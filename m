@@ -2,111 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FFA236D495
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1831836D498
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238104AbhD1JMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 05:12:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47752 "EHLO
+        id S237931AbhD1JNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 05:13:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbhD1JMm (ORCPT
+        with ESMTP id S229643AbhD1JNy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 05:12:42 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FAF3C061574;
-        Wed, 28 Apr 2021 02:11:56 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id lp8so2386129pjb.1;
-        Wed, 28 Apr 2021 02:11:56 -0700 (PDT)
+        Wed, 28 Apr 2021 05:13:54 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0775C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 02:13:08 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id g10so5352570edb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 02:13:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=iQOGR/2YT8/Z7BrRyEx1F0d6zkucK73DKDrSJaYPxMs=;
-        b=AnZhkOW2tSH7XfBDl4GA1Ao6XimYSjF7ybfvw62NWSwrQvNZyEBuyQiRO6vaK9eoLJ
-         hmmruyTB71wQDCJY8HSYHbs7O3oWkoXGL13x9peZCv8Bfy+rYtgiWFjx763AZ0927z46
-         g2dUsOyz/O76R8aGbnr1vGsXkVJwlLrFSCeJbQFxdp1qCaLvu5bi4bRJB9G9WQeSZ1CO
-         d1JAow+qIKwGrNoPxfG9bCkxdRyhUGDiqm33zTfJFkt0SqHqoiC0jnqIrmNzw4HV3/jN
-         D5NGYK+0ZeRtlzyD7ejLSjmIQFOK5J69vWAzTri/fwcrzp5sWkL4eqRv+We87Hfc+eyL
-         4VLw==
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zuJ82puTHqZvGhCMj8B6h5SzrRJTy69WAZAQZBqxSiQ=;
+        b=BmZFgYYLnjEt40CB2BFRTh2ATwa715HVEkdsPnOYQ8yMm6wh6xy4tyMFStm+7c/BGh
+         +yMeapcMlv7njQjAcuO+OJ8StqaOzyThoqO1tHYaQRlxKqiYvmYjemp7v6w0LeJilVMM
+         HUOPsw7eqNSU7qD9WNsnkZPrQDtxojfcZFdnc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=iQOGR/2YT8/Z7BrRyEx1F0d6zkucK73DKDrSJaYPxMs=;
-        b=LYeZV9IyRSjFSqpGay4LW6/aUExcoh9cy1/mpxZMEZ0F1kjsaamTTHA2VBZl1ivHKj
-         FHyhSHGvzDsP2qQzKt7MHfTgtRStiNUZtnc25eJXg8duVKyVuW7y/0JzGr8I8AIssPXq
-         Euq6ynrIu9Ds3I4/MFUDQ2gD0gygQeoalVaxCIITL8xbvZCEfMSqHW+h4d8iGtZOUo1n
-         mevWBh4tZP+0fihYfwQJ83KNzpU3yyOzFleQQWGN8YYL5D6uD2S7vmAANm2Il2C1LxGw
-         W+b89Rs2rsADp0cv/oUYXU/wJTQiNw7ZCacYoMsaD6pg02VOS9C8l4bzdEK0l2e5hXkV
-         UcFg==
-X-Gm-Message-State: AOAM532iivJrqoCrCKwY9zD3vUnD2ORj4qKmaWF+AN32EPTtdKP/8EQJ
-        B/1+H/qbQZ+AKrdocEGL67o=
-X-Google-Smtp-Source: ABdhPJxUV1Ev49YYlRiPWsk1AT7k99z/mOXMbC0yaPajecidZAO3bOgJOWRHOKJ3eOawQSpTf1L6JA==
-X-Received: by 2002:a17:90a:f283:: with SMTP id fs3mr3105955pjb.122.1619601116074;
-        Wed, 28 Apr 2021 02:11:56 -0700 (PDT)
-Received: from localhost ([115.99.221.24])
-        by smtp.gmail.com with ESMTPSA id g14sm4408848pjh.28.2021.04.28.02.11.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 02:11:55 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 14:41:50 +0530
-From:   Sanjana Srinidhi <sanjanasrinidhi1810@gmail.com>
-To:     bp@alien8.de, mchehab@kernel.org, tony.luck@intel.com,
-        james.morse@arm.com, rric@kernel.org
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Remove space before tabs
-Message-ID: <20210428091150.2c4qymxaxe2k4wqo@sanjana-VirtualBox>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zuJ82puTHqZvGhCMj8B6h5SzrRJTy69WAZAQZBqxSiQ=;
+        b=MsPQUPgKMarlcgD+5EIq5Zrd4fjynEyvAS/Vhm9ZnRQqBQzKWXMVvmHEF9+pdg8etf
+         JqYxl/RjZYTNZ4ibddfnfI6OW67uvYT+mj6CeyERCeDwRK7QjzN4W8lNMhEcPzJNVhkm
+         PP10uqhVReR03G8bckR+RhJRjvD7HOrpwDtXFgzItNL5FM8LuiMA2YOQfmKtpxuYqZPq
+         cweW2nXAo6kbIBY/oGLTI5Gm1nd/jw3GWCnXoAkFqcpWKAa7UxelHGkK8ur4BToR4Y/2
+         VVIpq8b2LJxJEtojqp2KIvwwJQVRNG+7cLM/Tq6tB5NTigvIsfn9w51MH5xVJwod5EbA
+         oe6w==
+X-Gm-Message-State: AOAM533j6jM52jU2prQSuKDRIjxbscv9fEvXm8maDt6S+9Z5qDKuA4ZC
+        TPku1HSx+O95mmfDGepDevMmdw==
+X-Google-Smtp-Source: ABdhPJzaOEGKbDD45sYI1dUDHD8YTTiiAB142e2QgrObP9pXVb0ZOjD3lWFGKvpypv0uGEO+Wsq+VA==
+X-Received: by 2002:a50:f28e:: with SMTP id f14mr10001002edm.371.1619601187486;
+        Wed, 28 Apr 2021 02:13:07 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id h23sm1555273ejx.90.2021.04.28.02.13.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Apr 2021 02:13:07 -0700 (PDT)
+Subject: Re: [PATCH] lib/string: sysfs_streq works case insensitively
+To:     Gioh Kim <gi-oh.kim@ionos.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20210412113315.91700-1-gi-oh.kim@ionos.com>
+ <CAJX1YtbXnPVbkpddXQf4MZ3sopoidr0fZ8OkrQegoLoCevaNwQ@mail.gmail.com>
+ <CAHp75Vf2yJ5=zdxRcPKmKGCKeF8As=Nv2S9fm0ciVXL5HGbWDg@mail.gmail.com>
+ <CAJX1YtYRK=_X8+mvva2S35-K4kpwXSAGctUJ01TEDFRhS0y5LA@mail.gmail.com>
+ <650dc1b8-d801-2263-2e5c-eb833f2c4534@rasmusvillemoes.dk>
+ <CAJX1YtaRAgg3oZ6X2cDtj0yASQ27XujDys97vbB0MWnN9vXakQ@mail.gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <64dc3e52-2146-3da4-3d04-d5c074723aba@rasmusvillemoes.dk>
+Date:   Wed, 28 Apr 2021 11:13:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <CAJX1YtaRAgg3oZ6X2cDtj0yASQ27XujDys97vbB0MWnN9vXakQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Spaces are removed before tabs to maintain code uniformity.
+On 28/04/2021 10.31, Gioh Kim wrote:
+> On Wed, Apr 28, 2021 at 9:47 AM Rasmus Villemoes
+> <linux@rasmusvillemoes.dk> wrote:
+>>
+>> On 28/04/2021 09.31, Gioh Kim wrote:
+>>> On Wed, Apr 28, 2021 at 8:42 AM Andy Shevchenko
+>>> <andy.shevchenko@gmail.com> wrote:
+>>>>
+>>
+>>>>
+>>>> Are you sure it’s good change? Sysfs is used for an ABI and you are opening a can of worms. From me NAK to this change without a very good background description that tells why it is safe to do.
+>>>
+>>> https://www.spinics.net/lists/kernel/msg3898123.html
+>>> My initial idea was making a new function: sysfs_streqcase.
+>>> Andrew and Greg suggested making sysfs_streq to be case-insensitive.
+>>> I would like to have a discussion about it.
+>>
+>> 1. That information should be in the commit log, not some random
+>> babbling about case sensitivity of file systems.
+> 
+> I don't think it is a good idea to write who suggested the concept of the patch.
 
-Signed-off-by: Sanjana Srinidhi <sanjanasrinidhi1810@gmail.com>
----
- drivers/edac/edac_pci.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+Sorry if it wasn't clear. I was referring to the information in that
+link (i.e., your commit log for the first suggested patch).
 
-diff --git a/drivers/edac/edac_pci.c b/drivers/edac/edac_pci.c
-index 48c844a72a27..46a68a70d30a 100644
---- a/drivers/edac/edac_pci.c
-+++ b/drivers/edac/edac_pci.c
-@@ -68,7 +68,7 @@ EXPORT_SYMBOL_GPL(edac_pci_free_ctl_info);
- 
- /*
-  * find_edac_pci_by_dev()
-- * 	scans the edac_pci list for a specific 'struct device *'
-+ *	scans the edac_pci list for a specific 'struct device *'
-  *
-  *	return NULL if not found, or return control struct pointer
-  */
-@@ -91,11 +91,11 @@ static struct edac_pci_ctl_info *find_edac_pci_by_dev(struct device *dev)
- 
- /*
-  * add_edac_pci_to_global_list
-- * 	Before calling this function, caller must assign a unique value to
-- * 	edac_dev->pci_idx.
-- * 	Return:
-- * 		0 on success
-- * 		1 on failure
-+ *	Before calling this function, caller must assign a unique value to
-+ *	edac_dev->pci_idx.
-+ *	Return:
-+ *		0 on success
-+ *		1 on failure
-  */
- static int add_edac_pci_to_global_list(struct edac_pci_ctl_info *pci)
- {
-@@ -161,7 +161,7 @@ static void del_edac_pci_from_global_list(struct edac_pci_ctl_info *pci)
- /*
-  * edac_pci_workq_function()
-  *
-- * 	periodic function that performs the operation
-+ *	periodic function that performs the operation
-  *	scheduled by a workq request, for a given PCI control struct
-  */
- static void edac_pci_workq_function(struct work_struct *work_req)
--- 
-2.25.1
+>> Sorry, I really think you need a lot stronger motivation for introducing
+>> either this change or a sysfs_strcaseeq().
+> 
+> I found out a problem of sysfs_streq when I tried to use it for
+> modules I am working on (RTRS/RNBD).
 
+Again, this is the kind of motivation that would need to be in the
+commit log. What problem are you solving in those modules that warrants
+changing the semantics of sysfs_streq()? Why does that module's sysfs
+interface need case-insensitive string comparison?
+
+> Then I thought it would be better if there is something like sysfs_streqcase.
+> That's why I sent the path.
+> If nobody needs the change, it is ok for me to ignore the patch.
+
+It's a lot easier to assess the merits of this new functionality
+(whether in the form of a new separate function, or changed semantics of
+sysfs_streq()) if we also see a few use cases. New functions are not
+added without users. Bells and whistles are not added without users.
+
+> Maybe I misunderstand when I can send a patch to Linux kernel community.
+> But the only motivation of me is sharing my idea just in case there is
+> someone who also needs it.
+
+That's fine, but you need to include proper information on why a new
+function is added or semantics of an existing one is changed (and for
+the latter, some words on why you believe all existing callers would be
+ok with that).
+
+Rasmus
