@@ -2,202 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F4636DE1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 904BF36DE2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241569AbhD1RWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 13:22:05 -0400
-Received: from mga14.intel.com ([192.55.52.115]:31875 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229931AbhD1RWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 13:22:03 -0400
-IronPort-SDR: XWMHNS+wPjLie1H7hBz2NfTsDEJbeLaQDEl6YlivxlsW5VAmlKjLVIZty42WlftZQ1UmtT+gAe
- fdAkZRfcBULg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9968"; a="196358545"
-X-IronPort-AV: E=Sophos;i="5.82,258,1613462400"; 
-   d="scan'208";a="196358545"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 10:21:17 -0700
-IronPort-SDR: cEvlCi3kOBH3dTkRN8SBpGaWOVoi90VfEqm9CSV9CtLns7T37tsTWnyFaetDwLqTl6FVw2AxIQ
- M7f0fLuWrMfQ==
-X-IronPort-AV: E=Sophos;i="5.82,258,1613462400"; 
-   d="scan'208";a="425680637"
-Received: from turnerrx-desk.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.37.37])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 10:21:14 -0700
-Subject: Re: [RFC PATCH] PCI/APCI: Move acpi_pci_osc_support() check to
- negotiation phase
-To:     Joerg Roedel <joro@8bytes.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, rjw@rjwysocki.net,
-        Len Brown <lenb@kernel.org>
-Cc:     linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Joerg Roedel <jroedel@suse.de>
-References: <20210428081857.10322-1-joro@8bytes.org>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <d24893db-2c9e-dbb1-75d2-53b96760c80e@linux.intel.com>
-Date:   Wed, 28 Apr 2021 10:21:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S241573AbhD1RYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 13:24:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23414 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231844AbhD1RYc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 13:24:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619630626;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6QmxbNDcfkmoT4snx6gLW6zB0uLTOmzBgWbCGZ43h/M=;
+        b=ZzCrrHdOP4mJDOUxSO+4Q35NSCs/UVzEYL0+E6A4nwVXZlJ3jlcbDT7BXrCRtifO+UwYBe
+        oUzyQIbHta8wd7OyV16gwsMtsOREU/xhaIFfPvaCeQHes5mm/mb0i8gCVQ0rHTXmzV/i8l
+        I7VqYah1c3/+dw0KoR+yIYo+LJG8uTU=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-17-OpMk-K7jMoWnZ6P6slb7SQ-1; Wed, 28 Apr 2021 13:23:44 -0400
+X-MC-Unique: OpMk-K7jMoWnZ6P6slb7SQ-1
+Received: by mail-qv1-f70.google.com with SMTP id h88-20020a0c82610000b02901b70a2884e8so8828994qva.20
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 10:23:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6QmxbNDcfkmoT4snx6gLW6zB0uLTOmzBgWbCGZ43h/M=;
+        b=ALhgSBi1M5Rbu+sWlK1yRXEYSLGWt+iDMuGtAjE3JSP3AYfvRf86XmdyvQFXN9Yzxd
+         n1yJpSFamqvYnGczAFm3WGM5bWJ5UsSvmPqxZylohu7LNwTw94XNyshRZx3vSmVAJ0+E
+         aRLcnWyPVmvPW76cp3v1fO7JRivP0mVm4Z7ELxmApDNsAVTRND980dT/56Wbf/et8mIv
+         aIlAE5DnPFR6AcNfvdNq0qbn4RhEUW+PH5fv1uSB+Mer1p3m5y9r5Lxm6Ex0GmN7P0p1
+         7CAz/m/WPdNgQIqZBHEmknI7YsFfwcgY/laXPLTCX3YdTU1Uq1FT1w1SLMVymThk5jub
+         Dl1w==
+X-Gm-Message-State: AOAM533W9nv+jOwnZrIDDCKEDyR5seLWe8nCp+W+ACtTrli54H8tmfdS
+        scgwfJqqILe+czKufUPMS8pIecrp4G8S4uhZhRU3naxTFLhFh/SvR8RnAk2r5TB9V20ycq39KBb
+        wob2Bk0ExVDjan6D6VZ3oCO2Y
+X-Received: by 2002:ae9:f310:: with SMTP id p16mr29914959qkg.123.1619630624372;
+        Wed, 28 Apr 2021 10:23:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJweTpfhxOs2+FE7b/y38FVRdocxBBDoCy0Saro4x4l/ivnG64cNuM5i6194baTUbY8T8h2pWw==
+X-Received: by 2002:ae9:f310:: with SMTP id p16mr29914911qkg.123.1619630624022;
+        Wed, 28 Apr 2021 10:23:44 -0700 (PDT)
+Received: from xz-x1 (bras-base-toroon474qw-grc-77-184-145-104-227.dsl.bell.ca. [184.145.104.227])
+        by smtp.gmail.com with ESMTPSA id 198sm275365qkf.20.2021.04.28.10.23.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 10:23:43 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 13:23:41 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        Brian Geffon <bgeffon@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH v5 09/10] userfaultfd/selftests: reinitialize test
+ context in each test
+Message-ID: <20210428172341.GF6584@xz-x1>
+References: <20210427225244.4326-1-axelrasmussen@google.com>
+ <20210427225244.4326-10-axelrasmussen@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210428081857.10322-1-joro@8bytes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210427225244.4326-10-axelrasmussen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/28/21 1:18 AM, Joerg Roedel wrote:
-> From: Joerg Roedel <jroedel@suse.de>
+On Tue, Apr 27, 2021 at 03:52:43PM -0700, Axel Rasmussen wrote:
+> Currently, the context (fds, mmap-ed areas, etc.) are global. Each test
+> mutates this state in some way, in some cases really "clobbering it"
+> (e.g., the events test mremap-ing area_dst over the top of area_src, or
+> the minor faults tests overwriting the count_verify values in the test
+> areas). We run the tests in a particular order, each test is careful to
+> make the right assumptions about its starting state, etc.
 > 
-> The acpi_pci_osc_support() does an _OSC query with _OSC supported set
-> to what the OS supports but a zero _OSC control value. This is
-> problematic on some platforms where the firmware allows to configure
-> whether DPC is under OS or Firmware control.
+> But, this is fragile. It's better for a test's success or failure to not
+> depend on what some other prior test case did to the global state.
+> 
+> To that end, clear and reinitialize the test context at the start of
+> each test case, so whatever prior test cases did doesn't affect future
+> tests.
+> 
+> This is particularly relevant to this series because the events test's
+> mremap of area_dst screws up assumptions the minor fault test was
+> relying on. This wasn't a problem for hugetlb, as we don't mremap in
+> that case.
+> 
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
-Do we run acpi_pci_osc_support() only to check whether _OSC is
-supported ? Or does it serve any other purpose.
-
-
-> 
-> When DPC is configured to be under OS control these platforms will
-> issue a warning in the firmware log that the OS does not support DPC.
-
-Also, is there any other benefit from this patch other than fixing
-a warning message in firmware?
-
-> 
-> Avoid an _OSC query with _OSC control set to zero by moving the
-> supported check into the acpi_pci_osc_control_set() path. This is
-> still early enough to fail as nothing before that depends on the
-> results of acpi_pci_osc_support().
-> 
-> As a result the acpi_pci_osc_support() function can be removed and
-> acpi_pci_query_osc() be simplified because it no longer called with a
-> NULL pointer for *control.
-> 
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
-> ---
->   drivers/acpi/pci_root.c | 50 ++++++++++++++++-------------------------
->   1 file changed, 19 insertions(+), 31 deletions(-)
-> 
-> diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
-> index dcd593766a64..530ecf4970b1 100644
-> --- a/drivers/acpi/pci_root.c
-> +++ b/drivers/acpi/pci_root.c
-> @@ -199,16 +199,11 @@ static acpi_status acpi_pci_query_osc(struct acpi_pci_root *root,
->   
->   	support &= OSC_PCI_SUPPORT_MASKS;
->   	support |= root->osc_support_set;
-> +	*control &= OSC_PCI_CONTROL_MASKS;
->   
->   	capbuf[OSC_QUERY_DWORD] = OSC_QUERY_ENABLE;
->   	capbuf[OSC_SUPPORT_DWORD] = support;
-> -	if (control) {
-> -		*control &= OSC_PCI_CONTROL_MASKS;
-> -		capbuf[OSC_CONTROL_DWORD] = *control | root->osc_control_set;
-> -	} else {
-> -		/* Run _OSC query only with existing controls. */
-> -		capbuf[OSC_CONTROL_DWORD] = root->osc_control_set;
-> -	}
-> +	capbuf[OSC_CONTROL_DWORD] = *control | root->osc_control_set;
->   
->   	status = acpi_pci_run_osc(root->device->handle, capbuf, &result);
->   	if (ACPI_SUCCESS(status)) {
-> @@ -219,11 +214,6 @@ static acpi_status acpi_pci_query_osc(struct acpi_pci_root *root,
->   	return status;
->   }
->   
-> -static acpi_status acpi_pci_osc_support(struct acpi_pci_root *root, u32 flags)
-> -{
-> -	return acpi_pci_query_osc(root, flags, NULL);
-> -}
-> -
->   struct acpi_pci_root *acpi_pci_find_root(acpi_handle handle)
->   {
->   	struct acpi_pci_root *root;
-> @@ -346,7 +336,8 @@ EXPORT_SYMBOL_GPL(acpi_get_pci_dev);
->    * _OSC bits the BIOS has granted control of, but its contents are meaningless
->    * on failure.
->    **/
-> -static acpi_status acpi_pci_osc_control_set(acpi_handle handle, u32 *mask, u32 req)
-> +static acpi_status acpi_pci_osc_control_set(acpi_handle handle, u32
-> +					    *mask, u32 req, u32 support)
->   {
->   	struct acpi_pci_root *root;
->   	acpi_status status;
-> @@ -370,7 +361,7 @@ static acpi_status acpi_pci_osc_control_set(acpi_handle handle, u32 *mask, u32 r
->   
->   	/* Need to check the available controls bits before requesting them. */
->   	while (*mask) {
-> -		status = acpi_pci_query_osc(root, root->osc_support_set, mask);
-> +		status = acpi_pci_query_osc(root, support, mask);
->   		if (ACPI_FAILURE(status))
->   			return status;
->   		if (ctrl == *mask)
-> @@ -433,18 +424,6 @@ static void negotiate_os_control(struct acpi_pci_root *root, int *no_aspm,
->   		support |= OSC_PCI_EDR_SUPPORT;
->   
->   	decode_osc_support(root, "OS supports", support);
-> -	status = acpi_pci_osc_support(root, support);
-> -	if (ACPI_FAILURE(status)) {
-> -		*no_aspm = 1;
-> -
-> -		/* _OSC is optional for PCI host bridges */
-> -		if ((status == AE_NOT_FOUND) && !is_pcie)
-> -			return;
-> -
-> -		dev_info(&device->dev, "_OSC: platform retains control of PCIe features (%s)\n",
-> -			 acpi_format_exception(status));
-> -		return;
-> -	}
->   
->   	if (pcie_ports_disabled) {
->   		dev_info(&device->dev, "PCIe port services disabled; not requesting _OSC control\n");
-> @@ -483,7 +462,8 @@ static void negotiate_os_control(struct acpi_pci_root *root, int *no_aspm,
->   
->   	requested = control;
->   	status = acpi_pci_osc_control_set(handle, &control,
-> -					  OSC_PCI_EXPRESS_CAPABILITY_CONTROL);
-> +					  OSC_PCI_EXPRESS_CAPABILITY_CONTROL,
-> +					  support);
->   	if (ACPI_SUCCESS(status)) {
->   		decode_osc_control(root, "OS now controls", control);
->   		if (acpi_gbl_FADT.boot_flags & ACPI_FADT_NO_ASPM) {
-> @@ -496,10 +476,8 @@ static void negotiate_os_control(struct acpi_pci_root *root, int *no_aspm,
->   			*no_aspm = 1;
->   		}
->   	} else {
-> -		decode_osc_control(root, "OS requested", requested);
-> -		decode_osc_control(root, "platform willing to grant", control);
-> -		dev_info(&device->dev, "_OSC: platform retains control of PCIe features (%s)\n",
-> -			acpi_format_exception(status));
-> +		/* Platform wants to control PCIe features */
-> +		root->osc_support_set = 0;
->   
->   		/*
->   		 * We want to disable ASPM here, but aspm_disabled
-> @@ -509,6 +487,16 @@ static void negotiate_os_control(struct acpi_pci_root *root, int *no_aspm,
->   		 * root scan.
->   		 */
->   		*no_aspm = 1;
-> +
-> +		/* _OSC is optional for PCI host bridges */
-> +		if ((status == AE_NOT_FOUND) && !is_pcie)
-> +			return;
-> +
-> +		decode_osc_control(root, "OS requested", requested);
-> +		decode_osc_control(root, "platform willing to grant", control);
-> +		dev_info(&device->dev, "_OSC: platform retains control of PCIe features (%s)\n",
-> +			acpi_format_exception(status));
-> +
->   	}
->   }
->   
-> 
+Reviewed-by: Peter Xu <peterx@redhat.com>
 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Peter Xu
+
