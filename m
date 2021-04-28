@@ -2,93 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E9EB36DE9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B329036DE9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242537AbhD1Rrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 13:47:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242457AbhD1Rrk (ORCPT
+        id S242487AbhD1Rrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 13:47:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56145 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242449AbhD1Rrb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 13:47:40 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64017C06138A
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 10:46:54 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id h36so46423798lfv.7
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 10:46:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hSp3pG8dXFozEXy+cySWLM8gnFTjSS+49BzY5lWcsD4=;
-        b=SoQdTmzP6hzb9+P80G8+F5jiqD/LVHkhkbM5bIUW+QtlVU7Out24D0T1rY5WGKhZAJ
-         9b5DVoXPEPnR/6JOe05sMyEYilISH6KZEqtWuzYqcwwP+vFIgD1AONe0sTGQ6Q8rA8zn
-         piqb8rGU3Lkrf4gu1ZTe/T9NI4xgzS3hRJU/I=
+        Wed, 28 Apr 2021 13:47:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619632005;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8BOun1ZYibCbIwXIrMmv7Pl4kSj5RYq+jSho1dRkNPA=;
+        b=jJ9eozzaD5WeSd0mgY7tQQJE0WdZTh/qd4n8w37YZ+p/Dr4E7A325KGJVlE1a9bBMJrLuP
+        dfiM6LjoYGEosWCNZN/iDd5gG75gLoBvUY824loD5Hm4EfSwIroKgsF//iSxpXBLuK+RBF
+        B0LvA0lw1146deGlRWvJc6X4jT2YFTw=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-258-idS5XV-SOiyXJwJPBEyU9g-1; Wed, 28 Apr 2021 13:46:43 -0400
+X-MC-Unique: idS5XV-SOiyXJwJPBEyU9g-1
+Received: by mail-ej1-f71.google.com with SMTP id s23-20020a1709069617b02903907023c7c0so2338865ejx.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 10:46:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hSp3pG8dXFozEXy+cySWLM8gnFTjSS+49BzY5lWcsD4=;
-        b=ZfhV2e2FUTbdroZIqktYKy5l2e9biubUqC+U+ibksPaM7Rvtyq81zpBfqwpPZ+Qxg5
-         XC0990wI4eSKY3WKaBRE9/sufnC/Bhx8v8E6SXU1tkc/CEXOX1nxq4lHeOfs9GA8qtYd
-         nxo1oRTEDXZzPeU2SNS2Z+Vt0VEKvAzl5APAT1yTB776Uq+b9pdvlHweiDCLvlsUhGTJ
-         KIGZCx8Lrg6rBlMo5T245Pksbv4DlQBDC8DJXgzss3zbySirW28bzN7JI/oQuXafiH9f
-         A5w/Nv0/xecwmpt5b6T0m1CRRlXGk1BnebK1u9RLuYvH/AAJzNv6qI9nrH/JUY5wE6qh
-         +7cw==
-X-Gm-Message-State: AOAM531+J3kKgcCvp+VomNTw6DWmGNO09YeFye0dEHU2GoESB+V+GVUY
-        +qdc5hXeg4zACuXxPa0SxCtsdirEM3lXzCm/
-X-Google-Smtp-Source: ABdhPJw3jV/UBn2+DH5hi/YOIC0m876HQ0+AgmIxcwPJsbq3U8hgL97bHS3vLlJC9Xn27BmYU8hLcg==
-X-Received: by 2002:a05:6512:2148:: with SMTP id s8mr21256074lfr.142.1619632012778;
-        Wed, 28 Apr 2021 10:46:52 -0700 (PDT)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id v14sm123323lfg.56.2021.04.28.10.46.51
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8BOun1ZYibCbIwXIrMmv7Pl4kSj5RYq+jSho1dRkNPA=;
+        b=c0NFiQmyR8ECBxq7REoNfPDzbrPfMv57mtI9FUsFEd2rIa5l9sh3I1WqGk1kM1ttbt
+         98BfuXpZomiLvFHxjEVl3TatEjxTAf1yXrjsVfb4+27LfBuwM+b9S/WZCZlp4s8pK/nC
+         VqIh2cNHwddzpVo9ar+FizPIWbmotNI0cmBh8C12AJpuIZgL5bQZhZiXk+JkplY9HBUa
+         P1H94gCeBgxeADyPAl0vhKNNeTVd5rYPjNQUUhjxfUO0X1Gen+X09w+6L6CgrdhWHMVA
+         vGFADem6PJX+2RNy/GwweIIjOJjX9SCmeYANYcMTBfUQHu95MsmExTjXjxkSCFFUdZyi
+         OLbQ==
+X-Gm-Message-State: AOAM530Jwa9mci3NdceoqaoRPm8VCAi8ZOYkyA35If0vo+vnu23G3b7j
+        5Sql/fF7mR5Ds+6cQNTiEOPaa58OLx3HqL+KlwXRg9dytK2T4Gy+dmwyB0JqD9mDpYdnpOQdM1/
+        kRGLaNgcLdRIu9HrKzslSZTRn
+X-Received: by 2002:aa7:c7d5:: with SMTP id o21mr13060596eds.166.1619632001802;
+        Wed, 28 Apr 2021 10:46:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwjDsV9NGJUW50rDTXrCtAkYz85juYbP1wtFF5LgyE9uXZiwIK4vbpBeyZwXwTfivQpZPGnog==
+X-Received: by 2002:aa7:c7d5:: with SMTP id o21mr13060570eds.166.1619632001620;
+        Wed, 28 Apr 2021 10:46:41 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id u24sm361329edt.85.2021.04.28.10.46.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Apr 2021 10:46:51 -0700 (PDT)
-Received: by mail-lf1-f52.google.com with SMTP id b23so18018000lfv.8
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 10:46:51 -0700 (PDT)
-X-Received: by 2002:a05:6512:1095:: with SMTP id j21mr3081254lfg.40.1619632010958;
- Wed, 28 Apr 2021 10:46:50 -0700 (PDT)
+        Wed, 28 Apr 2021 10:46:41 -0700 (PDT)
+To:     Ben Gardon <bgardon@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20210427223635.2711774-1-bgardon@google.com>
+ <20210427223635.2711774-6-bgardon@google.com>
+ <997f9fe3-847b-8216-c629-1ad5fdd2ffae@redhat.com>
+ <CANgfPd8RZXQ-BamwQPS66Q5hLRZaDFhi0WaA=ZvCP4BbofiUhg@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 5/6] KVM: x86/mmu: Protect kvm->memslots with a mutex
+Message-ID: <d936b13b-bb00-fc93-de3b-adc59fa32a7b@redhat.com>
+Date:   Wed, 28 Apr 2021 19:46:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210427183414.12499-1-arek_koz@o2.pl> <20210428061259.GA5084@lst.de>
- <9905352.nUPlyArG6x@swift.dev.arusekk.pl> <20210428130339.GA30329@lst.de>
-In-Reply-To: <20210428130339.GA30329@lst.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 28 Apr 2021 10:46:35 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wibrw+PnBiQbkGy+5p4GpkPwmmodw-beODikL-tiz0dFQ@mail.gmail.com>
-Message-ID: <CAHk-=wibrw+PnBiQbkGy+5p4GpkPwmmodw-beODikL-tiz0dFQ@mail.gmail.com>
-Subject: Re: [PATCH] proc: Use seq_read_iter where possible
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Arusekk <arek_koz@o2.pl>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CANgfPd8RZXQ-BamwQPS66Q5hLRZaDFhi0WaA=ZvCP4BbofiUhg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 6:03 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> Unless Linus changed his mind just patching the file you care about for
-> now seems like the best idea.
+On 28/04/21 18:40, Ben Gardon wrote:
+> On Tue, Apr 27, 2021 at 11:25 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>>
+>> On 28/04/21 00:36, Ben Gardon wrote:
+>>> +void kvm_arch_assign_memslots(struct kvm *kvm, int as_id,
+>>> +                          struct kvm_memslots *slots)
+>>> +{
+>>> +     mutex_lock(&kvm->arch.memslot_assignment_lock);
+>>> +     rcu_assign_pointer(kvm->memslots[as_id], slots);
+>>> +     mutex_unlock(&kvm->arch.memslot_assignment_lock);
+>>> +}
+>>
+>> Does the assignment also needs the lock, or only the rmap allocation?  I
+>> would prefer the hook to be something like kvm_arch_setup_new_memslots.
+> 
+> The assignment does need to be under the lock to prevent the following race:
+> 1. Thread 1 (installing a new memslot): Acquires memslot assignment
+> lock (or perhaps in this case rmap_allocation_lock would be more apt.)
+> 2. Thread 1: Check alloc_memslot_rmaps (it is false)
+> 3. Thread 1: doesn't allocate memslot rmaps for new slot
+> 4. Thread 1: Releases memslot assignment lock
+> 5. Thread 2 (allocating a shadow root): Acquires memslot assignment lock
+> 6. Thread 2: Sets alloc_memslot_rmaps = true
+> 7. Thread 2: Allocates rmaps for all existing slots
+> 8. Thread 2: Releases memslot assignment lock
+> 9. Thread 2: Sets shadow_mmu_active = true
+> 10. Thread 1: Installs the new memslots
+> 11. Thread 3: Null pointer dereference when trying to access rmaps on
+> the new slot.
 
-I'm ok with expanding splice() use, but I do want it to be on a
-case-by-case basis and with comments about what actually used splice()
-in the odd circumstances.
+... because thread 3 would be under mmu_lock and therefore cannot 
+allocate the rmap itself (you have to do it in mmu_alloc_shadow_roots, 
+as in patch 6).
 
-Our splice infrastructure is probably a lot safer than it used to be
-now that set_fs() is gone, but splice() on odd files does remain
-historically a source of not just bugs, but bugs that were security
-issues.
+Related to this, your solution does not have to protect kvm_dup_memslots 
+with the new lock, because the first update of the memslots will not go 
+through kvm_arch_prepare_memory_region but it _will_ go through 
+install_new_memslots and therefore through the new hook.  But overall I 
+think I'd prefer to have a kvm->slots_arch_lock mutex in generic code, 
+and place the call to kvm_dup_memslots and 
+kvm_arch_prepare_memory_region inside that mutex.
 
-So it's mainly a "once bitten, twice shy" thing for me, which is why
-I'm more than happy to extend splice(), but want to do so in a very
-careful and controlled - and documented - manner, rather than the old
-situation where "pretty much everything can do splice, whether it
-actually works or not".
+That makes the new lock decently intuitive, and easily documented as 
+"Architecture code can use slots_arch_lock if the contents of struct 
+kvm_arch_memory_slot needs to be written outside 
+kvm_arch_prepare_memory_region.  Unlike slots_lock, slots_arch_lock can 
+be taken inside a ``kvm->srcu`` read-side critical section".
 
-                 Linus
+I admit I haven't thought about it very thoroughly, but if something 
+like this is enough, it is relatively pretty:
+
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 9b8e30dd5b9b..6e5106365597 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1333,6 +1333,7 @@ static struct kvm_memslots 
+*install_new_memslots(struct kvm *kvm,
+
+  	rcu_assign_pointer(kvm->memslots[as_id], slots);
+
++	mutex_unlock(&kvm->slots_arch_lock);
+  	synchronize_srcu_expedited(&kvm->srcu);
+
+  	/*
+@@ -1399,6 +1398,7 @@ static int kvm_set_memslot(struct kvm *kvm,
+  	struct kvm_memslots *slots;
+  	int r;
+
++	mutex_lock(&kvm->slots_arch_lock);
+  	slots = kvm_dup_memslots(__kvm_memslots(kvm, as_id), change);
+  	if (!slots)
+  		return -ENOMEM;
+@@ -1427,6 +1427,7 @@ static int kvm_set_memslot(struct kvm *kvm,
+  		 *	- kvm_is_visible_gfn (mmu_check_root)
+  		 */
+  		kvm_arch_flush_shadow_memslot(kvm, slot);
++		mutex_lock(&kvm->slots_arch_lock);
+  	}
+
+  	r = kvm_arch_prepare_memory_region(kvm, new, mem, change);
+
+It does make the critical section a bit larger, so that the 
+initialization of the shadow page (which is in KVM_RUN context) contends 
+with slightly more code than necessary.  However it's all but a 
+performance critical situation, as it will only happen just once per VM.
+
+WDYT?
+
+Paolo
+
+> Putting the assignment under the lock prevents 5-8 from happening
+> between 2 and 10.
+> 
+> I'm open to other ideas as far as how to prevent this race though. I
+> admit this solution is not the most elegant looking.
+
+
