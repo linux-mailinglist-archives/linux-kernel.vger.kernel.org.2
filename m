@@ -2,158 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0207E36DCF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E83636DD02
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240739AbhD1QZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 12:25:46 -0400
-Received: from mga01.intel.com ([192.55.52.88]:43430 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230294AbhD1QZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 12:25:43 -0400
-IronPort-SDR: +4Spkr0uMoBgdOlJU22Pw7WvkHr689r04aaJ69bXQmM4Y9gd7GeyXoKVaMHB7lzWk4Vuyst3js
- vh6uuJSbMsug==
-X-IronPort-AV: E=McAfee;i="6200,9189,9968"; a="217503193"
-X-IronPort-AV: E=Sophos;i="5.82,258,1613462400"; 
-   d="scan'208";a="217503193"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 09:24:56 -0700
-IronPort-SDR: iYKiWGUzmjWmi7osjPR7ovPDHt4e7Z5mHFxVw8uXJpANdfEyblOIG9sK3P803dR1wOybig8Imf
- nQ2aVbEXh9Zg==
-X-IronPort-AV: E=Sophos;i="5.82,258,1613462400"; 
-   d="scan'208";a="537022643"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.209.133.34]) ([10.209.133.34])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 09:24:53 -0700
-Subject: Re: [PATCH v26 0/9] Control-flow Enforcement: Indirect Branch
- Tracking
-To:     David Laight <David.Laight@ACULAB.COM>,
-        'Andy Lutomirski' <luto@kernel.org>,
-        "H.J. Lu" <hjl.tools@gmail.com>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-References: <20210427204720.25007-1-yu-cheng.yu@intel.com>
- <0e03c50ea05440209d620971b9db4f29@AcuMS.aculab.com>
- <CALCETrUpZfznXzN3Ld33DMvQcHD2ACnhYf9KdP+5-xXuX_pVpA@mail.gmail.com>
- <CAMe9rOp7FauoqQ0vx+ZVPGOE9+ABspheuGLc++Chj_goE5HvWA@mail.gmail.com>
- <CALCETrVHUP9=2kX3aJJugcagsf26W0sLEPsDvVCZNnBmbWrOLQ@mail.gmail.com>
- <0c6e1c922bc54326b1121194759565f5@AcuMS.aculab.com>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <7d857e5d-e3d3-1182-5712-813abf48ccba@intel.com>
-Date:   Wed, 28 Apr 2021 09:24:52 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S240785AbhD1QaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 12:30:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229519AbhD1QaD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 12:30:03 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F324EC061573;
+        Wed, 28 Apr 2021 09:29:17 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id 20so29197380pll.7;
+        Wed, 28 Apr 2021 09:29:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding:user-agent;
+        bh=Jm1Qiw6sG7rg0i6ZsbX28rZ4o7A1N3m+zEYtnr+awQA=;
+        b=JCXUzC3v9I/GFjKAMLcDXsQKGTDsx8zvaI3ISqb71SOZIhNRc/9e14jpb7x2NvLjDm
+         /vNpiJSVKz1COx8/w7vEBAfLye6XFa954aAw88Lkpf0/65mN88GBPszfnEIL23wAnSF4
+         dWmZ/L4ljhyTONAPz/IaFC6c0cIwHBjQ4R5Zk7SHg2DUnJsjiYtUHTEoAnGVMVWijRZD
+         ND8e5KW/PJrh+yYTkAWYsKwdG9pAIGm4TS88u4ckxydGJFQEzTHfWPy2UI4hOdXB48+b
+         nQx0X6VGmKGUu5vlwfOqc0CMBxM1YC1km8SFXRICqv9Rw4LcRgmlszVeOVPBTV7RBTDB
+         nT9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding:user-agent;
+        bh=Jm1Qiw6sG7rg0i6ZsbX28rZ4o7A1N3m+zEYtnr+awQA=;
+        b=NJZqUrNSVDKd8wwCSIutm2CdH3sOCqchDB0NH+cpchX8i2M8PL7ojANiIjZOPixyCm
+         el/BvlYwOcJ/PI57RiQotXurNUxqPvfx/6ZOHgb6HpdEprZmrVpTDz/PJhgFDdwTYGQc
+         RpNWyvSODZrYo6HO+Dt+CldaGLPqT2Eb5PQF+w0tyLi9zLhHX4VQoMNBwSVHdx6uCP3P
+         q7+MqUOL4uac/18CcCXwQqzjrpBGfYRgxAx88Y8Yfqo7vKA+oX0KLFvJg5t5CWICYK4K
+         +1tp7r7Wu7TkcygRMKm+KlM3RlFehyYjA9PTadx7Zc6fgW34yWYtSgbFQqfqBlwCJu40
+         /LUw==
+X-Gm-Message-State: AOAM533t9SH6Ok1RbDW+JawHfK36W8fWjB6l+L6SrmlM6n5lyF9PUmaB
+        Gm0cz2oIhFUUiD7F+CHZq36YXk8YnwfM7TMV
+X-Google-Smtp-Source: ABdhPJwYo1UWffNjMrEZKZxnxRhmb8978jwv/8lFWFebVwgdd8VyMp572p6h+g5ZC+PFgCh7XlkjSw==
+X-Received: by 2002:a17:902:b68a:b029:e9:7643:6335 with SMTP id c10-20020a170902b68ab02900e976436335mr31138249pls.2.1619627357290;
+        Wed, 28 Apr 2021 09:29:17 -0700 (PDT)
+Received: from localhost ([157.45.42.123])
+        by smtp.gmail.com with ESMTPSA id r32sm192926pgm.49.2021.04.28.09.29.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 28 Apr 2021 09:29:16 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 21:59:07 +0530
+From:   Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+To:     m@bues.ch
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] drivers: ssb: main.c: Fix indentation of comment
+Message-ID: <20210428162907.bn5q3oh3sji6wlh4@kewl-virtual-machine>
 MIME-Version: 1.0
-In-Reply-To: <0c6e1c922bc54326b1121194759565f5@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/28/2021 8:33 AM, David Laight wrote:
-> From: Andy Lutomirski
->> Sent: 28 April 2021 16:15
->>
->> On Wed, Apr 28, 2021 at 7:57 AM H.J. Lu <hjl.tools@gmail.com> wrote:
->>>
->>> On Wed, Apr 28, 2021 at 7:52 AM Andy Lutomirski <luto@kernel.org> wrote:
->>>>
->>>> On Wed, Apr 28, 2021 at 7:48 AM David Laight <David.Laight@aculab.com> wrote:
->>>>>
->>>>> From: Yu-cheng Yu
->>>>>> Sent: 27 April 2021 21:47
->>>>>>
->>>>>> Control-flow Enforcement (CET) is a new Intel processor feature that blocks
->>>>>> return/jump-oriented programming attacks.  Details are in "Intel 64 and
->>>>>> IA-32 Architectures Software Developer's Manual" [1].
->>>>> ...
->>>>>
->>>>> Does this feature require that 'binary blobs' for out of tree drivers
->>>>> be compiled by a version of gcc that adds the ENDBRA instructions?
->>>>>
->>>>> If enabled for userspace, what happens if an old .so is dynamically
->>>>> loaded?
->>>
->>> CET will be disabled by ld.so in this case.
->>
->> What if a program starts a thread and then dlopens a legacy .so?
-> 
-> Or has shadow stack enabled and opens a .so that uses retpolines?
-> 
+Shifted the closing */ to the next line
+This is done to maintain code uniformity.
 
-When shadow stack is enabled, retpolines are not necessary.  I don't 
-know if glibc has been updated for detection of this case.  H.J.?
+Acked-by: Michael Büsch <m@bues.ch>
+Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+---
+ drivers/ssb/main.c | 30 ++++++++++++++++++++----------
+ 1 file changed, 20 insertions(+), 10 deletions(-)
 
->>>>> Or do all userspace programs and libraries have to have been compiled
->>>>> with the ENDBRA instructions?
->>>
->>> Correct.  ld and ld.so check this.
->>>
->>>> If you believe that the userspace tooling for the legacy IBT table
->>>> actually works, then it should just work.  Yu-cheng, etc: how well
->>>> tested is it?
->>>>
->>>
->>> Legacy IBT bitmap isn't unused since it doesn't cover legacy codes
->>> generated by legacy JITs.
->>>
->>
->> How does ld.so decide whether a legacy JIT is in use?
-> 
-> What if your malware just precedes its 'jump into the middle of a function'
-> with a %ds segment override?
-> 
-
-Do you mean far jump?  It is not tracked by ibt, which tracks near 
-indirect jump.  The details can be found in Intel SDM.
-
-> I may have a real problem here.
-> We currently release program/library binaries that run on Linux
-> distributions that go back as far as RHEL6 (2.6.32 kernel era).
-> To do this everything is compiled on a userspace of the same vintage.
-> I'm not at all sure a new enough gcc to generate the ENDBR64 instructions
-> will run on the relevant system - and may barf on the system headers
-> even if we got it to run.
-> I really don't want to have to build multiple copies of everything.
-
-This is likely OK.  We have tested many combinations.  Should you run 
-into any issue, please let glibc people know.
-
-Thanks!
-
-> 
-> 	David
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
-> 
+diff --git a/drivers/ssb/main.c b/drivers/ssb/main.c
+index 0a26984acb2c..0e180c36daa4 100644
+--- a/drivers/ssb/main.c
++++ b/drivers/ssb/main.c
+@@ -37,7 +37,8 @@ static LIST_HEAD(buses);
+ /* Software ID counter */
+ static unsigned int next_busnumber;
+ /* buses_mutes locks the two buslists and the next_busnumber.
+- * Don't lock this directly, but use ssb_buses_[un]lock() below. */
++ * Don't lock this directly, but use ssb_buses_[un]lock() below.
++ */
+ static DEFINE_MUTEX(buses_mutex);
+ 
+ /* There are differences in the codeflow, if the bus is
+@@ -45,7 +46,8 @@ static DEFINE_MUTEX(buses_mutex);
+  * are not available early. This is a mechanism to delay
+  * these initializations to after early boot has finished.
+  * It's also used to avoid mutex locking, as that's not
+- * available and needed early. */
++ * available and needed early.
++ */
+ static bool ssb_is_early_boot = 1;
+ 
+ static void ssb_buses_lock(void);
+@@ -161,7 +163,8 @@ int ssb_bus_resume(struct ssb_bus *bus)
+ 	int err;
+ 
+ 	/* Reset HW state information in memory, so that HW is
+-	 * completely reinitialized. */
++	 * completely reinitialized.
++	 */
+ 	bus->mapped_device = NULL;
+ #ifdef CONFIG_SSB_DRIVER_PCICORE
+ 	bus->pcicore.setup_done = 0;
+@@ -467,7 +470,8 @@ static int ssb_devices_register(struct ssb_bus *bus)
+ 		sdev = &(bus->devices[i]);
+ 
+ 		/* We don't register SSB-system devices to the kernel,
+-		 * as the drivers for them are built into SSB. */
++		 * as the drivers for them are built into SSB.
++		 */
+ 		switch (sdev->id.coreid) {
+ 		case SSB_DEV_CHIPCOMMON:
+ 		case SSB_DEV_PCI:
+@@ -521,7 +525,8 @@ static int ssb_devices_register(struct ssb_bus *bus)
+ 		if (err) {
+ 			pr_err("Could not register %s\n", dev_name(dev));
+ 			/* Set dev to NULL to not unregister
+-			 * dev on error unwinding. */
++			 * dev on error unwinding.
++			 */
+ 			sdev->dev = NULL;
+ 			put_device(dev);
+ 			goto error;
+@@ -667,7 +672,8 @@ ssb_bus_register(struct ssb_bus *bus,
+ 	ssb_bus_may_powerdown(bus);
+ 
+ 	/* Queue it for attach.
+-	 * See the comment at the ssb_is_early_boot definition. */
++	 * See the comment at the ssb_is_early_boot definition.
++	 */
+ 	list_add_tail(&bus->list, &attach_queue);
+ 	if (!ssb_is_early_boot) {
+ 		/* This is not early boot, so we must attach the bus now */
+@@ -1007,7 +1013,8 @@ static void ssb_flush_tmslow(struct ssb_device *dev)
+ 	 * a machine check exception otherwise.
+ 	 * Do this by reading the register back to commit the
+ 	 * PCI write and delay an additional usec for the device
+-	 * to react to the change. */
++	 * to react to the change.
++	 */
+ 	ssb_read32(dev, SSB_TMSLOW);
+ 	udelay(1);
+ }
+@@ -1044,7 +1051,8 @@ void ssb_device_enable(struct ssb_device *dev, u32 core_specific_flags)
+ EXPORT_SYMBOL(ssb_device_enable);
+ 
+ /* Wait for bitmask in a register to get set or cleared.
+- * timeout is in units of ten-microseconds */
++ * timeout is in units of ten-microseconds
++ */
+ static int ssb_wait_bits(struct ssb_device *dev, u16 reg, u32 bitmask,
+ 			 int timeout, int set)
+ {
+@@ -1153,7 +1161,8 @@ int ssb_bus_may_powerdown(struct ssb_bus *bus)
+ 
+ 	/* On buses where more than one core may be working
+ 	 * at a time, we must not powerdown stuff if there are
+-	 * still cores that may want to run. */
++	 * still cores that may want to run.
++	 */
+ 	if (bus->bustype == SSB_BUSTYPE_SSB)
+ 		goto out;
+ 
+@@ -1322,7 +1331,8 @@ static int __init ssb_modinit(void)
+ }
+ /* ssb must be initialized after PCI but before the ssb drivers.
+  * That means we must use some initcall between subsys_initcall
+- * and device_initcall. */
++ * and device_initcall.
++ */
+ fs_initcall(ssb_modinit);
+ 
+ static void __exit ssb_modexit(void)
+-- 
+2.17.1
 
