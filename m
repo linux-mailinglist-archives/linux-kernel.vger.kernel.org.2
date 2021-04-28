@@ -2,156 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6324D36D9D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D044836D9DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239530AbhD1OvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 10:51:21 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10122 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236514AbhD1OvT (ORCPT
+        id S240258AbhD1OxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 10:53:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231506AbhD1Ow7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 10:51:19 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13SEWhNI083557;
-        Wed, 28 Apr 2021 10:49:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=+MDph5yR3gYbc4z7haBiYjH/hMic3Sw60Vgj+9HGaec=;
- b=mb9YVMMZj01Xa68naoO6IhPCxdEPXk79yUFu2lZMm4k8Y+wsbB5JiWMSPS+gmFRYlb8D
- GC16uszM+zQbk3T1+fhwJ1luwTPmNLeFgetiuGUWo7Hvz78X0Uu42IcWs6n2cPGpnSTN
- jziiJLCj1m8u5SKWAM+ChFln9rHuDAw0xV0+aT1iGCN4o+TAO0M9zzaOydJ8hNPhtaB7
- OP6hXTrevFHJhqRyUxGAZAdrBzoTjJlm2QaniKs454MCQT8SOadjZF3anUpJSGxY66Ut
- tCqWEO+SLaZW79IxW2RSfbkmBA0izhxEWeM16NQrExtXci4JTX5Fm3OhLHoLYJvGPTuj Ug== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3879c612yf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Apr 2021 10:49:53 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13SEY7qp095552;
-        Wed, 28 Apr 2021 10:49:53 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3879c612xs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Apr 2021 10:49:53 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13SEhm14029529;
-        Wed, 28 Apr 2021 14:49:50 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma05fra.de.ibm.com with ESMTP id 384gjxs21t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Apr 2021 14:49:50 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13SEnlLV38601106
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Apr 2021 14:49:47 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 55D68A405B;
-        Wed, 28 Apr 2021 14:49:47 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6D754A405F;
-        Wed, 28 Apr 2021 14:49:45 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.77.184])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 28 Apr 2021 14:49:45 +0000 (GMT)
-Subject: Re: sched: Move SCHED_DEBUG sysctl to debugfs
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com,
-        greg@kroah.com, gregkh@linuxfoundation.org, joshdon@google.com,
-        juri.lelli@redhat.com, linux-kernel@vger.kernel.org,
-        linux@rasmusvillemoes.dk, mgorman@suse.de, mingo@kernel.org,
-        rostedt@goodmis.org, valentin.schneider@arm.com,
-        vincent.guittot@linaro.org, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org
-References: <20210412102001.287610138@infradead.org>
- <20210427145925.5246-1-borntraeger@de.ibm.com>
- <YIkgzUWEPaXQTCOv@hirez.programming.kicks-ass.net>
- <da373590-f0d7-e3a2-cef9-4527fc9f3056@de.ibm.com>
- <YIlXQ43b6+7sUl+f@hirez.programming.kicks-ass.net>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <89ccb344-7a03-65e6-826d-4807e1ab2815@de.ibm.com>
-Date:   Wed, 28 Apr 2021 16:49:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        Wed, 28 Apr 2021 10:52:59 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A95C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 07:52:13 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id t21so12187868iob.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 07:52:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wl8vFQIjo6JFIlbBjxksAQ+tRE1MsO+XMq0c0IigsWE=;
+        b=MM/udYhW0KLGS6PAS//T0vIl6yk09P4m++UFIZlz9dO3xasmCnpXPjrv3/fcO08LDy
+         HulSCuchGrPYnE3w4ZF8GWojnhR2jekrD//XUIuSo3BZIWsSbYsj/0HczjYAuoTgntxe
+         os32CwfSlpN2bVqanLH7oAtVSEotnQsE1nzMk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wl8vFQIjo6JFIlbBjxksAQ+tRE1MsO+XMq0c0IigsWE=;
+        b=MmI4LRzIjotnXyj7Ulb89zAClF6+VdJuqdsOBNpTSPzT28rUdv395IYRYW3EjTO8P2
+         /l2qCMzyUrhwWbUGEWQRy1u46JwRhK9JzftXpuicuWjlABymeH5e1XKfiiSa9AV0RmXo
+         N2gvEBtTGdcc65oXR68FZOYNs+g8n+rhoBwvi84X6bce6L24RaX1tfvMG7easg7G1E9T
+         Rx5mQ9XLwZPUASuPMSoKer/Wx3SdnCUI/yEGaZrSXmDpXp9gNlER5ql+2DSGT0ZUTLZr
+         JcQFTUBPtBWj+pCAFQjtRgMD30HPgns9rFtYfi8ko6FBxWHqI9Th2brQONiBHudnTzV4
+         LVug==
+X-Gm-Message-State: AOAM53194TRdi7uG0Kb21B3v+DmcG3Hb7nJV37XDHaVOI1alBHSleLVh
+        7IxT1i5bAogHOO1TZMB+GUn0SewsZu8pfOiZklpvfw==
+X-Google-Smtp-Source: ABdhPJxT4SjHctUYdhXojoF+Pq6ZlW2Bx8U9fEoC3p8PufgNTDURTmll7KbFBIVAqt5XOfAUZmM1xYMPN0BqVCkrI7M=
+X-Received: by 2002:a05:6638:304:: with SMTP id w4mr27476121jap.32.1619621533025;
+ Wed, 28 Apr 2021 07:52:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YIlXQ43b6+7sUl+f@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: GKX48hxqsFAcv5mlCEJdq8v7NzUQSymF
-X-Proofpoint-GUID: CPDMzAY1Lun_Kjk7BCoCWWMTM9fKYc_1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-28_09:2021-04-28,2021-04-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 clxscore=1015 phishscore=0 mlxlogscore=999 adultscore=0
- lowpriorityscore=0 suspectscore=0 spamscore=0 mlxscore=0 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104280098
+References: <20210427174313.860948-1-revest@chromium.org> <20210427174313.860948-3-revest@chromium.org>
+ <CAADnVQLQmt0-D_e=boXoK=FLRoXv9xzkCwM24zpbZERrEexLCw@mail.gmail.com>
+ <CABRcYm+eWh5=eM9mgOsCU6-TACi-y5kviCf9Kbqxfzvgq9u5BA@mail.gmail.com> <CAADnVQK=K2hcrZ7=d=voQ=gxdmC_oqSWodLpck54UncSSgsLuQ@mail.gmail.com>
+In-Reply-To: <CAADnVQK=K2hcrZ7=d=voQ=gxdmC_oqSWodLpck54UncSSgsLuQ@mail.gmail.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Wed, 28 Apr 2021 16:52:02 +0200
+Message-ID: <CABRcYmKb0Nft+whG0nv3QkAQszpctdpyXxN=uo2LJdEnzeEZaA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] bpf: Implement formatted output helpers
+ with bstr_printf
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.04.21 14:38, Peter Zijlstra wrote:
-> On Wed, Apr 28, 2021 at 11:42:57AM +0200, Christian Borntraeger wrote:
->> On 28.04.21 10:46, Peter Zijlstra wrote:
->> [..]
->>> The right thing to do here is to analyze the situation and determine why
->>> migration_cost needs changing; is that an architectural thing, does s390
->>> benefit from less sticky tasks due to its cache setup (the book caches
->>> could be absorbing some of the penalties here for example). Or is it
->>> something that's workload related, does KVM intrinsically not care about
->>> migrating so much, or is it something else.
->>
->> So lets focus on the performance issue.
->>
->> One workload where we have seen this is transactional workload that is
->> triggered by external network requests. So every external request
->> triggered a wakup of a guest and a wakeup of a process in the guest.
->> The end result was that KVM was 40% slower than z/VM (in terms of
->> transactions per second) while we had more idle time.
->> With smaller sched_migration_cost_ns (e.g. 100000) KVM was as fast
->> as z/VM.
->>
->> So to me it looks like that the wakeup and reschedule to a free CPU
->> was just not fast enough. It might also depend where I/O interrupts
->> land. Not sure yet.
-> 
-> So there's unfortunately three places where migration_cost is used; one
-> is in {nohz_,}newidle_balance(), see below. Someone tried removing it
-> before and that ran into so weird regressions somewhere. But it is worth
-> checking if this is the thing that matters for your workload.
-> 
-> The other (main) use is in task_hot(), where we try and prevent
-> migrating tasks that have recently run on a CPU. We already have an
-> exception for SMT there, because SMT siblings share all cache levels per
-> defintion, so moving it to the sibling should have no ill effect.
-> 
-> It could be that the current measure is fundamentally too high for your
-> machine -- it is basically a random number that was determined many
-> years ago on some random x86 machine, so it not reflecting reality today
-> on an entirely different platform is no surprise.
-> 
-> Back in the day, we had some magic code that measured cache latency per
-> sched_domain and we used that, but that suffered from boot-to-boot
-> variance and made things rather non-deterministic, but the idea of
-> having per-domain cost certainly makes sense.
-> 
-> Over the years people have tried bringing parts of that back, but it
-> never really had convincing numbers justifying the complexity. So that's
-> another thing you could be looking at I suppose.
-> 
-> And then finally we have an almost random use in rebalance_domains(),
-> and I can't remember the story behind that one :/
-> 
-> 
-> Anyway, TL;DR, try and figure out which of these three is responsible
-> for your performance woes. If it's the first, the below patch might be a
-> good candidate. If it's task_hot(), we might need to re-eval per domain
-> costs. If its that other thing, I'll have to dig to figure out wth that
-> was supposed to accomplish ;-)
+On Wed, Apr 28, 2021 at 2:51 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Apr 27, 2021 at 5:20 PM Florent Revest <revest@chromium.org> wrote:
+> >
+> > On Wed, Apr 28, 2021 at 1:46 AM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Tue, Apr 27, 2021 at 10:43 AM Florent Revest <revest@chromium.org> wrote:
+> > > > +                       if (fmt[i + 1] == 'B') {
+> > > > +                               if (tmp_buf)  {
+> > > > +                                       err = snprintf(tmp_buf,
+> > > > +                                                      (tmp_buf_end - tmp_buf),
+> > > > +                                                      "%pB",
+> > > ...
+> > > > +                       if ((tmp_buf_end - tmp_buf) < sizeof_cur_ip) {
+> > >
+> > > I removed a few redundant () like above
+> >
+> > Oh, sorry about that.
+> >
+> > > and applied.
+> >
+> > Nice! :)
+> >
+> > > >                 if (fmt[i] == 'l') {
+> > > > -                       cur_mod = BPF_PRINTF_LONG;
+> > > > +                       sizeof_cur_arg = sizeof(long);
+> > > >                         i++;
+> > > >                 }
+> > > >                 if (fmt[i] == 'l') {
+> > > > -                       cur_mod = BPF_PRINTF_LONG_LONG;
+> > > > +                       sizeof_cur_arg = sizeof(long long);
+> > > >                         i++;
+> > > >                 }
+> > >
+> > > This bit got me thinking.
+> > > I understand that this is how bpf_trace_printk behaved
+> > > and the sprintf continued the tradition, but I think it will
+> > > surprise bpf users.
+> > > The bpf progs are always 64-bit. The sizeof(long) == 8
+> > > inside any bpf program. So printf("%ld") matches that long.
+> >
+> > Yes, this also surprised me.
+> >
+> > > The clang could even do type checking to make sure the prog
+> > > is passing the right type into printf() if we add
+> > > __attribute__ ((format (printf))) to bpf_helper_defs.h
+> > > But this sprintf() implementation will trim the value to 32-bit
+> > > to satisfy 'fmt' string on 32-bit archs.
+> > > So bpf program behavior would be different on 32 and 64-bit archs.
+> > > I think that would be confusing, since the rest of bpf prog is
+> > > portable. The progs work the same way on all archs
+> > > (except endianess, of course).
+> > > I'm not sure how to fix it though.
+> > > The sprintf cannot just pass 64-bit unconditionally, since
+> > > bstr_printf on 32-bit archs will process %ld incorrectly.
+> > > The verifier could replace %ld with %Ld.
+> > > The fmt string is a read only string for bpf_snprintf,
+> > > but for bpf_trace_printk it's not and messing with it at run-time
+> > > is not good. Copying the fmt string is not great either.
+> > > Messing with internals of bstr_printf is ugly too.
+> >
+> > Indeed, none of these solutions are satisfying.
+>
+> Maybe Daniel has other ideas?
+>
+> > > Maybe we just have to live with this quirk ?
+> >
+> > If we were starting from scratch, maybe just banning %ld could have
+> > been an option, but now that bpf_trace_printk has been behaving like
+> > this for a while, I think it might be best to just keep the behavior
+> > as it is.
+> >
+> > > Just add a doc to uapi/bpf.h to discourage %ld and be done?
+> >
+> > More doc is always good. Something like "Note: %ld behaves differently
+> > depending on the host architecture, it is recommended to avoid it and
+> > use %d or %lld instead" in the helper description of the three
+> > helpers? If you don't have the time to do it today, I can send a patch
+> > tomorrow.
+>
+> bpf_trace_printk was like this for a long time, so there is no rush.
+> Pls wait until everything comes back to bpf tree and send a patch against it.
+> bpf_trace_printk comment in uapi/bpf.h is outdated too. Would be good
+> to document the latest behavior for them all.
 
-Thanks for the insight. I will try to find out which of these areas make
-a difference here.
-[..]
+Ok :)
