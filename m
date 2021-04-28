@@ -2,373 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11E3636D8F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 15:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 710A736D8FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 15:57:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236583AbhD1N5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 09:57:50 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19300 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229965AbhD1N5t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 09:57:49 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13SDqTc9002050;
-        Wed, 28 Apr 2021 09:56:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=r3xxhP8JL90aZnv+QQigK/Ppofw1xW2ZNxt26BtxjxI=;
- b=iw+b6hOzIc2sdZW48UkilIoEVbfjAGAIZEqX7ImjJXayRo6UsNa6CrC2JnePmW9Ny1Sf
- sRf7WPEcHqbSz3rCY6OB8OZcg2808n3hsWENnCjuTbLmlM/VNdWFezTYrTJS38H+i9vG
- +YzH5E2EvN/XlwAU6U7rIGr8TT+xFcjxh5HIiq50lisF8uQZEUhUohBQKfJrkTxMMXxg
- vfK5+wbXYDUH65ixKDMFUh/u7l/45CzFiXMRQDzTwVENJtfiS1jHJTPIWHo+oHvR665z
- uQ5HsXMXi4ZwuLu5x4BwIMEZmkW1q6rAYESqMNq7MoLGyK5MtTGRy1yrYzPQcJGZFoA/ 4g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3878ym84fe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Apr 2021 09:56:37 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13SDrFIS008968;
-        Wed, 28 Apr 2021 09:56:37 -0400
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3878ym84f3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Apr 2021 09:56:37 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13SDr2WE010769;
-        Wed, 28 Apr 2021 13:56:36 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma03wdc.us.ibm.com with ESMTP id 384ay95bjh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Apr 2021 13:56:36 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13SDuZK313959552
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Apr 2021 13:56:35 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 86D0DC605B;
-        Wed, 28 Apr 2021 13:56:35 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 18B8DC6055;
-        Wed, 28 Apr 2021 13:56:35 +0000 (GMT)
-Received: from v0005c16 (unknown [9.211.38.222])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed, 28 Apr 2021 13:56:34 +0000 (GMT)
-Message-ID: <453c7a7495408ac96127b36d67a8714632b5c0f7.camel@linux.ibm.com>
-Subject: Re: PPC476 hangs during tlb flush after calling /init in crash
- kernel with linux 5.4+
-From:   Eddie James <eajames@linux.ibm.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, benh@kernel.crashing.org,
-        paulus@samba.org, mpe@ellerman.id.au, npiggin@gmail.com,
-        miltonm@us.ibm.com
-Date:   Wed, 28 Apr 2021 08:56:34 -0500
-In-Reply-To: <711a9a60-264b-9b86-6772-6585622a5bd4@csgroup.eu>
-References: <b973fa4768140021719e7cc3123ee873d8b2a3f1.camel@linux.ibm.com>
-         <a24e9e0d-1d4f-506b-9303-4b995815d3c4@csgroup.eu>
-         <2f7587b1986d597a63169567124438325cbedfd7.camel@linux.ibm.com>
-         <711a9a60-264b-9b86-6772-6585622a5bd4@csgroup.eu>
-Organization: IBM
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: B0FOOWl6fjE0qY49qEisRayt6aJUqJTi
-X-Proofpoint-GUID: CGRqLC5BgmlAAefi_xcx4-yCWsZRg4Ha
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-28_06:2021-04-28,2021-04-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 spamscore=0 suspectscore=0 phishscore=0 mlxscore=0
- bulkscore=0 clxscore=1015 mlxlogscore=999 malwarescore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104280091
+        id S237718AbhD1N6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 09:58:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41542 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229965AbhD1N6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 09:58:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C419613FC;
+        Wed, 28 Apr 2021 13:57:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619618246;
+        bh=f09yXmNOKh092Vqv9UgMaDkw85ffvGRDzR/X1T62meU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=VZV4Q36rsti0GFqpeS/iW4dB76ufspKxRPfZGIGKUjU39p/KXuLL7xrpCYbYFO1oo
+         11SDjiJmZhAqH2s8kzmvgF680sYsgZdDveprO/jzMcY3RM+LsL2OzagL6X4eXPB7F9
+         Vw04lg/Mi2ClJVNGqi0JFjd9i0YPJCUBoXhi38BaxdoDBI4GNFokcZws2KNC0o1Uxv
+         Poy7QE5NiaOK9cVnCgmO0WwcSRHXMBSc3qDY/EqtD6pvy53XOxfzqvKgDlvbJRmrC2
+         YbmTPyelFTf7D/JIlQCeNQv39b7bVmY8UDU1JHVHa72sNFA9rBEoir10AYPfUmvsaZ
+         vjNDLhc1oPpIA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A1ED25C0163; Wed, 28 Apr 2021 06:57:25 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 06:57:25 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Luming Yu <luming.yu@gmail.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, john.stultz@linaro.org,
+        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
+        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
+        feng.tang@intel.com, zhengjun.xing@intel.com,
+        Chris Mason <clm@fb.com>
+Subject: Re: [PATCH v10 clocksource 1/7] clocksource: Provide module
+ parameters to inject delays in watchdog
+Message-ID: <20210428135725.GN975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1>
+ <20210425224709.1312655-1-paulmck@kernel.org>
+ <20210426040736.GS1401198@tassilo.jf.intel.com>
+ <20210426152801.GY975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210426160008.GY1401198@tassilo.jf.intel.com>
+ <20210426161425.GC975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210426175627.GZ1401198@tassilo.jf.intel.com>
+ <20210426182433.GD975577@paulmck-ThinkPad-P17-Gen-1>
+ <CAJRGBZxgJuc2OJfvT_k3Xmk_qsxzm=xX5wm4NqeRo7vkTcZk6w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJRGBZxgJuc2OJfvT_k3Xmk_qsxzm=xX5wm4NqeRo7vkTcZk6w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-04-28 at 08:08 +0200, Christophe Leroy wrote:
+On Wed, Apr 28, 2021 at 12:49:12PM +0800, Luming Yu wrote:
+> We 'd expect to see clock_source watchdog can avoid to do wrong thing
+> due to the injected delay or
+> in real life delay by doing tsc sync-re-check by applying the patch-set.
+> However , the noise is still cause wrong actions and the patch doesn't
+> defeat the injected's delay
+> please correct me if  I'm wrong.
+
+Injecting delay is just a test.  In real life, if you got four delays
+in a row, the cause is likely that the clock read is broken and taking
+a very long time.  In which case marking that clock unstable is a
+reasonable response.
+
+Other causes include having an NMI or SMI storm, getting extremely
+unlucky with vCPU preemptions, and so on.  In these cases, you are not
+making much forward progress anyway, so marked-unstable clock is the
+least of your worries.
+
+I ran this (without injected delays) for more than a thousand hours on
+rcutorture guest OSes and didn't see any instances of even two consecutive
+bad reads.   There was the very occasional single instance of a bad read.
+
+Therefore, the code marks the clock unstable if it has four bad reads
+in a row, as it should.
+
+							Thanx, Paul
+
+> parameters]# cat *
+> 1
+> 1
+> -1
+> 3
+> 8
 > 
-> Le 28/04/2021 à 00:42, Eddie James a écrit :
-> > On Tue, 2021-04-27 at 19:26 +0200, Christophe Leroy wrote:
-> > > Hi Eddies,
-> > > 
-> > > Le 27/04/2021 à 19:03, Eddie James a écrit :
-> > > > Hi all,
-> > > > 
-> > > > I'm having a problem in simulation and hardware where my PPC476
-> > > > processor stops executing instructions after callling /init. In
-> > > > my
-> > > > case
-> > > > this is a bash script. The code descends to flush the TLB, and
-> > > > somewhere in the loop in _tlbil_pid, the PC goes to
-> > > > InstructionTLBError47x but does not go any further. This only
-> > > > occurs in
-> > > > the crash kernel environment, which is using the same kernel,
-> > > > initramfs, and init script as the main kernel, which executed
-> > > > fine.
-> > > > I
-> > > > do not see this problem with linux 4.19 or 3.10. I do see it
-> > > > with
-> > > > 5.4
-> > > > and 5.10. I see a fair amount of refactoring in the PPC memory
-> > > > management area between 4.19 and 5.4. Can anyone point me in a
-> > > > direction to debug this further? My stack trace is below as I
-> > > > can
-> > > > run
-> > > > gdb in simulation.
-> > > 
-> > > Can you bisect to pin point the culprit commit ?
-> > 
-> > Hi, thanks for your prompt reply.
-> > 
-> > Good idea! I have bisected to:
-> > 
-> > commit 9e849f231c3c72d4c3c1b07c9cd19ae789da0420 (b8-bad,
-> > refs/bisect/bad)
-> > Author: Christophe Leroy <christophe.leroy@c-s.fr>
-> > Date:   Thu Feb 21 19:08:40 2019 +0000
-> > 
-> >      powerpc/mm/32s: use generic mmu_mapin_ram() for all blocks.
-> >      
-> >      Now that mmu_mapin_ram() is able to handle other blocks
-> >      than the one starting at 0, the WII can use it for all
-> >      its blocks.
-> >      
-> >      Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
-> >      Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-> > 
-> > I also confirmed that reverting this commit resolves the issue in
-> > 5.4+.
-> > 
-> > Now, I don't understand why this is problematic or what is really
-> > happening... Reverting is probably not the desired solution.
-> > 
+> [62939.809615] clocksource: clocksource_watchdog_inject_delay():
+> Injecting delay.
+> [62939.816867] clocksource: clocksource_watchdog_inject_delay():
+> Injecting delay.
+> [62939.824094] clocksource: clocksource_watchdog_inject_delay():
+> Injecting delay.
+> [62939.831314] clocksource: clocksource_watchdog_inject_delay():
+> Injecting delay.
+> [62939.838536] clocksource: timekeeping watchdog on CPU26: hpet
+> read-back delay of 7220833ns, attempt 4, marking unstable
+> [62939.849230] tsc: Marking TSC unstable due to clocksource watchdog
+> [62939.855340] TSC found unstable after boot, most likely due to
+> broken BIOS. Use 'tsc=unstable'.
+> [62939.863972] sched_clock: Marking unstable (62943398530130,
+> -3543150114)<-(62941186607503, -1331276112)
+> [62939.875104] clocksource: Checking clocksource tsc synchronization
+> from CPU 123 to CPUs 0,6,26,62,78,97-98,137.
+> [62939.886518] clocksource: Switched to clocksource hpet
 > 
-> Can you provide the 'dmesg' or a dump of the logs printed by the
-> kernel at boottime ?
-
-Yes:
-
-[    0.000000] Linux version 5.4.85-a19ab63.ppcnf-fsp2 (oe-user@oe-host
-) (gcc ve
-rsion 8.3.0 (GCC)) #1 Tue Mar 30 15:32:31 UTC 2021
-[    0.000000] Found initrd at 0xcf6a7000:0xcfffb09f
-[    0.000000] Using FSP-2 machine description
-[    0.000000] Found legacy serial port 0 for /plb4/opb/serial@b0020000
-[    0.000000]   mem=10b0020000, taddr=10b0020000, irq=0, clk=20833333,
-speed=11
-5200
-[    0.000000] -----------------------------------------------------
-[    0.000000] phys_mem_size     = 0x4000000
-[    0.000000] dcache_bsize      = 0x80
-[    0.000000] icache_bsize      = 0x20
-[    0.000000] cpu_features      = 0x0000000040800120
-[    0.000000]   possible        = 0x0000000040800120
-[    0.000000]   always          = 0x0000000000000020
-[    0.000000] cpu_user_features = 0x8c008000 0x00000000
-[    0.000000] mmu_features      = 0x00140020
-[    0.000000] physical_start    = 0xc000000
-[    0.000000] -----------------------------------------------------
-[    0.000000] Top of RAM: 0x10000000, Total RAM: 0x4000000
-[    0.000000] Memory hole size: 192MB
-[    0.000000] Zone ranges:
-[    0.000000]   Normal   [mem 0x000000000c000000-0x000000000fffffff]
-[    0.000000] Movable zone start for each node
-[    0.000000] Early memory node ranges
-[    0.000000]   node   0: [mem 0x000000000c000000-0x000000000fffffff]
-[    0.000000] Initmem setup node 0 [mem 0x000000000c000000-
-0x000000000fffffff]
-[    0.000000] On node 0 totalpages: 16384
-[    0.000000]   Normal zone: 160 pages used for memmap
-[    0.000000]   Normal zone: 0 pages reserved
-[    0.000000]   Normal zone: 16384 pages, LIFO batch:3
-[    0.000000] MMU: Allocated 278528 bytes of context maps for 65535
-contexts
-[    0.000000] pcpu-alloc: s0 r0 d32768 u32768 alloc=1*32768
-[    0.000000] pcpu-alloc: [0] 0 
-[    0.000000] Built 1 zonelists, mobility grouping on.  Total pages:
-16224
-[    0.000000] Kernel command line: console=ttyS0,115200 loglevel=9
-rootwait roo
-t=/dev/mmcblk0p2 elfcorehdr=209456K maxcpus=1
-[    0.000000] Dentry cache hash table entries: 8192 (order: 3, 32768
-bytes, lin
-ear)
-[    0.000000] Inode-cache hash table entries: 4096 (order: 2, 16384
-bytes, line
-ar)
-[    0.000000] mem auto-init: stack:off, heap alloc:off, heap free:off
-[    0.000000] Memory: 42028K/65536K available (7136K kernel code, 620K
-rwdata, 
-1916K rodata, 2080K init, 233K bss, 23508K reserved, 0K cma-reserved)
-[    0.000000] Kernel virtual memory layout:
-[    0.000000]   * 0xfffdf000..0xfffff000  : fixmap
-[    0.000000]   * 0xd1000000..0xfffdf000  : vmalloc & ioremap
-[    0.000000] SLUB: HWalign=128, Order=0-3, MinObjects=0, CPUs=1,
-Nodes=1
-[    0.000000] NR_IRQS: 512, nr_irqs: 512, preallocated irqs: 16
-[    0.000000] UIC0 (32 IRQ sources) at DCR 0x2c0
-[    0.000000] UIC1 (32 IRQ sources) at DCR 0x2c8
-[    0.000000] UIC2 (32 IRQ sources) at DCR 0x350
-[    0.000000] UIC3 (32 IRQ sources) at DCR 0x358
-[    0.000000] UIC4 (32 IRQ sources) at DCR 0x360
-[    0.000000] UIC5 (32 IRQ sources) at DCR 0x368
-[    0.000000] UIC6 (32 IRQ sources) at DCR 0x370
-[    0.000000] UIC7 (32 IRQ sources) at DCR 0x2d0
-[    0.000000] UIC8 (32 IRQ sources) at DCR 0x2d8
-[    0.000000] UIC17 (32 IRQ sources) at DCR 0x320
-[    0.000000] UIC18 (32 IRQ sources) at DCR 0x328
-[    0.000000] UIC19 (32 IRQ sources) at DCR 0x330
-[    0.000000] UIC20 (32 IRQ sources) at DCR 0x338
-[    0.000000] UIC21 (32 IRQ sources) at DCR 0x340
-[    0.000000] UIC22 (32 IRQ sources) at DCR 0x348
-[    0.000000] UIC9 (32 IRQ sources) at DCR 0x2e0
-[    0.000000] UIC10 (32 IRQ sources) at DCR 0x2e8
-[    0.000000] UIC11 (32 IRQ sources) at DCR 0x2f0
-[    0.000000] UIC12 (32 IRQ sources) at DCR 0x2f8
-[    0.000000] UIC13 (32 IRQ sources) at DCR 0x300
-[    0.000000] UIC14 (32 IRQ sources) at DCR 0x308
-[    0.000000] UIC15 (32 IRQ sources) at DCR 0x310
-[    0.000000] UIC16 (32 IRQ sources) at DCR 0x318
-[    0.000000] random: get_random_u32 called from
-start_kernel+0x32c/0x500 with 
-crng_init=0
-[    0.000000] time_init: decrementer frequency = 166.666667 MHz
-[    0.000000] time_init: processor frequency   = 1333.333333 MHz
-[    0.000004] clocksource: timebase: mask: 0xffffffffffffffff
-max_cycles: 0x267
-03d839d, max_idle_ns: 440795207088 ns
-[    0.000007] clocksource: timebase mult[6000000] shift[24] registered
-[    0.000011] clockevent: decrementer mult[2aaaaaac] shift[32] cpu[0]
-[    0.000071] pid_max: default: 32768 minimum: 301
-[    0.000107] Mount-cache hash table entries: 1024 (order: 0, 4096
-bytes, linea
-r)
-[    0.000111] Mountpoint-cache hash table entries: 1024 (order: 0,
-4096 bytes, 
-linear)
-[    0.000580] devtmpfs: initialized
-[    0.002029] clocksource: jiffies: mask: 0xffffffff max_cycles:
-0xffffffff, ma
-x_idle_ns: 7645041785100000 ns
-[    0.002034] futex hash table entries: 256 (order: -1, 3072 bytes,
-linear)
-[    0.002146] NET: Registered protocol family 16
-[    0.004958] SCSI subsystem initialized
-[    0.004973] libata version 3.00 loaded.
-[    0.005003] usbcore: registered new interface driver usbfs
-[    0.005019] usbcore: registered new interface driver hub
-[    0.005031] usbcore: registered new device driver usb
-[    0.005043] pps_core: LinuxPPS API ver. 1 registered
-[    0.005045] pps_core: Software ver. 5.3.6 - Copyright 2005-2007
-Rodolfo Giome
-tti <giometti@linux.it>
-[    0.005052] PTP clock support registered
-[    0.005257] clocksource: Switched to clocksource timebase
-[    0.311619] thermal_sys: Registered thermal governor 'step_wise'
-[    0.311665] NET: Registered protocol family 2
-[    0.311834] tcp_listen_portaddr_hash hash table entries: 512 (order:
-0, 4096 
-bytes, linear)
-[    0.311844] TCP established hash table entries: 1024 (order: 0, 4096
-bytes, l
-inear)
-[    0.311855] TCP bind hash table entries: 1024 (order: 0, 4096 bytes,
-linear)
-[    0.311864] TCP: Hash tables configured (established 1024 bind 1024)
-[    0.311877] UDP hash table entries: 256 (order: 0, 4096 bytes,
-linear)
-[    0.311885] UDP-Lite hash table entries: 256 (order: 0, 4096 bytes,
-linear)
-[    0.311918] NET: Registered protocol family 1
-[    0.311994] RPC: Registered named UNIX socket transport module.
-[    0.311996] RPC: Registered udp transport module.
-[    0.311999] RPC: Registered tcp transport module.
-[    0.312001] RPC: Registered tcp NFSv4.1 backchannel transport
-module.
-[    0.312043] Trying to unpack rootfs image as initramfs...
-[    0.632637] Freeing initrd memory: 9552K
-[    0.634361] shadow_disr_to_uic15: 0x00000020 to uic15_pr
-[    0.635621] workingset: timestamp_bits=30 max_order=14
-bucket_order=0
-[    0.638710] NFS: Registering the id_resolver key type
-[    0.638717] Key type id_resolver registered
-[    0.638720] Key type id_legacy registered
-[    0.638730] jffs2: version 2.2. (NAND) (SUMMARY)  Â© 2001-2006 Red
-Hat, Inc.
-[    0.638858] fuse: init (API version 7.31)
-[    0.664372] io scheduler mq-deadline registered
-[    0.664375] io scheduler kyber registered
-[    0.664573] Serial: 8250/16550 driver, 32 ports, IRQ sharing enabled
-[    0.665728] printk: console [ttyS0] disabled
-[    0.685664] serial8250.0: ttyS0 at MMIO 0x10b0020000 (irq = 47,
-base_baud = 1
-302083) is a 16550A
-[    0.693859] printk: console [ttyS0] enabled
-[    0.694150] printk: console [ttyS0] disabled
-[    0.694212] 10b0020000.serial: ttyS0 at MMIO 0x10b0020000 (irq = 47,
-base_bau
-d = 1302083) is a 16550
-[    0.702632] printk: console [ttyS0] enabled
-[    0.704642] brd: module loaded
-[    0.704730] slram: not enough parameters.
-[    0.704792] PPP generic driver version 2.4.2
-[    0.704875] PPP Deflate Compression module registered
-[    0.704941] ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI)
-Driver
-[    0.705052] ohci_hcd: USB 1.1 'Open' Host Controller (OHCI) Driver
-[    0.705148] usbcore: registered new interface driver usb-storage
-[    0.705248] usbcore: registered new interface driver
-usbserial_generic
-[    0.705341] usbserial: USB Serial support registered for generic
-[    0.705428] usbcore: registered new interface driver pl2303
-[    0.705508] usbserial: USB Serial support registered for pl2303
-[    0.705592] booke_wdt: powerpc book-e watchdog driver loaded
-[    0.705769] sdhci: Secure Digital Host Controller Interface driver
-[    0.705849] sdhci: Copyright(c) Pierre Ossman
-[    0.705906] sdhci-pltfm: SDHCI platform and OF driver helper
-[    0.706033] mmc0: Invalid maximum block size, assuming 512 bytes
-[    0.706112] mmc0 bounce up to 128 segments into one, max segment
-size 65536 b
-ytes
-[    0.731266] mmc0: SDHCI controller on 10020c0000.emmc
-[10020c0000.emmc] using
- DMA
-[    0.731422] oprofile: using timer interrupt.
-[    0.731546] Initializing XFRM netlink socket
-[    0.731789] NET: Registered protocol family 10
-[    0.732013] Segment Routing with IPv6
-[    0.732096] sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
-[    0.732331] NET: Registered protocol family 17
-[    0.732414] sctp: Hash tables configured (bind 1024/1024)
-[    0.732591] Key type dns_resolver registered
-[    0.732698] drmem: No dynamic reconfiguration memory found
-[    0.732888] hctosys: unable to open rtc device (rtc0)
-[    0.734057] Freeing unused kernel memory: 2080K
-[    0.734116] This architecture does not have kernel memory
-protection.
-[    0.734199] Run /init as init process
-
-> 
-> The difference with this commit is that if there are several
-> memblocks, all get mapped. Maybe your 
-> target doesn't like it.
-> 
-> You are talking about simulation, are you using QEMU ? If yes can you
-> provide details so that I can 
-> try and reproduce the issue ?
-
-No, we use Windriver simics for this system. I'm not sure if QEMU has a
-model for the PPC476... and I suspect it won't recreate with a more
-generic 32 bit ppc machine, though I can try and find out.
-
-Thanks,
-Eddie
-
-> 
-> Thanks
-> Christophe
-
+> On Tue, Apr 27, 2021 at 2:27 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Mon, Apr 26, 2021 at 10:56:27AM -0700, Andi Kleen wrote:
+> > > > ------------------------------------------------------------------------
+> > > >
+> > > > - module parameters
+> > > >
+> > > >   If the scope of the fault injection capability is limited to a
+> > > >   single kernel module, it is better to provide module parameters to
+> > > >   configure the fault attributes.
+> > > >
+> > > > ------------------------------------------------------------------------
+> > > >
+> > > > And in this case, the fault injection capability is in fact limited to
+> > > > kernel/clocksource.c.
+> > >
+> > >
+> > > I disagree with this recommendation because it prevents fuzzer coverage.
+> > >
+> > > Much better to have an uniform interface that can be automatically
+> > > explored.
+> >
+> > The permissions for these module parameters is 0644, so there is no
+> > reason why the fuzzers cannot use them via sysfs.
+> >
+> >                                                         Thanx, Paul
