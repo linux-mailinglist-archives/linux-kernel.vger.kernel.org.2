@@ -2,169 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A6D36DCEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB39936DCED
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:24:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240920AbhD1QY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 12:24:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21466 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239890AbhD1QY0 (ORCPT
+        id S240965AbhD1QY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 12:24:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240930AbhD1QYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 12:24:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619627020;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AH7csi7wwzGg18f+fG+VSfsyVRHxjn8kIlDKQiqjMRA=;
-        b=SJtRZoMizDsNw2nYJ1QacmvtFHDl0tJduhOMNd+ody5+jArjme12reEQaixKDP46T3qDZz
-        U8clKo0WuaGFoOnb3xFzsUsDrgZe6EZQSPN+8IYQZS98lmUeuuceSeO+zelG+GYTSC1uON
-        dF+f3Rxp8MuNOfQa7gBWMSt6zfomuRU=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-355-R83AJ_fbODqgB66fIQg8Jw-1; Wed, 28 Apr 2021 12:23:36 -0400
-X-MC-Unique: R83AJ_fbODqgB66fIQg8Jw-1
-Received: by mail-qk1-f200.google.com with SMTP id i62-20020a3786410000b02902e4f9ff4af8so2941540qkd.8
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:23:36 -0700 (PDT)
+        Wed, 28 Apr 2021 12:24:55 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6416C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:24:08 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso56984703otb.13
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:24:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vFFeVW33ruUEu/k84GYwSnkp1LcEq7XYbpo7nxvVcFI=;
+        b=hn+R2pvJfLdJc/4FJGrLTsET9/BSFZHQ3oyvmGarpqqestJfKms3Tpj/IujFgKAK+I
+         STWb4Qige1UGtc7wy0KuENrTa2Pu7sEZx/BXCYVQJon9TnFgC+6xapjpJeI5XS97UqAD
+         PskI9dX0Haq3e0/eOmrBhs2wAU1K8uE8bjQ+PnDAHPcoMhfs+0Mw4COjmFSyNb6GfUZ1
+         RK8Yo+sHZ9mW/OSVZjISnjiwOxC7J4/DScD6bpR+wPrmH1F8+uAyDiyZKQ87bFtPxypQ
+         il5d7LCT4zkXOqK7HNc0ERUv6Xx9PXmyWzUrEl4z4nHacZRpZDTTC5x+58shKX+l84bn
+         bAtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AH7csi7wwzGg18f+fG+VSfsyVRHxjn8kIlDKQiqjMRA=;
-        b=hR1w6z99WODJYyoAW3a4ZZj9MV54SHdoF1QU36SQcjM0SBUZHOocToWlyhnsJkzMTT
-         9AmvSuPhCub1ABNPaXRmRmdxvBMDm6MRO9H/aNJOCP4CqB/62iAn25jZIEK8gCyzJban
-         DrZrpzgfi0vl4V2UKfZOXpsh1yzk90yG0qTMQvgXAYzGCxAcNEZ3HG5z52XM87TSCmv3
-         op3UPgvzD5mKo8mkdIbb/dErtJnLx6wXoh0xATIyZHfXHu+CSHEqClL7kPBYV2r+opC0
-         DSVE2rAEfBXFDmUUY3y/ML6ZlDDG5wVhZcO5vTbvv19nDnWaioJctCgdzQ7c/h+MdTCY
-         pcKg==
-X-Gm-Message-State: AOAM533v+05ZL28eN+Cw+9+U4tJ9wCm7EryM0zX0OZvdcAVjEY4/LLyQ
-        f+iUqeHBcckW1HMjC3G0C2VkLFGmRMFhbbknEYsTSepOVpIdFQdeod11zYtEBYxVF00Eb4V7n/a
-        uTJRQ9LOP1cNoHOnB+/xxDl+T
-X-Received: by 2002:a0c:ec0f:: with SMTP id y15mr14227309qvo.9.1619627015685;
-        Wed, 28 Apr 2021 09:23:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwxbTtNlW1BwVWHBPqrKcGOZYJKpqLvm889MXyWSVHOhrT+49N36LmGWoLkkG+ECXaA21Ximg==
-X-Received: by 2002:a0c:ec0f:: with SMTP id y15mr14227282qvo.9.1619627015284;
-        Wed, 28 Apr 2021 09:23:35 -0700 (PDT)
-Received: from xz-x1 (bras-base-toroon474qw-grc-77-184-145-104-227.dsl.bell.ca. [184.145.104.227])
-        by smtp.gmail.com with ESMTPSA id h8sm333557qtp.47.2021.04.28.09.23.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 09:23:34 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 12:23:32 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v5 06/10] userfaultfd/shmem: modify
- shmem_mcopy_atomic_pte to use install_pte()
-Message-ID: <20210428162332.GE6584@xz-x1>
-References: <20210427225244.4326-1-axelrasmussen@google.com>
- <20210427225244.4326-7-axelrasmussen@google.com>
- <alpine.LSU.2.11.2104271704110.7111@eggly.anvils>
- <20210428155638.GD6584@xz-x1>
- <CAJHvVcg6mt-FH0vn3ZApYU1tdtyu_8pgGtnKxrX5m2OjiCeApw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vFFeVW33ruUEu/k84GYwSnkp1LcEq7XYbpo7nxvVcFI=;
+        b=tw/uJK1LZP/g/+VTjYjRBot7WM/LUXaYn7FVjE9UXtM8yh1LxbbhJnbx4Y7AbKOrHP
+         lK7bduPKxjnMBzxoZkMIxqPP9Jj/Y0nIx9aqktdT409TAWgoZKRmD/7X5cVho35GWqBT
+         8ySkHoWYbhDV9L1cHQX2wqDSyzyz7JkyoD5ASNwbqVp0SIOFiO3v55modV+V3aZ18IBf
+         1DLjJQc3v4tE5IBbMYC0UhEGr14Ai64frIYFex7HCsCSQnP3slvkEBAhz9ZOAOFOQ+zq
+         bD+VwoE9JTykntd/aN42jbjI2SaNNR4aOdZddFTmz3YXhlWf/xxXZc1tetsH+GjpeXfb
+         d8/w==
+X-Gm-Message-State: AOAM531NOQ8InRrD9cwf3fjSe3VH5FzLqbcIRLiPrFNv439D5q0PKZ2v
+        8CXjw9XlMAHT6wW+Ap5qkf1cpMYBl4dulhhtjf+wAg==
+X-Google-Smtp-Source: ABdhPJwWHRNFe5yz7wBYtOPEdrHwUqI1dTfIVjAv50VzHm+M+vApvLtLT8m3GLJkwbhFeJKPFsHpIeINVS9qEG1hLoA=
+X-Received: by 2002:a05:6830:1deb:: with SMTP id b11mr25593909otj.72.1619627047878;
+ Wed, 28 Apr 2021 09:24:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAJHvVcg6mt-FH0vn3ZApYU1tdtyu_8pgGtnKxrX5m2OjiCeApw@mail.gmail.com>
+References: <20210427223635.2711774-1-bgardon@google.com> <20210427223635.2711774-4-bgardon@google.com>
+ <2e5ecc0b-0ef4-a663-3b1d-81d020626b39@redhat.com>
+In-Reply-To: <2e5ecc0b-0ef4-a663-3b1d-81d020626b39@redhat.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 28 Apr 2021 09:23:56 -0700
+Message-ID: <CANgfPd9OrCFoH1=2G_GD5MB5R54q5w=SDKP7vLnHPvDZox5WiQ@mail.gmail.com>
+Subject: Re: [PATCH 3/6] KVM: x86/mmu: Deduplicate rmap freeing in allocate_memslot_rmap
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 08:59:53AM -0700, Axel Rasmussen wrote:
-> On Wed, Apr 28, 2021 at 8:56 AM Peter Xu <peterx@redhat.com> wrote:
-> >
-> > On Tue, Apr 27, 2021 at 05:58:16PM -0700, Hugh Dickins wrote:
-> > > On Tue, 27 Apr 2021, Axel Rasmussen wrote:
-> > >
-> > > > In a previous commit, we added the mcopy_atomic_install_pte() helper.
-> > > > This helper does the job of setting up PTEs for an existing page, to map
-> > > > it into a given VMA. It deals with both the anon and shmem cases, as
-> > > > well as the shared and private cases.
-> > > >
-> > > > In other words, shmem_mcopy_atomic_pte() duplicates a case it already
-> > > > handles. So, expose it, and let shmem_mcopy_atomic_pte() use it
-> > > > directly, to reduce code duplication.
-> > > >
-> > > > This requires that we refactor shmem_mcopy_atomic_pte() a bit:
-> > > >
-> > > > Instead of doing accounting (shmem_recalc_inode() et al) part-way
-> > > > through the PTE setup, do it afterward. This frees up
-> > > > mcopy_atomic_install_pte() from having to care about this accounting,
-> > > > and means we don't need to e.g. shmem_uncharge() in the error path.
-> > > >
-> > > > A side effect is this switches shmem_mcopy_atomic_pte() to use
-> > > > lru_cache_add_inactive_or_unevictable() instead of just lru_cache_add().
-> > > > This wrapper does some extra accounting in an exceptional case, if
-> > > > appropriate, so it's actually the more correct thing to use.
-> > > >
-> > > > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> > >
-> > > Not quite. Two things.
-> > >
-> > > One, in this version, delete_from_page_cache(page) has vanished
-> > > from the particular error path which needs it.
-> >
-> > Agreed.  I also spotted that the set_page_dirty() seems to have been overlooked
-> > when reusing mcopy_atomic_install_pte(), which afaiu should be move into the
-> > helper.
-> 
-> I think this is covered: we explicitly call SetPageDirty() just before
-> returning in shmem_mcopy_atomic_pte(). If I remember correctly from a
-> couple of revisions ago, we consciously put it here instead of in the
-> helper because it resulted in simpler code (error handling in
-> particular, I think?), and not all callers of the new helper need it.
+On Wed, Apr 28, 2021 at 3:00 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> Typo in the commit subject, I guess?
 
-Indeed, yes that looks okay.
+Oh woops, yeah It should just be "Deduplicate rmap freeing" or
+something to that effect.
 
-> 
+>
+> Paolo
+>
+> On 28/04/21 00:36, Ben Gardon wrote:
+> > Small code deduplication. No functional change expected.
 > >
-> > >
-> > > Two, and I think this predates your changes (so needs a separate
-> > > fix patch first, for backport to stable? a user with bad intentions
-> > > might be able to trigger the BUG), in pondering the new error paths
-> > > and that /* don't free the page */ one in particular, isn't it the
-> > > case that the shmem_inode_acct_block() on entry might succeed the
-> > > first time, but atomic copy fail so -ENOENT, then something else
-> > > fill up the tmpfs before the retry comes in, so that retry then
-> > > fail with -ENOMEM, and hit the BUG_ON(page) in __mcopy_atomic()?
-> > >
-> > > (As I understand it, the shmem_inode_unacct_blocks() has to be
-> > > done before returning, because the caller may be unable to retry.)
-> > >
-> > > What the right fix is rather depends on other uses of __mcopy_atomic():
-> > > if they obviously cannot hit that BUG_ON(page), you may prefer to leave
-> > > it in, and fix it here where shmem_inode_acct_block() fails. Or you may
-> > > prefer instead to delete that "else BUG_ON(page);" - looks as if that
-> > > would end up doing the right thing.  Peter may have a preference.
+> > Signed-off-by: Ben Gardon <bgardon@google.com>
+> > ---
+> >   arch/x86/kvm/x86.c | 19 +++++++++++--------
+> >   1 file changed, 11 insertions(+), 8 deletions(-)
 > >
-> > To me, the BUG_ON(page) wanted to guarantee mfill_atomic_pte() should have
-> > consumed the page properly when possible.  Removing the BUG_ON() looks good
-> > already, it will just stop covering the case when e.g. ret==0.
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index cf3b67679cf0..5bcf07465c47 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -10818,17 +10818,23 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
+> >       kvm_hv_destroy_vm(kvm);
+> >   }
 > >
-> > So maybe slightly better to release the page when shmem_inode_acct_block()
-> > fails (so as to still keep some guard on the page)?
-> 
-> This second issue, I will take some more time to investigate. :)
-
-No worry - take your time. :)
-
--- 
-Peter Xu
-
+> > -void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
+> > +static void free_memslot_rmap(struct kvm_memory_slot *slot)
+> >   {
+> >       int i;
+> >
+> >       for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
+> >               kvfree(slot->arch.rmap[i]);
+> >               slot->arch.rmap[i] = NULL;
+> > +     }
+> > +}
+> >
+> > -             if (i == 0)
+> > -                     continue;
+> > +void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
+> > +{
+> > +     int i;
+> > +
+> > +     free_memslot_rmap(slot);
+> >
+> > +     for (i = 1; i < KVM_NR_PAGE_SIZES; ++i) {
+> >               kvfree(slot->arch.lpage_info[i - 1]);
+> >               slot->arch.lpage_info[i - 1] = NULL;
+> >       }
+> > @@ -10894,12 +10900,9 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
+> >       return 0;
+> >
+> >   out_free:
+> > -     for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
+> > -             kvfree(slot->arch.rmap[i]);
+> > -             slot->arch.rmap[i] = NULL;
+> > -             if (i == 0)
+> > -                     continue;
+> > +     free_memslot_rmap(slot);
+> >
+> > +     for (i = 1; i < KVM_NR_PAGE_SIZES; ++i) {
+> >               kvfree(slot->arch.lpage_info[i - 1]);
+> >               slot->arch.lpage_info[i - 1] = NULL;
+> >       }
+> >
+>
