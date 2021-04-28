@@ -2,99 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93FD336D3FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD46C36D3F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237424AbhD1Ib1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 04:31:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38398 "EHLO
+        id S237254AbhD1Iaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 04:30:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237389AbhD1IbQ (ORCPT
+        with ESMTP id S231635AbhD1Iap (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 04:31:16 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8B1C061574;
-        Wed, 28 Apr 2021 01:30:28 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d124so449233pfa.13;
-        Wed, 28 Apr 2021 01:30:28 -0700 (PDT)
+        Wed, 28 Apr 2021 04:30:45 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E2B0C06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 01:30:01 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id 10so690332pfl.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 01:30:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=v7m0D7rx0mHGeruDjxwKiC0tRb8Flpj4t02w67RLk04=;
-        b=YuY9LSU10AzRV8q3HxrvO4+ECbK7HSr7PjVy68MTkqZSnLLZjD7QIfobR90b5UzeT9
-         Xwtu+BYL7dO+uwKJGtFYjZHxF4J5ND2ILXcLch5gcgPTYcMu/B36cwc00PdvkEdd++Oe
-         KeOAXjY0sDeWO+mRIkZJZuo2DWaK2hTmAxqT3WpanmHSrL/tyHT5elyIlhZ0dMDz5llR
-         6kHTiKHqC5BqofCr3nhb6VIjPdoQfQXrYjLJPrPbdYsZrntABBm05AwS0BwJFTiw7+jX
-         VHMqwJ10GL1yWv3j2M8CRW9OZeWsiAp0Y+UpGmCBVAt78EJVEn8aDWLlMo7kDj4qsPlX
-         BQxQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X3yT5TmoSLSmrok+Crx8M3QcwMZEOV/qAXHZ0pyFZQQ=;
+        b=NmFsFFy4JyKRlWwG4SAGhGeyQ2DH/Sw3keP+7sjtOe1hFGk0zSokCAtxFiVKqQYuiY
+         R+vdts7oxhszAeMpNiYcY8IFwqoeHJ87M8qLs3zimY83kZRtsVQcW/BrX4FISaKLg6nz
+         CFil30c3r6NcjtKzFjtYYIfFFc0IYQhZNU7UgSxwC1eoxneA2BqilDwmSv72Y98Bfk6u
+         Fh87cmHE4/wMyVG8KtcdMkHe5+x8m6NHk2V+IMeONpBIcW/NzkOMy/WRkkHGNfrFnkd/
+         6C88XHDmUGmYmBTcXbmSukAnyE/qF42eBVi6cTyzi7T54amFd9uZndBILpH2cKLy9FJy
+         ePwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=v7m0D7rx0mHGeruDjxwKiC0tRb8Flpj4t02w67RLk04=;
-        b=muX7TpU/YWQZnTKfEfzrz8PUHVOxuEdo+XL7rhjX4QD5jI3a8J5mZxItwv8KqB/TSV
-         Cu1q64VZy0GVRuuMgtc5fyRU0YkNfq5P80o8h+5jiIrCIvCkWdCq6PdD5mE75SorSasK
-         CsanHzWk1NTADGnrHW/c1tyLoFTXFu3YmUEkVkMbLaPPKnvROQVHoavrsjd18Z+ZrOAi
-         kyUFYjsbMxhwPP2e+cklo10not4Qg4jhyUA4jJwFabomqk/hikEeIdbxZgSf34wQGzbU
-         /TWUtpkbLsA1nJipKYpCCsI3JW56N0W9ZNH6vrVsCvR4e1ev/C3xLXbNWUzxELsWFnus
-         UaxQ==
-X-Gm-Message-State: AOAM532cGN+ubiQdRPQchv61wvDwtPGwmCFvBrOUjJ0Ws3Rtao3O2OsW
-        nQxy6Nx3HG9uidK+TWoLqa8=
-X-Google-Smtp-Source: ABdhPJxImi7e1CDSgVORCSBBjuxGkT4tEH9F2seAxYefktDE8vlf5hbPfe0l8ExYvsmXd7n14a9ocg==
-X-Received: by 2002:aa7:8c47:0:b029:25c:8bbd:908 with SMTP id e7-20020aa78c470000b029025c8bbd0908mr26727892pfd.54.1619598627997;
-        Wed, 28 Apr 2021 01:30:27 -0700 (PDT)
-Received: from localhost ([157.45.46.0])
-        by smtp.gmail.com with ESMTPSA id e9sm1784514pgk.69.2021.04.28.01.30.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 28 Apr 2021 01:30:27 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 14:00:20 +0530
-From:   Shubhankar Kuranagatti <shubhankarvk@gmail.com>
-To:     m@bues.ch
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sanjanasrinidhi1810@gmail.com
-Subject: [PATCH] drivers: ssb: driver_gpio.c: Fix alignment of comment
-Message-ID: <20210428083020.gt6ea2guhfp75pan@kewl-virtual-machine>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X3yT5TmoSLSmrok+Crx8M3QcwMZEOV/qAXHZ0pyFZQQ=;
+        b=OsPewGWrwCKrOX9h/g8uFqoGAqZKjhGw0vG3nFBa+ldjxwVhY3IqrC6pSSVLRvkRZD
+         MYgb8dwST5s9qFroThP1PxHMv2zQyinz+LIHRSsECE7ogPxh/JHJ6PG798sdCrPW8F0W
+         D4oEoBhlNPlw6Us9pPRXbxt9zY4NOlBj52/BcaShtU0e8U7PZcLEXez5exV2OkQslMHZ
+         BKpNAFhS42hIVDSryKB5zoYQrwmT5Q8eN2qTvJxbzoi1/GuzCeBQhfPV7/Lhs1j36jzF
+         o6r4ttt7fPEyZD+LRNCfSdu1VmeRIvDKr7+0u2R2yULEuGN5i+B+6Q31VODFCIzcYszI
+         o26Q==
+X-Gm-Message-State: AOAM531myStlNN212QuGAPagDUmb4T6SzQme6AjhE4FZEf9VGVIcXdw5
+        iLq8Il4/YwOIYsH/K71O2esva4/iiNkoiZh2bZ3EWKSIT+BWPQ==
+X-Google-Smtp-Source: ABdhPJzq32Kno41WvgEanKSTTJoP0HEse+GrqDt/mhwqt9SZ5cKbFQ8pOxTX89szqlPplDovLezTX8z1ZwCw4OEgCXk=
+X-Received: by 2002:a05:6a00:1494:b029:278:a4bc:957f with SMTP id
+ v20-20020a056a001494b0290278a4bc957fmr10769930pfu.55.1619598600279; Wed, 28
+ Apr 2021 01:30:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: NeoMutt/20171215
+References: <20210421065501.3134-1-jarvis.w.jiang@gmail.com>
+In-Reply-To: <20210421065501.3134-1-jarvis.w.jiang@gmail.com>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Wed, 28 Apr 2021 10:38:40 +0200
+Message-ID: <CAMZdPi-H=mnH9SFQZ7XQ8fjb0VtYbaWKGFhoXYyurDAB+RpQ5w@mail.gmail.com>
+Subject: Re: [PATCH v1] bus: mhi: pci_generic: T99W175: update channel name
+ from AT to DUN
+To:     Jarvis Jiang <jarvis.w.jiang@gmail.com>
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        Hemant Kumar <hemantk@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Chi-Wei Chen50 <cchen50@lenovo.com>,
+        Mark Pearson <mpearson@lenovo.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The closing */ has been shifted to a new line
-This is done to maintain code uniformity.
+On Wed, 21 Apr 2021 at 08:56, Jarvis Jiang <jarvis.w.jiang@gmail.com> wrote:
+>
+> According to MHI v1.1 specification, change the channel name of T99W175
+> from "AT" to "DUN" (Dial-up networking) for both channel 32 and 33,
+> so that the channels can be bound to the Qcom WWAN control driver, and
+> device node such as /dev/wwan0p3AT will be generated, which is very useful
+> for debugging modem
+>
+> Signed-off-by: Jarvis Jiang <jarvis.w.jiang@gmail.com>
 
-Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
----
- drivers/ssb/driver_gpio.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Ok, it seems the spec claims it's a DUN channel, but all vendors use
+it for AT protocol, so it's fine (and correctly handled by the
+mhi_wwan_ctrl driver).
 
-diff --git a/drivers/ssb/driver_gpio.c b/drivers/ssb/driver_gpio.c
-index 66a76fd83248..2de3896489c8 100644
---- a/drivers/ssb/driver_gpio.c
-+++ b/drivers/ssb/driver_gpio.c
-@@ -231,7 +231,8 @@ static int ssb_gpio_chipco_init(struct ssb_bus *bus)
- 	chip->ngpio		= 16;
- 	/* There is just one SoC in one device and its GPIO addresses should be
- 	 * deterministic to address them more easily. The other buses could get
--	 * a random base number. */
-+	 * a random base number.
-+	 */
- 	if (bus->bustype == SSB_BUSTYPE_SSB)
- 		chip->base		= 0;
- 	else
-@@ -424,7 +425,8 @@ static int ssb_gpio_extif_init(struct ssb_bus *bus)
- 	chip->ngpio		= 5;
- 	/* There is just one SoC in one device and its GPIO addresses should be
- 	 * deterministic to address them more easily. The other buses could get
--	 * a random base number. */
-+	 * a random base number.
-+	 */
- 	if (bus->bustype == SSB_BUSTYPE_SSB)
- 		chip->base		= 0;
- 	else
--- 
-2.17.1
+Could you please add a Fixes tag since it fixes your previous commit?
 
+with that
+
+Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
+
+
+
+> ---
+>  drivers/bus/mhi/pci_generic.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
+> index 7c810f02a2ef..8c7f6576e421 100644
+> --- a/drivers/bus/mhi/pci_generic.c
+> +++ b/drivers/bus/mhi/pci_generic.c
+> @@ -311,8 +311,8 @@ static const struct mhi_channel_config mhi_foxconn_sdx55_channels[] = {
+>         MHI_CHANNEL_CONFIG_DL(5, "DIAG", 32, 1),
+>         MHI_CHANNEL_CONFIG_UL(12, "MBIM", 32, 0),
+>         MHI_CHANNEL_CONFIG_DL(13, "MBIM", 32, 0),
+> -       MHI_CHANNEL_CONFIG_UL(32, "AT", 32, 0),
+> -       MHI_CHANNEL_CONFIG_DL(33, "AT", 32, 0),
+> +       MHI_CHANNEL_CONFIG_UL(32, "DUN", 32, 0),
+> +       MHI_CHANNEL_CONFIG_DL(33, "DUN", 32, 0),
+>         MHI_CHANNEL_CONFIG_HW_UL(100, "IP_HW0_MBIM", 128, 2),
+>         MHI_CHANNEL_CONFIG_HW_DL(101, "IP_HW0_MBIM", 128, 3),
+>  };
+> --
+> 2.25.1
+>
