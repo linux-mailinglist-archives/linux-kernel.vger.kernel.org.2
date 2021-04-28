@@ -2,92 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D415C36D782
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:37:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61CBB36D789
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239233AbhD1Mic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 08:38:32 -0400
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:34705 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237717AbhD1Mib (ORCPT
+        id S239342AbhD1Mks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 08:40:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235630AbhD1Mkr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 08:38:31 -0400
-Received: by mail-oi1-f181.google.com with SMTP id r3so9492719oic.1;
-        Wed, 28 Apr 2021 05:37:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=242UK1h4kw9vO9eTAPxNIGHP5gMqLpb7shCVDX9s6a4=;
-        b=OQSb8WEuGdDsPqPqvMu8OSBNLSgcdWxEjB83lyB6N7aQFKyg9/sR4cAwBcoWhWJXfo
-         iAhaBx7vmMN/4AkQ+yDlEjlqreA5Iypmccvbv9jN8jNYSfrnvkdZ8YIZzI4N7jo5jfEs
-         0N+2jiPY0riqO1y5bj6tCV+ykZ6gkJMyZxg2sAuPUKswcHqhn1/FC4d0KqfTbvEgYM4n
-         js3bMUNwW91nvrqwH0LF9cDdgD0/pLqIdkAb9AfUtu87i5xGc6kBIfxsvf2Yh8vHkJwv
-         4RvUSh9opaUlBx/UFK5MwxRdcC4qQCWhA2O0ic8tEfGCmd/geVQIL1KA+UfFTUQL8k3n
-         G1eQ==
-X-Gm-Message-State: AOAM5334Rfr5FZuDBJgj6wa7BbX8z8ygJairup4xGinP/9ujyEtC28c7
-        uTJZEU0ekazP5MxEcdI+XDSxpaQ/hMnZkuy1uxojPVRo
-X-Google-Smtp-Source: ABdhPJzatlyRpL0+4/W1VHR7JvgooF3FYWdjEs8HbXgX5Bh4yxfx+R/ZUKCKV9MgrzQDdoaCj691mLF0jqlISsHxqUM=
-X-Received: by 2002:aca:bc89:: with SMTP id m131mr20241934oif.71.1619613466041;
- Wed, 28 Apr 2021 05:37:46 -0700 (PDT)
+        Wed, 28 Apr 2021 08:40:47 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BD0FC061574;
+        Wed, 28 Apr 2021 05:40:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=m5f/iRhfUWRkjMhQisf/mthD9AMA77TGY3RTn6mcx6Q=; b=Lkqx31gsizhW9o7BpLZsPLAQ6X
+        InmIbkX46YfnQ/lGXXrBca7I7FvxudUMTFr+zICtQzQWdAR++bqAOtaPNtbaLtEcUxJxhXK96B7nG
+        wdCLH/PiJFmNuGWc3NjbHC0ezqo5YRu6o3/hkhUZmMrx+fVlA0b09ziwebO3mJ6ltfSp8/4DA/T1B
+        R76XZCqFJpc2DCxIs4QDwsuwZstPMQHGElGUwkgrJfEquzBC82cmh2n0TMopIsBsJMphtb6jQ7TsD
+        fAz0D6gSwCmInABLAIdKPl8owBaENkX4QSRAhwV4lUm/yjsT/A3EArSFC+A21eTDHweZio6odjPIz
+        xvjHNqbw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lbjSX-008Hl6-Kr; Wed, 28 Apr 2021 12:38:49 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1D408300091;
+        Wed, 28 Apr 2021 14:38:28 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id F09762CE52E40; Wed, 28 Apr 2021 14:38:27 +0200 (CEST)
+Date:   Wed, 28 Apr 2021 14:38:27 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com,
+        greg@kroah.com, gregkh@linuxfoundation.org, joshdon@google.com,
+        juri.lelli@redhat.com, linux-kernel@vger.kernel.org,
+        linux@rasmusvillemoes.dk, mgorman@suse.de, mingo@kernel.org,
+        rostedt@goodmis.org, valentin.schneider@arm.com,
+        vincent.guittot@linaro.org, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: sched: Move SCHED_DEBUG sysctl to debugfs
+Message-ID: <YIlXQ43b6+7sUl+f@hirez.programming.kicks-ass.net>
+References: <20210412102001.287610138@infradead.org>
+ <20210427145925.5246-1-borntraeger@de.ibm.com>
+ <YIkgzUWEPaXQTCOv@hirez.programming.kicks-ass.net>
+ <da373590-f0d7-e3a2-cef9-4527fc9f3056@de.ibm.com>
 MIME-Version: 1.0
-References: <20210428110536.edy74gsobkgtd6al@ubuntu> <YIlCzOl/rkYeOWVW@kroah.com>
- <56ea648f-3742-6dd6-9deb-5f1ba441905f@perex.cz> <YIlT0KKfT6QaE8mz@unreal> <20210428123205.nkxunwubdogjyvmq@burgerking>
-In-Reply-To: <20210428123205.nkxunwubdogjyvmq@burgerking>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 28 Apr 2021 14:37:33 +0200
-Message-ID: <CAJZ5v0hRBYtAG-_PUDN5WiDYhW0jcGDMMb7frd0G5x0+KwcY8Q@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: mark isapnp as obsolete
-To:     B K Karthik <bkkarthik@pesu.pes.edu>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Anupama K Patil <anupamakpatil123@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        kernelnewbies@kernelnewbies.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <da373590-f0d7-e3a2-cef9-4527fc9f3056@de.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 2:32 PM B K Karthik <bkkarthik@pesu.pes.edu> wrote:
->
-> On 21/04/28 03:23PM, Leon Romanovsky wrote:
-> > On Wed, Apr 28, 2021 at 02:17:00PM +0200, Jaroslav Kysela wrote:
-> > > Dne 28. 04. 21 v 13:11 Greg KH napsal(a):
-> > > > On Wed, Apr 28, 2021 at 04:35:36PM +0530, Anupama K Patil wrote:
-> > > >> isapnp code is very old and according to this link
-> > > >> https://en.wikipedia.org/wiki/Legacy_Plug_and_Play#Specifications
-> > > >> from Wikipedia, even Windows Vista disabled ISA PnP by default.
-> > > >>
-> > > >> This change is in follow up to
-> > > >> https://lore.kernel.org/lkml/20210422180322.7wlyg63kv3n2k6id@ubuntu/T/#u
-> > > >> and https://lore.kernel.org/lkml/20210424194301.jmsqpycvsm7izbk3@ubuntu/T/#u
-> > > >>
-> > > >> Suggested-by: B K Karthik <bkkarthik@pesu.pes.edu>
-> > > >> Signed-off-by: Anupama K Patil <anupamakpatil123@gmail.com>
-> > > >
-> > > > Has the maintainer said this is unsupported?
-> > >
-> > > I've no idea, if there're any users at the time, but there are many drivers
-> > > which depend on this code.
-> >
-> > IMHO, this is exactly "Odd fixes" - code not really dead, but not really
-> > alive too.
->
-> Okay! Does this have to come around as a v2 with 'Odd Fixes' instead of obsolete?
-> Or should that be a separate patch?
->
-> Or should we just wait for the maintainer's reply?
-> Sorry i'm a little confused.
+On Wed, Apr 28, 2021 at 11:42:57AM +0200, Christian Borntraeger wrote:
+> On 28.04.21 10:46, Peter Zijlstra wrote:
+> [..]
+> > The right thing to do here is to analyze the situation and determine why
+> > migration_cost needs changing; is that an architectural thing, does s390
+> > benefit from less sticky tasks due to its cache setup (the book caches
+> > could be absorbing some of the penalties here for example). Or is it
+> > something that's workload related, does KVM intrinsically not care about
+> > migrating so much, or is it something else.
+> 
+> So lets focus on the performance issue.
+> 
+> One workload where we have seen this is transactional workload that is
+> triggered by external network requests. So every external request
+> triggered a wakup of a guest and a wakeup of a process in the guest.
+> The end result was that KVM was 40% slower than z/VM (in terms of
+> transactions per second) while we had more idle time.
+> With smaller sched_migration_cost_ns (e.g. 100000) KVM was as fast
+> as z/VM.
+> 
+> So to me it looks like that the wakeup and reschedule to a free CPU
+> was just not fast enough. It might also depend where I/O interrupts
+> land. Not sure yet.
 
-I don't think that the MAINTAINERS entry needs to be updated.
+So there's unfortunately three places where migration_cost is used; one
+is in {nohz_,}newidle_balance(), see below. Someone tried removing it
+before and that ran into so weird regressions somewhere. But it is worth
+checking if this is the thing that matters for your workload.
 
-Technically, this code is maintained, but because the availability of
-systems on which to test changes is kind of limited, intrusive
-functional changes in it should better be avoided.
+The other (main) use is in task_hot(), where we try and prevent
+migrating tasks that have recently run on a CPU. We already have an
+exception for SMT there, because SMT siblings share all cache levels per
+defintion, so moving it to the sibling should have no ill effect.
 
-Thanks!
+It could be that the current measure is fundamentally too high for your
+machine -- it is basically a random number that was determined many
+years ago on some random x86 machine, so it not reflecting reality today
+on an entirely different platform is no surprise.
+
+Back in the day, we had some magic code that measured cache latency per
+sched_domain and we used that, but that suffered from boot-to-boot
+variance and made things rather non-deterministic, but the idea of
+having per-domain cost certainly makes sense.
+
+Over the years people have tried bringing parts of that back, but it
+never really had convincing numbers justifying the complexity. So that's
+another thing you could be looking at I suppose.
+
+And then finally we have an almost random use in rebalance_domains(),
+and I can't remember the story behind that one :/
+
+
+Anyway, TL;DR, try and figure out which of these three is responsible
+for your performance woes. If it's the first, the below patch might be a
+good candidate. If it's task_hot(), we might need to re-eval per domain
+costs. If its that other thing, I'll have to dig to figure out wth that
+was supposed to accomplish ;-)
+
+---
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 3bdc41f22909..9189bd78ad8f 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -10557,10 +10557,6 @@ static void nohz_newidle_balance(struct rq *this_rq)
+ 	if (!housekeeping_cpu(this_cpu, HK_FLAG_SCHED))
+ 		return;
+ 
+-	/* Will wake up very soon. No time for doing anything else*/
+-	if (this_rq->avg_idle < sysctl_sched_migration_cost)
+-		return;
+-
+ 	/* Don't need to update blocked load of idle CPUs*/
+ 	if (!READ_ONCE(nohz.has_blocked) ||
+ 	    time_before(jiffies, READ_ONCE(nohz.next_blocked)))
+@@ -10622,8 +10618,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ 	 */
+ 	rq_unpin_lock(this_rq, rf);
+ 
+-	if (this_rq->avg_idle < sysctl_sched_migration_cost ||
+-	    !READ_ONCE(this_rq->rd->overload)) {
++	if (!READ_ONCE(this_rq->rd->overload)) {
+ 
+ 		rcu_read_lock();
+ 		sd = rcu_dereference_check_sched_domain(this_rq->sd);
+
