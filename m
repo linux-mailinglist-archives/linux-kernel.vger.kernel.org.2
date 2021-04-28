@@ -2,85 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EBA436D930
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:04:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6731B36D935
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240150AbhD1ODQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 10:03:16 -0400
-Received: from mail-wr1-f47.google.com ([209.85.221.47]:43624 "EHLO
-        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238380AbhD1OCo (ORCPT
+        id S239498AbhD1OE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 10:04:27 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:34416 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230057AbhD1OEW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 10:02:44 -0400
-Received: by mail-wr1-f47.google.com with SMTP id x7so63152674wrw.10;
-        Wed, 28 Apr 2021 07:01:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Uheu8s26iW3ko1XKinftj7CiwtVhVkhr//K4W010x+g=;
-        b=MKy3Kq2BVhQG9g3ncrRkK2jYiFZKB8NepwFyhtZ7wcio0uUUosnue5H8Sqvo9DqKAQ
-         LO6tS9Bf0q3jgPz2OjQzEJ56c0TSBU8uAo867FfLjBidj0yw7SjVDyFxgATIL03w3MqL
-         ZxZMndHxq2wNHmx5N9hFn6ITqCJWV3uWcbXfaR0KssqdtHpw1BSn6FHYb52hr9Q0lwtp
-         kCzWCsIGfkfT5ismQ+1Mf7sJBC3ifXjJqAhq5+cadYtHMdi8cHrSzen3H+5UxPWlQdWD
-         TJRklLWs1IRvoomxjx1uh5AYyV8hh8804md2jfL2Pg3tTxpaHp4ilO1S2rqEs/YTWY7f
-         ownw==
-X-Gm-Message-State: AOAM532VtWf+/A6zEemLZZWpM4pnJhnHluB1XlcbOAlqIKW0yvPdv+KR
-        duBT9oeq4VB9ZBli7jl7zfA=
-X-Google-Smtp-Source: ABdhPJxivxFyQJiOiApbgYKWy7pGxc/X9ieVDkn9eHOL7wL9k5J3eH/h4E+cAhTd8gYUx4EopFk0PA==
-X-Received: by 2002:a5d:638f:: with SMTP id p15mr23588927wru.255.1619618518894;
-        Wed, 28 Apr 2021 07:01:58 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id n12sm3882943wmq.29.2021.04.28.07.01.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 07:01:58 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 14:01:56 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vineeth Pillai <viremana@linux.microsoft.com>
-Cc:     Lan Tianyu <Tianyu.Lan@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH v4 1/7] hyperv: Detect Nested virtualization support for
- SVM
-Message-ID: <20210428140156.flf5ie6r2j7os5ch@liuwe-devbox-debian-v2>
-References: <cover.1619556430.git.viremana@linux.microsoft.com>
- <8ffa88e6ceb55d283c76b4c5fd9ad0fb1a2cf667.1619556430.git.viremana@linux.microsoft.com>
+        Wed, 28 Apr 2021 10:04:22 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 13SE3HW3018990
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 10:03:17 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id DB1D515C3C3D; Wed, 28 Apr 2021 10:03:16 -0400 (EDT)
+Date:   Wed, 28 Apr 2021 10:03:16 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        lkp@lists.01.org, lkp@intel.com, dm-devel@redhat.com
+Subject: Re: [ext4]  21175ca434:
+ mdadm-selftests.enchmarks/mdadm-selftests/tests/01r1fail.fail
+Message-ID: <YIlrJCdhVaFPdPgb@mit.edu>
+References: <20210427081539.GF32408@xsang-OptiPlex-9020>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8ffa88e6ceb55d283c76b4c5fd9ad0fb1a2cf667.1619556430.git.viremana@linux.microsoft.com>
+In-Reply-To: <20210427081539.GF32408@xsang-OptiPlex-9020>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 08:54:50PM +0000, Vineeth Pillai wrote:
-> Previously, to detect nested virtualization enlightenment support,
-> we were using HV_X64_ENLIGHTENED_VMCS_RECOMMENDED feature bit of
-> HYPERV_CPUID_ENLIGHTMENT_INFO.EAX CPUID as docuemented in TLFS:
->  "Bit 14: Recommend a nested hypervisor using the enlightened VMCS
->   interface. Also indicates that additional nested enlightenments
->   may be available (see leaf 0x4000000A)".
-> 
-> Enlightened VMCS, however, is an Intel only feature so the above
-> detection method doesn't work for AMD. So, use the
-> HYPERV_CPUID_VENDOR_AND_MAX_FUNCTIONS.EAX CPUID information ("The
-> maximum input value for hypervisor CPUID information.") and this
-> works for both AMD and Intel.
-> 
-> Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
+(Hmm, why did you cc linux-km on this report?  I would have thought
+dm-devel would have made more sense?)
 
-Acked-by: Wei Liu <wei.liu@kernel.org>
+On Tue, Apr 27, 2021 at 04:15:39PM +0800, kernel test robot wrote:
+> 
+> FYI, we noticed the following commit (built with gcc-9):
+> 
+> commit: 21175ca434c5d49509b73cf473618b01b0b85437 ("ext4: make prefetch_block_bitmaps default")
+> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+> 
+
+> in testcase: mdadm-selftests
+> version: mdadm-selftests-x86_64-5d518de-1_20201008
+> with following parameters:
+> 
+> 	disk: 1HDD
+> 	test_prefix: 01r1
+> 	ucode: 0x21
+
+So this failure makes no sense to me.  Looking at the kmesg failure
+logs, it's failing in the md layer:
+
+kern  :info  : [   99.775514] md/raid1:md0: not clean -- starting background reconstruction
+kern  :info  : [   99.783372] md/raid1:md0: active with 3 out of 4 mirrors
+kern  :info  : [   99.789735] md0: detected capacity change from 0 to 37888
+kern  :info  : [   99.796216] md: resync of RAID array md0
+kern  :crit  : [   99.900450] md/raid1:md0: Disk failure on loop2, disabling device.
+                              md/raid1:md0: Operation continuing on 2 devices.
+kern  :crit  : [   99.918281] md/raid1:md0: Disk failure on loop1, disabling device.
+                              md/raid1:md0: Operation continuing on 1 devices.
+kern  :info  : [  100.835833] md: md0: resync interrupted.
+kern  :info  : [  101.852898] md: resync of RAID array md0
+kern  :info  : [  101.858347] md: md0: resync done.
+user  :notice: [  102.109684] /lkp/benchmarks/mdadm-selftests/tests/01r1fail... FAILED - see /var/tmp/01r1fail.log and /var/tmp/fail01r1fail.log for details
+
+The referenced commit just turns block bitmap prefetching in ext4.
+This should not cause md to failure; if so, that's an md bug, not an
+ext4 bug.  There should not be anything that the file system is doing
+that would cause the kernel to think there is a disk failure.
+
+By the way, the reproduction instructions aren't working currently:
+
+> To reproduce:
+> 
+>         git clone https://github.com/intel/lkp-tests.git
+>         cd lkp-tests
+>         bin/lkp install                job.yaml  # job file is attached in this email
+
+This fails because lkp is trying to apply a patch which does not apply
+with the current version of the md tools.
+
+>         bin/lkp split-job --compatible job.yaml
+>         bin/lkp run                    compatible-job.yaml
+
+And the current versions lkp don't generate a compatible-job.yaml file
+when you run "lkp split-job --compatable"; instead it generates a new
+yaml file with a set of random characters to generate a unique name.
+(What Multics parlance would be called a "shriek name"[1] :-)
+
+Since I was having trouble running the reproduction; could you send
+the /var/tmp/*fail.logs so we could have a bit more insight what is
+going on?
+
+Thanks!
+
+					- Ted
+
