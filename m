@@ -2,118 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC51D36DB6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0375D36DB6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239827AbhD1PPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 11:15:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35704 "EHLO mail.kernel.org"
+        id S239061AbhD1PSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 11:18:24 -0400
+Received: from mga14.intel.com ([192.55.52.115]:16742 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229805AbhD1PPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 11:15:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A71A61434
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 15:14:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619622890;
-        bh=4Ws0+en3jeqx+lcLETHxSaMmCbFj64akFU1VEPRBU+0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ScedMa4pTRrbMQMckrxWa/W5fytapGxMaxWDH0qlymRF2Y9VLNEfZ52a8gzMHsd52
-         2ryrys+CYOK1xWIKrSs7xIDsGaZo0qKjaTOAxk8nNreE5vd1fGw4viUeltjoLfBNIP
-         HW8ySxMLlVoJNC29I9nCwWa1D76Zyk8vD5A/UPgMvlRmNd7LsqZzo/XF4JdhrvD4EU
-         HJ/OMpNw5to/qNYpA2J3gev0yOy5iopChmSc0MSy+m0m0zctmONRp8W0ey7BsyBMYF
-         UWXAHkifj/C3aJ1/51ufonU1ECY9WqyF1vtGSrN67dWbBEI3Wcrkh86DyUZgtvil1i
-         Id7nJ/+1aZj1Q==
-Received: by mail-ed1-f41.google.com with SMTP id n25so2593623edr.5
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 08:14:50 -0700 (PDT)
-X-Gm-Message-State: AOAM5319X73oqW2ci/CwBr8rZCiG+pz1ompwpecBckiDs5UXEa8Tk5I1
-        oEEnA3omiR1+m3H1fGeu2kF+YApWsyFPU5bomcZ4AA==
-X-Google-Smtp-Source: ABdhPJxwJpY1QIeAU6fDkKWgHdGb8D1MMF6TX8d4Wams5Yc1cZADwoIMzfDbopKAgEhXVvM9guavhPLCPGkwr5btYfc=
-X-Received: by 2002:a50:fc91:: with SMTP id f17mr11825671edq.23.1619622888769;
- Wed, 28 Apr 2021 08:14:48 -0700 (PDT)
+        id S229805AbhD1PSY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 11:18:24 -0400
+IronPort-SDR: mUpYq0N7Qel4RlQno1R4W0TCNezC9vVNZIaTy8FTQjfwI6w5JyKWVWP0yNQDg1p8RrF5MT1RBQ
+ vzi92VNWU0hg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9968"; a="196318619"
+X-IronPort-AV: E=Sophos;i="5.82,258,1613462400"; 
+   d="scan'208";a="196318619"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 08:17:38 -0700
+IronPort-SDR: v7aXp3XAG64N5KnxOone90boPMhRuHAx6C1pPUPFr8uHerT0fLoM1+VX/WGeRvFfVJTSiCoxZ6
+ mHbc9/4mFgCw==
+X-IronPort-AV: E=Sophos;i="5.82,258,1613462400"; 
+   d="scan'208";a="619348552"
+Received: from sachanta-mobl.amr.corp.intel.com (HELO [10.209.170.35]) ([10.209.170.35])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 08:17:37 -0700
+Subject: Re: [PATCH 2/2] ASoC: da7219: do not request a new clock consummer
+ reference
+To:     Jerome Brunet <jbrunet@baylibre.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+References: <20210428122632.46244-1-jbrunet@baylibre.com>
+ <20210428122632.46244-3-jbrunet@baylibre.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <ddf546e9-e160-d865-0a49-a25a1ea4ca96@linux.intel.com>
+Date:   Wed, 28 Apr 2021 10:17:35 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210427204720.25007-1-yu-cheng.yu@intel.com> <0e03c50ea05440209d620971b9db4f29@AcuMS.aculab.com>
- <CALCETrUpZfznXzN3Ld33DMvQcHD2ACnhYf9KdP+5-xXuX_pVpA@mail.gmail.com> <CAMe9rOp7FauoqQ0vx+ZVPGOE9+ABspheuGLc++Chj_goE5HvWA@mail.gmail.com>
-In-Reply-To: <CAMe9rOp7FauoqQ0vx+ZVPGOE9+ABspheuGLc++Chj_goE5HvWA@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 28 Apr 2021 08:14:37 -0700
-X-Gmail-Original-Message-ID: <CALCETrVHUP9=2kX3aJJugcagsf26W0sLEPsDvVCZNnBmbWrOLQ@mail.gmail.com>
-Message-ID: <CALCETrVHUP9=2kX3aJJugcagsf26W0sLEPsDvVCZNnBmbWrOLQ@mail.gmail.com>
-Subject: Re: [PATCH v26 0/9] Control-flow Enforcement: Indirect Branch Tracking
-To:     "H.J. Lu" <hjl.tools@gmail.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210428122632.46244-3-jbrunet@baylibre.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 7:57 AM H.J. Lu <hjl.tools@gmail.com> wrote:
->
-> On Wed, Apr 28, 2021 at 7:52 AM Andy Lutomirski <luto@kernel.org> wrote:
-> >
-> > On Wed, Apr 28, 2021 at 7:48 AM David Laight <David.Laight@aculab.com> wrote:
-> > >
-> > > From: Yu-cheng Yu
-> > > > Sent: 27 April 2021 21:47
-> > > >
-> > > > Control-flow Enforcement (CET) is a new Intel processor feature that blocks
-> > > > return/jump-oriented programming attacks.  Details are in "Intel 64 and
-> > > > IA-32 Architectures Software Developer's Manual" [1].
-> > > ...
-> > >
-> > > Does this feature require that 'binary blobs' for out of tree drivers
-> > > be compiled by a version of gcc that adds the ENDBRA instructions?
-> > >
-> > > If enabled for userspace, what happens if an old .so is dynamically
-> > > loaded?
->
-> CET will be disabled by ld.so in this case.
 
-What if a program starts a thread and then dlopens a legacy .so?
 
->
-> > > Or do all userspace programs and libraries have to have been compiled
-> > > with the ENDBRA instructions?
->
-> Correct.  ld and ld.so check this.
->
-> > If you believe that the userspace tooling for the legacy IBT table
-> > actually works, then it should just work.  Yu-cheng, etc: how well
-> > tested is it?
-> >
->
-> Legacy IBT bitmap isn't unused since it doesn't cover legacy codes
-> generated by legacy JITs.
->
+On 4/28/21 7:26 AM, Jerome Brunet wrote:
+> This reverts commit 12f8127fe9e6154dd4197df97e44f3fd67583071.
+> 
+> There is problem with clk_hw_get_hw(). Using it pins the clock provider to
+> itself, making it impossible to remove the module.
+> 
+> Revert commit 12f8127fe9e6 ("ASoC: da7219: properly get clk from the
+> provider") until this gets sorted out.
+> 
+> Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 
-How does ld.so decide whether a legacy JIT is in use?
+I added this patch in the SOF tree and the CI results are back to 
+normal: https://sof-ci.01.org/linuxpr/PR2879/build5689/devicetest/
+
+Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+Thanks Jerome, this was a surprising/hard-to-detect side effect.
+
+> ---
+>   sound/soc/codecs/da7219.c | 5 +----
+>   1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+> index bd3c523a8617..13009d08b09a 100644
+> --- a/sound/soc/codecs/da7219.c
+> +++ b/sound/soc/codecs/da7219.c
+> @@ -2181,10 +2181,7 @@ static int da7219_register_dai_clks(struct snd_soc_component *component)
+>   				 ret);
+>   			goto err;
+>   		}
+> -
+> -		da7219->dai_clks[i] = devm_clk_hw_get_clk(dev, dai_clk_hw, NULL);
+> -		if (IS_ERR(da7219->dai_clks[i]))
+> -			return PTR_ERR(da7219->dai_clks[i]);
+> +		da7219->dai_clks[i] = dai_clk_hw->clk;
+>   
+>   		/* For DT setup onecell data, otherwise create lookup */
+>   		if (np) {
+> 
