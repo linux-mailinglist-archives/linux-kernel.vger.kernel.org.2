@@ -2,67 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE6736D43E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FF636D438
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237552AbhD1ItX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 04:49:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237934AbhD1ItW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 04:49:22 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AFFAC06138B;
-        Wed, 28 Apr 2021 01:48:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=HH9Gce1uOwCDDNzzHrLHk28gGwN7n6kj6W6fnuW2Cc4=; b=GaPgxHqJZPoKkBJrPX4zFODEo+
-        DWqFeO94cTEfwvsJM6YjXWCG8bsMSrYvCi/HaP6Ms8VGomeZ6cyc11ECmNXCak/NjhF85LzMAMCRe
-        sWZP8Lu2+cWLDzbTNG9PIFCWf2ZpM+WTutk6bryAJc1MxnIufnkdJyWO289l/D7P1MT+r/P0O10QX
-        PGjsGdtN+rzApeZOQjv/a6YNnfwGCBvr3NvlPQE1tN5TbdUR+mvBH8FSgAoRpbqVaAk0RKClHAx7a
-        CD6aYMm+tqb+tYRHJXac4AAyDWd2j2nxaLczlwmZaBWia+UwwX9nmdBNsoubzbHP0iwpItDLyQOiV
-        +a5oNLkA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lbfrB-0083ig-LM; Wed, 28 Apr 2021 08:47:47 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5B28830003A;
-        Wed, 28 Apr 2021 10:47:41 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4B3B22BF7B843; Wed, 28 Apr 2021 10:47:41 +0200 (CEST)
-Date:   Wed, 28 Apr 2021 10:47:41 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>, bristot@redhat.com,
-        bsegall@google.com, dietmar.eggemann@arm.com, greg@kroah.com,
-        gregkh@linuxfoundation.org, joshdon@google.com,
-        juri.lelli@redhat.com, linux-kernel@vger.kernel.org,
-        linux@rasmusvillemoes.dk, mgorman@suse.de, mingo@kernel.org,
-        valentin.schneider@arm.com, vincent.guittot@linaro.org,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: sched: Move SCHED_DEBUG sysctl to debugfs
-Message-ID: <YIkhLVi4weT02O/N@hirez.programming.kicks-ass.net>
-References: <20210412102001.287610138@infradead.org>
- <20210427145925.5246-1-borntraeger@de.ibm.com>
- <20210427110926.24f41fbb@gandalf.local.home>
+        id S237602AbhD1Ism (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 04:48:42 -0400
+Received: from mga05.intel.com ([192.55.52.43]:45256 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231635AbhD1Isj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 04:48:39 -0400
+IronPort-SDR: eMGboYIcQ5TMSlkNE/tbndC6+sVfG47mU+M+JLiXAOyQRLAzztihnRJa5g8XuXNenGMNd5biEP
+ 53GBNfIoZm0g==
+X-IronPort-AV: E=McAfee;i="6200,9189,9967"; a="282027898"
+X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
+   d="scan'208";a="282027898"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 01:47:55 -0700
+IronPort-SDR: ELEUZ/GcZm6EcWmRcpcBqlw7aEdLL3WyTjyJljecR8h93EzPjzpetHRrXHEm6T8j0CsaaZ1yuw
+ PFm5INJ4sHOQ==
+X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
+   d="scan'208";a="403607720"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 01:47:53 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lbfrK-007ppO-Ax; Wed, 28 Apr 2021 11:47:50 +0300
+Date:   Wed, 28 Apr 2021 11:47:50 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: drivers/pinctrl/intel/pinctrl-intel.c:1663:14: warning: variable
+ 'dummy' set but not used
+Message-ID: <YIkhNjYTBgFpgcia@smile.fi.intel.com>
+References: <202104280827.lscZW8Xg-lkp@intel.com>
+ <YIkgNWRJ+9BpEtvb@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210427110926.24f41fbb@gandalf.local.home>
+In-Reply-To: <YIkgNWRJ+9BpEtvb@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 11:09:26AM -0400, Steven Rostedt wrote:
-> Or perhaps we should add a "tunefs" for tunables that are stable interfaces
-> that should not be in /proc but also not in debugfs.
+On Wed, Apr 28, 2021 at 11:43:33AM +0300, Andy Shevchenko wrote:
+> +Cc: Arnd and Nick
+> 
+> (Seems like a clang bug)
+> 
+> On Wed, Apr 28, 2021 at 08:10:34AM +0800, kernel test robot wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   e359bce39d9085ab24eaa0bb0778bb5f6894144a
+> > commit: 10c857f063fc63902160755a6e23fa594290c6d3 pinctrl: cherryview: Switch to use intel_pinctrl_get_soc_data()
+> > date:   8 months ago
+> > config: x86_64-randconfig-a005-20210426 (attached as .config)
+> > compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 87fc97169e7901dfe56ca0da0d92da0c02d2ef48)
+> > reproduce (this is a W=1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # install x86_64 cross compiling tool for clang build
+> >         # apt-get install binutils-x86-64-linux-gnu
+> >         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=10c857f063fc63902160755a6e23fa594290c6d3
+> >         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> >         git fetch --no-tags linus master
+> >         git checkout 10c857f063fc63902160755a6e23fa594290c6d3
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=x86_64 
+> > 
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > 
+> > All warnings (new ones prefixed by >>):
+> > 
+> > >> drivers/pinctrl/intel/pinctrl-intel.c:1663:14: warning: variable 'dummy' set but not used [-Wunused-but-set-variable]
+> >            const char *dummy;
+> >                        ^
+> >    1 warning generated.
+> 
+> Seems to me a bug in clang. The variable is used to check if the body of the
+> loop should be executed or not.
 
-As said in that other email, I very emphatically do not want to do that.
-I want to actively discourage people from 'tuning' and start to debug.
+The only way of make this variable being unused is to avoid the loop being
+executed at all. This may be the case iff (mind to f:s) the supplied size
+parameter is 0, but how on earth clang can prove it (esp. taking into
+consideration that it's not true in real life)?!
+
+
+> > vim +/dummy +1663 drivers/pinctrl/intel/pinctrl-intel.c
+> > 
+> > a0a5f7661e1c49 Chris Chiu      2019-04-15  1656  
+> > 7101e022523bfb Andy Shevchenko 2019-10-22  1657  static void intel_restore_hostown(struct intel_pinctrl *pctrl, unsigned int c,
+> > 7101e022523bfb Andy Shevchenko 2019-10-22  1658  				  void __iomem *base, unsigned int gpp, u32 saved)
+> > 7101e022523bfb Andy Shevchenko 2019-10-22  1659  {
+> > 7101e022523bfb Andy Shevchenko 2019-10-22  1660  	const struct intel_community *community = &pctrl->communities[c];
+> > 7101e022523bfb Andy Shevchenko 2019-10-22  1661  	const struct intel_padgroup *padgrp = &community->gpps[gpp];
+> > 7101e022523bfb Andy Shevchenko 2019-10-22  1662  	struct device *dev = pctrl->dev;
+> > d1bfd0229ec4de Andy Shevchenko 2020-06-10 @1663  	const char *dummy;
+> > d1bfd0229ec4de Andy Shevchenko 2020-06-10  1664  	u32 requested = 0;
+> > d1bfd0229ec4de Andy Shevchenko 2020-06-10  1665  	unsigned int i;
+> > 7101e022523bfb Andy Shevchenko 2019-10-22  1666  
+> > e5a4ab6a55e230 Andy Shevchenko 2020-04-13  1667  	if (padgrp->gpio_base == INTEL_GPIO_BASE_NOMAP)
+> > 7101e022523bfb Andy Shevchenko 2019-10-22  1668  		return;
+> > 7101e022523bfb Andy Shevchenko 2019-10-22  1669  
+> > d1bfd0229ec4de Andy Shevchenko 2020-06-10  1670  	for_each_requested_gpio_in_range(&pctrl->chip, i, padgrp->gpio_base, padgrp->size, dummy)
+> > d1bfd0229ec4de Andy Shevchenko 2020-06-10  1671  		requested |= BIT(i);
+> > d1bfd0229ec4de Andy Shevchenko 2020-06-10  1672  
+> > 942c5ea49ffbe2 Andy Shevchenko 2019-10-22  1673  	if (!intel_gpio_update_reg(base + gpp * 4, requested, saved))
+> > 7101e022523bfb Andy Shevchenko 2019-10-22  1674  		return;
+> > 7101e022523bfb Andy Shevchenko 2019-10-22  1675  
+> > 764cfe33517f7c Andy Shevchenko 2019-10-22  1676  	dev_dbg(dev, "restored hostown %u/%u %#08x\n", c, gpp, readl(base + gpp * 4));
+> > 7101e022523bfb Andy Shevchenko 2019-10-22  1677  }
+> > 7101e022523bfb Andy Shevchenko 2019-10-22  1678  
+> > 
+> > :::::: The code at line 1663 was first introduced by commit
+> > :::::: d1bfd0229ec4deb53e61f95c050b524152fd0d9e pinctrl: intel: Make use of for_each_requested_gpio_in_range()
+> > 
+> > :::::: TO: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > :::::: CC: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > 
+> > ---
+> > 0-DAY CI Kernel Test Service, Intel Corporation
+> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
+> 
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
