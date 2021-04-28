@@ -2,174 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 704B836D22D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 08:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4171936D233
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 08:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235991AbhD1G2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 02:28:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232966AbhD1G2c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 02:28:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 873AB61158;
-        Wed, 28 Apr 2021 06:27:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619591268;
-        bh=0XZAnGMbHQVb6640NACUhIc6RdCMbx/GXT7x2D/JQy8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TTNCRtbSwT/1sPcCsPNBGMdt1T+unT0fTEBc7xEEJNuRXDHXQ6Yr3m3rCWgPfygv2
-         wpZyYjGW1b6saQCMxu2r7f633/udi8Y1TyYNlDM2dMyIx4KgYLng/im0COlcu2R2/j
-         C+p7XV+6uorxR7fkT8FieAn7dvmh7yCgrQU4PPbEQpO8+PwNnB+c7NbxtpAs9JZGgj
-         LRDnsoHpLcfUDUJ112FRCdmoutrb8+QWuO1n9LIH1IyVprMi8W8Gm7y9eVggDj3Hy0
-         Zc6K4hC03OHQu5qwRTwHs9TRjHtSk6PDlRyjMWwzT99e86p+8P689Ag+UrAFH4Qffa
-         m1Oo9fuP0eVuw==
-Date:   Wed, 28 Apr 2021 08:27:42 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Ezequiel Garcia <ezequiel@collabora.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH v3 79/79] media: hantro: document the usage of
- pm_runtime_get_sync()
-Message-ID: <20210428082742.20d54db1@coco.lan>
-In-Reply-To: <95ea572e201545b27ff9f48313f7aaea157d4764.camel@collabora.com>
-References: <cover.1619519080.git.mchehab+huawei@kernel.org>
-        <230f22170db7fa57b49cff4570cef15bf11b2ad5.1619519080.git.mchehab+huawei@kernel.org>
-        <02948673-9572-a570-d28e-03a7208f39e1@arm.com>
-        <95ea572e201545b27ff9f48313f7aaea157d4764.camel@collabora.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S234486AbhD1Gar convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Apr 2021 02:30:47 -0400
+Received: from de-smtp-delivery-105.mimecast.com ([62.140.7.105]:35754 "EHLO
+        de-smtp-delivery-105.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230490AbhD1Gaq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 02:30:46 -0400
+Received: from GBR01-CWL-obe.outbound.protection.outlook.com
+ (mail-cwlgbr01lp2058.outbound.protection.outlook.com [104.47.20.58]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-33-vZDCqs73PEqhodFzszGmow-1; Wed, 28 Apr 2021 08:28:07 +0200
+X-MC-Unique: vZDCqs73PEqhodFzszGmow-1
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:89::10)
+ by CWXP265MB3351.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:da::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.25; Wed, 28 Apr
+ 2021 06:28:07 +0000
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::a91f:361d:5554:3958]) by CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::a91f:361d:5554:3958%5]) with mapi id 15.20.4065.027; Wed, 28 Apr 2021
+ 06:28:07 +0000
+From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
+To:     Soeren Moch <smoch@web.de>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "heiko@sntech.de" <heiko@sntech.de>,
+        "jbx6244@gmail.com" <jbx6244@gmail.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-rockchip@lists.infradead.org" 
+        <linux-rockchip@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: dts: rockchip: include uhs support for rockpro64
+Thread-Topic: [PATCH] arm64: dts: rockchip: include uhs support for rockpro64
+Thread-Index: AQHXOyz+Y+++fPZwnUCCEHYwxF4ENKrId5wAgAEALc4=
+Date:   Wed, 28 Apr 2021 06:28:06 +0000
+Message-ID: <CWXP265MB2680159B5F44B014FA544E89C4409@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+References: <CWXP265MB2680938B222248792AC205F9C4419@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>,<97bcbcde-9ccf-f9cc-ef10-36cbd582825a@web.de>
+In-Reply-To: <97bcbcde-9ccf-f9cc-ef10-36cbd582825a@web.de>
+Accept-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [185.80.168.10]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f5aa04b6-d9d8-4aef-1841-08d90a0ec934
+x-ms-traffictypediagnostic: CWXP265MB3351:
+x-microsoft-antispam-prvs: <CWXP265MB33512C693934D91556A20136C4409@CWXP265MB3351.GBRP265.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:6430
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0
+x-microsoft-antispam-message-info: us2m+PTxtj16eAN+HRyylrysdFEUQVO3lfhrly2OCRYiIKW/3QdzRq7Hp0ZwFK7dMAOTVXEm+qlSNHgwPW6JmqtMlZqdk0Hm5TgmJBpoHREyssD5iQTgwiuI4WAnVJsQvWv9dLfoz0M30u+vcXVy5/NNOFVs3LlEn0VUnUd+HEjENOvfqjKI0/Izd3QPtLwqdlPSN1LLZnXEJlzXxFYjj5ve10JEyp2BHwZIrLNPGfIKZDMC4HniHPAAM99qWfKc3fO4N9kRCxHSsqdsaI/8sxI/sm5dWNwsAB5Heqw5Fb9wIuBhpHRpiSZ/XyQ78xEYQLCvaoD98RQpjfNqSR55JYM//3O7VLUwUy+A/UYT2pN+LK1E3GE9IAWwXNw24FYCNsSCkEX2v2Zon+S7qUdUhHUQV2AHVLM9jeoWtqCA4QXy79dTjDf/j5AAkF5ydjP70NSkJtjEI0BoqruFDAeqKLflYQpZdRq4s57fC+yzzvXyXVFAOlP23GvJaI5tFOECxqhEzlzroOs2SqyvwC+U/O/f52TgYlUkcz2LrS88tQfOa58ZYRBCTpPTKtP3PnJn+Fy95xU5sLzlU5VDqYo/GgZAu5fEAKu//BUoY3SeOFU=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(136003)(376002)(366004)(346002)(396003)(39830400003)(91956017)(64756008)(66446008)(66476007)(66556008)(52536014)(86362001)(110136005)(76116006)(66946007)(9686003)(7696005)(33656002)(6506007)(53546011)(5660300002)(8676002)(71200400001)(8936002)(122000001)(2906002)(38100700002)(186003)(26005)(316002)(478600001)(55016002);DIR:OUT;SFP:1101
+x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?DbFdr/Hs7vXrkYf0zwsHWnhptyrllLTprkUeqYl+XztseRw9b8B0V9Ny9c?=
+ =?iso-8859-1?Q?ML7T0sh8I0UigXUr63csZLQiq2mD5ZBlMdeJZrSM1IJSQkIYxu4CZK540I?=
+ =?iso-8859-1?Q?65C+9lpFbv/6zx2TQgL4rXyc6V3PjHWuTQuAqVTog85F6E+aFhNz2V6/n0?=
+ =?iso-8859-1?Q?YyQvqucR5mRZde1Vs6ivqrpdE9fGmGcLjsOTmUhcMyxOoRSYqhcnyQPQFr?=
+ =?iso-8859-1?Q?ckXA6cqPl3oxtHeZisw6hDwzmhsAJr7pGNmP5nQ9tsrYsSz6onabGnd626?=
+ =?iso-8859-1?Q?m/Ve3eextqWfI7tNgB08bdme3PgGiRwqKF1UbGcL1n5EZ6CcldckNq36xb?=
+ =?iso-8859-1?Q?2EcoRY5F/Q9Z6Ndv4OBA8DqE1c7UV4YRINUewyjlxG5F2kau4etGdbP6wD?=
+ =?iso-8859-1?Q?QvGadKb51qj9ZUwhkyYKzeN2L75q3kVnutG7A09K4uMaFMeFRDvtWiC2GV?=
+ =?iso-8859-1?Q?T8Sm582efkIsNZBuW1DFqt0q6stNNx5mg1OEjplCc7quYJKjyb6o6UTtc2?=
+ =?iso-8859-1?Q?2AxCCoxjacho0WKaIPz03Da9Gb+wd6+ognPPVPpf2ASPAGI+czC6v/2P2s?=
+ =?iso-8859-1?Q?CFNavEJ3aXYxC6v219lwRxgOGZvzm4yFQhPuHMOauQLR8i8pXVu1PTMZj8?=
+ =?iso-8859-1?Q?me8SwGGvD1q9XZrnu9g8w4QL8cIvpGbrfRNdf1Qxtv5ktnpMNyTt3lJ1NH?=
+ =?iso-8859-1?Q?PmSfH1tlGYm3t/wQNbZCsdHeNLxBPYgWMuJ5kPWRR6OWFaxl1k2I2o3Hx4?=
+ =?iso-8859-1?Q?V0delTFplDaJJb5mprxYqoQ/f6+aZv989CGHV8rkJtp/yncOUkG2x1eE2v?=
+ =?iso-8859-1?Q?FIO4TQsW2AN+pUjIDmmeML4rHYa8r1O4jvpsU90TC2paxAW4nupqGM8uMO?=
+ =?iso-8859-1?Q?PYDWg0IOiZNvtJMk4MfLf2E5T5WDmCVB27DEwm2IA7Vdzy5hFxc3JKsqEw?=
+ =?iso-8859-1?Q?w8tPRrCzu9405cadUYGjJjuq1QOn/boxRUzgsKFjk75OE5PJ+wr8hG5Rts?=
+ =?iso-8859-1?Q?n+WNJ+DDVQsmctoL2pIIlSF8RGs3Sg6rpa4qYI2eaYHueNEOOKNJU/4rcv?=
+ =?iso-8859-1?Q?bxP5O/t1iRlZqsxAPzL4NTdChq7TIu7Jjn+Q4Lz9Gxw0XgRmB2Thhn+PbM?=
+ =?iso-8859-1?Q?zazoHw/ZAHTdmxKxtAEXouInnIZas6dREW3lIfafvB13XbjCcF9Rk4tSi9?=
+ =?iso-8859-1?Q?4Sivj8nn2JGV82gCHnYa88BOCZy546oJedqqeX/ihbKvNHcqwNTatnnocF?=
+ =?iso-8859-1?Q?sSY5RGwBOhE/OciHd4ficoghB3DkO2oF1ATGYD3wGTNdYt20gen8mQ3FPJ?=
+ =?iso-8859-1?Q?c3oxVhKhqWpG/ZfZvKkCkrayxgbh8Q0fk9ZW6/TfMGXHMvI=3D?=
+x-ms-exchange-transport-forked: True
 MIME-Version: 1.0
+X-OriginatorOrg: hyperstone.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: f5aa04b6-d9d8-4aef-1841-08d90a0ec934
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Apr 2021 06:28:07.0005
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 86f203eb-e878-4188-b297-34c118c18b11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: M1+MKhcQTmBhmfJtsPtUa7rTI70zbDMOGSlk83XFua3Y7g5oDmrnvNqinTQVgpCDwAQfRjcGpQ19sr6/PTqnEw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB3351
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CDE5A68 smtp.mailfrom=cloehle@hyperstone.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: hyperstone.com
+Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 27 Apr 2021 12:18:32 -0300
-Ezequiel Garcia <ezequiel@collabora.com> escreveu:
+Oh okay, I was not aware of this issue
+and have not encountered it yet.
+But wouldn't it be more appropriate
+to get u-boot to power cycle the host controller at boot?
 
-> On Tue, 2021-04-27 at 16:08 +0100, Robin Murphy wrote:
-> > On 2021-04-27 11:27, Mauro Carvalho Chehab wrote: =20
-> > > Despite other *_get()/*_put() functions, where usage count is
-> > > incremented only if not errors, the pm_runtime_get_sync() has
-> > > a different behavior, incrementing the counter *even* on
-> > > errors.
-> > >=20
-> > > That's an error prone behavior, as people often forget to
-> > > decrement the usage counter.
-> > >=20
-> > > However, the hantro driver depends on this behavior, as it
-> > > will decrement the usage_count unconditionally at the m2m
-> > > job finish time, which makes sense.
-> > >=20
-> > > So, intead of using the pm_runtime_resume_and_get() that
-> > > would decrement the counter on error, keep the current
-> > > API, but add a documentation explaining the rationale for
-> > > keep using pm_runtime_get_sync().
-> > >=20
-> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > > ---
-> > > =C2=A0 drivers/staging/media/hantro/hantro_drv.c | 7 +++++++
-> > > =C2=A0 1 file changed, 7 insertions(+)
-> > >=20
-> > > diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/stag=
-ing/media/hantro/hantro_drv.c
-> > > index 595e82a82728..96f940c1c85c 100644
-> > > --- a/drivers/staging/media/hantro/hantro_drv.c
-> > > +++ b/drivers/staging/media/hantro/hantro_drv.c
-> > > @@ -155,6 +155,13 @@ static void device_run(void *priv)
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ret =3D clk_bulk_enab=
-le(ctx->dev->variant->num_clocks, ctx->dev->clocks);
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (ret)
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0goto err_cancel_job; =20
-> >=20
-> > ..except this can also cause the same pm_runtime_put_autosuspend() call=
-=20
-> > without even reaching the "matching" get below, so rather than some kin=
-d=20
-> > of cleverness it seems more like it's just broken :/
-> >  =20
->=20
-> Indeed, I was trying to find time to cook a quick patch, but kept
-> getting preempted.
->=20
-> Feel free to submit a fix for this, otherwise, I'll try to find
-> time later this week.
 
-What about doing this instead:
+From: Soeren Moch <smoch@web.de>
+Sent: Tuesday, April 27, 2021 5:07 PM
+To: Christian Löhle <CLoehle@hyperstone.com>; robh+dt@kernel.org <robh+dt@kernel.org>; heiko@sntech.de <heiko@sntech.de>; jbx6244@gmail.com <jbx6244@gmail.com>; devicetree@vger.kernel.org <devicetree@vger.kernel.org>; linux-arm-kernel@lists.infradead.org <linux-arm-kernel@lists.infradead.org>; linux-rockchip@lists.infradead.org <linux-rockchip@lists.infradead.org>; linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: dts: rockchip: include uhs support for rockpro64 
+ 
+On 27.04.21 08:20, Christian L?hle wrote:
+> The DesignWare Host Controller has full UHS-I support, so use it.
+Enabling this UHS support makes 'reboot' hang when booting the RockPro64
+from SD card. It would work when booting from eMMC, or with a modified
+ATF which does a power cycle on reboot.
 
-diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/me=
-dia/hantro/hantro_drv.c
-index 595e82a82728..67de6b15236d 100644
---- a/drivers/staging/media/hantro/hantro_drv.c
-+++ b/drivers/staging/media/hantro/hantro_drv.c
-@@ -56,14 +56,12 @@ dma_addr_t hantro_get_ref(struct hantro_ctx *ctx, u64 t=
-s)
- 	return hantro_get_dec_buf_addr(ctx, buf);
- }
-=20
--static void hantro_job_finish(struct hantro_dev *vpu,
--			      struct hantro_ctx *ctx,
--			      enum vb2_buffer_state result)
-+static void hantro_job_finish_no_pm(struct hantro_dev *vpu,
-+				    struct hantro_ctx *ctx,
-+				    enum vb2_buffer_state result)
- {
- 	struct vb2_v4l2_buffer *src, *dst;
-=20
--	pm_runtime_mark_last_busy(vpu->dev);
--	pm_runtime_put_autosuspend(vpu->dev);
- 	clk_bulk_disable(vpu->variant->num_clocks, vpu->clocks);
-=20
- 	src =3D v4l2_m2m_next_src_buf(ctx->fh.m2m_ctx);
-@@ -81,6 +79,16 @@ static void hantro_job_finish(struct hantro_dev *vpu,
- 					 result);
- }
-=20
-+static void hantro_job_finish(struct hantro_dev *vpu,
-+			      struct hantro_ctx *ctx,
-+			      enum vb2_buffer_state result)
-+{
-+	pm_runtime_mark_last_busy(vpu->dev);
-+	pm_runtime_put_autosuspend(vpu->dev);
-+
-+	hantro_job_finish_no_pm(vpu, ctx, result);
-+}
-+
- void hantro_irq_done(struct hantro_dev *vpu,
- 		     enum vb2_buffer_state result)
- {
-@@ -152,12 +160,13 @@ static void device_run(void *priv)
- 	src =3D hantro_get_src_buf(ctx);
- 	dst =3D hantro_get_dst_buf(ctx);
-=20
-+	ret =3D pm_runtime_resume_and_get(ctx->dev->dev);
-+	if (ret < 0)
-+		goto err_cancel_job;
-+
- 	ret =3D clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks);
- 	if (ret)
- 		goto err_cancel_job;
--	ret =3D pm_runtime_get_sync(ctx->dev->dev);
--	if (ret < 0)
--		goto err_cancel_job;
-=20
- 	v4l2_m2m_buf_copy_metadata(src, dst, true);
-=20
-@@ -165,7 +174,7 @@ static void device_run(void *priv)
- 	return;
-=20
- err_cancel_job:
--	hantro_job_finish(ctx->dev, ctx, VB2_BUF_STATE_ERROR);
-+	hantro_job_finish_no_pm(ctx->dev, ctx, VB2_BUF_STATE_ERROR);
- }
-=20
- static struct v4l2_m2m_ops vpu_m2m_ops =3D {
+But for general use it is not save to enable UHS support, or did I miss
+some recent changes?
 
-Thanks,
-Mauro
+Regards,
+Soeren
+>
+> Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
+> ---
+>  arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+> index 6bff8db7d33e..d22a489ec214 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+> @@ -722,6 +722,7 @@ &sdmmc {
+>        max-frequency = <150000000>;
+>        pinctrl-names = "default";
+>        pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_bus4>;
+> +     sd-uhs-sdr104;
+>        vmmc-supply = <&vcc3v0_sd>;
+>        vqmmc-supply = <&vcc_sdio>;
+>        status = "okay";
+
+Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
+Managing Directors: Dr. Jan Peter Berns.
+Commercial register of local courts: Freiburg HRB381782
+
