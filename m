@@ -2,143 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 838A536DD6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8CC436DD77
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241271AbhD1QsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 12:48:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36776 "EHLO
+        id S241223AbhD1QvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 12:51:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241210AbhD1QsS (ORCPT
+        with ESMTP id S240643AbhD1QvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 12:48:18 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3229BC0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:47:33 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id q136so43248110qka.7
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:47:33 -0700 (PDT)
+        Wed, 28 Apr 2021 12:51:06 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB504C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:50:19 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id z13so19308332lft.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:50:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=d5gcaLFkHTsHl3fSpK+mJvUIAigQB4OGxVY2NlUdHS4=;
-        b=lhlZvSJJsG9coISuaIljcJxg7ev6vBymOQm+7m1cfIRbaclhHHNe5Xsiy7TU7mtLAp
-         tW/EVQK+AWFdZ3fp9xF/i9t9OIV8pdGSqY4vdf04yp0O7L1Eq6sMAsNzDlfJVz6EQuwu
-         1ED2eQ8twnk4oJZuYdgJMyHRSBQFDUcY+SEZB2/vzN6wMzWBVymqA3MXJZTnvj+/fRTQ
-         d8sMzExvkZgLB2tYG/ObJTrvdo0BwXjcsOcARP5fcGuEZHztKPX2YvLd6D4T7WoZvCTi
-         FJmuDTwHwfE1tyPWk5d/9vNf3AaArOu/QZumDCCMs3ZutQ610xI998Lff5qzkZ3ET/4w
-         iH2Q==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0uZJAIRFioTiHNk4LTl3GPgwLpvR/tqMtufSg3nWhNk=;
+        b=MkEAqmIhebjBuyB/bFWJkeNmQq6+31Os4ltso3CHWcE/z6HMUwlD9kGKr75X1dcJZN
+         nhAkq4TFetgPc3bclHi1B1uRcqtiTIb2JBFDflUDC+XnR14QbDiaFEnR1UXNn7Agvs3p
+         CZs19Op5jQnv+sJsmNTa3kkHt1Kq8UyRB4q18=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=d5gcaLFkHTsHl3fSpK+mJvUIAigQB4OGxVY2NlUdHS4=;
-        b=hsq8ytE8w1COQqC6GxQrcYz5SJrEkvRILTPUOp8lKMvezIDDc9mGMmZSXH4wrXKDH1
-         MwRJYvtUAs/o7fO3KflS2J3uR5P9Cm9iOBSHUkndjzkogRoi+f/CYLHAeiJkSmHK1Iw1
-         +4E5uAgeqGVNHbM/GcJ+xHwnKepF80PCrLc9Gdl16imuxv5qxqWqVgLO4MF7c10nWXxJ
-         rm/JoNEhu6yQ8eW84TQXDXSGONbfBlBH8eZ4a8S0/xtZZRWy72Asl7o9JOt+24Ju0Ix8
-         RFUFbvrGbS9001lSBMw90cVuuZ0eVvwK8e+52OB+XFNcsNJMoQ0AwcufnUvQJimGDXFT
-         nBig==
-X-Gm-Message-State: AOAM533T2ylu4gmmJe5d1D5cdqiYG714cpJcmRmRjcoHZmXZDHliAURe
-        /Wvc9Vtj5SlNgk15pk4MwOKZ+SBL3cLxpl9b
-X-Google-Smtp-Source: ABdhPJwrZ/ARz760EsoZkEI7kPgF2Hv5R9DjyVFzafhWupMWPoCp5/6i7qZtp8Tys4gJ+GayIAslKw==
-X-Received: by 2002:a05:620a:49c:: with SMTP id 28mr30266953qkr.39.1619628452055;
-        Wed, 28 Apr 2021 09:47:32 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id d2sm397426qtg.85.2021.04.28.09.47.31
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0uZJAIRFioTiHNk4LTl3GPgwLpvR/tqMtufSg3nWhNk=;
+        b=W4Y1eHPUGQK3oLY5M7b+GpxxrCXlO/ehycXHAp6orhLTSIRGGvyq+tVviCsQsX/uGf
+         FwQjC2VGSUD2jius3/OKNI/lcRWuXt2c1svxauPboGEwz9pf6fHHB2yqrYJPpG7eHGnx
+         rvywYt0JcWbF54yxUCGJNmvnqIsblv+Xl8zpNc/orpAG32tmvVQ63siEkNzTlT7RI36B
+         GrjWnUXoJsHd9wnpWb3mHfdLHx4FkU+XIMmP2gXBMpJHkvbRiFz7dQn8qnhn0gkQF8yF
+         vH2Ut5o6Jrbek1d364Ak7S/2rkOnWmqDbfW/7CbxeeGASNSsLb7VYCswriCkwyT4UerA
+         SVhg==
+X-Gm-Message-State: AOAM530+fC/qzwaZ88EsBhGMJfn88JQ4qBzTmXc3lOR2RiG/C+i9rtvA
+        5Bm1R1hudlud5eDENGo+6jOUAZwbKj0xIdbM
+X-Google-Smtp-Source: ABdhPJwpC8Lt/74OFGYL6WVy560yyoXh1AZJvfBEBt6JwafgKihvAYFx8Tv6kCyXlld5amds8Bwtrw==
+X-Received: by 2002:a05:6512:b90:: with SMTP id b16mr22098890lfv.37.1619628618141;
+        Wed, 28 Apr 2021 09:50:18 -0700 (PDT)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id m28sm88188lfq.180.2021.04.28.09.50.17
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Apr 2021 09:47:31 -0700 (PDT)
-Subject: Re: [thermal-next PATCH 2/2] thermal: qcom: tsens: simplify debugfs
- init function
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210419012930.7727-1-ansuelsmth@gmail.com>
- <20210419012930.7727-2-ansuelsmth@gmail.com>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <8e679407-07e7-244a-48fa-0d4d451d744d@linaro.org>
-Date:   Wed, 28 Apr 2021 12:47:30 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 28 Apr 2021 09:50:17 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id 124so19275152lff.5
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:50:17 -0700 (PDT)
+X-Received: by 2002:ac2:5f92:: with SMTP id r18mr7706166lfe.253.1619628617003;
+ Wed, 28 Apr 2021 09:50:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210419012930.7727-2-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210427025805.GD3122264@magnolia> <CAHk-=wj6XUGJCgsr+hx3rz=4KvBP-kspn3dqG5v-cKMzzMktUw@mail.gmail.com>
+ <20210427195727.GA9661@lst.de> <CAHk-=wjrpinf=8gAjxyPoXT0jbK6-U3Urawiykh-zpxeo47Vhg@mail.gmail.com>
+ <20210428061706.GC5084@lst.de> <CAHk-=whWnFu4wztnOtySjFVYXmBR4Mb2wxrp6OayZqnpKeQw0g@mail.gmail.com>
+ <20210428064110.GA5883@lst.de> <CAHk-=wjeUhrznxM95ni4z+ynMqhgKGsJUDU8g0vrDLc+fDtYWg@mail.gmail.com>
+ <1de23de2-12a9-2b13-3b86-9fe4102fdc0c@rasmusvillemoes.dk>
+In-Reply-To: <1de23de2-12a9-2b13-3b86-9fe4102fdc0c@rasmusvillemoes.dk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 28 Apr 2021 09:50:01 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wimsMqGdzik187YWLb-ru+iktb4MYbMQG1rnZ81dXYFVg@mail.gmail.com>
+Message-ID: <CAHk-=wimsMqGdzik187YWLb-ru+iktb4MYbMQG1rnZ81dXYFVg@mail.gmail.com>
+Subject: Re: [GIT PULL] iomap: new code for 5.13-rc1
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jia He <justin.he@arm.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Eric Sandeen <sandeen@sandeen.net>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+[ Added Andy, who replied to the separate thread where Jia already
+posted the patch ]
 
-Please include a cover letter next time describing the patch series.
+On Wed, Apr 28, 2021 at 12:38 AM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
+>
+> So the patch makes sense to me. If somebody says '%pD5', it would get
+> capped at 4 instead of being forced down to 1. But note that while that
+> grep only produces ~36 hits, it also affects %pd, of which there are
+> ~200 without a 2-4 following (including some vsprintf test cases that
+> would break). So I think one would first have to explicitly support '1',
+> switch over some users by adding that 1 in their format string
+> (test_vsprintf in particular), then flip the default for 'no digit
+> following %p[dD]'.
 
-On 4/18/21 9:29 PM, Ansuel Smith wrote:
-> Simplify debugfs init function.
-> - Drop useless variables
-> - Add check for existing dev directory.
-> - Fix wrong version in dbg_version_show (with version 0.0.0, 0.1.0 was
->    incorrectly reported)
-> 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> ---
->   drivers/thermal/qcom/tsens.c | 16 +++++++---------
->   1 file changed, 7 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
-> index f9d50a67e..b086d1496 100644
-> --- a/drivers/thermal/qcom/tsens.c
-> +++ b/drivers/thermal/qcom/tsens.c
-> @@ -692,7 +692,7 @@ static int dbg_version_show(struct seq_file *s, void *data)
->   			return ret;
->   		seq_printf(s, "%d.%d.%d\n", maj_ver, min_ver, step_ver);
->   	} else {
-> -		seq_puts(s, "0.1.0\n");
-> +		seq_printf(s, "0.%d.0\n", priv->feat->ver_major);
->   	}
->   
->   	return 0;
-> @@ -704,21 +704,19 @@ DEFINE_SHOW_ATTRIBUTE(dbg_sensors);
->   static void tsens_debug_init(struct platform_device *pdev)
->   {
->   	struct tsens_priv *priv = platform_get_drvdata(pdev);
-> -	struct dentry *root, *file;
->   
-> -	root = debugfs_lookup("tsens", NULL);
-> -	if (!root)
-> +	priv->debug_root = debugfs_lookup("tsens", NULL);
-> +	if (!priv->debug_root)
->   		priv->debug_root = debugfs_create_dir("tsens", NULL);
-> -	else
-> -		priv->debug_root = root;
->   
-> -	file = debugfs_lookup("version", priv->debug_root);
-> -	if (!file)
-> +	if (!debugfs_lookup("version", priv->debug_root))
->   		debugfs_create_file("version", 0444, priv->debug_root,
->   				    pdev, &dbg_version_fops);
->   
->   	/* A directory for each instance of the TSENS IP */
-> -	priv->debug = debugfs_create_dir(dev_name(&pdev->dev), priv->debug_root);
+Yeah, and the "show one name" actually makes sense for "%pd", because
+that's about the *dentry*.
 
-Unconditionally creating priv->debug here is correct. The below if 
-(!priv->debug) will never be true because as per your patch 1, we call 
-tsens_debug_init once per instance of tsens.
+A dentry has a parent, yes, but at the same time, a dentry really does
+inherently have "one name" (and given just the dentry pointers, you
+can't show mount-related parenthood, so in many ways the "show just
+one name" makes sense for "%pd" in ways it doesn't necessarily for
+"%pD"). But while a dentry arguably has that "one primary component",
+a _file_ is certainly not exclusively about that last component.
 
-> +	priv->debug = debugfs_lookup(dev_name(&pdev->dev), priv->debug_root);
-> +	if (!priv->debug)
-> +		priv->debug = debugfs_create_dir(dev_name(&pdev->dev), priv->debug_root);
->   	debugfs_create_file("sensors", 0444, priv->debug, pdev, &dbg_sensors_fops);
->   }
->   #else
-> 
+So you're right - my "how about something like this" patch is too
+simplistic. The default number of components to show should be about
+whether it's %pd or %pD.
 
--- 
-Warm Regards
-Thara
+That also does explain the arguably odd %pD defaults: %pd came first,
+and then %pD came afterwards.
+
+              Linus
