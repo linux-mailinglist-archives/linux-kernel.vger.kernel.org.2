@@ -2,108 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347EA36D009
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 02:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F76736D012
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 02:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235889AbhD1Arv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 20:47:51 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:45847 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230368AbhD1Aru (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 20:47:50 -0400
-Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 13S0klxe959418
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Tue, 27 Apr 2021 17:46:50 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 13S0klxe959418
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021032801; t=1619570813;
-        bh=dmXauy4p/ZbgFoR9+NLZaIKYk51ve+/9HGzgV4ivmlo=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=H1c9xSxVl6ReDt1lyolUEzmpdZcBKTlHspe6Xu3xLQtDTNgN0FGOXYTpVobb1DbFt
-         NmXpyUu/n+m5XxTu2w61n8l5p3A/r7trSh56C4VJJHEOX9D4+pqvPPd1wej8TyWjiN
-         CUnGRcXxsPjjU34RhitKOYldu+yOowDuap/vzvhK4kYCxy5Ta+GwvSF/HBS2TBGpqm
-         uNi6YwFXJaRTk/HJ3XEoJAASqkLMfBQRdhMsvzdLw97LmW8lZiVLF/lmK8l7WFLtoN
-         EuG53rdhc8JwC+PuAMq0TECMmXWNHT3thsZ5lGbgI0UkSPI5CppDRRQ8d3t3DbMyuY
-         OGFk2IYygp1Rg==
-Subject: Re: pt_regs->ax == -ENOSYS
-From:   "H. Peter Anvin" <hpa@zytor.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>
-References: <f0240e15-223a-7600-4494-7a0a75155bdb@zytor.com>
- <F9F5E9D4-C1EE-455A-A6B1-4DF9D349BBAA@amacapital.net>
- <06a5e088-b0e6-c65e-73e6-edc740aa4256@zytor.com>
- <CALCETrW7Vu5ZU-Lv4RRG5DSGxMBJmDMqpvP7kqO16DwajproBQ@mail.gmail.com>
- <3626eea3-524e-4dbd-78dd-9ade5a346a08@zytor.com>
- <CALCETrWzL=jgnWd+6YuBo02GG8vTvsG22sXGaUQCc37vwQ6HdA@mail.gmail.com>
- <3a502aae-4124-5cb2-1dac-bc18b8158fbe@zytor.com>
-Message-ID: <87bda691-9201-06cd-9850-c92a05a399c7@zytor.com>
-Date:   Tue, 27 Apr 2021 17:46:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S236224AbhD1Awp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 20:52:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230368AbhD1Awo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 20:52:44 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E080CC061574;
+        Tue, 27 Apr 2021 17:51:58 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 4so36568527lfp.11;
+        Tue, 27 Apr 2021 17:51:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UBG7XS9thzjZcMvWkPqDMf/eiNI69sVC30py45fCdXE=;
+        b=JM1K2BEPc84C9uenaUaHtI3qRtkTe4U0B85lbrMxvrg1MMEIFDxXtLzsjICYtqvYKE
+         3ooPpj7sIHGwNfLHWav6hEg0WCbBuvFwHcoa8mlh7aqoXCpZqqy7vnmST95GUpoIg+eq
+         PvrSdyjHx0tClpZgo12DU5m/PigWYPEAHIvfAXFQmT4rPBgPo6aGBpC29loG6ka+ViTO
+         D/8cq1qJM/hdC78dYWR/KmqnmzBbHngIySIa7jGI5g7OCrkLOHJPnkGpDBE+jZr0Hrur
+         WAwIOdEsLYCT2p+pEAGgABfLYo45rVasO8+dmvivw6QQJ3Yw90TWJ2B4jtpucbx8VdUt
+         M1sA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UBG7XS9thzjZcMvWkPqDMf/eiNI69sVC30py45fCdXE=;
+        b=CIQRaimee0F80CNixhgfQ+wVum/zmyuYHaN5sheQY9SkAr7DXn0TyOxP2BTnaRwOdA
+         7xrTqm/RyijQCssSzCrW1IWEHXFefABTK2oevXDInd86G26KL4PruQC3Sbx3Ne01ntRl
+         wxphQ6emw4wu/W3Tyrshc0pgeazXMNKdiAwlytI5OMYXCxOqXorgiWW8d1wFLP/EteAa
+         3i7YdBOhyGNk6E7HFQ8htfRZXGJ8s3SnkCrrTVk/GBIjdXcfvkYhtqGxHcXbrtLP46Gb
+         HEuVA37IkWfQ5LLxmOcU1NwjQHohTwxltvdoqDhqeX3TshmLEyYx+CcOe00ryPP37BCR
+         MdZA==
+X-Gm-Message-State: AOAM531bAOsWKJ1hiyTWSmKa98P4cN0Ydv+oA7V+dXQr7UU369bq4mA8
+        Q7OR8C57l/tbgKkpP5ECp8LGCOS4kg23sqNSBejHcJ8V
+X-Google-Smtp-Source: ABdhPJxXcTmwg2f3Q0Foh7P6DoA1RfUjRqMgNdjwOixjjSncCf4Lq2Td6TCdUTqYFR0ykKs+uPdQYndnoyQ3zFu3ZEM=
+X-Received: by 2002:a05:6512:3f93:: with SMTP id x19mr18568740lfa.182.1619571117078;
+ Tue, 27 Apr 2021 17:51:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3a502aae-4124-5cb2-1dac-bc18b8158fbe@zytor.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210427174313.860948-1-revest@chromium.org> <20210427174313.860948-3-revest@chromium.org>
+ <CAADnVQLQmt0-D_e=boXoK=FLRoXv9xzkCwM24zpbZERrEexLCw@mail.gmail.com> <CABRcYm+eWh5=eM9mgOsCU6-TACi-y5kviCf9Kbqxfzvgq9u5BA@mail.gmail.com>
+In-Reply-To: <CABRcYm+eWh5=eM9mgOsCU6-TACi-y5kviCf9Kbqxfzvgq9u5BA@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 27 Apr 2021 17:51:45 -0700
+Message-ID: <CAADnVQK=K2hcrZ7=d=voQ=gxdmC_oqSWodLpck54UncSSgsLuQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] bpf: Implement formatted output helpers
+ with bstr_printf
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/27/21 5:20 PM, H. Peter Anvin wrote:
-> 
-> We *used* to truncate the system call number; that was unsigned. It 
-> causes massive headache to ptrace if a 32-bit ptrace wants to write -1, 
-> which is a bit hacky.
-> 
-> I would personally like to see orig_ax to be the register passed in and 
-> for the truncation to happen by syscall_get_nr().
-> 
-> I also note that kernel/seccomp.c and the tracing infrastructure all 
-> expect a signed int as the system call number. Yes, orig_ax is a 64-bit 
-> field, but so are the other register fields which doesn't necessarily 
-> directly reflect the value of an argument -- like, say, %rdi in the case 
-> of sys_write - it is an int argument so it gets sign extended; this is 
-> *not* reflected in ptrace.
-> 
->      -hpa
+On Tue, Apr 27, 2021 at 5:20 PM Florent Revest <revest@chromium.org> wrote:
+>
+> On Wed, Apr 28, 2021 at 1:46 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Tue, Apr 27, 2021 at 10:43 AM Florent Revest <revest@chromium.org> wrote:
+> > > +                       if (fmt[i + 1] == 'B') {
+> > > +                               if (tmp_buf)  {
+> > > +                                       err = snprintf(tmp_buf,
+> > > +                                                      (tmp_buf_end - tmp_buf),
+> > > +                                                      "%pB",
+> > ...
+> > > +                       if ((tmp_buf_end - tmp_buf) < sizeof_cur_ip) {
+> >
+> > I removed a few redundant () like above
+>
+> Oh, sorry about that.
+>
+> > and applied.
+>
+> Nice! :)
+>
+> > >                 if (fmt[i] == 'l') {
+> > > -                       cur_mod = BPF_PRINTF_LONG;
+> > > +                       sizeof_cur_arg = sizeof(long);
+> > >                         i++;
+> > >                 }
+> > >                 if (fmt[i] == 'l') {
+> > > -                       cur_mod = BPF_PRINTF_LONG_LONG;
+> > > +                       sizeof_cur_arg = sizeof(long long);
+> > >                         i++;
+> > >                 }
+> >
+> > This bit got me thinking.
+> > I understand that this is how bpf_trace_printk behaved
+> > and the sprintf continued the tradition, but I think it will
+> > surprise bpf users.
+> > The bpf progs are always 64-bit. The sizeof(long) == 8
+> > inside any bpf program. So printf("%ld") matches that long.
+>
+> Yes, this also surprised me.
+>
+> > The clang could even do type checking to make sure the prog
+> > is passing the right type into printf() if we add
+> > __attribute__ ((format (printf))) to bpf_helper_defs.h
+> > But this sprintf() implementation will trim the value to 32-bit
+> > to satisfy 'fmt' string on 32-bit archs.
+> > So bpf program behavior would be different on 32 and 64-bit archs.
+> > I think that would be confusing, since the rest of bpf prog is
+> > portable. The progs work the same way on all archs
+> > (except endianess, of course).
+> > I'm not sure how to fix it though.
+> > The sprintf cannot just pass 64-bit unconditionally, since
+> > bstr_printf on 32-bit archs will process %ld incorrectly.
+> > The verifier could replace %ld with %Ld.
+> > The fmt string is a read only string for bpf_snprintf,
+> > but for bpf_trace_printk it's not and messing with it at run-time
+> > is not good. Copying the fmt string is not great either.
+> > Messing with internals of bstr_printf is ugly too.
+>
+> Indeed, none of these solutions are satisfying.
 
-We could even do this, to make it perhaps harder to mess up:
+Maybe Daniel has other ideas?
 
-diff --git a/arch/x86/include/asm/ptrace.h b/arch/x86/include/asm/ptrace.h
-index 409f661481e1..4e8e5c2e35f4 100644
---- a/arch/x86/include/asm/ptrace.h
-+++ b/arch/x86/include/asm/ptrace.h
-@@ -41,7 +41,10 @@ struct pt_regs {
-  	unsigned short gs;
-  	unsigned short __gsh;
-  	/* On interrupt, this is the error code. */
--	unsigned long orig_ax;
-+	union {
-+		unsigned long orig_ax;
-+		int syscall_nr;
-+	};
-  	unsigned long ip;
-  	unsigned short cs;
-  	unsigned short __csh;
-@@ -78,7 +81,10 @@ struct pt_regs {
-   * On syscall entry, this is syscall#. On CPU exception, this is error 
-code.
-   * On hw interrupt, it's IRQ number:
-   */
--	unsigned long orig_ax;
-+	union {
-+		unsigned long orig_ax;
-+		int syscall_nr;
-+	};
-  /* Return frame for iretq */
-  	unsigned long ip;
-  	unsigned long cs;
+> > Maybe we just have to live with this quirk ?
+>
+> If we were starting from scratch, maybe just banning %ld could have
+> been an option, but now that bpf_trace_printk has been behaving like
+> this for a while, I think it might be best to just keep the behavior
+> as it is.
+>
+> > Just add a doc to uapi/bpf.h to discourage %ld and be done?
+>
+> More doc is always good. Something like "Note: %ld behaves differently
+> depending on the host architecture, it is recommended to avoid it and
+> use %d or %lld instead" in the helper description of the three
+> helpers? If you don't have the time to do it today, I can send a patch
+> tomorrow.
+
+bpf_trace_printk was like this for a long time, so there is no rush.
+Pls wait until everything comes back to bpf tree and send a patch against it.
+bpf_trace_printk comment in uapi/bpf.h is outdated too. Would be good
+to document the latest behavior for them all.
