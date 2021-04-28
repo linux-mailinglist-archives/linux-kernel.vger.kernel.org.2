@@ -2,140 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB5736D356
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 09:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DCFE36D359
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 09:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236855AbhD1HlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 03:41:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236826AbhD1HlS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 03:41:18 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F2F3C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 00:40:31 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id p6-20020a05600c3586b029014131bbe5c7so5266905wmq.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 00:40:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=r18HrmYIRACDIWPPxOL9xtuGamJUMKpi78NPG5ZEmUs=;
-        b=CYUDuxtqwT3OQp1twKAloFfczV1Y/bTIpgT4OTkWGwzSQ50vmGPlSL7+UXiUdqcxg8
-         SD04UZ91P2iUr2Z7JmMhgx8Ka6GP7SVW2VvXoIIhx/a7eGVesp6Ji4pZaHNLZZqbsZ/B
-         dLdAfsKuwhmhTZrx1iZ8zLA7yBCyOyA+8PRYlzXg9V1ZWKXj9owZcBiA7/9C9cohrC76
-         wZt3dPyKCI35OH4GV8ClJJ3i9KpnxCB7VgvgpVme7IdxS3OsKYHuUfsSOAoq1pg7VLh+
-         ViLaBvfIhnNUQa/kX50yynGQ8xqzyjeoqt72Borp3Yd95sAaDAZ4Owc/yZj+W0TF3SZL
-         Kx5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=r18HrmYIRACDIWPPxOL9xtuGamJUMKpi78NPG5ZEmUs=;
-        b=auSyFKrQmVj6/kjrrABftO6E9IYG+oxKPb08RnUdw4Z020lr6AkWoIzoMEUkGrfRW8
-         4QznfXSiDZfEdTnUmePqjHeWvGGX4pSr8qwIfGq7e/tIeKiqM5n8v72viS/ja1wcfQhb
-         IRh9qmD8GvxOCghOuRPy620YDEW4UTVPTOcU8Erdhq71lAJms3CDdaw5vxrCaioxcKE2
-         OGE3QyjjYuRZXU9no3L/zdtl15OOwjqON3ijNbndyiXf7tF6kGQppib0IgkO99i2o3C9
-         7CFg+HD83nChqiTJ4XZ4uCo1Vr+hB5EsYrpbM+QXUM2Wa/uH/CzodXCLdGkbRSiGBmw8
-         krVw==
-X-Gm-Message-State: AOAM531q2C7UeB5xcVFub2cIDWAg3+r7xOcmLeYHtBoXbxdBdDtwJ4YN
-        XZ12flWrXWVgq1wTeLJTQngP6Buzrc0=
-X-Google-Smtp-Source: ABdhPJwEzdDyoysipgTHWktEvHv5ADpAzs9Xl53U2PueWD2zshjX81Hkzf1gRaZccMMsbuy9EywUgQ==
-X-Received: by 2002:a1c:dc41:: with SMTP id t62mr2860557wmg.14.1619595629644;
-        Wed, 28 Apr 2021 00:40:29 -0700 (PDT)
-Received: from gmail.com (2E8BA22B.catv.pool.telekom.hu. [46.139.162.43])
-        by smtp.gmail.com with ESMTPSA id 3sm2745992wms.30.2021.04.28.00.40.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 00:40:29 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Wed, 28 Apr 2021 09:40:27 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] objtool updates for v5.13
-Message-ID: <20210428074027.GA206401@gmail.com>
+        id S236950AbhD1Hmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 03:42:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47288 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236816AbhD1Hmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 03:42:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2E67613F8;
+        Wed, 28 Apr 2021 07:41:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619595718;
+        bh=k2BZ9xZikA1qiwskEWEetLqBAKCp0Z9oJXFgxTUYmtw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Vi8Q41F1HdlBeYMrlKgVG2j609ljUqp7dOT+lug12/AGgDYNLVVa5LAIGQq4UN6qQ
+         gypWfjQczW66W9iirusrFuTv6SQ6MmRRqf6sDs/KIVveWLpKorA4BtJr8CdFlxScQL
+         mb3MszHz9ctWoPXXxLTqUua0QBFkJMNN/XgyRkkosY3K5dg1lpuSO5DrPYioom0LFv
+         9AQbNagmHL488T5TYbi2UXalXNcC+BrwSP2Frms+Q910aJoY8tlJ0pdiV6ZvevycU1
+         OdLILcanhaXgJzGGyu+huT70QFJgbL3T3ZsjtkvaVj/egYr23D+HilhkbOxiKznIL0
+         qz+UtpG9PSqAQ==
+Date:   Wed, 28 Apr 2021 09:41:52 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH v3 13/79] media: s5p: fix pm_runtime_get_sync() usage
+ count
+Message-ID: <20210428094152.0fbf3f15@coco.lan>
+In-Reply-To: <ae9e751a-be29-4ff8-b566-73c4f258d5b8@samsung.com>
+References: <cover.1619519080.git.mchehab+huawei@kernel.org>
+        <CGME20210427102755eucas1p2a4dd2a52b8bebd76c6a8fac9fa17c284@eucas1p2.samsung.com>
+        <fd173b0ac00a31630bc60edaf47c2231970a87ed.1619519080.git.mchehab+huawei@kernel.org>
+        <ae9e751a-be29-4ff8-b566-73c4f258d5b8@samsung.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Em Tue, 27 Apr 2021 12:51:45 +0200
+Sylwester Nawrocki <s.nawrocki@samsung.com> escreveu:
 
-Please pull the latest objtool/core git tree from:
+> On 27.04.2021 12:26, Mauro Carvalho Chehab wrote:
+> > The pm_runtime_get_sync() internally increments the
+> > dev->power.usage_count without decrementing it, even on errors.
+> > Replace it by the new pm_runtime_resume_and_get(), introduced by:
+> > commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> > in order to properly decrement the usage counter and avoid memory
+> > leaks.
+> > 
+> > While here, check if the PM runtime error was caught at
+> > s5p_cec_adap_enable().
+> > 
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  drivers/media/cec/platform/s5p/s5p_cec.c | 5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/media/cec/platform/s5p/s5p_cec.c b/drivers/media/cec/platform/s5p/s5p_cec.c
+> > index 2a3e7ffefe0a..2250c1cbc64e 100644
+> > --- a/drivers/media/cec/platform/s5p/s5p_cec.c
+> > +++ b/drivers/media/cec/platform/s5p/s5p_cec.c
+> > @@ -35,10 +35,13 @@ MODULE_PARM_DESC(debug, "debug level (0-2)");
+> >  
+> >  static int s5p_cec_adap_enable(struct cec_adapter *adap, bool enable)
+> >  {
+> > +	int ret;
+> >  	struct s5p_cec_dev *cec = cec_get_drvdata(adap);
+> >  
+> >  	if (enable) {
+> > -		pm_runtime_get_sync(cec->dev);
+> > +		ret = pm_runtime_resume_and_get(cec->dev);
+> > +		if (ret < 0)
+> > +			return ret;
+> >  
+> >  		s5p_cec_reset(cec);  
+> 
+> Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> 
+> Not related to this patch, it seems there is bug in the second
+> 'if (enable)' branch, where pm_runtime_disable() is used
+> instead of pm_runtime_put(_sync)().
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git objtool-core-2021-04-28
+Yeah. I'll add an additional patch before this series in order to
+fix the bug. Thanks!
 
-   # HEAD: 7d3d10e0e85fb7c23a86a70f795b1eabd2bc030b x86/crypto: Enable objtool in crypto code
-
-Objtool updates in this cycle were:
-
- - Standardize the crypto asm code so that it looks like compiler-generated
-   code to objtool - so that it can understand it. This enables unwinding
-   from crypto asm code - and also fixes the last known remaining objtool
-   warnings for LTO and more.
-
- - x86 decoder fixes: clean up and fix the decoder, and also extend it a bit
-
- - Misc fixes and cleanups
-
- Thanks,
-
-	Ingo
-
------------------->
-Josh Poimboeuf (13):
-      objtool: Support asm jump tables
-      x86/crypto/aesni-intel_avx: Remove unused macros
-      x86/crypto/aesni-intel_avx: Fix register usage comments
-      x86/crypto/aesni-intel_avx: Standardize stack alignment prologue
-      x86/crypto/camellia-aesni-avx2: Unconditionally allocate stack buffer
-      x86/crypto/crc32c-pcl-intel: Standardize jump table
-      x86/crypto/sha_ni: Standardize stack alignment prologue
-      x86/crypto/sha1_avx2: Standardize stack alignment prologue
-      x86/crypto/sha256-avx2: Standardize stack alignment prologue
-      x86/crypto/sha512-avx: Standardize stack alignment prologue
-      x86/crypto/sha512-avx2: Standardize stack alignment prologue
-      x86/crypto/sha512-ssse3: Standardize stack alignment prologue
-      x86/crypto: Enable objtool in crypto code
-
-Peter Zijlstra (11):
-      objtool: Allow UNWIND_HINT to suppress dodgy stack modifications
-      objtool,x86: Renumber CFI_reg
-      objtool,x86: Rewrite LEA decode
-      objtool,x86: Rewrite LEAVE
-      objtool,x86: Simplify register decode
-      objtool,x86: Support %riz encodings
-      objtool,x86: Rewrite ADD/SUB/AND
-      objtool,x86: More ModRM sugar
-      objtool: Add --backup
-      objtool: Collate parse_options() users
-      objtool: Parse options from OBJTOOL_ARGS
+Regards,
+Mauro
 
 
- arch/x86/crypto/Makefile                       |   2 -
- arch/x86/crypto/aesni-intel_avx-x86_64.S       |  28 +--
- arch/x86/crypto/camellia-aesni-avx2-asm_64.S   |   5 +-
- arch/x86/crypto/crc32c-pcl-intel-asm_64.S      |   7 +-
- arch/x86/crypto/sha1_avx2_x86_64_asm.S         |   8 +-
- arch/x86/crypto/sha1_ni_asm.S                  |   8 +-
- arch/x86/crypto/sha256-avx2-asm.S              |  13 +-
- arch/x86/crypto/sha512-avx-asm.S               |  41 ++--
- arch/x86/crypto/sha512-avx2-asm.S              |  42 ++--
- arch/x86/crypto/sha512-ssse3-asm.S             |  41 ++--
- tools/objtool/arch/x86/decode.c                | 282 ++++++++++++++-----------
- tools/objtool/arch/x86/include/arch/cfi_regs.h |  12 +-
- tools/objtool/builtin-check.c                  |  43 +++-
- tools/objtool/builtin-orc.c                    |   5 +-
- tools/objtool/check.c                          |  53 +++--
- tools/objtool/include/objtool/arch.h           |   1 -
- tools/objtool/include/objtool/builtin.h        |   5 +-
- tools/objtool/objtool.c                        |  64 ++++++
- 18 files changed, 384 insertions(+), 276 deletions(-)
+
+Thanks,
+Mauro
