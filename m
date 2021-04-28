@@ -2,174 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E2E36DD09
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:31:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D81C36DD30
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240857AbhD1QcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 12:32:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32984 "EHLO
+        id S240995AbhD1Qjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 12:39:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235502AbhD1QcQ (ORCPT
+        with ESMTP id S230243AbhD1Qjb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 12:32:16 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D485C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:31:29 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id g65so5026015wmg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:31:29 -0700 (PDT)
+        Wed, 28 Apr 2021 12:39:31 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5ADC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:38:45 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id b4so27843vst.13
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:38:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=s37poLb+YU/j8PS1vBOf/p0j3PbxlMcEPm2Cc7PyPFc=;
-        b=lAYP6D/xe5gDXAPQP7KVnwObFqfRXHFY5GwBElU671lGEh2PLg8GkgZQYIEWFZED8n
-         ICkiqNuM1cYoOK846RRK+9QOjGnxHTEqsRwC4h+NRG51WOu20qb1k/cFss7HQrwFVlEa
-         C28uwYS783D4w2SrsBZulhZ6uLoOgfvyDaDy7kyhqotdjC1sCnGD2iV1K7Y/gOJxlacD
-         /IZkgCG35q3uJ961iPnjWviyWb3zd9tdyIIAwbMjBo3rUbrq3HLfGgAIFf81DpKCj4Qz
-         EZPkZGatRmZdkGoLYQHUMFZHyBQbolAsdpewylqJrn0CaDkCBd1PSoWrPazfBj7Jowe3
-         EkQg==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+bqujsD1CEh1BMsQ6Vfhu0Dtl9EKMPvmnj/WQm5NOQY=;
+        b=X5QjYOktKo0SOMzzXCGGEhJ1B+vtKaNQV8NPxuiFMVZI1s8N5Hsv83Svtsg50rgxqV
+         Wme5k2pnWmXoL95EzEKY4g5itbI+wPpjl1gJvv8E9H6g6iahugJUDWBiswRZjV0HuMRk
+         UKmaoLRN5K1bRs4417u9LHMJfv8sfU53FKwfI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=s37poLb+YU/j8PS1vBOf/p0j3PbxlMcEPm2Cc7PyPFc=;
-        b=CkSAOfb2PEdo9zoKLBOqKEUm+dn3bhXywImNfsxhvK569iBRxs9XuW9fKV6NUdjVwi
-         rqOdJz0L4ZNaq/pYDVYHo8SWNN2CmOqpC2VKljL5FdTROqE0IxL7lEElqDk+hTT7q2rt
-         YDrQ6WiISWoFTGhcJeDEe5KuS2pDRxWQQwE4j+7PpYf9WIZms5jCGtRXZRRo+j8oi0SO
-         YL7IyJ8uwOgYyrnLUAziICELGKXzHLLKup7viIdHm+YmIARSbKWaVG/ZNkq0XvDPMKlN
-         Na+0kdYCY/ZXzsIIZZ8yQY9SVflbtr0EXzQxK/8VhvDsdTMCliwActTCvjt9fqPHTXdc
-         eYrA==
-X-Gm-Message-State: AOAM531GdE4fjkq/vcIzwr/oaHPGOX7x3jkP9Fa8u3HHQX1vxgL5WuZL
-        kYuSb+swQUvQOEfbP9TPwrhvyQ==
-X-Google-Smtp-Source: ABdhPJzK3CHvftOyllCnQgS/edlWXyrWZ90fvwsLji8SZm5+vWo5D+eg38Vg7Z849JFODpMYYpMe2w==
-X-Received: by 2002:a7b:c74d:: with SMTP id w13mr5753522wmk.25.1619627487898;
-        Wed, 28 Apr 2021 09:31:27 -0700 (PDT)
-Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id c15sm380339wrr.3.2021.04.28.09.31.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 09:31:27 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        robh+dt@kernel.org, linus.walleij@linaro.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH] dt-bindings: net: Convert mdio-gpio to yaml
-Date:   Wed, 28 Apr 2021 16:31:20 +0000
-Message-Id: <20210428163120.3657234-1-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+bqujsD1CEh1BMsQ6Vfhu0Dtl9EKMPvmnj/WQm5NOQY=;
+        b=AhwB35vgilVrK+EaNgrcI0lO14109iiwgTL78WZrIgpjGZqavGFJt1p6Wmzerq5YVQ
+         gZCHpFWc4VEZTTLXiQZ06iPJkwrrHIN/Geh7HVAwkBgx1d05rcT06ogdlkYWU+9UetOU
+         OzprTX9fpgsZ0hfsCIKvP2K+im6r1z9KEhmS6bhdahsbD8QiBut9PxlPY2K9tpLap6I4
+         cTRDXJnDpmpWkCAik1YN81CxEbjWXF9QrIoF3Z3txbHxeXZMr3+odoq+cRwA37f75RAC
+         WBndTXBGkSNKKOO/wnkw6nODIwtvgLrPKhRwRvw6rHZ0SeAJ5HsalrZlX6UKihjUp7l9
+         lwpQ==
+X-Gm-Message-State: AOAM532yX2o1aOg+Culv/H7LbtkyzSbnySLVX7EFJAFRTtzLRQ+J2o0e
+        jiqT7aSoUlumed7754trCq5Totegoa1Zbw==
+X-Google-Smtp-Source: ABdhPJy0UxdurI9aErbvEpjVVohnDeP6g8LpbU8KiRw+f5YUQ2c6BCQ+67wVCzqLSoonHItM6BPRzA==
+X-Received: by 2002:a05:6102:2089:: with SMTP id h9mr18624380vsr.45.1619627924630;
+        Wed, 28 Apr 2021 09:38:44 -0700 (PDT)
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com. [209.85.222.48])
+        by smtp.gmail.com with ESMTPSA id u65sm25888vkb.13.2021.04.28.09.38.44
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Apr 2021 09:38:44 -0700 (PDT)
+Received: by mail-ua1-f48.google.com with SMTP id n61so3145922uan.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:38:44 -0700 (PDT)
+X-Received: by 2002:a25:382:: with SMTP id 124mr19702977ybd.25.1619627606430;
+ Wed, 28 Apr 2021 09:33:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210423165906.2504169-1-dianders@chromium.org> <20210423095743.v5.1.I9e6af2529d6c61e5daf86a15a1211121c5223b9a@changeid>
+In-Reply-To: <20210423095743.v5.1.I9e6af2529d6c61e5daf86a15a1211121c5223b9a@changeid>
+From:   Sean Paul <seanpaul@chromium.org>
+Date:   Wed, 28 Apr 2021 12:32:48 -0400
+X-Gmail-Original-Message-ID: <CAOw6vb+wgVZVf_uRZCXhHoa+y-dJmd4u4JX2wHjO0jiB5bfujw@mail.gmail.com>
+Message-ID: <CAOw6vb+wgVZVf_uRZCXhHoa+y-dJmd4u4JX2wHjO0jiB5bfujw@mail.gmail.com>
+Subject: Re: [PATCH v5 01/20] drm/panel: panel-simple: Add missing
+ pm_runtime_disable() calls
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>,
+        robdclark@chromium.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-i2c@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Converts net/mdio-gpio.txt to yaml
+On Fri, Apr 23, 2021 at 12:59 PM Douglas Anderson <dianders@chromium.org> wrote:
+>
+> In commit 3235b0f20a0a ("drm/panel: panel-simple: Use runtime pm to
+> avoid excessive unprepare / prepare") we started using pm_runtime, but
+> my patch neglected to add the proper pm_runtime_disable(). Doh! Add
+> them now.
+>
+> Fixes: 3235b0f20a0a ("drm/panel: panel-simple: Use runtime pm to avoid excessive unprepare / prepare")
+> Reported-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
-This patch is a part of the work on fixing all DTs on gemini platform.
+Reviewed-by: Sean Paul <seanpaul@chromium.org>
 
- .../devicetree/bindings/net/mdio-gpio.txt     | 27 ---------
- .../devicetree/bindings/net/mdio-gpio.yaml    | 56 +++++++++++++++++++
- 2 files changed, 56 insertions(+), 27 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/net/mdio-gpio.txt
- create mode 100644 Documentation/devicetree/bindings/net/mdio-gpio.yaml
-
-diff --git a/Documentation/devicetree/bindings/net/mdio-gpio.txt b/Documentation/devicetree/bindings/net/mdio-gpio.txt
-deleted file mode 100644
-index 4d91a36c5cf5..000000000000
---- a/Documentation/devicetree/bindings/net/mdio-gpio.txt
-+++ /dev/null
-@@ -1,27 +0,0 @@
--MDIO on GPIOs
--
--Currently defined compatibles:
--- virtual,gpio-mdio
--- microchip,mdio-smi0
--
--MDC and MDIO lines connected to GPIO controllers are listed in the
--gpios property as described in section VIII.1 in the following order:
--
--MDC, MDIO.
--
--Note: Each gpio-mdio bus should have an alias correctly numbered in "aliases"
--node.
--
--Example:
--
--aliases {
--	mdio-gpio0 = &mdio0;
--};
--
--mdio0: mdio {
--	compatible = "virtual,mdio-gpio";
--	#address-cells = <1>;
--	#size-cells = <0>;
--	gpios = <&qe_pio_a 11
--		 &qe_pio_c 6>;
--};
-diff --git a/Documentation/devicetree/bindings/net/mdio-gpio.yaml b/Documentation/devicetree/bindings/net/mdio-gpio.yaml
-new file mode 100644
-index 000000000000..55c629cb5e57
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/mdio-gpio.yaml
-@@ -0,0 +1,56 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/mdio-gpio.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: MDIO on GPIOs
-+
-+maintainers:
-+  - Andrew Lunn <andrew@lunn.ch>
-+  - Florian Fainelli <f.fainelli@gmail.com>
-+  - Heiner Kallweit <hkallweit1@gmail.com>
-+
-+allOf:
-+  - $ref: "mdio.yaml#"
-+
-+properties:
-+  compatible:
-+    enum:
-+      - virtual,mdio-gpio
-+      - microchip,mdio-smi0
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 0
-+
-+  gpios:
-+    minItems: 2
-+    description: |
-+      MDC and MDIO lines connected to GPIO controllers are listed in
-+      the gpios property as described in section VIII.1 in the
-+      following order: MDC, MDIO.
-+
-+#Note: Each gpio-mdio bus should have an alias correctly numbered in "aliases"
-+#node.
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    aliases {
-+        mdio-gpio0 = &mdio0;
-+    };
-+
-+    mdio0: mdio {
-+      compatible = "virtual,mdio-gpio";
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+      gpios = <&qe_pio_a 11
-+               &qe_pio_c 6>;
-+      ethphy0: ethernet-phy@0 {
-+        reg = <0>;
-+      };
-+    };
-+...
--- 
-2.26.3
-
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+>
+> Changes in v5:
+> - Missing pm_runtime_disable() patch new for v5.
+>
+>  drivers/gpu/drm/panel/panel-simple.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+> index 6b22872b3281..9746eda6f675 100644
+> --- a/drivers/gpu/drm/panel/panel-simple.c
+> +++ b/drivers/gpu/drm/panel/panel-simple.c
+> @@ -797,12 +797,14 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
+>
+>         err = drm_panel_of_backlight(&panel->base);
+>         if (err)
+> -               goto free_ddc;
+> +               goto disable_pm_runtime;
+>
+>         drm_panel_add(&panel->base);
+>
+>         return 0;
+>
+> +disable_pm_runtime:
+> +       pm_runtime_disable(dev);
+>  free_ddc:
+>         if (panel->ddc)
+>                 put_device(&panel->ddc->dev);
+> @@ -818,6 +820,7 @@ static int panel_simple_remove(struct device *dev)
+>         drm_panel_disable(&panel->base);
+>         drm_panel_unprepare(&panel->base);
+>
+> +       pm_runtime_disable(dev);
+>         if (panel->ddc)
+>                 put_device(&panel->ddc->dev);
+>
+> --
+> 2.31.1.498.g6c1eba8ee3d-goog
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
