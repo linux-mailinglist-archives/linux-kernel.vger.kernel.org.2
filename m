@@ -2,107 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F53E36D53D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1FD36D543
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 12:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238805AbhD1KAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 06:00:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56316 "EHLO mail.kernel.org"
+        id S238683AbhD1KBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 06:01:08 -0400
+Received: from mga09.intel.com ([134.134.136.24]:63791 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238803AbhD1KAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 06:00:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4ABB613E8;
-        Wed, 28 Apr 2021 09:59:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619603967;
-        bh=RZY4Y90izrPgFDz39z3LwccFzaBMQQjh1wGYrsQeD08=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=J4//RRm087i1cit1p2L14QWl1OwvXu+Adu4Q9XNvfyVd9BgokEt/JADHc65/FkYJy
-         EyIcqZVyNRJ8E08e+zVKESRQ5y1ytSzhtneREeXraDMEILzArQ4LOvlVDlBHajmNSO
-         49HxzhyMsVivdY5DHUZ6vkYResPuB6xhJdWOKCfPOOZMRg7EWV88WjGqe0thNNR0bN
-         xSorPemePqx+RHDypah3klI3sfzCQU62Zyh0QUICr43whDVrjiV2ofGp7mBt3HPX17
-         m88/JEju+Ohzkvx9IDPA15amY6Fij3H+MvssLyCuxOG7rGiH5BCISDEILZgJCHkBN+
-         NRO2G4X5WZY1A==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Sandeep Maheswaram <sanm@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>
-Subject: Re: [PATCH v7 2/5] usb: dwc3: core: Host wake up support from
- system suspend
-In-Reply-To: <1619586716-8687-3-git-send-email-sanm@codeaurora.org>
-References: <1619586716-8687-1-git-send-email-sanm@codeaurora.org>
- <1619586716-8687-3-git-send-email-sanm@codeaurora.org>
-Date:   Wed, 28 Apr 2021 12:59:19 +0300
-Message-ID: <87r1iuk9vs.fsf@kernel.org>
+        id S233396AbhD1KBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 06:01:02 -0400
+IronPort-SDR: Y+z8L2G0UNYVsnll2m02PPaz2IjF69kLWteyo0wDfadxocdt4Y+Cq5w8dcnF766KGsWQ4izx31
+ XUR7mrESEh6g==
+X-IronPort-AV: E=McAfee;i="6200,9189,9967"; a="196811684"
+X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
+   d="scan'208";a="196811684"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 03:00:17 -0700
+IronPort-SDR: f7aF1oNaLFBuNCA2P0mGV7AtrmkAbXk1n/4Hj0QI2NR+Zt9QbZxP75HRIVkxVsUyF0d/FgYsqV
+ YjtEYF8HWpjw==
+X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
+   d="scan'208";a="423454172"
+Received: from lingshan-mobl5.ccr.corp.intel.com (HELO [10.254.209.93]) ([10.254.209.93])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 03:00:09 -0700
+Subject: Re: [PATCH 1/2] vDPA/ifcvf: record virtio notify base
+To:     Jason Wang <jasowang@redhat.com>, mst@redhat.com
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210428082133.6766-1-lingshan.zhu@intel.com>
+ <20210428082133.6766-2-lingshan.zhu@intel.com>
+ <55217869-b456-f3bc-0b5a-6beaf34c19f8@redhat.com>
+From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
+Message-ID: <3243eeef-2891-5b79-29cb-bc969802c5dc@intel.com>
+Date:   Wed, 28 Apr 2021 18:00:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+In-Reply-To: <55217869-b456-f3bc-0b5a-6beaf34c19f8@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
 
 
-Hi,
-
-Sandeep Maheswaram <sanm@codeaurora.org> writes:
-> Avoiding phy powerdown when wakeup capable devices are connected
-> by checking phy_power_off flag.
-> Phy should be on to wake up the device from suspend using wakeup capable
-> devices such as keyboard and mouse.
+On 4/28/2021 4:39 PM, Jason Wang wrote:
 >
-> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
-> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-> ---
->  drivers/usb/dwc3/core.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+> 在 2021/4/28 下午4:21, Zhu Lingshan 写道:
+>> This commit records virtio notify base addr to implemente
+>> doorbell mapping feature
+>>
+>> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
+>> ---
+>>   drivers/vdpa/ifcvf/ifcvf_base.c | 1 +
+>>   drivers/vdpa/ifcvf/ifcvf_base.h | 1 +
+>>   2 files changed, 2 insertions(+)
+>>
+>> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.c 
+>> b/drivers/vdpa/ifcvf/ifcvf_base.c
+>> index 1a661ab45af5..cc61a5bfc5b1 100644
+>> --- a/drivers/vdpa/ifcvf/ifcvf_base.c
+>> +++ b/drivers/vdpa/ifcvf/ifcvf_base.c
+>> @@ -133,6 +133,7 @@ int ifcvf_init_hw(struct ifcvf_hw *hw, struct 
+>> pci_dev *pdev)
+>> &hw->notify_off_multiplier);
+>>               hw->notify_bar = cap.bar;
+>>               hw->notify_base = get_cap_addr(hw, &cap);
+>> +            hw->notify_pa = pci_resource_start(pdev, cap.bar) + 
+>> cap.offset;
 >
-> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-> index b6e53d8..bb414c3 100644
-> --- a/drivers/usb/dwc3/core.c
-> +++ b/drivers/usb/dwc3/core.c
-> @@ -1738,7 +1738,7 @@ static int dwc3_suspend_common(struct dwc3 *dwc, pm=
-_message_t msg)
->  		dwc3_core_exit(dwc);
->  		break;
->  	case DWC3_GCTL_PRTCAP_HOST:
-> -		if (!PMSG_IS_AUTO(msg)) {
-> +		if (!PMSG_IS_AUTO(msg) && dwc->phy_power_off) {
+>
+> To be more generic and avoid future changes, let's use the math 
+> defined in the virtio spec.
+>
+> You may refer how it is implemented in virtio_pci vdpa driver[1].
+Are you suggesting every vq keep its own notify_pa? In this case, we 
+still need to record notify_pa in hw when init_hw, then initialize 
+vq->notify_pa accrediting to hw->notify_pa.
 
-should be able to detect this generically, no? Shouldn't
-device_may_wakeup() be valid here and give you the answer you want?
+Thanks
+Zhu Lingshan
+>
+> Thanks
+>
+> [1] 
+> https://lore.kernel.org/virtualization/20210415073147.19331-5-jasowang@redhat.com/T/
+>
+>
+>> IFCVF_DBG(pdev, "hw->notify_base = %p\n",
+>>                     hw->notify_base);
+>>               break;
+>> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h 
+>> b/drivers/vdpa/ifcvf/ifcvf_base.h
+>> index 0111bfdeb342..bcca7c1669dd 100644
+>> --- a/drivers/vdpa/ifcvf/ifcvf_base.h
+>> +++ b/drivers/vdpa/ifcvf/ifcvf_base.h
+>> @@ -98,6 +98,7 @@ struct ifcvf_hw {
+>>       char config_msix_name[256];
+>>       struct vdpa_callback config_cb;
+>>       unsigned int config_irq;
+>> +    phys_addr_t  notify_pa;
+>>   };
+>>     struct ifcvf_adapter {
+>
 
-=2D-=20
-balbi
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAmCJMfcRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQYH8w//cXMDqstNhHMVbRO7rVw7mwaHMhZuKzGX
-cNG37v9otq21tZ6SjnVOJcvaUR/0LaAWt4sc8dczR/V1mtdRJppnZ2ahFxzEhhPY
-cXviGcfRYZ3lNQfraKiCR4z3BtWaVwxbkajFwt2tdKWguKwmUA0S2lyPw5/TzYhB
-LUv071SyCvnYhNd3TxXaixIqmATOANjDqflILo3bdLn07Dc+AiyJ7RqMu70Jz2wB
-hwpYpYIPKEv9NdgsGm0TtAZU3y1q21kSUxkO3fab6LbphzXSVc66p/YE2KxRQIM8
-8jdz39R/RfQp/tf92SV4YhI6R/DWPdVDE+LldXslsDoMdzWNQjHDF4pVxPiav0JT
-+s3xreYvPLnQmvEO0czxKBEQmcYYuBP3gYnrzawQoKbfapWoN4BykSaPZ9Y8AaSW
-SfoRQtd7jcwELbGT7BBNeYl2iGsq3WKu9AXRnH9HN6X+a4dRojOn23z/e77wjbtC
-0cMyPg2HcOjusWuDfF0hW5QX/aU2Yi5xaayxydcqULNr32EFntgC2s2xr/v7YM6t
-9iwQt7wx856yokOVrOgHgIevXuIyOXUQUgfd6JRFv6FDH0ZvlmSvVwpn9GhBnA3l
-MkQisY9FvZPt9wN2nqeWHIaTM2mgRmT3MENiuUgPkwph+Yob3TMz/G5RwJEFxMU3
-vNkhmm2s5uw=
-=NdHw
------END PGP SIGNATURE-----
---=-=-=--
