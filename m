@@ -2,107 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE2F36D9C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E24736D9C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240251AbhD1Opa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 10:45:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54453 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240219AbhD1OpZ (ORCPT
+        id S240253AbhD1Opr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 10:45:47 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35618 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236337AbhD1Opp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 10:45:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619621080;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VjWuwXa1YtMUwTvGVSDOIM7cAaoA6yJc6vXG9qhAW3A=;
-        b=Q6UE8FSCnJh2jf1+vXbRxxWgzpALUP3VOgssfQ5ZBIBhNwykF6fKBbWIxmMlvWdTMnLjjn
-        sUNVKsmvwTqscLeZf/B+ojS9YOrpeHyirl36VXz+LfAuXvAsyo2afcTOmVzuw4sMKG0pBc
-        617C49fUFoLO0izTsepbLTqAGYd9QxQ=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-15-uYulJ5gWNDKWRXKDqRW8oA-1; Wed, 28 Apr 2021 10:44:38 -0400
-X-MC-Unique: uYulJ5gWNDKWRXKDqRW8oA-1
-Received: by mail-wr1-f72.google.com with SMTP id 91-20020adf94640000b029010b019075afso5620443wrq.17
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 07:44:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=VjWuwXa1YtMUwTvGVSDOIM7cAaoA6yJc6vXG9qhAW3A=;
-        b=QemrijU5MLYum/0qKmhrFTHgtUA1m+DEZR15+HsRj9SKL2e4Q3pm2UtPGRRh1KRu7v
-         ChQgsVkPrHb4LY6oyI97BP+CIVP8T4F+YhW4ZEE/y0z/whZNCfizKJ5Er1o+xi/o85ew
-         5FlrIAZXIqtlxX9J0smlyXHLEovUtmgoPTJ/24t8ZSq1wY+hW13W+a97suGxsoff1JbY
-         citDByH1eZrMp+BntZ+dID6/GhH+93ZbE6pPyhYkiBCbXJ7QLAW7xr8WFLZTcKuVzio3
-         Qsji2g8H/pJGNneI9xP0Gxvcz58B6tQcnsHdeCz8jkkzlRt561kQmSe22T/2EJLXgXAT
-         vzjw==
-X-Gm-Message-State: AOAM531IFS+u505SVm3tfB3QcFftqTdwlY3BLWwECaBo9Dx7UU04wBH7
-        ffOWelAzTf4XquAYJJQaD/Xh3uB2p+O6V4Q7YJnU/CxT0uZH1LRZ9HDc6qyKmniL4yqygvvYQT1
-        MQatbBDwmH5uApxVRAFeLEYY3
-X-Received: by 2002:a7b:c312:: with SMTP id k18mr32218057wmj.89.1619621077288;
-        Wed, 28 Apr 2021 07:44:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw/eTvBZIFZBQvqlxG36XxLa2MkImGigzmxHvgls8vpEbFngdpMJma6FbJTuPACeuAEUlKkHg==
-X-Received: by 2002:a7b:c312:: with SMTP id k18mr32218040wmj.89.1619621077038;
-        Wed, 28 Apr 2021 07:44:37 -0700 (PDT)
-Received: from ?IPv6:2003:d8:2f38:2400:62f4:c5fa:ba13:ac32? (p200300d82f38240062f4c5faba13ac32.dip0.t-ipconnect.de. [2003:d8:2f38:2400:62f4:c5fa:ba13:ac32])
-        by smtp.gmail.com with ESMTPSA id g11sm192970wri.59.2021.04.28.07.44.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Apr 2021 07:44:36 -0700 (PDT)
-Subject: Re: Is there a different memory allocation path other than the buddy
- allocator?
-To:     Shivank Garg <shivankgarg98@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, gregkh@linuxfoundation.org,
-        sergey.senozhatsky@gmail.com, pmladek@suse.com
-References: <CAOVCmzEAMz4NGF3gi4O_tNUQfm2+-8AkGiOn0gPN+p3GHctkKA@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <88d5164f-0261-469c-5549-4d97a7936775@redhat.com>
-Date:   Wed, 28 Apr 2021 16:44:36 +0200
+        Wed, 28 Apr 2021 10:45:45 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13SEX3LK086782;
+        Wed, 28 Apr 2021 10:44:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=lIC6A5oB6OGQNOiBi0aVyLDo0memk3cfKqRtYQ5ufYk=;
+ b=qNHe+j9Gk5hrDVWnWQiJmtpAIWlLkL1SQewoTp5As/kJEGQ9XAuTP/HhrTcAIH1OD9sO
+ hKtPFQH7+llooZDQk+Ar6FfpOzg3aHxFtyydnoylToHsyqKDF4A6DdhqOlTgfR4dxXyM
+ RmAf32pZFzu561k14YH0k4kgfxdx6NAwHPmmcdgxKXmVoWbrxHJ/tu56vrLAU3n6s3nd
+ 4IbCn97vXIF2APA/a8FiiLr7KwRknV3/fbOK8jUIVUkly5b2pAnrT8wD2pNWvboHlraS
+ vdhDJSWs2ADjIiADt4+G3L3EoSH81lkBWshK80SMi4+EN4hu1Qo0R/XHA/fFlGl0C/iX uw== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3877h8w7r2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 10:44:45 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13SEhm0m015326;
+        Wed, 28 Apr 2021 14:44:43 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06ams.nl.ibm.com with ESMTP id 384akh9xs6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 14:44:43 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13SEiduf38994264
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Apr 2021 14:44:39 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BD464A405F;
+        Wed, 28 Apr 2021 14:44:39 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3DB96A405B;
+        Wed, 28 Apr 2021 14:44:39 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.77.184])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 28 Apr 2021 14:44:39 +0000 (GMT)
+Subject: Re: [PATCH v2] s390/sclp_vt220: Fix console name to match device
+To:     Hendrik Brueckner <brueckner@linux.ibm.com>,
+        Valentin Vidic <vvidic@valentin-vidic.from.hr>
+Cc:     Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Philipp Kern <pkern@debian.org>,
+        Benjamin Zimmermann <dave@oss.volkswagen.com>,
+        debian-s390@lists.debian.org,
+        Peter Oberparleiter <oberpar@linux.ibm.com>
+References: <20200519181654.16765-1-vvidic@valentin-vidic.from.hr>
+ <20210427194010.9330-1-vvidic@valentin-vidic.from.hr>
+ <20210428133836.GD21939@linux.ibm.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <80735c89-a18a-5910-4e0c-f27eaa513578@de.ibm.com>
+Date:   Wed, 28 Apr 2021 16:44:38 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <CAOVCmzEAMz4NGF3gi4O_tNUQfm2+-8AkGiOn0gPN+p3GHctkKA@mail.gmail.com>
+In-Reply-To: <20210428133836.GD21939@linux.ibm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 8ht8VbbS-BOi2ypmp0ta7J_S4Y7uS2o_
+X-Proofpoint-GUID: 8ht8VbbS-BOi2ypmp0ta7J_S4Y7uS2o_
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-28_09:2021-04-28,2021-04-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ bulkscore=0 lowpriorityscore=0 suspectscore=0 priorityscore=1501
+ malwarescore=0 mlxscore=0 phishscore=0 spamscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104280098
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.04.21 09:37, Shivank Garg wrote:
-> Hi Everyone!
+
+
+On 28.04.21 15:38, Hendrik Brueckner wrote:
+> Hi Valentin,
 > 
-> I'm understanding memory allocation in Linux and doing some changes in
-> buddy allocator (__alloc_pages_nodemask) for my experiments. I create
-> a new flag in `struct page->flags` (by adding a new flag in `enum
-> pageflags` in `page-flags.h`. I set this bit permanently in
-> __alloc_pages_nodemask (to not to be cleared once set and survive all
-> further allocation and freeing). But I'm not able to see expected
-> behavior.
+> I just had the chance to look into this console topic yesterday.
 > 
-> I'm guessing this is because Linux is also using some different path
-> to allocate memory (probably during boot). Is my hypothesis correct?
+> On Tue, Apr 27, 2021 at 09:40:10PM +0200, Valentin Vidic wrote:
+>> Console name reported in /proc/consoles:
+>>
+>>    ttyS1                -W- (EC p  )    4:65
 > 
-> Is there any different memory allocation path other than buddy
-> allocator? Where can I find it?
+> It is been a while ago when working on consoles. However, consoles are
+> typically devices without having a device node associated. There is special
+> handling for /dev/console wrt. to the preferred console in the tty layer.
+> 
+> A console device might be associated with a tty device but this is not a
+> requirement. For example, consider the net console that streams console
+> messages thru UDP and is not associated with a tty.
+> 
+> Because console and tty are different devices, names can also be different
+> which is, unfortunately, the case on s390.
 
-memblock is the early memory allocator during boot, before the buddy is 
-up and running. The range allocator (e.g., alloc_contig_range()) is some 
-kind of mechanism that builds up on top of the buddy. Other allcoators 
-(hugetlb, slab, ...) might cache some pages, but effectively get 
-"physical memory" either via memblock or the buddy.
+another example is the ttyS0 console which is called sclp_line0 as a tty.
+Doesnt the debian installer thus also fails when running in an LPAR?
 
-CMA is another special-purpose allocator which reserves physical memory 
-areas via memblock and then uses the range allocator to actually 
-allocate memory inside these reserved regions at runtime.
+It might still be a good idea to actually change the console name for the
+ascii console as you patch does.
 
--- 
-Thanks,
+> Therefore my suggestion here is not derive the tty device from the name
+> of the console, but rather looking at the associated tty being reported
+> as major minor number in /proc/console.
 
-David / dhildenb
+So yes we should definitely try to fix the installer program as well. All other
+distros seem to handle this case fine.
 
+> 
+>>
+>> does not match the char device name:
+>>
+>>    crw--w----    1 root     root        4,  65 May 17 12:18 /dev/ttysclp0
+> 
+> In the example above, 4:65 excactly ends up in /dev/ttysclp0.
+> 
+> I am also in contact with Christian and thanks to him to try this out
+> internally.  At least, there are options to bring this forward and let's
+> figure out what the best solution will be.
+> 
+> Thanks and kind regards,
+>    Hendrik
+> 
+h
