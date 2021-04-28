@@ -2,96 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FA836D6CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 13:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F264436D6D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 13:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbhD1LwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 07:52:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54872 "EHLO
+        id S230435AbhD1L4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 07:56:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhD1LwH (ORCPT
+        with ESMTP id S229645AbhD1L4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 07:52:07 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D203FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 04:51:21 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so8905907pjh.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 04:51:21 -0700 (PDT)
+        Wed, 28 Apr 2021 07:56:07 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B2CC061574;
+        Wed, 28 Apr 2021 04:55:20 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id e5so34071780wrg.7;
+        Wed, 28 Apr 2021 04:55:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9ggqrO3Qchc0pj7s94KCNuU19NGYvqjq5lpDMS8H3Tw=;
-        b=TaxV56rAxX7DI8UcYkHNfDIiMW39vSkIvG80M/cHa9F8EHu0ZhIDqq5LxQQ++R0zAW
-         43N7aA+0N2Xv1Dldc9f0lrCFJqrmb7BzORDlQOiFYljP4an+R1YTCxxTOq6q9qDm+cSS
-         5wDplLbbtZhW32jTxiT//mI1RAt2gAJRbDugM=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=wFVlZsZ+heSlhDiUDM4jdsWEkeRvPBP/0Wu0oaYtrFc=;
+        b=hdH6GYWdfmHqxZz/sXPZXlHlyWXrxY3Qp1PlYjPmRYXfyT+TPE5zVwsEP1N5E9hayN
+         bz+Y2ohnj+urGYHpcsJqHVCdLm0sEX0bqpM50uzK09EtLBKC1uzWGtPwJqo3vyV0uXu3
+         iFCzJe6+kFO3pFVQ2Ns8Ix25yW2/80IkCwDZrviKqwXQE0IvyO0/RP5hiSbIwDcHr7VG
+         T5JlmibjhcLRhPbGTIpcRLEG8TI3BQs8AMD9QKqtoEKxUT47RtF9qFz8VEY4vetWj+z+
+         bNtAuR24nw4aJt1ZAHyjikiVgvfFcNFMfnaIinVw79KGSUAAVnPQ/VWN9NOc+C243xRY
+         ug4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9ggqrO3Qchc0pj7s94KCNuU19NGYvqjq5lpDMS8H3Tw=;
-        b=e8kMu2/9AUtWTlTw9JYoyjUgDSTxZ7Aa/bv/KSPa+q8AEJtvnPN3Gf6f6a1M5aO4Np
-         iWv3w8d5BvaBJhSAHObzG0iYhAiF4U6k6/ZJauTyK36vDCPKj4LQn+UuAJNjrryguLrW
-         f+AVgs1IzpVci7C1H87oUA1Iyw4rY5NfNKpgWy/J13fVf1xqgKaD3fIX9kWUN78YqREr
-         kre1zg2QPKsfQwCfGl/dXcb6dXHoRQX0GReLxxStfUQm8NM63QRxiVeGhdAuQutF79sz
-         OUenh3ik1MfulcmtOriudqaAwBt0K7kMKXczRSHCcQoc58ofPjXxX2ocCND/ggt5A/cm
-         DVOg==
-X-Gm-Message-State: AOAM530QwpFP03fVu4K7TNUgLYVCpJIM6cK2z+5Y2rDJyrV5Ssel2cF2
-        z6BhTvAodVCnSTHD26ajkvLlXQ==
-X-Google-Smtp-Source: ABdhPJwjgoH7hDN3JydB+39qADl+YpIqlvB7+GbFcirFX78xUnDZJs9piLSTNKYh9oW6oiklSYLooA==
-X-Received: by 2002:a17:902:b78b:b029:ed:5429:4c2c with SMTP id e11-20020a170902b78bb02900ed54294c2cmr10025560pls.4.1619610681285;
-        Wed, 28 Apr 2021 04:51:21 -0700 (PDT)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:1faf:c32e:8742:d913])
-        by smtp.gmail.com with ESMTPSA id y8sm2403760pgr.48.2021.04.28.04.51.18
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=wFVlZsZ+heSlhDiUDM4jdsWEkeRvPBP/0Wu0oaYtrFc=;
+        b=jfakcI9P14fT/dZYBQR3r/G5xRy0ZBorBc8EtSZXGtANCc49dh4ZP3G4HmVC+BcVmy
+         XsBfFk8ZA1f6cK0Dhxw2/W+STtVMGbpEw/lowUAR3yqQCQMoLVG66Ioul8+j4USTlug5
+         bQUxTqRmjGd7vJQkt9h/i01g83IFN+8Q1lkqow90yvpSm3yfcEm6Rbw2kugvokje3TIa
+         42/zd93mC37w82qgN0mlGdtaFItoO0c3I6jtrMfNkqWUxeB02pwOeEvefKh+D4dIkyCE
+         PA9YtFvmqb9pxgyq+bpqwBNMxIfzVYtEU109u7PfvtbVV4vJMSE0RnXSu4V01hUMIJpE
+         pd4Q==
+X-Gm-Message-State: AOAM530ImlJ7CAlndYKE5oUmTJru0qgbE3ku0Y8vTosDcWFG1mWuCwve
+        p6/tsZetwLWXXUpN5FAEceLVsPmKWBWDnZRH
+X-Google-Smtp-Source: ABdhPJyc4U4H2WokTiue7gy0nKH8mHu+ubb+IDt/e+SUp9eiqkUU4zQNZlUv3pYA7+h8y2FKXlzSYQ==
+X-Received: by 2002:adf:9d88:: with SMTP id p8mr35435030wre.138.1619610919503;
+        Wed, 28 Apr 2021 04:55:19 -0700 (PDT)
+Received: from ubuntudesktop.lan (210.53.7.51.dyn.plus.net. [51.7.53.210])
+        by smtp.gmail.com with ESMTPSA id c2sm3493626wmr.22.2021.04.28.04.55.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 04:51:20 -0700 (PDT)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Xin Ji <xji@analogixsemi.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Jonas Karlman <jonas@kwiboo.se>
-Subject: [PATCH v2] drm/bridge: anx7625: Fix power on delay
-Date:   Wed, 28 Apr 2021 19:51:16 +0800
-Message-Id: <20210428115116.931328-1-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+        Wed, 28 Apr 2021 04:55:18 -0700 (PDT)
+From:   Lee Gibson <leegib@gmail.com>
+To:     kvalo@codeaurora.org
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lee Gibson <leegib@gmail.com>
+Subject: [PATCH v2] wl1251: Fix possible buffer overflow in wl1251_cmd_scan
+Date:   Wed, 28 Apr 2021 12:55:08 +0100
+Message-Id: <20210428115508.25624-1-leegib@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210317121807.389169-1-leegib@gmail.com>
+References: <20210317121807.389169-1-leegib@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From anx7625 spec, the delay between powering on power supplies and gpio
-should be larger than 10ms.
+Function wl1251_cmd_scan calls memcpy without checking the length.
+Harden by checking the length is within the maximum allowed size.
 
-Fixes: 6c744983004e ("drm/bridge: anx7625: disable regulators when power off")
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Lee Gibson <leegib@gmail.com>
 ---
-v1->v2: Extend sleep range a bit as the regulator on some device takes
-more time to be powered on after regulator_enable() is called.
----
- drivers/gpu/drm/bridge/analogix/anx7625.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v2: use clamp_val() instead of min_t()
 
-diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-index 23283ba0c4f9..b4e349ca38fe 100644
---- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-+++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-@@ -893,7 +893,7 @@ static void anx7625_power_on(struct anx7625_data *ctx)
- 		usleep_range(2000, 2100);
+ drivers/net/wireless/ti/wl1251/cmd.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/ti/wl1251/cmd.c b/drivers/net/wireless/ti/wl1251/cmd.c
+index 498c8db2eb48..d7a869106782 100644
+--- a/drivers/net/wireless/ti/wl1251/cmd.c
++++ b/drivers/net/wireless/ti/wl1251/cmd.c
+@@ -454,9 +454,12 @@ int wl1251_cmd_scan(struct wl1251 *wl, u8 *ssid, size_t ssid_len,
+ 		cmd->channels[i].channel = channels[i]->hw_value;
  	}
  
--	usleep_range(4000, 4100);
-+	usleep_range(11000, 12000);
+-	cmd->params.ssid_len = ssid_len;
+-	if (ssid)
+-		memcpy(cmd->params.ssid, ssid, ssid_len);
++	if (ssid) {
++		int len = clamp_val(ssid_len, 0, IEEE80211_MAX_SSID_LEN);
++
++		cmd->params.ssid_len = len;
++		memcpy(cmd->params.ssid, ssid, len);
++	}
  
- 	/* Power on pin enable */
- 	gpiod_set_value(ctx->pdata.gpio_p_on, 1);
+ 	ret = wl1251_cmd_send(wl, CMD_SCAN, cmd, sizeof(*cmd));
+ 	if (ret < 0) {
 -- 
-2.31.1.498.g6c1eba8ee3d-goog
+2.25.1
 
