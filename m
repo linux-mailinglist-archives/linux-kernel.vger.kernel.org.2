@@ -2,160 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7959236D3A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9D736D3B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236920AbhD1IJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 04:09:11 -0400
-Received: from mga05.intel.com ([192.55.52.43]:42309 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230456AbhD1IJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 04:09:09 -0400
-IronPort-SDR: YXldW8SwvUQADZXWjtuqaglnEcB7AFp/yItSH6t8jJZculkza0FMSxfKc1ru0KFXcOx4PnraUN
- 2istnFlBvb3A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9967"; a="282022014"
-X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
-   d="scan'208";a="282022014"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 01:08:24 -0700
-IronPort-SDR: YNklEDKZwnYd3HocG82lxaF8Jsx+15ry+Ex9WF8LzzNmB/vwLKbKBOVZOOi/zKU28M4j3diCQa
- zxiUj+5PCQ4g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
-   d="scan'208";a="423418514"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
-  by fmsmga008.fm.intel.com with ESMTP; 28 Apr 2021 01:08:22 -0700
-Date:   Wed, 28 Apr 2021 16:08:19 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        kernel test robot <oliver.sang@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "lkp@lists.01.org" <lkp@lists.01.org>,
-        "lkp@intel.com" <lkp@intel.com>,
-        "ying.huang@intel.com" <ying.huang@intel.com>,
-        "zhengjun.xing@intel.com" <zhengjun.xing@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [genirq]  cbe16f35be:  will-it-scale.per_thread_ops -5.2%
- regression
-Message-ID: <20210428080819.GB53821@shbuild999.sh.intel.com>
-References: <20210427090013.GG32408@xsang-OptiPlex-9020>
- <87fszcnecr.ffs@nanos.tec.linutronix.de>
- <20210428050758.GB52098@shbuild999.sh.intel.com>
- <d392cc91241641df865217d82368eba8@hisilicon.com>
+        id S237290AbhD1IKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 04:10:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236805AbhD1IKT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 04:10:19 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A03C7C061574;
+        Wed, 28 Apr 2021 01:09:34 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 3392E2224F;
+        Wed, 28 Apr 2021 10:09:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1619597371;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=M9NlOCpW1MZNsl/vA/TRzY5PiytDAsgS7p11KntpwDc=;
+        b=TeuOHOIozerVUFBEq+kXl+E4fsEw1MWqgROl2oA8Sc/xKOT0oXpynCQIkw1papfFwz22RM
+        ZqopdTbGj/RRv3+sDFrM+3v84W6DRuM04o8XbE5Tyx09iWpSYtyaTodlAwmk1PVwQpm/hS
+        zB6aEh6Z4dXpMFJB4kyQVt3Zk/Jvibs=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d392cc91241641df865217d82368eba8@hisilicon.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 28 Apr 2021 10:09:17 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        netdev <netdev@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:MEDIA DRIVERS FOR RENESAS - FCP" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "moderated list:ARM/STM32 ARCHITECTURE" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        linux-oxnas@groups.io, linux-omap <linux-omap@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        devicetree@vger.kernel.org, linux-staging@lists.linux.dev,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Andreas Larsson <andreas@gaisler.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Joyce Ooi <joyce.ooi@intel.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Fugang Duan <fugang.duan@nxp.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Pantelis Antoniou <pantelis.antoniou@gmail.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Byungho An <bh74.an@samsung.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Wingman Kwok <w-kwok2@ti.com>,
+        Murali Karicheri <m-karicheri2@ti.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Helmut Schaa <helmut.schaa@googlemail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?Q?J=C3=A9r=C3=B4me_Pouiller?= <jerome.pouiller@silabs.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>
+Subject: Re: [PATCH net-next v4 2/2] of: net: fix of_get_mac_addr_nvmem() for
+ non-platform devices
+In-Reply-To: <3677398ebb77f334abb4899770db633d9658fe82.camel@kernel.crashing.org>
+References: <20210412174718.17382-1-michael@walle.cc>
+ <20210412174718.17382-3-michael@walle.cc>
+ <730d603b12e590c56770309b4df2bd668f7afbe3.camel@kernel.crashing.org>
+ <8157eba9317609294da80472622deb28@walle.cc>
+ <CAL_JsqLrx6nFZrKiEtm2a1vDvQGG+FkpGtJCG2osM8hhGo3P=Q@mail.gmail.com>
+ <108f268a35843368466004f7fe5f9f88@walle.cc>
+ <3677398ebb77f334abb4899770db633d9658fe82.camel@kernel.crashing.org>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <452795c5254b65cfba6e52cfc94d92bd@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Barry,
-
-On Wed, Apr 28, 2021 at 07:01:35AM +0000, Song Bao Hua (Barry Song) wrote:
+Am 2021-04-27 01:44, schrieb Benjamin Herrenschmidt:
+> On Mon, 2021-04-26 at 12:54 +0200, Michael Walle wrote:
+>> (2) What do you think of eth_get_mac_address(ndev). That is, the
 > 
-> 
-> > -----Original Message-----
-> > From: Feng Tang [mailto:feng.tang@intel.com]
-> > Sent: Wednesday, April 28, 2021 5:08 PM
-> > To: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: kernel test robot <oliver.sang@intel.com>; Song Bao Hua (Barry Song)
-> > <song.bao.hua@hisilicon.com>; Ingo Molnar <mingo@kernel.org>; LKML
-> > <linux-kernel@vger.kernel.org>; lkp@lists.01.org; lkp@intel.com;
-> > ying.huang@intel.com; zhengjun.xing@intel.com; x86@kernel.org
-> > Subject: Re: [genirq] cbe16f35be: will-it-scale.per_thread_ops -5.2%
-> > regression
-> > 
-> > Hi Thomas,
-> > 
-> > On Tue, Apr 27, 2021 at 01:42:12PM +0200, Thomas Gleixner wrote:
-> > > Folks,
-> > >
-> > > On Tue, Apr 27 2021 at 17:00, kernel test robot wrote:
-> > >
-> > > > Greeting,
-> > > >
-> > > > FYI, we noticed a -5.2% regression of will-it-scale.per_thread_ops due to
-> > commit:
-> > > >
-> > > > commit: cbe16f35bee6880becca6f20d2ebf6b457148552 ("genirq: Add
-> > > > IRQF_NO_AUTOEN for request_irq/nmi()")
-> > > > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git
-> > > > master
-> > >
-> > > this is the second report in the last week which makes not a lot of sense.
-> > > And this oneis makes absolutely no sense at all.
-> > >
-> > > This commit affects request_irq() and the related variants and has
-> > > exactly ZERO influence on anything related to that test case simply
-> > > because.
-> > >
-> > > I seriously have to ask the question whether this test infrastructure
-> > > is actually measuring what it claims to measure.
-> > >
-> > > As this commit clearly _cannot_ have the 'measured' side effect, this
-> > > points to some serious issue in the tests or the test infrastructure
-> > > itself.
-> > 
-> > 0day has reported about 20 similar cases that the bisected commit has nothing
-> > to do with the benchmark case, and we were very confused too back then. And
-> > our debug showed many of them changed the code alignment of kernel data or text
-> > of other modules which is relevant with the benchmark, though some cases are
-> > not well explained yet. Following are links of some explained cases.
-> > 
-> > https://lore.kernel.org/lkml/20200305062138.GI5972@shao2-debian/
-> > https://lore.kernel.org/lkml/20200330011254.GA14393@feng-iot/
-> > https://lore.kernel.org/lkml/20201102091543.GM31092@shao2-debian/
-> > 
-> > And to debug code alignment case, one debug patch to force all function address
-> > aligned to 32 bytes was merged in v5.9
-> > 
-> > 09c60546f04f ./Makefile: add debug option to enable function aligned on 32 bytes
-> > 
-> > 
-> > For this particular case, the commit changes the code size of
-> > request_threaded_irq(), and many following functions' alignment are changed.
-> > 
-> 
-> If so, the performance impact of code change would be random.
+> Not sure what you mean, eth_platform_get_mac_address() takes the
+> address as an argument. I think what you want is a consolidated
+> nvmem_get_mac_address + eth_platform_get_mac_address that takes a
+> device, which would have no requirement of the bus_type at all.
 
-Right, I heard 0day team has enabled the force_func_align_32B for some
-kernel build to filter the case.
+Sure. What I meant was the following:
 
-> > So I extended the debug patch to force 64 bytes aligned, then this commit will
-> > cause _no_ performance change for the same test case on same platform.
-> > 
-> > diff --git a/Makefile b/Makefile
-> > 
-> >  ifdef CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_32B
-> > -KBUILD_CFLAGS += -falign-functions=32
-> > +KBUILD_CFLAGS += -falign-functions=64
-> >  endif
-> > 
-> > Though I don't know the detail of how exactly this code alignment affects the
-> > case.
-> 
-> Guess it is related with icache.
+  eth_get_mac_address(struct net_device *ndev)
+vs.
+  eth_get_mac_address(struct device *dev, u8 *mac_buf)
 
-Possibly, and sometime iTLB also.
+The first would assume the destination is ndev->dev_addr (which
+is true for most of the calls, but not all).
 
-> But it is still an irrelevant problem.
-Yes, the commit itself has no problem. And my personal thought
-is no further action is needed. 
-
-Thanks,
-Feng
-
-> > 
-> > Thanks,
-> > Feng
-> > 
-> > > Thanks,
-> > >
-> > >         tglx
-> 
-> Thanks
-> Barry
+-michael
