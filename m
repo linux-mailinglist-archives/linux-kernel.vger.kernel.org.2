@@ -2,227 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 926E236DB61
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03FE336DB6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239246AbhD1POW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 11:14:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239882AbhD1POS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 11:14:18 -0400
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27087C06138A
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 08:13:32 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id s66so2168779vss.13
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 08:13:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=va17hEIN1gMI5572/Bu5U8n1TthGJNzz9MlZ0qjXfQ8=;
-        b=FOvCAHtdrpa64fWJjd2v8zhbrkxe2XjDlU8BFhSO+gr1TeRV8kbnzathFB0byuVTmR
-         JcfKaygmgp4SXfmNo5T2JVNViCAbS9k9C9RtAmufWpKDeqh6BVZiuGN2tic9W1V19bbr
-         7b+j3+4IRbOolxOeedhwnIa/VVQd2Z6KjHe4ePfGt8QJc6/VvxWcDG4jeOvQP/UDSe+2
-         sDbIZ4wdD+I0mfhb4ZKVUQ5tO4E8LpPspFniSY2oxEPqWmlfebUm+bj+J1vsXrSnp31S
-         IDWTMIuOOnjbs/l3MRn0x5I2u6x+LlCmdw341+JLwNzvmcdz8NXz5jMDYG/fIQMj+HuW
-         qdCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=va17hEIN1gMI5572/Bu5U8n1TthGJNzz9MlZ0qjXfQ8=;
-        b=HQQFIB6iCNMG6E8Mga0tYu9F/w7QIRY0z+lLc6OUC4abuv8bGNNejdLMDErnaB3a9T
-         T67migVBb5vnUQhVoSjuuqQyPBtqaXZXdhyXVRk5HrNM8Wh/74GI07K/XkzDBT1KxKAE
-         IK87iBpjkmyihQ4bQHvityi8BFhqqMUmX031N2ZkF5Q/wBqPypnXuoC/XusUTvULtU//
-         3nU/DprUuV2BsSkpu3NjE0VEALJtdeLIai0Dc9VeEgySR6o3cV3bQsvVZ4mnjERKmDGk
-         v3YH8eKAHas3Vhh1doPl1NjVOVG2r8xh754MxrJJ5rp2AczYT/KJHXAe26DEF0dF5JbH
-         DeWQ==
-X-Gm-Message-State: AOAM531vbC1daW47FLgpgtolfWdJb3dkh2JqFUNEYPHwus3tq8MrpT4A
-        oaGq1mzKmAA8YSnYRcWSyBQPnQ09OCzrCBW3lyPiFQ==
-X-Google-Smtp-Source: ABdhPJzWCsSOiCbEfusfgq4XxUrrYUu6eiejQ1dbIOPGeJVq5NDbusaXUpTSUd+FBBrrZ7R4t66BAiFanTN3I3naU+o=
-X-Received: by 2002:a67:bb0f:: with SMTP id m15mr24995139vsn.43.1619622810897;
- Wed, 28 Apr 2021 08:13:30 -0700 (PDT)
+        id S239780AbhD1PO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 11:14:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35032 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239803AbhD1POw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 11:14:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F6F361440
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 15:14:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619622847;
+        bh=xG7IdJumg4Q9sXJ8+UBUVHjJ+hKMOn7nNzLC0QXPCQU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ksjBkX+Sw4ROm+ksLudw+FDw/+NmY/ywobwWShXfUoBKOOYoAcZR2+k4PZK/f1Xud
+         nvBWDWpDKansHO99Hqz82+rPuGcPJ1gqhWPSAF/EQIUJCU7Wg1G04iFLXW/ZhwdoHZ
+         TrrnV7pFmK2E4W1HDN3JLm+6BvfRmIYJsV/bn4P0MuS+yMc2Xv2ejwz8JlkxzWDvDa
+         wteZ1ICPuRFSz3H+ztxiuhouJLagQoE+mN8K9zxESNDOJIvgfJ/x44AdqCB07sUNKt
+         M2fKPJJS5OkqVbWSpedvwVcoD6DPf9z2Rs/WkiOVH/7U7TgYyZFoBpCIp8EvN3wCbn
+         4dRUo6q8EyTcA==
+Received: by mail-ej1-f47.google.com with SMTP id u17so95279932ejk.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 08:14:07 -0700 (PDT)
+X-Gm-Message-State: AOAM532TvmYGqYbp4yIuz0ZYTAm/fyEmRfGcU2qzRZRYT2iTiZihfHD0
+        x++/7BPJsNa3cpFpATjGCcF3p+QOdcMynDfY7ZO1Og==
+X-Google-Smtp-Source: ABdhPJxOcmIc+lDu0PisdMd/DERFJX0tTTN+bEnjlJAW1lkwYOMUPs398lWAWCP3CiFZM6LmCf3D166ugEX/ePVWSjw=
+X-Received: by 2002:a17:906:f742:: with SMTP id jp2mr13124583ejb.199.1619622845689;
+ Wed, 28 Apr 2021 08:14:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <1616264220-25825-1-git-send-email-sbhanu@codeaurora.org>
- <CAD=FV=WLZCSd6D5VFyD+1KBp5n1qyszER2EVaEMwYjQfPSSDnA@mail.gmail.com>
- <b77f207b-2d90-3c8b-857f-625bd3867ed1@codeaurora.org> <6fdf704c4716f5873d413229ca8adc57@codeaurora.org>
- <CAD=FV=Wa4fT5wZgd0==8kLy_tzTLgdZ-HwdfOEAM9pMeMjjFyg@mail.gmail.com>
- <8126e130e5c0ea1e7ea867414f0510c0@codeaurora.org> <CAD=FV=XavWbf_b7-=JT6V5_RNA8CjdK4oRu7H719AaPDJ5tsqQ@mail.gmail.com>
- <32096a375966e1fcc149016df012c445@codeaurora.org> <CAD=FV=U0zEDi1Xn3OmVFA3h3maVWS_o2FXOW9qDEzTf1Moja=A@mail.gmail.com>
- <7c6805abf9c1f590bc4d66d625152f22@codeaurora.org>
-In-Reply-To: <7c6805abf9c1f590bc4d66d625152f22@codeaurora.org>
-From:   Doug Anderson <dianders@google.com>
-Date:   Wed, 28 Apr 2021 08:13:18 -0700
-Message-ID: <CAD=FV=W8z2VgbP6mepVNXJ8ZO_Enb+ftwG1HQhq8HtEyG1ppOA@mail.gmail.com>
-Subject: Re: [PATCH V2] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD card
-To:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>,
-        Georgi Djakov <georgi.djakov@linaro.org>
-Cc:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Sahitya Tummala <stummala@codeaurora.org>,
-        Ram Prakash Gupta <rampraka@codeaurora.org>,
-        Sayali Lokhande <sayalil@codeaurora.org>,
-        sartgarg@codeaurora.org, Rajendra Nayak <rnayak@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>, cang@codeaurora.org,
-        pragalla@codeaurora.org, nitirawa@codeaurora.org,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Evan Green <evgreen@chromium.org>,
-        Odelu Kukatla <okukatla@codeaurora.org>
+References: <20210407014502.24091-1-michel@lespinasse.org> <20210407014502.24091-14-michel@lespinasse.org>
+ <eee7431c-3dc8-ca3c-02fb-9e059d30e951@kernel.org> <20210428145823.GA856@lespinasse.org>
+In-Reply-To: <20210428145823.GA856@lespinasse.org>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 28 Apr 2021 08:13:53 -0700
+X-Gmail-Original-Message-ID: <CALCETrVRGtVqv9cMSryfg5q3iZ9s3jBey20cY4K23YLRhQRzbQ@mail.gmail.com>
+Message-ID: <CALCETrVRGtVqv9cMSryfg5q3iZ9s3jBey20cY4K23YLRhQRzbQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 13/37] mm: implement speculative handling in __handle_mm_fault().
+To:     Michel Lespinasse <michel@lespinasse.org>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Rom Lemarchand <romlem@google.com>,
+        Linux-Kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Wed, Apr 28, 2021 at 3:47 AM <sbhanu@codeaurora.org> wrote:
+On Wed, Apr 28, 2021 at 8:05 AM Michel Lespinasse <michel@lespinasse.org> wrote:
 >
-> On 2021-04-21 01:44, Doug Anderson wrote:
-> > Hi,
+> On Wed, Apr 07, 2021 at 08:36:01AM -0700, Andy Lutomirski wrote:
+> > On 4/6/21 6:44 PM, Michel Lespinasse wrote:
+> > > The page table tree is walked with local irqs disabled, which prevents
+> > > page table reclamation (similarly to what fast GUP does). The logic is
+> > > otherwise similar to the non-speculative path, but with additional
+> > > restrictions: in the speculative path, we do not handle huge pages or
+> > > wiring new pages tables.
 > >
-> > On Tue, Apr 20, 2021 at 10:21 AM <sbhanu@codeaurora.org> wrote:
-> >>
-> >> On 2021-04-15 01:55, Doug Anderson wrote:
-> >> > Hi,
-> >> >
-> >> > On Tue, Apr 13, 2021 at 3:59 AM <sbhanu@codeaurora.org> wrote:
-> >> >>
-> >> >> >> >>> +                                       required-opps =
-> >> >> >> >>> <&rpmhpd_opp_low_svs>;
-> >> >> >> >>> +                                       opp-peak-kBps = <1200000
-> >> >> >> >>> 76000>;
-> >> >> >> >>> +                                       opp-avg-kBps = <1200000
-> >> >> >> >>> 50000>;
-> >> >> >> >> Why are the kBps numbers so vastly different than the ones on sc7180
-> >> >> >> >> for the same OPP point. That implies:
-> >> >> >> >>
-> >> >> >> >> a) sc7180 is wrong.
-> >> >> >> >>
-> >> >> >> >> b) This patch is wrong.
-> >> >> >> >>
-> >> >> >> >> c) The numbers are essentially random and don't really matter.
-> >> >> >> >>
-> >> >> >> >> Can you identify which of a), b), or c) is correct, or propose an
-> >> >> >> >> alternate explanation of the difference?
-> >> >> >> >>
-> >> >> >>
-> >> >> >> We calculated bus votes values for both sc7180 and sc7280 with ICB
-> >> >> >> tool,
-> >> >> >> above mentioned values we got for sc7280.
-> >> >> >
-> >> >> > I don't know what an ICB tool is. Please clarify.
-> >> >> >
-> >> >> > Also: just because a tool spits out numbers that doesn't mean it's
-> >> >> > correct. Presumably the tool could be wrong or incorrectly configured.
-> >> >> > We need to understand why these numbers are different.
-> >> >> >
-> >> >> we checked with ICB tool team on this they conformed as Rennell &
-> >> >> Kodiak
-> >> >> are different chipsets,
-> >> >> we might see delta in ib/ab values due to delta in scaling factors.
-> >> >
-> >> > ...but these numbers are in kbps, aren't they? As I understand it
-> >> > these aren't supposed to be random numbers spit out by a tool but are
-> >> > supposed to be understandable by how much bandwidth an IP block (like
-> >> > MMC) needs from the busses it's connected to. Since the MMC IP block
-> >> > on sc7180 and sc7280 is roughly the same there shouldn't be a big
-> >> > difference in numbers.
-> >> >
-> >> > Something smells wrong.
-> >> >
-> >> > Adding a few people who understand interconnects better than I do,
-> >> > though.
-> >> >
-> >>
-> >> ICB team has re-checked the Rennell ICB tool and they confirmed that
-> >> some configs were wrong in Rennell ICB tool and they corrected it.With
-> >> the new updated Rennell ICB tool below are the values :
-> >>
-> >>
-> >> Rennell LC:(Sc7180)
-> >>
-> >> opp-384000000 {
-> >>               opp-hz = /bits/ 64 <384000000>;
-> >>               required-opps = <&rpmhpd_opp_nom>;
-> >>               opp-peak-kBps = <5400000 490000>;
-> >>               opp-avg-kBps = <6600000 300000>;
-> >> };
-> >>
-> >>
-> >> And now, these values are near to Kodaik LC values:
-> >>
-> >> Kodaik LC:(SC7280)
-> >>
-> >> opp-384000000 {
-> >>             opp-hz = /bits/ 64 <384000000>;
-> >>             required-opps = <&rpmhpd_opp_nom>;
-> >>             opp-peak-kBps = <5400000 399000>;
-> >>             opp-avg-kBps = <6000000 300000>;
-> >> };
+> > Not on most architectures.  Quoting the actual comment in mm/gup.c:
 > >
-> > This still isn't making sense to me.
+> > >  * Before activating this code, please be aware that the following assumptions
+> > >  * are currently made:
+> > >  *
+> > >  *  *) Either MMU_GATHER_RCU_TABLE_FREE is enabled, and tlb_remove_table() is used to
+> > >  *  free pages containing page tables or TLB flushing requires IPI broadcast.
 > >
-> > * sc7180 and sc7280 are running at the same speed. I'm glad the
-> > numbers are closer now, but I would have thought they'd be exactly the
-> > same.
+> > On MMU_GATHER_RCU_TABLE_FREE architectures, you cannot make the
+> > assumption that it is safe to dereference a pointer in a page table just
+> > because irqs are off.  You need RCU protection, too.
 > >
-> > * Aren't these supposed to be sensible? This is eMMC that does max
-> > transfer rates of 400 megabytes / second to the external device. You
-> > have bandwidths listed here of 5,400,000 kBps = 5,400,000 kilobytes /
-> > second = 5400 megabytes / second. I can imagine there being some
-> > overhead where an internal bus might need to be faster but that seems
-> > excessive. This is 13.5x!
-> >
+> > You have the same error in the cover letter.
 >
-> These numbers are not related to SDCC bandwidth, these are the values
-> needed for the NOC's to run in nominal voltage corners (internal to
-> hardware) and
-> thus it helps SDCC to run in nominal to get required through put
-> (384MBps).So above calculation mentioned by you is not applicable here.
-
-OK. I guess if everyone else understands this and it's just me that
-doesn't then I won't stand in the way. In general, though, the device
-tree is supposed to be describing the hardware in a way that makes
-sense on its own. It's not a place to just dump in magic numbers.
-These numbers must be somehow related to the transfer rate of the SD
-card since otherwise they wouldn't scale up with faster card clocks.
-Given that these numbers are expressed in "kBps" (since you're storing
-them in a property that has "kBps" in the name), I would expect that
-these numbers are expressing some type of bandwidth. I still haven't
-really understood why you have to scale some bandwidth at over 10x the
-card clock speed.
-
-Said another way: you're saying that you need these numbers because
-they make a whole bunch of math work out. I'm saying that these aren't
-just supposed to be magic numbers. They're supposed to make sense on
-their own and you should be able to describe to me how you arrived at
-these numbers in a way that I could do the math on my own. Saying "we
-plugged this into some program and it spit out these numbers" isn't
-good enough.
-
-
-> > * I can't see how it can make sense that "average" values are higher
-> > than "peak" values.
+> Hi Andy,
 >
+> Thanks for your comment. At first I thought did not matter, because we
+> only enable ARCH_SUPPORTS_SPECULATIVE_PAGE_FAULT on selected
+> architectures, and I thought MMU_GATHER_RCU_TABLE_FREE is not set on
+> these. But I was wrong - MMU_GATHER_RCU_TABLE_FREE is enabled on X86
+> with paravirt. So I took another look at fast GUP to make sure I
+> actually understand it.
 >
-> Here actual peak = peak number * 2
-> actual average = average number
->
-> and this multiplication is taken care by ICC driver, so technically
-> actual peak is still high than average.
+> This brings a question about lockless_pages_from_mm() - I see it
+> disabling interrupts, which it explains is necessary for disabling THP
+> splitting IPIs, but I do not see it taking an RCU read lock as would
+> be necessary for preventing paga table freeing on
+> MMU_GATHER_RCU_TABLE_FREE configs. I figure local_irq_save()
+> indirectly takes an rcu read lock somehow ? I think this is something
+> I should also mention in my explanation, and I have not seen a good
+> description of this on the fast GUP side...
 
-Sorry, but that is really counter-intuitive. Georgi: is that how this
-is normally expected to work?
+Sounds like a bug!  That being said, based on my extremely limited
+understanding of how the common RCU modes work, local_irq_save()
+probably implies an RCU lock in at least some cases.  Hi Paul!
 
--Doug
+--Andy
