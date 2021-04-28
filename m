@@ -2,76 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 534D336D3DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BDB236D3DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237498AbhD1IX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 04:23:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237390AbhD1IXz (ORCPT
+        id S237172AbhD1IYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 04:24:12 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:17067 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236961AbhD1IYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 04:23:55 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E932CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 01:23:10 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d124so436700pfa.13
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 01:23:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=TWcMSqO6ibem4/zpzxUEem0FvcMEDi0hJeG4n/5PAj8=;
-        b=Yh6yF0SGSHYUPqHYLil7VUjxJ++K3y3DoC6A4A8Lkos8FtRr/Cce8VjUZiGSBERF4n
-         HMwiCLIxhQqp3AJuDGsfyeSkK6i51W0riDWcBxOUprLoc17sCMOZIa6Fpfq6k1OjB0hj
-         hXQwjpOX6QsnueQhNCSjIqzenEvh/jMdG8MtvZcMHg3vb2Nb5HXrvPTdhnyFQiLVgxnd
-         o/5H/2RMKDsVQhkeLpDh8P/6pWyeKjCir5ZgXUfMxc3oq0QI/ssVzz+Jy05BPk6/Voxs
-         1gozThp0EtnBwsfRuZ3WA3cnMyhsUY8yOBpPOBv/zTOMZQ3QwWBHD7/qnZ70Q9oNq4OU
-         HqtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=TWcMSqO6ibem4/zpzxUEem0FvcMEDi0hJeG4n/5PAj8=;
-        b=pm7Lr01V/l7TsD/wHga14oGLu/YurIEG8+ALCHAK04ysPleNywmgu1Qh9vGi6ZnZYJ
-         73ivGxF65qUOUshnezJ+Cqq2Nh9X2TBTb30DPKVtGosojhwa/7SyfzONc5XCti62sKqK
-         fPCR2jYd5OaQQ7MPxUOwjura5kf/lZKUYKPTNgRJkNDPY1qkXfLdSaBdp8NQBJlmq3yn
-         AAzQfp4VpOwqS77ViDMkIGkYAiWfuHxj+jdzmtSbbrKNGmxl4ZImMpRijJnB3y9+3Vvp
-         Wvdl0gHNjEh+PoidCzqUzO6fg1vlEaD11jNFsC+vP8zXMDBCZ6o3TaXYLNUlPpy0I0fZ
-         RNBw==
-X-Gm-Message-State: AOAM530FJyRXTZtnbVUJGmuv9WfNjLJsdj8jW/zfXlFaxHWQy9ptJbLm
-        7Enh8jr1M7RjaOYoCb5zsXgT2eJ6FtDop+HUnLU=
-X-Google-Smtp-Source: ABdhPJzfMCgY40XKWwEL1oWhCX5GV4/ZYE17oRFFu3oN8J0rBn8+sW8zNqTn71F68g/4cthbnecIpiq9G6nKLrM0hHQ=
-X-Received: by 2002:a63:135d:: with SMTP id 29mr19081275pgt.83.1619598190475;
- Wed, 28 Apr 2021 01:23:10 -0700 (PDT)
+        Wed, 28 Apr 2021 04:24:11 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FVWmS4HTwz16MPc;
+        Wed, 28 Apr 2021 16:20:56 +0800 (CST)
+Received: from [10.174.176.174] (10.174.176.174) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 28 Apr 2021 16:23:22 +0800
+Subject: Re: [PATCH 2/5] mm/huge_memory.c: use page->deferred_list
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        <akpm@linux-foundation.org>
+CC:     <ziy@nvidia.com>, <william.kucharski@oracle.com>,
+        <willy@infradead.org>, <yang.shi@linux.alibaba.com>,
+        <aneesh.kumar@linux.ibm.com>, <rcampbell@nvidia.com>,
+        <songliubraving@fb.com>, <kirill.shutemov@linux.intel.com>,
+        <riel@surriel.com>, <hannes@cmpxchg.org>, <minchan@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+References: <20210427133214.2270207-1-linmiaohe@huawei.com>
+ <20210427133214.2270207-3-linmiaohe@huawei.com>
+ <e326f0c6-a4dc-6788-7be7-a175c47b2249@arm.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <2cda7d1a-d769-2635-24ce-928e33d6bfcc@huawei.com>
+Date:   Wed, 28 Apr 2021 16:23:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Reply-To: richardnabasaa@gmail.com
-Sender: rabiuusman967@gmail.com
-Received: by 2002:a05:6a10:8c10:0:0:0:0 with HTTP; Wed, 28 Apr 2021 01:23:10
- -0700 (PDT)
-From:   Richard Nabasa <richardnabasaa@gmail.com>
-Date:   Wed, 28 Apr 2021 08:23:10 +0000
-X-Google-Sender-Auth: DbnmsjsLSxf2KNlC-XMdnlEHWns
-Message-ID: <CAC=67fmqmbWWi3gKd3GnmSBenKpKF7tp17ydphiHRLJPiTS5fw@mail.gmail.com>
-Subject: Urgent Response
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <e326f0c6-a4dc-6788-7be7-a175c47b2249@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.174]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am Mr.Richard, I am a banker by profession, i need your urgent
-assistance, from my section in the bank i discovered an abandoned sum
-of $11.6million dollars that belongs to one of our foreign customer
-who died along with his supposed next of kin since July 22, 2003. The
-money has been here in our Bank lying dormant for years now without
-anybody coming for the claim of it. I need your co-operation in
-transferring the fund into your private bank account.
+On 2021/4/28 11:07, Anshuman Khandual wrote:
+> 
+> On 4/27/21 7:02 PM, Miaohe Lin wrote:
+>> Now that we can represent the location of ->deferred_list instead of
+>> ->mapping + ->index, make use of it to improve readability.
+> 
+> Could you please explain how page->deferred_list and page->mapping
+> are interchangeable here ?
 
-I want the bank to release the money to you as the relative and the
-next of kin to our deceased customer, the Banking laws here does not
-allow such money to stay more than 21years,because the money will be
-recalled to the Bank treasury account as unclaimed fund. Once the
-funds have been transferred to your nominated bank account, we shall
-then share in the ratio of 60% for me and 40% for you by indicating
-your interest i will send you the full details on how the transfer
-will be executed.
+It's because there is a union in struct page:
+
+union {
+		struct {
+			struct list_head lru;
+			struct address_space *mapping;
+			pgoff_t index;
+			unsigned long private;
+		};
+		struct {
+			unsigned long _compound_pad_1;
+			atomic_t hpage_pinned_refcount;
+			struct list_head *deferred_list*;
+		};
+};
+
+And initially there is no deferred_list and it's added via commit 66a6ffd2af42 ("mm: combine first
+three unions in struct page"). Also commit fa3015b7eed5 ("mm: use page->deferred_list") did the similar
+cleanup. Am I expected to add these to the commit log?
+
+Many thanks.
+
+> 
+>>
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> ---
+>>  mm/huge_memory.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>> index 63ed6b25deaa..76ca1eb2a223 100644
+>> --- a/mm/huge_memory.c
+>> +++ b/mm/huge_memory.c
+>> @@ -2868,7 +2868,7 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
+>>  	spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
+>>  	/* Take pin on all head pages to avoid freeing them under us */
+>>  	list_for_each_safe(pos, next, &ds_queue->split_queue) {
+>> -		page = list_entry((void *)pos, struct page, mapping);
+>> +		page = list_entry((void *)pos, struct page, deferred_list);
+>>  		page = compound_head(page);
+>>  		if (get_page_unless_zero(page)) {
+>>  			list_move(page_deferred_list(page), &list);
+>> @@ -2883,7 +2883,7 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
+>>  	spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
+>>  
+>>  	list_for_each_safe(pos, next, &list) {
+>> -		page = list_entry((void *)pos, struct page, mapping);
+>> +		page = list_entry((void *)pos, struct page, deferred_list);
+>>  		if (!trylock_page(page))
+>>  			goto next;
+>>  		/* split_huge_page() removes page from list on success */
+>>
+> .
+> 
+
