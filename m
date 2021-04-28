@@ -2,99 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE57136DDC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F8A36DDBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241441AbhD1RBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 13:01:53 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2947 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241235AbhD1RBw (ORCPT
+        id S241432AbhD1RBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 13:01:09 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49288 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229993AbhD1RBC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 13:01:52 -0400
-Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FVl7g1YR8z6xhS0;
-        Thu, 29 Apr 2021 00:53:19 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 28 Apr 2021 19:01:05 +0200
-Received: from localhost (10.52.123.69) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 28 Apr
- 2021 18:01:05 +0100
-Date:   Wed, 28 Apr 2021 17:59:31 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        "Robin van der Gracht" <robin@protonic.nl>,
-        <linux-iio@vger.kernel.org>,
-        "Lars-Peter Clausen" <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        "Dmitry Torokhov" <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH v6 1/3] dt-bindings:iio:adc: add generic
- settling-time-us and oversampling-ratio channel properties
-Message-ID: <20210428175931.00002a7e@Huawei.com>
-In-Reply-To: <20210428073208.19570-2-o.rempel@pengutronix.de>
-References: <20210428073208.19570-1-o.rempel@pengutronix.de>
-        <20210428073208.19570-2-o.rempel@pengutronix.de>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Wed, 28 Apr 2021 13:01:02 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619629216;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5uES+rTqUZ9pQ5unUa2AcUhQ/cbr0Z7u7rT0zVMi434=;
+        b=yMXY13I8gO5OoJyetS5t4ak6Xy5OFYV+nHM+adLSa+4cb9tX0R0O5hz82iRfSnvnqaHQJI
+        Z6hDhDr5n4HK+wQQ0b5XJD56Q9CLztTjrOag4reQNAZQC39hq845DlmbGMYeGcF809X0yl
+        yAAOL3AhSR2heoyhdMTFybNA5uFNreXsPT4QFxHdSPafPr3ZujFYr6bhrMxoZpVBg7Wl2q
+        1g9fmqfMquxeELR+EVRAJXQFFNU8e3O2g2gPPirHYqQ1gIY81WUUufJcU9G5i1pesLcc3W
+        uuzxULHp4bg617srIqVWBn1rg19kwvdSLqWr/HiZX4g7ffgTAdL8tgRsVPofwQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619629216;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5uES+rTqUZ9pQ5unUa2AcUhQ/cbr0Z7u7rT0zVMi434=;
+        b=XPSjCxz6k0LO55QbJQX5dNyBjeKy3Cxy4eecHSWjrRlqiGqkg1zPBTPsvS0mOq1/AQhsjH
+        qN2yplt1kVzpavDQ==
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     paulmck@kernel.org, Feng Tang <feng.tang@intel.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        0day robot <lkp@intel.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel-team@fb.com, neeraju@codeaurora.org,
+        zhengjun.xing@intel.com, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [clocksource]  8c30ace35d: WARNING:at_kernel/time/clocksource.c:#clocksource_watchdog
+In-Reply-To: <YImBlV8l7bjZ7Q6G@hirez.programming.kicks-ass.net>
+References: <87y2d3mo2q.ffs@nanos.tec.linutronix.de> <87a6pimt1f.ffs@nanos.tec.linutronix.de> <YImBlV8l7bjZ7Q6G@hirez.programming.kicks-ass.net>
+Date:   Wed, 28 Apr 2021 19:00:15 +0200
+Message-ID: <871raumjj4.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.123.69]
-X-ClientProxiedBy: lhreml751-chm.china.huawei.com (10.201.108.201) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Apr 2021 09:32:06 +0200
-Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+On Wed, Apr 28 2021 at 17:39, Peter Zijlstra wrote:
+> On Wed, Apr 28, 2021 at 03:34:52PM +0200, Thomas Gleixner wrote:
+>> #4 is the easy case because we can check MSR_TSC_ADJUST to figure out
+>>    whether something has written to MSR_TSC or MSR_TSC_ADJUST and undo
+>>    the damage in a sane way.
+>
+> This is after the fact though; userspace (and kernel space) will have
+> observed non-linear time and things will be broken in various subtle and
+> hard to tell ways.
 
-> Settling time and over sampling is a typical challenge for different IIO ADC
-> devices. So, introduce channel specific settling-time-us and oversampling-ratio
-> properties to cover this use case.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-This and patch 2 both look good to me.  Given Rob gave a minor comment on the
-previous version I don't feel I need him to look at this again.
+What I observed in the recent past is that _IF_ that happens it's a
+small amount of cycles so it's not a given that this can be observed
+accross CPUs. But yes, it's daft.
 
-Will pick up in a few days if no other reviews come in to require a v7.
+>> I can live with that and maybe we should have done that 15 years ago
+>> instead of trying to work around it at the symptom level.
+>
+> Anybody that still has runtime BIOS wreckage will then silently suffer
+> nonlinear time, doubly so for anybody not having TSC_ADJUST. Are we sure
+> we can tell them all to bugger off and buy new hardware?
+>
+> At the very least we need something like tsc=broken, to explicitly mark
+> TSC bad on machines, so that people that see TSC fail on their current
+> kernels can continue to use the new kernels. This requires a whole lot
+> of care on the part of users though, and will raise a ruckus, because I
+> bet a fair number of these people are not even currently aware we're
+> disabling TSC for them :/
+
+I'm still allowed to dream, right? :)
 
 Thanks,
 
-Jonathan
-
-> ---
->  Documentation/devicetree/bindings/iio/adc/adc.yaml | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/adc/adc.yaml b/Documentation/devicetree/bindings/iio/adc/adc.yaml
-> index 912a7635edc4..db348fcbb52c 100644
-> --- a/Documentation/devicetree/bindings/iio/adc/adc.yaml
-> +++ b/Documentation/devicetree/bindings/iio/adc/adc.yaml
-> @@ -39,4 +39,16 @@ properties:
->        The first value specifies the positive input pin, the second
->        specifies the negative input pin.
->  
-> +  settling-time-us:
-> +    description:
-> +      Time between enabling the channel and first stable readings.
-> +
-> +  oversampling-ratio:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      Oversampling is used as replacement of or addition to the low-pass filter.
-> +      In some cases, the desired filtering characteristics are a function the
-> +      device design and can interact with other characteristics such as
-> +      settling time.
-> +
->  additionalProperties: true
-
+        tglx
