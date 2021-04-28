@@ -2,128 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0893336D6F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2C736D6FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232528AbhD1MFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 08:05:47 -0400
-Received: from mail1.perex.cz ([77.48.224.245]:55910 "EHLO mail1.perex.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229645AbhD1MFq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 08:05:46 -0400
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 23366A0046;
-        Wed, 28 Apr 2021 14:04:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 23366A0046
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-        t=1619611499; bh=ENLwDl/OLcklOZfcnxRfMQqj+SXE/rIe811WLs5W4hw=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=dcEDzuWUErsp+Pawe2OIPbVWEabDWgNOTcNWw9zuJ6Q3/fsF/xpno6SzMKbruK/L3
-         4zYsZ7ztOwrJaVLwrNFIt7W3Tulgxhu0hkytnKhSdptVZN52cdIpsbCOmQv7JYBLll
-         LqE3zCbqCqPbi7l2gGmAX9kvfSherL9JsohKXJV0=
-Received: from p1gen2.localdomain (unknown [192.168.100.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: perex)
-        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-        Wed, 28 Apr 2021 14:04:50 +0200 (CEST)
-Subject: Re: [PATCH] drivers: pnp: proc.c: Handle errors while attaching
- devices
-To:     bkkarthik <bkkarthik@pesu.pes.edu>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     Anupama K Patil <anupamakpatil123@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        kernelnewbies@kernelnewbies.org
-References: <20210424194301.jmsqpycvsm7izbk3@ubuntu> <YIZJwkux0ghJ8k9d@unreal>
- <20210426175031.w26ovnffjiow346h@burgerking>
-From:   Jaroslav Kysela <perex@perex.cz>
-Message-ID: <59a5d631-6658-2034-06c4-467520b5b9f7@perex.cz>
-Date:   Wed, 28 Apr 2021 14:04:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210426175031.w26ovnffjiow346h@burgerking>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S231822AbhD1MHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 08:07:37 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:37774 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229645AbhD1MHg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 08:07:36 -0400
+Received: from localhost.localdomain (unknown [58.249.121.165])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9CxCcrST4lgjv8OAA--.2615S2;
+        Wed, 28 Apr 2021 20:06:43 +0800 (CST)
+From:   Xiaochuan Mao <maoxiaochuan@loongson.cn>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Qing Zhang <zhangqing@loongson.cn>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Xiaochuan Mao <maoxiaochuan@loongson.cn>
+Subject: [PATCH v2] MIPS:DTS:Correct device id of pcie for Loongnon-2K
+Date:   Wed, 28 Apr 2021 20:06:28 +0800
+Message-Id: <20210428120628.21041-1-maoxiaochuan@loongson.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: AQAAf9CxCcrST4lgjv8OAA--.2615S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7AF18KrWfXFWDuFy7Jw4DCFg_yoW8XFWxpF
+        1akayDKr1ruF1S9w4rCFyv9F47GFZxJa98tF47tryjyFWqqayUur1fJFZ3JF45XF4rJayF
+        vry0gFy8GFs7CrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkq14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW5JwCF
+        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjsjjDUUUUU==
+X-CM-SenderInfo: xpdr5xxdrfx3ldqnw6o6or00hjvr0hdfq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne 26. 04. 21 v 19:50 bkkarthik napsal(a):
-> On 21/04/26 08:04AM, Leon Romanovsky wrote:
->> On Sun, Apr 25, 2021 at 01:13:01AM +0530, Anupama K Patil wrote:
->>> isapnp_proc_init() does not look at the return value from
->>> isapnp_proc_attach_device(). Check for this return value in
->>> isapnp_proc_detach_device().
->>>
->>> Cleanup in isapnp_proc_detach_device and
->>> isapnp_proc_detach_bus() for cleanup.
->>>
->>> Changed sprintf() to the kernel-space function scnprintf() as it returns
->>> the actual number of bytes written.
->>>
->>> Removed unnecessary variables de, e of type 'struct proc_dir_entry' to
->>> save memory.
->>
->> What exactly do you fix for such an old code?
-> 
-> I was not aware that this code is so old. This fix was made after checkpatch reported assignment inside an if-statement.
-> Please ignore this patch if th change is not necessary as the code is probably not being used anywhere :)
-> 
-> Maybe the code has to be marked as obsolete in the MAINTAINERS file to prevent patches being sent?
-> 
->>
->>>
->>> Suggested-by: Shuah Khan <skhan@linuxfoundation.org>
->>> Co-developed-by: B K Karthik <bkkarthik@pesu.pes.edu>
->>> Signed-off-by: B K Karthik <bkkarthik@pesu.pes.edu>
->>> Signed-off-by: Anupama K Patil <anupamakpatil123@gmail.com>
->>> ---
->>>  drivers/pnp/isapnp/proc.c | 40 +++++++++++++++++++++++++++++----------
->>>  1 file changed, 30 insertions(+), 10 deletions(-)
->>>
->>> diff --git a/drivers/pnp/isapnp/proc.c b/drivers/pnp/isapnp/proc.c
->>> index 785a796430fa..46ebc24175b7 100644
->>> --- a/drivers/pnp/isapnp/proc.c
->>> +++ b/drivers/pnp/isapnp/proc.c
->>> @@ -54,34 +54,54 @@ static const struct proc_ops isapnp_proc_bus_proc_ops = {
->>>  	.proc_read	= isapnp_proc_bus_read,
->>>  };
->>>  
->>> +static int isapnp_proc_detach_device(struct pnp_dev *dev)
->>> +{
->>> +	proc_remove(dev->procent);
->>> +	dev->procent = NULL;
->>> +	return 0;
->>> +}
->>> +
->>> +static int isapnp_proc_detach_bus(struct pnp_card *bus)
->>> +{
->>> +	proc_remove(bus->procdir);
->>> +	return 0;
->>> +}
->>
->> Please don't add one line functions that are called only once and have
->> return value that no one care about it.
-> 
-> These were only intended for a clean-up job, the idea of this function came from how PCI handles procfs.
-> Maybe those should be changed?
+from Loongson-2K user manual know that Loongson-2K have two
+pcie controller pcie0 and pcie1, pcie0 have four port named port0~port3
+and pcie1 have 2 port named port0~port1. the device id of port0 is 7a19
+in each pcie controller and others are 7a09.
 
-Which code you refer? I see:
+Signed-off-by: Xiaochuan Mao <maoxiaochuan@loongson.cn>
+---
+v1:
+revert class code
+---
+ .../boot/dts/loongson/loongson64-2k1000.dtsi     | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-       for_each_pci_dev(dev)
-                pci_proc_attach_device(dev);
-
-
-The error codes are ignored, too. It does not harm, if proc entries are not
-created (in this case - the system is unstable anyway). We should concentrate
-only to the wrong pointers usage.
-
-						Jaroslav
-
+diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+index 569e814def83..912dcad361ef 100644
+--- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
++++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+@@ -163,8 +163,8 @@
+ 			};
+ 
+ 			pci_bridge@a,0 {
+-				compatible = "pci0014,7a19.0",
+-						   "pci0014,7a19",
++				compatible = "pci0014,7a09.0",
++						   "pci0014,7a09",
+ 						   "pciclass060400",
+ 						   "pciclass0604";
+ 
+@@ -178,8 +178,8 @@
+ 			};
+ 
+ 			pci_bridge@b,0 {
+-				compatible = "pci0014,7a19.0",
+-						   "pci0014,7a19",
++				compatible = "pci0014,7a09.0",
++						   "pci0014,7a09",
+ 						   "pciclass060400",
+ 						   "pciclass0604";
+ 
+@@ -193,8 +193,8 @@
+ 			};
+ 
+ 			pci_bridge@c,0 {
+-				compatible = "pci0014,7a19.0",
+-						   "pci0014,7a19",
++				compatible = "pci0014,7a09.0",
++						   "pci0014,7a09",
+ 						   "pciclass060400",
+ 						   "pciclass0604";
+ 
+@@ -223,8 +223,8 @@
+ 			};
+ 
+ 			pci_bridge@e,0 {
+-				compatible = "pci0014,7a19.0",
+-						   "pci0014,7a19",
++				compatible = "pci0014,7a09.0",
++						   "pci0014,7a09",
+ 						   "pciclass060400",
+ 						   "pciclass0604";
+ 
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.17.1
+
