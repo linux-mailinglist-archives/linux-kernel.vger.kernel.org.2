@@ -2,173 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 552D336E0A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 23:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7795536E0AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 23:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbhD1VEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 17:04:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbhD1VEI (ORCPT
+        id S231274AbhD1VET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 17:04:19 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:15666 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231218AbhD1VEQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 17:04:08 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A0DC06138A
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 14:03:21 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id q4so19392497qtn.5
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 14:03:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=WDC8cMj9KQFGN4oBcXzeVKvPTnKsbzd/gp0dCQd3X/Q=;
-        b=PWfyOCz5TRVUzpG1EnvMvWIUqUPjRWGfHRaQDh1gQrU3bm+IA8jET9L2HQs1jsgddu
-         KJMUUzIo0qPq4qZ1QF4Ijkptc1ShjKY0xkgvIJnGoRpxTjka8IINMp2eAwbGqRho8QRN
-         4g2d4UFc9fY8A8tiNxbklAWVZ+eIKiuYpxiaZ2BXCWKAzRw547K1ezKj+xmWddgegHsu
-         NECnDTscXuhIYqkp7FhZarCow+KRdssgIwz7iTWgxwhxkRc0ubxs/YyN2kjylejK5U/t
-         GHNLe3pUhmcULk7fGyYlOaB2HcxH0hHxEVgpi/8giB7fKphxewl+1cilR+A9ktR8Z+im
-         0MCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=WDC8cMj9KQFGN4oBcXzeVKvPTnKsbzd/gp0dCQd3X/Q=;
-        b=uSM0Sk0KQvETEElI6Q7Eu55GupYgraNox33Nt2JPkgAXfsfNbY44vo04K2u9V+hn9U
-         P488Xu6Fcd0MYfuAzfgJCP4YzqjujP4bb5WGDKqmSAGp3AtQORewk7tfIVqPFFTmiON2
-         uQbJ3cR7uNZBJlVzSREUnTb+Xp5RqdraeWHNnDv+j/5S0dagr8q/D3kVeBiH9gecHLe8
-         sfuIbuWg8bsEtEq0YcK7Dc+Ia0r/GDN7HXP+U+/qsNSw6WOITwFXwenrX4W43d1yd0nk
-         62luUsW04IuHRFHo+zQK9awHxR3TVQeSwi9fTMaaJw9QLgU5k13Uu05zWZLeD+cvJIDu
-         VzIQ==
-X-Gm-Message-State: AOAM532e1bjdxaBFXJyt3llg5lsNcOxzOKM4Wm2o1jFYIYqyEhAX1RFm
-        Fual+pPMlosaxFtjrrpoDtXRmA==
-X-Google-Smtp-Source: ABdhPJxHpUFRnQapCxPAOUFJmZDOlcbrm4ZSAzgXZrqUUfcjf4VuDgreeNK4a6SEKbnoW6EIbypMWg==
-X-Received: by 2002:a05:622a:6:: with SMTP id x6mr28372136qtw.1.1619643800361;
-        Wed, 28 Apr 2021 14:03:20 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id k18sm676219qkg.53.2021.04.28.14.03.19
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Wed, 28 Apr 2021 14:03:19 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 14:03:05 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Axel Rasmussen <axelrasmussen@google.com>
-cc:     Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] userfaultfd: release page in error path to avoid
- BUG_ON
-In-Reply-To: <20210428183943.GH6584@xz-x1>
-Message-ID: <alpine.LSU.2.11.2104281338380.9009@eggly.anvils>
-References: <20210428180109.293606-1-axelrasmussen@google.com> <20210428183943.GH6584@xz-x1>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Wed, 28 Apr 2021 17:04:16 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13SL25L3153792;
+        Wed, 28 Apr 2021 17:03:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=LFvpvudi6cDDlcXBX0V6icMIFr+fBvs03XaEAwnJV7o=;
+ b=ppNbP1aP0yLbvbiJYNv5UaOgvXip5nFwsslq04kQulGTbj3y5zvwM9Gy4HRpenM8BHqf
+ dVbQSRx2Dlj69tUdQq0cVQhUxihE7PSUR62RJkk2UHKsD6dYJRzWQ1dvEUzSdd9VX/PO
+ Wb2mf0XinmQSjM0Daql1+AGrXm2vVJixB5Yyyp3CDH3jJInCuLOQ5w/r73fbBdPrdCnw
+ niLjT889ev/HK5x8jlRwpWGR4t3vTlPk+FE3HNvjPrw5IZM3uggXl5r1TZNmhalbLko7
+ XaJcbDl3TBiOJqswHvAETDVSKKIQ0C3BC9szKHLIYU30HSJHWi1w6okcczxsnhzlhO5H ng== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 387f92g0jf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 17:03:29 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13SL2HNa154082;
+        Wed, 28 Apr 2021 17:03:29 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 387f92g0j1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 17:03:29 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13SL3RVb007431;
+        Wed, 28 Apr 2021 21:03:27 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 384ay8j2kq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 21:03:27 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13SL2x6j34472426
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Apr 2021 21:02:59 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6B1DCAE04D;
+        Wed, 28 Apr 2021 21:03:23 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0EE1BAE045;
+        Wed, 28 Apr 2021 21:03:23 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.77.184])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 28 Apr 2021 21:03:22 +0000 (GMT)
+Subject: Re: [PATCH] arch/s390/configs: Change CONFIG_VIRTIO_CONSOLE to "m"
+To:     Thomas Huth <thuth@redhat.com>, linux-s390@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        Marc Hartmayer <mhartmay@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>, cohuck@redhat.com
+References: <20210428082442.321327-1-thuth@redhat.com>
+ <c015ef3f-ff88-113b-a089-e2af9202399a@de.ibm.com>
+ <6e44cc81-fe19-f75b-972f-5c4707f2410f@redhat.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <b75f0447-55d4-09b8-8f3e-d0d54471cac1@de.ibm.com>
+Date:   Wed, 28 Apr 2021 23:03:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <6e44cc81-fe19-f75b-972f-5c4707f2410f@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: QNP59KlRt9igWLM2dHCx1bg1I6Dp0_d8
+X-Proofpoint-ORIG-GUID: kV9X_M9nncp7xe9HpMK5wN6i2wB46icx
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-28_16:2021-04-28,2021-04-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ clxscore=1015 impostorscore=0 mlxscore=0 priorityscore=1501
+ lowpriorityscore=0 spamscore=0 suspectscore=0 mlxlogscore=999 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104280133
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Apr 2021, Peter Xu wrote:
-> On Wed, Apr 28, 2021 at 11:01:09AM -0700, Axel Rasmussen wrote:
-> > Consider the following sequence of events (described from the point of
-> > view of the commit that introduced the bug - see "Fixes:" below):
-> > 
-> > 1. Userspace issues a UFFD ioctl, which ends up calling into
-> >    shmem_mcopy_atomic_pte(). We successfully account the blocks, we
-> >    shmem_alloc_page(), but then the copy_from_user() fails. We return
-> >    -EFAULT. We don't release the page we allocated.
-> > 2. Our caller detects this error code, tries the copy_from_user() after
-> >    dropping the mmap_sem, and retries, calling back into
-> >    shmem_mcopy_atomic_pte().
-> > 3. Meanwhile, let's say another process filled up the tmpfs being used.
-> > 4. So shmem_mcopy_atomic_pte() fails to account blocks this time, and
-> >    immediately returns - without releasing the page. This triggers a
-> >    BUG_ON in our caller, which asserts that the page should always be
-> >    consumed, unless -EFAULT is returned.
-> > 
-> > (Later on in the commit history, -EFAULT became -ENOENT, mmap_sem became
-> > mmap_lock, and shmem_inode_acct_block() was added.)
+
+
+On 28.04.21 11:30, Thomas Huth wrote:
+> On 28/04/2021 10.31, Christian Borntraeger wrote:
+>> On 28.04.21 10:24, Thomas Huth wrote:
+>>> In former times, the virtio-console code had to be compiled into
+>>> the kernel since the old guest virtio transport had some hard de-
+>>> pendencies. But since the old virtio transport has been removed in
+>>> commit 7fb2b2d51244 ("s390/virtio: remove the old KVM virtio transport"),
+>>> we do not have this limitation anymore.
+>>> Commit bb533ec8bacd ("s390/config: do not select VIRTIO_CONSOLE via
+>>> Kconfig") then also lifted the hard setting in the Kconfig system, so
+>>> we can finally switch the CONFIG_VIRTIO_CONSOLE knob to compile this
+>>> driver as a module now, making it more flexible for the user to only
+>>> load it if it is really required.
+>>
+>> Isnt that a distro specific decision? I would be perfectly fine to have
+>> this change in Fedora, Redhat and co.
 > 
-> I suggest you do s/EFAULT/ENOENT/ directly in above.
-
-I haven't looked into the history, but it would be best for this to
-describe the situation in v5.12, never mind the details which were
-different at the time of the commit tagged with Fixes.  But we stay
-alert that when it's backported to stable, we may need to adjust
-something to suit those releases (which will depend on how much
-else has been backported to them meanwhile).
-
+> Sure, I'll try to get it changed there, too.
 > 
-> > 
-> > A malicious user (even an unprivileged one) could trigger this
-> > intentionally without too much trouble.
-
-I regret having suggested that. Maybe. Opinions differ as to whether
-it's helpful to call attention like that. I'd say delete that paragraph.
-
-> > 
-> > To fix this, detect if we have a "dangling" page when accounting fails,
-> > and if so, release it before returning.
-> > 
-> > Fixes: cb658a453b93 ("userfaultfd: shmem: avoid leaking blocks and used blocks in UFFDIO_COPY")
-> > Reported-by: Hugh Dickins <hughd@google.com>
-> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-
-Thanks for getting on to this so quickly, Axel.
-But Peter is right, that unlock_page() needs removing.
-
-> > ---
-> >  mm/shmem.c | 13 ++++++++++++-
-> >  1 file changed, 12 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/mm/shmem.c b/mm/shmem.c
-> > index 26c76b13ad23..46766c9d7151 100644
-> > --- a/mm/shmem.c
-> > +++ b/mm/shmem.c
-> > @@ -2375,8 +2375,19 @@ static int shmem_mfill_atomic_pte(struct mm_struct *dst_mm,
-> >  	pgoff_t offset, max_off;
-> >  
-> >  	ret = -ENOMEM;
-> > -	if (!shmem_inode_acct_block(inode, 1))
-> > +	if (!shmem_inode_acct_block(inode, 1)) {
-> > +		/*
-> > +		 * We may have got a page, returned -ENOENT triggering a retry,
-> > +		 * and now we find ourselves with -ENOMEM. Release the page, to
-> > +		 * avoid a BUG_ON in our caller.
-> > +		 */
-> > +		if (unlikely(*pagep)) {
-> > +			unlock_page(*pagep);
+>> Not so sure about defconfig.
+>> We often use the defconfig in our CI and development things to have a
+>> kernel config that boots up fine, even without a ramdisk. I agree that
+>> virtio console is no longer really the most important console but does
+>> it really hurt?
 > 
-> Not necessary?
+> Well, it's about a default configuration that should be fine for most users. I don't think that anybody really uses virtio-console in a ramdisk already ... or are you really doing that in your CI? If so, then please disregard my patch.
 
-Worse than not necessary: would trigger a VM_BUG_ON_PAGE(). Delete!
-
-> 
-> > +			put_page(*pagep);
-> > +			*pagep = NULL;
-> > +		}
-> >  		goto out;
-> 
-> All "goto out" in this functions looks weird as it returns directly... so if
-> you're touching this after all, I suggest we do "return -ENOMEM" directly and
-> drop the "ret = -ENOMEM".
-
-No strong feeling either way from me on that: whichever looks best
-to you.  But I suspect the "ret = -ENOMEM" cannot be dropped,
-because it's relied on further down too?
-
-> 
-> Thanks,
-> 
-> > +	}
-> >  
-> >  	if (!*pagep) {
-> >  		page = shmem_alloc_page(gfp, info, pgoff);
-> > -- 
-> > 2.31.1.498.g6c1eba8ee3d-goog
-> > 
-> 
-> -- 
-> Peter Xu
+I think anybody uses the sclp console nowadays. The only question is, do
+we care about manual configs with virtio-console?
