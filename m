@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3DA936E06C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 22:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1902036E070
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 22:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242018AbhD1Uj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 16:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59706 "EHLO
+        id S242029AbhD1UkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 16:40:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242013AbhD1Ujz (ORCPT
+        with ESMTP id S242013AbhD1UkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 16:39:55 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA9FC06138E
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:39:08 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id p2so30143585pgh.4
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:39:08 -0700 (PDT)
+        Wed, 28 Apr 2021 16:40:13 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E27C06138D
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:39:28 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id q2so12615744pfk.9
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:39:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Z3WAVPi6tsHxDYkM4thG7PqVeXUU++9bnDuXCoKXmi4=;
-        b=ZmnkDIBH98NF1kICfHfEsAXDmL81P1i5sho5DoEipnWM1JRdebMvTIFIB3EZrdbxZn
-         y8ClFZHg8i8gUYF0PnrIs3G4b/r+BytJNDQ4uhlC+MiMF0Kec0BZ7gn7keoVd6VL500d
-         WrrbVntXIXFqljgruoN87fy+qSt9FsFRYjSW4=
+        bh=bP0jsyLUeBZMcia9mVsWBqP6zFcasRiNfS5tk4kM0rM=;
+        b=A8+FVi1mPar4WLP24ObFpp1Q218abKlV0OQrmnoXUgmmTraergbRvRIY1olI2H8FM5
+         Zs2ESIBKBScQGKK1e8f+Sa1YgkVnUJgNUswDh4G4ZG1eWdx+7ssZlBxd43RQhC93UIcT
+         UKYW2k8b4p/NrYoP+17PCBkBmkSnwJZS6FulQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Z3WAVPi6tsHxDYkM4thG7PqVeXUU++9bnDuXCoKXmi4=;
-        b=lZ7TU+L9aam6tuxOJvkCeYY5P6AvDUsnHafTLta4x/RAQzoTOqF+Lgszvqibaa5Ivs
-         8Ni5bWJEHam/lMapevAYHkuv2C1FLtevNhn/FMC72dGwcssdlLRjCmHAKHG7ZnxjuuRr
-         unRRNUJK96a88IPZYpzdni4wh51LqZVhDLBX0eskDhFB/Nko7Ym0SmiSIt4JYYIxib6a
-         Kp3N3tXoS+Jrsgi9xawNE3TxmsUvy6lYVAzrutKLA2/L4WAZRGaL/IcFtRx88Qm/kUrC
-         NKyYlZyQvrdhCXVC+b+m2uS5suaVFQgum/xTFoCSEvh5uAUzcxZ+wDDn9H7yr0LMIxCm
-         wEWQ==
-X-Gm-Message-State: AOAM531+T4kmUBwxZ3iTCobxd9nr+Cssr/5RJb3nwVPQL5h27zZJkyHC
-        zmIheD2aATJKie7SP+tL/7jauw==
-X-Google-Smtp-Source: ABdhPJz5qNc4ZUSIrp+d0WTSSyiaj2Rw5P4r2NUtbl4ssPsBN5WfJR8zNykqUu9f6aJ+oaWb6HqSaA==
-X-Received: by 2002:a05:6a00:170c:b029:225:8851:5b3c with SMTP id h12-20020a056a00170cb029022588515b3cmr29728717pfc.0.1619642348454;
-        Wed, 28 Apr 2021 13:39:08 -0700 (PDT)
+        bh=bP0jsyLUeBZMcia9mVsWBqP6zFcasRiNfS5tk4kM0rM=;
+        b=sPhtzlWdgq6/G4lJRsJN5AUIBcUsFm1aHPNwbpMd+qjzaKIdXc58hI0FTGYvqi2AQN
+         2Zu814m1U4VWBijhz8sfjcTxU6yVAjolAqk6qKlP0Uz1O94kp09tKjcJE8RMwRJooSPR
+         xO7nO5DvmAAYEhnbxNFiUcuGR7ietq1xduN3UCWtSAta1R4+bqYt731n1niO60T9mMQ3
+         5N6UqZowSoD8BXUteQivslBXXXvVETFg6g3khqCw9At7C789/oGQJr4Ad7eZq4Rtoa/T
+         5dY9C0wxjb98mEg/IsEgStZKyslGnE3t3m6RBB0bWjWbN+pbqzAg5Cp3TW3REMFNZ98/
+         nZzQ==
+X-Gm-Message-State: AOAM531HWgYO9qUYTFeLPeiPr0Fn/uZ7/pO1p3hDbUpwWblT5OgSWLy4
+        GzZlTbJ6Rnj5IVYiKj5cDadmIg==
+X-Google-Smtp-Source: ABdhPJz7TORt5UPUxQHJtcwUy7DLeU9h16cX0ZufDjJxSEVTidsxEub3MlR7oNmOUCLjsAVtm6Bv+w==
+X-Received: by 2002:a62:cd83:0:b029:275:d87e:612e with SMTP id o125-20020a62cd830000b0290275d87e612emr18839700pfg.49.1619642368304;
+        Wed, 28 Apr 2021 13:39:28 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id e10sm493387pfc.40.2021.04.28.13.39.07
+        by smtp.gmail.com with ESMTPSA id l18sm5405576pjq.33.2021.04.28.13.39.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 13:39:07 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 13:39:07 -0700
+        Wed, 28 Apr 2021 13:39:27 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 13:39:26 -0700
 From:   Kees Cook <keescook@chromium.org>
 To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
 Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
@@ -73,23 +73,21 @@ Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         Dave Martin <Dave.Martin@arm.com>,
         Weijiang Yang <weijiang.yang@intel.com>,
         Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Subject: Re: [PATCH v26 8/9] x86/vdso/32: Add ENDBR to __kernel_vsyscall
- entry point
-Message-ID: <202104281339.F0CA6CA3E@keescook>
+        Haitao Huang <haitao.huang@intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Subject: Re: [PATCH v26 9/9] x86/vdso: Add ENDBR to __vdso_sgx_enter_enclave
+Message-ID: <202104281339.E21514F9D@keescook>
 References: <20210427204720.25007-1-yu-cheng.yu@intel.com>
- <20210427204720.25007-9-yu-cheng.yu@intel.com>
+ <20210427204720.25007-10-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210427204720.25007-9-yu-cheng.yu@intel.com>
+In-Reply-To: <20210427204720.25007-10-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 01:47:19PM -0700, Yu-cheng Yu wrote:
-> From: "H.J. Lu" <hjl.tools@gmail.com>
-> 
+On Tue, Apr 27, 2021 at 01:47:20PM -0700, Yu-cheng Yu wrote:
 > ENDBR is a special new instruction for the Indirect Branch Tracking (IBT)
 > component of CET.  IBT prevents attacks by ensuring that (most) indirect
 > branches and function calls may only land at ENDBR instructions.  Branches
@@ -99,9 +97,9 @@ On Tue, Apr 27, 2021 at 01:47:19PM -0700, Yu-cheng Yu wrote:
 > instructions are inserted automatically by the compiler, but branch
 > targets written in assembly must have ENDBR added manually.
 > 
-> Add that to __kernel_vsyscall entry point.
+> Add ENDBR to __vdso_sgx_enter_enclave() branch targets.
 > 
-> Signed-off-by: H.J. Lu <hjl.tools@gmail.com>
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
 
 Reviewed-by: Kees Cook <keescook@chromium.org>
 
