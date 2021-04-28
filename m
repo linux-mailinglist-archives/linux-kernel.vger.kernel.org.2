@@ -2,89 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB0636D48A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F60236D470
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237947AbhD1JJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 05:09:35 -0400
-Received: from smtp12.smtpout.orange.fr ([80.12.242.134]:55489 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237745AbhD1JJe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 05:09:34 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d23 with ME
-        id y98k2400a21Fzsu0398lpr; Wed, 28 Apr 2021 11:08:48 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Wed, 28 Apr 2021 11:08:48 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] x86/kvm: Use 'hlist_for_each_entry' to simplify code
-Date:   Wed, 28 Apr 2021 11:08:43 +0200
-Message-Id: <29796ca9a5d4255c2a0260c2f5c829539a6e7d88.1619600757.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        id S237868AbhD1JFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 05:05:49 -0400
+Received: from mga02.intel.com ([134.134.136.20]:1522 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230307AbhD1JFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 05:05:48 -0400
+IronPort-SDR: aOcTg/IZvFCiaUr4wZWupa7l42GWuD3EIH9BbT6fYzQpQ62XIcL4DgH7A4+nPQNJjxkTpJHiLd
+ UEKNQUT5Hnvw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9967"; a="183836813"
+X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
+   d="scan'208";a="183836813"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 02:05:02 -0700
+IronPort-SDR: 9nQBvUbQM2Uq3UQjVXNkkDOv+4LFTTC23729isTETMuSfYCkr0VGMMr9JRKmBsH7djpjGWoSY6
+ RR3QC5BOdusw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
+   d="scan'208";a="423437549"
+Received: from chenyu-desktop.sh.intel.com ([10.239.158.173])
+  by fmsmga008.fm.intel.com with ESMTP; 28 Apr 2021 02:04:59 -0700
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     youling257 <youling257@gmail.com>, Kurt Garloff <kurt@garloff.de>,
+        Bingsong Si <owen.si@ucloud.cn>,
+        "Artem S . Tashkinov" <aros@gmx.com>
+Cc:     Terry Bowman <terry.bowman@amd.com>,
+        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
+        Calvin Walton <calvin.walton@kepstin.ca>,
+        Borislav Petkov <bp@suse.de>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chen Yu <yu.c.chen@intel.com>
+Subject: [PATCH 0/2] tools/power/turbostat: Fix long time duration RAPL calculation
+Date:   Wed, 28 Apr 2021 17:08:45 +0800
+Message-Id: <cover.1619600637.git.yu.c.chen@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use 'hlist_for_each_entry' instead of hand writing it.
-This saves a few lines of code.
+A combination of patch set to fix the recently introduced long time
+duration RAPL calculation issue found on AMD CPUs.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-Compile tested only
----
- arch/x86/kernel/kvm.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+Youling, Kurt, Bingsong, Artem, could you please confirm again
+if this patch set works for you on your platform?
 
-diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-index d307c22e5c18..35f5a0898b92 100644
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -89,14 +89,11 @@ static struct kvm_task_sleep_head {
- static struct kvm_task_sleep_node *_find_apf_task(struct kvm_task_sleep_head *b,
- 						  u32 token)
- {
--	struct hlist_node *p;
-+	struct kvm_task_sleep_node *n;
- 
--	hlist_for_each(p, &b->list) {
--		struct kvm_task_sleep_node *n =
--			hlist_entry(p, typeof(*n), link);
-+	hlist_for_each_entry(n, &b->list, link)
- 		if (n->token == token)
- 			return n;
--	}
- 
- 	return NULL;
- }
-@@ -169,14 +166,12 @@ static void apf_task_wake_all(void)
- 	for (i = 0; i < KVM_TASK_SLEEP_HASHSIZE; i++) {
- 		struct kvm_task_sleep_head *b = &async_pf_sleepers[i];
- 		struct kvm_task_sleep_node *n;
--		struct hlist_node *p, *next;
-+		struct hlist_node *next;
- 
- 		raw_spin_lock(&b->lock);
--		hlist_for_each_safe(p, next, &b->list) {
--			n = hlist_entry(p, typeof(*n), link);
-+		hlist_for_each_entry_safe(n, next, &b->list, link)
- 			if (n->cpu == smp_processor_id())
- 				apf_task_wake_one(n);
--		}
- 		raw_spin_unlock(&b->lock);
- 	}
- }
+Bas Nieuwenhuizen (1):
+  tools/power/turbostat: Fix turbostat for AMD Zen CPUs
+
+Calvin Walton (1):
+  tools/power turbostat: Fix offset overflow issue in index converting
+
+ tools/power/x86/turbostat/turbostat.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
+
 -- 
-2.30.2
+2.25.1
 
