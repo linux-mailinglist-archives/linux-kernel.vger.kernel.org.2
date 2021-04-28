@@ -2,103 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 903CE36D40B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF2BD36D40D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237399AbhD1Ihs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 04:37:48 -0400
-Received: from mga02.intel.com ([134.134.136.20]:63962 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237143AbhD1Iho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 04:37:44 -0400
-IronPort-SDR: vonmne445gQaLVAMkL1W/V/nBJJ1lYmIz2a8ZT+nwpkxDBKmINwdvbd4Xb34BJ9xNVYK95x8OV
- sUQGnFYOyeJg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9967"; a="183832957"
-X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
-   d="scan'208";a="183832957"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 01:36:59 -0700
-IronPort-SDR: 8z1ezEkN//rVFccU2elNeqxjLcFg/ynak4cABVRzE5nS/Si7nS4aFxCS6CQaCkEODxCn07QtWk
- XUYx/GiLPJWw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
-   d="scan'208";a="423426309"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
-  by fmsmga008.fm.intel.com with ESMTP; 28 Apr 2021 01:36:56 -0700
-Date:   Wed, 28 Apr 2021 16:36:55 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, ying.huang@intel.com, zhengjun.xing@intel.com,
-        x86@kernel.org
-Subject: Re: [genirq]  cbe16f35be:  will-it-scale.per_thread_ops -5.2%
- regression
-Message-ID: <20210428083655.GC53821@shbuild999.sh.intel.com>
-References: <87fszcnecr.ffs@nanos.tec.linutronix.de>
- <87czufo6xk.ffs@nanos.tec.linutronix.de>
+        id S237289AbhD1IjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 04:39:24 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]:41735 "EHLO
+        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232153AbhD1IjW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 04:39:22 -0400
+Received: by mail-wr1-f45.google.com with SMTP id d11so4257823wrw.8;
+        Wed, 28 Apr 2021 01:38:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5dhVOJV1v1xe2BZ8GwY6vRjyrU1hKrudsBliQOL/+ww=;
+        b=RJp50+8EF1+q+Rh4lxlIuKjycZe99IILmUb4oOsQ0zKWeb49ZYIPXE6Xrwlfel0281
+         /cMr6XchdzYoYQ9iZ6Y6DcemTQuBybmakehHpNoEU462RFi48v+N77MV2py/1PlWdWaN
+         YCla7j+gC3HTATfBM+JUOJR3g/tuVD1t4ITP10cyRy6Pt7xHknwH3uztGN5GOd2qACji
+         lKJZ7nk132SjF4FlH2c6jaukuPTUOzojAH3uEbvdk7KTlduJvdIKKlPHuUzNHTnfxmQa
+         0JgO2XYmizZRVVj+R2ay2moaSswPn6/wgYXU+5Vk0Z5rwiClB/E9sCiZjbDR4rmm77/l
+         ubtw==
+X-Gm-Message-State: AOAM532c2yp4Th0ncSeyE/DMXgIOMEbEQWisyMP91ugBi12IcPn2+mC7
+        Sgw+nQQPQAi/nnoTbWaVUMk=
+X-Google-Smtp-Source: ABdhPJxeIlyzT+Hh4euDs5kEWw/ETIm1+5xE/vERWo8x1IsMSR5jLr0sQNkCGUekdomNHU4K6upGwA==
+X-Received: by 2002:a5d:6383:: with SMTP id p3mr8032355wru.230.1619599117243;
+        Wed, 28 Apr 2021 01:38:37 -0700 (PDT)
+Received: from localhost ([2a02:8308:387:c900:a7b5:b859:9449:c07b])
+        by smtp.gmail.com with ESMTPSA id d14sm7438735wrp.12.2021.04.28.01.38.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Apr 2021 01:38:36 -0700 (PDT)
+From:   =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>
+Subject: [PATCH v2] Fix FSP-3Y YH-5151E non-compliant vout encoding
+Date:   Wed, 28 Apr 2021 10:38:32 +0200
+Message-Id: <20210428083833.4136346-1-kubernat@cesnet.cz>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87czufo6xk.ffs@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 09:37:11PM +0200, Thomas Gleixner wrote:
-> On Tue, Apr 27 2021 at 13:42, Thomas Gleixner wrote:
-> > On Tue, Apr 27 2021 at 17:00, kernel test robot wrote:
-> >> FYI, we noticed a -5.2% regression of will-it-scale.per_thread_ops due to commit:
-> >>
-> >> commit: cbe16f35bee6880becca6f20d2ebf6b457148552 ("genirq: Add IRQF_NO_AUTOEN for request_irq/nmi()")
-> >> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> >
-> > this is the second report in the last week which makes not a lot of sense.
-> > And this oneis makes absolutely no sense at all.
-> >
-> > This commit affects request_irq() and the related variants and has
-> > exactly ZERO influence on anything related to that test case simply
-> > because.
-> >
-> > I seriously have to ask the question whether this test infrastructure is
-> > actually measuring what it claims to measure.
-> >
-> > As this commit clearly _cannot_ have the 'measured' side effect, this
-> > points to some serious issue in the tests or the test infrastructure
-> > itself.
-> 
-> Just to illustrate the issue:
-> 
-> I ran the will-it-scale getppid1 test manually against plain v5.12 and
-> against v5.12 + cherrypicked cbe16f35be, i.e. the "offending" commit.
-> 
-> The result for a full run is just in the noise:
-> 
->     average:    < 0.1%
->     minimum:     -0.22%
->     maximum:      0.29%
-> 
-> IOW very far away from -5.2%.
-> 
-> That's an order of magnitude off.
+I didn't properly test the driver for YH-5151E, so it was completely
+broken. Firstly, the log/real mapping was incorrect in one case.
+Secondly, PMBus specifies that output voltages should be in the linear16
+encoding. However, the PDU is non-compliant and uses linear11. YM-2151E
+isn't affected by this. Fix this by converting the values inside the
+read functions. linear16 gets the exponent from the VOUT_MODE command.
+The device doesn't support it, so I have to manually supply the value
+for it.
 
-The test in original report was done on a 2S/44C/88T Cascade Lake box.
-I just run the same case on one Skylake server and one CoffeLake
-desktop, and the commit cause no performance change, just like your
-result.
+Both supported devices have now been tested to report correct vout
+values.
 
-And per our experience, this is common that some kernel performance
-change can only be reproduced on one or several type of platforms.
+Signed-off-by: Václav Kubernát <kubernat@cesnet.cz>
+---
+ drivers/hwmon/pmbus/fsp-3y.c | 26 ++++++++++++++++++++++++--
+ 1 file changed, 24 insertions(+), 2 deletions(-)
 
-Thanks,
-Feng
+diff --git a/drivers/hwmon/pmbus/fsp-3y.c b/drivers/hwmon/pmbus/fsp-3y.c
+index 564649e87e34..dc147a79d6aa 100644
+--- a/drivers/hwmon/pmbus/fsp-3y.c
++++ b/drivers/hwmon/pmbus/fsp-3y.c
+@@ -57,7 +57,7 @@ static int page_log_to_page_real(int page_log, enum chips chip)
+ 		case YH5151E_PAGE_12V_LOG:
+ 			return YH5151E_PAGE_12V_REAL;
+ 		case YH5151E_PAGE_5V_LOG:
+-			return YH5151E_PAGE_5V_LOG;
++			return YH5151E_PAGE_5V_REAL;
+ 		case YH5151E_PAGE_3V3_LOG:
+ 			return YH5151E_PAGE_3V3_REAL;
+ 		}
+@@ -103,17 +103,28 @@ static int set_page(struct i2c_client *client, int page_log)
+ 
+ static int fsp3y_read_byte_data(struct i2c_client *client, int page, int reg)
+ {
++	const struct pmbus_driver_info *info = pmbus_get_driver_info(client);
++	struct fsp3y_data *data = to_fsp3y_data(info);
+ 	int rv;
+ 
+ 	rv = set_page(client, page);
+ 	if (rv < 0)
+ 		return rv;
+ 
++	/*
++	 * YH5151-E outputs vout in linear11. The conversion is done later, but
++	 * I have to inject pmbus_core with the correct exponent.
++	 */
++	if (data->chip == yh5151e && reg == PMBUS_VOUT_MODE)
++		return 0x1A;
++
+ 	return i2c_smbus_read_byte_data(client, reg);
+ }
+ 
+ static int fsp3y_read_word_data(struct i2c_client *client, int page, int phase, int reg)
+ {
++	const struct pmbus_driver_info *info = pmbus_get_driver_info(client);
++	struct fsp3y_data *data = to_fsp3y_data(info);
+ 	int rv;
+ 
+ 	/*
+@@ -144,7 +155,18 @@ static int fsp3y_read_word_data(struct i2c_client *client, int page, int phase,
+ 	if (rv < 0)
+ 		return rv;
+ 
+-	return i2c_smbus_read_word_data(client, reg);
++	rv = i2c_smbus_read_word_data(client, reg);
++	if (rv < 0)
++		return rv;
++
++	/*
++	 * The PDU is non-compliant and outputs output voltages in linear11
++	 * instead of linear16.
++	 */
++	if (data->chip == yh5151e && reg == PMBUS_READ_VOUT)
++		rv = ((s16)((rv & 0x7ff) << 5)) >> 5;
++
++	return rv;
+ }
+ 
+ struct pmbus_driver_info fsp3y_info[] = {
+-- 
+2.31.1
 
-> And no, I'm not going to run that lkp-test muck simply because it's
-> unusable and the test result of will-it-scale itself is clear enough.
-> 
-> Thanks,
-> 
->         tglx
