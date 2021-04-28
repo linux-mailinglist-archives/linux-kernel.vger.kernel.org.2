@@ -2,124 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A46336DD87
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3651D36DD8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241334AbhD1Qvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 12:51:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49007 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241287AbhD1Qvs (ORCPT
+        id S241362AbhD1QwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 12:52:09 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:50016 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241360AbhD1QwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 12:51:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619628662;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BHdHg0RFU1qOPaKtIS99H89bvmSSqduaW6j8IHmwfQ8=;
-        b=OIE1G3e+qCQ0TSL3ObQCCxSZ23IN1uGtucB6RxSuxLY8QX+E8dipAG1rbEV8IqqsfAMEGt
-        F/hagiEx0Kbg15BEMzfPJX1QftmyTeXpEhZQaOu5DWZTRr4RwK+8P5RM8gIz4MazNM2R+o
-        w6auO/aeufrNHSfSblM2VkSwSom+GtY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-r3ZHLjFLMBmFPbWHRK9lQQ-1; Wed, 28 Apr 2021 12:51:00 -0400
-X-MC-Unique: r3ZHLjFLMBmFPbWHRK9lQQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5EDC1192CC5D;
-        Wed, 28 Apr 2021 16:50:50 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-116-128.rdu2.redhat.com [10.10.116.128])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D142C60E3A;
-        Wed, 28 Apr 2021 16:50:49 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 5F75F225FCF; Wed, 28 Apr 2021 12:50:49 -0400 (EDT)
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, virtio-fs@redhat.com,
-        dan.j.williams@intel.com
-Cc:     vgoyal@redhat.com, miklos@szeredi.hu, jack@suse.cz,
-        willy@infradead.org, slp@redhat.com
-Subject: [PATCH v5 3/3] dax: Wake up all waiters after invalidating dax entry
-Date:   Wed, 28 Apr 2021 12:50:40 -0400
-Message-Id: <20210428165040.1856202-4-vgoyal@redhat.com>
-In-Reply-To: <20210428165040.1856202-1-vgoyal@redhat.com>
-References: <20210428165040.1856202-1-vgoyal@redhat.com>
+        Wed, 28 Apr 2021 12:52:03 -0400
+Received: by mail-io1-f70.google.com with SMTP id i204-20020a6bb8d50000b02903f266b8e1c5so23236352iof.16
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:51:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=2EHzha25OiaVzXnMbSyW5BA4rWrDD90XuiP853UfWsw=;
+        b=cKlc6ksc0zArZCH3K4jyWF5zMNuFhFz5fH6VlW6KkVyRbpMuJEjJRB5SBYKtaXeFau
+         U5jl/35xck2JBhp72wBjxnAe4kQNUPBTi2djaLxXVn3isuucYZuRDDlTfZQvL/PRdeB8
+         SFyCilkD2DEgJyht+ymGtYO5djdquCirMhKGUEypEx1Gxzz+ie5bJb2RFanuiDnsstqd
+         0g0aKDv+BXQZ63tGCkWndqiEbtO3uPIZknH4e6RJ24v62xVOCdO0fiHAttQEbMaGa1+l
+         6IJXHgfpN/KE1QeFTIZnurZgiggjbQDtooHjShwnnGv+xZmBuNhZuy89YoSXhU9EbUoO
+         Pqkw==
+X-Gm-Message-State: AOAM5320tzZJ2lZ6SeQjR93yev29Dh8AYiBFkSqsYR7/kVAWAe376F9S
+        9uOMDTC2lE3pVDglEOm6eGNqZFWHJ6vmociqrurb6nIdr3HI
+X-Google-Smtp-Source: ABdhPJzDBDL15zCcKRMN/8ppzJ60mDtXTi0p4ttkmlOa5hbyQo/rwGSNsHbMkfaOMK3yzqU2J0CD1kcRiJdhOv9vQ5QPNTNkbLX+
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Received: by 2002:a05:6638:3bc:: with SMTP id z28mr2533847jap.133.1619628677452;
+ Wed, 28 Apr 2021 09:51:17 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 09:51:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fcdbf905c10b2f2e@google.com>
+Subject: [syzbot] BUG: corrupted list in team_priority_option_set
+From:   syzbot <syzbot+7deae1e5de1fc51f6c5d@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jiri@resnulli.us, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am seeing missed wakeups which ultimately lead to a deadlock when I am
-using virtiofs with DAX enabled and running "make -j". I had to mount
-virtiofs as rootfs and also reduce to dax window size to 256M to reproduce
-the problem consistently.
+Hello,
 
-So here is the problem. put_unlocked_entry() wakes up waiters only
-if entry is not null as well as !dax_is_conflict(entry). But if I
-call multiple instances of invalidate_inode_pages2() in parallel,
-then I can run into a situation where there are waiters on
-this index but nobody will wake these waiters.
+syzbot found the following issue on:
 
-invalidate_inode_pages2()
-  invalidate_inode_pages2_range()
-    invalidate_exceptional_entry2()
-      dax_invalidate_mapping_entry_sync()
-        __dax_invalidate_entry() {
-                xas_lock_irq(&xas);
-                entry = get_unlocked_entry(&xas, 0);
-                ...
-                ...
-                dax_disassociate_entry(entry, mapping, trunc);
-                xas_store(&xas, NULL);
-                ...
-                ...
-                put_unlocked_entry(&xas, entry);
-                xas_unlock_irq(&xas);
-        }
+HEAD commit:    57fa2369 Merge tag 'cfi-v5.13-rc1' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=138843cdd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c37352b2923ef305
+dashboard link: https://syzkaller.appspot.com/bug?extid=7deae1e5de1fc51f6c5d
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17741ee1d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13b73aedd00000
 
-Say a fault in in progress and it has locked entry at offset say "0x1c".
-Now say three instances of invalidate_inode_pages2() are in progress
-(A, B, C) and they all try to invalidate entry at offset "0x1c". Given
-dax entry is locked, all tree instances A, B, C will wait in wait queue.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7deae1e5de1fc51f6c5d@syzkaller.appspotmail.com
 
-When dax fault finishes, say A is woken up. It will store NULL entry
-at index "0x1c" and wake up B. When B comes along it will find "entry=0"
-at page offset 0x1c and it will call put_unlocked_entry(&xas, 0). And
-this means put_unlocked_entry() will not wake up next waiter, given
-the current code. And that means C continues to wait and is not woken
-up.
+list_del corruption, ffff8881411f0b80->prev is LIST_POISON2 (dead000000000122)
+------------[ cut here ]------------
+kernel BUG at lib/list_debug.c:48!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 9747 Comm: syz-executor132 Not tainted 5.12.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__list_del_entry_valid.cold+0x37/0x4a lib/list_debug.c:48
+Code: f2 ff 0f 0b 4c 89 ea 48 89 ee 48 c7 c7 40 53 c2 89 e8 4d ac f2 ff 0f 0b 4c 89 e2 48 89 ee 48 c7 c7 a0 53 c2 89 e8 39 ac f2 ff <0f> 0b 48 89 ee 48 c7 c7 60 54 c2 89 e8 28 ac f2 ff 0f 0b 83 c3 01
+RSP: 0018:ffffc9000b437438 EFLAGS: 00010286
+RAX: 000000000000004e RBX: 00000000ffffffff RCX: 0000000000000000
+RDX: ffff888015a49c40 RSI: ffffffff815c3fc5 RDI: fffff52001686e79
+RBP: ffff8881411f0b80 R08: 000000000000004e R09: 0000000000000000
+R10: ffffffff815bcd5e R11: 0000000000000000 R12: dead000000000122
+R13: ffff88801213bc70 R14: ffff8881411f0b80 R15: 0000000000000000
+FS:  00007ff078be7700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 00000000200f1000 CR4: 0000000000350ef0
+Call Trace:
+ __list_del_entry include/linux/list.h:132 [inline]
+ list_del_rcu include/linux/rculist.h:166 [inline]
+ __team_queue_override_port_del drivers/net/team/team.c:819 [inline]
+ team_queue_override_port_prio_changed drivers/net/team/team.c:876 [inline]
+ team_priority_option_set+0x169/0x2e0 drivers/net/team/team.c:1519
+ team_option_set drivers/net/team/team.c:374 [inline]
+ team_nl_cmd_options_set+0x6cb/0xc40 drivers/net/team/team.c:2645
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x44afb9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 01 16 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ff078be7308 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000004d6338 RCX: 000000000044afb9
+RDX: 0000000000000000 RSI: 0000000020000100 RDI: 000000000000000d
+RBP: 00000000004d6330 R08: 0000000000000040 R09: 0000000000000000
+R10: 0000000000000044 R11: 0000000000000246 R12: 00000000004d633c
+R13: 000000000049f534 R14: 0030656c69662f2e R15: 0000000000022000
+Modules linked in:
+---[ end trace d7d0cba5daa525c4 ]---
+RIP: 0010:__list_del_entry_valid.cold+0x37/0x4a lib/list_debug.c:48
+Code: f2 ff 0f 0b 4c 89 ea 48 89 ee 48 c7 c7 40 53 c2 89 e8 4d ac f2 ff 0f 0b 4c 89 e2 48 89 ee 48 c7 c7 a0 53 c2 89 e8 39 ac f2 ff <0f> 0b 48 89 ee 48 c7 c7 60 54 c2 89 e8 28 ac f2 ff 0f 0b 83 c3 01
+RSP: 0018:ffffc9000b437438 EFLAGS: 00010286
+RAX: 000000000000004e RBX: 00000000ffffffff RCX: 0000000000000000
+RDX: ffff888015a49c40 RSI: ffffffff815c3fc5 RDI: fffff52001686e79
+RBP: ffff8881411f0b80 R08: 000000000000004e R09: 0000000000000000
+R10: ffffffff815bcd5e R11: 0000000000000000 R12: dead000000000122
+R13: ffff88801213bc70 R14: ffff8881411f0b80 R15: 0000000000000000
+FS:  00007ff078be7700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f2cdd4f6020 CR3: 00000000200f1000 CR4: 0000000000350ef0
 
-This patch fixes the issue by waking up all waiters when a dax entry
-has been invalidated. This seems to fix the deadlock I am facing
-and I can make forward progress.
 
-Reported-by: Sergio Lopez <slp@redhat.com>
-Fixes: ac401cc78242 ("dax: New fault locking")
-Reviewed-by: Jan Kara <jack@suse.cz>
-Suggested-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
 ---
- fs/dax.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/dax.c b/fs/dax.c
-index e84dd240c35c..42d7406b2cea 100644
---- a/fs/dax.c
-+++ b/fs/dax.c
-@@ -675,7 +675,7 @@ static int __dax_invalidate_entry(struct address_space *mapping,
- 	mapping->nrexceptional--;
- 	ret = 1;
- out:
--	put_unlocked_entry(&xas, entry, WAKE_NEXT);
-+	put_unlocked_entry(&xas, entry, WAKE_ALL);
- 	xas_unlock_irq(&xas);
- 	return ret;
- }
--- 
-2.25.4
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
