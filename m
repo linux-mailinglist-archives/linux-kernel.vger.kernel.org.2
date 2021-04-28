@@ -2,178 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F7736D05F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 03:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D29B936D061
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 03:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238391AbhD1BtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 21:49:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48342 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235984AbhD1BtE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 21:49:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 337496100C;
-        Wed, 28 Apr 2021 01:48:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619574500;
-        bh=B2Y40YakNFJ0bB9L9P7SI99QssBMewlQIfxw07jXH9k=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ON0cjLoGaubXAtHNfj4ZoMKMN15/n/6LTiYnqshTu4xlOAIRdr/vgYskHkKM69dZz
-         bOfjOEmzPF+YlwYGBjv32auuQGxxtzvaaSkBPgwL/T+Ibogp2Yt1E3gnCfzfCDTIfL
-         k1ErpnG2WT98x/uwg9jhi/tAHIq4SU08Mgd75heI3ffPWUMWZeUPaAjlRXoYYTzyTr
-         8Qa5r9ALswFtmkkMdT3GdUTXrbah93VZMuSfzj83x4wpnB6QYvTBhA5g798W9fdlFD
-         xWgKHWLKRFJ+OOIDeFeUAE7lWoLZ2sIdNFlroPW6+873a+C0CCCBwjysacfixSXsdv
-         lf7YiACOekdFQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id EFB555C0153; Tue, 27 Apr 2021 18:48:19 -0700 (PDT)
-Date:   Tue, 27 Apr 2021 18:48:19 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Feng Tang <feng.tang@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel-team@fb.com, neeraju@codeaurora.org, zhengjun.xing@intel.com
-Subject: Re: [clocksource]  8c30ace35d:
- WARNING:at_kernel/time/clocksource.c:#clocksource_watchdog
-Message-ID: <20210428014819.GA965980@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210427175027.GA945820@paulmck-ThinkPad-P17-Gen-1>
- <87y2d3mo2q.ffs@nanos.tec.linutronix.de>
+        id S238548AbhD1BwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 21:52:05 -0400
+Received: from [58.211.163.100] ([58.211.163.100]:63598 "EHLO
+        mail.advantech.com.cn" rhost-flags-FAIL-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230460AbhD1BwE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 21:52:04 -0400
+Received: from ACNMB1.ACN.ADVANTECH.CORP (unverified [172.21.128.147]) by ACNSWEEPER.acn.advantech.com.cn
+ (Clearswift SMTPRS 5.6.0) with ESMTP id <Te6244c80dcac1580102738@ACNSWEEPER.acn.advantech.com.cn>;
+ Wed, 28 Apr 2021 09:51:11 +0800
+Received: from ACNMB2.ACN.ADVANTECH.CORP (172.21.128.148) by
+ ACNMB1.ACN.ADVANTECH.CORP (172.21.128.147) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 28 Apr 2021 09:51:04 +0800
+Received: from ACNMB2.ACN.ADVANTECH.CORP ([172.21.128.148]) by
+ ACNMB2.ACN.ADVANTECH.CORP ([172.21.128.148]) with mapi id 15.00.1497.015;
+ Wed, 28 Apr 2021 09:51:04 +0800
+From:   =?utf-8?B?eXVlY2hhby56aGFvKOi1tei2iui2hSk=?= 
+        <yuechao.zhao@advantech.com.cn>
+To:     Pavel Machek <pavel@ucw.cz>
+CC:     "345351830@qq.com" <345351830@qq.com>,
+        =?utf-8?B?UmFpbmJvdy5aaGFuZyjlvLXnjokp?= 
+        <Rainbow.Zhang@advantech.com.cn>,
+        =?utf-8?B?eXVueGlhLmxpKOadjuS6kemcnik=?= 
+        <yunxia.li@advantech.com.cn>,
+        =?utf-8?B?SmlhLlN1aSjotL7nnaIp?= <Jia.Sui@advantech.com.cn>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>
+Subject: RE: [v2,1/1] adv_mix955x is a scheme that multiplexes PCA9554/PCA9555
+ into LED and GPIO
+Thread-Topic: [v2,1/1] adv_mix955x is a scheme that multiplexes
+ PCA9554/PCA9555 into LED and GPIO
+Thread-Index: AQHXO2zKvpGjHV02jEKJChySUhWmgKrJJ0yA
+Date:   Wed, 28 Apr 2021 01:51:04 +0000
+Message-ID: <859d8fcef654414c9ba55993adc93104@ACNMB2.ACN.ADVANTECH.CORP>
+References: <tencent_17A7BBC4D15D331C1A25B4075294E5D67706@qq.com>
+ <cb03b75a018e4bec83eac6898eb1d2af@ACNMB2.ACN.ADVANTECH.CORP>
+ <20210427135356.GA2426@duo.ucw.cz>
+In-Reply-To: <20210427135356.GA2426@duo.ucw.cz>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [172.21.188.84]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87y2d3mo2q.ffs@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 11:09:49PM +0200, Thomas Gleixner wrote:
-> Paul,
-> 
-> On Tue, Apr 27 2021 at 10:50, Paul E. McKenney wrote:
-> > On Tue, Apr 27, 2021 at 06:37:46AM -0700, Paul E. McKenney wrote:
-> >> I suppose that I give it (say) 120 seconds instead of the current 60,
-> >> which might be the right thing to do, but it does feel like papering
-> >> over a very real initramfs problem.  Alternatively, I could provide a
-> >> boot parameter allowing those with slow systems to adjust as needed.
-> >
-> > OK, it turns out that there are systems for which boot times in excess
-> > of one minute are expected behavior.  They are a bit rare, though.
-> > So what I will do is keep the 60-second default, add a boot parameter,
-> > and also add a comment by the warning pointing out the boot parameter.
-> 
-> Oh, no. This starts to become yet another duct tape horror show.
-> 
-> I'm not at all against a more robust and resilent watchdog mechanism,
-> but having a dozen knobs to tune and heuristics which are doomed to fail
-> is not a solution at all.
-
-One problem is that I did the .max_drift patch backwards.  I tightened
-the skew requirements on all clocks except those specially marked, and
-I should have done the reverse.  With that change, all of the clocks
-except for clocksource_tsc would work (or as the case might be, fail to
-work) in exactly the same way that they do today, but still rejecting
-false-positive skew events due to NMIs, SMIs, vCPU preemption, and so on.
-
-Then patch v10 7/7 can go away completely, and patch 6/7 becomes much
-smaller (and gets renamed), for example, as shown below.
-
-Does that help?
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit ba1fca950a4bcd8a5737efc552f937529496b5fc
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Tue Apr 27 18:43:37 2021 -0700
-
-    clocksource: Reduce clocksource-skew threshold for TSC
-    
-    Currently, WATCHDOG_THRESHOLD is set to detect a 62.5-millisecond skew in
-    a 500-millisecond WATCHDOG_INTERVAL.  This requires that clocks be skewed
-    by more than 12.5% in order to be marked unstable.  Except that a clock
-    that is skewed by that much is probably destroying unsuspecting software
-    right and left.  And given that there are now checks for false-positive
-    skews due to delays between reading the two clocks, it should be possible
-    to greatly decrease WATCHDOG_THRESHOLD, at least for fine-grained clocks
-    such as TSC.
-    
-    Therefore, decrease WATCHDOG_THRESHOLD from the current 62.5 milliseconds
-    down to 200 microseconds, but only for clocksource_tsc through use of
-    a new max_drift field in struct clocksource.  Coarse-grained clocks
-    such as refined-jiffies retain their old skew checks, courtesy of the
-    default-zero initialization of the max_drift field.
-    
-    Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-    Cc: John Stultz <john.stultz@linaro.org>
-    Cc: Stephen Boyd <sboyd@kernel.org>
-    Cc: Jonathan Corbet <corbet@lwn.net>
-    Cc: Mark Rutland <Mark.Rutland@arm.com>
-    Cc: Marc Zyngier <maz@kernel.org>
-    Cc: Andi Kleen <ak@linux.intel.com>
-    Cc: Xing Zhengjun <zhengjun.xing@linux.intel.com>
-    Cc: Feng Tang <feng.tang@intel.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-index 56289170753c..c281575ed5c2 100644
---- a/arch/x86/kernel/tsc.c
-+++ b/arch/x86/kernel/tsc.c
-@@ -1147,6 +1147,7 @@ static struct clocksource clocksource_tsc_early = {
- static struct clocksource clocksource_tsc = {
- 	.name			= "tsc",
- 	.rating			= 300,
-+	.max_drift		= 200 * NSEC_PER_USEC,
- 	.read			= read_tsc,
- 	.mask			= CLOCKSOURCE_MASK(64),
- 	.flags			= CLOCK_SOURCE_IS_CONTINUOUS |
-diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
-index 83a3ebff7456..44b567fbf435 100644
---- a/include/linux/clocksource.h
-+++ b/include/linux/clocksource.h
-@@ -42,6 +42,8 @@ struct module;
-  * @shift:		Cycle to nanosecond divisor (power of two)
-  * @max_idle_ns:	Maximum idle time permitted by the clocksource (nsecs)
-  * @maxadj:		Maximum adjustment value to mult (~11%)
-+ * @max_drift:		Maximum drift rate in nanoseconds per half second.
-+ *			Zero says to use default WATCHDOG_THRESHOLD.
-  * @archdata:		Optional arch-specific data
-  * @max_cycles:		Maximum safe cycle value which won't overflow on
-  *			multiplication
-@@ -93,6 +95,7 @@ struct clocksource {
- 	u32			shift;
- 	u64			max_idle_ns;
- 	u32			maxadj;
-+	u32			max_drift;
- #ifdef CONFIG_ARCH_CLOCKSOURCE_DATA
- 	struct arch_clocksource_data archdata;
- #endif
-diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index f71f375df544..e33955c322cf 100644
---- a/kernel/time/clocksource.c
-+++ b/kernel/time/clocksource.c
-@@ -377,6 +377,7 @@ static void clocksource_watchdog(struct timer_list *unused)
- 	int next_cpu, reset_pending;
- 	int64_t wd_nsec, cs_nsec;
- 	struct clocksource *cs;
-+	u32 md;
- 
- 	spin_lock(&watchdog_lock);
- 	if (!watchdog_running)
-@@ -423,7 +424,8 @@ static void clocksource_watchdog(struct timer_list *unused)
- 			continue;
- 
- 		/* Check the deviation from the watchdog clocksource. */
--		if (abs(cs_nsec - wd_nsec) > WATCHDOG_THRESHOLD) {
-+		md = cs->max_drift ?: WATCHDOG_THRESHOLD;
-+		if (abs(cs_nsec - wd_nsec) > md) {
- 			pr_warn("timekeeping watchdog on CPU%d: Marking clocksource '%s' as unstable because the skew is too large:\n",
- 				smp_processor_id(), cs->name);
- 			pr_warn("                      '%s' wd_now: %llx wd_last: %llx mask: %llx\n",
+SGkgUGF2ZWwNCkFzIGZvciAiIFBsZWFzZSBDYyBMRUQgZHJpdmVycyB0byB0aGUgTEVEIG1haW50
+YWluZXJzLi4uIiwgZG9lcyBpdCBtZWFuIHRoYXQgSSBvbmx5IG5lZWQgdG8gQ2MgTEVEIGRyaXZl
+cnMgdG8gTEVEIG1haW50YWluZXJzPw0KT3IgZG8gSSBuZWVkIHRvIHNlbmQgdGhpcyBkcml2ZXIg
+dG8gbGludXgtbGVkc0B2Z2VyLmtlcm5lbC5vcmcgaW5zdGVhZCBvZiBwbGF0Zm9ybS1kcml2ZXIt
+eDg2QHZnZXIua2VybmVsLm9yZy4NCg0KQmVzdCByZWdhcmRzDQpZdWVjaGFvIFpoYW8NCg0KLS0t
+LS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IFBhdmVsIE1hY2hlayBbbWFpbHRvOnBhdmVs
+QHVjdy5jel0gDQpTZW50OiBUdWVzZGF5LCBBcHJpbCAyNywgMjAyMSA5OjU0IFBNDQpUbzogeXVl
+Y2hhby56aGFvKOi1tei2iui2hSkgPHl1ZWNoYW8uemhhb0BhZHZhbnRlY2guY29tLmNuPg0KQ2M6
+IDM0NTM1MTgzMEBxcS5jb207IFJhaW5ib3cuWmhhbmco5by1546JKSA8UmFpbmJvdy5aaGFuZ0Bh
+ZHZhbnRlY2guY29tLmNuPjsgeXVueGlhLmxpKOadjuS6kemcnikgPHl1bnhpYS5saUBhZHZhbnRl
+Y2guY29tLmNuPjsgSmlhLlN1aSjotL7nnaIpIDxKaWEuU3VpQGFkdmFudGVjaC5jb20uY24+OyBI
+YW5zIGRlIEdvZWRlIDxoZGVnb2VkZUByZWRoYXQuY29tPjsgTWFyayBHcm9zcyA8bWdyb3NzQGxp
+bnV4LmludGVsLmNvbT47IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IHBsYXRmb3JtLWRy
+aXZlci14ODZAdmdlci5rZXJuZWwub3JnDQpTdWJqZWN0OiBSZTogW3YyLDEvMV0gYWR2X21peDk1
+NXggaXMgYSBzY2hlbWUgdGhhdCBtdWx0aXBsZXhlcyBQQ0E5NTU0L1BDQTk1NTUgaW50byBMRUQg
+YW5kIEdQSU8NCg0KT24gVHVlIDIwMjEtMDQtMjcgMDg6MzI6MDUsIHl1ZWNoYW8uemhhbyjotbXo
+torotoUpIHdyb3RlOg0KPiBGcm9tOiBZdWVjaGFvIFpoYW8gPHl1ZWNoYW8uemhhb0BhZHZhbnRl
+Y2guY29tLmNuPg0KPiANCj4gV2l0aCB0aGlzIGRyaXZlciwgd2UgY2FuIG11bHRpcGxleCBQQ0E5
+NTU0L1BDQTk1NTUgaW50byBMRUQgYW5kIEdQSU8gYmFzZWQgb24gdGhlIEFDUEkgZGF0YSBvZiBC
+SU9TLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogWXVlY2hhbyBaaGFvIDx5dWVjaGFvLnpoYW9AYWR2
+YW50ZWNoLmNvbS5jbj4NCj4gU2lnbmVkLW9mZi1ieTogU3VpIEppYSA8amlhLnN1aUBhZHZhbnRl
+Y2guY29tLmNuPg0KDQpQbGVhc2UgQ2MgTEVEIGRyaXZlcnMgdG8gdGhlIExFRCBtYWludGFpbmVy
+cy4uLg0KDQo+ICsNCj4gK3N0YXRpYyBpbmxpbmUgdTggYW1peDk1NXhfc2V0X2JpdCh1OCB2YWws
+IGludCBsZWRfaWQsIGVudW0gDQo+ICtBTUlYOTU1WF9MRUQNCj4gK3N0YXRlKSB7DQo+ICsJbGVk
+X2lkICU9IEJBTktfU0laRTsNCj4gKw0KPiArCXN3aXRjaCAoc3RhdGUpIHsNCj4gKwljYXNlIEFN
+SVg5NTVYX0xFRF9PTjoNCj4gKwkJdmFsICY9IH4oMSA8PCBsZWRfaWQpOyAvL0NsZWFyIGJpdA0K
+PiArCQlicmVhazsNCj4gKwljYXNlIEFNSVg5NTVYX0xFRF9PRkY6DQo+ICsJCXZhbCB8PSAxIDw8
+IGxlZF9pZDsgLy9TZXQgYml0DQo+ICsJCWJyZWFrOw0KPiArCX0NCj4gKw0KPiArCXJldHVybiB2
+YWw7DQoNClBsZWFzZSBjaGVjayBDb2RpbmdTdHlsZSwgYXZvaWQgdXNlbGVzcyBjb21tZW50cyBh
+bmQgY2hlY2sgd29yZCB3cmFwcGluZyBpbiB5b3VyIGVtYWlsIHNldHRpbmdzLg0KDQpCZXN0IHJl
+Z2FyZHMsDQoJCQkJCQkJCVBhdmVsDQoNCi0tDQpodHRwOi8vd3d3LmxpdmVqb3VybmFsLmNvbS9+
+cGF2ZWxtYWNoZWsNCg==
