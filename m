@@ -2,100 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C3B36D939
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B5D36D93F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240124AbhD1OFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 10:05:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbhD1OFU (ORCPT
+        id S240149AbhD1OHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 10:07:22 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:40335 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231359AbhD1OHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 10:05:20 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0DAC061573;
-        Wed, 28 Apr 2021 07:04:34 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id B78632224D;
-        Wed, 28 Apr 2021 16:04:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1619618672;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=chFDx8DLygr7BeMNJ5Y2+mrFjaqKbsXAp4rGczBn/rQ=;
-        b=vYlIDouezddpBiLL9zI0HYbdVdOoorgyNAHvd3xgiWorddQWsmAQftY2OkK7Tm2aItXHno
-        u2l7DiS7sWl2GEWGf6RARulLv2uOQknl0R+q3bW4xxS1D9qhMPwaztPZJFOTysmFvir8TN
-        PQvTfSfjlv2Lu8ZIJvEOMN/85Z4tsPA=
+        Wed, 28 Apr 2021 10:07:21 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R531e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=xuyu@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UX4Z7HA_1619618792;
+Received: from xuyu-mbp15.local(mailfrom:xuyu@linux.alibaba.com fp:SMTPD_---0UX4Z7HA_1619618792)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 28 Apr 2021 22:06:33 +0800
+Subject: Re: [PATCH] mm, compaction: avoid isolating pinned tmpfs pages
+From:   Yu Xu <xuyu@linux.alibaba.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     akpm@linux-foundation.org
+References: <e2f0689e00cce7ac73716da14a971a4f1ab88359.1619618267.git.xuyu@linux.alibaba.com>
+Message-ID: <b6d1e9f1-0601-6e48-9488-8b674a405a62@linux.alibaba.com>
+Date:   Wed, 28 Apr 2021 22:06:55 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <e2f0689e00cce7ac73716da14a971a4f1ab88359.1619618267.git.xuyu@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 28 Apr 2021 16:04:32 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Subject: Re: [PATCH v4 1/2] gpio: Add support for IDT 79RC3243x GPIO
- controller
-In-Reply-To: <CAHp75VcXEu2YGOoL70zueEgARCe8D+Q=CFsN62-vFK5svjJAQA@mail.gmail.com>
-References: <20210426095426.118356-1-tsbogend@alpha.franken.de>
- <CAHp75VdRfPPj2pu4GOBVG4+bGUsCRLXYPsFjMwFOYfUTZuvJaQ@mail.gmail.com>
- <6f6bce2f070998db49acca2f6611727b@walle.cc>
- <CAHp75VdmTxvQBU4X8s-6csYgwM8ACth9Ao0GYjUH7+0Q0tyFyg@mail.gmail.com>
- <ebbbe74fe638e1a6ab7c1547870f4b31@walle.cc>
- <CAHp75VcXEu2YGOoL70zueEgARCe8D+Q=CFsN62-vFK5svjJAQA@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <880011ffd80ae7d1a32e7a17d405b987@walle.cc>
-X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-04-28 15:44, schrieb Andy Shevchenko:
-> On Wed, Apr 28, 2021 at 2:57 PM Michael Walle <michael@walle.cc> wrote:
->> 
->> Am 2021-04-28 13:07, schrieb Andy Shevchenko:
->> > On Wed, Apr 28, 2021 at 1:51 AM Michael Walle <michael@walle.cc> wrote:
->> >> Am 2021-04-26 12:29, schrieb Andy Shevchenko:
->> >> > On Mon, Apr 26, 2021 at 12:55 PM Thomas Bogendoerfer
->> >> > <tsbogend@alpha.franken.de> wrote:
->> >> >
->> >> > 2) there is gpio-regmap generic code, that may be worth
->> >> > considering.
->> >>
->> >> This driver uses memory mapped registers. While that is
->> >> also possible with gpio-regmap, there is one drawback:
->> >> it assumes gpiochip->can_sleep = true for now, see [1].
->> >> Unfortunately, there is no easy way to ask the regmap
->> >> if its mmio/fastio.
->> >
->> > I don't see how it is an impediment.
->> 
->> You'd have to use the *_cansleep() variants with the gpios,
->> which cannot be used everywhere, no?
+On 4/28/21 10:00 PM, Xu Yu wrote:
+> This makes pinned tmpfs pages bail out early in the process of page
+> migration, like what pinned anonymous pages do.
 > 
-> *can* sleep means that it requires a sleeping context to run, if your
-> controller is fine with that, there are no worries. OTOH if you want
-> to run this in an atomic context, then consumers can't do with that
-> kind of controller.
+> Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
+> ---
+>   mm/compaction.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index e04f4476e68e..78c3b992a1c9 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -964,11 +964,11 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+>   		}
+>   
+>   		/*
+> -		 * Migration will fail if an anonymous page is pinned in memory,
+> -		 * so avoid taking lru_lock and isolating it unnecessarily in an
+> -		 * admittedly racy check.
+> +		 * Migration will fail if an anonymous or tmpfs page is pinned
+> +		 * in memory, so avoid taking lru_lock and isolating it
+> +		 * unnecessarily in an admittedly racy check.
+>   		 */
+> -		if (!page_mapping(page) &&
+> +		if (!page_is_file_lru(page) &&
+>   		    page_count(page) > page_mapcount(page))
+Sorry, this patch is flawed, since tmpfs page cache takes an extra page
+count.
 
-Ok, then we are on the same track.
+Please ignore this patch.
 
-> What I meant above (and you stripped it here) is
-> to add a patch that will fix that and set it based on
-> gpio_regmap_config.
+>   			goto isolate_fail;
+>   
+> 
 
-Yes, but ideally, it would ask the regmap. Otherwise that
-information is redundant and might mismatch, i.e. gpio_regmap_config
-tell can_sleep=false but the regmap is an I2C type for example. Also
-if a driver wants to support both regmap types, we are no step
-further.
-
--michael
+-- 
+Thanks,
+Yu
