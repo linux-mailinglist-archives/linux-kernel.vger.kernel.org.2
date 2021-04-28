@@ -2,136 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6029236E0EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 23:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8465536E0EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 23:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbhD1V3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 17:29:52 -0400
-Received: from mail-dm6nam11on2068.outbound.protection.outlook.com ([40.107.223.68]:43680
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229593AbhD1V3v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 17:29:51 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Gb8iVXHvQ713jtIvgf392fD90h/gzXglwkVi9zI07yWME8mb/E3045Ad62i/bE39i/sLl22aPoNhIB7ZHY6xwIhh7Pp6WMEw2br1d/HvqPu5oDMs88+SV2k+Ia/UOr9kfktNVH/T67nYvJoChk0ncKkEE8SKXFnHJ2U7edVwwsTX0dNKvR1J/SjHCy9q2d8Yjus1phdu7czu0XoCGcPMrRPZD5fc1WkzSmG/i+pTst6CEMHTGdS/P2R0C/h/X8eikD2XjffedLZo6BDzhEtmRYxy5JHagari77ZxBAd6/DFBZT4lJi9S9rg5nH/RjOlEMRm6OALIxnyrsK+tXhuzWA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/7tq4EsWjuf1lch4ZBYoXtGOdABH7AuIiL6xazS/V8U=;
- b=fAIR/dPf0cQzbMIdk2qBO+NzLzIWM+6iR5ujLGbciNdhoGM1O8fHrbLFzwsMoO2FD/6G2cEh2UqoG0TlhbcUUPkZttrcNkA/ogCqY/UF9+G82kHWneQIHInYEEymQlMKcVBVUMdwDpTOt7IQ38Dd8qyhgGaX7GKpuCt5u+iKHbdBA7IQT3BW6FwAqP/TEIcWDdGJ0Jr91v2bGm5Wd7fMXrMkXdVe8I7rhY26+V/8i6EoIJ6K/vfyl29ItxKLz4pk8H7jIhJvN0Yg/P/oagDFDc8b5pazHeIDrpK0BVThckgZUk+ehAsvV+VyqN6i+iUoxeNPmZg3i25254IHCY1zsQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/7tq4EsWjuf1lch4ZBYoXtGOdABH7AuIiL6xazS/V8U=;
- b=my8f6JJcgAgpV8LVF+nh5o8Q1Tv+0LkdXyTIF9a2UqHXnATL2dll2r9F6R5y7s1a+48/Y4LtR+daBsvODrHXN9WpLNBblAspF0WUUCET7wOqDEwSuSaX5WoZDacYcjuArzlZveic+M+lf3ABUC4CFGVf+j/FW6gvv8MqPDnMdSk=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
- by SA0PR12MB4349.namprd12.prod.outlook.com (2603:10b6:806:98::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.23; Wed, 28 Apr
- 2021 21:29:04 +0000
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::9898:5b48:a062:db94]) by SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::9898:5b48:a062:db94%6]) with mapi id 15.20.4065.027; Wed, 28 Apr 2021
- 21:29:04 +0000
-Cc:     brijesh.singh@amd.com, x86@kernel.org, tglx@linutronix.de,
-        jroedel@suse.de, thomas.lendacky@amd.com,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        pbonzini@redhat.com
-Subject: Re: [PATCH 1/3] x86/sev-es: Rename sev-es.{ch} to sev.{ch}
-To:     Borislav Petkov <bp@alien8.de>
-References: <20210427111636.1207-1-brijesh.singh@amd.com>
- <20210427111636.1207-2-brijesh.singh@amd.com> <YIhCwtMA6WnDNvxt@zn.tnic>
-From:   Brijesh Singh <brijesh.singh@amd.com>
-Message-ID: <da102340-eaee-c76b-9773-bc63cf0e8f11@amd.com>
-Date:   Wed, 28 Apr 2021 16:29:01 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.0
-In-Reply-To: <YIhCwtMA6WnDNvxt@zn.tnic>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [70.112.153.56]
-X-ClientProxiedBy: SA0PR12CA0005.namprd12.prod.outlook.com
- (2603:10b6:806:6f::10) To SN6PR12MB2718.namprd12.prod.outlook.com
- (2603:10b6:805:6f::22)
+        id S230463AbhD1V37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 17:29:59 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37072 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230416AbhD1V36 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 17:29:58 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13SLOFfb047781;
+        Wed, 28 Apr 2021 17:29:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=e7ssmoTCG461tljZydTGlfgnz2kpotgx6iYW7xdaFDg=;
+ b=Vt8FBCmyHNpg8E8OdBxllufW7YWJL82Vy+Oi/tygUDk16fT5Kg5FcEV79MWTNAAR9+Fs
+ brbxf0jDcIMAsT7FenJkliXkkf/qF9NYhOwgVKQc6PS4XtxbWHvUYK3LBbssMYeTnW85
+ 6U2A7LOpfPCNPoLTLAFwfaNvT4uvtRKWfwKGNgS653A7D0iaGutGGFk8p8bOqfo0BwIo
+ jCQ/jXecGi7PUJQ16qxOib9+AD6hwVpb/4qLK7PX+mGzSKS2OqHiCLWOoW5MjlQey4nr
+ uae0aOwgH+PRhNOLgrC5N6QMOONEHJ4qP6maeqDEuYeDlR/WjSzO1cuLVswuCelNq7t0 vA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 387f92ggcu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 17:29:12 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13SLTCTX070110;
+        Wed, 28 Apr 2021 17:29:12 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 387f92ggcd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 17:29:12 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13SLTAGJ030874;
+        Wed, 28 Apr 2021 21:29:10 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03fra.de.ibm.com with ESMTP id 384ay8s5q6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 21:29:10 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13SLSgKc36438434
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Apr 2021 21:28:42 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 702F152050;
+        Wed, 28 Apr 2021 21:29:06 +0000 (GMT)
+Received: from osiris.fritz.box (unknown [9.171.11.104])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 1053F52052;
+        Wed, 28 Apr 2021 21:29:06 +0000 (GMT)
+Date:   Wed, 28 Apr 2021 23:29:03 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Thomas Huth <thuth@redhat.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        Marc Hartmayer <mhartmay@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>, cohuck@redhat.com
+Subject: Re: [PATCH] arch/s390/configs: Change CONFIG_VIRTIO_CONSOLE to "m"
+Message-ID: <YInTn6HRpUUGmKjX@osiris.fritz.box>
+References: <20210428082442.321327-1-thuth@redhat.com>
+ <c015ef3f-ff88-113b-a089-e2af9202399a@de.ibm.com>
+ <6e44cc81-fe19-f75b-972f-5c4707f2410f@redhat.com>
+ <b75f0447-55d4-09b8-8f3e-d0d54471cac1@de.ibm.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Brijeshs-MacBook-Pro.local (70.112.153.56) by SA0PR12CA0005.namprd12.prod.outlook.com (2603:10b6:806:6f::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.25 via Frontend Transport; Wed, 28 Apr 2021 21:29:03 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fe054cbe-d563-40df-f9d0-08d90a8ca5ab
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4349:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR12MB4349ECD0000740F3EE3292E2E5409@SA0PR12MB4349.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: goX9FusoRUaxcRqd3Uu/vxLi34UAtaIPSXDx23EIsqk+7XWCNVaS5SKxYIjpYZAu0bi2QViavIN3PH0uczrTacazTorsaWqkulXke09sJv97zC1VfIUFXZ9Bo221l74mMQqjgwrZ/sTjx4QjuDrRdiCa3sR+Qo606WCkxUlotttHtWsMT5uUHRqFRjUMQZE9wdZ14uNlXXxmIeil+3sUu0xtZky6c0cXn8uCr5mP/vmMaqn2q5zn7kRuQue1afTNKj9EZLaPWW+Xp/lzJOFFWKzvrvW2iSi5L7lckD2ydzRYHQBx27abM/wwzEtEDHG0NaEwzuAtMNB08cVU7UTBcddsFQE6KureBQeXHX+/lE5Gy2pdX54k9zvWksYBMM44jl41ZeMuiyRFPg1YAibvtKoO7xefl00SjkR8gggGZpiVmifsNMrCFvK+qrCsGnn+vsDBB7wFlAtg6l6T5FM15zoe0iE44gdwORqY4r4pECfRz8r/cQEKEVj8soo/rTDYmaUBQG07tE4zB+orKfZP1SqyWDmI3FqeAmzwaiuudb9mK0W2uWgDIucRiRIikwZqr4nDVJzMkRjPNhqx89acuf9REZNF/Xc/Ia/Rv77bk3gSjRGFnvzPmC8WZV4aNnuDC/TGRhfmamtIV7bbs/AsR/ATfGEGy6W9ge6ejqloGxOhu9pcnPYWfPAU7Zmyy8LF7j6VmfjeoGV6NLSS28NrH5AI7qFOxGvxoR3EebospUQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(396003)(39850400004)(366004)(44832011)(6512007)(6486002)(5660300002)(38350700002)(478600001)(83380400001)(6916009)(186003)(6506007)(66476007)(956004)(52116002)(8676002)(66556008)(36756003)(2906002)(66946007)(16526019)(31686004)(31696002)(38100700002)(2616005)(26005)(4326008)(86362001)(4744005)(316002)(53546011)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Y0pVWFdNVXBlTkcydzdOY0gvdUxPN2VKM1JEM1NUblFMS1lUaXJjdHNvRVl6?=
- =?utf-8?B?TWpob3M0S2cycWQwMEZINjk5aDRxS2xkOXdPL25HaFVDQm4vWU9mNmd1K2VR?=
- =?utf-8?B?MWFuRTRrZnduaE5ITFNqb2xiRXlIWjl6SFVXWktZYXY4ajkwc2tMSXZkQUgx?=
- =?utf-8?B?cmt1THhhV1JRbWtxaTdFcm1TN2ZGWEVlblpPN2hQcGtyVFJ3WCttQzV2RG9R?=
- =?utf-8?B?a0VhSnlUVy9tU20vakxJcTJBZVJYZ0JKby94MGN5NEZIOW1mWU4yWENsWm0z?=
- =?utf-8?B?cEdvTDI0M3ZRLzFPWDUvek9FMUJLRzFLbk5WNlVVSTVrRzlRNmYxWld6dThE?=
- =?utf-8?B?N1dpWlVZMVI2U1lnTVFZR2dzYmRUbE82K1dtaE11QVZsblR4clF4WjI4Vkdp?=
- =?utf-8?B?dWx0UUh2N1puTmlPUzNmbEZVbExzb21ObDZRQWlrdkVXcDVzU1k0dkM0T0l3?=
- =?utf-8?B?bVFvbzNHbm9nYjJwTEFDTHVLSjU0ZUdUTnlDc2FsS2xtTm5RL3N2WFFWQWh0?=
- =?utf-8?B?UUNmTGxjaWdjY2F6MlVtZDN1bnAyWEUxZjAwQjZESWtvUlF4aDZOd3ZNMDB4?=
- =?utf-8?B?OVROUVV5SjRjaUFjazJQTXNiN2o5RExFVmlaalZJVHFnUnhJQlgzeUpwU2FP?=
- =?utf-8?B?UE5xZ21vMEtNaTdUSCtMUDRBSDl2WWtHZHpuQUozeTUrV1o0SG41ZFFQSkRS?=
- =?utf-8?B?cmZGZE5jdHRibHljbWNMSy9LOVZrd3ZZbUh0R0lVV3pyaVBqbDAwOVVCWnRn?=
- =?utf-8?B?YTB3WmZrLzEzNkx3Y1JRZEpZLy9KcDJENlhUUStnWEprNVVKamtGVE4xSWJi?=
- =?utf-8?B?NFNHTGV6eDFESXR3WFkzYTB1Z0wvMFAyUVBUWU1ydzJNVFJkQ2FTN3M1cjFO?=
- =?utf-8?B?elo3V1dwbkU4L1BFSHVubU92YU51c2Y4a1ZnUkNKYkh4ZDdKMmdIWUcvMENN?=
- =?utf-8?B?Wk1YUTdmVnNSNmhHZU9pdFllS1ZoZWNGUHpOMEhpamV4cmhtWU1kckQ0WVdJ?=
- =?utf-8?B?aVpucjJoTzR1bmgxWmM5RWoweXlPOHpEZGo5aXhmZGFqWU53dlJXVUM0eisr?=
- =?utf-8?B?MU4yNW9KZk83R2FmUHNWSEg5cDV3dkM2TUVvYUdRYTczT0U5eVgwbjJXemlh?=
- =?utf-8?B?L1ZDTkw2UC9YdTVGWFhHTXhXRFFUNm82SlZxc1RISUovckJ0Tk4rVFdNNGtw?=
- =?utf-8?B?MTZXak10T3kzbU9ZYy9MTWlJaWlBaVVPWFc4Rnc2TjdnWXZtRzgySVFZSU9k?=
- =?utf-8?B?WGJXKzRoZEM0TUsvZTcwYkJaMGhBbzlHdFc3RVJJUm9vYUlqQXN1a1J0YnFZ?=
- =?utf-8?B?clI3QldyUEhWMWJMT29Ha21vSGpnbk42QTZrcEdjb3B6dmxtNjNIdVlDN1hi?=
- =?utf-8?B?UnhDRFNFUnVVaWIwRC9TQVBXem1GYWNYVmtQYkFBdEo0WXFGenhubWhpRHFB?=
- =?utf-8?B?QmJNUzd3by8zb3pCRjl3NldGMFpGM1VLamdyVHZ2c3ZpaHlnU0hCNEJsK1d6?=
- =?utf-8?B?amhWaDhaUlVwbHFJbC9DTnhvUk9USkVpdHc1V3E1dVpMMFl5THAzUGNLbkJS?=
- =?utf-8?B?RHE0cTVqZTREMnhtTUZoR0IvNlhJOHQvbllLa1N4ZE5yOHVBQ3RvVGNqNlVB?=
- =?utf-8?B?Wkk5TmZGdC8wbXdkV1VqYWRoUjRPRFFFcGJwSmlkMG1OSVV1S2hERkZDMFlY?=
- =?utf-8?B?ZU4wQ1pRcXU0cFhXcDMwbFI4NkdDazhiTkJ1d1JJSDhCMXRVcnJLalFIOVg1?=
- =?utf-8?Q?wCfjboF5a4gB01H7i3xgpY4oPgk1q4euDFp69xg?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fe054cbe-d563-40df-f9d0-08d90a8ca5ab
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2021 21:29:04.2455
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2zwjhEvXphD4998zifbG+KGWN0vPyQtjCXGwTuiSnw+dwkdYzbyvVIm/2vSvmqngv+SjM6WRuRRdwBzbk1kMWQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4349
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b75f0447-55d4-09b8-8f3e-d0d54471cac1@de.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: cXQHfjS85N_LJcki5yjkWmzIAhHYdMby
+X-Proofpoint-ORIG-GUID: 6pC7WTpBOdKKmkgaxNw-5qOk5MJo4TVT
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-28_16:2021-04-28,2021-04-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ clxscore=1015 impostorscore=0 mlxscore=0 priorityscore=1501
+ lowpriorityscore=0 spamscore=0 suspectscore=0 mlxlogscore=999 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104280136
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 28, 2021 at 11:03:22PM +0200, Christian Borntraeger wrote:
+> On 28.04.21 11:30, Thomas Huth wrote:
+> > On 28/04/2021 10.31, Christian Borntraeger wrote:
+> > > On 28.04.21 10:24, Thomas Huth wrote:
+> > > > In former times, the virtio-console code had to be compiled into
+> > > > the kernel since the old guest virtio transport had some hard de-
+> > > > pendencies. But since the old virtio transport has been removed in
+> > > > commit 7fb2b2d51244 ("s390/virtio: remove the old KVM virtio transport"),
+> > > > we do not have this limitation anymore.
+> > > > Commit bb533ec8bacd ("s390/config: do not select VIRTIO_CONSOLE via
+> > > > Kconfig") then also lifted the hard setting in the Kconfig system, so
+> > > > we can finally switch the CONFIG_VIRTIO_CONSOLE knob to compile this
+> > > > driver as a module now, making it more flexible for the user to only
+> > > > load it if it is really required.
+> > > 
+> > > Isnt that a distro specific decision? I would be perfectly fine to have
+> > > this change in Fedora, Redhat and co.
+> > 
+> > Sure, I'll try to get it changed there, too.
+> > 
+> > > Not so sure about defconfig.
+> > > We often use the defconfig in our CI and development things to have a
+> > > kernel config that boots up fine, even without a ramdisk. I agree that
+> > > virtio console is no longer really the most important console but does
+> > > it really hurt?
+> > Well, it's about a default configuration that should be fine for
+> > most users. I don't think that anybody really uses virtio-console
+> > in a ramdisk already ... or are you really doing that in your CI?
+> > If so, then please disregard my patch.
+> 
+> I think anybody uses the sclp console nowadays. The only question is, do
+> we care about manual configs with virtio-console?
 
-On 4/27/21 11:58 AM, Borislav Petkov wrote:
-> On Tue, Apr 27, 2021 at 06:16:34AM -0500, Brijesh Singh wrote:
->> The SEV-SNP builds upon the SEV-ES functionality while adding new hardware
->> protection. Version 2 of the GHCB specification adds new NAE events that
->> are SEV-SNP specific. Rename the sev-es.{ch} to sev.{ch} so that we can
->> consolidate all the SEV-ES and SEV-SNP in a one place.
-> No "we":
->
-> ... so that all SEV* functionality can be consolidated in one place."
-
-
-oops, I did it again :(.
-
-Let know if you want me to send the updated description ?
-
->
-> Rest looks good.
->
+Not really. If it breaks someone's workflow we will know for sure
+pretty soon. Therefore let's just change this.
