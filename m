@@ -2,178 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BD9D36DF0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 20:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 072DC36DF16
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 20:42:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243649AbhD1SmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 14:42:16 -0400
-Received: from mail-dm6nam12on2068.outbound.protection.outlook.com ([40.107.243.68]:28256
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236337AbhD1SmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 14:42:12 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CvI3kjB8WvK/3b+OGAwHn1l3D0Ykp9/JUZME6qGMNeHgdTNhAvyFQ1ySFbhRTAXHIInkggivwB3Mhae1ncFqoHd++DVTzbBAFQ1yxAVkqm/RdizvT1PWDBOMcUf7vzjqlqVKs64VABl/xFAV2No9xTtZfDUa5LxXpRsaowdLSqM6wBH2AfppXEE+ChmX66f8x6UQg/ceckxlUVzqtopfG50yU+MVNfAOK5ZUGuNxs6X4F0r81qtZQGJtixIP5ohuhpnjoPHu1VEMQWFhesy9AJZrB+Be2Ds3zo0A9Z/MtHv3og+IeKgxyoEdcS8mH2hL7bkGxA08ZkNQ+pb0pCIG0A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gMfmm1azbuIlsXCXTeGTugB3LpP6zMt1PjDKaXST7PA=;
- b=Fm3gVWL3WyMaptnbZHFPE+NPuuQae0GDmX5a0Ce0kiMvCpslSnLSzNvK9lMfu1Uq7ZM9QoLkxr170fYNxcJS0/sKbkiV3of5lzGizm9c8mC1RjT+ieU1V5WVcGu+sJwRvrCworGp7g6osvV011n6e4n0I9Fose2Pr5VO7+1c/RvO95o8rDvLaRawZl4F6DQXJGB6i9PsTUDQuZXvKyEGeKfwfp1LS2IuQ2HXuq8/B52xwkK2raUKxEaP0Z2UtwWZg0hVHRJ8Ty5jLY0TpColLM3tzoF1s0RsT0aHpfxL7JNQZ+i0NUDi9KQsqkEE772fhMxJMVTdS9NYK7yzEqDEMQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gMfmm1azbuIlsXCXTeGTugB3LpP6zMt1PjDKaXST7PA=;
- b=fMLBMOkBCvSgDFRgfCWPqAajG2U53d/nIUY6+cMmNLyrlDufyCB/TY07W6ymzNif6+wi7IylHN3zujuMF2gpAqdI9eILAmQroCQY3mRz37R0oHhymyy4JKNN5DFkyAmkwMg+95G+SGe2bZNV6oTdidK3sbagmyNWAwSK0s91q303Evnl7SRyBbvyGvCxBQtXJlRCMgJ7Nn75npWsst5eirZhlIxzGXiNGu466W1s7s+BFueb7165gvf42/gNnrPBwN86lEHrp56Cf4IBhJWgNivxH7Jmvtys+VGhuIzz606WstV8I/IO9oSp7+wQbNjSX8IFiM6S8dQO0/WK8/vo8w==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2602.namprd12.prod.outlook.com (2603:10b6:5:4a::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.25; Wed, 28 Apr
- 2021 18:41:26 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4065.027; Wed, 28 Apr 2021
- 18:41:26 +0000
-Date:   Wed, 28 Apr 2021 15:41:23 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     David Gibson <david@gibson.dropbear.id.au>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210428184123.GW1370958@nvidia.com>
-References: <20210421230301.GP1370958@nvidia.com>
- <20210422111337.6ac3624d@redhat.com>
- <20210422175715.GA1370958@nvidia.com>
- <20210422133747.23322269@redhat.com>
- <20210422200024.GC1370958@nvidia.com>
- <20210422163808.2d173225@redhat.com>
- <20210422233950.GD1370958@nvidia.com>
- <YIecXkaEGNgICePO@yekko.fritz.box>
- <20210427171212.GD1370958@nvidia.com>
- <MWHPR11MB1886C9199AA3F00FF72ACB508C409@MWHPR11MB1886.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR11MB1886C9199AA3F00FF72ACB508C409@MWHPR11MB1886.namprd11.prod.outlook.com>
-X-Originating-IP: [206.223.160.26]
-X-ClientProxiedBy: CH2PR15CA0008.namprd15.prod.outlook.com
- (2603:10b6:610:51::18) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S243705AbhD1Sm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 14:42:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243659AbhD1SmZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 14:42:25 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E5DC06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 11:41:38 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so9610305pjv.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 11:41:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iWgNLmw8XtUSWX3nXJqs3Lo41Zd8P550K3mKVLVvnf8=;
+        b=Uk1O0BgpnTa9THucVlNuUG2BFbxA/bUsmYfV78MZ2gAji7wuv0Maln71M/8n3/Poie
+         l4ijDJL55PVr0jf3oaNpMKTJKe5FCpfeoNIm0iVaYOcusDLB7qEB0WnnMOpdaFxLXdA2
+         VfdZEDwS78h/+cG/79kcQ3YxoT/NBXH5dgKUU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iWgNLmw8XtUSWX3nXJqs3Lo41Zd8P550K3mKVLVvnf8=;
+        b=oQyr9JSlYVO5/LTePJ+fzUzPpKYXiTaJ0qBQAtlKhIvzfi5eV4yhs7lp9ik7HQZrEA
+         7adWF0pHVt0HVVnNSQh3sqbC0/8pFQ+TeTHciCBsO3WxVhHepH7Ejqhq0QgV4kw4FLcU
+         Cx6N2bCo96phA4c6WjODUEOl1gowY2n7Q51tbuj62vu8BZLq6TLbEZ2Wh8ZVR3yCCf51
+         SMBGOUZNEklaf5u3/lCiowvVYEeBlTDr48BbzWAL5fJeS5XS7c9C97IjQykQidg9RZZI
+         2Lne6g2cf+3kK/2bSIbq6O+iWZrurn9vTr0ovQ+1NCTkmm+6+l2PLygOBfU15/q04XEf
+         2BwQ==
+X-Gm-Message-State: AOAM533XNEWq8UNmbFC748Ayv6VfufAQraMxbjdiHoyR57vWdZpXw5OM
+        3JPcVgpYAYC1fMa+NNgULRwU9A==
+X-Google-Smtp-Source: ABdhPJxKLMnoyUm0OBOXU0x+Ab6uzmJ1QVJbOzIE8+arEaVWVHLVS81tPukqeKbL1icp7BMJa0z5sA==
+X-Received: by 2002:a17:902:aa98:b029:ec:a55f:f4bc with SMTP id d24-20020a170902aa98b02900eca55ff4bcmr31879072plr.82.1619635298324;
+        Wed, 28 Apr 2021 11:41:38 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:4c1a:a0a7:2b43:81b0])
+        by smtp.gmail.com with UTF8SMTPSA id c13sm5257874pjv.21.2021.04.28.11.41.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Apr 2021 11:41:37 -0700 (PDT)
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Bastien Nocera <hadess@hadess.net>, linux-usb@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>, devicetree@vger.kernel.org,
+        Peter Chen <peter.chen@nxp.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Al Cooper <alcooperx@gmail.com>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        linux-arm-msm@vger.kernel.org
+Subject: [PATCH v8 0/5] USB: misc: Add onboard_usb_hub driver
+Date:   Wed, 28 Apr 2021 11:41:27 -0700
+Message-Id: <20210428184132.2184997-1-mka@chromium.org>
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by CH2PR15CA0008.namprd15.prod.outlook.com (2603:10b6:610:51::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.25 via Frontend Transport; Wed, 28 Apr 2021 18:41:25 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lbp7k-00E5zm-07; Wed, 28 Apr 2021 15:41:24 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dea0b7b7-920e-4788-1a49-08d90a753a50
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2602:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB2602A96402D13A2E34653919C2409@DM6PR12MB2602.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zmH32CcLjRO7nReGyhd4RyiSvA3UpDfz7sZClz7zqjDkNcOTzO5/PyZFggCEUK4WqzuMqmI+SR+65QWa+EUIgqb5tGa2gbWShL0oyYHkL14Z2aadRzfh7iNMG8U20T1dacoVDxJjd1dAZWjEeNMq3Su1Fri83NuiSu1F3aWA6aT1qEBO8t5U48Ue+8XDZJYBe5oPtbiLRXjr0062602i+2tn3sIymWGoAjacOAVFkOVpKimm8gpxNH1w7YeeH7lp68tbKy0Ju9GDmg55G9h1FHtOHa7W1Z0pGxTRafLoSO5Pe6eeKgpb5kZJHf7cED8XUOX+Z0EcWJeTH9CTv0lHxYwHWSjTpUzzpO8EnUilw+GGP5IEa1GSNDgYL8lnDXIFZKl72cFyGabbeE61MNa1I/RVFSC8ip7MbmIeZXKYFJ8DQvVlKzQw8ZBxFzOLf8HF5I5w5u/C40EaPFrpdb1hs6QeXSiv+qOXEXxb0WTmzU4KclbkXZNCGMMTLmSZUawiDBvgy24MqREnlh0D9ECACopg1IT3vie6NyKK2NnypId/vq7RGUuQ6ZhMoaCtq2+KVJ0SEGJ2qg1F3vGB9y7cLAC6WffowBAmgf94ogKNoAE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(366004)(136003)(396003)(2906002)(316002)(7416002)(36756003)(9746002)(54906003)(186003)(6916009)(9786002)(2616005)(1076003)(33656002)(4326008)(426003)(8936002)(8676002)(5660300002)(478600001)(66556008)(86362001)(38100700002)(66476007)(83380400001)(66946007)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?wYFR0UItFGTDOLMqbqqVVySTcwfGBHku3Nd82pjcCIEtl4bPHqQJcdWiYhw4?=
- =?us-ascii?Q?rv2gaPZtqmszAdzCg56Qu6rkRhvRQY0wqbXZxMFyInhfABat/tYR9+FNMDoK?=
- =?us-ascii?Q?5LhqWf9bsKQ/dPpcOKMSLi1ucR3YWNe3MgU0s9eT+C4iMmAvjVOq4WgkKnuH?=
- =?us-ascii?Q?7tyP/8dpK5x2/o2sFpbCl1IjVR42y+ybdpkZKfpNxXeg+x/tqHLK1d8mZ0SY?=
- =?us-ascii?Q?jv1zLfQ6xMbTN12P/og3mc6T0LSliqiBRMu3r8QyR+H/OnoajmuXU6QY+BZC?=
- =?us-ascii?Q?djrHo5+mjMEnAwOs9MuLzkYPTfT7ZZamjAQNU/vDUIOA4pekXpHtqC3Zx3RQ?=
- =?us-ascii?Q?wtie45qw4KtbRajD/xRrOahhdt/jBIyjEkE0BdtnxaRpC57DbU9eyuuwCYLL?=
- =?us-ascii?Q?0fc5f1MYAeT2/bkcphe3XX3jVSHeTpfW1TobDaxyrBYJAWd6G3rwRMOT74xr?=
- =?us-ascii?Q?IPqrUGBSfKeGk7VCiHAGkqc2WXr8GC+4QSi1+FUL3MYy+ML/Q93x6u1JbSK2?=
- =?us-ascii?Q?ZBTBu+FZSe9nz4Z+bcPFN4AyHQpB2BijprMoRpZ2/Xg2f7Ponm7V1EiNjFaJ?=
- =?us-ascii?Q?4cCtx+bUK/qVJzAOiesD8Sjw5Z3o7E6KXUT7QwOCZyA2jXr+JTu1XWjbjEu8?=
- =?us-ascii?Q?ahF1fuPQ6rhQf4AuECyTz+xTsoW9R/SfQOQbs2Bz2cbSDaF69BnxU+hb4AME?=
- =?us-ascii?Q?rOJvGcsqDNINEQO0X1sWYRy/pVzvlLzTNd3MKB5+HYFjnQhy6dJVv0Dqp5u9?=
- =?us-ascii?Q?oX4M169UzJwAFNGaGcoA9NjlHrHdogHsxB0RHNaPBl5I6pbpnFCVxumUbehn?=
- =?us-ascii?Q?En1oNOQjmD1EmIQ0mcEk8u0kwW5HRdRZn8t1N63/X33DtDOPRBVTv2kWh1F3?=
- =?us-ascii?Q?VWdFTrcsU1GqVrPeSCd97xs3lKM8gajEDG7e/dPwBfl+wj4eJ40lFyZEz0vH?=
- =?us-ascii?Q?sqJRXvKhJ9L+ZKispC0GBCs+V2BT4yrmPjriYMemt0nTT5QKfdSjxGPXnUmQ?=
- =?us-ascii?Q?BL0Fzbzlnmxj0Pj050IcQZuN+vO/Gcsd2p2tjx3BBSA6meUV+0vNVHKFCLqR?=
- =?us-ascii?Q?UTvQlDAN52rrLlLWPvsT9Pfjtw6jCbkrNfiNkhJbIPlVfLrHXFAM1xGcozzu?=
- =?us-ascii?Q?kxrXxGpTAvPMi+vTyyybPlHMV+bmDiJDIk87QgX/GL8Bm0riaTAHL/gCd9Ss?=
- =?us-ascii?Q?GtR7tGPw6U+zTBdeo31zQFKby3crTKQQOBdTah1/2k62ORUeQftSjim7k/Zs?=
- =?us-ascii?Q?nG92J4qYQCyi11W+RbuWE0lPUiF3FxVd7ojHbCoi0mHhRciE1He2fgspD/02?=
- =?us-ascii?Q?KRxTJYxEToH/FuLeEsZhIpqY?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dea0b7b7-920e-4788-1a49-08d90a753a50
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2021 18:41:25.9203
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: f24ts17V4dFoRDA5xeY5lKYk9Z8qiHjqJb9JSIIW6nex7tcqy97V5MUpCXO8DxV9
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2602
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 07:47:56AM +0000, Tian, Kevin wrote:
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Wednesday, April 28, 2021 1:12 AM
-> > 
-> [...]
-> > One option is VFIO can keep its group FD but nothing else will have
-> > anthing like it. However I don't much like the idea that VFIO will
-> > have a special and unique programming model to do that same things
-> > other subsystem will do. That will make it harder for userspace to
-> > implement.
-> 
-> Hi, Jason,
-> 
-> I have a question here. Based on discussions so far, it's clearly that the
-> new ioasid uAPI will differ from existing VFIO uAPI a lot, e.g. ioasid-
-> centric operations, no group fd, no incompatible domains, etc. Then 
-> I wonder how we plan to support legacy VFIO applications in this 
-> transition phase. 
+This series adds:
+- the onboard_usb_hub_driver
+- glue in the xhci-plat driver to create the onboard_usb_hub
+  platform device if needed
+- a device tree binding for the Realtek RTS5411 USB hub controller
+- device tree changes that add RTS5411 entries for the QCA SC7180
+  based boards trogdor and lazor
+- a couple of stubs for platform device functions to avoid
+  unresolved symbols with certain kernel configs
 
-I suspect the VFIO group fd will have to be registered with
-/dev/ioasid in addition to each device if we are to retain the same
-model.
+The main issue the driver addresses is that a USB hub needs to be
+powered before it can be discovered. For discrete onboard hubs (an
+example for such a hub is the Realtek RTS5411) this is often solved
+by supplying the hub with an 'always-on' regulator, which is kind
+of a hack. Some onboard hubs may require further initialization
+steps, like changing the state of a GPIO or enabling a clock, which
+requires even more hacks. This driver creates a platform device
+representing the hub which performs the necessary initialization.
+Currently it only supports switching on a single regulator, support
+for multiple regulators or other actions can be added as needed.
+Different initialization sequences can be supported based on the
+compatible string.
 
-> Earlier you ever mentioned the desire of directly replacing
-> /dev/vfio/vfio with /dev/ioasid and having ioasid to present both
-> VFIO and new uAPI. Doesn't it imply that we have to copy the VFIO
-> container/group semantics into /dev/ioasid although it's a special
-> programming model only for VFIO?
+Besides performing the initialization the driver can be configured
+to power the hub off during system suspend. This can help to extend
+battery life on battery powered devices which have no requirements
+to keep the hub powered during suspend. The driver can also be
+configured to leave the hub powered when a wakeup capable USB device
+is connected when suspending, and power it off otherwise.
 
-I gave that as a something to think about, if it doesn't work out then
-it is just a bad idea to discard.
+(no changes since v7)
 
-> Alternatively we could keep all the container/group legacy within VFIO
-> and having /dev/ioasid support only the new uAPI semantics. In this case
-> VFIO will include a shim iommu backend to connect its legacy uAPI into 
-> drivers/ioasid backend functions for backward compatibility. Then VFIO
-> will also support a new model which only uses its device uAPI to bind
-> to new ioasid fd w/o using any legacy container/group/iommu uAPI.
-> Does this sound a plan? 
+Changes in v7:
+- updated DT binding
+- series rebased on qcom/arm64-for-5.13
 
-It may be where we end up.. Though I fear it will make it overly
-complex inside VFIO to access the new stuff. It would be very nice if
-we could see a path where VFIO insides could only deal with the
-in-kernel ioasid handles, whatever they are.
+Changes in v6:
+- updated summary
 
-Jason
+Changes in v5:
+- cover letter added
+
+Matthias Kaehlcke (5):
+  dt-bindings: usb: Add binding for Realtek RTS5411 hub controller
+  USB: misc: Add onboard_usb_hub driver
+  of/platform: Add stubs for of_platform_device_create/destroy()
+  usb: host: xhci-plat: Create platform device for onboard hubs in
+    probe()
+  arm64: dts: qcom: sc7180-trogdor: Add nodes for onboard USB hub
+
+ .../sysfs-bus-platform-onboard-usb-hub        |   8 +
+ .../bindings/usb/realtek,rts5411.yaml         |  62 +++
+ MAINTAINERS                                   |   7 +
+ .../boot/dts/qcom/sc7180-trogdor-lazor-r0.dts |  19 +-
+ .../boot/dts/qcom/sc7180-trogdor-lazor-r1.dts |  11 +-
+ .../arm64/boot/dts/qcom/sc7180-trogdor-r1.dts |  19 +-
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi  |  21 +-
+ drivers/usb/host/xhci-plat.c                  |  16 +
+ drivers/usb/misc/Kconfig                      |  17 +
+ drivers/usb/misc/Makefile                     |   1 +
+ drivers/usb/misc/onboard_usb_hub.c            | 415 ++++++++++++++++++
+ include/linux/of_platform.h                   |  22 +-
+ include/linux/usb/hcd.h                       |   2 +
+ include/linux/usb/onboard_hub.h               |  15 +
+ 14 files changed, 599 insertions(+), 36 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-platform-onboard-usb-hub
+ create mode 100644 Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
+ create mode 100644 drivers/usb/misc/onboard_usb_hub.c
+ create mode 100644 include/linux/usb/onboard_hub.h
+
+-- 
+2.31.1.498.g6c1eba8ee3d-goog
+
