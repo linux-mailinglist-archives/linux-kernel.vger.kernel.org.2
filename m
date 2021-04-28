@@ -2,178 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79CC836D80E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 15:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8919B36D813
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 15:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239749AbhD1NKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 09:10:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44306 "EHLO
+        id S239768AbhD1NLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 09:11:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239201AbhD1NKn (ORCPT
+        with ESMTP id S239739AbhD1NLl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 09:10:43 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E893C06138A
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 06:09:58 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lbjwr-0004x1-9r; Wed, 28 Apr 2021 15:09:49 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lbjwq-0007j5-4p; Wed, 28 Apr 2021 15:09:48 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Fugang Duan <fugang.duan@nxp.com>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Randy Dunlap <rdunlap@infradead.org>, kernel@pengutronix.de,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        Fabio Estevam <festevam@gmail.com>,
-        David Jander <david@protonic.nl>,
-        Russell King <linux@armlinux.org.uk>,
-        Philippe Schenker <philippe.schenker@toradex.com>
-Subject: [PATCH net-next v1 1/1] net: selftest: fix build issue if INET is disabled
-Date:   Wed, 28 Apr 2021 15:09:46 +0200
-Message-Id: <20210428130947.29649-1-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
+        Wed, 28 Apr 2021 09:11:41 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E21C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 06:10:55 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id d1so19102060qvy.11
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 06:10:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ugedal.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yCqiPinRq7KbHRxw2+1CXLudhDzt8HuMBSPIFpRiJPQ=;
+        b=op0etC5f3iUvcNGm81crqMGzOmX3gWMXzJ1+rzIG/28W0YXHGVhDZikIUWNtLjtHcV
+         N5bDI277rR4vU5GWFEoGG5TddC76vb5yoAhS5AjLe50YPBa0VSTIQCNkGP7lP70EA5Hv
+         pum91yU819opegmcarW/Xkhb4kPpl34BF/gLEQUBRP5IrfDqM9nVUFrqoTYhr1qo3fZA
+         Rtcw/hUDlSIljTYbcOcRo4awy0mbjxf1q+vVlTg0XEyAzEHgw7n8bmNv03Ll42cMok3m
+         3CfnuCqpwzKRuyhuSLqHXPqQ3rg4wTERINUrqlNHeaT3RTloj79T+iEBFkNO+IHU/OAq
+         vGtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yCqiPinRq7KbHRxw2+1CXLudhDzt8HuMBSPIFpRiJPQ=;
+        b=a+tjlx0OLBcSdBcwO/iJ3hIlfLGQ6dqCBRTAQKk+4+5b7D3mX8otBVAgn0nD9HejpJ
+         1Kv8wuDa9ZS939qMdFtwmm60uYwAmabHNMSYx+TOR+sPcryo/ILy4L+CQGO/0GvslC3G
+         AuvZt6Wi8TRTvweIAPkLAkdaT78Ov0hmikX0llsyw0LX7VykrM0XGD5vdckyKo4wTXvj
+         32QQF9B9H7h5h4QkJe4YvmkBODrurfrQs4NvsryihY6LqyXl0mCaes6Qo36hxNWvVFUi
+         hqdE6WDxXO2z4lLIAVcGeO6xIKd1lEnVXm8TR2zuqpZ9vA9BsgUhyDZ0yn3Udpb+mD5P
+         BDzQ==
+X-Gm-Message-State: AOAM53351ydJ5lzbz5lUY59e7wyB+VAhvS2YEhMs5b4exw14ffd7ApG/
+        rXvKEEhtZ68sWxS7MwdyyVX9ymbA+orz6Z0QVCVJFA==
+X-Google-Smtp-Source: ABdhPJyVeqmrfxrJsE7YtnrS1x7yB+kJEsn0IMfmyFpC//oxcg5qEIlR8URP75kggnbwdsc51WSnkyAR7mbZAl+hl7I=
+X-Received: by 2002:a05:6214:1321:: with SMTP id c1mr8670090qvv.9.1619615455110;
+ Wed, 28 Apr 2021 06:10:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210425080902.11854-1-odin@uged.al> <20210425080902.11854-2-odin@uged.al>
+ <20210427142611.GA22056@vingu-book>
+In-Reply-To: <20210427142611.GA22056@vingu-book>
+From:   Odin Ugedal <odin@ugedal.com>
+Date:   Wed, 28 Apr 2021 15:10:22 +0200
+Message-ID: <CAFpoUr1KOvLSUoUac8MMTD+TREDWmDpeku950U=_p-oBDE4Avw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] sched/fair: Fix unfairness caused by missing load decay
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case ethernet driver is enabled and INET is disabled, selftest will
-fail to build.
+Hi,
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Fixes: 3e1e58d64c3d ("net: add generic selftest support")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- drivers/net/ethernet/atheros/Kconfig   |  2 +-
- drivers/net/ethernet/freescale/Kconfig |  2 +-
- include/net/selftests.h                | 19 +++++++++++++++++++
- net/Kconfig                            |  2 +-
- net/core/Makefile                      |  2 +-
- net/dsa/Kconfig                        |  2 +-
- 6 files changed, 24 insertions(+), 5 deletions(-)
+> Would be good to mention that the problem happens only if the new cfs_rq has
+> been removed from the leaf_cfs_rq_list because its PELT metrics were already
+> null. In such case __update_blocked_fair() never updates the blocked load of
+> the new cfs_rq and never propagate the removed load in the hierarchy.
 
-diff --git a/drivers/net/ethernet/atheros/Kconfig b/drivers/net/ethernet/atheros/Kconfig
-index 6842b74b0696..482c58c4c584 100644
---- a/drivers/net/ethernet/atheros/Kconfig
-+++ b/drivers/net/ethernet/atheros/Kconfig
-@@ -20,8 +20,8 @@ if NET_VENDOR_ATHEROS
- config AG71XX
- 	tristate "Atheros AR7XXX/AR9XXX built-in ethernet mac support"
- 	depends on ATH79
--	select NET_SELFTESTS
- 	select PHYLINK
-+	imply NET_SELFTESTS
- 	help
- 	  If you wish to compile a kernel for AR7XXX/91XXX and enable
- 	  ethernet support, then you should always answer Y to this.
-diff --git a/drivers/net/ethernet/freescale/Kconfig b/drivers/net/ethernet/freescale/Kconfig
-index 3d937b4650b2..2d1abdd58fab 100644
---- a/drivers/net/ethernet/freescale/Kconfig
-+++ b/drivers/net/ethernet/freescale/Kconfig
-@@ -26,8 +26,8 @@ config FEC
- 		   ARCH_MXC || SOC_IMX28 || COMPILE_TEST)
- 	default ARCH_MXC || SOC_IMX28 if ARM
- 	select CRC32
--	select NET_SELFTESTS
- 	select PHYLIB
-+	imply NET_SELFTESTS
- 	imply PTP_1588_CLOCK
- 	help
- 	  Say Y here if you want to use the built-in 10/100 Fast ethernet
-diff --git a/include/net/selftests.h b/include/net/selftests.h
-index 9993b9498cf3..61926c33a022 100644
---- a/include/net/selftests.h
-+++ b/include/net/selftests.h
-@@ -4,9 +4,28 @@
- 
- #include <linux/ethtool.h>
- 
-+#if IS_ENABLED(CONFIG_NET_SELFTESTS)
-+
- void net_selftest(struct net_device *ndev, struct ethtool_test *etest,
- 		  u64 *buf);
- int net_selftest_get_count(void);
- void net_selftest_get_strings(u8 *data);
- 
-+#else
-+
-+static inline void net_selftest(struct net_device *ndev, struct ethtool_test *etest,
-+		  u64 *buf)
-+{
-+}
-+
-+static inline int net_selftest_get_count(void)
-+{
-+	return 0;
-+}
-+
-+static inline void net_selftest_get_strings(u8 *data)
-+{
-+}
-+
-+#endif
- #endif /* _NET_SELFTESTS */
-diff --git a/net/Kconfig b/net/Kconfig
-index 8d955195c069..f5ee7c65e6b4 100644
---- a/net/Kconfig
-+++ b/net/Kconfig
-@@ -431,7 +431,7 @@ config SOCK_VALIDATE_XMIT
- 
- config NET_SELFTESTS
- 	def_tristate PHYLIB
--	depends on PHYLIB
-+	depends on PHYLIB && INET
- 
- config NET_SOCK_MSG
- 	bool
-diff --git a/net/core/Makefile b/net/core/Makefile
-index 1a6168d8f23b..f7f16650fe9e 100644
---- a/net/core/Makefile
-+++ b/net/core/Makefile
-@@ -21,6 +21,7 @@ obj-$(CONFIG_NETPOLL) += netpoll.o
- obj-$(CONFIG_FIB_RULES) += fib_rules.o
- obj-$(CONFIG_TRACEPOINTS) += net-traces.o
- obj-$(CONFIG_NET_DROP_MONITOR) += drop_monitor.o
-+obj-$(CONFIG_NET_SELFTESTS) += selftests.o
- obj-$(CONFIG_NETWORK_PHY_TIMESTAMPING) += timestamping.o
- obj-$(CONFIG_NET_PTP_CLASSIFY) += ptp_classifier.o
- obj-$(CONFIG_CGROUP_NET_PRIO) += netprio_cgroup.o
-@@ -33,7 +34,6 @@ obj-$(CONFIG_NET_DEVLINK) += devlink.o
- obj-$(CONFIG_GRO_CELLS) += gro_cells.o
- obj-$(CONFIG_FAILOVER) += failover.o
- ifeq ($(CONFIG_INET),y)
--obj-$(CONFIG_NET_SELFTESTS) += selftests.o
- obj-$(CONFIG_NET_SOCK_MSG) += skmsg.o
- obj-$(CONFIG_BPF_SYSCALL) += sock_map.o
- endif
-diff --git a/net/dsa/Kconfig b/net/dsa/Kconfig
-index cbc2bd643ab2..183e27b50202 100644
---- a/net/dsa/Kconfig
-+++ b/net/dsa/Kconfig
-@@ -9,7 +9,7 @@ menuconfig NET_DSA
- 	select NET_SWITCHDEV
- 	select PHYLINK
- 	select NET_DEVLINK
--	select NET_SELFTESTS
-+	imply NET_SELFTESTS
- 	help
- 	  Say Y if you want to enable support for the hardware switches supported
- 	  by the Distributed Switch Architecture.
--- 
-2.29.2
+Well, it does technically occur when PELT metrics were null and therefore
+removed from this leaf_cfs_rq_list, that is correct. We do however not add
+newly created cfs_rq's to leaf_cfs_rq_list, so that is also a reason for it
+to occur. Most users of cgroups are probably creating a new cgroup and then
+attaching a process to it, so I think that will be the _biggest_ issue.
 
+> The fix tag should be :
+> Fixes: 039ae8bcf7a5 ("sched/fair: Fix O(nr_cgroups) in the load balancing path")
+>
+> This patch re-introduced the del of idle cfs_rq from leaf_cfs_rq_list in order to
+> skip useless update of blocked load.
+
+Thanks for pointing me at that patch! A quick look makes me think that that
+commit caused the issue to occur _more often_, but was not the one that
+introduced it. I should probably investigate a bit more tho., since I didn't
+dig that deep in it. It is not a clean revert for that patch on v5.12,
+but I did apply the diff below to test. It is essentially what the patch
+039ae8bcf7a5 does, as far as I see. There might however been more commits
+beteen those, so I might take a look further behind to see.
+
+Doing this does make the problem less severe, resulting in ~90/10 load on the
+example that without the diff results in ~99/1. So with this diff/reverting
+039ae8bcf7a5, there is still an issue.
+
+Should I keep two "Fixes", or should I just take one of them?
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 794c2cb945f8..5fac4fbf6f84 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -7941,8 +7941,8 @@ static bool __update_blocked_fair(struct rq *rq,
+bool *done)
+                 * There can be a lot of idle CPU cgroups.  Don't let fully
+                 * decayed cfs_rqs linger on the list.
+                 */
+-               if (cfs_rq_is_decayed(cfs_rq))
+-                       list_del_leaf_cfs_rq(cfs_rq);
++               // if (cfs_rq_is_decayed(cfs_rq))
++               //      list_del_leaf_cfs_rq(cfs_rq);
+
+                /* Don't need periodic decay once load/util_avg are null */
+                if (cfs_rq_has_blocked(cfs_rq))
+
+> propagate_entity_cfs_rq() already goes across the tg tree to
+> propagate the attach/detach.
+>
+> would be better to call list_add_leaf_cfs_rq(cfs_rq)  inside this function
+> instead of looping twice the tg tree. Something like:
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 33b1ee31ae0f..18441ce7316c 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -11026,10 +11026,10 @@ static void propagate_entity_cfs_rq(struct sched_entity *se)
+>         for_each_sched_entity(se) {
+>                 cfs_rq = cfs_rq_of(se);
+>
+> -               if (cfs_rq_throttled(cfs_rq))
+> -                       break;
+> +               if (!cfs_rq_throttled(cfs_rq))
+> +                       update_load_avg(cfs_rq, se, UPDATE_TG);
+>
+> -               update_load_avg(cfs_rq, se, UPDATE_TG);
+> +               list_add_leaf_cfs_rq(cfs_rq);
+>         }
+>  }
+>  #else
+
+
+Thanks for that feedback!
+
+I did think about that, but was not sure what would be the best one.
+If it is "safe" to always run list_add_leaf_cfs_rq there (since it is used in
+more places than just on cgroup change and move to fair class), I do agree
+that that is a better solution. Will test that, and post a new patch
+if it works as expected.
+
+Also, the current code will exit from the loop in case a cfs_rq is throttled,
+while your suggestion will keep looping. For list_add_leaf_cfs_rq that is fine
+(and required), but should we keep running update_load_avg? I do think it is ok,
+and the likelihood of a cfs_rq being throttled is not that high after all, so
+I guess it doesn't really matter.
+
+Thanks
+Odin
