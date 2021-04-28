@@ -2,109 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE25036DCC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B609936DCC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240503AbhD1QP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 12:15:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239915AbhD1QPZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 12:15:25 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FD9C061573;
-        Wed, 28 Apr 2021 09:14:40 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id y124-20020a1c32820000b029010c93864955so9600085wmy.5;
-        Wed, 28 Apr 2021 09:14:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=aYKVWAKIY2SVLc5Zm+ilU7xifRJwW77SW1HqG8x0JaA=;
-        b=SbSdFVW1uVaKGxNMdvb2zSIxE+zfnIBM1DfXdsREMf2yzLTG9aTam/opWJt6FAR0FO
-         IAE2wArZ+XAhqUb/xgr/uPuJnr04OS0Qdgax29qEP1ROdkNK/pAM88TXXuLEKZikbJXC
-         uC0GOE6Hg6xdlrN5ZI5FXtrozhpi+ytgPyFouiLIdtCEl30o5gFnW2vMkC/JDNwOhlMb
-         C/PAfls4zqUYynpdiP/KEQZmDcHTLpeymfv5e23dTl5Otx3ArQsDvGB/u4wYRRxxc34t
-         0xpfBUcexuPemMENQaFf0aTemJQs4UT7OdCKtpw9X8Ol5jQ7Rz52aTDbRw7jKkleMwW2
-         AwpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=aYKVWAKIY2SVLc5Zm+ilU7xifRJwW77SW1HqG8x0JaA=;
-        b=jKpWpI5MLno76ukz7wXZLRdJBdhDbVAL4WA8BM05k536VZgJZeKqvNWeLcuGRg1dQX
-         05g9MHcnxjbFQvhkMI4xdA+QC5z/oUN/WW1vTMWsw9PhQYvIEPGAeXDexcUBXSRoLyJB
-         DzCLpJWo9if0iqNhTXFEKzUpwscQ76+VcyjDmbmT9pqwYMUh/cL4RHWdE5GdphXe0ZqM
-         myOpgVSui5GwfnCQX+l+Ct5ybPdrhI4MH0kuj24meA2nobiAv+72W8v+F6zdW+JAY5+f
-         ybanH3RuEE1cJZifyrmYO9rWLYTHTfZGr3beSrHLMR2yY5tKVdIL3itWYWnlRXldjg1h
-         G1qw==
-X-Gm-Message-State: AOAM530SdM8+uGexZcnxRD02oHYp3ffYhbwDD3HwrUBdeHUL1e5dqgMP
-        zlXJwjlJ+AUj9OVhFSewN1mn9BWzAlH8iesh
-X-Google-Smtp-Source: ABdhPJwVj5FDMqGLOFFmQahABCgh5yKpcSSFoypgvL/bqC3d1eLkEXCrKRmL9dNVkzTLXDaBCynX0g==
-X-Received: by 2002:a05:600c:4f45:: with SMTP id m5mr5399854wmq.132.1619626479138;
-        Wed, 28 Apr 2021 09:14:39 -0700 (PDT)
-Received: from 192.168.10.5 ([39.46.118.120])
-        by smtp.gmail.com with ESMTPSA id p7sm280375wrt.24.2021.04.28.09.14.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 09:14:38 -0700 (PDT)
-Message-ID: <2b5365025e7a9162aae111b1c5134430a37e6ff8.camel@gmail.com>
-Subject: Re: [PATCH] media: siano: use DEFINE_MUTEX() for mutex lock
-From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "open list:SIANO DVB DRIVER" <linux-media@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        zhengyongjun3@huawei.com, kernel-janitors@vger.kernel.org,
-        colin.king@canonical.com, dan.carpenter@oracle.com
-Cc:     musamaanjum@gmail.com
-Date:   Wed, 28 Apr 2021 21:14:34 +0500
-In-Reply-To: <20210405205219.GA687366@LEGION>
-References: <20210405205219.GA687366@LEGION>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S240535AbhD1QQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 12:16:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239890AbhD1QQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 12:16:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24E8A61420;
+        Wed, 28 Apr 2021 16:16:00 +0000 (UTC)
+From:   Clark Williams <williams@redhat.com>
+Subject: [ANNOUNCE] 4.19.189-rt78
+Date:   Wed, 28 Apr 2021 16:14:53 -0000
+Message-ID: <161962649367.296555.2478963021739615566@puck.lan>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <daniel.wagner@suse.com>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>,
+        Pavel Machek <pavel@denx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reminder!
+Hello RT-list!
 
-On Tue, 2021-04-06 at 01:52 +0500, Muhammad Usama Anjum wrote:
-> mutex lock can be initialized with DEFINE_MUTEX() rather than
-> explicitly calling mutex_init().
-> 
-> Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
-> ---
->  drivers/media/common/siano/smscoreapi.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/media/common/siano/smscoreapi.c b/drivers/media/common/siano/smscoreapi.c
-> index 410cc3ac6f94..7f5b638d2458 100644
-> --- a/drivers/media/common/siano/smscoreapi.c
-> +++ b/drivers/media/common/siano/smscoreapi.c
-> @@ -414,10 +414,10 @@ struct smscore_registry_entry_t {
->  
->  static struct list_head g_smscore_notifyees;
->  static struct list_head g_smscore_devices;
-> -static struct mutex g_smscore_deviceslock;
-> +static DEFINE_MUTEX(g_smscore_deviceslock);
->  
->  static struct list_head g_smscore_registry;
-> -static struct mutex g_smscore_registrylock;
-> +static DEFINE_MUTEX(g_smscore_registrylock);
->  
->  static int default_mode = DEVICE_MODE_NONE;
->  
-> @@ -2123,10 +2123,7 @@ static int __init smscore_module_init(void)
->  {
->  	INIT_LIST_HEAD(&g_smscore_notifyees);
->  	INIT_LIST_HEAD(&g_smscore_devices);
-> -	mutex_init(&g_smscore_deviceslock);
-> -
->  	INIT_LIST_HEAD(&g_smscore_registry);
-> -	mutex_init(&g_smscore_registrylock);
->  
->  	return 0;
->  }
+I'm pleased to announce the 4.19.189-rt78 stable release.
 
+You can get this release via the git tree at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+
+  branch: v4.19-rt
+  Head SHA1: 6ea1aced383f7781d0a1962777bd569cde0704f5
+
+Or to build 4.19.189-rt78 directly, the following patches should be applied:
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.19.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.19.189.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/patch-4.19.189-rt78.patch.xz
+
+
+You can also build from 4.19.188-rt77 by applying the incremental patch:
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/incr/patch-4.19.188-rt77-rt78.patch.xz
+
+Enjoy!
+Clark
+
+Changes from v4.19.188-rt77:
+---
+
+Alexander Aring (7):
+      net: ieee802154: stop dump llsec keys for monitors
+      net: ieee802154: stop dump llsec devs for monitors
+      net: ieee802154: forbid monitor for add llsec dev
+      net: ieee802154: stop dump llsec devkeys for monitors
+      net: ieee802154: forbid monitor for add llsec devkey
+      net: ieee802154: stop dump llsec seclevels for monitors
+      net: ieee802154: forbid monitor for add llsec seclevel
+
+Alexander Shiyan (1):
+      ASoC: fsl_esai: Fix TDM slot setup for I2S mode
+
+Ali Saidi (1):
+      locking/qrwlock: Fix ordering in queued_write_lock_slowpath()
+
+Andy Shevchenko (1):
+      dmaengine: dw: Make it dependent to HAS_IOMEM
+
+Arnd Bergmann (2):
+      ARM: keystone: fix integer overflow warning
+      Input: i8042 - fix Pegatron C15B ID entry
+
+Caleb Connolly (1):
+      Input: s6sy761 - fix coordinate read bit shift
+
+Christophe JAILLET (1):
+      net: davicom: Fix regulator not turned off on failed probe
+
+Clark Williams (2):
+      Merge tag 'v4.19.189' into v4.19-rt
+      Linux 4.19.189-rt78
+
+Eric Dumazet (1):
+      netfilter: nft_limit: avoid possible divide error in nft_limit_init
+
+Fabian Vogt (1):
+      Input: nspire-keypad - enable interrupts only when opened
+
+Fredrik Strupe (1):
+      ARM: 9071/1: uprobes: Don't hook on thumb instructions
+
+Greg Kroah-Hartman (1):
+      Linux 4.19.189
+
+Guenter Roeck (1):
+      pcnet32: Use pci_resource_len to validate PCI resource
+
+Hristo Venev (2):
+      net: sit: Unregister catch-all devices
+      net: ip6_tunnel: Unregister catch-all devices
+
+Jaegeuk Kim (1):
+      dm verity fec: fix misaligned RS roots IO
+
+Jason Xing (1):
+      i40e: fix the panic when running bpf in xdpdrv mode
+
+Jia-Ju Bai (1):
+      HID: alps: fix error return code in alps_input_configured()
+
+Jiapeng Zhong (1):
+      HID: wacom: Assign boolean values to a bool variable
+
+Johan Hovold (1):
+      net: hso: fix NULL-deref on disconnect regression
+
+John Paul Adrian Glaubitz (1):
+      ia64: tools: remove duplicate definition of ia64_mf() on ia64
+
+Jolly Shah (1):
+      scsi: libsas: Reset num_scatter if libata marks qc as NODATA
+
+Kan Liang (1):
+      perf/x86/intel/uncore: Remove uncore extra PCI dev HSWEP_PCI_PCU_3
+
+Lijun Pan (3):
+      ibmvnic: avoid calling napi_disable() twice
+      ibmvnic: remove duplicate napi_schedule call in do_reset function
+      ibmvnic: remove duplicate napi_schedule call in open function
+
+Linus Torvalds (2):
+      readdir: make sure to verify directory entry for legacy interfaces too
+      gup: document and work around "COW can break either way" issue
+
+Martin Wilck (1):
+      scsi: scsi_transport_srp: Don't block target in SRP_PORT_LOST state
+
+Matti Vaittinen (1):
+      gpio: sysfs: Obey valid_mask
+
+Michael Brown (1):
+      xen-netback: Check for hotplug-status existence before watching
+
+Mike Galbraith (1):
+      x86/crash: Fix crash_setup_memmap_entries() out-of-bounds access
+
+Nathan Chancellor (1):
+      arm64: alternatives: Move length validation in alternative_{insn, endif}
+
+Oliver Neukum (1):
+      USB: CDC-ACM: fix poison/unpoison imbalance
+
+Or Cohen (1):
+      net/sctp: fix race condition in sctp_destroy_sock
+
+Pablo Neira Ayuso (1):
+      netfilter: conntrack: do not print icmpv6 as unknown via /proc
+
+Pali Rohár (1):
+      net: phy: marvell: fix detection of PHY on Topaz switches
+
+Peter Collingbourne (1):
+      arm64: fix inline asm in load_unaligned_zeropad()
+
+Phillip Potter (1):
+      net: geneve: check skb is large enough for IPv4/IPv6 header
+
+Ping Cheng (1):
+      HID: wacom: set EV_KEY and EV_ABS only for non-HID_GENERIC type of devices
+
+Randy Dunlap (1):
+      ia64: fix discontig.c section mismatches
+
+Rob Clark (1):
+      drm/msm: Fix a5xx/a6xx timestamps
+
+Russell King (1):
+      ARM: footbridge: fix PCI interrupt mapping
+
+Seevalamuthu Mariappan (1):
+      mac80211: clear sta->fast_rx when STA removed from 4-addr VLAN
+
+Shou-Chieh Hsu (1):
+      HID: google: add don USB id
+
+Tetsuo Handa (1):
+      lockdep: Add a missing initialization hint to the "INFO: Trying to register non-static key" message
+
+Tong Zhu (1):
+      neighbour: Disregard DEAD dst in neigh_update
+
+Tony Lindgren (3):
+      ARM: dts: Drop duplicate sha2md5_fck to fix clk_disable race
+      ARM: dts: Fix moving mmc devices with aliases for omap4 & 5
+      ARM: dts: Fix swapped mmc order for omap3
+
+Vasily Gorbik (1):
+      s390/entry: save the caller of psw_idle
+
+Wan Jiabing (1):
+      cavium/liquidio: Fix duplicate argument
+
+Wang Qing (1):
+      arc: kernel: Return -EFAULT if copy_to_user() fails
+
+Yuanyuan Zhong (1):
+      pinctrl: lewisburg: Update number of pins in community
+---
+Makefile                                           |  2 +-
+ arch/arc/kernel/signal.c                           |  4 +-
+ arch/arm/boot/dts/omap3.dtsi                       |  3 ++
+ arch/arm/boot/dts/omap4.dtsi                       |  5 ++
+ arch/arm/boot/dts/omap44xx-clocks.dtsi             |  8 ---
+ arch/arm/boot/dts/omap5.dtsi                       |  5 ++
+ arch/arm/mach-footbridge/cats-pci.c                |  4 +-
+ arch/arm/mach-footbridge/ebsa285-pci.c             |  4 +-
+ arch/arm/mach-footbridge/netwinder-pci.c           |  2 +-
+ arch/arm/mach-footbridge/personal-pci.c            |  5 +-
+ arch/arm/mach-keystone/keystone.c                  |  4 +-
+ arch/arm/probes/uprobes/core.c                     |  4 +-
+ arch/arm64/include/asm/alternative.h               |  8 +--
+ arch/arm64/include/asm/word-at-a-time.h            | 10 ++--
+ arch/ia64/mm/discontig.c                           |  6 +--
+ arch/s390/kernel/entry.S                           |  1 +
+ arch/x86/events/intel/uncore_snbep.c               | 61 +++++++++-------------
+ arch/x86/kernel/crash.c                            |  2 +-
+ drivers/dma/dw/Kconfig                             |  2 +
+ drivers/gpio/gpiolib-sysfs.c                       |  8 +++
+ drivers/gpu/drm/msm/adreno/a5xx_gpu.c              |  4 +-
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c              |  4 +-
+ drivers/hid/hid-alps.c                             |  1 +
+ drivers/hid/hid-google-hammer.c                    |  2 +
+ drivers/hid/hid-ids.h                              |  1 +
+ drivers/hid/wacom_wac.c                            |  8 ++-
+ drivers/input/keyboard/nspire-keypad.c             | 56 +++++++++++---------
+ drivers/input/serio/i8042-x86ia64io.h              |  1 +
+ drivers/input/touchscreen/s6sy761.c                |  4 +-
+ drivers/md/dm-verity-fec.c                         | 11 ++--
+ drivers/md/dm-verity-fec.h                         |  1 +
+ drivers/net/dsa/mv88e6xxx/chip.c                   | 30 +++++------
+ drivers/net/ethernet/amd/pcnet32.c                 |  5 +-
+ drivers/net/ethernet/cavium/liquidio/cn66xx_regs.h |  2 +-
+ drivers/net/ethernet/davicom/dm9000.c              |  6 ++-
+ drivers/net/ethernet/ibm/ibmvnic.c                 | 14 +----
+ drivers/net/ethernet/intel/i40e/i40e_main.c        |  6 +++
+ drivers/net/geneve.c                               |  6 +++
+ drivers/net/phy/marvell.c                          | 28 ++++++++--
+ drivers/net/usb/hso.c                              |  2 +-
+ drivers/net/xen-netback/xenbus.c                   | 12 +++--
+ drivers/pinctrl/intel/pinctrl-lewisburg.c          |  6 +--
+ drivers/scsi/libsas/sas_ata.c                      |  9 ++--
+ drivers/scsi/scsi_transport_srp.c                  |  2 +-
+ drivers/usb/class/cdc-acm.c                        |  3 +-
+ fs/readdir.c                                       |  6 +++
+ include/linux/marvell_phy.h                        |  5 +-
+ kernel/locking/lockdep.c                           |  3 +-
+ kernel/locking/qrwlock.c                           |  7 +--
+ localversion-rt                                    |  2 +-
+ mm/gup.c                                           | 44 +++++++++++++---
+ mm/huge_memory.c                                   |  7 ++-
+ net/core/neighbour.c                               |  2 +-
+ net/ieee802154/nl802154.c                          | 29 ++++++++++
+ net/ipv6/ip6_tunnel.c                              | 10 ++++
+ net/ipv6/sit.c                                     |  4 +-
+ net/mac80211/cfg.c                                 |  4 +-
+ net/netfilter/nf_conntrack_standalone.c            |  1 +
+ net/netfilter/nft_limit.c                          |  4 +-
+ net/sctp/socket.c                                  | 13 ++---
+ sound/soc/fsl/fsl_esai.c                           |  8 +--
+ tools/arch/ia64/include/asm/barrier.h              |  3 --
+ 62 files changed, 325 insertions(+), 199 deletions(-)
