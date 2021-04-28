@@ -2,129 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12B6636D348
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 09:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F051836D350
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 09:38:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237055AbhD1HgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 03:36:10 -0400
-Received: from relay.sw.ru ([185.231.240.75]:46334 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237012AbhD1HgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 03:36:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=NyPojqAJXKDuboCn+PJDB2Z/IjVfmTg+CYfjOif2znQ=; b=A7vpzn4hERJpNyqPGJ2
-        nwASd6Gi9p0bKh7B0XkP8m5snuYBzC1YX3u+aKBsQ+djHxBhzQl2w8Ncp7B3PmNqxtWclUxgyywDk
-        CgKIl6fgyRjzLbOHFMogxlH466aAtLxp+dAdSQuFKXqMYlI96DO10QVaIEgUFcY0mjXF21dubS0=
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1lbejD-001VrS-0j; Wed, 28 Apr 2021 10:35:23 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH v2 2/2] ipc: use kmalloc for msg_queue and shmid_kernel
-To:     Michal Hocko <mhocko@suse.com>, cgroups@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>
-References: <ebc3ac79-3190-520d-81ce-22ad194986ec@virtuozzo.com>
-Message-ID: <0d0b6c9b-8af3-29d8-34e2-a565c53780f3@virtuozzo.com>
-Date:   Wed, 28 Apr 2021 10:35:22 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S236892AbhD1HjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 03:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236343AbhD1Hix (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 03:38:53 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29826C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 00:38:09 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id r9so93163886ejj.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 00:38:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=QkJ4vpHSUWaGMQDLA7ZMyh0ynmNQBlz+ZqztYkEPyuQ=;
+        b=m1fQRpKJMRs6XXRylK+K2Q9aA1XWDgL/5ejc0MtzpzqqmohWyRbvsAYZBx7t1e5gwN
+         whc9QfJUCBjYraOo4H3vSdp2nRELYMDFyeQx8ZjVrGTf+gvS0EPrxv12pibm07j6aUXO
+         UEHNbYm7CxkO2+qaMuBOleWngcp9mTOl0fnbNIk0izy0d2MWEeCwqEZaNEsGVFMzDJNK
+         0GBh3Tyr/fnsJ46U7dV1/pmvScgnZc1SI9ehKdSzUA2I8B8ZsxuMlu7ANtBh1abSqSo8
+         uqGRso+SN+xqu/SD8kEr4pz3D/aHuyIsb8wKUIDSlawkyAKLxkAf6IOIEUPUc1uQAu8q
+         8ssw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=QkJ4vpHSUWaGMQDLA7ZMyh0ynmNQBlz+ZqztYkEPyuQ=;
+        b=XuG3RxYxZf+rklb+hABQ9ARwQrmB1OKmbCCKfUbrfDVtE9LsJ9HY9Jfse9Xanq98dU
+         qZHpszjWdK8mTozwnHULq+ICdgT2y4XSR0BOTwyn2hYLSaZolIXkL2BTyrbmKKUhfJaj
+         efYwN0S0O1Wq8pA2d/Caey5dl4Wh2YY/pTJEVH0f+tlAS3waKfnhi1fiG7AIFXn9y93A
+         62+HM9HIOSrylg/tkcvRvm4bi9/Oy4y9yIwdI3qsd1sazWuqGMomQwDhECerIxg8/+Au
+         fQiJEXglUG6bLEekzzP1aG+R2B4bxhfQWXFURL6333VymewkZ5QR8NvsiDsAeh+1yx12
+         2WHA==
+X-Gm-Message-State: AOAM531D460pU8f6llk9MlPFSCyhRh4OtT1W5YUd4hOVH2+bTk892tAj
+        VK/cB2GaNCxG1f7JYbyeyZKmEps974vtB7GWX1F+CU+VHxWBrw==
+X-Google-Smtp-Source: ABdhPJySpqvgCso+yQC6dVX2kkkQwqHjiOGBaSeWdfU9qgjYUCeNEwH5NLI2NPjjBZggzW7MPKQOJyRfnPmm+gBqy90=
+X-Received: by 2002:a17:907:7355:: with SMTP id dq21mr14701122ejc.157.1619595487363;
+ Wed, 28 Apr 2021 00:38:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ebc3ac79-3190-520d-81ce-22ad194986ec@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   Shivank Garg <shivankgarg98@gmail.com>
+Date:   Wed, 28 Apr 2021 13:07:50 +0530
+Message-ID: <CAOVCmzEAMz4NGF3gi4O_tNUQfm2+-8AkGiOn0gPN+p3GHctkKA@mail.gmail.com>
+Subject: Is there a different memory allocation path other than the buddy allocator?
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, gregkh@linuxfoundation.org,
+        sergey.senozhatsky@gmail.com, pmladek@suse.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-msg_queue and shmid_kernel are quite small objects, no need to use
-kvmalloc for them.
-mhocko@: "Both of them are 256B on most 64b systems."
+Hi Everyone!
 
-Previously these objects was allocated via ipc_alloc/ipc_rcu_alloc(),
-common function for several ipc objects. It had kvmalloc call inside().
-Later, this function went away and was finally replaced by direct
-kvmalloc call, and now we can use more suitable kmalloc/kfree for them.
+I'm understanding memory allocation in Linux and doing some changes in
+buddy allocator (__alloc_pages_nodemask) for my experiments. I create
+a new flag in `struct page->flags` (by adding a new flag in `enum
+pageflags` in `page-flags.h`. I set this bit permanently in
+__alloc_pages_nodemask (to not to be cleared once set and survive all
+further allocation and freeing). But I'm not able to see expected
+behavior.
 
-Reported-by: Alexey Dobriyan <adobriyan@gmail.com>
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-Acked-by: Roman Gushchin <guro@fb.com>
----
- ipc/msg.c | 6 +++---
- ipc/shm.c | 6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
+I'm guessing this is because Linux is also using some different path
+to allocate memory (probably during boot). Is my hypothesis correct?
 
-diff --git a/ipc/msg.c b/ipc/msg.c
-index 87898cb..79c6625 100644
---- a/ipc/msg.c
-+++ b/ipc/msg.c
-@@ -130,7 +130,7 @@ static void msg_rcu_free(struct rcu_head *head)
- 	struct msg_queue *msq = container_of(p, struct msg_queue, q_perm);
- 
- 	security_msg_queue_free(&msq->q_perm);
--	kvfree(msq);
-+	kfree(msq);
- }
- 
- /**
-@@ -147,7 +147,7 @@ static int newque(struct ipc_namespace *ns, struct ipc_params *params)
- 	key_t key = params->key;
- 	int msgflg = params->flg;
- 
--	msq = kvmalloc(sizeof(*msq), GFP_KERNEL_ACCOUNT);
-+	msq = kmalloc(sizeof(*msq), GFP_KERNEL_ACCOUNT);
- 	if (unlikely(!msq))
- 		return -ENOMEM;
- 
-@@ -157,7 +157,7 @@ static int newque(struct ipc_namespace *ns, struct ipc_params *params)
- 	msq->q_perm.security = NULL;
- 	retval = security_msg_queue_alloc(&msq->q_perm);
- 	if (retval) {
--		kvfree(msq);
-+		kfree(msq);
- 		return retval;
- 	}
- 
-diff --git a/ipc/shm.c b/ipc/shm.c
-index 7632d72..85da060 100644
---- a/ipc/shm.c
-+++ b/ipc/shm.c
-@@ -222,7 +222,7 @@ static void shm_rcu_free(struct rcu_head *head)
- 	struct shmid_kernel *shp = container_of(ptr, struct shmid_kernel,
- 							shm_perm);
- 	security_shm_free(&shp->shm_perm);
--	kvfree(shp);
-+	kfree(shp);
- }
- 
- static inline void shm_rmid(struct ipc_namespace *ns, struct shmid_kernel *s)
-@@ -619,7 +619,7 @@ static int newseg(struct ipc_namespace *ns, struct ipc_params *params)
- 			ns->shm_tot + numpages > ns->shm_ctlall)
- 		return -ENOSPC;
- 
--	shp = kvmalloc(sizeof(*shp), GFP_KERNEL_ACCOUNT);
-+	shp = kmalloc(sizeof(*shp), GFP_KERNEL_ACCOUNT);
- 	if (unlikely(!shp))
- 		return -ENOMEM;
- 
-@@ -630,7 +630,7 @@ static int newseg(struct ipc_namespace *ns, struct ipc_params *params)
- 	shp->shm_perm.security = NULL;
- 	error = security_shm_alloc(&shp->shm_perm);
- 	if (error) {
--		kvfree(shp);
-+		kfree(shp);
- 		return error;
- 	}
- 
--- 
-1.8.3.1
+Is there any different memory allocation path other than buddy
+allocator? Where can I find it?
 
+To keep the newly added bit in the page_flag set for 'struct page'
+lifetime.  I make sure not to clear it while freeing by unsetting it
+in "#define PAGE_FLAGS_CHECK_AT_PREP       \
+-       (((1UL << NR_PAGEFLAGS) - 1) & ~__PG_HWPOISON & ~(1UL <<
+PG_NEWEXPFLAG))" I know  adding new bits in page->flag is probably not
+a good idea but this if for better understanding :)
+
+Thank You and stay safe!
+
+Best Regards,
+Shivank
