@@ -2,86 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D2C36D3FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93FD336D3FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:31:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237470AbhD1Iba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 04:31:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38458 "EHLO
+        id S237424AbhD1Ib1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 04:31:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236805AbhD1Ib3 (ORCPT
+        with ESMTP id S237389AbhD1IbQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 04:31:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75049C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 01:30:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=HKmR83wbMrXIN1GQCjjKTIEAr6iS+t5wzeghEaNE/3c=; b=h2clHxz5vWLNgFB8LzunBQ99T/
-        +fsGBfz3Yf4mT2JPidTAHn8VzXbrdA5xFHX1MBxwoUxA4MPLKQqNe2gFy3fhAfwybirua2j58iqng
-        WFnfMjMQ4S616aO5DnykJujMt1c0cLQrHGErIuu5afyh8S4hH/exYT3kNEApgv/ls0p7UUPCZ3qpe
-        xFSH/Fua72DIZJQtUpWYvQRk21qzGmH2dUIXKAFcwE3xL5v2uSop8SK5m5CsF3SsKDN2OnGY4npDq
-        kExH6QbxQDbtKIhnVuFSqN2rRi9/6gmA0ZKKFPbmF9eR3vM38n8V7p/ImIVzr36uO1Ih2ahB92Uvg
-        XHjcgRrA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lbfaB-0082el-DV; Wed, 28 Apr 2021 08:30:20 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E0FC1300094;
-        Wed, 28 Apr 2021 10:30:05 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B3AE62BF7B83C; Wed, 28 Apr 2021 10:30:05 +0200 (CEST)
-Date:   Wed, 28 Apr 2021 10:30:05 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     =?iso-8859-1?Q?J=F6rn?= Engel <joern@purestorage.com>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>
-Subject: Re: sched: wakeup setting TIF_NEED_RESCHED too frequently
-Message-ID: <YIkdDeb9c+XmDRvM@hirez.programming.kicks-ass.net>
-References: <YIh/QubidJcE5IIv@cork>
+        Wed, 28 Apr 2021 04:31:16 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8B1C061574;
+        Wed, 28 Apr 2021 01:30:28 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d124so449233pfa.13;
+        Wed, 28 Apr 2021 01:30:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=v7m0D7rx0mHGeruDjxwKiC0tRb8Flpj4t02w67RLk04=;
+        b=YuY9LSU10AzRV8q3HxrvO4+ECbK7HSr7PjVy68MTkqZSnLLZjD7QIfobR90b5UzeT9
+         Xwtu+BYL7dO+uwKJGtFYjZHxF4J5ND2ILXcLch5gcgPTYcMu/B36cwc00PdvkEdd++Oe
+         KeOAXjY0sDeWO+mRIkZJZuo2DWaK2hTmAxqT3WpanmHSrL/tyHT5elyIlhZ0dMDz5llR
+         6kHTiKHqC5BqofCr3nhb6VIjPdoQfQXrYjLJPrPbdYsZrntABBm05AwS0BwJFTiw7+jX
+         VHMqwJ10GL1yWv3j2M8CRW9OZeWsiAp0Y+UpGmCBVAt78EJVEn8aDWLlMo7kDj4qsPlX
+         BQxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=v7m0D7rx0mHGeruDjxwKiC0tRb8Flpj4t02w67RLk04=;
+        b=muX7TpU/YWQZnTKfEfzrz8PUHVOxuEdo+XL7rhjX4QD5jI3a8J5mZxItwv8KqB/TSV
+         Cu1q64VZy0GVRuuMgtc5fyRU0YkNfq5P80o8h+5jiIrCIvCkWdCq6PdD5mE75SorSasK
+         CsanHzWk1NTADGnrHW/c1tyLoFTXFu3YmUEkVkMbLaPPKnvROQVHoavrsjd18Z+ZrOAi
+         kyUFYjsbMxhwPP2e+cklo10not4Qg4jhyUA4jJwFabomqk/hikEeIdbxZgSf34wQGzbU
+         /TWUtpkbLsA1nJipKYpCCsI3JW56N0W9ZNH6vrVsCvR4e1ev/C3xLXbNWUzxELsWFnus
+         UaxQ==
+X-Gm-Message-State: AOAM532cGN+ubiQdRPQchv61wvDwtPGwmCFvBrOUjJ0Ws3Rtao3O2OsW
+        nQxy6Nx3HG9uidK+TWoLqa8=
+X-Google-Smtp-Source: ABdhPJxImi7e1CDSgVORCSBBjuxGkT4tEH9F2seAxYefktDE8vlf5hbPfe0l8ExYvsmXd7n14a9ocg==
+X-Received: by 2002:aa7:8c47:0:b029:25c:8bbd:908 with SMTP id e7-20020aa78c470000b029025c8bbd0908mr26727892pfd.54.1619598627997;
+        Wed, 28 Apr 2021 01:30:27 -0700 (PDT)
+Received: from localhost ([157.45.46.0])
+        by smtp.gmail.com with ESMTPSA id e9sm1784514pgk.69.2021.04.28.01.30.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 28 Apr 2021 01:30:27 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 14:00:20 +0530
+From:   Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+To:     m@bues.ch
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sanjanasrinidhi1810@gmail.com
+Subject: [PATCH] drivers: ssb: driver_gpio.c: Fix alignment of comment
+Message-ID: <20210428083020.gt6ea2guhfp75pan@kewl-virtual-machine>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YIh/QubidJcE5IIv@cork>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 02:16:50PM -0700, Jörn Engel wrote:
-> Anyway, trying to find a cause, I noticed the following call chain:
-> 	set_nr_if_polling()
-> 	ttwu_queue_remote()
-> 	ttwu_queue()
-> 	try_to_wake_up()
-> 	default_wake_function()
-> 	curr->func()
-> 	__wake_up_common()
-> 	__wake_up_common_lock()
-> 	__wake_up()
-> 	wake_up()
-> 
-> Call chain above is manually created from source code.  Closest sample I
-> caught with instrumentation is missing the leaf calls after
-> try_to_wake_up():
-> 	_raw_spin_unlock_irqrestore+0x1f/0x40
-> 	try_to_wake_up+0x425/0x5e0
-> 	wake_up_q+0x3f/0x80
-> 	futex_wake+0x159/0x180
-> 	do_futex+0xcd/0xba0
-> 
-> Afaics, the result is us setting TIF_NEED_RESCHED on any wakeup, unless
-> wake_list is already populated.  Is that actually intentional?  And is
-> that useful for performance of latency?  I think it isn't, but I am
-> probably missing something here.
+The closing */ has been shifted to a new line
+This is done to maintain code uniformity.
 
-set_nr_if_polling() only sets TIF_NEED_RESCHED IFF TIF_POLLING_NRFLAG is
-set. TIF_POLLING_NRFLAG is only set when idle and is then sufficient to
-wake that cpu and reschedule.
+Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+---
+ drivers/ssb/driver_gpio.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-If not TIF_POLLING_NRFLAG, then we send an IPI to deal with the
-non-empty wake_list.
+diff --git a/drivers/ssb/driver_gpio.c b/drivers/ssb/driver_gpio.c
+index 66a76fd83248..2de3896489c8 100644
+--- a/drivers/ssb/driver_gpio.c
++++ b/drivers/ssb/driver_gpio.c
+@@ -231,7 +231,8 @@ static int ssb_gpio_chipco_init(struct ssb_bus *bus)
+ 	chip->ngpio		= 16;
+ 	/* There is just one SoC in one device and its GPIO addresses should be
+ 	 * deterministic to address them more easily. The other buses could get
+-	 * a random base number. */
++	 * a random base number.
++	 */
+ 	if (bus->bustype == SSB_BUSTYPE_SSB)
+ 		chip->base		= 0;
+ 	else
+@@ -424,7 +425,8 @@ static int ssb_gpio_extif_init(struct ssb_bus *bus)
+ 	chip->ngpio		= 5;
+ 	/* There is just one SoC in one device and its GPIO addresses should be
+ 	 * deterministic to address them more easily. The other buses could get
+-	 * a random base number. */
++	 * a random base number.
++	 */
+ 	if (bus->bustype == SSB_BUSTYPE_SSB)
+ 		chip->base		= 0;
+ 	else
+-- 
+2.17.1
+
