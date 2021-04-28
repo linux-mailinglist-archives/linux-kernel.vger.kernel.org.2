@@ -2,255 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6910F36D0F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 05:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C7936D0F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 05:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235839AbhD1Dig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 23:38:36 -0400
-Received: from mga17.intel.com ([192.55.52.151]:44856 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230012AbhD1Die (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 23:38:34 -0400
-IronPort-SDR: ZDBerw1ri7O5zI81bjWSR+c4H2FJHeHOECUiGmuILu5iFiD/eAPz3t3eCcwTwe+35EusGDBlEB
- Sb8/s3ouBSSg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9967"; a="176765118"
-X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
-   d="scan'208";a="176765118"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 20:37:49 -0700
-IronPort-SDR: x4oPvsj3uFcvLGBRocjrPq6An4idP2mL79CIsgfSGZjiQYOmr7BlFigZRUS8cAkgOJgIzJx7rh
- l4PDbkjltaow==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
-   d="scan'208";a="454897897"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 27 Apr 2021 20:37:47 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lbb1G-0006un-Mm; Wed, 28 Apr 2021 03:37:46 +0000
-Date:   Wed, 28 Apr 2021 11:37:14 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Shyam Prasad N <sprasad@microsoft.com>
-Cc:     kbuild-all@lists.01.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org,
-        Steve French <stfrench@microsoft.com>,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH cifs] cifs: smb2_query_info_compound_final can be static
-Message-ID: <20210428033714.GA62842@ef09cc136aa1>
-References: <202104281139.5F0W4c8s-lkp@intel.com>
+        id S235501AbhD1Dlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 23:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229600AbhD1Dlr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 23:41:47 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E7BFC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 20:41:03 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id n4-20020a05600c4f84b029013151278decso7883422wmq.4
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 20:41:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=unJ/nW7IwIPU8FuEPxu2WTBi2sq/u62GKZm9+1iXWxg=;
+        b=QZH1yvadssNTkCLMPr/YyOHxUqvnHGZdJCeQ0QG07wZ0c8v0Tq0mdqoauuoTNo8c5t
+         52FJF+EF5/YcdSBwaM+q6wczSHVyrqMzy7KO8c6WMEyJ5VU2ugjm8CcPR2jttv1T/2O6
+         OQX7EngW1Kd701aUoIHwM9CM6zKwoGh0O7QqHeOzcDnsSBDAxguVsEwXzdNPa965DUQx
+         uNdKG3sM+V3YHeIQciUPGRNi+aEFtzAjLBmOvqJwb43mMmKtUGURK7e1fhZdAufBrwdf
+         9VRI74ZT2q5ZsWsHB9vphithqi77n7VEtA8rNG3EUPgub2WbkFATcl1aDrnfbtmPUPpO
+         g+gQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=unJ/nW7IwIPU8FuEPxu2WTBi2sq/u62GKZm9+1iXWxg=;
+        b=PcLjwTPovO5VQ9mqy6PDrnzKmeroUnCfX2sNHZk7QZiE6OYLqGDnuGSrYJ2ZbW8Rv4
+         21FEcOQQlQGNDCHNqgfDMhi5nLbGhBhSwqreV6iiRnrOKNfgKk0j7LmW13sYjpDFVtcS
+         S96I9kDn0oI9etAfSpqe5ma2sfCYGKGRu0ul5STniQzkZdiV9UnPxeU6m8D0+YDLuyUt
+         2ohzqSElI50HN5IAg4PQ1s2s+/Krst2anL0ETqym5H4pSoBQOsRHvtaynGeqneyn2psu
+         lSmcij2vdq34K2QkM2qMS0O0lMPIAIgwX6uqtEITXB0IMyGOMiVzDVtVnn/rSWWAnsc6
+         H/2w==
+X-Gm-Message-State: AOAM5300Up4jyg2GC3iTNI4Qc3Es0GIwCd6oUbb0H4FiXd7hk+1TbljC
+        xDhqA+GL4sUqzpqBYNmm0FAGZ3yRPb7uriRy1VLrEQ==
+X-Google-Smtp-Source: ABdhPJzI3LHtQ4OsT4z7dItzbxcMlwFjrS5Ewft66N9Bnj+ahbwhYUYdFV/mrMnOfwdZlsG+w0ppsAHoZ3+66SZ6bpk=
+X-Received: by 2002:a7b:c348:: with SMTP id l8mr1765461wmj.152.1619581262305;
+ Tue, 27 Apr 2021 20:41:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202104281139.5F0W4c8s-lkp@intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210428033415.107756-1-palmer@dabbelt.com>
+In-Reply-To: <20210428033415.107756-1-palmer@dabbelt.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Wed, 28 Apr 2021 09:10:51 +0530
+Message-ID: <CAAhSdy3Qnx+3tCecXLDw=1m45zMU67n3K4_YTYA2127mZm+Kfg@mail.gmail.com>
+Subject: Re: [PATCH] RISC-V: Always define XIP_FIXUP
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
+        Alexandre Ghiti <alex@ghiti.fr>,
+        Greentime Hu <greentime.hu@sifive.com>, 0x7f454c46@gmail.com,
+        chenhuang5@huawei.com,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        kernel-team@android.com, Palmer Dabbelt <palmerdabbelt@google.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fs/cifs/smb2ops.c:2671:1: warning: symbol 'smb2_query_info_compound_final' was not declared. Should it be static?
-fs/cifs/smb2ops.c:3284:1: warning: symbol 'smb2_query_reparse_tag_final' was not declared. Should it be static?
-fs/cifs/smb2pdu.c:2478:5: warning: symbol 'smb311_posix_mkdir_final' was not declared. Should it be static?
-fs/cifs/smb2pdu.c:2842:1: warning: symbol 'SMB2_open_final' was not declared. Should it be static?
-fs/cifs/smb2pdu.c:3056:1: warning: symbol 'SMB2_ioctl_final' was not declared. Should it be static?
-fs/cifs/smb2pdu.c:3247:1: warning: symbol '__SMB2_close_final' was not declared. Should it be static?
-fs/cifs/smb2pdu.c:3641:1: warning: symbol 'SMB2_change_notify_final' was not declared. Should it be static?
-fs/cifs/smb2pdu.c:3870:1: warning: symbol 'SMB2_flush_final' was not declared. Should it be static?
-fs/cifs/smb2pdu.c:4118:1: warning: symbol 'smb2_async_readv_final' was not declared. Should it be static?
-fs/cifs/smb2pdu.c:4205:1: warning: symbol 'SMB2_read_final' was not declared. Should it be static?
-fs/cifs/smb2pdu.c:4388:1: warning: symbol 'smb2_async_writev_final' was not declared. Should it be static?
-fs/cifs/smb2pdu.c:4542:1: warning: symbol 'SMB2_write_final' was not declared. Should it be static?
-fs/cifs/smb2pdu.c:4946:1: warning: symbol 'SMB2_query_directory_final' was not declared. Should it be static?
-fs/cifs/smb2pdu.c:5200:1: warning: symbol 'SMB2_oplock_break_final' was not declared. Should it be static?
-fs/cifs/smb2pdu.c:5333:1: warning: symbol 'SMB311_posix_qfs_info_final' was not declared. Should it be static?
-fs/cifs/smb2pdu.c:5398:1: warning: symbol 'SMB2_QFS_info_final' was not declared. Should it be static?
-fs/cifs/smb2pdu.c:5463:1: warning: symbol 'SMB2_QFS_attr_final' was not declared. Should it be static?
-fs/cifs/smb2pdu.c:5562:1: warning: symbol 'smb2_lockv_final' was not declared. Should it be static?
-fs/cifs/smb2pdu.c:5654:1: warning: symbol 'SMB2_lease_break_final' was not declared. Should it be static?
+On Wed, Apr 28, 2021 at 9:05 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>
+> From: Palmer Dabbelt <palmerdabbelt@google.com>
+>
+> XIP depends on MMU, but XIP_FIXUP is defined throughout the kernel in
+> order to avoid excessive ifdefs.  This just makes sure to always define
+> XIP_FIXIP, which will fix MMU=n builds.
+>
+> Fixes: 44c922572952 ("RISC-V: enable XIP")
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
- smb2ops.c |    4 ++--
- smb2pdu.c |   34 +++++++++++++++++-----------------
- 2 files changed, 19 insertions(+), 19 deletions(-)
+Looks good to me.
 
-diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
-index 19d2e746d7802..3a224f91fc87e 100644
---- a/fs/cifs/smb2ops.c
-+++ b/fs/cifs/smb2ops.c
-@@ -2667,7 +2667,7 @@ smb2_set_next_command(struct cifs_tcon *tcon, struct smb_rqst *rqst)
-  * Passes the query info response back to the caller on success.
-  * Caller need to free this with free_rsp_buf().
-  */
--int
-+static int
- smb2_query_info_compound_final(const unsigned int xid, struct cifs_tcon *tcon,
- 			 __le16 *utf16_path, u32 desired_access,
- 			 u32 class, u32 type, u32 output_len,
-@@ -3280,7 +3280,7 @@ smb2_query_symlink(const unsigned int xid, struct cifs_tcon *tcon,
- 	return rc;
- }
- 
--int
-+static int
- smb2_query_reparse_tag_final(const unsigned int xid, struct cifs_tcon *tcon,
- 		   struct cifs_sb_info *cifs_sb, const char *full_path,
- 		   __u32 *tag)
-diff --git a/fs/cifs/smb2pdu.c b/fs/cifs/smb2pdu.c
-index dbf679a5da6cf..992a2faedd652 100644
---- a/fs/cifs/smb2pdu.c
-+++ b/fs/cifs/smb2pdu.c
-@@ -2475,7 +2475,7 @@ alloc_path_with_tree_prefix(__le16 **out_path, int *out_size, int *out_len,
- 	return 0;
- }
- 
--int smb311_posix_mkdir_final(const unsigned int xid, struct inode *inode,
-+static int smb311_posix_mkdir_final(const unsigned int xid, struct inode *inode,
- 			       umode_t mode, struct cifs_tcon *tcon,
- 			       const char *full_path,
- 			       struct cifs_sb_info *cifs_sb)
-@@ -2839,7 +2839,7 @@ SMB2_open_free(struct smb_rqst *rqst)
- }
- 
- int
--SMB2_open_final(const unsigned int xid, struct cifs_open_parms *oparms, __le16 *path,
-+static SMB2_open_final(const unsigned int xid, struct cifs_open_parms *oparms, __le16 *path,
- 	  __u8 *oplock, struct smb2_file_all_info *buf,
- 	  struct create_posix_rsp *posix,
- 	  struct kvec *err_iov, int *buftype)
-@@ -3053,7 +3053,7 @@ SMB2_ioctl_free(struct smb_rqst *rqst)
-  *	SMB2 IOCTL is used for both IOCTLs and FSCTLs
-  */
- int
--SMB2_ioctl_final(const unsigned int xid, struct cifs_tcon *tcon, u64 persistent_fid,
-+static SMB2_ioctl_final(const unsigned int xid, struct cifs_tcon *tcon, u64 persistent_fid,
- 	   u64 volatile_fid, u32 opcode, bool is_fsctl,
- 	   char *in_data, u32 indatalen, u32 max_out_data_len,
- 	   char **out_data, u32 *plen /* returned data len */)
-@@ -3244,7 +3244,7 @@ SMB2_close_free(struct smb_rqst *rqst)
- }
- 
- int
--__SMB2_close_final(const unsigned int xid, struct cifs_tcon *tcon,
-+static __SMB2_close_final(const unsigned int xid, struct cifs_tcon *tcon,
- 	     u64 persistent_fid, u64 volatile_fid,
- 	     struct smb2_file_network_open_info *pbuf)
- {
-@@ -3638,7 +3638,7 @@ SMB2_notify_init(const unsigned int xid, struct smb_rqst *rqst,
- }
- 
- int
--SMB2_change_notify_final(const unsigned int xid, struct cifs_tcon *tcon,
-+static SMB2_change_notify_final(const unsigned int xid, struct cifs_tcon *tcon,
- 		u64 persistent_fid, u64 volatile_fid, bool watch_tree,
- 		u32 completion_filter)
- {
-@@ -3867,7 +3867,7 @@ SMB2_flush_init(const unsigned int xid, struct smb_rqst *rqst,
- }
- 
- int
--SMB2_flush_final(const unsigned int xid, struct cifs_tcon *tcon, u64 persistent_fid,
-+static SMB2_flush_final(const unsigned int xid, struct cifs_tcon *tcon, u64 persistent_fid,
- 	   u64 volatile_fid)
- {
- 	struct cifs_ses *ses = tcon->ses;
-@@ -4114,7 +4114,7 @@ smb2_readv_callback(struct mid_q_entry *mid)
- 	add_credits(server, &credits, 0);
- }
- 
--int
-+static int
- smb2_async_readv_final(struct cifs_readdata *rdata)
- {
- 	int rc, flags = 0;
-@@ -4202,7 +4202,7 @@ smb2_async_readv(struct cifs_readdata *rdata)
- }
- 
- int
--SMB2_read_final(const unsigned int xid, struct cifs_io_parms *io_parms,
-+static SMB2_read_final(const unsigned int xid, struct cifs_io_parms *io_parms,
- 	  unsigned int *nbytes, char **buf, int *buf_type)
- {
- 	struct smb_rqst rqst;
-@@ -4384,7 +4384,7 @@ smb2_writev_callback(struct mid_q_entry *mid)
- 	add_credits(server, &credits, 0);
- }
- 
--int
-+static int
- smb2_async_writev_final(struct cifs_writedata *wdata,
- 		  void (*release)(struct kref *kref))
- {
-@@ -4539,7 +4539,7 @@ smb2_async_writev(struct cifs_writedata *wdata,
- }
- 
- int
--SMB2_write_final(const unsigned int xid, struct cifs_io_parms *io_parms,
-+static SMB2_write_final(const unsigned int xid, struct cifs_io_parms *io_parms,
- 	   unsigned int *nbytes, struct kvec *iov, int n_vec)
- {
- 	struct smb_rqst rqst;
-@@ -4943,7 +4943,7 @@ smb2_parse_query_directory(struct cifs_tcon *tcon,
- }
- 
- int
--SMB2_query_directory_final(const unsigned int xid, struct cifs_tcon *tcon,
-+static SMB2_query_directory_final(const unsigned int xid, struct cifs_tcon *tcon,
- 		     u64 persistent_fid, u64 volatile_fid, int index,
- 		     struct cifs_search_info *srch_inf)
- {
-@@ -5197,7 +5197,7 @@ SMB2_set_ea(const unsigned int xid, struct cifs_tcon *tcon,
- }
- 
- int
--SMB2_oplock_break_final(const unsigned int xid, struct cifs_tcon *tcon,
-+static SMB2_oplock_break_final(const unsigned int xid, struct cifs_tcon *tcon,
- 		  const u64 persistent_fid, const u64 volatile_fid,
- 		  __u8 oplock_level)
- {
-@@ -5330,7 +5330,7 @@ build_qfs_info_req(struct kvec *iov, struct cifs_tcon *tcon,
- }
- 
- int
--SMB311_posix_qfs_info_final(const unsigned int xid, struct cifs_tcon *tcon,
-+static SMB311_posix_qfs_info_final(const unsigned int xid, struct cifs_tcon *tcon,
- 	      u64 persistent_fid, u64 volatile_fid, struct kstatfs *fsdata)
- {
- 	struct smb_rqst rqst;
-@@ -5395,7 +5395,7 @@ SMB311_posix_qfs_info(const unsigned int xid, struct cifs_tcon *tcon,
- }
- 
- int
--SMB2_QFS_info_final(const unsigned int xid, struct cifs_tcon *tcon,
-+static SMB2_QFS_info_final(const unsigned int xid, struct cifs_tcon *tcon,
- 	      u64 persistent_fid, u64 volatile_fid, struct kstatfs *fsdata)
- {
- 	struct smb_rqst rqst;
-@@ -5460,7 +5460,7 @@ SMB2_QFS_info(const unsigned int xid, struct cifs_tcon *tcon,
- }
- 
- int
--SMB2_QFS_attr_final(const unsigned int xid, struct cifs_tcon *tcon,
-+static SMB2_QFS_attr_final(const unsigned int xid, struct cifs_tcon *tcon,
- 	      u64 persistent_fid, u64 volatile_fid, int level)
- {
- 	struct smb_rqst rqst;
-@@ -5558,7 +5558,7 @@ SMB2_QFS_attr(const unsigned int xid, struct cifs_tcon *tcon,
- 	return rc;
- }
- 
--int
-+static int
- smb2_lockv_final(const unsigned int xid, struct cifs_tcon *tcon,
- 	   const __u64 persist_fid, const __u64 volatile_fid, const __u32 pid,
- 	   const __u32 num_lock, struct smb2_lock_element *buf)
-@@ -5651,7 +5651,7 @@ SMB2_lock(const unsigned int xid, struct cifs_tcon *tcon,
- }
- 
- int
--SMB2_lease_break_final(const unsigned int xid, struct cifs_tcon *tcon,
-+static SMB2_lease_break_final(const unsigned int xid, struct cifs_tcon *tcon,
- 		 __u8 *lease_key, const __le32 lease_state)
- {
- 	struct smb_rqst rqst;
+Reviewed-by: Anup Patel <anup@brainfault.org>
+
+Regards,
+Anup
+
+> ---
+>  arch/riscv/include/asm/pgtable.h | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
+>
+> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> index 2f1384e14e31..fd749351f432 100644
+> --- a/arch/riscv/include/asm/pgtable.h
+> +++ b/arch/riscv/include/asm/pgtable.h
+> @@ -73,18 +73,6 @@
+>  #endif
+>  #define FIXADDR_START    (FIXADDR_TOP - FIXADDR_SIZE)
+>
+> -#ifdef CONFIG_XIP_KERNEL
+> -#define XIP_OFFSET             SZ_8M
+> -#define XIP_FIXUP(addr) ({                                                     \
+> -       uintptr_t __a = (uintptr_t)(addr);                                      \
+> -       (__a >= CONFIG_XIP_PHYS_ADDR && __a < CONFIG_XIP_PHYS_ADDR + SZ_16M) ?  \
+> -               __a - CONFIG_XIP_PHYS_ADDR + CONFIG_PHYS_RAM_BASE - XIP_OFFSET :\
+> -               __a;                                                            \
+> -       })
+> -#else
+> -#define XIP_FIXUP(addr)                (addr)
+> -#endif /* CONFIG_XIP_KERNEL */
+> -
+>  #endif
+>
+>  #ifndef __ASSEMBLY__
+> @@ -101,6 +89,18 @@
+>  #include <asm/pgtable-32.h>
+>  #endif /* CONFIG_64BIT */
+>
+> +#ifdef CONFIG_XIP_KERNEL
+> +#define XIP_OFFSET             SZ_8M
+> +#define XIP_FIXUP(addr) ({                                                     \
+> +       uintptr_t __a = (uintptr_t)(addr);                                      \
+> +       (__a >= CONFIG_XIP_PHYS_ADDR && __a < CONFIG_XIP_PHYS_ADDR + SZ_16M) ?  \
+> +               __a - CONFIG_XIP_PHYS_ADDR + CONFIG_PHYS_RAM_BASE - XIP_OFFSET :\
+> +               __a;                                                            \
+> +       })
+> +#else
+> +#define XIP_FIXUP(addr)                (addr)
+> +#endif /* CONFIG_XIP_KERNEL */
+> +
+>  #ifdef CONFIG_MMU
+>  /* Number of entries in the page global directory */
+>  #define PTRS_PER_PGD    (PAGE_SIZE / sizeof(pgd_t))
+> --
+> 2.31.1.498.g6c1eba8ee3d-goog
+>
