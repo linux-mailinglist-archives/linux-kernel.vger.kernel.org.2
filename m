@@ -2,113 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 697FB36D28E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 08:53:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E45F036D296
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 08:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236213AbhD1GyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 02:54:18 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:54432 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230349AbhD1GyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 02:54:16 -0400
-Received: from [10.0.2.15] (unknown [58.249.121.165])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Cx6cleBolgstsOAA--.24449S3;
-        Wed, 28 Apr 2021 14:53:19 +0800 (CST)
-Subject: Re: [v1] MIPS:DTS:Correct device id of pcie for Loongnon-2K
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Qing Zhang <zhangqing@loongson.cn>
-Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210425130915.31001-1-maoxiaochuan@loongson.cn>
- <28bbe1bf-f421-afc7-07d3-e123764afe99@flygoat.com>
-From:   Xiaochuan Mao <maoxiaochuan@loongson.cn>
-Message-ID: <bce8bedc-30f9-f413-c68a-f5edf85046ee@loongson.cn>
-Date:   Wed, 28 Apr 2021 14:53:17 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S236554AbhD1Gyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 02:54:33 -0400
+Received: from mail-vs1-f51.google.com ([209.85.217.51]:34728 "EHLO
+        mail-vs1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234373AbhD1Gy3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 02:54:29 -0400
+Received: by mail-vs1-f51.google.com with SMTP id d25so24681894vsp.1;
+        Tue, 27 Apr 2021 23:53:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Qcj7/vi64EhvIZ063r8YI4RxRFbLfs3PNow3a+YW0lg=;
+        b=cAf6/mnqHqiNQeHBaIyvNmZqvu+ZKQN1PDms4OPyi/+AcJGZicWBqJGrEiwdxKLfaa
+         IcaENgQcasrWvyaoy75av4ukXV7DEAaofWRXaOEAqZP7x7kfM+KGkJP2Iwj0sQ1bVft9
+         AyD9ZMSQWzKQXXbB7sNPwGy5BCbeD46h5oE7+wsm6SJ6bE3gj9KXO0bDz3A/Bh2U/q2v
+         tNCo4WhxXY5GaxfRL4X/RPn0G21f3BFOBZA4KxPs+NZeSC/BqyKFVO+FP3Ihq5D4p9ZB
+         SwGYXsSpeXQ99bbRWPlFE0EWx7onae6BdqOqdoR7hhASNlTPWjW3S3PmJQWE/XwtIwJ+
+         CcoQ==
+X-Gm-Message-State: AOAM531Dv13R6bucoaudH68z3V1YZHf9Uc4nHO14O0rCBY96YxlJuEjH
+        HZZ3eo32D38/xnQTLHvgaf26ckAKz5+RRIo0PMY=
+X-Google-Smtp-Source: ABdhPJyELbGS2kG/kxrsEFotGwuE+59fsAnvQWK55bL61m1yNIRT7/aVm3vglBf6ZYvQwO5jkVSO99DpOIS8s+tQ5cQ=
+X-Received: by 2002:a67:8745:: with SMTP id j66mr23450138vsd.18.1619592824818;
+ Tue, 27 Apr 2021 23:53:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <28bbe1bf-f421-afc7-07d3-e123764afe99@flygoat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: AQAAf9Cx6cleBolgstsOAA--.24449S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ar1xWF17Kr4kAryxZF4Dtwb_yoW8tr1Dp3
-        Z3JFW3GrW8X3y7Wry7WwnxJF45KwsIy3W2qFW8Aw18uFyUZ345XryFyr48C34qyrs3WFyU
-        Ja4Ut340qF17Xw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
-        IcxG8wCY02Avz4vE14v_GF1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnU
-        UI43ZEXa7VUjHUDJUUUUU==
-X-CM-SenderInfo: xpdr5xxdrfx3ldqnw6o6or00hjvr0hdfq/
+References: <793432cca963b632709c4d1312baa9874d73e1d8.1619341585.git.fthain@telegraphics.com.au>
+ <ba908b1d-eab5-a4e5-0c0a-2c745287d121@physik.fu-berlin.de>
+ <10a08764-c138-9fe5-966c-ce68349b9b6@nippy.intranet> <65f01f42-31d9-522a-e690-73d286405a01@gmail.com>
+ <9650358f-a789-7dbd-4495-1d39ff321ded@nippy.intranet> <ada88dd6-f8d7-11dc-9a89-5c7e437a0981@gmail.com>
+In-Reply-To: <ada88dd6-f8d7-11dc-9a89-5c7e437a0981@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 28 Apr 2021 08:53:33 +0200
+Message-ID: <CAMuHMdUy_B_+pHZQpnDHYsee+gpXOs9ek_HaVxLjE2HVfGmLQg@mail.gmail.com>
+Subject: Re: [PATCH] m68k/mac: Replace macide driver with generic platform driver
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     Finn Thain <fthain@fastmail.com.au>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Christoph Hellwig <hch@lst.de>,
+        Joshua Thompson <funaho@jurai.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ide@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Michael,
 
-On 2021/4/25 下午9:49, Jiaxun Yang wrote:
+On Tue, Apr 27, 2021 at 9:55 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> On 27/04/21 3:47 pm, Finn Thain wrote:
+> > On Tue, 27 Apr 2021, Michael Schmitz wrote:
+> >> On 26/04/21 7:37 pm, Finn Thain wrote:
+> >>> Was macide the only IDE driver in Debian/m68k kernels without a libata
+> >>> alternative? If so, this patch would allow you to finally drop
+> >>> CONFIG_IDE.
+> >>>
+> >> There's still q40ide.c (ISA IDE interface, byte-swapped, so would need
+> >> treatment similar to Falcon IDE). Hasn't been updated to a platform
+> >> device yet.
+> >>
+> > AIUI, q40 support is not included in Debian/m68k kernel builds.
+> I see.
+> > I wonder whether q40 could re-use the pata_falcon driver . I suppose
 >
-> 在 2021/4/25 21:09, Xiaochuan Mao 写道:
->> from Loongson-2K user manual know that Loongson-2K have two
->> pcie controller pcie0 and pcie1, pcie0 have four port named port0~port3
->> and pcie1 have 2 port named port0~port1. the device id of port0 is 7a19
->> in each pcie controller and others are 7a09.
->>
->> Signed-off-by: Xiaochuan Mao <maoxiaochuan@loongson.cn>
->> ---
->> v1:
->> revert class code
+> I'm pretty sure it could, but there is no reason why it would have to be
+> crippled in that way. Interrupts should work perfectly fine with IDE on
+> Q40.
 >
->
-> Could you please help me check the actual hardware?
->
-> TBH I remeber I filled it with actual hardware values.
+> There is another reason why using the same module binary for both might
+> fail - the awkward address translation code in io_mm.h. Not certain at
+> all whether we can even have Q40 and Atari in the same kernel binary...
 
-here is the pci info  on the board:
+That's supposed to work, else our multi_defconfig is broken.
 
-pci_device_match_ids: vendor:0014, device:7A03, class:00020000 , devfn:00001800
+Gr{oetje,eeting}s,
 
-pci_device_match_ids: vendor:0014, device:7A03, class:00020000 , devfn:00001900
-pci_device_match_ids: vendor:0014, device:7A04, class:000C0380 , devfn:00002000
-pci_device_match_ids: vendor:0014, device:7A14, class:000C0320 , devfn:00002100
-pci_device_match_ids: vendor:0014, device:7A24, class:000C0310 , devfn:00002200
-pci_device_match_ids: vendor:0014, device:7A05, class:00030200 , devfn:00002800
-pci_device_match_ids: vendor:0014, device:7A06, class:00030000 , devfn:00003000
-pci_device_match_ids: vendor:0014, device:7A07, class:00040300 , devfn:00003800
-pci_device_match_ids: vendor:0014, device:7A08, class:00010601 , devfn:00004000
-pci_device_match_ids: vendor:0014, device:7A19, class:00060400 , devfn:00004800
-pci_device_match_ids: vendor:0014, device:7A09, class:00060400 , devfn:00005000
-pci_device_match_ids: vendor:0014, device:7A09, class:00060400 , devfn:00005800
-pci_device_match_ids: vendor:0014, device:7A09, class:00060400 , devfn:00006000
-pci_device_match_ids: vendor:0014, device:7A19, class:00060400 , devfn:00006800
->
-> Btw the tittle should be prefixed with [PATCH v2]
->
-> You may generate version suffix with `git format-patch -v2` or try to utilize patch management tools like git-publish[1].
->
-> Thanks.
->
-> [1]: https://github.com/stefanha/git-publish
->
-got it , thanks for suggest.  I'll send v2.
-
-> - Jiaxun
->
->
->> ---
->
-> [...]
+                        Geert
 
 -- 
---xiaochuan
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
