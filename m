@@ -2,131 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1FA36D404
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF4436D3FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237684AbhD1IdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 04:33:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237213AbhD1Ic7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 04:32:59 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4704C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 01:32:14 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id g10so5212321edb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 01:32:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=OpS26+rIWsvKvlcNvrtF9Fam5LIDf0slh+zm+iPFbAo=;
-        b=hUd0Gc8e7zxXydgUujYAYWkhWSajJcbgWY5JbrtcWZ2gO/z5uqB4aI5vy54oV4AP/f
-         +fsF03GeaXinN8GJy0cNhvEhdvdrK+dldZ5F61fNU36NJknA2+LJtkWJQiWLgu90mogG
-         879KxR4Resfx0jRhuRusrBLYX80iVnx5fgm4+ROnKvQ6zSczzuTSOsFpoF6uJ8j9GyRn
-         RuJu8oqOO+t1IWzpYkuBdxq5F1pFxHmwZfgTYG0AstxHYQkjZ1UUljCmBghJEw9OiF5M
-         TfwBglP4M1ZLn9kccgdeUFQLSs4hdtqMz8/eS7/ejAzDWa3NrnsqW9hSbhgRVlFpn9z0
-         oSog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OpS26+rIWsvKvlcNvrtF9Fam5LIDf0slh+zm+iPFbAo=;
-        b=KpxXzXB44Rzlpr6iL52AT0VA/FxURb8s5ug3Zq5ZjV92tL9ztJ5wiKEE2L3dexVO9w
-         QzrJ2eJIY+NRlZfSgazfksw0W0INUlInEfbegfX2RfZBtiO78X+e9ms3uvK0SBrS6xA1
-         hFch32+3S5ichQdw6UBxDzvdDe2q4zR/Pc2nRDFJbw2q8PG8UC8Mm0eytmFjwe2e1ejg
-         cwpIYjkh3K1U9jFQDJTcVe/tgrzHKPw4jwK5drfndj8y5ED3mL7/8+vGXHRLKSsX8zrf
-         tVu+KwdHd1OALe8khTu06oiN0wAqHDltWP5o6dA2Dd6p4lFJ3EH4uUfp3300C4EQSa1x
-         ffYQ==
-X-Gm-Message-State: AOAM532Ad7JBds94rnmGFEqZGsvdJhacn8p9mKSBQIvFS+girTE6QaLs
-        e2GRL39wWPTjDOFkN4sB/uhMqtZPWRhdhgr5UvzJlS4nwi9qNw==
-X-Google-Smtp-Source: ABdhPJy6ZMkZyqcGq+tqe6oZ6D24Yj9qh5Usb6d/CqyQTQGPj6mneDpHWMJJ88DgDaK4upMB5tO5mjoIErHmWGTC+c0=
-X-Received: by 2002:aa7:c40b:: with SMTP id j11mr9652021edq.219.1619598733619;
- Wed, 28 Apr 2021 01:32:13 -0700 (PDT)
+        id S237490AbhD1Ick (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 04:32:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42412 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236961AbhD1Ici (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 04:32:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8553F6141F;
+        Wed, 28 Apr 2021 08:31:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619598714;
+        bh=8q8seLvWtMALwDRZ39mid0YWnYDGfBmHECWjMoz1lq0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=s7qJ3e7DskhEutLmfwsUuD32czlpqWLeGFX9js6vhnpCPZDB8Nvlr7LUTtD+5NQCD
+         ZgrQQ7aBwJEM8vdfO9EpIO7wX+Nbznf/iAwBM/4sfddeYptKUv6KWuvd/0QaA/q1hZ
+         Od9X3METL1DUGc3ttLlNUD6vfc9yBLy25o8oZ/kGpvk+fi9vHQoYCclFWw0/DYbBWg
+         bD/3ERMlPtqzdlgC+9o3PwE9GdcfnhLjQBMGVb4TMrHTeXjpc4lel9ZhWH/psLWliw
+         AsLZ+lq4Csm3WKHsGrDNw1ZqDERjia7xLBrgiCXDBHQk4UuXkCRnXM9v9EWOWna8R4
+         ceOq4ULS89/eg==
+Date:   Wed, 28 Apr 2021 10:31:48 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Jacopo Mondi <jacopo@jmondi.org>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH 38/78] media: i2c: mt9m001: use
+ pm_runtime_resume_and_get()
+Message-ID: <20210428103148.590191ac@coco.lan>
+In-Reply-To: <YIgCOA1kSd/lzLFc@hovoldconsulting.com>
+References: <cover.1619191723.git.mchehab+huawei@kernel.org>
+        <beddb7295807f43a190f2add6c1665b7475cb154.1619191723.git.mchehab+huawei@kernel.org>
+        <20210424082454.2ciold3j3h2jw47m@uno.localdomain>
+        <YIPsTsEA/F+o7fhQ@hovoldconsulting.com>
+        <20210426163840.67ea8af9@coco.lan>
+        <YIgCOA1kSd/lzLFc@hovoldconsulting.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20210412113315.91700-1-gi-oh.kim@ionos.com> <CAJX1YtbXnPVbkpddXQf4MZ3sopoidr0fZ8OkrQegoLoCevaNwQ@mail.gmail.com>
- <CAHp75Vf2yJ5=zdxRcPKmKGCKeF8As=Nv2S9fm0ciVXL5HGbWDg@mail.gmail.com>
- <CAJX1YtYRK=_X8+mvva2S35-K4kpwXSAGctUJ01TEDFRhS0y5LA@mail.gmail.com> <650dc1b8-d801-2263-2e5c-eb833f2c4534@rasmusvillemoes.dk>
-In-Reply-To: <650dc1b8-d801-2263-2e5c-eb833f2c4534@rasmusvillemoes.dk>
-From:   Gioh Kim <gi-oh.kim@ionos.com>
-Date:   Wed, 28 Apr 2021 10:31:37 +0200
-Message-ID: <CAJX1YtaRAgg3oZ6X2cDtj0yASQ27XujDys97vbB0MWnN9vXakQ@mail.gmail.com>
-Subject: Re: [PATCH] lib/string: sysfs_streq works case insensitively
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 9:47 AM Rasmus Villemoes
-<linux@rasmusvillemoes.dk> wrote:
->
-> On 28/04/2021 09.31, Gioh Kim wrote:
-> > On Wed, Apr 28, 2021 at 8:42 AM Andy Shevchenko
-> > <andy.shevchenko@gmail.com> wrote:
-> >>
->
-> >>
-> >> Are you sure it=E2=80=99s good change? Sysfs is used for an ABI and yo=
-u are opening a can of worms. From me NAK to this change without a very goo=
-d background description that tells why it is safe to do.
-> >
-> > https://www.spinics.net/lists/kernel/msg3898123.html
-> > My initial idea was making a new function: sysfs_streqcase.
-> > Andrew and Greg suggested making sysfs_streq to be case-insensitive.
-> > I would like to have a discussion about it.
->
-> 1. That information should be in the commit log, not some random
-> babbling about case sensitivity of file systems.
+Em Tue, 27 Apr 2021 14:23:20 +0200
+Johan Hovold <johan@kernel.org> escreveu:
 
-I don't think it is a good idea to write who suggested the concept of the p=
-atch.
+> On Mon, Apr 26, 2021 at 04:38:40PM +0200, Mauro Carvalho Chehab wrote:
+> > Em Sat, 24 Apr 2021 12:00:46 +0200
+> > Johan Hovold <johan@kernel.org> escreveu:
+> >   
+> > > On Sat, Apr 24, 2021 at 10:24:54AM +0200, Jacopo Mondi wrote:  
+> > > > Hi Mauro,
+> > > > 
+> > > > On Sat, Apr 24, 2021 at 08:44:48AM +0200, Mauro Carvalho Chehab wrote:    
+> > > > > Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> > > > > added pm_runtime_resume_and_get() in order to automatically handle
+> > > > > dev->power.usage_count decrement on errors.
+> > > > >
+> > > > > Use the new API, in order to cleanup the error check logic.
+> > > > >
+> > > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>    
+> 
+> > > I'd say this kind of mass-conversion is of questionable worth as
+> > > pm_runtime_resume_and_get() isn't necessarily an improvement (even if it
+> > > may have its use in some places).  
+> > 
+> > The main problem is that other parts of the driver's core APIs
+> > assume that get object methods will only increment the usage
+> > counter if no errors. The pm_runtime_get_sync() is an exception.
+> > 
+> > Its name doesn't help at all: A function like that should, IMHO,
+> > be called, instead:
+> > 
+> > 	pm_runtime_inc_usage_count_and_try_to_resume().
+> > 
+> > Or something similar, in order to make clearer that it always
+> > increment the usage count, no matter what. If possible, all drivers
+> > should get rid of it too (or alternatively add comments warning
+> > people that keeping the usage_count incremented is desired on the
+> > very specific places where it is really needed), as it is risky
+> > to use something that has a different usage_count increement behavior
+> > than other more usual *_get() functions.  
+> 
+> pm_runtime_get_sync() has worked this way since it was merged 12 years
+> ago, and for someone who's used to this interface this is not such a big
+> deal as you seem to think. Sure, you need to remember to put the usage
+> counter on errors, but that's it (and the other side of that is that you
+> don't need to worry about error handling where it doesn't matter).
 
->
-> 2. So as Andy says, this is changing ABI for a whole lot of users in one
-> go. While it's _probably_ true that nobody would care (because it just
-> ends up accepting more strings, not fewer), your motivation seems to be
-> to replace uses of strncasecmp() to prevent "disableGARBAGE@#$@#@" to be
-> accepted as equivalent to "disable". I.e., those potential new users of
-> sysfs_streq() would have their ABI changed towards being less
-> permissive. That's a bigger change, with a higher chance of breaking
-> something. Do you even know if the maintainers of those drivers would
-> accept a switch to a case-insensitive sysfs_streq()?
+Before we have those at PM subsystem, the media had its own way to
+set/disable power for their sub-devices. The PCI and USB drivers 
+still use it, instead of pm_runtime, mostly due to historic reasons.
 
-I don't know what all maintainers would think about the patch.
-I thought sending a patch to the mailing list is asking for it, isn't it?
-I am asking with this email.
+So, basically, its usage at the media subsystem is restricted to
+drivers for embedded systems. The vast majority of drivers supporting
+PM runtime are the I2C camera drivers. The camera drivers can be used 
+interchangeable. So, in practice, the same bridge driver can work 
+with a lot of different camera models, depending on the hardware
+vendors' personal preferences and the desired max resolution.
 
-And Andrew and Greg are maintainers.
-I am sending this patch because I accepted their feedback.
-I don't know other maintainers personally,
-so I cannot contact them to ask what they think about my idea before
-sending this email.
+So, in thesis, all such drivers should behave exactly the same 
+with regards to PM.
 
+However, on most existing drivers, the pm_runtime was added a
+couple of years ago, and by people that are not too familiar
+with the PM subsystem.
 
->
-> Sorry, I really think you need a lot stronger motivation for introducing
-> either this change or a sysfs_strcaseeq().
+That probably explains why there were/are several places that 
+do things like this[1]:
 
-I found out a problem of sysfs_streq when I tried to use it for
-modules I am working on (RTRS/RNBD).
-Then I thought it would be better if there is something like sysfs_streqcas=
-e.
-That's why I sent the path.
-If nobody needs the change, it is ok for me to ignore the patch.
+	ret = pm_runtime_get_sync(dev);
+	if (ret < 0)
+		return ret;
 
-Maybe I misunderstand when I can send a patch to Linux kernel community.
-But the only motivation of me is sharing my idea just in case there is
-someone who also needs it.
-I am sorry if I misunderstand how Linux kernel community works
-but I thought I could suggest something good to me.
+without taking care of calling a pm_runtime_put*() function.
 
->
-> Rasmus
+[1] besides the 13 patches made by UCN addressing it on
+    existing code, I discovered the same pattern on a 
+    couple of other drivers with current upstream code.
+
+That shows a pattern: several media developers are not familiar
+with the usage_count behavior for pm_runtime_get functions.
+
+So, doing this work is not only helping to make the PM support
+more uniform, but it is also helping to solve existing issues.
+
+> Also note all the pm_runtime_get functions *always* increment the usage
+> count even if an async resume may later fail so there is consistency
+> here.
+> 
+> And regarding naming, the new pm_resume_and_get() looks completely out
+> of place to me since it uses a different naming scheme than the other
+> helpers (including the ones that are used to balance the new call).
+> 
+> > With regards to mass-fixing it, I've seen several patches seen
+> > to media fixing bugs due to the bad usage_count decrement logic.
+> > So, the best is to solve them all at once, and stop using
+> > pm_runtime_get_sync() inside the subsystem.  
+> 
+> Sure, having the script kiddies patch drivers without understanding what
+> they're are really doing is bound to introduce bugs unless it can be
+> caught in review.
+
+Yes, but as I pointed, the current code has bugs already.
+
+> You're call, but converting functioning drivers where the authors knew
+> what they were doing just because you're not used to the API and risk
+> introducing new bugs in the process isn't necessarily a good idea.
+
+The problem is that the above assumption is not necessarily true:
+based on the number of drivers that pm_runtime_get_sync() weren't
+decrementing usage_count on errors, several driver authors were not 
+familiar enough with the PM runtime behavior by the time the drivers
+were written or converted to use the PM runtime, instead of the
+media .s_power()/.s_stream() callbacks.
+
+> Especially since the pm_runtime_get_sync() will continue to be used
+> elsewhere, and possibly even in media in cases where you don't need to
+> check for errors (e.g. remove()).
+
+Talking about the remove(), I'm not sure if just ignoring errors
+there would do the right thing. I mean, if pm_runtime_get_sync()
+fails, probably any attempts to disable clocks and other things
+that depend on PM runtime will also (silently) fail.
+
+This may put the device on an unknown PM and keep clock lines enabled
+after its removal.
+
+Thanks,
+Mauro
