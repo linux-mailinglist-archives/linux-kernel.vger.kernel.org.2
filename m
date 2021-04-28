@@ -2,157 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 971DC36DC98
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FBD536DC9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240699AbhD1QBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 12:01:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54278 "EHLO
+        id S240367AbhD1QDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 12:03:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240634AbhD1QBS (ORCPT
+        with ESMTP id S234470AbhD1QDV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 12:01:18 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5360C06138A
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:00:32 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id o21so18908504qtp.7
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:00:32 -0700 (PDT)
+        Wed, 28 Apr 2021 12:03:21 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C5F5C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:02:35 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id y32so45042647pga.11
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:02:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2SuF9mSmF53oX7jF/kwRpkLK22JzuM8F0Omk1lKrm3U=;
-        b=c91OhnqmUMdrp5NwBmhDw0TWIKfd7cy5vfjKAMC5+iO+8WsXa/1iWeYeOn3iiAdnee
-         K687+nQwR9YSd0rPz34NBcYSpywzjMxeDXC53/Pb4AEGt7HZEY5Icnr0ahoHBsonGrbg
-         HXyuj//ZVjv22KpBoGWMZ2LFIIXIny1zBaq8Ckc7R2iE49O+5QqGx11lTuePdNiVNZQe
-         kuJ5UJThxkM79QHzgt2Li5You3M+/fDQ8yIHwND0dIhYaufGJNCSGtpVdCHwu6nPhiZQ
-         W8SjrEQQJNQEUo944EZmAwLRIc9DO2ZQpaS+Vg8i61WI8H2F5Vmk/5l5GjuPT/zghXGr
-         DYyg==
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=fufpDmdFGWBedAM49G/O0OohK3RRP/eyeb3mWz8RtJg=;
+        b=Efv7Pn8LGPw1Hcokx9BP4xbcwG1dnJ2PP5C0gUcIt5H1H2HA8F/IzTqwEX2fK/VpVD
+         GiyvVryN7iaxHT0n/iLvKdNWD6msGNNrydmGNQci8v+SaavOW1Gbu8fltf8lj6EuPPZ1
+         QpE3e9TUZZbvCgw3LoUr2V5MJtVUFe/g+Ytol6xKGz5XHJQR8qNA8FmDMSpTVtINv0Hs
+         2dj+9khj3jD6+IsU6zfa74RsN9kRk/ETQK+pR7wist7zSyLLYROD+h4WAa1ojldndCFI
+         ZiexeaFbhJPeSZeZXB7TUR9bvNqulornWAefzyoMRy2KvUgePzRIYVRuS23KlwIb8AS+
+         3u+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2SuF9mSmF53oX7jF/kwRpkLK22JzuM8F0Omk1lKrm3U=;
-        b=MXIaVmP53QHIiNlHP/28Z9xzM3s5MNWI39ajGUTG2qNQkwTifLmuXn5Jdp/wdipb+K
-         oW9oNeD0C2FxfHbrS25lXZJ+EWDfiIjztxnnmT7XIgVxRio+M+X/XL5SlRrqy0J4I+Xl
-         67+0WOC+FnAdeoNtxnujtHvnGNsaJamwtRjbCsn5bCqFqjjlPSqFLkEw9j6rtZ+2oAXR
-         c91CxUrLINmSgjoNiVEzx9DJtHZsZOg3ddf0R1NVTT8l7GBl5K624+xCZn79peQhbNLM
-         VYi+U2iWtif+wQved13ybbHejowxlEni/LdngG9aRHye75Vcu45zVypxWlwtDpueL+g4
-         LYrw==
-X-Gm-Message-State: AOAM533fxJ1rp08yCVfea7EngusIyZx8DR5REQNID28HvMJnBy7qsf9W
-        ldU4DsIy8gIuijsblaFikbZ6e7dQ48yoMJ/JPB6SEg==
-X-Google-Smtp-Source: ABdhPJxw/1TATKg60w/SjCaCBhfHoT8ss0Bn6ygLRSzh2SsIWTbTBD0bqD3Zs2Gx7AOSnVSgCP23TbUXpGj11qrDJVs=
-X-Received: by 2002:ac8:51d3:: with SMTP id d19mr26641416qtn.358.1619625629931;
- Wed, 28 Apr 2021 09:00:29 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=fufpDmdFGWBedAM49G/O0OohK3RRP/eyeb3mWz8RtJg=;
+        b=DXku1S4qVnZvHdg3f/WWBihdzP3guwdPBevhiRjsk4xQY1okDne7mO4T/XGOonD9FB
+         3CEq9UczHYMuR+lATlcwGUky+ugwjzgkljwcKCjAU3safasRtMDFoYeI2IbllQh0zI6u
+         g4aftAZGqk7LW6mQfURwGYuQMk5wbMnAwUnGKJaj4lZrSA9SfUj00TDctECcnY0abrvs
+         1BkwRfiwkvjiNnj0mwlhcJVfhkZKv0GVC0M4Q9FAv5SodCllXumLuPJp3vy5R96S0uuY
+         UC92L3/yJtfR6oUhaiYB8onQaLZN8JwK6doP30va/9y764YEgv6CzPPGrNoWdmCr4Vu2
+         yseg==
+X-Gm-Message-State: AOAM530+RhnHLNtRVafy01p3L4ctXar7UG4lVbPTTp/lN7jy4/Rvy/PK
+        D6o/RHWULPkDWtoV6gaF5luhXD1/+4Fc6Ha/0yI=
+X-Google-Smtp-Source: ABdhPJwWnuOFfmUHNStGxWPXDgzFbQhcg4CSt2S2GC+GKhSisIQOyH1iwioPAL600VLmTiGiohleaDcy6LJtWnAnB+0=
+X-Received: by 2002:a05:6a00:2c4:b029:279:c266:abe6 with SMTP id
+ b4-20020a056a0002c4b0290279c266abe6mr10150758pft.48.1619625754795; Wed, 28
+ Apr 2021 09:02:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210427225244.4326-1-axelrasmussen@google.com>
- <20210427225244.4326-7-axelrasmussen@google.com> <alpine.LSU.2.11.2104271704110.7111@eggly.anvils>
- <20210428155638.GD6584@xz-x1>
-In-Reply-To: <20210428155638.GD6584@xz-x1>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Wed, 28 Apr 2021 08:59:53 -0700
-Message-ID: <CAJHvVcg6mt-FH0vn3ZApYU1tdtyu_8pgGtnKxrX5m2OjiCeApw@mail.gmail.com>
-Subject: Re: [PATCH v5 06/10] userfaultfd/shmem: modify shmem_mcopy_atomic_pte
- to use install_pte()
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
+From:   Jassi Brar <jassisinghbrar@gmail.com>
+Date:   Wed, 28 Apr 2021 11:02:24 -0500
+Message-ID: <CABb+yY0j+ENA=z40pCEZxGYJM-hXVxiYK0CU-OB4aA24SmV5nw@mail.gmail.com>
+Subject: [GIT PULL] Mailbox changes for v5.13
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 8:56 AM Peter Xu <peterx@redhat.com> wrote:
->
-> On Tue, Apr 27, 2021 at 05:58:16PM -0700, Hugh Dickins wrote:
-> > On Tue, 27 Apr 2021, Axel Rasmussen wrote:
-> >
-> > > In a previous commit, we added the mcopy_atomic_install_pte() helper.
-> > > This helper does the job of setting up PTEs for an existing page, to map
-> > > it into a given VMA. It deals with both the anon and shmem cases, as
-> > > well as the shared and private cases.
-> > >
-> > > In other words, shmem_mcopy_atomic_pte() duplicates a case it already
-> > > handles. So, expose it, and let shmem_mcopy_atomic_pte() use it
-> > > directly, to reduce code duplication.
-> > >
-> > > This requires that we refactor shmem_mcopy_atomic_pte() a bit:
-> > >
-> > > Instead of doing accounting (shmem_recalc_inode() et al) part-way
-> > > through the PTE setup, do it afterward. This frees up
-> > > mcopy_atomic_install_pte() from having to care about this accounting,
-> > > and means we don't need to e.g. shmem_uncharge() in the error path.
-> > >
-> > > A side effect is this switches shmem_mcopy_atomic_pte() to use
-> > > lru_cache_add_inactive_or_unevictable() instead of just lru_cache_add().
-> > > This wrapper does some extra accounting in an exceptional case, if
-> > > appropriate, so it's actually the more correct thing to use.
-> > >
-> > > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> >
-> > Not quite. Two things.
-> >
-> > One, in this version, delete_from_page_cache(page) has vanished
-> > from the particular error path which needs it.
->
-> Agreed.  I also spotted that the set_page_dirty() seems to have been overlooked
-> when reusing mcopy_atomic_install_pte(), which afaiu should be move into the
-> helper.
+Hi Linus,
 
-I think this is covered: we explicitly call SetPageDirty() just before
-returning in shmem_mcopy_atomic_pte(). If I remember correctly from a
-couple of revisions ago, we consciously put it here instead of in the
-helper because it resulted in simpler code (error handling in
-particular, I think?), and not all callers of the new helper need it.
+The following changes since commit e49d033bddf5b565044e2abe4241353959bc9120:
 
->
-> >
-> > Two, and I think this predates your changes (so needs a separate
-> > fix patch first, for backport to stable? a user with bad intentions
-> > might be able to trigger the BUG), in pondering the new error paths
-> > and that /* don't free the page */ one in particular, isn't it the
-> > case that the shmem_inode_acct_block() on entry might succeed the
-> > first time, but atomic copy fail so -ENOENT, then something else
-> > fill up the tmpfs before the retry comes in, so that retry then
-> > fail with -ENOMEM, and hit the BUG_ON(page) in __mcopy_atomic()?
-> >
-> > (As I understand it, the shmem_inode_unacct_blocks() has to be
-> > done before returning, because the caller may be unable to retry.)
-> >
-> > What the right fix is rather depends on other uses of __mcopy_atomic():
-> > if they obviously cannot hit that BUG_ON(page), you may prefer to leave
-> > it in, and fix it here where shmem_inode_acct_block() fails. Or you may
-> > prefer instead to delete that "else BUG_ON(page);" - looks as if that
-> > would end up doing the right thing.  Peter may have a preference.
->
-> To me, the BUG_ON(page) wanted to guarantee mfill_atomic_pte() should have
-> consumed the page properly when possible.  Removing the BUG_ON() looks good
-> already, it will just stop covering the case when e.g. ret==0.
->
-> So maybe slightly better to release the page when shmem_inode_acct_block()
-> fails (so as to still keep some guard on the page)?
+  Linux 5.12-rc6 (2021-04-04 14:15:36 -0700)
 
-This second issue, I will take some more time to investigate. :)
+are available in the Git repository at:
 
->
-> Thanks,
->
-> --
-> Peter Xu
->
+  git://git.linaro.org/landing-teams/working/fujitsu/integration.git
+tags/mailbox-v5.13
+
+for you to fetch changes up to 2335f556b3afadbee6548456f543f53ac3d1af42:
+
+  dt-bindings: mailbox: qcom-ipcc: Add compatible for SC7280
+(2021-04-26 09:44:21 -0500)
+
+----------------------------------------------------------------
+- qcom: enable support for SM8350 and SC7280
+- sprd: refcounting channel usage
+specify interrupt names in dt
+support sc9863a
+- arm: drop redundant print
+- ti: convert dt-bindings to json schema
+- misc: spelling fixes
+
+----------------------------------------------------------------
+Bjorn Andersson (1):
+      MAINTAINERS: Add DT bindings directory to mailbox
+
+Nishanth Menon (1):
+      dt-bindings: mailbox: ti,secure-proxy: Convert to json schema
+
+Orson Zhai (3):
+      mailbox: sprd: Introduce refcnt when clients requests/free channels
+      dt-bindings: mailbox: Add interrupt-names to SPRD mailbox
+      mailbox: sprd: Add supplementary inbox support
+
+Qiheng Lin (1):
+      mailbox: arm_mhu_db: Remove redundant dev_err call in mhu_db_probe()
+
+Sai Prakash Ranjan (1):
+      dt-bindings: mailbox: qcom-ipcc: Add compatible for SC7280
+
+Tom Saeger (1):
+      mailbox: fix various typos in comments
+
+Vinod Koul (1):
+      dt-bindings: mailbox: Add compatible for SM8350 IPCC
+
+Yang Li (1):
+      mailbox: pcc: fix platform_no_drv_owner.cocci warnings
+
+ .../devicetree/bindings/mailbox/qcom-ipcc.yaml     |   2 +
+ .../devicetree/bindings/mailbox/sprd-mailbox.yaml  |  13 +-
+ .../bindings/mailbox/ti,secure-proxy.txt           |  50 -------
+ .../bindings/mailbox/ti,secure-proxy.yaml          |  79 +++++++++++
+ MAINTAINERS                                        |   1 +
+ drivers/mailbox/Kconfig                            |   2 +-
+ drivers/mailbox/arm_mhu_db.c                       |   4 +-
+ drivers/mailbox/bcm-flexrm-mailbox.c               |   4 +-
+ drivers/mailbox/mailbox-xgene-slimpro.c            |   6 +-
+ drivers/mailbox/mailbox.h                          |   2 +-
+ drivers/mailbox/pcc.c                              |   3 +-
+ drivers/mailbox/pl320-ipc.c                        |   2 +-
+ drivers/mailbox/sprd-mailbox.c                     | 147 +++++++++++++++------
+ drivers/mailbox/ti-msgmgr.c                        |   2 +-
+ 14 files changed, 212 insertions(+), 105 deletions(-)
+ delete mode 100644
+Documentation/devicetree/bindings/mailbox/ti,secure-proxy.txt
+ create mode 100644
+Documentation/devicetree/bindings/mailbox/ti,secure-proxy.yaml
