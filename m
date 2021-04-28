@@ -2,168 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 906A336D037
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 03:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 511C236D034
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 03:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237670AbhD1BSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 21:18:39 -0400
-Received: from mx21.baidu.com ([220.181.3.85]:51398 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236769AbhD1BSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 21:18:35 -0400
-Received: from BJHW-Mail-Ex15.internal.baidu.com (unknown [10.127.64.38])
-        by Forcepoint Email with ESMTPS id 8F6CEEBEEB2B5E7135C2;
-        Wed, 28 Apr 2021 09:17:41 +0800 (CST)
-Received: from BJHW-MAIL-EX19.internal.baidu.com (10.127.64.21) by
- BJHW-Mail-Ex15.internal.baidu.com (10.127.64.38) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.4; Wed, 28 Apr 2021 09:17:41 +0800
-Received: from BC-Mail-Ex20.internal.baidu.com (172.31.51.14) by
- BJHW-MAIL-EX19.internal.baidu.com (10.127.64.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.4; Wed, 28 Apr 2021 09:17:41 +0800
-Received: from BC-Mail-Ex20.internal.baidu.com ([172.31.51.14]) by
- BC-Mail-Ex20.internal.baidu.com ([172.31.51.14]) with mapi id 15.01.2242.008;
- Wed, 28 Apr 2021 09:17:40 +0800
-From:   "Chu,Kaiping" <chukaiping@baidu.com>
-To:     Rafael Aquini <aquini@redhat.com>
-CC:     "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "yzaikin@google.com" <yzaikin@google.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "nigupta@nvidia.com" <nigupta@nvidia.com>,
-        "bhe@redhat.com" <bhe@redhat.com>,
-        "khalid.aziz@oracle.com" <khalid.aziz@oracle.com>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "mateusznosek0@gmail.com" <mateusznosek0@gmail.com>,
-        "sh_def@163.com" <sh_def@163.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: =?gb2312?B?tPC4tDogW1BBVENIIHYzXSBtbS9jb21wYWN0aW9uOmxldCBwcm9hY3RpdmUg?=
- =?gb2312?Q?compaction_order_configurable?=
-Thread-Topic: [PATCH v3] mm/compaction:let proactive compaction order
- configurable
-Thread-Index: AQHXOjvUEYLrBaldBU+yjbigXZxebarJI3/Q
-Date:   Wed, 28 Apr 2021 01:17:40 +0000
-Message-ID: <f355248969f14e5897ad6dcfe3834297@baidu.com>
-References: <1619313662-30356-1-git-send-email-chukaiping@baidu.com>
- <YIYX22JLVHN1PhGs@t490s.aquini.net>
-In-Reply-To: <YIYX22JLVHN1PhGs@t490s.aquini.net>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.22.194.26]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-Baidu-BdMsfe-DateCheck: 1_BJHW-Mail-Ex15_2021-04-28 09:17:41:543
+        id S236229AbhD1BSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 21:18:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51834 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230368AbhD1BS3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 21:18:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id B377260FF1;
+        Wed, 28 Apr 2021 01:17:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619572665;
+        bh=hOZO+SPnyFvxLtuAUwDP9fN1YkgG5DsxCWBygsBLIZM=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=HE9+KAFPA0K6a6elYIM+R7J7mNtARTcdZUSANd55RVZG82wYRL8Vflsqbsb2BB6tl
+         SFFqIFDoc5GG4Rw3HJX7okvUho2nASa5Y0LYjIsXZEoOF+Vick9i2HNn22gGlPIEw0
+         f9tctUMrW90FccvVAS0htpDQeLy+LUKehLpc6ikIGkUtthq7Onjf101WLt+WCDF50J
+         PcB9cUqttPE39lEFpxTdKKXL9oW97cLtOkmt3aQK5rmfEfA346d26nsQeIuWGlGoHp
+         dZGYAa2HMPYIawXaTD4w+xIf9GTEjW7pNATpfhdLbdqcWbZHFo1uTfOJfcTpIVKtLY
+         2Gx9Yi7Y77bGQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AD66860A24;
+        Wed, 28 Apr 2021 01:17:45 +0000 (UTC)
+Subject: Re: [GIT PULL] printk for 5.13
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YIgXasI86BwJvQ0Z@alley>
+References: <YIgXasI86BwJvQ0Z@alley>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YIgXasI86BwJvQ0Z@alley>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git tags/printk-for-5.13
+X-PR-Tracked-Commit-Id: c8dbea6df351df211216b5f8877b020f21ecf75f
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 7f3d08b255d1806502e45fe70ca2ba9646eb3aa1
+Message-Id: <161957266570.1632.8354892507095477863.pr-tracker-bot@kernel.org>
+Date:   Wed, 28 Apr 2021 01:17:45 +0000
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UGxlYXNlIHNlZSBteSBhbnN3ZXIgaW5saW5lLg0KDQotLS0tLdPKvP7Urbz+LS0tLS0NCreivP7I
-yzogUmFmYWVsIEFxdWluaSA8YXF1aW5pQHJlZGhhdC5jb20+IA0Kt6LLzcqxvOQ6IDIwMjHE6jTU
-wjI2yNUgOTozMQ0KytW8/sjLOiBDaHUsS2FpcGluZyA8Y2h1a2FpcGluZ0BiYWlkdS5jb20+DQqz
-rcvNOiBtY2dyb2ZAa2VybmVsLm9yZzsga2Vlc2Nvb2tAY2hyb21pdW0ub3JnOyB5emFpa2luQGdv
-b2dsZS5jb207IGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmc7IHZiYWJrYUBzdXNlLmN6OyBuaWd1
-cHRhQG52aWRpYS5jb207IGJoZUByZWRoYXQuY29tOyBraGFsaWQuYXppekBvcmFjbGUuY29tOyBp
-YW1qb29uc29vLmtpbUBsZ2UuY29tOyBtYXRldXN6bm9zZWswQGdtYWlsLmNvbTsgc2hfZGVmQDE2
-My5jb207IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWZzZGV2ZWxAdmdlci5r
-ZXJuZWwub3JnOyBsaW51eC1tbUBrdmFjay5vcmcNCtb3zOI6IFJlOiBbUEFUQ0ggdjNdIG1tL2Nv
-bXBhY3Rpb246bGV0IHByb2FjdGl2ZSBjb21wYWN0aW9uIG9yZGVyIGNvbmZpZ3VyYWJsZQ0KDQpP
-biBTdW4sIEFwciAyNSwgMjAyMSBhdCAwOToyMTowMkFNICswODAwLCBjaHVrYWlwaW5nIHdyb3Rl
-Og0KPiBDdXJyZW50bHkgdGhlIHByb2FjdGl2ZSBjb21wYWN0aW9uIG9yZGVyIGlzIGZpeGVkIHRv
-IA0KPiBDT01QQUNUSU9OX0hQQUdFX09SREVSKDkpLCBpdCdzIE9LIGluIG1vc3QgbWFjaGluZXMg
-d2l0aCBsb3RzIG9mIA0KPiBub3JtYWwgNEtCIG1lbW9yeSwgYnV0IGl0J3MgdG9vIGhpZ2ggZm9y
-IHRoZSBtYWNoaW5lcyB3aXRoIHNtYWxsIA0KPiBub3JtYWwgbWVtb3J5LCBmb3IgZXhhbXBsZSB0
-aGUgbWFjaGluZXMgd2l0aCBtb3N0IG1lbW9yeSBjb25maWd1cmVkIGFzIA0KPiAxR0IgaHVnZXRs
-YmZzIGh1Z2UgcGFnZXMuIEluIHRoZXNlIG1hY2hpbmVzIHRoZSBtYXggb3JkZXIgb2YgZnJlZSAN
-Cj4gcGFnZXMgaXMgb2Z0ZW4gYmVsb3cgOSwgYW5kIGl0J3MgYWx3YXlzIGJlbG93IDkgZXZlbiB3
-aXRoIGhhcmQgDQo+IGNvbXBhY3Rpb24uIFRoaXMgd2lsbCBsZWFkIHRvIHByb2FjdGl2ZSBjb21w
-YWN0aW9uIGJlIHRyaWdnZXJlZCB2ZXJ5IA0KPiBmcmVxdWVudGx5LiBJbiB0aGVzZSBtYWNoaW5l
-cyB3ZSBvbmx5IGNhcmUgYWJvdXQgb3JkZXIgb2YgMyBvciA0Lg0KPiBUaGlzIHBhdGNoIGV4cG9y
-dCB0aGUgb2RlciB0byBwcm9jIGFuZCBsZXQgaXQgY29uZmlndXJhYmxlIGJ5IHVzZXIsIA0KPiBh
-bmQgdGhlIGRlZmF1bHQgdmFsdWUgaXMgc3RpbGwgQ09NUEFDVElPTl9IUEFHRV9PUkRFUi4NCj4g
-DQo+IFNpZ25lZC1vZmYtYnk6IGNodWthaXBpbmcgPGNodWthaXBpbmdAYmFpZHUuY29tPg0KPiBS
-ZXBvcnRlZC1ieToga2VybmVsIHRlc3Qgcm9ib3QgPGxrcEBpbnRlbC5jb20+DQoNClR3byBtaW5v
-ciBuaXRzIG9uIHRoZSBjb21taXQgbG9nIG1lc3NhZ2U6IA0KKiB0aGVyZSBzZWVtcyB0byBiZSBh
-IHdoaXRlc3BhZ2UgbWlzc2luZyBpbiB5b3VyIHNob3J0IGxvZzogDQogICIuLi4gbW0vY29tcGFj
-dGlvbjpsZXQgLi4uIg0KLS0+IEkgd2lsbCBmaXggaXQgaW4gbmV4dCBwYXRjaC4NCg0KKiBoYXMg
-dGhlIHBhdGggcmVhbGx5IGJlZW4gcmVwb3J0ZWQgYnkgYSB0ZXN0IHJvYm90Pw0KLS0+IFllcy4g
-VGhlcmUgaXMgYSBjb21waWxlIGVycm9yIGluIHYxLCBJIGZpeGVkIGl0IGluIHYyLg0KDQpBIG5v
-dGUgb24gdGhlIHN5c2N0bCBuYW1lLCBJJ2Qgc3VnZ2VzdCB0aGF0IGl0IHBlcmhhcHMgc2hvdWxk
-IHJlZmxlY3QgdGhlIGZhY3QgdGhhdCB3ZSdyZSBhZGp1c3RpbmcgdGhlIG9yZGVyIGZvciBwcm9h
-Y3RpdmUgY29tcGF0aW9uLg0KSG93IGFib3V0ICJwcm9hY3RpdmVfY29tcGF0aW9uX29yZGVyIj8N
-Ci0tPiBJIHdpbGwgY2hhbmdlIGl0IGluIG5leHQgcGF0Y2guDQoNCkNoZWVycywNCg0KPiAtLS0N
-Cj4gDQo+IENoYW5nZXMgaW4gdjM6DQo+ICAgICAtIGNoYW5nZSB0aGUgbWluIHZhbHVlIG9mIGNv
-bXBhY3Rpb25fb3JkZXIgdG8gMSBiZWNhdXNlIHRoZSBmcmFnbWVudGF0aW9uDQo+ICAgICAgIGlu
-ZGV4IG9mIG9yZGVyIDAgaXMgYWx3YXlzIDANCj4gICAgIC0gbW92ZSB0aGUgZGVmaW5pdGlvbiBv
-ZiBtYXhfYnVkZHlfem9uZSBpbnRvICNpZmRlZiANCj4gQ09ORklHX0NPTVBBQ1RJT04NCj4gDQo+
-IENoYW5nZXMgaW4gdjI6DQo+ICAgICAtIGZpeCB0aGUgY29tcGlsZSBlcnJvciBpbiBpYTY0IGFu
-ZCBwb3dlcnBjLCBtb3ZlIHRoZSBpbml0aWFsaXphdGlvbg0KPiAgICAgICBvZiBzeXNjdGxfY29t
-cGFjdGlvbl9vcmRlciB0byBrY29tcGFjdGRfaW5pdCBiZWNhdXNlIA0KPiAgICAgICBDT01QQUNU
-SU9OX0hQQUdFX09SREVSIGlzIGEgdmFyaWFibGUgaW4gdGhlc2UgYXJjaGl0ZWN0dXJlcw0KPiAg
-ICAgLSBjaGFuZ2UgdGhlIGhhcmQgY29kZWQgbWF4IG9yZGVyIG51bWJlciBmcm9tIDEwIHRvIE1B
-WF9PUkRFUiAtIDENCj4gDQo+ICBpbmNsdWRlL2xpbnV4L2NvbXBhY3Rpb24uaCB8ICAgIDEgKw0K
-PiAga2VybmVsL3N5c2N0bC5jICAgICAgICAgICAgfCAgIDEwICsrKysrKysrKysNCj4gIG1tL2Nv
-bXBhY3Rpb24uYyAgICAgICAgICAgIHwgICAgOSArKysrKystLS0NCj4gIDMgZmlsZXMgY2hhbmdl
-ZCwgMTcgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9p
-bmNsdWRlL2xpbnV4L2NvbXBhY3Rpb24uaCBiL2luY2x1ZGUvbGludXgvY29tcGFjdGlvbi5oIA0K
-PiBpbmRleCBlZDQwNzBlLi4xNTFjY2QxIDEwMDY0NA0KPiAtLS0gYS9pbmNsdWRlL2xpbnV4L2Nv
-bXBhY3Rpb24uaA0KPiArKysgYi9pbmNsdWRlL2xpbnV4L2NvbXBhY3Rpb24uaA0KPiBAQCAtODMs
-NiArODMsNyBAQCBzdGF0aWMgaW5saW5lIHVuc2lnbmVkIGxvbmcgY29tcGFjdF9nYXAodW5zaWdu
-ZWQgaW50IA0KPiBvcmRlcikgICNpZmRlZiBDT05GSUdfQ09NUEFDVElPTiAgZXh0ZXJuIGludCBz
-eXNjdGxfY29tcGFjdF9tZW1vcnk7ICANCj4gZXh0ZXJuIHVuc2lnbmVkIGludCBzeXNjdGxfY29t
-cGFjdGlvbl9wcm9hY3RpdmVuZXNzOw0KPiArZXh0ZXJuIHVuc2lnbmVkIGludCBzeXNjdGxfY29t
-cGFjdGlvbl9vcmRlcjsNCj4gIGV4dGVybiBpbnQgc3lzY3RsX2NvbXBhY3Rpb25faGFuZGxlcihz
-dHJ1Y3QgY3RsX3RhYmxlICp0YWJsZSwgaW50IHdyaXRlLA0KPiAgCQkJdm9pZCAqYnVmZmVyLCBz
-aXplX3QgKmxlbmd0aCwgbG9mZl90ICpwcG9zKTsgIGV4dGVybiBpbnQgDQo+IHN5c2N0bF9leHRm
-cmFnX3RocmVzaG9sZDsgZGlmZiAtLWdpdCBhL2tlcm5lbC9zeXNjdGwuYyANCj4gYi9rZXJuZWwv
-c3lzY3RsLmMgaW5kZXggNjJmYmQwOS4uZTUwZjdkMiAxMDA2NDQNCj4gLS0tIGEva2VybmVsL3N5
-c2N0bC5jDQo+ICsrKyBiL2tlcm5lbC9zeXNjdGwuYw0KPiBAQCAtMTk2LDYgKzE5Niw3IEBAIGVu
-dW0gc3lzY3RsX3dyaXRlc19tb2RlIHsgICNlbmRpZiAvKiANCj4gQ09ORklHX1NDSEVEX0RFQlVH
-ICovDQo+ICANCj4gICNpZmRlZiBDT05GSUdfQ09NUEFDVElPTg0KPiArc3RhdGljIGludCBtYXhf
-YnVkZHlfem9uZSA9IE1BWF9PUkRFUiAtIDE7DQo+ICBzdGF0aWMgaW50IG1pbl9leHRmcmFnX3Ro
-cmVzaG9sZDsNCj4gIHN0YXRpYyBpbnQgbWF4X2V4dGZyYWdfdGhyZXNob2xkID0gMTAwMDsgICNl
-bmRpZiBAQCAtMjg3MSw2ICsyODcyLDE1IA0KPiBAQCBpbnQgcHJvY19kb19zdGF0aWNfa2V5KHN0
-cnVjdCBjdGxfdGFibGUgKnRhYmxlLCBpbnQgd3JpdGUsDQo+ICAJCS5leHRyYTIJCT0gJm9uZV9o
-dW5kcmVkLA0KPiAgCX0sDQo+ICAJew0KPiArCQkucHJvY25hbWUgICAgICAgPSAiY29tcGFjdGlv
-bl9vcmRlciIsDQo+ICsJCS5kYXRhICAgICAgICAgICA9ICZzeXNjdGxfY29tcGFjdGlvbl9vcmRl
-ciwNCj4gKwkJLm1heGxlbiAgICAgICAgID0gc2l6ZW9mKHN5c2N0bF9jb21wYWN0aW9uX29yZGVy
-KSwNCj4gKwkJLm1vZGUgICAgICAgICAgID0gMDY0NCwNCj4gKwkJLnByb2NfaGFuZGxlciAgID0g
-cHJvY19kb2ludHZlY19taW5tYXgsDQo+ICsJCS5leHRyYTEgICAgICAgICA9IFNZU0NUTF9PTkUs
-DQo+ICsJCS5leHRyYTIgICAgICAgICA9ICZtYXhfYnVkZHlfem9uZSwNCj4gKwl9LA0KPiArCXsN
-Cj4gIAkJLnByb2NuYW1lCT0gImV4dGZyYWdfdGhyZXNob2xkIiwNCj4gIAkJLmRhdGEJCT0gJnN5
-c2N0bF9leHRmcmFnX3RocmVzaG9sZCwNCj4gIAkJLm1heGxlbgkJPSBzaXplb2YoaW50KSwNCj4g
-ZGlmZiAtLWdpdCBhL21tL2NvbXBhY3Rpb24uYyBiL21tL2NvbXBhY3Rpb24uYyBpbmRleCBlMDRm
-NDQ3Li43MGMwYWNkIA0KPiAxMDA2NDQNCj4gLS0tIGEvbW0vY29tcGFjdGlvbi5jDQo+ICsrKyBi
-L21tL2NvbXBhY3Rpb24uYw0KPiBAQCAtMTkyNSwxNiArMTkyNSwxNiBAQCBzdGF0aWMgYm9vbCBr
-c3dhcGRfaXNfcnVubmluZyhwZ19kYXRhX3QgDQo+ICpwZ2RhdCkNCj4gIA0KPiAgLyoNCj4gICAq
-IEEgem9uZSdzIGZyYWdtZW50YXRpb24gc2NvcmUgaXMgdGhlIGV4dGVybmFsIGZyYWdtZW50YXRp
-b24gd3J0IHRvIA0KPiB0aGUNCj4gLSAqIENPTVBBQ1RJT05fSFBBR0VfT1JERVIuIEl0IHJldHVy
-bnMgYSB2YWx1ZSBpbiB0aGUgcmFuZ2UgWzAsIDEwMF0uDQo+ICsgKiBzeXNjdGxfY29tcGFjdGlv
-bl9vcmRlci4gSXQgcmV0dXJucyBhIHZhbHVlIGluIHRoZSByYW5nZSBbMCwgMTAwXS4NCj4gICAq
-Lw0KPiAgc3RhdGljIHVuc2lnbmVkIGludCBmcmFnbWVudGF0aW9uX3Njb3JlX3pvbmUoc3RydWN0
-IHpvbmUgKnpvbmUpICB7DQo+IC0JcmV0dXJuIGV4dGZyYWdfZm9yX29yZGVyKHpvbmUsIENPTVBB
-Q1RJT05fSFBBR0VfT1JERVIpOw0KPiArCXJldHVybiBleHRmcmFnX2Zvcl9vcmRlcih6b25lLCBz
-eXNjdGxfY29tcGFjdGlvbl9vcmRlcik7DQo+ICB9DQo+ICANCj4gIC8qDQo+ICAgKiBBIHdlaWdo
-dGVkIHpvbmUncyBmcmFnbWVudGF0aW9uIHNjb3JlIGlzIHRoZSBleHRlcm5hbCANCj4gZnJhZ21l
-bnRhdGlvbg0KPiAtICogd3J0IHRvIHRoZSBDT01QQUNUSU9OX0hQQUdFX09SREVSIHNjYWxlZCBi
-eSB0aGUgem9uZSdzIHNpemUuIEl0DQo+ICsgKiB3cnQgdG8gdGhlIHN5c2N0bF9jb21wYWN0aW9u
-X29yZGVyIHNjYWxlZCBieSB0aGUgem9uZSdzIHNpemUuIEl0DQo+ICAgKiByZXR1cm5zIGEgdmFs
-dWUgaW4gdGhlIHJhbmdlIFswLCAxMDBdLg0KPiAgICoNCj4gICAqIFRoZSBzY2FsaW5nIGZhY3Rv
-ciBlbnN1cmVzIHRoYXQgcHJvYWN0aXZlIGNvbXBhY3Rpb24gZm9jdXNlcyBvbiANCj4gbGFyZ2Vy
-IEBAIC0yNjY2LDYgKzI2NjYsNyBAQCBzdGF0aWMgdm9pZCBjb21wYWN0X25vZGVzKHZvaWQpDQo+
-ICAgKiBiYWNrZ3JvdW5kLiBJdCB0YWtlcyB2YWx1ZXMgaW4gdGhlIHJhbmdlIFswLCAxMDBdLg0K
-PiAgICovDQo+ICB1bnNpZ25lZCBpbnQgX19yZWFkX21vc3RseSBzeXNjdGxfY29tcGFjdGlvbl9w
-cm9hY3RpdmVuZXNzID0gMjA7DQo+ICt1bnNpZ25lZCBpbnQgX19yZWFkX21vc3RseSBzeXNjdGxf
-Y29tcGFjdGlvbl9vcmRlcjsNCj4gIA0KPiAgLyoNCj4gICAqIFRoaXMgaXMgdGhlIGVudHJ5IHBv
-aW50IGZvciBjb21wYWN0aW5nIGFsbCBub2RlcyB2aWEgQEAgLTI5NTgsNiANCj4gKzI5NTksOCBA
-QCBzdGF0aWMgaW50IF9faW5pdCBrY29tcGFjdGRfaW5pdCh2b2lkKQ0KPiAgCWludCBuaWQ7DQo+
-ICAJaW50IHJldDsNCj4gIA0KPiArCXN5c2N0bF9jb21wYWN0aW9uX29yZGVyID0gQ09NUEFDVElP
-Tl9IUEFHRV9PUkRFUjsNCj4gKw0KPiAgCXJldCA9IGNwdWhwX3NldHVwX3N0YXRlX25vY2FsbHMo
-Q1BVSFBfQVBfT05MSU5FX0RZTiwNCj4gIAkJCQkJIm1tL2NvbXBhY3Rpb246b25saW5lIiwNCj4g
-IAkJCQkJa2NvbXBhY3RkX2NwdV9vbmxpbmUsIE5VTEwpOw0KPiAtLQ0KPiAxLjcuMQ0KPiANCg0K
+The pull request you sent on Tue, 27 Apr 2021 15:53:46 +0200:
+
+> git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git tags/printk-for-5.13
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/7f3d08b255d1806502e45fe70ca2ba9646eb3aa1
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
