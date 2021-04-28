@@ -2,153 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C09A36DFD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 21:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC55E36DFDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 21:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239223AbhD1TpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 15:45:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47600 "EHLO
+        id S240514AbhD1TrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 15:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232284AbhD1TpR (ORCPT
+        with ESMTP id S239663AbhD1TrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 15:45:17 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915EDC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 12:44:31 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id x7so64291938wrw.10
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 12:44:31 -0700 (PDT)
+        Wed, 28 Apr 2021 15:47:14 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2472AC061573;
+        Wed, 28 Apr 2021 12:46:28 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id t2-20020a17090a0242b0290155433387beso3668368pje.1;
+        Wed, 28 Apr 2021 12:46:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Sn7CSGIgmGn5VKzZbm8BRN6Y1B3vMVtXzAiBVY8ViXE=;
-        b=uv/K0P/Q182pdyPl5FpzzqZhMn45UrPIPQALeC9OD7sSme6UpfvHw0/R/1YCWlN2q2
-         CsnI3gnu3GZAwDve0cqzlzFNIHxFsdGEOEaibi21FxFoD3s43Qwbmp7tI3hWEaHztLxd
-         c0hDUzNY3G8xKjcx7mzp9kcjJCEVyMRn7iTADXAV3e/T/xfwVHuYv7COt2dDGXIpk+Hg
-         rzXPvmNFz8qIZJsCzv67dywANmiZ2SyEk0+QIGo2b38l4K3tUG4R9Mli88wUto9KblMW
-         g2NPN0vIxZdaj2rHJ2vQSa90VvsT4zm3FCvYLfuKgDSEm951TzlCkvKusd0yiIR5Jox7
-         82IA==
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=D+wipqtCl4oGAHPqnb+AwAue6qaVdWbnOzGhdtR+Ytw=;
+        b=F5bZGaYD9wF4spYCRoq8LrSFbRCNHXoTXnGNWiYQZl4kTQQ2sUE1fGqg63oRccdSZ3
+         e2WMBdG12OZgIMtcCiQ4+A7/rvANDF5Fmsua8hySb5+nRwTBwqwaBbknZI27gGgFpVdu
+         /ieVvhjaH/M7xIZZEFM7KBvDJ0cKjO5m7XXsqjCu1KJt2H2kRRcyOyBeKnxcHBd8g+bw
+         nMgWSkdBK4rCVBnehNXD/Z1LnW1M+dXzKhsOVypcv0/SCSGRqZO5wjVbW76g2K2CCi0G
+         BvtQwr1ktz2O7iXxgt/OW1YlfjNItupzRos1XJe/CrL25zNKDuwGBZCHHIVmbo5NTaHw
+         1kfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Sn7CSGIgmGn5VKzZbm8BRN6Y1B3vMVtXzAiBVY8ViXE=;
-        b=ajHol9sKsh1dMrqq0miSjfP5eQNPVyw5ZCzzby99Nq4z1+nb7IOfmL/e3iaJwOV5Mx
-         B9uvyVvc3gtx8oypHK9YEmVy8s0DYReU69kgE7YwWm8HIZpT9E1X5ZZm/uj5aKXOGXUc
-         ntaXp7ZiG9rG3IwcnxgvYn1J8gMdtCgGcTf/DpWe4sWq26idnQo05mkhhZdnwJgur6wd
-         YDZDCC41To7eLYwzTtoSZDrEwcCOtmU08rQ+eweAUmUqpA21M9thW+ZQD0Xifs55an8K
-         +7G5mCVUeV6yDsOjUmDD6YUPW2oymXQfwt9phajD+rnVLe1u2XWi2wDmqYYu6B4rqBNl
-         ah1A==
-X-Gm-Message-State: AOAM530HVssrjSGXEXOZ7LV75lcCfiHuav5vhpqkuV2YtNCm/Kbx16nV
-        qf7Q/mCAByJ/hTqr3mERvp7fxy5O+s9FlxJP
-X-Google-Smtp-Source: ABdhPJwwjzkfU75PzDn/R1kusWKNjG+LnE3S357agzvLt5nuHXVuDf1062RUlHvxyoT7V243QHMmaQ==
-X-Received: by 2002:adf:efca:: with SMTP id i10mr37850612wrp.316.1619639070055;
-        Wed, 28 Apr 2021 12:44:30 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:c98e:c214:1762:12d3? ([2a01:e34:ed2f:f020:c98e:c214:1762:12d3])
-        by smtp.googlemail.com with ESMTPSA id 3sm9510689wma.45.2021.04.28.12.44.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Apr 2021 12:44:29 -0700 (PDT)
-Subject: Re: [thermal-next PATCH 2/2] thermal: qcom: tsens: simplify debugfs
- init function
-To:     Thara Gopinath <thara.gopinath@linaro.org>,
-        Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>, linux-arm-msm@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210419012930.7727-1-ansuelsmth@gmail.com>
- <20210419012930.7727-2-ansuelsmth@gmail.com>
- <8e679407-07e7-244a-48fa-0d4d451d744d@linaro.org>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <6c5208b3-8bbd-d00f-9147-c4a35ae202c7@linaro.org>
-Date:   Wed, 28 Apr 2021 21:44:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=D+wipqtCl4oGAHPqnb+AwAue6qaVdWbnOzGhdtR+Ytw=;
+        b=JgkQdfmk54C66ezOV25b8NB2czJYWTG4ldhKlKWHvfuVfHKWU8jWqmbcR5otPckLu8
+         VsOHWcWZZRcErQhQOb5D+wiFKYQXTh/Vkd/Wg4rEj2EmJA6D/4S0IkKqn5vEc/qEjoL5
+         aG+bz33H4G/+XTcS6NcOMhnG+k5Yl7CAcFCKJJQVwQOfGKPMBP2W3p3eX24Vt22+zHON
+         qerUQETDhsmm6+nkbWQR23bN9phQAAxS2PxbWAlDBVwohb/4mRlrDkAXUu08Xay8Nwwg
+         B9NhoTk1v1hpTdjXKTh/DPiq09TeK4lS1IA6I7yXKHIVNXHZNA1OQfpJnabMzxfHiET+
+         ImMQ==
+X-Gm-Message-State: AOAM530oUqD9CB767Eq9ElaNO7pJE7fh4MKG/Qanv8WGpVpNfAFjmHIC
+        NSfbd6+Mq5jf95K1hehabCljIjG9LOFLFEft
+X-Google-Smtp-Source: ABdhPJyJqEdhgDdPedL1KsWIp0P/1+EZMGUpm6zBPQnyL0DGAIJZOFz8KUQJ8rTBjFnJpS7Qo56/3Q==
+X-Received: by 2002:a17:903:2490:b029:e6:faf5:86df with SMTP id p16-20020a1709032490b02900e6faf586dfmr31129782plw.69.1619639187619;
+        Wed, 28 Apr 2021 12:46:27 -0700 (PDT)
+Received: from tong-desktop.local ([2601:647:4200:13:dc67:9833:b65f:4f94])
+        by smtp.googlemail.com with ESMTPSA id m11sm459851pgs.4.2021.04.28.12.46.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 12:46:27 -0700 (PDT)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Tong Zhang <ztong0001@gmail.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: bt878: avoid schedule tasklet when it is not setup
+Date:   Wed, 28 Apr 2021 15:46:01 -0400
+Message-Id: <20210428194602.1774183-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <8e679407-07e7-244a-48fa-0d4d451d744d@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/04/2021 18:47, Thara Gopinath wrote:
-> Hi,
-> 
-> Please include a cover letter next time describing the patch series.
+There is a problem with the tasklet in bt878. bt->tasklet is set by
+dvb-bt8xx.ko, and bt878.ko can be loaded independetly.
+In this case if interrupt comes it may cause null-ptr-dereference.
+To solve this issue, we check if the tasklet is actually set before
+calling tasklet_schedule.
 
-Yes, a cover letter helps for the understanding of a patch series but in
-this case the changes are simple enough to get rid of it.
+[    1.750438] bt878(0): irq FDSR FBUS risc_pc=
+[    1.750728] BUG: kernel NULL pointer dereference, address: 0000000000000000
+[    1.752969] RIP: 0010:0x0
+[    1.757526] Call Trace:
+[    1.757659]  <IRQ>
+[    1.757770]  tasklet_action_common.isra.0+0x107/0x110
+[    1.758041]  tasklet_action+0x22/0x30
+[    1.758237]  __do_softirq+0xe0/0x29b
+[    1.758430]  irq_exit_rcu+0xa4/0xb0
+[    1.758618]  common_interrupt+0x8d/0xa0
+[    1.758824]  </IRQ>
 
-> On 4/18/21 9:29 PM, Ansuel Smith wrote:
->> Simplify debugfs init function.
->> - Drop useless variables
->> - Add check for existing dev directory.
->> - Fix wrong version in dbg_version_show (with version 0.0.0, 0.1.0 was
->>    incorrectly reported)
->>
->> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
->> ---
->>   drivers/thermal/qcom/tsens.c | 16 +++++++---------
->>   1 file changed, 7 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
->> index f9d50a67e..b086d1496 100644
->> --- a/drivers/thermal/qcom/tsens.c
->> +++ b/drivers/thermal/qcom/tsens.c
->> @@ -692,7 +692,7 @@ static int dbg_version_show(struct seq_file *s,
->> void *data)
->>               return ret;
->>           seq_printf(s, "%d.%d.%d\n", maj_ver, min_ver, step_ver);
->>       } else {
->> -        seq_puts(s, "0.1.0\n");
->> +        seq_printf(s, "0.%d.0\n", priv->feat->ver_major);
->>       }
->>         return 0;
->> @@ -704,21 +704,19 @@ DEFINE_SHOW_ATTRIBUTE(dbg_sensors);
->>   static void tsens_debug_init(struct platform_device *pdev)
->>   {
->>       struct tsens_priv *priv = platform_get_drvdata(pdev);
->> -    struct dentry *root, *file;
->>   -    root = debugfs_lookup("tsens", NULL);
->> -    if (!root)
->> +    priv->debug_root = debugfs_lookup("tsens", NULL);
->> +    if (!priv->debug_root)
->>           priv->debug_root = debugfs_create_dir("tsens", NULL);
->> -    else
->> -        priv->debug_root = root;
->>   -    file = debugfs_lookup("version", priv->debug_root);
->> -    if (!file)
->> +    if (!debugfs_lookup("version", priv->debug_root))
->>           debugfs_create_file("version", 0444, priv->debug_root,
->>                       pdev, &dbg_version_fops);
->>         /* A directory for each instance of the TSENS IP */
->> -    priv->debug = debugfs_create_dir(dev_name(&pdev->dev),
->> priv->debug_root);
-> 
-> Unconditionally creating priv->debug here is correct. The below if
-> (!priv->debug) will never be true because as per your patch 1, we call
-> tsens_debug_init once per instance of tsens.
-> 
->> +    priv->debug = debugfs_lookup(dev_name(&pdev->dev),
->> priv->debug_root);
->> +    if (!priv->debug)
->> +        priv->debug = debugfs_create_dir(dev_name(&pdev->dev),
->> priv->debug_root);
->>       debugfs_create_file("sensors", 0444, priv->debug, pdev,
->> &dbg_sensors_fops);
->>   }
->>   #else
->>
-> 
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+---
+ drivers/media/pci/bt8xx/bt878.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-
+diff --git a/drivers/media/pci/bt8xx/bt878.c b/drivers/media/pci/bt8xx/bt878.c
+index 78dd35c9b65d..6fc89649e320 100644
+--- a/drivers/media/pci/bt8xx/bt878.c
++++ b/drivers/media/pci/bt8xx/bt878.c
+@@ -300,7 +300,9 @@ static irqreturn_t bt878_irq(int irq, void *dev_id)
+ 		}
+ 		if (astat & BT878_ARISCI) {
+ 			bt->finished_block = (stat & BT878_ARISCS) >> 28;
+-			tasklet_schedule(&bt->tasklet);
++			if (bt->tasklet.callback) {
++				tasklet_schedule(&bt->tasklet);
++			}
+ 			break;
+ 		}
+ 		count++;
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.25.1
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
