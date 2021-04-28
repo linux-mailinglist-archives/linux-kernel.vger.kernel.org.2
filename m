@@ -2,93 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E45F036D296
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 08:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 100D836D292
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 08:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236554AbhD1Gyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 02:54:33 -0400
-Received: from mail-vs1-f51.google.com ([209.85.217.51]:34728 "EHLO
-        mail-vs1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234373AbhD1Gy3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 02:54:29 -0400
-Received: by mail-vs1-f51.google.com with SMTP id d25so24681894vsp.1;
-        Tue, 27 Apr 2021 23:53:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qcj7/vi64EhvIZ063r8YI4RxRFbLfs3PNow3a+YW0lg=;
-        b=cAf6/mnqHqiNQeHBaIyvNmZqvu+ZKQN1PDms4OPyi/+AcJGZicWBqJGrEiwdxKLfaa
-         IcaENgQcasrWvyaoy75av4ukXV7DEAaofWRXaOEAqZP7x7kfM+KGkJP2Iwj0sQ1bVft9
-         AyD9ZMSQWzKQXXbB7sNPwGy5BCbeD46h5oE7+wsm6SJ6bE3gj9KXO0bDz3A/Bh2U/q2v
-         tNCo4WhxXY5GaxfRL4X/RPn0G21f3BFOBZA4KxPs+NZeSC/BqyKFVO+FP3Ihq5D4p9ZB
-         SwGYXsSpeXQ99bbRWPlFE0EWx7onae6BdqOqdoR7hhASNlTPWjW3S3PmJQWE/XwtIwJ+
-         CcoQ==
-X-Gm-Message-State: AOAM531Dv13R6bucoaudH68z3V1YZHf9Uc4nHO14O0rCBY96YxlJuEjH
-        HZZ3eo32D38/xnQTLHvgaf26ckAKz5+RRIo0PMY=
-X-Google-Smtp-Source: ABdhPJyELbGS2kG/kxrsEFotGwuE+59fsAnvQWK55bL61m1yNIRT7/aVm3vglBf6ZYvQwO5jkVSO99DpOIS8s+tQ5cQ=
-X-Received: by 2002:a67:8745:: with SMTP id j66mr23450138vsd.18.1619592824818;
- Tue, 27 Apr 2021 23:53:44 -0700 (PDT)
+        id S236326AbhD1GyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 02:54:23 -0400
+Received: from relay.sw.ru ([185.231.240.75]:48638 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230186AbhD1GyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 02:54:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=7c123YSCTdMincmxsUMhI0gcAR3i6drsKgalA/feMPM=; b=hx3oiJ3GN0JTYyHXwUF
+        piNkCm1/FGOH/eBSy+V2rRwKfmysCkGH23nji93+uvE5Ai8wTXwimlqFzu4Y7YnCthNcHu6WlO3Fl
+        YvKQdyAw6KQYvlBk4RmmcQBGzzlsZ1yjE8/RJqo97C5YG5L2j3xRyTjx6/bUd1lGZkYrroLz0g0=
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1lbe4l-001Vjv-9I; Wed, 28 Apr 2021 09:53:35 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH v4 10/16] memcg: enable accounting for pollfd and select bits
+ arrays
+To:     cgroups@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc:     Roman Gushchin <guro@fb.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org
+References: <8664122a-99d3-7199-869a-781b21b7e712@virtuozzo.com>
+Message-ID: <aaf449c4-0932-2c9c-67b9-f214fe5d7a6f@virtuozzo.com>
+Date:   Wed, 28 Apr 2021 09:53:34 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <793432cca963b632709c4d1312baa9874d73e1d8.1619341585.git.fthain@telegraphics.com.au>
- <ba908b1d-eab5-a4e5-0c0a-2c745287d121@physik.fu-berlin.de>
- <10a08764-c138-9fe5-966c-ce68349b9b6@nippy.intranet> <65f01f42-31d9-522a-e690-73d286405a01@gmail.com>
- <9650358f-a789-7dbd-4495-1d39ff321ded@nippy.intranet> <ada88dd6-f8d7-11dc-9a89-5c7e437a0981@gmail.com>
-In-Reply-To: <ada88dd6-f8d7-11dc-9a89-5c7e437a0981@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 28 Apr 2021 08:53:33 +0200
-Message-ID: <CAMuHMdUy_B_+pHZQpnDHYsee+gpXOs9ek_HaVxLjE2HVfGmLQg@mail.gmail.com>
-Subject: Re: [PATCH] m68k/mac: Replace macide driver with generic platform driver
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Finn Thain <fthain@fastmail.com.au>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Joshua Thompson <funaho@jurai.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ide@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <8664122a-99d3-7199-869a-781b21b7e712@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+User can call select/poll system calls with a large number of assigned
+file descriptors and force kernel to allocate up to several pages of memory
+till end of these sleeping system calls. We have here long-living
+unaccounted per-task allocations.
 
-On Tue, Apr 27, 2021 at 9:55 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> On 27/04/21 3:47 pm, Finn Thain wrote:
-> > On Tue, 27 Apr 2021, Michael Schmitz wrote:
-> >> On 26/04/21 7:37 pm, Finn Thain wrote:
-> >>> Was macide the only IDE driver in Debian/m68k kernels without a libata
-> >>> alternative? If so, this patch would allow you to finally drop
-> >>> CONFIG_IDE.
-> >>>
-> >> There's still q40ide.c (ISA IDE interface, byte-swapped, so would need
-> >> treatment similar to Falcon IDE). Hasn't been updated to a platform
-> >> device yet.
-> >>
-> > AIUI, q40 support is not included in Debian/m68k kernel builds.
-> I see.
-> > I wonder whether q40 could re-use the pata_falcon driver . I suppose
->
-> I'm pretty sure it could, but there is no reason why it would have to be
-> crippled in that way. Interrupts should work perfectly fine with IDE on
-> Q40.
->
-> There is another reason why using the same module binary for both might
-> fail - the awkward address translation code in io_mm.h. Not certain at
-> all whether we can even have Q40 and Atari in the same kernel binary...
+It makes sense to account for these allocations to restrict the host's
+memory consumption from inside the memcg-limited container.
 
-That's supposed to work, else our multi_defconfig is broken.
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+---
+ fs/select.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/fs/select.c b/fs/select.c
+index 945896d..e83e563 100644
+--- a/fs/select.c
++++ b/fs/select.c
+@@ -655,7 +655,7 @@ int core_sys_select(int n, fd_set __user *inp, fd_set __user *outp,
+ 			goto out_nofds;
+ 
+ 		alloc_size = 6 * size;
+-		bits = kvmalloc(alloc_size, GFP_KERNEL);
++		bits = kvmalloc(alloc_size, GFP_KERNEL_ACCOUNT);
+ 		if (!bits)
+ 			goto out_nofds;
+ 	}
+@@ -1000,7 +1000,7 @@ static int do_sys_poll(struct pollfd __user *ufds, unsigned int nfds,
+ 
+ 		len = min(todo, POLLFD_PER_PAGE);
+ 		walk = walk->next = kmalloc(struct_size(walk, entries, len),
+-					    GFP_KERNEL);
++					    GFP_KERNEL_ACCOUNT);
+ 		if (!walk) {
+ 			err = -ENOMEM;
+ 			goto out_fds;
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+1.8.3.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
