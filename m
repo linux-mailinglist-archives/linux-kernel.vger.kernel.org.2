@@ -2,90 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8061036D3EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 534D336D3DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:24:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237713AbhD1I1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 04:27:50 -0400
-Received: from mga04.intel.com ([192.55.52.120]:7991 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231635AbhD1I1q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 04:27:46 -0400
-IronPort-SDR: qDy/ROmfXerGipvHRgdyTvxz3wCG5nI8sToAqdH7YPPnyox4Z1Grp3Z1AAsDzVxCc9TMSbuSFQ
- 0JVUz9ze0eww==
-X-IronPort-AV: E=McAfee;i="6200,9189,9967"; a="194573427"
-X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
-   d="scan'208";a="194573427"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 01:27:02 -0700
-IronPort-SDR: pEieoWPS439dCUpyUuZKXm1DshukFKzgSi+hhDVT3w21b8a+JXdIEe5AMuK9bHNhSEoA8Puo8o
- BTZZhWXslXbg==
-X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
-   d="scan'208";a="430192264"
-Received: from unknown (HELO localhost.localdomain.bj.intel.com) ([10.240.193.73])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 01:26:59 -0700
-From:   Zhu Lingshan <lingshan.zhu@intel.com>
-To:     jasowang@redhat.com, mst@redhat.com
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhu Lingshan <lingshan.zhu@intel.com>
-Subject: [PATCH 2/2] vDPA/ifcvf: implement doorbell mapping for ifcvf
-Date:   Wed, 28 Apr 2021 16:21:33 +0800
-Message-Id: <20210428082133.6766-3-lingshan.zhu@intel.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210428082133.6766-1-lingshan.zhu@intel.com>
-References: <20210428082133.6766-1-lingshan.zhu@intel.com>
+        id S237498AbhD1IX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 04:23:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237390AbhD1IXz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 04:23:55 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E932CC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 01:23:10 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d124so436700pfa.13
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 01:23:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=TWcMSqO6ibem4/zpzxUEem0FvcMEDi0hJeG4n/5PAj8=;
+        b=Yh6yF0SGSHYUPqHYLil7VUjxJ++K3y3DoC6A4A8Lkos8FtRr/Cce8VjUZiGSBERF4n
+         HMwiCLIxhQqp3AJuDGsfyeSkK6i51W0riDWcBxOUprLoc17sCMOZIa6Fpfq6k1OjB0hj
+         hXQwjpOX6QsnueQhNCSjIqzenEvh/jMdG8MtvZcMHg3vb2Nb5HXrvPTdhnyFQiLVgxnd
+         o/5H/2RMKDsVQhkeLpDh8P/6pWyeKjCir5ZgXUfMxc3oq0QI/ssVzz+Jy05BPk6/Voxs
+         1gozThp0EtnBwsfRuZ3WA3cnMyhsUY8yOBpPOBv/zTOMZQ3QwWBHD7/qnZ70Q9oNq4OU
+         HqtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=TWcMSqO6ibem4/zpzxUEem0FvcMEDi0hJeG4n/5PAj8=;
+        b=pm7Lr01V/l7TsD/wHga14oGLu/YurIEG8+ALCHAK04ysPleNywmgu1Qh9vGi6ZnZYJ
+         73ivGxF65qUOUshnezJ+Cqq2Nh9X2TBTb30DPKVtGosojhwa/7SyfzONc5XCti62sKqK
+         fPCR2jYd5OaQQ7MPxUOwjura5kf/lZKUYKPTNgRJkNDPY1qkXfLdSaBdp8NQBJlmq3yn
+         AAzQfp4VpOwqS77ViDMkIGkYAiWfuHxj+jdzmtSbbrKNGmxl4ZImMpRijJnB3y9+3Vvp
+         Wvdl0gHNjEh+PoidCzqUzO6fg1vlEaD11jNFsC+vP8zXMDBCZ6o3TaXYLNUlPpy0I0fZ
+         RNBw==
+X-Gm-Message-State: AOAM530FJyRXTZtnbVUJGmuv9WfNjLJsdj8jW/zfXlFaxHWQy9ptJbLm
+        7Enh8jr1M7RjaOYoCb5zsXgT2eJ6FtDop+HUnLU=
+X-Google-Smtp-Source: ABdhPJzfMCgY40XKWwEL1oWhCX5GV4/ZYE17oRFFu3oN8J0rBn8+sW8zNqTn71F68g/4cthbnecIpiq9G6nKLrM0hHQ=
+X-Received: by 2002:a63:135d:: with SMTP id 29mr19081275pgt.83.1619598190475;
+ Wed, 28 Apr 2021 01:23:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Reply-To: richardnabasaa@gmail.com
+Sender: rabiuusman967@gmail.com
+Received: by 2002:a05:6a10:8c10:0:0:0:0 with HTTP; Wed, 28 Apr 2021 01:23:10
+ -0700 (PDT)
+From:   Richard Nabasa <richardnabasaa@gmail.com>
+Date:   Wed, 28 Apr 2021 08:23:10 +0000
+X-Google-Sender-Auth: DbnmsjsLSxf2KNlC-XMdnlEHWns
+Message-ID: <CAC=67fmqmbWWi3gKd3GnmSBenKpKF7tp17ydphiHRLJPiTS5fw@mail.gmail.com>
+Subject: Urgent Response
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit implements doorbell mapping feature for ifcvf.
-This feature maps the notify page to userspace, to eliminate
-vmexit when kick a vq.
+I am Mr.Richard, I am a banker by profession, i need your urgent
+assistance, from my section in the bank i discovered an abandoned sum
+of $11.6million dollars that belongs to one of our foreign customer
+who died along with his supposed next of kin since July 22, 2003. The
+money has been here in our Bank lying dormant for years now without
+anybody coming for the claim of it. I need your co-operation in
+transferring the fund into your private bank account.
 
-Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
----
- drivers/vdpa/ifcvf/ifcvf_main.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
-
-diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
-index e48e6b74fe2e..afcb71bc0f51 100644
---- a/drivers/vdpa/ifcvf/ifcvf_main.c
-+++ b/drivers/vdpa/ifcvf/ifcvf_main.c
-@@ -413,6 +413,23 @@ static int ifcvf_vdpa_get_vq_irq(struct vdpa_device *vdpa_dev,
- 	return vf->vring[qid].irq;
- }
- 
-+static struct vdpa_notification_area ifcvf_get_vq_notification(struct vdpa_device *vdpa_dev,
-+							       u16 idx)
-+{
-+	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
-+	struct vdpa_notification_area area;
-+
-+	if (vf->notify_pa % PAGE_SIZE) {
-+		area.addr = 0;
-+		area.size = 0;
-+	} else {
-+		area.addr = vf->notify_pa;
-+		area.size = PAGE_SIZE;
-+	}
-+
-+	return area;
-+}
-+
- /*
-  * IFCVF currently does't have on-chip IOMMU, so not
-  * implemented set_map()/dma_map()/dma_unmap()
-@@ -440,6 +457,7 @@ static const struct vdpa_config_ops ifc_vdpa_ops = {
- 	.get_config	= ifcvf_vdpa_get_config,
- 	.set_config	= ifcvf_vdpa_set_config,
- 	.set_config_cb  = ifcvf_vdpa_set_config_cb,
-+	.get_vq_notification = ifcvf_get_vq_notification,
- };
- 
- static int ifcvf_probe(struct pci_dev *pdev, const struct pci_device_id *id)
--- 
-2.27.0
-
+I want the bank to release the money to you as the relative and the
+next of kin to our deceased customer, the Banking laws here does not
+allow such money to stay more than 21years,because the money will be
+recalled to the Bank treasury account as unclaimed fund. Once the
+funds have been transferred to your nominated bank account, we shall
+then share in the ratio of 60% for me and 40% for you by indicating
+your interest i will send you the full details on how the transfer
+will be executed.
