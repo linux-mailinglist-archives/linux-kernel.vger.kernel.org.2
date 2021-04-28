@@ -2,101 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1797E36E03D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 22:29:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA0536E041
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 22:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241905AbhD1UaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 16:30:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57462 "EHLO
+        id S241936AbhD1Uan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 16:30:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240942AbhD1UaK (ORCPT
+        with ESMTP id S230028AbhD1Ual (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 16:30:10 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B803C06138C
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:29:23 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id s15so5095643plg.6
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:29:23 -0700 (PDT)
+        Wed, 28 Apr 2021 16:30:41 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44BAFC06138A;
+        Wed, 28 Apr 2021 13:29:54 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id r3so10917737oic.1;
+        Wed, 28 Apr 2021 13:29:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UeII31CqNuFlE2BoTtr+fZN9wyzsy3hprcPYll4covw=;
-        b=jylj96Rw3QUQm4doFDBK0kop0iQgCV6NfySkOr5T98cqbEgl0duruUVIG5KC7g1OvD
-         XbTL/oRiSQ9ur3CZJRvyYbHIxY99dg3xegs4Ok2C8JzBM74t3TX7EC/VLwhZfoPz+u4/
-         RcByLq8jJDIgsj0tknp3coppc77n13njbPFO8=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tGQaGaHwtMEsGBsvTpG/LEWMQ/8sDbHoSj+JOzCRLas=;
+        b=FySiKbeLJyA4fvNRGfHBfMQpZxib7gTtzEGpQNDB3bz7T1I8fuGkkaDnuPFdKI5+ny
+         K4Ptr64TZojEEJvwbW1WQ9L4dUBwGtzk4ZwXfFcHqyEfdnNmT9WYMPZq4HXC7eJnzYqp
+         2Kvn2CRjNrPAuTpmazT8cCCNfNpaXSncbBZCZj6950x06c4Oa0IZfIHmNkyPVQlS1Hvg
+         TDtyP4fa5r8PhrpQdLqrHFx8vB2fGgfLr7GTthw7qWPcrTbYsqAmimNOFqBg4uJt27Ht
+         1/nulyyULfBu8oQh/b0I7o/lNXh1b5iJCd0vMtpgW10jyQgBf5s2ijF/joyfHQQj9up9
+         gG6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UeII31CqNuFlE2BoTtr+fZN9wyzsy3hprcPYll4covw=;
-        b=Rxi1WxVnOgidHps4ZgCpnuX4Var8mrDlV6BEwEGHjx88uB3y+d72Xn8slLElECGHOW
-         j/2vivdmKVgGLUAbcCFLhfT69R6xIQtsv6za/IVC9mZC0QXvr5EtGyI6gxtscFGHMOjo
-         70o8xAG1MahX23boJ1/AJyN2WXWmohWaFcdGC2exQNIEwkPlpaN8BwCDVQFhvTdsiXUN
-         LFfGOBRvc3bT9lTVaEShnm8clE0Vmu3IttoEebXrmQpSt324nU1Xb/ZUYFvVPXf2ueaZ
-         KMqT8XThifVmLS8qUeGFUh9NUj1U2TUp+xN7S2+2kEkr7kuRKv+zQFM7lIv0OQvkj21/
-         gWEw==
-X-Gm-Message-State: AOAM5304mnET5EYsb4beBmSEajmBMBsqZXGfabU/GESs/xBO1OumnFqH
-        OfxtbNz2MvaBjuYMqCSJ3gu20g==
-X-Google-Smtp-Source: ABdhPJwYkEDNlOuREptaQ5l3kQMV3gSjH3e1SrIdJIlzfjRSlDOr3aN5Uamkiddf+M4fmetyZadajQ==
-X-Received: by 2002:a17:90a:8c8c:: with SMTP id b12mr36346748pjo.35.1619641762540;
-        Wed, 28 Apr 2021 13:29:22 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k15sm516116pfi.0.2021.04.28.13.29.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 13:29:21 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 13:29:20 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tGQaGaHwtMEsGBsvTpG/LEWMQ/8sDbHoSj+JOzCRLas=;
+        b=fw9V3lgB8YF6n6sS+jlKGCubPPjyylWXYFTCjpUHF5ZHwIAoAFyGW2YLYZoWPRWQZ2
+         GuX5WVWJ/jofdiQKDgSRV7KpA1QWDHjPn0mzt93PFihFK7QihJXi6bs7Kj78i6qlVhpT
+         I7A/Zu9hXwk3KOdSpN7Ag5uziuHb9ji1BOMmtCRNktQbJf0xPjPItgm8lok9UEGJHkM7
+         PjZPopRUOfSwKvvJRBMc3xw9iP4Ky1MDLaLw6HM9vitBcT7U5Id/IuuRHYPMB1fRNoy1
+         UL8G4ueQv47ILzBtDh4h+8b9guwGrERDLJSc23fEoo0VvTf9C5iTl4Evt3IeYJb1elU6
+         S94A==
+X-Gm-Message-State: AOAM5333Qpq3adC5bFtTU+/VB9mu+mvqZg7jcJuauZWZxxAsVm893Owp
+        45IwYgrfCO6RwUsBaksYJoI=
+X-Google-Smtp-Source: ABdhPJxLbFzmwTwVKe1AFcOhbz/anbtcjO6QbYay1vp2NvlS8lsgoXE3mgjCCHRnlSK9OICdeWZ3LA==
+X-Received: by 2002:a05:6808:b3b:: with SMTP id t27mr4321817oij.50.1619641792296;
+        Wed, 28 Apr 2021 13:29:52 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.33])
+        by smtp.googlemail.com with ESMTPSA id j5sm226021oor.28.2021.04.28.13.29.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Apr 2021 13:29:51 -0700 (PDT)
+Subject: Re: [PATCH v6 net-next 3/3] selftests/net/forwarding: configurable
+ seed tests
+To:     Ido Schimmel <idosch@idosch.org>,
+        Pavel Balaev <balaevpa@infotecs.ru>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Subject: Re: [PATCH v26 1/9] x86/cet/ibt: Add Kconfig option for Indirect
- Branch Tracking
-Message-ID: <202104281329.564AACB@keescook>
-References: <20210427204720.25007-1-yu-cheng.yu@intel.com>
- <20210427204720.25007-2-yu-cheng.yu@intel.com>
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ido Schimmel <idosch@nvidia.com>
+References: <YIlWbxO+AFZAFww7@rnd> <YImPN7C/5BXRv6uC@shredder.lan>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <67788a64-1df7-ee3f-0bd3-cd05d411940c@gmail.com>
+Date:   Wed, 28 Apr 2021 14:29:48 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210427204720.25007-2-yu-cheng.yu@intel.com>
+In-Reply-To: <YImPN7C/5BXRv6uC@shredder.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 01:47:12PM -0700, Yu-cheng Yu wrote:
-> Indirect Branch Tracking (IBT) provides protection against CALL-/JMP-
-> oriented programming attacks.  It is active when the kernel has this
-> feature enabled, and the processor and the application support it.
-> When this feature is enabled, legacy non-IBT applications continue to
-> work, but without IBT protection.
+On 4/28/21 10:37 AM, Ido Schimmel wrote:
+> On Wed, Apr 28, 2021 at 03:34:55PM +0300, Pavel Balaev wrote:
+>> Test equal and different seed values for IPv4/IPv6
+>> multipath routing.
 > 
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> The test does not follow the usual convention of forwarding tests that
+> are expected to be run with both veth pairs and loop backed physical
+> devices. See: tools/testing/selftests/net/forwarding/README (and
+> existing tests for reference)
+> 
+> This approach allows us to test both the software and hardware data paths.
+> 
+> You can construct a test where you have multiple VRFs instead of
+> multiple namespaces. These VRFs emulate your hosts and routers. Send
+> multiple flows from one host and check the distribution across the
+> multiple paths connecting your two routers. Change the seed, expect a
+> different distribution. Go back to original seed and expect the original
+> distribution.
+> 
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Pavel: I think net-next is closing soon, so this will need to wait until
+next cycle (2 weeks from now).
 
--- 
-Kees Cook
+I'll take a look at the patch set in the next few days. You can send
+follow up sets as RFCs while net-next is closed, so this will be ready
+once it opens.
