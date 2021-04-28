@@ -2,111 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC5C36DDD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:07:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A37F36DDDA
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241447AbhD1RIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 13:08:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35198 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231916AbhD1RH7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 13:07:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0C11613B4;
-        Wed, 28 Apr 2021 17:07:10 +0000 (UTC)
-Date:   Wed, 28 Apr 2021 18:07:08 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: Re: [PATCH v11 2/6] arm64: kvm: Introduce MTE VM feature
-Message-ID: <20210428170705.GB4022@arm.com>
-References: <20210416154309.22129-1-steven.price@arm.com>
- <20210416154309.22129-3-steven.price@arm.com>
+        id S241460AbhD1RI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 13:08:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229931AbhD1RI1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 13:08:27 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84352C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 10:07:42 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id a36so62261912ljq.8
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 10:07:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GR7hKf7fNw0ovTS2B9IbzWhvenIGzwzqI1E/3AF1PEQ=;
+        b=d9UvkCg1CeyvhE04LX7mXGh/zBDp0cwiO6q/gaRpc3WOVY+ojFQvZg7EjBeX/Jiu9R
+         FTmZgbbYJ1YAsydfpOaxChtbOug8NpVgZzd0UUybISU9QkPB1GK2Qz2kycmp3p95KxCn
+         k0NxpghCv9KA+nBMtxK9jfsBLB6zFZZYyp2Bo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GR7hKf7fNw0ovTS2B9IbzWhvenIGzwzqI1E/3AF1PEQ=;
+        b=tmFbAOY2wPbv2w46EA9KwR+MdAFZho9lI/7UUEPKlq6K1Z508lxaGPCKCToGI8+7ZN
+         EFQHU+mU7xVCCZFUyiRhJTW1U11EjgatRXz9Z0xHYbFzzHC9MnYlV5nHfBY3JdwBDo1a
+         88hg/H611MxPOx3XD1hNUyO6VdRooSTqMZL9WvxfvsP5RQ0mMx/9Fe/NHqkImvIKEClA
+         t6FhMYZtlloheBFSkaX1rnSgbKzCW6lrKCP0du/W6UjnxhZHqw2jGmies12EnHwsChYs
+         M9SKFH24KKOIQLJO/rKQKiKd9IvA+4ap040fKRtrQZSYA3qDLZW+ZXiWPnPfoQt1THLZ
+         hihw==
+X-Gm-Message-State: AOAM5324BCOqqBnZ6DtRy9VmdR1/nv+vjGKWaf8lXMyeeMzDsD957YX8
+        jsNv0wUM0SqdQijof5U7v0oYJfy3ZMCbHOOS
+X-Google-Smtp-Source: ABdhPJx1AX7z5xEx8MvfBXOMnns6DcC+IoiX8z25C/7qXidk6LRwOXKHkVe0em03SecstiO7qsCXfw==
+X-Received: by 2002:a2e:7010:: with SMTP id l16mr21773579ljc.41.1619629660842;
+        Wed, 28 Apr 2021 10:07:40 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id a20sm66685ljq.130.2021.04.28.10.07.39
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Apr 2021 10:07:39 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id m7so62259177ljp.10
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 10:07:39 -0700 (PDT)
+X-Received: by 2002:a05:651c:44f:: with SMTP id g15mr20755418ljg.48.1619629659309;
+ Wed, 28 Apr 2021 10:07:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416154309.22129-3-steven.price@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CAPM=9txMo5f9QvPqdzt8g3CmUpyDFf2Q_0XS4V1FyjHX8WQPRA@mail.gmail.com>
+In-Reply-To: <CAPM=9txMo5f9QvPqdzt8g3CmUpyDFf2Q_0XS4V1FyjHX8WQPRA@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 28 Apr 2021 10:07:23 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh22MOMM5Paw-dHVvkp6W+UKx8mv_TNJ1TY9iaAMS1rLQ@mail.gmail.com>
+Message-ID: <CAHk-=wh22MOMM5Paw-dHVvkp6W+UKx8mv_TNJ1TY9iaAMS1rLQ@mail.gmail.com>
+Subject: Re: [git pull] drm for 5.13-rc1
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 04:43:05PM +0100, Steven Price wrote:
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index 77cb2d28f2a4..5f8e165ea053 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -879,6 +879,26 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->  	if (vma_pagesize == PAGE_SIZE && !force_pte)
->  		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
->  							   &pfn, &fault_ipa);
-> +
-> +	if (fault_status != FSC_PERM && kvm_has_mte(kvm) && !device &&
-> +	    pfn_valid(pfn)) {
+On Tue, Apr 27, 2021 at 8:32 PM Dave Airlie <airlied@gmail.com> wrote:
+>
+> There aren't a massive amount of conflicts, only with vmwgfx when I
+> did a test merge into your master yesterday, I think you should be
+> able to handle them yourself, but let me know if you want me to push a
+> merged tree somewhere (or if I missed something).
 
-In the current implementation, device == !pfn_valid(), so we could skip
-the latter check.
+The conflict was easy enough to resolve, but was unusual in that my
+tree had vmwgfx fixes that weren't in the development tree (ie that
+commit 2ef4fb92363c: "drm/vmwgfx: Make sure bo's are unpinned before
+putting them back").
 
-> +		/*
-> +		 * VM will be able to see the page's tags, so we must ensure
-> +		 * they have been initialised. if PG_mte_tagged is set, tags
-> +		 * have already been initialised.
-> +		 */
-> +		unsigned long i, nr_pages = vma_pagesize >> PAGE_SHIFT;
-> +		struct page *page = pfn_to_online_page(pfn);
-> +
-> +		if (!page)
-> +			return -EFAULT;
+Usually when I merge stuff, I can see that the fixes that were pushed
+to my tree are also in the development branch. Not so this time.
 
-I think that's fine, though maybe adding a comment that otherwise it
-would be mapped at stage 2 as Normal Cacheable and we cannot guarantee
-that the memory supports MTE tags.
-
-> +
-> +		for (i = 0; i < nr_pages; i++, page++) {
-> +			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
-> +				mte_clear_page_tags(page_address(page));
-> +		}
-> +	}
-> +
->  	if (writable)
->  		prot |= KVM_PGTABLE_PROT_W;
-
-I probably asked already but is the only way to map a standard RAM page
-(not device) in stage 2 via the fault handler? One case I had in mind
-was something like get_user_pages() but it looks like that one doesn't
-call set_pte_at_notify(). There are a few other places where
-set_pte_at_notify() is called and these may happen before we got a
-chance to fault on stage 2, effectively populating the entry (IIUC). If
-that's an issue, we could move the above loop and check closer to the
-actual pte setting like kvm_pgtable_stage2_map().
-
-While the set_pte_at() race on the page flags is somewhat clearer, we
-may still have a race here with the VMM's set_pte_at() if the page is
-mapped as tagged. KVM has its own mmu_lock but it wouldn't be held when
-handling the VMM page tables (well, not always, see below).
-
-gfn_to_pfn_prot() ends up calling get_user_pages*(). At least the slow
-path (hva_to_pfn_slow()) ends up with FOLL_TOUCH in gup and the VMM pte
-would be set, tags cleared (if PROT_MTE) before the stage 2 pte. I'm not
-sure whether get_user_page_fast_only() does the same.
-
-The race with an mprotect(PROT_MTE) in the VMM is fine I think as the
-KVM mmu notifier is invoked before set_pte_at() and racing with another
-user_mem_abort() is serialised by the KVM mmu_lock. The subsequent
-set_pte_at() would see the PG_mte_tagged set either by the current CPU
-or by the one it was racing with.
-
--- 
-Catalin
+          Linus
