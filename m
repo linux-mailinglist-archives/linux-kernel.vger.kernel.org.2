@@ -2,75 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 972C536DDA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 187E636DDB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:58:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241368AbhD1Q5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 12:57:17 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49252 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241340AbhD1Q5P (ORCPT
+        id S241429AbhD1Q7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 12:59:01 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2946 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241257AbhD1Q67 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 12:57:15 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1619628989;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hcjfKGsDUtZIm8NkZRo5Z9ImIbSWx7ZUl7/bQCsDzSA=;
-        b=veY7OyHT63EGaVlw/w9Z99/o5BgyI0d4czHBFdspTtcYHheb689AV/UAVgIZzSjbXmG8js
-        Ji/3ccq3EIz33tMLHblpFkiU6jI2B1DvOvbyrjWZrxeSG2bnW9f+Xj7kl5XSJkE4VNGDT8
-        ERh/ezmaRUyONyBLwlBwNBVvsHwmYR1DvF0b4Ra2AmVlCTDkUnZf58OTlqGkP3XEItkkng
-        MSH/gIYa6SbqwHiEV1mf9lOGhn3Gi+2Pq6wzhnAlDLf4NNkqyM7dUEgkSOxMMPqKsmiydE
-        IrvmoJdvV26X1IQvYlHQiGN4sN5j0uhUZxOZnIGuc5ZaXxEtqhfm8R1/8kUvww==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1619628989;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hcjfKGsDUtZIm8NkZRo5Z9ImIbSWx7ZUl7/bQCsDzSA=;
-        b=qEpMcwOYuFwl4uZ259mGVlC75/RmDvgQV/rjWXCIAlOZgzxCQzCc4xMYs6MaiR3DJAX7MW
-        PZQC6hS9vPwessBw==
-To:     Philip Li <philip.li@intel.com>
-Cc:     Feng Tang <feng.tang@intel.com>,
-        "Song Bao Hua \(Barry Song\)" <song.bao.hua@hisilicon.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "lkp\@lists.01.org" <lkp@lists.01.org>,
-        "lkp\@intel.com" <lkp@intel.com>,
-        "zhengjun.xing\@intel.com" <zhengjun.xing@intel.com>,
-        "x86\@kernel.org" <x86@kernel.org>
-Subject: Re: [LKP] Re: [genirq]  cbe16f35be:  will-it-scale.per_thread_ops -5.2% regression
-In-Reply-To: <20210428152339.GA2282261@pl-dbox>
-References: <20210427090013.GG32408@xsang-OptiPlex-9020> <87fszcnecr.ffs@nanos.tec.linutronix.de> <20210428050758.GB52098@shbuild999.sh.intel.com> <d392cc91241641df865217d82368eba8@hisilicon.com> <20210428080819.GB53821@shbuild999.sh.intel.com> <87o8dyn5xr.ffs@nanos.tec.linutronix.de> <20210428152339.GA2282261@pl-dbox>
-Date:   Wed, 28 Apr 2021 18:56:29 +0200
-Message-ID: <874kfqmjpe.ffs@nanos.tec.linutronix.de>
+        Wed, 28 Apr 2021 12:58:59 -0400
+Received: from fraeml704-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FVl4J3mPXz6896L;
+        Thu, 29 Apr 2021 00:50:24 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml704-chm.china.huawei.com (10.206.15.53) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 28 Apr 2021 18:58:11 +0200
+Received: from localhost (10.52.123.69) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 28 Apr
+ 2021 17:58:10 +0100
+Date:   Wed, 28 Apr 2021 17:56:36 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        "Robin van der Gracht" <robin@protonic.nl>,
+        <linux-iio@vger.kernel.org>,
+        "Lars-Peter Clausen" <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [PATCH v6 3/3] iio: adc: add ADC driver for the TI TSC2046
+ controller
+Message-ID: <20210428175636.00001170@Huawei.com>
+In-Reply-To: <20210428073208.19570-4-o.rempel@pengutronix.de>
+References: <20210428073208.19570-1-o.rempel@pengutronix.de>
+        <20210428073208.19570-4-o.rempel@pengutronix.de>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.123.69]
+X-ClientProxiedBy: lhreml751-chm.china.huawei.com (10.201.108.201) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Philip,
+On Wed, 28 Apr 2021 09:32:08 +0200
+Oleksij Rempel <o.rempel@pengutronix.de> wrote:
 
-On Wed, Apr 28 2021 at 23:23, Philip Li wrote:
-> On Wed, Apr 28, 2021 at 10:56:16AM +0200, Thomas Gleixner wrote:
->> On Wed, Apr 28 2021 at 16:08, Feng Tang wrote:
->> > On Wed, Apr 28, 2021 at 07:01:35AM +0000, Song Bao Hua (Barry Song) wrote:
->> >
->> >> But it is still an irrelevant problem.
->> > Yes, the commit itself has no problem. And my personal thought
->> > is no further action is needed. 
->> 
->> The commit does not need any further action, but this testing stuff
-> Sorry Thomas for confusion and trouble caused by this. We will take it
-> seriously to refine the report process for this category (alignment or
-> cache behavior) of performance change, to avoid meaningless ones.
+> Basically the TI TSC2046 touchscreen controller is 8 channel ADC optimized for
+> the touchscreen use case. By implementing it as an IIO ADC device, we can
+> make use of resistive-adc-touch and iio-hwmon drivers.
+> 
+> Polled readings are currently not implemented to keep this patch small, so
+> iio-hwmon will not work out of the box for now.
+> 
+> So far, this driver was tested with a custom version of resistive-adc-touch driver,
+> since it needs to be extended to make use of Z1 and Z2 channels. The X/Y
+> are working without additional changes.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Things go wrong every now and then. As long as we figure it out and
-stuff gets fixed, no problem.
+A few really small things inline that I'm happy to clean up whilst applying,
+or can get rolled into a v7 if you have to do one due to review from others.
 
-Thanks,
+...
 
-        tglx
+> +
+> +static int tsc2046_adc_read_one(struct tsc2046_adc_priv *priv, int ch_idx,
+> +				u32 *effective_speed_hz)
+> +{
+> +	struct spi_transfer xfer;
+> +	struct spi_message msg;
+> +	int ret;
+> +
+> +	memset(&xfer, 0, sizeof(xfer));
+> +	priv->tx_one->cmd = tsc2046_adc_get_cmd(priv, ch_idx, false);
+> +	priv->tx_one->data = 0;
+> +	xfer.tx_buf = priv->tx_one;
+> +	xfer.rx_buf = priv->rx_one;
+> +	xfer.len = sizeof(*priv->tx_one);
+> +	spi_message_init(&msg);
+> +	spi_message_add_tail(&xfer, &msg);
+
+Slight preference for 
+	spi_message_init_with_transfers(&msg, &xfer, 1);
+
+Same elsewhere where we get this pattern.
+
+> +
+> +	/*
+> +	 * We aren't using spi_write_then_read() because we need to be able
+> +	 * to get hold of the effective_speed_hz from the xfer
+> +	 */
+> +	ret = spi_sync(priv->spi, &msg);
+> +	if (ret) {
+> +		dev_err_ratelimited(&priv->spi->dev, "SPI transfer failed %pe\n",
+> +				    ERR_PTR(ret));
+> +		return ret;
+> +	}
+> +
+> +	if (effective_speed_hz)
+> +		*effective_speed_hz = xfer.effective_speed_hz;
+> +
+> +	return tsc2046_adc_get_value(priv->rx_one);
+> +}
+> +
+...
+
+> +static int tsc2046_adc_setup_spi_msg(struct tsc2046_adc_priv *priv)
+> +{
+> +	unsigned int ch_idx;
+> +	size_t size;
+> +	int ret;
+> +
+> +	priv->tx_one = devm_kzalloc(&priv->spi->dev, sizeof(*priv->tx_one),
+> +				    GFP_KERNEL);
+> +	if (!priv->tx_one)
+> +		return -ENOMEM;
+> +
+> +	priv->rx_one = devm_kzalloc(&priv->spi->dev, sizeof(*priv->rx_one),
+> +				    GFP_KERNEL);
+> +	if (!priv->rx_one)
+> +		return -ENOMEM;
+> +
+> +	/*
+> +	 * Make dummy read to set initial power state and get real SPI clock
+> +	 * freq. It seems to be not important which channel is used for this
+> +	 * case.
+> +	 */
+> +	ret = tsc2046_adc_read_one(priv, TI_TSC2046_ADDR_TEMP0,
+> +				   &priv->effective_speed_hz);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	/*
+> +	 * In case SPI controller do not report effective_speed_hz, use
+> +	 * configure value and hope it will match.
+> +	 */
+> +	if (!priv->effective_speed_hz)
+> +		priv->effective_speed_hz = priv->spi->max_speed_hz;
+> +
+> +
+> +	priv->scan_interval_us = TI_TSC2046_SAMPLE_INTERVAL_US;
+> +	priv->time_per_bit_ns = DIV_ROUND_UP(NSEC_PER_SEC,
+> +					     priv->effective_speed_hz);
+> +
+> +	/*
+> +	 * Calculate and allocate maximal size buffer if all channels are
+> +	 * enabled.
+> +	 */
+> +	size = 0;
+> +	for (ch_idx = 0; ch_idx < priv->dcfg->num_channels; ch_idx++)
+> +		size += tsc2046_adc_group_set_layout(priv, ch_idx, ch_idx);
+> +
+> +	priv->tx = devm_kzalloc(&priv->spi->dev, size, GFP_KERNEL);
+> +	if (!priv->tx)
+> +		return -ENOMEM;
+> +
+> +	priv->rx = devm_kzalloc(&priv->spi->dev, size, GFP_KERNEL);
+> +	if (!priv->rx)
+> +		return -ENOMEM;
+> +
+> +	spi_message_init(&priv->msg);
+> +	priv->msg.context = priv;
+
+Why is this set as we never set priv->msg.complete?
+I can drop this whilst merging if we aren't going around again.
+> +
+> +	priv->xfer.tx_buf = priv->tx;
+> +	priv->xfer.rx_buf = priv->rx;
+> +	priv->xfer.len = size;
+> +	spi_message_add_tail(&priv->xfer, &priv->msg);
+
+Having dropped the above, can also change to
+spi_message_init_with_transfers()
+
+> +
+> +	return 0;
+> +}
+> +
+...
+
+> +static int tsc2046_adc_probe(struct spi_device *spi)
+> +{
+> +	const struct tsc2046_adc_dcfg *dcfg;
+> +	struct device *dev = &spi->dev;
+> +	struct tsc2046_adc_priv *priv;
+> +	struct iio_dev *indio_dev;
+> +	struct iio_trigger *trig;
+> +	int ret;
+> +
+> +	if (spi->max_speed_hz > TI_TSC2046_MAX_CLK_FREQ) {
+> +		dev_err(dev, "SPI max_speed_hz is too high: %d Hz. Max supported freq is %zu Hz\n",
+> +			spi->max_speed_hz, TI_TSC2046_MAX_CLK_FREQ);
+> +		return -EINVAL;
+> +	}
+> +
+> +	dcfg = device_get_match_data(dev);
+> +	if (!dcfg)
+> +		return -EINVAL;
+> +
+> +	spi->bits_per_word = 8;
+> +	spi->mode &= ~SPI_MODE_X_MASK;
+> +	spi->mode |= SPI_MODE_0;
+> +	ret = spi_setup(spi);
+> +	if (ret < 0)
+> +		return dev_err_probe(dev, ret, "Error in SPI setup\n");
+> +
+> +	indio_dev = devm_iio_device_alloc(dev, sizeof(*priv));
+> +	if (!indio_dev)
+> +		return -ENOMEM;
+> +
+> +	priv = iio_priv(indio_dev);
+> +	priv->dcfg = dcfg;
+> +
+> +	spi_set_drvdata(spi, indio_dev);
+> +
+> +	priv->spi = spi;
+> +
+> +	indio_dev->name = TI_TSC2046_NAME;
+> +	indio_dev->modes = INDIO_DIRECT_MODE | INDIO_BUFFER_TRIGGERED;
+> +	indio_dev->channels = dcfg->channels;
+> +	indio_dev->num_channels = dcfg->num_channels;
+> +	indio_dev->info = &tsc2046_adc_info;
+> +
+> +	tsc2046_adc_parse_fwnode(priv);
+> +
+> +	ret = tsc2046_adc_setup_spi_msg(priv);
+> +	if (ret)
+> +		return ret;
+> +
+> +	mutex_init(&priv->slock);
+> +
+> +	/* TODO: remove IRQ_NOAUTOEN after needed patches are mainline */
+> +	irq_set_status_flags(spi->irq, IRQ_NOAUTOEN);
+
+They are now but I can do this whilst merging if that's all we have to change.
+
+> +	ret = devm_request_irq(dev, spi->irq, &tsc2046_adc_irq,
+> +			       0, indio_dev->name, indio_dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	trig = devm_iio_trigger_alloc(dev, "touchscreen-%s", indio_dev->name);
+> +	if (!trig)
+> +		return -ENOMEM;
+> +
+> +	priv->trig = trig;
+> +	iio_trigger_set_drvdata(trig, indio_dev);
+> +	trig->ops = &tsc2046_adc_trigger_ops;
+> +
+> +	spin_lock_init(&priv->trig_lock);
+> +	hrtimer_init(&priv->trig_timer, CLOCK_MONOTONIC,
+> +		     HRTIMER_MODE_REL_SOFT);
+> +	priv->trig_timer.function = tsc2046_adc_trig_more;
+> +
+> +	ret = devm_iio_trigger_register(dev, trig);
+> +	if (ret) {
+> +		dev_err(dev, "failed to register trigger\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = devm_iio_triggered_buffer_setup(dev, indio_dev, NULL,
+> +					      &tsc2046_adc_trigger_handler, NULL);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to setup triggered buffer\n");
+> +		return ret;
+> +	}
+> +
+> +	/* set default trigger */
+> +	indio_dev->trig = iio_trigger_get(priv->trig);
+> +
+> +	return devm_iio_device_register(dev, indio_dev);
+> +}
+> +
+
+thanks,
+
+J
