@@ -2,54 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD64E36D164
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 06:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 364ED36D168
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 06:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231552AbhD1Ede (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 00:33:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhD1Edd (ORCPT
+        id S234262AbhD1Ekn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Apr 2021 00:40:43 -0400
+Received: from out28-124.mail.aliyun.com ([115.124.28.124]:60712 "EHLO
+        out28-124.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229437AbhD1Ekm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 00:33:33 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECCD8C061574;
-        Tue, 27 Apr 2021 21:32:48 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lbbsS-008tr3-K1; Wed, 28 Apr 2021 04:32:44 +0000
-Date:   Wed, 28 Apr 2021 04:32:44 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-fsdevel@vger.kernel.org,
-        lkp@lists.01.org, lkp@intel.com
-Subject: Re: [iov_iter]  2418c34937: Initiating_system_reboot
-Message-ID: <YIjlbF/F9Y/5YOzt@zeniv-ca.linux.org.uk>
-References: <20210428023747.GA13086@xsang-OptiPlex-9020>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210428023747.GA13086@xsang-OptiPlex-9020>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+        Wed, 28 Apr 2021 00:40:42 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1873538|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0136063-0.000116433-0.986277;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047188;MF=ren_guo@c-sky.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.K5KZhek_1619584796;
+Received: from 30.225.212.191(mailfrom:ren_guo@c-sky.com fp:SMTPD_---.K5KZhek_1619584796)
+          by smtp.aliyun-inc.com(10.147.41.121);
+          Wed, 28 Apr 2021 12:39:56 +0800
+Content-Type: text/plain;
+        charset=gb2312
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: linux-next: Signed-off-by missing for commit in the csky tree
+From:   Guo Ren <ren_guo@c-sky.com>
+In-Reply-To: <20210421214136.2aa5d34b@canb.auug.org.au>
+Date:   Wed, 28 Apr 2021 12:39:55 +0800
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <2961F7A8-4BB4-4963-8E57-DDD88020CBDC@c-sky.com>
+References: <20210421214136.2aa5d34b@canb.auug.org.au>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 10:37:47AM +0800, kernel test robot wrote:
-> 
-> 
-> Greeting,
-> 
-> FYI, we noticed the following commit (built with gcc-9):
-> 
-> commit: 2418c34937c42a30ef4bccd923ad664a89e1fbd4 ("iov_iter: optimize iov_iter_advance() for iovec and kvec")
-> https://git.kernel.org/cgit/linux/kernel/git/viro/vfs.git untested.iov_iter
-> 
-> 
-> in testcase: boot
-> 
-> on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
-> 
-> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+Thx, I’ll fixup it.
 
-Could you try https://git.kernel.org/cgit/linux/kernel/git/viro/vfs.git for-lkp
-on the same test and see what (if anything) gets spewed into dmesg?
+Best Regards
+  Guo Ren
+
+
+
+> 在 2021年4月21日，下午7:41，Stephen Rothwell <sfr@canb.auug.org.au> 写道：
+> 
+> Hi all,
+> 
+> Commit
+> 
+>  8bfe70e69658 ("csky: fix syscache.c fallthrough warning")
+> 
+> is missing a Signed-off-by from its committer.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
+
