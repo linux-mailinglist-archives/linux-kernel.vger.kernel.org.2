@@ -2,98 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7124536D61E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 13:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EDC136D634
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 13:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbhD1LJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 07:09:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45320 "EHLO
+        id S239220AbhD1LMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 07:12:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239648AbhD1LIz (ORCPT
+        with ESMTP id S238599AbhD1LMM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 07:08:55 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED36C061574;
-        Wed, 28 Apr 2021 04:08:10 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id c3so24720259pfo.3;
-        Wed, 28 Apr 2021 04:08:10 -0700 (PDT)
+        Wed, 28 Apr 2021 07:12:12 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CCD2C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 04:11:26 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id x20so68230894lfu.6
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 04:11:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=sLpoIH+yhyALQFTgQocCci8bsTG3D7jmg/76ZkWjRcY=;
-        b=dpwXpyq3mY3XQ/cbopkDD6jheZvyXHH6oeT2KuE8ukVbHVlj940j0PSiy+9xFf9xsh
-         +NNRap1mP+dfKzOY1wZpB+MXHl14qTGu29zkTdUjG/9YHWH28q50wsevtiSHsRjZorkp
-         TBidwdOjaxRWuGrrBR2WMAHr/hYZRMm4OVYcfrWZfYnhK6qdSLLniHMS7UoT6f1IU1WC
-         EzEFS8iidL21YpS0nUD+WLjHvuXCCQFbUuYtw0PctqOWcZndxuKU604QfncYs5H+ik17
-         F0z3l2U+DwwnQKsqNKCYHe1ZCgd2WqzmA04SkOUAYz7xZR5HkaDsfztOhENb2tbqAoGm
-         9b8g==
+        d=kinvolk.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uyfujupd+nn5QDO9renTFnifqj77qdb+Pu4FnljETRM=;
+        b=gtHUnUjcLgmxwsgWIIOf8S/iDfnzWUGSnw/WqI9y2//8sFp6qgXEM166UhuVsXcx/R
+         qGlFx9kB/9NKu/QNkYaAe2i6SpgZAoxyFQM2GLXntmB5DijUeMqcwhHV07sFAvuHQHIP
+         OFvq2LbO/SqGzD2czTrq8ZGIJxCIEHXVnD3Us=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=sLpoIH+yhyALQFTgQocCci8bsTG3D7jmg/76ZkWjRcY=;
-        b=J9V1vGPHVbYRmUi+52GFCxgGznh7ZnI/kPaHDwgaL3ARZvrO+aDhDbXUaKMwkFFKN9
-         t5L+0gnrhVBwmk1hrWAfJlFuysKQ9tsnE+Pnx6c3rR75oDSTY82TN6251ZfQnBMfUXw6
-         0Qbuv64S/kkc8Bn75M5vwWqeRJifFZgrPat7UKjVI8+r0IaX3yMKMUouVwwitlvcBAIJ
-         /C95Id1DZ6CbQNF2lrln3xC1NyQgz68KJS8DiDWNcFM3X6L8t4PSy0s722quJT0tnphz
-         mY+jsNRc4Rgz8D2CznqU7zN0i1aBbGBv7WmShvt82V9jQ9JDJIfRG0gAg7fkenCN3dnJ
-         BweQ==
-X-Gm-Message-State: AOAM530TzsiLtGc0L+wXj80u5QErXaoQVj6H4CLel1rVVi0kFAY8mUFs
-        aMpLBLnQ0HJHYLjB+oUcQRVZCIuP300=
-X-Google-Smtp-Source: ABdhPJzgUYS5opVQrXuZN/v6IrlJrCS4wl7W8ENluYVVshJoupHTYPqxcKawOAAerM7DT8BRVj3gKg==
-X-Received: by 2002:a63:d942:: with SMTP id e2mr26479270pgj.117.1619608089738;
-        Wed, 28 Apr 2021 04:08:09 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.6])
-        by smtp.googlemail.com with ESMTPSA id z17sm4738423pfe.181.2021.04.28.04.08.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 28 Apr 2021 04:08:09 -0700 (PDT)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: [PATCH] KVM: LAPIC: Accurately guarantee busy wait for timer to expire when using hv_timer
-Date:   Wed, 28 Apr 2021 19:08:02 +0800
-Message-Id: <1619608082-4187-1-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uyfujupd+nn5QDO9renTFnifqj77qdb+Pu4FnljETRM=;
+        b=NP6WuOBc5Yv9gWehMncmZD2A0zACuYjhnxz6rqto8sjLZHdz8ElavEBhsve5t8NbuA
+         opFyP7u9VzElRD+EyXjB5xThuU/HXTGPnLV6IT0rmgsXNNEgXpXbA387wWvyJPULsVnL
+         tc0Kkfxdul2ko54fjJdttBx4AJiOzIQD2QHCBlwhG4LctsUwEnl0y6o176vvTSa+7cC5
+         pyz0FlcxWO5LONmoT7eck5Nsp1rRZ25IU7pXKFqNGPpoctCNpYlG54C1F04B/vJjZ5m7
+         7Wx+SrU7pCH+5681oQqn+QKIHDTY2AXkTDXPF9YOHKmm2MP3h++Bi+ALRwFtNSKUyLVp
+         CjUg==
+X-Gm-Message-State: AOAM532xEObZaURCXpEd923yQucyu6m8hmqZGacdNIH8IXrQm9gp5QoS
+        BaPv/fG238cT+HOv8NRaq83zy7B8KFFiwqIIF/y6Sg==
+X-Google-Smtp-Source: ABdhPJyRqU7x9LfIz6OKejPVBvLcSRnhU++Q8NTEmQA868KtvCUuU4zOr7es0Wue0SowhX2xTymnzaz6O0rKw4WYcfw=
+X-Received: by 2002:ac2:5335:: with SMTP id f21mr20269909lfh.288.1619608284816;
+ Wed, 28 Apr 2021 04:11:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210426180610.2363-1-sargun@sargun.me> <20210426180610.2363-3-sargun@sargun.me>
+ <20210426190229.GB1605795@cisco> <20210426221527.GA30835@ircssh-2.c.rugged-nimbus-611.internal>
+ <20210427134853.GA1746081@cisco> <CALCETrVrfBtQPh=YeDEK4P9+QHQvNxHbn8ZT3fdQNznpSeS5oQ@mail.gmail.com>
+ <20210427170753.GA1786245@cisco> <20210427221028.GA16602@ircssh-2.c.rugged-nimbus-611.internal>
+ <CALCETrX9JnHE9BOhRxCc1bCvEBfbOY8bb2rxeKTsDNxfMruntQ@mail.gmail.com> <20210428002215.GB1786245@cisco>
+In-Reply-To: <20210428002215.GB1786245@cisco>
+From:   Rodrigo Campos <rodrigo@kinvolk.io>
+Date:   Wed, 28 Apr 2021 13:10:49 +0200
+Message-ID: <CACaBj2ZchRGzHpGn5TD2FE=yKWZotVRNZ7M78TmvGfM9BoHF4g@mail.gmail.com>
+Subject: Re: [PATCH RESEND 2/5] seccomp: Add wait_killable semantic to seccomp
+ user notifier
+To:     Tycho Andersen <tycho@tycho.pizza>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Will Drewry <wad@chromium.org>, Alban Crequy <alban@kinvolk.io>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+On Wed, Apr 28, 2021 at 2:22 AM Tycho Andersen <tycho@tycho.pizza> wrote:
+>
+> On Tue, Apr 27, 2021 at 04:19:54PM -0700, Andy Lutomirski wrote:
+> > User notifiers should allow correct emulation.  Right now, it doesn't,
+> > but there is no reason it can't.
+>
+> Thanks for the explanation.
+>
+> Consider fsmount, which has a,
+>
+>         ret = mutex_lock_interruptible(&fc->uapi_mutex);
+>         if (ret < 0)
+>                 goto err_fsfd;
+>
+> If a regular task is interrupted during that wait, it return -EINTR
+> or whatever back to userspace.
+>
+> Suppose that we intercept fsmount. The supervisor decides the mount is
+> OK, does the fsmount, injects the mount fd into the container, and
+> then the tracee receives a signal. At this point, the mount fd is
+> visible inside the container. The supervisor gets a notification about
+> the signal and revokes the mount fd, but there was some time where it
+> was exposed in the container, whereas with the interrupt in the native
+> syscall there was never any exposure.
 
-Commit ee66e453db13d (KVM: lapic: Busy wait for timer to expire when 
-using hv_timer) tries to set ktime->expired_tscdeadline by checking 
-ktime->hv_timer_in_use since lapic timer oneshot/periodic modes which 
-are emulated by vmx preemption timer also get advanced, they leverage 
-the same vmx preemption timer logic with tsc-deadline mode. However, 
-ktime->hv_timer_in_use is cleared before apic_timer_expired() handling, 
-let's delay this clearing in preemption-disabled region.
+IIUC, this is solved by my patch, patch 4 of the series. The
+supervisor should do the addfd with the flag added in that patch
+(SECCOMP_ADDFD_FLAG_SEND) for an atomic "addfd + send".
 
-Fixes: ee66e453db13d (KVM: lapic: Busy wait for timer to expire when using hv_timer)
-Cc: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
----
- arch/x86/kvm/lapic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+That means when using the atomic "addfd+send" what happens is: either
+we add the fd _and_ the added fd value is returned to the syscall or
+the fd is not added at all and the container sees the syscall as
+interrupted. Therefore, the fd is only visible to the container when
+it should.
 
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index 152591f..c0ebef5 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -1913,8 +1913,8 @@ void kvm_lapic_expired_hv_timer(struct kvm_vcpu *vcpu)
- 	if (!apic->lapic_timer.hv_timer_in_use)
- 		goto out;
- 	WARN_ON(rcuwait_active(&vcpu->wait));
--	cancel_hv_timer(apic);
- 	apic_timer_expired(apic, false);
-+	cancel_hv_timer(apic);
- 
- 	if (apic_lvtt_period(apic) && apic->lapic_timer.period) {
- 		advance_periodic_target_expiration(apic);
--- 
-2.7.4
 
+Best,
+Rodrigo
