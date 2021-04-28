@@ -2,167 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38AF536D5C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 12:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A59EB36D5C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 12:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239338AbhD1KZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 06:25:38 -0400
-Received: from wind.enjellic.com ([76.10.64.91]:47592 "EHLO wind.enjellic.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239185AbhD1KZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 06:25:35 -0400
-Received: from wind.enjellic.com (localhost [127.0.0.1])
-        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 13SAOXs9024822;
-        Wed, 28 Apr 2021 05:24:34 -0500
-Received: (from greg@localhost)
-        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 13SAOWS3024821;
-        Wed, 28 Apr 2021 05:24:32 -0500
-Date:   Wed, 28 Apr 2021 05:24:32 -0500
-From:   "Dr. Greg" <greg@enjellic.com>
-To:     Jia Zhang <zhang.jia@linux.alibaba.com>
-Cc:     linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
-Subject: Re: SGX feature extensions patch.
-Message-ID: <20210428102432.GA24783@wind.enjellic.com>
-Reply-To: "Dr. Greg" <greg@enjellic.com>
-References: <20210426094538.GA8264@wind.enjellic.com> <7d8cc81d-79cb-469f-24dd-30905c7e6e0a@linux.alibaba.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S239396AbhD1K0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 06:26:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238295AbhD1K0X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 06:26:23 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDB26C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 03:25:38 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id a4so62468522wrr.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 03:25:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Bwu2rvkvN7gIZgfFitfEHTzbFUX5cjTsDc1ntVZl3eQ=;
+        b=PHZeQvSpD9gY/jZeF+Zw2eXX30t8tvzRaZFemI+co9ssuQJ5VmkKic+in5tGy1voiI
+         +JbG2h+dGoZ/G7jodqkrWRnDvqMHa+gVEgnr4zHczTntfWyOoWVoXaxQcHqXpiK2yXjl
+         bkhPD5asbliuzx3DkFvnuveaTuLwFkNVRijOUe8uTOsvWAizVeIoXmThi2TrC3YVMc7p
+         20iUBDZKOaklWfdjYQI1TquVFSrnj8YFJvZwGlQPSh3rmsqoU0DQGOYUCqKey8oVkujI
+         zDpM/DGNrIlmm0i4MBPcsp16t4/kmCEMcJMHglWv4NzCh/y3+uPg0kqcwq6iidzS3XZ5
+         Yc7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Bwu2rvkvN7gIZgfFitfEHTzbFUX5cjTsDc1ntVZl3eQ=;
+        b=ksNSkWbDF3kFoffloBEOTzHLbvkPMlkRpr71m0xjp5Lf0wReYHfv9tLw1ILAOu7FHq
+         7CSCAcKMvqBAZuxjpZaponWYGziak+AcBgSgbX1s1V7ntBDst349yi4/qGRAqYKULn68
+         DnyPhA+aN0rL+jQ6r4g/HY9Zmd7eWxvTBME62SZmMGLkgYt4n1LGyR0IJaxBrkEpp7MK
+         oRlGzKn8Y94g7Ql9cW5xPt1Nbob0d/JyaoMpVJlu9990R7xVzs0P90GwKiILsCKUXN1Z
+         yfLH2XQzlYsRlxw2eoqa61xuFX29wTJpfugTvN6du87axYuFFfd9GuvawDUekM4ZenaM
+         lrYw==
+X-Gm-Message-State: AOAM533dy6MCe81wWmFhlymimO9hAOqqWBmIzEGfiEJP2ZvL/RFl8y5K
+        WvqU5BtCj+HB1Zy6Tma9UFU=
+X-Google-Smtp-Source: ABdhPJyg7JPa6ZNYGm2DugdINct82FO1jCIP+1ZhYmTKZMahiNC6lNjGXCn7YoYbQE30oSy2QINbiA==
+X-Received: by 2002:a5d:53c9:: with SMTP id a9mr20283167wrw.108.1619605537794;
+        Wed, 28 Apr 2021 03:25:37 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id a9sm3381689wmj.1.2021.04.28.03.25.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 03:25:37 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 12:25:35 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     hch@lst.de, m.szyprowski@samsung.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: DMA mapping fill dma_address to 0
+Message-ID: <YIk4H82yrx+Yzp/U@Red>
+References: <YIkf4yqt14dGPoyr@Red>
+ <6ce3614e-af79-2a36-de83-6cbb4d9fe9a4@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <7d8cc81d-79cb-469f-24dd-30905c7e6e0a@linux.alibaba.com>
-User-Agent: Mutt/1.4i
-X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Wed, 28 Apr 2021 05:24:34 -0500 (CDT)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6ce3614e-af79-2a36-de83-6cbb4d9fe9a4@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 11:07:34AM +0800, Jia Zhang wrote:
+Le Wed, Apr 28, 2021 at 11:06:10AM +0100, Robin Murphy a écrit :
+> On 2021-04-28 09:42, Corentin Labbe wrote:
+> > Hello
+> > 
+> > I work on the crypto offloader driver of cortina/gemini SL3516 SoC.
+> > I test it by filling a LUKS2 partition.
+> > I got a reproductible problem when handling skcipher requests.
+> > I use dma_map_sg() and when iterating other the result, sg_dma_address(sg) return 0.
+> > But sg_dma_len(sg) is still correct (4096 in my case).
+> > 
+> > Below is a simplified view of my code:
+> > nr_sgs = dma_map_sg(ce->dev, areq->src, sg_nents(areq->src), DMA_TO_DEVICE);
+> > (nr_sgs = 1 in my case)
+> > sg = areq->src;
+> > if (!sg_dma_address(sg))
+> > 	FAIL
+> 
+> What is this check supposed to be for in the first place? 0 is a valid 
+> DMA address, because it's also a valid physical address, and I recall 
+> RAM at PA 0 on Hikey 960 flushing out some bugs in the past when we 
+> tried to use 0 for DMA_MAPPING_ERROR. All the Gemini DTs appear to show 
+> RAM starting at PA 0 too, so I'd have to guess that it's simply the case 
+> that your DMA buffer happened to end up using that particular page.
+> 
+> Robin.
+> 
 
-> Hi Dr.Greg,
+Yes, 0 is a valid DMA address.
+I just find it by going further and printing mem_map value and testing it against sg_page() return.
 
-Good morning Jia, I hope this note finds your day going well.
-
-> Thanks for your great job! I have a question about how do you work
-> out psw for non-flc platforms?
->
-> The background is that we (inclavare containers project:
-> https://github.com/alibaba/inclavare-containers)
->
-> also attempt to resolve the conflict between non-flc platform and sgx
-> in-tree driver.
->
-> Our work is available at
-> https://github.com/alibaba/inclavare-containers/tree/master/hack/no-sgx-flc
-
-Thank you, I'm pleased that, as a major SGX user, you see utility in
-the work.
-
-We just finished unit testing of the feature patch against the
-recently released 5.12 kernel and we will be making that available in
-the next day or so.
-
-Please feel free to include our patch in your work or provide a
-reference to it if it facilitates your initiatives.  Our approaches
-are similar but non-FLC platforms will need the cryptographic policy
-controls that we implement in order to get full functionality.
-
-> In addition, I compare the different parts between us for non-flc
-> support part:
->
-> - Use different ioctl cmd to support init-token ioctl with token
-> supplied by caller
->
-> - Use different init-token ioctl structure (w/ vs w/o address parameter
-> in ELRANGE)
-
-We deliberated at significant length on how to approach this problem,
-in the end, using a separate ioctl with its own index number, seemed
-to be the approach that would offer the best path forward with respect
-to those of us developing SGX runtimes.
-
-The separate ioctl call we implemented acts in a manner identical to
-the standard ioctl, if a NULL pointer value is passed as the address
-of the EINITTOKEN block.  Thus the ioctl will work on both FLC and
-non-FLC platforms and can be used exclusively by runtimes that support
-both types of hardware.
-
-A review of the kernel archives will show that I advocated rather
-aggressively for the mainline driver to include the pointer in its
-EINIT ioctl structure and have the in-kernel ioctl ignore that
-pointer.  Unfortunately, the design of the driver was driven by
-politics, and not by technology and the needs of the individuals that
-will be actually using the driver.
-
-> We did the testing on sgx1 machine and found it is required to modify
-> psw. See https://github.com/alibaba/inclavare-containers/blob/master/hack/no-sgx-flc/Linux-SGX-PSW-2.13-Support-SGX1-machine-with-SGX-in-tree-driver.patch
->
-> So we are interested how do you avoid to modify PSW to work out.
-
-By definition, the SGX runtimes will need to be modified in order to
-make all of work for the user community.  I believe the approach that
-we ended up using, with a separate ioctl index, will minimize the
-changes that are needed and allow the runtimes to work on both FLC and
-non-FLC hardware with minimal changes.
-
-I'm quite familiar with the Intel SDK/PSW, since we did a complete
-C-only re-implementation of the PSW, however, I don't have a platform
-right now that will build the Intel stack.  I'm assuming you do, so if
-you are interested we could collaborate on making the necessary
-changes.
-
-The basic strategy would be as follows:
-
-Modify the sgx_enclave_init_in_kernel structure definition in the
-following file:
-
-psw/urts/linux/isgx.h
-
-To include a __u64 token structure element.
-
-Modify the following function
-
-psw/enclave_common/sgx_common_enclave.cpp:enclave_initialize()
-
-So that the terminal 'else' clause that ends up handling the
-SGX_DRIVER_IN_KERNEL path initializes both pointer values to NULL.
-
-I would lift the code in the first 'if' clause, that loads the launch
-token for the out-of-tree driver, into a separate function to avoid
-code replication.
-
-In the SGX_DRIVER_IN_KERNEL path use the call that you implemented in
-your initial PSW modification, to check on the status of FLC support,
-to gate calling the token generation code on a non-FLC platform and
-set the token value of the sgx_enclave_init_in_kernel structure to the
-address of the token block that the function returns.
-
-That should produce a PSW that initializes enclaves on both non-FLC
-and FLC platforms.
-
-If you are interested I can work up a basic outline patch that you can
-work from if you are interested.
-
-Obviously, for completeness, the PSW should probe for the existence of
-the new ioctl if the in-kernel driver is detected, but that type of
-functionality can be added after the basics are working.
-
-> Cheers,
-> Jia
-
-Let me know your thoughts and we will go from there.
-
-Best wishes for a productive remainder of the week.
-
-Dr. Greg
-
-As always,
-Dr. Greg Wettstein, Ph.D, Worker      Autonomously self-defensive
-Enjellic Systems Development, LLC     IOT platforms and edge devices.
-4206 N. 19th Ave.
-Fargo, ND  58102
-PH: 701-281-1686                      EMAIL: greg@enjellic.com
-------------------------------------------------------------------------------
-"Man, despite his artistic pretensions, his sophistication and many
- accomplishments, owes the fact of his existence to a six-inch layer of
- topsoil and the fact that it rains."
-                                -- Anonymous writer on perspective.
-                                   GAUSSIAN quote.
+So my original problem was not related to this.
+Sorry for the noise.
+Thanks
