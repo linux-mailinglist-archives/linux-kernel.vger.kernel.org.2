@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2803F36DFC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 21:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65FE736DFB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 21:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232554AbhD1TjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 15:39:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46078 "EHLO
+        id S234417AbhD1TjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 15:39:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241819AbhD1Ti6 (ORCPT
+        with ESMTP id S241864AbhD1Ti7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 15:38:58 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ED06C06138A
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 12:38:05 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id m10-20020a170902f20ab02900ed7e32ff42so854327plc.19
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 12:38:05 -0700 (PDT)
+        Wed, 28 Apr 2021 15:38:59 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC7AC06138C
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 12:38:06 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id z19-20020a63e1130000b02901fcdcf0c5a3so21975086pgh.19
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 12:38:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=3EmL6xt5jVjqc/fFRGG9Bp/HY5j+2f9o1zD7J8DnnPw=;
-        b=qojwyUnMOEKFrRAcoKNQv8n9HI0z+aYcwAplArllOvARz6euC5nXNvMP3+XTjqrcuq
-         27iyRNgjq7qlyk8BgfqzP+q/bPr4jr7bPbIFOboYm2DK2DViCz9IgZO02YQcBAjmgel7
-         LfkZytiSEZgfQZE2lG/0d3YqOKenqkidls0+i+KeEhqqrAkiHzY1FGQib/wb6bMGhpLC
-         ggG0+bb0D3uy/d/sAGEhmuM6kW/F/n5phGtR6VG9kFmXv+RTV8Z/lXrev6QZXNEaeuuF
-         FSyn+4mmB/ug/UJXVXOt2t+AUXRjC8OQmqDiBEC30XkjkcsO+gdvbaD1+CHgH+8vqOGS
-         vn2g==
+        bh=y5TtNvQVcJDv9Z7T1noOFyA3ZEWB7AcnNOctxeDgCSw=;
+        b=Ay+VJZ4ahiyvX7cnAJy9QBvCOp0B2pagEvWI8fx2RuBj7dTYB362WFaPfyyrx5f7Kh
+         QMhmUSVQBU7KLTD2lIjkSGO+3Fb5HkHETqAb3FNjeCbtU8OquS7XkNpgAWzqMXoV7arY
+         DpjTkjTGSi3rb8BI1p4nYnYrBllrUtQwiU+m7QHSRy7c2f/COKdsJ/7GS19xDtEpJLI+
+         CWuN8iRf1IvqIPdafAVVTpT398O89OMISnTnJS86FZQZQAfSakOreMxb29iRZRFrkMuZ
+         zzLt0FP3ukRcKzJGBQydpkYQWFVuyRdYRbx3vSxcCGeZpK7CkKkNF5uopTiDM5/dbwMO
+         ISUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=3EmL6xt5jVjqc/fFRGG9Bp/HY5j+2f9o1zD7J8DnnPw=;
-        b=GSp1Su49djGmm0yPhr1GQmxG7lrxAUHg7wlUudh7cycIYGhNmzqHa+bVWWjWl13mVA
-         yJNYK+wquHYIU7PPfCPNF2ZjaUYINoTqkKBXdsYzqq5mOFK2NOaWpkia/0HxctmBwejE
-         l7SmyqkBlih6QEUk57RERNyXeaJ98DEVCuvMqB/iInnfC9tqGuULWXxKUReD9jNcacwp
-         u6UXEFj8JEVPq5zm9IMDfA2vRFtmihyXmYXfN2Wh1WDROYwvSxpCWUbnSkZH2kvMmmiF
-         KpJ4b02dKgBu1TFUTqo26rNDQHJmjZ2B3IqLGWN6U/q4SVO4OGO5EiJxCrIihoTVymSK
-         SA0w==
-X-Gm-Message-State: AOAM530THFR9VS5rdSP+JFtbpyGH2r/HoSbI3/LtHAwHx8lApDDLL6u7
-        vn8Rd9NIFZBBJszj/HzCwBMwF9p3YTrsJg==
-X-Google-Smtp-Source: ABdhPJwxcktVdD/XvgMx0K4EkvWN9+2vn0sfN6x1/yc8vpWGv23+caxbU3DuBq9wNvwPZ95Khs2Y0ysoEKh68w==
+        bh=y5TtNvQVcJDv9Z7T1noOFyA3ZEWB7AcnNOctxeDgCSw=;
+        b=nFl8cgUls0J+hEL5ZlWpIV22zSG3CL3rrjVQ1zKnwKpWB6eT6BFnbBSnz/BTpfep6u
+         4bLFkGA5p38xgMrYwPMkGTQvURIjBn4zytE+rZElsV+pzliIEP+wdBjg+mPHtAjnqQ6N
+         /vOuNV8ilofJnSubnBBiIrQAP93kDJWa3jC340uejA4z1+WhqfzTsatN+rQE7ny/18/y
+         a4e0/wkuvspmnqxfyp40j50IwC0q3pysFFhsEfUkhIGgBBPqOhq303gRdRn4tJMxYrzd
+         ckTYfVkgt0xWySmZ1LodnH9xr5f/c1B/shGjSCCstUTty9sq9Yb2az+HaHoTFqdUm/nk
+         sAbQ==
+X-Gm-Message-State: AOAM533xywV6cJKHuJztv7sTSgxltt3Zk88sEe05/50XEjecL4hPFUtt
+        iGbaGe376a2pqjZUpxgUn0QXaROvONFrJg==
+X-Google-Smtp-Source: ABdhPJw+Qnh815VDtDsA5CtP6S9BYBw6Zjzt/YgEpIlEYD2r+/tUmKiBWwxygl6tYBp6dUgQx+PJdyhNss9n2g==
 X-Received: from ricarkol2.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:62fe])
- (user=ricarkol job=sendgmr) by 2002:a17:902:8d8b:b029:ed:64bb:db81 with SMTP
- id v11-20020a1709028d8bb02900ed64bbdb81mr8252681plo.53.1619638684396; Wed, 28
- Apr 2021 12:38:04 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 12:37:51 -0700
+ (user=ricarkol job=sendgmr) by 2002:a17:90a:a60b:: with SMTP id
+ c11mr34343701pjq.125.1619638686001; Wed, 28 Apr 2021 12:38:06 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 12:37:52 -0700
 In-Reply-To: <20210428193756.2110517-1-ricarkol@google.com>
-Message-Id: <20210428193756.2110517-2-ricarkol@google.com>
+Message-Id: <20210428193756.2110517-3-ricarkol@google.com>
 Mime-Version: 1.0
 References: <20210428193756.2110517-1-ricarkol@google.com>
 X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-Subject: [PATCH v2 1/6] KVM: selftests: Add kernel headers sync check
+Subject: [PATCH v2 2/6] tools headers x86: Update bitsperlong.h in tools
 From:   Ricardo Koller <ricarkol@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     kvm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
@@ -77,121 +76,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a script that checks if header files under /tools match their
-original version in the kernel. Perform the check at the end of the
-make, so warnings are shown after all tests are built.  Note that
-the build is _not_ aborted if any diff check fails.
+Update uapi/asm-generic/bitsperlong.h with the latest version in the
+kernel. Here is how KVM selftests is currently including it:
 
-The list of header files to check was obtained from the union of the
-output of these (at tools/testing/selftests/kvm):
-
-  CFLAGS="-H" make ARCH=x86_64 2>&1 | grep '.h$' | grep 'tools'
-  CFLAGS="-H" make ARCH=arm64 CC=aarch64-linux-gnu-gcc-10 2>&1 | grep '.h$' | grep 'tools'
-
-and then by manually removing the header files that were updated on the
-tools/ side but not on the kernel side. There is no point in checking
-for these as their changes will not be synced back to the kernel. Here
-are the removed headers and the first commit that made them drift apart
-from their original copies:
-
-  tools/include/linux/kernel.h
-  d0761e37fe3 perf tools: Uninline scnprintf() and vscnprint()
-
-  tools/include/linux/list.h
-  5602ea09c19 tools include: Add compiler.h to list.h
-
-  tools/include/linux/poison.h
-  6ae8eefc6c8 tools include: Do not use poison with C++
-
-  tools/include/linux/types.h
-  70ba6b8f975 tools include: add __aligned_u64 to types.h
-
-  tools/include/asm-generic/bitsperlong.h
-  2a00f026a15 tools: Fix up BITS_PER_LONG setting
-
-Based on tools/perf/check-headers.sh.
+  tools/testing/selftests/kvm/lib/elf.c:#include <linux/elf.h>
+  . ../../../../usr/include/linux/elf.h
+  .. ../../../../tools/include/linux/types.h
+  ... ../../../../usr/include/asm/types.h
+  .... ../../../../usr/include/asm-generic/types.h
+  ..... ../../../../usr/include/asm-generic/int-ll64.h
+  ...... ../../../../usr/include/asm/bitsperlong.h
+  ....... ../../../../tools/include/asm-generic/bitsperlong.h
+  ........ ../../../../tools/include/uapi/asm-generic/bitsperlong.h
 
 Signed-off-by: Ricardo Koller <ricarkol@google.com>
 ---
- tools/testing/selftests/kvm/Makefile         |  2 +
- tools/testing/selftests/kvm/check-headers.sh | 55 ++++++++++++++++++++
- 2 files changed, 57 insertions(+)
- create mode 100755 tools/testing/selftests/kvm/check-headers.sh
+ tools/include/uapi/asm-generic/bitsperlong.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index ea5c42841307..69dc4f5e9ee3 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -147,6 +147,8 @@ $(OUTPUT)/libkvm.a: $(LIBKVM_OBJS)
+diff --git a/tools/include/uapi/asm-generic/bitsperlong.h b/tools/include/uapi/asm-generic/bitsperlong.h
+index 23e6c416b85f..693d9a40eb7b 100644
+--- a/tools/include/uapi/asm-generic/bitsperlong.h
++++ b/tools/include/uapi/asm-generic/bitsperlong.h
+@@ -1,3 +1,4 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+ #ifndef _UAPI__ASM_GENERIC_BITS_PER_LONG
+ #define _UAPI__ASM_GENERIC_BITS_PER_LONG
  
- x := $(shell mkdir -p $(sort $(dir $(TEST_GEN_PROGS))))
- all: $(STATIC_LIBS)
-+	@./check-headers.sh
-+
- $(TEST_GEN_PROGS): $(STATIC_LIBS)
- 
- cscope: include_paths = $(LINUX_TOOL_INCLUDE) $(LINUX_HDR_PATH) include lib ..
-diff --git a/tools/testing/selftests/kvm/check-headers.sh b/tools/testing/selftests/kvm/check-headers.sh
-new file mode 100755
-index 000000000000..c21a69b52bcd
---- /dev/null
-+++ b/tools/testing/selftests/kvm/check-headers.sh
-@@ -0,0 +1,55 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Adapted from tools/perf/check-headers.sh
-+
-+FILES='
-+arch/x86/include/asm/msr-index.h
-+include/linux/bits.h
-+include/linux/const.h
-+include/uapi/asm-generic/bitsperlong.h
-+include/uapi/linux/const.h
-+include/vdso/bits.h
-+include/vdso/const.h
-+'
-+
-+check_2 () {
-+  file1=$1
-+  file2=$2
-+
-+  shift
-+  shift
-+
-+  cmd="diff $* $file1 $file2 > /dev/null"
-+
-+  test -f $file2 && {
-+    eval $cmd || {
-+      echo "Warning: Kernel header at '$file1' differs from latest version at '$file2'" >&2
-+      echo diff -u $file1 $file2
-+    }
-+  }
-+}
-+
-+check () {
-+  file=$1
-+
-+  shift
-+
-+  check_2 tools/$file $file $*
-+}
-+
-+# Check if we are at the right place (we have the kernel headers)
-+# (tools/testing/selftests/kvm/../../../../include)
-+test -d ../../../../include || exit 0
-+
-+cd ../../../..
-+
-+# simple diff check
-+for i in $FILES; do
-+  check $i -B
-+done
-+
-+# diff with extra ignore lines
-+check include/linux/build_bug.h       '-I "^#\(ifndef\|endif\)\( \/\/\)* static_assert$"'
-+
-+cd tools/testing/selftests/kvm
 -- 
 2.31.1.498.g6c1eba8ee3d-goog
 
