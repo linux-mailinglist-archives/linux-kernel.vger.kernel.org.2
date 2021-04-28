@@ -2,117 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5494836CFF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 02:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFDB536CFF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 02:23:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238569AbhD1AWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 20:22:03 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:51429 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236026AbhD1AWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 20:22:01 -0400
-Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 13S0L0Hw954819
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Tue, 27 Apr 2021 17:21:02 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 13S0L0Hw954819
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021032801; t=1619569267;
-        bh=ZRfME0xaa5h3nNKOtMFXV4tw4BZwapnF65y+JWZ2Ar4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=e4jlhbwIHXh2+1UhWXBiiI4ofmbh95WWUx/gnD3kNnqysKlGPpEfYz3K67bD6IW60
-         CkyvV9SSzWAlZX9jzx4iwNIJ4XYI3Wn9bkiQMzkB6Wv4VXp/+U4fOW69Rplb345w41
-         vwgF155AwLS9HiBPihRQKjx6MdNLUQQRcuM/Xn3cBkgOT05mEGifSeqVp/35qcklE8
-         4VrZv6ifhvxJX4+KK6C3G8sCnlXIkt2ueXY6ntE1Bb12Ubj3ajZ2b/QxtCp6vjiZD9
-         1aeq2FZQddkXHJ7XEfAkRZQ9vrHW8EpyivFmscmBDWJx3eO2sJGyBRpLpRJSr2Sxv7
-         xicGw9GMKp/7w==
-Subject: Re: pt_regs->ax == -ENOSYS
+        id S238612AbhD1AXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 20:23:43 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:54519 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235889AbhD1AXR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 20:23:17 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 5AFD358096B;
+        Tue, 27 Apr 2021 20:22:19 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Tue, 27 Apr 2021 20:22:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=bPTuTe7blkVLywwWCJqNsQlHWvk
+        gDsPComF+4qCOu3Y=; b=8GWExJPszyZ8s4DyPGKY/UyVc6bfmj9RPjmG3uRrBhP
+        qAx+PDRD092TF+8bcwDCJ4vuMh17M4gkza25rTXXvUHvm6wh9nGvf90ZlA2NWz4n
+        tIH1kLOvpd1p3jA/4w2RtEZ8TVETQYWSNsjoDcHwi/VMcbcGa6Gh+0uvQ/q8FtvB
+        WmzMHb2u5Id7eXtjW0qexxNb1Qu9loap1cerF+L+0JXxAzBr5m6HRDZZMO/mpnLs
+        3rf9fB8+mNK0uuJjsSnt9zSS4nUd8P6LvoYoADWxuRjDz/Q2MHUKXf4T7wRUFAyH
+        qfI+5pqsbz3KLkZglobOMEGel/Eo3UmH3/iDMXPxFRQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=bPTuTe
+        7blkVLywwWCJqNsQlHWvkgDsPComF+4qCOu3Y=; b=tVR8T28R0rAHwIVdWjb08u
+        HHkuDl7o0lArL1B72Xsq/Fq96Om07a1VudTh8SDMoFmEb9p08fCnzCB37nS1NbMg
+        QX1rXbCH9lBsInT/Nsp51SFMHh8Hy7Jwx2qfcVD8yJTlA0xdjIzsgzDEEdblI410
+        F8x3eDYP+yNy3HaiF1uIonpsB129FK9/Xc3W7y6ilfMYxZi55Kih6WpjET3MgxBX
+        yugXoiVpmSNCuxCzIhLODHjxqnNhVXgFnMJqJM+QgFy/XTXOCBSz875JtJrR/7th
+        U4eT8RccSSEveYv1JeslalftaxPBcDulzANWMCwNQZpORmeQeI5/CKZxGHOa7tbg
+        ==
+X-ME-Sender: <xms:uqqIYJbTlm_AK0sYc6Td0NVo4ibBmN7xsmHbNs2letPPFkla00aZTw>
+    <xme:uqqIYAb3jm-SY0aefqj6OJm-hGXz7ll5bH5BFz82VPtOTK6z0oAQOT1QRogS5v9YR
+    eDyltm6BWUjPYBniqU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddvuddgfedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigthhho
+    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
+    htthgvrhhnpeegkeefjeegkedtjefgfeduleekueetjeeghffhuefgffefleehgeeifedv
+    gfethfenucfkphepudejfedrfeekrdduudejrdektdenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehthigthhhosehthigthhhordhpihiiiigr
+X-ME-Proxy: <xmx:uqqIYL_pttZNVb5IViQGnbatbCt7kXziz0gIR0SSlC4MLf-5Lfl_FA>
+    <xmx:uqqIYHqM2iSuKTbibryfLpOPlnCfjTr1HS5LRBNM9PBYyZg72Dcu5Q>
+    <xmx:uqqIYEow_5Ol7L_uV7zmu4-xyQS-53j5QfCKmNyd1V_KFcdTYCEoZg>
+    <xmx:u6qIYAfAf7SaeoHrFH8z-DxJiQZBGZng2MOA9XMkL4ME8oCSM4I-uw>
+Received: from cisco (unknown [173.38.117.80])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Tue, 27 Apr 2021 20:22:17 -0400 (EDT)
+Date:   Tue, 27 Apr 2021 18:22:15 -0600
+From:   Tycho Andersen <tycho@tycho.pizza>
 To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
+Cc:     Sargun Dhillon <sargun@sargun.me>,
         Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>
-References: <f0240e15-223a-7600-4494-7a0a75155bdb@zytor.com>
- <F9F5E9D4-C1EE-455A-A6B1-4DF9D349BBAA@amacapital.net>
- <06a5e088-b0e6-c65e-73e6-edc740aa4256@zytor.com>
- <CALCETrW7Vu5ZU-Lv4RRG5DSGxMBJmDMqpvP7kqO16DwajproBQ@mail.gmail.com>
- <3626eea3-524e-4dbd-78dd-9ade5a346a08@zytor.com>
- <CALCETrWzL=jgnWd+6YuBo02GG8vTvsG22sXGaUQCc37vwQ6HdA@mail.gmail.com>
-From:   "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <3a502aae-4124-5cb2-1dac-bc18b8158fbe@zytor.com>
-Date:   Tue, 27 Apr 2021 17:20:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Rodrigo Campos <rodrigo@kinvolk.io>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Mauricio =?iso-8859-1?Q?V=E1squez?= Bernal 
+        <mauricio@kinvolk.io>, Giuseppe Scrivano <gscrivan@redhat.com>,
+        Will Drewry <wad@chromium.org>, Alban Crequy <alban@kinvolk.io>
+Subject: Re: [PATCH RESEND 2/5] seccomp: Add wait_killable semantic to
+ seccomp user notifier
+Message-ID: <20210428002215.GB1786245@cisco>
+References: <20210426180610.2363-1-sargun@sargun.me>
+ <20210426180610.2363-3-sargun@sargun.me>
+ <20210426190229.GB1605795@cisco>
+ <20210426221527.GA30835@ircssh-2.c.rugged-nimbus-611.internal>
+ <20210427134853.GA1746081@cisco>
+ <CALCETrVrfBtQPh=YeDEK4P9+QHQvNxHbn8ZT3fdQNznpSeS5oQ@mail.gmail.com>
+ <20210427170753.GA1786245@cisco>
+ <20210427221028.GA16602@ircssh-2.c.rugged-nimbus-611.internal>
+ <CALCETrX9JnHE9BOhRxCc1bCvEBfbOY8bb2rxeKTsDNxfMruntQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CALCETrWzL=jgnWd+6YuBo02GG8vTvsG22sXGaUQCc37vwQ6HdA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrX9JnHE9BOhRxCc1bCvEBfbOY8bb2rxeKTsDNxfMruntQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/27/21 5:11 PM, Andy Lutomirski wrote:
-> On Tue, Apr 27, 2021 at 5:05 PM H. Peter Anvin <hpa@zytor.com> wrote:
->>
->> On 4/27/21 4:23 PM, Andy Lutomirski wrote:
->>>
->>> I much prefer the model of saying that the bits that make sense for
->>> the syscall type (all 64 for 64-bit SYSCALL and the low 32 for
->>> everything else) are all valid.  This way there are no weird reserved
->>> bits, no weird ptrace() interactions, etc.  I'm a tiny bit concerned
->>> that this would result in a backwards compatibility issue, but not
->>> very.  This would involve changing syscall_get_nr(), but that doesn't
->>> seem so bad.  The biggest problem is that seccomp hardcoded syscall
->>> nrs to 32 bit.
->>>
->>> An alternative would be to declare that we always truncate to 32 bits,
->>> except that 64-bit SYSCALL with high bits set is an error and results
->>> in ENOSYS. The ptrace interaction there is potentially nasty.
->>>
->>> Basically, all choices here kind of suck, and I haven't done a real
->>> analysis of all the issues...
->>>
->>
->> OK, I really don't understand this. The *current* way of doing it causes
->> a bunch of ugly corner conditions, including in ptrace, which this would
->> get rid of. It isn't any different than passing any other argument which
->> is an int -- in fact we have this whole machinery to deal with that subcase.
->>
+On Tue, Apr 27, 2021 at 04:19:54PM -0700, Andy Lutomirski wrote:
+> On Tue, Apr 27, 2021 at 3:10 PM Sargun Dhillon <sargun@sargun.me> wrote:
+> >
+> > On Tue, Apr 27, 2021 at 11:07:53AM -0600, Tycho Andersen wrote:
+> > > On Tue, Apr 27, 2021 at 09:23:42AM -0700, Andy Lutomirski wrote:
+> > > > On Tue, Apr 27, 2021 at 6:48 AM Tycho Andersen <tycho@tycho.pizza> wrote:
+> > > > >
+> > > > > On Mon, Apr 26, 2021 at 10:15:28PM +0000, Sargun Dhillon wrote:
+> > > >
+> > > > ISTM the current behavior is severely broken, and the new behavior
+> > > > isn't *that* much better since it simply ignores signals and can't
+> > > > emulate -EINTR (or all the various restart modes, sigh).  Surely the
+> > > > right behavior is to have the seccomped process notice that it got a
+> > > > signal and inform the monitor of that fact so that the monitor can
+> > > > take appropriate action.
+> > >
+> > > This doesn't help your case (2) though, since the IO could be done
+> > > before the supervisor gets the notification.
 > 
-> Let's suppose we decide to truncate the syscall nr.  What would the
-> actual semantics be?  Would ptrace see the truncated value in orig_ax?
->   How about syscall user dispatch?  What happens if ptrace writes a
-> value with high bits set to orig_ax?  Do we truncate it again?  Or do
-> we say that ptrace *can't* write too large a value?
+> Tycho, I disagree.  Here's how native syscalls work:
 > 
-> For better for worse, RAX is 64 bits, orig_ax is a 64-bit field, and
-> it currently has nonsensical semantics.  Redefining orig_ax as a
-> 32-bit field is surely possible, but doing so cleanly is not
-> necessarily any easier than any other approach.  If it weren't for
-> seccomp, I would say that the obviously correct answer is to just
-> treat it everywhere as a 64-bit number.
+> 1. Entry work is done and the syscall hander does whatever it does at
+> the beginning of the function.  This is entirely non-interruptible.
 > 
+> 2. The syscall handler decides it wants to wait, interruptibly,
+> killably or otherwise.
+> 
+> 3. It gets signaled.  It takes appropriate action.  Appropriate action
+> does *not* mean -EINTR.  It means that something that is correct *for
+> that syscall* happens.  For nanosleep(), this involves the restart
+> block (and I don't think we need to support the restart block).  For
+> accept(), it mostly seems to mean that the syscall completes as usual.
+> For write(2), it means that, depending on file type and whether any IO
+> has occured, either -EINTR is returned and no IO happens, or fewer
+> bytes than requested are transferred, or the syscall completes.  (Or,
+> if it's a KILL, the process dies early and partial IO is ignored.)
+> For some syscalls (some AF_UNIX writes, for example, or ptrace()), the
+> syscall indeed gets interrupted, but it uses one of the -ERESTART
+> mecahnisms.
+> 
+> User notifiers should allow correct emulation.  Right now, it doesn't,
+> but there is no reason it can't.
 
-We *used* to truncate the system call number; that was unsigned. It 
-causes massive headache to ptrace if a 32-bit ptrace wants to write -1, 
-which is a bit hacky.
+Thanks for the explanation.
 
-I would personally like to see orig_ax to be the register passed in and 
-for the truncation to happen by syscall_get_nr().
+Consider fsmount, which has a,
 
-I also note that kernel/seccomp.c and the tracing infrastructure all 
-expect a signed int as the system call number. Yes, orig_ax is a 64-bit 
-field, but so are the other register fields which doesn't necessarily 
-directly reflect the value of an argument -- like, say, %rdi in the case 
-of sys_write - it is an int argument so it gets sign extended; this is 
-*not* reflected in ptrace.
+        ret = mutex_lock_interruptible(&fc->uapi_mutex);
+        if (ret < 0)
+                goto err_fsfd;
 
-	-hpa
+If a regular task is interrupted during that wait, it return -EINTR
+or whatever back to userspace.
+
+Suppose that we intercept fsmount. The supervisor decides the mount is
+OK, does the fsmount, injects the mount fd into the container, and
+then the tracee receives a signal. At this point, the mount fd is
+visible inside the container. The supervisor gets a notification about
+the signal and revokes the mount fd, but there was some time where it
+was exposed in the container, whereas with the interrupt in the native
+syscall there was never any exposure.
+
+How does the supervisor correctly emulate this syscall? Maybe this
+doesn't matter and this is just "completes as usual"? But then
+handling signals is just a latency issue, not a correctness one. Or
+most likely I'm misunderstanding something else :)
+
+Tycho
