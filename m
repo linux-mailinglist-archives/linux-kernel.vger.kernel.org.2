@@ -2,89 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8EA36D41B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3889936D41E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237741AbhD1InF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 04:43:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237685AbhD1InA (ORCPT
+        id S237677AbhD1Inu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 04:43:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35784 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237110AbhD1Int (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 04:43:00 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F68DC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 01:42:14 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id q9so7957435wrs.6
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 01:42:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=R50Avg3KJsdo4BeRwGLPiE4UlIIB3LgXMqGrn5lll8k=;
-        b=ETU7dwygJgj5eDXnQ6pfi8iUFUTNPKNdnHUTtW+jULXAx/Vdo49mFXvIn2v2R27hXv
-         iVliB+NYWvwxC1riBHhTYfZGSQH5pFCt0sDbhBevXrXj1qMygABOrewfJeH3HJmKjITx
-         kr6IWY90hpyzQJKzOWVN+mWmrAsdU6U2clfBH944wiv4iI26p71EPmfladdeU5xSOHAf
-         w9bImLnUiI4uk8bn6id3EkJRvEXYNGNz/i6zUJTnLQSRn/To+XmsWNttfrmwksHbczAr
-         Ka6AO646FVNH74yu8brS8CPnOwmEVudbsFVfHVQ6KjhBd+hnN3Y5IA5rJsrc78PzGdmw
-         13Yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=R50Avg3KJsdo4BeRwGLPiE4UlIIB3LgXMqGrn5lll8k=;
-        b=n7pITc9JiQSuLczpVRtQf6stcRz/piKZ8Mt3YXKiwL6RdpqA8kw94FFbS0N2sEM0RH
-         qQLjQGArQ2tu5Pln+QeNuWKHaqUl+Gm6luAEs8CwchDsY8l2Qe4k4njJu9rIT3XQ9JrY
-         C5VjRTk1h0NmVUo+muFfDMP5i7qGDeafRd22yLMiH4D8M//neKVY6zvUNpXTROg4I8tS
-         E5lxt6uPZu9qQJby4gObblACkYsIOOnHFqXJl3bgxvx8qnJJT8s7qamQovVGap0FkSOV
-         LgkgAOLwGKQAxAIoia5sLmp/Da3mrz4/ftxanJWVpo6FxcPilk2EWvzOFYLA6A2yjbyL
-         Z33w==
-X-Gm-Message-State: AOAM5323vjf8HniGu7NzL1QXvChKkFmO/peCjHrF7YrULCF/p8yMsHFA
-        rDj5Fcco5NVnDx9RfXxmVjh2MgKZcLM=
-X-Google-Smtp-Source: ABdhPJxyMuEQ/b0cIHA6rqLYR8WTArZrojG0HcGnlGJDBGromikyk+lksY1h4wbGUdDs9xgikh0eWw==
-X-Received: by 2002:adf:efca:: with SMTP id i10mr34201311wrp.316.1619599333415;
-        Wed, 28 Apr 2021 01:42:13 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id q7sm7313479wrr.62.2021.04.28.01.42.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 01:42:13 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 10:42:11 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
-        iommu@lists.linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: DMA mapping fill dma_address to 0
-Message-ID: <YIkf4yqt14dGPoyr@Red>
+        Wed, 28 Apr 2021 04:43:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619599384;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1W52g62U8eu7kNC+tsNnm2qSHOwqXQwpPJN3IreWZiE=;
+        b=cwi67XmjvwxkEk4XMIok8DS5StW6CphISuv2vS3m+0VaXGIXg9H0wEgSjeOPLY3NyGurnB
+        xV58E4rzVSbVELwHghBLP6qUSpa+nTmzRyoSIJDKIpwKnsEL8IXswV3/ni8cJqeoAhYGIN
+        PYPjhETr8Pn6g373Z3kd4fT8oHF7Mpo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-408-hAMRtaRlN_isfdaq7ctq8w-1; Wed, 28 Apr 2021 04:43:02 -0400
+X-MC-Unique: hAMRtaRlN_isfdaq7ctq8w-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 09BF710054F6;
+        Wed, 28 Apr 2021 08:43:01 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-13-52.pek2.redhat.com [10.72.13.52])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 87E205F9C5;
+        Wed, 28 Apr 2021 08:42:55 +0000 (UTC)
+Subject: Re: [PATCH 2/2] vDPA/ifcvf: implement doorbell mapping for ifcvf
+To:     Zhu Lingshan <lingshan.zhu@intel.com>, mst@redhat.com
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210428082133.6766-1-lingshan.zhu@intel.com>
+ <20210428082133.6766-3-lingshan.zhu@intel.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <f6d9a424-9025-3eb5-1cb4-0ff22f7bec63@redhat.com>
+Date:   Wed, 28 Apr 2021 16:42:53 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20210428082133.6766-3-lingshan.zhu@intel.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
 
-I work on the crypto offloader driver of cortina/gemini SL3516 SoC.
-I test it by filling a LUKS2 partition.
-I got a reproductible problem when handling skcipher requests.
-I use dma_map_sg() and when iterating other the result, sg_dma_address(sg) return 0.
-But sg_dma_len(sg) is still correct (4096 in my case).
+ÔÚ 2021/4/28 ÏÂÎç4:21, Zhu Lingshan Ð´µÀ:
+> This commit implements doorbell mapping feature for ifcvf.
+> This feature maps the notify page to userspace, to eliminate
+> vmexit when kick a vq.
+>
+> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
+> ---
+>   drivers/vdpa/ifcvf/ifcvf_main.c | 18 ++++++++++++++++++
+>   1 file changed, 18 insertions(+)
+>
+> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
+> index e48e6b74fe2e..afcb71bc0f51 100644
+> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
+> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
+> @@ -413,6 +413,23 @@ static int ifcvf_vdpa_get_vq_irq(struct vdpa_device *vdpa_dev,
+>   	return vf->vring[qid].irq;
+>   }
+>   
+> +static struct vdpa_notification_area ifcvf_get_vq_notification(struct vdpa_device *vdpa_dev,
+> +							       u16 idx)
+> +{
+> +	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
+> +	struct vdpa_notification_area area;
+> +
+> +	if (vf->notify_pa % PAGE_SIZE) {
+> +		area.addr = 0;
+> +		area.size = 0;
 
-Below is a simplified view of my code:
-nr_sgs = dma_map_sg(ce->dev, areq->src, sg_nents(areq->src), DMA_TO_DEVICE);
-(nr_sgs = 1 in my case)
-sg = areq->src;
-if (!sg_dma_address(sg))
-	FAIL
 
-I have digged to find what do dma_map_sg() and I have added some debug.
-sg_page(sg) return c7efb000 for example so sg_page() works.
-But it seems the problem is that page_to_phys(sg_page(sg)) return 0.
+We don't need this since:
 
-This problem does not appear immediatly, luksOpen and subsequent fsck always work.
-But it appears fast after, when mouting or rsync files in it.
+1) there's a check in the vhost vDPA
+2) device is unaware of the bound driver, non page aligned doorbell 
+doesn't necessarily meant it can be used
 
-I have added CONFIG_DEBUG_SG, CONFIG_DMA_API_DEBUG, CONFIG_DMA_API_DEBUG_SG but they didnt bringed any more hints.
-Only "DMA-API: cacheline tracking ENOMEM, dma-debug disabled" appears but always with some "time" between my problem and its display.
-So I am not sure it is related.
+Let's leave those polices to the driver.
 
-Regards
+Thanks
+
+
+> +	} else {
+> +		area.addr = vf->notify_pa;
+> +		area.size = PAGE_SIZE;
+> +	}
+> +
+> +	return area;
+> +}
+> +
+>   /*
+>    * IFCVF currently does't have on-chip IOMMU, so not
+>    * implemented set_map()/dma_map()/dma_unmap()
+> @@ -440,6 +457,7 @@ static const struct vdpa_config_ops ifc_vdpa_ops = {
+>   	.get_config	= ifcvf_vdpa_get_config,
+>   	.set_config	= ifcvf_vdpa_set_config,
+>   	.set_config_cb  = ifcvf_vdpa_set_config_cb,
+> +	.get_vq_notification = ifcvf_get_vq_notification,
+>   };
+>   
+>   static int ifcvf_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+
