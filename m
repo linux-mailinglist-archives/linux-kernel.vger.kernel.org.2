@@ -2,247 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6225836D95E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 297F536D960
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240204AbhD1OPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 10:15:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58850 "EHLO
+        id S240221AbhD1OQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 10:16:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239223AbhD1OPk (ORCPT
+        with ESMTP id S229959AbhD1OQh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 10:15:40 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B39C061573;
-        Wed, 28 Apr 2021 07:14:55 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id B54DD1F42AFA
-Message-ID: <b92eb32b84dd7a69a47bf78b17f49d4ba500739c.camel@collabora.com>
-Subject: Re: [PATCH v3 79/79] media: hantro: document the usage of
- pm_runtime_get_sync()
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org
-Date:   Wed, 28 Apr 2021 11:14:44 -0300
-In-Reply-To: <20210428084431.0c2d505b@coco.lan>
-References: <cover.1619519080.git.mchehab+huawei@kernel.org>
-         <230f22170db7fa57b49cff4570cef15bf11b2ad5.1619519080.git.mchehab+huawei@kernel.org>
-         <02948673-9572-a570-d28e-03a7208f39e1@arm.com>
-         <95ea572e201545b27ff9f48313f7aaea157d4764.camel@collabora.com>
-         <20210428082742.20d54db1@coco.lan> <20210428084431.0c2d505b@coco.lan>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2-1 
+        Wed, 28 Apr 2021 10:16:37 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B91C061573;
+        Wed, 28 Apr 2021 07:15:52 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id n2so10083520wrm.0;
+        Wed, 28 Apr 2021 07:15:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2TpHsdEOrt7ciuQ/8DonxUWDEmVGDD5Q+PcxJbinjA8=;
+        b=lcJDBUoeKWD+RKvR/VVPkhB0Aq29ff/KoBw1J/qHr221cHVaSIrbhecEowgc7pOOzt
+         rLlBmh7hI+D8Vvpz0wokgFbOBzKN/Y64vYdRqdxOpLe/zgWi/qDpb3UxO3S6+ejkSvis
+         ZdVVrbVoz3AOwvdRKDfJznQgvWCvYr0C3Yd6xG0vb7LLK4EhAAbRPXzR2PXo4HCAqU0M
+         0qHp5e2o3uh0zpAkzCPJXfMTFV/Gk4PB9iMZFf4V8DDxFJhYHzClZSCdhiZhrL0PP3sO
+         XWhDDcAHWQSpCdcxpAR8rq5xy4BeMuBy2jvMwTidW22+CEZ/Jye7h563iYM1nElm3+kr
+         5Iaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2TpHsdEOrt7ciuQ/8DonxUWDEmVGDD5Q+PcxJbinjA8=;
+        b=G2+5if8AjbWhbWUcIYHgYFk1Cz6BD09iHBoRXb9a9ILpu9E41mYYdmZmy4rLNnvt9g
+         itDgDXeqB+i/Je3rCvueHQjiBFHOFjdogNdfRnA7xdOyfjOlxNTQaAhKPZ5hG2lD9Ga+
+         DnqokkuUJLCGx2cw9X/csHzc3t8I+i0E+LDzR+QVdS+Sy/Zn9psJYPA3BLdjRB0GaYuv
+         Cc6EWsgmdeAk06hvmgyTEvCaEDxl/MCoiVy9ZFvhcDvCvgZpBUwk9QV32SzFcCw7W+Zt
+         1NPadyAQQ76G0+c/lX8KDPpBMJlXQwKIUDk17oM0/AX0H+JZyElLvUDUv3zL6UG7FWpN
+         Fn4Q==
+X-Gm-Message-State: AOAM532c/Pb5K/EwNP6r23L5k8XZzycXcJAne+ZyeUgFB90+Z1aKtl4C
+        dxKijrSbJQtJrkLrbfeOt232mCfEiZU=
+X-Google-Smtp-Source: ABdhPJz/Ep1od8VTgUm37D4i97raVXSeNeA4KB1hHHImiFcsfBCxx6YAfdBZlov2ONKwDg0762E/Mg==
+X-Received: by 2002:a05:6000:1209:: with SMTP id e9mr36880804wrx.192.1619619351230;
+        Wed, 28 Apr 2021 07:15:51 -0700 (PDT)
+Received: from [192.168.1.102] ([37.168.62.78])
+        by smtp.gmail.com with ESMTPSA id x189sm7083129wmg.17.2021.04.28.07.15.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Apr 2021 07:15:50 -0700 (PDT)
+Subject: Re: UBSAN: shift-out-of-bounds in __qdisc_calculate_pkt_len
+To:     Hao Sun <sunhao.th@gmail.com>, jhs@mojatatu.com,
+        xiyou.wangcong@gmail.com, jiri@resnulli.us, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <CACkBjsYnV3_KkMasd-5GBeTBSqVun+BbPhNn+hyFpwA678mf4A@mail.gmail.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <e1d781fd-886b-3489-7eb0-4cef2a90920c@gmail.com>
+Date:   Wed, 28 Apr 2021 16:15:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACkBjsYnV3_KkMasd-5GBeTBSqVun+BbPhNn+hyFpwA678mf4A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
 
-On Wed, 2021-04-28 at 08:44 +0200, Mauro Carvalho Chehab wrote:
-> Em Wed, 28 Apr 2021 08:27:42 +0200
-> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+
+On 4/28/21 4:53 AM, Hao Sun wrote:
+> Hi
 > 
-> > Em Tue, 27 Apr 2021 12:18:32 -0300
-> > Ezequiel Garcia <ezequiel@collabora.com> escreveu:
-> > 
-> > > On Tue, 2021-04-27 at 16:08 +0100, Robin Murphy wrote:  
-> > > > On 2021-04-27 11:27, Mauro Carvalho Chehab wrote:    
-> > > > > Despite other *_get()/*_put() functions, where usage count is
-> > > > > incremented only if not errors, the pm_runtime_get_sync() has
-> > > > > a different behavior, incrementing the counter *even* on
-> > > > > errors.
-> > > > > 
-> > > > > That's an error prone behavior, as people often forget to
-> > > > > decrement the usage counter.
-> > > > > 
-> > > > > However, the hantro driver depends on this behavior, as it
-> > > > > will decrement the usage_count unconditionally at the m2m
-> > > > > job finish time, which makes sense.
-> > > > > 
-> > > > > So, intead of using the pm_runtime_resume_and_get() that
-> > > > > would decrement the counter on error, keep the current
-> > > > > API, but add a documentation explaining the rationale for
-> > > > > keep using pm_runtime_get_sync().
-> > > > > 
-> > > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > > > > ---
-> > > > >   drivers/staging/media/hantro/hantro_drv.c | 7 +++++++
-> > > > >   1 file changed, 7 insertions(+)
-> > > > > 
-> > > > > diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-> > > > > index 595e82a82728..96f940c1c85c 100644
-> > > > > --- a/drivers/staging/media/hantro/hantro_drv.c
-> > > > > +++ b/drivers/staging/media/hantro/hantro_drv.c
-> > > > > @@ -155,6 +155,13 @@ static void device_run(void *priv)
-> > > > >         ret = clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks);
-> > > > >         if (ret)
-> > > > >                 goto err_cancel_job;    
-> > > > 
-> > > > ..except this can also cause the same pm_runtime_put_autosuspend() call 
-> > > > without even reaching the "matching" get below, so rather than some kind 
-> > > > of cleverness it seems more like it's just broken :/
-> > > >     
-> > > 
-> > > Indeed, I was trying to find time to cook a quick patch, but kept
-> > > getting preempted.
-> > > 
-> > > Feel free to submit a fix for this, otherwise, I'll try to find
-> > > time later this week.  
-> > 
-> > What about doing this instead:
-> > 
-> > diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-> > index 595e82a82728..67de6b15236d 100644
-> > --- a/drivers/staging/media/hantro/hantro_drv.c
-> > +++ b/drivers/staging/media/hantro/hantro_drv.c
-> > @@ -56,14 +56,12 @@ dma_addr_t hantro_get_ref(struct hantro_ctx *ctx, u64 ts)
-> >         return hantro_get_dec_buf_addr(ctx, buf);
-> >  }
-> >  
-> > -static void hantro_job_finish(struct hantro_dev *vpu,
-> > -                             struct hantro_ctx *ctx,
-> > -                             enum vb2_buffer_state result)
-> > +static void hantro_job_finish_no_pm(struct hantro_dev *vpu,
-> > +                                   struct hantro_ctx *ctx,
-> > +                                   enum vb2_buffer_state result)
-> >  {
-> >         struct vb2_v4l2_buffer *src, *dst;
-> >  
-> > -       pm_runtime_mark_last_busy(vpu->dev);
-> > -       pm_runtime_put_autosuspend(vpu->dev);
-> >         clk_bulk_disable(vpu->variant->num_clocks, vpu->clocks);
-> >  
-> >         src = v4l2_m2m_next_src_buf(ctx->fh.m2m_ctx);
-> > @@ -81,6 +79,16 @@ static void hantro_job_finish(struct hantro_dev *vpu,
-> >                                          result);
-> >  }
-> >  
-> > +static void hantro_job_finish(struct hantro_dev *vpu,
-> > +                             struct hantro_ctx *ctx,
-> > +                             enum vb2_buffer_state result)
-> > +{
-> > +       pm_runtime_mark_last_busy(vpu->dev);
-> > +       pm_runtime_put_autosuspend(vpu->dev);
-> > +
-> > +       hantro_job_finish_no_pm(vpu, ctx, result);
-> > +}
-> > +
-> >  void hantro_irq_done(struct hantro_dev *vpu,
-> >                      enum vb2_buffer_state result)
-> >  {
-> > @@ -152,12 +160,13 @@ static void device_run(void *priv)
-> >         src = hantro_get_src_buf(ctx);
-> >         dst = hantro_get_dst_buf(ctx);
-> >  
-> > +       ret = pm_runtime_resume_and_get(ctx->dev->dev);
-> > +       if (ret < 0)
-> > +               goto err_cancel_job;
-> > +
-> >         ret = clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks);
-> >         if (ret)
-> >                 goto err_cancel_job;
-> > -       ret = pm_runtime_get_sync(ctx->dev->dev);
-> > -       if (ret < 0)
-> > -               goto err_cancel_job;
-> >  
-> >         v4l2_m2m_buf_copy_metadata(src, dst, true);
-> >  
-> > @@ -165,7 +174,7 @@ static void device_run(void *priv)
-> >         return;
-> >  
-> >  err_cancel_job:
-> > -       hantro_job_finish(ctx->dev, ctx, VB2_BUF_STATE_ERROR);
-> > +       hantro_job_finish_no_pm(ctx->dev, ctx, VB2_BUF_STATE_ERROR);
-> >  }
-> >  
-> >  static struct v4l2_m2m_ops vpu_m2m_ops = {
-> > 
-> > Thanks,
-> > Mauro
+> When using Healer to fuzz the Linux kernel, UBSAN reported a
+> shift-out-of-bounds bug in net/sched/sch_api.c:580:10.
 > 
-> Actually, the order at the finish logic should change as well.
-> Maybe like this:
+> Here are the details:
+> commit:   89698becf06d341a700913c3d89ce2a914af69a2
+> version:   Linux 5.12
+> git tree:    upstream
+> kernel config, reproduction program can be found in the attached file.
+> 
+> ================================================================================
+> UBSAN: shift-out-of-bounds in net/sched/sch_api.c:580:10
+> shift exponent 247 is too large for 32-bit type 'int'
+> CPU: 1 PID: 3176 Comm: kworker/1:2 Not tainted 5.12.0-rc7+ #3
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> Workqueue: ipv6_addrconf addrconf_dad_work
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0xfa/0x151 lib/dump_stack.c:120
+>  ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+>  __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x20c lib/ubsan.c:327
+>  __qdisc_calculate_pkt_len.cold+0x1b/0xcf net/sched/sch_api.c:580
+>  qdisc_calculate_pkt_len include/net/sch_generic.h:787 [inline]
+>  __dev_xmit_skb net/core/dev.c:3803 [inline]
+>  __dev_queue_xmit+0x13b2/0x3020 net/core/dev.c:4162
+>  neigh_hh_output include/net/neighbour.h:499 [inline]
+>  neigh_output include/net/neighbour.h:508 [inline]
+>  ip_finish_output2+0xf20/0x2240 net/ipv4/ip_output.c:230
+>  __ip_finish_output net/ipv4/ip_output.c:308 [inline]
+>  __ip_finish_output+0x699/0xe20 net/ipv4/ip_output.c:290
+>  ip_finish_output+0x35/0x200 net/ipv4/ip_output.c:318
+>  NF_HOOK_COND include/linux/netfilter.h:290 [inline]
+>  ip_output+0x201/0x610 net/ipv4/ip_output.c:432
+>  dst_output include/net/dst.h:448 [inline]
+>  ip_local_out+0xaf/0x1a0 net/ipv4/ip_output.c:126
+>  iptunnel_xmit+0x618/0x9f0 net/ipv4/ip_tunnel_core.c:82
+>  geneve_xmit_skb drivers/net/geneve.c:967 [inline]
+>  geneve_xmit+0xea7/0x41b0 drivers/net/geneve.c:1075
+>  __netdev_start_xmit include/linux/netdevice.h:4825 [inline]
+>  netdev_start_xmit include/linux/netdevice.h:4839 [inline]
+>  xmit_one net/core/dev.c:3605 [inline]
+>  dev_hard_start_xmit+0x1ff/0x940 net/core/dev.c:3621
+>  __dev_queue_xmit+0x2699/0x3020 net/core/dev.c:4194
+>  neigh_resolve_output net/core/neighbour.c:1491 [inline]
+>  neigh_resolve_output+0x4ee/0x810 net/core/neighbour.c:1471
+>  neigh_output include/net/neighbour.h:510 [inline]
+>  ip6_finish_output2+0xd09/0x21f0 net/ipv6/ip6_output.c:117
+>  __ip6_finish_output+0x4bb/0xe10 net/ipv6/ip6_output.c:182
+>  ip6_finish_output+0x35/0x200 net/ipv6/ip6_output.c:192
+>  NF_HOOK_COND include/linux/netfilter.h:290 [inline]
+>  ip6_output+0x242/0x810 net/ipv6/ip6_output.c:215
+>  dst_output include/net/dst.h:448 [inline]
+>  NF_HOOK include/linux/netfilter.h:301 [inline]
+>  ndisc_send_skb+0xf52/0x14c0 net/ipv6/ndisc.c:508
+>  ndisc_send_ns+0x3a9/0x840 net/ipv6/ndisc.c:650
+>  addrconf_dad_work+0xd29/0x1380 net/ipv6/addrconf.c:4119
+>  process_one_work+0x9ad/0x1620 kernel/workqueue.c:2275
+>  worker_thread+0x96/0xe20 kernel/workqueue.c:2421
+>  kthread+0x374/0x490 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> ================================================================================
 > 
 
-This one looks good.
+Can you submit a patch ?
 
-Thanks!
-Ezequiel
+We are at a point that we are flooded with such report. (look at syzbot queue for instance)
 
-> <snip>
-> static void hantro_job_finish_no_pm(struct hantro_dev *vpu,
->                                     struct hantro_ctx *ctx,
->                                     enum vb2_buffer_state result)
-> {
->         struct vb2_v4l2_buffer *src, *dst;
-> 
->         src = v4l2_m2m_next_src_buf(ctx->fh.m2m_ctx);
->         dst = v4l2_m2m_next_dst_buf(ctx->fh.m2m_ctx);
-> 
->         if (WARN_ON(!src))
->                 return;
->         if (WARN_ON(!dst))
->                 return;
-> 
->         src->sequence = ctx->sequence_out++;
->         dst->sequence = ctx->sequence_cap++;
-> 
->         v4l2_m2m_buf_done_and_job_finish(ctx->dev->m2m_dev, ctx->fh.m2m_ctx,
->                                          result);
-> }
-> 
-> static void hantro_job_finish(struct hantro_dev *vpu,
->                               struct hantro_ctx *ctx,
->                               enum vb2_buffer_state result)
-> {
-> 
->         hantro_job_finish_no_pm(vpu, ctx, result);
-> 
->         clk_bulk_disable(vpu->variant->num_clocks, vpu->clocks);
-> 
->         pm_runtime_mark_last_busy(vpu->dev);
->         pm_runtime_put_autosuspend(vpu->dev);
-> }
-> 
-> static void device_run(void *priv)
-> {
->         struct hantro_ctx *ctx = priv;
->         struct vb2_v4l2_buffer *src, *dst;
->         int ret;
-> 
->         src = hantro_get_src_buf(ctx);
->         dst = hantro_get_dst_buf(ctx);
-> 
->         ret = pm_runtime_resume_and_get(ctx->dev->dev);
->         if (ret < 0)
->                 goto err_cancel_job;
-> 
->         ret = clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks);
->         if (ret)
->                 goto err_cancel_job;
-> 
->         v4l2_m2m_buf_copy_metadata(src, dst, true);
-> 
->         ctx->codec_ops->run(ctx);
->         return;
-> 
-> err_cancel_job:
->         hantro_job_finish_no_pm(ctx->dev, ctx, VB2_BUF_STATE_ERROR);
-> }
-> </snip>
-> 
-> 
-> Thanks,
-> Mauro
+We prefer having formal patches, and as a bonus you will be a famous linux contributor.
+
+diff --git a/net/sched/sch_api.c b/net/sched/sch_api.c
+index f87d07736a1404edcfd17a792321758cd4bdd173..265289da7e84e4a408428767a57f82c00fd85b7f 100644
+--- a/net/sched/sch_api.c
++++ b/net/sched/sch_api.c
+@@ -504,6 +504,11 @@ static struct qdisc_size_table *qdisc_get_stab(struct nlattr *opt,
+                return ERR_PTR(-EINVAL);
+        }
+ 
++       if (s->cell_log >= 32 || s->size_log >= 32) {
++               NL_SET_ERR_MSG(extack, "Invalid cell_log/size_log of size table");
++               return ERR_PTR(-EINVAL);
++       }
++
+        list_for_each_entry(stab, &qdisc_stab_list, list) {
+                if (memcmp(&stab->szopts, s, sizeof(*s)))
+                        continue;
+
+
+
 
 
