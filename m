@@ -2,130 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C99736D881
+	by mail.lfdr.de (Postfix) with ESMTP id 106A736D880
 	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 15:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239884AbhD1NqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 09:46:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51932 "EHLO
+        id S239877AbhD1NqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 09:46:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239844AbhD1Np4 (ORCPT
+        with ESMTP id S239836AbhD1Npz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 09:45:56 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44FA8C06138B;
-        Wed, 28 Apr 2021 06:45:11 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id u25so33956929ljg.7;
-        Wed, 28 Apr 2021 06:45:11 -0700 (PDT)
+        Wed, 28 Apr 2021 09:45:55 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A1EC06138A;
+        Wed, 28 Apr 2021 06:45:10 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id s22so23634152pgk.6;
+        Wed, 28 Apr 2021 06:45:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Z4RRxi73OEamqbLSZX4qWcNZMUEw8pOKLAfd+Koka7A=;
-        b=BR/jO1prKlrgughIIKiL3Phw8cJK2ABFzl3HQ4yzpB9jxLVU79gDw9Qpmzw0qsy8+a
-         gWsde4S5HgysiTAgfutn0JsH6T5eJL80HBobIUKTk7Q7sWKv3Zrct3ijlnHdc6QPWa7L
-         L82dyLbASj0WeLJDuDuUCzEzxdD9QL+yCBQC0lLTPCsluTzHGJWj2mx5CzqB7xkhGYK4
-         2cAgY3oYAVqZhIgmBDeyKZJvqPHsDy1fUSY+Vd8YcnE8jSxw5DJ6W9ALloe6e8QjdQFS
-         XbmswhsEhXdAPYGo8LyCC/A2gpRg22qLNcJ/zySQ+pOJilXZ4KLOnkIb9K6zZMMUaQ8D
-         zarA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tW6Jg1hPCefeE4+Q5b9EX/MI8Wk9Qn2Twj5sMLql1/0=;
+        b=MnimyphcYUdXSnck5cSXyKGtFL3svaYYHKqt4u4CHuyRoU1LONISHmgfLbIuy3Jx8D
+         U10C91iCKgNrJxVKH1s3HL1lN/l4dC0MgqGEhtQNBljcPrZNUfEQwmS/npH3orn2lYbs
+         dLeQC3lu4RvXRLUO1whrYSHwY/DUVbF5akWwPq8IzOMBEI9gHDL4j+qz5cp8GYfjaMsn
+         81YTsmeNNCl3gWi+ff2s0pQFfHU3rC5CqmekKZMACLzOnBwQA/uF8nWJFDBQ/d4Hb89c
+         vhTZiw/9G2y1yqP6FcotT2L3Bs49IodoDp8i0Z+ws2TLyl84937at/5wWnY65eznFktM
+         fEaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Z4RRxi73OEamqbLSZX4qWcNZMUEw8pOKLAfd+Koka7A=;
-        b=lCoJi5u/UC4ILfh4QvLoBBtqOYtELlUUt/JdXU9I7J9bgn3DdNUmmB/1qE03/ig5xs
-         ooWYIfaG8EAjX/7m00MYOksc2HbaH7lZHIp9bbiaj95jgKulESuvGKM9DCTXQFOaVaSI
-         pnis5sQ68nskp42iAu2uRh7ly8Dc6j3G0RV6ePz/6gC7tVVn9AUvmHqfYzr3Op+ADQBe
-         OorfAp+RI7sVnOWW9j11WrRzQTPByWEAN0lW3f5zd2R6ijbmHWCKoUI475IeTpfQ4ZYf
-         YVQXL3WiUTJ0ZfEP0PO8x5p9Wj1htUkg/9WciKFDZLB2lp9ERDosH281i5/+V63fJqOS
-         U95A==
-X-Gm-Message-State: AOAM533OM/QZGlyccCuY7Gf062+wkmHcdA6BPUPv+LdbV/8VqoCSBsfe
-        x+1A6FfmMh31JVMtbOcKF/G1/25UAxICsZjjJSY=
-X-Google-Smtp-Source: ABdhPJz7gth6XMptfjLy54OTBeW5mnRb1e7uQcoqWwgR/UwYyYZ+QoXBPU5gwQ0T3l6FT9EjriXNtA==
-X-Received: by 2002:a2e:9099:: with SMTP id l25mr21151274ljg.206.1619617509828;
-        Wed, 28 Apr 2021 06:45:09 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id o16sm730253lfu.228.2021.04.28.06.45.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 06:45:09 -0700 (PDT)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH v1 5/5] kvfree_rcu: Fix comments according to current code
-Date:   Wed, 28 Apr 2021 15:44:22 +0200
-Message-Id: <20210428134422.1894-5-urezki@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210428134422.1894-1-urezki@gmail.com>
-References: <20210428134422.1894-1-urezki@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tW6Jg1hPCefeE4+Q5b9EX/MI8Wk9Qn2Twj5sMLql1/0=;
+        b=lItoHtIkc0Z1eF/Bdnvsrs7BXed1t+kEPVJH22E8teS7RAIBm/Efu7k0R4r0YsSebd
+         j7JDVxAmD9Sqb4x8l+AVKUhLEuJZXg3rkKks3McswK+0fjsP1P4lcr0mRie2enYZ3VrF
+         mFNE5OLGjIPQwupYe8EMEuKzaa5q1df+gG44smUBussJuPNQnG3faE9Zc3QvUyTzI75g
+         xSE13+b64tramD+bBUFOGCTRG8xfT/kdFO4BOH/BgxvmCVUTbKTaHyQ1XG4KWum6kZ65
+         sq0JBzVTh0/7CFjYEnkQifW5pdKIKivkWzU7eg3RGtMDAjY+PpEvdikM4uprHvI97RNZ
+         u1Pw==
+X-Gm-Message-State: AOAM5307z5ia1XWNqCJ8ejSHqVWx2TA/v7PschnsPvBakKVDf6UIU5wn
+        ZTGxOPELXSHJyfhD1abGiXkTDYeZYq3s9teieM+EiA8HqXA=
+X-Google-Smtp-Source: ABdhPJyh2zXRbuOdrBqVu7Frq1itIC3qKiVh/qPj4l8gEEzGAANFyUmIw6ldH+/FexEe3bG730Ffn+dolOGZxJJkfmE=
+X-Received: by 2002:a63:cd11:: with SMTP id i17mr26641169pgg.74.1619617510313;
+ Wed, 28 Apr 2021 06:45:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210426095426.118356-1-tsbogend@alpha.franken.de>
+ <CAHp75VdRfPPj2pu4GOBVG4+bGUsCRLXYPsFjMwFOYfUTZuvJaQ@mail.gmail.com>
+ <6f6bce2f070998db49acca2f6611727b@walle.cc> <CAHp75VdmTxvQBU4X8s-6csYgwM8ACth9Ao0GYjUH7+0Q0tyFyg@mail.gmail.com>
+ <ebbbe74fe638e1a6ab7c1547870f4b31@walle.cc>
+In-Reply-To: <ebbbe74fe638e1a6ab7c1547870f4b31@walle.cc>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 28 Apr 2021 16:44:54 +0300
+Message-ID: <CAHp75VcXEu2YGOoL70zueEgARCe8D+Q=CFsN62-vFK5svjJAQA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] gpio: Add support for IDT 79RC3243x GPIO controller
+To:     Michael Walle <michael@walle.cc>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We used to have an "emergency path" and comments related
-to it. According to current kvfree_rcu() design that path
-is not considered as emergency anymore.
+On Wed, Apr 28, 2021 at 2:57 PM Michael Walle <michael@walle.cc> wrote:
+>
+> Am 2021-04-28 13:07, schrieb Andy Shevchenko:
+> > On Wed, Apr 28, 2021 at 1:51 AM Michael Walle <michael@walle.cc> wrote:
+> >> Am 2021-04-26 12:29, schrieb Andy Shevchenko:
+> >> > On Mon, Apr 26, 2021 at 12:55 PM Thomas Bogendoerfer
+> >> > <tsbogend@alpha.franken.de> wrote:
+> >> >
+> >> > 2) there is gpio-regmap generic code, that may be worth
+> >> > considering.
+> >>
+> >> This driver uses memory mapped registers. While that is
+> >> also possible with gpio-regmap, there is one drawback:
+> >> it assumes gpiochip->can_sleep = true for now, see [1].
+> >> Unfortunately, there is no easy way to ask the regmap
+> >> if its mmio/fastio.
+> >
+> > I don't see how it is an impediment.
+>
+> You'd have to use the *_cansleep() variants with the gpios,
+> which cannot be used everywhere, no?
 
-This patch rephrases and updates comments regarding this.
+*can* sleep means that it requires a sleeping context to run, if your
+controller is fine with that, there are no worries. OTOH if you want
+to run this in an atomic context, then consumers can't do with that
+kind of controller. What I meant above (and you stripped it here) is
+to add a patch that will fix that and set it based on
+gpio_regmap_config.
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- kernel/rcu/tree.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 229e909ad437..91b978e90c3b 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3332,9 +3332,11 @@ static void kfree_rcu_work(struct work_struct *work)
- 	}
- 
- 	/*
--	 * Emergency case only. It can happen under low memory
--	 * condition when an allocation gets failed, so the "bulk"
--	 * path can not be temporary maintained.
-+	 * This is used when the "bulk" path can not be temporary
-+	 * maintained for the double-argument of kvfree_rcu(). It
-+	 * happens because a page-cache is empty, thus objects are
-+	 * queued to the linked-list instead. This path is named
-+	 * as "Channel 3".
- 	 */
- 	for (; head; head = next) {
- 		unsigned long offset = (unsigned long)head->func;
-@@ -3380,8 +3382,8 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
- 		if ((krcp->bkvhead[0] && !krwp->bkvhead_free[0]) ||
- 			(krcp->bkvhead[1] && !krwp->bkvhead_free[1]) ||
- 				(krcp->head && !krwp->head_free)) {
--			// Channel 1 corresponds to SLAB ptrs.
--			// Channel 2 corresponds to vmalloc ptrs.
-+			// Channel 1 corresponds to SLAB ptrs. bulk path.
-+			// Channel 2 corresponds to vmalloc ptrs. bulk path.
- 			for (j = 0; j < FREE_N_CHANNELS; j++) {
- 				if (!krwp->bkvhead_free[j]) {
- 					krwp->bkvhead_free[j] = krcp->bkvhead[j];
-@@ -3389,7 +3391,8 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
- 				}
- 			}
- 
--			// Channel 3 corresponds to emergency path.
-+			// Channel 3 corresponds to objects queued to the
-+			// linked-list for both SLAB and vmalloc pointers.
- 			if (!krwp->head_free) {
- 				krwp->head_free = krcp->head;
- 				krcp->head = NULL;
 -- 
-2.20.1
-
+With Best Regards,
+Andy Shevchenko
