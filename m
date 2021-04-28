@@ -2,130 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1831836D498
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9AE336D49C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237931AbhD1JNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 05:13:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48020 "EHLO
+        id S237920AbhD1JO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 05:14:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbhD1JNy (ORCPT
+        with ESMTP id S229643AbhD1JO2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 05:13:54 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0775C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 02:13:08 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id g10so5352570edb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 02:13:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zuJ82puTHqZvGhCMj8B6h5SzrRJTy69WAZAQZBqxSiQ=;
-        b=BmZFgYYLnjEt40CB2BFRTh2ATwa715HVEkdsPnOYQ8yMm6wh6xy4tyMFStm+7c/BGh
-         +yMeapcMlv7njQjAcuO+OJ8StqaOzyThoqO1tHYaQRlxKqiYvmYjemp7v6w0LeJilVMM
-         HUOPsw7eqNSU7qD9WNsnkZPrQDtxojfcZFdnc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zuJ82puTHqZvGhCMj8B6h5SzrRJTy69WAZAQZBqxSiQ=;
-        b=MsPQUPgKMarlcgD+5EIq5Zrd4fjynEyvAS/Vhm9ZnRQqBQzKWXMVvmHEF9+pdg8etf
-         JqYxl/RjZYTNZ4ibddfnfI6OW67uvYT+mj6CeyERCeDwRK7QjzN4W8lNMhEcPzJNVhkm
-         PP10uqhVReR03G8bckR+RhJRjvD7HOrpwDtXFgzItNL5FM8LuiMA2YOQfmKtpxuYqZPq
-         cweW2nXAo6kbIBY/oGLTI5Gm1nd/jw3GWCnXoAkFqcpWKAa7UxelHGkK8ur4BToR4Y/2
-         VVIpq8b2LJxJEtojqp2KIvwwJQVRNG+7cLM/Tq6tB5NTigvIsfn9w51MH5xVJwod5EbA
-         oe6w==
-X-Gm-Message-State: AOAM533j6jM52jU2prQSuKDRIjxbscv9fEvXm8maDt6S+9Z5qDKuA4ZC
-        TPku1HSx+O95mmfDGepDevMmdw==
-X-Google-Smtp-Source: ABdhPJzaOEGKbDD45sYI1dUDHD8YTTiiAB142e2QgrObP9pXVb0ZOjD3lWFGKvpypv0uGEO+Wsq+VA==
-X-Received: by 2002:a50:f28e:: with SMTP id f14mr10001002edm.371.1619601187486;
-        Wed, 28 Apr 2021 02:13:07 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id h23sm1555273ejx.90.2021.04.28.02.13.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Apr 2021 02:13:07 -0700 (PDT)
-Subject: Re: [PATCH] lib/string: sysfs_streq works case insensitively
-To:     Gioh Kim <gi-oh.kim@ionos.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20210412113315.91700-1-gi-oh.kim@ionos.com>
- <CAJX1YtbXnPVbkpddXQf4MZ3sopoidr0fZ8OkrQegoLoCevaNwQ@mail.gmail.com>
- <CAHp75Vf2yJ5=zdxRcPKmKGCKeF8As=Nv2S9fm0ciVXL5HGbWDg@mail.gmail.com>
- <CAJX1YtYRK=_X8+mvva2S35-K4kpwXSAGctUJ01TEDFRhS0y5LA@mail.gmail.com>
- <650dc1b8-d801-2263-2e5c-eb833f2c4534@rasmusvillemoes.dk>
- <CAJX1YtaRAgg3oZ6X2cDtj0yASQ27XujDys97vbB0MWnN9vXakQ@mail.gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <64dc3e52-2146-3da4-3d04-d5c074723aba@rasmusvillemoes.dk>
-Date:   Wed, 28 Apr 2021 11:13:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 28 Apr 2021 05:14:28 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF6F6C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 02:13:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BIoHFDWt30IDnc3GXkviCGSahwifPN4YHWVVjZg5LMc=; b=IgyUlM2tj8IrHLzT9Gz3aAaaq6
+        2ph2+7UhJv0MXo1b8Mrd0NfdxO3cDk2dHQk3utlQrNElRWmxKkKjy/ePj8AbPc0ZDUowZVXQKzCee
+        DiP9m8r+ttrU40dHUe3CURhpf3wTIo7DhkxhFQRP5l+314mr4iqREig1QasQahUp9+DIPVSlG79ti
+        9GXwHZmDaZB0E0cJA5I4J4DSdK6xeNxfQw0NE+935ZuDdmaHsisnyko9UICbNJael14WyO9Ut36m1
+        EnuU+QJN0yGlExlke8hH4L7XEa1exSnC6Zgn3qaOWWnQ0F10KVI15XnN279+V2/BGMY1YcpJT93bT
+        DQng1fvA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lbgGE-003Bsj-Rf; Wed, 28 Apr 2021 09:13:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 94B80300091;
+        Wed, 28 Apr 2021 11:13:33 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 48A982BF7B839; Wed, 28 Apr 2021 11:13:33 +0200 (CEST)
+Date:   Wed, 28 Apr 2021 11:13:33 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Don <joshdon@google.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        "Hyser,Chris" <chris.hyser@oracle.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, dhiatt@digitalocean.com
+Subject: Re: [PATCH 04/19] sched: Prepare for Core-wide rq->lock
+Message-ID: <YIknPXxwZvq0qmId@hirez.programming.kicks-ass.net>
+References: <20210422120459.447350175@infradead.org>
+ <20210422123308.196692074@infradead.org>
+ <CABk29Ntop2nX+z1bV7giG8ToR_w3f_+GYGAw+hFQ6g9rCZunmw@mail.gmail.com>
+ <YIZ6ZpkrMGQ9A9x2@hirez.programming.kicks-ass.net>
+ <CABk29NvicqM_c2ssYnDrEy_FPsfD5GH38rB_XHooErALOabe5g@mail.gmail.com>
+ <CABk29NvaH687GfOm_b5_hJF6HBQ6fu+1hzc0GFNEMv5mj3DrUw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJX1YtaRAgg3oZ6X2cDtj0yASQ27XujDys97vbB0MWnN9vXakQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABk29NvaH687GfOm_b5_hJF6HBQ6fu+1hzc0GFNEMv5mj3DrUw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/04/2021 10.31, Gioh Kim wrote:
-> On Wed, Apr 28, 2021 at 9:47 AM Rasmus Villemoes
-> <linux@rasmusvillemoes.dk> wrote:
->>
->> On 28/04/2021 09.31, Gioh Kim wrote:
->>> On Wed, Apr 28, 2021 at 8:42 AM Andy Shevchenko
->>> <andy.shevchenko@gmail.com> wrote:
->>>>
->>
->>>>
->>>> Are you sure it’s good change? Sysfs is used for an ABI and you are opening a can of worms. From me NAK to this change without a very good background description that tells why it is safe to do.
->>>
->>> https://www.spinics.net/lists/kernel/msg3898123.html
->>> My initial idea was making a new function: sysfs_streqcase.
->>> Andrew and Greg suggested making sysfs_streq to be case-insensitive.
->>> I would like to have a discussion about it.
->>
->> 1. That information should be in the commit log, not some random
->> babbling about case sensitivity of file systems.
+On Tue, Apr 27, 2021 at 04:30:02PM -0700, Josh Don wrote:
+
+> Also, did you mean to have a preempt_enable_no_resched() rather than
+> prempt_enable() in raw_spin_rq_trylock?
+
+No, trylock really needs to be preempt_enable(), because it can have
+failed, at which point it will not have incremented the preemption count
+and our decrement can hit 0, at which point we really should reschedule.
+
+> I went over the rq_lockp stuff again after Don's reported lockup. Most
+> uses are safe due to already holding an rq lock. However,
+> double_rq_unlock() is prone to race:
 > 
-> I don't think it is a good idea to write who suggested the concept of the patch.
-
-Sorry if it wasn't clear. I was referring to the information in that
-link (i.e., your commit log for the first suggested patch).
-
->> Sorry, I really think you need a lot stronger motivation for introducing
->> either this change or a sysfs_strcaseeq().
+> double_rq_unlock(rq1, rq2):
+> /* Initial state: core sched enabled, and rq1 and rq2 are smt
+> siblings. So, double_rq_lock(rq1, rq2) only took a single rq lock */
+> raw_spin_rq_unlock(rq1);
+> /* now not holding any rq lock */
+> /* sched core disabled. Now __rq_lockp(rq1) != __rq_lockp(rq2), so we
+> falsely unlock rq2 */
+> if (__rq_lockp(rq1) != __rq_lockp(rq2))
+>         raw_spin_rq_unlock(rq2);
+> else
+>         __release(rq2->lock);
 > 
-> I found out a problem of sysfs_streq when I tried to use it for
-> modules I am working on (RTRS/RNBD).
+> Instead we can cache __rq_lockp(rq1) and __rq_lockp(rq2) before
+> releasing the lock, in order to prevent this. FWIW I think it is
+> likely that Don is seeing a different issue.
 
-Again, this is the kind of motivation that would need to be in the
-commit log. What problem are you solving in those modules that warrants
-changing the semantics of sysfs_streq()? Why does that module's sysfs
-interface need case-insensitive string comparison?
+Ah, indeed so.. rq_lockp() could do with an assertion, not sure how to
+sanely do that. Anyway, double_rq_unlock() is simple enough to fix, we
+can simply flip the unlock()s.
 
-> Then I thought it would be better if there is something like sysfs_streqcase.
-> That's why I sent the path.
-> If nobody needs the change, it is ok for me to ignore the patch.
+( I'm suffering a cold and am really quite slow atm )
 
-It's a lot easier to assess the merits of this new functionality
-(whether in the form of a new separate function, or changed semantics of
-sysfs_streq()) if we also see a few use cases. New functions are not
-added without users. Bells and whistles are not added without users.
+How's this then?
 
-> Maybe I misunderstand when I can send a patch to Linux kernel community.
-> But the only motivation of me is sharing my idea just in case there is
-> someone who also needs it.
-
-That's fine, but you need to include proper information on why a new
-function is added or semantics of an existing one is changed (and for
-the latter, some words on why you believe all existing callers would be
-ok with that).
-
-Rasmus
+---
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index f732642e3e09..3a534c0c1c46 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -290,6 +290,10 @@ static void sched_core_assert_empty(void)
+ static void __sched_core_enable(void)
+ {
+ 	static_branch_enable(&__sched_core_enabled);
++	/*
++	 * Ensure raw_spin_rq_*lock*() have completed before flipping.
++	 */
++	synchronize_sched();
+ 	__sched_core_flip(true);
+ 	sched_core_assert_empty();
+ }
+@@ -449,16 +453,23 @@ void raw_spin_rq_lock_nested(struct rq *rq, int subclass)
+ {
+ 	raw_spinlock_t *lock;
+ 
++	/* Matches synchronize_sched() in __sched_core_enabled() */
++	preempt_disable();
+ 	if (sched_core_disabled()) {
+ 		raw_spin_lock_nested(&rq->__lock, subclass);
++		/* preempt-count *MUST* be > 1 */
++		preempt_enable_no_resched();
+ 		return;
+ 	}
+ 
+ 	for (;;) {
+ 		lock = __rq_lockp(rq);
+ 		raw_spin_lock_nested(lock, subclass);
+-		if (likely(lock == __rq_lockp(rq)))
++		if (likely(lock == __rq_lockp(rq))) {
++			/* preempt-count *MUST* be > 1 */
++			preempt_enable_no_resched();
+ 			return;
++		}
+ 		raw_spin_unlock(lock);
+ 	}
+ }
+@@ -468,14 +479,21 @@ bool raw_spin_rq_trylock(struct rq *rq)
+ 	raw_spinlock_t *lock;
+ 	bool ret;
+ 
+-	if (sched_core_disabled())
+-		return raw_spin_trylock(&rq->__lock);
++	/* Matches synchronize_sched() in __sched_core_enabled() */
++	preempt_disable();
++	if (sched_core_disabled()) {
++		ret = raw_spin_trylock(&rq->__lock);
++		preempt_enable();
++		return ret;
++	}
+ 
+ 	for (;;) {
+ 		lock = __rq_lockp(rq);
+ 		ret = raw_spin_trylock(lock);
+-		if (!ret || (likely(lock == __rq_lockp(rq))))
++		if (!ret || (likely(lock == __rq_lockp(rq)))) {
++			preempt_enable();
+ 			return ret;
++		}
+ 		raw_spin_unlock(lock);
+ 	}
+ }
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 6a905fe19eef..c9a52231d58a 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -2568,11 +2568,12 @@ static inline void double_rq_unlock(struct rq *rq1, struct rq *rq2)
+ 	__releases(rq1->lock)
+ 	__releases(rq2->lock)
+ {
+-	raw_spin_rq_unlock(rq1);
+ 	if (__rq_lockp(rq1) != __rq_lockp(rq2))
+ 		raw_spin_rq_unlock(rq2);
+ 	else
+ 		__release(rq2->lock);
++
++	raw_spin_rq_unlock(rq1);
+ }
+ 
+ extern void set_rq_online (struct rq *rq);
