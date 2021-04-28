@@ -2,170 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4F736DE02
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42CB236DE0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241536AbhD1RQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 13:16:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43102 "EHLO
+        id S241543AbhD1RSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 13:18:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236887AbhD1RQe (ORCPT
+        with ESMTP id S229931AbhD1RSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 13:16:34 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63830C061573;
-        Wed, 28 Apr 2021 10:15:47 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id d25so26240817oij.5;
-        Wed, 28 Apr 2021 10:15:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GDNVrff76VfRvD1j2rT05FypZOPT0Mkjjgr3q5U+VQs=;
-        b=erq4vAGuJkQ8SLktjhZPoxGk6wz1+UuIbAj57Rr7KkYYOB1NZYw0zdi5NYSYpquFij
-         49QBMCIkAsb3hXsHwEzPSV9O/XsH6xbDxOLEBgKaxpRFTmAxC/u0xHHQ6h8BGxojsRly
-         NjkpVJn8Nlpo1eo7rFT0w9fQUHQl30Z1wrn9KtV6SoDHQ7vGuFRjuQh5qFF7TjYtPwdF
-         GPGDDOqEJ9PW94EtgE/59JBvIa8nEcwn6gcXDFB8CVy0EJMpAm8cfirMN+8lXdqfg3gT
-         WmgMfwHNFhSaDHGXh+cDbnNrQ5Mi1HQ+tjOBgAUDyfAgoUtDrIqjx9XNze7X0NqMz6U8
-         r3Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GDNVrff76VfRvD1j2rT05FypZOPT0Mkjjgr3q5U+VQs=;
-        b=mZhKBHwTNAE8vykHVzRchCT2l0xi0msvbjmi3Z/huKxZ5qktKc2TaK+t6sF/92Q7fZ
-         bzRQ1D9q3tcmW6fX0zyYnFHMzGJci6xlwsJV7bxUFKfxqIRLmj6WE1IjOviMIH58zURO
-         pYSm396ymwtzRjN95nSHHWGzkH9iF/0u8552lRLW5w9MeUlBc3GQ3n8q7zRB/eS4yije
-         mDvQSI63g3DKSHIrUYE65Sf43fgEQ8GvD3vP4/uTRsMkyXHUA/bdRysrZWWwsX1HFS/4
-         MxU9sC9bLYXplOQ0LbIW8Om55081xpnWV+3IJDC8tsNUXZLIzo99NTyYn+10bv5qqKXb
-         2nDA==
-X-Gm-Message-State: AOAM533i8teCbHAI7S+JgQpZjzmqJawO5xxRmBIUZSv1j8SeD3rSxh9R
-        /rwe7Prb3MIgfEuUGyZxTZ242b60oWiioVNcAUQmkSRa/0uzDA==
-X-Google-Smtp-Source: ABdhPJxQrVjvc83ofCs6l74gjRa0C0tmhbLZn53UQcZWaj4ZM/E1Um2JQFVjFgAom3TPcnepSkOm9AgiCCimYK9INrI=
-X-Received: by 2002:aca:dd82:: with SMTP id u124mr3624452oig.35.1619630146460;
- Wed, 28 Apr 2021 10:15:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210427204720.25007-1-yu-cheng.yu@intel.com> <0e03c50ea05440209d620971b9db4f29@AcuMS.aculab.com>
- <CALCETrUpZfznXzN3Ld33DMvQcHD2ACnhYf9KdP+5-xXuX_pVpA@mail.gmail.com>
- <CAMe9rOp7FauoqQ0vx+ZVPGOE9+ABspheuGLc++Chj_goE5HvWA@mail.gmail.com>
- <CALCETrVHUP9=2kX3aJJugcagsf26W0sLEPsDvVCZNnBmbWrOLQ@mail.gmail.com>
- <0c6e1c922bc54326b1121194759565f5@AcuMS.aculab.com> <7d857e5d-e3d3-1182-5712-813abf48ccba@intel.com>
-In-Reply-To: <7d857e5d-e3d3-1182-5712-813abf48ccba@intel.com>
-From:   "H.J. Lu" <hjl.tools@gmail.com>
-Date:   Wed, 28 Apr 2021 10:15:10 -0700
-Message-ID: <CAMe9rOqhiBOvv4YhdHwu6Gwq+=rZ=t02Q+vQtWxqiB-uXWi2vw@mail.gmail.com>
-Subject: Re: [PATCH v26 0/9] Control-flow Enforcement: Indirect Branch Tracking
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
+        Wed, 28 Apr 2021 13:18:45 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A103C061573;
+        Wed, 28 Apr 2021 10:18:00 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id BE1851F42B88
+Message-ID: <e5eeffbbad6ee90204cb3928cfd6774efb6174f3.camel@collabora.com>
+Subject: Re: [PATCH v4 79/79] media: hantro: do a PM resume earlier
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org
+Date:   Wed, 28 Apr 2021 14:17:50 -0300
+In-Reply-To: <569838d406dde80dcc64989a663882817a54cbb2.1619621413.git.mchehab+huawei@kernel.org>
+References: <cover.1619621413.git.mchehab+huawei@kernel.org>
+         <569838d406dde80dcc64989a663882817a54cbb2.1619621413.git.mchehab+huawei@kernel.org>
+Organization: Collabora
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 9:25 AM Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
->
-> On 4/28/2021 8:33 AM, David Laight wrote:
-> > From: Andy Lutomirski
-> >> Sent: 28 April 2021 16:15
-> >>
-> >> On Wed, Apr 28, 2021 at 7:57 AM H.J. Lu <hjl.tools@gmail.com> wrote:
-> >>>
-> >>> On Wed, Apr 28, 2021 at 7:52 AM Andy Lutomirski <luto@kernel.org> wrote:
-> >>>>
-> >>>> On Wed, Apr 28, 2021 at 7:48 AM David Laight <David.Laight@aculab.com> wrote:
-> >>>>>
-> >>>>> From: Yu-cheng Yu
-> >>>>>> Sent: 27 April 2021 21:47
-> >>>>>>
-> >>>>>> Control-flow Enforcement (CET) is a new Intel processor feature that blocks
-> >>>>>> return/jump-oriented programming attacks.  Details are in "Intel 64 and
-> >>>>>> IA-32 Architectures Software Developer's Manual" [1].
-> >>>>> ...
-> >>>>>
-> >>>>> Does this feature require that 'binary blobs' for out of tree drivers
-> >>>>> be compiled by a version of gcc that adds the ENDBRA instructions?
-> >>>>>
-> >>>>> If enabled for userspace, what happens if an old .so is dynamically
-> >>>>> loaded?
-> >>>
-> >>> CET will be disabled by ld.so in this case.
-> >>
-> >> What if a program starts a thread and then dlopens a legacy .so?
-> >
-> > Or has shadow stack enabled and opens a .so that uses retpolines?
-> >
->
-> When shadow stack is enabled, retpolines are not necessary.  I don't
-> know if glibc has been updated for detection of this case.  H.J.?
->
-> >>>>> Or do all userspace programs and libraries have to have been compiled
-> >>>>> with the ENDBRA instructions?
-> >>>
-> >>> Correct.  ld and ld.so check this.
-> >>>
-> >>>> If you believe that the userspace tooling for the legacy IBT table
-> >>>> actually works, then it should just work.  Yu-cheng, etc: how well
-> >>>> tested is it?
-> >>>>
-> >>>
-> >>> Legacy IBT bitmap isn't unused since it doesn't cover legacy codes
-> >>> generated by legacy JITs.
-> >>>
-> >>
-> >> How does ld.so decide whether a legacy JIT is in use?
-> >
-> > What if your malware just precedes its 'jump into the middle of a function'
-> > with a %ds segment override?
-> >
->
-> Do you mean far jump?  It is not tracked by ibt, which tracks near
-> indirect jump.  The details can be found in Intel SDM.
->
-> > I may have a real problem here.
-> > We currently release program/library binaries that run on Linux
-> > distributions that go back as far as RHEL6 (2.6.32 kernel era).
-> > To do this everything is compiled on a userspace of the same vintage.
-> > I'm not at all sure a new enough gcc to generate the ENDBR64 instructions
-> > will run on the relevant system - and may barf on the system headers
-> > even if we got it to run.
-> > I really don't want to have to build multiple copies of everything.
->
-> This is likely OK.  We have tested many combinations.  Should you run
-> into any issue, please let glibc people know.
->
+Hi Mauro,
 
-If you have a Tiger Lake laptop, you can install the CET kernel on
-Fedora 34 or Ubuntu 20.10/21.04.
+Thanks a lot for taking care of this.
 
--- 
-H.J.
+On Wed, 2021-04-28 at 16:52 +0200, Mauro Carvalho Chehab wrote:
+> The device_run() first enables the clock and then
+> tries to resume PM runtime, checking for errors.
+> 
+> Well, if for some reason the pm_runtime can not resume,
+> it would be better to detect it beforehand.
+> 
+> So, change the order inside device_run().
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+Clocks could be behind power-domains, IIRC, so this change
+is fixing that.
+
+However, this has ever been a problem for this driver,
+so I don't think it makes sense to bother with Fixes tag.
+
+Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+
+Thanks,
+Ezequiel
+
+> ---
+>  drivers/staging/media/hantro/hantro_drv.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
+> index 25fa36e7e773..67de6b15236d 100644
+> --- a/drivers/staging/media/hantro/hantro_drv.c
+> +++ b/drivers/staging/media/hantro/hantro_drv.c
+> @@ -160,14 +160,14 @@ static void device_run(void *priv)
+>         src = hantro_get_src_buf(ctx);
+>         dst = hantro_get_dst_buf(ctx);
+>  
+> -       ret = clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks);
+> -       if (ret)
+> -               goto err_cancel_job;
+> -
+>         ret = pm_runtime_resume_and_get(ctx->dev->dev);
+>         if (ret < 0)
+>                 goto err_cancel_job;
+>  
+> +       ret = clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks);
+> +       if (ret)
+> +               goto err_cancel_job;
+> +
+>         v4l2_m2m_buf_copy_metadata(src, dst, true);
+>  
+>         ctx->codec_ops->run(ctx);
+
+
