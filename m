@@ -2,113 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D327F36E017
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 22:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6827E36E018
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 22:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241816AbhD1UIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 16:08:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52514 "EHLO
+        id S241834AbhD1UIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 16:08:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236700AbhD1UHw (ORCPT
+        with ESMTP id S238991AbhD1UHx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 16:07:52 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42120C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:06:45 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id d10so7163435pgf.12
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:06:45 -0700 (PDT)
+        Wed, 28 Apr 2021 16:07:53 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B535CC0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:06:53 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id r3so10856724oic.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:06:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=CAez7Qyq734BJY4fOHAHF9NJa5VleU6E2eJWVTM5cMY=;
-        b=dNmj2jyG74w6+mYtabfMSjs7cBIPdUxTxmyj4CKo83J4WFnMPA+vAqYBOj3Xgtt6Vf
-         RpoC4mfT2F0H1DdoBTKwS2P4EMiiDNEcHeo+PYiXLTKe/hU4nSTNbCALUq/+yC/Y8N5F
-         T3/jL1RzGWLDE1Ba2vzaetcDUdgp7tVT9PTd6qt+vRBlSr6lqckrHsIdhgWHMRKesRWR
-         sKGk01KaR6sUdjmDiJZVUAJ8hRY4p9OhtbPRGNQxLaKpZ9C3z5wzp6l3uQ07l/a2zGZ4
-         RcjSGObbebNx5pknTQKC/2MuATCYEfrwBjUh46A+HbL/DvqeeIFhYwoJOxoKfvHaZ9eB
-         mWoQ==
+        bh=vl7A1Bucz63bZ2sNuRyc6lFBD6YydDSFIrYy2XAFbW4=;
+        b=V+PDi+r9lcfd6nKjXBqXO7T4yGd0umuQaXFT35w2tV6DrX6On7FxjGWqdF3tS5MSE+
+         P+pX2ad6Mtyzf1c4KfvG0i9/O0LgZYK3O1gQjWOZFZDe3UpiaL5jPZ9HtwormPpB9AqP
+         Dd9pzkECFx19XuqHapvjUsFVxbCALKkus+6Gzmt7riMQJfy5QbldfUgIEg9y+93qAKO7
+         aO8sixH0nO+n5uEt3E9LaBcbDaEjV6aJfCQv0vtFQFhV2YscJemZjO4eIvOQ3Fhm0L6d
+         QLRpdqFumHBAi1ZJ98WtnZC4awoXEe8bu2/KJG5+VkeNdS0mEWyELY5ebkIwaupWcxxw
+         pZkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=CAez7Qyq734BJY4fOHAHF9NJa5VleU6E2eJWVTM5cMY=;
-        b=rsrfXk6j1+RTsFpflhq6wykzVpnlRj8ZDi1MDImDFVR8RtDL42ty+Hs1voVud4RS7W
-         DKV6m1AM6JRIHKeSFwJfPYdEQjGNM3bQAV9bOuGaeuvh2leB4+daQpsAuw6H/sJI9yAL
-         CCE3k1te1iJV9Wn/zC/Uz8K7AgXMIf2Q4Bvgnt3G0b5qtrfTh1exipIveDK9ak5k5Evb
-         fGmdxMZrGj0FSqbCApb7aqhLop7cvL9p+Fc6DiAIChHeNORY2BJNJV5NoVIKd3ogJ6Ym
-         m4kdM7rli4lXHHDq9sveEe28sm8FOez3ydHIKR+2yeiuC+pENyoL2v4iXEHPZ+HqdBT9
-         gizw==
-X-Gm-Message-State: AOAM532dVSxoTdmZVFIsOahnUotg2Np3yCjQTbLd41iqm4MSFWTTMvyM
-        yjVBiVhZzI9a3mfw4jeyhb3GOloBih4Vuw==
-X-Google-Smtp-Source: ABdhPJx6CsUROTTzjBOZDTARdsQ0hVWsBEZk8B/IPbqUlZijhoakdsN71COq1doo9BY0qDhDa12OJw==
-X-Received: by 2002:a63:40c1:: with SMTP id n184mr28334914pga.219.1619640404428;
-        Wed, 28 Apr 2021 13:06:44 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id w7sm431182pff.208.2021.04.28.13.06.43
+        bh=vl7A1Bucz63bZ2sNuRyc6lFBD6YydDSFIrYy2XAFbW4=;
+        b=i3pIn5FXuJaucbbUEbHVOpSt4zYh8J1BFZiTXMU+e3pVozE8JgfaN9iSIgkvSMC7Nc
+         GIrRf01nCDjetGaWbspvHsXCr5O1ZH71xFFfrjJlR4ZWLVZlgzzedy27zVTgPvFwbBjC
+         Cn4bRQ9QgXxk7Dqq1tGxLiK1/SzefwOr65x3PJ2/S4tjvE+eTb0KysE3biy9EE1NK+b+
+         LdfsbrLS5hOpmM2iitsmG14+TEf7T5Bw3XP/pUtnrV5Aj4VNf0ppn2igmm5JUz5pxd7X
+         g05lx9lJG0LvdGBdvAAqrc2JjDVgymMt0HDldwk2emMP9doUkXIFV1n848rlMsH84VYc
+         4jMg==
+X-Gm-Message-State: AOAM532CAHEFPdEV3mKtv9z8z9/Zs1OWAp35IcNt+DJ/VH50JkdeJHGK
+        SZxrvhQv6CI+kANYaN9kEMpV6g==
+X-Google-Smtp-Source: ABdhPJzAsbDFCLgX6C6JhjCevrUavXR+5G/d1FZkQZ2elBaaEKg8pKvEarGLagSh2TswjmnxMNfDZw==
+X-Received: by 2002:a05:6808:18e:: with SMTP id w14mr21763329oic.159.1619640413040;
+        Wed, 28 Apr 2021 13:06:53 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id x45sm195564otr.35.2021.04.28.13.06.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 13:06:43 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 20:06:39 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Steve Rutherford <srutherford@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Venu Busireddy <venu.busireddy@oracle.com>
-Subject: Re: [PATCH v2 2/2] KVM: x86: add MSR_KVM_MIGRATION_CONTROL
-Message-ID: <YInAT6MYU2N0tKSW@google.com>
-References: <20210421173716.1577745-1-pbonzini@redhat.com>
- <20210421173716.1577745-3-pbonzini@redhat.com>
- <YIiMrWS60NuesU63@google.com>
- <CABayD+dKLTx5kQTaKASQkcam4OiHJueuL1Vf32soiLq=torg+w@mail.gmail.com>
+        Wed, 28 Apr 2021 13:06:52 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 15:06:50 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Subbaraman Narayanamurthy <subbaram@codeaurora.org>
+Cc:     aghayal@codeaurora.org, collinsd@codeaurora.org,
+        fenglinw@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] Add QCOM PMIC PWM driver
+Message-ID: <20210428200650.GM1908499@yoga>
+References: <20210428155422.GL1908499@yoga>
+ <1619635777-2872-1-git-send-email-subbaram@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABayD+dKLTx5kQTaKASQkcam4OiHJueuL1Vf32soiLq=torg+w@mail.gmail.com>
+In-Reply-To: <1619635777-2872-1-git-send-email-subbaram@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021, Steve Rutherford wrote:
-> On Tue, Apr 27, 2021 at 3:14 PM Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > On Wed, Apr 21, 2021, Paolo Bonzini wrote:
-> > > Add a new MSR that can be used to communicate whether the page
-> > > encryption status bitmap is up to date and therefore whether live
-> > > migration of an encrypted guest is possible.
-> > >
-> > > The MSR should be processed by userspace if it is going to live
-> > > migrate the guest; the default implementation does nothing.
-> > >
-> > > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> > > ---
-> >
-> > ...
-> >
-> > > @@ -91,6 +93,8 @@ struct kvm_clock_pairing {
-> > >  /* MSR_KVM_ASYNC_PF_INT */
-> > >  #define KVM_ASYNC_PF_VEC_MASK                        GENMASK(7, 0)
-> > >
-> > > +/* MSR_KVM_MIGRATION_CONTROL */
-> > > +#define KVM_PAGE_ENC_STATUS_UPTODATE         (1 << 0)
-> >
-> > Why explicitly tie this to encryption status?  AFAICT, doing so serves no real
-> > purpose and can only hurt us in the long run.  E.g. if a new use case for
-> > "disabling" migration comes along and it has nothing to do with encryption, then
-> > it has the choice of either using a different bit or bastardizing the existing
-> > control.
-> >
-> > I've no idea if such a use case is remotely likely to pop up, but allowing for
-> > such a possibility costs us nothing.
->
-> Using a different bit sounds fine to me. It would allow us to avoid
-> stuffing multiple meanings into a single bit, which would still happen
-> even if we had a better name.
+On Wed 28 Apr 13:49 CDT 2021, Subbaraman Narayanamurthy wrote:
 
-But there's only multiple meanings if we define the bit to be specific to
-page encryption.  E.g. if the bit is KVM_READY_FOR_MIGRATION, then its meaning
-(when cleared) is simply "please don't migrate me, I will die".  KVM doesn't
-care _why_ the guest is telling userspace that it's not ready for migration, nor
-does KVM care if userspace honors the indicator.
+> >> Add PWM driver to support PWM modules inside QCOM PMIC chips which are accessed
+> >> through SPMI bus. Normally, there would be multiple PWM modules with adjacent
+> >> address spaces present in one PMIC chip, and each PWM module has 0x100 size of
+> >> address space. With this driver, a pwm_chip with multiple pwm_device individuals
+> >> is created, and each pwm_device individual is corresponding to one PWM module.
+> >> 
+> 
+> > Exposing this as individual pwm_chips will prevent us from enabling the
+> > LED related use cases (patterns and multicolor) that most versions of
+> > the hardware support.
+> 
+> > I proposed [1] a while ago and think this is a better approach. I'll
+> > take some time to respin this and send out the next version.
+> 
+> > [1] https://lore.kernel.org/linux-arm-msm/20201021201224.3430546-1-bjorn.andersson@linaro.org/
+> 
+> Hi Bjorn,
+> Yes, we came across this patch series but this driver (leds-qcom-lpg) is a
+> combo one which provides support only for RGB LEDs (or TRI_LED module) along
+> with PWM/LPG channels allocated for it. Say, if we've additional PWM channels
+> on the same PMIC (that provides user-interface support) or another PMIC
+> (non user-interface) that has multiple PWM channels that are not used for LED
+> notifications, it would be good to have a separate PWM driver to support such
+> channels IMHO. There are couple of use cases we've come across recently.
+> 
+> 1. Using a PWM channel for controlling external LCD backlight controller
+> 2. Using a PWM channel for controlling a haptics actuator
+> 
+
+The LPG driver, as it's currently written, support using each channel as
+a LED, part of a multicolor LED or as a pwm_chip. It's been tested on
+pm8916 (which doesn't have triled or the lut), pm*8994, pmi8996 and
+pm8150* in various combinations.
+
+In particular the PWM-only modes that you describe here is how the
+driver has been used on db410c, for driving the "backlight GPIO" in the
+low-speed connector.
+
+Regards,
+Bjorn
