@@ -2,114 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2972D36E1EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 01:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27AD436E1EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 01:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbhD1W5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 18:57:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhD1W5k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 18:57:40 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84AEDC06138B
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 15:56:55 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id 10so2233866pfl.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 15:56:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=j9J2Po6hg3Mws0Z8zIwA8YZmExUPMEbAlxsDVmpECto=;
-        b=SGHxTwJlAK0ItXxEiNEHiyNq3bXcziNwt3q7yMHZXQWirJm5OGHF9HpvFMFKu4WSMp
-         cKOyLBBhQrRV7g+JB2K3l6iUNdzCnw60IZDl+o1vVyRReZWT3cXzqR2YD/rpsDzOpiXS
-         wBw6UVG52xR46FbG7sIwRJc1OOu1lnvuUQNK3GwLHF5V7fXkTaapTqy/Exvd05tF0Wkr
-         wV5Z3r3tmE2YG9Zx4XIOq3FRm7x0fC+fWs/h0j5Or/z0X8psw2O9RAvGykngkvrG3dxs
-         sRn7v8L1XI09Nl++tUaFZXtyfwt0ZOlAmgbz3f1snSOBBRx7fW5ieOkwbMVsfTSpTNSB
-         bHdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=j9J2Po6hg3Mws0Z8zIwA8YZmExUPMEbAlxsDVmpECto=;
-        b=D1lwpJ9nR2+lxXiws0I587t2ebXCI8sQgWbFXo4ImruizVVrGVBW1s5WeKbjDZC39g
-         8TeHS2MDDaxqpiys8FQiq7KIMAq05wL0HUxXKy8iO0ca1v8VBJU0mDfF9Dn4/rNFUj0p
-         A8cgwobkiTOxwIiEECe6T48uLQRWbK0s+aYkAri+NSEIs0yidpAH3F6mG4yqZ9yTETLB
-         Ffzl2D4jg1uL5zL0F4tHhmuhucHZwiNPIiNUEIwYwVx0xlBLUH79agIbhJ1f/QfDdihB
-         /Yo4Jxn5EW5nAWWSC+IWtvgFAsOs8yuHJD3ZNip42E07a6qNZKOX7/SVqHwXO3YvdHXv
-         il1w==
-X-Gm-Message-State: AOAM530Oor0GtVukTQ+aSA9TJkn5IoL+jwiCVSP+UyTlHVeS/NgqgPk3
-        gGre+1S+jslgez3MtgbeLVNNNw==
-X-Google-Smtp-Source: ABdhPJx3OHZ8/hqLcVrY04nhXjnyxBow7PNlgjM6c+e7FkP3QPRVl0499+CVQL3qqh83h+bBiiUtOg==
-X-Received: by 2002:a62:170e:0:b029:1fa:7161:fd71 with SMTP id 14-20020a62170e0000b02901fa7161fd71mr29938355pfx.35.1619650614924;
-        Wed, 28 Apr 2021 15:56:54 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id e5sm142067pgj.91.2021.04.28.15.56.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 15:56:54 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 22:56:50 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH] KVM: LAPIC: Accurately guarantee busy wait for timer to
- expire when using hv_timer
-Message-ID: <YInoMjNJRgm3gUYX@google.com>
-References: <1619608082-4187-1-git-send-email-wanpengli@tencent.com>
+        id S229939AbhD1XE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 19:04:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44174 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229593AbhD1XEx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 19:04:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC9FE61461
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 23:04:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619651047;
+        bh=0afqfeFLgdB0fTNzaLFOMLYgWe3yB1y7QqmEFNzjedY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=s8CPOaIFrcZ6bgfFP6FstGuiS/Ep8lWIPMWnb/Iw39Kg8z0S6Hu4s34I7h0HF9dsO
+         +jFJk3d8n+w7lQ3eNw+yzriu6NxFWTCNH+jtp5oeyK8l/QS+jeRDJ+d1OnU0USEegh
+         +uux6L2gxngj6rNRFS8k+uTH3ngbWIj4yS5oYVpyMQM86An6XE9OCy2mYbVY4ECwti
+         AsMh5rD4V7hbfjc3SXOiaKr7Q6bDENZ5iN1pV8hPkHPzM/l8lhf29EM91z/4YxbmpZ
+         TmBqhOZm3Up25Hcy3mCbTpIA4g3ot3UsnqAZyVor05LSO9XfRFejgMe+QRf7O7MPDh
+         OmWSmvkCLu+yA==
+Received: by mail-ej1-f41.google.com with SMTP id u21so97030046ejo.13
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 16:04:07 -0700 (PDT)
+X-Gm-Message-State: AOAM532v3d1ZHg69IXKaju+ozd+sqw5TPApgiNNWZmNj8oWIoJia+pI0
+        1bNlYoUZVmz6Gwgnyb/VGnB8kGAdcO62Aws5k4mMFA==
+X-Google-Smtp-Source: ABdhPJzcb8Hw7Su0s8Rgxkv7jYWxNcuy2WTKMRFpTCb8fN9sWcUB+ds4ywq5Mo5SLRg2DAoSXXOtfYklNGY1ADo5ZH8=
+X-Received: by 2002:a17:906:6896:: with SMTP id n22mr32665459ejr.316.1619651045990;
+ Wed, 28 Apr 2021 16:04:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1619608082-4187-1-git-send-email-wanpengli@tencent.com>
+References: <20210427204315.24153-1-yu-cheng.yu@intel.com> <20210427204315.24153-26-yu-cheng.yu@intel.com>
+In-Reply-To: <20210427204315.24153-26-yu-cheng.yu@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 28 Apr 2021 16:03:55 -0700
+X-Gmail-Original-Message-ID: <CALCETrVTeYfzO-XWh+VwTuKCyPyp-oOMGH=QR_msG9tPQ4xPmA@mail.gmail.com>
+Message-ID: <CALCETrVTeYfzO-XWh+VwTuKCyPyp-oOMGH=QR_msG9tPQ4xPmA@mail.gmail.com>
+Subject: extending ucontext (Re: [PATCH v26 25/30] x86/cet/shstk: Handle
+ signals for shadow stack)
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        linux-arch <linux-arch@vger.kernel.org>
+Cc:     X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021, Wanpeng Li wrote:
-> From: Wanpeng Li <wanpengli@tencent.com>
-> 
-> Commit ee66e453db13d (KVM: lapic: Busy wait for timer to expire when 
-> using hv_timer) tries to set ktime->expired_tscdeadline by checking 
-> ktime->hv_timer_in_use since lapic timer oneshot/periodic modes which 
-> are emulated by vmx preemption timer also get advanced, they leverage 
-> the same vmx preemption timer logic with tsc-deadline mode. However, 
-> ktime->hv_timer_in_use is cleared before apic_timer_expired() handling, 
-> let's delay this clearing in preemption-disabled region.
-> 
-> Fixes: ee66e453db13d (KVM: lapic: Busy wait for timer to expire when using hv_timer)
+On Tue, Apr 27, 2021 at 1:44 PM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
+>
+> When shadow stack is enabled, a task's shadow stack states must be saved
+> along with the signal context and later restored in sigreturn.  However,
+> currently there is no systematic facility for extending a signal context.
+> There is some space left in the ucontext, but changing ucontext is likely
+> to create compatibility issues and there is not enough space for further
+> extensions.
+>
+> Introduce a signal context extension struct 'sc_ext', which is used to save
+> shadow stack restore token address.  The extension is located above the fpu
+> states, plus alignment.  The struct can be extended (such as the ibt's
+> wait_endbr status to be introduced later), and sc_ext.total_size field
+> keeps track of total size.
 
-Well that's embarassing.  I suspect/hope I tested the case where start_hv_timer()
-detects the timer already expired.  On the plus side, start_hv_timer() calls
-cancel_hv_timer() after apic_timer_expired(), so there are unlikely to be hidden
-side effects (and cancel_hv_timer() is tiny).
+I still don't like this.
 
-> Cc: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+Here's how the signal layout works, for better or for worse:
 
-Reviewed-by: Sean Christopherson <seanjc@google.com>
+The kernel has:
 
-> ---
->  arch/x86/kvm/lapic.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> index 152591f..c0ebef5 100644
-> --- a/arch/x86/kvm/lapic.c
-> +++ b/arch/x86/kvm/lapic.c
-> @@ -1913,8 +1913,8 @@ void kvm_lapic_expired_hv_timer(struct kvm_vcpu *vcpu)
->  	if (!apic->lapic_timer.hv_timer_in_use)
->  		goto out;
->  	WARN_ON(rcuwait_active(&vcpu->wait));
-> -	cancel_hv_timer(apic);
->  	apic_timer_expired(apic, false);
-> +	cancel_hv_timer(apic);
->  
->  	if (apic_lvtt_period(apic) && apic->lapic_timer.period) {
->  		advance_periodic_target_expiration(apic);
-> -- 
-> 2.7.4
-> 
+struct rt_sigframe {
+    char __user *pretcode;
+    struct ucontext uc;
+    struct siginfo info;
+    /* fp state follows here */
+};
+
+This is roughly the actual signal frame.  But userspace does not have
+this struct declared, and user code does not know the sizes of the
+fields.  So it's accessed in a nonsensical way.  The signal handler
+function is passed a pointer to the whole sigframe implicitly in RSP,
+a pointer to &frame->info in RSI, anda pointer to &frame->uc in RDX.
+User code can *find* the fp state by following a pointer from
+mcontext, which is, in turn, found via uc:
+
+struct ucontext {
+    unsigned long      uc_flags;
+    struct ucontext  *uc_link;
+    stack_t          uc_stack;
+    struct sigcontext uc_mcontext;  <-- fp pointer is in here
+    sigset_t      uc_sigmask;    /* mask last for extensibility */
+};
+
+The kernel, in sigreturn, works a bit differently.  The sigreturn
+variants know the base address of the frame but don't have the benefit
+of receiving pointers to the fields.  So instead the kernel takes
+advantage of the fact that it knows the offset to uc and parses uc
+accordingly.  And the kernel follows the pointer in mcontext to find
+the fp state.  The latter bit is quite important later.  The kernel
+does not parse info at all.
+
+The fp state is its own mess.  When XSAVE happened, Intel kindly (?)
+gave us a software defined area between the "legacy" x87 region and
+the modern supposedly extensible part.  Linux sticks the following
+structure in that hole:
+
+struct _fpx_sw_bytes {
+    /*
+     * If set to FP_XSTATE_MAGIC1 then this is an xstate context.
+     * 0 if a legacy frame.
+     */
+    __u32                magic1;
+
+    /*
+     * Total size of the fpstate area:
+     *
+     *  - if magic1 == 0 then it's sizeof(struct _fpstate)
+     *  - if magic1 == FP_XSTATE_MAGIC1 then it's sizeof(struct _xstate)
+     *    plus extensions (if any)
+     */
+    __u32                extended_size;
+
+    /*
+     * Feature bit mask (including FP/SSE/extended state) that is present
+     * in the memory layout:
+     */
+    __u64                xfeatures;
+
+    /*
+     * Actual XSAVE state size, based on the xfeatures saved in the layout.
+     * 'extended_size' is greater than 'xstate_size':
+     */
+    __u32                xstate_size;
+
+    /* For future use: */
+    __u32                padding[7];
+};
+
+
+That's where we are right now upstream.  The kernel has a parser for
+the FPU state that is bugs piled upon bugs and is going to have to be
+rewritten sometime soon.  On top of all this, we have two upcoming
+features, both of which require different kinds of extensions:
+
+1. AVX-512.  (Yeah, you thought this story was over a few years ago,
+but no.  And AMX makes it worse.)  To make a long story short, we
+promised user code many years ago that a signal frame fit in 2048
+bytes with some room to spare.  With AVX-512 this is false.  With AMX
+it's so wrong it's not even funny.  The only way out of the mess
+anyone has come up with involves making the length of the FPU state
+vary depending on which features are INIT, i.e. making it more compact
+than "compact" mode is.  This has a side effect: it's no longer
+possible to modify the state in place, because enabling a feature with
+no space allocated will make the structure bigger, and the stack won't
+have room.  Fortunately, one can relocate the entire FPU state, update
+the pointer in mcontext, and the kernel will happily follow the
+pointer.  So new code on a new kernel using a super-compact state
+could expand the state by allocating new memory (on the heap? very
+awkwardly on the stack?) and changing the pointer.  For all we know,
+some code already fiddles with the pointer.  This is great, except
+that your patch sticks more data at the end of the FPU block that no
+one is expecting, and your sigreturn code follows that pointer, and
+will read off into lala land.
+
+2. CET.  CET wants us to find a few more bytes somewhere, and those
+bytes logically belong in ucontext, and here we are.
+
+This is *almost*, but not quite, easy: struct ucontext is already
+variable length!  Unfortunately, the whole variable length portion is
+used up by uc_sigmask.  So I propose that we introduce a brand new
+bona fide extension mechanism.  It works like this:
+
+First, we add a struct ucontext_extension at the end.  It looks like:
+
+struct ucontext_extension {
+  u64 length;  /* sizeof(struct ucontext_extension) */
+  u64 flags;  /* we will want this some day */
+  [CET stuff here]
+  [future stuff here]
+};
+
+And we locate it by scrounging a word somewhere in ucontext to give
+the offset from the beginning of struct ucontext to
+ucontext_extension.  We indicate the presence of this feature using a
+new uc_flags bit.  I can think of a couple of vaguely reasonable
+places:
+
+a) the reserved word in sigcontext.  This is fine for x86 but not so
+great if other architectures want to do this.
+
+b) uc_link.  Fine everywhere but powerpc.  Oops.
+
+c) use the high bits of uc_flags.  After all, once we add extensions,
+we don't need new flags, so we can steal 16 high bits of uc_flags for
+this.
+
+I think I'm in favor of (c).  We do:
+
+(uc_flags & 0xffff0000) == 0: extension not present
+
+Otherwise the extension region is at ucontext + (uc_flags >> 16).
+
+And sigreturn finds the extension the same way, because CRIU can
+already migrate a signal frame from one kernel to another, your patch
+breaks this, and having sigreturn hardcode the offset would also break
+it.
+
+What do you think?
