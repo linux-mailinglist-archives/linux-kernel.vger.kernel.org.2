@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 498D536D1ED
+	by mail.lfdr.de (Postfix) with ESMTP id 98CBE36D1EE
 	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 08:00:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbhD1GAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 02:00:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39324 "EHLO mail.kernel.org"
+        id S236031AbhD1GAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 02:00:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235809AbhD1GAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 02:00:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6EB5613FB;
-        Wed, 28 Apr 2021 05:59:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619589573;
-        bh=PzXRzqyaN0AHEgEDWQ7ORDtLyuOZqfpRHAtszxM+aMo=;
+        id S235809AbhD1GAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 02:00:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6570261418;
+        Wed, 28 Apr 2021 05:59:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619589590;
+        bh=FgrS4XUHz0O6Fa4p86bx504/a38cD5C/C9ebOq8CMgE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=15ttKwTuuNivW2WUxOzPsphx0FRf9V1T8rt8jHcNnVVId6Lvj5uNEq3xV/c5gCrt8
-         kUKvwWswbZa1rZYStYXr3DoADlotDZXvS1mi3zdsqzkseIBK48Yce+nLvCDqZtFmnq
-         u1wakr7dYWCrxLNgwu1w0kUdlF1b42NPjmrWwnYo=
-Date:   Wed, 28 Apr 2021 07:59:28 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Timo Sigurdsson <public_timo.s@silentcreek.de>
-Cc:     axboe@kernel.dk, mripard@kernel.org, wens@csie.org,
-        jernej.skrabec@siol.net, linux-ide@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org, oliver@schinagl.nl,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] ata: ahci_sunxi: Disable DIPM
-Message-ID: <YIj5wKTdOVWLdD2d@kroah.com>
-References: <20210427230537.21423-1-public_timo.s@silentcreek.de>
+        b=kxQO8XXtHgJ92g69cQtUE/ztppXG10NjcTg3AAVJeNGHFfHBIwaxtHqYm4HKtsOM8
+         4pSH5hGTD/9dj+8+vp8XTh4poyGEKzDLbHfyz/p+fkTYk5UbI7PvZTP0EBlYgRcDBt
+         /UDubaGboihUuxJZ1iP9B6sJRYsCqp62pwxj1WOiQZr6AQIXrzuCoeW+b3lhv2xDNN
+         SwA6SCvteDVDkn4bMSCBOJLV9ILEVFDAzMKmVvjSB+LjAS1Zh6xwmAuOxr+nuYUIDO
+         hivwDhPoKspBevnIwMGctMyL5ixCSC4HKCbNvK1zsCWv9dkrAhxTjUQvkAJ6nuZtK0
+         Yj87vphXjtkmg==
+Date:   Wed, 28 Apr 2021 08:59:41 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: arm32: panic in move_freepages (Was [PATCH v2 0/4] arm64: drop
+ pfn_valid_within() and simplify pfn_valid())
+Message-ID: <YIj5zcbHBHt7CC8B@kernel.org>
+References: <9aa68d26-d736-3b75-4828-f148964eb7f0@huawei.com>
+ <YIEl8aKr8Ly0Zd3O@kernel.org>
+ <33fa74c2-f32d-f224-eb30-acdb717179ff@huawei.com>
+ <2a1592ad-bc9d-4664-fd19-f7448a37edc0@huawei.com>
+ <YIUYG8N9T3/C/tSG@kernel.org>
+ <52f7d03b-7219-46bc-c62d-b976bc31ebd5@huawei.com>
+ <YIZNq5HMfJ1rWytv@kernel.org>
+ <2d879629-3059-fd42-428f-4b7c2a73d698@huawei.com>
+ <YIet5X7lgygD9rpZ@kernel.org>
+ <259d14df-a713-72e7-4ccb-c06a8ee31e13@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210427230537.21423-1-public_timo.s@silentcreek.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <259d14df-a713-72e7-4ccb-c06a8ee31e13@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 01:05:37AM +0200, Timo Sigurdsson wrote:
-> DIPM is unsupported or broken on sunxi. Trying to enable the power
-> management policy med_power_with_dipm on an Allwinner A20 SoC based board
-> leads to immediate I/O errors and the attached SATA disk disappears from
-> the /dev filesystem. A reset (power cycle) is required to make the SATA
-> controller or disk work again. The A10 and A20 SoC data sheets and manuals
-> don't mention DIPM at all [1], so it's fair to assume that it's simply not
-> supported. But even if it were, it should be considered broken and best be
-> disabled in the ahci_sunxi driver.
+On Tue, Apr 27, 2021 at 07:08:59PM +0800, Kefeng Wang wrote:
 > 
-> Fixes: c5754b5220f0 ("ARM: sunxi: Add support for Allwinner SUNXi SoCs sata to ahci_platform")
-> 
-> [1] https://github.com/allwinner-zh/documents/tree/master/
-> 
-> Signed-off-by: Timo Sigurdsson <public_timo.s@silentcreek.de>
-> Tested-by: Timo Sigurdsson <public_timo.s@silentcreek.de>
-> ---
->  drivers/ata/ahci_sunxi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/ata/ahci_sunxi.c b/drivers/ata/ahci_sunxi.c
-> index cb69b737cb49..56b695136977 100644
-> --- a/drivers/ata/ahci_sunxi.c
-> +++ b/drivers/ata/ahci_sunxi.c
-> @@ -200,7 +200,7 @@ static void ahci_sunxi_start_engine(struct ata_port *ap)
->  }
->  
->  static const struct ata_port_info ahci_sunxi_port_info = {
-> -	.flags		= AHCI_FLAG_COMMON | ATA_FLAG_NCQ,
-> +	.flags		= AHCI_FLAG_COMMON | ATA_FLAG_NCQ | ATA_FLAG_NO_DIPM,
->  	.pio_mask	= ATA_PIO4,
->  	.udma_mask	= ATA_UDMA6,
->  	.port_ops	= &ahci_platform_ops,
-> -- 
-> 2.26.2
-> 
-<formletter>
+> On 2021/4/27 14:23, Mike Rapoport wrote:
+> > On Mon, Apr 26, 2021 at 11:26:38PM +0800, Kefeng Wang wrote:
+> > > On 2021/4/26 13:20, Mike Rapoport wrote:
+> > > > On Sun, Apr 25, 2021 at 03:51:56PM +0800, Kefeng Wang wrote:
+> > > > > On 2021/4/25 15:19, Mike Rapoport wrote:
+> > > > > 
+> > > > >       On Fri, Apr 23, 2021 at 04:11:16PM +0800, Kefeng Wang wrote:
+> > > > > 
+> > > > >           I tested this patchset(plus arm32 change, like arm64 does)
+> > > > >           based on lts 5.10，add some debug log, the useful info shows
+> > > > >           below, if we enable HOLES_IN_ZONE, no panic, any idea,
+> > > > >           thanks.
+> > > > > 
+> > > > >       Are there any changes on top of 5.10 except for pfn_valid() patch?
+> > > > >       Do you see this panic on 5.10 without the changes?
+> > > > > 
+> > > > > Yes, there are some BSP support for arm board based on 5.10,
+> > Is it possible to test 5.12?
 
-This is not the correct way to submit patches for inclusion in the
-stable kernel tree.  Please read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to do this properly.
+Do you use SPARSMEM? If yes, what is your section size?
+What is the value if CONFIG_FORCE_MAX_ZONEORDER in your configuration?
 
-</formletter>
+-- 
+Sincerely yours,
+Mike.
