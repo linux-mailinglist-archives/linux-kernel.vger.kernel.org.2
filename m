@@ -2,138 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6DAF36D214
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 08:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB5736D217
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 08:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236141AbhD1GQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 02:16:05 -0400
-Received: from mga05.intel.com ([192.55.52.43]:32847 "EHLO mga05.intel.com"
+        id S236175AbhD1GQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 02:16:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229464AbhD1GQE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 02:16:04 -0400
-IronPort-SDR: 5u0bowKIMwxtTxCfx0zpbsIpfHMafNMpYS3bWE2yUkfsJxIZbyZ3VYtIiPgxiXFylsyv1mm/Go
- ywDN2cmtPzDA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9967"; a="282001975"
-X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
-   d="scan'208";a="282001975"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 23:15:19 -0700
-IronPort-SDR: GMDDMjgMYoZyzKLyhMFgmpQlQ9mesaOT5JMyWzgX6wplQcfhiV//g5d2WRjtEiBdm8jCByaqeE
- eHwdAfs2Wl9g==
-X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
-   d="scan'208";a="430145653"
-Received: from xingzhen-mobl.ccr.corp.intel.com (HELO [10.238.4.46]) ([10.238.4.46])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 23:15:17 -0700
-Subject: Re: [LKP] Re: [mm/writeback] e5dbd33218:
- will-it-scale.per_process_ops -3.8% regression
-To:     Matthew Wilcox <willy@infradead.org>, lkp <oliver.sang@intel.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com
-References: <20210423054601.GC13944@xsang-OptiPlex-9020>
- <20210423124753.GA235567@casper.infradead.org>
-From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Message-ID: <e4ea454c-aa68-24de-709b-9fee462e3dcf@linux.intel.com>
-Date:   Wed, 28 Apr 2021 14:15:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S229464AbhD1GQx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 02:16:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 13AC861411;
+        Wed, 28 Apr 2021 06:16:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619590569;
+        bh=XV3oMV5FoWuEKQt9D6lhsXyyVkS6RL6u4LEmp+7nXxs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lYvTziSA/4pv+NC8fzyfn3syRWuQk6KU/X6XBOZqYrOTqYUkIZJ5wqYMUNXUxnnZf
+         9LoHNjGTvFYYtA+6ewnA+Ldw4qu5J98C72cUjqYzlVVqQogZRWgBMqxlbErhKjiEFq
+         VwUoi91q1aver0mxw7c5Ujvm5+2Il1vbMFU18WA4UFggyPcSZ3F1b9s4vBGzTNk/3z
+         Rg5qbZqJYnjx3Psv2KRFZsuZnJM3REaJciX85GYpAXHwGWhV9dpS9rLOLMOGuwyEiL
+         fnTdVTQlLkCmtMeGl4xzIQvPEkk7Qp67G+bAXPL0esxnfp0WnL5Az0g93OdCMcGKRl
+         eZANV0bTZhiew==
+Date:   Wed, 28 Apr 2021 08:16:02 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Niklas =?UTF-8?B?U8O2ZGVybHVuZA==?= 
+        <niklas.soderlund@ragnatech.se>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH v3 78/79] media: rcar-vin: use
+ pm_runtime_resume_and_get()
+Message-ID: <20210428081602.68a0d82f@coco.lan>
+In-Reply-To: <YIhwLhJSNyKPbzu9@oden.dyn.berto.se>
+References: <cover.1619519080.git.mchehab+huawei@kernel.org>
+        <85d92ba9e709ef00673a3e0e11769b121745e9cb.1619519080.git.mchehab+huawei@kernel.org>
+        <YIhwLhJSNyKPbzu9@oden.dyn.berto.se>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210423124753.GA235567@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthew,
+Hi Niklas,
 
-On 4/23/2021 8:47 PM, Matthew Wilcox wrote:
-> On Fri, Apr 23, 2021 at 01:46:01PM +0800, kernel test robot wrote:
->> FYI, we noticed a -3.8% regression of will-it-scale.per_process_ops due to commit:
->> commit: e5dbd33218bd8d87ab69f730ab90aed5fab7eb26 ("mm/writeback: Add wait_on_page_writeback_killable")
-> That commit just adds a function.  It doesn't add any callers.  It must
-> just be moving something around ...
+Em Tue, 27 Apr 2021 22:12:30 +0200
+Niklas S=C3=B6derlund <niklas.soderlund@ragnatech.se> escreveu:
 
-The micro benchmark like will-it-scale is sensitive to the alignments 
-(text/data), so I apply the data align debug patch and re-test, the 
-regression reduced to -1.5%.
-=========================================================================================
-tbox_group/testcase/rootfs/kconfig/compiler/nr_task/mode/test/cpufreq_governor/ucode:
-lkp-csl-2sp9/will-it-scale/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3-ge5dbd33218bd-no-dynamic/gcc-9/16/process/mmap2/performance/0x5003006
+> Hi Mauro,
+>=20
+> On 2021-04-27 12:27:08 +0200, Mauro Carvalho Chehab wrote:
+> > Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to dea=
+l with usage counter")
+> > added pm_runtime_resume_and_get() in order to automatically handle
+> > dev->power.usage_count decrement on errors.
+> >=20
+> > Use the new API, in order to cleanup the error check logic.
+> >=20
+> > Reviewed-by: Niklas S=C3=B6derlund <niklas.soderlund+renesas@ragnatech.=
+se>
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  drivers/media/platform/rcar-vin/rcar-csi2.c | 6 ++++++
+> >  drivers/media/platform/rcar-vin/rcar-dma.c  | 6 ++----
+> >  drivers/media/platform/rcar-vin/rcar-v4l2.c | 6 ++----
+> >  3 files changed, 10 insertions(+), 8 deletions(-)
+> >=20
+> > diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/medi=
+a/platform/rcar-vin/rcar-csi2.c
+> > index e06cd512aba2..ce8e84f9e3d9 100644
+> > --- a/drivers/media/platform/rcar-vin/rcar-csi2.c
+> > +++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
+> > @@ -408,6 +408,12 @@ static void rcsi2_enter_standby(struct rcar_csi2 *=
+priv)
+> > =20
+> >  static void rcsi2_exit_standby(struct rcar_csi2 *priv)
+> >  {
+> > +	/*
+> > +	 * The code at rcsi2_enter_standby() assumes
+> > +	 * inconditionally that PM runtime usage count was
+> > +	 * incremented. So, it shouldn't use pm_runtime_resume_and_get()
+> > +	 * here.
+> > +	 */ =20
+>=20
+>  	pm_runtime_get_sync(priv->dev);
+>
+> I think this comment is a bit much. I won't object if you really want to=
+=20
+> keep it but my preference would be to drop it.
 
-commit:
-   a142a3781e3dc0c03a48688cac619c2684eed18f (fs/cachefiles: Remove 
-wait_bit_key layout dependency)
-   86460bf788cb360a14811fadb3f94f9765ba5a23 (mm/writeback: Add 
-wait_on_page_writeback_killable)
+Hmm... I guess we could do this, instead:
 
-a142a3781e3dc0c0 86460bf788cb360a14811fadb3f
----------------- ---------------------------
-          %stddev     %change         %stddev
-              \          |                \
-    9089952            -1.5%    8953838 will-it-scale.16.processes
-     568121            -1.5%     559614 will-it-scale.per_process_ops
-    9089952            -1.5%    8953838        will-it-scale.workload
 
->> 39f985c8f667c80a e5dbd33218bd8d87ab69f730ab9
->> ---------------- ---------------------------
->>           %stddev     %change         %stddev
->>               \          |                \
->>     9359770            -3.8%    9001769        will-it-scale.16.processes
->>      584985            -3.8%     562610        will-it-scale.per_process_ops
->>     9359770            -3.8%    9001769        will-it-scale.workload
->>       15996            -1.2%      15811        proc-vmstat.nr_kernel_stack
->>       23577 ± 10%     +18.5%      27937 ±  7%  softirqs.CPU48.SCHED
->>        5183 ± 41%     +47.2%       7630 ±  7%  interrupts.CPU1.NMI:Non-maskable_interrupts
->>        5183 ± 41%     +47.2%       7630 ±  7%  interrupts.CPU1.PMI:Performance_monitoring_interrupts
->>       54.33 ± 12%     +18.4%      64.33 ±  7%  perf-sched.wait_and_delay.count.schedule_hrtimeout_range_clock.poll_schedule_timeout.constprop.0.do_sys_poll
->>      153.34 ± 24%     -45.9%      83.00 ± 25%  perf-sched.wait_and_delay.max.ms.schedule_timeout.rcu_gp_kthread.kthread.ret_from_fork
->>      153.33 ± 24%     -45.9%      82.99 ± 25%  perf-sched.wait_time.max.ms.schedule_timeout.rcu_gp_kthread.kthread.ret_from_fork
->>   2.424e+10            -3.8%  2.332e+10        perf-stat.i.branch-instructions
->>        0.47            +3.7%       0.48        perf-stat.i.cpi
->>   2.529e+10            -4.0%  2.428e+10        perf-stat.i.dTLB-loads
->>    1.15e+10            -3.8%  1.106e+10        perf-stat.i.dTLB-stores
->>    54249733            -4.8%   51627939        perf-stat.i.iTLB-load-misses
->>   1.004e+11            -3.8%  9.661e+10        perf-stat.i.instructions
->>        2.15            -3.6%       2.07        perf-stat.i.ipc
->>      693.66            -3.9%     666.70        perf-stat.i.metric.M/sec
->>        0.46            +3.7%       0.48        perf-stat.overall.cpi
->>        2.15            -3.6%       2.08        perf-stat.overall.ipc
->>   2.416e+10            -3.8%  2.324e+10        perf-stat.ps.branch-instructions
->>    2.52e+10            -4.0%  2.419e+10        perf-stat.ps.dTLB-loads
->>   1.146e+10            -3.8%  1.102e+10        perf-stat.ps.dTLB-stores
->>    54065825            -4.8%   51454019        perf-stat.ps.iTLB-load-misses
->>   1.001e+11            -3.8%  9.628e+10        perf-stat.ps.instructions
->>   3.025e+13            -3.9%  2.908e+13        perf-stat.total.instructions
->>        0.89 ± 14%      -0.1        0.77 ± 11%  perf-profile.calltrace.cycles-pp.atime_needs_update.touch_atime.shmem_mmap.mmap_region.do_mmap
->>        0.14 ± 13%      -0.1        0.04 ± 71%  perf-profile.children.cycles-pp.common_mmap
->>        0.61 ± 12%      -0.1        0.52 ± 12%  perf-profile.children.cycles-pp.common_file_perm
->>        0.21 ±  8%      -0.0        0.17 ± 11%  perf-profile.children.cycles-pp.vma_set_page_prot
->>        0.12 ±  8%      -0.0        0.09 ± 12%  perf-profile.children.cycles-pp.blocking_notifier_call_chain
->>        0.12 ± 14%      -0.0        0.09 ± 15%  perf-profile.children.cycles-pp.get_mmap_base
->>        0.09 ±  8%      -0.0        0.07 ± 11%  perf-profile.children.cycles-pp.vm_pgprot_modify
->>        0.13 ± 15%      +0.1        0.19 ±  8%  perf-profile.children.cycles-pp.cap_capable
->>        0.03 ±102%      +0.1        0.12 ± 12%  perf-profile.children.cycles-pp.munmap@plt
->>        0.14 ± 13%      +0.1        0.24 ±  6%  perf-profile.children.cycles-pp.testcase
->>        0.33 ± 10%      -0.1        0.23 ± 10%  perf-profile.self.cycles-pp.cap_vm_enough_memory
->>        0.13 ± 11%      -0.1        0.03 ±100%  perf-profile.self.cycles-pp.common_mmap
->>        0.48 ± 12%      -0.1        0.41 ± 12%  perf-profile.self.cycles-pp.common_file_perm
->>        0.49 ± 12%      -0.1        0.43 ± 13%  perf-profile.self.cycles-pp.vm_area_alloc
->>        0.12 ±  8%      -0.0        0.09 ± 12%  perf-profile.self.cycles-pp.blocking_notifier_call_chain
->>        0.12 ± 13%      -0.0        0.09 ± 14%  perf-profile.self.cycles-pp.get_mmap_base
->>        0.11 ±  8%      +0.0        0.16 ± 10%  perf-profile.self.cycles-pp.__x64_sys_munmap
->>        0.11 ± 14%      +0.1        0.18 ±  8%  perf-profile.self.cycles-pp.cap_capable
->>        0.12 ± 11%      +0.1        0.20 ±  6%  perf-profile.self.cycles-pp.testcase
->>        0.01 ±223%      +0.1        0.11 ± 13%  perf-profile.self.cycles-pp.munmap@plt
-> I'm struggling to see anything in that that says anything other than
-> "we did 3-4% less work".  Maybe someone else has something useful to
-> say about it?
-> _______________________________________________
-> LKP mailing list -- lkp@lists.01.org
-> To unsubscribe send an email to lkp-leave@lists.01.org
+diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/media/pl=
+atform/rcar-vin/rcar-csi2.c
+index e06cd512aba2..1fc2e6f4b607 100644
+--- a/drivers/media/platform/rcar-vin/rcar-csi2.c
++++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
+@@ -406,9 +406,14 @@ static void rcsi2_enter_standby(struct rcar_csi2 *priv)
+        pm_runtime_put(priv->dev);
+ }
+=20
+-static void rcsi2_exit_standby(struct rcar_csi2 *priv)
++static int rcsi2_exit_standby(struct rcar_csi2 *priv)
+ {
+-       pm_runtime_get_sync(priv->dev);
++       int ret;
++
++       ret =3D pm_runtime_resume_and_get(priv->dev);
++       if (ret < 0)
++               return ret;
++
+        reset_control_deassert(priv->rstc);
+ }
+=20
+@@ -657,7 +662,9 @@ static int rcsi2_start(struct rcar_csi2 *priv)
+ {
+        int ret;
+=20
+-       rcsi2_exit_standby(priv);
++       ret =3D rcsi2_exit_standby(priv);
++       if (ret < 0)
++               return ret;
+=20
+        ret =3D rcsi2_start_receiver(priv);
+        if (ret) {
 
--- 
-Zhengjun Xing
-
+Thanks,
+Mauro
