@@ -2,471 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA8836D5B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 12:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E12C236D5C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 12:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239332AbhD1KVp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Apr 2021 06:21:45 -0400
-Received: from mx1.emlix.com ([136.243.223.33]:33612 "EHLO mx1.emlix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239308AbhD1KVj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 06:21:39 -0400
-Received: from mailer.emlix.com (p5098be52.dip0.t-ipconnect.de [80.152.190.82])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.emlix.com (Postfix) with ESMTPS id 0A5305FB56;
-        Wed, 28 Apr 2021 12:20:53 +0200 (CEST)
-From:   Rolf Eike Beer <eb@emlix.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mm: remove argument from mem_init_print_info()
-Date:   Wed, 28 Apr 2021 12:20:51 +0200
-Message-ID: <1846777.ZUqDs8pn68@mobilepool36.emlix.com>
+        id S239198AbhD1KZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 06:25:35 -0400
+Received: from mail-vi1eur05on2053.outbound.protection.outlook.com ([40.107.21.53]:20768
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236055AbhD1KZd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 06:25:33 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jpfoHWlawMj1gKqjRU7T1XlNeWUlWyZQ6ZBcCH7YLUNSeibO452Lp0CMr1YfAIesuRmFmlRkrECa4jTOk3VW9IvETeeIIC4t+bNtwnyfrCCfN2/18DRE04Un1ThNTak1tnFMt5GBlpw5WFZPJQIHSOmQVvZK78XPBJ8XZdpecU/UloOG6m3fELAF94bC7PmUij141d5YK4VXMfYuAsY3p1vI5SYEsx3EnbS3gX1cw2+XyEZPp7ZLvXkPlnlh/whMm/NIKBwgAnQ8ShF8xQddZ0+D6PbTmhJa1h+nQ4Ga/iMUBVthBL2E/vJIlIHQRMdUEmbyoADcN9juFdV2N3VgnQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZaL2GU2eR8HQ9mX+Qff58usbXZQiFS2x/++okQQzCak=;
+ b=Ee0yzurF1L6fHvi+xMFIc+EMf49znKg2LAXAIAetqcvZ9EUUlstFKwvPODZC+2jtiqSRFzhKadOt1Ha7E/6vWgM+SxvhL/2GR8D25WHdb6Ae+TtLa2lJbVra0MDiXkrC2D7HBEC2tZ8T5MsuxA+Zm4ShUoKOnZ5LgRM+ruWwcg6U/A4vEgC/eCoZTXCl+wDgmsyP9Jx/EpNl1s4i//sOJyTF6cQAaaBkfYxHHPv5y8Y1kS6vUySKbxKylvROPLwahK2bpGM+cUDHHBl0FzyFcj9ehbCkVMnGLyLFjnqB0I6yH0mXIzjMEXMoyC/I0mEz7hFhptt8/awEEtaJHNTnJA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZaL2GU2eR8HQ9mX+Qff58usbXZQiFS2x/++okQQzCak=;
+ b=mhk4LiLiO9gfQlovtKi2E3AtVyDL0w37XAGyrOv27JeLGw7BbsR1FuMyn9kwwgXTVoxwHkNzw3+lpXl9QQyYhvjCLV1z9Uq6V4d3fBV4KdVPlaAdoEfD/7dSgjw8GX4re0Tajtpcn1Mk4MtecPS92sXo9GwX0vkMZEihqMQnlSE=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from DB6PR0402MB2758.eurprd04.prod.outlook.com (2603:10a6:4:96::7)
+ by DB8PR04MB7179.eurprd04.prod.outlook.com (2603:10a6:10:124::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.23; Wed, 28 Apr
+ 2021 10:24:46 +0000
+Received: from DB6PR0402MB2758.eurprd04.prod.outlook.com
+ ([fe80::a08f:6c6a:cecc:163d]) by DB6PR0402MB2758.eurprd04.prod.outlook.com
+ ([fe80::a08f:6c6a:cecc:163d%7]) with mapi id 15.20.4065.028; Wed, 28 Apr 2021
+ 10:24:46 +0000
+From:   Kuldeep Singh <kuldeep.singh@nxp.com>
+To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Kuldeep Singh <kuldeep.singh@nxp.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [RESEND] dt-bindings: spi: Convert NXP flexspi to json schema
+Date:   Wed, 28 Apr 2021 15:54:17 +0530
+Message-Id: <20210428102417.1936520-1-kuldeep.singh@nxp.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [14.142.151.118]
+X-ClientProxiedBy: HKAPR03CA0036.apcprd03.prod.outlook.com
+ (2603:1096:203:c9::23) To DB6PR0402MB2758.eurprd04.prod.outlook.com
+ (2603:10a6:4:96::7)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from lsv03378.swis.in-blr01.nxp.com (14.142.151.118) by HKAPR03CA0036.apcprd03.prod.outlook.com (2603:1096:203:c9::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.16 via Frontend Transport; Wed, 28 Apr 2021 10:24:43 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3e4fc9fd-18b6-4bde-e9e1-08d90a2fd892
+X-MS-TrafficTypeDiagnostic: DB8PR04MB7179:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB8PR04MB71791C071E9CFD13D27F159EE0409@DB8PR04MB7179.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7gmQyvXKp9poMlezKFKoU+aurhcdB5Ijc/Db1jmClCof5dJClS/koejOEkgRBZ9Kc1MUzxHOZVw9NNb+IS80mknXoZ7+tLpTrhvYSNPMMGNRxPR/pPKleUlLK37pscCbfHuHnz/I602UngX99B2YqjWtVuOj6N7yLIdh7LwDr9khz1EZtjAfEkAjYV3fNNw/x4tSjtxG6c+46ZqOQSNkGpZFJRYw1/pg80X/a00DbZY1PHJPJXW35EnDIEPDqCNAPwW3sfJMQU+iqXJHI4aPSWbmY31VT9aBZXvOhaqmVd4TCUjds+fHB+w9br6APQoxwZ9dcSOiLHYN7qpMa/+HwU134MEgmm2j9TqVFob+M77duGLQUO37j8td9l5GMqGHwiamxOiwso7SrnRj+17n24TPRUup4gksypivkVGMYC9KjETJrXlsQ/WR9L1TWnJ0RHEV/m5YBd3pHxLnXrg0LzROH2YdIL47JTuWwo0aH0RWXTmtADgr6oiZdParT8Lum/jQwzCTSfvw9mP1wmDWjFSZXsHhVdXEZcqyz7H3CeSwhQJy6whLYv/BcJO8JQD25BadDS8u+dJELjpUS2/lEsrbslkLnn/Rg0Ahg2QUBRJ0z0U7Ee4n4dx4uzXvS/UJkJPd2yVzc6pMmE3WU9rDAhMkp2B/27khcevWwZ3ULpQ+Bpg+WLjoePWkmoq8956lleOJGXa3WvkT4VpWBotNd34fysFVgGIl5BKnPzKYHAe8sewJjkw5biJQDB4rwd3N
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2758.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(366004)(396003)(39860400002)(38100700002)(1006002)(6666004)(38350700002)(26005)(110136005)(956004)(6486002)(2906002)(5660300002)(8676002)(44832011)(36756003)(83380400001)(966005)(7696005)(52116002)(478600001)(16526019)(54906003)(316002)(186003)(66946007)(2616005)(4326008)(66556008)(66476007)(86362001)(8936002)(1076003)(55236004)(110426009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?RiRkvDv/a8YYRXWsFhzR31yYswwDJHjB/FPShsrX6VA7Rz/4aSB36u4R9eR6?=
+ =?us-ascii?Q?OhWAJLxrpinxDU9YfbVoEvCinwC+VutVit0xi8rz3uhnajDkkbv5NpC9Wggb?=
+ =?us-ascii?Q?ASI+of4mCiHrGxTdZQDnMgNAhDpiyBDUeYxU4wKwF76LiJppXwJLFfykta72?=
+ =?us-ascii?Q?TncFfcJytGQ1bPzJzaonx05/mO6bjOHCzKASGEtWrG2k1y6XnM54vktCowW6?=
+ =?us-ascii?Q?bhYdA8slogy/bNg85Wp8ilzoRyE+dHlMZUNCpLeBRulQAzgAxoF0Xbvvwzcj?=
+ =?us-ascii?Q?0/4ZXCN6yc/BDtv7vLeAkpMvacJ9anpFRntgPFTZuqnfF3wpPKqTedJNBsPP?=
+ =?us-ascii?Q?2k9Kw0Moshc+SzVI6A01uJtiuM54oSBTb7zTYb0tdZrqww7yfi+rQLKnaszS?=
+ =?us-ascii?Q?pCtg0Qta0XOF1kg/ygWE/z3628t49Pzi3OyvC8yGWzSfiGV1jxqeTIGJVHSY?=
+ =?us-ascii?Q?YvWNn0XqGGkxABFar0iIUdS2/uEBZFIPpcyiX5tU+M4unfr5aGrp52Xm8a2L?=
+ =?us-ascii?Q?haE8YGjWm3vcZhtGcW3X9sPhmeaFBk9pqRT1CHmvy8B4BXQU0GRvbv1kD/CB?=
+ =?us-ascii?Q?d/CmhGpYVg8NI82Ur4TjtP249UXn7t+jaOYTmI3rErE1OhfRmw6OMIWdC05E?=
+ =?us-ascii?Q?2kf2xQQx7mcp+cHbF2S9gmCPLUIMdGvc7xUQt3PCYbbTztJWZwDkvzywMkNc?=
+ =?us-ascii?Q?AxmxhUEx1wqkiNsDulb9KEMFmx74f8hawTY4DE/P+72ohjfavAH7BG4MEgS/?=
+ =?us-ascii?Q?pozZr6J36Xqf9T9XzPkpc7v9ItJKhE/96NgWsBTKxkg77wZmbx9tukcTmOjE?=
+ =?us-ascii?Q?TjmuNEUUchPyGnAJiM/Bpb8wQTHdKF/L6m4kUcDFmWtrsaKxm66poa/i8xOZ?=
+ =?us-ascii?Q?2mCxM6nV8F/vkOrqrAs521SSQgBpJtr+avDc2vJqLEnpIHGq0AVoLyDcVaKj?=
+ =?us-ascii?Q?87MlPBMXmfsNo2iFWKj6lHZufcKRuwpi3bZmCw4YsY3Qng1fsrfCPm2SpkUq?=
+ =?us-ascii?Q?2lrTm3rk0YJQXH3jzOrE+TuMt4skg+k14tUOQAJSfXSeSzMkebHkPlkuKEMZ?=
+ =?us-ascii?Q?rB31vY3lhkbPtdnBqfIO+SpLVs7ZBOF1g1pIs0iznPrxYYsNsEQ2lbj/j2MC?=
+ =?us-ascii?Q?vghlNxOwcjwQYUbxbx+0QNvXG81JlJ6/iqRmXWT4pVUX8Vx9rUhXb1d/oATw?=
+ =?us-ascii?Q?SXM2eGRatX7wwXODr6OTzjn2IvtmJzHBPRpmaCFqmF6neNQFqDQYAdMt3qSq?=
+ =?us-ascii?Q?pX3u71fDa1SSUEcIof3br+B17iIaLHXvQAmnOUJO2j//L0IsdGWwY7UQ6vq6?=
+ =?us-ascii?Q?VrJjGnDI8vAt+DAHloJXhy59?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3e4fc9fd-18b6-4bde-e9e1-08d90a2fd892
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2758.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2021 10:24:46.5372
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 876+TDsIZXWX53K+zHR9sC8GE6eszXwZ8C7F1VjuCINXXkLgDnRebumiKj4j19A++TFaW7Zmogj/7V6UqfVUog==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB7179
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All callers passed NULL there, and I have not found anything in git history that
-shows this has been any different in the last 15 years.
+Convert the NXP FlexSPI binding to DT schema format using json-schema.
 
-Signed-off-by: Rolf Eike Beer <eb@emlix.com>
+Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- arch/alpha/mm/init.c             |  2 +-
- arch/arc/mm/init.c               |  2 +-
- arch/arm/mm/init.c               |  2 +-
- arch/arm64/mm/init.c             |  2 +-
- arch/csky/mm/init.c              |  2 +-
- arch/h8300/mm/init.c             |  2 +-
- arch/hexagon/mm/init.c           |  2 +-
- arch/ia64/mm/init.c              |  2 +-
- arch/m68k/mm/init.c              |  2 +-
- arch/microblaze/mm/init.c        |  2 +-
- arch/mips/loongson64/numa.c      |  2 +-
- arch/mips/mm/init.c              |  2 +-
- arch/mips/sgi-ip27/ip27-memory.c |  2 +-
- arch/nds32/mm/init.c             |  2 +-
- arch/nios2/mm/init.c             |  2 +-
- arch/openrisc/mm/init.c          |  2 +-
- arch/parisc/mm/init.c            |  2 +-
- arch/powerpc/mm/mem.c            |  2 +-
- arch/riscv/mm/init.c             |  2 +-
- arch/s390/mm/init.c              |  2 +-
- arch/sh/mm/init.c                |  2 +-
- arch/sparc/mm/init_32.c          |  2 +-
- arch/sparc/mm/init_64.c          |  2 +-
- arch/um/kernel/mem.c             |  2 +-
- arch/x86/mm/init_32.c            |  2 +-
- arch/x86/mm/init_64.c            |  2 +-
- arch/xtensa/mm/init.c            |  2 +-
- include/linux/mm.h               |  2 +-
- mm/page_alloc.c                  | 10 +++++-----
- 29 files changed, 33 insertions(+), 33 deletions(-)
+ .../bindings/spi/nxp,spi-nxp-fspi.yaml        | 86 +++++++++++++++++++
+ .../devicetree/bindings/spi/spi-nxp-fspi.txt  | 44 ----------
+ MAINTAINERS                                   |  2 +-
+ 3 files changed, 87 insertions(+), 45 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml
+ delete mode 100644 Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
 
-diff --git a/arch/alpha/mm/init.c b/arch/alpha/mm/init.c
-index 3c42b3147fd6..1eacd9527a36 100644
---- a/arch/alpha/mm/init.c
-+++ b/arch/alpha/mm/init.c
-@@ -282,5 +282,5 @@ mem_init(void)
- 	set_max_mapnr(max_low_pfn);
- 	high_memory = (void *) __va(max_low_pfn * PAGE_SIZE);
- 	memblock_free_all();
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- }
-diff --git a/arch/arc/mm/init.c b/arch/arc/mm/init.c
-index ce07e697916c..3bd7dff98da7 100644
---- a/arch/arc/mm/init.c
-+++ b/arch/arc/mm/init.c
-@@ -194,7 +194,7 @@ void __init mem_init(void)
- {
- 	memblock_free_all();
- 	highmem_init();
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- }
+diff --git a/Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml b/Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml
+new file mode 100644
+index 000000000000..b1d2e399a437
+--- /dev/null
++++ b/Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml
+@@ -0,0 +1,86 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/spi/nxp,spi-nxp-fspi.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NXP Flex Serial Peripheral Interface (FSPI)
++
++maintainers:
++  - Ashish Kumar <ashish.kumar@nxp.com>
++
++allOf:
++  - $ref: "spi-controller.yaml#"
++
++properties:
++  compatible:
++    enum:
++      - nxp,imx8dxl-fspi
++      - nxp,imx8mm-fspi
++      - nxp,imx8mp-fspi
++      - nxp,imx8qxp-fspi
++      - nxp,lx2160a-fspi
++
++  reg:
++    items:
++      - description: registers
++      - description: memory mapping
++
++  reg-names:
++    items:
++      - const: fspi_base
++      - const: fspi_mmap
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: SoC SPI fspi_en clock
++      - description: SoC SPI fspi clock
++
++  clock-names:
++    items:
++      - const: fspi_en
++      - const: fspi
++
++required:
++  - compatible
++  - reg
++  - reg-names
++  - interrupts
++  - clocks
++  - clock-names
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/clock/fsl,qoriq-clockgen.h>
++
++    soc {
++        #address-cells = <2>;
++        #size-cells = <2>;
++
++        spi@20c0000 {
++            compatible = "nxp,lx2160a-fspi";
++            reg = <0x0 0x20c0000 0x0 0x100000>,
++                  <0x0 0x20000000 0x0 0x10000000>;
++            reg-names = "fspi_base", "fspi_mmap";
++            interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
++            clocks = <&clockgen QORIQ_CLK_PLATFORM_PLL QORIQ_CLK_PLL_DIV(4)>,
++                     <&clockgen QORIQ_CLK_PLATFORM_PLL QORIQ_CLK_PLL_DIV(4)>;
++            clock-names = "fspi_en", "fspi";
++            #address-cells = <1>;
++            #size-cells = <0>;
++
++            flash@0 {
++                compatible = "jedec,spi-nor";
++                spi-max-frequency = <50000000>;
++                reg = <0>;
++                spi-rx-bus-width = <8>;
++                spi-tx-bus-width = <8>;
++            };
++        };
++    };
+diff --git a/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
+deleted file mode 100644
+index 8f34a7c7d8b8..000000000000
+--- a/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
++++ /dev/null
+@@ -1,44 +0,0 @@
+-* NXP Flex Serial Peripheral Interface (FSPI)
+-
+-Required properties:
+-  - compatible : Should be "nxp,lx2160a-fspi"
+-			    "nxp,imx8qxp-fspi"
+-			    "nxp,imx8mm-fspi"
+-			    "nxp,imx8mp-fspi"
+-			    "nxp,imx8dxl-fspi"
+-
+-  - reg :        First contains the register location and length,
+-                 Second contains the memory mapping address and length
+-  - reg-names :  Should contain the resource reg names:
+-	         - fspi_base: configuration register address space
+-                 - fspi_mmap: memory mapped address space
+-  - interrupts : Should contain the interrupt for the device
+-
+-Required SPI slave node properties:
+-  - reg :        There are two buses (A and B) with two chip selects each.
+-                 This encodes to which bus and CS the flash is connected:
+-                 - <0>: Bus A, CS 0
+-                 - <1>: Bus A, CS 1
+-                 - <2>: Bus B, CS 0
+-                 - <3>: Bus B, CS 1
+-
+-Example showing the usage of two SPI NOR slave devices on bus A:
+-
+-fspi0: spi@20c0000 {
+-	compatible = "nxp,lx2160a-fspi";
+-	reg = <0x0 0x20c0000 0x0 0x10000>, <0x0 0x20000000 0x0 0x10000000>;
+-	reg-names = "fspi_base", "fspi_mmap";
+-	interrupts = <0 25 0x4>; /* Level high type */
+-	clocks = <&clockgen 4 3>, <&clockgen 4 3>;
+-	clock-names = "fspi_en", "fspi";
+-
+-	mt35xu512aba0: flash@0 {
+-		reg = <0>;
+-		....
+-	};
+-
+-	mt35xu512aba1: flash@1 {
+-		reg = <1>;
+-		....
+-	};
+-};
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 299a9f458e3a..4b2736df358a 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -12847,7 +12847,7 @@ M:	Ashish Kumar <ashish.kumar@nxp.com>
+ R:	Yogesh Gaur <yogeshgaur.83@gmail.com>
+ L:	linux-spi@vger.kernel.org
+ S:	Maintained
+-F:	Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
++F:	Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml
+ F:	drivers/spi/spi-nxp-fspi.c
  
- #ifdef CONFIG_HIGHMEM
-diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
-index 828a2561b229..f2bf4b0de362 100644
---- a/arch/arm/mm/init.c
-+++ b/arch/arm/mm/init.c
-@@ -316,7 +316,7 @@ void __init mem_init(void)
- 
- 	free_highpages();
- 
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- 
- 	/*
- 	 * Check boundaries twice: Some fundamental inconsistencies can
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index 3685e12aba9b..d7e05ee08b2e 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -491,7 +491,7 @@ void __init mem_init(void)
- 	/* this will put all unused low memory onto the freelists */
- 	memblock_free_all();
- 
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- 
- 	/*
- 	 * Check boundaries twice: Some fundamental inconsistencies can be
-diff --git a/arch/csky/mm/init.c b/arch/csky/mm/init.c
-index 894050a8ce09..a9399e07b65f 100644
---- a/arch/csky/mm/init.c
-+++ b/arch/csky/mm/init.c
-@@ -107,7 +107,7 @@ void __init mem_init(void)
- 			free_highmem_page(page);
- 	}
- #endif
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- }
- 
- void free_initmem(void)
-diff --git a/arch/h8300/mm/init.c b/arch/h8300/mm/init.c
-index 1f3b345d68b9..4d3645d42c56 100644
---- a/arch/h8300/mm/init.c
-+++ b/arch/h8300/mm/init.c
-@@ -99,5 +99,5 @@ void __init mem_init(void)
- 	/* this will put all low memory onto the freelists */
- 	memblock_free_all();
- 
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- }
-diff --git a/arch/hexagon/mm/init.c b/arch/hexagon/mm/init.c
-index f2e6c868e477..ce5a15671649 100644
---- a/arch/hexagon/mm/init.c
-+++ b/arch/hexagon/mm/init.c
-@@ -55,7 +55,7 @@ void __init mem_init(void)
- {
- 	/*  No idea where this is actually declared.  Seems to evade LXR.  */
- 	memblock_free_all();
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- 
- 	/*
- 	 *  To-Do:  someone somewhere should wipe out the bootmem map
-diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
-index 16d0d7d22657..1568c331cd8a 100644
---- a/arch/ia64/mm/init.c
-+++ b/arch/ia64/mm/init.c
-@@ -659,7 +659,7 @@ mem_init (void)
- 	set_max_mapnr(max_low_pfn);
- 	high_memory = __va(max_low_pfn * PAGE_SIZE);
- 	memblock_free_all();
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- 
- 	/*
- 	 * For fsyscall entrpoints with no light-weight handler, use the ordinary
-diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
-index 14c1e541451c..9254df8bd83e 100644
---- a/arch/m68k/mm/init.c
-+++ b/arch/m68k/mm/init.c
-@@ -153,5 +153,5 @@ void __init mem_init(void)
- 	/* this will put all memory onto the freelists */
- 	memblock_free_all();
- 	init_pointer_tables();
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- }
-diff --git a/arch/microblaze/mm/init.c b/arch/microblaze/mm/init.c
-index 181e48782e6c..02510f567a4f 100644
---- a/arch/microblaze/mm/init.c
-+++ b/arch/microblaze/mm/init.c
-@@ -131,7 +131,7 @@ void __init mem_init(void)
- 	highmem_setup();
- #endif
- 
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- 	mem_init_done = 1;
- }
- 
-diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
-index a8f57bf01285..6d84b2581526 100644
---- a/arch/mips/loongson64/numa.c
-+++ b/arch/mips/loongson64/numa.c
-@@ -167,7 +167,7 @@ void __init mem_init(void)
- 	high_memory = (void *) __va(get_num_physpages() << PAGE_SHIFT);
- 	memblock_free_all();
- 	setup_zero_pages();	/* This comes from node 0 */
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- }
- 
- /* All PCI device belongs to logical Node-0 */
-diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
-index 5cb73bf74a8b..9f79fe628b6f 100644
---- a/arch/mips/mm/init.c
-+++ b/arch/mips/mm/init.c
-@@ -467,7 +467,7 @@ void __init mem_init(void)
- 	memblock_free_all();
- 	setup_zero_pages();	/* Setup zeroed pages.  */
- 	mem_init_free_highmem();
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- 
- #ifdef CONFIG_64BIT
- 	if ((unsigned long) &_text > (unsigned long) CKSEG0)
-diff --git a/arch/mips/sgi-ip27/ip27-memory.c b/arch/mips/sgi-ip27/ip27-memory.c
-index 87bb6945ec25..c1eefc01ee6e 100644
---- a/arch/mips/sgi-ip27/ip27-memory.c
-+++ b/arch/mips/sgi-ip27/ip27-memory.c
-@@ -420,5 +420,5 @@ void __init mem_init(void)
- 	high_memory = (void *) __va(get_num_physpages() << PAGE_SHIFT);
- 	memblock_free_all();
- 	setup_zero_pages();	/* This comes from node 0 */
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- }
-diff --git a/arch/nds32/mm/init.c b/arch/nds32/mm/init.c
-index fa86f7b2f416..310f7d320fa5 100644
---- a/arch/nds32/mm/init.c
-+++ b/arch/nds32/mm/init.c
-@@ -191,7 +191,7 @@ void __init mem_init(void)
- 
- 	/* this will put all low memory onto the freelists */
- 	memblock_free_all();
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- 
- 	pr_info("virtual kernel memory layout:\n"
- 		"    fixmap  : 0x%08lx - 0x%08lx   (%4ld kB)\n"
-diff --git a/arch/nios2/mm/init.c b/arch/nios2/mm/init.c
-index 61862dbb0e32..e5109560fc9a 100644
---- a/arch/nios2/mm/init.c
-+++ b/arch/nios2/mm/init.c
-@@ -71,7 +71,7 @@ void __init mem_init(void)
- 
- 	/* this will put all memory onto the freelists */
- 	memblock_free_all();
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- }
- 
- void __init mmu_init(void)
-diff --git a/arch/openrisc/mm/init.c b/arch/openrisc/mm/init.c
-index bf9b2310fc93..f31a86d39fb8 100644
---- a/arch/openrisc/mm/init.c
-+++ b/arch/openrisc/mm/init.c
-@@ -211,7 +211,7 @@ void __init mem_init(void)
- 	/* this will put all low memory onto the freelists */
- 	memblock_free_all();
- 
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- 
- 	printk("mem_init_done ...........................................\n");
- 	mem_init_done = 1;
-diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
-index 9ca4e4ff6895..3fb2c28729e9 100644
---- a/arch/parisc/mm/init.c
-+++ b/arch/parisc/mm/init.c
-@@ -573,7 +573,7 @@ void __init mem_init(void)
- #endif
- 		parisc_vmalloc_start = SET_MAP_OFFSET(MAP_START);
- 
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- 
- #if 0
- 	/*
-diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
-index 4e8ce6d85232..f121158a23fc 100644
---- a/arch/powerpc/mm/mem.c
-+++ b/arch/powerpc/mm/mem.c
-@@ -312,7 +312,7 @@ void __init mem_init(void)
- 		(mfspr(SPRN_TLB1CFG) & TLBnCFG_N_ENTRY) - 1;
- #endif
- 
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- #ifdef CONFIG_PPC32
- 	pr_info("Kernel virtual memory layout:\n");
- #ifdef CONFIG_KASAN
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 067583ab1bd7..a0488829efd6 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -102,7 +102,7 @@ void __init mem_init(void)
- 	high_memory = (void *)(__va(PFN_PHYS(max_low_pfn)));
- 	memblock_free_all();
- 
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- 	print_vm_layout();
- }
- 
-diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
-index 0e76b2127dc6..4c85d4bae2f7 100644
---- a/arch/s390/mm/init.c
-+++ b/arch/s390/mm/init.c
-@@ -210,7 +210,7 @@ void __init mem_init(void)
- 
- 	cmma_init_nodat();
- 
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- }
- 
- void free_initmem(void)
-diff --git a/arch/sh/mm/init.c b/arch/sh/mm/init.c
-index 0db6919af8d3..e3a12ef6e281 100644
---- a/arch/sh/mm/init.c
-+++ b/arch/sh/mm/init.c
-@@ -359,7 +359,7 @@ void __init mem_init(void)
- 
- 	vsyscall_init();
- 
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- 	pr_info("virtual kernel memory layout:\n"
- 		"    fixmap  : 0x%08lx - 0x%08lx   (%4ld kB)\n"
- 		"    vmalloc : 0x%08lx - 0x%08lx   (%4ld MB)\n"
-diff --git a/arch/sparc/mm/init_32.c b/arch/sparc/mm/init_32.c
-index 6139c5700ccc..290bd8f3180b 100644
---- a/arch/sparc/mm/init_32.c
-+++ b/arch/sparc/mm/init_32.c
-@@ -293,7 +293,7 @@ void __init mem_init(void)
- 		map_high_region(start_pfn, end_pfn);
- 	}
- 
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- }
- 
- void sparc_flush_page_to_ram(struct page *page)
-diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
-index 182bb7bdaa0a..57a2e4801d24 100644
---- a/arch/sparc/mm/init_64.c
-+++ b/arch/sparc/mm/init_64.c
-@@ -2520,7 +2520,7 @@ void __init mem_init(void)
- 	}
- 	mark_page_reserved(mem_map_zero);
- 
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- 
- 	if (tlb_type == cheetah || tlb_type == cheetah_plus)
- 		cheetah_ecache_flush_init();
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index 9242dc91d751..ab8fcd1c4c52 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -54,7 +54,7 @@ void __init mem_init(void)
- 	memblock_free_all();
- 	max_low_pfn = totalram_pages();
- 	max_pfn = max_low_pfn;
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- 	kmalloc_ok = 1;
- }
- 
-diff --git a/arch/x86/mm/init_32.c b/arch/x86/mm/init_32.c
-index da31c2635ee4..892ed7b1f446 100644
---- a/arch/x86/mm/init_32.c
-+++ b/arch/x86/mm/init_32.c
-@@ -755,7 +755,7 @@ void __init mem_init(void)
- 	after_bootmem = 1;
- 	x86_init.hyper.init_after_bootmem();
- 
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- 
- 	/*
- 	 * Check boundaries twice: Some fundamental inconsistencies can
-diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-index 55247451ba85..aff5e8588896 100644
---- a/arch/x86/mm/init_64.c
-+++ b/arch/x86/mm/init_64.c
-@@ -1307,7 +1307,7 @@ void __init mem_init(void)
- 
- 	preallocate_vmalloc_pages();
- 
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- }
- 
- #ifdef CONFIG_DEFERRED_STRUCT_PAGE_INIT
-diff --git a/arch/xtensa/mm/init.c b/arch/xtensa/mm/init.c
-index 2daeba9e454e..0c9d31b759a9 100644
---- a/arch/xtensa/mm/init.c
-+++ b/arch/xtensa/mm/init.c
-@@ -119,7 +119,7 @@ void __init mem_init(void)
- 
- 	memblock_free_all();
- 
--	mem_init_print_info(NULL);
-+	mem_init_print_info();
- 	pr_info("virtual kernel memory layout:\n"
- #ifdef CONFIG_KASAN
- 		"    kasan   : 0x%08lx - 0x%08lx  (%5lu MB)\n"
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 06094627f1c1..b42964e5cb1a 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2357,7 +2357,7 @@ extern unsigned long free_reserved_area(void *start, void *end,
- 					int poison, const char *s);
- 
- extern void adjust_managed_page_count(struct page *page, long count);
--extern void mem_init_print_info(const char *str);
-+extern void mem_init_print_info(void);
- 
- extern void reserve_bootmem_region(phys_addr_t start, phys_addr_t end);
- 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index e2f19bf948db..2c2f4c6e399b 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -7689,7 +7689,7 @@ unsigned long free_reserved_area(void *start, void *end, int poison, const char
- 	return pages;
- }
- 
--void __init mem_init_print_info(const char *str)
-+void __init mem_init_print_info(void)
- {
- 	unsigned long physpages, codesize, datasize, rosize, bss_size;
- 	unsigned long init_code_size, init_data_size;
-@@ -7728,17 +7728,17 @@ void __init mem_init_print_info(const char *str)
- #ifdef	CONFIG_HIGHMEM
- 		", %luK highmem"
- #endif
--		"%s%s)\n",
-+		")\n",
- 		nr_free_pages() << (PAGE_SHIFT - 10),
- 		physpages << (PAGE_SHIFT - 10),
- 		codesize >> 10, datasize >> 10, rosize >> 10,
- 		(init_data_size + init_code_size) >> 10, bss_size >> 10,
- 		(physpages - totalram_pages() - totalcma_pages) << (PAGE_SHIFT - 10),
--		totalcma_pages << (PAGE_SHIFT - 10),
-+		totalcma_pages << (PAGE_SHIFT - 10)
- #ifdef	CONFIG_HIGHMEM
--		totalhigh_pages() << (PAGE_SHIFT - 10),
-+		, totalhigh_pages() << (PAGE_SHIFT - 10)
- #endif
--		str ? ", " : "", str ? str : "");
-+		);
- }
- 
- /**
+ NXP FXAS21002C DRIVER
 -- 
-2.31.1
-
-
--- 
-Rolf Eike Beer, emlix GmbH, https://www.emlix.com
-Fon +49 551 30664-0, Fax +49 551 30664-11
-Gothaer Platz 3, 37083 Göttingen, Germany
-Sitz der Gesellschaft: Göttingen, Amtsgericht Göttingen HR B 3160
-Geschäftsführung: Heike Jordan, Dr. Uwe Kracke – Ust-IdNr.: DE 205 198 055
-
-emlix - smart embedded open source
-
+2.25.1
 
