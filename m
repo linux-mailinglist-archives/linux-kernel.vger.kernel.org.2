@@ -2,245 +2,373 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DBB436D8E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 15:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E3636D8F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 15:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240083AbhD1Nvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 09:51:46 -0400
-Received: from mail-eopbgr70049.outbound.protection.outlook.com ([40.107.7.49]:34482
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238737AbhD1Nvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 09:51:42 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MVrUQ0WLMBe0k7oOL9i1omnMp67K65nB20LfMfmRBlowr8j7AIToEfetZbeQFaekQNqVmb+nDzsTApPXMPj52rtPegt6mFhFNa8/qAzNMVLFGrhoIvTS4r4yMndGrVSmRIm8pXNZRanqwwnzV7CIDe7RsfL1ybr/Kon27GCudkBQ8LdShuSFk9VAE1TOBV9T2zniRlkgmBlJimrLJ3QNZmEpidbgqWC69g0zsGH2fjH3Vl4aOsxiFFy3MoggFirkRY61Bal6q4IZLAh817/TSa6NdVWO+2dEkH8PQ8o6E6wy3ShfOpl+Z3Th4qg+pspvkbO3ib7MzrojDNXWs3NL4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Yr1DsEpzAfmu8pK502bguevhldaWtYtOpsQxzKMNYOk=;
- b=VQ5nK1NCGane4xkzHh4NJGnMxe/3Q7Lv63O1a3tn87Ak4L/5YSJu2ZPLmCxgfqSGNxYJoG20NbXJ5D1gxWciYqEnD/n38qzbxsr1CGzWqaFaFyJAUBbEGNCJE8hv6t6OLy+4BH8d64ZhfVYw/EK9W1b1dzbKU/YSI9SKcF07yzDYU4KBwhATXF959msUGwUyMtUHPGtEOeujxg8Un4I2WCPFHvxLJtBIb8F8FWJ3LaB62By7OETr2YIDGlh+2AObOLFZGVpIpbc0Gi2MMCZFYS4q9CgwiTFge6T5+Jzeo4zSuzBVAm6ypT+XS2yBGy+SstOeAeR/Lhbx7pYETk5SRA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vaisala.com; dmarc=pass action=none header.from=vaisala.com;
- dkim=pass header.d=vaisala.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vaisala.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Yr1DsEpzAfmu8pK502bguevhldaWtYtOpsQxzKMNYOk=;
- b=yWpMp8KCzrNkhu1QFZdz9ypc6rbCsO8EIckku2MjimEKZgw20SnjeJ0pj3IO/6fLRiokIUzYK2fmTMzobwhJ6P4XPS1Uwp2Tf0dQi98BoX32ASuLAKPUlV+M8qHT3rU7aS35RvzYTwvF/sGTvJXwS72PoA+KVaI0JX8tX3Y1bBBduOuq0ylhyzro+QjOaD1cPZITuGLYHQRnAEWclwzjzTPVxkaj+1WpOYl4FWUDr5aWZeW51B5Pfyn5RqAC4n2XuwBMK1bcSInoaIDZq5lk/JWame/SqhjIIFONQB8/KT7igAWUZqcGLtOetmClPcvKl4DMyQ1ld8aSt8iJKp2G2w==
-Authentication-Results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=vaisala.com;
-Received: from HE1PR0602MB3449.eurprd06.prod.outlook.com (2603:10a6:7:8a::22)
- by HE1PR0601MB2361.eurprd06.prod.outlook.com (2603:10a6:3:97::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.24; Wed, 28 Apr
- 2021 13:50:51 +0000
-Received: from HE1PR0602MB3449.eurprd06.prod.outlook.com
- ([fe80::3969:c39b:252e:ae3d]) by HE1PR0602MB3449.eurprd06.prod.outlook.com
- ([fe80::3969:c39b:252e:ae3d%5]) with mapi id 15.20.4065.027; Wed, 28 Apr 2021
- 13:50:51 +0000
-From:   Nandor Han <nandor.han@vaisala.com>
-To:     srinivas.kandagatla@linaro.org, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     Nandor Han <nandor.han@vaisala.com>
-Subject: [PATCH v2 4/4] nvmem: snvs_lpgpr: support two bytes NVMEM cell size
-Date:   Wed, 28 Apr 2021 16:50:41 +0300
-Message-Id: <149346ffe06893dc5add7f9a7e901ae03eb940fe.1619617498.git.nandor.han@vaisala.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <cover.1619617498.git.nandor.han@vaisala.com>
-References: <cover.1619617498.git.nandor.han@vaisala.com>
+        id S236583AbhD1N5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 09:57:50 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19300 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229965AbhD1N5t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 09:57:49 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13SDqTc9002050;
+        Wed, 28 Apr 2021 09:56:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=r3xxhP8JL90aZnv+QQigK/Ppofw1xW2ZNxt26BtxjxI=;
+ b=iw+b6hOzIc2sdZW48UkilIoEVbfjAGAIZEqX7ImjJXayRo6UsNa6CrC2JnePmW9Ny1Sf
+ sRf7WPEcHqbSz3rCY6OB8OZcg2808n3hsWENnCjuTbLmlM/VNdWFezTYrTJS38H+i9vG
+ +YzH5E2EvN/XlwAU6U7rIGr8TT+xFcjxh5HIiq50lisF8uQZEUhUohBQKfJrkTxMMXxg
+ vfK5+wbXYDUH65ixKDMFUh/u7l/45CzFiXMRQDzTwVENJtfiS1jHJTPIWHo+oHvR665z
+ uQ5HsXMXi4ZwuLu5x4BwIMEZmkW1q6rAYESqMNq7MoLGyK5MtTGRy1yrYzPQcJGZFoA/ 4g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3878ym84fe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 09:56:37 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13SDrFIS008968;
+        Wed, 28 Apr 2021 09:56:37 -0400
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3878ym84f3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 09:56:37 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13SDr2WE010769;
+        Wed, 28 Apr 2021 13:56:36 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma03wdc.us.ibm.com with ESMTP id 384ay95bjh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 13:56:36 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13SDuZK313959552
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Apr 2021 13:56:35 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 86D0DC605B;
+        Wed, 28 Apr 2021 13:56:35 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 18B8DC6055;
+        Wed, 28 Apr 2021 13:56:35 +0000 (GMT)
+Received: from v0005c16 (unknown [9.211.38.222])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 28 Apr 2021 13:56:34 +0000 (GMT)
+Message-ID: <453c7a7495408ac96127b36d67a8714632b5c0f7.camel@linux.ibm.com>
+Subject: Re: PPC476 hangs during tlb flush after calling /init in crash
+ kernel with linux 5.4+
+From:   Eddie James <eajames@linux.ibm.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, benh@kernel.crashing.org,
+        paulus@samba.org, mpe@ellerman.id.au, npiggin@gmail.com,
+        miltonm@us.ibm.com
+Date:   Wed, 28 Apr 2021 08:56:34 -0500
+In-Reply-To: <711a9a60-264b-9b86-6772-6585622a5bd4@csgroup.eu>
+References: <b973fa4768140021719e7cc3123ee873d8b2a3f1.camel@linux.ibm.com>
+         <a24e9e0d-1d4f-506b-9303-4b995815d3c4@csgroup.eu>
+         <2f7587b1986d597a63169567124438325cbedfd7.camel@linux.ibm.com>
+         <711a9a60-264b-9b86-6772-6585622a5bd4@csgroup.eu>
+Organization: IBM
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [37.136.150.171]
-X-ClientProxiedBy: HE1PR0701CA0067.eurprd07.prod.outlook.com
- (2603:10a6:3:64::11) To HE1PR0602MB3449.eurprd06.prod.outlook.com
- (2603:10a6:7:8a::22)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.vaisala.com (37.136.150.171) by HE1PR0701CA0067.eurprd07.prod.outlook.com (2603:10a6:3:64::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.17 via Frontend Transport; Wed, 28 Apr 2021 13:50:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fcbf5714-361e-41b6-bea3-08d90a4ca2c9
-X-MS-TrafficTypeDiagnostic: HE1PR0601MB2361:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HE1PR0601MB236109511D57A512D0B77D9785409@HE1PR0601MB2361.eurprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1303;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KRswsThjlCPqu+PwOjSBxC/Vl6gTySLXqXpSehNsxQ5L2qMk2ZO17oSh4qcO3+40GA5T47T7mx4Vbh+3N3JeyWsthX8hERSuiN5GX4TC4M0Ao99lNGH8BwcwKTD0eBZ9tfHC7DkLVBWxsPw9axn80lzqY90SKCjVJY4/3mH5IZGviNYazqebV+3tGX7mkepfOacLzhbYsrcKyJcYICOXtlCXg+10XlnSSbnXajC7D+fbZOmPY85WdswtC/mgXF/qOu+kQyGZoS6rxvlCba0pmDqLDI+ifo4KPCYyOHma0okX20o/7PopXo8Oss7n9F1DqGs5aDdU/xpJRQovo+ofZASF2ihXhgwCnLVn7UodODpkrHjng8G4HzvfgNambPQxQr+sh3bpspkA5/Jh2rLgawVA+yll2wmHzHHV8Bddc6O0kWPwCB4MiJen2dTUDCmGAlbMdeWp8N9GmRgk9v1ykr1VD1+3BUPXRi5ZzizWvvMFeH8d75GGdtZCQsRa3NIcxy7YR+DU3ND1NPpWSFA0QlxQjEki2hJd1ApOguYXiqhjQPVmR0ovHbiSVohV86MaorwHz8U0Uvez5Q5he5UrwAutyEBPm7V8I0KpZJM2L5/m4Qn2wv++d9X7B+p/4G7as4AwWWpZxEJGdiMsfBxpzQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0602MB3449.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(366004)(346002)(396003)(376002)(136003)(5660300002)(2616005)(86362001)(6486002)(66556008)(26005)(2906002)(107886003)(66476007)(44832011)(8676002)(956004)(83380400001)(8936002)(4326008)(186003)(52116002)(316002)(38100700002)(66946007)(36756003)(7696005)(6666004)(16526019)(478600001)(38350700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?/JockMYRf4CB52wc33n6Mm4Yp181jEkm9XsUMqdBSOjEpyOEEPf6bttaM3no?=
- =?us-ascii?Q?E8XpstdUdCOUeY/x1yvVwWdbyTJkfUod1ofB6K3Lwm+GALajRv5VN0utMJGz?=
- =?us-ascii?Q?QvbJxGMj5p/YXz7BqIjqaerrJyJe/GoJgXeBvTOypEMJOv9IRTiN7yF0mgoJ?=
- =?us-ascii?Q?XTiCMjlWhUgHdfox3PAMaODHxGyJr2Jpe62vug7I0jvzA+//8dcktYEcyIeD?=
- =?us-ascii?Q?uDowPO/skO+6AUZTAtqVtLvyf+ziaPSLR4x1UOltSVeFVRA+phq//ROfdjcy?=
- =?us-ascii?Q?4HXGdMP717Gw0TY5+yJOXbzHfhuET6BZzmd8R05R/eKnA6owl6aiOhbSYNsp?=
- =?us-ascii?Q?Llixtvzvhm9q73r/oQpI/VryX+da6p02J6sllGafwpD+FLpG/2ZyKU0YbIAH?=
- =?us-ascii?Q?KtOWvtRHBLGZc4tVrFBxG+GgYM2DrgwBaiYqjGvXGoiYDi+B0fD7xaO/iUKr?=
- =?us-ascii?Q?M8pNje9XBdGQ8wefPuBomTWXANqBvkracRupoUyE7w/5d2BtVgsLuhO2F8d2?=
- =?us-ascii?Q?TfmxV8nKovVbtDNSGE/GCT/KkbTU39ysSJwN/9RVhngZ7cwdx/Q5MLsJwZJf?=
- =?us-ascii?Q?cYO2QxhBBI0t/7f28JFigo1wcHrQBkMycJJ7z7bN00u55QtSjcmcHt7wZQ5V?=
- =?us-ascii?Q?I/h4bKQI9lm4UaHxdFWmQbPT9yJhikXbl3W0nQ8PVEd9sPJn4tvpJM6suqGR?=
- =?us-ascii?Q?+BNn288HpRYb8riB9eZekLD1kaDr6KMq4wI8AgoNMI8E9u9lRWJpVFmyoCDx?=
- =?us-ascii?Q?WmxViJ7Bvdm7uywO5lQeFcuO7qh7BM/YdjEZxjsmZ0PPlQtje/NljSxmCSAD?=
- =?us-ascii?Q?7RphddAOIqBEFmN3mnfd3uoTI3mI9TJNkmwg3srT4RjsFg1mb7Lqo7defXuK?=
- =?us-ascii?Q?Z5YfFTL0hDg0+WuITqOOYMwDmbk8JNXLkV8RlzxGfcdn7sh4NuRgDRTpdz+a?=
- =?us-ascii?Q?zwE1iyJsYHE7akrc8UZE1XuSRxVkLvSJ1CyzxYHglHRM+JSuCFN5gkExkKib?=
- =?us-ascii?Q?0NwWtYqcwVS14obPeWMJCN3KinrEsxfPm6s481c2HPyGU6mnInVrW2CDStWK?=
- =?us-ascii?Q?06kywsw9ZdtXk9B7+CstYK9aP8HUZyLu8DlcKw1QZTVUjrSV6/RT+4JpFf30?=
- =?us-ascii?Q?7EJMif0cnJBQ5CWnb4KXY4XCAbK5VPo7yjXsSzJJumYiJUKHg01oeyaJYu7C?=
- =?us-ascii?Q?rxTtp6sEB9B+iLSr4Ih46YWx22DGt36Gr33G68BoJ39cUeaQ111RjISX/Yxj?=
- =?us-ascii?Q?6JfUrbBKCOSTGL3bkKjmqEFa66H1PZyha4IXBBXVdF8dl5M2o4LsGfNwSuiR?=
- =?us-ascii?Q?IW1IRrmrnZOeo08j6cLemdUj?=
-X-OriginatorOrg: vaisala.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fcbf5714-361e-41b6-bea3-08d90a4ca2c9
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR0602MB3449.eurprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2021 13:50:51.6687
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 6d7393e0-41f5-4c2e-9b12-4c2be5da5c57
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5DVugejwn1rufk7kOajpdlo6rbqW6eHg0b6uZdpwnW+H7CQRlRTKfGc/RHqyE02qJ14et7IDSXbA8mQVjQAkng==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0601MB2361
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: B0FOOWl6fjE0qY49qEisRayt6aJUqJTi
+X-Proofpoint-GUID: CGRqLC5BgmlAAefi_xcx4-yCWsZRg4Ha
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-28_06:2021-04-28,2021-04-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 spamscore=0 suspectscore=0 phishscore=0 mlxscore=0
+ bulkscore=0 clxscore=1015 mlxlogscore=999 malwarescore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104280091
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In some situation is desired to use less than 4 bytes for storing data.
-This will allow using the same register for multiple purposes.
+On Wed, 2021-04-28 at 08:08 +0200, Christophe Leroy wrote:
+> 
+> Le 28/04/2021 à 00:42, Eddie James a écrit :
+> > On Tue, 2021-04-27 at 19:26 +0200, Christophe Leroy wrote:
+> > > Hi Eddies,
+> > > 
+> > > Le 27/04/2021 à 19:03, Eddie James a écrit :
+> > > > Hi all,
+> > > > 
+> > > > I'm having a problem in simulation and hardware where my PPC476
+> > > > processor stops executing instructions after callling /init. In
+> > > > my
+> > > > case
+> > > > this is a bash script. The code descends to flush the TLB, and
+> > > > somewhere in the loop in _tlbil_pid, the PC goes to
+> > > > InstructionTLBError47x but does not go any further. This only
+> > > > occurs in
+> > > > the crash kernel environment, which is using the same kernel,
+> > > > initramfs, and init script as the main kernel, which executed
+> > > > fine.
+> > > > I
+> > > > do not see this problem with linux 4.19 or 3.10. I do see it
+> > > > with
+> > > > 5.4
+> > > > and 5.10. I see a fair amount of refactoring in the PPC memory
+> > > > management area between 4.19 and 5.4. Can anyone point me in a
+> > > > direction to debug this further? My stack trace is below as I
+> > > > can
+> > > > run
+> > > > gdb in simulation.
+> > > 
+> > > Can you bisect to pin point the culprit commit ?
+> > 
+> > Hi, thanks for your prompt reply.
+> > 
+> > Good idea! I have bisected to:
+> > 
+> > commit 9e849f231c3c72d4c3c1b07c9cd19ae789da0420 (b8-bad,
+> > refs/bisect/bad)
+> > Author: Christophe Leroy <christophe.leroy@c-s.fr>
+> > Date:   Thu Feb 21 19:08:40 2019 +0000
+> > 
+> >      powerpc/mm/32s: use generic mmu_mapin_ram() for all blocks.
+> >      
+> >      Now that mmu_mapin_ram() is able to handle other blocks
+> >      than the one starting at 0, the WII can use it for all
+> >      its blocks.
+> >      
+> >      Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+> >      Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+> > 
+> > I also confirmed that reverting this commit resolves the issue in
+> > 5.4+.
+> > 
+> > Now, I don't understand why this is problematic or what is really
+> > happening... Reverting is probably not the desired solution.
+> > 
+> 
+> Can you provide the 'dmesg' or a dump of the logs printed by the
+> kernel at boottime ?
 
-Add support for allowing 2 bytes granularity for NVMEM cells.
+Yes:
 
-Signed-off-by: Nandor Han <nandor.han@vaisala.com>
----
- drivers/nvmem/snvs_lpgpr.c | 67 ++++++++++++++++++++++++++++++++++----
- 1 file changed, 61 insertions(+), 6 deletions(-)
+[    0.000000] Linux version 5.4.85-a19ab63.ppcnf-fsp2 (oe-user@oe-host
+) (gcc ve
+rsion 8.3.0 (GCC)) #1 Tue Mar 30 15:32:31 UTC 2021
+[    0.000000] Found initrd at 0xcf6a7000:0xcfffb09f
+[    0.000000] Using FSP-2 machine description
+[    0.000000] Found legacy serial port 0 for /plb4/opb/serial@b0020000
+[    0.000000]   mem=10b0020000, taddr=10b0020000, irq=0, clk=20833333,
+speed=11
+5200
+[    0.000000] -----------------------------------------------------
+[    0.000000] phys_mem_size     = 0x4000000
+[    0.000000] dcache_bsize      = 0x80
+[    0.000000] icache_bsize      = 0x20
+[    0.000000] cpu_features      = 0x0000000040800120
+[    0.000000]   possible        = 0x0000000040800120
+[    0.000000]   always          = 0x0000000000000020
+[    0.000000] cpu_user_features = 0x8c008000 0x00000000
+[    0.000000] mmu_features      = 0x00140020
+[    0.000000] physical_start    = 0xc000000
+[    0.000000] -----------------------------------------------------
+[    0.000000] Top of RAM: 0x10000000, Total RAM: 0x4000000
+[    0.000000] Memory hole size: 192MB
+[    0.000000] Zone ranges:
+[    0.000000]   Normal   [mem 0x000000000c000000-0x000000000fffffff]
+[    0.000000] Movable zone start for each node
+[    0.000000] Early memory node ranges
+[    0.000000]   node   0: [mem 0x000000000c000000-0x000000000fffffff]
+[    0.000000] Initmem setup node 0 [mem 0x000000000c000000-
+0x000000000fffffff]
+[    0.000000] On node 0 totalpages: 16384
+[    0.000000]   Normal zone: 160 pages used for memmap
+[    0.000000]   Normal zone: 0 pages reserved
+[    0.000000]   Normal zone: 16384 pages, LIFO batch:3
+[    0.000000] MMU: Allocated 278528 bytes of context maps for 65535
+contexts
+[    0.000000] pcpu-alloc: s0 r0 d32768 u32768 alloc=1*32768
+[    0.000000] pcpu-alloc: [0] 0 
+[    0.000000] Built 1 zonelists, mobility grouping on.  Total pages:
+16224
+[    0.000000] Kernel command line: console=ttyS0,115200 loglevel=9
+rootwait roo
+t=/dev/mmcblk0p2 elfcorehdr=209456K maxcpus=1
+[    0.000000] Dentry cache hash table entries: 8192 (order: 3, 32768
+bytes, lin
+ear)
+[    0.000000] Inode-cache hash table entries: 4096 (order: 2, 16384
+bytes, line
+ar)
+[    0.000000] mem auto-init: stack:off, heap alloc:off, heap free:off
+[    0.000000] Memory: 42028K/65536K available (7136K kernel code, 620K
+rwdata, 
+1916K rodata, 2080K init, 233K bss, 23508K reserved, 0K cma-reserved)
+[    0.000000] Kernel virtual memory layout:
+[    0.000000]   * 0xfffdf000..0xfffff000  : fixmap
+[    0.000000]   * 0xd1000000..0xfffdf000  : vmalloc & ioremap
+[    0.000000] SLUB: HWalign=128, Order=0-3, MinObjects=0, CPUs=1,
+Nodes=1
+[    0.000000] NR_IRQS: 512, nr_irqs: 512, preallocated irqs: 16
+[    0.000000] UIC0 (32 IRQ sources) at DCR 0x2c0
+[    0.000000] UIC1 (32 IRQ sources) at DCR 0x2c8
+[    0.000000] UIC2 (32 IRQ sources) at DCR 0x350
+[    0.000000] UIC3 (32 IRQ sources) at DCR 0x358
+[    0.000000] UIC4 (32 IRQ sources) at DCR 0x360
+[    0.000000] UIC5 (32 IRQ sources) at DCR 0x368
+[    0.000000] UIC6 (32 IRQ sources) at DCR 0x370
+[    0.000000] UIC7 (32 IRQ sources) at DCR 0x2d0
+[    0.000000] UIC8 (32 IRQ sources) at DCR 0x2d8
+[    0.000000] UIC17 (32 IRQ sources) at DCR 0x320
+[    0.000000] UIC18 (32 IRQ sources) at DCR 0x328
+[    0.000000] UIC19 (32 IRQ sources) at DCR 0x330
+[    0.000000] UIC20 (32 IRQ sources) at DCR 0x338
+[    0.000000] UIC21 (32 IRQ sources) at DCR 0x340
+[    0.000000] UIC22 (32 IRQ sources) at DCR 0x348
+[    0.000000] UIC9 (32 IRQ sources) at DCR 0x2e0
+[    0.000000] UIC10 (32 IRQ sources) at DCR 0x2e8
+[    0.000000] UIC11 (32 IRQ sources) at DCR 0x2f0
+[    0.000000] UIC12 (32 IRQ sources) at DCR 0x2f8
+[    0.000000] UIC13 (32 IRQ sources) at DCR 0x300
+[    0.000000] UIC14 (32 IRQ sources) at DCR 0x308
+[    0.000000] UIC15 (32 IRQ sources) at DCR 0x310
+[    0.000000] UIC16 (32 IRQ sources) at DCR 0x318
+[    0.000000] random: get_random_u32 called from
+start_kernel+0x32c/0x500 with 
+crng_init=0
+[    0.000000] time_init: decrementer frequency = 166.666667 MHz
+[    0.000000] time_init: processor frequency   = 1333.333333 MHz
+[    0.000004] clocksource: timebase: mask: 0xffffffffffffffff
+max_cycles: 0x267
+03d839d, max_idle_ns: 440795207088 ns
+[    0.000007] clocksource: timebase mult[6000000] shift[24] registered
+[    0.000011] clockevent: decrementer mult[2aaaaaac] shift[32] cpu[0]
+[    0.000071] pid_max: default: 32768 minimum: 301
+[    0.000107] Mount-cache hash table entries: 1024 (order: 0, 4096
+bytes, linea
+r)
+[    0.000111] Mountpoint-cache hash table entries: 1024 (order: 0,
+4096 bytes, 
+linear)
+[    0.000580] devtmpfs: initialized
+[    0.002029] clocksource: jiffies: mask: 0xffffffff max_cycles:
+0xffffffff, ma
+x_idle_ns: 7645041785100000 ns
+[    0.002034] futex hash table entries: 256 (order: -1, 3072 bytes,
+linear)
+[    0.002146] NET: Registered protocol family 16
+[    0.004958] SCSI subsystem initialized
+[    0.004973] libata version 3.00 loaded.
+[    0.005003] usbcore: registered new interface driver usbfs
+[    0.005019] usbcore: registered new interface driver hub
+[    0.005031] usbcore: registered new device driver usb
+[    0.005043] pps_core: LinuxPPS API ver. 1 registered
+[    0.005045] pps_core: Software ver. 5.3.6 - Copyright 2005-2007
+Rodolfo Giome
+tti <giometti@linux.it>
+[    0.005052] PTP clock support registered
+[    0.005257] clocksource: Switched to clocksource timebase
+[    0.311619] thermal_sys: Registered thermal governor 'step_wise'
+[    0.311665] NET: Registered protocol family 2
+[    0.311834] tcp_listen_portaddr_hash hash table entries: 512 (order:
+0, 4096 
+bytes, linear)
+[    0.311844] TCP established hash table entries: 1024 (order: 0, 4096
+bytes, l
+inear)
+[    0.311855] TCP bind hash table entries: 1024 (order: 0, 4096 bytes,
+linear)
+[    0.311864] TCP: Hash tables configured (established 1024 bind 1024)
+[    0.311877] UDP hash table entries: 256 (order: 0, 4096 bytes,
+linear)
+[    0.311885] UDP-Lite hash table entries: 256 (order: 0, 4096 bytes,
+linear)
+[    0.311918] NET: Registered protocol family 1
+[    0.311994] RPC: Registered named UNIX socket transport module.
+[    0.311996] RPC: Registered udp transport module.
+[    0.311999] RPC: Registered tcp transport module.
+[    0.312001] RPC: Registered tcp NFSv4.1 backchannel transport
+module.
+[    0.312043] Trying to unpack rootfs image as initramfs...
+[    0.632637] Freeing initrd memory: 9552K
+[    0.634361] shadow_disr_to_uic15: 0x00000020 to uic15_pr
+[    0.635621] workingset: timestamp_bits=30 max_order=14
+bucket_order=0
+[    0.638710] NFS: Registering the id_resolver key type
+[    0.638717] Key type id_resolver registered
+[    0.638720] Key type id_legacy registered
+[    0.638730] jffs2: version 2.2. (NAND) (SUMMARY)  Â© 2001-2006 Red
+Hat, Inc.
+[    0.638858] fuse: init (API version 7.31)
+[    0.664372] io scheduler mq-deadline registered
+[    0.664375] io scheduler kyber registered
+[    0.664573] Serial: 8250/16550 driver, 32 ports, IRQ sharing enabled
+[    0.665728] printk: console [ttyS0] disabled
+[    0.685664] serial8250.0: ttyS0 at MMIO 0x10b0020000 (irq = 47,
+base_baud = 1
+302083) is a 16550A
+[    0.693859] printk: console [ttyS0] enabled
+[    0.694150] printk: console [ttyS0] disabled
+[    0.694212] 10b0020000.serial: ttyS0 at MMIO 0x10b0020000 (irq = 47,
+base_bau
+d = 1302083) is a 16550
+[    0.702632] printk: console [ttyS0] enabled
+[    0.704642] brd: module loaded
+[    0.704730] slram: not enough parameters.
+[    0.704792] PPP generic driver version 2.4.2
+[    0.704875] PPP Deflate Compression module registered
+[    0.704941] ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI)
+Driver
+[    0.705052] ohci_hcd: USB 1.1 'Open' Host Controller (OHCI) Driver
+[    0.705148] usbcore: registered new interface driver usb-storage
+[    0.705248] usbcore: registered new interface driver
+usbserial_generic
+[    0.705341] usbserial: USB Serial support registered for generic
+[    0.705428] usbcore: registered new interface driver pl2303
+[    0.705508] usbserial: USB Serial support registered for pl2303
+[    0.705592] booke_wdt: powerpc book-e watchdog driver loaded
+[    0.705769] sdhci: Secure Digital Host Controller Interface driver
+[    0.705849] sdhci: Copyright(c) Pierre Ossman
+[    0.705906] sdhci-pltfm: SDHCI platform and OF driver helper
+[    0.706033] mmc0: Invalid maximum block size, assuming 512 bytes
+[    0.706112] mmc0 bounce up to 128 segments into one, max segment
+size 65536 b
+ytes
+[    0.731266] mmc0: SDHCI controller on 10020c0000.emmc
+[10020c0000.emmc] using
+ DMA
+[    0.731422] oprofile: using timer interrupt.
+[    0.731546] Initializing XFRM netlink socket
+[    0.731789] NET: Registered protocol family 10
+[    0.732013] Segment Routing with IPv6
+[    0.732096] sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
+[    0.732331] NET: Registered protocol family 17
+[    0.732414] sctp: Hash tables configured (bind 1024/1024)
+[    0.732591] Key type dns_resolver registered
+[    0.732698] drmem: No dynamic reconfiguration memory found
+[    0.732888] hctosys: unable to open rtc device (rtc0)
+[    0.734057] Freeing unused kernel memory: 2080K
+[    0.734116] This architecture does not have kernel memory
+protection.
+[    0.734199] Run /init as init process
 
-diff --git a/drivers/nvmem/snvs_lpgpr.c b/drivers/nvmem/snvs_lpgpr.c
-index 35457421314a..44614f3d68f0 100644
---- a/drivers/nvmem/snvs_lpgpr.c
-+++ b/drivers/nvmem/snvs_lpgpr.c
-@@ -21,6 +21,9 @@
- #define IMX_GPR_SL		BIT(5)
- #define IMX_GPR_HL		BIT(5)
- 
-+#define REGMAP_FIELD_SIZE 16
-+#define REGMAP_FIELDS_PER_REG 2
-+
- struct snvs_lpgpr_cfg {
- 	int offset;
- 	int offset_hplr;
-@@ -33,6 +36,7 @@ struct snvs_lpgpr_priv {
- 	struct regmap			*regmap;
- 	struct nvmem_config		cfg;
- 	const struct snvs_lpgpr_cfg	*dcfg;
-+	struct regmap_field **reg_fields;
- };
- 
- static const struct snvs_lpgpr_cfg snvs_lpgpr_cfg_imx6q = {
-@@ -56,6 +60,11 @@ static int snvs_lpgpr_write(void *context, unsigned int offset, void *val,
- 	const struct snvs_lpgpr_cfg *dcfg = priv->dcfg;
- 	unsigned int lock_reg;
- 	int ret;
-+	u32 regval;
-+	unsigned int field_id;
-+
-+	if (offset + bytes > dcfg->size)
-+		return -EINVAL;
- 
- 	ret = regmap_read(priv->regmap, dcfg->offset_hplr, &lock_reg);
- 	if (ret < 0)
-@@ -71,8 +80,16 @@ static int snvs_lpgpr_write(void *context, unsigned int offset, void *val,
- 	if (lock_reg & IMX_GPR_HL)
- 		return -EPERM;
- 
--	return regmap_bulk_write(priv->regmap, dcfg->offset + offset, val,
--				 bytes / priv->cfg.stride);
-+	if (bytes == (REGMAP_FIELD_SIZE >> 3)) {
-+		regval = *(u16 *)(val);
-+		field_id = offset / REGMAP_FIELDS_PER_REG;
-+		ret = regmap_field_write(priv->reg_fields[field_id], regval);
-+	} else {
-+		ret = regmap_bulk_write(priv->regmap, dcfg->offset + offset,
-+					val, bytes / priv->cfg.stride);
-+	}
-+
-+	return ret;
- }
- 
- static int snvs_lpgpr_read(void *context, unsigned int offset, void *val,
-@@ -80,9 +97,27 @@ static int snvs_lpgpr_read(void *context, unsigned int offset, void *val,
- {
- 	struct snvs_lpgpr_priv *priv = context;
- 	const struct snvs_lpgpr_cfg *dcfg = priv->dcfg;
-+	int ret;
-+	u32 regval;
-+	unsigned int field_id;
- 
--	return regmap_bulk_read(priv->regmap, dcfg->offset + offset, val,
--				bytes / priv->cfg.stride);
-+	if (offset + bytes > dcfg->size)
-+		return -EINVAL;
-+
-+	if (bytes == (REGMAP_FIELD_SIZE >> 3)) {
-+		field_id = offset / REGMAP_FIELDS_PER_REG;
-+		ret = regmap_field_read(priv->reg_fields[field_id], &regval);
-+		if (ret)
-+			return ret;
-+
-+		*(u16 *)(val) = regval;
-+	} else {
-+		ret = regmap_bulk_read(priv->regmap, dcfg->offset + offset, val,
-+				       bytes / priv->cfg.stride);
-+		if (ret)
-+			return ret;
-+	}
-+	return 0;
- }
- 
- static int snvs_lpgpr_probe(struct platform_device *pdev)
-@@ -94,6 +129,8 @@ static int snvs_lpgpr_probe(struct platform_device *pdev)
- 	struct nvmem_config *cfg;
- 	struct nvmem_device *nvmem;
- 	const struct snvs_lpgpr_cfg *dcfg;
-+	int i;
-+	int fields_count;
- 
- 	if (!node)
- 		return -ENOENT;
-@@ -121,13 +158,31 @@ static int snvs_lpgpr_probe(struct platform_device *pdev)
- 	cfg->priv = priv;
- 	cfg->name = dev_name(dev);
- 	cfg->dev = dev;
--	cfg->stride = 4;
--	cfg->word_size = 4;
-+	cfg->stride = 2;
-+	cfg->word_size = 2;
- 	cfg->size = dcfg->size;
- 	cfg->owner = THIS_MODULE;
- 	cfg->reg_read  = snvs_lpgpr_read;
- 	cfg->reg_write = snvs_lpgpr_write;
- 
-+	fields_count = priv->dcfg->size / priv->cfg.stride;
-+	priv->reg_fields = devm_kzalloc(
-+		dev, sizeof(struct regmap_field *) * fields_count, GFP_KERNEL);
-+	if (!priv->reg_fields)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < fields_count; i++) {
-+		size_t field_start = i * REGMAP_FIELD_SIZE;
-+		size_t field_end = field_start + REGMAP_FIELD_SIZE - 1;
-+		const struct reg_field field =
-+			REG_FIELD(dcfg->offset, field_start, field_end);
-+
-+		priv->reg_fields[i] =
-+			devm_regmap_field_alloc(dev, priv->regmap, field);
-+		if (IS_ERR(priv->reg_fields[i]))
-+			return PTR_ERR(priv->reg_fields[i]);
-+	}
-+
- 	nvmem = devm_nvmem_register(dev, cfg);
- 
- 	return PTR_ERR_OR_ZERO(nvmem);
--- 
-2.26.3
+> 
+> The difference with this commit is that if there are several
+> memblocks, all get mapped. Maybe your 
+> target doesn't like it.
+> 
+> You are talking about simulation, are you using QEMU ? If yes can you
+> provide details so that I can 
+> try and reproduce the issue ?
+
+No, we use Windriver simics for this system. I'm not sure if QEMU has a
+model for the PPC476... and I suspect it won't recreate with a more
+generic 32 bit ppc machine, though I can try and find out.
+
+Thanks,
+Eddie
+
+> 
+> Thanks
+> Christophe
 
