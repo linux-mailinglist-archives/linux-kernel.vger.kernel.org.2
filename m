@@ -2,85 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 512F036D700
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C07DF36D704
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232607AbhD1MIs convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Apr 2021 08:08:48 -0400
-Received: from mail-vs1-f45.google.com ([209.85.217.45]:34462 "EHLO
-        mail-vs1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231602AbhD1MIr (ORCPT
+        id S233185AbhD1MKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 08:10:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232211AbhD1MKM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 08:08:47 -0400
-Received: by mail-vs1-f45.google.com with SMTP id d25so25063766vsp.1;
-        Wed, 28 Apr 2021 05:08:02 -0700 (PDT)
+        Wed, 28 Apr 2021 08:10:12 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3109CC06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 05:09:26 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id b21so4197632plz.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 05:09:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5XNbQ4jS+oEXsc5GlcM2m6b8j3J1nAAGezzxy2+DoYs=;
+        b=Q2XwIizloJd2toyJiA+osnbErOig8kN5L7KDEPFsod7H8NfuPrUh8yOaSBkFsuwS10
+         GL5keAiLkcvD3utMjxyyGXQu785vT/hKz0m5t1+Y2L6Pe88hICry9+1ArV86UUh2O+C9
+         5PsdceqVkCeR+XbdxHuCjXhu9ayNV+0cg8qKHFONq1MZv8S+lMncnYEF2S8AJ9RRxsF/
+         PDESK8gr3hnJ89HfN7RWmimccOIw9b6REKlKYkjRITqaQ613RcpqMhVGYi1XP3lLDdTY
+         ghgRIKbKX2WyvgzT1xzrw9jJYtnrfy7/v4AavZxM4gcbgNyXr4EalLR4vO7HxZGCoEaE
+         nvww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=J5mBs5jaQh3wtMQmRUFFXymD4w0OFf894XaJ7i3Natc=;
-        b=kjjM4UiyKtUjaPSPuq9mkwGyC4s0EH6s/udSCpBfLL6wh3VVT+iU7NrIMRx2uCf/Zg
-         MWMspfVf0n9RavshI4UczMl0vktf0QXVyYrjwOq1JierNEx+t8aR4Jmq66TaA1U2blJB
-         +x9A71oPpHrvCy7/OplKQT550gnylWT4zhCtgY0Dm3cICmGRhJb4uSIJJbKMv0jCP1Or
-         psF4/AIxKDT1RTGyZf1GXO1632oodd7WUTB2okRKSlOUL0mlR8xbLoy77k+xyDpiyU+d
-         baYQuThI5iMT/VqzFIfJLNW2BL3io0ADYNaDBWaofKy/0z10syQO/12PNxlm7b7M68y3
-         9avw==
-X-Gm-Message-State: AOAM531JwloVCh39t0a9BDFyaje9Dcwdkm/R6UJK0PjFxHFwwt3Jj4m4
-        ZwdQEgo+sCOe5RerSovv8AgF3GVaPnZEFIPHlGI=
-X-Google-Smtp-Source: ABdhPJyt7LPnKkg4RokoJwXilgPmqlDDD/Bu5PTcYsE2WO63a5OjnRGES3axOm0jQe9YJGZ21DkJc+/8VBf1Z2ktDK0=
-X-Received: by 2002:a67:8745:: with SMTP id j66mr24878487vsd.18.1619611682536;
- Wed, 28 Apr 2021 05:08:02 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5XNbQ4jS+oEXsc5GlcM2m6b8j3J1nAAGezzxy2+DoYs=;
+        b=GQqNQvQYbCx94JEpRm0xrVIwBR5GZ+X3cNpPbY6ir59A4je7ukmYKc86hyLBOvN94i
+         WV3ckfHDf6Sj+601QYx/MaltlOUfGpV3TTRQc3gCVqEPnGRKz2Z/WQH26vacn6em0mG/
+         FX46tb26js9GOSO8bSbA140OdsM06WK2e8taElceGxWzuZWW1HhuCBCIMWxu+iyTUWhI
+         8N6qSS8UaYCkixYSyEZ1rLPaeZX0EBBN5qMzSHsSAHK34v87bWQusyH/XP/GKSujdvnP
+         udocvhp3ejAsLdwVjS3HMljtmw9PLCugyG0XXLlaAtDW50XXaQOc3DZCCSbKfH0CzdxW
+         +apw==
+X-Gm-Message-State: AOAM531RJxHHhNqBHX/TLC6W+1SkoA8l78w8u5OD0NHWdvdXHLLnu1k3
+        D6FsgA72SRHQwN0BN6JWtgrrew==
+X-Google-Smtp-Source: ABdhPJwUvHIeeJ60S4HPiVj/59XXkm1I8zR0Nrtf8ZwEp3l2L7RS2JhMFK5wRKNFzUhhUy3IwJJtfw==
+X-Received: by 2002:a17:90a:a404:: with SMTP id y4mr3623528pjp.228.1619611765700;
+        Wed, 28 Apr 2021 05:09:25 -0700 (PDT)
+Received: from localhost (ec2-18-166-74-158.ap-east-1.compute.amazonaws.com. [18.166.74.158])
+        by smtp.gmail.com with ESMTPSA id g21sm5166040pjl.28.2021.04.28.05.09.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 05:09:25 -0700 (PDT)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Steve MacLean <Steve.MacLean@Microsoft.com>,
+        Yonatan Goldschmidt <yonatan.goldschmidt@granulate.io>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH v3 0/4] perf: Allow TIME_CONV to be backwards-compatible and dump it
+Date:   Wed, 28 Apr 2021 20:09:11 +0800
+Message-Id: <20210428120915.7123-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210323221430.3735147-1-laurent@vivier.eu> <20210323221430.3735147-3-laurent@vivier.eu>
- <a9c75ae7-6023-6b6c-260f-a0d6841ea4fa@vivier.eu>
-In-Reply-To: <a9c75ae7-6023-6b6c-260f-a0d6841ea4fa@vivier.eu>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 28 Apr 2021 14:07:51 +0200
-Message-ID: <CAMuHMdW49S_81Oip2p+yUO5YUL1-V3_K_C1WEXux7mQWcb-mKA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] m68k: introduce a virtual m68k machine
-To:     Laurent Vivier <laurent@vivier.eu>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+The event PERF_RECORD_TIME_CONV was extended for clock parameters, but
+the tool fails to be backwards-compatible for the old event format.
 
-On Tue, Apr 27, 2021 at 7:20 PM Laurent Vivier <laurent@vivier.eu> wrote:
-> Le 23/03/2021 à 23:14, Laurent Vivier a écrit :
-> > This machine allows to have up to 3.2 GiB and 128 Virtio devices.
-> >
-> > It is based on android goldfish devices.
-> >
-> > Signed-off-by: Laurent Vivier <laurent@vivier.eu>
+Based on checking the event size, this patch series can decide if the
+extended clock parameters are contained in the perf event or not.  This
+allows the event PERF_RECORD_TIME_CONV to be backwards-compatible.
 
-> As 5.12 has been released, is this possible to consider having this new machine in the next release?
->
-> All changes are contained under arch/m68k and protected by the CONFIG_VIRT flag. This should not
-> have any impact on the other m68k machines. In any case, I'll be able to maintain the machine and
-> fix any problem.
+The last patch also is introduced for dumping the event, for both the
+old and latest event formats.
 
-Thanks for the reminder!
+The patch set has been rebased on perf/core branch with:
 
-Please accept my apologies: I had completely forgotten about your patch.
-By the time it reappeared on my radar (due to Alexandre's reply), it was
-already too late for v5.13.
+  commit 4c391ea001cb ("perf beauty: Fix fsconfig generator")
 
-I have tested and reviewed your patch, great work!
-I'm confident this can make v5.14, with the small nits fixed.
+And the patches have been tested on Arm64 HiSilicon D06 platform.
 
-Gr{oetje,eeting}s,
+Changes from v2:
+* Fixed subject and commit log in patch 01.
 
-                        Geert
+Changes from v1:
+* Changed from bool to __u8 for perf_record_time_conv (Adrain);
+* Added helper event_contains() and used it (Adrian).
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Leo Yan (4):
+  perf tool: Change fields type in perf_record_time_conv
+  perf jit: Let convert_timestamp() to be backwards-compatible
+  perf session: Add swap operation for event TIME_CONV
+  perf session: Dump PERF_RECORD_TIME_CONV event
+
+ tools/lib/perf/include/perf/event.h |  7 +++++--
+ tools/perf/util/jitdump.c           | 30 +++++++++++++++++++----------
+ tools/perf/util/session.c           | 28 +++++++++++++++++++++++++--
+ tools/perf/util/tsc.c               | 30 +++++++++++++++++++++++++++++
+ tools/perf/util/tsc.h               |  4 ++++
+ 5 files changed, 85 insertions(+), 14 deletions(-)
+
+-- 
+2.25.1
+
