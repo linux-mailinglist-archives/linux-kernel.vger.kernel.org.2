@@ -2,161 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2F436DC4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3EA836DC40
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240740AbhD1Ps0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 11:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50438 "EHLO
+        id S240710AbhD1PqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 11:46:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231874AbhD1PsQ (ORCPT
+        with ESMTP id S241496AbhD1Poo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 11:48:16 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F23C0612A6
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 08:45:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=sMGmqfmRxgnUnc7FxlxA1CjtidgVAL/oIRDORQH7Bv0=; b=a10ieGhgIH9rZOgJ2iFa8Y4NFF
-        TvuEGQ9WCtL/D7LyooHtwfqBJaYIuQ81J+mJJCjAS2nyXekxS60abKKdaGd64kxko2FDpIhmJ0jV6
-        hApjuCd5DUafuMaz+LqPYT8J4s+1bGkOHsj5tkgya0EHL+Z92msGo2izrEFJ2SBHZtLTPPk8DLKv0
-        65vgoECY0tLoY4BOlyUaavOCo1/x9PPB9aq88aPzQq4ml+Bt7mIARZS65nqHUEzZqljwmddGbpmw+
-        oLxaQFeCBDwZDdse5uG6k4kBFxOOGDv61KFl0NRihhNF0O/+VgkWve99eBSuHbifiNc2g3jt8klB6
-        uafzcIyw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lbmHI-008TLd-C0; Wed, 28 Apr 2021 15:40:10 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 092E63002F1;
-        Wed, 28 Apr 2021 17:39:02 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E46F82CEAF0D1; Wed, 28 Apr 2021 17:39:01 +0200 (CEST)
-Date:   Wed, 28 Apr 2021 17:39:01 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     paulmck@kernel.org, Feng Tang <feng.tang@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel-team@fb.com, neeraju@codeaurora.org,
-        zhengjun.xing@intel.com, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [clocksource]  8c30ace35d:
- WARNING:at_kernel/time/clocksource.c:#clocksource_watchdog
-Message-ID: <YImBlV8l7bjZ7Q6G@hirez.programming.kicks-ass.net>
-References: <87y2d3mo2q.ffs@nanos.tec.linutronix.de>
- <87a6pimt1f.ffs@nanos.tec.linutronix.de>
+        Wed, 28 Apr 2021 11:44:44 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B61C0612AC;
+        Wed, 28 Apr 2021 08:39:52 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id q2so12049059pfk.9;
+        Wed, 28 Apr 2021 08:39:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=fdQ6mtwPVeGREgtHEwqkJNzQ1V/fit6k42a1rYIg3q0=;
+        b=mzniNHUfc1nOG+ti98K/mrPtMSoZvgnfG4tlaMCp370Ft7CUpb3mEyJE75JOLEKeJe
+         mHe/buO7oXHo8KcEjEvyi5zaOVM+FxC6GyZ3kOjrF65L/c4zGGHCzkhqpLKio8orJHIB
+         PjB9Mq5pJItF6CVIB81gMrv1MsiEIYEgzBpxP/zY+U8FT+uNXPa7srXoaaUS3h8EWSAI
+         cmqPhNIHOtoXTt8WpI9YOwfaW+RZBMqwQFsQ9HY/+bQkq7ODhKXzS7zM4AfhF9ji3unI
+         JAY4cHY1PfTr3eTIYunc4t2iSXJ8zPgicQ2SdKoAX+VQXQTUXu6PFNh0M0TRVypQoxlD
+         J3aA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=fdQ6mtwPVeGREgtHEwqkJNzQ1V/fit6k42a1rYIg3q0=;
+        b=AnUZ4CAF37EA2ir9wZHRXYn4zcDp4K0pj0blV4ESUDn815fyR3G5/WmkQEfbSGOrjB
+         AkMEoPChh5I91fUZ7ZbLZ/dnRq2eM2+lqU6/Rfbb9peK+ZbMQiWJPDw+Ou3a/y5uRuv1
+         +o/3Ch+L7BboIni27RiUn0+LX+K6QwQsMb2e0Rpsr+tniUZLa5HLgzlfhs/eXfGTen+J
+         AWBMKHlkLFyl4dKKBn6bITZ1YYejtOPM2nUeIbuYzSbwPGxoQrWBHPbEy1fi1FF0cFX5
+         IReX55WyykAUm81Kzjr7Kq5+0V4aMIIATtqm7U6fzIStvHKCUKs56Pm0DgEmfXSUF2o5
+         xaIA==
+X-Gm-Message-State: AOAM530ulsOX6jkJJRzgTCksXHg0YKNyfwHDCX/oQ6AvtkNSjgoobj4n
+        Yb0rXHDzk+wJ9bjiVeyfKA2vESqIGFaKtH4f
+X-Google-Smtp-Source: ABdhPJx61oOlYsuRsg8P/Ar5DdJxDI1EUSr1yeJRLgiKPcDSNmL2JgVqK/1DfjS4gEwHgu4TB1hk5w==
+X-Received: by 2002:a62:528e:0:b029:1f5:c5ee:a487 with SMTP id g136-20020a62528e0000b02901f5c5eea487mr28007099pfb.7.1619624391158;
+        Wed, 28 Apr 2021 08:39:51 -0700 (PDT)
+Received: from localhost ([157.45.42.123])
+        by smtp.gmail.com with ESMTPSA id a27sm129483pfl.64.2021.04.28.08.39.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 28 Apr 2021 08:39:50 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 21:09:42 +0530
+From:   Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+To:     James.Bottomley@HansenPartnership.com
+Cc:     deller@gmx.de, linux-parisc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sanjanasrinidhi1810@gmail.com
+Subject: [PATCH] drivers: parisc: ccio-dma.c: Added tab insead of spaces
+Message-ID: <20210428153942.uyips5a3osoz3nju@kewl-virtual-machine>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87a6pimt1f.ffs@nanos.tec.linutronix.de>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 03:34:52PM +0200, Thomas Gleixner wrote:
+Single space has been removed.
+It has been replaced with tabs.
+This is done to maintain code uniformity.
 
+Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+---
+ drivers/parisc/ccio-dma.c | 88 +++++++++++++++++++--------------------
+ 1 file changed, 44 insertions(+), 44 deletions(-)
 
->  3) CPU does advertise X86_FEATURE_CONSTANT_TSC and X86_FEATURE_NONSTOP_TSC
-> 
->     That's the point where usable starts, which is around 2007/2008
-> 
->  4) CPU has X86_FEATURE_CONSTANT_TSC, X86_FEATURE_NONSTOP_TSC and
->     TSC_ADJUST
-> 
->     That's anything Intel starting from Haswell - not sure about the
->     ATOM parts though.
-> 
->     Non-Intel CPUs lack this completely.
-> 
->  5) CPU has X86_FEATURE_CONSTANT_TSC, X86_FEATURE_NONSTOP_TSC and
->     TSC_ADJUST and the not yet existing feature TSC_LOCKDOWN
-> 
->     We're asking for this for at least 15 years now, but we also had to
->     wait 10+ years to get a halfways usable TSC, so why am I
->     complaining?
-> 
-> So we really care about #3 and #4.
-> 
-> #4 is the easy case because we can check MSR_TSC_ADJUST to figure out
->    whether something has written to MSR_TSC or MSR_TSC_ADJUST and undo
->    the damage in a sane way.
+diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
+index b5f9ee81a46c..9b777357e8cb 100644
+--- a/drivers/parisc/ccio-dma.c
++++ b/drivers/parisc/ccio-dma.c
+@@ -111,29 +111,29 @@
+ #define CMD_TLB_PURGE        33         /* IO_COMMAND to Purge I/O TLB entry */
+ 
+ struct ioa_registers {
+-        /* Runway Supervisory Set */
+-        int32_t    unused1[12];
+-        uint32_t   io_command;             /* Offset 12 */
+-        uint32_t   io_status;              /* Offset 13 */
+-        uint32_t   io_control;             /* Offset 14 */
+-        int32_t    unused2[1];
+-
+-        /* Runway Auxiliary Register Set */
+-        uint32_t   io_err_resp;            /* Offset  0 */
+-        uint32_t   io_err_info;            /* Offset  1 */
+-        uint32_t   io_err_req;             /* Offset  2 */
+-        uint32_t   io_err_resp_hi;         /* Offset  3 */
+-        uint32_t   io_tlb_entry_m;         /* Offset  4 */
+-        uint32_t   io_tlb_entry_l;         /* Offset  5 */
+-        uint32_t   unused3[1];
+-        uint32_t   io_pdir_base;           /* Offset  7 */
+-        uint32_t   io_io_low_hv;           /* Offset  8 */
+-        uint32_t   io_io_high_hv;          /* Offset  9 */
+-        uint32_t   unused4[1];
+-        uint32_t   io_chain_id_mask;       /* Offset 11 */
+-        uint32_t   unused5[2];
+-        uint32_t   io_io_low;              /* Offset 14 */
+-        uint32_t   io_io_high;             /* Offset 15 */
++	/* Runway Supervisory Set */
++	int32_t    unused1[12];
++	uint32_t   io_command;             /* Offset 12 */
++	uint32_t   io_status;              /* Offset 13 */
++	uint32_t   io_control;             /* Offset 14 */
++	int32_t    unused2[1];
++
++	/* Runway Auxiliary Register Set */
++	uint32_t   io_err_resp;            /* Offset  0 */
++	uint32_t   io_err_info;            /* Offset  1 */
++	uint32_t   io_err_req;             /* Offset  2 */
++	uint32_t   io_err_resp_hi;         /* Offset  3 */
++	uint32_t   io_tlb_entry_m;         /* Offset  4 */
++	uint32_t   io_tlb_entry_l;         /* Offset  5 */
++	uint32_t   unused3[1];
++	uint32_t   io_pdir_base;           /* Offset  7 */
++	uint32_t   io_io_low_hv;           /* Offset  8 */
++	uint32_t   io_io_high_hv;          /* Offset  9 */
++	uint32_t   unused4[1];
++	uint32_t   io_chain_id_mask;       /* Offset 11 */
++	uint32_t   unused5[2];
++	uint32_t   io_io_low;              /* Offset 14 */
++	uint32_t   io_io_high;             /* Offset 15 */
+ };
+ 
+ /*
+@@ -198,7 +198,7 @@ struct ioa_registers {
+ ** In order for a Runway address to reside within GSC+ extended address space:
+ **	Runway Address [0:7]    must identically compare to 8'b11111111
+ **	Runway Address [8:11]   must be equal to IO_IO_LOW(_HV)[16:19]
+-** 	Runway Address [12:23]  must be greater than or equal to
++**	Runway Address [12:23]  must be greater than or equal to
+ **	           IO_IO_LOW(_HV)[20:31] and less than IO_IO_HIGH(_HV)[20:31].
+ **	Runway Address [24:39]  is not used in the comparison.
+ **
+@@ -226,10 +226,10 @@ struct ioc {
+ 	struct ioa_registers __iomem *ioc_regs;  /* I/O MMU base address */
+ 	u8  *res_map;	                /* resource map, bit == pdir entry */
+ 	u64 *pdir_base;	                /* physical base address */
+-	u32 pdir_size; 			/* bytes, function of IOV Space size */
+-	u32 res_hint;	                /* next available IOVP - 
++	u32 pdir_size;			/* bytes, function of IOV Space size */
++	u32 res_hint;			/* next available IOVP -
+ 					   circular search */
+-	u32 res_size;		    	/* size of resource map in bytes */
++	u32 res_size;			/* size of resource map in bytes */
+ 	spinlock_t res_lock;
+ 
+ #ifdef CCIO_COLLECT_STATS
+@@ -249,7 +249,7 @@ struct ioc {
+ 	unsigned short cujo20_bug;
+ 
+ 	/* STUFF We don't need in performance path */
+-	u32 chainid_shift; 		/* specify bit location of chain_id */
++	u32 chainid_shift;		/* specify bit location of chain_id */
+ 	struct ioc *next;		/* Linked list of discovered iocs */
+ 	const char *name;		/* device name from firmware */
+ 	unsigned int hw_path;           /* the hardware path this ioc is associatd with */
+@@ -293,7 +293,7 @@ static int ioc_count;
+ ** cause the kernel to panic anyhow.
+ */
+ #define CCIO_SEARCH_LOOP(ioc, res_idx, mask, size)  \
+-       for(; res_ptr < res_end; ++res_ptr) { \
++	for (; res_ptr < res_end; ++res_ptr) { \
+ 		int ret;\
+ 		unsigned int idx;\
+ 		idx = (unsigned int)((unsigned long)res_ptr - (unsigned long)ioc->res_map); \
+@@ -303,15 +303,15 @@ static int ioc_count;
+ 			res_idx = idx;\
+ 			ioc->res_hint = res_idx + (size >> 3); \
+ 			goto resource_found; \
+-		} \
++		  \
+ 	}
+ 
+ #define CCIO_FIND_FREE_MAPPING(ioa, res_idx, mask, size) \
+        u##size *res_ptr = (u##size *)&((ioc)->res_map[ioa->res_hint & ~((size >> 3) - 1)]); \
+        u##size *res_end = (u##size *)&(ioc)->res_map[ioa->res_size]; \
+-       CCIO_SEARCH_LOOP(ioc, res_idx, mask, size); \
+-       res_ptr = (u##size *)&(ioc)->res_map[0]; \
+-       CCIO_SEARCH_LOOP(ioa, res_idx, mask, size);
++	CCIO_SEARCH_LOOP(ioc, res_idx, mask, size); \
++	res_ptr = (u##size *)&(ioc)->res_map[0]; \
++	CCIO_SEARCH_LOOP(ioa, res_idx, mask, size);
+ 
+ /*
+ ** Find available bit in this ioa's resource map.
+@@ -348,9 +348,9 @@ ccio_alloc_range(struct ioc *ioc, struct device *dev, size_t size)
+ 	
+ 	BUG_ON(pages_needed == 0);
+ 	BUG_ON((pages_needed * IOVP_SIZE) > DMA_CHUNK_SIZE);
+-     
+-	DBG_RES("%s() size: %d pages_needed %d\n", 
+-		__func__, size, pages_needed);
++
++	DBG_RES("%s() size: %d pages_needed %d\n",
++			__func__, size, pages_needed);
+ 
+ 	/*
+ 	** "seek and ye shall find"...praying never hurts either...
+@@ -416,7 +416,7 @@ ccio_alloc_range(struct ioc *ioc, struct device *dev, size_t size)
+ #define CCIO_FREE_MAPPINGS(ioc, res_idx, mask, size) \
+         u##size *res_ptr = (u##size *)&((ioc)->res_map[res_idx]); \
+         BUG_ON((*res_ptr & mask) != mask); \
+-        *res_ptr &= ~(mask);
++	*res_ptr &= ~(mask);
+ 
+ /**
+  * ccio_free_range - Free pages from the ioc's resource map.
+@@ -845,7 +845,7 @@ static void *
+ ccio_alloc(struct device *dev, size_t size, dma_addr_t *dma_handle, gfp_t flag,
+ 		unsigned long attrs)
+ {
+-      void *ret;
++	void *ret;
+ #if 0
+ /* GRANT Need to establish hierarchy for non-PCI devs as well
+ ** and then provide matching gsc_map_xxx() functions for them as well.
+@@ -856,7 +856,7 @@ ccio_alloc(struct device *dev, size_t size, dma_addr_t *dma_handle, gfp_t flag,
+ 		return 0;
+ 	}
+ #endif
+-        ret = (void *) __get_free_pages(flag, get_order(size));
++	ret = (void *) __get_free_pages(flag, get_order(size));
+ 
+ 	if (ret) {
+ 		memset(ret, 0, size);
+@@ -1022,8 +1022,8 @@ static const struct dma_map_ops ccio_ops = {
+ 	.free =			ccio_free,
+ 	.map_page =		ccio_map_page,
+ 	.unmap_page =		ccio_unmap_page,
+-	.map_sg = 		ccio_map_sg,
+-	.unmap_sg = 		ccio_unmap_sg,
++	.map_sg =		ccio_map_sg,
++	.unmap_sg =		ccio_unmap_sg,
+ 	.get_sgtable =		dma_common_get_sgtable,
+ 	.alloc_pages =		dma_common_alloc_pages,
+ 	.free_pages =		dma_common_free_pages,
+@@ -1080,7 +1080,7 @@ static int ccio_proc_info(struct seq_file *m, void *p)
+ 		max = ioc->usingle_pages - ioc->usg_pages;
+ 		seq_printf(m, "pci_unmap_single: %8ld calls  %8ld pages (avg %d/1000)\n",
+ 			   min, max, (int)((max * 1000)/min));
+- 
++
+ 		seq_printf(m, "pci_map_sg()    : %8ld calls  %8ld pages (avg %d/1000)\n",
+ 			   ioc->msg_calls, ioc->msg_pages,
+ 			   (int)((ioc->msg_pages * 1000)/ioc->msg_calls));
+@@ -1169,7 +1169,7 @@ void __init ccio_cujo20_fixup(struct parisc_device *cujo, u32 iovp)
+ 	idx = PDIR_INDEX(iovp) >> 3;
+ 
+ 	while (idx < ioc->res_size) {
+- 		res_ptr[idx] |= 0xff;
++		res_ptr[idx] |= 0xff;
+ 		idx += PDIR_INDEX(CUJO_20_STEP) >> 3;
+ 	}
+ }
+@@ -1297,7 +1297,7 @@ ccio_ioc_init(struct ioc *ioc)
+ 	DBG_INIT(" base %p\n", ioc->pdir_base);
+ 
+ 	/* resource map size dictated by pdir_size */
+- 	ioc->res_size = (ioc->pdir_size / sizeof(u64)) >> 3;
++	ioc->res_size = (ioc->pdir_size / sizeof(u64)) >> 3;
+ 	DBG_INIT("%s() res_size 0x%x\n", __func__, ioc->res_size);
+ 	
+ 	ioc->res_map = (u8 *)__get_free_pages(GFP_KERNEL, 
+-- 
+2.17.1
 
-This is after the fact though; userspace (and kernel space) will have
-observed non-linear time and things will be broken in various subtle and
-hard to tell ways.
-
->    That's currently only done when a CPU goes idle, but there are
->    options to do that differently (timer, TIF flag ...)
-> 
->    This allows to disable the clocksource watchdog completely and based
->    on Fengs work we are going to do so sooner than later.
-
-
-> The problematic case is #3 because that affects any Non-Intel CPUs
-> and the pre Haswell Intel ones.
-
-Right, no clue what to do about all them AMD machines :/
-
-> Unfortunately there is no other way than using the watchdog mechanism,
-> simply because we need hardware assistance for detection and a reliable
-> way to undo the damage, which is what we have with TSC_ADJUST. Of course
-> the best case would be a mechanism to prevent writes to TSC/TSC_ADJUST
-> completely after boot.
-
-Yes, we needs us that TSC_LOCKDOWN thing, across all of x86.
-
-> Now let's look at the cases which cause TSC problems in the real world:
-> 
->     1) Boot time (or resume time) TSC inconsistency
-> 
->        That's the major problem today, but that's not a watchdog issue.
-> 
->        On TSC_ADJUST equipped machines we fix the wreckage up, on others
->        we give up. For the latter case we don't need a watchdog :)
-> 
->     2) Runtime wreckage caused by BIOS/SMM
-> 
->        That used to be a wide spread problem 10 years ago and today it's
->        only a sporadic issue, but it's not eliminated completely which
->        is why we have this discussion at all.
-> 
-> As we have no reliable indicator whether a BIOS can be trusted and
-> history taught us that it can't be trusted, we need to have this
-> trainwreck until hardware people actually come to senses and fix the
-> root cause once and forever.
-
-Also, realistically, people are actually still running modern kernels on
-10 year old hardware :/
-
-> The only other option to handle this mess is to declare the watchdog
-> experiment as failed, rip it out completely and emit a fat warning on
-> boot when a non-trustable TSC is detected:
-> 
->      HARDWARE-BUG: Untrusted TSC detected. For further information see:
->      https://www.kernel.org/doc/html/latest/admin-guide/hw-trainwrecks/tsc.html
-> 
-> I can live with that and maybe we should have done that 15 years ago
-> instead of trying to work around it at the symptom level.
-
-Anybody that still has runtime BIOS wreckage will then silently suffer
-nonlinear time, doubly so for anybody not having TSC_ADJUST. Are we sure
-we can tell them all to bugger off and buy new hardware?
-
-At the very least we need something like tsc=broken, to explicitly mark
-TSC bad on machines, so that people that see TSC fail on their current
-kernels can continue to use the new kernels. This requires a whole lot
-of care on the part of users though, and will raise a ruckus, because I
-bet a fair number of these people are not even currently aware we're
-disabling TSC for them :/
