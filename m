@@ -2,92 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6BC36D447
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C489736D42B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237716AbhD1Iwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 04:52:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39118 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237167AbhD1Iwf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 04:52:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D56F261418
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 08:51:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619599910;
-        bh=DwC5HXGO+SMcxoToQXvRD9FRL1XMAMGE30AHfo+wM5w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TAs9plRb6NQSmWN05MVLB1ZoXs3NdyjMcxsnCi7PJ154aKb1fBLlVuoNgTg/g9ts3
-         vsyYfgxButiqJU+vrITsNfIIeqmb9dudGijLTro3DoFUmb+a4DCJqfG0y/zgM8EUYb
-         vehaJMYRWdtC9zQhH9CMxbioP93Fj0z8DDxYjNQw/q+hl2P1Uaf5E+UoTG5Kzr/X5W
-         GKOUIwPiqtLyv486Oddz5/44uAPW2dEDBtGP+/OfMpTEC4JiXxXoGbaKYNjjEDWGyw
-         mgldd94fD08PnEfvzhzSGpu3ulZp2MlhqMEkGwKWanG4QbmmgUc3qS13tHbrt42JZP
-         ql40+rbc6NVtg==
-Received: by mail-ot1-f49.google.com with SMTP id 65-20020a9d03470000b02902808b4aec6dso52981910otv.6
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 01:51:50 -0700 (PDT)
-X-Gm-Message-State: AOAM531cito0qqxHfONqnYwY/inH9d9S6dVypWlhbbSYv8UYF3gS8pgt
-        2ypj1q5EAjmBNRaxa91671reafwKrahBJCLX2Ac=
-X-Google-Smtp-Source: ABdhPJzQdhdfR7hl9GS/+BN8nNAkCne6d9vHOW2kGmVMdLhDbOmWhIDAR0Hrl+u9Om22RRH9wejf0vcOt8LdWD122hg=
-X-Received: by 2002:a9d:311:: with SMTP id 17mr22887790otv.77.1619599910047;
- Wed, 28 Apr 2021 01:51:50 -0700 (PDT)
+        id S237872AbhD1Io6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 04:44:58 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:17404 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229643AbhD1Io5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 04:44:57 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FVXDx45ggzlZFH;
+        Wed, 28 Apr 2021 16:42:09 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Wed, 28 Apr 2021
+ 16:44:01 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Ye Bin <yebin10@huawei.com>
+Subject: [PATCH v3] ext4: Fix bug on in ext4_es_cache_extent as ext4_split_extent_at failed
+Date:   Wed, 28 Apr 2021 16:51:58 +0800
+Message-ID: <20210428085158.3728201-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-References: <20210423205159.830854-1-morbo@google.com> <202104271557.412DD365A@keescook>
-In-Reply-To: <202104271557.412DD365A@keescook>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 28 Apr 2021 10:51:38 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEEHEeRdPanD5uRc+e95_qB3pd_NoWA0eu80wRSrPxOvA@mail.gmail.com>
-Message-ID: <CAMj1kXEEHEeRdPanD5uRc+e95_qB3pd_NoWA0eu80wRSrPxOvA@mail.gmail.com>
-Subject: Re: [PATCH] arm64/vdso: Discard .note.gnu.property sections in vDSO
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Bill Wendling <morbo@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Apr 2021 at 00:58, Kees Cook <keescook@chromium.org> wrote:
->
-> On Fri, Apr 23, 2021 at 01:51:59PM -0700, Bill Wendling wrote:
-> > The arm64 assembler in binutils 2.32 and above generates a program
-> > property note in a note section, .note.gnu.property, to encode used x86
-> > ISAs and features. But the kernel linker script only contains a single
-> > NOTE segment:
-> >
-> >   PHDRS
-> >   {
-> >     text    PT_LOAD    FLAGS(5) FILEHDR PHDRS; /* PF_R|PF_X */
-> >     dynamic PT_DYNAMIC FLAGS(4);               /* PF_R */
-> >     note    PT_NOTE    FLAGS(4);               /* PF_R */
-> >   }
-> >
-> > The NOTE segment generated by the vDSO linker script is aligned to 4 bytes.
-> > But the .note.gnu.property section must be aligned to 8 bytes on arm64.
-> >
-> >   $ readelf -n vdso64.so
-> >
-> >   Displaying notes found in: .note
-> >     Owner                Data size      Description
-> >     Linux                0x00000004     Unknown note type: (0x00000000)
-> >      description data: 06 00 00 00
-> >   readelf: Warning: note with invalid namesz and/or descsz found at offset 0x20
-> >   readelf: Warning:  type: 0x78, namesize: 0x00000100, descsize: 0x756e694c, alignment: 8
-> >
-> > Since the note.gnu.property section in the vDSO is not checked by the
-> > dynamic linker, discard the .note.gnu.property sections in the vDSO.
-> >
-> > Similar to commit 4caffe6a28d31 ("x86/vdso: Discard .note.gnu.property
-> > sections in vDSO"), but for arm64.
-> >
-> > Signed-off-by: Bill Wendling <morbo@google.com>
->
-> Seems good to me. If we ever need the BTI markings, etc, for the vDSO,
-> we can revisit it then.
->
-> Reviewed-by: Kees Cook <keescook@chromium.org>
->
+We got follow bug_on when run fsstress with injecting IO fault:
+[130747.323114] kernel BUG at fs/ext4/extents_status.c:762!
+[130747.323117] Internal error: Oops - BUG: 0 [#1] SMP
+......
+[130747.334329] Call trace:
+[130747.334553]  ext4_es_cache_extent+0x150/0x168 [ext4]
+[130747.334975]  ext4_cache_extents+0x64/0xe8 [ext4]
+[130747.335368]  ext4_find_extent+0x300/0x330 [ext4]
+[130747.335759]  ext4_ext_map_blocks+0x74/0x1178 [ext4]
+[130747.336179]  ext4_map_blocks+0x2f4/0x5f0 [ext4]
+[130747.336567]  ext4_mpage_readpages+0x4a8/0x7a8 [ext4]
+[130747.336995]  ext4_readpage+0x54/0x100 [ext4]
+[130747.337359]  generic_file_buffered_read+0x410/0xae8
+[130747.337767]  generic_file_read_iter+0x114/0x190
+[130747.338152]  ext4_file_read_iter+0x5c/0x140 [ext4]
+[130747.338556]  __vfs_read+0x11c/0x188
+[130747.338851]  vfs_read+0x94/0x150
+[130747.339110]  ksys_read+0x74/0xf0
 
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
+If call ext4_ext_insert_extent failed but new extent already inserted, we just
+update "ex->ee_len = orig_ex.ee_len", this will lead to extent overlap, then
+cause bug on when cache extent.
+If call ext4_ext_insert_extent failed don't update ex->ee_len with old value.
+Maybe there will lead to block leak, but it can be fixed by fsck later.
+
+After we fixed above issue with v2 patch, but we got the same issue.
+ext4_split_extent_at:
+{
+        ......
+        err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
+        if (err == -ENOSPC && (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
+            ......
+            ext4_ext_try_to_merge(handle, inode, path, ex); ->step(1)
+            err = ext4_ext_dirty(handle, inode, path + path->p_depth); ->step(2)
+            if (err)
+                goto fix_extent_len;
+        ......
+        }
+        ......
+fix_extent_len:
+        ex->ee_len = orig_ex.ee_len; ->step(3)
+        ......
+}
+If step(1) have been merged, but step(2) dirty extent failed, then go to
+fix_extent_len label to fix ex->ee_len with orig_ex.ee_len. But "ex" may not be
+old one, will cause overwritten. Then will trigger the same issue as previous.
+If step(2) failed, just return error, don't fix ex->ee_len with old value.
+
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ fs/ext4/extents.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
+
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 77c84d6f1af6..d4aa24a09d8b 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -3238,15 +3238,12 @@ static int ext4_split_extent_at(handle_t *handle,
+ 		ex->ee_len = cpu_to_le16(ee_len);
+ 		ext4_ext_try_to_merge(handle, inode, path, ex);
+ 		err = ext4_ext_dirty(handle, inode, path + path->p_depth);
+-		if (err)
+-			goto fix_extent_len;
+-
+-		/* update extent status tree */
+-		err = ext4_zeroout_es(inode, &zero_ex);
+-
+-		goto out;
+-	} else if (err)
++		if (!err)
++		        /* update extent status tree */
++		        err = ext4_zeroout_es(inode, &zero_ex);
++	} else if (err && err != -EROFS) {
+ 		goto fix_extent_len;
++	}
+ 
+ out:
+ 	ext4_ext_show_leaf(inode, path);
+-- 
+2.25.4
+
