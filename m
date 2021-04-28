@@ -2,115 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72C5536E233
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 01:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 960CC36E23A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 01:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231721AbhD1XdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 19:33:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhD1XdJ (ORCPT
+        id S230245AbhD1Xnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 19:43:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27341 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229488AbhD1Xnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 19:33:09 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C74C06138C
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 16:32:23 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id z23so27727093lji.4
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 16:32:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gKq+LFxXyWBv0dDTFY+xwdbBAeyG/loY9cisPmftCiM=;
-        b=fOK8Gte9Lv/qjiZD5DrB5u9ffD/eOuMtHeRXWH5DTq5IZNXrLrVYdv2yXGI8XKhop0
-         WMqDH3qz7FrWIhw0WlFbPyWcreqCalPk9cNvVu76ktwMyChX/RXU5svLiLmwqUmqNxlo
-         dZk1T0X7yPoRp/7oSqxflxCnz1sdA7jbVt5+Q62Yv4gaVlH+VIZCQaTM/4mPlnVnAcPo
-         B9fWgjRbqwND3uMVNbtG4kM4CAB++EPz1ngJ7h+qcyduKi670SKL8Qijs04wwmRhactc
-         N9q1nintLqo0k6ZYHrWI09cAl77fxkCeI/W4V/aMwmw9huJMaBIHQAQUVjn+CKII9w3D
-         DjuA==
+        Wed, 28 Apr 2021 19:43:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619653374;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WCGTGrknZeE7eCqq8B0KPNhvevrJ02XQwZZ1Z+q/y2w=;
+        b=UHg8RRDPkpVtEfaUubvOaZSNPNxbnlw9WXZuXbGlzrs5FyL48ILq/pLsQIZgM+vkRRrlQh
+        f92jZ9v/O7qYdc/ysXj0F6C8uhZfB8rajj6Lg0UEct+ml3ZR/YzHUCuAkCpo0slltUrkLw
+        Xq/YKw6qZY8/MlHrQlVT6jpMBvJ0eRs=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-50-EHauhDVCNjiWrUqn3b9KAw-1; Wed, 28 Apr 2021 19:42:52 -0400
+X-MC-Unique: EHauhDVCNjiWrUqn3b9KAw-1
+Received: by mail-ej1-f71.google.com with SMTP id x21-20020a1709064bd5b029037c44cb861cso12903799ejv.4
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 16:42:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gKq+LFxXyWBv0dDTFY+xwdbBAeyG/loY9cisPmftCiM=;
-        b=oEOaOR7jMHiDWClrc6h7nj6vSMWkyufSXHXVLzWJpxe8Yg+UzOGCRzQ345sSvGGUsy
-         hX6+JhL1TZux0unDJMvtxm0N2GbuasM6ncH6H+SA+uJQ7nnv5waSOLDaRxPu4P/yPnkF
-         ipfVykWXailP+hyqswQ4VwYqt/EuJQYDHT6IS8lqU+FZ9PJ0RHBkSrgSLMqO45nTe/ht
-         lonKpebgeLBE8kFJuCVchskDpeHcykVi3cl1Yo6/tgipggsAucSg42NMYyM5i9tJ9hhD
-         d4+PohYjpPk1xkUWO9yCXCK35dq9P4eVzoQGPIZHEKZx9Ptg+wBFvvtWzWoAa+69gkHL
-         TdHQ==
-X-Gm-Message-State: AOAM531FU3DBer8GuIEt/6btPWgpbDsLM0dJfo+K6MJgDDaHz7XhlG/i
-        3ldQWpT9u60KQm8lS7Vh6jBwpjT9rUBLK/QoSJx0BA==
-X-Google-Smtp-Source: ABdhPJy3P/E9ZXBwSluvDEgi8bjVYUJz8Z+EqxAxyirc6UV5SK1NI/Z+7EGWfDNucx42FfRiJqMqLlmVEiLBFgn0Ya4=
-X-Received: by 2002:a2e:b17b:: with SMTP id a27mr21518327ljm.160.1619652741705;
- Wed, 28 Apr 2021 16:32:21 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WCGTGrknZeE7eCqq8B0KPNhvevrJ02XQwZZ1Z+q/y2w=;
+        b=E6yOUPoELyMIiBbjjgRBFs59UssJmh/ygqhdBy2dtZRg6Y71lIYywY0xZu1+X2NYXG
+         6gxPzGpbOnChcj+exFhy69mraKjpiwnaEyPj2Q5UzokSnEDXeC6VDJrkQs6HzWueq05+
+         cxFk54fYU5IcFoXAe4HFjY2qEMq5NehtZfo/lj/esZcyIH9MD9aRE67XFBpyptwFfx0a
+         MlxaSDSKkxCiG+yJJA+ZBy3gzmN2cNFV6JuSobVwheagAExuxdM0kEjM3NBJ8RkaH6tn
+         BXJyJmv+vQs2W4mYGsSZOTOjBHE8atU+QcEhxCwoRI/mSTnJJyVwVMWju5ASlJm8ddvd
+         bIBg==
+X-Gm-Message-State: AOAM533tpIUMgQXMwTxN8lv0H2Nk+McioVQDpjB1cegkx1TOvzkLdUsC
+        B0sCX6NkcswKkF5hBqYbIvShlNOiVUarox4tFpsopDgG+sV/7fvwghCL9UOWh1GMtc88eOvY7FP
+        wIyJ6SoLygvHf53i/jyAmETU3
+X-Received: by 2002:a17:906:2e17:: with SMTP id n23mr4703497eji.266.1619653370834;
+        Wed, 28 Apr 2021 16:42:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwvq4EViWh9nuBMUH/uXQuJHoWkOTGTEPkDOPHSwlXpSrpAi3mHmdhuz3EwJdYuJevA/tJwUA==
+X-Received: by 2002:a17:906:2e17:: with SMTP id n23mr4703476eji.266.1619653370672;
+        Wed, 28 Apr 2021 16:42:50 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id i19sm710063ejd.114.2021.04.28.16.42.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Apr 2021 16:42:50 -0700 (PDT)
+To:     Ben Gardon <bgardon@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20210427223635.2711774-1-bgardon@google.com>
+ <20210427223635.2711774-6-bgardon@google.com>
+ <997f9fe3-847b-8216-c629-1ad5fdd2ffae@redhat.com>
+ <CANgfPd8RZXQ-BamwQPS66Q5hLRZaDFhi0WaA=ZvCP4BbofiUhg@mail.gmail.com>
+ <d936b13b-bb00-fc93-de3b-adc59fa32a7b@redhat.com>
+ <CANgfPd9kVJOAR_uq+oh9kE2gr00EUAGSPiJ9jMR9BdG2CAC+BA@mail.gmail.com>
+ <5b4a0c30-118c-da1f-281c-130438a1c833@redhat.com>
+ <CANgfPd_S=LjEs+s2UzcHZKfUHf+n498eSbfidpXNFXjJT8kxzw@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 5/6] KVM: x86/mmu: Protect kvm->memslots with a mutex
+Message-ID: <16b2f0f3-c9a8-c455-fff0-231c2fe04a8e@redhat.com>
+Date:   Thu, 29 Apr 2021 01:42:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210428094949.43579-1-songmuchun@bytedance.com>
-In-Reply-To: <20210428094949.43579-1-songmuchun@bytedance.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 28 Apr 2021 16:32:07 -0700
-Message-ID: <CALvZod6XtOpPAg5BipOe3fWJrDXFhonqgne8eaD6QBr07rDR2w@mail.gmail.com>
-Subject: Re: [PATCH 0/9] Shrink the list lru size on memory cgroup removal
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>, Yang Shi <shy828301@gmail.com>,
-        alexs@kernel.org,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CANgfPd_S=LjEs+s2UzcHZKfUHf+n498eSbfidpXNFXjJT8kxzw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 2:54 AM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> In our server, we found a suspected memory leak problem. The kmalloc-32
-> consumes more than 6GB of memory. Other kmem_caches consume less than 2GB
-> memory.
->
-> After our in-depth analysis, the memory consumption of kmalloc-32 slab
-> cache is the cause of list_lru_one allocation.
->
->   crash> p memcg_nr_cache_ids
->   memcg_nr_cache_ids = $2 = 24574
->
-> memcg_nr_cache_ids is very large and memory consumption of each list_lru
-> can be calculated with the following formula.
->
->   num_numa_node * memcg_nr_cache_ids * 32 (kmalloc-32)
->
-> There are 4 numa nodes in our system, so each list_lru consumes ~3MB.
->
->   crash> list super_blocks | wc -l
->   952
->
-> Every mount will register 2 list lrus, one is for inode, another is for
-> dentry. There are 952 super_blocks. So the total memory is 952 * 2 * 3
-> MB (~5.6GB). But the number of memory cgroup is less than 500. So I
-> guess more than 12286 containers have been deployed on this machine (I
-> do not know why there are so many containers, it may be a user's bug or
-> the user really want to do that). But now there are less than 500
-> containers in the system. And memcg_nr_cache_ids has not been reduced
-> to a suitable value. This can waste a lot of memory. If we want to reduce
-> memcg_nr_cache_ids, we have to reboot the server. This is not what we
-> want.
->
-> So this patchset will dynamically adjust the value of memcg_nr_cache_ids
-> to keep healthy memory consumption. In this case, we may be able to restore
-> a healthy environment even if the users have created tens of thousands of
-> memory cgroups and then destroyed those memory cgroups. This patchset also
-> contains some code simplification.
->
+On 28/04/21 23:46, Ben Gardon wrote:
+> On Wed, Apr 28, 2021 at 2:41 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>>
+>> On 28/04/21 22:40, Ben Gardon wrote:
+>>> ... However with the locking you propose below, we might still run
+>>> into issues on a move or delete, which would mean we'd still need the
+>>> separate memory allocation for the rmaps array. Or we do some
+>>> shenanigans where we try to copy the rmap pointers from the other set
+>>> of memslots.
+>>
+>> If that's (almost) as easy as passing old to
+>> kvm_arch_prepare_memory_region, that would be totally okay.
+> 
+> Unfortunately it's not quite that easy because it's all the slots
+> _besides_ the one being modified where we'd need to copy the rmaps.
 
-There was a recent discussion [1] on the same issue. Did you get the
-chance to take a look at that. I have not gone through this patch
-series yet but will do in the next couple of weeks.
+Ah, now I understand the whole race.  And it seems to me that if one
+kvm_dup_memslots within the new lock fixed a bug, two kvm_dup_memslots
+within the new lock are going to fix two bugs. :)
 
-[1] https://lore.kernel.org/linux-fsdevel/20210405054848.GA1077931@in.ibm.com/
+Seriously: unless I'm missing another case (it's late here...), it's
+not ugly and it's still relatively easy to explain.
+
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 2799c6660cce..48929dd5fb29 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1270,7 +1270,7 @@ static int check_memory_region_flags(const struct kvm_userspace_memory_region *m
+  	return 0;
+  }
+  
+-static struct kvm_memslots *install_new_memslots(struct kvm *kvm,
++static void install_new_memslots(struct kvm *kvm,
+  		int as_id, struct kvm_memslots *slots)
+  {
+  	struct kvm_memslots *old_memslots = __kvm_memslots(kvm, as_id);
+@@ -1280,7 +1280,9 @@ static struct kvm_memslots *install_new_memslots(struct kvm *kvm,
+  	slots->generation = gen | KVM_MEMSLOT_GEN_UPDATE_IN_PROGRESS;
+  
+  	rcu_assign_pointer(kvm->memslots[as_id], slots);
++	mutex_unlock(&kvm->slots_arch_lock);
+  	synchronize_srcu_expedited(&kvm->srcu);
++	kvfree(old_memslots);
+  
+  	/*
+  	 * Increment the new memslot generation a second time, dropping the
+@@ -1302,8 +1304,6 @@ static struct kvm_memslots *install_new_memslots(struct kvm *kvm,
+  	kvm_arch_memslots_updated(kvm, gen);
+  
+  	slots->generation = gen;
+-
+-	return old_memslots;
+  }
+  
+  /*
+@@ -1342,6 +1342,7 @@ static int kvm_set_memslot(struct kvm *kvm,
+  	struct kvm_memslots *slots;
+  	int r;
+  
++	mutex_lock(&kvm->slots_arch_lock);
+  	slots = kvm_dup_memslots(__kvm_memslots(kvm, as_id), change);
+  	if (!slots)
+  		return -ENOMEM;
+@@ -1353,14 +1354,7 @@ static int kvm_set_memslot(struct kvm *kvm,
+  		 */
+  		slot = id_to_memslot(slots, old->id);
+  		slot->flags |= KVM_MEMSLOT_INVALID;
+-
+-		/*
+-		 * We can re-use the old memslots, the only difference from the
+-		 * newly installed memslots is the invalid flag, which will get
+-		 * dropped by update_memslots anyway.  We'll also revert to the
+-		 * old memslots if preparing the new memory region fails.
+-		 */
+-		slots = install_new_memslots(kvm, as_id, slots);
++		install_new_memslots(kvm, as_id, slots);
+  
+  		/* From this point no new shadow pages pointing to a deleted,
+  		 * or moved, memslot will be created.
+@@ -1370,6 +1364,9 @@ static int kvm_set_memslot(struct kvm *kvm,
+  		 *	- kvm_is_visible_gfn (mmu_check_root)
+  		 */
+  		kvm_arch_flush_shadow_memslot(kvm, slot);
++
++		mutex_lock(&kvm->slots_arch_lock);
++		slots = kvm_dup_memslots(__kvm_memslots(kvm, as_id), change);
+  	}
+  
+  	r = kvm_arch_prepare_memory_region(kvm, new, mem, change);
+@@ -1377,16 +1374,17 @@ static int kvm_set_memslot(struct kvm *kvm,
+  		goto out_slots;
+  
+  	update_memslots(slots, new, change);
+-	slots = install_new_memslots(kvm, as_id, slots);
++	install_new_memslots(kvm, as_id, slots);
+  
+  	kvm_arch_commit_memory_region(kvm, mem, old, new, change);
+-
+-	kvfree(slots);
+  	return 0;
+  
+  out_slots:
+-	if (change == KVM_MR_DELETE || change == KVM_MR_MOVE)
++	if (change == KVM_MR_DELETE || change == KVM_MR_MOVE) {
++		slot = id_to_memslot(slots, old->id);
++		slot->flags &= ~KVM_MEMSLOT_INVALID;
+  		slots = install_new_memslots(kvm, as_id, slots);
++	}
+  	kvfree(slots);
+  	return r;
+  }
+
+One could optimize things a bit by reusing the allocation and only
+doing a memcpy from the new memslots array to the old one under the
+slots_arch_lock.  (Plus the above still lacks a mutex_init and
+should be split in two patches, with the mutex going in the second;
+but you get the idea and code sometimes is easier than words).
+
+Paolo
+
