@@ -2,42 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F1F236DD72
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E2E36DD09
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241286AbhD1Qs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 12:48:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36920 "EHLO
+        id S240857AbhD1QcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 12:32:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241162AbhD1Qsv (ORCPT
+        with ESMTP id S235502AbhD1QcQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 12:48:51 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2724BC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:48:05 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:91bb:828d:42f8:4e5f])
-        by michel.telenet-ops.be with bizsmtp
-        id yGny2400d2ZBlDX06GnyTG; Wed, 28 Apr 2021 18:48:02 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lbnLy-0014IZ-AY; Wed, 28 Apr 2021 18:47:58 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lbkVD-00HLPF-Sr; Wed, 28 Apr 2021 15:45:19 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Alexandre Ghiti <alex@ghiti.fr>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     Damien Le Moal <damien.lemoal@wdc.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] riscv: Only extend kernel reservation if mapped read-only
-Date:   Wed, 28 Apr 2021 15:45:17 +0200
-Message-Id: <1a7660125046b94db9c6a7d62aa0ce88c8cd2f1d.1619617340.git.geert+renesas@glider.be>
+        Wed, 28 Apr 2021 12:32:16 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D485C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:31:29 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id g65so5026015wmg.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:31:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s37poLb+YU/j8PS1vBOf/p0j3PbxlMcEPm2Cc7PyPFc=;
+        b=lAYP6D/xe5gDXAPQP7KVnwObFqfRXHFY5GwBElU671lGEh2PLg8GkgZQYIEWFZED8n
+         ICkiqNuM1cYoOK846RRK+9QOjGnxHTEqsRwC4h+NRG51WOu20qb1k/cFss7HQrwFVlEa
+         C28uwYS783D4w2SrsBZulhZ6uLoOgfvyDaDy7kyhqotdjC1sCnGD2iV1K7Y/gOJxlacD
+         /IZkgCG35q3uJ961iPnjWviyWb3zd9tdyIIAwbMjBo3rUbrq3HLfGgAIFf81DpKCj4Qz
+         EZPkZGatRmZdkGoLYQHUMFZHyBQbolAsdpewylqJrn0CaDkCBd1PSoWrPazfBj7Jowe3
+         EkQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s37poLb+YU/j8PS1vBOf/p0j3PbxlMcEPm2Cc7PyPFc=;
+        b=CkSAOfb2PEdo9zoKLBOqKEUm+dn3bhXywImNfsxhvK569iBRxs9XuW9fKV6NUdjVwi
+         rqOdJz0L4ZNaq/pYDVYHo8SWNN2CmOqpC2VKljL5FdTROqE0IxL7lEElqDk+hTT7q2rt
+         YDrQ6WiISWoFTGhcJeDEe5KuS2pDRxWQQwE4j+7PpYf9WIZms5jCGtRXZRRo+j8oi0SO
+         YL7IyJ8uwOgYyrnLUAziICELGKXzHLLKup7viIdHm+YmIARSbKWaVG/ZNkq0XvDPMKlN
+         Na+0kdYCY/ZXzsIIZZ8yQY9SVflbtr0EXzQxK/8VhvDsdTMCliwActTCvjt9fqPHTXdc
+         eYrA==
+X-Gm-Message-State: AOAM531GdE4fjkq/vcIzwr/oaHPGOX7x3jkP9Fa8u3HHQX1vxgL5WuZL
+        kYuSb+swQUvQOEfbP9TPwrhvyQ==
+X-Google-Smtp-Source: ABdhPJzK3CHvftOyllCnQgS/edlWXyrWZ90fvwsLji8SZm5+vWo5D+eg38Vg7Z849JFODpMYYpMe2w==
+X-Received: by 2002:a7b:c74d:: with SMTP id w13mr5753522wmk.25.1619627487898;
+        Wed, 28 Apr 2021 09:31:27 -0700 (PDT)
+Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.googlemail.com with ESMTPSA id c15sm380339wrr.3.2021.04.28.09.31.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 09:31:27 -0700 (PDT)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        robh+dt@kernel.org, linus.walleij@linaro.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH] dt-bindings: net: Convert mdio-gpio to yaml
+Date:   Wed, 28 Apr 2021 16:31:20 +0000
+Message-Id: <20210428163120.3657234-1-clabbe@baylibre.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -45,56 +63,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the kernel mapping was moved outside of the linear mapping, the
-kernel memory reservation was increased, to take into account mapping
-granularity.  However, this is done unconditionally, regardless of
-whether the kernel memory is mapped read-only or not.
+Converts net/mdio-gpio.txt to yaml
 
-If this extension is not needed, up to 2 MiB may be lost, which has a
-big impact on e.g. Canaan K210 (64-bit nommu) platforms with only 8 MiB
-of RAM.
-
-Reclaim the lost memory by only extending the reserved region when
-needed, i.e. matching the conditional logic around the call to
-protect_kernel_linear_mapping_text_rodata().
-
-Fixes: 2bfc6cd81bd17e43 ("riscv: Move kernel mapping outside of linear mapping")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
-Only tested on K210 (SiPeed MAIX BiT):
+This patch is a part of the work on fixing all DTs on gemini platform.
 
-    -Memory: 5852K/8192K available (1344K kernel code, 147K rwdata, 272K rodata, 106K init, 72K bss, 2340K reserved, 0K cma-reserved)
-    +Memory: 5948K/8192K available (1344K kernel code, 147K rwdata, 272K rodata, 106K init, 72K bss, 2244K reserved, 0K cma-reserved)
+ .../devicetree/bindings/net/mdio-gpio.txt     | 27 ---------
+ .../devicetree/bindings/net/mdio-gpio.yaml    | 56 +++++++++++++++++++
+ 2 files changed, 56 insertions(+), 27 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/net/mdio-gpio.txt
+ create mode 100644 Documentation/devicetree/bindings/net/mdio-gpio.yaml
 
-Yes, I was lucky, as only 96 KiB was lost ;-)
----
- arch/riscv/mm/init.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 788eb222deacf994..3439783f26abc488 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -136,11 +136,17 @@ void __init setup_bootmem(void)
- 
- 	/*
- 	 * Reserve from the start of the kernel to the end of the kernel
--	 * and make sure we align the reservation on PMD_SIZE since we will
-+	 */
-+#if defined(CONFIG_STRICT_KERNEL_RWX) && defined(CONFIG_64BIT) && \
-+    defined(CONFIG_MMU) && !defined(CONFIG_XIP_KERNEL)
-+	/*
-+	 * Make sure we align the reservation on PMD_SIZE since we will
- 	 * map the kernel in the linear mapping as read-only: we do not want
- 	 * any allocation to happen between _end and the next pmd aligned page.
- 	 */
--	memblock_reserve(vmlinux_start, (vmlinux_end - vmlinux_start + PMD_SIZE - 1) & PMD_MASK);
-+	vmlinux_end = (vmlinux_end + PMD_SIZE - 1) & PMD_MASK;
-+#endif
-+	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
- 
- 	/*
- 	 * memblock allocator is not aware of the fact that last 4K bytes of
+diff --git a/Documentation/devicetree/bindings/net/mdio-gpio.txt b/Documentation/devicetree/bindings/net/mdio-gpio.txt
+deleted file mode 100644
+index 4d91a36c5cf5..000000000000
+--- a/Documentation/devicetree/bindings/net/mdio-gpio.txt
++++ /dev/null
+@@ -1,27 +0,0 @@
+-MDIO on GPIOs
+-
+-Currently defined compatibles:
+-- virtual,gpio-mdio
+-- microchip,mdio-smi0
+-
+-MDC and MDIO lines connected to GPIO controllers are listed in the
+-gpios property as described in section VIII.1 in the following order:
+-
+-MDC, MDIO.
+-
+-Note: Each gpio-mdio bus should have an alias correctly numbered in "aliases"
+-node.
+-
+-Example:
+-
+-aliases {
+-	mdio-gpio0 = &mdio0;
+-};
+-
+-mdio0: mdio {
+-	compatible = "virtual,mdio-gpio";
+-	#address-cells = <1>;
+-	#size-cells = <0>;
+-	gpios = <&qe_pio_a 11
+-		 &qe_pio_c 6>;
+-};
+diff --git a/Documentation/devicetree/bindings/net/mdio-gpio.yaml b/Documentation/devicetree/bindings/net/mdio-gpio.yaml
+new file mode 100644
+index 000000000000..55c629cb5e57
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/mdio-gpio.yaml
+@@ -0,0 +1,56 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/mdio-gpio.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: MDIO on GPIOs
++
++maintainers:
++  - Andrew Lunn <andrew@lunn.ch>
++  - Florian Fainelli <f.fainelli@gmail.com>
++  - Heiner Kallweit <hkallweit1@gmail.com>
++
++allOf:
++  - $ref: "mdio.yaml#"
++
++properties:
++  compatible:
++    enum:
++      - virtual,mdio-gpio
++      - microchip,mdio-smi0
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 0
++
++  gpios:
++    minItems: 2
++    description: |
++      MDC and MDIO lines connected to GPIO controllers are listed in
++      the gpios property as described in section VIII.1 in the
++      following order: MDC, MDIO.
++
++#Note: Each gpio-mdio bus should have an alias correctly numbered in "aliases"
++#node.
++unevaluatedProperties: false
++
++examples:
++  - |
++    aliases {
++        mdio-gpio0 = &mdio0;
++    };
++
++    mdio0: mdio {
++      compatible = "virtual,mdio-gpio";
++      #address-cells = <1>;
++      #size-cells = <0>;
++      gpios = <&qe_pio_a 11
++               &qe_pio_c 6>;
++      ethphy0: ethernet-phy@0 {
++        reg = <0>;
++      };
++    };
++...
 -- 
-2.25.1
+2.26.3
 
