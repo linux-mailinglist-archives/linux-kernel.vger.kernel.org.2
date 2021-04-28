@@ -2,94 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F9636D484
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61CAD36D486
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238146AbhD1JH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 05:07:26 -0400
-Received: from mga04.intel.com ([192.55.52.120]:11102 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230113AbhD1JHY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 05:07:24 -0400
-IronPort-SDR: 19u9sQ86hIOPmi2kEqiARS3njuKpmpe/6FHNVt6lfeoc/c3K2WIT/RmCeb/Pt+xm4SHTjTkDh9
- aKchyNfIgMXw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9967"; a="194579810"
-X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
-   d="scan'208";a="194579810"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 02:06:40 -0700
-IronPort-SDR: oxydSdPDCRBsw6vd2p2BrdWc+V5eDRGhitUmmArfmGlX7dVE79M3toNcDmh1jKsk8EhCW2/07q
- Yq/wJuN0yNQw==
-X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
-   d="scan'208";a="425532650"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 02:06:37 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lbg9T-007q1b-3m; Wed, 28 Apr 2021 12:06:35 +0300
-Date:   Wed, 28 Apr 2021 12:06:35 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org, lukas@wunner.de,
-        yangyingliang@huawei.com, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 2/2] serial: 8250: Add an empty line and remove some
- useless {}
-Message-ID: <YIklm6h4xvQlw5Wf@smile.fi.intel.com>
-References: <14024ddeb2b3a8c5b0138b5ba5083f54d00164a9.1619594713.git.christophe.jaillet@wanadoo.fr>
- <257ffd691b4a062ad017333c9430d69da6dbd29a.1619594713.git.christophe.jaillet@wanadoo.fr>
+        id S237636AbhD1JJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 05:09:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23204 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229643AbhD1JJO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 05:09:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619600909;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Fhr6VD9MpmIRwGw/LQkBVjKYFz4C2wLpeHZjuBPrxEw=;
+        b=K12dyoJ6FUTb7XJozjP3pAYRBfr/077POcjMw+WVC3GYu75zFeSOfrTut0165Vl6A27pWx
+        1/EKw27F87Si4QzUjGSY+la6MroEuSHBd/Awa5Lsv/mMjEOH7GVVr65zAXpqp5NQ0D7N80
+        yRJevCwKjZy/PbK6aQOQ6r1I+yv3qq4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-489-0_PvrvcsMLaWe9oxDTpISQ-1; Wed, 28 Apr 2021 05:08:27 -0400
+X-MC-Unique: 0_PvrvcsMLaWe9oxDTpISQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00D4D19251A4;
+        Wed, 28 Apr 2021 09:08:26 +0000 (UTC)
+Received: from gondolin.fritz.box (ovpn-113-113.ams2.redhat.com [10.36.113.113])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 48FE919C45;
+        Wed, 28 Apr 2021 09:08:24 +0000 (UTC)
+Date:   Wed, 28 Apr 2021 11:08:21 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Thomas Huth <thuth@redhat.com>, linux-s390@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        Marc Hartmayer <mhartmay@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [PATCH] arch/s390/configs: Change CONFIG_VIRTIO_CONSOLE to "m"
+Message-ID: <20210428110821.70aa5774.cohuck@redhat.com>
+In-Reply-To: <c015ef3f-ff88-113b-a089-e2af9202399a@de.ibm.com>
+References: <20210428082442.321327-1-thuth@redhat.com>
+        <c015ef3f-ff88-113b-a089-e2af9202399a@de.ibm.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <257ffd691b4a062ad017333c9430d69da6dbd29a.1619594713.git.christophe.jaillet@wanadoo.fr>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 09:30:52AM +0200, Christophe JAILLET wrote:
-> This fixes the following checkpatch.pl warnings:
->    WARNING: Missing a blank line after declarations
->    WARNING: braces {} are not necessary for any arm of this statement
+On Wed, 28 Apr 2021 10:31:54 +0200
+Christian Borntraeger <borntraeger@de.ibm.com> wrote:
 
-If it makes somebody happier...
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/tty/serial/8250/8250_core.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+> On 28.04.21 10:24, Thomas Huth wrote:
+> > In former times, the virtio-console code had to be compiled into
+> > the kernel since the old guest virtio transport had some hard de-
+> > pendencies. But since the old virtio transport has been removed in
+> > commit 7fb2b2d51244 ("s390/virtio: remove the old KVM virtio transport"),
+> > we do not have this limitation anymore.
+> > Commit bb533ec8bacd ("s390/config: do not select VIRTIO_CONSOLE via
+> > Kconfig") then also lifted the hard setting in the Kconfig system, so
+> > we can finally switch the CONFIG_VIRTIO_CONSOLE knob to compile this
+> > driver as a module now, making it more flexible for the user to only
+> > load it if it is really required.  
 > 
-> diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8250/8250_core.c
-> index 081b773a54c9..1082e76c4d37 100644
-> --- a/drivers/tty/serial/8250/8250_core.c
-> +++ b/drivers/tty/serial/8250/8250_core.c
-> @@ -321,9 +321,9 @@ static int univ8250_setup_irq(struct uart_8250_port *up)
->  	 * hardware interrupt, we use a timer-based system.  The original
->  	 * driver used to do this with IRQ0.
->  	 */
-> -	if (!port->irq) {
-> +	if (!port->irq)
->  		mod_timer(&up->timer, jiffies + uart_poll_timeout(port));
-> -	} else
-> +	else
->  		retval = serial_link_irq_chain(up);
->  
->  	return retval;
-> @@ -752,6 +752,7 @@ void serial8250_suspend_port(int line)
->  	if (!console_suspend_enabled && uart_console(port) &&
->  	    port->type != PORT_8250) {
->  		unsigned char canary = 0xa5;
-> +
->  		serial_out(up, UART_SCR, canary);
->  		if (serial_in(up, UART_SCR) == canary)
->  			up->canary = canary;
-> -- 
-> 2.30.2
-> 
+> Isnt that a distro specific decision? I would be perfectly fine to have
+> this change in Fedora, Redhat and co. Not so sure about defconfig.
+> We often use the defconfig in our CI and development things to have a
+> kernel config that boots up fine, even without a ramdisk. I agree that
+> virtio console is no longer really the most important console but does
+> it really hurt? Is any distro using the defconfig unmodified?
 
--- 
-With Best Regards,
-Andy Shevchenko
+Having a value in the defconfig that will be sensible for most users
+sounds good to me, independent of what different distros choose to do.
+(Or am I misunderstanding the purpose of the defconfig?)
 
+For booting without a ramdisk, I see that virtio-blk and virtio-input
+are y, while other virtio drivers are m. That should be sufficient,
+shouldn't it?
 
