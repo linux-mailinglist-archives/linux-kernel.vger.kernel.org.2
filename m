@@ -2,160 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E5F036E1CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 01:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 685F436E1D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 01:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240130AbhD1Wjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 18:39:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57610 "EHLO
+        id S240137AbhD1Wkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 18:40:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232947AbhD1Wjg (ORCPT
+        with ESMTP id S232537AbhD1Wk3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 18:39:36 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CDD6C06138B
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 15:38:51 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id m6-20020a17090a8586b02901507e1acf0fso9911892pjn.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 15:38:51 -0700 (PDT)
+        Wed, 28 Apr 2021 18:40:29 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7174EC06138B
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 15:39:43 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id k25so64638781oic.4
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 15:39:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=40mvDvEqW9Ck6kXUyy+OdsmQH7a8B6aLXhlL5FWmJuM=;
-        b=J5iAoCMPLGAbUrLxrJOkHQjozfbLQ4i8a1MCBD1nju7qsziZGaHIQlEO90RvN4sYwC
-         on3bzxKOmtiPcK+Z3RKtcmHiabsgeY3xUN+OufCZ50Hh9mma9vuzJ4L4OX/lxLlGjBuA
-         jyiltB2KNjrOCrjK49wDpCNkUDe0ii5gNSFUxsizZ9ZXRIhuZCj8GEWmzjG7hyXQa26z
-         Col68vtxqCTOPCPWY5WxaDjt8BCloymnV0Mx5a76O8clVLhfGYY8fHKfyg7E3QCjeQ4S
-         ggtXtG284l8i6itUzk7NUMRB/+d3uwPMQgYezzh55k/zZX2WN9VyoO3e+KciP/ewG4s0
-         IxoQ==
+        bh=NJgioqDWdKAET5WKiWO1U4XbKqCMuCFU3cGEOM7ro6o=;
+        b=u/E9Gt5cg1H8iyQ0N4FUiZxddi9IEfEi3QJA9VDk2Uxia48DMRDVvWz07Tzyw4cRAy
+         jvu8OaWHWcChElNul+iVWzqSfHOYI4iCVy9ZRyxNEKYys53KWsuizy50DOiWYVSotqQW
+         HoZikWrXR36qEj2YJkCVrAiiqNyYgOEG6E9p9NFRNhwsiRetGkinSuL4fxcENbVPYxmL
+         dXJWNysM3rbD6rvb1rBrR2Nt2bTtFAdLvh8w9n5QF4E6T/rM801pwLbw4BoWLv2WHUTB
+         Qg24nLc3e+ifWGhTC/laIlMpBpQpDgVLtqncdrqNEtQvQTvbxOVP0SnWQvXRxnlq2bUA
+         eWRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=40mvDvEqW9Ck6kXUyy+OdsmQH7a8B6aLXhlL5FWmJuM=;
-        b=KdDooOIsJBQG7P3lGGW6m6vBwRNd43PRT0HZmmFx/aUuxG0l7rWlgWExIyjijoiDPK
-         KlnmV5uHVlVsUTPeDVJc5n5rO3JrTqwGPiLyskuvf8RKvUNq2b6U535V+1Oi1R8xDTMy
-         qqUoxykiYmGGrmUS3GPpsEBQhE3+smKErNH6BLyqcnL8b8oKMRuoE9D8A+neHvtGhr+J
-         4gIZ6UiSneiSS5kHZUAylwdQPxNJHVkNqMgk26cMRLbJJ91zCzHMCsENnvAh4keeZHrT
-         lfQc38rv0355R6TFj85gvjz8Q65/gacBNvJXv0FPXysOL7xOi28gfZVs5qywBQ82D/B5
-         H3XQ==
-X-Gm-Message-State: AOAM532MOYzh3SvQ3NNeutYW5B33726XDRkmD1+KYbwWxdzQ0ruF9cD4
-        EUJjtaiZaZyMIv2qBnaFfgnL8Q==
-X-Google-Smtp-Source: ABdhPJxxyerV2sLaJmaReymvIjG1ou0vnWrNIz7CdomcPKHywlk+yQp1i+7gM5oynqmH//eLr0TFXA==
-X-Received: by 2002:a17:90a:a58f:: with SMTP id b15mr34064584pjq.135.1619649530360;
-        Wed, 28 Apr 2021 15:38:50 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id t4sm578754pfq.165.2021.04.28.15.38.49
+        bh=NJgioqDWdKAET5WKiWO1U4XbKqCMuCFU3cGEOM7ro6o=;
+        b=oHDVftOr+3oHTi0wv/Zcp1Zdv2R98nm2Gc4LLeIMJcTaARZFeL0v7OkkpVVdyGZxf5
+         BwxAiRgdMJZoxZ4JXbHtg68Z40zgrhnz5dMvoRdi583Jvi8KX/ewhpefwcN93oxvY61f
+         grjkpbdlYO3rWArdwjXpNqw3tnVWB7DcjzGhQLypezGCFtWT63fjczDtl1OWmYlaoc18
+         NuPLPyLn4Xh9HLwNeVqHddpjgHUEztqOmbg3prun9rMIUfIJs3oLrlhG+h0FxNZ+Hq10
+         Va0V/2swfvhc9Am4s+9NbezVN+FfoZfZz03wr+Q3/zsFW94+mksi7Xj0UX0rxCG781m8
+         TbwQ==
+X-Gm-Message-State: AOAM530++aiiiNst3Hho1qRm8kBAQ22eJoYrk6Y3T+7kFHR5ptPCD9SV
+        xB5EpNm+97zxjbbiRkr6TDYOTA==
+X-Google-Smtp-Source: ABdhPJwD8AMHlFWkT0PEmKmxtPOG8Dya6tQD8PCReMCG0J6yux62nUtJNRQVt2iU1xRcVWvWs8Cr+g==
+X-Received: by 2002:a05:6808:f8e:: with SMTP id o14mr22019998oiw.56.1619649582773;
+        Wed, 28 Apr 2021 15:39:42 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id j20sm313169ooc.29.2021.04.28.15.39.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 15:38:49 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 22:38:45 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Michael Tokarev <mjt@tls.msk.ru>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Subject: Re: [PATCH v3 3/9] KVM: x86: Defer tick-based accounting 'til after
- IRQ handling
-Message-ID: <YInj9QtUFdAlKqr3@google.com>
-References: <20210415222106.1643837-1-seanjc@google.com>
- <20210415222106.1643837-4-seanjc@google.com>
- <20210420231402.GA8720@lothringen>
- <YH9jKpeviZtMKxt8@google.com>
- <20210421121940.GD16580@lothringen>
+        Wed, 28 Apr 2021 15:39:42 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 17:39:39 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Marijn Suijten <marijn.suijten@somainline.org>
+Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Martin Botka <martin.botka1@gmail.com>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v6 2/4] leds: Add driver for Qualcomm LPG
+Message-ID: <20210428223939.GN1908499@yoga>
+References: <20201021201224.3430546-1-bjorn.andersson@linaro.org>
+ <20201021201224.3430546-3-bjorn.andersson@linaro.org>
+ <881fb5a3-fb51-3967-63de-a09950839855@somainline.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210421121940.GD16580@lothringen>
+In-Reply-To: <881fb5a3-fb51-3967-63de-a09950839855@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Apologies for the slow response.
+On Sun 18 Apr 16:54 CDT 2021, Marijn Suijten wrote:
 
-On Wed, Apr 21, 2021, Frederic Weisbecker wrote:
-> On Tue, Apr 20, 2021 at 11:26:34PM +0000, Sean Christopherson wrote:
-> > On Wed, Apr 21, 2021, Frederic Weisbecker wrote:
-> > > On Thu, Apr 15, 2021 at 03:21:00PM -0700, Sean Christopherson wrote:
-> > > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > > > index 16fb39503296..e4d475df1d4a 100644
-> > > > --- a/arch/x86/kvm/x86.c
-> > > > +++ b/arch/x86/kvm/x86.c
-> > > > @@ -9230,6 +9230,14 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
-> > > >  	local_irq_disable();
-> > > >  	kvm_after_interrupt(vcpu);
-> > > >  
-> > > > +	/*
-> > > > +	 * When using tick-based accounting, wait until after servicing IRQs to
-> > > > +	 * account guest time so that any ticks that occurred while running the
-> > > > +	 * guest are properly accounted to the guest.
-> > > > +	 */
-> > > > +	if (!vtime_accounting_enabled_this_cpu())
-> > > > +		vtime_account_guest_exit();
-> > > 
-> > > Can we rather have instead:
-> > > 
-> > > static inline void tick_account_guest_exit(void)
-> > > {
-> > > 	if (!vtime_accounting_enabled_this_cpu())
-> > > 		current->flags &= ~PF_VCPU;
-> > > }
-> > > 
-> > > It duplicates a bit of code but I think this will read less confusing.
+> Hi Bjorn,
+> 
+> On 10/21/20 10:12 PM, Bjorn Andersson wrote:
+> > The Light Pulse Generator (LPG) is a PWM-block found in a wide range of
+> > PMICs from Qualcomm. It can operate on fixed parameters or based on a
+> > lookup-table, altering the duty cycle over time - which provides the
+> > means for e.g. hardware assisted transitions of LED brightness.
 > > 
-> > Either way works for me.  I used vtime_account_guest_exit() to try to keep as
-> > many details as possible inside vtime, e.g. in case the implemenation is tweaked
-> > in the future.  But I agree that pretending KVM isn't already deeply intertwined
-> > with the details is a lie.
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Tested-by: Luca Weiss <luca@z3ntu.xyz>
 > 
-> Ah I see, before 87fa7f3e98a131 the vtime was accounted after interrupts get
-> processed. So it used to work until then. I see that ARM64 waits for IRQs to
-> be enabled too.
 > 
-> PPC/book3s_hv, MIPS, s390 do it before IRQs get re-enabled (weird, how does that
-> work?)
-
-No idea.  It's entirely possible it doesn't work on one or more of those
-architectures.
-
-Based on init/Kconfig, s390 doesn't support tick-based accounting, so I assume
-s390 is ok.
-
-  config TICK_CPU_ACCOUNTING
-	bool "Simple tick based cputime accounting"
-	depends on !S390 && !NO_HZ_FULL
-
-> And PPC/book3s_pr calls guest_exit() so I guess it has interrupts enabled.
+> Thanks for these patches.  I have tested them successfully on the Sony
+> Xperia XA2 (Discovery, Nile platform) with the leds on the PM660l - feel
+> free to add my Tested-by.  Should I send the configuration your way for
+> inclusion in this patch, or submit them separately (either applied after, or
+> included as separate patches in the next version of this series)?
 > 
-> The point is: does it matter to call vtime_account_guest_exit() before or
-> after interrupts? If it doesn't matter, we can simply call
-> vtime_account_guest_exit() once and for all once IRQs are re-enabled.
+
+Thanks for testing, let's try to land this first iteration first and
+then we can add PM660l and PM8150* definitions/support on top.
+
+> > +/**
+> > + * struct lpg_data - initialization data
+> > + * @lut_base:		base address of LUT block
+> > + * @lut_size:		number of entries in LUT
+> > + * @triled_base:	base address of TRILED
+> > + * @pwm_9bit_mask:	bitmask for switching from 6bit to 9bit pwm
 > 
-> If it does matter because we don't want to account the host IRQs firing at the
-> end of vcpu exit, then probably we should standardize that behaviour and have
-> guest_exit_vtime() called before interrupts get enabled and guest_exit_tick()
-> called after interrupts get enabled. It's probably then beyond the scope of this
-> patchset but I would like to poke your opinion on that.
 > 
-> Thanks.
+> Our downstream kernel derives this from the "LPG subtype" for each distinct
+> channel, read from register offset +0x5.  A value of 0xb is subtype "PWM"
+> with a shift of 2, a value of 0x11 is subtype "LPG_LITE" with a shift of 4.
+> Can we do the same here instead of hardcoding it for all channels in the LPG
+> at once?  How should we determine if the mask is one or two bits wide, for
+> the 3<<4 case?
+> 
 
-I don't know.  For x86, I would be ok with simply moving the call to
-vtime_account_guest_exit() to after IRQs are enabled.  It would bug me a little
-bit that KVM _could_ be more precise when running with
-CONFIG_VIRT_CPU_ACCOUNTING_GEN=y, and KVM would still be poking into the details
-of vtime_account_guest_exit() to some extent, but overall it would be an
-improvement from a code cleanliness perspective.
+I don't see any obvious solution to the latter, so perhaps we should
+just stick with defining this per compatible? Or am I reading your
+suggestion wrong?
 
-The problem is I have no clue who, if anyone, deploys KVM on x86 with
-CONFIG_VIRT_CPU_ACCOUNTING_GEN=y.  On the other hand, AMD/SVM has always had the
-"inaccurate" accounting, and Intel/VMX has been inaccurate since commit
-d7a08882a0a4 ("KVM: x86: Unconditionally enable irqs in guest context"), which
-amusingly was a fix for an edge case in tick-based accounting.
+> > + * @num_channels:	number of channels in LPG
+> > + * @channels:		list of channel initialization data
+> > + */
+> 
+> > +	if (ping_pong) {
+> > +		if (len % 2)
+> > +			hi_pause = 0;
+> > +		else
+> > +			hi_pause = pattern[len + 1 / 2].delta_t;
+> 
+> 
+> len + 1 should be wrapped in parentheses just like the reassignment to len=
+> below, otherwise this is always an out of bounds read (at len + 0).
+> 
 
-Anyone have an opinion either way?  I'm very tempted to go with Frederic's
-suggestion of moving the time accounting back to where it was, it makes KVM just
-a little less ugly.
+Thanks for spotting this.
+
+> > +		lo_pause = pattern[len - 1].delta_t;
+> > +
+> > +		len = (len + 1) / 2;
+> > +	} else {
+> > +		hi_pause = pattern[len - 1].delta_t;
+> > +		lo_pause = 0;
+> > +	}
+> > +
+> > +	ret = lpg_lut_store(lpg, pattern, len, &lo_idx, &hi_idx);
+> > +	if (ret < 0)
+> > +		goto out;
+> > +
+> > +	for (i = 0; i < led->num_channels; i++) {
+> > +		chan = led->channels[i];
+> > +
+> > +		chan->ramp_duration_ms = pattern[0].delta_t * len;
+> 
+> 
+> Perhaps this could store the duration of a single step instead, since the
+> only use in lpg_apply_lut_control divides it by pattern length again?
+> 
+
+Sounds like a good idea.
+
+> > +		chan->ramp_ping_pong = ping_pong;
+> > +		chan->ramp_oneshot = repeat != -1;
+> > +
+> > +		chan->ramp_lo_pause_ms = lo_pause;
+> > +		chan->ramp_hi_pause_ms = hi_pause;
+> > +
+> > +		chan->pattern_lo_idx = lo_idx;
+> > +		chan->pattern_hi_idx = hi_idx;
+> > +	}
+> > +
+> > +out:
+> > +	return ret;
+> > +}
+> 
+> > +static int lpg_init_lut(struct lpg *lpg)
+> > +{
+> > +	const struct lpg_data *data = lpg->data;
+> > +	size_t bitmap_size;
+> > +
+> > +	if (!data->lut_base)
+> > +		return 0;
+> > +
+> > +	lpg->lut_base = data->lut_base;
+> > +	lpg->lut_size = data->lut_size;
+> > +
+> > +	bitmap_size = BITS_TO_LONGS(lpg->lut_size) * sizeof(unsigned long);
+> > +	lpg->lut_bitmap = devm_kzalloc(lpg->dev, bitmap_size, GFP_KERNEL);
+> 
+> 
+> Would it be nicer to use BITS_TO_BYTES here, or otherwise devm_kcalloc(...,
+> bitmap_size, sizeof(long), ...) without mutiplying with sizeof(unsigned
+> long)?
+> 
+
+Yes, that's cleaner.
+
+> > +
+> > +	bitmap_clear(lpg->lut_bitmap, 0, lpg->lut_size);
+> > +	return lpg->lut_bitmap ? 0 : -ENOMEM;
+> > +}
+> > +
+> > +static int lpg_probe(struct platform_device *pdev)
+> > +{
+> > +	struct device_node *np;
+> > +	struct lpg *lpg;
+> > +	int ret;
+> > +	int i;
+> > +
+> > +	lpg = devm_kzalloc(&pdev->dev, sizeof(*lpg), GFP_KERNEL);
+> > +	if (!lpg)
+> > +		return -ENOMEM;
+> > +
+> > +	lpg->data = of_device_get_match_data(&pdev->dev);
+> > +	if (!lpg->data)
+> > +		return -EINVAL;
+> > +
+> > +	lpg->dev = &pdev->dev;
+> > +
+> > +	lpg->map = dev_get_regmap(pdev->dev.parent, NULL);
+> > +	if (!lpg->map) {
+> > +		dev_err(&pdev->dev, "parent regmap unavailable\n");
+> > +		return -ENXIO;
+> > +	}
+> > +
+> > +	ret = lpg_init_channels(lpg);
+> > +	if (ret < 0)
+> > +		return ret;
+> > +
+> > +	ret = lpg_init_triled(lpg);
+> > +	if (ret < 0)
+> > +		return ret;
+> > +
+> > +	ret = lpg_init_lut(lpg);
+> > +	if (ret < 0)
+> > +		return ret;
+> 
+> 
+> How about turning these returns into dev_err_probe?  I'm not sure if that's
+> the expected way to go nowadays, but having some form of logging when a
+> driver fails to probe is always good to have.
+> 
+
+The intention is that each code path through these functions will either
+pass or spit out an error in the log. I looked through them again and
+think I cover all paths...
+
+Thanks,
+Bjorn
