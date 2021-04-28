@@ -2,95 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0B936D728
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E7136D72C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234523AbhD1MVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 08:21:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233738AbhD1MVj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 08:21:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 794C461418;
-        Wed, 28 Apr 2021 12:20:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619612454;
-        bh=46NOAPukfKiOsVS2b8yCpV5HcgSzuZTzoL1lJfcFngc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mJKwLeFOFCD1Vw3ws46O8gaXMgFTodXh5NX+F6pwKv7PTlM7V8smIihxGv7wYpwzi
-         n8CiftQxXObFAJDepRwqh0S+DEgYZuTGHtTttol1QNPVzahOElHwL0Nu6qVSjN2KoY
-         vATkOXChhXb0PSa1ZXiaxc7oJTizb7IAtNWNeQqmKH4AZcMgCen4iH9Vf8gK8COIgy
-         5RIDB7Zz2Nj2wDxPXdUAE+Pvr2sTZ4EaclMXYP/H75JWtCnKcC136TNunVfzNL8dhG
-         RIn3F/0+GgzlbDpbMd49FFyFHnhB7yFyf4X1tBtvjG+e4rXWHKhE3XgQ1eZC45caEW
-         750G0gwAD0NMg==
-Date:   Wed, 28 Apr 2021 15:20:47 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Anupama K Patil <anupamakpatil123@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, B K Karthik <bkkarthik@pesu.pes.edu>,
-        kernelnewbies@kernelnewbies.org
-Subject: Re: [PATCH] MAINTAINERS: mark isapnp as obsolete
-Message-ID: <YIlTH8nMkAs6pb4w@unreal>
-References: <20210428110536.edy74gsobkgtd6al@ubuntu>
- <YIlCzOl/rkYeOWVW@kroah.com>
- <20210428114057.tlc53ie7crvkqqhj@ubuntu>
- <YIlLk00Wzd6Lf660@unreal>
- <20210428121329.o4jlx76klmzlzl5n@ubuntu>
+        id S234587AbhD1MW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 08:22:26 -0400
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:39462 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234356AbhD1MWZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 08:22:25 -0400
+Received: by mail-oi1-f171.google.com with SMTP id i81so62846338oif.6;
+        Wed, 28 Apr 2021 05:21:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GRxkUo+PRbe+x5wLLv3keLeEPMkJ2hxH1SQXgu1ocjk=;
+        b=Tvfv2ymW+DV6C/paqY38g+8stelqtlDmdpxOFAMTLj9ElU6eUEzjceL6i82YjTlAfb
+         aloQ8n5YkyWdiyGTjJYsJJQc+zMbKT4vHoHp18Ro3EMT8fodkgQeSroGi3lua9adC9aC
+         FnfqCGazJWKqDKNIU/v+GH06YDdHvXGhLxuPbLeOcSHQi4ioUPQsQrbPK5X9xbBGGs0D
+         9PcS/al0gxmdXFSe1ARIRi7GFsg+dCpBgp/EnacobG33yU/1s81858BifPL/IO1Wgo70
+         267erXTpmEydZM3V4jgFbkBec7L4j6S4yXjpk2c1IcyeHI3Xt5aE9D8SJLAuBcci5OZg
+         0ahA==
+X-Gm-Message-State: AOAM530KlMoJP6byqnL98IN/B+50zvcWT+OjuDMlzKYP/1knvNv5BVFQ
+        nuDrqDAXr5r+6KPIaJdWYfjV9LFIzcV1OBqMo4I=
+X-Google-Smtp-Source: ABdhPJxOhMz6a0QlMskPlWjNHUPGrH1Vn78FLKH0qxpCwG0EW2c/SIcnZsKBhMYvQD1e2UvBb9Jr9em/bmGCLMLK8jk=
+X-Received: by 2002:aca:bc89:: with SMTP id m131mr20193642oif.71.1619612500595;
+ Wed, 28 Apr 2021 05:21:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210428121329.o4jlx76klmzlzl5n@ubuntu>
+References: <20210424021631.1972022-1-rajatja@google.com> <20210424021631.1972022-2-rajatja@google.com>
+ <d53c72949d81db9f092a9aecb49bf56b47727738.camel@suse.com> <CAJZ5v0iNrSFjhmTE8K-JrO07kJon3ikhatbg0Jg2hs+x-frDJg@mail.gmail.com>
+ <79b994f2476249498797e1784f735fd7@AcuMS.aculab.com> <21c6b5002c5ad36cd7fe0bb849f5eba12a614bca.camel@suse.com>
+ <b5e031652f144ab6accbe553566676c9@AcuMS.aculab.com> <0601e45130495b152bec04eee4a50e302db4cfd2.camel@suse.com>
+In-Reply-To: <0601e45130495b152bec04eee4a50e302db4cfd2.camel@suse.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 28 Apr 2021 14:21:27 +0200
+Message-ID: <CAJZ5v0jEbjRSGPdfwvegawin5_N=m-UoP+Wa99EQ-QmkusiBCg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] pci: Support "removable" attribute for PCI devices
+To:     Oliver Neukum <oneukum@suse.com>
+Cc:     David Laight <David.Laight@aculab.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rajat Jain <rajatja@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+        Rajat Jain <rajatxjain@gmail.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Dmitry Torokhov <dtor@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 05:43:29PM +0530, Anupama K Patil wrote:
-> On 21/04/28 02:48PM, Leon Romanovsky wrote:
-> > On Wed, Apr 28, 2021 at 05:10:57PM +0530, Anupama K Patil wrote:
-> > > On 21/04/28 01:11PM, Greg KH wrote:
-> > > > On Wed, Apr 28, 2021 at 04:35:36PM +0530, Anupama K Patil wrote:
-> > > > > isapnp code is very old and according to this link
-> > > > > https://en.wikipedia.org/wiki/Legacy_Plug_and_Play#Specifications
-> > > > > from Wikipedia, even Windows Vista disabled ISA PnP by default.
-> > > > > 
-> > > > > This change is in follow up to
-> > > > > https://lore.kernel.org/lkml/20210422180322.7wlyg63kv3n2k6id@ubuntu/T/#u
-> > > > > and https://lore.kernel.org/lkml/20210424194301.jmsqpycvsm7izbk3@ubuntu/T/#u
-> > > > > 
-> > > > > Suggested-by: B K Karthik <bkkarthik@pesu.pes.edu>
-> > > > > Signed-off-by: Anupama K Patil <anupamakpatil123@gmail.com>
-> > > > 
-> > > > Has the maintainer said this is unsupported?
-> > > > 
-> > > > That's who you should take suggestions from :)
-> > > > 
-> > > > thanks,
-> > > > 
-> > > > greg k-h
-> > > 
-> > > Leon said he thinks it is unsupported (I've also cc'd him). So, I've sent this patch
-> > > to get the feedback from the maintainer.
-> > 
-> > Leon said something different.
-> > https://lore.kernel.org/lkml/20210422180322.7wlyg63kv3n2k6id@ubuntu/T/#m6c837180c8d6496d5bcbb8526e274c4239844be0
-> > ------
-> > > If changes to ISA code aren't welcomed, should these be marked obsolete in the MAINTIANERS file?
-> > 
-> > I think so, but think that "Odd Fixes" better describes that Rafael wrote.
-> > ------
-> Sorry about that! but does checkpatch tell people not to send patches if it's 'Odd fixes'?
+On Wed, Apr 28, 2021 at 8:57 AM Oliver Neukum <oneukum@suse.com> wrote:
+>
+> Am Dienstag, den 27.04.2021, 12:59 +0000 schrieb David Laight:
+> > From: Oliver Neukum
+> > > Sent: 27 April 2021 13:00
+>
+> > > that is true for those options, but not for the style
+> > > of PCI hotplug which requires you to push a button and wait
+> > > for the blinking light.
+> >
+> > True, I remember some of those PCI hotplug chassis from 25 years ago.
+> > ISTR we did get the removal events working (SVR4/Unixware) but I
+> > don't remember the relevant chassis ever being sold.
+> > In spite of the marketing hype I suspect it was only ever possible
+> > to remove a completely working board and replace it with an
+> > exactly equivalent one.
+> >
+> > In any case those chassis are not 'surprise removal'.
+> >
+> > More modern drivers are less likely to crash (and burn?) when
+> > a PCI read returns ~0u.
+> > But I suspect an awful lot really don't handle surprise removal
+> > very well at all.
+>
+> So you are saying that these systems are so rare that it should be
+> handled  as special cases if at all?
 
-I don't think so, but people should check MAINTIANERS file before they
-send patches and it has an explanation what "Odd fixes" means.
-
-> Should I wait for the maintainer's reply before doing anything else?
-
-Yes, please
-
-> > 
-> > > 
-> > > Thanks,
-> > > Anupama
+In principle, in the wake of Thunderbolt every PCI driver handling
+PCIe devices needs to be able to deal with a device that's gone away
+without notice, because in principle any PCIe device can be included
+into a Thunderbolt docking station which may go away as a whole
+without notice.
