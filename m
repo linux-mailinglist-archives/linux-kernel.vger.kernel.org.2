@@ -2,142 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A55736D548
+	by mail.lfdr.de (Postfix) with ESMTP id EEACC36D54A
 	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 12:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238849AbhD1KBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 06:01:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47573 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230006AbhD1KBd (ORCPT
+        id S238881AbhD1KBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 06:01:45 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:49750 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238658AbhD1KBf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 06:01:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619604048;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FhFNqwiAFSjk5pc8IGLBBUa1bd6wwdqJ26xugM42AOU=;
-        b=bUHp+K/PLPuY7Y2kC9ThTes/GauyUYORH6PYmclXfq8i1XFFohoI3A5OK2J5r21LOKim4Q
-        3os9g55VJDJ6YhFLk/wrNO272A6tvTRa4A3R++lboK8owZTmmKw97pcHDKdnjSO5+tMASv
-        Fnjd/Q/mJoSoYEkIu1rMXsMehJguTJY=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-101-d7s0lQ9_N06Yhc0qWl3ZZw-1; Wed, 28 Apr 2021 06:00:46 -0400
-X-MC-Unique: d7s0lQ9_N06Yhc0qWl3ZZw-1
-Received: by mail-ej1-f69.google.com with SMTP id f15-20020a170906738fb029037c94426fffso12208409ejl.22
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 03:00:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FhFNqwiAFSjk5pc8IGLBBUa1bd6wwdqJ26xugM42AOU=;
-        b=l4fJHP4/IyVy1PMZq6HbNF3P22wMrx6s7ckEU/EGE2ZViHfr9X92HTnu4kBxcNj/vN
-         enoyGwHyLcdQP09oduxAdWKgYtxME4gcRgpQG0jiP8dmONAbXRkX286UaQBxPH/ZSTXA
-         IcXgWel0tWlUzjhvXXafuVaGzfDqJpNJMsgINUtlzwd6JsE4Qt6TC45jca4txqzmBTZV
-         goY6nqXDkoqxVB5KactKBMbnUlKArVpCVCOvzkPXxGGXb7Fd2p13VxSr6B74u9YjAXIT
-         qX6cqALRQBjvgM2DwPd/qPADd1RA2CsVJZJK8bcoatZIX8GPT3H6M3buHzAyelIdd1ey
-         VUxQ==
-X-Gm-Message-State: AOAM532VNM8WLA7uSyX/IzOyaer+cs1rhaySsHlVYZqLz4KJmNX/nE4K
-        vb1Y0ui8TAUSwBsu4gX8Z53yi6E+EifEXk0fCR6tYvrkZzgE0mgWxGyHCdOQea4iO5WMmqtinkf
-        w5jChu3VPoMCTcej+bNuojg2p
-X-Received: by 2002:a17:906:a0d4:: with SMTP id bh20mr28035366ejb.348.1619604045266;
-        Wed, 28 Apr 2021 03:00:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxTMhrX4bqXfljul31u2glQku96LkpSI89jMTVvHtGdEXLDq8ZAQFkOvHuZRusQHJD5Oogk+A==
-X-Received: by 2002:a17:906:a0d4:: with SMTP id bh20mr28035332ejb.348.1619604045012;
-        Wed, 28 Apr 2021 03:00:45 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id u13sm1620873ejj.16.2021.04.28.03.00.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Apr 2021 03:00:44 -0700 (PDT)
-Subject: Re: [PATCH 3/6] KVM: x86/mmu: Deduplicate rmap freeing in
- allocate_memslot_rmap
-To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20210427223635.2711774-1-bgardon@google.com>
- <20210427223635.2711774-4-bgardon@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <2e5ecc0b-0ef4-a663-3b1d-81d020626b39@redhat.com>
-Date:   Wed, 28 Apr 2021 12:00:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210427223635.2711774-4-bgardon@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Wed, 28 Apr 2021 06:01:35 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R931e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UX3G0f2_1619604047;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UX3G0f2_1619604047)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 28 Apr 2021 18:00:48 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] llc2: Remove redundant assignment to rc
+Date:   Wed, 28 Apr 2021 18:00:46 +0800
+Message-Id: <1619604046-118132-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Typo in the commit subject, I guess?
+Variable 'rc' is set to zero but this value is never read as it is
+overwritten with a new value later on, hence it is a redundant
+assignment and can be removed.
 
-Paolo
+Cleans up the following clang-analyzer warning:
 
-On 28/04/21 00:36, Ben Gardon wrote:
-> Small code deduplication. No functional change expected.
-> 
-> Signed-off-by: Ben Gardon <bgardon@google.com>
-> ---
->   arch/x86/kvm/x86.c | 19 +++++++++++--------
->   1 file changed, 11 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index cf3b67679cf0..5bcf07465c47 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -10818,17 +10818,23 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
->   	kvm_hv_destroy_vm(kvm);
->   }
->   
-> -void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
-> +static void free_memslot_rmap(struct kvm_memory_slot *slot)
->   {
->   	int i;
->   
->   	for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
->   		kvfree(slot->arch.rmap[i]);
->   		slot->arch.rmap[i] = NULL;
-> +	}
-> +}
->   
-> -		if (i == 0)
-> -			continue;
-> +void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
-> +{
-> +	int i;
-> +
-> +	free_memslot_rmap(slot);
->   
-> +	for (i = 1; i < KVM_NR_PAGE_SIZES; ++i) {
->   		kvfree(slot->arch.lpage_info[i - 1]);
->   		slot->arch.lpage_info[i - 1] = NULL;
->   	}
-> @@ -10894,12 +10900,9 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
->   	return 0;
->   
->   out_free:
-> -	for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
-> -		kvfree(slot->arch.rmap[i]);
-> -		slot->arch.rmap[i] = NULL;
-> -		if (i == 0)
-> -			continue;
-> +	free_memslot_rmap(slot);
->   
-> +	for (i = 1; i < KVM_NR_PAGE_SIZES; ++i) {
->   		kvfree(slot->arch.lpage_info[i - 1]);
->   		slot->arch.lpage_info[i - 1] = NULL;
->   	}
-> 
+net/llc/llc_station.c:54:2: warning: Value stored to 'rc' is never read
+[clang-analyzer-deadcode.DeadStores]
+net/llc/llc_station.c:83:2: warning: Value stored to 'rc' is never read
+[clang-analyzer-deadcode.DeadStores]
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ net/llc/llc_station.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/net/llc/llc_station.c b/net/llc/llc_station.c
+index c29170e..05c6ae0 100644
+--- a/net/llc/llc_station.c
++++ b/net/llc/llc_station.c
+@@ -54,7 +54,6 @@ static int llc_station_ac_send_xid_r(struct sk_buff *skb)
+ 
+ 	if (!nskb)
+ 		goto out;
+-	rc = 0;
+ 	llc_pdu_decode_sa(skb, mac_da);
+ 	llc_pdu_decode_ssap(skb, &dsap);
+ 	llc_pdu_header_init(nskb, LLC_PDU_TYPE_U, 0, dsap, LLC_PDU_RSP);
+@@ -83,7 +82,6 @@ static int llc_station_ac_send_test_r(struct sk_buff *skb)
+ 
+ 	if (!nskb)
+ 		goto out;
+-	rc = 0;
+ 	llc_pdu_decode_sa(skb, mac_da);
+ 	llc_pdu_decode_ssap(skb, &dsap);
+ 	llc_pdu_header_init(nskb, LLC_PDU_TYPE_U, 0, dsap, LLC_PDU_RSP);
+-- 
+1.8.3.1
 
