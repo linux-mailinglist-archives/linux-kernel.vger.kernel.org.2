@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3C936D73D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C8336D73F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235324AbhD1M13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 08:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34538 "EHLO
+        id S235803AbhD1M1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 08:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234627AbhD1M12 (ORCPT
+        with ESMTP id S232051AbhD1M12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 28 Apr 2021 08:27:28 -0400
 Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 356B2C061574
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C935EC061574
         for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 05:26:43 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id h4so53792160wrt.12
+Received: by mail-wr1-x433.google.com with SMTP id n2so9673200wrm.0
         for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 05:26:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=mq5mQkRS1/Si/vDDQIIoPNxNsDItueuxM0NFUO8KGvU=;
-        b=GbiOuP+Zfq0WtKT1Gz3U2J6/6JGvZlhycSoIe1ZtjST8VNRC7IwMCQL19wOWNL00xw
-         3fmmNd5BdiXaV8rbd5o5AhO+ROk48RkMVvEIu519KsTE8CZMUhwNLuWdxCqyBIDp5bsZ
-         qScvt8dEhNhwQ5vECkvzV56z5J81kp40NSrrqSuk9/0C6YlgTvhutDYLirayNbTSwhgm
-         xZckvnh0rfOhVGpL2ah1lZnETsI194xRMxTxW3YXhCkUN2ur8F3dQQDtcQlcZ7hoHdJK
-         IFVxFte0FRzTlKTEAYrmWud/Xr0Dh8BvHfm9yhRDlGEAyiBGBYAo5sNSugG3Ed4kF8wG
-         +krA==
+        bh=2s9J474JZEARtTyoYarg8YHk4rTHZwi14Y+KDirOQUE=;
+        b=Vi2yGBQwLLvbUL/PZNfqnZWUQEW3eb7RyybrpCOByvM/YIEE2TP7jdEk9ko1KePQFR
+         YyrdEbq58ghqLszXpKU+fYwHdOLGtF6OCedhP02ErXj9yK8kXGyNoLe/qD5ECmD9UAjh
+         nrD85fsrfFfbNSgLBEocEDoYjeLirccPc4egnhMjXoNJcDTlHG4dkswd8mojF734iJ1v
+         p0rs4ClW4Cro5OQpbHuRHercHRDTSLCr8QwSzClGK/64A8VonQ3nGwUk4ZtUG1Fkyvs+
+         sjAXa8PrGInVtf3757M9CWvszPWEjgtsILgad0FJEpPm0WvZe43UR5W5ceCYdlUUiOtl
+         jfiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=mq5mQkRS1/Si/vDDQIIoPNxNsDItueuxM0NFUO8KGvU=;
-        b=I0KD9HS5oCi7UgVP48cQp8qs8Lq0aZADkn45gDAivibycxRq7oNFfqt6mwxSxs0UPz
-         HLswJT3k/q4W2/7jDw5MXhwl0HvNYO8FKEy5i6iUS9EPutL17FcM6G0Jsi/HQA3v14aB
-         VePSNZOxCVPknI8i6zqaOeLpbR6GvqSrJfMjgR45RTOBf8Ex9grRXdb0tmmKaIS8ygMb
-         kjBSGB/B6nhTSdCx0yECv0xuiwR7bVShmO9QN3cZqK0FaUd3zCOaV/r8OTbm90+fay/z
-         lhYTmoRt8CPn+KCEnLbQ6OIYjnv6kO3WZwLERInjudL143/h6ScCVZEX3f622CmRUDZd
-         QaQw==
-X-Gm-Message-State: AOAM530IYek8qs0Thz2+N5IXmeVh7uz/wyE7ZUAFVW37uskbW0FFpDU+
-        ZxRRuN/rlXYdHeH6SV9c95Ebig==
-X-Google-Smtp-Source: ABdhPJyA65vTcGjZeG06k0Wrhp8jdCphSvGpg9OIl6uZPja/c30vy8MbqaTSisAtX2IBFwB8ZE09Sw==
-X-Received: by 2002:adf:e2cc:: with SMTP id d12mr35729479wrj.90.1619612801917;
-        Wed, 28 Apr 2021 05:26:41 -0700 (PDT)
+        bh=2s9J474JZEARtTyoYarg8YHk4rTHZwi14Y+KDirOQUE=;
+        b=tKSOsVJCN0gqjLHjezeepDmWdi5ZKjCT/Smx3kHRGdTwIJ91voiJVZ9l0I3e7mgG6J
+         7sAs8b1ZmIEJpgN3XqhlFo3+v+Q9kzkqaxC0rvFthrKCpB+JWTkmWUZma8K0Mb1yLJP4
+         WmWW5BQPEEOW+dJvLOePhMMrN4R/oULIXSQAEJLF6cLwbDcU9oIflyn7CtgB4BYiz0qr
+         hF69qScnykmfk6YkOFnKhniDkAEM34i1oY3vGFoejlak7//sskmb7akh3pDNqF3qGzoE
+         4captmu7DKy0GasFPK4gScbhqTtVrrDJ8rwVqRrn096SEM+hertI5hxNlLGwuKe+u4np
+         Ecmg==
+X-Gm-Message-State: AOAM531Suv4scOE7ezJPSwEvOAqNiMtwac8boWV4EXP/Ap//Sh6dTAJz
+        WPFjWXAG05+n6A0FmgR2AStqJQ==
+X-Google-Smtp-Source: ABdhPJzsHvIsdh84+IkiXywToPZY4EDZs2ETaU+bB51962XC6NGy8KF0p7RFdurlu0tLNFYvg44EJQ==
+X-Received: by 2002:a05:6000:1290:: with SMTP id f16mr2680463wrx.52.1619612802473;
+        Wed, 28 Apr 2021 05:26:42 -0700 (PDT)
 Received: from localhost.localdomain (82-65-169-74.subs.proxad.net. [82.65.169.74])
         by smtp.googlemail.com with ESMTPSA id 6sm7872021wmg.9.2021.04.28.05.26.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 05:26:41 -0700 (PDT)
+        Wed, 28 Apr 2021 05:26:42 -0700 (PDT)
 From:   Jerome Brunet <jbrunet@baylibre.com>
 To:     Mark Brown <broonie@kernel.org>
 Cc:     Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>
-Subject: [PATCH 1/2] ASoC: stm32: do not request a new clock consummer reference
-Date:   Wed, 28 Apr 2021 14:26:31 +0200
-Message-Id: <20210428122632.46244-2-jbrunet@baylibre.com>
+        linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/2] ASoC: da7219: do not request a new clock consummer reference
+Date:   Wed, 28 Apr 2021 14:26:32 +0200
+Message-Id: <20210428122632.46244-3-jbrunet@baylibre.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210428122632.46244-1-jbrunet@baylibre.com>
 References: <20210428122632.46244-1-jbrunet@baylibre.com>
@@ -65,35 +66,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 65d1cce726d4912793d0a84c55ecdb0ef5832130.
+This reverts commit 12f8127fe9e6154dd4197df97e44f3fd67583071.
 
 There is problem with clk_hw_get_hw(). Using it pins the clock provider to
 itself, making it impossible to remove the module.
 
-Revert commit 65d1cce726d4 ("ASoC: stm32: properly get clk from the
+Revert commit 12f8127fe9e6 ("ASoC: da7219: properly get clk from the
 provider") until this gets sorted out.
 
+Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- sound/soc/stm/stm32_sai_sub.c | 5 +----
+ sound/soc/codecs/da7219.c | 5 +----
  1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index c1561237ee24..3aa1cf262402 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -484,10 +484,7 @@ static int stm32_sai_add_mclk_provider(struct stm32_sai_sub_data *sai)
- 		dev_err(dev, "mclk register returned %d\n", ret);
- 		return ret;
- 	}
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index bd3c523a8617..13009d08b09a 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -2181,10 +2181,7 @@ static int da7219_register_dai_clks(struct snd_soc_component *component)
+ 				 ret);
+ 			goto err;
+ 		}
 -
--	sai->sai_mclk = devm_clk_hw_get_clk(dev, hw, NULL);
--	if (IS_ERR(sai->sai_mclk))
--		return PTR_ERR(sai->sai_mclk);
-+	sai->sai_mclk = hw->clk;
+-		da7219->dai_clks[i] = devm_clk_hw_get_clk(dev, dai_clk_hw, NULL);
+-		if (IS_ERR(da7219->dai_clks[i]))
+-			return PTR_ERR(da7219->dai_clks[i]);
++		da7219->dai_clks[i] = dai_clk_hw->clk;
  
- 	/* register mclk provider */
- 	return devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get, hw);
+ 		/* For DT setup onecell data, otherwise create lookup */
+ 		if (np) {
 -- 
 2.31.1
 
