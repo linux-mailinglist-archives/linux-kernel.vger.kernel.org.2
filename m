@@ -2,283 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 948A736D777
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC0E36D77F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238908AbhD1Mgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 08:36:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53139 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236973AbhD1Mgw (ORCPT
+        id S239191AbhD1MiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 08:38:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237704AbhD1MiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 08:36:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619613367;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=EfaV1qUnQ9f1xKdjfZKXnCyH2xPlaciTQVcIm4m9/xo=;
-        b=V9gkQiI6s5ddYQG9E1exOsD22acVOeaOLTKxVtnioVl2/75ctnDn80kG61mZ33U6gUhbyi
-        vc0/DWupunRgKzNEhrJQDPg1ZTsiCorgD2Fxqo1Gh1i0BOUW7A4Xf6Qdv8djwHN10VbwLj
-        EpCsNI85zyC2xaV60OF4HKu2HzglIQQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-585-x89X53tHMS2DlCc6ds0r-w-1; Wed, 28 Apr 2021 08:36:05 -0400
-X-MC-Unique: x89X53tHMS2DlCc6ds0r-w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2E6951936B66;
-        Wed, 28 Apr 2021 12:36:01 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-20.rdu2.redhat.com [10.10.112.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 25CB06A8EA;
-        Wed, 28 Apr 2021 12:36:00 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH] afs: Fix speculative status fetches
-From:   David Howells <dhowells@redhat.com>
-To:     marc.dionne@auristor.com
-Cc:     linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 28 Apr 2021 13:35:59 +0100
-Message-ID: <161961335926.39335.2552653972195467566.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Wed, 28 Apr 2021 08:38:01 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6977C06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 05:37:15 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id v20so5465540plo.10
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 05:37:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pesu-pes-edu.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6ARRtmav88LSZoCwmnUD6wYSwb7zXRvqm2Rfbvm63Co=;
+        b=igvWqquW/p1mUnPsEEJHoKUHwvAA1Jr/Pu6wCtI6RwsxfJS/ZRbgv3wXQqJ7exU/1d
+         Uklhp/aMi9h8BRiYA9WYceDLU5GPziuHoJRmMU6bkOjbrjoJi0d05nWXJeOdio0+5mrl
+         soM4+tmlKnww6Oz1xfrJ7zfiiRnvRXhBuAbJqPSLusKOCnnR/WP4wUguy0YDvxPhJGmC
+         2C0+c3Tn3iDiEvhV4e8LzdVRc7N1AiR8IzpZouxu1hv3QL8K2pWHXZj0bGOJND625QYb
+         i0IDwC6SEmbX/yQSAnNl3CEk1W+PeS9Ngxf6VuznrD92fotVx14rOB2l/F8AwyWNgObz
+         HtOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6ARRtmav88LSZoCwmnUD6wYSwb7zXRvqm2Rfbvm63Co=;
+        b=J9zXJDtRU2ioVsdfyesnVbAJXlJ6R+JA+DI5Hh/szVpdYjsxh7bCdW16o+oPSmtUcW
+         hGwZeYuyQn/++5YNEtNkGJ61K7P2Z3yh6ajwCqrU9pZKON2RrNiBgPFmh9iT+IZts8ga
+         sF74lsFpOWNGh7vlZOrZ7o5kXsFNrxgAmNGaWlGWX8H8b5ILLKNHXKedUw1jQcBGeYRC
+         qqNIj5i/v7fugbOD6Z4R9esS95khI/dMvLdFM8g57yyV1OzlMLn0EwJ6OwEZtAVN3Vrx
+         QSgPl8pbltbFN74Sj46sqMFt+MLhEYvwmKaC0Hi0FHn7Qbh6eHxhia1Fi568a+vqVAfK
+         6w8A==
+X-Gm-Message-State: AOAM531VL/M5LGAazQvPC35mOspZgmbQAylbMPoSe0ebreFIQfngZtxF
+        DYnwV7SZdPCc9kw54oOjIMdA+17fycKu2ng7
+X-Google-Smtp-Source: ABdhPJwxD0V11fzKlK9LEYltKzLMpxvMXlPXv3v5dK3ikG8RJ5EaVzb9JO+4R5M/bTtEUOL6+gQCOw==
+X-Received: by 2002:a17:90a:634a:: with SMTP id v10mr1739093pjs.33.1619613435199;
+        Wed, 28 Apr 2021 05:37:15 -0700 (PDT)
+Received: from localhost ([2406:7400:73:8968:d957:fdf:9d7:1a08])
+        by smtp.gmail.com with ESMTPSA id l21sm5028377pfc.114.2021.04.28.05.37.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 28 Apr 2021 05:37:14 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 18:07:09 +0530
+From:   bkkarthik <bkkarthik@pesu.pes.edu>
+To:     Jaroslav Kysela <perex@perex.cz>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Anupama K Patil <anupamakpatil123@gmail.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        kernelnewbies@kernelnewbies.org
+Subject: Re: [PATCH] drivers: pnp: proc.c: Handle errors while attaching
+ devices
+Message-ID: <20210428123709.dbciscrm5qjr3bxa@burgerking>
+References: <20210424194301.jmsqpycvsm7izbk3@ubuntu>
+ <YIZJwkux0ghJ8k9d@unreal>
+ <20210426175031.w26ovnffjiow346h@burgerking>
+ <59a5d631-6658-2034-06c4-467520b5b9f7@perex.cz>
+ <YIlTY8p4kpkORPfl@unreal>
+ <19e8bd56-e24d-551e-9de2-57675541ee3f@perex.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <19e8bd56-e24d-551e-9de2-57675541ee3f@perex.cz>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The generic/464 xfstest causes kAFS to emit occasional warnings of the
-form:
+On 21/04/28 02:30PM, Jaroslav Kysela wrote:
+> Dne 28. 04. 21 v 14:21 Leon Romanovsky napsal(a):
+> > On Wed, Apr 28, 2021 at 02:04:49PM +0200, Jaroslav Kysela wrote:
+> >> Dne 26. 04. 21 v 19:50 bkkarthik napsal(a):
+> >>> On 21/04/26 08:04AM, Leon Romanovsky wrote:
+> >>>> On Sun, Apr 25, 2021 at 01:13:01AM +0530, Anupama K Patil wrote:
+> >>>>> isapnp_proc_init() does not look at the return value from
+> >>>>> isapnp_proc_attach_device(). Check for this return value in
+> >>>>> isapnp_proc_detach_device().
+> >>>>>
+> >>>>> Cleanup in isapnp_proc_detach_device and
+> >>>>> isapnp_proc_detach_bus() for cleanup.
+> >>>>>
+> >>>>> Changed sprintf() to the kernel-space function scnprintf() as it returns
+> >>>>> the actual number of bytes written.
+> >>>>>
+> >>>>> Removed unnecessary variables de, e of type 'struct proc_dir_entry' to
+> >>>>> save memory.
+> >>>>
+> >>>> What exactly do you fix for such an old code?
+> >>>
+> >>> I was not aware that this code is so old. This fix was made after checkpatch reported assignment inside an if-statement.
+> >>> Please ignore this patch if th change is not necessary as the code is probably not being used anywhere :)
+> >>>
+> >>> Maybe the code has to be marked as obsolete in the MAINTAINERS file to prevent patches being sent?
+> >>>
+> >>>>
+> >>>>>
+> >>>>> Suggested-by: Shuah Khan <skhan@linuxfoundation.org>
+> >>>>> Co-developed-by: B K Karthik <bkkarthik@pesu.pes.edu>
+> >>>>> Signed-off-by: B K Karthik <bkkarthik@pesu.pes.edu>
+> >>>>> Signed-off-by: Anupama K Patil <anupamakpatil123@gmail.com>
+> >>>>> ---
+> >>>>>  drivers/pnp/isapnp/proc.c | 40 +++++++++++++++++++++++++++++----------
+> >>>>>  1 file changed, 30 insertions(+), 10 deletions(-)
+> >>>>>
+> >>>>> diff --git a/drivers/pnp/isapnp/proc.c b/drivers/pnp/isapnp/proc.c
+> >>>>> index 785a796430fa..46ebc24175b7 100644
+> >>>>> --- a/drivers/pnp/isapnp/proc.c
+> >>>>> +++ b/drivers/pnp/isapnp/proc.c
+> >>>>> @@ -54,34 +54,54 @@ static const struct proc_ops isapnp_proc_bus_proc_ops = {
+> >>>>>  	.proc_read	= isapnp_proc_bus_read,
+> >>>>>  };
+> >>>>>  
+> >>>>> +static int isapnp_proc_detach_device(struct pnp_dev *dev)
+> >>>>> +{
+> >>>>> +	proc_remove(dev->procent);
+> >>>>> +	dev->procent = NULL;
+> >>>>> +	return 0;
+> >>>>> +}
+> >>>>> +
+> >>>>> +static int isapnp_proc_detach_bus(struct pnp_card *bus)
+> >>>>> +{
+> >>>>> +	proc_remove(bus->procdir);
+> >>>>> +	return 0;
+> >>>>> +}
+> >>>>
+> >>>> Please don't add one line functions that are called only once and have
+> >>>> return value that no one care about it.
+> >>>
+> >>> These were only intended for a clean-up job, the idea of this function came from how PCI handles procfs.
+> >>> Maybe those should be changed?
+> >>
+> >> Which code you refer? I see:
+> >>
+> >>        for_each_pci_dev(dev)
+> >>                 pci_proc_attach_device(dev);
+> > 
+> > He talks about isapnp_proc_detach_*() functions.
+> 
+> But only this patch introduced those functions. The pci_proc_init() code does
+> not call pci_proc_detach_*() functions and ignores the allocation errors, too.
 
-	kAFS: vnode modified {100055:8a} 30->31 YFS.StoreData64 (c=6015)
+The changes in this patch make isapnp_proc_init() look at the return value of isapnp_proc_attach_device() and call isapnp_proc_detach_device() if that returns an error code.
 
-This indicates that the data version received back from the server did not
-match the expected value (the DV should be incremented monotonically for
-each individual modification op committed to a vnode).
+> I don't think that this cleanup code is required.
 
-What is happening is that a lookup call is doing a bulk status fetch
-speculatively on a bunch of vnodes in a directory besides getting the
-status of the vnode it's actually interested in.  This is racing with a
-StoreData operation (though it could also occur with, say, a MakeDir op).
+Oh okay!
 
-On the client, a modification operation locks the vnode, but the bulk
-status fetch only locks the parent directory, so no ordering is imposed
-there (thereby avoiding an avenue to deadlock).
+karthik
 
-On the server, the StoreData op handler doesn't lock the vnode until it's
-received all the request data, and downgrades the lock after committing the
-data until it has finished sending change notifications to other clients -
-which allows the status fetch to occur before it has finished.
-
-This means that:
-
- - a status fetch can access the target vnode either side of the exclusive
-   section of the modification
-
- - the status fetch could start before the modification, yet finish after,
-   and vice-versa.
-
- - the status fetch and the modification RPCs can complete in either order.
-
- - the status fetch can return either the before or the after DV from the
-   modification.
-
- - the status fetch might regress the locally cached DV.
-
-Some of these are handled by the previous fix[1], but that's not sufficient
-because it checks the DV it received against the DV it cached at the start
-of the op, but the DV might've been updated in the meantime by a locally
-generated modification op.
-
-Fix this by the following means:
-
- (1) Keep track of when we're performing a modification operation on a
-     vnode.  This is done by marking vnode parameters with a 'modification'
-     note that causes the AFS_VNODE_MODIFYING flag to be set on the vnode
-     for the duration.
-
- (2) Altering the speculation race detection to ignore speculative status
-     fetches if either the vnode is marked as being modified or the data
-     version number is not what we expected.
-
-Note that whilst the "vnode modified" warning does get recovered from as it
-causes the client to refetch the status at the next opportunity, it will
-also invalidate the pagecache, so changes might get lost.
-
-Fixes: a9e5c87ca744 ("afs: Fix speculative status fetch going out of order wrt to modifications")
-Reported-by: Marc Dionne <marc.dionne@auristor.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: linux-afs@lists.infradead.org
-Link: https://lore.kernel.org/r/160605082531.252452.14708077925602709042.stgit@warthog.procyon.org.uk/ [1]
----
-
- fs/afs/dir.c          |    7 +++++++
- fs/afs/dir_silly.c    |    3 +++
- fs/afs/fs_operation.c |    6 ++++++
- fs/afs/inode.c        |    6 ++++--
- fs/afs/internal.h     |    2 ++
- fs/afs/write.c        |    1 +
- 6 files changed, 23 insertions(+), 2 deletions(-)
-
-diff --git a/fs/afs/dir.c b/fs/afs/dir.c
-index 117df15e5367..9fbe5a5ec9bd 100644
---- a/fs/afs/dir.c
-+++ b/fs/afs/dir.c
-@@ -1419,6 +1419,7 @@ static int afs_mkdir(struct user_namespace *mnt_userns, struct inode *dir,
- 
- 	afs_op_set_vnode(op, 0, dvnode);
- 	op->file[0].dv_delta = 1;
-+	op->file[0].modification = true;
- 	op->file[0].update_ctime = true;
- 	op->dentry	= dentry;
- 	op->create.mode	= S_IFDIR | mode;
-@@ -1500,6 +1501,7 @@ static int afs_rmdir(struct inode *dir, struct dentry *dentry)
- 
- 	afs_op_set_vnode(op, 0, dvnode);
- 	op->file[0].dv_delta = 1;
-+	op->file[0].modification = true;
- 	op->file[0].update_ctime = true;
- 
- 	op->dentry	= dentry;
-@@ -1636,6 +1638,7 @@ static int afs_unlink(struct inode *dir, struct dentry *dentry)
- 
- 	afs_op_set_vnode(op, 0, dvnode);
- 	op->file[0].dv_delta = 1;
-+	op->file[0].modification = true;
- 	op->file[0].update_ctime = true;
- 
- 	/* Try to make sure we have a callback promise on the victim. */
-@@ -1718,6 +1721,7 @@ static int afs_create(struct user_namespace *mnt_userns, struct inode *dir,
- 
- 	afs_op_set_vnode(op, 0, dvnode);
- 	op->file[0].dv_delta = 1;
-+	op->file[0].modification = true;
- 	op->file[0].update_ctime = true;
- 
- 	op->dentry	= dentry;
-@@ -1792,6 +1796,7 @@ static int afs_link(struct dentry *from, struct inode *dir,
- 	afs_op_set_vnode(op, 0, dvnode);
- 	afs_op_set_vnode(op, 1, vnode);
- 	op->file[0].dv_delta = 1;
-+	op->file[0].modification = true;
- 	op->file[0].update_ctime = true;
- 	op->file[1].update_ctime = true;
- 
-@@ -1987,6 +1992,8 @@ static int afs_rename(struct user_namespace *mnt_userns, struct inode *old_dir,
- 	afs_op_set_vnode(op, 1, new_dvnode); /* May be same as orig_dvnode */
- 	op->file[0].dv_delta = 1;
- 	op->file[1].dv_delta = 1;
-+	op->file[0].modification = true;
-+	op->file[1].modification = true;
- 	op->file[0].update_ctime = true;
- 	op->file[1].update_ctime = true;
- 
-diff --git a/fs/afs/dir_silly.c b/fs/afs/dir_silly.c
-index 04f75a44f243..dae9a57d7ec0 100644
---- a/fs/afs/dir_silly.c
-+++ b/fs/afs/dir_silly.c
-@@ -73,6 +73,8 @@ static int afs_do_silly_rename(struct afs_vnode *dvnode, struct afs_vnode *vnode
- 	afs_op_set_vnode(op, 1, dvnode);
- 	op->file[0].dv_delta = 1;
- 	op->file[1].dv_delta = 1;
-+	op->file[0].modification = true;
-+	op->file[1].modification = true;
- 	op->file[0].update_ctime = true;
- 	op->file[1].update_ctime = true;
- 
-@@ -201,6 +203,7 @@ static int afs_do_silly_unlink(struct afs_vnode *dvnode, struct afs_vnode *vnode
- 	afs_op_set_vnode(op, 0, dvnode);
- 	afs_op_set_vnode(op, 1, vnode);
- 	op->file[0].dv_delta = 1;
-+	op->file[0].modification = true;
- 	op->file[0].update_ctime = true;
- 	op->file[1].op_unlinked = true;
- 	op->file[1].update_ctime = true;
-diff --git a/fs/afs/fs_operation.c b/fs/afs/fs_operation.c
-index 2cb0951acca6..d222dfbe976b 100644
---- a/fs/afs/fs_operation.c
-+++ b/fs/afs/fs_operation.c
-@@ -118,6 +118,8 @@ static void afs_prepare_vnode(struct afs_operation *op, struct afs_vnode_param *
- 		vp->cb_break_before	= afs_calc_vnode_cb_break(vnode);
- 		if (vnode->lock_state != AFS_VNODE_LOCK_NONE)
- 			op->flags	|= AFS_OPERATION_CUR_ONLY;
-+		if (vp->modification)
-+			set_bit(AFS_VNODE_MODIFYING, &vnode->flags);
- 	}
- 
- 	if (vp->fid.vnode)
-@@ -225,6 +227,10 @@ int afs_put_operation(struct afs_operation *op)
- 
- 	if (op->ops && op->ops->put)
- 		op->ops->put(op);
-+	if (op->file[0].modification)
-+		clear_bit(AFS_VNODE_MODIFYING, &op->file[0].vnode->flags);
-+	if (op->file[1].modification && op->file[1].vnode != op->file[0].vnode)
-+		clear_bit(AFS_VNODE_MODIFYING, &op->file[1].vnode->flags);
- 	if (op->file[0].put_vnode)
- 		iput(&op->file[0].vnode->vfs_inode);
- 	if (op->file[1].put_vnode)
-diff --git a/fs/afs/inode.c b/fs/afs/inode.c
-index 3a129b9fd9b8..80b6c8d967d5 100644
---- a/fs/afs/inode.c
-+++ b/fs/afs/inode.c
-@@ -294,8 +294,9 @@ void afs_vnode_commit_status(struct afs_operation *op, struct afs_vnode_param *v
- 			op->flags &= ~AFS_OPERATION_DIR_CONFLICT;
- 		}
- 	} else if (vp->scb.have_status) {
--		if (vp->dv_before + vp->dv_delta != vp->scb.status.data_version &&
--		    vp->speculative)
-+		if (vp->speculative &&
-+		    (test_bit(AFS_VNODE_MODIFYING, &vnode->flags) ||
-+		     vp->dv_before != vnode->status.data_version))
- 			/* Ignore the result of a speculative bulk status fetch
- 			 * if it splits around a modification op, thereby
- 			 * appearing to regress the data version.
-@@ -911,6 +912,7 @@ int afs_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
- 	}
- 	op->ctime = attr->ia_ctime;
- 	op->file[0].update_ctime = 1;
-+	op->file[0].modification = true;
- 
- 	op->ops = &afs_setattr_operation;
- 	ret = afs_do_sync_operation(op);
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index 52157a05796a..5ed416f4ff33 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -645,6 +645,7 @@ struct afs_vnode {
- #define AFS_VNODE_PSEUDODIR	7 		/* set if Vnode is a pseudo directory */
- #define AFS_VNODE_NEW_CONTENT	8		/* Set if file has new content (create/trunc-0) */
- #define AFS_VNODE_SILLY_DELETED	9		/* Set if file has been silly-deleted */
-+#define AFS_VNODE_MODIFYING	10		/* Set if we're performing a modification op */
- 
- 	struct list_head	wb_keys;	/* List of keys available for writeback */
- 	struct list_head	pending_locks;	/* locks waiting to be granted */
-@@ -762,6 +763,7 @@ struct afs_vnode_param {
- 	bool			set_size:1;	/* Must update i_size */
- 	bool			op_unlinked:1;	/* True if file was unlinked by op */
- 	bool			speculative:1;	/* T if speculative status fetch (no vnode lock) */
-+	bool			modification:1;	/* Set if the content gets modified */
- };
- 
- /*
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index dc66ff15dd16..3edb6204b937 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -377,6 +377,7 @@ static int afs_store_data(struct afs_vnode *vnode, struct iov_iter *iter, loff_t
- 
- 	afs_op_set_vnode(op, 0, vnode);
- 	op->file[0].dv_delta = 1;
-+	op->file[0].modification = true;
- 	op->store.write_iter = iter;
- 	op->store.pos = pos;
- 	op->store.size = size;
-
-
+> 
+> 					Jaroslav
+> 
+> -- 
+> Jaroslav Kysela <perex@perex.cz>
+> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
