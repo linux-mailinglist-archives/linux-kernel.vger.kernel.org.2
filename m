@@ -2,54 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B28236D4C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:29:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A06B136D4CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238212AbhD1J3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 05:29:54 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:44114 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238023AbhD1J3x (ORCPT
+        id S238218AbhD1JbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 05:31:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40393 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238001AbhD1Ja7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 05:29:53 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R241e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=teawaterz@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UX3e5fb_1619602142;
-Received: from localhost(mailfrom:teawaterz@linux.alibaba.com fp:SMTPD_---0UX3e5fb_1619602142)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 28 Apr 2021 17:29:07 +0800
-From:   Hui Zhu <teawater@antfin.com>
-To:     wufengguang@huawei.com, linux-kernel@vger.kernel.org
-Cc:     Hui Zhu <teawater@antfin.com>
-Subject: [PATCH for vm-scalability] usemem: Update the usage of touch-alloc
-Date:   Wed, 28 Apr 2021 17:29:01 +0800
-Message-Id: <20210428092901.3103-1-teawater@antfin.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 28 Apr 2021 05:30:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619602214;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vqTFXF2fuJIOfJHntKSB5UWeiLgURFuvM9psymb7+ag=;
+        b=jMMwTl8m/u4ByyDLeNxaJMxKgoZaxT2GJHgxyLaPBz2V/omcNs/2RM/QuE4GK7J3STAZXn
+        psbU48luiM2qwnavzT0ZzKpglIGzY50DCAMZ2QZa3aFWFjHfoLiJnD3/ZJ/ajbprR2poxw
+        0amrHrVoX0KlvnN2iE3Gp7Idcha8afg=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-573-pLkFOOKZNX6d1LvdmjIp5A-1; Wed, 28 Apr 2021 05:30:12 -0400
+X-MC-Unique: pLkFOOKZNX6d1LvdmjIp5A-1
+Received: by mail-wr1-f70.google.com with SMTP id 91-20020adf94640000b029010b019075afso5215962wrq.17
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 02:30:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vqTFXF2fuJIOfJHntKSB5UWeiLgURFuvM9psymb7+ag=;
+        b=Ihh9m6Ma3sfQa0Y7c/0YZEAHzrtnlVD6uj9D0GYZD6KZIRzrlnIdfREFTp9V61lnIV
+         MlzDg8MsxMUzLT041M6RQLIypSFdca+Y4NPPvVdySquc7q/ApqA5e1V1VfX1d+bRFB6K
+         UjtFV5MLEsH4Zmba4VYfFJhxWaVxYw82uqIOhBY7WoFwDP1T2JgKZH3XRCxLKOwQVTas
+         BqfVgi9+I11q+4jvokZp+5rWbldTp+490eBhHffyMT05C5Z0rB2b8GeyiPaHBko3GCrq
+         Ta7gy2RWM4Mu1JM+z4XMnwMUBr9bZryfYTusYxYa4+W2yQRQk7TrFxnirzN8jQbZJSzl
+         ypkw==
+X-Gm-Message-State: AOAM531SHpp7l4r87twj0MRee3J+NlsE8R3JHLp+RMXd7X3u1kkH51tc
+        /ocjiHtz5bRw+nWzWgDR0Km60DdCHDVFGvLnAUm3vWuY/WSL9TaD/ja3gI+mrjXNkIkOb6MdXU+
+        dL6rvH4/Ndf7WelUnjpMLla3p
+X-Received: by 2002:adf:9d48:: with SMTP id o8mr34503126wre.183.1619602211012;
+        Wed, 28 Apr 2021 02:30:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy0jbStDFMnERnBlV0S856/OfSAKHul1X6SZy3ljW6qhVlQyQMN4lvCOKyPwHGz88y85+Lmww==
+X-Received: by 2002:adf:9d48:: with SMTP id o8mr34503101wre.183.1619602210812;
+        Wed, 28 Apr 2021 02:30:10 -0700 (PDT)
+Received: from thuth.remote.csb (pd9e839c7.dip0.t-ipconnect.de. [217.232.57.199])
+        by smtp.gmail.com with ESMTPSA id k188sm7328698wmf.18.2021.04.28.02.30.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Apr 2021 02:30:10 -0700 (PDT)
+To:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        Marc Hartmayer <mhartmay@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>, cohuck@redhat.com
+References: <20210428082442.321327-1-thuth@redhat.com>
+ <c015ef3f-ff88-113b-a089-e2af9202399a@de.ibm.com>
+From:   Thomas Huth <thuth@redhat.com>
+Subject: Re: [PATCH] arch/s390/configs: Change CONFIG_VIRTIO_CONSOLE to "m"
+Message-ID: <6e44cc81-fe19-f75b-972f-5c4707f2410f@redhat.com>
+Date:   Wed, 28 Apr 2021 11:30:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
+MIME-Version: 1.0
+In-Reply-To: <c015ef3f-ff88-113b-a089-e2af9202399a@de.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The touch-alloc was updated to write memory in commit
-3f9c6c227120db43873d1af20cea3f374eb99592.
+On 28/04/2021 10.31, Christian Borntraeger wrote:
+> On 28.04.21 10:24, Thomas Huth wrote:
+>> In former times, the virtio-console code had to be compiled into
+>> the kernel since the old guest virtio transport had some hard de-
+>> pendencies. But since the old virtio transport has been removed in
+>> commit 7fb2b2d51244 ("s390/virtio: remove the old KVM virtio transport"),
+>> we do not have this limitation anymore.
+>> Commit bb533ec8bacd ("s390/config: do not select VIRTIO_CONSOLE via
+>> Kconfig") then also lifted the hard setting in the Kconfig system, so
+>> we can finally switch the CONFIG_VIRTIO_CONSOLE knob to compile this
+>> driver as a module now, making it more flexible for the user to only
+>> load it if it is really required.
+> 
+> Isnt that a distro specific decision? I would be perfectly fine to have
+> this change in Fedora, Redhat and co.
 
-This commit updates the usage of touch-alloc.
+Sure, I'll try to get it changed there, too.
 
-Signed-off-by: Hui Zhu <teawater@antfin.com>
----
- usemem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Not so sure about defconfig.
+> We often use the defconfig in our CI and development things to have a
+> kernel config that boots up fine, even without a ramdisk. I agree that
+> virtio console is no longer really the most important console but does
+> it really hurt?
 
-diff --git a/usemem.c b/usemem.c
-index 0c76d17..3b4d207 100644
---- a/usemem.c
-+++ b/usemem.c
-@@ -158,7 +158,7 @@ void usage(int ok)
- 	"    -Z|--read-again     read memory again after access the memory\n"
- 	"    --punch-holes       free every other page after allocation\n"
- 	"    --init-time         account/show initialization time separately from run time\n"
--	"    --touch-alloc       read memory after allocate it\n"
-+	"    --touch-alloc       write memory to allocate the pages from Linux kernel after allocate it\n"
- 	"    -h|--help           show this message\n"
- 	,		ourname);
- 
--- 
-2.17.1
+Well, it's about a default configuration that should be fine for most users. 
+I don't think that anybody really uses virtio-console in a ramdisk already 
+... or are you really doing that in your CI? If so, then please disregard my 
+patch.
+
+Otherwise, I think compiling this as a module is the better choice, since 
+most people won't use this at all during run-time, or maybe just use it for 
+thing like communicating with the QEMU guest agent, but this is then 
+certainly not required during boot up yet and thus the "m" should be fine, too.
+
+> Is any distro using the defconfig unmodified?
+
+Most likely don't. But it's a template for new configs, so we should use 
+good defaults here.
+
+  Thomas
 
