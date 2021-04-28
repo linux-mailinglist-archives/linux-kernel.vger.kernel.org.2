@@ -2,61 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4BD36E1B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 01:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74F3336E1B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 01:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233516AbhD1WZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 18:25:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53030 "EHLO mail.kernel.org"
+        id S232212AbhD1W0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 18:26:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232200AbhD1WZ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 18:25:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6A9D61423;
-        Wed, 28 Apr 2021 22:25:10 +0000 (UTC)
+        id S235132AbhD1W0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 18:26:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 621E461448;
+        Wed, 28 Apr 2021 22:25:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619648711;
-        bh=Ciu+vjnyzbb1KvMv65Y/6x0VqiGQoi9pYjTaF0fu8Rs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FrehbleRxVg/7CDlRANT7vHjIeCGAe1y3DlmOPy6z7Q4Pj05TISlsVEyltrESPl32
-         Paa/lh6n3eNVzFaBDg8o6fzO6XnZDWcU72Q9VAFyNvoshvhmmlkMx6mOU3vqNqTJoh
-         +IbmOGc9k0IC6HLB7w2T3QQpd0cTuqc4x64wjh6qht4R2QaDLIKGwOm0GV2Ja4UEhF
-         JyjRPtY+Cekc1BbLaszH5cwCZyN3/5/UDiBzJdAOibYZ+njsZ0KkhqSuFnAZeTUvYI
-         AKSrg7UAswA/jOvF+7SmLjNv2u1k3AmnPIoXXnN+wOYnydHpOhwIj0c2jDMmlMScIm
-         8XmYaWU4sUK3g==
-Date:   Wed, 28 Apr 2021 15:25:09 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Fugang Duan <fugang.duan@nxp.com>,
-        Randy Dunlap <rdunlap@infradead.org>, kernel@pengutronix.de,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        Fabio Estevam <festevam@gmail.com>,
-        David Jander <david@protonic.nl>,
-        Russell King <linux@armlinux.org.uk>,
-        Philippe Schenker <philippe.schenker@toradex.com>
-Subject: Re: [PATCH net-next v1 1/1] net: selftest: fix build issue if INET
- is disabled
-Message-ID: <20210428152509.61dc25e7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210428130947.29649-1-o.rempel@pengutronix.de>
-References: <20210428130947.29649-1-o.rempel@pengutronix.de>
+        s=k20201202; t=1619648734;
+        bh=bc51XLzoIStqnoVTY2IJKBH2Xkj7e3O8EbUO/HRXZk4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ne3oFiliuKEqZvqRvRzJ/joF+ploVyTKGqAL1cvEbIbxYKAKLmKORq3y6WYRfvDzt
+         5ijg+enNweA0yissVsE9cqg8XgrROj6zGRUEs0GF4E7/9lPdHZa/qRo+s20jKdYmE2
+         /s8EJJlX5oj3MZqGfnr2K5XBMhViog+gflPI9gvJEH+k76G+bZlu1Ieomqp03z5sA3
+         5qdxfhKj9Cf6v3mZs+lNSggANx+ESdV4x4gcxT8URLV5IHhOhuh5NEBY/RMAb+Q1CW
+         OywMoMY81JxKMj7wGhPvRN2YVoNIakacpnE2Bikk18zvpRKdkMEQICdxSFwBz8ei2d
+         SpIO6+nR5C27Q==
+Date:   Wed, 28 Apr 2021 15:25:34 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Cc:     pakki001@umn.edu, gregkh@linuxfoundation.org, arnd@arndb.de
+Subject: [PATCH] ics932s401: fix broken handling of errors when word reading
+ fails
+Message-ID: <20210428222534.GJ3122264@magnolia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Apr 2021 15:09:46 +0200 Oleksij Rempel wrote:
-> In case ethernet driver is enabled and INET is disabled, selftest will
-> fail to build.
-> 
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Fixes: 3e1e58d64c3d ("net: add generic selftest support")
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+From: Darrick J. Wong <djwong@kernel.org>
 
-Applied (after fixing a checkpatch warning), thanks.
+In commit b05ae01fdb89, someone tried to make the driver handle i2c read
+errors by simply zeroing out the register contents, but for some reason
+left unaltered the code that sets the cached register value the function
+call return value.
+
+The original patch was authored by a member of the Underhanded
+Mangle-happy Nerds, I'm not terribly surprised.  I don't have the
+hardware anymore so I can't test this, but it seems like a pretty
+obvious API usage fix to me...
+
+Fixes: b05ae01fdb89 ("misc/ics932s401: Add a missing check to i2c_smbus_read_word_data")
+Signed-off-by: Darrick J. Wong <djwong@kernel.org>
+---
+ drivers/misc/ics932s401.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/misc/ics932s401.c b/drivers/misc/ics932s401.c
+index 2bdf560ee681..0f9ea75b0b18 100644
+--- a/drivers/misc/ics932s401.c
++++ b/drivers/misc/ics932s401.c
+@@ -134,7 +134,7 @@ static struct ics932s401_data *ics932s401_update_device(struct device *dev)
+ 	for (i = 0; i < NUM_MIRRORED_REGS; i++) {
+ 		temp = i2c_smbus_read_word_data(client, regs_to_copy[i]);
+ 		if (temp < 0)
+-			data->regs[regs_to_copy[i]] = 0;
++			temp = 0;
+ 		data->regs[regs_to_copy[i]] = temp >> 8;
+ 	}
+ 
