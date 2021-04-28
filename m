@@ -2,99 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A083036DE4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31AC936DE4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241645AbhD1R32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 13:29:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241631AbhD1R30 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 13:29:26 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EFBBC061573;
-        Wed, 28 Apr 2021 10:28:41 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id u25so34837726ljg.7;
-        Wed, 28 Apr 2021 10:28:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1XiDkDGEE4btr09JaX3wGmRBxeV6dNzC/hyl0FxehK8=;
-        b=GZpmsCncjuprG6+asstSsX5oepVjz0xOWymnDCshF00N2Rw+nfY7cBxb+FvB9BJYfC
-         qLg+aT6NgphyS7FPAVkomnO8r3tsQw/cEBtBRigNgQh6tPBEdAPlkRCAJWUDGSVm2dFT
-         I4kgQSE1hD84pX/vSvoaEKkXChXxtaOl3D3I+r22AI2eoHxqvUAj/ej43NBolSLR3JoT
-         NUr5ZUWkrGF+7IzWmFFjbb0ouDY0D3+cEmOENGDnVBFJ5LZcRb+fSPL34baHZCy+M0VJ
-         auDF9Buu8HDPqM0MLh9xenjA0LxkliaGfkSivJS/J+kaY91zWv00+Rmm/SEF2BtDEKdD
-         T2mQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1XiDkDGEE4btr09JaX3wGmRBxeV6dNzC/hyl0FxehK8=;
-        b=tamR+SnwWIytnh9+Aia8+AxDyR7exILwDb7+VdLyQo2YGFIbaW6jCRoNj0Us3C4JMR
-         Aaz0oqm7VlTZgkCdq2X4mBsbgeaM/ormi96aIvqFKtPy4u5c/roSlj+traUHv7bC7Oon
-         wblHmvo5mmVGX56ZpQB4fcKiiyLI2UesiWRtRGuTiy+JWurbHmb5FYetKbSaeCVR54NZ
-         rTaKDvoJM/gJransp0vxl/DAVPgor4lR53LHe/gda7x890bxm2HJ7aYotr8tGoMTi8Vz
-         IA2z7I9mcZ57S8aNEjESlAQVFPOnQWlho2ctK862LYWRnzkEAgqE9mWrjTL3QYYce7Lz
-         Zsag==
-X-Gm-Message-State: AOAM533uvB2Zs0BBCrrC1ELQxIOtjCuZEu0kSInHccaXpImfbTXkPUHa
-        LWTpb2rdzuiPfFbEk/X+m40=
-X-Google-Smtp-Source: ABdhPJwHjkl+4vki37PhnFjR3qt2TUXGaKWKn/Wg0boY1wzE5b2i+2ZmEvZax2nb4xAhe3YoIjG3qQ==
-X-Received: by 2002:a05:651c:513:: with SMTP id o19mr21519090ljp.291.1619630919562;
-        Wed, 28 Apr 2021 10:28:39 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.229.147])
-        by smtp.gmail.com with ESMTPSA id z145sm108539lfc.169.2021.04.28.10.28.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 10:28:38 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
-Subject: [PATCH] ext4: fix memory leak in ext4_fill_super
-Date:   Wed, 28 Apr 2021 20:28:28 +0300
-Message-Id: <20210428172828.12589-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        id S241659AbhD1R3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 13:29:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48476 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241631AbhD1R3h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 13:29:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18F8461431;
+        Wed, 28 Apr 2021 17:28:49 +0000 (UTC)
+Date:   Wed, 28 Apr 2021 18:28:47 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Bill Wendling <morbo@google.com>
+Cc:     Kees Cook <keescook@google.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Brown <broonie@kernel.org>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        Daniel Kiss <Daniel.Kiss@arm.com>
+Subject: Re: [PATCH] arm64/vdso: Discard .note.gnu.property sections in vDSO
+Message-ID: <20210428172847.GC4022@arm.com>
+References: <20210423205159.830854-1-morbo@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210423205159.830854-1-morbo@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot reported memory leak in ext4 subsyetem.
-The problem appears, when thread_stop() call happens
-before wake_up_process().
+On Fri, Apr 23, 2021 at 01:51:59PM -0700, Bill Wendling wrote:
+> The arm64 assembler in binutils 2.32 and above generates a program
+> property note in a note section, .note.gnu.property, to encode used x86
+> ISAs and features. But the kernel linker script only contains a single
+> NOTE segment:
+> 
+>   PHDRS
+>   {
+>     text    PT_LOAD    FLAGS(5) FILEHDR PHDRS; /* PF_R|PF_X */
+>     dynamic PT_DYNAMIC FLAGS(4);               /* PF_R */
+>     note    PT_NOTE    FLAGS(4);               /* PF_R */
+>   }
+> 
+> The NOTE segment generated by the vDSO linker script is aligned to 4 bytes.
+> But the .note.gnu.property section must be aligned to 8 bytes on arm64.
+> 
+>   $ readelf -n vdso64.so
+> 
+>   Displaying notes found in: .note
+>     Owner                Data size      Description
+>     Linux                0x00000004     Unknown note type: (0x00000000)
+>      description data: 06 00 00 00
+>   readelf: Warning: note with invalid namesz and/or descsz found at offset 0x20
+>   readelf: Warning:  type: 0x78, namesize: 0x00000100, descsize: 0x756e694c, alignment: 8
+> 
+> Since the note.gnu.property section in the vDSO is not checked by the
+> dynamic linker, discard the .note.gnu.property sections in the vDSO.
+> 
+> Similar to commit 4caffe6a28d31 ("x86/vdso: Discard .note.gnu.property
+> sections in vDSO"), but for arm64.
 
-Normally, this data will be freed by
-created thread, but if kthread_stop()
-returned -EINTR, this data should be freed manually
+Can we not instead fix the linker script to preserve the
+.note.gnu.property, correctly aligned? It doesn't take much space and
+while we don't use it now, it has the BTI information about the binary.
 
-Reported-by: syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
-Tested-by: syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- fs/ext4/super.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Cc'ing a few others who were involved in the BTI support.
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index b9693680463a..9c33e97bd5c5 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5156,8 +5156,10 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- failed_mount3:
- 	flush_work(&sbi->s_error_work);
- 	del_timer_sync(&sbi->s_err_report);
--	if (sbi->s_mmp_tsk)
--		kthread_stop(sbi->s_mmp_tsk);
-+	if (sbi->s_mmp_tsk) {
-+		if (kthread_stop(sbi->s_mmp_tsk) == -EINTR)
-+			kfree(kthread_data(sbi->s_mmp_tsk));
-+	}
- failed_mount2:
- 	rcu_read_lock();
- 	group_desc = rcu_dereference(sbi->s_group_desc);
+> Signed-off-by: Bill Wendling <morbo@google.com>
+> ---
+>  arch/arm64/kernel/vdso/vdso.lds.S | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/kernel/vdso/vdso.lds.S b/arch/arm64/kernel/vdso/vdso.lds.S
+> index 61dbb4c838ef..a5e61e09ea92 100644
+> --- a/arch/arm64/kernel/vdso/vdso.lds.S
+> +++ b/arch/arm64/kernel/vdso/vdso.lds.S
+> @@ -31,6 +31,13 @@ SECTIONS
+>  	.gnu.version_d	: { *(.gnu.version_d) }
+>  	.gnu.version_r	: { *(.gnu.version_r) }
+>  
+> +	/*
+> +	 * Discard .note.gnu.property sections which are unused and have
+> +	 * different alignment requirement from vDSO note sections.
+> +	 */
+> +	/DISCARD/	: {
+> +		*(.note.GNU-stack .note.gnu.property)
+> +	}
+>  	.note		: { *(.note.*) }		:text	:note
+>  
+>  	. = ALIGN(16);
+> @@ -48,7 +55,6 @@ SECTIONS
+>  	PROVIDE(end = .);
+>  
+>  	/DISCARD/	: {
+> -		*(.note.GNU-stack)
+>  		*(.data .data.* .gnu.linkonce.d.* .sdata*)
+>  		*(.bss .sbss .dynbss .dynsbss)
+>  		*(.eh_frame .eh_frame_hdr)
+> -- 
+> 2.31.1.498.g6c1eba8ee3d-goog
+
 -- 
-2.31.1
-
+Catalin
