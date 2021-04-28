@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB89B36E1E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 01:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C3336E1E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 01:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240172AbhD1WwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 18:52:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22256 "EHLO
+        id S240166AbhD1WwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 18:52:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37100 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240068AbhD1WwJ (ORCPT
+        by vger.kernel.org with ESMTP id S240075AbhD1WwJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 28 Apr 2021 18:52:09 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619650282;
+        s=mimecast20190719; t=1619650284;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aG6Es1lhsdq1W+SfyrFpv9ZTWYnqP0BhVj1uRKdeKnk=;
-        b=Ykga9GXdIISdhjb8wHuvZtfjsUfUYmzCUqKsmFXkWFZOcqBo+o5QNdLesQNS13IxjJnMZf
-        FzMUpm90Z6jkhaUvlwhygSx3dpN4yw6XLIVWFIVW3vKc86DDgDC0JI3wJirVAygxfUpWHG
-        h9/yzMzUDxvOpOuAopJTljtKbVuPyNU=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-3-CXjKKI_uNiG3ORmo_sJAWA-1; Wed, 28 Apr 2021 18:51:21 -0400
-X-MC-Unique: CXjKKI_uNiG3ORmo_sJAWA-1
-Received: by mail-qk1-f198.google.com with SMTP id h190-20020a3785c70000b02902e022511825so26466631qkd.7
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 15:51:21 -0700 (PDT)
+        bh=mX5tB3J49H84VgNhuzdVmDuPOZ+GeLNjOa4r3iSgeg4=;
+        b=Jt6OXs0RMK8kEOPshcdLvuIJ4303oiRaL3gcIQ4ahP//AKMWHU0D0E18upY00j7HsZc083
+        qJAkikPhkr0TFmjEUmNgmRo3gIicZGcrEOOWiXgmJ2bbpQAmaOpHolwdpPXSvkHlkTIOst
+        6bZQAsuYRicp6JTZU8OLguGnl7DVH2k=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-286-P-42Xd2nPq2u9kPq6vgl-A-1; Wed, 28 Apr 2021 18:51:22 -0400
+X-MC-Unique: P-42Xd2nPq2u9kPq6vgl-A-1
+Received: by mail-qt1-f200.google.com with SMTP id u16-20020ac86f700000b02901baa6e2dbfcso7380536qtv.20
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 15:51:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=aG6Es1lhsdq1W+SfyrFpv9ZTWYnqP0BhVj1uRKdeKnk=;
-        b=sJTps2XLKEvjrQgYHtA3w6yxtX68S2DsULYPCeuBun9Xj0vSmklu/4uFoAPaVbMLbc
-         hohbcNMpMDq2Mpb1WFjdsa/g3es2qzZlOjQFmvhF7By0WiN2VikS6sEDwYJB4tDNG7iw
-         CtkLSmeWYDARqw6jr2tonEHMgssgGnszrUtg/wraStfMHONq0ToEWngA9gIb73T6X3lS
-         wSAyzYWREM23JJuuP3cF1KYpdfI52zut9JNQJlDj6nKGDhVy8nZ2/ySd0Yw03IIQkkOj
-         44CThsvY2cQcNriNqQaNieVVvE+NpuCM/pJL/dtPFgT8UXVoY3SrFAawrp7RBhvt0XiW
-         z6GA==
-X-Gm-Message-State: AOAM531CMxxKhTdtzduKuGYthJABEHxY/IThj4Ax1R4Sez9v7b2xj6nn
-        2zJB5kBFXz8eFaYlg691ZC1Badrj2p7a3kCc4Vev+FTg07Emeq9Z8U8XFuEFMlEFQjAfKVnZb4F
-        U9I8ypN251XQxC2Esbj4L8xNj
-X-Received: by 2002:a0c:9ae9:: with SMTP id k41mr24204946qvf.40.1619650280326;
-        Wed, 28 Apr 2021 15:51:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzi0KqzO23V+VDmbdXTP1koTP2GA72Z0kaCSBKAzMlcmEcNe5JkFaEp7X/r2ioxQbKVKn1aRQ==
-X-Received: by 2002:a0c:9ae9:: with SMTP id k41mr24204929qvf.40.1619650280118;
-        Wed, 28 Apr 2021 15:51:20 -0700 (PDT)
+        bh=mX5tB3J49H84VgNhuzdVmDuPOZ+GeLNjOa4r3iSgeg4=;
+        b=LC/ae/3j9wOlSsod/Sy2KAvJC3gcwEMlxk9eotr4S0ZFkkk+f+jUi+pUrktsoUAz4h
+         tO0MArnfQ/STQqkM5E5ehmjv/wZmVDaovek+5VdUQgAQo1zmwtha4B6x9SksLy8k4OqS
+         GuDABdvg4H/UfNjqCzwIWukEBbEpY5cBdLIOZ6YBOS+kPuJd18GaPJN5ky6IWgUsKBWp
+         fdbmqRnRC59aHobZHShVyh/PkZdrNP6GFwtA4Nkfluu9q6XuEPR7yOkOYfxDqRFYVnk5
+         5QkLW3IK3DjHsyIPKiijmOvm8UE+gL3xwRFDSwxXt88+CbI/y+eGJHGjuz6FR9QSfjCe
+         rdUw==
+X-Gm-Message-State: AOAM532tLyddCYMkMrwDEfMtUUGboiCBy5IplnQQbh/cbv2PQaOomysi
+        IQwqgpobbm/1sGMM71JpdB9StjNGidbKleCpEtsTPPfK2lSttOB1WqpQ7GYr65L3RNZv8/oNkLb
+        Sb4MrlQU36aZ/97VHr7yYAOLf
+X-Received: by 2002:a0c:fb4e:: with SMTP id b14mr31673236qvq.28.1619650282101;
+        Wed, 28 Apr 2021 15:51:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz4HCkJm81ksUeMlHST386Jw+apuC8iK/I7PR3SG4syb6rigMTQEREtHbkFfHxe1EdAh2hbFg==
+X-Received: by 2002:a0c:fb4e:: with SMTP id b14mr31673214qvq.28.1619650281917;
+        Wed, 28 Apr 2021 15:51:21 -0700 (PDT)
 Received: from localhost.localdomain (bras-base-toroon474qw-grc-77-184-145-104-227.dsl.bell.ca. [184.145.104.227])
-        by smtp.gmail.com with ESMTPSA id 191sm897459qkk.31.2021.04.28.15.51.18
+        by smtp.gmail.com with ESMTPSA id 191sm897459qkk.31.2021.04.28.15.51.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 15:51:19 -0700 (PDT)
+        Wed, 28 Apr 2021 15:51:21 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Cc:     Mike Kravetz <mike.kravetz@oracle.com>, peterx@redhat.com,
@@ -61,9 +61,9 @@ Cc:     Mike Kravetz <mike.kravetz@oracle.com>, peterx@redhat.com,
         "Kirill A . Shutemov" <kirill@shutemov.name>,
         Andrew Morton <akpm@linux-foundation.org>,
         Jerome Glisse <jglisse@redhat.com>
-Subject: [PATCH 4/6] mm/userfaultfd: Fail uffd-wp registeration if not supported
-Date:   Wed, 28 Apr 2021 18:50:28 -0400
-Message-Id: <20210428225030.9708-5-peterx@redhat.com>
+Subject: [PATCH 5/6] mm/pagemap: Export uffd-wp protection information
+Date:   Wed, 28 Apr 2021 18:50:29 -0400
+Message-Id: <20210428225030.9708-6-peterx@redhat.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210428225030.9708-1-peterx@redhat.com>
 References: <20210428225030.9708-1-peterx@redhat.com>
@@ -73,46 +73,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We should fail uffd-wp registration immediately if the arch does not even have
-CONFIG_HAVE_ARCH_USERFAULTFD_WP defined.  That'll block also relevant ioctls on
-e.g. UFFDIO_WRITEPROTECT because that'll check against VM_UFFD_WP, which can
-only be applied with a success registration.
-
-Remove the WP feature bit too for those archs when handling UFFDIO_API ioctl.
+Export the PTE/PMD status of uffd-wp to pagemap too.
 
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- fs/userfaultfd.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ Documentation/admin-guide/mm/pagemap.rst | 2 ++
+ fs/proc/task_mmu.c                       | 9 +++++++++
+ 2 files changed, 11 insertions(+)
 
-diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-index 14f92285d04f8..5dd78238cc156 100644
---- a/fs/userfaultfd.c
-+++ b/fs/userfaultfd.c
-@@ -1304,8 +1304,12 @@ static int userfaultfd_register(struct userfaultfd_ctx *ctx,
- 	vm_flags = 0;
- 	if (uffdio_register.mode & UFFDIO_REGISTER_MODE_MISSING)
- 		vm_flags |= VM_UFFD_MISSING;
--	if (uffdio_register.mode & UFFDIO_REGISTER_MODE_WP)
-+	if (uffdio_register.mode & UFFDIO_REGISTER_MODE_WP) {
-+#ifndef CONFIG_HAVE_ARCH_USERFAULTFD_WP
-+		goto out;
-+#endif
- 		vm_flags |= VM_UFFD_WP;
-+	}
- 	if (uffdio_register.mode & UFFDIO_REGISTER_MODE_MINOR) {
- #ifndef CONFIG_HAVE_ARCH_USERFAULTFD_MINOR
- 		goto out;
-@@ -1942,6 +1946,9 @@ static int userfaultfd_api(struct userfaultfd_ctx *ctx,
- 	uffdio_api.features = UFFD_API_FEATURES;
- #ifndef CONFIG_HAVE_ARCH_USERFAULTFD_MINOR
- 	uffdio_api.features &= ~UFFD_FEATURE_MINOR_HUGETLBFS;
-+#endif
-+#ifndef CONFIG_HAVE_ARCH_USERFAULTFD_WP
-+	uffdio_api.features &= ~UFFD_FEATURE_PAGEFAULT_FLAG_WP;
- #endif
- 	uffdio_api.ioctls = UFFD_API_IOCTLS;
- 	ret = -EFAULT;
+diff --git a/Documentation/admin-guide/mm/pagemap.rst b/Documentation/admin-guide/mm/pagemap.rst
+index 340a5aee9b802..fb578fbbb76ca 100644
+--- a/Documentation/admin-guide/mm/pagemap.rst
++++ b/Documentation/admin-guide/mm/pagemap.rst
+@@ -21,6 +21,8 @@ There are four components to pagemap:
+     * Bit  55    pte is soft-dirty (see
+       :ref:`Documentation/admin-guide/mm/soft-dirty.rst <soft_dirty>`)
+     * Bit  56    page exclusively mapped (since 4.2)
++    * Bit  57    pte is uffd-wp write-protected (since 5.13) (see
++      :ref:`Documentation/admin-guide/mm/userfaultfd.rst <userfaultfd>`)
+     * Bits 57-60 zero
+     * Bit  61    page is file-page or shared-anon (since 3.5)
+     * Bit  62    page swapped
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index fc9784544b241..ce3b5f33b44c4 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -1302,6 +1302,7 @@ struct pagemapread {
+ #define PM_PFRAME_MASK		GENMASK_ULL(PM_PFRAME_BITS - 1, 0)
+ #define PM_SOFT_DIRTY		BIT_ULL(55)
+ #define PM_MMAP_EXCLUSIVE	BIT_ULL(56)
++#define PM_UFFD_WP		BIT_ULL(57)
+ #define PM_FILE			BIT_ULL(61)
+ #define PM_SWAP			BIT_ULL(62)
+ #define PM_PRESENT		BIT_ULL(63)
+@@ -1375,10 +1376,14 @@ static pagemap_entry_t pte_to_pagemap_entry(struct pagemapread *pm,
+ 		page = vm_normal_page(vma, addr, pte);
+ 		if (pte_soft_dirty(pte))
+ 			flags |= PM_SOFT_DIRTY;
++		if (pte_uffd_wp(pte))
++			flags |= PM_UFFD_WP;
+ 	} else if (is_swap_pte(pte)) {
+ 		swp_entry_t entry;
+ 		if (pte_swp_soft_dirty(pte))
+ 			flags |= PM_SOFT_DIRTY;
++		if (pte_swp_uffd_wp(pte))
++			flags |= PM_UFFD_WP;
+ 		entry = pte_to_swp_entry(pte);
+ 		if (pm->show_pfn)
+ 			frame = swp_type(entry) |
+@@ -1426,6 +1431,8 @@ static int pagemap_pmd_range(pmd_t *pmdp, unsigned long addr, unsigned long end,
+ 			flags |= PM_PRESENT;
+ 			if (pmd_soft_dirty(pmd))
+ 				flags |= PM_SOFT_DIRTY;
++			if (pmd_uffd_wp(pmd))
++				flags |= PM_UFFD_WP;
+ 			if (pm->show_pfn)
+ 				frame = pmd_pfn(pmd) +
+ 					((addr & ~PMD_MASK) >> PAGE_SHIFT);
+@@ -1444,6 +1451,8 @@ static int pagemap_pmd_range(pmd_t *pmdp, unsigned long addr, unsigned long end,
+ 			flags |= PM_SWAP;
+ 			if (pmd_swp_soft_dirty(pmd))
+ 				flags |= PM_SOFT_DIRTY;
++			if (pmd_swp_uffd_wp(pmd))
++				flags |= PM_UFFD_WP;
+ 			VM_BUG_ON(!is_pmd_migration_entry(pmd));
+ 			page = migration_entry_to_page(entry);
+ 		}
 -- 
 2.26.2
 
