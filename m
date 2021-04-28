@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FFAB36D2CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 09:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA05E36D2D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 09:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236319AbhD1HMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 03:12:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59332 "EHLO mail.kernel.org"
+        id S235087AbhD1HN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 03:13:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229478AbhD1HMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 03:12:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DBD48613E8;
-        Wed, 28 Apr 2021 07:11:14 +0000 (UTC)
+        id S229643AbhD1HN0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 03:13:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FB5B613DC;
+        Wed, 28 Apr 2021 07:12:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619593875;
-        bh=kCkThJgnYF9IXPhmKsQ3RjJ7SvL0Lv7X3t1df9LBL9w=;
+        s=korg; t=1619593961;
+        bh=7v+xaRxAqtmDAUOE8Tqu0GK3pp+dZezxoCjvSINuU6w=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XnwqoIm/2IB+cMi7mQ5iPNDS+3KAU48b4E6HrAokYyGZdP+uKunBTKODKFYHDeBnp
-         bKvI+ETG97RtM+zeMyxqBaxrwCrKObcyN43F2jaok2G7TXWHSb2GZsRM5LDER7V8fC
-         3RMgdThso05OXCBW/NQX4Zm+TtJAgvbic3lTbNNc=
-Date:   Wed, 28 Apr 2021 09:11:12 +0200
+        b=2UDigCzqveIvyzp2iNKTR1gvty5j1OTRed0E/pO5qjzZCEpV0wAuSwtMXZKc9/i18
+         6kSrUe/ivYi0QwhgGPc1SK+BD6DAdrB1n4DDmpWCStHDLhokAN4o9/+PgMY+72cq38
+         ysppkj6P8vZWZCB3esF3rccmOKbTOBMR36/bBw/U=
+Date:   Wed, 28 Apr 2021 09:12:38 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Aditya Pakki <pakki001@umn.edu>,
+Cc:     Qiushi Wu <wu000273@umn.edu>,
         "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 031/190] Revert "test_objagg: Fix potential memory leak
- in error handling"
-Message-ID: <YIkKkHJgiWCjZt2y@kroah.com>
+Subject: Re: [PATCH 048/190] Revert "net: sun: fix missing release regions in
+ cas_init_one()."
+Message-ID: <YIkK5kBlqHD7nud9@kroah.com>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-32-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-49-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-32-gregkh@linuxfoundation.org>
+In-Reply-To: <20210421130105.1226686-49-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 02:58:26PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit a6379f0ad6375a707e915518ecd5c2270afcd395.
+On Wed, Apr 21, 2021 at 02:58:43PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit 5a730153984dd13f82ffae93d7170d76eba204e9.
 > 
 > Commits from @umn.edu addresses have been found to be submitted in "bad
 > faith" to try to test the kernel community's ability to review "known
@@ -55,34 +55,38 @@ On Wed, Apr 21, 2021 at 02:58:26PM +0200, Greg Kroah-Hartman wrote:
 > change to ensure that no problems are being introduced into the
 > codebase.
 > 
-> Cc: Aditya Pakki <pakki001@umn.edu>
+> Cc: Qiushi Wu <wu000273@umn.edu>
 > Cc: David S. Miller <davem@davemloft.net>
 > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > ---
->  lib/test_objagg.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  drivers/net/ethernet/sun/cassini.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/lib/test_objagg.c b/lib/test_objagg.c
-> index da137939a410..72c1abfa154d 100644
-> --- a/lib/test_objagg.c
-> +++ b/lib/test_objagg.c
-> @@ -979,10 +979,10 @@ static int test_hints_case(const struct hints_case *hints_case)
->  err_world2_obj_get:
->  	for (i--; i >= 0; i--)
->  		world_obj_put(&world2, objagg, hints_case->key_ids[i]);
-> -	i = hints_case->key_ids_count;
-> +	objagg_hints_put(hints);
->  	objagg_destroy(objagg2);
-> +	i = hints_case->key_ids_count;
->  err_check_expect_hints_stats:
-> -	objagg_hints_put(hints);
->  err_hints_get:
->  err_check_expect_stats:
->  err_world_obj_get:
+> diff --git a/drivers/net/ethernet/sun/cassini.c b/drivers/net/ethernet/sun/cassini.c
+> index 9ff894ba8d3e..d9cdf51c5a33 100644
+> --- a/drivers/net/ethernet/sun/cassini.c
+> +++ b/drivers/net/ethernet/sun/cassini.c
+> @@ -4956,7 +4956,7 @@ static int cas_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+>  					  cas_cacheline_size)) {
+>  			dev_err(&pdev->dev, "Could not set PCI cache "
+>  			       "line size\n");
+> -			goto err_out_free_res;
+> +			goto err_write_cacheline;
+>  		}
+>  	}
+>  #endif
+> @@ -5128,6 +5128,7 @@ static int cas_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+>  err_out_free_res:
+>  	pci_release_regions(pdev);
+>  
+> +err_write_cacheline:
+>  	/* Try to restore it in case the error occurred after we
+>  	 * set it.
+>  	 */
 > -- 
 > 2.31.1
 > 
 
-This commit looks correct to me, so I will drop the revert.
+This change looks correct to me, so I will drop the revert.
 
 greg k-h
