@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60AB036D06C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 04:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AFB036D06D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 04:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236927AbhD1CG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 22:06:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47144 "EHLO mail.kernel.org"
+        id S237814AbhD1CGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 22:06:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229888AbhD1CG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 22:06:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 857D161151;
+        id S235422AbhD1CG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 22:06:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E2F2C61408;
         Wed, 28 Apr 2021 02:05:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1619575544;
-        bh=WA+8HRXIjno8aNkTFxntF+zwDHxIKww14+HYuvd6MIs=;
+        bh=/jVsjF2cK235GrhnfA4npgZ/2bxzPacRVS/JKgDnHjo=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=owyYVOeHQ01UZzQBqaUlykhhnTW8z3KGAYjh1gM0IN3CIMWe2y5EZZoor4Zt6r+bu
-         iTgZrAjlCp6pgfkGqx+XuK6zXQqapTMtICrzbOulSXZJM18fTYt4n4Dyq4dDhG8GK1
-         2qDVovQdAEqDCpWCwzUr7p1EjmfzUJyHFf5CJHuJY4qOyl7+n0M7RnEvuoum5slGtk
-         bQ10EjaXtnVfIP91ssx0L32MmEngCc9VzimJHZF/i00LRcCls7GbwMEEi+6fpiF9kU
-         MRJHL5IQHvIDfWbzIlPTtfLHNsfpil2t1q4qnOeZRPV2iFIjwVX3BOpErDqImnbZrf
-         fhNrqXLPkbAvA==
+        b=dy3SJSsh48d19yybAVha4daDEQcyrV6ie3fe9E5e9sWsWkUBOcWA0jIiUz09NV/M7
+         QCN7r3gGWL2ae7bdmZDSyr0j1j8aIHxLHDLaDK5cAb/mrWBfqcVFmUM7b8muLvm2PA
+         1oJCt6XnIhmtcfKBtlvrfVa/P6BvQMR0ZJTc9dEHhPlzmY8rg7dbDqUPE4i/H/clMW
+         fSzFSOiAtL92g15rloNkYMSQLS3iiffa3tnznoEtpNtnozBn0VaSCIEqZWcy4qnqsd
+         0RPVIULimWYPLGsPOIvpzoOKyhC9tdMpFpT0ZyqNhhKt5m9Y+r2RqMhXZO58wRIdkW
+         ufimyJYIHJfVA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7A56960A24;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DD8E560A24;
         Wed, 28 Apr 2021 02:05:44 +0000 (UTC)
-Subject: Re: [GIT PULL] cgroup changes for v5.13-rc1
+Subject: Re: [GIT PULL] Kselftest update for Linux 5.13-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YIgmD4t2UM7lSXYz@slm.duckdns.org>
-References: <YIgmD4t2UM7lSXYz@slm.duckdns.org>
+In-Reply-To: <aea4049e-6de5-f27d-c23e-ca098d78f79f@linuxfoundation.org>
+References: <aea4049e-6de5-f27d-c23e-ca098d78f79f@linuxfoundation.org>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YIgmD4t2UM7lSXYz@slm.duckdns.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.13
-X-PR-Tracked-Commit-Id: ffeee417d97f9171bce9f43c22c9f477e4c84f54
+X-PR-Tracked-Message-Id: <aea4049e-6de5-f27d-c23e-ca098d78f79f@linuxfoundation.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-next-5.13-rc1
+X-PR-Tracked-Commit-Id: e75074781f1735c1976bc551e29ccf2ba9a4b17f
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 55e6be657b8d774d9a2e67363e5bcbbaf80fdc28
-Message-Id: <161957554443.21925.17556300526205901198.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 2a68c268a18317a013961e8faf6eaabc81a94e6b
+Message-Id: <161957554490.21925.14940488069071577353.pr-tracker-bot@kernel.org>
 Date:   Wed, 28 Apr 2021 02:05:44 +0000
-To:     Tejun Heo <tj@kernel.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 27 Apr 2021 10:56:15 -0400:
+The pull request you sent on Tue, 27 Apr 2021 17:13:02 -0600:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.13
+> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-next-5.13-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/55e6be657b8d774d9a2e67363e5bcbbaf80fdc28
+https://git.kernel.org/torvalds/c/2a68c268a18317a013961e8faf6eaabc81a94e6b
 
 Thank you!
 
