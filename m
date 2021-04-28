@@ -2,61 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C56F336DE5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:34:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D621236DE5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241684AbhD1Ren (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 13:34:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50504 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241661AbhD1Rel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 13:34:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2CA796143A;
-        Wed, 28 Apr 2021 17:33:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619631236;
-        bh=0Si3F/7AQsY27gb25npKxX+YjDcEKtnnK2Wq89glGQk=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=PiF8YqnO46DWh3EDfhekTdfiNh3wedKbC3EJVAEVALnVMh53exy/LeiuoMvO2QDz6
-         CtPjd5WOjoj6UQl/He1Bkg7GfAG3KSTmyTuZdMx+zHS7RYIdAAK3pDUUDYBFAYYQjj
-         4+bL1Zo5XCMIJboTyBp9sDUSixu7M+S2EcACb+rdnR+ZMQbhtsJb90RUzBDo9LsnOd
-         clSJDm4XXmD/A5bl6Y9gh3GWyXhsWP2LvBKaythLKFaSg+ILg2pgg6VrAY1knrvZAj
-         SznAWmuBgeSsa9aKCPbkJNLBrnjmZ6THgmoeNRnlo/vhXdaAKCL7/hcId56KYFJQgc
-         IXvJM/P2tClRg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 265EB60A36;
-        Wed, 28 Apr 2021 17:33:56 +0000 (UTC)
-Subject: Re: [git pull] drm for 5.13-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAPM=9txMo5f9QvPqdzt8g3CmUpyDFf2Q_0XS4V1FyjHX8WQPRA@mail.gmail.com>
-References: <CAPM=9txMo5f9QvPqdzt8g3CmUpyDFf2Q_0XS4V1FyjHX8WQPRA@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAPM=9txMo5f9QvPqdzt8g3CmUpyDFf2Q_0XS4V1FyjHX8WQPRA@mail.gmail.com>
-X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-next-2021-04-28
-X-PR-Tracked-Commit-Id: a1a1ca70deb3ec600eeabb21de7f3f48aaae5695
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 68a32ba14177d4a21c4a9a941cf1d7aea86d436f
-Message-Id: <161963123615.29190.4484357306581976086.pr-tracker-bot@kernel.org>
-Date:   Wed, 28 Apr 2021 17:33:56 +0000
-To:     Dave Airlie <airlied@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        id S241940AbhD1RgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 13:36:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241924AbhD1RgL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 13:36:11 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9753CC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 10:35:26 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id u16so46512283oiu.7
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 10:35:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id;
+        bh=Bch1oq78dAKG4OuGE0cpushN9U1V2L83n1Hncb6KNXs=;
+        b=CKZmEMvLLQPT2T4K/7ACKFBrXF7Dhdf380FQNA5cqQe2irjZ403gMdDlBX+1W1xC9k
+         +VOkxWalv8VgGr2ROCyoY8e3Fh6wGVkbIl5wUhoKy2BUfl77SzXazI9cTUDh/4lx9FBx
+         NhNHj8hpxlEVoyIAK1PkDcGUdomELhUJffyng2SPlDZsWUew8rVgpV1sedEuEBSOBhE5
+         gJnsYf6awNVs5XIqjjxh7FF+gD7fHuD1oOeOx/p4mBSBl/SRUqokGX6QwJuluRRJ3+TR
+         vby1TYffahtl48jVCMGdyjUD6g+ecCRIJLRhy0GXJPEC931CMqGu4O//P7iWw3l6ilaE
+         OJdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
+        bh=Bch1oq78dAKG4OuGE0cpushN9U1V2L83n1Hncb6KNXs=;
+        b=CjuyYWvo7yL9/e15TE/uhcaol97rRpFwzQBPLcdzvUwsOSyAby1xd1rqwtma8t49Gx
+         aHBJlTT5OBA6omxPUo8wX8MhAr29xbTCwtdN2n3rNpp9SiWlD7auDvQtNyGhDdBiZIBk
+         v5B1B0l+k3Ur4HvCRUpiXa+aEI10xxh1m1dLwntYp0WAztUI95eLobDmrNtGzzC0ruD2
+         aKQZc786592FwZTDFCd0K6UZFqy9ld6LZEFDH6q3qOiqSITiYQIjTr75Y7eZEymdjG5q
+         1dMW4CHNKP0c4EzHI9JWId/UamqUV50g6w6QBBirUB7i76HsnuVrmpQ9MZ677MWrD4N3
+         7lMQ==
+X-Gm-Message-State: AOAM533FmsjxDsO5elh0tqKh4rL5aFnIFIa3fMST4EP2BsMLWaypr3on
+        jR3yt+7976vzZNx0fibeNFk=
+X-Google-Smtp-Source: ABdhPJw0Z1soQrHdhdkaW+wEPDLB2epqNABhfB/3YssWKPvMAlY7jlCBUvm5+BDwJlbJ0Qv/t98yvA==
+X-Received: by 2002:a05:6808:1393:: with SMTP id c19mr8850865oiw.149.1619631326062;
+        Wed, 28 Apr 2021 10:35:26 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id a11sm107487oif.52.2021.04.28.10.35.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 28 Apr 2021 10:35:25 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Larry Finger <Larry.Finger@lwfinger.net>
+Cc:     Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH] staging: rtl8712: Use list iterators and helpers
+Date:   Wed, 28 Apr 2021 10:35:23 -0700
+Message-Id: <20210428173523.149958-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 28 Apr 2021 13:31:59 +1000:
+Use existing list iterators and helper functions.
 
-> git://anongit.freedesktop.org/drm/drm tags/drm-next-2021-04-28
+The following coccinelle script was used to convert the code.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/68a32ba14177d4a21c4a9a941cf1d7aea86d436f
+@@
+identifier v1, v2, v3, v4;
+symbol next;
+expression e;
+iterator name list_for_each;
+statement S;
+@@
 
-Thank you!
+<+...
+(
+- e = v1->next;
+|
+- e = get_next(v1);
+)
+  ... when != e
+- while ( \( v1 != e \| e != v1 \) )
++ list_for_each (e, v1)
+  {
+    ...
+-   v2 = container_of(e, struct v3, v4);
++   v2 = list_entry(e, struct v3, v4);
+?-  if (!v2) S
+    ...
+(
+-   e = e->next;
+|
+- e = get_next(e);
+)
+    ... when != e
+  }
+...+>
 
+Compile tested only.
+
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ drivers/staging/rtl8712/rtl871x_mlme.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/staging/rtl8712/rtl871x_mlme.c b/drivers/staging/rtl8712/rtl871x_mlme.c
+index ba4a71e91ae0..92b7c9c07df6 100644
+--- a/drivers/staging/rtl8712/rtl871x_mlme.c
++++ b/drivers/staging/rtl8712/rtl871x_mlme.c
+@@ -139,10 +139,8 @@ static struct wlan_network *r8712_find_network(struct  __queue *scanned_queue,
+ 		return NULL;
+ 	spin_lock_irqsave(&scanned_queue->lock, irqL);
+ 	phead = &scanned_queue->queue;
+-	plist = phead->next;
+-	while (plist != phead) {
+-		pnetwork = container_of(plist, struct wlan_network, list);
+-		plist = plist->next;
++	list_for_each(plist, phead) {
++		pnetwork = list_entry(plist, struct wlan_network, list);
+ 		if (!memcmp(addr, pnetwork->network.MacAddress, ETH_ALEN))
+ 			break;
+ 	}
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.17.1
+
