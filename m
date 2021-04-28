@@ -2,84 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30CD736DFF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 21:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E114B36DFFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 21:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241752AbhD1Txt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 15:53:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49492 "EHLO
+        id S241770AbhD1T5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 15:57:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232936AbhD1Txr (ORCPT
+        with ESMTP id S241755AbhD1T5u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 15:53:47 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F5D8C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 12:53:01 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id lp8so3318350pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 12:53:01 -0700 (PDT)
+        Wed, 28 Apr 2021 15:57:50 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF00CC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 12:57:03 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id s9so15743620ljj.6
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 12:57:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=t2vjzLo5833TwHRjaoZDQocM21zdHYgMxRE4qSKWBXU=;
-        b=HgpbCexYJ8QnHXUVW5h6oIZf6JX8cFOmlVUHI/I8orX+JfuFAmUpjdGyrDEK6GgEsW
-         AMSbqcIcd4rTUcHO/roNkGDwhXOH3GOum3NmGSTN/vMHkWWm9peWStWyWxYWinNMvZzv
-         keGSIjBl7h7wCkLP6WDknNHZ6Fz4RMPOUJAb918dwYoFwIXOb3PbyAfYFgXf0+1I5qGi
-         7Xmm77ndPQGN9PHBkFwN3Qu6fOAFP44PCnbm9xxdJmloDz3s/4lBthSS96gg5klcOyEO
-         43ngKjxqCKaooiJgev8eoO+VW7DCEqYomFw/Iwot6pleC6pGAvQnS1vt7sukUXPT1qYj
-         ze3A==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VZgp1adEz9KJlJ3oJ5kLJbN7WPtmYsA6YapY9DMHwWU=;
+        b=Iz54qD+kKfPO2PcFkG2ZI4iTD0Qi5YGf77KBVhdRLOpBNlaAfEuwWHyphPOjSDozh2
+         1dMAt42ImNhZR5GGOciu7WEqcHYdoCr9dbEIrEFK0yjF5cr9qVpPPD4yZ0M/gUoaBMk1
+         ILoWtnTh7u7JhKXq6VOJlInl0krz9qP0S/xg+uGLa8S72XNvgxSTJnlO2oo1WDbvaiKd
+         hQsHzsEBWUG/mmLRiUsnkeHIAMCbu7xbO7aVQw5HwO0GVX0Z+m876z6YQ4JYIaRqFW3o
+         opfXGG//T4BmEBxz0sfOKLCrdMiHPftmIDPGyMqn+QXqkwY2TkeN28Rh+ETuzRNSWspF
+         Q1BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=t2vjzLo5833TwHRjaoZDQocM21zdHYgMxRE4qSKWBXU=;
-        b=CZafpQAnFnWMT5Dnyi4WVNru81Q0VbgD3J4U+JClKSQuFflO3qgueqglnLJV7bCkbf
-         FmSnfkI/Jdirr/IDTd5BirV1b8/A4yfz8tl8gkuqwQWRZlxHhgtACf3xp8dODVjxO67+
-         gzpCF6+fKqv6io2et4/jGEWh8IkjzIJySX2D0qBGxDskIteG+FgGKgKuijYsq1EXc/hT
-         TJaxnDcIAgyy20mtmjZuoUDqa+EJOjBdBdHBRBTnjOzSZ4himaC3JViYQEcw4OZunwV4
-         gxQcSEs9P1tLGsuC8ZmPhFJSKllRJ4nJShRsHHbr875npabdep8pxdCfwshAL/aXMNnw
-         uYwA==
-X-Gm-Message-State: AOAM53049iuk2wq7R3NGAm81NRG6knKe3/oaex9Qnc40TFaCAr8WIH6e
-        rZ/Tgl59EsRZViN0OOIf9M0=
-X-Google-Smtp-Source: ABdhPJwhug9mgcMupt82IsIk5So9b0QVyz3a+s9sFYwAwVC2QShayJbfGKyfdxrjMPmsxxIjso7Pjg==
-X-Received: by 2002:a17:902:a614:b029:ed:3d5f:768 with SMTP id u20-20020a170902a614b02900ed3d5f0768mr15502807plq.18.1619639581088;
-        Wed, 28 Apr 2021 12:53:01 -0700 (PDT)
-Received: from localhost ([115.99.168.181])
-        by smtp.gmail.com with ESMTPSA id i14sm448603pgk.77.2021.04.28.12.53.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 12:53:00 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 01:22:56 +0530
-From:   Sanjana Srinidhi <sanjanasrinidhi1810@gmail.com>
-To:     geoff@infradead.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Add blank line after declarations
-Message-ID: <20210428195256.c3tqnrllnid3c3e7@sanjana-VirtualBox>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VZgp1adEz9KJlJ3oJ5kLJbN7WPtmYsA6YapY9DMHwWU=;
+        b=pe6cFh6FBzuDCe6ySnauVQwFCiBiUjd9jbG+DUGIiFUfe4zknIFxd/a+HF6yjZFwSS
+         nY437eOleXjUjGMxLRrLkbkDGggzxL4L5nrCxs37feDJQb+eOvBEh3P2Kx6lut2J1xA9
+         6FMLtCHeiPPf0ip+CK/rFEIYdsz4aUaGFLmzfORWjngzL9yfNSiyPTJerfm89GIuCr6D
+         UIRTrb09N1dqFHkbyYp/qkGtmhHS6ZzbrLf5QYOUWibaOOJvCr0HtfEgqUZ29hEIO2df
+         QXlg3oQvCKunNTqPLl1sFDbOu6c65GKdIiopiJp2ihoVUptBjTk3p5DHCgsXPFOy1uTn
+         4YPQ==
+X-Gm-Message-State: AOAM533/gOwF7RDMNbzCZFb86j6TQLXbKkPiA1TXPG7HfF8+5hqp7TJZ
+        uCLteSeXdgE+/9RFTmPWfNvbM5NoDx7eRo/zz66+2g==
+X-Google-Smtp-Source: ABdhPJyIMs9er4bTaeKrhXCa0B8Comuk9ocQKVa3i92in2sI+G9I6NvUnUtGTMH6JYgzGl9UeTtVxPTJs1/YwqY8yWY=
+X-Received: by 2002:a2e:97d2:: with SMTP id m18mr22006341ljj.13.1619639815715;
+ Wed, 28 Apr 2021 12:56:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210421173716.1577745-1-pbonzini@redhat.com> <20210421173716.1577745-3-pbonzini@redhat.com>
+ <YIiMrWS60NuesU63@google.com>
+In-Reply-To: <YIiMrWS60NuesU63@google.com>
+From:   Steve Rutherford <srutherford@google.com>
+Date:   Wed, 28 Apr 2021 12:56:19 -0700
+Message-ID: <CABayD+dKLTx5kQTaKASQkcam4OiHJueuL1Vf32soiLq=torg+w@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] KVM: x86: add MSR_KVM_MIGRATION_CONTROL
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Venu Busireddy <venu.busireddy@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Blank line is added after declarations to maintain code uniformity.
-
-Signed-off-by: Sanjana Srinidhi <sanjanasrinidhi1810@gmail.com>
----
- drivers/ps3/ps3av.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/ps3/ps3av.c b/drivers/ps3/ps3av.c
-index 9d66257e1da5..c4ea494ce464 100644
---- a/drivers/ps3/ps3av.c
-+++ b/drivers/ps3/ps3av.c
-@@ -175,6 +175,7 @@ static int ps3av_vuart_write(struct ps3_system_bus_device *dev,
- 			     const void *buf, unsigned long size)
- {
- 	int error;
-+
- 	dev_dbg(&dev->core, " -> %s:%d\n", __func__, __LINE__);
- 	error = ps3_vuart_write(dev, buf, size);
- 	dev_dbg(&dev->core, " <- %s:%d\n", __func__, __LINE__);
--- 
-2.25.1
-
+On Tue, Apr 27, 2021 at 3:14 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Wed, Apr 21, 2021, Paolo Bonzini wrote:
+> > Add a new MSR that can be used to communicate whether the page
+> > encryption status bitmap is up to date and therefore whether live
+> > migration of an encrypted guest is possible.
+> >
+> > The MSR should be processed by userspace if it is going to live
+> > migrate the guest; the default implementation does nothing.
+> >
+> > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> > ---
+>
+> ...
+>
+> > @@ -91,6 +93,8 @@ struct kvm_clock_pairing {
+> >  /* MSR_KVM_ASYNC_PF_INT */
+> >  #define KVM_ASYNC_PF_VEC_MASK                        GENMASK(7, 0)
+> >
+> > +/* MSR_KVM_MIGRATION_CONTROL */
+> > +#define KVM_PAGE_ENC_STATUS_UPTODATE         (1 << 0)
+>
+> Why explicitly tie this to encryption status?  AFAICT, doing so serves no real
+> purpose and can only hurt us in the long run.  E.g. if a new use case for
+> "disabling" migration comes along and it has nothing to do with encryption, then
+> it has the choice of either using a different bit or bastardizing the existing
+> control.
+>
+> I've no idea if such a use case is remotely likely to pop up, but allowing for
+> such a possibility costs us nothing.
+Using a different bit sounds fine to me. It would allow us to avoid
+stuffing multiple meanings into a single bit, which would still happen
+even if we had a better name.
