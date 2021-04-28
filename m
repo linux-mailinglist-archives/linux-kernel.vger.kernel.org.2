@@ -2,193 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B67E636DBB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B66D536DBB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238784AbhD1Pca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 11:32:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230036AbhD1Pc0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 11:32:26 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 837B6C061573;
-        Wed, 28 Apr 2021 08:31:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=GYT2LCMhy6nDkJqGf6hC469YOFILkKh7rgUUoEsmUHU=; b=pfBH3HSKGWjSfHp68rPUKeqfw4
-        6fHTDaL1HDPrc63gyzKq16bRRDFfACS+sNnje9Y6jCSyex9++pAgdAIEz9TMbNxUAq+Zn/JL1PigG
-        HffM2PqeWRm/MMA4y6oApi2g+FEn/rvRbPziphsIh5tvAzqc3RWH9aKBdQKD837FVOdbShC5fayHC
-        ZchFv0aHaNoMumHHd0Z/NIRavDiiX6ogaLXLPjBoH+6llPzjtYVv0QMBWH1yaH8n8ZB++bA8xarQs
-        +TVx+CxtrUiJwXFGFaF8Gbu5WxhxJbCujnVPr/Q7ZbAajhl4kaiLNm4mrRrB2XAUgXveaKKs1ifdB
-        vADos5vg==;
-Received: from [2601:1c0:6280:3f0::df68]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lbm9o-008Sn1-LK; Wed, 28 Apr 2021 15:31:21 +0000
-Subject: Re: [PATCH net-next v1 1/1] net: selftest: fix build issue if INET is
- disabled
-To:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Fugang Duan <fugang.duan@nxp.com>
-Cc:     kernel@pengutronix.de, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com, Fabio Estevam <festevam@gmail.com>,
-        David Jander <david@protonic.nl>,
-        Russell King <linux@armlinux.org.uk>,
-        Philippe Schenker <philippe.schenker@toradex.com>
-References: <20210428130947.29649-1-o.rempel@pengutronix.de>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <8a6612ee-8bb7-7287-265f-1a57d9532904@infradead.org>
-Date:   Wed, 28 Apr 2021 08:31:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S239737AbhD1PeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 11:34:12 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:31804 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229961AbhD1PeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 11:34:08 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619624004; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=+uEHZQCoId6Z6PN43bKUgIGsM7RbOOikbjeOmDhDNZw=; b=j/Jd2LPBF5MjFK9LqrzuzPo3ONy1SIqnadK1QSsfTtILeJxkA9/cUf34asnRm7L6K5vmPLDq
+ jUbMAaHth3tkIOGNYdj7pYnO5DiM6x05HfORWT6pZvwRebzqQ+cUWedShdJrxvDOdFRxU7Tt
+ 6WBmA+nGGyjd9CjDdiTw4BN+9k8=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 60898026853c0a2c468b6011 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 28 Apr 2021 15:32:54
+ GMT
+Sender: charante=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D0F6DC4338A; Wed, 28 Apr 2021 15:32:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.29.110] (unknown [49.37.159.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: charante)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0902EC433D3;
+        Wed, 28 Apr 2021 15:32:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0902EC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
+Subject: Re: [PATCH] mm: compaction: improve /proc trigger for full node
+ memory compaction
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     akpm@linux-foundation.org, vbabka@suse.cz, bhe@redhat.com,
+        nigupta@nvidia.com, khalid.aziz@oracle.com,
+        mateusznosek0@gmail.com, sh_def@163.com, iamjoonsoo.kim@lge.com,
+        mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
+        mhocko@suse.com, rientjes@google.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        vinmenon@codeaurora.org
+References: <1619098678-8501-1-git-send-email-charante@codeaurora.org>
+ <20210427080921.GG4239@techsingularity.net>
+From:   Charan Teja Kalla <charante@codeaurora.org>
+Message-ID: <9afd1ae1-bee8-a4cc-1cd6-df92090abeb4@codeaurora.org>
+Date:   Wed, 28 Apr 2021 21:02:44 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210428130947.29649-1-o.rempel@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210427080921.GG4239@techsingularity.net>
+Content-Type: text/plain; charset=iso-8859-15
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/28/21 6:09 AM, Oleksij Rempel wrote:
-> In case ethernet driver is enabled and INET is disabled, selftest will
-> fail to build.
-> 
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Fixes: 3e1e58d64c3d ("net: add generic selftest support")
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Thanks Mel for your comments!!
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-
-Thanks.
-
-> ---
->  drivers/net/ethernet/atheros/Kconfig   |  2 +-
->  drivers/net/ethernet/freescale/Kconfig |  2 +-
->  include/net/selftests.h                | 19 +++++++++++++++++++
->  net/Kconfig                            |  2 +-
->  net/core/Makefile                      |  2 +-
->  net/dsa/Kconfig                        |  2 +-
->  6 files changed, 24 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/atheros/Kconfig b/drivers/net/ethernet/atheros/Kconfig
-> index 6842b74b0696..482c58c4c584 100644
-> --- a/drivers/net/ethernet/atheros/Kconfig
-> +++ b/drivers/net/ethernet/atheros/Kconfig
-> @@ -20,8 +20,8 @@ if NET_VENDOR_ATHEROS
->  config AG71XX
->  	tristate "Atheros AR7XXX/AR9XXX built-in ethernet mac support"
->  	depends on ATH79
-> -	select NET_SELFTESTS
->  	select PHYLINK
-> +	imply NET_SELFTESTS
->  	help
->  	  If you wish to compile a kernel for AR7XXX/91XXX and enable
->  	  ethernet support, then you should always answer Y to this.
-> diff --git a/drivers/net/ethernet/freescale/Kconfig b/drivers/net/ethernet/freescale/Kconfig
-> index 3d937b4650b2..2d1abdd58fab 100644
-> --- a/drivers/net/ethernet/freescale/Kconfig
-> +++ b/drivers/net/ethernet/freescale/Kconfig
-> @@ -26,8 +26,8 @@ config FEC
->  		   ARCH_MXC || SOC_IMX28 || COMPILE_TEST)
->  	default ARCH_MXC || SOC_IMX28 if ARM
->  	select CRC32
-> -	select NET_SELFTESTS
->  	select PHYLIB
-> +	imply NET_SELFTESTS
->  	imply PTP_1588_CLOCK
->  	help
->  	  Say Y here if you want to use the built-in 10/100 Fast ethernet
-> diff --git a/include/net/selftests.h b/include/net/selftests.h
-> index 9993b9498cf3..61926c33a022 100644
-> --- a/include/net/selftests.h
-> +++ b/include/net/selftests.h
-> @@ -4,9 +4,28 @@
->  
->  #include <linux/ethtool.h>
->  
-> +#if IS_ENABLED(CONFIG_NET_SELFTESTS)
-> +
->  void net_selftest(struct net_device *ndev, struct ethtool_test *etest,
->  		  u64 *buf);
->  int net_selftest_get_count(void);
->  void net_selftest_get_strings(u8 *data);
->  
-> +#else
-> +
-> +static inline void net_selftest(struct net_device *ndev, struct ethtool_test *etest,
-> +		  u64 *buf)
-> +{
-> +}
-> +
-> +static inline int net_selftest_get_count(void)
-> +{
-> +	return 0;
-> +}
-> +
-> +static inline void net_selftest_get_strings(u8 *data)
-> +{
-> +}
-> +
-> +#endif
->  #endif /* _NET_SELFTESTS */
-> diff --git a/net/Kconfig b/net/Kconfig
-> index 8d955195c069..f5ee7c65e6b4 100644
-> --- a/net/Kconfig
-> +++ b/net/Kconfig
-> @@ -431,7 +431,7 @@ config SOCK_VALIDATE_XMIT
->  
->  config NET_SELFTESTS
->  	def_tristate PHYLIB
-> -	depends on PHYLIB
-> +	depends on PHYLIB && INET
->  
->  config NET_SOCK_MSG
->  	bool
-> diff --git a/net/core/Makefile b/net/core/Makefile
-> index 1a6168d8f23b..f7f16650fe9e 100644
-> --- a/net/core/Makefile
-> +++ b/net/core/Makefile
-> @@ -21,6 +21,7 @@ obj-$(CONFIG_NETPOLL) += netpoll.o
->  obj-$(CONFIG_FIB_RULES) += fib_rules.o
->  obj-$(CONFIG_TRACEPOINTS) += net-traces.o
->  obj-$(CONFIG_NET_DROP_MONITOR) += drop_monitor.o
-> +obj-$(CONFIG_NET_SELFTESTS) += selftests.o
->  obj-$(CONFIG_NETWORK_PHY_TIMESTAMPING) += timestamping.o
->  obj-$(CONFIG_NET_PTP_CLASSIFY) += ptp_classifier.o
->  obj-$(CONFIG_CGROUP_NET_PRIO) += netprio_cgroup.o
-> @@ -33,7 +34,6 @@ obj-$(CONFIG_NET_DEVLINK) += devlink.o
->  obj-$(CONFIG_GRO_CELLS) += gro_cells.o
->  obj-$(CONFIG_FAILOVER) += failover.o
->  ifeq ($(CONFIG_INET),y)
-> -obj-$(CONFIG_NET_SELFTESTS) += selftests.o
->  obj-$(CONFIG_NET_SOCK_MSG) += skmsg.o
->  obj-$(CONFIG_BPF_SYSCALL) += sock_map.o
->  endif
-> diff --git a/net/dsa/Kconfig b/net/dsa/Kconfig
-> index cbc2bd643ab2..183e27b50202 100644
-> --- a/net/dsa/Kconfig
-> +++ b/net/dsa/Kconfig
-> @@ -9,7 +9,7 @@ menuconfig NET_DSA
->  	select NET_SWITCHDEV
->  	select PHYLINK
->  	select NET_DEVLINK
-> -	select NET_SELFTESTS
-> +	imply NET_SELFTESTS
->  	help
->  	  Say Y if you want to enable support for the hardware switches supported
->  	  by the Distributed Switch Architecture.
+On 4/27/2021 1:39 PM, Mel Gorman wrote:
+>> The existing /proc/sys/vm/compact_memory interface do the full node
+>> compaction when user writes an arbitrary value to it and is targeted for
+>> the usecases like an app launcher prepares the system before the target
+>> application runs.
+> The intent behind compact_memory was a debugging interface to tell
+> the difference between an application failing to allocate a huge page
+> prematurely and the inability of compaction to find a free page.
 > 
 
+Thanks for clarifying this.
+
+>> This patch adds a new /proc interface,
+>> /proc/sys/vm/proactive_compact_memory, and on write of an arbitrary
+>> value triggers the full node compaction but can be stopped in the middle
+>> if sufficient higher order(COMPACTION_HPAGE_ORDER) pages available in
+>> the system. The availability of pages that a user looking for can be
+>> given as input through /proc/sys/vm/compaction_proactiveness.
+>>
+>> [1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=facdaa917c4d5a376d09d25865f5a863f906234a
+>>
+>> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+> Hence, while I do not object to the patch as-such, I'm wary of the trend
+> towards improving explicit out-of-band compaction via proc interfaces. I
+
+I think people relying on this /proc/../compact_memory for reasons of on
+demand compaction effects the performance and the kcompactd returns when
+ even a single page of the order we are looking for is available. Say
+that If an app launching completion is relied on the memory
+fragmentation, meaning that lesser the system fragmented, lesser it
+needs to spend time on allocation as it gets more higher order pages.
+With the current compaction methods we may get just one higher order
+page at a time (as compaction stops run after that) thus can effect its
+launch completion time. The compact_memory node can help in these
+situation where the system administrator can defragment system whenever
+is required by writing to the compact_node. This is just a theoretical
+example.
+
+Although it is intended for debugging interface, it got a lot of other
+applications too.
+
+This patch aims to improve this interface by taking help from tunables
+provided by the proactive compaction.
+
+> would have preferred if the focus was on reducing the cost of compaction
+> so that direct allocation requests succeed quickly or improving background
+> compaction via kcompactd when there has been recent failures.
 
 -- 
-~Randy
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
+Forum, a Linux Foundation Collaborative Project
