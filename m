@@ -2,97 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC01D36D823
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 15:16:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 696DA36D830
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 15:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239761AbhD1NRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 09:17:13 -0400
-Received: from mga14.intel.com ([192.55.52.115]:5634 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235630AbhD1NRL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 09:17:11 -0400
-IronPort-SDR: SzV/G+6mgLhE+ThIPlqbSQH9GeUnABbZGTpyTu0CFl6L/G9rQFEqOp40hwnHcDlZivnH9583ih
- Zo/m4y/+GgnA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9968"; a="196291593"
-X-IronPort-AV: E=Sophos;i="5.82,258,1613462400"; 
-   d="scan'208";a="196291593"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 06:16:26 -0700
-IronPort-SDR: XWgVG/CwpmqKGAnEwM8j+fatDehBexOHhlV97a9IDvGlsPLycx7h5J8HQMFP5o6gZ6oonAzfbC
- GKB95FicqMmw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,258,1613462400"; 
-   d="scan'208";a="403677600"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by orsmga002.jf.intel.com with ESMTP; 28 Apr 2021 06:16:22 -0700
-Subject: Re: [PATCH v3 1/4] perf tool: Change fields type in
- perf_record_time_conv
-To:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Steve MacLean <Steve.MacLean@Microsoft.com>,
-        Yonatan Goldschmidt <yonatan.goldschmidt@granulate.io>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210428120915.7123-1-leo.yan@linaro.org>
- <20210428120915.7123-2-leo.yan@linaro.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <a3bcac42-f268-fe65-b871-3d5e3718a30b@intel.com>
-Date:   Wed, 28 Apr 2021 16:16:45 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S239777AbhD1NV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 09:21:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239702AbhD1NV0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 09:21:26 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 220A3C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 06:20:41 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id o5so39104851ljc.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 06:20:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kinvolk.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uIGj9FC9IzQAq2GBbgZ3dpBuRxuZ1w8kk9zAVN1t/ks=;
+        b=Atxh07MDqbbW6/8ErsAvnGFkCNHvXe2vYe9WACJaEyB7bJkjnALZzk1jNN5xtWCwrG
+         izIca9U7kp1F/dB6FgQJwUeWw7/HVJ0fhgnwgHlW7VnhUz8cjI9OCl1ep8aGKyoYnpMp
+         qwRrem0ZKmJaX7mt0eVuN+e18X4/U3KpboD1U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uIGj9FC9IzQAq2GBbgZ3dpBuRxuZ1w8kk9zAVN1t/ks=;
+        b=rhZxelH75OqbYlQoi0wEnNf0m+AvqMkRWnpZ99gvcUlvAWZLEDxc9pYt6iZtSq8cS0
+         qyZRLGeDYPfmONB1cyb9O3CABkQ/L5AN6FplUKVVdmyk+syjufUmHTL5XWEMtLeT/cXe
+         Pg3Hu71Ubwh5Pnl0/nhNY2lI5cTKYg0JtfgHSekDvv85cOYmhgHFqJxtltgr+S1TMeHA
+         H9Jf3fL74RYmdP/hvSetDBxWKKFDErj4GMtNlBRDHHE5oN9bAXS6j0It9LNbbJ5jh4Lx
+         7Hr6pfLtBTGd45/pzGJSt5S1ObMww7Eng+1UCbXu54p47qJOuRktFvWiBIXICQ+6rTCi
+         uooQ==
+X-Gm-Message-State: AOAM531i3ERciG9peyx1NONxOZc4aDpVF14JVw/7xtKhLlBWSPBkBK1K
+        u20Cx8i2NI7uLWlo0gOnZrjjzHFm7ESYch6r8VBzyg==
+X-Google-Smtp-Source: ABdhPJx9KA3ejbYEli1zAg5bEg5ZXtE1NsqbHnBRe3FeKasU220+f/H5v10Cq1RRRSRPsxwCH7ZeWuiXmKw0XIS1zCs=
+X-Received: by 2002:a2e:9b50:: with SMTP id o16mr21000868ljj.8.1619616039596;
+ Wed, 28 Apr 2021 06:20:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210428120915.7123-2-leo.yan@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210426180610.2363-1-sargun@sargun.me> <20210426180610.2363-3-sargun@sargun.me>
+ <20210426190229.GB1605795@cisco> <20210426221527.GA30835@ircssh-2.c.rugged-nimbus-611.internal>
+ <20210427134853.GA1746081@cisco> <CALCETrVrfBtQPh=YeDEK4P9+QHQvNxHbn8ZT3fdQNznpSeS5oQ@mail.gmail.com>
+ <20210427170753.GA1786245@cisco> <20210427221028.GA16602@ircssh-2.c.rugged-nimbus-611.internal>
+ <CALCETrX9JnHE9BOhRxCc1bCvEBfbOY8bb2rxeKTsDNxfMruntQ@mail.gmail.com>
+ <20210428002215.GB1786245@cisco> <CACaBj2ZchRGzHpGn5TD2FE=yKWZotVRNZ7M78TmvGfM9BoHF4g@mail.gmail.com>
+In-Reply-To: <CACaBj2ZchRGzHpGn5TD2FE=yKWZotVRNZ7M78TmvGfM9BoHF4g@mail.gmail.com>
+From:   Rodrigo Campos <rodrigo@kinvolk.io>
+Date:   Wed, 28 Apr 2021 15:20:02 +0200
+Message-ID: <CACaBj2aSnzQnbZG0sMM2Vae_yWGzxKWrGUz9xJVL_7akF8DvNA@mail.gmail.com>
+Subject: Re: [PATCH RESEND 2/5] seccomp: Add wait_killable semantic to seccomp
+ user notifier
+To:     Tycho Andersen <tycho@tycho.pizza>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Will Drewry <wad@chromium.org>, Alban Crequy <alban@kinvolk.io>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/04/21 3:09 pm, Leo Yan wrote:
-> C standard claims "An object declared as type _Bool is large enough to
-> store the values 0 and 1", bool type size can be 1 byte or larger than
-> 1 byte.  Thus it's uncertian for bool type size with different
-> compilers.
-> 
-> This patch changes the bool type in structure perf_record_time_conv to
-> __u8 type, and pads extra bytes for 8-byte alignment; this can give
-> reliable structure size.
-> 
-> Suggested-by: Adrian Hunter <adrian.hunter@intel.com>
-> Fixes: d110162cafc8 ("perf tsc: Support cap_user_time_short for event TIME_CONV")
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+On Wed, Apr 28, 2021 at 1:10 PM Rodrigo Campos <rodrigo@kinvolk.io> wrote:
+>
+> On Wed, Apr 28, 2021 at 2:22 AM Tycho Andersen <tycho@tycho.pizza> wrote:
+> >
+> > On Tue, Apr 27, 2021 at 04:19:54PM -0700, Andy Lutomirski wrote:
+> > > User notifiers should allow correct emulation.  Right now, it doesn't,
+> > > but there is no reason it can't.
+> >
+> > Thanks for the explanation.
+> >
+> > Consider fsmount, which has a,
+> >
+> >         ret = mutex_lock_interruptible(&fc->uapi_mutex);
+> >         if (ret < 0)
+> >                 goto err_fsfd;
+> >
+> > If a regular task is interrupted during that wait, it return -EINTR
+> > or whatever back to userspace.
+> >
+> > Suppose that we intercept fsmount. The supervisor decides the mount is
+> > OK, does the fsmount, injects the mount fd into the container, and
+> > then the tracee receives a signal. At this point, the mount fd is
+> > visible inside the container. The supervisor gets a notification about
+> > the signal and revokes the mount fd, but there was some time where it
+> > was exposed in the container, whereas with the interrupt in the native
+> > syscall there was never any exposure.
+>
+> IIUC, this is solved by my patch, patch 4 of the series. The
+> supervisor should do the addfd with the flag added in that patch
+> (SECCOMP_ADDFD_FLAG_SEND) for an atomic "addfd + send".
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Well, under Andy's proposal handling that is even simpler. If the
+signal is delivered after we added the fd (note that the container
+syscall does not return when the signal arrives, as it happens today,
+it just signals the notifier and continues to wait), we can just
+ignore the signal and return that (if that is the appropriate thing
+for that syscall, but I guess after adding an fd there isn't any other
+reasonable thing to do).
 
-> ---
->  tools/lib/perf/include/perf/event.h | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/lib/perf/include/perf/event.h b/tools/lib/perf/include/perf/event.h
-> index d82054225fcc..48583e441d9b 100644
-> --- a/tools/lib/perf/include/perf/event.h
-> +++ b/tools/lib/perf/include/perf/event.h
-> @@ -346,8 +346,9 @@ struct perf_record_time_conv {
->  	__u64			 time_zero;
->  	__u64			 time_cycles;
->  	__u64			 time_mask;
-> -	bool			 cap_user_time_zero;
-> -	bool			 cap_user_time_short;
-> +	__u8			 cap_user_time_zero;
-> +	__u8			 cap_user_time_short;
-> +	__u8			 reserved[6];	/* For alignment */
->  };
->  
->  struct perf_record_header_feature {
-> 
 
+
+Best,
+Rodrigo
