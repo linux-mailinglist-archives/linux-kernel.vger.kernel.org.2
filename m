@@ -2,156 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFDB536CFF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 02:23:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A947636CFFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 02:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238612AbhD1AXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 20:23:43 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:54519 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235889AbhD1AXR (ORCPT
+        id S238236AbhD1A2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 20:28:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230368AbhD1A15 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 20:23:17 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 5AFD358096B;
-        Tue, 27 Apr 2021 20:22:19 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Tue, 27 Apr 2021 20:22:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=bPTuTe7blkVLywwWCJqNsQlHWvk
-        gDsPComF+4qCOu3Y=; b=8GWExJPszyZ8s4DyPGKY/UyVc6bfmj9RPjmG3uRrBhP
-        qAx+PDRD092TF+8bcwDCJ4vuMh17M4gkza25rTXXvUHvm6wh9nGvf90ZlA2NWz4n
-        tIH1kLOvpd1p3jA/4w2RtEZ8TVETQYWSNsjoDcHwi/VMcbcGa6Gh+0uvQ/q8FtvB
-        WmzMHb2u5Id7eXtjW0qexxNb1Qu9loap1cerF+L+0JXxAzBr5m6HRDZZMO/mpnLs
-        3rf9fB8+mNK0uuJjsSnt9zSS4nUd8P6LvoYoADWxuRjDz/Q2MHUKXf4T7wRUFAyH
-        qfI+5pqsbz3KLkZglobOMEGel/Eo3UmH3/iDMXPxFRQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=bPTuTe
-        7blkVLywwWCJqNsQlHWvkgDsPComF+4qCOu3Y=; b=tVR8T28R0rAHwIVdWjb08u
-        HHkuDl7o0lArL1B72Xsq/Fq96Om07a1VudTh8SDMoFmEb9p08fCnzCB37nS1NbMg
-        QX1rXbCH9lBsInT/Nsp51SFMHh8Hy7Jwx2qfcVD8yJTlA0xdjIzsgzDEEdblI410
-        F8x3eDYP+yNy3HaiF1uIonpsB129FK9/Xc3W7y6ilfMYxZi55Kih6WpjET3MgxBX
-        yugXoiVpmSNCuxCzIhLODHjxqnNhVXgFnMJqJM+QgFy/XTXOCBSz875JtJrR/7th
-        U4eT8RccSSEveYv1JeslalftaxPBcDulzANWMCwNQZpORmeQeI5/CKZxGHOa7tbg
-        ==
-X-ME-Sender: <xms:uqqIYJbTlm_AK0sYc6Td0NVo4ibBmN7xsmHbNs2letPPFkla00aZTw>
-    <xme:uqqIYAb3jm-SY0aefqj6OJm-hGXz7ll5bH5BFz82VPtOTK6z0oAQOT1QRogS5v9YR
-    eDyltm6BWUjPYBniqU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddvuddgfedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigthhho
-    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
-    htthgvrhhnpeegkeefjeegkedtjefgfeduleekueetjeeghffhuefgffefleehgeeifedv
-    gfethfenucfkphepudejfedrfeekrdduudejrdektdenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehthigthhhosehthigthhhordhpihiiiigr
-X-ME-Proxy: <xmx:uqqIYL_pttZNVb5IViQGnbatbCt7kXziz0gIR0SSlC4MLf-5Lfl_FA>
-    <xmx:uqqIYHqM2iSuKTbibryfLpOPlnCfjTr1HS5LRBNM9PBYyZg72Dcu5Q>
-    <xmx:uqqIYEow_5Ol7L_uV7zmu4-xyQS-53j5QfCKmNyd1V_KFcdTYCEoZg>
-    <xmx:u6qIYAfAf7SaeoHrFH8z-DxJiQZBGZng2MOA9XMkL4ME8oCSM4I-uw>
-Received: from cisco (unknown [173.38.117.80])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Tue, 27 Apr 2021 20:22:17 -0400 (EDT)
-Date:   Tue, 27 Apr 2021 18:22:15 -0600
-From:   Tycho Andersen <tycho@tycho.pizza>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Sargun Dhillon <sargun@sargun.me>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Rodrigo Campos <rodrigo@kinvolk.io>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Mauricio =?iso-8859-1?Q?V=E1squez?= Bernal 
-        <mauricio@kinvolk.io>, Giuseppe Scrivano <gscrivan@redhat.com>,
-        Will Drewry <wad@chromium.org>, Alban Crequy <alban@kinvolk.io>
-Subject: Re: [PATCH RESEND 2/5] seccomp: Add wait_killable semantic to
- seccomp user notifier
-Message-ID: <20210428002215.GB1786245@cisco>
-References: <20210426180610.2363-1-sargun@sargun.me>
- <20210426180610.2363-3-sargun@sargun.me>
- <20210426190229.GB1605795@cisco>
- <20210426221527.GA30835@ircssh-2.c.rugged-nimbus-611.internal>
- <20210427134853.GA1746081@cisco>
- <CALCETrVrfBtQPh=YeDEK4P9+QHQvNxHbn8ZT3fdQNznpSeS5oQ@mail.gmail.com>
- <20210427170753.GA1786245@cisco>
- <20210427221028.GA16602@ircssh-2.c.rugged-nimbus-611.internal>
- <CALCETrX9JnHE9BOhRxCc1bCvEBfbOY8bb2rxeKTsDNxfMruntQ@mail.gmail.com>
+        Tue, 27 Apr 2021 20:27:57 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B83FC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 17:27:11 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id z23so23739921lji.4
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 17:27:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2a4y88/F8W7qUoEwL5UNyDw7aPSVIQ4F7yZZlcOOYM8=;
+        b=HaEd5IVFmRBlWEGN2OKvouixEKl8O4cOmn9sjZ16iCZMBhMBTb/8hTEWv3vcfrg9V3
+         GSTO7KXJTl0M/ClGPkiRNrjkMlcF25Pul2TK+um4uf/geHFKoZRmzaiA1kCZOJ1TWtGm
+         VocidabqBjm2Tzgp2nKgm+xe/krglqpHpwy9Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2a4y88/F8W7qUoEwL5UNyDw7aPSVIQ4F7yZZlcOOYM8=;
+        b=MNWWnxvJFLveN8Ib1S63gXXyP8Gf6rkKUJJOdsFX+zmTNF8rSAR48ApNx0ozznBRnD
+         irsXGNMp8gH7BJamAQdkv1BxW7KMi1EApczNKWee/W372nr6QtS05rYAhFVmzCRQyIVn
+         yGXaUmev49brRWWxA+0ke3ht617A0lrLtCrqFCC2ENgqtec6Va1OQws3ZRpvVqJafmYm
+         CWSwSBYaLxAautj5gsI3oz9RhcmeiXPNooqawHPPih8MGWl4saJGoFYGAVx0cfgGu450
+         S0O90VuKFQkfmrwVW9MRxAda++PDdG6CZovbjpskGYs5f/I6HLfkV12y+T8mkzVYLPfr
+         R4YQ==
+X-Gm-Message-State: AOAM532Ki4suq9OFB/D6Ml1EsWLLY37rXipDqy4TMhv6fnqjQR07q1Ax
+        eCSQLRgRdGsJXBruw5mAtJp84r0Tl0cl2RJv
+X-Google-Smtp-Source: ABdhPJxg6GN8T/2nCDJRNXhz1faS0hbSdTeKN/YAqnIwSOG4GTkpPIe70OkQJB8PjefIS+mXZAK1bw==
+X-Received: by 2002:a2e:b4ba:: with SMTP id q26mr18152237ljm.223.1619569629690;
+        Tue, 27 Apr 2021 17:27:09 -0700 (PDT)
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
+        by smtp.gmail.com with ESMTPSA id b9sm310403lfb.67.2021.04.27.17.27.09
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Apr 2021 17:27:09 -0700 (PDT)
+Received: by mail-lf1-f54.google.com with SMTP id z13so15389219lft.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 17:27:09 -0700 (PDT)
+X-Received: by 2002:ac2:51ae:: with SMTP id f14mr13482160lfk.377.1619569629081;
+ Tue, 27 Apr 2021 17:27:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrX9JnHE9BOhRxCc1bCvEBfbOY8bb2rxeKTsDNxfMruntQ@mail.gmail.com>
+References: <CAPM=9tyKdGHyiRLDooKrMf=02GtNn8U4YfF4dJtXdabnVAGdXQ@mail.gmail.com>
+ <CAHk-=whOOVBBuQceJ9D9uZrv-QOUWGMQ4aZe2K+2X24o7xA8cg@mail.gmail.com>
+In-Reply-To: <CAHk-=whOOVBBuQceJ9D9uZrv-QOUWGMQ4aZe2K+2X24o7xA8cg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 27 Apr 2021 17:26:53 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whZN6zfnOTYmrUvur-+Mw8UOBpQxuhCJQ-R7J9zwsGwBA@mail.gmail.com>
+Message-ID: <CAHk-=whZN6zfnOTYmrUvur-+Mw8UOBpQxuhCJQ-R7J9zwsGwBA@mail.gmail.com>
+Subject: Re: New warnings with gcc-11
+To:     Dave Airlie <airlied@gmail.com>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 04:19:54PM -0700, Andy Lutomirski wrote:
-> On Tue, Apr 27, 2021 at 3:10 PM Sargun Dhillon <sargun@sargun.me> wrote:
-> >
-> > On Tue, Apr 27, 2021 at 11:07:53AM -0600, Tycho Andersen wrote:
-> > > On Tue, Apr 27, 2021 at 09:23:42AM -0700, Andy Lutomirski wrote:
-> > > > On Tue, Apr 27, 2021 at 6:48 AM Tycho Andersen <tycho@tycho.pizza> wrote:
-> > > > >
-> > > > > On Mon, Apr 26, 2021 at 10:15:28PM +0000, Sargun Dhillon wrote:
-> > > >
-> > > > ISTM the current behavior is severely broken, and the new behavior
-> > > > isn't *that* much better since it simply ignores signals and can't
-> > > > emulate -EINTR (or all the various restart modes, sigh).  Surely the
-> > > > right behavior is to have the seccomped process notice that it got a
-> > > > signal and inform the monitor of that fact so that the monitor can
-> > > > take appropriate action.
-> > >
-> > > This doesn't help your case (2) though, since the IO could be done
-> > > before the supervisor gets the notification.
-> 
-> Tycho, I disagree.  Here's how native syscalls work:
-> 
-> 1. Entry work is done and the syscall hander does whatever it does at
-> the beginning of the function.  This is entirely non-interruptible.
-> 
-> 2. The syscall handler decides it wants to wait, interruptibly,
-> killably or otherwise.
-> 
-> 3. It gets signaled.  It takes appropriate action.  Appropriate action
-> does *not* mean -EINTR.  It means that something that is correct *for
-> that syscall* happens.  For nanosleep(), this involves the restart
-> block (and I don't think we need to support the restart block).  For
-> accept(), it mostly seems to mean that the syscall completes as usual.
-> For write(2), it means that, depending on file type and whether any IO
-> has occured, either -EINTR is returned and no IO happens, or fewer
-> bytes than requested are transferred, or the syscall completes.  (Or,
-> if it's a KILL, the process dies early and partial IO is ignored.)
-> For some syscalls (some AF_UNIX writes, for example, or ptrace()), the
-> syscall indeed gets interrupted, but it uses one of the -ERESTART
-> mecahnisms.
-> 
-> User notifiers should allow correct emulation.  Right now, it doesn't,
-> but there is no reason it can't.
+On Tue, Apr 27, 2021 at 4:43 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> I think I will make the argument type to intel_print_wm_latency() be
+> just "const u16 wm[]" for now, just to avoid seeing a ton of silly
+> warnings.
 
-Thanks for the explanation.
+After fixing the trivial ones, this one remains:
 
-Consider fsmount, which has a,
+  drivers/gpu/drm/i915/display/intel_dp.c: In function
+=E2=80=98intel_dp_check_mst_status=E2=80=99:
+  drivers/gpu/drm/i915/display/intel_dp.c:4554:22: warning:
+=E2=80=98drm_dp_channel_eq_ok=E2=80=99 reading 6 bytes from a region of siz=
+e 4
+[-Wstringop-overread]
+   4554 |                     !drm_dp_channel_eq_ok(&esi[10],
+intel_dp->lane_count)) {
+        |
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  drivers/gpu/drm/i915/display/intel_dp.c:4554:22: note: referencing
+argument 1 of type =E2=80=98const u8 *=E2=80=99 {aka =E2=80=98const unsigne=
+d char *=E2=80=99}
+  In file included from drivers/gpu/drm/i915/display/intel_dp.c:38:
+  ./include/drm/drm_dp_helper.h:1459:6: note: in a call to function
+=E2=80=98drm_dp_channel_eq_ok=E2=80=99
+   1459 | bool drm_dp_channel_eq_ok(const u8 link_status[DP_LINK_STATUS_SIZ=
+E],
+        |      ^~~~~~~~~~~~~~~~~~~~
 
-        ret = mutex_lock_interruptible(&fc->uapi_mutex);
-        if (ret < 0)
-                goto err_fsfd;
+and I'm not fixing that one, because it actually looks like a valid
+warning, and doesn't have an obvious fix.
 
-If a regular task is interrupted during that wait, it return -EINTR
-or whatever back to userspace.
+That "esi[]" array is 14 bytes in size (DP_DPRX_ESI_LEN). So when it
+does that "&esi[10]" and passes it in as an argument, then only 4
+bytes remain of the array.
 
-Suppose that we intercept fsmount. The supervisor decides the mount is
-OK, does the fsmount, injects the mount fd into the container, and
-then the tracee receives a signal. At this point, the mount fd is
-visible inside the container. The supervisor gets a notification about
-the signal and revokes the mount fd, but there was some time where it
-was exposed in the container, whereas with the interrupt in the native
-syscall there was never any exposure.
+And drm_dp_channel_eq_ok() supposedly takes a "const u8
+link_status[DP_LINK_STATUS_SIZE]", which is 6 bytes.
 
-How does the supervisor correctly emulate this syscall? Maybe this
-doesn't matter and this is just "completes as usual"? But then
-handling signals is just a latency issue, not a correctness one. Or
-most likely I'm misunderstanding something else :)
+There may be some reason this is ok, but it does look a bit fishy, and
+the compiler warning is appropriate.
 
-Tycho
+            Linus
