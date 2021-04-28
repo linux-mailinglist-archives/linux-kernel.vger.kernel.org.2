@@ -2,70 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F3336E1B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 01:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B7C36E1C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 01:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232212AbhD1W0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 18:26:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53382 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235132AbhD1W0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 18:26:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 621E461448;
-        Wed, 28 Apr 2021 22:25:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619648734;
-        bh=bc51XLzoIStqnoVTY2IJKBH2Xkj7e3O8EbUO/HRXZk4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ne3oFiliuKEqZvqRvRzJ/joF+ploVyTKGqAL1cvEbIbxYKAKLmKORq3y6WYRfvDzt
-         5ijg+enNweA0yissVsE9cqg8XgrROj6zGRUEs0GF4E7/9lPdHZa/qRo+s20jKdYmE2
-         /s8EJJlX5oj3MZqGfnr2K5XBMhViog+gflPI9gvJEH+k76G+bZlu1Ieomqp03z5sA3
-         5qdxfhKj9Cf6v3mZs+lNSggANx+ESdV4x4gcxT8URLV5IHhOhuh5NEBY/RMAb+Q1CW
-         OywMoMY81JxKMj7wGhPvRN2YVoNIakacpnE2Bikk18zvpRKdkMEQICdxSFwBz8ei2d
-         SpIO6+nR5C27Q==
-Date:   Wed, 28 Apr 2021 15:25:34 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Cc:     pakki001@umn.edu, gregkh@linuxfoundation.org, arnd@arndb.de
-Subject: [PATCH] ics932s401: fix broken handling of errors when word reading
- fails
-Message-ID: <20210428222534.GJ3122264@magnolia>
+        id S240108AbhD1Wa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 18:30:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240035AbhD1Wao (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 18:30:44 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96142C06138B;
+        Wed, 28 Apr 2021 15:29:58 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id C9C991F42CA8
+Received: by jupiter.universe (Postfix, from userid 1000)
+        id A528F4800BA; Thu, 29 Apr 2021 00:29:53 +0200 (CEST)
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Saravana Kannan <saravanak@google.com>,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        kernel@collabora.com
+Subject: [PATCHv2 0/5] Support for GE B1x5v2 and B1x5Pv2
+Date:   Thu, 29 Apr 2021 00:29:48 +0200
+Message-Id: <20210428222953.235280-1-sebastian.reichel@collabora.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <djwong@kernel.org>
+Hi,
 
-In commit b05ae01fdb89, someone tried to make the driver handle i2c read
-errors by simply zeroing out the register contents, but for some reason
-left unaltered the code that sets the cached register value the function
-call return value.
+This series adds support for another General Electric patient
+monitor series (similar to existing Bx50v3), which is based on
+i.MX6DL using Congatec's QMX6 module.
 
-The original patch was authored by a member of the Underhanded
-Mangle-happy Nerds, I'm not terribly surprised.  I don't have the
-hardware anymore so I can't test this, but it seems like a pretty
-obvious API usage fix to me...
+The module uses an I2C RTC to provide the i.MX6 32768 Hz clock,
+so it's important to keep it enabled. Not doing so results in
+incorrect timings of watchdog and i.MX6 RTC. The bootloader
+enables the watchdog, so disabling the clock results in system
+reboot. [0]
 
-Fixes: b05ae01fdb89 ("misc/ics932s401: Add a missing check to i2c_smbus_read_word_data")
-Signed-off-by: Darrick J. Wong <djwong@kernel.org>
----
- drivers/misc/ics932s401.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The second patch is required for B155v2, which uses a 1366x768
+G156XTN01 panel. The 1366 width is not supported by the display
+pipeline and result in boot hanging without the patch. [1]
 
-diff --git a/drivers/misc/ics932s401.c b/drivers/misc/ics932s401.c
-index 2bdf560ee681..0f9ea75b0b18 100644
---- a/drivers/misc/ics932s401.c
-+++ b/drivers/misc/ics932s401.c
-@@ -134,7 +134,7 @@ static struct ics932s401_data *ics932s401_update_device(struct device *dev)
- 	for (i = 0; i < NUM_MIRRORED_REGS; i++) {
- 		temp = i2c_smbus_read_word_data(client, regs_to_copy[i]);
- 		if (temp < 0)
--			data->regs[regs_to_copy[i]] = 0;
-+			temp = 0;
- 		data->regs[regs_to_copy[i]] = temp >> 8;
- 	}
- 
+Patches 3+4 are updating DT bindings for the new board compatible
+values.
+
+Patch 5 adds the board files.
+
+Changes since PATCHv1:
+ * https://lore.kernel.org/lkml/20210222171247.97609-1-sebastian.reichel@collabora.com/
+ * drop patch 5 (applied)
+ * instead of using 'protected-clocks' in RTC node, add fixed-clock
+   node as suggested by Saravana Kannan
+ * rebased to current master (68a32ba14177)
+
+Thanks,
+
+[0] There has been a discussion for the problem on the mailinglists
+last year. The discussion died off, when I told people their ideas
+don't work. I hope using protected-clocks is fine for this usecase.
+
+https://lore.kernel.org/linux-clk/20191108170135.9053-1-sebastian.reichel@collabora.com/
+
+[1] I've sent this before as a separate patch in September, but
+nobody seemed to care. This adds full context for the problem.
+
+https://lore.kernel.org/dri-devel/20200910162831.321556-1-sebastian.reichel@collabora.com/
+
+-- Sebastian
+
+Sebastian Reichel (5):
+  rtc: m41t80: add support for fixed clock
+  drm/imx: Add 8 pixel alignment fix
+  dt-bindings: vendor-prefixes: add congatec
+  dt-bindings: arm: fsl: add GE B1x5pv2 boards
+  ARM: dts: imx6: Add GE B1x5v2
+
+ .../devicetree/bindings/arm/fsl.yaml          |  11 +
+ .../devicetree/bindings/rtc/rtc-m41t80.txt    |   9 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ arch/arm/boot/dts/Makefile                    |   5 +
+ arch/arm/boot/dts/imx6dl-b105pv2.dts          |  35 +
+ arch/arm/boot/dts/imx6dl-b105v2.dts           |  35 +
+ arch/arm/boot/dts/imx6dl-b125pv2.dts          |  33 +
+ arch/arm/boot/dts/imx6dl-b125v2.dts           |  33 +
+ arch/arm/boot/dts/imx6dl-b155v2.dts           |  36 +
+ arch/arm/boot/dts/imx6dl-b1x5pv2.dtsi         | 434 ++++++++++++
+ arch/arm/boot/dts/imx6dl-b1x5v2.dtsi          |  61 ++
+ arch/arm/boot/dts/imx6dl-qmx6.dtsi            | 624 ++++++++++++++++++
+ drivers/gpu/drm/imx/imx-drm-core.c            |  19 +-
+ drivers/gpu/drm/imx/imx-ldb.c                 |   5 +
+ drivers/gpu/drm/imx/ipuv3-crtc.c              |  11 +-
+ drivers/gpu/drm/imx/ipuv3-plane.c             |  19 +-
+ drivers/gpu/ipu-v3/ipu-dc.c                   |   5 +
+ drivers/gpu/ipu-v3/ipu-di.c                   |   7 +
+ drivers/rtc/rtc-m41t80.c                      |  12 +
+ 19 files changed, 1390 insertions(+), 6 deletions(-)
+ create mode 100644 arch/arm/boot/dts/imx6dl-b105pv2.dts
+ create mode 100644 arch/arm/boot/dts/imx6dl-b105v2.dts
+ create mode 100644 arch/arm/boot/dts/imx6dl-b125pv2.dts
+ create mode 100644 arch/arm/boot/dts/imx6dl-b125v2.dts
+ create mode 100644 arch/arm/boot/dts/imx6dl-b155v2.dts
+ create mode 100644 arch/arm/boot/dts/imx6dl-b1x5pv2.dtsi
+ create mode 100644 arch/arm/boot/dts/imx6dl-b1x5v2.dtsi
+ create mode 100644 arch/arm/boot/dts/imx6dl-qmx6.dtsi
+
+-- 
+2.30.2
+
