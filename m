@@ -2,259 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E571736DAD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2821C36DB32
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231375AbhD1PGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 11:06:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231347AbhD1PGE (ORCPT
+        id S233999AbhD1PH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 11:07:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28827 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232438AbhD1PH0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 11:06:04 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88CF4C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 08:05:19 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id k128so34014801wmk.4
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 08:05:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/utO0JUES8bqsMHp6o1HbmgumSL9/IkbjkGaOE+fxJM=;
-        b=sXVaOijJfNFI19nbo7RcDhdrRvL5CF+2EI4624OSIpoi7pG8IP89DKxS8Uaq8ge+2l
-         0hhhOb/xBebUTxMR81v1MENznZIYN8p/aowm+NcKsJfimzDOi5642mdEaAr451xFuwAB
-         ZTK6Kl/mOS1Q0TkWzoFG6gpHHKkuJsGSjBYMLDNVPeEKBs03SQWVSHpXl9iCB0cqncZE
-         WrhhN8Xv78oE9RgL7XKoiSuUG+NoRPdW07vrPRg4Cz3sdR11V2uoTL1xI7Vz9iooUPqz
-         K3Rr/sbEXYL+nmAuKQDWDknH05q9pctZu5yJ23e+Dynnt9pmVJuuUEwlH/G426VNx4T4
-         grzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/utO0JUES8bqsMHp6o1HbmgumSL9/IkbjkGaOE+fxJM=;
-        b=DYKWo1Shvt8DVopM+qEgis0Ga4klHcNg/3c/PfV+JlXaQgZzVEgN7h8DOrL8Q1FUhD
-         ltxfoVKo57SfZOgHYblz8FhZkKfav2dXBbcIg6A6gSuqRZeuBI6Bt1Wz2Na54VbcwojT
-         3t8NYaahOdbnUyoQStu9qmAv7YvdbN3uUstXTcV2MbYJyHsdGCWfW6i69yK63tzpUXF8
-         pCTyqq5anXzwKtr5S3tVe/iuhMl0dmOPImp0k7GQy4rcUs+RlAwVmKlqnxP5HVv0L7sq
-         ucRYz8CGLWw2s5EII/QI94ygWRYMt0Dj60akuR8pZTw9AXKwXmEeqdkVpy1k+rEj7sRB
-         /fTQ==
-X-Gm-Message-State: AOAM530W6NmLv61KbHPspjQqjKLiFzVWWhd8y8LaF6Ul0rXgpJMWsSWR
-        TeaXP43e82t7Vj9HkiXOCqh4Gvdw1hhqqGRDZiiTDA==
-X-Google-Smtp-Source: ABdhPJwzc8Bo3yQZy0zHTPtuY0RXeQo+X9BpX8xL6qrPlR+iYaCnn0fD7g7FalokrLkDRRHwImEJLPllBxUO+I/e9jk=
-X-Received: by 2002:a7b:c929:: with SMTP id h9mr3588261wml.48.1619622317994;
- Wed, 28 Apr 2021 08:05:17 -0700 (PDT)
+        Wed, 28 Apr 2021 11:07:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619622401;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zftD9DhX6kilajc1JR4rVj986eWNpAry/j1BY289hak=;
+        b=hgFD573rUh+oesLvdXbzGIy/8q6kPzFSpBuHxo+WSR9nQEfRCck1GW3T+CyF7fEZivn76B
+        e7m+blkffwg9ZqGzr8q7tpTRBISxX0O4JBC4NSS/SgWOHNftzsDFTawcrP/f8SnihnAWgR
+        mrlF2kcrPdXzuG4+oMvDrqVAF+yqcFE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-527-RkfH_XnQM12aZfppyhR3bA-1; Wed, 28 Apr 2021 11:06:35 -0400
+X-MC-Unique: RkfH_XnQM12aZfppyhR3bA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5440B804030;
+        Wed, 28 Apr 2021 15:06:31 +0000 (UTC)
+Received: from redhat.com (ovpn-113-225.phx2.redhat.com [10.3.113.225])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E72AD687FF;
+        Wed, 28 Apr 2021 15:06:25 +0000 (UTC)
+Date:   Wed, 28 Apr 2021 09:06:25 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210428090625.5a05dae8@redhat.com>
+In-Reply-To: <MWHPR11MB188625137D5B7423822396C88C409@MWHPR11MB1886.namprd11.prod.outlook.com>
+References: <20210421162307.GM1370958@nvidia.com>
+        <20210421105451.56d3670a@redhat.com>
+        <20210421175203.GN1370958@nvidia.com>
+        <20210421133312.15307c44@redhat.com>
+        <20210421230301.GP1370958@nvidia.com>
+        <MWHPR11MB1886188698A6E20338196F788C469@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210422121020.GT1370958@nvidia.com>
+        <MWHPR11MB1886E688D2128C98A1F240B18C459@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210423114944.GF1370958@nvidia.com>
+        <MWHPR11MB18861FE6982D73AFBF173E048C439@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210426123817.GQ1370958@nvidia.com>
+        <MWHPR11MB188625137D5B7423822396C88C409@MWHPR11MB1886.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-References: <20210416023536.168632-1-zhengjun.xing@linux.intel.com>
- <7b7a1c09-3d16-e199-15d2-ccea906d4a66@linux.intel.com> <YIGuvh70JbE1Cx4U@google.com>
- <YIlNKds8klSiOalo@dhcp22.suse.cz>
-In-Reply-To: <YIlNKds8klSiOalo@dhcp22.suse.cz>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Wed, 28 Apr 2021 09:05:06 -0600
-Message-ID: <CAOUHufYXzYs__HSgXC2NfYJGHQzZEE6C+AZ78cvNbrZk_VyKxQ@mail.gmail.com>
-Subject: Re: [RFC] mm/vmscan.c: avoid possible long latency caused by too_many_isolated()
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Shakeel Butt <shakeelb@google.com>, wfg@mail.ustc.edu.cn,
-        Rik van Riel <riel@surriel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 5:55 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> [Cc Rik and Andrea]
->
-> On Thu 22-04-21 11:13:34, Yu Zhao wrote:
-> > On Thu, Apr 22, 2021 at 04:36:19PM +0800, Xing Zhengjun wrote:
-> > > Hi,
-> > >
-> > >    In the system with very few file pages (nr_active_file + nr_inacti=
-ve_file
-> > > < 100), it is easy to reproduce "nr_isolated_file > nr_inactive_file"=
-,  then
-> > > too_many_isolated return true, shrink_inactive_list enter "msleep(100=
-)", the
-> > > long latency will happen.
-> > >
-> > > The test case to reproduce it is very simple: allocate many huge page=
-s(near
-> > > the DRAM size), then do free, repeat the same operation many times.
-> > > In the test case, the system with very few file pages (nr_active_file=
- +
-> > > nr_inactive_file < 100), I have dumpped the numbers of
-> > > active/inactive/isolated file pages during the whole test(see in the
-> > > attachments) , in shrink_inactive_list "too_many_isolated" is very ea=
-sy to
-> > > return true, then enter "msleep(100)",in "too_many_isolated" sc->gfp_=
-mask is
-> > > 0x342cca ("_GFP_IO" and "__GFP_FS" is masked) , it is also very easy =
-to
-> > > enter =E2=80=9Cinactive >>=3D3=E2=80=9D, then =E2=80=9Cisolated > ina=
-ctive=E2=80=9D will be true.
-> > >
-> > > So I  have a proposal to set a threshold number for the total file pa=
-ges to
-> > > ignore the system with very few file pages, and then bypass the 100ms=
- sleep.
-> > > It is hard to set a perfect number for the threshold, so I just give =
-an
-> > > example of "256" for it.
-> > >
-> > > I appreciate it if you can give me your suggestion/comments. Thanks.
-> >
-> > Hi Zhengjun,
-> >
-> > It seems to me using the number of isolated pages to keep a lid on
-> > direct reclaimers is not a good solution. We shouldn't keep going
-> > that direction if we really want to fix the problem because migration
-> > can isolate many pages too, which in turn blocks page reclaim.
-> >
-> > Here is something works a lot better. Please give it a try. Thanks.
->
-> O do have a very vague recollection that number of reclaimers used to be
-> a criterion in very old days and it has proven to be quite bad in the
-> end. I am sorry but I do not have an reference at hands and do not have
-> time to crawl git history. Maybe Rik/Andrea will remember details.
+On Wed, 28 Apr 2021 06:34:11 +0000
+"Tian, Kevin" <kevin.tian@intel.com> wrote:
 
-Well, I found nothing.
+> > From: Jason Gunthorpe <jgg@nvidia.com>
+> > Sent: Monday, April 26, 2021 8:38 PM
+> >   
+> [...]
+> > > Want to hear your opinion for one open here. There is no doubt that
+> > > an ioasid represents a HW page table when the table is constructed by
+> > > userspace and then linked to the IOMMU through the bind/unbind
+> > > API. But I'm not very sure about whether an ioasid should represent
+> > > the exact pgtable or the mapping metadata when the underlying
+> > > pgtable is indirectly constructed through map/unmap API. VFIO does
+> > > the latter way, which is why it allows multiple incompatible domains
+> > > in a single container which all share the same mapping metadata.  
+> > 
+> > I think VFIO's map/unmap is way too complex and we know it has bad
+> > performance problems.  
+> 
+> Can you or Alex elaborate where the complexity and performance problem
+> locate in VFIO map/umap? We'd like to understand more detail and see how 
+> to avoid it in the new interface.
 
-> The existing throttling mechanism is quite far from optimal but it aims
-> at handling close to OOM situations where effectivelly a large part of
-> the existing LRUs can be already isolated. We already have a retry
-> logic which is LRU aware in the page allocator
-> (should_reclaim_retry). The logic would have to be extended but that
-> sounds like a better fit for the back off to me.
->
-> > diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> > index 507d216610bf2..9a09f7e76f6b8 100644
-> > --- a/include/linux/mmzone.h
-> > +++ b/include/linux/mmzone.h
-> > @@ -951,6 +951,8 @@ typedef struct pglist_data {
-> >
-> >       /* Fields commonly accessed by the page reclaim scanner */
-> >
-> > +     atomic_t nr_reclaimers;
-> > +
-> >       /*
-> >        * NOTE: THIS IS UNUSED IF MEMCG IS ENABLED.
-> >        *
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index 1c080fafec396..f7278642290a6 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -1786,43 +1786,6 @@ int isolate_lru_page(struct page *page)
-> >       return ret;
-> >  }
-> >
-> > -/*
-> > - * A direct reclaimer may isolate SWAP_CLUSTER_MAX pages from the LRU =
-list and
-> > - * then get rescheduled. When there are massive number of tasks doing =
-page
-> > - * allocation, such sleeping direct reclaimers may keep piling up on e=
-ach CPU,
-> > - * the LRU list will go small and be scanned faster than necessary, le=
-ading to
-> > - * unnecessary swapping, thrashing and OOM.
-> > - */
-> > -static int too_many_isolated(struct pglist_data *pgdat, int file,
-> > -             struct scan_control *sc)
-> > -{
-> > -     unsigned long inactive, isolated;
-> > -
-> > -     if (current_is_kswapd())
-> > -             return 0;
-> > -
-> > -     if (!writeback_throttling_sane(sc))
-> > -             return 0;
-> > -
-> > -     if (file) {
-> > -             inactive =3D node_page_state(pgdat, NR_INACTIVE_FILE);
-> > -             isolated =3D node_page_state(pgdat, NR_ISOLATED_FILE);
-> > -     } else {
-> > -             inactive =3D node_page_state(pgdat, NR_INACTIVE_ANON);
-> > -             isolated =3D node_page_state(pgdat, NR_ISOLATED_ANON);
-> > -     }
-> > -
-> > -     /*
-> > -      * GFP_NOIO/GFP_NOFS callers are allowed to isolate more pages, s=
-o they
-> > -      * won't get blocked by normal direct-reclaimers, forming a circu=
-lar
-> > -      * deadlock.
-> > -      */
-> > -     if ((sc->gfp_mask & (__GFP_IO | __GFP_FS)) =3D=3D (__GFP_IO | __G=
-FP_FS))
-> > -             inactive >>=3D 3;
-> > -
-> > -     return isolated > inactive;
-> > -}
-> > -
-> >  /*
-> >   * move_pages_to_lru() moves pages from private @list to appropriate L=
-RU list.
-> >   * On return, @list is reused as a list of pages to be freed by the ca=
-ller.
-> > @@ -1924,19 +1887,6 @@ shrink_inactive_list(unsigned long nr_to_scan, s=
-truct lruvec *lruvec,
-> >       struct pglist_data *pgdat =3D lruvec_pgdat(lruvec);
-> >       bool stalled =3D false;
-> >
-> > -     while (unlikely(too_many_isolated(pgdat, file, sc))) {
-> > -             if (stalled)
-> > -                     return 0;
-> > -
-> > -             /* wait a bit for the reclaimer. */
-> > -             msleep(100);
-> > -             stalled =3D true;
-> > -
-> > -             /* We are about to die and free our memory. Return now. *=
-/
-> > -             if (fatal_signal_pending(current))
-> > -                     return SWAP_CLUSTER_MAX;
-> > -     }
-> > -
-> >       lru_add_drain();
-> >
-> >       spin_lock_irq(&lruvec->lru_lock);
-> > @@ -3302,6 +3252,7 @@ static bool throttle_direct_reclaim(gfp_t gfp_mas=
-k, struct zonelist *zonelist,
-> >  unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
-> >                               gfp_t gfp_mask, nodemask_t *nodemask)
-> >  {
-> > +     int nr_cpus;
-> >       unsigned long nr_reclaimed;
-> >       struct scan_control sc =3D {
-> >               .nr_to_reclaim =3D SWAP_CLUSTER_MAX,
-> > @@ -3334,8 +3285,17 @@ unsigned long try_to_free_pages(struct zonelist =
-*zonelist, int order,
-> >       set_task_reclaim_state(current, &sc.reclaim_state);
-> >       trace_mm_vmscan_direct_reclaim_begin(order, sc.gfp_mask);
-> >
-> > +     nr_cpus =3D current_is_kswapd() ? 0 : num_online_cpus();
-> > +     while (nr_cpus && !atomic_add_unless(&pgdat->nr_reclaimers, 1, nr=
-_cpus)) {
-> > +             if (schedule_timeout_killable(HZ / 10))
-> > +                     return SWAP_CLUSTER_MAX;
-> > +     }
-> > +
-> >       nr_reclaimed =3D do_try_to_free_pages(zonelist, &sc);
-> >
-> > +     if (nr_cpus)
-> > +             atomic_dec(&pgdat->nr_reclaimers);
-> > +
-> >       trace_mm_vmscan_direct_reclaim_end(nr_reclaimed);
-> >       set_task_reclaim_state(current, NULL);
->
-> This will surely break any memcg direct reclaim.
 
-Mind elaborating how it will "surely" break any memcg direct reclaim?
+The map/unmap interface is really only good for long lived mappings,
+the overhead is too high for things like vIOMMU use cases or any case
+where the mapping is intended to be dynamic.  Userspace drivers must
+make use of a long lived buffer mapping in order to achieve performance.
+
+The mapping and unmapping granularity has been a problem as well,
+type1v1 allowed arbitrary unmaps to bisect the original mapping, with
+the massive caveat that the caller relies on the return value of the
+unmap to determine what was actually unmapped because the IOMMU use of
+superpages is transparent to the caller.  This led to type1v2 that
+simply restricts the user to avoid ever bisecting mappings.  That still
+leaves us with problems for things like virtio-mem support where we
+need to create initial mappings with a granularity that allows us to
+later remove entries, which can prevent effective use of IOMMU
+superpages.
+
+Locked page accounting has been another constant issue.  We perform
+locked page accounting at the container level, where each container
+accounts independently.  A user may require multiple containers, the
+containers may pin the same physical memory, but be accounted against
+the user once per container.
+
+Those are the main ones I can think of.  It is nice to have a simple
+map/unmap interface, I'd hope that a new /dev/ioasid interface wouldn't
+raise the barrier to entry too high, but the user needs to have the
+ability to have more control of their mappings and locked page
+accounting should probably be offloaded somewhere.  Thanks,
+
+Alex
+
