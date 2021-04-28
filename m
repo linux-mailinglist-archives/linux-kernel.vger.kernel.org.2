@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65FE736DFB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 21:39:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4A536DFB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 21:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234417AbhD1TjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 15:39:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46102 "EHLO
+        id S241944AbhD1TjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 15:39:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241864AbhD1Ti7 (ORCPT
+        with ESMTP id S241844AbhD1Ti6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 15:38:59 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC7AC06138C
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 12:38:06 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id z19-20020a63e1130000b02901fcdcf0c5a3so21975086pgh.19
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 12:38:06 -0700 (PDT)
+        Wed, 28 Apr 2021 15:38:58 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73EC9C06138E
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 12:38:08 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id 99-20020a0c80ec0000b029017de514d56fso28892569qvb.17
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 12:38:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=y5TtNvQVcJDv9Z7T1noOFyA3ZEWB7AcnNOctxeDgCSw=;
-        b=Ay+VJZ4ahiyvX7cnAJy9QBvCOp0B2pagEvWI8fx2RuBj7dTYB362WFaPfyyrx5f7Kh
-         QMhmUSVQBU7KLTD2lIjkSGO+3Fb5HkHETqAb3FNjeCbtU8OquS7XkNpgAWzqMXoV7arY
-         DpjTkjTGSi3rb8BI1p4nYnYrBllrUtQwiU+m7QHSRy7c2f/COKdsJ/7GS19xDtEpJLI+
-         CWuN8iRf1IvqIPdafAVVTpT398O89OMISnTnJS86FZQZQAfSakOreMxb29iRZRFrkMuZ
-         zzLt0FP3ukRcKzJGBQydpkYQWFVuyRdYRbx3vSxcCGeZpK7CkKkNF5uopTiDM5/dbwMO
-         ISUg==
+        bh=Xmnri5WQ2+orpUoy8Yah+jBeLizzxPOC9TaH0yNsUEw=;
+        b=oUpZGl/Vd2qkyf4SEL16T8TOpKEn5WhjXx4VgQpa0lSAh9RnrVFX6/2Imp5MadfmY5
+         1+VzIv5fC88MCSeyRjIc3T1M6SS80CR4qys0B6+MC5eN/YViCPyMVix1ipyDoh7zdOmu
+         Vlz11OlwUpHnSBi5+7GZOOuBr259U6xnle8I/FXd43fuYu4zx+4RnttJHuhowMMMovMV
+         +CH0346wj3qt9NQolRPCggW8BNYhgge1e8Cj4Gp7xS3KV1iZmbOQGYJVjWmYjnModCvc
+         XpDbwO+U9EjhNfN3LadxEY92OYMKdG2BAZR/V//v94Ui5DdMLjRzwn8cBtY1VhPbhsOl
+         4mrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=y5TtNvQVcJDv9Z7T1noOFyA3ZEWB7AcnNOctxeDgCSw=;
-        b=nFl8cgUls0J+hEL5ZlWpIV22zSG3CL3rrjVQ1zKnwKpWB6eT6BFnbBSnz/BTpfep6u
-         4bLFkGA5p38xgMrYwPMkGTQvURIjBn4zytE+rZElsV+pzliIEP+wdBjg+mPHtAjnqQ6N
-         /vOuNV8ilofJnSubnBBiIrQAP93kDJWa3jC340uejA4z1+WhqfzTsatN+rQE7ny/18/y
-         a4e0/wkuvspmnqxfyp40j50IwC0q3pysFFhsEfUkhIGgBBPqOhq303gRdRn4tJMxYrzd
-         ckTYfVkgt0xWySmZ1LodnH9xr5f/c1B/shGjSCCstUTty9sq9Yb2az+HaHoTFqdUm/nk
-         sAbQ==
-X-Gm-Message-State: AOAM533xywV6cJKHuJztv7sTSgxltt3Zk88sEe05/50XEjecL4hPFUtt
-        iGbaGe376a2pqjZUpxgUn0QXaROvONFrJg==
-X-Google-Smtp-Source: ABdhPJw+Qnh815VDtDsA5CtP6S9BYBw6Zjzt/YgEpIlEYD2r+/tUmKiBWwxygl6tYBp6dUgQx+PJdyhNss9n2g==
+        bh=Xmnri5WQ2+orpUoy8Yah+jBeLizzxPOC9TaH0yNsUEw=;
+        b=ogOOV3yhB/sYwHMlJWgFPbO5+/XwD2vfoAc5L7IFGC8OQDsk4/tad1Xa1ZUTTxyG72
+         jU3scOk6QxYgWixEjxSe/v259s+oMldA71lu/0EThSDazxTlhh1oQKBkJ+tS5B9dpz2x
+         rmYnKDDgEbOoUaQAfU+PPa96esMnVNxw6kR1eU9V3y9CK7yr9w3AIwcJQTBQcmrF4lQN
+         VQQ3jHvpKzt5/tbtcXOJkbuBPMCYeZx4ImPwXS52LJPb+/hcP29R5Or7A5G7j+6dNx3e
+         heEgSXK4DA/5hDBpsVb0UOxf5da37AQfaVeeT538QcGZePpPAsCiDJxCnVP666Xem6mk
+         R3mQ==
+X-Gm-Message-State: AOAM532d88uWYBDPHDbdzlOg1yhPdsel+vzULGWBG14mRsZGIb6huTrJ
+        +AlnNmQP3Vq5SmSYytsYY0oYBnhfAYvXQw==
+X-Google-Smtp-Source: ABdhPJyHfYEnIMTt5sC77fB90YETDOON4FUQfvWdf6od6TH9hQ03ldd2gzkcG2ATyN/FvIqgivRA84an1WMgIw==
 X-Received: from ricarkol2.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:62fe])
- (user=ricarkol job=sendgmr) by 2002:a17:90a:a60b:: with SMTP id
- c11mr34343701pjq.125.1619638686001; Wed, 28 Apr 2021 12:38:06 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 12:37:52 -0700
+ (user=ricarkol job=sendgmr) by 2002:a05:6214:258d:: with SMTP id
+ fq13mr9099903qvb.50.1619638687593; Wed, 28 Apr 2021 12:38:07 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 12:37:53 -0700
 In-Reply-To: <20210428193756.2110517-1-ricarkol@google.com>
-Message-Id: <20210428193756.2110517-3-ricarkol@google.com>
+Message-Id: <20210428193756.2110517-4-ricarkol@google.com>
 Mime-Version: 1.0
 References: <20210428193756.2110517-1-ricarkol@google.com>
 X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-Subject: [PATCH v2 2/6] tools headers x86: Update bitsperlong.h in tools
+Subject: [PATCH v2 3/6] x86/cpu: Expose CPUID regs, leaf and index definitions
+ to tools
 From:   Ricardo Koller <ricarkol@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     kvm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
@@ -76,33 +77,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update uapi/asm-generic/bitsperlong.h with the latest version in the
-kernel. Here is how KVM selftests is currently including it:
+Move cpuid_regs, cpuid_regs_idx, and cpuid_leafs out of their
+'#ifdef __KERNEL__' guards so that KVM selftests can reuse the
+definitions in future patches.  Move cpuid_regs and cpuid_regs_idx from
+processor.h to cpufeature.h to avoid blasting processor.h with several
+'#ifdefs'.
 
-  tools/testing/selftests/kvm/lib/elf.c:#include <linux/elf.h>
-  . ../../../../usr/include/linux/elf.h
-  .. ../../../../tools/include/linux/types.h
-  ... ../../../../usr/include/asm/types.h
-  .... ../../../../usr/include/asm-generic/types.h
-  ..... ../../../../usr/include/asm-generic/int-ll64.h
-  ...... ../../../../usr/include/asm/bitsperlong.h
-  ....... ../../../../tools/include/asm-generic/bitsperlong.h
-  ........ ../../../../tools/include/uapi/asm-generic/bitsperlong.h
-
+Suggested-by: Sean Christopherson <seanjc@google.com>
 Signed-off-by: Ricardo Koller <ricarkol@google.com>
 ---
- tools/include/uapi/asm-generic/bitsperlong.h | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/events/intel/pt.c        |  1 +
+ arch/x86/include/asm/cpufeature.h | 23 ++++++++++++++++++-----
+ arch/x86/include/asm/processor.h  | 11 -----------
+ arch/x86/kernel/cpu/scattered.c   |  2 +-
+ arch/x86/kernel/cpuid.c           |  2 +-
+ 5 files changed, 21 insertions(+), 18 deletions(-)
 
-diff --git a/tools/include/uapi/asm-generic/bitsperlong.h b/tools/include/uapi/asm-generic/bitsperlong.h
-index 23e6c416b85f..693d9a40eb7b 100644
---- a/tools/include/uapi/asm-generic/bitsperlong.h
-+++ b/tools/include/uapi/asm-generic/bitsperlong.h
-@@ -1,3 +1,4 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
- #ifndef _UAPI__ASM_GENERIC_BITS_PER_LONG
- #define _UAPI__ASM_GENERIC_BITS_PER_LONG
+diff --git a/arch/x86/events/intel/pt.c b/arch/x86/events/intel/pt.c
+index e94af4a54d0d..882b1478556e 100644
+--- a/arch/x86/events/intel/pt.c
++++ b/arch/x86/events/intel/pt.c
+@@ -21,6 +21,7 @@
+ #include <asm/io.h>
+ #include <asm/intel_pt.h>
+ #include <asm/intel-family.h>
++#include <asm/cpufeature.h>
  
+ #include "../perf_event.h"
+ #include "pt.h"
+diff --git a/arch/x86/include/asm/cpufeature.h b/arch/x86/include/asm/cpufeature.h
+index 1728d4ce5730..22458ab5aac4 100644
+--- a/arch/x86/include/asm/cpufeature.h
++++ b/arch/x86/include/asm/cpufeature.h
+@@ -2,12 +2,19 @@
+ #ifndef _ASM_X86_CPUFEATURE_H
+ #define _ASM_X86_CPUFEATURE_H
+ 
+-#include <asm/processor.h>
++#include <linux/types.h>
+ 
+-#if defined(__KERNEL__) && !defined(__ASSEMBLY__)
++#ifndef __ASSEMBLY__
++struct cpuid_regs {
++	u32 eax, ebx, ecx, edx;
++};
+ 
+-#include <asm/asm.h>
+-#include <linux/bitops.h>
++enum cpuid_regs_idx {
++	CPUID_EAX = 0,
++	CPUID_EBX,
++	CPUID_ECX,
++	CPUID_EDX,
++};
+ 
+ enum cpuid_leafs
+ {
+@@ -32,6 +39,11 @@ enum cpuid_leafs
+ 	CPUID_7_EDX,
+ 	CPUID_8000_001F_EAX,
+ };
++#ifdef __KERNEL__
++
++#include <asm/processor.h>
++#include <asm/asm.h>
++#include <linux/bitops.h>
+ 
+ #ifdef CONFIG_X86_FEATURE_NAMES
+ extern const char * const x86_cap_flags[NCAPINTS*32];
+@@ -240,5 +252,6 @@ static __always_inline bool _static_cpu_has(u16 bit)
+ #define CPU_FEATURE_TYPEVAL		boot_cpu_data.x86_vendor, boot_cpu_data.x86, \
+ 					boot_cpu_data.x86_model
+ 
+-#endif /* defined(__KERNEL__) && !defined(__ASSEMBLY__) */
++#endif /* defined(__KERNEL__) */
++#endif /* !defined(__ASSEMBLY__) */
+ #endif /* _ASM_X86_CPUFEATURE_H */
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index f1b9ed5efaa9..1d355d2a6e4e 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -142,17 +142,6 @@ struct cpuinfo_x86 {
+ 	unsigned		initialized : 1;
+ } __randomize_layout;
+ 
+-struct cpuid_regs {
+-	u32 eax, ebx, ecx, edx;
+-};
+-
+-enum cpuid_regs_idx {
+-	CPUID_EAX = 0,
+-	CPUID_EBX,
+-	CPUID_ECX,
+-	CPUID_EDX,
+-};
+-
+ #define X86_VENDOR_INTEL	0
+ #define X86_VENDOR_CYRIX	1
+ #define X86_VENDOR_AMD		2
+diff --git a/arch/x86/kernel/cpu/scattered.c b/arch/x86/kernel/cpu/scattered.c
+index 21d1f062895a..bcbcda1e329b 100644
+--- a/arch/x86/kernel/cpu/scattered.c
++++ b/arch/x86/kernel/cpu/scattered.c
+@@ -6,7 +6,7 @@
+ 
+ #include <asm/memtype.h>
+ #include <asm/apic.h>
+-#include <asm/processor.h>
++#include <asm/cpufeature.h>
+ 
+ #include "cpu.h"
+ 
+diff --git a/arch/x86/kernel/cpuid.c b/arch/x86/kernel/cpuid.c
+index 6f7b8cc1bc9f..23e67220445b 100644
+--- a/arch/x86/kernel/cpuid.c
++++ b/arch/x86/kernel/cpuid.c
+@@ -37,7 +37,7 @@
+ #include <linux/gfp.h>
+ #include <linux/completion.h>
+ 
+-#include <asm/processor.h>
++#include <asm/cpufeature.h>
+ #include <asm/msr.h>
+ 
+ static struct class *cpuid_class;
 -- 
 2.31.1.498.g6c1eba8ee3d-goog
 
