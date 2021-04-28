@@ -2,95 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1808236DAA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E0C36D9FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238887AbhD1O6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 10:58:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36356 "EHLO mail.kernel.org"
+        id S240268AbhD1OxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 10:53:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240457AbhD1OyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 10:54:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B45F961943;
-        Wed, 28 Apr 2021 14:52:44 +0000 (UTC)
+        id S240259AbhD1OxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 10:53:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3322161440
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 14:52:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619621565;
-        bh=uJQR0czm+DeAW2PWQeBvZ4Rvzd+S5i8+90myFebensI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gd0RWjwESYvChE/vXJCMbgMdur/zgpmsndv+U7m1KPFsydIARd9u/rGZfIxnlVWAK
-         dEC37mB/No0AtlFC4lrWsscAwp8/zNCRUShMCT9rLYXvM5lw01qGK7jOhujoyJC/Vr
-         /k66J5MVQ/fBrmTq2ao4mLnRs/Z/AJPnOvR3Z7rJnNTPIFRXy74874ksxc1UiQxncJ
-         Ky6bALQZhCk2CSmQZYAazp9dOf8L+iqw9CvSwhw40Ft4DLVJ8oIV6stXFrGcoYqxw5
-         ilknZ4+VUlkH7MlSRyNF6zFpOWMQQZT2E1BxZ4PXQA9m/3aw5ghLONpdS8tV9EFPn1
-         Q5rn/6+Bh6vBQ==
-Received: by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1lblYR-001DsL-7K; Wed, 28 Apr 2021 16:52:43 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jacob Chen <jacob-chen@iotwrt.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org
-Subject: [PATCH v4 57/79] media: rockchip/rga: use pm_runtime_resume_and_get()
-Date:   Wed, 28 Apr 2021 16:52:18 +0200
-Message-Id: <cf0f0cb266c8b552f03583590a3b02a56f751c79.1619621413.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1619621413.git.mchehab+huawei@kernel.org>
-References: <cover.1619621413.git.mchehab+huawei@kernel.org>
+        s=k20201202; t=1619621553;
+        bh=v9MXjcMFDkwGRxGtKjG0QxDDhk6y4//cm0KjKwV14/0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KRG/4bXmqOpbEk2St/DRgo26OHKoEpvaJMcORuhBhJnAKSJO0hf22cyOzkqsqg7XJ
+         NMBdrJ7AZp2Ifo59fj4Vk9u7RorERhLrwUapTwJLqqzV3IGaWJL5G06xIuGiogYHET
+         b532Nv7EFUmxnIklw4vgXoHXRvRp5YuXx5u/MrA917KjaLWZ05kn65qG+o8QD3hwhg
+         x0luXKQvpp1LpHfDmnvy1qm4DrsITXKKm6eRWgnsFuWGt4lA/Uv4+4Igr+o7FGb+Tg
+         fN6BEMDxbs2tA9WFGcVPAO/4Qop+TNJjVaW3vlEdo0PmXfueeKeiWGCaWw9b1sbzHz
+         kmbBpzDOXP1LQ==
+Received: by mail-ed1-f47.google.com with SMTP id g14so14898577edy.6
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 07:52:33 -0700 (PDT)
+X-Gm-Message-State: AOAM532mM5v3J1cXkTmpI+rrUwajL1E4liSa438EGicM1/pMIhhp1+Eu
+        TlX5Ufv109aEr7B40nzq9GZQDAF36GyHxvqlCwaGBA==
+X-Google-Smtp-Source: ABdhPJz+QIzKaPnT4DT6hm809Ge+488Ygp48T6Uu+3gaGnaUVYy9et+z5f3TMrjkz6M7tyk1lUqB4cQlJnvVlzDNxh4=
+X-Received: by 2002:a05:6402:cbb:: with SMTP id cn27mr12113500edb.222.1619621551563;
+ Wed, 28 Apr 2021 07:52:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
+References: <20210427204720.25007-1-yu-cheng.yu@intel.com> <0e03c50ea05440209d620971b9db4f29@AcuMS.aculab.com>
+In-Reply-To: <0e03c50ea05440209d620971b9db4f29@AcuMS.aculab.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 28 Apr 2021 07:52:19 -0700
+X-Gmail-Original-Message-ID: <CALCETrUpZfznXzN3Ld33DMvQcHD2ACnhYf9KdP+5-xXuX_pVpA@mail.gmail.com>
+Message-ID: <CALCETrUpZfznXzN3Ld33DMvQcHD2ACnhYf9KdP+5-xXuX_pVpA@mail.gmail.com>
+Subject: Re: [PATCH v26 0/9] Control-flow Enforcement: Indirect Branch Tracking
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-added pm_runtime_resume_and_get() in order to automatically handle
-dev->power.usage_count decrement on errors.
+On Wed, Apr 28, 2021 at 7:48 AM David Laight <David.Laight@aculab.com> wrote:
+>
+> From: Yu-cheng Yu
+> > Sent: 27 April 2021 21:47
+> >
+> > Control-flow Enforcement (CET) is a new Intel processor feature that blocks
+> > return/jump-oriented programming attacks.  Details are in "Intel 64 and
+> > IA-32 Architectures Software Developer's Manual" [1].
+> ...
+>
+> Does this feature require that 'binary blobs' for out of tree drivers
+> be compiled by a version of gcc that adds the ENDBRA instructions?
+>
+> If enabled for userspace, what happens if an old .so is dynamically
+> loaded?
+> Or do all userspace programs and libraries have to have been compiled
+> with the ENDBRA instructions?
 
-Use the new API, in order to cleanup the error check logic.
+If you believe that the userspace tooling for the legacy IBT table
+actually works, then it should just work.  Yu-cheng, etc: how well
+tested is it?
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/media/platform/rockchip/rga/rga-buf.c | 3 +--
- drivers/media/platform/rockchip/rga/rga.c     | 4 +++-
- 2 files changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/media/platform/rockchip/rga/rga-buf.c b/drivers/media/platform/rockchip/rga/rga-buf.c
-index bf9a75b75083..81508ed5abf3 100644
---- a/drivers/media/platform/rockchip/rga/rga-buf.c
-+++ b/drivers/media/platform/rockchip/rga/rga-buf.c
-@@ -79,9 +79,8 @@ static int rga_buf_start_streaming(struct vb2_queue *q, unsigned int count)
- 	struct rockchip_rga *rga = ctx->rga;
- 	int ret;
- 
--	ret = pm_runtime_get_sync(rga->dev);
-+	ret = pm_runtime_resume_and_get(rga->dev);
- 	if (ret < 0) {
--		pm_runtime_put_noidle(rga->dev);
- 		rga_buf_return_buffers(q, VB2_BUF_STATE_QUEUED);
- 		return ret;
- 	}
-diff --git a/drivers/media/platform/rockchip/rga/rga.c b/drivers/media/platform/rockchip/rga/rga.c
-index 9d122429706e..bf3fd71ec3af 100644
---- a/drivers/media/platform/rockchip/rga/rga.c
-+++ b/drivers/media/platform/rockchip/rga/rga.c
-@@ -866,7 +866,9 @@ static int rga_probe(struct platform_device *pdev)
- 		goto unreg_video_dev;
- 	}
- 
--	pm_runtime_get_sync(rga->dev);
-+	ret = pm_runtime_resume_and_get(rga->dev);
-+	if (ret < 0)
-+		goto unreg_video_dev;
- 
- 	rga->version.major = (rga_read(rga, RGA_VERSION_INFO) >> 24) & 0xFF;
- 	rga->version.minor = (rga_read(rga, RGA_VERSION_INFO) >> 20) & 0x0F;
--- 
-2.30.2
-
+--Andy
