@@ -2,87 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9983636E1F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 01:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B2936E1FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 01:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231237AbhD1XH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 19:07:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35482 "EHLO
+        id S230056AbhD1XJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 19:09:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhD1XHZ (ORCPT
+        with ESMTP id S229479AbhD1XJt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 19:07:25 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B0A8C06138B;
-        Wed, 28 Apr 2021 16:06:39 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id i12so33869195qke.3;
-        Wed, 28 Apr 2021 16:06:39 -0700 (PDT)
+        Wed, 28 Apr 2021 19:09:49 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C883EC06138B
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 16:09:02 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id i3-20020a0c9c830000b02901bb3405e50aso7250352qvf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 16:09:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=9qLoG8GhVsaODXvAxNVSdW8lGghLvmtsq9pFbRDh42Y=;
-        b=TDZzd9Yjn7zwOBAE6kqvkUuPXbahUd+wVeSFZKpWbKob9fl3wAJ1WJT8p4BGmnMUK/
-         DuJ3P1fGBC08Jw+LZwhm+xfSjdPlfsmvxQvQuBj0399jIdirjmH5Q03qVy8G1VOVOR7e
-         x+vWDHkzR7HRTU0Cs5c9Oz0pVn31wfPsKtsl5akMO//OBs3Gu+hSPMeH2f9XIdV7to6c
-         NPO1MW9vE8WwwZ6C0OQOn7NHVG0s6a345neSRiErDR22MWcZUrL9IxCku2/RRZ/WZxJX
-         PFP/MuNqi9PEq5PLw2kCn6xW6s7eVR7IQq5F7JLlBilwKShwJSTAqPLknTAnXJyh2Or9
-         NF4g==
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=i1GiJbmx4c6CwH/DZDMM7LMoubeTmN2YjmWg8BjfUo4=;
+        b=t6dEc0kYwYtucEIA0MfNTqRIaZQdQr5TRyZEyQ+l4esJqNuNymiL+THr1F91O0RlLa
+         KXnWLbGLzMSgUG1QrnFRtffehJ5493CxwfktVlLKb3/Fk2O1rBVSLiocksWe+gCX6sLm
+         6GGPvkQBg5fwRJfCJ6sfvvydK1aVGcSUMhZvtCidXFWW638mbynyZ1wNQsF+16CoyD+/
+         6Wa2hkPL3YcWaIeR0Jxhy8JLLOD2tuVgiaCv0RU+DZRy5RCV5uVsA+9zWCVIuByNG6DP
+         Iq7IAVrn6M9w3BWKwW6f9VVEWg8CMHmtnFudx9AGZYE6UPzDzvliuUNtqMaSwgjWbSig
+         ptrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=9qLoG8GhVsaODXvAxNVSdW8lGghLvmtsq9pFbRDh42Y=;
-        b=bM5sn9SXhe1fUW43RNrpOTodekqbNNrDn5GLDm28oGXokjfMVgtjmn39qNlxNud8hB
-         1HMNtRsWPvHnjwr/iQ8waSr5Pyn8w54vF5lp09Ssb3auECBfxL6bhxfDHKY8ZpSgtLHM
-         7/D6GuNU7hgQnzJ/5lQBMgZV7b1crSKcPHJlZagyW/RSQkH3VDZBfNnR6SlLFqmjEHXt
-         4/D5XGd/vrIsdLLJERDb4jw3Ntxc/z+p9TSgsA/ygHxX8mD2A4lBElnD33hgWMj1ji1D
-         P6vxroxFtCK4C6gZTMVcO6QnLOjS4i5tsM1BFoTiOvW4LUFPMRl1mAPbfEpfa2jjLcGA
-         AISQ==
-X-Gm-Message-State: AOAM5304ecwhvqrB+hM3uy++5YMHyRK4f6w32fCyq6iXCpqta9u92y4f
-        ElgLDbI1B8eQyeTUQpA7O0U=
-X-Google-Smtp-Source: ABdhPJx7/CKXkBSSiNqr83HqQNA928kpne7Yz76AtLT3qadpPggSsUB4qoL9p1sjG/M1p1Qei8ubGg==
-X-Received: by 2002:a05:620a:232:: with SMTP id u18mr8411245qkm.213.1619651198317;
-        Wed, 28 Apr 2021 16:06:38 -0700 (PDT)
-Received: from ?IPv6:2601:152:4100:57e0:91c9:b195:c9a6:94c1? ([2601:152:4100:57e0:91c9:b195:c9a6:94c1])
-        by smtp.gmail.com with ESMTPSA id h62sm891040qkf.116.2021.04.28.16.06.36
-        (version=TLS1 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Wed, 28 Apr 2021 16:06:37 -0700 (PDT)
-Content-Type: text/plain; charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 7.3 \(1878.6\))
-Subject: Re: [PATCH 2/2] m68k: introduce a virtual m68k machine
-From:   Josh Juran <jjuran@gmail.com>
-In-Reply-To: <CAMuHMdUFh2W-bY5Ez1aOTZQjq0=THvmOf22JdxWoNNtFLskSzw@mail.gmail.com>
-Date:   Wed, 28 Apr 2021 19:06:10 -0400
-Cc:     Laurent Vivier <laurent@vivier.eu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Content-Transfer-Encoding: 7bit
-Message-Id: <F9FB9B1D-3B31-452D-AD67-D1C57A302B83@gmail.com>
-References: <20210323221430.3735147-1-laurent@vivier.eu> <20210323221430.3735147-3-laurent@vivier.eu> <CAMuHMdUFh2W-bY5Ez1aOTZQjq0=THvmOf22JdxWoNNtFLskSzw@mail.gmail.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-X-Mailer: Apple Mail (2.1878.6)
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=i1GiJbmx4c6CwH/DZDMM7LMoubeTmN2YjmWg8BjfUo4=;
+        b=ABF5bEJ/BzHom3ASypGh7JPovUEnZ7+AfXnZtlsPPpCy8WyqoXrjk2ICcakSYlgea4
+         ZDhlYZAVsaa+jhlkrnlH42ZH6Edy/C6zRJs+pV1jlISmgXx9NiEvoquCcbrkpt8SiFBV
+         /M/2KTB/bUQE6Wld9iwEP+NOCFy96ayULTZWQOMqbHbrY7gdVhJxOEs1rlk63YcNy6iU
+         580KxTFbJ/YfNJeT80s/5uX35YB8bcamzHDMjvwHvHhRS7VNU5tAPPgXhMWG2pxf6ncA
+         vg3rSP3p+haqZpEU8v00BtaxqQEP+Ep+WbS7Q8G3V/1Lens/YgfYdxScSOLD0ZDsLGeX
+         JmYw==
+X-Gm-Message-State: AOAM5324jTqucBWFfegwJaIEvpNgPryRDnmHVliTZiY+QGHy5s+UioZj
+        j7ac0rlpgSCqmhBTd+a+IEOGt5zzmqgZSNhqanjB
+X-Google-Smtp-Source: ABdhPJyUP7JxteYpJxt8ZDYt5abz9mFFKsb5Bqpj0SvGj2jW49PdVtIfkMUN5AUTE4HZGrOQonJJIi320UBsR0xOGPhp
+X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:ed44:e19a:52ee:e8cc])
+ (user=axelrasmussen job=sendgmr) by 2002:a0c:ebc9:: with SMTP id
+ k9mr32020308qvq.32.1619651341988; Wed, 28 Apr 2021 16:09:01 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 16:08:58 -0700
+In-Reply-To: <20210428180109.293606-1-axelrasmussen@google.com>
+Message-Id: <20210428230858.348400-1-axelrasmussen@google.com>
+Mime-Version: 1.0
+References: <20210428180109.293606-1-axelrasmussen@google.com>
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+Subject: [PATCH v2] userfaultfd: release page in error path to avoid BUG_ON
+From:   Axel Rasmussen <axelrasmussen@google.com>
+To:     Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>, Peter Xu <peterx@redhat.com>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Apr 28, 2021, at 8:04 AM, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+Consider the following sequence of events:
 
-> This can be simplified by shifting irq_pending instead of irq_bit:
-> 
->    do {
->            if (irq_pending & 1)
->                    generic_handle_irq(irq_num);
-> 
->            ++irq_num;
->            irq_pending >>= 1;
->    } while (irq_pending);
-> 
-> Unfortunately m68k doesn't have a single-instruction __ffs().
+1. Userspace issues a UFFD ioctl, which ends up calling into
+   shmem_mfill_atomic_pte(). We successfully account the blocks, we
+   shmem_alloc_page(), but then the copy_from_user() fails. We return
+   -ENOENT. We don't release the page we allocated.
+2. Our caller detects this error code, tries the copy_from_user() after
+   dropping the mmap_lock, and retries, calling back into
+   shmem_mfill_atomic_pte().
+3. Meanwhile, let's say another process filled up the tmpfs being used.
+4. So shmem_mfill_atomic_pte() fails to account blocks this time, and
+   immediately returns - without releasing the page.
 
-The 68000 and 68010 don't, but couldn't the 68020's BFFFO do the job?
+This triggers a BUG_ON in our caller, which asserts that the page
+should always be consumed, unless -ENOENT is returned.
 
-Josh
+To fix this, detect if we have such a "dangling" page when accounting
+fails, and if so, release it before returning.
+
+Fixes: cb658a453b93 ("userfaultfd: shmem: avoid leaking blocks and used blocks in UFFDIO_COPY")
+Reported-by: Hugh Dickins <hughd@google.com>
+Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+---
+ mm/shmem.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 26c76b13ad23..8def03d3f32a 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -2375,8 +2375,18 @@ static int shmem_mfill_atomic_pte(struct mm_struct *dst_mm,
+ 	pgoff_t offset, max_off;
+ 
+ 	ret = -ENOMEM;
+-	if (!shmem_inode_acct_block(inode, 1))
++	if (!shmem_inode_acct_block(inode, 1)) {
++		/*
++		 * We may have got a page, returned -ENOENT triggering a retry,
++		 * and now we find ourselves with -ENOMEM. Release the page, to
++		 * avoid a BUG_ON in our caller.
++		 */
++		if (unlikely(*pagep)) {
++			put_page(*pagep);
++			*pagep = NULL;
++		}
+ 		goto out;
++	}
+ 
+ 	if (!*pagep) {
+ 		page = shmem_alloc_page(gfp, info, pgoff);
+-- 
+2.31.1.498.g6c1eba8ee3d-goog
 
