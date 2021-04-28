@@ -2,91 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA05E36D2D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 09:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E23836D2D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 09:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235087AbhD1HN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 03:13:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59956 "EHLO mail.kernel.org"
+        id S236437AbhD1HN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 03:13:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229643AbhD1HN0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 03:13:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FB5B613DC;
-        Wed, 28 Apr 2021 07:12:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619593961;
-        bh=7v+xaRxAqtmDAUOE8Tqu0GK3pp+dZezxoCjvSINuU6w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2UDigCzqveIvyzp2iNKTR1gvty5j1OTRed0E/pO5qjzZCEpV0wAuSwtMXZKc9/i18
-         6kSrUe/ivYi0QwhgGPc1SK+BD6DAdrB1n4DDmpWCStHDLhokAN4o9/+PgMY+72cq38
-         ysppkj6P8vZWZCB3esF3rccmOKbTOBMR36/bBw/U=
-Date:   Wed, 28 Apr 2021 09:12:38 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Qiushi Wu <wu000273@umn.edu>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 048/190] Revert "net: sun: fix missing release regions in
- cas_init_one()."
-Message-ID: <YIkK5kBlqHD7nud9@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-49-gregkh@linuxfoundation.org>
+        id S229643AbhD1HNx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 03:13:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 235D4601FC;
+        Wed, 28 Apr 2021 07:13:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619593988;
+        bh=vtrlu5NLjbjl/L0tLDBVhlFvjRnFBvLZFZImEEWL/Kk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ASBSV4p3ulPv6GeE1EBbPsFhZFJ1rt+T2/fgFgVHaSSfDBmaXJ6jMnj4uIXzWZAif
+         52hCdOB9hI0jNZcosW6vQuQSbJHgqaXCtBhEreWRKeBCo+DgiGEeJpwRgwaiGKuPm0
+         iXkKeSc3++o0Zec4DrZuAjSsLmhPqysBNEeYT291HbxWt6zxxetc/7aeKcnQeD+BEs
+         MJolRy7Vb3GItE3x/agrXCYfFL/R/iYOLARwkY4nYjI2eAWvNSfiz1t6OieD5dZQ6H
+         E4vgkcykWfEKqRkIbSuQu2fRPgj0s9+E0RG1GEiT2Vb14Gz5vTM3ksc4H0KD6gsyRn
+         ClKUXZOd+KNbA==
+Date:   Wed, 28 Apr 2021 09:13:02 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH 58/78] media: exynos-gsc: use
+ pm_runtime_resume_and_get()
+Message-ID: <20210428091302.64af1e5d@coco.lan>
+In-Reply-To: <5f6088c7-c839-f097-737f-b4234c413eac@samsung.com>
+References: <cover.1619191723.git.mchehab+huawei@kernel.org>
+        <CGME20210424064556eucas1p1e89378837c377168c9782b4172e70482@eucas1p1.samsung.com>
+        <9c7d683907b9f9cf4a99f57f978671ec7f5a1dbc.1619191723.git.mchehab+huawei@kernel.org>
+        <ee7b580a-d5bc-bdbf-3efc-c9d8f43316db@samsung.com>
+        <20210427113055.745d0560@coco.lan>
+        <20210427114235.45a7b2a4@coco.lan>
+        <5f6088c7-c839-f097-737f-b4234c413eac@samsung.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-49-gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 02:58:43PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit 5a730153984dd13f82ffae93d7170d76eba204e9.
-> 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
-> 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: Qiushi Wu <wu000273@umn.edu>
-> Cc: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  drivers/net/ethernet/sun/cassini.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/sun/cassini.c b/drivers/net/ethernet/sun/cassini.c
-> index 9ff894ba8d3e..d9cdf51c5a33 100644
-> --- a/drivers/net/ethernet/sun/cassini.c
-> +++ b/drivers/net/ethernet/sun/cassini.c
-> @@ -4956,7 +4956,7 @@ static int cas_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
->  					  cas_cacheline_size)) {
->  			dev_err(&pdev->dev, "Could not set PCI cache "
->  			       "line size\n");
-> -			goto err_out_free_res;
-> +			goto err_write_cacheline;
->  		}
->  	}
->  #endif
-> @@ -5128,6 +5128,7 @@ static int cas_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
->  err_out_free_res:
->  	pci_release_regions(pdev);
->  
-> +err_write_cacheline:
->  	/* Try to restore it in case the error occurred after we
->  	 * set it.
->  	 */
-> -- 
-> 2.31.1
-> 
+Em Tue, 27 Apr 2021 13:50:44 +0200
+Sylwester Nawrocki <s.nawrocki@samsung.com> escreveu:
 
-This change looks correct to me, so I will drop the revert.
+> On 27.04.2021 11:42, Mauro Carvalho Chehab wrote:
+> > Em Tue, 27 Apr 2021 11:30:55 +0200
+> > Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+> >   
+> >> Em Tue, 27 Apr 2021 10:18:12 +0200
+> >> Sylwester Nawrocki <s.nawrocki@samsung.com> escreveu:
+> >>  
+> >>> On 24.04.2021 08:45, Mauro Carvalho Chehab wrote:    
+> >>>> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> >>>> added pm_runtime_resume_and_get() in order to automatically handle
+> >>>> dev->power.usage_count decrement on errors.
+> >>>>
+> >>>> Use the new API, in order to cleanup the error check logic.
+> >>>>
+> >>>> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> >>>> ---
+> >>>>  drivers/media/platform/exynos-gsc/gsc-core.c | 3 +--
+> >>>>  drivers/media/platform/exynos-gsc/gsc-m2m.c  | 2 +-
+> >>>>  2 files changed, 2 insertions(+), 3 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/media/platform/exynos-gsc/gsc-core.c b/drivers/media/platform/exynos-gsc/gsc-core.c
+> >>>> index 9f41c2e7097a..9d5841194f6b 100644
+> >>>> --- a/drivers/media/platform/exynos-gsc/gsc-core.c
+> >>>> +++ b/drivers/media/platform/exynos-gsc/gsc-core.c
+> >>>> @@ -1210,7 +1210,7 @@ static int gsc_remove(struct platform_device *pdev)
+> >>>>  	struct gsc_dev *gsc = platform_get_drvdata(pdev);
+> >>>>  	int i;
+> >>>>  
+> >>>> -	pm_runtime_get_sync(&pdev->dev);
+> >>>> +	pm_runtime_resume_and_get(&pdev->dev);
+> >>>>  
+> >>>>  	gsc_unregister_m2m_device(gsc);
+> >>>>  	v4l2_device_unregister(&gsc->v4l2_dev);
+> >>>> @@ -1219,7 +1219,6 @@ static int gsc_remove(struct platform_device *pdev)
+> >>>>  	for (i = 0; i < gsc->num_clocks; i++)
+> >>>>  		clk_disable_unprepare(gsc->clock[i]);
+> >>>>  
+> >>>> -	pm_runtime_put_noidle(&pdev->dev);      
+> >>>
+> >>> If we do this then the device usage count will not get decremented
+> >>> after the pm_runtime_resume_and_get() call above and after driver
+> >>> unload/load cycle it will not be possible to suspend the device.
+> >>> I wouldn't be changing anything in gsc_remove(), pm_runtime_get_sync()
+> >>> works better in that case.    
+> >>
+> >> Good point.
+> >>
+> >> Actually, I don't see any reason why to call a PM resume
+> >> function - either being pm_runtime_get_sync() or
+> >> pm_runtime_resume_and_get().
+> >>
+> >> The code there could simply be:
+> >>
+> >>     static int gsc_remove(struct platform_device *pdev)
+> >>     {
+> >>         struct gsc_dev *gsc = platform_get_drvdata(pdev);
+> >>         int i;
+> >>
+> >>         gsc_unregister_m2m_device(gsc);
+> >>         v4l2_device_unregister(&gsc->v4l2_dev);
+> >>
+> >>         vb2_dma_contig_clear_max_seg_size(&pdev->dev);
+> >>         for (i = 0; i < gsc->num_clocks; i++)
+> >>                 clk_disable_unprepare(gsc->clock[i]);
+> >>
+> >>         pm_runtime_disable(&pdev->dev);
+> >>
+> >>         dev_dbg(&pdev->dev, "%s driver unloaded\n", pdev->name);
+> >>         return 0;
+> >>     }
+> >>
+> >> Eventually also adding:
+> >> 	pm_runtime_suspended(&pdev->dev);  
+> > 
+> > In time: I actually meant:
+> > 
+> > 	pm_runtime_set_suspended(&pdev->dev);
+> > 
+> > but after double-checking the PM runtime code, it sounds to me that
+> > just calling pm_runtime_disable() would be enough. Not 100% sure
+> > here. Btw, some media drivers call it after pm_runtime_disable(),
+> > while others don't do.  
+> 
+> I think if the device is brought into suspended state (e.g. by
+> disabling clocks as above) the pm_runtime_set_suspended() call
+> should be there. IOW a following sequence: 
+> 
+> 	pm_runtime_disable(dev);
+> 	if (!pm_runtime_status_suspended(dev))
+> 		/* put device into suspended state (disable clocks, 
+> 		  voltage regulators, assert GPIOs, etc. */
+> 	pm_runtime_set_suspended(dev);
 
-greg k-h
+Not sure if this would work, as the clock framework would try
+to do things like calling clk_pm_runtime_put().
+
+Perhaps an alternative would be to just return an error if it
+can't resume PM runtime, e. g.:
+
+diff --git a/drivers/media/platform/exynos-gsc/gsc-core.c b/drivers/media/platform/exynos-gsc/gsc-core.c
+index 9f41c2e7097a..d47d02c75484 100644
+--- a/drivers/media/platform/exynos-gsc/gsc-core.c
++++ b/drivers/media/platform/exynos-gsc/gsc-core.c
+@@ -1208,9 +1208,11 @@ static int gsc_probe(struct platform_device *pdev)
+ static int gsc_remove(struct platform_device *pdev)
+ {
+        struct gsc_dev *gsc = platform_get_drvdata(pdev);
+-       int i;
++       int ret, i;
+ 
+-       pm_runtime_get_sync(&pdev->dev);
++       ret = pm_runtime_resume_and_get(&pdev->dev);
++       if (ret < 0)
++               return ret;
+ 
+        gsc_unregister_m2m_device(gsc);
+        v4l2_device_unregister(&gsc->v4l2_dev);
+
+
+Thanks,
+Mauro
