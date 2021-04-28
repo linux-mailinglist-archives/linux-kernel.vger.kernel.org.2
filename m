@@ -2,101 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D2F36D60F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 13:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41FCB36D614
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 13:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239012AbhD1LEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 07:04:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44416 "EHLO
+        id S239144AbhD1LG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 07:06:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230418AbhD1LEt (ORCPT
+        with ESMTP id S230418AbhD1LGZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 07:04:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76FB5C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 04:04:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=zxNgnu2M7GkuCzxbYYc67l1UTIAJJ8OaQJP7t4GsgZs=; b=YyMWUI9LhynBY1idJkAJ9coqw7
-        +YUlnKB8hm+9GVbxHZ1CS8lfc9i1WI6XYtY+dp+FNr6H9UskDXpIt+oamjie6Ai+ZVUS99fwFbQqQ
-        Pp47Vjrn13G1RKR2dr7MtmhAnAQEW0S+hj9p+lF4E3blotJFxlTorVAxcIqpyjf8YnBipRG4sgwxi
-        JPx2IRkxjBrbi8+iVT5kON/BBu01K0TX5sxjgsxEkAJ+jtPjYhmfuXV85UHFWDK7jMaYeir/NckpA
-        2T3JqSIeibtMGHLAmoMhJl/Z1MFkirPDaeVBq7Nf+uy2Wnax+Ltj6SmtpR9/VwfZ7jNa/cBng0tZa
-        F5SGZ0Ww==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lbhye-008BnE-9N; Wed, 28 Apr 2021 11:03:35 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 32152300091;
-        Wed, 28 Apr 2021 13:03:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CF16D2CCF1F67; Wed, 28 Apr 2021 13:03:29 +0200 (CEST)
-Date:   Wed, 28 Apr 2021 13:03:29 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Aubrey Li <aubrey.intel@gmail.com>
-Cc:     Josh Don <joshdon@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Don Hiatt <dhiatt@digitalocean.com>,
-        Paul McKenney <paulmck@kernel.org>
-Subject: Re: [PATCH 04/19] sched: Prepare for Core-wide rq->lock
-Message-ID: <YIlBASJRMHlLBivL@hirez.programming.kicks-ass.net>
-References: <20210422120459.447350175@infradead.org>
- <20210422123308.196692074@infradead.org>
- <CABk29Ntop2nX+z1bV7giG8ToR_w3f_+GYGAw+hFQ6g9rCZunmw@mail.gmail.com>
- <YIZ6ZpkrMGQ9A9x2@hirez.programming.kicks-ass.net>
- <CABk29NvicqM_c2ssYnDrEy_FPsfD5GH38rB_XHooErALOabe5g@mail.gmail.com>
- <CABk29NvaH687GfOm_b5_hJF6HBQ6fu+1hzc0GFNEMv5mj3DrUw@mail.gmail.com>
- <YIknPXxwZvq0qmId@hirez.programming.kicks-ass.net>
- <CAERHkrttLutB1yUHS=i_syQZjqWmttm8PfQeH4WkcCLQvaR64A@mail.gmail.com>
+        Wed, 28 Apr 2021 07:06:25 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC74C061574;
+        Wed, 28 Apr 2021 04:05:40 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id z16so3538334pga.1;
+        Wed, 28 Apr 2021 04:05:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=dSYE6S+BpcUBKa5NtVmSI9y2K7ZECLccftb7NzlWRZE=;
+        b=oIOW/P3gGCyaEqya8fliX+TX43gs9Q2ndvIvEnfrvXUadpI5OM4++NdTiata6lwF2z
+         mLMHZ655n1yfiZe9DI62+sYYeLXTd5Mgj8DYpq35xSamKlAmbhA1IDy4hqjrTCmffFfv
+         zT1YP0HEcPvTyOecQTG/mnHLYnrmDCzAkMW9a1Uq0+GmLqBuOB/l4y2IS8Dvpp56Jbmz
+         eDjW6pPiNunG+GP21mMjEVPR11b03FXoe2CaecVnLmi7Gi9tW7YhtEm0mscfNP7mmsdJ
+         pBzX6eEafuzoUL7NuNguVVCwHrmvTJW5hgDVZHQzJhUWVXtsz96OSaB18f5cX6U9qnl3
+         RJ8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=dSYE6S+BpcUBKa5NtVmSI9y2K7ZECLccftb7NzlWRZE=;
+        b=Fu6xG8BZ4RzIzVutIfHC8qPwVpP+VGP+qPZTpJ0VztJnyeD/K0r1xZZCo7qjultcCI
+         9LI8sPQ1muGKNgZyFS19oVroOz4BlNIH8cz+saXvnlfAhcVFKN9My+6B3u1kjjnI/8tV
+         BBOzrtOw/YzAZ7CxpoLYIGKzelzTzbdexERRnaSl75Lbckf0M5zxlLv3pYgAjLL92new
+         DbKlpRDS5yp5WKAeWPyc05lRx5/z3t8LaooC8zaJdJVvE6N5Qlsve87frCD1AWL4jluT
+         N3EL2TL0zJwFD8w1qAP4W1gsAnAH3LJuRNxuxDIE1ib34xk6cwN/Y8pXXea7N84jhbDX
+         dM4w==
+X-Gm-Message-State: AOAM531XHwMyEEvy0+TY8FGDg9TkzoFl4S6AdvrTqSmfRf1omZt/VrUD
+        hp5FR9tUKI5DSt//AA8ecVU=
+X-Google-Smtp-Source: ABdhPJz8ad6L51o3pgxkW3+IWNyWQ82AvlbD/fnyXCK4Y5OEk+0tTQ3oVCigyh9ts7CTLJvVmR1/eA==
+X-Received: by 2002:a62:d409:0:b029:27d:338:1cca with SMTP id a9-20020a62d4090000b029027d03381ccamr2689145pfh.25.1619607940314;
+        Wed, 28 Apr 2021 04:05:40 -0700 (PDT)
+Received: from localhost ([122.172.37.94])
+        by smtp.gmail.com with ESMTPSA id f18sm5749098pfk.144.2021.04.28.04.05.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 04:05:39 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 16:35:36 +0530
+From:   Anupama K Patil <anupamakpatil123@gmail.com>
+To:     Jaroslav Kysela <perex@perex.cz>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, Leon Romanovsky <leon@kernel.org>,
+        B K Karthik <bkkarthik@pesu.pes.edu>,
+        gregkh@linuxfoundation.org, kernelnewbies@kernelnewbies.org
+Subject: [PATCH] MAINTAINERS: mark isapnp as obsolete
+Message-ID: <20210428110536.edy74gsobkgtd6al@ubuntu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vgvwmq3n6vsc46qh"
 Content-Disposition: inline
-In-Reply-To: <CAERHkrttLutB1yUHS=i_syQZjqWmttm8PfQeH4WkcCLQvaR64A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 06:35:36PM +0800, Aubrey Li wrote:
-> On Wed, Apr 28, 2021 at 5:14 PM Peter Zijlstra <peterz@infradead.org> wrote:
 
-> > Ah, indeed so.. rq_lockp() could do with an assertion, not sure how to
-> > sanely do that. Anyway, double_rq_unlock() is simple enough to fix, we
-> > can simply flip the unlock()s.
-> >
-> > ( I'm suffering a cold and am really quite slow atm )
-> >
-> > How's this then?
-> >
-> > ---
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index f732642e3e09..3a534c0c1c46 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -290,6 +290,10 @@ static void sched_core_assert_empty(void)
-> >  static void __sched_core_enable(void)
-> >  {
-> >         static_branch_enable(&__sched_core_enabled);
-> > +       /*
-> > +        * Ensure raw_spin_rq_*lock*() have completed before flipping.
-> > +        */
-> > +       synchronize_sched();
-> 
-> synchronize_sched() seems no longer exist...
+--vgvwmq3n6vsc46qh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Bah.. Paul, why did that go away? I realize RCU merged in the sched and
-bh flavours, but I still find it expressive to use sync_sched() vs
-preempt_disable().
+isapnp code is very old and according to this link
+https://en.wikipedia.org/wiki/Legacy_Plug_and_Play#Specifications
+=66rom Wikipedia, even Windows Vista disabled ISA PnP by default.
 
-Anyway, just use sync_rcu().
+This change is in follow up to
+https://lore.kernel.org/lkml/20210422180322.7wlyg63kv3n2k6id@ubuntu/T/#u
+and https://lore.kernel.org/lkml/20210424194301.jmsqpycvsm7izbk3@ubuntu/T/#u
+
+Suggested-by: B K Karthik <bkkarthik@pesu.pes.edu>
+Signed-off-by: Anupama K Patil <anupamakpatil123@gmail.com>
+---
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 04e7de8c95be..215e05d93c60 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9534,7 +9534,7 @@ F:	drivers/media/radio/radio-isa*
+=20
+ ISAPNP
+ M:	Jaroslav Kysela <perex@perex.cz>
+-S:	Maintained
++S:	Obsolete
+ F:	Documentation/driver-api/isapnp.rst
+ F:	drivers/pnp/isapnp/
+ F:	include/linux/isapnp.h
+--=20
+2.25.1
+
+
+--vgvwmq3n6vsc46qh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAEBCgAdFiEEDSQZGCDcREXgcOjQtGmOOZV75b4FAmCJQXoACgkQtGmOOZV7
+5b74uAv+I+Ww6fdeCEYtqOmZqkH/uUxw9jCrzuhGxB4i2kuf+BCO5QQyWjaRde32
+Vf1BBYKkNjpjE4l8xQmWGfjKDna8C+t4MBjxM6aZt+xg5XtxmQEriSeoHMlj+C87
+1DUE66IDOxFnn5K2Wv7MPdXy24QTrPe19O3YJVUTeuQLHOZpUGvjHWvwxuL8xhgK
+PSPqCHes8ud1rP+wJd+RrtCIdNkC/TUGEEB/oeFPNiBocLys2kA1cE0TXdyVPaBG
++b9BxItUEW3FIganxoXvmQ/xf8yyducadx27TcGOEuiNLxEBwbOTpmL8hYb/Ea0F
+U2L6q4fjEDThyz2wXCe0qOAl7tE4pu9wb/vy6ctfR1ZBMDmQuXp07gU3+MiLZXhV
+jNdxa3kClq0ssN5mWYfdM61ZgF556HFNCMxGpoEcLwYQqcHEkqucsQx6c9zpNBEB
+sS0n8N5JV1P68E9S1bIZOvG+e6kskRYxaIBaYuI5YHE/OVCfbU96YJWSxWnsUZYC
+l91RsqBD
+=qVfS
+-----END PGP SIGNATURE-----
+
+--vgvwmq3n6vsc46qh--
