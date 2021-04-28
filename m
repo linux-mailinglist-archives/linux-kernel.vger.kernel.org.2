@@ -2,132 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2821C36DB32
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6008A36DB30
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233999AbhD1PH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 11:07:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28827 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232438AbhD1PH0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232781AbhD1PH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 28 Apr 2021 11:07:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619622401;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zftD9DhX6kilajc1JR4rVj986eWNpAry/j1BY289hak=;
-        b=hgFD573rUh+oesLvdXbzGIy/8q6kPzFSpBuHxo+WSR9nQEfRCck1GW3T+CyF7fEZivn76B
-        e7m+blkffwg9ZqGzr8q7tpTRBISxX0O4JBC4NSS/SgWOHNftzsDFTawcrP/f8SnihnAWgR
-        mrlF2kcrPdXzuG4+oMvDrqVAF+yqcFE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-527-RkfH_XnQM12aZfppyhR3bA-1; Wed, 28 Apr 2021 11:06:35 -0400
-X-MC-Unique: RkfH_XnQM12aZfppyhR3bA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from mail.kernel.org ([198.145.29.99]:58224 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229890AbhD1PHV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 11:07:21 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5440B804030;
-        Wed, 28 Apr 2021 15:06:31 +0000 (UTC)
-Received: from redhat.com (ovpn-113-225.phx2.redhat.com [10.3.113.225])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E72AD687FF;
-        Wed, 28 Apr 2021 15:06:25 +0000 (UTC)
-Date:   Wed, 28 Apr 2021 09:06:25 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210428090625.5a05dae8@redhat.com>
-In-Reply-To: <MWHPR11MB188625137D5B7423822396C88C409@MWHPR11MB1886.namprd11.prod.outlook.com>
-References: <20210421162307.GM1370958@nvidia.com>
-        <20210421105451.56d3670a@redhat.com>
-        <20210421175203.GN1370958@nvidia.com>
-        <20210421133312.15307c44@redhat.com>
-        <20210421230301.GP1370958@nvidia.com>
-        <MWHPR11MB1886188698A6E20338196F788C469@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <20210422121020.GT1370958@nvidia.com>
-        <MWHPR11MB1886E688D2128C98A1F240B18C459@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <20210423114944.GF1370958@nvidia.com>
-        <MWHPR11MB18861FE6982D73AFBF173E048C439@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <20210426123817.GQ1370958@nvidia.com>
-        <MWHPR11MB188625137D5B7423822396C88C409@MWHPR11MB1886.namprd11.prod.outlook.com>
-MIME-Version: 1.0
+        by mail.kernel.org (Postfix) with ESMTPSA id A44FE613B1;
+        Wed, 28 Apr 2021 15:06:36 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lbllq-009sXy-H3; Wed, 28 Apr 2021 16:06:34 +0100
+Date:   Wed, 28 Apr 2021 16:06:33 +0100
+Message-ID: <87h7jqo3d2.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     <cl@rock-chips.com>
+Cc:     heiko@sntech.de, robh+dt@kernel.org, jagan@amarulasolutions.com,
+        wens@csie.org, uwe@kleine-koenig.org, mail@david-bauer.net,
+        jbx6244@gmail.com, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
+        cnsztl@gmail.com, devicetree@vger.kernel.org,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
+        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
+        zhangqing@rock-chips.com, huangtao@rock-chips.com,
+        wim@linux-watchdog.org, linux@roeck-us.net, jamie@jamieiles.com,
+        linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH v3 09/10] arm64: dts: rockchip: add core dtsi for RK3568 SoC
+In-Reply-To: <20210428135002.22528-1-cl@rock-chips.com>
+References: <20210428134759.22076-1-cl@rock-chips.com>
+        <20210428135002.22528-1-cl@rock-chips.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: cl@rock-chips.com, heiko@sntech.de, robh+dt@kernel.org, jagan@amarulasolutions.com, wens@csie.org, uwe@kleine-koenig.org, mail@david-bauer.net, jbx6244@gmail.com, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, jensenhuang@friendlyarm.com, michael@amarulasolutions.com, cnsztl@gmail.com, devicetree@vger.kernel.org, ulf.hansson@linaro.org, linux-mmc@vger.kernel.org, gregkh@linuxfoundation.org, linux-serial@vger.kernel.org, linux-i2c@vger.kernel.org, jay.xu@rock-chips.com, shawn.lin@rock-chips.com, david.wu@rock-chips.com, zhangqing@rock-chips.com, huangtao@rock-chips.com, wim@linux-watchdog.org, linux@roeck-us.net, jamie@jamieiles.com, linux-watchdog@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Apr 2021 06:34:11 +0000
-"Tian, Kevin" <kevin.tian@intel.com> wrote:
-
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Monday, April 26, 2021 8:38 PM
-> >   
-> [...]
-> > > Want to hear your opinion for one open here. There is no doubt that
-> > > an ioasid represents a HW page table when the table is constructed by
-> > > userspace and then linked to the IOMMU through the bind/unbind
-> > > API. But I'm not very sure about whether an ioasid should represent
-> > > the exact pgtable or the mapping metadata when the underlying
-> > > pgtable is indirectly constructed through map/unmap API. VFIO does
-> > > the latter way, which is why it allows multiple incompatible domains
-> > > in a single container which all share the same mapping metadata.  
-> > 
-> > I think VFIO's map/unmap is way too complex and we know it has bad
-> > performance problems.  
+On Wed, 28 Apr 2021 14:50:02 +0100,
+<cl@rock-chips.com> wrote:
 > 
-> Can you or Alex elaborate where the complexity and performance problem
-> locate in VFIO map/umap? We'd like to understand more detail and see how 
-> to avoid it in the new interface.
+> From: Liang Chen <cl@rock-chips.com>
+> 
+> RK3568 is a high-performance and low power quad-core application processor
+> designed for personal mobile internet device and AIoT equipment. This patch
+> add basic core dtsi file for it.
+> 
+> We use scmi_clk for cortex-a55 instead of standard ARMCLK, so that
+> kernel/uboot/rtos can change cpu clk with the same code in ATF, and we will
+> enalbe a special high-performance PLL when high frequency is required. The
+> smci_clk code is in ATF, and clkid for cpu is 0, as below:
+> 
+>     cpu0: cpu@0 {
+>         device_type = "cpu";
+>         compatible = "arm,cortex-a55";
+>         reg = <0x0 0x0>;
+>         clocks = <&scmi_clk 0>;
+>     };
+> 
+> Signed-off-by: Liang Chen <cl@rock-chips.com>
+> ---
+>  .../boot/dts/rockchip/rk3568-pinctrl.dtsi     | 3111 +++++++++++++++++
+>  arch/arm64/boot/dts/rockchip/rk3568.dtsi      |  779 +++++
+>  2 files changed, 3890 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
+>  create mode 100644 arch/arm64/boot/dts/rockchip/rk3568.dtsi
 
+[...]
 
-The map/unmap interface is really only good for long lived mappings,
-the overhead is too high for things like vIOMMU use cases or any case
-where the mapping is intended to be dynamic.  Userspace drivers must
-make use of a long lived buffer mapping in order to achieve performance.
+> +	gic: interrupt-controller@fd400000 {
+> +		compatible = "arm,gic-v3";
+> +		reg = <0x0 0xfd400000 0 0x10000>, /* GICD */
+> +		      <0x0 0xfd460000 0 0xc0000>; /* GICR */
 
-The mapping and unmapping granularity has been a problem as well,
-type1v1 allowed arbitrary unmaps to bisect the original mapping, with
-the massive caveat that the caller relies on the return value of the
-unmap to determine what was actually unmapped because the IOMMU use of
-superpages is transparent to the caller.  This led to type1v2 that
-simply restricts the user to avoid ever bisecting mappings.  That still
-leaves us with problems for things like virtio-mem support where we
-need to create initial mappings with a granularity that allows us to
-later remove entries, which can prevent effective use of IOMMU
-superpages.
+If this SoC has 4 CPUs, that's 4 redistributors. Given that GIC600
+doesn't implement VLPIs, that's 128kB per redistributors. Why is GICR
+large enough for 6 CPUs here? Is that copy-pasted from another SoC?
 
-Locked page accounting has been another constant issue.  We perform
-locked page accounting at the container level, where each container
-accounts independently.  A user may require multiple containers, the
-containers may pin the same physical memory, but be accounted against
-the user once per container.
+> +		interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
+> +		interrupt-controller;
+> +		#interrupt-cells = <3>;
+> +		mbi-alias = <0x0 0xfd400000>;
+> +		mbi-ranges = <296 24>;
+> +		msi-controller;
+> +	};
 
-Those are the main ones I can think of.  It is nice to have a simple
-map/unmap interface, I'd hope that a new /dev/ioasid interface wouldn't
-raise the barrier to entry too high, but the user needs to have the
-ability to have more control of their mappings and locked page
-accounting should probably be offloaded somewhere.  Thanks,
+Glad to see that you found some spare SPIs to get MSIs going
 
-Alex
+However, the whole point of mbi-alias (aka GICA in GIC600) is to be
+different from GICD and provide some isolation via an IOMMU.  If I
+trust the TRM, if should be at 0xfd10000 in your implementation.
 
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
