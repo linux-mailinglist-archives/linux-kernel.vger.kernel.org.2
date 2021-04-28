@@ -2,88 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FF6D36D2A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 08:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2940236D2AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 08:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234373AbhD1G5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 02:57:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58864 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229643AbhD1G5o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 02:57:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1619593019; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+Tsc59MqetNg6ashY2X2omdPgZEqSVZURb8MsEroGqQ=;
-        b=ftjvMGNejqEHuMTmVZMGZhaGOvvbuv9KDapKN0EEL32JIcbP0tREQkmv6yhKetZdVQS5em
-        /istegquIOtIWaa/P0/6PKQWR7iwnaxApC1VxBE49eOgdKCw5aWG3NL2Sc/I9gJ0g9bz9R
-        PHOIsT3Fj8DezC2f/pHWpgbUwnarNKE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1A7F1AF38;
-        Wed, 28 Apr 2021 06:56:59 +0000 (UTC)
-Message-ID: <0601e45130495b152bec04eee4a50e302db4cfd2.camel@suse.com>
-Subject: Re: [PATCH v2 2/2] pci: Support "removable" attribute for PCI
- devices
-From:   Oliver Neukum <oneukum@suse.com>
-To:     David Laight <David.Laight@ACULAB.COM>,
-        "'Rafael J. Wysocki'" <rafael@kernel.org>
-Cc:     Rajat Jain <rajatja@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
-        <linux-usb@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        Rajat Jain <rajatxjain@gmail.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Dmitry Torokhov <dtor@google.com>
-Date:   Wed, 28 Apr 2021 08:56:52 +0200
-In-Reply-To: <b5e031652f144ab6accbe553566676c9@AcuMS.aculab.com>
-References: <20210424021631.1972022-1-rajatja@google.com>
-         <20210424021631.1972022-2-rajatja@google.com>
-         <d53c72949d81db9f092a9aecb49bf56b47727738.camel@suse.com>
-         <CAJZ5v0iNrSFjhmTE8K-JrO07kJon3ikhatbg0Jg2hs+x-frDJg@mail.gmail.com>
-         <79b994f2476249498797e1784f735fd7@AcuMS.aculab.com>
-         <21c6b5002c5ad36cd7fe0bb849f5eba12a614bca.camel@suse.com>
-         <b5e031652f144ab6accbe553566676c9@AcuMS.aculab.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S236259AbhD1G7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 02:59:07 -0400
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:58548 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229643AbhD1G7F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 02:59:05 -0400
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d41 with ME
+        id y6yG2400221Fzsu036yGaE; Wed, 28 Apr 2021 08:58:18 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 28 Apr 2021 08:58:18 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     gcherian@marvell.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] macvlan: Use 'hash' iterators to simplify code
+Date:   Wed, 28 Apr 2021 08:58:14 +0200
+Message-Id: <fa1b35d89a6254b3d46d9385ae6f85584138cc31.1619367130.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Dienstag, den 27.04.2021, 12:59 +0000 schrieb David Laight:
-> From: Oliver Neukum
-> > Sent: 27 April 2021 13:00
+Use 'hash_for_each_rcu' and 'hash_for_each_safe' instead of hand writing
+them. This saves some lines of code, reduce indentation and improve
+readability.
 
-> > that is true for those options, but not for the style
-> > of PCI hotplug which requires you to push a button and wait
-> > for the blinking light.
-> 
-> True, I remember some of those PCI hotplug chassis from 25 years ago.
-> ISTR we did get the removal events working (SVR4/Unixware) but I
-> don't remember the relevant chassis ever being sold.
-> In spite of the marketing hype I suspect it was only ever possible
-> to remove a completely working board and replace it with an
-> exactly equivalent one.
-> 
-> In any case those chassis are not 'surprise removal'.
-> 
-> More modern drivers are less likely to crash (and burn?) when
-> a PCI read returns ~0u.
-> But I suspect an awful lot really don't handle surprise removal
-> very well at all.
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+Compile tested only
+---
+ drivers/net/macvlan.c | 45 +++++++++++++++++--------------------------
+ 1 file changed, 18 insertions(+), 27 deletions(-)
 
-So you are saying that these systems are so rare that it should be
-handled  as special cases if at all?
-
-	Regards
-		Oliver
-
+diff --git a/drivers/net/macvlan.c b/drivers/net/macvlan.c
+index 9a9a5cf36a4b..b4f9c66e9a75 100644
+--- a/drivers/net/macvlan.c
++++ b/drivers/net/macvlan.c
+@@ -272,25 +272,22 @@ static void macvlan_broadcast(struct sk_buff *skb,
+ 	if (skb->protocol == htons(ETH_P_PAUSE))
+ 		return;
+ 
+-	for (i = 0; i < MACVLAN_HASH_SIZE; i++) {
+-		hlist_for_each_entry_rcu(vlan, &port->vlan_hash[i], hlist) {
+-			if (vlan->dev == src || !(vlan->mode & mode))
+-				continue;
++	hash_for_each_rcu(port->vlan_hash, i, vlan, hlist) {
++		if (vlan->dev == src || !(vlan->mode & mode))
++			continue;
+ 
+-			hash = mc_hash(vlan, eth->h_dest);
+-			if (!test_bit(hash, vlan->mc_filter))
+-				continue;
++		hash = mc_hash(vlan, eth->h_dest);
++		if (!test_bit(hash, vlan->mc_filter))
++			continue;
+ 
+-			err = NET_RX_DROP;
+-			nskb = skb_clone(skb, GFP_ATOMIC);
+-			if (likely(nskb))
+-				err = macvlan_broadcast_one(
+-					nskb, vlan, eth,
++		err = NET_RX_DROP;
++		nskb = skb_clone(skb, GFP_ATOMIC);
++		if (likely(nskb))
++			err = macvlan_broadcast_one(nskb, vlan, eth,
+ 					mode == MACVLAN_MODE_BRIDGE) ?:
+-				      netif_rx_ni(nskb);
+-			macvlan_count_rx(vlan, skb->len + ETH_HLEN,
+-					 err == NET_RX_SUCCESS, true);
+-		}
++			      netif_rx_ni(nskb);
++		macvlan_count_rx(vlan, skb->len + ETH_HLEN,
++				 err == NET_RX_SUCCESS, true);
+ 	}
+ }
+ 
+@@ -380,20 +377,14 @@ static void macvlan_broadcast_enqueue(struct macvlan_port *port,
+ static void macvlan_flush_sources(struct macvlan_port *port,
+ 				  struct macvlan_dev *vlan)
+ {
++	struct macvlan_source_entry *entry;
++	struct hlist_node *next;
+ 	int i;
+ 
+-	for (i = 0; i < MACVLAN_HASH_SIZE; i++) {
+-		struct hlist_node *h, *n;
+-
+-		hlist_for_each_safe(h, n, &port->vlan_source_hash[i]) {
+-			struct macvlan_source_entry *entry;
++	hash_for_each_safe(port->vlan_source_hash, i, next, entry, hlist)
++		if (entry->vlan == vlan)
++			macvlan_hash_del_source(entry);
+ 
+-			entry = hlist_entry(h, struct macvlan_source_entry,
+-					    hlist);
+-			if (entry->vlan == vlan)
+-				macvlan_hash_del_source(entry);
+-		}
+-	}
+ 	vlan->macaddr_count = 0;
+ }
+ 
+-- 
+2.30.2
 
