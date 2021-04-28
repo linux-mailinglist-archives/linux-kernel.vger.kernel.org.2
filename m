@@ -2,126 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D9F36D426
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22DC436D429
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237459AbhD1IoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 04:44:24 -0400
-Received: from mga01.intel.com ([192.55.52.88]:3498 "EHLO mga01.intel.com"
+        id S237822AbhD1Iov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 04:44:51 -0400
+Received: from mout.web.de ([217.72.192.78]:32805 "EHLO mout.web.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229643AbhD1IoW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 04:44:22 -0400
-IronPort-SDR: 4iCEf6igrdok3svtktVitXLqdM7E3hpcC6Adfe1znRKfc9gfGdishIx7xwcMbl6SHf8Lnqttv8
- 6wGz41zfyylg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9967"; a="217405963"
-X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
-   d="scan'208";a="217405963"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 01:43:38 -0700
-IronPort-SDR: sttpcSwQ4nJj1ugazyCYKIgI92nVSzcr0jm4AfSqUo9GfXaepdM9ve6UKQAJgFcUCW4+lBFx5D
- uh322Sqs4wLA==
-X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
-   d="scan'208";a="458076432"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 01:43:36 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lbfnB-007pmY-M5; Wed, 28 Apr 2021 11:43:33 +0300
-Date:   Wed, 28 Apr 2021 11:43:33 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: drivers/pinctrl/intel/pinctrl-intel.c:1663:14: warning: variable
- 'dummy' set but not used
-Message-ID: <YIkgNWRJ+9BpEtvb@smile.fi.intel.com>
-References: <202104280827.lscZW8Xg-lkp@intel.com>
+        id S229643AbhD1Ios (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 04:44:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1619599419;
+        bh=6oyXuRc/HyaQOUAoGH4BzDn08qL8+bPGEAEzFtgQee8=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=PSe8w6+iPdNb9pSML6dkoGWEONTrwTkVhRTNHqSXhblL2u2IBifLvn9TUzZ1rzZa2
+         gh5CE8fl/DCFtLiRU2E8wBh/cF8UB1Ao9IDL76ghRo7v+MaZunECFBxUYtRP4ws3HP
+         bf6iumkBTgUB00UZGGL8eGfW1aLDHpTyLcWhbYRw=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.70.1] ([46.114.137.249]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MgibW-1l5wXP28dQ-00h9An; Wed, 28
+ Apr 2021 10:43:39 +0200
+Subject: Re: [PATCH] arm64: dts: rockchip: include uhs support for rockpro64
+To:     =?UTF-8?Q?Christian_L=c3=b6hle?= <CLoehle@hyperstone.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "heiko@sntech.de" <heiko@sntech.de>,
+        "jbx6244@gmail.com" <jbx6244@gmail.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-rockchip@lists.infradead.org" 
+        <linux-rockchip@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <CWXP265MB2680938B222248792AC205F9C4419@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+ <97bcbcde-9ccf-f9cc-ef10-36cbd582825a@web.de>
+ <CWXP265MB2680159B5F44B014FA544E89C4409@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+From:   Soeren Moch <smoch@web.de>
+Message-ID: <8466ba81-7334-d23c-8496-b3d11adcd595@web.de>
+Date:   Wed, 28 Apr 2021 10:43:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202104280827.lscZW8Xg-lkp@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CWXP265MB2680159B5F44B014FA544E89C4409@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-GB
+X-Provags-ID: V03:K1:rI5NXxMS8vc1KqOWBuSEaRYXQILgcVXz4XXWfSf7usOe+o2UYL/
+ 32svAj4SutZK2NxYNKw1sudZOr7ZxroEgtTHyl7Tqn/0ui1PbL/UFv7SVuvXxF3jaDZM2S+
+ BOQV/C+lyJ8SyZisVPBFSz4nt0YTtlgHLXAvxWflWskCjndUjw2ynMaYEjwKJXWdkAtfBuD
+ MAU0eS0O+TDZxkcbvednQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Xjfoxz2hrlU=:NMfVgpSc3Ihcp8cpoROheQ
+ lZyJMrT9pvTsMigU48ZOJWkDkyH35UxgribY2Wd0KVLIHsu821/cy5EFPPpa1Cm0LjlwUpw6U
+ le88EZNz2UytA66V+U7TUWobPAP3rWSarpU1kc7BXqwgdHInQRlnwGTRaHIHsXo1dQcQL7fWy
+ m/jB0vBk1FT79RKU58c8G8V3XHydczZzTQO4+1Zagp+TLimkkCstuxoJIXC1KRqX1jTcWkYUP
+ hlrvLl1vxEd/PiQZzkS65CfUfz/aDi+0iuNiqj7BtfsT2i0JqlHGb+NKfZn2BJvjrvQI21Fja
+ kesDVlSYjeJMfjjoLsbnDEOthjN6HA15QHXfkbbVIjtABBSIPnsBnlPwLuiw6vnje5ZdOqtyS
+ Bmoj7l6FZZq8kTFg1oTNozqJVktD6lCWxjNdMCnHyOd/0lh7AVra4rJXJ8oxK83DyJN58FIOe
+ KhcwxVSDri+/IFwKImwKAoctJBjqXLq69loj97h6DwVMePLrsldoya31O4bUGXFyBiuNzeaUa
+ csuJK8CiLAOITfTSib4Aja/0087FJebnhrnEkG5vR7pBx9dVQJnZrwWFSVkfdQqdYR1DC9Pi2
+ 9JrsJFltSStnguzU20sT2eIIsGq8crD3D7UQUITbJ5QB6Dxo2sPPsBFVTr1aBSggWmiQoBjUf
+ svnSjxZtwsyxEkJZ045ydXHhFSPT/x/XFHnNIVr3CIg+Z5hF4XcMqpihKCmtavHgAT4wERtfT
+ 6prwK/JvQ0MeDL1D3JDGqk8vhfKKQinxjh9stnMeUIhVjHgsPBZCnjD8YDJy0d0+2jxZgzFAi
+ XVmsPe7anqwjcH8x/mUlAykhVS/l2xTz0O8wihDq9fYlLmxgQYhH9O60r/zeGT/1eQs7sUOhh
+ dnBzVi1GhPS/A4BfOYecsIi6r7RZo9I8Zhhxh2y3addgAFTgkPNOqfrcvjphuBaTj8ctiQgNV
+ +mDfuFmObZ3B6pZfE4PguPYaKzx9tZxVe7vy+7SVZjxccxytbvvmTfvVCKXxU3+OAutW49mO9
+ HkM9LqaQi2p7XCiJuLkLz3bv1gyKRIqRZJPfJ7Wa+zZSXmcmoUACoJkyQv6Z96AOblGDwUj98
+ M6vYH8S3zbh9WAEuHf6jJN0YMhH/RTkMFZPpzsL+IV+LirXQYsrnd1/9ALiMOxfmEQ14NJDb1
+ Rub+ZGF0L10IXDcc4G1xUVf/OaF4ybQJq2DIgIMU2EXMXiOBIUY8reSQHSrc2lELu0cYs=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc: Arnd and Nick
+On 28.04.21 08:28, Christian L=C3=B6hle wrote:
+> Oh okay, I was not aware of this issue
+> and have not encountered it yet.
+> But wouldn't it be more appropriate
+> to get u-boot to power cycle the host controller at boot?
+This is not about power-cycling the host controller. We have to
+power-cycle the SD card itself to switch it back to default speed and
+3.3V operation. This is the mode the boot ROM expects.
 
-(Seems like a clang bug)
+Unfortunately there is no separate power switch for SD card power on
+RockPro64. So we have to power-cycle the whole SoC. This obviously
+cannot be done easily after reboot in u-boot, but can be done in trusted
+firmware (TF-A, was called ATF before) at reboot. This is what I use on
+my boards, see the hack in [1]. Rockchip seems to prefer soft reset,
+maybe someone from Rockchip can comment on the exact reasons.
 
-On Wed, Apr 28, 2021 at 08:10:34AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   e359bce39d9085ab24eaa0bb0778bb5f6894144a
-> commit: 10c857f063fc63902160755a6e23fa594290c6d3 pinctrl: cherryview: Switch to use intel_pinctrl_get_soc_data()
-> date:   8 months ago
-> config: x86_64-randconfig-a005-20210426 (attached as .config)
-> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 87fc97169e7901dfe56ca0da0d92da0c02d2ef48)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install x86_64 cross compiling tool for clang build
->         # apt-get install binutils-x86-64-linux-gnu
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=10c857f063fc63902160755a6e23fa594290c6d3
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 10c857f063fc63902160755a6e23fa594290c6d3
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=x86_64 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
-> >> drivers/pinctrl/intel/pinctrl-intel.c:1663:14: warning: variable 'dummy' set but not used [-Wunused-but-set-variable]
->            const char *dummy;
->                        ^
->    1 warning generated.
-
-Seems to me a bug in clang. The variable is used to check if the body of the
-loop should be executed or not.
-
-> vim +/dummy +1663 drivers/pinctrl/intel/pinctrl-intel.c
-> 
-> a0a5f7661e1c49 Chris Chiu      2019-04-15  1656  
-> 7101e022523bfb Andy Shevchenko 2019-10-22  1657  static void intel_restore_hostown(struct intel_pinctrl *pctrl, unsigned int c,
-> 7101e022523bfb Andy Shevchenko 2019-10-22  1658  				  void __iomem *base, unsigned int gpp, u32 saved)
-> 7101e022523bfb Andy Shevchenko 2019-10-22  1659  {
-> 7101e022523bfb Andy Shevchenko 2019-10-22  1660  	const struct intel_community *community = &pctrl->communities[c];
-> 7101e022523bfb Andy Shevchenko 2019-10-22  1661  	const struct intel_padgroup *padgrp = &community->gpps[gpp];
-> 7101e022523bfb Andy Shevchenko 2019-10-22  1662  	struct device *dev = pctrl->dev;
-> d1bfd0229ec4de Andy Shevchenko 2020-06-10 @1663  	const char *dummy;
-> d1bfd0229ec4de Andy Shevchenko 2020-06-10  1664  	u32 requested = 0;
-> d1bfd0229ec4de Andy Shevchenko 2020-06-10  1665  	unsigned int i;
-> 7101e022523bfb Andy Shevchenko 2019-10-22  1666  
-> e5a4ab6a55e230 Andy Shevchenko 2020-04-13  1667  	if (padgrp->gpio_base == INTEL_GPIO_BASE_NOMAP)
-> 7101e022523bfb Andy Shevchenko 2019-10-22  1668  		return;
-> 7101e022523bfb Andy Shevchenko 2019-10-22  1669  
-> d1bfd0229ec4de Andy Shevchenko 2020-06-10  1670  	for_each_requested_gpio_in_range(&pctrl->chip, i, padgrp->gpio_base, padgrp->size, dummy)
-> d1bfd0229ec4de Andy Shevchenko 2020-06-10  1671  		requested |= BIT(i);
-> d1bfd0229ec4de Andy Shevchenko 2020-06-10  1672  
-> 942c5ea49ffbe2 Andy Shevchenko 2019-10-22  1673  	if (!intel_gpio_update_reg(base + gpp * 4, requested, saved))
-> 7101e022523bfb Andy Shevchenko 2019-10-22  1674  		return;
-> 7101e022523bfb Andy Shevchenko 2019-10-22  1675  
-> 764cfe33517f7c Andy Shevchenko 2019-10-22  1676  	dev_dbg(dev, "restored hostown %u/%u %#08x\n", c, gpp, readl(base + gpp * 4));
-> 7101e022523bfb Andy Shevchenko 2019-10-22  1677  }
-> 7101e022523bfb Andy Shevchenko 2019-10-22  1678  
-> 
-> :::::: The code at line 1663 was first introduced by commit
-> :::::: d1bfd0229ec4deb53e61f95c050b524152fd0d9e pinctrl: intel: Make use of for_each_requested_gpio_in_range()
-> 
-> :::::: TO: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> :::::: CC: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Regards,
+Soeren
 
 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+[1] https://github.com/s-moch/arm-trusted-firmware-rockpro64
+>
+>
+> From: Soeren Moch <smoch@web.de>
+> Sent: Tuesday, April 27, 2021 5:07 PM
+> To: Christian L=C3=B6hle <CLoehle@hyperstone.com>; robh+dt@kernel.org <r=
+obh+dt@kernel.org>; heiko@sntech.de <heiko@sntech.de>; jbx6244@gmail.com <=
+jbx6244@gmail.com>; devicetree@vger.kernel.org <devicetree@vger.kernel.org=
+>; linux-arm-kernel@lists.infradead.org <linux-arm-kernel@lists.infradead.=
+org>; linux-rockchip@lists.infradead.org <linux-rockchip@lists.infradead.o=
+rg>; linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>
+> Subject: Re: [PATCH] arm64: dts: rockchip: include uhs support for rockp=
+ro64
+> =C2=A0
+> On 27.04.21 08:20, Christian L?hle wrote:
+>> The DesignWare Host Controller has full UHS-I support, so use it.
+> Enabling this UHS support makes 'reboot' hang when booting the RockPro64
+> from SD card. It would work when booting from eMMC, or with a modified
+> ATF which does a power cycle on reboot.
+>
+> But for general use it is not save to enable UHS support, or did I miss
+> some recent changes?
+>
+> Regards,
+> Soeren
+>> Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
+>> ---
+>> =C2=A0 arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi | 1 +
+>> =C2=A0 1 file changed, 1 insertion(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi b/arch/=
+arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+>> index 6bff8db7d33e..d22a489ec214 100644
+>> --- a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+>> +++ b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+>> @@ -722,6 +722,7 @@ &sdmmc {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 max-frequency =3D <150000000=
+>;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pinctrl-names =3D "default";
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pinctrl-0 =3D <&sdmmc_clk &s=
+dmmc_cmd &sdmmc_bus4>;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 sd-uhs-sdr104;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vmmc-supply =3D <&vcc3v0_sd>=
+;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vqmmc-supply =3D <&vcc_sdio>=
+;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 status =3D "okay";
+> Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
+> Managing Directors: Dr. Jan Peter Berns.
+> Commercial register of local courts: Freiburg HRB381782
+>
 
