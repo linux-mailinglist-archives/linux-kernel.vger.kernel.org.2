@@ -2,97 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0817D36CFE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 02:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8A336CFEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 02:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236248AbhD1AMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 20:12:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46040 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230460AbhD1AMI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 20:12:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66CF6613FC
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 00:11:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619568684;
-        bh=792QeymoWauXvm02dswME8EM0IgqUrIwt4lsDh5wUrw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hh1aY/nRVJDxTXaHdxDLlvdGwWxonXq64a17k0SXUUjulkJuPRhSbofS8k/8pU2Hq
-         GmxucxgF64op4WwkTsRGVwVdPry4mfePPk2510OqxAwBMCxIGdndfdEFa0sxHRvEgu
-         ChQeVnsYOTlPHxCIbrDfbDNj+5WVG1cjJq84lgnUZAkahiww3Ju/qgHKCJmXbSexih
-         xJIXalxzCQS6XyUW2kcspX1DI4rGlzr9w6mUhLyJYu9KmrQ1+AaQ7iqVmsLt3Wk/0n
-         WPmYAzTeB0669ByqgDxFNgic/oAvRHu45uYCtFp57C8lKvnVXhhQelbvOTkvuHVv6e
-         yEozGZ/NE/Wfg==
-Received: by mail-ej1-f48.google.com with SMTP id r20so42216421ejo.11
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 17:11:24 -0700 (PDT)
-X-Gm-Message-State: AOAM531dGermP/ssXvVjP1JKTT8B1YljjuEnqDTxQsfIDRwp0gEia13y
-        QnfMe3VyVAOwiLdwyWEChSe9V/cZ99OH/kVCYhRJHg==
-X-Google-Smtp-Source: ABdhPJzFJ9RDRFJkSZtUvvXS0A1zmHuwfOM0Id3HacC43zVXPXjiF6rCdQLA98OO8yPKhWP6sM3Z89x3sgfd9juQ0Cw=
-X-Received: by 2002:a17:906:270a:: with SMTP id z10mr17591091ejc.204.1619568683001;
- Tue, 27 Apr 2021 17:11:23 -0700 (PDT)
+        id S237104AbhD1ARW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 20:17:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230368AbhD1ARW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 20:17:22 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32FACC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 17:16:38 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id u16so44094235oiu.7
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 17:16:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:mime-version
+         :content-disposition;
+        bh=MzkvnbEyxJtAGd0h3/FLJS51hociLz8+QPArNAOpdBc=;
+        b=GQZjjuhIGAzVdxuyQVcsuJem/BHo5SYknlF2eR7P4LKlSDbEOW01by++aD7H2fgKmY
+         07Cbz8HEF8G1lBsuw5HFAHs/ImcRpv3w6VIpsNXAf6joYcaCv4qzDHQ9gk1MlhaJJjb8
+         B0InRz8lrsoMAGZI9x5XEuHXOQIFA377wz7w1/nt9W5NsH6p3JCZWNNddmVxIe95ROfm
+         LLfApZ9mdqhqluiZSMI+rZjjmVVbXjHG7NwSnhZw8ycMHp2LXC975hcrhANQrZw75JFD
+         ynMGo7td3x9FDk9QR4Sq6a9+zOwI+JVTwv8TuUJ4Oe3iQpKplBXTHuJ1aesSZTf8D/5V
+         6feQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:mime-version:content-disposition;
+        bh=MzkvnbEyxJtAGd0h3/FLJS51hociLz8+QPArNAOpdBc=;
+        b=XJKu7kaX+W8II9xSOv6af0CPdN/uAnLui6ulDp3y3QE7ROX17huuuQW1CMzVWzCK9r
+         QKunQbPRchWGLAcuCYju5uw8sTX+Atn3erQziKtkdpinxhzP/vKOMtATZTyyKNQO2L4w
+         mBekHaoQelTGlwBRoeUtf3ODLbyQEAqroIqTdHVDpCwo038j5EkBtJ6f0BFm6fWJXsfI
+         ntgydDlS9fRitxz5P1GF0A37zp0j8rxl6od0Sxldx2cqeFm9OvgA+ZcZNRmDJ4Wy0cBX
+         t1Z6yInplXl8lSmgfuamDaRsq9zUnPyEvRVoA5iY72TSqtIscYUSjaBWyJ9A5z4B7gvU
+         xlhg==
+X-Gm-Message-State: AOAM530iLZq8+5uln0eCuUP2b0dDbm8+4o05eEfM7/5LyIg5FwPr5uAo
+        sSEYPyh7xAfb37G2PJPyb7v2c1zHoA==
+X-Google-Smtp-Source: ABdhPJw6pyIo1JB4iyLgAOR4dBJefPZ+0/jdcjiFZ4GD/+OHli7bR89qDafU8aI9XBIet6n9f8VFKQ==
+X-Received: by 2002:aca:db41:: with SMTP id s62mr18156719oig.54.1619568997369;
+        Tue, 27 Apr 2021 17:16:37 -0700 (PDT)
+Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
+        by smtp.gmail.com with ESMTPSA id x3sm394177otj.8.2021.04.27.17.16.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Apr 2021 17:16:36 -0700 (PDT)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:245c:a96e:2726:2306])
+        by serve.minyard.net (Postfix) with ESMTPSA id 844DE180001;
+        Wed, 28 Apr 2021 00:16:35 +0000 (UTC)
+Date:   Tue, 27 Apr 2021 19:16:34 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        openipmi-developer@lists.sourceforge.net
+Subject: [GIT PULL] IPMI bug fixes for 5.13
+Message-ID: <20210428001634.GB18645@minyard.net>
+Reply-To: minyard@acm.org
 MIME-Version: 1.0
-References: <f0240e15-223a-7600-4494-7a0a75155bdb@zytor.com>
- <F9F5E9D4-C1EE-455A-A6B1-4DF9D349BBAA@amacapital.net> <06a5e088-b0e6-c65e-73e6-edc740aa4256@zytor.com>
- <CALCETrW7Vu5ZU-Lv4RRG5DSGxMBJmDMqpvP7kqO16DwajproBQ@mail.gmail.com> <3626eea3-524e-4dbd-78dd-9ade5a346a08@zytor.com>
-In-Reply-To: <3626eea3-524e-4dbd-78dd-9ade5a346a08@zytor.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 27 Apr 2021 17:11:11 -0700
-X-Gmail-Original-Message-ID: <CALCETrWzL=jgnWd+6YuBo02GG8vTvsG22sXGaUQCc37vwQ6HdA@mail.gmail.com>
-Message-ID: <CALCETrWzL=jgnWd+6YuBo02GG8vTvsG22sXGaUQCc37vwQ6HdA@mail.gmail.com>
-Subject: Re: pt_regs->ax == -ENOSYS
-To:     "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 5:05 PM H. Peter Anvin <hpa@zytor.com> wrote:
->
-> On 4/27/21 4:23 PM, Andy Lutomirski wrote:
-> >
-> > I much prefer the model of saying that the bits that make sense for
-> > the syscall type (all 64 for 64-bit SYSCALL and the low 32 for
-> > everything else) are all valid.  This way there are no weird reserved
-> > bits, no weird ptrace() interactions, etc.  I'm a tiny bit concerned
-> > that this would result in a backwards compatibility issue, but not
-> > very.  This would involve changing syscall_get_nr(), but that doesn't
-> > seem so bad.  The biggest problem is that seccomp hardcoded syscall
-> > nrs to 32 bit.
-> >
-> > An alternative would be to declare that we always truncate to 32 bits,
-> > except that 64-bit SYSCALL with high bits set is an error and results
-> > in ENOSYS. The ptrace interaction there is potentially nasty.
-> >
-> > Basically, all choices here kind of suck, and I haven't done a real
-> > analysis of all the issues...
-> >
->
-> OK, I really don't understand this. The *current* way of doing it causes
-> a bunch of ugly corner conditions, including in ptrace, which this would
-> get rid of. It isn't any different than passing any other argument which
-> is an int -- in fact we have this whole machinery to deal with that subcase.
->
+The following changes since commit a74e6a014c9d4d4161061f770c9b4f98372ac778:
 
-Let's suppose we decide to truncate the syscall nr.  What would the
-actual semantics be?  Would ptrace see the truncated value in orig_ax?
- How about syscall user dispatch?  What happens if ptrace writes a
-value with high bits set to orig_ax?  Do we truncate it again?  Or do
-we say that ptrace *can't* write too large a value?
+  Merge tag 's390-5.12-3' of git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux (2021-03-10 13:15:16 -0800)
 
-For better for worse, RAX is 64 bits, orig_ax is a 64-bit field, and
-it currently has nonsensical semantics.  Redefining orig_ax as a
-32-bit field is surely possible, but doing so cleanly is not
-necessarily any easier than any other approach.  If it weren't for
-seccomp, I would say that the obviously correct answer is to just
-treat it everywhere as a 64-bit number.
+are available in the Git repository at:
 
---Andy
+  https://github.com/cminyard/linux-ipmi.git tags/for-linus-5.13-1
+
+for you to fetch changes up to 07cbd87b0416d7b6b8419b2a56bc63659de5d066:
+
+  ipmi_si: Join string literals back (2021-04-02 12:53:42 -0500)
+
+----------------------------------------------------------------
+A bunch of little cleanups
+
+Nothing major, no functional changes.
+
+----------------------------------------------------------------
+Andy Shevchenko (10):
+      ipmi_si: Switch to use platform_get_mem_or_io()
+      ipmi_si: Remove bogus err_free label
+      ipmi_si: Utilize temporary variable to hold device pointer
+      ipmi_si: Use proper ACPI macros to check error code for failures
+      ipmi_si: Introduce ipmi_panic_event_str[] array
+      ipmi_si: Reuse si_to_str[] array in ipmi_hardcode_init_one()
+      ipmi_si: Get rid of ->addr_source_cleanup()
+      ipmi_si: Use strstrip() to remove surrounding spaces
+      ipmi_si: Drop redundant check before calling put_device()
+      ipmi_si: Join string literals back
+
+Heikki Krogerus (1):
+      ipmi: Handle device properties with software node API
+
+Liguang Zhang (1):
+      ipmi:ssif: make ssif_i2c_send() void
+
+Terry Duncan (1):
+      ipmi: Refine retry conditions for getting device id
+
+ drivers/char/ipmi/ipmi_msghandler.c  | 60 +++++++++--------------
+ drivers/char/ipmi/ipmi_plat_data.c   |  2 +-
+ drivers/char/ipmi/ipmi_si.h          |  8 +--
+ drivers/char/ipmi/ipmi_si_hardcode.c | 73 ++++++++++-----------------
+ drivers/char/ipmi/ipmi_si_hotmod.c   | 24 +++------
+ drivers/char/ipmi/ipmi_si_intf.c     | 38 +++++----------
+ drivers/char/ipmi/ipmi_si_pci.c      | 22 ++-------
+ drivers/char/ipmi/ipmi_si_platform.c | 95 +++++++++++++++---------------------
+ drivers/char/ipmi/ipmi_ssif.c        | 81 ++++++++----------------------
+ 9 files changed, 137 insertions(+), 266 deletions(-)
+
