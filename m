@@ -2,121 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AECDC36DEB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 20:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5DC136DEC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 20:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243382AbhD1SCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 14:02:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241704AbhD1SCS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 14:02:18 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA212C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 11:01:31 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id v18-20020ac857920000b02901bad9e4241dso954621qta.15
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 11:01:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=nf8i5zc/CF74bPP2ccA5udCaSNmHZYeuQlI0W716jnY=;
-        b=HKG1evztST1oyuQsk7u0HTBIeKZoVDWVDIphqea7uW3br0SFbKO8xX4AEbjbA97tg9
-         bYQ8PYvw0YmkXElXeR0MuH/5Xr9FoyTUUm098WeRi1+9FBNA5NS+tYYvHOOSvYOh6T1V
-         vtpFlhisjl6TuLCxitRSb8aA6A/04ee6TJq1htNwhP/seMTW9XvvzDKPktJeUtppDQT3
-         onMwRslSMIN0NTInxzBZSu2BEK1VmnQlQjAEAoHGuW8pNPb1D+NZoxJ+rwycstttffjI
-         fz1hjox625joRSOcz4lP/OwLFn3NMieOLouW1rBHqO3Cxy4Jsc9Hgv1m8v1kBfIe4VyL
-         DsHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=nf8i5zc/CF74bPP2ccA5udCaSNmHZYeuQlI0W716jnY=;
-        b=Lk1ZYpft5zLn7WJPIBCWkR/VKLVDUypoiGQuQ3SHnW14uMHpfSAwrzV6hHZOdub/0P
-         EDDt51UDAZ4F64A+xRsUX9isU8xHCb3IQpn8tqZqbtD3ZF4PEwZxhoaQmsmd59Edctmk
-         suNLXAMRANqc4oa7zQMQZbdamxiAoUPhZ06cOUKZicdnRxcukRcPb598ruHqQ295jSC5
-         fxWgXOvg5InuNG+JI1rTQcSznpPPQ9hyxIZbwcnfgq/YLLsKPSXBh7KBZPSEaYSaZ137
-         VC3QAMYLVq9oVolRf9tnRdAyazsSaqS7+AlqzyouL4MUFM0SdIigb03esb79EGQ0fDv7
-         GqfQ==
-X-Gm-Message-State: AOAM530+60KZUt7GxsrnwExfiSHGICEtP8M/zv/slzvXkg/etOvzaqpD
-        2lcgsCuRszjfI4E4GmliI8dRl+BVfk50uMk3iEGa
-X-Google-Smtp-Source: ABdhPJzsD0nTdGceEOL3UE6Ru96fIeoOZ7OkQlhmlKn4qnc+6fUXsrzld5XqhSB5tzg8EnOmjF2eZHL7mAroh2t8RaMJ
-X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:ed44:e19a:52ee:e8cc])
- (user=axelrasmussen job=sendgmr) by 2002:ad4:54c5:: with SMTP id
- j5mr23475834qvx.4.1619632890610; Wed, 28 Apr 2021 11:01:30 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 11:01:09 -0700
-Message-Id: <20210428180109.293606-1-axelrasmussen@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-Subject: [PATCH] userfaultfd: release page in error path to avoid BUG_ON
-From:   Axel Rasmussen <axelrasmussen@google.com>
-To:     Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>, Peter Xu <peterx@redhat.com>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S243441AbhD1SHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 14:07:53 -0400
+Received: from msg-1.mailo.com ([213.182.54.11]:35236 "EHLO msg-1.mailo.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239935AbhD1SHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 14:07:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
+        t=1619633077; bh=7hlgpWxI8RDOAaTiJXMHJmjusAlSxGAIvuavLSm+NJs=;
+        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:MIME-Version:
+         Content-Type;
+        b=M6BMEs62PGRC8fOjrqKiYPGjER2VRGY69XZKigMrh9r3fzSIiEYBMkGyjtUN4yHBv
+         RyX8DqGRtz2RJbDzWSpSlSPYWTY1cki+0rTzZ+0q0kpK3Sl9AxuMZpew+UVNMO/opt
+         ++oFNJPw8cXjmYX26gQSIu97WaVOXHi1BjA6KqE0=
+Received: by 192.168.90.11 [192.168.90.11] with ESMTP
+        via ip-206.mailobj.net [213.182.55.206]
+        Wed, 28 Apr 2021 20:04:37 +0200 (CEST)
+X-EA-Auth: D9acU+5VrOCUhvF5ajQTKCNpZFfSNXGn1i367EQfYqGFv32RsQo9pSqkrlja6tz07PCkVuXSgVy+sorgw26MzkxjFXcamVCk
+Date:   Wed, 28 Apr 2021 23:34:29 +0530
+From:   Deepak R Varma <drv@mailo.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, drv@mailo.com
+Subject: [PATCH v4 0/9] staging: media: atomisp: code cleanup fixes
+Message-ID: <cover.1619628317.git.drv@mailo.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Consider the following sequence of events (described from the point of
-view of the commit that introduced the bug - see "Fixes:" below):
+This patch set addresses multiple issues reported by  of checkpatch script as
+WARNING and CHECK complaints. Other feedback received from the
+maintainers is incorporated as well.
 
-1. Userspace issues a UFFD ioctl, which ends up calling into
-   shmem_mcopy_atomic_pte(). We successfully account the blocks, we
-   shmem_alloc_page(), but then the copy_from_user() fails. We return
-   -EFAULT. We don't release the page we allocated.
-2. Our caller detects this error code, tries the copy_from_user() after
-   dropping the mmap_sem, and retries, calling back into
-   shmem_mcopy_atomic_pte().
-3. Meanwhile, let's say another process filled up the tmpfs being used.
-4. So shmem_mcopy_atomic_pte() fails to account blocks this time, and
-   immediately returns - without releasing the page. This triggers a
-   BUG_ON in our caller, which asserts that the page should always be
-   consumed, unless -EFAULT is returned.
+Note:
+   - The patches should be applied in the ascending order.
+   - Patch count revised to 9 from 6
+   - patch 1/9 is not being sent since it was already submitted by
+     another developer.
 
-(Later on in the commit history, -EFAULT became -ENOENT, mmap_sem became
-mmap_lock, and shmem_inode_acct_block() was added.)
+Changes since v3:
+   Generic change:
+   1. Dropped patch 1/9 since it was already submitted to Hans by
+      another developer.
+   2. Split patch 2 into patch 2 & 3 since they are doing two different
+      things.
+   3. Added patch 8 & 9 for extended clean up based on patch set feedback
+      received.
 
-A malicious user (even an unprivileged one) could trigger this
-intentionally without too much trouble.
+   Patch Specific change:
+   1. patch 1/9 : dropped
+   2. patch 2/9 : split into patch 2 & 3
+   3. patch 3/9 : introduced
+   4. patch 4/9 : none
+   5. patch 5/9 : include header file in the clean up
+   6. patch 6/9 : none 
+   7. patch 7/9 : include dev_info() for replacements 
+   8. patch 8/9 : introduced 
+   9. patch 9/9 : introduced
 
-To fix this, detect if we have a "dangling" page when accounting fails,
-and if so, release it before returning.
+Changes since v2:
+   Generic change:
+   1. Correct patch versioning in patch subject
 
-Fixes: cb658a453b93 ("userfaultfd: shmem: avoid leaking blocks and used blocks in UFFDIO_COPY")
-Reported-by: Hugh Dickins <hughd@google.com>
-Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
----
- mm/shmem.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+   Patch Specific change:
+   1. patch 1/6 : none
+   2. patch 2/6 : none
+   3. patch 3/6 : none
+   4. patch 4/6 :
+        a. Tag Fabio Auito for the patch suggestion
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 26c76b13ad23..46766c9d7151 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -2375,8 +2375,19 @@ static int shmem_mfill_atomic_pte(struct mm_struct *dst_mm,
- 	pgoff_t offset, max_off;
- 
- 	ret = -ENOMEM;
--	if (!shmem_inode_acct_block(inode, 1))
-+	if (!shmem_inode_acct_block(inode, 1)) {
-+		/*
-+		 * We may have got a page, returned -ENOENT triggering a retry,
-+		 * and now we find ourselves with -ENOMEM. Release the page, to
-+		 * avoid a BUG_ON in our caller.
-+		 */
-+		if (unlikely(*pagep)) {
-+			unlock_page(*pagep);
-+			put_page(*pagep);
-+			*pagep = NULL;
-+		}
- 		goto out;
-+	}
- 
- 	if (!*pagep) {
- 		page = shmem_alloc_page(gfp, info, pgoff);
+   5. patch 5/6 : none
+   6. patch 6/6:
+        a. Tag Fabio Auito for the patch suggestion
+
+Changes since v1:
+   Generic change:
+   1. The patch set is being resent from an email account that matches with
+      the patch signed-of-by tag. Issue highlighted by Hans Verkuil.
+
+   Patch specific changes:
+   1. patch 1/6 : none
+   2. patch 2/6 : none
+   3. patch 3/6 : none
+   4. patch 4/6 : implement following changes suggested by Fabio Aiuto
+        a. Corrected commenting style
+        b. Similar style implemented for other comment blocks in
+           the same files.
+   5. patch 5/6 : none
+   6. patch 6/6: implement following changes suggested by Fabio Aiuto
+        a. use dev_info instead of pr_info
+        b. update patch log message accordingly
+
+
+Deepak R Varma (9):
+  staging: media: atomisp: improve function argument alignment
+  staging: media: atomisp: balance braces around if...else block
+  staging: media: atomisp: remove unnecessary braces
+  staging: media: atomisp: use __func__ over function names
+  staging: media: atomisp: reformat code comment blocks
+  staging: media: atomisp: fix CamelCase variable naming
+  staging: media: atomisp: replace raw pr_*() by dev_dbg()
+  staging: media: atomisp: remove unnecessary pr_info calls
+  staging: media: atomisp: remove unwanted dev_*() calls
+
+ .../media/atomisp/i2c/atomisp-gc0310.c        |  57 +++------
+ .../media/atomisp/i2c/atomisp-gc2235.c        |  29 ++---
+ .../atomisp/i2c/atomisp-libmsrlisthelper.c    |   6 +-
+ .../media/atomisp/i2c/atomisp-lm3554.c        |   2 +-
+ .../media/atomisp/i2c/atomisp-mt9m114.c       | 108 ++++++++++--------
+ .../media/atomisp/i2c/atomisp-ov2680.c        |  41 ++++---
+ .../media/atomisp/i2c/atomisp-ov2722.c        |  10 +-
+ drivers/staging/media/atomisp/i2c/mt9m114.h   |   3 +-
+ drivers/staging/media/atomisp/i2c/ov2680.h    |  10 +-
+ 9 files changed, 130 insertions(+), 136 deletions(-)
+
 -- 
-2.31.1.498.g6c1eba8ee3d-goog
+2.31.1
+
+
 
