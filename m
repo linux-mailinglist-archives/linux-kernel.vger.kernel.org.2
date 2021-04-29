@@ -2,214 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7136F36E264
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 02:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B02A36E275
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 02:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232200AbhD2AMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 20:12:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231858AbhD2AMu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 20:12:50 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49FE1C06138E
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 17:12:04 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id i11so2856385oig.8
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 17:12:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SBQkZZ+AM0rdRiolN8pMUJvJaHdqRcP6uvGtBB7hbVU=;
-        b=ZoTQshL6LSUn3Lj4/ZAJK9Rw3XfU8aTAMNv0jvQ6LotAVOdLClfvB+3CeSpCEioye0
-         Xtopma3PqjaDfDfsQayOuP4TbqJWt9iSo+X07bTjJZrtqsrpD62HHGpNjKK8gv1NaNtS
-         j+jH6knXMDHPhdU/nGtL0OIOSn/aAekpdbSYjfJzWoxRqf7OTjh4v4eEpfubQ2W/pv6d
-         Z+RgHfkEWL9+um/+yz3n1MeBS04aaAlWZ1J852+CB8wQARNwCvxGxntYdB7vjtAt8hzm
-         umKD+6zJY4V0bBk45x5b0yvwel00U0JtsWLN76hqI9/nZIU2JQov5EqcHbyL4pPBuLAT
-         GL4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SBQkZZ+AM0rdRiolN8pMUJvJaHdqRcP6uvGtBB7hbVU=;
-        b=pJeRA2RLfAwUeDKfHO6KrX8xpNKGzonIw2k5lMroJ6Eaw+cB6DvprQ+H6M/p+3oeLt
-         5lhLS20/uioU7oTdiuA3wEsU0/zgNdTL09lhPp9sEIsg8wqQpha6vlT03TBpdWbaXFdc
-         xd/X7Ic/IYZn7+WzQYrR8NhFh5zaf7v2S8BBYU3nW8aWd6YdeLiooJ/cipwPJQHIKrWc
-         6uk64cGV8K8guS5woOL6HqohnoB/i5I4ZqiX/4fOmejo8kYG24aRfFe8yYvJxx3mzfU4
-         oG1S6AG0dSqp66YuixfenwDSJrwR9zVvhKw4hnzwW1007gm+HpnAXT7irOsnyaDEXIZA
-         FxwQ==
-X-Gm-Message-State: AOAM530WxvECCmhnlSKFTDeNMvpimO1PAYIPAqlqiIAsAcT4aM+MO9rK
-        pPGy2xhZErNb3C0PkS3T0Cm3Tg==
-X-Google-Smtp-Source: ABdhPJxVHBqD0ADdSUFDRMR3ZR31HODm2e3SR+lV5ybAgqah5lCuPwSWrEvzbrK39xY68/DgooIHzA==
-X-Received: by 2002:aca:5845:: with SMTP id m66mr5007370oib.0.1619655123470;
-        Wed, 28 Apr 2021 17:12:03 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id r63sm305743oia.43.2021.04.28.17.12.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 17:12:03 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 19:12:00 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Martin Botka <martin.botka1@gmail.com>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v6 2/4] leds: Add driver for Qualcomm LPG
-Message-ID: <YIn50NW+Pimqfsih@builder.lan>
-References: <20201021201224.3430546-1-bjorn.andersson@linaro.org>
- <20201021201224.3430546-3-bjorn.andersson@linaro.org>
- <20201029181357.GE26053@duo.ucw.cz>
+        id S232284AbhD2APe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 20:15:34 -0400
+Received: from mail-mw2nam12on2069.outbound.protection.outlook.com ([40.107.244.69]:57472
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231708AbhD2APd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 20:15:33 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kPyTGbg+K43urNwjal1S9/jTDSNkWqReH9009p+bM7M9m8ljaFTPAEw0BVE9ag/ssj5Xk6CxxMX7lHlz96tIR/eAdQPozgKwlYEfi6KzcWiinjjwaFAYGdhr+8dPvL3keoTUTucoXlrEJdFh6R58bBOhVsBlZi+iApb3vRZ5jCvgoByLbuLcFzHAIgG9Ai/rUYKwraNj4zs90xe60L5zhzohTvTtsskSgec9sS7H4lMWdyrkJIH9JfeVcYZca//AC6gZCocO4A7hMhhudf6B19j2Rttt8inoBivz81N82rRXbmVi0DVCrVsGyRt7WJ55pWmvhCsnUqPaTuYC3G73IQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=57yJDByir0quWUcWq5mHbIMTZ9K7cRztaeM5o7lDHtI=;
+ b=eeu42gf6jnOaJFp1rhwc3r2krkxOpyrcgO95m9aFwyRys6+sW2XwMVBZ9te5E3QpRAxSiSVn9MyI4UIJNDanphja06Fg6hIOdNyrTdIOLOou5sAPMbf1yZ2sTwOyW6LW2g1vttCTP9/OQVofp4qJLIUOaDsZy05qDfDuM6B8fR3+aZS1jvaMQ7OssUyB2os7DmEeSbzM/RAQHY3T9kBsaYIMEncqOkrmEUYo+Dt4sRvxMwgSCVfAbKc5z9fU97z7e7MJrvMFLdBSMoADChUF0gR9zeEGRvai+OzgQdRzYMKcMZt1bvcIqLYH7QwlWOPVLmd7aUMYtjTlwnvDHntykg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=57yJDByir0quWUcWq5mHbIMTZ9K7cRztaeM5o7lDHtI=;
+ b=vjqHiVpONlurV/mE5IqxMV1oKMgPvcWU4iQSxB2cbQQubOl4NYylOJpnZ00f7cgkkb/nwCw8ji9DVz5E+JT7qCFf+z7brYG8z/5QTspmt9apfUja+8eN/kWZpy8wYfGXKjQgBj7usl3Ps5T2PH9OuBs7/VbHYp9BOEqZUFraNZQ=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from BY5PR12MB4644.namprd12.prod.outlook.com (2603:10b6:a03:1f9::11)
+ by BYAPR12MB4629.namprd12.prod.outlook.com (2603:10b6:a03:111::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.23; Thu, 29 Apr
+ 2021 00:14:46 +0000
+Received: from BY5PR12MB4644.namprd12.prod.outlook.com
+ ([fe80::a8ef:60d5:b60f:9cb5]) by BY5PR12MB4644.namprd12.prod.outlook.com
+ ([fe80::a8ef:60d5:b60f:9cb5%7]) with mapi id 15.20.4065.026; Thu, 29 Apr 2021
+ 00:14:45 +0000
+Subject: Re: [git pull] drm for 5.13-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Dave Airlie <airlied@gmail.com>,
+        Mikita Lipski <mikita.lipski@amd.com>,
+        Sun peng Li <Sunpeng.Li@amd.com>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <CAPM=9txMo5f9QvPqdzt8g3CmUpyDFf2Q_0XS4V1FyjHX8WQPRA@mail.gmail.com>
+ <CAHk-=wh3x4Q4pCkYe7__OAnvOyPqdZLN5ha0z4U035FwT5G57w@mail.gmail.com>
+From:   Mikita Lipski <mlipski@amd.com>
+Message-ID: <e6532806-ba36-d5d0-6d74-488182787a6c@amd.com>
+Date:   Wed, 28 Apr 2021 20:14:41 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
+In-Reply-To: <CAHk-=wh3x4Q4pCkYe7__OAnvOyPqdZLN5ha0z4U035FwT5G57w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [165.204.54.211]
+X-ClientProxiedBy: YTOPR0101CA0066.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00:14::43) To BY5PR12MB4644.namprd12.prod.outlook.com
+ (2603:10b6:a03:1f9::11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029181357.GE26053@duo.ucw.cz>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [172.31.19.100] (165.204.54.211) by YTOPR0101CA0066.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00:14::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.25 via Frontend Transport; Thu, 29 Apr 2021 00:14:44 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 124f5457-0de1-424d-6f1f-08d90aa3cb4e
+X-MS-TrafficTypeDiagnostic: BYAPR12MB4629:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR12MB4629226848E8B4203141094FE45F9@BYAPR12MB4629.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: US5crqDUqG3I+q4zXOit35hoVkBPjrPLTynVKtD0oexq3hBagE2O8e/IPn5CQ+GQ8KaWhEEEduC2ode+Ll1RUJZd46XmM6PnFg5gF+38vMDUhLUVX8WoFXkar6Ca2kWVlMcUGyjtScZ2WXZF6UqAMwXVqv8ClLf2/Ytezs7VbqnES37wUqvjbwwbwhyML182QvlhUKjBRUrDNwy2eiSnsKECEp48OSLx3ayoCM7h9vCXqCT2W7ofYHnk1WFE41hCGB6TSNWcL819iz7HqcUcsBI6QWpmNNwClmQ8CR3rTi9lopy0tepI9L3IeQbDWsJ6PH/aVVkE14uYKq2aqRJv3ykD4MQ6jdGjAcyuvDcka+ZaO+tcdy0OmGx/JsZEsRVYXAQs37NC7bW+efzu6ZkP2w+qYEQFyDGT8ZWEJODBc3BrQuQgrw/bVUIUnEaQAkJW+FkUtpoZsvzgJsuQmQMMo/i4Numok7w5AXoWhULB4ILEw3IcF+IJaXmW/TdvQ7/Hl4bwc5F55TGD1muWzAfjUnW5PjQyE4n5NvVxpplHiTUDr77Wpgj0svpfNCc319N2g4kUbtV72c0llAnGLp7iUrD2RF12Yw5A/zVRgP03UI0OddxBBKRkgAS1RupsQ4wjfVbC0nX0bE5aN0sPbJe6Wa9jNij9P8DY8SjrPIEMcL43BOFioGa1ESiqDq9DY29FTGl7v/8DTK09tUpucoB7cYdedaJEv3VcsEE5KEwnfa17i0DclAkZKB5H9KBwO+IlSC8LW83wDNXAbW6bE9j6a0y8Xzjr6iq3gooLTvtnKwA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4644.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(366004)(376002)(346002)(396003)(31686004)(6666004)(2616005)(8936002)(31696002)(83380400001)(110136005)(26005)(66476007)(38100700002)(38350700002)(16576012)(478600001)(66946007)(2906002)(6486002)(6636002)(36756003)(53546011)(8676002)(4326008)(66556008)(52116002)(5660300002)(316002)(54906003)(956004)(16526019)(186003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?c24rSVlnSEN4ZUtBeEFXQmhJaHgzbXMwdWZ3b1E4ZHBQb09ZZ2t6Y0xpallV?=
+ =?utf-8?B?OFYwNGFSekcwcHhaUUNacXhIS0ZyQlUzdWRQUXVIaWtLNmNQZmsxSEE4cWxB?=
+ =?utf-8?B?NkhMWWlOeFJFRzhubWJzZVA4S1pBRERFMzFPVnhwTHhYUnY0V1dLU1dNOUtO?=
+ =?utf-8?B?ZTA5V2JxWFFwMFF1Uk9SbFA0T0NiQXo1ZnEzSWsvNGt1SzBjYURtSCtVRkxI?=
+ =?utf-8?B?S1JJaFNrV09SZ29JQTVZazlwWEdrS3BjdkR4aHk1dEpPU2VUY29MTGdTdndY?=
+ =?utf-8?B?OTNnaGFCTTJ3T2ZNMHdSTVlIR3dkVWxMVFhMY1didDNLM1lWQm1Fb2YxZVU5?=
+ =?utf-8?B?L2Zmd0RmYlRyd3VHWjZ6UVBwbWZYd0RXaEtPRGRMc1lXRDhUVVpuZHJhVkxs?=
+ =?utf-8?B?V2ZBMEZZRytQRmY3NXhHSXFTZmRwRURuNXRIdDFuSXNxMUFibWRsTkhJK2hU?=
+ =?utf-8?B?Q2svWUYvejdTcTlRQ05OL3h0TU5xc1Q4QWdNNjk3RitUdDBVRHhLVnBqdklV?=
+ =?utf-8?B?VVpaY3FuZ3pjUjVGbWV2RnJlNXNZTm4zQWxkYUpJeEhzbWRuVkpLS0lwSmJH?=
+ =?utf-8?B?c0FWVmVHTmR5T1RKKzZXaWxXMVdvWGpTdm1samZTd1BaemNJcFNiL0JGMWhF?=
+ =?utf-8?B?NGYxV1ZTV3kxdVlBYUM3cUN5eDNUMnZGNk11aFhPR05rYXUralhtS2JWRnF5?=
+ =?utf-8?B?Rm5nRmIwY0c2TjdOSVowWWpIeXpNMktjSEJFRmEzcmxTNnVFVHU5MFFmMXk2?=
+ =?utf-8?B?dnd5TEUyWTlTQ3RtaDQ5T2EreGRDMkZycjFyWGw5R3B3V20yUEMzTWVmQ3ox?=
+ =?utf-8?B?RnZ5WVZlcnJCYmkwZEFicXAzQ3E0M0lUYndubldpVVNZTExsRlJCNUVCdE1V?=
+ =?utf-8?B?RjZub2dmOVhmSnZObTd5VDI0NndNVmRPZ3lBRkhabUtxMnVsS2JBSWtUM2I5?=
+ =?utf-8?B?U1VMMVV3VWRWdWhEcFc1T3VVNThwVXl6dlhNL2xZK1ZtRlV6ZXcrLzlKbW15?=
+ =?utf-8?B?S2xiTTdVcnk4emk4TkVRKys5U1JFaGN5aVlVdDJJU1pPL0FrdjBwZk5vUGI5?=
+ =?utf-8?B?RGlCM2kweVJvRkJZRzJaMWsrdVJKd1NUZFBidHVqdkQ2TDdCR2RGZnhUK01k?=
+ =?utf-8?B?UlJ3dXp1RUNEUWRZZGF1TW9QZkduaHFGZmJ3cXRiajZ6bDVHQ0pTc2p5THVo?=
+ =?utf-8?B?Vm5rd2NaRGN6SGtFRi83UkROOEF6VUY2OVJqaWhuU3gvdmFLTkkydUd4VkN4?=
+ =?utf-8?B?WVRObWRIT3ZrbzNrZW9MWjE5QnVtYjVaN09XZC9iWUsrcmFGV3J4RU9KdXpp?=
+ =?utf-8?B?N09vRUVQS1RzQ2x6MFA5TWxZb1JINVZraXl6cFRSd2tlT2JrNVVVUUU5MnBk?=
+ =?utf-8?B?T2RhaG5IZFNKRnpJYW4xcHpDU2R2VG9ZejVVTjNCbEkrcUc2Z3FkcVAxa0JB?=
+ =?utf-8?B?bm5GK29DR05UMUdENmhGd3ZUL2pBZEZ6Zm9DTUlEczZLcE5ZVFhiSlBQOG5q?=
+ =?utf-8?B?YkxMWFpwd3BoanRRbEc2d2Joek9BMTBzczRjTHFmVDd4SFI3alZWcmZOSEF2?=
+ =?utf-8?B?OC8yRWZxOTVBYzV1SEVMNndnVktHakw3eHFMR05QOTNHbml5b2N4WkhieTJ5?=
+ =?utf-8?B?eXVYZGR1SjVtQVVOV1ZBOTMxbVlZM1pjQTVyY2dlNTltdDJwbVd4UUdMajJR?=
+ =?utf-8?B?UWNnZjAwdGxqdmEzdGdxYm5Kam1uUlJYS3drbWloV2VvMTdtWC8vSWZSdWJE?=
+ =?utf-8?Q?qp/agmSyxTkqPgHapQ8BVoYVsMJnyOjV3I7Y8Go?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 124f5457-0de1-424d-6f1f-08d90aa3cb4e
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4644.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2021 00:14:45.8167
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /YurF0yl8/s3IVM9e8pM7FRIYeBy/cUd2PGigcqmcxxWRyfetjTT82nTEaaa45vH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB4629
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 29 Oct 13:13 CDT 2020, Pavel Machek wrote:
+Hi Linus,
 
-> Hi!
-> 
-> > The Light Pulse Generator (LPG) is a PWM-block found in a wide range of
-> > PMICs from Qualcomm. It can operate on fixed parameters or based on a
-> > lookup-table, altering the duty cycle over time - which provides the
-> > means for e.g. hardware assisted transitions of LED brightness.
-> > 
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> > 
-> > Changes since v5:
-> > - Make sure to not used the state of the last channel in a group to determine
-> >   if the current sink should be active for all channels in the group.
-> > - Replacement of unsigned -1 with UINT_MAX
-> > - Work around potential overflow by using larger data types, instead of separate code paths
-> > - Use cpu_to_l16() rather than hand rolling them
-> > - Minor style cleanups
-> > 
-> >  drivers/leds/Kconfig         |    9 +
-> >  drivers/leds/Makefile        |    1 +
-> >  drivers/leds/leds-qcom-lpg.c | 1190 ++++++++++++++++++++++++++++++++++
-> >  3 files changed, 1200 insertions(+)
-> >  create mode 100644 drivers/leds/leds-qcom-lpg.c
-> 
-> Let's put this into drivers/leds/rgb/. You may need to create it.
-> 
+The patch to fix the warning is here 
+(https://www.spinics.net/lists/amd-gfx/msg61614.html)
 
-Will do so.
+I guess it just didn't propagate all the way to the release.
+Can it still be pulled into 5.13-rc1 release?
 
-> 
-> > +static int lpg_lut_store(struct lpg *lpg, struct led_pattern *pattern,
-> > +			 size_t len, unsigned int *lo_idx, unsigned int *hi_idx)
-> > +{
-> > +	unsigned int idx;
-> > +	__le16 val;
-> 
-> No need for __XX variants outside of headers meant for userspace.
-> 
 
-__le16 is the in-kernel return type for cpu_to_le16(), but after further
-review I believe I don't need to do this.
+From: Mikita Lipski <mikita.lipski@xxxxxxx>
 
-> > +#define LPG_ENABLE_GLITCH_REMOVAL	BIT(5)
-> > +
-> > +static void lpg_enable_glitch(struct lpg_channel *chan)
-> > +{
-> > +	struct lpg *lpg = chan->lpg;
-> > +
-> > +	regmap_update_bits(lpg->map, chan->base + PWM_TYPE_CONFIG_REG,
-> > +			   LPG_ENABLE_GLITCH_REMOVAL, 0);
-> > +}
-> > +
-> > +static void lpg_disable_glitch(struct lpg_channel *chan)
-> > +{
-> > +	struct lpg *lpg = chan->lpg;
-> > +
-> > +	regmap_update_bits(lpg->map, chan->base + PWM_TYPE_CONFIG_REG,
-> > +			   LPG_ENABLE_GLITCH_REMOVAL,
-> > +			   LPG_ENABLE_GLITCH_REMOVAL);
-> > +}
+[why]
+Previous statement would always evaluate to true
+making it meaningless
+[how]
+Just check if a connector is MST by checking if its port exists.
+
+Reported-by: kernel test robot <lkp@xxxxxxxxx>
+Signed-off-by: Mikita Lipski <mikita.lipski@xxxxxxx>
+Reviewed-by: Nicholas Kazlauskas <Nicholas.Kazlauskas@xxxxxxx>
+Acked-by: Wayne Lin <waynelin@xxxxxxx>
+---
+  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c 
+b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+index 656bc8f00a42..8bf0b566612b 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+@@ -3030,7 +3030,7 @@ static int trigger_hpd_mst_set(void *data, u64 val)
+  			if (!aconnector->dc_link)
+  				continue;
+
+-			if (!(aconnector->port && &aconnector->mst_port->mst_mgr))
++			if (!aconnector->mst_port)
+  				continue;
+
+  			link = aconnector->dc_link;
+-- 
+2.17.1
+
+
+
+Thanks,
+Mikita
+
+
+On 2021-04-28 6:21 p.m., Linus Torvalds wrote:
+> On Tue, Apr 27, 2021 at 8:32 PM Dave Airlie <airlied@gmail.com> wrote:
+>>
+>> This is the main drm pull request for 5.13. The usual lots of work all
+>> over the place. [...]
+>>
+>> Mikita Lipski:
+>>        drm/amd/display: Add MST capability to trigger_hotplug interface
 > 
-> Helper functions for single register write is kind of overkill...
+> Hmm. I've already merged this, but my clang build shows that this looks buggy:
 > 
-
-Yes, it is, but it keep lpg_apply() tidy.
-
-> > +static int lpg_blink_set(struct lpg_led *led,
-> > +			 unsigned long delay_on, unsigned long delay_off)
-> > +{
-> > +	struct lpg_channel *chan;
-> > +	unsigned int period_us;
-> > +	unsigned int duty_us;
-> > +	int i;
-> > +
-> > +	if (!delay_on && !delay_off) {
-> > +		delay_on = 500;
-> > +		delay_off = 500;
-> > +	}
+> drivers/gpu/drm/amd/amdgpu/amdgpu_dm/amdgpu_dm_debugfs.c:3015:53:
+> warning: address of 'aconnector->mst_port->mst_mgr' will always
+> evaluate to 'true' [-Wpointer-bool-conversion]
+>                          if (!(aconnector->port &&
+> &aconnector->mst_port->mst_mgr))
+>                                                 ~~  ~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
 > 
-> Aren't you supposed to modify the values passed to you, so that
-> userspace knows what the default rate is?
+> and yeah, checking for the address of a member of a structure benign
+> NULL doesn't really work.
 > 
-
-I had missed this.
-
+> I'm assuming the '&' is just a left-over cut-and-paste error or something.
 > 
-> > +	ret = lpg_lut_store(lpg, pattern, len, &lo_idx, &hi_idx);
-> > +	if (ret < 0)
-> > +		goto out;
+> Please fix after reviewing (I'm not going to blindly just remove the
+> '&' just to silence the warning, since I don't know the code).
 > 
-> Just do direct return.
+>                  Linus
 > 
-
-Will do.
-
-> > +out:
-> > +	return ret;
-> > +}
-> 
-> > +static const struct pwm_ops lpg_pwm_ops = {
-> > +	.request = lpg_pwm_request,
-> > +	.apply = lpg_pwm_apply,
-> > +	.owner = THIS_MODULE,
-> > +};
-> > +
-> > +static int lpg_add_pwm(struct lpg *lpg)
-> > +{
-> > +	int ret;
-> > +
-> > +	lpg->pwm.base = -1;
-> > +	lpg->pwm.dev = lpg->dev;
-> > +	lpg->pwm.npwm = lpg->num_channels;
-> > +	lpg->pwm.ops = &lpg_pwm_ops;
-> > +
-> > +	ret = pwmchip_add(&lpg->pwm);
-> > +	if (ret)
-> > +		dev_err(lpg->dev, "failed to add PWM chip: ret %d\n", ret);
-> > +
-> > +	return ret;
-> > +}
-> 
-> Do we need to do this? I'd rather have LED driver, than LED+PWM
-> driver...
-> 
-
-Yes, I believe we need to do this.
-
-Because each piece of hardware has N channels, which can be wired to
-LEDs, grouped with other channels and wired to multicolor LEDs or be
-used as PWM signals. And this configuration is board specific.
-
-One such example is the laptop in front of me, which has 3 channels
-wired to an RGB LED and 1 channel wired as a backlight control signal
-(i.e. using pwm-backlight).  Another example is a devboard where the
-4 channels are wired to 4 LEDs.
-
-Regards,
-Bjorn
