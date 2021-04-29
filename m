@@ -2,146 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1874836E61E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 09:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A09E36E624
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 09:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239259AbhD2HiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 03:38:12 -0400
-Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:42615 "EHLO
-        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229814AbhD2HhJ (ORCPT
+        id S232511AbhD2HiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 03:38:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233375AbhD2HiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 03:37:09 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id c1D6lpGQjiDzSc1DAlkTFj; Thu, 29 Apr 2021 09:35:49 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1619681749; bh=e+nJscNVv3JQsbWlwn5P4urVvkcZ/Jr/l81JInVCgRw=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=GVTSyQ24Ogjk7I4tcaOqHj0W0Att+FfuPHcIwMezqkIbVqhrMd/W5X4ncDoneaURz
-         z2vD4hpyFjhRT4tdg3jI89Sc0LEnEC3he9AeSK7zlddKZKvubirLayp9QpllJv0OVr
-         QfOWL1H/pPhLltuBzYQs+VbZJKTkcn3q+g6RDAqsiMLbK/8qPC4vVFdxhvBUalfqW9
-         F5zzcwrDFVTsMMBDzLB9eTYB2YpJUG3904OAcKO/4nbrGutTLR0LAIzQltkewsDsR2
-         MzRRfwqhs4EdZpwCo/ATM+aO4EKW005T8uQRAHdK3/xLC46BS4UsbrMvp+0zCCOH2c
-         JX685SJ56JWqg==
-Subject: Re: [PATCH v4 00/15] media: mtk-vcodec: support for MT8183 decoder
-To:     Alexandre Courbot <acourbot@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yunfei Dong <yunfei.dong@mediatek.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-References: <20210427111526.1772293-1-acourbot@chromium.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <34782bc5-d891-8eef-d370-6cfcc547166a@xs4all.nl>
-Date:   Thu, 29 Apr 2021 09:35:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        Thu, 29 Apr 2021 03:38:10 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C88C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 00:36:50 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id j189so2802136pgd.13
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 00:36:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MQXKcQ9KcEZqY03xe0NgMF80WSAnACAs/9znMR5Uqyw=;
+        b=aGXvvaOFqxy4Rj/1ZHgdlRJtm5OBg5ahGhRpOj9aHbZ1/kBEUrjY3PSkjmURS4mp20
+         LQ+vZgoUxB7VzIFAG2mU0wb82c+b/4IIyOSrV8z3aJX1V1NXTog2CMSzVx04EEtKSK1s
+         D4lmtR+4aa8ToPfQwLe9o1I8gPBgpGmqF3UVpBCLtofWcWlJiGX4KuWIoKwxpE4IFoyo
+         s7UbdGouSGYwFPxM3k7TVuNKKfL83sDEllNh4iwSQtMOHNXVp39yLEKEU6OBSlbnV44S
+         wINVdIPBq5uVR17YISOCAiVkrZF/zH+dpRS89TNawRlUuNcIPiSjTj3g3Ybx3TvaTLZP
+         olsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MQXKcQ9KcEZqY03xe0NgMF80WSAnACAs/9znMR5Uqyw=;
+        b=iLSsd7kFERLhWQnWfYVQAr3OodBLNzdS2XPba4P0mG/kN6oh2+sQM7OC0FXN201Up6
+         N7VKTLiVLsGJD3g0r7gomdIOAh0npNDeqQXUBbsoHj22Ou8cUdFOoT3aLBFVD8R9e3DP
+         b72BjWAt8Rq/cBbHZjkb24RbAWHg2aar0/DQPgDQNLKdfw8bmKGUQCguuBRVhZQjuvrq
+         gPosWwnYroF9rYXrhx2V1G39QQFEJSRv0BbyV19hyhDX7zsgBRrISqev8Y/AnganApyL
+         ISgM5oT3RQscYX7fhxWJ3WlbxvMY+/aNQRmeRmRuu9bgkHoEN2N7PoMbWe/js35qtB6K
+         qwOg==
+X-Gm-Message-State: AOAM530hKhYKXUloLJrb+6u1aS7wmLHRy4fMAL0yfrtHq0xPEvkGKM5I
+        nFqG6WSycune6IT9k0H3Fk4brmhRo2z2T/9TS9BP4Q==
+X-Google-Smtp-Source: ABdhPJxK8Ut6EhdxMn+dWGfAOpoSc8Vw82gx7w5X49AGlOWuPYpJ67QuP20aVAHVVftvDalnzaadpa8ZQ7HXilV/0L0=
+X-Received: by 2002:a63:1665:: with SMTP id 37mr31262717pgw.31.1619681810202;
+ Thu, 29 Apr 2021 00:36:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210427111526.1772293-1-acourbot@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfBegxNwO7sjie5TrkNagJYw+HjzrJ7Zn+5Qg+SpHhR+WqQNGXlOvvaRUlXTd3rM9W28JFL81MTlv7IIDbIRAoZQRCq6qOMfu5R5wBxhuqrgrdOWVQFvV
- dVRMFwiWslx7Fwdr0AzDsqwgbLBjBtX/brx/cV8umxRe8FwHBG2SRX3960fsiLD8JXFVEMavXUzt1XF/D5AErhsZp8D1k7BVglju9naOtYGgNwmxtfIUyEME
- VjH/zBOQhW5Qz74NO8CTjQFLrjMGmlNlUgvR9YphAodAYbwJzjkIfRK5Q5ImnWKROWEqxhvXmaRg9TsRqMQc8yY7EC2h86Ygrpl2hxqsPFIuLv92CwguIBXF
- 8vCu31qhm5SSYKEMrCTBMzOpKipLUlGVUPYqZO1dUL0sqwrv5Zvuk4v5uNEwmt30kM5Bmg7GjxF3AHV4hfQL0D+m4C11Z0snRZtzWyNSl3JW6o8LtK4EA1bl
- qxxH0YJD5uQ01RLCtdRG2FS6OfEXfNxkfTUGeA==
+References: <20210428094949.43579-1-songmuchun@bytedance.com>
+ <20210428094949.43579-8-songmuchun@bytedance.com> <20210429064751.GA2216380@infradead.org>
+In-Reply-To: <20210429064751.GA2216380@infradead.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 29 Apr 2021 15:36:13 +0800
+Message-ID: <CAMZfGtVu7jVSD8DKze5dNoECN1RKnq4mdfT7ym3Ln1QStKSXJQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH 7/9] ida: introduce ida_max() to return the
+ maximum allocated ID
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, Yang Shi <shy828301@gmail.com>,
+        alexs@kernel.org,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/04/2021 13:15, Alexandre Courbot wrote:
-> This series adds support for the stateless API into mtk-vcodec, by first
-> separating the stateful ops into their own source file, and introducing
-> a new set of ops suitable for stateless decoding. As such, support for
-> stateful decoders should remain completely unaffected.
-> 
-> This series has been tested with both MT8183 and MT8173. Decoding was
-> working for both chips, and in the case of MT8173 no regression has been
-> noticed.
-> 
-> Patches 1-9 add MT8183 support to the decoder using the stateless API.
-> MT8183 only support H.264 acceleration.
-> 
-> Patches 10-15 are follow-ups that further improve compliance for the
-> decoder and encoder, by fixing support for commands on both. Patch 11
-> also makes sure that supported H.264 profiles are exported on MT8173.
+On Thu, Apr 29, 2021 at 2:49 PM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Wed, Apr 28, 2021 at 05:49:47PM +0800, Muchun Song wrote:
+> > Introduce ida_max() to return the maximum allocated ID. This will be
+> > used by memory cgroup in the later patch.
+>
+> Please also add a lower-level xa_max as this funcationalty would also
+> come in handy at the xarray level in a few places.
 
-For a v5 I would recommend that - where possible - these 'improve compliance'
-patches are moved to the beginning of the series. That way they can be picked
-up quickly without having to wait for the whole series to be accepted.
-
-Regards,
-
-	Hans
-
-> 
-> Changes since v3:
-> * Stop checking that controls are set for every request.
-> * Add V4L2_CID_STATELESS_H264_START_CODE control.
-> * Stop mapping OUTPUT buffers and getting the NAL type from them, use the
->   nal_ref_idc field instead.
-> * Make V4L2_CID_MIN_BUFFERS_FOR_CAPTURE control stateful-only.
-> * Set vb2_buffer's field to V4L2_FIELD_NONE in buffer validation hook.
-> 
-> Changes since v2:
-> * Add follow-up patches fixing support for START/STOP commands for the
->   encoder, and stateful decoder.
-> 
-> Alexandre Courbot (8):
->   media: mtk-vcodec: vdec: handle firmware version field
->   media: mtk-vcodec: support version 2 of decoder firmware ABI
->   media: add Mediatek's MM21 format
->   dt-bindings: media: document mediatek,mt8183-vcodec-dec
->   media: mtk-vcodec: vdec: use helpers in VIDIOC_(TRY_)DECODER_CMD
->   media: mtk-vcodec: vdec: clamp OUTPUT resolution to hardware limits
->   media: mtk-vcodec: make flush buffer reusable by encoder
->   media: mtk-vcodec: venc: support START and STOP commands
-> 
-> Hirokazu Honda (1):
->   media: mtk-vcodec: vdec: Support H264 profile control
-> 
-> Hsin-Yi Wang (1):
->   media: mtk-vcodec: venc: make sure buffer exists in list before
->     removing
-> 
-> Yunfei Dong (5):
->   media: mtk-vcodec: vdec: move stateful ops into their own file
->   media: mtk-vcodec: vdec: support stateless API
->   media: mtk-vcodec: vdec: support stateless H.264 decoding
->   media: mtk-vcodec: vdec: add media device if using stateless api
->   media: mtk-vcodec: enable MT8183 decoder
-> 
->  .../bindings/media/mediatek-vcodec.txt        |   1 +
->  .../media/v4l/pixfmt-reserved.rst             |   7 +
->  drivers/media/platform/Kconfig                |   2 +
->  drivers/media/platform/mtk-vcodec/Makefile    |   3 +
->  .../platform/mtk-vcodec/mtk_vcodec_dec.c      | 818 +++---------------
->  .../platform/mtk-vcodec/mtk_vcodec_dec.h      |  28 +-
->  .../platform/mtk-vcodec/mtk_vcodec_dec_drv.c  |  66 +-
->  .../mtk-vcodec/mtk_vcodec_dec_stateful.c      | 667 ++++++++++++++
->  .../mtk-vcodec/mtk_vcodec_dec_stateless.c     | 370 ++++++++
->  .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  58 +-
->  .../platform/mtk-vcodec/mtk_vcodec_enc.c      | 135 ++-
->  .../platform/mtk-vcodec/mtk_vcodec_enc_drv.c  |   4 +
->  .../mtk-vcodec/vdec/vdec_h264_req_if.c        | 780 +++++++++++++++++
->  .../media/platform/mtk-vcodec/vdec_drv_if.c   |   3 +
->  .../media/platform/mtk-vcodec/vdec_drv_if.h   |   1 +
->  .../media/platform/mtk-vcodec/vdec_ipi_msg.h  |  23 +-
->  .../media/platform/mtk-vcodec/vdec_vpu_if.c   |  43 +-
->  .../media/platform/mtk-vcodec/vdec_vpu_if.h   |   5 +
->  drivers/media/v4l2-core/v4l2-ioctl.c          |   1 +
->  include/uapi/linux/videodev2.h                |   1 +
->  20 files changed, 2293 insertions(+), 723 deletions(-)
->  create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateful.c
->  create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateless.c
->  create mode 100644 drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
-> 
-> --
-> 2.31.1.498.g6c1eba8ee3d-goog
-> 
-
+Good suggestion. This way is also efficient. Thanks.
