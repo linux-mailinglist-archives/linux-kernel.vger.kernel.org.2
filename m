@@ -2,64 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 047CA36E858
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9C036E85A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238062AbhD2KEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 06:04:44 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:39532 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237512AbhD2KEn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 06:04:43 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lc3WU-0004lW-RS; Thu, 29 Apr 2021 10:03:54 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH] initrd: remove redundant assignment to variable rotate
-Date:   Thu, 29 Apr 2021 11:03:54 +0100
-Message-Id: <20210429100354.58353-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        id S240254AbhD2KEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 06:04:48 -0400
+Received: from mx-out.tlen.pl ([193.222.135.142]:31033 "EHLO mx-out.tlen.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237512AbhD2KEq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 06:04:46 -0400
+Received: (wp-smtpd smtp.tlen.pl 2600 invoked from network); 29 Apr 2021 12:03:57 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
+          t=1619690637; bh=ygjEkLzoy67+HxQNC9nOx8jeF7wnqzCRlbT0WkJJcS0=;
+          h=From:To:Cc:Subject;
+          b=LwnqmiX7PrqVlTiTLaln3sNLKzPHxAoBMfDfjpqcaAMxJ5ohyrsw3DnoM1wLq+eY5
+           aQOYMDULeavXLpYMW4gUdOgWNyRT5PawV/Vew4vEXM34ldBjZRCsad5zcJiuiSmiGm
+           7HADcyoA+REJDht35wiOTPeMFkXQqa5x1iTCqhS8=
+Received: from 89-64-46-199.dynamic.chello.pl (HELO localhost.localdomain) (arek_koz@o2.pl@[89.64.46.199])
+          (envelope-sender <arek_koz@o2.pl>)
+          by smtp.tlen.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <torvalds@linux-foundation.org>; 29 Apr 2021 12:03:57 +0200
+From:   "Arkadiusz Kozdra (Arusekk)" <arek_koz@o2.pl>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        "Arkadiusz Kozdra (Arusekk)" <arek_koz@o2.pl>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v2] proc: Use seq_read_iter for /proc/*/maps
+Date:   Thu, 29 Apr 2021 12:05:08 +0200
+Message-Id: <20210429100508.18502-1-arek_koz@o2.pl>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <CAHk-=wibrw+PnBiQbkGy+5p4GpkPwmmodw-beODikL-tiz0dFQ@mail.gmail.com>
+References: <CAHk-=wibrw+PnBiQbkGy+5p4GpkPwmmodw-beODikL-tiz0dFQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-WP-MailID: d2a92516f227032653df43168bef5a51
+X-WP-AV: skaner antywirusowy Poczty o2
+X-WP-SPAM: NO 0000000 [AcNU]                               
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Since seq_read_iter looks mature enough to be used for /proc/<pid>/maps,
+re-allow applications to perform zero-copy data forwarding from it.
 
-The assignment of 0 to rotate is redundant, the value is never
-read so it can be it removed.
+Some executable-inspecting tools rely on patching entry point
+instructions with minimal machine code that uses sendfile to read
+/proc/self/maps to stdout.  The sendfile call allows them to do it
+faster and without excessive allocations.
 
-Cleans up clang scan-build warning:
-init/do_mounts_rd.c:252:4: warning: Value stored to 'rotate' is
-never read [deadcode.DeadStores]
-                        rotate = 0;
-                        ^        ~
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+This is inspired by the series by Cristoph Hellwig (linked).
+
+Changes since v1:
+
+only change proc_pid_maps_operations
+
+Link: https://lore.kernel.org/lkml/20201104082738.1054792-1-hch@lst.de/
+Fixes: 36e2c7421f02 ("fs: don't allow splice read/write without explicit ops")
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Arkadiusz Kozdra (Arusekk) <arek_koz@o2.pl>
 ---
- init/do_mounts_rd.c | 1 -
- 1 file changed, 1 deletion(-)
+ fs/proc/task_mmu.c   | 3 ++-
+ fs/proc/task_nommu.c | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/init/do_mounts_rd.c b/init/do_mounts_rd.c
-index ac021ae6e6fa..8003604dbf90 100644
---- a/init/do_mounts_rd.c
-+++ b/init/do_mounts_rd.c
-@@ -249,7 +249,6 @@ int __init rd_load_image(char *from)
- 	for (i = 0; i < nblocks; i++) {
- 		if (i && (i % devblocks == 0)) {
- 			pr_cont("done disk #1.\n");
--			rotate = 0;
- 			fput(in_file);
- 			break;
- 		}
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index e862cab69583..06282294ddb8 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -351,7 +351,8 @@ static int pid_maps_open(struct inode *inode, struct file *file)
+ 
+ const struct file_operations proc_pid_maps_operations = {
+ 	.open		= pid_maps_open,
+-	.read		= seq_read,
++	.read_iter	= seq_read_iter,
++	.splice_read    = generic_file_splice_read,
+ 	.llseek		= seq_lseek,
+ 	.release	= proc_map_release,
+ };
+diff --git a/fs/proc/task_nommu.c b/fs/proc/task_nommu.c
+index a6d21fc0033c..e55e79fd0175 100644
+--- a/fs/proc/task_nommu.c
++++ b/fs/proc/task_nommu.c
+@@ -295,7 +295,8 @@ static int pid_maps_open(struct inode *inode, struct file *file)
+ 
+ const struct file_operations proc_pid_maps_operations = {
+ 	.open		= pid_maps_open,
+-	.read		= seq_read,
++	.read_iter	= seq_read_iter,
++	.splice_read	= generic_file_splice_read,
+ 	.llseek		= seq_lseek,
+ 	.release	= map_release,
+ };
 -- 
-2.30.2
+2.31.1
 
