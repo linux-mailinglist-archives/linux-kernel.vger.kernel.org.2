@@ -2,238 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE0D36E7C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 11:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1D6336E7D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 11:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237155AbhD2JRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 05:17:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55850 "EHLO
+        id S232588AbhD2JVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 05:21:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231135AbhD2JRN (ORCPT
+        with ESMTP id S231701AbhD2JUv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 05:17:13 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B522C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:16:27 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id i3so51984454edt.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:16:27 -0700 (PDT)
+        Thu, 29 Apr 2021 05:20:51 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94EBC06138C
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:20:03 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id d11so8247871wrw.8
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:20:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pns6JVw1tsF1/qIxAMsi+w1qWpoEsDD9F2ufA8tB/tE=;
-        b=LcICwlVTNEWQJ/kXzV3Qf010nnyK82+SA0OXfpGqqw86m6XUQ13LPjKjye6jQ/rh4z
-         OrLA2NkxjZz8deFsSQW6xG2OxR3qnTDtxlQErrUDH4Dx3hGsfpICuqPJafaRrsKmrDmn
-         9U/pS3PGwc/p9zxrt9ILSwlKKhHctgm3rqtP5H7bxXbaU6+rIPXbmcARxB8Zd3lAsBXn
-         l+n7i1T1ulzV0Xx//OAoixznSOaEot/nrXI2YP0d2wpzqcDE41o68iXBi9B5Dze0ECn3
-         kBqe9rE2DDWQyrL5jO+QkUhMhteM1RfOmrrlzQt9cBg6rcGn3oOZyoMKbsos1APdd7a3
-         HkKw==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OEnZFH+XYmfSP7g7WH0QI8W4ZYWs8ZUaoUGB+JuAxoM=;
+        b=Mm8xR36UEWJ6cS/XVCZAg06SJ8bVoGQwtegzm0Efe0KzMFiqiX58kizt5BxUCmAct1
+         XNcx+mGKGlXGphDHdUG4u/f2it6Vn0QuWvYK52mYMVvDbtQGyOXAKbaGxcHfGISAg3Yh
+         DeMttCvju5ZPiLWDNPvmxPqUzqM0QLYWmpiXtLFI0PT6tTLnXTnhUuQX3as6ClQmDFru
+         jHiW5g7K8RvY8fTwdXhzC7ssqkEawqN7kie2i3PfCf+Ps82jEl6QCwTk9XV7NOvpJLDq
+         OmtPqH8d98UaaR3ll3mvCB5dyZ8ZODNFu1nwAm8ueqcb+Z7VoPhrLiMWVx/2xk2838IP
+         Ncfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pns6JVw1tsF1/qIxAMsi+w1qWpoEsDD9F2ufA8tB/tE=;
-        b=ia0r08F7wSw1nn8CkZMH2yS+f1M5qFPCYxFTb1kTK7r0hnG5pL4AUiWAmoewQ9VsFo
-         XURFhvIjNJL2MG8fmelWCMDoU3g6Uy+joFP7Lv8/IfbOlrxMGpAixOtSCHc74P2rudtQ
-         FWc7t+jUH9YvxkCtJsIbbJA+rkOzbSN/IT2sBldEKBgMpCGQGAUbGLGBmQDNCyoW/3Cs
-         BNVCcCYUNJ3bYdWqCbXll9vDOAvAdzlm2Qgfw2ncj5Nc+Cd2GYljnSE76RMtleOL300Y
-         P4hdy8Q0iZf8TxZqEbR1GeXemMql4M1aRTqx31OfWqSzR2VnKjcW9/ylEsDJloZ5F/bG
-         Ngmw==
-X-Gm-Message-State: AOAM532NIKMj0faQ83i1s0jEXlbQqYB1v7dsjuq1fePPcwXCfm/bcbAp
-        iR1wY3DC358uhFWVy/IjNsyCpyD+5pCVGQ==
-X-Google-Smtp-Source: ABdhPJxjSCuoBN3SsqvGYK1hxB2DnMzqSLY8VA/cbtvx2pFCJQg5OGzEbwKGFlo953NBo2N9x55OOQ==
-X-Received: by 2002:aa7:c30c:: with SMTP id l12mr13555061edq.217.1619687786148;
-        Thu, 29 Apr 2021 02:16:26 -0700 (PDT)
-Received: from linux.local (host-79-52-107-152.retail.telecomitalia.it. [79.52.107.152])
-        by smtp.gmail.com with ESMTPSA id a22sm1881378edu.14.2021.04.29.02.16.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 02:16:25 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     outreachy-kernel@googlegroups.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH 1/2] staging: rtl8723bs: hal: Remove set but unused variables
-Date:   Thu, 29 Apr 2021 11:16:24 +0200
-Message-ID: <2336223.vu2A7xvVi3@linux.local>
-In-Reply-To: <20210429082552.GC1409@agape.jhs>
-References: <20210428113346.28305-1-fmdefrancesco@gmail.com> <8266064.IJzC9MfcRG@linux.local> <20210429082552.GC1409@agape.jhs>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=OEnZFH+XYmfSP7g7WH0QI8W4ZYWs8ZUaoUGB+JuAxoM=;
+        b=MRNV2Lj9IP6oG97F2vyaYEb24C6HqwqHRK5u+aqHf0ygJZU8gdHTE3QexUamqsHrO6
+         O/ikPY8SUSlCHt0tLrefs04wrAOz9PUoGMAHVLNTLU14lC0I/VAG8cMFKbBRfwO/Cz+l
+         62xik1XOwdqPiZM6EVjuroGQeuV8J6SQ/SbmjjPrsrmupsshd+Zb6YK7obeat/uxO2hC
+         fP1mM83Il3KmPySvsF2phNZwhqdCOhKPJjwA7F4bRVZcbFUq5JDmZvTJMAG7GY0zjMI+
+         Mn+IHQNWMax4uSO710L7jgiBVKuuiIUmW+UiYeWZwUWTMUR6bnKhmld0nck/BZik2Oac
+         YFDg==
+X-Gm-Message-State: AOAM5306f42kcXofZBPfxq8n7eOl9uXi+HF3Lb5uxFP6pIflqfdAsLv7
+        F5XL+DSVvhs7G9wjyBzxyz30Uw8Z25WOY7FF
+X-Google-Smtp-Source: ABdhPJy1DesDcdMTDcl1IHz35cNr7g3mrtoEBR2y4NzPLkd9a2ncVF1iU/HEFWmsMvhhTTteYlUoQQ==
+X-Received: by 2002:a5d:6085:: with SMTP id w5mr28892118wrt.14.1619688001872;
+        Thu, 29 Apr 2021 02:20:01 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:90c:e290:c304:4b2b:4a79:1da9? ([2a01:e0a:90c:e290:c304:4b2b:4a79:1da9])
+        by smtp.gmail.com with ESMTPSA id a9sm3960823wrw.26.2021.04.29.02.20.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Apr 2021 02:20:01 -0700 (PDT)
+Subject: Re: [PATCH] clk: meson: g12a: fix gp0 and hifi ranges
+To:     Jerome Brunet <jbrunet@baylibre.com>
+Cc:     Kevin Hilman <khilman@baylibre.com>,
+        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210429090325.60970-1-jbrunet@baylibre.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <979eb290-6fc2-38df-0596-867b82d22226@baylibre.com>
+Date:   Thu, 29 Apr 2021 11:20:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20210429090325.60970-1-jbrunet@baylibre.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, April 29, 2021 10:25:53 AM CEST Fabio Aiuto wrote:
-> On Thu, Apr 29, 2021 at 09:44:47AM +0200, Fabio M. De Francesco wrote:
-> > On Thursday, April 29, 2021 9:26:20 AM CEST Fabio Aiuto wrote:
-> > > Hi Fabio,
-> > > 
-> > > On Wed, Apr 28, 2021 at 01:33:45PM +0200, Fabio M. De Francesco wrote:
-> > > > Removed four set but unused variables. Issue detected by gcc.
-> > > > 
-> > > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > > > ---
-> > > > 
-> > > >  drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c | 5 -----
-> > > >  1 file changed, 5 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-> > > > b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c index
-> > 
-> > 082448557b53..96cb4426a0f4
-> > 
-> > > > 100644
-> > > > --- a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-> > > > +++ b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-> > > > @@ -3900,14 +3900,11 @@ u8 GetHalDefVar8723B(struct adapter *padapter,
-> > 
-> > enum
-> > 
-> > > > hal_def_variable variable, v>
-> > > > 
-> > > >  			u32 cmd;
-> > > >  			u32 ra_info1, ra_info2;
-> > > >  			u32 rate_mask1, rate_mask2;
-> > > > 
-> > > > -			u8 curr_tx_rate, curr_tx_sgi, hight_rate,
-> > 
-> > lowest_rate;
-> > 
-> > > >  			cmd = 0x40000100 | mac_id;
-> > > >  			rtw_write32(padapter,
-> > 
-> > REG_HMEBOX_DBG_2_8723B, cmd);
-> > 
-> > > >  			msleep(10);
-> > > >  			ra_info1 = rtw_read32(padapter, 0x2F0);
-> > > > 
-> > > > -			curr_tx_rate = ra_info1&0x7F;
-> > > > -			curr_tx_sgi = (ra_info1>>7)&0x01;
-> > > > 
-> > > >  			cmd = 0x40000400 | mac_id;
-> > > >  			rtw_write32(padapter,
-> > 
-> > REG_HMEBOX_DBG_2_8723B, cmd);
-> > 
-> > > > @@ -3916,8 +3913,6 @@ u8 GetHalDefVar8723B(struct adapter *padapter, 
-enum
-> > > > hal_def_variable variable, v>
-> > > > 
-> > > >  			ra_info2 = rtw_read32(padapter, 0x2F4);
-> > > >  			rate_mask1 = rtw_read32(padapter, 0x2F8);
-> > > >  			rate_mask2 = rtw_read32(padapter, 0x2FC);
-> > > > 
-> > > > -			hight_rate = ra_info2&0xFF;
-> > > > -			lowest_rate = (ra_info2>>8)  & 0xFF;
-> > > > 
-> > > >  		}
-> > > >  		break;
-> > > 
-> > > rate_mask{1,2} and ra_info{1,2} seems to be unused as well.
-> > > 
-> > > thank you,
-> > > 
-> > > fabio
-> > 
-> > Hello Fabio,
-> > 
-> > I'm not sure about it: rtw_read32 calls a pointer to a function. I'm don't
-> > know drivers programming, however that function looks like an 
-implementation
-> > of a read() system call. So I wouldn't be so sure to remove those calls.
-> > 
-> > Could calling a (*read) method have side effects on subsequent read()? I 
-mean:
-> > could it update some internal data structure? If not I can remove the
-> > variables you mentioned above and the calls to read32.
-> > 
-> > I'm looking forward to read your reply.
-> > 
-> > Thanks,
-> > 
-> > Fabio
+On 29/04/2021 11:03, Jerome Brunet wrote:
+> While some SoC samples are able to lock with a PLL factor of 55, others
+> samples can't. ATM, a minimum of 60 appears to work on all the samples
+> I have tried.
 > 
-> hi Fabio,
+> Even with 60, it sometimes takes a long time for the PLL to eventually
+> lock. The documentation says that the minimum rate of these PLLs DCO
+> should be 3GHz, a factor of 125. Let's use that to be on the safe side.
 > 
-> rtw_read32 is a macro wrapping _rtw_read32() defined as follows (in core/
-rtw_io.c):
->
-Hi Fabio,
+> With factor range changed, the PLL seems to lock quickly (enough) so far.
+> It is still unclear if the range was the only reason for the delay.
+> 
+> Fixes: 085a4ea93d54 ("clk: meson: g12a: add peripheral clock controller")
+> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+> ---
+>  drivers/clk/meson/g12a.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/clk/meson/g12a.c b/drivers/clk/meson/g12a.c
+> index b080359b4645..a805bac93c11 100644
+> --- a/drivers/clk/meson/g12a.c
+> +++ b/drivers/clk/meson/g12a.c
+> @@ -1603,7 +1603,7 @@ static struct clk_regmap g12b_cpub_clk_trace = {
+>  };
+>  
+>  static const struct pll_mult_range g12a_gp0_pll_mult_range = {
+> -	.min = 55,
+> +	.min = 125,
+>  	.max = 255,
+>  };
+>  
+> 
 
-Thanks a lot for your reply.
+I got other issues with GP0 when trying to use it for DSI on VIM3 & VIM3L.
 
-However, There is something less than clear to me... how did you find that 
-rtw_read32 is a macro wrapping _rtw_read32()? I mean: I knew that, in vim, one 
-can go to the definition of something by using ctrl-] key.
+I had to do change the following to have it lock correctly and achieve rates usable for MIPI-DSI requested bandwidth:
 
-If I do that on rtw_read32 it takes me to a static definition of it in 
-drivers/net/wireless/realtek/rtw88/hci.h. This is a one line function:
+diff --git a/drivers/clk/meson/clk-pll.c b/drivers/clk/meson/clk-pll.c
+index cde07f7ebad6..897cd6db5c0f 100644
+--- a/drivers/clk/meson/clk-pll.c
++++ b/drivers/clk/meson/clk-pll.c
+@@ -391,9 +391,9 @@ static int meson_clk_pll_set_rate(struct clk_hw *hw, unsigned long rate,
+                meson_parm_write(clk->map, &pll->frac, frac);
+        }
 
-static inline void rtw_write32(struct rtw_dev *rtwdev, u32 addr, u32 val)
-{       
-        rtwdev->hci.ops->write32(rtwdev, addr, val);
-}
+-       /* If the pll is stopped, bail out now */
++       /* If the pll is stopped, bail out now * /
+        if (!enabled)
+-               return 0;
++               return 0;*/
 
-When I use ctrl-] on write32() it takes me to struct rtw_hci_ops in drivers/
-net/wireless/realtek/rtw88/hci.h.
+        if (meson_clk_pll_enable(hw)) {
+                pr_warn("%s: pll did not lock, trying to restore old rate %lu\n",
 
-After that I wanted to find where the member (*read32)() is assigned but I 
-don't know where and how to grep it: I tried "grep -rn "\bwrite32\b=" drivers/
-staging/rtl8723bs/" but I found nothing...
+This one is tricky, for DSI the clock rate is set with assigned-clock-rates in DT, but
+then the GP0 is seen as stopped and then the rate is never set.
 
-Can you please explain what I'm doing wrong in following the path I mentioned 
-above and how you find out that macro?
+When afterwards we enable the PLL, the rate set in the registers is invalid and never locks,
+this permits setting the rate in the registers even if the PLL is stopped.
 
-Thanks for your time,
+diff --git a/drivers/clk/meson/g12a.c b/drivers/clk/meson/g12a.c
+index 1b0167b8de3b..08174724a115 100644
+--- a/drivers/clk/meson/g12a.c
++++ b/drivers/clk/meson/g12a.c
+@@ -1602,8 +1602,8 @@ static struct clk_regmap g12b_cpub_clk_trace = {
+ };
 
-Fabio 
-> 
-> u32 _rtw_read32(struct adapter *adapter, u32 addr)
-> {
->         u32 r_val;
->         /* struct       io_queue        *pio_queue = (struct io_queue
-> *)adapter->pio_queue; */ struct io_priv *pio_priv = &adapter->iopriv;
->         struct  intf_hdl                *pintfhdl = &(pio_priv->intf);
->         u32 (*_read32)(struct intf_hdl *pintfhdl, u32 addr);
-> 
->         _read32 = pintfhdl->io_ops._read32;
-> 
->         r_val = _read32(pintfhdl, addr);
->         return rtw_le32_to_cpu(r_val);
-> 
-> }
-> 
-> the actual read seems to be performed by the handler contained in
-> 
-> 	pintfhdl->io_ops._read32;
-> 
-> so:
-> 
-> $ grep -r '\b_read32' drivers/staging/rtl8723bs/
-> 
-> drivers/staging/rtl8723bs/hal/sdio_ops.c:	ops->_read32 = 
-&sdio_read32;
-> 
-> this is the place where _read32 is stored with sdio_read32 reference...
-> 
-> drivers/staging/rtl8723bs/core/rtw_io.c:	u32 (*_read32)(struct 
-intf_hdl *pintfhdl, u32
-> addr); drivers/staging/rtl8723bs/core/rtw_io.c:	_read32 = pintfhdl-
->io_ops._read32;
-> ...
-> 
-> if you check it in hal/sdio_ops.c, nothing is written, just reads are
-> performed (and it's not odd, for a read function isn't supposed to write
-> something under the hood ;)).
-> 
-> I think those variables could be easily removed as W=1 gcc suggests.
-> 
-> thank you,
-> 
-> fabio
+ static const struct pll_mult_range g12a_gp0_pll_mult_range = {
+-       .min = 55,
+-       .max = 255,
++       .min = 120,
++       .max = 168,
+ };
 
+I had to change the min/max to achieve a stable and functional rate of 720MHz after the ODs.
 
-
-
+Neil
