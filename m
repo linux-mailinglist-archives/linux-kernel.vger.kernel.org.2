@@ -2,150 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37FC736ED4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 162C736ED4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240675AbhD2PXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 11:23:44 -0400
-Received: from mail-eopbgr20076.outbound.protection.outlook.com ([40.107.2.76]:46214
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232989AbhD2PXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 11:23:42 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ixzwn6v7aKt1xxcQOQfa/eBnKngBC3+v4CgDT2gM4RKilo74pSO/MiggkiACSe+KnQRgZGFXtwH7TzoBXZI3U7gha2NorC5ZJGKYw1AFsrxNnUM6V3ZQ6ATFYsksUD1cZ6KxlNQI8QZNIKDqr1bmOWg8emjf2GvSRXHCJbIy52tG17O3P7c6armdP9JQpTwn6HzAQVeoNknMen0Q8PcY+6f+8zN86USXGbz10YNrIKDSA0uEX2+BGqZeQ5fIcrwRtW5AB4glSHmgF3Ke/ZBKiqozKRfRVd4FzVcdvgb7jG46Z3+I4knjHvTfwe9GYZhN9MUQMEqNnfZO7cCDi8Zh2A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E1cCO2A+lX6ecM+zjv1WfM3Fr3iIhR6Gw3YRNEPUrZk=;
- b=R2JW3Jo9qb8+gLn1zY8gCSH0GAHv58K7An6qDfoHXyw8K6ryBfP/VuaRnHuy4Qcw4m96Z42oiYoB2QsEtBVFhyqa0duDqexKf3PVeoF8NWXkvINd6CxbLGuqpuBHNPsO3zJh8BX0L63ftUaoRZmX5EzvD2ChpFUaTgohU1DvytUgJMWBM4bdNrcrwjBPTNdgyd5I74dNk2k8bAuctaU5qFFdqOLZ2VMYeDGbuMDBx6V8fcWNjl7Gzt0Cuje/tZGo47Ly+Xf+7PYx5tyLeQtjMhAohKZ+031lBOyq4D0sX70vYas5iH3TR3nMRYTYsRDHBEwwPtM7aaaxrCAh1+Fk+g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E1cCO2A+lX6ecM+zjv1WfM3Fr3iIhR6Gw3YRNEPUrZk=;
- b=U8Ky0R9c0K3A0e2PyN9wqSl/hSRvizf31n/+lHdk815tAFGPAVZizhMHUWWnao3uslEnDod6ufK2c8Fdh+jXWbjfqwbZ+qZrKrGlq2/CK7Bnyxw9ZE7JsgvfbzBO+VXjMwFABylZKE2S76bTTqiynprSMZX6ka0oTmAXBM/Ecr0=
-Received: from AM6PR04MB6053.eurprd04.prod.outlook.com (2603:10a6:20b:b9::10)
- by AM6PR04MB4199.eurprd04.prod.outlook.com (2603:10a6:209:49::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21; Thu, 29 Apr
- 2021 15:22:51 +0000
-Received: from AM6PR04MB6053.eurprd04.prod.outlook.com
- ([fe80::b034:690:56aa:7b18]) by AM6PR04MB6053.eurprd04.prod.outlook.com
- ([fe80::b034:690:56aa:7b18%4]) with mapi id 15.20.4087.025; Thu, 29 Apr 2021
- 15:22:51 +0000
-From:   "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
-To:     Fabio Estevam <festevam@gmail.com>,
-        "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
-CC:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Horia Geanta <horia.geanta@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        "dominique.martinet@atmark-techno.com" 
-        <dominique.martinet@atmark-techno.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>
-Subject: RE: [PATCH v1 2/2] caam: imx8m: change to use of_match_node in
- run_descriptor_deco0
-Thread-Topic: [PATCH v1 2/2] caam: imx8m: change to use of_match_node in
- run_descriptor_deco0
-Thread-Index: AQHXPQBPQp7syc9+7kmnegummfCQsqrLh0YAgAASmjA=
-Date:   Thu, 29 Apr 2021 15:22:51 +0000
-Message-ID: <AM6PR04MB60536DF97D12915D5E5A8663E25F9@AM6PR04MB6053.eurprd04.prod.outlook.com>
-References: <20210429140250.2321-1-alice.guo@oss.nxp.com>
- <20210429140250.2321-2-alice.guo@oss.nxp.com>
- <CAOMZO5Cbfh3Aj5-i2y+GDZ=-SZw-wLMbPMew=YTcf9Yr6ohVCw@mail.gmail.com>
-In-Reply-To: <CAOMZO5Cbfh3Aj5-i2y+GDZ=-SZw-wLMbPMew=YTcf9Yr6ohVCw@mail.gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oss.nxp.com;
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [92.121.68.129]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2b6a604c-4962-47f5-51c9-08d90b22a785
-x-ms-traffictypediagnostic: AM6PR04MB4199:
-x-ms-exchange-sharedmailbox-routingagent-processed: True
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR04MB4199889ED6E864A48523D56FA35F9@AM6PR04MB4199.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Y9BU/wExQeUU6b/V+L+i8uNv0j9sRZrZhwoND7ujb4l73VyxW+ndBhuh5EdiG7hTdyVLV9z0MPwJnhxU5SO+zZOp95lPnbfWTOlccISVr4AayEUT+bqoBjTLrAETxSdZ8EoyESzfj0tWDT1+nRgbmEpUi+t7kk+s5XBdZJx7mV3tILDxXK19XX6owO7a/p2G6stL97MF4dtQPxLSAsKgZabF3mP4X6S2Ny2vQPO/FqNCcHHwS734ZOGkcaeGYDGNSwrUqVHuuR0LDb68nLY6mMFedZI/UoWH5vkBSG42mpkA6++J+r8hp52+QkJ+jmNfSOiqbRZQy9b+MmpGUHow45URLltZnBUupB0hk8zxVB+ycwqQ5K4jFYoe+fqyavlsZoZm8RP1/iazFSh4n4WrpQAoYzLciJAmWM+lt2+iszJsfX6uKfjIaxI1ZeULbojwZ79VaaOCzyuVVcKdZcx6VnkBBVakxjKivpjP1cFlsAv0kogz+lZlp5o6IOCzimf82E/dDiBtC+fr0o64LcEhbmBpVrwDbS4BObZ9PaJg/oyJrccfCjiXTydQk6zG58xfH5xwXtUFnztpQOvN0e/mUeKlFVQfPcsWTF6SrritzvB29prhuwfuMFCwPWehojjzKlTeRsle7vxIujbtJznQVg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6053.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(498600001)(54906003)(8936002)(76116006)(2906002)(110136005)(186003)(122000001)(52536014)(66446008)(66476007)(26005)(66946007)(66556008)(64756008)(7416002)(55016002)(5660300002)(53546011)(4744005)(7696005)(33656002)(6506007)(8676002)(86362001)(71200400001)(9686003)(83380400001)(4326008)(38100700002)(32563001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?Y3JPNkhxS2VGY3V0STNyY0gzRm02c3VocWxpV3RHNmxhM0tKYWo0TkVKamJ3?=
- =?utf-8?B?VTlaQmo4T0swRjFVTjBoZWRNK1h2U1pucjlGT2k0UHc1dHJUSU9idW54d3B6?=
- =?utf-8?B?VDMxTERxYlpRWmE4YlY0OW9zMlFYNWsxdlY3ZUxHa0tBSVc1bWRwdTNSdzJ1?=
- =?utf-8?B?aFBCWE9IVzZoMU9paFNualdJNDlrSVlMRjF6K1NhMnh3R0wxd0NSNEsxWEZ5?=
- =?utf-8?B?TFlPZEsvQzdFb1RxQlVGeXByQXFzTTYvaHNSeTZxcDE5MHpuZEtNd2gwcEYv?=
- =?utf-8?B?N3NNVVhPL3JpZGJDeGRHdjkrenNLU0JOWmlYVGJCTU9qM2d6OVY3QTdBRjRa?=
- =?utf-8?B?S1FLWkVEaFdPUzNIZXExZHVCaXJSa2Q4bTBSS1pTS0x1WWFRdU1UNU1PWXlP?=
- =?utf-8?B?VkpSamlOb0ZjcXdhaWFjSU1lTTVURFR4VURHUVFaTVJ0S0NiWllNKzArT2gy?=
- =?utf-8?B?bHVpdUFDd3FVU1hMWHNlN01NYnhDdkZOWHdUQ2NCWWN6TkVRaUN2QXhNRTBC?=
- =?utf-8?B?T1dnY2JOSGFzMjU1eEVnM3hZQ05hWVRXdW0rYU5ZbTFibG5aM1Mrb0FZUWVQ?=
- =?utf-8?B?d3RTTzZtdlAya25lSSs1cnlCR1Y5WVFkN2xGZlVJbFlHS1o3bTMxbkltM2F2?=
- =?utf-8?B?YnFhYmQzd1BNTFhsdTRFd090Q2Q5SVl5N0EwRDNkcllkUFBuSnZEcVFRWWRt?=
- =?utf-8?B?SDV6a1p6R0t4WXRxY2FHTnBOaGZiekNodkpKSnFhOWtPTFZwSkZ6OG1ld3k2?=
- =?utf-8?B?MWFSSi9PZ1JnREpwbVhGeEN2Z2lSK0RIZlZEL1dVQmZzOVhNQThNVWxpbmZZ?=
- =?utf-8?B?blVWL1dxSFRjNllzcEdablhSK1ZDOUNHM3NQR2hSOVlBM3kxeWZ2bXNodzRV?=
- =?utf-8?B?cDBQY0ozemRvdnNrN0Z1ZWd3VHBQVlI0U1pvQ24ycHAwc1BRR1J6OUpLL1dR?=
- =?utf-8?B?VVp0eEhnb0Nza2FWQ0NHbVoyNFo2WUhVMTlXVy9SNENaTi9pd0h0VVNhTzRO?=
- =?utf-8?B?U3dEREJDdUNteW5iWVQ1SEFDdjQ1c1JIVC9QMCtTTUpPRlh5a1BaYWxJdEdY?=
- =?utf-8?B?VElwUXZENHlVSUVLQUJZQU1IVUZubHNTbXlwNTUwYW9GQmZmSDNOYmxnRVRa?=
- =?utf-8?B?QjVlcE1mcExrcjg5UmdXSStIM2xoQ29abDJpeU5NMXp2MnFpWnVvZGVEL1NW?=
- =?utf-8?B?VWFwSC9LaFJQVENOLzlISDFZT1k3b0FFL1pocjduUTFYOFN6cWwvbXJkWlZy?=
- =?utf-8?B?eGJYYlAwTXFoY1VyRkcrS3g5a0hlSnBIeTB5MXVXQnZUdks5bzcxNVN6eUhK?=
- =?utf-8?B?ektwdGxGSktoWmhUL1Vya2dVNVpQS3JEVzYxNmZTb3FFdHUyRTZ4QW5nTjFK?=
- =?utf-8?B?c0xNNThlV3hiVWVBclpDWnlPUzdrYnpDMGZyWUdqeGlySzdDQkI2ZzF1UjIv?=
- =?utf-8?B?eVoxbjdsUm1EQVF0Uml2dFJQaUpoVHRyY28wK3JRWFJDUmxZV3V1UWhGZUtD?=
- =?utf-8?B?QUVMTlNOSHhtMi80SGhOSW1aSitFWFFvakRIa0MwZ2J3eEJTa01YMGFzM1k1?=
- =?utf-8?B?cXBYelI1MlVQSGZBT2ovVWVlaEFmRUJrVkIwV3JLaUpBMUVJa2MxcFZLdDIv?=
- =?utf-8?B?UzBHcFRVZC8xWVduZDRWWm5VdEUzNWpDQ1FzTG9qNS9OcEhjOVhMUEs4anpN?=
- =?utf-8?B?NkFPbkRETWJoQzkyNldPd3V6Wi94Uk1xdUJxYmp3TnRMMUdTU3Jjc2RkRkFH?=
- =?utf-8?Q?ZEieNMW5GmVtx3JN8t+6GxCFjy+mBai9SlNuczK?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S240679AbhD2PYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 11:24:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233148AbhD2PYY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 11:24:24 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D0EC06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:23:36 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id q10so47376732pgj.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:23:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wMYiQrMMxp1KAmD6rBJdeD74Yv1gPkBbA4QnPdt6Sj0=;
+        b=BZkBythIdb/rLxPtJRW74b5TcaCa08gTAkZWc8/9jHfFgsEiXDRIAszwC4rSnq86Pk
+         jzYbhlf+6BC9gjbrc/fBycvqqy05YA2//rZKNGPw2WrVNJAmbLE0UWnZuXI2GEcobo0u
+         ey9AbkwKBqMX10ojHFgD2Vx3bECe97TE9Y1cB350VKDiutV+RtpCdVqntn8uHjOiBZgM
+         EW2eefHRwbcm87xt1k/Td/Z+LL8SwQqNhRlWdiXlnfn9X2udXBtIByvK14w4FG/ZXVV8
+         NAMcr4vq+EIlZnrmWGeCN0C7TIdQgtVNAYgB4ru2x2lxKsZ0jlo63iTuz/y9PGmKIWdo
+         Lt1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wMYiQrMMxp1KAmD6rBJdeD74Yv1gPkBbA4QnPdt6Sj0=;
+        b=PsDWkUcqn3qPIpoYlp0NFRAE4p7XeexzR+3XNEvnDbEB5Qryj8zRmmTvnSJAhSFT4p
+         9P51fJ/PmBG+l43O9HvyrrA891w1aVV8tsZdOpsdYcmqNJKMnl8hg/3IgVPYzFZTnbeq
+         +GQjksdaeSMQEQukh+d3Vx5uONY/H6Pd9MV4wSCOZOPtd0gedb1snE+cWzipDELN/ZNM
+         ZDdhgcFi0cwJy6pbxGGKsVB5B5SznqbI13B5DI3zD6+VISo4m+4Cs9vUW/ZAweo/aNc7
+         F7SL6qvKe6WH2uC5i4HDqKOX5VWtXNElAQ79LnbfS8xlGTMRShHKqXhr6zHmneT7+Z3s
+         Dc/w==
+X-Gm-Message-State: AOAM530pS2Nx4TB/cXgVsaAzViSJYutNqVwuLlqow7VQHQDTz3ovMb6y
+        m+ue3RFm5WmQsEqDKU1VRy+GWg==
+X-Google-Smtp-Source: ABdhPJwat9n5OdJZby1DncnAT3k7z26/jxcDLk33gW9Eu8s4zfB/OraVURfsrF+29NdrkuMTMyekWA==
+X-Received: by 2002:a65:42c3:: with SMTP id l3mr233498pgp.258.1619709816249;
+        Thu, 29 Apr 2021 08:23:36 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([204.124.180.30])
+        by smtp.gmail.com with ESMTPSA id h8sm2633662pjt.17.2021.04.29.08.23.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 08:23:35 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 23:23:26 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Al Grant <Al.Grant@arm.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 4/6] perf arm-spe: Assign kernel time to synthesized
+ event
+Message-ID: <20210429152326.GA282348@leoy-ThinkPad-X240s>
+References: <20210412091006.468557-1-leo.yan@linaro.org>
+ <20210412091006.468557-5-leo.yan@linaro.org>
+ <9036368a-e824-3d63-da5b-54cf32a86aed@arm.com>
+ <20210415152348.GF1011890@leoy-ThinkPad-X240s>
+ <c9c060d1-0884-b67d-7689-6b45ad10baa9@arm.com>
 MIME-Version: 1.0
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6053.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2b6a604c-4962-47f5-51c9-08d90b22a785
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Apr 2021 15:22:51.5632
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dtfpC3vqvCUJ0GAgvU7Artvfy6iElzQaKKtW2/z2H/F3Res9RbCwzy+DrjF3e/FBtqc+vjMO/ECI7am1E8Nzhg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4199
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c9c060d1-0884-b67d-7689-6b45ad10baa9@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRmFiaW8gRXN0ZXZhbSA8
-ZmVzdGV2YW1AZ21haWwuY29tPg0KPiBTZW50OiAyMDIx5bm0NOaciDI55pelIDIyOjA1DQo+IFN1
-YmplY3Q6IFJlOiBbUEFUQ0ggdjEgMi8yXSBjYWFtOiBpbXg4bTogY2hhbmdlIHRvIHVzZSBvZl9t
-YXRjaF9ub2RlIGluDQo+IHJ1bl9kZXNjcmlwdG9yX2RlY28wDQo+IA0KPiBIaSBBbGljZQ0KPiAN
-Cj4gT24gVGh1LCBBcHIgMjksIDIwMjEgYXQgMTE6MDIgQU0gQWxpY2UgR3VvIChPU1MpIDxhbGlj
-ZS5ndW9Ab3NzLm54cC5jb20+DQo+IHdyb3RlOg0KPiA+DQo+ID4gRnJvbTogQWxpY2UgR3VvIDxh
-bGljZS5ndW9AbnhwLmNvbT4NCj4gPg0KPiA+IFBhdGNoICJmaXggdGhlIGJ1aWx0LWluIGNhYW0g
-ZHJpdmVyIGNhbm5vdCBtYXRjaCBzb2NfaWQiIHByb3ZpZGVzDQo+ID4gaW14OG1fbWFjaGluZV9t
-YXRjaCB0byBtYXRjaCBpLk1YOE17USxNLE4sUH0sIHNvIGNoYW5nZSB0byB1c2UgdG8NCj4gPiBv
-Zl9tYXRjaF9ub2RlIHdoaWNoIGNhbiBzaW1wbGlmeSB0aGUgY29kZS4NCj4gDQo+IFNob3VsZG4n
-dCB0aGVzZSBwYXRjaGVzIGJlIHNxdWFzaGVkPw0KDQpUaGVzZSBwYXRjaGVzIHNob3VsZCBub3Qg
-YmUgc3F1YXNoZWQgYmVjYXVzZSAiZml4IHRoZSBidWlsdC1pbiBjYWFtIGRyaXZlciBjYW5ub3Qg
-bWF0Y2ggc29jX2lkIg0KaXMgbWFpbmx5IHVzZWQgdG8gcHJvdmlkZSBkZWZlciBwcm9iZSB3aGVu
-IHNvYyBkZXZpY2UgaGFzIG5vdCBiZWVuIHByb2JlZCB5ZXQsIGFuZCBpcyBvbmx5IGZvcg0KaS5N
-WDhNLiAiY2hhbmdlIHRvIHVzZSBvZl9tYXRjaF9ub2RlIGluIHJ1bl9kZXNjcmlwdG9yX2RlY28w
-IiBpcyBqdXN0IHRvIHNpbXBsaWZ5IGNvZGUuDQoNCkJlc3QgUmVnYXJkcywNCkFsaWNlIEd1bw0K
-DQogDQoNCg==
+Hi James,
+
+On Fri, Apr 16, 2021 at 03:51:25PM +0300, James Clark wrote:
+
+[...]
+
+> >>> diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
+> >>> index 23714cf0380e..c13a89f06ab8 100644
+> >>> --- a/tools/perf/util/arm-spe.c
+> >>> +++ b/tools/perf/util/arm-spe.c
+> >>> @@ -234,7 +234,7 @@ static void arm_spe_prep_sample(struct arm_spe *spe,
+> >>>  	struct arm_spe_record *record = &speq->decoder->record;
+> >>>  
+> >>>  	if (!spe->timeless_decoding)
+> >>> -		sample->time = speq->timestamp;
+> >>> +		sample->time = tsc_to_perf_time(record->timestamp, &spe->tc);
+> >>
+> >>
+> >> I noticed that in arm_spe_recording_options() the TIME sample bit is set regardless of any options.
+> >> I don't know of a way to remove this, and if there isn't, does that mean that all the code in this
+> >> file that looks at spe->timeless_decoding is untested and has never been hit?
+> >>
+> >> Unless there is a way to get a perf file with only the AUXTRACE event and no others? I think that one
+> >> might have no timestamp set. Otherwise other events will always have timestamps so spe->timeless_decoding
+> >> is always false.
+> > 
+> > Good point.  To be honest, I never noticed this issue until you
+> > mentioned this.
+> > 
+> > We should fix for the "timeless" flow; and it's questionable for the
+> > function arm_spe_recording_options(), except for setting
+> > PERF_SAMPLE_TIME, it also hard codes for setting
+> > PERF_SAMPLE_CPU and PERF_SAMPLE_TID.  Might need to carefully go
+> > through this function.
+> > 
+> 
+> Yeah, it's not strictly related to your change, which is definitely an improvement.
+> But maybe we should have a look at the SPE implementation relating to timestamps as a whole.
+
+Just now I sent another patch series "perf arm-spe: Correct recording
+configurations", which is the following up for the issue you found at
+here.
+
+After correcting sample flags, and combining with current patch series
+"perf arm-spe: Enable timestamp", I verified the Arm SPE decoding
+flows for "timeless" decoding, which can work as expected.
+
+So I think we can move forward for this patch series, for easier review,
+I have uploaded my testing branch wiht the complete patches [1].  Could
+you help confirm if this works for you?  Thanks!
+
+Leo
+
+[1] https://github.com/Leo-Yan/linux/tree/perf_arm_spe_timestamp_v4_with_correcting_sample_flags
