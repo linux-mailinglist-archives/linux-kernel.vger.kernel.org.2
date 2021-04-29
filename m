@@ -2,150 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A5436E482
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 07:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB6B36E485
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 07:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236837AbhD2FeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 01:34:22 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:34102 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229792AbhD2FeU (ORCPT
+        id S238308AbhD2Fht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 01:37:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229792AbhD2Fhq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 01:34:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1619674414; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=bsA0nxUjD3KYsDuCWjb6jWZWnBa2V9HdYdOfdgr6mLY=;
- b=HWR8K4TWI3Ctb9WoEGphVT0Y1EzJLfiH0XkZoov4VfO+CAuujkKviL4OhyQvaY21O2yD3Yyr
- EQafd5qsuPpE71tXmffICruFHBVe9utCCfxtlc1CQiRvq9MDC1iV7/UL7TqwGoNKsZiiEh6n
- Zu+pPCFEQg9A/y7L0yqTQNcEhmA=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 608a452de0e9c9a6b6864edf (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 29 Apr 2021 05:33:33
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BB093C433D3; Thu, 29 Apr 2021 05:33:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E371DC4338A;
-        Thu, 29 Apr 2021 05:33:32 +0000 (UTC)
+        Thu, 29 Apr 2021 01:37:46 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D112C06138B
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 22:37:00 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id j4so63498498lfp.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 22:37:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xZdjO0RFzZ36whN0nqHe2gpIIEZmqiH1THH/jtnnt+U=;
+        b=CWIBXDifnBdQIfmH7fbeslO7HP2eB+tTmyS2+tE28FSFjzEoZbGTu0dwfbn2UFv+gO
+         5GC4piK1lG0xbMdstaNzlVQvx+loNPyJ77w2K99aZCLdLZzAsUJeEg/qqDPNCmcGa61c
+         EufhXxsrRrt/3dTxVhgt7dfueNJVuDHmw1hpc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xZdjO0RFzZ36whN0nqHe2gpIIEZmqiH1THH/jtnnt+U=;
+        b=MlrKzYLp3mwtSgvgNK77jzVONT/wjhyo9e5Lybz8fSC3+hv/LzUs0UgEmNtpnUUcjS
+         I4hoL5Mq06wQ+xmBaIgZA48p0mXCpwXQR9r6xraAnGMMGM6/ygbiSUy6rAMhksRtf3vq
+         hD4ZV+G+fEL7gDNBL/seaPDNyQJ3W67ua1aGP9m/MOrzwdm8NCKfSyi2bG7Sx1Gzu4wj
+         DYnVza86qFnRfqIr0RI0ZTRZZ9Di4uCU49VxndZSWt8tLCv0i7i25NlNLOOwYmkA+G/S
+         7UdWSdwAZa/0Yf4c1ksWYNn7IR6XaysFuM1Muv3NdiROaONuThLHW+13IhHY0Mx6+f6u
+         iEMg==
+X-Gm-Message-State: AOAM530/E0tk1ywNLizzOnoRKA9GCFge3n8Hln1sboqzR6nWhkLhuwcW
+        iF+TjtNq1IBbbSVaVurqX1Kxh8IEYG6NKYc2KaMuCA==
+X-Google-Smtp-Source: ABdhPJyQ2IZxORPjDeTCdOrxZkBNm/7PwLV9TJURE53nbZgLwQeggPI1ZudCFD1WHsd77x8hIsDt4W34NsAy5o90BhQ=
+X-Received: by 2002:a19:6d10:: with SMTP id i16mr19428164lfc.126.1619674618681;
+ Wed, 28 Apr 2021 22:36:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 29 Apr 2021 11:03:32 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     robh+dt@kernel.org, bjorn.andersson@linaro.org, sboyd@kernel.org,
-        agross@kernel.org, mani@kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/5] reset: qcom: Add PDC Global reset signals for WPSS
-In-Reply-To: <0c5f747fe0a3f757a4160e4fd28cc2b56a57a39d.camel@pengutronix.de>
-References: <1619508824-14413-1-git-send-email-sibis@codeaurora.org>
- <1619508824-14413-5-git-send-email-sibis@codeaurora.org>
- <0c5f747fe0a3f757a4160e4fd28cc2b56a57a39d.camel@pengutronix.de>
-Message-ID: <e28b74712d66f298af793ceb873216bb@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20200909224226.2177401-1-swboyd@chromium.org> <CABXOdTeWfuZHLywMU1d+No-NSZ4uusAgkhs=2hNZGFM-uYz2wA@mail.gmail.com>
+ <c3ba5d92-8bfe-30d7-44f0-c8a3e40d1906@collabora.com> <CABXOdTdsVyae9oHKEMSbXOsi5VWUZhLbKVxeNVedc4redZineQ@mail.gmail.com>
+ <6b546379-d5ce-f0bd-7907-be36f90c15ed@collabora.com> <159978558757.2295844.13766111546939928492@swboyd.mtv.corp.google.com>
+ <161801995912.3764895.7559313428958998666@swboyd.mtv.corp.google.com>
+In-Reply-To: <161801995912.3764895.7559313428958998666@swboyd.mtv.corp.google.com>
+From:   Gwendal Grignou <gwendal@chromium.org>
+Date:   Wed, 28 Apr 2021 22:36:46 -0700
+Message-ID: <CAPUE2utFmQ6YJxi4zi90i8iBSq6QCDii-HoUW-X1w1bFQ6MqEw@mail.gmail.com>
+Subject: Re: [PATCH v2] platform/chrome: Don't populate lightbar device if it
+ isn't there
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@google.com>,
+        Benson Leung <bleung@chromium.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Lee Jones <lee.jones@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Philipp,
+On Fri, Apr 9, 2021 at 6:59 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> Quoting Stephen Boyd (2020-09-10 17:53:07)
+> > Quoting Enric Balletbo i Serra (2020-09-10 08:49:42)
+> > > On 10/9/20 16:52, Guenter Roeck wrote:
+> > > > On Thu, Sep 10, 2020 at 7:32 AM Enric Balletbo i Serra
+> > > > <enric.balletbo@collabora.com> wrote:
+> > > >> On 10/9/20 16:18, Guenter Roeck wrote:
+> > > >>> On Wed, Sep 9, 2020 at 3:42 PM Stephen Boyd <swboyd@chromium.org> wrote:
+> > > >>>> @@ -206,6 +209,17 @@ static int ec_device_probe(struct platform_device *pdev)
+> > > >>>>                 }
+> > > >>>>         }
+> > > >>>>
+> > > >>>> +       if (!strcmp(ec_platform->ec_name, CROS_EC_DEV_NAME) &&
+> > > >>>> +           !cros_ec_get_lightbar_version(ec, NULL, NULL)) {
+> > > >>>
+> > > >>> Any idea why the lightbar code doesn't use cros_ec_check_features() ?
+> > > >>> There is a definition for EC_FEATURE_LIGHTBAR, but it doesn't seem to
+> > > >>> be used. It would be much more convenient if that feature check could
+> > > >>> be used instead of moving the get_lightbar_version command and its
+> > > >>> helper function around.
+> > > >>>
+> > > >>
+> > > >> IIRC it was to support a very old device, the Pixel Chromebook (Link). This flag
+> > > >> is not set in this device but has a lightbar, hence we had this 'weird' way to
+> > > >> detect the lightbar.
+> > > >>
+> > > >
+> > > > If that is the only reason, wouldn't it be better to use something
+> > > > else (eg dmi_match) to determine if the system in question is a  Pixel
+> > > > Chromebook (Link) ?
+> > > >
+> > > >              if (!strcmp(ec_platform->ec_name, CROS_EC_DEV_NAME) &&
+> > > >                  (cros_ec_check_features(ec, EC_FEATURE_LIGHTBAR) ||
+> > > >                   dmi_match(DMI_PRODUCT_NAME, "Link")) {
 
-Thanks for the review. Will get them
-fixed in the next re-spin.
+check_features supporting lightbar was introduced with crrev.com/c/263463
+in 2015. It is present devices with lightbar like Pixel C and
+backported to Pixel 2 (samus) with crrev.com/c/274047.
+Remaining boards that have lightbar support and not check_features support are:
+link
+bolt (reference board for early samus).
 
-On 2021-04-27 13:28, Philipp Zabel wrote:
-> Hi Sibi,
-> 
-> On Tue, 2021-04-27 at 13:03 +0530, Sibi Sankar wrote:
->> Add PDC Global reset signals for Wireless Processor Subsystem (WPSS)
->> on SC7280 SoCs.
->> 
->> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
->> ---
->> 
->> v2:
->>  * place resets and num_resets adjacent to each other [Stephen]
-> [...]
->> +struct qcom_pdc_reset_desc {
->> +	const struct qcom_pdc_reset_map *resets;
->> +	size_t num_resets;
->> +	unsigned int offset;
->> +};
-> [...]
-> 
-> For consistency, please do the same here:
-> 
->> +static const struct qcom_pdc_reset_desc sdm845_pdc_reset_desc = {
->> +	.resets = sdm845_pdc_resets,
->> +	.offset = RPMH_SDM845_PDC_SYNC_RESET,
->> +	.num_resets = ARRAY_SIZE(sdm845_pdc_resets),
->> +};
-> [...]
-> 
-> and here:
-> 
->> +static const struct qcom_pdc_reset_desc sc7280_pdc_reset_desc = {
->> +	.resets = sc7280_pdc_resets,
->> +	.offset = RPMH_SC7280_PDC_SYNC_RESET,
->> +	.num_resets = ARRAY_SIZE(sc7280_pdc_resets),
->> +};
-> 
-> [...]
->> @@ -54,19 +89,18 @@ static int qcom_pdc_control_assert(struct 
->> reset_controller_dev *rcdev,
->>  					unsigned long idx)
->>  {
->>  	struct qcom_pdc_reset_data *data = to_qcom_pdc_reset_data(rcdev);
->> +	const struct qcom_pdc_reset_map *map = &data->desc->resets[idx];
->> 
->> -	return regmap_update_bits(data->regmap, RPMH_PDC_SYNC_RESET,
->> -				  BIT(sdm845_pdc_resets[idx].bit),
->> -				  BIT(sdm845_pdc_resets[idx].bit));
->> +	return regmap_update_bits(data->regmap, data->desc->offset, 
->> BIT(map->bit), BIT(map->bit));
->>  }
-> 
-> Why not go one step further:
-> 
-> 	u32 mask = BIT(data->desc->resets[idx].bit);
-> 
-> 	return regmap_update_bits(data->regmap, data->desc->offset, mask, 
-> mask);
-> 
-> That seems to be a common pattern in other qcom drivers.
+Therefore, that solution is right. I will send a patch based on that
+code snippet.
 
-will send out a separate patch for
-the other reset driver.
+Gwendal.
 
-> Either way, with the above reset/num_reset changes:
-> 
-> Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
-> 
-> Also,
-> 
-> Acked-by: Philipp Zabel <p.zabel@pengutronix.de>
-> 
-> for the whole series to go through the qcom tree, or let me know if you
-> want me to pick up patches 2-4 next round.
-> 
-> regards
-> Philipp
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+> > > >
+> > >
+> > > That looks a better solution, indeed. And definetely I'd prefer use the check
+> > > features way.
+> > >
+> > > Gwendal, can you confirm that the Pixel Chromebook (Link) is the _only_ one
+> > > affected? This one is the only that comes to my mind but I might miss others.
+> > >
+> > > I think that Samus has this flag (I can double check) and this was discussed
+> > > with you (long, long time ago :-) )
+> > >
+> >
+> > Sounds fine by me. I'll wait for Gwendal to inform us.
+>
+> Anything come of this? I haven't seen any updates.
