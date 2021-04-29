@@ -2,117 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 729DC36E2EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1199D36E2F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232636AbhD2BXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 21:23:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229794AbhD2BX2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 21:23:28 -0400
-Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E133EC06138B;
-        Wed, 28 Apr 2021 18:22:42 -0700 (PDT)
-Received: by mail-vk1-xa2b.google.com with SMTP id v3so5882437vkn.7;
-        Wed, 28 Apr 2021 18:22:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ViBgxGCT8wGE7JBD0u1eysSz+PhOzrYgLess3huZ56U=;
-        b=vh6nUW7529gpJAy6rJnyn5l8oAN1nIzkQSassiRMQIeF7JNZK10rY3ma+D4oogLfFf
-         7OAXcjtWr7gw0x/GBb+SRFuepDyElMjx3E2bwqkpJEFU0418uw21mvneNn60e3Te1X0z
-         No2PY02Wfn8qDTIp5oOprlMJiT7+rJYbJz8FpOjUU8RDil4gWiFmSBZHZyqq6+0epLwB
-         EXoK7yiH3sr46ZhaDlMCYsNK/e43/3HXkyS78M1beKb1jeH2rVwDAGDz9E89XGoj0aL3
-         g+X/OdPPu8OR7GECPBlnucmZ7cGrm51H20zagJI85LkFAXc1Q1ku42F0tqhcH4j8tBYl
-         BYhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ViBgxGCT8wGE7JBD0u1eysSz+PhOzrYgLess3huZ56U=;
-        b=KyoS/muOveRPOd2DXqY3ixzp/9PZWCaAEqEY0WoyiX+4UJezITo7iiKAppKLOw8/PG
-         GER/jvSm864vXXDl33YSoVHm6ppCo/11Iv3qn3RkLERVZXekmYivnUhAfIzPL07j0f6c
-         +gEbXpBVr4ekwkr2jeBugPZrJhmSL20yOUpZcx7HM/YSM5ztqn1jlPlRE7qIcpoNWusx
-         rdVHDWbEXM6F7DNryouWyvYA3dizA7Epo/zxOE+Ev/7sbSwXDYXt6XlwVmdi4gCnbuiu
-         CC5StFfq8SxehhU6TnHQQA7CnXfbPlEno1MgahL3UVceKWvlTQaAuCRJZnhjOPWZWZM+
-         9CfQ==
-X-Gm-Message-State: AOAM530swj34UxzSTpa4b29UnPX2jjqQTL1A3bLpZBkw5VSbrrX7/vR0
-        Ki054C8ZU5++9nshjwNm0kPqgBPlwFTUVEUK+4M=
-X-Google-Smtp-Source: ABdhPJzZGFapknzKZPv3UlZvoGIZbQzR2Gyq6MTd1Tub533B/q5iV3dkRPIhqnicdI8UukonEHQHi5JIcagHmwJ0pPc=
-X-Received: by 2002:a1f:a24c:: with SMTP id l73mr30003357vke.0.1619659361614;
- Wed, 28 Apr 2021 18:22:41 -0700 (PDT)
+        id S233754AbhD2BY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 21:24:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59030 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229794AbhD2BY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 21:24:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B49A5610FA;
+        Thu, 29 Apr 2021 01:24:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619659452;
+        bh=4Hd6dK6eIjF8l59EgDDYr45OuQJR8Yqbc8fdCNhcpyk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Zc6KpNZ3re98d4jLG7D1Jjuj6wDjVcpW5n1++rnsqWPCsHuP+cganlwOPmRwyOSF8
+         lqkWNr7AGpvw40mv8V01RvbHOsrG4bf8Hlef8bunEngVr3Pv1+12lfV/v1kb9Axq/0
+         37GHP0y7HNNGBNUOXyA0NWCHTyO3xIuSj8HZ1QnGx5srMc3An8kKL4t5ykpNu3cLVf
+         +l+pdegnA95lsYeZP+tYs4DV3/4R23S4Z3grpgqiGkQr0SlOIG/OQRqzH7UCExXKOH
+         jmPqdAya3rOf0lR4eTY+4j+e1vBJGjnKHjEK+CLsgLXGES+RiltVxoMtrnLbULV5Zs
+         bI+OzDLZUDR3w==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>, stable@vger.kernel.org
+Subject: [PATCH] Makefile: Move -Wno-unused-but-set-variable out of GCC only block
+Date:   Wed, 28 Apr 2021 18:23:50 -0700
+Message-Id: <20210429012350.600951-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.31.1.362.g311531c9de
 MIME-Version: 1.0
-References: <20210421065501.3134-1-jarvis.w.jiang@gmail.com> <CAMZdPi-H=mnH9SFQZ7XQ8fjb0VtYbaWKGFhoXYyurDAB+RpQ5w@mail.gmail.com>
-In-Reply-To: <CAMZdPi-H=mnH9SFQZ7XQ8fjb0VtYbaWKGFhoXYyurDAB+RpQ5w@mail.gmail.com>
-From:   Jarvis Jiang <jarvis.w.jiang@gmail.com>
-Date:   Thu, 29 Apr 2021 09:22:29 +0800
-Message-ID: <CAPncsNNQKC_o4ZeP7PcfPWK5X70b5+f3oBNFRYaWcjJj1hPjgw@mail.gmail.com>
-Subject: Re: [PATCH v1] bus: mhi: pci_generic: T99W175: update channel name
- from AT to DUN
-To:     Loic Poulain <loic.poulain@linaro.org>
-Cc:     Manivannan Sadhasivam <mani@kernel.org>,
-        Hemant Kumar <hemantk@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Chi-Wei Chen50 <cchen50@lenovo.com>,
-        Mark Pearson <mpearson@lenovo.com>
-Content-Type: text/plain; charset="UTF-8"
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 4:30 PM Loic Poulain <loic.poulain@linaro.org> wrote:
->
-> On Wed, 21 Apr 2021 at 08:56, Jarvis Jiang <jarvis.w.jiang@gmail.com> wrote:
-> >
-> > According to MHI v1.1 specification, change the channel name of T99W175
-> > from "AT" to "DUN" (Dial-up networking) for both channel 32 and 33,
-> > so that the channels can be bound to the Qcom WWAN control driver, and
-> > device node such as /dev/wwan0p3AT will be generated, which is very useful
-> > for debugging modem
-> >
-> > Signed-off-by: Jarvis Jiang <jarvis.w.jiang@gmail.com>
->
-> Ok, it seems the spec claims it's a DUN channel, but all vendors use
-> it for AT protocol, so it's fine (and correctly handled by the
-> mhi_wwan_ctrl driver).
->
-> Could you please add a Fixes tag since it fixes your previous commit?
->
+Currently, -Wunused-but-set-variable is only supported by GCC so it is
+disabled unconditionally in a GCC only block (it is enabled with W=1).
+clang currently has its implementation for this warning in review so
+preemptively move this statement out of the GCC only block and wrap it
+with cc-disable-warning so that both compilers function the same.
 
-Sure, I will add it in the next patch.
+Cc: stable@vger.kernel.org
+Link: https://reviews.llvm.org/D100581
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ Makefile | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-thanks,
-Jarvis
+diff --git a/Makefile b/Makefile
+index f03888cdba4e..911d839cfea8 100644
+--- a/Makefile
++++ b/Makefile
+@@ -775,16 +775,16 @@ KBUILD_CFLAGS += -Wno-gnu
+ KBUILD_CFLAGS += -mno-global-merge
+ else
+ 
+-# These warnings generated too much noise in a regular build.
+-# Use make W=1 to enable them (see scripts/Makefile.extrawarn)
+-KBUILD_CFLAGS += -Wno-unused-but-set-variable
+-
+ # Warn about unmarked fall-throughs in switch statement.
+ # Disabled for clang while comment to attribute conversion happens and
+ # https://github.com/ClangBuiltLinux/linux/issues/636 is discussed.
+ KBUILD_CFLAGS += $(call cc-option,-Wimplicit-fallthrough,)
+ endif
+ 
++# These warnings generated too much noise in a regular build.
++# Use make W=1 to enable them (see scripts/Makefile.extrawarn)
++KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
++
+ KBUILD_CFLAGS += $(call cc-disable-warning, unused-const-variable)
+ ifdef CONFIG_FRAME_POINTER
+ KBUILD_CFLAGS	+= -fno-omit-frame-pointer -fno-optimize-sibling-calls
 
-> with that
->
-> Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
->
->
->
-> > ---
-> >  drivers/bus/mhi/pci_generic.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
-> > index 7c810f02a2ef..8c7f6576e421 100644
-> > --- a/drivers/bus/mhi/pci_generic.c
-> > +++ b/drivers/bus/mhi/pci_generic.c
-> > @@ -311,8 +311,8 @@ static const struct mhi_channel_config mhi_foxconn_sdx55_channels[] = {
-> >         MHI_CHANNEL_CONFIG_DL(5, "DIAG", 32, 1),
-> >         MHI_CHANNEL_CONFIG_UL(12, "MBIM", 32, 0),
-> >         MHI_CHANNEL_CONFIG_DL(13, "MBIM", 32, 0),
-> > -       MHI_CHANNEL_CONFIG_UL(32, "AT", 32, 0),
-> > -       MHI_CHANNEL_CONFIG_DL(33, "AT", 32, 0),
-> > +       MHI_CHANNEL_CONFIG_UL(32, "DUN", 32, 0),
-> > +       MHI_CHANNEL_CONFIG_DL(33, "DUN", 32, 0),
-> >         MHI_CHANNEL_CONFIG_HW_UL(100, "IP_HW0_MBIM", 128, 2),
-> >         MHI_CHANNEL_CONFIG_HW_DL(101, "IP_HW0_MBIM", 128, 3),
-> >  };
-> > --
-> > 2.25.1
-> >
+base-commit: d8201efe75e13146ebde433745c7920e15593baf
+-- 
+2.31.1.362.g311531c9de
+
