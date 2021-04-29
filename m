@@ -2,64 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9ECF36EFB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 20:50:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BE7736EFC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 20:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241253AbhD2SvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 14:51:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44090 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241017AbhD2SvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 14:51:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9448E61408;
-        Thu, 29 Apr 2021 18:50:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619722224;
-        bh=gsDhp5xP+VTDVof1bkfn1g5YLC96sgnxmOLcyWwKWcw=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=MS6bQzaslH43Oyc5fgCBc/Lx1D/sbYzkOMkBKb0gUjBpLIeu3jz6XxBbQAFefAxWK
-         79U6+a4XD4NBcQrn2TOBXXswMnZJi5CNknLOJ2YxjHT7YQpKFfmgCjczvrkhYnvTSH
-         prypvjFyCfEth+lfEZ0Vnw6pxrUke1yPGUU0jqa2LzRrxGQyq0O40XOoBMhQMfsfuS
-         voeM+oXlzkcmCBH+bYMbYtu0eijRfNVhtkaDv6T6y8Qva5JTnCmOnicysMMwIM+1BH
-         4OipUMO9qxaGGZmZkRBPl8fiOLZsZKrbkwORYnHzYzjmHUVEUSU5yG2helY99Ui5s+
-         o7DHVSG7dp0Hw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8E49C60A1B;
-        Thu, 29 Apr 2021 18:50:24 +0000 (UTC)
-Subject: Re: [GIT PULL] x86/mm changes for v5.13
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210429082819.GA2827959@gmail.com>
-References: <20210429082819.GA2827959@gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210429082819.GA2827959@gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-mm-2021-04-29
-X-PR-Tracked-Commit-Id: a500fc918f7b8dc3dff2e6c74f3e73e856c18248
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 635de956a7f5a6ffcb04f29d70630c64c717b56b
-Message-Id: <161972222457.6619.15296998135532721680.pr-tracker-bot@kernel.org>
-Date:   Thu, 29 Apr 2021 18:50:24 +0000
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rik van Riel <riel@surriel.com>,
-        Nadav Amit <namit@vmware.com>
+        id S241472AbhD2SwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 14:52:00 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:49816 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241434AbhD2Svx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 14:51:53 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TIohum016066;
+        Thu, 29 Apr 2021 18:51:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=6WL3UehjKjLvokjQ71PRkHVn0xAi2FYu3gjgUD+xzsw=;
+ b=yOb4L89nACWZsbgVaPXoyWC8gAhcNX/X0eCTtVp8S+wjNFE8/6SGWDhUoQHJRYJ+6lOz
+ qebyy7w/rS70YJsXSXkrk6+KRI/rAetP109XxQpj3DIzOKmJUq2ytr0OFNGNHpMaNUdh
+ IvgHnNhigv3WNlAAI9uH6ETrRQ9ZHHVj6j3jxkzl7LwNKJ7izsFBJDPrldta2jWDVA8y
+ SLmfGAlVrT484IR0pdKOxePls39F+y+DMiYjMLCHfJT9J7YY4WJnbDzRdoUsKfj2rEC5
+ cOrYTU/aozISb3pn3CzM3EP9fO8KdNG/GrA36WxU7A8znBQRJAeCiTFf4kVnp9y6HcGh 0g== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 385aft5e8a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 18:51:02 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TIktLi022195;
+        Thu, 29 Apr 2021 18:51:02 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 3848f1grqv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 18:51:02 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13TIp2ir041420;
+        Thu, 29 Apr 2021 18:51:02 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.147.25.63])
+        by userp3030.oracle.com with ESMTP id 3848f1grqc-1;
+        Thu, 29 Apr 2021 18:51:02 +0000
+From:   Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+Cc:     saeed.mirzamohammadi@oracle.com, Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH  1/1] HID: quirks: Add quirk for Lenovo optical mouse
+Date:   Thu, 29 Apr 2021 11:50:39 -0700
+Message-Id: <20210429185040.46249-1-saeed.mirzamohammadi@oracle.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: cwHqY566YxCjjfXVwr3HCcFMPJeMcS3A
+X-Proofpoint-ORIG-GUID: cwHqY566YxCjjfXVwr3HCcFMPJeMcS3A
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9969 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 lowpriorityscore=0
+ mlxlogscore=999 malwarescore=0 phishscore=0 priorityscore=1501
+ clxscore=1011 spamscore=0 bulkscore=0 suspectscore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104290119
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 29 Apr 2021 10:28:19 +0200:
+The Lenovo optical mouse with vendor id of 0x17ef and product id of
+0x600e experiences disconnecting issues every 55 seconds:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-mm-2021-04-29
+[38565.706242] usb 1-1.4: Product: Lenovo Optical Mouse
+[38565.728603] input: Lenovo Optical Mouse as /devices/platform/scb/fd500000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/usb1/1-1/1-1.4/1-1.4:1.0/0003:17EF:600E.029A/input/input665
+[38565.755949] hid-generic 0003:17EF:600E.029A: input,hidraw1: USB HID v1.11 Mouse [Lenovo Optical Mouse] on usb-0000:01:00.0-1.4/input0
+[38619.360692] usb 1-1.4: USB disconnect, device number 48
+[38620.864990] usb 1-1.4: new low-speed USB device number 49 using xhci_hcd
+[38620.984011] usb 1-1.4: New USB device found, idVendor=17ef,idProduct=600e, bcdDevice= 1.00
+[38620.998117] usb 1-1.4: New USB device strings: Mfr=0, Product=2,SerialNumber=0
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/635de956a7f5a6ffcb04f29d70630c64c717b56b
+This adds HID_QUIRK_ALWAYS_POLL for this device in order to work properly.
 
-Thank you!
+Reference:
+https://github.com/sriemer/fix-linux-mouse
 
+Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+---
+ drivers/hid/hid-ids.h    | 1 +
+ drivers/hid/hid-quirks.c | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index d004f5645b30..98a8c2e9cf03 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -740,6 +740,7 @@
+ #define USB_DEVICE_ID_LENOVO_X1_COVER	0x6085
+ #define USB_DEVICE_ID_LENOVO_X1_TAB	0x60a3
+ #define USB_DEVICE_ID_LENOVO_X1_TAB3	0x60b5
++#define USB_DEVICE_ID_LENOVO_OPTICAL_USB_MOUSE_600E	0x600e
+ #define USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_608D	0x608d
+ #define USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_6019	0x6019
+ #define USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_602E	0x602e
+diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
+index f35d919c4eba..680406305a7c 100644
+--- a/drivers/hid/hid-quirks.c
++++ b/drivers/hid/hid-quirks.c
+@@ -110,6 +110,7 @@ static const struct hid_device_id hid_quirks[] = {
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_KYE, USB_DEVICE_ID_KYE_PENSKETCH_M912), HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_KYE, USB_DEVICE_ID_KYE_EASYPEN_M406XE), HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_KYE, USB_DEVICE_ID_PIXART_USB_OPTICAL_MOUSE_ID2), HID_QUIRK_ALWAYS_POLL },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_OPTICAL_USB_MOUSE_600E), HID_QUIRK_ALWAYS_POLL },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_608D), HID_QUIRK_ALWAYS_POLL },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_6019), HID_QUIRK_ALWAYS_POLL },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_602E), HID_QUIRK_ALWAYS_POLL },
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.27.0
+
