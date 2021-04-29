@@ -2,190 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B888A36E9A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 13:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6147436E9AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 13:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235270AbhD2Leq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 07:34:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231921AbhD2Lep (ORCPT
+        id S232101AbhD2Lgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 07:36:42 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:6308 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230148AbhD2Lgk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 07:34:45 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0207FC06138B;
-        Thu, 29 Apr 2021 04:33:59 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id j10so11115367lfb.12;
-        Thu, 29 Apr 2021 04:33:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pRbuoEIim8wsF2C8VdzLs/YLM/1AITJTydfJ7MQBhhM=;
-        b=ogDtxXWDerzgMms96J516/1092QTu+vbUPMbohoBszxQJ6Ux3wSkwodVyccD7yu/aw
-         P9GVfMuEnPJS7WvQ+4AlfPyBLzun3JogjtQ4Kkb44RwQFvjefPHMApucSULbYD7G5tGb
-         /e1RTI3o89oLU3BE3OEGE6o2pBts63GFo9Yukk/KUalCaVg5yeoY0D6aZgTybDSVcQBD
-         GZJ7yz7KshRQTAhcGE2OUHnIxTBvWEwfngpDNPsPS/ZCy2Hxr/bR5pxn2FEQt98xDs0+
-         g668wocdERHPqniLTrSTJv9Ot8ktvQXGTw6SG43TrEAM4HhjBjhWfxjCm97eTXrIaopD
-         yG+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pRbuoEIim8wsF2C8VdzLs/YLM/1AITJTydfJ7MQBhhM=;
-        b=Su3SnWLWdfaOPpNbFj5nZW9gdzt9RWiVBngNd3+TMLVOrLa9lr3vJuysnYqVLiZLeu
-         cQ46EDcxC1kzctsaCEt6Zs9kY51foxJciLVOziYbzwKVR1OBU4oYEDUjWdEuTiI0180q
-         pRZDzsicl1gFN0xAxmSpK1DyGWUamPQn0fVaA1bfkQvT9nGgj4PRrUz9CXKCxY64ZMIh
-         iM5lgCwgzzJEB4sfmz7Hdu2h8fX6tdMCUQdvVSQya6FlhImn10OUnNK8PdC8jXFLn6k6
-         6NN8w031+PXOaUiqioOGyOw7JBhAqr3ENWms1ar/E8pVxCRTh6kywxeUvZSgQ47l/yO8
-         d4+Q==
-X-Gm-Message-State: AOAM530JGrzjX7XIX5bdA9kbS9hJTKm7ZQwd2FXArPFhp2REXV4wZ37b
-        xIQrLZXRlFN95hAU3mtxnjaLztFJHUFV51+q
-X-Google-Smtp-Source: ABdhPJzSiF9h9nx6Q9ZGVGhdfChxe1/b3PVD/6xVTkd2Ui8nLkL41A2/T8ooeXfhhJkeZvUB1rNeUQ==
-X-Received: by 2002:a05:6512:3ca9:: with SMTP id h41mr25760102lfv.145.1619696037463;
-        Thu, 29 Apr 2021 04:33:57 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.226.84])
-        by smtp.gmail.com with ESMTPSA id h22sm496950lfu.91.2021.04.29.04.33.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 04:33:57 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 14:33:54 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Vegard Nossum <vegard.nossum@oracle.com>,
-        akpm@linux-foundation.org, peterz@infradead.org, axboe@kernel.dk,
-        pmladek@suse.com
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ext4: fix memory leak in ext4_fill_super
-Message-ID: <20210429143354.418248a7@gmail.com>
-In-Reply-To: <3c3877a4-fef2-9e24-f99f-2ecc46deb7e4@oracle.com>
-References: <20210428172828.12589-1-paskripkin@gmail.com>
-        <3c3877a4-fef2-9e24-f99f-2ecc46deb7e4@oracle.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        Thu, 29 Apr 2021 07:36:40 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13TBX5mW147941;
+        Thu, 29 Apr 2021 07:35:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
+ : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=8P9s2/WzmM3qHJHqKhRFK3MoGT1jfmyGj1Yb0DkPOYk=;
+ b=WQAFwBz5cefFy/WsVJg+uWlx9iCFk1jh+PnEKvp6S+i1IAiMTSyqzVv67erjpu2R859g
+ 0Aw4zavBMCYY43QE6kEF7YvOgkTKPtuLKVzYrHARDyTSwfw8vFOHk8qnCiMTbzN5OwBv
+ yZM9re1iynyhFSKP7ndt+BcuHvONSAv/n9TBZ7M5xhL4PnxerEWq/7vSvrwnLCYMw/TR
+ di0/eOxr0EphrSEBkCCk7i3fIjmSKnkuSCGh5kO6z1VATAb1JJITnitypeQKVVn5bsk2
+ BsBvYryfUfsIuXhr+v85GICTwxnHC8Y7LtEnJGBFjkxeDD4aBalpImOy0xNL45HuAGop ew== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 387v1b01nu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Apr 2021 07:35:37 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13TBXd35027882;
+        Thu, 29 Apr 2021 11:35:35 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 384akhacfr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Apr 2021 11:35:35 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13TBZ6w722937992
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 11:35:06 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F30F95206D;
+        Thu, 29 Apr 2021 11:35:30 +0000 (GMT)
+Received: from pomme.local (unknown [9.145.30.132])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id AD8E85208A;
+        Thu, 29 Apr 2021 11:35:30 +0000 (GMT)
+Subject: Re: [PATCH v3] pseries/drmem: update LMBs after LPM
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org
+Cc:     nathanl@linux.ibm.com, Tyrel Datwyler <tyreld@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20210428094758.28665-1-ldufour@linux.ibm.com>
+ <87fsz95qso.fsf@linux.ibm.com>
+ <e3fcd8b6-6d43-85ed-7036-42430aad4979@linux.ibm.com>
+Message-ID: <66c1b88f-6614-52b1-9b53-5fe60a1a813b@linux.ibm.com>
+Date:   Thu, 29 Apr 2021 13:35:30 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <e3fcd8b6-6d43-85ed-7036-42430aad4979@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: zYOTUSwoHagKxkxG2qPmecoJ-wj0feMY
+X-Proofpoint-GUID: zYOTUSwoHagKxkxG2qPmecoJ-wj0feMY
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-29_06:2021-04-28,2021-04-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
+ malwarescore=0 adultscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
+ phishscore=0 clxscore=1015 lowpriorityscore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104290079
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Apr 2021 12:01:46 +0200
-Vegard Nossum <vegard.nossum@oracle.com> wrote:
-
+Le 29/04/2021 à 13:31, Laurent Dufour a écrit :
+> Le 29/04/2021 à 12:27, Aneesh Kumar K.V a écrit :
+>> Laurent Dufour <ldufour@linux.ibm.com> writes:
+>>
+>>> After a LPM, the device tree node ibm,dynamic-reconfiguration-memory may be
+>>> updated by the hypervisor in the case the NUMA topology of the LPAR's
+>>> memory is updated.
+>>>
+>>> This is caught by the kernel, but the memory's node is updated because
+>>> there is no way to move a memory block between nodes.
+>>>
+>>> If later a memory block is added or removed, drmem_update_dt() is called
+>>> and it is overwriting the DT node to match the added or removed LMB. But
+>>> the LMB's associativity node has not been updated after the DT node update
+>>> and thus the node is overwritten by the Linux's topology instead of the
+>>> hypervisor one.
+>>>
+>>> Introduce a hook called when the ibm,dynamic-reconfiguration-memory node is
+>>> updated to force an update of the LMB's associativity.
+>>>
+>>> Cc: Tyrel Datwyler <tyreld@linux.ibm.com>
+>>> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+>>> ---
+>>>
+>>> V3:
+>>>   - Check rd->dn->name instead of rd->dn->full_name
+>>> V2:
+>>>   - Take Tyrel's idea to rely on OF_RECONFIG_UPDATE_PROPERTY instead of
+>>>   introducing a new hook mechanism.
+>>> ---
+>>>   arch/powerpc/include/asm/drmem.h              |  1 +
+>>>   arch/powerpc/mm/drmem.c                       | 35 +++++++++++++++++++
+>>>   .../platforms/pseries/hotplug-memory.c        |  4 +++
+>>>   3 files changed, 40 insertions(+)
+>>>
+>>> diff --git a/arch/powerpc/include/asm/drmem.h b/arch/powerpc/include/asm/drmem.h
+>>> index bf2402fed3e0..4265d5e95c2c 100644
+>>> --- a/arch/powerpc/include/asm/drmem.h
+>>> +++ b/arch/powerpc/include/asm/drmem.h
+>>> @@ -111,6 +111,7 @@ int drmem_update_dt(void);
+>>>   int __init
+>>>   walk_drmem_lmbs_early(unsigned long node, void *data,
+>>>                 int (*func)(struct drmem_lmb *, const __be32 **, void *));
+>>> +void drmem_update_lmbs(struct property *prop);
+>>>   #endif
+>>>   static inline void invalidate_lmb_associativity_index(struct drmem_lmb *lmb)
+>>> diff --git a/arch/powerpc/mm/drmem.c b/arch/powerpc/mm/drmem.c
+>>> index 9af3832c9d8d..f0a6633132af 100644
+>>> --- a/arch/powerpc/mm/drmem.c
+>>> +++ b/arch/powerpc/mm/drmem.c
+>>> @@ -307,6 +307,41 @@ int __init walk_drmem_lmbs_early(unsigned long node, 
+>>> void *data,
+>>>       return ret;
+>>>   }
+>>> +/*
+>>> + * Update the LMB associativity index.
+>>> + */
+>>> +static int update_lmb(struct drmem_lmb *updated_lmb,
+>>> +              __maybe_unused const __be32 **usm,
+>>> +              __maybe_unused void *data)
+>>> +{
+>>> +    struct drmem_lmb *lmb;
+>>> +
+>>> +    /*
+>>> +     * Brut force there may be better way to fetch the LMB
+>>> +     */
+>>> +    for_each_drmem_lmb(lmb) {
+>>> +        if (lmb->drc_index != updated_lmb->drc_index)
+>>> +            continue;
+>>> +
+>>> +        lmb->aa_index = updated_lmb->aa_index;
+>>> +        break;
+>>> +    }
+>>> +    return 0;
+>>> +}
+>>> +
+>>> +/*
+>>> + * Update the LMB associativity index.
+>>> + *
+>>> + * This needs to be called when the hypervisor is updating the
+>>> + * dynamic-reconfiguration-memory node property.
+>>> + */
+>>> +void drmem_update_lmbs(struct property *prop)
+>>> +{
+>>> +    if (!strcmp(prop->name, "ibm,dynamic-memory"))
+>>> +        __walk_drmem_v1_lmbs(prop->value, NULL, NULL, update_lmb);
+>>> +    else if (!strcmp(prop->name, "ibm,dynamic-memory-v2"))
+>>> +        __walk_drmem_v2_lmbs(prop->value, NULL, NULL, update_lmb);
+>>> +}
+>>>   #endif
+>>>   static int init_drmem_lmb_size(struct device_node *dn)
+>>> diff --git a/arch/powerpc/platforms/pseries/hotplug-memory.c 
+>>> b/arch/powerpc/platforms/pseries/hotplug-memory.c
+>>> index 8377f1f7c78e..672ffbee2e78 100644
+>>> --- a/arch/powerpc/platforms/pseries/hotplug-memory.c
+>>> +++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
+>>> @@ -949,6 +949,10 @@ static int pseries_memory_notifier(struct notifier_block 
+>>> *nb,
+>>>       case OF_RECONFIG_DETACH_NODE:
+>>>           err = pseries_remove_mem_node(rd->dn);
+>>>           break;
+>>> +    case OF_RECONFIG_UPDATE_PROPERTY:
+>>> +        if (!strcmp(rd->dn->name,
+>>> +                "ibm,dynamic-reconfiguration-memory"))
+>>> +            drmem_update_lmbs(rd->prop);
+>>>       }
+>>>       return notifier_from_errno(err);
+>>
+>> How will this interact with DLPAR memory? When we dlpar memory,
+>> ibm,configure-connector is used to fetch the new associativity details
+>> and set drmem_lmb->aa_index correctly there. Once that is done kernel
+>> then call drmem_update_dt() which will result in the above notifier
+>> callback?
 > 
-> On 2021-04-28 19:28, Pavel Skripkin wrote:
-> > syzbot reported memory leak in ext4 subsyetem.
-> > The problem appears, when thread_stop() call happens
-> > before wake_up_process().
-> > 
-> > Normally, this data will be freed by
-> > created thread, but if kthread_stop()
-> > returned -EINTR, this data should be freed manually
-> > 
-> > Reported-by: syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
-> > Tested-by: syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
-> > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> > ---
-> >   fs/ext4/super.c | 6 ++++--
-> >   1 file changed, 4 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> > index b9693680463a..9c33e97bd5c5 100644
-> > --- a/fs/ext4/super.c
-> > +++ b/fs/ext4/super.c
-> > @@ -5156,8 +5156,10 @@ static int ext4_fill_super(struct
-> > super_block *sb, void *data, int silent) failed_mount3:
-> >   	flush_work(&sbi->s_error_work);
-> >   	del_timer_sync(&sbi->s_err_report);
-> > -	if (sbi->s_mmp_tsk)
-> > -		kthread_stop(sbi->s_mmp_tsk);
-> > +	if (sbi->s_mmp_tsk) {
-> > +		if (kthread_stop(sbi->s_mmp_tsk) == -EINTR)
-> > +			kfree(kthread_data(sbi->s_mmp_tsk));
-> > +	}
-> >   failed_mount2:
-> >   	rcu_read_lock();
-> >   	group_desc = rcu_dereference(sbi->s_group_desc);
-> > 
+> When a memory DLPAR operation is done, the in memory DT property 
+> "ibm,dynamic-memory" or "ibm,dynamic-memory-v2" (if existing) have to be updated 
+> to reflect the added/removed memory part. This is done by calling 
+> drmem_update_dt().
 > 
-> So I've looked at this, and the puzzling thing is that ext4 uses
-> kthread_run() which immediately calls wake_up_process() -- according
-> to the kerneldoc for kthread_stop(), it shouldn't return -EINTR in
-> this case:
+> This patch is addressing the case where the hypervisor has updated the DT 
+> property mentioned above. In that case, the LMB tree should be updated so the 
+> aa_index fields are matching the DT one. This way the next time a memory DLPAR 
+> operation is done the DT properties "ibm,dynamic-memory" or 
+> "ibm,dynamic-memory-v2" will be rebuilt correctly.
 > 
->   * Returns the result of threadfn(), or %-EINTR if wake_up_process()
->   * was never called.
->   */
-> int kthread_stop(struct task_struct *k)
+>> IIUC, the call back then will update drmem_lmb->aa_index again?
+
+Oh I missed what you pointed out.
+Please ignore my previous answer, I need to double check code.
+
+> drmem_update_dt() is not updating drmem_lmb->aa_index, that's the oppposite, it 
+> is rebuilding the in memory DT property "ibm,dynamic-memory" or 
+> "ibm,dynamic-memory-v2" based on the data stored in the LMB tree.
 > 
-> So it really looks like kthread_stop() can return -EINTR even when
-> wake_up_process() has been called but the thread hasn't had a chance
-> to run yet?
-> 
-> If this is true, then we either have to fix kthread_create() to make
-> sure it respects the behaviour that is claimed by the comment OR we
-> have to audit every single kthread_stop() in the kernel which does
-> not check for -EINTR.
-> 
-> 
-> Vegard
+> Laurent.
 
-I am sorry for my complitely broken mail client :(
-
-Me and Vegard found the root case of this bug:
-
-static int kthread(void *_create) 
-{
-	....
-	ret = -EINTR;
-	if (!test_bit(KTHREAD_SHOULD_STOP, &self->flags)) {
-		cgroup_kthread_ready();
-		__kthread_parkme(self);
-		ret = threadfn(data);
-	}
-	
-	do_exit(ret);
-}
-
-There is a chance, that kthread_stop() call will happen before
-threadfn call. It means, that kthread_stop() return value must be checked everywhere,
-isn't it? Otherwise, there are a lot of potential memory leaks,
-because some developers rely on the fact, that data allocated for the thread will
-be freed _inside_ thread function.
-
-Vegard wrote the code snippet, which reproduces this behavior:
-
-#include <linux/printk.h>
-#include <linux/proc_fs.h>
-#include <linux/kthread.h>
-
-static int test_thread(void *data)
-{
-        printk(KERN_ERR "test_thread()\n");
-        return 0;
-}
-
-static int test_show(struct seq_file *seq, void *data)
-{
-        struct task_struct *t = kthread_run(test_thread, NULL, "test");
-        if (!IS_ERR(t)) {
-                int ret = kthread_stop(t);
-                printk(KERN_ERR "kthread_stop() = %d\n", ret);
-        }
-
-        return 0;
-}
-
-static void __init init_test(void)
-{
-        proc_create_single("test", 0444, NULL, &test_show);
-}
-
-late_initcall(init_test);
-
-So, is this behavior is expected or not? Should maintainers rewrite
-code, which doesn't check kthread_stop() return value?
-
-
-With regards,
-Pavel Skripkin
