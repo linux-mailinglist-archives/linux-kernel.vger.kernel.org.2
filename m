@@ -2,100 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F75C36EB95
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 15:48:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F9636EB9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 15:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239194AbhD2Nss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 09:48:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233862AbhD2Nsr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 09:48:47 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71ACFC06138B;
-        Thu, 29 Apr 2021 06:48:00 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id a11so3884809plh.3;
-        Thu, 29 Apr 2021 06:48:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PlH3+2vfZTyuFfAqFBDTmRaRDdNNygl3Tgthx29aiWE=;
-        b=C0AkQKD0SAMi4Wyu71J5JywvoQzblYpGXd4pTiwkoBY3JmovzQKSQaKYVb8Jd2UDHb
-         gagiQtYRjqKVBxw5zTR5vGN9ucSKnzuNWiixecHwx1D3q8E/JwwKH0/T8E6ykWJUi+nQ
-         Mw1IKlzIchnCInVjXwXRkae3CUsX4B+aiyTTIj403sEi+K+vg9TPyE5UeCM8lRNv6Fc2
-         SgOmVEVGVw1relf9JjfDWdz8RGkMkkKvi08uw/nO1aYBW0eqEH1kiHS4xlBtjIqjLBSV
-         hRVXwGw6I2qcFtYYJ28dVdWrOvJOMRmiwKkcTYwZIDsjcfeGXkP4QeO6FLzIUCzjThOg
-         8Cdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PlH3+2vfZTyuFfAqFBDTmRaRDdNNygl3Tgthx29aiWE=;
-        b=XXuOcglCxi7AOIAnP7KwQAIgm1xAxLu9FJ6je988NGUABqIAUbw4b3ZEVqZmJEHaBs
-         2SxYsetEC6oCGLQ1S49STBJ4BiSfL1IBkz+n/PK7dsRmtu2rFZvGy7xIwMdABvsJrSeV
-         80a15X4LzoVMqSLn/GJ6fFUnnLL2kYAZoEs4ZX86GkJTG4sdgnrBjPGS3K/Q0PvojJej
-         YJTcIGOpieGPVmOq3N0YSSGFB137C7qYX1ZIpNqkBBDirMmstIN7ast2pDyRbFlq/Bk1
-         wGBXyRaroiImSnGR2lzY1n+AK8vNBS5Bav905RdBsxvHC3zXidtfDYVYHVXyK6UZKwpi
-         uVNQ==
-X-Gm-Message-State: AOAM533InAWbWO99BikUpbm6wt3+koKeGUGsGHBRWFOPdvaKSFfEfW0T
-        XtAmPIzjxSDO3vJY0jFLOcU=
-X-Google-Smtp-Source: ABdhPJxcrHPq0Yh2vzbld5D+XYsyxSrLVwVp1i8jSMbpNjL77MDoBAE9H02D6VqQOX42z8fGsjVxsA==
-X-Received: by 2002:a17:903:1243:b029:ed:8298:7628 with SMTP id u3-20020a1709031243b02900ed82987628mr6112715plh.11.1619704080057;
-        Thu, 29 Apr 2021 06:48:00 -0700 (PDT)
-Received: from localhost.localdomain ([103.248.31.149])
-        by smtp.googlemail.com with ESMTPSA id n9sm37175pgt.35.2021.04.29.06.47.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 06:47:59 -0700 (PDT)
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     Ryder Lee <ryder.lee@mediatek.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Amey Narkhede <ameynarkhede03@gmail.com>
-Subject: [PATCH] PCI: mediatek: Verify whether the free_ck clock is ungated or not
-Date:   Thu, 29 Apr 2021 19:17:49 +0530
-Message-Id: <20210429134749.75157-1-ameynarkhede03@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        id S237228AbhD2Nvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 09:51:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43132 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233602AbhD2Nvj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 09:51:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E94D26144B;
+        Thu, 29 Apr 2021 13:50:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619704251;
+        bh=1pwUJEUEEr4r0+qzy+Jmi6HRPUEqKSnEkhxKAyFFqcQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NFRGvH1gSyB/kHWlCBr7aAxHTpmTrlFgzCpg+Nhpkv7A7RqDvoxzDsFbcCLCXkSOo
+         uxGGZVqhZm39ejQBICHAzySZ9jHLa9KnD3ExXP9W+eInk4JV0AmIU/54hL1+ao1sEO
+         vzlh6vLur9euh81m+hyyBr9/+0oF2IqZt/3CqC+g=
+Date:   Thu, 29 Apr 2021 15:48:45 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Wenwen Wang <wang6495@umn.edu>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 4/7] Revert "ethtool: fix a potential missing-check bug"
+Message-ID: <YIq5PZ9vOKdgcD2R@kroah.com>
+References: <20210429130811.3353369-1-gregkh@linuxfoundation.org>
+ <20210429130811.3353369-5-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210429130811.3353369-5-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Verify that the free_ck clock is ungated on device resume
-by checking return value of clk_prepare_enable().
+On Thu, Apr 29, 2021 at 03:08:08PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit d656fe49e33df48ee6bc19e871f5862f49895c9e.
+> 
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper submitted to the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota) but later
+> withdrawn.
+> 
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+> 
+> Cc: Wenwen Wang <wang6495@umn.edu>
+> Cc: David S. Miller <davem@davemloft.net>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  net/ethtool/ioctl.c | 5 -----
+>  1 file changed, 5 deletions(-)
+> 
+> diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
+> index 771688e1b0da..34688ebfd74e 100644
+> --- a/net/ethtool/ioctl.c
+> +++ b/net/ethtool/ioctl.c
+> @@ -869,11 +869,6 @@ static noinline_for_stack int ethtool_get_rxnfc(struct net_device *dev,
+>  		info_size = sizeof(info);
+>  		if (copy_from_user(&info, useraddr, info_size))
+>  			return -EFAULT;
+> -		/* Since malicious users may modify the original data,
+> -		 * we need to check whether FLOW_RSS is still requested.
+> -		 */
+> -		if (!(info.flow_type & FLOW_RSS))
+> -			return -EINVAL;
+>  	}
+>  
+>  	if (info.cmd != cmd)
+> -- 
+> 2.31.1
+> 
 
-Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
----
- drivers/pci/controller/pcie-mediatek.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+This change looks correct, I'll drop the revert from my tree.
 
-diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
-index 23548b517..9b13214bf 100644
---- a/drivers/pci/controller/pcie-mediatek.c
-+++ b/drivers/pci/controller/pcie-mediatek.c
-@@ -1154,11 +1154,14 @@ static int __maybe_unused mtk_pcie_resume_noirq(struct device *dev)
- {
- 	struct mtk_pcie *pcie = dev_get_drvdata(dev);
- 	struct mtk_pcie_port *port, *tmp;
-+	int ret;
+thanks,
 
- 	if (list_empty(&pcie->ports))
- 		return 0;
-
--	clk_prepare_enable(pcie->free_ck);
-+	ret = clk_prepare_enable(pcie->free_ck);
-+	if (ret)
-+		return ret;
-
- 	list_for_each_entry_safe(port, tmp, &pcie->ports, list)
- 		mtk_pcie_enable_port(port);
---
-2.31.1
+greg k-h
