@@ -2,60 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5119736F229
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 23:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E29636F22C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 23:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237287AbhD2VjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 17:39:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37118 "EHLO mail.kernel.org"
+        id S237470AbhD2Vje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 17:39:34 -0400
+Received: from mga01.intel.com ([192.55.52.88]:10691 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233394AbhD2VjF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 17:39:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 930D9613F8;
-        Thu, 29 Apr 2021 21:38:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619732298;
-        bh=G1kl+vdOcvmCWJ8j3CnqI9jXl1xnKXUpCn8W/EK5uzE=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=jsvbfNPq4FeaSgWKuQp2PqHHf443K390fF1h81H+DhEJl/o3smimvcB3PZGPUgOi9
-         TrLGrapckITk3yJuKlYASyRYLzr4jDpeiZBwrDEXL6dDAYQp2os4IQjJLW1PTKLELP
-         orQmRnT86wOAorCDFo5cfZbtjBGGdwg3nIrZNV3rej/2TYiigBZjqtLrpJoVZKnn+C
-         EB/SwvFyCmD6Gz02zwx75aD3tmiGc2pPISqqRvvnFS/7nby6XhO+EDxbUIdgZuDCXq
-         QAF0vbI/nngKswwjfc5ir5iN6pqa+Cq3pdRm1d3bxsVLQ17xaEmBlrfRyFKTSuYHwp
-         GfyhL22A/qMKA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7EE3460A1B;
-        Thu, 29 Apr 2021 21:38:18 +0000 (UTC)
-Subject: Re: [GIT PULL 1/2] Kbuild updates for v5.13-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAK7LNASN32_wwEf7xD+kVgT6SXLqZ41dJYFu8qwu-99Q_xkyhQ@mail.gmail.com>
-References: <CAK7LNASN32_wwEf7xD+kVgT6SXLqZ41dJYFu8qwu-99Q_xkyhQ@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kbuild.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAK7LNASN32_wwEf7xD+kVgT6SXLqZ41dJYFu8qwu-99Q_xkyhQ@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-v5.13
-X-PR-Tracked-Commit-Id: f634ca650f724347892068489c7920631a3aac6a
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b0030af53a74a08c77ea11d3888da21542af2d0e
-Message-Id: <161973229845.20460.6717472563871173858.pr-tracker-bot@kernel.org>
-Date:   Thu, 29 Apr 2021 21:38:18 +0000
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S237032AbhD2Vjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 17:39:32 -0400
+IronPort-SDR: AyMcRTztoBUC77IhADgAt0LhUbceF3AHu947TtV0/ADXiF/kAmnnV+3ZztzmUqP7kJqcTvgd7U
+ D1HOC4e8maTg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9969"; a="217861329"
+X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
+   d="scan'208";a="217861329"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 14:38:40 -0700
+IronPort-SDR: f9Nh7tLxPyeV16MID3qgW3/z74cOv1GJzhZX5F4vJlQFhkjebjEJk4FA5aP6Aidt/L8DGuhrI8
+ 1nO0jEUGYTeg==
+X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
+   d="scan'208";a="387102569"
+Received: from ndutta-mobl.amr.corp.intel.com (HELO [10.212.215.226]) ([10.212.215.226])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 14:38:39 -0700
+Subject: Re: [PATCH 1/2] CPU, NUMA topology ABIs: clarify the overflow issue
+ of sysfs pagebuf
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        "tiantao (H)" <tiantao6@hisilicon.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+References: <1619679819-45256-1-git-send-email-tiantao6@hisilicon.com>
+ <1619679819-45256-2-git-send-email-tiantao6@hisilicon.com>
+ <146e051b-603c-a6d3-43d8-d083cf2c8119@intel.com>
+ <602918a1e2214ea7bd0890a751975566@hisilicon.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <7c663f7e-07e0-6d95-3012-6e31a1b78f7e@intel.com>
+Date:   Thu, 29 Apr 2021 14:38:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <602918a1e2214ea7bd0890a751975566@hisilicon.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 29 Apr 2021 15:44:43 +0900:
+On 4/29/21 2:08 PM, Song Bao Hua (Barry Song) wrote:
+>> Do we think >PAGE_SIZE data out of a sysfs file is a worse ABI break or
+>> something?
+> This kind of cpu list ABIs have been there for many years but have 
+> never been documented well.
+> 
+> We have two ABIs:
+> xxx_cpus - in format like 3333333333
+> xxx_cpus_list - in format like 0,3,5,7,9,11,13....
+> 
+> xxx_cpus_list is another human-readable version of xxx_cpus. It doesn't
+> include any more useful information than xxx_cpus.
+> 
+> xxx_cpus won't overflow based on BUILD_BUG_ON and maximum NR_CPUS
+> in kconfig nowadays.
+> 
+> if people all agree the trimmed list is a break of ABI, I think we may
+> totally remove this list. For these days, this list probably has never
+> overflowed but literally this could happen.
+> 
+> thoughts?
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-v5.13
+From what Greg said, it sounds like removing the BUILD_BUG_ON(), making
+it a binary sysfs file, and making it support arbitrary lengths is the
+way to go.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b0030af53a74a08c77ea11d3888da21542af2d0e
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
