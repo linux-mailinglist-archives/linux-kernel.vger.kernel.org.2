@@ -2,219 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A60DC36EC6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 16:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B59036EC72
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 16:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240460AbhD2Ocp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 10:32:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53090 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236096AbhD2Oco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 10:32:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D6BC601FF;
-        Thu, 29 Apr 2021 14:31:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619706717;
-        bh=fSsEl9V0D483cRJsFJ60zt0ioccxGTZIoa7tZKuuAv0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WGVyjuwxqCp1D6xZ69541N/vv8HBhkQENZEYVYed5pi9k+Exa6rplvk8cU5PPJk1T
-         56yVbDX+wzIykqTHylcmvRiQA85BdAqplLJ2ZoiyYRlnttoMfObzEmV8e7XylZOSbx
-         DyCTbnDqNdSeNGpgarQJubI340he79PItZ3pRynfla8bCAL/oDoLr9yX+belfF3Cx7
-         eajHDFaeQ6+H6s7vscrSLCOQ6pcI0+O6hWAByDlrU73HujDbtlsVrT2YuZ9QRAEceM
-         WsprEB39zSwI9rEin4M/NoLgZKZr6hyvDjtBQS+82o1aX5OhhBZSn3Lyxtvy0pu/7n
-         ij/vTThuPzDFQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id B39D14034C; Thu, 29 Apr 2021 11:31:54 -0300 (-03)
-Date:   Thu, 29 Apr 2021 11:31:54 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 04/12] perf inject: Add facility to do in place update
-Message-ID: <YIrDWjIYxwkxV5Xk@kernel.org>
-References: <20210429125854.13905-1-adrian.hunter@intel.com>
- <20210429125854.13905-5-adrian.hunter@intel.com>
+        id S240540AbhD2OdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 10:33:21 -0400
+Received: from mail-co1nam11on2078.outbound.protection.outlook.com ([40.107.220.78]:4961
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237338AbhD2OdU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 10:33:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=irLKmC94JjUaQrbu1OHkST1cUoc6T0QHEF5cLJQWL8JeJKfoN08ZqE2CfNmkJ/2O4nJ2qzymukWJb1ufvsE1fy4Urffvvsd2AJrIpOw0UGEhig5CGGs5EKzwC2ZHwfe0KU9FBPC6pvfi0Y+KYd7DV9YQkhaUHOqaAQfjnF8SPvz/RZR//TijVukMKZREDFvRXvnC+aR0Sw8cCt2fPjxuVRO1fXOBETMoscHvfmv9cA2KYPnn4Em/9B0YihZ6S3maG8mOsI1/U+dcB3g9BgjVZ8RHuedDBrYipHT3agGPFVZ9RjCfa1VNEW3Wr9eOn+yYNGopAHR+mz1pvAJkrQKDWg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MXBnj6Vk9mhpGOBga49QZtV1fdDRgEfHMDmHuoTwSkU=;
+ b=KzQVWBlIktF7m0BMRDmvbOMzdzmrVJz8kERrBRDHhTPN8af/aqHLO9eEDERfI5T88FoXtri1EaAe4eRk/v7QRcknbTOz2ohFipru8pbzA+zbSCvgobXDRpI+aXSgwZHKD+Puzc3uMYaBTvRcNOaIM1yq32LZQn5YhEt1k5l7eY2kGjvUliuhoRp1oBx474sG3FwVwco4aicLFn+yd2U5dxzQdPMRtj83pk6Lj3lXNo5TNhks+e07bGAR6wfEC7w5AVz/LXChFP5YffER9KitWXfFlclUzgS5qFcQif0X3Vk2CeHTF65sl22zho4+MsL4mGQSjYAl6XTGBZmmR2Y5mg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
+ dkim=pass header.d=xilinx.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MXBnj6Vk9mhpGOBga49QZtV1fdDRgEfHMDmHuoTwSkU=;
+ b=V8QGZvJIGo6nJxRE/c7hZZhgXY46GeUFRuZJC5KYjMBzG23Gx8UsNVq8WaUFVqbLzN4AvwatS+5rUm216p+KoCc2ZRM+dd3YXqB6FmCXwI+99DCxkUIHXQateW8m9NVTilHyTeKLqhg1EguX0FKSG68q0taFNPjSIOePfFbmDKA=
+Received: from DM5PR02MB3877.namprd02.prod.outlook.com (2603:10b6:4:b9::34) by
+ DM6PR02MB6441.namprd02.prod.outlook.com (2603:10b6:5:153::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4087.25; Thu, 29 Apr 2021 14:32:29 +0000
+Received: from DM5PR02MB3877.namprd02.prod.outlook.com
+ ([fe80::943b:e0c1:3e2b:4327]) by DM5PR02MB3877.namprd02.prod.outlook.com
+ ([fe80::943b:e0c1:3e2b:4327%3]) with mapi id 15.20.4042.024; Thu, 29 Apr 2021
+ 14:32:29 +0000
+From:   Sai Krishna Potthuri <lakshmis@xilinx.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+CC:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michal Simek <michals@xilinx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        git <git@xilinx.com>,
+        "saikrishna12468@gmail.com" <saikrishna12468@gmail.com>
+Subject: RE: [PATCH v6 0/3] Add ZynqMP pinctrl driver
+Thread-Topic: [PATCH v6 0/3] Add ZynqMP pinctrl driver
+Thread-Index: AQHXN1HFgmDK8H7m5kWZ1B+6Bz2mLqrAQPkAgAICaoCACVQBgIAAAOhw
+Date:   Thu, 29 Apr 2021 14:32:29 +0000
+Message-ID: <DM5PR02MB387737FE520F81217EBF4133BD5F9@DM5PR02MB3877.namprd02.prod.outlook.com>
+References: <1619080202-31924-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+ <CACRpkdaDP+JnCP+go9hZAObnNgmJyJRDFypX2CZGp-UJBh5wNA@mail.gmail.com>
+ <CAHp75VfpvPdAAW2JpvdiDtzS3LUF_=Ej7c2LEML_+pOwi6CtWg@mail.gmail.com>
+ <CACRpkdaxTxCz=LJuGL_wCNTZESK0opixBzLass0w0n8A6P7mfA@mail.gmail.com>
+In-Reply-To: <CACRpkdaxTxCz=LJuGL_wCNTZESK0opixBzLass0w0n8A6P7mfA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=xilinx.com;
+x-originating-ip: [149.199.50.129]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 237dc9ec-34ff-4929-9503-08d90b1b9e3b
+x-ms-traffictypediagnostic: DM6PR02MB6441:
+x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR02MB6441CED99A51F332745CC08ABD5F9@DM6PR02MB6441.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3826;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ERa6MOwpo5fgzP3EPdHQT0iojD2VKpO3fOb5yJeYtXkcKx0AZCESqAOt8LTygDRPn/BE4Z9hzJuMdSKWsvxPoPQKbioBGHj3bUlFLzDAC18boLKV0u18nHesrZPBcejVvvHFZJXBgqBqO2imLlY26R8FavU9jTr6+/X6R08bLli2lwrmcjdegrWGGzDVk7H28osVgZgrVw9aiv+4ZTB+mX4w0J5hKTqBmDZsZhlMakXR5KxXBPIxWBGvSQK18q3QfWFpyH6elHDO6bvfDjEDv/pa+GdCo6EwvjnpV0OiQxI6cMhENXDImHDPqiJsg8I6z5ioxERnRxs4QAmSHnTUQ14oSDC7qSjTLT0HoZI1yWKPXXgT8mbu0HA5eTo+M8PMJhyqCtIgXV3RvsWXMmEW/gpc1HAKTKkKErAemjGbuOvwf63MYJxUftl/DrTyLKMhYgzZ0B4TYHfG4eTGUGiUGOGNRhTPy3gmLGiQjoI76WVZXV7WyAVO4EKcmNXUmDEWL0XUq74TGL+Eu6F0cw7GJw+EiSHsrc9FV2D7iLih7oVAQvwV6JugfVZgS9mv0Jk3AnZBce3uk8gCKdwTBg1nuhhQlEZTQmLsdhqrmTO8Hlc=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR02MB3877.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(136003)(39850400004)(396003)(71200400001)(64756008)(66556008)(33656002)(66446008)(66946007)(26005)(86362001)(52536014)(66476007)(76116006)(55016002)(316002)(9686003)(83380400001)(186003)(5660300002)(6506007)(2906002)(478600001)(7696005)(8936002)(4326008)(8676002)(122000001)(6916009)(7416002)(54906003)(38100700002)(53546011);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?clFXS1pTK0ZaMFFyQ2hpQzZ4enBmcndLUHBVT0tRSmt1NVU4MDZBeXRkTUU4?=
+ =?utf-8?B?VGRtdHovWFJGOU9MKzUrME5WYmJSYnZBWjFxa2EzdjRNMExBSTk0bkhRZ000?=
+ =?utf-8?B?RWN2b0FjcU1Xdk5NMzhoMXJqaWF4a3FNU1ZORDU0MlpZRnhqemZVcHBSYXF3?=
+ =?utf-8?B?Z1VFU25GYVd3aUZHeXlVRUYvbjJvWWMvWlZHK253SVluSTNLbHd6V3Uwdmo4?=
+ =?utf-8?B?QzRsUkdGMGNUSmpsWENnZjZRbUhFMk1rSDh4ekdYMS8rSmcwY2pPQnpBcFl1?=
+ =?utf-8?B?dUtLUEZyRzFjUjlXTnZKeTBqL1Nua0tkVERNN28rVVRsRGh0QkNJL0xsb2V6?=
+ =?utf-8?B?MUNka2x5cnFuSkVESkZlbngwNTZndEIvYzRLUG9LSDJYUklNSUlsdldvTmVy?=
+ =?utf-8?B?bWJZUEcvSzI4ZllVSlRHYTNORjFnYXVpc2ZodEZPdzNodjBHd1hESThUUkoz?=
+ =?utf-8?B?Q3BwUHB0WUFGMUczbU90bGlDdkRCODdOVE9PSjJDYU55b0hxWGgxZkxxaVR1?=
+ =?utf-8?B?YUxINm0rZFZYNGI5RXgvQVpscU9UamZZMFpGbTc4NHJCcUFuZHJzTTBJK0cz?=
+ =?utf-8?B?aGNrTEhxeHNPUkJTb08rUW4wWWNKRDc0cDVFUTdIK056SG1iU2hDcWYrNHhK?=
+ =?utf-8?B?RVY3WVcwOGdoMWNMejdqOW15S1VxdGlaTVJDRFhQRTlEZENENHBpYlNKblRW?=
+ =?utf-8?B?blVocVJ2b08zOWJhRlhGRGE5WXRERUZXbVVyR281RzlFNTRuU0J2b2h6NEdu?=
+ =?utf-8?B?WVVHUGlYRW43RmN5UkFsVGhLUXpTODVHNVYvYWRxVWthRXFBQ1pxY2NvUE82?=
+ =?utf-8?B?TFZtR3Rvd3loc0J6QTZUNDZCZDRyNVR5RDIrSVFzczJjR1hhUjVma2E0czNa?=
+ =?utf-8?B?ME1OWGk1bm44N3MwVnpTNkRKcnNCNEVHZzBUMi93d09MZGlkK1YxYmV4RzBY?=
+ =?utf-8?B?cEluWE5XbnoxcGg2RlZiTFl2dm14bVZwMFVVS0xPMjB1Mk9leTVkMnBkcjBy?=
+ =?utf-8?B?Rkd6eFl4aDJjZzhpalg2dWUvUEFlcEpSN1Z3UXJXcmRQU0FTY3NlTjNGWHlQ?=
+ =?utf-8?B?VURJVGYxZ0JxTlhCL2p0enltNWpBdStVQTNnUGRVS3RGOEpUdGFCcHZ2QUx0?=
+ =?utf-8?B?azNZcEFQcTNDRFF6SDExZ0hNT0k1cW9wRXNUaTFmc2VZRjJDNzVNTlVsT2Uv?=
+ =?utf-8?B?cDRIbVNzZGlNRFRXWXpNMTlhQVltMWU3OWtId2tyMnVZaGJMZnFWZjl2WEpU?=
+ =?utf-8?B?UTB1dEpQUThVd05hUm9IV2krMU80bk5kZFNyYm1BRFNxUSt0bzlMZ291ZW5Q?=
+ =?utf-8?B?SnZ6VXhFSFdPS1d6RnRuK0hXTnRJaDFyYVFnQ1RKUzdxQ01Jd2RLOG5mRkhy?=
+ =?utf-8?B?MkNZR3pIMmo4TjR3MXpkWlFncUJ3T2VTU3lGMko3S0d1UkNSZ1o4S1VCOG10?=
+ =?utf-8?B?YWU0SFlDWmRwQjBvMytuWnpTM3QxczE3RERGU1pBcy85Z2s0cERCVERjNm9u?=
+ =?utf-8?B?NjAyS1Y5UkJOU0tha3drLzcvbVZQcnJzYnRhTlhkdDY1VmE2NGFqZTNxTVQy?=
+ =?utf-8?B?RE00bUFGc3FaK2FyZklQOXFIeXJ3Ri9uL0htVm8zelZWdDdYSEdTSHgySEZ0?=
+ =?utf-8?B?L0srVkhsSEFiMlJWaFRuNHhkM2dxVDNZLy82dmdTZTM4RWZDdWxhd2FDNGNq?=
+ =?utf-8?B?bGEvMGd4cWNFS01UZHJBeUxHc1VWdTMvM1ptdzFoV1VFbWRpSDRBWXRaVmdv?=
+ =?utf-8?Q?m+Cg5ohd6ErDvhGST+QFMxaPPoEAZC/BoVZpNSW?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429125854.13905-5-adrian.hunter@intel.com>
-X-Url:  http://acmel.wordpress.com
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR02MB3877.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 237dc9ec-34ff-4929-9503-08d90b1b9e3b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Apr 2021 14:32:29.5783
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: GCjDvIWG4t1drTtsCSFnJwFAL2emRVqTl8+6ZYe9tjQGvQN2g3Ay2S4T6oh6Ba0l3q+C8sHm31cpldD6Jr0KiA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB6441
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Apr 29, 2021 at 03:58:46PM +0300, Adrian Hunter escreveu:
-> When there is a need to modify only timestamps, it is much simpler and
-> quicker to do it to the existing file rather than re-write all the
-> contents.
-> 
-> In preparation for that, add the ability to modify the input file in place.
-> In practice that just means making the file descriptor and mmaps writable.
-
-Clever, and you took care of checking that the constraints are met, and
-I see this paves the way for the actual 'perf inject' option that uses
-this new 'perf inject' mode.
-
-- Arnaldo
- 
-> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->  tools/perf/builtin-inject.c | 30 ++++++++++++++++++++++++++----
->  tools/perf/util/data.c      |  3 ++-
->  tools/perf/util/data.h      |  1 +
->  tools/perf/util/header.c    |  5 +++++
->  tools/perf/util/session.c   |  6 +++++-
->  5 files changed, 39 insertions(+), 6 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-> index ddccc0eb7390..ddfdeb85c586 100644
-> --- a/tools/perf/builtin-inject.c
-> +++ b/tools/perf/builtin-inject.c
-> @@ -43,6 +43,8 @@ struct perf_inject {
->  	bool			have_auxtrace;
->  	bool			strip;
->  	bool			jit_mode;
-> +	bool			in_place_update;
-> +	bool			in_place_update_dry_run;
->  	const char		*input_name;
->  	struct perf_data	output;
->  	u64			bytes_written;
-> @@ -701,7 +703,7 @@ static int __cmd_inject(struct perf_inject *inject)
->  	int ret = -EINVAL;
->  	struct perf_session *session = inject->session;
->  	struct perf_data *data_out = &inject->output;
-> -	int fd = perf_data__fd(data_out);
-> +	int fd = inject->in_place_update ? -1 : perf_data__fd(data_out);
->  	u64 output_data_offset;
->  
->  	signal(SIGINT, sig_handler);
-> @@ -759,14 +761,14 @@ static int __cmd_inject(struct perf_inject *inject)
->  	if (!inject->itrace_synth_opts.set)
->  		auxtrace_index__free(&session->auxtrace_index);
->  
-> -	if (!data_out->is_pipe)
-> +	if (!data_out->is_pipe && !inject->in_place_update)
->  		lseek(fd, output_data_offset, SEEK_SET);
->  
->  	ret = perf_session__process_events(session);
->  	if (ret)
->  		return ret;
->  
-> -	if (!data_out->is_pipe) {
-> +	if (!data_out->is_pipe && !inject->in_place_update) {
->  		if (inject->build_ids)
->  			perf_header__set_feat(&session->header,
->  					      HEADER_BUILD_ID);
-> @@ -900,7 +902,27 @@ int cmd_inject(int argc, const char **argv)
->  		return -1;
->  	}
->  
-> -	if (perf_data__open(&inject.output)) {
-> +	if (inject.in_place_update) {
-> +		if (!strcmp(inject.input_name, "-")) {
-> +			pr_err("Input file name required for in-place updating\n");
-> +			return -1;
-> +		}
-> +		if (strcmp(inject.output.path, "-")) {
-> +			pr_err("Output file name must not be specified for in-place updating\n");
-> +			return -1;
-> +		}
-> +		if (!data.force && !inject.in_place_update_dry_run) {
-> +			char reply[10];
-> +
-> +			printf("The input file will be updated in place. OK? (y/n) ");
-> +			if (!fgets(reply, sizeof(reply), stdin) || strcmp(reply, "y\n")) {
-> +				pr_err("Aborted\n");
-> +				return -1;
-> +			}
-> +		}
-> +		if (!inject.in_place_update_dry_run)
-> +			data.in_place_update = true;
-> +	} else if (perf_data__open(&inject.output)) {
->  		perror("failed to create output file");
->  		return -1;
->  	}
-> diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
-> index f29af4fc3d09..209fe63d4e49 100644
-> --- a/tools/perf/util/data.c
-> +++ b/tools/perf/util/data.c
-> @@ -239,11 +239,12 @@ static bool is_dir(struct perf_data *data)
->  
->  static int open_file_read(struct perf_data *data)
->  {
-> +	int flags = data->in_place_update ? O_RDWR : O_RDONLY;
->  	struct stat st;
->  	int fd;
->  	char sbuf[STRERR_BUFSIZE];
->  
-> -	fd = open(data->file.path, O_RDONLY);
-> +	fd = open(data->file.path, flags);
->  	if (fd < 0) {
->  		int err = errno;
->  
-> diff --git a/tools/perf/util/data.h b/tools/perf/util/data.h
-> index 62a3e66fbee8..c9de82af5584 100644
-> --- a/tools/perf/util/data.h
-> +++ b/tools/perf/util/data.h
-> @@ -31,6 +31,7 @@ struct perf_data {
->  	bool			 is_dir;
->  	bool			 force;
->  	bool			 use_stdio;
-> +	bool			 in_place_update;
->  	enum perf_data_mode	 mode;
->  
->  	struct {
-> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-> index aa1e42518d37..02b13c7a23be 100644
-> --- a/tools/perf/util/header.c
-> +++ b/tools/perf/util/header.c
-> @@ -3814,6 +3814,11 @@ int perf_session__read_header(struct perf_session *session)
->  	if (perf_file_header__read(&f_header, header, fd) < 0)
->  		return -EINVAL;
->  
-> +	if (header->needs_swap && data->in_place_update) {
-> +		pr_err("In-place update not supported when byte-swapping is required\n");
-> +		return -EINVAL;
-> +	}
-> +
->  	/*
->  	 * Sanity check that perf.data was written cleanly; data size is
->  	 * initialized to 0 and updated only if the on_exit function is run.
-> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> index eba3769be3f1..edd068ea8a6c 100644
-> --- a/tools/perf/util/session.c
-> +++ b/tools/perf/util/session.c
-> @@ -2131,6 +2131,7 @@ struct reader {
->  	u64		 data_size;
->  	u64		 data_offset;
->  	reader_cb_t	 process;
-> +	bool		 in_place_update;
->  };
->  
->  static int
-> @@ -2164,7 +2165,9 @@ reader__process_events(struct reader *rd, struct perf_session *session,
->  	mmap_prot  = PROT_READ;
->  	mmap_flags = MAP_SHARED;
->  
-> -	if (session->header.needs_swap) {
-> +	if (rd->in_place_update) {
-> +		mmap_prot  |= PROT_WRITE;
-> +	} else if (session->header.needs_swap) {
->  		mmap_prot  |= PROT_WRITE;
->  		mmap_flags = MAP_PRIVATE;
->  	}
-> @@ -2250,6 +2253,7 @@ static int __perf_session__process_events(struct perf_session *session)
->  		.data_size	= session->header.data_size,
->  		.data_offset	= session->header.data_offset,
->  		.process	= process_simple,
-> +		.in_place_update = session->data->in_place_update,
->  	};
->  	struct ordered_events *oe = &session->ordered_events;
->  	struct perf_tool *tool = session->tool;
-> -- 
-> 2.17.1
-> 
-
--- 
-
-- Arnaldo
+SGkgTGludXMsDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTGludXMg
+V2FsbGVpaiA8bGludXMud2FsbGVpakBsaW5hcm8ub3JnPg0KPiBTZW50OiBUaHVyc2RheSwgQXBy
+aWwgMjksIDIwMjEgNzo1MiBQTQ0KPiBUbzogQW5keSBTaGV2Y2hlbmtvIDxhbmR5LnNoZXZjaGVu
+a29AZ21haWwuY29tPg0KPiBDYzogU2FpIEtyaXNobmEgUG90dGh1cmkgPGxha3NobWlzQHhpbGlu
+eC5jb20+OyBSb2IgSGVycmluZw0KPiA8cm9iaCtkdEBrZXJuZWwub3JnPjsgTWljaGFsIFNpbWVr
+IDxtaWNoYWxzQHhpbGlueC5jb20+OyBHcmVnIEtyb2FoLQ0KPiBIYXJ0bWFuIDxncmVna2hAbGlu
+dXhmb3VuZGF0aW9uLm9yZz47IExpbnV4IEFSTSA8bGludXgtYXJtLQ0KPiBrZXJuZWxAbGlzdHMu
+aW5mcmFkZWFkLm9yZz47IGxpbnV4LWtlcm5lbCA8bGludXgta2VybmVsQHZnZXIua2VybmVsLm9y
+Zz47DQo+IG9wZW4gbGlzdDpPUEVOIEZJUk1XQVJFIEFORCBGTEFUVEVORUQgREVWSUNFIFRSRUUg
+QklORElOR1MNCj4gPGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnPjsgb3BlbiBsaXN0OkdQSU8g
+U1VCU1lTVEVNIDxsaW51eC0NCj4gZ3Bpb0B2Z2VyLmtlcm5lbC5vcmc+OyBnaXQgPGdpdEB4aWxp
+bnguY29tPjsgc2Fpa3Jpc2huYTEyNDY4QGdtYWlsLmNvbQ0KPiBTdWJqZWN0OiBSZTogW1BBVENI
+IHY2IDAvM10gQWRkIFp5bnFNUCBwaW5jdHJsIGRyaXZlcg0KPiANCj4gT24gRnJpLCBBcHIgMjMs
+IDIwMjEgYXQgNTo1NSBQTSBBbmR5IFNoZXZjaGVua28NCj4gPGFuZHkuc2hldmNoZW5rb0BnbWFp
+bC5jb20+IHdyb3RlOg0KPiA+IE9uIFRodSwgQXByIDIyLCAyMDIxIGF0IDEyOjE0IFBNIExpbnVz
+IFdhbGxlaWogPGxpbnVzLndhbGxlaWpAbGluYXJvLm9yZz4NCj4gd3JvdGU6DQo+ID4gPiBPbiBU
+aHUsIEFwciAyMiwgMjAyMSBhdCAxMDozMCBBTSBTYWkgS3Jpc2huYSBQb3R0aHVyaQ0KPiA+ID4g
+PGxha3NobWkuc2FpLmtyaXNobmEucG90dGh1cmlAeGlsaW54LmNvbT4gd3JvdGU6DQo+ID4gPg0K
+PiA+ID4gPiBjaGFuZ2VzIGluIHY2Og0KPiA+ID4gPiAtIFJlYmFzZWQgdGhlIHBhdGNoZSBzZXJp
+ZXMgb24gJ2RldmVsJyBicmFuY2ggaW4gcGluY3RybCB0cmVlIGFuZA0KPiA+ID4gPiBubyBmdW5j
+dGlvbmFsIGNoYW5nZXMuDQo+ID4gPg0KPiA+ID4gUmVtYWluaW5nIHBhdGNoZXMgYXBwbGllZCEg
+VGhhbmtzIGZvciB3b3JraW5nIHNvIGhhcmQgb24gdGhpcyENCj4gPg0KPiA+IEhtbS4uLiBJIGhh
+dmUgaGFkIGEgYnVuY2ggb2YgY29tbWVudHMuIE9rYXksIHRoZXkgbWF5IGJlIGFkZHJlc3NlZCBi
+eQ0KPiA+IGZvbGxvdyB1cChzKS4NCj4gDQo+IFNhaTogY2FuIHlvdSBwbGVhc2UgYWRkcmVzcyBB
+bmR5J3MgY29tbWVudHMgd2l0aCByZXBsaWVzIGFuZC9vciBmb2xsb3ctdXANCj4gcGF0Y2hlcz8N
+ClN1cmUsIGRpc2N1c3Npbmcgd2l0aCBBbmR5IG9uIGNvdXBsZSBvZiBjb21tZW50cy4NCkkgd2ls
+bCBzZW5kIHRoZSBmb2xsb3ctdXAgcGF0Y2ggdG8gYWRkcmVzcyBoaXMgY29tbWVudHMuDQoNClJl
+Z2FyZHMNClNhaSBLcmlzaG5hDQo+IA0KPiBZb3VycywNCj4gTGludXMgV2FsbGVpag0K
