@@ -2,158 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1EED36F1D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 23:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 007E036F1D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 23:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237334AbhD2VSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 17:18:46 -0400
-Received: from server.lespinasse.org ([63.205.204.226]:40475 "EHLO
-        server.lespinasse.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237306AbhD2VSp (ORCPT
+        id S237271AbhD2VTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 17:19:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233315AbhD2VTe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 17:18:45 -0400
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
- d=lespinasse.org; i=@lespinasse.org; q=dns/txt; s=srv-14-ed;
- t=1619731078; h=date : from : to : cc : subject : message-id :
- references : mime-version : content-type : in-reply-to : from;
- bh=ihhm4JDgRp4tsnb14+du7QsA3Ya60duhO1ZG+MsWcoY=;
- b=blEo8AgOgCdrZC3Y1y9NVvbVSbqLNKi48emijN0hwv0/FoHa9fQ/EtBnujraMgT6QcKtC
- tQAkWdyK8i2aLU3CQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lespinasse.org;
- i=@lespinasse.org; q=dns/txt; s=srv-14-rsa; t=1619731078; h=date :
- from : to : cc : subject : message-id : references : mime-version :
- content-type : in-reply-to : from;
- bh=ihhm4JDgRp4tsnb14+du7QsA3Ya60duhO1ZG+MsWcoY=;
- b=wjXPd0NVVBvXaYyvlEuyVQBantMV2nDbFVPwGi65KvG87kUx0E6Cvr/gtDtD2ewYUJ19/
- i3md/30LYA+z0FbxJQMTLDe8gbiI6SOFzrEbmrV8eZVqo73MM2lDeoUdrhpLoYyks9mCQGY
- gZmjxy6S92ErTOHMjAcSM6aHACLdSzOc8j1bYkyQFbHFuKJREmuf28kozwCold9RIN1s8Mr
- jYFro8S9Jo6tvn7HNQrNm9iV44S9zX0AqbIkkMlzdETW+p7zR8t1S4122KgAOXCZR4Z6Nrg
- 8aXajyB1EJZoUjh2C1kqbK7J8ke923I4b6jDicAbZgfrFx47Ty05fjUcPPEA==
-Received: by server.lespinasse.org (Postfix, from userid 1000)
-        id 83604160309; Thu, 29 Apr 2021 14:17:58 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 14:17:58 -0700
-From:   Michel Lespinasse <michel@lespinasse.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Michel Lespinasse <michel@lespinasse.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Rik van Riel <riel@surriel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Rom Lemarchand <romlem@google.com>,
-        Linux-Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 13/37] mm: implement speculative handling in
- __handle_mm_fault().
-Message-ID: <20210429211758.GE10973@lespinasse.org>
-References: <20210407014502.24091-1-michel@lespinasse.org>
- <20210407014502.24091-14-michel@lespinasse.org>
- <eee7431c-3dc8-ca3c-02fb-9e059d30e951@kernel.org>
- <20210428145823.GA856@lespinasse.org>
- <CALCETrVRGtVqv9cMSryfg5q3iZ9s3jBey20cY4K23YLRhQRzbQ@mail.gmail.com>
- <20210428161108.GP975577@paulmck-ThinkPad-P17-Gen-1>
- <20210429000225.GC10973@lespinasse.org>
- <20210429155250.GV975577@paulmck-ThinkPad-P17-Gen-1>
- <20210429183412.GA278623@paulmck-ThinkPad-P17-Gen-1>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429183412.GA278623@paulmck-ThinkPad-P17-Gen-1>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Thu, 29 Apr 2021 17:19:34 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659DFC06138C
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 14:18:47 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id x186-20020a25e0c30000b02904f0d007a955so5969678ybg.12
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 14:18:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=5NDzCDKCGCk6XFMagA6CzP44uT46tOEAvw4LLjGAeOA=;
+        b=rsK1XDnr5jWG+rKZO/5mZTxX0XfQb3/H8ivcRXIm8gWzPRbayNlE2dbGbIR2G21tnP
+         CjdzicccsKnXkgCxrKknP2hlgTb2OvTbwkjMYfsSoG41gsJ6+v4Ot2toYnKn6Tu48ua8
+         YwBI7l6OYQKS4jyWdgj7zcEY1jk2KSRxCUfOAgQy4rmguySN0O28l7NAS8qKBcGukhpy
+         EtuKxQnFHjmTeMhFTjMMS2enzygdfISkubtywX1Kwnm+iL/fLlYd25Ylo69pqwXLbfi3
+         yHJLPy9wsIxUHVlV1GqJUe4sJA8EuEsU3wgJy4AlznwRc1IjXxZrPO2GuumB9IhoMUnr
+         XR6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=5NDzCDKCGCk6XFMagA6CzP44uT46tOEAvw4LLjGAeOA=;
+        b=SGbu6+pT4Z2kJ10nC5mD0HLTuHYY/QXgZIKkx62Ge0H02vy9dz32YGUWE2ANh4O9ef
+         Pzi/qfn+eDFne1SzuNRuIeMWw0c17SOOci7jp2dMhq2FRHvlBbgFG1xe8yN9RL2qPOdC
+         IXyl8VlHP8M7zhqfskSs96TzUvFiIee5Qq5VFJ1UX+e5N25YWN2GYyHA3Y2ICUXzh2zB
+         XUygcq/EcoKST2ddlwINxWO5UC8AVZ+CM0C6I1gL5J/gh26zb6yCFLwP8NwbOsssatxR
+         sO+UKS5vBHLfet+CtRPwXInvO50zhCHK7eGErlj3dbTB8xAmDhwoVnyTTfK8R74ZB7v3
+         Y08w==
+X-Gm-Message-State: AOAM530hDwmHXUF3s059oad7crGoakynzAIY1GSL4+NhesyOro3E/Bra
+        1TiwBegIsDLxE2XepICcE5+Dgki4/joSEseFVDI9VoNUj27/OmeJVQ3kU3dt5GKjX/WhFeom/kk
+        Ah1gF0TPOdq8mAouIqR4Nyx8lxk71xpdSJ7Vnfsz4B3QnYxCun6JX3uwvO324hVH2G8yzHWgo
+X-Google-Smtp-Source: ABdhPJzMnmNUqhweoATHShUFOm2WiU0N4e30hQvigpqsUZJG3TEf8qs9lU0gYxxmgEWAVvG1Ltgqrz6ePbmj
+X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:1a18:9719:a02:56fb])
+ (user=bgardon job=sendgmr) by 2002:a5b:611:: with SMTP id d17mr2257989ybq.421.1619731126562;
+ Thu, 29 Apr 2021 14:18:46 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 14:18:26 -0700
+Message-Id: <20210429211833.3361994-1-bgardon@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
+Subject: [PATCH v2 0/7] Lazily allocate memslot rmaps
+From:   Ben Gardon <bgardon@google.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Ben Gardon <bgardon@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 11:34:12AM -0700, Paul E. McKenney wrote:
-> ------------------------------------------------------------------------
-> 
-> commit 97262c64c2cf807bf06825e454c4bedd228fadfb
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Thu Apr 29 11:18:01 2021 -0700
-> 
->     rcu: Improve comments describing RCU read-side critical sections
->     
->     There are a number of places that call out the fact that preempt-disable
->     regions of code now act as RCU read-side critical sections, where
->     preempt-disable regions of code include irq-disable regions of code,
->     bh-disable regions of code, hardirq handlers, and NMI handlers.  However,
->     someone relying solely on (for example) the call_rcu() header comment
->     might well have no idea that preempt-disable regions of code have RCU
->     semantics.
->     
->     This commit therefore updates the header comments for
->     call_rcu(), synchronize_rcu(), rcu_dereference_bh_check(), and
->     rcu_dereference_sched_check() to call out these new(ish) forms of RCU
->     readers.
->     
->     Reported-by: Michel Lespinasse <michel@lespinasse.org>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index a10480f2b4ef..c01b04ad64c4 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -532,7 +532,10 @@ do {									      \
->   * @p: The pointer to read, prior to dereferencing
->   * @c: The conditions under which the dereference will take place
->   *
-> - * This is the RCU-bh counterpart to rcu_dereference_check().
-> + * This is the RCU-bh counterpart to rcu_dereference_check().  However,
-> + * please note that in recent kernels, synchronize_rcu() waits for
-> + * local_bh_disable() regions of code in addition to regions of code
-> + * demarked by rcu_read_lock() and rcu_read_unlock().
+This series enables KVM to save memory when using the TDP MMU by waiting
+to allocate memslot rmaps until they are needed. To do this, KVM tracks
+whether or not a shadow root has been allocated. In order to get away
+with not allocating the rmaps, KVM must also be sure to skip operations
+which iterate over the rmaps. If the TDP MMU is in use and we have not
+allocated a shadow root, these operations would essentially be op-ops
+anyway. Skipping the rmap operations has a secondary benefit of avoiding
+acquiring the MMU lock in write mode in many cases, substantially
+reducing MMU lock contention.
 
-Two things:
-- "recent kernels" could be clarified, as Matthew pointed out
-- The above is not 100% clear if call_rcu() also waits for
-  local_bh_disable() regions of code ? (you did clarify this in tree.c
-  but I think it's better to have that here as well)
+This series was tested on an Intel Skylake machine. With the TDP MMU off
+and on, this introduced no new failures on kvm-unit-tests or KVM selftests.
 
->   */
->  #define rcu_dereference_bh_check(p, c) \
->  	__rcu_dereference_check((p), (c) || rcu_read_lock_bh_held(), __rcu)
-> @@ -543,6 +546,9 @@ do {									      \
->   * @c: The conditions under which the dereference will take place
->   *
->   * This is the RCU-sched counterpart to rcu_dereference_check().
-> + * However, please note that in recent kernels, synchronize_rcu() waits
-> + * for preemption-disabled regions of code in addition to regions of code
-> + * demarked by rcu_read_lock() and rcu_read_unlock().
+Changelog:
+v2:
+	Incorporated feedback from Paolo and Sean
+	Replaced the memslot_assignment_lock with slots_arch_lock, which
+	has a larger critical section.
 
-Same comments regarding "recent kernels" and call_rcu() here.
+Ben Gardon (7):
+  KVM: x86/mmu: Track if shadow MMU active
+  KVM: x86/mmu: Skip rmap operations if shadow MMU inactive
+  KVM: x86/mmu: Deduplicate rmap freeing
+  KVM: x86/mmu: Factor out allocating memslot rmap
+  KVM: mmu: Refactor memslot copy
+  KVM: mmu: Add slots_arch_lock for memslot arch fields
+  KVM: x86/mmu: Lazily allocate memslot rmaps
 
->   */
->  #define rcu_dereference_sched_check(p, c) \
->  	__rcu_dereference_check((p), (c) || rcu_read_lock_sched_held(), \
-> @@ -634,6 +640,12 @@ do {									      \
->   * sections, invocation of the corresponding RCU callback is deferred
->   * until after the all the other CPUs exit their critical sections.
->   *
-> + * In recent kernels, synchronize_rcu() and call_rcu() also wait for
-> + * regions of code with preemption disabled, including regions of code
-> + * with interrupts or softirqs disabled.  If your kernel is old enough
-> + * for synchronize_sched() to be defined, only code enclosed within
-> + * rcu_read_lock() and rcu_read_unlock() are guaranteed to be waited for.
-> + *
+ arch/x86/include/asm/kvm_host.h |  13 +++
+ arch/x86/kvm/mmu/mmu.c          | 153 +++++++++++++++++++++-----------
+ arch/x86/kvm/mmu/mmu_internal.h |   2 +
+ arch/x86/kvm/mmu/tdp_mmu.c      |   6 +-
+ arch/x86/kvm/mmu/tdp_mmu.h      |   4 +-
+ arch/x86/kvm/x86.c              | 110 +++++++++++++++++++----
+ include/linux/kvm_host.h        |   9 ++
+ virt/kvm/kvm_main.c             |  54 ++++++++---
+ 8 files changed, 264 insertions(+), 87 deletions(-)
 
-Thanks, this is the quote I was looking for, and also I think it's
-important for it to be in rcupdate.h rather than any .c implementation
-(I think it's more natural to look at headers for this kind of stuff).
+-- 
+2.31.1.527.g47e6f16901-goog
 
-Same comment regarding "old enough" / "recent kernels" though.
-
->   * Note, however, that RCU callbacks are permitted to run concurrently
->   * with new RCU read-side critical sections.  One way that this can happen
->   * is via the following sequence of events: (1) CPU 0 enters an RCU
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-
-The tree.c changes look fine to me.
-
-Thanks a lot for looking into this !
-
---
-Michel "walken" Lespinasse
