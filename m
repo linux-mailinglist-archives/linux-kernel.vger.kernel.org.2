@@ -2,97 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A78536EAA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E368436EAD4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231564AbhD2MjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 08:39:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232657AbhD2MjG (ORCPT
+        id S236862AbhD2Msi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 08:48:38 -0400
+Received: from mail-m176218.qiye.163.com ([59.111.176.218]:53262 "EHLO
+        mail-m176218.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233701AbhD2Msg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 08:39:06 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54B5C06138B;
-        Thu, 29 Apr 2021 05:38:19 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id b21so3762335ljf.11;
-        Thu, 29 Apr 2021 05:38:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=C9ADd+O1J2g7WPah5TPp1y5aPWH188p57AR71wN8M7Y=;
-        b=jNb3LRNDZRY9dtWQ93oZg3Us255+OUEcb5r+MjK5sgkqGm7K9ak2patahQ6FZcQ4SG
-         28gHOMaQhLQK4D5cZpgiMVK1xT5XaPCU5pkFtSOVIMAZQ9BBiOgPnc/cXivzWcDrNz2i
-         H9506pQwYfGU9WiNOhZ3cIL0FTWvHooUSMBpK5u6BPyF2ggTLCQG09bdSv95I1JnkX3g
-         nh3pI0amvi5YoTJBsug51S7QoV+mrkdy5sDhpRttOD/vmKonfuRbaUBS+GKkabP6a7Az
-         uTEygRG6Qdg7dwzw0ebu4kUpHrNm2Jc9NyFuOLXfFVRJyurvbkzpJUP+ZLKUZztvchJ2
-         eX7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=C9ADd+O1J2g7WPah5TPp1y5aPWH188p57AR71wN8M7Y=;
-        b=Mm9rHTI72nTTyaQzdJGEmKuoNrI/jp4EG2F7DanwU9C+0/F+sQBAk/Xf1clfXU02X/
-         +l8H4sKrAZvMPMofSR+4/fGpeNBMuemSaYoxa8J9+aP20lz+F+mpk8Jwe8t+XtxyNmtF
-         xOR8CW3Sp8WLF+oPxl1m8nmM5Vu6xISI/Dwhov619MZF36BqEQaCS1uOn2A72blmFrW+
-         A03w+1PDvX06uY5iDGJjTY5KVWIquZpgGCXxq7rJ88M3Gv4Y0piGe7XfY8bdQABppbmB
-         ntswtyKkpFgypWAoB8B8m2nwGVytgl6orrj0lFoIXwVgnM9V56M1VyvsXHvHE03MzG9I
-         y5iw==
-X-Gm-Message-State: AOAM531Xb1KTWqW1fdbWLTTHfNpBSwFHLXeEnGjj9hvKIZ4q6kvANgFV
-        gXOkDwtyTPW+lZdlstvJmJcHF5p3tcI=
-X-Google-Smtp-Source: ABdhPJzTvng8yQNg4q9VfyFfl15qNbeKD7GZ3dV96aB9VC37IqAWamJguU8SXFBqPTn3oiUW9HRVMA==
-X-Received: by 2002:a2e:140b:: with SMTP id u11mr24386345ljd.125.1619699898040;
-        Thu, 29 Apr 2021 05:38:18 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-102.dynamic.spd-mgts.ru. [109.252.193.102])
-        by smtp.googlemail.com with ESMTPSA id v130sm515026lfa.262.2021.04.29.05.38.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Apr 2021 05:38:17 -0700 (PDT)
-Subject: Re: [PATCH v4 25/79] staging: media: tegra-vde: use
- pm_runtime_resume_and_get()
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <cover.1619621413.git.mchehab+huawei@kernel.org>
- <bc2b9048d4ad510eec97988ce8f3fd0d2bb26f39.1619621413.git.mchehab+huawei@kernel.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <ec7048b0-bd5e-82e5-08fb-b51d633105ff@gmail.com>
-Date:   Thu, 29 Apr 2021 15:38:17 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 29 Apr 2021 08:48:36 -0400
+X-Greylist: delayed 518 seconds by postgrey-1.27 at vger.kernel.org; Thu, 29 Apr 2021 08:48:35 EDT
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m176218.qiye.163.com (Hmail) with ESMTPA id 1208F320114;
+        Thu, 29 Apr 2021 20:39:09 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Aric Cyr <aric.cyr@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Jacky Liao <ziyu.liao@amd.com>,
+        Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Wenjing Liu <wenjing.liu@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] [v2] drm/amd/display: Remove duplicate declaration of dc_state
+Date:   Thu, 29 Apr 2021 20:38:36 +0800
+Message-Id: <20210429123900.25156-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <bc2b9048d4ad510eec97988ce8f3fd0d2bb26f39.1619621413.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGUhKHlZMS0kaGRhJHhkaTR1VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MVE6CDo5Hz8IPEgvOD0KFT1C
+        SDkKChRVSlVKTUpCTUJCQk9CQkJDVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFJQ0hKNwY+
+X-HM-Tid: 0a791da3e029d978kuws1208f320114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-28.04.2021 17:51, Mauro Carvalho Chehab пишет:
-> @@ -1069,11 +1071,17 @@ static int tegra_vde_probe(struct platform_device *pdev)
->  	 * power-cycle it in order to put hardware into a predictable lower
->  	 * power state.
->  	 */
-> -	pm_runtime_get_sync(dev);
-> +	if (pm_runtime_resume_and_get(dev) < 0)
-> +		goto err_pm_runtime;
-> +
->  	pm_runtime_put(dev);
->  
->  	return 0;
->  
-> +err_pm_runtime:
-> +	pm_runtime_dont_use_autosuspend(dev);
-> +	pm_runtime_disable(dev);
-> +
->  err_deinit_iommu:
->  	tegra_vde_iommu_deinit(vde);
+There are two declarations of struct dc_state here.
+Remove the later duplicate more secure.
 
-This is incorrect error unwinding, the miscdev isn't unregistered.
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+Changelog:
+v2:
+- Remove the later duplicate instead of the former.
+---
+ drivers/gpu/drm/amd/display/dc/dc.h | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/amd/display/dc/dc.h b/drivers/gpu/drm/amd/display/dc/dc.h
+index 8108b82bac60..6f3c95b5d1a2 100644
+--- a/drivers/gpu/drm/amd/display/dc/dc.h
++++ b/drivers/gpu/drm/amd/display/dc/dc.h
+@@ -594,7 +594,6 @@ struct dc_bounding_box_overrides {
+ 	int min_dcfclk_mhz;
+ };
+ 
+-struct dc_state;
+ struct resource_pool;
+ struct dce_hwseq;
+ struct gpu_info_soc_bounding_box_v1_0;
+-- 
+2.25.1
+
