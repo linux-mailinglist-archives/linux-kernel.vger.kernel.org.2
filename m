@@ -2,114 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D570736EB77
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 15:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EEC036EB7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 15:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237292AbhD2Nn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 09:43:58 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:54285 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231343AbhD2Nn5 (ORCPT
+        id S237179AbhD2Now (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 09:44:52 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:35160 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234147AbhD2Nod (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 09:43:57 -0400
-X-Originating-IP: 2.7.49.219
-Received: from [192.168.1.100] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 934956000F;
-        Thu, 29 Apr 2021 13:43:06 +0000 (UTC)
-Subject: Re: [PATCH v2] RISC-V: Always define XIP_FIXUP
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-riscv@lists.infradead.org
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        Atish Patra <Atish.Patra@wdc.com>, akpm@linux-foundation.org,
-        rppt@kernel.org, Anup Patel <Anup.Patel@wdc.com>,
-        wangkefeng.wang@huawei.com, vitaly.wool@konsulko.com,
-        greentime.hu@sifive.com, 0x7f454c46@gmail.com,
-        chenhuang5@huawei.com, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, Palmer Dabbelt <palmerdabbelt@google.com>,
-        Guenter Roeck <linux@roeck-us.net>
-References: <20210428214512.551153-1-palmer@dabbelt.com>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <fd30ede9-b105-e9e2-c9e8-f2d88dc2a653@ghiti.fr>
-Date:   Thu, 29 Apr 2021 09:43:05 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Thu, 29 Apr 2021 09:44:33 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 0147E1F434AA
+Message-ID: <47800413ff99225e39f46c841bfb8061aee6d1b6.camel@collabora.com>
+Subject: Re: [PATCH v10 6/9] media: uapi: Add a control for HANTRO driver
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        lee.jones@linaro.org, gregkh@linuxfoundation.org,
+        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
+        emil.l.velikov@gmail.com
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com, cphealy@gmail.com
+Date:   Thu, 29 Apr 2021 10:43:25 -0300
+In-Reply-To: <20210420121046.181889-7-benjamin.gaignard@collabora.com>
+References: <20210420121046.181889-1-benjamin.gaignard@collabora.com>
+         <20210420121046.181889-7-benjamin.gaignard@collabora.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-In-Reply-To: <20210428214512.551153-1-palmer@dabbelt.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 4/28/21 � 5:45 PM, Palmer Dabbelt a �crit�:
-> From: Palmer Dabbelt <palmerdabbelt@google.com>
+On Tue, 2021-04-20 at 14:10 +0200, Benjamin Gaignard wrote:
+> The HEVC HANTRO driver needs to know the number of bits to skip at
+> the beginning of the slice header.
+> That is a hardware specific requirement so create a dedicated control
+> for this purpose.
 > 
-> XIP depends on MMU, but XIP_FIXUP is used throughout the kernel in
-> order to avoid excessive ifdefs.  This just makes sure to always define
-> XIP_FIXUP, which will fix MMU=n builds.  XIP_OFFSET is used by assembly
-> but XIP_FIXUP is C-only, so they're split.
-> 
-> Fixes: 44c922572952 ("RISC-V: enable XIP")
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+
+Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+
 > ---
-> Changes since v1:
+>  .../userspace-api/media/drivers/hantro.rst    | 19 +++++++++++++++++++
+>  .../userspace-api/media/drivers/index.rst     |  1 +
+>  include/media/hevc-ctrls.h                    | 13 +++++++++++++
+>  3 files changed, 33 insertions(+)
+>  create mode 100644 Documentation/userspace-api/media/drivers/hantro.rst
 > 
-> * Clean up the commit text.
-> * Define XIP_OFFSET for assembly.
-> ---
->   arch/riscv/include/asm/pgtable.h | 23 +++++++++++++----------
->   1 file changed, 13 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-> index 2f1384e14e31..9469f464e71a 100644
-> --- a/arch/riscv/include/asm/pgtable.h
-> +++ b/arch/riscv/include/asm/pgtable.h
-> @@ -73,18 +73,10 @@
->   #endif
->   #define FIXADDR_START    (FIXADDR_TOP - FIXADDR_SIZE)
->   
-> +#endif
+> diff --git a/Documentation/userspace-api/media/drivers/hantro.rst b/Documentation/userspace-api/media/drivers/hantro.rst
+> new file mode 100644
+> index 000000000000..cd9754b4e005
+> --- /dev/null
+> +++ b/Documentation/userspace-api/media/drivers/hantro.rst
+> @@ -0,0 +1,19 @@
+> +.. SPDX-License-Identifier: GPL-2.0
 > +
->   #ifdef CONFIG_XIP_KERNEL
->   #define XIP_OFFSET		SZ_8M
-> -#define XIP_FIXUP(addr) ({							\
-> -	uintptr_t __a = (uintptr_t)(addr);					\
-> -	(__a >= CONFIG_XIP_PHYS_ADDR && __a < CONFIG_XIP_PHYS_ADDR + SZ_16M) ?	\
-> -		__a - CONFIG_XIP_PHYS_ADDR + CONFIG_PHYS_RAM_BASE - XIP_OFFSET :\
-> -		__a;								\
-> -	})
-> -#else
-> -#define XIP_FIXUP(addr)		(addr)
-> -#endif /* CONFIG_XIP_KERNEL */
-> -
->   #endif
->   
->   #ifndef __ASSEMBLY__
-> @@ -101,6 +93,17 @@
->   #include <asm/pgtable-32.h>
->   #endif /* CONFIG_64BIT */
->   
-> +#ifdef CONFIG_XIP_KERNEL
-> +#define XIP_FIXUP(addr) ({							\
-> +	uintptr_t __a = (uintptr_t)(addr);					\
-> +	(__a >= CONFIG_XIP_PHYS_ADDR && __a < CONFIG_XIP_PHYS_ADDR + SZ_16M) ?	\
-> +		__a - CONFIG_XIP_PHYS_ADDR + CONFIG_PHYS_RAM_BASE - XIP_OFFSET :\
-> +		__a;								\
-> +	})
-> +#else
-> +#define XIP_FIXUP(addr)		(addr)
-> +#endif /* CONFIG_XIP_KERNEL */
+> +Hantro video decoder driver
+> +===========================
 > +
->   #ifdef CONFIG_MMU
->   /* Number of entries in the page global directory */
->   #define PTRS_PER_PGD    (PAGE_SIZE / sizeof(pgd_t))
-> 
+> +The Hantro video decoder driver implements the following driver-specific controls:
+> +
+> +``V4L2_CID_HANTRO_HEVC_SLICE_HEADER_SKIP (integer)``
+> +    Specifies to Hantro HEVC video decoder driver the number of data (in bits) to
+> +    skip in the slice segment header.
+> +    If non-IDR, the bits to be skipped go from syntax element "pic_output_flag"
+> +    to before syntax element "slice_temporal_mvp_enabled_flag".
+> +    If IDR, the skipped bits are just "pic_output_flag"
+> +    (separate_colour_plane_flag is not supported).
+> +
+> +.. note::
+> +
+> +        This control is not yet part of the public kernel API and
+> +        it is expected to change.
+> diff --git a/Documentation/userspace-api/media/drivers/index.rst b/Documentation/userspace-api/media/drivers/index.rst
+> index 1a9038f5f9fa..12e3c512d718 100644
+> --- a/Documentation/userspace-api/media/drivers/index.rst
+> +++ b/Documentation/userspace-api/media/drivers/index.rst
+> @@ -33,6 +33,7 @@ For more details see the file COPYING in the source distribution of Linux.
+>  
+>         ccs
+>         cx2341x-uapi
+> +        hantro
+>         imx-uapi
+>         max2175
+>         meye-uapi
+> diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
+> index 8e0109eea454..b713eeed1915 100644
+> --- a/include/media/hevc-ctrls.h
+> +++ b/include/media/hevc-ctrls.h
+> @@ -224,4 +224,17 @@ struct v4l2_ctrl_hevc_decode_params {
+>         __u64   flags;
+>  };
+>  
+> +/*  MPEG-class control IDs specific to the Hantro driver as defined by V4L2 */
+> +#define V4L2_CID_CODEC_HANTRO_BASE                             (V4L2_CTRL_CLASS_CODEC | 0x1200)
+> +/*
+> + * V4L2_CID_HANTRO_HEVC_SLICE_HEADER_SKIP -
+> + * the number of data (in bits) to skip in the
+> + * slice segment header.
+> + * If non-IDR, the bits to be skipped go from syntax element "pic_output_flag"
+> + * to before syntax element "slice_temporal_mvp_enabled_flag".
+> + * If IDR, the skipped bits are just "pic_output_flag"
+> + * (separate_colour_plane_flag is not supported).
+> + */
+> +#define V4L2_CID_HANTRO_HEVC_SLICE_HEADER_SKIP (V4L2_CID_CODEC_HANTRO_BASE + 0)
+> +
+>  #endif
 
-XIP_KERNEL works now and !MMU compiles so you can add:
 
-Tested-by: Alexandre Ghiti <alex@ghiti.fr>
-
-Thanks!
