@@ -2,110 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 754AF36E3B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 05:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4642A36E3BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 05:35:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236659AbhD2Dbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 23:31:48 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16166 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbhD2Dbq (ORCPT
+        id S235346AbhD2DgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 23:36:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229805AbhD2DgD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 23:31:46 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FW1Cp45ChzpcHN;
-        Thu, 29 Apr 2021 11:27:50 +0800 (CST)
-Received: from [10.174.187.224] (10.174.187.224) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 29 Apr 2021 11:30:52 +0800
-Subject: Re: [RFC PATCH v2 2/2] KVM: x86: Not wr-protect huge page with
- init_all_set dirty log
-To:     Ben Gardon <bgardon@google.com>
-References: <20210416082511.2856-1-zhukeqian1@huawei.com>
- <20210416082511.2856-3-zhukeqian1@huawei.com>
- <CANgfPd_WzX6Fm7BiMoBoehuLL8tjh4WEqehUhF8biPyL8vS4XQ@mail.gmail.com>
- <49e6bf4f-0142-c9ea-a8c1-7cfe211c8d7b@huawei.com>
- <CANgfPd840MmH5zKRHb4p1Rk0QEDu8iJoMJZGxWF6fhqxANrptg@mail.gmail.com>
- <f0651fce-3b39-3ca7-6681-9fbc6edf8480@huawei.com>
- <CANgfPd_xJbL388zmirbQW-pSw+o0csmNe=uLA1yV_Zk-QMvDfA@mail.gmail.com>
- <4f71baed-544b-81b2-dfa6-f04016966a5a@huawei.com>
- <60894846.1c69fb81.6e765.161bSMTPIN_ADDED_BROKEN@mx.google.com>
- <CANgfPd_FceqBOf3j-o91rZ_Ziq4vNj_0SVMrzfDVsr6PrweL4A@mail.gmail.com>
-CC:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        "Paolo Bonzini" <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "Wanghaibin (D)" <wanghaibin.wang@huawei.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <d2dd806f-7df4-1ba4-9da5-073aece6da1c@huawei.com>
-Date:   Thu, 29 Apr 2021 11:30:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Wed, 28 Apr 2021 23:36:03 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696C2C06138B;
+        Wed, 28 Apr 2021 20:35:15 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id f12so48286910qtf.2;
+        Wed, 28 Apr 2021 20:35:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lNUUJ8qi4DmOFV+yjdI//PoYUgIqsfa9OFzQz/+KjMI=;
+        b=FmQ6jd9m7mlLLMbGjiiPmvY6WOyFJWibxvasdzl1IqeAO/eCg8/tzHc+zbBVSL+b4c
+         WBpWVpbHlUythMkQWQMNezegqFJDJsd0N1YW/u4TLeC0MfEk45Sf8ymtRQ7rOl+zGMsU
+         SO0WzR+SpEP3nVL47QF9uxdI++mP+wbm63SyMqIrXkru84BCtyLdoMwgDHGCCioLFFFL
+         CxUwa+/Qr+F0Uh5VJdSpX0+n63pVHVrrDRN+p/oK6WlKTBFNM9Tai1FClOtuU3xdivSN
+         ZfzJbWpSXGf73X0rn1iRsxCKnUOCkFDSfJFUGB0t9/N9W5Wqob4NJAKL3eROFiEbDphG
+         390Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lNUUJ8qi4DmOFV+yjdI//PoYUgIqsfa9OFzQz/+KjMI=;
+        b=NfAX2fNwC3QtnsAe2vUlTNcYoaeWnSCc1XlE+0HavYtaFd8+e48N2huMoKdrnJJhAQ
+         trd3YncoG9dDuYnjSK1n8mkQqbkxZIr5o2U0gNdt8MOqu8dRF8tC8w3JYeWNzRl5nqPz
+         aCoa77jN3X5ovjbainw0Ue/BgFq3t9H++ds9cONA/3ljleAPqO1+Tfe4wuzDB5DeZOC0
+         D9BZFkJOQnw2XqMpUXP5k/1eSk2p3iDZRNUWu/ocyg/39/ccVmmhm2UuPyhEw+ypHwnF
+         FaH5g7AcS5XDw0xsfEbOAjOO8+lfrOoZ112F+3UNzmmuYJ3qPohwa/jqDQY2UVYAC1Yk
+         DYeA==
+X-Gm-Message-State: AOAM531gYhKECC8wQle9rUV3OVoT83LG/w8mq6onQHOYyMFF1JbqQiOV
+        G4xGHtogOb5LcUjnwuJjnvc=
+X-Google-Smtp-Source: ABdhPJzoVnQRDl8vlJwqsbS9imdg5enRF1XkdV+pGzV3NUkBPzKbRPbb9Mic40PrfkhGrKPKQ57tcg==
+X-Received: by 2002:ac8:1098:: with SMTP id a24mr28839495qtj.291.1619667314605;
+        Wed, 28 Apr 2021 20:35:14 -0700 (PDT)
+Received: from smtp.gmail.com ([2804:30c:909:ed00:eb66:a9ae:aa9c:152f])
+        by smtp.gmail.com with ESMTPSA id m124sm1359546qkc.70.2021.04.28.20.35.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 20:35:14 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 00:35:10 -0300
+From:   Marcelo Schmitt <marcelo.schmitt1@gmail.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     kunit-dev@googlegroups.com,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        andersonreisrosa@gmail.com
+Subject: Re: Running kunit_tool on unclean trees
+Message-ID: <YIopbhx4YT8UZseI@smtp.gmail.com>
+References: <YIRryUf6noodWiqe@smtp.gmail.com>
+ <CAK7LNATsbkhYHk6NCZJCDrtT0NFfBwe_n9GRSrEvURaXaW+gfg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CANgfPd_FceqBOf3j-o91rZ_Ziq4vNj_0SVMrzfDVsr6PrweL4A@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.187.224]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNATsbkhYHk6NCZJCDrtT0NFfBwe_n9GRSrEvURaXaW+gfg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ben,
-
-On 2021/4/29 0:22, Ben Gardon wrote:
-> On Wed, Apr 28, 2021 at 4:34 AM zhukeqian <zhukeqian1@huawei.com> wrote:
->>
->> Oh, I have to correct myself.
->>
->> without this opt:
->> first round dirtying: write fault and split large mapping
->> second round: write fault
->>
->> with this opt:
->> first round dirtying: no write fault
->> second round: write fault and split large mapping
->>
->> the total test time is expected to be reduced.
+On 04/26, Masahiro Yamada wrote:
+> On Sun, Apr 25, 2021 at 4:05 AM Marcelo Schmitt
+> <marcelo.schmitt1@gmail.com> wrote:
+> >
+> > Hi, a friend and I were chasing bug 205219 [1] listed in Bugzilla.
+> > We step into something a little bit different when trying to reproduce
+> > the buggy behavior. In our try, compilation failed with a message form
+> > make asking us to clean the source tree. We couldn't run kunit_tool
+> > after compiling the kernel for x86, as described by Ted in the
+> > discussion pointed out by the bug report.
+> >
+> > Steps to reproduce:
+> >
+> > 0) Run kunit_tool
+> > $ ./tools/testing/kunit/kunit.py run
+> > Works fine with a clean tree.
+> >
+> > 1) Compile the kernel for some architecture (we did it for x86_64).
+> >
+> > 2) Run kunit_tool again
+> > $ ./tools/testing/kunit/kunit.py run
+> > Fails with a message form make asking us to clean the source tree.
 > 
-> Oh yeah, good point. So we should really see the savings in the first
-> round dirty memory time. Good catch.
+> This is probably because
+> tools/testing/kunit/kunit_kernel.py
+> runs make with O= option.
 > 
-[...]
-
->>> It would probably also serve us well to have some kind of "hot" subset
->>> of memory for each vCPU, since some of the benefit of lazy large page
->>> splitting depend on that access pattern.
->>>
->>> 3. Lockstep dirtying and dirty log collection
->>> While this test is currently great for timing dirty logging
->>> operations, it's not great for trickier analysis, especially
->>> reductions to guest degradation. In order to measure that we'd need to
->>> change the test to collect the dirty log as quickly as possible,
->>> independent of what the guest is doing and then also record how much
->>> "progress" the guest is able to make while all that is happening.
->> Yes, make sense.
->>
->> Does the "dirty log collection" contains "dirty log clear"? As I understand, the dirty log
->> collection is very fast, just some memory copy. But for "dirty log clear", we should modify mappings
->> and perform TLBI, the time is much longer.
 > 
-> Yeah, sorry. By dirty log collection I meant get + clear since the
-> test does both before it waits for the guest to dirty all memory
-> again.
-I see.
+> 
+> > Removing the clean source tree check from the top-level Makefile gives
+> > us a similar error to what was described in the bug report. We see that
+> > after running `git clean -fdx` kunit_tool runs nicely again. However,
+> > this is not a real solution since some kernel binaries are erased by git.
+> >
+> > We also had a look into the commit messages of Masahiro Yamada but
+> > couldn't quite grasp why the check for the tree to be clean was added.
+> > We could invest more time in this issue but actually don't know how to
+> > proceed. We'd be glad to receive any comment about it. We could also try
+> > something else if it's a too hard issue for beginners.
+> 
+> I think you are talking about the following error message.
+> 
+> ***
+> *** The source tree is not clean, please run 'make mrproper'
+> *** in /home/masahiro/ref/linux
+> ***
+> 
+
+Yes, I wanted to mean that message.
 
 > 
->>
->>>
->>> I'd be happy to help review any improvements to the test which you
->>> feel like making.
->> Thanks, Ben. emm... I feel very sorry that perhaps I don't have enough time to do this, many works are queued...
->> On the other hand, I think the "Dirtying memory time" of first round can show us the optimization.
 > 
-> No worries, I think this is a good patch either way. No need to block
-> on test improvements, from my perspective.
-OK, thanks.
+> Kbuild checks if the source tree is clean
+> before starting the out-of-tree build
+> because the out-of-tree build relies on VPATH.
+> 
+> This check has existed for a long time. (at least more than a decade)
+> 
+> If Kbuild started the O= build with a dirty source tree,
+> some stale generated source files would have been remaining.
+> (some *.c and *.h are generated by scripts)
+> 
+> Then, Kbuild would wrongly use stale source files in srctree
+> instead of generating new ones in objtree.
+> 
+
+I see, we better try not to break stuff.
+Well, I can't think of any means of fixing bug 205219 so we're probably
+going to start looking forward to work on fixes for another one.
 
 
-BRs,
-Keqian
+Thanks,
+
+Marcelo
+
+> 
+> 
+> 
+> 
+> > [1]: https://bugzilla.kernel.org/show_bug.cgi?id=205219
+> >
+> >
+> > Best Regards,
+> >
+> > Marcelo
+> 
+> 
+> 
+> --
+> Best Regards
+> Masahiro Yamada
+> 
+> -- 
+> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/CAK7LNATsbkhYHk6NCZJCDrtT0NFfBwe_n9GRSrEvURaXaW%2Bgfg%40mail.gmail.com.
