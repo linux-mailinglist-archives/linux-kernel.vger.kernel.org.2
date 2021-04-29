@@ -2,75 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A14536E74B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 10:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF1F36E751
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 10:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235092AbhD2IrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 04:47:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbhD2IrF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 04:47:05 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C021C06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 01:46:19 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id t24so8399458oic.10
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 01:46:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bYJ/i+SyDWuXeltdyQRtqtcL95TciOlmlQ2w0jknE48=;
-        b=pL/eJr3nZ1xPXLcRvl0U4RW4El5I8fT5ZC3v52Qmlslf9BOJWoOnByIYODbo7VWxZN
-         gvNtg2QGNUyVoKYRtfdyuchvx2ZUZczbs/bhGEgyt3Kyh73GiDnclQczVT3mWr1tNnVF
-         n8jvU4dfHi25Dns1SHDJJW7HWJzxfAvoVX/Za5OJoueFl8wCOnNX5g40cfRddEas7dln
-         4ooWV7jq0UDZwy6gz6025xNHxdIqg7qF9rhuiF3ds/2Sg9hjzM0JLq4ipWf4sxnj0dWW
-         WvXstLLdiaOeVizGBD/xIIJBj7j+rNoCtfHxsn684meB9CcHSoHwTwapwZLWUr8Iz5KB
-         F7rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bYJ/i+SyDWuXeltdyQRtqtcL95TciOlmlQ2w0jknE48=;
-        b=luuk0njeMGHibR91NDjuJneBINaP+bMahaRK4nUKf+hDWJuGH2CbQboxFgwQKTzXzt
-         C3Ea9k0xUrxJ6Nhf1jogeiLZp9A8ly6VgrUy5SOW3TBfPhfjHDFYb262SBypVI3xII9j
-         8TBwoSEmajFB0233dlM7gdOUJiPo+hW+FDLv98WACfxY/KYeN94nKELxizR41BhYJXgf
-         pUyFxyq6+Ug6LthE3v4zUo9HyHiHz55cdNVuXbJeSGmEZ1DcCOh0D/vIHmoVOJMfi2SB
-         NKAhQmEFZX78W7qKRPx7rbIHGQB7snNrhaT4xQa1gMrBPyg1ZJsJHaEXc+NKFuG72BoW
-         NrHQ==
-X-Gm-Message-State: AOAM530bNbSbTshzTOfkrAgWrnVfFM0v3zzFi13mEkbX6FQPhkllXYbv
-        pRaMGay9apo3TjZL+rkoxgfgEZg+98ohGb078wEHRA==
-X-Google-Smtp-Source: ABdhPJyCkp8J3VRA0ewFkoQykIwlYkcZbVoeMyqGaTtHvZE/zViErogzzqFjCPiXR/2ErhCqVeYfbzmswfnNNdh7rQs=
-X-Received: by 2002:aca:a814:: with SMTP id r20mr1142692oie.104.1619685978667;
- Thu, 29 Apr 2021 01:46:18 -0700 (PDT)
+        id S240075AbhD2IrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 04:47:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38342 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229963AbhD2IrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 04:47:19 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1619685991; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=S3QDYnjvvBLgh2dAPtQ9pkVbfHfZNetkQxLpUjGW754=;
+        b=OtSF5u7L+L2LBMnAeCxzUjy4YNgAOoo0IsOcErHs3J8qzcRne5SXyyjiiQ88GBNySNydXZ
+        1n6ud3MbJ7JFIP3WhvO+1/xNL/zKyFgiNX4p6E/fDMPqj4Fux+z8ohPY7CpyFnk4PYh3r6
+        LANFD0TnI07HbOF7nmtvJ/3Vc5z0/MM=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1F1F3AE56;
+        Thu, 29 Apr 2021 08:46:31 +0000 (UTC)
+Date:   Thu, 29 Apr 2021 10:46:30 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Jia He <justin.he@arm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org
+Subject: Re: [PATCH 2/4] lib/vsprintf.c: Make %p{D,d} mean as much components
+ as possible
+Message-ID: <YIpyZmi1Reh7iXeI@alley>
+References: <20210428135929.27011-1-justin.he@arm.com>
+ <20210428135929.27011-2-justin.he@arm.com>
 MIME-Version: 1.0
-References: <20210427170859.579924-1-jackmanb@google.com> <CAEf4BzZimYsgp3AS72U8nOXfryB6dVxQKetT_6yE3xzztdTyZg@mail.gmail.com>
- <CACYkzJ57LqsDBgJpTZ6X-mEabgNK60J=2CJEhUWoQU6wALvQVw@mail.gmail.com>
- <CAEf4Bzb+OGZrvmgLk3C1bGtmyLU9JiJKp2WfgGkWq0nW0Tq32g@mail.gmail.com>
- <CA+i-1C2bNk0Mx_9KkuyOjvQh_y7KFrHBU-869P+8oTFq8HdVcw@mail.gmail.com> <CAEf4Bzb1ZNotcB44cDauAkAbs4R=UvPRKP1KWNbLg1k1jH25mA@mail.gmail.com>
-In-Reply-To: <CAEf4Bzb1ZNotcB44cDauAkAbs4R=UvPRKP1KWNbLg1k1jH25mA@mail.gmail.com>
-From:   Brendan Jackman <jackmanb@google.com>
-Date:   Thu, 29 Apr 2021 10:46:06 +0200
-Message-ID: <CA+i-1C3YJQt60FBaOg3pHD+BG6kuUK1Z8RiZ87O9+WSr1Ynbyg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Fix signed overflow in ringbuf_process_ring
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210428135929.27011-2-justin.he@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Apr 2021 at 20:13, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-...
->
-> Yep, let's cap. But to not penalize a hot loop with extra checks.
-> Let's use int64_t internally for counting and only cap it before the
-> return.
+On Wed 2021-04-28 21:59:27, Jia He wrote:
+> From: Linus Torvalds <torvalds@linux-foundation.org>
+> 
+> We have '%pD'(no digit following) for printing a filename. It may not be
+> perfect (by default it only prints one component.
+> 
+> %pD4 should be more than good enough, but we should make plain "%pD" mean
+> "as much of the path that is reasonable" rather than "as few components as
+> possible" (ie 1).
 
-Cool, sounds good. Patch incoming but I'm on interrupts duty this week
-so might not be today/tomorrow.
+Could you please provide link to the discussion where this idea was
+came from?
+
+It would be great to add and example into the commit message how
+it improved the output.
+
+Also please explain why it is useful/safe to change the behavior
+for all existing users. It seems that you checked them and prevented
+any regression by the other patches in this patchset.
+
+Anyway, some regressions are fixed by the followup patches.
+It would break bisection.
+
+We either need to prevent the regression before this patch.
+Or the changes have to be done in this patch. For example,
+it would be perfectly fine to update test_printf.c in
+this patch.
+
+> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+
+If you want to keep Linus as the author and do more changes, you might
+describe here changes done by you, for example:
+
+[justin.he@arm.com: update documentation and test_printf]
+Signed-off-by: Jia He <justin.he@arm.com>
+
+Or you might make you the author and add
+
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+
+> ---
+>  Documentation/core-api/printk-formats.rst | 3 ++-
+>  lib/vsprintf.c                            | 4 ++--
+>  2 files changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/core-api/printk-formats.rst b/Documentation/core-api/printk-formats.rst
+> index 9be6de402cb9..aa76cbec0dae 100644
+> --- a/Documentation/core-api/printk-formats.rst
+> +++ b/Documentation/core-api/printk-formats.rst
+
+Plese, update also the pattern:
+
+-	%pd{,2,3,4}
+-	%pD{,2,3,4}
++	%pd{1,2,3,4}
++	%pD{1,2,3,4}
+
+> @@ -413,7 +413,8 @@ dentry names
+>  For printing dentry name; if we race with :c:func:`d_move`, the name might
+>  be a mix of old and new ones, but it won't oops.  %pd dentry is a safer
+>  equivalent of %s dentry->d_name.name we used to use, %pd<n> prints ``n``
+> -last components.  %pD does the same thing for struct file.
+> +last components.  %pD does the same thing for struct file. By default, %p{D,d}
+> +is equal to %p{D,d}4.
+>  
+>  Passed by reference.
+
+Best Regards,
+Petr
