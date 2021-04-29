@@ -2,67 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9313836F17C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 22:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F18B36F180
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 23:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237189AbhD2VAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 17:00:01 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:46672 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235283AbhD2VAA (ORCPT
+        id S236675AbhD2VBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 17:01:33 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31117 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233097AbhD2VBb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 17:00:00 -0400
-Received: by mail-ot1-f47.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso60732420otb.13;
-        Thu, 29 Apr 2021 13:59:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=obh49y+1a3byoenIm3e/beiu4zdzYImuom9/0sNbr00=;
-        b=GNx5ecgqSVTcMOIOuNCcGxBFe8ZAxVRc+BUnXN09zupfd4EJQYuirwafaHbsbxp388
-         WM7oiicdyy6luUzC1wa2GzpI2D0BoO7sbAltCUFtENqektU67HRpjV32UY1akpUYfEMG
-         8W+sLsh8M14BOe2dtBfr25/IuSiPgBBmsQCM5bHnwoz18dkoVVPSevlj9iv6XzAJmpnK
-         T1qkVOGPvQaL17Tgbix3tJppaVcsoAY908k/wml8K7/PCk81gE9kDvb+bWIMEBQ2ckNQ
-         u5x1aOyz9w1Fu53P/f22O5D+FIXvGW4h3IY99QwndKlo2Udq/koKxbumZfQs5EpYbC12
-         S4TQ==
-X-Gm-Message-State: AOAM530W0VRH0QUaCed9jwFvjcTc2H7amt/3Q+lvKjpaXp0N1uByWMSP
-        L8UMqb+KFYCsfFI+FakQyg==
-X-Google-Smtp-Source: ABdhPJxAjA6/oSOntfg+xpDF1G5G8lYBZjGcGs046yjziy6G4ZKxK0/ldNbEtwrvPm+K4kBIv7ufzg==
-X-Received: by 2002:a05:6830:1db9:: with SMTP id z25mr1024968oti.155.1619729953024;
-        Thu, 29 Apr 2021 13:59:13 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k16sm241447ooa.36.2021.04.29.13.59.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 13:59:11 -0700 (PDT)
-Received: (nullmailer pid 1766256 invoked by uid 1000);
-        Thu, 29 Apr 2021 20:59:11 -0000
-Date:   Thu, 29 Apr 2021 15:59:11 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] dt-binding: interrupt-controller: Add missing interrupts
- property
-Message-ID: <20210429205911.GA1765201@robh.at.kernel.org>
-References: <20210427224201.32285-1-tsbogend@alpha.franken.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210427224201.32285-1-tsbogend@alpha.franken.de>
+        Thu, 29 Apr 2021 17:01:31 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13TKYBIG012993;
+        Thu, 29 Apr 2021 17:00:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=Xgqqc0RPhCoOpnWlWCwPmBpEcrWbP+4/YtDT9h+84WE=;
+ b=daMUzyfwboJizTbJkpzvmPxGrAyfI5R8fI0kWcyNbVKXxD4z9n44aX2IRVvnUI9CvOI7
+ TaxfI7AKK+ugc1j6SUOZiq/K/wEEM2a1h0rd47lUpKTbQ6co35HeejOnJ1LaIB7dTMeJ
+ 5Uhjcb+yvA2qIqjd58VUCAiWpR3bb75kuw3YuzuHelbFcCmuOyEfNAlG+Tk0hrVzz18u
+ F/fWH8CXf10Sw2pQesZFF/R67nH56cG0Md6+RMiY2ayAmSYmMSMVb2MZuse5Hp8UYq3w
+ roaRRsYj4+qipujFb1EBHXCjsHWLm//k9AeBz7cB2/3hVETIagyI7j+IFCjrakhkv+VR MA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3883txrqm6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Apr 2021 17:00:41 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13TKYupe018418;
+        Thu, 29 Apr 2021 17:00:40 -0400
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3883txrqky-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Apr 2021 17:00:40 -0400
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13TKjnVi020093;
+        Thu, 29 Apr 2021 21:00:40 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma01wdc.us.ibm.com with ESMTP id 384ay9y2u9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Apr 2021 21:00:40 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13TL0dec22806998
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 21:00:39 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 138F9C605D;
+        Thu, 29 Apr 2021 21:00:39 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B4472C6057;
+        Thu, 29 Apr 2021 21:00:38 +0000 (GMT)
+Received: from v0005c16 (unknown [9.211.73.43])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 29 Apr 2021 21:00:38 +0000 (GMT)
+Message-ID: <5e55a124f57186e95498e30d54ef6f9d7d671dbe.camel@linux.ibm.com>
+Subject: Re: [PATCH 1/5] dt-bindings: leds: Add retain-state-shutdown boolean
+From:   Eddie James <eajames@linux.ibm.com>
+To:     linux-leds@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, pavel@ucw.cz,
+        jacek.anaszewski@gmail.com, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, vishwa@linux.ibm.com
+Date:   Thu, 29 Apr 2021 16:00:38 -0500
+In-Reply-To: <20210429205002.70245-2-eajames@linux.ibm.com>
+References: <20210429205002.70245-1-eajames@linux.ibm.com>
+         <20210429205002.70245-2-eajames@linux.ibm.com>
+Organization: IBM
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: RNlEDZJ-x_SsVUGbqKGQTpIvRA_D9wvN
+X-Proofpoint-ORIG-GUID: nMfFNRqmol6F8UuVLIiP7ElskYE-8wjk
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-29_11:2021-04-28,2021-04-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ phishscore=0 adultscore=0 impostorscore=0 mlxlogscore=999 suspectscore=0
+ bulkscore=0 priorityscore=1501 clxscore=1015 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104290133
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Apr 2021 00:42:00 +0200, Thomas Bogendoerfer wrote:
-> Interrupts property is required, so add it.
+On Thu, 2021-04-29 at 15:49 -0500, Eddie James wrote:
+> Document the retain-state-shutdown property that indicates that a LED
+> should not be turned off or changed during system shutdown.
+
+Lost a character of Rob's email, so bumping this one with the right
+address.
+
+Sorry,
+Eddie
+
 > 
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Signed-off-by: Eddie James <eajames@linux.ibm.com>
 > ---
->  .../bindings/interrupt-controller/idt,32434-pic.yaml          | 4 ++++
->  1 file changed, 4 insertions(+)
+>  Documentation/devicetree/bindings/leds/common.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
+> diff --git a/Documentation/devicetree/bindings/leds/common.yaml
+> b/Documentation/devicetree/bindings/leds/common.yaml
+> index b1f363747a62..697102707703 100644
+> --- a/Documentation/devicetree/bindings/leds/common.yaml
+> +++ b/Documentation/devicetree/bindings/leds/common.yaml
+> @@ -128,6 +128,12 @@ properties:
+>        as a panic indicator.
+>      type: boolean
+>  
+> +  retain-state-shutdown:
+> +    description:
+> +      This property specifies that the LED should not be turned off
+> or changed
+> +      when the system shuts down.
+> +    type: boolean
+> +
+>    trigger-sources:
+>      description: |
+>        List of devices which should be used as a source triggering
+> this LED
 
-Applied, thanks!
-
-All fine in my build, so not sure what happened to the bot...
