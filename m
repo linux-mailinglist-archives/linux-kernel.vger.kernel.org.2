@@ -2,106 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D27D36E68C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 10:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6610936E694
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 10:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239921AbhD2IFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 04:05:46 -0400
-Received: from mail-vs1-f52.google.com ([209.85.217.52]:42943 "EHLO
-        mail-vs1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239520AbhD2IFo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 04:05:44 -0400
-Received: by mail-vs1-f52.google.com with SMTP id 66so33248308vsk.9;
-        Thu, 29 Apr 2021 01:04:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cEaWsqveglqKutwIfCWg/c1k8Pjc9F7AASjTBk3kAB0=;
-        b=qRxS7DrgjtfP6uNKjGJyeysH31OCYcAOJHbFS000i/hrznxEAdXpWvtEOseiZJLjUw
-         p5QF60hahfKSUW6eQSTmv9LOZeEaprPtoBEU0Uaz5xcMsQMwnolI36j5Bjl2dEjQCTib
-         IqzGn9kVzSMAo1vkBdBHfMxQQnL75EyOETJLDwkDrequvJ+r/LUTMJlnw2l6xLTxHIw8
-         ZuTa0T5SLJ1Grfr+3bBigKcekZFZd9dOq1rVOPzpiuuQ/QbQ4VkcMjsRgBz/6d9I4R3o
-         6EVPfxDyUKYNaAluWyz3GQW2pFvGb3brqxk+49yJKTppqpJGtlPs+0QlgJD/hsdl/6eE
-         QdJg==
-X-Gm-Message-State: AOAM532dpOwsliZ3fm645/WBICC65toI0bKKrKXCBfYSYZR6GQfqVZSn
-        V9mCK7DEnfaGX/gzTI3uLx6ywul2G9I+RwsOqqY=
-X-Google-Smtp-Source: ABdhPJyOQfCSFL6ivPQSvopdsprRnA2n+Ja7fwwMwXAF5cOL+2KKLY+oOwM93GwYMJWOqvFowThQ0q/7iQPRdk2pFdw=
-X-Received: by 2002:a67:fc57:: with SMTP id p23mr29422049vsq.40.1619683497839;
- Thu, 29 Apr 2021 01:04:57 -0700 (PDT)
+        id S239747AbhD2IIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 04:08:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230071AbhD2IIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 04:08:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08B9E61446;
+        Thu, 29 Apr 2021 08:07:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619683652;
+        bh=2DlbYxunUevwnqh+Ong8MaEHb0LiPaIl1Ok8WmzGuC0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mymJPklfL0ZdniTD3N+MWED8nyjPviqzLYjhTAO9CwOtOlMAc5Yikt0vbNuMpsMcq
+         JJcLc8HGlhvjlKM94tLwKjShqHZQ+6JgLliD1lz+WxxHaDN1V0m1FTVk0IeMQDJn/O
+         f2t0RwiL5h+1KtZy5SB8QFo3zjbTv/SgBa28WbpwaC+drlFM6tXiC5vXASU3qu996F
+         VrLQk6nuZMtZMvU95X3Pp3ZqofFnubP+rS1eKkUeqkD8/6iuaCAt+wuohcmb0uk+UA
+         plLQVK9tGKsIcd4rtNkQxruxahYKNzyKeGNZI7MmIl7hoWRvduXtaYGv91cmaBf/IW
+         rmtY1ZJj8MZAQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] powerpc: mark local variables around longjmp as volatile
+Date:   Thu, 29 Apr 2021 10:06:38 +0200
+Message-Id: <20210429080708.1520360-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <161918446704.3145707.14418606303992174310.stgit@warthog.procyon.org.uk>
- <161918455721.3145707.4063925145568978308.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161918455721.3145707.4063925145568978308.stgit@warthog.procyon.org.uk>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 29 Apr 2021 10:04:46 +0200
-Message-ID: <CAMuHMdXJZ7iNQE964CdBOU=vRKVMFzo=YF_eiwsGgqzuvZ+TuA@mail.gmail.com>
-Subject: Re: [PATCH v7 07/31] netfs: Make a netfs helper module
-To:     David Howells <dhowells@redhat.com>
-Cc:     Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Linux MM <linux-mm@kvack.org>, linux-cachefs@redhat.com,
-        linux-afs@lists.infradead.org,
-        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
-        linux-cifs@vger.kernel.org,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        V9FS Developers <v9fs-developer@lists.sourceforge.net>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+From: Arnd Bergmann <arnd@arndb.de>
 
-On Fri, Apr 23, 2021 at 3:31 PM David Howells <dhowells@redhat.com> wrote:
-> Make a netfs helper module to manage read request segmentation, caching
-> support and transparent huge page support on behalf of a network
-> filesystem.
->
-> Signed-off-by: David Howells <dhowells@redhat.com>
+gcc-11 points out that modifying local variables next to a
+longjmp/setjmp may cause undefined behavior:
 
-Thanks for your patch, which is now commit 3ca236440126f75c ("mm:
-Implement readahead_control pageset expansion") upstream.
+arch/powerpc/kexec/crash.c: In function 'crash_kexec_prepare_cpus.constprop':
+arch/powerpc/kexec/crash.c:108:22: error: variable 'ncpus' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbere
+d]
+arch/powerpc/kexec/crash.c:109:13: error: variable 'tries' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbere
+d]
+arch/powerpc/xmon/xmon.c: In function 'xmon_print_symbol':
+arch/powerpc/xmon/xmon.c:3625:21: error: variable 'name' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbered]
+arch/powerpc/xmon/xmon.c: In function 'stop_spus':
+arch/powerpc/xmon/xmon.c:4057:13: error: variable 'i' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbered]
+arch/powerpc/xmon/xmon.c: In function 'restart_spus':
+arch/powerpc/xmon/xmon.c:4098:13: error: variable 'i' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbered]
+arch/powerpc/xmon/xmon.c: In function 'dump_opal_msglog':
+arch/powerpc/xmon/xmon.c:3008:16: error: variable 'pos' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbered]
+arch/powerpc/xmon/xmon.c: In function 'show_pte':
+arch/powerpc/xmon/xmon.c:3207:29: error: variable 'tsk' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbered]
+arch/powerpc/xmon/xmon.c: In function 'show_tasks':
+arch/powerpc/xmon/xmon.c:3302:29: error: variable 'tsk' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbered]
+arch/powerpc/xmon/xmon.c: In function 'xmon_core':
+arch/powerpc/xmon/xmon.c:494:13: error: variable 'cmd' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbered]
+arch/powerpc/xmon/xmon.c:860:21: error: variable 'bp' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbered]
+arch/powerpc/xmon/xmon.c:860:21: error: variable 'bp' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbered]
+arch/powerpc/xmon/xmon.c:492:48: error: argument 'fromipi' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbered]
 
-> --- /dev/null
-> +++ b/fs/netfs/Kconfig
-> @@ -0,0 +1,8 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +
-> +config NETFS_SUPPORT
-> +       tristate "Support for network filesystem high-level I/O"
-> +       help
-> +         This option enables support for network filesystems, including
-> +         helpers for high-level buffered I/O, abstracting out read
-> +         segmentation, local caching and transparent huge page support.
+According to the documentation, marking these as 'volatile' is
+sufficient to avoid the problem, and it shuts up the warning.
 
-TBH, this help text didn't give me any clue on whether I want to enable
-this config option or not.  Do I need it for e.g. NFS, which is a
-network filesystem?
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/powerpc/kexec/crash.c |  4 ++--
+ arch/powerpc/xmon/xmon.c   | 22 +++++++++++-----------
+ 2 files changed, 13 insertions(+), 13 deletions(-)
 
-I see later patches make AFS and FSCACHE select NETFS_SUPPORT.  If this
-is just a library of functions, to be selected by its users, then please
-make the symbol invisible.
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/powerpc/kexec/crash.c b/arch/powerpc/kexec/crash.c
+index 0196d0c211ac..10f997e6bb95 100644
+--- a/arch/powerpc/kexec/crash.c
++++ b/arch/powerpc/kexec/crash.c
+@@ -105,8 +105,8 @@ void crash_ipi_callback(struct pt_regs *regs)
+ static void crash_kexec_prepare_cpus(int cpu)
+ {
+ 	unsigned int msecs;
+-	unsigned int ncpus = num_online_cpus() - 1;/* Excluding the panic cpu */
+-	int tries = 0;
++	volatile unsigned int ncpus = num_online_cpus() - 1;/* Excluding the panic cpu */
++	volatile int tries = 0;
+ 	int (*old_handler)(struct pt_regs *regs);
+ 
+ 	printk(KERN_EMERG "Sending IPI to other CPUs\n");
+diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
+index c8173e92f19d..ce0eacf77645 100644
+--- a/arch/powerpc/xmon/xmon.c
++++ b/arch/powerpc/xmon/xmon.c
+@@ -489,10 +489,10 @@ static void xmon_touch_watchdogs(void)
+ 	touch_nmi_watchdog();
+ }
+ 
+-static int xmon_core(struct pt_regs *regs, int fromipi)
++static int xmon_core(struct pt_regs *regs, volatile int fromipi)
+ {
+-	int cmd = 0;
+-	struct bpt *bp;
++	volatile int cmd = 0;
++	struct bpt *volatile bp;
+ 	long recurse_jmp[JMP_BUF_LEN];
+ 	bool locked_down;
+ 	unsigned long offset;
+@@ -857,7 +857,7 @@ static inline void force_enable_xmon(void)
+ static struct bpt *at_breakpoint(unsigned long pc)
+ {
+ 	int i;
+-	struct bpt *bp;
++	struct bpt *volatile bp;
+ 
+ 	bp = bpts;
+ 	for (i = 0; i < NBPTS; ++i, ++bp)
+@@ -3005,7 +3005,7 @@ static void dump_opal_msglog(void)
+ {
+ 	unsigned char buf[128];
+ 	ssize_t res;
+-	loff_t pos = 0;
++	volatile loff_t pos = 0;
+ 
+ 	if (!firmware_has_feature(FW_FEATURE_OPAL)) {
+ 		printf("Machine is not running OPAL firmware.\n");
+@@ -3160,7 +3160,7 @@ memzcan(void)
+ 		printf("%.8lx\n", a - mskip);
+ }
+ 
+-static void show_task(struct task_struct *tsk)
++static void show_task(struct task_struct *volatile tsk)
+ {
+ 	char state;
+ 
+@@ -3204,7 +3204,7 @@ static void format_pte(void *ptep, unsigned long pte)
+ static void show_pte(unsigned long addr)
+ {
+ 	unsigned long tskv = 0;
+-	struct task_struct *tsk = NULL;
++	struct task_struct *volatile tsk = NULL;
+ 	struct mm_struct *mm;
+ 	pgd_t *pgdp;
+ 	p4d_t *p4dp;
+@@ -3299,7 +3299,7 @@ static void show_pte(unsigned long addr)
+ static void show_tasks(void)
+ {
+ 	unsigned long tskv;
+-	struct task_struct *tsk = NULL;
++	struct task_struct *volatile tsk = NULL;
+ 
+ 	printf("     task_struct     ->thread.ksp    ->thread.regs    PID   PPID S  P CMD\n");
+ 
+@@ -3622,7 +3622,7 @@ static void xmon_print_symbol(unsigned long address, const char *mid,
+ 			      const char *after)
+ {
+ 	char *modname;
+-	const char *name = NULL;
++	const char *volatile name = NULL;
+ 	unsigned long offset, size;
+ 
+ 	printf(REG, address);
+@@ -4054,7 +4054,7 @@ void xmon_register_spus(struct list_head *list)
+ static void stop_spus(void)
+ {
+ 	struct spu *spu;
+-	int i;
++	volatile int i;
+ 	u64 tmp;
+ 
+ 	for (i = 0; i < XMON_NUM_SPUS; i++) {
+@@ -4095,7 +4095,7 @@ static void stop_spus(void)
+ static void restart_spus(void)
+ {
+ 	struct spu *spu;
+-	int i;
++	volatile int i;
+ 
+ 	for (i = 0; i < XMON_NUM_SPUS; i++) {
+ 		if (!spu_info[i].spu)
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.29.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
