@@ -2,258 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4F836F135
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 22:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F1C936F138
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 22:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237143AbhD2Uip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 16:38:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237127AbhD2Uio (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 16:38:44 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 135E3C06138C;
-        Thu, 29 Apr 2021 13:37:56 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id q9so14078413wrs.6;
-        Thu, 29 Apr 2021 13:37:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pWM5Xu7wIYzZp7eGSboEhbdiiLmMWtTkOWFVFd4JcnA=;
-        b=hLFx5PLWQIR3xKQ/5IvKVagswkOhcm/GYU8c3GAMQo/ARWnheC5evOm0VRegdVMQdj
-         lPVmQRHkXHfAaD24FiV3svwy5Uu7udU0IgFQjrDFeZSDxpfIa/119r4zjJf/SlQXDSfE
-         amaHQw4lU5hruHI5Aea41azqdX411FSF2RNw1Ihf+x1pPT7NHbA+OFOtFh4wpfDoU2yk
-         T7tFv0ATcuhV7ZuFOy9WiW6Q7oMKHxD8xQXxOZ43njQuUjudVul3ranRu9e9N2+K3/R5
-         dyjpFKpVyojtPLDAqB2tGDJyNk20yjdbekRxPUokFE9YsRSIEhQVSflEby+8OqkUf8zP
-         EB+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pWM5Xu7wIYzZp7eGSboEhbdiiLmMWtTkOWFVFd4JcnA=;
-        b=M9+Rzr/lghRfPTR0OZzRvncJkR0gSCIT+b+zYBn1gTCi1/5Sh6rOAmr3A5G0cxhb3A
-         LXr7BPJghSawLdGQb6TAkSf2hrFS9uYEhrUtxMW7mNJP5tIlwINxmZd3GRtt6K+BWqut
-         zSwYpn+bv7H6INyTdsP+V858enRIQP3FTkD8doFjpcJzGAxNZOb3eZkJ90K0JRtP/U76
-         LAPW7Pf1DaVN4uzbOJo9Ig6RBNWhr13wVeb/62n7/thQYmXkIp3ND+0L4a4xulyBxEee
-         KsJ8rbQNWUW1ysxEtySZDOVE5WhpdX6vOGx3/hJDpP52bEst7eoT8JmaUoZIaIAtnFXH
-         qA/w==
-X-Gm-Message-State: AOAM530rr/r35VHiXtg24UJv1PA/lWgY0rzTgysQPLIqjM2Gt7bZ2lb/
-        Ymd9uYoplQhMQWc5wR7Whkw=
-X-Google-Smtp-Source: ABdhPJxxMcPB1qB93AqtUnS0W3Ivqgh+wLZPQhhTw0o5uWxhLaDTAKddo/FzVK4CmSCTMhM3hNuPhw==
-X-Received: by 2002:adf:e8c4:: with SMTP id k4mr1841574wrn.262.1619728674667;
-        Thu, 29 Apr 2021 13:37:54 -0700 (PDT)
-Received: from localhost.localdomain (p200300f137153600428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3715:3600:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id x25sm11635783wmj.34.2021.04.29.13.37.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 13:37:53 -0700 (PDT)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     narmstrong@baylibre.com, khilman@baylibre.com,
-        linux-amlogic@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Stefan Agner <stefan@agner.ch>
-Subject: [PATCH RFC] soc: amlogic: meson-ee-pwrc: Drop the .shutdown callback from the driver
-Date:   Thu, 29 Apr 2021 22:37:23 +0200
-Message-Id: <20210429203723.1177082-1-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.31.1
+        id S237161AbhD2Ujr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 16:39:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39822 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236675AbhD2Ujp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 16:39:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BA9B61424;
+        Thu, 29 Apr 2021 20:38:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619728738;
+        bh=7fpzpOV4zd0vGWk7Nig3KUb6uMJJYVewdGFJlgXV4LY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cNpYsunI00J2o1O4QCg8osIK8v04uOc/PbHjS4Y4zu2D5I/+eqeyDYZrSDU5FmVbj
+         0G2UtVVjmkkt7WxU0uOMKAIfa9rCWwxpSk2y+3dzNPILqIfhtjNwcx6KHa8n0yrs4j
+         EIy/9Z/KXE1a9BkIase6egfGDf4n2W1Unuq/blldVABxfty4wFUyic5bpwpV/CWX9Z
+         qXc3yWEVsuARaZlVG2rSZ0iaEREf2ZQXxLwGMF0lVmcd/iM+G6oJvWCjFuCCHTFv3o
+         dWTNZVh6/wys/RkO3Nh53WIzySBYPLGlkIkXRXOa47KiGmzKj58HAMX75D7xGcALL0
+         uZglbRslGJl/g==
+Received: by mail-ej1-f51.google.com with SMTP id n2so101854491ejy.7;
+        Thu, 29 Apr 2021 13:38:58 -0700 (PDT)
+X-Gm-Message-State: AOAM531M9hk9YIVsbscfLwQET38f16VfFIHjBkTmSFCSxs/1K3OFQmOJ
+        jxoqjAtLaR7z+w+QA1+aO4IlzorpKMbSHjhyPA==
+X-Google-Smtp-Source: ABdhPJys+AHIA7g0Hb9LngctVWlxApTbTRNaemN0NP5iP2Mprf+bpox8GRotpdVwoHfbA6KYjOGY7O7u2wDHKbJNX7I=
+X-Received: by 2002:a17:906:7806:: with SMTP id u6mr393550ejm.130.1619728737129;
+ Thu, 29 Apr 2021 13:38:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210429192504.1148842-1-clabbe@baylibre.com>
+In-Reply-To: <20210429192504.1148842-1-clabbe@baylibre.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 29 Apr 2021 15:38:45 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJqFGU5EG+7GuRKFBaYZkB+Af41ZvqZH=54PH7qCQoMEg@mail.gmail.com>
+Message-ID: <CAL_JsqJqFGU5EG+7GuRKFBaYZkB+Af41ZvqZH=54PH7qCQoMEg@mail.gmail.com>
+Subject: Re: [PATCH v2] dt-bindings: dma: convert arm-pl08x to yaml
+To:     Corentin Labbe <clabbe@baylibre.com>
+Cc:     Vinod <vkoul@kernel.org>, devicetree@vger.kernel.org,
+        "open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM" 
+        <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stefan reports that rebooting his ODROID-N2+ (using a G12B SoC) results
-in the board hanging. His kernel config uses:
-  CONFIG_MESON_EE_PM_DOMAINS=y
-  CONFIG_DRM_MESON=m
+On Thu, Apr 29, 2021 at 2:25 PM Corentin Labbe <clabbe@baylibre.com> wrote:
+>
+> Converts dma/arm-pl08x.txt to yaml.
+> In the process, I add an example for the faraday variant.
+>
+> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+> ---
+> Changes since v1:
+> - fixes yamllint warning about indent
+> - added select
+> - fixed example (needed includes)
+>
+>  .../devicetree/bindings/dma/arm-pl08x.txt     |  59 --------
+>  .../devicetree/bindings/dma/arm-pl08x.yaml    | 141 ++++++++++++++++++
+>  2 files changed, 141 insertions(+), 59 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/dma/arm-pl08x.txt
+>  create mode 100644 Documentation/devicetree/bindings/dma/arm-pl08x.yaml
 
-He reports that his kernel config results in the DRM driver's .shutdown
-callback to be executed after the power domain driver's .shutdown
-callback. That's problematic because meson_ee_pwrc_shutdown disables the
-clock which are used by the VPU IP. This causes the board to hang.
+> diff --git a/Documentation/devicetree/bindings/dma/arm-pl08x.yaml b/Documentation/devicetree/bindings/dma/arm-pl08x.yaml
+> new file mode 100644
+> index 000000000000..06dec6f3e9a8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dma/arm-pl08x.yaml
+> @@ -0,0 +1,141 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/dma/arm-pl08x.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: ARM PrimeCells PL080 and PL081 and derivatives DMA controller
+> +
+> +maintainers:
+> +  - Vinod Koul <vkoul@kernel.org>
+> +
+> +allOf:
+> +  - $ref: "dma-controller.yaml#"
+> +
+> +# We need a select here so we don't match all nodes with 'arm,primecell'
+> +select:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        enum:
+> +          - arm,pl080
+> +          - arm,pl081
+> +  required:
+> +    - compatible
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - const: "arm,pl080"
+> +          - const: "arm,primecell"
+> +      - items:
+> +          - const: "arm,pl081"
+> +          - const: "arm,primecell"
 
-Further he reports that changing from CONFIG_DRM_MESON=m to
-CONFIG_DRM_MESON=y reverses the order in which the DRM and power domain
-driver's shutdown functions are executed, making the reboot successful.
+The first 2 oneOf entries can be combined into one.
 
-The reason why we use meson_ee_pwrc_shutdown is because of the VPU power
-domain (which is causing the problem described above). It can be left
-enabled by u-boot. According to the original TOFIX comment in
-meson_ee_pwrc_init_domain we need to be careful because disabling the
-power domain could "cause system errors". As a workaround the clocks
-are manually enabled in meson_ee_pwrc_init_domain and the power domain
-is marked as GENPD_FLAG_ALWAYS_ON (so it can never be turned off).
+And you don't need quotes.
 
-Experimenting has shown that the power domain itself can be disabled as
-long as we keep the clocks enabled if u-boot enabled the power domain
-but we don't have any driver enabled for the VPU (CONFIG_DRM_MESON=n).
+> +      - items:
+> +          - const: faraday,ftdma020
+> +          - const: arm,pl080
+> +          - const: arm,primecell
 
-Keeping the clocks enabled is the responsibility of the CCF drivers, not
-the power domain driver. Even better: this is already covered as all
-gates in the VPU and VAPB tree on GX an G12 SoCs have the
-CLK_IGNORE_UNUSED flag set, meaning: if the bootloader has previously
-enabled the clock we're not touching it until a driver explicitly asks
-to enable (and then disable) it. In case of CONFIG_DRM_MESON=n we're
-never calling meson_ee_pwrc_on, meaning that we always keep the state of
-the clocks as set by u-boot.
+blank line between each DT property
 
-The original TOFIX comment also mentioned that we need to make sure not
-to mess up the clock's prepare/enable ref-counters. This is the only
-requirement that's left for the meson-ee-pwrc driver that needs to be
-managed for the VPU power domain.
+> +  arm,primecell-periphid:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
 
-Three steps can improve this situation:
-- Don't prepare and enable the clocks (just to fix the ref-counting) in
-  meson_ee_pwrc_init_domain if u-boot left that power domain enabled.
-  Instead, remember if the clocks are enabled in meson_ee_pwrc_{on,off}
-  and only disable them if we have previously turned them on ourselves.
-- Drop GENPD_FLAG_ALWAYS_ON as we can always manage the state of the VPU
-  power domain if both the power domain controller and DRM driver are
-  enabled (=m or =y). If the power domain driver is enabled but the DRM
-  driver is disabled we can still use meson_ee_pwrc_off because it's not
-  trying to disable the clocks anymore
-- Drop meson_ee_pwrc_shutdown as it's the responsibility of the genpd
-  framework to call meson_ee_pwrc_off when needed (either when a power
-  domain is being disabled - regardless of whether it's was used by a
-  driver before or not). Now there's also no more shutdown callback
-  ordering dependency between the power domain driver and other drivers
-  anymore.
+This already has a type in the common definition, so drop.
 
-Fixes: eef3c2ba0a42a6 ("soc: amlogic: Add support for Everything-Else power domains controller")
-Reported-by: Stefan Agner <stefan@agner.ch>
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
-Neil, I would like you to specifically review (and re-test) the original
-TOFIX part. I *believe* that I understand the original problem and hope
-that my approach also works in that scenario, but I am not 100% sure.
+> +    description: on the FTDMAC020 the primecell ID is not hard-coded
+> +                 in the hardware and must be specified here as <0x0003b080>. This number
+> +                 follows the PrimeCell standard numbering using the JEP106 vendor code 0x38
+> +                 for Faraday Technology.
+> +  reg:
+> +    minItems: 1
 
-Kevin, as you're my go-to genpd expert I am also asking you to review
-this to point out any issues you see.
+Convention is 'maxItems: 1'.
 
+> +    description: Address range of the PL08x registers
+> +  interrupts:
+> +    minItems: 1
+> +    description: The PL08x interrupt number
+> +  clocks:
+> +    minItems: 1
+> +    description: The clock running the IP core clock
+> +  clock-names:
+> +    const: "apb_pclk"
 
- drivers/soc/amlogic/meson-ee-pwrc.c | 76 ++++++++++++-----------------
- 1 file changed, 31 insertions(+), 45 deletions(-)
+primecell.yaml already covers this IIRC. Just 'maxItems: 1' is fine here.
 
-diff --git a/drivers/soc/amlogic/meson-ee-pwrc.c b/drivers/soc/amlogic/meson-ee-pwrc.c
-index 50bf5d2b828b..534c33ba31ce 100644
---- a/drivers/soc/amlogic/meson-ee-pwrc.c
-+++ b/drivers/soc/amlogic/meson-ee-pwrc.c
-@@ -353,10 +353,26 @@ static int meson_ee_pwrc_off(struct generic_pm_domain *domain)
- 
- 	if (pwrc_domain->num_clks) {
- 		msleep(20);
--		clk_bulk_disable_unprepare(pwrc_domain->num_clks,
--					   pwrc_domain->clks);
-+
-+		/*
-+		 * We are only allowed to turn off the clocks here if we
-+		 * have previously enabled them ourselves. In other words:
-+		 * for an "unused" power domain (which is not used by any
-+		 * power domain consumer) we have not enabled the clocks
-+		 * previously so we keep them in the state they are.
-+		 * This is relevant for the VPU power domain which may
-+		 * have been enabled by u-boot. If the display driver in
-+		 * Linux is disabled then we need to keep the clocks in
-+		 * the state as u-boot set them, otherwise the board will
-+		 * hang.
-+		 */
-+		if (pwrc_domain->enabled)
-+			clk_bulk_disable_unprepare(pwrc_domain->num_clks,
-+						   pwrc_domain->clks);
- 	}
- 
-+	pwrc_domain->enabled = false;
-+
- 	return 0;
- }
- 
-@@ -392,8 +408,14 @@ static int meson_ee_pwrc_on(struct generic_pm_domain *domain)
- 	if (ret)
- 		return ret;
- 
--	return clk_bulk_prepare_enable(pwrc_domain->num_clks,
--				       pwrc_domain->clks);
-+	ret = clk_bulk_prepare_enable(pwrc_domain->num_clks,
-+				      pwrc_domain->clks);
-+	if (ret)
-+		return ret;
-+
-+	pwrc_domain->enabled = true;
-+
-+	return 0;
- }
- 
- static int meson_ee_pwrc_init_domain(struct platform_device *pdev,
-@@ -434,33 +456,11 @@ static int meson_ee_pwrc_init_domain(struct platform_device *pdev,
- 	dom->base.power_on = meson_ee_pwrc_on;
- 	dom->base.power_off = meson_ee_pwrc_off;
- 
--	/*
--         * TOFIX: This is a special case for the VPU power domain, which can
--	 * be enabled previously by the bootloader. In this case the VPU
--         * pipeline may be functional but no driver maybe never attach
--         * to this power domain, and if the domain is disabled it could
--         * cause system errors. This is why the pm_domain_always_on_gov
--         * is used here.
--         * For the same reason, the clocks should be enabled in case
--         * we need to power the domain off, otherwise the internal clocks
--         * prepare/enable counters won't be in sync.
--         */
--	if (dom->num_clks && dom->desc.get_power && !dom->desc.get_power(dom)) {
--		ret = clk_bulk_prepare_enable(dom->num_clks, dom->clks);
--		if (ret)
--			return ret;
--
--		dom->base.flags = GENPD_FLAG_ALWAYS_ON;
--		ret = pm_genpd_init(&dom->base, NULL, false);
--		if (ret)
--			return ret;
--	} else {
--		ret = pm_genpd_init(&dom->base, NULL,
--				    (dom->desc.get_power ?
--				     dom->desc.get_power(dom) : true));
--		if (ret)
--			return ret;
--	}
-+	ret = pm_genpd_init(&dom->base, NULL,
-+			    (dom->desc.get_power ?
-+			     dom->desc.get_power(dom) : true));
-+	if (ret)
-+		return ret;
- 
- 	return 0;
- }
-@@ -528,19 +528,6 @@ static int meson_ee_pwrc_probe(struct platform_device *pdev)
- 	return of_genpd_add_provider_onecell(pdev->dev.of_node, &pwrc->xlate);
- }
- 
--static void meson_ee_pwrc_shutdown(struct platform_device *pdev)
--{
--	struct meson_ee_pwrc *pwrc = platform_get_drvdata(pdev);
--	int i;
--
--	for (i = 0 ; i < pwrc->xlate.num_domains ; ++i) {
--		struct meson_ee_pwrc_domain *dom = &pwrc->domains[i];
--
--		if (dom->desc.get_power && !dom->desc.get_power(dom))
--			meson_ee_pwrc_off(&dom->base);
--	}
--}
--
- static struct meson_ee_pwrc_domain_data meson_ee_g12a_pwrc_data = {
- 	.count = ARRAY_SIZE(g12a_pwrc_domains),
- 	.domains = g12a_pwrc_domains,
-@@ -606,7 +593,6 @@ MODULE_DEVICE_TABLE(of, meson_ee_pwrc_match_table);
- 
- static struct platform_driver meson_ee_pwrc_driver = {
- 	.probe = meson_ee_pwrc_probe,
--	.shutdown = meson_ee_pwrc_shutdown,
- 	.driver = {
- 		.name		= "meson_ee_pwrc",
- 		.of_match_table	= meson_ee_pwrc_match_table,
--- 
-2.31.1
+> +  lli-bus-interface-ahb1:
+> +    type: boolean
+> +    description: if AHB master 1 is eligible for fetching LLIs
+> +  lli-bus-interface-ahb2:
+> +    type: boolean
+> +    description: if AHB master 2 is eligible for fetching LLIs
+> +  mem-bus-interface-ahb1:
+> +    type: boolean
+> +    description: if AHB master 1 is eligible for fetching memory contents
+> +  mem-bus-interface-ahb2:
+> +    type: boolean
+> +    description: if AHB master 2 is eligible for fetching memory contents
+> +  "#dma-cells":
+> +    const: 2
+> +    description: must be <2>. First cell should contain the DMA request,
 
+'must be <2>' is already stated by the schema.
+
+> +                 second cell should contain either 1 or 2 depending on
+> +                 which AHB master that is used.
+> +
+> +  memcpy-burst-size:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum:
+> +      - 1
+> +      - 4
+> +      - 8
+> +      - 16
+> +      - 32
+> +      - 64
+> +      - 128
+> +      - 256
+> +    description: the size of the bursts for memcpy
+> +  memcpy-bus-width:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum:
+> +      - 8
+> +      - 16
+> +      - 32
+> +      - 64
+> +    description: |
+
+Don't need '|' unless you need to preserve formatting.
+
+> +                 the bus width used for memcpy in bits: 8, 16 or 32 are legal
+> +                 values, the Faraday FTDMAC020 can also accept 64 bits
+> +
+> +required:
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - "#dma-cells"
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    dmac0: dma-controller@10130000 {
+> +      compatible = "arm,pl080", "arm,primecell";
+> +      reg = <0x10130000 0x1000>;
+> +      interrupt-parent = <&vica>;
+> +      interrupts = <15>;
+> +      clocks = <&hclkdma0>;
+> +      clock-names = "apb_pclk";
+> +      lli-bus-interface-ahb1;
+> +      lli-bus-interface-ahb2;
+> +      mem-bus-interface-ahb2;
+> +      memcpy-burst-size = <256>;
+> +      memcpy-bus-width = <32>;
+> +      #dma-cells = <2>;
+> +    };
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/reset/cortina,gemini-reset.h>
+> +    #include <dt-bindings/clock/cortina,gemini-clock.h>
+> +    dma-controller@67000000 {
+> +      compatible = "faraday,ftdma020", "arm,pl080", "arm,primecell";
+> +      /* Faraday Technology FTDMAC020 variant */
+> +      arm,primecell-periphid = <0x0003b080>;
+> +      reg = <0x67000000 0x1000>;
+> +      interrupts = <9 IRQ_TYPE_EDGE_RISING>;
+> +      resets = <&syscon GEMINI_RESET_DMAC>;
+> +      clocks = <&syscon GEMINI_CLK_AHB>;
+> +      clock-names = "apb_pclk";
+> +      /* Bus interface AHB1 (AHB0) is totally tilted */
+> +      lli-bus-interface-ahb2;
+> +      mem-bus-interface-ahb2;
+> +      memcpy-burst-size = <256>;
+> +      memcpy-bus-width = <32>;
+> +      #dma-cells = <2>;
+> +    };
+> --
+> 2.26.3
+>
