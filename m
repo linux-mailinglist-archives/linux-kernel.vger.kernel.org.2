@@ -2,257 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E393336F1D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 23:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBF1F36F193
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 23:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237249AbhD2VS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 17:18:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46320 "EHLO
+        id S234786AbhD2VKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 17:10:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234858AbhD2VS2 (ORCPT
+        with ESMTP id S233293AbhD2VKg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 17:18:28 -0400
-X-Greylist: delayed 522 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 29 Apr 2021 14:17:41 PDT
-Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8290FC06138B;
-        Thu, 29 Apr 2021 14:17:41 -0700 (PDT)
-Received: from webmail.kmu-office.ch (unknown [IPv6:2a02:418:6a02::a3])
-        by mail.kmu-office.ch (Postfix) with ESMTPSA id 145635C2B46;
-        Thu, 29 Apr 2021 23:08:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
-        t=1619730536;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pje9CZRyStP4gi5ZOAWJouc2CdO7Xjp15C0/4DK7xbc=;
-        b=pZ2TNwQtFNWbKSz+JDbIFLRKBy8TmnkJLpgxTXyhz2vKn6kf89N5/mTzDV3myABxZ8vIv7
-        OaAAMIXIojEh5fWFt4W9n7zguK/xkrJW79+IG/+b/E0SK1AfEAk0ikqWnoouPvfCHu6oWX
-        9g1t4XcIMIxNF9VGQ3ybXHzRahjOaOQ=
+        Thu, 29 Apr 2021 17:10:36 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 332F1C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 14:09:49 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id b21so5701983ljf.11
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 14:09:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=digitalocean.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EZk56/tKMCbIPvV8YNaRO6wo8Irr+WK10NbZxDJf+z4=;
+        b=fkpQe5JdXBXmFB1qTx5+TPACFa+jtEGsa1I1mrclX9AXJwSW+9J/MPIJxxqqZGl1Pz
+         VpHU4C0wFKTS5y0jqEI4k9lXvfxwa2TtqnQaSbTKItswKxvHU4RDAD2vc07U2tW1FVVf
+         z570BZJFXzNjzvtbXe4+NwHpNaeF/c7rppDqg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EZk56/tKMCbIPvV8YNaRO6wo8Irr+WK10NbZxDJf+z4=;
+        b=jSYpMUvgNTYOfsM+XGy4eurJQRtEHJbVpZ/dowP2mcF9YH8LCmCJqnzU6hhJTCa5uO
+         A8r1ByLi2GDWDEinglN6k6P0HOoIX6YEVx5Jibt80V8l143QZI+xu7om4PDCEf/SBMnT
+         w/p7vcMY205EACG2C+BKNlU4KNsrsHDeDv1tS5lHvIs5C3LRAlM9BAPGsikWGOYn8b3V
+         N7dCWXvm/xMKm1SmeuSBONMC3rptggEEuazxOOQUMU9np63e2w/yTwOP3Vct0ka+TWeM
+         o1TXZB3jwV4ZI2poq2qb6xFGoHXMWeIEBuUAdl+O8PJiMpzRkbsW74D2Al4ODpsfc1P3
+         B4XQ==
+X-Gm-Message-State: AOAM530/EbYYIksIICCYT4WKUVd1KTw/wn2G90ypZge9RJlnehjGlmV7
+        7Nmtw0mMO8wnUBcfu6ZY1fwKAgoxbOpRqE5HCe1wOA==
+X-Google-Smtp-Source: ABdhPJwl1zm2hxsWtYR4UHYAXOKAwBbQiMsY/xAufPPqF+RVf0CrZPw0VzO6RrwwkpQmpsxZ2B08H5lQO1JhmX/0a5g=
+X-Received: by 2002:a2e:9e98:: with SMTP id f24mr1185878ljk.442.1619730587668;
+ Thu, 29 Apr 2021 14:09:47 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Thu, 29 Apr 2021 23:08:56 +0200
-From:   Stefan Agner <stefan@agner.ch>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     narmstrong@baylibre.com, khilman@baylibre.com,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH RFC] soc: amlogic: meson-ee-pwrc: Drop the .shutdown
- callback from the driver
-In-Reply-To: <20210429203723.1177082-1-martin.blumenstingl@googlemail.com>
-References: <20210429203723.1177082-1-martin.blumenstingl@googlemail.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <d8c3d21b679fd8e6e1bedafc7406c42e@agner.ch>
-X-Sender: stefan@agner.ch
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210422120459.447350175@infradead.org> <20210422123308.196692074@infradead.org>
+ <CABk29Ntop2nX+z1bV7giG8ToR_w3f_+GYGAw+hFQ6g9rCZunmw@mail.gmail.com>
+ <YIZ6ZpkrMGQ9A9x2@hirez.programming.kicks-ass.net> <CABk29NvicqM_c2ssYnDrEy_FPsfD5GH38rB_XHooErALOabe5g@mail.gmail.com>
+ <CAOY2WoyTq0AYMz+z=USxSpdcJqWMjkq-FDkuLN++brwhAkwTaQ@mail.gmail.com>
+ <CABk29Nuz-FDCk23ajcr9gS4KD-wMpwyn=ASu+yuTTT445rwTvw@mail.gmail.com>
+ <CAERHkrvU2Xzi5p9Dph3zZ7zkoYjSV1krK-UhqE7+Qb80FodEGg@mail.gmail.com>
+ <5c289c5a-a120-a1d0-ca89-2724a1445fe8@linux.intel.com> <CAERHkrsoCR7d3N2rhwKCeFDDBv4-S4HzD567mOaV_pngXn_Hkg@mail.gmail.com>
+ <CAOY2WowOR6HhoKMsGrg+2VFD6ySY67E7Kr1s2GCuO4LdyusyUw@mail.gmail.com> <CABk29Nt_xBaoawiyMv1RG+Yzg_a9w5RMc6Zy0ggmS5K-9LzrUA@mail.gmail.com>
+In-Reply-To: <CABk29Nt_xBaoawiyMv1RG+Yzg_a9w5RMc6Zy0ggmS5K-9LzrUA@mail.gmail.com>
+From:   Don Hiatt <dhiatt@digitalocean.com>
+Date:   Thu, 29 Apr 2021 14:09:36 -0700
+Message-ID: <CAOY2WozkceZ+B+AGTVLJ1H-jZDAbr2c7ksjtgrnr7DQ8h5raAg@mail.gmail.com>
+Subject: Re: [PATCH 04/19] sched: Prepare for Core-wide rq->lock
+To:     Josh Don <joshdon@google.com>
+Cc:     Aubrey Li <aubrey.intel@gmail.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Hyser,Chris" <chris.hyser@oracle.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: multipart/mixed; boundary="0000000000004fe2d805c122eafa"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-04-29 22:37, Martin Blumenstingl wrote:
-> Stefan reports that rebooting his ODROID-N2+ (using a G12B SoC) results
-> in the board hanging. His kernel config uses:
->   CONFIG_MESON_EE_PM_DOMAINS=y
->   CONFIG_DRM_MESON=m
-> 
-> He reports that his kernel config results in the DRM driver's .shutdown
-> callback to be executed after the power domain driver's .shutdown
-> callback. That's problematic because meson_ee_pwrc_shutdown disables the
-> clock which are used by the VPU IP. This causes the board to hang.
-> 
-> Further he reports that changing from CONFIG_DRM_MESON=m to
-> CONFIG_DRM_MESON=y reverses the order in which the DRM and power domain
-> driver's shutdown functions are executed, making the reboot successful.
-> 
-> The reason why we use meson_ee_pwrc_shutdown is because of the VPU power
-> domain (which is causing the problem described above). It can be left
-> enabled by u-boot. According to the original TOFIX comment in
-> meson_ee_pwrc_init_domain we need to be careful because disabling the
-> power domain could "cause system errors". As a workaround the clocks
-> are manually enabled in meson_ee_pwrc_init_domain and the power domain
-> is marked as GENPD_FLAG_ALWAYS_ON (so it can never be turned off).
-> 
-> Experimenting has shown that the power domain itself can be disabled as
-> long as we keep the clocks enabled if u-boot enabled the power domain
-> but we don't have any driver enabled for the VPU (CONFIG_DRM_MESON=n).
-> 
-> Keeping the clocks enabled is the responsibility of the CCF drivers, not
-> the power domain driver. Even better: this is already covered as all
-> gates in the VPU and VAPB tree on GX an G12 SoCs have the
-> CLK_IGNORE_UNUSED flag set, meaning: if the bootloader has previously
-> enabled the clock we're not touching it until a driver explicitly asks
-> to enable (and then disable) it. In case of CONFIG_DRM_MESON=n we're
-> never calling meson_ee_pwrc_on, meaning that we always keep the state of
-> the clocks as set by u-boot.
-> 
-> The original TOFIX comment also mentioned that we need to make sure not
-> to mess up the clock's prepare/enable ref-counters. This is the only
-> requirement that's left for the meson-ee-pwrc driver that needs to be
-> managed for the VPU power domain.
-> 
-> Three steps can improve this situation:
-> - Don't prepare and enable the clocks (just to fix the ref-counting) in
->   meson_ee_pwrc_init_domain if u-boot left that power domain enabled.
->   Instead, remember if the clocks are enabled in meson_ee_pwrc_{on,off}
->   and only disable them if we have previously turned them on ourselves.
-> - Drop GENPD_FLAG_ALWAYS_ON as we can always manage the state of the VPU
->   power domain if both the power domain controller and DRM driver are
->   enabled (=m or =y). If the power domain driver is enabled but the DRM
->   driver is disabled we can still use meson_ee_pwrc_off because it's not
->   trying to disable the clocks anymore
-> - Drop meson_ee_pwrc_shutdown as it's the responsibility of the genpd
->   framework to call meson_ee_pwrc_off when needed (either when a power
->   domain is being disabled - regardless of whether it's was used by a
->   driver before or not). Now there's also no more shutdown callback
->   ordering dependency between the power domain driver and other drivers
->   anymore.
-> 
-> Fixes: eef3c2ba0a42a6 ("soc: amlogic: Add support for Everything-Else
-> power domains controller")
-> Reported-by: Stefan Agner <stefan@agner.ch>
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+--0000000000004fe2d805c122eafa
+Content-Type: text/plain; charset="UTF-8"
 
-FWIW, I successfully tested this change with CONFIG_DRM_MESON=m and
-CONFIG_DRM_MESON=y each with a couple of reboots without any hang.
+On Thu, Apr 29, 2021 at 1:48 PM Josh Don <joshdon@google.com> wrote:
+>
+> On Wed, Apr 28, 2021 at 9:41 AM Don Hiatt <dhiatt@digitalocean.com> wrote:
+> >
+> > I'm still seeing hard lockups while repeatedly setting cookies on qemu
+> > processes even with
+> > the updated patch. If there is any debug you'd like me to turn on,
+> > just let me know.
+> >
+> > Thanks!
+> >
+> > don
+>
+> Thanks for the added context on your repro configuration. In addition
+> to the updated patch from earlier, could you try the modification to
+> double_rq_lock() from
+> https://lkml.kernel.org/r/CABk29NuS-B3n4sbmavo0NDA1OCCsz6Zf2VDjjFQvAxBMQoJ_Lg@mail.gmail.com
+> ? I have a feeling this is what's causing your lockup.
+>
+> Best,
+> Josh
 
-Tested-by: Stefan Agner <stefan@agner.ch>
+Hi Josh,
 
-Thanks Martin for help debugging and working on this patch!
+I've been running Aubrey+Peter's patch (attached) for almost 5 hours
+and haven't had a single issue. :)
 
---
-Stefan
+I'm running a set-cookie script every 5 seconds on the two VMs (each
+vm is running
+'sysbench --threads=1 --time=0 cpu run' to generate some load in the vm) and
+I'm running two of the same sysbench runs on the HV while setting cookies
+every 5 seconds.
 
-> ---
-> Neil, I would like you to specifically review (and re-test) the original
-> TOFIX part. I *believe* that I understand the original problem and hope
-> that my approach also works in that scenario, but I am not 100% sure.
-> 
-> Kevin, as you're my go-to genpd expert I am also asking you to review
-> this to point out any issues you see.
-> 
-> 
->  drivers/soc/amlogic/meson-ee-pwrc.c | 76 ++++++++++++-----------------
->  1 file changed, 31 insertions(+), 45 deletions(-)
-> 
-> diff --git a/drivers/soc/amlogic/meson-ee-pwrc.c
-> b/drivers/soc/amlogic/meson-ee-pwrc.c
-> index 50bf5d2b828b..534c33ba31ce 100644
-> --- a/drivers/soc/amlogic/meson-ee-pwrc.c
-> +++ b/drivers/soc/amlogic/meson-ee-pwrc.c
-> @@ -353,10 +353,26 @@ static int meson_ee_pwrc_off(struct
-> generic_pm_domain *domain)
->  
->  	if (pwrc_domain->num_clks) {
->  		msleep(20);
-> -		clk_bulk_disable_unprepare(pwrc_domain->num_clks,
-> -					   pwrc_domain->clks);
-> +
-> +		/*
-> +		 * We are only allowed to turn off the clocks here if we
-> +		 * have previously enabled them ourselves. In other words:
-> +		 * for an "unused" power domain (which is not used by any
-> +		 * power domain consumer) we have not enabled the clocks
-> +		 * previously so we keep them in the state they are.
-> +		 * This is relevant for the VPU power domain which may
-> +		 * have been enabled by u-boot. If the display driver in
-> +		 * Linux is disabled then we need to keep the clocks in
-> +		 * the state as u-boot set them, otherwise the board will
-> +		 * hang.
-> +		 */
-> +		if (pwrc_domain->enabled)
-> +			clk_bulk_disable_unprepare(pwrc_domain->num_clks,
-> +						   pwrc_domain->clks);
->  	}
->  
-> +	pwrc_domain->enabled = false;
-> +
->  	return 0;
->  }
->  
-> @@ -392,8 +408,14 @@ static int meson_ee_pwrc_on(struct
-> generic_pm_domain *domain)
->  	if (ret)
->  		return ret;
->  
-> -	return clk_bulk_prepare_enable(pwrc_domain->num_clks,
-> -				       pwrc_domain->clks);
-> +	ret = clk_bulk_prepare_enable(pwrc_domain->num_clks,
-> +				      pwrc_domain->clks);
-> +	if (ret)
-> +		return ret;
-> +
-> +	pwrc_domain->enabled = true;
-> +
-> +	return 0;
->  }
->  
->  static int meson_ee_pwrc_init_domain(struct platform_device *pdev,
-> @@ -434,33 +456,11 @@ static int meson_ee_pwrc_init_domain(struct
-> platform_device *pdev,
->  	dom->base.power_on = meson_ee_pwrc_on;
->  	dom->base.power_off = meson_ee_pwrc_off;
->  
-> -	/*
-> -         * TOFIX: This is a special case for the VPU power domain, which can
-> -	 * be enabled previously by the bootloader. In this case the VPU
-> -         * pipeline may be functional but no driver maybe never attach
-> -         * to this power domain, and if the domain is disabled it could
-> -         * cause system errors. This is why the pm_domain_always_on_gov
-> -         * is used here.
-> -         * For the same reason, the clocks should be enabled in case
-> -         * we need to power the domain off, otherwise the internal clocks
-> -         * prepare/enable counters won't be in sync.
-> -         */
-> -	if (dom->num_clks && dom->desc.get_power && !dom->desc.get_power(dom)) {
-> -		ret = clk_bulk_prepare_enable(dom->num_clks, dom->clks);
-> -		if (ret)
-> -			return ret;
-> -
-> -		dom->base.flags = GENPD_FLAG_ALWAYS_ON;
-> -		ret = pm_genpd_init(&dom->base, NULL, false);
-> -		if (ret)
-> -			return ret;
-> -	} else {
-> -		ret = pm_genpd_init(&dom->base, NULL,
-> -				    (dom->desc.get_power ?
-> -				     dom->desc.get_power(dom) : true));
-> -		if (ret)
-> -			return ret;
-> -	}
-> +	ret = pm_genpd_init(&dom->base, NULL,
-> +			    (dom->desc.get_power ?
-> +			     dom->desc.get_power(dom) : true));
-> +	if (ret)
-> +		return ret;
->  
->  	return 0;
->  }
-> @@ -528,19 +528,6 @@ static int meson_ee_pwrc_probe(struct
-> platform_device *pdev)
->  	return of_genpd_add_provider_onecell(pdev->dev.of_node, &pwrc->xlate);
->  }
->  
-> -static void meson_ee_pwrc_shutdown(struct platform_device *pdev)
-> -{
-> -	struct meson_ee_pwrc *pwrc = platform_get_drvdata(pdev);
-> -	int i;
-> -
-> -	for (i = 0 ; i < pwrc->xlate.num_domains ; ++i) {
-> -		struct meson_ee_pwrc_domain *dom = &pwrc->domains[i];
-> -
-> -		if (dom->desc.get_power && !dom->desc.get_power(dom))
-> -			meson_ee_pwrc_off(&dom->base);
-> -	}
-> -}
-> -
->  static struct meson_ee_pwrc_domain_data meson_ee_g12a_pwrc_data = {
->  	.count = ARRAY_SIZE(g12a_pwrc_domains),
->  	.domains = g12a_pwrc_domains,
-> @@ -606,7 +593,6 @@ MODULE_DEVICE_TABLE(of, meson_ee_pwrc_match_table);
->  
->  static struct platform_driver meson_ee_pwrc_driver = {
->  	.probe = meson_ee_pwrc_probe,
-> -	.shutdown = meson_ee_pwrc_shutdown,
->  	.driver = {
->  		.name		= "meson_ee_pwrc",
->  		.of_match_table	= meson_ee_pwrc_match_table,
+Unless I jinxed us it looks like a great fix. :)
+
+Let me know if there is anything else you'd like me to try. I'm going
+to leave the tests running
+and see what happens. I update with what I find.
+
+Thanks!
+
+don
+
+--0000000000004fe2d805c122eafa
+Content-Type: application/octet-stream; name="aubrey-cosched.diff"
+Content-Disposition: attachment; filename="aubrey-cosched.diff"
+Content-Transfer-Encoding: base64
+Content-ID: <f_ko3dgfif0>
+X-Attachment-Id: f_ko3dgfif0
+
+ZGlmZiAtLWdpdCBhL2tlcm5lbC9zY2hlZC9jb3JlLmMgYi9rZXJuZWwvc2NoZWQvY29yZS5jCmlu
+ZGV4IGY3MzI2NDJlM2UwOS4uMWQ3YmM4NzAwN2NkIDEwMDY0NAotLS0gYS9rZXJuZWwvc2NoZWQv
+Y29yZS5jCisrKyBiL2tlcm5lbC9zY2hlZC9jb3JlLmMKQEAgLTI5MCw2ICsyOTAsMTAgQEAgc3Rh
+dGljIHZvaWQgc2NoZWRfY29yZV9hc3NlcnRfZW1wdHkodm9pZCkKIHN0YXRpYyB2b2lkIF9fc2No
+ZWRfY29yZV9lbmFibGUodm9pZCkKIHsKIAlzdGF0aWNfYnJhbmNoX2VuYWJsZSgmX19zY2hlZF9j
+b3JlX2VuYWJsZWQpOworCS8qCisJICogRW5zdXJlIHJhd19zcGluX3JxXypsb2NrKigpIGhhdmUg
+Y29tcGxldGVkIGJlZm9yZSBmbGlwcGluZy4KKwkgKi8KKwlzeW5jaHJvbml6ZV9yY3UoKTsKIAlf
+X3NjaGVkX2NvcmVfZmxpcCh0cnVlKTsKIAlzY2hlZF9jb3JlX2Fzc2VydF9lbXB0eSgpOwogfQpA
+QCAtNDQ5LDE2ICs0NTMsMjMgQEAgdm9pZCByYXdfc3Bpbl9ycV9sb2NrX25lc3RlZChzdHJ1Y3Qg
+cnEgKnJxLCBpbnQgc3ViY2xhc3MpCiB7CiAJcmF3X3NwaW5sb2NrX3QgKmxvY2s7CgorCS8qIE1h
+dGNoZXMgc3luY2hyb25pemVfc2NoZWQoKSBpbiBfX3NjaGVkX2NvcmVfZW5hYmxlZCgpICovCisJ
+cHJlZW1wdF9kaXNhYmxlKCk7CiAJaWYgKHNjaGVkX2NvcmVfZGlzYWJsZWQoKSkgewogCQlyYXdf
+c3Bpbl9sb2NrX25lc3RlZCgmcnEtPl9fbG9jaywgc3ViY2xhc3MpOworCQkvKiBwcmVlbXB0LWNv
+dW50ICpNVVNUKiBiZSA+IDEgKi8KKwkJcHJlZW1wdF9lbmFibGVfbm9fcmVzY2hlZCgpOwogCQly
+ZXR1cm47CiAJfQoKIAlmb3IgKDs7KSB7CiAJCWxvY2sgPSBfX3JxX2xvY2twKHJxKTsKIAkJcmF3
+X3NwaW5fbG9ja19uZXN0ZWQobG9jaywgc3ViY2xhc3MpOwotCQlpZiAobGlrZWx5KGxvY2sgPT0g
+X19ycV9sb2NrcChycSkpKQorCQlpZiAobGlrZWx5KGxvY2sgPT0gX19ycV9sb2NrcChycSkpKSB7
+CisJCQkvKiBwcmVlbXB0LWNvdW50ICpNVVNUKiBiZSA+IDEgKi8KKwkJCXByZWVtcHRfZW5hYmxl
+X25vX3Jlc2NoZWQoKTsKIAkJCXJldHVybjsKKwkJfQogCQlyYXdfc3Bpbl91bmxvY2sobG9jayk7
+CiAJfQogfQpAQCAtNDY4LDE0ICs0NzksMjEgQEAgYm9vbCByYXdfc3Bpbl9ycV90cnlsb2NrKHN0
+cnVjdCBycSAqcnEpCiAJcmF3X3NwaW5sb2NrX3QgKmxvY2s7CiAJYm9vbCByZXQ7CgotCWlmIChz
+Y2hlZF9jb3JlX2Rpc2FibGVkKCkpCi0JCXJldHVybiByYXdfc3Bpbl90cnlsb2NrKCZycS0+X19s
+b2NrKTsKKwkvKiBNYXRjaGVzIHN5bmNocm9uaXplX3NjaGVkKCkgaW4gX19zY2hlZF9jb3JlX2Vu
+YWJsZWQoKSAqLworCXByZWVtcHRfZGlzYWJsZSgpOworCWlmIChzY2hlZF9jb3JlX2Rpc2FibGVk
+KCkpIHsKKwkJcmV0ID0gcmF3X3NwaW5fdHJ5bG9jaygmcnEtPl9fbG9jayk7CisJCXByZWVtcHRf
+ZW5hYmxlKCk7CisJCXJldHVybiByZXQ7CisJfQoKIAlmb3IgKDs7KSB7CiAJCWxvY2sgPSBfX3Jx
+X2xvY2twKHJxKTsKIAkJcmV0ID0gcmF3X3NwaW5fdHJ5bG9jayhsb2NrKTsKLQkJaWYgKCFyZXQg
+fHwgKGxpa2VseShsb2NrID09IF9fcnFfbG9ja3AocnEpKSkpCisJCWlmICghcmV0IHx8IChsaWtl
+bHkobG9jayA9PSBfX3JxX2xvY2twKHJxKSkpKSB7CisJCQlwcmVlbXB0X2VuYWJsZSgpOwogCQkJ
+cmV0dXJuIHJldDsKKwkJfQogCQlyYXdfc3Bpbl91bmxvY2sobG9jayk7CiAJfQogfQpAQCAtNDkz
+LDE0ICs1MTEsMTcgQEAgdm9pZCBkb3VibGVfcnFfbG9jayhzdHJ1Y3QgcnEgKnJxMSwgc3RydWN0
+IHJxICpycTIpCiB7CiAJbG9ja2RlcF9hc3NlcnRfaXJxc19kaXNhYmxlZCgpOwoKLQlpZiAocnEx
+LT5jcHUgPiBycTItPmNwdSkKLQkJc3dhcChycTEsIHJxMik7Ci0KLQlyYXdfc3Bpbl9ycV9sb2Nr
+KHJxMSk7Ci0JaWYgKF9fcnFfbG9ja3AocnExKSA9PSBfX3JxX2xvY2twKHJxMikpCi0JCXJldHVy
+bjsKLQotCXJhd19zcGluX3JxX2xvY2tfbmVzdGVkKHJxMiwgU0lOR0xFX0RFUFRIX05FU1RJTkcp
+OworCWlmIChfX3JxX2xvY2twKHJxMSkgPT0gX19ycV9sb2NrcChycTIpKSB7CisJCXJhd19zcGlu
+X3JxX2xvY2socnExKTsKKwl9IGVsc2UgeworCQlpZiAoX19ycV9sb2NrcChycTEpIDwgX19ycV9s
+b2NrcChycTIpKSB7CisJCQlyYXdfc3Bpbl9ycV9sb2NrKHJxMSk7CisJCQlyYXdfc3Bpbl9ycV9s
+b2NrX25lc3RlZChycTIsIFNJTkdMRV9ERVBUSF9ORVNUSU5HKTsKKwkJfSBlbHNlIHsKKwkJCXJh
+d19zcGluX3JxX2xvY2socnEyKTsKKwkJCXJhd19zcGluX3JxX2xvY2tfbmVzdGVkKHJxMSwgU0lO
+R0xFX0RFUFRIX05FU1RJTkcpOworCQl9CisJfQogfQogI2VuZGlmCg==
+--0000000000004fe2d805c122eafa--
