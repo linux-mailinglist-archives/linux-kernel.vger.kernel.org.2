@@ -2,94 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5A636E8D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC1036E8D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240472AbhD2KdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 06:33:13 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:34477 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235578AbhD2KdG (ORCPT
+        id S237512AbhD2Kfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 06:35:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55092 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232261AbhD2Kfl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 06:33:06 -0400
-Received: by mail-il1-f197.google.com with SMTP id g7-20020a056e021a27b02901663a2bc830so34551997ile.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 03:32:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=Xjux6uWK6HqdmpxJpDGqjp9kZ+TR4joypvkzTViX7DI=;
-        b=t/623BEPcnvTSwFPF62EPd/2+zF2gydKQ1fZAPQaz6r7iriphVTURUIpZ5zfHoiKmh
-         rUHAJbNE6JQyCSg6btu6rYx7MgGRhzF0rZvBfbnVhplI4wVYMcbgb+Q+xyUrGjF0lvXT
-         8L/AGrZzqQssj6FgIJ57rzbifG5wls/pRs3JLrrwuiqNyxa5C7lCulNjPwTeZaX/NJFf
-         2yuh6LR50YrRMfuwa+yNWeIDcs2/JB4CahT8ifG1BjNZiv4o8nPww+mHVKmqolR+Qbj2
-         f0cE4zi9a76Uoy3ERxZAv+0bjGa2cXYy4bsTLpSZmrXUYzE6uGegLCtx+bIj8/O9/DsD
-         G+MQ==
-X-Gm-Message-State: AOAM5300+FDNYgAn35TkhvWNiuy8AdgrzGB+UhZMynuE+BFPS/JyuRR+
-        dbAzOWgCMTNsnFfVZT/jRYXAakgD3kodpsuPeTHuGYky6zLt
-X-Google-Smtp-Source: ABdhPJyZjWbQtEkf2xY7hcOB3Dro/TE+xgj6LrBMSfJyp59pKJsdAAnaHNHlAcuIug/tzd32Oe0Qh2vi9ENCinEEU5XNIxHynFUK
+        Thu, 29 Apr 2021 06:35:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619692495;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Chvtu/o6tQSjr1YmXbx6Eow1icBSXGjA7cXfGJrXKvI=;
+        b=Tq4Q+cBsM4OCcqoxbJ7NzQB9H+mUl/QgS3x4unLUBsYb9Z2WLhMijTcDxvYCIKV/OW61hD
+        fdM23uELUzpTzhl78TsHD6HAxCkQjciyw4Vb+oaNnd9HrU6vcAF61gM0W81V1nhNmh8wpx
+        S9MFEJbbl4MvyeCx9Y8c1Y7HgwuXiDI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-284-l4ce_dJfN4mYrfOAtTFIbQ-1; Thu, 29 Apr 2021 06:34:53 -0400
+X-MC-Unique: l4ce_dJfN4mYrfOAtTFIbQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 28EDB80402F;
+        Thu, 29 Apr 2021 10:34:52 +0000 (UTC)
+Received: from max.com (unknown [10.40.195.97])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CFE756A90B;
+        Thu, 29 Apr 2021 10:34:47 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        cluster-devel@redhat.com, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] GFS2 changes for 5.13
+Date:   Thu, 29 Apr 2021 12:34:45 +0200
+Message-Id: <20210429103445.846975-1-agruenba@redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:8e93:: with SMTP id q141mr978723iod.6.1619692339721;
- Thu, 29 Apr 2021 03:32:19 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 03:32:19 -0700
-In-Reply-To: <000000000000b23f7805c119dee8@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008dfbaf05c11a023c@google.com>
-Subject: Re: [syzbot] WARNING in io_rsrc_node_switch
-From:   syzbot <syzbot+a4715dd4b7c866136f79@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Hi Linus,
 
-HEAD commit:    d72cd4ad Merge tag 'scsi-misc' of git://git.kernel.org/pub..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12c045d5d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=65c207250bba4efe
-dashboard link: https://syzkaller.appspot.com/bug?extid=a4715dd4b7c866136f79
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11893de1d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=161c19d5d00000
+please consider pulling the following gfs2 changes for 5.13.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a4715dd4b7c866136f79@syzkaller.appspotmail.com
+Thanks a lot,
+Andreas
 
-RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 0000000000440a49
-RDX: 0000000000000010 RSI: 00000000200002c0 RDI: 0000000000000182
-RBP: 00007fff0b88f050 R08: 0000000000000001 R09: 00007fff0b88f038
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
-R13: 00007fff0b88f03a R14: 00000000004b74b0 R15: 000000000000000c
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 8397 at fs/io_uring.c:7081 io_rsrc_node_switch+0x2a5/0x390 fs/io_uring.c:7081
-Modules linked in:
-CPU: 0 PID: 8397 Comm: syz-executor469 Not tainted 5.12.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:io_rsrc_node_switch+0x2a5/0x390 fs/io_uring.c:7081
-Code: ff 4d 85 e4 74 a4 48 83 c4 20 5b 5d 41 5c 41 5d 41 5e 41 5f e9 fc 00 99 ff e8 f7 00 99 ff 0f 0b e9 ee fd ff ff e8 eb 00 99 ff <0f> 0b e9 9d fd ff ff 4c 89 f7 e8 7c e0 dc ff eb 8b 4c 89 ef e8 72
-RSP: 0018:ffffc9000164fd90 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff8880196fe000 RCX: 0000000000000000
-RDX: ffff88801c7a1c40 RSI: ffffffff81db5d25 RDI: ffff8880196fe000
-RBP: 0000000000000000 R08: 0000000000000dc0 R09: ffffffff8c0b37d3
-R10: fffffbfff18166fa R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: ffff8880196fe808 R15: 0000000000000000
-FS:  0000000001485300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000200002c4 CR3: 00000000160b2000 CR4: 0000000000350ef0
-Call Trace:
- io_uring_create fs/io_uring.c:9611 [inline]
- io_uring_setup+0xf75/0x2a80 fs/io_uring.c:9689
- do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x440a49
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 41 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fff0b88f008 EFLAGS: 00000246 ORIG_RAX: 00000000000001a9
-RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 0000000000440a49
-RDX: 0000000000000010 RSI: 00000000200002c0 RDI: 0000000000000182
-RBP: 00007fff0b88f050 R08: 0000000000000001 R09: 00007fff0b88f038
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
-R13: 00007fff0b88f03a R14: 00000000004b74b0 R15: 000000000000000c
+The following changes since commit 8e29be3468d4565dd95fbb098df0d7a79ee60d71:
+
+  Merge tag 'gfs2-v5.12-rc2-fixes2' of git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2 (2021-04-03 12:15:01 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-for-5.13
+
+for you to fetch changes up to e5966cf20f0c7e40fd8c208ba1614e1a35a8deee:
+
+  gfs2: Fix fall-through warnings for Clang (2021-04-20 22:38:21 +0200)
+
+----------------------------------------------------------------
+Changes in gfs2:
+
+- Fix some compiler and kernel-doc warnings.
+
+- Various minor cleanups and optimizations.
+
+- Add a new sysfs gfs2 status file with some filesystem wide
+  information.
+
+----------------------------------------------------------------
+Andreas Gruenbacher (7):
+      gfs2: Remove unused variable sb_format
+      gfs2: Add new gfs2_iomap_get helper
+      gfs2: Turn gfs2_extent_map into gfs2_{get,alloc}_extent
+      gfs2: Replace gfs2_lblk_to_dblk with gfs2_get_extent
+      gfs2: Turn gfs2_meta_indirect_buffer into gfs2_meta_buffer
+      gfs2: Silence possible null pointer dereference warning
+      gfs2: Make gfs2_setattr_simple static
+
+Bob Peterson (4):
+      gfs2: don't create empty buffers for NO_CREATE
+      gfs2: Eliminate gh parameter from go_xmote_bh func
+      gfs2: Fix dir.c function parameter descriptions
+      gfs2: Add new sysfs file for gfs2 status
+
+Gustavo A. R. Silva (1):
+      gfs2: Fix fall-through warnings for Clang
+
+Lee Jones (1):
+      gfs2: Fix a number of kernel-doc warnings
+
+ fs/gfs2/aops.c       |   5 +-
+ fs/gfs2/bmap.c       | 153 ++++++++++++++++++++++++++-------------------------
+ fs/gfs2/bmap.h       |  13 +++--
+ fs/gfs2/dir.c        |  52 +++++++++--------
+ fs/gfs2/file.c       |  12 ++--
+ fs/gfs2/glock.c      |  12 ++--
+ fs/gfs2/glops.c      |  16 ++----
+ fs/gfs2/incore.h     |   3 +-
+ fs/gfs2/inode.c      |  32 +++++------
+ fs/gfs2/inode.h      |   1 -
+ fs/gfs2/lock_dlm.c   |  37 +++++++------
+ fs/gfs2/log.c        |  23 ++++----
+ fs/gfs2/lops.c       |  13 +++--
+ fs/gfs2/meta_io.c    |  20 ++++---
+ fs/gfs2/meta_io.h    |   6 +-
+ fs/gfs2/ops_fstype.c |   8 +--
+ fs/gfs2/quota.c      |   6 +-
+ fs/gfs2/recovery.c   |   8 ++-
+ fs/gfs2/rgrp.c       |   8 ++-
+ fs/gfs2/super.c      |  12 ++--
+ fs/gfs2/sys.c        |  67 ++++++++++++++++++++++
+ fs/gfs2/util.c       |  19 ++++---
+ fs/gfs2/xattr.c      |  29 +++-------
+ 23 files changed, 312 insertions(+), 243 deletions(-)
 
