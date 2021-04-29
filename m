@@ -2,158 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 999BA36E321
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 04:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2017536E324
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 04:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234549AbhD2CB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 22:01:28 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:17068 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbhD2CB1 (ORCPT
+        id S235694AbhD2CEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 22:04:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229888AbhD2CEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 22:01:27 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FVzDM1Xx1z16N0m;
-        Thu, 29 Apr 2021 09:58:11 +0800 (CST)
-Received: from [10.174.176.174] (10.174.176.174) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 29 Apr 2021 10:00:34 +0800
-Subject: Re: [PATCH 3/5] mm/huge_memory.c: add missing read-only THP checking
- in transparent_hugepage_enabled()
-To:     Yang Shi <shy828301@gmail.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>,
-        <william.kucharski@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Yang Shi" <yang.shi@linux.alibaba.com>,
-        <aneesh.kumar@linux.ibm.com>,
-        "Ralph Campbell" <rcampbell@nvidia.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Rik van Riel <riel@surriel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-References: <20210427133214.2270207-1-linmiaohe@huawei.com>
- <20210427133214.2270207-4-linmiaohe@huawei.com>
- <CAHbLzkrBAtTM8aE_pM4ASQ6cGyfPcs7_7HPJLCd9T24VyqU5wQ@mail.gmail.com>
- <1fa95721-2ae0-af5f-b2e4-cdb430ebc263@huawei.com>
- <CAHbLzkr6j2TFUTUv3kEXR-jKQ+Qc11su2r9U-KiDjG4KrnGRkQ@mail.gmail.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <18d8302c-3ff0-c508-2e8f-61d55bafe4fd@huawei.com>
-Date:   Thu, 29 Apr 2021 10:00:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 28 Apr 2021 22:04:14 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846AEC06138B;
+        Wed, 28 Apr 2021 19:03:27 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id x54-20020a05683040b6b02902a527443e2fso9054140ott.1;
+        Wed, 28 Apr 2021 19:03:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+BkPf6ouH7ZXKDiYFqOTfX8y6jRjgrxp2WW9zPHG2zM=;
+        b=bkM3ihNeJ0HW0mwEhAryX/7RY+zSFEiCvJZ+gRl5PCNaIWoBzeHbMJhZiX2JleCqFx
+         HLNTKqeM8OY8uIxF8eC8DT7mVkA1iUEaNmHvfekXAfP17uNorz2h/jIY7Gu+LX4/Y2sl
+         z3n7dwLFasEJJCChT8MptcwyeFTF/Yxw3X0vJ3SoRiFGI6oNZA/4GuLwz7YvCNoOqC3t
+         Oi1fe+2Bqa2kHo8xEJjBuisMEFZJfLfSjPyt4JaoCymoVOjNmpSIlIUmR739KLfHNGmg
+         dZ2RYKJ7OCK8mcRsu5D48S2iI2L+ZoNxyfFObXATtJUEr13ucFaPxfZtH9kit5zH/1Xw
+         UEyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+BkPf6ouH7ZXKDiYFqOTfX8y6jRjgrxp2WW9zPHG2zM=;
+        b=A+rncepdDwUWBm+21B6mhL44pFyT84qxhYCN5+ag6y9ruETwmBz8VgI3XhoBleNEye
+         DL0cK2l90XcXZfFIPfobgq3wje9X+tWBBco7xKtwNpP4/o8ndNGVJxCVlKJgfZ8V8TGV
+         l8rKhWzNyeXdliO3HzJTLbFqsoz4u2k5LieoqmtQePI6NPurC21KUN6feX2h7uH8c972
+         C1Ya/OXfaZKNXVZes1JlwVLzprmwAT04IKfiX0MHBg9EJweSzGxGHnfuA3Y/4qGaAlx6
+         3/yPdd0j3ZyiRun/MaJ0R3aOCZdmH/J1cMg3PGw2oc9gXZJ+kGM/7+Zl2rDd+X/QIahn
+         Zsrw==
+X-Gm-Message-State: AOAM533wcSkeERZLXJyvp6JsYsNVmgLtPCeHiJmRMX106ecrJBEXk+Vl
+        HxsCF6i4B7zgyvNC1WxNcB8=
+X-Google-Smtp-Source: ABdhPJzIh5K3WybsuN2qQVsgk+GkFZwEBCxYE8vSJTtctdFBN25tv3nh4KCPzFxiPnOSASwlBkjY9g==
+X-Received: by 2002:a9d:6a88:: with SMTP id l8mr16463342otq.236.1619661806887;
+        Wed, 28 Apr 2021 19:03:26 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.33])
+        by smtp.googlemail.com with ESMTPSA id f20sm413214oov.21.2021.04.28.19.03.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Apr 2021 19:03:26 -0700 (PDT)
+Subject: Re: [net-next] seg6: add counters support for SRv6 Behaviors
+To:     Andrea Mayer <andrea.mayer@uniroma2.it>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@uniroma2.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>
+References: <20210427154404.20546-1-andrea.mayer@uniroma2.it>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <a49ed340-3f92-8533-3efb-ac7ee2231ca3@gmail.com>
+Date:   Wed, 28 Apr 2021 20:03:23 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAHbLzkr6j2TFUTUv3kEXR-jKQ+Qc11su2r9U-KiDjG4KrnGRkQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210427154404.20546-1-andrea.mayer@uniroma2.it>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.174]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/29 0:21, Yang Shi wrote:
-> On Tue, Apr 27, 2021 at 7:06 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
->>
->> On 2021/4/28 5:03, Yang Shi wrote:
->>> On Tue, Apr 27, 2021 at 6:32 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
->>>>
->>>> Since commit 99cb0dbd47a1 ("mm,thp: add read-only THP support for
->>>> (non-shmem) FS"), read-only THP file mapping is supported. But it
->>>> forgot to add checking for it in transparent_hugepage_enabled().
->>>>
->>>> Fixes: 99cb0dbd47a1 ("mm,thp: add read-only THP support for (non-shmem) FS")
->>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>>> ---
->>>>  mm/huge_memory.c | 3 +++
->>>>  1 file changed, 3 insertions(+)
->>>>
->>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->>>> index 76ca1eb2a223..aa22a0ae9894 100644
->>>> --- a/mm/huge_memory.c
->>>> +++ b/mm/huge_memory.c
->>>> @@ -74,6 +74,9 @@ bool transparent_hugepage_enabled(struct vm_area_struct *vma)
->>>>                 return __transparent_hugepage_enabled(vma);
->>>>         if (vma_is_shmem(vma))
->>>>                 return shmem_huge_enabled(vma);
->>>> +       if (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS) && vma->vm_file &&
->>>> +           (vma->vm_flags & VM_DENYWRITE))
->>>> +               return true;
->>>
->>
->> Many thanks for your quick respond and Reviewed-by tag!
->>
->>> I don't think this change is correct. This function is used to
->>> indicate if allocating THP is eligible for the VMAs or not showed by
->>> smap. And currently readonly FS THP is collapsed by khugepaged only.
->>>
->>> So, you need check if the vma is suitable for khugepaged. Take a look
->>> at what hugepage_vma_check() does.
->>>
->>> And, the new patch
->>> (https://lore.kernel.org/linux-mm/20210406000930.3455850-1-cfijalkovich@google.com/)
->>> relax the constraints for readonly FS THP, it might be already in -mm
->>> tree, so you need adopt the new condition as well.
->>>
->>
->> Many thanks for your comment. I referred to what hugepage_vma_check() does about
->> Read-only file mappings when I came up this patch. But it seems I am miss something.
+On 4/27/21 9:44 AM, Andrea Mayer wrote:
+> This patch provides counters for SRv6 Behaviors as defined in [1],
+> section 6. For each SRv6 Behavior instance, counters defined in [1] are:
 > 
-> Yes, you need do the below check for readonly FS THP too:
-> 
-> if ((vm_flags & VM_NOHUGEPAGE) ||
->     test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags))
-> return false;
-> 
-> This check is done separately for anonymous and shmem. It seems not
-> perfect to do it three times in a row. So I'd suggest extracting the
-> check into a common helper then call it at the top of
-> transparent_hugepage_enabled() .
-> 
-> The helper also could replace the same check in
-> __transparent_hugepage_enabled() and shmem_huge_enabled().
+>  - the total number of packets that have been correctly processed;
+>  - the total amount of traffic in bytes of all packets that have been
+>    correctly processed;
 > 
 
-I see. Many thanks for detailed explanation and good suggestion! Will do it in v2. :)
+...
 
->> Take the new patch into account, the check for READ_ONLY_THP now should be:
->>
->> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->> index 76ca1eb2a223..a46a558233b4 100644
->> --- a/mm/huge_memory.c
->> +++ b/mm/huge_memory.c
->> @@ -74,6 +74,10 @@ bool transparent_hugepage_enabled(struct vm_area_struct *vma)
->>                 return __transparent_hugepage_enabled(vma);
->>         if (vma_is_shmem(vma))
->>                 return shmem_huge_enabled(vma);
->> +       if (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS) && vma->vm_file &&
->> +           !inode_is_open_for_write(vma->vm_file->f_inode) &&
->> +           (vma->vm_flags & VM_EXEC))
->> +               return true;
->>
->>         return false;
->>  }
->>
->> Am I miss something about checking for READ_ONLY_THP case? Or READ_ONLY_THP case is ok
->> but other case is missed? Could you please explain this more detailed for me?
->>
->> Many thanks!
->>
->>>>
->>>>         return false;
->>>>  }
->>>
->>>> --
->>>> 2.23.0
->>>>
->>>>
->>>
->>> .
->>>
->>
-> .
 > 
+> Results of tests are shown in the following table:
+> 
+> Scenario (1): average 1504764,81 pps (~1504,76 kpps); std. dev 3956,82 pps
+> Scenario (2): average 1501469,78 pps (~1501,47 kpps); std. dev 2979,85 pps
+> Scenario (3): average 1501315,13 pps (~1501,32 kpps); std. dev 2956,00 pps
+> 
+> As can be observed, throughputs achieved in scenarios (2),(3) did not
+> suffer any observable degradation compared to scenario (1).
+> 
+> Thanks to Jakub Kicinski and David Ahern for their valuable suggestions
+> and comments provided during the discussion of the proposed RFCs.
+> 
+> [2] https://www.cloudlab.us
+> 
+> Signed-off-by: Andrea Mayer <andrea.mayer@uniroma2.it>
+> ---
+>  include/uapi/linux/seg6_local.h |  30 +++++
+>  net/ipv6/seg6_local.c           | 198 +++++++++++++++++++++++++++++++-
+>  2 files changed, 226 insertions(+), 2 deletions(-)
+
+Thanks for the detailed commit message and stats on performance impact.
+
+> @@ -977,7 +1044,14 @@ static int seg6_local_input(struct sk_buff *skb)
+>  	slwt = seg6_local_lwtunnel(orig_dst->lwtstate);
+>  	desc = slwt->desc;
+>  
+> -	return desc->input(skb, slwt);
+> +	rc = desc->input(skb, slwt);
+> +
+> +	if (!seg6_lwtunnel_counters_enabled(slwt))
+> +		return rc;
+> +
+> +	seg6_local_update_counters(slwt, len, rc);
+> +
+> +	return rc;
+
+Nit: This would be simpler as
+
+	if (seg6_lwtunnel_counters_enabled(slwt))
+		seg6_local_update_counters(slwt, len, rc);
+
+	return rc;
+
+but not worth a re-do since net-next is about to close, so:
+
+Reviewed-by: David Ahern <dsahern@kernel.org>
 
