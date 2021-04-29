@@ -2,60 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DE8036E30A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 339E736E307
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235621AbhD2BpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 21:45:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41494 "EHLO
+        id S235236AbhD2BoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 21:44:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232936AbhD2Bo7 (ORCPT
+        with ESMTP id S229888AbhD2BoU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 21:44:59 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D2BC06138B;
-        Wed, 28 Apr 2021 18:44:12 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id v23so13710999qkj.13;
-        Wed, 28 Apr 2021 18:44:12 -0700 (PDT)
+        Wed, 28 Apr 2021 21:44:20 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA69C06138B
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 18:43:35 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id c17so10389817pfn.6
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 18:43:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=z0Pzw0H4TbpPJpFAIVdigVkx2yK/j7uQ93wdHgfsXaM=;
-        b=ZTNXhZaJsAmmBaPOxgvaQDra9s098pS5en15cdnfGs8VQyOmkt9LWV7w7S//0x+fCS
-         ylzcAdIJT3xMecDB/mQxE4GTTqYZ9qO1aQyazjS0FJ+RH1Z1NNAB+nZ7RiSguvsC8ZuL
-         159NJUHQq9uU51iCDgFvTglv+Um1PkY9JcZaoVRNkP+iGWpmsUoH4oDrSCpYVtD193QH
-         SUdE9smxmRrYNnL1U1N32U9qqyvGksgoI4x8FnjuuDWsREk1QnTYhzDj4uF+sBbWgDbQ
-         iHlG6BKTMgCd5093vAuuW8iymevFQFh39GDfAgk6bqHC4+aHkLFwBy4JaoUGoZaF1Q4r
-         xPUQ==
+        bh=W4UwE2Dbwa47OkyVoSFrNDymke2/cl1Ry9ysp9qho4Q=;
+        b=wPkGlcF0955iBFFTsDYmWzReIFFILvyj3Xl9zQnh7GaknUyB4JiENrsp/rXfc+Yy+w
+         WiqX3MN+IsYJZw4Gc3O5aUB658hl5UVck+EbetD0CdOIPGBIviL2QS/jmc+mCG3ejutf
+         qqtZOYh1zAiEoV/yNlxFk6DrwoanvMo6vZqaicPk5om9J0eEvUVXt+6tpzpj8EzRBxlW
+         f64AS4S4KPORiCRI8rcjV20PPruqh1YuYzdvWIR4CHksWpxRT0vf72UhyLaAO/UUiz+j
+         puyBfKWzyO/U/SGwaZGdbgt0RH+Gl6N/CSCCsKcr31RVcAl2EjijJwRSfKWd+PdB98NN
+         +P1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=z0Pzw0H4TbpPJpFAIVdigVkx2yK/j7uQ93wdHgfsXaM=;
-        b=fOpUNwOTXxx166jZJsUTRRJImrqrSDFJLLTZ0zKpEd7u0RrWBHpF61fCD5VR7IBiFA
-         wVZ6eUDXG+QI2y1SPmM9F9AuksEtbKTDQTVzN3SYOiSxHzgus8RLpERbwnhsbd4LeiXx
-         Z3kLvsxDSw3pPkoJrlkrOFAot/c474xzfBjpkimZLmhWjns2IfG+4/mqKLtiBplOz9wk
-         Px5opMuCUxvdsMUQdILTnqWs0xCxQXWwFvnenVXyPGWYekCtV8la15SWNRd9QGXeZ1na
-         7H65dfwkWgb8r5/ORLOSgXtu/DjFpbpy4Wn2SB45sJqmdMy1NI79rjF/tvZXYWj4AhST
-         CtQw==
-X-Gm-Message-State: AOAM530z8OHqo0OWCkaHzKu/b+9IBkC8NaDeoYP5ek9rnKwGrx9wQY3T
-        FAijXeCKGE1J96mSLxskiIA=
-X-Google-Smtp-Source: ABdhPJyUGFOE60HEaZhJbrYOvZrU5sVRxxQYhf//lZXuUNcmCxzmyuKnJGgb+3eE+XmLyQTlb3iMTA==
-X-Received: by 2002:a37:9bd5:: with SMTP id d204mr17230602qke.442.1619660651513;
-        Wed, 28 Apr 2021 18:44:11 -0700 (PDT)
-Received: from localhost.localdomain ([87.101.93.188])
-        by smtp.gmail.com with ESMTPSA id 185sm1200194qko.99.2021.04.28.18.44.07
+        bh=W4UwE2Dbwa47OkyVoSFrNDymke2/cl1Ry9ysp9qho4Q=;
+        b=RiI3OE4FgDu2xqWBPR8qAJz2v7+tXr8H9M6yxB+MvBHPjXDLa9h7m6SJWvgdPp/EWh
+         07Gd77JK0OhUp7GO8wQazWcGEBzqlpSXaB2kZrxAldn7dQHYk4F/e3mF5Wo/EnUREodm
+         9KrxgFihDIG2Cv9RoPBBZhMgY5zeYHdExHR+ZJGfj3YoiJ0aGFB0YCdD393ZjXLU0xAl
+         FhX9PSY3sZbGSUYGIbMrYMtu6z4MtTis/z0B9oIHgae+Un0+zxGIM8OWfMnnBxgCLvTS
+         Cfkb9cqCZzk4j5o4Hmom5j4Y8W0LQfjURs0xefYmntANTIUaCRJDcuuqAj30rkFQ2eWA
+         WUkA==
+X-Gm-Message-State: AOAM531O9AWUgSxsIBorQ2V6yGT/gd+E4/Cz4Qr1Kcl+5GwKSGPUrCLs
+        ojOqPRTOUnaUWGZZrb/GSrqX3Q==
+X-Google-Smtp-Source: ABdhPJzmOB6NKYjVpqO6pigE8zHGwwDPUl3pMRk7roD7Cj4XxjhQ/7kOYTe6sgaayGF4i8Vm7yNbig==
+X-Received: by 2002:a62:8747:0:b029:27f:6a61:c742 with SMTP id i68-20020a6287470000b029027f6a61c742mr988846pfe.3.1619660614717;
+        Wed, 28 Apr 2021 18:43:34 -0700 (PDT)
+Received: from localhost ([103.207.71.35])
+        by smtp.gmail.com with ESMTPSA id in1sm5776107pjb.23.2021.04.28.18.43.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 18:44:11 -0700 (PDT)
-From:   Jarvis Jiang <jarvis.w.jiang@gmail.com>
-To:     mani@kernel.org, hemantk@codeaurora.org, loic.poulain@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        cchen50@lenovo.com, mpearson@lenovo.com,
-        Jarvis Jiang <jarvis.w.jiang@gmail.com>
-Subject: [PATCH v2] bus: mhi: pci_generic: T99W175: update channel name from AT to DUN
-Date:   Wed, 28 Apr 2021 18:42:26 -0700
-Message-Id: <20210429014226.21017-1-jarvis.w.jiang@gmail.com>
+        Wed, 28 Apr 2021 18:43:34 -0700 (PDT)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH] arm64: stacktrace: Stop unwinding when the PC is zero
+Date:   Thu, 29 Apr 2021 09:43:21 +0800
+Message-Id: <20210429014321.196606-1-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -63,36 +66,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to MHI v1.1 specification, change the channel name of T99W175
-from "AT" to "DUN" (Dial-up networking) for both channel 32 and 33,
-so that the channels can be bound to the Qcom WWAN control driver, and
-device node such as /dev/wwan0p3AT will be generated, which is very useful
-for debugging modem
+When use ftrace for stack trace, it reports the spurious frame with the
+PC value is zero.  This can be reproduced with commands:
 
-Fixes: aac426562f56 ("bus: mhi: pci_generic: Introduce Foxconn T99W175 support")
-Signed-off-by: Jarvis Jiang <jarvis.w.jiang@gmail.com>
+  # cd /sys/kernel/debug/tracing/
+  # echo "prev_pid == 0" > events/sched/sched_switch/filter
+  # echo stacktrace > events/sched/sched_switch/trigger
+  # echo 1 > events/sched/sched_switch/enable
+  # cat trace
+
+           <idle>-0       [005] d..2   259.621390: sched_switch: ...
+           <idle>-0       [005] d..3   259.621394: <stack trace>
+  => __schedule
+  => schedule_idle
+  => do_idle
+  => cpu_startup_entry
+  => secondary_start_kernel
+  => 0
+
+The kernel initializes FP/PC values as zero for swapper threads in
+head.S, when walk the stack frame, this patch stops unwinding if detect
+the PC value is zero, therefore can avoid the spurious frame.
+
+Below is the stacktrace after applying the change:
+
+  # cat trace
+
+           <idle>-0       [005] d..2   259.621390: sched_switch: ...
+           <idle>-0       [005] d..3   259.621394: <stack trace>
+  => __schedule
+  => schedule_idle
+  => do_idle
+  => cpu_startup_entry
+  => secondary_start_kernel
+
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
+ arch/arm64/kernel/stacktrace.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-v2: Add: Fixes: aac426562f56
-
- drivers/bus/mhi/pci_generic.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
-index 7c810f02a2ef..8c7f6576e421 100644
---- a/drivers/bus/mhi/pci_generic.c
-+++ b/drivers/bus/mhi/pci_generic.c
-@@ -311,8 +311,8 @@ static const struct mhi_channel_config mhi_foxconn_sdx55_channels[] = {
- 	MHI_CHANNEL_CONFIG_DL(5, "DIAG", 32, 1),
- 	MHI_CHANNEL_CONFIG_UL(12, "MBIM", 32, 0),
- 	MHI_CHANNEL_CONFIG_DL(13, "MBIM", 32, 0),
--	MHI_CHANNEL_CONFIG_UL(32, "AT", 32, 0),
--	MHI_CHANNEL_CONFIG_DL(33, "AT", 32, 0),
-+	MHI_CHANNEL_CONFIG_UL(32, "DUN", 32, 0),
-+	MHI_CHANNEL_CONFIG_DL(33, "DUN", 32, 0),
- 	MHI_CHANNEL_CONFIG_HW_UL(100, "IP_HW0_MBIM", 128, 2),
- 	MHI_CHANNEL_CONFIG_HW_DL(101, "IP_HW0_MBIM", 128, 3),
- };
+diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
+index 84b676bcf867..02b1e85b2026 100644
+--- a/arch/arm64/kernel/stacktrace.c
++++ b/arch/arm64/kernel/stacktrace.c
+@@ -145,7 +145,11 @@ void notrace walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
+ 		if (!fn(data, frame->pc))
+ 			break;
+ 		ret = unwind_frame(tsk, frame);
+-		if (ret < 0)
++		/*
++		 * When the frame->pc is zero, it has reached to the initial pc
++		 * and fp values; stop unwinding for this case.
++		 */
++		if (ret < 0 || !frame->pc)
+ 			break;
+ 	}
+ }
 -- 
 2.25.1
 
