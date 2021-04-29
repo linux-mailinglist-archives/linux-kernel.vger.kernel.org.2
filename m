@@ -2,169 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883B236E9DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 13:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7771636E9E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234194AbhD2L7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 07:59:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46126 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230148AbhD2L73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 07:59:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 831836145A;
-        Thu, 29 Apr 2021 11:58:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619697522;
-        bh=lyNfyoxsqMlUGOpA/NkL35gSdKjhxCzdXm5yGHglZig=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bokxKh1aGS+yKBfQn3k9jpOkqTUrSa+PRpoxhdODJKRxZD+6i44WmQziUceLHcHDd
-         VOd9FZYYJI0m9hG4S5O5We73OBw3dXnvrqThUP09lAOeaA/lmXQ/n7r/0NfOk1t3Oz
-         HTh3qyMN/4QjnCH0wv9w8/AQWH7PtIjvM1rZMrZkjroIUjw6cCI5h6ut5ZrZ6Oc9Fs
-         B+FhdtMapIh+q8JRlIYyRQuCpmVXn5L7ouKg1jgcW6wkAyyom55f2NOvthsC3v660N
-         B5TcT4wxkwiBCCRKMaGWAR25WZvT+2pspEb3K9Y+2eKOJAHWeJyTovKGZls9VcvtP0
-         1aew3bTUyTAbg==
-Received: by mail-ej1-f47.google.com with SMTP id w3so99497697ejc.4;
-        Thu, 29 Apr 2021 04:58:42 -0700 (PDT)
-X-Gm-Message-State: AOAM530rs2WktsMhZXcsomXAq0Gev9jZz1Cy4TDoaQ9Xf8lWzhxur/GW
-        EtGhPZmqtEAtlR8YHXXZfWZMtbVxFyxZFin+twY=
-X-Google-Smtp-Source: ABdhPJzIW9XWBND47ohyx1jdYR+ajCfUvsZUaiihkpvKQz9aAeW9fdYN+2xvNjq5JNecjo89JIRcPgQ8PdO5ptqp7aM=
-X-Received: by 2002:a17:906:4a55:: with SMTP id a21mr1199259ejv.215.1619697520822;
- Thu, 29 Apr 2021 04:58:40 -0700 (PDT)
+        id S233881AbhD2MBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 08:01:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231343AbhD2MBj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 08:01:39 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD0EFC06138B;
+        Thu, 29 Apr 2021 05:00:51 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id h15so14395879wre.11;
+        Thu, 29 Apr 2021 05:00:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eL7kzrQuQQqjx9marUBLtMFHaHO1ZN6rfrvAhnpX8HE=;
+        b=pL3rSfZfiYa/AAXPA4mQPKPXTA1R8bmrJ9ja4YL/7fclS8/puO8retk+ccDhlr8/R3
+         wlHfDCSBmiQ0MSkZs3EhBLDCpa4qUAy4baFAWVbdrDOXIoyZWO78YUuRKSGr0QPlGF/N
+         1xKnOV+3IYn3OsW7iAprn4tE8EF3PfGMPCYvPrgUq4fWQoLtoVQ870Z36JvVzWhoSlNz
+         OoI8wrQYjggcs6iRBZgeJElBbTDwuoA/COBlKkGo466dRZuzg2uWnHMzW9fo8re8YNR8
+         EjemtUPja6QsFZNpGdLUrecF2mHIretVYaqdQGAcESP5T51nhymqzlPjs9b2fEpXt+k2
+         aboA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eL7kzrQuQQqjx9marUBLtMFHaHO1ZN6rfrvAhnpX8HE=;
+        b=umDxerFAUX7UlsebHeHxBaHwqrIiQYVi0IRL5lGGXXo50NWFHqSK8vOwaGzhqx6ebW
+         BwBSbBfj0+igCiH7H8xZ0c4ilMWQLYwvFoExcJ6KzAp6qICIB95RVBjGrEBzYT/U2UV0
+         9jJr2NAoKn25j8JNyLIxIgAH5tDdWDo3ySESv8pSoBORYfAozvWVU44CgzXN+cRaWOTs
+         LNCZ8doKlztwq9lNWRIlIWAHK67VWTY7mszGWX5pRZr/gpC4M5t7DAicvqYo4TiVJR4g
+         K220G+9In1DdPIrOavOcdF+/OMqK/DCF6qZCfqx1XK6z6RFcv+aM5glguO1h7iYzXQcZ
+         WtqA==
+X-Gm-Message-State: AOAM532tCGmK8Yz7gK65HBZYUaV2uqshTOrV5vn2OyxodsOE3HV2lNb6
+        Xwnuw6jhIYvtjjnURz3uh9WrWRzh4ZL3FXnYHA8=
+X-Google-Smtp-Source: ABdhPJys5fLcsFOTfbWkCMLTvilRbno5eHK/GA3+o5yiwDbOz6bayC2JBT8z2yunv9DoF6sZF3VFcCbkbX/nfN6Ie6U=
+X-Received: by 2002:a5d:58e1:: with SMTP id f1mr17018329wrd.375.1619697650366;
+ Thu, 29 Apr 2021 05:00:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210420075406.64105-1-acelan.kao@canonical.com>
-In-Reply-To: <20210420075406.64105-1-acelan.kao@canonical.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Thu, 29 Apr 2021 13:58:28 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPfp875V3zHorfyf+QLwia5HYX3N=AXe=xRCxCDi6ifbtg@mail.gmail.com>
-Message-ID: <CAJKOXPfp875V3zHorfyf+QLwia5HYX3N=AXe=xRCxCDi6ifbtg@mail.gmail.com>
-Subject: Re: [PATCH] net: called rtnl_unlock() before runpm resumes devices
-To:     AceLan Kao <acelan.kao@canonical.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Wang <weiwan@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        netdev@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <161961335926.39335.2552653972195467566.stgit@warthog.procyon.org.uk>
+In-Reply-To: <161961335926.39335.2552653972195467566.stgit@warthog.procyon.org.uk>
+From:   Marc Dionne <marc.c.dionne@gmail.com>
+Date:   Thu, 29 Apr 2021 09:00:39 -0300
+Message-ID: <CAB9dFdvMCYNxxdmoiRF2qs9Z9qpd3Rg7qjBfG3Wg8=GzhygHGQ@mail.gmail.com>
+Subject: Re: [PATCH] afs: Fix speculative status fetches
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Apr 2021 at 09:55, AceLan Kao <acelan.kao@canonical.com> wrote:
+On Wed, Apr 28, 2021 at 9:36 AM David Howells <dhowells@redhat.com> wrote:
 >
-> From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
+> The generic/464 xfstest causes kAFS to emit occasional warnings of the
+> form:
 >
-> The rtnl_lock() has been called in rtnetlink_rcv_msg(), and then in
-> __dev_open() it calls pm_runtime_resume() to resume devices, and in
-> some devices' resume function(igb_resum,igc_resume) they calls rtnl_lock()
-> again. That leads to a recursive lock.
+>         kAFS: vnode modified {100055:8a} 30->31 YFS.StoreData64 (c=6015)
 >
-> It should leave the devices' resume function to decide if they need to
-> call rtnl_lock()/rtnl_unlock(), so call rtnl_unlock() before calling
-> pm_runtime_resume() and then call rtnl_lock() after it in __dev_open().
+> This indicates that the data version received back from the server did not
+> match the expected value (the DV should be incremented monotonically for
+> each individual modification op committed to a vnode).
 >
-> [  967.723577] INFO: task ip:6024 blocked for more than 120 seconds.
-> [  967.723588]       Not tainted 5.12.0-rc3+ #1
-> [  967.723592] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> [  967.723594] task:ip              state:D stack:    0 pid: 6024 ppid:  5957 flags:0x00004000
-> [  967.723603] Call Trace:
-> [  967.723610]  __schedule+0x2de/0x890
-> [  967.723623]  schedule+0x4f/0xc0
-> [  967.723629]  schedule_preempt_disabled+0xe/0x10
-> [  967.723636]  __mutex_lock.isra.0+0x190/0x510
-> [  967.723644]  __mutex_lock_slowpath+0x13/0x20
-> [  967.723651]  mutex_lock+0x32/0x40
-> [  967.723657]  rtnl_lock+0x15/0x20
-> [  967.723665]  igb_resume+0xee/0x1d0 [igb]
-> [  967.723687]  ? pci_pm_default_resume+0x30/0x30
-> [  967.723696]  igb_runtime_resume+0xe/0x10 [igb]
-> [  967.723713]  pci_pm_runtime_resume+0x74/0x90
-> [  967.723718]  __rpm_callback+0x53/0x1c0
-> [  967.723725]  rpm_callback+0x57/0x80
-> [  967.723730]  ? pci_pm_default_resume+0x30/0x30
-> [  967.723735]  rpm_resume+0x547/0x760
-> [  967.723740]  __pm_runtime_resume+0x52/0x80
-> [  967.723745]  __dev_open+0x56/0x160
-> [  967.723753]  ? _raw_spin_unlock_bh+0x1e/0x20
-> [  967.723758]  __dev_change_flags+0x188/0x1e0
-> [  967.723766]  dev_change_flags+0x26/0x60
-> [  967.723773]  do_setlink+0x723/0x10b0
-> [  967.723782]  ? __nla_validate_parse+0x5b/0xb80
-> [  967.723792]  __rtnl_newlink+0x594/0xa00
-> [  967.723800]  ? nla_put_ifalias+0x38/0xa0
-> [  967.723807]  ? __nla_reserve+0x41/0x50
-> [  967.723813]  ? __nla_reserve+0x41/0x50
-> [  967.723818]  ? __kmalloc_node_track_caller+0x49b/0x4d0
-> [  967.723824]  ? pskb_expand_head+0x75/0x310
-> [  967.723830]  ? nla_reserve+0x28/0x30
-> [  967.723835]  ? skb_free_head+0x25/0x30
-> [  967.723843]  ? security_sock_rcv_skb+0x2f/0x50
-> [  967.723850]  ? netlink_deliver_tap+0x3d/0x210
-> [  967.723859]  ? sk_filter_trim_cap+0xc1/0x230
-> [  967.723863]  ? skb_queue_tail+0x43/0x50
-> [  967.723870]  ? sock_def_readable+0x4b/0x80
-> [  967.723876]  ? __netlink_sendskb+0x42/0x50
-> [  967.723888]  ? security_capable+0x3d/0x60
-> [  967.723894]  ? __cond_resched+0x19/0x30
-> [  967.723900]  ? kmem_cache_alloc_trace+0x390/0x440
-> [  967.723906]  rtnl_newlink+0x49/0x70
-> [  967.723913]  rtnetlink_rcv_msg+0x13c/0x370
-> [  967.723920]  ? _copy_to_iter+0xa0/0x460
-> [  967.723927]  ? rtnl_calcit.isra.0+0x130/0x130
-> [  967.723934]  netlink_rcv_skb+0x55/0x100
-> [  967.723939]  rtnetlink_rcv+0x15/0x20
-> [  967.723944]  netlink_unicast+0x1a8/0x250
-> [  967.723949]  netlink_sendmsg+0x233/0x460
-> [  967.723954]  sock_sendmsg+0x65/0x70
-> [  967.723958]  ____sys_sendmsg+0x218/0x290
-> [  967.723961]  ? copy_msghdr_from_user+0x5c/0x90
-> [  967.723966]  ? lru_cache_add_inactive_or_unevictable+0x27/0xb0
-> [  967.723974]  ___sys_sendmsg+0x81/0xc0
-> [  967.723980]  ? __mod_memcg_lruvec_state+0x22/0xe0
-> [  967.723987]  ? kmem_cache_free+0x244/0x420
-> [  967.723991]  ? dentry_free+0x37/0x70
-> [  967.723996]  ? mntput_no_expire+0x4c/0x260
-> [  967.724001]  ? __cond_resched+0x19/0x30
-> [  967.724007]  ? security_file_free+0x54/0x60
-> [  967.724013]  ? call_rcu+0xa4/0x250
-> [  967.724021]  __sys_sendmsg+0x62/0xb0
-> [  967.724026]  ? exit_to_user_mode_prepare+0x3d/0x1a0
-> [  967.724032]  __x64_sys_sendmsg+0x1f/0x30
-> [  967.724037]  do_syscall_64+0x38/0x90
-> [  967.724044]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> What is happening is that a lookup call is doing a bulk status fetch
+> speculatively on a bunch of vnodes in a directory besides getting the
+> status of the vnode it's actually interested in.  This is racing with a
+> StoreData operation (though it could also occur with, say, a MakeDir op).
 >
-> Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
+> On the client, a modification operation locks the vnode, but the bulk
+> status fetch only locks the parent directory, so no ordering is imposed
+> there (thereby avoiding an avenue to deadlock).
+>
+> On the server, the StoreData op handler doesn't lock the vnode until it's
+> received all the request data, and downgrades the lock after committing the
+> data until it has finished sending change notifications to other clients -
+> which allows the status fetch to occur before it has finished.
+>
+> This means that:
+>
+>  - a status fetch can access the target vnode either side of the exclusive
+>    section of the modification
+>
+>  - the status fetch could start before the modification, yet finish after,
+>    and vice-versa.
+>
+>  - the status fetch and the modification RPCs can complete in either order.
+>
+>  - the status fetch can return either the before or the after DV from the
+>    modification.
+>
+>  - the status fetch might regress the locally cached DV.
+>
+> Some of these are handled by the previous fix[1], but that's not sufficient
+> because it checks the DV it received against the DV it cached at the start
+> of the op, but the DV might've been updated in the meantime by a locally
+> generated modification op.
+>
+> Fix this by the following means:
+>
+>  (1) Keep track of when we're performing a modification operation on a
+>      vnode.  This is done by marking vnode parameters with a 'modification'
+>      note that causes the AFS_VNODE_MODIFYING flag to be set on the vnode
+>      for the duration.
+>
+>  (2) Altering the speculation race detection to ignore speculative status
+>      fetches if either the vnode is marked as being modified or the data
+>      version number is not what we expected.
+>
+> Note that whilst the "vnode modified" warning does get recovered from as it
+> causes the client to refetch the status at the next opportunity, it will
+> also invalidate the pagecache, so changes might get lost.
+>
+> Fixes: a9e5c87ca744 ("afs: Fix speculative status fetch going out of order wrt to modifications")
+> Reported-by: Marc Dionne <marc.dionne@auristor.com>
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: linux-afs@lists.infradead.org
+> Link: https://lore.kernel.org/r/160605082531.252452.14708077925602709042.stgit@warthog.procyon.org.uk/ [1]
 > ---
->  net/core/dev.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
 >
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 1f79b9aa9a3f..427cbc80d1e5 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -1537,8 +1537,11 @@ static int __dev_open(struct net_device *dev, struct netlink_ext_ack *extack)
+>  fs/afs/dir.c          |    7 +++++++
+>  fs/afs/dir_silly.c    |    3 +++
+>  fs/afs/fs_operation.c |    6 ++++++
+>  fs/afs/inode.c        |    6 ++++--
+>  fs/afs/internal.h     |    2 ++
+>  fs/afs/write.c        |    1 +
+>  6 files changed, 23 insertions(+), 2 deletions(-)
 >
->         if (!netif_device_present(dev)) {
->                 /* may be detached because parent is runtime-suspended */
-> -               if (dev->dev.parent)
-> +               if (dev->dev.parent) {
-> +                       rtnl_unlock();
->                         pm_runtime_resume(dev->dev.parent);
+> diff --git a/fs/afs/dir.c b/fs/afs/dir.c
+> index 117df15e5367..9fbe5a5ec9bd 100644
+> --- a/fs/afs/dir.c
+> +++ b/fs/afs/dir.c
+> @@ -1419,6 +1419,7 @@ static int afs_mkdir(struct user_namespace *mnt_userns, struct inode *dir,
+>
+>         afs_op_set_vnode(op, 0, dvnode);
+>         op->file[0].dv_delta = 1;
+> +       op->file[0].modification = true;
+>         op->file[0].update_ctime = true;
+>         op->dentry      = dentry;
+>         op->create.mode = S_IFDIR | mode;
+> @@ -1500,6 +1501,7 @@ static int afs_rmdir(struct inode *dir, struct dentry *dentry)
+>
+>         afs_op_set_vnode(op, 0, dvnode);
+>         op->file[0].dv_delta = 1;
+> +       op->file[0].modification = true;
+>         op->file[0].update_ctime = true;
+>
+>         op->dentry      = dentry;
+> @@ -1636,6 +1638,7 @@ static int afs_unlink(struct inode *dir, struct dentry *dentry)
+>
+>         afs_op_set_vnode(op, 0, dvnode);
+>         op->file[0].dv_delta = 1;
+> +       op->file[0].modification = true;
+>         op->file[0].update_ctime = true;
+>
+>         /* Try to make sure we have a callback promise on the victim. */
+> @@ -1718,6 +1721,7 @@ static int afs_create(struct user_namespace *mnt_userns, struct inode *dir,
+>
+>         afs_op_set_vnode(op, 0, dvnode);
+>         op->file[0].dv_delta = 1;
+> +       op->file[0].modification = true;
+>         op->file[0].update_ctime = true;
+>
+>         op->dentry      = dentry;
+> @@ -1792,6 +1796,7 @@ static int afs_link(struct dentry *from, struct inode *dir,
+>         afs_op_set_vnode(op, 0, dvnode);
+>         afs_op_set_vnode(op, 1, vnode);
+>         op->file[0].dv_delta = 1;
+> +       op->file[0].modification = true;
+>         op->file[0].update_ctime = true;
+>         op->file[1].update_ctime = true;
+>
+> @@ -1987,6 +1992,8 @@ static int afs_rename(struct user_namespace *mnt_userns, struct inode *old_dir,
+>         afs_op_set_vnode(op, 1, new_dvnode); /* May be same as orig_dvnode */
+>         op->file[0].dv_delta = 1;
+>         op->file[1].dv_delta = 1;
+> +       op->file[0].modification = true;
+> +       op->file[1].modification = true;
+>         op->file[0].update_ctime = true;
+>         op->file[1].update_ctime = true;
+>
+> diff --git a/fs/afs/dir_silly.c b/fs/afs/dir_silly.c
+> index 04f75a44f243..dae9a57d7ec0 100644
+> --- a/fs/afs/dir_silly.c
+> +++ b/fs/afs/dir_silly.c
+> @@ -73,6 +73,8 @@ static int afs_do_silly_rename(struct afs_vnode *dvnode, struct afs_vnode *vnode
+>         afs_op_set_vnode(op, 1, dvnode);
+>         op->file[0].dv_delta = 1;
+>         op->file[1].dv_delta = 1;
+> +       op->file[0].modification = true;
+> +       op->file[1].modification = true;
+>         op->file[0].update_ctime = true;
+>         op->file[1].update_ctime = true;
+>
+> @@ -201,6 +203,7 @@ static int afs_do_silly_unlink(struct afs_vnode *dvnode, struct afs_vnode *vnode
+>         afs_op_set_vnode(op, 0, dvnode);
+>         afs_op_set_vnode(op, 1, vnode);
+>         op->file[0].dv_delta = 1;
+> +       op->file[0].modification = true;
+>         op->file[0].update_ctime = true;
+>         op->file[1].op_unlinked = true;
+>         op->file[1].update_ctime = true;
+> diff --git a/fs/afs/fs_operation.c b/fs/afs/fs_operation.c
+> index 2cb0951acca6..d222dfbe976b 100644
+> --- a/fs/afs/fs_operation.c
+> +++ b/fs/afs/fs_operation.c
+> @@ -118,6 +118,8 @@ static void afs_prepare_vnode(struct afs_operation *op, struct afs_vnode_param *
+>                 vp->cb_break_before     = afs_calc_vnode_cb_break(vnode);
+>                 if (vnode->lock_state != AFS_VNODE_LOCK_NONE)
+>                         op->flags       |= AFS_OPERATION_CUR_ONLY;
+> +               if (vp->modification)
+> +                       set_bit(AFS_VNODE_MODIFYING, &vnode->flags);
+>         }
+>
+>         if (vp->fid.vnode)
+> @@ -225,6 +227,10 @@ int afs_put_operation(struct afs_operation *op)
+>
+>         if (op->ops && op->ops->put)
+>                 op->ops->put(op);
+> +       if (op->file[0].modification)
+> +               clear_bit(AFS_VNODE_MODIFYING, &op->file[0].vnode->flags);
+> +       if (op->file[1].modification && op->file[1].vnode != op->file[0].vnode)
+> +               clear_bit(AFS_VNODE_MODIFYING, &op->file[1].vnode->flags);
+>         if (op->file[0].put_vnode)
+>                 iput(&op->file[0].vnode->vfs_inode);
+>         if (op->file[1].put_vnode)
+> diff --git a/fs/afs/inode.c b/fs/afs/inode.c
+> index 3a129b9fd9b8..80b6c8d967d5 100644
+> --- a/fs/afs/inode.c
+> +++ b/fs/afs/inode.c
+> @@ -294,8 +294,9 @@ void afs_vnode_commit_status(struct afs_operation *op, struct afs_vnode_param *v
+>                         op->flags &= ~AFS_OPERATION_DIR_CONFLICT;
+>                 }
+>         } else if (vp->scb.have_status) {
+> -               if (vp->dv_before + vp->dv_delta != vp->scb.status.data_version &&
+> -                   vp->speculative)
+> +               if (vp->speculative &&
+> +                   (test_bit(AFS_VNODE_MODIFYING, &vnode->flags) ||
+> +                    vp->dv_before != vnode->status.data_version))
+>                         /* Ignore the result of a speculative bulk status fetch
+>                          * if it splits around a modification op, thereby
+>                          * appearing to regress the data version.
+> @@ -911,6 +912,7 @@ int afs_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
+>         }
+>         op->ctime = attr->ia_ctime;
+>         op->file[0].update_ctime = 1;
+> +       op->file[0].modification = true;
+>
+>         op->ops = &afs_setattr_operation;
+>         ret = afs_do_sync_operation(op);
+> diff --git a/fs/afs/internal.h b/fs/afs/internal.h
+> index 52157a05796a..5ed416f4ff33 100644
+> --- a/fs/afs/internal.h
+> +++ b/fs/afs/internal.h
+> @@ -645,6 +645,7 @@ struct afs_vnode {
+>  #define AFS_VNODE_PSEUDODIR    7               /* set if Vnode is a pseudo directory */
+>  #define AFS_VNODE_NEW_CONTENT  8               /* Set if file has new content (create/trunc-0) */
+>  #define AFS_VNODE_SILLY_DELETED        9               /* Set if file has been silly-deleted */
+> +#define AFS_VNODE_MODIFYING    10              /* Set if we're performing a modification op */
+>
+>         struct list_head        wb_keys;        /* List of keys available for writeback */
+>         struct list_head        pending_locks;  /* locks waiting to be granted */
+> @@ -762,6 +763,7 @@ struct afs_vnode_param {
+>         bool                    set_size:1;     /* Must update i_size */
+>         bool                    op_unlinked:1;  /* True if file was unlinked by op */
+>         bool                    speculative:1;  /* T if speculative status fetch (no vnode lock) */
+> +       bool                    modification:1; /* Set if the content gets modified */
+>  };
+>
+>  /*
+> diff --git a/fs/afs/write.c b/fs/afs/write.c
+> index dc66ff15dd16..3edb6204b937 100644
+> --- a/fs/afs/write.c
+> +++ b/fs/afs/write.c
+> @@ -377,6 +377,7 @@ static int afs_store_data(struct afs_vnode *vnode, struct iov_iter *iter, loff_t
+>
+>         afs_op_set_vnode(op, 0, vnode);
+>         op->file[0].dv_delta = 1;
+> +       op->file[0].modification = true;
+>         op->store.write_iter = iter;
+>         op->store.pos = pos;
+>         op->store.size = size;
+>
+>
+>
+> _______________________________________________
+> linux-afs mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-afs
 
-A side topic, maybe a little bit silly question (I don't know that
-much about net core):
-Why not increase the parent or current PM runtime usage counter
-instead? The problem with calling pm_runtime_resume() is that if the
-parent device was already suspended (so it's usage counter ==0), it
-might get suspended right after this call. IOW, you do not have any
-guarantee that the device will be really resumed. Probably it should
-be pm_runtime_resume_and_get() (and later "put" on close or other
-events). This however might not solve the lock problem at all.
-
-Best regards,
-Krzysztof
+Reviewed-by: Marc Dionne <marc.dionne@auristor.com>
