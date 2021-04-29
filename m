@@ -2,104 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA7D36E52D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 08:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB74536E52A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 08:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236451AbhD2G4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 02:56:12 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:55256 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231179AbhD2G4K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 02:56:10 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1619679323; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=i6nhprnTP7+B3o9IhSRHaKC/LVUmcR5lx3xKcdEqRdI=; b=rxX0ULKilDLXfcY+s0l/4VqeaQrj3KD73GeEt2svXlEqwzZjlxLVuSlimhY4p2E5eNGeYEXJ
- moOUN6Hp1bCod0TUKzUPjVGdGx4AALWFS/OPTGRNN6URoL7b6RGdlYybxb2Z0Puel6b+vJbT
- UQTWKq820xfIxAwBScRWdZ9HEIU=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 608a585a853c0a2c469bab8b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 29 Apr 2021 06:55:22
- GMT
-Sender: tdas=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0FEA9C433F1; Thu, 29 Apr 2021 06:55:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.103] (unknown [49.204.182.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BD9C3C433F1;
-        Thu, 29 Apr 2021 06:55:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BD9C3C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
-Subject: Re: [PATCH v3] Add support for duty-cycle for RCG
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1619334502-9880-1-git-send-email-tdas@codeaurora.org>
- <161956919717.177949.9925740807826300314@swboyd.mtv.corp.google.com>
-From:   Taniya Das <tdas@codeaurora.org>
-Message-ID: <ed64fe46-361b-5bf9-88a6-d35cac2c98e7@codeaurora.org>
-Date:   Thu, 29 Apr 2021 12:25:16 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S233080AbhD2Gzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 02:55:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57412 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229814AbhD2Gzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 02:55:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F06A6141E;
+        Thu, 29 Apr 2021 06:55:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619679305;
+        bh=MwMz82hw2zlO0Xlg+tehPqJXtowu2LTKbKEv/YGYl7w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f4RfcpBrvonll+RNLrdlZhlpVHyXb9riZqN1E8XFh/918b69u7jDOAMmpGfj4h+ae
+         LHs2Mcy+yH7w7TaBJIuOVRnf/dasi1jRI8i8+hiLWfylzf1aagCY/aNmCGOheJIUiQ
+         tff4pW0Ob6mX3yZD7BGocDSUGKvwbKwlIqaD12WX4SVivJUlIfghym9QYeE754ruCC
+         fcPyYFjPhgZ2H7u16osUANhNr8m4h6Mg//lDLrt32QODpOwfRwssDgp6CvmalO+xC6
+         M/4UPD0dLYvE/LX9QXfhtUUuwpMrLljMJVzA9wunzFKBcIMHlkLXIbfC2k/Ryp3iAQ
+         hALdNzlMWV8Sw==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lc0Zy-0005eB-Nw; Thu, 29 Apr 2021 08:55:18 +0200
+Date:   Thu, 29 Apr 2021 08:55:18 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Tung Pham <Tung.Pham@silabs.com>
+Cc:     Pho Tran <photranvan0712@gmail.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hung Nguyen <Hung.Nguyen@silabs.com>,
+        Pho Tran <Pho.Tran@silabs.com>
+Subject: Re: [PATCH v9] USB: serial: cp210x: Add support for GPIOs on CP2108
+Message-ID: <YIpYVk0bwIXFyAuE@hovoldconsulting.com>
+References: <20210408103607.2077-1-photranvan0712@gmail.com>
+ <YIA8HD0S6C+x5ZC9@hovoldconsulting.com>
+ <CO1PR11MB48829DEA0747C1B19278868E81429@CO1PR11MB4882.namprd11.prod.outlook.com>
+ <YIksjb9IjOwSpPgw@hovoldconsulting.com>
+ <CO1PR11MB4882A90461E033F8EA301C07815F9@CO1PR11MB4882.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <161956919717.177949.9925740807826300314@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CO1PR11MB4882A90461E033F8EA301C07815F9@CO1PR11MB4882.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you for your review.
+On Thu, Apr 29, 2021 at 02:54:09AM +0000, Tung Pham wrote:
 
-On 4/28/2021 5:49 AM, Stephen Boyd wrote:
-> Quoting Taniya Das (2021-04-25 00:08:21)
->> The root clock generators with MND divider has the capability to support
->> change in duty-cycle by updating the 'D'. Add the clock ops which would
->> check all the boundary conditions and enable setting the desired duty-cycle
->> as per the consumer.
->>
->> [v3]
->>    * Implement clockops for get_duty_cycle.
->>    * Return -EINVAL for Non-MND or HID RCGs.
+> So my questions again are:
 > 
-> We don't need cover letters for single patches. Please add these details
-> after the dash before the diffstat on the single patch.
+>  1) Have you verified that the struct cp210x_quad_port_config above
+>     actually matches what the device uses?
 > 
+>  2) Do you have any documentation of the structures as expected by the
+>     device firmware (not your library)?
+> 
+> 
+> Tung Pham: the device return some unused bytes, and manufacturing
+> library already discard these byte to assign value to PORT_CONFIG, so
+> you don't see padding byte on PORT_CONFIG structure.   you can find
+> the structure  of port setting in this code: 
+> 
+> https://www.silabs.com/documents/public/software/USBXpressHostSDK-Linux.tar
+> 
+> 
+> \USBXpressHostSDK-Linux\USBXpressHostSDK\CP210x\srcpkg\cp210xmanufacturing_1.0.tar\cp210xmanufacturing_1.0\cp210xmanufacturing\cp210xmanufacturing\src\CP2104Device.cpp
+> 
+> CP210x_STATUS CCP2104Device::GetPortConfig(PORT_CONFIG* PortConfig)
 
-Sure Stephen, will take care from next time. Let me know in case I need 
-to re-submit the patch again.
+Thanks for confirming.
 
->>
->> Taniya Das (1):
->>    clk: qcom: clk-rcg2: Add support for duty-cycle for RCG
->>
->>   drivers/clk/qcom/clk-rcg2.c | 81 +++++++++++++++++++++++++++++++++++++++++++++
->>   1 file changed, 81 insertions(+)
->>
->> --
->> Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
->> of the Code Aurora Forum, hosted by the  Linux Foundation.
->>
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation.
-
---
+Johan
