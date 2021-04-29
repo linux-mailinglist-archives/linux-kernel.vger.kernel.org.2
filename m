@@ -2,209 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1039A36EC7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 16:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B420E36EC80
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 16:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237338AbhD2OjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 10:39:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233128AbhD2OjN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 10:39:13 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFAD7C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 07:38:26 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id l189-20020a1cbbc60000b0290140319ad207so9083241wmf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 07:38:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nvlXRyFYaeeyIwO6szvQsWjtbPP+qdyXO2BDXR8A9/8=;
-        b=CTBsw0zEqYpNO1IjM8aFVM6MLCxN6LQLNQXkIC9OsaOSGWnb/RbFJWycx2If4u4pdM
-         u7LCQbFVd358Tit6j/gy93z3Qq2H3nkjMYVtUDTiucVPFLSM1GPHdmnAAR8tjADSYJne
-         r/xyB13RGDKYOdcVVDk5mQzKqGjOMy34nohurpBYaFkfy+resbSItmJDq0bNQ563skf0
-         LCOSIMYI1sTQFYkKbiN8k73UIDX2K2jI5PnzbpPHTAghIZHDE10/Udrpz7Jrna/ah1XD
-         fKAJ74nYjd41jnqYfFuuhbY25ymEPco0zQp7FGON2zNjTO6qhP5AQV6oR8qJDxQMnywP
-         Nf2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nvlXRyFYaeeyIwO6szvQsWjtbPP+qdyXO2BDXR8A9/8=;
-        b=amu0x0HnDO3WgTtG6oA0TkW9+K9hNr3ExfPCwYiIJTGct/kKeV4VWMUcvWEob/dMEB
-         UKkEpqYoPAip9vrtG3A5FEcXqVHg1zE6UNedpDgUmeU4DDpSNnkpPGe3YDm1YYi+Vtdn
-         q5uDJ5TOWSq5XKZLzQnyrlKrtkjNN5u9enn9rmOxXpAF4AByYSDkuDbGxXvIYbrrxoXT
-         SA2RW8ayE4lrhHCoUN+Ckky4UffHydMFjHMW0R7oHqeoKDK6nvLQ0I1DEKWN0hnG/9fY
-         YTSmre5+MzOBTZcOenVxK8RHYMMji916YK+sf1KvMM6pagNrdVdOVb7gWlpeL/qOBey1
-         1FEQ==
-X-Gm-Message-State: AOAM532bT8EbaD+oWBRsaQymiWvz1qwSlaUeW0qO1cWpX+CEC+s366ZS
-        eCzSypMzZBqwIPLJeMsEUq85BQ==
-X-Google-Smtp-Source: ABdhPJzxai37BCFbsjEPDgcJce53BzDsodpZRG2jq6v0LEhp4mkGCjah3cYW3LSkNzEjW74rnZwnZQ==
-X-Received: by 2002:a1c:7209:: with SMTP id n9mr398838wmc.60.1619707105655;
-        Thu, 29 Apr 2021 07:38:25 -0700 (PDT)
-Received: from groot.home ([2a01:cb19:826e:8e00:f37e:9091:b397:6f48])
-        by smtp.gmail.com with ESMTPSA id d6sm5025602wrr.77.2021.04.29.07.38.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 07:38:25 -0700 (PDT)
-From:   Mattijs Korpershoek <mkorpershoek@baylibre.com>
-To:     Lee Jones <lee.jones@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chen Zhong <chen.zhong@mediatek.com>
-Cc:     fparent@baylibre.com, dmitry.torokhov@gmail.com,
-        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mfd: mt6397: rename mtk-pmic-keys cells to avoid OOPS
-Date:   Thu, 29 Apr 2021 16:38:11 +0200
-Message-Id: <20210429143811.2030717-1-mkorpershoek@baylibre.com>
-X-Mailer: git-send-email 2.27.0
+        id S239655AbhD2OkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 10:40:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54556 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232820AbhD2OkO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 10:40:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60DC661446;
+        Thu, 29 Apr 2021 14:39:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619707167;
+        bh=Mh8dyfMC3818Shu7XLjNLUJFKWBWMg2lbNf10K7e91M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Lhyr1yQJKkahTplcGu4TKSOknhpsBnXMOCTdoAEjefWCcqASnjPDlj9j0aPTjwca8
+         raFqCc/PBknzybSC6eQyNFzj3Mo+iGFuyfIIMP9rTKKDBLXYdy/V/ZaP+NDcnAj9uW
+         avoPyQIjNlKGc8HTaXyc6a4Quz1cjVOKSNSR5Ysq57Cf1Xb+IScc7Wj49UsKXnRhrk
+         h7KudqlzMnChwEx0iZ121mU96j14t60A1rYyzQp7nA5yKclj9NOZlhSQWwKQlYyhgJ
+         ZxIJibu6ON0bWh5IaAurwTQ2xiu7I49pueQn8XMIea6B2s244UB8xGEV+IjdKzR+FW
+         mUAmxRn2mDIzQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 9AC804034C; Thu, 29 Apr 2021 11:39:23 -0300 (-03)
+Date:   Thu, 29 Apr 2021 11:39:23 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 08/12] perf intel-pt: Add a tree for VMCS information
+Message-ID: <YIrFGzo819FMXnKL@kernel.org>
+References: <20210429125854.13905-1-adrian.hunter@intel.com>
+ <20210429125854.13905-9-adrian.hunter@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210429125854.13905-9-adrian.hunter@intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When booting with CONFIG_KEYBOARD_MTK_PMIC=y, we have the following oops:
+Em Thu, Apr 29, 2021 at 03:58:50PM +0300, Adrian Hunter escreveu:
+> Even when VMX TSC Offset is not changing (during perf record), different
+> virtual machines can have different TSC Offsets. There is a Virtual Machine
+> Control Structure (VMCS) for each virtual CPU, the address of which is
+> reported to Intel PT in the VMCS packet. We do not know which VMCS belongs
+> to which virtual machine, so use a tree to keep track of VMCS information.
+> Then the decoder will be able to use the current VMCS value to look up the
+> current TSC Offset.
+> 
+> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+> ---
+>  .../util/intel-pt-decoder/intel-pt-decoder.c  |  2 +
+>  .../util/intel-pt-decoder/intel-pt-decoder.h  | 11 ++++
+>  tools/perf/util/intel-pt.c                    | 66 +++++++++++++++++++
+>  3 files changed, 79 insertions(+)
+> 
+> diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
+> index 8f916f90205e..8cbcb419c0d1 100644
+> --- a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
+> +++ b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
+> @@ -107,6 +107,7 @@ struct intel_pt_decoder {
+>  			 uint64_t max_insn_cnt, void *data);
+>  	bool (*pgd_ip)(uint64_t ip, void *data);
+>  	int (*lookahead)(void *data, intel_pt_lookahead_cb_t cb, void *cb_data);
+> +	struct intel_pt_vmcs_info *(*lookup_vmcs_info)(void *data, uint64_t vmcs);
+>  	void *data;
+>  	struct intel_pt_state state;
+>  	const unsigned char *buf;
+> @@ -258,6 +259,7 @@ struct intel_pt_decoder *intel_pt_decoder_new(struct intel_pt_params *params)
+>  	decoder->walk_insn          = params->walk_insn;
+>  	decoder->pgd_ip             = params->pgd_ip;
+>  	decoder->lookahead          = params->lookahead;
+> +	decoder->lookup_vmcs_info   = params->lookup_vmcs_info;
+>  	decoder->data               = params->data;
+>  	decoder->return_compression = params->return_compression;
+>  	decoder->branch_enable      = params->branch_enable;
+> diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.h b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.h
+> index bebdb7d37b39..634dd4ac174a 100644
+> --- a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.h
+> +++ b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.h
+> @@ -11,6 +11,8 @@
+>  #include <stddef.h>
+>  #include <stdbool.h>
+>  
+> +#include <linux/rbtree.h>
+> +
+>  #include "intel-pt-insn-decoder.h"
+>  
+>  #define INTEL_PT_IN_TX		(1 << 0)
+> @@ -199,6 +201,14 @@ struct intel_pt_blk_items {
+>  	bool is_32_bit;
+>  };
+>  
+> +struct intel_pt_vmcs_info {
+> +	struct rb_node rb_node;
+> +	uint64_t vmcs;
+> +	uint64_t tsc_offset;
+> +	bool reliable;
+> +	bool error_printed;
+> +};
+> +
+>  struct intel_pt_state {
+>  	enum intel_pt_sample_type type;
+>  	bool from_nr;
+> @@ -244,6 +254,7 @@ struct intel_pt_params {
+>  			 uint64_t max_insn_cnt, void *data);
+>  	bool (*pgd_ip)(uint64_t ip, void *data);
+>  	int (*lookahead)(void *data, intel_pt_lookahead_cb_t cb, void *cb_data);
+> +	struct intel_pt_vmcs_info *(*lookup_vmcs_info)(void *data, uint64_t vmcs);
+>  	void *data;
+>  	bool return_compression;
+>  	bool branch_enable;
+> diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
+> index a494d47aa1ad..71e29a82a7cf 100644
+> --- a/tools/perf/util/intel-pt.c
+> +++ b/tools/perf/util/intel-pt.c
+> @@ -133,6 +133,9 @@ struct intel_pt {
+>  
+>  	struct ip_callchain *chain;
+>  	struct branch_stack *br_stack;
+> +
+> +	u64 dflt_tsc_offset;
+> +	struct rb_root vmcs_info;
+>  };
+>  
+>  enum switch_state {
+> @@ -271,6 +274,65 @@ static bool intel_pt_log_events(struct intel_pt *pt, u64 tm)
+>  	return !n || !perf_time__ranges_skip_sample(range, n, tm);
+>  }
+>  
+> +static struct intel_pt_vmcs_info *intel_pt_lookup_vmcs(struct rb_root *rb_root,
+> +						       u64 vmcs,
+> +						       u64 dflt_tsc_offset)
+> +{
 
-[    0.384359] Unable to handle kernel NULL pointer dereference at virtual address 00000000000000c0
-[    0.385471] Mem abort info:
-[    0.385826]   ESR = 0x96000004
-[    0.386214]   EC = 0x25: DABT (current EL), IL = 32 bits
-[    0.386886]   SET = 0, FnV = 0
-[    0.387282]   EA = 0, S1PTW = 0
-[    0.387681] Data abort info:
-[    0.388047]   ISV = 0, ISS = 0x00000004
-[    0.388533]   CM = 0, WnR = 0
-[    0.388910] [00000000000000c0] user address but active_mm is swapper
-[    0.389712] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-[    0.390419] Modules linked in:
-[    0.390812] CPU: 4 PID: 1 Comm: swapper/0 Not tainted 5.12.0-mtk-04316-g7f74036c9b47 #58
-[    0.391835] Hardware name: Pumpkin MT8183 (DT)
-[    0.392399] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
-[    0.393160] pc : mtk_pmic_keys_probe+0x8c/0x57c
-[    0.393744] lr : mtk_pmic_keys_probe+0x70/0x57c
-[    0.394318] sp : ffff80001008bb10
-[    0.394738] x29: ffff80001008bb10 x28: 0000000000000000
-[    0.395414] x27: ffff8000117f04b0 x26: ffff80001121aa88
-[    0.396089] x25: ffff0000031ea400 x24: ffff0000031ea410
-[    0.396763] x23: 0000000000000000 x22: ffff00000342ad80
-[    0.397438] x21: ffff000003589780 x20: 0000000000000000
-[    0.398112] x19: ffff80001129d0d0 x18: 0000000000003ca8
-[    0.398786] x17: ffff800010bad620 x16: ffff800010bacc44
-[    0.399460] x15: 0000000000000040 x14: ffffffffffffffff
-[    0.400134] x13: ffff800011df2728 x12: 0000000000000030
-[    0.400808] x11: 0101010101010101 x10: 7f7f7f7f7f7f7f7f
-[    0.401482] x9 : 0000000000000000 x8 : ffff000003589800
-[    0.402155] x7 : 0000000000000000 x6 : 000000000000003f
-[    0.402829] x5 : 0000000000000040 x4 : ffff0000031ea610
-[    0.403503] x3 : ffff0000031ea6b8 x2 : 0000000000000000
-[    0.404176] x1 : ffff000002d8d800 x0 : ffff0000031ea410
-[    0.404850] Call trace:
-[    0.405162]  mtk_pmic_keys_probe+0x8c/0x57c
-[    0.405694]  platform_probe+0x68/0xe0
-[    0.406162]  really_probe+0x1c0/0x480
-[    0.406631]  driver_probe_device.part.0+0xd8/0x118
-[    0.407239]  device_driver_attach+0xcc/0xd4
-[    0.407773]  __driver_attach+0x60/0x12c
-[    0.408261]  bus_for_each_dev+0x70/0xc4
-[    0.408749]  driver_attach+0x24/0x30
-[    0.409204]  bus_add_driver+0x118/0x200
-[    0.409692]  driver_register+0x78/0x130
-[    0.410180]  __platform_driver_register+0x28/0x34
-[    0.410779]  pmic_keys_pdrv_init+0x1c/0x28
-[    0.411301]  do_one_initcall+0x54/0x1c0
-[    0.411791]  kernel_init_freeable+0x1d4/0x23c
-[    0.412347]  kernel_init+0x14/0x118
-[    0.412792]  ret_from_fork+0x10/0x34
-[    0.413251] Code: aa1803e0 f90006b8 f94006c1 f9000aa1 (f9406281)
-[    0.414032] ---[ end trace ad605d8d1790625c ]---
-[    0.414630] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-[    0.415600] SMP: stopping secondary CPUs
-[    0.416103] Kernel Offset: 0x80000 from 0xffff800010000000
-[    0.416796] PHYS_OFFSET: 0x40000000
-[    0.417238] CPU features: 0x00240002,2188200c
-[    0.417791] Memory Limit: none
-[    0.418181] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
+Elsewhere in tools/perf/ we use the __findnew() jargon for such "find
+and if not present, create the new entry and add it", can we please use
+it here as well?
 
-This happens when we don't have a matching device-tree entry
-(such as mediatek,mt6323-keys) for the driver.
-In that case, we dereference of_id->data with of_id == NULL
+> +	struct rb_node **p = &rb_root->rb_node;
+> +	struct rb_node *parent = NULL;
+> +	struct intel_pt_vmcs_info *v;
+> +
+> +	while (*p) {
+> +		parent = *p;
+> +		v = rb_entry(parent, struct intel_pt_vmcs_info, rb_node);
+> +
+> +		if (v->vmcs == vmcs)
+> +			return v;
+> +
+> +		if (vmcs < v->vmcs)
+> +			p = &(*p)->rb_left;
+> +		else
+> +			p = &(*p)->rb_right;
+> +	}
+> +
+> +	v = zalloc(sizeof(*v));
+> +	if (v) {
+> +		v->vmcs = vmcs;
+> +		v->tsc_offset = dflt_tsc_offset;
+> +		v->reliable = dflt_tsc_offset;
+> +
+> +		rb_link_node(&v->rb_node, parent, p);
+> +		rb_insert_color(&v->rb_node, rb_root);
+> +	}
+> +
+> +	return v;
+> +}
 
-The mfd core warns us about this:
-   [    0.352175] mtk-pmic-keys: Failed to locate of_node [id: -1]
+> +static struct intel_pt_vmcs_info *intel_pt_lookup_vmcs_info(void *data, uint64_t vmcs)
+> +{
+> +	struct intel_pt_queue *ptq = data;
+> +	struct intel_pt *pt = ptq->pt;
+> +
+> +	if (!vmcs && !pt->dflt_tsc_offset)
+> +		return NULL;
+> +
+> +	return intel_pt_lookup_vmcs(&pt->vmcs_info, vmcs, pt->dflt_tsc_offset);
+> +}
+> +
+> +static void intel_pt_free_vmcs_info(struct intel_pt *pt)
+> +{
+> +	struct intel_pt_vmcs_info *v;
+> +	struct rb_node *n;
+> +
+> +	n = rb_first(&pt->vmcs_info);
+> +	while (n) {
+> +		v = rb_entry(n, struct intel_pt_vmcs_info, rb_node);
+> +		n = rb_next(n);
+> +		rb_erase(&v->rb_node, &pt->vmcs_info);
+> +		free(v);
+> +	}
+> +}
+> +
+>  static int intel_pt_do_fix_overlap(struct intel_pt *pt, struct auxtrace_buffer *a,
+>  				   struct auxtrace_buffer *b)
+>  {
+> @@ -1109,6 +1171,7 @@ static struct intel_pt_queue *intel_pt_alloc_queue(struct intel_pt *pt,
+>  	params.get_trace = intel_pt_get_trace;
+>  	params.walk_insn = intel_pt_walk_next_insn;
+>  	params.lookahead = intel_pt_lookahead;
+> +	params.lookup_vmcs_info = intel_pt_lookup_vmcs_info;
+>  	params.data = ptq;
+>  	params.return_compression = intel_pt_return_compression(pt);
+>  	params.branch_enable = intel_pt_branch_enable(pt);
+> @@ -2970,6 +3033,7 @@ static void intel_pt_free(struct perf_session *session)
+>  	auxtrace_heap__free(&pt->heap);
+>  	intel_pt_free_events(session);
+>  	session->auxtrace = NULL;
+> +	intel_pt_free_vmcs_info(pt);
+>  	thread__put(pt->unknown_thread);
+>  	addr_filters__exit(&pt->filts);
+>  	zfree(&pt->chain);
+> @@ -3475,6 +3539,8 @@ int intel_pt_process_auxtrace_info(union perf_event *event,
+>  	if (!pt)
+>  		return -ENOMEM;
+>  
+> +	pt->vmcs_info = RB_ROOT;
+> +
+>  	addr_filters__init(&pt->filts);
+>  
+>  	err = perf_config(intel_pt_perf_config, pt);
+> -- 
+> 2.17.1
+> 
 
-mtk_pmic_keys gets probed() anyways because its mfd_cell->name:
-    }, {
-            .name = "mtk-pmic-keys",
-            .num_resources = ARRAY_SIZE(mt6323_keys_resources),
-            .resources = mt6323_keys_resources,
-            .of_compatible = "mediatek,mt6323-keys"
-    }, {
-
-.name is used by mfd_add_device() and becomes the name of the platform
-device:
-
-    pdev = platform_device_alloc(cell->name, platform_id);
-
-Later, in initcall, we do:
-
-[    0.296114] calling  pmic_keys_pdrv_init+0x0/0x28 @ 1
-[    0.296142] bus: 'platform': add driver mtk-pmic-keys
-
-Then, to check if we should call mtk_pmic_keys_probe(), we call
-
-      platform_match(drv, dev)
-
-which will return true since drv->name and pdev->name match.
-
-Since both the platform device is named mtk-pmic-keys and the driver is
-called mtk-pmic-keys, we call probe(), which triggers the oops.
-
-Fix it by renaming the mtk-pmic-key subdevices to right side of
-their compatible.
-
-This way, probe() will only be called when we have a valid dts entry for
-mtk-pmic-keys.
-
-Note: this is also more consistent naming with the other subdevices
-such as mt6397-rtc and mt6397-codec.
-
-Fixes: 55d1d1547ab5 ("mfd: mt6397: Add PMIC keys support to MT6397 driver")
-Signed-off-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
----
-
-This is a replacement for:
-https://patchwork.kernel.org/project/linux-mediatek/patch/20210428164219.1115537-2-mkorpershoek@baylibre.com/
-
- drivers/mfd/mt6397-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mfd/mt6397-core.c b/drivers/mfd/mt6397-core.c
-index 7518d74c3b4c..a83fbc486d26 100644
---- a/drivers/mfd/mt6397-core.c
-+++ b/drivers/mfd/mt6397-core.c
-@@ -72,7 +72,7 @@ static const struct mfd_cell mt6323_devs[] = {
- 		.name = "mt6323-led",
- 		.of_compatible = "mediatek,mt6323-led"
- 	}, {
--		.name = "mtk-pmic-keys",
-+		.name = "mt6323-keys",
- 		.num_resources = ARRAY_SIZE(mt6323_keys_resources),
- 		.resources = mt6323_keys_resources,
- 		.of_compatible = "mediatek,mt6323-keys"
-@@ -118,7 +118,7 @@ static const struct mfd_cell mt6397_devs[] = {
- 		.name = "mt6397-pinctrl",
- 		.of_compatible = "mediatek,mt6397-pinctrl",
- 	}, {
--		.name = "mtk-pmic-keys",
-+		.name = "mt6397-keys",
- 		.num_resources = ARRAY_SIZE(mt6397_keys_resources),
- 		.resources = mt6397_keys_resources,
- 		.of_compatible = "mediatek,mt6397-keys"
-
-base-commit: 4a0225c3d208cfa6e4550f2210ffd9114a952a81
 -- 
-2.27.0
 
+- Arnaldo
