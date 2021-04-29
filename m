@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 432B036EB04
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C468236EB02
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238148AbhD2M7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 08:59:41 -0400
+        id S238004AbhD2M7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 08:59:40 -0400
 Received: from mga17.intel.com ([192.55.52.151]:50831 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237367AbhD2M7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237362AbhD2M7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 29 Apr 2021 08:59:31 -0400
-IronPort-SDR: fEzDFU166rlSUGajcSluThSQ/3f/I4xhV6w5RK/Nz0DD6a+6N22ju7U7tHEx8YO1Co8k1zPSk9
- jQ8IQpzIxUMQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9969"; a="177107422"
+IronPort-SDR: 7P3Hs3WC1JS+7E5LA7Ikq0nD9uNqWEAO4cS1ZjHkoo3TefCdbZIa9j54eL+b60ibXTu4ciUVrH
+ hsLkpdhqVmXA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9969"; a="177107425"
 X-IronPort-AV: E=Sophos;i="5.82,259,1613462400"; 
-   d="scan'208";a="177107422"
+   d="scan'208";a="177107425"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 05:58:40 -0700
-IronPort-SDR: sB6zJD0z4EczBB0ceVyWPz07qu78Xl4gxHsYlyMc1wI7uqY25MLq+ADqD3IPA2Km2QXcf99h+r
- djlpdtJKriKQ==
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 05:58:42 -0700
+IronPort-SDR: 2GUTPRorEbUVi/+y6LBwLdyKRDqE71geKgr1BlTfuR87tu1NuChNi5BRjItCVzwDLHyZE3JxK+
+ dihZyJeDXm7Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,259,1613462400"; 
-   d="scan'208";a="537361597"
+   d="scan'208";a="537361615"
 Received: from ahunter-desktop.fi.intel.com ([10.237.72.174])
-  by orsmga004.jf.intel.com with ESMTP; 29 Apr 2021 05:58:38 -0700
+  by orsmga004.jf.intel.com with ESMTP; 29 Apr 2021 05:58:40 -0700
 From:   Adrian Hunter <adrian.hunter@intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 04/12] perf inject: Add facility to do in place update
-Date:   Thu, 29 Apr 2021 15:58:46 +0300
-Message-Id: <20210429125854.13905-5-adrian.hunter@intel.com>
+Subject: [PATCH 05/12] perf inject: Add --vm-time-correlation option
+Date:   Thu, 29 Apr 2021 15:58:47 +0300
+Message-Id: <20210429125854.13905-6-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210429125854.13905-1-adrian.hunter@intel.com>
 References: <20210429125854.13905-1-adrian.hunter@intel.com>
@@ -40,167 +40,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When there is a need to modify only timestamps, it is much simpler and
-quicker to do it to the existing file rather than re-write all the
-contents.
+Intel PT timestamps are affected by virtualization. Add a new option
+that will allow the Intel PT decoder to correlate the timestamps and
+translate the virtual machine timestamps to host timestamps.
 
-In preparation for that, add the ability to modify the input file in place.
-In practice that just means making the file descriptor and mmaps writable.
+The advantages of making this a separate step, rather than a part of
+normal decoding are that it is simpler to implement, and it needs to
+be done only once.
+
+This patch adds only the option. Later patches add Intel PT support.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- tools/perf/builtin-inject.c | 30 ++++++++++++++++++++++++++----
- tools/perf/util/data.c      |  3 ++-
- tools/perf/util/data.h      |  1 +
- tools/perf/util/header.c    |  5 +++++
- tools/perf/util/session.c   |  6 +++++-
- 5 files changed, 39 insertions(+), 6 deletions(-)
+ tools/perf/Documentation/perf-inject.txt | 10 ++++++
+ tools/perf/builtin-inject.c              | 43 ++++++++++++++++++++++++
+ tools/perf/util/auxtrace.h               |  6 ++++
+ 3 files changed, 59 insertions(+)
 
+diff --git a/tools/perf/Documentation/perf-inject.txt b/tools/perf/Documentation/perf-inject.txt
+index a8eccff21281..89305b1a6d39 100644
+--- a/tools/perf/Documentation/perf-inject.txt
++++ b/tools/perf/Documentation/perf-inject.txt
+@@ -68,6 +68,16 @@ include::itrace.txt[]
+ --force::
+ 	Don't complain, do it.
+ 
++--vm-time-correlation[=OPTIONS]::
++	Some architectures may capture AUX area data which contains timestamps
++	affected by virtualization. This option will update those timestamps
++	in place, to correlate with host timestamps. The in-place update means
++	that an output file is not specified, and instead the input file is
++	modified.  The options are architecture specific, except that they may
++	start with "dry-run" which will cause the file to be processed but
++	without updating it. Currently this option is supported only by
++	Intel PT, refer	linkperf:perf-intel-pt[1]
++
+ SEE ALSO
+ --------
+ linkperf:perf-record[1], linkperf:perf-report[1], linkperf:perf-archive[1],
 diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-index ddccc0eb7390..ddfdeb85c586 100644
+index ddfdeb85c586..8fba0cf746d5 100644
 --- a/tools/perf/builtin-inject.c
 +++ b/tools/perf/builtin-inject.c
-@@ -43,6 +43,8 @@ struct perf_inject {
- 	bool			have_auxtrace;
- 	bool			strip;
- 	bool			jit_mode;
-+	bool			in_place_update;
-+	bool			in_place_update_dry_run;
- 	const char		*input_name;
- 	struct perf_data	output;
- 	u64			bytes_written;
-@@ -701,7 +703,7 @@ static int __cmd_inject(struct perf_inject *inject)
- 	int ret = -EINVAL;
- 	struct perf_session *session = inject->session;
- 	struct perf_data *data_out = &inject->output;
--	int fd = perf_data__fd(data_out);
-+	int fd = inject->in_place_update ? -1 : perf_data__fd(data_out);
- 	u64 output_data_offset;
+@@ -698,6 +698,36 @@ static void strip_init(struct perf_inject *inject)
+ 		evsel->handler = drop_sample;
+ }
  
- 	signal(SIGINT, sig_handler);
-@@ -759,14 +761,14 @@ static int __cmd_inject(struct perf_inject *inject)
- 	if (!inject->itrace_synth_opts.set)
- 		auxtrace_index__free(&session->auxtrace_index);
- 
--	if (!data_out->is_pipe)
-+	if (!data_out->is_pipe && !inject->in_place_update)
- 		lseek(fd, output_data_offset, SEEK_SET);
- 
- 	ret = perf_session__process_events(session);
- 	if (ret)
- 		return ret;
- 
--	if (!data_out->is_pipe) {
-+	if (!data_out->is_pipe && !inject->in_place_update) {
- 		if (inject->build_ids)
- 			perf_header__set_feat(&session->header,
- 					      HEADER_BUILD_ID);
-@@ -900,7 +902,27 @@ int cmd_inject(int argc, const char **argv)
- 		return -1;
- 	}
- 
--	if (perf_data__open(&inject.output)) {
-+	if (inject.in_place_update) {
-+		if (!strcmp(inject.input_name, "-")) {
-+			pr_err("Input file name required for in-place updating\n");
-+			return -1;
-+		}
-+		if (strcmp(inject.output.path, "-")) {
-+			pr_err("Output file name must not be specified for in-place updating\n");
-+			return -1;
-+		}
-+		if (!data.force && !inject.in_place_update_dry_run) {
-+			char reply[10];
++static int parse_vm_time_correlation(const struct option *opt, const char *str, int unset)
++{
++	struct perf_inject *inject = opt->value;
++	const char *args;
++	char *dry_run;
 +
-+			printf("The input file will be updated in place. OK? (y/n) ");
-+			if (!fgets(reply, sizeof(reply), stdin) || strcmp(reply, "y\n")) {
-+				pr_err("Aborted\n");
-+				return -1;
-+			}
-+		}
-+		if (!inject.in_place_update_dry_run)
-+			data.in_place_update = true;
-+	} else if (perf_data__open(&inject.output)) {
- 		perror("failed to create output file");
- 		return -1;
- 	}
-diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
-index f29af4fc3d09..209fe63d4e49 100644
---- a/tools/perf/util/data.c
-+++ b/tools/perf/util/data.c
-@@ -239,11 +239,12 @@ static bool is_dir(struct perf_data *data)
- 
- static int open_file_read(struct perf_data *data)
- {
-+	int flags = data->in_place_update ? O_RDWR : O_RDONLY;
- 	struct stat st;
- 	int fd;
- 	char sbuf[STRERR_BUFSIZE];
- 
--	fd = open(data->file.path, O_RDONLY);
-+	fd = open(data->file.path, flags);
- 	if (fd < 0) {
- 		int err = errno;
- 
-diff --git a/tools/perf/util/data.h b/tools/perf/util/data.h
-index 62a3e66fbee8..c9de82af5584 100644
---- a/tools/perf/util/data.h
-+++ b/tools/perf/util/data.h
-@@ -31,6 +31,7 @@ struct perf_data {
- 	bool			 is_dir;
- 	bool			 force;
- 	bool			 use_stdio;
-+	bool			 in_place_update;
- 	enum perf_data_mode	 mode;
- 
- 	struct {
-diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-index aa1e42518d37..02b13c7a23be 100644
---- a/tools/perf/util/header.c
-+++ b/tools/perf/util/header.c
-@@ -3814,6 +3814,11 @@ int perf_session__read_header(struct perf_session *session)
- 	if (perf_file_header__read(&f_header, header, fd) < 0)
- 		return -EINVAL;
- 
-+	if (header->needs_swap && data->in_place_update) {
-+		pr_err("In-place update not supported when byte-swapping is required\n");
-+		return -EINVAL;
++	if (unset)
++		return 0;
++
++	inject->itrace_synth_opts.set = true;
++	inject->itrace_synth_opts.vm_time_correlation = true;
++	inject->in_place_update = true;
++
++	if (!str)
++		return 0;
++
++	dry_run = strstr(str, "dry-run");
++	if (dry_run) {
++		inject->itrace_synth_opts.vm_tm_corr_dry_run = true;
++		inject->in_place_update_dry_run = true;
++		args = dry_run + strlen("dry-run");
++	} else {
++		args = str;
 +	}
 +
- 	/*
- 	 * Sanity check that perf.data was written cleanly; data size is
- 	 * initialized to 0 and updated only if the on_exit function is run.
-diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index eba3769be3f1..edd068ea8a6c 100644
---- a/tools/perf/util/session.c
-+++ b/tools/perf/util/session.c
-@@ -2131,6 +2131,7 @@ struct reader {
- 	u64		 data_size;
- 	u64		 data_offset;
- 	reader_cb_t	 process;
-+	bool		 in_place_update;
- };
- 
- static int
-@@ -2164,7 +2165,9 @@ reader__process_events(struct reader *rd, struct perf_session *session,
- 	mmap_prot  = PROT_READ;
- 	mmap_flags = MAP_SHARED;
- 
--	if (session->header.needs_swap) {
-+	if (rd->in_place_update) {
-+		mmap_prot  |= PROT_WRITE;
-+	} else if (session->header.needs_swap) {
- 		mmap_prot  |= PROT_WRITE;
- 		mmap_flags = MAP_PRIVATE;
- 	}
-@@ -2250,6 +2253,7 @@ static int __perf_session__process_events(struct perf_session *session)
- 		.data_size	= session->header.data_size,
- 		.data_offset	= session->header.data_offset,
- 		.process	= process_simple,
-+		.in_place_update = session->data->in_place_update,
++	inject->itrace_synth_opts.vm_tm_corr_args = strdup(args);
++
++	return inject->itrace_synth_opts.vm_tm_corr_args ? 0 : -ENOMEM;
++}
++
+ static int __cmd_inject(struct perf_inject *inject)
+ {
+ 	int ret = -EINVAL;
+@@ -739,6 +769,15 @@ static int __cmd_inject(struct perf_inject *inject)
+ 			else if (!strncmp(name, "sched:sched_stat_", 17))
+ 				evsel->handler = perf_inject__sched_stat;
+ 		}
++	} else if (inject->itrace_synth_opts.vm_time_correlation) {
++		session->itrace_synth_opts = &inject->itrace_synth_opts;
++		memset(&inject->tool, 0, sizeof(inject->tool));
++		inject->tool.id_index	    = perf_event__process_id_index;
++		inject->tool.auxtrace_info  = perf_event__process_auxtrace_info;
++		inject->tool.auxtrace	    = perf_event__process_auxtrace;
++		inject->tool.auxtrace_error = perf_event__process_auxtrace_error;
++		inject->tool.ordered_events = true;
++		inject->tool.ordering_requires_timestamps = true;
+ 	} else if (inject->itrace_synth_opts.set) {
+ 		session->itrace_synth_opts = &inject->itrace_synth_opts;
+ 		inject->itrace_synth_opts.inject = true;
+@@ -880,6 +919,9 @@ int cmd_inject(int argc, const char **argv)
+ 				    itrace_parse_synth_opts),
+ 		OPT_BOOLEAN(0, "strip", &inject.strip,
+ 			    "strip non-synthesized events (use with --itrace)"),
++		OPT_CALLBACK_OPTARG(0, "vm-time-correlation", &inject, NULL, "opts",
++				    "correlate time between VM guests and the host",
++				    parse_vm_time_correlation),
+ 		OPT_END()
  	};
- 	struct ordered_events *oe = &session->ordered_events;
- 	struct perf_tool *tool = session->tool;
+ 	const char * const inject_usage[] = {
+@@ -972,5 +1014,6 @@ int cmd_inject(int argc, const char **argv)
+ out_delete:
+ 	zstd_fini(&(inject.session->zstd_data));
+ 	perf_session__delete(inject.session);
++	free(inject.itrace_synth_opts.vm_tm_corr_args);
+ 	return ret;
+ }
+diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
+index 59c3c05384a4..9ac2ac1bd793 100644
+--- a/tools/perf/util/auxtrace.h
++++ b/tools/perf/util/auxtrace.h
+@@ -90,6 +90,9 @@ enum itrace_period_type {
+  * @remote_access: whether to synthesize remote access events
+  * @mem: whether to synthesize memory events
+  * @timeless_decoding: prefer "timeless" decoding i.e. ignore timestamps
++ * @vm_time_correlation: perform VM Time Correlation
++ * @vm_tm_corr_dry_run: VM Time Correlation dry-run
++ * @vm_tm_corr_args:  VM Time Correlation implementation-specific arguments
+  * @callchain_sz: maximum callchain size
+  * @last_branch_sz: branch context size
+  * @period: 'instructions' events period
+@@ -130,6 +133,9 @@ struct itrace_synth_opts {
+ 	bool			remote_access;
+ 	bool			mem;
+ 	bool			timeless_decoding;
++	bool			vm_time_correlation;
++	bool			vm_tm_corr_dry_run;
++	char			*vm_tm_corr_args;
+ 	unsigned int		callchain_sz;
+ 	unsigned int		last_branch_sz;
+ 	unsigned long long	period;
 -- 
 2.17.1
 
