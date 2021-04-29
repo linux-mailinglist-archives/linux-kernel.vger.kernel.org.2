@@ -2,113 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB0636E8CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4192D36E8D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240434AbhD2KdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 06:33:09 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:48482 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232629AbhD2KdF (ORCPT
+        id S240539AbhD2KdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 06:33:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240272AbhD2KdH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 06:33:05 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TANiqD037446;
-        Thu, 29 Apr 2021 10:32:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=107xJILZ/k3vJceB87TBegFi0U6lLFQ35yB8nmmNbSM=;
- b=vXB3z3UCrHexzBve64hdefEitFT9HVa9/y+2Pm0wjajsB7vIFPANdgeRxQKsbhSfHCYs
- ME6um/dw8xYoFD8e2fbjUMvIxBg/r5l97nUzpMnx7PWVAIfbi4/R4JIDBSOOOEY36hdg
- JmIgZBOVZu/RqSC3I2ncWRVe/p8mC7sT+tBaD0lwaz+DYjFXiP2vLozQ04YxLWBPn9HA
- 0HXFNyOecRU+g9pDmnQal2D7XfeE2ViyEBTpV1ehLgbBztXoeKm5D64o7DHWFkiWIWKr
- 93+uGu+rMkaYxYOG0G3i81QUXGG2fOA+3Akv0Xql592+MT9dbg7z49iHvGF1qj6ZUedN 1g== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 385ahbuw3t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 10:32:12 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TAQe8w064375;
-        Thu, 29 Apr 2021 10:32:12 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 384w3w2msg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 10:32:12 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13TAWBFL088524;
-        Thu, 29 Apr 2021 10:32:11 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 384w3w2mrs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 10:32:11 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13TAW7U4021477;
-        Thu, 29 Apr 2021 10:32:07 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 29 Apr 2021 03:32:07 -0700
-Date:   Thu, 29 Apr 2021 13:31:59 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        Marion et Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        tj@kernel.org, jiangshanlai@gmail.com, saeedm@nvidia.com,
-        leon@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 1/2] workqueue: Have 'alloc_workqueue()' like macros
- accept a format specifier
-Message-ID: <20210429103158.GA1981@kadam>
-References: <cover.1618780558.git.christophe.jaillet@wanadoo.fr>
- <ae88f6c2c613d17bc1a56692cfa4f960dbc723d2.1618780558.git.christophe.jaillet@wanadoo.fr>
- <042f5fff-5faf-f3c5-0819-b8c8d766ede6@acm.org>
- <1032428026.331.1618814178946.JavaMail.www@wwinf2229>
- <40c21bfe-e304-230d-b319-b98063347b8b@acm.org>
- <20210422122419.GF2047089@ziepe.ca>
+        Thu, 29 Apr 2021 06:33:07 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94CEEC06138B;
+        Thu, 29 Apr 2021 03:32:20 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id b19-20020a05600c06d3b029014258a636e8so6334687wmn.2;
+        Thu, 29 Apr 2021 03:32:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GbXkdlBZbDXm3nWFnvDWM+vsQZ7k+H4Y2BPygrAm+f8=;
+        b=tHGtaRl0XFjOkbv9KxHi47FQ9wm57KtVLwyun1Rm2En/FH3CvdTzc0jgzdopPad88h
+         wWzKLyb4s4/Sed0RwaHUJnRLFRlxzKu4FgABsVsGOiWF0KvjjGzn94wibriIvwDYsgqw
+         Pr4DXwQog/jZXaT6dgUki9BY8iFjh7Bvh0AB4lEnClqGp2Lz/peTakipjt8eLH7Hl2uL
+         t+sd1Owl9IfccBYnLRT2s8drPo6wFtDr8I03QLRLiNM3b8wNTVd5tN710Jdk4GE1yQIo
+         8GhapvFNclM0E6LHo00At7s8IiW5RJCmBtQ7W0ofq27OQDQss/tghw7aTfJYdhRIj9pc
+         sweQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GbXkdlBZbDXm3nWFnvDWM+vsQZ7k+H4Y2BPygrAm+f8=;
+        b=oYq60EKEnY64wGauO08Lio01ajOZsNY1okTgJ635Do0NJsWeOOJH3QlnTf0L91rAFE
+         h10Namfwh8YCk1qCvt1iLAmJ/13BklvX5P7D/Ouz5U1qZYdXbXDJF3pkWbTDNPVKaGkU
+         /8qO+/y4oYOlrdga/jyHIDVNHx6/SrN/E3nv2ITM0fomIE5p7CGp/+GDUW4C+ZZRRVQp
+         PFoKCkt2B5kqNAO2aCSJW+QjdEXEy6x6etdcY7GECY6SA7PkdiMIKah0xV844J/irkOy
+         BWorIqIWQfTsH6kOnk2IQnmtxX+3vRkLshTvDIs/6RHuC4Z1IC2OOdlLIhGGw7Wmpmrw
+         JSmA==
+X-Gm-Message-State: AOAM531M4yv06tCnfbaGIqyJ/09eS5K9DJjdm6QisHbORBXHv+AAmRAs
+        LyyzDMvPHQy4tKN0ubr2IdsFIBkhs9c=
+X-Google-Smtp-Source: ABdhPJy2H3OLhiiKfpmXHW2Z4j4ElI9PQjtTxGeRdK4Q3i5r0ZUXk3VubEyEpAZ/LSDYzFOVQDVCjw==
+X-Received: by 2002:a1c:6382:: with SMTP id x124mr9628040wmb.142.1619692339104;
+        Thu, 29 Apr 2021 03:32:19 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.132.80])
+        by smtp.gmail.com with ESMTPSA id n10sm4129299wrw.37.2021.04.29.03.32.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Apr 2021 03:32:18 -0700 (PDT)
+Subject: Re: [PATCH][next] io_uring: Fix memory leak on error return path.
+To:     Colin King <colin.king@canonical.com>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210429102654.58943-1-colin.king@canonical.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <6929b598-ac2f-521a-8e96-dbbf295d137a@gmail.com>
+Date:   Thu, 29 Apr 2021 11:32:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210422122419.GF2047089@ziepe.ca>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: vMjc6YA3PuELYm8M01byc768l2ZGob5M
-X-Proofpoint-ORIG-GUID: vMjc6YA3PuELYm8M01byc768l2ZGob5M
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9968 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 mlxlogscore=999
- priorityscore=1501 clxscore=1011 adultscore=0 suspectscore=0 spamscore=0
- phishscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104290070
+In-Reply-To: <20210429102654.58943-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 09:24:19AM -0300, Jason Gunthorpe wrote:
-> On Mon, Apr 19, 2021 at 01:02:34PM -0700, Bart Van Assche wrote:
-> > On 4/18/21 11:36 PM, Marion et Christophe JAILLET wrote:
-> > > The list in To: is the one given by get_maintainer.pl. Usualy, I only
-> > > put the ML in Cc: I've run the script on the 2 patches of the serie
-> > > and merged the 2 lists. Everyone is in the To: of the cover letter
-> > > and of the 2 patches.
-> > > 
-> > > If Théo is "Tejun Heo" (  (maintainer:WORKQUEUE) ), he is already in
-> > > the To: line.
-> > Linus wants to see a "Cc: ${maintainer}" tag in patches that he receives
-> > from a maintainer and that modify another subsystem than the subsystem
-> > maintained by that maintainer.
+On 4/29/21 11:26 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Really? Do you remember a lore link for this?
+> Currently the -EINVAL error return path is leaking memory allocated
+> to data. Fix this by kfree'ing data before the return.
 > 
-> Generally I've been junking the CC lines (vs Andrew at the other
-> extreme that often has 10's of CC lines)
+> Addresses-Coverity: ("Resource leak")
+> Fixes: c3a40789f6ba ("io_uring: allow empty slots for reg buffers")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  fs/io_uring.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index 47c2f126f885..beeb477e4f6a 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -8417,8 +8417,10 @@ static int io_sqe_buffers_register(struct io_ring_ctx *ctx, void __user *arg,
+>  		ret = io_buffer_validate(&iov);
+>  		if (ret)
+>  			break;
+> -		if (!iov.iov_base && tag)
+> +		if (!iov.iov_base && tag) {> +			kfree(data);
+>  			return -EINVAL;
+> +		}
 
-Of course this patch has already been NAKed but it wasn't clear to me
-whose git tree it would have gone through.  Surely if it were going
-through your tree you would have required an Acked-by: from Tejun and
-the CC: line would not be required.  It would only be required if you
-can't get a maintainer to respond.
+Buggy indeed, should have been:
 
-regards,
-dan carpenter
+ret = -EINVAL;
+break;
 
+Colin, can you resend with the change?
+
+>  
+>  		ret = io_sqe_buffer_register(ctx, &iov, &ctx->user_bufs[i],
+>  					     &last_hpage);
+> 
+
+-- 
+Pavel Begunkov
