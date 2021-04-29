@@ -2,498 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D15C36F2D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 01:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1DB36F2DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 01:20:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbhD2XLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 19:11:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47106 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229519AbhD2XL3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 19:11:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4FB961445;
-        Thu, 29 Apr 2021 23:10:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619737842;
-        bh=MysNyOtbY1Vxq8fQpmBmTz4JwQokSuV2eiYUrv0I21c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=oNswTqy6LKch4xQH+Zbvlc3vUBYKuHnn+gfrl3IVmBpc7fPMAqIKV35b2WHLFkWjQ
-         b6F+qsH93dSzKtOd6wDnXMJVGNlKaEUEUWeRNxKDFr8Foi5fqIjXvWvos+4fzBdnpQ
-         27gY1upYYGbZ+dyuuTFiE2rrp8UZvbQcP3wec0sQTGBDtjMGnqZsj9WmCEvBclvqAY
-         7OdS2+NerAznY1WIyWgnRUZkxal8Dx/B7wCMv45hOO+FWU+Cewrr1aVlhwE7hW6iCU
-         mHdSOGu3+zKwS2dOq1QnaqUWfYDQcLMt0gz3IVQSDZZrKXqU6rgVd1ZMSUm8VKIO4I
-         IM3NYbvXDv5hw==
-Date:   Thu, 29 Apr 2021 18:10:40 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-pci@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
-        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] PCI: dwc: Visconti: PCIe RC controller driver
-Message-ID: <20210429231040.GA589969@bjorn-Precision-5520>
+        id S229831AbhD2XV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 19:21:29 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:34508 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229519AbhD2XV1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 19:21:27 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TNIxet010148;
+        Thu, 29 Apr 2021 23:19:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ cc : references : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=Jny8cLWcBSLCrO5pFiQUp78JZqG1YhBSjmUvXZvxV60=;
+ b=nj8V3mSid8PhHqjx+lcdmZqABTHA50SSMPqoMQHPilHiyCbLkh6TE3BYf/yEIdZoUGii
+ u1jLyaqAUH2TojCZxrr/6GCCfaupQOEQ0vyEp/P0aaSjexwbl0x/OUehLjrTSVSI3Vdv
+ Bzsho7GJz3XOtpMQAIGefjZr9NSFUl2IkFu8hJ7bXZ/LbPwiDekyja09v3CikakzfcCM
+ MOv3uy9Xbsg37e3oNQqHjKm8wEj/KCOeUCY0eKMHeos/RjyffzlKvK1sX/0flP+SmpAq
+ Y/pCShKdi4Q1WyLyXWvwZEmUYXhKXsk5xCKAstqmJmb1ypf+yojKKpejqGD1NLmfHp3B fw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 385afq62mt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 23:19:47 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TNFsV9154342;
+        Thu, 29 Apr 2021 23:19:47 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2042.outbound.protection.outlook.com [104.47.66.42])
+        by userp3020.oracle.com with ESMTP id 384w3x1dm4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 23:19:46 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jTQYhFVZxoGNA8FlwizwODRSK0zdVnpKM6ei9o8P46JagLnnKANAV2K/85Td3cW/P/p38tYmRQ6CZtHquQo2foQk7ApTKr9bRa2W8ssdxHIhAjW1iXrgtCqF2sOJHsBRAl+fl4dsqiXfzTa+QIC5He41QxFQEEGK/ixwdI5Fy1q80Mc4wlmT2DTJmSAsJ8u+LPnmODHN9LYa7iuNNAy1ExlmHzAgFlr4YDnzOgFN6RVaPpI5/vD/9O0K637REV6FD3cyeedvRkwmZMxEf3pRp5/itomqmrFcfbnQiMG0s6DqpjDpB/8G1BUKA3qL6F/VgxJgTtuvUiVwQJrgQa8oQQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Jny8cLWcBSLCrO5pFiQUp78JZqG1YhBSjmUvXZvxV60=;
+ b=ahLGC4aBNBKe+/if0R0JNTwUIDKE+xkIUuscEYUPq0ON+++2Ec5KwjVA4YELMAURZ/BSveyTHvsvWslpgs6poyiLc2gluQUEq6JLhNl/dJFI8dt8zTcD6py9u4jSdKW+tDll39cdVfdE2NziQUCtXB4WoKH3WciGS9ViEfs18PCAceOs6OmSkO2q3iD/e4W1E1330yMJyZ1PuhTnkyzzU4mFIOo0RSyEzMXBH19UFM9pNx6Zn9DqAOdQp1thvETguIWgdjrqKlcXzHudZSxZiX7cVpiYc0y7BfI3EqqsQKo0VMdR7jrt6hz7DUIlxeayZzncnvWhlU1flsW0yk5Ibw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Jny8cLWcBSLCrO5pFiQUp78JZqG1YhBSjmUvXZvxV60=;
+ b=MAvMsFkax+cOGBt/76iauMOwWySDrUuH0uVZAXxwYCOxIdTRqasjfFxIJsiQjVSqCG7faejnZSb3LFVegRt4FIgvPZ3r3LD8ecz1yey4UINrTZnGwap41S32Vbsu+fBuXb08MNwKFVyDUKhbc4CfLRJv6mnUWHlcC82uUs4fsDk=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by BY5PR10MB3812.namprd10.prod.outlook.com (2603:10b6:a03:1f7::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.25; Thu, 29 Apr
+ 2021 23:19:43 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::4407:2ff6:c0a:5d90]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::4407:2ff6:c0a:5d90%8]) with mapi id 15.20.4065.027; Thu, 29 Apr 2021
+ 23:19:43 +0000
+Subject: Re: [External] Re: [PATCH v21 0/9] Free some vmemmap pages of HugeTLB
+ page
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, bp@alien8.de,
+        X86 ML <x86@kernel.org>, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        fam.zheng@bytedance.com, zhengqi.arch@bytedance.com,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20210425070752.17783-1-songmuchun@bytedance.com>
+ <ee3903ae-7033-7608-c7ed-1f16f0359663@oracle.com>
+ <CAMZfGtVbB6YwUMg2ECpdmniQ_vt_3AwdVAuu0GdUJfzWZgQpyg@mail.gmail.com>
+ <98f191e8-b509-e541-9d9d-76029c74d241@oracle.com>
+ <CAMZfGtUqE6OzWwK6o5h0j6qHPotfvbKpGbzYpSPLLhYH2nJiAw@mail.gmail.com>
+ <4489afcd-be3e-7830-4e37-03abe454486a@oracle.com>
+Message-ID: <5f363b58-f70a-4a6a-9761-aae93cb49138@oracle.com>
+Date:   Thu, 29 Apr 2021 16:19:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
+In-Reply-To: <4489afcd-be3e-7830-4e37-03abe454486a@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [50.38.35.18]
+X-ClientProxiedBy: MWHPR13CA0010.namprd13.prod.outlook.com
+ (2603:10b6:300:16::20) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210419063513.1947003-3-nobuhiro1.iwamatsu@toshiba.co.jp>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.112] (50.38.35.18) by MWHPR13CA0010.namprd13.prod.outlook.com (2603:10b6:300:16::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.8 via Frontend Transport; Thu, 29 Apr 2021 23:19:42 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 73161d10-5e49-400c-2c1c-08d90b65458e
+X-MS-TrafficTypeDiagnostic: BY5PR10MB3812:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR10MB3812D8E966E36F93C91B1D39E25F9@BY5PR10MB3812.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0/Gea8PqF8YT3DWbUrSzuyrHPR+Kz5zCIzbkdtOsGEy3nyXfliOrLdPUKDqlAaKDJ/LFH3CB5yWRLRFNrURZ27aEKUHT3FYHpBaROQRMf0yz/oBoFAIs476ywi9UD8kaDISw/Begh0hK0uX72FREA+4dxUblYZWcs4dvty/FHCvS6DQWUrk1Q8gAsaktbGxarq3AIcGJg7xFHOp7wF0FdXAEQCPWi7fHWi9/65WYK4vs3Xac/oJj8SPBvK8w5/6mLDNmwnZgPMf8wPf36VY5Aa36kJYXjGL9jA3H5zxZJ+zEDTrHC/aPcp9svW/yldV6uGn47OygkgdvAXWVPbUfwEQsu99I+52N5F9NQOBbtnVZeaHfGaz6C/zWwgd/OeUB+VM3zo2XTRnaiRwMyrWtatiSSWXwdONly39JinjKlkGDk0ABbQBVQTSVtYTXfKkosVaMGTDHOvsFD2oo8CTY/prnihBZqURfxBMxzkHTLbtmrwjXlB3uf5vUa7207gP0+TB2crwXGxNm3eaaq7XelDeyct1+Q5TQWiDTB3X+R9ge6rkTkBdEqX5wSu64uV4nzW126hkNjRohU8ogRsvIFchCYdoddvdJmS5px0wTlxRsoroFqIOGykwcRATCFzk8IMtFNUv0EHeVBYk8pNHF6masICsVCicf5wdo8nLuq30ZPAyBCueuzIdl71lc39q4rgNo9d5/+O0mTZKoTRqYQKrcaJzb2dfHyk5i/HtJ80U=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(346002)(376002)(366004)(136003)(54906003)(83380400001)(2906002)(38350700002)(2616005)(8936002)(36756003)(4326008)(956004)(31696002)(6486002)(16576012)(478600001)(26005)(7406005)(7416002)(186003)(86362001)(6916009)(44832011)(316002)(66556008)(8676002)(66476007)(38100700002)(53546011)(52116002)(31686004)(5660300002)(16526019)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?T28xYy9iVmlzNjZHTXBiTjV2WnVhcGNXQVliQUpnSC93TUltWDJoTmVQY1RS?=
+ =?utf-8?B?V1BXSUxTZ3NVSmF1Ukp3U2VSSkRzbnBxWVkwRTFWRHNJZGo3d1l1S2hSQklT?=
+ =?utf-8?B?Z3pZQW9UdkxWVGhqSnptVmFydG9vZnlkMFhJSUREZW1PN1NVSDhKRXFvMjRT?=
+ =?utf-8?B?cStqTjZVQUw2ZWRnV0RISEJ1ZjNkQXltTTU3WWl2R2pFdndnK1N2Mi95OXVC?=
+ =?utf-8?B?K21SRWZQQm1LZnF6UmcxNHdYQ05OVUZpeit1SEJTbysvVXhNM0k4eDFURUEr?=
+ =?utf-8?B?NVErM2RsRXMxYm1qRkFRanIvOTBIZ2hiV2pFOWo1UnlnNzlwTzlEekoyMkhD?=
+ =?utf-8?B?SnJzWDZRQk1ZM0VRNXpwK0FRbjFwL2l3VzBCRmVaZzE0U0dNTzlyUDVFRDJB?=
+ =?utf-8?B?OGVSc0Q5R0I5cjk2cGRRUkxuMWhTZWt1OGVJTGlVc0JCZlBIcVFtTktVRU9R?=
+ =?utf-8?B?SGxkbnd6dEorSldoaHJOUzUzTXhCcGlsTi95d1hnQU5vUWRObC8vRUtEMzZ1?=
+ =?utf-8?B?QzU0a0dxdUZWUENoWENqT2VwRVRoUUx4Zmt1eFNza2hzbTVLdlE5dEJqSytp?=
+ =?utf-8?B?eWV6c0hKZ2NYd2xEVjBtUWcvSUpDYUJLd2g0MXErYzVjVEZCUFZZTFpFWFRy?=
+ =?utf-8?B?UmZmTFFGZ080c0U1TTVPSG1QdjMrUXBIRlRBRjRCWUFyc0dFMWMycVZNQisx?=
+ =?utf-8?B?U3R1YTl5NUltbis0bm40N3pDeStLY2F4YzkvY0cvWVMzLzE2SHd5UjlvYm5X?=
+ =?utf-8?B?ZGcvMlc4ek5lbXgva05Na0ErYUtheGZZNFh5bXY0WDF5V2JPOXkzOTJSS01v?=
+ =?utf-8?B?UmpGcm5qWktNNE93VmtHY3RmZVhNVi9vTFkvVTlsWnc5WVdvQVpyZ2pmN2xP?=
+ =?utf-8?B?VWtReGFSeENLT2FlYjJ0Z3ZiWnJlZ1M0TnJGQXp1dkZtU3hhWXF6OUZTbm9x?=
+ =?utf-8?B?L0lvKy9pZ0NLcXBtVGlreGF1bURCeFF1NGpWckFaRVIxWEJEVnpEOXVKdU90?=
+ =?utf-8?B?NnI2MGw0Q0wzWDlpaFhFUTcwWXZGL0hDVVd2TEpkdEFPQTZhd3hGdkZyWHRz?=
+ =?utf-8?B?RE9LTkFlSm1nN1pueFJIWENwNk1OUEpxd05Ed3R5WnhZQ2pkbE5ZMzMrQ204?=
+ =?utf-8?B?ajNiQ1drK1RRMWZuVEFGSnVaWElLWmorOXRxM3hyc0hkNEhpZnI3WERXOWRB?=
+ =?utf-8?B?dTJGNS8xNHJpUUFnV2pGT3hjL25iQlFJKzNrWFZ0QzNuTDEwNG1MYlJQSWhT?=
+ =?utf-8?B?M2tCSko3K2F0YWxIL0hmdHp3cFVmNVlkdDBxUzh5Z1UvNUdVcHpZSE4vcXdQ?=
+ =?utf-8?B?aUJKYTlCQXF5Vzh3S291VTlsa1NVczBQVEtYcEhKU0gva1BZcmM4Tm5rbVZL?=
+ =?utf-8?B?WDRNcWR1RlFybWhYRS8rb29XS0dGUjJLd1EzWVZpN08xb0V2anVGZ0RpT3dn?=
+ =?utf-8?B?ODRCekJONjk0cGR6S2I1MzFZb2dMaEVmUXlrRXFzQVA4WlBNbWNkdnBmcTJN?=
+ =?utf-8?B?Mm9zam8vMkhkQjBqR3d2MHMzd1I2YVdzS0h1TU1LMmxsclhFRzVEOEpDY1JF?=
+ =?utf-8?B?b0J5bUQyWXByN29ZclkyeVlKbDdoaUJWaTNOYWQwOHBmb1RPMUp3b2hTOGtJ?=
+ =?utf-8?B?MDM1QVFVL1VDS0ovS0FUem9yWG0zK05VMFVYdG02Y29GL2RYdnRudmVoTlpH?=
+ =?utf-8?B?bXg4ckxNWElBTDQ0NGlKcVRvZHJTekppWlRjcVFMRXdNb1BaOEI2T0p5dU9K?=
+ =?utf-8?Q?S9skc+x0zEQUltrKI7b0nc8aBnaYfCdlbYV+gSL?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 73161d10-5e49-400c-2c1c-08d90b65458e
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2021 23:19:43.7876
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yO9ffCJUNbgZC4k5eYZLNNQQHy6Nu2KUDRI7noEc0zDvG58t5ux+dVLk1yBEoQXng2nRLr3hZ07ABD3ZanGUYA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3812
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9969 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
+ mlxlogscore=999 bulkscore=0 phishscore=0 spamscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104290150
+X-Proofpoint-ORIG-GUID: R68rIf_3TafAKvnivr38rkVaOF_AZ7w1
+X-Proofpoint-GUID: R68rIf_3TafAKvnivr38rkVaOF_AZ7w1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9969 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 phishscore=0
+ clxscore=1015 suspectscore=0 lowpriorityscore=0 mlxlogscore=999 mlxscore=0
+ adultscore=0 malwarescore=0 impostorscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104290150
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please use something like this as the subject to match existing
-convention:
-
-  PCI: visconti: Add Toshiba Visconti PCIe host controller driver
-
-(You can use "git log --oneline drivers/pci/controller/dwc" to learn
-this.)
-
-On Mon, Apr 19, 2021 at 03:35:12PM +0900, Nobuhiro Iwamatsu wrote:
-> Add support to PCIe RC controller on Toshiba Visconti ARM SoCs. PCIe controller is based of Synopsys
-> DesignWare PCIe core.
+On 4/29/21 3:23 PM, Mike Kravetz wrote:
+> On 4/28/21 9:02 PM, Muchun Song wrote:
+>> On Thu, Apr 29, 2021 at 10:32 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>>>
+>>> On 4/28/21 5:26 AM, Muchun Song wrote:
+>>>> On Wed, Apr 28, 2021 at 7:47 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>>>>>
+>>>>> Thanks!  I will take a look at the modifications soon.
+>>>>>
+>>>>> I applied the patches to Andrew's mmotm-2021-04-21-23-03, ran some tests and
+>>>>> got the following warning.  We may need to special case that call to
+>>>>> __prep_new_huge_page/free_huge_page_vmemmap from alloc_and_dissolve_huge_page
+>>>>> as it is holding hugetlb lock with IRQs disabled.
+>>>>
+>>>> Good catch. Thanks Mike. I will fix it in the next version. How about this:
+>>>>
+>>>> @@ -1618,7 +1617,8 @@ static void __prep_new_huge_page(struct hstate
+>>>> *h, struct page *page)
+>>>>
+>>>>  static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
+>>>>  {
+>>>> +       free_huge_page_vmemmap(h, page);
+>>>>         __prep_new_huge_page(page);
+>>>>         spin_lock_irq(&hugetlb_lock);
+>>>>         __prep_account_new_huge_page(h, nid);
+>>>>         spin_unlock_irq(&hugetlb_lock);
+>>>> @@ -2429,6 +2429,7 @@ static int alloc_and_dissolve_huge_page(struct
+>>>> hstate *h, struct page *old_page,
+>>>>         if (!new_page)
+>>>>                 return -ENOMEM;
+>>>>
+>>>> +       free_huge_page_vmemmap(h, new_page);
+>>>>  retry:
+>>>>         spin_lock_irq(&hugetlb_lock);
+>>>>         if (!PageHuge(old_page)) {
+>>>> @@ -2489,7 +2490,7 @@ static int alloc_and_dissolve_huge_page(struct
+>>>> hstate *h, struct page *old_page,
+>>>>
+>>>>  free_new:
+>>>>         spin_unlock_irq(&hugetlb_lock);
+>>>> -       __free_pages(new_page, huge_page_order(h));
+>>>> +       update_and_free_page(h, new_page, false);
+>>>>
+>>>>         return ret;
+>>>>  }
+>>>>
+>>>>
+>>>
+>>> Another option would be to leave the prep* routines as is and only
+>>> modify alloc_and_dissolve_huge_page as follows:
+>>
+>> OK. LGTM. I will use this. Thanks Mike.
 > 
-> This patch does not yet use the clock framework to control the clock. This will be replaced in the
-> future.
-
-Wrap this text to fit nicely in 75 columns.
-
-> Signed-off-by: Yuji Ishikawa <yuji2.ishikawa@toshiba.co.jp>
-> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> ---
->  drivers/pci/controller/dwc/Kconfig         |   9 +
->  drivers/pci/controller/dwc/Makefile        |   1 +
->  drivers/pci/controller/dwc/pcie-visconti.c | 333 +++++++++++++++++++++
->  3 files changed, 343 insertions(+)
->  create mode 100644 drivers/pci/controller/dwc/pcie-visconti.c
+> There are issues with my suggested patch below.  I am occasionally
+> hitting the BUG that checks for page ref count being zero at put_page
+> time.  Still do not fully understand, but I do not hit the same BUG
+> with your patch above.  Please do not use my patch below.
 > 
-> diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-> index b9aaa84452c4..043c2c70d566 100644
-> --- a/drivers/pci/controller/dwc/Kconfig
-> +++ b/drivers/pci/controller/dwc/Kconfig
-> @@ -286,6 +286,15 @@ config PCIE_TEGRA194_EP
->  	  in order to enable device-specific features PCIE_TEGRA194_EP must be
->  	  selected. This uses the DesignWare core.
+
+Ah!  The issue is pretty obvious.
+
+
+> @@ -2489,7 +2489,7 @@ static int alloc_and_dissolve_huge_page(struct hstate *h, struct page *old_page,
 >  
-> +config PCIE_VISCONTI
+>  free_new:
+>  	spin_unlock_irq(&hugetlb_lock);
+> -	__free_pages(new_page, huge_page_order(h));
+> +	update_and_free_page(h, old_page, false);
 
-Consider using PCIE_VISCONTI_HOST in case you ever adapt this hardware
-to work in endpoint mode.
+That should of course be:
+	update_and_free_page(h, new_page, false);
 
-> +	bool "Toshiba VISCONTI PCIe controllers"
-
-s/VISCONTI/Visconti/ to match usage below.
-
-> +	depends on ARCH_VISCONTI || COMPILE_TEST
-> +	depends on PCI_MSI_IRQ_DOMAIN
-> +	select PCIE_DW_HOST
-> +	help
-> +	  Say Y here if you want PCIe controller support on Toshiba Visconti SoC.
-> +	  This driver supports TMPV77xx.
-
-What is "TMPV77xx"?  A SoC?  A reference platform?
-
->  config PCIE_UNIPHIER
->  	bool "Socionext UniPhier PCIe host controllers"
->  	depends on ARCH_UNIPHIER || COMPILE_TEST
-> diff --git a/drivers/pci/controller/dwc/Makefile b/drivers/pci/controller/dwc/Makefile
-> index ba7c42f6df6f..46ac5d49dc75 100644
-> --- a/drivers/pci/controller/dwc/Makefile
-> +++ b/drivers/pci/controller/dwc/Makefile
-> @@ -20,6 +20,7 @@ obj-$(CONFIG_PCI_MESON) += pci-meson.o
->  obj-$(CONFIG_PCIE_TEGRA194) += pcie-tegra194.o
->  obj-$(CONFIG_PCIE_UNIPHIER) += pcie-uniphier.o
->  obj-$(CONFIG_PCIE_UNIPHIER_EP) += pcie-uniphier-ep.o
-> +obj-$(CONFIG_PCIE_VISCONTI) += pcie-visconti.o
 >  
->  # The following drivers are for devices that use the generic ACPI
->  # pci_root.c driver but don't support standard ECAM config access.
-> diff --git a/drivers/pci/controller/dwc/pcie-visconti.c b/drivers/pci/controller/dwc/pcie-visconti.c
-> new file mode 100644
-> index 000000000000..a4739e7187f0
-> --- /dev/null
-> +++ b/drivers/pci/controller/dwc/pcie-visconti.c
-> @@ -0,0 +1,333 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * DWC PCIe RC driver for Toshiba Visconti ARM SoC
-> + *
-> + * Copyright (C) 2019, 2020 Toshiba Electronic Device & Storage Corporation
-> + * Copyright (C) 2020, TOSHIBA CORPORATION
-> + *
-> + * Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> + *
-
-Remove spurious blank line.
-
-> + */
-> +
-> +#include <linux/clk.h>
-> +#include <linux/delay.h>
-> +#include <linux/gpio.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/init.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/kernel.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/pci.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/resource.h>
-> +#include <linux/types.h>
-> +
-> +#include "pcie-designware.h"
-> +#include "../../pci.h"
-> +
-> +struct visconti_pcie {
-> +	struct dw_pcie pci;
-> +	void __iomem *ulreg_base;
-> +	void __iomem *smu_base;
-> +	void __iomem *mpu_base;
-> +	struct clk *refclk;
-> +	struct clk *sysclk;
-> +	struct clk *auxclk;
-> +};
-> +
-> +#define PCIE_UL_REG_S_PCIE_MODE		0x00F4
-> +#define  PCIE_UL_REG_S_PCIE_MODE_EP	0x00
-> +#define  PCIE_UL_REG_S_PCIE_MODE_RC	0x04
-> +
-> +#define PCIE_UL_REG_S_PERSTN_CTRL	0x00F8
-> +#define  PCIE_UL_IOM_PCIE_PERSTN_I_EN	BIT(3)
-> +#define  PCIE_UL_DIRECT_PERSTN_EN	BIT(2)
-> +#define  PCIE_UL_PERSTN_OUT		BIT(1)
-> +#define  PCIE_UL_DIRECT_PERSTN		BIT(0)
-> +
-> +#define PCIE_UL_REG_S_PHY_INIT_02	0x0104
-> +#define  PCIE_UL_PHY0_SRAM_EXT_LD_DONE	BIT(0)
-> +
-> +#define PCIE_UL_REG_S_PHY_INIT_03	0x0108
-> +#define  PCIE_UL_PHY0_SRAM_INIT_DONE	BIT(0)
-> +
-> +#define PCIE_UL_REG_S_INT_EVENT_MASK1	0x0138
-> +#define  PCIE_UL_CFG_PME_INT		BIT(0)
-> +#define  PCIE_UL_CFG_LINK_EQ_REQ_INT	BIT(1)
-> +#define  PCIE_UL_EDMA_INT0		BIT(2)
-> +#define  PCIE_UL_EDMA_INT1		BIT(3)
-> +#define  PCIE_UL_EDMA_INT2		BIT(4)
-> +#define  PCIE_UL_EDMA_INT3		BIT(5)
-> +#define  PCIE_UL_S_INT_EVENT_MASK1_ALL  (PCIE_UL_CFG_PME_INT | PCIE_UL_CFG_LINK_EQ_REQ_INT | \
-> +					 PCIE_UL_EDMA_INT0 | PCIE_UL_EDMA_INT1 | \
-> +					 PCIE_UL_EDMA_INT2 | PCIE_UL_EDMA_INT3)
-> +
-
-Please wrap the code here and below so it fits nicely in 80 columns.
-
-> +#define PCIE_UL_REG_S_SB_MON		0x0198
-> +#define PCIE_UL_REG_S_SIG_MON		0x019C
-> +#define  PCIE_UL_CORE_RST_N_MON		BIT(0)
-> +
-> +#define PCIE_UL_REG_V_SII_DBG_00	0x0844
-> +#define PCIE_UL_REG_V_SII_GEN_CTRL_01	0x0860
-> +#define  PCIE_UL_APP_LTSSM_ENABLE	BIT(0)
-> +
-> +#define PCIE_UL_REG_V_PHY_ST_00		0x0864
-> +#define  PCIE_UL_SMLH_LINK_UP		BIT(0)
-> +
-> +#define PCIE_UL_REG_V_PHY_ST_02		0x0868
-> +#define  PCIE_UL_S_DETECT_ACT		0x01
-> +#define  PCIE_UL_S_L0			0x11
-> +
-> +#define PISMU_CKON_PCIE			0x0038
-> +#define  PISMU_CKON_PCIE_AUX_CLK	BIT(1)
-> +#define  PISMU_CKON_PCIE_MSTR_ACLK	BIT(0)
-> +
-> +#define PISMU_RSOFF_PCIE		0x0538
-> +#define  PISMU_RSOFF_PCIE_ULREG_RST_N	BIT(1)
-> +#define  PISMU_RSOFF_PCIE_PWR_UP_RST_N	BIT(0)
-> +
-> +#define PCIE_MPU_REG_MP_EN		0x0
-> +#define  MPU_MP_EN_DISABLE		BIT(0)
-> +
-> +#define PCIE_BUS_OFFSET			0x40000000
-> +
-> +/* Access registers in PCIe ulreg */
-> +static inline void visconti_ulreg_writel(struct visconti_pcie *pcie, u32 val, u32 reg)
-> +{
-> +	writel_relaxed(val, pcie->ulreg_base + reg);
-> +}
-> +
-> +/* Access registers in PCIe smu */
-> +static inline void visconti_smu_writel(struct visconti_pcie *pcie, u32 val, u32 reg)
-> +{
-> +	writel_relaxed(val, pcie->smu_base + reg);
-> +}
-> +
-> +/* Access registers in PCIe mpu */
-> +static inline void visconti_mpu_writel(struct visconti_pcie *pcie, u32 val, u32 reg)
-> +{
-> +	writel_relaxed(val, pcie->mpu_base + reg);
-> +}
-> +
-> +static inline u32 visconti_mpu_readl(struct visconti_pcie *pcie, u32 reg)
-
-Don't bother with "inline" above and the signature will fit better in
-the line.  The compiler will inline these even if you don't specify
-it.
-
-> +{
-> +	return readl_relaxed(pcie->mpu_base + reg);
-> +}
-> +
-> +static int visconti_pcie_check_link_status(struct visconti_pcie *pcie)
-
-"check_link_status" gives no hint about what the return value means.
-This looks like it might be similar to what other drivers do in
-*_pcie_link_up().
-
-Can you hook things up so this generic code in dw_pcie_host_init()
-works for you?
-
-        if (!dw_pcie_link_up(pci) && pci->ops && pci->ops->start_link) {
-                ret = pci->ops->start_link(pci);
-                if (ret)
-                        goto err_free_msi;
-        }
-
-> +{
-> +	int err;
-> +	u32 val;
-> +
-> +	/* wait for linkup of phy link layer */
-> +	err = readl_relaxed_poll_timeout(pcie->ulreg_base + PCIE_UL_REG_V_PHY_ST_00, val,
-> +				 (val & PCIE_UL_SMLH_LINK_UP), 1000, 10000);
-> +	if (err)
-> +		return err;
-> +
-> +	/* wait for linkup of data link layer */
-> +	err = readl_relaxed_poll_timeout(pcie->ulreg_base + PCIE_UL_REG_V_PHY_ST_02, val,
-> +				 (val & PCIE_UL_S_DETECT_ACT), 1000, 10000);
-> +	if (err)
-> +		return err;
-> +
-> +	/* wait for LTSSM Status */
-> +	return readl_relaxed_poll_timeout(pcie->ulreg_base + PCIE_UL_REG_V_PHY_ST_02, val,
-> +				  (val & PCIE_UL_S_L0), 1000, 10000);
-> +}
-> +
-> +static int visconti_pcie_establish_link(struct pcie_port *pp)
-> +{
-> +	int ret;
-> +	u32 val;
-> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> +	struct visconti_pcie *pcie = dev_get_drvdata(pci->dev);
-
-Reorder these in the order of use (as you did below).
-
-> +	visconti_ulreg_writel(pcie, PCIE_UL_APP_LTSSM_ENABLE, PCIE_UL_REG_V_SII_GEN_CTRL_01);
-> +
-> +	ret = visconti_pcie_check_link_status(pcie);
-> +	if (ret < 0) {
-> +		dev_info(pci->dev, "Link failure\n");
-> +		return ret;
-> +	}
-> +
-> +	val = visconti_mpu_readl(pcie, PCIE_MPU_REG_MP_EN);
-> +	visconti_mpu_writel(pcie, val & ~MPU_MP_EN_DISABLE, PCIE_MPU_REG_MP_EN);
-> +
-> +	visconti_ulreg_writel(pcie, PCIE_UL_S_INT_EVENT_MASK1_ALL, PCIE_UL_REG_S_INT_EVENT_MASK1);
-> +
-> +	return 0;
-> +}
-> +
-> +static int visconti_pcie_host_init(struct pcie_port *pp)
-> +{
-> +	dw_pcie_setup_rc(pp);
-> +	return visconti_pcie_establish_link(pp);
-
-This doesn't look like correct usage of the dwc infrastructure.  No
-other *_pcie_host_init() functions call dw_pcie_setup_rc().  It'd be
-nice if the dwc infrastructure had a little more of a user's guide.
-In the meantime, try to copy the structure and style of existing
-drivers.
-
-> +}
-> +
-> +static const struct dw_pcie_host_ops visconti_pcie_host_ops = {
-> +	.host_init = visconti_pcie_host_init,
-> +};
-> +
-> +static u64 visconti_pcie_cpu_addr_fixup(struct dw_pcie *pci, u64 pci_addr)
-> +{
-> +	return pci_addr - PCIE_BUS_OFFSET;
-> +}
-> +
-> +static const struct dw_pcie_ops dw_pcie_ops = {
-> +	.cpu_addr_fixup = visconti_pcie_cpu_addr_fixup,
-> +};
-> +
-> +static int visconti_get_resources(struct platform_device *pdev,
-> +				  struct visconti_pcie *pcie)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +
-> +	pcie->ulreg_base = devm_platform_ioremap_resource_byname(pdev, "ulreg");
-> +	if (IS_ERR(pcie->ulreg_base))
-> +		return PTR_ERR(pcie->ulreg_base);
-> +
-> +	pcie->smu_base = devm_platform_ioremap_resource_byname(pdev, "smu");
-> +	if (IS_ERR(pcie->smu_base))
-> +		return PTR_ERR(pcie->smu_base);
-> +
-> +	pcie->mpu_base = devm_platform_ioremap_resource_byname(pdev, "mpu");
-> +	if (IS_ERR(pcie->mpu_base))
-> +		return PTR_ERR(pcie->mpu_base);
-> +
-> +	pcie->refclk = devm_clk_get(dev, "pcie_refclk");
-> +	if (IS_ERR(pcie->refclk)) {
-> +		dev_err(dev, "Failed to get refclk clock: %ld\n", PTR_ERR(pcie->refclk));
-> +		return PTR_ERR(pcie->refclk);
-> +	}
-> +
-> +	pcie->sysclk = devm_clk_get(dev, "sysclk");
-> +	if (IS_ERR(pcie->sysclk)) {
-> +		dev_err(dev, "Failed to get sysclk clock: %ld\n", PTR_ERR(pcie->sysclk));
-> +		return PTR_ERR(pcie->sysclk);
-> +	}
-> +
-> +	pcie->auxclk = devm_clk_get(dev, "auxclk");
-> +	if (IS_ERR(pcie->auxclk)) {
-> +		dev_err(dev, "Failed to get auxclk clock: %ld\n", PTR_ERR(pcie->auxclk));
-> +		return PTR_ERR(pcie->auxclk);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int visconti_device_turnon(struct visconti_pcie *pcie)
-
-There are no other drivers with a *_turnon() function.  Can you copy
-a name used in other drivers for similar functionality?  Maybe this
-is similar to kirin_pcie_power_on(), meson_pcie_power_on(), etc?
-
-> +{
-> +	int err;
-> +	u32 val;
-> +
-> +	visconti_smu_writel(pcie, PISMU_CKON_PCIE_AUX_CLK | PISMU_CKON_PCIE_MSTR_ACLK,
-> +			    PISMU_CKON_PCIE);
-> +	ndelay(250);
-> +
-> +	visconti_smu_writel(pcie, PISMU_RSOFF_PCIE_ULREG_RST_N, PISMU_RSOFF_PCIE);
-> +
-> +	visconti_ulreg_writel(pcie, PCIE_UL_REG_S_PCIE_MODE_RC, PCIE_UL_REG_S_PCIE_MODE);
-> +
-> +	val = PCIE_UL_IOM_PCIE_PERSTN_I_EN | PCIE_UL_DIRECT_PERSTN_EN | PCIE_UL_DIRECT_PERSTN;
-> +	visconti_ulreg_writel(pcie, val, PCIE_UL_REG_S_PERSTN_CTRL);
-> +	udelay(100);
-> +
-> +	val |= PCIE_UL_PERSTN_OUT;
-> +	visconti_ulreg_writel(pcie, val, PCIE_UL_REG_S_PERSTN_CTRL);
-> +	udelay(100);
-> +
-> +	visconti_smu_writel(pcie, PISMU_RSOFF_PCIE_PWR_UP_RST_N, PISMU_RSOFF_PCIE);
-> +
-> +	err = readl_relaxed_poll_timeout(pcie->ulreg_base + PCIE_UL_REG_S_PHY_INIT_03, val,
-> +				 (val & PCIE_UL_PHY0_SRAM_INIT_DONE), 100, 1000);
-> +	if (err)
-> +		return err;
-> +
-> +	visconti_ulreg_writel(pcie, PCIE_UL_PHY0_SRAM_EXT_LD_DONE, PCIE_UL_REG_S_PHY_INIT_02);
-> +
-> +	return readl_relaxed_poll_timeout(pcie->ulreg_base + PCIE_UL_REG_S_SIG_MON, val,
-> +				 (val & PCIE_UL_CORE_RST_N_MON), 100, 1000);
-> +}
-> +
-> +static int visconti_add_pcie_port(struct visconti_pcie *pcie, struct platform_device *pdev)
-> +{
-> +	struct dw_pcie *pci = &pcie->pci;
-> +	struct pcie_port *pp = &pci->pp;
-> +	struct device *dev = &pdev->dev;
-> +	int ret;
-> +
-> +	pp->irq = platform_get_irq_byname(pdev, "intr");
-> +	if (pp->irq < 0) {
-> +		dev_err(dev, "interrupt intr is missing");
-
-Make your error messages consistently capitalized (or consistently not
-capitalized).
-
-> +		return pp->irq;
-> +	}
-> +
-> +	pp->ops = &visconti_pcie_host_ops;
-> +
-> +	pci->link_gen = of_pci_get_max_link_speed(pdev->dev.of_node);
-> +	if (pci->link_gen < 0 || pci->link_gen > 3) {
-> +		pci->link_gen = 3;
-> +		dev_dbg(dev, "Applied default link speed\n");
-> +	}
-> +
-> +	dev_dbg(dev, "link speed Gen %d", pci->link_gen);
-> +
-> +	ret = visconti_device_turnon(pcie);
-> +	if (ret)
-> +		goto error;
-
-There's no cleanup, so just "return ret;" here and omit the "error:"
-label.
-
-> +	ret = dw_pcie_host_init(pp);
-> +	if (ret)
-> +		dev_err(dev, "Failed to initialize host\n");
-> +
-> +error:
-> +	return ret;
-> +}
-> +
-> +static int visconti_pcie_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct visconti_pcie *pcie;
-> +	struct pcie_port *pp;
-> +	struct dw_pcie *pci;
-> +	int ret;
-> +
-> +	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(36));
-> +	if (ret)
-> +		return ret;
-> +
-> +	pcie = devm_kzalloc(dev, sizeof(*pcie), GFP_KERNEL);
-> +	if (!pcie)
-> +		return -ENOMEM;
-> +
-> +	pci = &pcie->pci;
-> +	pp = &pci->pp;
-> +	pp->num_vectors = MAX_MSI_IRQS;
-> +
-> +	pci->dev = dev;
-> +	pci->ops = &dw_pcie_ops;
-> +
-> +	ret = visconti_get_resources(pdev, pcie);
-> +	if (ret)
-> +		return ret;
-> +
-> +	platform_set_drvdata(pdev, pcie);
-> +
-> +	return visconti_add_pcie_port(pcie, pdev);
-> +}
-> +
-> +static const struct of_device_id visconti_pcie_match[] = {
-> +	{ .compatible = "toshiba,visconti-pcie" },
-> +	{},
-> +};
-> +
-> +static struct platform_driver visconti_pcie_driver = {
-> +	.probe = visconti_pcie_probe,
-> +	.driver = {
-> +		.name = "visconti-pcie",
-> +		.of_match_table = visconti_pcie_match,
-> +		.suppress_bind_attrs = true,
-> +	},
-> +};
-> +
-> +builtin_platform_driver(visconti_pcie_driver);
-> -- 
-> 2.30.0.rc2
+>  	return ret;
+>  }
 > 
+
+-- 
+Mike Kravetz
