@@ -2,93 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27CE436EC2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 16:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E176C36EC32
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 16:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240093AbhD2ONV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 10:13:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49082 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235277AbhD2ONQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 10:13:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96D9E610A0;
-        Thu, 29 Apr 2021 14:12:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619705550;
-        bh=clzuBZR0L7dnM2q4M2FsHH5sXP6gp/LBlVl9ahY6fQY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WI5dazIYLvPU9plyaUXzd4OIFy/lVISsO9F/qbj8kXQG6mtn+glr8hrzRdOHimPHR
-         nEKDSW087AjnN+pPQSRopxs9JC1GOtNl3skyiKqIzH6vqx45WC0nyHP8ihfaX0NwHY
-         uzZXThxdXcCoeXFImxCoh6pdB+OzGx18uhwcbFDM=
-Date:   Thu, 29 Apr 2021 16:12:27 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kangjie Lu <kjlu@umn.edu>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Subject: Re: [PATCH 6/7] Revert "leds: lp5523: fix a missing check of return
- value of lp55xx_read"
-Message-ID: <YIq+y1dKTOXnJhxy@kroah.com>
-References: <20210429130811.3353369-1-gregkh@linuxfoundation.org>
- <20210429130811.3353369-7-gregkh@linuxfoundation.org>
- <YIq4VD0NyUGv0uy1@kroah.com>
+        id S239916AbhD2OO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 10:14:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235277AbhD2OOX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 10:14:23 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3EDCC06138B;
+        Thu, 29 Apr 2021 07:13:35 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 26-20020a05600c22dab029013efd7879b8so9570177wmg.0;
+        Thu, 29 Apr 2021 07:13:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8rixzT4B1KAAKcd3h0t8hYsII2C1zsLRX8iTNWsf0g8=;
+        b=SlNkVNa9WY+p38id+ZUpEWa3+04Fs1ksNp2uWDj4F6tGPMY9cJaSFeIum+ML0JGqrw
+         us1GACHx73MJbuUqfz99qA4n9hWrx3OUJzAMeQZeNtGnLBSjeTvC4r6MCYzAooCzg00b
+         P7bA6PNzaZPs8A619SnuvecOuGcmoGKZ2fsWWdPJTKwyreAOK1CsUkV+tRRZXTOp1ScZ
+         qNu9j8lzRAnm+peDx2AgXvtic0Exm1FQZDZK9IcHs8rO3U4K3UQQIasSyblkEn6a9av4
+         NTZMb7QcivI+LWNM1pjwI94Pxmr4tCl+s5CZBC2jlFl0fcY6voWzHTpfZf516aEYEVxM
+         Fcjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8rixzT4B1KAAKcd3h0t8hYsII2C1zsLRX8iTNWsf0g8=;
+        b=mAgRawQfDMu5um+o0vbxgT6niAwc2qxj/7W0TtJirkr0JJZs+bv3QS1rIE6iH/pWpd
+         HidC1Akw2fIyH+XSX35IQpwh6KW9BXWGuIadKDulFSAvegBgV5kKEDA2P+oc40wr/P3d
+         B5zKqg/4en/MEniHuZCNXSxda5aMeg1JPRkcYhFwtH5Tgfs5dQkBVTRN1baNlIoO7GWJ
+         Jk7hIyq0ft8FS4hMWJkgqiYHzBFq1Ok69jBPUBWVG3WP27j7iZX+EMdQ4QEUbNBsAeCY
+         Xx2rHbPDoVwx9ehrDFWGVz48Jf94Wcuzj9FikErH1rKdlCsia9ealQ0CwpEP7wgPzF3c
+         54nw==
+X-Gm-Message-State: AOAM530vheAI9eoS+rSFonAEsrBsHQKcjTzofDLA+MQyrhLRtbxDQHlS
+        5snh0FIR7PTYJKOGiLfpI/brYA3u+HSv4YxRn0w=
+X-Google-Smtp-Source: ABdhPJwOQrIh7CBQq+wWKHUpQhidWUWhX4DmgUlp1+WHgX848yi6EVenXqGOm1apOvzUoBofOv2QFnqAoIa3q6it4Dw=
+X-Received: by 2002:a05:600c:4a19:: with SMTP id c25mr230132wmp.94.1619705614413;
+ Thu, 29 Apr 2021 07:13:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YIq4VD0NyUGv0uy1@kroah.com>
+References: <20210414184604.23473-1-ojeda@kernel.org> <CAJTyqKP4Ud7aWxdCihfzeZ3dQe_5yeTAVnXcKDonciez-g2zWA@mail.gmail.com>
+ <878s51e3jc.fsf@gmail.com> <CAJTyqKOEG1tF0YGOvNeyidjF+2MaXoY5kCo9-cZ4Ri_Jb8XV8Q@mail.gmail.com>
+In-Reply-To: <CAJTyqKOEG1tF0YGOvNeyidjF+2MaXoY5kCo9-cZ4Ri_Jb8XV8Q@mail.gmail.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Thu, 29 Apr 2021 10:13:23 -0400
+Message-ID: <CAGngYiXCui0iGW0890BMDUrTkgRe5HQNuiEyEbf=NdvFe06eug@mail.gmail.com>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+To:     mceier+kernel@gmail.com
+Cc:     Kajetan Puchalski <mrkajetanp@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 03:44:52PM +0200, Greg Kroah-Hartman wrote:
-> On Thu, Apr 29, 2021 at 03:08:10PM +0200, Greg Kroah-Hartman wrote:
-> > This reverts commit 248b57015f35c94d4eae2fdd8c6febf5cd703900.
-> > 
-> > Commits from @umn.edu addresses have been found to be submitted in "bad
-> > faith" to try to test the kernel community's ability to review "known
-> > malicious" changes.  The result of these submissions can be found in a
-> > paper submitted to the 42nd IEEE Symposium on Security and Privacy
-> > entitled, "Open Source Insecurity: Stealthily Introducing
-> > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> > of Minnesota) and Kangjie Lu (University of Minnesota) but later
-> > withdrawn.
-> > 
-> > Because of this, all submissions from this group must be reverted from
-> > the kernel tree and will need to be re-reviewed again to determine if
-> > they actually are a valid fix.  Until that work is complete, remove this
-> > change to ensure that no problems are being introduced into the
-> > codebase.
-> > 
-> > Cc: Kangjie Lu <kjlu@umn.edu>
-> > Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > ---
-> >  drivers/leds/leds-lp5523.c | 4 +---
-> >  1 file changed, 1 insertion(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/leds/leds-lp5523.c b/drivers/leds/leds-lp5523.c
-> > index fc433e63b1dc..5036d7d5f3d4 100644
-> > --- a/drivers/leds/leds-lp5523.c
-> > +++ b/drivers/leds/leds-lp5523.c
-> > @@ -305,9 +305,7 @@ static int lp5523_init_program_engine(struct lp55xx_chip *chip)
-> >  
-> >  	/* Let the programs run for couple of ms and check the engine status */
-> >  	usleep_range(3000, 6000);
-> > -	ret = lp55xx_read(chip, LP5523_REG_STATUS, &status);
-> > -	if (ret)
-> > -		return ret;
-> > +	lp55xx_read(chip, LP5523_REG_STATUS, &status);
-> >  	status &= LP5523_ENG_STATUS_MASK;
-> >  
-> >  	if (status != LP5523_ENG_STATUS_MASK) {
-> > -- 
-> > 2.31.1
-> > 
-> 
-> This looks incorrect to me as lp5523_run_engine() has been called and
-> not cleaned up from properly.
-> 
-> I'll keep the revert and fix this up correctly.
+On Thu, Apr 29, 2021 at 10:06 AM Mariusz Ceier <mceier+kernel@gmail.com> wrote:
+>
+> Let's assume the hipothetical corporation wants to add some
+> proprietary stuff to the kernel and avoid sharing the code
 
-I already reviewed this one too, sorry for the noise.
+Wouldn't Greg KH be itching to remove such patches from the kernel? If
+they made it in, in the first place.
 
-greg k-h
+GPL is a necessary, but not sufficient condition for code to be merged
+into the kernel. AFAIK the kernel community has the absolute
+discretion to refuse any GPLed code for any reason.
+
+IANAL.
