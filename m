@@ -2,188 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6610936E694
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 10:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0073736E691
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 10:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239747AbhD2IIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 04:08:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230071AbhD2IIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 04:08:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 08B9E61446;
-        Thu, 29 Apr 2021 08:07:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619683652;
-        bh=2DlbYxunUevwnqh+Ong8MaEHb0LiPaIl1Ok8WmzGuC0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=mymJPklfL0ZdniTD3N+MWED8nyjPviqzLYjhTAO9CwOtOlMAc5Yikt0vbNuMpsMcq
-         JJcLc8HGlhvjlKM94tLwKjShqHZQ+6JgLliD1lz+WxxHaDN1V0m1FTVk0IeMQDJn/O
-         f2t0RwiL5h+1KtZy5SB8QFo3zjbTv/SgBa28WbpwaC+drlFM6tXiC5vXASU3qu996F
-         VrLQk6nuZMtZMvU95X3Pp3ZqofFnubP+rS1eKkUeqkD8/6iuaCAt+wuohcmb0uk+UA
-         plLQVK9tGKsIcd4rtNkQxruxahYKNzyKeGNZI7MmIl7hoWRvduXtaYGv91cmaBf/IW
-         rmtY1ZJj8MZAQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] powerpc: mark local variables around longjmp as volatile
-Date:   Thu, 29 Apr 2021 10:06:38 +0200
-Message-Id: <20210429080708.1520360-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S239630AbhD2IHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 04:07:55 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:8856 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231405AbhD2IHy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 04:07:54 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13T7qkXr011961;
+        Thu, 29 Apr 2021 10:07:04 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=D7QL7NcUJ9tOd7qvePWnf+YhgefsK20ho31ilFMVp2I=;
+ b=Bjk1npPB6851N80K3ICBr1wBZcwg3hG+zCL6x8y/B1s8y+yYj30TSZPQM9ibgeGrOZP+
+ IrhffO4k0bYue8IfsTSftDYVTIHhucLG0PJOCQz4FcV/dGwTBne+n5kUSri/dTrSXWPt
+ gW13urR7Ypd+GgM3Uss+HcNzR3ynYvSohLT+f28LJKDI9NOiQh1MhegtIdjBaEdtgnTe
+ 4/+5i+Iq/U0S9ubUOVisIAoszKJDYUu5eUE0NqwUJdReI2vBYSCGcOVF/SgV/DZDhg9m
+ Lh2arH9XmQu+CTA5dHg86HpjBy4TlK46VNIiqzPKcXFQduMgfireCWiWgE6ossY2m807 JQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 38735wqks6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Apr 2021 10:07:04 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CE70510002A;
+        Thu, 29 Apr 2021 10:07:02 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id BBF5F20E5E0;
+        Thu, 29 Apr 2021 10:07:02 +0200 (CEST)
+Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 29 Apr 2021 10:07:02
+ +0200
+From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <arnaud.pouliquen@foss.st.com>
+Subject: [PATCH] rpmsg: char: Remove useless includes
+Date:   Thu, 29 Apr 2021 10:06:39 +0200
+Message-ID: <20210429080639.6379-1-arnaud.pouliquen@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-29_03:2021-04-28,2021-04-29 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Remove includes that are not requested to build the module.
 
-gcc-11 points out that modifying local variables next to a
-longjmp/setjmp may cause undefined behavior:
-
-arch/powerpc/kexec/crash.c: In function 'crash_kexec_prepare_cpus.constprop':
-arch/powerpc/kexec/crash.c:108:22: error: variable 'ncpus' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbere
-d]
-arch/powerpc/kexec/crash.c:109:13: error: variable 'tries' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbere
-d]
-arch/powerpc/xmon/xmon.c: In function 'xmon_print_symbol':
-arch/powerpc/xmon/xmon.c:3625:21: error: variable 'name' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbered]
-arch/powerpc/xmon/xmon.c: In function 'stop_spus':
-arch/powerpc/xmon/xmon.c:4057:13: error: variable 'i' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbered]
-arch/powerpc/xmon/xmon.c: In function 'restart_spus':
-arch/powerpc/xmon/xmon.c:4098:13: error: variable 'i' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbered]
-arch/powerpc/xmon/xmon.c: In function 'dump_opal_msglog':
-arch/powerpc/xmon/xmon.c:3008:16: error: variable 'pos' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbered]
-arch/powerpc/xmon/xmon.c: In function 'show_pte':
-arch/powerpc/xmon/xmon.c:3207:29: error: variable 'tsk' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbered]
-arch/powerpc/xmon/xmon.c: In function 'show_tasks':
-arch/powerpc/xmon/xmon.c:3302:29: error: variable 'tsk' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbered]
-arch/powerpc/xmon/xmon.c: In function 'xmon_core':
-arch/powerpc/xmon/xmon.c:494:13: error: variable 'cmd' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbered]
-arch/powerpc/xmon/xmon.c:860:21: error: variable 'bp' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbered]
-arch/powerpc/xmon/xmon.c:860:21: error: variable 'bp' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbered]
-arch/powerpc/xmon/xmon.c:492:48: error: argument 'fromipi' might be clobbered by 'longjmp' or 'vfork' [-Werror=clobbered]
-
-According to the documentation, marking these as 'volatile' is
-sufficient to avoid the problem, and it shuts up the warning.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
 ---
- arch/powerpc/kexec/crash.c |  4 ++--
- arch/powerpc/xmon/xmon.c   | 22 +++++++++++-----------
- 2 files changed, 13 insertions(+), 13 deletions(-)
+applied without issue on Bjorn next branch (dc0e14fa833b)
+---
+ drivers/rpmsg/rpmsg_char.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/arch/powerpc/kexec/crash.c b/arch/powerpc/kexec/crash.c
-index 0196d0c211ac..10f997e6bb95 100644
---- a/arch/powerpc/kexec/crash.c
-+++ b/arch/powerpc/kexec/crash.c
-@@ -105,8 +105,8 @@ void crash_ipi_callback(struct pt_regs *regs)
- static void crash_kexec_prepare_cpus(int cpu)
- {
- 	unsigned int msecs;
--	unsigned int ncpus = num_online_cpus() - 1;/* Excluding the panic cpu */
--	int tries = 0;
-+	volatile unsigned int ncpus = num_online_cpus() - 1;/* Excluding the panic cpu */
-+	volatile int tries = 0;
- 	int (*old_handler)(struct pt_regs *regs);
+diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+index 2bebc9b2d163..e4e54f515af6 100644
+--- a/drivers/rpmsg/rpmsg_char.c
++++ b/drivers/rpmsg/rpmsg_char.c
+@@ -10,19 +10,10 @@
+  * was based on TI & Google OMX rpmsg driver.
+  */
+ #include <linux/cdev.h>
+-#include <linux/device.h>
+-#include <linux/fs.h>
+-#include <linux/idr.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+-#include <linux/poll.h>
+ #include <linux/rpmsg.h>
+ #include <linux/skbuff.h>
+-#include <linux/slab.h>
+-#include <linux/uaccess.h>
+-#include <uapi/linux/rpmsg.h>
+-
+-#include "rpmsg_internal.h"
  
- 	printk(KERN_EMERG "Sending IPI to other CPUs\n");
-diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
-index c8173e92f19d..ce0eacf77645 100644
---- a/arch/powerpc/xmon/xmon.c
-+++ b/arch/powerpc/xmon/xmon.c
-@@ -489,10 +489,10 @@ static void xmon_touch_watchdogs(void)
- 	touch_nmi_watchdog();
- }
+ #define RPMSG_DEV_MAX	(MINORMASK + 1)
  
--static int xmon_core(struct pt_regs *regs, int fromipi)
-+static int xmon_core(struct pt_regs *regs, volatile int fromipi)
- {
--	int cmd = 0;
--	struct bpt *bp;
-+	volatile int cmd = 0;
-+	struct bpt *volatile bp;
- 	long recurse_jmp[JMP_BUF_LEN];
- 	bool locked_down;
- 	unsigned long offset;
-@@ -857,7 +857,7 @@ static inline void force_enable_xmon(void)
- static struct bpt *at_breakpoint(unsigned long pc)
- {
- 	int i;
--	struct bpt *bp;
-+	struct bpt *volatile bp;
- 
- 	bp = bpts;
- 	for (i = 0; i < NBPTS; ++i, ++bp)
-@@ -3005,7 +3005,7 @@ static void dump_opal_msglog(void)
- {
- 	unsigned char buf[128];
- 	ssize_t res;
--	loff_t pos = 0;
-+	volatile loff_t pos = 0;
- 
- 	if (!firmware_has_feature(FW_FEATURE_OPAL)) {
- 		printf("Machine is not running OPAL firmware.\n");
-@@ -3160,7 +3160,7 @@ memzcan(void)
- 		printf("%.8lx\n", a - mskip);
- }
- 
--static void show_task(struct task_struct *tsk)
-+static void show_task(struct task_struct *volatile tsk)
- {
- 	char state;
- 
-@@ -3204,7 +3204,7 @@ static void format_pte(void *ptep, unsigned long pte)
- static void show_pte(unsigned long addr)
- {
- 	unsigned long tskv = 0;
--	struct task_struct *tsk = NULL;
-+	struct task_struct *volatile tsk = NULL;
- 	struct mm_struct *mm;
- 	pgd_t *pgdp;
- 	p4d_t *p4dp;
-@@ -3299,7 +3299,7 @@ static void show_pte(unsigned long addr)
- static void show_tasks(void)
- {
- 	unsigned long tskv;
--	struct task_struct *tsk = NULL;
-+	struct task_struct *volatile tsk = NULL;
- 
- 	printf("     task_struct     ->thread.ksp    ->thread.regs    PID   PPID S  P CMD\n");
- 
-@@ -3622,7 +3622,7 @@ static void xmon_print_symbol(unsigned long address, const char *mid,
- 			      const char *after)
- {
- 	char *modname;
--	const char *name = NULL;
-+	const char *volatile name = NULL;
- 	unsigned long offset, size;
- 
- 	printf(REG, address);
-@@ -4054,7 +4054,7 @@ void xmon_register_spus(struct list_head *list)
- static void stop_spus(void)
- {
- 	struct spu *spu;
--	int i;
-+	volatile int i;
- 	u64 tmp;
- 
- 	for (i = 0; i < XMON_NUM_SPUS; i++) {
-@@ -4095,7 +4095,7 @@ static void stop_spus(void)
- static void restart_spus(void)
- {
- 	struct spu *spu;
--	int i;
-+	volatile int i;
- 
- 	for (i = 0; i < XMON_NUM_SPUS; i++) {
- 		if (!spu_info[i].spu)
 -- 
-2.29.2
+2.17.1
 
