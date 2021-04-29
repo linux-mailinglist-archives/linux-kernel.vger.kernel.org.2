@@ -2,128 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5163E36F287
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 00:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AADB936F28B
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 00:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbhD2WVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 18:21:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60268 "EHLO
+        id S229722AbhD2WXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 18:23:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhD2WVD (ORCPT
+        with ESMTP id S229578AbhD2WXt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 18:21:03 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E60FC06138B;
-        Thu, 29 Apr 2021 15:20:16 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 741622224D;
-        Fri, 30 Apr 2021 00:20:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1619734813;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=la6VLsxOJVtAExCAynbfZPh1rnm5vHPZ1THtd/hTHcY=;
-        b=U1hNdI7EaTGjYM4poaPfhkmA5c76axn4jj3YiAyBX56MOJQoXCvwx/44i8od6G5H/YKUum
-        lHdmylGQ99VQvHC/vqZj3663T77p2LReCJzpgTtY8fHUJWF8AEGfuccJwg5sklLtzTuXgy
-        hUu31FWHRAF9cKaEdUhINy1f5hlLAnI=
+        Thu, 29 Apr 2021 18:23:49 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F92BC06138B;
+        Thu, 29 Apr 2021 15:23:02 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id z20-20020a0568301294b02902a52ecbaf18so10444327otp.8;
+        Thu, 29 Apr 2021 15:23:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=y/dh3xIKSWKWI3UZIKoQ5GqY1MGMaSfcmsOXMLuCmUQ=;
+        b=dAsZd/yk5QzUquUfs85vKVW905qMZTKW9s6nVilgxzO2es+d4KGXVRrHYjC5RfMP35
+         TTWegMsPxm0xUl7Mc96dSF7/Qi1vVtiN47cx7ChcNSVuhMpPmbyzoxy5BhW/l0Fhx/PK
+         u8kl1H7w8yvHgNCj3njSJ7e345pBXFvqUeQwYr125Ittr9hZW5JpiidwjfG0AuIW13t7
+         1j6EIQAktDlt6FnPpPmx8clHe68UASsCAADWNOKjOLa/SsmBjj1c1iqbWLd0wjPBKiPW
+         +DAEv6hU8I5sd9cgv/ZaWsox6WKUi4vqlt9fnzoQmSUlxyUUQnr2KloJzHLWEgYes9Ui
+         nOQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=y/dh3xIKSWKWI3UZIKoQ5GqY1MGMaSfcmsOXMLuCmUQ=;
+        b=KBjHRQ/wMLUxG98bonSXjo881OIP5Cn884ajE2IcytpsOaAPBxO6mispgsGU2C48mF
+         QSMD+3tfXdek96Zq8ulV3/YJOrGUyGCgH/Dzun618XbAUbNzuM67P0PyvWK05VLjhVJ5
+         4S2geVGCMgh1a5ZtqDlT4fptz/Jl0S9O25J0yXprbuD/qulJCBqsr6WSo/RHV0J5QKYP
+         ZaxsqYZVS/UQi+mVClpRVj0vHKuAvZnl0G1IclYmm7r4BhU3CArX4RPS6wUYtwjxrbqE
+         22/JgSan6HwwKEtKQiAUnqZmCjXas6c3lf2M3H2x4fN02K7qZPqiWWqU3Xp3elSruHa2
+         TqRw==
+X-Gm-Message-State: AOAM532a34zJteS8F+8pZTiW4kyvqPFBYO0Ik/dlXblvtRW1G7Sbntm/
+        tDb9/PRM1R2uh67rbkTgOap2v55gsQg=
+X-Google-Smtp-Source: ABdhPJz3WGra1OmP3aqS/B/ab1uJM8iUaD9L6Vd7U1l/rskxuuAmvPzmWgOqO08sVQEZB7xS8deQFA==
+X-Received: by 2002:a05:6830:2159:: with SMTP id r25mr1015600otd.313.1619734981071;
+        Thu, 29 Apr 2021 15:23:01 -0700 (PDT)
+Received: from server.roeck-us.net (108-223-40-66.lightspeed.sntcca.sbcglobal.net. [108.223.40.66])
+        by smtp.gmail.com with ESMTPSA id n37sm282774otn.9.2021.04.29.15.22.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Apr 2021 15:23:00 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH V9 1/2] watchdog: mtk: support pre-timeout when the bark
+ irq is available
+To:     Wang Qing <wangqing@vivo.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1619315527-8171-1-git-send-email-wangqing@vivo.com>
+ <1619315527-8171-2-git-send-email-wangqing@vivo.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <45ff044d-80ff-9001-1d4f-d39d0ae63060@roeck-us.net>
+Date:   Thu, 29 Apr 2021 15:22:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <1619315527-8171-2-git-send-email-wangqing@vivo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 30 Apr 2021 00:20:13 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Tudor.Ambarus@microchip.com, nm@ti.com, kristo@kernel.org,
-        robh+dt@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
-        vigneshr@ti.com, broonie@kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-spi@vger.kernel.org, lokeshvutla@ti.com
-Subject: Re: [RFC PATCH 4/6] spi: cadence-qspi: Use PHY for DAC reads if
- possible
-In-Reply-To: <20210429181908.bwb45eljn5nxscf6@ti.com>
-References: <20210311191216.7363-1-p.yadav@ti.com>
- <20210311191216.7363-5-p.yadav@ti.com>
- <2f26456e-59ff-2625-5d65-c1537052839d@microchip.com>
- <20210312101757.sqeyledbwjnpqdoy@ti.com>
- <ee2b753b16e76ecbede4c1373b6f2d77@walle.cc>
- <20210429181908.bwb45eljn5nxscf6@ti.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <e17722c30deb7f2dcb94a9aa43bbc6dd@walle.cc>
-X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-04-29 20:19, schrieb Pratyush Yadav:
-> On 29/04/21 06:28PM, Michael Walle wrote:
->> Am 2021-03-12 11:17, schrieb Pratyush Yadav:
->> > On 12/03/21 09:13AM, Tudor.Ambarus@microchip.com wrote:
->> > > On 3/11/21 9:12 PM, Pratyush Yadav wrote:
->> > > > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->> > > >
->> > > > Check if a read is eligible for PHY and if it is, enable PHY and DQS.
->> > >
->> > > DQS as in data strobe? Shouldn't the upper layer inform the QSPI
->> > > controller
->> > > whether DS is required or not?
->> >
->> > Yes, DQS as in data strobe. I need to check this again, but IIRC the
->> > controller cannot run in PHY mode unless DS is used. Ideally the upper
->> > layer should indeed inform the controller whether DS is supported/in-use
->> > or not. That can be used to decide whether PHY mode (and consequently
->> > the DS line) is to be used or not.
->> >
->> > Currently there are only two flashes that use 8D-8D-8D mode (S28HS512T
->> > and MT35XU512ABA), and both of them drive the DS line.
->> 
->> The LS1028A datasheet explicitly states that the calibration is only
->> used for non-DQS flashes. Which makes sense, because it just determine 
->> at
->> which point the input data is sampled. And if the flash provides a 
->> data
->> strobe, it already know when to sample it. What I am missing here?
+On 4/24/21 6:52 PM, Wang Qing wrote:
+> Use the bark interrupt as the pretimeout notifier if available.
 > 
-> If there was 0 delay in transferring the signals from flash to
-> SoC/controller, you would be right. But in practice there is a small 
-> but
-> noticeable delay from when the flash launches the signal and when it is
-> received by the device. So by the time the DQS signal reaches the SoC 
-> it
-> might already be too late and the data lines might not be valid any
-> more. The calibration accounts for these (and some others) delays.
-
-DQS and the data signals are trace length matched, so for data reads
-they will end up on the IO pad of the SoC at the same time. This is
-also mentioned in [1] (Fig 1.1, point 4 and 5). So while there needs
-to be a delay on the clock line for the receiving FF, the best value
-for this should be half the SCK clock period.
-
-Does this work without DQS? That should be the main purpose for a
-calibration, no? Because in this case, you'll have to determine
-the delay between SCK and the data signals (for reads).
-
-Btw. I can't get my head around how the TX delay search would work.
-Basically you shift the SCK to the command / data to the flash. So
-the flash will either recognize a valid read command or if the delay
-is too short/too long the flash will (hopefully) ignore the wrong
-command, correct? Might there be any misinterpreted commands which
-might be harmful? Are there any flashes which actually need a delay
-between data out and SCK?
-
-Of course, the calibration might help with broken hardware where the
-SCK/DQ/DQS traces are not length matched.
-
--michael
-
+> When the watchdog timer expires in dual mode, an interrupt will be
+> triggered first, then the timing restarts. The reset signal will be
+> initiated when the timer expires again.
 > 
-> See [0] for a somewhat similar discussion I had with Tudor.
+> The pretimeout notification shall occur at timeout-sec/2.
 > 
-> [0] 
-> https://lore.kernel.org/linux-mtd/20210312181447.dlecnw2oed7jtxe7@ti.com/
+> V2:
+> - panic() by default if WATCHDOG_PRETIMEOUT_GOV is not enabled.
+> 
+> V3:
+> - Modify the pretimeout behavior, manually reset after the pretimeout
+> - is processed and wait until timeout.
+> 
+> V4:
+> - Remove pretimeout related processing. 
+> - Add dual mode control separately.
+> 
+> V5:
+> - Fix some formatting and printing problems.
+> 
+> V6:
+> - Realize pretimeout processing through dualmode.
+> 
+> V7:
+> - Add set_pretimeout().
+> 
+> V8/V9:
+> - Fix some formatting problems.
+> 
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
 
-[1] https://www.ti.com/lit/an/spract2/spract2.pdf
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+
+Note that the version history should be after "---".
+
+Guenter
+
+> ---
+>  drivers/watchdog/mtk_wdt.c | 77 +++++++++++++++++++++++++++++++++++++++++++---
+>  1 file changed, 72 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
+> index 97ca993..7bb0774
+> --- a/drivers/watchdog/mtk_wdt.c
+> +++ b/drivers/watchdog/mtk_wdt.c
+> @@ -25,9 +25,10 @@
+>  #include <linux/reset-controller.h>
+>  #include <linux/types.h>
+>  #include <linux/watchdog.h>
+> +#include <linux/interrupt.h>
+>  
+>  #define WDT_MAX_TIMEOUT		31
+> -#define WDT_MIN_TIMEOUT		1
+> +#define WDT_MIN_TIMEOUT		2
+>  #define WDT_LENGTH_TIMEOUT(n)	((n) << 5)
+>  
+>  #define WDT_LENGTH		0x04
+> @@ -187,12 +188,19 @@ static int mtk_wdt_set_timeout(struct watchdog_device *wdt_dev,
+>  	u32 reg;
+>  
+>  	wdt_dev->timeout = timeout;
+> +	/*
+> +	 * In dual mode, irq will be triggered at timeout / 2
+> +	 * the real timeout occurs at timeout
+> +	 */
+> +	if (wdt_dev->pretimeout)
+> +		wdt_dev->pretimeout = timeout / 2;
+>  
+>  	/*
+>  	 * One bit is the value of 512 ticks
+>  	 * The clock has 32 KHz
+>  	 */
+> -	reg = WDT_LENGTH_TIMEOUT(timeout << 6) | WDT_LENGTH_KEY;
+> +	reg = WDT_LENGTH_TIMEOUT((timeout - wdt_dev->pretimeout) << 6)
+> +			| WDT_LENGTH_KEY;
+>  	iowrite32(reg, wdt_base + WDT_LENGTH);
+>  
+>  	mtk_wdt_ping(wdt_dev);
+> @@ -239,13 +247,48 @@ static int mtk_wdt_start(struct watchdog_device *wdt_dev)
+>  		return ret;
+>  
+>  	reg = ioread32(wdt_base + WDT_MODE);
+> -	reg &= ~(WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
+> +	if (wdt_dev->pretimeout)
+> +		reg |= (WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
+> +	else
+> +		reg &= ~(WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
+>  	reg |= (WDT_MODE_EN | WDT_MODE_KEY);
+>  	iowrite32(reg, wdt_base + WDT_MODE);
+>  
+>  	return 0;
+>  }
+>  
+> +static int mtk_wdt_set_pretimeout(struct watchdog_device *wdd,
+> +				  unsigned int timeout)
+> +{
+> +	struct mtk_wdt_dev *mtk_wdt = watchdog_get_drvdata(wdd);
+> +	void __iomem *wdt_base = mtk_wdt->wdt_base;
+> +	u32 reg = ioread32(wdt_base + WDT_MODE);
+> +
+> +	if (timeout && !wdd->pretimeout) {
+> +		wdd->pretimeout = wdd->timeout / 2;
+> +		reg |= (WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
+> +	} else if (!timeout && wdd->pretimeout) {
+> +		wdd->pretimeout = 0;
+> +		reg &= ~(WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
+> +	} else {
+> +		return 0;
+> +	}
+> +
+> +	reg |= WDT_MODE_KEY;
+> +	iowrite32(reg, wdt_base + WDT_MODE);
+> +
+> +	return mtk_wdt_set_timeout(wdd, wdd->timeout);
+> +}
+> +
+> +static irqreturn_t mtk_wdt_isr(int irq, void *arg)
+> +{
+> +	struct watchdog_device *wdd = arg;
+> +
+> +	watchdog_notify_pretimeout(wdd);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+>  static const struct watchdog_info mtk_wdt_info = {
+>  	.identity	= DRV_NAME,
+>  	.options	= WDIOF_SETTIMEOUT |
+> @@ -253,12 +296,21 @@ static const struct watchdog_info mtk_wdt_info = {
+>  			  WDIOF_MAGICCLOSE,
+>  };
+>  
+> +static const struct watchdog_info mtk_wdt_pt_info = {
+> +	.identity	= DRV_NAME,
+> +	.options	= WDIOF_SETTIMEOUT |
+> +			  WDIOF_PRETIMEOUT |
+> +			  WDIOF_KEEPALIVEPING |
+> +			  WDIOF_MAGICCLOSE,
+> +};
+> +
+>  static const struct watchdog_ops mtk_wdt_ops = {
+>  	.owner		= THIS_MODULE,
+>  	.start		= mtk_wdt_start,
+>  	.stop		= mtk_wdt_stop,
+>  	.ping		= mtk_wdt_ping,
+>  	.set_timeout	= mtk_wdt_set_timeout,
+> +	.set_pretimeout	= mtk_wdt_set_pretimeout,
+>  	.restart	= mtk_wdt_restart,
+>  };
+>  
+> @@ -267,7 +319,7 @@ static int mtk_wdt_probe(struct platform_device *pdev)
+>  	struct device *dev = &pdev->dev;
+>  	struct mtk_wdt_dev *mtk_wdt;
+>  	const struct mtk_wdt_data *wdt_data;
+> -	int err;
+> +	int err, irq;
+>  
+>  	mtk_wdt = devm_kzalloc(dev, sizeof(*mtk_wdt), GFP_KERNEL);
+>  	if (!mtk_wdt)
+> @@ -279,7 +331,22 @@ static int mtk_wdt_probe(struct platform_device *pdev)
+>  	if (IS_ERR(mtk_wdt->wdt_base))
+>  		return PTR_ERR(mtk_wdt->wdt_base);
+>  
+> -	mtk_wdt->wdt_dev.info = &mtk_wdt_info;
+> +	irq = platform_get_irq(pdev, 0);
+> +	if (irq > 0) {
+> +		err = devm_request_irq(&pdev->dev, irq, mtk_wdt_isr, 0, "wdt_bark",
+> +				       &mtk_wdt->wdt_dev);
+> +		if (err)
+> +			return err;
+> +
+> +		mtk_wdt->wdt_dev.info = &mtk_wdt_pt_info;
+> +		mtk_wdt->wdt_dev.pretimeout = WDT_MAX_TIMEOUT / 2;
+> +	} else {
+> +		if (irq == -EPROBE_DEFER)
+> +			return -EPROBE_DEFER;
+> +
+> +		mtk_wdt->wdt_dev.info = &mtk_wdt_info;
+> +	}
+> +
+>  	mtk_wdt->wdt_dev.ops = &mtk_wdt_ops;
+>  	mtk_wdt->wdt_dev.timeout = WDT_MAX_TIMEOUT;
+>  	mtk_wdt->wdt_dev.max_hw_heartbeat_ms = WDT_MAX_TIMEOUT * 1000;
+> 
+
