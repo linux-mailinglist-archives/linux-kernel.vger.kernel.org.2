@@ -2,85 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1199D36E2F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:24:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE3936E2F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233754AbhD2BY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 21:24:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59030 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229794AbhD2BY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 21:24:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B49A5610FA;
-        Thu, 29 Apr 2021 01:24:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619659452;
-        bh=4Hd6dK6eIjF8l59EgDDYr45OuQJR8Yqbc8fdCNhcpyk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Zc6KpNZ3re98d4jLG7D1Jjuj6wDjVcpW5n1++rnsqWPCsHuP+cganlwOPmRwyOSF8
-         lqkWNr7AGpvw40mv8V01RvbHOsrG4bf8Hlef8bunEngVr3Pv1+12lfV/v1kb9Axq/0
-         37GHP0y7HNNGBNUOXyA0NWCHTyO3xIuSj8HZ1QnGx5srMc3An8kKL4t5ykpNu3cLVf
-         +l+pdegnA95lsYeZP+tYs4DV3/4R23S4Z3grpgqiGkQr0SlOIG/OQRqzH7UCExXKOH
-         jmPqdAya3rOf0lR4eTY+4j+e1vBJGjnKHjEK+CLsgLXGES+RiltVxoMtrnLbULV5Zs
-         bI+OzDLZUDR3w==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>, stable@vger.kernel.org
-Subject: [PATCH] Makefile: Move -Wno-unused-but-set-variable out of GCC only block
-Date:   Wed, 28 Apr 2021 18:23:50 -0700
-Message-Id: <20210429012350.600951-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.31.1.362.g311531c9de
-MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+        id S234398AbhD2B1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 21:27:39 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:35453 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231161AbhD2B1i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 21:27:38 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R901e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UX7837P_1619659609;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UX7837P_1619659609)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 29 Apr 2021 09:26:51 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     lorenzo.pieralisi@arm.com
+Cc:     mark.rutland@arm.com, sudeep.holla@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        arm@kernel.org, soc@kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH v2] psci: Remove unneeded semicolon
+Date:   Thu, 29 Apr 2021 09:26:29 +0800
+Message-Id: <1619659589-4775-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, -Wunused-but-set-variable is only supported by GCC so it is
-disabled unconditionally in a GCC only block (it is enabled with W=1).
-clang currently has its implementation for this warning in review so
-preemptively move this statement out of the GCC only block and wrap it
-with cc-disable-warning so that both compilers function the same.
+Eliminate the following coccicheck warning:
+./drivers/firmware/psci/psci.c:141:2-3: Unneeded semicolon
 
-Cc: stable@vger.kernel.org
-Link: https://reviews.llvm.org/D100581
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Acked-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 ---
- Makefile | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index f03888cdba4e..911d839cfea8 100644
---- a/Makefile
-+++ b/Makefile
-@@ -775,16 +775,16 @@ KBUILD_CFLAGS += -Wno-gnu
- KBUILD_CFLAGS += -mno-global-merge
- else
- 
--# These warnings generated too much noise in a regular build.
--# Use make W=1 to enable them (see scripts/Makefile.extrawarn)
--KBUILD_CFLAGS += -Wno-unused-but-set-variable
--
- # Warn about unmarked fall-throughs in switch statement.
- # Disabled for clang while comment to attribute conversion happens and
- # https://github.com/ClangBuiltLinux/linux/issues/636 is discussed.
- KBUILD_CFLAGS += $(call cc-option,-Wimplicit-fallthrough,)
- endif
- 
-+# These warnings generated too much noise in a regular build.
-+# Use make W=1 to enable them (see scripts/Makefile.extrawarn)
-+KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
-+
- KBUILD_CFLAGS += $(call cc-disable-warning, unused-const-variable)
- ifdef CONFIG_FRAME_POINTER
- KBUILD_CFLAGS	+= -fno-omit-frame-pointer -fno-optimize-sibling-calls
+Change in v2:
+--subject should read "psci: Remove unneeded semicolon"
 
-base-commit: d8201efe75e13146ebde433745c7920e15593baf
+ drivers/firmware/psci/psci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
+index 64344e8..6e7bac6 100644
+--- a/drivers/firmware/psci/psci.c
++++ b/drivers/firmware/psci/psci.c
+@@ -138,7 +138,7 @@ static int psci_to_linux_errno(int errno)
+ 		return -EINVAL;
+ 	case PSCI_RET_DENIED:
+ 		return -EPERM;
+-	};
++	}
+ 
+ 	return -EINVAL;
+ }
 -- 
-2.31.1.362.g311531c9de
+1.8.3.1
 
