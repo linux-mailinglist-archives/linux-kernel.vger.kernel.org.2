@@ -2,86 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17C1636EF20
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9070036EF22
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241028AbhD2Rum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 13:50:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233706AbhD2Rul (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 13:50:41 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAAEEC06138B;
-        Thu, 29 Apr 2021 10:49:54 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0a4f007f02d405bcb749ad.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:4f00:7f02:d405:bcb7:49ad])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 944CF1EC047F;
-        Thu, 29 Apr 2021 19:49:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1619718592;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=nqBClF7AH8n5dyvE3ZI5y/m01GvXUhCLBNoFKZDQARk=;
-        b=IIJWw7wniB9ciZLWpUxNQ3Whs/jCo7pAKplYwyesU44NleMyX8DQkgKbiRu/Uf+ZO759K5
-        UyufCRNfP1HfuwLGYlUNvxoRnrpyjAo+Y+vR3xULUMgEWcM8vsMN2jdlw3olY68A4QRYUE
-        b2OnOsfxQL59yYyvI2rxM+Un7j32iQQ=
-Date:   Thu, 29 Apr 2021 19:49:50 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Subject: Re: [PATCH v26 00/30] Control-flow Enforcement: Shadow Stack
-Message-ID: <YIrxvk4iM+7DaLhl@zn.tnic>
-References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
- <YIrpT1UxXqFtzySx@zn.tnic>
- <aa1ac406-84c8-b0f0-b70b-7224df4c8c77@intel.com>
+        id S241045AbhD2RvJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 29 Apr 2021 13:51:09 -0400
+Received: from mga12.intel.com ([192.55.52.136]:57556 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233706AbhD2RvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 13:51:08 -0400
+IronPort-SDR: YLgrXuhPP4sWKDqqlEY8/Nn8Z7JDx5gmRHdwCp5lQRgCurZE855wCNjmMrp/fpy5rLcdRtjKnn
+ uHc7b/+pfhuA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9969"; a="176555664"
+X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
+   d="scan'208";a="176555664"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 10:50:21 -0700
+IronPort-SDR: bsJ7xWyidrkJGopANBwSbJO+yz7E0LhA2K2ENvAKxgJOrQH3hrN0jjMG1LmUimBlQWNXwMfiQs
+ prEPB2UOK4mw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
+   d="scan'208";a="455644726"
+Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
+  by FMSMGA003.fm.intel.com with ESMTP; 29 Apr 2021 10:50:21 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 29 Apr 2021 10:50:20 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 29 Apr 2021 10:50:20 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
+ Thu, 29 Apr 2021 10:50:20 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     "Chatre, Reinette" <reinette.chatre@intel.com>,
+        "tan.shaopeng@fujitsu.com" <tan.shaopeng@fujitsu.com>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>
+CC:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
+        "'linux-arm-kernel@lists.infradead.org'" 
+        <linux-arm-kernel@lists.infradead.org>,
+        'James Morse' <james.morse@arm.com>,
+        "misono.tomohiro@fujitsu.com" <misono.tomohiro@fujitsu.com>
+Subject: RE: About add an A64FX cache control function into resctrl
+Thread-Topic: About add an A64FX cache control function into resctrl
+Thread-Index: AQHXPR8AhIvM7pb1S52qTlM+pjp6RKrLxTbg
+Date:   Thu, 29 Apr 2021 17:50:20 +0000
+Message-ID: <49cdd0b707194148915e2efe2ab5d707@intel.com>
+References: <OSAPR01MB214600C7923AEF7C35B02E648B739@OSAPR01MB2146.jpnprd01.prod.outlook.com>
+ <OSAPR01MB214657641D532FB8D112DD528B479@OSAPR01MB2146.jpnprd01.prod.outlook.com>
+ <bb0967c0-5b88-c6c2-0242-1e3928189a04@intel.com>
+ <OSAPR01MB2146D42FC04779268BA231878B409@OSAPR01MB2146.jpnprd01.prod.outlook.com>
+ <14ddf86b-89e1-ba26-b684-f3d5d5f8ade7@intel.com>
+In-Reply-To: <14ddf86b-89e1-ba26-b684-f3d5d5f8ade7@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.22.254.132]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <aa1ac406-84c8-b0f0-b70b-7224df4c8c77@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 10:32:04AM -0700, Yu, Yu-cheng wrote:
-> I did send out some selftest patches (link is in the cover letter). However,
-> those need to be updated to the Linux standard, and I would like to do it
-> separately.
+>>>> [Sector cache function]
+>>>> The sector cache function split cache into multiple sectors and
+>>>> control them separately. It is implemented on the L1D cache and
+>>>> L2 cache in the A64FX processor and can be controlled individually
+>>>> for L1D cache and L2 cache. A64FX has no L3 cache. Each L1D cache and
+>>>> L2 cache has 4 sectors. Which L1D sector is used is specified by the
+>>>> value of [57:56] bits of address, how many ways of sector are
+>>>> specified by the value of register (IMP_SCCR_L1_EL0).
+>>>> Which L2 sector is used is specified by the value of [56] bits of
+>>>> address, and how many ways of sector are specified by value of
+>>>> register (IMP_SCCR_ASSIGN_EL1, IMP_SCCR_SET0_L2_EL1,
+>>>> IMP_SCCR_SET1_L2_EL1).
 
-Ok, and they look exactly like what I had in mind.
+Are A64FX binaries position independent?  I.e. could the OS reassign
+a running task to a different sector by remapping it to different virtual
+addresses during a context switch?
 
-Thx.
+Or is this a static property at task launch?
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+-Tony
