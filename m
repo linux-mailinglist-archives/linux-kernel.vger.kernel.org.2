@@ -2,87 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 320CD36EE4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 18:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A53136EE55
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 18:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240816AbhD2QlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 12:41:08 -0400
-Received: from foss.arm.com ([217.140.110.172]:55916 "EHLO foss.arm.com"
+        id S240824AbhD2QpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 12:45:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232724AbhD2QlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 12:41:05 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 885851FB;
-        Thu, 29 Apr 2021 09:40:18 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DC4793F70D;
-        Thu, 29 Apr 2021 09:40:15 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 17:40:11 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Greentime Hu <greentime.hu@sifive.com>, paul.walmsley@sifive.com,
-        hes@sifive.com, erik.danie@sifive.com, zong.li@sifive.com,
-        bhelgaas@google.com, robh+dt@kernel.org, aou@eecs.berkeley.edu,
-        mturquette@baylibre.com, sboyd@kernel.org, p.zabel@pengutronix.de,
-        alex.dewar90@gmail.com, khilman@baylibre.com,
-        hayashi.kunihiko@socionext.com, vidyas@nvidia.com,
-        jh80.chung@samsung.com, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [PATCH v5 5/6] PCI: fu740: Add SiFive FU740 PCIe host controller
- driver
-Message-ID: <20210429164010.GA31397@lpieralisi>
-References: <20210429145954.GA29122@lpieralisi>
- <20210429151522.GA495642@bjorn-Precision-5520>
+        id S232724AbhD2QpU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 12:45:20 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A230D6143B;
+        Thu, 29 Apr 2021 16:44:32 +0000 (UTC)
+Date:   Thu, 29 Apr 2021 12:44:30 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        outreachy-kernel@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sched: Replace 'unsigned' with 'unsigned int'
+Message-ID: <20210429124430.5755dca8@gandalf.local.home>
+In-Reply-To: <20210429122454.9936-1-fmdefrancesco@gmail.com>
+References: <20210429122454.9936-1-fmdefrancesco@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429151522.GA495642@bjorn-Precision-5520>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 10:15:22AM -0500, Bjorn Helgaas wrote:
-> On Thu, Apr 29, 2021 at 03:59:54PM +0100, Lorenzo Pieralisi wrote:
-> > On Wed, Apr 28, 2021 at 02:47:13PM -0500, Bjorn Helgaas wrote:
-> > > On Tue, Apr 06, 2021 at 05:26:33PM +0800, Greentime Hu wrote:
-> > > > From: Paul Walmsley <paul.walmsley@sifive.com>
-> > > > 
-> > > > Add driver for the SiFive FU740 PCIe host controller.
-> > > > This controller is based on the DesignWare PCIe core.
-> > > > 
-> > > > Signed-off-by: Paul Walmsley <paul.walmsley@sifive.com>
-> > > > Co-developed-by: Henry Styles <hes@sifive.com>
-> > > > Signed-off-by: Henry Styles <hes@sifive.com>
-> > > > Co-developed-by: Erik Danie <erik.danie@sifive.com>
-> > > > Signed-off-by: Erik Danie <erik.danie@sifive.com>
-> > > > Co-developed-by: Greentime Hu <greentime.hu@sifive.com>
-> > > > Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-> > > 
-> > > Tripped over these errors while build testing with the .config below.
-> > 
-> > Sorry about that - the kbot did not managed to test it. Is it a
-> > randconfig ? I think we should ask the kbuild bot guys to add it,
-> > I think it can be done on a per-repo basis.
-> 
-> I don't know enough about the bot.  The lkp@intel.com reports I get
-> include allyesconfig for x86_64; not sure why that wouldn't catch
-> this.
-> 
-> > Waiting for a fix asap - I can move/rebase some commits if the fix
-> > takes time.
-> 
-> If it's feasible you could just move the FU740 stuff to a different
-> branch so we can be sure to include the other dwc stuff.  Same for
-> brcmstb.
-> 
-> Oh, and Colin just posted a NULL pointer check that could be squashed
-> into the new mediatek-gen3 driver.
+On Thu, 29 Apr 2021 14:24:54 +0200
+"Fabio M. De Francesco" <fmdefrancesco@gmail.com> wrote:
 
-All done. Updated pci/dwc, pci/brcmstb and pci/mediatek, parked the
-changes requiring a fix-up in separate branches, will push them out
-when fixed.
+> Replaced 'unsigned' with 'unsigned int' because the second is preferred.
+> Detected by checkpatch.pl.
 
-Thanks,
-Lorenzo
+Please do not fix existing code because of "preferred" coding style from
+checkpatch.pl. It causes unnecessary churn, and a waste of time applying it.
+
+"unsigned" is just as good as "unsigned int" , and honestly, that's what I
+prefer.
+
+NACK.
+
+-- Steve
