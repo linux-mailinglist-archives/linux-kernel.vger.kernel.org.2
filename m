@@ -2,67 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3490F36E59D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 09:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AA1536E5A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 09:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237365AbhD2HKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 03:10:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237275AbhD2HKd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 03:10:33 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E94D3C06138E
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 00:09:45 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1lc0ns-0005sg-IO; Thu, 29 Apr 2021 09:09:40 +0200
-Received: from mfe by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1lc0ns-0005Pn-3a; Thu, 29 Apr 2021 09:09:40 +0200
-Date:   Thu, 29 Apr 2021 09:09:40 +0200
-From:   Marco Felsch <m.felsch@pengutronix.de>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, shengjiu.wang@gmail.com
-Subject: Re: [PATCH] ARM: dts: imx6ul: Switch to fsl-asoc-card sound card
-Message-ID: <20210429070940.6hech7hezrpiyzzp@pengutronix.de>
-References: <1619664739-12589-1-git-send-email-shengjiu.wang@nxp.com>
+        id S237418AbhD2HNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 03:13:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229814AbhD2HNS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 03:13:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2B046141E;
+        Thu, 29 Apr 2021 07:12:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619680351;
+        bh=3fsok0wCSZLbAq41vKAGozZ3ndqQi3pGDMCx05gU6Z4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rRdbBS/sTyijeyENZnMbKpXk03EzmAzpkK1RSADy1NOsrbf8DRs7Rbsp0vuClmFJu
+         JOUOFSPxXxDjX6p5c+A6Hey/dv11q4csuErnG1BlOZqXEobbjovrgNqdjwzbZwKsVU
+         whuo78INCZj3HXHZJKoH13Er40a1gJo7sqBj5kZ0=
+Date:   Thu, 29 Apr 2021 09:12:28 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>, pakki001@umn.edu,
+        arnd@arndb.de
+Subject: Re: [PATCH] ics932s401: fix broken handling of errors when word
+ reading fails
+Message-ID: <YIpcXKQtn6mLcU+o@kroah.com>
+References: <20210428222534.GJ3122264@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1619664739-12589-1-git-send-email-shengjiu.wang@nxp.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 09:08:19 up 147 days, 21:14, 44 users,  load average: 0.09, 0.18,
- 0.13
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210428222534.GJ3122264@magnolia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Apr 28, 2021 at 03:25:34PM -0700, Darrick J. Wong wrote:
+> From: Darrick J. Wong <djwong@kernel.org>
+> 
+> In commit b05ae01fdb89, someone tried to make the driver handle i2c read
+> errors by simply zeroing out the register contents, but for some reason
+> left unaltered the code that sets the cached register value the function
+> call return value.
+> 
+> The original patch was authored by a member of the Underhanded
+> Mangle-happy Nerds, I'm not terribly surprised.  I don't have the
+> hardware anymore so I can't test this, but it seems like a pretty
+> obvious API usage fix to me...
+> 
+> Fixes: b05ae01fdb89 ("misc/ics932s401: Add a missing check to i2c_smbus_read_word_data")
+> Signed-off-by: Darrick J. Wong <djwong@kernel.org>
+> ---
+>  drivers/misc/ics932s401.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/misc/ics932s401.c b/drivers/misc/ics932s401.c
+> index 2bdf560ee681..0f9ea75b0b18 100644
+> --- a/drivers/misc/ics932s401.c
+> +++ b/drivers/misc/ics932s401.c
+> @@ -134,7 +134,7 @@ static struct ics932s401_data *ics932s401_update_device(struct device *dev)
+>  	for (i = 0; i < NUM_MIRRORED_REGS; i++) {
+>  		temp = i2c_smbus_read_word_data(client, regs_to_copy[i]);
+>  		if (temp < 0)
+> -			data->regs[regs_to_copy[i]] = 0;
+> +			temp = 0;
+>  		data->regs[regs_to_copy[i]] = temp >> 8;
+>  	}
+>  
 
-thanks for the patch.
+Many thanks for looking at this again, I'll add it to my series of
+patches for "reviewing all the crap and fixing it up" that I will be
+working to get merged for 5.13-final.
 
-On 21-04-29 10:52, Shengjiu Wang wrote:
-> There is issue with simple sound card, the simple sound
-> card can't configure the pll of codec.
-
-Hm, than we should fix this rather than moving to the 'old'
-'fsl,imx-audio-wm8960'. But that only my opinion.
-
-Regards,
-  Marco
+greg k-h
