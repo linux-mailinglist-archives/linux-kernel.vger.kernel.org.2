@@ -2,107 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A9636EAFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E231736EAF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237331AbhD2M6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 08:58:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41564 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233701AbhD2M6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 08:58:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 10EEDB019;
-        Thu, 29 Apr 2021 12:57:48 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id C93AFDA783; Thu, 29 Apr 2021 14:55:24 +0200 (CEST)
-Date:   Thu, 29 Apr 2021 14:55:24 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: Remove redundant assignment to ret
-Message-ID: <20210429125524.GU7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1619691320-81639-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        id S237243AbhD2M5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 08:57:33 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54566 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231490AbhD2M5c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 08:57:32 -0400
+Date:   Thu, 29 Apr 2021 12:56:43 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619701004;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rkdPTwzS6GeJhZZPpvn3cefE4IFChyUoGE6kAhB2BtU=;
+        b=OyE848gqAIpcXVJkwB58V1+tLTwgfCtuYLOEJUtoXyhJuN5nYRmb1ycn6g7Uy2OtG6vLfM
+        7K7Z1+/P8wNiKzjmU/hAFDvUnXJa0T9kMTEdDtIwBY/bYK2TZa2FUZvFyeiDAYOZFQU5RJ
+        hli+QZAMu4rT8KdP3uo2k5u61YsqhtHCXD+B5BIVen16bgPowgJhiXjdWyoX4h1z09Czum
+        aPWJgBKBalMsl/K/uJtiW1qiD4qlUzbciNImuiiDZYhZ2VgYSLunOQwPQhiaV9/IxLYu/+
+        cp2dEtaqcWf6isNgOZgasN2NThevcTXCLwCnpmbcc66Xhp3nxCuWDQu9ZM/2Og==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619701004;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rkdPTwzS6GeJhZZPpvn3cefE4IFChyUoGE6kAhB2BtU=;
+        b=z1X+X37CJBmz7/1L7tzXneBv653+1w4qiuIdk9cXdWGipn1hKhvqCICw7b6BfDyhYMcart
+        JSKzav68toA8pXCw==
+From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
+Subject: [irqchip: irq/irqchip-next] ARM: PXA: Fix cplds irqdesc allocation
+ when using legacy mode
+Cc:     Guenter Roeck <linux@roeck-us.net>, Marc Zyngier <maz@kernel.org>,
+        tglx@linutronix.de
+In-Reply-To: <20210426223942.GA213931@roeck-us.net>
+References: <20210426223942.GA213931@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1619691320-81639-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Message-ID: <161970100394.29796.15958780952771731304.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 06:15:20PM +0800, Jiapeng Chong wrote:
-> Variable ret is set to zero but this value is never read as it
-> is overwritten or not used later on, hence it is a redundant
-> assignment and can be removed.
-> 
-> Cleans up the following clang-analyzer warning:
+The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-I've looked at clang analyzer warnings in the past and the dead stores
-were ones of the least useful, namely because of the return value
-assignments.
+Commit-ID:     33aa3698bac9748ff40575ec342322c04c19b750
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/33aa3698bac9748ff40575ec342322c04c19b750
+Author:        Marc Zyngier <maz@kernel.org>
+AuthorDate:    Tue, 27 Apr 2021 09:00:28 +01:00
+Committer:     Marc Zyngier <maz@kernel.org>
+CommitterDate: Thu, 29 Apr 2021 13:52:30 +01:00
 
-> fs/btrfs/volumes.c:8019:4: warning: Value stored to 'ret' is never read
-> [clang-analyzer-deadcode.DeadStores].
-> 
-> fs/btrfs/volumes.c:4757:4: warning: Value stored to 'ret' is never read
-> [clang-analyzer-deadcode.DeadStores].
-> 
-> fs/btrfs/volumes.c:7951:4: warning: Value stored to 'ret' is never read
-> [clang-analyzer-deadcode.DeadStores].
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  fs/btrfs/volumes.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 9a1ead0..30504fa 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -4754,7 +4754,6 @@ int btrfs_shrink_device(struct btrfs_device *device, u64 new_size)
->  			mutex_unlock(&fs_info->reclaim_bgs_lock);
->  			if (ret < 0)
->  				goto done;
-> -			ret = 0;
->  			btrfs_release_path(path);
->  			break;
+ARM: PXA: Fix cplds irqdesc allocation when using legacy mode
 
-So this is a code pattern where 'ret' is used for some local function
-call but we want to make sure it does not go outside of the block as a
-non-zero value, potentially being returned from the whole function.
-No harm done if the value is not used later.
+The Mainstone PXA platform uses CONFIG_SPARSE_IRQ, and thus we
+cannot rely on the irq descriptors to be readilly allocated
+before creating the irqdomain in legacy mode. The kernel then
+complains loudly about not being able to associate the interrupt
+in the domain -- can't blame it.
 
->  		}
-> @@ -7939,7 +7938,7 @@ int btrfs_verify_dev_extents(struct btrfs_fs_info *fs_info)
->  	struct btrfs_key key;
->  	u64 prev_devid = 0;
->  	u64 prev_dev_ext_end = 0;
-> -	int ret = 0;
-> +	int ret;
+Fix it by allocating the irqdescs upfront in the legacy case.
 
-Similar here, initializing ret to zero does no harm. We've had compiler
-warnings about unitialized ret when some error path was jumping around
-it.
+Fixes: b68761da0111 ("ARM: PXA: Kill use of irq_create_strict_mappings()")
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210426223942.GA213931@roeck-us.net
+---
+ arch/arm/mach-pxa/pxa_cplds_irqs.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
->  
->  	/*
->  	 * We don't have a dev_root because we mounted with ignorebadroots and
-> @@ -8016,7 +8015,6 @@ int btrfs_verify_dev_extents(struct btrfs_fs_info *fs_info)
->  		if (ret < 0)
->  			goto out;
->  		if (ret > 0) {
-> -			ret = 0;
->  			break;
->  		}
-
-Same pattern as in the first case.
+diff --git a/arch/arm/mach-pxa/pxa_cplds_irqs.c b/arch/arm/mach-pxa/pxa_cplds_irqs.c
+index ec0d9b0..bddfc7c 100644
+--- a/arch/arm/mach-pxa/pxa_cplds_irqs.c
++++ b/arch/arm/mach-pxa/pxa_cplds_irqs.c
+@@ -121,8 +121,13 @@ static int cplds_probe(struct platform_device *pdev)
+ 		return fpga->irq;
+ 
+ 	base_irq = platform_get_irq(pdev, 1);
+-	if (base_irq < 0)
++	if (base_irq < 0) {
+ 		base_irq = 0;
++	} else {
++		ret = devm_irq_alloc_descs(&pdev->dev, base_irq, base_irq, CPLDS_NB_IRQ, 0);
++		if (ret < 0)
++			return ret;
++	}
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	fpga->base = devm_ioremap_resource(&pdev->dev, res);
