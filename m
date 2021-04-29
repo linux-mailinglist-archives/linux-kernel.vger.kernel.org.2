@@ -2,121 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A84B36E4A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 07:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F192736E4AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 08:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238429AbhD2F5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 01:57:41 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:60450 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbhD2F5j (ORCPT
+        id S236966AbhD2GBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 02:01:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229814AbhD2GBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 01:57:39 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13T5sTMo189481;
-        Thu, 29 Apr 2021 05:56:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=hGTyGt9noPt67Cw1LsQXYDQXCJu92JsiJuvxMAxCMMM=;
- b=Qvmzx64VuqWu0acTsyHbvRzHxKl5/RQOnbPHfTSRFkp7TWHHvdB//von1yV+hujZSPRj
- TwgCE+c5VjNtfhi9JmBUHKETzqbWx3XtYEDhZcw56eM9jIeR0But4iNgR4BZkxkoMCTr
- JKVGyLt5+LK229yWP/mAoYlDXKRO4B9i93Ey6d5IEpZpNCk6pGoZyOpOHS9lH9CB+K7k
- lNcrpPIahV/JSNObMOpQMZQpR5WmnxVPJWg5vLAkETZf+ov+x5kwXPni9rzjglDk3Ilk
- 4bIbTF8QXwQC9vh34TZOXYiHNAY3IrmQqJqBOHpSPQEUgQ/sbkp5qmOS39Nd9XsngP3Z AQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 385aeq33ka-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 05:56:43 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13T5sqgJ162583;
-        Thu, 29 Apr 2021 05:56:43 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 3848f0k264-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 05:56:43 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13T5ughd166809;
-        Thu, 29 Apr 2021 05:56:42 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 3848f0k25t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 05:56:42 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13T5ufk1022348;
-        Thu, 29 Apr 2021 05:56:41 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 29 Apr 2021 05:56:40 +0000
-Date:   Thu, 29 Apr 2021 08:56:34 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Muhammad Usama Anjum <musamaanjum@gmail.com>
-Cc:     Coly Li <colyli@suse.de>, Zheng Yongjun <zhengyongjun3@huawei.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-bcache@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Hulk Robot <hulkci@huawei.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] bcache: use DEFINE_MUTEX() for mutex lock
-Message-ID: <20210429055634.GW1981@kadam>
-References: <20210405101453.15096-1-zhengyongjun3@huawei.com>
- <42c3e33d-c20e-0fdd-f316-5084e33f9a3b@suse.de>
- <d7f70ce31f6f61a50c05a5d5ba03582054f144fe.camel@gmail.com>
- <0b4b7c5cc2f19d2d77a66c0d2ce42f63692174d9.camel@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0b4b7c5cc2f19d2d77a66c0d2ce42f63692174d9.camel@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: kYTj2TlPmLhcVFf4NH8LINeIEXi0YT8g
-X-Proofpoint-GUID: kYTj2TlPmLhcVFf4NH8LINeIEXi0YT8g
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9968 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
- phishscore=0 spamscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0
- clxscore=1011 suspectscore=0 malwarescore=0 mlxlogscore=999
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104290046
+        Thu, 29 Apr 2021 02:01:14 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B93CC06138B
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 23:00:28 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id g26-20020a0caada0000b02901b93eb92373so8707577qvb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 23:00:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=zm+O/Qq20Co4E8EekZlwvxA5d89XqR6ilK7cJRDGIHI=;
+        b=PQ5LAgrrjZYFZHr0feIUhMAgkQEqJvlq1d3k5jmEznQhOAYGvJjgLThWHXMHCEMJKB
+         A3aMYGiO5OiN8eDOwGAoFIO9jRqscIQdxxuiF9S6xdeX7WRhrIb5DIK0ILpcjEYvXtH2
+         gF7Pjd3Ac8arM7HO03q3ovdJfiQHOC83YQzlNiQ3ejpCcveipsgum0RZzVrFz+aM0EVR
+         y4A5ASujsc4hCZOM6Gkrxcnu9gM5OEIzOI3tNPCC+1yGg69UBLxUzHYe6Qfk0jOhYNbe
+         TX+Euz+rbHgqCDbr7rC5S4eHL+lKaAucqRrIXSODfHQlhY9f86QVmBJJNp28llS3tqaw
+         tBOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=zm+O/Qq20Co4E8EekZlwvxA5d89XqR6ilK7cJRDGIHI=;
+        b=T06CB3c9cUMG1k6lv+jwPCI2aGMqCgSM8iRQEy81St87tP1Z83EqL64EUeJ/s1rN0j
+         VEaOVeH9E4nmuut3GGvlM6Kb3N/t81+JP2gqZqsu/BH/ZSP3VctgAlXJrHUh/qBsI7Q/
+         s00b1BqHRqs7QG/vzEhWzrdDzsXedL0wAMWXrDJakZ5LwhYV7mKXMa5hHPEcLMiWNr45
+         AMo/18S4OtgEep9lj9GiL2U9rVpsAQ7izqRJOJOICA+xA5l0v/i3h5pozIcyxhMzUu+E
+         2TO2Z/AcRm1BnhpFX3JUOG77omP24wQ2Nx3HWAbohGw9w0biHgRMWV4EUdV2pCT1eRIT
+         REYA==
+X-Gm-Message-State: AOAM531mcVlJuBJC4nkN3SGmaksM3Ne6vaEqDZlVWGZE8YztPVQ6UJBt
+        sxFuFZtABLyfacsLNSgdawabhkV07d3A
+X-Google-Smtp-Source: ABdhPJwMje5mNyQ5B2E+CKvcUA1n6pGO1/9kBtlDfk7PZHWFOPAa6JUGwrHd/tRYTsOcmJLVf4nO4PTNFxrm
+X-Received: from nandos.syd.corp.google.com ([2401:fa00:9:14:30c1:7a5a:2ec9:29e5])
+ (user=amistry job=sendgmr) by 2002:a05:6214:1d0c:: with SMTP id
+ e12mr33333658qvd.0.1619676026057; Wed, 28 Apr 2021 23:00:26 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 16:00:17 +1000
+Message-Id: <20210429155950.v2.1.I2392cf11fb353d10459958100b69d93346fa167c@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+Subject: [PATCH v2] x86: Add a prompt for HPET_EMULATE_RTC
+From:   Anand K Mistry <amistry@google.com>
+To:     x86@kernel.org
+Cc:     Anand K Mistry <amistry@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 09:19:26PM +0500, Muhammad Usama Anjum wrote:
-> On Tue, 2021-04-06 at 02:17 +0500, Muhammad Usama Anjum wrote:
-> > On Mon, 2021-04-05 at 22:02 +0800, Coly Li wrote:
-> > > On 4/5/21 6:14 PM, Zheng Yongjun wrote:
-> > > > mutex lock can be initialized automatically with DEFINE_MUTEX()
-> > > > rather than explicitly calling mutex_init().
-> > > > 
-> > > > Reported-by: Hulk Robot <hulkci@huawei.com>
-> > > > Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> > > 
-> > > NACK. This is not the first time people try to "fix" this location...
-> > > 
-> > > Using DEFINE_MUTEX() does not gain anything for us, it will generate
-> > > unnecessary extra size for the bcache.ko.
-> > > ines.
-> > 
-> > How can the final binary have larger size by just static declaration?
-> > By using DEFINE_MUTEX, the mutex is initialized at compile time. It'll
-> > save initialization at run time and one line of code will be less also
-> > from text section. 
-> > 
-> > #### with no change (dynamic initialization)
-> > size drivers/md/bcache/bcache.ko
-> >    text	   data	    bss	    dec	    hex	filename
-> >  187792	  25310	    152	 213254	  34106	drivers/md/bcache/bcache.ko
-> > 
-> > #### with patch applied (static initialization)
-> >    text	   data	    bss	    dec	    hex	filename
-> >  187751	  25342	    120	 213213	  340dd	drivers/md/bcache/bcache.ko
-> > 
-> > Module's binary size has decreased by 41 bytes with the path applied
-> > (x86_64 arch).
-> > 
-> Anybody has any thoughts on it?
->
+This does two things:
+1. Makes the option visible in menuconfig, allowing the user to easily
+   disable this option
+2. Allows olddefconfig to respect the option if it is set in the old
+   .config file
 
-I think you're right and the response is puzzling.  But who cares?  It's
-a small thing.  Leave it and move on.
+It's not clear exactly why the second consequence is true, but it
+appears to be because when the conf tool reads the config file, it only
+respects the existing setting if the option is "visible" (see
+scripts/kconfig/symbol.c:381).
 
-regards,
-dan carpenter
+Signed-off-by: Anand K Mistry <amistry@google.com>
+---
+This patch was previously discussed at
+https://lore.kernel.org/lkml/20210204132043.1.I2392cf11fb353d10459958100b69d93346fa167c@changeid/
+Sending as a v2 because a merge conflict exists with commit
+3228e1dc80983 ("x86/Kconfig: Remove HPET_EMULATE_RTC depends on RTC")
+
+Changes in v2:
+- Rebase
+- Fix typo in commit message
+
+ arch/x86/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 0fc82237414d..55e652aa42d1 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -896,6 +896,7 @@ config HPET_TIMER
+ 
+ config HPET_EMULATE_RTC
+ 	def_bool y
++	prompt "HPET RTC emulation"
+ 	depends on HPET_TIMER && (RTC_DRV_CMOS=m || RTC_DRV_CMOS=y)
+ 
+ # Mark as expert because too many people got it wrong.
+-- 
+2.31.1.498.g6c1eba8ee3d-goog
+
