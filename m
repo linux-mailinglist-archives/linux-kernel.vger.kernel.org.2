@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D6336E7D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 11:21:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6943D36E7D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 11:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232588AbhD2JVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 05:21:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56632 "EHLO
+        id S237145AbhD2JVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 05:21:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231701AbhD2JUv (ORCPT
+        with ESMTP id S231883AbhD2JVg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 05:20:51 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94EBC06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:20:03 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id d11so8247871wrw.8
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:20:03 -0700 (PDT)
+        Thu, 29 Apr 2021 05:21:36 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D7CBC06138E
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:20:10 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 82-20020a1c01550000b0290142562ff7c9so6247311wmb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:20:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:organization:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=OEnZFH+XYmfSP7g7WH0QI8W4ZYWs8ZUaoUGB+JuAxoM=;
-        b=Mm8xR36UEWJ6cS/XVCZAg06SJ8bVoGQwtegzm0Efe0KzMFiqiX58kizt5BxUCmAct1
-         XNcx+mGKGlXGphDHdUG4u/f2it6Vn0QuWvYK52mYMVvDbtQGyOXAKbaGxcHfGISAg3Yh
-         DeMttCvju5ZPiLWDNPvmxPqUzqM0QLYWmpiXtLFI0PT6tTLnXTnhUuQX3as6ClQmDFru
-         jHiW5g7K8RvY8fTwdXhzC7ssqkEawqN7kie2i3PfCf+Ps82jEl6QCwTk9XV7NOvpJLDq
-         OmtPqH8d98UaaR3ll3mvCB5dyZ8ZODNFu1nwAm8ueqcb+Z7VoPhrLiMWVx/2xk2838IP
-         Ncfg==
+        bh=emtycNn+wWCzpWR3wOPRX/lfC7/b7fgfW6hulP1Fj7Y=;
+        b=e+xfgr7nxfd1QlWEWsqxjy1GUZPA7ol9k+mWo0/8JLNUhvS0J4jmiBTTLfDxEradFq
+         CIsxtz0S7SxSbc0qvNJyclrHPRSJoKUWSX82ziobYfkzic6lu1CJwOvrwXFy1JEn8DG6
+         riIHtBrWT3/TJecwwZsUF56rWIPkKRAY06iNxlRjDM/cu5dyjOWlOXfHXVAyDbGyQDDU
+         itrhfxwLXaAoAWzkdiS3cbP8Y6BhMOdJEwkBTLUBAtmwHaqrL0RQJugTwhjrSpkof4O9
+         xsK5HjjySgkp+4Ki7kNyWs2+LPU8iM0GG1ZtoYg5PByLRn/upr8gWhOPaG5M+zOwEh6p
+         //nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:organization
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=OEnZFH+XYmfSP7g7WH0QI8W4ZYWs8ZUaoUGB+JuAxoM=;
-        b=MRNV2Lj9IP6oG97F2vyaYEb24C6HqwqHRK5u+aqHf0ygJZU8gdHTE3QexUamqsHrO6
-         O/ikPY8SUSlCHt0tLrefs04wrAOz9PUoGMAHVLNTLU14lC0I/VAG8cMFKbBRfwO/Cz+l
-         62xik1XOwdqPiZM6EVjuroGQeuV8J6SQ/SbmjjPrsrmupsshd+Zb6YK7obeat/uxO2hC
-         fP1mM83Il3KmPySvsF2phNZwhqdCOhKPJjwA7F4bRVZcbFUq5JDmZvTJMAG7GY0zjMI+
-         Mn+IHQNWMax4uSO710L7jgiBVKuuiIUmW+UiYeWZwUWTMUR6bnKhmld0nck/BZik2Oac
-         YFDg==
-X-Gm-Message-State: AOAM5306f42kcXofZBPfxq8n7eOl9uXi+HF3Lb5uxFP6pIflqfdAsLv7
-        F5XL+DSVvhs7G9wjyBzxyz30Uw8Z25WOY7FF
-X-Google-Smtp-Source: ABdhPJy1DesDcdMTDcl1IHz35cNr7g3mrtoEBR2y4NzPLkd9a2ncVF1iU/HEFWmsMvhhTTteYlUoQQ==
-X-Received: by 2002:a5d:6085:: with SMTP id w5mr28892118wrt.14.1619688001872;
-        Thu, 29 Apr 2021 02:20:01 -0700 (PDT)
+        bh=emtycNn+wWCzpWR3wOPRX/lfC7/b7fgfW6hulP1Fj7Y=;
+        b=TPWrOPeUQkmSu6ivB33UXsqZ+jSeeVc6WwTEN2m/LvUJOaXqQAKj+0LxIi7tnz5q/R
+         G94Ynj8a/eDjFqCyoXJJVoUJ5+ZOUdJq4b27XMv8cRGXHgCXFJaGPWw/wxJft9K721XM
+         h5geNyOxDYNXQE60rnQvYZBHSue3lx9mA67Ik52uwl05aaz7rRlJnm3SbWdGTT7Xe0f8
+         C+D6T1MnLkVPSfjqYFJjso98b7kPb0ZE/0kxcQEJZ6AOk+aQh83RKxb14vBaYtcJPV1u
+         PcA0jkGhxrXQveOueD/Utx+lLfRQaAlx4sgHVBztvgg5wNO17dsJWHtVLQLz3tsuSXYZ
+         1TtA==
+X-Gm-Message-State: AOAM530mZyBpAYr65NA2rVsmLEXga+UPfiYthdvG2ls3uw4SRnKYKuR7
+        Bp4BuKsQZCWhpKflV2xy4EKRtStvo4jXyz7I
+X-Google-Smtp-Source: ABdhPJz5ekuOvwFtm5X+ti48U3iGu1NlkQkbznQFO3DSiirw/PRy6N7TyqP6K1tEDIiQl8WB7C7+sQ==
+X-Received: by 2002:a1c:1bca:: with SMTP id b193mr2500141wmb.28.1619688008970;
+        Thu, 29 Apr 2021 02:20:08 -0700 (PDT)
 Received: from ?IPv6:2a01:e0a:90c:e290:c304:4b2b:4a79:1da9? ([2a01:e0a:90c:e290:c304:4b2b:4a79:1da9])
-        by smtp.gmail.com with ESMTPSA id a9sm3960823wrw.26.2021.04.29.02.20.00
+        by smtp.gmail.com with ESMTPSA id f6sm3835949wrt.19.2021.04.29.02.20.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Apr 2021 02:20:01 -0700 (PDT)
-Subject: Re: [PATCH] clk: meson: g12a: fix gp0 and hifi ranges
+        Thu, 29 Apr 2021 02:20:08 -0700 (PDT)
+Subject: Re: [PATCH] clk: meson: axg-audio: do not print error on defer
 To:     Jerome Brunet <jbrunet@baylibre.com>
 Cc:     Kevin Hilman <khilman@baylibre.com>,
         linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210429090325.60970-1-jbrunet@baylibre.com>
+References: <20210429090516.61085-1-jbrunet@baylibre.com>
 From:   Neil Armstrong <narmstrong@baylibre.com>
 Organization: Baylibre
-Message-ID: <979eb290-6fc2-38df-0596-867b82d22226@baylibre.com>
-Date:   Thu, 29 Apr 2021 11:20:00 +0200
+Message-ID: <ea42fa60-77cb-179b-ae2b-18b230383578@baylibre.com>
+Date:   Thu, 29 Apr 2021 11:20:07 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210429090325.60970-1-jbrunet@baylibre.com>
+In-Reply-To: <20210429090516.61085-1-jbrunet@baylibre.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -71,80 +71,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/04/2021 11:03, Jerome Brunet wrote:
-> While some SoC samples are able to lock with a PLL factor of 55, others
-> samples can't. ATM, a minimum of 60 appears to work on all the samples
-> I have tried.
+On 29/04/2021 11:05, Jerome Brunet wrote:
+> Do not print an error if we are just waiting for the reset controller to
+> come up.
 > 
-> Even with 60, it sometimes takes a long time for the PLL to eventually
-> lock. The documentation says that the minimum rate of these PLLs DCO
-> should be 3GHz, a factor of 125. Let's use that to be on the safe side.
-> 
-> With factor range changed, the PLL seems to lock quickly (enough) so far.
-> It is still unclear if the range was the only reason for the delay.
-> 
-> Fixes: 085a4ea93d54 ("clk: meson: g12a: add peripheral clock controller")
 > Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 > ---
->  drivers/clk/meson/g12a.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/clk/meson/axg-audio.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/clk/meson/g12a.c b/drivers/clk/meson/g12a.c
-> index b080359b4645..a805bac93c11 100644
-> --- a/drivers/clk/meson/g12a.c
-> +++ b/drivers/clk/meson/g12a.c
-> @@ -1603,7 +1603,7 @@ static struct clk_regmap g12b_cpub_clk_trace = {
->  };
+> diff --git a/drivers/clk/meson/axg-audio.c b/drivers/clk/meson/axg-audio.c
+> index 7c8d02164443..5e501eff0840 100644
+> --- a/drivers/clk/meson/axg-audio.c
+> +++ b/drivers/clk/meson/axg-audio.c
+> @@ -1811,7 +1811,8 @@ static int axg_audio_clkc_probe(struct platform_device *pdev)
 >  
->  static const struct pll_mult_range g12a_gp0_pll_mult_range = {
-> -	.min = 55,
-> +	.min = 125,
->  	.max = 255,
->  };
+>  	ret = device_reset(dev);
+>  	if (ret) {
+> -		dev_err(dev, "failed to reset device\n");
+> +		if (ret != -EPROBE_DEFER)
+> +			dev_err(dev, "failed to reset device\n");
+>  		return ret;
+>  	}
 >  
 > 
 
-I got other issues with GP0 when trying to use it for DSI on VIM3 & VIM3L.
-
-I had to do change the following to have it lock correctly and achieve rates usable for MIPI-DSI requested bandwidth:
-
-diff --git a/drivers/clk/meson/clk-pll.c b/drivers/clk/meson/clk-pll.c
-index cde07f7ebad6..897cd6db5c0f 100644
---- a/drivers/clk/meson/clk-pll.c
-+++ b/drivers/clk/meson/clk-pll.c
-@@ -391,9 +391,9 @@ static int meson_clk_pll_set_rate(struct clk_hw *hw, unsigned long rate,
-                meson_parm_write(clk->map, &pll->frac, frac);
-        }
-
--       /* If the pll is stopped, bail out now */
-+       /* If the pll is stopped, bail out now * /
-        if (!enabled)
--               return 0;
-+               return 0;*/
-
-        if (meson_clk_pll_enable(hw)) {
-                pr_warn("%s: pll did not lock, trying to restore old rate %lu\n",
-
-This one is tricky, for DSI the clock rate is set with assigned-clock-rates in DT, but
-then the GP0 is seen as stopped and then the rate is never set.
-
-When afterwards we enable the PLL, the rate set in the registers is invalid and never locks,
-this permits setting the rate in the registers even if the PLL is stopped.
-
-diff --git a/drivers/clk/meson/g12a.c b/drivers/clk/meson/g12a.c
-index 1b0167b8de3b..08174724a115 100644
---- a/drivers/clk/meson/g12a.c
-+++ b/drivers/clk/meson/g12a.c
-@@ -1602,8 +1602,8 @@ static struct clk_regmap g12b_cpub_clk_trace = {
- };
-
- static const struct pll_mult_range g12a_gp0_pll_mult_range = {
--       .min = 55,
--       .max = 255,
-+       .min = 120,
-+       .max = 168,
- };
-
-I had to change the min/max to achieve a stable and functional rate of 720MHz after the ODs.
-
-Neil
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
