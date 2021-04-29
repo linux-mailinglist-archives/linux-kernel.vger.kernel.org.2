@@ -2,91 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC50236EBA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 15:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A434936EBB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 15:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237915AbhD2NzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 09:55:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233862AbhD2NzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 09:55:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 344F861407;
-        Thu, 29 Apr 2021 13:54:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619704458;
-        bh=y/KSgaD2/mqGMlekuhyd5x478LgNEJTau9K+E8yRMlY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SfYs0JlfAyjPspN8DJlYf1seeCx45i8MoX8QD7xYEL9Vi8Fvdz5rnpIBpref/AQSJ
-         5jVuVicHwjQIYXHDtQrySVwEDqugFUZ00qIWeJD2Zo2o2B+TLmIkrsgga+2JShOWyO
-         1k9nU+ZZa9RS6Y7B5MzYNSm2FgrgsNT4cQS2B3GQ=
-Date:   Thu, 29 Apr 2021 15:54:16 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Aditya Pakki <pakki001@umn.edu>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 1/7] Revert "rocker: fix incorrect error handling in
- dma_rings_init"
-Message-ID: <YIq6iA+C1gdfopYj@kroah.com>
-References: <20210429130811.3353369-1-gregkh@linuxfoundation.org>
- <20210429130811.3353369-2-gregkh@linuxfoundation.org>
+        id S238866AbhD2N4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 09:56:32 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:58878 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235277AbhD2N42 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 09:56:28 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13TDpqlU026627;
+        Thu, 29 Apr 2021 15:55:34 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=798sGlkNn2haxzb2XBlJK5YccN6Miljype3MfgmLqlw=;
+ b=P4fVCv2IUblfERDP8yWruFlCP1dBv5UgJSHStETzUro7N2R2O8d4dYCcJhiZOLz+EYgx
+ sleRf6Sfic5We5eFxgiQuzpbW+JYZW2ok/e1MQ2BJbzUVjW4b0b5tI1JNhHHRVBHbUTM
+ UjRfKEjyYpcEnyfOldWEk/0NcIki7L95NoNpbQgUlhBUmaYxKJLrdhndMZLTlYBwdq7U
+ wygiWflsyHYmDQfzK8F7MVcjrQJ5KuBQ2uh3aCRhRa5TwFgoUKFh64GMgxt7o+ZPK/Uw
+ wPpRi9SCO18fRvV8URFFc/wdgPurVbKytYhg09h1xyiNBaqWStLfbg3g3BObKgcYYvvt rQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 387qp5b6g5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Apr 2021 15:55:33 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 50FEA10002A;
+        Thu, 29 Apr 2021 15:55:33 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 413EC212FA0;
+        Thu, 29 Apr 2021 15:55:33 +0200 (CEST)
+Received: from localhost (10.75.127.45) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 29 Apr 2021 15:55:32
+ +0200
+From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <arnaud.pouliquen@foss.st.com>
+Subject: [PATCH v3 0/6] Restructure the rpmsg char and introduce the rpmsg-raw channel
+Date:   Thu, 29 Apr 2021 15:55:01 +0200
+Message-ID: <20210429135507.8264-1-arnaud.pouliquen@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429130811.3353369-2-gregkh@linuxfoundation.org>
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-29_07:2021-04-28,2021-04-29 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 03:08:05PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit 58d0c864e1a759a15c9df78f50ea5a5c32b3989e.
-> 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper submitted to the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota) but later
-> withdrawn.
-> 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: Aditya Pakki <pakki001@umn.edu>
-> Cc: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  drivers/net/ethernet/rocker/rocker_main.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/rocker/rocker_main.c b/drivers/net/ethernet/rocker/rocker_main.c
-> index 3473d296b2e2..35ebeeb40639 100644
-> --- a/drivers/net/ethernet/rocker/rocker_main.c
-> +++ b/drivers/net/ethernet/rocker/rocker_main.c
-> @@ -650,10 +650,10 @@ static int rocker_dma_rings_init(struct rocker *rocker)
->  err_dma_event_ring_bufs_alloc:
->  	rocker_dma_ring_destroy(rocker, &rocker->event_ring);
->  err_dma_event_ring_create:
-> -	rocker_dma_cmd_ring_waits_free(rocker);
-> -err_dma_cmd_ring_waits_alloc:
->  	rocker_dma_ring_bufs_free(rocker, &rocker->cmd_ring,
->  				  DMA_BIDIRECTIONAL);
-> +err_dma_cmd_ring_waits_alloc:
-> +	rocker_dma_cmd_ring_waits_free(rocker);
->  err_dma_cmd_ring_bufs_alloc:
->  	rocker_dma_ring_destroy(rocker, &rocker->cmd_ring);
->  	return err;
-> -- 
-> 2.31.1
-> 
+Main update from V2 [1]
+ - Management of the endpoint creation/release to handle it for all the use cases
+   in the rpmsg_eptdev_open and rpmsg_eptdev_release function
 
-The original commit here looks correct to me, so unless someone objects,
-I'll drop this revert from my tree.
+Other patch updates are described at the end of their commit message.
 
-thanks,
 
-greg k-h
+This series can be applied on git/andersson/remoteproc.git 
+for-next branch (dc0e14fa833b) + "rpmsg: char: Remove useless includes" patch[3].
+
+Series description:
+This series is the second step in the division of the series [2]: 
+"Introducing a Generic IOCTL Interface for RPMsg Channel Management".
+
+The purpose of this patchset is to:
+- split the control code related to the control
+  and the endpoint. 
+- define the rpmsg-raw channel, associated with the rpmsg char device to
+  allow it to be instantiated using a name service announcement.
+    
+An important point to keep in mind for this patchset is that the concept of
+channel is associated with a default endpoint. To facilitate communication
+with the remote side, this default endpoint must have a fixed address.
+
+Therefore, for /dev/rpmsgX device created during the instantiation of he "rpmsg-raw"
+device, the endpoint creation/release is not dynamically managed on each FS open/close.
+
+This is only applicable for channels probed by the rpmsg bus. The behavior,
+using the RPMSG_CREATE_EPT_IOCTL and RPMSG_DESTROY_EPT_IOCTL controls, is preserved.
+  
+The next step should be:
+Introduce the IOCTLs RPMSG_CREATE_DEV_IOCTL and RPMSG_DESTROY_DEV_IOCTL
+to instantiate the rpmsg devices
+
+[1]: https://patchwork.kernel.org/project/linux-remoteproc/list/?series=466357
+[2]: https://patchwork.kernel.org/project/linux-remoteproc/list/?series=435523
+[3]: https://patchwork.kernel.org/project/linux-remoteproc/patch/20210429080639.6379-1-arnaud.pouliquen@foss.st.com/
+
+
+Arnaud Pouliquen (6):
+  rpmsg: char: Export eptdev create an destroy functions
+  rpmsg: Move the rpmsg control device from rpmsg_char to rpmsg_ctrl
+  rpmsg: Update rpmsg_chrdev_register_device function
+  rpmsg: char: Add possibility to create and reuse default endpoint
+  rpmsg: char: Introduce a rpmsg driver for the rpmsg char device
+  rpmsg: char: Return error if user tries to destroy a default endpoint.
+
+ drivers/rpmsg/Kconfig             |   9 ++
+ drivers/rpmsg/Makefile            |   1 +
+ drivers/rpmsg/qcom_glink_native.c |   2 +-
+ drivers/rpmsg/qcom_smd.c          |   2 +-
+ drivers/rpmsg/rpmsg_char.c        | 223 ++++++++++--------------------
+ drivers/rpmsg/rpmsg_char.h        |  51 +++++++
+ drivers/rpmsg/rpmsg_ctrl.c        | 209 ++++++++++++++++++++++++++++
+ drivers/rpmsg/rpmsg_internal.h    |   8 +-
+ drivers/rpmsg/virtio_rpmsg_bus.c  |   2 +-
+ 9 files changed, 350 insertions(+), 157 deletions(-)
+ create mode 100644 drivers/rpmsg/rpmsg_char.h
+ create mode 100644 drivers/rpmsg/rpmsg_ctrl.c
+
+-- 
+2.17.1
+
