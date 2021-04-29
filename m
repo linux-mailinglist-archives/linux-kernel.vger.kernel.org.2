@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BECD736E2F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC4E36E2F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235280AbhD2Bb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 21:31:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33408 "EHLO mail.kernel.org"
+        id S235620AbhD2Bbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 21:31:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230084AbhD2BbX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 21:31:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4275E61440;
+        id S231564AbhD2BbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 21:31:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45CAB6143F;
         Thu, 29 Apr 2021 01:30:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1619659838;
-        bh=ysesX+RW8zVp2m4tJ1Vt5n3IPX9GL7H04/cOc1kBNAg=;
+        bh=F5cbAlcmf+aEb764Zrismh1ok95cWf7Kuij41bO5ids=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eq/uWYtNLbKhYfwLDyIk/0WvIc8j61HhRAUksqRCjVepwHGcbArxlt3TdJUzpqlO3
-         SEV3uQ0DJCRnOOGdA6PZZBcLGZQJ43zYQJJCv2AMaWl8R/7H7y0B2xqbJ7SnJoq81H
-         2q3DLlAK9axuy2LjxpZdYlBWLcqZKLR9/g7o/us5h1LxWtwKeN2yw9rgGBfz4voGXL
-         dL7SRNQUvDczSs1wwxLDLPN23Qcafxa8YPGTjKSj22CR89Kc4ccxLgyF7ZCjWr+l41
-         ZYXe8JhavlrkNDv5aJsqzwuh+vETy+9GW9+02Eu1x9HHtHEyDnVEUNHAi+l0eLHn6E
-         WfDD4d6iONdQw==
+        b=lHYtKQraJ3J7797Az5tYfC/TlteNLt//dRvKrAaCaq+QLE6rL88KkZYu6CnxbZm1J
+         ViedKXNjOKD2HrxS/gb7BnQhvZ9Uz1MOWWnsrX1VP+3BrTfhPlLV8WLfefvoyHtIVV
+         FtUScvaQ8rxtzKUiNnAoCCE+creaDuF5hH7RdHOdHMMu2gtfLjxYwtHrjzDaVDardp
+         Yq98brfl6LfsQ5y2jRIX3jUydLghjqW93ZevXeChb5w4J3DurHcVHG0ojlC2KA/ONH
+         LA3a/awArr36cFIa8OUyaxKor1RhUSsIca3fwNlVpa8yRwU7lFQl5ffkSmiP53UjkS
+         oHRIa9hdrghhQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 14E205C0531; Wed, 28 Apr 2021 18:30:38 -0700 (PDT)
+        id 16D905C0563; Wed, 28 Apr 2021 18:30:38 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     tglx@linutronix.de
 Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Xing Zhengjun <zhengjun.xing@linux.intel.com>,
         Chris Mason <clm@fb.com>
-Subject: [PATCH v11 clocksource 2/6] clocksource: Retry clock read if long delays detected
-Date:   Wed, 28 Apr 2021 18:30:33 -0700
-Message-Id: <20210429013037.3958717-2-paulmck@kernel.org>
+Subject: [PATCH v11 clocksource 3/6] clocksource: Check per-CPU clock synchronization when marked unstable
+Date:   Wed, 28 Apr 2021 18:30:34 -0700
+Message-Id: <20210429013037.3958717-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210429012909.GA3958584@paulmck-ThinkPad-P17-Gen-1>
 References: <20210429012909.GA3958584@paulmck-ThinkPad-P17-Gen-1>
@@ -46,26 +46,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the clocksource watchdog marks a clock as unstable, this might
-be due to that clock being unstable or it might be due to delays that
-happen to occur between the reads of the two clocks.  Yes, interrupts are
-disabled across those two reads, but there are no shortage of things that
-can delay interrupts-disabled regions of code ranging from SMI handlers
-to vCPU preemption.  It would be good to have some indication as to why
-the clock was marked unstable.
+Some sorts of per-CPU clock sources have a history of going out of
+synchronization with each other.  However, this problem has purportedy
+been solved in the past ten years.  Except that it is all too possible
+that the problem has instead simply been made less likely, which might
+mean that some of the occasional "Marking clocksource 'tsc' as unstable"
+messages might be due to desynchronization.  How would anyone know?
 
-Therefore, re-read the watchdog clock on either side of the read
-from the clock under test.  If the watchdog clock shows an excessive
-time delta between its pair of reads, the reads are retried.  The
-maximum number of retries is specified by a new kernel boot parameter
-clocksource.max_read_retries, which defaults to three, that is, up to four
-reads, one initial and up to three retries.  If more than one retry was
-required, a message is printed on the console (the occasional single retry
-is expected behavior, especially in guest OSes).  If the maximum number
-of retries is exceeded, the clock under test will be marked unstable.
-However, the probability of this happening due to various sorts of
-delays is quite small.  In addition, the reason (clock-read delays)
-for the unstable marking will be apparent.
+Therefore apply CPU-to-CPU synchronization checking to newly unstable
+clocksource that are marked with the new CLOCK_SOURCE_VERIFY_PERCPU flag.
+Lists of desynchronized CPUs are printed, with the caveat that if it
+is the reporting CPU that is itself desynchronized, it will appear that
+all the other clocks are wrong.  Just like in real life.
 
 Link: https://lore.kernel.org/lkml/20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1/
 Link: https://lore.kernel.org/lkml/20210420064934.GE31773@xsang-OptiPlex-9020/
@@ -79,124 +71,123 @@ Cc: Jonathan Corbet <corbet@lwn.net>
 Cc: Mark Rutland <Mark.Rutland@arm.com>
 Cc: Marc Zyngier <maz@kernel.org>
 Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Feng Tang <feng.tang@intel.com>
 Cc: Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Acked-by: Feng Tang <feng.tang@intel.com>
 Reported-by: Chris Mason <clm@fb.com>
-[ paulmck: Per-clocksource retries per Neeraj Upadhyay feedback. ]
-[ paulmck: Don't reset injectfail per Neeraj Upadhyay feedback. ]
+[ paulmck: Add "static" to clocksource_verify_one_cpu() per kernel test robot feedback. ]
 [ paulmck: Apply Thomas Gleixner feedback. ]
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../admin-guide/kernel-parameters.txt         |  6 +++
- kernel/time/clocksource.c                     | 53 ++++++++++++++++---
- 2 files changed, 52 insertions(+), 7 deletions(-)
+ arch/x86/kernel/tsc.c       |  3 +-
+ include/linux/clocksource.h |  2 +-
+ kernel/time/clocksource.c   | 60 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 63 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index b68cb54bc872..eb40e5332236 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -604,6 +604,12 @@
- 			from, and complained about, and to larger values
- 			to force the clock to be marked unstable.
+diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+index f70dffc2771f..56289170753c 100644
+--- a/arch/x86/kernel/tsc.c
++++ b/arch/x86/kernel/tsc.c
+@@ -1151,7 +1151,8 @@ static struct clocksource clocksource_tsc = {
+ 	.mask			= CLOCKSOURCE_MASK(64),
+ 	.flags			= CLOCK_SOURCE_IS_CONTINUOUS |
+ 				  CLOCK_SOURCE_VALID_FOR_HRES |
+-				  CLOCK_SOURCE_MUST_VERIFY,
++				  CLOCK_SOURCE_MUST_VERIFY |
++				  CLOCK_SOURCE_VERIFY_PERCPU,
+ 	.vdso_clock_mode	= VDSO_CLOCKMODE_TSC,
+ 	.enable			= tsc_cs_enable,
+ 	.resume			= tsc_resume,
+diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
+index 86d143db6523..83a3ebff7456 100644
+--- a/include/linux/clocksource.h
++++ b/include/linux/clocksource.h
+@@ -131,7 +131,7 @@ struct clocksource {
+ #define CLOCK_SOURCE_UNSTABLE			0x40
+ #define CLOCK_SOURCE_SUSPEND_NONSTOP		0x80
+ #define CLOCK_SOURCE_RESELECT			0x100
+-
++#define CLOCK_SOURCE_VERIFY_PERCPU		0x200
+ /* simplify initialization of mask field */
+ #define CLOCKSOURCE_MASK(bits) GENMASK_ULL((bits) - 1, 0)
  
-+	clocksource.max_read_retries= [KNL]
-+			Number of clocksource_watchdog() retries due to
-+			external delays before the clock will be marked
-+			unstable.  Defaults to three retries, that is,
-+			four attempts to read the clock under test.
-+
- 	clearcpuid=BITNUM[,BITNUM...] [X86]
- 			Disable CPUID feature X for the kernel. See
- 			arch/x86/include/asm/cpufeatures.h for the valid bit
 diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index f1e1e6e4b387..94bfdb53f2f4 100644
+index 94bfdb53f2f4..a8d73e1f9431 100644
 --- a/kernel/time/clocksource.c
 +++ b/kernel/time/clocksource.c
-@@ -125,6 +125,13 @@ static void __clocksource_change_rating(struct clocksource *cs, int rating);
- #define WATCHDOG_INTERVAL (HZ >> 1)
- #define WATCHDOG_THRESHOLD (NSEC_PER_SEC >> 4)
- 
-+/*
-+ * Maximum permissible delay between two readouts of the watchdog
-+ * clocksource surrounding a read of the clocksource being validated.
-+ * This delay could be due to SMIs, NMIs, or to VCPU preemptions.
-+ */
-+#define WATCHDOG_MAX_SKEW (100 * NSEC_PER_USEC)
-+
- static void clocksource_watchdog_work(struct work_struct *work)
- {
- 	/*
-@@ -189,6 +196,8 @@ static ulong inject_delay_period;
- module_param(inject_delay_period, ulong, 0644);
- static ulong inject_delay_repeat = 1;
- module_param(inject_delay_repeat, ulong, 0644);
-+static ulong max_read_retries = 3;
-+module_param(max_read_retries, ulong, 0644);
- 
- static void clocksource_watchdog_inject_delay(void)
- {
-@@ -206,12 +215,42 @@ static void clocksource_watchdog_inject_delay(void)
- 	invocations++;
+@@ -245,6 +245,60 @@ static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
+ 	return false;
  }
  
-+static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
++static u64 csnow_mid;
++static cpumask_t cpus_ahead;
++static cpumask_t cpus_behind;
++
++static void clocksource_verify_one_cpu(void *csin)
 +{
-+	unsigned int nretries;
-+	u64 wd_end, wd_delta;
-+	int64_t wd_delay;
++	struct clocksource *cs = (struct clocksource *)csin;
 +
-+	for (nretries = 0; nretries <= max_read_retries; nretries++) {
-+		local_irq_disable();
-+		*wdnow = watchdog->read(watchdog);
-+		clocksource_watchdog_inject_delay();
-+		*csnow = cs->read(cs);
-+		wd_end = watchdog->read(watchdog);
-+		local_irq_enable();
++	csnow_mid = cs->read(cs);
++}
 +
-+		wd_delta = clocksource_delta(wd_end, *wdnow, watchdog->mask);
-+		wd_delay = clocksource_cyc2ns(wd_delta, watchdog->mult, watchdog->shift);
-+		if (wd_delay <= WATCHDOG_MAX_SKEW) {
-+			if (nretries > 1 || nretries >= max_read_retries) {
-+				pr_warn("timekeeping watchdog on CPU%d: %s retried %d times before success\n",
-+					smp_processor_id(), watchdog->name, nretries);
-+			}
-+			return true;
-+		}
++static void clocksource_verify_percpu(struct clocksource *cs)
++{
++	int64_t cs_nsec, cs_nsec_max = 0, cs_nsec_min = LLONG_MAX;
++	u64 csnow_begin, csnow_end;
++	int cpu, testcpu;
++	s64 delta;
++
++	cpumask_clear(&cpus_ahead);
++	cpumask_clear(&cpus_behind);
++	preempt_disable();
++	testcpu = smp_processor_id();
++	pr_warn("Checking clocksource %s synchronization from CPU %d.\n", cs->name, testcpu);
++	for_each_online_cpu(cpu) {
++		if (cpu == testcpu)
++			continue;
++		csnow_begin = cs->read(cs);
++		smp_call_function_single(cpu, clocksource_verify_one_cpu, cs, 1);
++		csnow_end = cs->read(cs);
++		delta = (s64)((csnow_mid - csnow_begin) & cs->mask);
++		if (delta < 0)
++			cpumask_set_cpu(cpu, &cpus_behind);
++		delta = (csnow_end - csnow_mid) & cs->mask;
++		if (delta < 0)
++			cpumask_set_cpu(cpu, &cpus_ahead);
++		delta = clocksource_delta(csnow_end, csnow_begin, cs->mask);
++		cs_nsec = clocksource_cyc2ns(delta, cs->mult, cs->shift);
++		if (cs_nsec > cs_nsec_max)
++			cs_nsec_max = cs_nsec;
++		if (cs_nsec < cs_nsec_min)
++			cs_nsec_min = cs_nsec;
 +	}
-+
-+	pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, marking unstable\n",
-+		smp_processor_id(), watchdog->name, wd_delay, nretries);
-+	return false;
++	preempt_enable();
++	if (!cpumask_empty(&cpus_ahead))
++		pr_warn("        CPUs %*pbl ahead of CPU %d for clocksource %s.\n",
++			cpumask_pr_args(&cpus_ahead), testcpu, cs->name);
++	if (!cpumask_empty(&cpus_behind))
++		pr_warn("        CPUs %*pbl behind CPU %d for clocksource %s.\n",
++			cpumask_pr_args(&cpus_behind), testcpu, cs->name);
++	if (!cpumask_empty(&cpus_ahead) || !cpumask_empty(&cpus_behind))
++		pr_warn("        CPU %d check durations %lldns - %lldns for clocksource %s.\n",
++			testcpu, cs_nsec_min, cs_nsec_max, cs->name);
 +}
 +
  static void clocksource_watchdog(struct timer_list *unused)
  {
--	struct clocksource *cs;
  	u64 csnow, wdnow, cslast, wdlast, delta;
--	int64_t wd_nsec, cs_nsec;
- 	int next_cpu, reset_pending;
-+	int64_t wd_nsec, cs_nsec;
-+	struct clocksource *cs;
+@@ -469,6 +523,12 @@ static int __clocksource_watchdog_kthread(void)
+ 	unsigned long flags;
+ 	int select = 0;
  
- 	spin_lock(&watchdog_lock);
- 	if (!watchdog_running)
-@@ -228,11 +267,11 @@ static void clocksource_watchdog(struct timer_list *unused)
- 			continue;
- 		}
- 
--		local_irq_disable();
--		csnow = cs->read(cs);
--		clocksource_watchdog_inject_delay();
--		wdnow = watchdog->read(watchdog);
--		local_irq_enable();
-+		if (!cs_watchdog_read(cs, &csnow, &wdnow)) {
-+			/* Clock readout unreliable, so give it up. */
-+			__clocksource_unstable(cs);
-+			continue;
-+		}
- 
- 		/* Clocksource initialized ? */
- 		if (!(cs->flags & CLOCK_SOURCE_WATCHDOG) ||
++	/* Do any required per-CPU skew verification. */
++	if (curr_clocksource &&
++	    curr_clocksource->flags & CLOCK_SOURCE_UNSTABLE &&
++	    curr_clocksource->flags & CLOCK_SOURCE_VERIFY_PERCPU)
++		clocksource_verify_percpu(curr_clocksource);
++
+ 	spin_lock_irqsave(&watchdog_lock, flags);
+ 	list_for_each_entry_safe(cs, tmp, &watchdog_list, wd_list) {
+ 		if (cs->flags & CLOCK_SOURCE_UNSTABLE) {
 -- 
 2.31.1.189.g2e36527f23
 
