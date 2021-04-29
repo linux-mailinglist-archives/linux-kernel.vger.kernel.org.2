@@ -2,131 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7765336E7B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 11:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D47B36E7C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 11:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237299AbhD2JNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 05:13:07 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:42134 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232775AbhD2JNE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 05:13:04 -0400
-Received: from zn.tnic (p200300ec2f0a4f00fa8ecda271c3a3d7.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:4f00:fa8e:cda2:71c3:a3d7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1DC2B1EC0288;
-        Thu, 29 Apr 2021 11:12:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1619687536;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=7zGmhNtr9fSMXiAv9CTHWxetCafBFfr5+g4Pp2O1zPA=;
-        b=VJ8KU5gDLEDcc86e/EfzBa0Fu1gTt/agw1fFBUNcKkgElWJVHz5ezJ1+abvUNWA/+YPW+c
-        hhXKF5mKvOhNpbhEILpk4RsYp4zZM9GJdcTDDXSIzZSnW5O74QppV0bnYsVdEpAKdndzIb
-        /RedeShYZzUdYUN0WSeW2H8EvvtriFM=
-Date:   Thu, 29 Apr 2021 11:12:19 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Subject: Re: [PATCH v26 22/30] x86/cet/shstk: Add user-mode shadow stack
- support
-Message-ID: <YIp4c95E9/9DYR6z@zn.tnic>
-References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
- <20210427204315.24153-23-yu-cheng.yu@intel.com>
- <YImg5hmBnTZTkYIp@zn.tnic>
- <3a0ed2e3-b13d-0db6-87af-fecd394ddd2e@intel.com>
+        id S231467AbhD2JOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 05:14:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237556AbhD2JOc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 05:14:32 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E24C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:13:38 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id m11so2482969pfc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:13:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=daUJAt6BDK7VQ+WlkM9PDlnlylglMZJCEcrdwOXNXiU=;
+        b=dNRaCOjTd5rJ7pIJnhapOyuioT2WF6PhpsaQCTwi1yiyoLsaEvwWhg5Z3OGraNih4r
+         OC4ksq2pViFc7pxL74+nvCFkIHYeEduPukhei/uOD6wluDzc/q3pDLOxMRVXGKxlEYDr
+         3GkddQuJo2r64VSK59jDrkq83TdwwdrIwo28NS5rtc0CuGZj1KsmSL15NZNTzVm+opM/
+         9JbB1GiIeJoVO352iE4vPzacPls6qm/71ytbk1fUTEtoNI9RjjwZf+ir5ir7J8JsF5/l
+         dkKSU7Bz+ksevFT6M6q4PhIvBqbxiFCq4I+HEeT1PN9Jz3XmEeQOYlC5hrxqSluvaWa+
+         tWMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=daUJAt6BDK7VQ+WlkM9PDlnlylglMZJCEcrdwOXNXiU=;
+        b=KFpWXrD0jja2zBeFzhA7M7T5x3AfBB3NuJZ2i2FJzYZ1suUQvmiTpcn0/1/nLD6CYo
+         0QpTVLAeo20AZDzl0wHYEFsou66CgJ5xaW8rryrmWEbFkTJwIqxUmNlmFDxyayaAUy+Y
+         99z5dzIVt25zxIIS0k2t3DAF6aQgBcYZw88NXDoDXh0KF57uDz/kIfplVbJ8yJnRfiYI
+         ML1Ju5WHhibVyUT5B3nh2eYP7eQI6IAHf0zy9AR/m5uscVTFTGoQ7uzOr+4jjOYm/uPg
+         wBXp9/7fNpUV4JoPkCVN18zyNGsc8SUs/Fr6IyMZAbN3f8ACOZE8r5BnOUW87Z6p3asu
+         p+FA==
+X-Gm-Message-State: AOAM531r3tjpNuEb7l+xDxuJ+72TLvccG5Zeo6tUShZieTVU3LDg2C9s
+        7o3s2PQ87TEXP09QLdJ82vI=
+X-Google-Smtp-Source: ABdhPJzr/RTLTDeRIA2mpucsICAgg8RNCsrSGdBG2uZfNJqu9CaM5wRHqkVwXZrbDKneSWC4E/dYOA==
+X-Received: by 2002:a65:5a81:: with SMTP id c1mr31624182pgt.356.1619687617917;
+        Thu, 29 Apr 2021 02:13:37 -0700 (PDT)
+Received: from localhost ([115.99.169.0])
+        by smtp.gmail.com with ESMTPSA id f20sm2011925pgb.47.2021.04.29.02.13.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 02:13:37 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 14:43:33 +0530
+From:   Sanjana Srinidhi <sanjanasrinidhi1810@gmail.com>
+To:     linux@dominikbrodowski.net, kw@linux.com, bhelgaas@google.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] Remove space before tabs
+Message-ID: <20210429091333.bw25zy7datkegtt2@sanjana-VirtualBox>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3a0ed2e3-b13d-0db6-87af-fecd394ddd2e@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 11:39:00AM -0700, Yu, Yu-cheng wrote:
-> Sorry about that.  After that email thread, we went ahead to separate shadow
-> stack and ibt into different files.  I thought about the struct, the file
-> names cet.h, etc.  The struct still needs to include ibt status, and if it
-> is shstk_desc, the name is not entirely true.  One possible approach is, we
-> don't make it a struct here, and put every item directly in thread_struct.
-> However, the benefit of putting all in a struct is understandable (you might
-> argue the opposite :-)).  Please make the call, and I will do the change.
+Space before tabs are removed to maintain code uniformity.
 
-/me looks forward into the patchset...
+Signed-off-by: Sanjana Srinidhi <sanjanasrinidhi1810@gmail.com>
+---
+ drivers/pcmcia/yenta_socket.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-So this looks like the final version of it:
-
-@@ -15,6 +15,7 @@ struct cet_status {
- 	unsigned long	shstk_base;
- 	unsigned long	shstk_size;
- 	unsigned int	locked:1;
-+	unsigned int	ibt_enabled:1;
- };
-
-If so, that thing should be simply:
-
-	struct cet {
-		unsigned long shstk_base;
-		unsigned long shstk_size;
-		unsigned int shstk_lock : 1,
-			     ibt	: 1;
-	}
-
-Is that ibt flag per thread or why is it here? I guess I'll find out.
-
-/me greps...
-
-ah yes, it is.
-
-> Yes, the comments are in patch #23: Handle thread shadow stack.  I wanted to
-> add that in the patch that takes the path.
-
-That comes next, I'll look there.
-
-> > vm_munmap() can return other negative error values, where are you
-> > handling those?
-> > 
-> 
-> For other error values, the loop stops.
-
-And then what happens?
-
-> > > +	cet->shstk_base = 0;
-> > > +	cet->shstk_size = 0;
-
-You clear those here without even checking whether unmap failed somehow.
-And then stuff leaks but we don't care, right?
-
-Someone else's problem, I'm sure.
-
+diff --git a/drivers/pcmcia/yenta_socket.c b/drivers/pcmcia/yenta_socket.c
+index 84bfc0e85d6b..e9da9c197ff1 100644
+--- a/drivers/pcmcia/yenta_socket.c
++++ b/drivers/pcmcia/yenta_socket.c
+@@ -6,10 +6,10 @@
+  *
+  * Changelog:
+  * Aug 2002: Manfred Spraul <manfred@colorfullife.com>
+- * 	Dynamically adjust the size of the bridge resource
++ *	Dynamically adjust the size of the bridge resource
+  *
+  * May 2003: Dominik Brodowski <linux@brodo.de>
+- * 	Merge pci_socket.c and yenta.c into one file
++ *	Merge pci_socket.c and yenta.c into one file
+  */
+ #include <linux/init.h>
+ #include <linux/pci.h>
 -- 
-Regards/Gruss,
-    Boris.
+2.25.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
