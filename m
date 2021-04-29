@@ -2,159 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D2936F045
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 21:25:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C75036F048
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 21:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233679AbhD2TR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 15:17:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239559AbhD2TL2 (ORCPT
+        id S233741AbhD2TR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 15:17:58 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54950 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242072AbhD2TOA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 15:11:28 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D17E8C06138E
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 12:10:39 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id q4so21619425qtn.5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 12:10:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=ltkj3GwXMNWaqEgIRsYEcolYZKDxC8Ql9gepvrB9Q24=;
-        b=TaBriJpTEbcq6utoehleZ+bDiikQrmpNSJk00MCJpyDMZLKOyVSneUzbn7CH4f/qn3
-         FE1yimgmQ0EwoN8URvM9nU5Uvda1kkFueNohCj18W7thbi5clbQhHBwE3hQzUgPp2fJB
-         +YvpPQTKoOeAx+4wu1ZyUrXd/xHbqG6PZTZrE4k1/hg2zTSqMVaysYRKZY29qGUbpo00
-         xtHnnxqdp5jV/qFiADbiy6m9EHcrePboNKaCsSdRdB7pMQzuqaqt9xoqUyEm+YTh8LM7
-         dOAa10WdrQiqJdkNPsoDoz+umXwoXcx66oHDICInmvjRXr4/sLOWjeQOwGQVr+F9lm5f
-         QEbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=ltkj3GwXMNWaqEgIRsYEcolYZKDxC8Ql9gepvrB9Q24=;
-        b=kikTQm9X24LNyoU3379Do1rjILB8IxCj6pLMMEVytZWX5UpkZq12Um85QTb5iI9ODn
-         bXWfScz++dhWfa6sWUC4AnJIK2pBgQqY5qDnwyV6bUZeVjSU8UZoH4KAqxjRD6PKSKcK
-         YdjRxyo1Ih43FnLVfovXMP0I6qDf2AnV1mFy1uUDA9LmhKYYeuXoyDU9XURXpTWKm+gK
-         jXJsXEsiZ5Z0wUfLccc/AQYBC2lHmbSQ5co0hTYr0CrajNs7khDsTirxkMjt0DlyAWk3
-         KpC9DK284afY/48P6qu8qVXadwQUmA9tJe8B9oErCmhMWoKm6mLbjtrmApkdNh3GL5cT
-         lJ6g==
-X-Gm-Message-State: AOAM5334VKMklo/wilKirev8oMEmxX7L8ppy1mM0GdeYuMROfPDwgAEp
-        u1zYmbDTTnxx5d/IgE2HdLdHCA==
-X-Google-Smtp-Source: ABdhPJwZc2TDsodYdDvwl5OmNVUqcCm1bJyFDAHw3Z1GnVU7wF1KEyZShesHOjlg0t2Qjj5w0p+z7A==
-X-Received: by 2002:ac8:7774:: with SMTP id h20mr901414qtu.79.1619723438687;
-        Thu, 29 Apr 2021 12:10:38 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
-        by smtp.gmail.com with ESMTPSA id r81sm2824049qka.82.2021.04.29.12.10.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 12:10:37 -0700 (PDT)
-Message-ID: <d54b1bb7956e1e3bea47fde1216084c7f2eae87e.camel@ndufresne.ca>
-Subject: Re: [PATCH 1/3] v4l: Add Qualcomm custom compressed pixel formats
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-api@vger.kernel.org
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Date:   Thu, 29 Apr 2021 15:10:36 -0400
-In-Reply-To: <20210429105815.2790770-2-stanimir.varbanov@linaro.org>
-References: <20210429105815.2790770-1-stanimir.varbanov@linaro.org>
-         <20210429105815.2790770-2-stanimir.varbanov@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0 (3.40.0-1.fc34) 
+        Thu, 29 Apr 2021 15:14:00 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13TJ44aM074069;
+        Thu, 29 Apr 2021 15:12:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=huAJF92NWRC93NOn3XV+LPpOVtQxgb1PRH05BQA/EVs=;
+ b=OxMOjI5528eIX9eApkD+p1rjK1J7Ih47NQQyKs67EtFRJ3Ou4vRz1vml/FNINf3Nmr/e
+ tmK7bn58D6mU8NZQszsD9MfImgJZeA9VYG9jPfMvdycyKLjaHa9+fJ6NNiFuCWw/qDBJ
+ Xomg/z6hl0AQfvd0zDUyUr4cs2uUyo+Of8M46kugzBabV6ChuIBypYZYG4EnxHlSR4mJ
+ iyzF3dZCys86uSaJlO4UWMTP9lJrWI5dRoL4q7LHMTDH5Cr8QewxJW6Hd+OQ6tB6gSEF
+ U5jnjxm7c04JKBnmjRiPcxN5GFbB1YOg4kJm3PA0Q72QZ6X5Ki9RFCgFyZ6ICBrWreMn 4A== 
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38807qccy0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Apr 2021 15:12:51 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13TJ7FW8004157;
+        Thu, 29 Apr 2021 19:12:51 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma04dal.us.ibm.com with ESMTP id 384aya81un-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Apr 2021 19:12:51 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13TJCoD313501072
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 19:12:50 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5708B124052;
+        Thu, 29 Apr 2021 19:12:50 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2CFA7124055;
+        Thu, 29 Apr 2021 19:12:49 +0000 (GMT)
+Received: from oc6857751186.ibm.com (unknown [9.160.61.17])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 29 Apr 2021 19:12:48 +0000 (GMT)
+Subject: Re: [PATCH v3] pseries/drmem: update LMBs after LPM
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org
+Cc:     nathanl@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+References: <20210428094758.28665-1-ldufour@linux.ibm.com>
+ <87fsz95qso.fsf@linux.ibm.com>
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+Message-ID: <9d29bf8c-9e97-c179-6897-8e25fa4eb516@linux.ibm.com>
+Date:   Thu, 29 Apr 2021 12:12:48 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <87fsz95qso.fsf@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: cGIzZKfDz5NwiMOEPFOqbgPzwkoOzPSl
+X-Proofpoint-ORIG-GUID: cGIzZKfDz5NwiMOEPFOqbgPzwkoOzPSl
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-29_10:2021-04-28,2021-04-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 adultscore=0 lowpriorityscore=0 mlxlogscore=999 spamscore=0
+ clxscore=1015 impostorscore=0 phishscore=0 malwarescore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104290121
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le jeudi 29 avril 2021 à 13:58 +0300, Stanimir Varbanov a écrit :
-> Here we add custom Qualcomm raw compressed pixel formats. They are
-> used in Qualcomm SoCs to optimaize the interconnect bandwidth.
+On 4/29/21 3:27 AM, Aneesh Kumar K.V wrote:
+> Laurent Dufour <ldufour@linux.ibm.com> writes:
+> 
+>> After a LPM, the device tree node ibm,dynamic-reconfiguration-memory may be
+>> updated by the hypervisor in the case the NUMA topology of the LPAR's
+>> memory is updated.
+>>
+>> This is caught by the kernel, but the memory's node is updated because
+>> there is no way to move a memory block between nodes.
+>>
+>> If later a memory block is added or removed, drmem_update_dt() is called
+>> and it is overwriting the DT node to match the added or removed LMB. But
+>> the LMB's associativity node has not been updated after the DT node update
+>> and thus the node is overwritten by the Linux's topology instead of the
+>> hypervisor one.
+>>
+>> Introduce a hook called when the ibm,dynamic-reconfiguration-memory node is
+>> updated to force an update of the LMB's associativity.
+>>
+>> Cc: Tyrel Datwyler <tyreld@linux.ibm.com>
+>> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+>> ---
+>>
+>> V3:
+>>  - Check rd->dn->name instead of rd->dn->full_name
+>> V2:
+>>  - Take Tyrel's idea to rely on OF_RECONFIG_UPDATE_PROPERTY instead of
+>>  introducing a new hook mechanism.
+>> ---
+>>  arch/powerpc/include/asm/drmem.h              |  1 +
+>>  arch/powerpc/mm/drmem.c                       | 35 +++++++++++++++++++
+>>  .../platforms/pseries/hotplug-memory.c        |  4 +++
+>>  3 files changed, 40 insertions(+)
+>>
+>> diff --git a/arch/powerpc/include/asm/drmem.h b/arch/powerpc/include/asm/drmem.h
+>> index bf2402fed3e0..4265d5e95c2c 100644
+>> --- a/arch/powerpc/include/asm/drmem.h
+>> +++ b/arch/powerpc/include/asm/drmem.h
+>> @@ -111,6 +111,7 @@ int drmem_update_dt(void);
+>>  int __init
+>>  walk_drmem_lmbs_early(unsigned long node, void *data,
+>>  		      int (*func)(struct drmem_lmb *, const __be32 **, void *));
+>> +void drmem_update_lmbs(struct property *prop);
+>>  #endif
+>>  
+>>  static inline void invalidate_lmb_associativity_index(struct drmem_lmb *lmb)
+>> diff --git a/arch/powerpc/mm/drmem.c b/arch/powerpc/mm/drmem.c
+>> index 9af3832c9d8d..f0a6633132af 100644
+>> --- a/arch/powerpc/mm/drmem.c
+>> +++ b/arch/powerpc/mm/drmem.c
+>> @@ -307,6 +307,41 @@ int __init walk_drmem_lmbs_early(unsigned long node, void *data,
+>>  	return ret;
+>>  }
+>>  
+>> +/*
+>> + * Update the LMB associativity index.
+>> + */
+>> +static int update_lmb(struct drmem_lmb *updated_lmb,
+>> +		      __maybe_unused const __be32 **usm,
+>> +		      __maybe_unused void *data)
+>> +{
+>> +	struct drmem_lmb *lmb;
+>> +
+>> +	/*
+>> +	 * Brut force there may be better way to fetch the LMB
+>> +	 */
+>> +	for_each_drmem_lmb(lmb) {
+>> +		if (lmb->drc_index != updated_lmb->drc_index)
+>> +			continue;
+>> +
+>> +		lmb->aa_index = updated_lmb->aa_index;
+>> +		break;
+>> +	}
+>> +	return 0;
+>> +}
+>> +
+>> +/*
+>> + * Update the LMB associativity index.
+>> + *
+>> + * This needs to be called when the hypervisor is updating the
+>> + * dynamic-reconfiguration-memory node property.
+>> + */
+>> +void drmem_update_lmbs(struct property *prop)
+>> +{
+>> +	if (!strcmp(prop->name, "ibm,dynamic-memory"))
+>> +		__walk_drmem_v1_lmbs(prop->value, NULL, NULL, update_lmb);
+>> +	else if (!strcmp(prop->name, "ibm,dynamic-memory-v2"))
+>> +		__walk_drmem_v2_lmbs(prop->value, NULL, NULL, update_lmb);
+>> +}
+>>  #endif
+>>  
+>>  static int init_drmem_lmb_size(struct device_node *dn)
+>> diff --git a/arch/powerpc/platforms/pseries/hotplug-memory.c b/arch/powerpc/platforms/pseries/hotplug-memory.c
+>> index 8377f1f7c78e..672ffbee2e78 100644
+>> --- a/arch/powerpc/platforms/pseries/hotplug-memory.c
+>> +++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
+>> @@ -949,6 +949,10 @@ static int pseries_memory_notifier(struct notifier_block *nb,
+>>  	case OF_RECONFIG_DETACH_NODE:
+>>  		err = pseries_remove_mem_node(rd->dn);
+>>  		break;
+>> +	case OF_RECONFIG_UPDATE_PROPERTY:
+>> +		if (!strcmp(rd->dn->name,
+>> +			    "ibm,dynamic-reconfiguration-memory"))
+>> +			drmem_update_lmbs(rd->prop);
+>>  	}
+>>  	return notifier_from_errno(err);
+> 
+> How will this interact with DLPAR memory? When we dlpar memory,
+> ibm,configure-connector is used to fetch the new associativity details
+> and set drmem_lmb->aa_index correctly there. Once that is done kernel
+> then call drmem_update_dt() which will result in the above notifier
+> callback? 
+> 
+> IIUC, the call back then will update drmem_lmb->aa_index again?
 
-Wasn't reviewing, just skimming the lists, but s/optimaize/optimize/
+After digging through some of this code I'm a bit concerned about all the kernel
+device tree manipulation around memory DLPAR both with the assoc-lookup-array
+prop update and post dynamic-memory prop updating. We build a drmem_info array
+of the LMBs from the device-tree at boot. I don't really understand why we are
+manipulating the device tree property every time we add/remove an LMB. Not sure
+the reasoning was to write back in particular the aa_index and flags for each
+LMB into the device tree when we already have them in the drmem_info array. On
+the other hand the assoc-lookup-array I suppose would need to have an in kernel
+representation to avoid updating the device tree property every time.
+
+Changes to the device tree should be things reported to the system from the
+hypervisor through the proper interfaces, and as a result any code that cares
+can register an of_reconfig_notifier to respond to device tree updates. The
+memory dlpar code seems to be needlessly manipulating the device-tree which
+leads to the problem here where a notifier callback is now duplicating work.
+
+Just my two cents FWIW.
+
+-Tyrel
 
 > 
-> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> ---
->  .../userspace-api/media/v4l/pixfmt-reserved.rst      | 12 ++++++++++++
->  drivers/media/v4l2-core/v4l2-ioctl.c                 |  2 ++
->  include/uapi/linux/videodev2.h                       |  2 ++
->  3 files changed, 16 insertions(+)
+> -aneesh
 > 
-> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst b/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
-> index 0b879c0da713..30b9cef4cbf0 100644
-> --- a/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
-> +++ b/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
-> @@ -260,6 +260,18 @@ please make a proposal on the linux-media mailing list.
->  	of tiles, resulting in 32-aligned resolutions for the luminance plane
->  	and 16-aligned resolutions for the chrominance plane (with 2x2
->  	subsampling).
-> +    * .. _V4L2-PIX-FMT-QC8C:
-> +
-> +      - ``V4L2_PIX_FMT_QC8C``
-> +      - 'QC8C'
-> +      - Compressed Macro-tile 8Bit YUV420 format used by Qualcomm platforms.
-> +	The compression is lossless. It contains four planes.
-
-Would be nice to document if the bytesperline is meaningful or not. Basically,
-what information need to be carried to other drivers ?
-
-> +    * .. _V4L2-PIX-FMT-QC10C:
-> +
-> +      - ``V4L2_PIX_FMT_QC10C``
-> +      - 'QC10C'
-> +      - Compressed Macro-tile 10Bit YUV420 format used by Qualcomm platforms.
-> +	The compression is lossless. It contains four planes.
->  
-> 
-> 
-> 
-> 
-> 
-> 
-> 
->  .. raw:: latex
->  
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-> index 6a5d1c6d11d6..33ee12b97aa0 100644
-> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
-> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-> @@ -1455,6 +1455,8 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
->  		case V4L2_PIX_FMT_S5C_UYVY_JPG:	descr = "S5C73MX interleaved UYVY/JPEG"; break;
->  		case V4L2_PIX_FMT_MT21C:	descr = "Mediatek Compressed Format"; break;
->  		case V4L2_PIX_FMT_SUNXI_TILED_NV12: descr = "Sunxi Tiled NV12 Format"; break;
-> +		case V4L2_PIX_FMT_QC8C:		descr = "QCOM Compressed 8bit Format"; break;
-> +		case V4L2_PIX_FMT_QC10C:	descr = "QCOM Compressed 10bit Format"; break;
->  		default:
->  			if (fmt->description[0])
->  				return;
-> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-> index 311a01cc5775..c57628a16cf4 100644
-> --- a/include/uapi/linux/videodev2.h
-> +++ b/include/uapi/linux/videodev2.h
-> @@ -737,6 +737,8 @@ struct v4l2_pix_format {
->  #define V4L2_PIX_FMT_SUNXI_TILED_NV12 v4l2_fourcc('S', 'T', '1', '2') /* Sunxi Tiled NV12 Format */
->  #define V4L2_PIX_FMT_CNF4     v4l2_fourcc('C', 'N', 'F', '4') /* Intel 4-bit packed depth confidence information */
->  #define V4L2_PIX_FMT_HI240    v4l2_fourcc('H', 'I', '2', '4') /* BTTV 8-bit dithered RGB */
-> +#define V4L2_PIX_FMT_QC8C     v4l2_fourcc('Q', '0', '8', 'C') /* Qualcomm 8-bit compressed */
-> +#define V4L2_PIX_FMT_QC10C    v4l2_fourcc('Q', '1', '0', 'C') /* Qualcomm 10-bit compresed */
->  
-> 
-> 
-> 
-> 
-> 
-> 
-> 
->  /* 10bit raw bayer packed, 32 bytes for every 25 pixels, last LSB 6 bits unused */
->  #define V4L2_PIX_FMT_IPU3_SBGGR10	v4l2_fourcc('i', 'p', '3', 'b') /* IPU3 packed 10-bit BGGR bayer */
-
 
