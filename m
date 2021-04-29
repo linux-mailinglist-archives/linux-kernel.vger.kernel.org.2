@@ -2,146 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C1536E2BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 02:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F8C36E2CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbhD2Ay1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 20:54:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58764 "EHLO
+        id S230075AbhD2BA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 21:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhD2AyZ (ORCPT
+        with ESMTP id S229624AbhD2BA4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 20:54:25 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C11ECC06138B
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 17:53:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=ias16OQcBsl8ZkDBEGSPojETSjzryLxJi3zCN7d/i4E=; b=GTME8irLh4yirVajHMss5bhE0m
-        7i1RAaFww73oFMbbYd0JrHof4s+TMXrucW6CGr3kkbhsBf8q6s5DdEMDqGDJGD0LWfOKw5Wj6+hXJ
-        gpb68XEd42+3C5w2QFfuLtvXv/1ExB9xhRjty8Wc5BsnGBX/32nQiIQlP78e31U/5YRWDyCIwQLxs
-        UBQ/lr6+8zb8wwDxweO7GwWWjEVzEb/QKLsU34ZkxKy6Wt3lhT4YV4tr0/OTWb/oxitrSkJzYBj/N
-        aMp6SjGofFyNorhZU3fAsN//GPO+gx9GiFBOObxJHnXKrWN3XPozkuT9WBmaOffhc9TgtjUqUKnB0
-        e5+LOTsg==;
-Received: from [2601:1c0:6280:3f0::3bc5] (helo=casper.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lbuvn-0090nA-OF; Thu, 29 Apr 2021 00:53:35 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Anatolij Gustschin <agust@denx.de>,
-        linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH] powerpc: mpc52xx: fix some pr_debug() issues
-Date:   Wed, 28 Apr 2021 17:53:23 -0700
-Message-Id: <20210429005323.8195-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Wed, 28 Apr 2021 21:00:56 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AFBAC06138C
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 18:00:11 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id u14-20020a17090a1f0eb029014e38011b09so10055443pja.5
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 18:00:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=W1foyVnHpt10zkANi9y0LWp7jrRDQd/Q7wAouJW7aRU=;
+        b=l0enqpDX6x7/rQ/qhKF4XS/4BoLoz2AHWukBmE29ObLVOk7DOcHRi1ABbXlXZ/mbKI
+         gTvEh3P2XsGnujeGXSCa99jrGp4J6td9wZOVTUs/KZwwxIuVjCOKUuGkKsUl8QI1npFz
+         XfXBXDVswe5VSNifnAhJp2j/P3+ptoAye9aN/5HVivKg2Er7aGzTVLrDGU3hglCFMXic
+         YROk6OR7rBzv/ifeBonAwUsWOiHGGLTQWatjKEQtWK+CoT999dY+Fj26fsWVrAAnasKx
+         zMeNQzFD6UViMEA7Vg69DpU2tXqZlS44ForW8kl4IsPVVovQ2n3U9POGTXArPoWJVRWF
+         xyzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=W1foyVnHpt10zkANi9y0LWp7jrRDQd/Q7wAouJW7aRU=;
+        b=qnJEWrhNWHkBgl1AlCyik5P0fXmPG+9z8kOkxOArO9FUphgGZu0Ed/yXwpubd9T+ht
+         EIQ//RJwIT1jVnSUl0qceSexfbtYG6EM7KmvK8J73BaSw5uzh57CQ4putd2M7L/HG5Re
+         RtFvUj0AdA7JfRC2e+IqvLFlU4LE3A2Iy9/lq4D5YgK1q+nf5dIedhyR971IhWh6IwWt
+         fwo7+sRWrr8QUG+WHz7ncHDofhhvUkhd6nvPfF8rvaMQEI15UKrEN5lFeAinw/tusBx6
+         50GBbveOMZus0k3Wy7pal+7aYa+LSJdL3qdg58gPLPBnMf1iVjdHwke1ZhuP5jReBDlU
+         vIdQ==
+X-Gm-Message-State: AOAM532q28R/IYDcK5bMzmKI1FnOOyImV6juNArLou8QKecHAiaf8JXa
+        Y5uqiJ2I34m/mWxfEakkQ9bsAQ==
+X-Google-Smtp-Source: ABdhPJzn0rzOp7Odw2sXRwk+fWNrSxVdAPCKwhagPdWng4HyaQb+oJYvsO5jwpedNc8uRrmK9PtTZQ==
+X-Received: by 2002:a17:902:7e86:b029:ed:74b7:8fd4 with SMTP id z6-20020a1709027e86b02900ed74b78fd4mr4989129pla.21.1619658010508;
+        Wed, 28 Apr 2021 18:00:10 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id 5sm729450pfi.43.2021.04.28.18.00.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 18:00:10 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 01:00:06 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Valeriy Vdovin <valeriy.vdovin@virtuozzo.com>
+Cc:     linux-kernel@vger.kernel.org, Denis Lunev <den@openvz.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Alexander Graf <graf@amazon.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        Like Xu <like.xu@linux.intel.com>, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v4] KVM: x86: Fix KVM_GET_CPUID2 ioctl to return cpuid
+ entries count
+Message-ID: <YIoFFl72VSeuhCRt@google.com>
+References: <20210428172729.3551-1-valeriy.vdovin@virtuozzo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210428172729.3551-1-valeriy.vdovin@virtuozzo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix some pr_debug() issues in mpc52xx_pci.c:
+On Wed, Apr 28, 2021, Valeriy Vdovin wrote:
+> It's very explicit by the code that it was designed to receive some
+> small number of entries to return E2BIG along with the corrected number.
 
-- use __func__ to print function names
-- use "%pr" to print struct resource entries
-- use "%pa" to print a resource_size_t (phys_addr_t)
+LOL, saying KVM_GET_CPUID2 was "designed" is definitely giving the KVM
+forefathers the benefit of the doubt.
 
-The latter two fix several build warnings:
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index efc7a82ab140..3f941b1f4e78 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -4773,14 +4773,17 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
+>  		r = -EFAULT;
+>  		if (copy_from_user(&cpuid, cpuid_arg, sizeof(cpuid)))
+>  			goto out;
+> +
+>  		r = kvm_vcpu_ioctl_get_cpuid2(vcpu, &cpuid,
+>  					      cpuid_arg->entries);
+> -		if (r)
+> +
+> +		if (r && r != -E2BIG)
+>  			goto out;
+> -		r = -EFAULT;
+> -		if (copy_to_user(cpuid_arg, &cpuid, sizeof(cpuid)))
+> +
+> +		if (copy_to_user(cpuid_arg, &cpuid, sizeof(cpuid))) {
+> +			r = -EFAULT;
+>  			goto out;
 
-../arch/powerpc/platforms/52xx/mpc52xx_pci.c: In function 'mpc52xx_pci_setup':
-../include/linux/kern_levels.h:5:18: warning: format '%x' expects argument of type 'unsigned int', but argument 2 has type 'resource_size_t' {aka 'long long unsigned int'} [-Wformat=]
-../arch/powerpc/platforms/52xx/mpc52xx_pci.c:277:40: note: format string is defined here
-  277 |   pr_debug("mem_resource[1] = {.start=%x, .end=%x, .flags=%lx}\n",
-      |                                       ~^
-      |                                        |
-      |                                        unsigned int
-      |                                       %llx
-../include/linux/kern_levels.h:5:18: warning: format '%x' expects argument of type 'unsigned int', but argument 3 has type 'resource_size_t' {aka 'long long unsigned int'} [-Wformat=]
-../arch/powerpc/platforms/52xx/mpc52xx_pci.c:277:49: note: format string is defined here
-  277 |   pr_debug("mem_resource[1] = {.start=%x, .end=%x, .flags=%lx}\n",
-      |                                                ~^
-      |                                                 |
-      |                                                 unsigned int
-      |                                                %llx
+As I pointed out[*], copying the number of entries but not the entries themselves
+is wrong.  All of my feedback on v1 still stands.
 
-../arch/powerpc/platforms/52xx/mpc52xx_pci.c:299:36: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
-  299 |    (unsigned long long)res->flags, (void*)hose->io_base_phys);
-      |                                    ^
-../arch/powerpc/platforms/52xx/mpc52xx_pci.c:295:2: note: in expansion of macro 'pr_debug'
-  295 |  pr_debug(".io_resource={.start=%llx,.end=%llx,.flags=%llx} "
-      |  ^~~~~~~~
+[*] https://lkml.kernel.org/r/YIl4M/GgaYvwNuXv@google.com
 
-The change to print mem_resource[0] is for consistency within this
-source file and to use the kernel API -- there were no warnings here.
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Anatolij Gustschin <agust@denx.de>
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: Michael Ellerman <mpe@ellerman.id.au>
----
- arch/powerpc/platforms/52xx/mpc52xx_pci.c |   22 ++++++--------------
- 1 file changed, 7 insertions(+), 15 deletions(-)
-
---- linux-next-20210427.orig/arch/powerpc/platforms/52xx/mpc52xx_pci.c
-+++ linux-next-20210427/arch/powerpc/platforms/52xx/mpc52xx_pci.c
-@@ -242,7 +242,7 @@ mpc52xx_pci_setup(struct pci_controller
- 	u32 tmp;
- 	int iwcr0 = 0, iwcr1 = 0, iwcr2 = 0;
- 
--	pr_debug("mpc52xx_pci_setup(hose=%p, pci_regs=%p)\n", hose, pci_regs);
-+	pr_debug("%s(hose=%p, pci_regs=%p)\n", __func__, hose, pci_regs);
- 
- 	/* pci_process_bridge_OF_ranges() found all our addresses for us;
- 	 * now store them in the right places */
-@@ -257,11 +257,7 @@ mpc52xx_pci_setup(struct pci_controller
- 	/* Memory windows */
- 	res = &hose->mem_resources[0];
- 	if (res->flags) {
--		pr_debug("mem_resource[0] = "
--		         "{.start=%llx, .end=%llx, .flags=%llx}\n",
--		         (unsigned long long)res->start,
--			 (unsigned long long)res->end,
--			 (unsigned long long)res->flags);
-+		pr_debug("mem_resource[0] = %pr\n", res);
- 		out_be32(&pci_regs->iw0btar,
- 		         MPC52xx_PCI_IWBTAR_TRANSLATION(res->start, res->start,
- 							resource_size(res)));
-@@ -274,8 +270,7 @@ mpc52xx_pci_setup(struct pci_controller
- 
- 	res = &hose->mem_resources[1];
- 	if (res->flags) {
--		pr_debug("mem_resource[1] = {.start=%x, .end=%x, .flags=%lx}\n",
--		         res->start, res->end, res->flags);
-+		pr_debug("mem_resource[1] = %pr\n", res);
- 		out_be32(&pci_regs->iw1btar,
- 		         MPC52xx_PCI_IWBTAR_TRANSLATION(res->start, res->start,
- 							resource_size(res)));
-@@ -292,11 +287,8 @@ mpc52xx_pci_setup(struct pci_controller
- 		printk(KERN_ERR "%s: Didn't find IO resources\n", __FILE__);
- 		return;
- 	}
--	pr_debug(".io_resource={.start=%llx,.end=%llx,.flags=%llx} "
--	         ".io_base_phys=0x%p\n",
--	         (unsigned long long)res->start,
--		 (unsigned long long)res->end,
--		 (unsigned long long)res->flags, (void*)hose->io_base_phys);
-+	pr_debug(".io_resource = %pr .io_base_phys=0x%pa\n",
-+			res, &hose->io_base_phys);
- 	out_be32(&pci_regs->iw2btar,
- 	         MPC52xx_PCI_IWBTAR_TRANSLATION(hose->io_base_phys,
- 	                                        res->start,
-@@ -336,8 +328,8 @@ mpc52xx_pci_fixup_resources(struct pci_d
- {
- 	int i;
- 
--	pr_debug("mpc52xx_pci_fixup_resources() %.4x:%.4x\n",
--	         dev->vendor, dev->device);
-+	pr_debug("%s() %.4x:%.4x\n",
-+	         __func__, dev->vendor, dev->device);
- 
- 	/* We don't rely on boot loader for PCI and resets all
- 	   devices */
+> -		r = 0;
+> +		}
+>  		break;
+>  	}
+>  	case KVM_GET_MSRS: {
