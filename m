@@ -2,126 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD9A436E762
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 10:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 148AB36E753
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 10:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240071AbhD2Iwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 04:52:33 -0400
-Received: from mga01.intel.com ([192.55.52.88]:11275 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239885AbhD2Iwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 04:52:31 -0400
-IronPort-SDR: brQXJnHKxWJDqO0GCnJmVrfTDI3lKxIa2YEszbmPRkwV6fyPomsM1a02JVxiS4BRTbnZCYrC3A
- T9ui2Rve6/Ug==
-X-IronPort-AV: E=McAfee;i="6200,9189,9968"; a="217684140"
-X-IronPort-AV: E=Sophos;i="5.82,258,1613462400"; 
-   d="scan'208";a="217684140"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 01:51:45 -0700
-IronPort-SDR: SuZ9tfMNP5EQbtl+AkYk/IewFy3ZsHwjdPYuhr8U9Hnpbw0u4o9gNtZxoMFpCIsXjqSY1Loj12
- FxXGcocZnoew==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,258,1613462400"; 
-   d="scan'208";a="605198520"
-Received: from mike-ilbpg1.png.intel.com ([10.88.227.76])
-  by orsmga005.jf.intel.com with ESMTP; 29 Apr 2021 01:51:40 -0700
-From:   Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-To:     Jose.Abreu@synopsys.com, andrew@lunn.ch, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, kuba@kernel.org, netdev@vger.kernel.org,
-        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        davem@davemloft.net, mcoquelin.stm32@gmail.com,
-        weifeng.voon@intel.com, boon.leong.ong@intel.com,
-        tee.min.tan@intel.com, vee.khee.wong@linux.intel.com,
-        vee.khee.wong@intel.com, michael.wei.hong.sit@intel.com,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 2/2] net: stmmac: Add callbacks for DWC xpcs Energy Efficient Ethernet
-Date:   Thu, 29 Apr 2021 16:46:36 +0800
-Message-Id: <20210429084636.24752-3-michael.wei.hong.sit@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210429084636.24752-1-michael.wei.hong.sit@intel.com>
-References: <20210429084636.24752-1-michael.wei.hong.sit@intel.com>
+        id S240101AbhD2Irj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 04:47:39 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53262 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239919AbhD2Irh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 04:47:37 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619686009;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kHswT2jDsMipWNtyamEbQ6UzsQ/KBjJJLmUiEm7N+L4=;
+        b=m47Zu631+9u8FlUrxbxPWR/hy2tj9n1mmU4jXSHTB7lMVT6uTqyRHD/r20qxTyqI2n5haT
+        +sVsm4jxfVtIWu/ko/KhJxz6tN3zMObJIKY5J01woaE717JGjmTIgJTQfF+QsRXMaHq36+
+        wDwMpl8nhngfmxWU9cTLND3m4eXqXqrWhtX7kLPIl7PcY8xRFSHabrDS8H9ybe1fGyDBzl
+        8IGnWZkBO+vE3lc3gpTDUQ3RHsm/TO7Er1J+7o9y4JnTkmu5zJkM/B4rma5KNBRduiE1aA
+        4vh+ZTP4Qxum6HT0sph3uaZzvEj9UzqMEHP/PmYam8PFcqskWcZfK+0O+S9Tlg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619686009;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kHswT2jDsMipWNtyamEbQ6UzsQ/KBjJJLmUiEm7N+L4=;
+        b=lZimm/D2q4FscZj3ZcaogdCCgH27aBYOxB6pEVm4YlRD/7ed43dpAbKE0hKX3M7WIqhq2r
+        fqvYFh+hGFJoJpDQ==
+To:     Zelin Deng <zelin.deng@linux.alibaba.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH] Guest system time jumps when new vCPUs is hot-added
+In-Reply-To: <e33920a0-24bc-fa40-0a23-c2eb5693f85d@linux.alibaba.com>
+References: <1619576521-81399-1-git-send-email-zelin.deng@linux.alibaba.com> <87lf92n5r1.ffs@nanos.tec.linutronix.de> <e33920a0-24bc-fa40-0a23-c2eb5693f85d@linux.alibaba.com>
+Date:   Thu, 29 Apr 2021 10:46:49 +0200
+Message-ID: <875z057a12.ffs@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Link xpcs callback functions for MAC to configure the xpcs EEE feature.
+On Thu, Apr 29 2021 at 07:24, Zelin Deng wrote:
+> On 2021/4/28 =E4=B8=8B=E5=8D=885:00, Thomas Gleixner wrote:
+>> On Wed, Apr 28 2021 at 10:22, Zelin Deng wrote:
+>>> [   85.101228] TSC ADJUST compensate: CPU1 observed 169175101528 warp. =
+Adjust: 169175101528
+>>> [  141.513496] TSC ADJUST compensate: CPU1 observed 166 warp. Adjust: 1=
+69175101694
+>> Why is TSC_ADJUST on CPU1 different from CPU0 in the first place?
+>
+> Per my understanding when vCPU is created by KVM, it's tsc_offset =3D 0 -=
+=20
+> host rdtsc() meanwhile TSC_ADJUST is 0.
+>
+> Assume vCPU0 boots up with tsc_offset0, after 10000 tsc cycles, hotplug=20
+> via "virsh setvcpus" creates a new vCPU1 whose tsc_offset1 should be=20
+> about tsc_offset0 - 10000.=C2=A0 Therefore there's 10000 tsc warp between=
+=20
+> rdtsc() in guest of vCPU0 and vCPU1, check_tsc_sync_target() when vCPU1=20
+> gets online will set TSC_ADJUST for vCPU1.
+>
+> Did I miss something?
 
-The clk_eee frequency is used to calculate the MULT_FACT_100NS. This is
-to adjust the clock tic closer to 100ns.
+Yes. The above is wrong.
 
-Signed-off-by: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
----
- drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c    | 11 +++++++++++
- drivers/net/ethernet/stmicro/stmmac/hwif.h           |  2 ++
- drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c |  6 ++++++
- include/linux/stmmac.h                               |  1 +
- 4 files changed, 20 insertions(+)
+The host has to ensure that the TSC of the vCPUs is in sync and if it
+exposes TSC_ADJUST then that should be 0 and nothing else. The TSC
+in a guest vCPU is
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-index 80728a4c0e3f..e36a8cc59ad0 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-@@ -429,6 +429,17 @@ static int intel_mgbe_common_data(struct pci_dev *pdev,
- 	plat->force_sf_dma_mode = 0;
- 	plat->tso_en = 1;
- 
-+	/* Multiplying factor to the clk_eee_i clock time
-+	 * period to make it closer to 100 ns. This value
-+	 * should be programmed such that the clk_eee_time_period *
-+	 * (MULT_FACT_100NS + 1) should be within 80 ns to 120 ns
-+	 * clk_eee frequency is 19.2Mhz
-+	 * clk_eee_time_period is 52ns
-+	 * 52ns * (1 + 1) = 104ns
-+	 * MULT_FACT_100NS = 1
-+	 */
-+	plat->mult_fact_100ns = 1;
-+
- 	plat->rx_sched_algorithm = MTL_RX_ALGORITHM_SP;
- 
- 	for (i = 0; i < plat->rx_queues_to_use; i++) {
-diff --git a/drivers/net/ethernet/stmicro/stmmac/hwif.h b/drivers/net/ethernet/stmicro/stmmac/hwif.h
-index 2cc91759b91f..c678d7b826a3 100644
---- a/drivers/net/ethernet/stmicro/stmmac/hwif.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/hwif.h
-@@ -624,6 +624,8 @@ struct stmmac_mmc_ops {
- 	stmmac_do_callback(__priv, xpcs, link_up, __args)
- #define stmmac_xpcs_probe(__priv, __args...) \
- 	stmmac_do_callback(__priv, xpcs, probe, __args)
-+#define stmmac_xpcs_config_eee(__priv, __args...) \
-+	stmmac_do_callback(__priv, xpcs, config_eee, __args)
- 
- struct stmmac_regs_off {
- 	u32 ptp_off;
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-index 61b11639ee0c..1f6d749fd9a3 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-@@ -720,6 +720,12 @@ static int stmmac_ethtool_op_set_eee(struct net_device *dev,
- 		netdev_warn(priv->dev,
- 			    "Setting EEE tx-lpi is not supported\n");
- 
-+	ret = stmmac_xpcs_config_eee(priv, &priv->hw->xpcs_args,
-+				     priv->plat->mult_fact_100ns,
-+				     edata->eee_enabled);
-+	if (ret)
-+		return ret;
-+
- 	if (!edata->eee_enabled)
- 		stmmac_disable_eee_mode(priv);
- 
-diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-index 0db36360ef21..e14a12df381b 100644
---- a/include/linux/stmmac.h
-+++ b/include/linux/stmmac.h
-@@ -223,6 +223,7 @@ struct plat_stmmacenet_data {
- 	struct clk *clk_ptp_ref;
- 	unsigned int clk_ptp_rate;
- 	unsigned int clk_ref_rate;
-+	unsigned int mult_fact_100ns;
- 	s32 ptp_max_adj;
- 	struct reset_control *stmmac_rst;
- 	struct stmmac_axi *axi;
--- 
-2.17.1
+  hostTSC + host_TSC_ADJUST + vcpu_TSC_OFFSET + vcpu_guest_TSC_ADJUST
 
+The mechanism the host has to use to ensure that the guest vCPUs are
+exposing the same time is vcpu_TSC_OFFSET and nothing else. And
+vcpu_TSC_OFFSET is the same for all vCPUs of a guest.
+
+Now there is another issue when vCPU0 and vCPU1 are on different
+'sockets' via the topology information provided by the hypervisor.
+
+Because we had quite some issues in the past where TSCs on a single
+socket were perfectly fine, but between sockets they were skewed, we
+have a sanity check there. What it does is:
+
+     if (cpu_is_first_on_non_boot_socket(cpu))
+     	validate_synchronization_with_boot_socket()
+
+And that validation expects that the CPUs involved run in a tight loop
+concurrently so the TSC readouts which happen on both can be reliably
+compared.
+
+But this cannot be guaranteed on vCPUs at all, because the host can
+schedule out one or both at any point during that synchronization check.
+
+A two socket guest setup needs to have information from the host that
+TSC is usable and that the socket sync check can be skipped. Anything
+else is just doomed to fail in hard to diagnose ways.
+
+Thanks,
+
+        tglx
