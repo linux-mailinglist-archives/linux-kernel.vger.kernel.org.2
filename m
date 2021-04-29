@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D945B36F20F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 23:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB0E36F211
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 23:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237296AbhD2Vat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 17:30:49 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:51463 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233284AbhD2Vap (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 17:30:45 -0400
-X-Originating-IP: 90.65.108.55
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 4DFC91C0003;
-        Thu, 29 Apr 2021 21:29:56 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Mark Brown <broonie@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-samsung-soc@vger.kernel.org, linux-rtc@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>
-Subject: Re: (subset) [PATCH 0/9] mfd/rtc/regulator: Drop board file support for Samsung PMIC
-Date:   Thu, 29 Apr 2021 23:29:50 +0200
-Message-Id: <161973168395.2582973.3771358876796788667.b4-ty@bootlin.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210420170118.12788-1-krzysztof.kozlowski@canonical.com>
-References: <20210420170118.12788-1-krzysztof.kozlowski@canonical.com>
+        id S237278AbhD2Vaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 17:30:52 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:46746 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233284AbhD2Vav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 17:30:51 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lcEEQ-001iLp-4X; Thu, 29 Apr 2021 23:29:58 +0200
+Date:   Thu, 29 Apr 2021 23:29:58 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-staging@lists.linux.dev, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, Weijie Gao <weijie.gao@mediatek.com>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        =?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+Subject: Re: [PATCH net-next 2/4] net: dsa: mt7530: add interrupt support
+Message-ID: <YIslVil/EmynAUxa@lunn.ch>
+References: <20210429062130.29403-1-dqfext@gmail.com>
+ <20210429062130.29403-3-dqfext@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210429062130.29403-3-dqfext@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Apr 2021 19:01:09 +0200, Krzysztof Kozlowski wrote:
-> The Samsung PMIC drivers since long time are used only on devicetree
-> platforms (Samsung Exynos) and there are no users with board files.
+On Thu, Apr 29, 2021 at 02:21:28PM +0800, DENG Qingfang wrote:
+> Add support for MT7530 interrupt controller to handle internal PHYs.
+> In order to assign an IRQ number to each PHY, the registration of MDIO bus
+> is also done in this driver.
 > 
-> Drop the support for board files entirely and depend on OF for matching.
-> 
-> This makes the code smaller and simpler.
-> 
-> [...]
+> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
 
-Applied, thanks!
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-[7/9] rtc: s5m: Remove reference to parent's device pdata
-      commit: aa364b12fd7404374a8a6c55ec2e4a70aba9a574
-
-Best regards,
--- 
-Alexandre Belloni <alexandre.belloni@bootlin.com>
+    Andrew
