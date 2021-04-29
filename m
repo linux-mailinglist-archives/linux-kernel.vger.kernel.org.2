@@ -2,96 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A2D336E30E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B32A36E315
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235837AbhD2Bqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 21:46:44 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:33573 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231564AbhD2Bqn (ORCPT
+        id S236006AbhD2Bvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 21:51:40 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:36696 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235520AbhD2Bvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 21:46:43 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 18DA810C2;
-        Wed, 28 Apr 2021 21:45:57 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 28 Apr 2021 21:45:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm2; bh=D
-        k51ao1IEp6JfSy4kSMl2Ei33Quo/UNxiozv8dRzrts=; b=YdMQYrPi7hm+ocAWD
-        sCMvDcAGS4tKL2YoRGxRD5Yb3GG+UqzjSlUrmHAaShyIDPx1h/VeCXLBZMbIGwYl
-        tKjJtaMunNEsTAo0Q2to6vPxFErFKx3pFN/oq15P6yxERz59jD1b/kpSFkyd09QX
-        3pakhpoQYEUshzmkU37VgSSHdOXNQglQDAePdfHcihV9jrrmQlLBXDvetc8dhiwD
-        utwDkm5sWvTQXIwdo+qdQyiepLAXJZsFXjlWw2MLuaYkQ1ryvKIUl8+Dfp4VH175
-        mNEY8UvH/9sjRioyI68oPjY6wxQ5sEnHGdnCL+ZjHiMNYe8PgVjvzHTXhQYyABis
-        bmhJA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=Dk51ao1IEp6JfSy4kSMl2Ei33Quo/UNxiozv8dRzr
-        ts=; b=VloHZsZDzfz/Mlh84tSM6YkubRVzNH8ATuagT1dLBQP5FXigm5k1mOF34
-        7ig8mODw/AEqnWUExdEMzwp6n8bijXUQg92THkKyRDrny2itCQ03owghSi77nt9R
-        ssKhX57JVwgt5QFvLxZ7SjZl4Uhk4SjHhk6KFxzXV2/+m30laNncyvKTfRK/NJCZ
-        4JATT3oQJUGs6hkq+nSpAjCgA2sVfvCcYECsUWIAoLw5JkJi36VaQgxayMrImmqX
-        qK4UFX3dT8TEBVtw6XB+FUh/1PGRgO8dyAFckmyCOWyUZ0Q9jF2ti5iOgYr8Yn5G
-        9eU1kTe0HAf7k7iygJeEOe7lHRVbQ==
-X-ME-Sender: <xms:0w-KYGvBZONSKjSsMwxl5heX3-vkbLMlF9Zcd0wFI0YX_3WkuRjpKA>
-    <xme:0w-KYLeYRriAvsh9UXPBjAov9oJ9gw7IxmZ-5Sqd4unZ11mwPsO6UlOBPCAAq1Ok_
-    _CSNLPZD50rwLe4jT0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddvfedggeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdeftfenucfhrhhomheplfhirgig
-    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
-    ggtffrrghtthgvrhhnpeefleduiedtvdekffeggfeukeejgeeffeetlefghfekffeuteei
-    jeeghefhueffvdenucfkphepudduvddrieegrddvledrudduheenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehf
-    lhihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:0w-KYBzIV1Xqnu218oZ2itbZraWQKAhk8XJNNxo6KaswJbPbzoWGxw>
-    <xmx:0w-KYBPI3DryFxIHfPf1g0F1gGEcP0_aeBJRU_pqUO0Xf0bZ1zZ_DQ>
-    <xmx:0w-KYG8GipOCOsaY_YqPXgneuLNk5-7Bzz2tibgn9zy7dcNaClwXWQ>
-    <xmx:1A-KYKZ8hmbJgs0E4U_WldIArVaQUa9mwggMEirG0RUPCHBuW_mj8Q>
-Received: from [10.20.192.183] (unknown [112.64.29.115])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Wed, 28 Apr 2021 21:45:53 -0400 (EDT)
-Subject: Re: [PATCH v2] MIPS:DTS:Correct device id of pcie for Loongnon-2K
-To:     Xiaochuan Mao <maoxiaochuan@loongson.cn>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Qing Zhang <zhangqing@loongson.cn>
-Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210428120628.21041-1-maoxiaochuan@loongson.cn>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <3254396f-eabc-c7f4-8801-1efa9850025d@flygoat.com>
-Date:   Thu, 29 Apr 2021 09:45:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210428120628.21041-1-maoxiaochuan@loongson.cn>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
+        Wed, 28 Apr 2021 21:51:38 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13T1mkHg009817;
+        Thu, 29 Apr 2021 01:50:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=CEhFXbkeV5jb4Bwi3UMetDKwSUynvsvV1cHuD5gAY6A=;
+ b=vRzuye4UEHqr2A54aSqyzq4bTMIfuAr/6Cwr3V/bSxOBkGubiNHwpqNvbhYERZbv9UFs
+ sKsLSlHGbtykAD+/m7s4FL92vlGtmyBo+ymnO1Dm0blIRy1jdrMAmnhjw8Mv/CBmv0pf
+ wBKtGNtrVr2l8lSadVNkOLlHsSbUemFfGbzlx2bmiM8rdW7BFXzNQwPvFlaVpnwW8pWD
+ mYgnYFBUF7r7Q+nSmjiuLR5Gl+5PqiRxrpDmI2Ymp8uS7VGFpcZKcorwlEN4jMI/SQlx
+ OUAkgXu7RX4elZbzMQlOh/CTBnQM8Tcj1hIYeFqZ+ZDsQu4iVQ84Ra9TQfX0+BeMTma5 2w== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 385afq2ty9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 01:50:38 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13T1oZIn023971;
+        Thu, 29 Apr 2021 01:50:37 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 384w3vhppu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 01:50:37 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13T1oaYp024126;
+        Thu, 29 Apr 2021 01:50:36 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 384w3vhpmy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 01:50:36 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13T1oQGa007139;
+        Thu, 29 Apr 2021 01:50:26 GMT
+Received: from ban25x6uut24.us.oracle.com (/10.153.73.24)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 28 Apr 2021 18:50:26 -0700
+From:   Si-Wei Liu <si-wei.liu@oracle.com>
+To:     mst@redhat.com, jasowang@redhat.com, elic@nvidia.com
+Cc:     linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        si-wei.liu@oracle.com
+Subject: [PATCH v3 0/1] mlx5_vdpa bug fix for feature negotiation
+Date:   Wed, 28 Apr 2021 21:48:53 -0400
+Message-Id: <1619660934-30910-1-git-send-email-si-wei.liu@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-ORIG-GUID: rrt_UaoDzYl39b02gY1zZs7WqvyHmeBO
+X-Proofpoint-GUID: rrt_UaoDzYl39b02gY1zZs7WqvyHmeBO
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9968 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 phishscore=0
+ clxscore=1015 suspectscore=0 lowpriorityscore=0 mlxlogscore=999 mlxscore=0
+ adultscore=0 malwarescore=0 impostorscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104290011
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This v3 consisting of one single patch only is a follow-up 
+to the v2 of mlx5_vdpa bug fix series as in:
 
-ÔÚ 2021/4/28 20:06, Xiaochuan Mao Ð´µÀ:
-> from Loongson-2K user manual know that Loongson-2K have two
-> pcie controller pcie0 and pcie1, pcie0 have four port named port0~port3
-> and pcie1 have 2 port named port0~port1. the device id of port0 is 7a19
-> in each pcie controller and others are 7a09.
->
-> Signed-off-by: Xiaochuan Mao <maoxiaochuan@loongson.cn>
+https://lore.kernel.org/virtualization/1612993680-29454-1-git-send-email-si-wei.liu@oracle.com
 
-Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+which initially attempted to fix a few independent issues in the
+mlx5_vdpa driver.
 
-> ---
-> v1:
-> revert class code
-> ---
->   .../boot/dts/loongson/loongson64-2k1000.dtsi     | 16 ++++++++--------
-[...]
+Presently Patch #1 in the original series was piggybacked and got
+merged through a separate patchset:
+
+https://lore.kernel.org/virtualization/20210406170457.98481-13-parav@nvidia.com/
+
+and the issue Patch #3 tried to fix was addressed by another patch,
+
+https://lore.kernel.org/virtualization/a5356a13-6d7d-8086-bfff-ff869aec5449@redhat.com/
+
+that leaves Patch #2 in the original v2 series unmerged. Since it
+was already Ack'ed by Jason and Eli in v2, just get it reposted
+while dropping others after syncing with the current vhost tree.
+
+Thanks,
+
+--
+v2->v3: drop merged patches from previous series;
+        repost with updated commit message
+v1->v2: move feature capability query to probing (Eli)
+
+Si-Wei Liu (1):
+  vdpa/mlx5: fix feature negotiation across device reset
+
+ drivers/vdpa/mlx5/net/mlx5_vnet.c | 25 +++++++++++++++----------
+ 1 file changed, 15 insertions(+), 10 deletions(-)
+
+-- 
+1.8.3.1
+
