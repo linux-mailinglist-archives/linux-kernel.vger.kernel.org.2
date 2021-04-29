@@ -2,73 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB8436E747
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 10:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A14536E74B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 10:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240034AbhD2Iqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 04:46:32 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:25811 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233714AbhD2Iqb (ORCPT
+        id S235092AbhD2IrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 04:47:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229963AbhD2IrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 04:46:31 -0400
-X-Originating-IP: 2.7.49.219
-Received: from debian.home (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id C4ECF240006;
-        Thu, 29 Apr 2021 08:45:42 +0000 (UTC)
-From:   Alexandre Ghiti <alex@ghiti.fr>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexandre Ghiti <alex@ghiti.fr>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] riscv: Disallow to build XIP_KERNEL with SOC_SIFIVE
-Date:   Thu, 29 Apr 2021 04:45:41 -0400
-Message-Id: <20210429084541.28083-1-alex@ghiti.fr>
-X-Mailer: git-send-email 2.20.1
+        Thu, 29 Apr 2021 04:47:05 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C021C06138C
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 01:46:19 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id t24so8399458oic.10
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 01:46:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bYJ/i+SyDWuXeltdyQRtqtcL95TciOlmlQ2w0jknE48=;
+        b=pL/eJr3nZ1xPXLcRvl0U4RW4El5I8fT5ZC3v52Qmlslf9BOJWoOnByIYODbo7VWxZN
+         gvNtg2QGNUyVoKYRtfdyuchvx2ZUZczbs/bhGEgyt3Kyh73GiDnclQczVT3mWr1tNnVF
+         n8jvU4dfHi25Dns1SHDJJW7HWJzxfAvoVX/Za5OJoueFl8wCOnNX5g40cfRddEas7dln
+         4ooWV7jq0UDZwy6gz6025xNHxdIqg7qF9rhuiF3ds/2Sg9hjzM0JLq4ipWf4sxnj0dWW
+         WvXstLLdiaOeVizGBD/xIIJBj7j+rNoCtfHxsn684meB9CcHSoHwTwapwZLWUr8Iz5KB
+         F7rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bYJ/i+SyDWuXeltdyQRtqtcL95TciOlmlQ2w0jknE48=;
+        b=luuk0njeMGHibR91NDjuJneBINaP+bMahaRK4nUKf+hDWJuGH2CbQboxFgwQKTzXzt
+         C3Ea9k0xUrxJ6Nhf1jogeiLZp9A8ly6VgrUy5SOW3TBfPhfjHDFYb262SBypVI3xII9j
+         8TBwoSEmajFB0233dlM7gdOUJiPo+hW+FDLv98WACfxY/KYeN94nKELxizR41BhYJXgf
+         pUyFxyq6+Ug6LthE3v4zUo9HyHiHz55cdNVuXbJeSGmEZ1DcCOh0D/vIHmoVOJMfi2SB
+         NKAhQmEFZX78W7qKRPx7rbIHGQB7snNrhaT4xQa1gMrBPyg1ZJsJHaEXc+NKFuG72BoW
+         NrHQ==
+X-Gm-Message-State: AOAM530bNbSbTshzTOfkrAgWrnVfFM0v3zzFi13mEkbX6FQPhkllXYbv
+        pRaMGay9apo3TjZL+rkoxgfgEZg+98ohGb078wEHRA==
+X-Google-Smtp-Source: ABdhPJyCkp8J3VRA0ewFkoQykIwlYkcZbVoeMyqGaTtHvZE/zViErogzzqFjCPiXR/2ErhCqVeYfbzmswfnNNdh7rQs=
+X-Received: by 2002:aca:a814:: with SMTP id r20mr1142692oie.104.1619685978667;
+ Thu, 29 Apr 2021 01:46:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210427170859.579924-1-jackmanb@google.com> <CAEf4BzZimYsgp3AS72U8nOXfryB6dVxQKetT_6yE3xzztdTyZg@mail.gmail.com>
+ <CACYkzJ57LqsDBgJpTZ6X-mEabgNK60J=2CJEhUWoQU6wALvQVw@mail.gmail.com>
+ <CAEf4Bzb+OGZrvmgLk3C1bGtmyLU9JiJKp2WfgGkWq0nW0Tq32g@mail.gmail.com>
+ <CA+i-1C2bNk0Mx_9KkuyOjvQh_y7KFrHBU-869P+8oTFq8HdVcw@mail.gmail.com> <CAEf4Bzb1ZNotcB44cDauAkAbs4R=UvPRKP1KWNbLg1k1jH25mA@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb1ZNotcB44cDauAkAbs4R=UvPRKP1KWNbLg1k1jH25mA@mail.gmail.com>
+From:   Brendan Jackman <jackmanb@google.com>
+Date:   Thu, 29 Apr 2021 10:46:06 +0200
+Message-ID: <CA+i-1C3YJQt60FBaOg3pHD+BG6kuUK1Z8RiZ87O9+WSr1Ynbyg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Fix signed overflow in ringbuf_process_ring
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RISCV_ERRATA_ALTERNATIVE patches text at runtime which is not possible when
-the kernel is executed from the flash in XIP mode, and as the SIFIVE
-errata must be fixed somehow, disallow to build a XIP kernel that
-supports SIFIVE socs.
+On Wed, 28 Apr 2021 at 20:13, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+...
+>
+> Yep, let's cap. But to not penalize a hot loop with extra checks.
+> Let's use int64_t internally for counting and only cap it before the
+> return.
 
-Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
----
- arch/riscv/Kconfig.erratas | 2 +-
- arch/riscv/Kconfig.socs    | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/riscv/Kconfig.erratas b/arch/riscv/Kconfig.erratas
-index d5d03ae8d685..9537dbd67357 100644
---- a/arch/riscv/Kconfig.erratas
-+++ b/arch/riscv/Kconfig.erratas
-@@ -2,7 +2,7 @@ menu "CPU errata selection"
- 
- config RISCV_ERRATA_ALTERNATIVE
- 	bool "RISC-V alternative scheme"
--	default y
-+	default y if !XIP_KERNEL
- 	help
- 	  This Kconfig allows the kernel to automatically patch the
- 	  errata required by the execution platform at run time. The
-diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-index 00c2b205654c..9cb38bc9d7cd 100644
---- a/arch/riscv/Kconfig.socs
-+++ b/arch/riscv/Kconfig.socs
-@@ -9,6 +9,7 @@ config SOC_MICROCHIP_POLARFIRE
- 
- config SOC_SIFIVE
- 	bool "SiFive SoCs"
-+	depends on !XIP_KERNEL
- 	select SERIAL_SIFIVE if TTY
- 	select SERIAL_SIFIVE_CONSOLE if TTY
- 	select CLK_SIFIVE
--- 
-2.20.1
-
+Cool, sounds good. Patch incoming but I'm on interrupts duty this week
+so might not be today/tomorrow.
