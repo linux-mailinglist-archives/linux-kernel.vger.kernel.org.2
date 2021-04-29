@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C468236EB02
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E18936EB05
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238004AbhD2M7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 08:59:40 -0400
-Received: from mga17.intel.com ([192.55.52.151]:50831 "EHLO mga17.intel.com"
+        id S238462AbhD2M7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 08:59:43 -0400
+Received: from mga17.intel.com ([192.55.52.151]:50834 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237362AbhD2M7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237370AbhD2M7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 29 Apr 2021 08:59:31 -0400
-IronPort-SDR: 7P3Hs3WC1JS+7E5LA7Ikq0nD9uNqWEAO4cS1ZjHkoo3TefCdbZIa9j54eL+b60ibXTu4ciUVrH
- hsLkpdhqVmXA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9969"; a="177107425"
+IronPort-SDR: Y4WVEkubBLNA+k5Ek1y4J8HDGFmVI9aUB8b/SI2r8mYvMXeXobi4KkbBNHLbJKqNDajU9wwxAc
+ sb0BiF3Zko4A==
+X-IronPort-AV: E=McAfee;i="6200,9189,9969"; a="177107441"
 X-IronPort-AV: E=Sophos;i="5.82,259,1613462400"; 
-   d="scan'208";a="177107425"
+   d="scan'208";a="177107441"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 05:58:42 -0700
-IronPort-SDR: 2GUTPRorEbUVi/+y6LBwLdyKRDqE71geKgr1BlTfuR87tu1NuChNi5BRjItCVzwDLHyZE3JxK+
- dihZyJeDXm7Q==
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 05:58:44 -0700
+IronPort-SDR: kwXc05OeD7R6lWh99Cc8uY3eHfnq2lYNmvuI9cohdrVpCCeSxKlOyhV46DT+bS4Yg6tKqlJXOf
+ SKTyrBbNHoCA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,259,1613462400"; 
-   d="scan'208";a="537361615"
+   d="scan'208";a="537361630"
 Received: from ahunter-desktop.fi.intel.com ([10.237.72.174])
-  by orsmga004.jf.intel.com with ESMTP; 29 Apr 2021 05:58:40 -0700
+  by orsmga004.jf.intel.com with ESMTP; 29 Apr 2021 05:58:42 -0700
 From:   Adrian Hunter <adrian.hunter@intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 05/12] perf inject: Add --vm-time-correlation option
-Date:   Thu, 29 Apr 2021 15:58:47 +0300
-Message-Id: <20210429125854.13905-6-adrian.hunter@intel.com>
+Subject: [PATCH 06/12] perf auxtrace: Allow buffers to be mapped read / write
+Date:   Thu, 29 Apr 2021 15:58:48 +0300
+Message-Id: <20210429125854.13905-7-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210429125854.13905-1-adrian.hunter@intel.com>
 References: <20210429125854.13905-1-adrian.hunter@intel.com>
@@ -40,142 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Intel PT timestamps are affected by virtualization. Add a new option
-that will allow the Intel PT decoder to correlate the timestamps and
-translate the virtual machine timestamps to host timestamps.
-
-The advantages of making this a separate step, rather than a part of
-normal decoding are that it is simpler to implement, and it needs to
-be done only once.
-
-This patch adds only the option. Later patches add Intel PT support.
+To support in-place update, allow buffers to be mapped read / write.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- tools/perf/Documentation/perf-inject.txt | 10 ++++++
- tools/perf/builtin-inject.c              | 43 ++++++++++++++++++++++++
- tools/perf/util/auxtrace.h               |  6 ++++
- 3 files changed, 59 insertions(+)
+ tools/perf/util/auxtrace.c | 5 +++--
+ tools/perf/util/auxtrace.h | 6 +++++-
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/Documentation/perf-inject.txt b/tools/perf/Documentation/perf-inject.txt
-index a8eccff21281..89305b1a6d39 100644
---- a/tools/perf/Documentation/perf-inject.txt
-+++ b/tools/perf/Documentation/perf-inject.txt
-@@ -68,6 +68,16 @@ include::itrace.txt[]
- --force::
- 	Don't complain, do it.
- 
-+--vm-time-correlation[=OPTIONS]::
-+	Some architectures may capture AUX area data which contains timestamps
-+	affected by virtualization. This option will update those timestamps
-+	in place, to correlate with host timestamps. The in-place update means
-+	that an output file is not specified, and instead the input file is
-+	modified.  The options are architecture specific, except that they may
-+	start with "dry-run" which will cause the file to be processed but
-+	without updating it. Currently this option is supported only by
-+	Intel PT, refer	linkperf:perf-intel-pt[1]
-+
- SEE ALSO
- --------
- linkperf:perf-record[1], linkperf:perf-report[1], linkperf:perf-archive[1],
-diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-index ddfdeb85c586..8fba0cf746d5 100644
---- a/tools/perf/builtin-inject.c
-+++ b/tools/perf/builtin-inject.c
-@@ -698,6 +698,36 @@ static void strip_init(struct perf_inject *inject)
- 		evsel->handler = drop_sample;
+diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
+index 48b88e2bca1e..ade655d58780 100644
+--- a/tools/perf/util/auxtrace.c
++++ b/tools/perf/util/auxtrace.c
+@@ -1120,8 +1120,9 @@ int auxtrace_queue_data(struct perf_session *session, bool samples, bool events)
+ 					 auxtrace_queue_data_cb, &qd);
  }
  
-+static int parse_vm_time_correlation(const struct option *opt, const char *str, int unset)
-+{
-+	struct perf_inject *inject = opt->value;
-+	const char *args;
-+	char *dry_run;
-+
-+	if (unset)
-+		return 0;
-+
-+	inject->itrace_synth_opts.set = true;
-+	inject->itrace_synth_opts.vm_time_correlation = true;
-+	inject->in_place_update = true;
-+
-+	if (!str)
-+		return 0;
-+
-+	dry_run = strstr(str, "dry-run");
-+	if (dry_run) {
-+		inject->itrace_synth_opts.vm_tm_corr_dry_run = true;
-+		inject->in_place_update_dry_run = true;
-+		args = dry_run + strlen("dry-run");
-+	} else {
-+		args = str;
-+	}
-+
-+	inject->itrace_synth_opts.vm_tm_corr_args = strdup(args);
-+
-+	return inject->itrace_synth_opts.vm_tm_corr_args ? 0 : -ENOMEM;
-+}
-+
- static int __cmd_inject(struct perf_inject *inject)
+-void *auxtrace_buffer__get_data(struct auxtrace_buffer *buffer, int fd)
++void *auxtrace_buffer__get_data_rw(struct auxtrace_buffer *buffer, int fd, bool rw)
  {
- 	int ret = -EINVAL;
-@@ -739,6 +769,15 @@ static int __cmd_inject(struct perf_inject *inject)
- 			else if (!strncmp(name, "sched:sched_stat_", 17))
- 				evsel->handler = perf_inject__sched_stat;
- 		}
-+	} else if (inject->itrace_synth_opts.vm_time_correlation) {
-+		session->itrace_synth_opts = &inject->itrace_synth_opts;
-+		memset(&inject->tool, 0, sizeof(inject->tool));
-+		inject->tool.id_index	    = perf_event__process_id_index;
-+		inject->tool.auxtrace_info  = perf_event__process_auxtrace_info;
-+		inject->tool.auxtrace	    = perf_event__process_auxtrace;
-+		inject->tool.auxtrace_error = perf_event__process_auxtrace_error;
-+		inject->tool.ordered_events = true;
-+		inject->tool.ordering_requires_timestamps = true;
- 	} else if (inject->itrace_synth_opts.set) {
- 		session->itrace_synth_opts = &inject->itrace_synth_opts;
- 		inject->itrace_synth_opts.inject = true;
-@@ -880,6 +919,9 @@ int cmd_inject(int argc, const char **argv)
- 				    itrace_parse_synth_opts),
- 		OPT_BOOLEAN(0, "strip", &inject.strip,
- 			    "strip non-synthesized events (use with --itrace)"),
-+		OPT_CALLBACK_OPTARG(0, "vm-time-correlation", &inject, NULL, "opts",
-+				    "correlate time between VM guests and the host",
-+				    parse_vm_time_correlation),
- 		OPT_END()
- 	};
- 	const char * const inject_usage[] = {
-@@ -972,5 +1014,6 @@ int cmd_inject(int argc, const char **argv)
- out_delete:
- 	zstd_fini(&(inject.session->zstd_data));
- 	perf_session__delete(inject.session);
-+	free(inject.itrace_synth_opts.vm_tm_corr_args);
- 	return ret;
- }
++	int prot = rw ? PROT_READ | PROT_WRITE : PROT_READ;
+ 	size_t adj = buffer->data_offset & (page_size - 1);
+ 	size_t size = buffer->size + adj;
+ 	off_t file_offset = buffer->data_offset - adj;
+@@ -1130,7 +1131,7 @@ void *auxtrace_buffer__get_data(struct auxtrace_buffer *buffer, int fd)
+ 	if (buffer->data)
+ 		return buffer->data;
+ 
+-	addr = mmap(NULL, size, PROT_READ, MAP_SHARED, fd, file_offset);
++	addr = mmap(NULL, size, prot, MAP_SHARED, fd, file_offset);
+ 	if (addr == MAP_FAILED)
+ 		return NULL;
+ 
 diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
-index 59c3c05384a4..9ac2ac1bd793 100644
+index 9ac2ac1bd793..472c0973b1f1 100644
 --- a/tools/perf/util/auxtrace.h
 +++ b/tools/perf/util/auxtrace.h
-@@ -90,6 +90,9 @@ enum itrace_period_type {
-  * @remote_access: whether to synthesize remote access events
-  * @mem: whether to synthesize memory events
-  * @timeless_decoding: prefer "timeless" decoding i.e. ignore timestamps
-+ * @vm_time_correlation: perform VM Time Correlation
-+ * @vm_tm_corr_dry_run: VM Time Correlation dry-run
-+ * @vm_tm_corr_args:  VM Time Correlation implementation-specific arguments
-  * @callchain_sz: maximum callchain size
-  * @last_branch_sz: branch context size
-  * @period: 'instructions' events period
-@@ -130,6 +133,9 @@ struct itrace_synth_opts {
- 	bool			remote_access;
- 	bool			mem;
- 	bool			timeless_decoding;
-+	bool			vm_time_correlation;
-+	bool			vm_tm_corr_dry_run;
-+	char			*vm_tm_corr_args;
- 	unsigned int		callchain_sz;
- 	unsigned int		last_branch_sz;
- 	unsigned long long	period;
+@@ -533,7 +533,11 @@ int auxtrace_queue_data(struct perf_session *session, bool samples,
+ 			bool events);
+ struct auxtrace_buffer *auxtrace_buffer__next(struct auxtrace_queue *queue,
+ 					      struct auxtrace_buffer *buffer);
+-void *auxtrace_buffer__get_data(struct auxtrace_buffer *buffer, int fd);
++void *auxtrace_buffer__get_data_rw(struct auxtrace_buffer *buffer, int fd, bool rw);
++static inline void *auxtrace_buffer__get_data(struct auxtrace_buffer *buffer, int fd)
++{
++	return auxtrace_buffer__get_data_rw(buffer, fd, false);
++}
+ void auxtrace_buffer__put_data(struct auxtrace_buffer *buffer);
+ void auxtrace_buffer__drop_data(struct auxtrace_buffer *buffer);
+ void auxtrace_buffer__free(struct auxtrace_buffer *buffer);
 -- 
 2.17.1
 
