@@ -2,94 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B0C36E5DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 09:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB4536E5E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 09:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239066AbhD2HZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 03:25:55 -0400
-Received: from mail-vk1-f169.google.com ([209.85.221.169]:34622 "EHLO
-        mail-vk1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232511AbhD2HZu (ORCPT
+        id S239308AbhD2H2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 03:28:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239050AbhD2H2e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 03:25:50 -0400
-Received: by mail-vk1-f169.google.com with SMTP id q192so3306949vke.1;
-        Thu, 29 Apr 2021 00:25:01 -0700 (PDT)
+        Thu, 29 Apr 2021 03:28:34 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A26C06138D
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 00:27:48 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id u14-20020a17090a1f0eb029014e38011b09so10481269pja.5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 00:27:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=endlessos.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=lG7fN/8t7j6+iLVQDFN6M3QfpChMwMgL2bDEqLa02Qg=;
+        b=o60cTcFzKjZX8No9QlOUH0ywJR5DGB2ckobVxKGj1L3r3yyfwakt0O58LTrx85TMaW
+         ALH1hf0SggjV3NhjAH7Rx2OVX25cLd+rmewdhEKcfD7X+aH1uquihIKdlsB06SM1jvQ+
+         E7EIOPcGKx78e2lMjav+mliBO7ne05IjYkIQ02cCkNBleG2PSqrKOdtPgEXw9MohfzPG
+         /08g4DLCOlEl+7kd1eIV3DivNXcZERo4zcmt4Z+ajuytA/VM0+zuIXgq2/4IusAmUtj8
+         a99w+D6UTZFgkScfcqdNddLqV75Gi65qbPyG4JNHichuA5jbPR+iwuL63SiORK4wuc0g
+         7LwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BR+Zb6bXtQ8BGY8mZumeMhUwBbZF2jGOR3njZwlxxUo=;
-        b=pSQl/F6GHiWWSyjZNPEnp6B0D8lZB0Rg3QVAQ5xd7NYXsPINZNp+BWID7jwnIXAKDX
-         LKx6kVjqzjbb4Snt5dpMpBHojVo+3v0LUpPvMfmQmUYrqJog5VSPiT0uwhym/mphEyox
-         osEl+xDc7ybfLr60hdXdflKWCn72Uy4xRsqIOwasXuSaSY3DgpsI7OQeoN4uJHiLtgf7
-         gOF/vhXq5r8RoahJNnPwRbTH+MRnGYOvtLycF19OOxxYJwQKVQzwzfLPZFN6EGEgATH3
-         4U86xWumKWaFGhNth14QUi5OHAsdU5a0g6iQB2X8cqBXoqGy0354QuTlQOfBfY+p/s9w
-         EKWA==
-X-Gm-Message-State: AOAM5324RBrF5AztyqW1qGeHnb/EVBYVhQGGd6y3KiwZe3FgPo+8+VaT
-        xrWr5fs8NI3vqudnMbqxVSixa0nQs3BASgT+qgrYAFLRzd0=
-X-Google-Smtp-Source: ABdhPJzWxXJHZHy/a/3azuE76fEyxLCedtlAO9sChfUUdpE3dbANNOgLoCyBS8aBE6LYvOYl+2jaqpKGLBJpBu4clNQ=
-X-Received: by 2002:a1f:5682:: with SMTP id k124mr28961242vkb.2.1619681006490;
- Thu, 29 Apr 2021 00:23:26 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=lG7fN/8t7j6+iLVQDFN6M3QfpChMwMgL2bDEqLa02Qg=;
+        b=UF4E+IW871oJI4oHK2rat9cloK70BNSGdo4OdqU1zvjfsVlk6jNJrAUyP83uFolS8R
+         ujHS94vtu7OWZSyVxyklXr8XTKHroU1SQMqL/YzQj5oazhX1I2MXsKeltO+DtKKreVtP
+         dk5sk2XjbwXpILE9uC1q7YasVPK1tmanwNrFqgWMV1PDR5gth2qcYJOTcmzAyvTEozLx
+         Z8+pL86p0r7JzZ/gKe1m6eaYYZnF2ShucyQaVqa5GSxeEHTQG+zWYsTo8cuisdN79B0+
+         hoPGQtDi2bUL9xeIMUhq037wF6gq3w0CgIf+uJ8oejRCokaVjOaI3JujKB9NK8N+E3PE
+         5qkQ==
+X-Gm-Message-State: AOAM531EYWPfqUY64nsTQ/r8E14mKgbQ4rXpHDwV9aB9P8OOn+Bi1U0D
+        I5Ynplh7kYbkqNsOKHwRdOsnSQ==
+X-Google-Smtp-Source: ABdhPJx4W5jNoRZhQiC9645r/h31OFGTNwljVCcUp6NkakGEw9IMReUvVm8qBOVVaZtRC9a9uoS/5Q==
+X-Received: by 2002:a17:902:ec84:b029:ea:b28d:e53e with SMTP id x4-20020a170902ec84b02900eab28de53emr33378997plg.77.1619681268180;
+        Thu, 29 Apr 2021 00:27:48 -0700 (PDT)
+Received: from starnight.localdomain (123-204-46-122.static.seed.net.tw. [123.204.46.122])
+        by smtp.googlemail.com with ESMTPSA id m9sm1674753pgt.65.2021.04.29.00.27.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 00:27:47 -0700 (PDT)
+From:   Jian-Hong Pan <jhp@endlessos.org>
+To:     =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+        linux-firmware@kernel.org
+Cc:     linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux@endlessos.org,
+        Jian-Hong Pan <jhp@endlessos.org>
+Subject: [PATCH v2] brcm: Add a link to enable khadas VIM2's WiFi
+Date:   Thu, 29 Apr 2021 15:25:03 +0800
+Message-Id: <20210429072502.4350-1-jhp@endlessos.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <c62e9f94-25fc-6791-c328-5454abc403b9@gmail.com>
+References: <c62e9f94-25fc-6791-c328-5454abc403b9@gmail.com>
 MIME-Version: 1.0
-References: <20210323221430.3735147-1-laurent@vivier.eu> <20210323221430.3735147-3-laurent@vivier.eu>
- <CAMuHMdUFh2W-bY5Ez1aOTZQjq0=THvmOf22JdxWoNNtFLskSzw@mail.gmail.com> <F9FB9B1D-3B31-452D-AD67-D1C57A302B83@gmail.com>
-In-Reply-To: <F9FB9B1D-3B31-452D-AD67-D1C57A302B83@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 29 Apr 2021 09:23:15 +0200
-Message-ID: <CAMuHMdXhSQNwCU627MOONOrXdasQN=VZxSGrCZiDN7iwQSwi7Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] m68k: introduce a virtual m68k machine
-To:     Josh Juran <jjuran@gmail.com>
-Cc:     Laurent Vivier <laurent@vivier.eu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Josh,
+According to kernel message on khadas VIM2 board equipped with BCM4356:
 
-On Thu, Apr 29, 2021 at 1:06 AM Josh Juran <jjuran@gmail.com> wrote:
-> On Apr 28, 2021, at 8:04 AM, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > This can be simplified by shifting irq_pending instead of irq_bit:
-> >
-> >    do {
-> >            if (irq_pending & 1)
-> >                    generic_handle_irq(irq_num);
-> >
-> >            ++irq_num;
-> >            irq_pending >>= 1;
-> >    } while (irq_pending);
-> >
-> > Unfortunately m68k doesn't have a single-instruction __ffs().
->
-> The 68000 and 68010 don't, but couldn't the 68020's BFFFO do the job?
+brcmfmac: brcmf_fw_alloc_request: using brcm/brcmfmac4356-sdio for chip BCM4356/2
+usbcore: registered new interface driver brcmfmac
+brcmfmac mmc0:0001:1: Direct firmware load for brcm/brcmfmac4356-sdio.khadas,vim2.txt failed with error -2
+brcmfmac mmc0:0001:1: Direct firmware load for brcm/brcmfmac4356-sdio.txt failed with error -2
 
-I looked at the code generated by gcc for __builtin_ffs(), and while
-it did use BFFFO, it needs several other instructions.
+System needs the NVRAM file "brcmfmac4356-sdio.khadas,vim2.txt" to
+enable the WiFi chip BCM4356. Found it can share with the same file
+"brcmfmac4356-sdio.vamrs,rock960.txt" with a soft link as
+"brcmfmac4356-sdio.khadas,vim2.txt". Both 2.4GHz and 5GHz WiFi are
+enabled with the linked config.
 
-The same can be seen in arch/m68k/include/asm/bitops.h:
+This patch adds the link to brcmfmac4356-sdio.vamrs,rock960.txt for it.
 
-    static inline int ffs(int x)
-    {
-            int cnt;
+Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+---
+v2: Modified the commit description.
 
-            __asm__ ("bfffo %1{#0:#0},%0"
-                    : "=d" (cnt)
-                    : "dm" (x & -x));
-            return 32 - cnt;
-    }
+ WHENCE | 1 +
+ 1 file changed, 1 insertion(+)
 
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/WHENCE b/WHENCE
+index 3c29304..5773020 100644
+--- a/WHENCE
++++ b/WHENCE
+@@ -2780,6 +2780,7 @@ Link: brcm/brcmfmac43455-sdio.Raspberry\ Pi\ Foundation-Raspberry\ Pi\ Compute\
+ File: "brcm/brcmfmac43455-sdio.MINIX-NEO Z83-4.txt"
+ File: "brcm/brcmfmac4356-pcie.gpd-win-pocket.txt"
+ File: brcm/brcmfmac4356-sdio.vamrs,rock960.txt
++Link: brcm/brcmfmac4356-sdio.khadas,vim2.txt -> brcmfmac4356-sdio.vamrs,rock960.txt
+ 
+ Licence: GPLv2. See GPL-2 for details.
+ 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.31.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
