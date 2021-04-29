@@ -2,122 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6116C36ECA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 16:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E4C36ECAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 16:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240483AbhD2Otc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 10:49:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21645 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232556AbhD2Otb (ORCPT
+        id S240584AbhD2Otw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 10:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240633AbhD2Otq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 10:49:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619707724;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Tkl/J7KdySQSxmwL4nToe0M/Xh0jvxPcUzrvauVfBCc=;
-        b=iSi5jPUf8GrptG9AIA+UzCXJQRkLhCTudznXyReUK8jIZhEennuESwEFpZZ7j+vp1vCJui
-        ZaiRozZTTEhvih9g+WwMkaYIDyYHNLGqIJaLnN9WEGQZztGlJZ+rYY9bbPjAzkzZf4zcXE
-        SUAyt7glonWg4vLwKtgEX/TGBb7jNQ8=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-562-Ib8TO8iLMJy_sWRE2kCz3w-1; Thu, 29 Apr 2021 10:48:42 -0400
-X-MC-Unique: Ib8TO8iLMJy_sWRE2kCz3w-1
-Received: by mail-wm1-f72.google.com with SMTP id n9-20020a1c40090000b02901401bf40f9dso4820070wma.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 07:48:42 -0700 (PDT)
+        Thu, 29 Apr 2021 10:49:46 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 343B4C06138C
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 07:48:58 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id m9so54496377wrx.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 07:48:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=vngK38/uzYnT4W+jr6IRjRIJAM+iJCix31NgQ9EuLvg=;
+        b=YTSzJGcJHQgMlVXHNlXeaegByzcdO/Ixq9cwa3gZIFs3WIVEICy7i6oaNv6IY9heK7
+         3c+2qFCcvore/t6PybqZ371mANjlIO6Gow70D+otyIZbAmzdIs25wLSskUQbnAeN6e/F
+         Ka3IZAu9ACMS2YqTyCoGjzJdaTJLf6Bh5Q3u0ojWvmh3ox6/A/oHVkgYkmtR5Uk5ykVn
+         9MciTdw6XCQoZaeHTMxi/igOej912jK01qR+4ZtYYNTFHrluX9deMM+JEN8vmzveHWyr
+         iUd6sEyPOAhufRaw9anUNU86N5EcjVMvyafncjUCAGlePRQXghhvzVcsKb39+t+pipJY
+         iuwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=Tkl/J7KdySQSxmwL4nToe0M/Xh0jvxPcUzrvauVfBCc=;
-        b=JM8pGFbiQB2VSYGhNsTE+sA+6rpzLxuJZJcrZZoHbVnqdE6T7g2AGqw2Uo2ZFYxMr2
-         mGCUh2LVeaaatCveWcU/a2mKnsv5InHE6rO0o6Wf3li2qGEDxmCCq7kThyt4f+X7YnIH
-         8iz/h/icrNmFQOZuPyhfgSLvGPuqzbvWX4nGJNuvKwQ4RXLNmNE+1YIMv7DH33/GCd5T
-         qB8ZLC3a6rqkLvLVPUnvbUW+LXk5agmwvs8/HdBhHvKkVspl6NOdaVtZ8Q3FNhK32rWx
-         Swe05EbIcyEFR7iQGaf3HbTFaWCBpX73oZJbBRzVOcgUx2tvmultepvyugWoP9zS2s3p
-         /Aaw==
-X-Gm-Message-State: AOAM531nR9Sy/2Xod7Di+gB6qlrLaHTiTNuNzHb4gWrNSDSGudUWFgcl
-        GJg1zYMS174UOpLqr80jaESy93RgVXpj0jz9Wt8DSyUCJXvfCaW4CSZWSSmpbuSqEn3MDgcZg3C
-        HvmMj96F5RP3gpamxEvDSZJ6b
-X-Received: by 2002:a05:600c:2d4b:: with SMTP id a11mr375461wmg.185.1619707721313;
-        Thu, 29 Apr 2021 07:48:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyK5tOEhSkHKJM0+mEkeUgviEzMNg++fZFr8Lr9yMtdQOF0i9GqBldz4nWleT5OKc6yM0IfdQ==
-X-Received: by 2002:a05:600c:2d4b:: with SMTP id a11mr375426wmg.185.1619707721051;
-        Thu, 29 Apr 2021 07:48:41 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6158.dip0.t-ipconnect.de. [91.12.97.88])
-        by smtp.gmail.com with ESMTPSA id p17sm5000217wru.1.2021.04.29.07.48.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Apr 2021 07:48:40 -0700 (PDT)
-Subject: Re: [PATCH v2 1/5] mm/huge_memory.c: remove dedicated macro
- HPAGE_CACHE_INDEX_MASK
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
-Cc:     ziy@nvidia.com, william.kucharski@oracle.com, willy@infradead.org,
-        yang.shi@linux.alibaba.com, aneesh.kumar@linux.ibm.com,
-        rcampbell@nvidia.com, songliubraving@fb.com,
-        kirill.shutemov@linux.intel.com, riel@surriel.com,
-        hannes@cmpxchg.org, minchan@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20210429132648.305447-1-linmiaohe@huawei.com>
- <20210429132648.305447-2-linmiaohe@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <c7dab2a5-cf77-a1dd-201a-f4a5f190c4d7@redhat.com>
-Date:   Thu, 29 Apr 2021 16:48:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=vngK38/uzYnT4W+jr6IRjRIJAM+iJCix31NgQ9EuLvg=;
+        b=oDZ0aJD++drAMFutT8Iwk48RjRNMvtRibp6ueU5zROr4E2r5w7fN6el7mFlhOT6jeq
+         kueh7ySPE76HGrxk9hSpeq2DU/o/qGsqyQeOSBgLWUCY3OQJmV/FA9ZEXnqPj3gX5Tk8
+         zmkB2y9mCXx0rKhNr0l1MigDSuVM/vcb47JDKIZvJe6g0LHFl7hbDpAT7cm3WexLsyOn
+         y/dsUjmAC3I/6ygiKcO8riHN7CncZUkA66A74kPcUhoQEz0LzNDw32zHQnqDE+gvd+nI
+         9hsP4P123jw1lB/8VRI6z/b2ndtsSOL0mPtWc5MHBS/VuDqB2heGDLXXpRuDuA5FWPMv
+         PFKA==
+X-Gm-Message-State: AOAM531T4k0zBVC/ywXEraWJjv8JMXMBUffo6LRJHE3oH/Vrl7TD6xp1
+        zQO2PAFmnKPgQWe+2+s5QMCoeQ==
+X-Google-Smtp-Source: ABdhPJzRr1ptHoMK+F/hhQ1TsfC2223uBRcGsPIsIY79GHjAwVNUN4USMf1S/BuOGfztjsVVwGhQrA==
+X-Received: by 2002:a5d:6da8:: with SMTP id u8mr218171wrs.48.1619707736884;
+        Thu, 29 Apr 2021 07:48:56 -0700 (PDT)
+Received: from localhost ([2a01:cb19:826e:8e00:f37e:9091:b397:6f48])
+        by smtp.gmail.com with ESMTPSA id r2sm4995675wrt.79.2021.04.29.07.48.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 07:48:56 -0700 (PDT)
+From:   Mattijs Korpershoek <mkorpershoek@baylibre.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>, fparent@baylibre.com,
+        linux-input@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/7] Input: mtk-pmic-keys - check for NULL on
+ of_match_device()
+In-Reply-To: <875z05y4a2.fsf@baylibre.com>
+References: <20210428164219.1115537-1-mkorpershoek@baylibre.com>
+ <20210428164219.1115537-2-mkorpershoek@baylibre.com>
+ <YIm9Bb3eBjYwY53R@google.com> <875z05y4a2.fsf@baylibre.com>
+Date:   Thu, 29 Apr 2021 16:48:55 +0200
+Message-ID: <87wnslw3hk.fsf@baylibre.com>
 MIME-Version: 1.0
-In-Reply-To: <20210429132648.305447-2-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.04.21 15:26, Miaohe Lin wrote:
-> Rewrite the pgoff checking logic to remove macro HPAGE_CACHE_INDEX_MASK
-> which is only used here to simplify the code.
-> 
-> Reviewed-by: Yang Shi <shy828301@gmail.com>
-> Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->   include/linux/huge_mm.h | 6 ++----
->   1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-> index 9626fda5efce..0a526f211fec 100644
-> --- a/include/linux/huge_mm.h
-> +++ b/include/linux/huge_mm.h
-> @@ -152,15 +152,13 @@ static inline bool __transparent_hugepage_enabled(struct vm_area_struct *vma)
->   
->   bool transparent_hugepage_enabled(struct vm_area_struct *vma);
->   
-> -#define HPAGE_CACHE_INDEX_MASK (HPAGE_PMD_NR - 1)
-> -
->   static inline bool transhuge_vma_suitable(struct vm_area_struct *vma,
->   		unsigned long haddr)
->   {
->   	/* Don't have to check pgoff for anonymous vma */
->   	if (!vma_is_anonymous(vma)) {
-> -		if (((vma->vm_start >> PAGE_SHIFT) & HPAGE_CACHE_INDEX_MASK) !=
-> -			(vma->vm_pgoff & HPAGE_CACHE_INDEX_MASK))
-> +		if (!IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) - vma->vm_pgoff,
-> +				HPAGE_PMD_NR))
->   			return false;
+Hi Dmitry,
 
-I'd have used
+Mattijs Korpershoek <mkorpershoek@baylibre.com> writes:
 
-if (!IS_ALIGNED(PHYS_PFN(vma->vm_start) - vma->vm_pgoff,
+> Hi Dmitry,
+>
+> Dmitry Torokhov <dmitry.torokhov@gmail.com> writes:
+>
+>> Hi Mattijs,
+>>
+>> On Wed, Apr 28, 2021 at 06:42:13PM +0200, Mattijs Korpershoek wrote:
+>>> mtk-pmic-keys being a child device of mt6397, it will always get probed
+>>> when mt6397_probe() is called.
+>>> 
+>>> This also happens when we have no device tree node matching
+>>> mediatek,mt6397-keys.
+>>
+>> It sounds for me that creating a platform device instance in case where
+>> we know need OF node, but do not have one, is wasteful. Can
+>> mt6397-core.c and/or MFD core be adjusted to not do that.
+>
+> You are right. Maybe I can fix MFD core instead. I will look into it.
+>
+> Thanks for your review.
+>>
+>>> 
+>>> In that case, the mfd core warns us:
+>>> 
+>>>   [    0.352175] mtk-pmic-keys: Failed to locate of_node [id: -1]
+>>> 
+>>> Check return value from call to of_match_device()
+>>> in order to prevent a NULL pointer dereference.
+>>> 
+>>> In case of NULL print error message and return -ENODEV
+>>> 
+>>> Signed-off-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
+>>> ---
+>>>  drivers/input/keyboard/mtk-pmic-keys.c | 3 +++
+>>>  1 file changed, 3 insertions(+)
+>>> 
+>>> diff --git a/drivers/input/keyboard/mtk-pmic-keys.c b/drivers/input/keyboard/mtk-pmic-keys.c
+>>> index 62391d6c7da6..12c449eed026 100644
+>>> --- a/drivers/input/keyboard/mtk-pmic-keys.c
+>>> +++ b/drivers/input/keyboard/mtk-pmic-keys.c
+>>> @@ -247,6 +247,9 @@ static int mtk_pmic_keys_probe(struct platform_device *pdev)
+>>>  	const struct of_device_id *of_id =
+>>>  		of_match_device(of_mtk_pmic_keys_match_tbl, &pdev->dev);
+>>>  
+>>> +	if (!of_id)
+>>> +		return -ENODEV;
+>>> +
+>>
+>> So if we make MFD/6396 core smarter we would not be needing this. I
+>> guess there is still a possibility of someone stuffing "mtk-pmic-keys"
+>> into "driver_override" attribute of a random platform device but I
+>> wonder if we really need to take care of such scenarios...
+It turns out it was possible to make 6397-core smarter.
+I've submitted [1] to replace this patch.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Thanks again for your suggestion. Please let me know if I should add
+your Suggested-by: in [1].
 
--- 
-Thanks,
-
-David / dhildenb
-
+[1] https://patchwork.kernel.org/project/linux-mediatek/patch/20210429143811.2030717-1-mkorpershoek@baylibre.com/ instead
+>>
+>>>  	keys = devm_kzalloc(&pdev->dev, sizeof(*keys), GFP_KERNEL);
+>>>  	if (!keys)
+>>>  		return -ENOMEM;
+>>> -- 
+>>> 2.27.0
+>>> 
+>>
+>> Thanks.
+>>
+>> -- 
+>> Dmitry
