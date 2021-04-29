@@ -2,125 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD61236EB1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 15:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13CB636EB22
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 15:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237366AbhD2NGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 09:06:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234147AbhD2NGJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 09:06:09 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2072C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 06:05:21 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id l17-20020a25ad510000b02904ee2dd236d5so9617118ybe.18
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 06:05:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=dBDPUd6OEZUbveW3fcmwIajvKcq5g8Z72TTKCSfESO0=;
-        b=nRh86q6+YSD5vdlfgm97OOyL3sWvNGVQZuU5Fp4lJkrtv8saGQ537qpzdPmQ6mzJN9
-         W+wyyUPl1emjGz5Sce2KO1DNGkXGVECrq6hgD9uelgFh81LrPnc7C+ukhgsV9lfNlOdr
-         N5br/ybBGs+90Kg0AQK76eExLy8eZCBNb3p7wVqDE7rw73TkGMKF4Iny6vETrv1o/9wl
-         8JJFUA6PpqOHobLIkG2cNZrJptP0Jxl3bDTkYUAkRO+Fg33dO5qCAdJDmY5NRMuU/tGU
-         FZlvUPZJk/C/VlLDXCrGzsDkRmqIsnwiNXwhVAz2Or2ZYju8ZS7taBx6ne4pDe6YmvS1
-         aiTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=dBDPUd6OEZUbveW3fcmwIajvKcq5g8Z72TTKCSfESO0=;
-        b=InUpIsTR9yaPU8Ss+LmEVKMosCkVE0+fW9TSEC6q0S1rsQRB07dJzWU3EqCxlpIZ/I
-         ueVHlf/BxbA98P78YbGMmizLdNfbf1XvIGtoUlppejJr0TzHxXv2/Mlv71qm177eWlgT
-         JDoQhRzDW1kZAAiOcrH6wkiXrFmFae1vK+dffTyTS4tDehT6PVpr1dQBGYjR+ZkGonMX
-         mctAWX/tazHzweD1xVKx2Juiwx9HnQ+U4F5DbxwgR5HAb7CbJRJoUKgUjsGX6UtdFAUt
-         MEUW5/dU9yftFJzRttWJvdnpBPzChDlO9Uhkj2QqF8wunoBHrRm9ZbjXws62KHbtO05b
-         dVmQ==
-X-Gm-Message-State: AOAM532vcWnS44vuC25y5N/pBuPPSv9w1UPmPxCX64Ba+vSafxAVW4Ub
-        Kxtu/JSC4hOnwQ0DFIGx2OjxqVn1gUdnZg==
-X-Google-Smtp-Source: ABdhPJy8mvO1vCbW824a5Lt9RNNd1uTOm5bVBNwdxx+J9QO0FZuPU3BUQs4IO5oNUEfhO0AmL4+Ajj8PvP0A/g==
-X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:11db])
- (user=jackmanb job=sendgmr) by 2002:a05:6902:4e2:: with SMTP id
- w2mr17353469ybs.79.1619701520798; Thu, 29 Apr 2021 06:05:20 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 13:05:10 +0000
-Message-Id: <20210429130510.1621665-1-jackmanb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-Subject: [PATCH v2 bpf-next] libbpf: Fix signed overflow in ringbuf_process_ring
-From:   Brendan Jackman <jackmanb@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        linux-kernel@vger.kernel.org, kpsingh@kernel.org,
-        revest@chromium.org, Brendan Jackman <jackmanb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S237582AbhD2NJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 09:09:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34344 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234147AbhD2NJF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 09:09:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBBC261423;
+        Thu, 29 Apr 2021 13:08:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619701698;
+        bh=9cC7e2UFjfuEVz+wmCI1a4Mh3W4r2BKyn+Qiq5LvEeU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=wS9Ab1yQGCHz5VN0VLNo2m3Mg3BfzjkkWq2SYXWsQPWUlplnN5drXMg4C8g9BKwiq
+         C3mQB/GZ0BRrMOgJLbokF2imFyvxzrfkwmvyeieZYu4omeSqKfeOncDtPXCK7W6iOo
+         BFP6hUA258jW/sURX2R45iFrt6L6glDoMInzAUT4=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Aditya Pakki <pakki001@umn.edu>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>, Kangjie Lu <kjlu@umn.edu>,
+        Mark Brown <broonie@kernel.org>, Qiushi Wu <wu000273@umn.edu>,
+        Wenwen Wang <wang6495@umn.edu>
+Subject: [PATCH 0/7] Second set of revertion of all of the umn.edu commits
+Date:   Thu, 29 Apr 2021 15:08:04 +0200
+Message-Id: <20210429130811.3353369-1-gregkh@linuxfoundation.org>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One of our benchmarks running in (Google-internal) CI pushes data
-through the ringbuf faster htan than userspace is able to consume
-it. In this case it seems we're actually able to get >INT_MAX entries
-in a single ringbuf_buffer__consume call. ASAN detected that cnt
-overflows in this case.
+Like the first set of 190 patches submitted here:
+	https://lore.kernel.org/r/20210421130105.1226686-1-gregkh@linuxfoundation.org
 
-Fix by using 64-bit counter internally and then capping the result to
-INT_MAX before converting to the int return type.
+I am working through all of the patches submitted by umn.edu email
+addresses.  The remaining 79 set of patches that did not automatically
+revert with git were looked at, and these are the remaining ones where a
+revert was actually possible.  The other 72 commits did not need to be
+listed at the moment as they fell into other categories (were already
+fixed, applied to files not in the tree anymore, modified such that they
+were no longer relevant, etc.)
 
-Fixes: bf99c936f947 (libbpf: Add BPF ring buffer support)
-Signed-off-by: Brendan Jackman <jackmanb@google.com>
----
+The full report of all of this audit is currently being worked on by me
+and other members of the LF Technical Advisarory Board, and will be
+published when completed.
 
-diff v1->v2: Now we don't break the loop at INT_MAX, we just cap the reported
-entry count.
+This remaining set of patches is to provide a public review of them, and
+to determine if they are valid or not.  If the commit was valid, I'll
+drop it from my list of reverts, if the commit was not correct, I'll
+keep the revert and provide a "correct" fix for the issue as well.
 
-Note: I feel a bit guilty about the fact that this makes the reader
-think about implicit conversions. Nobody likes thinking about that.
+The final set of "reverts of bad + correct patches" will be posted to
+lkml and maintainers when all of this is completed.  Hopefully sometime
+next week, but I'm not promising anything :)
 
-But explicit casts don't really help with clarity:
+Maintainers, if you could take a look at these and see if the original
+was a valid commit or not, that would be most appreciated.  I'll be also
+doing a review of them as well.
 
-  return (int)min(cnt, (int64_t)INT_MAX); // ugh
+Thanks all for your help with this unexpected extra work...
 
-shrug..
+greg k-h
 
- tools/lib/bpf/ringbuf.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+Greg Kroah-Hartman (7):
+  Revert "rocker: fix incorrect error handling in dma_rings_init"
+  Revert "rtc: mc13xxx: fix a double-unlock issue"
+  Revert "orinoco: avoid assertion in case of NULL pointer"
+  Revert "ethtool: fix a potential missing-check bug"
+  Revert "regulator: tps65910: fix a missing check of return value"
+  Revert "leds: lp5523: fix a missing check of return value of
+    lp55xx_read"
+  Revert "serial: max310x: pass return value of spi_register_driver"
 
-diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-index e7a8d847161f..2e114c2d0047 100644
---- a/tools/lib/bpf/ringbuf.c
-+++ b/tools/lib/bpf/ringbuf.c
-@@ -204,7 +204,9 @@ static inline int roundup_len(__u32 len)
+ drivers/leds/leds-lp5523.c                          | 4 +---
+ drivers/net/ethernet/rocker/rocker_main.c           | 4 ++--
+ drivers/net/wireless/intersil/orinoco/orinoco_usb.c | 3 +--
+ drivers/regulator/tps65910-regulator.c              | 4 +---
+ drivers/rtc/rtc-mc13xxx.c                           | 4 +---
+ drivers/tty/serial/max310x.c                        | 4 ++--
+ net/ethtool/ioctl.c                                 | 5 -----
+ 7 files changed, 8 insertions(+), 20 deletions(-)
 
- static int ringbuf_process_ring(struct ring* r)
- {
--	int *len_ptr, len, err, cnt = 0;
-+	int *len_ptr, len, err;
-+	/* 64-bit to avoid overflow in case of extreme application behavior */
-+	int64_t cnt = 0;
- 	unsigned long cons_pos, prod_pos;
- 	bool got_new_data;
- 	void *sample;
-@@ -240,7 +242,7 @@ static int ringbuf_process_ring(struct ring* r)
- 		}
- 	} while (got_new_data);
- done:
--	return cnt;
-+	return min(cnt, INT_MAX);
- }
-
- /* Consume available ring buffer(s) data without event polling.
-@@ -263,8 +265,8 @@ int ring_buffer__consume(struct ring_buffer *rb)
- }
-
- /* Poll for available data and consume records, if any are available.
-- * Returns number of records consumed, or negative number, if any of the
-- * registered callbacks returned error.
-+ * Returns number of records consumed (or INT_MAX, whichever is less), or
-+ * negative number, if any of the registered callbacks returned error.
-  */
- int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms)
- {
---
-2.31.1.498.g6c1eba8ee3d-goog
+-- 
+2.31.1
 
