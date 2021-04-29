@@ -2,126 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 339E736E307
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2D336E30E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235236AbhD2BoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 21:44:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbhD2BoU (ORCPT
+        id S235837AbhD2Bqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 21:46:44 -0400
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:33573 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231564AbhD2Bqn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 21:44:20 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA69C06138B
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 18:43:35 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id c17so10389817pfn.6
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 18:43:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=W4UwE2Dbwa47OkyVoSFrNDymke2/cl1Ry9ysp9qho4Q=;
-        b=wPkGlcF0955iBFFTsDYmWzReIFFILvyj3Xl9zQnh7GaknUyB4JiENrsp/rXfc+Yy+w
-         WiqX3MN+IsYJZw4Gc3O5aUB658hl5UVck+EbetD0CdOIPGBIviL2QS/jmc+mCG3ejutf
-         qqtZOYh1zAiEoV/yNlxFk6DrwoanvMo6vZqaicPk5om9J0eEvUVXt+6tpzpj8EzRBxlW
-         f64AS4S4KPORiCRI8rcjV20PPruqh1YuYzdvWIR4CHksWpxRT0vf72UhyLaAO/UUiz+j
-         puyBfKWzyO/U/SGwaZGdbgt0RH+Gl6N/CSCCsKcr31RVcAl2EjijJwRSfKWd+PdB98NN
-         +P1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=W4UwE2Dbwa47OkyVoSFrNDymke2/cl1Ry9ysp9qho4Q=;
-        b=RiI3OE4FgDu2xqWBPR8qAJz2v7+tXr8H9M6yxB+MvBHPjXDLa9h7m6SJWvgdPp/EWh
-         07Gd77JK0OhUp7GO8wQazWcGEBzqlpSXaB2kZrxAldn7dQHYk4F/e3mF5Wo/EnUREodm
-         9KrxgFihDIG2Cv9RoPBBZhMgY5zeYHdExHR+ZJGfj3YoiJ0aGFB0YCdD393ZjXLU0xAl
-         FhX9PSY3sZbGSUYGIbMrYMtu6z4MtTis/z0B9oIHgae+Un0+zxGIM8OWfMnnBxgCLvTS
-         Cfkb9cqCZzk4j5o4Hmom5j4Y8W0LQfjURs0xefYmntANTIUaCRJDcuuqAj30rkFQ2eWA
-         WUkA==
-X-Gm-Message-State: AOAM531O9AWUgSxsIBorQ2V6yGT/gd+E4/Cz4Qr1Kcl+5GwKSGPUrCLs
-        ojOqPRTOUnaUWGZZrb/GSrqX3Q==
-X-Google-Smtp-Source: ABdhPJzmOB6NKYjVpqO6pigE8zHGwwDPUl3pMRk7roD7Cj4XxjhQ/7kOYTe6sgaayGF4i8Vm7yNbig==
-X-Received: by 2002:a62:8747:0:b029:27f:6a61:c742 with SMTP id i68-20020a6287470000b029027f6a61c742mr988846pfe.3.1619660614717;
-        Wed, 28 Apr 2021 18:43:34 -0700 (PDT)
-Received: from localhost ([103.207.71.35])
-        by smtp.gmail.com with ESMTPSA id in1sm5776107pjb.23.2021.04.28.18.43.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 18:43:34 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH] arm64: stacktrace: Stop unwinding when the PC is zero
-Date:   Thu, 29 Apr 2021 09:43:21 +0800
-Message-Id: <20210429014321.196606-1-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Wed, 28 Apr 2021 21:46:43 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 18DA810C2;
+        Wed, 28 Apr 2021 21:45:57 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 28 Apr 2021 21:45:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm2; bh=D
+        k51ao1IEp6JfSy4kSMl2Ei33Quo/UNxiozv8dRzrts=; b=YdMQYrPi7hm+ocAWD
+        sCMvDcAGS4tKL2YoRGxRD5Yb3GG+UqzjSlUrmHAaShyIDPx1h/VeCXLBZMbIGwYl
+        tKjJtaMunNEsTAo0Q2to6vPxFErFKx3pFN/oq15P6yxERz59jD1b/kpSFkyd09QX
+        3pakhpoQYEUshzmkU37VgSSHdOXNQglQDAePdfHcihV9jrrmQlLBXDvetc8dhiwD
+        utwDkm5sWvTQXIwdo+qdQyiepLAXJZsFXjlWw2MLuaYkQ1ryvKIUl8+Dfp4VH175
+        mNEY8UvH/9sjRioyI68oPjY6wxQ5sEnHGdnCL+ZjHiMNYe8PgVjvzHTXhQYyABis
+        bmhJA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=Dk51ao1IEp6JfSy4kSMl2Ei33Quo/UNxiozv8dRzr
+        ts=; b=VloHZsZDzfz/Mlh84tSM6YkubRVzNH8ATuagT1dLBQP5FXigm5k1mOF34
+        7ig8mODw/AEqnWUExdEMzwp6n8bijXUQg92THkKyRDrny2itCQ03owghSi77nt9R
+        ssKhX57JVwgt5QFvLxZ7SjZl4Uhk4SjHhk6KFxzXV2/+m30laNncyvKTfRK/NJCZ
+        4JATT3oQJUGs6hkq+nSpAjCgA2sVfvCcYECsUWIAoLw5JkJi36VaQgxayMrImmqX
+        qK4UFX3dT8TEBVtw6XB+FUh/1PGRgO8dyAFckmyCOWyUZ0Q9jF2ti5iOgYr8Yn5G
+        9eU1kTe0HAf7k7iygJeEOe7lHRVbQ==
+X-ME-Sender: <xms:0w-KYGvBZONSKjSsMwxl5heX3-vkbLMlF9Zcd0wFI0YX_3WkuRjpKA>
+    <xme:0w-KYLeYRriAvsh9UXPBjAov9oJ9gw7IxmZ-5Sqd4unZ11mwPsO6UlOBPCAAq1Ok_
+    _CSNLPZD50rwLe4jT0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddvfedggeekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdeftfenucfhrhhomheplfhirgig
+    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
+    ggtffrrghtthgvrhhnpeefleduiedtvdekffeggfeukeejgeeffeetlefghfekffeuteei
+    jeeghefhueffvdenucfkphepudduvddrieegrddvledrudduheenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehf
+    lhihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:0w-KYBzIV1Xqnu218oZ2itbZraWQKAhk8XJNNxo6KaswJbPbzoWGxw>
+    <xmx:0w-KYBPI3DryFxIHfPf1g0F1gGEcP0_aeBJRU_pqUO0Xf0bZ1zZ_DQ>
+    <xmx:0w-KYG8GipOCOsaY_YqPXgneuLNk5-7Bzz2tibgn9zy7dcNaClwXWQ>
+    <xmx:1A-KYKZ8hmbJgs0E4U_WldIArVaQUa9mwggMEirG0RUPCHBuW_mj8Q>
+Received: from [10.20.192.183] (unknown [112.64.29.115])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Wed, 28 Apr 2021 21:45:53 -0400 (EDT)
+Subject: Re: [PATCH v2] MIPS:DTS:Correct device id of pcie for Loongnon-2K
+To:     Xiaochuan Mao <maoxiaochuan@loongson.cn>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Qing Zhang <zhangqing@loongson.cn>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210428120628.21041-1-maoxiaochuan@loongson.cn>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <3254396f-eabc-c7f4-8801-1efa9850025d@flygoat.com>
+Date:   Thu, 29 Apr 2021 09:45:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210428120628.21041-1-maoxiaochuan@loongson.cn>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When use ftrace for stack trace, it reports the spurious frame with the
-PC value is zero.  This can be reproduced with commands:
 
-  # cd /sys/kernel/debug/tracing/
-  # echo "prev_pid == 0" > events/sched/sched_switch/filter
-  # echo stacktrace > events/sched/sched_switch/trigger
-  # echo 1 > events/sched/sched_switch/enable
-  # cat trace
+ÔÚ 2021/4/28 20:06, Xiaochuan Mao Ð´µÀ:
+> from Loongson-2K user manual know that Loongson-2K have two
+> pcie controller pcie0 and pcie1, pcie0 have four port named port0~port3
+> and pcie1 have 2 port named port0~port1. the device id of port0 is 7a19
+> in each pcie controller and others are 7a09.
+>
+> Signed-off-by: Xiaochuan Mao <maoxiaochuan@loongson.cn>
 
-           <idle>-0       [005] d..2   259.621390: sched_switch: ...
-           <idle>-0       [005] d..3   259.621394: <stack trace>
-  => __schedule
-  => schedule_idle
-  => do_idle
-  => cpu_startup_entry
-  => secondary_start_kernel
-  => 0
+Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 
-The kernel initializes FP/PC values as zero for swapper threads in
-head.S, when walk the stack frame, this patch stops unwinding if detect
-the PC value is zero, therefore can avoid the spurious frame.
-
-Below is the stacktrace after applying the change:
-
-  # cat trace
-
-           <idle>-0       [005] d..2   259.621390: sched_switch: ...
-           <idle>-0       [005] d..3   259.621394: <stack trace>
-  => __schedule
-  => schedule_idle
-  => do_idle
-  => cpu_startup_entry
-  => secondary_start_kernel
-
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- arch/arm64/kernel/stacktrace.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-index 84b676bcf867..02b1e85b2026 100644
---- a/arch/arm64/kernel/stacktrace.c
-+++ b/arch/arm64/kernel/stacktrace.c
-@@ -145,7 +145,11 @@ void notrace walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
- 		if (!fn(data, frame->pc))
- 			break;
- 		ret = unwind_frame(tsk, frame);
--		if (ret < 0)
-+		/*
-+		 * When the frame->pc is zero, it has reached to the initial pc
-+		 * and fp values; stop unwinding for this case.
-+		 */
-+		if (ret < 0 || !frame->pc)
- 			break;
- 	}
- }
--- 
-2.25.1
-
+> ---
+> v1:
+> revert class code
+> ---
+>   .../boot/dts/loongson/loongson64-2k1000.dtsi     | 16 ++++++++--------
+[...]
