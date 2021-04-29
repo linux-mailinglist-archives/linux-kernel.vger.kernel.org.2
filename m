@@ -2,99 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B5F36E788
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 11:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2633636E78C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 11:05:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240059AbhD2JEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 05:04:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239730AbhD2JEj (ORCPT
+        id S240171AbhD2JFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 05:05:41 -0400
+Received: from mail-m17655.qiye.163.com ([59.111.176.55]:63808 "EHLO
+        mail-m17655.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240008AbhD2JFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 05:04:39 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19625C06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:03:51 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id i24so18049392edy.8
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:03:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=W+HLzXbkNngIE9tkgHqx97GNCxRpXGXx8Ojt9z/evco=;
-        b=GBItjtMHIl9+fy1sfAPi2drO9fIPPAf3u5xufxexjqsbdmF4uIINYvXOAIEZgiqqNo
-         Wsdh5SY6oBaU0E1YBTd6SU1JID0yqbCaxQnC2QDGLRJDbsf2jA9M1uy6tP9NMdj/TI7O
-         0SmHpAVj7lb1ZtvDMcU9EZ6CvFVspZUa6fbJzCGMuw3GbAz9due6dTzo5homhF8iyNJ6
-         /XpUIyOnfqwtLwANoXjV3u/TaAUj8Z51+IELjYn2/NvqFiyGamW/0fe71ZpTDQUWqOIv
-         N8Tl3L99t3uQNKJ7edqd2pawkvQ66odmZ9Z1yKetCmS56MWyapKxPrweuxY0hGLmW2Ru
-         0hRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=W+HLzXbkNngIE9tkgHqx97GNCxRpXGXx8Ojt9z/evco=;
-        b=XO8uqFXzMXpzD4nZgS8vYfxgEZUTtyMbHxVn1M+N/TqVgbufUHOnMYMtX3gjWpUowr
-         /KAZJU+W8021TzR77NABsAx5lLB+exSQ1H8h1xswa0eAiyY2naXwK54KgmjYX1xbfAob
-         eEiWfS+rvdaqNvnQwSxiL98VRGnqvy0zvH8KfVLrCDxjFk5cHzkEO6F1vdZfQWVliOBj
-         uIhjO4MvM1fim8yjnAcTmzF7PNbY1hEYu97jyExVljfvmD3RyB2ZxAC0IGyibEK/0aB2
-         4Pe8ru/uTDJ1rBh1sUVhX9l8Vi/dlfOT81duAsqHM99+8kh3JCBSBiU49EwWfLCS8kF2
-         q8cw==
-X-Gm-Message-State: AOAM532gPrcg0HeXRA2WvjJZ2HjmPMOCyTzmn/RGka26cHPHG7T8QDHA
-        KbxOrsSb/Ozzr3gYP4iwfJBZTA==
-X-Google-Smtp-Source: ABdhPJwI3INalSk/5D1+Nz2RIt7IqV/JfVEmFAdW+NvqkU08BDtWe79kNgj0WIjvOe3XIFipym9Zjg==
-X-Received: by 2002:aa7:d413:: with SMTP id z19mr16987380edq.37.1619687030544;
-        Thu, 29 Apr 2021 02:03:50 -0700 (PDT)
-Received: from localhost.localdomain (82-65-169-74.subs.proxad.net. [82.65.169.74])
-        by smtp.googlemail.com with ESMTPSA id j4sm1441152ejk.37.2021.04.29.02.03.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 02:03:49 -0700 (PDT)
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
+        Thu, 29 Apr 2021 05:05:36 -0400
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.250.176.229])
+        by mail-m17655.qiye.163.com (Hmail) with ESMTPA id 0A578400B3;
+        Thu, 29 Apr 2021 17:04:47 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Jonathan Corbet <corbet@lwn.net>, Wang Qing <wangqing@vivo.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Joe Perches <joe@perches.com>, Stephen Kitt <steve@sk2.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Santosh Sivaraj <santosh@fossix.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] clk: meson: g12a: fix gp0 and hifi ranges
-Date:   Thu, 29 Apr 2021 11:03:25 +0200
-Message-Id: <20210429090325.60970-1-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH V2,RESEND 1/4] kernel: watchdog: Modify the explanation related to watchdog thread
+Date:   Thu, 29 Apr 2021 17:04:25 +0800
+Message-Id: <1619687073-24686-2-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQhgYT1YfTUgfQhlKS04eHR1VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Ni46Ijo5Hj8LHkkICUwqFzg0
+        PQhPCTBVSlVKTUpCTUNMS0NMQ0lKVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5LVUpMTVVJSUJZV1kIAVlBSE1ITDcG
+X-HM-Tid: 0a791cdf9d82da01kuws0a578400b3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While some SoC samples are able to lock with a PLL factor of 55, others
-samples can't. ATM, a minimum of 60 appears to work on all the samples
-I have tried.
+The watchdog thread has been replaced by cpu_stop_work, modify the 
+explanation related.
 
-Even with 60, it sometimes takes a long time for the PLL to eventually
-lock. The documentation says that the minimum rate of these PLLs DCO
-should be 3GHz, a factor of 125. Let's use that to be on the safe side.
-
-With factor range changed, the PLL seems to lock quickly (enough) so far.
-It is still unclear if the range was the only reason for the delay.
-
-Fixes: 085a4ea93d54 ("clk: meson: g12a: add peripheral clock controller")
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Wang Qing <wangqing@vivo.com>
 ---
- drivers/clk/meson/g12a.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/watchdog.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/clk/meson/g12a.c b/drivers/clk/meson/g12a.c
-index b080359b4645..a805bac93c11 100644
---- a/drivers/clk/meson/g12a.c
-+++ b/drivers/clk/meson/g12a.c
-@@ -1603,7 +1603,7 @@ static struct clk_regmap g12b_cpub_clk_trace = {
- };
+diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+index 7110906..d7fb4fb
+--- a/kernel/watchdog.c
++++ b/kernel/watchdog.c
+@@ -92,7 +92,7 @@ __setup("nmi_watchdog=", hardlockup_panic_setup);
+  * own hardlockup detector.
+  *
+  * watchdog_nmi_enable/disable can be implemented to start and stop when
+- * softlockup watchdog threads start and stop. The arch must select the
++ * softlockup watchdog start and stop. The arch must select the
+  * SOFTLOCKUP_DETECTOR Kconfig.
+  */
+ int __weak watchdog_nmi_enable(unsigned int cpu)
+@@ -322,7 +322,7 @@ static DEFINE_PER_CPU(struct completion, softlockup_completion);
+ static DEFINE_PER_CPU(struct cpu_stop_work, softlockup_stop_work);
  
- static const struct pll_mult_range g12a_gp0_pll_mult_range = {
--	.min = 55,
-+	.min = 125,
- 	.max = 255,
- };
+ /*
+- * The watchdog thread function - touches the timestamp.
++ * The watchdog feed function - touches the timestamp.
+  *
+  * It only runs once every sample_period seconds (4 seconds by
+  * default) to reset the softlockup timestamp. If this gets delayed
+@@ -551,11 +551,7 @@ static void lockup_detector_reconfigure(void)
+ }
  
+ /*
+- * Create the watchdog thread infrastructure and configure the detector(s).
+- *
+- * The threads are not unparked as watchdog_allowed_mask is empty.  When
+- * the threads are successfully initialized, take the proper locks and
+- * unpark the threads in the watchdog_cpumask if the watchdog is enabled.
++ * Create the watchdog infrastructure and configure the detector(s).
+  */
+ static __init void lockup_detector_setup(void)
+ {
+@@ -621,7 +617,7 @@ void lockup_detector_soft_poweroff(void)
+ 
+ #ifdef CONFIG_SYSCTL
+ 
+-/* Propagate any changes to the watchdog threads */
++/* Propagate any changes to the watchdog infrastructure */
+ static void proc_watchdog_update(void)
+ {
+ 	/* Remove impossible cpus to keep sysctl output clean. */
 -- 
-2.31.1
+2.7.4
 
