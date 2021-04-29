@@ -2,80 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9875F36E977
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 13:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D11236E97A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 13:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232898AbhD2LSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 07:18:01 -0400
-Received: from mout.kundenserver.de ([212.227.126.187]:57319 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229792AbhD2LR5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 07:17:57 -0400
-Received: from mail-wm1-f52.google.com ([209.85.128.52]) by
- mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MhDIw-1l6Zb50hKE-00eP9z for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021
- 13:17:09 +0200
-Received: by mail-wm1-f52.google.com with SMTP id f15-20020a05600c4e8fb029013f5599b8a9so9033260wmq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 04:17:09 -0700 (PDT)
-X-Gm-Message-State: AOAM532H4md8vAtjoF019oqYzXwPNLdLPhUuqsJuhva57UHDJnhb1x0b
-        91M7ZE9JpL66tbtL17NfcepULUR2RoAgJmLsV88=
-X-Google-Smtp-Source: ABdhPJyDWoC/ym2DkxTwOlrTJfTfOpX3HwZAlq5h9pUN7MtTX83B8bsWTbCb2UI3t3hqLMGsQ8YVwDxicRugaT+YDbI=
-X-Received: by 2002:a7b:c344:: with SMTP id l4mr9631153wmj.120.1619695028817;
- Thu, 29 Apr 2021 04:17:08 -0700 (PDT)
+        id S231904AbhD2LWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 07:22:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56164 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230148AbhD2LWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 07:22:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 050CF613D9;
+        Thu, 29 Apr 2021 11:21:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619695283;
+        bh=jKlpm3G7PbB50Ez26v5YugL6swUDAvRxbWGy6pq6Nms=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ydnohWks5nj3hC2Qt+4gPELzNLDZCjraOeIIVrrLsuAKm+3asmdsCqmVEacIyVTA5
+         n/5PPvo9ej7R2lvw6jfNZMOuQRlnGU8dx1RcZVXgXY8tArErw+LYtDiyBKqnUdXYNC
+         7mNiojGy3pg8emJ3hz2aMGKOqKtQ//omq7QlBvvM=
+Date:   Thu, 29 Apr 2021 13:21:21 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Fabio Aiuto <fabioaiuto83@gmail.com>,
+        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH 1/2] staging: rtl8723bs: hal: Remove
+ set but unused variables
+Message-ID: <YIqWsbTO8Zv1qFmT@kroah.com>
+References: <20210428113346.28305-1-fmdefrancesco@gmail.com>
+ <20210429082552.GC1409@agape.jhs>
+ <YIqECQk/1Zb4JRjb@kroah.com>
+ <4187627.69DiqvND7d@linux.local>
 MIME-Version: 1.0
-References: <a7fac800-02ae-62d4-00d4-770facff4a7c@rasmusvillemoes.dk>
-In-Reply-To: <a7fac800-02ae-62d4-00d4-770facff4a7c@rasmusvillemoes.dk>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 29 Apr 2021 13:16:33 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1Cgt+Lx7-CZE5muY+=Bs0PWGvs-=L5ghzEQFx7u9=1bg@mail.gmail.com>
-Message-ID: <CAK8P3a1Cgt+Lx7-CZE5muY+=Bs0PWGvs-=L5ghzEQFx7u9=1bg@mail.gmail.com>
-Subject: Re: RFC: collection of common distro configs?
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:4Hy4lcRBMh6NFxG3rmjMRa9LhpsRq3fH/ZeoXdU5BHv5wolEiYz
- bvKsNIMSIoqd7bHNpKJVRjETlIlzIo+PA797N88gnuQvKhAT0F+1i8DTA8iQa6ZJxyzCMgN
- zsPztknq70I79FP1RgYjRV0pxON3yYEctyGf+5BhHycyO6OeV7rKnhV42rlM+xRvQmOpt/U
- cTq2RxFAA7jMbYmNDoNlQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:44P/ANmGEyk=:X0BFM8fcGdWhMnJw0MpzCx
- F7HNgFlr7KPsIJqgBPMds6BTxNkxKmlyk6Dh4QfDWB6L0Tscm+adl6aCf+Uy8iZpbcdOHv5wS
- wSZhOo7CZ419q+Zx0Ow0YxKwMedfHqkivZM1YSMsoCHzHias+PFpgnVFzhaMkMW2aWeNOmnFd
- sOz3FrXOTYWjcF30+1ckQuo7bk6+rwvxNd0HLA1GMLxpX7HuQh6dZKMvYmtJDwhP/0BQWupg3
- 7e8GsNfAZ00ftZYBjYor0jg/c1FRp63vvbWwbaoOceATMLt/G553y4AFv4zE0JsyJO4KHlnaM
- vAuBu38ilvRTHstg+umU9nqarrPO17cbt2fHC7p3+K2pzdilh0tC6NT2ErZoYBKnCdvYeXuAL
- Jsf8A+4KNP/vSWUp1ZKrQEBVHMjA5lnF4QBTqsJ00kCfHpMG6kQFm0cQPvnVM0pwtJgzySVPz
- 6hjSHYECVvKrGWltGiWzIK+qT3bOdM2GSf1yWDrPBcpeGPpUpeNtl+EBun1REhZCn/OAgAvjk
- 8vdBosdQBuy3dJUAbhZTKo=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4187627.69DiqvND7d@linux.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 12:26 PM Rasmus Villemoes
-<linux@rasmusvillemoes.dk> wrote:
->
-> Hi there,
->
-> Does anybody know of a place where one can find a collection of .configs
-> from various distros? I think it might be useful to be able to grep
-> around to see what features are actually enabled by which distros.
->
-> Based on the domain name, I hoped linuxconfig.org would be such a place,
-> if so I cannot find it.
->
-> If no such collection exists, do others agree it might be useful? If so,
-> I'll be happy to throw up a repo somewhere and start collecting them.
+On Thu, Apr 29, 2021 at 12:15:40PM +0200, Fabio M. De Francesco wrote:
+> On Thursday, April 29, 2021 12:01:45 PM CEST Greg Kroah-Hartman wrote:
+> > On Thu, Apr 29, 2021 at 10:25:53AM +0200, Fabio Aiuto wrote:
+> > > On Thu, Apr 29, 2021 at 09:44:47AM +0200, Fabio M. De Francesco wrote:
+> > > > On Thursday, April 29, 2021 9:26:20 AM CEST Fabio Aiuto wrote:
+> > > > > Hi Fabio,
+> > > > > 
+> > > > > On Wed, Apr 28, 2021 at 01:33:45PM +0200, Fabio M. De Francesco wrote:
+> > > > > > Removed four set but unused variables. Issue detected by gcc.
+> > > > > > 
+> > > > > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > > > > > ---
+> > > > > > 
+> > > > > >  drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c | 5 -----
+> > > > > >  1 file changed, 5 deletions(-)
+> > > > > > 
+> > > > > > diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+> > > > > > b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c index
+> > > > 
+> > > > 082448557b53..96cb4426a0f4
+> > > > 
+> > > > > > 100644
+> > > > > > --- a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+> > > > > > +++ b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+> > > > > > @@ -3900,14 +3900,11 @@ u8 GetHalDefVar8723B(struct adapter 
+> *padapter,
+> > > > 
+> > > > enum
+> > > > 
+> > > > > > hal_def_variable variable, v>
+> > > > > > 
+> > > > > >  			u32 cmd;
+> > > > > >  			u32 ra_info1, ra_info2;
+> > > > > >  			u32 rate_mask1, rate_mask2;
+> > > > > > 
+> > > > > > -			u8 curr_tx_rate, curr_tx_sgi, hight_rate,
+> > > > 
+> > > > lowest_rate;
+> > > > 
+> > > > > >  			cmd = 0x40000100 | mac_id;
+> > > > > >  			rtw_write32(padapter,
+> > > > 
+> > > > REG_HMEBOX_DBG_2_8723B, cmd);
+> > > > 
+> > > > > >  			msleep(10);
+> > > > > >  			ra_info1 = rtw_read32(padapter, 0x2F0);
+> > > > > > 
+> > > > > > -			curr_tx_rate = ra_info1&0x7F;
+> > > > > > -			curr_tx_sgi = (ra_info1>>7)&0x01;
+> > > > > > 
+> > > > > >  			cmd = 0x40000400 | mac_id;
+> > > > > >  			rtw_write32(padapter,
+> > > > 
+> > > > REG_HMEBOX_DBG_2_8723B, cmd);
+> > > > 
+> > > > > > @@ -3916,8 +3913,6 @@ u8 GetHalDefVar8723B(struct adapter *padapter, 
+> enum
+> > > > > > hal_def_variable variable, v>
+> > > > > > 
+> > > > > >  			ra_info2 = rtw_read32(padapter, 0x2F4);
+> > > > > >  			rate_mask1 = rtw_read32(padapter, 0x2F8);
+> > > > > >  			rate_mask2 = rtw_read32(padapter, 0x2FC);
+> > > > > > 
+> > > > > > -			hight_rate = ra_info2&0xFF;
+> > > > > > -			lowest_rate = (ra_info2>>8)  & 0xFF;
+> > > > > > 
+> > > > > >  		}
+> > > > > >  		break;
+> > > > > 
+> > > > > rate_mask{1,2} and ra_info{1,2} seems to be unused as well.
+> > > > > 
+> > > > > thank you,
+> > > > > 
+> > > > > fabio
+> > > > 
+> > > > Hello Fabio,
+> > > > 
+> > > > I'm not sure about it: rtw_read32 calls a pointer to a function. I'm 
+> don't
+> > > > know drivers programming, however that function looks like an 
+> implementation
+> > > > of a read() system call. So I wouldn't be so sure to remove those calls.
+> > > > 
+> > > > Could calling a (*read) method have side effects on subsequent read()? I 
+> mean:
+> > > > could it update some internal data structure? If not I can remove the
+> > > > variables you mentioned above and the calls to read32.
+> > > > 
+> > > > I'm looking forward to read your reply.
+> > > > 
+> > > > Thanks,
+> > > > 
+> > > > Fabio
+> > > 
+> > > hi Fabio,
+> > > 
+> > > rtw_read32 is a macro wrapping _rtw_read32() defined as follows (in core/
+> rtw_io.c):
+> > > 
+> > > u32 _rtw_read32(struct adapter *adapter, u32 addr)
+> > > {
+> > > 
+> > >         u32 r_val;
+> > >         /* struct       io_queue        *pio_queue = (struct io_queue
+> > >         *)adapter->pio_queue; */
+> > >         struct io_priv *pio_priv = &adapter->iopriv;
+> > >         struct  intf_hdl                *pintfhdl = &(pio_priv->intf);
+> > >         u32 (*_read32)(struct intf_hdl *pintfhdl, u32 addr);
+> > >         
+> > >         _read32 = pintfhdl->io_ops._read32;
+> > >         
+> > >         r_val = _read32(pintfhdl, addr);
+> > >         return rtw_le32_to_cpu(r_val);
+> > > 
+> > > }
+> > > 
+> > > the actual read seems to be performed by the handler contained in
+> > > 
+> > > 	pintfhdl->io_ops._read32;
+> > > 
+> > > so:
+> > > 
+> > > $ grep -r '\b_read32' drivers/staging/rtl8723bs/
+> > > 
+> > > drivers/staging/rtl8723bs/hal/sdio_ops.c:	ops->_read32 = 
+> &sdio_read32;
+> > > 
+> > > this is the place where _read32 is stored with sdio_read32 reference...
+> > > 
+> > > drivers/staging/rtl8723bs/core/rtw_io.c:	u32 (*_read32)(struct 
+> intf_hdl *pintfhdl, u32
+> > > addr); drivers/staging/rtl8723bs/core/rtw_io.c:	_read32 = pintfhdl-
+> >io_ops._read32;
+> > > ...
+> > > 
+> > > if you check it in hal/sdio_ops.c, nothing is written, just reads are
+> > > performed (and it's not odd, for a read function isn't supposed to write
+> > > something under the hood ;)).
+> > 
+> > Yes, but many types of hardware _REQUIRE_ reads to do something.  So
+> > "read that does nothing" is a requirement for some operations.
+> > 
+> > As an example, a write is only guaranteed to have been finished if you
+> > do a read of the same location back from it on some hardware busses.
+> > The bus can reorder things, but a write/read of the same location can
+> > not be reordered.
+> > 
+> > Sometimes you have to do reads multiple times to get things to "stick".
+> > 
+> > Other times reading from a location changes a state in the hardware
+> > (horrid but HW designers aren't the brightest at times...)
+> > 
+> > So you can NOT just remove reads without knowing that the hardware does
+> > not require this.  This is an issue where GCC "warnings" mean nothing as
+> > gcc does not actually know what hardware does, or does not, do for many
+> > things.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> >
+> Just to be sure... does it mean that v1 can be applied as-is?
 
-I've looked for this in the past and couldn't find any, and I think this
-would be very valuable, but it also sounds like a lot of work for you
-to maintain.
+I will review it when I get the time...
 
-Another thing we had discussed previously would be to check in
-distro configs into the kernel itself in some form and have the distros
-only maintain the diff that they would like to apply on top, in form
-of a config fragment.
+thanks,
 
-     Arnd
+greg k-h
