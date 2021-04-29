@@ -2,217 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 203C336E989
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 13:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B8736E9A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 13:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233500AbhD2L1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 07:27:12 -0400
-Received: from mga03.intel.com ([134.134.136.65]:25966 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230148AbhD2L1K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 07:27:10 -0400
-IronPort-SDR: bnyy8rVzjFI5xhK0bs8y4Km/MubCcK/VuLQlst4JM8XlCwgrirRcKaIx1E9CPKK5Oy1ksEqBiw
- 7uVPm8Yq7cAg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9968"; a="197029050"
-X-IronPort-AV: E=Sophos;i="5.82,259,1613462400"; 
-   d="scan'208";a="197029050"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 04:26:18 -0700
-IronPort-SDR: 6rR9y8kmfinDUbQKppRZ/uP7sAONhZL9QHkj0hsR2petOMhD4RcjAcsVG9avvMqHSm/TJ53V0B
- 2zgSBYfu6JHQ==
-X-IronPort-AV: E=Sophos;i="5.82,259,1613462400"; 
-   d="scan'208";a="526904265"
-Received: from xli56-mobl.ccr.corp.intel.com (HELO [10.254.211.239]) ([10.254.211.239])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 04:26:16 -0700
-Subject: Re: [PATCH 2/2] vDPA/ifcvf: implement doorbell mapping for ifcvf
-To:     Jason Wang <jasowang@redhat.com>, mst@redhat.com
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210428082133.6766-1-lingshan.zhu@intel.com>
- <20210428082133.6766-3-lingshan.zhu@intel.com>
- <f6d9a424-9025-3eb5-1cb4-0ff22f7bec63@redhat.com>
- <5052fced-cd9a-e453-5cb2-39cdde60a208@intel.com>
- <1984491f-cd5e-d4bc-b328-41e2f2e935fd@redhat.com>
- <ef510c97-1f1c-a121-99db-b659a5f9518c@intel.com>
- <4e0eda74-04ac-a889-471b-03fe65c65606@redhat.com>
- <f4cb4619-5634-e42d-0629-5c40f6b0dcd1@intel.com>
- <bca66845-b16d-ee5e-807b-a3570e290813@redhat.com>
-From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
-Message-ID: <d3bb5231-47cc-86e6-a4b2-a05bd81140a5@intel.com>
-Date:   Thu, 29 Apr 2021 19:26:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <bca66845-b16d-ee5e-807b-a3570e290813@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        id S234485AbhD2Le3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 07:34:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231921AbhD2Le0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 07:34:26 -0400
+X-Greylist: delayed 399 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 29 Apr 2021 04:33:40 PDT
+Received: from gimli.kloenk.dev (gimli.kloenk.dev [IPv6:2a0f:4ac0:0:1::cb2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A5AC06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 04:33:40 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kloenk.de; s=mail;
+        t=1619695616; bh=b889TRzO6OzDBzPrOpA5ZVqDMouo54h15av3KLVawlY=;
+        h=Subject:From:In-Reply-To:Date:Cc:References:To;
+        b=WFUhp98nc08c3/ZcLRpB1gkFNSU3hMWTPvb8COxtnBgPTMb3UYz2P2y63CYyx2fsH
+         LjlZGQCdKG2sDLsT3GUVGccWTrtTi64Nkube5uMPqOx97qag6JoTk9GC9MINmmmD25
+         TQv5/F86w1eL450yIGE7LTQrUvd3LU0O54XjcGK0=
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
+Subject: Re: module parameters permission
+From:   Finn Behrens <me@kloenk.de>
+In-Reply-To: <20210429102543.GG1409@agape.jhs>
+Date:   Thu, 29 Apr 2021 13:26:56 +0200
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <2A893F5B-9867-4F7F-B16F-6FAD4FE36E3D@kloenk.de>
+References: <20210429095819.GE1409@agape.jhs> <YIqE1B3qMK+5AwQj@kroah.com>
+ <20210429102543.GG1409@agape.jhs>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The module macro is a proc_macro. This is written in a way to only =
+accept one single iteral at that position. So that is an expected =
+behaviour with the current implementation.
+If needed, this macro could be extended with functionality to deal with =
+that case, but if octal values are preferred, I don=E2=80=99t see a =
+reason to introduce that level of complexity.
 
+Finn
 
-On 4/28/2021 9:08 PM, Jason Wang wrote:
->
-> 在 2021/4/28 下午6:20, Zhu, Lingshan 写道:
->>
->>
->> On 4/28/2021 6:03 PM, Jason Wang wrote:
->>>
->>> 在 2021/4/28 下午5:56, Zhu, Lingshan 写道:
->>>>
->>>>
->>>> On 4/28/2021 5:21 PM, Jason Wang wrote:
->>>>>
->>>>> 在 2021/4/28 下午4:59, Zhu, Lingshan 写道:
->>>>>>
->>>>>>
->>>>>> On 4/28/2021 4:42 PM, Jason Wang wrote:
->>>>>>>
->>>>>>> 在 2021/4/28 下午4:21, Zhu Lingshan 写道:
->>>>>>>> This commit implements doorbell mapping feature for ifcvf.
->>>>>>>> This feature maps the notify page to userspace, to eliminate
->>>>>>>> vmexit when kick a vq.
->>>>>>>>
->>>>>>>> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
->>>>>>>> ---
->>>>>>>>   drivers/vdpa/ifcvf/ifcvf_main.c | 18 ++++++++++++++++++
->>>>>>>>   1 file changed, 18 insertions(+)
->>>>>>>>
->>>>>>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c 
->>>>>>>> b/drivers/vdpa/ifcvf/ifcvf_main.c
->>>>>>>> index e48e6b74fe2e..afcb71bc0f51 100644
->>>>>>>> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
->>>>>>>> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
->>>>>>>> @@ -413,6 +413,23 @@ static int ifcvf_vdpa_get_vq_irq(struct 
->>>>>>>> vdpa_device *vdpa_dev,
->>>>>>>>       return vf->vring[qid].irq;
->>>>>>>>   }
->>>>>>>>   +static struct vdpa_notification_area 
->>>>>>>> ifcvf_get_vq_notification(struct vdpa_device *vdpa_dev,
->>>>>>>> +                                   u16 idx)
->>>>>>>> +{
->>>>>>>> +    struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
->>>>>>>> +    struct vdpa_notification_area area;
->>>>>>>> +
->>>>>>>> +    if (vf->notify_pa % PAGE_SIZE) {
->>>>>>>> +        area.addr = 0;
->>>>>>>> +        area.size = 0;
->>>>>>>
->>>>>>>
->>>>>>> We don't need this since:
->>>>>>>
->>>>>>> 1) there's a check in the vhost vDPA
->>>>>> I think you mean this code block in vdpa.c
->>>>>>         notify = ops->get_vq_notification(vdpa, index);
->>>>>>         if (notify.addr & (PAGE_SIZE - 1))
->>>>>>                 return -EINVAL;
->>>>>>
->>>>>> This should work, however, I think the parent driver should 
->>>>>> ensure it passes a PAGE_SIZE aligned address to userspace, to be 
->>>>>> robust, to be reliable.
->>>>>
->>>>>
->>>>> The point is parent is unaware of whether or not there's a userspace.
->>>> when calling this, I think it targets a usersapce program, why 
->>>> kernel space need it, so IMHO no harm if we check this to keep the 
->>>> parent driver robust.
->>>
->>>
->>> Again, vDPA device is unaware of what driver that is bound. It could 
->>> be virtio-vpda, vhost-vdpa or other in the future. It's only the 
->>> vDPA bus driver know how it is actually used.
->>>
->>>
->>>>>
->>>>>
->>>>>>> 2) device is unaware of the bound driver, non page aligned 
->>>>>>> doorbell doesn't necessarily meant it can be used
->>>>>> Yes, non page aligned doorbell can not be used, so there is a check.
->>>>>
->>>>>
->>>>> Typo, what I meant is "it can't be used". That is to say, we 
->>>>> should let the vDPA bus driver to decide whether or not it can be 
->>>>> used.
->>>> If it is not page aligned, there would be extra complexities for 
->>>> vhost/qemu, I see it as a hardware defect, 
->>>
->>>
->>> It is allowed by the virtio spec, isn't it?
->> The spec does not require the doorbell to be page size aligned, 
->> however it still a hardware defect if non page size aligned notify 
->> base present, I will leave a warning message here instead of the 0 
->> value.
->>
->
-> Another note is that, using PAGE_SIZE is wrong here since it varies 
-> among archs (at most 64K on some one).
-For the page alignment checks, I think this is the point of using 
-PAGE_SIZE, we want the doorbell placed at the page boundary, PAGE_SIZE 
-depends on the arch,
-so I think we don't want to use hard code here. We will pass the 
-notify_pa to upper layer anyway, just print an warning if not PAGE_SIZE 
-aligned.
-
-However I think this may refer to vdpa_notification_area.size, YES, I 
-think use PAGE_SIZE directly is wrong here, this size depends on the 
-device(bar layout) than the arch, so I will add more code to tell which 
-device is probed by the driver, then assign correct value.
-
-Thanks
->
-> Thanks
->
->
->> Thanks
->> Zhu Lingshan
->>>
->>> Thanks
->>>
->>>
->>>> why adapt to this kind of defects?
->>>>
->>>> Thanks
->>>> Zhu Lingshan
->>>>>
->>>>> Thanks
->>>>>
->>>>>
->>>>>>
->>>>>> Thanks
->>>>>> Zhu Lingshan
->>>>>>>
->>>>>>> Let's leave those polices to the driver.
->>>>>>>
->>>>>>> Thanks
->>>>>>>
->>>>>>>
->>>>>>>> +    } else {
->>>>>>>> +        area.addr = vf->notify_pa;
->>>>>>>> +        area.size = PAGE_SIZE;
->>>>>>>> +    }
->>>>>>>> +
->>>>>>>> +    return area;
->>>>>>>> +}
->>>>>>>> +
->>>>>>>>   /*
->>>>>>>>    * IFCVF currently does't have on-chip IOMMU, so not
->>>>>>>>    * implemented set_map()/dma_map()/dma_unmap()
->>>>>>>> @@ -440,6 +457,7 @@ static const struct vdpa_config_ops 
->>>>>>>> ifc_vdpa_ops ={
->>>>>>>>       .get_config    = ifcvf_vdpa_get_config,
->>>>>>>>       .set_config    = ifcvf_vdpa_set_config,
->>>>>>>>       .set_config_cb  = ifcvf_vdpa_set_config_cb,
->>>>>>>> +    .get_vq_notification = ifcvf_get_vq_notification,
->>>>>>>>   };
->>>>>>>>     static int ifcvf_probe(struct pci_dev *pdev, const struct 
->>>>>>>> pci_device_id *id)
->>>>>>>
->>>>>>
->>>>>
->>>>
->>>
->>
->
+> On 29. Apr 2021, at 12:25, Fabio Aiuto <fabioaiuto83@gmail.com> wrote:
+>=20
+> On Thu, Apr 29, 2021 at 12:05:08PM +0200, Greg KH wrote:
+>> On Thu, Apr 29, 2021 at 11:58:20AM +0200, Fabio Aiuto wrote:
+>>> Hi all,
+>>>=20
+>>> I'm trying to declare module parameters this way:
+>>>=20
+>>>=20
+>>>   params: {
+>>>        scull_major: i32 {
+>>>            default: 0,
+>>>            permissions: bindings::S_IRUGO as i32,
+>>>            description: b"Major number",
+>>>        },
+>>>        scull_minor: i32 {
+>>>            default: 0,
+>>>            permissions: bindings::S_IRUGO as i32,
+>>>            description: b"Minor number",
+>>>        },
+>>>=20
+>>> i.e. using S_IRUGO macro exposed by bindgen. But I have the
+>>> following compiler error:
+>>>=20
+>>> error: proc macro panicked
+>>>  --> samples/rust/rust_scull.rs:12:1
+>>>   |
+>>> 12 | / module! {
+>>> 13 | |     type: RustScull,
+>>> 14 | |     name: b"rust_scull",
+>>> 15 | |     author: b"Alessandro Rubini, Jonathan Corbet",
+>>> ...  |
+>>> 44 | |     },
+>>> 45 | | }
+>>>   | |_^
+>>>   |
+>>>   =3D help: message: Expected Literal
+>>>=20
+>>> the same if I remove as i32 casts.
+>>>=20
+>>> if I write permissions as in samples/rust/rust_module_parameters.rs
+>>>=20
+>>>    params: {
+>>>        my_bool: bool {
+>>>            default: true,
+>>>            permissions: 0,
+>>>            description: b"Example of bool",
+>>>        },
+>>>        my_i32: i32 {
+>>>            default: 42,
+>>>            permissions: 0o644, <-------
+>>>            description: b"Example of i32",
+>>>        },
+>>>=20
+>>> I get no error.
+>>>=20
+>>> What's the right way to use S_I*UGO macros?
+>>=20
+>> Not at all, use the octal values instead please.
+>>=20
+>> That's the way that we have declared a while ago, and I think
+>> checkpatch.pl will even catch if you try to do this in any new code.
+>> Please don't force us to deal with S_* defines in rust code as well.
+>>=20
+>> thanks,
+>>=20
+>> greg k-h
+>=20
+> thank you I didn't know that. I will use octal than.
+>=20
+> Anyway I'd like to know what was the matter with those bindings...
+>=20
+> fabio
 
