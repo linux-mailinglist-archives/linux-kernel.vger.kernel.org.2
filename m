@@ -2,108 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9809536E726
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 10:39:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 136AF36E727
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 10:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240016AbhD2IiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 04:38:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48068 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232714AbhD2IiN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 04:38:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 124A5613CC;
-        Thu, 29 Apr 2021 08:37:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619685447;
-        bh=HaAfWtOAafkNSsvz88e84TAEk52kR7zNGm+Hs1lufVE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j9cwET2lfBWx4z21Rbb5XQMMhagUx2mZffCLo2Lp3v/hzb4OAB6NrKG31LTSxwiKc
-         lVch/kCh8FFLY5N9U5tNB9qh03SCzDBRwkuYoMM206585XP4FdSHs8ux+y3jD1Wt9l
-         HiH+s+W2q5JX1mo5P7mLWnVKEHCT5wf9OfNl3//yR3epiOmS3Ub3Jmnkg8IVKOJCV/
-         fZsDZEsCMLNF2+R8iihbHsEw0q1B/uYa29DsAom/etGTcGe6qoFnnBH2HqDWiyuIZ1
-         r68ti6+chgwa5tf+bOYsDae1tsDYvngA+sdcim/uCP2r9VCopjnqL5zV0jkKjddaMy
-         8XEt2Nr8sbvgQ==
-Received: by pali.im (Postfix)
-        id C4B347DF; Thu, 29 Apr 2021 10:37:24 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>
-Cc:     =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 mvebu + mvebu/dt64 6/6] arm64: dts: marvell: armada-37xx: move firmware node to generic dtsi file
-Date:   Thu, 29 Apr 2021 10:36:36 +0200
-Message-Id: <20210429083636.22560-6-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210429083636.22560-1-pali@kernel.org>
-References: <20210308153703.23097-1-kabel@kernel.org>
- <20210429083636.22560-1-pali@kernel.org>
+        id S233271AbhD2Ij2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 04:39:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231701AbhD2Ij0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 04:39:26 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DAD0C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 01:38:39 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id g14so17868841edy.6
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 01:38:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c4WPoZQIZ1kvkVufh+qEP9zP3pw5rW8jLhJq9sIj904=;
+        b=IgozPNfcNZh3SwfuiOVHikpsuKvtyq7T9Za5Oh1Jszmvf4rzk1b73g0p1DgzEY09Nv
+         mvt+HK76Hu85mdMLosxGGlK56/jynJd45gUlQmCdHXzKqe+WW9VpIlXezo1hRimAWler
+         oTCZfhu0CWFOWi0VNIAtBVHaq/JhfNrwJb8Ejqh/vQJvnpr2AI/6aphYa0fO8PHXfLUa
+         R9xydeBTmrwJb8pDMah7fXzrSpA789fMei0X5en2SGXgqTsu+xpeLCqJ6BjeCkkvLj3r
+         l/7Wa8iLepHsi7PVNJopsuFldMBfBBx2GXg0EpIHVmuqx6P06UYeo9KsrW8RBHV4tp5n
+         4d1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c4WPoZQIZ1kvkVufh+qEP9zP3pw5rW8jLhJq9sIj904=;
+        b=oocHEuFRBy2BHPsxLT60qr1UyAfdxzB95DCb/KTGdk3J5wB6/9rS3e0aElQwLpfek5
+         4k5pnmDw4gFwzq3RyXeSEiHLsFeWANFbScv1fI+sRE0XsJtVi8lkCo1YYhmxfHMUvl1/
+         pnAXVXa6lvy8P1GuQ9bJOwmvYx+kUglygpLBlIH7EIEFs2wlWnGiWD70/aaM7Rwc9T+3
+         yg9h/q5GP94sLWYsbsG/xqCt++BAQzEChXANX6lP5IneCgR68ipsf/lC934+LDoAwAv5
+         BMUJDgYQqrbmUS+5h1Yel54PZxAXhv4fuP9ytD1Qg/KzNN7HpdnyraG+NXFDvIWWXp6R
+         /t9w==
+X-Gm-Message-State: AOAM533PiHVX5z2tErBRaNG68KBIpe5BLi/R5lzCRKwR1pGB4LpcTiJE
+        pxS4OVVnDP3qrSnx5PVjNRpTZQ==
+X-Google-Smtp-Source: ABdhPJw/uG7z0S3jYVdM8GLT8Zryvd2mD2Bcig9/CCVXyJhaEGwQUisy9MFDRZf0bsFixgvhhRhZiQ==
+X-Received: by 2002:aa7:cc98:: with SMTP id p24mr16596562edt.187.1619685517668;
+        Thu, 29 Apr 2021 01:38:37 -0700 (PDT)
+Received: from localhost.localdomain (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.googlemail.com with ESMTPSA id n10sm1387941ejg.124.2021.04.29.01.38.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 01:38:37 -0700 (PDT)
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Kevin Hilman <khilman@baylibre.com>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH RESEND] arm64: meson: select COMMON_CLK
+Date:   Thu, 29 Apr 2021 10:38:23 +0200
+Message-Id: <20210429083823.59546-1-jbrunet@baylibre.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the turris-mox-rwtm firmware node from Turris MOX' device tree into
-the generic armada-37xx.dtsi file and use the generic compatible string
-'marvell,armada-3700-rwtm-firmware' instead of the current one.
+This fix the recent removal of clock drivers selection.
+While it is not necessary to select the clock drivers themselves, we need
+to select a proper implementation of the clock API, which for the meson, is
+CCF
 
-The Turris MOX rWTM firmware can be used on any Armada 37xx device,
-giving them access to the rWTM hardware random number generator, which
-is otherwise unavailable.
-
-This change allows Linux to load the turris-mox-rwtm.ko module on these
-boards.
-
-Tested on ESPRESSObin v5 with both default Marvell WTMI firmware and
-CZ.NIC's firmware. With default WTMI firmware the turris-mox-rwtm fails
-to probe, while with CZ.NIC's firmware it registers the HW random number
-generator.
-
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Marek Behún <kabel@kernel.org>
-Cc: <stable@vger.kernel.org> # 5.4+: 46d2f6d0c99f ("arm64: dts: armada-3720-turris-mox: add firmware node")
+Fixes: ba66a25536dd ("arm64: meson: ship only the necessary clock controllers")
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts | 8 --------
- arch/arm64/boot/dts/marvell/armada-37xx.dtsi           | 8 ++++++++
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ arch/arm64/Kconfig.platforms | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-index 0753cc489638..ebb0ddf8d306 100644
---- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-@@ -107,14 +107,6 @@
- 		/* enabled by U-Boot if SFP module is present */
- 		status = "disabled";
- 	};
--
--	firmware {
--		turris-mox-rwtm {
--			compatible = "cznic,turris-mox-rwtm";
--			mboxes = <&rwtm 0>;
--			status = "okay";
--		};
--	};
- };
+diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
+index cdfd5fed457f..a3fdffcd1ce8 100644
+--- a/arch/arm64/Kconfig.platforms
++++ b/arch/arm64/Kconfig.platforms
+@@ -168,6 +168,7 @@ config ARCH_MEDIATEK
  
- &i2c0 {
-diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-index 1b7f43e27589..847a2d12a4be 100644
---- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-@@ -505,4 +505,12 @@
- 			};
- 		};
- 	};
-+
-+	firmware {
-+		armada-3700-rwtm {
-+			compatible = "marvell,armada-3700-rwtm-firmware";
-+			mboxes = <&rwtm 0>;
-+			status = "okay";
-+		};
-+	};
- };
+ config ARCH_MESON
+ 	bool "Amlogic Platforms"
++	select COMMON_CLK
+ 	select MESON_IRQ_GPIO
+ 	help
+ 	  This enables support for the arm64 based Amlogic SoCs
 -- 
-2.20.1
+2.31.1
 
