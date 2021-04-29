@@ -2,211 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC0F36E806
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 11:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8575736E80C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 11:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235642AbhD2JdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 05:33:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59396 "EHLO
+        id S237494AbhD2Jds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 05:33:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230392AbhD2JdV (ORCPT
+        with ESMTP id S236987AbhD2Jdr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 05:33:21 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D42C06138B;
-        Thu, 29 Apr 2021 02:32:34 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id t22so11471269pgu.0;
-        Thu, 29 Apr 2021 02:32:34 -0700 (PDT)
+        Thu, 29 Apr 2021 05:33:47 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B032C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:33:00 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id gx5so6777704ejb.11
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:32:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/wNiFpqOaAKZtxpT+wIYCT15YwckphLit/10ndu05zM=;
-        b=NVsODKg1x8dhR/Trn9fbN1LyN/34bBtqRrhqxjyfL7r/oNvcg0y8ymb11FNO8Mx9Zc
-         2XHl3aWGDi3rlKSM+ezE3gQDLL0V/T4D2S90e+5yt5aEHVBdHkfpltMJj4/cX2NmwT90
-         6DPj46mgaUjf3hFIo6v0lIzj6kmrR2PIpgGHpb/V6d8+GGvZ3ZOm67gvC620YHrtuGZ2
-         IGpxE9CHtLx9ImbB0MIgiDZOepv+7Y6eyC7so99pvqtsJPapRS/bIW7TWFsK+r7CgOym
-         qgt8o9vhmepUMb5uuCeCFmWHSgPeoTFgkwQSfAwZCQmVMw1FFUdSZugM/wlWu1uXTQDt
-         jQPA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=mVDpQxeTCMq46bao8sy9cnrDvz662NxXvCGy2842XSk=;
+        b=XIn696y5s3nQNvaOHb7ZQC5AkLwso8hmCtzWa3OuTSHiW0etnQEvHvOAu4NDNHQPkQ
+         Zsp5yVjwQGNI+3Ijf9mY3fNUY36K09rqxAQoiohiRsVVE/xEEgprsv5cRS3FVka0cTxH
+         hhQ904F3Ay2q1+waxm+qgfVzTcAbLmbV9ye5zSdEAAJ9++K/0Qnw1sPdAxfcxoPGZsjb
+         Pi81D2XV+Ac2wYIdrDMH5h+JISZH3l2cCynLGfDkUVky+KD40KYTnwVlUBirIC0Tfa6Q
+         /53mFkAFJVysFsQlV9GwzE9F/CgL3hGmhVPecfLjFjC5bgvt94s7crIgmVPJ0pIeufLc
+         rixw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/wNiFpqOaAKZtxpT+wIYCT15YwckphLit/10ndu05zM=;
-        b=gKAoJyFh/GEKVyqCcOHy8316FwuAwA/BV38n3Z4mzyTR7CMZNL7U2avcN+gP4a6yEj
-         8KqFbhKo1UQoPNmqHrkeng+3fV+Ow9h0rerisohC0ndu0GXhlm3xu0uq6Fo31yPZxsun
-         pvv4fl5U6A1stHj5W+tqsttJeo/dVwrMFagUPIBEbpbhBDvzNzDbj0CS+G2TpqBICo5L
-         bNgC0Go3j1dDEUsjW6Gqe3m+SY1guG8+n49OJTmEprRAiaIIT1PFhgH+2tBVurYowfY6
-         OkT7UwiAac2js50Osjakn9mcCPYwC/AbkblE+NqNN7p8KQYKi5Zi9zDpHc5rSf5H2O07
-         BYUw==
-X-Gm-Message-State: AOAM530ULsQwH/L89mzKntx0KVXTKLQcy2JhPinEIDUjE6pNd1JPwttI
-        QPS+YWkilGLnrxa+OQ8wS8hed08K4GxcR0v4WYgsX+W3Wro=
-X-Google-Smtp-Source: ABdhPJwUaOwWjHOoYBhSdQvsUNZUwlRQcBXlmtOw3z2HfS28/S+CegSC4NeUvLbefV1Nrw1ECLOhoaX9GUcIgqyJB/Y=
-X-Received: by 2002:a63:a847:: with SMTP id i7mr30760439pgp.203.1619688754072;
- Thu, 29 Apr 2021 02:32:34 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mVDpQxeTCMq46bao8sy9cnrDvz662NxXvCGy2842XSk=;
+        b=Bf+Zw+5Xl6dSle/Emy2sX7ZYMeBZo4L6hj9P9C6CTs9f2RoS75CLVFKvhXVqq+uHyt
+         P6amR3Fb6cEVIs+t1lDKOwDxlUeAi1BiqIUon/Ii4WhjghpLNwFi6WL2PCeAy8m75BbC
+         EMNLf/9qHUlRetB1tHYqa8QJyhTkODHTDS0Eevx6P2HyhT5LPftqZrvk+Oj2iCYS0bxb
+         lpSYoJ+k+6pDvPavxu9HSVPng6N+BL0vvCnvzGbs2Zq3elMLqDQuvR8ciEyAyFWHvcQ4
+         p7UzzHhAbPsd0v9ALsqRWc4i6fDwtP/9L1EsRBBASErgg2TMCzG9ponJMWGlROdLke6s
+         ff/A==
+X-Gm-Message-State: AOAM530kq25pChymXPHZPiB/KCyUDgtnkyTiiP/j9/FKS1lYrdCGYEuA
+        A7QLG+b6YS86PfD/aJ1mofw=
+X-Google-Smtp-Source: ABdhPJyu7EJGrJVitIw+ZVXJWa+RqWaHus2Yaz8XlMZoE0QyEDZ4Ng9qqIebxoqtP2fw9vzHrWJA6Q==
+X-Received: by 2002:a17:906:4889:: with SMTP id v9mr6716100ejq.21.1619688778789;
+        Thu, 29 Apr 2021 02:32:58 -0700 (PDT)
+Received: from agape.jhs ([5.171.81.14])
+        by smtp.gmail.com with ESMTPSA id n17sm1853594eds.72.2021.04.29.02.32.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 02:32:58 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 11:32:52 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     outreachy-kernel@googlegroups.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH 1/2] staging: rtl8723bs: hal: Remove
+ set but unused variables
+Message-ID: <20210429093250.GD1409@agape.jhs>
+References: <20210428113346.28305-1-fmdefrancesco@gmail.com>
+ <8266064.IJzC9MfcRG@linux.local>
+ <20210429082552.GC1409@agape.jhs>
+ <2336223.vu2A7xvVi3@linux.local>
 MIME-Version: 1.0
-References: <20210429070237.3012-1-rocco.yue@mediatek.com>
-In-Reply-To: <20210429070237.3012-1-rocco.yue@mediatek.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 29 Apr 2021 12:32:17 +0300
-Message-ID: <CAHp75Vc=GMv5dJ1dJYr=B3W6c+nuPCfXa4wxLJOYPTuqrMskFg@mail.gmail.com>
-Subject: Re: [PATCH] rtnetlink: add rtnl_lock debug log
-To:     Rocco Yue <rocco.yue@mediatek.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Peter Enderborg <peter.enderborg@sony.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vitor Massaru Iha <vitor@massaru.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Di Zhu <zhudi21@huawei.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, wsd_upsream@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2336223.vu2A7xvVi3@linux.local>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 10:21 AM Rocco Yue <rocco.yue@mediatek.com> wrote:
->
-> We often encounter system hangs caused by certain processes
-> holding rtnl_lock for a long time. Even if there is a lock
-> detection mechanism in Linux, it is a bit troublesome and
-> affects the system performance. We hope to add a lightweight
-> debugging mechanism for detecting rtnl_lock.
->
-> Up to now, we have discovered and solved some potential bugs
-> through such debug information of this lightweight rtnl_lock,
-> which is helpful for us.
->
-> When you say Y for RTNL_LOCK_DEBUG, then the kernel will detect
-> if any function hold rtnl_lock too long and some key information
-> will be printed to help identify the issue point.
->
-> i.e: from the following logs, we can clear know that the pid=5546
+On Thu, Apr 29, 2021 at 11:16:24AM +0200, Fabio M. De Francesco wrote:
+> On Thursday, April 29, 2021 10:25:53 AM CEST Fabio Aiuto wrote:
+> > On Thu, Apr 29, 2021 at 09:44:47AM +0200, Fabio M. De Francesco wrote:
+> > > On Thursday, April 29, 2021 9:26:20 AM CEST Fabio Aiuto wrote:
+> > > > Hi Fabio,
+> > > > 
+> > > > On Wed, Apr 28, 2021 at 01:33:45PM +0200, Fabio M. De Francesco wrote:
+> > > > > Removed four set but unused variables. Issue detected by gcc.
+> > > > > 
+> > > > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > > > > ---
+> > > > > 
+> > > > >  drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c | 5 -----
+> > > > >  1 file changed, 5 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+> > > > > b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c index
+> > > 
+> > > 082448557b53..96cb4426a0f4
+> > > 
+> > > > > 100644
+> > > > > --- a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+> > > > > +++ b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+> > > > > @@ -3900,14 +3900,11 @@ u8 GetHalDefVar8723B(struct adapter *padapter,
+> > > 
+> > > enum
+> > > 
+> > > > > hal_def_variable variable, v>
+> > > > > 
+> > > > >  			u32 cmd;
+> > > > >  			u32 ra_info1, ra_info2;
+> > > > >  			u32 rate_mask1, rate_mask2;
+> > > > > 
+> > > > > -			u8 curr_tx_rate, curr_tx_sgi, hight_rate,
+> > > 
+> > > lowest_rate;
+> > > 
+> > > > >  			cmd = 0x40000100 | mac_id;
+> > > > >  			rtw_write32(padapter,
+> > > 
+> > > REG_HMEBOX_DBG_2_8723B, cmd);
+> > > 
+> > > > >  			msleep(10);
+> > > > >  			ra_info1 = rtw_read32(padapter, 0x2F0);
+> > > > > 
+> > > > > -			curr_tx_rate = ra_info1&0x7F;
+> > > > > -			curr_tx_sgi = (ra_info1>>7)&0x01;
+> > > > > 
+> > > > >  			cmd = 0x40000400 | mac_id;
+> > > > >  			rtw_write32(padapter,
+> > > 
+> > > REG_HMEBOX_DBG_2_8723B, cmd);
+> > > 
+> > > > > @@ -3916,8 +3913,6 @@ u8 GetHalDefVar8723B(struct adapter *padapter, 
+> enum
+> > > > > hal_def_variable variable, v>
+> > > > > 
+> > > > >  			ra_info2 = rtw_read32(padapter, 0x2F4);
+> > > > >  			rate_mask1 = rtw_read32(padapter, 0x2F8);
+> > > > >  			rate_mask2 = rtw_read32(padapter, 0x2FC);
+> > > > > 
+> > > > > -			hight_rate = ra_info2&0xFF;
+> > > > > -			lowest_rate = (ra_info2>>8)  & 0xFF;
+> > > > > 
+> > > > >  		}
+> > > > >  		break;
+> > > > 
+> > > > rate_mask{1,2} and ra_info{1,2} seems to be unused as well.
+> > > > 
+> > > > thank you,
+> > > > 
+> > > > fabio
+> > > 
+> > > Hello Fabio,
+> > > 
+> > > I'm not sure about it: rtw_read32 calls a pointer to a function. I'm don't
+> > > know drivers programming, however that function looks like an 
+> implementation
+> > > of a read() system call. So I wouldn't be so sure to remove those calls.
+> > > 
+> > > Could calling a (*read) method have side effects on subsequent read()? I 
+> mean:
+> > > could it update some internal data structure? If not I can remove the
+> > > variables you mentioned above and the calls to read32.
+> > > 
+> > > I'm looking forward to read your reply.
+> > > 
+> > > Thanks,
+> > > 
+> > > Fabio
+> > 
+> > hi Fabio,
+> > 
+> > rtw_read32 is a macro wrapping _rtw_read32() defined as follows (in core/
+> rtw_io.c):
+> >
+> Hi Fabio,
+> 
+> Thanks a lot for your reply.
+> 
+> However, There is something less than clear to me... how did you find that 
+> rtw_read32 is a macro wrapping _rtw_read32()? I mean: I knew that, in vim, one 
+> can go to the definition of something by using ctrl-] key.
+> 
+> If I do that on rtw_read32 it takes me to a static definition of it in 
+> drivers/net/wireless/realtek/rtw88/hci.h. This is a one line function:
+> 
+> static inline void rtw_write32(struct rtw_dev *rtwdev, u32 addr, u32 val)
+> {       
+>         rtwdev->hci.ops->write32(rtwdev, addr, val);
+> }
+> 
+> When I use ctrl-] on write32() it takes me to struct rtw_hci_ops in drivers/
+> net/wireless/realtek/rtw88/hci.h.
+> 
+> After that I wanted to find where the member (*read32)() is assigned but I 
+> don't know where and how to grep it: I tried "grep -rn "\bwrite32\b=" drivers/
+> staging/rtl8723bs/" but I found nothing...
+> 
+> Can you please explain what I'm doing wrong in following the path I mentioned 
+> above and how you find out that macro?
 
-clearly
+$grep -r 'define\s*\brtw_read32' drivers/staging/rtl8723bs/
 
-> RfxSender_4 process hold rtnl_lock for a long time, causing the
-
-holds
-
-> system hang. And we can also speculate that the delay operation
-
-to hang
-
-> may be performed in devinet_ioctl(), resulting in rtnl_lock was
-> not released in time.
->
-> <6>[  141.151364] ----------- rtnl_print_btrace start -----------
-
-Can you, please, shrink this to the point?
-
-> <6>[  141.152079] RfxSender_4[5546][R] hold rtnl_lock more than 2 sec,
-> start time: 139129481562
-> <4>[  141.153114]  rtnl_lock+0x88/0xfc
-> <4>[  141.153523]  devinet_ioctl+0x190/0x1268
-> <4>[  141.154007]  inet_ioctl+0x108/0x1f4
-> <4>[  141.154449]  sock_do_ioctl+0x88/0x200
-> <4>[  141.154911]  sock_ioctl+0x4b0/0x884
-> <4>[  141.155367]  do_vfs_ioctl+0x6b0/0xcc4
-> <4>[  141.155830]  __arm64_sys_ioctl+0xc0/0xec
-> <4>[  141.156326]  el0_svc_common+0x130/0x2c0
-> <4>[  141.156810]  el0_svc_handler+0xd0/0xe0
-> <4>[  141.157283]  el0_svc+0x8/0xc
-> <4>[  141.157646] Call trace:
-> <4>[  141.157956]  dump_backtrace+0x0/0x240
-> <4>[  141.158418]  show_stack+0x18/0x24
-> <4>[  141.158836]  rtnl_print_btrace+0x138/0x1cc
-> <4>[  141.159362]  call_timer_fn+0x120/0x47c
-> <4>[  141.159834]  expire_timers+0x28c/0x420
-> <4>[  141.160306]  __run_timers+0x3d0/0x494
-> <4>[  141.160768]  run_timer_softirq+0x24/0x48
-> <4>[  141.161262]  __do_softirq+0x26c/0x968
-> <4>[  141.161725]  irq_exit+0x1f8/0x2b4
-> <4>[  141.162145]  __handle_domain_irq+0xdc/0x15c
-> <4>[  141.162672]  gic_handle_irq+0xe4/0x188
-> <4>[  141.163144]  el1_irq+0x104/0x200
-> <4>[  141.163559]  __const_udelay+0x118/0x1b0
-> <4>[  141.164044]  devinet_ioctl+0x1a0/0x1268
-> <4>[  141.164527]  inet_ioctl+0x108/0x1f4
-> <4>[  141.164968]  sock_do_ioctl+0x88/0x200
-> <4>[  141.165428]  sock_ioctl+0x4b0/0x884
-> <4>[  141.165868]  do_vfs_ioctl+0x6b0/0xcc4
-> <4>[  141.166330]  __arm64_sys_ioctl+0xc0/0xec
-> <4>[  141.166825]  el0_svc_common+0x130/0x2c0
-> <4>[  141.167308]  el0_svc_handler+0xd0/0xe0
-> <4>[  141.167786]  el0_svc+0x8/0xc
-> <6>[  141.168153] ------------ rtnl_print_btrace end -----------
->
-> <6>[  147.321389] rtnl_lock is held by [5546] from
-> [139129481562] to [147321378812]
+it's a grep I always do to check if a function is actally
+a function or a macro..
 
 
-...
+> 
+> Thanks for your time,
+> 
+> Fabio 
+> > 
+> > u32 _rtw_read32(struct adapter *adapter, u32 addr)
+> > {
+> >         u32 r_val;
+> >         /* struct       io_queue        *pio_queue = (struct io_queue
+> > *)adapter->pio_queue; */ struct io_priv *pio_priv = &adapter->iopriv;
+> >         struct  intf_hdl                *pintfhdl = &(pio_priv->intf);
+> >         u32 (*_read32)(struct intf_hdl *pintfhdl, u32 addr);
+> > 
+> >         _read32 = pintfhdl->io_ops._read32;
+> > 
+> >         r_val = _read32(pintfhdl, addr);
+> >         return rtw_le32_to_cpu(r_val);
+> > 
+> > }
+> > 
+> > the actual read seems to be performed by the handler contained in
+> > 
+> > 	pintfhdl->io_ops._read32;
+> > 
+> > so:
+> > 
+> > $ grep -r '\b_read32' drivers/staging/rtl8723bs/
+> > 
+> > drivers/staging/rtl8723bs/hal/sdio_ops.c:	ops->_read32 = 
+> &sdio_read32;
+> > 
+> > this is the place where _read32 is stored with sdio_read32 reference...
+> > 
+> > drivers/staging/rtl8723bs/core/rtw_io.c:	u32 (*_read32)(struct 
+> intf_hdl *pintfhdl, u32
+> > addr); drivers/staging/rtl8723bs/core/rtw_io.c:	_read32 = pintfhdl-
+> >io_ops._read32;
+> > ...
+> > 
+> > if you check it in hal/sdio_ops.c, nothing is written, just reads are
+> > performed (and it's not odd, for a read function isn't supposed to write
+> > something under the hood ;)).
+> > 
+> > I think those variables could be easily removed as W=1 gcc suggests.
+> > 
+> > thank you,
+> > 
+> > fabio
+> 
+> 
+> 
+> 
 
-> +static struct rtnl_debug_btrace_t rtnl_instance = {
-> +       .task           = NULL,
-> +       .pid            = 0,
-> +       .start_time     = 0,
-> +       .end_time       = 0,
-> +       .nr_entries     = 0,
+thanks,
 
-static assumes all 0:s, what's the point?
-
-> +};
-
-...
-
-> +static void rtnl_print_btrace(struct timer_list *unused)
-> +{
-> +       pr_info("----------- %s start -----------\n", __func__);
-> +       pr_info("%s[%d][%c] hold rtnl_lock more than 2 sec, start time: %llu\n",
-> +               rtnl_instance.task->comm,
-> +               rtnl_instance.pid,
-> +               task_state_to_char(rtnl_instance.task),
-> +               rtnl_instance.start_time);
-> +       stack_trace_print(rtnl_instance.addrs, rtnl_instance.nr_entries, 0);
-
-> +       show_stack(rtnl_instance.task, NULL, KERN_DEBUG);
-
-Unaligned debug level.
-
-> +       pr_info("------------ %s end -----------\n", __func__);
-
-Looking into tons of these, perhaps you need to define pr_fmt(). I
-haven't checked if it's already defined, though.
-
-> +}
-
-...
-
-> +       if (rtnl_instance.end_time - rtnl_instance.start_time > 2000000000ULL) {
-
-Perhaps you should use one of the defined constants from time64.h ?
-
-> +               pr_info("rtnl_lock is held by [%d] from [%llu] to [%llu]\n",
-> +                       rtnl_instance.pid,
-> +                       rtnl_instance.start_time,
-> +                       rtnl_instance.end_time);
-> +       }
-
--- 
-With Best Regards,
-Andy Shevchenko
+fabio
