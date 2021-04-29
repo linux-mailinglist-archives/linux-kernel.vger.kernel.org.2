@@ -2,154 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DBCE36EE13
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 18:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D57B336EE16
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 18:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240854AbhD2QYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 12:24:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233302AbhD2QY2 (ORCPT
+        id S240826AbhD2QYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 12:24:42 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:35339 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232724AbhD2QYi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 12:24:28 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38BCEC06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 09:23:42 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id f75-20020a9d03d10000b0290280def9ab76so56752451otf.12
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 09:23:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A8kA1nA6ez8GVSpcYT5oYjc8axAEtsKpaYmy0o7ewtQ=;
-        b=UemxAc3nBUhoStCY+5eaTBJdKaNUQuiJnDiJLkTnfwXM00EwLQoXe1kiBv9U81LRI3
-         TV9h8nxmy+TEACZY7eDK3efcOgpl6ZRO/p5yQrq29yu55NjWtOpBcU2vkx+eK3qktRLC
-         t7xtu0tp0aFGXnyAQqlw43DryH7aSlI9S6wjrXiiBd2yoBHS+SG3c4LQTmrcnJat6gVy
-         QrcsOXHi+U4DT0w4sfmL/NVJqpOF5X6gehC+ZcoxeLbje4Q7n2ShtF9tBnjyrQc335al
-         h14a2E5vGmzbMplyYl1O7fAFpaLMfXSsVVWiwrH7MA+wlqDmcynG2YYlzuMZhZHKuZfp
-         pCBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A8kA1nA6ez8GVSpcYT5oYjc8axAEtsKpaYmy0o7ewtQ=;
-        b=WQRSpN/nlqirdPaICFx6Id4NtX+tVst6UBB31hNw70EVLlXvOyrnHeFNN+OTyKsenG
-         fLLFTycfys/qAn1nizOQVYcTmxzRn8ItAlEu6jMCuIKds0zGn/XESAREWafOTx4B0vkb
-         4ul/8c8XH0IFENRHC0otfxb6BHm3aLbYenThGzKDOkrZYH3hwGcSFscJXIeTHFAnSPPq
-         kMcq9gqforJr6cIG8w49zB5rsvPbhlGwfcTAg4pRfcg0lAW3j/cjDxsHhD5wibWAXqJv
-         zUNVOBJwR0OUYCwTdAY4KQ3D1JNmrm5R5lkNBayjgWf9L0CyJL8f/CbfsBsi33HaKqag
-         VZUg==
-X-Gm-Message-State: AOAM532JexPCXx2fsQWKDcfahLm0YMd2VYCilud4eIy/aY8CD3G0FPbz
-        wGi8NYW1T46j92YnmGJ2A1uo/xx2+jHzOUXDoe9h/TyPfxAGWg==
-X-Google-Smtp-Source: ABdhPJxVwwWkxsw6FKByqMz8rfOcZyIFcq+eCWSSVPh4iq7muettmAZQdnhXaqnsF4dT0Etk89a1R2E7+whZMQeJ/OI=
-X-Received: by 2002:a9d:6b0e:: with SMTP id g14mr181079otp.214.1619713418279;
- Thu, 29 Apr 2021 09:23:38 -0700 (PDT)
+        Thu, 29 Apr 2021 12:24:38 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 6767C22173;
+        Thu, 29 Apr 2021 18:23:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1619713430;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bWL3CNDjMb7nz1cZKkLAw3O1cGMY+QoFR9KqySt0db8=;
+        b=ZD1lH0+lsVqZBevm1a4HCNgWdi/+b3VWuzjXso1qeVDK1xIiSBdD19MS6uDfMSYXcJHkBn
+        ZUkrBkmAaZwUY8TmZD6hD4jq+CBOpuh/Jeorn853kpal/Ubsu6U6yj3GK0TY7B/8A+dHZQ
+        EVXT/eZ/PGxjCQe2WgU26b0pKqzjQA0=
 MIME-Version: 1.0
-References: <20210429155713.28808-1-michael@walle.cc> <20210429155713.28808-3-michael@walle.cc>
-In-Reply-To: <20210429155713.28808-3-michael@walle.cc>
-From:   Alexander Williams <awill@google.com>
-Date:   Thu, 29 Apr 2021 09:23:26 -0700
-Message-ID: <CACqsJN8mrHUB9Ls3PG5R_B84+xUjf-2VakA=09mP_bodWnUgmw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] mtd: spi-nor: add initial sysfs support
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 29 Apr 2021 18:23:50 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
         Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
         Miquel Raynal <miquel.raynal@bootlin.com>,
         Richard Weinberger <richard@nod.at>,
         Vignesh Raghavendra <vigneshr@ti.com>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Heiko Thiery <heiko.thiery@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mark Brown <broonie@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-spi@vger.kernel.org, Lokesh Vutla <lokeshvutla@ti.com>
+Subject: Re: [RFC PATCH 1/6] spi: spi-mem: Tell controller when device is
+ ready for calibration
+In-Reply-To: <20210324080804.x7oemmpt2khi72mp@ti.com>
+References: <20210311191216.7363-1-p.yadav@ti.com>
+ <20210311191216.7363-2-p.yadav@ti.com>
+ <934c8c6f7bb71729bfdaefd39c63a262@walle.cc>
+ <20210324080804.x7oemmpt2khi72mp@ti.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <6dfbb3e4107887dc9ee3e19e4940e87c@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+Hi Pratyush,
 
-On Thu, Apr 29, 2021 at 8:57 AM Michael Walle <michael@walle.cc> wrote:
->
-> Add support to show the manufacturer, the partname and JEDEC identifier
-> as well as to dump the SFDP table. Not all flashes list their SFDP table
-> contents in their datasheet. So having that is useful. It might also be
-> helpful in bug reports from users.
->
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
-> Pratyush, Heiko, I've dropped your Acked and Tested-by because there
-> were some changes.
->
->  .../ABI/testing/sysfs-bus-spi-devices-spi-nor | 31 +++++++
->  drivers/mtd/spi-nor/Makefile                  |  2 +-
->  drivers/mtd/spi-nor/core.c                    |  1 +
->  drivers/mtd/spi-nor/core.h                    |  2 +
->  drivers/mtd/spi-nor/sysfs.c                   | 92 +++++++++++++++++++
->  5 files changed, 127 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
->  create mode 100644 drivers/mtd/spi-nor/sysfs.c
->
-> diff --git a/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor b/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
-> new file mode 100644
-> index 000000000000..4c88307759e2
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
-> @@ -0,0 +1,31 @@
-> +What:          /sys/bus/spi/devices/.../jedec_id
-> +Date:          April 2021
-> +KernelVersion: 5.14
-> +Contact:       linux-mtd@lists.infradead.org
-> +Description:   (RO) The JEDEC ID of the SPI NOR flash as reported by the
-> +               flash device.
-> +
-> +
-> +What:          /sys/bus/spi/devices/.../manufacturer
-> +Date:          April 2021
-> +KernelVersion: 5.14
-> +Contact:       linux-mtd@lists.infradead.org
-> +Description:   (RO) Manufacturer of the SPI NOR flash.
-> +
-> +
-> +What:          /sys/bus/spi/devices/.../partname
-> +Date:          April 2021
-> +KernelVersion: 5.14
-> +Contact:       linux-mtd@lists.infradead.org
-> +Description:   (RO) Part name of the SPI NOR flash.
-> +
-> +
-> +What:          /sys/bus/spi/devices/.../sfdp
-> +Date:          April 2021
-> +KernelVersion: 5.14
-> +Contact:       linux-mtd@lists.infradead.org
-> +Description:   (RO) This attribute is only present if the SPI NOR flash
-> +               device supports the "Read SFDP" command (5Ah).
-> +
-> +               If present, it contains the complete SFDP (serial flash
-> +               discoverable parameters) binary data of the flash.
-> diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-> index 136f245c91dc..6b904e439372 100644
-> --- a/drivers/mtd/spi-nor/Makefile
-> +++ b/drivers/mtd/spi-nor/Makefile
-> @@ -1,6 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0
->
-> -spi-nor-objs                   := core.o sfdp.o swp.o otp.o
-> +spi-nor-objs                   := core.o sfdp.o swp.o otp.o sysfs.o
->  spi-nor-objs                   += atmel.o
->  spi-nor-objs                   += catalyst.o
->  spi-nor-objs                   += eon.o
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 20c7ee604731..57d8a4dae5fd 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -3349,6 +3349,7 @@ static struct spi_mem_driver spi_nor_driver = {
->                 .driver = {
->                         .name = "spi-nor",
->                         .of_match_table = spi_nor_of_table,
-> +                       .dev_groups = spi_nor_sysfs_groups,
+I've had a look at the LS1028A FlexSPI calibration feature. The
+reference manual is very sparse on details, though. What you need to
+do there is to program a special read command sequence (the whole
+controller is made of these lookup table entries, where you can
+have a short sequence of operations for read/write/program and so
+on). Therefore, for data learning you'll take the read operation
+and insert a LEARN op in between and read a specific data pattern.
+Then the hardware will automatically figure out the correct sample
+phase for the read data pins.
 
-Putting these in the driver's dev_groups does create a divergence between
-different spi-nor controllers. For all the controllers supported in
-drivers/mtd/spi-nor/controllers/, would their drivers need to add the same sysfs
-groups to get the same support?
+Unfortunately, it does not mention how often you have to do it. It
+might be the case that is has to be calibrated more than once.
 
-- Alex
+I'm just mentioning this so it won't be lost. If needed, it can
+be added later.
+
+Am 2021-03-24 09:08, schrieb Pratyush Yadav:
+> On 24/03/21 12:07AM, Michael Walle wrote:
+>> Am 2021-03-11 20:12, schrieb Pratyush Yadav:
+>> > Some controllers like the Cadence OSPI controller need to perform a
+>> > calibration sequence to operate at high clock speeds. This calibration
+>> > should happen after the flash is fully initialized otherwise the
+>> > calibration might happen in a different SPI mode from the one the flash
+>> > is finally set to. Add a hook that can be used to tell the controller
+>> > when the flash is ready for calibration. Whether calibration is needed
+>> > depends on the controller.
+>> >
+>> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+>> > ---
+>> >  drivers/spi/spi-mem.c       | 12 ++++++++++++
+>> >  include/linux/spi/spi-mem.h |  8 ++++++++
+>> >  2 files changed, 20 insertions(+)
+>> >
+>> > diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+>> > index dc713b0c3c4d..e2f05ad3f4dc 100644
+>> > --- a/drivers/spi/spi-mem.c
+>> > +++ b/drivers/spi/spi-mem.c
+>> > @@ -464,6 +464,18 @@ int spi_mem_adjust_op_size(struct spi_mem *mem,
+>> > struct spi_mem_op *op)
+>> >  }
+>> >  EXPORT_SYMBOL_GPL(spi_mem_adjust_op_size);
+>> >
+>> > +int spi_mem_do_calibration(struct spi_mem *mem, struct spi_mem_op *op)
+>> > +{
+>> > +	struct spi_controller *ctlr = mem->spi->controller;
+>> > +
+>> > +	if (!ctlr->mem_ops || !ctlr->mem_ops->do_calibration)
+>> > +		return -EOPNOTSUPP;
+>> > +
+>> > +	ctlr->mem_ops->do_calibration(mem, op);
+>> 
+>> Can't a calibration fail?
+> 
+> It can. If it does, the controller falls back to lower speed transfers.
+> There is not much the upper layer can do about this. That's why it is
+> not informed whether it succeeded or not.
+
+Ok, if needed, that should be an easy change.
+
+op is there to decide if we need a calibration at all, correct?
+What if there are different factors, like frequency? For example
+on the LS1028A its just a matter of the SCK frequency. It seems
+that this parameter is tailored to the OPHY.
+
+-michael
+
+>> > +	return 0;
+>> > +}
+>> > +EXPORT_SYMBOL_GPL(spi_mem_do_calibration);
+>> > +
+>> >  static ssize_t spi_mem_no_dirmap_read(struct spi_mem_dirmap_desc *desc,
+>> >  				      u64 offs, size_t len, void *buf)
+>> >  {
+>> > diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+>> > index 2b65c9edc34e..97a2d280f2d0 100644
+>> > --- a/include/linux/spi/spi-mem.h
+>> > +++ b/include/linux/spi/spi-mem.h
+>> > @@ -250,6 +250,12 @@ static inline void *spi_mem_get_drvdata(struct
+>> > spi_mem *mem)
+>> >   *		  the currently mapped area), and the caller of
+>> >   *		  spi_mem_dirmap_write() is responsible for calling it again in
+>> >   *		  this case.
+>> > + * @do_calibration: perform calibration needed for high SPI clock speed
+>> > + *		    operation. Should be called after the SPI memory device has
+>> > + *		    been completely initialized. The op passed should contain
+>> > + *		    a template for the read operation used for the device so
+>> > + *		    the controller can decide what type of calibration is
+>> > + *		    required for this type of read.
+>> >   *
+>> >   * This interface should be implemented by SPI controllers providing an
+>> >   * high-level interface to execute SPI memory operation, which is
+>> > usually the
+>> > @@ -274,6 +280,7 @@ struct spi_controller_mem_ops {
+>> >  			       u64 offs, size_t len, void *buf);
+>> >  	ssize_t (*dirmap_write)(struct spi_mem_dirmap_desc *desc,
+>> >  				u64 offs, size_t len, const void *buf);
+>> > +	void (*do_calibration)(struct spi_mem *mem, struct spi_mem_op *op);
+>> >  };
+>> >
+>> >  /**
+>> > @@ -346,6 +353,7 @@ bool spi_mem_dtr_supports_op(struct spi_mem *mem,
+>> >  #endif /* CONFIG_SPI_MEM */
+>> >
+>> >  int spi_mem_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op);
+>> > +int spi_mem_do_calibration(struct spi_mem *mem, struct spi_mem_op *op);
+>> >
+>> >  bool spi_mem_supports_op(struct spi_mem *mem,
+>> >  			 const struct spi_mem_op *op);
+>> 
+
