@@ -2,174 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C0E36EC63
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 16:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A3D936EC67
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 16:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239667AbhD2Oaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 10:30:30 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:36506 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234862AbhD2Oa3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 10:30:29 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TEGLHI007806;
-        Thu, 29 Apr 2021 14:29:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=C65XH8xoI5TYZm566O43/WYrIfY3ecy/PjkGC3++hGw=;
- b=gR13sC9s01nkeqaIUKKoIMpE6HJcW3wjIDkol3KzComfT9SdkrS3htqUWVttrSKXqadI
- hLx/vmqyW/GPjbYiAHsQQvZ8BR5IJzN1t1ABn30qfIT66N4hhDkdaizay+3s0gyM9d4t
- aijBVtOr0NxfUj9n3+CBMRGpnTELq2Fx1GUbuDxT9DUG8xRY5MkWgqcLkSa059xuG2GP
- 0CrxbluwqxOv0OZ8gv9Ij2yE8nXf8+C4f+RyAwHlfzWosTC1Eab9tMFTKsOVhzgOHwd4
- q1pONk+g5z5GpKWM2yHKskY1X+iHH9zkfdSvaj6lw9NhQXPK9WIc45fM/ImlqlmHiC5g fw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 385ahbvk77-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 14:29:36 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TEEh70117475;
-        Thu, 29 Apr 2021 14:29:35 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 384w3wcc3c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 14:29:35 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13TENJRu156594;
-        Thu, 29 Apr 2021 14:29:35 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 384w3wcc2p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 14:29:34 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13TETXdF003385;
-        Thu, 29 Apr 2021 14:29:33 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 29 Apr 2021 07:29:33 -0700
-Date:   Thu, 29 Apr 2021 17:29:27 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org, Ioana Ciornei <ioana.ciornei@nxp.com>
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c:721
- dpaa2_eth_build_sg_fd_single_buf() warn: overwrite may leak 'sgt_buf'
-Message-ID: <202104281748.NQlMojCM-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S239881AbhD2Obi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 10:31:38 -0400
+Received: from mail-bn7nam10on2076.outbound.protection.outlook.com ([40.107.92.76]:9376
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234473AbhD2Obh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 10:31:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Rc8XgqIqNOoIqYy1MP3Js36hfynYmKZ60kgT3z3aUtt1pRrz47TXvCw0Y7K04ej9v1oNnyuKvhN0UDl/x+uJxGI09oyzlGFmM5WjG2ouK8RqtDLtz7gwQIMVfAfd4tH7rtdyqj9NXdQfNSBfy5rm8Nx/975Zw4tLlf2H7Q6eBixgkrcpoYdyUu9vx1tm7jFzdROFdWxRHmodAeDgqc8daEeQ8rfgMNZqI0YmZmBwIvkO86xoMqlfh3Xf3q6Wn+8Vr2BkezO62bfnl4fT55fm6xBSyDyl31feNs/Dz52zwEHH7pjPVsYKZqcJCp+12CwWMCqP4bY/AMrhimnZRuo9Og==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UEOluUaLyB2byncnXhTMUz+KKHVeash59tIWxkeStUY=;
+ b=JqlsiEKztVRCQTRP8/hqCfBswITF0Yy0njJxXbEGfmzKooOuBwpRYbBKhpZfLSwvnn+tHTqRIXQzo1tenrPoi5rq1pWNkTO12nnuIt7QNfGlVrbMTXFnoHHVoF/6YkU5I+HhGwa3QP0fY2bMw1AyCxy5O57DCxFRYPyAB+ryPBu5qDqHlxDwBMT7EDJQJiSRLphDsI3FbJf+wE4fuhjVhAkvhdxfsO7Fcb+3XgQteW9NOObLFo70ljvh3zJCeMbJA3DL2/2a4QSEHkuU+GIcyYfdjUgnEAicBqoQfs7U+9gw+v8n0bKLgq/8+Ouc6Yw5B7xju59zoqwbeXv+kkdQYA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UEOluUaLyB2byncnXhTMUz+KKHVeash59tIWxkeStUY=;
+ b=IkYZhjC/O0U8ALlsxqNJCB1FzOo7XDQA7PEb8qAnNSJUp39h1++jQ+Dx7OT+9zQGNRSGaeft3kJUILVl1l1zQH5xuK91+n7jvR4eTyVLmpD5LYjHY4YIwxl8ReJVXIdfjc40lsywNaS0HBS8iz+/9JmTyd0NgBQZ8rHps33WGBQ=
+Authentication-Results: vivo.com; dkim=none (message not signed)
+ header.d=none;vivo.com; dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB2601.namprd12.prod.outlook.com (2603:10b6:5:45::27) by
+ DM6PR12MB4250.namprd12.prod.outlook.com (2603:10b6:5:21a::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4087.26; Thu, 29 Apr 2021 14:30:47 +0000
+Received: from DM6PR12MB2601.namprd12.prod.outlook.com
+ ([fe80::3d2c:5edf:5d51:4101]) by DM6PR12MB2601.namprd12.prod.outlook.com
+ ([fe80::3d2c:5edf:5d51:4101%7]) with mapi id 15.20.4065.027; Thu, 29 Apr 2021
+ 14:30:47 +0000
+Date:   Thu, 29 Apr 2021 10:30:43 -0400
+From:   Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Aric Cyr <aric.cyr@amd.com>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Jacky Liao <ziyu.liao@amd.com>,
+        Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Wenjing Liu <wenjing.liu@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kael_w@yeah.net
+Subject: Re: [PATCH] [v2] drm/amd/display: Remove duplicate declaration of
+ dc_state
+Message-ID: <20210429143043.psmabddm74bljtpx@outlook.office365.com>
+References: <20210429123900.25156-1-wanjiabing@vivo.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pxa2pngw4xywjlgp"
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: SF4CG-DNFrOuRhZh2PkWJB2UwHmssTd9
-X-Proofpoint-ORIG-GUID: SF4CG-DNFrOuRhZh2PkWJB2UwHmssTd9
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9969 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 mlxlogscore=999
- priorityscore=1501 clxscore=1011 adultscore=0 suspectscore=0 spamscore=0
- phishscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104290094
+In-Reply-To: <20210429123900.25156-1-wanjiabing@vivo.com>
+X-Originating-IP: [2607:fea8:56e0:6d60:9d3b:95a7:19db:40c3]
+X-ClientProxiedBy: BN0PR03CA0019.namprd03.prod.outlook.com
+ (2603:10b6:408:e6::24) To DM6PR12MB2601.namprd12.prod.outlook.com
+ (2603:10b6:5:45::27)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from outlook.office365.com (2607:fea8:56e0:6d60:9d3b:95a7:19db:40c3) by BN0PR03CA0019.namprd03.prod.outlook.com (2603:10b6:408:e6::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.27 via Frontend Transport; Thu, 29 Apr 2021 14:30:45 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 71299113-5cee-4ace-8fc2-08d90b1b6144
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4250:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB425091BC9F29D92C871D42B5985F9@DM6PR12MB4250.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:773;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XidyLaVhDyTUhYF6m9eOCJEJ2UZhzvLBAEExVOALR/+ghylDeWAZrwXajNCJsZmK7IYND2/wD3Vb30/vucyRTjhZVXFVj6Or44NqgkYnWdseecaKYBdNjSIeyeP+j9qJqdNRq5RsrAd2VL6mnVduN+VjyU7afhHygAXKBA+qMLhFz0z5obRUj9UAEy/JMOFRPMnLatIvWn+zPIg0p2/tzxMX1ZCQxQo1gxRVvcGH9Hxn8njbWk9BiQbmyMhdWo2QnnchR0okCNPcKRFHrR3tznCjjyJQNyECCeZEz7F9vGsYh/3sjU2YfPNGzCTFfMw5FO5doxwOD6EzfSxQKpnbdACyLDm0xPsvAU4eyYg7Hn3fJWkLDtZraVexyKrqZmzPIPi7kPZvrc3AkoBvFM9EN82WjaWDBVADqrwiORP8HNujdoboi/eU4BmwvmbuaoNtCvaWv4aqAUFeuRoLt9jOLksltig2oVdCl9uCl1v+MdZf6htmgA9Jd5JffXVCeq5Hfd49FN/WCc8R4tJWewHQl8HYzNY25vKSXPRYlJ6tLba5Bk6rDloNXO2QuaSUl6ai1UaIz8AYFFX4RAxROsi0dREbk9P3kxFop0wW/cfoyzHLQzwAE3SrxlXCPm0AasSdfZltgQ3OOWlZxvgmKM66IYK/Cnr9+c9MTdALcVn10R1loowt/Id9ZxetjZJ/q1yC+tCFgz9fq77ICC5mBlg2e+J/7RRfPUUmHZE1V+wOUHY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB2601.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(136003)(376002)(39860400002)(396003)(21480400003)(6916009)(2906002)(38100700002)(4326008)(66946007)(316002)(66556008)(16526019)(55016002)(9686003)(186003)(54906003)(1076003)(66476007)(8936002)(6506007)(7696005)(86362001)(5660300002)(52116002)(478600001)(966005)(8676002)(83380400001)(44144004)(2700100001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?5YEon8Pab58Jsk+m7XoO3SUGTU49Dg65MWx4oB1C0YKl37SsS3LcA+OQDvYb?=
+ =?us-ascii?Q?apKbwbCBveiw9/rf18EOGr1PpO5d67Tdok5ck9ymQi8oZ2KxmIgsSnfs1P3F?=
+ =?us-ascii?Q?mdhJzXJfwEjDtse3vDPZlikAO85oJeUGtRcb6GlBVPRuskB1Q0sF7udascpR?=
+ =?us-ascii?Q?adp9GEYmi81Jc39vGlbQpp8/DOn2f+wlfeubxu3m4aD+gVvHeTA7vw1yGGfM?=
+ =?us-ascii?Q?U4F650svvu9wfjTRoC+4dytQN5aHqunsRcnwPNMFIsqixn/9YzHio/IgijNG?=
+ =?us-ascii?Q?IV7F0Ihiw1p9K1jcep0qam5r893IWuN0Xh1Amf5MCYm1xOSHVP+pLoy77d7h?=
+ =?us-ascii?Q?SQmGsx+9tIYWvaWNStfwetJsq0i0/ta1x8k1q0d9WHv48rapCS2SE7h3RGce?=
+ =?us-ascii?Q?hFezQnmwMuXR9CfW+qMLWjoirNWhdLC8SNFwC3E7tTkqyXHYn1PmiaI1RBao?=
+ =?us-ascii?Q?KMSVamfYsCDnvLOwe6VZZu9ygQif6rOSfQkQEnWMLCnZcjH9TqgSvZOUAS/x?=
+ =?us-ascii?Q?c1Iufig8EqylSOAMLMo/oeDO1gEaS4KrEVPL6Xcd78n6LQ3dRHQC5CG8jhvd?=
+ =?us-ascii?Q?iGLT8zkbiCaM9kejgy0+hxdJyCraAJ3RM0/KaEL83e75pGOv1gL0e5DR3yiq?=
+ =?us-ascii?Q?FnizYjR1TAsyscmCHoFhDzwRbsucojFu3CH7Vmx4FMVwMIgJoVQGxUCuYCpb?=
+ =?us-ascii?Q?82F5hAYIr+nDtZ5tPp+K6CJ0oIVusPgTICzI/eVaOWXqnLfv2czXPJ4AoyzQ?=
+ =?us-ascii?Q?l5C+Mn7RdxZRGnZaYwOvLzaz7Id82YQTI/2ZzooPTd12hqhGZofxieVXb0qW?=
+ =?us-ascii?Q?rp+eMGgscAp9dXGHOnZZan2o6c4unECR0NyUaqKJmvfF+mBYfraoqpwSJ+PV?=
+ =?us-ascii?Q?euGYJFor1a8zXUWGse3Ud+SnAc7xtxH6aLc0wTbFqAOeh3/qdd9o1xK7+q0c?=
+ =?us-ascii?Q?6LVCrpnRjyBUAc62uAxVfKaGPJxjLlYn1VKu8qF5pK6MjLNVl7sb/VdL874L?=
+ =?us-ascii?Q?+oBftNwCyIQ+1x7qlhj6me+UDe+s2Yo5Ff8DzdeUnsOY2Oyw12Vbuq6thP1A?=
+ =?us-ascii?Q?jU7X64Qkraeqe2zR1yDJef+U5a9v2hb/f51vRXvWR2ujlcu/BjIAZ5iw89oi?=
+ =?us-ascii?Q?yJgO6RHGHDEUGHcujqEfpvserdM9PqzYwRkTthnj7Dz4d9sicOW462UQvPo/?=
+ =?us-ascii?Q?N4Tc2Eo3JgfqOHFidgzpfsT/Frcbcxc0GPygM1BZcgbN/Ds0GIcmSNqj3Pr5?=
+ =?us-ascii?Q?6ttlluC7YBKHYWB12A297dpe6m9/P1xUaYiQ0wVYT+H4fBZUg4kwaeX5B5k6?=
+ =?us-ascii?Q?y3lUwyJIYepwmngTtBVRPnZUKyJLK+VF1PefZngJj4pZzWSyUCSWobx6iSJH?=
+ =?us-ascii?Q?ngqS+Q5ZW4Modmn6bCdqGraTjIBB?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 71299113-5cee-4ace-8fc2-08d90b1b6144
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB2601.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2021 14:30:47.5280
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7k4Jwl/f0Kw4AeiqMY+KwiXPyaw/NVnSx3RAPfm9qa4padety6K4LsfKGGAzhW6b72x4kCbWcVphchtQwkRXzg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4250
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Why is kbuild sending out 8 month old bug reports??? -dan ]
+--pxa2pngw4xywjlgp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   acd3d28594536e9096c1ea76c5867d8a68babef6
-commit: 5d8dccf8bad96bdc5bd5594344ff67539cf3a733 dpaa2-eth: add a dpaa2_eth_ prefix to all functions in dpaa2-eth.c
-config: arm-randconfig-m031-20210428 (attached as .config)
-compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
+Reviewed-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+On 04/29, Wan Jiabing wrote:
+> There are two declarations of struct dc_state here.
+> Remove the later duplicate more secure.
+>=20
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+> ---
+> Changelog:
+> v2:
+> - Remove the later duplicate instead of the former.
+> ---
+>  drivers/gpu/drm/amd/display/dc/dc.h | 1 -
+>  1 file changed, 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/amd/display/dc/dc.h b/drivers/gpu/drm/amd/di=
+splay/dc/dc.h
+> index 8108b82bac60..6f3c95b5d1a2 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dc.h
+> +++ b/drivers/gpu/drm/amd/display/dc/dc.h
+> @@ -594,7 +594,6 @@ struct dc_bounding_box_overrides {
+>  	int min_dcfclk_mhz;
+>  };
+> =20
+> -struct dc_state;
+>  struct resource_pool;
+>  struct dce_hwseq;
+>  struct gpu_info_soc_bounding_box_v1_0;
+> --=20
+> 2.25.1
+>=20
 
-smatch warnings:
-drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c:721 dpaa2_eth_build_sg_fd_single_buf() warn: overwrite may leak 'sgt_buf'
+--=20
+Rodrigo Siqueira
+https://siqueira.tech
 
-vim +/sgt_buf +721 drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+--pxa2pngw4xywjlgp
+Content-Type: application/pgp-signature; name="signature.asc"
 
-5d8dccf8bad96b drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-08-31  696  static int dpaa2_eth_build_sg_fd_single_buf(struct dpaa2_eth_priv *priv,
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  697  					    struct sk_buff *skb,
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  698  					    struct dpaa2_fd *fd)
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  699  {
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  700  	struct device *dev = priv->net_dev->dev.parent;
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  701  	struct dpaa2_eth_sgt_cache *sgt_cache;
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  702  	struct dpaa2_sg_entry *sgt;
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  703  	struct dpaa2_eth_swa *swa;
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  704  	dma_addr_t addr, sgt_addr;
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  705  	void *sgt_buf = NULL;
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  706  	int sgt_buf_size;
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  707  	int err;
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  708  
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  709  	/* Prepare the HW SGT structure */
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  710  	sgt_cache = this_cpu_ptr(priv->sgt_cache);
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  711  	sgt_buf_size = priv->tx_data_offset + sizeof(struct dpaa2_sg_entry);
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  712  
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  713  	if (sgt_cache->count == 0)
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  714  		sgt_buf = kzalloc(sgt_buf_size + DPAA2_ETH_TX_BUF_ALIGN,
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  715  				  GFP_ATOMIC);
+-----BEGIN PGP SIGNATURE-----
 
-sgt_buf is assigned here.
+iQIzBAABCgAdFiEE4tZ+ii1mjMCMQbfkWJzP/comvP8FAmCKww8ACgkQWJzP/com
+vP/ggQ/8CfGtjmkV50kOe1v8HJZBnGNKUGy3IqvB4aNVU1FEtg4GqXY66S77Iarx
+7gc+QO8d2w5TJe07n+/Wdeho3Vj71OI4zktscX2kyFNrce+OmR4T9sFU+m8aKpCN
+HQK6PPV0Fec2Qe3JZPOJsvcETHUuL8gPIL+/XQ33uboagvFqYsec5CSNoUmCWqZM
+TtA2M/yq24WRR4nhbascTuhiS0kBShC28xxXyqZBKHIIKSapBb6DonyAtZYVSgrg
+rqfCJUdkzgA2jMaZn1nnNySGHV4niFbpPIWmHE5l3PZgSMc+rKHYv8NKYn7wLk6L
+/spnGzj8WR+U6a1v7RCRlzJoeU65sf6WapJk1nVim9HAUhykcJdeLdM2MN6/mC1N
+CndJz+xRhIDVfaLGviDb9i72swgTn92pAI6+TFxdO4R0Kg3Jy9pdCuVPD0DbiZRU
+InKCQl10YhprBfAd9pIo86/Qjn3DGF3Me6o/Czo3/RgOAa4QWaeMVRLJCvLn6wyM
+wH9j3brJpZY8xYaUBSlUvP6jnrRH0FmIx+301m+A3+0ZSI/gicl//xYjajJGlpbL
+6dfpGEnHvRJOiK0wEkJaiDDcndtFji3DzTXyqlLQ5GQOSfJIve/lTQX65hqmRYUT
+lHcRcQnWtGYn2giQG3fqj+zHON707RNdKhtOhbqeutxryOHRmMM=
+=+V0s
+-----END PGP SIGNATURE-----
 
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  716  	else
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  717  		sgt_buf = sgt_cache->buf[--sgt_cache->count];
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  718  	if (unlikely(!sgt_buf))
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  719  		return -ENOMEM;
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  720  
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29 @721  	sgt_buf = PTR_ALIGN(sgt_buf, DPAA2_ETH_TX_BUF_ALIGN);
-
-We're losing track of the original "sgt_buf" pointer so we won't be
-able to pass it to kfree().
-
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  722  	sgt = (struct dpaa2_sg_entry *)(sgt_buf + priv->tx_data_offset);
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  723  
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  724  	addr = dma_map_single(dev, skb->data, skb->len, DMA_BIDIRECTIONAL);
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  725  	if (unlikely(dma_mapping_error(dev, addr))) {
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  726  		err = -ENOMEM;
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  727  		goto data_map_failed;
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  728  	}
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  729  
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  730  	/* Fill in the HW SGT structure */
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  731  	dpaa2_sg_set_addr(sgt, addr);
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  732  	dpaa2_sg_set_len(sgt, skb->len);
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  733  	dpaa2_sg_set_final(sgt, true);
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  734  
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  735  	/* Store the skb backpointer in the SGT buffer */
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  736  	swa = (struct dpaa2_eth_swa *)sgt_buf;
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  737  	swa->type = DPAA2_ETH_SWA_SINGLE;
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  738  	swa->single.skb = skb;
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  739  	swa->sg.sgt_size = sgt_buf_size;
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  740  
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  741  	/* Separately map the SGT buffer */
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  742  	sgt_addr = dma_map_single(dev, sgt_buf, sgt_buf_size, DMA_BIDIRECTIONAL);
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  743  	if (unlikely(dma_mapping_error(dev, sgt_addr))) {
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  744  		err = -ENOMEM;
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  745  		goto sgt_map_failed;
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  746  	}
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  747  
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  748  	dpaa2_fd_set_offset(fd, priv->tx_data_offset);
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  749  	dpaa2_fd_set_format(fd, dpaa2_fd_sg);
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  750  	dpaa2_fd_set_addr(fd, sgt_addr);
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  751  	dpaa2_fd_set_len(fd, skb->len);
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  752  	dpaa2_fd_set_ctrl(fd, FD_CTRL_PTA);
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  753  
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  754  	if (priv->tx_tstamp && skb_shinfo(skb)->tx_flags & SKBTX_HW_TSTAMP)
-5d8dccf8bad96b drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-08-31  755  		dpaa2_eth_enable_tx_tstamp(fd, sgt_buf);
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  756  
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  757  	return 0;
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  758  
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  759  sgt_map_failed:
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  760  	dma_unmap_single(dev, addr, skb->len, DMA_BIDIRECTIONAL);
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  761  data_map_failed:
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  762  	if (sgt_cache->count >= DPAA2_ETH_SGT_CACHE_SIZE)
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  763  		kfree(sgt_buf);
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  764  	else
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  765  		sgt_cache->buf[sgt_cache->count++] = sgt_buf;
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  766  
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  767  	return err;
-d70446ee1f406e drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c Ioana Ciornei   2020-06-29  768  }
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
+--pxa2pngw4xywjlgp--
