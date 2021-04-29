@@ -2,118 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1157236EFBE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 20:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B7E36EFC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 20:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241274AbhD2Svr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 14:51:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42034 "EHLO
+        id S241467AbhD2SwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 14:52:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241311AbhD2Svj (ORCPT
+        with ESMTP id S241450AbhD2SwJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 14:51:39 -0400
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CF53C06138C;
-        Thu, 29 Apr 2021 11:50:52 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id D21C912801CA;
-        Thu, 29 Apr 2021 11:50:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1619722251;
-        bh=VwqfuRV94ygqfXZS1UeALT+6jZdpwq29n2FhIXE8648=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=BNzknt7UULVwUspwyiap7s3ojhMPpAootk5fdqtimemuj485mf0hQsV2iusO5/XBa
-         sBVnZjWmK2kh4Yd5RY6r3dGDIxujwxQecdeV8EJH8XcP691OyW+m3t/IIk5bqfQwE8
-         KGhDIWhIZcAdp4R9n4QsVILWIXSk7DnQsvskDOHM=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id kSLeBx-fT8Hw; Thu, 29 Apr 2021 11:50:51 -0700 (PDT)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 4CFA3128017C;
-        Thu, 29 Apr 2021 11:50:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1619722251;
-        bh=VwqfuRV94ygqfXZS1UeALT+6jZdpwq29n2FhIXE8648=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=BNzknt7UULVwUspwyiap7s3ojhMPpAootk5fdqtimemuj485mf0hQsV2iusO5/XBa
-         sBVnZjWmK2kh4Yd5RY6r3dGDIxujwxQecdeV8EJH8XcP691OyW+m3t/IIk5bqfQwE8
-         KGhDIWhIZcAdp4R9n4QsVILWIXSk7DnQsvskDOHM=
-Message-ID: <9eea988ff637af57511107c6c0941bff2aa7c6c5.camel@HansenPartnership.com>
-Subject: Re: [PATCH 1/1] trusted-keys: match tpm_get_ops on all return paths
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Ben Boeckel <me@benboeckel.net>, keyrings@vger.kernel.org
-Cc:     Ben Boeckel <mathstuf@gmail.com>, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Date:   Thu, 29 Apr 2021 11:50:50 -0700
-In-Reply-To: <20210429183742.756766-2-list.lkml.keyrings@me.benboeckel.net>
-References: <20210429183742.756766-1-list.lkml.keyrings@me.benboeckel.net>
-         <20210429183742.756766-2-list.lkml.keyrings@me.benboeckel.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Thu, 29 Apr 2021 14:52:09 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21009C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 11:51:22 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id o21-20020a1c4d150000b029012e52898006so354391wmh.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 11:51:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=G4T1feCRX4TLasSulNlD/YXTM3T/mKWHa/HALOMBqRE=;
+        b=QgKZ8ydzf6oyIPPQVVElrlAAvUXvjeCV+LfNBolAT+qNEs5bCdKySk/51s6GcjTh7t
+         ovdL6T/AM2Nkgg5ip/MPERs7HrwjK6whXjusJTKQBirU38Le3ua964zPqfnGVFInrfki
+         dozXtZTFfbrP2a1OWFjGiIkaoGl5mZbzF29SDm7ScjoYHqoAtQ6i4E3sIAQ1FUNmcTao
+         SN2rujJoPBg8W4pa95XN2MQQ3giTSA2MZQ+KlsaJxTh6JNvb+T3aj7OtYTo6Gd3rFOWZ
+         L+LbZLzP7MjYMe1dsmUCxwzIQL6rtGAXICqqxWZY3TSPtLnmSoUAyqk4wM5CUMiPMf/H
+         kDfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=G4T1feCRX4TLasSulNlD/YXTM3T/mKWHa/HALOMBqRE=;
+        b=FDR02BlsqMKkfMKjDTLf9RKW/ylUiIYz68RG5RIB7226YNin3y8Y/b5sX1oPjthY1e
+         n5ywjjFjGzsztxD0fLQQbvcMo/W+1t9H9XABDYSi9RAQt7PeHCooFdsIg52kfqoBieNW
+         vWra42LwBHYNbi0t5nuVj9w1ng7PMlIx6BSRD40Yskh2/PsYskBh95E59z8jxXlWblG9
+         iFwin5tRGl0nZygeltxDWvB32SRYob3pIMlALQwNTqBO9CjPKaOQP/LoCAX2VNBK53Eu
+         EVQc5olnh0y4kG+WUtc3mkKMMUz9cPVDKaOwsB25SfkKvKVH72NFEjOVu+13fV4517Yh
+         0m7A==
+X-Gm-Message-State: AOAM533Nn3dTCn5fqW7wAz+duSHrRucBRyMwjuCJ6h9ONA6ALcsheOxD
+        cJYqA1SK8w5uTJZ5dw47Kh5v9w==
+X-Google-Smtp-Source: ABdhPJz4cwum8Vt8KBIxLHSQujxRWtkwfsaB3lSFdUguV+8XNNJCFG1SSDkBNsPkbHC0XADsdUSIEQ==
+X-Received: by 2002:a1c:228a:: with SMTP id i132mr1768594wmi.10.1619722280823;
+        Thu, 29 Apr 2021 11:51:20 -0700 (PDT)
+Received: from apalos.home ([94.69.77.156])
+        by smtp.gmail.com with ESMTPSA id m11sm5596997wri.44.2021.04.29.11.51.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 11:51:20 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 21:51:15 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
+        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net-next v3 0/5] page_pool: recycle buffers
+Message-ID: <YIsAIzecktXXBlxn@apalos.home>
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+ <e873c16e-8f49-6e70-1f56-21a69e2e37ce@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e873c16e-8f49-6e70-1f56-21a69e2e37ce@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-04-29 at 14:37 -0400, Ben Boeckel wrote:
-> From: Ben Boeckel <mathstuf@gmail.com>
+Hi Yunsheng,
+
+On Thu, Apr 29, 2021 at 04:27:21PM +0800, Yunsheng Lin wrote:
+> On 2021/4/10 6:37, Matteo Croce wrote:
+> > From: Matteo Croce <mcroce@microsoft.com>
+> > 
+> > This is a respin of [1]
+> > 
+> > This  patchset shows the plans for allowing page_pool to handle and
+> > maintain DMA map/unmap of the pages it serves to the driver.  For this
+> > to work a return hook in the network core is introduced.
+> > 
+> > The overall purpose is to simplify drivers, by providing a page
+> > allocation API that does recycling, such that each driver doesn't have
+> > to reinvent its own recycling scheme.  Using page_pool in a driver
+> > does not require implementing XDP support, but it makes it trivially
+> > easy to do so.  Instead of allocating buffers specifically for SKBs
+> > we now allocate a generic buffer and either wrap it on an SKB
+> > (via build_skb) or create an XDP frame.
+> > The recycling code leverages the XDP recycle APIs.
+> > 
+> > The Marvell mvpp2 and mvneta drivers are used in this patchset to
+> > demonstrate how to use the API, and tested on a MacchiatoBIN
+> > and EspressoBIN boards respectively.
+> > 
 > 
-> The `tpm_get_ops` call at the beginning of the function is not paired
-> with a `tpm_put_ops` on this return path.
+> Hi, Matteo
+>      I added the skb frag page recycling in hns3 based on this patchset,
+> and it has above 10%~20% performance improvement for one thread iperf
+> TCP flow(IOMMU is off, there may be more performance improvement if
+> considering the DMA map/unmap avoiding for IOMMU), thanks for the job.
 > 
-> Fixes: f2219745250f ("security: keys: trusted: use ASN.1 TPM2 key
-> format for the blobs")
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Ben Boeckel <mathstuf@gmail.com>
-> ---
->  security/keys/trusted-keys/trusted_tpm2.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>     The skb frag page recycling support in hns3 driver is not so simple
+> as the mvpp2 and mvneta driver, because:
 > 
-> diff --git a/security/keys/trusted-keys/trusted_tpm2.c
-> b/security/keys/trusted-keys/trusted_tpm2.c
-> index 617fabd4d913..25c2c4d564de 100644
-> --- a/security/keys/trusted-keys/trusted_tpm2.c
-> +++ b/security/keys/trusted-keys/trusted_tpm2.c
-> @@ -335,8 +335,10 @@ int tpm2_seal_trusted(struct tpm_chip *chip,
->  		else
->  			rc = -EPERM;
->  	}
-> -	if (blob_len < 0)
-> +	if (blob_len < 0) {
-> +		tpm_put_ops(chip);
->  		return blob_len;
-> +	}
->  
->  	payload->blob_len = blob_len;
->  
+> 1. the hns3 driver do not have XDP support yet, so "struct xdp_rxq_info"
+>    is added to assist relation binding between the "struct page" and
+>    "struct page_pool".
+> 
+> 2. the hns3 driver has already a page reusing based on page spliting and
+>    page reference count, but it may not work if the upper stack can not
+>    handle skb and release the corresponding page fast enough.
+> 
+> 3. the hns3 driver support page reference count updating batching, see:
+>    aeda9bf87a45 ("net: hns3: batch the page reference count updates")
+> 
+> So it would be better if：
+> 
+> 1. skb frag page recycling do not need "struct xdp_rxq_info" or
+>    "struct xdp_mem_info" to bond the relation between "struct page" and
+>    "struct page_pool", which seems uncessary at this point if bonding
+>    a "struct page_pool" pointer directly in "struct page" does not cause
+>    space increasing.
 
-Actually, I think this is a better fix to avoid multiple put and
-returns.
+We can't do that. The reason we need those structs is that we rely on the
+existing XDP code, which already recycles it's buffers, to enable
+recycling.  Since we allocate a page per packet when using page_pool for a
+driver , the same ideas apply to an SKB and XDP frame. We just recycle the
+payload and we don't really care what's in that.  We could rename the functions
+to something more generic in the future though ?
 
-James
+> 
+> 2. it would be good to do the page reference count updating batching
+>    in page pool instead of specific driver.
+> 
+> 
+> page_pool_atomic_sub_if_positive() is added to decide who can call
+> page_pool_put_full_page(), because the driver and stack may hold
+> reference to the same page, only if last one which hold complete
+> reference to a page can call page_pool_put_full_page() to decide if
+> recycling is possible, if not, the page is released, so I am wondering
+> if a similar page_pool_atomic_sub_if_positive() can added to specific
+> user space address unmapping path to allow skb recycling for RX zerocopy
+> too?
+> 
 
----
+I would prefer a different page pool type if we wanted to support the split
+page model.  The changes as is are quite intrusive, since they change the 
+entire skb return path.  So I would prefer introducing the changes one at a 
+time. 
 
-diff --git a/security/keys/trusted-keys/trusted_tpm2.c b/security/keys/trusted-keys/trusted_tpm2.c
-index d225ad140960..cbf2a932577b 100644
---- a/security/keys/trusted-keys/trusted_tpm2.c
-+++ b/security/keys/trusted-keys/trusted_tpm2.c
-@@ -336,9 +336,9 @@ int tpm2_seal_trusted(struct tpm_chip *chip,
- 			rc = -EPERM;
- 	}
- 	if (blob_len < 0)
--		return blob_len;
--
--	payload->blob_len = blob_len;
-+		rc = blob_len;
-+	else
-+		payload->blob_len = blob_len;
- 
- 	tpm_put_ops(chip);
- 	return rc;
+The fundamental difference between having the recycling in the driver vs
+having it in a generic API is pretty straightforward.  When a driver holds
+the extra page references he is free to decide what to reuse, when he is about
+to refill his Rx descriptors.  So TCP zerocopy might work even if the
+userspace applications hold the buffers for an X amount of time.
+On this proposal though we *need* to decide what to do with the buffer when we
+are about to free the skb.
 
+[...]
+
+
+Cheers
+/Ilias
