@@ -2,89 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 331D436E9D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 13:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 883B236E9DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 13:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233843AbhD2L4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 07:56:49 -0400
-Received: from msg-2.mailo.com ([213.182.54.12]:39696 "EHLO msg-2.mailo.com"
+        id S234194AbhD2L7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 07:59:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230148AbhD2L4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 07:56:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
-        t=1619697337; bh=EDodJBjFB3DQAxPXQjc9/lyJzoAH5vHWFKGP+cWp5Cw=;
-        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
-         MIME-Version:Content-Type:In-Reply-To;
-        b=PMcwewS9jJs/xe16lbhanLuCXKbwsgk2tpXw8CD58VNUgrh3QihuEfUskHjXGvcDo
-         YscogBvsi/zoiu90mjxVqfNw2x1kivo0wQZGTJx/OVWA7YCNhSfPHiNapfF6MOLBNO
-         4blcMauAcuzRsVgfy39EKZ/eORv1KZ4N+kH8eABw=
-Received: by 192.168.90.11 [192.168.90.11] with ESMTP
-        via ip-206.mailobj.net [213.182.55.206]
-        Thu, 29 Apr 2021 13:55:37 +0200 (CEST)
-X-EA-Auth: cJOQOLANNKlBzEu2daIqW4bACv6qvrxU/vXGYSh8PQf4qW+uEs1ZyrV9jbACe8RylP4MiN8XQLbjiYmvM0/i1v18h2xAnE/j
-Date:   Thu, 29 Apr 2021 17:25:30 +0530
-From:   Deepak R Varma <drv@mailo.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com
-Subject: Re: [PATCH v1 4/6] staging: media: atomisp: reformat code comment
- blocks
-Message-ID: <YIqesrvl3lFwWDhV@192.168.1.8>
-References: <cover.1619022192.git.drv@mailo.com>
- <efdd8910b519dd55838570c72e3ce35e063f4a11.1619022192.git.drv@mailo.com>
- <20210429100808.GZ1981@kadam>
- <YIqZHWkHi8HWnF0C@192.168.1.8>
- <20210429114304.GC21598@kadam>
+        id S230148AbhD2L73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 07:59:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 831836145A;
+        Thu, 29 Apr 2021 11:58:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619697522;
+        bh=lyNfyoxsqMlUGOpA/NkL35gSdKjhxCzdXm5yGHglZig=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bokxKh1aGS+yKBfQn3k9jpOkqTUrSa+PRpoxhdODJKRxZD+6i44WmQziUceLHcHDd
+         VOd9FZYYJI0m9hG4S5O5We73OBw3dXnvrqThUP09lAOeaA/lmXQ/n7r/0NfOk1t3Oz
+         HTh3qyMN/4QjnCH0wv9w8/AQWH7PtIjvM1rZMrZkjroIUjw6cCI5h6ut5ZrZ6Oc9Fs
+         B+FhdtMapIh+q8JRlIYyRQuCpmVXn5L7ouKg1jgcW6wkAyyom55f2NOvthsC3v660N
+         B5TcT4wxkwiBCCRKMaGWAR25WZvT+2pspEb3K9Y+2eKOJAHWeJyTovKGZls9VcvtP0
+         1aew3bTUyTAbg==
+Received: by mail-ej1-f47.google.com with SMTP id w3so99497697ejc.4;
+        Thu, 29 Apr 2021 04:58:42 -0700 (PDT)
+X-Gm-Message-State: AOAM530rs2WktsMhZXcsomXAq0Gev9jZz1Cy4TDoaQ9Xf8lWzhxur/GW
+        EtGhPZmqtEAtlR8YHXXZfWZMtbVxFyxZFin+twY=
+X-Google-Smtp-Source: ABdhPJzIW9XWBND47ohyx1jdYR+ajCfUvsZUaiihkpvKQz9aAeW9fdYN+2xvNjq5JNecjo89JIRcPgQ8PdO5ptqp7aM=
+X-Received: by 2002:a17:906:4a55:: with SMTP id a21mr1199259ejv.215.1619697520822;
+ Thu, 29 Apr 2021 04:58:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429114304.GC21598@kadam>
+References: <20210420075406.64105-1-acelan.kao@canonical.com>
+In-Reply-To: <20210420075406.64105-1-acelan.kao@canonical.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Thu, 29 Apr 2021 13:58:28 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPfp875V3zHorfyf+QLwia5HYX3N=AXe=xRCxCDi6ifbtg@mail.gmail.com>
+Message-ID: <CAJKOXPfp875V3zHorfyf+QLwia5HYX3N=AXe=xRCxCDi6ifbtg@mail.gmail.com>
+Subject: Re: [PATCH] net: called rtnl_unlock() before runpm resumes devices
+To:     AceLan Kao <acelan.kao@canonical.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Wang <weiwan@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        netdev@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 02:43:04PM +0300, Dan Carpenter wrote:
-> On Thu, Apr 29, 2021 at 05:01:41PM +0530, Deepak R Varma wrote:
-> > On Thu, Apr 29, 2021 at 01:08:09PM +0300, Dan Carpenter wrote:
-> > > On Wed, Apr 21, 2021 at 10:26:09PM +0530, Deepak R Varma wrote:
-> > > > @@ -1044,7 +1048,7 @@ static long mt9m114_s_exposure(struct v4l2_subdev *sd,
-> > > >  	}
-> > > >  
-> > > >  	/*
-> > > > -	// set analog/digital gain
-> > > > +	 * set analog/digital gain
-> > > >  	switch(AnalogGain)
-> > > >  	{
-> > > >  	case 0:
-> > > 
-> > > How on earth does this compile?
-> > 
-> > There is a closing */ down under after the entire switch block. The
-> > change I made is within the comment block. I have compiled the built the
-> > driver successfully.
-> 
-> Oh...  Duh.  I thought you converted the // to /*.  This patch doesn't
-> make any sense though because originally it was commented out code, but
-> now it's a commented out ball of code and notes.
+On Tue, 20 Apr 2021 at 09:55, AceLan Kao <acelan.kao@canonical.com> wrote:
+>
+> From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
+>
+> The rtnl_lock() has been called in rtnetlink_rcv_msg(), and then in
+> __dev_open() it calls pm_runtime_resume() to resume devices, and in
+> some devices' resume function(igb_resum,igc_resume) they calls rtnl_lock()
+> again. That leads to a recursive lock.
+>
+> It should leave the devices' resume function to decide if they need to
+> call rtnl_lock()/rtnl_unlock(), so call rtnl_unlock() before calling
+> pm_runtime_resume() and then call rtnl_lock() after it in __dev_open().
+>
+> [  967.723577] INFO: task ip:6024 blocked for more than 120 seconds.
+> [  967.723588]       Not tainted 5.12.0-rc3+ #1
+> [  967.723592] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> [  967.723594] task:ip              state:D stack:    0 pid: 6024 ppid:  5957 flags:0x00004000
+> [  967.723603] Call Trace:
+> [  967.723610]  __schedule+0x2de/0x890
+> [  967.723623]  schedule+0x4f/0xc0
+> [  967.723629]  schedule_preempt_disabled+0xe/0x10
+> [  967.723636]  __mutex_lock.isra.0+0x190/0x510
+> [  967.723644]  __mutex_lock_slowpath+0x13/0x20
+> [  967.723651]  mutex_lock+0x32/0x40
+> [  967.723657]  rtnl_lock+0x15/0x20
+> [  967.723665]  igb_resume+0xee/0x1d0 [igb]
+> [  967.723687]  ? pci_pm_default_resume+0x30/0x30
+> [  967.723696]  igb_runtime_resume+0xe/0x10 [igb]
+> [  967.723713]  pci_pm_runtime_resume+0x74/0x90
+> [  967.723718]  __rpm_callback+0x53/0x1c0
+> [  967.723725]  rpm_callback+0x57/0x80
+> [  967.723730]  ? pci_pm_default_resume+0x30/0x30
+> [  967.723735]  rpm_resume+0x547/0x760
+> [  967.723740]  __pm_runtime_resume+0x52/0x80
+> [  967.723745]  __dev_open+0x56/0x160
+> [  967.723753]  ? _raw_spin_unlock_bh+0x1e/0x20
+> [  967.723758]  __dev_change_flags+0x188/0x1e0
+> [  967.723766]  dev_change_flags+0x26/0x60
+> [  967.723773]  do_setlink+0x723/0x10b0
+> [  967.723782]  ? __nla_validate_parse+0x5b/0xb80
+> [  967.723792]  __rtnl_newlink+0x594/0xa00
+> [  967.723800]  ? nla_put_ifalias+0x38/0xa0
+> [  967.723807]  ? __nla_reserve+0x41/0x50
+> [  967.723813]  ? __nla_reserve+0x41/0x50
+> [  967.723818]  ? __kmalloc_node_track_caller+0x49b/0x4d0
+> [  967.723824]  ? pskb_expand_head+0x75/0x310
+> [  967.723830]  ? nla_reserve+0x28/0x30
+> [  967.723835]  ? skb_free_head+0x25/0x30
+> [  967.723843]  ? security_sock_rcv_skb+0x2f/0x50
+> [  967.723850]  ? netlink_deliver_tap+0x3d/0x210
+> [  967.723859]  ? sk_filter_trim_cap+0xc1/0x230
+> [  967.723863]  ? skb_queue_tail+0x43/0x50
+> [  967.723870]  ? sock_def_readable+0x4b/0x80
+> [  967.723876]  ? __netlink_sendskb+0x42/0x50
+> [  967.723888]  ? security_capable+0x3d/0x60
+> [  967.723894]  ? __cond_resched+0x19/0x30
+> [  967.723900]  ? kmem_cache_alloc_trace+0x390/0x440
+> [  967.723906]  rtnl_newlink+0x49/0x70
+> [  967.723913]  rtnetlink_rcv_msg+0x13c/0x370
+> [  967.723920]  ? _copy_to_iter+0xa0/0x460
+> [  967.723927]  ? rtnl_calcit.isra.0+0x130/0x130
+> [  967.723934]  netlink_rcv_skb+0x55/0x100
+> [  967.723939]  rtnetlink_rcv+0x15/0x20
+> [  967.723944]  netlink_unicast+0x1a8/0x250
+> [  967.723949]  netlink_sendmsg+0x233/0x460
+> [  967.723954]  sock_sendmsg+0x65/0x70
+> [  967.723958]  ____sys_sendmsg+0x218/0x290
+> [  967.723961]  ? copy_msghdr_from_user+0x5c/0x90
+> [  967.723966]  ? lru_cache_add_inactive_or_unevictable+0x27/0xb0
+> [  967.723974]  ___sys_sendmsg+0x81/0xc0
+> [  967.723980]  ? __mod_memcg_lruvec_state+0x22/0xe0
+> [  967.723987]  ? kmem_cache_free+0x244/0x420
+> [  967.723991]  ? dentry_free+0x37/0x70
+> [  967.723996]  ? mntput_no_expire+0x4c/0x260
+> [  967.724001]  ? __cond_resched+0x19/0x30
+> [  967.724007]  ? security_file_free+0x54/0x60
+> [  967.724013]  ? call_rcu+0xa4/0x250
+> [  967.724021]  __sys_sendmsg+0x62/0xb0
+> [  967.724026]  ? exit_to_user_mode_prepare+0x3d/0x1a0
+> [  967.724032]  __x64_sys_sendmsg+0x1f/0x30
+> [  967.724037]  do_syscall_64+0x38/0x90
+> [  967.724044]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+>
+> Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
+> ---
+>  net/core/dev.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 1f79b9aa9a3f..427cbc80d1e5 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -1537,8 +1537,11 @@ static int __dev_open(struct net_device *dev, struct netlink_ext_ack *extack)
+>
+>         if (!netif_device_present(dev)) {
+>                 /* may be detached because parent is runtime-suspended */
+> -               if (dev->dev.parent)
+> +               if (dev->dev.parent) {
+> +                       rtnl_unlock();
+>                         pm_runtime_resume(dev->dev.parent);
 
-No problem. It looks wrong with the limited lines in diff. Appreciate
-you looking at it though.
+A side topic, maybe a little bit silly question (I don't know that
+much about net core):
+Why not increase the parent or current PM runtime usage counter
+instead? The problem with calling pm_runtime_resume() is that if the
+parent device was already suspended (so it's usage counter ==0), it
+might get suspended right after this call. IOW, you do not have any
+guarantee that the device will be really resumed. Probably it should
+be pm_runtime_resume_and_get() (and later "put" on close or other
+events). This however might not solve the lock problem at all.
 
-Is it okay if I send in a separate patch with comment clean up? There
-are several #if 0 code block directives for this driver that I believe can
-be taken off as well. Should I clean those up as well?
-
-Regards,
-deepak.
-
-> 
-> Just delete any commented out code.
-> 
-> regards,
-> dan carpenter
-> 
-
-
+Best regards,
+Krzysztof
