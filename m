@@ -2,135 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E2C36EF4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 20:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C7B36EF4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 20:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241105AbhD2SF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 14:05:27 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:35513 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232572AbhD2SFY (ORCPT
+        id S241113AbhD2SFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 14:05:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232572AbhD2SFr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 14:05:24 -0400
-Received: by mail-oi1-f177.google.com with SMTP id e25so37390916oii.2;
-        Thu, 29 Apr 2021 11:04:37 -0700 (PDT)
+        Thu, 29 Apr 2021 14:05:47 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C13DC06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 11:04:59 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id t2-20020a17090a0242b0290155433387beso5325757pje.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 11:04:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=1Oi0kSqm+uivd7+EZZSGI4riQYLG2DblxTrL3C9zjKA=;
+        b=PA9OdCNGw/HfjkY+gp6rWkdSLZV1Rf8m25csBA0lc0tV4Y1u566DMGXcNKGBtrIvw2
+         6GDwJ5nej2yajcGjO28hpGwyIYoYjMVsCBVioXic2KpK7EYsOd6BEhWDsdF5LwBSXsC7
+         bBLkPiytg8EcOqjRbaKJ4Oj0kZIdd3ql9o9PAEBEae/AwUl+Mhh0gemQ8AzONjOrXOLg
+         UVnCFknvFd81c9+quhBMiiAuQrd/UMJ5YsFqNwjAWd/rPlsvT63qH1z3r8NoowFRugO1
+         iHWYuypsf5cbxuBa8gY0Y9W1QhiQnk+W/ZXGh75cxsUmd0fTDrlBBCODaPCtumZzgSyD
+         QdDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BGXc8n8dJgWIvZ1rgn/mp/0YVMWp8ZgJFpSUhA1n/t0=;
-        b=VUmbolxsdBR7g59BJIa4Uxubh8AAezLYzNq8glcT3Szq0vGl3jmNQ7lGsOV7MeRWBl
-         Nr7FTDSvq90swnqtEQYQhU9hoh+OYIpOhlQUyvitwYoa6P2Pv0VxuhUxQWI/GLdo/6sQ
-         ulgRTMiCYMvCAtaLq0xp/JYTzB+AaLz1PyKw5uAHgXajwlJKskxoV19RZQdD2POaM595
-         qKiYwhk7xH4Rjs+2uyyywRF0ZWJp+/mQBwnR6t1imTybpMKAqk2dDHqGwmY7UgSFmNeo
-         TbP25PaYggqNksYU1aaXi9flUKqYG6w6RoRaIwhl9+v1HvYJSrQeyT2OtALS7sUxAtQt
-         lhlg==
-X-Gm-Message-State: AOAM531wWt+5M60u/at6fBBvtpUk1j9JQ3pQl8T9rZlTAHCyRp8hgP6Q
-        iWBhB3dUjTS+IIpPjhUPQw==
-X-Google-Smtp-Source: ABdhPJxsvgDl4cmyGSZAjcy3TO96h2Gk37C2SsrChdAtgKojOCkhhcJuqRmLaS8oiHIGCS+V5p6asA==
-X-Received: by 2002:aca:ed12:: with SMTP id l18mr7861083oih.24.1619719477238;
-        Thu, 29 Apr 2021 11:04:37 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id q1sm114127otm.26.2021.04.29.11.04.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 11:04:36 -0700 (PDT)
-Received: (nullmailer pid 1505463 invoked by uid 1000);
-        Thu, 29 Apr 2021 18:04:35 -0000
-Date:   Thu, 29 Apr 2021 13:04:35 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Rajeev Nandan <rajeevny@codeaurora.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robdclark@gmail.com,
-        dianders@chromium.org, mkrishn@codeaurora.org,
-        kalyan_t@codeaurora.org, hoegsberg@chromium.org,
-        abhinavk@codeaurora.org, seanpaul@chromium.org
-Subject: Re: [v3 1/2] dt-bindings: backlight: add DisplayPort aux backlight
-Message-ID: <20210429180435.GA1385465@robh.at.kernel.org>
-References: <1619416756-3533-1-git-send-email-rajeevny@codeaurora.org>
- <1619416756-3533-2-git-send-email-rajeevny@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1619416756-3533-2-git-send-email-rajeevny@codeaurora.org>
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=1Oi0kSqm+uivd7+EZZSGI4riQYLG2DblxTrL3C9zjKA=;
+        b=aehAHGVqFHQgkr30b+w/H0scvtDwxxInpu7KQg+D86oP8OrfLruVCTRnhbfVNXBNMj
+         d4A7+UEnfKs5J0mm7PLlBBCuOvSWR2nHuhyBq+HUl/Qr59MTsI62uYYhu7RjShhpYl7V
+         nJy/4HiP+d8/UiP5u6pVqZoZ3+lF/vGT4UrypxosR/bTKzCZElo1r7/zSe16UKo0u+TP
+         EsfF201VnfF6ffMYQ3lsTIJnk53BK3WAWVX2kC2md7J0qLQwFtp60DWSje11yB9cR1RO
+         mtTB/N3iWx2XDtnCmkMNXzizAchUjf0t5uU6dUxRfoo7hCrkXxGCcTAFA4PZvh+yF6yc
+         UYLA==
+X-Gm-Message-State: AOAM530Sgb0wr/xAbyehK2frYkQ9KDoOtLi6/BVUWVuk5+xm6avWOISa
+        YMMoMMFheyGiRL5GkdrTiX5A5ZFZ5q/f0A==
+X-Google-Smtp-Source: ABdhPJwGf/t92rC1BLW0ndwWKW5edghg2axJUuyA+Xjplec49LQxPU+HynF4ldhOrvN6zsxfycFMeA==
+X-Received: by 2002:a17:90a:a413:: with SMTP id y19mr2726186pjp.161.1619719498933;
+        Thu, 29 Apr 2021 11:04:58 -0700 (PDT)
+Received: from smtpclient.apple ([2600:1012:b045:bfcd:58c5:d3bf:226f:4139])
+        by smtp.gmail.com with ESMTPSA id u12sm8428314pji.45.2021.04.29.11.04.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Apr 2021 11:04:57 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [RFC PATCH 13/37] mm: implement speculative handling in __handle_mm_fault().
+Date:   Thu, 29 Apr 2021 11:04:56 -0700
+Message-Id: <C02655BC-F722-4EAD-B93E-D890A2DEC05A@amacapital.net>
+References: <20210429161234.GG1847222@casper.infradead.org>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Michel Lespinasse <michel@lespinasse.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Rom Lemarchand <romlem@google.com>,
+        Linux-Kernel <linux-kernel@vger.kernel.org>
+In-Reply-To: <20210429161234.GG1847222@casper.infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+X-Mailer: iPhone Mail (18E199)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 11:29:15AM +0530, Rajeev Nandan wrote:
-> Add bindings for DisplayPort aux backlight driver.
-> 
-> Changes in v2:
-> - New
-> 
-> Signed-off-by: Rajeev Nandan <rajeevny@codeaurora.org>
-> ---
->  .../bindings/leds/backlight/dp-aux-backlight.yaml  | 49 ++++++++++++++++++++++
->  1 file changed, 49 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/leds/backlight/dp-aux-backlight.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/leds/backlight/dp-aux-backlight.yaml b/Documentation/devicetree/bindings/leds/backlight/dp-aux-backlight.yaml
-> new file mode 100644
-> index 00000000..0fa8bf0
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/leds/backlight/dp-aux-backlight.yaml
-> @@ -0,0 +1,49 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/leds/backlight/dp-aux-backlight.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: DisplayPort aux backlight driver bindings
-> +
-> +maintainers:
-> +  - Rajeev Nandan <rajeevny@codeaurora.org>
-> +
-> +description:
-> +  Backlight driver to control the brightness over DisplayPort aux channel.
-> +
-> +allOf:
-> +  - $ref: common.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: dp-aux-backlight
-> +
-> +  ddc-i2c-bus:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      A phandle to the system I2C controller connected to the DDC bus used
-> +      for the DisplayPort AUX channel.
-> +
-> +  enable-gpios:
-> +    maxItems: 1
-> +    description: GPIO specifier for backlight enable pin.
-> +
-> +  max-brightness: true
-> +
-> +required:
-> +  - compatible
-> +  - ddc-i2c-bus
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    backlight {
-> +        compatible = "dp-aux-backlight";
-> +        ddc-i2c-bus = <&sn65dsi86_bridge>;
-> +        enable-gpios = <&tlmm 12 GPIO_ACTIVE_HIGH>;
 
-So the DDC bus is connected to a backlight and also a panel? This 
-binding is not reflecting the h/w, but rather what you want for some 
-driver.
 
-There's only one thing here and that's an eDP panel which supports 
-backlight control via DP aux channel. You can figure all that out from 
-the panel's compatible and/or reading the EDID. 
+> On Apr 29, 2021, at 9:12 AM, Matthew Wilcox <willy@infradead.org> wrote:
+>=20
+> =EF=BB=BFOn Wed, Apr 28, 2021 at 05:05:17PM -0700, Andy Lutomirski wrote:
+>>> On Wed, Apr 28, 2021 at 5:02 PM Michel Lespinasse <michel@lespinasse.org=
+> wrote:
+>>> Thanks Paul for confirming / clarifying this. BTW, it would be good to
+>>> add this to the rcu header files, just so people have something to
+>>> reference to when they depend on such behavior (like fast GUP
+>>> currently does).
+>>=20
+>> Or, even better, fast GUP could add an explicit RCU read lock.
+>>=20
+>>>=20
+>>> Going back to my patch. I don't need to protect against THP splitting
+>>> here, as I'm only handling the small page case. So when
+>>> MMU_GATHER_RCU_TABLE_FREE is enabled, I *think* I could get away with
+>>> using only an rcu read lock, instead of disabling interrupts which
+>>> implicitly creates the rcu read lock. I'm not sure which way to go -
+>>> fast GUP always disables interrupts regardless of the
+>>> MMU_GATHER_RCU_TABLE_FREE setting, and I think there is a case to be
+>>> made for following the fast GUP stes rather than trying to be smarter.
+>>=20
+>> How about adding some little helpers:
+>>=20
+>> lockless_page_walk_begin();
+>>=20
+>> lockless_page_walk_end();
+>>=20
+>> these turn into RCU read locks if MMU_GATHER_RCU_TABLE_FREE and into
+>> irqsave otherwise.  And they're somewhat self-documenting.
+>=20
+> One of the worst things we can do while holding a spinlock is take a
+> cache miss because we then delay for several thousand cycles to wait for
+> the cache line.  That gives every other CPU a really long opportunity
+> to slam into the spinlock and things go downhill fast at that point.
+> We've even seen patches to do things like read A, take lock L, then read
+> A to avoid the cache miss while holding the lock.
+>=20
+> What sort of performance effect would it have to free page tables
+> under RCU for all architectures?  It's painful on s390 & powerpc because
+> different tables share the same struct page, but I have to believe that's
+> a solvable problem.
 
-You might also be interested in this thread:
-
-https://lore.kernel.org/lkml/YIKsDtjcIHGNvW0u@orome.fritz.box/
-
-Rob
+The IPI locking mechanism is entirely useless on any architecture that wants=
+ to do paravirt shootdowns, so this seems like a good strategy to me.=
