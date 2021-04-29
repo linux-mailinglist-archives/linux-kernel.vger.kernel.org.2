@@ -2,134 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2017536E324
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 04:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4122C36E326
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 04:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235694AbhD2CEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 22:04:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45664 "EHLO
+        id S235404AbhD2CK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 22:10:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbhD2CEO (ORCPT
+        with ESMTP id S229888AbhD2CK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 22:04:14 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846AEC06138B;
-        Wed, 28 Apr 2021 19:03:27 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id x54-20020a05683040b6b02902a527443e2fso9054140ott.1;
-        Wed, 28 Apr 2021 19:03:27 -0700 (PDT)
+        Wed, 28 Apr 2021 22:10:26 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6EEDC06138B
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 19:09:40 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id u80so31452130oia.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 19:09:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+BkPf6ouH7ZXKDiYFqOTfX8y6jRjgrxp2WW9zPHG2zM=;
-        b=bkM3ihNeJ0HW0mwEhAryX/7RY+zSFEiCvJZ+gRl5PCNaIWoBzeHbMJhZiX2JleCqFx
-         HLNTKqeM8OY8uIxF8eC8DT7mVkA1iUEaNmHvfekXAfP17uNorz2h/jIY7Gu+LX4/Y2sl
-         z3n7dwLFasEJJCChT8MptcwyeFTF/Yxw3X0vJ3SoRiFGI6oNZA/4GuLwz7YvCNoOqC3t
-         Oi1fe+2Bqa2kHo8xEJjBuisMEFZJfLfSjPyt4JaoCymoVOjNmpSIlIUmR739KLfHNGmg
-         dZ2RYKJ7OCK8mcRsu5D48S2iI2L+ZoNxyfFObXATtJUEr13ucFaPxfZtH9kit5zH/1Xw
-         UEyQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XpteW1PZJWutvArOWsFj/ZNWB/Fybylygdy+Uph5aBg=;
+        b=DsAkVTofK/Xe5v6g4JN1wqggjo+FWBs2DbjZ1lhg84Xl3S8EHIL1qmsHGNf07k2hoH
+         YRj8NOX69DxJjpBoQDTyKw3kNF3M/9izPVV/4xkcucp7HzOGwJdDm5QcBdlPNzsElUod
+         mdd0jEOkPM67KTRS0AOtoqXDsakD8Dqnza6RhJBWy5BOvnFIJydZpsW7E8JS86P/4h7x
+         wmPamGBgRfmg03zn/MhHdoetOcCThYMfskOg7CDftttxb69DmrE6avPSrdT0i9oRUoh5
+         AiKcgJX8LKFbqKoXElWUIcQXiKTsRrwqn9sH2jAqY7gqB3ENVnHZVOYEBNGF799vSZ3l
+         P41w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+BkPf6ouH7ZXKDiYFqOTfX8y6jRjgrxp2WW9zPHG2zM=;
-        b=A+rncepdDwUWBm+21B6mhL44pFyT84qxhYCN5+ag6y9ruETwmBz8VgI3XhoBleNEye
-         DL0cK2l90XcXZfFIPfobgq3wje9X+tWBBco7xKtwNpP4/o8ndNGVJxCVlKJgfZ8V8TGV
-         l8rKhWzNyeXdliO3HzJTLbFqsoz4u2k5LieoqmtQePI6NPurC21KUN6feX2h7uH8c972
-         C1Ya/OXfaZKNXVZes1JlwVLzprmwAT04IKfiX0MHBg9EJweSzGxGHnfuA3Y/4qGaAlx6
-         3/yPdd0j3ZyiRun/MaJ0R3aOCZdmH/J1cMg3PGw2oc9gXZJ+kGM/7+Zl2rDd+X/QIahn
-         Zsrw==
-X-Gm-Message-State: AOAM533wcSkeERZLXJyvp6JsYsNVmgLtPCeHiJmRMX106ecrJBEXk+Vl
-        HxsCF6i4B7zgyvNC1WxNcB8=
-X-Google-Smtp-Source: ABdhPJzIh5K3WybsuN2qQVsgk+GkFZwEBCxYE8vSJTtctdFBN25tv3nh4KCPzFxiPnOSASwlBkjY9g==
-X-Received: by 2002:a9d:6a88:: with SMTP id l8mr16463342otq.236.1619661806887;
-        Wed, 28 Apr 2021 19:03:26 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.33])
-        by smtp.googlemail.com with ESMTPSA id f20sm413214oov.21.2021.04.28.19.03.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Apr 2021 19:03:26 -0700 (PDT)
-Subject: Re: [net-next] seg6: add counters support for SRv6 Behaviors
-To:     Andrea Mayer <andrea.mayer@uniroma2.it>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     Stefano Salsano <stefano.salsano@uniroma2.it>,
-        Paolo Lungaroni <paolo.lungaroni@uniroma2.it>,
-        Ahmed Abdelsalam <ahabdels.dev@gmail.com>
-References: <20210427154404.20546-1-andrea.mayer@uniroma2.it>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <a49ed340-3f92-8533-3efb-ac7ee2231ca3@gmail.com>
-Date:   Wed, 28 Apr 2021 20:03:23 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XpteW1PZJWutvArOWsFj/ZNWB/Fybylygdy+Uph5aBg=;
+        b=PXT/sfK4h3J4WYybZTPq//hwz6C3htoIqGzJLtbfmjR/66WjMLu39+Eo7PNLuQP6tP
+         QALTGcX41ScgrjiVDytv3cWA/OTXy9xzBQ2flPZ2l+S9pzEui0TFV+f3VkcmTUg8PsNJ
+         sO5PeIGmhMSKqcvW0Xtvv4HgahAPUMATw/EA/h7MyjS/DQRfqzzrtGBQ7ig5v1jzRRfa
+         y+7sPf8UVoj+mOgzzCSUSHUKX09QSN2jjY3NHYMI38NkzuGp0GJsI/SkFWp6tIJ3HLZg
+         yQwx5Aoipdi73aP8rqR8EcKW85ZiFmtdK/7nPlsp4jgIm5w46cLfWma6Gm+pl3N/T7li
+         nMJg==
+X-Gm-Message-State: AOAM531K5QB2cXdl4F2SpKhjOvoBJobh2TMoMD/oNTxaHkb8+PAWlMi/
+        /mkkfbZK3ZaV3mhQJHq/ZhpKhiyeZVsE816oFC8=
+X-Google-Smtp-Source: ABdhPJyuYXVAOuFtIEN/9ZLKxDjiTfOQu7kcczQGclHdfUPsTiqficxHMdUkZazFrXKpKU36KATgpeiiM90eypHsB6s=
+X-Received: by 2002:aca:4a4e:: with SMTP id x75mr14232021oia.123.1619662180056;
+ Wed, 28 Apr 2021 19:09:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210427154404.20546-1-andrea.mayer@uniroma2.it>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAPM=9txMo5f9QvPqdzt8g3CmUpyDFf2Q_0XS4V1FyjHX8WQPRA@mail.gmail.com>
+ <CAHk-=wh3x4Q4pCkYe7__OAnvOyPqdZLN5ha0z4U035FwT5G57w@mail.gmail.com> <e6532806-ba36-d5d0-6d74-488182787a6c@amd.com>
+In-Reply-To: <e6532806-ba36-d5d0-6d74-488182787a6c@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Wed, 28 Apr 2021 22:09:29 -0400
+Message-ID: <CADnq5_Nd6Xo+dQ01Lvoe-e+21zp-gihPZ67ykxec6AG5W=j6CQ@mail.gmail.com>
+Subject: Re: [git pull] drm for 5.13-rc1
+To:     Mikita Lipski <mlipski@amd.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Dave Airlie <airlied@gmail.com>,
+        Mikita Lipski <mikita.lipski@amd.com>,
+        Sun peng Li <Sunpeng.Li@amd.com>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/27/21 9:44 AM, Andrea Mayer wrote:
-> This patch provides counters for SRv6 Behaviors as defined in [1],
-> section 6. For each SRv6 Behavior instance, counters defined in [1] are:
-> 
->  - the total number of packets that have been correctly processed;
->  - the total amount of traffic in bytes of all packets that have been
->    correctly processed;
-> 
+On Wed, Apr 28, 2021 at 8:14 PM Mikita Lipski <mlipski@amd.com> wrote:
+>
+> Hi Linus,
+>
+> The patch to fix the warning is here
+> (https://www.spinics.net/lists/amd-gfx/msg61614.html)
+>
+> I guess it just didn't propagate all the way to the release.
+> Can it still be pulled into 5.13-rc1 release?
 
-...
+I'll include it in my -fixes pull next week.
 
-> 
-> Results of tests are shown in the following table:
-> 
-> Scenario (1): average 1504764,81 pps (~1504,76 kpps); std. dev 3956,82 pps
-> Scenario (2): average 1501469,78 pps (~1501,47 kpps); std. dev 2979,85 pps
-> Scenario (3): average 1501315,13 pps (~1501,32 kpps); std. dev 2956,00 pps
-> 
-> As can be observed, throughputs achieved in scenarios (2),(3) did not
-> suffer any observable degradation compared to scenario (1).
-> 
-> Thanks to Jakub Kicinski and David Ahern for their valuable suggestions
-> and comments provided during the discussion of the proposed RFCs.
-> 
-> [2] https://www.cloudlab.us
-> 
-> Signed-off-by: Andrea Mayer <andrea.mayer@uniroma2.it>
+Alex
+
+
+>
+>
+> From: Mikita Lipski <mikita.lipski@xxxxxxx>
+>
+> [why]
+> Previous statement would always evaluate to true
+> making it meaningless
+> [how]
+> Just check if a connector is MST by checking if its port exists.
+>
+> Reported-by: kernel test robot <lkp@xxxxxxxxx>
+> Signed-off-by: Mikita Lipski <mikita.lipski@xxxxxxx>
+> Reviewed-by: Nicholas Kazlauskas <Nicholas.Kazlauskas@xxxxxxx>
+> Acked-by: Wayne Lin <waynelin@xxxxxxx>
 > ---
->  include/uapi/linux/seg6_local.h |  30 +++++
->  net/ipv6/seg6_local.c           | 198 +++++++++++++++++++++++++++++++-
->  2 files changed, 226 insertions(+), 2 deletions(-)
-
-Thanks for the detailed commit message and stats on performance impact.
-
-> @@ -977,7 +1044,14 @@ static int seg6_local_input(struct sk_buff *skb)
->  	slwt = seg6_local_lwtunnel(orig_dst->lwtstate);
->  	desc = slwt->desc;
->  
-> -	return desc->input(skb, slwt);
-> +	rc = desc->input(skb, slwt);
-> +
-> +	if (!seg6_lwtunnel_counters_enabled(slwt))
-> +		return rc;
-> +
-> +	seg6_local_update_counters(slwt, len, rc);
-> +
-> +	return rc;
-
-Nit: This would be simpler as
-
-	if (seg6_lwtunnel_counters_enabled(slwt))
-		seg6_local_update_counters(slwt, len, rc);
-
-	return rc;
-
-but not worth a re-do since net-next is about to close, so:
-
-Reviewed-by: David Ahern <dsahern@kernel.org>
-
+>   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> index 656bc8f00a42..8bf0b566612b 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> @@ -3030,7 +3030,7 @@ static int trigger_hpd_mst_set(void *data, u64 val)
+>                         if (!aconnector->dc_link)
+>                                 continue;
+>
+> -                       if (!(aconnector->port && &aconnector->mst_port->mst_mgr))
+> +                       if (!aconnector->mst_port)
+>                                 continue;
+>
+>                         link = aconnector->dc_link;
+> --
+> 2.17.1
+>
+>
+>
+> Thanks,
+> Mikita
+>
+>
+> On 2021-04-28 6:21 p.m., Linus Torvalds wrote:
+> > On Tue, Apr 27, 2021 at 8:32 PM Dave Airlie <airlied@gmail.com> wrote:
+> >>
+> >> This is the main drm pull request for 5.13. The usual lots of work all
+> >> over the place. [...]
+> >>
+> >> Mikita Lipski:
+> >>        drm/amd/display: Add MST capability to trigger_hotplug interface
+> >
+> > Hmm. I've already merged this, but my clang build shows that this looks buggy:
+> >
+> > drivers/gpu/drm/amd/amdgpu/amdgpu_dm/amdgpu_dm_debugfs.c:3015:53:
+> > warning: address of 'aconnector->mst_port->mst_mgr' will always
+> > evaluate to 'true' [-Wpointer-bool-conversion]
+> >                          if (!(aconnector->port &&
+> > &aconnector->mst_port->mst_mgr))
+> >                                                 ~~  ~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+> >
+> > and yeah, checking for the address of a member of a structure benign
+> > NULL doesn't really work.
+> >
+> > I'm assuming the '&' is just a left-over cut-and-paste error or something.
+> >
+> > Please fix after reviewing (I'm not going to blindly just remove the
+> > '&' just to silence the warning, since I don't know the code).
+> >
+> >                  Linus
+> >
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
