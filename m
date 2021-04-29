@@ -2,95 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28FC536F143
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 22:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 295B236F14A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 22:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236819AbhD2UtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 16:49:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236737AbhD2UtA (ORCPT
+        id S236892AbhD2UuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 16:50:10 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:54623 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231201AbhD2UuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 16:49:00 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD486C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 13:48:13 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id a18so26424245qtj.10
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 13:48:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FFc2H/uuDNG6mhR7R+crmY+ptoL0P1RcjoOttIU6eIY=;
-        b=qabzS5m9gj1GEL2TvdC78tTot/7F3iPVfyyWrV+VuOSkCUCVa2Vogt/gv+PFTFhOsO
-         kv0ZzJGAcWlfdJ6YhH7clJSZ0tUwD6McMOJtzSLu6o436UpCYggWaUkSoUP85idJqvIA
-         8lVHkx5nC3BtPnKwAKPQjl3vaS4dlGQtmIeEQpKbQmyHQbuegusUjASy4mF6IwKtsuyV
-         LwpIZordeLPeYi4/jfbxiGwMao3v/4ypT3zx7r0OPkWDQ6/Us82DJcxYvcMGXmwYYlZO
-         xx44NOSUmNi/S1cslX/eC8MMqr2bXspPNvIyUTIwGzwIQ1dPHPyn6LMraO/boZh/dQWF
-         DoGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FFc2H/uuDNG6mhR7R+crmY+ptoL0P1RcjoOttIU6eIY=;
-        b=Ho+zkMZ+b/MQkh7dEDcUFLqe5lPQgNdW/GCctLdPKG1REHwWEv/Qapef5upCTNcybl
-         2ISehKpxzj+RDF4dUErszDL0R4OCYDxD2eHAFZWpyWYezVlImKMfraLgHoousTEHYAGp
-         F+XttYh9atS2L1Gwa2OtIp5e7TRtRrncucL02H0sxE5DRYoihPmhU9ic8XL9SR819HSD
-         1S67a1PGy7Kf+P13/JnZEuSb8Ipm5q6oSemYv3Fbph6MGWAwItH57gFhsvOStc9xSssE
-         lmqs2wM2FjTbWM/Ynmma6H6ITvaqu9VvWnu9pMxs7O+dwafv0fAn5UqQLHevbwPG37US
-         pBNA==
-X-Gm-Message-State: AOAM531F7qxlzUb8C2krQFSgHeBDiFazJTF/+snRDXHfuzjnICjh1iON
-        kOqbhu8KEtWrBi5G5ZSiXKcVu8NYoBCAkpfotqkZfA==
-X-Google-Smtp-Source: ABdhPJxj/Y6dadoRniiAgYeHloz7Nu/aZPXFISYFljo/JngdamCEoqCLsGPlR5JbvP1mzAfMruIjzYU81em3NHzCHoc=
-X-Received: by 2002:a05:622a:c8:: with SMTP id p8mr1286166qtw.145.1619729292799;
- Thu, 29 Apr 2021 13:48:12 -0700 (PDT)
+        Thu, 29 Apr 2021 16:50:06 -0400
+Received: from mail-wm1-f41.google.com ([209.85.128.41]) by
+ mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1N4yyQ-1lUlMv1UpQ-010wy8; Thu, 29 Apr 2021 22:49:17 +0200
+Received: by mail-wm1-f41.google.com with SMTP id 4-20020a05600c26c4b0290146e1feccd8so521816wmv.1;
+        Thu, 29 Apr 2021 13:49:17 -0700 (PDT)
+X-Gm-Message-State: AOAM533Lsa8YXw7vetbN82yaMhNUIX/cxsJQ3o0zJumPSHkeUDH4ZlrO
+        E2NdMfX1mGTztpCj5Y3ak1IEvnDZGYHfo9QU+VU=
+X-Google-Smtp-Source: ABdhPJwlxMNdSsRwR0fdPNqNypLLItyjoOqUJmBY9r3HaMsASmwKpwt6rd7DUEn1wPswZS5VmrYEijB1isok1r6KSGg=
+X-Received: by 2002:a7b:c4da:: with SMTP id g26mr2183043wmk.43.1619729356972;
+ Thu, 29 Apr 2021 13:49:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210422120459.447350175@infradead.org> <20210422123308.196692074@infradead.org>
- <CABk29Ntop2nX+z1bV7giG8ToR_w3f_+GYGAw+hFQ6g9rCZunmw@mail.gmail.com>
- <YIZ6ZpkrMGQ9A9x2@hirez.programming.kicks-ass.net> <CABk29NvicqM_c2ssYnDrEy_FPsfD5GH38rB_XHooErALOabe5g@mail.gmail.com>
- <CAOY2WoyTq0AYMz+z=USxSpdcJqWMjkq-FDkuLN++brwhAkwTaQ@mail.gmail.com>
- <CABk29Nuz-FDCk23ajcr9gS4KD-wMpwyn=ASu+yuTTT445rwTvw@mail.gmail.com>
- <CAERHkrvU2Xzi5p9Dph3zZ7zkoYjSV1krK-UhqE7+Qb80FodEGg@mail.gmail.com>
- <5c289c5a-a120-a1d0-ca89-2724a1445fe8@linux.intel.com> <CAERHkrsoCR7d3N2rhwKCeFDDBv4-S4HzD567mOaV_pngXn_Hkg@mail.gmail.com>
- <CAOY2WowOR6HhoKMsGrg+2VFD6ySY67E7Kr1s2GCuO4LdyusyUw@mail.gmail.com>
-In-Reply-To: <CAOY2WowOR6HhoKMsGrg+2VFD6ySY67E7Kr1s2GCuO4LdyusyUw@mail.gmail.com>
-From:   Josh Don <joshdon@google.com>
-Date:   Thu, 29 Apr 2021 13:48:01 -0700
-Message-ID: <CABk29Nt_xBaoawiyMv1RG+Yzg_a9w5RMc6Zy0ggmS5K-9LzrUA@mail.gmail.com>
-Subject: Re: [PATCH 04/19] sched: Prepare for Core-wide rq->lock
-To:     Don Hiatt <dhiatt@digitalocean.com>
-Cc:     Aubrey Li <aubrey.intel@gmail.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
+References: <YIpkvGrBFGlB5vNj@elver.google.com> <m11rat9f85.fsf@fess.ebiederm.org>
+In-Reply-To: <m11rat9f85.fsf@fess.ebiederm.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 29 Apr 2021 22:48:40 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
+Message-ID: <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
+Subject: Re: siginfo_t ABI break on sparc64 from si_addr_lsb move 3y ago
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Marco Elver <elver@google.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Peter Zijlstra <peterz@infradead.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
         Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:Y5+kRV9UPqKJX/D/7aStG7U/Py7dIw+sGe7g3Wp8tNykx536WRq
+ iv7bhZcLn7MPQIK+Gsjut2r2Itj6RnUpzjoS5iGld/vCXEhrGh/Df0y2laAfdIIVWqQjYsF
+ qJI0oQN0aJfc67ZCbPr2aLvhIAp+UGPF3D9E0vMbh/JrPrLq+vGNDfq5TQtBp+fTWKRYaCR
+ rOsFCo+6OdKTmhFtRMwow==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:0gnD6TDUOGU=:VQyZMBvfQy1PO9+fgiyh4r
+ ueF8VvNBMmTBRRaDtlb+077rlOEFzdMgDjMwS8Okn2sDCgz5IB1TForHNfA5k5lhFjLK0S7sa
+ BxWimh/mdubIO40EmLhbOs2XjMv1rr4YzC2flihFITSBaO5rL9M1fldhPs0zLjfveHNV63g1D
+ BB5XqARpRCbi81hm89Yn56Qy0c3NWBA/6SZBrw0KaUjiQGPY3F3j5bozH7lhroDbXOEbW8l0W
+ +cklcRFYePQw18i4fS0Z9l5WohNFS21H3x5xVSZuaerf1tDra5KIZDBQyN0SBga36FYnO55Gp
+ RC1JrkceZDDqfYOMmRjkWp5jRdcN9CsCDOlwZyZTnzOoSW/OpgbIMYl5CurgWd0ugiETJDykW
+ x93WVKNNyY8jyryfbqgyUdBjfpQHpPFnTbvlBkn8hsZyuMnTPj+XWRDHdZ9SF7fez1BWkcHb6
+ Y3rBRdFmnueYn6OdAW+QeId4qwhnyb5NNmxUUa9H0Nw/qb65slp5VdjlBYnAqNTeX+mT6Vkpl
+ P0p7x9WVPIkywSg84RUSk0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 9:41 AM Don Hiatt <dhiatt@digitalocean.com> wrote:
->
-> I'm still seeing hard lockups while repeatedly setting cookies on qemu
-> processes even with
-> the updated patch. If there is any debug you'd like me to turn on,
-> just let me know.
->
-> Thanks!
->
-> don
+On Thu, Apr 29, 2021 at 7:23 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
 
-Thanks for the added context on your repro configuration. In addition
-to the updated patch from earlier, could you try the modification to
-double_rq_lock() from
-https://lkml.kernel.org/r/CABk29NuS-B3n4sbmavo0NDA1OCCsz6Zf2VDjjFQvAxBMQoJ_Lg@mail.gmail.com
-? I have a feeling this is what's causing your lockup.
+> > Which option do you prefer? Are there better options?
+>
+> Personally the most important thing to have is a single definition
+> shared by all architectures so that we consolidate testing.
+>
+> A little piece of me cries a little whenever I see how badly we
+> implemented the POSIX design.  As specified by POSIX the fields can be
+> place in siginfo such that 32bit and 64bit share a common definition.
+> Unfortunately we did not addpadding after si_addr on 32bit to
+> accommodate a 64bit si_addr.
+>
+> I find it unfortunate that we are adding yet another definition that
+> requires translation between 32bit and 64bit, but I am glad
+> that at least the translation is not architecture specific.  That common
+> definition is what has allowed this potential issue to be caught
+> and that makes me very happy to see.
+>
+> Let's go with Option 3.
+>
+> Confirm BUS_MCEERR_AR, BUS_MCEERR_AO, SEGV_BNDERR, SEGV_PKUERR are not
+> in use on any architecture that defines __ARCH_SI_TRAPNO, and then fixup
+> the userspace definitions of these fields.
+>
+> To the kernel I would add some BUILD_BUG_ON's to whatever the best
+> maintained architecture (sparc64?) that implements __ARCH_SI_TRAPNO just
+> to confirm we don't create future regressions by accident.
+>
+> I did a quick search and the architectures that define __ARCH_SI_TRAPNO
+> are sparc, mips, and alpha.  All have 64bit implementations.
 
-Best,
-Josh
+I think you (slightly) misread: mips has "#undef __ARCH_SI_TRAPNO", not
+"#define __ARCH_SI_TRAPNO". This means it's only sparc and
+alpha.
+
+I can see that the alpha instance was added to the kernel during linux-2.5,
+but never made it into the glibc or uclibc copy of the struct definition, and
+musl doesn't support alpha or sparc. Debian codesearch only turns up
+sparc (and BSD) references to si_trapno.
+
+> I did a quick search and the architectures that define __ARCH_SI_TRAPNO
+> are sparc, mips, and alpha.  All have 64bit implementations.  A further
+> quick search shows that none of those architectures have faults that
+> use BUS_MCEERR_AR, BUS_MCEERR_AO, SEGV_BNDERR, SEGV_PKUERR, nor do
+> they appear to use mm/memory-failure.c
+>
+> So it doesn't look like we have an ABI regression to fix.
+
+Even better!
+
+So if sparc is the only user of _trapno and it uses none of the later
+fields in _sigfault, I wonder if we could take even more liberty at
+trying to have a slightly saner definition. Can you think of anything that
+might break if we put _trapno inside of the union along with _perf
+and _addr_lsb?
+
+I suppose in theory sparc64 or alpha might start using the other
+fields in the future, and an application might be compiled against
+mismatched headers, but that is unlikely and is already broken
+with the current headers.
+
+       Arnd
