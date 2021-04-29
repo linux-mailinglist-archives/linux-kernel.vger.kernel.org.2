@@ -2,159 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6376736ECC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 16:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6460136ECC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 16:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240440AbhD2Ovu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 10:51:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232820AbhD2Ovt (ORCPT
+        id S240111AbhD2OxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 10:53:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53366 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233128AbhD2OxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 10:51:49 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C13C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 07:51:02 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id a4so67264804wrr.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 07:51:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kynesim-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:references:in-reply-to
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=0snjfriunXokbhjSMJ9Eyiap4guJwiDtJ6KT7smyyik=;
-        b=zZuvgHd91qgQwjw10MKn4hrMbBJwZ/VIUK2nLx6HRcitCkkzaZtGkyAJUgUI4Aet1g
-         wyTdxhA2NL7uTPT2v3OoLOQTp+Uw+KBC13mIBQb07A7NfrpOiECd/kO4dDlwwr3jpNwv
-         5Y44aLLZ0lheYTLUioJBmD5//UBatavi2PwfoPIk/0LkFx25xI3gGo+EqwTFElyrot6S
-         Pe4kotbwcdBCM4az9Ak0Lvcc4un9xQOc7na5Z2Vq5cK4YhWgcv2Y8Zt92uI+l7rEVkES
-         uWFEby+By7MjeuLaNm7ruUSy7Kx3V3ilZYyVuUKVLZO075FXuHGOXQQvTx8riRiZR03Z
-         /sjg==
+        Thu, 29 Apr 2021 10:53:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619707941;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6lxQeZ3rFbs3JiKojmdVgu0t7tnrrD3u7eTUsMmffGw=;
+        b=NJHzKmBS+3ePGyB3bvOwDqAbxlwb/ILXZW5JUIitF+bs8Ui2TX/q8Sss6UA3qqrBX8x5hq
+        FsXhpKoV9pWvk9EK02Do8sVfh7KGy5snyBt18xNxw+NidGtyqxZgP099Gqtt9sLkzfiwdV
+        LsBFc++yQIDuZpb92fGlTqibxxGhOGI=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-356-vkLdZ2W7O16qZpMV81iLsw-1; Thu, 29 Apr 2021 10:52:19 -0400
+X-MC-Unique: vkLdZ2W7O16qZpMV81iLsw-1
+Received: by mail-wm1-f70.google.com with SMTP id g17-20020a05600c0011b029014399f816a3so1478168wmc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 07:52:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:references
-         :in-reply-to:user-agent:mime-version:content-transfer-encoding;
-        bh=0snjfriunXokbhjSMJ9Eyiap4guJwiDtJ6KT7smyyik=;
-        b=esHuyFoR8OZx18zV5zGQlnLBbPehy6KYmDsl/q5sqqYU1B34ddB160aqlO9JzJ4uQ3
-         x0ON68xuZH3pEwOfxipZaLFYOiyHNj0i14DXJO/68drH1B7v+KJoC3MgT+c7Enc2suWL
-         BBnvhhC9M9UOTRqoiEA4mzZ2dOWqqaa+WltdrsQVINfapg+4TQGELSeK1peCOTKrXjP7
-         2IilHxpFWFkqcVJDh5xFOjI8R0W31zsXmWn8mUxJOMznhMrEjqtivi7zO5NzTvSYNZIO
-         iBhQgFKTWcivb6K+DC/qtJFj0Su5I4cq70z+FPosZVcfJXNmnfmLFBgiEVC216TLVHdq
-         Ihxw==
-X-Gm-Message-State: AOAM5337gkbbW9Uw2Ioj3y4RSlFDJ7UFuki755KJwxCEm+H237RXGD3U
-        oOgrExLJZ5YSn23e0Pwp/D8wjg==
-X-Google-Smtp-Source: ABdhPJzj4vvtS0ITy4N2nOoIEmto/xNvRB0C1X+g/W+l+SSz8bMWSXmMg681Oss3TiWJNDLomY4WSA==
-X-Received: by 2002:a5d:6d48:: with SMTP id k8mr155304wri.93.1619707861191;
-        Thu, 29 Apr 2021 07:51:01 -0700 (PDT)
-Received: from CTHALPA.outer.uphall.net (cpc1-cmbg20-2-0-cust759.5-4.cable.virginm.net. [86.21.218.248])
-        by smtp.gmail.com with ESMTPSA id n7sm3245336wri.14.2021.04.29.07.51.00
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 29 Apr 2021 07:51:00 -0700 (PDT)
-From:   John Cox <jc@kynesim.co.uk>
-To:     Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        ezequiel@collabora.com, benjamin.gaignard@collabora.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH] media: hevc: Fix dependent slice segment flags
-Date:   Thu, 29 Apr 2021 15:51:00 +0100
-Message-ID: <lrhl8gl392tcpss5rcpkqr1cahujnlqq9k@4ax.com>
-References: <20210427071554.2222625-1-jernej.skrabec@siol.net>
-In-Reply-To: <20210427071554.2222625-1-jernej.skrabec@siol.net>
-User-Agent: ForteAgent/8.00.32.1272
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=6lxQeZ3rFbs3JiKojmdVgu0t7tnrrD3u7eTUsMmffGw=;
+        b=XUOYHYq3F9/lbV2EIWYgyDOw3PfuPz02afw1+ewyTyCnydtHJyioQzffjUIM4qnKPM
+         xfBx51xmPHpsVmkzYieJqtQQrUMFiw4BjzVYrUtciHJbZzOxs+DhQKsdVRXvDdXBIOIH
+         r/OFZrFp0pJQWagBIdXRNxxJHuvpYhqzGz695f1igDPVchHJtbPrvvtQ3lnMMzjapRCc
+         DnhfcHB32vxS8PEPO8ns6Yu3BUvaU9hrWrZONcNAsU8Qm19oWWG/U3Bn9eZsaKJjfT+v
+         Lvs6DK9weekHyLw2WedsbkwmCxe/fRXf+S/iXACJNUfabbyiwVZuTpAWzm5bnsTcsh+z
+         JRRw==
+X-Gm-Message-State: AOAM5331xVZgs7OaMgSQyCQ50wJLoAPU/VyzZ6TQJP7FZ99N5Jsf7d9c
+        XdnWlOj3gSBLeSHvlWziX4IBioobpmDaS5q0mMtxy7dZzaZ2VDItizbmsfJpj7rgbVemCH92ODd
+        6z9TbuzqnBkxJ9IJ94lsRBcqo
+X-Received: by 2002:a05:600c:ac2:: with SMTP id c2mr436213wmr.23.1619707937997;
+        Thu, 29 Apr 2021 07:52:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzREobSjw9+ep7qp65Qsyqe0mmsMCMmXyHmNKtRFVawQb8jsvu7DTK65VQQ9/FC2uyyK6KgEw==
+X-Received: by 2002:a05:600c:ac2:: with SMTP id c2mr436189wmr.23.1619707937796;
+        Thu, 29 Apr 2021 07:52:17 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6158.dip0.t-ipconnect.de. [91.12.97.88])
+        by smtp.gmail.com with ESMTPSA id p18sm5105591wrs.68.2021.04.29.07.52.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Apr 2021 07:52:17 -0700 (PDT)
+Subject: Re: [PATCH v2 2/5] mm/huge_memory.c: use page->deferred_list
+To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
+Cc:     ziy@nvidia.com, william.kucharski@oracle.com, willy@infradead.org,
+        yang.shi@linux.alibaba.com, aneesh.kumar@linux.ibm.com,
+        rcampbell@nvidia.com, songliubraving@fb.com,
+        kirill.shutemov@linux.intel.com, riel@surriel.com,
+        hannes@cmpxchg.org, minchan@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20210429132648.305447-1-linmiaohe@huawei.com>
+ <20210429132648.305447-3-linmiaohe@huawei.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <7b0d3d84-02fc-e913-e894-740fc1b704e9@redhat.com>
+Date:   Thu, 29 Apr 2021 16:52:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210429132648.305447-3-linmiaohe@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->Dependent slice segment flag for PPS control is misnamed. It should have
->"enabled" at the end. It only tells if this flag is present in slice
->header or not and not the actual value.
->
->Fix this by renaming the PPS flag and introduce another flag for slice
->control which tells actual value.
->
->Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
->---
-> Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 5 ++++-
-> drivers/staging/media/sunxi/cedrus/cedrus_h265.c          | 4 ++--
-> include/media/hevc-ctrls.h                                | 3 ++-
-> 3 files changed, 8 insertions(+), 4 deletions(-)
->
->diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst =
-b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->index 7b90cb939e9d..5ed343ddd1ea 100644
->--- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->@@ -3059,7 +3059,7 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
->     :stub-columns: 0
->     :widths:       1 1 2
->=20
->-    * - ``V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT``
->+    * - ``V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT_ENABLED``
->       - 0x00000001
->       -
->     * - ``V4L2_HEVC_PPS_FLAG_OUTPUT_FLAG_PRESENT``
->@@ -3274,6 +3274,9 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
->     * - =
-``V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_LOOP_FILTER_ACROSS_SLICES_ENABLED``
->       - 0x00000100
->       -
->+    * - ``V4L2_HEVC_SLICE_PARAMS_FLAG_DEPENDENT_SLICE_SEGMENT``
->+      - 0x00000200
->+      -
->=20
-> .. raw:: latex
->=20
->diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c =
-b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
->index 397a4ba5df4c..6821e3d05d34 100644
->--- a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
->+++ b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
->@@ -479,8 +479,8 @@ static void cedrus_h265_setup(struct cedrus_ctx =
-*ctx,
-> 				slice_params->flags);
->=20
-> 	reg |=3D =
-VE_DEC_H265_FLAG(VE_DEC_H265_DEC_SLICE_HDR_INFO0_FLAG_DEPENDENT_SLICE_SEG=
-MENT,
->-				V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT,
->-				pps->flags);
->+				V4L2_HEVC_SLICE_PARAMS_FLAG_DEPENDENT_SLICE_SEGMENT,
->+				slice_params->flags);
->=20
-> 	/* FIXME: For multi-slice support. */
-> 	reg |=3D =
-VE_DEC_H265_DEC_SLICE_HDR_INFO0_FLAG_FIRST_SLICE_SEGMENT_IN_PIC;
->diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
->index b713eeed1915..dc964ff7cd29 100644
->--- a/include/media/hevc-ctrls.h
->+++ b/include/media/hevc-ctrls.h
->@@ -83,7 +83,7 @@ struct v4l2_ctrl_hevc_sps {
-> 	__u64	flags;
-> };
->=20
->-#define V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT		(1ULL << 0)
->+#define V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT_ENABLED	(1ULL << 0)
-> #define V4L2_HEVC_PPS_FLAG_OUTPUT_FLAG_PRESENT			(1ULL << 1)
-> #define V4L2_HEVC_PPS_FLAG_SIGN_DATA_HIDING_ENABLED		(1ULL << 2)
-> #define V4L2_HEVC_PPS_FLAG_CABAC_INIT_PRESENT			(1ULL << 3)
->@@ -166,6 +166,7 @@ struct v4l2_hevc_pred_weight_table {
-> #define V4L2_HEVC_SLICE_PARAMS_FLAG_USE_INTEGER_MV		(1ULL << 6)
-> #define V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_DEBLOCKING_FILTER_DISABLED =
-(1ULL << 7)
-> #define =
-V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_LOOP_FILTER_ACROSS_SLICES_ENABLED (1ULL=
- << 8)
->+#define V4L2_HEVC_SLICE_PARAMS_FLAG_DEPENDENT_SLICE_SEGMENT	(1ULL << 9)
->=20
-> struct v4l2_ctrl_hevc_slice_params {
-> 	__u32	bit_size;
+On 29.04.21 15:26, Miaohe Lin wrote:
+> Now that we can represent the location of ->deferred_list instead of
+> ->mapping + ->index, make use of it to improve readability.
+> 
+> Reviewed-by: Yang Shi <shy828301@gmail.com>
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>   mm/huge_memory.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 63ed6b25deaa..76ca1eb2a223 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2868,7 +2868,7 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
+>   	spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
+>   	/* Take pin on all head pages to avoid freeing them under us */
+>   	list_for_each_safe(pos, next, &ds_queue->split_queue) {
+> -		page = list_entry((void *)pos, struct page, mapping);
+> +		page = list_entry((void *)pos, struct page, deferred_list);
+>   		page = compound_head(page);
+>   		if (get_page_unless_zero(page)) {
+>   			list_move(page_deferred_list(page), &list);
+> @@ -2883,7 +2883,7 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
+>   	spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
+>   
+>   	list_for_each_safe(pos, next, &list) {
+> -		page = list_entry((void *)pos, struct page, mapping);
+> +		page = list_entry((void *)pos, struct page, deferred_list);
+>   		if (!trylock_page(page))
+>   			goto next;
+>   		/* split_huge_page() removes page from list on success */
+> 
 
-Happy to see this flag finally making it
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-Many thanks
+-- 
+Thanks,
 
-John Cox
+David / dhildenb
+
