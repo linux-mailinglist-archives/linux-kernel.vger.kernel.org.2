@@ -2,97 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A4236ED3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A63CC36ED44
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240715AbhD2PTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 11:19:07 -0400
-Received: from mail-m17642.qiye.163.com ([59.111.176.42]:46962 "EHLO
-        mail-m17642.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233420AbhD2PTE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 11:19:04 -0400
-Received: from vivo.com (localhost [127.0.0.1])
-        by mail-m17642.qiye.163.com (Hmail) with ESMTP id 14B8322010B;
-        Thu, 29 Apr 2021 23:18:15 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AB*ANgDFDju3UB4GeQss-4rk.3.1619709495070.Hmail.wanjiabing@vivo.com>
-To:     Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Aric Cyr <aric.cyr@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Wesley Chalmers <Wesley.Chalmers@amd.com>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Wayne Lin <Wayne.Lin@amd.com>,
-        Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>,
-        Chiawen Huang <chiawen.huang@amd.com>,
-        Anson Jacob <Anson.Jacob@amd.com>,
-        Alvin Lee <alvin.lee2@amd.com>, Eric Yang <Eric.Yang2@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, kael_w@yeah.net
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gZHJtL2FtZC9kaXNwbGF5OiBSZW1vdmUgZHVwbGljYXRlIGluY2x1ZGUgb2YgaHVicC5o?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 180.111.217.84
-In-Reply-To: <20210429144121.v6ycsvwkk64s7grp@outlook.office365.com>
+        id S240723AbhD2PTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 11:19:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36810 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233148AbhD2PTU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 11:19:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB54B61447;
+        Thu, 29 Apr 2021 15:18:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619709514;
+        bh=uV4pH8bW9rxeLWB3WXO/T+5i0gmgm4sBbiw2Lm7Jk0Q=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=tnUPevTboJ6pYRb+MA1Gg+Cwq7LE06m5gIUW1X8Eu33WMQsjuzyWewG+kDI2WTgHA
+         d10dQueou/p4WSDTdbxoOaQkanf4t4pS+bw1DeEkQK6kDQ5sMsqurlm+JKfyN1WWMb
+         OMjPqupiusTVovVcLGZDWkiVeNk0IZjjIUX0hAyNZxWgdM6N1VMqAjrZ+IhUjwIQXX
+         ok/BWop+hb1dedpWjmJYqMFN0gtd3ts9pheVuxcg79dc+mPtLaXOYDYW1GDx4XgCEq
+         0YytVTI/Se8/FB4/jq0LFeBy7qgO1XkA8LTRdWCp/UT9g5j/NFgYwpncoZokzAxmOD
+         8SwiKUDNfbBWQ==
+Received: by mail-qt1-f175.google.com with SMTP id a18so25608351qtj.10;
+        Thu, 29 Apr 2021 08:18:33 -0700 (PDT)
+X-Gm-Message-State: AOAM533NP3zNARaoPDL98Ds9S3l/4HKCXTAXpeFDlkqqPlWiNIQcfnOL
+        N4uDxAKaoIb+fCuhjQukon8u7IDxavQvFUsMfw==
+X-Google-Smtp-Source: ABdhPJyvnKfB3Mjs6tNMy27mCpJHlNiYu6wPEX1WAGi/QlDuZ7Ax+59Z4uCOBrNhOuO71QhBlF9qwe23+IqDNDTWkTY=
+X-Received: by 2002:ac8:48c2:: with SMTP id l2mr10939431qtr.134.1619709512977;
+ Thu, 29 Apr 2021 08:18:32 -0700 (PDT)
 MIME-Version: 1.0
-Received: from wanjiabing@vivo.com( [180.111.217.84) ] by ajax-webmail ( [127.0.0.1] ) ; Thu, 29 Apr 2021 23:18:15 +0800 (GMT+08:00)
-From:   Jiabing Wan <wanjiabing@vivo.com>
-Date:   Thu, 29 Apr 2021 23:18:15 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGUofT1ZKHUpPSU5DSUJPGh5VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kJHlYWEh9ZQU1ISUhMQk5CSUxMN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6OVE6NRw*PT8RDkguOU88HioICFZPCRBVSFVKTUpCTEtCT0JOT0NOVTMWGhIXVQwaFRESGhkS
-        FRw7DRINFFUYFBZFWVdZEgtZQVlKQ0tVSkpKVUlKTFVDT1lXWQgBWUFNSUJINwY+
-X-HM-Tid: 0a791e358738d998kuws14b8322010b
+References: <1617976766-7852-1-git-send-email-skakit@codeaurora.org>
+ <1617976766-7852-4-git-send-email-skakit@codeaurora.org> <20210414083820.GH4869@dell>
+ <CAL_JsqKYQ2EBgQJzKJSy-+D20Pmu_mzUQog03nAw=_PRY-uRjg@mail.gmail.com> <YHnisFroaR1qWA0Y@piout.net>
+In-Reply-To: <YHnisFroaR1qWA0Y@piout.net>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 29 Apr 2021 10:18:21 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKO12CuA3MdX6bpENVYaT-0Xvm2L0S9UquHx2P-AhgiZQ@mail.gmail.com>
+Message-ID: <CAL_JsqKO12CuA3MdX6bpENVYaT-0Xvm2L0S9UquHx2P-AhgiZQ@mail.gmail.com>
+Subject: Re: [PATCH V2 3/4] dt-bindings: mfd: Convert pm8xxx bindings to yaml
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Lee Jones <lee.jones@linaro.org>
+Cc:     satya priya <skakit@codeaurora.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
+        <linux-rtc@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org, Kiran Gunda <kgunda@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IAo+SXMgeW91ciByb2JvdCBwdWJsaWMgYXZhaWxhYmxlPwoKU29ycnksIEkgc3RhcnRlZCB0byB3
-cml0ZSB0aGUgcm9ib3QganVzdCBvbmUgd2VlayBhZ28uCkl0IGlzIG5vdCBzdHJvbmcgYW5kIGNv
-bXBsZXRlIGVub3VnaCBzbyBpdCBpcyBub3QgcHVibGljIGF2YWlsYWJsZSBub3cuCkJ1dCBJIGFt
-IHN0aWxsIHdvcmtpbmcgb24gaXQuIElmIGNvbXBsZXRlLCBpdCBjYW4gYmUgcHVibGljIGF2YWls
-YWJsZS4KCkluIGZhY3QsIHRoaXMgcGF0Y2ggaXMgY2F0Y2hlZCBieSB0aGUgc2NyaXB0IGNhbGxl
-ZCBjaGVja2luY2x1ZGUucGwKaW4gbGludXgvc2NyaXB0LiBUaGUgcm9ib3QganVzdCBydW4gdGhl
-IHNjcmlwdCBhbmQgY2F0Y2ggaXQgOykuCgpUaGVyZSB3aWxsIGJlIG1vcmUgc2NyaXB0cyBpbiB0
-aGUgcm9ib3QgYW5kIEkgdGhpbmsKaXQgd2lsbCBiZSBwdWJsaWMgYXZhaWxhYmxlIHNvb24uCgo+
-YnR3LCBhcHBsaWVkIHRvIGFtZC1zdGFnaW5nLWRybS1uZXh0LgoKVGhhbmsgeW91IHZlcnkgbXVj
-aC4KCj4KPlRoYW5rcwo+T24gMDQvMjksIEppYWJpbmcgV2FuIHdyb3RlOgo+PiAgCj4+ID5OaWNl
-IGNhdGNoIQo+PiA+Cj4+ID5BcmUgeW91IHVzaW5nIGFueSB0b29sIHRvIGlkZW50aWZ5IHRoaXMg
-cHJvYmxlbT8KPj4gCj4+IFllcywgSSBoYXZlIGEgcm9ib3QgaW5jbHVkaW5nIG1hbnkgZGV0ZWN0
-aW5nIHNjcmlwdHMgOikKPj4gCj4+ID5SZXZpZXdlZC1ieTogUm9kcmlnbyBTaXF1ZWlyYSA8Um9k
-cmlnby5TaXF1ZWlyYUBhbWQuY29tPgo+PiA+Cj4+ID5PbiAwNC8yOSwgV2FuIEppYWJpbmcgd3Jv
-dGU6Cj4+ID4+IEluIGNvbW1pdCA0ODI4MTJkNTY2OThlICgiZHJtL2FtZC9kaXNwbGF5OiBTZXQg
-bWF4IFRUVSBvbgo+PiA+PiBEUEcgZW5hYmxlIiksICJodWJwLmgiIHdhcyBhZGRlZCB3aGljaCBj
-YXVzZWQgdGhlIGR1cGxpY2F0ZSBpbmNsdWRlLgo+PiA+PiBUbyBiZSBvbiB0aGUgc2FmZSBzaWRl
-LCByZW1vdmUgdGhlIGxhdGVyIGR1cGxpY2F0ZSBpbmNsdWRlLgo+PiA+PiAKPj4gPj4gU2lnbmVk
-LW9mZi1ieTogV2FuIEppYWJpbmcgPHdhbmppYWJpbmdAdml2by5jb20+Cj4+ID4+IC0tLQo+PiA+
-PiAgZHJpdmVycy9ncHUvZHJtL2FtZC9kaXNwbGF5L2RjL2NvcmUvZGMuYyB8IDEgLQo+PiA+PiAg
-MSBmaWxlIGNoYW5nZWQsIDEgZGVsZXRpb24oLSkKPj4gPj4gCj4+ID4+IGRpZmYgLS1naXQgYS9k
-cml2ZXJzL2dwdS9kcm0vYW1kL2Rpc3BsYXkvZGMvY29yZS9kYy5jIGIvZHJpdmVycy9ncHUvZHJt
-L2FtZC9kaXNwbGF5L2RjL2NvcmUvZGMuYwo+PiA+PiBpbmRleCA4ZjBhMTM4MDdkMDUuLmRjYWE2
-YjFlMTZhZiAxMDA2NDQKPj4gPj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2FtZC9kaXNwbGF5L2Rj
-L2NvcmUvZGMuYwo+PiA+PiArKysgYi9kcml2ZXJzL2dwdS9kcm0vYW1kL2Rpc3BsYXkvZGMvY29y
-ZS9kYy5jCj4+ID4+IEBAIC01OCw3ICs1OCw2IEBACj4+ID4+ICAjaW5jbHVkZSAiZGNfbGlua19k
-ZGMuaCIKPj4gPj4gICNpbmNsdWRlICJkbV9oZWxwZXJzLmgiCj4+ID4+ICAjaW5jbHVkZSAibWVt
-X2lucHV0LmgiCj4+ID4+IC0jaW5jbHVkZSAiaHVicC5oIgo+PiA+PiAgCj4+ID4+ICAjaW5jbHVk
-ZSAiZGNfbGlua19kcC5oIgo+PiA+PiAgI2luY2x1ZGUgImRjX2RtdWJfc3J2LmgiCj4+ID4+IC0t
-IAo+PiA+PiAyLjI1LjEKPj4gPj4gCj4+ID4KPj4gPi0tIAo+PiA+Um9kcmlnbyBTaXF1ZWlyYQo+
-PiA+aHR0cHM6Ly9uYW0xMS5zYWZlbGlua3MucHJvdGVjdGlvbi5vdXRsb29rLmNvbS8/dXJsPWh0
-dHBzJTNBJTJGJTJGc2lxdWVpcmEudGVjaCUyRiZhbXA7ZGF0YT0wNCU3QzAxJTdDUm9kcmlnby5T
-aXF1ZWlyYSU0MGFtZC5jb20lN0NiOGZmMTYxYjNhOTA0YTQ5ZTU5ODA4ZDkwYjA5OTFkOSU3QzNk
-ZDg5NjFmZTQ4ODRlNjA4ZTExYTgyZDk5NGUxODNkJTdDMCU3QzAlN0M2Mzc1NTI5NTgwMTM2Njk2
-OTglN0NVbmtub3duJTdDVFdGcGJHWnNiM2Q4ZXlKV0lqb2lNQzR3TGpBd01EQWlMQ0pRSWpvaVYy
-bHVNeklpTENKQlRpSTZJazFoYVd3aUxDSlhWQ0k2TW4wJTNEJTdDMTAwMCZhbXA7c2RhdGE9STdB
-dEVpT2x6VXVSUWFnN3VBdUFyVXZmZDY0bDFiM2dzdHE3WlRldWNpayUzRCZhbXA7cmVzZXJ2ZWQ9
-MAo+PiAKPj4gWW91cnMsCj4+IFdhbiBKaWFiaW5nCj4+IAo+Cj4tLSAKPlJvZHJpZ28gU2lxdWVp
-cmEKPmh0dHBzOi8vc2lxdWVpcmEudGVjaAoKWW91cnMsCldhbiBKaWFiaW5nCg0KDQo=
+On Fri, Apr 16, 2021 at 2:17 PM Alexandre Belloni
+<alexandre.belloni@bootlin.com> wrote:
+>
+> Hi,
+>
+> On 16/04/2021 12:20:30-0500, Rob Herring wrote:
+> > On Wed, Apr 14, 2021 at 3:38 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > >
+> > > On Fri, 09 Apr 2021, satya priya wrote:
+> > >
+> > > > Convert pm8xxx bindings from .txt to .yaml format. Also,
+> > > > split this binding into two: parent binding(qcom-pm8xxx.yaml)
+> > > > and child node RTC binding(qcom-pm8xxx-rtc.yaml).
+> > > >
+> > > > Signed-off-by: satya priya <skakit@codeaurora.org>
+> > > > ---
+> > > > Changes in V2:
+> > > >  - As per Bjorn's comments, I've split this into two, one parent binding
+> > > >    and one child node rtc binding.
+> > > >  - Fixed bot errors and changed maintainer name.
+> > > >
+> > > >  .../devicetree/bindings/mfd/qcom-pm8xxx.txt        | 100 ---------------------
+> > > >  .../devicetree/bindings/mfd/qcom-pm8xxx.yaml       |  54 +++++++++++
+> > > >  2 files changed, 54 insertions(+), 100 deletions(-)
+> > > >  delete mode 100644 Documentation/devicetree/bindings/mfd/qcom-pm8xxx.txt
+> > > >  create mode 100644 Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
+> > >
+> > > Applied, thanks.
+> >
+> > You need to apply the rtc schema too. linux-next has an error on this one now.
+> >
+>
+> I'm going to apply it later tonight
+
+I've said this before, but MFD bindings with more than one schema file
+like this one need to go thru one tree or things break temporarily (as
+now Linus' tree is broken).
+
+Rob
