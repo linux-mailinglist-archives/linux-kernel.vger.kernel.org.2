@@ -2,239 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 012E636ED82
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D9EA36ED81
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:38:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240635AbhD2Pjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 11:39:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233420AbhD2Pju (ORCPT
+        id S234590AbhD2PjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 11:39:09 -0400
+Received: from jptosegrel01.sonyericsson.com ([124.215.201.71]:1832 "EHLO
+        JPTOSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233420AbhD2PjH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 11:39:50 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23DFDC06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:39:04 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id l17-20020a25ad510000b02904ee2dd236d5so10116353ybe.18
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:39:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=xC3KmY9xAqwoVwsFDm4WXfd4THuTAizTawn6IKvDgFU=;
-        b=N0GXApwTiwBnsTEHsxkhgW5osS2p2oNCf0cDSCUhCQOqGYZdaMUFoO8QuCsvVaxrBj
-         OYL8XeShTQR2Om4Fr+8v4AjqUd5AOc5tzdG3y7IKvVDyTOWNwcZWVVcMT1GKlrQzW+2O
-         KzBLpl2ECnPPMW9uNkFMmPmuSjKD94OsHg/yiowdywrwCmKrMiPIkfBCfc+30vA0AbKO
-         lPYQOjJY23z2Z2y+Ssnk8NfoCXVxRptjp3MnjiAHgbv9zZ0SvkpF1tk97stcQ+2OKYSZ
-         IK+6qGTb74FbWocm2eyWrEYyGB7Pl7UdHPnxpCQsb+KeQbjwoQS3yshEKs43zO6ZCDyX
-         EawQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=xC3KmY9xAqwoVwsFDm4WXfd4THuTAizTawn6IKvDgFU=;
-        b=ced/sdS4Ds6ckB6fJYf+1e1mo3Zcy/XS+l+Cop7ho8gPYQYbZY2axcpP07vH20VNNG
-         Ez8gb27SUGf2OrlP5K5TVAChz+jF8ysjQ+QzNc6Y2OLfI6dIv/wcHoS6H+8NCmax/eGg
-         +PYf0wjfdGG7AwIt3XTz9Fg9HDn7mSblcWs85WrzD/Df0RaSF9tMrXuyyl39KJdkghUv
-         QiDX8dL/E2FI3rBQrlRzKJazDMdnJNPVfq1JeP3bhLe+5HVqNqtm1sia2WVZT/wxTD28
-         m9rkp0KTp5H24ymJlaBZ9Bo9h4xCB2IP7AXsAhjtvoCpTWSAd3RvM2x7O+8kCIYXNrkp
-         opzQ==
-X-Gm-Message-State: AOAM532TxjwPTSo8mldnxl5/69R5uEfKnPKW5LpAbOqPxf/BqiNcLvn1
-        4fumHiKRpybMJQdOjjWnHVUBo8v2bg==
-X-Google-Smtp-Source: ABdhPJw8uCV+h3myux52+v9N6YFEXe/P/hczAhYH5IttRWYlc7BUcBirw8eoSB00nHMwQueL14wRbk8opQ==
-X-Received: from peanut.svl.corp.google.com ([2620:15c:2c5:1:544d:6c9a:2020:fc52])
- (user=awill job=sendgmr) by 2002:a25:6fc5:: with SMTP id k188mr121216ybc.109.1619710743354;
- Thu, 29 Apr 2021 08:39:03 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 08:37:26 -0700
-In-Reply-To: <20210318092406.5340-3-michael@walle.cc>
-Message-Id: <20210429153725.15970-1-awill@google.com>
-Mime-Version: 1.0
-References: <20210318092406.5340-3-michael@walle.cc>
-X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
-Subject: Re: [PATCH 2/2] mtd: spi-nor: add initial sysfs support
-From:   Alexander Williams <awill@google.com>
-To:     michael@walle.cc
-Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        miquel.raynal@bootlin.com, p.yadav@ti.com, richard@nod.at,
-        tudor.ambarus@microchip.com, vigneshr@ti.com,
-        Alexander Williams <awill@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 29 Apr 2021 11:39:07 -0400
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+To:     Willy Tarreau <w@1wt.eu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Nick Desaulniers <ndesaulniers@google.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        rust-for-linux <rust-for-linux@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+References: <20210414184604.23473-1-ojeda@kernel.org>
+ <YHlz54rd1YQHsOA/@hirez.programming.kicks-ass.net>
+ <YHmMJWmzz2vZ3qQH@google.com>
+ <YHmc2+bKQJ/XAATF@hirez.programming.kicks-ass.net>
+ <YHmuX1NA5RF7C7XS@google.com> <20210416161444.GA10484@1wt.eu>
+ <CANiq72nbkJFPmiJXX=L8PmkouKgKG1k-CxhZYpL1hcncYwa8JA@mail.gmail.com>
+ <20210416173717.GA10846@1wt.eu>
+ <CAKwvOd=RadTs7Skv6KUBo4qZQtdi0kugTzxvZM+5X_2gstjyaQ@mail.gmail.com>
+ <YH5tAqLr965MNZyW@kroah.com> <20210420061613.GA30890@1wt.eu>
+From:   peter enderborg <peter.enderborg@sony.com>
+Message-ID: <e3c591db-a272-5048-7396-3e934b071aab@sony.com>
+Date:   Thu, 29 Apr 2021 17:38:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210420061613.GA30890@1wt.eu>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=DLnxHBFb c=1 sm=1 tr=0 a=9drRLWArJOlETflmpfiyCA==:117 a=IkcTkHD0fZMA:10 a=3YhXtTcJ-WEA:10 a=W69p7wgkjsnNkqErQOcA:9 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+On 4/20/21 8:16 AM, Willy Tarreau wrote:
+> On Tue, Apr 20, 2021 at 07:56:18AM +0200, Greg Kroah-Hartman wrote:
+>> I would LOVE it if some "executives" would see the above presentations,
+>> because then they would maybe actually fund developers to fix bugs and
+>> maintain the kernel code, instead of only allowing them to add new
+>> features.
+>>
+>> Seriously, that's the real problem, that Dmitry's work has exposed, the
+>> lack of people allowed to do this type of bugfixing and maintenance on
+>> company time, for something that the company relies on, is a huge issue.
+>> "executives" feel that they are willing to fund the initial work and
+>> then "throw it over the wall to the community" once it is merged, and
+>> then they can forget about it as "the community" will maintain it for
+>> them for free.  And that's a lie, as Dmitry's work shows.
+> That's sadly the eternal situation, and I'm suspecting that software
+> development and maintenance is not identified as a requirement for a
+> large number of hardware vendors, especially on the consumer side where
+> margins are lower. A contractor is paid to develop a driver, *sometimes*
+> to try to mainline it (and the later they engage with the community, the
+> longer it takes in round trips), and once the code finally gets merged,
+> all the initial budget is depleted and no more software work will be
+> done.
+>
+> Worse, we could imagine kicking unmaintained drivers faster off the
+> tree, but that would actually help these unscrupulous vendors by
+> forcing their customers to switch to the new model :-/  And most of
+> them wouldn't care either if their contributions were refused based
+> on their track record of not maintaining their code, since they often
+> see this as a convenience to please their customers and not something
+> they need (after all, relying on a bogus and vulnerable BSP has never
+> prevented from selling a device, quite the opposite).
+>
+> In short, there is a parallel universe where running highly bogus and
+> vulnerable out-of-tree code seems like the norm and where there is no
+> sort of care for what is mainlined as it's possibly just made to look
+> "cool".
 
-> On Thu, Mar 18, 2021 at 10:24 AM Michael Walle <michael@walle.cc>
-> wrote:
-> Add support to show the name and JEDEC identifier as well as to dump the
-> SFDP table. Not all flashes list their SFDP table contents in their
-> datasheet. So having that is useful. It might also be helpful in bug
-> reports from users.
-> 
-> The idea behind the sysfs module is also to have raw access to the SPI
-> NOR flash device registers, which can also be useful for debugging.
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
->  drivers/mtd/spi-nor/Makefile |  2 +-
->  drivers/mtd/spi-nor/core.c   |  5 +++
->  drivers/mtd/spi-nor/core.h   |  3 ++
->  drivers/mtd/spi-nor/sysfs.c  | 86 ++++++++++++++++++++++++++++++++++++
->  4 files changed, 95 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/mtd/spi-nor/sysfs.c
-> 
-> diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-> index 653923896205..aff308f75987 100644
-> --- a/drivers/mtd/spi-nor/Makefile
-> +++ b/drivers/mtd/spi-nor/Makefile
-> @@ -1,6 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0
->  
-> -spi-nor-objs			:= core.o sfdp.o
-> +spi-nor-objs			:= core.o sfdp.o sysfs.o
->  spi-nor-objs			+= atmel.o
->  spi-nor-objs			+= catalyst.o
->  spi-nor-objs			+= eon.o
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 4a315cb1c4db..2eaf4ba8c0f3 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -3707,6 +3707,10 @@ static int spi_nor_probe(struct spi_mem *spimem)
->  	if (ret)
->  		return ret;
->  
-> +	ret = spi_nor_sysfs_create(nor);
 
-This appears to be racing with user space. By the time we reach probe(), the
-device embedded in the spi_device has already been registered, with the uevent
-sent out, right? udev may not see the new attributes created here.
+In the parallel universe where I spent most time everyone
+now need to learn how to make their things to work
+out-of-tree. And there is not much of business case trying
+to fix and improve core parts of linux. The turn around have
+increased a lot and there is no edge doing it.
 
-Since we reuse a preexisting device throughout spi-nor, it seems awfully
-challenging to be able to safely add sysfs attributes. Would it make sense to
-create a spi-nor-specific device/class? Or perhaps attach these attributes to
-the device in mtd_info like I've done in
-https://lore.kernel.org/linux-mtd/20210428052725.530939-1-awill@google.com/ ?
 
-- Alex
+> We also need to recognize that it's expectable that some vendors are
+> not willing to engage on supporting a driver for a decade if they
+> expect their device to last 5 years only, and maybe we should make
+> some rules clear about mainlining drivers and what to expect for
+> users (in which case the end of support would be clear and nobody
+> would be surprised if the driver is removed at the end of its
+> maintenance, barring a switch to a community maintainer).
 
-> +	if (ret)
-> +		return ret;
-> +
->  	return mtd_device_register(&nor->mtd, data ? data->parts : NULL,
->  				   data ? data->nr_parts : 0);
->  }
-> @@ -3716,6 +3720,7 @@ static int spi_nor_remove(struct spi_mem *spimem)
->  	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
->  
->  	spi_nor_restore(nor);
-> +	spi_nor_sysfs_remove(nor);
->  
->  	/* Clean up MTD stuff. */
->  	return mtd_device_unregister(&nor->mtd);
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 668f22011b1d..dd592f7b62d1 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -488,4 +488,7 @@ static struct spi_nor __maybe_unused *mtd_to_spi_nor(struct mtd_info *mtd)
->  	return mtd->priv;
->  }
->  
-> +int spi_nor_sysfs_create(struct spi_nor *nor);
-> +void spi_nor_sysfs_remove(struct spi_nor *nor);
-> +
->  #endif /* __LINUX_MTD_SPI_NOR_INTERNAL_H */
-> diff --git a/drivers/mtd/spi-nor/sysfs.c b/drivers/mtd/spi-nor/sysfs.c
-> new file mode 100644
-> index 000000000000..0de031e246c5
-> --- /dev/null
-> +++ b/drivers/mtd/spi-nor/sysfs.c
-> @@ -0,0 +1,86 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/mtd/spi-nor.h>
-> +#include <linux/spi/spi.h>
-> +#include <linux/spi/spi-mem.h>
-> +#include <linux/sysfs.h>
-> +
-> +#include "core.h"
-> +
-> +static ssize_t name_show(struct device *dev,
-> +			 struct device_attribute *attr, char *buf)
-> +{
-> +	struct spi_device *spi = to_spi_device(dev);
-> +	struct spi_mem *spimem = spi_get_drvdata(spi);
-> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-> +
-> +	return sprintf(buf, "%s\n", nor->info->name);
-> +}
-> +static DEVICE_ATTR_RO(name);
-> +
-> +static ssize_t jedec_id_show(struct device *dev,
-> +			     struct device_attribute *attr, char *buf)
-> +{
-> +	struct spi_device *spi = to_spi_device(dev);
-> +	struct spi_mem *spimem = spi_get_drvdata(spi);
-> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-> +
-> +	return sprintf(buf, "%*phN\n", nor->info->id_len, nor->info->id);
-> +}
-> +static DEVICE_ATTR_RO(jedec_id);
-> +
-> +static struct attribute *spi_nor_sysfs_entries[] = {
-> +	&dev_attr_name.attr,
-> +	&dev_attr_jedec_id.attr,
-> +	NULL
-> +};
-> +
-> +static ssize_t sfdp_read(struct file *filp, struct kobject *kobj,
-> +			 struct bin_attribute *bin_attr, char *buf,
-> +			 loff_t off, size_t count)
-> +{
-> +	struct spi_device *spi = to_spi_device(kobj_to_dev(kobj));
-> +	struct spi_mem *spimem = spi_get_drvdata(spi);
-> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-> +	struct sfdp *sfdp = nor->sfdp;
-> +	size_t sfdp_size = sfdp->num_dwords * sizeof(*sfdp->dwords);
-> +
-> +	return memory_read_from_buffer(buf, count, &off, nor->sfdp->dwords,
-> +				       sfdp_size);
-> +}
-> +static BIN_ATTR_RO(sfdp, PAGE_SIZE);
-> +
-> +static struct bin_attribute *spi_nor_sysfs_bin_entries[] = {
-> +	&bin_attr_sfdp,
-> +	NULL
-> +};
-> +
-> +static umode_t spi_nor_sysfs_is_bin_visible(struct kobject *kobj,
-> +					    struct bin_attribute *attr, int n)
-> +{
-> +	struct spi_device *spi = to_spi_device(kobj_to_dev(kobj));
-> +	struct spi_mem *spimem = spi_get_drvdata(spi);
-> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-> +
-> +	if (attr == &bin_attr_sfdp && nor->sfdp)
-> +		return 0444;
-> +
-> +	return 0;
-> +}
-> +
-> +static struct attribute_group spi_nor_sysfs_attr_group = {
-> +	.name		= NULL,
-> +	.is_bin_visible	= spi_nor_sysfs_is_bin_visible,
-> +	.attrs		= spi_nor_sysfs_entries,
-> +	.bin_attrs	= spi_nor_sysfs_bin_entries,
-> +};
-> +
-> +int spi_nor_sysfs_create(struct spi_nor *nor)
-> +{
-> +	return sysfs_create_group(&nor->dev->kobj, &spi_nor_sysfs_attr_group);
-> +}
-> +
-> +void spi_nor_sysfs_remove(struct spi_nor *nor)
-> +{
-> +	sysfs_remove_group(&nor->dev->kobj, &spi_nor_sysfs_attr_group);
-> +}
-> -- 
-> 2.20.1
+Things have changed. Once upon a time the community was
+happy if it could get hardware specs.
+
+
+> Just my two cents,
+> Willy
+
+
