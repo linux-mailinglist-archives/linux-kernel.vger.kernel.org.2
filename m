@@ -2,102 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAD3036EF05
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC3136EF09
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240884AbhD2Rib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 13:38:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:57466 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232991AbhD2Ri3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 13:38:29 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 181881FB;
-        Thu, 29 Apr 2021 10:37:42 -0700 (PDT)
-Received: from [10.57.61.145] (unknown [10.57.61.145])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B102E3F70D;
-        Thu, 29 Apr 2021 10:37:39 -0700 (PDT)
-Subject: Re: [PATCH] [v2] coresight: etm4x: avoid build failure with unrolled
- loops
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Qi Liu <liuqi115@huawei.com>,
-        Tingwei Zhang <tingwei@codeaurora.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-References: <20210429145752.3218324-1-arnd@kernel.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <dff8cbd8-8c56-ae6e-ecc2-9ca183113ab2@arm.com>
-Date:   Thu, 29 Apr 2021 18:37:38 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210429145752.3218324-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S240990AbhD2RjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 13:39:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240968AbhD2RjG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 13:39:06 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B328C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:38:18 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id j3-20020ac874c30000b02901bab5879d6aso8465350qtr.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:38:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=WpMEHPbds2Rhg3l6Bk0VFJZGn5ipo4apAqnWrKsE5c4=;
+        b=UkLmhq21G9yc49Z2YWhYMcMJfpH4lMjNSOHTQ3p6SDiJI/yS+IxzvfHobHXQ9br85T
+         Jx8T8/MJykCPgA5QYmKHmrktKQX5DECpwYJmhbyB4D/31LwoujpBkp3s2DTHPeC7Zm4Y
+         OvW059QSWPjthG0jxddJIB7lpZi4iUxdDngi8UNzJGiis4K6Ww4tUvxB9nIi2PvUFeEv
+         W4ufOBaZD8a7ysZbTWIb6mKx4fqMAyyZcPxPbo1090QhGw6l+ZtO2llLVUsVDNqmZKic
+         9eL3NcNaU3I+SXFwxdQae/89tC6dowvLsyvDRgDmh5vAGSwzSHyQZsihkws/P3g+s15K
+         FLQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=WpMEHPbds2Rhg3l6Bk0VFJZGn5ipo4apAqnWrKsE5c4=;
+        b=SC+tZwiO6ELUIba2VbqD6lMAYABtzEnLARmnCc4FjqJrj5eKANelJPdpfsmiLjpPmF
+         IoA7JqZMkNXvDUCoK7mVt+KwqM+XrdfuQjuLIwyBjYwC8y2jLoPpymYIogxlMWzlhhUh
+         xjfQn/T1SbjO4pl0oOLBJ0mIAsigvi/WyTlA3xsxFI2F7bDp1TzpZQGQPKDO4OpdSrSW
+         QgeKBv75BH3n5wgt/jyMOlszP7AnMZsx5BmjbAPMI96IPPyCXyflV4vIdZhiCM/MSqSY
+         2c1gKILUGDya7Z3kG3xnAPqjnICfu9TIGjEE0QqBXlHPhhB6QNP6sERATIYZhabo6kVG
+         zOpw==
+X-Gm-Message-State: AOAM531OV+ARFfQYFM6Sd/IXNjcPUTNt9dJOPqY0GeYMCuv3sHf7HdMG
+        d/N+S466Nn52Gg1rFGUijf7nQ0pXe3kv
+X-Google-Smtp-Source: ABdhPJxTYICujkQPtJYJVsHuxV271Yk6KHakyDkdvkOIG4LlOoxWUwhIKhNzSjNgwQJLcqyM0F7JA9WNzcZJ
+X-Received: from yudiliu.mtv.corp.google.com ([2620:15c:202:201:b87a:317b:6a3:155c])
+ (user=yudiliu job=sendgmr) by 2002:a05:6214:2b0:: with SMTP id
+ m16mr957921qvv.4.1619717897610; Thu, 29 Apr 2021 10:38:17 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 10:38:12 -0700
+Message-Id: <20210429103751.v1.1.Ic231ad3cfa66df90373578777cf7cdc7f0e8f2ae@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
+Subject: [PATCH v1] Bluetooth: Add a new MGMT error code for 0x3E HCI error
+From:   Yu Liu <yudiliu@google.com>
+To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
+        chromeos-bluetooth-upstreaming@chromium.org
+Cc:     Yu Liu <yudiliu@google.com>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd
+This is to enable us to retry the pairing in the user space if this
+failure is encountered
 
-On 29/04/2021 15:57, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> clang-12 fails to build the etm4x driver with -fsanitize=array-bounds,
-> where it decides to unroll certain loops in a way that result in a
-> C variable getting put into an inline assembly
-> 
-> <instantiation>:1:7: error: expected constant expression in '.inst' directive
-> .inst (0xd5200000|((((2) << 19) | ((1) << 16) | (((((((((((0x160 + (i * 4))))) >> 2))) >> 7) & 0x7)) << 12) | ((((((((((0x160 + (i * 4))))) >> 2))) & 0xf)) << 8) | (((((((((((0x160 + (i * 4))))) >> 2))) >> 4) & 0x7)) << 5)))|(.L__reg_num_x8))
->        ^
-> drivers/hwtracing/coresight/coresight-etm4x-core.c:702:4: note: while in macro instantiation
->                          etm4x_relaxed_read32(csa, TRCCNTVRn(i));
->                          ^
-> drivers/hwtracing/coresight/coresight-etm4x.h:403:4: note: expanded from macro 'etm4x_relaxed_read32'
->                   read_etm4x_sysreg_offset((offset), false)))
->                   ^
-> drivers/hwtracing/coresight/coresight-etm4x.h:383:12: note: expanded from macro 'read_etm4x_sysreg_offset'
->                          __val = read_etm4x_sysreg_const_offset((offset));       \
->                                  ^
-> drivers/hwtracing/coresight/coresight-etm4x.h:149:2: note: expanded from macro 'read_etm4x_sysreg_const_offset'
->          READ_ETM4x_REG(ETM4x_OFFSET_TO_REG(offset))
->          ^
-> drivers/hwtracing/coresight/coresight-etm4x.h:144:2: note: expanded from macro 'READ_ETM4x_REG'
->          read_sysreg_s(ETM4x_REG_NUM_TO_SYSREG((reg)))
->          ^
-> arch/arm64/include/asm/sysreg.h:1108:15: note: expanded from macro 'read_sysreg_s'
->          asm volatile(__mrs_s("%0", r) : "=r" (__val));                  \
->                       ^
-> arch/arm64/include/asm/sysreg.h:1074:2: note: expanded from macro '__mrs_s'
-> "       mrs_s " v ", " __stringify(r) "\n"                      \
->   ^
-> 
-> This only happened in a few loops in which the array bounds sanitizer
-> added a special case for an array overflow that clang determined to be
-> possible, but any compiler is free to unroll any of the loops in the
-> same way that breaks the sysreg macros.
-> 
-> Introduce helper functions that perform a sysreg access with a
-> non-constant register number and use them in each call that passes
-> a loop counter.
+Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
 
-You don't need to add this special helper. We have the exact 
-infrastructure already. So these could simply be replaced with:
+Signed-off-by: Yu Liu <yudiliu@google.com>
+---
 
-csdev_access_xxx(csa, ...)
+Changes in v1:
+- Initial change
 
-see :
+ include/net/bluetooth/mgmt.h | 1 +
+ net/bluetooth/mgmt.c         | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-include/linux/coresight.h
+diff --git a/include/net/bluetooth/mgmt.h b/include/net/bluetooth/mgmt.h
+index a03c62b1dc2f..78b94577a7d8 100644
+--- a/include/net/bluetooth/mgmt.h
++++ b/include/net/bluetooth/mgmt.h
+@@ -45,6 +45,7 @@
+ #define MGMT_STATUS_RFKILLED		0x12
+ #define MGMT_STATUS_ALREADY_PAIRED	0x13
+ #define MGMT_STATUS_PERMISSION_DENIED	0x14
++#define MGMT_STATUS_CONNECT_NOT_ESTD	0x15
+ 
+ struct mgmt_hdr {
+ 	__le16	opcode;
+diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
+index b44e19c69c44..9e44c04d4212 100644
+--- a/net/bluetooth/mgmt.c
++++ b/net/bluetooth/mgmt.c
+@@ -271,7 +271,7 @@ static const u8 mgmt_status_table[] = {
+ 	MGMT_STATUS_INVALID_PARAMS,	/* Unsuitable Connection Interval */
+ 	MGMT_STATUS_TIMEOUT,		/* Directed Advertising Timeout */
+ 	MGMT_STATUS_AUTH_FAILED,	/* Terminated Due to MIC Failure */
+-	MGMT_STATUS_CONNECT_FAILED,	/* Connection Establishment Failed */
++	MGMT_STATUS_CONNECT_NOT_ESTD,	/* Connection Establishment Failed */
+ 	MGMT_STATUS_CONNECT_FAILED,	/* MAC Connection Failed */
+ };
+ 
+-- 
+2.31.1.527.g47e6f16901-goog
 
-Cheers
-Suzuki
