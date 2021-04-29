@@ -2,150 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E09236ECE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8658336ECEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240641AbhD2PCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 11:02:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240611AbhD2PCH (ORCPT
+        id S240689AbhD2PCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 11:02:16 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:56926 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240611AbhD2PCL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 11:02:07 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4FF1C06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:01:20 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id c17so11652422pfn.6
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:01:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XKzTGaXq5BgNlLNQghWJCOtAajFRMnz38uWkb37Btq0=;
-        b=vdjfp6T9ELO/U/TE5+KkR/ljxb5dDEpn3eDZXxEznvnTdj+ZlDuigDbJwQjcvfNe2f
-         1RcVpsKvKgb/ZD7swSBbi63tgsGSduD86CHVXwlIuLk/ujREs7DH0bElJskIzdbDFvhW
-         mYUOe3rnGk8q9s477H8WBr/1YeX2hfIOawdSqcwQEfKVhmj+kC8adnIDT4lYJoknNNhP
-         QCLIRTG94fjMOCZF4jRqd5AmS+SKMXDwY83iJp7jm8KQAH0WGSnot94JmMopYJA428aS
-         gut3YCjn5qIm5pyTaXBrEXnhZ4QOx10MH/XmrW3l9W2XmLalk+ihm3ZQxs7DauIo53e9
-         4QUQ==
+        Thu, 29 Apr 2021 11:02:11 -0400
+Received: by mail-il1-f199.google.com with SMTP id u5-20020a92da850000b0290167339353beso35168124iln.23
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:01:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XKzTGaXq5BgNlLNQghWJCOtAajFRMnz38uWkb37Btq0=;
-        b=nWK0f75msuv89RlKPesaZ00R1wNT4G2ytNWgMh4+saN6xMEdQ8PwB03p+rUKPujR39
-         1XXrgpSBZmtj9ojPIoxobyTia9kIjcOBnaa7TzdSjqN2QtDky+jEojhItH+WMxIVKItw
-         UTGdOfB0OmigzgHb5RyvhBWf8Q/C+xNPFdoMm7Gn3X9DquOFcVt4Zy7CQFbkvO4qF+/e
-         nNeMNDALSBFQlDAqE2lGquuWtk9KZM/i9MYIaRVIKBqReEX4+0PqhpnktUzsimEUSZOf
-         sbG0mjKoEQvA8rFuxXKqi4WgR7d4JjFJ+dO+RwYWmTF8bv0d6i6M2L7pg/Lt82bS+lwT
-         MyDQ==
-X-Gm-Message-State: AOAM531H8mcstmov2sTpGtRGToSJ+CH+5UPulz3jAwLlCVBtVFd4Bb86
-        wjXFaQARzwEoMln01IwcIm4/Yw==
-X-Google-Smtp-Source: ABdhPJxlUPcxM98q94BIRDqtl6qiB6XI4IIX8WgyoEZUYoolY68FW0vRSchkJ6LPoCXuhU9Ncw4q7Q==
-X-Received: by 2002:a62:55c6:0:b029:21c:4dfc:d6e2 with SMTP id j189-20020a6255c60000b029021c4dfcd6e2mr127505pfb.60.1619708479686;
-        Thu, 29 Apr 2021 08:01:19 -0700 (PDT)
-Received: from localhost ([204.124.180.30])
-        by smtp.gmail.com with ESMTPSA id f135sm2726924pfa.102.2021.04.29.08.01.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 08:01:19 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        James Clark <James.Clark@arm.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Al Grant <Al.Grant@arm.com>
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v1 3/3] perf arm-spe: Enable timestamp for per-cpu mode
-Date:   Thu, 29 Apr 2021 23:01:00 +0800
-Message-Id: <20210429150100.282180-4-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210429150100.282180-1-leo.yan@linaro.org>
-References: <20210429150100.282180-1-leo.yan@linaro.org>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=p08hvBbKA+73t6PrwVyec5Fgw0enIkiE1avPmk1LtBY=;
+        b=p45KDYeJRVUMAI3+RVKiIb4l3PvFS8SfWCbx44bXxyuPR8b5OJMKgeBcs+UC0ke0TA
+         DpBUqngGe4Ib531xXYA+mzZPDnOyphtbKi+/+Jy/e25FQ1G11IxVGgT5eOufIxkNVPY5
+         fpGtJl5Dyd0jN88+nFmNwpaswIEA0u3WZaSD9NPlxSlsAYIUYgv7rizytfm8B7qRD7o9
+         dtf8GHbp3NHIOdTS+ghk+T15W/KpyP42ptiCpOTFdhFx4StJRqNgpyMID+855V6UCYzf
+         DfMglljnB9d31lg9xiZpXGTNjJGhDE7Z9iP8nZojZW9nbY2KOokpdrBD+x4QpF5dMtsQ
+         CkIg==
+X-Gm-Message-State: AOAM530ufwMH1scJGfDrihYGIOG+NO2sFQfZP3SRIs9x4tqbE35ksewN
+        QKEUqDT7wQlT0yWqgPmf68kR72N7zzIcWjSe5JMdQzuGbF2v
+X-Google-Smtp-Source: ABdhPJyFL2nLdyv3A910LI1aEMALDvqFplKoJdnPUb6yPAgJUhSJ3fsN1630b3VlOcRDd6M4OTjoLlX6nskl/dPjzntWIgoHoMVl
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a5d:9a8c:: with SMTP id c12mr29251309iom.166.1619708483616;
+ Thu, 29 Apr 2021 08:01:23 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 08:01:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ce433f05c11dc4e6@google.com>
+Subject: [syzbot] WARNING in io_uring_setup (2)
+From:   syzbot <syzbot+1eca5b0d7ac82b74d347@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For per-cpu mmap, it should enable timestamp tracing for Arm SPE; this
-is helpful for samples correlation.
+Hello,
 
-To automatically enable the timestamp, a helper arm_spe_set_timestamp()
-is introduced for setting "ts_enable" format bit.
+syzbot found the following issue on:
 
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
+HEAD commit:    d72cd4ad Merge tag 'scsi-misc' of git://git.kernel.org/pub..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=175285a3d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=53fdf14defd48c56
+dashboard link: https://syzkaller.appspot.com/bug?extid=1eca5b0d7ac82b74d347
+compiler:       Debian clang version 11.0.1-2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15aeff43d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1747117dd00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1eca5b0d7ac82b74d347@syzkaller.appspotmail.com
+
+RSP: 002b:00007ffe79f6a2c8 EFLAGS: 00000202 ORIG_RAX: 00000000000001a9
+RAX: ffffffffffffffda RBX: 0000000020000000 RCX: 000000000043fa99
+RDX: 0000000000000010 RSI: 0000000020000000 RDI: 0000000000000345
+RBP: 0000000000000001 R08: 0000000000000001 R09: bfe829bde5bd92dc
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000020ffd000
+R13: 0000000000000000 R14: 00000000004ad018 R15: 0000000000400488
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 8379 at fs/io_uring.c:7081 io_rsrc_node_switch_start fs/io_uring.c:7107 [inline]
+WARNING: CPU: 0 PID: 8379 at fs/io_uring.c:7081 io_uring_create fs/io_uring.c:9610 [inline]
+WARNING: CPU: 0 PID: 8379 at fs/io_uring.c:7081 io_uring_setup fs/io_uring.c:9689 [inline]
+WARNING: CPU: 0 PID: 8379 at fs/io_uring.c:7081 __do_sys_io_uring_setup fs/io_uring.c:9695 [inline]
+WARNING: CPU: 0 PID: 8379 at fs/io_uring.c:7081 __se_sys_io_uring_setup+0x2059/0x3100 fs/io_uring.c:9692
+Modules linked in:
+CPU: 0 PID: 8379 Comm: syz-executor223 Not tainted 5.12.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:io_rsrc_node_switch fs/io_uring.c:7107 [inline]
+RIP: 0010:io_uring_create fs/io_uring.c:9611 [inline]
+RIP: 0010:io_uring_setup fs/io_uring.c:9689 [inline]
+RIP: 0010:__do_sys_io_uring_setup fs/io_uring.c:9695 [inline]
+RIP: 0010:__se_sys_io_uring_setup+0x2059/0x3100 fs/io_uring.c:9692
+Code: dc ff eb 05 e8 78 09 97 ff 48 b8 00 00 00 00 00 fc ff df 41 80 7c 05 00 00 74 08 4c 89 ff e8 ce a1 dd ff 49 c7 07 00 00 00 00 <0f> 0b e9 e1 00 00 00 e8 4b 09 97 ff 49 8d 5c 24 10 48 89 d8 48 c1
+RSP: 0000:ffffc9000112fd00 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffff88802fee0000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff888011441780
+RBP: ffffc9000112ff20 R08: 0000000000000dc0 R09: fffffbfff19bc9e3
+R10: fffffbfff19bc9e3 R11: 0000000000000000 R12: ffff88802452010c
+R13: 1ffff11005c31501 R14: 0000000000000000 R15: ffff88802e18a808
+FS:  00000000009a23c0(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8918d3b000 CR3: 00000000133b0000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x43fa99
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c4 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe79f6a2c8 EFLAGS: 00000202 ORIG_RAX: 00000000000001a9
+RAX: ffffffffffffffda RBX: 0000000020000000 RCX: 000000000043fa99
+RDX: 0000000000000010 RSI: 0000000020000000 RDI: 0000000000000345
+RBP: 0000000000000001 R08: 0000000000000001 R09: bfe829bde5bd92dc
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000020ffd000
+R13: 0000000000000000 R14: 00000000004ad018 R15: 0000000000400488
+
+
 ---
- tools/perf/arch/arm64/util/arm-spe.c | 33 ++++++++++++++++++++++++++--
- 1 file changed, 31 insertions(+), 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/perf/arch/arm64/util/arm-spe.c b/tools/perf/arch/arm64/util/arm-spe.c
-index f6eec0900604..dae115dd458e 100644
---- a/tools/perf/arch/arm64/util/arm-spe.c
-+++ b/tools/perf/arch/arm64/util/arm-spe.c
-@@ -14,6 +14,7 @@
- #include "../../../util/cpumap.h"
- #include "../../../util/event.h"
- #include "../../../util/evsel.h"
-+#include "../../../util/evsel_config.h"
- #include "../../../util/evlist.h"
- #include "../../../util/session.h"
- #include <internal/lib.h> // page_size
-@@ -32,6 +33,29 @@ struct arm_spe_recording {
- 	struct evlist		*evlist;
- };
- 
-+static void arm_spe_set_timestamp(struct auxtrace_record *itr,
-+				  struct evsel *evsel)
-+{
-+	struct arm_spe_recording *ptr;
-+	struct perf_pmu *arm_spe_pmu;
-+	struct evsel_config_term *term = evsel__get_config_term(evsel, CFG_CHG);
-+	u64 user_bits = 0, bit;
-+
-+	ptr = container_of(itr, struct arm_spe_recording, itr);
-+	arm_spe_pmu = ptr->arm_spe_pmu;
-+
-+	if (term)
-+		user_bits = term->val.cfg_chg;
-+
-+	bit = perf_pmu__format_bits(&arm_spe_pmu->format, "ts_enable");
-+
-+	/* Skip if user has set it */
-+	if (bit & user_bits)
-+		return;
-+
-+	evsel->core.attr.config |= bit;
-+}
-+
- static size_t
- arm_spe_info_priv_size(struct auxtrace_record *itr __maybe_unused,
- 		       struct evlist *evlist __maybe_unused)
-@@ -120,9 +144,14 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
- 	 */
- 	evlist__to_front(evlist, arm_spe_evsel);
- 
--	/* In the case of per-cpu mmaps, sample CPU for AUX event. */
--	if (!perf_cpu_map__empty(cpus))
-+	/*
-+	 * In the case of per-cpu mmaps, sample CPU for AUX event;
-+	 * also enable the timestamp tracing for samples correlation.
-+	 */
-+	if (!perf_cpu_map__empty(cpus)) {
- 		evsel__set_sample_bit(arm_spe_evsel, CPU);
-+		arm_spe_set_timestamp(itr, arm_spe_evsel);
-+	}
- 
- 	/* Add dummy event to keep tracking */
- 	if (opts->full_auxtrace) {
--- 
-2.25.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
