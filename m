@@ -2,264 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BCAA36E7C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 11:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE0D36E7C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 11:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236232AbhD2JP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 05:15:56 -0400
-Received: from mail.synology.com ([211.23.38.101]:54318 "EHLO synology.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232775AbhD2JPx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 05:15:53 -0400
-Received: from localhost.localdomain (unknown [10.17.32.161])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by synology.com (Postfix) with ESMTPSA id 0344BCE781B4;
-        Thu, 29 Apr 2021 17:15:06 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1619687706; bh=0sSfdqm0yzi0ey/gtrGRKKyyZxAerg/2fvBwbsr4J5M=;
-        h=From:To:Cc:Subject:Date;
-        b=dMfeD9cDptOb3qr9yivFOnIaVde+Jrmq/BPSHe6/fZ6atKXybhGD3RlAhETYdJ/+J
-         +qEEX0MthdmYvjFKN+SLymykpc2Wwv2nf2V9Uhbp05Fq9tPKHymt43qlVlbYbBNIf1
-         RHd1JdTMJ7CMVIBiOnWFd5kziCkfzE9Uf9BdGQV8=
-From:   bingjingc <bingjingc@synology.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        slava@dubeyko.com, christian.brauner@ubuntu.com, leon@kernel.org,
-        kvalo@codeaurora.org, keescook@chromium.org, jgg@ziepe.ca
-Cc:     bingjingc@synology.com, cccheng@synology.com
-Subject: [PATCH] hfsplus: fix attr searching failed of xattr key name with ':'
-Date:   Thu, 29 Apr 2021 17:14:46 +0800
-Message-Id: <1619687686-29580-1-git-send-email-bingjingc@synology.com>
-X-Mailer: git-send-email 2.7.4
-X-Synology-MCP-Status: no
-X-Synology-Spam-Flag: no
-X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
-X-Synology-Virus-Status: no
+        id S237155AbhD2JRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 05:17:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231135AbhD2JRN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 05:17:13 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B522C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:16:27 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id i3so51984454edt.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:16:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=pns6JVw1tsF1/qIxAMsi+w1qWpoEsDD9F2ufA8tB/tE=;
+        b=LcICwlVTNEWQJ/kXzV3Qf010nnyK82+SA0OXfpGqqw86m6XUQ13LPjKjye6jQ/rh4z
+         OrLA2NkxjZz8deFsSQW6xG2OxR3qnTDtxlQErrUDH4Dx3hGsfpICuqPJafaRrsKmrDmn
+         9U/pS3PGwc/p9zxrt9ILSwlKKhHctgm3rqtP5H7bxXbaU6+rIPXbmcARxB8Zd3lAsBXn
+         l+n7i1T1ulzV0Xx//OAoixznSOaEot/nrXI2YP0d2wpzqcDE41o68iXBi9B5Dze0ECn3
+         kBqe9rE2DDWQyrL5jO+QkUhMhteM1RfOmrrlzQt9cBg6rcGn3oOZyoMKbsos1APdd7a3
+         HkKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=pns6JVw1tsF1/qIxAMsi+w1qWpoEsDD9F2ufA8tB/tE=;
+        b=ia0r08F7wSw1nn8CkZMH2yS+f1M5qFPCYxFTb1kTK7r0hnG5pL4AUiWAmoewQ9VsFo
+         XURFhvIjNJL2MG8fmelWCMDoU3g6Uy+joFP7Lv8/IfbOlrxMGpAixOtSCHc74P2rudtQ
+         FWc7t+jUH9YvxkCtJsIbbJA+rkOzbSN/IT2sBldEKBgMpCGQGAUbGLGBmQDNCyoW/3Cs
+         BNVCcCYUNJ3bYdWqCbXll9vDOAvAdzlm2Qgfw2ncj5Nc+Cd2GYljnSE76RMtleOL300Y
+         P4hdy8Q0iZf8TxZqEbR1GeXemMql4M1aRTqx31OfWqSzR2VnKjcW9/ylEsDJloZ5F/bG
+         Ngmw==
+X-Gm-Message-State: AOAM532NIKMj0faQ83i1s0jEXlbQqYB1v7dsjuq1fePPcwXCfm/bcbAp
+        iR1wY3DC358uhFWVy/IjNsyCpyD+5pCVGQ==
+X-Google-Smtp-Source: ABdhPJxjSCuoBN3SsqvGYK1hxB2DnMzqSLY8VA/cbtvx2pFCJQg5OGzEbwKGFlo953NBo2N9x55OOQ==
+X-Received: by 2002:aa7:c30c:: with SMTP id l12mr13555061edq.217.1619687786148;
+        Thu, 29 Apr 2021 02:16:26 -0700 (PDT)
+Received: from linux.local (host-79-52-107-152.retail.telecomitalia.it. [79.52.107.152])
+        by smtp.gmail.com with ESMTPSA id a22sm1881378edu.14.2021.04.29.02.16.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 02:16:25 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     outreachy-kernel@googlegroups.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH 1/2] staging: rtl8723bs: hal: Remove set but unused variables
+Date:   Thu, 29 Apr 2021 11:16:24 +0200
+Message-ID: <2336223.vu2A7xvVi3@linux.local>
+In-Reply-To: <20210429082552.GC1409@agape.jhs>
+References: <20210428113346.28305-1-fmdefrancesco@gmail.com> <8266064.IJzC9MfcRG@linux.local> <20210429082552.GC1409@agape.jhs>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: BingJing Chang <bingjingc@synology.com>
+On Thursday, April 29, 2021 10:25:53 AM CEST Fabio Aiuto wrote:
+> On Thu, Apr 29, 2021 at 09:44:47AM +0200, Fabio M. De Francesco wrote:
+> > On Thursday, April 29, 2021 9:26:20 AM CEST Fabio Aiuto wrote:
+> > > Hi Fabio,
+> > > 
+> > > On Wed, Apr 28, 2021 at 01:33:45PM +0200, Fabio M. De Francesco wrote:
+> > > > Removed four set but unused variables. Issue detected by gcc.
+> > > > 
+> > > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > > > ---
+> > > > 
+> > > >  drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c | 5 -----
+> > > >  1 file changed, 5 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+> > > > b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c index
+> > 
+> > 082448557b53..96cb4426a0f4
+> > 
+> > > > 100644
+> > > > --- a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+> > > > +++ b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+> > > > @@ -3900,14 +3900,11 @@ u8 GetHalDefVar8723B(struct adapter *padapter,
+> > 
+> > enum
+> > 
+> > > > hal_def_variable variable, v>
+> > > > 
+> > > >  			u32 cmd;
+> > > >  			u32 ra_info1, ra_info2;
+> > > >  			u32 rate_mask1, rate_mask2;
+> > > > 
+> > > > -			u8 curr_tx_rate, curr_tx_sgi, hight_rate,
+> > 
+> > lowest_rate;
+> > 
+> > > >  			cmd = 0x40000100 | mac_id;
+> > > >  			rtw_write32(padapter,
+> > 
+> > REG_HMEBOX_DBG_2_8723B, cmd);
+> > 
+> > > >  			msleep(10);
+> > > >  			ra_info1 = rtw_read32(padapter, 0x2F0);
+> > > > 
+> > > > -			curr_tx_rate = ra_info1&0x7F;
+> > > > -			curr_tx_sgi = (ra_info1>>7)&0x01;
+> > > > 
+> > > >  			cmd = 0x40000400 | mac_id;
+> > > >  			rtw_write32(padapter,
+> > 
+> > REG_HMEBOX_DBG_2_8723B, cmd);
+> > 
+> > > > @@ -3916,8 +3913,6 @@ u8 GetHalDefVar8723B(struct adapter *padapter, 
+enum
+> > > > hal_def_variable variable, v>
+> > > > 
+> > > >  			ra_info2 = rtw_read32(padapter, 0x2F4);
+> > > >  			rate_mask1 = rtw_read32(padapter, 0x2F8);
+> > > >  			rate_mask2 = rtw_read32(padapter, 0x2FC);
+> > > > 
+> > > > -			hight_rate = ra_info2&0xFF;
+> > > > -			lowest_rate = (ra_info2>>8)  & 0xFF;
+> > > > 
+> > > >  		}
+> > > >  		break;
+> > > 
+> > > rate_mask{1,2} and ra_info{1,2} seems to be unused as well.
+> > > 
+> > > thank you,
+> > > 
+> > > fabio
+> > 
+> > Hello Fabio,
+> > 
+> > I'm not sure about it: rtw_read32 calls a pointer to a function. I'm don't
+> > know drivers programming, however that function looks like an 
+implementation
+> > of a read() system call. So I wouldn't be so sure to remove those calls.
+> > 
+> > Could calling a (*read) method have side effects on subsequent read()? I 
+mean:
+> > could it update some internal data structure? If not I can remove the
+> > variables you mentioned above and the calls to read32.
+> > 
+> > I'm looking forward to read your reply.
+> > 
+> > Thanks,
+> > 
+> > Fabio
+> 
+> hi Fabio,
+> 
+> rtw_read32 is a macro wrapping _rtw_read32() defined as follows (in core/
+rtw_io.c):
+>
+Hi Fabio,
 
-Some OSX extended attributes couldn't be displayed in ubuntu:
-$ mount -t hfsplus /dev/sdb3 /mnt
-$ cd /mnt
-$ getfattr -d -m ".*" picture.png
-Here, /dev/sdb is a usb stick from OSX computer.
+Thanks a lot for your reply.
 
-Output:
-osx.com.apple.FinderInfo=0sAAAAAAAAAAAEHAAAAAAAAAAAAABgf5OhAAAAAAAAAAg=
-osx.com.apple.lastuseddate#PS=0soCWGYAAAAAATBhINAAAAAA==
-osx.com.apple.macl=0sAgCH2+S5OA9OG5WnnVb5d67AAAAAAAAAAAAAAAAAAAAAAAAAAA...
-Voronoi.png: osx.com.apple.metadata:_kMDItemUserTags: No such attribute
-Voronoi.png: osx.com.apple.metadata:kMDItemIsScreenCapture: No suchattr...
-Voronoi.png: osx.com.apple.metadata:kMDItemScreenCaptureGlobalRect: No ...
-Voronoi.png: osx.com.apple.metadata:kMDItemScreenCaptureType: No such a...
-osx.com.apple.quarantine="0082;608625a1;Preview;"
+However, There is something less than clear to me... how did you find that 
+rtw_read32 is a macro wrapping _rtw_read32()? I mean: I knew that, in vim, one 
+can go to the definition of something by using ctrl-] key.
 
-Here are 8 extended attributes in this file. However, some contents of
-them could not be retrieved.
+If I do that on rtw_read32 it takes me to a static definition of it in 
+drivers/net/wireless/realtek/rtw88/hci.h. This is a one line function:
 
-The problem is caused by the name-mangling scheme of ascii-unicode
-conversions in fs/hfsplus/unicode.c. The character '/' is illegal in
-Linux filenames but valid in OSX filenames. In contrast, the character ':'
-is opposite. So a simple name-mangling scheme can be applied to
-hfsplus filenames by replacing unicode '/' by ascii ':' and ascii ':' by
-unicode '/'. However, there're no such constraints in attribute names.
-Forcely converting ':' to '/' will cause the xattr lookup failures.
+static inline void rtw_write32(struct rtw_dev *rtwdev, u32 addr, u32 val)
+{       
+        rtwdev->hci.ops->write32(rtwdev, addr, val);
+}
 
-To fix this, we introduce a new parameter name_mangling in
-hfsplus_uni2asc() and hfsplus_asc2uni() to indicate whether to perform
-such name-mangling scheme or not. And we give the hints not to perform
-the scheme for attribute keys.
+When I use ctrl-] on write32() it takes me to struct rtw_hci_ops in drivers/
+net/wireless/realtek/rtw88/hci.h.
 
-Reviewed-by: Chung-Chiang Cheng <cccheng@synology.com>
-Signed-off-by: BingJing Chang <bingjingc@synology.com>
----
- fs/hfsplus/attributes.c |  7 ++++---
- fs/hfsplus/catalog.c    |  4 ++--
- fs/hfsplus/dir.c        |  3 ++-
- fs/hfsplus/hfsplus_fs.h |  5 +++--
- fs/hfsplus/unicode.c    | 22 ++++++++++++----------
- fs/hfsplus/xattr.c      |  5 +++--
- 6 files changed, 26 insertions(+), 20 deletions(-)
+After that I wanted to find where the member (*read32)() is assigned but I 
+don't know where and how to grep it: I tried "grep -rn "\bwrite32\b=" drivers/
+staging/rtl8723bs/" but I found nothing...
 
-diff --git a/fs/hfsplus/attributes.c b/fs/hfsplus/attributes.c
-index eeebe80..234badf 100644
---- a/fs/hfsplus/attributes.c
-+++ b/fs/hfsplus/attributes.c
-@@ -55,9 +55,10 @@ int hfsplus_attr_build_key(struct super_block *sb, hfsplus_btree_key *key,
- 	memset(key, 0, sizeof(struct hfsplus_attr_key));
- 	key->attr.cnid = cpu_to_be32(cnid);
- 	if (name) {
--		int res = hfsplus_asc2uni(sb,
--				(struct hfsplus_unistr *)&key->attr.key_name,
--				HFSPLUS_ATTR_MAX_STRLEN, name, strlen(name));
-+		int res = hfsplus_asc2uni(sb, (struct hfsplus_unistr *)
-+					  &key->attr.key_name,
-+					  HFSPLUS_ATTR_MAX_STRLEN,
-+					  name, strlen(name), false);
- 		if (res)
- 			return res;
- 		len = be16_to_cpu(key->attr.key_name.length);
-diff --git a/fs/hfsplus/catalog.c b/fs/hfsplus/catalog.c
-index 35472cb..f40fc9e 100644
---- a/fs/hfsplus/catalog.c
-+++ b/fs/hfsplus/catalog.c
-@@ -47,7 +47,7 @@ int hfsplus_cat_build_key(struct super_block *sb,
- 
- 	key->cat.parent = cpu_to_be32(parent);
- 	err = hfsplus_asc2uni(sb, &key->cat.name, HFSPLUS_MAX_STRLEN,
--			str->name, str->len);
-+			      str->name, str->len, true);
- 	if (unlikely(err < 0))
- 		return err;
- 
-@@ -183,7 +183,7 @@ static int hfsplus_fill_cat_thread(struct super_block *sb,
- 	entry->thread.reserved = 0;
- 	entry->thread.parentID = cpu_to_be32(parentid);
- 	err = hfsplus_asc2uni(sb, &entry->thread.nodeName, HFSPLUS_MAX_STRLEN,
--				str->name, str->len);
-+			      str->name, str->len, true);
- 	if (unlikely(err < 0))
- 		return err;
- 
-diff --git a/fs/hfsplus/dir.c b/fs/hfsplus/dir.c
-index 03e6c04..505b4e6 100644
---- a/fs/hfsplus/dir.c
-+++ b/fs/hfsplus/dir.c
-@@ -204,7 +204,8 @@ static int hfsplus_readdir(struct file *file, struct dir_context *ctx)
- 			fd.entrylength);
- 		type = be16_to_cpu(entry.type);
- 		len = NLS_MAX_CHARSET_SIZE * HFSPLUS_MAX_STRLEN;
--		err = hfsplus_uni2asc(sb, &fd.key->cat.name, strbuf, &len);
-+		err = hfsplus_uni2asc(sb, &fd.key->cat.name, strbuf, &len,
-+				      true);
- 		if (err)
- 			goto out;
- 		if (type == HFSPLUS_FOLDER) {
-diff --git a/fs/hfsplus/hfsplus_fs.h b/fs/hfsplus/hfsplus_fs.h
-index 12b2047..1481d0a 100644
---- a/fs/hfsplus/hfsplus_fs.h
-+++ b/fs/hfsplus/hfsplus_fs.h
-@@ -522,9 +522,10 @@ int hfsplus_strcasecmp(const struct hfsplus_unistr *s1,
- int hfsplus_strcmp(const struct hfsplus_unistr *s1,
- 		   const struct hfsplus_unistr *s2);
- int hfsplus_uni2asc(struct super_block *sb, const struct hfsplus_unistr *ustr,
--		    char *astr, int *len_p);
-+		    char *astr, int *len_p, bool name_mangling);
- int hfsplus_asc2uni(struct super_block *sb, struct hfsplus_unistr *ustr,
--		    int max_unistr_len, const char *astr, int len);
-+		    int max_unistr_len, const char *astr, int len,
-+		    bool name_mangling);
- int hfsplus_hash_dentry(const struct dentry *dentry, struct qstr *str);
- int hfsplus_compare_dentry(const struct dentry *dentry, unsigned int len,
- 			   const char *str, const struct qstr *name);
-diff --git a/fs/hfsplus/unicode.c b/fs/hfsplus/unicode.c
-index 73342c9..52d9186 100644
---- a/fs/hfsplus/unicode.c
-+++ b/fs/hfsplus/unicode.c
-@@ -121,7 +121,7 @@ static u16 *hfsplus_compose_lookup(u16 *p, u16 cc)
- 
- int hfsplus_uni2asc(struct super_block *sb,
- 		const struct hfsplus_unistr *ustr,
--		char *astr, int *len_p)
-+		char *astr, int *len_p, bool name_mangling)
- {
- 	const hfsplus_unichr *ip;
- 	struct nls_table *nls = HFSPLUS_SB(sb)->nls;
-@@ -187,7 +187,8 @@ int hfsplus_uni2asc(struct super_block *sb,
- 				c0 = 0x2400;
- 				break;
- 			case '/':
--				c0 = ':';
-+				if (name_mangling)
-+					c0 = ':';
- 				break;
- 			}
- 			res = nls->uni2char(c0, op, len);
-@@ -253,8 +254,8 @@ int hfsplus_uni2asc(struct super_block *sb,
-  * Convert one or more ASCII characters into a single unicode character.
-  * Returns the number of ASCII characters corresponding to the unicode char.
-  */
--static inline int asc2unichar(struct super_block *sb, const char *astr, int len,
--			      wchar_t *uc)
-+static inline int asc2unichar(struct super_block *sb, const char *astr,
-+			      int len, wchar_t *uc, bool name_mangling)
- {
- 	int size = HFSPLUS_SB(sb)->nls->char2uni(astr, len, uc);
- 	if (size <= 0) {
-@@ -266,7 +267,8 @@ static inline int asc2unichar(struct super_block *sb, const char *astr, int len,
- 		*uc = 0;
- 		break;
- 	case ':':
--		*uc = '/';
-+		if (name_mangling)
-+			*uc = '/';
- 		break;
- 	}
- 	return size;
-@@ -343,7 +345,7 @@ static u16 *decompose_unichar(wchar_t uc, int *size, u16 *hangul_buffer)
- 
- int hfsplus_asc2uni(struct super_block *sb,
- 		    struct hfsplus_unistr *ustr, int max_unistr_len,
--		    const char *astr, int len)
-+		    const char *astr, int len, bool name_mangling)
- {
- 	int size, dsize, decompose;
- 	u16 *dstr, outlen = 0;
-@@ -352,7 +354,7 @@ int hfsplus_asc2uni(struct super_block *sb,
- 
- 	decompose = !test_bit(HFSPLUS_SB_NODECOMPOSE, &HFSPLUS_SB(sb)->flags);
- 	while (outlen < max_unistr_len && len > 0) {
--		size = asc2unichar(sb, astr, len, &c);
-+		size = asc2unichar(sb, astr, len, &c, name_mangling);
- 
- 		if (decompose)
- 			dstr = decompose_unichar(c, &dsize, dhangul);
-@@ -399,7 +401,7 @@ int hfsplus_hash_dentry(const struct dentry *dentry, struct qstr *str)
- 	len = str->len;
- 	while (len > 0) {
- 		int dsize;
--		size = asc2unichar(sb, astr, len, &c);
-+		size = asc2unichar(sb, astr, len, &c, true);
- 		astr += size;
- 		len -= size;
- 
-@@ -456,7 +458,7 @@ int hfsplus_compare_dentry(const struct dentry *dentry,
- 
- 	while (len1 > 0 && len2 > 0) {
- 		if (!dsize1) {
--			size = asc2unichar(sb, astr1, len1, &c);
-+			size = asc2unichar(sb, astr1, len1, &c, true);
- 			astr1 += size;
- 			len1 -= size;
- 
-@@ -471,7 +473,7 @@ int hfsplus_compare_dentry(const struct dentry *dentry,
- 		}
- 
- 		if (!dsize2) {
--			size = asc2unichar(sb, astr2, len2, &c);
-+			size = asc2unichar(sb, astr2, len2, &c, true);
- 			astr2 += size;
- 			len2 -= size;
- 
-diff --git a/fs/hfsplus/xattr.c b/fs/hfsplus/xattr.c
-index 4d169c5..de6a1c9 100644
---- a/fs/hfsplus/xattr.c
-+++ b/fs/hfsplus/xattr.c
-@@ -735,8 +735,9 @@ ssize_t hfsplus_listxattr(struct dentry *dentry, char *buffer, size_t size)
- 
- 		xattr_name_len = NLS_MAX_CHARSET_SIZE * HFSPLUS_ATTR_MAX_STRLEN;
- 		if (hfsplus_uni2asc(inode->i_sb,
--			(const struct hfsplus_unistr *)&fd.key->attr.key_name,
--					strbuf, &xattr_name_len)) {
-+				    (const struct hfsplus_unistr *)
-+				    &fd.key->attr.key_name, strbuf,
-+				    &xattr_name_len, false)) {
- 			pr_err("unicode conversion failed\n");
- 			res = -EIO;
- 			goto end_listxattr;
--- 
-2.7.4
+Can you please explain what I'm doing wrong in following the path I mentioned 
+above and how you find out that macro?
+
+Thanks for your time,
+
+Fabio 
+> 
+> u32 _rtw_read32(struct adapter *adapter, u32 addr)
+> {
+>         u32 r_val;
+>         /* struct       io_queue        *pio_queue = (struct io_queue
+> *)adapter->pio_queue; */ struct io_priv *pio_priv = &adapter->iopriv;
+>         struct  intf_hdl                *pintfhdl = &(pio_priv->intf);
+>         u32 (*_read32)(struct intf_hdl *pintfhdl, u32 addr);
+> 
+>         _read32 = pintfhdl->io_ops._read32;
+> 
+>         r_val = _read32(pintfhdl, addr);
+>         return rtw_le32_to_cpu(r_val);
+> 
+> }
+> 
+> the actual read seems to be performed by the handler contained in
+> 
+> 	pintfhdl->io_ops._read32;
+> 
+> so:
+> 
+> $ grep -r '\b_read32' drivers/staging/rtl8723bs/
+> 
+> drivers/staging/rtl8723bs/hal/sdio_ops.c:	ops->_read32 = 
+&sdio_read32;
+> 
+> this is the place where _read32 is stored with sdio_read32 reference...
+> 
+> drivers/staging/rtl8723bs/core/rtw_io.c:	u32 (*_read32)(struct 
+intf_hdl *pintfhdl, u32
+> addr); drivers/staging/rtl8723bs/core/rtw_io.c:	_read32 = pintfhdl-
+>io_ops._read32;
+> ...
+> 
+> if you check it in hal/sdio_ops.c, nothing is written, just reads are
+> performed (and it's not odd, for a read function isn't supposed to write
+> something under the hood ;)).
+> 
+> I think those variables could be easily removed as W=1 gcc suggests.
+> 
+> thank you,
+> 
+> fabio
+
+
+
 
