@@ -2,364 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B87336ED95
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A18836ED9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240772AbhD2Prd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 11:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57830 "EHLO
+        id S240747AbhD2Ps7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 11:48:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233420AbhD2Prc (ORCPT
+        with ESMTP id S233420AbhD2Ps5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 11:47:32 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED63EC06138B;
-        Thu, 29 Apr 2021 08:46:44 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 621441F435E6
-Subject: Re: [PATCH v1 4/4] mtk-mdp: soc: mediatek: register mdp from mmsys
-To:     Eizan Miyamoto <eizan@chromium.org>, linux-kernel@vger.kernel.org
-Cc:     chunkuang.hu@kernel.org, yong.wu@mediatek.com,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Houlong Wei <houlong.wei@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-References: <20210423055842.2490679-1-eizan@chromium.org>
- <20210423155824.v1.4.I558dcbaa17bf00243951a8ceb6d0e98758aacfa4@changeid>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <ecf9ab25-779d-01c7-97e3-76aa09b69415@collabora.com>
-Date:   Thu, 29 Apr 2021 17:46:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Thu, 29 Apr 2021 11:48:57 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 517C4C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:48:09 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id x19so75220963lfa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:48:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3NyxbJCwhqb1aqLdIOSz5lukrN8T+dDDlsyMoLY0gW4=;
+        b=cbYC8SxTjuN7PL/HHpWnlrg/QN1hbVMX8F6WKSRM2DjP4eDx+2x+t4E0/GMgzTxeUO
+         8IZnyKtuvzyQ3D8CHxgPBCUcbxohWBWSZeMojKYswbWhlX3U9Q7Th0J/+IhWbre9r0Eb
+         5cKkEh5sjhR2Us2DIWa/9crBm8yfFuMvC1foJOzjGZQrUSCMc4K4SAcEAyLTokeM1vWn
+         PILewUSWyy4LQur7FqhLQWHTyKwEPBcJDwFFE4IoDouS9bHTEzFU4Ch1b6fDojeAV6on
+         6mS/xGS/4MMurv31BIf6i016OPdTJjBIyh9tq7CKBVCAiaEeLWvq8GgyjFLUMkr5oOaJ
+         o4FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3NyxbJCwhqb1aqLdIOSz5lukrN8T+dDDlsyMoLY0gW4=;
+        b=icju8V0QGfn9+x6swRZKvK8ugZe/0bBVvlpNDA5xLpAf0eWA9JvyVgpz/1fYtaKSnS
+         epp/T9IXef25UAJxsP7Xcxz35d/ZP9Bb8CcmDnVX4/aO3XMg5m40fM9+Kd3AJcRFo/cV
+         VSnJfIkDlGJzDDEUdhJtjQ0cAYYny6zB7o7iTdn+ctk5oxSOoPTgobfu/Lc+8FdqTWaM
+         5U5gFDSzGirkv3wgB/MhUcK2DFxzMe4WO3qyV+OEC/JllsHaRTTLad2JspIY1N9V9qsa
+         +fwO55utshm8Cx900h5xvTuLl+OUQPdBYVnoZoKUB8GMG/fjIg79HGAkTNmxXLFAvP6W
+         aZxg==
+X-Gm-Message-State: AOAM530xpbJTYJ2LjKKSSxWR6KITFmEovi2p8dRFKOnQ3p1rluE3fO2E
+        doAtJpF8ga5Es0eahKBlrhRweg==
+X-Google-Smtp-Source: ABdhPJxG/sG67SG3OP0g0HlxPZkucJvHMsVb7rMJuwC8Q4cClb/EyKqoa1z0wyOYJzSIY4vZ+1XSmQ==
+X-Received: by 2002:ac2:5f6a:: with SMTP id c10mr159706lfc.286.1619711287786;
+        Thu, 29 Apr 2021 08:48:07 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id j8sm13949lfg.250.2021.04.29.08.48.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 08:48:06 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 29D45101C51; Thu, 29 Apr 2021 18:48:07 +0300 (+03)
+Date:   Thu, 29 Apr 2021 18:48:07 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     Simon Ser <contact@emersion.fr>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Peter Xu <peterx@redhat.com>, Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Herrmann <dh.herrmann@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        "tytso@mit.edu" <tytso@mit.edu>
+Subject: Re: Sealed memfd & no-fault mmap
+Message-ID: <20210429154807.hptls4vnmq2svuea@box>
+References: <vs1Us2sm4qmfvLOqNat0-r16GyfmWzqUzQ4KHbXJwEcjhzeoQ4sBTxx7QXDG9B6zk5AeT7FsNb3CSr94LaKy6Novh1fbbw8D_BBxYsbPLms=@emersion.fr>
+ <CAHk-=wgmGv2EGscKSi8SrQWtEVpEQyk-ZN1Xj4EoAB87Dmx1gA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210423155824.v1.4.I558dcbaa17bf00243951a8ceb6d0e98758aacfa4@changeid>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgmGv2EGscKSi8SrQWtEVpEQyk-ZN1Xj4EoAB87Dmx1gA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eizan,
-
-Thank you for your patch.
-
-On 23/4/21 7:58, Eizan Miyamoto wrote:
-> Rather than hanging the MDP master component driver off of the rdma0
-> device, create a "virtual" device by the mmsys driver instead which is
-> probed by the mtk_mdp_core driver.
+On Tue, Apr 27, 2021 at 09:51:58AM -0700, Linus Torvalds wrote:
+> On Tue, Apr 27, 2021 at 1:25 AM Simon Ser <contact@emersion.fr> wrote:
+> >
+> > Rather than requiring changes in all compositors *and* clients, can we
+> > maybe only require changes in compositors? For instance, OpenBSD has a
+> > __MAP_NOFAULT flag. When passed to mmap, it means that out-of-bound
+> > accesses will read as zeroes instead of triggering SIGBUS. Such a flag
+> > would be very helpful to unblock the annoying SIGBUS situation.
+> >
+> > Would something among these lines be welcome in the Linux kernel?
 > 
-> Broadly, four interdependent things are done by this change:
-> - A virtual device that is probed by the mtk_mdp_core driver is
->   instantiated by the mtk_mmsys driver.
-> - Presence of a mediatek,vpu property in a child node to the mmsys
->   device node is used to determine what device to use when dispatching
->   dma ops from the relevant ioctl.
-> - v4l-related setup is moved into from the mtk_mdp_core driver to the
->   mtk_mdp_comp driver.
+> Hmm. It doesn't look too hard to do. The biggest problem is actually
+> that we've run out of flags in the vma (on 32-bit architectures), but
+> you could try this UNTESTED patch that just does the MAP_NOFAULT thing
+> unconditionally.
 > 
-> Signed-off-by: Eizan Miyamoto <eizan@chromium.org>
-> ---
+> NOTE! Not only is it untested, not only is this a "for your testing
+> only" (because it does it unconditionally rather than only for
+> __MAP_NOFAULT), but it might be bogus for other reasons. In
+> particular, this patch depends on "vmf->address" not being changed by
+> the ->fault() infrastructure, so that we can just re-use the vmf for
+> the anonymous case if we get a SIGBUS.
 > 
->  drivers/media/platform/mtk-mdp/mtk_mdp_comp.c | 47 +++++++++-----
->  drivers/media/platform/mtk-mdp/mtk_mdp_core.c | 62 ++++++-------------
->  drivers/media/platform/mtk-mdp/mtk_mdp_core.h |  2 +
->  drivers/media/platform/mtk-mdp/mtk_mdp_m2m.c  |  4 +-
->  drivers/soc/mediatek/mtk-mmsys.c              | 20 +++++-
->  5 files changed, 75 insertions(+), 60 deletions(-)
+> I think that's all ok these days, because Kirill and Peter Xu cleaned
+> up those paths, but I didn't actually check. So I'm cc'ing Kirill,
+> Peter and Will, who have been working in this area for other reasons
+> fairly recently.
 > 
-> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
-> index d447bfaadef4..dc5231a1fcfd 100644
-> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
-> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
-> @@ -106,8 +106,41 @@ static int mtk_mdp_comp_bind(struct device *dev, struct device *master,
->  {
->  	struct mtk_mdp_comp *comp = dev_get_drvdata(dev);
->  	struct mtk_mdp_dev *mdp = data;
-> +	struct device_node *vpu_node;
->  
->  	mtk_mdp_register_component(mdp, comp);
-> +
-> +	// If this component has a "mediatek-vpu" property, it is responsible for
-> +	// notifying the mdp master driver about it so it can be further initialized
-> +	// later.
+> Side note: this will only ever work for non-shared mappings.
 
-Please use c-style comments here.
+I think it's show-stopper for the use-case, no? IIUC, the mappings is used
+for communication between a compositor and a client and has to be shared.
 
-> +	vpu_node = of_parse_phandle(dev->of_node, "mediatek,vpu", 0);
-
-That's a bit confusing to me, please correct me if I am wrong, so, the
-mediatek,vpu property is used to tell the code that this component should be the
-'vpu master', not to point a vpu node in the DT? I understood correctly?
-
-
-> +	if (vpu_node) {
-> +		int ret;
-> +
-> +		mdp->vpu_dev = of_find_device_by_node(vpu_node);
-> +		if (WARN_ON(!mdp->vpu_dev)) {
-> +			dev_err(dev, "vpu pdev failed\n");
-> +			of_node_put(vpu_node);
-> +		}
-> +
-> +		ret = v4l2_device_register(dev, &mdp->v4l2_dev);
-> +		if (ret) {
-> +			dev_err(dev, "Failed to register v4l2 device\n");
-> +			return -EINVAL;
-> +		}
-> +
-> +		ret = vb2_dma_contig_set_max_seg_size(dev, DMA_BIT_MASK(32));
-> +		if (ret) {
-> +			dev_err(dev, "Failed to set vb2 dma mag seg size\n");
-> +			return -EINVAL;
-> +		}
-> +
-> +		// presence of the "mediatek,vpu" property in a device node
-> +		// indicates that it is the primary MDP rdma device and MDP DMA
-> +		// ops should be handled by its DMA callbacks.
-
-Isn't rdma0 always the primary MDP device? or there are SoCs or configurations
-where this is different? At least I think it is for MT8173 and MT8183.
-
-> +		mdp->rdma_dev = dev;
-> +	}
-> +
->  	pm_runtime_enable(dev);
->  
->  	return 0;
-> @@ -164,23 +197,9 @@ int mtk_mdp_comp_init(struct mtk_mdp_comp *comp, struct device *dev)
->  static int mtk_mdp_comp_probe(struct platform_device *pdev)
->  {
->  	struct device *dev = &pdev->dev;
-> -	struct device_node *vpu_node;
->  	int status;
->  	struct mtk_mdp_comp *comp;
->  
-> -	vpu_node = of_parse_phandle(dev->of_node, "mediatek,vpu", 0);
-> -	if (vpu_node) {
-> -		of_node_put(vpu_node);
-> -		/*
-> -		 * The device tree node with a mediatek,vpu property is deemed
-> -		 * the MDP "master" device, we don't want to add a component
-> -		 * for it in this function because the initialization for the
-> -		 * master is done elsewhere.
-> -		 */
-> -		dev_info(dev, "vpu node found, not probing\n");
-> -		return -ENODEV;
-> -	}
-> -
->  	comp = devm_kzalloc(dev, sizeof(*comp), GFP_KERNEL);
->  	if (!comp)
->  		return -ENOMEM;
-> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-> index 5e71496e2517..4d7aa4e26be6 100644
-> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-> @@ -121,6 +121,17 @@ static int mtk_mdp_master_bind(struct device *dev)
->  		goto err_component_bind_all;
->  	}
->  
-> +	if (mdp->vpu_dev) {
-> +		int ret = vpu_wdt_reg_handler(mdp->vpu_dev, mtk_mdp_reset_handler, mdp,
-> +					  VPU_RST_MDP);
-> +		if (ret) {
-> +			dev_err(dev, "Failed to register reset handler\n");
-> +			goto err_wdt_reg;
-> +		}
-> +	} else {
-> +		dev_err(dev, "no vpu_dev found\n");
-> +	}
-> +
->  	status = mtk_mdp_register_m2m_device(mdp);
->  	if (status) {
->  		dev_err(dev, "Failed to register m2m device: %d\n", status);
-> @@ -133,6 +144,8 @@ static int mtk_mdp_master_bind(struct device *dev)
->  	return 0;
->  
->  err_mtk_mdp_register_m2m_device:
-> +
-> +err_wdt_reg:
->  	component_unbind_all(dev, mdp);
->  
->  err_component_bind_all:
-> @@ -191,8 +204,13 @@ static int mtk_mdp_probe(struct platform_device *pdev)
->  		of_node_put(node);
->  		parent = dev->of_node;
->  		dev_warn(dev, "device tree is out of date\n");
-> -	} else {
-> +	} else if (dev->of_node) {
->  		parent = dev->of_node->parent;
-> +	} else if (dev->parent) {
-> +		// maybe we were created from a call to platform_device_register_data()
-> +		parent = dev->parent->parent->of_node;
-> +	} else {
-> +		return -ENODEV;
->  	}
->  
->  	/* Iterate over sibling MDP function blocks */
-> @@ -225,16 +243,6 @@ static int mtk_mdp_probe(struct platform_device *pdev)
->  		}
->  	}
->  
-> -	/*
-> -	 * Create a component for myself so that clocks can be toggled in
-> -	 * clock_on().
-> -	 */
-> -	ret = mtk_mdp_comp_init(&mdp->comp_self, dev);
-> -	if (ret) {
-> -		dev_err(dev, "Failed to initialize component\n");
-> -		goto err_comp;
-> -	}
-> -
->  	mdp->job_wq = create_singlethread_workqueue(MTK_MDP_MODULE_NAME);
->  	if (!mdp->job_wq) {
->  		dev_err(&pdev->dev, "unable to alloc job workqueue\n");
-> @@ -250,29 +258,8 @@ static int mtk_mdp_probe(struct platform_device *pdev)
->  	}
->  	INIT_WORK(&mdp->wdt_work, mtk_mdp_wdt_worker);
->  
-> -	ret = v4l2_device_register(dev, &mdp->v4l2_dev);
-> -	if (ret) {
-> -		dev_err(&pdev->dev, "Failed to register v4l2 device\n");
-> -		ret = -EINVAL;
-> -		goto err_dev_register;
-> -	}
-> -
-> -	mdp->vpu_dev = vpu_get_plat_device(pdev);
-> -	ret = vpu_wdt_reg_handler(mdp->vpu_dev, mtk_mdp_reset_handler, mdp,
-> -				  VPU_RST_MDP);
-> -	if (ret) {
-> -		dev_err(&pdev->dev, "Failed to register reset handler\n");
-> -		goto err_wdt_reg;
-> -	}
-> -
->  	platform_set_drvdata(pdev, mdp);
->  
-> -	ret = vb2_dma_contig_set_max_seg_size(&pdev->dev, DMA_BIT_MASK(32));
-> -	if (ret) {
-> -		dev_err(&pdev->dev, "Failed to set vb2 dma mag seg size\n");
-> -		goto err_set_max_seg_size;
-> -	}
-> -
->  	ret = component_master_add_with_match(dev, &mtk_mdp_com_ops, match);
->  	if (ret) {
->  		dev_err(dev, "Component master add failed\n");
-> @@ -284,22 +271,12 @@ static int mtk_mdp_probe(struct platform_device *pdev)
->  	return 0;
->  
->  err_component_master_add:
-> -	vb2_dma_contig_clear_max_seg_size(&pdev->dev);
-> -
-> -err_set_max_seg_size:
-> -
-> -err_wdt_reg:
-> -	v4l2_device_unregister(&mdp->v4l2_dev);
-> -
-> -err_dev_register:
->  	destroy_workqueue(mdp->wdt_wq);
->  
->  err_alloc_wdt_wq:
->  	destroy_workqueue(mdp->job_wq);
->  
->  err_alloc_job_wq:
-> -
-> -err_comp:
->  	dev_dbg(dev, "err %d\n", ret);
->  	return ret;
->  }
-> @@ -371,7 +348,6 @@ static struct platform_driver mtk_mdp_driver = {
->  	.driver = {
->  		.name	= MTK_MDP_MODULE_NAME,
->  		.pm	= &mtk_mdp_pm_ops,
-> -		.of_match_table = mtk_mdp_of_ids,
->  	}
->  };
->  
-> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_core.h b/drivers/media/platform/mtk-mdp/mtk_mdp_core.h
-> index 230f531400ca..78c3c77cd226 100644
-> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_core.h
-> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_core.h
-> @@ -133,6 +133,7 @@ struct mtk_mdp_variant {
->   * struct mtk_mdp_dev - abstraction for image processor entity
->   * @lock:	the mutex protecting this data structure
->   * @vpulock:	the mutex protecting the communication with VPU
-> + * @rdma_dev:  device pointer to rdma device for MDP
->   * @pdev:	pointer to the image processor platform device
->   * @variant:	the IP variant information
->   * @id:		image processor device index (0..MTK_MDP_MAX_DEVS)
-> @@ -151,6 +152,7 @@ struct mtk_mdp_variant {
->  struct mtk_mdp_dev {
->  	struct mutex			lock;
->  	struct mutex			vpulock;
-> +	struct device			*rdma_dev;
->  	struct platform_device		*pdev;
->  	struct mtk_mdp_variant		*variant;
->  	u16				id;
-> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_m2m.c b/drivers/media/platform/mtk-mdp/mtk_mdp_m2m.c
-> index d351e5a44768..c80ad8299c5e 100644
-> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_m2m.c
-> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_m2m.c
-> @@ -932,7 +932,7 @@ static int mtk_mdp_m2m_queue_init(void *priv, struct vb2_queue *src_vq,
->  	src_vq->mem_ops = &vb2_dma_contig_memops;
->  	src_vq->buf_struct_size = sizeof(struct v4l2_m2m_buffer);
->  	src_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
-> -	src_vq->dev = &ctx->mdp_dev->pdev->dev;
-> +	src_vq->dev = ctx->mdp_dev->rdma_dev;
->  	src_vq->lock = &ctx->mdp_dev->lock;
->  
->  	ret = vb2_queue_init(src_vq);
-> @@ -947,7 +947,7 @@ static int mtk_mdp_m2m_queue_init(void *priv, struct vb2_queue *src_vq,
->  	dst_vq->mem_ops = &vb2_dma_contig_memops;
->  	dst_vq->buf_struct_size = sizeof(struct v4l2_m2m_buffer);
->  	dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
-> -	dst_vq->dev = &ctx->mdp_dev->pdev->dev;
-> +	dst_vq->dev = ctx->mdp_dev->rdma_dev;
->  	dst_vq->lock = &ctx->mdp_dev->lock;
->  
->  	return vb2_queue_init(dst_vq);
-> diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
-> index 18f93979e14a..6f9cf7725529 100644
-> --- a/drivers/soc/mediatek/mtk-mmsys.c
-> +++ b/drivers/soc/mediatek/mtk-mmsys.c
-> @@ -305,6 +305,7 @@ static int mtk_mmsys_probe(struct platform_device *pdev)
->  	struct device *dev = &pdev->dev;
->  	struct platform_device *clks;
->  	struct platform_device *drm;
-> +	struct platform_device *mdp;
->  	void __iomem *config_regs;
->  	int ret;
->  
-> @@ -328,10 +329,27 @@ static int mtk_mmsys_probe(struct platform_device *pdev)
->  					    PLATFORM_DEVID_AUTO, NULL, 0);
->  	if (IS_ERR(drm)) {
->  		platform_device_unregister(clks);
-> -		return PTR_ERR(drm);
-> +		ret = PTR_ERR(drm);
-> +		goto err_drm;
-> +	}
-> +
-> +	mdp = platform_device_register_data(&pdev->dev, "mtk-mdp",
-> +					    PLATFORM_DEVID_AUTO, NULL, 0);
-> +	if (IS_ERR(mdp)) {
-> +		ret = PTR_ERR(mdp);
-> +		dev_err(dev, "Failed to register mdp: %d\n", ret);
-> +		goto err_mdp;
->  	}
->  
->  	return 0;
-> +
-> +err_mdp:
-> +	platform_device_unregister(drm);
-> +
-> +err_drm:
-> +	platform_device_unregister(clks);
-> +
-> +	return ret;
->  }
->  
->  static const struct of_device_id of_match_mtk_mmsys[] = {
+> That's fundamental. We won't add an anonymous page to a shared mapping,
+> and do_anonymous_page() does verify that. So a MAP_SHARED mappign will
+> still return SIGBUS even with this patch (although it's not obvious from
+> the patch - the VM_FAULT_SIGBUS will just be re-created by
+> do_anonymous_page()).
 > 
+> So if you want a _shared_ mapping to honor __MAP_NOFAULT and insert
+> random anonymous pages into it, I think the answer is "no, that's not
+> going to be viable".
+
++ Matthew, Dan.
+
+DAX uses zero pages in page cache to avoid allocating backing storage read
+accesses to holes. Maybe we can generalize it beyond DAX to any page cache
+and add a (per-inode?) flag to do the same for accesses beyond i_size?
+
+> So _if_ this works for you, and if it's ok that only MAP_PRIVATE can
+> have __MAP_NOFAULT, and if Kirill/Peter/Will don't say "Oh, Linus,
+> you're completely off your rocker and clearly need to be taking your
+> meds", something like this - if we figure out the conditional bit -
+> might be doable.
+> 
+> That's a fair number of "ifs".
+> 
+> Ok, back to the merge window for me, I'll be throwing away this crazy
+> untested patch immediately after hitting "send". This is very much a
+> "throw the idea over to other people" patch, in other words.
+> 
+>             Linus
+
+
+
+-- 
+ Kirill A. Shutemov
