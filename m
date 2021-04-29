@@ -2,90 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A39636E86C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E4736E879
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240300AbhD2KKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 06:10:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39088 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240262AbhD2KKK (ORCPT
+        id S238261AbhD2KPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 06:15:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232261AbhD2KPK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 06:10:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619690964;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7ZFyr5mpRghduXOnoE7H3sxU/6BfwiFPot9Qqrp6hRU=;
-        b=JwsXeJhKjYVh8SedOeXpuGXDj4MzMujSt1F4l1E7rky9idkL4B0dpD+OT1aAP86ZQvLnee
-        mmo5U3pcTCQ3PRxsFgDiOUtNk7RlqSt+G74eaIDNtJ1aeU/qrxQPLJGr3PwnnJ1j4KDOsL
-        d/0Ct/n0dvW5zmS6w+O6U2G8g6Pz5cc=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-377-8aAoDgGhOYGo1qCKVmm5gw-1; Thu, 29 Apr 2021 06:09:19 -0400
-X-MC-Unique: 8aAoDgGhOYGo1qCKVmm5gw-1
-Received: by mail-ed1-f71.google.com with SMTP id c15-20020a056402100fb029038518e5afc5so21041911edu.18
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 03:09:19 -0700 (PDT)
+        Thu, 29 Apr 2021 06:15:10 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA4DC06138B;
+        Thu, 29 Apr 2021 03:14:21 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id n2so99013102ejy.7;
+        Thu, 29 Apr 2021 03:14:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=S4yG2fi+UcSVw0GAJVZLN6MnOqhUUjkPFwRoh2SCzns=;
+        b=m3VAglieYd1KZvGhGUm9+5aDZIKoHnaN6enC3RB5XjqNwoqgu31ktt0EwzxRzlG1xk
+         mjOt5P0S9U4NC5YH/fQ9jXpqJJIWnuj/KOsOQ0lVxf8wdll1CNQ/2mKsf3hVg9K6xb7/
+         URvfRCv/REBZaLBEM2aRM/qQzhZ4ksIknz5DUW8AsSMeUXJB/TL+FDS5EFwthCUoLBQ+
+         SEXfsg/UlOBDWzkjtBtT2/R/NHgBTPc5NqLIuBDTxIQai4mIzhy8wDaNu4O4D7WF+k0h
+         na5JLAiCsBp40ig6nK7A6AcszoZewBTT8WMkDNAxf/kGb8OxH2U/IXEHpZETyf7IJNa8
+         rG6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7ZFyr5mpRghduXOnoE7H3sxU/6BfwiFPot9Qqrp6hRU=;
-        b=ixSRtzprlKWHSsgCNz3+r6yMylKC3pimhA8j4Yj1vl3VdbNKzv7zcV5at34U6WD6iY
-         OZK2uvKwq9WrRWMGJmuGXwizxJBqAoKXMcpcZeLUGPNNECMNRfBEBmnBVxqQ+7LtDEFy
-         2N8GIfOTWtHDhcgDoJ2vZ5esTrInAaAaqztmHjgJUCCDpxP1KnIXxGC1IvpkZdJ11Co9
-         yDdA65HA9otBJZvHo+QJaKjURZ7w1SH6psf/TzYlRg2YkIrAi+k84DnWAXUTAKUcPcv/
-         6vDI4M+I+cN9Be7rkLpKkTrs9eSF4jnKHc2UYXxZPJ04dU3C7ZlL11o2aZMgaAn2BqLo
-         SRYw==
-X-Gm-Message-State: AOAM531SN8CmHSjTleAOJ1nibNNT7Gb8keuQlkO2gNMmEX3dLQN4olVu
-        JtbVcHEGCdoEBFCFhWOpeIAfoEQNyxS8YwGBrPNSVu2/HrNX7rSJ2mzTKU+JNUbaDw8nCMqfB0r
-        LgIhTGRW1DjRoxZUdHz912F41
-X-Received: by 2002:a05:6402:2211:: with SMTP id cq17mr16993721edb.28.1619690958432;
-        Thu, 29 Apr 2021 03:09:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz1YMOL4t+paQHX+lVQsNYt9WN5JUhsRxvn9uu0mM2C1D//VngYDfIF/6Qg3bG0hhfeHSGVxw==
-X-Received: by 2002:a05:6402:2211:: with SMTP id cq17mr16993705edb.28.1619690958290;
-        Thu, 29 Apr 2021 03:09:18 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id t15sm2010629edr.55.2021.04.29.03.09.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Apr 2021 03:09:17 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] KVM: x86: add MSR_KVM_MIGRATION_CONTROL
-To:     Sean Christopherson <seanjc@google.com>,
-        Steve Rutherford <srutherford@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Venu Busireddy <venu.busireddy@oracle.com>
-References: <20210421173716.1577745-1-pbonzini@redhat.com>
- <20210421173716.1577745-3-pbonzini@redhat.com> <YIiMrWS60NuesU63@google.com>
- <CABayD+dKLTx5kQTaKASQkcam4OiHJueuL1Vf32soiLq=torg+w@mail.gmail.com>
- <YInAT6MYU2N0tKSW@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <cc0c6333-6c2f-e8f3-f838-3cb2492f007a@redhat.com>
-Date:   Thu, 29 Apr 2021 12:09:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=S4yG2fi+UcSVw0GAJVZLN6MnOqhUUjkPFwRoh2SCzns=;
+        b=kCXWWFO1ftAo7RXsb2a4T/CFTDTL0NE5NzOQCuchjv/kWPbVxcJVXG/m3WhZ3D7CwA
+         PVw+zeJjhDilKIzaDQBvwvBpVWBwgQg2QglsCtUju5l1qqi/t5KXTiIahXmb3TuOsOAO
+         aQjeLG9XGNzC1IrFOoFZ92QxvRhRTs6sdATs9vk9JRbEiZ5tlGb97elhUACtj67h3uT9
+         XratrMl7g8K+ookEmKXL4EVIxFZ+qOYyuSFqwQys/8+gthYoNxLmhJRdKLdXbtpkragg
+         LP89AsegPa3Xu/8tFmNJq/heMr40xcfy6OfRWjsMpabQ3MfScpsNuQ6gibn8UU79gecs
+         LsxQ==
+X-Gm-Message-State: AOAM533oeghncrgCXSnidnVZWcNmDwJKb+Hom6gzB6ZnlY2dN8Z5k1bR
+        rdGwJQCcQ9iD6T/E40eE5k4=
+X-Google-Smtp-Source: ABdhPJxh2d0DqqKGAty7LL3QSKbQcmC+MGRvZj3dYJFoDtO4jKXN4vqvD03Pc/HlkHpwQP6SDe0R/Q==
+X-Received: by 2002:a17:907:16a9:: with SMTP id hc41mr34622201ejc.84.1619691260433;
+        Thu, 29 Apr 2021 03:14:20 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id r10sm1540317ejd.112.2021.04.29.03.14.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 03:14:18 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 12:15:14 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     Fenglin Wu <fenglinw@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>, linux-pwm@vger.kernel.org,
+        subbaram@codeaurora.org, collinsd@codeaurora.org,
+        aghayal@codeaurora.org
+Subject: Re: [PATCH 2/2] pwm: pwm-qcom: add driver for PWM modules in QCOM
+ PMICs
+Message-ID: <YIqHMuKhkVkcp6ir@orome.fritz.box>
+References: <20210427102247.822-1-fenglinw@codeaurora.org>
+ <20210427102247.822-3-fenglinw@codeaurora.org>
+ <20210427170748.wglupc6zwrndalxs@pengutronix.de>
+ <YImfkM/ll1nCmopq@orome.fritz.box>
+ <20210429065213.inajpznvfxa2xsld@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <YInAT6MYU2N0tKSW@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="qjfQOg7BRpB4kEso"
+Content-Disposition: inline
+In-Reply-To: <20210429065213.inajpznvfxa2xsld@pengutronix.de>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/04/21 22:06, Sean Christopherson wrote:
-> But there's only multiple meanings if we define the bit to be specific to
-> page encryption.  E.g. if the bit is KVM_READY_FOR_MIGRATION, then its meaning
-> (when cleared) is simply "please don't migrate me, I will die".  KVM doesn't
-> care_why_  the guest is telling userspace that it's not ready for migration, nor
-> does KVM care if userspace honors the indicator.
 
-Makes sense, I'll change that.
+--qjfQOg7BRpB4kEso
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Paolo
+On Thu, Apr 29, 2021 at 08:52:13AM +0200, Uwe Kleine-K=C3=B6nig wrote:
+> Hello,
+>=20
+> On Wed, Apr 28, 2021 at 07:46:56PM +0200, Thierry Reding wrote:
+> > On Tue, Apr 27, 2021 at 07:07:48PM +0200, Uwe Kleine-K=C3=B6nig wrote:
+> > > I would like to see the register definition to use a common prefix (l=
+ike
+> > > QCOM_PWM_) and that the names of bit fields include the register name.
+> > > So something like:
+> > >=20
+> > > 	#define QCOM_PWM_PWM_SIZE_CLK		0x41
+> > > 	#define QCOM_PWM_PWM_SIZE_CLK_FREQ_SEL 		GENMASK(1, 0)
+> > >=20
+> > > even if the names are quite long, its usage is less error prone. Maybe
+> > > it makes sense to drop the duplicated PWM (but only if all or no
+> > > register contains PWM in its name according to the reference manual).
+> > > Also maybe QCOM_PWM_PWMSIZECLK_FREQSEL might be a good choice. I let =
+you
+> > > judge about the details.
+> >=20
+> > Please stop requesting this. A common prefix is good for namespacing
+> > symbols, but these defines are used only within this file, so there's no
+> > need to namespace them.
+>=20
+> I do consider it important. The goal of my review comments is to improve
+> the drivers according to what I consider sensible even if that might not
+> fit your metrics.=20
+>=20
+> Consistent name(space)ing is sensible because the names of static
+> functions are used in backtraces.
 
+I've said this elsewhere, and I specifically didn't comment on that
+request, that I think namespacing for static functions does make sense
+because they may show up in backtraces.
+
+Register definitions, however, are never going to show up in a
+backtrace. The only place where you will ever see them is within the
+source file where the context is already plenty clear. The same goes
+for locally scoped variables.
+
+>                                   It is sensible because tools like
+> ctags, etags and cscope work better when names are unique.
+
+But those tools are primarily useful to find cross-references of
+symbols. If you have symbols that are local to a single file, then it's
+much easier to open that file in an editor than run the tools.
+
+>                                                            It is
+> sensible because it's harder than necessary to spot the error in
+>=20
+> 	writel(PWM_EN_GLITCH_REMOVAL_MASK, base + REG_ENABLE_CONTROL);
+
+I don't think it's sensible to rely on naming to detect errors in this
+kind of construct. Either you write it correctly and the code does what
+it's supposed to, or it isn't correct and the code will be broken.
+
+> . It is sensible because the rule "Use namespacing for all symbols" is
+> easier than "Use namespacing for symbols that might conflict with
+> (present or future) names in the core or that might appear in user
+> visible messages like backtraces or KASAN reports".
+
+Yes, sure, if you consider everyone incapable of making reasonable
+decisions, then by all means, let's make it as easy as possible. Maybe
+while at it you want to go and propagate those rules across the entire
+kernel. Good luck with that.
+
+>                                                     It's sensible
+> because then it's obvious when reading a code line that the symbol is
+> driver specific. It is useful to have a common prefix for driver
+> functions because that makes it easier to select them for tracing.
+
+Again, functions are an exception where the prefix makes sense.
+
+> > Forcing everyone to use a specific prefix is just going to add a bunch
+> > of characters but doesn't actually add any value.
+>=20
+> That's your opinion and I disagree. I do see a value and the "burden" of
+> these additional characters is quite worth its costs. In my bubble most
+> people also see this value. This includes the coworkers I talked to,
+> several other maintainers also insist on common prefixes[1] and it
+> matches what my software engineering professor taught me during my
+> studies. I also agree that longer names are more annoying than short
+> ones, but that doesn't outweigh the advantages in my eyes and a good
+> editor helps here.
+
+Well, I'm sure I could find plenty of examples of maintainers *not*
+requesting common prefixes because they disagree with your opinion.
+Maybe you should think about why it's called a "bubble".
+
+This is totally subjective and there aren't any clear rules. As such I
+don't think we should enforce it. The one exception that we all seem to
+agree on is static functions because they can show up in traces, but for
+the rest I'm not going to enforce the common prefix.
+
+Thierry
+
+--qjfQOg7BRpB4kEso
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmCKhy8ACgkQ3SOs138+
+s6HNkw//TMJDUdvWi+QsUhFmthvLPdP0Ifps0JgEMYIfP0DIkDIpg0Qp2jauA3nl
+KeBb1+G52ziYDe1agqGJYNTNlQN6WcEt+M6/cGYV9SCE3PQiDx+JybnV1x8/vIHb
+mTkLQDZ94cOri/tEhh7TPmDK/Q8W9Lp7JM97KVMr/I4kmUQ0f5efvWaCGxpi5AoI
+HjO0xg1btLE8O1jrnWFlWkE5OKrM4AxMYZQA27bLmhjNby7Yrr016/aTZVVZLr8R
+YyluQGYTnCVBDisz+LLDGAdmnQDDwZw6gYZUFrKEU+dk76VG/A0kez237icQoKOD
+T0DX9NgCkIVz5czludlTguJ9zPXGVXVx6YSo53rzzEDAeTEq5rNUGqs0D8Xx80B2
+wfL5zpkSdJ4DPwa5dITtYSL/vP5WisHT4Nsymo4Of3Ij1UkftBZigSDi3vN0aFvu
+fmL2EZQPRt/oZWQ871Gaj+9TKalErPzt5lvFVu7tJyyBfteBAOnOFem25Th3cMCm
+k8juO5wzhmH2PaucwiI7PbcSpfgF+su0qaZpDrncy/e0g5nhdzN/zKQ2wQQBVq1H
+ZEj/Rz39F6jdMAeBtzER5LvarK458q0GVXUTUNsEmjtTnrbFBt3wpjR0XIYO08m7
+0egzE8pCcBshNntJpNmv5MR5c87UhVFD65XMdV1EYB79INmNdkQ=
+=VkNK
+-----END PGP SIGNATURE-----
+
+--qjfQOg7BRpB4kEso--
