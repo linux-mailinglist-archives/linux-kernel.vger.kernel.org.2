@@ -2,302 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD7F36E9EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C5036E9F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234355AbhD2MEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 08:04:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231343AbhD2MEV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 08:04:21 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3207C06138B;
-        Thu, 29 Apr 2021 05:03:34 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id n2so13486254wrm.0;
-        Thu, 29 Apr 2021 05:03:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+7SJd1dfwP75iJuc22gPuZeM/v2rpuHZDX9VGTB084E=;
-        b=eiEKI+ziJjSte8zKQM64WfXQOn+WsVQgWWmmUzrT81SSbZK9srhkfM8Wgiua/HnvyQ
-         MDd7fPPWvxyc+d9ecAxYFnWQJnc/1LnkWh7Qcj8Bd5GFidjktWsZfgSxqS3v4N5/aYtH
-         PT/vagIlO93V6vTY9kYE6sWt9D/H29SKb1roX9dhdFhdwBTAvYSl1d8b1ccmsDAvdTKJ
-         tP9kKaAG6sKy1iD4N2xfXumJqAKL6Zo42EqNplosHvkXoSS4xqeQ1UTeLMcHvf8UjKJt
-         BQHtFJhRSjL9tOm6bfDCpALsuKKzTQkQLEbRbRSn1Y0PZ47/zR66PYSLEnOh3P2eLKwI
-         TPLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+7SJd1dfwP75iJuc22gPuZeM/v2rpuHZDX9VGTB084E=;
-        b=UXXZfjUNcTRtjBnQbUT2PyJ13Blwiam7NsZDz1GXEsX2cKKTkKjqy20JSlSn90z1y/
-         hJ3BbJkQXaB+Ryv4acmPV4y97r32ZT1ADVYojpqJvk+AHHpw4GO3OkccO7gPOyNn5fdY
-         d1LDc73IjWodhra0Uf/e6zhHZ7LQlppLdKX3stsqDo/Ae/dtZZGzQckVTgBHzdNUyzZY
-         LtPRmtnM3XRDAT8CTTXtERoj0aAxm75fWKPZTYFck93J3uWXVhmCLD9PTTq1LZNY93f1
-         ZsZqeGQywjNqZbgU5L8tDYbYjzeX+zVdtcvtkdzfVjecYwNZnc0Gx7TKLF0sRgRbR6M1
-         qihA==
-X-Gm-Message-State: AOAM533mytBmYeYhVOEghD/LRxLk2pzbpxJPs9q7zURFZQGMubdZ3RuU
-        9fp+YYOMhvZ8RT5dU5ORPFdoly6+aS/6NbHxE+OmPqtnlcY=
-X-Google-Smtp-Source: ABdhPJw98AmDp3uyzb5MHSLry9VVoImFNnXoUCxrk2GF4FuWhex1qsEuDQosp+vxOsQlSj9d0i+L+o5afCifVQP72Gc=
-X-Received: by 2002:a5d:4c8a:: with SMTP id z10mr15998737wrs.395.1619697813633;
- Thu, 29 Apr 2021 05:03:33 -0700 (PDT)
+        id S234833AbhD2MF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 08:05:59 -0400
+Received: from mail-dm6nam12on2055.outbound.protection.outlook.com ([40.107.243.55]:19937
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230148AbhD2MF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 08:05:57 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W70G6HsQDDQmUTjt1L4Y5fT7JqB9RzAsrwYZu560LtG9OV+8pxm6a+lC/oe05ClFZJ+DPZUQ16ohlUcoGlzGzn/TmeQc5r0e29Jsne0TMaMKIX9eNunL0SAavWt8tPwCkUBEUxCrWJMKURvwRdRlaY4XWk6WqYl8cyGQF6TNo4If3TOgs7w/zcLPH5x8ofkhmiyuKAroTZb8EaNs1CRNrZNsoYg/819zBmSwH0eEWOm6MS6VMKjIKSK4jOn2xawMdBjz4IiMg852BeOSLAUVotXHoXlH1Q3WM7orAeKme/rFzP0UFqnOcm61+gh8Eh5o02zX1BCyAtFyVwTe0skRpg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=77EKHJO2+lORrpFR7iFZ2OmAw4LsrUTPhYOiUpL2W68=;
+ b=QOfYtfl6edbefGUfozuWL1y5oX6NgzP6V4Ji8lajKnQ1px4HMablOtlgE77FizR2LsCxDLlUogRNb73WEtMw1kq1q/CTU/WonyG+Ayoi8/T8ynvwaGs11cFbZYv8KoSUjFvPOcFlUF5WvrQk1zc/K+C6oM2WH6KGugw1NoEs4pusklKrtByR1WwUTmR7YNOEYGas/nz80LLNtyWSM95zjmCQS3SPgtJKJO+MDbXZGx3ijKUBvmsjAK1f/O2hJxywCyaLVxGK8Tdrl+W9dSpbtSR+iX8TTIvH+TqE/G7ucO1COMk/HrF+UIxno39PfLVY3IjRAxBBiXgcQxvivotpAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=77EKHJO2+lORrpFR7iFZ2OmAw4LsrUTPhYOiUpL2W68=;
+ b=WhyO3GWq2Ppp7BQ85LqiMAVxStFV2/kKEpMqf5vFiYH6PzMIaVlpEEVYuPwvtUlaPH2OSpM/y8sA457KVBgMzo4xcdxQYUbAIrHDgCOio5/dGWL/w/aqgGdmuEA8S8B7WvD+KINefZQ5TAaU+BwxSuL38pSVu5VUPOn6q1H0ABo=
+Authentication-Results: vivo.com; dkim=none (message not signed)
+ header.d=none;vivo.com; dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB2601.namprd12.prod.outlook.com (2603:10b6:5:45::27) by
+ DM5PR12MB1145.namprd12.prod.outlook.com (2603:10b6:3:77::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4065.27; Thu, 29 Apr 2021 12:05:08 +0000
+Received: from DM6PR12MB2601.namprd12.prod.outlook.com
+ ([fe80::3d2c:5edf:5d51:4101]) by DM6PR12MB2601.namprd12.prod.outlook.com
+ ([fe80::3d2c:5edf:5d51:4101%7]) with mapi id 15.20.4065.027; Thu, 29 Apr 2021
+ 12:05:08 +0000
+Date:   Thu, 29 Apr 2021 08:05:04 -0400
+From:   Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Aric Cyr <aric.cyr@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Wesley Chalmers <Wesley.Chalmers@amd.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Wayne Lin <Wayne.Lin@amd.com>,
+        Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>,
+        Chiawen Huang <chiawen.huang@amd.com>,
+        Anson Jacob <Anson.Jacob@amd.com>,
+        Alvin Lee <alvin.lee2@amd.com>, Eric Yang <Eric.Yang2@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kael_w@yeah.net
+Subject: Re: [PATCH] drm/amd/display: Remove duplicate include of hubp.h
+Message-ID: <20210429120504.sjruq5a3w2hdtusy@outlook.office365.com>
+References: <20210429030412.18344-1-wanjiabing@vivo.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="qz4nnjzgkciv5dyg"
+Content-Disposition: inline
+In-Reply-To: <20210429030412.18344-1-wanjiabing@vivo.com>
+X-Originating-IP: [2607:fea8:56e0:6d60:9d3b:95a7:19db:40c3]
+X-ClientProxiedBy: YT1PR01CA0026.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::39)
+ To DM6PR12MB2601.namprd12.prod.outlook.com (2603:10b6:5:45::27)
 MIME-Version: 1.0
-References: <161961335926.39335.2552653972195467566.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161961335926.39335.2552653972195467566.stgit@warthog.procyon.org.uk>
-From:   Marc Dionne <marc.c.dionne@gmail.com>
-Date:   Thu, 29 Apr 2021 09:03:22 -0300
-Message-ID: <CAB9dFdvaMJW=y=2O3SUC+vmXfhutTsM6kFc6Jy45993WC4V_fg@mail.gmail.com>
-Subject: Re: [PATCH] afs: Fix speculative status fetches
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from outlook.office365.com (2607:fea8:56e0:6d60:9d3b:95a7:19db:40c3) by YT1PR01CA0026.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.25 via Frontend Transport; Thu, 29 Apr 2021 12:05:07 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c0d27faf-5ed8-4668-8c47-08d90b070849
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1145:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR12MB1145EDAC5CEE1BDC71EAB449985F9@DM5PR12MB1145.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:136;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: q58yVJtupTaUNHU9N/11jR9TnZowgRCqh4wzk3J8Bj2Z38KnJS14RWvLDxTXgg8MjNdNWFQl/25gAJ7vpAvQOCL3Xl41IIE4Z7L7nqRmL8RgYN7zdjvI3Yq5AptI2T5fGh023IwWpAqkaEqNCcQS91KrFgZ0UubGt5LjqN0WY8DvB+XsH3g5AQwHo46SnubdTGHcLtd/boNpBsaAE1vGILQUAoMZ0F+zNmaCJgjjj1P6oW6F8OclJ50bKGac3unlnspgrg6h0n31y/cm85G5aeZAgWOYdIexUPHXTQWWF8d6z5DCSqtL+cXGz8qyqaGiW9M1jUxfMv8FG5wkrCEeJMK4OcHIY6soKX55mOaoCSqZ7wLtvOBd4ydLItPGs049FlixTEXVsn0z1IUlR4mjNbjH54sBungdSZj12kcnYA+x6k8eIhRK6rfopNUQmTUYRn3RdUmNPf8Te9o/Au6rrsjrPZotM6pYlypTNnO/I34AsQSYYVFWVR88g2tHIfCF20WlcH8/+Y8L2rn9hTzG9gMjvHYIsb8nuw7qcNTevT9LaegZ6lx1pOFN1tYxQI1JZbVpIAHkSPt+D4piKkMee5IWAziIw7ZoJGYgzVlZwTKohsMQ8sQgFha/hXSOj5gukuohQjrPnHQREJpgq9Kbyo2uPrsYjBaliVYkmx8MTbhKkRG9/EZdBS0G/jnDku28ZoAIhdd4yqS90E+j0dHgsPjkky5ewXBc4fYBNZw/Vfs=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB2601.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(136003)(396003)(39860400002)(52116002)(478600001)(9686003)(2906002)(6506007)(6666004)(966005)(54906003)(21480400003)(6916009)(5660300002)(186003)(8676002)(83380400001)(16526019)(38100700002)(4326008)(86362001)(8936002)(1076003)(7696005)(316002)(66476007)(55016002)(66946007)(66556008)(44144004)(2700100001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?IfBAJkdayhyLzrD4nlE5zt1JD5qy5VVcD9Z7KwRvZbtWj0/isfC/ZzuMs7Si?=
+ =?us-ascii?Q?ou48Jj1xuKNe1q6kOhGcZlg/tc6d4rsTusc86CZs6KjsxYtzxBx7lZm3ZkzC?=
+ =?us-ascii?Q?bmscCh+++C5Ju0Su1UGfI1LXCqa27p5r8a9HZtguagyJydH0x/xK8bVqH2I0?=
+ =?us-ascii?Q?n2uFUk92r13s8N/WITDcaPbmBFLss6oIQ0YAM56rPXNpJ5zpbXATD9h0tHDY?=
+ =?us-ascii?Q?89IX8itL1Aw7dmQeXvBDOAW0AC/beuyzDwviKu4wOEDVwAKtEAaeHe/juAJQ?=
+ =?us-ascii?Q?dGpgIQeXr1A5SOvXpEoLfx4cqivJztIJe/ylmdsGezwhcvAVrqL3IjxUEFLj?=
+ =?us-ascii?Q?xicy7ji9nPZvimH/m1ijfQbzcmgdFaaMxXtNVJ+EiXLy7P2kMM53MPvdoBRI?=
+ =?us-ascii?Q?my/MwWgmW/TDqfxfns+iF5CRIJLXK/Hf8FWLrXR/EKy/uh4M9xglQX3qCYNh?=
+ =?us-ascii?Q?ZAmvrVyToAFTX2UAiBYKPrx0wtlEuF19CEMbwXjkgz3uQX+g/m82S5oH5gIN?=
+ =?us-ascii?Q?YyKQc7ukDalmlCaEPgDIqGentCBjxqo/pUymRnOXEHFzPdGe3z4tPnYyL3xg?=
+ =?us-ascii?Q?DBE/xXhWbJpP/n+3DbBX9VZSnHnMjuBEzRdGB8bap+N80lTA7o0wZj0FO7Oj?=
+ =?us-ascii?Q?vExoOwzNVFVcxY+t59OM8tM2zBCSf4fi367XRmrxu5ZjdiO5+qR+WXadPHHA?=
+ =?us-ascii?Q?qv9kZME5egc+Qm4ZINNEsPZ9XJRmjJzunrkXV4yuybBFmDtPrKOtVmARY5Mk?=
+ =?us-ascii?Q?rgOdgOi71f0Aqz+TMXhViaWQIOYpMcmHPRXqNctIAtPJqkqABPM/uEum4Alw?=
+ =?us-ascii?Q?7z3jlOye0mWN9B4CNFNelUfrxZgaVA66BhlNWnrqNrPFYZa8sEWTwu8oy9SJ?=
+ =?us-ascii?Q?7oa5Vpmcm1C5e0MjuSo1eP/FY1XgqzFVyOInuMgTfgN0BDkE41m7GyYMEmMR?=
+ =?us-ascii?Q?b+0P6DZE6YGjdhGO3EOGhJJ080X2K+jfJvUd4o0JJCTYpyF+5XkJHdLNMZhi?=
+ =?us-ascii?Q?j8BxR04v3TTyTLyzewI+2edl6EMwfUC8A7uIizeCSTgKipEyRQA91IHLfpHJ?=
+ =?us-ascii?Q?EZIXHo/bZ01Z34uMeszCgQzaudAhRrpOcopCBYdw9mlRHfkEnbTb0PtF0j/2?=
+ =?us-ascii?Q?yyok55v72PT7KxZIYjW222bZdL5HCK5ulAOYSXCvT4+Puo7fth+9Ry00B9uq?=
+ =?us-ascii?Q?RYBochRuiAbygz6/I/9eN8/8o2sTdnk8d3AHDkI0aEmnEJ2nCDCuEzWaGfUO?=
+ =?us-ascii?Q?jZZZpJbV3wSYjA/hzHTKb7HurgyDeCevZR0yUy5B2voM7UvrSThhZl8Dy61x?=
+ =?us-ascii?Q?jF2fcjscTSGRwx5GmHspSUZhPSFVFj2jd+PUV1sIRK+jQfQGZ6mOhD7su8Vp?=
+ =?us-ascii?Q?653D7Hv0WVeGopHmDnvq2V4akTgu?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c0d27faf-5ed8-4668-8c47-08d90b070849
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB2601.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2021 12:05:08.4078
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yPua8WGTf5FEp1PCFXT03SHbChYBInx82DrRJw5R6EpS+3mNgYtxA+ULtrldtai/nv7y1ERIsL8t8nWW4SQlUg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1145
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 9:36 AM David Howells <dhowells@redhat.com> wrote:
->
-> The generic/464 xfstest causes kAFS to emit occasional warnings of the
-> form:
->
->         kAFS: vnode modified {100055:8a} 30->31 YFS.StoreData64 (c=6015)
->
-> This indicates that the data version received back from the server did not
-> match the expected value (the DV should be incremented monotonically for
-> each individual modification op committed to a vnode).
->
-> What is happening is that a lookup call is doing a bulk status fetch
-> speculatively on a bunch of vnodes in a directory besides getting the
-> status of the vnode it's actually interested in.  This is racing with a
-> StoreData operation (though it could also occur with, say, a MakeDir op).
->
-> On the client, a modification operation locks the vnode, but the bulk
-> status fetch only locks the parent directory, so no ordering is imposed
-> there (thereby avoiding an avenue to deadlock).
->
-> On the server, the StoreData op handler doesn't lock the vnode until it's
-> received all the request data, and downgrades the lock after committing the
-> data until it has finished sending change notifications to other clients -
-> which allows the status fetch to occur before it has finished.
->
-> This means that:
->
->  - a status fetch can access the target vnode either side of the exclusive
->    section of the modification
->
->  - the status fetch could start before the modification, yet finish after,
->    and vice-versa.
->
->  - the status fetch and the modification RPCs can complete in either order.
->
->  - the status fetch can return either the before or the after DV from the
->    modification.
->
->  - the status fetch might regress the locally cached DV.
->
-> Some of these are handled by the previous fix[1], but that's not sufficient
-> because it checks the DV it received against the DV it cached at the start
-> of the op, but the DV might've been updated in the meantime by a locally
-> generated modification op.
->
-> Fix this by the following means:
->
->  (1) Keep track of when we're performing a modification operation on a
->      vnode.  This is done by marking vnode parameters with a 'modification'
->      note that causes the AFS_VNODE_MODIFYING flag to be set on the vnode
->      for the duration.
->
->  (2) Altering the speculation race detection to ignore speculative status
->      fetches if either the vnode is marked as being modified or the data
->      version number is not what we expected.
->
-> Note that whilst the "vnode modified" warning does get recovered from as it
-> causes the client to refetch the status at the next opportunity, it will
-> also invalidate the pagecache, so changes might get lost.
->
-> Fixes: a9e5c87ca744 ("afs: Fix speculative status fetch going out of order wrt to modifications")
-> Reported-by: Marc Dionne <marc.dionne@auristor.com>
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: linux-afs@lists.infradead.org
-> Link: https://lore.kernel.org/r/160605082531.252452.14708077925602709042.stgit@warthog.procyon.org.uk/ [1]
+--qz4nnjzgkciv5dyg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Nice catch!
+
+Are you using any tool to identify this problem?
+
+Reviewed-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+
+On 04/29, Wan Jiabing wrote:
+> In commit 482812d56698e ("drm/amd/display: Set max TTU on
+> DPG enable"), "hubp.h" was added which caused the duplicate include.
+> To be on the safe side, remove the later duplicate include.
+>=20
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 > ---
->
->  fs/afs/dir.c          |    7 +++++++
->  fs/afs/dir_silly.c    |    3 +++
->  fs/afs/fs_operation.c |    6 ++++++
->  fs/afs/inode.c        |    6 ++++--
->  fs/afs/internal.h     |    2 ++
->  fs/afs/write.c        |    1 +
->  6 files changed, 23 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/afs/dir.c b/fs/afs/dir.c
-> index 117df15e5367..9fbe5a5ec9bd 100644
-> --- a/fs/afs/dir.c
-> +++ b/fs/afs/dir.c
-> @@ -1419,6 +1419,7 @@ static int afs_mkdir(struct user_namespace *mnt_userns, struct inode *dir,
->
->         afs_op_set_vnode(op, 0, dvnode);
->         op->file[0].dv_delta = 1;
-> +       op->file[0].modification = true;
->         op->file[0].update_ctime = true;
->         op->dentry      = dentry;
->         op->create.mode = S_IFDIR | mode;
-> @@ -1500,6 +1501,7 @@ static int afs_rmdir(struct inode *dir, struct dentry *dentry)
->
->         afs_op_set_vnode(op, 0, dvnode);
->         op->file[0].dv_delta = 1;
-> +       op->file[0].modification = true;
->         op->file[0].update_ctime = true;
->
->         op->dentry      = dentry;
-> @@ -1636,6 +1638,7 @@ static int afs_unlink(struct inode *dir, struct dentry *dentry)
->
->         afs_op_set_vnode(op, 0, dvnode);
->         op->file[0].dv_delta = 1;
-> +       op->file[0].modification = true;
->         op->file[0].update_ctime = true;
->
->         /* Try to make sure we have a callback promise on the victim. */
-> @@ -1718,6 +1721,7 @@ static int afs_create(struct user_namespace *mnt_userns, struct inode *dir,
->
->         afs_op_set_vnode(op, 0, dvnode);
->         op->file[0].dv_delta = 1;
-> +       op->file[0].modification = true;
->         op->file[0].update_ctime = true;
->
->         op->dentry      = dentry;
-> @@ -1792,6 +1796,7 @@ static int afs_link(struct dentry *from, struct inode *dir,
->         afs_op_set_vnode(op, 0, dvnode);
->         afs_op_set_vnode(op, 1, vnode);
->         op->file[0].dv_delta = 1;
-> +       op->file[0].modification = true;
->         op->file[0].update_ctime = true;
->         op->file[1].update_ctime = true;
->
-> @@ -1987,6 +1992,8 @@ static int afs_rename(struct user_namespace *mnt_userns, struct inode *old_dir,
->         afs_op_set_vnode(op, 1, new_dvnode); /* May be same as orig_dvnode */
->         op->file[0].dv_delta = 1;
->         op->file[1].dv_delta = 1;
-> +       op->file[0].modification = true;
-> +       op->file[1].modification = true;
->         op->file[0].update_ctime = true;
->         op->file[1].update_ctime = true;
->
-> diff --git a/fs/afs/dir_silly.c b/fs/afs/dir_silly.c
-> index 04f75a44f243..dae9a57d7ec0 100644
-> --- a/fs/afs/dir_silly.c
-> +++ b/fs/afs/dir_silly.c
-> @@ -73,6 +73,8 @@ static int afs_do_silly_rename(struct afs_vnode *dvnode, struct afs_vnode *vnode
->         afs_op_set_vnode(op, 1, dvnode);
->         op->file[0].dv_delta = 1;
->         op->file[1].dv_delta = 1;
-> +       op->file[0].modification = true;
-> +       op->file[1].modification = true;
->         op->file[0].update_ctime = true;
->         op->file[1].update_ctime = true;
->
-> @@ -201,6 +203,7 @@ static int afs_do_silly_unlink(struct afs_vnode *dvnode, struct afs_vnode *vnode
->         afs_op_set_vnode(op, 0, dvnode);
->         afs_op_set_vnode(op, 1, vnode);
->         op->file[0].dv_delta = 1;
-> +       op->file[0].modification = true;
->         op->file[0].update_ctime = true;
->         op->file[1].op_unlinked = true;
->         op->file[1].update_ctime = true;
-> diff --git a/fs/afs/fs_operation.c b/fs/afs/fs_operation.c
-> index 2cb0951acca6..d222dfbe976b 100644
-> --- a/fs/afs/fs_operation.c
-> +++ b/fs/afs/fs_operation.c
-> @@ -118,6 +118,8 @@ static void afs_prepare_vnode(struct afs_operation *op, struct afs_vnode_param *
->                 vp->cb_break_before     = afs_calc_vnode_cb_break(vnode);
->                 if (vnode->lock_state != AFS_VNODE_LOCK_NONE)
->                         op->flags       |= AFS_OPERATION_CUR_ONLY;
-> +               if (vp->modification)
-> +                       set_bit(AFS_VNODE_MODIFYING, &vnode->flags);
->         }
->
->         if (vp->fid.vnode)
-> @@ -225,6 +227,10 @@ int afs_put_operation(struct afs_operation *op)
->
->         if (op->ops && op->ops->put)
->                 op->ops->put(op);
-> +       if (op->file[0].modification)
-> +               clear_bit(AFS_VNODE_MODIFYING, &op->file[0].vnode->flags);
-> +       if (op->file[1].modification && op->file[1].vnode != op->file[0].vnode)
-> +               clear_bit(AFS_VNODE_MODIFYING, &op->file[1].vnode->flags);
->         if (op->file[0].put_vnode)
->                 iput(&op->file[0].vnode->vfs_inode);
->         if (op->file[1].put_vnode)
-> diff --git a/fs/afs/inode.c b/fs/afs/inode.c
-> index 3a129b9fd9b8..80b6c8d967d5 100644
-> --- a/fs/afs/inode.c
-> +++ b/fs/afs/inode.c
-> @@ -294,8 +294,9 @@ void afs_vnode_commit_status(struct afs_operation *op, struct afs_vnode_param *v
->                         op->flags &= ~AFS_OPERATION_DIR_CONFLICT;
->                 }
->         } else if (vp->scb.have_status) {
-> -               if (vp->dv_before + vp->dv_delta != vp->scb.status.data_version &&
-> -                   vp->speculative)
-> +               if (vp->speculative &&
-> +                   (test_bit(AFS_VNODE_MODIFYING, &vnode->flags) ||
-> +                    vp->dv_before != vnode->status.data_version))
->                         /* Ignore the result of a speculative bulk status fetch
->                          * if it splits around a modification op, thereby
->                          * appearing to regress the data version.
-> @@ -911,6 +912,7 @@ int afs_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
->         }
->         op->ctime = attr->ia_ctime;
->         op->file[0].update_ctime = 1;
-> +       op->file[0].modification = true;
->
->         op->ops = &afs_setattr_operation;
->         ret = afs_do_sync_operation(op);
-> diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-> index 52157a05796a..5ed416f4ff33 100644
-> --- a/fs/afs/internal.h
-> +++ b/fs/afs/internal.h
-> @@ -645,6 +645,7 @@ struct afs_vnode {
->  #define AFS_VNODE_PSEUDODIR    7               /* set if Vnode is a pseudo directory */
->  #define AFS_VNODE_NEW_CONTENT  8               /* Set if file has new content (create/trunc-0) */
->  #define AFS_VNODE_SILLY_DELETED        9               /* Set if file has been silly-deleted */
-> +#define AFS_VNODE_MODIFYING    10              /* Set if we're performing a modification op */
->
->         struct list_head        wb_keys;        /* List of keys available for writeback */
->         struct list_head        pending_locks;  /* locks waiting to be granted */
-> @@ -762,6 +763,7 @@ struct afs_vnode_param {
->         bool                    set_size:1;     /* Must update i_size */
->         bool                    op_unlinked:1;  /* True if file was unlinked by op */
->         bool                    speculative:1;  /* T if speculative status fetch (no vnode lock) */
-> +       bool                    modification:1; /* Set if the content gets modified */
->  };
->
->  /*
-> diff --git a/fs/afs/write.c b/fs/afs/write.c
-> index dc66ff15dd16..3edb6204b937 100644
-> --- a/fs/afs/write.c
-> +++ b/fs/afs/write.c
-> @@ -377,6 +377,7 @@ static int afs_store_data(struct afs_vnode *vnode, struct iov_iter *iter, loff_t
->
->         afs_op_set_vnode(op, 0, vnode);
->         op->file[0].dv_delta = 1;
-> +       op->file[0].modification = true;
->         op->store.write_iter = iter;
->         op->store.pos = pos;
->         op->store.size = size;
->
->
->
-> _______________________________________________
-> linux-afs mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-afs
+>  drivers/gpu/drm/amd/display/dc/core/dc.c | 1 -
+>  1 file changed, 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/a=
+md/display/dc/core/dc.c
+> index 8f0a13807d05..dcaa6b1e16af 100644
+> --- a/drivers/gpu/drm/amd/display/dc/core/dc.c
+> +++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
+> @@ -58,7 +58,6 @@
+>  #include "dc_link_ddc.h"
+>  #include "dm_helpers.h"
+>  #include "mem_input.h"
+> -#include "hubp.h"
+> =20
+>  #include "dc_link_dp.h"
+>  #include "dc_dmub_srv.h"
+> --=20
+> 2.25.1
+>=20
 
-Also verified that it gets rid of the warnings while running the
-generic/464, so you can add:
+--=20
+Rodrigo Siqueira
+https://siqueira.tech
 
-Tested-by: Marc Dionne <marc.dionne@auristor.com>
+--qz4nnjzgkciv5dyg
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Marc
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE4tZ+ii1mjMCMQbfkWJzP/comvP8FAmCKoOsACgkQWJzP/com
+vP+agQ//arVeQU82/PUFoyXH7PTUt3SQKVbpyBnC0yxDsBX5JblvMkNkPQKhrOUm
+HASRepMZjw19i1+B6NJ8s4v4BYutE7/nVf5AaNSu+b9Sl2I7xGwDnnr8r3M20Ni0
++xSf5XGFyX/VlPEwtuZhGZwgZALavJ5gFIC+otsuE6ACkr29BNSZyeHsXd8COSSl
+oErm05YBOta2DHW12aekcgBfqHHSabf7L2ETLbc5505YJf39L74Hb3h4JFgQqiZf
+yof2vyKFShNON17hsIpOGhPHqmHHLwmSMQCUIVhG7VGj4hz5zPT/T2+DdU94nddW
+s5/ov9eXkJcHyExNKXoVzxjlxWjgomOfgr5FVbZeknJZw0bg9GnqRz9Nqg8LsqAL
+pzW9MStHhePSPxdQI0lAFeszrg10orVV7e/k5sKmWzjeU2UfPZ5ZITorsguRKTPv
+hNIhzKzZhaxM1BCxjbQvwP9M6IuBZgVCVcYaVTrDSj9nvRpOgzhHhMIuWRp0/gPH
+SZBm07Z6fUiYlZ0HznG+TLXQcfFpGRuZDqNtJ2H0ET8Cf/t1aFU7KiElSaPJ3z/J
+SaN2MMK/Lt+9QrDn46/ZH/bx2/4R68DtgkZMf+p1JvNbabpap7oBIqGx/RHwaFBk
+SF0tzO81Y7E0t7Cbw3uCFkUqVe51jnP+HyW17uQDkqP0uPYmUhM=
+=txRg
+-----END PGP SIGNATURE-----
+
+--qz4nnjzgkciv5dyg--
