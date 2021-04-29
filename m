@@ -2,81 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C21E36EB68
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 15:38:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B649A36EB6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 15:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236737AbhD2Njb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 09:39:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40014 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231343AbhD2Nja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 09:39:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1981A6144B;
-        Thu, 29 Apr 2021 13:38:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619703523;
-        bh=971hVuOP0+M93zEJ9v1aY+SpzUjnc6StqqxYcms7O80=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eS04rvmFqyspmQoC/9Dg+oqFg1OI6gSWe+n4ZCfKz9MwiVBKbH7kF8bPhKPpUc/9X
-         cTsSvhY1D4lp9gwCSwqjugyR4sxVAnbcvvMcIZovu1w2Oi1cn5xyYDPcYQivTplHAL
-         a9bCci6SUPJD3TvPoiQD33F/LQQQJvqVkCggLen8=
-Date:   Thu, 29 Apr 2021 15:38:41 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>
-Subject: Re: [PATCH 037/190] Revert "RDMA/core: Fix several reference count
- leaks."
-Message-ID: <YIq24bDyB49QJm0S@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-38-gregkh@linuxfoundation.org>
- <20210421141444.GL1370958@nvidia.com>
- <YIgfbZDo9eQ2tKvc@kroah.com>
- <20210427161235.GB1370958@nvidia.com>
- <YIlTzGLpbRj3rh/R@kroah.com>
- <20210428130044.GQ1370958@nvidia.com>
+        id S237293AbhD2Nk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 09:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237084AbhD2NkY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 09:40:24 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E4EC06138D
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 06:39:37 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id a18so25341200qtj.10
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 06:39:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IgdBnMydFBzwsG7W3uYP/xp1blAOpZ2iF3BFsqoCBR4=;
+        b=D72PPw3JOCL5ArWLKUg1LwdWV4i791yrbbio9+d1fGpbB8TfYgO9ZgsEgt9+WcSW0G
+         H0/6BTJkS5OExQWGTmZx9vWat6g65+R7TtSNFJ730vVMQDjLQKbnhd/iKtKqeqMhlhVg
+         eMD8gTXifjMb9FPkds4hkkYV5AKQSl5Rj5+SQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IgdBnMydFBzwsG7W3uYP/xp1blAOpZ2iF3BFsqoCBR4=;
+        b=rac0jqOle3pGHr+auwQTSS/8QMHrhGdHS8j8cvCEg5uXc0yCr2epxfmezvge8Apc0E
+         goS5Dqu35PayiofNPPGLTeitDG72NKR8hYt6JVjoT5TgcwXORiSj3QeJ+MFqvoyX6495
+         PWKgWhEdNGuwgMgjDmA0kAGqpAZsREUEyf1F9qxwfsp9oMwfkTP+Kl5Jl4GsBXNwisMY
+         ZffXkdBuFI8+AEVKPBG5vYW260cfRA9nc8wbD62CeTrlHb5WePTgnv1lCFpU0nwaebEa
+         IcVRkE1daCfVBAyqHwvdxuQNw5Qsh5WJYBwcWxxygzHEWYk5DOvuYOn5bBCyqXINy/4s
+         Waww==
+X-Gm-Message-State: AOAM531Aaz3An61KZSXGbxlzyWgFcAkCJr0VkND/gyxORm+DRrDu9gLR
+        PAs7KXaUZaReBLRX3fzGsuHYJEICrPtLfQ==
+X-Google-Smtp-Source: ABdhPJwWjpJ0tY1SYjmvqsuQ6RSgj6QWhf5hv0cpkySyoRl4WUyi4P/JOqMwUK3fPo23XIlIrGd5SA==
+X-Received: by 2002:ac8:4b54:: with SMTP id e20mr31961309qts.371.1619703575632;
+        Thu, 29 Apr 2021 06:39:35 -0700 (PDT)
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
+        by smtp.gmail.com with ESMTPSA id b15sm2112398qkj.95.2021.04.29.06.39.34
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Apr 2021 06:39:35 -0700 (PDT)
+Received: by mail-yb1-f182.google.com with SMTP id z1so78484967ybf.6
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 06:39:34 -0700 (PDT)
+X-Received: by 2002:a05:6902:4e2:: with SMTP id w2mr17570245ybs.79.1619703574539;
+ Thu, 29 Apr 2021 06:39:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210428130044.GQ1370958@nvidia.com>
+References: <1619674827-26650-1-git-send-email-rnayak@codeaurora.org> <1619674827-26650-2-git-send-email-rnayak@codeaurora.org>
+In-Reply-To: <1619674827-26650-2-git-send-email-rnayak@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 29 Apr 2021 06:39:23 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UUowpvn_2uPrOQG9hOCdX6GYZDojBdW+w8hg5q6PfvAQ@mail.gmail.com>
+Message-ID: <CAD=FV=UUowpvn_2uPrOQG9hOCdX6GYZDojBdW+w8hg5q6PfvAQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: sc7280: Add "google,senor" to the compatible
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 10:00:44AM -0300, Jason Gunthorpe wrote:
-> On Wed, Apr 28, 2021 at 02:23:40PM +0200, Greg Kroah-Hartman wrote:
-> 
-> > > We've talked about this specifically before:
-> > > 
-> > > http://lore.kernel.org/r/20210331170720.GY2710221@ziepe.ca
-> > > 
-> > > I still don't understand what you mean by "udev sees it properly", as
-> > > above, all the tests I thought of look OK.
-> > 
-> > Can you query the udev database to see the attribute values?
-> 
-> It appears so unless I misunderstand your ask:
-> 
-> $ udevadm info -a /sys/class/infiniband/ibp0s9
->     ATTR{ports/1/cm_rx_duplicates/dreq}=="0"
+Hi,
 
-That works?  Nice, I didn't think it did.
+On Wed, Apr 28, 2021 at 10:40 PM Rajendra Nayak <rnayak@codeaurora.org> wrote:
+>
+> The sc7280 IDP board is also called senor in the Chrome OS builds.
+> Add the "google,senor" compatible so coreboot/depthcharge knows what
+> device tree blob to pick
+>
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sc7280-idp.dts | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-But what about the uevent that fired for "1", isn't there attibutes
-assigned to it that udev ignores?
-
-> > As you say, it's uABI for now, so odds are nothing can be changed.  It's
-> > just no fun for when other subsystems want to do this same thing, they
-> > point at this code and say "see, they did it!" :)
-> 
-> Are you sure we shouldn't just formally support this?
-> 
-> What is the exact technical blocker?
-
-Placing a raw kobject below a struct device breaks the "device tree"
-model.  You now have devices with an arbritrary number of levels deep
-set of attributes, making it impossible to determine all attributes for
-a device in a simple way.
-
-thanks,
-
-greg k-h
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
