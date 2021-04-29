@@ -2,159 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B597B36EF15
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E892B36EF17
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241001AbhD2RqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 13:46:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240931AbhD2RqJ (ORCPT
+        id S241011AbhD2Rq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 13:46:58 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:48994 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240931AbhD2Rq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 13:46:09 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4620BC06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:45:21 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso60216382otb.13
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:45:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GbYmESgQnmInPmbhpZ7rWt4zsWsa0tFAztscShVWN9U=;
-        b=vo2hrfvnOI6K5Ln4dS+wWzLtKsRVK+bII/RzGZi/zH190Occ5Gd1Ik+idDOaOpnbta
-         3tO3kUKyXRI4aBXIlJvFthSwTUmxRPSBoX8Mfw+PdFgqvn8fBB+6wR3GceKKQV66mJKm
-         EQmKQClJUnZRdiy1R/LlPTUbXPcqlbmypPtTLlOResxjAy2PLcMqkHMuO/c0QBLd1dPX
-         AdoUVG7nWCgh6hO+xG5DpB8AIHPuNzVYkW7B84gY0zdzKezbb4LvklN/3zzC4ghTMha6
-         dH84LoDHmRSAM+YwqE6XmtbWHLg/QNmi9ZYhst4CaC9uwj7PgZwudqsFQ4vyUgX52NLS
-         W9/g==
+        Thu, 29 Apr 2021 13:46:57 -0400
+Received: by mail-il1-f198.google.com with SMTP id h4-20020a926c040000b0290192f4fa4c3bso12905707ilc.15
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:46:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GbYmESgQnmInPmbhpZ7rWt4zsWsa0tFAztscShVWN9U=;
-        b=NBm0dOF9rrreivynsKtdIWEXu4aa00fWmQxnEFxTy6duKeffapviNeugCDbbx2Fp2N
-         DD+z1ZcXSDBCGU8dIof1FgMH9qwhBr3JcsGL9FbNMqYF48CJ7zDJZEcWx+oZYxVZ3g7S
-         i5iXrrlu9vO8hFzi7UD03rAx56/CzNR7fRmfaMe/k2PznojWv54NEn2eMIl+oqCBf6IT
-         U/EwBVIlz4GIvh1aAZITthxue8h2Zeyc+VZB1eW0marbzaxFR1EjXiV1y3askyc5u6NY
-         H/Ei89k9eNxiOuRCpmT7S8k13WOWi5DcK8gcXo7CuSE4XXGKtVtcy2J1x4QjZt+SuxFl
-         G+Aw==
-X-Gm-Message-State: AOAM530vPn5C9m5VGxtcTO0ziWNweyS5g+ZRgwbgCBngy5DjwVT9+MMr
-        P4XS2v7q/bIEVf3NO5R9ps1751+J5ilAkrl3Qx5sQIVs4wE=
-X-Google-Smtp-Source: ABdhPJxWHOT49B50EOhJuCFIVghZvUxS4Pkj0+eUhcAl2GOyx5G+ZugyaaA3ny00e9zH+pduNU6Ek5Q70F5QxcYoCOs=
-X-Received: by 2002:a9d:7857:: with SMTP id c23mr453371otm.208.1619718318872;
- Thu, 29 Apr 2021 10:45:18 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=1DydgRsBOMclr8lyrq3i7fMITXu/lphpAdBAlh88rSU=;
+        b=jzQ96PJSsS21iypRh4ebv7PxtV2/L4+mdtlbLSLDGQ2GIUNH1ndC3CoBRu6tFopfW1
+         lkKVYPFYWcvvHZgSX9gmrpoQiTN/zql48uziYi/X3jyEhC56yzH1cF3QnVcpGKlGv9iN
+         Jtaf3rGJS94noo8faEif+sMbjDaIunOZmArYUPCXrEO6PMfv5/+lGTYdexF22Ie6sfJo
+         TEZvMwao0vGXJBpZypGwrXlXjFIaIAS2arQqBpT42ALAwx0BRUqaUlL80aRZBIutOMfM
+         FQ6Ue5/LcX4NLybtnFrycRbBaMHHOwYAGFsoVKMe8CmisCGilsnV1GAJ9KNHvTS5MyEu
+         anXw==
+X-Gm-Message-State: AOAM533z1cqglfCqbGuLsPnSvonqSThWnvLVrjvAk0aH/5Ne/KbdYvzT
+        Pq22rVXCwZpoBUR0QrIvzeDQFnv1MWdxz+tz+GM+kjbCCbDU
+X-Google-Smtp-Source: ABdhPJydPNzW45/whprBQL+Ac/2InNOOOYTRFbWB3JVZZeInMDqejiFAQUGgkQsp40t3ND/wlLTSgl6aueY1s8TPTqQh+qmzUvLA
 MIME-Version: 1.0
-References: <20210427223635.2711774-1-bgardon@google.com> <20210427223635.2711774-6-bgardon@google.com>
- <997f9fe3-847b-8216-c629-1ad5fdd2ffae@redhat.com> <CANgfPd8RZXQ-BamwQPS66Q5hLRZaDFhi0WaA=ZvCP4BbofiUhg@mail.gmail.com>
- <d936b13b-bb00-fc93-de3b-adc59fa32a7b@redhat.com> <CANgfPd9kVJOAR_uq+oh9kE2gr00EUAGSPiJ9jMR9BdG2CAC+BA@mail.gmail.com>
- <5b4a0c30-118c-da1f-281c-130438a1c833@redhat.com> <CANgfPd_S=LjEs+s2UzcHZKfUHf+n498eSbfidpXNFXjJT8kxzw@mail.gmail.com>
- <16b2f0f3-c9a8-c455-fff0-231c2fe04a8e@redhat.com> <YIoAixSoRsM/APgx@google.com>
- <623c2305-91ae-4617-357e-fe7d9147b656@redhat.com>
-In-Reply-To: <623c2305-91ae-4617-357e-fe7d9147b656@redhat.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Thu, 29 Apr 2021 10:45:07 -0700
-Message-ID: <CANgfPd9BWoO4Hy0e8urus4AaJP8t6fByqHK+ddsed6KFg6W97A@mail.gmail.com>
-Subject: Re: [PATCH 5/6] KVM: x86/mmu: Protect kvm->memslots with a mutex
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+X-Received: by 2002:a92:3212:: with SMTP id z18mr672901ile.171.1619718370026;
+ Thu, 29 Apr 2021 10:46:10 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 10:46:10 -0700
+In-Reply-To: <000000000000ce433f05c11dc4e6@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000014ec7c05c12012b1@google.com>
+Subject: Re: [syzbot] WARNING in io_uring_setup (2)
+From:   syzbot <syzbot+1eca5b0d7ac82b74d347@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 12:02 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 29/04/21 02:40, Sean Christopherson wrote:
-> > On Thu, Apr 29, 2021, Paolo Bonzini wrote:
-> >> it's not ugly and it's still relatively easy to explain.
-> >
-> > LOL, that's debatable.
->
->  From your remark below it looks like we have different priorities on
-> what to avoid modifying.
->
-> I like the locks to be either very coarse or fine-grained enough for
-> them to be leaves, as I find that to be the easiest way to avoid
-> deadlocks and complex hierarchies.  For this reason, I treat unlocking
-> in the middle of a large critical section as "scary by default"; you
-> have to worry about which invariants might be required (in the case of
-> RCU, which pointers might be stored somewhere and would be invalidated),
-> and which locks are taken at that point so that the subsequent relocking
-> would change the lock order from AB to BA.
+syzbot has bisected this issue to:
 
-The idea of dropping the srcu read lock to allocate the rmaps scares
-me too. I have no idea what it protects, in addition to the memslots,
-and where we might be making assumptions about things staying valid
-because of it.
-Is there anywhere that we enumerate the things protected by that SRCU?
-I wonder if we have complete enough annotations for the SRCU / lockdep
-checker to find a problem if we were dropping the SRCU read lock in a
-bad place.
+commit eae071c9b4cefbcc3f985c5abf9a6e32c1608ca9
+Author: Pavel Begunkov <asml.silence@gmail.com>
+Date:   Sun Apr 25 13:32:24 2021 +0000
 
->
-> This applies to every path leading to the unlock/relock.  So instead
-> what matters IMO is shielding architecture code from the races that Ben
-> had to point out to me, _and the possibility to apply easily explained
-> rules_ outside more complex core code.
->
-> So, well, "relatively easy" because it's indeed subtle.  But if you
-> consider what the locking rules are, "you can choose to protect
-> slots->arch data with this mutex and it will have no problematic
-> interactions with the memslot copy/update code" is as simple as it can get.
->
-> >> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> >> index 2799c6660cce..48929dd5fb29 100644
-> >> --- a/virt/kvm/kvm_main.c
-> >> +++ b/virt/kvm/kvm_main.c
-> >> @@ -1377,16 +1374,17 @@ static int kvm_set_memslot(struct kvm *kvm,
-> >>              goto out_slots;
-> >>      update_memslots(slots, new, change);
-> >> -    slots = install_new_memslots(kvm, as_id, slots);
-> >> +    install_new_memslots(kvm, as_id, slots);
-> >>      kvm_arch_commit_memory_region(kvm, mem, old, new, change);
-> >> -
-> >> -    kvfree(slots);
-> >>      return 0;
-> >>   out_slots:
-> >> -    if (change == KVM_MR_DELETE || change == KVM_MR_MOVE)
-> >> +    if (change == KVM_MR_DELETE || change == KVM_MR_MOVE) {
-> >> +            slot = id_to_memslot(slots, old->id);
-> >> +            slot->flags &= ~KVM_MEMSLOT_INVALID;
-> >
-> > Modifying flags on an SRCU-protect field outside of said protection is sketchy.
-> > It's probably ok to do this prior to the generation update, emphasis on
-> > "probably".  Of course, the VM is also likely about to be killed in this case...
-> >
-> >>              slots = install_new_memslots(kvm, as_id, slots);
-> >
-> > This will explode if memory allocation for KVM_MR_MOVE fails.  In that case,
-> > the rmaps for "slots" will have been cleared by kvm_alloc_memslot_metadata().
->
-> I take your subsequent reply as a sort-of-review that the above approach
-> works, though we may disagree on its elegance and complexity.
+    io_uring: prepare fixed rw for dynanic buffers
 
-I'll try Paolo's suggestion about using a second dup_slots to avoid
-backing the higher level rmap arrays with dynamic memory and send out
-a V2.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13f639edd00000
+start commit:   d72cd4ad Merge tag 'scsi-misc' of git://git.kernel.org/pub..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=100e39edd00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17f639edd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=53fdf14defd48c56
+dashboard link: https://syzkaller.appspot.com/bug?extid=1eca5b0d7ac82b74d347
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15aeff43d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1747117dd00000
 
->
-> Paolo
->
-> > The SRCU index is already tracked in vcpu->srcu_idx, why not temporarily drop
-> > the SRCU lock if activate_shadow_mmu() needs to do work so that it can take
-> > slots_lock?  That seems simpler and I think would avoid modifying the common
-> > memslot code.
-> >
-> > kvm_arch_async_page_ready() is the only path for reaching kvm_mmu_reload() that
-> > looks scary, but that should be impossible to reach with the correct MMU context.
-> > We could always and an explicit sanity check on the rmaps being avaiable.
->
+Reported-by: syzbot+1eca5b0d7ac82b74d347@syzkaller.appspotmail.com
+Fixes: eae071c9b4ce ("io_uring: prepare fixed rw for dynanic buffers")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
