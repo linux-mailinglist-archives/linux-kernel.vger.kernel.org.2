@@ -2,149 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5EF36E89D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A39636E86C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240421AbhD2KWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 06:22:35 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:16570 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237774AbhD2KWd (ORCPT
+        id S240300AbhD2KKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 06:10:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39088 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240262AbhD2KKK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 06:22:33 -0400
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210429102145epoutp023e6e181cb512180fd200ed0ba347d07d~6TQZjHhIM0141601416epoutp02g
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:21:45 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210429102145epoutp023e6e181cb512180fd200ed0ba347d07d~6TQZjHhIM0141601416epoutp02g
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1619691705;
-        bh=qvvGTSpuXSrZtizggQL76UqiLnmybbPMcVCYW4PRp8U=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=OI+QhfWleKdc3NdMtqWVlNv/raS3+0xkQ9/78OuyB9muuNA7NIdUFXnZ2o2L8zl3e
-         y0AVdrFVhak6hZrmzmt/trKbnk1lfv0CHDmmlE6H+3lfTVxnrAB2ofY5AUIcuhF1Ht
-         R7iiroTcXdPVoB/mSG+inMEvIGFh7EeJzM50pCh0=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20210429102145epcas2p1527c0ca6f17df83a2ea754dd54b36dce~6TQY7zRHr0094500945epcas2p1T;
-        Thu, 29 Apr 2021 10:21:45 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.40.190]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4FWBPM5nFxz4x9Q3; Thu, 29 Apr
-        2021 10:21:43 +0000 (GMT)
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        0A.D4.09433.7B88A806; Thu, 29 Apr 2021 19:21:43 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210429102143epcas2p4c8747c09a9de28f003c20389c050394a~6TQXNHUkO1667016670epcas2p40;
-        Thu, 29 Apr 2021 10:21:43 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210429102143epsmtrp1e70eec154bd490fe7419c00b0a701a1b~6TQXLU3Q22489024890epsmtrp1_;
-        Thu, 29 Apr 2021 10:21:43 +0000 (GMT)
-X-AuditID: b6c32a47-f61ff700000024d9-3f-608a88b7e43d
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        93.23.08637.7B88A806; Thu, 29 Apr 2021 19:21:43 +0900 (KST)
-Received: from ubuntu.dsn.sec.samsung.com (unknown [12.36.155.120]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210429102143epsmtip2a518c690a833daf0b90c4ca5b2986392~6TQW7ko2V1939219392epsmtip25;
-        Thu, 29 Apr 2021 10:21:43 +0000 (GMT)
-From:   Dongseok Yi <dseok.yi@samsung.com>
-To:     bpf@vger.kernel.org
-Cc:     Dongseok Yi <dseok.yi@samsung.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf] bpf: check for data_len before upgrading mss when 6 to
- 4
-Date:   Thu, 29 Apr 2021 19:08:23 +0900
-Message-Id: <1619690903-1138-1-git-send-email-dseok.yi@samsung.com>
-X-Mailer: git-send-email 2.7.4
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrNKsWRmVeSWpSXmKPExsWy7bCmhe72jq4EgxlHtS2+/57NbPHl5212
-        i89HjrNZLF74jdlizvkWFosr0/4wWjTtWMFk8eLDE0aL5/t6mSwubOtjtbi8aw6bxbEFYhY/
-        D59htnixZAajA5/HlpU3mTwmNr9j99g56y67R9eNS8wem1Z1snn0bVnF6PF5k1wAe1SOTUZq
-        YkpqkUJqXnJ+SmZeuq2Sd3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7QyUoKZYk5pUCh
-        gMTiYiV9O5ui/NKSVIWM/OISW6XUgpScAkPDAr3ixNzi0rx0veT8XCtDAwMjU6DKhJyM7dPm
-        shUc5qzYcW4hUwPjffYuRg4OCQETiVPzHbsYuTiEBHYwSmzvOMMO4XxilFj6cxILhPONUWLW
-        3CNMXYycYB2LV/+CSuxllFjxYB1Uyw9GiQMvW1lAqtgENCT2v3vBCmKLCIhLLDi2gQmkiFng
-        HLPEpflzGEESwgL+ErMfvGQGsVkEVCV+XPsE1sAr4Cyx7P9vdoh1chI3z3UygzRLCHxll1jb
-        0M0CkXCR2LF5ExuELSzx6vgWqAYpiZf9bVDf1Uu0dsdA9PYwSlzZ9wSq11hi1rN2RpAaZgFN
-        ifW79CHKlSWO3AKrYBbgk+g4/BdqCq9ER5sQhKkkMfFLPMQMCYkXJydDzfOQmH21E+wWIYFY
-        if/vT7NPYJSdhTB+ASPjKkax1ILi3PTUYqMCY+Q42sQIToVa7jsYZ7z9oHeIkYmD8RCjBAez
-        kgjv73WdCUK8KYmVValF+fFFpTmpxYcYTYGhNZFZSjQ5H5iM80riDU2NzMwMLE0tTM2MLJTE
-        eX+m1iUICaQnlqRmp6YWpBbB9DFxcEo1MNneCf2+dpnwtCcxOmp/FV6bC7CK/XJykHbawpi/
-        TuN2j1QWj+tCnbNXqvX8dUQ99E/1K5rpiOheffbSii3FYtGVK89kTkj4bvMXYHitXNbnfmfd
-        g0Ld54cnmyzkYUv6ZLrsy0MDo7uMZqHbmrnszr0vy3Vh0+yYzvd01cc+lUnF6rXnnM6+abyg
-        1Pgt7wfjrS/b+fcmbtO7rpAipbXrpPKH3sOv70b11ATmRS/gKjgQet/9T/OTKi+txbvv5ihu
-        sTqw3N72TVykwBS7F1OLZ6+6l67baMjW9s/Po+GkZbJk4rNe/WUyfLfTpk04nDBLYL/6pMvn
-        fi00ne9Qa2smGZO34KKviZzUkVNTtaLKlViKMxINtZiLihMBRryFlQ4EAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNLMWRmVeSWpSXmKPExsWy7bCSvO72jq4Eg43buCy+/57NbPHl5212
-        i89HjrNZLF74jdlizvkWFosr0/4wWjTtWMFk8eLDE0aL5/t6mSwubOtjtbi8aw6bxbEFYhY/
-        D59htnixZAajA5/HlpU3mTwmNr9j99g56y67R9eNS8wem1Z1snn0bVnF6PF5k1wAexSXTUpq
-        TmZZapG+XQJXxvZpc9kKDnNW7Di3kKmB8T57FyMnh4SAicTi1b9Yuhi5OIQEdjNKNPffZO1i
-        5ABKSEjs2uwKUSMscb/lCCtEzTdGiak7X7GAJNgENCT2v3vBCmKLCIhLLDi2gQmkiFngFrNE
-        98k5jCAJYQFfiYaZ38G2sQioSvy49gmsgVfAWWLZ/99QV8hJ3DzXyTyBkWcBI8MqRsnUguLc
-        9NxiwwLDvNRyveLE3OLSvHS95PzcTYzg8NTS3MG4fdUHvUOMTByMhxglOJiVRHh/r+tMEOJN
-        SaysSi3Kjy8qzUktPsQozcGiJM57oetkvJBAemJJanZqakFqEUyWiYNTqoHJrCna96D0zSvH
-        ufolTp7banuD5/ObwPZX7w6YanoZvXE7sCnzPKO+xtqfj5UfWDye7XjnVN6Hv3tns7+QT0le
-        9uO01Uafxqe6z47Fql6bHn/g8qPTW5tu8tutzsyIStp4/1l+q+cd1t8x8w2ieQp8Lfouvda+
-        v5x3H4+tierR4Cu/vnmfFbH6kfpTTTVg2l2L6gkxa2esPvW2b4Ig/9cmbeuSXe0vHl+MulRQ
-        vnvBT4XNKUzBO5447Np40aPn9epN1/YdaOf1ml7oqF9cctv6QN26Ta633543ZXdvEfM48D2c
-        T1GqPb2fN+bEtSi5+rDpuqZ34pXjFs4pL3W6p8usPHlR8KkDP0OS+14FnGBhUGIpzkg01GIu
-        Kk4EANEaXsW+AgAA
-X-CMS-MailID: 20210429102143epcas2p4c8747c09a9de28f003c20389c050394a
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210429102143epcas2p4c8747c09a9de28f003c20389c050394a
-References: <CGME20210429102143epcas2p4c8747c09a9de28f003c20389c050394a@epcas2p4.samsung.com>
+        Thu, 29 Apr 2021 06:10:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619690964;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7ZFyr5mpRghduXOnoE7H3sxU/6BfwiFPot9Qqrp6hRU=;
+        b=JwsXeJhKjYVh8SedOeXpuGXDj4MzMujSt1F4l1E7rky9idkL4B0dpD+OT1aAP86ZQvLnee
+        mmo5U3pcTCQ3PRxsFgDiOUtNk7RlqSt+G74eaIDNtJ1aeU/qrxQPLJGr3PwnnJ1j4KDOsL
+        d/0Ct/n0dvW5zmS6w+O6U2G8g6Pz5cc=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-377-8aAoDgGhOYGo1qCKVmm5gw-1; Thu, 29 Apr 2021 06:09:19 -0400
+X-MC-Unique: 8aAoDgGhOYGo1qCKVmm5gw-1
+Received: by mail-ed1-f71.google.com with SMTP id c15-20020a056402100fb029038518e5afc5so21041911edu.18
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 03:09:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7ZFyr5mpRghduXOnoE7H3sxU/6BfwiFPot9Qqrp6hRU=;
+        b=ixSRtzprlKWHSsgCNz3+r6yMylKC3pimhA8j4Yj1vl3VdbNKzv7zcV5at34U6WD6iY
+         OZK2uvKwq9WrRWMGJmuGXwizxJBqAoKXMcpcZeLUGPNNECMNRfBEBmnBVxqQ+7LtDEFy
+         2N8GIfOTWtHDhcgDoJ2vZ5esTrInAaAaqztmHjgJUCCDpxP1KnIXxGC1IvpkZdJ11Co9
+         yDdA65HA9otBJZvHo+QJaKjURZ7w1SH6psf/TzYlRg2YkIrAi+k84DnWAXUTAKUcPcv/
+         6vDI4M+I+cN9Be7rkLpKkTrs9eSF4jnKHc2UYXxZPJ04dU3C7ZlL11o2aZMgaAn2BqLo
+         SRYw==
+X-Gm-Message-State: AOAM531SN8CmHSjTleAOJ1nibNNT7Gb8keuQlkO2gNMmEX3dLQN4olVu
+        JtbVcHEGCdoEBFCFhWOpeIAfoEQNyxS8YwGBrPNSVu2/HrNX7rSJ2mzTKU+JNUbaDw8nCMqfB0r
+        LgIhTGRW1DjRoxZUdHz912F41
+X-Received: by 2002:a05:6402:2211:: with SMTP id cq17mr16993721edb.28.1619690958432;
+        Thu, 29 Apr 2021 03:09:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz1YMOL4t+paQHX+lVQsNYt9WN5JUhsRxvn9uu0mM2C1D//VngYDfIF/6Qg3bG0hhfeHSGVxw==
+X-Received: by 2002:a05:6402:2211:: with SMTP id cq17mr16993705edb.28.1619690958290;
+        Thu, 29 Apr 2021 03:09:18 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id t15sm2010629edr.55.2021.04.29.03.09.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Apr 2021 03:09:17 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] KVM: x86: add MSR_KVM_MIGRATION_CONTROL
+To:     Sean Christopherson <seanjc@google.com>,
+        Steve Rutherford <srutherford@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Venu Busireddy <venu.busireddy@oracle.com>
+References: <20210421173716.1577745-1-pbonzini@redhat.com>
+ <20210421173716.1577745-3-pbonzini@redhat.com> <YIiMrWS60NuesU63@google.com>
+ <CABayD+dKLTx5kQTaKASQkcam4OiHJueuL1Vf32soiLq=torg+w@mail.gmail.com>
+ <YInAT6MYU2N0tKSW@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <cc0c6333-6c2f-e8f3-f838-3cb2492f007a@redhat.com>
+Date:   Thu, 29 Apr 2021 12:09:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <YInAT6MYU2N0tKSW@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tcp_gso_segment check for the size of GROed payload if it is bigger
-than the mss. bpf_skb_proto_6_to_4 increases mss, but the mss can be
-bigger than the size of GROed payload unexpectedly if data_len is not
-big enough.
+On 28/04/21 22:06, Sean Christopherson wrote:
+> But there's only multiple meanings if we define the bit to be specific to
+> page encryption.  E.g. if the bit is KVM_READY_FOR_MIGRATION, then its meaning
+> (when cleared) is simply "please don't migrate me, I will die".  KVM doesn't
+> care_why_  the guest is telling userspace that it's not ready for migration, nor
+> does KVM care if userspace honors the indicator.
 
-Assume that skb gso_size = 1372 and data_len = 8. bpf_skb_proto_6_to_4
-would increse the gso_size to 1392. tcp_gso_segment will get an error
-with 1380 <= 1392.
+Makes sense, I'll change that.
 
-Check for the size of GROed payload if it is really bigger than target
-mss when increase mss.
-
-Fixes: 6578171a7ff0 (bpf: add bpf_skb_change_proto helper)
-Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
----
- net/core/filter.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 9323d34..3f79e3c 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3308,7 +3308,9 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
- 		}
- 
- 		/* Due to IPv4 header, MSS can be upgraded. */
--		skb_increase_gso_size(shinfo, len_diff);
-+		if (skb->data_len > len_diff)
-+			skb_increase_gso_size(shinfo, len_diff);
-+
- 		/* Header must be checked, and gso_segs recomputed. */
- 		shinfo->gso_type |= SKB_GSO_DODGY;
- 		shinfo->gso_segs = 0;
--- 
-2.7.4
+Paolo
 
