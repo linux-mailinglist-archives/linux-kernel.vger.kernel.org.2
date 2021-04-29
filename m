@@ -2,105 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3AE36E62A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 09:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E409636E634
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 09:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231202AbhD2Hj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 03:39:26 -0400
-Received: from mga14.intel.com ([192.55.52.115]:1980 "EHLO mga14.intel.com"
+        id S237128AbhD2HmG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 29 Apr 2021 03:42:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239762AbhD2HjH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 03:39:07 -0400
-IronPort-SDR: jUrGf21yTe8sRKnxPPkd1nSS7eh1OpLcjLOwvEh8CoV/Rt2DVr5puR4y9l1NkwoG7QO7ltTYcq
- sXGmeZYOrt6Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9968"; a="196502442"
-X-IronPort-AV: E=Sophos;i="5.82,258,1613462400"; 
-   d="scan'208";a="196502442"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 00:38:21 -0700
-IronPort-SDR: qyNJhMyS573341bMtMyQx7/cmndiTpoc0zlhI+GheSQDEwbQVSpGI+WeIO1n2To/9vI8oiR1Qo
- qqtznY9tO1DQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,258,1613462400"; 
-   d="scan'208";a="423944954"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
-  by fmsmga008.fm.intel.com with ESMTP; 29 Apr 2021 00:38:16 -0700
-Date:   Thu, 29 Apr 2021 15:38:16 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>, paulmck@kernel.org,
-        kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel-team@fb.com, neeraju@codeaurora.org,
-        zhengjun.xing@intel.com, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Borislav Petkov <bp@suse.de>
-Subject: Re: [clocksource]  8c30ace35d:
- WARNING:at_kernel/time/clocksource.c:#clocksource_watchdog
-Message-ID: <20210429073816.GA317@shbuild999.sh.intel.com>
-References: <87y2d3mo2q.ffs@nanos.tec.linutronix.de>
- <87a6pimt1f.ffs@nanos.tec.linutronix.de>
- <YImBlV8l7bjZ7Q6G@hirez.programming.kicks-ass.net>
- <871raumjj4.ffs@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <871raumjj4.ffs@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        id S231889AbhD2Hld (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 03:41:33 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 093BB613BD;
+        Thu, 29 Apr 2021 07:40:47 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lc1Hw-009zNf-QY; Thu, 29 Apr 2021 08:40:44 +0100
+Date:   Thu, 29 Apr 2021 08:40:43 +0100
+Message-ID: <87eeeto7wk.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     =?UTF-8?B?6ZmI5Lqu?= <cl@rock-chips.com>
+Cc:     heiko@sntech.de, robh+dt@kernel.org, jagan@amarulasolutions.com,
+        wens@csie.org, uwe@kleine-koenig.org, mail@david-bauer.net,
+        jbx6244@gmail.com, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
+        cnsztl@gmail.com, devicetree@vger.kernel.org,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
+        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
+        zhangqing@rock-chips.com, huangtao@rock-chips.com,
+        wim@linux-watchdog.org, linux@roeck-us.net, jamie@jamieiles.com,
+        linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH v3 09/10] arm64: dts: rockchip: add core dtsi for RK3568 SoC
+In-Reply-To: <3401442c-24a1-e8f8-fc4a-fa44d94b903b@rock-chips.com>
+References: <20210428134759.22076-1-cl@rock-chips.com>
+        <20210428135002.22528-1-cl@rock-chips.com>
+        <87h7jqo3d2.wl-maz@kernel.org>
+        <3401442c-24a1-e8f8-fc4a-fa44d94b903b@rock-chips.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: cl@rock-chips.com, heiko@sntech.de, robh+dt@kernel.org, jagan@amarulasolutions.com, wens@csie.org, uwe@kleine-koenig.org, mail@david-bauer.net, jbx6244@gmail.com, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, jensenhuang@friendlyarm.com, michael@amarulasolutions.com, cnsztl@gmail.com, devicetree@vger.kernel.org, ulf.hansson@linaro.org, linux-mmc@vger.kernel.org, gregkh@linuxfoundation.org, linux-serial@vger.kernel.org, linux-i2c@vger.kernel.org, jay.xu@rock-chips.com, shawn.lin@rock-chips.com, david.wu@rock-chips.com, zhangqing@rock-chips.com, huangtao@rock-chips.com, wim@linux-watchdog.org, linux@roeck-us.net, jamie@jamieiles.com, linux-watchdog@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 07:00:15PM +0200, Thomas Gleixner wrote:
-> On Wed, Apr 28 2021 at 17:39, Peter Zijlstra wrote:
-> > On Wed, Apr 28, 2021 at 03:34:52PM +0200, Thomas Gleixner wrote:
-> >> #4 is the easy case because we can check MSR_TSC_ADJUST to figure out
-> >>    whether something has written to MSR_TSC or MSR_TSC_ADJUST and undo
-> >>    the damage in a sane way.
-> >
-> > This is after the fact though; userspace (and kernel space) will have
-> > observed non-linear time and things will be broken in various subtle and
-> > hard to tell ways.
+On Thu, 29 Apr 2021 02:13:35 +0100,
+陈亮 <cl@rock-chips.com> wrote:
 > 
-> What I observed in the recent past is that _IF_ that happens it's a
-> small amount of cycles so it's not a given that this can be observed
-> accross CPUs. But yes, it's daft.
-
-Currently when tsc_adjust overriden is detected, the warning msg is
-"[Firmware Bug]: TSC ADJUST differs: CPU%u %lld --> %lld. Restoring",
-which is kind of gentle. With Borislav's patch of preventing user space
-from writing to tsc_adjust msr, the warning could be stronger? Adding
-something after that like: 
-
-"Writing to TSC_ADJUST MSR is dangerous, and may cause the lost of
-your best clocksource: tsc, please check with your BIOS/OS vendors"
-
-Thanks,
-Feng
-
-> >> I can live with that and maybe we should have done that 15 years ago
-> >> instead of trying to work around it at the symptom level.
-> >
-> > Anybody that still has runtime BIOS wreckage will then silently suffer
-> > nonlinear time, doubly so for anybody not having TSC_ADJUST. Are we sure
-> > we can tell them all to bugger off and buy new hardware?
-> >
-> > At the very least we need something like tsc=broken, to explicitly mark
-> > TSC bad on machines, so that people that see TSC fail on their current
-> > kernels can continue to use the new kernels. This requires a whole lot
-> > of care on the part of users though, and will raise a ruckus, because I
-> > bet a fair number of these people are not even currently aware we're
-> > disabling TSC for them :/
+> Hi Marc,
 > 
-> I'm still allowed to dream, right? :)
+> 在 2021/4/28 下午11:06, Marc Zyngier 写道:
+> > On Wed, 28 Apr 2021 14:50:02 +0100,
+> > <cl@rock-chips.com> wrote:
+> >> From: Liang Chen <cl@rock-chips.com>
+> >> 
+> >> RK3568 is a high-performance and low power quad-core application processor
+> >> designed for personal mobile internet device and AIoT equipment. This patch
+> >> add basic core dtsi file for it.
+> >> 
+> >> We use scmi_clk for cortex-a55 instead of standard ARMCLK, so that
+> >> kernel/uboot/rtos can change cpu clk with the same code in ATF, and we will
+> >> enalbe a special high-performance PLL when high frequency is required. The
+> >> smci_clk code is in ATF, and clkid for cpu is 0, as below:
+> >> 
+> >>      cpu0: cpu@0 {
+> >>          device_type = "cpu";
+> >>          compatible = "arm,cortex-a55";
+> >>          reg = <0x0 0x0>;
+> >>          clocks = <&scmi_clk 0>;
+> >>      };
+> >> 
+> >> Signed-off-by: Liang Chen <cl@rock-chips.com>
+> >> ---
+> >>   .../boot/dts/rockchip/rk3568-pinctrl.dtsi     | 3111 +++++++++++++++++
+> >>   arch/arm64/boot/dts/rockchip/rk3568.dtsi      |  779 +++++
+> >>   2 files changed, 3890 insertions(+)
+> >>   create mode 100644 arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
+> >>   create mode 100644 arch/arm64/boot/dts/rockchip/rk3568.dtsi
+> > [...]
+> > 
+> >> +	gic: interrupt-controller@fd400000 {
+> >> +		compatible = "arm,gic-v3";
+> >> +		reg = <0x0 0xfd400000 0 0x10000>, /* GICD */
+> >> +		      <0x0 0xfd460000 0 0xc0000>; /* GICR */
+> > If this SoC has 4 CPUs, that's 4 redistributors. Given that GIC600
+> > doesn't implement VLPIs, that's 128kB per redistributors. Why is GICR
+> > large enough for 6 CPUs here? Is that copy-pasted from another SoC?
+> Copy from rk3399, sorry.
+> >> +		interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
+> >> +		interrupt-controller;
+> >> +		#interrupt-cells = <3>;
+> >> +		mbi-alias = <0x0 0xfd400000>;
+> >> +		mbi-ranges = <296 24>;
+> >> +		msi-controller;
+> >> +	};
+> > Glad to see that you found some spare SPIs to get MSIs going
+> > 
+> > However, the whole point of mbi-alias (aka GICA in GIC600) is to be
+> > different from GICD and provide some isolation via an IOMMU.  If I
+> > trust the TRM, if should be at 0xfd10000 in your implementation.
 > 
-> Thanks,
+> But in the ./devicetree/bindings/interrupt-controller/arm,gic-v3.yaml, say:
 > 
->         tglx
+>   mbi-alias:
+>     description:
+>       Address property. Base address of an alias of the *GICD* region
+> containing
+>       only the {SET,CLR}SPI registers to be used if isolation is required,
+>       and if supported by the HW.
+
+
+[recurring theme: I happen to know about this section of the binding,
+having written the original myself]
+
+How does that contradict my comment? GIC600's GICA page only contains
+the four {SET,CLR}_SPI registers, as expected (see section 4.3 in the
+TRM[1]), and the address is computed using table 4-1 "Register map
+pages" of the same document.
+
+Please either fix the DT or explain why the GICA distributor alias
+isn't usable.
+
+	M.
+
+[1] https://documentation-service.arm.com/static/5e7ddddacbfe76649ba53034
+
+-- 
+Without deviation from the norm, progress is not possible.
