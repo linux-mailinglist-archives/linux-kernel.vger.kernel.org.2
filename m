@@ -2,323 +2,405 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 465F936E63A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 09:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9C836E63E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 09:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239202AbhD2Hs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 03:48:29 -0400
-Received: from mail-vi1eur05on2078.outbound.protection.outlook.com ([40.107.21.78]:29381
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229814AbhD2HsY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 03:48:24 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nXU2/YgAer9fpvvwTqg/zx7s4pKGNNSp12VDRxLctkQlPJvZt335XRYJckKjduYgL66StNI4bsNhbkNTYSAssT/BYxEQ3k4PanIFQpAE8omUepcuFciYooedvaruaTW2AXkxwxaV//ClLLD/oZkj7GvZvsQjU7nTDrPfCizNot9zfX5Y+MSnrG2+SDCmiACQaK3X1Qcv7FHOi8JvkPTFh8LJ70g9If7tX35ZY250ESCUq2hlwpltbbMQ7bW0umdENr7mdoYg9p5bONlnsySkyXcb4anikd7TC76lz6+52b7JDrm0KaJKvtid3QVrVuasXccRbdZyMJlnWCFNQMvTDg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3yPMMInUYdgvN+6ceoH3SloJ2LW0qbrxQnYfD2j1EoE=;
- b=NtWCrWXnzWO2hV6M5HHLdodlgkNfRmsTLK7I4V4oxajPlKA1vxnXC57mFgvS8Zzx7GKbkRMpzcf1u5lx9Fq57roHTJecKp+bf1Fmp/VjMKOxojc1YKg/I3mq2HuTEErQyQEjrehEhEny1DWl7K6A90O3nkuSx/elC0UF1EcQAl3SIkyWgeM6632uwgJPy28fW8HGWH3l1/aiN2RMG1FU5VONzeZVL7GTuPK2FSu7/QGcT/UeDHnE5BNKp+GhI94FTPokggnLqnGaMOxjn2kOy08hk+WgVu78fvv+kFkQhI/dNhPlR94OXQdNZIxJR0fQJS9HqdVTc8VFePRGeuAzgg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3yPMMInUYdgvN+6ceoH3SloJ2LW0qbrxQnYfD2j1EoE=;
- b=SU6mUTFblvavPYR4Qw6xhSVLPsmVvXi1dLC6QWKOW15YUwWUvtsIE3PkIJUujn7KMTt6KfyXHz/gGYH0U57pXwGVbX0XrCHIy2Mhv0+C1wh9BlJKPkTQrIg/GNv7Nzq7g1V1nuaCAhN2KK5ZHc3d6Zv2WKy78WQfaUm0HisNmwQ=
-Received: from DBBPR04MB7930.eurprd04.prod.outlook.com (2603:10a6:10:1ea::12)
- by DB6PR0401MB2375.eurprd04.prod.outlook.com (2603:10a6:4:4a::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20; Thu, 29 Apr
- 2021 07:47:35 +0000
-Received: from DBBPR04MB7930.eurprd04.prod.outlook.com
- ([fe80::ddbd:8680:c613:2274]) by DBBPR04MB7930.eurprd04.prod.outlook.com
- ([fe80::ddbd:8680:c613:2274%5]) with mapi id 15.20.4065.032; Thu, 29 Apr 2021
- 07:47:35 +0000
-From:   Jacky Bai <ping.bai@nxp.com>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
-CC:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "l.stach@pengutronix.de" <l.stach@pengutronix.de>,
-        "krzk@kernel.org" <krzk@kernel.org>,
-        "agx@sigxcpu.org" <agx@sigxcpu.org>,
-        "marex@denx.de" <marex@denx.de>,
-        "andrew.smirnov@gmail.com" <andrew.smirnov@gmail.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "frieder.schrempf@kontron.de" <frieder.schrempf@kontron.de>,
-        "aford173@gmail.com" <aford173@gmail.com>,
-        Abel Vesa <abel.vesa@nxp.com>, Peng Fan <peng.fan@nxp.com>
-Subject: RE: [PATCH 3/4] soc: imx: Add generic blk-ctl driver
-Thread-Topic: [PATCH 3/4] soc: imx: Add generic blk-ctl driver
-Thread-Index: AQHXPMWF29bMS7TqwkCnJc1H3NiGdarLG5LQ
-Date:   Thu, 29 Apr 2021 07:47:35 +0000
-Message-ID: <DBBPR04MB7930DAB66F97B8E60F9B470F875F9@DBBPR04MB7930.eurprd04.prod.outlook.com>
-References: <20210429073331.21204-1-peng.fan@oss.nxp.com>
- <20210429073331.21204-4-peng.fan@oss.nxp.com>
-In-Reply-To: <20210429073331.21204-4-peng.fan@oss.nxp.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: oss.nxp.com; dkim=none (message not signed)
- header.d=none;oss.nxp.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6eccde7c-7b3a-4189-8fe7-08d90ae30da9
-x-ms-traffictypediagnostic: DB6PR0401MB2375:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB6PR0401MB2375E44834C1FFCE4B7AA307875F9@DB6PR0401MB2375.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3826;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: BvOX6EaW+yizyVIRrVeWSisValpb0k3sEhv3H5ipPl0fXjth0LawVb+mTYDKiRXsPfYNy0qEWFCE4L/rNuFeYF0MeoXK2GEVwbjkEUxZc4ArPA453Gx4f+HW3pQvjAXbySLfzjJtGUU3mnLn0MJktDMHyY//MwQPCaiPj+TejVduhdnSvikRfeGigg994gcbmMeenorKcn6cGGeDRdIZiTyArG8MS2ZlXvimsnOD+ySmdDs1sv59627dO6LtkxU+Rlw4L9PDJRIL8OHJcoFG1ZEsWDJoBm8aYM6zCDAORMwC5TnXzhHUQqlvxjT3h5Hp0XWQBkmV+gRItrIlVnuEe87VnHF06YcQ0BjsPHLCLavOpdML15vArnU97yntHzGtpjmNKovZWrKMaMkXysN3BwO9+pUd1M+zaqRwzgjOMdb0z/cEp3vDFqSjYcJY1d+F5/vie9+TsOd6vXLg8SnJfMA8ok3yzmBLEqJN9gOEHI8zHA18jcCLUQQRJ7QY8d5Fe6b4ej/mmNEqMmXLF2Bb86mNijzterKlve9jFrF6fhrHvETFHbUSmRAOTIdxiMS65gdU0YWS3gEusniquch6kzu/iLIVNF/napY6H7NqtFKx97jxw0EMU27/BbN2Awsl10QpDSFFrUcvcDtRhMUjjA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR04MB7930.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(366004)(39860400002)(396003)(122000001)(38100700002)(30864003)(71200400001)(4326008)(52536014)(6506007)(86362001)(7416002)(186003)(478600001)(5660300002)(26005)(9686003)(7696005)(2906002)(8936002)(66946007)(54906003)(66476007)(33656002)(55016002)(66446008)(8676002)(66556008)(316002)(76116006)(64756008)(83380400001)(110136005)(41533002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?bFp6UHBkazN0b3pBOVNiWS9MQ1djOXh0UlJpSFB2eFV5S0NmUFo1MEJBQXVZ?=
- =?utf-8?B?SWErSWxaSEtzeHlJQUNPUVQvNHczVFJ3UEQ4R1lqWWRkZm1uMHMvMm9HK2Q2?=
- =?utf-8?B?N2hRSVFjMzFWUVBlSy9Mc1Q5a2k0YUl6WFJ3OWJ5R21hNk55TUdWcHd0Mk9R?=
- =?utf-8?B?NzU2bEt0WXdVYnU0TStRNDhQQzdTTng3UWRqdUs4aUxYY2tzV3VJQVRLS2l2?=
- =?utf-8?B?Rm43WDhGemZ5ZktkN2FNck92TkJWVHBPVmFjNklLU2NSNDNabFVwV3o5ellQ?=
- =?utf-8?B?V0lyOUtxd2pMSTB1ZWdFcGdPTjYwQm52S2JOSm1VMmYvRjgxUkFIRkhpQUF5?=
- =?utf-8?B?b1R2Y1ByanQvTTV1R1RWWk5GMnpDR2VKQTE1S2ZNSm1wZ2tQS1FEMEk1cEp1?=
- =?utf-8?B?clJPbEhNR2JCWElOS1kzRXdCZ0pMWlE4MXBHZVpEMm5UMDgxNEE3WkM1R1Rq?=
- =?utf-8?B?eEJPS3RRMFBMdlNVNjhMRzBSclZpSzZZYTBMSkFDaG43U0k0VlJkWHM0WEtp?=
- =?utf-8?B?ZUtFVWNPUkxZMWFRYkV1MkloYUdWcSsvdjlvaVc2akczUmlRN2xqYmpYYlVz?=
- =?utf-8?B?TGhmOWdzQUU5emZ0bkJvSk90TU8vMEZXSFZLU1l6Y2RITUFWMmNXc1pweVFq?=
- =?utf-8?B?V2xHRFNqdFhMdisrUzk0L0pGZ083cFNnQzBzY3lWcFZHVmV3N3FrOFR2cXRZ?=
- =?utf-8?B?ZEJTUk9PMitBM1VWcTI5eFJzR0xhU21saml2Sm9SZkFhNUs2c3g3Qk1Vc1pC?=
- =?utf-8?B?d2Rnd2NKdlRYei8rdTBDbVpuRXFndjhKTzYyS0puQ0I2cDF5bmtyMVl6M2d0?=
- =?utf-8?B?MjB4QVJiMXZzK00wcTVzSGtXOE56VitLWi84cER2aE83NGd5V3BPV2xNR29G?=
- =?utf-8?B?U1R0NENxbXd1VDJTa2FvT0J6UzV5L0U4cU84aHBrdmhYZFhJV0ljZVhlY1A4?=
- =?utf-8?B?REpzNFhNQ1RXOGJMb2g5Q3NHeUFZbVlaeVZOcnMyQmlmZDVEaW5Ccy9KNGcv?=
- =?utf-8?B?emMydlBrNEVzUkFWNzFvb2pGbGlLbGlYUkZJTksrN0V6WENJWnVPRytTNml5?=
- =?utf-8?B?UVczSUNxV20vMkdZeEdoMWYxZldCWTg0RG1OYUUvTkFtV0wxRjIxTGxHKzEw?=
- =?utf-8?B?cm1LNSs2dzBFNEh5UllrMnc5MC9LVkFvL0ZEaWhVSDVnSE9DN3RLd1hMZ3Fk?=
- =?utf-8?B?YXJwTzkwb0xkTmJmVVVRYWF0N0RQOUxHMFV4VGVuQ1BtNEhOQlBFRDdvVnlF?=
- =?utf-8?B?WjJWWnZ2QVdhRGhUME5WcExrZ1RyK0pkNXNiMWNSeEYrWjZqRUIya2JzWDRX?=
- =?utf-8?B?RWFFbWZDenJaSU5wRXBjTk5LT0RyT1FFMy9OWGpaNEJyamVad2kvQXo3aGp2?=
- =?utf-8?B?NmNOYVFJamZVRzZySjdDSG9qSXJDQzdEaVQ1K0xlSWVHSjk5aFNXcmNSUXNN?=
- =?utf-8?B?RUxETEVxSllVWm9qSUVWbmkzYURCN3lmdHJ0RkgwVHJjWStBOE4wd2xNbDRG?=
- =?utf-8?B?UlB0MEN1OWtsUjJHOXpOZ0I5QUZxdHBjVHA4VzZzT09HTXo0M2szZUJXb1pu?=
- =?utf-8?B?VUswaVlNSCtuenpCRDdkNWo3WStoaDd6cjhhTHd4REtNNE1pV0RmWkpKNUxk?=
- =?utf-8?B?VERHeUtTa3dZZHRxU0R4c2FpNFJWQ3hPL3huOXo3bUNXOGJGTzFpTXR4RGZE?=
- =?utf-8?B?T3pZVmE4WUxCYmUvcUN3eGc5Zmd4KzRoQkY4ejBTbFZmUEpOWlBiNlVQMWpR?=
- =?utf-8?Q?5AQw7cmWcqZyElr9r6tFP931oVb+nRIr/Cyrzw5?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S239352AbhD2HtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 03:49:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229814AbhD2HtG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 03:49:06 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7765C06138C
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 00:48:20 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id l2so13448164wrm.9
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 00:48:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=BpYrN5HcmOywbaw+z2lQkv5C1/K+LRrq5c9nfbi+Y18=;
+        b=JcIUqcHrwEEUIrK8eQIfevaimISQgkglEN9be726HSuGNOosQiIBpj36PaV8Ucnp5u
+         9NxIQMi1yPtrPQPenV7Kz4l/CXRSi9QqFQe4kSLcpv/PW90R4cQ8WUN2ildfIa2JeGZl
+         8yIAMi4iXAvSAxYZwr1VW6MRcxe8X5rLEKcG8TMt07J9F5JKqtzDbtpi26+0ffY/rTza
+         pf13/jHc7SLkCJYL5U88wQwtC2Mnb34B7psULAykrLvMYPCm5+MzIdU4mOh4+kXN6yhW
+         Psc5tBvD+24PXoPWLo+O9mKYgMkGF2Pq8T+TdNhvi3Aywql2ZXNnTr3V1KozPtgK6zJZ
+         eknQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=BpYrN5HcmOywbaw+z2lQkv5C1/K+LRrq5c9nfbi+Y18=;
+        b=UNkBO6lo0e9ygTfYNKClx5omQLDP8jtm98MAIcmD0kl/nhOo3mW9PjoelO1AYUKa8I
+         VyYCzKhH1M7eYGwRXisnquU9NQ+nAM+vz4F6UixPPfzT2IGgm2O6JpHhlOXPdXv/WNax
+         YIM7rqGbJhTdzgXIs/E8CR/G3ZuLXzMWQcnRBeL3/uZucreoErbs//b+FnKOW/PhWQIF
+         PSUi/NR2fS1FGV7svyJpYsjPEFbWXpQ/V5UMEEZe22Uttgav0fC5IUpNaTUApqcsYov6
+         9bpW6xEoRbZETVKPN3CQYqZJlC+AoK0Tq+2NYkY+qoF03/hfNWdCzyCXBVTpdlQhPIxR
+         dPIA==
+X-Gm-Message-State: AOAM531vVxVFjHDJ35+WnFDCgTBaO5f0nXKs70tHesQ0SpOJaz9/GHZe
+        sK4vfmO6jUbGqlIB1Xa+Hbt3KG6cW97L8g==
+X-Google-Smtp-Source: ABdhPJyr0jiAuOvDT1Z+V8GkwzkBVN754Ae6Efaf0Fi+YrTrKm1160jW+hdV67dq0vpM7vh/OfmSvA==
+X-Received: by 2002:a5d:610d:: with SMTP id v13mr11811010wrt.173.1619682499142;
+        Thu, 29 Apr 2021 00:48:19 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:15:13:fdf0:ddee:bee4:b3ce])
+        by smtp.gmail.com with ESMTPSA id m81sm2571110wmf.26.2021.04.29.00.48.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 00:48:18 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 09:48:12 +0200
+From:   Marco Elver <elver@google.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Florian Weimer <fweimer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        kasan-dev@googlegroups.com
+Subject: siginfo_t ABI break on sparc64 from si_addr_lsb move 3y ago
+Message-ID: <YIpkvGrBFGlB5vNj@elver.google.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DBBPR04MB7930.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6eccde7c-7b3a-4189-8fe7-08d90ae30da9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Apr 2021 07:47:35.1312
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: URXAYM0vtaiXMHuj/Y0FU5C7r4DjTwAuIa9HYHGVLBPjOHULiGMAW9xg0u1a4mS6JIsmln0Kevyma4dUbhkTdA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0401MB2375
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBTdWJqZWN0OiBbUEFUQ0ggMy80XSBzb2M6IGlteDogQWRkIGdlbmVyaWMgYmxrLWN0bCBkcml2
-ZXINCj4gDQo+IEZyb206IFBlbmcgRmFuIDxwZW5nLmZhbkBueHAuY29tPg0KPiANCj4gVGhlIGku
-TVg4TU0gaW50cm9kdWNlcyBhbiBJUCBuYW1lZCBCTEtfQ1RMIGFuZCB1c3VhbGx5IGlzIGNvbXBy
-aXNlZCBvZg0KPiBzb21lIEdQUnMuDQo+IA0KPiBUaGUgR1BScyBoYXMgc29tZSBjbG9jayBiaXRz
-IGFuZCByZXNldCBiaXRzLCBidXQgaGVyZSB3ZSB0YWtlIGl0IGFzIHZpcnR1YWwgUERzLA0KPiBi
-ZWNhdXNlIG9mIHRoZSBjbG9jayBhbmQgcG93ZXIgZG9tYWluIEEvQiBsb2NrIGlzc3VlIHdoZW4g
-dGFraW5nIGl0IGFzIGENCj4gY2xvY2sgY29udHJvbGxlci4NCj4gDQo+IEZvciBzb21lIGJpdHMs
-IGl0IG1pZ2h0IGJlIGdvb2QgdG8gYWxzbyBtYWtlIGl0IGFzIGEgcmVzZXQgY29udHJvbGxlciwg
-YnV0IHRvDQo+IGkuTVg4TU0sIHdlIG5vdCBhZGQgdGhhdCBzdXBwb3J0IGZvciBub3cuDQo+IA0K
-PiBTaWduZWQtb2ZmLWJ5OiBQZW5nIEZhbiA8cGVuZy5mYW5AbnhwLmNvbT4NCj4gLS0tDQo+ICBk
-cml2ZXJzL3NvYy9pbXgvTWFrZWZpbGUgIHwgICAyICstDQo+ICBkcml2ZXJzL3NvYy9pbXgvYmxr
-LWN0bC5jIHwgMzAzDQo+ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+
-ICBkcml2ZXJzL3NvYy9pbXgvYmxrLWN0bC5oIHwgIDc2ICsrKysrKysrKysNCj4gIDMgZmlsZXMg
-Y2hhbmdlZCwgMzgwIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkgIGNyZWF0ZSBtb2RlIDEw
-MDY0NA0KPiBkcml2ZXJzL3NvYy9pbXgvYmxrLWN0bC5jICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJp
-dmVycy9zb2MvaW14L2Jsay1jdGwuaA0KPiANCi4uLg0KDQo+ICsNCj4gK3N0YXRpYyBpbmxpbmUg
-c3RydWN0IGlteF9ibGtfY3RsX2RvbWFpbiAqdG9faW14X2Jsa19jdGxfcGQoc3RydWN0DQo+ICtn
-ZW5lcmljX3BtX2RvbWFpbiAqZ2VucGQpIHsNCj4gKwlyZXR1cm4gY29udGFpbmVyX29mKGdlbnBk
-LCBzdHJ1Y3QgaW14X2Jsa19jdGxfZG9tYWluLCBwZCk7IH0NCg0KV2h5IG5vdCB1c2UgbWFjcm8g
-ZGVmaW5lPw0KDQo+ICsNCj4gK3N0YXRpYyBpbnQgaW14X2Jsa19jdGxfZW5hYmxlX2hzayhzdHJ1
-Y3QgZGV2aWNlICpkZXYpIHsNCj4gKwlzdHJ1Y3QgaW14X2Jsa19jdGwgKmJsa19jdGwgPSBkZXZf
-Z2V0X2RydmRhdGEoZGV2KTsNCj4gKwljb25zdCBzdHJ1Y3QgaW14X2Jsa19jdGxfaHcgKmh3ID0g
-JmJsa19jdGwtPmRldl9kYXRhLT5od19oc2s7DQo+ICsJc3RydWN0IHJlZ21hcCAqcmVnbWFwID0g
-YmxrX2N0bC0+cmVnbWFwOw0KPiArCWludCByZXQ7DQo+ICsNCj4gKw0KDQpSZWR1bmRhbnQgbGlu
-ZS4NCg0KPiArCWlmIChody0+ZmxhZ3MgJiBJTVhfQkxLX0NUTF9QRF9SRVNFVCkNCj4gKwkJcmV0
-ID0gcmVnbWFwX3VwZGF0ZV9iaXRzKHJlZ21hcCwgaHctPnJzdF9vZmZzZXQsIGh3LT5yc3RfbWFz
-aywNCj4gK2h3LT5yc3RfbWFzayk7DQo+ICsNCj4gKwlyZXQgPSByZWdtYXBfdXBkYXRlX2JpdHMo
-cmVnbWFwLCBody0+b2Zmc2V0LCBody0+bWFzaywgaHctPm1hc2spOw0KPiArDQo+ICsJLyogV2Fp
-dCBmb3IgaGFuZHNoYWtlICovDQo+ICsJdWRlbGF5KDUpOw0KPiArDQo+ICsJcmV0dXJuIHJldDsN
-Cj4gK30NCj4gKw0KPiAraW50IGlteF9ibGtfY3RsX3Bvd2VyX29mZihzdHJ1Y3QgZ2VuZXJpY19w
-bV9kb21haW4gKmRvbWFpbikgew0KPiArCXN0cnVjdCBpbXhfYmxrX2N0bF9kb21haW4gKnBkOw0K
-PiArCXN0cnVjdCBpbXhfYmxrX2N0bCAqYmxrX2N0bDsNCj4gKwljb25zdCBzdHJ1Y3QgaW14X2Js
-a19jdGxfaHcgKmh3Ow0KPiArCXN0cnVjdCByZWdtYXAgKnJlZ21hcDsNCj4gKwlpbnQgcmV0Ow0K
-PiArDQo+ICsJcGQgPSB0b19pbXhfYmxrX2N0bF9wZChkb21haW4pOw0KPiArCWJsa19jdGwgPSBw
-ZC0+YmxrX2N0bDsNCj4gKwlyZWdtYXAgPSBibGtfY3RsLT5yZWdtYXA7DQo+ICsJaHcgPSAmYmxr
-X2N0bC0+ZGV2X2RhdGEtPnBkc1twZC0+aWRdOw0KPiArDQo+ICsJcmV0ID0gY2xrX2J1bGtfcHJl
-cGFyZV9lbmFibGUoYmxrX2N0bC0+bnVtX2Nsa3MsIGJsa19jdGwtPmNsa3MpOw0KPiArCWlmIChy
-ZXQpDQo+ICsJCXJldHVybiByZXQ7DQo+ICsNCj4gKwlyZXQgPSByZWdtYXBfdXBkYXRlX2JpdHMo
-cmVnbWFwLCBody0+b2Zmc2V0LCBody0+bWFzaywgMCk7DQo+ICsJaWYgKHJldCkNCj4gKwkJZ290
-byBoc2tfZmFpbDsNCj4gKw0KPiArCWlmIChody0+ZmxhZ3MgJiBJTVhfQkxLX0NUTF9QRF9SRVNF
-VCkNCj4gKwkJcmV0ID0gcmVnbWFwX3VwZGF0ZV9iaXRzKHJlZ21hcCwgaHctPnJzdF9vZmZzZXQs
-IGh3LT5yc3RfbWFzaywNCj4gMCk7DQo+ICsNCj4gKwlpZiAoYXRvbWljX2RlY19hbmRfdGVzdCgm
-YmxrX2N0bC0+cG93ZXJfY291bnQpKSB7DQo+ICsJCXJldCA9IGlteF9ibGtfY3RsX2VuYWJsZV9o
-c2soYmxrX2N0bC0+ZGV2KTsNCg0KRm9yIHRoZSBCVVMgY2xvY2sgRU4gYW5kIFJTVCBoYW5kbGlu
-Zz8NCg0KPiArCQlpZiAocmV0KSB7DQo+ICsJCQlkZXZfZXJyKGJsa19jdGwtPmRldiwgIkhhbmtz
-aGFrZSBmYWlsXG4iKTsNCj4gKwkJCWdvdG8gaHNrX2ZhaWw7DQo+ICsJCX0NCj4gKwl9DQo+ICsN
-Cj4gK2hza19mYWlsOg0KPiArCWNsa19idWxrX2Rpc2FibGVfdW5wcmVwYXJlKGJsa19jdGwtPm51
-bV9jbGtzLCBibGtfY3RsLT5jbGtzKTsNCj4gKw0KPiArCXJldHVybiByZXQ7DQo+ICt9DQo+ICsN
-Cj4gK2ludCBpbXhfYmxrX2N0bF9wb3dlcl9vbihzdHJ1Y3QgZ2VuZXJpY19wbV9kb21haW4gKmRv
-bWFpbikgew0KPiArCXN0cnVjdCBpbXhfYmxrX2N0bF9kb21haW4gKnBkOw0KPiArCXN0cnVjdCBy
-ZWdtYXAgKnJlZ21hcDsNCj4gKwljb25zdCBzdHJ1Y3QgaW14X2Jsa19jdGxfaHcgKmh3Ow0KPiAr
-CWludCByZXQ7DQo+ICsJc3RydWN0IGlteF9ibGtfY3RsICpibGtfY3RsOw0KPiArDQo+ICsJcGQg
-PSB0b19pbXhfYmxrX2N0bF9wZChkb21haW4pOw0KPiArCWJsa19jdGwgPSBwZC0+YmxrX2N0bDsN
-Cj4gKwlyZWdtYXAgPSBibGtfY3RsLT5yZWdtYXA7DQo+ICsJaHcgPSAmYmxrX2N0bC0+ZGV2X2Rh
-dGEtPnBkc1twZC0+aWRdOw0KPiArDQo+ICsJcmV0ID0gY2xrX2J1bGtfcHJlcGFyZV9lbmFibGUo
-YmxrX2N0bC0+bnVtX2Nsa3MsIGJsa19jdGwtPmNsa3MpOw0KPiArCWlmIChyZXQpDQo+ICsJCXJl
-dHVybiByZXQ7DQo+ICsNCj4gKwlpZiAoKGF0b21pY19yZWFkKCZibGtfY3RsLT5wb3dlcl9jb3Vu
-dCkgPT0gMCkpIHsNCj4gKwkJcmV0ID0gaW14X2Jsa19jdGxfZW5hYmxlX2hzayhibGtfY3RsLT5k
-ZXYpOw0KPiArCQlpZiAocmV0KSB7DQo+ICsJCQlkZXZfZXJyKGJsa19jdGwtPmRldiwgIkhhbmtz
-aGFrZSBmYWlsXG4iKTsNCj4gKwkJCWdvdG8gZGlzYWJsZV9jbGs7DQo+ICsJCX0NCj4gKwl9DQo+
-ICsNCj4gKwlpZiAoaHctPmZsYWdzICYgSU1YX0JMS19DVExfUERfUkVTRVQpDQo+ICsJCXJldCA9
-IHJlZ21hcF91cGRhdGVfYml0cyhyZWdtYXAsIGh3LT5yc3Rfb2Zmc2V0LCBody0+cnN0X21hc2ss
-DQo+IDApOw0KPiArDQo+ICsJLyogV2FpdCBmb3IgcmVzZXQgcHJvcGFnYXRlICovDQo+ICsJdWRl
-bGF5KDUpOw0KPiArDQo+ICsJaWYgKGh3LT5mbGFncyAmIElNWF9CTEtfQ1RMX1BEX1JFU0VUKQ0K
-PiArCQlyZXQgPSByZWdtYXBfdXBkYXRlX2JpdHMocmVnbWFwLCBody0+cnN0X29mZnNldCwgaHct
-PnJzdF9tYXNrLA0KPiAraHctPnJzdF9tYXNrKTsNCj4gKw0KPiArCXJldCA9IHJlZ21hcF91cGRh
-dGVfYml0cyhyZWdtYXAsIGh3LT5vZmZzZXQsIGh3LT5tYXNrLCBody0+bWFzayk7DQo+ICsJaWYg
-KHJldCkNCj4gKwkJZ290byBkaXNhYmxlX2NsazsNCj4gKw0KPiArCWF0b21pY19pbmMoJmJsa19j
-dGwtPnBvd2VyX2NvdW50KTsNCj4gKw0KPiArZGlzYWJsZV9jbGs6DQo+ICsJY2xrX2J1bGtfZGlz
-YWJsZV91bnByZXBhcmUoYmxrX2N0bC0+bnVtX2Nsa3MsIGJsa19jdGwtPmNsa3MpOw0KPiArDQo+
-ICsJcmV0dXJuIHJldDsNCj4gK30NCj4gKw0KPiArc3RhdGljIGludCBpbXhfYmxrX2N0bF9hdHRh
-Y2hfcGQoc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3QgZGV2aWNlICoqZGV2cywNCj4gY2hhciAq
-KnBkX25hbWVzLA0KPiArCQkJCSB1MzIgbnVtX3BkcykNCj4gK3sNCj4gKwlpbnQgaSwgcmV0Ow0K
-PiArDQo+ICsJaWYgKCFwZF9uYW1lcykNCj4gKwkJcmV0dXJuIDA7DQoNClJldHVybiBzdWNjZXNz
-Pw0KDQpCUg0KSmFja3kgQmFpDQo+ICsNCj4gKwlpZiAoZGV2LT5wbV9kb21haW4pIHsNCj4gKwkJ
-ZGV2c1swXSA9IGRldjsNCj4gKwkJcG1fcnVudGltZV9lbmFibGUoZGV2KTsNCj4gKwkJcmV0dXJu
-IDA7DQo+ICsJfQ0KPiArDQo+ICsJZm9yIChpID0gMDsgaSA8IG51bV9wZHM7IGkrKykgew0KPiAr
-CQlkZXZzW2ldID0gZGV2X3BtX2RvbWFpbl9hdHRhY2hfYnlfbmFtZShkZXYsIHBkX25hbWVzW2ld
-KTsNCj4gKwkJaWYgKElTX0VSUl9PUl9OVUxMKGRldnNbaV0pKSB7DQo+ICsJCQlyZXQgPSBQVFJf
-RVJSKGRldnNbaV0pID8gOiAtRU5PREFUQTsNCj4gKwkJCWdvdG8gZGV0YWNoX3BtOw0KPiArCQl9
-DQo+ICsJfQ0KPiArDQo+ICsJcmV0dXJuIDA7DQo+ICsNCj4gK2RldGFjaF9wbToNCj4gKwlmb3Ig
-KGktLTsgaSA+PSAwOyBpLS0pDQo+ICsJCWRldl9wbV9kb21haW5fZGV0YWNoKGRldnNbaV0sIGZh
-bHNlKTsNCj4gKw0KPiArCXJldHVybiByZXQ7DQo+ICt9DQo+ICsNCj4gK3N0YXRpYyBpbnQgaW14
-X2Jsa19jdGxfcmVnaXN0ZXJfcGQoc3RydWN0IGRldmljZSAqZGV2KSB7DQo+ICsJc3RydWN0IGlt
-eF9ibGtfY3RsICpibGtfY3RsID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+ICsJY29uc3Qgc3Ry
-dWN0IGlteF9ibGtfY3RsX2Rldl9kYXRhICpkZXZfZGF0YSA9IGJsa19jdGwtPmRldl9kYXRhOw0K
-PiArCWludCBudW0gPSBkZXZfZGF0YS0+cGRzX251bTsNCj4gKwlzdHJ1Y3QgaW14X2Jsa19jdGxf
-ZG9tYWluICpkb21haW47DQo+ICsJaW50IGksIHJldDsNCj4gKw0KPiArCWJsa19jdGwtPm9uZWNl
-bGxfZGF0YS5udW1fZG9tYWlucyA9IG51bTsNCj4gKwlibGtfY3RsLT5vbmVjZWxsX2RhdGEuZG9t
-YWlucyA9IGRldm1fa2NhbGxvYyhkZXYsIG51bSwNCj4gKwkJCQkJCSAgICAgc2l6ZW9mKHN0cnVj
-dCBnZW5lcmljX3BtX2RvbWFpbiAqKSwNCj4gKwkJCQkJCSAgICAgR0ZQX0tFUk5FTCk7DQo+ICsN
-Cj4gKwlpZiAoIWJsa19jdGwtPm9uZWNlbGxfZGF0YS5kb21haW5zKQ0KPiArCQlyZXR1cm4gLUVO
-T01FTTsNCj4gKw0KPiArCWZvciAoaSA9IDA7IGkgPCBudW07IGkrKykgew0KPiArCQlkb21haW4g
-PSBkZXZtX2t6YWxsb2MoZGV2LCBzaXplb2YoKmRvbWFpbiksIEdGUF9LRVJORUwpOw0KPiArCQlp
-ZiAoIWRvbWFpbikgew0KPiArCQkJcmV0ID0gLUVOT01FTTsNCj4gKwkJCWdvdG8gcmVtb3ZlX2dl
-bnBkOw0KPiArCQl9DQo+ICsJCWRvbWFpbi0+cGQubmFtZSA9IGRldl9kYXRhLT5wZHNbaV0ubmFt
-ZTsNCj4gKwkJZG9tYWluLT5wZC5wb3dlcl9vZmYgPSBpbXhfYmxrX2N0bF9wb3dlcl9vZmY7DQo+
-ICsJCWRvbWFpbi0+cGQucG93ZXJfb24gPSBpbXhfYmxrX2N0bF9wb3dlcl9vbjsNCj4gKwkJZG9t
-YWluLT5ibGtfY3RsID0gYmxrX2N0bDsNCj4gKwkJZG9tYWluLT5pZCA9IGk7DQo+ICsNCj4gKwkJ
-cmV0ID0gcG1fZ2VucGRfaW5pdCgmZG9tYWluLT5wZCwgTlVMTCwgdHJ1ZSk7DQo+ICsJCWlmIChy
-ZXQpDQo+ICsJCQlyZXR1cm4gcmV0Ow0KPiArDQo+ICsJCWJsa19jdGwtPm9uZWNlbGxfZGF0YS5k
-b21haW5zW2ldID0gJmRvbWFpbi0+cGQ7DQo+ICsJfQ0KPiArDQo+ICsJcmV0dXJuIDA7DQo+ICsN
-Cj4gK3JlbW92ZV9nZW5wZDoNCj4gKwlmb3IgKGkgPSBpIC0gMTsgaSA+PSAwOyBpLS0pDQo+ICsJ
-CXBtX2dlbnBkX3JlbW92ZShibGtfY3RsLT5vbmVjZWxsX2RhdGEuZG9tYWluc1tpXSk7DQo+ICsN
-Cj4gKwlyZXR1cm4gcmV0Ow0KPiArfQ0KPiArDQo+ICtzdGF0aWMgaW50IGlteF9ibGtfY3RsX2hv
-b2tfcGQoc3RydWN0IGRldmljZSAqZGV2KSB7DQo+ICsJc3RydWN0IGlteF9ibGtfY3RsICpibGtf
-Y3RsID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+ICsJY29uc3Qgc3RydWN0IGlteF9ibGtfY3Rs
-X2Rldl9kYXRhICpkZXZfZGF0YSA9IGJsa19jdGwtPmRldl9kYXRhOw0KPiArCWNvbnN0IHN0cnVj
-dCBpbXhfYmxrX2N0bF9odyAqcGRzID0gZGV2X2RhdGEtPnBkczsNCj4gKwlpbnQgbnVtX2FjdGl2
-ZV9wZCA9IGRldl9kYXRhLT5udW1fYWN0aXZlX3BkOw0KPiArCWludCBudW0gPSBkZXZfZGF0YS0+
-cGRzX251bTsNCj4gKwlzdHJ1Y3QgZ2VuZXJpY19wbV9kb21haW4gKmdlbnBkLCAqY2hpbGRfZ2Vu
-cGQ7DQo+ICsJaW50IHJldDsNCj4gKwlpbnQgaSwgajsNCj4gKw0KPiArCWJsa19jdGwtPmFjdGl2
-ZV9wZHMgPSBkZXZtX2tjYWxsb2MoZGV2LCBudW1fYWN0aXZlX3BkLCBzaXplb2Yoc3RydWN0DQo+
-IGRldmljZSAqKSwgR0ZQX0tFUk5FTCk7DQo+ICsJaWYgKCFibGtfY3RsLT5hY3RpdmVfcGRzKQ0K
-PiArCQlyZXR1cm4gLUVOT01FTTsNCj4gKw0KPiArCXJldCA9IGlteF9ibGtfY3RsX2F0dGFjaF9w
-ZChkZXYsIGJsa19jdGwtPmFjdGl2ZV9wZHMsDQo+IGRldl9kYXRhLT5hY3RpdmVfcGRfbmFtZXMs
-DQo+ICsJCQkJICAgIG51bV9hY3RpdmVfcGQpOw0KPiArCWlmIChyZXQpIHsNCj4gKwkJaWYgKHJl
-dCA9PSAtRVBST0JFX0RFRkVSKQ0KPiArCQkJcmV0dXJuIHJldDsNCj4gKwkJZGV2X2VycihkZXYs
-ICJGYWlsZWQgdG8gYXR0YWNoIGFjdGl2ZSBwZDogJWRcbiIsIHJldCk7DQo+ICsJCXJldHVybiBy
-ZXQ7DQo+ICsJfQ0KPiArDQo+ICsJZm9yIChpID0gMDsgaSA8IG51bTsgaSsrKSB7DQo+ICsJCWZv
-ciAoaiA9IDA7IGogPCBudW1fYWN0aXZlX3BkOyBqKyspIHsNCj4gKwkJCWdlbnBkID0gcGRfdG9f
-Z2VucGQoYmxrX2N0bC0+YWN0aXZlX3Bkc1tqXS0+cG1fZG9tYWluKTsNCj4gKwkJCWlmICghc3Ry
-Y21wKGdlbnBkLT5uYW1lLCBwZHNbaV0ucGFyZW50X25hbWUpKQ0KPiArCQkJCWJyZWFrOw0KPiAr
-CQl9DQo+ICsNCj4gKwkJY2hpbGRfZ2VucGQgPSBibGtfY3RsLT5vbmVjZWxsX2RhdGEuZG9tYWlu
-c1tpXTsNCj4gKwkJaWYgKHBtX2dlbnBkX2FkZF9zdWJkb21haW4oZ2VucGQsIGNoaWxkX2dlbnBk
-KSkNCj4gKwkJCXByX3dhcm4oImZhaWxlZCB0byBhZGQgc3ViZG9tYWluOlxuIik7DQo+ICsJfQ0K
-PiArDQo+ICsJcmV0dXJuIDA7DQo+ICt9DQo+ICsNCj4gK2ludCBpbXhfYmxrX2N0bF9yZWdpc3Rl
-cihzdHJ1Y3QgZGV2aWNlICpkZXYpIHsNCj4gKwlzdHJ1Y3QgaW14X2Jsa19jdGwgKmJsa19jdGwg
-PSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsNCj4gKwljb25zdCBzdHJ1Y3QgaW14X2Jsa19jdGxfZGV2
-X2RhdGEgKmRldl9kYXRhID0gYmxrX2N0bC0+ZGV2X2RhdGE7DQo+ICsJaW50IG51bSA9IGRldl9k
-YXRhLT5wZHNfbnVtOw0KPiArCWludCBpLCByZXQ7DQo+ICsNCj4gKwlpZiAoIWJsa19jdGwpDQo+
-ICsJCXJldHVybiAtRU5PREVWOw0KPiArDQo+ICsJcmV0ID0gaW14X2Jsa19jdGxfcmVnaXN0ZXJf
-cGQoZGV2KTsNCj4gKwlpZiAocmV0KQ0KPiArCQlyZXR1cm4gcmV0Ow0KPiArDQo+ICsJcmV0ID0g
-aW14X2Jsa19jdGxfaG9va19wZChkZXYpOw0KPiArCWlmIChyZXQpDQo+ICsJCWdvdG8gdW5yZWdp
-c3Rlcl9wZDsNCj4gKw0KPiArCXJldCA9IG9mX2dlbnBkX2FkZF9wcm92aWRlcl9vbmVjZWxsKGRl
-di0+b2Zfbm9kZSwNCj4gJmJsa19jdGwtPm9uZWNlbGxfZGF0YSk7DQo+ICsJaWYgKHJldCkNCj4g
-KwkJZ290byBkZXRhY2hfcGQ7DQo+ICsNCj4gKwlwbV9ydW50aW1lX2dldF9ub3Jlc3VtZShkZXYp
-Ow0KPiArCXBtX3J1bnRpbWVfc2V0X2FjdGl2ZShkZXYpOw0KPiArCXBtX3J1bnRpbWVfZW5hYmxl
-KGRldik7DQo+ICsNCj4gKwlwbV9ydW50aW1lX3B1dChkZXYpOw0KPiArDQo+ICsJcmV0dXJuIDA7
-DQo+ICsNCj4gK2RldGFjaF9wZDoNCj4gKwlmb3IgKGkgPSBibGtfY3RsLT5kZXZfZGF0YS0+bnVt
-X2FjdGl2ZV9wZDsgaSA+PSAwOyBpLS0pDQo+ICsJCWRldl9wbV9kb21haW5fZGV0YWNoKGJsa19j
-dGwtPmFjdGl2ZV9wZHNbaV0sIGZhbHNlKTsNCj4gK3VucmVnaXN0ZXJfcGQ6DQo+ICsJZm9yIChp
-ID0gbnVtIC0gMTsgaSA+PSAwOyBpLS0pDQo+ICsJCXBtX2dlbnBkX3JlbW92ZShibGtfY3RsLT5v
-bmVjZWxsX2RhdGEuZG9tYWluc1tpXSk7DQo+ICsNCj4gKwlyZXR1cm4gcmV0Ow0KPiArfQ0KPiAr
-RVhQT1JUX1NZTUJPTF9HUEwoaW14X2Jsa19jdGxfcmVnaXN0ZXIpOw0KPiArDQo+ICtzdGF0aWMg
-aW50IF9fbWF5YmVfdW51c2VkIGlteF9ibGtfY3RsX3J1bnRpbWVfc3VzcGVuZChzdHJ1Y3QgZGV2
-aWNlDQo+ICsqZGV2KSB7DQo+ICsJcmV0dXJuIDA7DQo+ICt9DQo+ICsNCj4gK3N0YXRpYyBpbnQg
-X19tYXliZV91bnVzZWQgaW14X2Jsa19jdGxfcnVudGltZV9yZXN1bWUoc3RydWN0IGRldmljZQ0K
-PiArKmRldikgew0KPiArCXJldHVybiAwOw0KPiArfQ0KPiArDQo+ICtjb25zdCBzdHJ1Y3QgZGV2
-X3BtX29wcyBpbXhfYmxrX2N0bF9wbV9vcHMgPSB7DQo+ICsJU0VUX1JVTlRJTUVfUE1fT1BTKGlt
-eF9ibGtfY3RsX3J1bnRpbWVfc3VzcGVuZCwNCj4gKwkJCSAgIGlteF9ibGtfY3RsX3J1bnRpbWVf
-cmVzdW1lLCBOVUxMKQ0KPiArCVNFVF9TWVNURU1fU0xFRVBfUE1fT1BTKHBtX3J1bnRpbWVfZm9y
-Y2Vfc3VzcGVuZCwNCj4gKwkJCSAgIHBtX3J1bnRpbWVfZm9yY2VfcmVzdW1lKQ0KPiArfTsNCj4g
-K0VYUE9SVF9TWU1CT0xfR1BMKGlteF9ibGtfY3RsX3BtX29wcyk7DQo+IGRpZmYgLS1naXQgYS9k
-cml2ZXJzL3NvYy9pbXgvYmxrLWN0bC5oIGIvZHJpdmVycy9zb2MvaW14L2Jsay1jdGwuaCBuZXcg
-ZmlsZSBtb2RlDQo+IDEwMDY0NCBpbmRleCAwMDAwMDAwMDAwMDAuLmU3MzYzNjk0MDZhMQ0KPiAt
-LS0gL2Rldi9udWxsDQo+ICsrKyBiL2RyaXZlcnMvc29jL2lteC9ibGstY3RsLmgNCj4gQEAgLTAs
-MCArMSw3NiBAQA0KPiArLyogU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAgKi8NCj4g
-KyNpZm5kZWYgX19TT0NfSU1YX0JMS19DVExfSA0KPiArI2RlZmluZSBfX1NPQ19JTVhfQkxLX0NU
-TF9IDQo+ICsNCj4gK2VudW0gaW14X2Jsa19jdGxfcGRfdHlwZSB7DQo+ICsJQkxLX0NUTF9QRCwN
-Cj4gK307DQo+ICsNCj4gK3N0cnVjdCBpbXhfYmxrX2N0bF9odyB7DQo+ICsJaW50IHR5cGU7DQo+
-ICsJY2hhciAqbmFtZTsNCj4gKwljaGFyICpwYXJlbnRfbmFtZTsNCj4gKwl1MzIgb2Zmc2V0Ow0K
-PiArCXUzMiBtYXNrOw0KPiArCXUzMiBmbGFnczsNCj4gKwl1MzIgaWQ7DQo+ICsJdTMyIHJzdF9v
-ZmZzZXQ7DQo+ICsJdTMyIHJzdF9tYXNrOw0KPiArfTsNCj4gKw0KPiArc3RydWN0IGlteF9ibGtf
-Y3RsX2RvbWFpbiB7DQo+ICsJc3RydWN0IGdlbmVyaWNfcG1fZG9tYWluIHBkOw0KPiArCXN0cnVj
-dCBpbXhfYmxrX2N0bCAqYmxrX2N0bDsNCj4gKwl1MzIgaWQ7DQo+ICt9Ow0KPiArDQo+ICtzdHJ1
-Y3QgaW14X2Jsa19jdGxfZGV2X2RhdGEgew0KPiArCXN0cnVjdCByZWdtYXBfY29uZmlnIGNvbmZp
-ZzsNCj4gKwlzdHJ1Y3QgaW14X2Jsa19jdGxfaHcgKnBkczsNCj4gKwlzdHJ1Y3QgaW14X2Jsa19j
-dGxfaHcgaHdfaHNrOw0KPiArCXUzMiBwZHNfbnVtOw0KPiArCWNoYXIgKiphY3RpdmVfcGRfbmFt
-ZXM7DQo+ICsJdTMyIG51bV9hY3RpdmVfcGQ7DQo+ICt9Ow0KPiArDQo+ICtzdHJ1Y3QgaW14X2Js
-a19jdGwgew0KPiArCXN0cnVjdCBkZXZpY2UgKmRldjsNCj4gKwlzdHJ1Y3QgcmVnbWFwICpyZWdt
-YXA7DQo+ICsJc3RydWN0IGRldmljZSAqKmFjdGl2ZV9wZHM7DQo+ICsJdTMyIHBkc19udW07DQo+
-ICsJdTMyIGFjdGl2ZV9wZF9jb3VudDsNCj4gKwlzdHJ1Y3QgZ2VucGRfb25lY2VsbF9kYXRhIG9u
-ZWNlbGxfZGF0YTsNCj4gKwljb25zdCBzdHJ1Y3QgaW14X2Jsa19jdGxfZGV2X2RhdGEgKmRldl9k
-YXRhOw0KPiArCXN0cnVjdCBjbGtfYnVsa19kYXRhICpjbGtzOw0KPiArCXUzMiBudW1fY2xrczsN
-Cj4gKw0KPiArCWF0b21pY190IHBvd2VyX2NvdW50Ow0KPiArfTsNCj4gKw0KPiArI2RlZmluZSBJ
-TVhfQkxLX0NUTChfdHlwZSwgX25hbWUsIF9wYXJlbnRfbmFtZSwgX2lkLCBfb2Zmc2V0LCBfbWFz
-aywNCj4gX3JzdF9vZmZzZXQsIF9yc3RfbWFzaywJXA0KPiArCQkgICAgX2ZsYWdzKQkJCQkJCQkJ
-XA0KPiArCXsJCQkJCQkJCQkJXA0KPiArCQkudHlwZSA9IF90eXBlLAkJCQkJCQkJXA0KPiArCQku
-bmFtZSA9IF9uYW1lLAkJCQkJCQkJXA0KPiArCQkucGFyZW50X25hbWUgPSBfcGFyZW50X25hbWUs
-CQkJCQkJXA0KPiArCQkuaWQgPSBfaWQsCQkJCQkJCQlcDQo+ICsJCS5vZmZzZXQgPSBfb2Zmc2V0
-LAkJCQkJCQlcDQo+ICsJCS5tYXNrID0gX21hc2ssCQkJCQkJCQlcDQo+ICsJCS5mbGFncyA9IF9m
-bGFncywJCQkJCQkJXA0KPiArCQkucnN0X29mZnNldCA9IF9yc3Rfb2Zmc2V0LAkJCQkJCVwNCj4g
-KwkJLnJzdF9tYXNrID0gX3JzdF9tYXNrLAkJCQkJCQlcDQo+ICsJfQ0KPiArDQo+ICsjZGVmaW5l
-IElNWF9CTEtfQ1RMX1BEKF9uYW1lLCBfcGFyZW50X25hbWUsIF9pZCwgX29mZnNldCwgX21hc2ss
-DQo+IF9yc3Rfb2Zmc2V0LCBfcnN0X21hc2ssIF9mbGFncykgXA0KPiArCUlNWF9CTEtfQ1RMKEJM
-S19DVExfUEQsIF9uYW1lLCBfcGFyZW50X25hbWUsIF9pZCwgX29mZnNldCwgX21hc2ssDQo+IF9y
-c3Rfb2Zmc2V0LAkJXA0KPiArCQkgICAgX3JzdF9tYXNrLCBfZmxhZ3MpDQo+ICsNCj4gK2ludCBp
-bXhfYmxrX2N0bF9yZWdpc3RlcihzdHJ1Y3QgZGV2aWNlICpkZXYpOw0KPiArDQo+ICsjZGVmaW5l
-IElNWF9CTEtfQ1RMX1BEX0hBTkRTSEFLRQlCSVQoMCkNCj4gKyNkZWZpbmUgSU1YX0JMS19DVExf
-UERfUkVTRVQJCUJJVCgxKQ0KPiArI2RlZmluZSBJTVhfQkxLX0NUTF9QRF9CVVMJCUJJVCgyKQ0K
-PiArDQo+ICtjb25zdCBleHRlcm4gc3RydWN0IGRldl9wbV9vcHMgaW14X2Jsa19jdGxfcG1fb3Bz
-Ow0KPiArDQo+ICsjZW5kaWYNCj4gLS0NCj4gMi4zMC4wDQoNCg==
+Hello,  Eric,
+
+By inspecting the logs I've seen that about 3 years ago there had been a
+number of siginfo_t cleanups. This included moving si_addr_lsb:
+
+	b68a68d3dcc1 ("signal: Move addr_lsb into the _sigfault union for clarity")
+	859d880cf544 ("signal: Correct the offset of si_pkey in struct siginfo")
+ 	8420f71943ae ("signal: Correct the offset of si_pkey and si_lower in struct siginfo on m68k")
+
+In an ideal world, we could just have si_addr + the union in _sigfault,
+but it seems there are more corner cases. :-/
+
+The reason I've stumbled upon this is that I wanted to add the just
+merged si_perf [1] field to glibc. But what I noticed is that glibc's
+definition and ours are vastly different around si_addr_lsb, si_lower,
+si_upper, and si_pkey.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=42dec9a936e7696bea1f27d3c5a0068cd9aa95fd
+
+In our current definition of siginfo_t, si_addr_lsb is placed into the
+same union as si_lower, si_upper, and si_pkey (and now si_perf). From
+the logs I see that si_lower, si_upper, and si_pkey are padded because
+si_addr_lsb used to be outside the union, which goes back to
+"signal: Move addr_lsb into the _sigfault union for clarity".
+
+Since then, si_addr_lsb must also be pointer-aligned, because the union
+containing it must be pointer-aligned (because si_upper, si_lower). On
+all architectures where si_addr_lsb is right after si_addr, this is
+perfectly fine, because si_addr itself is a pointer...
+
+... except for the anomaly that are 64-bit architectures that define
+__ARCH_SI_TRAPNO and want that 'int si_trapno'. Like, for example
+sparc64, which means siginfo_t's ABI has been subtly broken on sparc64
+since v4.16.
+
+The following static asserts illustrate this:
+
+--- a/arch/sparc/kernel/signal_64.c
++++ b/arch/sparc/kernel/signal_64.c
+@@ -556,3 +556,37 @@ void do_notify_resume(struct pt_regs *regs, unsigned long orig_i0, unsigned long
+ 	user_enter();
+ }
+ 
++static_assert(offsetof(siginfo_t, si_signo)	== 0);
++static_assert(offsetof(siginfo_t, si_errno)	== 4);
++static_assert(offsetof(siginfo_t, si_code)	== 8);
++static_assert(offsetof(siginfo_t, si_pid)	== 16);
++static_assert(offsetof(siginfo_t, si_uid)	== 20);
++static_assert(offsetof(siginfo_t, si_tid)	== 16);
++static_assert(offsetof(siginfo_t, si_overrun)	== 20);
++static_assert(offsetof(siginfo_t, si_status)	== 24);
++static_assert(offsetof(siginfo_t, si_utime)	== 32);
++static_assert(offsetof(siginfo_t, si_stime)	== 40);
++static_assert(offsetof(siginfo_t, si_value)	== 24);
++static_assert(offsetof(siginfo_t, si_int)	== 24);
++static_assert(offsetof(siginfo_t, si_ptr)	== 24);
++static_assert(offsetof(siginfo_t, si_addr)	== 16);
++static_assert(offsetof(siginfo_t, si_trapno)	== 24);
++#if 1 /* Correct offsets, obtained from v4.14 */
++static_assert(offsetof(siginfo_t, si_addr_lsb)	== 28);
++static_assert(offsetof(siginfo_t, si_lower)	== 32);
++static_assert(offsetof(siginfo_t, si_upper)	== 40);
++static_assert(offsetof(siginfo_t, si_pkey)	== 32);
++#else /* Current offsets, as of v4.16 */
++static_assert(offsetof(siginfo_t, si_addr_lsb)	== 32);
++static_assert(offsetof(siginfo_t, si_lower)	== 40);
++static_assert(offsetof(siginfo_t, si_upper)	== 48);
++static_assert(offsetof(siginfo_t, si_pkey)	== 40);
++#endif
++static_assert(offsetof(siginfo_t, si_band)	== 16);
++static_assert(offsetof(siginfo_t, si_fd)	== 20);
+
+---
+
+Granted, nobody seems to have noticed because I don't even know if these
+fields have use on sparc64. But I don't yet see this as justification to
+leave things as-is...
+
+The collateral damage of this, and the acute problem that I'm having is
+defining si_perf in a sort-of readable and portable way in siginfo_t
+definitions that live outside the kernel, where sparc64 does not yet
+have broken si_addr_lsb. And the same difficulty applies to the kernel
+if we want to unbreak sparc64, while not wanting to move si_perf for
+other architectures.
+
+There are 2 options I see to solve this:
+
+1. Make things simple again. We could just revert the change moving
+   si_addr_lsb into the union, and sadly accept we'll have to live with
+   that legacy "design" mistake. (si_perf stays in the union, but will
+   unfortunately change its offset for all architectures... this one-off
+   move might be ok because it's new.)
+
+2. Add special cases to retain si_addr_lsb in the union on architectures
+   that do not have __ARCH_SI_TRAPNO (the majority). I have added a
+   draft patch that would do this below (with some refactoring so that
+   it remains sort-of readable), as an experiment to see how complicated
+   this gets.
+
+Option (1) means we'll forever be wasting the space where si_addr_lsb
+lives (including the padding). It'd also mean we'd move si_perf for
+_all_ architectures -- this might be acceptable, given there is no
+stable release with it yet -- the fix just needs to be merged before the
+release of v5.13! It is the simpler option though -- and I don't know if
+we need all this complexity.
+
+Option (2) perhaps results in better space utilization. Maybe that's
+better long-term if we worry about space in some rather distant future
+-- where we need those 8 bytes on 64-bit architectures to not exceed 128
+bytes. This option, however, doesn't just make us carry this complexity
+forever, but also forces it onto everyone else, like glibc and other
+libcs (including those in other languages with C FFIs) which have their
+own definition of siginfo_t.
+
+Which option do you prefer? Are there better options?
+
+Many thanks,
+-- Marco
+
+------ >8 ------
+
+Option #2 draft:
+
+diff --git a/arch/sparc/kernel/signal_64.c b/arch/sparc/kernel/signal_64.c
+index a0eec62c825d..150ee27b1423 100644
+--- a/arch/sparc/kernel/signal_64.c
++++ b/arch/sparc/kernel/signal_64.c
+@@ -556,3 +556,37 @@ void do_notify_resume(struct pt_regs *regs, unsigned long orig_i0, unsigned long
+ 	user_enter();
+ }
+ 
++/*
++ * Compile-time assertions for siginfo_t offsets. Unlike other architectures,
++ * sparc64 is special, because it requires si_trapno (int), and the following
++ * si_addr_lsb (short) need not be word aligned. Accidental changes around the
++ * offset of si_addr_lsb and the following fields would only be caught here.
++ */
++static_assert(offsetof(siginfo_t, si_signo)	== 0);
++static_assert(offsetof(siginfo_t, si_errno)	== 4);
++static_assert(offsetof(siginfo_t, si_code)	== 8);
++static_assert(offsetof(siginfo_t, si_pid)	== 16);
++static_assert(offsetof(siginfo_t, si_uid)	== 20);
++static_assert(offsetof(siginfo_t, si_tid)	== 16);
++static_assert(offsetof(siginfo_t, si_overrun)	== 20);
++static_assert(offsetof(siginfo_t, si_status)	== 24);
++static_assert(offsetof(siginfo_t, si_utime)	== 32);
++static_assert(offsetof(siginfo_t, si_stime)	== 40);
++static_assert(offsetof(siginfo_t, si_value)	== 24);
++static_assert(offsetof(siginfo_t, si_int)	== 24);
++static_assert(offsetof(siginfo_t, si_ptr)	== 24);
++static_assert(offsetof(siginfo_t, si_addr)	== 16);
++static_assert(offsetof(siginfo_t, si_trapno)	== 24);
++#if 1 /* Correct offsets, obtained from v4.14 */
++static_assert(offsetof(siginfo_t, si_addr_lsb)	== 28);
++static_assert(offsetof(siginfo_t, si_lower)	== 32);
++static_assert(offsetof(siginfo_t, si_upper)	== 40);
++static_assert(offsetof(siginfo_t, si_pkey)	== 32);
++#else /* Current offsets, as of v4.16 */
++static_assert(offsetof(siginfo_t, si_addr_lsb)	== 32);
++static_assert(offsetof(siginfo_t, si_lower)	== 40);
++static_assert(offsetof(siginfo_t, si_upper)	== 48);
++static_assert(offsetof(siginfo_t, si_pkey)	== 40);
++#endif
++static_assert(offsetof(siginfo_t, si_band)	== 16);
++static_assert(offsetof(siginfo_t, si_fd)	== 20);
+diff --git a/include/linux/compat.h b/include/linux/compat.h
+index f0d2dd35d408..5ea9f9c748dd 100644
+--- a/include/linux/compat.h
++++ b/include/linux/compat.h
+@@ -158,6 +158,31 @@ typedef union compat_sigval {
+ 	compat_uptr_t	sival_ptr;
+ } compat_sigval_t;
+ 
++struct __compat_sigfault_addin {
++#ifdef __ARCH_SI_TRAPNO
++	int _trapno;	/* TRAP # which caused the signal */
++#endif
++	/*
++	 * used when si_code=BUS_MCEERR_AR or
++	 * used when si_code=BUS_MCEERR_AO
++	 */
++	short int _addr_lsb;	/* Valid LSB of the reported address. */
++
++/* See include/asm-generic/uapi/siginfo.h */
++#ifdef __ARCH_SI_TRAPNO
++#	define __COMPAT_SIGFAULT_ADDIN_FIXED struct __compat_sigfault_addin _addin;
++#	define __COMPAT_SIGFAULT_ADDIN_UNION
++#	define __COMPAT_SIGFAULT_LEGACY_UNION_PAD
++#else
++#	define __COMPAT_SIGFAULT_ADDIN_FIXED
++#	define __COMPAT_SIGFAULT_ADDIN_UNION struct __compat_sigfault_addin _addin;
++#	define __COMPAT_SIGFAULT_LEGACY_UNION_PAD				\
++		char _unused[__alignof__(compat_uptr_t) < sizeof(short) ?       \
++				   sizeof(short) :				\
++				   __alignof__(compat_uptr_t)];
++#endif
++};
++
+ typedef struct compat_siginfo {
+ 	int si_signo;
+ #ifndef __ARCH_HAS_SWAPPED_SIGINFO
+@@ -214,26 +239,18 @@ typedef struct compat_siginfo {
+ 		/* SIGILL, SIGFPE, SIGSEGV, SIGBUS, SIGTRAP, SIGEMT */
+ 		struct {
+ 			compat_uptr_t _addr;	/* faulting insn/memory ref. */
+-#ifdef __ARCH_SI_TRAPNO
+-			int _trapno;	/* TRAP # which caused the signal */
+-#endif
+-#define __COMPAT_ADDR_BND_PKEY_PAD  (__alignof__(compat_uptr_t) < sizeof(short) ? \
+-				     sizeof(short) : __alignof__(compat_uptr_t))
++			__COMPAT_SIGFAULT_ADDIN_FIXED
+ 			union {
+-				/*
+-				 * used when si_code=BUS_MCEERR_AR or
+-				 * used when si_code=BUS_MCEERR_AO
+-				 */
+-				short int _addr_lsb;	/* Valid LSB of the reported address. */
++				__COMPAT_SIGFAULT_ADDIN_UNION
+ 				/* used when si_code=SEGV_BNDERR */
+ 				struct {
+-					char _dummy_bnd[__COMPAT_ADDR_BND_PKEY_PAD];
++					__COMPAT_SIGFAULT_LEGACY_UNION_PAD
+ 					compat_uptr_t _lower;
+ 					compat_uptr_t _upper;
+ 				} _addr_bnd;
+ 				/* used when si_code=SEGV_PKUERR */
+ 				struct {
+-					char _dummy_pkey[__COMPAT_ADDR_BND_PKEY_PAD];
++					__COMPAT_SIGFAULT_LEGACY_UNION_PAD
+ 					u32 _pkey;
+ 				} _addr_pkey;
+ 				/* used when si_code=TRAP_PERF */
+diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
+index 03d6f6d2c1fe..f1c1a0300ac8 100644
+--- a/include/uapi/asm-generic/siginfo.h
++++ b/include/uapi/asm-generic/siginfo.h
+@@ -29,6 +29,45 @@ typedef union sigval {
+ #define __ARCH_SI_ATTRIBUTES
+ #endif
+ 
++/*
++ * The _sigfault portion of __sifields after si_addr varies depending on
++ * architecture; capture these rules here.
++ */
++struct __sifields_sigfault_addin {
++#ifdef __ARCH_SI_TRAPNO
++	int _trapno;	/* TRAP # which caused the signal */
++#endif
++	/*
++	 * used when si_code=BUS_MCEERR_AR or
++	 * used when si_code=BUS_MCEERR_AO
++	 */
++	short _addr_lsb; /* LSB of the reported address */
++
++#if defined(__ARCH_SI_TRAPNO)
++/*
++ * If we have si_trapno between si_addr and si_addr_lsb, we cannot safely move
++ * it inside the union due to alignment of si_trapno+si_addr_lsb vs. the union.
++ */
++#	define __SI_SIGFAULT_ADDIN_FIXED struct __sifields_sigfault_addin _addin;
++#	define __SI_SIGFAULT_ADDIN_UNION
++#	define __SI_SIGFAULT_LEGACY_UNION_PAD
++#else
++/*
++ * Safe to move si_addr_lsb inside the union. We will benefit from better space
++ * usage for new fields added to the union.
++ *
++ * Fields that were added after si_addr_lsb, before it become part of the union,
++ * require padding to retain the ABI. New fields do not require padding.
++ */
++#	define __SI_SIGFAULT_ADDIN_FIXED
++#	define __SI_SIGFAULT_ADDIN_UNION struct __sifields_sigfault_addin _addin;
++#	define __SI_SIGFAULT_LEGACY_UNION_PAD				\
++		char _unused[__alignof__(void *) < sizeof(short) ?	\
++					   sizeof(short) :		\
++					   __alignof__(void *)];
++#endif
++};
++
+ union __sifields {
+ 	/* kill() */
+ 	struct {
+@@ -63,32 +102,23 @@ union __sifields {
+ 	/* SIGILL, SIGFPE, SIGSEGV, SIGBUS, SIGTRAP, SIGEMT */
+ 	struct {
+ 		void __user *_addr; /* faulting insn/memory ref. */
+-#ifdef __ARCH_SI_TRAPNO
+-		int _trapno;	/* TRAP # which caused the signal */
+-#endif
+ #ifdef __ia64__
+ 		int _imm;		/* immediate value for "break" */
+ 		unsigned int _flags;	/* see ia64 si_flags */
+ 		unsigned long _isr;	/* isr */
+ #endif
+-
+-#define __ADDR_BND_PKEY_PAD  (__alignof__(void *) < sizeof(short) ? \
+-			      sizeof(short) : __alignof__(void *))
++		__SI_SIGFAULT_ADDIN_FIXED
+ 		union {
+-			/*
+-			 * used when si_code=BUS_MCEERR_AR or
+-			 * used when si_code=BUS_MCEERR_AO
+-			 */
+-			short _addr_lsb; /* LSB of the reported address */
++			__SI_SIGFAULT_ADDIN_UNION
+ 			/* used when si_code=SEGV_BNDERR */
+ 			struct {
+-				char _dummy_bnd[__ADDR_BND_PKEY_PAD];
++				__SI_SIGFAULT_LEGACY_UNION_PAD
+ 				void __user *_lower;
+ 				void __user *_upper;
+ 			} _addr_bnd;
+ 			/* used when si_code=SEGV_PKUERR */
+ 			struct {
+-				char _dummy_pkey[__ADDR_BND_PKEY_PAD];
++				__SI_SIGFAULT_LEGACY_UNION_PAD
+ 				__u32 _pkey;
+ 			} _addr_pkey;
+ 			/* used when si_code=TRAP_PERF */
+@@ -151,9 +181,9 @@ typedef struct siginfo {
+ #define si_ptr		_sifields._rt._sigval.sival_ptr
+ #define si_addr		_sifields._sigfault._addr
+ #ifdef __ARCH_SI_TRAPNO
+-#define si_trapno	_sifields._sigfault._trapno
++#define si_trapno	_sifields._sigfault._addin._trapno
+ #endif
+-#define si_addr_lsb	_sifields._sigfault._addr_lsb
++#define si_addr_lsb	_sifields._sigfault._addin._addr_lsb
+ #define si_lower	_sifields._sigfault._addr_bnd._lower
+ #define si_upper	_sifields._sigfault._addr_bnd._upper
+ #define si_pkey		_sifields._sigfault._addr_pkey._pkey
