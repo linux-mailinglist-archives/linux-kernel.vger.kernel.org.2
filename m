@@ -2,119 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76F2936F139
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 22:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43DB136F13E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 22:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237165AbhD2Ukz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 16:40:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37788 "EHLO
+        id S236781AbhD2UpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 16:45:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235805AbhD2Ukx (ORCPT
+        with ESMTP id S233699AbhD2Uo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 16:40:53 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19363C06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 13:40:06 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id z2so31638071qkb.9
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 13:40:06 -0700 (PDT)
+        Thu, 29 Apr 2021 16:44:59 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1499C06138D
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 13:44:10 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id k14so18306116wrv.5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 13:44:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rFb15ZMjaV6JQrUKpgKUzgMYCYW0ui4LjECZptZ36oM=;
-        b=Fdw56/aBYilSisy70jltjWIgerhxu2sQGHPZm1B+Uvk6Ysq6ZyvqYeqLk1c7LsbCl0
-         wBKKosYF2cBWq/sB/ZENX9wPVuojKrqreX6IausIfjQQsr9LW3hFzywu8XG3MYUjhxCY
-         RP23cri+uNPqWQwdOeI8KJaI0OuftG2VG7PKCWhqIEXC07cFDIxDAJW6ABruxwRp4q33
-         immAU+4R+sprvMh6lAHoUblb/JrvCgLKZlCWL1e/4iDYtGRu10CVf8mbsB18gNW2I0h/
-         JumMTpP9dnl9zWWlLlnj5A67qCbw5JGtB3M01NV0IYr6myjbO0JnoGq/iaN8VXbZ8VKG
-         ZOXw==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=3FNuWJ2V7SfgCjlrVjDv7aIGD8kBMXXDl/W+oAPOJA4=;
+        b=OyuX2tpPaz5ft1BDTP29/+tNris6Wwgw6buwhXO2lpHIHsmHQrt+xYV6hrSSXWwEwt
+         MEHp5FBTaoENvty+71TT+qFnYfT3NmOTdjmIbH2PRpLpEbfIbBBo+Xn8YAFfmb+igWwW
+         1IywC4XZKP5NTRCLaOh8fcrfK0vv+qF5ETNFaNVzJZuUeuhB/PYW47MpPcUFYSvGLYhR
+         fOlIXdF6MKVyiicC+UQ5LaDARmluCcoEnOTv+tICqdj+pZb5thqlZ4/nroF08/I7Q4oW
+         qiPRC8P7mlyyHHKPEl2PCEf2RPE/4HgrHSFP+gqL+hTZWYr5CnCFo+w7uGZFxfBcc9Fp
+         xTnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rFb15ZMjaV6JQrUKpgKUzgMYCYW0ui4LjECZptZ36oM=;
-        b=RWws+CJL7qgObPmtdien2iI20a9QwQOkEYL8YkTjuUgWjyYpAFjdbJI8sTFGrvBTcQ
-         2rBFMVon0C3sfaIyfguc5OLh+g5oHJUMsyyRbz3SV1PJrBgrxedsKMfFn/EoNPpicyPZ
-         PSLMTQRQQ+XQ5FwD5f/csuqDsC5rMw8LxJtJPbs8OlBWlGTP4XoztEClmFaawHINXGYb
-         cPo0YEBDg6DKTgQkGkU74gpE3lW8YyjZlEWs8B/TvbYpjaFCUEcnsUGFDwEKvRh67fA8
-         wq62uVsRgfC0gV0phdLYU0H7Yt5XqRrpNjlhvd5TWNg0vtRJ+P650RheC0Scmqshbi2A
-         A03A==
-X-Gm-Message-State: AOAM5300PWIwdKOOS5Yz/PIm5VyWfCX+vEHGGTu0ZiTXyiVnbe/EAkpZ
-        ymOz0pdGlbIym3DWjsc8Ax+3f/W4J5QhaboAacaV2A==
-X-Google-Smtp-Source: ABdhPJwwCIS/YiCixgJ+N0X8LKladOHybcdVNsajPx8KTPexm8GMxWCBBjm/qvHdEbCmAIDiM2Kvqo6sPoFvvQ4ts9Y=
-X-Received: by 2002:a37:a788:: with SMTP id q130mr1608535qke.276.1619728804981;
- Thu, 29 Apr 2021 13:40:04 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3FNuWJ2V7SfgCjlrVjDv7aIGD8kBMXXDl/W+oAPOJA4=;
+        b=seaGRbenCiQPP2T656QtNKtP7weMF5lmJ8wLC3EKwLEvGaS7zDX1mZcYA6rG6GTgHI
+         2laFlDVRX8vjwC7tCLplV4OO5rw8QTygmhniETFje8mEVKQte2r3P8Xg5eG9OReOFbJM
+         EYnxeIK5t760UsZHXCWvPLQGCTDPDV1ZTR8j1sK91t9hyiGyDNZsAXAgMepoD+YLGeGr
+         zagfw0hBTCu67DxlEF3eiwSJAftxgn7+U+/1w+ooggZQ3aqDuERYyMpSC6v6351KnzXC
+         y2k3ob5wdqT9vvGWTMz3qPLwv1VPYEL/85hGsYAg0jeIjvcGqxmFMKp/aPptNVKZdYbX
+         CMXA==
+X-Gm-Message-State: AOAM531fdItCCkStoUnvClN9T5GgL/+mCktJjtP0gFZg9tqz4x4XN6gY
+        n843qpPYWWCWGKX6B56lrviaEA==
+X-Google-Smtp-Source: ABdhPJwM/TzhB6JI4B+qHqyCFekjx9ZQ8GTcztQCOnd//DnP+WtU7WxVfF2pWrUkNS+XUGJcgSuFzg==
+X-Received: by 2002:adf:d223:: with SMTP id k3mr1807817wrh.99.1619729049177;
+        Thu, 29 Apr 2021 13:44:09 -0700 (PDT)
+Received: from macbook.lan ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id o13sm6187484wrf.91.2021.04.29.13.44.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Apr 2021 13:44:08 -0700 (PDT)
+Subject: Re: [PATCH V2] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD
+ card
+To:     Doug Anderson <dianders@google.com>,
+        Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+Cc:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Sahitya Tummala <stummala@codeaurora.org>,
+        Ram Prakash Gupta <rampraka@codeaurora.org>,
+        Sayali Lokhande <sayalil@codeaurora.org>,
+        sartgarg@codeaurora.org, Rajendra Nayak <rnayak@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>, cang@codeaurora.org,
+        pragalla@codeaurora.org, nitirawa@codeaurora.org,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Evan Green <evgreen@chromium.org>,
+        Odelu Kukatla <okukatla@codeaurora.org>
+References: <1616264220-25825-1-git-send-email-sbhanu@codeaurora.org>
+ <CAD=FV=WLZCSd6D5VFyD+1KBp5n1qyszER2EVaEMwYjQfPSSDnA@mail.gmail.com>
+ <b77f207b-2d90-3c8b-857f-625bd3867ed1@codeaurora.org>
+ <6fdf704c4716f5873d413229ca8adc57@codeaurora.org>
+ <CAD=FV=Wa4fT5wZgd0==8kLy_tzTLgdZ-HwdfOEAM9pMeMjjFyg@mail.gmail.com>
+ <8126e130e5c0ea1e7ea867414f0510c0@codeaurora.org>
+ <CAD=FV=XavWbf_b7-=JT6V5_RNA8CjdK4oRu7H719AaPDJ5tsqQ@mail.gmail.com>
+ <32096a375966e1fcc149016df012c445@codeaurora.org>
+ <CAD=FV=U0zEDi1Xn3OmVFA3h3maVWS_o2FXOW9qDEzTf1Moja=A@mail.gmail.com>
+ <7c6805abf9c1f590bc4d66d625152f22@codeaurora.org>
+ <CAD=FV=W8z2VgbP6mepVNXJ8ZO_Enb+ftwG1HQhq8HtEyG1ppOA@mail.gmail.com>
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+Message-ID: <43fa4053-09e9-0d90-3b19-879ef94c9ec3@linaro.org>
+Date:   Thu, 29 Apr 2021 23:44:06 +0300
 MIME-Version: 1.0
-References: <20210422120459.447350175@infradead.org> <20210422123308.196692074@infradead.org>
- <CAERHkrsC9rC4Jrkz8r-7kp4SFPM6aU+EHN+Y+uQiTuPG5S72bA@mail.gmail.com>
-In-Reply-To: <CAERHkrsC9rC4Jrkz8r-7kp4SFPM6aU+EHN+Y+uQiTuPG5S72bA@mail.gmail.com>
-From:   Josh Don <joshdon@google.com>
-Date:   Thu, 29 Apr 2021 13:39:54 -0700
-Message-ID: <CABk29NuS-B3n4sbmavo0NDA1OCCsz6Zf2VDjjFQvAxBMQoJ_Lg@mail.gmail.com>
-Subject: Re: [PATCH 04/19] sched: Prepare for Core-wide rq->lock
-To:     Aubrey Li <aubrey.intel@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Don Hiatt <dhiatt@digitalocean.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAD=FV=W8z2VgbP6mepVNXJ8ZO_Enb+ftwG1HQhq8HtEyG1ppOA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 1:03 AM Aubrey Li <aubrey.intel@gmail.com> wrote:
->
-> On Thu, Apr 22, 2021 at 8:39 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> ----snip----
-> > @@ -199,6 +224,25 @@ void raw_spin_rq_unlock(struct rq *rq)
-> >         raw_spin_unlock(rq_lockp(rq));
-> >  }
-> >
-> > +#ifdef CONFIG_SMP
-> > +/*
-> > + * double_rq_lock - safely lock two runqueues
-> > + */
-> > +void double_rq_lock(struct rq *rq1, struct rq *rq2)
-> > +{
-> > +       lockdep_assert_irqs_disabled();
-> > +
-> > +       if (rq1->cpu > rq2->cpu)
->
-> It's still a bit hard for me to digest this function, I guess using (rq->cpu)
-> can't guarantee the sequence of locking when coresched is enabled.
->
-> - cpu1 and cpu7 shares lockA
-> - cpu2 and cpu8 shares lockB
->
-> double_rq_lock(1,8) leads to lock(A) and lock(B)
-> double_rq_lock(7,2) leads to lock(B) and lock(A)
->
-> change to below to avoid ABBA?
-> +       if (__rq_lockp(rq1) > __rq_lockp(rq2))
->
-> Please correct me if I was wrong.
+On 28.04.21 18:13, Doug Anderson wrote:
+> Hi,
+> 
+> On Wed, Apr 28, 2021 at 3:47 AM <sbhanu@codeaurora.org> wrote:
+>>
+>> On 2021-04-21 01:44, Doug Anderson wrote:
+>>> Hi,
+>>>
+>>> On Tue, Apr 20, 2021 at 10:21 AM <sbhanu@codeaurora.org> wrote:
+>>>>
+>>>> On 2021-04-15 01:55, Doug Anderson wrote:
+>>>>> Hi,
+>>>>>
+>>>>> On Tue, Apr 13, 2021 at 3:59 AM <sbhanu@codeaurora.org> wrote:
+>>>>>>
+>>>>>>>>>>> +                                       required-opps =
+>>>>>>>>>>> <&rpmhpd_opp_low_svs>;
+>>>>>>>>>>> +                                       opp-peak-kBps = <1200000
+>>>>>>>>>>> 76000>;
+>>>>>>>>>>> +                                       opp-avg-kBps = <1200000
+>>>>>>>>>>> 50000>;
+>>>>>>>>>> Why are the kBps numbers so vastly different than the ones on sc7180
+>>>>>>>>>> for the same OPP point. That implies:
+>>>>>>>>>>
+>>>>>>>>>> a) sc7180 is wrong.
+>>>>>>>>>>
+>>>>>>>>>> b) This patch is wrong.
+>>>>>>>>>>
+>>>>>>>>>> c) The numbers are essentially random and don't really matter.
+>>>>>>>>>>
+>>>>>>>>>> Can you identify which of a), b), or c) is correct, or propose an
+>>>>>>>>>> alternate explanation of the difference?
+>>>>>>>>>>
+>>>>>>>>
+>>>>>>>> We calculated bus votes values for both sc7180 and sc7280 with ICB
+>>>>>>>> tool,
+>>>>>>>> above mentioned values we got for sc7280.
+>>>>>>>
+>>>>>>> I don't know what an ICB tool is. Please clarify.
+>>>>>>>
+>>>>>>> Also: just because a tool spits out numbers that doesn't mean it's
+>>>>>>> correct. Presumably the tool could be wrong or incorrectly configured.
+>>>>>>> We need to understand why these numbers are different.
+>>>>>>>
+>>>>>> we checked with ICB tool team on this they conformed as Rennell &
+>>>>>> Kodiak
+>>>>>> are different chipsets,
+>>>>>> we might see delta in ib/ab values due to delta in scaling factors.
+>>>>>
+>>>>> ...but these numbers are in kbps, aren't they? As I understand it
+>>>>> these aren't supposed to be random numbers spit out by a tool but are
+>>>>> supposed to be understandable by how much bandwidth an IP block (like
+>>>>> MMC) needs from the busses it's connected to. Since the MMC IP block
+>>>>> on sc7180 and sc7280 is roughly the same there shouldn't be a big
+>>>>> difference in numbers.
+>>>>>
+>>>>> Something smells wrong.
+>>>>>
+>>>>> Adding a few people who understand interconnects better than I do,
+>>>>> though.
+>>>>>
+>>>>
+>>>> ICB team has re-checked the Rennell ICB tool and they confirmed that
+>>>> some configs were wrong in Rennell ICB tool and they corrected it.With
+>>>> the new updated Rennell ICB tool below are the values :
+>>>>
+>>>>
+>>>> Rennell LC:(Sc7180)
+>>>>
+>>>> opp-384000000 {
+>>>>                opp-hz = /bits/ 64 <384000000>;
+>>>>                required-opps = <&rpmhpd_opp_nom>;
+>>>>                opp-peak-kBps = <5400000 490000>;
+>>>>                opp-avg-kBps = <6600000 300000>;
+>>>> };
+>>>>
+>>>>
+>>>> And now, these values are near to Kodaik LC values:
+>>>>
+>>>> Kodaik LC:(SC7280)
+>>>>
+>>>> opp-384000000 {
+>>>>              opp-hz = /bits/ 64 <384000000>;
+>>>>              required-opps = <&rpmhpd_opp_nom>;
+>>>>              opp-peak-kBps = <5400000 399000>;
+>>>>              opp-avg-kBps = <6000000 300000>;
+>>>> };
+>>>
+>>> This still isn't making sense to me.
+>>>
+>>> * sc7180 and sc7280 are running at the same speed. I'm glad the
+>>> numbers are closer now, but I would have thought they'd be exactly the
+>>> same.
+>>>
+>>> * Aren't these supposed to be sensible? This is eMMC that does max
+>>> transfer rates of 400 megabytes / second to the external device. You
+>>> have bandwidths listed here of 5,400,000 kBps = 5,400,000 kilobytes /
+>>> second = 5400 megabytes / second. I can imagine there being some
+>>> overhead where an internal bus might need to be faster but that seems
+>>> excessive. This is 13.5x!
+>>>
+>>
+>> These numbers are not related to SDCC bandwidth, these are the values
+>> needed for the NOC's to run in nominal voltage corners (internal to
+>> hardware) and
+>> thus it helps SDCC to run in nominal to get required through put
+>> (384MBps).So above calculation mentioned by you is not applicable here.
+> 
+> OK. I guess if everyone else understands this and it's just me that
+> doesn't then I won't stand in the way. In general, though, the device
+> tree is supposed to be describing the hardware in a way that makes
+> sense on its own. It's not a place to just dump in magic numbers.
+> These numbers must be somehow related to the transfer rate of the SD
+> card since otherwise they wouldn't scale up with faster card clocks.
+> Given that these numbers are expressed in "kBps" (since you're storing
+> them in a property that has "kBps" in the name), I would expect that
+> these numbers are expressing some type of bandwidth. I still haven't
+> really understood why you have to scale some bandwidth at over 10x the
+> card clock speed.
+> 
+> Said another way: you're saying that you need these numbers because
+> they make a whole bunch of math work out. I'm saying that these aren't
+> just supposed to be magic numbers. They're supposed to make sense on
+> their own and you should be able to describe to me how you arrived at
+> these numbers in a way that I could do the math on my own. Saying "we
+> plugged this into some program and it spit out these numbers" isn't
+> good enough.
 
-Great catch Aubrey. This is possibly what is causing the lockups that
-Don is seeing.
+Agree.
 
-The proposed usage of __rq_lockp() is prone to race with sched core
-being enabled/disabled. It also won't order properly if we do
-double_rq_lock(smt0, smt1) vs double_rq_lock(smt1, smt0), since these
-would have equivalent __rq_lockp(). I'd propose an alternative but
-similar idea: order by core, then break ties by ordering on cpu.
+>>> * I can't see how it can make sense that "average" values are higher
+>>> than "peak" values.
+>>
+>>
+>> Here actual peak = peak number * 2
+>> actual average = average number
+>>
+>> and this multiplication is taken care by ICC driver, so technically
+>> actual peak is still high than average.
+> 
+> Sorry, but that is really counter-intuitive. Georgi: is that how this
+> is normally expected to work?
 
-+#ifdef CONFIG_SCHED_CORE
-+       if (rq1->core->cpu > rq2->core->cpu)
-+               swap(rq1, rq2);
-+       else if (rq1->core->cpu == rq2->core->cpu && rq1->cpu > rq2->cpu)
-+               swap(rq1, rq2);
-+#else
-        if (rq1->cpu > rq2->cpu)
-                swap(rq1, rq2);
-+#endif
+Average bandwidth being higher than peak does not make sense to me.
+The numbers in DT should reflect the real bandwidth that is being
+requested. If some links between nodes consist of multiple channels,
+or there is anything specific to the topology or the hardware platform
+(scaling factors, buswidth, etc), this should be handled in the
+interconnect provider driver. The goal is to use bandwidth values and
+not magic numbers.
+
+Thanks,
+Georgi
