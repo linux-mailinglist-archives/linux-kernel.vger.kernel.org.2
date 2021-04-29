@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64C0236EB27
+	by mail.lfdr.de (Postfix) with ESMTP id B054836EB28
 	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 15:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238583AbhD2NJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 09:09:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34466 "EHLO mail.kernel.org"
+        id S238815AbhD2NJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 09:09:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238957AbhD2NJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 09:09:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64ED161424;
-        Thu, 29 Apr 2021 13:08:30 +0000 (UTC)
+        id S239049AbhD2NJU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 09:09:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E66B861405;
+        Thu, 29 Apr 2021 13:08:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619701710;
-        bh=O4r1DamRUf/Vy8ddqu40jrXafGjcmQZQvyTEc5Mja/U=;
+        s=korg; t=1619701713;
+        bh=Kq1pbPFw4lvQZncgqGKNk5Fm20UQ8Gt55ufHzgJ2Kxk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2mkL3NDwvs2pVER2Rk9wsTkwhi4fG/9+0YwHb+9rfSCIZ2VB+mAb7e6Q6wUlNyJuK
-         XF8owMb8DkquslNOj6162F0agd5KvzDGKyuqZtNF8grKgCLJH/Ty8s4TQNeWNHhHxQ
-         S4ADRspDVZsTPfcRrJDS4Uw4e46lAW/PvLRIu7mU=
+        b=imuRzkYemenFabKleXf9sTxyLbHqbqWd+hlv7B4gR00kiU6kBrp54jTjlWKfxOpzX
+         g/hP14Hb0u4o8mncl5lznO4+Ks4Yvsdw6tXP4WdnHFO4J1uJd3ROSnmCE+JTReZvf5
+         OhhOxDZsd+bx2xhP+2oIJmI4BBWnsCyGw3dCtEJc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kangjie Lu <kjlu@umn.edu>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5/7] Revert "regulator: tps65910: fix a missing check of return value"
-Date:   Thu, 29 Apr 2021 15:08:09 +0200
-Message-Id: <20210429130811.3353369-6-gregkh@linuxfoundation.org>
+        Kangjie Lu <kjlu@umn.edu>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Subject: [PATCH 6/7] Revert "leds: lp5523: fix a missing check of return value of lp55xx_read"
+Date:   Thu, 29 Apr 2021 15:08:10 +0200
+Message-Id: <20210429130811.3353369-7-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210429130811.3353369-1-gregkh@linuxfoundation.org>
 References: <20210429130811.3353369-1-gregkh@linuxfoundation.org>
@@ -36,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit cd07e3701fa6a4c68f8493ee1d12caa18d46ec6a.
+This reverts commit 248b57015f35c94d4eae2fdd8c6febf5cd703900.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -54,27 +55,27 @@ change to ensure that no problems are being introduced into the
 codebase.
 
 Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Mark Brown <broonie@kernel.org>
+Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/regulator/tps65910-regulator.c | 4 +---
+ drivers/leds/leds-lp5523.c | 4 +---
  1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/regulator/tps65910-regulator.c b/drivers/regulator/tps65910-regulator.c
-index 1d5b0a1b86f7..8ad1ecc1559f 100644
---- a/drivers/regulator/tps65910-regulator.c
-+++ b/drivers/regulator/tps65910-regulator.c
-@@ -1098,10 +1098,8 @@ static int tps65910_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, pmic);
+diff --git a/drivers/leds/leds-lp5523.c b/drivers/leds/leds-lp5523.c
+index fc433e63b1dc..5036d7d5f3d4 100644
+--- a/drivers/leds/leds-lp5523.c
++++ b/drivers/leds/leds-lp5523.c
+@@ -305,9 +305,7 @@ static int lp5523_init_program_engine(struct lp55xx_chip *chip)
  
- 	/* Give control of all register to control port */
--	err = regmap_set_bits(pmic->mfd->regmap, TPS65910_DEVCTRL,
-+	regmap_set_bits(pmic->mfd->regmap, TPS65910_DEVCTRL,
- 				DEVCTRL_SR_CTL_I2C_SEL_MASK);
--	if (err < 0)
--		return err;
+ 	/* Let the programs run for couple of ms and check the engine status */
+ 	usleep_range(3000, 6000);
+-	ret = lp55xx_read(chip, LP5523_REG_STATUS, &status);
+-	if (ret)
+-		return ret;
++	lp55xx_read(chip, LP5523_REG_STATUS, &status);
+ 	status &= LP5523_ENG_STATUS_MASK;
  
- 	switch (tps65910_chip_id(tps65910)) {
- 	case TPS65910:
+ 	if (status != LP5523_ENG_STATUS_MASK) {
 -- 
 2.31.1
 
