@@ -2,89 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46AC336F235
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 23:41:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9249B36F23B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 23:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237418AbhD2VmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 17:42:24 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55614 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S237191AbhD2VmW (ORCPT
+        id S237529AbhD2Vo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 17:44:57 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:53125 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237337AbhD2Voz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 17:42:22 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 13TLfCYp030461
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Apr 2021 17:41:13 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id B3F0815C39C4; Thu, 29 Apr 2021 17:41:12 -0400 (EDT)
-Date:   Thu, 29 Apr 2021 17:41:12 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Vegard Nossum <vegard.nossum@oracle.com>,
-        akpm@linux-foundation.org, peterz@infradead.org, axboe@kernel.dk,
-        pmladek@suse.com, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ext4: fix memory leak in ext4_fill_super
-Message-ID: <YIsn+JToAkPqDPq5@mit.edu>
-References: <20210428172828.12589-1-paskripkin@gmail.com>
- <3c3877a4-fef2-9e24-f99f-2ecc46deb7e4@oracle.com>
- <20210429143354.418248a7@gmail.com>
- <YIrnPXJo/n68NrQs@mit.edu>
- <20210429230956.6ad23897@gmail.com>
+        Thu, 29 Apr 2021 17:44:55 -0400
+Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id A129D200002;
+        Thu, 29 Apr 2021 21:44:07 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rtc: sysfs: check features instead of ops
+Date:   Thu, 29 Apr 2021 23:44:03 +0200
+Message-Id: <20210429214403.2610952-1-alexandre.belloni@bootlin.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429230956.6ad23897@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 11:09:56PM +0300, Pavel Skripkin wrote:
-> > we will exit with -ENOMEM.  So at the very least all callers of
-> > kthread_stop() also need to check for -ENOMEM as well as -EINTR ---
-> > or, be somehow sure that the thread function was successfully called
-> > and started.  In this particular case, the ext4 mount code had just
-> > started the kmmpd thread, and then detected that something else had
-> > gone wrong, and failed the mount before the kmmpd thread ever had a
-> > chance to run.
-> 
-> There is a small problem about -ENOMEM...
+Test RTC_FEATURE_ALARM instead of relying on .set_alarm to know whether
+alarms are available.
 
-What I'd suggest is that we simply move
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+---
+ drivers/rtc/sysfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> exit_thread:
-> 	EXT4_SB(sb)->s_mmp_tsk = NULL;
-> 	kfree(data);
-> 	brelse(bh);
-> 	return retval;
-> }
-
-out of the thread function.  That means hanging struct mmpd_data off
-the struct ext4_sb_info structure, and then adding a function like
-this to fs/ext4/mmp.c
-
-static void ext4_stop_mmpd(struct ext4_sb_info *sbi)
-{
-	if (sbi->s_mmp_tsk) {
-		kthread_stop(sbi->s_mmp_tsk);
-		brelse(sbi->s_mmp_data->bh);
-		kfree(sbi->s_mmp_data);
-		sbi->s_mmp_data = NULL;
-		sbi->s_mmp_tsk = NULL;
-	}
-}
-
-Basically, just move all of the cleanup so it is done after the
-kthread is stopped, so we don't have to do any fancy error checking.
-We just do it unconditionally.
-
-					- Ted
-
-P.S.  Actually, we could drop the struct mmpd_data altogether, and
-just hang the buffer head as sbi->s_mmp_bh.  Then we can just pass the
-struct super * as the private pointer to kmmpd().
+diff --git a/drivers/rtc/sysfs.c b/drivers/rtc/sysfs.c
+index 8a957d31a1a4..74026f67fdfb 100644
+--- a/drivers/rtc/sysfs.c
++++ b/drivers/rtc/sysfs.c
+@@ -273,7 +273,7 @@ static bool rtc_does_wakealarm(struct rtc_device *rtc)
+ 	if (!device_can_wakeup(rtc->dev.parent))
+ 		return false;
+ 
+-	return rtc->ops->set_alarm != NULL;
++	return !!test_bit(RTC_FEATURE_ALARM, rtc->features);
+ }
+ 
+ static umode_t rtc_attr_is_visible(struct kobject *kobj,
+-- 
+2.30.2
 
