@@ -2,166 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7987536F187
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 23:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 820E936F188
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 23:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234418AbhD2VEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 17:04:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43068 "EHLO
+        id S233285AbhD2VEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 17:04:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233285AbhD2VEV (ORCPT
+        with ESMTP id S233341AbhD2VE3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 17:04:21 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B73FC06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 14:03:33 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id h3so32581287qve.13
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 14:03:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xRU2yBtauvlwmgJ+pf3kg4KpnBtBpDuxDmDITGaelXM=;
-        b=MxcB5px72C8+5vJCXXHc+ftOlbOvLaOIZCcSYXwDudiJ5T6uRWCF3IbA/q7i0v05H4
-         b5+Xhyg/FMAavwP1EiO0TTX+zk0MdwRoYHVLZbsieoDElYIszlwp9kC2cL2arlNwdmht
-         5eSBc+Cb7eohKUohNBZmGo0StBZWqhQKL+4x4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xRU2yBtauvlwmgJ+pf3kg4KpnBtBpDuxDmDITGaelXM=;
-        b=ZEk1Hnw+58ksMywblnMewbOwfiyuNgvqDK6/EvADGtmYkMntB0CywosyPP3si6byI1
-         QQ3LLRCzP36Gj2/jKbPv16J3+ukGQTE6/CZ7BNkG58/pnn4MiPoltjnDy10hl6/J4b4o
-         yfja5xC+uJ/gHaygvQz38egIq5z3HfMOLIv8uhgtzjo8HZUm7FYgchdtULVUVFkB+2cK
-         asK/n46RINq7VfxpbRhNIlaVkEZQAXonN1/RzL6u6Cq3fSvz3bJ17qLxE+PzGPpbnu/i
-         HycBJ+ilp3paYSEL25MAAjeH1UCt2C5kP5hMf6w38J5TKrw5k2C5J2sko4eSYfJWqY5P
-         3eBw==
-X-Gm-Message-State: AOAM5315mpo+lgUcsOW5Mdz0wXI82qLolab0Z5wt8vpPt5m054iMSfYc
-        wA8emU5E+i/3IvmjfQKttZNtG5Ap4V/u3w==
-X-Google-Smtp-Source: ABdhPJw/OC7u9o4m7cshjslbY1oYHsp/NzlzedsDrJS7TqfZiVNaaQQItPvOntjyRWb42EntK309ug==
-X-Received: by 2002:a0c:ebc9:: with SMTP id k9mr1631091qvq.32.1619730211906;
-        Thu, 29 Apr 2021 14:03:31 -0700 (PDT)
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
-        by smtp.gmail.com with ESMTPSA id z17sm843559qtf.10.2021.04.29.14.03.30
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Apr 2021 14:03:31 -0700 (PDT)
-Received: by mail-yb1-f178.google.com with SMTP id 82so80362193yby.7
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 14:03:30 -0700 (PDT)
-X-Received: by 2002:a05:6902:4e2:: with SMTP id w2mr2101815ybs.79.1619730210214;
- Thu, 29 Apr 2021 14:03:30 -0700 (PDT)
+        Thu, 29 Apr 2021 17:04:29 -0400
+Received: from mx0b-00190b01.pphosted.com (mx0b-00190b01.pphosted.com [IPv6:2620:100:9005:57f::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED60C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 14:03:42 -0700 (PDT)
+Received: from pps.filterd (m0050096.ppops.net [127.0.0.1])
+        by m0050096.ppops.net-00190b01. (8.16.0.43/8.16.0.43) with SMTP id 13TKhZUM008426;
+        Thu, 29 Apr 2021 22:03:41 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=jan2016.eng;
+ bh=n0L6msrOcJTH6F5oPZAFsPXWOXyqbONZZ+dhNx0/9aU=;
+ b=AowOkg9KW6fAWs+L8SRWWBYEMmkOYwmLiCtdgqfDvrxCVwVnu38SBUm6CHqsLSzkFC6z
+ u7oVkLDiakoQIuafZh+Jw+vkpauNTfSxbDNLcHi3tBhUletLfGMwWUiK9+SQjv/AO9wA
+ 0oZurww2zXHWlc/6pLY/PAOzKApdAFETYLQfcyd6+C3EdoShA1zTtyYr4ooSnjyaz/oP
+ oAOcMCNDm+nweSmJ6PuNFeDuCTJIfef815ieCROmAHu1XYTzitiqpTjHP/wOmeDlKOoY
+ so9ShiMwXvMmBsv174Co5mZIHzizsC26zJEcexBaKB5yjWQ+T2VLPVMYIjAZb8uZeDoa kQ== 
+Received: from prod-mail-ppoint2 (prod-mail-ppoint2.akamai.com [184.51.33.19] (may be forged))
+        by m0050096.ppops.net-00190b01. with ESMTP id 3883fwsphj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Apr 2021 22:03:41 +0100
+Received: from pps.filterd (prod-mail-ppoint2.akamai.com [127.0.0.1])
+        by prod-mail-ppoint2.akamai.com (8.16.1.2/8.16.1.2) with SMTP id 13TKp7xF003451;
+        Thu, 29 Apr 2021 17:03:40 -0400
+Received: from prod-mail-relay10.akamai.com ([172.27.118.251])
+        by prod-mail-ppoint2.akamai.com with ESMTP id 3877q8bq0b-1;
+        Thu, 29 Apr 2021 17:03:40 -0400
+Received: from [0.0.0.0] (prod-ssh-gw01.bos01.corp.akamai.com [172.27.119.138])
+        by prod-mail-relay10.akamai.com (Postfix) with ESMTP id 202464471F;
+        Thu, 29 Apr 2021 21:03:40 +0000 (GMT)
+Subject: Re: [PATCH 1/2] dyndbg: avoid calling dyndbg_emit_prefix when it has
+ no work
+To:     Jim Cromie <jim.cromie@gmail.com>, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+References: <20210428010031.571623-1-jim.cromie@gmail.com>
+ <20210428010031.571623-2-jim.cromie@gmail.com>
+From:   Jason Baron <jbaron@akamai.com>
+Message-ID: <f2e4773e-45a2-c4cb-24cb-fc8119f10a3a@akamai.com>
+Date:   Thu, 29 Apr 2021 17:03:40 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1619416756-3533-1-git-send-email-rajeevny@codeaurora.org>
- <1619416756-3533-2-git-send-email-rajeevny@codeaurora.org> <20210429180435.GA1385465@robh.at.kernel.org>
-In-Reply-To: <20210429180435.GA1385465@robh.at.kernel.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 29 Apr 2021 14:03:18 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=V-kdySH5Pp-Fb-PRYk60Ha_UOTXJHcvMp+uV3P1oo7Uw@mail.gmail.com>
-Message-ID: <CAD=FV=V-kdySH5Pp-Fb-PRYk60Ha_UOTXJHcvMp+uV3P1oo7Uw@mail.gmail.com>
-Subject: Re: [v3 1/2] dt-bindings: backlight: add DisplayPort aux backlight
-To:     Rob Herring <robh@kernel.org>
-Cc:     Rajeev Nandan <rajeevny@codeaurora.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Rob Clark <robdclark@gmail.com>, mkrishn@codeaurora.org,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Sean Paul <seanpaul@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210428010031.571623-2-jim.cromie@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-29_11:2021-04-28,2021-04-29 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 spamscore=0
+ malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104290134
+X-Proofpoint-ORIG-GUID: OELZtakVMndXn3b9tmh3sUEq3exMcNdp
+X-Proofpoint-GUID: OELZtakVMndXn3b9tmh3sUEq3exMcNdp
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-29_11:2021-04-28,2021-04-29 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0
+ lowpriorityscore=0 phishscore=0 priorityscore=1501 mlxlogscore=999
+ malwarescore=0 clxscore=1015 impostorscore=0 bulkscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104290134
+X-Agari-Authentication-Results: mx.akamai.com; spf=${SPFResult} (sender IP is 184.51.33.19)
+ smtp.mailfrom=jbaron@akamai.com smtp.helo=prod-mail-ppoint2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Jim,
 
-On Thu, Apr 29, 2021 at 11:04 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Mon, Apr 26, 2021 at 11:29:15AM +0530, Rajeev Nandan wrote:
-> > Add bindings for DisplayPort aux backlight driver.
-> >
-> > Changes in v2:
-> > - New
-> >
-> > Signed-off-by: Rajeev Nandan <rajeevny@codeaurora.org>
-> > ---
-> >  .../bindings/leds/backlight/dp-aux-backlight.yaml  | 49 ++++++++++++++++++++++
-> >  1 file changed, 49 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/leds/backlight/dp-aux-backlight.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/leds/backlight/dp-aux-backlight.yaml b/Documentation/devicetree/bindings/leds/backlight/dp-aux-backlight.yaml
-> > new file mode 100644
-> > index 00000000..0fa8bf0
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/leds/backlight/dp-aux-backlight.yaml
-> > @@ -0,0 +1,49 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/leds/backlight/dp-aux-backlight.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: DisplayPort aux backlight driver bindings
-> > +
-> > +maintainers:
-> > +  - Rajeev Nandan <rajeevny@codeaurora.org>
-> > +
-> > +description:
-> > +  Backlight driver to control the brightness over DisplayPort aux channel.
-> > +
-> > +allOf:
-> > +  - $ref: common.yaml#
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: dp-aux-backlight
-> > +
-> > +  ddc-i2c-bus:
-> > +    $ref: /schemas/types.yaml#/definitions/phandle
-> > +    description:
-> > +      A phandle to the system I2C controller connected to the DDC bus used
-> > +      for the DisplayPort AUX channel.
-> > +
-> > +  enable-gpios:
-> > +    maxItems: 1
-> > +    description: GPIO specifier for backlight enable pin.
-> > +
-> > +  max-brightness: true
-> > +
-> > +required:
-> > +  - compatible
-> > +  - ddc-i2c-bus
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    backlight {
-> > +        compatible = "dp-aux-backlight";
-> > +        ddc-i2c-bus = <&sn65dsi86_bridge>;
-> > +        enable-gpios = <&tlmm 12 GPIO_ACTIVE_HIGH>;
->
-> So the DDC bus is connected to a backlight and also a panel? This
-> binding is not reflecting the h/w, but rather what you want for some
-> driver.
->
-> There's only one thing here and that's an eDP panel which supports
-> backlight control via DP aux channel. You can figure all that out from
-> the panel's compatible and/or reading the EDID.
->
-> You might also be interested in this thread:
->
-> https://lore.kernel.org/lkml/YIKsDtjcIHGNvW0u@orome.fritz.box/
+On 4/27/21 9:00 PM, Jim Cromie wrote:
+> Wrap function in a static-inline one, which checks flags to avoid
+> calling the function unnecessarily.
+> 
+> Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+> ---
+>  include/linux/dynamic_debug.h | 9 +++++++++
+>  lib/dynamic_debug.c           | 9 ++++++++-
+>  2 files changed, 17 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
+> index a57ee75342cf..173535e725f7 100644
+> --- a/include/linux/dynamic_debug.h
+> +++ b/include/linux/dynamic_debug.h
+> @@ -32,6 +32,15 @@ struct _ddebug {
+>  #define _DPRINTK_FLAGS_INCL_FUNCNAME	(1<<2)
+>  #define _DPRINTK_FLAGS_INCL_LINENO	(1<<3)
+>  #define _DPRINTK_FLAGS_INCL_TID		(1<<4)
+> +
+> +#define _DPRINTK_FLAGS_INCL_ANYSITE		\
+> +	(_DPRINTK_FLAGS_INCL_MODNAME		\
+> +	 | _DPRINTK_FLAGS_INCL_FUNCNAME		\
+> +	 | _DPRINTK_FLAGS_INCL_LINENO)
+> +#define _DPRINTK_FLAGS_INCL_ANY			\
+> +	(_DPRINTK_FLAGS_INCL_ANYSITE		\
+> +	 | _DPRINTK_FLAGS_INCL_TID)
+> +
 
-I think Rajeev needs to rework everything anyway as per:
+I'm not sure it's worth having an unused define here by dynamic_debug.c.
 
-https://lore.kernel.org/r/87zgxl5qar.fsf@intel.com
+I would prefer to just have _DPRINTK_FLAGS_INCL_ANY that has all the flags
+in a single define.
 
-...but you're right that it makes sense not to model the backlight as
-a separate node in the device tree. The panel driver can handle
-setting up the backlight.
+>  #if defined DEBUG
+>  #define _DPRINTK_FLAGS_DEFAULT _DPRINTK_FLAGS_PRINT
+>  #else
+> diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+> index c70d6347afa2..613293896e47 100644
+> --- a/lib/dynamic_debug.c
+> +++ b/lib/dynamic_debug.c
+> @@ -586,7 +586,7 @@ static int remaining(int wrote)
+>  	return 0;
+>  }
+>  
+> -static char *dynamic_emit_prefix(const struct _ddebug *desc, char *buf)
+> +static char *__dynamic_emit_prefix(const struct _ddebug *desc, char *buf)
+>  {
+>  	int pos_after_tid;
+>  	int pos = 0;
+> @@ -618,6 +618,13 @@ static char *dynamic_emit_prefix(const struct _ddebug *desc, char *buf)
+>  	return buf;
+>  }
+>  
+> +static inline char *dynamic_emit_prefix(struct _ddebug *desc, char *buf)
+> +{
+> +	if (unlikely(desc->flags & _DPRINTK_FLAGS_INCL_ANY))
+> +		return __dynamic_emit_prefix(desc, buf);
+> +	return buf;
+> +}
+> +
 
--Doug
+hmmm - looking at __dynamic_emit_prefix() it starts by doing:
+
+
+ 589 static char *dynamic_emit_prefix(const struct _ddebug *desc, char *buf)
+ 590 {
+ 591         int pos_after_tid;
+ 592         int pos = 0;
+ 593
+ 594         *buf = '\0';
+
+
+So now we are missing the string termination if no flags are set...
+
+Thanks,
+
+-Jason
+
+>  void __dynamic_pr_debug(struct _ddebug *descriptor, const char *fmt, ...)
+>  {
+>  	va_list args;
+> 
