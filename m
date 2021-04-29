@@ -2,86 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E97A36EF25
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77F5F36EF30
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241050AbhD2Rv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 13:51:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233706AbhD2Rv5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 13:51:57 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC35BC06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:51:10 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id z13so25143266lft.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:51:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6As9QWB6Bh2AmK0gqxTfBNY3/GVKKNOfvjuvOCjRnsY=;
-        b=CMBlR2cONsJRSVTzvsEhjwLrLl8X3/1UbmXgxMCZsoJVtJgmnPSAXsraEDcY8C0qhJ
-         dF+0hqGhEuxcsoVcg63yfRv8tKMj+gxh5WAt8Ebm+NroA4rNJ0HxHMlPloS2ve88C9xH
-         godFDieuF8yt8hRTWJ7DH02vPp+8OcauXV558=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6As9QWB6Bh2AmK0gqxTfBNY3/GVKKNOfvjuvOCjRnsY=;
-        b=OCcKkwIPQ+kLUnUHpO26ZDVpzAUxlA1J/bjo5misgyMVPjLZ6gWzujxiAehZ624SXu
-         J1PREkFm3qwCZsYbjPW100Dpd/Kvdi+8M6suSkoeGHeM0KZCBTrlIEty+RyUTkHTimvh
-         XGFoyieWXWx45aVnSnaZCh7e1NJ3tVAoYfzN+4zX6gowwV5NsrXeSz/pGiOlWr8rIvoG
-         AgnMzuzN6kpD2qDwZqxDpnkBkRLVZ3LuFHAuUTtq9ZPWWkd/8HksGVqXXTbRDTk5hRCc
-         41GrRXkCsrTntMCu9Uyhbab2wHzZ0f6G92WNBCtIGf3mJSZTyolDJgWnaaRwROyIVI0r
-         T0jw==
-X-Gm-Message-State: AOAM530c58HeSf0n3uSgVGyBZHSJLxdGL4+JDLhql1iUNDHAONwFDcux
-        cHGdZPUQCKwhmPuZn625rNIEKSZAp4+s0VwO
-X-Google-Smtp-Source: ABdhPJxGIK4wADrzHtzE/m1ECQhdZ2sbK6G/ByfayUyMw4kf8Yrh1czYySX7M7wt7E8rGzPsM3X2NA==
-X-Received: by 2002:ac2:57c8:: with SMTP id k8mr466416lfo.659.1619718668979;
-        Thu, 29 Apr 2021 10:51:08 -0700 (PDT)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id i15sm40906lfg.232.2021.04.29.10.51.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Apr 2021 10:51:07 -0700 (PDT)
-Received: by mail-lf1-f41.google.com with SMTP id 12so105827097lfq.13
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:51:07 -0700 (PDT)
-X-Received: by 2002:ac2:5f92:: with SMTP id r18mr484354lfe.253.1619718667143;
- Thu, 29 Apr 2021 10:51:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210429170619.GM3122264@magnolia>
-In-Reply-To: <20210429170619.GM3122264@magnolia>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 29 Apr 2021 10:50:51 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgpn570yfA+EM5yZ0T-m0c5jnLcx3WGSu3xR8E4DGvCFg@mail.gmail.com>
-Message-ID: <CAHk-=wgpn570yfA+EM5yZ0T-m0c5jnLcx3WGSu3xR8E4DGvCFg@mail.gmail.com>
+        id S241092AbhD2Rw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 13:52:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57540 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240931AbhD2Rwy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 13:52:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5AAE6613FF;
+        Thu, 29 Apr 2021 17:52:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619718727;
+        bh=timUPoTpAXouMZdauVIrhnWw8EeXjiihj7oHTCRBEGU=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=AKbLS0+u2+QZTWhUTkYOD9NIDcpkX5vekB7C3S33QIpBxwORcSv+fgv6d43/hgzgI
+         urtPDua9uR8+x+IpKj3mmOPJulSfLtdYpu6q5woxPTYSziYVzimyJ4kwD/1wLH4sV4
+         3FLNluPWucUWJ2kO1ATBfGitS62RHRSURJXQ8Hea3xIgSQVfsDwTrUhEyc0Ih73clT
+         H8/yym0LiX4ZiZJfil7QY974QvpQYwOi+kyt4ezMz9kOjH2sc3VXqVKYWvfv2cjp4x
+         e0yGLZ8LxSRfIYsO6adzgpZ8hBfcscFtR4gmscrKrHeHg/OWjI+hq0C4IrF/oSpREX
+         t5S9IzkziYSFA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4800D60A36;
+        Thu, 29 Apr 2021 17:52:07 +0000 (UTC)
 Subject: Re: [GIT PULL] xfs: new code for 5.13
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210429170619.GM3122264@magnolia>
+References: <20210429170619.GM3122264@magnolia>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210429170619.GM3122264@magnolia>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.13-merge-3
+X-PR-Tracked-Commit-Id: 76adf92a30f3b92a7f91bb00b28ea80efccd0f01
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: d2b6f8a179194de0ffc4886ffc2c4358d86047b8
+Message-Id: <161971872723.11214.4279033295206868895.pr-tracker-bot@kernel.org>
+Date:   Thu, 29 Apr 2021 17:52:07 +0000
 To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Eric Sandeen <sandeen@sandeen.net>,
-        Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        david@fromorbit.com, linux-kernel@vger.kernel.org,
+        sandeen@sandeen.net, hch@lst.de
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 10:06 AM Darrick J. Wong <djwong@kernel.org> wrote:
->
-> Unfortunately, some of our refactoring work collided with Miklos'
-> patchset that refactors FS_IOC_[GS]ETFLAGS and FS_IOC_FS[GS]ETXATTR.
+The pull request you sent on Thu, 29 Apr 2021 10:06:19 -0700:
 
-Ok, the resolution looked reasonably straightforward to me, and I
-ended up with what looks like the same end result you did.
+> git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.13-merge-3
 
-But I only did a visual inspection of our --cc diffs (you seem to use
---patience, which made my initial diff look different) and obviously
-verified that it all builds cleanly, I didn't do any actual testing.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/d2b6f8a179194de0ffc4886ffc2c4358d86047b8
 
-So please double-check that everything still looks good,
+Thank you!
 
-                 Linus
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
