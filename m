@@ -2,115 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DEC536EC7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 16:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1039A36EC7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 16:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239923AbhD2Ogn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 10:36:43 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:40032 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234862AbhD2Ogk (ORCPT
+        id S237338AbhD2OjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 10:39:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233128AbhD2OjN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 10:36:40 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TEGATE007742;
-        Thu, 29 Apr 2021 14:35:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=OZcICzs7p+CNORIipbTD7WjNxFxyZPDdbnWZ3TzgtYQ=;
- b=YqIFGPBI9ME/+a2PoaA9CyZ3roMe9zeNWHB/VjPEqqH3KIsPHX+BnmUjsVgBl4kAbwkG
- 4bFcc3OY2Qe7dJAMIn0YY4euZWVVCxsc8LULqX3Riky5CI3sK1UxzskHWD3LvxR23maf
- JTU4ht8seluxEHUSEZYPqnXJdzjHjHtPnaAZTF5BgTN42D0gjjIUsX63isdV1dUJd/cR
- a+h46WP4JJpz24Nl6rEWSmH3r28CtIKxSmT2t1Pz8WXf2UgNHGUVk8XqYtmk/Uvab8/0
- f1Y8CzfapZGX2IUrQXPKS9xULg/lOcBxihXgKHDALOnztxKK39gVBk1561gA2HM6yRsI sA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 385ahbvkva-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 14:35:46 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TEYu23142485;
-        Thu, 29 Apr 2021 14:35:46 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 3848f1653h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 14:35:46 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13TEZj0t147341;
-        Thu, 29 Apr 2021 14:35:45 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 3848f16538-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 14:35:45 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13TEZiX6032445;
-        Thu, 29 Apr 2021 14:35:44 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 29 Apr 2021 07:35:43 -0700
-Date:   Thu, 29 Apr 2021 17:35:36 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     outreachy-kernel@googlegroups.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH 2/2] staging: rtl8723bs: core: Removed
- set but unused variable.
-Message-ID: <20210429143536.GD1981@kadam>
-References: <20210428113346.28305-1-fmdefrancesco@gmail.com>
- <20210428113346.28305-3-fmdefrancesco@gmail.com>
+        Thu, 29 Apr 2021 10:39:13 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFAD7C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 07:38:26 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id l189-20020a1cbbc60000b0290140319ad207so9083241wmf.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 07:38:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nvlXRyFYaeeyIwO6szvQsWjtbPP+qdyXO2BDXR8A9/8=;
+        b=CTBsw0zEqYpNO1IjM8aFVM6MLCxN6LQLNQXkIC9OsaOSGWnb/RbFJWycx2If4u4pdM
+         u7LCQbFVd358Tit6j/gy93z3Qq2H3nkjMYVtUDTiucVPFLSM1GPHdmnAAR8tjADSYJne
+         r/xyB13RGDKYOdcVVDk5mQzKqGjOMy34nohurpBYaFkfy+resbSItmJDq0bNQ563skf0
+         LCOSIMYI1sTQFYkKbiN8k73UIDX2K2jI5PnzbpPHTAghIZHDE10/Udrpz7Jrna/ah1XD
+         fKAJ74nYjd41jnqYfFuuhbY25ymEPco0zQp7FGON2zNjTO6qhP5AQV6oR8qJDxQMnywP
+         Nf2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nvlXRyFYaeeyIwO6szvQsWjtbPP+qdyXO2BDXR8A9/8=;
+        b=amu0x0HnDO3WgTtG6oA0TkW9+K9hNr3ExfPCwYiIJTGct/kKeV4VWMUcvWEob/dMEB
+         UKkEpqYoPAip9vrtG3A5FEcXqVHg1zE6UNedpDgUmeU4DDpSNnkpPGe3YDm1YYi+Vtdn
+         q5uDJ5TOWSq5XKZLzQnyrlKrtkjNN5u9enn9rmOxXpAF4AByYSDkuDbGxXvIYbrrxoXT
+         SA2RW8ayE4lrhHCoUN+Ckky4UffHydMFjHMW0R7oHqeoKDK6nvLQ0I1DEKWN0hnG/9fY
+         YTSmre5+MzOBTZcOenVxK8RHYMMji916YK+sf1KvMM6pagNrdVdOVb7gWlpeL/qOBey1
+         1FEQ==
+X-Gm-Message-State: AOAM532bT8EbaD+oWBRsaQymiWvz1qwSlaUeW0qO1cWpX+CEC+s366ZS
+        eCzSypMzZBqwIPLJeMsEUq85BQ==
+X-Google-Smtp-Source: ABdhPJzxai37BCFbsjEPDgcJce53BzDsodpZRG2jq6v0LEhp4mkGCjah3cYW3LSkNzEjW74rnZwnZQ==
+X-Received: by 2002:a1c:7209:: with SMTP id n9mr398838wmc.60.1619707105655;
+        Thu, 29 Apr 2021 07:38:25 -0700 (PDT)
+Received: from groot.home ([2a01:cb19:826e:8e00:f37e:9091:b397:6f48])
+        by smtp.gmail.com with ESMTPSA id d6sm5025602wrr.77.2021.04.29.07.38.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 07:38:25 -0700 (PDT)
+From:   Mattijs Korpershoek <mkorpershoek@baylibre.com>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chen Zhong <chen.zhong@mediatek.com>
+Cc:     fparent@baylibre.com, dmitry.torokhov@gmail.com,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mfd: mt6397: rename mtk-pmic-keys cells to avoid OOPS
+Date:   Thu, 29 Apr 2021 16:38:11 +0200
+Message-Id: <20210429143811.2030717-1-mkorpershoek@baylibre.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210428113346.28305-3-fmdefrancesco@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: 3I-WfEfnF7HtXKDJ1_iqrugYLeTgwa2h
-X-Proofpoint-ORIG-GUID: 3I-WfEfnF7HtXKDJ1_iqrugYLeTgwa2h
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9969 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 mlxlogscore=999
- priorityscore=1501 clxscore=1031 adultscore=0 suspectscore=0 spamscore=0
- phishscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104290094
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 01:33:46PM +0200, Fabio M. De Francesco wrote:
-> Removed set but unused variable. Issue detected by gcc.
-> 
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> ---
->  drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> index a2fdd5ea5fc4..b0d2ba5ed129 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> @@ -1019,7 +1019,7 @@ unsigned int OnAssocReq(struct adapter *padapter, union recv_frame *precv_frame)
->  	u16 capab_info;
->  	struct rtw_ieee802_11_elems elems;
->  	struct sta_info *pstat;
-> -	unsigned char 	reassoc, *p, *pos, *wpa_ie;
-> +	unsigned char 	*p, *pos, *wpa_ie;
->  	unsigned char WMM_IE[] = {0x00, 0x50, 0xf2, 0x02, 0x00, 0x01};
->  	int		i, ie_len, wpa_ie_len, left;
->  	unsigned char 	supportRate[16];
-> @@ -1040,10 +1040,8 @@ unsigned int OnAssocReq(struct adapter *padapter, union recv_frame *precv_frame)
->  
->  	frame_type = GetFrameSubType(pframe);
->  	if (frame_type == WIFI_ASSOCREQ) {
-> -		reassoc = 0;
->  		ie_offset = _ASOCREQ_IE_OFFSET_;
->  	} else { /*  WIFI_REASSOCREQ */
-> -		reassoc = 1;
->  		ie_offset = _REASOCREQ_IE_OFFSET_;
->  	}
+When booting with CONFIG_KEYBOARD_MTK_PMIC=y, we have the following oops:
 
-Get rid of the curly braces as well, otherwise the patch introduces a
-checkpatch warning.
+[    0.384359] Unable to handle kernel NULL pointer dereference at virtual address 00000000000000c0
+[    0.385471] Mem abort info:
+[    0.385826]   ESR = 0x96000004
+[    0.386214]   EC = 0x25: DABT (current EL), IL = 32 bits
+[    0.386886]   SET = 0, FnV = 0
+[    0.387282]   EA = 0, S1PTW = 0
+[    0.387681] Data abort info:
+[    0.388047]   ISV = 0, ISS = 0x00000004
+[    0.388533]   CM = 0, WnR = 0
+[    0.388910] [00000000000000c0] user address but active_mm is swapper
+[    0.389712] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+[    0.390419] Modules linked in:
+[    0.390812] CPU: 4 PID: 1 Comm: swapper/0 Not tainted 5.12.0-mtk-04316-g7f74036c9b47 #58
+[    0.391835] Hardware name: Pumpkin MT8183 (DT)
+[    0.392399] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+[    0.393160] pc : mtk_pmic_keys_probe+0x8c/0x57c
+[    0.393744] lr : mtk_pmic_keys_probe+0x70/0x57c
+[    0.394318] sp : ffff80001008bb10
+[    0.394738] x29: ffff80001008bb10 x28: 0000000000000000
+[    0.395414] x27: ffff8000117f04b0 x26: ffff80001121aa88
+[    0.396089] x25: ffff0000031ea400 x24: ffff0000031ea410
+[    0.396763] x23: 0000000000000000 x22: ffff00000342ad80
+[    0.397438] x21: ffff000003589780 x20: 0000000000000000
+[    0.398112] x19: ffff80001129d0d0 x18: 0000000000003ca8
+[    0.398786] x17: ffff800010bad620 x16: ffff800010bacc44
+[    0.399460] x15: 0000000000000040 x14: ffffffffffffffff
+[    0.400134] x13: ffff800011df2728 x12: 0000000000000030
+[    0.400808] x11: 0101010101010101 x10: 7f7f7f7f7f7f7f7f
+[    0.401482] x9 : 0000000000000000 x8 : ffff000003589800
+[    0.402155] x7 : 0000000000000000 x6 : 000000000000003f
+[    0.402829] x5 : 0000000000000040 x4 : ffff0000031ea610
+[    0.403503] x3 : ffff0000031ea6b8 x2 : 0000000000000000
+[    0.404176] x1 : ffff000002d8d800 x0 : ffff0000031ea410
+[    0.404850] Call trace:
+[    0.405162]  mtk_pmic_keys_probe+0x8c/0x57c
+[    0.405694]  platform_probe+0x68/0xe0
+[    0.406162]  really_probe+0x1c0/0x480
+[    0.406631]  driver_probe_device.part.0+0xd8/0x118
+[    0.407239]  device_driver_attach+0xcc/0xd4
+[    0.407773]  __driver_attach+0x60/0x12c
+[    0.408261]  bus_for_each_dev+0x70/0xc4
+[    0.408749]  driver_attach+0x24/0x30
+[    0.409204]  bus_add_driver+0x118/0x200
+[    0.409692]  driver_register+0x78/0x130
+[    0.410180]  __platform_driver_register+0x28/0x34
+[    0.410779]  pmic_keys_pdrv_init+0x1c/0x28
+[    0.411301]  do_one_initcall+0x54/0x1c0
+[    0.411791]  kernel_init_freeable+0x1d4/0x23c
+[    0.412347]  kernel_init+0x14/0x118
+[    0.412792]  ret_from_fork+0x10/0x34
+[    0.413251] Code: aa1803e0 f90006b8 f94006c1 f9000aa1 (f9406281)
+[    0.414032] ---[ end trace ad605d8d1790625c ]---
+[    0.414630] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+[    0.415600] SMP: stopping secondary CPUs
+[    0.416103] Kernel Offset: 0x80000 from 0xffff800010000000
+[    0.416796] PHYS_OFFSET: 0x40000000
+[    0.417238] CPU features: 0x00240002,2188200c
+[    0.417791] Memory Limit: none
+[    0.418181] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
 
-regards,
-dan carpenter
+This happens when we don't have a matching device-tree entry
+(such as mediatek,mt6323-keys) for the driver.
+In that case, we dereference of_id->data with of_id == NULL
+
+The mfd core warns us about this:
+   [    0.352175] mtk-pmic-keys: Failed to locate of_node [id: -1]
+
+mtk_pmic_keys gets probed() anyways because its mfd_cell->name:
+    }, {
+            .name = "mtk-pmic-keys",
+            .num_resources = ARRAY_SIZE(mt6323_keys_resources),
+            .resources = mt6323_keys_resources,
+            .of_compatible = "mediatek,mt6323-keys"
+    }, {
+
+.name is used by mfd_add_device() and becomes the name of the platform
+device:
+
+    pdev = platform_device_alloc(cell->name, platform_id);
+
+Later, in initcall, we do:
+
+[    0.296114] calling  pmic_keys_pdrv_init+0x0/0x28 @ 1
+[    0.296142] bus: 'platform': add driver mtk-pmic-keys
+
+Then, to check if we should call mtk_pmic_keys_probe(), we call
+
+      platform_match(drv, dev)
+
+which will return true since drv->name and pdev->name match.
+
+Since both the platform device is named mtk-pmic-keys and the driver is
+called mtk-pmic-keys, we call probe(), which triggers the oops.
+
+Fix it by renaming the mtk-pmic-key subdevices to right side of
+their compatible.
+
+This way, probe() will only be called when we have a valid dts entry for
+mtk-pmic-keys.
+
+Note: this is also more consistent naming with the other subdevices
+such as mt6397-rtc and mt6397-codec.
+
+Fixes: 55d1d1547ab5 ("mfd: mt6397: Add PMIC keys support to MT6397 driver")
+Signed-off-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
+---
+
+This is a replacement for:
+https://patchwork.kernel.org/project/linux-mediatek/patch/20210428164219.1115537-2-mkorpershoek@baylibre.com/
+
+ drivers/mfd/mt6397-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mfd/mt6397-core.c b/drivers/mfd/mt6397-core.c
+index 7518d74c3b4c..a83fbc486d26 100644
+--- a/drivers/mfd/mt6397-core.c
++++ b/drivers/mfd/mt6397-core.c
+@@ -72,7 +72,7 @@ static const struct mfd_cell mt6323_devs[] = {
+ 		.name = "mt6323-led",
+ 		.of_compatible = "mediatek,mt6323-led"
+ 	}, {
+-		.name = "mtk-pmic-keys",
++		.name = "mt6323-keys",
+ 		.num_resources = ARRAY_SIZE(mt6323_keys_resources),
+ 		.resources = mt6323_keys_resources,
+ 		.of_compatible = "mediatek,mt6323-keys"
+@@ -118,7 +118,7 @@ static const struct mfd_cell mt6397_devs[] = {
+ 		.name = "mt6397-pinctrl",
+ 		.of_compatible = "mediatek,mt6397-pinctrl",
+ 	}, {
+-		.name = "mtk-pmic-keys",
++		.name = "mt6397-keys",
+ 		.num_resources = ARRAY_SIZE(mt6397_keys_resources),
+ 		.resources = mt6397_keys_resources,
+ 		.of_compatible = "mediatek,mt6397-keys"
+
+base-commit: 4a0225c3d208cfa6e4550f2210ffd9114a952a81
+-- 
+2.27.0
 
