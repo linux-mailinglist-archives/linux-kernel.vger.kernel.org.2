@@ -2,104 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EADE36EE7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D38836EE78
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240888AbhD2RBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 13:01:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240852AbhD2RBG (ORCPT
+        id S240776AbhD2RAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 13:00:48 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:19104 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233099AbhD2RAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 13:01:06 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E050C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:00:19 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id m7so66446053ljp.10
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:00:19 -0700 (PDT)
+        Thu, 29 Apr 2021 13:00:47 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f0HDs304V6rBQyJsC5AJ9JCDtTKnf5YiKXTX64eRPok=;
-        b=ExZEkvb48KmMdff51m5EllB7RqJi7o96Jtn3zE3fRmXGBVkDfzxzZmLnWIq5F+BdEM
-         q6cz07f9ztPJ3Y+jdlGik9OM0RnI/rho9TYwV1UhXhrBQA6aDsNZTG7hRI26Qc0ryVgj
-         gQavAami2VG0lmlSiImr4AagqgDrhqmLkFypq6RtwXc83dhxlenMhB+LDhHVLNIMURfI
-         fTSEu8MjopjkR03N++XlTEGNOFm1cTZu1KKiLdMtCngzZHV6ntqCm1+Hop9fah1h5JbZ
-         Zsm2slRg6nDEOwvT6Zr/IdzMWQW9c4v0uSIKofH2VEpAtrDCEOAnIkyePqrkjvIveyFP
-         Da2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f0HDs304V6rBQyJsC5AJ9JCDtTKnf5YiKXTX64eRPok=;
-        b=phSZv8dp9qlzSmY1gNJD8+TSI3oMCxDlp8l6W/1J8o0PMsg0oviQExrN78dcReBQi0
-         8QmSSrY0hPL9tgg9ujWA+XuXIrEHTRTN2NydsfLgXNNnzKDR3XaoB16hZ9y7gIOf4xnP
-         ksru983SYn5mf7PluQhobDOzgmopQ4/9r8ygA5QuoPbUd/lYQ/c97mKWBibdweF3Z/Cr
-         RXnZg4ZncqMpvtFOK1LY4RmAL1HqAXrTfaT1yi8mYyWdisaKM6dFNoA8b4CJSOU7Qw7K
-         BvAVakn/VFHxUtSJXg4PificOJYrjeTm7WOKhSyGmYwwntU5dL/ZsGrbsYV6UKZwyDGL
-         DSnA==
-X-Gm-Message-State: AOAM5307WJn0bKjOlxKvzwdHQG3mV+x3TFvqQwHn30DJ3dWGUUCacXa9
-        hS26xeu65VLzsHoXrr4xEmfOKqRHrC6B0twhZJbo4g==
-X-Google-Smtp-Source: ABdhPJw+ESSs7VTM3JdnNUYO1nFYP+5xozFj+wC6Na197QlKwaCYJN5flP6NE6Ly3ROztBiNyG6qGBwyM8dd8acjBKQ=
-X-Received: by 2002:a05:651c:50b:: with SMTP id o11mr431200ljp.323.1619715617399;
- Thu, 29 Apr 2021 10:00:17 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1619715601; x=1651251601;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=pwWACMutRRf/vENNfq16JaVK0svpWCRPXO5OfA+s6Ls=;
+  b=ULKiEI3gER9wBnWZcA93JaOIxE6+p3AnPRA286i15oLh9MxcTREmQBD/
+   hpQo33c5Lb17nj0uZTGjHtvHMbusZcZYVWKqJhez0cdZF7cP1pXhMIOge
+   tqWoFyMwLYkSOoe2dQ7gympcpwT/3nvloctILMEPgNy2FcxchlAKkGxjj
+   g=;
+X-IronPort-AV: E=Sophos;i="5.82,259,1613433600"; 
+   d="scan'208";a="106325076"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-821c648d.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP; 29 Apr 2021 16:59:53 +0000
+Received: from EX13D16EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1a-821c648d.us-east-1.amazon.com (Postfix) with ESMTPS id A676DA2019;
+        Thu, 29 Apr 2021 16:59:52 +0000 (UTC)
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.161.85) by
+ EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 29 Apr 2021 16:59:47 +0000
+From:   Andra Paraschiv <andraprs@amazon.com>
+To:     linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Greg KH <gregkh@linuxfoundation.org>,
+        Mathias Krause <minipli@grsecurity.net>,
+        ne-devel-upstream <ne-devel-upstream@amazon.com>,
+        stable <stable@vger.kernel.org>,
+        Andra Paraschiv <andraprs@amazon.com>
+Subject: [PATCH v1 0/1] Nitro Enclaves kernel driver issue fix
+Date:   Thu, 29 Apr 2021 19:59:40 +0300
+Message-ID: <20210429165941.27020-1-andraprs@amazon.com>
+X-Mailer: git-send-email 2.20.1 (Apple Git-117)
 MIME-Version: 1.0
-References: <20210424021631.1972022-1-rajatja@google.com> <20210424021631.1972022-2-rajatja@google.com>
- <d53c72949d81db9f092a9aecb49bf56b47727738.camel@suse.com> <CAJZ5v0iNrSFjhmTE8K-JrO07kJon3ikhatbg0Jg2hs+x-frDJg@mail.gmail.com>
- <79b994f2476249498797e1784f735fd7@AcuMS.aculab.com> <21c6b5002c5ad36cd7fe0bb849f5eba12a614bca.camel@suse.com>
- <b5e031652f144ab6accbe553566676c9@AcuMS.aculab.com> <0601e45130495b152bec04eee4a50e302db4cfd2.camel@suse.com>
- <CAJZ5v0jEbjRSGPdfwvegawin5_N=m-UoP+Wa99EQ-QmkusiBCg@mail.gmail.com>
- <5ac7634acbe7569879234ad541879c79918f3e00.camel@suse.com> <CAJZ5v0jF1M95MJO+gGL2rmk=rmt5u0sYR-DCJW4+Bb5WP+3W7w@mail.gmail.com>
-In-Reply-To: <CAJZ5v0jF1M95MJO+gGL2rmk=rmt5u0sYR-DCJW4+Bb5WP+3W7w@mail.gmail.com>
-From:   Rajat Jain <rajatja@google.com>
-Date:   Thu, 29 Apr 2021 09:59:39 -0700
-Message-ID: <CACK8Z6E_zbUguY2qUE5Jbgzj3fwcQ_xMVxHYs_VeY5Hm=S4zGQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] pci: Support "removable" attribute for PCI devices
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Oliver Neukum <oneukum@suse.com>,
-        David Laight <David.Laight@aculab.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
-        <linux-usb@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        Rajat Jain <rajatxjain@gmail.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Dmitry Torokhov <dtor@google.com>
-Content-Type: text/plain; charset="UTF-8"
+X-Originating-IP: [10.43.161.85]
+X-ClientProxiedBy: EX13D11UWC003.ant.amazon.com (10.43.162.162) To
+ EX13D16EUB003.ant.amazon.com (10.43.166.99)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 2:58 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Thu, Apr 29, 2021 at 11:03 AM Oliver Neukum <oneukum@suse.com> wrote:
-> >
-> > Am Mittwoch, den 28.04.2021, 14:21 +0200 schrieb Rafael J. Wysocki:
-> >
-> > > In principle, in the wake of Thunderbolt every PCI driver handling
-> > > PCIe devices needs to be able to deal with a device that's gone away
-> > > without notice, because in principle any PCIe device can be included
-> > > into a Thunderbolt docking station which may go away as a whole
-> > > without notice.
-> >
-> > Yes, but we are dealing with what we export to user space, don't we?
->
-> Right, so it would be good to know why exporting this information to
-> user space is desired.
+An issue was found in the Nitro Enclaves kernel driver codebase [1] included in
+the v5.10 upstream Linux kernel. The fix for it has been tested on the AWS side.
+The issue does not break the isolation or security of what is running inside the
+enclave. Nitro Enclaves already assumes that the instance running the Nitro
+Enclaves kernel driver is untrusted.
 
-For us, the driving motivation is to implement policies in userspace
-for user removable devices. Eg:
+We would like to thank Mathias Krause from Open Source Security, Inc. for
+reporting and providing a fix for this issue directly to AWS.
 
-* Tracking the statistics around usage of user removable devices (how
-many users use such devices, how often etc).
-* Removing user removable devices when a user logs out.
-* Not allowing a new user removable device while the screen is locked.
-* (perhaps additional such policies in future).
+The patch will be merged into the latest upstream Linux kernel release and into
+the v5.10+ stable kernel releases.
 
 Thanks,
+Andra
 
-Rajat
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/virt/nitro_enclaves
+
+Mathias Krause (1):
+  nitro_enclaves: Fix stale file descriptors on failed usercopy
+
+ drivers/virt/nitro_enclaves/ne_misc_dev.c | 43 +++++++++--------------
+ 1 file changed, 17 insertions(+), 26 deletions(-)
+
+-- 
+2.20.1 (Apple Git-117)
+
+
+
+
+Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
+
