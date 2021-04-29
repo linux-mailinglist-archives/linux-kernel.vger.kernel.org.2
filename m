@@ -2,207 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD6436E99C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 13:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4901D36E9A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 13:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233188AbhD2LdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 07:33:07 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41160 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230148AbhD2LdF (ORCPT
+        id S233994AbhD2Ld7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 07:33:59 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:43873 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230148AbhD2Ld6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 07:33:05 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13TB4Gcv182189;
-        Thu, 29 Apr 2021 07:32:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=UWvtbK8dcp1l3VZpp6JuyPfV2zCIrVCruA0h5n2duuA=;
- b=W+TIVEw1R2OIszzlYR+Ptq1rSfRffbXH1l1C8oessfKHTW5rr6r7JweN+Bua+dsNXPvX
- /DmALLco25tMrMnHwjdhK0eCn5TEPVz2ouxitfH50/sFM+Y80d0nZdOlEEVSgQIthkzN
- T4L6I5BXFTZVz0kNFT8F1qAlfyW6ocTJycYG66IUusYtFG+sdVALfOvPq5xz+U97IwHy
- T1/XTDGzMQCEzR+Z7FnIZ4Snnky78Y169eLagcOPBZCpSVcySg8xwV9vcj+zvqbfNKRW
- iywEEj9QhqGP9pTHWQ/ClfSI+VGR1a6G2Vzr8hp+JNtggvM2N2yx2kqMcZPmKKQt23MN Dg== 
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 387tkmaq87-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Apr 2021 07:32:04 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13TBRs2w020501;
-        Thu, 29 Apr 2021 11:32:03 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma05fra.de.ibm.com with ESMTP id 384gjxs9xa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Apr 2021 11:32:02 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13TBVx3B54001964
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 11:31:59 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 231CD5208D;
-        Thu, 29 Apr 2021 11:31:59 +0000 (GMT)
-Received: from pomme.local (unknown [9.145.30.132])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id D0BD852091;
-        Thu, 29 Apr 2021 11:31:58 +0000 (GMT)
-Subject: Re: [PATCH v3] pseries/drmem: update LMBs after LPM
-To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org
-Cc:     nathanl@linux.ibm.com, Tyrel Datwyler <tyreld@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20210428094758.28665-1-ldufour@linux.ibm.com>
- <87fsz95qso.fsf@linux.ibm.com>
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-Message-ID: <e3fcd8b6-6d43-85ed-7036-42430aad4979@linux.ibm.com>
-Date:   Thu, 29 Apr 2021 13:31:58 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.0
+        Thu, 29 Apr 2021 07:33:58 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lc4uc-0003Ou-4G; Thu, 29 Apr 2021 11:32:54 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-crypto@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] hwrng: amd: remove redundant initialization of variable err
+Date:   Thu, 29 Apr 2021 12:32:53 +0100
+Message-Id: <20210429113253.63960-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <87fsz95qso.fsf@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: GBrDq5Ha8ZcjzGgs3wfu21e5lzsZ6u6t
-X-Proofpoint-GUID: GBrDq5Ha8ZcjzGgs3wfu21e5lzsZ6u6t
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-29_06:2021-04-28,2021-04-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 lowpriorityscore=0 phishscore=0 clxscore=1015
- mlxlogscore=999 spamscore=0 adultscore=0 malwarescore=0 mlxscore=0
- bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104290075
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 29/04/2021 à 12:27, Aneesh Kumar K.V a écrit :
-> Laurent Dufour <ldufour@linux.ibm.com> writes:
-> 
->> After a LPM, the device tree node ibm,dynamic-reconfiguration-memory may be
->> updated by the hypervisor in the case the NUMA topology of the LPAR's
->> memory is updated.
->>
->> This is caught by the kernel, but the memory's node is updated because
->> there is no way to move a memory block between nodes.
->>
->> If later a memory block is added or removed, drmem_update_dt() is called
->> and it is overwriting the DT node to match the added or removed LMB. But
->> the LMB's associativity node has not been updated after the DT node update
->> and thus the node is overwritten by the Linux's topology instead of the
->> hypervisor one.
->>
->> Introduce a hook called when the ibm,dynamic-reconfiguration-memory node is
->> updated to force an update of the LMB's associativity.
->>
->> Cc: Tyrel Datwyler <tyreld@linux.ibm.com>
->> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
->> ---
->>
->> V3:
->>   - Check rd->dn->name instead of rd->dn->full_name
->> V2:
->>   - Take Tyrel's idea to rely on OF_RECONFIG_UPDATE_PROPERTY instead of
->>   introducing a new hook mechanism.
->> ---
->>   arch/powerpc/include/asm/drmem.h              |  1 +
->>   arch/powerpc/mm/drmem.c                       | 35 +++++++++++++++++++
->>   .../platforms/pseries/hotplug-memory.c        |  4 +++
->>   3 files changed, 40 insertions(+)
->>
->> diff --git a/arch/powerpc/include/asm/drmem.h b/arch/powerpc/include/asm/drmem.h
->> index bf2402fed3e0..4265d5e95c2c 100644
->> --- a/arch/powerpc/include/asm/drmem.h
->> +++ b/arch/powerpc/include/asm/drmem.h
->> @@ -111,6 +111,7 @@ int drmem_update_dt(void);
->>   int __init
->>   walk_drmem_lmbs_early(unsigned long node, void *data,
->>   		      int (*func)(struct drmem_lmb *, const __be32 **, void *));
->> +void drmem_update_lmbs(struct property *prop);
->>   #endif
->>   
->>   static inline void invalidate_lmb_associativity_index(struct drmem_lmb *lmb)
->> diff --git a/arch/powerpc/mm/drmem.c b/arch/powerpc/mm/drmem.c
->> index 9af3832c9d8d..f0a6633132af 100644
->> --- a/arch/powerpc/mm/drmem.c
->> +++ b/arch/powerpc/mm/drmem.c
->> @@ -307,6 +307,41 @@ int __init walk_drmem_lmbs_early(unsigned long node, void *data,
->>   	return ret;
->>   }
->>   
->> +/*
->> + * Update the LMB associativity index.
->> + */
->> +static int update_lmb(struct drmem_lmb *updated_lmb,
->> +		      __maybe_unused const __be32 **usm,
->> +		      __maybe_unused void *data)
->> +{
->> +	struct drmem_lmb *lmb;
->> +
->> +	/*
->> +	 * Brut force there may be better way to fetch the LMB
->> +	 */
->> +	for_each_drmem_lmb(lmb) {
->> +		if (lmb->drc_index != updated_lmb->drc_index)
->> +			continue;
->> +
->> +		lmb->aa_index = updated_lmb->aa_index;
->> +		break;
->> +	}
->> +	return 0;
->> +}
->> +
->> +/*
->> + * Update the LMB associativity index.
->> + *
->> + * This needs to be called when the hypervisor is updating the
->> + * dynamic-reconfiguration-memory node property.
->> + */
->> +void drmem_update_lmbs(struct property *prop)
->> +{
->> +	if (!strcmp(prop->name, "ibm,dynamic-memory"))
->> +		__walk_drmem_v1_lmbs(prop->value, NULL, NULL, update_lmb);
->> +	else if (!strcmp(prop->name, "ibm,dynamic-memory-v2"))
->> +		__walk_drmem_v2_lmbs(prop->value, NULL, NULL, update_lmb);
->> +}
->>   #endif
->>   
->>   static int init_drmem_lmb_size(struct device_node *dn)
->> diff --git a/arch/powerpc/platforms/pseries/hotplug-memory.c b/arch/powerpc/platforms/pseries/hotplug-memory.c
->> index 8377f1f7c78e..672ffbee2e78 100644
->> --- a/arch/powerpc/platforms/pseries/hotplug-memory.c
->> +++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
->> @@ -949,6 +949,10 @@ static int pseries_memory_notifier(struct notifier_block *nb,
->>   	case OF_RECONFIG_DETACH_NODE:
->>   		err = pseries_remove_mem_node(rd->dn);
->>   		break;
->> +	case OF_RECONFIG_UPDATE_PROPERTY:
->> +		if (!strcmp(rd->dn->name,
->> +			    "ibm,dynamic-reconfiguration-memory"))
->> +			drmem_update_lmbs(rd->prop);
->>   	}
->>   	return notifier_from_errno(err);
-> 
-> How will this interact with DLPAR memory? When we dlpar memory,
-> ibm,configure-connector is used to fetch the new associativity details
-> and set drmem_lmb->aa_index correctly there. Once that is done kernel
-> then call drmem_update_dt() which will result in the above notifier
-> callback?
+From: Colin Ian King <colin.king@canonical.com>
 
-When a memory DLPAR operation is done, the in memory DT property 
-"ibm,dynamic-memory" or "ibm,dynamic-memory-v2" (if existing) have to be updated 
-to reflect the added/removed memory part. This is done by calling drmem_update_dt().
+The variable err is being initialized with a value that is
+never read and it is being updated later with a new value.  The
+initialization is redundant and can be removed
 
-This patch is addressing the case where the hypervisor has updated the DT 
-property mentioned above. In that case, the LMB tree should be updated so the 
-aa_index fields are matching the DT one. This way the next time a memory DLPAR 
-operation is done the DT properties "ibm,dynamic-memory" or 
-"ibm,dynamic-memory-v2" will be rebuilt correctly.
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/char/hw_random/amd-rng.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> IIUC, the call back then will update drmem_lmb->aa_index again?
+diff --git a/drivers/char/hw_random/amd-rng.c b/drivers/char/hw_random/amd-rng.c
+index 9959c762da2f..d8d4ef5214a1 100644
+--- a/drivers/char/hw_random/amd-rng.c
++++ b/drivers/char/hw_random/amd-rng.c
+@@ -126,7 +126,7 @@ static struct hwrng amd_rng = {
+ 
+ static int __init mod_init(void)
+ {
+-	int err = -ENODEV;
++	int err;
+ 	struct pci_dev *pdev = NULL;
+ 	const struct pci_device_id *ent;
+ 	u32 pmbase;
+-- 
+2.30.2
 
-drmem_update_dt() is not updating drmem_lmb->aa_index, that's the oppposite, it 
-is rebuilding the in memory DT property "ibm,dynamic-memory" or 
-"ibm,dynamic-memory-v2" based on the data stored in the LMB tree.
-
-Laurent.
