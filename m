@@ -2,113 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9EA36ED81
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA0A236ED88
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234590AbhD2PjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 11:39:09 -0400
-Received: from jptosegrel01.sonyericsson.com ([124.215.201.71]:1832 "EHLO
-        JPTOSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233420AbhD2PjH (ORCPT
+        id S240759AbhD2PlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 11:41:22 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:43136 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240646AbhD2PlP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 11:39:07 -0400
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-To:     Willy Tarreau <w@1wt.eu>,
+        Thu, 29 Apr 2021 11:41:15 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TFKUW4076424;
+        Thu, 29 Apr 2021 15:40:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=BQbkytA+PXtTY5YfGP8M5DIYUuBz3K7V5eP2VQDmhNM=;
+ b=S9FvGfccgLwiYVaHfVT6jvYI9xpZP3PWhPZeOaPVxfS3KNgYbpuPJI2hbw3XraqSnlyZ
+ 505RkaClU9/iT4OKzTQ+bczYv+vuWzeaRFjuhq2fmVFED06dzd/eeSqY9SuPEFcM/3MS
+ ERuk9MX5h8FdEkgC/Kr+/xCjP9neVJ77JuoK5y731Wr7wGmQsr2F4kEAXslZKd76GOSp
+ 9MvMREJ777cCo/B9Mf3X/o1koMgac30wg/QmrFyrwm+ecG4h0NZgIwNU+0JVm+LiECek
+ pktom7ZUB3L7zljVNBR46D79YXmni3Rp6+sgziRygTzJE1IWbuuyhZG6ln3IogIs75HN Hg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 385aeq4uva-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 15:40:12 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TFEule086153;
+        Thu, 29 Apr 2021 15:40:11 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 3874d3pt3x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 15:40:11 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13TFYBrO173166;
+        Thu, 29 Apr 2021 15:40:10 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 3874d3pt3a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 15:40:10 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13TFe9MK014179;
+        Thu, 29 Apr 2021 15:40:09 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 29 Apr 2021 08:40:08 -0700
+Date:   Thu, 29 Apr 2021 18:40:02 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Phil Reid <preid@electromag.com.au>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Nick Desaulniers <ndesaulniers@google.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        rust-for-linux <rust-for-linux@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-References: <20210414184604.23473-1-ojeda@kernel.org>
- <YHlz54rd1YQHsOA/@hirez.programming.kicks-ass.net>
- <YHmMJWmzz2vZ3qQH@google.com>
- <YHmc2+bKQJ/XAATF@hirez.programming.kicks-ass.net>
- <YHmuX1NA5RF7C7XS@google.com> <20210416161444.GA10484@1wt.eu>
- <CANiq72nbkJFPmiJXX=L8PmkouKgKG1k-CxhZYpL1hcncYwa8JA@mail.gmail.com>
- <20210416173717.GA10846@1wt.eu>
- <CAKwvOd=RadTs7Skv6KUBo4qZQtdi0kugTzxvZM+5X_2gstjyaQ@mail.gmail.com>
- <YH5tAqLr965MNZyW@kroah.com> <20210420061613.GA30890@1wt.eu>
-From:   peter enderborg <peter.enderborg@sony.com>
-Message-ID: <e3c591db-a272-5048-7396-3e934b071aab@sony.com>
-Date:   Thu, 29 Apr 2021 17:38:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Subject: Re: [PATCH v3 3/4] staging: fbtft: Don't spam logs when probe is
+ deferred
+Message-ID: <20210429154002.GF21598@kadam>
+References: <20210428130415.55406-1-andriy.shevchenko@linux.intel.com>
+ <20210428130415.55406-4-andriy.shevchenko@linux.intel.com>
+ <20210429144244.GE1981@kadam>
 MIME-Version: 1.0
-In-Reply-To: <20210420061613.GA30890@1wt.eu>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=DLnxHBFb c=1 sm=1 tr=0 a=9drRLWArJOlETflmpfiyCA==:117 a=IkcTkHD0fZMA:10 a=3YhXtTcJ-WEA:10 a=W69p7wgkjsnNkqErQOcA:9 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210429144244.GE1981@kadam>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: rKOQ23DLMGvFxRqmwpwTIydtrzopqg3E
+X-Proofpoint-GUID: rKOQ23DLMGvFxRqmwpwTIydtrzopqg3E
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9969 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
+ phishscore=0 spamscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0
+ clxscore=1015 suspectscore=0 malwarescore=0 mlxlogscore=999
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104290097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/20/21 8:16 AM, Willy Tarreau wrote:
-> On Tue, Apr 20, 2021 at 07:56:18AM +0200, Greg Kroah-Hartman wrote:
->> I would LOVE it if some "executives" would see the above presentations,
->> because then they would maybe actually fund developers to fix bugs and
->> maintain the kernel code, instead of only allowing them to add new
->> features.
->>
->> Seriously, that's the real problem, that Dmitry's work has exposed, the
->> lack of people allowed to do this type of bugfixing and maintenance on
->> company time, for something that the company relies on, is a huge issue.
->> "executives" feel that they are willing to fund the initial work and
->> then "throw it over the wall to the community" once it is merged, and
->> then they can forget about it as "the community" will maintain it for
->> them for free.  And that's a lie, as Dmitry's work shows.
-> That's sadly the eternal situation, and I'm suspecting that software
-> development and maintenance is not identified as a requirement for a
-> large number of hardware vendors, especially on the consumer side where
-> margins are lower. A contractor is paid to develop a driver, *sometimes*
-> to try to mainline it (and the later they engage with the community, the
-> longer it takes in round trips), and once the code finally gets merged,
-> all the initial budget is depleted and no more software work will be
-> done.
->
-> Worse, we could imagine kicking unmaintained drivers faster off the
-> tree, but that would actually help these unscrupulous vendors by
-> forcing their customers to switch to the new model :-/  And most of
-> them wouldn't care either if their contributions were refused based
-> on their track record of not maintaining their code, since they often
-> see this as a convenience to please their customers and not something
-> they need (after all, relying on a bogus and vulnerable BSP has never
-> prevented from selling a device, quite the opposite).
->
-> In short, there is a parallel universe where running highly bogus and
-> vulnerable out-of-tree code seems like the norm and where there is no
-> sort of care for what is mainlined as it's possibly just made to look
-> "cool".
+On Thu, Apr 29, 2021 at 05:42:44PM +0300, Dan Carpenter wrote:
+> On Wed, Apr 28, 2021 at 04:04:14PM +0300, Andy Shevchenko wrote:
+> > @@ -75,20 +75,16 @@ static int fbtft_request_one_gpio(struct fbtft_par *par,
+> >  				  struct gpio_desc **gpiop)
+> >  {
+> >  	struct device *dev = par->info->device;
+> > -	int ret = 0;
+> >  
+> >  	*gpiop = devm_gpiod_get_index_optional(dev, name, index,
+> >  					       GPIOD_OUT_LOW);
+> > -	if (IS_ERR(*gpiop)) {
+> > -		ret = PTR_ERR(*gpiop);
+> > -		dev_err(dev,
+> > -			"Failed to request %s GPIO: %d\n", name, ret);
+> > -		return ret;
+> > -	}
+> > +	if (IS_ERR(*gpiop))
+> > +		dev_err_probe(dev, PTR_ERR(*gpiop), "Failed to request %s GPIO\n", name);
+> 
+> This should be a return statement:
+> 
+> 		return dev_err_probe(dev, PTR_ERR(*gpiop), "Failed to request %s GPIO\n", name);
+> 
 
+I've created a new Smatch check for these:
 
-In the parallel universe where I spent most time everyone
-now need to learn how to make their things to work
-out-of-tree. And there is not much of business case trying
-to fix and improve core parts of linux. The turn around have
-increased a lot and there is no edge doing it.
+drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c:2890 mcp251xfd_probe() warn: pointer error 'PTR_ERR(clk)' not handled
 
+There aren't that many bugs...  Anyway, I'm running a test now and I
+guess we'll see tomorrow how it goes.
 
-> We also need to recognize that it's expectable that some vendors are
-> not willing to engage on supporting a driver for a decade if they
-> expect their device to last 5 years only, and maybe we should make
-> some rules clear about mainlining drivers and what to expect for
-> users (in which case the end of support would be clear and nobody
-> would be surprised if the driver is removed at the end of its
-> maintenance, barring a switch to a community maintainer).
-
-Things have changed. Once upon a time the community was
-happy if it could get hardware specs.
-
-
-> Just my two cents,
-> Willy
-
+regards,
+dan carpenter
 
