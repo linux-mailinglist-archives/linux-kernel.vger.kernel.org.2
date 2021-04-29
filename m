@@ -2,125 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7284B36E973
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 13:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9875F36E977
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 13:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232108AbhD2LQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 07:16:52 -0400
-Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:35451 "EHLO
-        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229792AbhD2LQu (ORCPT
+        id S232898AbhD2LSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 07:18:01 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:57319 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229792AbhD2LR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 07:16:50 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id c4eDlaqJQk1MGc4eHlQHFU; Thu, 29 Apr 2021 13:16:02 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1619694962; bh=YrojQE9ERQiZNfb7RIe79VsZbxw01qfhdFXpj3i6hGo=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=DHumpr44aBiQWb/UXwg5d1PH+wSzzQYZO1aj12K0q8l43CJ5Lcl87dEE3T4JnVD5/
-         aIZSwVdGjryRoPBcW9EBxKUYjZuEvCSwhxKYP/ChX1qAcd/FuTIMNXlaGDKjYHD3vF
-         pvRTY4D8OWvmzbeuCJDy9C/2tb/wDbzMBOjhUt20fpuP5I4X4mJRmPB8frvH6ZolB+
-         I0o8PCFcnvGI08Y/QIjxRv4GtAhgL1hBmltgKGpSAK8gVzaybrcgWn4gC5R/kHV0ZL
-         9YNVISsL4EVHug9iviScgXMZBgDJoMtPmq/rJvIlTn2MxkV4MwXtKMGlljVl/DaBWn
-         HFJ/Ku8i1mQeA==
-Subject: Re: [PATCH 1/5] dt-bindings: media: mtk-vcodec: Add dma-ranges
- property
-To:     Irui Wang <irui.wang@mediatek.com>, Rob Herring <robh@kernel.org>
-Cc:     Alexandre Courbot <acourbot@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Maoguang Meng <maoguang.meng@mediatek.com>,
-        Longfei Wang <longfei.wang@mediatek.com>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org
-References: <20210203083752.12586-1-irui.wang@mediatek.com>
- <20210203083752.12586-2-irui.wang@mediatek.com>
- <20210210225323.GA2961490@robh.at.kernel.org>
- <1614581129.14457.0.camel@mhfsdcap03>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <2b97b41c-d5d8-ac32-a9cf-c7bef09ed8ef@xs4all.nl>
-Date:   Thu, 29 Apr 2021 13:15:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        Thu, 29 Apr 2021 07:17:57 -0400
+Received: from mail-wm1-f52.google.com ([209.85.128.52]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MhDIw-1l6Zb50hKE-00eP9z for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021
+ 13:17:09 +0200
+Received: by mail-wm1-f52.google.com with SMTP id f15-20020a05600c4e8fb029013f5599b8a9so9033260wmq.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 04:17:09 -0700 (PDT)
+X-Gm-Message-State: AOAM532H4md8vAtjoF019oqYzXwPNLdLPhUuqsJuhva57UHDJnhb1x0b
+        91M7ZE9JpL66tbtL17NfcepULUR2RoAgJmLsV88=
+X-Google-Smtp-Source: ABdhPJyDWoC/ym2DkxTwOlrTJfTfOpX3HwZAlq5h9pUN7MtTX83B8bsWTbCb2UI3t3hqLMGsQ8YVwDxicRugaT+YDbI=
+X-Received: by 2002:a7b:c344:: with SMTP id l4mr9631153wmj.120.1619695028817;
+ Thu, 29 Apr 2021 04:17:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1614581129.14457.0.camel@mhfsdcap03>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfNrow+hJPzbDwnSzPIM2iA7/r7UP/AhJJatUskZ25uvvarllQW6GBPr2wazwYt9NN71N3GOTusnxmHuukAG4ZvotrrHOVv1QJzl+rOcQ51QRhCgUM1Qn
- M4Anh50GGMSX3hNWob2kxFFJsFPAt+QRqVAJoTwjo7smyyOLDcMJtGyaZ3TgMhtN9V6x+ebu/AQDYYpRyVjeAmaBRIs8OaBe6M3Ab0jMcfr/oGd3yqbFLsWq
- HAB7BJyvNa8uX2DVXaJ40NKBPLSSq9pShFG/Y88QJHXwJo2fQdBA3zT29ORmDgvVbXfP4I73uwejQ09AVB+xnIhm+RchvJ0zHMhP+7OhGw95BY2EeX7WpNk2
- lwkDpd//gfTKnAmrkm7w9Rhc0tidSRMyjq2gOdPGEkSen8s+9g2y+CHUAyGZIUBUOONXTPywleMtQr/7mgCu7NSR3qhyHlTr/WOOrAg5FF+KD9u5vnakyqa9
- Ng89ajdZgRZytq9Cs2obvrBfEVWcZtUQaQ0WU8khZ07re67MwdIcQU9MLMYDn6gfF6SCKbWSZRyMtwJ2mtcEbHF3XFJ9ika1R8Vjr0mLa4fcrl1y6AmZLyal
- l/W8Abl+tyKVObjfMUZdge6lgAIAH9pRUUVJo/qHo8RE4xfCtgF2H5vx2MFNfUVTkYLkaZdrqkN6wbPJB7iEu6FuhQpkR+e2tbeZHRxDk2oRu+bqOjhcC4f/
- 5glUCzyJmy9H0WJ8wq4b9D963MgjdPedHi39frvMKOj4nih7X3vR3OdbBj8W7CVBSUAZKz28DHp1oYjFrbnI1cyos4GfvEy1rKm4vuGf53t6bDic+iyrfTYo
- ndwfDRFZZdYSu/jln5U=
+References: <a7fac800-02ae-62d4-00d4-770facff4a7c@rasmusvillemoes.dk>
+In-Reply-To: <a7fac800-02ae-62d4-00d4-770facff4a7c@rasmusvillemoes.dk>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 29 Apr 2021 13:16:33 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1Cgt+Lx7-CZE5muY+=Bs0PWGvs-=L5ghzEQFx7u9=1bg@mail.gmail.com>
+Message-ID: <CAK8P3a1Cgt+Lx7-CZE5muY+=Bs0PWGvs-=L5ghzEQFx7u9=1bg@mail.gmail.com>
+Subject: Re: RFC: collection of common distro configs?
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:4Hy4lcRBMh6NFxG3rmjMRa9LhpsRq3fH/ZeoXdU5BHv5wolEiYz
+ bvKsNIMSIoqd7bHNpKJVRjETlIlzIo+PA797N88gnuQvKhAT0F+1i8DTA8iQa6ZJxyzCMgN
+ zsPztknq70I79FP1RgYjRV0pxON3yYEctyGf+5BhHycyO6OeV7rKnhV42rlM+xRvQmOpt/U
+ cTq2RxFAA7jMbYmNDoNlQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:44P/ANmGEyk=:X0BFM8fcGdWhMnJw0MpzCx
+ F7HNgFlr7KPsIJqgBPMds6BTxNkxKmlyk6Dh4QfDWB6L0Tscm+adl6aCf+Uy8iZpbcdOHv5wS
+ wSZhOo7CZ419q+Zx0Ow0YxKwMedfHqkivZM1YSMsoCHzHias+PFpgnVFzhaMkMW2aWeNOmnFd
+ sOz3FrXOTYWjcF30+1ckQuo7bk6+rwvxNd0HLA1GMLxpX7HuQh6dZKMvYmtJDwhP/0BQWupg3
+ 7e8GsNfAZ00ftZYBjYor0jg/c1FRp63vvbWwbaoOceATMLt/G553y4AFv4zE0JsyJO4KHlnaM
+ vAuBu38ilvRTHstg+umU9nqarrPO17cbt2fHC7p3+K2pzdilh0tC6NT2ErZoYBKnCdvYeXuAL
+ Jsf8A+4KNP/vSWUp1ZKrQEBVHMjA5lnF4QBTqsJ00kCfHpMG6kQFm0cQPvnVM0pwtJgzySVPz
+ 6hjSHYECVvKrGWltGiWzIK+qT3bOdM2GSf1yWDrPBcpeGPpUpeNtl+EBun1REhZCn/OAgAvjk
+ 8vdBosdQBuy3dJUAbhZTKo=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Thu, Apr 29, 2021 at 12:26 PM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
+>
+> Hi there,
+>
+> Does anybody know of a place where one can find a collection of .configs
+> from various distros? I think it might be useful to be able to grep
+> around to see what features are actually enabled by which distros.
+>
+> Based on the domain name, I hoped linuxconfig.org would be such a place,
+> if so I cannot find it.
+>
+> If no such collection exists, do others agree it might be useful? If so,
+> I'll be happy to throw up a repo somewhere and start collecting them.
 
-On 01/03/2021 07:45, Irui Wang wrote:
-> On Wed, 2021-02-10 at 16:53 -0600, Rob Herring wrote:
->> On Wed, Feb 03, 2021 at 04:37:48PM +0800, Irui Wang wrote:
->>> Adds dma-ranges property for DMA addresses translation.
->>>
->>> Signed-off-by: Irui Wang <irui.wang@mediatek.com>
->>> ---
->>>  Documentation/devicetree/bindings/media/mediatek-vcodec.txt | 2 ++
->>>  1 file changed, 2 insertions(+)
->>>
->>> diff --git a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
->>> index f85276e629bf..e4644f8caee9 100644
->>> --- a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
->>> +++ b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
->>> @@ -23,6 +23,8 @@ Required properties:
->>>  - iommus : should point to the respective IOMMU block with master port as
->>>    argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
->>>    for details.
->>> +- dma-ranges : describes how the physical address space of the IOMMU maps
->>> +  to memory.
->>
->> dma-ranges is supposed to be in a bus/parent node.
-> Dear Rob,
-> 
-> The mt8192 iommu support 0~16GB iova. We separate it to four banks:
-> 0~4G; 4G~8G; 8G~12G; 12G~16G.
-> 
-> The "dma-ranges" could be used to adjust the bank we locate.
-> If we don't set this property. The default range always is 0~4G.
-> 
-> Here we don't have actual bus/parent concept here.  And the iova
-> requirement is for our HW. Thus put the property in our node.
-> 
-> Is this OK? If this is ok for you, I will put this message in the commit
-> message and binding in next version.
+I've looked for this in the past and couldn't find any, and I think this
+would be very valuable, but it also sounds like a lot of work for you
+to maintain.
 
-Can you answer Irui's question? Just a reminder...
+Another thing we had discussed previously would be to check in
+distro configs into the kernel itself in some form and have the distros
+only maintain the diff that they would like to apply on top, in form
+of a config fragment.
 
-Much appreciated!
-
-Regards,
-
-	Hans
-
-> 
-> Regards
->>
->>>  One of the two following nodes:
->>>  - mediatek,vpu : the node of the video processor unit, if using VPU.
->>>  - mediatek,scp : the node of the SCP unit, if using SCP.
->>> -- 
->>> 2.25.1
->>>
-> 
-
+     Arnd
