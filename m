@@ -2,72 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F7EB36E8A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A8736E8AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240453AbhD2K12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 06:27:28 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:54352 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240398AbhD2K10 (ORCPT
+        id S240497AbhD2K1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 06:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240470AbhD2K1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 06:27:26 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UX9cCg3_1619691984;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UX9cCg3_1619691984)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 29 Apr 2021 18:26:37 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     nicolas.ferre@microchip.com
-Cc:     claudiu.beznea@microchip.com, davem@davemloft.net, kuba@kernel.org,
-        linux@armlinux.org.uk, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] net: macb: Remove redundant assignment to w0
-Date:   Thu, 29 Apr 2021 18:26:22 +0800
-Message-Id: <1619691982-90657-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Thu, 29 Apr 2021 06:27:45 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B9BC06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 03:26:56 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id r9so99086997ejj.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 03:26:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=yZo3c4iu2EX6TZmHWmdN/bchUwVgQC/t8mPnGi2lY+8=;
+        b=asYj199e4vh8FlavBAH5k/G94BzWi//apRwryigJKVoeihByxxXc4AjDn3EIiuZs2a
+         nPoiJXuZbTdj3YTzhnz856Pt+Xi7bE4XYXDakSyk1+Ai23+xCV6mH2+ngMp1AlSNW4r3
+         8RPIlywJUWffgdM3U3R+L0x+lmB8h7+lvdHGs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=yZo3c4iu2EX6TZmHWmdN/bchUwVgQC/t8mPnGi2lY+8=;
+        b=S3uxynAauD1CthPIpDCr6Tjx1VYeAwHcHEEw930qkVXeddk09vTmDFDgiHs5lRng02
+         e/6YAKR48eOCBGbrdhhBVgwVgpeOkxFFadiHoMiDCouszy7so7+DlydR3t1xM0Jog3gY
+         tzBMwizoPAHTWqqKslIKz8XtunupcUZv//c3Jdm9lbwucO4Q5/klt5OSy6U6+iCjcuIE
+         8dEAe7IwJlwqiqVoT0KcZrsAXn8FSeDDWP+uxRPiZ9o1hWe58q+hh8xY33fccHTEfdd8
+         6HlACOagYNv7WE/Dy5L+cmC8b+vja0peh4OdAd5D3+D3JzXlQ9JIc9DU7st05EfjFizy
+         +4bw==
+X-Gm-Message-State: AOAM530rXWuoi/5cKBIuyix4m8vdQEqNXy8PlRCqS/2368rflXkqm3pz
+        lsbFtOPGhdJ9wtKyJ8LR5ov9TOKyPWBhZabC
+X-Google-Smtp-Source: ABdhPJwTKmFNhcFlZ7zQTvxygaEsN+FUHDo/AoBXmroxGUTHNxHhDFLZZwHclU+Z/kdIKxzm7trtXw==
+X-Received: by 2002:a17:906:b28e:: with SMTP id q14mr25743067ejz.528.1619692015592;
+        Thu, 29 Apr 2021 03:26:55 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id kx3sm1533659ejc.44.2021.04.29.03.26.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Apr 2021 03:26:55 -0700 (PDT)
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>, Arnd Bergmann <arnd@arndb.de>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: RFC: collection of common distro configs?
+Message-ID: <a7fac800-02ae-62d4-00d4-770facff4a7c@rasmusvillemoes.dk>
+Date:   Thu, 29 Apr 2021 12:26:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Variable w0 is set to zero but these values is not used as it is
-overwritten later on, hence redundant assignment can be removed.
+Hi there,
 
-Cleans up the following clang-analyzer warning:
+Does anybody know of a place where one can find a collection of .configs
+from various distros? I think it might be useful to be able to grep
+around to see what features are actually enabled by which distros.
 
-drivers/net/ethernet/cadence/macb_main.c:3265:3: warning: Value stored
-to 'w0' is never read [clang-analyzer-deadcode.DeadStores].
+Based on the domain name, I hoped linuxconfig.org would be such a place,
+if so I cannot find it.
 
-drivers/net/ethernet/cadence/macb_main.c:3251:3: warning: Value stored
-to 'w0' is never read [clang-analyzer-deadcode.DeadStores].
+If no such collection exists, do others agree it might be useful? If so,
+I'll be happy to throw up a repo somewhere and start collecting them.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/net/ethernet/cadence/macb_main.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-index 0f6a6cb..741b2e3 100644
---- a/drivers/net/ethernet/cadence/macb_main.c
-+++ b/drivers/net/ethernet/cadence/macb_main.c
-@@ -3248,7 +3248,6 @@ static void gem_prog_cmp_regs(struct macb *bp, struct ethtool_rx_flow_spec *fs)
- 	/* ignore field if any masking set */
- 	if (tp4sp_m->ip4src == 0xFFFFFFFF) {
- 		/* 1st compare reg - IP source address */
--		w0 = 0;
- 		w1 = 0;
- 		w0 = tp4sp_v->ip4src;
- 		w1 = GEM_BFINS(T2DISMSK, 1, w1); /* 32-bit compare */
-@@ -3262,7 +3261,6 @@ static void gem_prog_cmp_regs(struct macb *bp, struct ethtool_rx_flow_spec *fs)
- 	/* ignore field if any masking set */
- 	if (tp4sp_m->ip4dst == 0xFFFFFFFF) {
- 		/* 2nd compare reg - IP destination address */
--		w0 = 0;
- 		w1 = 0;
- 		w0 = tp4sp_v->ip4dst;
- 		w1 = GEM_BFINS(T2DISMSK, 1, w1); /* 32-bit compare */
--- 
-1.8.3.1
-
+Thanks,
+Rasmus
