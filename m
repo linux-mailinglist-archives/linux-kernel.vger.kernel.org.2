@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C362A36E2F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA6C36E2F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235484AbhD2Bb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 21:31:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33416 "EHLO mail.kernel.org"
+        id S235557AbhD2Bba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 21:31:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231161AbhD2BbX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 21:31:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4ADCF61446;
+        id S234355AbhD2BbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 21:31:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8472A61463;
         Thu, 29 Apr 2021 01:30:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1619659838;
-        bh=GCDZbOy+quDNlrarTolqq+mZfSNjBFIYQ2Md2BhIDfI=;
+        bh=ni/Tzv6rP6yipZuSFBoXDtv3cCHZmg26Vz24H5N5qgc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ncoTkNIFsT6f+/YxkQVhJ6HBSbdp8N7xqOfOmjcDkKhmpkn6Y0kEASUbzaUpri97t
-         60U8pVa0UdE/lvHtnekFyTAbx6e5L57Q2S6E6yR8R8IYXXIqjHTcmhHGYfNX7Bt6Hi
-         g6XDqAcVLPsOrMjVmUT5O8HnCsMfWHNaXixsSWiqS4Btk2SpiYfLk4JjP9D5FteEpt
-         pkCVt4fRXATmX2hT+cTo9nwylFvR6npfezfL1sjBaq/pvFzYQCeqMjCTwfwHG7k3EW
-         2hRA1PV07Scw/PFwD5mukJkjoHRxUMPpqKpHDWu5z1kK2h6ABaVwH2crlOpwFuP+Eo
-         4hEcBUsBSj3kg==
+        b=XtyKtKNFY/hhHbjKS6u0bgUXnp628eKpsQUE9oQBxwKEOceAQ15SUb15C/SGu99pU
+         nb3s8qDFe4tQJedOZ74n6yIN0pJIOl+UyzSuyL5bhoMtgj9I+VH3Bk4jYqsKQdXndQ
+         Rsnh2TrXZ1bkT3rZ+qFvW4imCA4VgdlcwiHX57kxcPMCtEkraebo4DH8HA7HFct4vA
+         9yRMPwQs++xsktHPVrfmMJkeV0O3iZint0ELxVzwSzNm59pwJf+aQ5eZOoYxHFgcRv
+         RWi1emLqUlmezDevirUePHoI79iUmL8Y1ZP+nKMeYwdX4t2NkBmoEUuWOZugvxk0w8
+         J/UAQoOlXRgdg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 1B3B45C05B1; Wed, 28 Apr 2021 18:30:38 -0700 (PDT)
+        id 1D2C15C060F; Wed, 28 Apr 2021 18:30:38 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     tglx@linutronix.de
 Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
@@ -33,9 +33,9 @@ Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
         ak@linux.intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Subject: [PATCH v11 clocksource 5/6] clocksource: Limit number of CPUs checked for clock synchronization
-Date:   Wed, 28 Apr 2021 18:30:36 -0700
-Message-Id: <20210429013037.3958717-5-paulmck@kernel.org>
+Subject: [PATCH v11 clocksource 6/6] clocksource: Reduce clocksource-skew threshold for TSC
+Date:   Wed, 28 Apr 2021 18:30:37 -0700
+Message-Id: <20210429013037.3958717-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210429012909.GA3958584@paulmck-ThinkPad-P17-Gen-1>
 References: <20210429012909.GA3958584@paulmck-ThinkPad-P17-Gen-1>
@@ -45,184 +45,200 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, if skew is detected on a clock marked CLOCK_SOURCE_VERIFY_PERCPU,
-that clock is checked on all CPUs.  This is thorough, but might not be
-what you want on a system with a few tens of CPUs, let alone a few hundred
-of them.
+Currently, WATCHDOG_THRESHOLD is set to detect a 62.5-millisecond skew in
+a 500-millisecond WATCHDOG_INTERVAL.  This requires that clocks be skewed
+by more than 12.5% in order to be marked unstable.  Except that a clock
+that is skewed by that much is probably destroying unsuspecting software
+right and left.  And given that there are now checks for false-positive
+skews due to delays between reading the two clocks, it should be possible
+to greatly decrease WATCHDOG_THRESHOLD, at least for fine-grained clocks
+such as TSC.
 
-Therefore, by default check only up to eight randomly chosen CPUs.
-Also provide a new clocksource.verify_n_cpus kernel boot parameter.
-A value of -1 says to check all of the CPUs, and a non-negative value says
-to randomly select that number of CPUs, without concern about selecting
-the same CPU multiple times.  However, make use of a cpumask so that a
-given CPU will be checked at most once.
+Therefore, add a new uncertainty_margin field to the clocksource
+structure that contains the maximum uncertainty in nanoseconds for
+the corresponding clock.  This field may be initialized manually,
+as it is for clocksource_tsc_early and clocksource_jiffies, which
+is copied to refined_jiffies.  If the field is not initialized
+manually, it will be computed at clock-registry time as the period
+of the clock in question based on the scale and freq parameters to
+__clocksource_update_freq_scale() function.  If either of those two
+parameters are zero, the tens-of-milliseconds WATCHDOG_THRESHOLD is
+used as a cowardly alternative to dividing by zero.  No matter how the
+uncertainty_margin field is calculated, it is bounded below by twice
+WATCHDOG_MAX_SKEW, that is, by 100 microseconds.
+
+Note that manually initialized uncertainty_margin fields are not adjusted,
+but there is a WARN_ON_ONCE() that triggers if any such field is less than
+twice WATCHDOG_MAX_SKEW.  This WARN_ON_ONCE() is intended to discourage
+production use of the one-nanosecond uncertainty_margin values that are
+used to test the clock-skew code itself.
+
+The actual clock-skew check uses the sum of the uncertainty_margin fields
+of the two clocksource structures being compared.  Integer overflow is
+avoided because the largest computed value of the uncertainty_margin
+fields is one billion (10^9), and double that value fits into an
+unsigned int.  However, if someone manually specifies (say) UINT_MAX,
+they will get what they deserve.
+
+Note that the refined_jiffies uncertainty_margin field is initialized to
+TICK_NSEC, which means that skew checks involving this clocksource will
+be sufficently forgiving.  In a similar vein, the clocksource_tsc_early
+uncertainty_margin field is initialized to 32*NSEC_PER_MSEC, which
+replicates the current behavior and allows custom setting if needed
+in order to address the rare skews detected for this clocksource in
+current mainline.
 
 Link: https://lore.kernel.org/lkml/20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1/
 Link: https://lore.kernel.org/lkml/20210420064934.GE31773@xsang-OptiPlex-9020/
 Link: https://lore.kernel.org/lkml/20210106004013.GA11179@paulmck-ThinkPad-P72/
 Link: https://lore.kernel.org/lkml/20210414043435.GA2812539@paulmck-ThinkPad-P17-Gen-1/
 Link: https://lore.kernel.org/lkml/20210419045155.GA596058@paulmck-ThinkPad-P17-Gen-1/
-Suggested-by: Thomas Gleixner <tglx@linutronix.de> # For verify_n_cpus=1.
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
 Cc: John Stultz <john.stultz@linaro.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Stephen Boyd <sboyd@kernel.org>
 Cc: Jonathan Corbet <corbet@lwn.net>
 Cc: Mark Rutland <Mark.Rutland@arm.com>
 Cc: Marc Zyngier <maz@kernel.org>
 Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Feng Tang <feng.tang@intel.com>
 Cc: Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Cc: Feng Tang <feng.tang@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../admin-guide/kernel-parameters.txt         | 10 +++
- kernel/time/clocksource.c                     | 74 ++++++++++++++++++-
- 2 files changed, 82 insertions(+), 2 deletions(-)
+ arch/x86/kernel/tsc.c       |  1 +
+ include/linux/clocksource.h |  3 +++
+ kernel/time/clocksource.c   | 30 ++++++++++++++++++++++++++----
+ kernel/time/jiffies.c       | 15 ++++++++-------
+ 4 files changed, 38 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index babcc9e80fba..4058a74df9ab 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -626,6 +626,16 @@
- 			unstable.  Defaults to three retries, that is,
- 			four attempts to read the clock under test.
- 
-+	clocksource.verify_n_cpus= [KNL]
-+			Limit the number of CPUs checked for clocksources
-+			marked with CLOCK_SOURCE_VERIFY_PERCPU that
-+			are marked unstable due to excessive skew.
-+			A negative value says to check all CPUs, while
-+			zero says not to check any.  Values larger than
-+			nr_cpu_ids are silently truncated to nr_cpu_ids.
-+			The actual CPUs are chosen randomly, with
-+			no replacement if the same CPU is chosen twice.
-+
- 	clearcpuid=BITNUM[,BITNUM...] [X86]
- 			Disable CPUID feature X for the kernel. See
- 			arch/x86/include/asm/cpufeatures.h for the valid bit
+diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+index 56289170753c..6e11c9619437 100644
+--- a/arch/x86/kernel/tsc.c
++++ b/arch/x86/kernel/tsc.c
+@@ -1127,6 +1127,7 @@ static int tsc_cs_enable(struct clocksource *cs)
+ static struct clocksource clocksource_tsc_early = {
+ 	.name			= "tsc-early",
+ 	.rating			= 299,
++	.uncertainty_margin	= 32 * NSEC_PER_MSEC,
+ 	.read			= read_tsc,
+ 	.mask			= CLOCKSOURCE_MASK(64),
+ 	.flags			= CLOCK_SOURCE_IS_CONTINUOUS |
+diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
+index 83a3ebff7456..8f87c1a6f323 100644
+--- a/include/linux/clocksource.h
++++ b/include/linux/clocksource.h
+@@ -42,6 +42,8 @@ struct module;
+  * @shift:		Cycle to nanosecond divisor (power of two)
+  * @max_idle_ns:	Maximum idle time permitted by the clocksource (nsecs)
+  * @maxadj:		Maximum adjustment value to mult (~11%)
++ * @uncertainty_margin:	Maximum uncertainty in nanoseconds per half second.
++ *			Zero says to use default WATCHDOG_THRESHOLD.
+  * @archdata:		Optional arch-specific data
+  * @max_cycles:		Maximum safe cycle value which won't overflow on
+  *			multiplication
+@@ -93,6 +95,7 @@ struct clocksource {
+ 	u32			shift;
+ 	u64			max_idle_ns;
+ 	u32			maxadj;
++	u32			uncertainty_margin;
+ #ifdef CONFIG_ARCH_CLOCKSOURCE_DATA
+ 	struct arch_clocksource_data archdata;
+ #endif
 diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index 584433448226..f71f375df544 100644
+index f71f375df544..c228f3727191 100644
 --- a/kernel/time/clocksource.c
 +++ b/kernel/time/clocksource.c
-@@ -15,6 +15,8 @@
- #include <linux/tick.h>
- #include <linux/kthread.h>
- #include <linux/delay.h>
-+#include <linux/prandom.h>
-+#include <linux/cpu.h>
+@@ -122,17 +122,17 @@ static int clocksource_watchdog_kthread(void *data);
+ static void __clocksource_change_rating(struct clocksource *cs, int rating);
  
- #include "tick-internal.h"
- #include "timekeeping_internal.h"
-@@ -200,6 +202,8 @@ static int inject_delay_shift_percpu = -1;
- module_param(inject_delay_shift_percpu, int, 0644);
- static ulong max_read_retries = 3;
- module_param(max_read_retries, ulong, 0644);
-+static int verify_n_cpus = 8;
-+module_param(verify_n_cpus, int, 0644);
+ /*
+- * Interval: 0.5sec Threshold: 0.0625s
++ * Interval: 0.5sec Threshold: 0.0312s, when doubled: 0.0625s
+  */
+ #define WATCHDOG_INTERVAL (HZ >> 1)
+-#define WATCHDOG_THRESHOLD (NSEC_PER_SEC >> 4)
++#define WATCHDOG_THRESHOLD (NSEC_PER_SEC >> 5)
  
- static void clocksource_watchdog_inject_delay(void)
+ /*
+  * Maximum permissible delay between two readouts of the watchdog
+  * clocksource surrounding a read of the clocksource being validated.
+  * This delay could be due to SMIs, NMIs, or to VCPU preemptions.
+  */
+-#define WATCHDOG_MAX_SKEW (100 * NSEC_PER_USEC)
++#define WATCHDOG_MAX_SKEW (50 * NSEC_PER_USEC)
+ 
+ static void clocksource_watchdog_work(struct work_struct *work)
  {
-@@ -250,6 +254,55 @@ static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
- static u64 csnow_mid;
- static cpumask_t cpus_ahead;
- static cpumask_t cpus_behind;
-+static cpumask_t cpus_chosen;
-+
-+static void clocksource_verify_choose_cpus(void)
-+{
-+	int cpu, i, n = verify_n_cpus;
-+
-+	if (n < 0) {
-+		/* Check all of the CPUs. */
-+		cpumask_copy(&cpus_chosen, cpu_online_mask);
-+		cpumask_clear_cpu(smp_processor_id(), &cpus_chosen);
-+		return;
-+	}
-+
-+	/* If no checking desired, or no other CPU to check, leave. */
-+	cpumask_clear(&cpus_chosen);
-+	if (n == 0 || num_online_cpus() <= 1)
-+		return;
-+
-+	/* Make sure to select at least one CPU other than the current CPU. */
-+	cpu = cpumask_next(-1, cpu_online_mask);
-+	if (cpu == smp_processor_id())
-+		cpu = cpumask_next(cpu, cpu_online_mask);
-+	if (WARN_ON_ONCE(cpu >= nr_cpu_ids))
-+		return;
-+	cpumask_set_cpu(cpu, &cpus_chosen);
-+
-+	/* Force a sane value for the boot parameter. */
-+	if (n > nr_cpu_ids)
-+		n = nr_cpu_ids;
+@@ -377,6 +377,7 @@ static void clocksource_watchdog(struct timer_list *unused)
+ 	int next_cpu, reset_pending;
+ 	int64_t wd_nsec, cs_nsec;
+ 	struct clocksource *cs;
++	u32 md;
+ 
+ 	spin_lock(&watchdog_lock);
+ 	if (!watchdog_running)
+@@ -423,7 +424,8 @@ static void clocksource_watchdog(struct timer_list *unused)
+ 			continue;
+ 
+ 		/* Check the deviation from the watchdog clocksource. */
+-		if (abs(cs_nsec - wd_nsec) > WATCHDOG_THRESHOLD) {
++		md = cs->uncertainty_margin + watchdog->uncertainty_margin;
++		if (abs(cs_nsec - wd_nsec) > md) {
+ 			pr_warn("timekeeping watchdog on CPU%d: Marking clocksource '%s' as unstable because the skew is too large:\n",
+ 				smp_processor_id(), cs->name);
+ 			pr_warn("                      '%s' wd_now: %llx wd_last: %llx mask: %llx\n",
+@@ -1076,6 +1078,26 @@ void __clocksource_update_freq_scale(struct clocksource *cs, u32 scale, u32 freq
+ 		clocks_calc_mult_shift(&cs->mult, &cs->shift, freq,
+ 				       NSEC_PER_SEC / scale, sec * scale);
+ 	}
 +
 +	/*
-+	 * Randomly select the specified number of CPUs.  If the same
-+	 * CPU is selected multiple times, that CPU is checked only once,
-+	 * and no replacement CPU is selected.  This gracefully handles
-+	 * situations where verify_n_cpus is greater than the number of
-+	 * CPUs that are currently online.
++	 * If the uncertainty margin is not specified, calculate it.
++	 * If both scale and freq are non-zero, calculate the clock
++	 * period, but bound below at 2*WATCHDOG_MAX_SKEW.  However,
++	 * if either of scale or freq is zero, be very conservative and
++	 * take the tens-of-milliseconds WATCHDOG_THRESHOLD value for the
++	 * uncertainty margin.  Allow stupidly small uncertainty margins
++	 * to be specified by the caller for testing purposes, but warn
++	 * to discourage production use of this capability.
 +	 */
-+	for (i = 1; i < n; i++) {
-+		cpu = prandom_u32() % nr_cpu_ids;
-+		cpu = cpumask_next(cpu - 1, cpu_online_mask);
-+		if (cpu >= nr_cpu_ids)
-+			cpu = cpumask_next(-1, cpu_online_mask);
-+		if (!WARN_ON_ONCE(cpu >= nr_cpu_ids))
-+			cpumask_set_cpu(cpu, &cpus_chosen);
++	if (scale && freq && !cs->uncertainty_margin) {
++		cs->uncertainty_margin = NSEC_PER_SEC / (scale * freq);
++		if (cs->uncertainty_margin < 2 * WATCHDOG_MAX_SKEW)
++			cs->uncertainty_margin = 2 * WATCHDOG_MAX_SKEW;
++	} else if (!cs->uncertainty_margin) {
++		cs->uncertainty_margin = WATCHDOG_THRESHOLD;
 +	}
++	WARN_ON_ONCE(cs->uncertainty_margin < 2 * WATCHDOG_MAX_SKEW);
 +
-+	/* Don't verify ourselves. */
-+	cpumask_clear_cpu(smp_processor_id(), &cpus_chosen);
-+}
+ 	/*
+ 	 * Ensure clocksources that have large 'mult' values don't overflow
+ 	 * when adjusted.
+diff --git a/kernel/time/jiffies.c b/kernel/time/jiffies.c
+index a5cffe2a1770..165b85bcdf29 100644
+--- a/kernel/time/jiffies.c
++++ b/kernel/time/jiffies.c
+@@ -49,13 +49,14 @@ static u64 jiffies_read(struct clocksource *cs)
+  * for "tick-less" systems.
+  */
+ static struct clocksource clocksource_jiffies = {
+-	.name		= "jiffies",
+-	.rating		= 1, /* lowest valid rating*/
+-	.read		= jiffies_read,
+-	.mask		= CLOCKSOURCE_MASK(32),
+-	.mult		= TICK_NSEC << JIFFIES_SHIFT, /* details above */
+-	.shift		= JIFFIES_SHIFT,
+-	.max_cycles	= 10,
++	.name			= "jiffies",
++	.rating			= 1, /* lowest valid rating*/
++	.uncertainty_margin	= TICK_NSEC,
++	.read			= jiffies_read,
++	.mask			= CLOCKSOURCE_MASK(32),
++	.mult			= TICK_NSEC << JIFFIES_SHIFT, /* details above */
++	.shift			= JIFFIES_SHIFT,
++	.max_cycles		= 10,
+ };
  
- static void clocksource_verify_one_cpu(void *csin)
- {
-@@ -271,12 +324,22 @@ static void clocksource_verify_percpu(struct clocksource *cs)
- 	int cpu, testcpu;
- 	s64 delta;
- 
-+	if (verify_n_cpus == 0)
-+		return;
- 	cpumask_clear(&cpus_ahead);
- 	cpumask_clear(&cpus_behind);
-+	get_online_cpus();
- 	preempt_disable();
-+	clocksource_verify_choose_cpus();
-+	if (cpumask_weight(&cpus_chosen) == 0) {
-+		preempt_enable();
-+		put_online_cpus();
-+		pr_warn("Not enough CPUs to check clocksource '%s'.\n", cs->name);
-+		return;
-+	}
- 	testcpu = smp_processor_id();
--	pr_warn("Checking clocksource %s synchronization from CPU %d.\n", cs->name, testcpu);
--	for_each_online_cpu(cpu) {
-+	pr_warn("Checking clocksource %s synchronization from CPU %d to CPUs %*pbl.\n", cs->name, testcpu, cpumask_pr_args(&cpus_chosen));
-+	for_each_cpu(cpu, &cpus_chosen) {
- 		if (cpu == testcpu)
- 			continue;
- 		csnow_begin = cs->read(cs);
-@@ -296,6 +359,7 @@ static void clocksource_verify_percpu(struct clocksource *cs)
- 			cs_nsec_min = cs_nsec;
- 	}
- 	preempt_enable();
-+	put_online_cpus();
- 	if (!cpumask_empty(&cpus_ahead))
- 		pr_warn("        CPUs %*pbl ahead of CPU %d for clocksource %s.\n",
- 			cpumask_pr_args(&cpus_ahead), testcpu, cs->name);
-@@ -366,6 +430,12 @@ static void clocksource_watchdog(struct timer_list *unused)
- 				watchdog->name, wdnow, wdlast, watchdog->mask);
- 			pr_warn("                      '%s' cs_now: %llx cs_last: %llx mask: %llx\n",
- 				cs->name, csnow, cslast, cs->mask);
-+			if (curr_clocksource == cs)
-+				pr_warn("                      '%s' is current clocksource.\n", cs->name);
-+			else if (curr_clocksource)
-+				pr_warn("                      '%s' (not '%s') is current clocksource.\n", curr_clocksource->name, cs->name);
-+			else
-+				pr_warn("                      No current clocksource.\n");
- 			__clocksource_unstable(cs);
- 			continue;
- 		}
+ __cacheline_aligned_in_smp DEFINE_RAW_SPINLOCK(jiffies_lock);
 -- 
 2.31.1.189.g2e36527f23
 
