@@ -2,56 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D2136EE86
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 758BB36EE8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232724AbhD2RDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 13:03:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40386 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240858AbhD2RDr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 13:03:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3819613ED;
-        Thu, 29 Apr 2021 17:02:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619715780;
-        bh=86ih1Pwmgv0YL5x9tywf55q61EjjUm4JVP9sqao1QdI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hV6N0ssirvcFMAC4nHeJ3RI7CHxhtr7a5qHAQOrRyb/zArTto/mbpT8EeExaeEnXR
-         GzNuFWCxbWLrkkxQ2yNnqd4EKPzrgtJdt3hS5zb+yMQzFsxirhBzNb72a8J5rQduhh
-         fON0mlhKvxGlVF8bM4UE0WmraBKNtG1UKLtZGqXs=
-Date:   Thu, 29 Apr 2021 19:02:57 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Deepak R Varma <drv@mailo.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: code clean up confirmation => staging: media: atomisp: pci driver
-Message-ID: <YIrmwYeSU0Clt7U4@kroah.com>
-References: <YIrfVFhW8ufjm/tB@192.168.1.8>
+        id S240893AbhD2RE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 13:04:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233302AbhD2REz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 13:04:55 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD4AAC06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:04:08 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id s82so1237593wmf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:04:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P4osrw7Ler4/vCy2T4LTFORBBWseqxgPFKsBoHb7/xA=;
+        b=Tm/Fk/QObU0IY482tWJn+v/HIVmJ6V+45EWZeCkoejpyX63YUkJHOFDRPVIZXfM52v
+         4sMzHaAPsnNKqFTUIjCVoO71g/w8S+mhAMsS/xbuQDnPxidJFFwWsn2VAEYdKGUUV2zm
+         lWVt0dXN3PVaPjgHAoey5XI2ma2+71VyxvPjMv2bAl4VqG1Xh9ooNi8zEIbRkPA8eyvi
+         LpjVvnLX38Bq4/TonHfcT03XZiKnM40f2xhV7g9qt+YRVzt8k3msfO23aj+zHjV4jnlZ
+         lP23XKCxG5pasRAC4coBqxr2BPFNtyNKZNj6a4kG1JKxRUjGnHeDgLsoP8WyMG3ayKcG
+         BSQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P4osrw7Ler4/vCy2T4LTFORBBWseqxgPFKsBoHb7/xA=;
+        b=aY8+F8OJpPDsnjvs6xSRU4jknZCc13ic4wfxFzv+zqsm9YD3jPVJuOhTxtGCOiUvtR
+         zBLdThjspXZPZ1cLmRBaDiCZob7anx4mDkaX8uL4Z+V66DYF2i6ZIBlh1iOFozRASj8K
+         EUl3F9AJYPRBlp+N9RSUpJNJRboDFOvpkcU562a7Ci5h3VpdeqRrX02ObU4otKStLpNK
+         gN1w2WcYoG49HjC6ZuwhjIMdsOz4NaYBO68Z4N+UUQ/vmFjN9sspz9z5dQAagW2BalVb
+         gOxroFRCGdhR07wJCt+vMZTfEIYMOWAHiYJVF9OASHjzSwROrSo0IxmFJsVfdFdMKhHn
+         GfDg==
+X-Gm-Message-State: AOAM531DDsUeKhi7Oazzg/RQGi+EpO/FWh5fShMTWMFfcTSumcPj4dMP
+        71aolPoZP6t7eNcNL6boYh/tOw==
+X-Google-Smtp-Source: ABdhPJzfwWOyATeEOoon2Wmu89CkD9+SVVIBKVropOnFcJ1co1JDEY47UOACmlkf7bw7X1Mun7zu0Q==
+X-Received: by 2002:a7b:cb82:: with SMTP id m2mr11725084wmi.105.1619715847365;
+        Thu, 29 Apr 2021 10:04:07 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e0a:90c:e290:c304:4b2b:4a79:1da9])
+        by smtp.gmail.com with ESMTPSA id 18sm11041275wmo.47.2021.04.29.10.04.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 10:04:07 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     khilman@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com
+Cc:     linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH 0/3] arm64: meson-sm1: add support for Banana PI BPI-M5
+Date:   Thu, 29 Apr 2021 19:04:01 +0200
+Message-Id: <20210429170404.3616111-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YIrfVFhW8ufjm/tB@192.168.1.8>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 10:01:16PM +0530, Deepak R Varma wrote:
-> Hello All,
-> Is anyone already working on code clean up of the following driver
-> /files? I am specifically targeting addressing the checkpatch
-> complaints. Let me know.
-> 
-> 	drivers/staging/media/atomisp/pci
+Banana Pi BPI-M5 is a credit card format SBC with the following features:
+- Amlogic S905X3 quad core Cortex-A55
+- Mali-G31 GPU
+- 4GB LPDDR4
+- 16GB eMMC flash
+- 4 USB 3.0
+- 1 GbE ethernet
+- HDMI output
+- 2x LEDS
+- SDCard
+- 2.5mm Jack with Stereo Audio + CVBS
+- Infrared Received
+- ADC Button
+- GPIO Button
+- 40 pins header + 3pins debug header
 
-There's no need to ask, just do the work and submit the patches.
+This also adds the missing toacodec node to enable internal audio codec.
 
-We do not "claim" work ahead of time in the kernel, that is what has
-killed other open source projects numerous times in the past.  We know
-to learn from other's mistakes. :)
+Neil Armstrong (3):
+  arm64: dts: meson-sm1: add toacodec node
+  dt-bindings: arm: amlogic: add Banana PI M5 bindings
+  arm64: dts: meson-sm1: add Banana PI BPI-M5 board dts
 
-thanks,
+ .../devicetree/bindings/arm/amlogic.yaml      |   1 +
+ arch/arm64/boot/dts/amlogic/Makefile          |   1 +
+ .../dts/amlogic/meson-sm1-bananapi-m5.dts     | 606 ++++++++++++++++++
+ arch/arm64/boot/dts/amlogic/meson-sm1.dtsi    |  11 +
+ 4 files changed, 619 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/amlogic/meson-sm1-bananapi-m5.dts
 
-greg k-h
+-- 
+2.25.1
+
