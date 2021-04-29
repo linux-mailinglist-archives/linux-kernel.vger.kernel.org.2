@@ -2,121 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D596436ECEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1C636ECED
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240673AbhD2PD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 11:03:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43495 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232556AbhD2PDY (ORCPT
+        id S240693AbhD2PDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 11:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234487AbhD2PD2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 11:03:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619708557;
+        Thu, 29 Apr 2021 11:03:28 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9489C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:02:40 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0a4f00261a50588b71a803.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:4f00:261a:5058:8b71:a803])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7AE3A1EC0118;
+        Thu, 29 Apr 2021 17:02:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1619708559;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xdMySnQAmB6rNT6+jogSDdKQ2HhVWfHBEjIsczqBe4Y=;
-        b=SLDM1KxIGlAZZJYOyZfLfj0dAST0TC6HXQUI07W6pQJ3g1mVttrcpsRDsX2/qRL/TAmswA
-        c3pfRjnmfxpX3Jz2mQ4OECrKS8o/StriNSTJ3UoERk2Heon34G00wJeATVl9HAr55IC/vy
-        BRrDBOnH6X5wrvaVuvuuI/eeyFq1Vp8=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-386-nJBefy6qN4yuf7M4tpL6eA-1; Thu, 29 Apr 2021 11:02:33 -0400
-X-MC-Unique: nJBefy6qN4yuf7M4tpL6eA-1
-Received: by mail-wm1-f71.google.com with SMTP id y184-20020a1ce1c10000b0290143299f39d7so2924840wmg.4
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:02:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=xdMySnQAmB6rNT6+jogSDdKQ2HhVWfHBEjIsczqBe4Y=;
-        b=WMEAoUJlVBVJFxTdpe3HVuq5VPZ2j5W2xpDQpwWF9etybhJbuPdmu4zEGfvcmzhAAV
-         J/qfE4q/W7qeKe5DhxTZ/91U6Jpned2RtezF0FSmB34EuOxGtdpQ5YWTMI8xfKS8Gbzm
-         9vCLw8n8SmJ5MC/p1/3NSh6EgtYHd2xgit1DEaqmM0nvvB0SckCX2fNyf3linPc83JSN
-         9nQQ9q7YMDlBI3hFicv/g2S5uBUBhJRGRlfZp6AZOKaieSRm56jocd4XK+ASFVTRz+d/
-         tJtKfFP4N48s1mEd9wrq9nT/Q/fgF4TEh7mqH+opili3yhKVpON9Qk1s0zYshwppyR3F
-         H2CA==
-X-Gm-Message-State: AOAM530EK92LK+hCI+JofEFMJgX+NmyiEdEKXCGZp3C/9wqj3vV+U0DK
-        Xac3mxBX8G6fmjm2CJWtiqmWm/UpXZ4qNXhtGDae2N0RXzJ1hSR6bpwQRfVLDlt+l0Sis3dMJTi
-        82qg8Q8ff+gwr+NmxPMQLa/Cq
-X-Received: by 2002:a05:600c:249:: with SMTP id 9mr433355wmj.175.1619708552046;
-        Thu, 29 Apr 2021 08:02:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyVmC0YQ8yWtx9WOhJSq1hs5RMGemUIOou6z5QyX84IKGnzum5fv69U4+GLRPkiN4uR3v6sYg==
-X-Received: by 2002:a05:600c:249:: with SMTP id 9mr433332wmj.175.1619708551792;
-        Thu, 29 Apr 2021 08:02:31 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6158.dip0.t-ipconnect.de. [91.12.97.88])
-        by smtp.gmail.com with ESMTPSA id l5sm317821wmh.0.2021.04.29.08.02.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Apr 2021 08:02:31 -0700 (PDT)
-Subject: Re: [PATCH v2 4/5] mm/huge_memory.c: remove unnecessary
- tlb_remove_page_size() for huge zero pmd
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
-Cc:     ziy@nvidia.com, william.kucharski@oracle.com, willy@infradead.org,
-        yang.shi@linux.alibaba.com, aneesh.kumar@linux.ibm.com,
-        rcampbell@nvidia.com, songliubraving@fb.com,
-        kirill.shutemov@linux.intel.com, riel@surriel.com,
-        hannes@cmpxchg.org, minchan@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Aaron Lu <aaron.lu@intel.com>
-References: <20210429132648.305447-1-linmiaohe@huawei.com>
- <20210429132648.305447-5-linmiaohe@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <f1390cf8-6428-fd17-794b-cc2336cf238d@redhat.com>
-Date:   Thu, 29 Apr 2021 17:02:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=NOcatuN4XreT3yxQdVGVFIBdjt3FM9ZXlUyEyrjCkL0=;
+        b=p3HwlQM0uLzkbBakEdfPdwqwK7+vAN+eKFN9wBgM5t5D1NYu06/eYGPyEKUeX+PvmodNYg
+        Q4sAq3+u/gRunLxS+pG4bqq4IQVsBZaqO7gkwh1Z0i7+KZ8dfprfbFHOyFCbjWEzwHouge
+        XIRdFDtDl/Udk+dUPr74Tv7m0z+bDf0=
+Date:   Thu, 29 Apr 2021 17:02:42 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Saripalli, RK" <rsaripal@amd.com>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com, Jonathan Corbet <corbet@lwn.net>,
+        bsd@redhat.com
+Subject: Re: [v3 1/1] x86/cpufeatures: Implement Predictive Store Forwarding
+ control.
+Message-ID: <YIrKkqmXlK36E2lN@zn.tnic>
+References: <20210428160349.158774-1-rsaripal@amd.com>
+ <20210428160349.158774-2-rsaripal@amd.com>
+ <CAAeT=FyqjYqcUBRtvCiHv5sUN34kdi7kTfbfUfHZ6jR0tve+Og@mail.gmail.com>
+ <84eddb82-7626-c1e0-78b3-a92b5039e011@amd.com>
+ <238f41fd-2f7b-cfa0-b538-2a659c38c7e3@amd.com>
+ <75258a4d-131d-766a-b20c-b3cc5ee65817@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20210429132648.305447-5-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <75258a4d-131d-766a-b20c-b3cc5ee65817@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.04.21 15:26, Miaohe Lin wrote:
-> Commit aa88b68c3b1d ("thp: keep huge zero page pinned until tlb flush")
-> introduced tlb_remove_page() for huge zero page to keep it pinned until
-> flush is complete and prevents the page from being split under us. But
-> huge zero page is kept pinned until all relevant mm_users reach zero since
-> the commit 6fcb52a56ff6 ("thp: reduce usage of huge zero page's atomic
-> counter"). So tlb_remove_page_size() for huge zero pmd is unnecessary now.
-> 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->   mm/huge_memory.c | 3 ---
->   1 file changed, 3 deletions(-)
-> 
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index e24a96de2e37..af30338ac49c 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -1680,12 +1680,9 @@ int zap_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
->   		if (arch_needs_pgtable_deposit())
->   			zap_deposited_table(tlb->mm, pmd);
->   		spin_unlock(ptl);
-> -		if (is_huge_zero_pmd(orig_pmd))
-> -			tlb_remove_page_size(tlb, pmd_page(orig_pmd), HPAGE_PMD_SIZE);
->   	} else if (is_huge_zero_pmd(orig_pmd)) {
->   		zap_deposited_table(tlb->mm, pmd);
->   		spin_unlock(ptl);
-> -		tlb_remove_page_size(tlb, pmd_page(orig_pmd), HPAGE_PMD_SIZE);
->   	} else {
->   		struct page *page = NULL;
->   		int flush_needed = 1;
-> 
+On Thu, Apr 29, 2021 at 09:32:35AM -0500, Saripalli, RK wrote:
+> Yes, I agree with his analysis and fixing it.
 
-This sounds sane to me
+So you can do this and correct the comment above it to explain why
+you're doing the "tmp" thing.
 
-Acked-by: David Hildenbrand <david@redhat.com>
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index d41b70fe4918..536136e0daa3 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -78,6 +78,8 @@ EXPORT_SYMBOL_GPL(mds_idle_clear);
+ 
+ void __init check_bugs(void)
+ {
++	u64 tmp = 0;
++
+ 	identify_boot_cpu();
+ 
+ 	/*
+@@ -97,7 +99,9 @@ void __init check_bugs(void)
+ 	 * init code as it is not enumerated and depends on the family.
+ 	 */
+ 	if (boot_cpu_has(X86_FEATURE_MSR_SPEC_CTRL))
+-		rdmsrl(MSR_IA32_SPEC_CTRL, x86_spec_ctrl_base);
++		rdmsrl(MSR_IA32_SPEC_CTRL, tmp);
++
++	x86_spec_ctrl_base |= tmp;
+ 
+ 	/* Allow STIBP in MSR_SPEC_CTRL if supported */
+ 	if (boot_cpu_has(X86_FEATURE_STIBP))
+
+---
+
+and as Tom correctly suggests, set X86_FEATURE_MSR_SPEC_CTRL in
+psf_cmdline() so that the above loading of the base value works.
+
+Thx.
 
 -- 
-Thanks,
+Regards/Gruss,
+    Boris.
 
-David / dhildenb
-
+https://people.kernel.org/tglx/notes-about-netiquette
