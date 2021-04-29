@@ -2,62 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04AC236E8FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18FFA36E901
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240458AbhD2KnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 06:43:13 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:56100 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232245AbhD2KnM (ORCPT
+        id S240426AbhD2Kqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 06:46:51 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:41312 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232245AbhD2Kqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 06:43:12 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R281e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UX9d.L0_1619692943;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UX9d.L0_1619692943)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 29 Apr 2021 18:42:24 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     dennis.dalessandro@cornelisnetworks.com
-Cc:     mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, nathan@kernel.org, ndesaulniers@google.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] IB/qib: Remove redundant assignment to ret
-Date:   Thu, 29 Apr 2021 18:42:20 +0800
-Message-Id: <1619692940-104771-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Thu, 29 Apr 2021 06:46:50 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lc4BG-00084q-EX; Thu, 29 Apr 2021 10:46:02 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next][V2] io_uring: Fix premature return from loop and memory leak
+Date:   Thu, 29 Apr 2021 11:46:02 +0100
+Message-Id: <20210429104602.62676-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Variable 'ret' is set to zero but this value is never read as it is
-overwritten with a new value later on, hence it is a redundant
-assignment and can be removed
+From: Colin Ian King <colin.king@canonical.com>
 
-Clean up the following clang-analyzer warning:
+Currently the -EINVAL error return path is leaking memory allocated
+to data. Fix this by not returning immediately but instead setting
+the error return variable to -EINVAL and breaking out of the loop.
 
-drivers/infiniband/hw/qib/qib_sd7220.c:690:2: warning: Value stored to
-'ret' is never read [clang-analyzer-deadcode.DeadStores]
+Kudos to Pavel Begunkov for suggesting a correct fix.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/infiniband/hw/qib/qib_sd7220.c | 1 -
- 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/qib/qib_sd7220.c b/drivers/infiniband/hw/qib/qib_sd7220.c
-index 4f4a09c..81b810d 100644
---- a/drivers/infiniband/hw/qib/qib_sd7220.c
-+++ b/drivers/infiniband/hw/qib/qib_sd7220.c
-@@ -687,7 +687,6 @@ static int qib_sd7220_reg_mod(struct qib_devdata *dd, int sdnum, u32 loc,
- 		spin_unlock_irqrestore(&dd->cspec->sdepb_lock, flags);
- 		return -1;
- 	}
--	ret = 0;
- 	for (tries = EPB_TRANS_TRIES; tries; --tries) {
- 		transval = qib_read_kreg32(dd, trans);
- 		if (transval & EPB_TRANS_RDY)
+V2: set ret/err to -EINVAL and break rather than kfree and return,
+    fix both occurrences of this issue.
+
+---
+ fs/io_uring.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 47c2f126f885..c783ad83f220 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -8417,8 +8417,10 @@ static int io_sqe_buffers_register(struct io_ring_ctx *ctx, void __user *arg,
+ 		ret = io_buffer_validate(&iov);
+ 		if (ret)
+ 			break;
+-		if (!iov.iov_base && tag)
+-			return -EINVAL;
++		if (!iov.iov_base && tag) {
++			ret = -EINVAL;
++			break;
++		}
+ 
+ 		ret = io_sqe_buffer_register(ctx, &iov, &ctx->user_bufs[i],
+ 					     &last_hpage);
+@@ -8468,8 +8470,10 @@ static int __io_sqe_buffers_update(struct io_ring_ctx *ctx,
+ 		err = io_buffer_validate(&iov);
+ 		if (err)
+ 			break;
+-		if (!iov.iov_base && tag)
+-			return -EINVAL;
++		if (!iov.iov_base && tag) {
++			err = -EINVAL;
++			break;
++		}
+ 		err = io_sqe_buffer_register(ctx, &iov, &imu, &last_hpage);
+ 		if (err)
+ 			break;
 -- 
-1.8.3.1
+2.30.2
 
