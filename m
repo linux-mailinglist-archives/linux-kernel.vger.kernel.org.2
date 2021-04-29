@@ -2,71 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE41B36EE71
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 18:56:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EADE36EE7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240872AbhD2Q46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 12:56:58 -0400
-Received: from mga17.intel.com ([192.55.52.151]:7625 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240833AbhD2Q4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 12:56:55 -0400
-IronPort-SDR: sDukpH99KYzREJ3szo72vgWlGuJ9f9nlPPWnchrG5joec5BzM+4atX9vcMKLoJ6NwCkq5oDj3s
- 26N+dG/BZZQQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9969"; a="177166393"
-X-IronPort-AV: E=Sophos;i="5.82,259,1613462400"; 
-   d="scan'208";a="177166393"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 09:56:08 -0700
-IronPort-SDR: UfKVhAS4HGuIl3apXrQJCsFL3vlyN0GGn2fENaHT29ZuNVWNPey5dREwdyShiKJVKnsY7pCp2V
- ffQfvMYdQzoA==
-X-IronPort-AV: E=Sophos;i="5.82,259,1613462400"; 
-   d="scan'208";a="527029629"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 09:56:06 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lc9xL-008C2n-Sf; Thu, 29 Apr 2021 19:56:03 +0300
-Date:   Thu, 29 Apr 2021 19:56:03 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Phil Reid <preid@electromag.com.au>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v3 3/4] staging: fbtft: Don't spam logs when probe is
- deferred
-Message-ID: <YIrlI+bo5Jm3orUD@smile.fi.intel.com>
-References: <20210428130415.55406-1-andriy.shevchenko@linux.intel.com>
- <20210428130415.55406-4-andriy.shevchenko@linux.intel.com>
- <20210429144244.GE1981@kadam>
+        id S240888AbhD2RBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 13:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240852AbhD2RBG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 13:01:06 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E050C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:00:19 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id m7so66446053ljp.10
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:00:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=f0HDs304V6rBQyJsC5AJ9JCDtTKnf5YiKXTX64eRPok=;
+        b=ExZEkvb48KmMdff51m5EllB7RqJi7o96Jtn3zE3fRmXGBVkDfzxzZmLnWIq5F+BdEM
+         q6cz07f9ztPJ3Y+jdlGik9OM0RnI/rho9TYwV1UhXhrBQA6aDsNZTG7hRI26Qc0ryVgj
+         gQavAami2VG0lmlSiImr4AagqgDrhqmLkFypq6RtwXc83dhxlenMhB+LDhHVLNIMURfI
+         fTSEu8MjopjkR03N++XlTEGNOFm1cTZu1KKiLdMtCngzZHV6ntqCm1+Hop9fah1h5JbZ
+         Zsm2slRg6nDEOwvT6Zr/IdzMWQW9c4v0uSIKofH2VEpAtrDCEOAnIkyePqrkjvIveyFP
+         Da2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f0HDs304V6rBQyJsC5AJ9JCDtTKnf5YiKXTX64eRPok=;
+        b=phSZv8dp9qlzSmY1gNJD8+TSI3oMCxDlp8l6W/1J8o0PMsg0oviQExrN78dcReBQi0
+         8QmSSrY0hPL9tgg9ujWA+XuXIrEHTRTN2NydsfLgXNNnzKDR3XaoB16hZ9y7gIOf4xnP
+         ksru983SYn5mf7PluQhobDOzgmopQ4/9r8ygA5QuoPbUd/lYQ/c97mKWBibdweF3Z/Cr
+         RXnZg4ZncqMpvtFOK1LY4RmAL1HqAXrTfaT1yi8mYyWdisaKM6dFNoA8b4CJSOU7Qw7K
+         BvAVakn/VFHxUtSJXg4PificOJYrjeTm7WOKhSyGmYwwntU5dL/ZsGrbsYV6UKZwyDGL
+         DSnA==
+X-Gm-Message-State: AOAM5307WJn0bKjOlxKvzwdHQG3mV+x3TFvqQwHn30DJ3dWGUUCacXa9
+        hS26xeu65VLzsHoXrr4xEmfOKqRHrC6B0twhZJbo4g==
+X-Google-Smtp-Source: ABdhPJw+ESSs7VTM3JdnNUYO1nFYP+5xozFj+wC6Na197QlKwaCYJN5flP6NE6Ly3ROztBiNyG6qGBwyM8dd8acjBKQ=
+X-Received: by 2002:a05:651c:50b:: with SMTP id o11mr431200ljp.323.1619715617399;
+ Thu, 29 Apr 2021 10:00:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429144244.GE1981@kadam>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210424021631.1972022-1-rajatja@google.com> <20210424021631.1972022-2-rajatja@google.com>
+ <d53c72949d81db9f092a9aecb49bf56b47727738.camel@suse.com> <CAJZ5v0iNrSFjhmTE8K-JrO07kJon3ikhatbg0Jg2hs+x-frDJg@mail.gmail.com>
+ <79b994f2476249498797e1784f735fd7@AcuMS.aculab.com> <21c6b5002c5ad36cd7fe0bb849f5eba12a614bca.camel@suse.com>
+ <b5e031652f144ab6accbe553566676c9@AcuMS.aculab.com> <0601e45130495b152bec04eee4a50e302db4cfd2.camel@suse.com>
+ <CAJZ5v0jEbjRSGPdfwvegawin5_N=m-UoP+Wa99EQ-QmkusiBCg@mail.gmail.com>
+ <5ac7634acbe7569879234ad541879c79918f3e00.camel@suse.com> <CAJZ5v0jF1M95MJO+gGL2rmk=rmt5u0sYR-DCJW4+Bb5WP+3W7w@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jF1M95MJO+gGL2rmk=rmt5u0sYR-DCJW4+Bb5WP+3W7w@mail.gmail.com>
+From:   Rajat Jain <rajatja@google.com>
+Date:   Thu, 29 Apr 2021 09:59:39 -0700
+Message-ID: <CACK8Z6E_zbUguY2qUE5Jbgzj3fwcQ_xMVxHYs_VeY5Hm=S4zGQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] pci: Support "removable" attribute for PCI devices
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Oliver Neukum <oneukum@suse.com>,
+        David Laight <David.Laight@aculab.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+        Rajat Jain <rajatxjain@gmail.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Dmitry Torokhov <dtor@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 05:42:44PM +0300, Dan Carpenter wrote:
-> On Wed, Apr 28, 2021 at 04:04:14PM +0300, Andy Shevchenko wrote:
+On Thu, Apr 29, 2021 at 2:58 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Thu, Apr 29, 2021 at 11:03 AM Oliver Neukum <oneukum@suse.com> wrote:
+> >
+> > Am Mittwoch, den 28.04.2021, 14:21 +0200 schrieb Rafael J. Wysocki:
+> >
+> > > In principle, in the wake of Thunderbolt every PCI driver handling
+> > > PCIe devices needs to be able to deal with a device that's gone away
+> > > without notice, because in principle any PCIe device can be included
+> > > into a Thunderbolt docking station which may go away as a whole
+> > > without notice.
+> >
+> > Yes, but we are dealing with what we export to user space, don't we?
+>
+> Right, so it would be good to know why exporting this information to
+> user space is desired.
 
-> > +	if (IS_ERR(*gpiop))
-> > +		dev_err_probe(dev, PTR_ERR(*gpiop), "Failed to request %s GPIO\n", name);
-> 
-> This should be a return statement:
-> 
-> 		return dev_err_probe(dev, PTR_ERR(*gpiop), "Failed to request %s GPIO\n", name);
+For us, the driving motivation is to implement policies in userspace
+for user removable devices. Eg:
 
-Thanks!
+* Tracking the statistics around usage of user removable devices (how
+many users use such devices, how often etc).
+* Removing user removable devices when a user logs out.
+* Not allowing a new user removable device while the screen is locked.
+* (perhaps additional such policies in future).
 
-Funny that I have trapped to this and my patch that adds __must_check to avoid
-exactly this situations had been reverted :-(
+Thanks,
 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Rajat
