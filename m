@@ -2,73 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF6436F2B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 00:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C15636F2BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 00:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbhD2WtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 18:49:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbhD2WtK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 18:49:10 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6FD9C06138B;
-        Thu, 29 Apr 2021 15:48:23 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id ED2C722239;
-        Fri, 30 Apr 2021 00:48:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1619736502;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xpz2vUSKO6/55m06O1O//fMXB/R8r80PGS4qvX8VdOA=;
-        b=KOaVJvx2SFj3w7VND+/8f0UbPBoIs2iOrXTSKfUdMbbBF3dPXNTB4A1VqL7QJYYmKKv5ky
-        JiwTmts0NWMc0U7gYZ1q3tjXUtQ60O0yxgExMiq7EL/t9vkM8HRlAx4FUN8UepmmCTxszc
-        QmHd5ITnUhYuaOPla46NvkRpgmApDiY=
+        id S229773AbhD2Wuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 18:50:46 -0400
+Received: from foss.arm.com ([217.140.110.172]:34670 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229582AbhD2Wuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 18:50:44 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8620CED1;
+        Thu, 29 Apr 2021 15:49:57 -0700 (PDT)
+Received: from [10.57.61.145] (unknown [10.57.61.145])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 504F43F70D;
+        Thu, 29 Apr 2021 15:49:55 -0700 (PDT)
+Subject: Re: [PATCH] [v2] coresight: etm4x: avoid build failure with unrolled
+ loops
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Qi Liu <liuqi115@huawei.com>,
+        Tingwei Zhang <tingwei@codeaurora.org>,
+        coresight@lists.linaro.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+References: <20210429145752.3218324-1-arnd@kernel.org>
+ <dff8cbd8-8c56-ae6e-ecc2-9ca183113ab2@arm.com>
+ <CAK8P3a3-XoDQ6BfTBUof5ST2H1_6JOL+rK-BQqWXAV0H5jMm9Q@mail.gmail.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <81b8a4ff-4d5d-1c2a-8ff1-7cd320460e57@arm.com>
+Date:   Thu, 29 Apr 2021 23:49:53 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <CAK8P3a3-XoDQ6BfTBUof5ST2H1_6JOL+rK-BQqWXAV0H5jMm9Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 30 Apr 2021 00:48:21 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-spi@vger.kernel.org, Lokesh Vutla <lokeshvutla@ti.com>
-Subject: Re: [RFC PATCH 5/6] spi: cadence-qspi: Tune PHY to allow running at
- higher frequencies
-In-Reply-To: <20210311191216.7363-6-p.yadav@ti.com>
-References: <20210311191216.7363-1-p.yadav@ti.com>
- <20210311191216.7363-6-p.yadav@ti.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <143b24c61109823f6e616cf91d28d16c@walle.cc>
-X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-03-11 20:12, schrieb Pratyush Yadav:
-> +	if (of_property_read_u32(np, "cdns,phy-tx-start", 
-> &f_pdata->phy_tx_start))
-> +		f_pdata->phy_tx_start = 16;
-> +
-> +	if (of_property_read_u32(np, "cdns,phy-tx-end", 
-> &f_pdata->phy_tx_end))
-> +		f_pdata->phy_tx_end = 48;
-> +
+On 29/04/2021 18:50, Arnd Bergmann wrote:
+> On Thu, Apr 29, 2021 at 7:37 PM Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
+>> On 29/04/2021 15:57, Arnd Bergmann wrote:
+>>> From: Arnd Bergmann <arnd@arndb.de>
+>>>
+>>> clang-12 fails to build the etm4x driver with -fsanitize=array-bounds,
+>>> where it decides to unroll certain loops in a way that result in a
+>>> C variable getting put into an inline assembly
+>>>
+>>> <instantiation>:1:7: error: expected constant expression in '.inst' directive
+>>> .inst (0xd5200000|((((2) << 19) | ((1) << 16) | (((((((((((0x160 + (i * 4))))) >> 2))) >> 7) & 0x7)) << 12) | ((((((((((0x160 + (i * 4))))) >> 2))) & 0xf)) << 8) | (((((((((((0x160 + (i * 4))))) >> 2))) >> 4) & 0x7)) << 5)))|(.L__reg_num_x8))
+>>>         ^
+>>> drivers/hwtracing/coresight/coresight-etm4x-core.c:702:4: note: while in macro instantiation
+>>>                           etm4x_relaxed_read32(csa, TRCCNTVRn(i));
+>>>                           ^
+>>> drivers/hwtracing/coresight/coresight-etm4x.h:403:4: note: expanded from macro 'etm4x_relaxed_read32'
+>>>                    read_etm4x_sysreg_offset((offset), false)))
+>>>                    ^
+>>> drivers/hwtracing/coresight/coresight-etm4x.h:383:12: note: expanded from macro 'read_etm4x_sysreg_offset'
+>>>                           __val = read_etm4x_sysreg_const_offset((offset));       \
+>>>                                   ^
+>>> drivers/hwtracing/coresight/coresight-etm4x.h:149:2: note: expanded from macro 'read_etm4x_sysreg_const_offset'
+>>>           READ_ETM4x_REG(ETM4x_OFFSET_TO_REG(offset))
+>>>           ^
+>>> drivers/hwtracing/coresight/coresight-etm4x.h:144:2: note: expanded from macro 'READ_ETM4x_REG'
+>>>           read_sysreg_s(ETM4x_REG_NUM_TO_SYSREG((reg)))
+>>>           ^
+>>> arch/arm64/include/asm/sysreg.h:1108:15: note: expanded from macro 'read_sysreg_s'
+>>>           asm volatile(__mrs_s("%0", r) : "=r" (__val));                  \
+>>>                        ^
+>>> arch/arm64/include/asm/sysreg.h:1074:2: note: expanded from macro '__mrs_s'
+>>> "       mrs_s " v ", " __stringify(r) "\n"                      \
+>>>    ^
+>>>
+>>> This only happened in a few loops in which the array bounds sanitizer
+>>> added a special case for an array overflow that clang determined to be
+>>> possible, but any compiler is free to unroll any of the loops in the
+>>> same way that breaks the sysreg macros.
+>>>
+>>> Introduce helper functions that perform a sysreg access with a
+>>> non-constant register number and use them in each call that passes
+>>> a loop counter.
+>>
+>> You don't need to add this special helper. We have the exact
+>> infrastructure already. So these could simply be replaced with:
+>>
+>> csdev_access_xxx(csa, ...)
+>>
+>> see :
+>>
+>> include/linux/coresight.h
+> 
+> Ah, nice!
+> 
+> Do you mean replacing only the ones that use a nonconstant
+> offset, or all of them? I guess changing all would avoid some
 
-I didn't see a dt-bindings patch for these.
+Only the CLANG "nonconstant" please. Going through an indirect
+function call and large "switch..case" for every single register
+access is painful. Which is why I decided to add those ugly macros.
 
--michael
+So, please leave the rest as they are.
+
+Suzuki
+
+
+> really ugly magic macros, but the indirect function call and the
+> switch() adds a few cycles of overhead every time and the code
+> looks like it is micro-optimized for fast register access here.
+> 
+>        Arnd
+> 
+
