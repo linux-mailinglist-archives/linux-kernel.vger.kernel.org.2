@@ -2,108 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C742A36EA2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F1836EA33
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236857AbhD2MQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 08:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38908 "EHLO
+        id S235945AbhD2MRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 08:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231490AbhD2MQf (ORCPT
+        with ESMTP id S231490AbhD2MRi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 08:16:35 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ECF7C06138B;
-        Thu, 29 Apr 2021 05:15:48 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id i81so66270690oif.6;
-        Thu, 29 Apr 2021 05:15:48 -0700 (PDT)
+        Thu, 29 Apr 2021 08:17:38 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51774C06138C
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 05:16:52 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id u3so20846100eja.12
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 05:16:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=7JOIpT+gpkrmnjjclA5CWTgL1Tfw2rNWt1HrwDtAo0o=;
-        b=jsP2RMexicFTW5DTFSLZ1KPpxJ34rjzBbFmTBW2sUIo1YgMHrEPMftm8gsBzUmwzbQ
-         i7tqCNONGzqSYP9bUP5yMh8+awNqVvli7+uEGMCkKE6g3Vfu2V652cyE1u5XiG4su8Ip
-         zJFvb0GzsCgN1bXIu9VNb/1daa7PDfqQvh+nzq0kUZiSUcQgrCgobjlnwYEIOglIKmXt
-         A+YN9B4SefPb0If0GF62yfbzFFfJi/p0nsGHJlfBVMF6z8MnYnGoF0sQOv15DvjmhodH
-         pLulFOMLFhNHPlUgDczQzpu2TZ5MGAVr5eCHGosKZsw8k/0Bbp7ZuuLJ0Fq1o9gADhvp
-         C9BA==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
+         :date:mime-version;
+        bh=RHDNDn67MN6JLEq0pltz7iYeAGgFoGfE9CmM1nSQbiM=;
+        b=VLz3BHKdI7dakRFv9mmsbfTllD7WadxqdT21O1FF3zjQHR/N6QaVylRXAFuabctKcP
+         S1bsSYCBhQP2msbddEU8aX4hizq6OualaavABgrpoFGQQZHebEb5d5OAO4FuTh/aWLG/
+         u9ySRd6UmiGk9zNRwGeDJ6U/9b8vNd8F0XzKbW2YZkB314aLxEQ3YSvkRH6JoysyEBVr
+         sEYVf58VIKpdKkjoOUS7PHRybE4+2r7m7GpRNrT6lid9ZsfBuGyrLKVmufnpcvzsIzm2
+         W0yAHRx6boAsSZIN9OA882VkKLiQz7SMzoikULGcw7/GDvEz4oaGPwFnYVg37Imh8xzl
+         Z0Bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=7JOIpT+gpkrmnjjclA5CWTgL1Tfw2rNWt1HrwDtAo0o=;
-        b=l0JNuGartNdba9dUBR6Kn973kNIFZnCPL1CVs1Mb9R16q4UUeYWrYd0Uq/+QoJmK+B
-         2gayMRVxFsQunE7HvfGAR5PZ6mTWfMeofrjUlO/Vbz8Kv4PXbsoeQOSAwbUYExnfq8Qg
-         OxhKMOnyXa3Dvqtz9lCdhI2QRhL52AhrLFb7BloM1hNGFBofpIUMsz99QuJEddQI5TNu
-         cSTVeJjJe6YusIjCeM9GOJLsbP26VqZuiJHbsWX7X0+nSVW6WTAelYyEIBtpzesV6+rX
-         eaZMl6Fv7oTWg1vbKWIpVq6gDuKFNWx/orvMyYaK7n6e2Aix1t7hbRU8yaGvpnpm1Zwr
-         gpIw==
-X-Gm-Message-State: AOAM533k7A59AdMYwCUF1G3rC1T7ZPLN6KMunVL6qwXIkL4auTAeZnlc
-        /AJPLp6ovnpxFrlC78smqmd8JieNs8zrDPWD2Ns=
-X-Google-Smtp-Source: ABdhPJz+Ux2N/YD6IWPcdk9lo0W8iarZD34+mYqN52kQxdAaACM7v/FrBKVgReBD18iwlf7NvuEqsbMMSSQ/CutNLQY=
-X-Received: by 2002:aca:cf09:: with SMTP id f9mr6624326oig.95.1619698547741;
- Thu, 29 Apr 2021 05:15:47 -0700 (PDT)
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=RHDNDn67MN6JLEq0pltz7iYeAGgFoGfE9CmM1nSQbiM=;
+        b=BhmATyJr9vw6tOsa9+IIcaX62XzWcuejNE4fuRTBZGz0qkX1CJuVscxrgzT5SW+Oue
+         8oJJxlKJXBUdfMpxACpSPS6F6kVjwrDCqiDnRQ6JTZVJNLIDeifS0K8D+KfEqPm7y45D
+         nMU2GtADt0gwc1P2ygwOsfrwHV9KQG+d9GS5Smn3cvJhqQNd/G2ssnjJaZna+X+xDYrz
+         3MA4eVrXIXiyKgYl4hIBJxziJ6t3iAiMrNLVXAiWa+CYP8oYQwZ9bLwogCwdtxvUJJWe
+         5nTpm7LyiaecYOCn10TTnizMnQ04ftOYmObqrN7RXMr2GeWq5xXoLE8ESqgVvdLX3Mh2
+         ZE0Q==
+X-Gm-Message-State: AOAM530VSfmWeJIo1xGdzRvtQooIUWiiza1631+X9cC5wLsOlZCqh3Ou
+        2yWb85/pCs7lRsnqY8ZCmx/Z7Q==
+X-Google-Smtp-Source: ABdhPJyjKXaQJOX+hYp1411iGB1TL2HQfK+4JZ8HKBK8KqippD9mSpc/mnctO78Xqo7k5gSPI5tCkg==
+X-Received: by 2002:a17:906:b5b:: with SMTP id v27mr11944783ejg.40.1619698610904;
+        Thu, 29 Apr 2021 05:16:50 -0700 (PDT)
+Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.gmail.com with ESMTPSA id k5sm2441081edk.46.2021.04.29.05.16.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 05:16:50 -0700 (PDT)
+References: <20210429090325.60970-1-jbrunet@baylibre.com>
+ <979eb290-6fc2-38df-0596-867b82d22226@baylibre.com>
+ <1jim45juf1.fsf@starbuckisacylon.baylibre.com>
+ <0cfc7286-7be6-57ec-8040-a4370d0b4204@baylibre.com>
+User-agent: mu4e 1.4.15; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     Kevin Hilman <khilman@baylibre.com>,
+        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: meson: g12a: fix gp0 and hifi ranges
+In-reply-to: <0cfc7286-7be6-57ec-8040-a4370d0b4204@baylibre.com>
+Message-ID: <1jfsz9jnf2.fsf@starbuckisacylon.baylibre.com>
+Date:   Thu, 29 Apr 2021 14:16:49 +0200
 MIME-Version: 1.0
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Thu, 29 Apr 2021 20:15:12 +0800
-Message-ID: <CAL+tcoDuY6D6j6zO9XSzkUCom9jdD4ydidUL5S8Pt-dqd69EGw@mail.gmail.com>
-Subject: soft lockup in __inet_lookup_established() function
-To:     David Miller <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        dsahern@kernel.org, kuba@kernel.org
-Cc:     netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        liweishi <liweishi@kuaishou.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-I've encountered one big issue which causes infinite loop in
-__inet_lookup_established() function until I reboot manually. it's
-happening randomly among thousands of machines with the 4.19 kernel
-running. Once the soft lockup issue is triggered, whatever I try I
-still cannot ping or ssh to the machine anymore until reboot.
+On Thu 29 Apr 2021 at 14:15, Neil Armstrong <narmstrong@baylibre.com> wrote:
 
-Does anyone have any clue on how to dig into this part of code?  I
-highly suspect that it has something to do with the corruption of
-nulls_list, so the lookup of sk could never break the infinite loop of
-hashinfo.
+> On 29/04/2021 11:45, Jerome Brunet wrote:
+>> 
+>> On Thu 29 Apr 2021 at 11:20, Neil Armstrong <narmstrong@baylibre.com> wrote:
+>> 
+>>> On 29/04/2021 11:03, Jerome Brunet wrote:
+>>>> While some SoC samples are able to lock with a PLL factor of 55, others
+>>>> samples can't. ATM, a minimum of 60 appears to work on all the samples
+>>>> I have tried.
+>>>>
+>>>> Even with 60, it sometimes takes a long time for the PLL to eventually
+>>>> lock. The documentation says that the minimum rate of these PLLs DCO
+>>>> should be 3GHz, a factor of 125. Let's use that to be on the safe side.
+>>>>
+>>>> With factor range changed, the PLL seems to lock quickly (enough) so far.
+>>>> It is still unclear if the range was the only reason for the delay.
+>>>>
+>>>> Fixes: 085a4ea93d54 ("clk: meson: g12a: add peripheral clock controller")
+>>>> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+>>>> ---
+>>>>  drivers/clk/meson/g12a.c | 2 +-
+>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/clk/meson/g12a.c b/drivers/clk/meson/g12a.c
+>>>> index b080359b4645..a805bac93c11 100644
+>>>> --- a/drivers/clk/meson/g12a.c
+>>>> +++ b/drivers/clk/meson/g12a.c
+>>>> @@ -1603,7 +1603,7 @@ static struct clk_regmap g12b_cpub_clk_trace = {
+>>>>  };
+>>>>  
+>>>>  static const struct pll_mult_range g12a_gp0_pll_mult_range = {
+>>>> -	.min = 55,
+>>>> +	.min = 125,
+>>>>  	.max = 255,
+>>>>  };
+>>>>  
+>>>>
+>>>
+>>> I got other issues with GP0 when trying to use it for DSI on VIM3 & VIM3L.
+>>>
+>>> I had to do change the following to have it lock correctly and achieve rates usable for MIPI-DSI requested bandwidth:
+>>>
+>>> diff --git a/drivers/clk/meson/clk-pll.c b/drivers/clk/meson/clk-pll.c
+>>> index cde07f7ebad6..897cd6db5c0f 100644
+>>> --- a/drivers/clk/meson/clk-pll.c
+>>> +++ b/drivers/clk/meson/clk-pll.c
+>>> @@ -391,9 +391,9 @@ static int meson_clk_pll_set_rate(struct clk_hw *hw, unsigned long rate,
+>>>                 meson_parm_write(clk->map, &pll->frac, frac);
+>>>         }
+>>>
+>>> -       /* If the pll is stopped, bail out now */
+>>> +       /* If the pll is stopped, bail out now * /
+>>>         if (!enabled)
+>>> -               return 0;
+>>> +               return 0;*/
+>> 
+>> This enables the PLL everytime set_rate() is called :/
+>> 
+>>>
+>>>         if (meson_clk_pll_enable(hw)) {
+>>>                 pr_warn("%s: pll did not lock, trying to restore old rate %lu\n",
+>>>
+>>> This one is tricky, for DSI the clock rate is set with assigned-clock-rates in DT, but
+>>> then the GP0 is seen as stopped and then the rate is never set.
+>> 
+>> Audio does the same - PLL is set and enabled afterward. This has been
+>> working so far.
+>> 
+>>>
+>>> When afterwards we enable the PLL, the rate set in the registers is invalid and never locks,
+>>> this permits setting the rate in the registers even if the PLL is
+>>> stopped.
+>> 
+>> There something to be explained here cause the register have been set
+>> before bailing out. What is happening ? The pokes before have no effect
+>> or are the value being reset at another point ?
+>> 
+>> I understand this need to address this concern but it does not seems
+>> related to this particular patch.
+>> 
+>>>
+>>> diff --git a/drivers/clk/meson/g12a.c b/drivers/clk/meson/g12a.c
+>>> index 1b0167b8de3b..08174724a115 100644
+>>> --- a/drivers/clk/meson/g12a.c
+>>> +++ b/drivers/clk/meson/g12a.c
+>>> @@ -1602,8 +1602,8 @@ static struct clk_regmap g12b_cpub_clk_trace = {
+>>>  };
+>>>
+>>>  static const struct pll_mult_range g12a_gp0_pll_mult_range = {
+>>> -       .min = 55,
+>>> -       .max = 255,
+>>> +       .min = 120,
+>>> +       .max = 168,
+>>>  };
+>>>
+>>> I had to change the min/max to achieve a stable and functional rate of 720MHz after the ODs.
+>>>
+>> 
+>> How about the range provided in here ? This is range documented by AML
+>> (3GHz < DCO < 6GHz). 168 limits would limit the rate to ~4GHz which is
+>> way below spec and would negatively impact audio clocks.
+>
+> For hifi pll right, not for GP0 ?
+>
 
-These call traces are totally identical attached below:
-[1048271.465028] watchdog: BUG: soft lockup - CPU#20 stuck for 22s!
-[swapper/20:0]
-[1048271.473669] Modules linked in: vxlan ip6_udp_tunnel udp_tunnel
-udp_diag tcp_diag inet_diag nf_conntrack_netlink nfnetlink
-br_netfilter bridge stp llc xt_statistic xt_nat ipt_MASQUERADE
-ipt_REJECT nf_reject_ipv4 xt_mark xt_addrtype xt_comment xt_conntrack
-...
-[1048271.553597] RIP: 0010:__inet_lookup_established+0x5a/0x190
-...
-[1048271.660309] Call Trace:
-[1048271.663135]  <IRQ>
-[1048271.665432]  tcp_v4_early_demux+0xaa/0x150
-[1048271.669812]  ip_rcv_finish+0x171/0x410
-[1048271.673941]  ip_rcv+0x273/0x362
-[1048271.677360]  ? inet_add_protocol.cold.1+0x1e/0x1e
-[1048271.682354]  __netif_receive_skb_core+0xac2/0xbb0
-[1048271.687351]  ? inet_gro_receive+0x22a/0x2d0
-[1048271.692001]  ? ktime_get_with_offset+0x4d/0xc0
-[1048271.696725]  netif_receive_skb_internal+0x42/0xf0
-[1048271.701717]  napi_gro_receive+0xba/0xe0
-[1048271.705839]  receive_buf+0x165/0xa50 [virtio_net]
-[1048271.710839]  ? receive_buf+0x165/0xa50 [virtio_net]
-[1048271.716053]  ? vring_unmap_one+0x16/0x80
-[1048271.720308]  ? detach_buf+0x69/0x110
-[1048271.724218]  virtnet_poll+0xc0/0x2ea [virtio_net]
-[1048271.729202]  net_rx_action+0x149/0x3b0
-[1048271.733234]  __do_softirq+0xe3/0x30a
-[1048271.737095]  irq_exit+0x100/0x110
-[1048271.740882]  do_IRQ+0x85/0xd0
-[1048271.744143]  common_interrupt+0xf/0xf
-[1048271.748104]  </IRQ>
+Both have the same spec.
 
+>>> Neil
+>> 
 
-thanks,
-jason
