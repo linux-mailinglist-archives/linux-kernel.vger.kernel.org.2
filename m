@@ -2,169 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F07136E514
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 08:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C464236E512
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 08:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238584AbhD2Gue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 02:50:34 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:43334 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbhD2Gud (ORCPT
+        id S239073AbhD2Gto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 02:49:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238748AbhD2Gtm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 02:50:33 -0400
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 13T6nUOI011264;
-        Thu, 29 Apr 2021 15:49:31 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 13T6nUOI011264
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1619678971;
-        bh=YioOJRfCV5xNJjK8OwaGmWoUUHe4Hl6Qd35pu4qVlQ0=;
-        h=From:Date:Subject:To:Cc:From;
-        b=0bhUfnZ6QJGS+W2St8QxYO1kAI88tJ7HmyyHuvzBkLjz7q62kbUoOIE/0WQ9Jxxln
-         IkHH4rUfih3HNxSe0uhb8TiYLM9vWfuDsVItMtr07BMVEFS9bFPeVy4PEBIr4fXJbT
-         t3QkcR2dpjtA9W09WSqMZ4YEQah80LT5LQwmVJSUAgOuqocPSfUPkEYTRw+8u3fVhU
-         qyQvIXacTagVpJJUELfB02MV5K+essEsJMEZSVDUUiWHgByF2u/aZojH1Ueu5ac45k
-         bEVQgQ/ZBvY+bKM4TjnL+1Uxp/0zue5KssUtpzKfQKfW+85Twh/FfwHCjaBXJ+nSVT
-         WRVLjTZISts1g==
-X-Nifty-SrcIP: [209.85.216.47]
-Received: by mail-pj1-f47.google.com with SMTP id md17so6700665pjb.0;
-        Wed, 28 Apr 2021 23:49:30 -0700 (PDT)
-X-Gm-Message-State: AOAM533PQ7S5DnQ1qaiUxeYP34roW5R/DcVrl0tixT0ZrM0PAdrZU6Li
-        XVzPq/qGl1eQTV+6cAQu2b6Oa2V4uH13nZ6PcMc=
-X-Google-Smtp-Source: ABdhPJzsp2AYA0lmRGtmLfFt/fRwHeSbe9qAgeEuitljAbtRaxRD5vo4BDQRWlkfR3v8u66VFes8xFsNl1LqUC89GvI=
-X-Received: by 2002:a17:90a:2c4c:: with SMTP id p12mr7943546pjm.87.1619678970196;
- Wed, 28 Apr 2021 23:49:30 -0700 (PDT)
+        Thu, 29 Apr 2021 02:49:42 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD0D7C06138C
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 23:48:56 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id h15so13341117wre.11
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 23:48:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=o3h5EriEjCqQopiIHnHAtghPtkLJbZARkrJvdBbmedE=;
+        b=d8dCRC4gjEhWMxE3SYQi+NpLceGRBYrmrFpjvbmsHAWECYSzCFyO0o/bHyEnKk1lfa
+         SgH7w9204VdW7XjaaZXmFjJk4bd/euAM+GpLQUin9KJiQSCAbgM4UJHe9Jo1hZvD7Klm
+         RJnAWx/25XGVuxr2RREacpJRN432K6oHtarC/d+DneSuNnDp/uVuZ3pX357f0+OOsQK1
+         EXtn41+WlXzp6ZWT7FF+1ohfUOnZCL+5eVO6E25kevnK4FdNzf7XMJC3mUnicrdevtOF
+         srDScOmKoiKziGoBM/B1eEA8dxqYx1e4pTmZw0J7VPu7zatqfsqnpcXThHz1bwX3Qn1v
+         vZ3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=o3h5EriEjCqQopiIHnHAtghPtkLJbZARkrJvdBbmedE=;
+        b=MG7/tZrzxSJzGQgEslMSrkTkW9Gr59LihThtloa2i1+FRuQKIWpTQ9ggnL/Nec+gEN
+         HDt3qij3vDzTxtSO4cZ5vZSIP/sY5d6QPwqFR07IF0OweHBtlrcQIQ7FtN95/+Q6Ey1x
+         hIVc2hD4ubGYlPDiwRMjjaPLhGB5pV+t4c69K3aTYm4Y9Z4VlcyqzXDPQ7CFe9qCZKqO
+         nTexQBlDP6yk1snhdxxnJvhx9vOS+fpa8lgSApm/UrCpVz+rkT/skNKn6/H687fesVT9
+         HvRgdbANxut2rVuvmIhPTLV5bFqzEuVzvi0t9vtqqYX1RfB5H30/ml4wxyA2euq2XP+t
+         UEBA==
+X-Gm-Message-State: AOAM531ZiMfuxeJmkeWltnUvbu/qv2ISACQ3OaIW07m3ZnLFD0Cji+LF
+        DVoPBo/iwbtomibQr73C4/K2rQ==
+X-Google-Smtp-Source: ABdhPJyQ18dyuVmmPQJLNTxgisV36R9DWwMSNPYNEPe4j4InyGwlgS2BBW/xtr/CvurtASHAvnQZsQ==
+X-Received: by 2002:adf:f74d:: with SMTP id z13mr817646wrp.147.1619678935368;
+        Wed, 28 Apr 2021 23:48:55 -0700 (PDT)
+Received: from localhost ([2a01:cb19:826e:8e00:f37e:9091:b397:6f48])
+        by smtp.gmail.com with ESMTPSA id z18sm3264416wrh.16.2021.04.28.23.48.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 23:48:54 -0700 (PDT)
+From:   Mattijs Korpershoek <mkorpershoek@baylibre.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>, fparent@baylibre.com,
+        linux-input@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/7] Input: mtk-pmic-keys - check for NULL on
+ of_match_device()
+In-Reply-To: <YIm9Bb3eBjYwY53R@google.com>
+References: <20210428164219.1115537-1-mkorpershoek@baylibre.com>
+ <20210428164219.1115537-2-mkorpershoek@baylibre.com>
+ <YIm9Bb3eBjYwY53R@google.com>
+Date:   Thu, 29 Apr 2021 08:48:53 +0200
+Message-ID: <875z05y4a2.fsf@baylibre.com>
 MIME-Version: 1.0
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 29 Apr 2021 15:48:53 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ_2XPx6-v5irQDw0HyfSRKrrxcR2rutmZ=WBUsSBW-wA@mail.gmail.com>
-Message-ID: <CAK7LNAQ_2XPx6-v5irQDw0HyfSRKrrxcR2rutmZ=WBUsSBW-wA@mail.gmail.com>
-Subject: [GIT PULL 2/2] Kconfig updates for v5.13-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Dmitry,
 
-Please pull Kconfig updates for v5.13-rc1.
-Thanks.
+Dmitry Torokhov <dmitry.torokhov@gmail.com> writes:
 
+> Hi Mattijs,
+>
+> On Wed, Apr 28, 2021 at 06:42:13PM +0200, Mattijs Korpershoek wrote:
+>> mtk-pmic-keys being a child device of mt6397, it will always get probed
+>> when mt6397_probe() is called.
+>> 
+>> This also happens when we have no device tree node matching
+>> mediatek,mt6397-keys.
+>
+> It sounds for me that creating a platform device instance in case where
+> we know need OF node, but do not have one, is wasteful. Can
+> mt6397-core.c and/or MFD core be adjusted to not do that.
 
-The following changes since commit 1e28eed17697bcf343c6743f0028cc3b5dd88bf0:
+You are right. Maybe I can fix MFD core instead. I will look into it.
 
-  Linux 5.12-rc3 (2021-03-14 14:41:02 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
-tags/kconfig-v5.13
-
-for you to fetch changes up to 8ac27f2c6eac1f140531411e404fb3ba23339ba5:
-
-  kconfig: refactor .gitignore (2021-04-26 02:17:39 +0900)
-
-----------------------------------------------------------------
-Kconfig updates for v5.13
-
- - Change 'option defconfig' to the environment variable
-   KCONFIG_DEFCONFIG_LIST
-
- - Refactor tinyconfig without using allnoconfig_y
-
- - Remove 'option allnoconfig_y' syntax
-
- - Change 'option modules' to 'modules'
-
- - Do not use /boot/config-* etc. as base config for cross-compilation
-
- - Fix a search bug in nconf
-
- - Various code cleanups
-
-----------------------------------------------------------------
-Bhaskar Chowdhury (2):
-      kconfig: streamline_config.pl: Couple of typo fixes
-      kconfig: lxdialog: A spello fix and a punctuation added
-
-Masahiro Yamada (28):
-      kconfig: split randconfig setup code into set_randconfig_seed()
-      kconfig: refactor option parse code
-      kconfig: add long options --help and --silent
-      kconfig: add help messages for --help (-h) and --silent (-s)
-      kconfig: remove assignment for Kconfig file
-      kconfig: move conf_rewrite_mod_or_yes() to conf.c
-      kconfig: move conf_set_all_new_symbols() to conf.c
-      kconfig: move JUMP_NB to mconf.c
-      kconfig: change defconfig_list option to environment variable
-      kconfig: move default KBUILD_DEFCONFIG back to scripts/kconfig/Makefile
-      kconfig: do not use allnoconfig_y option
-      kconfig: remove allnoconfig_y option
-      kconfig: change "modules" from sub-option to first-level attribute
-      kconfig: nconf: fix core dump when searching in empty menu
-      kconfig: change sym_change_count to a boolean flag
-      kconfig: use /boot/config-* etc. as DEFCONFIG_LIST only for native build
-      kconfig: mconf,nconf: remove unneeded '\0' termination after snprintf()
-      kconfig: nconf: fix NORMAL attributes
-      kconfig: nconf: get rid of (void) casts from wattrset() calls
-      kconfig: nconf: remove unneeded default for menu prompt
-      kconfig: nconf: refactor attributes setup code
-      kconfig: nconf: change set_config_filename() to void function
-      kconfig: nconf: remove meaningless wattrset() call from show_menu()
-      kconfig: nconf: refactor in print_in_middle()
-      kconfig: split menu.c out of parser.y
-      kconfig: remove unused PACKAGE definition
-      kconfig: gconf: remove unused code
-      kconfig: refactor .gitignore
-
-Mihai Moldovan (1):
-      kconfig: nconf: stop endless search loops
-
-Randy Dunlap (2):
-      kconfig: highlight gconfig 'comment' lines with '***'
-      kconfig: highlight xconfig 'comment' lines with '***'
-
-Yang Li (1):
-      kconfig: use true and false for bool variable
-
- Documentation/kbuild/kconfig-language.rst             |  23 +-
- Documentation/kbuild/kconfig.rst                      |   8 +
- Makefile                                              |   8 +-
- init/Kconfig                                          |  12 +-
- kernel/configs/tiny-base.config                       |   1 +
- scripts/kconfig/.gitignore                            |  13 +-
- scripts/kconfig/Makefile                              |  21 +-
- scripts/kconfig/conf.c                                | 363
-++++++++++++++++++++-----
- scripts/kconfig/confdata.c                            | 262 +++---------------
- scripts/kconfig/expr.h                                |   6 -
- scripts/kconfig/gconf.c                               |  15 +-
- scripts/kconfig/internal.h                            |   9 +
- scripts/kconfig/lexer.l                               |   3 -
- scripts/kconfig/lkc.h                                 |  21 --
- scripts/kconfig/lkc_proto.h                           |   1 +
- scripts/kconfig/lxdialog/util.c                       |   4 +-
- scripts/kconfig/mconf.c                               |  15 +-
- scripts/kconfig/menu.c                                |  23 +-
- scripts/kconfig/nconf.c                               |  58 ++--
- scripts/kconfig/nconf.gui.c                           | 284 ++++++++-----------
- scripts/kconfig/nconf.h                               |  51 ++--
- scripts/kconfig/parser.y                              |  27 +-
- scripts/kconfig/qconf.cc                              |   1 +
- scripts/kconfig/streamline_config.pl                  |   4 +-
- scripts/kconfig/symbol.c                              |   3 +-
- scripts/kconfig/tests/choice/Kconfig                  |   2 +-
- scripts/kconfig/tests/choice_value_with_m_dep/Kconfig |   2 +-
- scripts/kconfig/tests/conftest.py                     |   4 +
- scripts/kconfig/tests/inter_choice/Kconfig            |   2 +-
- 29 files changed, 578 insertions(+), 668 deletions(-)
- create mode 100644 kernel/configs/tiny-base.config
- create mode 100644 scripts/kconfig/internal.h
-
-
--- 
-Best Regards
-Masahiro Yamada
+Thanks for your review.
+>
+>> 
+>> In that case, the mfd core warns us:
+>> 
+>>   [    0.352175] mtk-pmic-keys: Failed to locate of_node [id: -1]
+>> 
+>> Check return value from call to of_match_device()
+>> in order to prevent a NULL pointer dereference.
+>> 
+>> In case of NULL print error message and return -ENODEV
+>> 
+>> Signed-off-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
+>> ---
+>>  drivers/input/keyboard/mtk-pmic-keys.c | 3 +++
+>>  1 file changed, 3 insertions(+)
+>> 
+>> diff --git a/drivers/input/keyboard/mtk-pmic-keys.c b/drivers/input/keyboard/mtk-pmic-keys.c
+>> index 62391d6c7da6..12c449eed026 100644
+>> --- a/drivers/input/keyboard/mtk-pmic-keys.c
+>> +++ b/drivers/input/keyboard/mtk-pmic-keys.c
+>> @@ -247,6 +247,9 @@ static int mtk_pmic_keys_probe(struct platform_device *pdev)
+>>  	const struct of_device_id *of_id =
+>>  		of_match_device(of_mtk_pmic_keys_match_tbl, &pdev->dev);
+>>  
+>> +	if (!of_id)
+>> +		return -ENODEV;
+>> +
+>
+> So if we make MFD/6396 core smarter we would not be needing this. I
+> guess there is still a possibility of someone stuffing "mtk-pmic-keys"
+> into "driver_override" attribute of a random platform device but I
+> wonder if we really need to take care of such scenarios...
+>
+>>  	keys = devm_kzalloc(&pdev->dev, sizeof(*keys), GFP_KERNEL);
+>>  	if (!keys)
+>>  		return -ENOMEM;
+>> -- 
+>> 2.27.0
+>> 
+>
+> Thanks.
+>
+> -- 
+> Dmitry
