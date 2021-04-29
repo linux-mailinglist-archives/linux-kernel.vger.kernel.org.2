@@ -2,123 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B7F36EC9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 16:48:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 459A736ECA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 16:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239032AbhD2Osq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 10:48:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58332 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232820AbhD2Osp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 10:48:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 73BD0B133;
-        Thu, 29 Apr 2021 14:47:57 +0000 (UTC)
-From:   Mian Yousaf Kaukab <ykaukab@suse.de>
-To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mian Yousaf Kaukab <ykaukab@suse.de>
-Subject: [PATCH] rtc: pcf2127: handle timestamp interrupts
-Date:   Thu, 29 Apr 2021 16:47:58 +0200
-Message-Id: <20210429144758.4552-1-ykaukab@suse.de>
-X-Mailer: git-send-email 2.26.2
+        id S240228AbhD2OtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 10:49:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232820AbhD2OtQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 10:49:16 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7AE8C06138B;
+        Thu, 29 Apr 2021 07:48:29 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id BFCE51F43316
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Daniel Almeida <daniel.almeida@collabora.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Subject: [PATCH v7 00/10] MPEG-2 stateless API cleanup and destaging
+Date:   Thu, 29 Apr 2021 11:48:08 -0300
+Message-Id: <20210429144818.67105-1-ezequiel@collabora.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 03623b4b041c ("rtc: pcf2127: add tamper detection support")
-added support for timestamp interrupts. However they are not being
-handled in the irq handler. If a timestamp interrupt occurs it
-results in kernel disabling the interrupt and displaying the call
-trace:
+Hi,
 
-[  121.145580] irq 78: nobody cared (try booting with the "irqpoll" option)
-...
-[  121.238087] [<00000000c4d69393>] irq_default_primary_handler threaded [<000000000a90d25b>] pcf2127_rtc_irq [rtc_pcf2127]
-[  121.248971] Disabling IRQ #78
+Seventh round.
 
-Handle timestamp interrupts in pcf2127_rtc_irq(). Display a message
-in kernel log when a timestamp interrupt occurs. Don’t check for
-TSF1 and TSF2 flags in timestamp0_show() as they are cleared in the
-IRQ handler now.
+v7:
+* Fix padding in v4l2_ctrl_mpeg2_picture.
+* Fix V4L2_MPEG2_SEQ_FLAG_PROGRESSIVE.
 
-Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
----
- drivers/rtc/rtc-pcf2127.c | 34 +++++++++++++++++++++++++---------
- 1 file changed, 25 insertions(+), 9 deletions(-)
+v6: 
+* Reorder patch "media: controls: Log MPEG-2 stateless control in .std_log"
+  to avoid a new compile warning.
+* Remove "reserved" field in mpeg2 sequence control, noted by Hans.
+* Reorder "flags" field in mpeg2 picture control, noted by Hans.
+* Typos and comments fixes, noted by Hans.
 
-diff --git a/drivers/rtc/rtc-pcf2127.c b/drivers/rtc/rtc-pcf2127.c
-index d13c20a2adf7..0dbc0473cc68 100644
---- a/drivers/rtc/rtc-pcf2127.c
-+++ b/drivers/rtc/rtc-pcf2127.c
-@@ -94,6 +94,13 @@
- #define PCF2127_WD_VAL_MAX		255
- #define PCF2127_WD_VAL_DEFAULT		60
- 
-+/* Mask for currently enabled interrupts */
-+#define PCF2127_CTRL1_IRQ_MASK (PCF2127_BIT_CTRL1_TSF1)
-+#define PCF2127_CTRL2_IRQ_MASK ( \
-+		PCF2127_BIT_CTRL2_AF | \
-+		PCF2127_BIT_CTRL2_WDTF | \
-+		PCF2127_BIT_CTRL2_TSF2)
-+
- struct pcf2127 {
- 	struct rtc_device *rtc;
- 	struct watchdog_device wdd;
-@@ -437,20 +444,33 @@ static int pcf2127_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alrm)
- static irqreturn_t pcf2127_rtc_irq(int irq, void *dev)
- {
- 	struct pcf2127 *pcf2127 = dev_get_drvdata(dev);
--	unsigned int ctrl2 = 0;
-+	unsigned int ctrl1, ctrl2;
- 	int ret = 0;
- 
-+	ret = regmap_read(pcf2127->regmap, PCF2127_REG_CTRL1, &ctrl1);
-+	if (ret)
-+		return IRQ_NONE;
-+
- 	ret = regmap_read(pcf2127->regmap, PCF2127_REG_CTRL2, &ctrl2);
- 	if (ret)
- 		return IRQ_NONE;
- 
--	if (!(ctrl2 & PCF2127_BIT_CTRL2_AF))
-+	if (!(ctrl1 & PCF2127_CTRL1_IRQ_MASK || ctrl2 & PCF2127_CTRL2_IRQ_MASK))
- 		return IRQ_NONE;
- 
--	regmap_write(pcf2127->regmap, PCF2127_REG_CTRL2,
--		     ctrl2 & ~(PCF2127_BIT_CTRL2_AF | PCF2127_BIT_CTRL2_WDTF));
-+	if (ctrl1 & PCF2127_CTRL1_IRQ_MASK)
-+		regmap_write(pcf2127->regmap, PCF2127_REG_CTRL1,
-+			ctrl1 & ~PCF2127_CTRL1_IRQ_MASK);
- 
--	rtc_update_irq(pcf2127->rtc, 1, RTC_IRQF | RTC_AF);
-+	if (ctrl2 & PCF2127_CTRL2_IRQ_MASK)
-+		regmap_write(pcf2127->regmap, PCF2127_REG_CTRL2,
-+			ctrl2 & ~PCF2127_CTRL2_IRQ_MASK);
-+
-+	if (ctrl1 & PCF2127_BIT_CTRL1_TSF1 || ctrl2 & PCF2127_BIT_CTRL2_TSF2)
-+		dev_info(dev, "timestamp interrupt generated");
-+
-+	if (ctrl2 & PCF2127_BIT_CTRL2_AF)
-+		rtc_update_irq(pcf2127->rtc, 1, RTC_IRQF | RTC_AF);
- 
- 	pcf2127_wdt_active_ping(&pcf2127->wdd);
- 
-@@ -524,10 +544,6 @@ static ssize_t timestamp0_show(struct device *dev,
- 	if (ret)
- 		return ret;
- 
--	if (!(data[PCF2127_REG_CTRL1] & PCF2127_BIT_CTRL1_TSF1) &&
--	    !(data[PCF2127_REG_CTRL2] & PCF2127_BIT_CTRL2_TSF2))
--		return 0;
--
- 	tm.tm_sec = bcd2bin(data[PCF2127_REG_TS_SC] & 0x7F);
- 	tm.tm_min = bcd2bin(data[PCF2127_REG_TS_MN] & 0x7F);
- 	tm.tm_hour = bcd2bin(data[PCF2127_REG_TS_HR] & 0x3F);
+v5:
+* Rename "quantization" to "quantisation", so the terminology
+  matches the MPEG-2 specification.
+  This is the only change in v5, compared to v4.
+
+v4:
+* Rework and clarify quantization matrices control semantics.
+* Move reference buffer fields to the picture parameter control.
+* Remove slice parameters control. This can be added back in the
+  future if needed, but for now it's not used.
+  See patch 6/9 for details.
+* Destage the API.
+
+v3:
+* No API changes, just minor boilerplate fixes for the new
+  controls to be properly exposed, initialized and validated.
+
+v2:
+* Fixed bad use of boolean negation in a flag, which
+  was fortunately reported by 0day bot.
+
+Ezequiel Garcia (10):
+  media: uapi: mpeg2: Rename "quantization" to "quantisation"
+  media: uapi: mpeg2: rework quantisation matrices semantics
+  media: uapi: mpeg2: Cleanup flags
+  media: uapi: mpeg2: Split sequence and picture parameters
+  media: uapi: mpeg2: Move reference buffer fields
+  media: hantro/cedrus: Remove unneeded slice size and slice offset
+  media: uapi: mpeg2: Remove V4L2_CID_MPEG_VIDEO_MPEG2_SLICE_PARAMS
+  media: uapi: Move the MPEG-2 stateless control type out of staging
+  media: controls: Log MPEG-2 stateless control in .std_log
+  media: uapi: move MPEG-2 stateless controls out of staging
+
+ .../media/v4l/ext-ctrls-codec-stateless.rst   | 214 +++++++++++++++++
+ .../media/v4l/ext-ctrls-codec.rst             | 217 ------------------
+ .../media/v4l/pixfmt-compressed.rst           |  11 +-
+ .../media/v4l/vidioc-g-ext-ctrls.rst          |  12 +
+ .../media/v4l/vidioc-queryctrl.rst            |  18 +-
+ .../media/videodev2.h.rst.exceptions          |   5 +-
+ drivers/media/v4l2-core/v4l2-ctrls.c          | 122 +++++++---
+ drivers/staging/media/hantro/hantro_drv.c     |   9 +-
+ .../media/hantro/hantro_g1_mpeg2_dec.c        | 110 ++++-----
+ drivers/staging/media/hantro/hantro_hw.h      |   2 +-
+ drivers/staging/media/hantro/hantro_mpeg2.c   |   2 +-
+ .../media/hantro/rk3399_vpu_hw_mpeg2_dec.c    | 106 ++++-----
+ drivers/staging/media/sunxi/cedrus/cedrus.c   |  10 +-
+ drivers/staging/media/sunxi/cedrus/cedrus.h   |   5 +-
+ .../staging/media/sunxi/cedrus/cedrus_dec.c   |  10 +-
+ .../staging/media/sunxi/cedrus/cedrus_mpeg2.c |  97 +++-----
+ include/media/mpeg2-ctrls.h                   |  82 -------
+ include/media/v4l2-ctrls.h                    |  11 +-
+ include/uapi/linux/v4l2-controls.h            | 112 +++++++++
+ include/uapi/linux/videodev2.h                |   7 +
+ 20 files changed, 610 insertions(+), 552 deletions(-)
+ delete mode 100644 include/media/mpeg2-ctrls.h
+
 -- 
-2.26.2
+2.30.0
 
