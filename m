@@ -2,99 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8753036E76E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 10:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B073436E772
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 10:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240205AbhD2Ixz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 04:53:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50670 "EHLO
+        id S232400AbhD2IzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 04:55:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232400AbhD2Ixx (ORCPT
+        with ESMTP id S239890AbhD2IzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 04:53:53 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5C3C06138B;
-        Thu, 29 Apr 2021 01:53:05 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id p17so6366020pjz.3;
-        Thu, 29 Apr 2021 01:53:05 -0700 (PDT)
+        Thu, 29 Apr 2021 04:55:07 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31C2EC06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 01:54:21 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id w3so98750720ejc.4
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 01:54:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JOu/qK5HN825dhzv2XzFqxUs2XZc9mrKG/c5JbhDry8=;
-        b=GDYQ8++4fQq+mZaPkX6MdGs+654lMgCs5gVpuu1KCHnr9edys1E+gvB0jO/KuV14Rk
-         7z6GTwu0hzUIjiNhKS2oBwGJY8tBcMaXotpz9Zfc4JN/JNPqXuQjK9Li6JDPP7qOFIlZ
-         0ZHXxVYkQX5Vrjn5IwDStA4fOhm6llxPmUQ23Zs4MbJgO4kSfqdefcmO0d0V7re2QtGM
-         Z9hYke/bKghRTEMdGUYW6SiF/iEzkaC45EcmeBhoe5KIMjN7wq0BiXUQxps5jzVPohZD
-         3/vVoVKcHYqbTXEyYHE3IIVpHNKF/+qdAaRu6q96dmb2fdzduf892qUUccsC46hXgicq
-         cJ8w==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Okh7SCTJDi6w4nnu7QO5qBG/v+E7WIC+sY8y8/WILM0=;
+        b=u8Vd2oGaTMPpqhwHEz69+5zFmMPmIW3Xe+oOdNQOxMxVkTrl+SeLoyuD0sKuN5RD2l
+         u9MVW+trx+Evc55frr7/kM0Jc+c5ICqksesG26zRL8EzYE6hWhF1lujGIqCgmJTGJ7yv
+         7KQkm/Z/HxbwntAviIeZVJZ4OJ/2HUalcwNFUpfL/5tPLKGmyjZY2RxsIVJq9az/0jdc
+         3gGWYlvf9GwqQbJbg1fTQDlBjWzYe0kO9lhBGQQ/O9yBSgNqwSj4ShtlKxQy205ti5Lq
+         d0KLW9gNA62xYvdWammNPJP7+crCLRDXbFhQlRrQBzpIfqrsjn3DYm6W+SD303KGUmxK
+         tBiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JOu/qK5HN825dhzv2XzFqxUs2XZc9mrKG/c5JbhDry8=;
-        b=lld7Pzna4CE7GDY7XQYmgQ58SeUQg6P0ciSUaVJVZJ4WSR266IVgl4cDfDZ0JX+LBc
-         Oy6+ZF6sEyuA8kzZXeHZU/XnBG0xPMDrlES2zTn3r4SY2BQU+OV1Xct/tP3wc+w2imAp
-         jO7T8kjgsnVOz/dkjKQ14Od9jlP5TUDIjQu7JvbPrrC6tnvpP6JilYsw/CEe9NThxfKw
-         uuApXfKIznOUZmIjGgvoCwuobe+KbjbMy/xomgdpb73IPwVjoupI6syLOeqz+9Kc47aY
-         qhddHX4UbA/GICjTO27CdRqES8DMEMdEWfAhujsQzJzE549IQ9PpTLhBkW9L04HyByUN
-         OOQg==
-X-Gm-Message-State: AOAM532vkkxmGrFAlsI92NBzNSy2gCLJ7fX1qhHk9JgA8r9Wk9A11kLw
-        yI6ldRw2KwEraA38/WFMioNXa9f8qfSaFy8VP50=
-X-Google-Smtp-Source: ABdhPJympxDsG2Ngi8NPlgJljS6eDQicsW6y9AwP+1/Y3H3kM1jS2J4gWlxALFAcZCZM7OBGOqUI7U6lRHPGArijjTI=
-X-Received: by 2002:a17:90b:1184:: with SMTP id gk4mr8719543pjb.129.1619686385054;
- Thu, 29 Apr 2021 01:53:05 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Okh7SCTJDi6w4nnu7QO5qBG/v+E7WIC+sY8y8/WILM0=;
+        b=KtRr6HNH0nIX5tF/+jnGEXQhXIJtFjkPSr38tU6UmZP6JnmU0lqI8W0MTVbrKTDOMu
+         eTNBYt/1FEqnWYH1Xohj1/YCCBko0GYCih0YqmEvtT1U+lmfRE5RxsXbqu0MG6XQiaK1
+         GD4UD710/HkQ1QuDVjWHY/tEmcusWI5N3DK7EU6MildLsaVOX8FulO7sInM4xR8oqWaZ
+         Ekyyc9E3Z6mQsVYWPAd9/aIYH8uTAnyccnRiOKxmeaj4Dah0rsHle6h1c1s5KpwQ58gz
+         C0A/U4EbKWynU6djloVW7iXvfTBN282EJ1fyjUXT9aCttfxg2Kl0oxQZB6toM/ZC3+2m
+         NcmQ==
+X-Gm-Message-State: AOAM530GW1Y8tIdueP0UQVMHH3py5ybsMe+1s5b2/SBxL5D41pNdddSp
+        NyGCxlHf/pvDnyuCl0L+SQSEY8lzKAoCv5e4
+X-Google-Smtp-Source: ABdhPJwJoIa+rgy+CBsStAafFHpT7XKNSzhMNvbJHyz88GZFb+n1fhDg1aSkROswvEIgI77W9+pK7A==
+X-Received: by 2002:a17:906:2bd1:: with SMTP id n17mr22869220ejg.371.1619686459979;
+        Thu, 29 Apr 2021 01:54:19 -0700 (PDT)
+Received: from localhost.localdomain (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.googlemail.com with ESMTPSA id x9sm1835847edv.22.2021.04.29.01.54.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 01:54:19 -0700 (PDT)
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Kevin Hilman <khilman@baylibre.com>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH] arm64: dts: meson: vim2: enable highspeed on wifi sdio
+Date:   Thu, 29 Apr 2021 10:54:13 +0200
+Message-Id: <20210429085413.60368-1-jbrunet@baylibre.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210428135929.27011-1-justin.he@arm.com> <20210428135929.27011-2-justin.he@arm.com>
- <YIpyZmi1Reh7iXeI@alley>
-In-Reply-To: <YIpyZmi1Reh7iXeI@alley>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 29 Apr 2021 11:52:49 +0300
-Message-ID: <CAHp75Vfa3ATc+-Luka9vJTwoCLAPVm38cciYyBYnWxzNQ1DPrg@mail.gmail.com>
-Subject: Re: [PATCH 2/4] lib/vsprintf.c: Make %p{D,d} mean as much components
- as possible
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Jia He <justin.he@arm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:TI WILINK WIRELES..." <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, linux-s390@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 11:47 AM Petr Mladek <pmladek@suse.com> wrote:
->
-> On Wed 2021-04-28 21:59:27, Jia He wrote:
-> > From: Linus Torvalds <torvalds@linux-foundation.org>
-> >
-> > We have '%pD'(no digit following) for printing a filename. It may not be
-> > perfect (by default it only prints one component.
-> >
-> > %pD4 should be more than good enough, but we should make plain "%pD" mean
-> > "as much of the path that is reasonable" rather than "as few components as
-> > possible" (ie 1).
->
-> Could you please provide link to the discussion where this idea was
-> came from?
+Enable highspeed mode for vim2 sdio. In theory, the vim2 SDIO bus is
+capable of handling SDR50 mode but this needs to thoroughly tested.
 
-https://lore.kernel.org/lkml/20210427025805.GD3122264@magnolia/
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+index 18a4b7a6c5df..217f9d6d470e 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+@@ -307,6 +307,7 @@ &sd_emmc_a {
+ 	#size-cells = <0>;
+ 
+ 	bus-width = <4>;
++	cap-sd-highspeed;
+ 	max-frequency = <60000000>;
+ 
+ 	non-removable;
 -- 
-With Best Regards,
-Andy Shevchenko
+2.31.1
+
