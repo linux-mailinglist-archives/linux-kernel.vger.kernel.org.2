@@ -2,187 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3251036EFC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 20:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A535436EFCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 20:55:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241206AbhD2Sx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 14:53:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234050AbhD2Sx0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 14:53:26 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E5BFC06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 11:52:39 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id gx5so9348977ejb.11
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 11:52:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4yV9cxzQq9N1fpD7pjE0zlpfDuyGNd6+h0F0/Tf6pS0=;
-        b=JGvNA3TyjYst2lJpl0zaPfCjHPxpFn536A/AZeK5+7sp2UVaeew+SYRR47ukb+gsxl
-         Dy8gcOx0rkZIZT1FBtqqh/3EKfyCUa2XohZRnLpsOnHyzkbaLSUzgbsziXMVQENoLA71
-         aOBOXKsDFCwOKXjgqoFsLY55LC5VYeFX6NWsf6Try3z9apUZweaDr4/JjDs+ZYGySQo8
-         GRkRnP1iwOUCJHprMJa8izCdEjsVvygGF2BcAJbG6idUtCtzKyGUbAeiPeKHZi1MDE8z
-         qFAt4DyloIvZakZUTSlMQbY+AYX85yAcAerdEF7maq66/fVDPQhGNs7nawAma4Ppmkba
-         0DRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4yV9cxzQq9N1fpD7pjE0zlpfDuyGNd6+h0F0/Tf6pS0=;
-        b=Phbk3MI+x0YABwkRcG67MsRsq9pl3/txLG6mJRxNcLJyuL/Ue9SQI8XMkKwCOtR/FR
-         6k8hPc6faHTv4JAAcLwXZS2OOD6PLH+olbNg6xNfFoq+hSokCmLWghwPzX2eNLT+dkHe
-         xRn+ZWUAipYYoYicG+z6Fl2+LtmT50GT/T5d5SWFRoZPpzuz4+UZ7SpI2GRBstFn0mj+
-         4s1roVsdRpjyahPQk1X9MBu28n9vMZAsC0rMNiLsYo7eh1iu3N+XeJOsjZ4EHeeE6shX
-         V8fRufDzB9s5YA8UrzOlNrjjlKDIIS8tGuR/rEosY8wu5I/D6WZGLxFsb/Hxevx0xczZ
-         FViA==
-X-Gm-Message-State: AOAM533bxlU4rG3gtd0m4af8FFys3wAoFjSx7xJsye/MeM0Rk0Qt8XRM
-        ny/00PFI9r/3ZovJXeHVUg5Li7LWk/0+L/L4fgqD
-X-Google-Smtp-Source: ABdhPJw10znQ1o7oPRMqW3o5DtP4m7icKNtuuiEvnUEf85sqQX1fbAZZT3CsyymyW9VosExLQEmpzRoDwXPFnU8mWKc=
-X-Received: by 2002:a17:906:685:: with SMTP id u5mr1395276ejb.449.1619722357543;
- Thu, 29 Apr 2021 11:52:37 -0700 (PDT)
+        id S241193AbhD2S4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 14:56:13 -0400
+Received: from mga04.intel.com ([192.55.52.120]:58918 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233676AbhD2S4L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 14:56:11 -0400
+IronPort-SDR: am6zbRL5HxdX7NNDScBEeNo1hxvDkzAJp3jnbSIP+bLCzn0VEwdFLsbtBdreUrVD1EEhnA3bLE
+ ZnhxPYrWw5Mg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9969"; a="194979346"
+X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
+   d="scan'208";a="194979346"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 11:55:23 -0700
+IronPort-SDR: 0VCEQ2ZfmZ8L3iRIOpJqFbgJSa48jroB5YT/MW8eBg1WOYX1z7WtBeXA/b1rXPHXg1nZD7j8L3
+ SFZmAkWLhhQA==
+X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
+   d="scan'208";a="387055834"
+Received: from ndutta-mobl.amr.corp.intel.com (HELO [10.212.215.226]) ([10.212.215.226])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 11:55:23 -0700
+Subject: Re: Subject: [PATCH 0/1] SGX self test fails
+To:     Tim Gardner <tim.gardner@canonical.com>,
+        dave.hansen@linux.intel.com
+Cc:     jarkko@kernel.org, shuah@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210429183952.22797-1-tim.gardner@canonical.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <c0725600-0a00-31dd-2ec3-20d4a86b33c5@intel.com>
+Date:   Thu, 29 Apr 2021 11:55:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210423205159.830854-1-morbo@google.com> <20210428172847.GC4022@arm.com>
- <20210428174010.GA4593@sirena.org.uk> <CAGG=3QUATefn9AG+HvnCfEOBv3iRu4fzFwfmA7Djrh2CmP_weA@mail.gmail.com>
- <CAGG=3QUNykCfkS22g+HRWb0Goa8DJ72TUueLtMe5v1YfnStojw@mail.gmail.com>
- <20210429075454.GQ9028@arm.com> <CAGG=3QV0kR__23yEmwwXBpcE1gvjLqRNmF667hhVeY0B3urTqQ@mail.gmail.com>
- <20210429095027.GR9028@arm.com>
-In-Reply-To: <20210429095027.GR9028@arm.com>
-From:   Bill Wendling <morbo@google.com>
-Date:   Thu, 29 Apr 2021 11:52:26 -0700
-Message-ID: <CAGG=3QW9t2zUPYLt_La=qQTZeHzfLBCXgZRbiia8T6K7n=YrdQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64/vdso: Discard .note.gnu.property sections in vDSO
-To:     Szabolcs Nagy <szabolcs.nagy@arm.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Kees Cook <keescook@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Daniel Kiss <Daniel.Kiss@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210429183952.22797-1-tim.gardner@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 2:50 AM Szabolcs Nagy <szabolcs.nagy@arm.com> wrote:
-> The 04/29/2021 02:23, Bill Wendling wrote:
-> > On Thu, Apr 29, 2021 at 12:55 AM Szabolcs Nagy <szabolcs.nagy@arm.com> wrote:
-> > > The 04/28/2021 12:31, Bill Wendling wrote:
-> > > > On Wed, Apr 28, 2021 at 12:21 PM Bill Wendling <morbo@google.com> wrote:
-> > > > > On Wed, Apr 28, 2021 at 10:40 AM Mark Brown <broonie@kernel.org> wrote:
-> > > > > > On Wed, Apr 28, 2021 at 06:28:47PM +0100, Catalin Marinas wrote:
-> > > > > > > On Fri, Apr 23, 2021 at 01:51:59PM -0700, Bill Wendling wrote:
-> > > > > >
-> > > > > > > > Since the note.gnu.property section in the vDSO is not checked by the
-> > > > > > > > dynamic linker, discard the .note.gnu.property sections in the vDSO.
-> > > > > >
-> > > > > > > Can we not instead fix the linker script to preserve the
-> > > > > > > .note.gnu.property, correctly aligned? It doesn't take much space and
-> > > > > > > while we don't use it now, it has the BTI information about the binary.
-> > > > > >
-> > > > > > > Cc'ing a few others who were involved in the BTI support.
-> > > > > >
-> > > > > > Not just BTI, we also flag PAC usage in there too and could add other
-> > > > > > extensions going forwards.  While the note isn't actively used by
-> > > > > > anything right now due to the kernel mapping the vDSO prior to userspace
-> > > > > > starting it is part of the ABI and something could end up wanting to use
-> > > > > > it and getting confused if it's not there.  It would be much better to
-> > > > > > fix the alignment issue.
-> > > > >
-> > > > > If there's only one of the 8-byte aligned sections guaranteed, we
-> > > > > could place it first in the note. Otherwise, we will have to change
-> > > > > the alignment of the note (or somehow merge multiple notes).
-> > > > >
-> > > > I should have clarified that there's only one *entry* in the
-> > > > .note.gnu.properties section, and if not then is it possible to merge
-> > > > multiple entries into one. (Excuse my ignorance if this is already the
-> > > > case.)
-> > >
-> > > .note.gnu.property should go to PT_GNU_PROPERTY and it
-> > > should be merged following rules specified in
-> > > https://github.com/hjl-tools/linux-abi/wiki/Linux-Extensions-to-gABI
-> > > and
-> > > https://github.com/ARM-software/abi-aa/blob/master/aaelf64/aaelf64.rst#program-property
-> > >
-> > > it may also be covered by a (8byte aligned) PT_NOTE, but
-> > > that's not a requirement on aarch64 (x86 requires it for
-> > > compatibility with old dynamic linker, but since the vdso
-> > > is handled specially that may not be relevant either).
-> > >
-> > > i don't know how this works in linker scripts.
-> >
-> > This is a potential patch. I haven't had time to test it though.
-> > However, it does appear to format the section in the "expected" way,
-> > so one's able to grab the build IDs. Thoughts?
->
->
-> please show the program headers.
->
+On 4/29/21 11:39 AM, Tim Gardner wrote:
+> I'm just starting my learning curve on SGX, so I don't know if I've missed
+> some setup for the SGX device entries. After looking at arch/x86/kernel/cpu/sgx/driver.c
+> I see that there is no mode value for either sgx_dev_enclave or sgx_dev_provision.
+> 
+> With this patch I can get the SGX self test to complete:
+> 
+> sudo ./test_sgx
+> Warning: no execute permissions on device file /dev/sgx_enclave
+> 0x0000000000000000 0x0000000000002000 0x03
+> 0x0000000000002000 0x0000000000001000 0x05
+> 0x0000000000003000 0x0000000000003000 0x03
+> SUCCESS
+> 
+> Is the warning even necessary ?
 
-$ readelf -lW arch/arm64/kernel/vdso/vdso.so
+Dang, I just added that warning.  I thought it was necessary, but I
+guess not:
 
-Elf file type is DYN (Shared object file)
-Entry point 0x300
-There are 4 program headers, starting at offset 64
+$ ls -l /dev/sgx_enclave
+crw------- 1 dave dave 10, 125 Apr 28 11:32 /dev/sgx_enclave
+$ ./test_sgx
+0x0000000000000000 0x0000000000002000 0x03
+0x0000000000002000 0x0000000000001000 0x05
+0x0000000000003000 0x0000000000003000 0x03
+SUCCESS
 
-Program Headers:
-  Type           Offset   VirtAddr           PhysAddr
-FileSiz  MemSiz   Flg Align
-  LOAD           0x000000 0x0000000000000000 0x0000000000000000
-0x000968 0x000968 R E 0x8
-  DYNAMIC        0x0008a8 0x00000000000008a8 0x00000000000008a8
-0x0000c0 0x0000c0 R   0x8
-  NOTE           0x000288 0x0000000000000288 0x0000000000000288
-0x000074 0x000074 R   0x8
-  GNU_EH_FRAME   0x0008a4 0x00000000000008a4 0x00000000000008a4
-0x000000 0x000000 R E 0x1
+*But*, is that OK?  Should we be happily creating a PROT_EXEC mapping on
+a ugo-x file?  Why were we respecting noexec on the filesystem but not
+ugo-x on the file?
 
- Section to Segment mapping:
-  Segment Sections...
-   00     .hash .dynsym .dynstr .gnu.version .gnu.version_d .note
-.text .eh_frame_hdr .eh_frame .dynamic
-   01     .dynamic
-   02     .note
-   03     .eh_frame_hdr .eh_frame
-
-> >
-> > $ objdump -s -j .note ./arch/arm64/kernel/vdso/vdso.so
-> >
-> > ./arch/arm64/kernel/vdso/vdso.so:     file format elf64-little
-> >
-> > Contents of section .note:
-> >  0288 04000000 10000000 05000000 474e5500  ............GNU.
-> >  0298 000000c0 04000000 03000000 00000000  ................
-> >  02a8 06000000 04000000 00000000 4c696e75  ............Linu
-> >  02b8 78000000 000a0500 06000000 01000000  x...............
-> >  02c8 00010000 4c696e75 78000000 00000000  ....Linux.......
-> >  02d8 04000000 14000000 03000000 474e5500  ............GNU.
-> >  02e8 958db149 af5156cb 45309896 7a53ae8a  ...I.QV.E0..zS..
-> >  02f8 ef34e95c                             .4.\
-> >
-> > diff --git a/arch/arm64/kernel/vdso/vdso.lds.S
-> > b/arch/arm64/kernel/vdso/vdso.lds.S
-> > index d808ad31e01f..d51e886c6223 100644
-> > --- a/arch/arm64/kernel/vdso/vdso.lds.S
-> > +++ b/arch/arm64/kernel/vdso/vdso.lds.S
-> > @@ -31,7 +31,13 @@ SECTIONS
-> >         .gnu.version_d  : { *(.gnu.version_d) }
-> >         .gnu.version_r  : { *(.gnu.version_r) }
-> >
-> > -       .note           : { *(.note.*) }                :text   :note
-> > +       /*
-> > +        * Add the .note.gnu.property section first, as it's aligned to
-> > +        * 8-bytes, while other notes are aligned to 4-bytes.
-> > +        */
-> > +       . = ALIGN(8);
-> > +
-> > +       .note           : { *(.note.gnu.property) *(.note.*) }  :text   :note
-> >
-> >         . = ALIGN(16);
->
-> --
