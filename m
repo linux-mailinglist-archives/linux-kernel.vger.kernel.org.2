@@ -2,238 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B826536E507
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 08:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E99136E505
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 08:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238998AbhD2Gqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 02:46:44 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:29659 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239032AbhD2Gqn (ORCPT
+        id S239002AbhD2GqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 02:46:13 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:32467 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229904AbhD2GqG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 02:46:43 -0400
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 13T6jKmb030584;
-        Thu, 29 Apr 2021 15:45:21 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 13T6jKmb030584
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1619678721;
-        bh=8DZzijCBdpCaLEnqJa+mumAbo6/dr98GX5sWG/LH/vI=;
-        h=From:Date:Subject:To:Cc:From;
-        b=z1STa/QXilrgzNxFDsICG6sdi6fdygVp5wDCvDRlQRMbSrPD5aJ1sBvZbOREstdOW
-         K/hVBQMxFuk4TYoilCE1xP6fEEJrEdZndenRncSGxLQbBiiHqgz5WuL5WltZnzq+Id
-         cdnlSIono2bD5YaBQyD3xr0/rtSNQ5g+8TDeXrufb3wQqJZxG/kKe5V4e1+lLmKXXo
-         rXwVZqXBdDYE0hH2g/3W7NPKeEftYmjo+hoZfig5MJ70YUGqW0al9iPR3xg+ShPDI3
-         C2iRJmAQno6oyY0zbcCd1+nRbvQ9C2l8FQwFtXHesIMCiRs3EIGFcDNdPm7R9YAvTb
-         CBKdcpU1e3maQ==
-X-Nifty-SrcIP: [209.85.210.176]
-Received: by mail-pf1-f176.google.com with SMTP id e15so8647339pfv.10;
-        Wed, 28 Apr 2021 23:45:21 -0700 (PDT)
-X-Gm-Message-State: AOAM530W3GjaXx+JZ+2Xj0TwmZuaUrdLRBAifN3CFqicphTQjFiwggLa
-        CXt9UmVM9DSQjCecDNv+vDLfc863J+wQyAQC9to=
-X-Google-Smtp-Source: ABdhPJxG2U+2+vZkCioFmEZVnj2vvZ8ywZQtvnFTZjpfCTWWfYy9Lb05EF6uSeDrq+nSTCx8sxSnhzqhrjGSyeYtH5o=
-X-Received: by 2002:a63:a547:: with SMTP id r7mr4716798pgu.7.1619678720394;
- Wed, 28 Apr 2021 23:45:20 -0700 (PDT)
+        Thu, 29 Apr 2021 02:46:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1619678720; x=1651214720;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-transfer-encoding:mime-version;
+  bh=fpjzoL4VFOdYmtfMCnJ2cA76rqMsqck89ri0DmLZtOU=;
+  b=mwk6wfi7mueC/3f4cA88jh/Psf0d4oHOWdAjwJdJLBF1hZpkheGpDQwU
+   XzBg89hkDyOf01TD3aQEMM7u6TCKbmdcOhwdqlq+fnLF4Y/IMxJ9fJuCD
+   e4rQotj5S7aMil+miztWyOk9hnL88TBNfPKHGh1FbeOvS3bWbA37K5yVQ
+   jlX+dX1iAjqJgc0b7KvGgTHzXXsQzyG1/z6504ktX0tkTCwgYtnqRWlkw
+   hZPIR4Ba8SzPerXEWr3gsKNfhTUoagjaBPpmMMI3TLlcfZW1wByHOw0r5
+   +BO5SJ9uPUQfnCqZHo2vL8XQSvmDSfcxAJwpBc0Rr1+wDGiNXMpEIcCjJ
+   A==;
+IronPort-SDR: 4OdvUGN8sgLZ4TFxbyy3VEEVxg4+pREzvGXKSsDI/qWtKDFLV6NtgliYW5yHJBDojMNMPAPjkR
+ FErk2wIE/zCwc+oaxqLIef1NQ1fMFtMwPCpg6NXfAuuQ7Ohmg+4caHW/mQwuG6X4Z1MbwDltPl
+ OpwbugiEWfSLdN649nwouVoZmr/rUHz77G5iJSih/UJdgxEHxDWznn2XnwhFTEbCzhFziHxWJJ
+ ue+qR1DnPH87EAPbhPVd8pqsac4a9m6/NPMo6EpwYkREHxoe5Ag66ScD+xBMiqHz+MvWOEKoor
+ w24=
+X-IronPort-AV: E=Sophos;i="5.82,258,1613404800"; 
+   d="scan'208";a="277663283"
+Received: from mail-mw2nam08lp2172.outbound.protection.outlook.com (HELO NAM04-MW2-obe.outbound.protection.outlook.com) ([104.47.73.172])
+  by ob1.hgst.iphmx.com with ESMTP; 29 Apr 2021 14:44:52 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=en+lCGn4C9lgLM3TcQWbbAfFI7TISorqb+AmjfZ20FEk7wRmoAxru7sDYhzB+Cdd3xFXdx8MIykzNZGKhW6mg/tauACdjzm8/bCblnB6FVszOLqpxuCj8qcHm8mqmUdTjSFlqb0cBTr096z8E+AieZw7k89eAWPIwc1+Fd613X8a7Rr/yojKFue6CFBcATYVuGNQt6Tqayg9eYoCy3gchOsU5Abu3xlxxg9SsrsHo9W6SC6h2B7zciWxvgn426+KgZ/m7MK7ev/OVMbJSpcbsV4Io58DevOnmUl+fDSHLLawXOuYIbHsWARl5zwTHmIwNRmbfOJsgmMYT8G6hB2UGA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fpjzoL4VFOdYmtfMCnJ2cA76rqMsqck89ri0DmLZtOU=;
+ b=dwBhwZTi1MaV1Vorw1VJkBCWvENfpdQ14M3J1XW0YOS6YR26XwFCOycmr9BflOa/t1trwvmk1xDyUq2KTlb+yhaQRkkYTGyG8/m/kGwCtPz0rkKiFK2PZEhqnSfhP0B/ETeNo7PQaEwc/V7qSdzUTfLpPBd2BuIji0f1pdy4uES5t/3FBZDjKbDeAXVhdojpC0eCsP6CVGeVyZEk9MmrpyMKsZyEvhjyGCrysIiVgq16vvosWwleTWUgaRgKbmOcM1yVxCxekAfz7KRc1fxiJFH/9MJFPq+h96kVmLIhzARLPrmCo0SgafH8sOEaJb+VNsu4oMH8h2dV2UBcN3LJJQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fpjzoL4VFOdYmtfMCnJ2cA76rqMsqck89ri0DmLZtOU=;
+ b=deq9rmJv+JjPASVBbzX7bW+kkm8EcJP0jmZZVtJIKvLrIqRKBpbZDPToal8QfS6vbl8cAAbknS75iY/C/97lNZVWOPCZ0xOSVBPE3DjcTliQ6inCeuFgVZxljYWqzO6N/l6emIC++N9pFrfgjkBff5K0IsuAcI2zz3dUSUEYxes=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM6PR04MB5628.namprd04.prod.outlook.com (2603:10b6:5:163::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4087.26; Thu, 29 Apr 2021 06:44:51 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::ed2d:4ccc:f42b:9966]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::ed2d:4ccc:f42b:9966%6]) with mapi id 15.20.4087.025; Thu, 29 Apr 2021
+ 06:44:51 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        Jaemyung Lee <jaemyung.lee@samsung.com>,
+        Jieon Seol <jieon.seol@samsung.com>
+Subject: RE: [PATCH v34 0/4] scsi: ufs: Add Host Performance Booster Support
+Thread-Topic: [PATCH v34 0/4] scsi: ufs: Add Host Performance Booster Support
+Thread-Index: AQHXPIV1EQrhDmFc4UuXv5b7bi3TqarLDQKA
+Date:   Thu, 29 Apr 2021 06:44:51 +0000
+Message-ID: <DM6PR04MB6575E1F6149F099382CAD388FC5F9@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <CGME20210428232257epcms2p8602b29d63529fca8a06010a21157d5cb@epcms2p8>
+ <20210428232257epcms2p8602b29d63529fca8a06010a21157d5cb@epcms2p8>
+In-Reply-To: <20210428232257epcms2p8602b29d63529fca8a06010a21157d5cb@epcms2p8>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: samsung.com; dkim=none (message not signed)
+ header.d=none;samsung.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [212.25.79.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d1cd7fc5-6d7d-4065-48c6-08d90ada4a20
+x-ms-traffictypediagnostic: DM6PR04MB5628:
+x-microsoft-antispam-prvs: <DM6PR04MB5628F02C97DEC07986E38E23FC5F9@DM6PR04MB5628.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:3968;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: LYASdMAPX8ItDxcIJxqiMsn6AqJQ5mhCzZDUTQm2AVSajsEGo39EmFMFjaqmfxjerJal2pdZQLcFU3TXMgt8ieTcfg8hyASEeG61rSWQCa01pilCX58QrciOMY6LLryyKADEjYUlFx3MamWL5lIje/PLSoFvBcWkJikPSlj+1iJt7HjET1WeKDXU5S4YBgLJ13krRVZ4aF931fHG7WjWPP84mkr/j+dun8s6cno/5a/NqPuzEh+f9deuTXpMabalxyV3AEn89710JQXh54/UgaAdtpnPVg+69sRJ/ECbsxAAfPILiL2dPL4hSK95NKocLDbL+Mgcomu/y6b1EgLg0hB7o0weNr2V0jSPu6q5tzNXX5qkGc8dms2LIstMhtE72bqV9ZzZ7+nFuoV9sMPDihL31NbKGkt9xbZYeoD3wSnnAcW0ZtsIhMu4WRLZS89v2jCi9sxcN52+JKLupa/lZIPMi6Vg+IMRxyEJaLBES7S0Gctdz7K8BMXZZ3pBw2rgvqM5z9yjyvmWPbCBfpv1zmb2+tiPDD9CiCUofJ3Eic81i208iYxAEODBlBzaIqNc9anCY2GTdadN8wUbo8VTQ0LnrlrhEhF1yiPvl0rpl5cM0aNLlr2uH+Td8zRs+2Kr0SU1n8UeHoBZo27dcPxWRA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(366004)(346002)(136003)(376002)(66946007)(558084003)(186003)(316002)(7696005)(26005)(66446008)(66556008)(33656002)(64756008)(6506007)(76116006)(9686003)(8936002)(71200400001)(55016002)(66476007)(8676002)(921005)(478600001)(2906002)(86362001)(110136005)(7416002)(52536014)(122000001)(5660300002)(38100700002)(83380400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?a3JXazE3MkVldVdlWVNXZjNtK1M3M3dad2tSekFPMmhyRWZqWXV6QTJrVG9K?=
+ =?utf-8?B?d05FaXcwK096TlFaSnpuVUdYSzc3Ulo3NXBYb0FwMEpHd3pZMk9mSjFpNkFw?=
+ =?utf-8?B?UlVMU0NSOWFwMmFGRlEyQ2o0WExkNXZxaEtoUzJiRlVaTkZabURXbTliQVRS?=
+ =?utf-8?B?RmJtTlBjb3NDeEtlME0vbElsd25uME83MllJQXBwTFE5bkRQVlpMVnJaR3Z4?=
+ =?utf-8?B?Nkc5SHc5QWp0bXFtMDNJM2JNZ0UvUjhsNkNKRnlTL3kzSm5QUTBHWEFxVVht?=
+ =?utf-8?B?UG5lRzVRcG51N2h2MTNKRVdkdUc4Z0tTSzQ2S1hnL2lNK3ZCMGlwRDdBUEMw?=
+ =?utf-8?B?ank3aG9saGNkV003VUUwd0kwLyt6aFoxQ0xmalpnV1AwZE5pbWcyY0VzZ0pS?=
+ =?utf-8?B?cHBuQjExbjNWRjNvRExXWTB6T0JqOEkzcWJnZTZUUzZZcDZpRTZXVjdaclZk?=
+ =?utf-8?B?cExQbVlMcHU5Y20ycGE0TVBpS0Q0NmtybDJ4bWluajE4WFVXaWtnUS9kcWpX?=
+ =?utf-8?B?WGtIOXFROTFhT2g5dUJELzdkOGFERjZPZ25iY1BpQUg4aTRPZmlldEFpSXVt?=
+ =?utf-8?B?Z054ajcxVnpjU2FIbE9GYlNuNjQ1VjVKZE5RZkUwc3pOMFIwVG1mdXJZZkc1?=
+ =?utf-8?B?RTJmNG9QMXo0eEpvMktpd2gwUDVSaHM3ZnRVUjZ0aTZ0dENkVktPNk1sSGV1?=
+ =?utf-8?B?dFQ4dTV0bS94MmptZ0d2R1B6ZGNVejBFcE9KWlBRTkRORnVQTFhFbTNkdWsx?=
+ =?utf-8?B?d0JDanBhSXBucTVZQkF1UHB4QnZ2Wnpoa3hqUFNnSEpEVGVpWGJsZUZVM0I3?=
+ =?utf-8?B?RUJXREttSzB0L2tlRGNCRFZJTUVuajdqd2daci8wamZrTTdwczRzU2NTZklm?=
+ =?utf-8?B?ZjI0TFdVbzAzVTBqTUY4OHo2aFB2djFva3VMdUYrSmpPT1RYbmxST08xVFNL?=
+ =?utf-8?B?RUU5eXJYSkVDMnNNQktDQ2c3Qk8zUjk2UEVMU0dvT084Ti84L3k0TXVCUjFD?=
+ =?utf-8?B?bkJmd2wwUlNTWkJ6NHFoclE2UE9GekpnTXNBVXVncWd6SStqQXh2OTZBQW8x?=
+ =?utf-8?B?UEtQMDMzWFM4OW9MSmk2RlNqVE5DMkJvVm5jaEszZmRDa09hV0NKRjc3d2xG?=
+ =?utf-8?B?cC9QOHhNSzltOFU5NEdJMVovZ0NUMXRCVlVuMkgyT01IK2x4ZXUwSWhuK3Bk?=
+ =?utf-8?B?b0FRanpuYXBkN0paQmJ2NnMwelI1TlA2aWEvSkFDTWNaUTljZXZaY0N0NDVO?=
+ =?utf-8?B?Y1Bad2xYTHpQb0NEbnNCY1lGYWhyaURydEUrU3dEcjR4MWlJUkRoS0IzRStw?=
+ =?utf-8?B?YkwrTU1qVmV0VGk2M1lmU2xCVkZiS1VKTmJsMUFzbWs0UThUSzhFN2JmVlpB?=
+ =?utf-8?B?SlRyck15V1BseU15d3preFNLVk1HSVZKZWhyZ0EwR3dqVlJQM3paekJOaW5T?=
+ =?utf-8?B?Vk9QMlV3amtNc0JIbVZVVTVkRVNlQkV2UlViWUpCVDc1L0JVbmR1Z3BtVGU2?=
+ =?utf-8?B?VFBqNW1ORTcvMTdkREpkeDB0WDZVRVlGUkRneThlWFFpcFpCQWVRdDVSQ1U3?=
+ =?utf-8?B?TyszdTg3YmxkbXlDZjFnZXk2V2szaFU1MDlkY0xWajZWclI4My94VmZYUTV0?=
+ =?utf-8?B?ZkdWdC85c1luZkR4dzRSaGZlZlJ6N0E5S2RUUnJYcXNkMVBNaGZMVmhnRW1x?=
+ =?utf-8?B?bDZwWFlqRlQrSEU0TUVmcEFnbjV6SnBWVVo0cCtITlR2cHpYaUlRTXpDdzFG?=
+ =?utf-8?Q?b+6T9WackQ35zCq+1IufEQ4oWdN7eUEgVe4Zp9S?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 29 Apr 2021 15:44:43 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASN32_wwEf7xD+kVgT6SXLqZ41dJYFu8qwu-99Q_xkyhQ@mail.gmail.com>
-Message-ID: <CAK7LNASN32_wwEf7xD+kVgT6SXLqZ41dJYFu8qwu-99Q_xkyhQ@mail.gmail.com>
-Subject: [GIT PULL 1/2] Kbuild updates for v5.13-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d1cd7fc5-6d7d-4065-48c6-08d90ada4a20
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Apr 2021 06:44:51.1487
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Nvmy4b6wUnDK2GpyjYsFGv94PLD4m562C3Jr9MI0kaeqoqDe/ZGU3O3QantQQDm8mu6hPdshTgYGmGmxCu1oWg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB5628
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-
-Please pull Kbuild updates for v5.13-rc1.
-Thanks.
-
-
-The following changes since commit 1e28eed17697bcf343c6743f0028cc3b5dd88bf0:
-
-  Linux 5.12-rc3 (2021-03-14 14:41:02 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
-tags/kbuild-v5.13
-
-for you to fetch changes up to f634ca650f724347892068489c7920631a3aac6a:
-
-  kbuild: Add $(KBUILD_HOSTLDFLAGS) to 'has_libelf' test (2021-04-25
-06:14:56 +0900)
-
-----------------------------------------------------------------
-Kbuild updates for v5.13
-
- - Evaluate $(call cc-option,...) etc. only for build targets
-
- - Add CONFIG_VMLINUX_MAP to generate .map file when linking vmlinux
-
- - Remove unnecessary --gcc-toolchains Clang flag because the --prefix
-   flag finds the toolchains
-
- - Do not pass Clang's --prefix flag when using the integrated as
-
- - Check the assembler version in Kconfig time
-
- - Add new CONFIG options, AS_VERSION, AS_IS_GNU, AS_IS_LLVM to clean up
-   some dependencies in Kconfig
-
- - Fix invalid Module.symvers creation when building only modules without
-   vmlinux
-
- - Fix false-positive modpost warnings when CONFIG_TRIM_UNUSED_KSYMS is
-   set, but there is no module to build
-
- - Refactor module installation Makefile
-
- - Support zstd for module compression
-
- - Convert alpha and ia64 to use generic shell scripts to generate the
-   syscall headers
-
- - Add a new elfnote to indicate if the kernel was built with LTO, which
-   will be used by pahole
-
- - Flatten the directory structure under include/config/ so CONFIG options
-   and filenames match
-
- - Change the deb source package name from linux-$(KERNELRELEASE) to
-   linux-upstream
-
-----------------------------------------------------------------
-Alexey Dobriyan (1):
-      kbuild: redo fake deps at include/config/*.h
-
-Bhaskar Chowdhury (2):
-      docs: kbuild: Fix a typo in the file Kconfig.recursion-issue-02
-      scripts: modpost.c: Fix a few typos
-
-Masahiro Yamada (31):
-      kbuild: prefix $(srctree)/ to some included Makefiles
-      kbuild: split cc-option and friends to scripts/Makefile.compiler
-      kbuild: include Makefile.compiler only when compiler is needed
-      kbuild: show warning if 'make headers_check' is used
-      kbuild: rename multi-used-* to multi-obj-*
-      kbuild: move $(strip ) to suffix-search definition
-      kbuild: replace sed with $(subst ) or $(patsubst )
-      kbuild: collect minimum tool versions into scripts/min-tool-version.sh
-      kbuild: check the minimum assembler version in Kconfig
-      kbuild: dwarf: use AS_VERSION instead of test_dwarf5_support.sh
-      arm64: move --fix-cortex-a53-843419 linker test to Kconfig
-      kbuild: generate Module.symvers only when vmlinux exists
-      kbuild: do not set -w for vmlinux.o modpost
-      kbuild: fix false-positive modpost warning when all symbols are trimmed
-      kbuild: remove unneeded mkdir for external modules_install
-      kbuild: unify modules(_install) for in-tree and external modules
-      kbuild: show the target directory for depmod log
-      kbuild: check module name conflict for external modules as well
-      kbuild: rename extmod-prefix to extmod_prefix
-      kbuild: refactor scripts/Makefile.modinst
-      kbuild: move module strip/compression code into scripts/Makefile.modinst
-      kbuild: merge scripts/Makefile.modsign to scripts/Makefile.modinst
-      kbuild: remove CONFIG_MODULE_COMPRESS
-      sysctl: use min() helper for namecmp()
-      alpha: syscalls: switch to generic syscalltbl.sh
-      alpha: syscalls: switch to generic syscallhdr.sh
-      ia64: syscalls: switch to generic syscalltbl.sh
-      ia64: syscalls: switch to generic syscallhdr.sh
-      kbuild: remove TMPO from try-run
-      tools: do not include scripts/Kbuild.include
-      kbuild: deb-pkg: change the source package name to linux-upstream
-
-Michal Suchanek (1):
-      MAINTAINERS: add pattern for dummy-tools
-
-Nathan Chancellor (3):
-      Makefile: Remove '--gcc-toolchain' flag
-      Makefile: Only specify '--prefix=' when building with clang + GNU as
-      kbuild: Add $(KBUILD_HOSTLDFLAGS) to 'has_libelf' test
-
-Piotr Gorski (1):
-      kbuild: add support for zstd compressed modules
-
-Rasmus Villemoes (2):
-      kbuild: add CONFIG_VMLINUX_MAP expert option
-      kbuild: apply fixdep logic to link-vmlinux.sh
-
-Yonghong Song (1):
-      kbuild: add an elfnote for whether vmlinux is built with lto
-
- .gitignore                                       |   2 +
- Documentation/devicetree/bindings/Makefile       |   2 +-
- Documentation/dontdiff                           |   2 +
- Documentation/kbuild/Kconfig.recursion-issue-02  |   2 +-
- MAINTAINERS                                      |   1 +
- Makefile                                         | 230
-+++++++++++++-----------------
- arch/Kconfig                                     |   3 +-
- arch/alpha/kernel/syscalls/Makefile              |  14 +-
- arch/alpha/kernel/syscalls/syscallhdr.sh         |  36 -----
- arch/alpha/kernel/syscalls/syscalltbl.sh         |  32 -----
- arch/alpha/kernel/systbls.S                      |   3 +-
- arch/arm64/Kconfig                               |   3 +
- arch/arm64/Makefile                              |   2 +-
- arch/ia64/kernel/entry.S                         |   3 +-
- arch/ia64/kernel/syscalls/Makefile               |  16 +--
- arch/ia64/kernel/syscalls/syscallhdr.sh          |  36 -----
- arch/ia64/kernel/syscalls/syscalltbl.sh          |  32 -----
- arch/x86/Makefile                                |   4 +-
- fs/proc/proc_sysctl.c                            |   7 +-
- include/linux/compiler-version.h                 |   2 +-
- include/linux/elfnote-lto.h                      |  14 ++
- init/Kconfig                                     |  65 ++++++---
- init/version.c                                   |   2 +
- kernel/gen_kheaders.sh                           |   2 +-
- lib/Kconfig.debug                                |  13 +-
- scripts/Kbuild.include                           |  80 -----------
- scripts/Kconfig.include                          |   6 +
- scripts/Makefile.asm-generic                     |   4 +-
- scripts/Makefile.build                           |  19 +--
- scripts/Makefile.clean                           |   2 +-
- scripts/Makefile.compiler                        |  74 ++++++++++
- scripts/Makefile.dtbinst                         |   2 +-
- scripts/Makefile.headersinst                     |   2 +-
- scripts/Makefile.lib                             |  16 +--
- scripts/Makefile.modinst                         | 113 ++++++++++++---
- scripts/Makefile.modpost                         |  32 ++++-
- scripts/Makefile.modsign                         |  29 ----
- scripts/Makefile.package                         |   2 +-
- scripts/as-version.sh                            |  82 +++++++++++
- scripts/basic/fixdep.c                           |  43 +-----
- scripts/cc-version.sh                            |  20 +--
- scripts/dummy-tools/gcc                          |   6 +
- scripts/kconfig/confdata.c                       |  15 +-
- scripts/ld-version.sh                            |  11 +-
- scripts/link-vmlinux.sh                          |  12 ++
- scripts/min-tool-version.sh                      |  39 +++++
- scripts/mod/modpost.c                            |  50 +++----
- scripts/modules-check.sh                         |   4 +-
- scripts/test_dwarf5_support.sh                   |   8 --
- tools/build/Build.include                        |  24 ++++
- tools/testing/selftests/bpf/Makefile             |   2 +-
- tools/testing/selftests/kvm/Makefile             |   2 +-
- tools/testing/selftests/powerpc/pmu/ebb/Makefile |   2 +-
- tools/thermal/tmon/Makefile                      |   2 +-
- 54 files changed, 635 insertions(+), 596 deletions(-)
- delete mode 100644 arch/alpha/kernel/syscalls/syscallhdr.sh
- delete mode 100644 arch/alpha/kernel/syscalls/syscalltbl.sh
- delete mode 100644 arch/ia64/kernel/syscalls/syscallhdr.sh
- delete mode 100644 arch/ia64/kernel/syscalls/syscalltbl.sh
- create mode 100644 include/linux/elfnote-lto.h
- create mode 100644 scripts/Makefile.compiler
- delete mode 100644 scripts/Makefile.modsign
- create mode 100755 scripts/as-version.sh
- create mode 100755 scripts/min-tool-version.sh
- delete mode 100755 scripts/test_dwarf5_support.sh
-
-
---
-Best Regards
-Masahiro Yamada
+TmVlZCBvbmUgbW9yZSByZWJhc2Ugbm93Li4uDQoNClRoYW5rcywNCkF2cmkgDQo+IA0KPiBDaGFu
+Z2Vsb2c6DQo+IA0KPiB2MzMgLT4gdjM0DQo+IEZpeCB3YXJuaW5nIGFib3V0IE5VTEwgY2hlY2sg
+YmVmb3JlIHNvbWUgZnJlZWluZyBmdW5jdGlvbnMgaXMgbm90IG5lZWRlZC4NCg==
