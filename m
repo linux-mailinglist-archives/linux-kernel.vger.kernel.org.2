@@ -2,151 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF57236E44C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 06:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A48C736E450
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 06:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236975AbhD2EoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 00:44:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231356AbhD2EoG (ORCPT
+        id S235465AbhD2EsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 00:48:02 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:57501 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229814AbhD2Er5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 00:44:06 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8D96C06138B
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 21:43:20 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so10308161pjv.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 21:43:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sE2savxAfPxu0P92GN6OpAhX0O3eNjGvHwyPPUWKYXM=;
-        b=BbKFsrcgMKJaZOVLDg+9Z0CXvzo42Bs4YtCgco8RWK06gIpsXcpSRcHtnm21RXdPag
-         4AOSJCwn0TOJbK0rk5+7Leh4jED6MQpJRhgh4FX/gc286imJNECfydO1JA6qe5bWYh2C
-         wIvXkDFCJg+QlmNxoYUmO7+0+Wv/38VQ7r8ofok18unzJkIODkz0IL3shy8pg2vHamPY
-         dEqTLKKs7LELc70nV46Ds+h1PFT2uHN0+KSRkUHZ0NYtgBAkGFikYjAOJW1JmMD6DhdW
-         YYqrJg5FH5yXQEpg+PDLKPHfD0KH9qOUP1/w7tli4LY1LN9mVWjGPsdjpsmJIS+MwAAj
-         g5eg==
+        Thu, 29 Apr 2021 00:47:57 -0400
+Received: from mail-oo1-f70.google.com ([209.85.161.70])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <chris.chiu@canonical.com>)
+        id 1lbyZy-0007St-9O
+        for linux-kernel@vger.kernel.org; Thu, 29 Apr 2021 04:47:10 +0000
+Received: by mail-oo1-f70.google.com with SMTP id 126-20020a4a17840000b02901e5e0ccc28aso18750073ooe.13
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 21:47:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=sE2savxAfPxu0P92GN6OpAhX0O3eNjGvHwyPPUWKYXM=;
-        b=tGz6agppf5Y81dGvQweOOW6Iyi4oY0KPbNEXBRVrlYJQEwTB8FKVLKqu/+HWv+LOgv
-         enRndl312HQOtBVCUt1ONr6z0BiYF4htGe1sPgVwMrqma/adjBRw/HgdV2nXMfqGyujV
-         xBHGZDe9PUWvYX8OVyvQDkq43DkYsSrEaa82ff18c3w7wu8D5NQjdnBdQn5TzJnY5wXD
-         jGltx0DeSAJzYnfkMVtVNMwximIex3UIwOMC1lP9b7ovxihKfm8FODNkaJ1UxuwMNCbN
-         TCU10kNfoUL6KnLCeXekklMiL4RuGsJkqAw+TH9lI4rAUk+UHOUvWbTfPVySofI0S3bU
-         0RSg==
-X-Gm-Message-State: AOAM531rbChORvIgECKv+kXZYSoTCtBqORlNAJhqPITcd9zXjuTfouqG
-        DXb0U5Dfl1KovDKKZhh1bd5zTWq5HxUXMQ==
-X-Google-Smtp-Source: ABdhPJzIZ4MO/M2q7pEFyxcjdg+AMdv6kInIrBs1Dge1k1V8H0zvz80UNnzL5Hf6btnS/YDAvJKmjg==
-X-Received: by 2002:a17:90a:e643:: with SMTP id ep3mr7555235pjb.194.1619671400173;
-        Wed, 28 Apr 2021 21:43:20 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id a16sm1134447pgl.12.2021.04.28.21.43.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 21:43:19 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 21:43:19 -0700 (PDT)
-X-Google-Original-Date: Wed, 28 Apr 2021 21:43:11 PDT (-0700)
-Subject:     Re: [PATCH] RISC-V: Always define XIP_FIXUP
-In-Reply-To: <b674bc91-8228-9236-f3ec-8f65bb5620c8@ghiti.fr>
-CC:     linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, akpm@linux-foundation.org,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Anup Patel <Anup.Patel@wdc.com>, wangkefeng.wang@huawei.com,
-        rppt@kernel.org, vitaly.wool@konsulko.com, greentime.hu@sifive.com,
-        0x7f454c46@gmail.com, chenhuang5@huawei.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        linux@roeck-us.net
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     alex@ghiti.fr
-Message-ID: <mhng-2e1a7543-84bc-4954-843a-b577fc132157@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=rRim53UzJWgVMkdOW0b/+ZBSUNTOdVPMyNPZwfBxAPo=;
+        b=L77psbNKlebF71VUA10x50QBC9g+X4kzucjQtrAZuZ50r7MCpLEBlQ1g7/u27gmH0A
+         Ibu2Kg8nmvBIqm294NrDmn12+c/dOTs0lBle3DxHB88w2ipgpHk67mVdwdcgEVSKGcLB
+         agYz6owCrai94qPNGvzbRXMWVe118uygZ3vpZNY/4TjP8/8a2a+mgpjfoqtroCM6oBD3
+         meYyeZGHMcawKeSmKWB5P12wY/379XQQoj27R3poSPmURUGl0HHZcQq62AcQ3PhH8eIR
+         l4ukQpAGHyFGiCDFjZ/wYNL8dewZN4iO56m3veNx8Swh97/Ynuz6WGRJyow2v5JVrDu2
+         MlLg==
+X-Gm-Message-State: AOAM530cbs2/Ok5IHfdvQVjbHMajZESPWGfNlup9RQO4+j0nNM8pYacI
+        h5SbPo/J6f4a5iAtSIvW77wiyRoZQgceOGrUc67bIv2tj4b071unrTXebj+GE+TCkvcEgiXjYsg
+        mKLrvR4S+Iw5UNewjIv+jfC+mJ+/10S9wjFu503xwKPvO0dq4pnIsHonsLQ==
+X-Received: by 2002:aca:3d86:: with SMTP id k128mr5603683oia.86.1619671629101;
+        Wed, 28 Apr 2021 21:47:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyqdMpxb8MWKz1tOE3sKrkJg5plm8nWbqA9fYdsOBpP6o5Ws798cfd23tiJN70JL2O/48OnzYTMqiwUxSqj8FI=
+X-Received: by 2002:aca:3d86:: with SMTP id k128mr5603660oia.86.1619671628872;
+ Wed, 28 Apr 2021 21:47:08 -0700 (PDT)
+MIME-Version: 1.0
+From:   Chris Chiu <chris.chiu@canonical.com>
+Date:   Thu, 29 Apr 2021 12:46:58 +0800
+Message-ID: <CABTNMG1TRbAW+ULs9Ss27owvxppf-dA=F7M0vGp1EtHwDcK51w@mail.gmail.com>
+Subject: TGL: : No video output on external monitor after unplug and re-plug
+ the cable
+To:     imre.deak@intel.com, jani.nikula@linux.intel.com,
+        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Apr 2021 01:25:55 PDT (-0700), alex@ghiti.fr wrote:
-> Le 4/27/21 à 11:34 PM, Palmer Dabbelt a écrit :
->> From: Palmer Dabbelt <palmerdabbelt@google.com>
->>
->> XIP depends on MMU, but XIP_FIXUP is defined throughout the kernel in
->> order to avoid excessive ifdefs.  This just makes sure to always define
->> XIP_FIXIP, which will fix MMU=n builds.
->
-> A small typo here.
+We found another bug after the fix of
+https://gitlab.freedesktop.org/drm/intel/-/issues/2538. The external
+monitor is also connected via WD19's HDMI/DisplayPort just as #2538.
+However, the display monitor can only be detected and show output at
+the very first time we power on the WD19 dock. If we unplug the cable
+and replug again, the monitor seems to be detected but there's no
+video output.
 
-Actually two: "defined" should have been "used".  Both are fixed.
+When we power on the WD19 dock with cable connected to the monitor,
+the drm kernel log shows as follows
 
->
->>
->> Fixes: 44c922572952 ("RISC-V: enable XIP")
->> Reported-by: Guenter Roeck <linux@roeck-us.net>
->> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
->> ---
->>   arch/riscv/include/asm/pgtable.h | 24 ++++++++++++------------
->>   1 file changed, 12 insertions(+), 12 deletions(-)
->>
->> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
->> index 2f1384e14e31..fd749351f432 100644
->> --- a/arch/riscv/include/asm/pgtable.h
->> +++ b/arch/riscv/include/asm/pgtable.h
->> @@ -73,18 +73,6 @@
->>   #endif
->>   #define FIXADDR_START    (FIXADDR_TOP - FIXADDR_SIZE)
->>
->> -#ifdef CONFIG_XIP_KERNEL
->> -#define XIP_OFFSET		SZ_8M
->> -#define XIP_FIXUP(addr) ({							\
->> -	uintptr_t __a = (uintptr_t)(addr);					\
->> -	(__a >= CONFIG_XIP_PHYS_ADDR && __a < CONFIG_XIP_PHYS_ADDR + SZ_16M) ?	\
->> -		__a - CONFIG_XIP_PHYS_ADDR + CONFIG_PHYS_RAM_BASE - XIP_OFFSET :\
->> -		__a;								\
->> -	})
->> -#else
->> -#define XIP_FIXUP(addr)		(addr)
->> -#endif /* CONFIG_XIP_KERNEL */
->> -
->>   #endif
->>
->>   #ifndef __ASSEMBLY__
->> @@ -101,6 +89,18 @@
->>   #include <asm/pgtable-32.h>
->>   #endif /* CONFIG_64BIT */
->>
->> +#ifdef CONFIG_XIP_KERNEL
->> +#define XIP_OFFSET		SZ_8M
->
->
-> XIP_OFFSET is used in head.S and then this breaks XIP_KERNEL. XIP_OFFSET
-> must live outside the ifndef __ASSEMBLY__.
+ i915 0000:00:02.0: [drm:intel_get_hpd_pins.isra.0 [i915]] hotplug
+event received, stat 0x00010000, dig 0x0088888a, pins 0x00000200, long
+0x00000200
+ i915 0000:00:02.0: [drm:intel_hpd_irq_handler [i915]] digital hpd on
+[ENCODER:292:DDI D] - long
+ i915 0000:00:02.0: [drm:intel_hpd_irq_handler [i915]] Received HPD
+interrupt on PIN 9 - cnt: 10
+ i915 0000:00:02.0: [drm:intel_dp_hpd_pulse [i915]] got hpd irq on
+[ENCODER:292:DDI D] - long
+ i915 0000:00:02.0: [drm:i915_hotplug_work_func [i915]] running
+encoder hotplug functions
+ i915 0000:00:02.0: [drm:i915_hotplug_work_func [i915]] Connector DP-1
+(pin 9) received hotplug event. (retry 0)
+ i915 0000:00:02.0: [drm:intel_dp_detect [i915]] [CONNECTOR:293:DP-1]
+ i915 0000:00:02.0: [drm:intel_power_well_enable [i915]] enabling TC cold off
+ i915 0000:00:02.0: [drm:tgl_tc_cold_request [i915]] TC cold block succeeded
+ i915 0000:00:02.0: [drm:__intel_tc_port_lock [i915]] Port D/TC#1: TC
+port mode reset (tbt-alt -> dp-alt)
+ i915 0000:00:02.0: [drm:intel_power_well_enable [i915]] enabling AUX D TC1
+ i915 0000:00:02.0: [drm:drm_dp_dpcd_read [drm_kms_helper]] AUX D/port
+D: 0xf0000 AUX -> (ret=  8) 14 1e 40 55 02 00 00 00
+ i915 0000:00:02.0: [drm:intel_dp_lttpr_init [i915]] LTTPR common
+capabilities: 14 1e 40 55 02 00 00 00
 
-Thanks, I hadn't even seen XIP_OFFSET.  This is fixed in the v2.
+Then I replug the cable, the intel_power_well_enable() in
+intel_dp_aux_xfer() shows "enabling DC off" power domain instead of
+enabling AUX D TC1. After that, the flooded i915 0000:00:02.0:
+[drm:intel_dp_aux_xfer [i915]] AUX D/port D: timeout (status
+0x7d4003ff) keeps show up and no video output.
 
-Do you have an XIP config that will run on QEMU, and a way to run it?  
-If so, can you post a defconfig and some instructions?  That'll make it 
-easier to test on my end.
+I filed a bug on
+https://gitlab.freedesktop.org/drm/intel/-/issues/3407 and also
+uploaded the journal log  with kernel boot parameter
+"drm.debug=0x10e".
 
->> +#define XIP_FIXUP(addr) ({							\
->> +	uintptr_t __a = (uintptr_t)(addr);					\
->> +	(__a >= CONFIG_XIP_PHYS_ADDR && __a < CONFIG_XIP_PHYS_ADDR + SZ_16M) ?	\
->> +		__a - CONFIG_XIP_PHYS_ADDR + CONFIG_PHYS_RAM_BASE - XIP_OFFSET :\
->> +		__a;								\
->> +	})
->> +#else
->> +#define XIP_FIXUP(addr)		(addr)
->> +#endif /* CONFIG_XIP_KERNEL */
->> +
->>   #ifdef CONFIG_MMU
->>   /* Number of entries in the page global directory */
->>   #define PTRS_PER_PGD    (PAGE_SIZE / sizeof(pgd_t))
->>
->
-> Thank you for doing that!
->
-> Alex
+Can anyone suggest what happens at the replug? What can we do to
+identify the cause? Thanks
+
+Chris
