@@ -2,99 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3EC36EF4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 20:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E2C36EF4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 20:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241073AbhD2SFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 14:05:23 -0400
-Received: from elvis.franken.de ([193.175.24.41]:52028 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232572AbhD2SFS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 14:05:18 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lcB1W-00022Q-00; Thu, 29 Apr 2021 20:04:26 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 5E3DCC0D1B; Thu, 29 Apr 2021 20:04:17 +0200 (CEST)
-Date:   Thu, 29 Apr 2021 20:04:17 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Huang Pei <huangpei@loongson.cn>
-Cc:     Zhou Yanjie <zhouyanjie@wanyeetech.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, paul.burton@mips.com,
-        paul@crapouillou.net, siyanteng@loongson.cn, ira.weiny@intel.com,
-        yangtiezhu@loongson.cn, jun.jiang@ingenic.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, sernia.zhou@foxmail.com,
-        sihui.liu@ingenic.com
-Subject: Re: [PATCH] Revert "MIPS: make userspace mapping young by default".
-Message-ID: <20210429180417.GA10482@alpha.franken.de>
-References: <1618562868-91115-1-git-send-email-zhouyanjie@wanyeetech.com>
- <20210416092003.5754967.19768.9603@loongson.cn>
- <ae06522f-eda8-96d1-6f58-072905afa65c@wanyeetech.com>
- <20210419045610.frhzxskec47s5rmq@ambrosehua-HP-xw6600-Workstation>
- <13e37741-c1b4-2aae-471e-0790adc8db59@wanyeetech.com>
- <20210420024818.r6jf243oglb2ywbr@ambrosehua-HP-xw6600-Workstation>
- <fd1e02ff-0165-7e7e-8bc6-55fb278fc50f@wanyeetech.com>
- <20210423145131.GA11112@alpha.franken.de>
- <6d307cf6-0ed5-e9f9-ae1e-8f2e28b23311@wanyeetech.com>
- <20210426131146.bj2r4ha7yy5norxa@ambrosehua-HP-xw6600-Workstation>
+        id S241105AbhD2SF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 14:05:27 -0400
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:35513 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232572AbhD2SFY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 14:05:24 -0400
+Received: by mail-oi1-f177.google.com with SMTP id e25so37390916oii.2;
+        Thu, 29 Apr 2021 11:04:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BGXc8n8dJgWIvZ1rgn/mp/0YVMWp8ZgJFpSUhA1n/t0=;
+        b=VUmbolxsdBR7g59BJIa4Uxubh8AAezLYzNq8glcT3Szq0vGl3jmNQ7lGsOV7MeRWBl
+         Nr7FTDSvq90swnqtEQYQhU9hoh+OYIpOhlQUyvitwYoa6P2Pv0VxuhUxQWI/GLdo/6sQ
+         ulgRTMiCYMvCAtaLq0xp/JYTzB+AaLz1PyKw5uAHgXajwlJKskxoV19RZQdD2POaM595
+         qKiYwhk7xH4Rjs+2uyyywRF0ZWJp+/mQBwnR6t1imTybpMKAqk2dDHqGwmY7UgSFmNeo
+         TbP25PaYggqNksYU1aaXi9flUKqYG6w6RoRaIwhl9+v1HvYJSrQeyT2OtALS7sUxAtQt
+         lhlg==
+X-Gm-Message-State: AOAM531wWt+5M60u/at6fBBvtpUk1j9JQ3pQl8T9rZlTAHCyRp8hgP6Q
+        iWBhB3dUjTS+IIpPjhUPQw==
+X-Google-Smtp-Source: ABdhPJxsvgDl4cmyGSZAjcy3TO96h2Gk37C2SsrChdAtgKojOCkhhcJuqRmLaS8oiHIGCS+V5p6asA==
+X-Received: by 2002:aca:ed12:: with SMTP id l18mr7861083oih.24.1619719477238;
+        Thu, 29 Apr 2021 11:04:37 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id q1sm114127otm.26.2021.04.29.11.04.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 11:04:36 -0700 (PDT)
+Received: (nullmailer pid 1505463 invoked by uid 1000);
+        Thu, 29 Apr 2021 18:04:35 -0000
+Date:   Thu, 29 Apr 2021 13:04:35 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Rajeev Nandan <rajeevny@codeaurora.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        dianders@chromium.org, mkrishn@codeaurora.org,
+        kalyan_t@codeaurora.org, hoegsberg@chromium.org,
+        abhinavk@codeaurora.org, seanpaul@chromium.org
+Subject: Re: [v3 1/2] dt-bindings: backlight: add DisplayPort aux backlight
+Message-ID: <20210429180435.GA1385465@robh.at.kernel.org>
+References: <1619416756-3533-1-git-send-email-rajeevny@codeaurora.org>
+ <1619416756-3533-2-git-send-email-rajeevny@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210426131146.bj2r4ha7yy5norxa@ambrosehua-HP-xw6600-Workstation>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1619416756-3533-2-git-send-email-rajeevny@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 09:11:47PM +0800, Huang Pei wrote:
-> [   40.873779] Cause : 4080800c (ExcCode 03)
-> [   40.877775] BadVA : 77e23000
-> [   40.880645] PrId  : 00d00100 (Ingenic XBurst)
-> [   40.884989] Modules linked in:
-> [   40.888034] Process Xsession (pid: 1370, threadinfo=ca5ce8d6,
-> task=61c8f3ad, tls=77e28690)
+On Mon, Apr 26, 2021 at 11:29:15AM +0530, Rajeev Nandan wrote:
+> Add bindings for DisplayPort aux backlight driver.
 > 
-> !!! This is my first time debug MIPS32 kernel, I think both threadinfo
-> and task should be at KSEG0, instead of KSEG2 or USEG
-
-don't print pointers with %p they will be garbled for security reasons.
-
-see Documentation/core-api/printk-formats.rst
-
-"A raw pointer value may be printed with %p which will hash the address
-before printing."
-
-> [   41.233877] Index: 27 pgmask=4kb va=77e22000 asid=5c
-> [   41.233877]  [pa=06a17000 c=3 d=0 v=0 g=0] [pa=2017a000 c=0 d=0 v=0
-> g=0]
+> Changes in v2:
+> - New
 > 
-> !!! TLB entry is loading a SWAP entry(C=0, pa=swap) at BADV, the pte_buddy point to a valid
-> PFN(C=3, pa seem ok), but it is impossible, since line 116 must flush the tlb and
-> replaced swap entry with new page 
+> Signed-off-by: Rajeev Nandan <rajeevny@codeaurora.org>
+> ---
+>  .../bindings/leds/backlight/dp-aux-backlight.yaml  | 49 ++++++++++++++++++++++
+>  1 file changed, 49 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/leds/backlight/dp-aux-backlight.yaml
 > 
-> Am I missing something?
+> diff --git a/Documentation/devicetree/bindings/leds/backlight/dp-aux-backlight.yaml b/Documentation/devicetree/bindings/leds/backlight/dp-aux-backlight.yaml
+> new file mode 100644
+> index 00000000..0fa8bf0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/leds/backlight/dp-aux-backlight.yaml
+> @@ -0,0 +1,49 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/leds/backlight/dp-aux-backlight.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: DisplayPort aux backlight driver bindings
+> +
+> +maintainers:
+> +  - Rajeev Nandan <rajeevny@codeaurora.org>
+> +
+> +description:
+> +  Backlight driver to control the brightness over DisplayPort aux channel.
+> +
+> +allOf:
+> +  - $ref: common.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: dp-aux-backlight
+> +
+> +  ddc-i2c-bus:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description:
+> +      A phandle to the system I2C controller connected to the DDC bus used
+> +      for the DisplayPort AUX channel.
+> +
+> +  enable-gpios:
+> +    maxItems: 1
+> +    description: GPIO specifier for backlight enable pin.
+> +
+> +  max-brightness: true
+> +
+> +required:
+> +  - compatible
+> +  - ddc-i2c-bus
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    backlight {
+> +        compatible = "dp-aux-backlight";
+> +        ddc-i2c-bus = <&sn65dsi86_bridge>;
+> +        enable-gpios = <&tlmm 12 GPIO_ACTIVE_HIGH>;
 
-not sure, if I'm on the right track, but with the _PAGE_VALID bit set in
-the new pte local_r4k_flush_cache_page() will do
+So the DDC bus is connected to a backlight and also a panel? This 
+binding is not reflecting the h/w, but rather what you want for some 
+driver.
 
-        if ((mm == current->active_mm) && (pte_val(*ptep) & _PAGE_VALID))
-                vaddr = NULL;
+There's only one thing here and that's an eDP panel which supports 
+backlight control via DP aux channel. You can figure all that out from 
+the panel's compatible and/or reading the EDID. 
 
+You might also be interested in this thread:
 
-and then
+https://lore.kernel.org/lkml/YIKsDtjcIHGNvW0u@orome.fritz.box/
 
-	vaddr ? r4k_blast_dcache_page(addr) :
-                r4k_blast_dcache_user_page(addr);
-
-flush the address directly instead with r4k_blast_dcache_user_page().
-But the TLB will be updated after the cache flush (which is correct IMHO). 
-So setting the VALID bit too early destroys the logic of flushing
-cache aliases. Do you agree ?
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Rob
