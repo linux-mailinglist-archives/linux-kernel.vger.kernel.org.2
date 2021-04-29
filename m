@@ -2,107 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9000336F07D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 21:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD3836F07E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 21:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229663AbhD2TZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 15:25:24 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:45433 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235623AbhD2TWv (ORCPT
+        id S229751AbhD2TZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 15:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231725AbhD2TYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 15:22:51 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id A6E895C0093;
-        Thu, 29 Apr 2021 15:22:04 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Thu, 29 Apr 2021 15:22:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=benboeckel.net;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=h3cv4urXYSFk9
-        7s6YrYJHSj6MAiYXM35h2NCOKlwrv0=; b=eohsoYKvQzbbeIhDknuuEXX9VOE0e
-        QJDIfvp6FoW9zqwDpPOt8lR8wSgvHdzjDpktew7bAtxULwJDmXrLXSAkxY6pwBf6
-        7iI/chHjVwx9ncWh4s/4Se3iuGzs5G+4gkS8QbRWryLL1hOq+5SdxnQrqXWbLiwt
-        gxDMOhpslwiqubw7Zgp+s3MWbIU0fXG/dF61dO2cI7B2o32suwp0rEvTqYOWl+P7
-        iur0m5LdGItMhQ838AcZZ+AT3UVTAQGVcFgGmjmi2xAyErkSVzi/GD0MkUXVCWgK
-        JMRNr9Ns94qB1NiZHim347BlqZHoFXv3mX+FJi3/miiK6K17II9NZHiUg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=h3cv4urXYSFk97s6YrYJHSj6MAiYXM35h2NCOKlwrv0=; b=ucs1s/hh
-        UnHw7OVRYnt2bTrUBB3DDQ4iigIgItLyxaqc+otV2imIRzfFWNB+b70BOteCAQzb
-        9Ekp6SQNw4xC7k8XpbBcj7g0qQNcbGyh7/5lAPgH//ZDSS9eJLqgso5KcgJgQnXX
-        1c1zaDpid6+0eOqWbzomg6zMh5mKsrTu1G9BrVQ85A6nvWi3jzVw5FDIKWUumbk4
-        9eM3giPxPbJb2avX9DdTgNjPzSJNDJhFyMPF1HS4gJVqWbBoijbEemh9nGg/d4kn
-        mJ514qM4lZTEAM94F7O7/JDXTeg+8bRgw2JujL1aQG3iZyrooU7gNajZmWcNObKr
-        aJTVeUSPUey2dw==
-X-ME-Sender: <xms:XAeLYCvFOsRsjqZkcsGigE5tzg_HAPJtZBebdQyo-S_MO6y4HKruuQ>
-    <xme:XAeLYHexxK8JlaRf92tij3QwUtKAXMQ0eQMQBCkF6YVqQE4Uc9Ez-EzTdZxD3cseZ
-    5VKUZmGCw78doXdEFo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddvgedgudefkecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepuegvnhcu
-    uehovggtkhgvlhcuoehmvgessggvnhgsohgvtghkvghlrdhnvghtqeenucggtffrrghtth
-    gvrhhnpeffkeehlefgteelgefhheekfeeigeffledtkefhveeifeehledtffehkeeuheek
-    heenucfkphepvdegrdduieelrddvtddrvdehheenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmvgessggvnhgsohgvtghkvghlrdhnvght
-X-ME-Proxy: <xmx:XAeLYNzRRFEmxdmcJiwKMuL33R1YdclCOZTNdvTDbCyCmK00Qgaz7Q>
-    <xmx:XAeLYNNujPLmOWpirYpAIftwNjJHeqBm5wExQK13oPNaLiPV_CCdGg>
-    <xmx:XAeLYC-GJNIdZ4ELwXwdhz9K9L8dvwKzjwLJ87qDoEoq3i-UfXk15w>
-    <xmx:XAeLYGZa0Vg8tHXIaaoLxK-6xo5cGZsLyObhD5HjflbKcHqmQvYDpg>
-Received: from localhost (unknown [24.169.20.255])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Thu, 29 Apr 2021 15:22:04 -0400 (EDT)
-From:   Ben Boeckel <me@benboeckel.net>
-To:     keyrings@vger.kernel.org
-Cc:     Ben Boeckel <mathstuf@gmail.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH v2 1/1] trusted-keys: match tpm_get_ops on all return paths
-Date:   Thu, 29 Apr 2021 15:21:56 -0400
-Message-Id: <20210429192156.770145-2-list.lkml.keyrings@me.benboeckel.net>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210429192156.770145-1-list.lkml.keyrings@me.benboeckel.net>
-References: <20210429192156.770145-1-list.lkml.keyrings@me.benboeckel.net>
+        Thu, 29 Apr 2021 15:24:21 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CDFEC06138C
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 12:23:33 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id k14so18109185wrv.5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 12:23:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mZR6yJJg0IBSnPE9su+AvonxGsm8ZfFFCm7ShdjTwvQ=;
+        b=ssmtpDvjIDmJyk5nxi7ilK1rS/PfcgPrdlPqB0yDXDfix4oLBHhspiB1cA0BxZFHL0
+         fzl19sp6iG2WIJfo8AcYmKD7PD9H/xhA9jFXuIW5GC9Nb64iN4pSa/+omhb1qzEL+JDn
+         e9BGy30ocZBmOQ95/onlHVbXHHgr9BQ6B3Efah0h2d18SWOUxZ5i5lBIpvtn2uhkU3Sj
+         YJSDBSqP+Hh6NS8/xCYDWXtVPlRXdKkxpfPkYxs6TKCt+fS9G724Z99u3LwGxIY51Xt0
+         YfqGe3RKRw+J45fwUwdg8qQzy/4K28eD2P785rjIwWXGSzT7LSMuzTWWbww/tdwXRTGG
+         g0CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mZR6yJJg0IBSnPE9su+AvonxGsm8ZfFFCm7ShdjTwvQ=;
+        b=AlxKKQqT/aFny/9p984z+PuvDBNNaYggD2oeDRhuXhlHDRQzpdoWDKFI+zzbSxqERj
+         65WS5s095u36xtw28lcoKMCKaGwH0IxAbSl60jc2VzUJkeY4IG7ZpTpmy6gb5HYSEoF3
+         DILSdhNsD3slliIGenhrbWc+y+IzX5iz9RkBEJmGui6E9qQmAP2gIq3em7qqoODfhEFj
+         Mjui9dzWsYqbT7+UAP9OO9uWOGuyJ4rxSK1lSO12+kkuIXJoueeQbUACzuo8NKtZ2hFQ
+         a1GyaYjBbKg3YgcoaYpl1LlHQiYPWO+VxbCCaxBDJEoZkrBNXWTEYXgTR82o136bXaio
+         3/Zg==
+X-Gm-Message-State: AOAM530xyAOQ1jzmuJuDFz4Y355oZMGW7Y8cexDa+VkFcBn/Sq8F79lU
+        0iSqDhia/ZElLBqsBlzulDdfQw==
+X-Google-Smtp-Source: ABdhPJza9qioQpEDGVoOtJ96QdX0eM9IWtCXsQyzsWrrlvDYObClYYuO0Plmm5pjMypo0szdZ9lSNA==
+X-Received: by 2002:adf:a316:: with SMTP id c22mr1513474wrb.202.1619724212082;
+        Thu, 29 Apr 2021 12:23:32 -0700 (PDT)
+Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.googlemail.com with ESMTPSA id 61sm6708000wrm.52.2021.04.29.12.23.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 12:23:31 -0700 (PDT)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH v2] dt-bindings: net: Convert mdio-gpio to yaml
+Date:   Thu, 29 Apr 2021 19:23:26 +0000
+Message-Id: <20210429192326.1148440-1-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Boeckel <mathstuf@gmail.com>
+Converts net/mdio-gpio.txt to yaml
 
-The `tpm_get_ops` call at the beginning of the function is not paired
-with a `tpm_put_ops` on this return path.
-
-Fixes: f2219745250f ("security: keys: trusted: use ASN.1 TPM2 key format for the blobs")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Ben Boeckel <mathstuf@gmail.com>
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
- security/keys/trusted-keys/trusted_tpm2.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Changes since v1:
+- fixes yamllint warning about indent
+- added maxItems 3
 
-diff --git a/security/keys/trusted-keys/trusted_tpm2.c b/security/keys/trusted-keys/trusted_tpm2.c
-index 617fabd4d913..0165da386289 100644
---- a/security/keys/trusted-keys/trusted_tpm2.c
-+++ b/security/keys/trusted-keys/trusted_tpm2.c
-@@ -336,9 +336,9 @@ int tpm2_seal_trusted(struct tpm_chip *chip,
- 			rc = -EPERM;
- 	}
- 	if (blob_len < 0)
--		return blob_len;
+ .../devicetree/bindings/net/mdio-gpio.txt     | 27 ---------
+ .../devicetree/bindings/net/mdio-gpio.yaml    | 57 +++++++++++++++++++
+ 2 files changed, 57 insertions(+), 27 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/net/mdio-gpio.txt
+ create mode 100644 Documentation/devicetree/bindings/net/mdio-gpio.yaml
+
+diff --git a/Documentation/devicetree/bindings/net/mdio-gpio.txt b/Documentation/devicetree/bindings/net/mdio-gpio.txt
+deleted file mode 100644
+index 4d91a36c5cf5..000000000000
+--- a/Documentation/devicetree/bindings/net/mdio-gpio.txt
++++ /dev/null
+@@ -1,27 +0,0 @@
+-MDIO on GPIOs
 -
--	payload->blob_len = blob_len;
-+		rc = blob_len;
-+	else
-+		payload->blob_len = blob_len;
- 
- 	tpm_put_ops(chip);
- 	return rc;
+-Currently defined compatibles:
+-- virtual,gpio-mdio
+-- microchip,mdio-smi0
+-
+-MDC and MDIO lines connected to GPIO controllers are listed in the
+-gpios property as described in section VIII.1 in the following order:
+-
+-MDC, MDIO.
+-
+-Note: Each gpio-mdio bus should have an alias correctly numbered in "aliases"
+-node.
+-
+-Example:
+-
+-aliases {
+-	mdio-gpio0 = &mdio0;
+-};
+-
+-mdio0: mdio {
+-	compatible = "virtual,mdio-gpio";
+-	#address-cells = <1>;
+-	#size-cells = <0>;
+-	gpios = <&qe_pio_a 11
+-		 &qe_pio_c 6>;
+-};
+diff --git a/Documentation/devicetree/bindings/net/mdio-gpio.yaml b/Documentation/devicetree/bindings/net/mdio-gpio.yaml
+new file mode 100644
+index 000000000000..70103ef17f53
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/mdio-gpio.yaml
+@@ -0,0 +1,57 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/mdio-gpio.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: MDIO on GPIOs
++
++maintainers:
++  - Andrew Lunn <andrew@lunn.ch>
++  - Florian Fainelli <f.fainelli@gmail.com>
++  - Heiner Kallweit <hkallweit1@gmail.com>
++
++allOf:
++  - $ref: "mdio.yaml#"
++
++properties:
++  compatible:
++    enum:
++      - virtual,mdio-gpio
++      - microchip,mdio-smi0
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 0
++
++  gpios:
++    minItems: 2
++    maxItems: 3
++    description: |
++      MDC and MDIO lines connected to GPIO controllers are listed in
++      the gpios property as described in section VIII.1 in the
++      following order: MDC, MDIO.
++
++#Note: Each gpio-mdio bus should have an alias correctly numbered in "aliases"
++#node.
++unevaluatedProperties: false
++
++examples:
++  - |
++    aliases {
++        mdio-gpio0 = &mdio0;
++    };
++
++    mdio0: mdio {
++      compatible = "virtual,mdio-gpio";
++      #address-cells = <1>;
++      #size-cells = <0>;
++      gpios = <&qe_pio_a 11
++               &qe_pio_c 6>;
++      ethphy0: ethernet-phy@0 {
++        reg = <0>;
++      };
++    };
++...
 -- 
-2.30.2
+2.26.3
 
