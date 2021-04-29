@@ -2,232 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C24FF36E8C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB0636E8CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240437AbhD2K3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 06:29:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25159 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240389AbhD2K3k (ORCPT
+        id S240434AbhD2KdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 06:33:09 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:48482 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232629AbhD2KdF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 06:29:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619692134;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ko3kaV/+Mf9FuO3wToe/HRm5XWo4kyxfc88vhtIYVqA=;
-        b=GbtSdfJdBD5pMu1XMaQ8nBerS7GJeezJ+z4d5d/CLNEAv1NZu96pzaU6XYpeYBCXvSvVdl
-        eJtzlU7rHIYUQeJqWam+tAi9O4FcwIMaHg+FI5fFe0XZ4hqKqiMIHIyYCbSnreUskJysq6
-        8cdTyyReQn0+SN69ue6N2FQQlAMtBiU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-36-ZTi-gXfSPN2PraJHSYgwQg-1; Thu, 29 Apr 2021 06:28:50 -0400
-X-MC-Unique: ZTi-gXfSPN2PraJHSYgwQg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B1D3C1008073;
-        Thu, 29 Apr 2021 10:28:49 +0000 (UTC)
-Received: from localhost.localdomain.com (unknown [10.40.196.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 11A325DDAD;
-        Thu, 29 Apr 2021 10:28:40 +0000 (UTC)
-From:   Prasanna Kumar Kalever <prasanna.kalever@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
-        josef@toxicpanda.com, axboe@kernel.dk, idryomov@redhat.com,
-        xiubli@redhat.com,
-        Prasanna Kumar Kalever <prasanna.kalever@redhat.com>
-Subject: [PATCH] nbd: provide a way for userspace processes to identify device backends
-Date:   Thu, 29 Apr 2021 15:58:28 +0530
-Message-Id: <20210429102828.31248-1-prasanna.kalever@redhat.com>
+        Thu, 29 Apr 2021 06:33:05 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TANiqD037446;
+        Thu, 29 Apr 2021 10:32:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=107xJILZ/k3vJceB87TBegFi0U6lLFQ35yB8nmmNbSM=;
+ b=vXB3z3UCrHexzBve64hdefEitFT9HVa9/y+2Pm0wjajsB7vIFPANdgeRxQKsbhSfHCYs
+ ME6um/dw8xYoFD8e2fbjUMvIxBg/r5l97nUzpMnx7PWVAIfbi4/R4JIDBSOOOEY36hdg
+ JmIgZBOVZu/RqSC3I2ncWRVe/p8mC7sT+tBaD0lwaz+DYjFXiP2vLozQ04YxLWBPn9HA
+ 0HXFNyOecRU+g9pDmnQal2D7XfeE2ViyEBTpV1ehLgbBztXoeKm5D64o7DHWFkiWIWKr
+ 93+uGu+rMkaYxYOG0G3i81QUXGG2fOA+3Akv0Xql592+MT9dbg7z49iHvGF1qj6ZUedN 1g== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 385ahbuw3t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 10:32:12 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TAQe8w064375;
+        Thu, 29 Apr 2021 10:32:12 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 384w3w2msg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 10:32:12 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13TAWBFL088524;
+        Thu, 29 Apr 2021 10:32:11 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 384w3w2mrs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 10:32:11 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13TAW7U4021477;
+        Thu, 29 Apr 2021 10:32:07 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 29 Apr 2021 03:32:07 -0700
+Date:   Thu, 29 Apr 2021 13:31:59 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        Marion et Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        tj@kernel.org, jiangshanlai@gmail.com, saeedm@nvidia.com,
+        leon@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH 1/2] workqueue: Have 'alloc_workqueue()' like macros
+ accept a format specifier
+Message-ID: <20210429103158.GA1981@kadam>
+References: <cover.1618780558.git.christophe.jaillet@wanadoo.fr>
+ <ae88f6c2c613d17bc1a56692cfa4f960dbc723d2.1618780558.git.christophe.jaillet@wanadoo.fr>
+ <042f5fff-5faf-f3c5-0819-b8c8d766ede6@acm.org>
+ <1032428026.331.1618814178946.JavaMail.www@wwinf2229>
+ <40c21bfe-e304-230d-b319-b98063347b8b@acm.org>
+ <20210422122419.GF2047089@ziepe.ca>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20210422122419.GF2047089@ziepe.ca>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: vMjc6YA3PuELYm8M01byc768l2ZGob5M
+X-Proofpoint-ORIG-GUID: vMjc6YA3PuELYm8M01byc768l2ZGob5M
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9968 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 mlxlogscore=999
+ priorityscore=1501 clxscore=1011 adultscore=0 suspectscore=0 spamscore=0
+ phishscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104290070
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Problem:
-On reconfigure of device, there is no way to defend if the backend
-storage is matching with the initial backend storage.
+On Thu, Apr 22, 2021 at 09:24:19AM -0300, Jason Gunthorpe wrote:
+> On Mon, Apr 19, 2021 at 01:02:34PM -0700, Bart Van Assche wrote:
+> > On 4/18/21 11:36 PM, Marion et Christophe JAILLET wrote:
+> > > The list in To: is the one given by get_maintainer.pl. Usualy, I only
+> > > put the ML in Cc: I've run the script on the 2 patches of the serie
+> > > and merged the 2 lists. Everyone is in the To: of the cover letter
+> > > and of the 2 patches.
+> > > 
+> > > If Théo is "Tejun Heo" (  (maintainer:WORKQUEUE) ), he is already in
+> > > the To: line.
+> > Linus wants to see a "Cc: ${maintainer}" tag in patches that he receives
+> > from a maintainer and that modify another subsystem than the subsystem
+> > maintained by that maintainer.
+> 
+> Really? Do you remember a lore link for this?
+> 
+> Generally I've been junking the CC lines (vs Andrew at the other
+> extreme that often has 10's of CC lines)
 
-Say, if an initial connect request for backend "pool1/image1" got
-mapped to /dev/nbd0 and the userspace process is terminated. A next
-reconfigure request within NBD_ATTR_DEAD_CONN_TIMEOUT is allowed to
-use /dev/nbd0 for a different backend "pool1/image2"
+Of course this patch has already been NAKed but it wasn't clear to me
+whose git tree it would have gone through.  Surely if it were going
+through your tree you would have required an Acked-by: from Tejun and
+the CC: line would not be required.  It would only be required if you
+can't get a maintainer to respond.
 
-For example, an operation like below could be dangerous:
-
-$ sudo rbd-nbd map --try-netlink rbd-pool/ext4-image
-/dev/nbd0
-$ sudo blkid /dev/nbd0
-/dev/nbd0: UUID="bfc444b4-64b1-418f-8b36-6e0d170cfc04" TYPE="ext4"
-$ sudo pkill -9 rbd-nbd
-$ sudo rbd-nbd attach --try-netlink --device /dev/nbd0 rbd-pool/xfs-image
-/dev/nbd0
-$ sudo blkid /dev/nbd0
-/dev/nbd0: UUID="d29bf343-6570-4069-a9ea-2fa156ced908" TYPE="xfs"
-
-Solution:
-Provide a way for userspace processes to keep some metadata to identify
-between the device and the backend, so that when a reconfigure request is
-made, we can compare and avoid such dangerous operations.
-
-With this solution, as part of the initial connect request, backend
-path can be stored in the sysfs per device config, so that on a reconfigure
-request it's easy to check if the backend path matches with the initial
-connect backend path.
-
-Please note, ioctl interface to nbd will not have these changes, as there
-won't be any reconfigure.
-
-Signed-off-by: Prasanna Kumar Kalever <prasanna.kalever@redhat.com>
----
- drivers/block/nbd.c              | 60 +++++++++++++++++++++++++++++++-
- include/uapi/linux/nbd-netlink.h |  1 +
- 2 files changed, 60 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index 4ff71b579cfc..b5022187ad9c 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -79,6 +79,7 @@ struct link_dead_args {
- #define NBD_RT_HAS_CONFIG_REF		4
- #define NBD_RT_BOUND			5
- #define NBD_RT_DISCONNECT_ON_CLOSE	6
-+#define NBD_RT_HAS_BACKEND_FILE		7
- 
- #define NBD_DESTROY_ON_DISCONNECT	0
- #define NBD_DISCONNECT_REQUESTED	1
-@@ -119,6 +120,8 @@ struct nbd_device {
- 
- 	struct completion *destroy_complete;
- 	unsigned long flags;
-+
-+	char *backend;
- };
- 
- #define NBD_CMD_REQUEUED	1
-@@ -216,6 +219,20 @@ static const struct device_attribute pid_attr = {
- 	.show = pid_show,
- };
- 
-+static ssize_t backend_show(struct device *dev,
-+		struct device_attribute *attr, char *buf)
-+{
-+	struct gendisk *disk = dev_to_disk(dev);
-+	struct nbd_device *nbd = (struct nbd_device *)disk->private_data;
-+
-+	return sprintf(buf, "%s\n", nbd->backend ?: "");
-+}
-+
-+static const struct device_attribute backend_attr = {
-+	.attr = { .name = "backend", .mode = 0444},
-+	.show = backend_show,
-+};
-+
- static void nbd_dev_remove(struct nbd_device *nbd)
- {
- 	struct gendisk *disk = nbd->disk;
-@@ -1215,6 +1232,12 @@ static void nbd_config_put(struct nbd_device *nbd)
- 				       &config->runtime_flags))
- 			device_remove_file(disk_to_dev(nbd->disk), &pid_attr);
- 		nbd->task_recv = NULL;
-+		if (test_and_clear_bit(NBD_RT_HAS_BACKEND_FILE,
-+				       &config->runtime_flags)) {
-+			device_remove_file(disk_to_dev(nbd->disk), &backend_attr);
-+			kfree(nbd->backend);
-+			nbd->backend = NULL;
-+		}
- 		nbd_clear_sock(nbd);
- 		if (config->num_connections) {
- 			int i;
-@@ -1274,7 +1297,7 @@ static int nbd_start_device(struct nbd_device *nbd)
- 
- 	error = device_create_file(disk_to_dev(nbd->disk), &pid_attr);
- 	if (error) {
--		dev_err(disk_to_dev(nbd->disk), "device_create_file failed!\n");
-+		dev_err(disk_to_dev(nbd->disk), "device_create_file failed for pid!\n");
- 		return error;
- 	}
- 	set_bit(NBD_RT_HAS_PID_FILE, &config->runtime_flags);
-@@ -1681,6 +1704,7 @@ static int nbd_dev_add(int index)
- 		BLK_MQ_F_BLOCKING;
- 	nbd->tag_set.driver_data = nbd;
- 	nbd->destroy_complete = NULL;
-+	nbd->backend = NULL;
- 
- 	err = blk_mq_alloc_tag_set(&nbd->tag_set);
- 	if (err)
-@@ -1754,6 +1778,7 @@ static const struct nla_policy nbd_attr_policy[NBD_ATTR_MAX + 1] = {
- 	[NBD_ATTR_SOCKETS]		=	{ .type = NLA_NESTED},
- 	[NBD_ATTR_DEAD_CONN_TIMEOUT]	=	{ .type = NLA_U64 },
- 	[NBD_ATTR_DEVICE_LIST]		=	{ .type = NLA_NESTED},
-+	[NBD_ATTR_BACKEND_IDENTIFIER]	=	{ .type = NLA_STRING},
- };
- 
- static const struct nla_policy nbd_sock_policy[NBD_SOCK_MAX + 1] = {
-@@ -1956,6 +1981,23 @@ static int nbd_genl_connect(struct sk_buff *skb, struct genl_info *info)
- 		}
- 	}
- 	ret = nbd_start_device(nbd);
-+	if (ret)
-+		goto out;
-+	if (info->attrs[NBD_ATTR_BACKEND_IDENTIFIER]) {
-+		nbd->backend = nla_strdup(info->attrs[NBD_ATTR_BACKEND_IDENTIFIER],
-+					  GFP_KERNEL);
-+		if (!nbd->backend) {
-+			ret = -ENOMEM;
-+			goto out;
-+		}
-+	}
-+	ret = device_create_file(disk_to_dev(nbd->disk), &backend_attr);
-+	if (ret) {
-+		dev_err(disk_to_dev(nbd->disk),
-+			"device_create_file failed for backend!\n");
-+		goto out;
-+	}
-+	set_bit(NBD_RT_HAS_BACKEND_FILE, &config->runtime_flags);
- out:
- 	mutex_unlock(&nbd->config_lock);
- 	if (!ret) {
-@@ -2048,6 +2090,22 @@ static int nbd_genl_reconfigure(struct sk_buff *skb, struct genl_info *info)
- 		       index);
- 		return -EINVAL;
- 	}
-+	if (nbd->backend) {
-+		if (info->attrs[NBD_ATTR_BACKEND_IDENTIFIER]) {
-+			if (nla_strcmp(info->attrs[NBD_ATTR_BACKEND_IDENTIFIER],
-+				       nbd->backend)) {
-+				mutex_unlock(&nbd_index_mutex);
-+				dev_err(nbd_to_dev(nbd),
-+					"backend image doesn't match with %s\n",
-+					nbd->backend);
-+				return -EINVAL;
-+			}
-+		} else {
-+			mutex_unlock(&nbd_index_mutex);
-+			dev_err(nbd_to_dev(nbd), "must specify backend\n");
-+			return -EINVAL;
-+		}
-+	}
- 	if (!refcount_inc_not_zero(&nbd->refs)) {
- 		mutex_unlock(&nbd_index_mutex);
- 		printk(KERN_ERR "nbd: device at index %d is going down\n",
-diff --git a/include/uapi/linux/nbd-netlink.h b/include/uapi/linux/nbd-netlink.h
-index c5d0ef7aa7d5..2d0b90964227 100644
---- a/include/uapi/linux/nbd-netlink.h
-+++ b/include/uapi/linux/nbd-netlink.h
-@@ -35,6 +35,7 @@ enum {
- 	NBD_ATTR_SOCKETS,
- 	NBD_ATTR_DEAD_CONN_TIMEOUT,
- 	NBD_ATTR_DEVICE_LIST,
-+	NBD_ATTR_BACKEND_IDENTIFIER,
- 	__NBD_ATTR_MAX,
- };
- #define NBD_ATTR_MAX (__NBD_ATTR_MAX - 1)
--- 
-2.30.2
+regards,
+dan carpenter
 
