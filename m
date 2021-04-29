@@ -2,89 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BFAD36E855
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 047CA36E858
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237788AbhD2KEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 06:04:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232629AbhD2KEa (ORCPT
+        id S238062AbhD2KEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 06:04:44 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:39532 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237512AbhD2KEn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 06:04:30 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8FA2C06138B;
-        Thu, 29 Apr 2021 03:03:44 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id f12so48708991qtf.2;
-        Thu, 29 Apr 2021 03:03:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AcjSzANMS6HIMfKrieYzsYzq45hgOJ71xRiU5GDItPk=;
-        b=MqbV6CHcekXw68bg3H2A98ezVud2yeeRHpOp+fV3kOshYX4oxr7iFbs7ifLhsNQOmy
-         kejhUFhad5UkKGph+Xu2LmLIpspIVDttDfulaYravbeaJEmNvqFDAwLF+PXaV0Tnw8f8
-         Em3gtT/QaUnI9cVQ9+l58i8JMiPj5oCYCTrRzWC0iGb/nN39jWqrr/cdD4bFc9dugPbo
-         GTtuSgzlhev6e4/Wv904U1mn/BDd4XTXPTKQiolEGrXGLMSBoBmSvWnR6GJOdtcFImC8
-         SfoUj5Me69M5MKGi4vbcqGa5/lHo+/NVLKXiljNQym17OX7l5Hf9VPFdO7KrSOkFHJVe
-         nzIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AcjSzANMS6HIMfKrieYzsYzq45hgOJ71xRiU5GDItPk=;
-        b=UUBBwM85FNYoMRRN1b9Wv05Kwn2WQqqpN2w+ser+zJMJRgY3tIMwFIxYJKZ/5apraq
-         y6QxqjUv/dH4Pto1ya35KlOD5MzJ+OZMnlYsHi085wgmSxq3orXHKwHDPb5w7W/E0oDO
-         fqYy/hqAHMD2hFmang6gYR5uUYGpggShuWOMIs6Fz/2C/lVlrh7HqU7FFAxfEcYVa1tn
-         NYlGyE1RAz7CTRVTFVtZBdcPV5u36Bk9TkV3qp3Eh6vjLSDSbWMri1ukGj3qErqUPBFw
-         hTZeb1Ukhc1W5Toti9YnjbyJ8DVMzsLA8N9Nby/2I8oyfho719be7ABKWII7T0JQ10Yi
-         aKmA==
-X-Gm-Message-State: AOAM530ocs7WXvlfHt9Cfm/VvSyh0Xz1hgV+6JaFs2Vu6KwBm+s4JBSF
-        WrxHgGxChW7MV6W4kKmy2Os4uDremPSB6sV3rbs=
-X-Google-Smtp-Source: ABdhPJwGNTXNUIRbmonLReVBGTiBtFnLjx7ynUomR28zpT3yBPaqiYt1wEXEdfJ4KQF/bgUBDibGjuMSOhDq8SaJKYQ=
-X-Received: by 2002:ac8:6b05:: with SMTP id w5mr18034535qts.204.1619690624006;
- Thu, 29 Apr 2021 03:03:44 -0700 (PDT)
+        Thu, 29 Apr 2021 06:04:43 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lc3WU-0004lW-RS; Thu, 29 Apr 2021 10:03:54 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH] initrd: remove redundant assignment to variable rotate
+Date:   Thu, 29 Apr 2021 11:03:54 +0100
+Message-Id: <20210429100354.58353-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <1619664739-12589-1-git-send-email-shengjiu.wang@nxp.com> <20210429070940.6hech7hezrpiyzzp@pengutronix.de>
-In-Reply-To: <20210429070940.6hech7hezrpiyzzp@pengutronix.de>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Thu, 29 Apr 2021 18:03:32 +0800
-Message-ID: <CAA+D8ANeEbVMJ6QGfyrtqgP9ohHXD6FBFdwXT7rZ7pO+SVTFcw@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: imx6ul: Switch to fsl-asoc-card sound card
-To:     Marco Felsch <m.felsch@pengutronix.de>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de,
-        Fabio Estevam <festevam@gmail.com>, linux-imx@nxp.com,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 3:09 PM Marco Felsch <m.felsch@pengutronix.de> wrote:
->
-> Hi,
->
-> thanks for the patch.
->
-> On 21-04-29 10:52, Shengjiu Wang wrote:
-> > There is issue with simple sound card, the simple sound
-> > card can't configure the pll of codec.
->
-> Hm, than we should fix this rather than moving to the 'old'
-> 'fsl,imx-audio-wm8960'. But that only my opinion.
->
+From: Colin Ian King <colin.king@canonical.com>
 
-Thanks for your comments.
+The assignment of 0 to rotate is redundant, the value is never
+read so it can be it removed.
 
-But fsl-asoc-card is better than simple sound card, it not only
-avoids the pll error but also supports the ASRC module.
-And this patch is to use the same machine driver as the imx6qdl
-platform.
+Cleans up clang scan-build warning:
+init/do_mounts_rd.c:252:4: warning: Value stored to 'rotate' is
+never read [deadcode.DeadStores]
+                        rotate = 0;
+                        ^        ~
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ init/do_mounts_rd.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Best regards
-Wang shengjiu
+diff --git a/init/do_mounts_rd.c b/init/do_mounts_rd.c
+index ac021ae6e6fa..8003604dbf90 100644
+--- a/init/do_mounts_rd.c
++++ b/init/do_mounts_rd.c
+@@ -249,7 +249,6 @@ int __init rd_load_image(char *from)
+ 	for (i = 0; i < nblocks; i++) {
+ 		if (i && (i % devblocks == 0)) {
+ 			pr_cont("done disk #1.\n");
+-			rotate = 0;
+ 			fput(in_file);
+ 			break;
+ 		}
+-- 
+2.30.2
+
