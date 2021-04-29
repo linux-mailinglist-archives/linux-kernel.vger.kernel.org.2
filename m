@@ -2,206 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3F836E746
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB8436E747
 	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 10:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239989AbhD2IqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 04:46:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239952AbhD2IqJ (ORCPT
+        id S240034AbhD2Iqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 04:46:32 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:25811 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233714AbhD2Iqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 04:46:09 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE30C06138D
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 01:45:21 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id h190-20020a3785c70000b02902e022511825so27298133qkd.7
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 01:45:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=jczHCwrsUz4nxGytYAbOYxiwVzhOvP/hHxvtUgEKyfY=;
-        b=gF2qYHrDn89JrVsHKfB0auMYhxo5tdLoOGPcZ6s8bOXQ0rnJoYf2p8vyqIEDyUOMNx
-         uBMjP2jiho5Djuvtg8p0rVR1hjrI2W/TwZuyWJhKehBBFrpAoSkW2s9/yWyDXpJuXmkH
-         GdplhNz8B6ObULbxmKPzDpiLLkOEsttTrqrxXdrLhyif+LGxqSvgBLeeBfbiPHMheV+n
-         YO1Q002eC6G4L7pVhvJTzbLWa+Y4aRWS+R7wRnb/IVK+9J6VjtDsDkpz1r3mwu3sXIMM
-         dtMOdzWVtGdaKmyMzxMRhDFO8zIsfDUN9IGhjvHzdVAWJOLsGew4m7E1oGPYNywe2HA8
-         Adug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=jczHCwrsUz4nxGytYAbOYxiwVzhOvP/hHxvtUgEKyfY=;
-        b=NmXGtfOy/vhB4ZoZs8sdlaC7mpkLj6LAw7HE8yqOOUU2xB75L7wQxdsRLVV+cZnuQs
-         IFSDHBh45UGx0M8OdLXq2v/wlxcdmo76gJNKSPjvb9S8jsMG5/4hp4lW/S7RaCWQQXt2
-         k7W9y6sjvVBezxBayta7nEtQPh7ae96BQijEI8gbyxzPdpAQOJKDa8te4EO5HxbKSTyY
-         Fv3B7kAJ3Y9bwR7ge+QpbCbq+N/kcg3csZw8wPnbMXHIWjCwSsmIMdQcgvSajJWo6JiE
-         +r8O5wYnvloQK1XRnUsBcJbC3tpnmKFOip/XF5R8kg6XreBrbU6qBn+wI7stau3pHOWV
-         f0fQ==
-X-Gm-Message-State: AOAM531tYV5uWFlzD17GUex5GgbtZxo1Wkh+cxH/miZCEyPDQyFkFmaH
-        6Qgg1gaPTPnWtsoTTE2UYHYzAQ6CJle3
-X-Google-Smtp-Source: ABdhPJwlSiTQ5Nd0y1YGK9qKbAQ/7M6H6puRAmZzvfiyHIBongleXchfeflsgyh6ffhNstvlx7r6z1R347SI
-X-Received: from nandos.syd.corp.google.com ([2401:fa00:9:14:30c1:7a5a:2ec9:29e5])
- (user=amistry job=sendgmr) by 2002:ad4:4c11:: with SMTP id
- bz17mr17371179qvb.42.1619685920462; Thu, 29 Apr 2021 01:45:20 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 18:44:10 +1000
-In-Reply-To: <20210429084410.783998-1-amistry@google.com>
-Message-Id: <20210429184101.RFC.v2.2.I0d44ed3cc06ff2924c1b5e418e0599e1c1731c3c@changeid>
-Mime-Version: 1.0
-References: <20210429084410.783998-1-amistry@google.com>
-X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-Subject: [RFC PATCH v2 2/2] selftests: Benchmark for the cost of disabling IB speculation
-From:   Anand K Mistry <amistry@google.com>
-To:     x86@kernel.org
-Cc:     joelaf@google.com, asteinhauser@google.com, bp@alien8.de,
-        tglx@linutronix.de, Anand K Mistry <amistry@google.com>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 29 Apr 2021 04:46:31 -0400
+X-Originating-IP: 2.7.49.219
+Received: from debian.home (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id C4ECF240006;
+        Thu, 29 Apr 2021 08:45:42 +0000 (UTC)
+From:   Alexandre Ghiti <alex@ghiti.fr>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexandre Ghiti <alex@ghiti.fr>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] riscv: Disallow to build XIP_KERNEL with SOC_SIFIVE
+Date:   Thu, 29 Apr 2021 04:45:41 -0400
+Message-Id: <20210429084541.28083-1-alex@ghiti.fr>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a simple benchmark for determining the cost of disabling IB
-speculation. It forks a child process and does a simple ping-pong
-using pipes between the parent and child. The child process can have IB
-speculation disabled by running with 'd' as the first argument.
+RISCV_ERRATA_ALTERNATIVE patches text at runtime which is not possible when
+the kernel is executed from the flash in XIP mode, and as the SIFIVE
+errata must be fixed somehow, disallow to build a XIP kernel that
+supports SIFIVE socs.
 
-The test increases the number of iterations until the iterations take at
-least 1 second, to minimise noise.
-
-This file is NOT intended for inclusion in the kernel source. It is
-presented here as a patch for reference and for others to replicate
-results.
-
-The binary should be run with 'taskset' and pinned to a single core,
-since the goal is to benchmark process switching on a single core.
-
-Signed-off-by: Anand K Mistry <amistry@google.com>
+Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
 ---
+ arch/riscv/Kconfig.erratas | 2 +-
+ arch/riscv/Kconfig.socs    | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-(no changes since v1)
-
- .../testing/selftests/ib_spec/ib_spec_bench.c | 109 ++++++++++++++++++
- 1 file changed, 109 insertions(+)
- create mode 100644 tools/testing/selftests/ib_spec/ib_spec_bench.c
-
-diff --git a/tools/testing/selftests/ib_spec/ib_spec_bench.c b/tools/testing/selftests/ib_spec/ib_spec_bench.c
-new file mode 100644
-index 000000000000..e8eab910a9d0
---- /dev/null
-+++ b/tools/testing/selftests/ib_spec/ib_spec_bench.c
-@@ -0,0 +1,109 @@
-+#include <stdio.h>
-+#include <time.h>
-+#include <stdint.h>
-+#include <assert.h>
-+#include <unistd.h>
-+#include <sys/prctl.h>
-+
-+#define PR_SPEC_IBPB_MODE 2
-+#define PR_SPEC_IBPB_MODE_DEFAULT 0
-+#define PR_SPEC_IBPB_MODE_SANDBOX 1
-+#define PR_SPEC_IBPB_MODE_PROTECT 2
-+
-+int64_t get_time_us() {
-+	struct timespec ts = {0};
-+	assert(clock_gettime(CLOCK_MONOTONIC, &ts) == 0);
-+	return (ts.tv_sec * 1000000) + (ts.tv_nsec/1000);
-+}
-+
-+void pong(int read_fd, int write_fd) {
-+	int ret;
-+	char buf;
-+
-+	while (1) {
-+		ret = read(read_fd, &buf, 1);
-+		if (ret == 0)
-+			return;
-+		assert(ret == 1);
-+
-+		assert(write(write_fd, &buf, 1) == 1);
-+	}
-+}
-+
-+void ping_once(int write_fd, int read_fd) {
-+	char buf = 42;
-+	assert(write(write_fd, &buf, 1) == 1);
-+	assert(read(read_fd, &buf, 1) == 1);
-+}
-+
-+int64_t ping_multi(int iters, int write_fd, int read_fd) {
-+	int64_t start_time = get_time_us();
-+	for (int i = 0; i < iters; i++)
-+		ping_once(write_fd, read_fd);
-+	return get_time_us() - start_time;
-+}
-+
-+void run_test(int write_fd, int read_fd) {
-+	int64_t iters = 1;
-+	int64_t t;
-+	for (int i = 0; i < 60; i++) {
-+		t = ping_multi(iters, write_fd, read_fd);
-+		printf("iters: %d, t: %dus, iter/sec: %d, us/iter: %d\n",
-+					 iters, t, (iters * 1000000LL) / t, t/iters);
-+
-+		if (t > 1000000)
-+			break;
-+		iters <<= 1;
-+	}
-+}
-+
-+int main(int argc, char* argv[]) {
-+	int fds_ping[2], fds_pong[2];
-+	assert(pipe(fds_ping) == 0);
-+	assert(pipe(fds_pong) == 0);
-+
-+	int disable_ib = 0;
-+	int spec_ibpb_mode = 0;
-+
-+	if (argc > 1) {
-+		int done = 0;
-+		for (int i = 0; !done; i++) {
-+			switch (argv[1][i]) {
-+				case 0:
-+					done = 1;
-+					break;
-+				case 'd':
-+					disable_ib = 1;
-+					break;
-+				case 's':
-+					spec_ibpb_mode = PR_SPEC_IBPB_MODE_SANDBOX;
-+					break;
-+				case 'p':
-+					spec_ibpb_mode = PR_SPEC_IBPB_MODE_PROTECT;
-+					break;
-+			}
-+		}
-+	}
-+
-+	pid_t pid = fork();
-+	assert(pid >= 0);
-+	if (!pid) {
-+		if (prctl(PR_SET_SPECULATION_CTRL,
-+							PR_SPEC_IBPB_MODE, spec_ibpb_mode, 0, 0)) {
-+			perror("Unable to set IBPB mode");
-+		}
-+
-+		if (disable_ib)
-+			assert(prctl(PR_SET_SPECULATION_CTRL,
-+									 PR_SPEC_INDIRECT_BRANCH,
-+									 PR_SPEC_DISABLE, 0, 0) == 0);
-+
-+		close(fds_ping[1]);
-+		pong(fds_ping[0], fds_pong[1]);
-+	} else {
-+		run_test(fds_ping[1], fds_pong[0]);
-+		close(fds_ping[1]);
-+	}
-+
-+	return 0;
-+}
+diff --git a/arch/riscv/Kconfig.erratas b/arch/riscv/Kconfig.erratas
+index d5d03ae8d685..9537dbd67357 100644
+--- a/arch/riscv/Kconfig.erratas
++++ b/arch/riscv/Kconfig.erratas
+@@ -2,7 +2,7 @@ menu "CPU errata selection"
+ 
+ config RISCV_ERRATA_ALTERNATIVE
+ 	bool "RISC-V alternative scheme"
+-	default y
++	default y if !XIP_KERNEL
+ 	help
+ 	  This Kconfig allows the kernel to automatically patch the
+ 	  errata required by the execution platform at run time. The
+diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+index 00c2b205654c..9cb38bc9d7cd 100644
+--- a/arch/riscv/Kconfig.socs
++++ b/arch/riscv/Kconfig.socs
+@@ -9,6 +9,7 @@ config SOC_MICROCHIP_POLARFIRE
+ 
+ config SOC_SIFIVE
+ 	bool "SiFive SoCs"
++	depends on !XIP_KERNEL
+ 	select SERIAL_SIFIVE if TTY
+ 	select SERIAL_SIFIVE_CONSOLE if TTY
+ 	select CLK_SIFIVE
 -- 
-2.31.1.498.g6c1eba8ee3d-goog
+2.20.1
 
