@@ -2,136 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A989936E5ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 09:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C002836E601
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 09:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239483AbhD2H3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 03:29:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60038 "EHLO
+        id S239663AbhD2Hav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 03:30:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239542AbhD2H25 (ORCPT
+        with ESMTP id S232082AbhD2Hac (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 03:28:57 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E48C06138F;
-        Thu, 29 Apr 2021 00:28:11 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id h36so49163112lfv.7;
-        Thu, 29 Apr 2021 00:28:10 -0700 (PDT)
+        Thu, 29 Apr 2021 03:30:32 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C3EC06138B;
+        Thu, 29 Apr 2021 00:29:08 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id m12so5781258pgr.9;
+        Thu, 29 Apr 2021 00:29:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jdGoIRWBioljnz1nn4BBzNDaqsoqN9PPsguAeYrjWLg=;
-        b=HJX7+45yNzfNOqoK21ORJnfSS4SqA73WGkbuaPh5kcOvNYBW3pgUgci+P8nrnGhQNi
-         QZWfIOMDuLxP7E+IQpYLX9lQKKuah9ZA8zd1fRzmg+us00a0DmfVFSJnoglvDlrR5JPu
-         wZT0M0/aUfULpMBV9n6oztU1UyISEfYE99jx+Q8TP6g+4uRAG8uA8+yTJauJnN5AbBUY
-         qNoqboxDl+xzzGI7bhFrM+aicJFNWgbT7KP6ymuX4ynpdc3n//T15fOaV6b78MEdGhpM
-         FgBTL7grc3s+XEViMjWFpN6JTZThcff9VQa1IWXouixVnItPd6v/EBVeRr1oW/H3lGiu
-         /UIA==
+        h=from:to:cc:subject:date:message-id;
+        bh=lZMvbMppjpPZmuxlkLQ5Yw5wPz86LXmS4L9P6/MEvlk=;
+        b=hgcZnthuzmqZq5NREAgPhsiKiJBmDRL2JkZKWCUOvKbqLBQWpCSYLhwja+iiHUgCU1
+         J8nKfSqKjS0jmXBNMPpoeX0M4UoZLJkY97a7rqiZ+ASX6253sgD5dzfdkjSRPGPtVUDZ
+         UtYW6CZSAKmpS6N2TDIbsoDMszZ8zrfIlXMRt3tbCA/WATM3sp4xSPI344xwxrq98/Xd
+         eiRUkzaScYG+KomgAkweesU17OCMAXcfW6RNhCvJlh+YYvlLnBC7bwvjLjES5vPGVeiW
+         BhR+Eh4M31hX7cf0s5sD586nhP/4twOMtJuoVV+xkWIg5kv7U6BAOzfdqbTZx6kJBmKF
+         1a7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jdGoIRWBioljnz1nn4BBzNDaqsoqN9PPsguAeYrjWLg=;
-        b=F7+IaO8wzRH5HaDZ7T77Gov35YfycrgsjdDmc/5Uz+pJbUnQSZzrU5lrgE64EQhJSP
-         32Lk8yfAiYARvKp8shBrftuGmLcoo0qws35hlHZkKmaMgohLu7GvpPRhbBsZ32ZOSgWi
-         oMOroKpoqpAKsqedrDZsnY9U12THMT0UMEIFYriBshw4xmcaFWca8fXO4ITnqb9iX6RR
-         osr1sxE1LfcqW6m17zK5polb/jxBA9GGCTBP2iXmptwNrb8WAfllNfT1ntJVIz1VIq40
-         Oa5gI4UTsU6qavlS3g4NLC5zoJ4RO2GeoNH7aZjxwb7W3mPYw1VDTMLzT7qJ1JoL1Jt+
-         jb9A==
-X-Gm-Message-State: AOAM531FUzHww6X9No679KWry/KHEaRq6pENdedH23LqD53HVRitJCdj
-        H0n7s7Bmx7zpKM0RozizhrY=
-X-Google-Smtp-Source: ABdhPJwuzpu7JK/CSqJabsNtmy0swVR3AkMVRzJ7rqYa3XCC6KgbaqN5bCkxJUe0VVIgGQcVOJHNpg==
-X-Received: by 2002:a05:6512:12d2:: with SMTP id p18mr4572032lfg.239.1619681289241;
-        Thu, 29 Apr 2021 00:28:09 -0700 (PDT)
-Received: from grain.localdomain ([5.18.199.94])
-        by smtp.gmail.com with ESMTPSA id f17sm260073lfu.215.2021.04.29.00.28.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 00:28:08 -0700 (PDT)
-Received: by grain.localdomain (Postfix, from userid 1000)
-        id 72CF5560116; Thu, 29 Apr 2021 10:28:07 +0300 (MSK)
-Date:   Thu, 29 Apr 2021 10:28:07 +0300
-From:   Cyrill Gorcunov <gorcunov@gmail.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        linux-arch <linux-arch@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=lZMvbMppjpPZmuxlkLQ5Yw5wPz86LXmS4L9P6/MEvlk=;
+        b=mknvJLcAJBmcTvm6ROCKp2NSh6gQ7/27fQqVrRbKB2psOAyuhpczAbwARiPOkft+PJ
+         ynzn16TTYpL69FcLEOelkOCrmZCllPYfOoqegG7N1Y2MhUzUFmkJA/HNijb0HHnzlN2V
+         9AVA21pSp1nm0owXipIe2tiHvlY3NJH7zYqU92hDjbMkSjJdHINHGJnFk2CzUUklrxY2
+         oCsDGzjDHSOpUdrKvO1nZPyMSy5gQzznDq7kDEKpPueKHcO40A3pxJGW8Ek7ZYKFV0zC
+         QukczsTqlYnF8Sv1ZB47ox+uEGcYCgCF9NC28QFiGYwHJJN2TZ0UopgqmfLixdOAYmHa
+         EmVA==
+X-Gm-Message-State: AOAM531vK0zT1Im2ZvxtGnRad4c8/1i0M5Vr2Bok+QLHXrNCuh6N2zmm
+        bdbn8yyMY0He3R82w1MW/yA=
+X-Google-Smtp-Source: ABdhPJyXBZu43sKug8SqQTf/zxeF8hKBVbti8QunGDCHFiZ16mANPrKR0hHzlHtxZ07GrjLESvrXiA==
+X-Received: by 2002:a63:31cb:: with SMTP id x194mr7306534pgx.290.1619681348525;
+        Thu, 29 Apr 2021 00:29:08 -0700 (PDT)
+Received: from linux-l9pv.suse ([124.11.22.254])
+        by smtp.gmail.com with ESMTPSA id z29sm1632085pga.52.2021.04.29.00.29.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 29 Apr 2021 00:29:07 -0700 (PDT)
+From:   "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
+X-Google-Original-From: "Lee, Chun-Yi" <jlee@suse.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ben Boeckel <me@benboeckel.net>,
         Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Subject: Re: extending ucontext (Re: [PATCH v26 25/30] x86/cet/shstk: Handle
- signals for shadow stack)
-Message-ID: <YIpgB5HbnNPWX4FP@grain>
-References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
- <20210427204315.24153-26-yu-cheng.yu@intel.com>
- <CALCETrVTeYfzO-XWh+VwTuKCyPyp-oOMGH=QR_msG9tPQ4xPmA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrVTeYfzO-XWh+VwTuKCyPyp-oOMGH=QR_msG9tPQ4xPmA@mail.gmail.com>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+        Malte Gell <malte.gell@gmx.de>,
+        Varad Gautam <varad.gautam@suse.com>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Lee, Chun-Yi" <jlee@suse.com>
+Subject: [PATCH v6 0/4] Check codeSigning extended key usage extension
+Date:   Thu, 29 Apr 2021 15:28:47 +0800
+Message-Id: <20210429072851.24057-1-jlee@suse.com>
+X-Mailer: git-send-email 2.12.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 04:03:55PM -0700, Andy Lutomirski wrote:
-> On Tue, Apr 27, 2021 at 1:44 PM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
-> >
-> > When shadow stack is enabled, a task's shadow stack states must be saved
-> > along with the signal context and later restored in sigreturn.  However,
-> > currently there is no systematic facility for extending a signal context.
-> > There is some space left in the ucontext, but changing ucontext is likely
-> > to create compatibility issues and there is not enough space for further
-> > extensions.
-> >
-> > Introduce a signal context extension struct 'sc_ext', which is used to save
-> > shadow stack restore token address.  The extension is located above the fpu
-> > states, plus alignment.  The struct can be extended (such as the ibt's
-> > wait_endbr status to be introduced later), and sc_ext.total_size field
-> > keeps track of total size.
-> 
-> I still don't like this.
-> 
-> Here's how the signal layout works, for better or for worse:
-> 
-> The kernel has:
-> 
-> struct rt_sigframe {
->     char __user *pretcode;
->     struct ucontext uc;
->     struct siginfo info;
->     /* fp state follows here */
-> };
-> 
-> This is roughly the actual signal frame.  But userspace does not have
-> this struct declared, and user code does not know the sizes of the
-> fields.  So it's accessed in a nonsensical way.  The signal handler
+NIAP PP_OS certification requests that the OS shall validate the
+CodeSigning extended key usage extension field for integrity
+verifiction of exectable code:
 
-Well, not really. While indeed this is not declared as a part of API
-the structure is widely used for rt_sigreturn syscall (and we're using
-it inside criu thus any change here will simply break the restore
-procedure). Sorry out of time right now, I'll read your mail more
-carefully once time permit.
+    https://www.niap-ccevs.org/MMO/PP/-442-/
+        FIA_X509_EXT.1.1
+
+This patchset adds the logic for parsing the codeSigning EKU extension
+field in X.509. And checking the CodeSigning EKU when verifying
+signature of kernel module or kexec PE binary in PKCS#7.
+
+v6:
+- Add more length checking when parsing extKeyUsage and EKU's OID blob.
+- Add 'usage' parameter to the comment of pkcs7_validate_trust function.
+
+v5:
+Fixed the wording in module-signing.rst.
+
+v4:
+Fixed the wording in patch description.
+
+v3:
+- Add codeSigning EKU to x509.genkey key generation config.
+- Add openssl command option example for generating CodeSign EKU to
+  module-signing.rst document. 
+
+v2:
+Changed the help wording in the Kconfig.
+
+Lee, Chun-Yi (4):
+  X.509: Add CodeSigning extended key usage parsing
+  PKCS#7: Check codeSigning EKU for kernel module and kexec pe
+    verification
+  modsign: Add codeSigning EKU when generating X.509 key generation
+    config
+  Documentation/admin-guide/module-signing.rst: add openssl command
+    option example for CodeSign EKU
+
+ Documentation/admin-guide/module-signing.rst |  6 +++++
+ certs/Makefile                               |  1 +
+ certs/system_keyring.c                       |  2 +-
+ crypto/asymmetric_keys/Kconfig               |  9 +++++++
+ crypto/asymmetric_keys/pkcs7_trust.c         | 37 +++++++++++++++++++++++++---
+ crypto/asymmetric_keys/x509_cert_parser.c    | 24 ++++++++++++++++++
+ include/crypto/pkcs7.h                       |  3 ++-
+ include/crypto/public_key.h                  |  1 +
+ include/linux/oid_registry.h                 |  5 ++++
+ 9 files changed, 83 insertions(+), 5 deletions(-)
+
+-- 
+2.16.4
+
