@@ -2,113 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA0A236ED88
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B7936ED87
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240759AbhD2PlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 11:41:22 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:43136 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240646AbhD2PlP (ORCPT
+        id S240732AbhD2PlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 11:41:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37462 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233451AbhD2PlN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 11:41:15 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TFKUW4076424;
-        Thu, 29 Apr 2021 15:40:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=BQbkytA+PXtTY5YfGP8M5DIYUuBz3K7V5eP2VQDmhNM=;
- b=S9FvGfccgLwiYVaHfVT6jvYI9xpZP3PWhPZeOaPVxfS3KNgYbpuPJI2hbw3XraqSnlyZ
- 505RkaClU9/iT4OKzTQ+bczYv+vuWzeaRFjuhq2fmVFED06dzd/eeSqY9SuPEFcM/3MS
- ERuk9MX5h8FdEkgC/Kr+/xCjP9neVJ77JuoK5y731Wr7wGmQsr2F4kEAXslZKd76GOSp
- 9MvMREJ777cCo/B9Mf3X/o1koMgac30wg/QmrFyrwm+ecG4h0NZgIwNU+0JVm+LiECek
- pktom7ZUB3L7zljVNBR46D79YXmni3Rp6+sgziRygTzJE1IWbuuyhZG6ln3IogIs75HN Hg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 385aeq4uva-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 15:40:12 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TFEule086153;
-        Thu, 29 Apr 2021 15:40:11 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 3874d3pt3x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 15:40:11 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13TFYBrO173166;
-        Thu, 29 Apr 2021 15:40:10 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 3874d3pt3a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 15:40:10 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13TFe9MK014179;
-        Thu, 29 Apr 2021 15:40:09 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 29 Apr 2021 08:40:08 -0700
-Date:   Thu, 29 Apr 2021 18:40:02 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Phil Reid <preid@electromag.com.au>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v3 3/4] staging: fbtft: Don't spam logs when probe is
- deferred
-Message-ID: <20210429154002.GF21598@kadam>
-References: <20210428130415.55406-1-andriy.shevchenko@linux.intel.com>
- <20210428130415.55406-4-andriy.shevchenko@linux.intel.com>
- <20210429144244.GE1981@kadam>
+        Thu, 29 Apr 2021 11:41:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619710826;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kK+PtjkelzcP148tYlX83T1qpvdgbT7Hd+zpcnCGKv4=;
+        b=FbRKFbvHMrQf3hIl7bz93MrO3CLfZAlTeA0yTAfH2hHpD1Wa40k6G2h8b4/f22gMmup6/T
+        fhIZRgKyHpPnqlVGAUvG48/5aOd3gS8QZ55cNTRRdbZiLJ5hzCbb3heA+jSWW3OxccB22H
+        av6z2PRTZFLTIjhQcbRZA7LFZzR8El8=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-482-bXftMJ1BM_SA61Q_vDeaDg-1; Thu, 29 Apr 2021 11:40:24 -0400
+X-MC-Unique: bXftMJ1BM_SA61Q_vDeaDg-1
+Received: by mail-ed1-f71.google.com with SMTP id z12-20020aa7d40c0000b0290388179cc8bfso2776635edq.21
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:40:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kK+PtjkelzcP148tYlX83T1qpvdgbT7Hd+zpcnCGKv4=;
+        b=Uj8DgdlWbXI2+dPMANDmwrGK/WZl5fu7Xm6bV8NBotBOuNNGMhQpFtRoc95ae5BhG5
+         Tzte8krc7DijfcXII0MnYy76XK+nQBX5IUVJ+gTtdiH2E1q85Ia84vvbg5F1wj22IvCq
+         tFv5qtWAY8rYGaLMKADWbiKXby8VE98/ikHFMUpoTeD3IK7d9LQNJLcOwqObC8n5Knr6
+         YcMxr9EeXEFvL+St4nMpOvUNB64P7/ZAFCuYW2c0li5YnqOAyDOAtQx1xxilvJnLaL9r
+         2sUExv6k+hhMsQhU6ELIT8ZUy1SCED0UpW44+JxA6G5asB245tS9PqiQ7sBeWilMyx+e
+         U4Bg==
+X-Gm-Message-State: AOAM532B3xJz7JfzcPL5G7KnkLf1TDQcxVf+Hk6JYN847nrDPeQvgm+b
+        yddJ3wFiZoVHAV9Mzma51QTY0EMYbT/DNkn8R1Ioe2uPrJBbHfrJa5eDvfjVXQzQb5kFAgDvhDI
+        70dOgH2xUWMHKiwbPloUXW+Hm
+X-Received: by 2002:a50:ab1d:: with SMTP id s29mr156012edc.203.1619710822542;
+        Thu, 29 Apr 2021 08:40:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxvGDWWePXYARUeseM/SK8xtoNJZjNSvs627FSZovPJWIisAAmeLX5WcR7hzO/wxYVsh87DbQ==
+X-Received: by 2002:a50:ab1d:: with SMTP id s29mr155985edc.203.1619710822325;
+        Thu, 29 Apr 2021 08:40:22 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id lc1sm202408ejb.39.2021.04.29.08.40.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Apr 2021 08:40:21 -0700 (PDT)
+Subject: Re: [PATCH] KVM: LAPIC: Accurately guarantee busy wait for timer to
+ expire when using hv_timer
+To:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <kernellwp@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <1619608082-4187-1-git-send-email-wanpengli@tencent.com>
+ <YInoMjNJRgm3gUYX@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <7893b6e5-3a4a-1e79-bc7c-2c6368e92471@redhat.com>
+Date:   Thu, 29 Apr 2021 17:40:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429144244.GE1981@kadam>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: rKOQ23DLMGvFxRqmwpwTIydtrzopqg3E
-X-Proofpoint-GUID: rKOQ23DLMGvFxRqmwpwTIydtrzopqg3E
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9969 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
- phishscore=0 spamscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0
- clxscore=1015 suspectscore=0 malwarescore=0 mlxlogscore=999
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104290097
+In-Reply-To: <YInoMjNJRgm3gUYX@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 05:42:44PM +0300, Dan Carpenter wrote:
-> On Wed, Apr 28, 2021 at 04:04:14PM +0300, Andy Shevchenko wrote:
-> > @@ -75,20 +75,16 @@ static int fbtft_request_one_gpio(struct fbtft_par *par,
-> >  				  struct gpio_desc **gpiop)
-> >  {
-> >  	struct device *dev = par->info->device;
-> > -	int ret = 0;
-> >  
-> >  	*gpiop = devm_gpiod_get_index_optional(dev, name, index,
-> >  					       GPIOD_OUT_LOW);
-> > -	if (IS_ERR(*gpiop)) {
-> > -		ret = PTR_ERR(*gpiop);
-> > -		dev_err(dev,
-> > -			"Failed to request %s GPIO: %d\n", name, ret);
-> > -		return ret;
-> > -	}
-> > +	if (IS_ERR(*gpiop))
-> > +		dev_err_probe(dev, PTR_ERR(*gpiop), "Failed to request %s GPIO\n", name);
+On 29/04/21 00:56, Sean Christopherson wrote:
+> On Wed, Apr 28, 2021, Wanpeng Li wrote:
+>> From: Wanpeng Li <wanpengli@tencent.com>
+>>
+>> Commit ee66e453db13d (KVM: lapic: Busy wait for timer to expire when
+>> using hv_timer) tries to set ktime->expired_tscdeadline by checking
+>> ktime->hv_timer_in_use since lapic timer oneshot/periodic modes which
+>> are emulated by vmx preemption timer also get advanced, they leverage
+>> the same vmx preemption timer logic with tsc-deadline mode. However,
+>> ktime->hv_timer_in_use is cleared before apic_timer_expired() handling,
+>> let's delay this clearing in preemption-disabled region.
+>>
+>> Fixes: ee66e453db13d (KVM: lapic: Busy wait for timer to expire when using hv_timer)
 > 
-> This should be a return statement:
+> Well that's embarassing.  I suspect/hope I tested the case where start_hv_timer()
+> detects the timer already expired.  On the plus side, start_hv_timer() calls
+> cancel_hv_timer() after apic_timer_expired(), so there are unlikely to be hidden
+> side effects (and cancel_hv_timer() is tiny).
 > 
-> 		return dev_err_probe(dev, PTR_ERR(*gpiop), "Failed to request %s GPIO\n", name);
+>> Cc: Sean Christopherson <seanjc@google.com>
+>> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> 
+> Reviewed-by: Sean Christopherson <seanjc@google.com>
+> 
+>> ---
+>>   arch/x86/kvm/lapic.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+>> index 152591f..c0ebef5 100644
+>> --- a/arch/x86/kvm/lapic.c
+>> +++ b/arch/x86/kvm/lapic.c
+>> @@ -1913,8 +1913,8 @@ void kvm_lapic_expired_hv_timer(struct kvm_vcpu *vcpu)
+>>   	if (!apic->lapic_timer.hv_timer_in_use)
+>>   		goto out;
+>>   	WARN_ON(rcuwait_active(&vcpu->wait));
+>> -	cancel_hv_timer(apic);
+>>   	apic_timer_expired(apic, false);
+>> +	cancel_hv_timer(apic);
+>>   
+>>   	if (apic_lvtt_period(apic) && apic->lapic_timer.period) {
+>>   		advance_periodic_target_expiration(apic);
+>> -- 
+>> 2.7.4
+>>
 > 
 
-I've created a new Smatch check for these:
+Queued, thanks.
 
-drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c:2890 mcp251xfd_probe() warn: pointer error 'PTR_ERR(clk)' not handled
-
-There aren't that many bugs...  Anyway, I'm running a test now and I
-guess we'll see tomorrow how it goes.
-
-regards,
-dan carpenter
+Paolo
 
