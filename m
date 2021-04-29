@@ -2,134 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86AEA36F25A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 23:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CAF936F260
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 00:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233589AbhD2Vzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 17:55:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54838 "EHLO
+        id S229599AbhD2WGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 18:06:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231638AbhD2Vzr (ORCPT
+        with ESMTP id S229570AbhD2WGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 17:55:47 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C97D9C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 14:54:58 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id n6so1290183pfv.9
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 14:54:58 -0700 (PDT)
+        Thu, 29 Apr 2021 18:06:40 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB8EBC06138B;
+        Thu, 29 Apr 2021 15:05:51 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id j4so67687598lfp.0;
+        Thu, 29 Apr 2021 15:05:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xILzlD8Dc/GC/uEcYmCRAVPf5ev0yMARXoUln4gBq+M=;
-        b=eIYbBZxhCJo4QYi8f2O4+a/PDCv49G7XQEh46rHgNeVgZkAPo27YclJTFAoSur+0jI
-         Xu1c/2yXHlP/idepUEDlanvWe0G8/b1Ybyat/wVSWFVCsa9BHYp6JXwqqGooSwepyCm3
-         b7yM0u1tr06nhWrZJQKj853ZY38kkLCxw7eM2B0j1KTDBLLvtSYDmumDUtEO7HBZ5L17
-         cjEkzFk4lLvetZYuMOG0bexbhqgzcWP5r8NCBaCItRGXCPeHGPZdmkAGhsDBZUI7mcU8
-         +eyc/jdqyqOGn1zwFZIO3+OkVdRcXDg5niV5Y1tKOUyrTHLPTN9ajffZdmzACyONS9bZ
-         Cf5g==
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=pS24tBuMJUeoaya9TnlvnHjqLdb8zYNWsRuU9yZXzgo=;
+        b=Nk/k9NwO+hA2GJZ/Npp03Gb9D3esbFvOM1FnpRW6KuE30m35eXbMttEXBWP9uUmsUH
+         eYd4zerzmurslm2YaX/IBKBxPXzmtFQ8SUIfz3tgNxIvmTsiNN/F7Y9N73E6fyzxN/lV
+         K5qg/ThkGvfTe0GjdJSlZvP1mcsdKwaJdLvOM2qOuH3gElgsV/XcjSDuxcYoKmzCO9l7
+         /favnIzuib8UrMDqgCr1UG1WM9IQOJCMhVpx8O6F0p9c/WLkzx8GVIC8beNTO2bMQ4gM
+         HtIPUo3UryQm8ivOTH7TmK6sbsdGaXWsTKs15xfSb89itemBIKNO5ol9TzQeLgb4zUs6
+         JqGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xILzlD8Dc/GC/uEcYmCRAVPf5ev0yMARXoUln4gBq+M=;
-        b=FfqanNr6A0mhUO+ezFsFL5WAvRURwtY2aOAZV2sYjmk2DY3claqB3Pi/B1H8cY+vTD
-         rnC8thuq1rbJIQHgkHcbfXc2auMOGlLc7Le2MhmSPOBs20YujmqAugt9m5YtRT2IVBtL
-         L1W/6lX544nwMbSvDo/fIY34c3174quft6yKzvVUKUGoOQnJ6yAxHxxB94yXX4QUCaBy
-         AfcPE3jki6GlWe4AlP87+Bfe5/JXY33E3Zr/WZO+2b9r/bc+lht0MA2WVhAO6b6VE1gI
-         vhoX0fw6ElkNydhjqF8ddluJuaKuyzLhX8mh0C8G+nbx6yKAAJyieeF0LjDB/m7XnOCR
-         fxNQ==
-X-Gm-Message-State: AOAM5301RP2RvW3ocQOrryy1Wt15UMAfEqfFH4QymOthcyFVnSL8nSLO
-        a+8Z0TESeJHefASLQXrPRKI=
-X-Google-Smtp-Source: ABdhPJxWYGupRvMzQopX9u2g7/MngEcIFHl1KxNOdrbssRowLBPVMtHH4KtwsfwB6l6kPIkFuk0N/Q==
-X-Received: by 2002:a62:7c4d:0:b029:289:d38:d1be with SMTP id x74-20020a627c4d0000b02902890d38d1bemr572168pfc.23.1619733298295;
-        Thu, 29 Apr 2021 14:54:58 -0700 (PDT)
-Received: from mail.google.com ([141.164.41.4])
-        by smtp.gmail.com with ESMTPSA id 18sm3181647pji.30.2021.04.29.14.54.53
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=pS24tBuMJUeoaya9TnlvnHjqLdb8zYNWsRuU9yZXzgo=;
+        b=qIR8tqBbvkuiPZaWkF6domVWSU9xxO1W2eSJ0roTOvdrma9Enx0mEfujMdA9tW1lIi
+         CAjf1ybIVSpoIU8Eg7JdhJPfjdY5N1SgxsO+adE2PELmNtlQ7g0myQioiyGKNyiqtvG3
+         69DXpR4rdP0Kc3pEBEcvlNmnqoeU39Y93K9+07fMloRM4kvXzqeohNir4GGnJdwaawVJ
+         91d22jXqjk+TB03vCzRNODAuw4V/xVVY5dcnmFoKuWwkNVrJPw+/vnjnrOg+i0OpNmcC
+         pm4ce+aqUvuwuW/hp6ICQ7Sr/o6k6F51/DA1+SsYSQnygBmU7j4XS2TQKMzztXQwXaZD
+         sFZQ==
+X-Gm-Message-State: AOAM5313VpADt0x4aztnGWvQ8AWyp7I3d+YHUEioOGK+3fhK6dzXrGI7
+        BqoCxM68b+ZbgUJuOIej4h4=
+X-Google-Smtp-Source: ABdhPJwClB8QKIt8phODb/iWDW7zUJg9cMohAEAUWhd/0S3GeJYJIFjnaIug0gZ9qH3rklaJbqkdFw==
+X-Received: by 2002:a19:f00a:: with SMTP id p10mr1204694lfc.510.1619733950339;
+        Thu, 29 Apr 2021 15:05:50 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.226.84])
+        by smtp.gmail.com with ESMTPSA id p23sm102836lfc.210.2021.04.29.15.05.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 14:54:57 -0700 (PDT)
-Date:   Fri, 30 Apr 2021 05:54:51 +0800
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, peterz@infradead.org, jpoimboe@redhat.com,
-        jbaron@akamai.com, ardb@kernel.org,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Anup Patel <Anup.Patel@wdc.com>, akpm@linux-foundation.org,
-        rppt@kernel.org, mhiramat@kernel.org, zong.li@sifive.com,
-        guoren@linux.alibaba.com, wangkefeng.wang@huawei.com,
-        0x7f454c46@gmail.com, chenhuang5@huawei.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Changbin Du <changbin.du@gmail.com>
-Subject: Re: [PATCH] RISC-V: insn: Use a raw spinlock to protect TEXT_POKE*
-Message-ID: <20210429215451.yuey5gzmfh2dkzp5@mail.google.com>
-References: <20210429061713.783628-1-palmer@dabbelt.com>
- <20210429123007.5144fc0d@gandalf.local.home>
+        Thu, 29 Apr 2021 15:05:50 -0700 (PDT)
+Date:   Fri, 30 Apr 2021 01:05:47 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Vegard Nossum <vegard.nossum@oracle.com>,
+        akpm@linux-foundation.org, peterz@infradead.org, axboe@kernel.dk,
+        pmladek@suse.com, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
+Subject: Re: [PATCH] ext4: fix memory leak in ext4_fill_super
+Message-ID: <20210430010547.38f27e39@gmail.com>
+In-Reply-To: <YIsn+JToAkPqDPq5@mit.edu>
+References: <20210428172828.12589-1-paskripkin@gmail.com>
+        <3c3877a4-fef2-9e24-f99f-2ecc46deb7e4@oracle.com>
+        <20210429143354.418248a7@gmail.com>
+        <YIrnPXJo/n68NrQs@mit.edu>
+        <20210429230956.6ad23897@gmail.com>
+        <YIsn+JToAkPqDPq5@mit.edu>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429123007.5144fc0d@gandalf.local.home>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 12:30:07PM -0400, Steven Rostedt wrote:
-> On Wed, 28 Apr 2021 23:17:13 -0700
-> Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> 
-> > From: Palmer Dabbelt <palmerdabbelt@google.com>
+On Thu, 29 Apr 2021 17:41:12 -0400
+"Theodore Ts'o" <tytso@mit.edu> wrote:
+
+> On Thu, Apr 29, 2021 at 11:09:56PM +0300, Pavel Skripkin wrote:
+> > > we will exit with -ENOMEM.  So at the very least all callers of
+> > > kthread_stop() also need to check for -ENOMEM as well as -EINTR
+> > > --- or, be somehow sure that the thread function was successfully
+> > > called and started.  In this particular case, the ext4 mount code
+> > > had just started the kmmpd thread, and then detected that
+> > > something else had gone wrong, and failed the mount before the
+> > > kmmpd thread ever had a chance to run.
 > > 
-> > We currently use text_mutex to protect the fixmap sections from
-> > concurrent callers.  This is convienent for kprobes as the generic code
-> > already holds text_mutex, but ftrace doesn't which triggers a lockdep
-> > assertion.  We could take text_mutex for ftrace, but the jump label
-> > implementation (which is currently taking text_mutex) isn't explicitly
-> > listed as being sleepable and it's called from enough places it seems
-> > safer to just avoid sleeping.
-> > 
-> > arm64 and parisc, the other two TEXT_POKE-style patching
-> > implemnetations, already use raw spinlocks.  abffa6f3b157 ("arm64:
-> > convert patch_lock to raw lock") lays out the case for a raw spinlock as
-> > opposed to a regular spinlock, and while I don't know of anyone using rt
-> > on RISC-V I'm sure it'll eventually show up and I don't see any reason
-> > to wait.
+> > There is a small problem about -ENOMEM...
 > 
-> On x86 we use text_mutex for jump label and ftrace. I don't understand the
-> issue here. The arm64 update was already using spin locks in the
-> insn_write() function itself. riscv just makes sure that text_mutex is held.
+> What I'd suggest is that we simply move
 > 
-> It also looks like ftrace on riscv should also have text_mutex held
-> whenever it modifies the code. Because I see this in
-> arch/riscv/kernel/ftrace.c:
+> > exit_thread:
+> > 	EXT4_SB(sb)->s_mmp_tsk = NULL;
+> > 	kfree(data);
+> > 	brelse(bh);
+> > 	return retval;
+> > }
 > 
+> out of the thread function.  That means hanging struct mmpd_data off
+> the struct ext4_sb_info structure, and then adding a function like
+> this to fs/ext4/mmp.c
 > 
-> int ftrace_arch_code_modify_prepare(void) __acquires(&text_mutex)
+> static void ext4_stop_mmpd(struct ext4_sb_info *sbi)
 > {
->         mutex_lock(&text_mutex);
->         return 0;
+> 	if (sbi->s_mmp_tsk) {
+> 		kthread_stop(sbi->s_mmp_tsk);
+> 		brelse(sbi->s_mmp_data->bh);
+> 		kfree(sbi->s_mmp_data);
+> 		sbi->s_mmp_data = NULL;
+> 		sbi->s_mmp_tsk = NULL;
+> 	}
 > }
 > 
-> int ftrace_arch_code_modify_post_process(void) __releases(&text_mutex)
-> {
->         mutex_unlock(&text_mutex);
->         return 0;
-> }
-> 
-> Which should be getting called before and after respectively from when
-> ftrace does its updates.
-> 
-> Can you show me the back trace of that lockdep splat?
-> 
-The problem is that lockdep cannot handle locks across tasks since we use
-stopmachine to patch code for risc-v. So there's a false positive report.
-See privious disscussion here:
-https://lkml.org/lkml/2021/4/29/63
+> Basically, just move all of the cleanup so it is done after the
+> kthread is stopped, so we don't have to do any fancy error checking.
+> We just do it unconditionally.
 
-> -- Steve
+This sound much better than my idea. Will do it in v2.
 
--- 
-Cheers,
-Changbin Du
+Thanks!
+
+> 
+> 					- Ted
+> 
+> P.S.  Actually, we could drop the struct mmpd_data altogether, and
+> just hang the buffer head as sbi->s_mmp_bh.  Then we can just pass the
+> struct super * as the private pointer to kmmpd().
+> 
+
+
+
+With regards,
+Pavel Skripkin
