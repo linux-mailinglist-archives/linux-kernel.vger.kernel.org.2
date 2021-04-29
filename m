@@ -2,117 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3706636E2DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB3C36E2E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234058AbhD2BJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 21:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33776 "EHLO
+        id S232582AbhD2BMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 21:12:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhD2BJW (ORCPT
+        with ESMTP id S229624AbhD2BMd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 21:09:22 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B043C06138B;
-        Wed, 28 Apr 2021 18:08:36 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id w3so97380749ejc.4;
-        Wed, 28 Apr 2021 18:08:36 -0700 (PDT)
+        Wed, 28 Apr 2021 21:12:33 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B7FBC06138C
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 18:11:47 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id y2so74283194ybq.13
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 18:11:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0OMLFjLReOb2JwNxzWO6xyUiZXAv/sqF1QolMUD4D7A=;
-        b=ncV3ZqawPPttw+QVtlDecYRJhUWMej3+hKvkHiNYQ9GeZIB/do3461XYDJ+K7Q7dkO
-         lytuhhzbCgUIa+iHhSco7sfiAe4YIPZ1kUawVn1IgfaKJMKQfR7VLqOJyDxKOw8WgSK9
-         16uYjTX7SrKPaxm7UhLpehDveYgyY57mD5EnNMYntgmwtIOBwf8c7eT7wygLhUecXnvv
-         diY6V7NA06KpFkG12gNShYhhsrIws+BBCBZEHVgSfY8kuGBoB1KqZpwaRfEBC9wBZ0sp
-         D+R957udwuvXrHpe04dxfLtRDX63updfjjJ4uHPChU+CAEajckqIeDZ24UbMHu76TBd8
-         SMZA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B9WmxfQPgVB/G8qqdqqrH4JxR1XC119NUyqOOtSd7t0=;
+        b=pkiPHPNLc8oPY1Rpg9s6MMH9zsVYb3Pu6hknNjJ97Hfi1mRnSBTaBnKpkK1xFjd1Qc
+         cQcOSKlv6GspGLFBVFS0a2R7wfDy66R5CFpgbbx4KptsbtihfP16CiZn9rhGgXqx5QTW
+         bT7wJSVgy86XNC/E1yQdfItBAZhtztfAwi05/r0kJhF9SMDdROLy1hNoB4qjsCCc7xWl
+         mnFO4W/wNfSaDiAaT4Hzi7/2XKbK/+nwY+9Li/v4xqODqdRq+++/zwuK2aVSJ6jeZ06F
+         W59O7/MT/99ty+gNnLuDf32EQ5etfkSEubBJ3iZEk34moqDnV4u5QwEcMfSvrieB519k
+         avQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0OMLFjLReOb2JwNxzWO6xyUiZXAv/sqF1QolMUD4D7A=;
-        b=Dj+H8GiYerS9fAu9hiShgY45eUOOTjRWYQKFvABiFP2phxg6Rj1nJT1VehhcsrPEgu
-         0da1k7dFNaD6M8mXwZNdkkzvRIDwx6zO2jzc25gBRin80PXqrSK9eDJVN2M5dxJukVBF
-         610BPL7V6pw4mEVSjfVDJtg8YFp8KZz8xuvfFgoGMhYP0cPC96XjsH0qZn7yilClPvPA
-         rzuzULYFtSvPa8u+YOGCUkSlrxx08GGwYKf/Qwq1qqlIf4gWDO73h0ehxzqKgCOXl3rz
-         RjEfkcg64CQy1TwnVQRdhl/PAAg0fdKQ4I2CbKUYnE+uMgzgnFagMz5I/uJLYsoE0x22
-         BHpg==
-X-Gm-Message-State: AOAM530pECrMoHYZ0JoMtgWByeM/07oKRiHO09UeWuawhalvKZiUmrUB
-        L/RzVfJgSroWlgbVabFgPfUhEvc/c6P9MA==
-X-Google-Smtp-Source: ABdhPJx+QA1nwtL0nBSCep/X68DDBSwioqe2HJhuMfeuIbutnIvsGY3GqnRrMbiuPn89Z/iCtS/1Pw==
-X-Received: by 2002:a17:906:494d:: with SMTP id f13mr14561587ejt.490.1619658515152;
-        Wed, 28 Apr 2021 18:08:35 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
-        by smtp.googlemail.com with ESMTPSA id d5sm1113398edt.49.2021.04.28.18.08.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 18:08:34 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [thermal-next PATCH v2 2/2] thermal: qcom: tsens: simplify debugfs init function
-Date:   Thu, 29 Apr 2021 03:05:18 +0200
-Message-Id: <20210429010518.13319-3-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210429010518.13319-1-ansuelsmth@gmail.com>
-References: <20210429010518.13319-1-ansuelsmth@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B9WmxfQPgVB/G8qqdqqrH4JxR1XC119NUyqOOtSd7t0=;
+        b=k1Fs+nOdeub89C2ODRoRg16LS/zgJlgmSo6ZvvlUvNk0HbxyNXnoGkA3epOLJGuxGb
+         SAP10NcUkB9rB4q6pY8KkoQKsIB2lTiu1VRWMMaxnHvLRFlBQnJuwyICmX/WvJ0GhfG9
+         gH/1O//39Z/5BeNlDXzGM2owPQjZEtcZGPn3FQYwckUtUSLoyrgXT7xb2Lkfk1wR9K1t
+         iA3HWiOdRLTex9TbiBotjNIGu7+QMQR03sY8JDwWZNbxMIFLxCSdXW+72EniA7zfzWzO
+         Db96ZT0IPP4pknKZ6m/5fMKSNv0GLdMNVRdMkcF4WEaXJTYGMFa+EvlG1ZEMgApNdk5T
+         X9ww==
+X-Gm-Message-State: AOAM532qSrngP1RQBrGnl7fWnZ12BceFNkFcjlLDYRqlttdE3g+fRoor
+        wKSFFVxuy1pgUIx4+YdwEhTpq7CuRpHEMCpxoZ24hA==
+X-Google-Smtp-Source: ABdhPJzGFBnav+DZBGGJcieg9JxgTULrcj3YfzoYD2uRXeNcTYI7rbQImezTdi5sUdA9XukgcMPYmupPisXhoBxFVf8=
+X-Received: by 2002:a25:58d5:: with SMTP id m204mr47013043ybb.32.1619658706418;
+ Wed, 28 Apr 2021 18:11:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210428222953.235280-1-sebastian.reichel@collabora.com> <20210428222953.235280-2-sebastian.reichel@collabora.com>
+In-Reply-To: <20210428222953.235280-2-sebastian.reichel@collabora.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 28 Apr 2021 18:11:10 -0700
+Message-ID: <CAGETcx_YoYJkOgh=kX7tZf-oAWGMmTDT+Azm1A3thWD1SRy_4A@mail.gmail.com>
+Subject: Re: [PATCHv2 1/5] rtc: m41t80: add support for fixed clock
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-rtc@vger.kernel.org,
+        linux-mtd@lists.infradead.org,
+        Collabora Kernel ML <kernel@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify debugfs init function.
-- Add check for existing dev directory.
-- Fix wrong version in dbg_version_show (with version 0.0.0, 0.1.0 was
-  incorrectly reported)
+On Wed, Apr 28, 2021 at 3:29 PM Sebastian Reichel
+<sebastian.reichel@collabora.com> wrote:
+>
+> Congatec's QMX6 system on module (SoM) uses a m41t62 as RTC. The
+> modules SQW clock output defaults to 32768 Hz. This behaviour is
+> used to provide the i.MX6 CKIL clock. Once the RTC driver is probed,
+> the clock is disabled and all i.MX6 functionality depending on
+> the 32 KHz clock has undefined behaviour. For example when using
+> the hardware watchdog the system will likely do arbitrary reboots.
+>
+> Referencing the m41t62 directly results in a deadlock. The kernel
+> will see, that i.MX6 system clock needs the RTC clock and do probe
+> deferral. But the i.MX6 I2C module never becomes usable without the
+> i.MX6 CKIL clock and thus the RTC's clock will not be probed. So
+> from the kernel's perspective this is a chicken-and-egg problem.
+>
+> Technically everything is fine by not touching anything, since
+> the RTC clock correctly enables the clock on reset (i.e. on
+> battery backup power loss) and also the bootloader enables it
+> in case an something (e.g. an unpatched kernel) disabled this
+> incorrectly.
+>
+> A workaround for this issue is describing the square wave pin
+> as fixed-clock, which is registered early and basically how
+> this pin is used on the i.MX6.
+>
+> Suggested-by: Saravana Kannan <saravanak@google.com>
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> ---
+>  Documentation/devicetree/bindings/rtc/rtc-m41t80.txt |  9 +++++++++
+>  drivers/rtc/rtc-m41t80.c                             | 12 ++++++++++++
+>  2 files changed, 21 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/rtc/rtc-m41t80.txt b/Documentation/devicetree/bindings/rtc/rtc-m41t80.txt
+> index c746cb221210..cdd196b1e9bd 100644
+> --- a/Documentation/devicetree/bindings/rtc/rtc-m41t80.txt
+> +++ b/Documentation/devicetree/bindings/rtc/rtc-m41t80.txt
+> @@ -21,10 +21,19 @@ Optional properties:
+>                        clock name
+>  - wakeup-source: Enables wake up of host system on alarm
+>
+> +Optional child node:
+> +- clock: Provide this if the square wave pin is used as boot-enabled fixed clock.
+> +
+>  Example:
+>         rtc@68 {
+>                 compatible = "st,m41t80";
+>                 reg = <0x68>;
+>                 interrupt-parent = <&UIC0>;
+>                 interrupts = <0x9 0x8>;
+> +
+> +               clock {
+> +                       compatible = "fixed-clock";
+> +                       #clock-cells = <0>;
+> +                       clock-frequency = <32768>;
+> +               };
+>         };
+> diff --git a/drivers/rtc/rtc-m41t80.c b/drivers/rtc/rtc-m41t80.c
+> index 89128fc29ccc..b3ece42b6f90 100644
+> --- a/drivers/rtc/rtc-m41t80.c
+> +++ b/drivers/rtc/rtc-m41t80.c
+> @@ -544,10 +544,22 @@ static struct clk *m41t80_sqw_register_clk(struct m41t80_data *m41t80)
+>  {
+>         struct i2c_client *client = m41t80->client;
+>         struct device_node *node = client->dev.of_node;
+> +       struct device_node *fixed_clock;
+>         struct clk *clk;
+>         struct clk_init_data init;
+>         int ret;
+>
+> +       fixed_clock = of_get_child_by_name(node, "clock");
+> +       if (fixed_clock) {
+> +               /*
+> +                * skip registering square wave clock when a fixed
+> +                * clock has been registered. The fixed clock is
+> +                * registered automatically when being referenced.
+> +                */
+> +               of_node_put(fixed_clock);
+> +               return 0;
+> +       }
+> +
+>         /* First disable the clock */
+>         ret = i2c_smbus_read_byte_data(client, M41T80_REG_ALARM_MON);
+>         if (ret < 0)
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- drivers/thermal/qcom/tsens.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+Reviewed-by: Saravana Kannan <saravanak@google.com>
 
-diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
-index b37d5fd71f3a..e43898bf3199 100644
---- a/drivers/thermal/qcom/tsens.c
-+++ b/drivers/thermal/qcom/tsens.c
-@@ -657,7 +657,7 @@ static int dbg_version_show(struct seq_file *s, void *data)
- 			return ret;
- 		seq_printf(s, "%d.%d.%d\n", maj_ver, min_ver, step_ver);
- 	} else {
--		seq_puts(s, "0.1.0\n");
-+		seq_printf(s, "0.%d.0\n", priv->feat->ver_major);
- 	}
- 
- 	return 0;
-@@ -669,16 +669,12 @@ DEFINE_SHOW_ATTRIBUTE(dbg_sensors);
- static void tsens_debug_init(struct platform_device *pdev)
- {
- 	struct tsens_priv *priv = platform_get_drvdata(pdev);
--	struct dentry *root, *file;
- 
--	root = debugfs_lookup("tsens", NULL);
--	if (!root)
-+	priv->debug_root = debugfs_lookup("tsens", NULL);
-+	if (!priv->debug_root)
- 		priv->debug_root = debugfs_create_dir("tsens", NULL);
--	else
--		priv->debug_root = root;
- 
--	file = debugfs_lookup("version", priv->debug_root);
--	if (!file)
-+	if (!debugfs_lookup("version", priv->debug_root))
- 		debugfs_create_file("version", 0444, priv->debug_root,
- 				    pdev, &dbg_version_fops);
- 
--- 
-2.30.2
-
+-Saravana
