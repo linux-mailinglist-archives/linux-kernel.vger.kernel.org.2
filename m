@@ -2,116 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9734E36E446
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 06:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF57236E44C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 06:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232505AbhD2EcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 00:32:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49438 "EHLO
+        id S236975AbhD2EoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 00:44:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbhD2EcC (ORCPT
+        with ESMTP id S231356AbhD2EoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 00:32:02 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701A5C06138C
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 21:31:16 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id gv2so22685680qvb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 21:31:16 -0700 (PDT)
+        Thu, 29 Apr 2021 00:44:06 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8D96C06138B
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 21:43:20 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so10308161pjv.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 21:43:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:in-reply-to:references:mime-version
-         :content-transfer-encoding:date:message-id;
-        bh=RB5kc9IKbmCeDriaGhlxOG+1StbExGw3h3p1/FmS/Is=;
-        b=a3NnSFjNVU+caljK4pWab0swF/9ObxO4E9lt8wdlT3jZH0O12PVBmCMaXEgzCcYmET
-         00re9IQzpVhA5LItOhrp6yUV66DGYtEwAs40DkEIrd/eAZJA4N2FuIZLBko7S/vTmDmL
-         Fnpw0x8H8QlbGIdlnRgqHpRh/x2Rbk0UTf1BVj/+gFpYOkiC/C58uujnJ7rnLbnuPYbg
-         0ZS2WmM9aUNoi/ZCz+ZhQp90LxBNzNWJrvODVB0KG3bHc0RnhjP1MloWGhlEcsfUr6M1
-         cJhvDdSxfiobUPh8iWUKaEoE5xRfj6O1KSoPmGMklZPQpYu/z4OJ0hrdaRg+zUUpiZC6
-         Xgow==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sE2savxAfPxu0P92GN6OpAhX0O3eNjGvHwyPPUWKYXM=;
+        b=BbKFsrcgMKJaZOVLDg+9Z0CXvzo42Bs4YtCgco8RWK06gIpsXcpSRcHtnm21RXdPag
+         4AOSJCwn0TOJbK0rk5+7Leh4jED6MQpJRhgh4FX/gc286imJNECfydO1JA6qe5bWYh2C
+         wIvXkDFCJg+QlmNxoYUmO7+0+Wv/38VQ7r8ofok18unzJkIODkz0IL3shy8pg2vHamPY
+         dEqTLKKs7LELc70nV46Ds+h1PFT2uHN0+KSRkUHZ0NYtgBAkGFikYjAOJW1JmMD6DhdW
+         YYqrJg5FH5yXQEpg+PDLKPHfD0KH9qOUP1/w7tli4LY1LN9mVWjGPsdjpsmJIS+MwAAj
+         g5eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :mime-version:content-transfer-encoding:date:message-id;
-        bh=RB5kc9IKbmCeDriaGhlxOG+1StbExGw3h3p1/FmS/Is=;
-        b=gfffXFtZO0ZWb5ddE3ESZ3oxfQ1Q5qVo1f1rqH20K4CfhTJBGGp3gY3UANYNAbEEFE
-         Bjc5DzLOKiFd5h2XXHZUUuSeIj/nn2dmtaobWz5xZgvsHbM/faE5BuiWVOpHqL8mz6lH
-         UD6xkH9czzGE72EnD6VJrxe8OoVxy2JDAImKrfZPd3sA+VKQt7VPLEhJqLIDRrBI8e4Z
-         c6VaMAZlfrnPu2Lvs11bTgmuLSiUx/jgu7GZ2BmV1AKFgyggnKttUFCQfjOyzDTkIMNe
-         cjadeCe8xW9JqIXK31OuJNtDD1o1iKd8hgDWYUOnbuOH/gCTlNmnR40EBwieeZRT3z4l
-         izXg==
-X-Gm-Message-State: AOAM533H3+ZLDC4X1HxWufHMSD2VDs0T+nQU2vpirJOkkTYZSsnsqmDb
-        yZYoQWuJ/S2fp3DMZIXX35Ry+A==
-X-Google-Smtp-Source: ABdhPJwFB36RZUA9Sz9VJppLgGsiTMODOr0NrQ7oBaWjAgwldjkD9oVUxKiRIh1csxCKyBNW17cx/Q==
-X-Received: by 2002:ad4:4c86:: with SMTP id bs6mr33749154qvb.39.1619670675551;
-        Wed, 28 Apr 2021 21:31:15 -0700 (PDT)
-Received: from turing-police ([2601:5c0:c380:d61::359])
-        by smtp.gmail.com with ESMTPSA id a187sm1418590qkd.69.2021.04.28.21.31.14
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=sE2savxAfPxu0P92GN6OpAhX0O3eNjGvHwyPPUWKYXM=;
+        b=tGz6agppf5Y81dGvQweOOW6Iyi4oY0KPbNEXBRVrlYJQEwTB8FKVLKqu/+HWv+LOgv
+         enRndl312HQOtBVCUt1ONr6z0BiYF4htGe1sPgVwMrqma/adjBRw/HgdV2nXMfqGyujV
+         xBHGZDe9PUWvYX8OVyvQDkq43DkYsSrEaa82ff18c3w7wu8D5NQjdnBdQn5TzJnY5wXD
+         jGltx0DeSAJzYnfkMVtVNMwximIex3UIwOMC1lP9b7ovxihKfm8FODNkaJ1UxuwMNCbN
+         TCU10kNfoUL6KnLCeXekklMiL4RuGsJkqAw+TH9lI4rAUk+UHOUvWbTfPVySofI0S3bU
+         0RSg==
+X-Gm-Message-State: AOAM531rbChORvIgECKv+kXZYSoTCtBqORlNAJhqPITcd9zXjuTfouqG
+        DXb0U5Dfl1KovDKKZhh1bd5zTWq5HxUXMQ==
+X-Google-Smtp-Source: ABdhPJzIZ4MO/M2q7pEFyxcjdg+AMdv6kInIrBs1Dge1k1V8H0zvz80UNnzL5Hf6btnS/YDAvJKmjg==
+X-Received: by 2002:a17:90a:e643:: with SMTP id ep3mr7555235pjb.194.1619671400173;
+        Wed, 28 Apr 2021 21:43:20 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id a16sm1134447pgl.12.2021.04.28.21.43.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 21:31:14 -0700 (PDT)
-Sender: Valdis Kletnieks <valdis@vt.edu>
-From:   "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     bkkarthik <bkkarthik@pesu.pes.edu>,
-        Anupama K Patil <anupamakpatil123@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        kernelnewbies@kernelnewbies.org
-Subject: Re: [PATCH] drivers: pnp: proc.c: Handle errors while attaching devices
-In-Reply-To: <YIeSc1qePhuQ1XRK@unreal>
-References: <20210424194301.jmsqpycvsm7izbk3@ubuntu> <YIZJwkux0ghJ8k9d@unreal> <20210426175031.w26ovnffjiow346h@burgerking>
- <YIeSc1qePhuQ1XRK@unreal>
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1619670673_209619P";
-         micalg=pgp-sha1; protocol="application/pgp-signature"
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 29 Apr 2021 00:31:13 -0400
-Message-ID: <210271.1619670673@turing-police>
+        Wed, 28 Apr 2021 21:43:19 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 21:43:19 -0700 (PDT)
+X-Google-Original-Date: Wed, 28 Apr 2021 21:43:11 PDT (-0700)
+Subject:     Re: [PATCH] RISC-V: Always define XIP_FIXUP
+In-Reply-To: <b674bc91-8228-9236-f3ec-8f65bb5620c8@ghiti.fr>
+CC:     linux-riscv@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, akpm@linux-foundation.org,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Anup Patel <Anup.Patel@wdc.com>, wangkefeng.wang@huawei.com,
+        rppt@kernel.org, vitaly.wool@konsulko.com, greentime.hu@sifive.com,
+        0x7f454c46@gmail.com, chenhuang5@huawei.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        linux@roeck-us.net
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     alex@ghiti.fr
+Message-ID: <mhng-2e1a7543-84bc-4954-843a-b577fc132157@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---==_Exmh_1619670673_209619P
-Content-Type: text/plain; charset=us-ascii
-
-On Tue, 27 Apr 2021 07:26:27 +0300, Leon Romanovsky said:
-> On Mon, Apr 26, 2021 at 11:20:32PM +0530, bkkarthik wrote:
-> > These were only intended for a clean-up job, the idea of this function came from how PCI handles procfs.
-> > Maybe those should be changed?
+On Wed, 28 Apr 2021 01:25:55 PDT (-0700), alex@ghiti.fr wrote:
+> Le 4/27/21 à 11:34 PM, Palmer Dabbelt a écrit :
+>> From: Palmer Dabbelt <palmerdabbelt@google.com>
+>>
+>> XIP depends on MMU, but XIP_FIXUP is defined throughout the kernel in
+>> order to avoid excessive ifdefs.  This just makes sure to always define
+>> XIP_FIXIP, which will fix MMU=n builds.
 >
-> Probably, the CONFIG_PROC_FS around pci_proc_*() is not needed too.
+> A small typo here.
 
-Will that actually build correctly if it's an embedded system or something build with
-CONFIG_PROC_FS=n?  I'd expect that to die a horrid death while linking vmlinx due
-to stuff inside that #ifdef calling symbols only present with PROC_FS=m/y.
+Actually two: "defined" should have been "used".  Both are fixed.
 
-In general, inline ifdef's are frowned upon, so if you come across one in the kernel
-source, that's probably a *big* hint that either (a) refactoring the code to eliminate
-an inline ifdef was just too ugly to be allowed to live or (b) you *have* to put a guard
-around it because you're guaranteed a build failure otherwise.
+>
+>>
+>> Fixes: 44c922572952 ("RISC-V: enable XIP")
+>> Reported-by: Guenter Roeck <linux@roeck-us.net>
+>> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+>> ---
+>>   arch/riscv/include/asm/pgtable.h | 24 ++++++++++++------------
+>>   1 file changed, 12 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+>> index 2f1384e14e31..fd749351f432 100644
+>> --- a/arch/riscv/include/asm/pgtable.h
+>> +++ b/arch/riscv/include/asm/pgtable.h
+>> @@ -73,18 +73,6 @@
+>>   #endif
+>>   #define FIXADDR_START    (FIXADDR_TOP - FIXADDR_SIZE)
+>>
+>> -#ifdef CONFIG_XIP_KERNEL
+>> -#define XIP_OFFSET		SZ_8M
+>> -#define XIP_FIXUP(addr) ({							\
+>> -	uintptr_t __a = (uintptr_t)(addr);					\
+>> -	(__a >= CONFIG_XIP_PHYS_ADDR && __a < CONFIG_XIP_PHYS_ADDR + SZ_16M) ?	\
+>> -		__a - CONFIG_XIP_PHYS_ADDR + CONFIG_PHYS_RAM_BASE - XIP_OFFSET :\
+>> -		__a;								\
+>> -	})
+>> -#else
+>> -#define XIP_FIXUP(addr)		(addr)
+>> -#endif /* CONFIG_XIP_KERNEL */
+>> -
+>>   #endif
+>>
+>>   #ifndef __ASSEMBLY__
+>> @@ -101,6 +89,18 @@
+>>   #include <asm/pgtable-32.h>
+>>   #endif /* CONFIG_64BIT */
+>>
+>> +#ifdef CONFIG_XIP_KERNEL
+>> +#define XIP_OFFSET		SZ_8M
+>
+>
+> XIP_OFFSET is used in head.S and then this breaks XIP_KERNEL. XIP_OFFSET
+> must live outside the ifndef __ASSEMBLY__.
 
---==_Exmh_1619670673_209619P
-Content-Type: application/pgp-signature
+Thanks, I hadn't even seen XIP_OFFSET.  This is fixed in the v2.
 
------BEGIN PGP SIGNATURE-----
-Comment: Exmh version 2.9.0 11/07/2018
+Do you have an XIP config that will run on QEMU, and a way to run it?  
+If so, can you post a defconfig and some instructions?  That'll make it 
+easier to test on my end.
 
-iQIVAwUBYIo2kAdmEQWDXROgAQLtVA/7BvMbjCP/xvK8WkA+Fk2QhCEVXOxBUGkH
-n5t1+/k62wdCTY7EcqhNW5MQWu1VZ16aN0T1RHeTFX3rv7AmDxyXTVlf3ksyof4v
-a1/oyPr5mEIzLXmpFjIkHICY2OysaUkLgeScwEOpfpkAAqGrx+DTblzEN08VVbTf
-84/gwKgvb8CxU3D5MVpPFUbmDY9JXqJsK3/sPBNYseyXi76ypTSkaANNB8aY7HsZ
-C43Qo7wqr8lwe2q/uKjE0Fw5bfPb2B/otaEgfABrRTLDiqyODvSKVdticcHUIWsg
-GUpW3QPqYhttPRNjVy+vLQsAytSQVMBuSApoyplJ/ebZUrPRXophRE7WmxoW7q5X
-yX/7rnuEB4aT0VeqIcL3LSiUJBGKptBgJiT9qsCYnYTMva0hMQjMKJRRZ1Xczrp7
-NDxGMbkkPlre09Z2OsOQqJblQJHiztGTOA6fcXjnigThux5H5xXZCUUklinXcGO3
-6jhx5qNOSJ+a5OeLrShSDvR9XuQPxIk8ql/qDs4wkcLb2YB/56d6Lr8reCdsce7n
-dChAkKG5CugsOC/E7ZYLtzm8E6ezyiqDPCa+Z4yhdSNPtaxbBW6Ies+Dmkyj8MzO
-ChgiQRW04BofS4dU5bF3LgRTuvAtlrKxB94qK+u8YkXYydgV2mfYmCo/Gd/Y62zt
-iKcs8dUS/ko=
-=MSZI
------END PGP SIGNATURE-----
-
---==_Exmh_1619670673_209619P--
+>> +#define XIP_FIXUP(addr) ({							\
+>> +	uintptr_t __a = (uintptr_t)(addr);					\
+>> +	(__a >= CONFIG_XIP_PHYS_ADDR && __a < CONFIG_XIP_PHYS_ADDR + SZ_16M) ?	\
+>> +		__a - CONFIG_XIP_PHYS_ADDR + CONFIG_PHYS_RAM_BASE - XIP_OFFSET :\
+>> +		__a;								\
+>> +	})
+>> +#else
+>> +#define XIP_FIXUP(addr)		(addr)
+>> +#endif /* CONFIG_XIP_KERNEL */
+>> +
+>>   #ifdef CONFIG_MMU
+>>   /* Number of entries in the page global directory */
+>>   #define PTRS_PER_PGD    (PAGE_SIZE / sizeof(pgd_t))
+>>
+>
+> Thank you for doing that!
+>
+> Alex
