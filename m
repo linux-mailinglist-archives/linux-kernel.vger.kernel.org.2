@@ -2,90 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 771A536EA1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B33E36EA1E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235983AbhD2MMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 08:12:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235945AbhD2MMv (ORCPT
+        id S233643AbhD2MOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 08:14:21 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:51425 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230148AbhD2MOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 08:12:51 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82122C06138E
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 05:12:03 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id h15so14438031wre.11
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 05:12:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ymSp8rfZSWXVKAoyrk1VB6kKAVSstzHQFijBzDCf7V4=;
-        b=0WXvLpbTLG1tRoZSII9grqKOVMmJ//5onbjzjw3Hrr7ozsslJOL1Q1fWdQg27qyJMA
-         R1jsnOIFEYIMlxrQGpCtvWc1Vwm+TESo6CHKznijk5dAYL+RbcsPNA5x/sh5Vfp2vmbq
-         ucWGTQ2KmC5N2Qo4KODwjQY6kV3Ko0p/BwzC7Q9Xh9yiVniGIoWsSBqXK8KSvIZYS+r2
-         pgT1oRfr6+S77L3hPsyfPhxKyC666pPZypgYMdtuJYqb5WzwKnMS7Cc0iIIQYPBQflpK
-         XeCyT4tVITG9AJFXBVBdoCPg4wNdX4d2uulqw9v+xn+I6PzRWVX0WGDQ+UPsGLpACh7C
-         uxRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ymSp8rfZSWXVKAoyrk1VB6kKAVSstzHQFijBzDCf7V4=;
-        b=jAfCGxN6YbM9ICiwposCq7xqINk0t+RIB4IL+3n7D9SQ8Yz3qI++K7TkZ8WQLfWmjf
-         Ng7d17Ia84MYL8pNLed7XCqF2CfgDbYNmLclbRtu8xE4Z08EmpIsn+ohDBZsGkuxIhKl
-         fIRtZLfftlvKov8hI0KSePaRu+nf5UAaggHsUW1rkJI5eczHsFTzXrV8F7o0d8kG7Ycz
-         ePrTa3daCIER7RBn/ZSNZ5TMy3TN2hAqU8/Yc7u/8Sz+ugPQ5X8ksJVgl/7oQtWjrj4V
-         2tFqLOyD69c8WQiQc72DZ/iFHdaNyNl0oMofXunV2ZIKuJzlrCnqUFqHc01rt8HyCgLr
-         dKsw==
-X-Gm-Message-State: AOAM5326vUoV1w3llIVswNlgpYpl2/dWsnCpqETx7v/hfrP1AxQ1nphk
-        fEkV3OjpODRXNFw7ikAT0Tpzfw==
-X-Google-Smtp-Source: ABdhPJwmckvmYiN8ROxPFgYNNcFNtN9hKA8kcQk2aMDqu0TsLAaRfAW+3HnF6cPy+5U99P52ncQQzw==
-X-Received: by 2002:adf:e7c2:: with SMTP id e2mr23171822wrn.180.1619698322290;
-        Thu, 29 Apr 2021 05:12:02 -0700 (PDT)
-Received: from localhost.localdomain (dh207-97-15.xnet.hr. [88.207.97.15])
-        by smtp.googlemail.com with ESMTPSA id 18sm10075640wmo.47.2021.04.29.05.12.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 05:12:01 -0700 (PDT)
-From:   Robert Marko <robert.marko@sartura.hr>
-To:     jdelvare@suse.com, linux@roeck-us.net, corbet@lwn.net,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org
-Cc:     Robert Marko <robert.marko@sartura.hr>
-Subject: [PATCH 2/2] dt-bindings: hwmon: Add Texas Instruments TMP1075
-Date:   Thu, 29 Apr 2021 14:11:50 +0200
-Message-Id: <20210429121150.106804-2-robert.marko@sartura.hr>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210429121150.106804-1-robert.marko@sartura.hr>
-References: <20210429121150.106804-1-robert.marko@sartura.hr>
+        Thu, 29 Apr 2021 08:14:20 -0400
+X-Originating-IP: 2.7.49.219
+Received: from [192.168.1.100] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 5142860008;
+        Thu, 29 Apr 2021 12:13:31 +0000 (UTC)
+Subject: Re: [PATCH] riscv: Disallow to build XIP_KERNEL with SOC_SIFIVE
+To:     Vitaly Wool <vitaly.wool@konsulko.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210429084541.28083-1-alex@ghiti.fr>
+ <CAM4kBBK=yQ=jXYw85Ti7Y3EyGd11aOYt7QnD4+fFFkDhvrwcxA@mail.gmail.com>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <1a4a0a88-6ff5-66ad-6819-53dd96f76849@ghiti.fr>
+Date:   Thu, 29 Apr 2021 08:13:30 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
+In-Reply-To: <CAM4kBBK=yQ=jXYw85Ti7Y3EyGd11aOYt7QnD4+fFFkDhvrwcxA@mail.gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the DT compatible for TI TMP1075 which
-is a LM75 compatible sensor.
+Le 4/29/21 à 5:11 AM, Vitaly Wool a écrit :
+> On Thu, Apr 29, 2021 at 10:47 AM Alexandre Ghiti <alex@ghiti.fr> wrote:
+>>
+>> RISCV_ERRATA_ALTERNATIVE patches text at runtime which is not possible when
+>> the kernel is executed from the flash in XIP mode, and as the SIFIVE
+>> errata must be fixed somehow, disallow to build a XIP kernel that
+>> supports SIFIVE socs.
+> 
+> Could you please hold off this patch for a bit? I will try to come up
+> with an alternative solution. It should be possible to define a
+> special section within the RW area and place the functions that need
+> such patching there.
+> Not that I like that much but at least we'll keep the ability to use
+> XIP on SiFive.
 
-Signed-off-by: Robert Marko <robert.marko@sartura.hr>
----
- Documentation/devicetree/bindings/hwmon/lm75.yaml | 1 +
- 1 file changed, 1 insertion(+)
+Ok, I'm wondering why I did not think of that...I'll give it a try just 
+to punish myself.
 
-diff --git a/Documentation/devicetree/bindings/hwmon/lm75.yaml b/Documentation/devicetree/bindings/hwmon/lm75.yaml
-index 96eed5cc7841..72980d083c21 100644
---- a/Documentation/devicetree/bindings/hwmon/lm75.yaml
-+++ b/Documentation/devicetree/bindings/hwmon/lm75.yaml
-@@ -30,6 +30,7 @@ properties:
-       - st,stds75
-       - st,stlm75
-       - microchip,tcn75
-+      - ti,tmp1075
-       - ti,tmp100
-       - ti,tmp101
-       - ti,tmp105
--- 
-2.31.1
+Thanks Vitaly,
 
+Alex
+
+> 
+> Best regards,
+>     Vitaly
+> 
+>> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+>> ---
+>>   arch/riscv/Kconfig.erratas | 2 +-
+>>   arch/riscv/Kconfig.socs    | 1 +
+>>   2 files changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/riscv/Kconfig.erratas b/arch/riscv/Kconfig.erratas
+>> index d5d03ae8d685..9537dbd67357 100644
+>> --- a/arch/riscv/Kconfig.erratas
+>> +++ b/arch/riscv/Kconfig.erratas
+>> @@ -2,7 +2,7 @@ menu "CPU errata selection"
+>>
+>>   config RISCV_ERRATA_ALTERNATIVE
+>>          bool "RISC-V alternative scheme"
+>> -       default y
+>> +       default y if !XIP_KERNEL
+>>          help
+>>            This Kconfig allows the kernel to automatically patch the
+>>            errata required by the execution platform at run time. The
+>> diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+>> index 00c2b205654c..9cb38bc9d7cd 100644
+>> --- a/arch/riscv/Kconfig.socs
+>> +++ b/arch/riscv/Kconfig.socs
+>> @@ -9,6 +9,7 @@ config SOC_MICROCHIP_POLARFIRE
+>>
+>>   config SOC_SIFIVE
+>>          bool "SiFive SoCs"
+>> +       depends on !XIP_KERNEL
+>>          select SERIAL_SIFIVE if TTY
+>>          select SERIAL_SIFIVE_CONSOLE if TTY
+>>          select CLK_SIFIVE
+>> --
+>> 2.20.1
+>>
+>>
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
