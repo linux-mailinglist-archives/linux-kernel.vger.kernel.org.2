@@ -2,190 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 675BF36F254
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 23:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E3D436F256
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 23:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237413AbhD2Vxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 17:53:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54396 "EHLO
+        id S235174AbhD2VyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 17:54:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235732AbhD2Vxs (ORCPT
+        with ESMTP id S236978AbhD2VyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 17:53:48 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F38DDC06138D
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 14:53:00 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id a36so67469078ljq.8
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 14:53:00 -0700 (PDT)
+        Thu, 29 Apr 2021 17:54:16 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3DF8C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 14:53:27 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 12so106790478lfq.13
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 14:53:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EjH+o6UjzQ/Am12P1LLl5WjEAhv3JEtTZEWuxrZg3O0=;
-        b=Ha119dA0JNsUpBFRKqGtG4fA4JtuHTwk8w90di3c/eFv5DMhUhzO57V9YFQxD4FY5K
-         n4Fe5wb3RYCw45myOLUdo03vx35EIK+pOxiKRb+Ayw7IR6G1nlz52lsoP9A87rRrLNr7
-         mx6/ijMStfVsrI+xm5w54lnWMAQW1+TDC5SdURI60f4mSfFmwZVM7SVxl/Kjw2Pa6deJ
-         Zq06mpnFSUmlAcgRS0qxLJ1yC8mZMiy8BiVrQc09cbBgfk9j2Mqbtm+F8hiA0/VSrZ0L
-         cGMHC6wSiS9mLjtLHxpWPUTJm6W1X3nfw33//OOz4L2TsSL5o161R/vkTJvG36xqhULu
-         M+4w==
+        d=linux-foundation.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=Zbt5Vlv/Alx31b/vvnYikUY4tIX1dxiM5eoc7l+5rps=;
+        b=W+ycA9wZCo5gKoUz/8ORyQ0pQlfDQ+B/jeB2IVZa3Mkjsnqci1OSTopvwUO7KOfZpC
+         eD9dHANwdb7U1qc55ucBV9mPg3mg95YWANYRnTWqKipG7me92aVnlS6w2M2Qzwuae7fD
+         ktxpC/lk7YlHVrL2n8cPDyIg1aJAjyB2noi/w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EjH+o6UjzQ/Am12P1LLl5WjEAhv3JEtTZEWuxrZg3O0=;
-        b=QY8gYtiy+EX3Kx8qZqu55uN3JPlb9tMA+YuxRGvrZ6ID0Vo+lNkO/N+vqKawoT0PCf
-         od36f84sT83bnz3P3rfBoexe0vUgPD2+6Aen3LFh4qCP3tWXDBzhhVCDJz0UkiKrwMh8
-         vcBN/6bAXZQOxNQIlelOeKaxMsy8MMxccXRkGpeCdJxKPpTiccbTZ4NxgVp2YXjz9q+3
-         Vsn+KJ3pJBDLVjm8mZajJWmA/TQJ0gJBZbbVgyLiJzKe4bp4V/C50CMB18I2oaTdnA9W
-         amag6+RIz5mGqvDMOdhZowld++TKUW+t6eZqF5/3Rz1pu2KisydlXW3gnf66g/cv75MX
-         eY8g==
-X-Gm-Message-State: AOAM531KDC2IdBjJxdZlDy/5nj4a7omr9ohxjLeULI8cosMspYyR/Ao0
-        O6x5IwHxk9qy01Vpk9o+kdN9cj+vuiAldNRWJaZSTA==
-X-Google-Smtp-Source: ABdhPJz2vZyb8EjDXoBz5aJqdCJaHJxbASKD9ocqOG9byUNYhtvhV1GrDtGe3hly7FxSRBKHBFr6Xffa/kBY7R2DNFo=
-X-Received: by 2002:a2e:9357:: with SMTP id m23mr1266773ljh.446.1619733179148;
- Thu, 29 Apr 2021 14:52:59 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=Zbt5Vlv/Alx31b/vvnYikUY4tIX1dxiM5eoc7l+5rps=;
+        b=U2J64dT5VmTBJbesI5EQWUzi6fV2RzEeUNRsu8lKUeYzKfL6A85gjb7CvI/70OI6UT
+         9YxiRIas3ysVogPsNmVtXPiCSOZMHSgcSQM4k8GV8SxOzHPyNiJk9oe7K0G0p7UyBj0v
+         NcSdhXznBD40rVHbyp1vWzGkZ1g4HrWYVmAQAVRPVvf2SIReypNFL9IL/31GJbJ9echg
+         3lhdwbxD/IUpIAc+fHAjWdX+CJlniMrUqkxZTp5tYXlC3lpG0/6EmbD+kvLJZ7qXnGQx
+         XKiem4dmOt1kjVf5Mu+vxOwQRFUSByjl3IMXa31PR0nU840feHYqFAgemorsV592bsgx
+         52Sw==
+X-Gm-Message-State: AOAM531tLO6kmuhD1pGhvxi8231v3f+hOV+CTDX4Njj5BMLl0g+pKuaO
+        cRtwCRnNaMHp8eChgWJla0Iq2ppoeQCin7w7
+X-Google-Smtp-Source: ABdhPJywzQKJ2yHjsHsCcYEf3STmnDm5zLkBYBu/UxoTYzVK+ZhlHv3T06pQufWBFtsBkdtjFp5/2A==
+X-Received: by 2002:ac2:5fcb:: with SMTP id q11mr1128569lfg.248.1619733205872;
+        Thu, 29 Apr 2021 14:53:25 -0700 (PDT)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id p18sm97510lfu.52.2021.04.29.14.53.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Apr 2021 14:53:25 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id x20so76828435lfu.6
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 14:53:24 -0700 (PDT)
+X-Received: by 2002:ac2:5f97:: with SMTP id r23mr1053760lfe.377.1619733204581;
+ Thu, 29 Apr 2021 14:53:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210429205109.2847831-1-brendanhiggins@google.com> <20210429205109.2847831-2-brendanhiggins@google.com>
-In-Reply-To: <20210429205109.2847831-2-brendanhiggins@google.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Thu, 29 Apr 2021 14:52:48 -0700
-Message-ID: <CAGS_qxp+ToCmvhT=HWy=pzOczL4ayqKAdhTFbBVaXTc9Dbwm2Q@mail.gmail.com>
-Subject: Re: [RFC v2 1/4] kunit: Add 'kunit_shutdown' option
-To:     Brendan Higgins <brendanhiggins@google.com>
-Cc:     shuah@kernel.org, David Gow <davidgow@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Stephen Boyd <sboyd@kernel.org>,
-        Kees Cook <keescook@chromium.org>, frowand.list@gmail.com
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 29 Apr 2021 14:53:08 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjmNOoX8iPtYsM8PVa+7DE1=5bv-XVe_egP0ZOiuT=7CQ@mail.gmail.com>
+Message-ID: <CAHk-=wjmNOoX8iPtYsM8PVa+7DE1=5bv-XVe_egP0ZOiuT=7CQ@mail.gmail.com>
+Subject: Very slow clang kernel config ..
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 1:51 PM Brendan Higgins
-<brendanhiggins@google.com> wrote:
->
-> From: David Gow <davidgow@google.com>
->
-> Add a new kernel command-line option, 'kunit_shutdown', which allows the
-> user to specify that the kernel poweroff, halt, or reboot after
-> completing all KUnit tests; this is very handy for running KUnit tests
-> on UML or a VM so that the UML/VM process exits cleanly immediately
-> after running all tests without needing a special initramfs.
->
-> Signed-off-by: David Gow <davidgow@google.com>
-> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+I haven't looked into why this is so slow with clang, but it really is
+painfully slow:
 
-Tested-By: Daniel Latypov <dlatypov@google.com>
+   time make CC=clang allmodconfig
+   real 0m2.667s
 
-Testing this out, I think this also helps fix coverage on UML.
-I used to have to hack in something like this:
+vs the gcc case:
 
-diff --git a/arch/um/os-Linux/util.c b/arch/um/os-Linux/util.c
-index 07327425d06e..e13763faedd9 100644
---- a/arch/um/os-Linux/util.c
-+++ b/arch/um/os-Linux/util.c
-@@ -146,7 +146,7 @@ void os_dump_core(void)
-        while ((pid = waitpid(-1, NULL, WNOHANG | __WALL)) > 0)
-                os_kill_ptraced_process(pid, 0);
+    time make CC=gcc allmodconfig
+    real 0m0.903s
 
--       uml_abort();
-+       exit(127);
- }
+Yeah, yeah, three seconds may sound like "not a lot of time, but
+considering that the subsequent full build (which for me is often
+empty) doesn't take all that much longer, that config time clang waste
+is actually quite noticeable.
 
- void um_early_printk(const char *s, unsigned int n)
+I actually don't do allmodconfig builds with clang, but I do my
+default kernel builds with it:
 
-And afaict, this patch removes the need to do so.
-(But I made a few mistakes when initially trying to test that out, so
-I'm not 100% certain I didn't make another).
+    time make oldconfig
+    real 0m2.748s
 
-> ---
->  lib/kunit/executor.c                | 20 ++++++++++++++++++++
->  tools/testing/kunit/kunit_kernel.py |  2 +-
->  tools/testing/kunit/kunit_parser.py |  2 +-
->  3 files changed, 22 insertions(+), 2 deletions(-)
->
-> diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-> index 15832ed446685..7db619624437c 100644
-> --- a/lib/kunit/executor.c
-> +++ b/lib/kunit/executor.c
-> @@ -1,5 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->
-> +#include <linux/reboot.h>
->  #include <kunit/test.h>
->  #include <linux/glob.h>
->  #include <linux/moduleparam.h>
-> @@ -18,6 +19,9 @@ module_param(filter_glob, charp, 0);
->  MODULE_PARM_DESC(filter_glob,
->                 "Filter which KUnit test suites run at boot-time, e.g. list*");
->
-> +static char *kunit_shutdown;
-> +core_param(kunit_shutdown, kunit_shutdown, charp, 0644);
-> +
->  static struct kunit_suite * const *
->  kunit_filter_subsuite(struct kunit_suite * const * const subsuite)
->  {
-> @@ -82,6 +86,20 @@ static struct suite_set kunit_filter_suites(void)
->         return filtered;
->  }
->
-> +static void kunit_handle_shutdown(void)
-> +{
-> +       if (!kunit_shutdown)
-> +               return;
-> +
-> +       if (!strcmp(kunit_shutdown, "poweroff"))
-> +               kernel_power_off();
-> +       else if (!strcmp(kunit_shutdown, "halt"))
-> +               kernel_halt();
-> +       else if (!strcmp(kunit_shutdown, "reboot"))
-> +               kernel_restart(NULL);
-> +
-> +}
-> +
->  static void kunit_print_tap_header(struct suite_set *suite_set)
->  {
->         struct kunit_suite * const * const *suites, * const *subsuite;
-> @@ -112,6 +130,8 @@ int kunit_run_all_tests(void)
->                 kfree(suite_set.start);
->         }
->
-> +       kunit_handle_shutdown();
-> +
->         return 0;
->  }
->
-> diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-> index f309a33256cd3..7d5b77967d48f 100644
-> --- a/tools/testing/kunit/kunit_kernel.py
-> +++ b/tools/testing/kunit/kunit_kernel.py
-> @@ -206,7 +206,7 @@ class LinuxSourceTree(object):
->         def run_kernel(self, args=None, build_dir='', filter_glob='', timeout=None) -> Iterator[str]:
->                 if not args:
->                         args = []
-> -               args.extend(['mem=1G', 'console=tty'])
-> +               args.extend(['mem=1G', 'console=tty','kunit_shutdown=halt'])
->                 if filter_glob:
->                         args.append('kunit.filter_glob='+filter_glob)
->                 self._ops.linux_bin(args, timeout, build_dir)
-> diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-> index e8bcc139702e2..8d8d4d70b39dd 100644
-> --- a/tools/testing/kunit/kunit_parser.py
-> +++ b/tools/testing/kunit/kunit_parser.py
-> @@ -49,7 +49,7 @@ class TestStatus(Enum):
->
->  kunit_start_re = re.compile(r'TAP version [0-9]+$')
->  kunit_end_re = re.compile('(List of all partitions:|'
-> -                         'Kernel panic - not syncing: VFS:)')
-> +                         'Kernel panic - not syncing: VFS:|reboot: System halted)')
->
->  def isolate_kunit_output(kernel_output) -> Iterator[str]:
->         started = False
-> --
-> 2.31.1.498.g6c1eba8ee3d-goog
->
+    time sh -c "make -j128 > ../makes"
+    real 0m3.546s
+
+so that "make oldconfig" really is almost as slow as the whole
+"confirm build is done" thing. Its' quite noticeable in my workflow.
+
+The gcc config isn't super-fast either, but there's a big 3x
+difference, so the clang case really is doing something extra wrong.
+
+I've not actually looked into _why_. Except I do see that "clang" gets
+invoked with small (empty?) test files several times, probably to
+check for command line flags being valid.
+
+Sending this to relevant parties in the hope that somebody goes "Yeah,
+that's silly" and fixes it.
+
+This is on my F34 machine:
+
+     clang version 12.0.0 (Fedora 12.0.0-0.3.rc1.fc34)
+
+in case it matters (but I don't see why it should).
+
+Many many moons ago the promise for clang was faster build speeds.
+That didn't turn out to be true, but can we please at least try to
+make them not painfully much slower?
+
+              Linus
