@@ -2,230 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B40636ED63
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 271F836ED65
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240676AbhD2P1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 11:27:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53438 "EHLO
+        id S240762AbhD2P1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 11:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232989AbhD2P1i (ORCPT
+        with ESMTP id S232989AbhD2P1s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 11:27:38 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA58C06138B;
-        Thu, 29 Apr 2021 08:26:50 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id n32-20020a9d1ea30000b02902a53d6ad4bdso6694298otn.3;
-        Thu, 29 Apr 2021 08:26:50 -0700 (PDT)
+        Thu, 29 Apr 2021 11:27:48 -0400
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8736FC06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:27:01 -0700 (PDT)
+Received: by mail-wm1-x349.google.com with SMTP id z135-20020a1c7e8d0000b02901297f50f20dso1505636wmc.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:27:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vbo4pKW3eCIThjMyIy6wsscOAdK3OJqwzPMbrwiTzTg=;
-        b=Srmr0fVOgjkykvlE3qdpkc3N3K5sktCMj6v1OgxqDJL0bljoIWUSciurSzygMcC6+n
-         Kvfe48eZrFMI4Vezxk+6d1SmAwUj3O8KStWxJ7C6QQj643wUL1pTlFt1cIl+3EPJlog8
-         Wjz7r5pur/St1BB4WjvL2c+1TRfSExFtimoriLOUN5bhVZxRQ7ceQ7l6u1U35bjVvgYO
-         G+U3UQmd+zdqnS/9c59d2vTHPjnfybGBOMlKvgo2G6yt/3QwDjhtTZtb/DN7njCxMlfl
-         Z+5BoYbOdcY8gHWg1rB52LVWnrX7HAjpecCdA5JJdAmydYP8GXTBu8hDuNRA/byDUNS0
-         rQAg==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=p0igZyrs5kNhrAalP/Bef9OTT/K+mc9eClA68h2BbGw=;
+        b=g25g7eSv3DiOYvQLj9XcGvg72/wdAPGils2qsqtLeERwPsWbBt3tqc/oF6MYvyOzaQ
+         Xz0ZMDjLqYlv85SfYdNgre/MZhNCsVPa5oWu4lrnDZlQGayGlxwZrup2hjX5As6ztpE8
+         nrjSrVkBvPZPWN11HbodPTRC9P+49h7CFZRYMRxwU9DmEOt/jh7pOkQoPmBwDYtFONLT
+         ZOSxrB9qFOGNLgKAEoxjNvICIV9ZS+0+rLlE5hrW9p7xEJQuLIECC88Xpv90x9uXF6U0
+         Go5KX2EBQ0crdh+IenObEIeXhBZJ+oGuPdD/aaZDTOJ8mTNzwgYToOu679+51mHMNOQm
+         DPZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vbo4pKW3eCIThjMyIy6wsscOAdK3OJqwzPMbrwiTzTg=;
-        b=MGIyoT3NAD/pAQdjvHSrqqo1k4kH6MBdA1sEh9pRpd3fXo9qslVI9uoKtttwgAAXPW
-         gJuxpJ/t4LTVXThMWAt4nNvCOi4JfezjRRPnOwVNAeGqZglDL4TtplRlp36hMoPm7ku5
-         wg0xcWyIhYjpSzzioz9V1TtYlfHJMhGQ9o8meJvOmW5sesvl6H4XVctFpnYjhIjtSTmp
-         +2kQ/G/uqqZkhzxpXAmpeTtzivjqDC20nrrkSqVsbnCL/0t4CmSNA3OilzVYNgcO9uwJ
-         xKahMtf4kZntTtMRpUOowEZ1su+ijRyxjtqkHGcJGVB7LqnXOTp0G9xMDNiMqnRRaUc4
-         3k2A==
-X-Gm-Message-State: AOAM533jIbvB3UAm8ogYkr3vxljxRfzFE0GB8aOdysfLHhxBL650XskD
-        usUNe/HjR+3fSHsOgFK5GBZu0WIVsrIwz6aNLiQ=
-X-Google-Smtp-Source: ABdhPJx/VF42MwLva6s4z6QCvKeFfwbdS1g8a6UEzyk0r2NtvE1jU5KzdNDQMYGiG9P9g6IxZOwxNN7a3OAYwulPFs8=
-X-Received: by 2002:a9d:63d1:: with SMTP id e17mr1296573otl.311.1619710009654;
- Thu, 29 Apr 2021 08:26:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210427112738.15869-1-fmdefrancesco@gmail.com> <ef0a9c9d-4a7e-b1ce-05ef-29dca0c020a7@amd.com>
-In-Reply-To: <ef0a9c9d-4a7e-b1ce-05ef-29dca0c020a7@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 29 Apr 2021 11:26:38 -0400
-Message-ID: <CADnq5_NGxHweFv_Cqwn1em5erGeUH_WJ_6KugJ+iKEUsKtuaYg@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/amd/amdgpu: Fix errors in documentation of
- function parameters
-To:     Felix Kuehling <felix.kuehling@amd.com>
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "open list:AMD KFD" <amd-gfx@lists.freedesktop.org>,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=p0igZyrs5kNhrAalP/Bef9OTT/K+mc9eClA68h2BbGw=;
+        b=g5JQ2LomUxH6T4HYYVu2oe0YplhVsvkci1Vg+d2O+mfFonJtPJFH35uoyHzjBhQrRC
+         3TTZbG0uRGH4gY2B4w6tx2MVDlO5SwDxjYBnYT++btSU+ZWsh5QE8y2Zgyt6fQvw25wT
+         w7rrf2SPbtoom/mE3IWLhAk5CxO4JTVvOnzGU1Pwbdfx4PNqcrUjJ31O6q+CZ/uGpB6o
+         vlmlWawmTo+pxurIBNaZSXKcqDLg+IrO7iauuaG4KV6Pd/Q4wN1OqYoCWAcUmtH/Rn26
+         7f4JbHmoPvhlth0QvvmN39PjYqZa3fl2sM4MdwaucG2XcNZWoJcAFDu06bHISdNzA5TF
+         N3rg==
+X-Gm-Message-State: AOAM532nuMLDtl9nlD+N7bpurSAF07q0OUcfPsvEDnFlaP2QuemF0T79
+        /LUOAAMeXJALC88LeWej3IcsXE9kIaxp
+X-Google-Smtp-Source: ABdhPJxGZl3J/RFxt6+Vl9aoO7k2oljSMnxglkps8BJDR/bwdVgtrSYGMYUXKftoy6ms3yYhy9QsfLnJaA9+
+X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:1652])
+ (user=qperret job=sendgmr) by 2002:a05:600c:499a:: with SMTP id
+ h26mr643514wmp.176.1619710020173; Thu, 29 Apr 2021 08:27:00 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 15:26:56 +0000
+Message-Id: <20210429152656.4118460-1-qperret@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+Subject: [PATCH v2] sched: Fix out-of-bound access in uclamp
+From:   Quentin Perret <qperret@google.com>
+To:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        juri.lelli@redhat.com
+Cc:     dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, qais.yousef@arm.com,
+        kernel-team@android.com, linux-kernel@vger.kernel.org,
+        patrick.bellasi@matbug.net
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 2:44 AM Felix Kuehling <felix.kuehling@amd.com> wrote:
->
-> On 2021-04-27 7:27, Fabio M. De Francesco wrote:
-> > In the documentation of functions, removed excess parameters, described
-> > undocumented ones, and fixed syntax errors.
-> >
-> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > ---
-> >
-> > Changes from v1: Cc'ed all the maintainers.
->
-> Looks like Alex already applied V1. So this one doesn't apply. "git am
-> -3" tells me:
+Util-clamp places tasks in different buckets based on their clamp values
+for performance reasons. However, the size of buckets is currently
+computed using a rounding division, which can lead to an off-by-one
+error in some configurations.
 
-Ah sorry, I didn't see the v2 patch.
+For instance, with 20 buckets, the bucket size will be 1024/20=51. A
+task with a clamp of 1024 will be mapped to bucket id 1024/51=20. Sadly,
+correct indexes are in range [0,19], hence leading to an out of bound
+memory access.
 
-Alex
+Fix the math to compute the bucket size.
 
+Fixes: 69842cba9ace ("sched/uclamp: Add CPU's clamp buckets refcounting")
+Suggested-by: Qais Yousef <qais.yousef@arm.com>
+Signed-off-by: Quentin Perret <qperret@google.com>
 
->
-> Applying: drm/amd/amdgpu: Fix errors in documentation of function parameters
-> Using index info to reconstruct a base tree...
-> M       drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-> M       drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_fence.c
-> M       drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c
-> Falling back to patching base and 3-way merge...
-> No changes -- Patch already applied.
->
-> Regards,
->    Felix
->
->
-> >
-> >   drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c          | 12 ++++++------
-> >   drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_fence.c  |  4 +++-
-> >   drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c |  8 ++++----
-> >   3 files changed, 13 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-> > index 2e9b16fb3fcd..bf2939b6eb43 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-> > @@ -76,7 +76,7 @@ struct amdgpu_atif {
-> >   /**
-> >    * amdgpu_atif_call - call an ATIF method
-> >    *
-> > - * @handle: acpi handle
-> > + * @atif: acpi handle
-> >    * @function: the ATIF function to execute
-> >    * @params: ATIF function params
-> >    *
-> > @@ -166,7 +166,6 @@ static void amdgpu_atif_parse_functions(struct amdgpu_atif_functions *f, u32 mas
-> >   /**
-> >    * amdgpu_atif_verify_interface - verify ATIF
-> >    *
-> > - * @handle: acpi handle
-> >    * @atif: amdgpu atif struct
-> >    *
-> >    * Execute the ATIF_FUNCTION_VERIFY_INTERFACE ATIF function
-> > @@ -240,8 +239,7 @@ static acpi_handle amdgpu_atif_probe_handle(acpi_handle dhandle)
-> >   /**
-> >    * amdgpu_atif_get_notification_params - determine notify configuration
-> >    *
-> > - * @handle: acpi handle
-> > - * @n: atif notification configuration struct
-> > + * @atif: acpi handle
-> >    *
-> >    * Execute the ATIF_FUNCTION_GET_SYSTEM_PARAMETERS ATIF function
-> >    * to determine if a notifier is used and if so which one
-> > @@ -304,7 +302,7 @@ static int amdgpu_atif_get_notification_params(struct amdgpu_atif *atif)
-> >   /**
-> >    * amdgpu_atif_query_backlight_caps - get min and max backlight input signal
-> >    *
-> > - * @handle: acpi handle
-> > + * @atif: acpi handle
-> >    *
-> >    * Execute the QUERY_BRIGHTNESS_TRANSFER_CHARACTERISTICS ATIF function
-> >    * to determine the acceptable range of backlight values
-> > @@ -363,7 +361,7 @@ static int amdgpu_atif_query_backlight_caps(struct amdgpu_atif *atif)
-> >   /**
-> >    * amdgpu_atif_get_sbios_requests - get requested sbios event
-> >    *
-> > - * @handle: acpi handle
-> > + * @atif: acpi handle
-> >    * @req: atif sbios request struct
-> >    *
-> >    * Execute the ATIF_FUNCTION_GET_SYSTEM_BIOS_REQUESTS ATIF function
-> > @@ -899,6 +897,8 @@ void amdgpu_acpi_fini(struct amdgpu_device *adev)
-> >   /**
-> >    * amdgpu_acpi_is_s0ix_supported
-> >    *
-> > + * @adev: amdgpu_device_pointer
-> > + *
-> >    * returns true if supported, false if not.
-> >    */
-> >   bool amdgpu_acpi_is_s0ix_supported(struct amdgpu_device *adev)
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_fence.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_fence.c
-> > index 5af464933976..98d31ebad9ce 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_fence.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_fence.c
-> > @@ -111,6 +111,8 @@ static const char *amdkfd_fence_get_timeline_name(struct dma_fence *f)
-> >    *  a KFD BO and schedules a job to move the BO.
-> >    *  If fence is already signaled return true.
-> >    *  If fence is not signaled schedule a evict KFD process work item.
-> > + *
-> > + *  @f: dma_fence
-> >    */
-> >   static bool amdkfd_fence_enable_signaling(struct dma_fence *f)
-> >   {
-> > @@ -131,7 +133,7 @@ static bool amdkfd_fence_enable_signaling(struct dma_fence *f)
-> >   /**
-> >    * amdkfd_fence_release - callback that fence can be freed
-> >    *
-> > - * @fence: fence
-> > + * @f: dma_fence
-> >    *
-> >    * This function is called when the reference count becomes zero.
-> >    * Drops the mm_struct reference and RCU schedules freeing up the fence.
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c
-> > index b43e68fc1378..ed3014fbb563 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c
-> > @@ -719,7 +719,7 @@ static void unlock_spi_csq_mutexes(struct amdgpu_device *adev)
-> >   }
-> >
-> >   /**
-> > - * @get_wave_count: Read device registers to get number of waves in flight for
-> > + * get_wave_count: Read device registers to get number of waves in flight for
-> >    * a particular queue. The method also returns the VMID associated with the
-> >    * queue.
-> >    *
-> > @@ -755,19 +755,19 @@ static void get_wave_count(struct amdgpu_device *adev, int queue_idx,
-> >   }
-> >
-> >   /**
-> > - * @kgd_gfx_v9_get_cu_occupancy: Reads relevant registers associated with each
-> > + * kgd_gfx_v9_get_cu_occupancy: Reads relevant registers associated with each
-> >    * shader engine and aggregates the number of waves that are in flight for the
-> >    * process whose pasid is provided as a parameter. The process could have ZERO
-> >    * or more queues running and submitting waves to compute units.
-> >    *
-> >    * @kgd: Handle of device from which to get number of waves in flight
-> >    * @pasid: Identifies the process for which this query call is invoked
-> > - * @wave_cnt: Output parameter updated with number of waves in flight that
-> > + * @pasid_wave_cnt: Output parameter updated with number of waves in flight that
-> >    * belong to process with given pasid
-> >    * @max_waves_per_cu: Output parameter updated with maximum number of waves
-> >    * possible per Compute Unit
-> >    *
-> > - * @note: It's possible that the device has too many queues (oversubscription)
-> > + * Note: It's possible that the device has too many queues (oversubscription)
-> >    * in which case a VMID could be remapped to a different PASID. This could lead
-> >    * to an iaccurate wave count. Following is a high-level sequence:
-> >    *    Time T1: vmid = getVmid(); vmid is associated with Pasid P1
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+---
+
+Changes in v2:
+ - replaced the DIV_ROUND_UP(a,b) with a/b+1 (Dietmar)
+
+This was found thanks to the SCHED_WARN_ON() in uclamp_rq_dec_id() which
+indicated a broken state while running with 20 buckets on Android.
+
+Big thanks to Qais for the help with this one.
+---
+ kernel/sched/core.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 98191218d891..c5fb230dc604 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -920,8 +920,7 @@ static struct uclamp_se uclamp_default[UCLAMP_CNT];
+  */
+ DEFINE_STATIC_KEY_FALSE(sched_uclamp_used);
+ 
+-/* Integer rounded range for each bucket */
+-#define UCLAMP_BUCKET_DELTA DIV_ROUND_CLOSEST(SCHED_CAPACITY_SCALE, UCLAMP_BUCKETS)
++#define UCLAMP_BUCKET_DELTA (SCHED_CAPACITY_SCALE / UCLAMP_BUCKETS + 1)
+ 
+ #define for_each_clamp_id(clamp_id) \
+ 	for ((clamp_id) = 0; (clamp_id) < UCLAMP_CNT; (clamp_id)++)
+-- 
+2.31.1.498.g6c1eba8ee3d-goog
+
