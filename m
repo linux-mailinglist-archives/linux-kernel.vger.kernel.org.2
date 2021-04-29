@@ -2,105 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD0636EDB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C3336EDB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234710AbhD2PzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 11:55:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59494 "EHLO
+        id S240672AbhD2P6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 11:58:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232989AbhD2Py7 (ORCPT
+        with ESMTP id S232004AbhD2P6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 11:54:59 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D585C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:54:12 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id b17so54477648ilh.6
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:54:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=70fNwGQ2+wnm+RsZQ37LOGldOw8Lk2bCC2vptNmZyrQ=;
-        b=oEVICcUeVEnXPNMN2DH0TbLTP5Ex38Q4NWBnvIO0sV+5D2i8TWzp6V+edgIvpk1Ah6
-         SW6GKSl++6hSuIVKF4tSltHbb73hf3XbSOAGOl+fH/SPDOoMpurQm3lTgPZEYQ2EANnU
-         9JISVKdlR8/YytrKr8z03+bUEm6Y3T7qCwmKFFPF7ykbaX/U0IkCoNgokxHoNbzWhJ+R
-         ivMHm/gA0esFjjwV/LGgIgKuzghmWf/K5Ek6ALZn11oBC8RD/99vAixDacRh5ICtZS8l
-         h8wtYCUV4CufDCjPq0VqB1f3p8qTYP2NfAhktxHNGvp13yh+EE3I/0P3b3BI17G8okYY
-         ECRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=70fNwGQ2+wnm+RsZQ37LOGldOw8Lk2bCC2vptNmZyrQ=;
-        b=L8+UQIxwkvf62SRHO5xvy1GFNtAdnOLpNnA6Xq733n0x23JtTbYTiQ4MDNcFYmzfyF
-         a5y90dK47S05bl6BaxPC45yAnuPDi0eGZGxQNlHYrq9Hw+IyPYWUepFnfWVZDL3WO6vs
-         39MZo+hlTT6GF9r60mjYLyO4awvKLLyKrb6qEzJtevYhD2gRnspYg/d/P7DEEUedpfp5
-         PxQ+1I7e/p9wy7VLk82lTxeUPv0tDJ+7tXYmG0AcENmbcAGKCN2Xl3DzQe0eeaUOsaak
-         CkpfS4c332RyK6WXVmut+G6v8saVinpKUhime7f/LMbg3ST6Q97yEUZO1zSLiMJDlcuS
-         a2ZA==
-X-Gm-Message-State: AOAM530d4WDUAjsttA3rl4yi/i8GzKQJGSOYYnr64ApPrV+GJ9kgFubr
-        D9J2WGsD3FJv5VNOI4hyf5blOg==
-X-Google-Smtp-Source: ABdhPJyoEgLRtMbV6qtNsLK18iz5OQwyuRm137+ckSle536tgpbGbK7/aLQWWWwlSp6UquiUV9Mo+A==
-X-Received: by 2002:a92:6012:: with SMTP id u18mr320869ilb.92.1619711651814;
-        Thu, 29 Apr 2021 08:54:11 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id r11sm134797iob.1.2021.04.29.08.54.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Apr 2021 08:54:11 -0700 (PDT)
-Subject: Re: [PATCH] smp: fix smp_call_function_single_async prototype
-To:     Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jian Cai <jiancai@google.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Huang, Ying" <ying.huang@intel.com>, Borislav Petkov <bp@suse.de>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Juergen Gross <jgross@suse.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20210429150940.3256656-1-arnd@kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <90e5aaa8-20d4-fbb7-1924-2dc1b6257824@kernel.dk>
-Date:   Thu, 29 Apr 2021 09:54:10 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 29 Apr 2021 11:58:17 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 160D0C06138C
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:57:31 -0700 (PDT)
+Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 14E4F22173;
+        Thu, 29 Apr 2021 17:57:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1619711848;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=HpaxG8rm84ZVuaYd7aNZxfINyI92WQzUWLGtZtmfac8=;
+        b=gJZKOFRG8OKB8slf+vsoR1ECI/6/hpvbWhABptC0NI6f5mYWP5cvSDzBwG2yFRsIsJkjA+
+        R+M05qxI2IaYvO3ox4VrS4bKoxuBWh7NrFvHe0mHOqmtYT6w2o4sDk9r8InyaLP254EmS9
+        7gUQqsndTdpv3XGzRYBjgPmciTEDEGo=
+From:   Michael Walle <michael@walle.cc>
+To:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Alexander Williams <awill@google.com>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Heiko Thiery <heiko.thiery@gmail.com>,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH v3 0/2] mtd: spi-nor: support dumping sfdp tables
+Date:   Thu, 29 Apr 2021 17:57:11 +0200
+Message-Id: <20210429155713.28808-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210429150940.3256656-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/29/21 9:09 AM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> As of commit 966a967116e6 ("smp: Avoid using two cache lines for struct
-> call_single_data"), the smp code prefers 32-byte aligned call_single_data
-> objects for performance reasons, but the block layer includes an instance
-> of this structure in the main 'struct request' that is more senstive
-> to size than to performance here, see 4ccafe032005 ("block: unalign
-> call_single_data in struct request").
-> 
-> The result is a violation of the calling conventions that clang correctly
-> points out:
-> 
-> block/blk-mq.c:630:39: warning: passing 8-byte aligned argument to 32-byte aligned parameter 2 of 'smp_call_function_single_async' may result in an unaligned pointer access [-Walign-mismatch]
->                 smp_call_function_single_async(cpu, &rq->csd);
-> 
-> It does seem that the usage of the call_single_data without cache line
-> alignment should still be allowed by the smp code, so just change the
-> function prototype so it accepts both, but leave the default alignment
-> unchanged for the other users. This seems better to me than adding
-> a local hack to shut up an otherwise correct warning in the caller.
+Add the possibility to dump the SFDP data of a flash device.
 
-I think that's the right approach, rather than work-around it in eg
-blk-mq.
+More and more flash devices share the same flash ID and we need per device
+fixups. Usually, these fixups differentiate flashes by looking at
+differences in the SFDP data. Determining the difference is only possible
+if we have the SFDP data for all the flashes which share a flash ID. This
+will lay the foundation to dump the whole SFDP data of a flash device.
 
-Acked-by: Jens Axboe <axboe@kernel.dk>
+This is even more important, because some datasheets doesn't even contain
+the SFDP data. Fixups for these kind of flashes are nearly impossible to
+do.
+
+I envision having a database of all the SFDP data for the flashes we
+support and make it a requirement to submit it when a new flash is added.
+This might or might not have legal implications. Thus I'd start with having
+that database private to the SPI NOR maintainers.
+
+Changes since v2:
+ - use .dev_groups of the driver to attach the attributes
+ - add manufacturer attribue
+ - rename attribute name to partname
+ - add ABI documentation
+
+Changes since v1:
+ - use sysfs_emit()
+ - add comment about the allocation of the sfdp dwords
+ - free SFDP memory in the error path
+ - use BIN_ATTR_RO(sfdp, 0)
+ - use spi_nor_read_sfdp()
+
+Changes since RFC:
+ - Don't read SFDP data after probe. The flash might already be switched to
+   8D-8D-8D mode. Instead, cache the SFDP data
+ - add two sysfs files: jedec-id and name
+ - change the file mode of the sfdp file from 0400 to 0444. There is no
+   hardware access anymore.
+
+Michael Walle (2):
+  mtd: spi-nor: sfdp: save a copy of the SFDP data
+  mtd: spi-nor: add initial sysfs support
+
+ .../ABI/testing/sysfs-bus-spi-devices-spi-nor | 31 +++++++
+ drivers/mtd/spi-nor/Makefile                  |  2 +-
+ drivers/mtd/spi-nor/core.c                    |  1 +
+ drivers/mtd/spi-nor/core.h                    | 12 +++
+ drivers/mtd/spi-nor/sfdp.c                    | 58 ++++++++++++
+ drivers/mtd/spi-nor/sysfs.c                   | 92 +++++++++++++++++++
+ include/linux/mtd/spi-nor.h                   |  2 +
+ 7 files changed, 197 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
+ create mode 100644 drivers/mtd/spi-nor/sysfs.c
 
 -- 
-Jens Axboe
+2.20.1
 
