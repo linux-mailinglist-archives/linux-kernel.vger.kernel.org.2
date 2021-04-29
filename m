@@ -2,113 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BE7736EFC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 20:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1157236EFBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 20:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241472AbhD2SwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 14:52:00 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:49816 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241434AbhD2Svx (ORCPT
+        id S241274AbhD2Svr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 14:51:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241311AbhD2Svj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 14:51:53 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TIohum016066;
-        Thu, 29 Apr 2021 18:51:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=6WL3UehjKjLvokjQ71PRkHVn0xAi2FYu3gjgUD+xzsw=;
- b=yOb4L89nACWZsbgVaPXoyWC8gAhcNX/X0eCTtVp8S+wjNFE8/6SGWDhUoQHJRYJ+6lOz
- qebyy7w/rS70YJsXSXkrk6+KRI/rAetP109XxQpj3DIzOKmJUq2ytr0OFNGNHpMaNUdh
- IvgHnNhigv3WNlAAI9uH6ETrRQ9ZHHVj6j3jxkzl7LwNKJ7izsFBJDPrldta2jWDVA8y
- SLmfGAlVrT484IR0pdKOxePls39F+y+DMiYjMLCHfJT9J7YY4WJnbDzRdoUsKfj2rEC5
- cOrYTU/aozISb3pn3CzM3EP9fO8KdNG/GrA36WxU7A8znBQRJAeCiTFf4kVnp9y6HcGh 0g== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 385aft5e8a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 18:51:02 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TIktLi022195;
-        Thu, 29 Apr 2021 18:51:02 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 3848f1grqv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 18:51:02 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13TIp2ir041420;
-        Thu, 29 Apr 2021 18:51:02 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.147.25.63])
-        by userp3030.oracle.com with ESMTP id 3848f1grqc-1;
-        Thu, 29 Apr 2021 18:51:02 +0000
-From:   Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-Cc:     saeed.mirzamohammadi@oracle.com, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH  1/1] HID: quirks: Add quirk for Lenovo optical mouse
-Date:   Thu, 29 Apr 2021 11:50:39 -0700
-Message-Id: <20210429185040.46249-1-saeed.mirzamohammadi@oracle.com>
-X-Mailer: git-send-email 2.27.0
+        Thu, 29 Apr 2021 14:51:39 -0400
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CF53C06138C;
+        Thu, 29 Apr 2021 11:50:52 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id D21C912801CA;
+        Thu, 29 Apr 2021 11:50:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1619722251;
+        bh=VwqfuRV94ygqfXZS1UeALT+6jZdpwq29n2FhIXE8648=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=BNzknt7UULVwUspwyiap7s3ojhMPpAootk5fdqtimemuj485mf0hQsV2iusO5/XBa
+         sBVnZjWmK2kh4Yd5RY6r3dGDIxujwxQecdeV8EJH8XcP691OyW+m3t/IIk5bqfQwE8
+         KGhDIWhIZcAdp4R9n4QsVILWIXSk7DnQsvskDOHM=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id kSLeBx-fT8Hw; Thu, 29 Apr 2021 11:50:51 -0700 (PDT)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 4CFA3128017C;
+        Thu, 29 Apr 2021 11:50:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1619722251;
+        bh=VwqfuRV94ygqfXZS1UeALT+6jZdpwq29n2FhIXE8648=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=BNzknt7UULVwUspwyiap7s3ojhMPpAootk5fdqtimemuj485mf0hQsV2iusO5/XBa
+         sBVnZjWmK2kh4Yd5RY6r3dGDIxujwxQecdeV8EJH8XcP691OyW+m3t/IIk5bqfQwE8
+         KGhDIWhIZcAdp4R9n4QsVILWIXSk7DnQsvskDOHM=
+Message-ID: <9eea988ff637af57511107c6c0941bff2aa7c6c5.camel@HansenPartnership.com>
+Subject: Re: [PATCH 1/1] trusted-keys: match tpm_get_ops on all return paths
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Ben Boeckel <me@benboeckel.net>, keyrings@vger.kernel.org
+Cc:     Ben Boeckel <mathstuf@gmail.com>, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Date:   Thu, 29 Apr 2021 11:50:50 -0700
+In-Reply-To: <20210429183742.756766-2-list.lkml.keyrings@me.benboeckel.net>
+References: <20210429183742.756766-1-list.lkml.keyrings@me.benboeckel.net>
+         <20210429183742.756766-2-list.lkml.keyrings@me.benboeckel.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: cwHqY566YxCjjfXVwr3HCcFMPJeMcS3A
-X-Proofpoint-ORIG-GUID: cwHqY566YxCjjfXVwr3HCcFMPJeMcS3A
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9969 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 lowpriorityscore=0
- mlxlogscore=999 malwarescore=0 phishscore=0 priorityscore=1501
- clxscore=1011 spamscore=0 bulkscore=0 suspectscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104290119
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Lenovo optical mouse with vendor id of 0x17ef and product id of
-0x600e experiences disconnecting issues every 55 seconds:
+On Thu, 2021-04-29 at 14:37 -0400, Ben Boeckel wrote:
+> From: Ben Boeckel <mathstuf@gmail.com>
+> 
+> The `tpm_get_ops` call at the beginning of the function is not paired
+> with a `tpm_put_ops` on this return path.
+> 
+> Fixes: f2219745250f ("security: keys: trusted: use ASN.1 TPM2 key
+> format for the blobs")
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Ben Boeckel <mathstuf@gmail.com>
+> ---
+>  security/keys/trusted-keys/trusted_tpm2.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/security/keys/trusted-keys/trusted_tpm2.c
+> b/security/keys/trusted-keys/trusted_tpm2.c
+> index 617fabd4d913..25c2c4d564de 100644
+> --- a/security/keys/trusted-keys/trusted_tpm2.c
+> +++ b/security/keys/trusted-keys/trusted_tpm2.c
+> @@ -335,8 +335,10 @@ int tpm2_seal_trusted(struct tpm_chip *chip,
+>  		else
+>  			rc = -EPERM;
+>  	}
+> -	if (blob_len < 0)
+> +	if (blob_len < 0) {
+> +		tpm_put_ops(chip);
+>  		return blob_len;
+> +	}
+>  
+>  	payload->blob_len = blob_len;
+>  
 
-[38565.706242] usb 1-1.4: Product: Lenovo Optical Mouse
-[38565.728603] input: Lenovo Optical Mouse as /devices/platform/scb/fd500000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/usb1/1-1/1-1.4/1-1.4:1.0/0003:17EF:600E.029A/input/input665
-[38565.755949] hid-generic 0003:17EF:600E.029A: input,hidraw1: USB HID v1.11 Mouse [Lenovo Optical Mouse] on usb-0000:01:00.0-1.4/input0
-[38619.360692] usb 1-1.4: USB disconnect, device number 48
-[38620.864990] usb 1-1.4: new low-speed USB device number 49 using xhci_hcd
-[38620.984011] usb 1-1.4: New USB device found, idVendor=17ef,idProduct=600e, bcdDevice= 1.00
-[38620.998117] usb 1-1.4: New USB device strings: Mfr=0, Product=2,SerialNumber=0
+Actually, I think this is a better fix to avoid multiple put and
+returns.
 
-This adds HID_QUIRK_ALWAYS_POLL for this device in order to work properly.
+James
 
-Reference:
-https://github.com/sriemer/fix-linux-mouse
-
-Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
 ---
- drivers/hid/hid-ids.h    | 1 +
- drivers/hid/hid-quirks.c | 1 +
- 2 files changed, 2 insertions(+)
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index d004f5645b30..98a8c2e9cf03 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -740,6 +740,7 @@
- #define USB_DEVICE_ID_LENOVO_X1_COVER	0x6085
- #define USB_DEVICE_ID_LENOVO_X1_TAB	0x60a3
- #define USB_DEVICE_ID_LENOVO_X1_TAB3	0x60b5
-+#define USB_DEVICE_ID_LENOVO_OPTICAL_USB_MOUSE_600E	0x600e
- #define USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_608D	0x608d
- #define USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_6019	0x6019
- #define USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_602E	0x602e
-diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
-index f35d919c4eba..680406305a7c 100644
---- a/drivers/hid/hid-quirks.c
-+++ b/drivers/hid/hid-quirks.c
-@@ -110,6 +110,7 @@ static const struct hid_device_id hid_quirks[] = {
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_KYE, USB_DEVICE_ID_KYE_PENSKETCH_M912), HID_QUIRK_MULTI_INPUT },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_KYE, USB_DEVICE_ID_KYE_EASYPEN_M406XE), HID_QUIRK_MULTI_INPUT },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_KYE, USB_DEVICE_ID_PIXART_USB_OPTICAL_MOUSE_ID2), HID_QUIRK_ALWAYS_POLL },
-+	{ HID_USB_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_OPTICAL_USB_MOUSE_600E), HID_QUIRK_ALWAYS_POLL },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_608D), HID_QUIRK_ALWAYS_POLL },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_6019), HID_QUIRK_ALWAYS_POLL },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_602E), HID_QUIRK_ALWAYS_POLL },
--- 
-2.27.0
+diff --git a/security/keys/trusted-keys/trusted_tpm2.c b/security/keys/trusted-keys/trusted_tpm2.c
+index d225ad140960..cbf2a932577b 100644
+--- a/security/keys/trusted-keys/trusted_tpm2.c
++++ b/security/keys/trusted-keys/trusted_tpm2.c
+@@ -336,9 +336,9 @@ int tpm2_seal_trusted(struct tpm_chip *chip,
+ 			rc = -EPERM;
+ 	}
+ 	if (blob_len < 0)
+-		return blob_len;
+-
+-	payload->blob_len = blob_len;
++		rc = blob_len;
++	else
++		payload->blob_len = blob_len;
+ 
+ 	tpm_put_ops(chip);
+ 	return rc;
 
