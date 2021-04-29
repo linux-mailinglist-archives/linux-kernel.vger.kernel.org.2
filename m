@@ -2,200 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326B636F15F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 22:50:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF4A36F161
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 22:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237253AbhD2UvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 16:51:15 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31696 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237191AbhD2UvL (ORCPT
+        id S237145AbhD2Uvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 16:51:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237285AbhD2Uvb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 16:51:11 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13TKYBqq012950;
-        Thu, 29 Apr 2021 16:50:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=jX3q+vq0d+05week6S3F0/wSQMjJlxTuY2TLUEtG38c=;
- b=F+e06gUI11IsvRqzWc00aKt1OcTIxoO8fpCTN8Nb3X5QvHyUZJQQjidMCogdxNk8lpR8
- 3KCTEkY69hYDSY80MLWDqWTE3AVwNrN82CmtEhwLyZIo2zEAvnVAat5tx0on4dzJFdl/
- EeN75FtoaDkKk4bfPtMKFLrb+4dX3n+XTOkOF7vJF6zd5mwJaQqV9rY/aHOKV+jr1Wdx
- Gop2GR4gvaerPePqFKpWIaWIz9gStCw+eUQoDuEy76/bdEVieCZzE/Y1d56s5JGAHsuA
- ciRuCtiw0rLw8z3BPr+Bn0naaAZccL7PMnQcRsx2oVTZRIjeqemRs2u+7olONqAj2vcs wA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3883txrgnc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Apr 2021 16:50:22 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13TKYG3P013472;
-        Thu, 29 Apr 2021 16:50:21 -0400
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3883txrgn2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Apr 2021 16:50:21 -0400
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13TKfWu4027434;
-        Thu, 29 Apr 2021 20:50:21 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma01dal.us.ibm.com with ESMTP id 384ay9rq1r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Apr 2021 20:50:21 +0000
-Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13TKoKGx38273418
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 20:50:20 GMT
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 40D7B2805E;
-        Thu, 29 Apr 2021 20:50:20 +0000 (GMT)
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5E1252805A;
-        Thu, 29 Apr 2021 20:50:19 +0000 (GMT)
-Received: from v0005c16.aus.stglabs.ibm.com (unknown [9.211.73.43])
-        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu, 29 Apr 2021 20:50:19 +0000 (GMT)
-From:   Eddie James <eajames@linux.ibm.com>
-To:     linux-leds@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, pavel@ucw.cz,
-        jacek.anaszewski@gmail.com, robh+dt@kernel.or,
-        devicetree@vger.kernel.org, vishwa@linux.ibm.com,
-        Eddie James <eajames@linux.ibm.com>
-Subject: [PATCH 5/5] leds: pca955x: Implement the default-state property
-Date:   Thu, 29 Apr 2021 15:50:02 -0500
-Message-Id: <20210429205002.70245-6-eajames@linux.ibm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210429205002.70245-1-eajames@linux.ibm.com>
-References: <20210429205002.70245-1-eajames@linux.ibm.com>
+        Thu, 29 Apr 2021 16:51:31 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC442C06138B;
+        Thu, 29 Apr 2021 13:50:43 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id t4so18609541ejo.0;
+        Thu, 29 Apr 2021 13:50:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1uxYngYQxqk+PVDP3WJw3Xc00kGb4JNoTKGlf4NQlJc=;
+        b=NjFf6rcAhMZJ3GP8Kb1G1y+aZenxrUqBwabfgT9kgHGhlUE35Z5svXqKB7D1HsLZdq
+         4vNZ9y1RAcJ5oSk/jgxWokzecNIGV8ebSCUEZtF51B7VxgxodF273ui10iaT3aFhA12w
+         1TPuOI4kc+JyLYRZ1CmWjuH6t+150V7CvpAkJbbpAWPx6VI+mUK+9zv+BzgyQ5hl6L7K
+         o8hlMHPcZvR/APjvGsXVTr9dTOCUe+OKBeGt0WoxRHNro9aI+XgHNcJtGeBt5/RlFHtP
+         EjASYbSMruZvLJtXIwSCe4AVMBavhyv2RG0l10u50udkJT+Td910zOzpPEsc5FDzxVjT
+         3O3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1uxYngYQxqk+PVDP3WJw3Xc00kGb4JNoTKGlf4NQlJc=;
+        b=qNO1hTchVEmTQWDrwmlJaLo9eofGPm519cRW7ZaGO50nq4fBMFUSGeAV6yAvZlFSIl
+         SEtUpFftSPrxQQ+7b5nNllSDasjW7WNtXWi8qJaflAhfY4tE1fnuhr01d0XJu/+AUuKZ
+         4DA8CydVwkKo9KwizGbzChDlN6GMn/qUBdmMQY1Pr+BWxDhTzLffQnVqBKkSu70VRpa5
+         wdIWfqevQyAv5F8CniJNpXBKroKHu0xGMwcvdMrI7WrSw+hQC9LMB7aDX1mDFKmM1JK6
+         2gwfPuGWY7Y0pkCill+mXoamCcbm4o9MwaTTxRu/MLsbFxX45MHHn7WswtoD7Hbi+65F
+         h2XA==
+X-Gm-Message-State: AOAM531VyvCON5bRJX9OZVCopFUAS/gikT+MZvJKcRJDCI5kZ+ahh12X
+        8d7ryOKGXiiVEWT0RLh8TZJc+GSejSfD3kjwaDk=
+X-Google-Smtp-Source: ABdhPJysjlV6wcuLfYd06FMw2pBaznePZVcE1hTvCj8elYYMmCQAATV5o2uqzLuxQYLtP0GSZtEYWBLOTySqdAlfFco=
+X-Received: by 2002:a17:906:85c1:: with SMTP id i1mr454865ejy.216.1619729442540;
+ Thu, 29 Apr 2021 13:50:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Id5Bo-hsMpHB49g__r-smhUDbNluRc4e
-X-Proofpoint-ORIG-GUID: TwGnGyUqn-M7owWWsN5R_hHBDNSzaR6m
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-29_11:2021-04-28,2021-04-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- phishscore=0 adultscore=0 impostorscore=0 mlxlogscore=999 suspectscore=0
- bulkscore=0 priorityscore=1501 clxscore=1015 spamscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104290133
+References: <20210429170404.3616111-1-narmstrong@baylibre.com> <20210429170404.3616111-3-narmstrong@baylibre.com>
+In-Reply-To: <20210429170404.3616111-3-narmstrong@baylibre.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Thu, 29 Apr 2021 22:50:31 +0200
+Message-ID: <CAFBinCBJvW2i2P98d_0d-ZJq2=Koh4vaQXUW=Sb94mEq_KWt2g@mail.gmail.com>
+Subject: Re: [PATCH 2/3] dt-bindings: arm: amlogic: add Banana PI M5 bindings
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     khilman@baylibre.com, jbrunet@baylibre.com,
+        devicetree@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to retain the LED state after a system reboot, check the
-documented default-state device tree property during initialization.
-Modify the behavior of the probe according to the property.
-
-Signed-off-by: Eddie James <eajames@linux.ibm.com>
----
- drivers/leds/leds-pca955x.c | 54 +++++++++++++++++++++++++++++++------
- 1 file changed, 46 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/leds/leds-pca955x.c b/drivers/leds/leds-pca955x.c
-index e47ba7c3b7c7..fa1d77d86ef6 100644
---- a/drivers/leds/leds-pca955x.c
-+++ b/drivers/leds/leds-pca955x.c
-@@ -129,6 +129,7 @@ struct pca955x_led {
- 	int			led_num;	/* 0 .. 15 potentially */
- 	char			name[32];
- 	u32			type;
-+	int			default_state;
- 	const char		*default_trigger;
- };
- 
-@@ -439,6 +440,7 @@ pca955x_get_pdata(struct i2c_client *client, struct pca955x_chipdef *chip)
- 
- 	device_for_each_child_node(&client->dev, child) {
- 		const char *name;
-+		const char *state;
- 		u32 reg;
- 		int res;
- 
-@@ -457,6 +459,18 @@ pca955x_get_pdata(struct i2c_client *client, struct pca955x_chipdef *chip)
- 		fwnode_property_read_u32(child, "type", &led->type);
- 		fwnode_property_read_string(child, "linux,default-trigger",
- 					    &led->default_trigger);
-+
-+		if (!fwnode_property_read_string(child, "default-state",
-+						 &state)) {
-+			if (!strcmp(state, "keep"))
-+				led->default_state = LEDS_GPIO_DEFSTATE_KEEP;
-+			else if (!strcmp(state, "on"))
-+				led->default_state = LEDS_GPIO_DEFSTATE_ON;
-+			else
-+				led->default_state = LEDS_GPIO_DEFSTATE_OFF;
-+		} else {
-+			led->default_state = LEDS_GPIO_DEFSTATE_OFF;
-+		}
- 	}
- 
- 	pdata->num_leds = chip->bits;
-@@ -485,6 +499,7 @@ static int pca955x_probe(struct i2c_client *client,
- 	int i, err;
- 	struct pca955x_platform_data *pdata;
- 	int ngpios = 0;
-+	bool keep_pwm = false;
- 
- 	chip = &pca955x_chipdefs[id->driver_data];
- 	adapter = client->adapter;
-@@ -565,14 +580,35 @@ static int pca955x_probe(struct i2c_client *client,
- 			led->brightness_set_blocking = pca955x_led_set;
- 			led->brightness_get = pca955x_led_get;
- 
-+			if (pdata->leds[i].default_state ==
-+			    LEDS_GPIO_DEFSTATE_OFF) {
-+				err = pca955x_led_set(led, LED_OFF);
-+				if (err)
-+					return err;
-+			} else if (pdata->leds[i].default_state ==
-+				   LEDS_GPIO_DEFSTATE_ON) {
-+				err = pca955x_led_set(led, LED_FULL);
-+				if (err)
-+					return err;
-+			}
-+
- 			err = devm_led_classdev_register(&client->dev, led);
- 			if (err)
- 				return err;
- 
--			/* Turn off LED */
--			err = pca955x_led_set(led, LED_OFF);
--			if (err)
--				return err;
-+			/*
-+			 * For default-state == "keep", let the core update the
-+			 * brightness from the hardware, then check the
-+			 * brightness to see if it's using PWM1. If so, PWM1
-+			 * should not be written below.
-+			 */
-+			if (pdata->leds[i].default_state ==
-+			    LEDS_GPIO_DEFSTATE_KEEP) {
-+				if (led->brightness != LED_FULL &&
-+				    led->brightness != LED_OFF &&
-+				    led->brightness != LED_HALF)
-+					keep_pwm = true;
-+			}
- 		}
- 	}
- 
-@@ -581,10 +617,12 @@ static int pca955x_probe(struct i2c_client *client,
- 	if (err)
- 		return err;
- 
--	/* PWM1 is used for variable brightness, default to OFF */
--	err = pca955x_write_pwm(client, 1, 0);
--	if (err)
--		return err;
-+	if (!keep_pwm) {
-+		/* PWM1 is used for variable brightness, default to OFF */
-+		err = pca955x_write_pwm(client, 1, 0);
-+		if (err)
-+			return err;
-+	}
- 
- 	/* Set to fast frequency so we do not see flashing */
- 	err = pca955x_write_psc(client, 0, 0);
--- 
-2.27.0
-
+On Thu, Apr 29, 2021 at 7:04 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
+>
+> Add bindings for the Banana PI M5 board.
+>
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
