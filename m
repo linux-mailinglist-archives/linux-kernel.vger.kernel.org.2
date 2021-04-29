@@ -2,110 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 517F036E798
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 11:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAFEC36E7A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 11:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240354AbhD2JG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 05:06:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53436 "EHLO
+        id S234271AbhD2JLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 05:11:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240322AbhD2JGZ (ORCPT
+        with ESMTP id S231501AbhD2JK6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 05:06:25 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE7DFC06138B;
-        Thu, 29 Apr 2021 02:05:38 -0700 (PDT)
-Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id BC47D22249;
-        Thu, 29 Apr 2021 11:05:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1619687134;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QGlBK//hIFViSV+qyHZn068w4JR3qL4cxAnd+11uHFk=;
-        b=kAaxmuhNpJejecjCHqTyLe/l5gZaCeCVDnjvGr+ZyLwHWs5PpM6zLNyQ2bAaq5D/oYYna0
-        zDglfQyMiECfZlryFGZb8xhdcE4Tx20OQO8BLJxWF5LTjpn5PSuW30ymZPuGKVSDY9ptxE
-        2d2JIclBCHK2t+Y6pApo46V8PirBmmo=
-From:   Michael Walle <michael@walle.cc>
-To:     netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jakub Kicinski <kuba@kernel.org>, Michael Walle <michael@walle.cc>
-Subject: [PATCH net v2 2/2] MAINTAINERS: move Murali Karicheri to credits
-Date:   Thu, 29 Apr 2021 11:05:21 +0200
-Message-Id: <20210429090521.554-2-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210429090521.554-1-michael@walle.cc>
-References: <20210429090521.554-1-michael@walle.cc>
+        Thu, 29 Apr 2021 05:10:58 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72279C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:10:09 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id h4so57009438wrt.12
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:10:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jjn7ofrdjd1TnkYur2KtlSXqsC+58JHrPfTq02YwB5M=;
+        b=su4cjFGi5+kn1HkDFEXCytoV9WXF2o51AZFXnN7J60XFatV7b0G480EAPDFoa0ljdx
+         GTni/HiMLYx7p2q1HaVPXlCusW4oCh55p7p12ftlg5UYiGVDQT18qAtTvXMZ2GUzgpCD
+         mTZOJK0F5SVWygJYXiaqq08TEGzcFpfDtDKsHj3dv8GqxV/wCT0dc6GpxXzSGKR+DvI0
+         cXL3KNBzoMgVlOs7VcNqJF7xtBsxT2biXRH0fE10HAl3P0CPiAJuJbOjmAO9cTWJQOFZ
+         gK70joRmwtU5UKgtSJ9QHPJ6HVi3rdTU3iL0kFGzt20ocp2nZtTA1GfOAVRcfO9GDcBF
+         b+2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=jjn7ofrdjd1TnkYur2KtlSXqsC+58JHrPfTq02YwB5M=;
+        b=i99h8sgOhUntNjRCE2IQRlq1G0/DMuoVqjRndrMK7A38pHnWXTp4aNnD+BxP0mHagT
+         qvH+ndeo+8jdVZ5JlvtRRj8JpcxNt9lVr1Lt7nmvG2Bz/GHtreow82+rvvb9vgsNaTFB
+         BK/aXzdNUMvxwyb5uemzus8+uKP6JdEEcYMEp7n7k6NvZ9/aLJyIzk0CPv9nUlbGrLQC
+         yvSpN6/CbaJmNRWj76wk+vJ6osDvsow8kiHH/ibLycJBZU8tVxxoANv/9LpvRMBqyE2u
+         FLA3xv0iftIpwjXx8zTp6Md+yrqS3/0GmFPbI3LnafbQPXNffZR6yevgDolsF3coVXM7
+         fjRA==
+X-Gm-Message-State: AOAM532G/FC8f1UgtdCV4ixrzDVo6PUXwJUZHgAVrRRXQ99YEdaEeVD4
+        Lt7pANeNnjn12uPVPzlDTNhUGQ==
+X-Google-Smtp-Source: ABdhPJxxe5ErG/v5x7LmLALpFiu8uZN2sGOtEQkXtdLvfxipLv3O+0/hat2t8+GWnA/F4dBqzzS54A==
+X-Received: by 2002:a5d:568f:: with SMTP id f15mr42616599wrv.346.1619687402526;
+        Thu, 29 Apr 2021 02:10:02 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:90c:e290:c304:4b2b:4a79:1da9? ([2a01:e0a:90c:e290:c304:4b2b:4a79:1da9])
+        by smtp.gmail.com with ESMTPSA id a15sm4582835wrx.9.2021.04.29.02.10.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Apr 2021 02:10:01 -0700 (PDT)
+Subject: Re: [PATCH] arm64: dts: meson: vim3: enable hdmi audio loopback
+To:     Jerome Brunet <jbrunet@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>
+Cc:     linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20210429084253.59692-1-jbrunet@baylibre.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <3f85bc7a-aebc-cac6-11f9-5e18528c5e7f@baylibre.com>
+Date:   Thu, 29 Apr 2021 11:10:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210429084253.59692-1-jbrunet@baylibre.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-His email bounces with permanent error "550 Invalid recipient". His last
-email was from 2020-09-09 on the LKML and he seems to have left TI.
+On 29/04/2021 10:42, Jerome Brunet wrote:
+> Enable audio capture frontends and a tdm decoder.
+> This makes it possible to loopback the audio played on the hdmi codec,
+> which is the only output interface at the moment.
+> 
+> Of course, one TODDR device would be enough to do that but since
+> the 3 FRDDRs are enabled on the playback side, let's do the same on the
+> capture side.
+> 
+> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+> ---
+>  .../boot/dts/amlogic/meson-khadas-vim3.dtsi   | 41 +++++++++++++++++--
+>  .../dts/amlogic/meson-sm1-khadas-vim3l.dts    | 13 ++++++
+>  2 files changed, 50 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+> index 66d67524b031..3cf4ecb6d52e 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+> +++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+> @@ -171,11 +171,16 @@ hdmi_connector_in: endpoint {
+>  	sound {
+>  		compatible = "amlogic,axg-sound-card";
+>  		model = "KHADAS-VIM3";
+> -		audio-aux-devs = <&tdmout_a>;
+> +		audio-aux-devs = <&tdmin_a>, <&tdmout_a>;
+>  		audio-routing = "TDMOUT_A IN 0", "FRDDR_A OUT 0",
+>  				"TDMOUT_A IN 1", "FRDDR_B OUT 0",
+>  				"TDMOUT_A IN 2", "FRDDR_C OUT 0",
+> -				"TDM_A Playback", "TDMOUT_A OUT";
+> +				"TDM_A Playback", "TDMOUT_A OUT",
+> +				"TDMIN_A IN 0", "TDM_A Capture",
+> +				"TDMIN_A IN 3", "TDM_A Loopback",
+> +				"TODDR_A IN 0", "TDMIN_A OUT",
+> +				"TODDR_B IN 0", "TDMIN_A OUT",
+> +				"TODDR_C IN 0", "TDMIN_A OUT";
+>  
+>  		assigned-clocks = <&clkc CLKID_MPLL2>,
+>  				  <&clkc CLKID_MPLL0>,
+> @@ -198,8 +203,20 @@ dai-link-2 {
+>  			sound-dai = <&frddr_c>;
+>  		};
+>  
+> -		/* 8ch hdmi interface */
+>  		dai-link-3 {
+> +			sound-dai = <&toddr_a>;
+> +		};
+> +
+> +		dai-link-4 {
+> +			sound-dai = <&toddr_b>;
+> +		};
+> +
+> +		dai-link-5 {
+> +			sound-dai = <&toddr_c>;
+> +		};
+> +
+> +		/* 8ch hdmi interface */
+> +		dai-link-6 {
+>  			sound-dai = <&tdmif_a>;
+>  			dai-format = "i2s";
+>  			dai-tdm-slot-tx-mask-0 = <1 1>;
+> @@ -214,7 +231,7 @@ codec {
+>  		};
+>  
+>  		/* hdmi glue */
+> -		dai-link-4 {
+> +		dai-link-7 {
+>  			sound-dai = <&tohdmitx TOHDMITX_I2S_OUT>;
+>  
+>  			codec {
+> @@ -454,10 +471,26 @@ &tdmif_a {
+>  	status = "okay";
+>  };
+>  
+> +&tdmin_a {
+> +	status = "okay";
+> +};
+> +
+>  &tdmout_a {
+>  	status = "okay";
+>  };
+>  
+> +&toddr_a {
+> +	status = "okay";
+> +};
+> +
+> +&toddr_b {
+> +	status = "okay";
+> +};
+> +
+> +&toddr_c {
+> +	status = "okay";
+> +};
+> +
+>  &tohdmitx {
+>  	status = "okay";
+>  };
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+> index 06de0b1ce726..f2c098143594 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+> +++ b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+> @@ -32,6 +32,19 @@ vddcpu: regulator-vddcpu {
+>  		regulator-boot-on;
+>  		regulator-always-on;
+>  	};
+> +
+> +	sound {
+> +		model = "G12B-KHADAS-VIM3L";
+> +		audio-routing = "TDMOUT_A IN 0", "FRDDR_A OUT 0",
+> +				"TDMOUT_A IN 1", "FRDDR_B OUT 0",
+> +				"TDMOUT_A IN 2", "FRDDR_C OUT 0",
+> +				"TDM_A Playback", "TDMOUT_A OUT",
+> +				"TDMIN_A IN 0", "TDM_A Capture",
+> +				"TDMIN_A IN 13", "TDM_A Loopback",
+> +				"TODDR_A IN 0", "TDMIN_A OUT",
+> +				"TODDR_B IN 0", "TDMIN_A OUT",
+> +				"TODDR_C IN 0", "TDMIN_A OUT";
+> +	};
+>  };
+>  
+>  &cpu0 {
+> 
 
-Signed-off-by: Michael Walle <michael@walle.cc>
----
-changes since v1:
- - rebased to net
-
- CREDITS     |  5 +++++
- MAINTAINERS | 13 -------------
- 2 files changed, 5 insertions(+), 13 deletions(-)
-
-diff --git a/CREDITS b/CREDITS
-index cef83b958cbe..80d096dbf262 100644
---- a/CREDITS
-+++ b/CREDITS
-@@ -1874,6 +1874,11 @@ S: Krosenska' 543
- S: 181 00 Praha 8
- S: Czech Republic
- 
-+N: Murali Karicheri
-+E: m-karicheri2@ti.com
-+D: Keystone NetCP driver
-+D: Keystone PCIe host controller driver
-+
- N: Jan "Yenya" Kasprzak
- E: kas@fi.muni.cz
- D: Author of the COSA/SRP sync serial board driver.
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 04f4a2116b35..e264e63f09c0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13780,13 +13780,6 @@ F:	Documentation/devicetree/bindings/pci/ti-pci.txt
- F:	drivers/pci/controller/cadence/pci-j721e.c
- F:	drivers/pci/controller/dwc/pci-dra7xx.c
- 
--PCI DRIVER FOR TI KEYSTONE
--M:	Murali Karicheri <m-karicheri2@ti.com>
--L:	linux-pci@vger.kernel.org
--L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
--S:	Maintained
--F:	drivers/pci/controller/dwc/pci-keystone.c
--
- PCI DRIVER FOR V3 SEMICONDUCTOR V360EPC
- M:	Linus Walleij <linus.walleij@linaro.org>
- L:	linux-pci@vger.kernel.org
-@@ -17974,12 +17967,6 @@ F:	drivers/power/supply/lp8788-charger.c
- F:	drivers/regulator/lp8788-*.c
- F:	include/linux/mfd/lp8788*.h
- 
--TI NETCP ETHERNET DRIVER
--M:	Murali Karicheri <m-karicheri2@ti.com>
--L:	netdev@vger.kernel.org
--S:	Maintained
--F:	drivers/net/ethernet/ti/netcp*
--
- TI PCM3060 ASoC CODEC DRIVER
- M:	Kirill Marinushkin <kmarinushkin@birdec.com>
- L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
--- 
-2.20.1
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
 
