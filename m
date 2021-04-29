@@ -2,61 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58AF836EF5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 20:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A59536EF64
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 20:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241090AbhD2SP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 14:15:56 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:50013 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233578AbhD2SPz (ORCPT
+        id S241127AbhD2SSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 14:18:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233705AbhD2SSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 14:15:55 -0400
-Received: by mail-il1-f200.google.com with SMTP id c10-20020a92cf0a0000b029016baf18aee1so35515369ilo.16
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 11:15:08 -0700 (PDT)
+        Thu, 29 Apr 2021 14:18:06 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A3EBC06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 11:17:19 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id 10-20020ac8594a0000b02901b9f6ae286fso19739272qtz.23
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 11:17:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=MpCPitAmm122m51pt+u1hw6SH26S0A84lD3VDR+ZTJQ=;
+        b=YPwdYInivlpgPtX9RFoJzjPFD7w4vI51Ydzy31qY8cLpsYPdtkzyLID3WrY6w2ZSjf
+         wtpba9FcQp4IJfqHLh3G9QtskdywnrgdhlE+uqw4DWnQUri7qDgpe/CrDRGVtBpsNTNS
+         Vhm+8zfE+lwhJHieGHaZZfvnXem6jDM37btbYevWRBiAEKDSQmzb8r++Bc5hNdoDEpqf
+         Nxj4eCw23sPHRWjNcFUywTLM2v+ElstFGKxBWJs9dulAJCRswqjq1vydO6629GNb0o/F
+         zJ3LSqstamKb5b6S6lXw+vhFJTR+lCqkbhKRDCZhP8TWLAQ2W6Rt2VVMcBopCN/0+lol
+         XsDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=r/V3F/1bnZMKmRFzFAEWeq/yoMvyb9wXT3VqY/klpPk=;
-        b=AQ8EhmnTKfmcGUyDoGFWMLbaim1GXPhlQB80Pk920z/KjwZmUaa5nRR7VLKZ+1S9ZR
-         dLcn5YRgmVHkkSiTZayfN83OE1lEwZ7Flhhzgx0wzIMulnVHOwmHJAEDyvmtA3H869/G
-         Qbat1N5foZdQn9shSy60fCsMErodm3C/lX6gf1qqVi2lVe4a7SprG5ApNv1gp2tFPu47
-         xcVkQws7vpOzsX2A26tT4WgiWnmrcfBfC6h6c2jXQeQ1Z/azXtgjb+02ShG3HCuGavdD
-         RB30ma3SE6lllEAMfdxbTi39H4E2yCG13OAMpUg26d/lt9FJS41UE+nH5mp+aW5SRxgW
-         nRAw==
-X-Gm-Message-State: AOAM5309grHmZHlarE5V4nNmmUOvt13vINnIq2twgHCZNrcUbJTA/HL9
-        XjDE2+B5KFM/w8dNxu0ccNhriszJ75KWkofi5zoRAMTYIXHY
-X-Google-Smtp-Source: ABdhPJz3StFhNnV44iXyZPONVHe2gH61CmFOR+bR9R3jyr3oDcfWqc6XJwXqpimXGBIbR3inwZ0QiSVjwFQKvxz712vOlhvYPyjS
-MIME-Version: 1.0
-X-Received: by 2002:a02:ac05:: with SMTP id a5mr1042298jao.89.1619720108542;
- Thu, 29 Apr 2021 11:15:08 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 11:15:08 -0700
-In-Reply-To: <8eec9ad4-3341-f136-0983-52f3c687f9da@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b48d0f05c1207964@google.com>
-Subject: Re: [syzbot] WARNING in io_uring_setup (2)
-From:   syzbot <syzbot+1eca5b0d7ac82b74d347@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=MpCPitAmm122m51pt+u1hw6SH26S0A84lD3VDR+ZTJQ=;
+        b=q1Ey840PngV2lMUquLrG2lFbhjuGhPEs3EEti3fFCRDwKrkAY7v3v3GF/jBmOIIVGj
+         hxraM+JjG9Zzp6DZOrrhOJBIoGvzGElONK7iQcFEHDC3Q1HyF/tmD06KM+gJUMPOhPeL
+         9euqxJnyeOsXPIxQy2v+Q9GYlNZfJJ7M8pEcVrQu9hm4Mx8E4Dy9fBRRvkr3Bip/z1wx
+         WQQh1huYk6nfsJR4fh18qGJLRdf+alXahLheH18tOTlftJf1+EcnR+5I7qy7g5IrEF3x
+         m4YCZLuiCc/oIoih8DfeCmKke1fuLxBuOEqaZoB4gCWzlxHoE/DYu4TBsxCUo/7fXekW
+         ohnA==
+X-Gm-Message-State: AOAM533hPNL0tdNA4qnBAairsp37Q463noxCYo1DaGCoUkzKUUxzF+NF
+        DFHa+LK+8helgsxK4grxzG7asfkffZ+11rl32rI=
+X-Google-Smtp-Source: ABdhPJxPpcshZ7se177uUXlIRLBuOOybyxz8var/6cubB7OZ1tEPUACxt7sVCqaIhIPAZXBeGtSJ5qcyqec0VykPb6I=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:8d4f:4280:c6de:de17])
+ (user=ndesaulniers job=sendgmr) by 2002:a05:6214:486:: with SMTP id
+ ay6mr1283593qvb.18.1619720238157; Thu, 29 Apr 2021 11:17:18 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 11:17:16 -0700
+In-Reply-To: <20210429150940.3256656-1-arnd@kernel.org>
+Message-Id: <20210429181716.2409874-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+References: <20210429150940.3256656-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
+Subject: Re: [PATCH] smp: fix smp_call_function_single_async prototype
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     arnd@kernel.org
+Cc:     arnd@arndb.de, axboe@kernel.dk, bp@suse.de, eric.dumazet@gmail.com,
+        jgross@suse.com, jiancai@google.com, linux-kernel@vger.kernel.org,
+        linux@roeck-us.net, mpe@ellerman.id.au, peterz@infradead.org,
+        tglx@linutronix.de, ying.huang@intel.com,
+        Nathan Chancellor <nathan@kernel.org>,
+        clang-built-linux@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+(replying manually to
+https://lore.kernel.org/lkml/20210429150940.3256656-1-arnd@kernel.org/)
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Thanks for the patch; with this applied I observe the following new warnings
+though (for x86_64 defconfig; make LLVM=1 LLVM_IAS=1 -j72)
 
-Reported-and-tested-by: syzbot+1eca5b0d7ac82b74d347@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         0c8ceb80 io_uring: Fix premature return from loop and memo..
-git tree:       git://git.kernel.dk/linux-block io_uring-5.13
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3d4238f574736e51
-dashboard link: https://syzkaller.appspot.com/bug?extid=1eca5b0d7ac82b74d347
-compiler:       Debian clang version 11.0.1-2
-
-Note: testing is done by a robot and is best-effort only.
+kernel/smp.c:515:19: warning: passing 8-byte aligned argument to 32-byte
+aligned parameter 1 of 'csd_lock_record' may result in an unaligned pointer
+access [-Walign-mismatch]
+                csd_lock_record(csd);
+                                ^
+kernel/smp.c:516:14: warning: passing 8-byte aligned argument to 32-byte
+aligned parameter 1 of 'csd_unlock' may result in an unaligned pointer access
+[-Walign-mismatch]
+                csd_unlock(csd);
+                           ^
+kernel/smp.c:525:14: warning: passing 8-byte aligned argument to 32-byte
+aligned parameter 1 of 'csd_unlock' may result in an unaligned pointer access
+[-Walign-mismatch]
+                csd_unlock(csd);
+                           ^
