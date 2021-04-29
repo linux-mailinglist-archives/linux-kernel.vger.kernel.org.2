@@ -2,73 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EA8036EACC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A432F36EAF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237253AbhD2MrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 08:47:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233701AbhD2MrR (ORCPT
+        id S237300AbhD2M4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 08:56:11 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:37160 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235908AbhD2M4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 08:47:17 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53227C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 05:46:31 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id md17so7142686pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 05:46:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lKZ23VCFKvQ6/HOWqxM0itn4uKSnl0X45UL4mdVA5Go=;
-        b=D5CVSQtuJsCpJyyjaftW2XzPxBy5MXHYMRgNjfQDwY9QXVfrAfcdo9QCubnhmlILWG
-         BDqoGSYRPlkC4YCLuZUhqUVsLom6f+2VmmRev8QqueILLXv0GVL26ZukWh5hRm0gfApH
-         jejUdK+dpQP6Z+sJIfhTWD/EohSIvEMxcBWXY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lKZ23VCFKvQ6/HOWqxM0itn4uKSnl0X45UL4mdVA5Go=;
-        b=lKvjnJ8RnMtsAXI+a0vM3eo+PQY1RHwArYJy3K8a7wXM2ZTRveTvW0bM+fYHMSVsPy
-         4b6ZjbnRxST9eDQoY6pWdJ4dYWe80EceuZyHTS1qRS7OCujiJDFz+o7doAgPOJOuA5OC
-         QXNm3vyb1RtafQqMSOC+ZeqlHSHTTCP1R1UK2Q9CyBBiw73/6259xuDUfCCdSYJ3xYO+
-         NNZAmZWatscd6MJNVfN2ZoyBgpUGLIPw5kdlIhchuG84XptbuJeLkSiPXXktwf8U464I
-         Llm7eCsaoFI5g2KM5CRxDpZ8VeWR7tC485mCH1kHGLCdkVhphb12E290TX2KseqTbFHk
-         jVCQ==
-X-Gm-Message-State: AOAM531E2g2ngl5qE8uO+gaW1ePw6oUiM9kpcC0z6ggbq8nGkzaDC6fz
-        6nkcjCJAAjmRJTkliho3nevv8uMqn+cNQQ==
-X-Google-Smtp-Source: ABdhPJwZxlKLO2k//JvjEuPGXSJZ7VfquSt1xd1A1fTwDzseyQ/mWuetZvfMNzxY2mqjjBV8HfjXcg==
-X-Received: by 2002:a17:903:185:b029:ed:10bf:6c8a with SMTP id z5-20020a1709030185b02900ed10bf6c8amr25315750plg.8.1619700390887;
-        Thu, 29 Apr 2021 05:46:30 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:59f:ddfb:1a03:fe23])
-        by smtp.gmail.com with UTF8SMTPSA id v2sm2242834pgs.19.2021.04.29.05.46.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Apr 2021 05:46:30 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 05:46:29 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dianders@chromium.org
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: sc7280: Add "google,senor" to the
- compatible
-Message-ID: <YIqqpUK3wRiq6WT0@google.com>
-References: <1619674827-26650-1-git-send-email-rnayak@codeaurora.org>
- <1619674827-26650-2-git-send-email-rnayak@codeaurora.org>
+        Thu, 29 Apr 2021 08:56:10 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TCrjmq067316;
+        Thu, 29 Apr 2021 12:55:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=/v0hnkc5VQ//MlMo9LHLiozP+/cPjSQg2GVarccDiBc=;
+ b=muXDhUBJWUKqel/l12/uolsHfdylq2i+gzgVIYkcwBKq0WHRW2kQI44zHj+rBF1VPLUF
+ oDUTlM3IaIXogzpnvaf4aJawf3YdV/W8qDG5ikcqqha5ZL5daMlrKYLiAJPE7YHeFVSr
+ hiiF24W4VW7qavJR3wUcU3M0uC02MGyh7VRhlbvoZN/1+4BL9q+dpMPnKVxz+53bnzL6
+ ewik1GKWPw8Dc6OiKQw7DQeb25HX3IeYmHrkCKFylA7joee8shecz9LZb1PF+CKkHTf4
+ n5ZcRWCwfLYXlwvP/qa/WNk/fgvkuMpBK+fJgj2kr9DQ+j4+4oJnVy6aqIA/BCqgde06 /g== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 385ahbv8ug-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 12:55:09 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TCsgtu034819;
+        Thu, 29 Apr 2021 12:55:08 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 384w3w7atu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 12:55:08 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13TCt7Xb037433;
+        Thu, 29 Apr 2021 12:55:07 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 384w3w7atc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 12:55:07 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13TCt5PA020098;
+        Thu, 29 Apr 2021 12:55:05 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 29 Apr 2021 05:55:05 -0700
+Date:   Thu, 29 Apr 2021 15:54:56 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Deepak R Varma <drv@mailo.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com
+Subject: Re: [PATCH v1 4/6] staging: media: atomisp: reformat code comment
+ blocks
+Message-ID: <20210429125456.GD21598@kadam>
+References: <cover.1619022192.git.drv@mailo.com>
+ <efdd8910b519dd55838570c72e3ce35e063f4a11.1619022192.git.drv@mailo.com>
+ <20210429100808.GZ1981@kadam>
+ <YIqZHWkHi8HWnF0C@192.168.1.8>
+ <20210429114304.GC21598@kadam>
+ <YIqesrvl3lFwWDhV@192.168.1.8>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1619674827-26650-2-git-send-email-rnayak@codeaurora.org>
+In-Reply-To: <YIqesrvl3lFwWDhV@192.168.1.8>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: N2_4Q6ChWtfiM-SugcsYx30q84eG2wU0
+X-Proofpoint-ORIG-GUID: N2_4Q6ChWtfiM-SugcsYx30q84eG2wU0
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9969 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 mlxlogscore=999
+ priorityscore=1501 clxscore=1015 adultscore=0 suspectscore=0 spamscore=0
+ phishscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104290088
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 11:10:27AM +0530, Rajendra Nayak wrote:
-> The sc7280 IDP board is also called senor in the Chrome OS builds.
-> Add the "google,senor" compatible so coreboot/depthcharge knows what
-> device tree blob to pick
+On Thu, Apr 29, 2021 at 05:25:30PM +0530, Deepak R Varma wrote:
+> On Thu, Apr 29, 2021 at 02:43:04PM +0300, Dan Carpenter wrote:
+> > On Thu, Apr 29, 2021 at 05:01:41PM +0530, Deepak R Varma wrote:
+> > > On Thu, Apr 29, 2021 at 01:08:09PM +0300, Dan Carpenter wrote:
+> > > > On Wed, Apr 21, 2021 at 10:26:09PM +0530, Deepak R Varma wrote:
+> > > > > @@ -1044,7 +1048,7 @@ static long mt9m114_s_exposure(struct v4l2_subdev *sd,
+> > > > >  	}
+> > > > >  
+> > > > >  	/*
+> > > > > -	// set analog/digital gain
+> > > > > +	 * set analog/digital gain
+> > > > >  	switch(AnalogGain)
+> > > > >  	{
+> > > > >  	case 0:
+> > > > 
+> > > > How on earth does this compile?
+> > > 
+> > > There is a closing */ down under after the entire switch block. The
+> > > change I made is within the comment block. I have compiled the built the
+> > > driver successfully.
+> > 
+> > Oh...  Duh.  I thought you converted the // to /*.  This patch doesn't
+> > make any sense though because originally it was commented out code, but
+> > now it's a commented out ball of code and notes.
 > 
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> No problem. It looks wrong with the limited lines in diff. Appreciate
+> you looking at it though.
+> 
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Yeah.  That's fine by me.
+
+> Is it okay if I send in a separate patch with comment clean up? There
+> are several #if 0 code block directives for this driver that I believe can
+> be taken off as well. Should I clean those up as well?
+
+Yep.  Delete those as well.
+
+regards,
+dan carpenter
+
