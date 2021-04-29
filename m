@@ -2,107 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FCC136E2AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 02:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 572C836E2B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 02:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234465AbhD2Aif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 20:38:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55314 "EHLO
+        id S234397AbhD2Alg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 20:41:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232936AbhD2Aie (ORCPT
+        with ESMTP id S229479AbhD2Ale (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 20:38:34 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A759C06138E
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 17:37:47 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 65-20020a9d03470000b02902808b4aec6dso55232808otv.6
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 17:37:47 -0700 (PDT)
+        Wed, 28 Apr 2021 20:41:34 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B138C06138B
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 17:40:48 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id m11so1752682pfc.11
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 17:40:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rzVBAT7fLNBdUBZLJQxVK1ZVpLgca3IdfSpNyGEzsn0=;
-        b=K0KwdJty6MIrAKG+FegIYHm0zfWgr1uKyaUrSLhlh/tDnJMEA2u06pRNJxSe3nflmF
-         3/BIhzdwil+l1pDc4/cpnFAoFXp1JbkJBXVXLvAD5s43u0wHo6jbveH5OyeilDC2Y384
-         XJbDU6s93q1BtIg7pVuTrew4U1I8Jrwdp13+8ioBhE4CNDKd6fX34brZ5KCSWndJ5y8h
-         n8Gy/rJT2Q58MN3032BjCoVissGrJFh9ZxjTh0R4z1E+cI/SGC8eqqBfVMf37WkL0EBk
-         /WHIioDg2u9HjdDLbchAe5LuQaWXl2hGyCVQEx9MU9wcVBlbcRUChI/gjJThvugLwLK9
-         0YFA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4awlf4C5aIDwxCX8Cd8Uakbh16U3MG80dqO+vEd3Xwo=;
+        b=LU8ti1Vx7Ov9lHevash08+QhqpSGt/ZEiGe7fS0cHa83Pm3K4dPoaubVo/ogw+m6qy
+         w5jRHY67NXfunL64qV1MFPS2gwkFBHgNKiTpW8hDImp7ayjPOZ7paUCKaQMc2LdXuYdB
+         b6er2kQsLhSGphpM75M4WTsD1SpYFaIdmwCehKwC21z9AWQd0bOcAKApd6TbBljKyaKM
+         n6RNKC/7V66Njwrt+mPAbNaDWlHPYEtrBoyZmHHkKAe8oadVaEfvu2zsvljgFHu0cctZ
+         ZLEzIHGdmrBdFyg5uwwyylaqnaiw/WoLA3hG/Zmx/ZU3jkPLdPnsBlBPJ4GVMwGutPDQ
+         MKew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rzVBAT7fLNBdUBZLJQxVK1ZVpLgca3IdfSpNyGEzsn0=;
-        b=YjrrkHAQ96jfLtIbkTzkuukig+NdkPoodUGm2Gap+Nr61F7rmhHhLVs2/cAW9BKS/n
-         DkdcaAnzxpit3Pc+Bvx9RHGNtZOsUpLGkNCawGL6IsmpHEujZB8kK1lpEWBRfkl0H7vz
-         A6qocjMjTDTCITB370mM62RH1/tFxMBI3wWFy1/r91sgxirLajB5X+lyAOPjOhFB3HTD
-         U8L3sb8Tq+INMPNl/BpLTm7SxYAEdi+V0GHJfTPqSzXwL8zmXhtGtA/x0t8x594QtGAH
-         nYCKvQyzEeqHNJfwz+XRWY2yp3ONzwLbKUQBskmn+hk+rdUyWoyK3bhlN2t1Jir/pBnh
-         ZNkA==
-X-Gm-Message-State: AOAM531UNMdVpm6IQLBcPeB7FyJAx+PvXrRZbh0FFQyG7y1Hn3cdoGQj
-        KHHRL3hhHqYpS54JiU6C17v4Sw==
-X-Google-Smtp-Source: ABdhPJyqMG44KHGTxh7hXcyD116UD+IX6SFca2bhJAL4JzBdZXEePILZGpGFFp8CFrGMcVVTJOqMaw==
-X-Received: by 2002:a9d:bc3:: with SMTP id 61mr25494742oth.7.1619656666762;
-        Wed, 28 Apr 2021 17:37:46 -0700 (PDT)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id o64sm314893oif.50.2021.04.28.17.37.46
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4awlf4C5aIDwxCX8Cd8Uakbh16U3MG80dqO+vEd3Xwo=;
+        b=XjoPhO8BdCs/pHfxrh33yor6Du3XjK1Md00rrHaIgIw197x47BsT5bRCDSA9aAcYAS
+         4SXNzhaC3dqGaj2Xvw3ex9RhsJub2wzR7HZ9Z51fDEIaBKZGiLJQRVEzmCjAwzdKEE+G
+         5libeVJ1xsVxp1eIVTrg/8/y2CnDA8aIQH+oiV7VyW9VMOswCTjbxmtJQhHLAuOBvLKX
+         kwOOc1CEc/sT8E4JYj723rhfZUYyFMjTVkpezVR15rriBOknU1PqWBZt1Esu1MVHxeTC
+         pPz2BYOhjVlbIfnQQnKWwX46w45XdWGq+0P3ANLD7hXdGUc2mjorQXmtBjFYIrxX3A9S
+         nB5g==
+X-Gm-Message-State: AOAM533jkJeSJ731Oe7PaJ8WMXIvQ+BJO+ecCQOTIBKaTjowLX201Aha
+        YoiYMvqALachagyaYW98HHv2pw==
+X-Google-Smtp-Source: ABdhPJzuuAuPfzXaOhuj2tkYQIzPQar3yiyzTkotAN/6gS6BnX3tHVREy1gCvDqu3rBH3MQy99SXMA==
+X-Received: by 2002:a62:ea1a:0:b029:27a:bcea:5d3d with SMTP id t26-20020a62ea1a0000b029027abcea5d3dmr10350937pfh.69.1619656847464;
+        Wed, 28 Apr 2021 17:40:47 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id x62sm714484pfb.71.2021.04.28.17.40.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 17:37:46 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] pinctrl: qcom: spmi-mpp: Add compatible for pmi8994
-Date:   Wed, 28 Apr 2021 17:37:51 -0700
-Message-Id: <20210429003751.224232-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        Wed, 28 Apr 2021 17:40:46 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 00:40:43 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Ben Gardon <bgardon@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Subject: Re: [PATCH 5/6] KVM: x86/mmu: Protect kvm->memslots with a mutex
+Message-ID: <YIoAixSoRsM/APgx@google.com>
+References: <20210427223635.2711774-1-bgardon@google.com>
+ <20210427223635.2711774-6-bgardon@google.com>
+ <997f9fe3-847b-8216-c629-1ad5fdd2ffae@redhat.com>
+ <CANgfPd8RZXQ-BamwQPS66Q5hLRZaDFhi0WaA=ZvCP4BbofiUhg@mail.gmail.com>
+ <d936b13b-bb00-fc93-de3b-adc59fa32a7b@redhat.com>
+ <CANgfPd9kVJOAR_uq+oh9kE2gr00EUAGSPiJ9jMR9BdG2CAC+BA@mail.gmail.com>
+ <5b4a0c30-118c-da1f-281c-130438a1c833@redhat.com>
+ <CANgfPd_S=LjEs+s2UzcHZKfUHf+n498eSbfidpXNFXjJT8kxzw@mail.gmail.com>
+ <16b2f0f3-c9a8-c455-fff0-231c2fe04a8e@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <16b2f0f3-c9a8-c455-fff0-231c2fe04a8e@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PMI8994 has 4 multi-purpose-pins, add a compatible for this hardware
-block to the MPP driver.
+On Thu, Apr 29, 2021, Paolo Bonzini wrote:
+> it's not ugly and it's still relatively easy to explain.
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
+LOL, that's debatable.
 
-PS. I see that while the related gpio driver was converted to hierarchical IRQ
-chips the mpp driver didn't get the same treatment. We should fix this at some
-point...
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 2799c6660cce..48929dd5fb29 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -1377,16 +1374,17 @@ static int kvm_set_memslot(struct kvm *kvm,
+>  		goto out_slots;
+>  	update_memslots(slots, new, change);
+> -	slots = install_new_memslots(kvm, as_id, slots);
+> +	install_new_memslots(kvm, as_id, slots);
+>  	kvm_arch_commit_memory_region(kvm, mem, old, new, change);
+> -
+> -	kvfree(slots);
+>  	return 0;
+>  out_slots:
+> -	if (change == KVM_MR_DELETE || change == KVM_MR_MOVE)
+> +	if (change == KVM_MR_DELETE || change == KVM_MR_MOVE) {
+> +		slot = id_to_memslot(slots, old->id);
+> +		slot->flags &= ~KVM_MEMSLOT_INVALID;
 
- Documentation/devicetree/bindings/pinctrl/qcom,pmic-mpp.txt | 1 +
- drivers/pinctrl/qcom/pinctrl-spmi-mpp.c                     | 1 +
- 2 files changed, 2 insertions(+)
+Modifying flags on an SRCU-protect field outside of said protection is sketchy.
+It's probably ok to do this prior to the generation update, emphasis on
+"probably".  Of course, the VM is also likely about to be killed in this case...
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-mpp.txt b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-mpp.txt
-index 0ba07bc96c55..5363d44cbb74 100644
---- a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-mpp.txt
-+++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-mpp.txt
-@@ -21,6 +21,7 @@ of PMIC's from Qualcomm.
- 		    "qcom,pmi8950-mpp",
- 		    "qcom,pm8994-mpp",
- 		    "qcom,pma8084-mpp",
-+		    "qcom,pmi8994-mpp",
- 
- 		    And must contain either "qcom,spmi-mpp" or "qcom,ssbi-mpp"
- 		    if the device is on an spmi bus or an ssbi bus respectively.
-diff --git a/drivers/pinctrl/qcom/pinctrl-spmi-mpp.c b/drivers/pinctrl/qcom/pinctrl-spmi-mpp.c
-index 3c213f799feb..2da9b5f68f3f 100644
---- a/drivers/pinctrl/qcom/pinctrl-spmi-mpp.c
-+++ b/drivers/pinctrl/qcom/pinctrl-spmi-mpp.c
-@@ -920,6 +920,7 @@ static const struct of_device_id pmic_mpp_of_match[] = {
- 	{ .compatible = "qcom,pmi8950-mpp" },	/* 4 MPP's */
- 	{ .compatible = "qcom,pm8994-mpp" },	/* 8 MPP's */
- 	{ .compatible = "qcom,pma8084-mpp" },	/* 8 MPP's */
-+	{ .compatible = "qcom,pmi8994-mpp" },	/* 4 MPP's */
- 	{ .compatible = "qcom,spmi-mpp" },	/* Generic */
- 	{ },
- };
--- 
-2.29.2
+>  		slots = install_new_memslots(kvm, as_id, slots);
 
+This will explode if memory allocation for KVM_MR_MOVE fails.  In that case,
+the rmaps for "slots" will have been cleared by kvm_alloc_memslot_metadata().
+
+> +	}
+>  	kvfree(slots);
+>  	return r;
+>  }
+
+The SRCU index is already tracked in vcpu->srcu_idx, why not temporarily drop
+the SRCU lock if activate_shadow_mmu() needs to do work so that it can take
+slots_lock?  That seems simpler and I think would avoid modifying the common
+memslot code.
+
+kvm_arch_async_page_ready() is the only path for reaching kvm_mmu_reload() that
+looks scary, but that should be impossible to reach with the correct MMU context.
+We could always and an explicit sanity check on the rmaps being avaiable.
