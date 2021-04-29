@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C9336E722
+	by mail.lfdr.de (Postfix) with ESMTP id 0012E36E724
 	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 10:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239915AbhD2Ihj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 04:37:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47822 "EHLO mail.kernel.org"
+        id S239967AbhD2Ihl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 04:37:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229963AbhD2Ihg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 04:37:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02CBE61289;
-        Thu, 29 Apr 2021 08:36:50 +0000 (UTC)
+        id S239916AbhD2Ihi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 04:37:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67951613B4;
+        Thu, 29 Apr 2021 08:36:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619685410;
-        bh=MeLEsLw6D27yIvjQ/kVD7YJHUqg3HKZl6KtwqpCreNs=;
+        s=k20201202; t=1619685411;
+        bh=2qAnuZ0glq7AD0WdQxX0rOeTrE+qvGfHUxQ2lCXNL8s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IW7NtWq1kOKSpdZ0t3EbHV1G9raGE+iIzxS46CQTSI3s4y9uQ/263WJfMZ3aMSAcD
-         3wQE3PYuMC3RSGsU6ad9jTzoX+vAfnWiRULC+CcPDb5MDRCDGVQNWzz4gld6H3DODW
-         m4KEUBiD4QNqIISPOb+lbOomUGyOG/P4UCUyzdoM+QKHkaY2MHAHrb6Qbv1JU+zgsh
-         qm7Y7EPApU9qh4OtJRVwtRcMxm+dhHJkDFd3vAP91wKtbuPhdFw5BA5gxfgR22wOyo
-         IdUI0XrOljA3ugdMH1nzmIlD5LwdzvJPoV9Zy6NDIRBE28NKqlbHZH7pLrvVWZLoTp
-         TSe0oV5GwQtOg==
+        b=N5z99kBzrOrO5N3XTumPMUpPZExJtOdotoLhGXf3C20gqEqJ256d5oK7P5uXcGKLS
+         ohvR7hBUHcGkALFvgWY90FCamd5G+EevWmbnVOQOzFi2DHn/mkA1bob8KDHb3epsnf
+         DGckQ6/iwtqKn66b+ZxR0sAtjlGVEbdZpYVS5/4u+Y9iFDjz6wUTmZFa+KgkBZN4Rq
+         CEdnXwToC2xePL1NRXbPWiKxPUeqji5RZ8sr2LjbkywAoBelXx5NbR5jkvqXrQVCYh
+         ygjkli9u4EYqhKDm8w6qBdSNRlJr9fKLaz9M+OFgCvNzepXH0M3SZJoWKHzmRO/B2a
+         VsT4BdsSq1NlQ==
 Received: by pali.im (Postfix)
-        id 295097DF; Thu, 29 Apr 2021 10:36:48 +0200 (CEST)
+        id 693FDA43; Thu, 29 Apr 2021 10:36:49 +0200 (CEST)
 From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
 To:     Gregory CLEMENT <gregory.clement@bootlin.com>,
         Andrew Lunn <andrew@lunn.ch>
 Cc:     =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 mvebu + mvebu/dt64 2/6] firmware: turris-mox-rwtm: report failures better
-Date:   Thu, 29 Apr 2021 10:36:32 +0200
-Message-Id: <20210429083636.22560-2-pali@kernel.org>
+Subject: [PATCH v2 mvebu + mvebu/dt64 3/6] firmware: turris-mox-rwtm: fail probing when firmware does not support hwrng
+Date:   Thu, 29 Apr 2021 10:36:33 +0200
+Message-Id: <20210429083636.22560-3-pali@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210429083636.22560-1-pali@kernel.org>
 References: <20210308153703.23097-1-kabel@kernel.org>
@@ -44,60 +44,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Behún <kabel@kernel.org>
+When Marvell's rWTM firmware, which does not support the GET_RANDOM
+command, is used, kernel prints an error message
+  hwrng: no data available
+every 10 seconds.
 
-Report a notice level message if a command is not supported by the rWTM
-firmware.
+Fail probing of this driver if the rWTM firmware does not support the
+GET_RANDOM command.
 
-This should not be an error, merely a notice, because the firmware can
-be used on non-CZ.NIC boards that do not have manufacturing information
-burned.
+This makes it possible to put this driver's compatible into generic
+armada-37xx device tree, to be available for other Armada 3720 devices
+besides Turris MOX. If they use the rWTM firmware from CZ.NIC, they will
+have HWRNG available, and if not, the driver won't be complaining.
 
-Signed-off-by: Marek Behún <kabel@kernel.org>
+Signed-off-by: Pali Rohár <pali@kernel.org>
 Fixes: 389711b37493 ("firmware: Add Turris Mox rWTM firmware driver")
+Signed-off-by: Marek Behún <kabel@kernel.org>
 ---
- drivers/firmware/turris-mox-rwtm.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ drivers/firmware/turris-mox-rwtm.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
 diff --git a/drivers/firmware/turris-mox-rwtm.c b/drivers/firmware/turris-mox-rwtm.c
-index f85acdb3130c..d7e3489e4bf2 100644
+index d7e3489e4bf2..3ef9687dddca 100644
 --- a/drivers/firmware/turris-mox-rwtm.c
 +++ b/drivers/firmware/turris-mox-rwtm.c
-@@ -204,11 +204,14 @@ static int mox_get_board_info(struct mox_rwtm *rwtm)
- 		return ret;
+@@ -260,6 +260,27 @@ static int mox_get_board_info(struct mox_rwtm *rwtm)
+ 	return 0;
+ }
  
- 	ret = mox_get_status(MBOX_CMD_BOARD_INFO, reply->retval);
--	if (ret < 0 && ret != -ENODATA) {
--		return ret;
--	} else if (ret == -ENODATA) {
-+	if (ret == -ENODATA) {
- 		dev_warn(rwtm->dev,
- 			 "Board does not have manufacturing information burned!\n");
-+	} else if (ret == -ENOSYS) {
-+		dev_notice(rwtm->dev,
-+			   "Firmware does not support the BOARD_INFO command\n");
-+	} else if (ret < 0) {
++static int check_get_random_support(struct mox_rwtm *rwtm)
++{
++	struct armada_37xx_rwtm_tx_msg msg;
++	int ret;
++
++	msg.command = MBOX_CMD_GET_RANDOM;
++	msg.args[0] = 1;
++	msg.args[1] = rwtm->buf_phys;
++	msg.args[2] = 4;
++
++	ret = mbox_send_message(rwtm->mbox, &msg);
++	if (ret < 0)
 +		return ret;
- 	} else {
- 		rwtm->serial_number = reply->status[1];
- 		rwtm->serial_number <<= 32;
-@@ -237,10 +240,13 @@ static int mox_get_board_info(struct mox_rwtm *rwtm)
- 		return ret;
- 
- 	ret = mox_get_status(MBOX_CMD_ECDSA_PUB_KEY, reply->retval);
--	if (ret < 0 && ret != -ENODATA) {
--		return ret;
--	} else if (ret == -ENODATA) {
-+	if (ret == -ENODATA) {
- 		dev_warn(rwtm->dev, "Board has no public key burned!\n");
-+	} else if (ret == -ENOSYS) {
-+		dev_notice(rwtm->dev,
-+			   "Firmware does not support the ECDSA_PUB_KEY command\n");
-+	} else if (ret < 0) {
++
++	ret = wait_for_completion_timeout(&rwtm->cmd_done, HZ / 2);
++	if (ret < 0)
 +		return ret;
- 	} else {
- 		u32 *s = reply->status;
++
++	return mox_get_status(MBOX_CMD_GET_RANDOM, rwtm->reply.retval);
++}
++
+ static int mox_hwrng_read(struct hwrng *rng, void *data, size_t max, bool wait)
+ {
+ 	struct mox_rwtm *rwtm = (struct mox_rwtm *) rng->priv;
+@@ -497,6 +518,13 @@ static int turris_mox_rwtm_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		dev_warn(dev, "Cannot read board information: %i\n", ret);
  
++	ret = check_get_random_support(rwtm);
++	if (ret < 0) {
++		dev_notice(dev,
++			   "Firmware does not support the GET_RANDOM command\n");
++		goto free_channel;
++	}
++
+ 	rwtm->hwrng.name = DRIVER_NAME "_hwrng";
+ 	rwtm->hwrng.read = mox_hwrng_read;
+ 	rwtm->hwrng.priv = (unsigned long) rwtm;
 -- 
 2.20.1
 
