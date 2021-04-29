@@ -2,114 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C6936E9D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 13:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 331D436E9D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 13:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233252AbhD2LzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 07:55:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230148AbhD2LzG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 07:55:06 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11DCDC06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 04:54:20 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id n25so6097272edr.5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 04:54:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CMvMuvuTciwDVZ/KzrxH2STYwNF49iaFIcUSnZPNLNM=;
-        b=B1lx1G+D97mH3O/bJGl1kifKvvXiQkqY5I5rt08F+TibDHUgyENDGydn612v0aZts3
-         OIt0KszPHCnDQNGJtD+O2s1fo2uZNjh/MylNBSQQEljeFWHeUlKImoA2zN9E9HFiqOVJ
-         /avO3sxfTShFdww/uuUT5nObnM5ChOMzqY69M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CMvMuvuTciwDVZ/KzrxH2STYwNF49iaFIcUSnZPNLNM=;
-        b=g+VkWYApnsgtPIzwCBIHRPY2oMiNV3mee+oJsSDmcNJ4CWKEv8zVgMEm7VPj4BAuIY
-         /ilcxhyMU3/R0nk3DiDg/JOkGEWIsq1ZIfy6fmBtC6zENSgofdcIRESjN3V/EcTBG3nV
-         9spaPHHmkGPfDa2uA/+sZDhmr6Skoq4Z07ux8WMacwUi2gmvBGL4o+lbt2sJUmMhKtyr
-         YJ4uB7NO971DNv+CqMamoIZYukDdAybYKboiOK8PJM0LwFzbuocIwaw7N+PXrc6LeeQu
-         s9AhEuBI8UfhX2+jCW9XE3oUYvBDgqYH6U5uSc4quPQzPX1Qg9gyXTqbKyN9596n7ACx
-         OUUQ==
-X-Gm-Message-State: AOAM533ZYDlluR0n66mbW5FoZGvTRYr+whSDU/kX3+669yqP8t5DQZsV
-        KV4H8TZD4iq0Hmg8QHlFqWm7qA==
-X-Google-Smtp-Source: ABdhPJyM9DYB+I3qcNbhmorquqVoVO3QWr2FOME2k2Bh2iPq4F1ObVAnvS7bQBpH9KJailsurRzV3A==
-X-Received: by 2002:aa7:c454:: with SMTP id n20mr18114477edr.138.1619697258625;
-        Thu, 29 Apr 2021 04:54:18 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id w19sm2117948edd.52.2021.04.29.04.54.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Apr 2021 04:54:18 -0700 (PDT)
-Subject: Re: RFC: collection of common distro configs?
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Arnd Bergmann <arnd@arndb.de>
-References: <a7fac800-02ae-62d4-00d4-770facff4a7c@rasmusvillemoes.dk>
- <YIqW5a2DTsw7uc9O@kroah.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <69c626ba-4c50-9414-6ed4-51eaf04457df@rasmusvillemoes.dk>
-Date:   Thu, 29 Apr 2021 13:54:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S233843AbhD2L4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 07:56:49 -0400
+Received: from msg-2.mailo.com ([213.182.54.12]:39696 "EHLO msg-2.mailo.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230148AbhD2L4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 07:56:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
+        t=1619697337; bh=EDodJBjFB3DQAxPXQjc9/lyJzoAH5vHWFKGP+cWp5Cw=;
+        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
+         MIME-Version:Content-Type:In-Reply-To;
+        b=PMcwewS9jJs/xe16lbhanLuCXKbwsgk2tpXw8CD58VNUgrh3QihuEfUskHjXGvcDo
+         YscogBvsi/zoiu90mjxVqfNw2x1kivo0wQZGTJx/OVWA7YCNhSfPHiNapfF6MOLBNO
+         4blcMauAcuzRsVgfy39EKZ/eORv1KZ4N+kH8eABw=
+Received: by 192.168.90.11 [192.168.90.11] with ESMTP
+        via ip-206.mailobj.net [213.182.55.206]
+        Thu, 29 Apr 2021 13:55:37 +0200 (CEST)
+X-EA-Auth: cJOQOLANNKlBzEu2daIqW4bACv6qvrxU/vXGYSh8PQf4qW+uEs1ZyrV9jbACe8RylP4MiN8XQLbjiYmvM0/i1v18h2xAnE/j
+Date:   Thu, 29 Apr 2021 17:25:30 +0530
+From:   Deepak R Varma <drv@mailo.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com
+Subject: Re: [PATCH v1 4/6] staging: media: atomisp: reformat code comment
+ blocks
+Message-ID: <YIqesrvl3lFwWDhV@192.168.1.8>
+References: <cover.1619022192.git.drv@mailo.com>
+ <efdd8910b519dd55838570c72e3ce35e063f4a11.1619022192.git.drv@mailo.com>
+ <20210429100808.GZ1981@kadam>
+ <YIqZHWkHi8HWnF0C@192.168.1.8>
+ <20210429114304.GC21598@kadam>
 MIME-Version: 1.0
-In-Reply-To: <YIqW5a2DTsw7uc9O@kroah.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210429114304.GC21598@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/04/2021 13.22, Greg Kroah-Hartman wrote:
-> On Thu, Apr 29, 2021 at 12:26:54PM +0200, Rasmus Villemoes wrote:
->> Hi there,
->>
->> Does anybody know of a place where one can find a collection of .configs
->> from various distros? I think it might be useful to be able to grep
->> around to see what features are actually enabled by which distros.
->>
->> Based on the domain name, I hoped linuxconfig.org would be such a place,
->> if so I cannot find it.
->>
->> If no such collection exists, do others agree it might be useful? If so,
->> I'll be happy to throw up a repo somewhere and start collecting them.
+On Thu, Apr 29, 2021 at 02:43:04PM +0300, Dan Carpenter wrote:
+> On Thu, Apr 29, 2021 at 05:01:41PM +0530, Deepak R Varma wrote:
+> > On Thu, Apr 29, 2021 at 01:08:09PM +0300, Dan Carpenter wrote:
+> > > On Wed, Apr 21, 2021 at 10:26:09PM +0530, Deepak R Varma wrote:
+> > > > @@ -1044,7 +1048,7 @@ static long mt9m114_s_exposure(struct v4l2_subdev *sd,
+> > > >  	}
+> > > >  
+> > > >  	/*
+> > > > -	// set analog/digital gain
+> > > > +	 * set analog/digital gain
+> > > >  	switch(AnalogGain)
+> > > >  	{
+> > > >  	case 0:
+> > > 
+> > > How on earth does this compile?
+> > 
+> > There is a closing */ down under after the entire switch block. The
+> > change I made is within the comment block. I have compiled the built the
+> > driver successfully.
 > 
-> It will change on a monthly basis, is this really all that useful?  Who
-> will keep it up to date?
+> Oh...  Duh.  I thought you converted the // to /*.  This patch doesn't
+> make any sense though because originally it was commented out code, but
+> now it's a commented out ball of code and notes.
+
+No problem. It looks wrong with the limited lines in diff. Appreciate
+you looking at it though.
+
+Is it okay if I send in a separate patch with comment clean up? There
+are several #if 0 code block directives for this driver that I believe can
+be taken off as well. Should I clean those up as well?
+
+Regards,
+deepak.
+
 > 
-> What are you trying to determine?
+> Just delete any commented out code.
+> 
+> regards,
+> dan carpenter
+> 
 
-Concretely, I wanted to know if any distro has CONFIG_UEVENT_HELPER_PATH
-set to something other than the empty string (if they have
-CONFIG_UEVENT_HELPER at all). There are some in-tree _defconfigs with
-that, but that doesn't say a whole lot, nobody knows if anybody use
-those defconfigs.
 
-But it's something I've wanted to use on other occasions before, and I
-see from Arnd's reply that I'm not alone.
-
-It's not about which distros enable some random rtc driver - it's for
-the more generic, high-level config options it would be useful. Stack
-protector and other hardening things. Is tracing enabled? How about
-dynamic_debug, anybody (not) using that? Or legacy config options, can
-we remove CONFIG_USELIB and be done with it?
-
-For the same reason, I wouldn't need a new copy of /boot/config-`uname
--r` every time a distro updates to the next -stable tag, the configs are
-very likely to be the same for all practical purposes.
-
-As for maintaining it: I'm not going to actively hunt down .configs from
-various distros - if that was easy, I wouldn't have asked here in the
-first place. I was hoping for crowd-sourcing it; create a github repo
-with a README laying out the directory structure and hope kernel devs
-would send me the .config they have on their machine in the form of a PR
-(or just an email with the info I'd need). It's very likely I'm naive.
-But at least I'm not alone in wishing such a thing existed.
-
-Rasmus
