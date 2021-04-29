@@ -2,264 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C143D36E51C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 08:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1ACA36E522
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 08:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237102AbhD2Gvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 02:51:41 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:54301 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230176AbhD2Gvj (ORCPT
+        id S239030AbhD2GxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 02:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238726AbhD2GxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 02:51:39 -0400
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210429065051epoutp0258d126ace0da38238fae9a52b11ed5b8~6QYQiT_j51654716547epoutp02y
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 06:50:51 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210429065051epoutp0258d126ace0da38238fae9a52b11ed5b8~6QYQiT_j51654716547epoutp02y
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1619679051;
-        bh=tlw0avSX2wOoEZ1KYfcEj/kTJmF/Mffz5DkEvg1IGFQ=;
-        h=Subject:Reply-To:From:To:Date:References:From;
-        b=EY6ZkIOqlC+9QEA4lhu0CbhrfiC+xePsp7uxmplPv0a3cau3NYsfA91uplRFp6L/K
-         lD1P+va+TcvSeaJhXUzdk6o915GTEpJXJEpq8bDcs10hX1ObcHUUnJlnbWHZbqydkx
-         Pl2rpaksEoRD0lX0Z32B2yJ105DgA9cIqNYEqPXE=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20210429065048epcas2p28806dc6a3ffe0af4cd9b2c924ca329c0~6QYNZqFOw2841528415epcas2p2j;
-        Thu, 29 Apr 2021 06:50:48 +0000 (GMT)
-Received: from epsmges2p2.samsung.com (unknown [182.195.40.185]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4FW5jz1Ft4z4x9Pw; Thu, 29 Apr
-        2021 06:50:47 +0000 (GMT)
-X-AuditID: b6c32a46-e01ff700000025de-a1-608a5744395d
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A0.DC.09694.4475A806; Thu, 29 Apr 2021 15:50:44 +0900 (KST)
-Mime-Version: 1.0
-Subject: [PATCH] f2fs: refactoring nat and sit functions
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
-        "chao@kernel.org" <chao@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        Chao Yu <yuchao0@huawei.com>,
-        Daejun Park <daejun7.park@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210429065038epcms2p538390e44af97feae43437fb97aa0759e@epcms2p5>
-Date:   Thu, 29 Apr 2021 15:50:38 +0900
-X-CMS-MailID: 20210429065038epcms2p538390e44af97feae43437fb97aa0759e
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmphk+LIzCtJLcpLzFFi42LZdljTQtclvCvB4Od5VYvTU88yWbw8pGmx
-        6kG4xZP1s5gtLi1yt7i8aw6bxdTHa1kd2D1ajrxl9di0qpPNY/eCz0wefVtWMXp83iQXwBqV
-        Y5ORmpiSWqSQmpecn5KZl26r5B0c7xxvamZgqGtoaWGupJCXmJtqq+TiE6DrlpkDdIOSQlli
-        TilQKCCxuFhJ386mKL+0JFUhI7+4xFYptSAlp8DQsECvODG3uDQvXS85P9fK0MDAyBSoMiEn
-        Y/3WzWwFB40q5r/YzNrAeFmzi5GTQ0LARKJn+R+mLkYuDiGBHYwSt2fOYO5i5ODgFRCU+LtD
-        GKRGWMBC4kz7WiYQW0hASWL9xVnsEHE9iVsP1zCC2GwCOhLTT9xnB5kjIrCJSWLJks3MEAt4
-        JWa0P2WBsKUlti/fyghha0j8WNYLVSMqcXP1W3YY+/2x+VA1IhKt985C1QhKPPi5GyouKXFs
-        9wcmCLteYuudX4wgiyUEehglDu+8xQqR0Je41rERbDGvgK/Eytn/wRpYBFQlzu+/C7XMRWLh
-        yh1gQ5kF5CW2v50D9jyzgKbE+l36IKaEgLLEkVssMK80bPzNjs5mFuCT6Dj8Fy6+Y94TqNPU
-        JNb9XM8EMUZG4tY8qOs9JNbNes84gVFxFiKgZyE5YRbCCQsYmVcxiqUWFOempxYbFRghx+0m
-        RnBy1HLbwTjl7Qe9Q4xMHIyHGCU4mJVEeH+v60wQ4k1JrKxKLcqPLyrNSS0+xGgK9PxEZinR
-        5Hxges4riTc0NTIzM7A0tTA1M7JQEuf9mVqXICSQnliSmp2aWpBaBNPHxMEp1cB0ViSm279a
-        4Eilmn5lMKOyaYe/j379dTEbG6OyQNFXPwuOzdHcf+9479ms5e1bPwQ9ZQjYq/hbb4LR15Rj
-        mg9m/N3YqX85V5996xYGbvvAzL5Uj2Mqb251tpdXl5S1i8Tsaa08MXWfvFXRwYcT139yO/v5
-        xK/6mPmd13tYmv9Pe3VP9ujcrNpmt5rNrFK2PzT36xUe3Bx7b3rY9i/CKrGnFnyQKzr9+JPr
-        bae4iV+Yo7emTHebuernmQVtSzgO1jD5heg7+2rO2XTVdoK0tO+tkL43l+f236lqdFj8etlN
-        859TpjL4sFZPte4N+bvm795gvZwT1q0J+31bm0Kflb99crrR97NUou+T5A3XPd8osRRnJBpq
-        MRcVJwIAzfgARxcEAAA=
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210429065038epcms2p538390e44af97feae43437fb97aa0759e
-References: <CGME20210429065038epcms2p538390e44af97feae43437fb97aa0759e@epcms2p5>
+        Thu, 29 Apr 2021 02:53:07 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44CDDC06138C
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 23:52:19 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lc0X0-0002j9-JE; Thu, 29 Apr 2021 08:52:14 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lc0Wz-0002AX-Ul; Thu, 29 Apr 2021 08:52:13 +0200
+Date:   Thu, 29 Apr 2021 08:52:13 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Fenglin Wu <fenglinw@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>, linux-pwm@vger.kernel.org,
+        subbaram@codeaurora.org, collinsd@codeaurora.org,
+        aghayal@codeaurora.org
+Subject: Re: [PATCH 2/2] pwm: pwm-qcom: add driver for PWM modules in QCOM
+ PMICs
+Message-ID: <20210429065213.inajpznvfxa2xsld@pengutronix.de>
+References: <20210427102247.822-1-fenglinw@codeaurora.org>
+ <20210427102247.822-3-fenglinw@codeaurora.org>
+ <20210427170748.wglupc6zwrndalxs@pengutronix.de>
+ <YImfkM/ll1nCmopq@orome.fritz.box>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="y4s53szfi6y5jve3"
+Content-Disposition: inline
+In-Reply-To: <YImfkM/ll1nCmopq@orome.fritz.box>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch separates the APIs for nat and sit.
 
-f2fs_lookup_journal_in_cursum -> f2fs_lookup_journal_{nats|sits}_in_cursum
-__has_cursum_space -> __has_{nats|sits}_in_cursum_space
+--y4s53szfi6y5jve3
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Daejun Park <daejun7.park@samsung.com>
----
- fs/f2fs/f2fs.h    | 16 +++++++++++-----
- fs/f2fs/node.c    | 11 +++++------
- fs/f2fs/segment.c | 46 +++++++++++++++++++++++++++-------------------
- 3 files changed, 43 insertions(+), 30 deletions(-)
+Hello,
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index b9d5317db0a7..e264fedacc9e 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -416,11 +416,15 @@ static inline int update_sits_in_cursum(struct f2fs_journal *journal, int i)
- 	return before;
- }
- 
--static inline bool __has_cursum_space(struct f2fs_journal *journal,
--							int size, int type)
-+static inline bool __has_nats_in_cursum_space(struct f2fs_journal *journal,
-+					      int size)
-+{
-+	return size <= MAX_NAT_JENTRIES(journal);
-+}
-+
-+static inline bool __has_sits_in_cursum_space(struct f2fs_journal *journal,
-+					      int size)
- {
--	if (type == NAT_JOURNAL)
--		return size <= MAX_NAT_JENTRIES(journal);
- 	return size <= MAX_SIT_JENTRIES(journal);
- }
- 
-@@ -3420,7 +3424,9 @@ void f2fs_wait_on_block_writeback_range(struct inode *inode, block_t blkaddr,
- 								block_t len);
- void f2fs_write_data_summaries(struct f2fs_sb_info *sbi, block_t start_blk);
- void f2fs_write_node_summaries(struct f2fs_sb_info *sbi, block_t start_blk);
--int f2fs_lookup_journal_in_cursum(struct f2fs_journal *journal, int type,
-+int f2fs_lookup_journal_sits_in_cursum(struct f2fs_journal *journal,
-+			unsigned int val, int alloc);
-+int f2fs_lookup_journal_nats_in_cursum(struct f2fs_journal *journal,
- 			unsigned int val, int alloc);
- void f2fs_flush_sit_entries(struct f2fs_sb_info *sbi, struct cp_control *cpc);
- int f2fs_fix_curseg_write_pointer(struct f2fs_sb_info *sbi);
-diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-index e67ce5f13b98..cb295eb8ed91 100644
---- a/fs/f2fs/node.c
-+++ b/fs/f2fs/node.c
-@@ -554,7 +554,7 @@ int f2fs_get_node_info(struct f2fs_sb_info *sbi, nid_t nid,
- 
- 	/* Check current segment summary */
- 	down_read(&curseg->journal_rwsem);
--	i = f2fs_lookup_journal_in_cursum(journal, NAT_JOURNAL, nid, 0);
-+	i = f2fs_lookup_journal_nats_in_cursum(journal, nid, 0);
- 	if (i >= 0) {
- 		ne = nat_in_journal(journal, i);
- 		node_info_from_raw_nat(ni, &ne);
-@@ -2891,7 +2891,7 @@ static int __flush_nat_entry_set(struct f2fs_sb_info *sbi,
- 	 * #2, flush nat entries to nat page.
- 	 */
- 	if (enabled_nat_bits(sbi, cpc) ||
--		!__has_cursum_space(journal, set->entry_cnt, NAT_JOURNAL))
-+		!__has_nats_in_cursum_space(journal, set->entry_cnt))
- 		to_journal = false;
- 
- 	if (to_journal) {
-@@ -2914,8 +2914,8 @@ static int __flush_nat_entry_set(struct f2fs_sb_info *sbi,
- 		f2fs_bug_on(sbi, nat_get_blkaddr(ne) == NEW_ADDR);
- 
- 		if (to_journal) {
--			offset = f2fs_lookup_journal_in_cursum(journal,
--							NAT_JOURNAL, nid, 1);
-+			offset = f2fs_lookup_journal_nats_in_cursum(journal,
-+							nid, 1);
- 			f2fs_bug_on(sbi, offset < 0);
- 			raw_ne = &nat_in_journal(journal, offset);
- 			nid_in_journal(journal, offset) = cpu_to_le32(nid);
-@@ -2985,8 +2985,7 @@ int f2fs_flush_nat_entries(struct f2fs_sb_info *sbi, struct cp_control *cpc)
- 	 * into nat entry set.
- 	 */
- 	if (enabled_nat_bits(sbi, cpc) ||
--		!__has_cursum_space(journal,
--			nm_i->nat_cnt[DIRTY_NAT], NAT_JOURNAL))
-+		!__has_nats_in_cursum_space(journal, nm_i->nat_cnt[DIRTY_NAT]))
- 		remove_nats_in_journal(sbi);
- 
- 	while ((found = __gang_lookup_nat_set(nm_i,
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index efac388d2468..63bfbc2603ae 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -4013,25 +4013,33 @@ void f2fs_write_node_summaries(struct f2fs_sb_info *sbi, block_t start_blk)
- 	write_normal_summaries(sbi, start_blk, CURSEG_HOT_NODE);
- }
- 
--int f2fs_lookup_journal_in_cursum(struct f2fs_journal *journal, int type,
-+int f2fs_lookup_journal_nats_in_cursum(struct f2fs_journal *journal,
- 					unsigned int val, int alloc)
- {
- 	int i;
- 
--	if (type == NAT_JOURNAL) {
--		for (i = 0; i < nats_in_cursum(journal); i++) {
--			if (le32_to_cpu(nid_in_journal(journal, i)) == val)
--				return i;
--		}
--		if (alloc && __has_cursum_space(journal, 1, NAT_JOURNAL))
--			return update_nats_in_cursum(journal, 1);
--	} else if (type == SIT_JOURNAL) {
--		for (i = 0; i < sits_in_cursum(journal); i++)
--			if (le32_to_cpu(segno_in_journal(journal, i)) == val)
--				return i;
--		if (alloc && __has_cursum_space(journal, 1, SIT_JOURNAL))
--			return update_sits_in_cursum(journal, 1);
--	}
-+	for (i = 0; i < nats_in_cursum(journal); i++)
-+		if (le32_to_cpu(nid_in_journal(journal, i)) == val)
-+			return i;
-+
-+	if (alloc && __has_nats_in_cursum_space(journal, 1))
-+		return update_nats_in_cursum(journal, 1);
-+
-+	return -1;
-+}
-+
-+int f2fs_lookup_journal_sits_in_cursum(struct f2fs_journal *journal,
-+					unsigned int val, int alloc)
-+{
-+	int i;
-+
-+	for (i = 0; i < sits_in_cursum(journal); i++)
-+		if (le32_to_cpu(segno_in_journal(journal, i)) == val)
-+			return i;
-+
-+	if (alloc && __has_sits_in_cursum_space(journal, 1))
-+		return update_sits_in_cursum(journal, 1);
-+
- 	return -1;
- }
- 
-@@ -4174,7 +4182,7 @@ void f2fs_flush_sit_entries(struct f2fs_sb_info *sbi, struct cp_control *cpc)
- 	 * entries, remove all entries from journal and add and account
- 	 * them in sit entry set.
- 	 */
--	if (!__has_cursum_space(journal, sit_i->dirty_sentries, SIT_JOURNAL) ||
-+	if (!__has_sits_in_cursum_space(journal, sit_i->dirty_sentries) ||
- 								!to_journal)
- 		remove_sits_in_journal(sbi);
- 
-@@ -4192,7 +4200,7 @@ void f2fs_flush_sit_entries(struct f2fs_sb_info *sbi, struct cp_control *cpc)
- 		unsigned int segno = start_segno;
- 
- 		if (to_journal &&
--			!__has_cursum_space(journal, ses->entry_cnt, SIT_JOURNAL))
-+			!__has_sits_in_cursum_space(journal, ses->entry_cnt))
- 			to_journal = false;
- 
- 		if (to_journal) {
-@@ -4220,8 +4228,8 @@ void f2fs_flush_sit_entries(struct f2fs_sb_info *sbi, struct cp_control *cpc)
- 			}
- 
- 			if (to_journal) {
--				offset = f2fs_lookup_journal_in_cursum(journal,
--							SIT_JOURNAL, segno, 1);
-+				offset = f2fs_lookup_journal_sits_in_cursum(
-+						journal, segno, 1);
- 				f2fs_bug_on(sbi, offset < 0);
- 				segno_in_journal(journal, offset) =
- 							cpu_to_le32(segno);
--- 
-2.25.1
+On Wed, Apr 28, 2021 at 07:46:56PM +0200, Thierry Reding wrote:
+> On Tue, Apr 27, 2021 at 07:07:48PM +0200, Uwe Kleine-K=F6nig wrote:
+> > I would like to see the register definition to use a common prefix (like
+> > QCOM_PWM_) and that the names of bit fields include the register name.
+> > So something like:
+> >=20
+> > 	#define QCOM_PWM_PWM_SIZE_CLK		0x41
+> > 	#define QCOM_PWM_PWM_SIZE_CLK_FREQ_SEL 		GENMASK(1, 0)
+> >=20
+> > even if the names are quite long, its usage is less error prone. Maybe
+> > it makes sense to drop the duplicated PWM (but only if all or no
+> > register contains PWM in its name according to the reference manual).
+> > Also maybe QCOM_PWM_PWMSIZECLK_FREQSEL might be a good choice. I let you
+> > judge about the details.
+>=20
+> Please stop requesting this. A common prefix is good for namespacing
+> symbols, but these defines are used only within this file, so there's no
+> need to namespace them.
 
+I do consider it important. The goal of my review comments is to improve
+the drivers according to what I consider sensible even if that might not
+fit your metrics.=20
+
+Consistent name(space)ing is sensible because the names of static
+functions are used in backtraces. It is sensible because tools like
+ctags, etags and cscope work better when names are unique. It is
+sensible because it's harder than necessary to spot the error in
+
+	writel(PWM_EN_GLITCH_REMOVAL_MASK, base + REG_ENABLE_CONTROL);
+
+=2E It is sensible because the rule "Use namespacing for all symbols" is
+easier than "Use namespacing for symbols that might conflict with
+(present or future) names in the core or that might appear in user
+visible messages like backtraces or KASAN reports". It's sensible
+because then it's obvious when reading a code line that the symbol is
+driver specific. It is useful to have a common prefix for driver
+functions because that makes it easier to select them for tracing.
+
+> Forcing everyone to use a specific prefix is just going to add a bunch
+> of characters but doesn't actually add any value.
+
+That's your opinion and I disagree. I do see a value and the "burden" of
+these additional characters is quite worth its costs. In my bubble most
+people also see this value. This includes the coworkers I talked to,
+several other maintainers also insist on common prefixes[1] and it
+matches what my software engineering professor taught me during my
+studies. I also agree that longer names are more annoying than short
+ones, but that doesn't outweigh the advantages in my eyes and a good
+editor helps here.
+=20
+Best regards
+Uwe
+
+[1] A few posts that I found quickly:
+    https://lore.kernel.org/lkml/YH2k5xnD%2F+CKnMBQ@hovoldconsulting.com/
+    https://lore.kernel.org/lkml/CAPDyKFpg1qJD0r54sBC3hCoFey_+gwAL1n2o-aGwn=
+AzAan5p7w@mail.gmail.com/
+    https://lore.kernel.org/lkml/CAMpxmJW770v6JLdveEe1hkgNEJByVyArhorSyUZBY=
+OyFiVyOeg@mail.gmail.com/
+    https://lore.kernel.org/linux-can/fe0a8a9b-35c6-8f23-5968-0b14abb6078d@=
+pengutronix.de/
+    https://lore.kernel.org/netdev/20190327084422.4209-16-maxime.chevallier=
+@bootlin.com/
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--y4s53szfi6y5jve3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCKV5kACgkQwfwUeK3K
+7AlmwQf/epeEtpmrZMHYRnU75vEFtSLuwbRwEWsSadMmTTP8gE82juELjPfqMZff
+aUHOX2IiZkMlBEsPUIUWQZIqY0tMnlpnrwg6ndugFlhACZXn1G7eIl0ojyeoTnB8
+tSjHCQOzL4S8+PWHyxshxFzG3eQJuEbK5LkcvZiENPM0LrIrh0OOHvCVVQedMeg4
+zrmAQ2jJgB4QQ4taTQ/n9HyJ07GZUZxEkU9c5SGVfYcwc2BXLLnTHg39K2FNVUW+
+qiqMTgLyXFUVv6pfOxUU0uGY87XOzG+pIUIm/2eO6eKnx45ewxaur5k9PSaNF9+3
+bYo8WAxns5T8PEg+r4UjeWlIwYj9yw==
+=sHLp
+-----END PGP SIGNATURE-----
+
+--y4s53szfi6y5jve3--
