@@ -2,75 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A84A36EEB4
+	by mail.lfdr.de (Postfix) with ESMTP id 0F62A36EEB3
 	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:16:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240962AbhD2RRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 13:17:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42620 "EHLO mail.kernel.org"
+        id S240941AbhD2RRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 13:17:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240894AbhD2RRL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 13:17:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C939461453;
-        Thu, 29 Apr 2021 17:16:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619716584;
-        bh=Bs2DkvTjvBhYZrCWK9wUuP3xTjP49b6oGWKDrTsofZY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QiYRwEZcvzd9yjZyGyOFHYtyv34FaaejXuZoK6roYnvJLPMXzbXL8XWHmium0A3Cv
-         azHzmg+fCzc9oh7hEusXV0foeFK+CkPGoefMA7kxU1b+IIAWFcs11Dy2yrisGDvFf3
-         kiJbbfNFwUs8WqC3jUu5q14aVW4Zb6e/63S2JXtt3P7hCFx95ZzgbfSQzlRTFGwJBC
-         dYykW+GnqTkpqIQ1WU2tw5os8K0ntkJBzi/l5qZ7o/HUxYCHEtHbs37YkexuyxADJI
-         8r5fyLzrK7gSJ06fbwrMK924seXYa7SYF4qMRmuHU3lHlhUOxFLL6xlfBBqx2Saszf
-         8ewIfdVM8SrBg==
-From:   Mark Brown <broonie@kernel.org>
-To:     Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, git@xilinx.com,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2]spi: spi-zynq-qspi: Fix stack violation bug
-Date:   Thu, 29 Apr 2021 18:15:49 +0100
-Message-Id: <161970928183.41765.11956133765398420405.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210318102446.25142-1-amit.kumar-mahapatra@xilinx.com>
-References: <20210318102446.25142-1-amit.kumar-mahapatra@xilinx.com>
+        id S233552AbhD2RRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 13:17:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 733E46144B;
+        Thu, 29 Apr 2021 17:16:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619716583;
+        bh=xCE9kiuLbHXwsZ1KM6w/Tl3VqKcpO4AP4M7f6sN//EQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DtxMrFqA9p7JcfQiuEV1zxzYYkLtjwQ8IrfXzjheChjOdPze0WwnoNsisQwllBRnu
+         mzrV77uJ39oHAL90UPCgmwI+qy+EQOdywuNtNSZne1YykrslESVV92jDtQhzSABAM2
+         zL+E9K9BVm13BmTnZdu+M7Iw0RXyS6M3UhQV801M=
+Date:   Thu, 29 Apr 2021 19:16:20 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Tariq Toukan <ttoukan.linux@gmail.com>,
+        Atul Gopinathan <atulgopinathan@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 046/190] Revert "net/mlx4_core: fix a memory leak bug."
+Message-ID: <YIrp5CMmMugYg4Zk@kroah.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-47-gregkh@linuxfoundation.org>
+ <1027d8d1-5cea-0a04-4974-3f9672ff7d4e@gmail.com>
+ <YIgK2Hbnmxz2dPCe@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YIgK2Hbnmxz2dPCe@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Mar 2021 04:24:44 -0600, Amit Kumar Mahapatra wrote:
-> This patch series fixes kernel-doc warnings and stack violation
-> issues in Zynq qspi driver file
+On Tue, Apr 27, 2021 at 03:00:08PM +0200, Greg Kroah-Hartman wrote:
+> On Mon, Apr 26, 2021 at 02:18:37PM +0300, Tariq Toukan wrote:
+> > 
+> > 
+> > On 4/21/2021 3:58 PM, Greg Kroah-Hartman wrote:
+> > > This reverts commit febfd9d3c7f74063e8e630b15413ca91b567f963.
+> > > 
+> > > Commits from @umn.edu addresses have been found to be submitted in "bad
+> > > faith" to try to test the kernel community's ability to review "known
+> > > malicious" changes.  The result of these submissions can be found in a
+> > > paper published at the 42nd IEEE Symposium on Security and Privacy
+> > > entitled, "Open Source Insecurity: Stealthily Introducing
+> > > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> > > of Minnesota) and Kangjie Lu (University of Minnesota).
+> > > 
+> > > Because of this, all submissions from this group must be reverted from
+> > > the kernel tree and will need to be re-reviewed again to determine if
+> > > they actually are a valid fix.  Until that work is complete, remove this
+> > > change to ensure that no problems are being introduced into the
+> > > codebase.
+> > > 
+> > > Cc: Qiushi Wu <wu000273@umn.edu>
+> > > Cc: David S. Miller <davem@davemloft.net>
+> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > ---
+> > >   drivers/net/ethernet/mellanox/mlx4/fw.c | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/net/ethernet/mellanox/mlx4/fw.c b/drivers/net/ethernet/mellanox/mlx4/fw.c
+> > > index f6cfec81ccc3..380e027ba5df 100644
+> > > --- a/drivers/net/ethernet/mellanox/mlx4/fw.c
+> > > +++ b/drivers/net/ethernet/mellanox/mlx4/fw.c
+> > > @@ -2734,7 +2734,7 @@ void mlx4_opreq_action(struct work_struct *work)
+> > >   		if (err) {
+> > >   			mlx4_err(dev, "Failed to retrieve required operation: %d\n",
+> > >   				 err);
+> > > -			goto out;
+> > > +			return;
+> > >   		}
+> > >   		MLX4_GET(modifier, outbox, GET_OP_REQ_MODIFIER_OFFSET);
+> > >   		MLX4_GET(token, outbox, GET_OP_REQ_TOKEN_OFFSET);
+> > > 
+> > 
+> > Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+> > 
+> > The original commit febfd9d3c7f74063e8e630b15413ca91b567f963 is a bad
+> > commit. Not to be re-submitted.
+> 
+> Thanks for the review, will keep!
 
-Applied to
+In looking closer (well, Atul looked closer after I asked them too), it
+seems that the original commit is ok, so I'm going to drop this revert
+from my tree.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+Tariq, unless you can point out the problem you see here?
 
-Thanks!
+thanks,
 
-[1/2] spi: spi-zynq-qspi: Fix kernel-doc warning
-      commit: 121271f08809e5dc01d15d3e529988ac5d740af6
-[2/2] spi: spi-zynq-qspi: Fix stack violation bug
-      commit: 6d5ff8e632a4f2389c331e5554cd1c2a9a28c7aa
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+greg k-h
