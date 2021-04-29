@@ -2,137 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F3EE36E8A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BABB36E8A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240333AbhD2K0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 06:26:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232629AbhD2K0f (ORCPT
+        id S240416AbhD2K0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 06:26:48 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:48897 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233114AbhD2K0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 06:26:35 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E835BC06138B;
-        Thu, 29 Apr 2021 03:25:47 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id e7so77817978edu.10;
-        Thu, 29 Apr 2021 03:25:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vWUqzDcIYyNtlaUQtK5aS5vhflRni0UZwh7Hr23COe0=;
-        b=mMlYgWU6vGBm3MdIgBW1T/cskesGE4awH1fU3eyfNCNvSAQhBj9c1TmtREUMJiD5Ci
-         mquByqy/x84469lW2uW37BthDunxdUMNzVa7iW+a9MnPfMpMCXLTfHsg1xz1iP+gfPDU
-         tIRuxjGd2dh48bY1S6irw1XFFTeS9uv4vYoCm77AM9tSpuHogSm9sp/JDITIpjK7VyQl
-         5+k8pcltsEeXZSGJ49r9DHCY7Y++OTsdvt8GdannpJTYK37q1iyy8XyWblB4mp/xAZeM
-         YhNWKk2Xyn/PUd2hAwoKz+0zb3kXxi+oJhBMiurcRR5JZF6mnGxpssqzMxt38DdPGCXu
-         9IRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vWUqzDcIYyNtlaUQtK5aS5vhflRni0UZwh7Hr23COe0=;
-        b=OB6qPjiLB2no+OOa+HVnKyQEriA2GNwGOALVsSiivWtEx3gbW44kJ4gAZWFZWeDkBu
-         hlVnt874WkRUTDFnpwPK+s2oClf7WYKtn5JthM1WkoDPTeLQDseukuh+NNktb9rp/paE
-         mSWExJMYDvs8+AFCF6B4f6FU0yuBh6dkMnkXDpEwr8JLxww+0UL6Hmp+u+UARYpgRVK4
-         VMx4pGIdQkc6ZUqE3IAcNvT2J+kvjcObhle8BL1onE+LwAZXUhJpxjgS+353dL4y4Clg
-         Op4EDxdKvF4zuhPdwtX3BjgdCUliVdH2EiH2I3iH0E6LMjBO5Pe+zAPFdAR57ii1PMHS
-         XqtQ==
-X-Gm-Message-State: AOAM532XNIVR7KMNplZE4uv4SsIK6qSU0mI1Zen2X2C+2upOUhbYPNsh
-        CnN9HYjPs+BcbPqcxvnWzuQ=
-X-Google-Smtp-Source: ABdhPJzofCqquTNo1xEfJ8jQID96SYM0bCFV0mtDFwrvDGs0P28BYXtfg5FFOBQdzOxHhVbFMxZNpg==
-X-Received: by 2002:a05:6402:c98:: with SMTP id cm24mr9756782edb.18.1619691946678;
-        Thu, 29 Apr 2021 03:25:46 -0700 (PDT)
-Received: from agape.jhs ([5.171.81.14])
-        by smtp.gmail.com with ESMTPSA id h19sm1536071ejc.94.2021.04.29.03.25.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 03:25:46 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 12:25:43 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: module parameters permission
-Message-ID: <20210429102543.GG1409@agape.jhs>
-References: <20210429095819.GE1409@agape.jhs>
- <YIqE1B3qMK+5AwQj@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YIqE1B3qMK+5AwQj@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Thu, 29 Apr 2021 06:26:46 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UX9cCYY_1619691948;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UX9cCYY_1619691948)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 29 Apr 2021 18:25:58 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     nicolas.ferre@microchip.com
+Cc:     claudiu.beznea@microchip.com, davem@davemloft.net, kuba@kernel.org,
+        linux@armlinux.org.uk, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] net: macb: Remove redundant assignment to queue
+Date:   Thu, 29 Apr 2021 18:25:46 +0800
+Message-Id: <1619691946-90305-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 12:05:08PM +0200, Greg KH wrote:
-> On Thu, Apr 29, 2021 at 11:58:20AM +0200, Fabio Aiuto wrote:
-> > Hi all,
-> > 
-> > I'm trying to declare module parameters this way:
-> > 
-> > 
-> >    params: {
-> >         scull_major: i32 {
-> >             default: 0,
-> >             permissions: bindings::S_IRUGO as i32,
-> >             description: b"Major number",
-> >         },
-> >         scull_minor: i32 {
-> >             default: 0,
-> >             permissions: bindings::S_IRUGO as i32,
-> >             description: b"Minor number",
-> >         },
-> > 
-> > i.e. using S_IRUGO macro exposed by bindgen. But I have the
-> > following compiler error:
-> > 
-> > error: proc macro panicked
-> >   --> samples/rust/rust_scull.rs:12:1
-> >    |
-> > 12 | / module! {
-> > 13 | |     type: RustScull,
-> > 14 | |     name: b"rust_scull",
-> > 15 | |     author: b"Alessandro Rubini, Jonathan Corbet",
-> > ...  |
-> > 44 | |     },
-> > 45 | | }
-> >    | |_^
-> >    |
-> >    = help: message: Expected Literal
-> > 
-> > the same if I remove as i32 casts.
-> > 
-> > if I write permissions as in samples/rust/rust_module_parameters.rs
-> > 
-> >     params: {
-> >         my_bool: bool {
-> >             default: true,
-> >             permissions: 0,
-> >             description: b"Example of bool",
-> >         },
-> >         my_i32: i32 {
-> >             default: 42,
-> >             permissions: 0o644, <-------
-> >             description: b"Example of i32",
-> >         },
-> > 
-> > I get no error.
-> > 
-> > What's the right way to use S_I*UGO macros?
-> 
-> Not at all, use the octal values instead please.
-> 
-> That's the way that we have declared a while ago, and I think
-> checkpatch.pl will even catch if you try to do this in any new code.
-> Please don't force us to deal with S_* defines in rust code as well.
-> 
-> thanks,
-> 
-> greg k-h
+Variable queue is set to bp->queues but these values is not used as it
+is overwritten later on, hence redundant assignment  can be removed.
 
-thank you I didn't know that. I will use octal than.
+Cleans up the following clang-analyzer warning:
 
-Anyway I'd like to know what was the matter with those bindings...
+drivers/net/ethernet/cadence/macb_main.c:4919:21: warning: Value stored
+to 'queue' during its initialization is never read
+[clang-analyzer-deadcode.DeadStores].
 
-fabio
+drivers/net/ethernet/cadence/macb_main.c:4832:21: warning: Value stored
+to 'queue' during its initialization is never read
+[clang-analyzer-deadcode.DeadStores].
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/net/ethernet/cadence/macb_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
+index 0f6a6cb..5693850 100644
+--- a/drivers/net/ethernet/cadence/macb_main.c
++++ b/drivers/net/ethernet/cadence/macb_main.c
+@@ -4829,7 +4829,7 @@ static int __maybe_unused macb_suspend(struct device *dev)
+ {
+ 	struct net_device *netdev = dev_get_drvdata(dev);
+ 	struct macb *bp = netdev_priv(netdev);
+-	struct macb_queue *queue = bp->queues;
++	struct macb_queue *queue;
+ 	unsigned long flags;
+ 	unsigned int q;
+ 	int err;
+@@ -4916,7 +4916,7 @@ static int __maybe_unused macb_resume(struct device *dev)
+ {
+ 	struct net_device *netdev = dev_get_drvdata(dev);
+ 	struct macb *bp = netdev_priv(netdev);
+-	struct macb_queue *queue = bp->queues;
++	struct macb_queue *queue;
+ 	unsigned long flags;
+ 	unsigned int q;
+ 	int err;
+-- 
+1.8.3.1
+
