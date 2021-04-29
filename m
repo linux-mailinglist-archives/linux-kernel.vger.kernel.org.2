@@ -2,76 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4248536E785
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 11:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B5F36E788
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 11:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240038AbhD2JEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 05:04:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34476 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240044AbhD2JEK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 05:04:10 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1619687003; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DFSUvl7s2zdDYPJD+xQRo2Bnr+lexNSci+LEO6W5He8=;
-        b=mg1UsGkrLZmlv+D6XG+/HA63O1OSbJeLTZvag6O8WDR5QmzDlgvXKZrGvvmM/UTavO+B8w
-        ouN4qPqyDQg7whZdxwdw6cFzlCobEv6Zjz2N6ic8tf0Y1dJwrIvZqn5JFtNGFJL/L0ehFX
-        3QPc4oE+e1wPdP/HiH8njEBM/XKdJIc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1F126AFA9;
-        Thu, 29 Apr 2021 09:03:23 +0000 (UTC)
-Message-ID: <5ac7634acbe7569879234ad541879c79918f3e00.camel@suse.com>
-Subject: Re: [PATCH v2 2/2] pci: Support "removable" attribute for PCI
- devices
-From:   Oliver Neukum <oneukum@suse.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Rajat Jain <rajatja@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
-        <linux-usb@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        Rajat Jain <rajatxjain@gmail.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Dmitry Torokhov <dtor@google.com>
-Date:   Thu, 29 Apr 2021 11:03:20 +0200
-In-Reply-To: <CAJZ5v0jEbjRSGPdfwvegawin5_N=m-UoP+Wa99EQ-QmkusiBCg@mail.gmail.com>
-References: <20210424021631.1972022-1-rajatja@google.com>
-         <20210424021631.1972022-2-rajatja@google.com>
-         <d53c72949d81db9f092a9aecb49bf56b47727738.camel@suse.com>
-         <CAJZ5v0iNrSFjhmTE8K-JrO07kJon3ikhatbg0Jg2hs+x-frDJg@mail.gmail.com>
-         <79b994f2476249498797e1784f735fd7@AcuMS.aculab.com>
-         <21c6b5002c5ad36cd7fe0bb849f5eba12a614bca.camel@suse.com>
-         <b5e031652f144ab6accbe553566676c9@AcuMS.aculab.com>
-         <0601e45130495b152bec04eee4a50e302db4cfd2.camel@suse.com>
-         <CAJZ5v0jEbjRSGPdfwvegawin5_N=m-UoP+Wa99EQ-QmkusiBCg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S240059AbhD2JEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 05:04:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239730AbhD2JEj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 05:04:39 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19625C06138C
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:03:51 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id i24so18049392edy.8
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:03:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W+HLzXbkNngIE9tkgHqx97GNCxRpXGXx8Ojt9z/evco=;
+        b=GBItjtMHIl9+fy1sfAPi2drO9fIPPAf3u5xufxexjqsbdmF4uIINYvXOAIEZgiqqNo
+         Wsdh5SY6oBaU0E1YBTd6SU1JID0yqbCaxQnC2QDGLRJDbsf2jA9M1uy6tP9NMdj/TI7O
+         0SmHpAVj7lb1ZtvDMcU9EZ6CvFVspZUa6fbJzCGMuw3GbAz9due6dTzo5homhF8iyNJ6
+         /XpUIyOnfqwtLwANoXjV3u/TaAUj8Z51+IELjYn2/NvqFiyGamW/0fe71ZpTDQUWqOIv
+         N8Tl3L99t3uQNKJ7edqd2pawkvQ66odmZ9Z1yKetCmS56MWyapKxPrweuxY0hGLmW2Ru
+         0hRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W+HLzXbkNngIE9tkgHqx97GNCxRpXGXx8Ojt9z/evco=;
+        b=XO8uqFXzMXpzD4nZgS8vYfxgEZUTtyMbHxVn1M+N/TqVgbufUHOnMYMtX3gjWpUowr
+         /KAZJU+W8021TzR77NABsAx5lLB+exSQ1H8h1xswa0eAiyY2naXwK54KgmjYX1xbfAob
+         eEiWfS+rvdaqNvnQwSxiL98VRGnqvy0zvH8KfVLrCDxjFk5cHzkEO6F1vdZfQWVliOBj
+         uIhjO4MvM1fim8yjnAcTmzF7PNbY1hEYu97jyExVljfvmD3RyB2ZxAC0IGyibEK/0aB2
+         4Pe8ru/uTDJ1rBh1sUVhX9l8Vi/dlfOT81duAsqHM99+8kh3JCBSBiU49EwWfLCS8kF2
+         q8cw==
+X-Gm-Message-State: AOAM532gPrcg0HeXRA2WvjJZ2HjmPMOCyTzmn/RGka26cHPHG7T8QDHA
+        KbxOrsSb/Ozzr3gYP4iwfJBZTA==
+X-Google-Smtp-Source: ABdhPJwI3INalSk/5D1+Nz2RIt7IqV/JfVEmFAdW+NvqkU08BDtWe79kNgj0WIjvOe3XIFipym9Zjg==
+X-Received: by 2002:aa7:d413:: with SMTP id z19mr16987380edq.37.1619687030544;
+        Thu, 29 Apr 2021 02:03:50 -0700 (PDT)
+Received: from localhost.localdomain (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.googlemail.com with ESMTPSA id j4sm1441152ejk.37.2021.04.29.02.03.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 02:03:49 -0700 (PDT)
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] clk: meson: g12a: fix gp0 and hifi ranges
+Date:   Thu, 29 Apr 2021 11:03:25 +0200
+Message-Id: <20210429090325.60970-1-jbrunet@baylibre.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, den 28.04.2021, 14:21 +0200 schrieb Rafael J. Wysocki:
+While some SoC samples are able to lock with a PLL factor of 55, others
+samples can't. ATM, a minimum of 60 appears to work on all the samples
+I have tried.
 
-> In principle, in the wake of Thunderbolt every PCI driver handling
-> PCIe devices needs to be able to deal with a device that's gone away
-> without notice, because in principle any PCIe device can be included
-> into a Thunderbolt docking station which may go away as a whole
-> without notice.
+Even with 60, it sometimes takes a long time for the PLL to eventually
+lock. The documentation says that the minimum rate of these PLLs DCO
+should be 3GHz, a factor of 125. Let's use that to be on the safe side.
 
-Yes, but we are dealing with what we export to user space, don't we?
+With factor range changed, the PLL seems to lock quickly (enough) so far.
+It is still unclear if the range was the only reason for the delay.
 
-	Regards
-		Oliver
+Fixes: 085a4ea93d54 ("clk: meson: g12a: add peripheral clock controller")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
+ drivers/clk/meson/g12a.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
+diff --git a/drivers/clk/meson/g12a.c b/drivers/clk/meson/g12a.c
+index b080359b4645..a805bac93c11 100644
+--- a/drivers/clk/meson/g12a.c
++++ b/drivers/clk/meson/g12a.c
+@@ -1603,7 +1603,7 @@ static struct clk_regmap g12b_cpub_clk_trace = {
+ };
+ 
+ static const struct pll_mult_range g12a_gp0_pll_mult_range = {
+-	.min = 55,
++	.min = 125,
+ 	.max = 255,
+ };
+ 
+-- 
+2.31.1
 
