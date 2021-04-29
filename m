@@ -2,92 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136AF36E727
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 10:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A6A36E72A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 10:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233271AbhD2Ij2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 04:39:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47382 "EHLO
+        id S233626AbhD2IkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 04:40:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231701AbhD2Ij0 (ORCPT
+        with ESMTP id S230071AbhD2IkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 04:39:26 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DAD0C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 01:38:39 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id g14so17868841edy.6
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 01:38:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c4WPoZQIZ1kvkVufh+qEP9zP3pw5rW8jLhJq9sIj904=;
-        b=IgozPNfcNZh3SwfuiOVHikpsuKvtyq7T9Za5Oh1Jszmvf4rzk1b73g0p1DgzEY09Nv
-         mvt+HK76Hu85mdMLosxGGlK56/jynJd45gUlQmCdHXzKqe+WW9VpIlXezo1hRimAWler
-         oTCZfhu0CWFOWi0VNIAtBVHaq/JhfNrwJb8Ejqh/vQJvnpr2AI/6aphYa0fO8PHXfLUa
-         R9xydeBTmrwJb8pDMah7fXzrSpA789fMei0X5en2SGXgqTsu+xpeLCqJ6BjeCkkvLj3r
-         l/7Wa8iLepHsi7PVNJopsuFldMBfBBx2GXg0EpIHVmuqx6P06UYeo9KsrW8RBHV4tp5n
-         4d1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c4WPoZQIZ1kvkVufh+qEP9zP3pw5rW8jLhJq9sIj904=;
-        b=oocHEuFRBy2BHPsxLT60qr1UyAfdxzB95DCb/KTGdk3J5wB6/9rS3e0aElQwLpfek5
-         4k5pnmDw4gFwzq3RyXeSEiHLsFeWANFbScv1fI+sRE0XsJtVi8lkCo1YYhmxfHMUvl1/
-         pnAXVXa6lvy8P1GuQ9bJOwmvYx+kUglygpLBlIH7EIEFs2wlWnGiWD70/aaM7Rwc9T+3
-         yg9h/q5GP94sLWYsbsG/xqCt++BAQzEChXANX6lP5IneCgR68ipsf/lC934+LDoAwAv5
-         BMUJDgYQqrbmUS+5h1Yel54PZxAXhv4fuP9ytD1Qg/KzNN7HpdnyraG+NXFDvIWWXp6R
-         /t9w==
-X-Gm-Message-State: AOAM533PiHVX5z2tErBRaNG68KBIpe5BLi/R5lzCRKwR1pGB4LpcTiJE
-        pxS4OVVnDP3qrSnx5PVjNRpTZQ==
-X-Google-Smtp-Source: ABdhPJw/uG7z0S3jYVdM8GLT8Zryvd2mD2Bcig9/CCVXyJhaEGwQUisy9MFDRZf0bsFixgvhhRhZiQ==
-X-Received: by 2002:aa7:cc98:: with SMTP id p24mr16596562edt.187.1619685517668;
-        Thu, 29 Apr 2021 01:38:37 -0700 (PDT)
-Received: from localhost.localdomain (82-65-169-74.subs.proxad.net. [82.65.169.74])
-        by smtp.googlemail.com with ESMTPSA id n10sm1387941ejg.124.2021.04.29.01.38.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 01:38:37 -0700 (PDT)
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Kevin Hilman <khilman@baylibre.com>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH RESEND] arm64: meson: select COMMON_CLK
-Date:   Thu, 29 Apr 2021 10:38:23 +0200
-Message-Id: <20210429083823.59546-1-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 29 Apr 2021 04:40:13 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF67C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 01:39:24 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[127.0.0.1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1lc2Ca-0007uh-7v; Thu, 29 Apr 2021 10:39:16 +0200
+Subject: Re: [PATCH 15/16] soc: imx: gpcv2: support reset defer probe
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de
+Cc:     marex@denx.de, devicetree@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>, kernel@pengutronix.de,
+        abel.vesa@nxp.com, andrew.smirnov@gmail.com, aford173@gmail.com,
+        agx@sigxcpu.org, linux-kernel@vger.kernel.org, krzk@kernel.org,
+        frieder.schrempf@kontron.de, ping.bai@nxp.com, linux-imx@nxp.com,
+        p.zabel@pengutronix.de, festevam@gmail.com,
+        linux-arm-kernel@lists.infradead.org, l.stach@pengutronix.de
+References: <20210429073050.21039-1-peng.fan@oss.nxp.com>
+ <20210429073050.21039-16-peng.fan@oss.nxp.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <bc5793e4-5d43-1ca9-7a12-9b58806c1856@pengutronix.de>
+Date:   Thu, 29 Apr 2021 10:39:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210429073050.21039-16-peng.fan@oss.nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fix the recent removal of clock drivers selection.
-While it is not necessary to select the clock drivers themselves, we need
-to select a proper implementation of the clock API, which for the meson, is
-CCF
+Hi,
 
-Fixes: ba66a25536dd ("arm64: meson: ship only the necessary clock controllers")
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- arch/arm64/Kconfig.platforms | 1 +
- 1 file changed, 1 insertion(+)
+On 29.04.21 09:30, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> When gpcv2 probe, the reset controller might not be ready, so we need
+> defer probe
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/soc/imx/gpcv2.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soc/imx/gpcv2.c b/drivers/soc/imx/gpcv2.c
+> index 072f519462a5..49dd137f6b94 100644
+> --- a/drivers/soc/imx/gpcv2.c
+> +++ b/drivers/soc/imx/gpcv2.c
+> @@ -784,9 +784,12 @@ static int imx_pgc_domain_probe(struct platform_device *pdev)
+>  				     "Failed to get domain's clocks\n");
+>  
+>  	domain->reset = devm_reset_control_array_get_optional_exclusive(domain->dev);
+> -	if (IS_ERR(domain->reset))
+> +	if (IS_ERR(domain->reset)) {
+> +		if (PTR_ERR(domain->reset) == -EPROBE_DEFER)
+> +			return -EPROBE_DEFER;
+>  		return dev_err_probe(domain->dev, PTR_ERR(domain->reset),
+>  				     "Failed to get domain's resets\n");
 
-diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-index cdfd5fed457f..a3fdffcd1ce8 100644
---- a/arch/arm64/Kconfig.platforms
-+++ b/arch/arm64/Kconfig.platforms
-@@ -168,6 +168,7 @@ config ARCH_MEDIATEK
- 
- config ARCH_MESON
- 	bool "Amlogic Platforms"
-+	select COMMON_CLK
- 	select MESON_IRQ_GPIO
- 	help
- 	  This enables support for the arm64 based Amlogic SoCs
+dev_err_probe already propagates the error code in its second argument.
+Seems to me this patch's only effect is to disable deferred probe reason tracking?
+
+> +	}
+>  
+>  	pm_runtime_enable(domain->dev);
+>  
+> 
+
 -- 
-2.31.1
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
