@@ -2,78 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B2C36E508
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 08:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 523DE36E50A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 08:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238794AbhD2Gr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 02:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbhD2Gr1 (ORCPT
+        id S238958AbhD2GsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 02:48:23 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18512 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229814AbhD2GsV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 02:47:27 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E0FC06138B
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 23:46:41 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id h15so13335744wre.11
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 23:46:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=IV+kt1OmYS8Wh4LgfyrWEcjxrFRQO5oQ7Ew+3zidxDc=;
-        b=es+83lp3/LR6GR2T2eLYDRVeF4oDs6iSKJLxJtY2sxDb30eUXhyJRQqFX8+YOg8DDS
-         dYsjwilyCd2Ntj+qA73QUQGeJ27C7ootXjWqgKRtYZIhcwgHL15AoWXoQ/QBTlkiScZ6
-         7w/rBDBMD9tKGWXncVqHjAgzQnLUXI3UlkG5QAB6ZXpomYhYLyR0AiqhtPfEvR3YvSsu
-         O/4MV2XJIbrGDTsVaiqIb6TUHD2pAeWRqzO4vMyQ0KYOA6gdn4t9GxponM1bNrEzZU2Z
-         sBBG9SyDQYgUhR7jmxB7Vy3MXgYqAoA/3kD5DBu92kZDUAXvKtIA/AkHpojY2E8/j5NS
-         uP+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=IV+kt1OmYS8Wh4LgfyrWEcjxrFRQO5oQ7Ew+3zidxDc=;
-        b=MmYIAj26Q5nl8rJ0DQW1FzDzToX+tbV5fub2XWq1qPuzWHJIerXqrZrOv3DPCGF5Qh
-         275oUQUWMY9+HRLREmVp8dTXAN4TKuM+s5cnGM8ZMxK++1jnAdIJd50tp/3hx1JmA/SY
-         xSuIGY+GVUdIO1NCKLaUhEMtd5kBbeGyp/v9NsU5l+q6h7XxBrIfKIlIsq2i4k3uIYK8
-         NhkZN5vqnwkAg5C6M94LtfocUfqTD1dhw4jbcJwKAo/0PgZZ6QzL0jgUww4M2z7Odwm8
-         swRCcYb+1GhF4fI1ZmIX8wJdx1LiWYGYMRtdlf3DSkv3a7v1WTDnaUMJp3dNXgsuOXxh
-         SBfw==
-X-Gm-Message-State: AOAM533pyBwBOUwMZZ8MSjivaz53Ap5vCpWNJN3Q96Rx1vCK3roe244S
-        bejOxePDh722+J4NykXTI5o6v2+ZJS0aNw==
-X-Google-Smtp-Source: ABdhPJzqt1Y/HsKtza3a0dJu5+8QS6g3WtmcFa6cE+FWtSX33js3yaynm/w1rKAf4hlJsBIvfXnEbw==
-X-Received: by 2002:a5d:674c:: with SMTP id l12mr8332988wrw.357.1619678799760;
-        Wed, 28 Apr 2021 23:46:39 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f38:4600:cd3e:54f2:98f5:2e97? (p200300ea8f384600cd3e54f298f52e97.dip0.t-ipconnect.de. [2003:ea:8f38:4600:cd3e:54f2:98f5:2e97])
-        by smtp.googlemail.com with ESMTPSA id s6sm10725545wms.0.2021.04.28.23.46.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Apr 2021 23:46:39 -0700 (PDT)
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Subject: wait_for_initramfs warning from kernel_init_freeable()
-Message-ID: <c197724b-3d16-45bd-d71b-0a016196ca40@gmail.com>
-Date:   Thu, 29 Apr 2021 08:46:33 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Thu, 29 Apr 2021 02:48:21 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13T6XGnW080735;
+        Thu, 29 Apr 2021 02:47:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=vM5+vU/Z6Lm6XndWosoUTktdcsBjZ50Ncx13JytSvQg=;
+ b=VuVrqF+ZOrsBfoXBuIk7fe2kfOh2er+uRCuUBxCUKj/hOMhnzIq39zNRKDFWCuY4e5gJ
+ 6eTCOAKOEGBCcYGVuzo9CTnutgeCFE5YgywjzPn5OADiK6NHF4mHzlNnQoWLX+xoz7i0
+ CMMgut5Zf9MYvW6U3SSgCma11bekBnmsTiz7z2Yn2Y0f4gzueQbPsZ5e79TX/v23J1Nd
+ JhkuaSeo2mM5OcqOuQWoVPbVawr43pfDMahyg+OSYye4Or+7CsA9qhvintuzAImWI2zv
+ TO0WkXtbeS4eILaNYS8l2c/rQvai42ApMsP63joZPNigJwDttBZaYIB3mBa8+omhjDfJ nA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 387pafacyn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Apr 2021 02:47:34 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13T6XbYW084891;
+        Thu, 29 Apr 2021 02:47:34 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 387pafacxu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Apr 2021 02:47:34 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13T6cEjT025759;
+        Thu, 29 Apr 2021 06:47:32 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma02fra.de.ibm.com with ESMTP id 384ay898h4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Apr 2021 06:47:31 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13T6l3NN24248592
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 06:47:03 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1708152052;
+        Thu, 29 Apr 2021 06:47:28 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.65.86])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id EA65652050;
+        Thu, 29 Apr 2021 06:47:26 +0000 (GMT)
+Subject: Re: [PATCH] arch/s390/configs: Change CONFIG_VIRTIO_CONSOLE to "m"
+To:     Thomas Huth <thuth@redhat.com>, linux-s390@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        Marc Hartmayer <mhartmay@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>, cohuck@redhat.com
+References: <20210428082442.321327-1-thuth@redhat.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <6e6a8f49-4af7-1411-0aa8-a40641812d37@de.ibm.com>
+Date:   Thu, 29 Apr 2021 08:47:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210428082442.321327-1-thuth@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 55u7eIB2L9pWBeQeuQM1mkk_0NwwuiUH
+X-Proofpoint-ORIG-GUID: YhH2_gDE6ErZXwuzpsbJqlZQ1KlyoFt9
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-29_03:2021-04-28,2021-04-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ lowpriorityscore=0 suspectscore=0 clxscore=1015 mlxscore=0 spamscore=0
+ mlxlogscore=999 impostorscore=0 adultscore=0 bulkscore=0
+ priorityscore=1501 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104060000 definitions=main-2104290050
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since 97f8172f9a98 ("init/initramfs.c: do unpacking asynchronously") I get
-the following warning early in the boot process from umh:
-"wait_for_initramfs() called before rootfs_initcalls"
-Some debugging lead me to the following call chain:
+On 28.04.21 10:24, Thomas Huth wrote:
+> In former times, the virtio-console code had to be compiled into
+> the kernel since the old guest virtio transport had some hard de-
+> pendencies. But since the old virtio transport has been removed in
+> commit 7fb2b2d51244 ("s390/virtio: remove the old KVM virtio transport"),
+> we do not have this limitation anymore.
+> Commit bb533ec8bacd ("s390/config: do not select VIRTIO_CONSOLE via
+> Kconfig") then also lifted the hard setting in the Kconfig system, so
+> we can finally switch the CONFIG_VIRTIO_CONSOLE knob to compile this
+> driver as a module now, making it more flexible for the user to only
+> load it if it is really required.
+> 
+> Signed-off-by: Thomas Huth <thuth@redhat.com>
 
-kernel_init_freeable()
--> do_basic_setup()
-   -> driver_init()
-      -> platform_bus_init()
-         -> bus_register()
-            -> kset_register()
-               -> kobject_uvent()
+applied, thanks.
+> ---
+>   arch/s390/configs/debug_defconfig | 2 +-
+>   arch/s390/configs/defconfig       | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/s390/configs/debug_defconfig b/arch/s390/configs/debug_defconfig
+> index dc0b69058ac4..04ce0edd0b31 100644
+> --- a/arch/s390/configs/debug_defconfig
+> +++ b/arch/s390/configs/debug_defconfig
+> @@ -548,7 +548,7 @@ CONFIG_INPUT_EVDEV=y
+>   # CONFIG_INPUT_MOUSE is not set
+>   # CONFIG_SERIO is not set
+>   CONFIG_LEGACY_PTY_COUNT=0
+> -CONFIG_VIRTIO_CONSOLE=y
+> +CONFIG_VIRTIO_CONSOLE=m
+>   CONFIG_HW_RANDOM_VIRTIO=m
+>   CONFIG_RAW_DRIVER=m
+>   CONFIG_HANGCHECK_TIMER=m
+> diff --git a/arch/s390/configs/defconfig b/arch/s390/configs/defconfig
+> index 320379da96d9..e448711eff8d 100644
+> --- a/arch/s390/configs/defconfig
+> +++ b/arch/s390/configs/defconfig
+> @@ -540,7 +540,7 @@ CONFIG_INPUT_EVDEV=y
+>   # CONFIG_INPUT_MOUSE is not set
+>   # CONFIG_SERIO is not set
+>   CONFIG_LEGACY_PTY_COUNT=0
+> -CONFIG_VIRTIO_CONSOLE=y
+> +CONFIG_VIRTIO_CONSOLE=m
+>   CONFIG_HW_RANDOM_VIRTIO=m
+>   CONFIG_RAW_DRIVER=m
+>   CONFIG_HANGCHECK_TIMER=m
+> 
