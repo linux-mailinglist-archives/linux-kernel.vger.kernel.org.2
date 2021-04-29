@@ -2,165 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4415136E313
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4A236E319
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235469AbhD2Bv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 21:51:26 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:43572 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbhD2BvY (ORCPT
+        id S235970AbhD2Bxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 21:53:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229888AbhD2Bxa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 21:51:24 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13T1o3Y6048008;
-        Thu, 29 Apr 2021 01:50:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=7527Ky9YLhXmwVbJhatdnIN6ck4lz56JZBmCdtNblZE=;
- b=h1/f51B4WofEloeAbwqIWhpnc8u7TkGfXcDKDpXHJYPPlFVPodzrpqe8wqFZRmgk+EAi
- 7JSy+mx5Uf45T+uNamvx2UhpjzIq2RQ86DOtEo+MB62sMKnWu1o8CZ0P/nllcwr3ZQ1k
- Rc38ssrtAlz1xmeAkWcFQntAipkufxmQ/h10Pv2pcJcGLMG4o1kUEwdwTmVc+fvW65Qx
- +vD/uTvBU8CokBLZqrzKw6vSSse+KweVFEvgxWfChlQPFhrMJOxy74s1T1/zuRTlN3E9
- jfP+hnvoTIn65A1esDucEbAAelYa5ZQ2RijrTrOwNi0NNvPvzFCLoCWmKvusmGfHWMKn tA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 385aft2rh0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 01:50:29 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13T1nq8t012550;
-        Thu, 29 Apr 2021 01:50:28 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 384b59gcde-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 01:50:28 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13T1oRcD014363;
-        Thu, 29 Apr 2021 01:50:27 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 384b59gcd6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 01:50:27 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13T1oRME001590;
-        Thu, 29 Apr 2021 01:50:27 GMT
-Received: from ban25x6uut24.us.oracle.com (/10.153.73.24)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 28 Apr 2021 18:50:27 -0700
-From:   Si-Wei Liu <si-wei.liu@oracle.com>
-To:     mst@redhat.com, jasowang@redhat.com, elic@nvidia.com
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        si-wei.liu@oracle.com
-Subject: [PATCH v3 1/1] vdpa/mlx5: fix feature negotiation across device reset
-Date:   Wed, 28 Apr 2021 21:48:54 -0400
-Message-Id: <1619660934-30910-2-git-send-email-si-wei.liu@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1619660934-30910-1-git-send-email-si-wei.liu@oracle.com>
-References: <1619660934-30910-1-git-send-email-si-wei.liu@oracle.com>
-X-Proofpoint-GUID: oh378PwpZ4wZKgXEqgz_qEwXApDWQqJY
-X-Proofpoint-ORIG-GUID: oh378PwpZ4wZKgXEqgz_qEwXApDWQqJY
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9968 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 lowpriorityscore=0
- mlxlogscore=999 malwarescore=0 phishscore=0 priorityscore=1501
- clxscore=1011 spamscore=0 bulkscore=0 suspectscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104290011
+        Wed, 28 Apr 2021 21:53:30 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 609A3C06138C
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 18:52:44 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id a22-20020a05600c2256b029014294520f18so5504943wmm.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 18:52:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Z5QgDM+I2C6Hs4bMlAREKhvOvSoohgfPlmAYHKBQSac=;
+        b=wFJzphLMhpNV3HJcNbszgJWUQQ5CB2rRQ5bjSrZdr83GkfqSRBhtz7ZMMH0hpjQkyB
+         jgaS/mCGWkAmly4Oek4eXoSPOw+p/ysz/hBNsCH3ubP9pImRHtXj8IvLQZjErsWDeh+7
+         LIztEJskO7o9E695JhLZAxhqUXTFrBAVhKn4OEBlV5suAvf9Rbr7/bTEJkns0w062zf/
+         3ocmVA3fQtfN/sZdPexq7kTwPT3ZgMM0/xvoOjI8LvYv0UCZlODD5wHewbHke8xF6IBu
+         X00WdH4KYgdR6c5SRz7nJP11d8D9BSo5PsfLm4SlZT2WbvGeh964ConPMMkuG6vhRyLF
+         RRFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Z5QgDM+I2C6Hs4bMlAREKhvOvSoohgfPlmAYHKBQSac=;
+        b=a3NlCK9gyWK7n9yBHpEBOR7BdDrrnW6+u7995qFOe9uV02XPCTW6ugcQHGUxd1MwOW
+         tSKV4kQJQ/cJ1g8djITylpuUgZFiQBqhZ54Fok6174zPXFOHFIQvkwX9xLa+OpLYj7Da
+         m1SRABvhWwCr4juTFfNQVnIlcWTTK7bRqBFeOclNdwLJLilM99CC25gc04/xZum9QpDo
+         zhOk7BaOBzungosx/jvOa8e5i2yoIWTV2yZIVin9/zSKORfwhywhis1mw8vGuT4lwKA8
+         SztFhrHJ49I9lEaJPvsJuAu3DvB1sZ21a1HgyORR06rba4KknPWRzfXm/7uEcqd/KMSb
+         C6Jg==
+X-Gm-Message-State: AOAM532ntaE/coAkUMQ+nTvWHqYRRxIzUAXej+Xif5ISV+6mAsN/ScWX
+        6bfWgGnGLfUbBhgRykSshfJR
+X-Google-Smtp-Source: ABdhPJxgLwUIMsb3SdFRZxYYgRWiO68DdgpipoFzoKf0OjSBvPyEMbT2ZgKwov6fK6KiP4ScBS+6Hg==
+X-Received: by 2002:a7b:c247:: with SMTP id b7mr7519773wmj.155.1619661162897;
+        Wed, 28 Apr 2021 18:52:42 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:209:ee88:aba3:edd5:1bd6])
+        by smtp.gmail.com with ESMTPSA id f7sm2361837wrp.48.2021.04.28.18.52.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 18:52:42 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 02:52:38 +0100
+From:   Wedson Almeida Filho <wedsonaf@google.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux <rust-for-linux@vger.kernel.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+Message-ID: <YIoRZizWTn7LrEuz@google.com>
+References: <20210414184604.23473-1-ojeda@kernel.org>
+ <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
+ <YHj02M3jMSweoP4l@google.com>
+ <CACRpkdat8bny=D2mAsUXcDQvFJ=9jSZSccMMZzH=10dHQ_bXrQ@mail.gmail.com>
+ <YIGVFCymUn+4HBIj@google.com>
+ <CACRpkdat-4BbKHMBerdxXBseMb9O3PiDRZmMLP_OWFE2ctSgEg@mail.gmail.com>
+ <YIbQ3dHOpyD/yymW@google.com>
+ <CACRpkdYM5DFLa5=t2NRnZh_TC4KXJYOuXL0oP6xcbifuNjegUg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdYM5DFLa5=t2NRnZh_TC4KXJYOuXL0oP6xcbifuNjegUg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mlx_features denotes the capability for which
-set of virtio features is supported by device. In
-principle, this field needs not be cleared during
-virtio device reset, as this capability is static
-and does not change across reset.
+On Tue, Apr 27, 2021 at 12:54:00PM +0200, Linus Walleij wrote:
+> I really like the look of this. I don't fully understand it, but what
+> is needed for driver developers to adopt rust is something like a
+> detailed walk-through of examples like this that explains the
+> syntax 100% all the way down.
 
-In fact, the current code seems to wrongly assume
-that mlx_features can be reloaded or updated on
-device reset thru the .get_features op. However,
-the userspace VMM may save a copy of previously
-advertised backend feature capability and won't
-need to get it again on reset. In that event, all
-virtio features reset to zero thus getting disabled
-upon device reset. This ends up with guest holding
-a mismatched view of available features with the
-VMM/host's. For instance, the guest may assume
-the presence of tx checksum offload feature across
-reboot, however, since the feature is left disabled
-on reset, frames with bogus partial checksum are
-transmitted on the wire.
+Do you have a suggestion for a good place to host such walk-throughs? Also, do
+you have other examples in mind that might be useful?
 
-The fix is to retain the features capability on
-reset, and get it only once from firmware on the
-vdpa_dev_add path.
+Have you had a chance to read the example I posted in Google's security blog?
+It's not particularly complex stuff but touches on some relevant concepts:
+https://security.googleblog.com/2021/04/rust-in-linux-kernel.html
 
-Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
-Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
-Acked-by: Eli Cohen <elic@nvidia.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
----
- drivers/vdpa/mlx5/net/mlx5_vnet.c | 25 +++++++++++++++----------
- 1 file changed, 15 insertions(+), 10 deletions(-)
+> This looks good, but cannot be done like this. The assembly versions
+> of writel() etc have to be used because the compiler simply will not
+> emit the right type of assembly for IO access, unless the compiler
+> (LLVM GCC) gains knowledge of what an IO address is, and so far
+> they have not.
 
-diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-index 25533db..624f521 100644
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -1492,16 +1492,8 @@ static u64 mlx_to_vritio_features(u16 dev_features)
- static u64 mlx5_vdpa_get_features(struct vdpa_device *vdev)
- {
- 	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
--	struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
--	u16 dev_features;
+That code does not preclude the use of C/assembly wrappers. One way to do it
+would be to define a trait that allows types to specify their read/write
+functions. For example:
+
+pub trait IoMemType {
+    unsafe fn write(ptr: *mut Self, value: Self);
+    unsafe fn read(ptr: *const Self) -> Self;
+}
+
+Then we restrict T in my original example to only allow types that implement
+IoMemType. And we implement it for u8/16/32/64 as wrappers to the C/assembly
+implementations.
+
+> One *could* think about putting awareness about crazy stuff like
+> that into the language but ... I think you may want to avoid it
+> and just wrap the assembly. So a bit of low-level control of the
+> behavior there.
+
+Yes, I'm happy to have C/assembly be the source of truth, called from Rust
+through wrappers.
+
+> > 2. The only unsafe part that could involve the driver for this would be the
+> > creation of IoMemBlock: my expectation is that this would be implemented by the
+> > bus driver or some library that maps the appropriate region and caps the size.
+> > That is, we can also build a safe abstraction for this.
+> 
+> I suppose this is part of the problem in a way: a language tends to be
+> imperialistic: the developers will start thinking "it would all be so much
+> easier if I just rewrote also this thing in Rust".
+
+I'm not sure I agree with this. I actually just want to hook things up to the
+existing C code and expose a Rust interface that allows developers to benefit
+from the guarantees it offers. Unnecessarily rewriting things would slow me
+down, so my incentive is to avoid rewrites.
+
+> > 7. We could potentially design a way to limit which offsets are available for a
+> > given IoMemBlock, I just haven't thought through it yet, but it would also
+> > reduce the number of mistakes a developer could make.
+> 
+> The kernel has an abstraction for memory and register accesses,
+> which is the regmap, for example MMIO regmap for simple
+> memory-mapped IO:
+> drivers/base/regmap/regmap-mmio.c
+> 
+> In a way this is memory safety implemented in C.
+
+I wasn't aware of this. I like it. Thanks for sharing.
+
+> If Rust wants to do this I would strongly recommend it to
+> try to look like regmap MMIO.
+> See for example drivers/clk/sprd/common.c:
+> 
+> static const struct regmap_config sprdclk_regmap_config = {
+>         .reg_bits       = 32,
+>         .reg_stride     = 4,
+>         .val_bits       = 32,
+>         .max_register   = 0xffff,
+>         .fast_io        = true,
+> };
+> (...)
+> regmap = devm_regmap_init_mmio(&pdev->dev, base,
+>                                                &sprdclk_regmap_config);
+> 
+> It is also possible to provide a callback function to determine
+> if addresses are readable/writeable.
+> 
+> This is really a devil-in-the-details place where Rust needs
+> to watch out to not reimplement regmap in a substandard
+> way from what is already available.
+
+At the moment we're only providing wrappers for things we need, so it is mostly
+restricted to what I needed for Binder.
+
+If someone wants to write a driver that would benefit from this, we will look
+into it and possibly wrap the C implementation.
+
+> Also in many cases developers do not use regmap MMIO
+> because it is just too much trouble. They tend to use it
+> not because "safety is nice" but because a certain register
+> region is very fractured and it is easy to do mistakes and
+> write into a read-only register by mistake. So they want
+> this, optionally, when the situation demands it.
+
+In Rust, we want all accesses to be safe (within reason), so we probably want to
+offer something like IoMemBlock for cases when regmap-mmio is too much hassle.
+
+> It looks nice but it is sadly unrealistic because we need to wrap
+> the real assembly accessors in practice (write memory barriers
+> and such) and another problem is that it shows that Rust has an
+> ambition to do a parallel implementation of regmap.
+
+There is no such ambition. The code in my previous email was written on the spot
+as a demonstration per your request.
+
+> > Would you mind sharing more about which aspect of this you feel is challenging?
+> 
+> Good point.
+> 
+> This explanation is going to take some space.
+
+Thanks, I appreciate this.
+
+> I am not able to express it in Rust at all and that is what
+> is challenging about it, the examples provided for Rust
+> are all about nice behaved computer programs like
+> cutesey fibonnacci series and such things and not really
+> complex stuff.
+
+I'm sure you're able to express functions and arguments, for example. So going
+into the details of the code would have been helpful to me.
+
+> Your binder example is however very good, the problem
+> is that it is not a textbook example so the intricacies of
+> it are not explained, top down. (I'm not blaming you for
+> this, I just say we need that kind of text to get to know
+> Rust in the details.)
+
+Do you think a write up about some of what's in there would be helpful? I was
+planning to publish some information about the code, including performance
+numbers and comparisons of past vulnerabilities once I completed the work.
+Probably not to the level of detail that you're seeking but I may look into
+having more details about the code if there is demand for it.
+
+> What we need is a good resource to learn it, that
+> skips the trivial aspects of the language and goes immediately
+> for the interesting details.
+> 
+> It's not like I didn't try.
+> I consulted the Rust book on the website of coure.
+
+Did you run into 'Rust for Embedded C Programmers' by any chance
+(https://docs.opentitan.org/doc/ug/rust_for_c/)? It's not all up to date but I
+found it useful.
+
+> The hard thing to understand in Rust is traits. I don't understand
+> traits. I have the level of "a little knowledge is dangerous" and
+> I clearly understand this: all kernel developers must have
+> a thorough and intuitive understanding of the inner transcendental
+> meaning of the concept of a TRAIT, how it was devised, how the
+> authors of the language conceptualized it, what effect it is supposed
+> to have on generated assembly.
+
+Perhaps we need a 'Rust for Linux Kernel Programmers' in a similar vain to the
+page I linked above. 
+
+> The language book per se is a bit too terse.
+> For example if I read
+> https://doc.rust-lang.org/book/appendix-02-operators.html
+> 
+> T: ?Sized : Allow generic type parameter to be a dynamically sized type
+> 
+> This is just self-referential. The description is written in a
+> strongly context-dependent language to make a pun ...
+> I think every word in that sentence except "allow"and "to be a"
+> is dependent on other Rust concepts and thus completely
+> unreadable without context.
+> 
+> Instead it is described in a later chapter:
+> https://doc.rust-lang.org/book/ch19-04-advanced-types.html
+> 
+> This is more to the point.
+> 
+> "Rust has a particular trait called the Sized trait to
+> determine whether or not a type’s size is known at compile time."
+> (...) "A trait bound on ?Sized is the opposite of a trait bound on
+> Sized: we would read this as “T may or may not be Sized.” This
+> syntax is only available for Sized, not any other traits."
+> 
+> But Jesus Christ. This makes me understand less not
+> more.
+
+I had similar frustrations when I started on the language, which wasn't that
+long ago. One thing that I found useful was to read through some of the RFCs
+related to the topic I was interested in: it was time-consuming but helped me
+understand not only what was going on but the rationale as well.
  
--	dev_features = MLX5_CAP_DEV_VDPA_EMULATION(mvdev->mdev, device_features_bits_mask);
--	ndev->mvdev.mlx_features = mlx_to_vritio_features(dev_features);
--	if (MLX5_CAP_DEV_VDPA_EMULATION(mvdev->mdev, virtio_version_1_0))
--		ndev->mvdev.mlx_features |= BIT_ULL(VIRTIO_F_VERSION_1);
--	ndev->mvdev.mlx_features |= BIT_ULL(VIRTIO_F_ACCESS_PLATFORM);
--	print_features(mvdev, ndev->mvdev.mlx_features, false);
--	return ndev->mvdev.mlx_features;
-+	return mvdev->mlx_features;
- }
- 
- static int verify_min_features(struct mlx5_vdpa_dev *mvdev, u64 features)
-@@ -1783,7 +1775,6 @@ static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
- 		teardown_driver(ndev);
- 		mlx5_vdpa_destroy_mr(&ndev->mvdev);
- 		ndev->mvdev.status = 0;
--		ndev->mvdev.mlx_features = 0;
- 		++mvdev->generation;
- 		return;
- 	}
-@@ -1902,6 +1893,19 @@ static int mlx5_get_vq_irq(struct vdpa_device *vdv, u16 idx)
- 	.free = mlx5_vdpa_free,
- };
- 
-+static void query_virtio_features(struct mlx5_vdpa_net *ndev)
-+{
-+	struct mlx5_vdpa_dev *mvdev = &ndev->mvdev;
-+	u16 dev_features;
-+
-+	dev_features = MLX5_CAP_DEV_VDPA_EMULATION(mvdev->mdev, device_features_bits_mask);
-+	mvdev->mlx_features = mlx_to_vritio_features(dev_features);
-+	if (MLX5_CAP_DEV_VDPA_EMULATION(mvdev->mdev, virtio_version_1_0))
-+		mvdev->mlx_features |= BIT_ULL(VIRTIO_F_VERSION_1);
-+	mvdev->mlx_features |= BIT_ULL(VIRTIO_F_ACCESS_PLATFORM);
-+	print_features(mvdev, mvdev->mlx_features, false);
-+}
-+
- static int query_mtu(struct mlx5_core_dev *mdev, u16 *mtu)
- {
- 	u16 hw_mtu;
-@@ -2009,6 +2013,7 @@ static int mlx5_vdpa_dev_add(struct vdpa_mgmt_dev *v_mdev, const char *name)
- 	init_mvqs(ndev);
- 	mutex_init(&ndev->reslock);
- 	config = &ndev->config;
-+	query_virtio_features(ndev);
- 	err = query_mtu(mdev, &ndev->mtu);
- 	if (err)
- 		goto err_mtu;
--- 
-1.8.3.1
+> What I find very disturbing is that the authors of the Rust
+> language did NOT write it. I think this may be the source
+> of a serious flaw. We need this information straight from
+> the horse's mouth.
 
+Perhaps you're right... I don't share this feeling though.
+
+> I would strongly advice the Rust community to twist the
+> arms of the original Rust authors to go and review and
+> edit the Rust book. Possibly rewrite parts of it. This is what
+> the world needs to get a more adaptable Rust.
+> 
+> I understand this is a thick requirement, but hey, you are
+> competing with C.
+
+I don't think of this as a competition. I'm not arguing for C to be replaced,
+only for Rust to be an option for those inclined to use it.
+
+Thanks again,
+-Wedson
