@@ -2,176 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9097A36E3E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 06:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97F936E433
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 06:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237704AbhD2Dqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 23:46:46 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:38534 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S237209AbhD2Dql (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 23:46:41 -0400
-X-UUID: 957f3940e6c14b6a925b2dc7270d90e7-20210429
-X-UUID: 957f3940e6c14b6a925b2dc7270d90e7-20210429
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <rex-bc.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 602636878; Thu, 29 Apr 2021 11:45:52 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 29 Apr 2021 11:45:51 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 29 Apr 2021 11:45:51 +0800
-From:   Rex-BC Chen <rex-bc.chen@mediatek.com>
-To:     <chunkuang.hu@kernel.org>, <matthias.bgg@gmail.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Rex-BC Chen <rex-bc.chen@mediatek.com>,
-        Jitao Shi <jitao.shi@mediatek.com>
-Subject: [v3,PATCH 3/3] drm/mediatek: dpi: add bus format negotiation
-Date:   Thu, 29 Apr 2021 11:45:48 +0800
-Message-ID: <20210429034548.28030-4-rex-bc.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210429034548.28030-1-rex-bc.chen@mediatek.com>
-References: <20210429034548.28030-1-rex-bc.chen@mediatek.com>
+        id S237773AbhD2ETB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 00:19:01 -0400
+Received: from ozlabs.org ([203.11.71.1]:35437 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236873AbhD2ETA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 00:19:00 -0400
+Received: by ozlabs.org (Postfix, from userid 1007)
+        id 4FW2Kx1MK8z9sjD; Thu, 29 Apr 2021 14:18:13 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=gibson.dropbear.id.au; s=201602; t=1619669893;
+        bh=hsi/0KQt96DzQmNT580YEU9V2UkP5TGhmJvkh107yvI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FKTV6jhUCQG6QGXO0yH4rJ0e1PKhM4eKJ+VPACBqzzyMB7lNfd0pf0uJyRsuOpKkS
+         4a4aXtGWyzp1xpv7GbZy9pee3/Zw4bA7PCSLwHPsjZJ1McFkwdWmOJSIfyF2xZ3zAn
+         i8zpShOOVMxVTYpefxWG3AmPchYbPYKTcg30OJRc=
+Date:   Thu, 29 Apr 2021 13:04:05 +1000
+From:   David Gibson <david@gibson.dropbear.id.au>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <YIoiJRY3FM7xH2bH@yekko>
+References: <20210422111337.6ac3624d@redhat.com>
+ <20210422175715.GA1370958@nvidia.com>
+ <20210422133747.23322269@redhat.com>
+ <20210422200024.GC1370958@nvidia.com>
+ <20210422163808.2d173225@redhat.com>
+ <20210422233950.GD1370958@nvidia.com>
+ <YIecXkaEGNgICePO@yekko.fritz.box>
+ <20210427171212.GD1370958@nvidia.com>
+ <YIizNdbA0+LYwQbI@yekko.fritz.box>
+ <20210428145622.GU1370958@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="XZCPoS4KxluW8njQ"
+Content-Disposition: inline
+In-Reply-To: <20210428145622.GU1370958@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the atomic_get_output_bus_fmts, atomic_get_input_bus_fmts to negotiate
-the possible output and input formats for the current mode and monitor,
-and use the negotiated formats in a basic atomic_check callback.
 
-Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
-Signed-off-by: Rex-BC Chen <rex-bc.chen@mediatek.com>
----
- drivers/gpu/drm/mediatek/mtk_dpi.c | 92 ++++++++++++++++++++++++++++--
- 1 file changed, 87 insertions(+), 5 deletions(-)
+--XZCPoS4KxluW8njQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c
-index c548780dd3a5..8822d9448ae8 100644
---- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-@@ -536,6 +536,87 @@ static int mtk_dpi_set_display_mode(struct mtk_dpi *dpi,
- 	return 0;
- }
- 
-+#define MAX_OUTPUT_SEL_FORMATS	2
-+
-+static u32 *mtk_dpi_bridge_atomic_get_output_bus_fmts(struct drm_bridge *bridge,
-+					struct drm_bridge_state *bridge_state,
-+					struct drm_crtc_state *crtc_state,
-+					struct drm_connector_state *conn_state,
-+					unsigned int *num_output_fmts)
-+{
-+	u32 *output_fmts;
-+	struct mtk_dpi *dpi = bridge_to_dpi(bridge);
-+
-+	*num_output_fmts = 0;
-+
-+	output_fmts = kcalloc(MAX_OUTPUT_SEL_FORMATS, sizeof(*output_fmts),
-+			      GFP_KERNEL);
-+	if (!output_fmts)
-+		return NULL;
-+
-+	/* Default 8bit RGB fallback */
-+	if (dpi->conf->dual_edge) {
-+		output_fmts[0] =  MEDIA_BUS_FMT_RGB888_2X12_LE;
-+		output_fmts[1] =  MEDIA_BUS_FMT_RGB888_2X12_BE;
-+		*num_output_fmts = 2;
-+	} else {
-+		output_fmts[0] =  MEDIA_BUS_FMT_RGB888_1X24;
-+		*num_output_fmts = 1;
-+	}
-+
-+	return output_fmts;
-+}
-+
-+#define MAX_INPUT_SEL_FORMATS	1
-+
-+static u32 *mtk_dpi_bridge_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
-+					struct drm_bridge_state *bridge_state,
-+					struct drm_crtc_state *crtc_state,
-+					struct drm_connector_state *conn_state,
-+					u32 output_fmt,
-+					unsigned int *num_input_fmts)
-+{
-+	u32 *input_fmts;
-+
-+	*num_input_fmts = 0;
-+
-+	input_fmts = kcalloc(MAX_INPUT_SEL_FORMATS, sizeof(*input_fmts),
-+			     GFP_KERNEL);
-+	if (!input_fmts)
-+		return NULL;
-+
-+	*num_input_fmts = 1;
-+	input_fmts[0] = MEDIA_BUS_FMT_RGB888_1X24;
-+
-+	return input_fmts;
-+}
-+
-+static int mtk_dpi_bridge_atomic_check(struct drm_bridge *bridge,
-+				       struct drm_bridge_state *bridge_state,
-+				       struct drm_crtc_state *crtc_state,
-+				       struct drm_connector_state *conn_state)
-+{
-+	struct mtk_dpi *dpi = bridge->driver_private;
-+	unsigned int out_bus_format;
-+
-+	out_bus_format = bridge_state->output_bus_cfg.format;
-+
-+	dev_dbg(dpi->dev, "input format 0x%04x, output format 0x%04x\n",
-+		bridge_state->input_bus_cfg.format,
-+		bridge_state->output_bus_cfg.format);
-+
-+	dpi->ddr_edge_sel = (out_bus_format == MEDIA_BUS_FMT_RGB888_2X12_LE) ?
-+				true : false;
-+
-+	dpi->bit_num = MTK_DPI_OUT_BIT_NUM_8BITS;
-+	dpi->channel_swap = MTK_DPI_OUT_CHANNEL_SWAP_RGB;
-+	dpi->yc_map = MTK_DPI_OUT_YC_MAP_RGB;
-+	dpi->color_format = MTK_DPI_COLOR_FORMAT_RGB;
-+
-+	return 0;
-+}
-+
- static int mtk_dpi_bridge_attach(struct drm_bridge *bridge,
- 				 enum drm_bridge_attach_flags flags)
- {
-@@ -574,6 +655,12 @@ static const struct drm_bridge_funcs mtk_dpi_bridge_funcs = {
- 	.mode_set = mtk_dpi_bridge_mode_set,
- 	.disable = mtk_dpi_bridge_disable,
- 	.enable = mtk_dpi_bridge_enable,
-+	.atomic_check = mtk_dpi_bridge_atomic_check,
-+	.atomic_get_output_bus_fmts = mtk_dpi_bridge_atomic_get_output_bus_fmts,
-+	.atomic_get_input_bus_fmts = mtk_dpi_bridge_atomic_get_input_bus_fmts,
-+	.atomic_duplicate_state = drm_atomic_helper_bridge_duplicate_state,
-+	.atomic_destroy_state = drm_atomic_helper_bridge_destroy_state,
-+	.atomic_reset = drm_atomic_helper_bridge_reset,
- };
- 
- void mtk_dpi_start(struct device *dev)
-@@ -620,11 +707,6 @@ static int mtk_dpi_bind(struct device *dev, struct device *master, void *data)
- 	}
- 	drm_connector_attach_encoder(dpi->connector, &dpi->encoder);
- 
--	dpi->bit_num = MTK_DPI_OUT_BIT_NUM_8BITS;
--	dpi->channel_swap = MTK_DPI_OUT_CHANNEL_SWAP_RGB;
--	dpi->yc_map = MTK_DPI_OUT_YC_MAP_RGB;
--	dpi->color_format = MTK_DPI_COLOR_FORMAT_RGB;
--
- 	return 0;
- 
- err_cleanup:
--- 
-2.18.0
+On Wed, Apr 28, 2021 at 11:56:22AM -0300, Jason Gunthorpe wrote:
+> On Wed, Apr 28, 2021 at 10:58:29AM +1000, David Gibson wrote:
+> > On Tue, Apr 27, 2021 at 02:12:12PM -0300, Jason Gunthorpe wrote:
+> > > On Tue, Apr 27, 2021 at 03:08:46PM +1000, David Gibson wrote:
+> > > > > Starting from a BDF the general pseudo code is:
+> > > > >  device_name =3D first_directory_of("/sys/bus/pci/devices/BDF/vfi=
+o/")
+> > > > >  device_fd =3D open("/dev/vfio/"+device_name)
+> > > > >  ioasidfd =3D open("/dev/ioasid")
+> > > > >  ioctl(device_fd, JOIN_IOASID_FD, ioasidfd)
+> > > >=20
+> > > > This line is the problem.
+> > > >=20
+> > > > [Historical aside: Alex's early drafts for the VFIO interface looked
+> > > > quite similar to this.  Ben Herrenschmidt and myself persuaded him =
+it
+> > > > was a bad idea, and groups were developed instead.  I still think i=
+t's
+> > > > a bad idea, and not just for POWER]
+> > >=20
+> > > Spawning the VFIO device FD from the group FD is incredibly gross from
+> > > a kernel design perspective. Since that was done the struct
+> > > vfio_device missed out on a sysfs presence and doesn't have the
+> > > typical 'struct device' member or dedicated char device you'd expect a
+> > > FD based subsystem to have.
+> > >=20
+> > > This basically traded normal usage of the driver core for something
+> > > that doesn't serve a technical usage. Given we are now nearly 10 years
+> > > later and see that real widely deployed applications are not doing
+> > > anything special with the group FD it makes me question the wisdom of
+> > > this choice.
+> >=20
+> > I'm really not sure what "anything special" would constitute here.
+>=20
+> Well, really anything actually. All I see in, say, dpdk, is open the
+> group fd, get a device fd, do the container dance and never touch the
+> group fd again or care about groups in any way. It seems typical of
+> this class of application.
 
+Well, sure, the only operation you do on the group itself is attach it
+to the container (and then every container operation can be thought of
+as applying to all its attached groups).  But that attach operation
+really is fundamentally about the group.  It always, unavoidably,
+fundamentally affects every device in the group - including devices
+you may not typically think about, like bridges and switches.
+
+That is *not* true of the other device operations, like poking IO.
+
+> If dpdk is exposing other devices to a risk it certainly hasn't done
+> anything to make that obvious.
+
+And in practice I suspect it will just break if you give it a >1
+device group.
+
+> > > Okay, that is fair, but let's solve that problem directly. For
+> > > instance netlink has been going in the direction of adding a "extack"
+> > > from the kernel which is a descriptive error string. If the failing
+> > > ioctl returned the string:
+> > >=20
+> > >   "cannot join this device to the IOASID because device XXX in the
+> > >    same group #10 is in use"
+> >=20
+> > Um.. is there a sane way to return strings from an ioctl()?
+>=20
+> Yes, it can be done, a string buffer pointer and length in the input
+> for instance.
+
+I suppose.  Rare enough that I expect everyone will ignore it, alas :/.
+
+> > Getting the device fds from the group fd kind of follows, because it's
+> > unsafe to do basically anything on the device unless you already
+> > control the group (which in this case means attaching it to a
+> > container/ioasid).  I'm entirely open to ways of doing that that are
+> > less inelegant from a sysfs integration point of view, but the point
+> > is you must manage the group before you can do anything at all with
+> > individual devices.
+>=20
+> I think most likely VFIO is going to be the only thing to manage a
+> multi-device group.
+
+You don't get to choose that.  You could explicitly limit other things
+to only one-device groups, but that would be an explicit limitation.
+Essentially any device can end up in a multi-device group, if you put
+it behind a PCIe to PCI bridge, or a PCIe switch which doesn't support
+access controls.
+
+The groups are still there, whether or not other things want to deal
+with them.
+
+> I see things like VDPA being primarily about PASID, and an IOASID that
+> is matched to a PASID is inherently a single device IOMMU group.
+
+I don't know enough about PASID to make sense of that.
+
+> > I don't see why.  I mean, sure, you don't want explicitly the *vfio*
+> > group as such.  But IOMMU group is already a cross-subsystem concept
+> > and you can explicitly expose that in a different way.
+>=20
+> Yes, and no, the kernel drivers in something like VDPA have decided
+> what device and group they are in before we get to IOASID. It is
+> illogical to try to retro-actively bolt in a group concept to their
+> APIs.
+
+Again, I don't know enough about VDPA to make sense of that.  Are we
+essentially talking non-PCI virtual devices here?  In which case you
+could define the VDPA "bus" to always have one-device groups.
+
+> > Again, I realy think this is necessary complexity.  You're right that
+> > far too little of the userspace properly understands group
+> > restrictions.. but these come from real hardware limitations, and I
+> > don't feel like making it *less* obvious in the interface is going to
+> > help that.
+>=20
+> The appeal of making it less obvious is we can have a single
+> simplified API flow so that an application that doesn't understand or
+> care about groups can have uniformity.
+
+I don't think simplified-but-wrong is a good goal.  The thing about
+groups is that if they're there, you can't just "not care" about them,
+they affect you whether you like it or not.
+
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--XZCPoS4KxluW8njQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmCKIiMACgkQbDjKyiDZ
+s5Ko9RAAruwUcNc8D5emb4+A75xQ5FhpAN1TX0gJbsRkNbWI5YyofP4isXd7e5vJ
+m+5diAhMg7KO37NKLSM5UW4wUotGlmqoDUHbUzWAqTPWsoDFcxUyNnmRJs8VQf5N
+UScJmiRZBuh3x/6WB2YpKxY0qGf8FD0yWLDjR8QFKcJPeQyvSkmo7qvVjflt4Y9T
+buzgdN+mZ5l3GasBfx3w6HE8s9OlIfD2D5vv1uosc8q+eJcq3axUk83hCqqIQteA
+xaNkfFXhuc3DRSTKkAL+B/snZWiG3O9AGOlDM86kHOFAihbH71bIcsgnMjZRSynA
+RYed6WpcYXyjxsPxvtLwxTHN4eHS9OGqLVSWnkHS6S5CREbNokA0Uyr1tCWx+V7j
+WefMR7fVnWrN6M7ZA3RLiA8Mw5Pd1ObB3kp1FoROqrHaCQe5V3YzyjTENWawSNKx
+Dm5os40SkM/6jGXqxtVmLu8qv66RadGR7Hgn9T8YEv99afPgnG5WqoVzXpXmDSqt
+29yjzQrDIvz8LO/jDU6dcvIjv9ELV1D4A7AMmWDYrCPEmu2+T6GKSYm60G1aDuYK
+/Sd/Mg7HX8hZvTRDrt9BfAt0QC0cWsM6z598wI56cJ+XSy661uStb8wnnVGawlKJ
+9VKxystpE/ry52y2kevd0N2OWa5V1AyGVDKdi5GU2h2iVgK1tO8=
+=BkOW
+-----END PGP SIGNATURE-----
+
+--XZCPoS4KxluW8njQ--
