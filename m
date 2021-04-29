@@ -2,249 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43DB136F13E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 22:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E8336F140
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 22:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236781AbhD2UpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 16:45:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38710 "EHLO
+        id S234943AbhD2Ure (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 16:47:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233699AbhD2Uo7 (ORCPT
+        with ESMTP id S229882AbhD2Urd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 16:44:59 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1499C06138D
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 13:44:10 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id k14so18306116wrv.5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 13:44:10 -0700 (PDT)
+        Thu, 29 Apr 2021 16:47:33 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD9CC06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 13:46:46 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id c22so16528051edn.7
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 13:46:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=3FNuWJ2V7SfgCjlrVjDv7aIGD8kBMXXDl/W+oAPOJA4=;
-        b=OyuX2tpPaz5ft1BDTP29/+tNris6Wwgw6buwhXO2lpHIHsmHQrt+xYV6hrSSXWwEwt
-         MEHp5FBTaoENvty+71TT+qFnYfT3NmOTdjmIbH2PRpLpEbfIbBBo+Xn8YAFfmb+igWwW
-         1IywC4XZKP5NTRCLaOh8fcrfK0vv+qF5ETNFaNVzJZuUeuhB/PYW47MpPcUFYSvGLYhR
-         fOlIXdF6MKVyiicC+UQ5LaDARmluCcoEnOTv+tICqdj+pZb5thqlZ4/nroF08/I7Q4oW
-         qiPRC8P7mlyyHHKPEl2PCEf2RPE/4HgrHSFP+gqL+hTZWYr5CnCFo+w7uGZFxfBcc9Fp
-         xTnw==
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WgLKTfF2m6aFVph8YVoLnHUhUC3a+ICHx4fOWtLtkUY=;
+        b=AhpGWuJY5why2oF/WmjGuw+62ZG3SETxkECzhYzChL6cWPmcLWlI1Skyr/iUzPxBCt
+         DlCYYXSXAaDD2/n6HCgNrWeINejQDiANCBkjLQFlFG4TqzN4+ZARWcvTB+04eZRIYBVD
+         80iHKrJZtHO1h6I8n21Qszp7BTWLr1evfopov7HDXdES7E6ooitwxkUixhHqHxKFg0ma
+         bBP0vJaVlj7JYgIkgaFJv7wyEdR8taftme4jHBoTn2hEdwPIIl8tiPfKKDrw6ojjyzW8
+         v0aCu06tL3gt7jPcEkWFRIENSt5/O3nHToMKUHnD99FLPE0hbYS+QSiXdhYXIsbcLEu3
+         pYyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3FNuWJ2V7SfgCjlrVjDv7aIGD8kBMXXDl/W+oAPOJA4=;
-        b=seaGRbenCiQPP2T656QtNKtP7weMF5lmJ8wLC3EKwLEvGaS7zDX1mZcYA6rG6GTgHI
-         2laFlDVRX8vjwC7tCLplV4OO5rw8QTygmhniETFje8mEVKQte2r3P8Xg5eG9OReOFbJM
-         EYnxeIK5t760UsZHXCWvPLQGCTDPDV1ZTR8j1sK91t9hyiGyDNZsAXAgMepoD+YLGeGr
-         zagfw0hBTCu67DxlEF3eiwSJAftxgn7+U+/1w+ooggZQ3aqDuERYyMpSC6v6351KnzXC
-         y2k3ob5wdqT9vvGWTMz3qPLwv1VPYEL/85hGsYAg0jeIjvcGqxmFMKp/aPptNVKZdYbX
-         CMXA==
-X-Gm-Message-State: AOAM531fdItCCkStoUnvClN9T5GgL/+mCktJjtP0gFZg9tqz4x4XN6gY
-        n843qpPYWWCWGKX6B56lrviaEA==
-X-Google-Smtp-Source: ABdhPJwM/TzhB6JI4B+qHqyCFekjx9ZQ8GTcztQCOnd//DnP+WtU7WxVfF2pWrUkNS+XUGJcgSuFzg==
-X-Received: by 2002:adf:d223:: with SMTP id k3mr1807817wrh.99.1619729049177;
-        Thu, 29 Apr 2021 13:44:09 -0700 (PDT)
-Received: from macbook.lan ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id o13sm6187484wrf.91.2021.04.29.13.44.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Apr 2021 13:44:08 -0700 (PDT)
-Subject: Re: [PATCH V2] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD
- card
-To:     Doug Anderson <dianders@google.com>,
-        Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-Cc:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Sahitya Tummala <stummala@codeaurora.org>,
-        Ram Prakash Gupta <rampraka@codeaurora.org>,
-        Sayali Lokhande <sayalil@codeaurora.org>,
-        sartgarg@codeaurora.org, Rajendra Nayak <rnayak@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>, cang@codeaurora.org,
-        pragalla@codeaurora.org, nitirawa@codeaurora.org,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Evan Green <evgreen@chromium.org>,
-        Odelu Kukatla <okukatla@codeaurora.org>
-References: <1616264220-25825-1-git-send-email-sbhanu@codeaurora.org>
- <CAD=FV=WLZCSd6D5VFyD+1KBp5n1qyszER2EVaEMwYjQfPSSDnA@mail.gmail.com>
- <b77f207b-2d90-3c8b-857f-625bd3867ed1@codeaurora.org>
- <6fdf704c4716f5873d413229ca8adc57@codeaurora.org>
- <CAD=FV=Wa4fT5wZgd0==8kLy_tzTLgdZ-HwdfOEAM9pMeMjjFyg@mail.gmail.com>
- <8126e130e5c0ea1e7ea867414f0510c0@codeaurora.org>
- <CAD=FV=XavWbf_b7-=JT6V5_RNA8CjdK4oRu7H719AaPDJ5tsqQ@mail.gmail.com>
- <32096a375966e1fcc149016df012c445@codeaurora.org>
- <CAD=FV=U0zEDi1Xn3OmVFA3h3maVWS_o2FXOW9qDEzTf1Moja=A@mail.gmail.com>
- <7c6805abf9c1f590bc4d66d625152f22@codeaurora.org>
- <CAD=FV=W8z2VgbP6mepVNXJ8ZO_Enb+ftwG1HQhq8HtEyG1ppOA@mail.gmail.com>
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-Message-ID: <43fa4053-09e9-0d90-3b19-879ef94c9ec3@linaro.org>
-Date:   Thu, 29 Apr 2021 23:44:06 +0300
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WgLKTfF2m6aFVph8YVoLnHUhUC3a+ICHx4fOWtLtkUY=;
+        b=nFm8GrkoP4+voqCdYu8aN9xHX8ItYrv/gEqzWtlWeWQEQv0TCPygZc6yp4RAhKTCYa
+         TKTeiZgbBXk4f4CvAM1w0DdpvOSR2sWDzPMflxv8QBaAD7RK438fA0idxBqaEfwDOPug
+         e9ve8C81Lw9R4gQbyu4D0bDvW/ktm+yTmMmicbh7s/FfKqHcTZvqAy6DtG2v2hsuWG5e
+         mgatnyIh0F27OG31IuwAqjHkLJl+mVljpY8KFNX+WrH83yNmxwXJs8b88bIuai3bmT5O
+         fdlMIJqpf/MIuOzCwI5Oa34vAsopvbZJLU/6+VpOPrTG46wJHg/ZQS/fyd+qrsYvaxr7
+         EYuw==
+X-Gm-Message-State: AOAM5317ynvySntAqzcIXCKRgcxgdDjVpBQk5nkjE8ZRi9dx5uKagk7o
+        b5kNMt+0PJb/MaVeKYmzyYmfFfVaHCApRkqGjm4=
+X-Google-Smtp-Source: ABdhPJwlHXvuI11WdJAA7XjJIqO9h0ktT1pkTTPYMdjmtZZ8L+mVogYy1p7mq+TRRFwUzzanEYOFqQR/TrDFTsyoh0c=
+X-Received: by 2002:aa7:c957:: with SMTP id h23mr1745712edt.301.1619729202396;
+ Thu, 29 Apr 2021 13:46:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAD=FV=W8z2VgbP6mepVNXJ8ZO_Enb+ftwG1HQhq8HtEyG1ppOA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210429083823.59546-1-jbrunet@baylibre.com>
+In-Reply-To: <20210429083823.59546-1-jbrunet@baylibre.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Thu, 29 Apr 2021 22:46:31 +0200
+Message-ID: <CAFBinCBdzeApU0Ai5i91ed9Ra6CB4pThuCHHwaPbFm9FDhq=3A@mail.gmail.com>
+Subject: Re: [PATCH RESEND] arm64: meson: select COMMON_CLK
+To:     Jerome Brunet <jbrunet@baylibre.com>
+Cc:     Kevin Hilman <khilman@baylibre.com>,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.04.21 18:13, Doug Anderson wrote:
-> Hi,
-> 
-> On Wed, Apr 28, 2021 at 3:47 AM <sbhanu@codeaurora.org> wrote:
->>
->> On 2021-04-21 01:44, Doug Anderson wrote:
->>> Hi,
->>>
->>> On Tue, Apr 20, 2021 at 10:21 AM <sbhanu@codeaurora.org> wrote:
->>>>
->>>> On 2021-04-15 01:55, Doug Anderson wrote:
->>>>> Hi,
->>>>>
->>>>> On Tue, Apr 13, 2021 at 3:59 AM <sbhanu@codeaurora.org> wrote:
->>>>>>
->>>>>>>>>>> +                                       required-opps =
->>>>>>>>>>> <&rpmhpd_opp_low_svs>;
->>>>>>>>>>> +                                       opp-peak-kBps = <1200000
->>>>>>>>>>> 76000>;
->>>>>>>>>>> +                                       opp-avg-kBps = <1200000
->>>>>>>>>>> 50000>;
->>>>>>>>>> Why are the kBps numbers so vastly different than the ones on sc7180
->>>>>>>>>> for the same OPP point. That implies:
->>>>>>>>>>
->>>>>>>>>> a) sc7180 is wrong.
->>>>>>>>>>
->>>>>>>>>> b) This patch is wrong.
->>>>>>>>>>
->>>>>>>>>> c) The numbers are essentially random and don't really matter.
->>>>>>>>>>
->>>>>>>>>> Can you identify which of a), b), or c) is correct, or propose an
->>>>>>>>>> alternate explanation of the difference?
->>>>>>>>>>
->>>>>>>>
->>>>>>>> We calculated bus votes values for both sc7180 and sc7280 with ICB
->>>>>>>> tool,
->>>>>>>> above mentioned values we got for sc7280.
->>>>>>>
->>>>>>> I don't know what an ICB tool is. Please clarify.
->>>>>>>
->>>>>>> Also: just because a tool spits out numbers that doesn't mean it's
->>>>>>> correct. Presumably the tool could be wrong or incorrectly configured.
->>>>>>> We need to understand why these numbers are different.
->>>>>>>
->>>>>> we checked with ICB tool team on this they conformed as Rennell &
->>>>>> Kodiak
->>>>>> are different chipsets,
->>>>>> we might see delta in ib/ab values due to delta in scaling factors.
->>>>>
->>>>> ...but these numbers are in kbps, aren't they? As I understand it
->>>>> these aren't supposed to be random numbers spit out by a tool but are
->>>>> supposed to be understandable by how much bandwidth an IP block (like
->>>>> MMC) needs from the busses it's connected to. Since the MMC IP block
->>>>> on sc7180 and sc7280 is roughly the same there shouldn't be a big
->>>>> difference in numbers.
->>>>>
->>>>> Something smells wrong.
->>>>>
->>>>> Adding a few people who understand interconnects better than I do,
->>>>> though.
->>>>>
->>>>
->>>> ICB team has re-checked the Rennell ICB tool and they confirmed that
->>>> some configs were wrong in Rennell ICB tool and they corrected it.With
->>>> the new updated Rennell ICB tool below are the values :
->>>>
->>>>
->>>> Rennell LC:(Sc7180)
->>>>
->>>> opp-384000000 {
->>>>                opp-hz = /bits/ 64 <384000000>;
->>>>                required-opps = <&rpmhpd_opp_nom>;
->>>>                opp-peak-kBps = <5400000 490000>;
->>>>                opp-avg-kBps = <6600000 300000>;
->>>> };
->>>>
->>>>
->>>> And now, these values are near to Kodaik LC values:
->>>>
->>>> Kodaik LC:(SC7280)
->>>>
->>>> opp-384000000 {
->>>>              opp-hz = /bits/ 64 <384000000>;
->>>>              required-opps = <&rpmhpd_opp_nom>;
->>>>              opp-peak-kBps = <5400000 399000>;
->>>>              opp-avg-kBps = <6000000 300000>;
->>>> };
->>>
->>> This still isn't making sense to me.
->>>
->>> * sc7180 and sc7280 are running at the same speed. I'm glad the
->>> numbers are closer now, but I would have thought they'd be exactly the
->>> same.
->>>
->>> * Aren't these supposed to be sensible? This is eMMC that does max
->>> transfer rates of 400 megabytes / second to the external device. You
->>> have bandwidths listed here of 5,400,000 kBps = 5,400,000 kilobytes /
->>> second = 5400 megabytes / second. I can imagine there being some
->>> overhead where an internal bus might need to be faster but that seems
->>> excessive. This is 13.5x!
->>>
->>
->> These numbers are not related to SDCC bandwidth, these are the values
->> needed for the NOC's to run in nominal voltage corners (internal to
->> hardware) and
->> thus it helps SDCC to run in nominal to get required through put
->> (384MBps).So above calculation mentioned by you is not applicable here.
-> 
-> OK. I guess if everyone else understands this and it's just me that
-> doesn't then I won't stand in the way. In general, though, the device
-> tree is supposed to be describing the hardware in a way that makes
-> sense on its own. It's not a place to just dump in magic numbers.
-> These numbers must be somehow related to the transfer rate of the SD
-> card since otherwise they wouldn't scale up with faster card clocks.
-> Given that these numbers are expressed in "kBps" (since you're storing
-> them in a property that has "kBps" in the name), I would expect that
-> these numbers are expressing some type of bandwidth. I still haven't
-> really understood why you have to scale some bandwidth at over 10x the
-> card clock speed.
-> 
-> Said another way: you're saying that you need these numbers because
-> they make a whole bunch of math work out. I'm saying that these aren't
-> just supposed to be magic numbers. They're supposed to make sense on
-> their own and you should be able to describe to me how you arrived at
-> these numbers in a way that I could do the math on my own. Saying "we
-> plugged this into some program and it spit out these numbers" isn't
-> good enough.
+On Thu, Apr 29, 2021 at 10:39 AM Jerome Brunet <jbrunet@baylibre.com> wrote:
+>
+> This fix the recent removal of clock drivers selection.
+> While it is not necessary to select the clock drivers themselves, we need
+> to select a proper implementation of the clock API, which for the meson, is
+> CCF
+>
+> Fixes: ba66a25536dd ("arm64: meson: ship only the necessary clock controllers")
+> Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-Agree.
-
->>> * I can't see how it can make sense that "average" values are higher
->>> than "peak" values.
->>
->>
->> Here actual peak = peak number * 2
->> actual average = average number
->>
->> and this multiplication is taken care by ICC driver, so technically
->> actual peak is still high than average.
-> 
-> Sorry, but that is really counter-intuitive. Georgi: is that how this
-> is normally expected to work?
-
-Average bandwidth being higher than peak does not make sense to me.
-The numbers in DT should reflect the real bandwidth that is being
-requested. If some links between nodes consist of multiple channels,
-or there is anything specific to the topology or the hardware platform
-(scaling factors, buswidth, etc), this should be handled in the
-interconnect provider driver. The goal is to use bandwidth values and
-not magic numbers.
-
-Thanks,
-Georgi
+note to self: ARCH_MULTIPLATFORM for the 32-bit SoCs also selects this
