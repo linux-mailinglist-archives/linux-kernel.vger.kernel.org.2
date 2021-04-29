@@ -2,143 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4145E36EA04
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F1836EA05
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235595AbhD2MIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 08:08:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37034 "EHLO
+        id S235868AbhD2MIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 08:08:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233922AbhD2MIQ (ORCPT
+        with ESMTP id S233337AbhD2MIW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 08:08:16 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB467C06138B;
-        Thu, 29 Apr 2021 05:07:29 -0700 (PDT)
-Received: from [IPv6:2a02:810a:880:f54:11ef:dfbe:29a3:d3d] (unknown [IPv6:2a02:810a:880:f54:11ef:dfbe:29a3:d3d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 867411F43410;
-        Thu, 29 Apr 2021 13:07:27 +0100 (BST)
-Subject: Re: [PATCH v4 00/15] media: mtk-vcodec: support for MT8183 decoder
-To:     Alexandre Courbot <acourbot@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yunfei Dong <yunfei.dong@mediatek.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-References: <20210427111526.1772293-1-acourbot@chromium.org>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <976d420c-b4fc-bc23-c398-9b3a7ab4ffc9@collabora.com>
-Date:   Thu, 29 Apr 2021 14:07:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 29 Apr 2021 08:08:22 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8123DC06138D
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 05:07:34 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id q6so18970385edr.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 05:07:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=E/qBmN3w5ra6vzERr1tAnJ+lRCifYP6wOJclMHfbmgA=;
+        b=lga51PiHQT8AXJaHF9E+Rcm2L7rBLdrZM+LDIobxpUfFnTW7kT866PFjvaeamdIvSy
+         oBD2mFz5kUbvDDg4P1Cg8yPYTBWvdZXO8RsJJc4oXIOxDg45gU7vEzM++OrTbHtzNBQe
+         rC2SSb7iC4kcW17d3a11uA/rozz2QvFI0F4cEh0FnZAyP5OZleb0yDhj4BCF+ftMk3Z2
+         byiuS7kh6koeNRV86e+Fxnw26SAom3jTRnzAe7a1jiU//Uxf7d/j2wCkKENOuPXiF9NE
+         sQo2naXTvrxYe3K2YjKBJZmVXEjw0DZOLtjyFBFtm43mMQaypu7hcZmaQQTtedC9OPKp
+         4onw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=E/qBmN3w5ra6vzERr1tAnJ+lRCifYP6wOJclMHfbmgA=;
+        b=eCntQ8uGcwHTUXXkg7gDMSpBXK08o6uk1T2Q1O268A/pKpNKb1RsQUkyqGjfQ0U2jR
+         EgrUZ+Gh5KWeQBpFGjsDFrherPNFGk3+ufakPS7HA8we3l7JIUbtr4i3xF4Hx7qITBBh
+         ODUPTlhvDEvlE3cTniwyOLDL04JwoggkP4z1LGWLSW2wz5EKKKd0rWP3SBnKOmqL7pva
+         nsxhI5TbX3P+hIJW5cp8uMKA/hdADnfCZVMM5UnqLKmoHYY/nmoC92448MIVGCOXZfNc
+         1bFLHJDKvbiKzDUMqUj1IDAEiOw3GWXkrmthrNL/i4qW7cInW2IOGiRhdIxH9jR8o+vb
+         LI+A==
+X-Gm-Message-State: AOAM530vFtItzOzSpj09mVxW7F46OT6cpuSA+o6ZWWVh+s1QzdvLZH2u
+        SgYW9y73RqTbAS+28Gl0DOo=
+X-Google-Smtp-Source: ABdhPJw4JTYkFThXioPmy2z8+WuiLOKSdz69LpPJsZTBZxAQhtylaDEIj8mQzdkT/FBSuMgnjrWcJA==
+X-Received: by 2002:a05:6402:78b:: with SMTP id d11mr10066481edy.257.1619698053629;
+        Thu, 29 Apr 2021 05:07:33 -0700 (PDT)
+Received: from agape.jhs ([5.171.72.170])
+        by smtp.gmail.com with ESMTPSA id c25sm2184909edt.43.2021.04.29.05.07.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 05:07:33 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 14:07:30 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH 1/2] staging: rtl8723bs: hal: Remove
+ set but unused variables
+Message-ID: <20210429120729.GA1393@agape.jhs>
+References: <20210428113346.28305-1-fmdefrancesco@gmail.com>
+ <YIqECQk/1Zb4JRjb@kroah.com>
+ <20210429102201.GF1409@agape.jhs>
+ <1870536.WTzYeaBcXf@linux.local>
 MIME-Version: 1.0
-In-Reply-To: <20210427111526.1772293-1-acourbot@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1870536.WTzYeaBcXf@linux.local>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+> > > Yes, but many types of hardware _REQUIRE_ reads to do something.  So
+> > > "read that does nothing" is a requirement for some operations.
+> > > 
+> > > As an example, a write is only guaranteed to have been finished if you
+> > > do a read of the same location back from it on some hardware busses.
+> > > The bus can reorder things, but a write/read of the same location can
+> > > not be reordered.
+> > > 
+> > > Sometimes you have to do reads multiple times to get things to "stick".
+> > > 
+> > > Other times reading from a location changes a state in the hardware
+> > > (horrid but HW designers aren't the brightest at times...)
+> > > 
+> > > So you can NOT just remove reads without knowing that the hardware does
+> > > not require this.  This is an issue where GCC "warnings" mean nothing as
+> > > gcc does not actually know what hardware does, or does not, do for many
+> > > things.
+> > > 
+> > > thanks,
+> > > 
+> > > greg k-h
+> > 
+> > thank you for explanation, my hardware knowledge is poor:(
+> > Sorry for noise.
+> > 
+> > fabio
+> >
+> I suspected that removing those variables could have been a source of troubles 
+> (but I was thinking of possible side effects on internal kernel's data, not of 
+> hardware related idiosyncrasies), however I think that you did well to point 
+> it out because:
+> 
+> 1) We learned something new from Greg;
 
-On 27.04.21 13:15, Alexandre Courbot wrote:
-> This series adds support for the stateless API into mtk-vcodec, by first
-> separating the stateful ops into their own source file, and introducing
-> a new set of ops suitable for stateless decoding. As such, support for
-> stateful decoders should remain completely unaffected.
-> 
-> This series has been tested with both MT8183 and MT8173. Decoding was
-> working for both chips, and in the case of MT8173 no regression has been
-> noticed.
+yes that's been very good for me
 
-I am trying to test the decoder with this patchset using v4l2-ctl on mt8173.
+> 2) I learned that, for the purpose of finding definitions, vim's ctrl-] is not 
+> the right way to work out the problem.
 
-I am trying to decode an h264 file into V4L2_PIX_FMT_MT21C format.
-I am not able to do it. It seems that the driver expects each buffer to start
-with a nal starting code, and the v4l2-ctl command just read the files into
-buffers without any parsing.
+3) I learned that with ctrl-] in vim one could (in some misterious conditions)
+   see a function definition :-D
 
-Can you share the command and the files you used for testing?
-
-Thank you,
-Dafna
+It seems that you know more than me about vim, I make intensive use of grep
+for finding function defs and usages in code.
 
 > 
-> Patches 1-9 add MT8183 support to the decoder using the stateless API.
-> MT8183 only support H.264 acceleration.
+> If you have time, I'd appreciate some comments on the topic of line (2).
 > 
-> Patches 10-15 are follow-ups that further improve compliance for the
-> decoder and encoder, by fixing support for commands on both. Patch 11
-> also makes sure that supported H.264 profiles are exported on MT8173.
+> Thanks,
 > 
-> Changes since v3:
-> * Stop checking that controls are set for every request.
-> * Add V4L2_CID_STATELESS_H264_START_CODE control.
-> * Stop mapping OUTPUT buffers and getting the NAL type from them, use the
->    nal_ref_idc field instead.
-> * Make V4L2_CID_MIN_BUFFERS_FOR_CAPTURE control stateful-only.
-> * Set vb2_buffer's field to V4L2_FIELD_NONE in buffer validation hook.
+> Fabio
 > 
-> Changes since v2:
-> * Add follow-up patches fixing support for START/STOP commands for the
->    encoder, and stateful decoder.
 > 
-> Alexandre Courbot (8):
->    media: mtk-vcodec: vdec: handle firmware version field
->    media: mtk-vcodec: support version 2 of decoder firmware ABI
->    media: add Mediatek's MM21 format
->    dt-bindings: media: document mediatek,mt8183-vcodec-dec
->    media: mtk-vcodec: vdec: use helpers in VIDIOC_(TRY_)DECODER_CMD
->    media: mtk-vcodec: vdec: clamp OUTPUT resolution to hardware limits
->    media: mtk-vcodec: make flush buffer reusable by encoder
->    media: mtk-vcodec: venc: support START and STOP commands
 > 
-> Hirokazu Honda (1):
->    media: mtk-vcodec: vdec: Support H264 profile control
-> 
-> Hsin-Yi Wang (1):
->    media: mtk-vcodec: venc: make sure buffer exists in list before
->      removing
-> 
-> Yunfei Dong (5):
->    media: mtk-vcodec: vdec: move stateful ops into their own file
->    media: mtk-vcodec: vdec: support stateless API
->    media: mtk-vcodec: vdec: support stateless H.264 decoding
->    media: mtk-vcodec: vdec: add media device if using stateless api
->    media: mtk-vcodec: enable MT8183 decoder
-> 
->   .../bindings/media/mediatek-vcodec.txt        |   1 +
->   .../media/v4l/pixfmt-reserved.rst             |   7 +
->   drivers/media/platform/Kconfig                |   2 +
->   drivers/media/platform/mtk-vcodec/Makefile    |   3 +
->   .../platform/mtk-vcodec/mtk_vcodec_dec.c      | 818 +++---------------
->   .../platform/mtk-vcodec/mtk_vcodec_dec.h      |  28 +-
->   .../platform/mtk-vcodec/mtk_vcodec_dec_drv.c  |  66 +-
->   .../mtk-vcodec/mtk_vcodec_dec_stateful.c      | 667 ++++++++++++++
->   .../mtk-vcodec/mtk_vcodec_dec_stateless.c     | 370 ++++++++
->   .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  58 +-
->   .../platform/mtk-vcodec/mtk_vcodec_enc.c      | 135 ++-
->   .../platform/mtk-vcodec/mtk_vcodec_enc_drv.c  |   4 +
->   .../mtk-vcodec/vdec/vdec_h264_req_if.c        | 780 +++++++++++++++++
->   .../media/platform/mtk-vcodec/vdec_drv_if.c   |   3 +
->   .../media/platform/mtk-vcodec/vdec_drv_if.h   |   1 +
->   .../media/platform/mtk-vcodec/vdec_ipi_msg.h  |  23 +-
->   .../media/platform/mtk-vcodec/vdec_vpu_if.c   |  43 +-
->   .../media/platform/mtk-vcodec/vdec_vpu_if.h   |   5 +
->   drivers/media/v4l2-core/v4l2-ioctl.c          |   1 +
->   include/uapi/linux/videodev2.h                |   1 +
->   20 files changed, 2293 insertions(+), 723 deletions(-)
->   create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateful.c
->   create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateless.c
->   create mode 100644 drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
-> 
-> --
-> 2.31.1.498.g6c1eba8ee3d-goog
-> 
+
+thank you,
+
+fabio
