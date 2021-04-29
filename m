@@ -2,79 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB33C36F2CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 01:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A9536F2D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 01:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229656AbhD2XFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 19:05:01 -0400
-Received: from mga18.intel.com ([134.134.136.126]:53418 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229519AbhD2XFA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 19:05:00 -0400
-IronPort-SDR: YRtt4Ji4waPgevN+XEdxW0ncTrnQNi5s3ZQ45zk1iShK0Y3rbUMGpdSoIGnPDUK63dkoowJx8a
- F4qt3K8K2a/g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9969"; a="184615119"
-X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
-   d="scan'208";a="184615119"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 16:04:12 -0700
-IronPort-SDR: 6+FwaPgiFdigqVtSY3veAlz0a/L6X+7mTvM8vf6oRT4RNwDeO+lAraUZj3kCeuhQYs8D+PBo/e
- GhmaUBR1K+6A==
-X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
-   d="scan'208";a="466541563"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 16:04:12 -0700
-Date:   Thu, 29 Apr 2021 16:04:11 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     paulmck@kernel.org, Feng Tang <feng.tang@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel-team@fb.com, neeraju@codeaurora.org,
-        zhengjun.xing@intel.com, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [clocksource]  8c30ace35d:
- WARNING:at_kernel/time/clocksource.c:#clocksource_watchdog
-Message-ID: <20210429230411.GK4032392@tassilo.jf.intel.com>
-References: <87y2d3mo2q.ffs@nanos.tec.linutronix.de>
- <87a6pimt1f.ffs@nanos.tec.linutronix.de>
- <20210428183118.GR975577@paulmck-ThinkPad-P17-Gen-1>
- <878s517axu.ffs@nanos.tec.linutronix.de>
- <20210429142641.GU975577@paulmck-ThinkPad-P17-Gen-1>
- <87lf91f177.ffs@nanos.tec.linutronix.de>
+        id S229713AbhD2XIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 19:08:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229519AbhD2XIo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 19:08:44 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77963C06138C
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 16:07:56 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id c15so7756081ilj.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 16:07:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fatalsyntax-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PyGv+yp8//v/HbpkhYW49V4szC/UoJYYhYRBhyxZAOM=;
+        b=YcYmtc/1yJdq417y4j0Vknz8h6kXS1rgZMJQcb7DFDfL0TAw3rm5Vva3gUGco94BeZ
+         FmqoYsls6tk42b4VyILHI0FHIPxIXGkRxEwqDakqWeHtao0VztTQmjJRZXXAJzN11Tc7
+         sGcR0G2FMT7kfPADwHTwcbtD4pIXboX1ZD9iRb8Xf+YBPaDrNA75teRzk66+p78klRwe
+         033H3hgPDo9wyoH31LzDIC8y5GuG3rE6lqTPdaZybX28mif6crr7Fts+L3RSInxrQOme
+         HPHGGWPppw57rXUShRNQ+bnbxICXAzkeew2TNzQ1VT3yiAD7v1dAtcNuWGEVXyiLQfXK
+         C/9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PyGv+yp8//v/HbpkhYW49V4szC/UoJYYhYRBhyxZAOM=;
+        b=B1ewx5XLaC78SyYyiiOhFcdbR1wk+dnt22sta5NVTnBD90p0G727ux4/HSID4dBWVB
+         FxRlTjaIEMyl71HXZNTnFAMkQrrGnNH+x4s5hAJq4bIH7fEVBXLe1jj5OGAruh6DIDyD
+         9gEzYL0QXRgITZ3/gqYLukdpAd08ICOH+mySGu4uDobTuP6uGPcsts9N/Psp37QO9/1R
+         TVSlqa0W8VQupfxN7n8U+FZkTnb1BaVUfGcFeD0eEfnKxLEE86S5zNAJny1V3imE0aqn
+         sCd5UBa6CjcLBP6NEMkQAgY2i32jUMsLVYFeY5iEiQmZurIEezfOEKzNrZt2wuEBzAWK
+         YwGw==
+X-Gm-Message-State: AOAM532qX5zbAqc3NIQtN6K1KVF0EEpYjWKN1aU6bVnZZYIo4iqY6yxu
+        sZTZLbk1KxrP8nhUjqx9jSJp+w==
+X-Google-Smtp-Source: ABdhPJwmWt4/XFHJ73YQHH6fUR+TGUzu+8184rhiHWLR5FCNhGUdmK5LxliPxnlE5vPkN6Q9GwXBzA==
+X-Received: by 2002:a05:6e02:13d0:: with SMTP id v16mr1766583ilj.8.1619737675830;
+        Thu, 29 Apr 2021 16:07:55 -0700 (PDT)
+Received: from nagato.condo.fsyn.dev (2603-6000-ca08-f310-6401-a7ff-fe3c-3150.res6.spectrum.com. [2603:6000:ca08:f310:6401:a7ff:fe3c:3150])
+        by smtp.gmail.com with ESMTPSA id e3sm577358iov.55.2021.04.29.16.07.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 16:07:55 -0700 (PDT)
+From:   Robert Straw <drbawb@fatalsyntax.com>
+To:     bhelgaas@google.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Robert Straw <drbawb@fatalsyntax.com>
+Subject: [PATCH] pci: add NVMe FLR quirk to the SM951 SSD
+Date:   Thu, 29 Apr 2021 18:07:30 -0500
+Message-Id: <20210429230730.201266-1-drbawb@fatalsyntax.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87lf91f177.ffs@nanos.tec.linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > The idea is to leave the watchdog code in kernel/time/clocksource.c,
-> > but to move the fault injection into kernel/time/clocksourcefault.c or
-> > some such.  In this new file, new clocksource structures are created that
-> > use some existing timebase/clocksource under the covers.  These then
-> > inject delays based on module parameters (one senstive to CPU number,
-> > the other unconditional).  They register these clocksources using the
-> > normal interfaces, and verify that they are eventually marked unstable
-> > when the fault-injection parameters warrant it.  This is combined with
-> > the usual checking of the console log.
-> >
-> > Or am I missing your point?
-> 
-> That's what I meant.
+The SM951/PM951, when used in conjunction with the vfio-pci driver and
+passed to a KVM guest, can exhibit the fatal state addressed by the
+existing `nvme_disable_and_flr` quirk. If the guest cleanly shuts down
+the SSD, and vfio-pci attempts an FLR to the device while it is in this 
+state, the nvme driver will fail when it attempts to bind to the device 
+after the FLR due to the frozen config area, e.g:
 
-I still think all this stuff should be in the fault injection framework,
-like other fault injections, to have a consistent discoverable interface. 
+  nvme nvme2: frozen state error detected, reset controller
+  nvme nvme2: Removing after probe failure status: -12
 
-I actually checked now and the standard fault injection supports boot arguments,
-so needing it at boot time shouldn't be a barrier.
+By including this older model (Samsung 950 PRO) of the controller in the
+existing quirk: the device is able to be cleanly reset after being used
+by a KVM guest.
 
--Andi
+Signed-off-by: Robert Straw <drbawb@fatalsyntax.com>
+---
+ drivers/pci/quirks.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 653660e3b..e339ca238 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -3920,6 +3920,7 @@ static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
+ 		reset_ivb_igd },
+ 	{ PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_IVB_M2_VGA,
+ 		reset_ivb_igd },
++	{ PCI_VENDOR_ID_SAMSUNG, 0xa802, nvme_disable_and_flr },
+ 	{ PCI_VENDOR_ID_SAMSUNG, 0xa804, nvme_disable_and_flr },
+ 	{ PCI_VENDOR_ID_INTEL, 0x0953, delay_250ms_after_flr },
+ 	{ PCI_VENDOR_ID_CHELSIO, PCI_ANY_ID,
+-- 
+2.31.1
+
