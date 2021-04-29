@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAFEC36E7A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 11:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9863736E7AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 11:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234271AbhD2JLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 05:11:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54434 "EHLO
+        id S236878AbhD2JMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 05:12:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231501AbhD2JK6 (ORCPT
+        with ESMTP id S235125AbhD2JMQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 05:10:58 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72279C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:10:09 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id h4so57009438wrt.12
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:10:09 -0700 (PDT)
+        Thu, 29 Apr 2021 05:12:16 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F09C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:11:30 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id x5so15794738wrv.13
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:11:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:organization:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=jjn7ofrdjd1TnkYur2KtlSXqsC+58JHrPfTq02YwB5M=;
-        b=su4cjFGi5+kn1HkDFEXCytoV9WXF2o51AZFXnN7J60XFatV7b0G480EAPDFoa0ljdx
-         GTni/HiMLYx7p2q1HaVPXlCusW4oCh55p7p12ftlg5UYiGVDQT18qAtTvXMZ2GUzgpCD
-         mTZOJK0F5SVWygJYXiaqq08TEGzcFpfDtDKsHj3dv8GqxV/wCT0dc6GpxXzSGKR+DvI0
-         cXL3KNBzoMgVlOs7VcNqJF7xtBsxT2biXRH0fE10HAl3P0CPiAJuJbOjmAO9cTWJQOFZ
-         gK70joRmwtU5UKgtSJ9QHPJ6HVi3rdTU3iL0kFGzt20ocp2nZtTA1GfOAVRcfO9GDcBF
-         b+2Q==
+        bh=O+eVdTRCfCuqwWZ1A1ERDlsGqazfT8HhsrE+QM1WXMw=;
+        b=SGRNGmZcelKkQMPndTgMCpvKt7Mi7S5M9k1PuMo5te3UagHs3j4vJZ6rBOW4JwoGu6
+         eooXqCs8/8EXgVawS9B9jYxc8wZ7w/nppUC8CRqdEt+SBLJSOn1ab3K1FCzkK9WTUdnd
+         NpImVrCvJ0w7IXtzNEZ3Ar+SUxQQEelE6PGSIDmhiVb9p3a/f8l5AmVJhfOeL+BKmujF
+         iEfmQ3qNAeooDZl5OudcQH5CNBx90ysnin3c6acscLYCJ2H3MWjHEihxdbl9Z9E/iMw+
+         I8tdmW5LycplqOxsOkKlJhhgxOP43G5h9rbVS9gvyhy+n7g1RX67gtiJJvnBGZ7YHaCP
+         xRSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:organization
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=jjn7ofrdjd1TnkYur2KtlSXqsC+58JHrPfTq02YwB5M=;
-        b=i99h8sgOhUntNjRCE2IQRlq1G0/DMuoVqjRndrMK7A38pHnWXTp4aNnD+BxP0mHagT
-         qvH+ndeo+8jdVZ5JlvtRRj8JpcxNt9lVr1Lt7nmvG2Bz/GHtreow82+rvvb9vgsNaTFB
-         BK/aXzdNUMvxwyb5uemzus8+uKP6JdEEcYMEp7n7k6NvZ9/aLJyIzk0CPv9nUlbGrLQC
-         yvSpN6/CbaJmNRWj76wk+vJ6osDvsow8kiHH/ibLycJBZU8tVxxoANv/9LpvRMBqyE2u
-         FLA3xv0iftIpwjXx8zTp6Md+yrqS3/0GmFPbI3LnafbQPXNffZR6yevgDolsF3coVXM7
-         fjRA==
-X-Gm-Message-State: AOAM532G/FC8f1UgtdCV4ixrzDVo6PUXwJUZHgAVrRRXQ99YEdaEeVD4
-        Lt7pANeNnjn12uPVPzlDTNhUGQ==
-X-Google-Smtp-Source: ABdhPJxxe5ErG/v5x7LmLALpFiu8uZN2sGOtEQkXtdLvfxipLv3O+0/hat2t8+GWnA/F4dBqzzS54A==
-X-Received: by 2002:a5d:568f:: with SMTP id f15mr42616599wrv.346.1619687402526;
-        Thu, 29 Apr 2021 02:10:02 -0700 (PDT)
+        bh=O+eVdTRCfCuqwWZ1A1ERDlsGqazfT8HhsrE+QM1WXMw=;
+        b=lfhcouXkBTyyIlo55XKKUbJOHn6Zr76Y0ZaHDEOZ/nOCCIkW3ih1jWA7eTpYwBX0W/
+         JLA7iUUhgGXmZnXUdHUH0kU7MUR+9xrIcWb0ZYiG3lE6qp5M3BewGaVhFz9QXcPVbdIq
+         1iKtHJM9yRVbaFxNywMQae+8zF6nfZdiK4/sv8ESwGHhFUpsATTnY9kKCiHmL3AhabhZ
+         74M2UzC+mDI5eIUR2i9YeVz7cK0gPal9Vnl3Yz9D7Yx5LzyGy9qyrFcDOol2681vNLuz
+         qGlv1WmQV2e/MB6+jXY4auOfxB5v7LixCfhybrKqrvvU09N69iy0CJdAjEWO8zd6Tote
+         vD0g==
+X-Gm-Message-State: AOAM531h2oNm4rEf53d5s2gfC6ilNq4Pu93On/3UTH+AXrhEg1IOn7ni
+        thIS83hdisA39mI2V1T/YYnEYQ==
+X-Google-Smtp-Source: ABdhPJzPFcT3Hp+/PTaRjf3DjVp/UmR1/VZWw9gfXFGmCskwcG4X6iE03lY3aAvI/2Zzqj1SN2HTcA==
+X-Received: by 2002:a5d:525c:: with SMTP id k28mr25681566wrc.158.1619687488930;
+        Thu, 29 Apr 2021 02:11:28 -0700 (PDT)
 Received: from ?IPv6:2a01:e0a:90c:e290:c304:4b2b:4a79:1da9? ([2a01:e0a:90c:e290:c304:4b2b:4a79:1da9])
-        by smtp.gmail.com with ESMTPSA id a15sm4582835wrx.9.2021.04.29.02.10.01
+        by smtp.gmail.com with ESMTPSA id y14sm3678487wrs.64.2021.04.29.02.11.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Apr 2021 02:10:01 -0700 (PDT)
-Subject: Re: [PATCH] arm64: dts: meson: vim3: enable hdmi audio loopback
-To:     Jerome Brunet <jbrunet@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>
+        Thu, 29 Apr 2021 02:11:28 -0700 (PDT)
+Subject: Re: [PATCH] arm64: dts: meson: vim2: enable highspeed on wifi sdio
+To:     Art Nikpal <email2tema@gmail.com>
 Cc:     linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20210429084253.59692-1-jbrunet@baylibre.com>
+        devicetree@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>
+References: <20210429085413.60368-1-jbrunet@baylibre.com>
 From:   Neil Armstrong <narmstrong@baylibre.com>
 Organization: Baylibre
-Message-ID: <3f85bc7a-aebc-cac6-11f9-5e18528c5e7f@baylibre.com>
-Date:   Thu, 29 Apr 2021 11:10:00 +0200
+Message-ID: <b5b797bb-852c-22ce-2b40-7f6dc0b37083@baylibre.com>
+Date:   Thu, 29 Apr 2021 11:11:27 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210429084253.59692-1-jbrunet@baylibre.com>
+In-Reply-To: <20210429085413.60368-1-jbrunet@baylibre.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -71,127 +71,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/04/2021 10:42, Jerome Brunet wrote:
-> Enable audio capture frontends and a tdm decoder.
-> This makes it possible to loopback the audio played on the hdmi codec,
-> which is the only output interface at the moment.
-> 
-> Of course, one TODDR device would be enough to do that but since
-> the 3 FRDDRs are enabled on the playback side, let's do the same on the
-> capture side.
+Hi Art,
+
+So you think you can test this patch to see if it breaks SDIO ?
+
+Neil
+
+On 29/04/2021 10:54, Jerome Brunet wrote:
+> Enable highspeed mode for vim2 sdio. In theory, the vim2 SDIO bus is
+> capable of handling SDR50 mode but this needs to thoroughly tested.
 > 
 > Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 > ---
->  .../boot/dts/amlogic/meson-khadas-vim3.dtsi   | 41 +++++++++++++++++--
->  .../dts/amlogic/meson-sm1-khadas-vim3l.dts    | 13 ++++++
->  2 files changed, 50 insertions(+), 4 deletions(-)
+>  arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
-> index 66d67524b031..3cf4ecb6d52e 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
-> +++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
-> @@ -171,11 +171,16 @@ hdmi_connector_in: endpoint {
->  	sound {
->  		compatible = "amlogic,axg-sound-card";
->  		model = "KHADAS-VIM3";
-> -		audio-aux-devs = <&tdmout_a>;
-> +		audio-aux-devs = <&tdmin_a>, <&tdmout_a>;
->  		audio-routing = "TDMOUT_A IN 0", "FRDDR_A OUT 0",
->  				"TDMOUT_A IN 1", "FRDDR_B OUT 0",
->  				"TDMOUT_A IN 2", "FRDDR_C OUT 0",
-> -				"TDM_A Playback", "TDMOUT_A OUT";
-> +				"TDM_A Playback", "TDMOUT_A OUT",
-> +				"TDMIN_A IN 0", "TDM_A Capture",
-> +				"TDMIN_A IN 3", "TDM_A Loopback",
-> +				"TODDR_A IN 0", "TDMIN_A OUT",
-> +				"TODDR_B IN 0", "TDMIN_A OUT",
-> +				"TODDR_C IN 0", "TDMIN_A OUT";
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+> index 18a4b7a6c5df..217f9d6d470e 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+> +++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+> @@ -307,6 +307,7 @@ &sd_emmc_a {
+>  	#size-cells = <0>;
 >  
->  		assigned-clocks = <&clkc CLKID_MPLL2>,
->  				  <&clkc CLKID_MPLL0>,
-> @@ -198,8 +203,20 @@ dai-link-2 {
->  			sound-dai = <&frddr_c>;
->  		};
+>  	bus-width = <4>;
+> +	cap-sd-highspeed;
+>  	max-frequency = <60000000>;
 >  
-> -		/* 8ch hdmi interface */
->  		dai-link-3 {
-> +			sound-dai = <&toddr_a>;
-> +		};
-> +
-> +		dai-link-4 {
-> +			sound-dai = <&toddr_b>;
-> +		};
-> +
-> +		dai-link-5 {
-> +			sound-dai = <&toddr_c>;
-> +		};
-> +
-> +		/* 8ch hdmi interface */
-> +		dai-link-6 {
->  			sound-dai = <&tdmif_a>;
->  			dai-format = "i2s";
->  			dai-tdm-slot-tx-mask-0 = <1 1>;
-> @@ -214,7 +231,7 @@ codec {
->  		};
->  
->  		/* hdmi glue */
-> -		dai-link-4 {
-> +		dai-link-7 {
->  			sound-dai = <&tohdmitx TOHDMITX_I2S_OUT>;
->  
->  			codec {
-> @@ -454,10 +471,26 @@ &tdmif_a {
->  	status = "okay";
->  };
->  
-> +&tdmin_a {
-> +	status = "okay";
-> +};
-> +
->  &tdmout_a {
->  	status = "okay";
->  };
->  
-> +&toddr_a {
-> +	status = "okay";
-> +};
-> +
-> +&toddr_b {
-> +	status = "okay";
-> +};
-> +
-> +&toddr_c {
-> +	status = "okay";
-> +};
-> +
->  &tohdmitx {
->  	status = "okay";
->  };
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
-> index 06de0b1ce726..f2c098143594 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
-> +++ b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
-> @@ -32,6 +32,19 @@ vddcpu: regulator-vddcpu {
->  		regulator-boot-on;
->  		regulator-always-on;
->  	};
-> +
-> +	sound {
-> +		model = "G12B-KHADAS-VIM3L";
-> +		audio-routing = "TDMOUT_A IN 0", "FRDDR_A OUT 0",
-> +				"TDMOUT_A IN 1", "FRDDR_B OUT 0",
-> +				"TDMOUT_A IN 2", "FRDDR_C OUT 0",
-> +				"TDM_A Playback", "TDMOUT_A OUT",
-> +				"TDMIN_A IN 0", "TDM_A Capture",
-> +				"TDMIN_A IN 13", "TDM_A Loopback",
-> +				"TODDR_A IN 0", "TDMIN_A OUT",
-> +				"TODDR_B IN 0", "TDMIN_A OUT",
-> +				"TODDR_C IN 0", "TDMIN_A OUT";
-> +	};
->  };
->  
->  &cpu0 {
+>  	non-removable;
 > 
-
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
 
