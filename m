@@ -2,177 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C8D36E431
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 06:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADBDB36E439
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 06:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237568AbhD2ERr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 00:17:47 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:40866 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235005AbhD2ERj (ORCPT
+        id S233053AbhD2E2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 00:28:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231356AbhD2E2d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 00:17:39 -0400
-X-UUID: 69bec48eebea47df837d5970603b0866-20210429
-X-UUID: 69bec48eebea47df837d5970603b0866-20210429
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <rex-bc.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 776025292; Thu, 29 Apr 2021 12:16:49 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 29 Apr 2021 12:16:47 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 29 Apr 2021 12:16:47 +0800
-From:   Rex-BC Chen <rex-bc.chen@mediatek.com>
-To:     <chunkuang.hu@kernel.org>, <matthias.bgg@gmail.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Rex-BC Chen <rex-bc.chen@mediatek.com>,
-        Jitao Shi <jitao.shi@mediatek.com>
-Subject: [v3 RESEND,PATCH 3/3] drm/mediatek: dpi: add bus format negotiation
-Date:   Thu, 29 Apr 2021 12:16:41 +0800
-Message-ID: <20210429041641.11077-4-rex-bc.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210429041641.11077-1-rex-bc.chen@mediatek.com>
-References: <20210429041641.11077-1-rex-bc.chen@mediatek.com>
+        Thu, 29 Apr 2021 00:28:33 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87CF0C06138D
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 21:27:13 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lbyGU-0006mq-Fp; Thu, 29 Apr 2021 06:27:02 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lbyGR-0007Ca-4z; Thu, 29 Apr 2021 06:26:59 +0200
+Date:   Thu, 29 Apr 2021 06:26:59 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     devicetree@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio@vger.kernel.org,
+        Robin van der Gracht <robin@protonic.nl>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH v6 1/3] dt-bindings:iio:adc: add generic settling-time-us
+ and oversampling-ratio channel properties
+Message-ID: <20210429042659.rioipw3sqdmtmymy@pengutronix.de>
+References: <20210428073208.19570-1-o.rempel@pengutronix.de>
+ <20210428073208.19570-2-o.rempel@pengutronix.de>
+ <20210428175931.00002a7e@Huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210428175931.00002a7e@Huawei.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 06:26:38 up 147 days, 18:33, 33 users,  load average: 0.15, 0.06,
+ 0.01
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the atomic_get_output_bus_fmts, atomic_get_input_bus_fmts to negotiate
-the possible output and input formats for the current mode and monitor,
-and use the negotiated formats in a basic atomic_check callback.
+On Wed, Apr 28, 2021 at 05:59:31PM +0100, Jonathan Cameron wrote:
+> On Wed, 28 Apr 2021 09:32:06 +0200
+> Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+> 
+> > Settling time and over sampling is a typical challenge for different IIO ADC
+> > devices. So, introduce channel specific settling-time-us and oversampling-ratio
+> > properties to cover this use case.
+> > 
+> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> This and patch 2 both look good to me.  Given Rob gave a minor comment on the
+> previous version I don't feel I need him to look at this again.
+> 
+> Will pick up in a few days if no other reviews come in to require a v7.
 
-Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
-Signed-off-by: Rex-BC Chen <rex-bc.chen@mediatek.com>
----
- drivers/gpu/drm/mediatek/mtk_dpi.c | 92 ++++++++++++++++++++++++++++--
- 1 file changed, 87 insertions(+), 5 deletions(-)
+Ok, thank you!
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c
-index c548780dd3a5..8822d9448ae8 100644
---- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-@@ -536,6 +536,87 @@ static int mtk_dpi_set_display_mode(struct mtk_dpi *dpi,
- 	return 0;
- }
- 
-+#define MAX_OUTPUT_SEL_FORMATS	2
-+
-+static u32 *mtk_dpi_bridge_atomic_get_output_bus_fmts(struct drm_bridge *bridge,
-+					struct drm_bridge_state *bridge_state,
-+					struct drm_crtc_state *crtc_state,
-+					struct drm_connector_state *conn_state,
-+					unsigned int *num_output_fmts)
-+{
-+	u32 *output_fmts;
-+	struct mtk_dpi *dpi = bridge_to_dpi(bridge);
-+
-+	*num_output_fmts = 0;
-+
-+	output_fmts = kcalloc(MAX_OUTPUT_SEL_FORMATS, sizeof(*output_fmts),
-+			      GFP_KERNEL);
-+	if (!output_fmts)
-+		return NULL;
-+
-+	/* Default 8bit RGB fallback */
-+	if (dpi->conf->dual_edge) {
-+		output_fmts[0] =  MEDIA_BUS_FMT_RGB888_2X12_LE;
-+		output_fmts[1] =  MEDIA_BUS_FMT_RGB888_2X12_BE;
-+		*num_output_fmts = 2;
-+	} else {
-+		output_fmts[0] =  MEDIA_BUS_FMT_RGB888_1X24;
-+		*num_output_fmts = 1;
-+	}
-+
-+	return output_fmts;
-+}
-+
-+#define MAX_INPUT_SEL_FORMATS	1
-+
-+static u32 *mtk_dpi_bridge_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
-+					struct drm_bridge_state *bridge_state,
-+					struct drm_crtc_state *crtc_state,
-+					struct drm_connector_state *conn_state,
-+					u32 output_fmt,
-+					unsigned int *num_input_fmts)
-+{
-+	u32 *input_fmts;
-+
-+	*num_input_fmts = 0;
-+
-+	input_fmts = kcalloc(MAX_INPUT_SEL_FORMATS, sizeof(*input_fmts),
-+			     GFP_KERNEL);
-+	if (!input_fmts)
-+		return NULL;
-+
-+	*num_input_fmts = 1;
-+	input_fmts[0] = MEDIA_BUS_FMT_RGB888_1X24;
-+
-+	return input_fmts;
-+}
-+
-+static int mtk_dpi_bridge_atomic_check(struct drm_bridge *bridge,
-+				       struct drm_bridge_state *bridge_state,
-+				       struct drm_crtc_state *crtc_state,
-+				       struct drm_connector_state *conn_state)
-+{
-+	struct mtk_dpi *dpi = bridge->driver_private;
-+	unsigned int out_bus_format;
-+
-+	out_bus_format = bridge_state->output_bus_cfg.format;
-+
-+	dev_dbg(dpi->dev, "input format 0x%04x, output format 0x%04x\n",
-+		bridge_state->input_bus_cfg.format,
-+		bridge_state->output_bus_cfg.format);
-+
-+	dpi->ddr_edge_sel = (out_bus_format == MEDIA_BUS_FMT_RGB888_2X12_LE) ?
-+				true : false;
-+
-+	dpi->bit_num = MTK_DPI_OUT_BIT_NUM_8BITS;
-+	dpi->channel_swap = MTK_DPI_OUT_CHANNEL_SWAP_RGB;
-+	dpi->yc_map = MTK_DPI_OUT_YC_MAP_RGB;
-+	dpi->color_format = MTK_DPI_COLOR_FORMAT_RGB;
-+
-+	return 0;
-+}
-+
- static int mtk_dpi_bridge_attach(struct drm_bridge *bridge,
- 				 enum drm_bridge_attach_flags flags)
- {
 
-@@ -574,6 +655,12 @@ static const struct drm_bridge_funcs mtk_dpi_bridge_funcs = {
- 	.mode_set = mtk_dpi_bridge_mode_set,
- 	.disable = mtk_dpi_bridge_disable,
- 	.enable = mtk_dpi_bridge_enable,
-+	.atomic_check = mtk_dpi_bridge_atomic_check,
-+	.atomic_get_output_bus_fmts = mtk_dpi_bridge_atomic_get_output_bus_fmts,
-+	.atomic_get_input_bus_fmts = mtk_dpi_bridge_atomic_get_input_bus_fmts,
-+	.atomic_duplicate_state = drm_atomic_helper_bridge_duplicate_state,
-+	.atomic_destroy_state = drm_atomic_helper_bridge_destroy_state,
-+	.atomic_reset = drm_atomic_helper_bridge_reset,
- };
- 
- void mtk_dpi_start(struct device *dev)
-@@ -620,11 +707,6 @@ static int mtk_dpi_bind(struct device *dev, struct device *master, void *data)
- 	}
- 	drm_connector_attach_encoder(dpi->connector, &dpi->encoder);
- 
--	dpi->bit_num = MTK_DPI_OUT_BIT_NUM_8BITS;
--	dpi->channel_swap = MTK_DPI_OUT_CHANNEL_SWAP_RGB;
--	dpi->yc_map = MTK_DPI_OUT_YC_MAP_RGB;
--	dpi->color_format = MTK_DPI_COLOR_FORMAT_RGB;
--
- 	return 0;
- 
- err_cleanup:
+> Thanks,
+> 
+> Jonathan
+> 
+> > ---
+> >  Documentation/devicetree/bindings/iio/adc/adc.yaml | 12 ++++++++++++
+> >  1 file changed, 12 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/iio/adc/adc.yaml b/Documentation/devicetree/bindings/iio/adc/adc.yaml
+> > index 912a7635edc4..db348fcbb52c 100644
+> > --- a/Documentation/devicetree/bindings/iio/adc/adc.yaml
+> > +++ b/Documentation/devicetree/bindings/iio/adc/adc.yaml
+> > @@ -39,4 +39,16 @@ properties:
+> >        The first value specifies the positive input pin, the second
+> >        specifies the negative input pin.
+> >  
+> > +  settling-time-us:
+> > +    description:
+> > +      Time between enabling the channel and first stable readings.
+> > +
+> > +  oversampling-ratio:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    description:
+> > +      Oversampling is used as replacement of or addition to the low-pass filter.
+> > +      In some cases, the desired filtering characteristics are a function the
+> > +      device design and can interact with other characteristics such as
+> > +      settling time.
+> > +
+> >  additionalProperties: true
+> 
+> 
+> 
+
 -- 
-2.18.0
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
