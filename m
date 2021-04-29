@@ -2,165 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB3C36E2E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 729DC36E2EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232582AbhD2BMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 21:12:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34480 "EHLO
+        id S232636AbhD2BXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 21:23:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbhD2BMd (ORCPT
+        with ESMTP id S229794AbhD2BX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 21:12:33 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B7FBC06138C
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 18:11:47 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id y2so74283194ybq.13
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 18:11:47 -0700 (PDT)
+        Wed, 28 Apr 2021 21:23:28 -0400
+Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E133EC06138B;
+        Wed, 28 Apr 2021 18:22:42 -0700 (PDT)
+Received: by mail-vk1-xa2b.google.com with SMTP id v3so5882437vkn.7;
+        Wed, 28 Apr 2021 18:22:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=B9WmxfQPgVB/G8qqdqqrH4JxR1XC119NUyqOOtSd7t0=;
-        b=pkiPHPNLc8oPY1Rpg9s6MMH9zsVYb3Pu6hknNjJ97Hfi1mRnSBTaBnKpkK1xFjd1Qc
-         cQcOSKlv6GspGLFBVFS0a2R7wfDy66R5CFpgbbx4KptsbtihfP16CiZn9rhGgXqx5QTW
-         bT7wJSVgy86XNC/E1yQdfItBAZhtztfAwi05/r0kJhF9SMDdROLy1hNoB4qjsCCc7xWl
-         mnFO4W/wNfSaDiAaT4Hzi7/2XKbK/+nwY+9Li/v4xqODqdRq+++/zwuK2aVSJ6jeZ06F
-         W59O7/MT/99ty+gNnLuDf32EQ5etfkSEubBJ3iZEk34moqDnV4u5QwEcMfSvrieB519k
-         avQw==
+        bh=ViBgxGCT8wGE7JBD0u1eysSz+PhOzrYgLess3huZ56U=;
+        b=vh6nUW7529gpJAy6rJnyn5l8oAN1nIzkQSassiRMQIeF7JNZK10rY3ma+D4oogLfFf
+         7OAXcjtWr7gw0x/GBb+SRFuepDyElMjx3E2bwqkpJEFU0418uw21mvneNn60e3Te1X0z
+         No2PY02Wfn8qDTIp5oOprlMJiT7+rJYbJz8FpOjUU8RDil4gWiFmSBZHZyqq6+0epLwB
+         EXoK7yiH3sr46ZhaDlMCYsNK/e43/3HXkyS78M1beKb1jeH2rVwDAGDz9E89XGoj0aL3
+         g+X/OdPPu8OR7GECPBlnucmZ7cGrm51H20zagJI85LkFAXc1Q1ku42F0tqhcH4j8tBYl
+         BYhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=B9WmxfQPgVB/G8qqdqqrH4JxR1XC119NUyqOOtSd7t0=;
-        b=k1Fs+nOdeub89C2ODRoRg16LS/zgJlgmSo6ZvvlUvNk0HbxyNXnoGkA3epOLJGuxGb
-         SAP10NcUkB9rB4q6pY8KkoQKsIB2lTiu1VRWMMaxnHvLRFlBQnJuwyICmX/WvJ0GhfG9
-         gH/1O//39Z/5BeNlDXzGM2owPQjZEtcZGPn3FQYwckUtUSLoyrgXT7xb2Lkfk1wR9K1t
-         iA3HWiOdRLTex9TbiBotjNIGu7+QMQR03sY8JDwWZNbxMIFLxCSdXW+72EniA7zfzWzO
-         Db96ZT0IPP4pknKZ6m/5fMKSNv0GLdMNVRdMkcF4WEaXJTYGMFa+EvlG1ZEMgApNdk5T
-         X9ww==
-X-Gm-Message-State: AOAM532qSrngP1RQBrGnl7fWnZ12BceFNkFcjlLDYRqlttdE3g+fRoor
-        wKSFFVxuy1pgUIx4+YdwEhTpq7CuRpHEMCpxoZ24hA==
-X-Google-Smtp-Source: ABdhPJzGFBnav+DZBGGJcieg9JxgTULrcj3YfzoYD2uRXeNcTYI7rbQImezTdi5sUdA9XukgcMPYmupPisXhoBxFVf8=
-X-Received: by 2002:a25:58d5:: with SMTP id m204mr47013043ybb.32.1619658706418;
- Wed, 28 Apr 2021 18:11:46 -0700 (PDT)
+        bh=ViBgxGCT8wGE7JBD0u1eysSz+PhOzrYgLess3huZ56U=;
+        b=KyoS/muOveRPOd2DXqY3ixzp/9PZWCaAEqEY0WoyiX+4UJezITo7iiKAppKLOw8/PG
+         GER/jvSm864vXXDl33YSoVHm6ppCo/11Iv3qn3RkLERVZXekmYivnUhAfIzPL07j0f6c
+         +gEbXpBVr4ekwkr2jeBugPZrJhmSL20yOUpZcx7HM/YSM5ztqn1jlPlRE7qIcpoNWusx
+         rdVHDWbEXM6F7DNryouWyvYA3dizA7Epo/zxOE+Ev/7sbSwXDYXt6XlwVmdi4gCnbuiu
+         CC5StFfq8SxehhU6TnHQQA7CnXfbPlEno1MgahL3UVceKWvlTQaAuCRJZnhjOPWZWZM+
+         9CfQ==
+X-Gm-Message-State: AOAM530swj34UxzSTpa4b29UnPX2jjqQTL1A3bLpZBkw5VSbrrX7/vR0
+        Ki054C8ZU5++9nshjwNm0kPqgBPlwFTUVEUK+4M=
+X-Google-Smtp-Source: ABdhPJzZGFapknzKZPv3UlZvoGIZbQzR2Gyq6MTd1Tub533B/q5iV3dkRPIhqnicdI8UukonEHQHi5JIcagHmwJ0pPc=
+X-Received: by 2002:a1f:a24c:: with SMTP id l73mr30003357vke.0.1619659361614;
+ Wed, 28 Apr 2021 18:22:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210428222953.235280-1-sebastian.reichel@collabora.com> <20210428222953.235280-2-sebastian.reichel@collabora.com>
-In-Reply-To: <20210428222953.235280-2-sebastian.reichel@collabora.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 28 Apr 2021 18:11:10 -0700
-Message-ID: <CAGETcx_YoYJkOgh=kX7tZf-oAWGMmTDT+Azm1A3thWD1SRy_4A@mail.gmail.com>
-Subject: Re: [PATCHv2 1/5] rtc: m41t80: add support for fixed clock
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-rtc@vger.kernel.org,
-        linux-mtd@lists.infradead.org,
-        Collabora Kernel ML <kernel@collabora.com>
+References: <20210421065501.3134-1-jarvis.w.jiang@gmail.com> <CAMZdPi-H=mnH9SFQZ7XQ8fjb0VtYbaWKGFhoXYyurDAB+RpQ5w@mail.gmail.com>
+In-Reply-To: <CAMZdPi-H=mnH9SFQZ7XQ8fjb0VtYbaWKGFhoXYyurDAB+RpQ5w@mail.gmail.com>
+From:   Jarvis Jiang <jarvis.w.jiang@gmail.com>
+Date:   Thu, 29 Apr 2021 09:22:29 +0800
+Message-ID: <CAPncsNNQKC_o4ZeP7PcfPWK5X70b5+f3oBNFRYaWcjJj1hPjgw@mail.gmail.com>
+Subject: Re: [PATCH v1] bus: mhi: pci_generic: T99W175: update channel name
+ from AT to DUN
+To:     Loic Poulain <loic.poulain@linaro.org>
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        Hemant Kumar <hemantk@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Chi-Wei Chen50 <cchen50@lenovo.com>,
+        Mark Pearson <mpearson@lenovo.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 3:29 PM Sebastian Reichel
-<sebastian.reichel@collabora.com> wrote:
+On Wed, Apr 28, 2021 at 4:30 PM Loic Poulain <loic.poulain@linaro.org> wrote:
 >
-> Congatec's QMX6 system on module (SoM) uses a m41t62 as RTC. The
-> modules SQW clock output defaults to 32768 Hz. This behaviour is
-> used to provide the i.MX6 CKIL clock. Once the RTC driver is probed,
-> the clock is disabled and all i.MX6 functionality depending on
-> the 32 KHz clock has undefined behaviour. For example when using
-> the hardware watchdog the system will likely do arbitrary reboots.
+> On Wed, 21 Apr 2021 at 08:56, Jarvis Jiang <jarvis.w.jiang@gmail.com> wrote:
+> >
+> > According to MHI v1.1 specification, change the channel name of T99W175
+> > from "AT" to "DUN" (Dial-up networking) for both channel 32 and 33,
+> > so that the channels can be bound to the Qcom WWAN control driver, and
+> > device node such as /dev/wwan0p3AT will be generated, which is very useful
+> > for debugging modem
+> >
+> > Signed-off-by: Jarvis Jiang <jarvis.w.jiang@gmail.com>
 >
-> Referencing the m41t62 directly results in a deadlock. The kernel
-> will see, that i.MX6 system clock needs the RTC clock and do probe
-> deferral. But the i.MX6 I2C module never becomes usable without the
-> i.MX6 CKIL clock and thus the RTC's clock will not be probed. So
-> from the kernel's perspective this is a chicken-and-egg problem.
+> Ok, it seems the spec claims it's a DUN channel, but all vendors use
+> it for AT protocol, so it's fine (and correctly handled by the
+> mhi_wwan_ctrl driver).
 >
-> Technically everything is fine by not touching anything, since
-> the RTC clock correctly enables the clock on reset (i.e. on
-> battery backup power loss) and also the bootloader enables it
-> in case an something (e.g. an unpatched kernel) disabled this
-> incorrectly.
+> Could you please add a Fixes tag since it fixes your previous commit?
 >
-> A workaround for this issue is describing the square wave pin
-> as fixed-clock, which is registered early and basically how
-> this pin is used on the i.MX6.
->
-> Suggested-by: Saravana Kannan <saravanak@google.com>
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> ---
->  Documentation/devicetree/bindings/rtc/rtc-m41t80.txt |  9 +++++++++
->  drivers/rtc/rtc-m41t80.c                             | 12 ++++++++++++
->  2 files changed, 21 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/rtc/rtc-m41t80.txt b/Documentation/devicetree/bindings/rtc/rtc-m41t80.txt
-> index c746cb221210..cdd196b1e9bd 100644
-> --- a/Documentation/devicetree/bindings/rtc/rtc-m41t80.txt
-> +++ b/Documentation/devicetree/bindings/rtc/rtc-m41t80.txt
-> @@ -21,10 +21,19 @@ Optional properties:
->                        clock name
->  - wakeup-source: Enables wake up of host system on alarm
->
-> +Optional child node:
-> +- clock: Provide this if the square wave pin is used as boot-enabled fixed clock.
-> +
->  Example:
->         rtc@68 {
->                 compatible = "st,m41t80";
->                 reg = <0x68>;
->                 interrupt-parent = <&UIC0>;
->                 interrupts = <0x9 0x8>;
-> +
-> +               clock {
-> +                       compatible = "fixed-clock";
-> +                       #clock-cells = <0>;
-> +                       clock-frequency = <32768>;
-> +               };
->         };
-> diff --git a/drivers/rtc/rtc-m41t80.c b/drivers/rtc/rtc-m41t80.c
-> index 89128fc29ccc..b3ece42b6f90 100644
-> --- a/drivers/rtc/rtc-m41t80.c
-> +++ b/drivers/rtc/rtc-m41t80.c
-> @@ -544,10 +544,22 @@ static struct clk *m41t80_sqw_register_clk(struct m41t80_data *m41t80)
->  {
->         struct i2c_client *client = m41t80->client;
->         struct device_node *node = client->dev.of_node;
-> +       struct device_node *fixed_clock;
->         struct clk *clk;
->         struct clk_init_data init;
->         int ret;
->
-> +       fixed_clock = of_get_child_by_name(node, "clock");
-> +       if (fixed_clock) {
-> +               /*
-> +                * skip registering square wave clock when a fixed
-> +                * clock has been registered. The fixed clock is
-> +                * registered automatically when being referenced.
-> +                */
-> +               of_node_put(fixed_clock);
-> +               return 0;
-> +       }
-> +
->         /* First disable the clock */
->         ret = i2c_smbus_read_byte_data(client, M41T80_REG_ALARM_MON);
->         if (ret < 0)
 
-Reviewed-by: Saravana Kannan <saravanak@google.com>
+Sure, I will add it in the next patch.
 
--Saravana
+thanks,
+Jarvis
+
+> with that
+>
+> Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
+>
+>
+>
+> > ---
+> >  drivers/bus/mhi/pci_generic.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
+> > index 7c810f02a2ef..8c7f6576e421 100644
+> > --- a/drivers/bus/mhi/pci_generic.c
+> > +++ b/drivers/bus/mhi/pci_generic.c
+> > @@ -311,8 +311,8 @@ static const struct mhi_channel_config mhi_foxconn_sdx55_channels[] = {
+> >         MHI_CHANNEL_CONFIG_DL(5, "DIAG", 32, 1),
+> >         MHI_CHANNEL_CONFIG_UL(12, "MBIM", 32, 0),
+> >         MHI_CHANNEL_CONFIG_DL(13, "MBIM", 32, 0),
+> > -       MHI_CHANNEL_CONFIG_UL(32, "AT", 32, 0),
+> > -       MHI_CHANNEL_CONFIG_DL(33, "AT", 32, 0),
+> > +       MHI_CHANNEL_CONFIG_UL(32, "DUN", 32, 0),
+> > +       MHI_CHANNEL_CONFIG_DL(33, "DUN", 32, 0),
+> >         MHI_CHANNEL_CONFIG_HW_UL(100, "IP_HW0_MBIM", 128, 2),
+> >         MHI_CHANNEL_CONFIG_HW_DL(101, "IP_HW0_MBIM", 128, 3),
+> >  };
+> > --
+> > 2.25.1
+> >
