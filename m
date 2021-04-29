@@ -2,94 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9169A36F0A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 22:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74DEC36F0AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 22:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233072AbhD2ThB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 15:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232951AbhD2Tg4 (ORCPT
+        id S233811AbhD2TrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 15:47:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55040 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237780AbhD2Tqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 15:36:56 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C43C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 12:36:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=AuBuKJtfecHwtKNKpCmxc6lcyXSAmiHHw7MgDTeW7ko=; b=JrwAldHMLpLgEzU0P7+eBtdIWD
-        TKHT2PzsS5jt8F3IoPwNFkuypPPQtIgd3ZETtz9Z4zU0DBLbhDVZdX2mWomE/51XA4822ajz6/zbT
-        DyhKWMAbD+9IeA6yiCGjuUG5hJixoez1oQVYGrS4lP5sb4yW3x1VoaoqzG3KVxXBS1h6VRk/W7u5t
-        3HI6xNURfQoXVTT1iO18RRaAfcleLYXlUo+ErlmgpOXCfeJoltW9IJa4Q/CqoFKSOSRKB9Jgus5Yi
-        JM7WYLTdWnMoFle+d9wVwE4vYqu5bpUJRg+QXPlrolbPCFi7ol5BPIt+PgfCe7RSsxycFvQDhgI4w
-        6f8feC4A==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lcCR6-00A3cd-MN; Thu, 29 Apr 2021 19:35:01 +0000
-Date:   Thu, 29 Apr 2021 20:34:56 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Michel Lespinasse <michel@lespinasse.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Rik van Riel <riel@surriel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Rom Lemarchand <romlem@google.com>,
-        Linux-Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 13/37] mm: implement speculative handling in
- __handle_mm_fault().
-Message-ID: <20210429193456.GI1847222@casper.infradead.org>
-References: <20210407014502.24091-1-michel@lespinasse.org>
- <20210407014502.24091-14-michel@lespinasse.org>
- <eee7431c-3dc8-ca3c-02fb-9e059d30e951@kernel.org>
- <20210428145823.GA856@lespinasse.org>
- <CALCETrVRGtVqv9cMSryfg5q3iZ9s3jBey20cY4K23YLRhQRzbQ@mail.gmail.com>
- <20210428161108.GP975577@paulmck-ThinkPad-P17-Gen-1>
- <20210429000225.GC10973@lespinasse.org>
- <CALCETrWybk8k8Z=9+x3Ns7zMUPMzganzPY47pqOJCbB3LkfQ+A@mail.gmail.com>
- <20210429161234.GG1847222@casper.infradead.org>
- <20210429191428.GD10973@lespinasse.org>
+        Thu, 29 Apr 2021 15:46:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619725550;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=46vr6MOxvMx7EcNeLrQPCFzx6v2cxfIGSgLQQ+snNgQ=;
+        b=dEvGNPfHCVP1XUi6b0tgVv5pCcMSMGAYn2O78d7MpfX4RzlrvEBayEStQQHtUknsy33Jb/
+        6HDcQIj7wnYWComQFwrimoxfhi1zHILt13FOUt7u/0g0dBfc+Aqe8IWuD3K3dN59WJFkaB
+        hm1//v1AoeYLBatp6cMt2vok7K49Xyg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-366-2E-ZcLmyNSmk8WkXdFT6MA-1; Thu, 29 Apr 2021 15:45:48 -0400
+X-MC-Unique: 2E-ZcLmyNSmk8WkXdFT6MA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 349D5818411;
+        Thu, 29 Apr 2021 19:45:44 +0000 (UTC)
+Received: from optiplex-fbsd (unknown [10.3.128.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7DA6110016FC;
+        Thu, 29 Apr 2021 19:45:40 +0000 (UTC)
+Date:   Thu, 29 Apr 2021 15:45:37 -0400
+From:   Rafael Aquini <aquini@redhat.com>
+To:     "Chu,Kaiping" <chukaiping@baidu.com>
+Cc:     "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "yzaikin@google.com" <yzaikin@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "vbabka@suse.cz" <vbabka@suse.cz>,
+        "nigupta@nvidia.com" <nigupta@nvidia.com>,
+        "bhe@redhat.com" <bhe@redhat.com>,
+        "khalid.aziz@oracle.com" <khalid.aziz@oracle.com>,
+        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
+        "mateusznosek0@gmail.com" <mateusznosek0@gmail.com>,
+        "sh_def@163.com" <sh_def@163.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: Re: =?utf-8?B?562U5aSNOiBbUEFUQw==?= =?utf-8?Q?H?= v3]
+ mm/compaction:let proactive compaction order configurable
+Message-ID: <YIsM4UtV9UqKhsNB@optiplex-fbsd>
+References: <1619313662-30356-1-git-send-email-chukaiping@baidu.com>
+ <YIYX22JLVHN1PhGs@t490s.aquini.net>
+ <f355248969f14e5897ad6dcfe3834297@baidu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210429191428.GD10973@lespinasse.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f355248969f14e5897ad6dcfe3834297@baidu.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 12:14:28PM -0700, Michel Lespinasse wrote:
-> On Thu, Apr 29, 2021 at 05:12:34PM +0100, Matthew Wilcox wrote:
-> > One of the worst things we can do while holding a spinlock is take a
-> > cache miss because we then delay for several thousand cycles to wait for
-> > the cache line.  That gives every other CPU a really long opportunity
-> > to slam into the spinlock and things go downhill fast at that point.
-> > We've even seen patches to do things like read A, take lock L, then read
-> > A to avoid the cache miss while holding the lock.
+On Wed, Apr 28, 2021 at 01:17:40AM +0000, Chu,Kaiping wrote:
+> Please see my answer inline.
 > 
-> I understand the effect your are describing, but I do not see how it
-> applies here - what cacheline are we likely to miss on when using
-> local_irq_disable() that we wouldn't touch if using rcu_read_lock() ?
-
-It's the same cache lines in both cases.  The difference is that in one
-case we have interrupts disabled (and a spinlock held?  i wasn't clear
-on that) and in the other case, we just have preemption disabled.
-
-> > What sort of performance effect would it have to free page tables
-> > under RCU for all architectures?  It's painful on s390 & powerpc because
-> > different tables share the same struct page, but I have to believe that's
-> > a solvable problem.
+> -----邮件原件-----
+> 发件人: Rafael Aquini <aquini@redhat.com> 
+> 发送时间: 2021年4月26日 9:31
+> 收件人: Chu,Kaiping <chukaiping@baidu.com>
+> 抄送: mcgrof@kernel.org; keescook@chromium.org; yzaikin@google.com; akpm@linux-foundation.org; vbabka@suse.cz; nigupta@nvidia.com; bhe@redhat.com; khalid.aziz@oracle.com; iamjoonsoo.kim@lge.com; mateusznosek0@gmail.com; sh_def@163.com; linux-kernel@vger.kernel.org; linux-fsdevel@vger.kernel.org; linux-mm@kvack.org
+> 主题: Re: [PATCH v3] mm/compaction:let proactive compaction order configurable
 > 
-> I agree using RCU to free page tables would be a good thing to try.
-> I am afraid of adding that to this patchset though, as it seems
-> somewhate unrelated and adds risk. IMO we are most likely to find
-> justification for pushing this if/when we try accessing remote mm's without
-> taking the mmap lock, since disabling IPIs clearly wouldn't work there.
+> On Sun, Apr 25, 2021 at 09:21:02AM +0800, chukaiping wrote:
+> > Currently the proactive compaction order is fixed to 
+> > COMPACTION_HPAGE_ORDER(9), it's OK in most machines with lots of 
+> > normal 4KB memory, but it's too high for the machines with small 
+> > normal memory, for example the machines with most memory configured as 
+> > 1GB hugetlbfs huge pages. In these machines the max order of free 
+> > pages is often below 9, and it's always below 9 even with hard 
+> > compaction. This will lead to proactive compaction be triggered very 
+> > frequently. In these machines we only care about order of 3 or 4.
+> > This patch export the oder to proc and let it configurable by user, 
+> > and the default value is still COMPACTION_HPAGE_ORDER.
+> > 
+> > Signed-off-by: chukaiping <chukaiping@baidu.com>
+> > Reported-by: kernel test robot <lkp@intel.com>
+> 
+> Two minor nits on the commit log message: 
+> * there seems to be a whitespage missing in your short log: 
+>   "... mm/compaction:let ..."
+> --> I will fix it in next patch.
+> 
+> * has the path really been reported by a test robot?
+> --> Yes. There is a compile error in v1, I fixed it in v2.
+>
 
-I think that needs to happen _before_ this patchset.  Creating a mess and
-then trying to clean it up later isn't a great way to do development.
+So, no... the test robot should not be listed as Reported-by. 
+
