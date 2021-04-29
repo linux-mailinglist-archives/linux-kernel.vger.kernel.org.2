@@ -2,129 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F1836EA05
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6542236EA08
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235868AbhD2MIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 08:08:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233337AbhD2MIW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 08:08:22 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8123DC06138D
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 05:07:34 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id q6so18970385edr.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 05:07:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=E/qBmN3w5ra6vzERr1tAnJ+lRCifYP6wOJclMHfbmgA=;
-        b=lga51PiHQT8AXJaHF9E+Rcm2L7rBLdrZM+LDIobxpUfFnTW7kT866PFjvaeamdIvSy
-         oBD2mFz5kUbvDDg4P1Cg8yPYTBWvdZXO8RsJJc4oXIOxDg45gU7vEzM++OrTbHtzNBQe
-         rC2SSb7iC4kcW17d3a11uA/rozz2QvFI0F4cEh0FnZAyP5OZleb0yDhj4BCF+ftMk3Z2
-         byiuS7kh6koeNRV86e+Fxnw26SAom3jTRnzAe7a1jiU//Uxf7d/j2wCkKENOuPXiF9NE
-         sQo2naXTvrxYe3K2YjKBJZmVXEjw0DZOLtjyFBFtm43mMQaypu7hcZmaQQTtedC9OPKp
-         4onw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=E/qBmN3w5ra6vzERr1tAnJ+lRCifYP6wOJclMHfbmgA=;
-        b=eCntQ8uGcwHTUXXkg7gDMSpBXK08o6uk1T2Q1O268A/pKpNKb1RsQUkyqGjfQ0U2jR
-         EgrUZ+Gh5KWeQBpFGjsDFrherPNFGk3+ufakPS7HA8we3l7JIUbtr4i3xF4Hx7qITBBh
-         ODUPTlhvDEvlE3cTniwyOLDL04JwoggkP4z1LGWLSW2wz5EKKKd0rWP3SBnKOmqL7pva
-         nsxhI5TbX3P+hIJW5cp8uMKA/hdADnfCZVMM5UnqLKmoHYY/nmoC92448MIVGCOXZfNc
-         1bFLHJDKvbiKzDUMqUj1IDAEiOw3GWXkrmthrNL/i4qW7cInW2IOGiRhdIxH9jR8o+vb
-         LI+A==
-X-Gm-Message-State: AOAM530vFtItzOzSpj09mVxW7F46OT6cpuSA+o6ZWWVh+s1QzdvLZH2u
-        SgYW9y73RqTbAS+28Gl0DOo=
-X-Google-Smtp-Source: ABdhPJw4JTYkFThXioPmy2z8+WuiLOKSdz69LpPJsZTBZxAQhtylaDEIj8mQzdkT/FBSuMgnjrWcJA==
-X-Received: by 2002:a05:6402:78b:: with SMTP id d11mr10066481edy.257.1619698053629;
-        Thu, 29 Apr 2021 05:07:33 -0700 (PDT)
-Received: from agape.jhs ([5.171.72.170])
-        by smtp.gmail.com with ESMTPSA id c25sm2184909edt.43.2021.04.29.05.07.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 05:07:33 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 14:07:30 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH 1/2] staging: rtl8723bs: hal: Remove
- set but unused variables
-Message-ID: <20210429120729.GA1393@agape.jhs>
-References: <20210428113346.28305-1-fmdefrancesco@gmail.com>
- <YIqECQk/1Zb4JRjb@kroah.com>
- <20210429102201.GF1409@agape.jhs>
- <1870536.WTzYeaBcXf@linux.local>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S233981AbhD2MJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 08:09:36 -0400
+Received: from mail-dm6nam11on2083.outbound.protection.outlook.com ([40.107.223.83]:8380
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231490AbhD2MJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 08:09:35 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n+N00UCjYGw/M4lElH9d7ScxPYQWpZMD2G/i/cJ+1AqfQHi2QSP/BHg0gOX2MiwYqpUygcuV2Rhl6+uTgt/CJuGetzSQhFSYUz6ENwRbcqkRWLcQv5VtWDdrb8sd7dQQ1dVAPv0t/cFyY60pqW2kpArtGMOEnYz3DhTsBwATMbPzHzvaX0tkPAUPrNydhRyqQOEK2OCol8FqHC8XO6D0R6DYIMVHZfhkfaSwrUekkxEw/W2l4YjK9Pbhs9TXW7tAefKDdKgYQ7s8vBPOrtndYqfjOW95bJQJe6D/dDr8SQmDuxNhJhx9BjFsg85bLQn48+jC1ZMe1LAKaflGd167YQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZZ2/NF36K3MSCPvKA7ywNRqA1WNqgzjbXa3ExVuH4+w=;
+ b=G6nzbTBEz+wcs+S5fpb9gEVm89hrFtLfQ6OhtjtQDu5UTsSKriRYulAzRZuARJUlRuPzetjpr+YA7luG5UV857RGEo/8g/ZR++AVqtY8Cjk0QhPvcNA9MNO2uqDAOQTHXBV9suyrdC4csxF912F19WeevLljZWAKCfU1G77mGltCuWfMVWhYJl35+cjrwiPbkxUkIJehbuuCoVT2o/XIYj2X+QxbkLWCuA4UTBCLvx9A5fURIJMH2tuveTUB+IW5aIq2mTs4XTGM2p9wigDt2MNrZhi83dnnpZSrcHtVq/8RYvcrzaPfxt2aRhTWzvqqqeyiDVQllwxYe/XOSNSVOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZZ2/NF36K3MSCPvKA7ywNRqA1WNqgzjbXa3ExVuH4+w=;
+ b=Sl/VvRgBuY8zfAzSyyu+fVSIvwx6wwEjBkUW6cmgcN3FAVBEaOhZcFZBax9pmTi0QexbQzbStWbb/s1HuPbMYbBl/Nn3S3V/blAy7nl+SzOu/K5rVO5neUhOhMpCVdmEyofS535se36b9qJcFluo9k5C5gCD+RrDO3gIIrXzaGU=
+Authentication-Results: vivo.com; dkim=none (message not signed)
+ header.d=none;vivo.com; dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB2601.namprd12.prod.outlook.com (2603:10b6:5:45::27) by
+ DM5PR12MB1833.namprd12.prod.outlook.com (2603:10b6:3:111::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4065.21; Thu, 29 Apr 2021 12:08:45 +0000
+Received: from DM6PR12MB2601.namprd12.prod.outlook.com
+ ([fe80::3d2c:5edf:5d51:4101]) by DM6PR12MB2601.namprd12.prod.outlook.com
+ ([fe80::3d2c:5edf:5d51:4101%7]) with mapi id 15.20.4065.027; Thu, 29 Apr 2021
+ 12:08:45 +0000
+Date:   Thu, 29 Apr 2021 08:08:41 -0400
+From:   Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Aric Cyr <aric.cyr@amd.com>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Jacky Liao <ziyu.liao@amd.com>,
+        Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Wenjing Liu <wenjing.liu@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kael_w@yeah.net
+Subject: Re: [PATCH] drm/amd/display: Remove duplicate declaration of dc_state
+Message-ID: <20210429120841.egvj3m23kehofsfc@outlook.office365.com>
+References: <20210429031804.19487-1-wanjiabing@vivo.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="z6ktmvaoxarxrbps"
 Content-Disposition: inline
-In-Reply-To: <1870536.WTzYeaBcXf@linux.local>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210429031804.19487-1-wanjiabing@vivo.com>
+X-Originating-IP: [2607:fea8:56e0:6d60:9d3b:95a7:19db:40c3]
+X-ClientProxiedBy: YT1PR01CA0030.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::43)
+ To DM6PR12MB2601.namprd12.prod.outlook.com (2603:10b6:5:45::27)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from outlook.office365.com (2607:fea8:56e0:6d60:9d3b:95a7:19db:40c3) by YT1PR01CA0030.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.25 via Frontend Transport; Thu, 29 Apr 2021 12:08:44 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6ed7f0b1-d459-4665-7011-08d90b0789b6
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1833:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR12MB18332606021F6393DFCEA745985F9@DM5PR12MB1833.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2331;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nrU5kbGuc8jiAgWLKyCWzdW8CVtjd285QGTNEksvTvanC/+VvK7LHRt12bk4aHJX5+LRQOQ3GvKtDIozrUZalgD9MSsQgycdXk3nnYFC2HmCYOeYXqMdkjsPRh+OUHaLkR3ZyfsdVjnh6hDcuKW9RKvgfqhQ5E9KQBrxB13GbuJ9Yrw/1dPMzZ/J6OMnC+b0BsuMvjrO2qvAFGfwGbmHzvSJw6YoTgL8xg2ch6OVEFHaOol1QGh71/C/ZECdbcyofmtnvcmGD85C56f06PXCnkTug239vp3iuoW/AsWeC3jcNeEPUz0847v3yN+TyJwxDGqq5ByeuxuTSUQkybvaD2RtAACjUbUAkthjaR46RqkDIzhaGMwBfUfzhZHwHm02u7+LGcmaeXzbudQmce/+A/8u8hMCqHcLGv3ek3prNidzfQa0sz/hmr3Zfk3WJTlVToX0W5yB8oOMA66XUHXH7gDBzDEeN8ouIFwhjPk+8PmdGjCr+Fr1hpKpTjxjxtSqOgXLR+78stZTw3oeEq+P/5YozVtpFeR2yil+jfAIthlwvdUFyNRoE3dXAZJtd/CHp2VAfBeAlGp4/c01GjnvWhgTtl+IG9XCi6+lGuFxvL8Hfv+s+jaekylZB4y/PchOaUjMrRVhbtNgph4yu/Z4XiZi0HkF1mQ1kP9O+ukhSmo65nqT6d699P7E3yL5hS3+q9IhbC4XcC/QSTtryczab8uO0sUyz0T77vZ3sQMx3uQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB2601.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(366004)(396003)(136003)(346002)(966005)(9686003)(16526019)(66556008)(86362001)(54906003)(6506007)(66476007)(8936002)(316002)(8676002)(1076003)(186003)(38100700002)(66946007)(6666004)(4326008)(55016002)(52116002)(2906002)(21480400003)(44144004)(7696005)(6916009)(478600001)(5660300002)(83380400001)(2700100001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?94T0MNY3a2e9PddscjJpM4OEm5KWVEXVEmH1o4KUUt93AfxdASiULyiKpUaW?=
+ =?us-ascii?Q?KD+z+nsX5jbDANJjFTyCv5ciBnr8tcAVp71i56mfhZSsm940IwzKQT8yPEoN?=
+ =?us-ascii?Q?xixjpV3tFll6F+Gtg8IBI0kz1YihFNgA5KdXpkDtMX+OKUuizYqh/ilIZpiX?=
+ =?us-ascii?Q?SJ0CFdQygdO1Ruw6exTq9Bv2GZ4tBJQilaeSSObWsGZ/KbcpiMlGraiTut8X?=
+ =?us-ascii?Q?iJu4lfnaAEzfAfMLXWWudLZnbfGYPF0fw/zeFvFqJ0t7isoPqu3NVA+5RnFw?=
+ =?us-ascii?Q?Npcwwz/0yzf2TTYZH3SwBcelh/hT/r7uFz+V6OR6XlPX6WIZCl2zWQj5QYsY?=
+ =?us-ascii?Q?hsSFwutTzcVhmn8Sx0hkrmY/p5gq6So++i94eUjyskifBTGdKLezxf3FkTdh?=
+ =?us-ascii?Q?hnyjQ82mCywRt6AhgUnIvJsuCR8NjizchJTjMq2lZuxnhA7bjEANrKdrdbnQ?=
+ =?us-ascii?Q?rhvUKct4pQQ1YwYT/kKUu9H1MO/D6oj1mZI9A3YEj9CpOEzhg+sye2mLNX2b?=
+ =?us-ascii?Q?XBv56jj8WUoTcYlkyjl7vuEzW6+7K7erFdLAJMwh242YQmi/ySPnu5M8gtmu?=
+ =?us-ascii?Q?GDWO3JsVtQMMrfpzZ2U91zi1cWdvc3tpxjM6XCoYSNQY/cQxX10dhv/zHwy4?=
+ =?us-ascii?Q?vXT3xWx/5+yDutInVv8GIlepqPF3J4q7fOT2eG6tOgS3pmhR5qlI69doCwkk?=
+ =?us-ascii?Q?AML6qcJ349N9asuwdx6t8oGh3D7V6dy3lPPAGB2W8RZLvEaq9M9ckZRy3Yro?=
+ =?us-ascii?Q?TsBnQdDYzlo0RfkNdgdPLU+xYPG+N35m/7XqFEMFjRMm/XVWBk7NhJufigyG?=
+ =?us-ascii?Q?X/2XpY0XZ9utmh0pzXsVwCIJLpG41ddAf6oVIcSwaWS+hEf3CVaBiqwExfdR?=
+ =?us-ascii?Q?dnCUBhba7Yzc4gkgLUQgUCRxgNAGz24Vy/dAJ7dQLbpumgaANYCAtu7dR3Sa?=
+ =?us-ascii?Q?kEVV6qG0VGNwU78it7pGUh4rX7xXZd9jVEtR9vvnLzV8Ai+7YG33f0dm7pc7?=
+ =?us-ascii?Q?u0sSS9DLhJsqPVRpmor15yDjnygEdQnjum6rlSMFrG3m4n1PjzSXBhJKn6JY?=
+ =?us-ascii?Q?D8XnM+XWeJwVbhaED5ueRMA5SWHZYJ99zBevKjgtCWdWiL0MZq2soS7bgDuy?=
+ =?us-ascii?Q?ZcoFebrSVLDwN2LQDHMIK8cFo6cx8f9EEQZwQARUFTeEM8xbBKBK05Ykmyxd?=
+ =?us-ascii?Q?DSfy9B7COGyWUkMetRDSXR6+lx6uC9tepi6JKmuHovithogQJq1cS63vEG3Z?=
+ =?us-ascii?Q?FWgAgdQQcsV9WDqoOX9yxNd7EMN1eJS1ajKZIynWzxgAmN+U7+ZtS3UbXb2g?=
+ =?us-ascii?Q?Yd366LsT8qGqqtFkLGq+lDuWDo34Q7CRLHWov2RsGHUNMT06ZzZujHRF3FkZ?=
+ =?us-ascii?Q?RMbJTi5CNNQ8w3LM7d6zFExla3am?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ed7f0b1-d459-4665-7011-08d90b0789b6
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB2601.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2021 12:08:45.5006
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jE80B5dS84KMMw+3shLlru/OIlp59hDmorVtsEHTyyFtn6QQjZapL0ZDRwuBDwMAFo7c1rs+ow1/g1iU9LB30A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1833
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > Yes, but many types of hardware _REQUIRE_ reads to do something.  So
-> > > "read that does nothing" is a requirement for some operations.
-> > > 
-> > > As an example, a write is only guaranteed to have been finished if you
-> > > do a read of the same location back from it on some hardware busses.
-> > > The bus can reorder things, but a write/read of the same location can
-> > > not be reordered.
-> > > 
-> > > Sometimes you have to do reads multiple times to get things to "stick".
-> > > 
-> > > Other times reading from a location changes a state in the hardware
-> > > (horrid but HW designers aren't the brightest at times...)
-> > > 
-> > > So you can NOT just remove reads without knowing that the hardware does
-> > > not require this.  This is an issue where GCC "warnings" mean nothing as
-> > > gcc does not actually know what hardware does, or does not, do for many
-> > > things.
-> > > 
-> > > thanks,
-> > > 
-> > > greg k-h
-> > 
-> > thank you for explanation, my hardware knowledge is poor:(
-> > Sorry for noise.
-> > 
-> > fabio
-> >
-> I suspected that removing those variables could have been a source of troubles 
-> (but I was thinking of possible side effects on internal kernel's data, not of 
-> hardware related idiosyncrasies), however I think that you did well to point 
-> it out because:
-> 
-> 1) We learned something new from Greg;
+--z6ktmvaoxarxrbps
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-yes that's been very good for me
+Hi Wan,
 
-> 2) I learned that, for the purpose of finding definitions, vim's ctrl-] is not 
-> the right way to work out the problem.
+Instead of remove the first dc_state, remove the second one.
 
-3) I learned that with ctrl-] in vim one could (in some misterious conditions)
-   see a function definition :-D
+Thanks
 
-It seems that you know more than me about vim, I make intensive use of grep
-for finding function defs and usages in code.
+On 04/29, Wan Jiabing wrote:
+> There are two declarations of struct dc_state here.
+> The later one is closer to its user. Remove the former duplicate.
+>=20
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+> ---
+>  drivers/gpu/drm/amd/display/dc/dc.h | 2 --
+>  1 file changed, 2 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/amd/display/dc/dc.h b/drivers/gpu/drm/amd/di=
+splay/dc/dc.h
+> index 8108b82bac60..cad045db6ea2 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dc.h
+> +++ b/drivers/gpu/drm/amd/display/dc/dc.h
+> @@ -276,8 +276,6 @@ enum surface_update_type {
+>  /* Forward declaration*/
+>  struct dc;
+>  struct dc_plane_state;
+> -struct dc_state;
+> -
+> =20
+>  struct dc_cap_funcs {
+>  	bool (*get_dcc_compression_cap)(const struct dc *dc,
+> --=20
+> 2.25.1
+>=20
 
-> 
-> If you have time, I'd appreciate some comments on the topic of line (2).
-> 
-> Thanks,
-> 
-> Fabio
-> 
-> 
-> 
+--=20
+Rodrigo Siqueira
+https://siqueira.tech
 
-thank you,
+--z6ktmvaoxarxrbps
+Content-Type: application/pgp-signature; name="signature.asc"
 
-fabio
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE4tZ+ii1mjMCMQbfkWJzP/comvP8FAmCKockACgkQWJzP/com
+vP94bBAAtGyCjm1gSmBANOcbgahugjq1wi2TZpPmrOu4aqbH0y7dS84tV15laNWX
+bCGFCHb7vGRf4kkg83sLrLTcrmx619AYgBBHZkBoQXQBU6la1cNrJwtjFqy7YLoR
+IKHdj8Zv+kQMMmXjANGnWTYzwnMXvWD/JDI1B1IT6RMoEO7RJRpj6+HHT2RTRHlT
+YPJpkQo9DFIaaIrETObA+DxDppEbWSSQ8PRiWI/jIAdCgh4QODpSPFEdr2lUMZfJ
+y12jtf9gqmXd4eVP0UCYnBCzkrAPp9rcIoWAjjYnX2rvvrnM0HvMsWjVky44i73Q
+os0T67doFL47cCHW9g0VN9kzOCKrbksNpnWGsLuSeW1SUhhallVyrLHw/hEvBz9n
+3jbe6Ctc8QHiwUJZtGp5KDWbFd/SyhIe8skgwonR0iiQQXP8uoHebvxyAvFrJIyr
+Z3Al0Kc4s2dgKgVxGIYP0U3fk/fQMBJ/aYTOgZKP1YtRd/yutmWhqzgjTWxkpR84
+wq40Xy1oOPZr4DbU2B2wd+r8ShNsVYHalQmflRGF2nty8Z0ieg9tyorcz5tnJSFT
+HOBRV7OgQP3uUOrWoJXXklw5SzpfIFCHQCZUbOlyTwjiCQ1CBvL6uGTPuhFabid9
+VRixtiXhzMCC+4utSACPQhiMyYw49ely1Qe0aHjSd6L2l+PVc60=
+=gbfm
+-----END PGP SIGNATURE-----
+
+--z6ktmvaoxarxrbps--
