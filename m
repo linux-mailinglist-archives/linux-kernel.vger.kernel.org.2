@@ -2,92 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9070036EF22
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA9C36EF2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241045AbhD2RvJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 29 Apr 2021 13:51:09 -0400
-Received: from mga12.intel.com ([192.55.52.136]:57556 "EHLO mga12.intel.com"
+        id S241066AbhD2RwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 13:52:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233706AbhD2RvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 13:51:08 -0400
-IronPort-SDR: YLgrXuhPP4sWKDqqlEY8/Nn8Z7JDx5gmRHdwCp5lQRgCurZE855wCNjmMrp/fpy5rLcdRtjKnn
- uHc7b/+pfhuA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9969"; a="176555664"
-X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
-   d="scan'208";a="176555664"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 10:50:21 -0700
-IronPort-SDR: bsJ7xWyidrkJGopANBwSbJO+yz7E0LhA2K2ENvAKxgJOrQH3hrN0jjMG1LmUimBlQWNXwMfiQs
- prEPB2UOK4mw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
-   d="scan'208";a="455644726"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by FMSMGA003.fm.intel.com with ESMTP; 29 Apr 2021 10:50:21 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 29 Apr 2021 10:50:20 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 29 Apr 2021 10:50:20 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
- Thu, 29 Apr 2021 10:50:20 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     "Chatre, Reinette" <reinette.chatre@intel.com>,
-        "tan.shaopeng@fujitsu.com" <tan.shaopeng@fujitsu.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>
-CC:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-        "'linux-arm-kernel@lists.infradead.org'" 
-        <linux-arm-kernel@lists.infradead.org>,
-        'James Morse' <james.morse@arm.com>,
-        "misono.tomohiro@fujitsu.com" <misono.tomohiro@fujitsu.com>
-Subject: RE: About add an A64FX cache control function into resctrl
-Thread-Topic: About add an A64FX cache control function into resctrl
-Thread-Index: AQHXPR8AhIvM7pb1S52qTlM+pjp6RKrLxTbg
-Date:   Thu, 29 Apr 2021 17:50:20 +0000
-Message-ID: <49cdd0b707194148915e2efe2ab5d707@intel.com>
-References: <OSAPR01MB214600C7923AEF7C35B02E648B739@OSAPR01MB2146.jpnprd01.prod.outlook.com>
- <OSAPR01MB214657641D532FB8D112DD528B479@OSAPR01MB2146.jpnprd01.prod.outlook.com>
- <bb0967c0-5b88-c6c2-0242-1e3928189a04@intel.com>
- <OSAPR01MB2146D42FC04779268BA231878B409@OSAPR01MB2146.jpnprd01.prod.outlook.com>
- <14ddf86b-89e1-ba26-b684-f3d5d5f8ade7@intel.com>
-In-Reply-To: <14ddf86b-89e1-ba26-b684-f3d5d5f8ade7@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.22.254.132]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S241007AbhD2RwL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 13:52:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D185C61460
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 17:51:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619718683;
+        bh=k8vm1xb1TV8BKDiblYpNsmnSnjC+JE3s7D/l56gk21k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GdvgBm7ELuRUoXrBUrTqCvu77A9zcI/bZbNWvUE5/jbpplGq8ItxkO+wCIqEl9hKO
+         m1FNxwz6jFwC8qc9SuPjCUO2aA14mfbAMKkjIH+bG6dHzXx77myJbZdDg0srhnxuzi
+         FZxKcM8jB29u4qU5Z2L04pjcFqr8Aqj2BGv+mFcmjip3hTmQZtQrECQPsOuvz0CaoE
+         8EdP/6rWNj6Ifrmv2XJaJazVeRInix0bw+ReoTEymjlEX8XBf9NWPdfNy1Kf/PiiXX
+         GfhIWYkgExgLV3Dpp3m8AR6WFDvv77NZZKz3ZoXH3lTOM0bBm3ONzDc0Lx47SHGFR6
+         Mv9YaRerz4geg==
+Received: by mail-wr1-f47.google.com with SMTP id d11so9941463wrw.8
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:51:23 -0700 (PDT)
+X-Gm-Message-State: AOAM531guY6xWFrPj1PUvxwlXDxV72rCFOg5BZWenHOe1+swUUZq1nF2
+        UXe5I8m9S+WICqFDyCtFRr6KrmGNUGUOmZvZTqE=
+X-Google-Smtp-Source: ABdhPJznqRz/sdYoaTZ26WmYkNCAlFwhDZgvz1gbGGOowZpPKgx27qiJg7XXPzUBlmyL78a4akx6Fj510K+MH6JLjzQ=
+X-Received: by 2002:adf:d223:: with SMTP id k3mr1096320wrh.99.1619718682219;
+ Thu, 29 Apr 2021 10:51:22 -0700 (PDT)
 MIME-Version: 1.0
+References: <20210429145752.3218324-1-arnd@kernel.org> <dff8cbd8-8c56-ae6e-ecc2-9ca183113ab2@arm.com>
+In-Reply-To: <dff8cbd8-8c56-ae6e-ecc2-9ca183113ab2@arm.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 29 Apr 2021 19:50:46 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3-XoDQ6BfTBUof5ST2H1_6JOL+rK-BQqWXAV0H5jMm9Q@mail.gmail.com>
+Message-ID: <CAK8P3a3-XoDQ6BfTBUof5ST2H1_6JOL+rK-BQqWXAV0H5jMm9Q@mail.gmail.com>
+Subject: Re: [PATCH] [v2] coresight: etm4x: avoid build failure with unrolled loops
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Qi Liu <liuqi115@huawei.com>,
+        Tingwei Zhang <tingwei@codeaurora.org>,
+        coresight@lists.linaro.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>>> [Sector cache function]
->>>> The sector cache function split cache into multiple sectors and
->>>> control them separately. It is implemented on the L1D cache and
->>>> L2 cache in the A64FX processor and can be controlled individually
->>>> for L1D cache and L2 cache. A64FX has no L3 cache. Each L1D cache and
->>>> L2 cache has 4 sectors. Which L1D sector is used is specified by the
->>>> value of [57:56] bits of address, how many ways of sector are
->>>> specified by the value of register (IMP_SCCR_L1_EL0).
->>>> Which L2 sector is used is specified by the value of [56] bits of
->>>> address, and how many ways of sector are specified by value of
->>>> register (IMP_SCCR_ASSIGN_EL1, IMP_SCCR_SET0_L2_EL1,
->>>> IMP_SCCR_SET1_L2_EL1).
+On Thu, Apr 29, 2021 at 7:37 PM Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
+> On 29/04/2021 15:57, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > clang-12 fails to build the etm4x driver with -fsanitize=array-bounds,
+> > where it decides to unroll certain loops in a way that result in a
+> > C variable getting put into an inline assembly
+> >
+> > <instantiation>:1:7: error: expected constant expression in '.inst' directive
+> > .inst (0xd5200000|((((2) << 19) | ((1) << 16) | (((((((((((0x160 + (i * 4))))) >> 2))) >> 7) & 0x7)) << 12) | ((((((((((0x160 + (i * 4))))) >> 2))) & 0xf)) << 8) | (((((((((((0x160 + (i * 4))))) >> 2))) >> 4) & 0x7)) << 5)))|(.L__reg_num_x8))
+> >        ^
+> > drivers/hwtracing/coresight/coresight-etm4x-core.c:702:4: note: while in macro instantiation
+> >                          etm4x_relaxed_read32(csa, TRCCNTVRn(i));
+> >                          ^
+> > drivers/hwtracing/coresight/coresight-etm4x.h:403:4: note: expanded from macro 'etm4x_relaxed_read32'
+> >                   read_etm4x_sysreg_offset((offset), false)))
+> >                   ^
+> > drivers/hwtracing/coresight/coresight-etm4x.h:383:12: note: expanded from macro 'read_etm4x_sysreg_offset'
+> >                          __val = read_etm4x_sysreg_const_offset((offset));       \
+> >                                  ^
+> > drivers/hwtracing/coresight/coresight-etm4x.h:149:2: note: expanded from macro 'read_etm4x_sysreg_const_offset'
+> >          READ_ETM4x_REG(ETM4x_OFFSET_TO_REG(offset))
+> >          ^
+> > drivers/hwtracing/coresight/coresight-etm4x.h:144:2: note: expanded from macro 'READ_ETM4x_REG'
+> >          read_sysreg_s(ETM4x_REG_NUM_TO_SYSREG((reg)))
+> >          ^
+> > arch/arm64/include/asm/sysreg.h:1108:15: note: expanded from macro 'read_sysreg_s'
+> >          asm volatile(__mrs_s("%0", r) : "=r" (__val));                  \
+> >                       ^
+> > arch/arm64/include/asm/sysreg.h:1074:2: note: expanded from macro '__mrs_s'
+> > "       mrs_s " v ", " __stringify(r) "\n"                      \
+> >   ^
+> >
+> > This only happened in a few loops in which the array bounds sanitizer
+> > added a special case for an array overflow that clang determined to be
+> > possible, but any compiler is free to unroll any of the loops in the
+> > same way that breaks the sysreg macros.
+> >
+> > Introduce helper functions that perform a sysreg access with a
+> > non-constant register number and use them in each call that passes
+> > a loop counter.
+>
+> You don't need to add this special helper. We have the exact
+> infrastructure already. So these could simply be replaced with:
+>
+> csdev_access_xxx(csa, ...)
+>
+> see :
+>
+> include/linux/coresight.h
 
-Are A64FX binaries position independent?  I.e. could the OS reassign
-a running task to a different sector by remapping it to different virtual
-addresses during a context switch?
+Ah, nice!
 
-Or is this a static property at task launch?
+Do you mean replacing only the ones that use a nonconstant
+offset, or all of them? I guess changing all would avoid some
+really ugly magic macros, but the indirect function call and the
+switch() adds a few cycles of overhead every time and the code
+looks like it is micro-optimized for fast register access here.
 
--Tony
+      Arnd
