@@ -2,100 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D7336E85D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D46C36E861
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240219AbhD2KF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 06:05:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38826 "EHLO mail.kernel.org"
+        id S238073AbhD2KGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 06:06:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33010 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232258AbhD2KF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 06:05:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C0766142A;
-        Thu, 29 Apr 2021 10:05:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619690711;
-        bh=B4U6INbbFuXS+8tIhj+PBopurtIGvEU38c61RE6Eub0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bLXOyZU9r4x90zJaCqHW5KIYgp0EHTxJB/k2ST7qXSsJZNBYfx3gvIspOCwv+1vz3
-         yqtAkzvhxz936nWSSn2FGTU7aq2bTvLl5HDGx3Qvzqz9F6OIAlx7lP6DfpCs3iAnBW
-         f4U/VDleEEXsl/sRT7bOUs7Yfa8NxccafswaPOck=
-Date:   Thu, 29 Apr 2021 12:05:08 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: module parameters permission
-Message-ID: <YIqE1B3qMK+5AwQj@kroah.com>
-References: <20210429095819.GE1409@agape.jhs>
+        id S231543AbhD2KGw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 06:06:52 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 87C1CAF8C;
+        Thu, 29 Apr 2021 10:06:05 +0000 (UTC)
+Subject: Re: [PATCH -next] bcache: use DEFINE_MUTEX() for mutex lock
+To:     Muhammad Usama Anjum <musamaanjum@gmail.com>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     linux-bcache@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Hulk Robot <hulkci@huawei.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210405101453.15096-1-zhengyongjun3@huawei.com>
+ <42c3e33d-c20e-0fdd-f316-5084e33f9a3b@suse.de>
+ <d7f70ce31f6f61a50c05a5d5ba03582054f144fe.camel@gmail.com>
+ <0b4b7c5cc2f19d2d77a66c0d2ce42f63692174d9.camel@gmail.com>
+From:   Coly Li <colyli@suse.de>
+Message-ID: <dab84e1a-ccc5-354e-9ef4-caf738da2faa@suse.de>
+Date:   Thu, 29 Apr 2021 18:05:56 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429095819.GE1409@agape.jhs>
+In-Reply-To: <0b4b7c5cc2f19d2d77a66c0d2ce42f63692174d9.camel@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 11:58:20AM +0200, Fabio Aiuto wrote:
-> Hi all,
+On 4/29/21 12:19 AM, Muhammad Usama Anjum wrote:
+> On Tue, 2021-04-06 at 02:17 +0500, Muhammad Usama Anjum wrote:
+>> On Mon, 2021-04-05 at 22:02 +0800, Coly Li wrote:
+>>> On 4/5/21 6:14 PM, Zheng Yongjun wrote:
+>>>> mutex lock can be initialized automatically with DEFINE_MUTEX()
+>>>> rather than explicitly calling mutex_init().
+>>>>
+>>>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>>>> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+>>>
+>>> NACK. This is not the first time people try to "fix" this location...
+>>>
+>>> Using DEFINE_MUTEX() does not gain anything for us, it will generate
+>>> unnecessary extra size for the bcache.ko.
+>>> ines.
+>>
+>> How can the final binary have larger size by just static declaration?
+>> By using DEFINE_MUTEX, the mutex is initialized at compile time. It'll
+>> save initialization at run time and one line of code will be less also
+>> from text section. 
+>>
+>> #### with no change (dynamic initialization)
+>> size drivers/md/bcache/bcache.ko
+>>    text	   data	    bss	    dec	    hex	filename
+>>  187792	  25310	    152	 213254	  34106	drivers/md/bcache/bcache.ko
+>>
+>> #### with patch applied (static initialization)
+>>    text	   data	    bss	    dec	    hex	filename
+>>  187751	  25342	    120	 213213	  340dd	drivers/md/bcache/bcache.ko
+>>
+>> Module's binary size has decreased by 41 bytes with the path applied
+>> (x86_64 arch).
+>>
+> Anybody has any thoughts on it?
 > 
-> I'm trying to declare module parameters this way:
 > 
-> 
->    params: {
->         scull_major: i32 {
->             default: 0,
->             permissions: bindings::S_IRUGO as i32,
->             description: b"Major number",
->         },
->         scull_minor: i32 {
->             default: 0,
->             permissions: bindings::S_IRUGO as i32,
->             description: b"Minor number",
->         },
-> 
-> i.e. using S_IRUGO macro exposed by bindgen. But I have the
-> following compiler error:
-> 
-> error: proc macro panicked
->   --> samples/rust/rust_scull.rs:12:1
->    |
-> 12 | / module! {
-> 13 | |     type: RustScull,
-> 14 | |     name: b"rust_scull",
-> 15 | |     author: b"Alessandro Rubini, Jonathan Corbet",
-> ...  |
-> 44 | |     },
-> 45 | | }
->    | |_^
->    |
->    = help: message: Expected Literal
-> 
-> the same if I remove as i32 casts.
-> 
-> if I write permissions as in samples/rust/rust_module_parameters.rs
-> 
->     params: {
->         my_bool: bool {
->             default: true,
->             permissions: 0,
->             description: b"Example of bool",
->         },
->         my_i32: i32 {
->             default: 42,
->             permissions: 0o644, <-------
->             description: b"Example of i32",
->         },
-> 
-> I get no error.
-> 
-> What's the right way to use S_I*UGO macros?
 
-Not at all, use the octal values instead please.
 
-That's the way that we have declared a while ago, and I think
-checkpatch.pl will even catch if you try to do this in any new code.
-Please don't force us to deal with S_* defines in rust code as well.
+I am waiting for Yongjun's v4 patch to update the commit log, which was
+suggested by Pavel Goran.
 
-thanks,
-
-greg k-h
+Coly Li
