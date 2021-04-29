@@ -2,243 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 608C836ED19
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2942D36ED1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240744AbhD2PIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 11:08:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49040 "EHLO
+        id S233650AbhD2PJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 11:09:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240725AbhD2PII (ORCPT
+        with ESMTP id S240343AbhD2PJS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 11:08:08 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E6A0C061344
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:07:17 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id k127so11850701qkc.6
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:07:17 -0700 (PDT)
+        Thu, 29 Apr 2021 11:09:18 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31708C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:08:32 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id z6-20020a17090a1706b0290155e8a752d8so2644693pjd.4
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:08:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=EAJclNu5gCfIMzIcfLRFLOY6aPCs84wagw7Ng4g4WPE=;
-        b=aHldvDBxe0q18B3BPRssa004Y8f+LA+eNfmC343d8B7v9zweaJYeO3v5lbbcpxpFdD
-         zxUVgiedCqBuWpYmo5ozuMTYfZtT8ncqy22fRs/ZNXYLu1597O4A8yp7X/ZuLePuZjYD
-         5RG6bm27Y1Gk8N5BjYq10sJVVNBnY46UzPkTepRGwdEuROlMnN6vRYk1unGfegeDh0SR
-         OpNPfeyWRwzTui61dDupg6K+10Z0FeVqiVON/PUXYusIaytQmg3LhtVrtP9YEZWbxf5P
-         lauDMl6M8Gw635e0e4Iuwp/8LaXwJvv77OOLVOqi2yEOIy1wM0PPghGbNv1Hmd3P0d8W
-         vmXA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=GgXjPCns+v+eTZAmZafN0sCl2pErz4or/Z5oduKbOjM=;
+        b=NOB7NTePrT66Rm9kLn0amKEGyBEPyg8zzxAqifAtZtkD4aZYV58gYuqmp9WytOdFDV
+         scMvNF4k+BsBz5Q9Ww1c3wfh3MRfln13ka6MsVrR6fsuuUNoOxRFA/UhwwYT39G3PuG3
+         GAoF8SIIcUX1Gom+cT0grvMFxHAZ18mHOW5YrGEj4fQNcQEd+B5YJcHozhl0IKqqd5ek
+         zJQdMr41fpuy+qV3Y9zSMX/p3y419ZGiHxw8AZrtbY3LQRgGKK6PPJnc3lb+EGl07ozl
+         OLSv5ojaqQBu5F88jkgSRBPVWl7tlKiF5ZS5kIlj4bz1oav/zce+R3eRczcHVxGZlQNF
+         MlOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=EAJclNu5gCfIMzIcfLRFLOY6aPCs84wagw7Ng4g4WPE=;
-        b=ELL7nmzAHzttAtUM4N68IAJ7z76Fkp4DQ5MDR1zzWq/v5gLGsWAMZr2CokxO2gy3b2
-         615RmVVibUYTZCZaudITOL0niV1HCDDoxEbNYH5zH37svH5QuNx+SMt1hgYLjzImjfzV
-         K4NppHnZneimGQObOFuyVumN0mSrJeUdc8RPQZyqxilGN26tFflplapc6sb9HmtutUDS
-         Rq4mzt4Fwvu+ps31bFFBafu8JsjeOIYxLXMng7UE9h0hGqamLlzltGs0AM1aQFmo7VmX
-         eu4Pai4mBDL03520elrcZ768saLHYD+5kveLl6lxG+l0JMd5E0sO8jo48hY+Mscei00g
-         YICg==
-X-Gm-Message-State: AOAM532bvQ3wIrHfZRX+1AmgZ+HOjvkSIOaUeO6oYBzQSnXrK9zOvhhT
-        qEhpLk4dNPgQm1q+FWHwPQ44oA==
-X-Google-Smtp-Source: ABdhPJynTvhxR+rkdsECq11IqLL5FpLJSpryGxpvw+9lu+AtYYUuQ7KCw1ybLe4ADcT+GRZFglj2Qg==
-X-Received: by 2002:a37:f509:: with SMTP id l9mr129609qkk.172.1619708836520;
-        Thu, 29 Apr 2021 08:07:16 -0700 (PDT)
-Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.googlemail.com with ESMTPSA id j191sm2223822qke.131.2021.04.29.08.07.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 08:07:15 -0700 (PDT)
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        bjorn.andersson@linaro.org
-Cc:     ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: [Patch v4 7/7] crypto: qce: aead: Schedule fallback algorithm
-Date:   Thu, 29 Apr 2021 11:07:07 -0400
-Message-Id: <20210429150707.3168383-8-thara.gopinath@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210429150707.3168383-1-thara.gopinath@linaro.org>
-References: <20210429150707.3168383-1-thara.gopinath@linaro.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=GgXjPCns+v+eTZAmZafN0sCl2pErz4or/Z5oduKbOjM=;
+        b=V2LqMYKTPrH7pkebLxnbMBsHd0SpzYXBFMZ8iX38q2fLAXAIUzs9e21AyJ1zHTS2kM
+         ZAS1/rKthQpkK81ReDvf+qqUeNckv3ZFq4ght1AUngwnT6a8vQZc1XJbL6ofq6cCBMxe
+         Xre7U9J8TaiQflb+dokBU4jq2MgArLPtXuA8wTZlScY5gYLKU/7TdiM+a9gRTsuX949U
+         RRrxoLHeHuEqccQVMO+4Njlt9A74dm0bvwwzInjUT+hSehWIdLSXBYhn6PILh+zxcxBu
+         VXZftGzs/1DLhey8SKKFhWjKHNLkQ/sHgB0ODOLILbSpuKuN74un2a6F5IQqMW6JotMY
+         sBpA==
+X-Gm-Message-State: AOAM5322534/QwMgT/6qrr7n+OIv0QiLkJvj6KIXzPk8nqYPCOB1X4wx
+        Ihdk0sh0zCy4Li+O8Kh92jM=
+X-Google-Smtp-Source: ABdhPJzcYVTJIuTNAaStQGXkeKJ+uhEePxuz3QpkB7hBzFgUkPgetxIb2Qo8N30n0hWwJOIcUJLEyA==
+X-Received: by 2002:a17:90a:788d:: with SMTP id x13mr7891362pjk.140.1619708911670;
+        Thu, 29 Apr 2021 08:08:31 -0700 (PDT)
+Received: from localhost ([157.45.131.193])
+        by smtp.gmail.com with ESMTPSA id m12sm204486pgn.24.2021.04.29.08.08.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 29 Apr 2021 08:08:30 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 20:38:21 +0530
+From:   Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+To:     dan.j.williams@intel.com
+Cc:     vishal.l.verma@intel.com, dave.jiang@intel.com,
+        ira.weiny@intel.com, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org, sanjanasrinidhi1810@gmail.com
+Subject: [PATCH] drivers: nvdimm: region_devs.c: Add tabs instead of space
+Message-ID: <20210429150821.a23qgknksyqk6ajy@kewl-virtual-machine>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Qualcomm crypto engine does not handle the following scenarios and
-will issue an abort. In such cases, pass on the transformation to
-a fallback algorithm.
+Space has been replaced with a tab as mentioned in Lindent
+This is done to maintain code uniformity.
 
-- DES3 algorithms with all three keys same.
-- AES192 algorithms.
-- 0 length messages.
-
-Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
 ---
- drivers/crypto/qce/aead.c | 64 ++++++++++++++++++++++++++++++++-------
- drivers/crypto/qce/aead.h |  3 ++
- 2 files changed, 56 insertions(+), 11 deletions(-)
+ drivers/nvdimm/region_devs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/qce/aead.c b/drivers/crypto/qce/aead.c
-index ef66ae21eae3..6d06a19b48e4 100644
---- a/drivers/crypto/qce/aead.c
-+++ b/drivers/crypto/qce/aead.c
-@@ -512,7 +512,23 @@ static int qce_aead_crypt(struct aead_request *req, int encrypt)
- 	/* CE does not handle 0 length messages */
- 	if (!rctx->cryptlen) {
- 		if (!(IS_CCM(rctx->flags) && IS_DECRYPT(rctx->flags)))
--			return -EINVAL;
-+			ctx->need_fallback = true;
-+	}
-+
-+	/* If fallback is needed, schedule and exit */
-+	if (ctx->need_fallback) {
-+		/* Reset need_fallback in case the same ctx is used for another transaction */
-+		ctx->need_fallback = false;
-+
-+		aead_request_set_tfm(&rctx->fallback_req, ctx->fallback);
-+		aead_request_set_callback(&rctx->fallback_req, req->base.flags,
-+					  req->base.complete, req->base.data);
-+		aead_request_set_crypt(&rctx->fallback_req, req->src,
-+				       req->dst, req->cryptlen, req->iv);
-+		aead_request_set_ad(&rctx->fallback_req, req->assoclen);
-+
-+		return encrypt ? crypto_aead_encrypt(&rctx->fallback_req) :
-+				 crypto_aead_decrypt(&rctx->fallback_req);
- 	}
+diff --git a/drivers/nvdimm/region_devs.c b/drivers/nvdimm/region_devs.c
+index ef23119db574..e8a8fe3fc5a4 100644
+--- a/drivers/nvdimm/region_devs.c
++++ b/drivers/nvdimm/region_devs.c
+@@ -1089,7 +1089,7 @@ static struct nd_region *nd_region_create(struct nvdimm_bus *nvdimm_bus,
+ 	if (!nd_region->lane)
+ 		goto err_percpu;
  
- 	/*
-@@ -553,7 +569,7 @@ static int qce_aead_ccm_setkey(struct crypto_aead *tfm, const u8 *key,
- 		memcpy(ctx->ccm4309_salt, key + keylen, QCE_CCM4309_SALT_SIZE);
- 	}
+-        for (i = 0; i < nr_cpu_ids; i++) {
++	for (i = 0; i < nr_cpu_ids; i++) {
+ 		struct nd_percpu_lane *ndl;
  
--	if (keylen != AES_KEYSIZE_128 && keylen != AES_KEYSIZE_256)
-+	if (keylen != AES_KEYSIZE_128 && keylen != AES_KEYSIZE_256 && keylen != AES_KEYSIZE_192)
- 		return -EINVAL;
- 
- 	ctx->enc_keylen = keylen;
-@@ -562,7 +578,12 @@ static int qce_aead_ccm_setkey(struct crypto_aead *tfm, const u8 *key,
- 	memcpy(ctx->enc_key, key, keylen);
- 	memcpy(ctx->auth_key, key, keylen);
- 
--	return 0;
-+	if (keylen == AES_KEYSIZE_192)
-+		ctx->need_fallback = true;
-+
-+	return IS_CCM_RFC4309(flags) ?
-+		crypto_aead_setkey(ctx->fallback, key, keylen + QCE_CCM4309_SALT_SIZE) :
-+		crypto_aead_setkey(ctx->fallback, key, keylen);
- }
- 
- static int qce_aead_setkey(struct crypto_aead *tfm, const u8 *key, unsigned int keylen)
-@@ -593,20 +614,21 @@ static int qce_aead_setkey(struct crypto_aead *tfm, const u8 *key, unsigned int
- 		 * The crypto engine does not support any two keys
- 		 * being the same for triple des algorithms. The
- 		 * verify_skcipher_des3_key does not check for all the
--		 * below conditions. Return -EINVAL in case any two keys
--		 * are the same. Revisit to see if a fallback cipher
--		 * is needed to handle this condition.
-+		 * below conditions. Schedule fallback in this case.
- 		 */
- 		memcpy(_key, authenc_keys.enckey, DES3_EDE_KEY_SIZE);
- 		if (!((_key[0] ^ _key[2]) | (_key[1] ^ _key[3])) ||
- 		    !((_key[2] ^ _key[4]) | (_key[3] ^ _key[5])) ||
- 		    !((_key[0] ^ _key[4]) | (_key[1] ^ _key[5])))
--			return -EINVAL;
-+			ctx->need_fallback = true;
- 	} else if (IS_AES(flags)) {
- 		/* No random key sizes */
- 		if (authenc_keys.enckeylen != AES_KEYSIZE_128 &&
-+		    authenc_keys.enckeylen != AES_KEYSIZE_192 &&
- 		    authenc_keys.enckeylen != AES_KEYSIZE_256)
- 			return -EINVAL;
-+		if (authenc_keys.enckeylen == AES_KEYSIZE_192)
-+			ctx->need_fallback = true;
- 	}
- 
- 	ctx->enc_keylen = authenc_keys.enckeylen;
-@@ -617,7 +639,7 @@ static int qce_aead_setkey(struct crypto_aead *tfm, const u8 *key, unsigned int
- 	memset(ctx->auth_key, 0, sizeof(ctx->auth_key));
- 	memcpy(ctx->auth_key, authenc_keys.authkey, authenc_keys.authkeylen);
- 
--	return 0;
-+	return crypto_aead_setkey(ctx->fallback, key, keylen);
- }
- 
- static int qce_aead_setauthsize(struct crypto_aead *tfm, unsigned int authsize)
-@@ -632,15 +654,33 @@ static int qce_aead_setauthsize(struct crypto_aead *tfm, unsigned int authsize)
- 			return -EINVAL;
- 	}
- 	ctx->authsize = authsize;
--	return 0;
-+
-+	return crypto_aead_setauthsize(ctx->fallback, authsize);
- }
- 
- static int qce_aead_init(struct crypto_aead *tfm)
- {
--	crypto_aead_set_reqsize(tfm, sizeof(struct qce_aead_reqctx));
-+	struct qce_aead_ctx *ctx = crypto_aead_ctx(tfm);
-+
-+	ctx->need_fallback = false;
-+	ctx->fallback = crypto_alloc_aead(crypto_tfm_alg_name(&tfm->base),
-+					  0, CRYPTO_ALG_NEED_FALLBACK);
-+
-+	if (IS_ERR(ctx->fallback))
-+		return PTR_ERR(ctx->fallback);
-+
-+	crypto_aead_set_reqsize(tfm, sizeof(struct qce_aead_reqctx) +
-+				crypto_aead_reqsize(ctx->fallback));
- 	return 0;
- }
- 
-+static void qce_aead_exit(struct crypto_aead *tfm)
-+{
-+	struct qce_aead_ctx *ctx = crypto_aead_ctx(tfm);
-+
-+	crypto_free_aead(ctx->fallback);
-+}
-+
- struct qce_aead_def {
- 	unsigned long flags;
- 	const char *name;
-@@ -738,11 +778,13 @@ static int qce_aead_register_one(const struct qce_aead_def *def, struct qce_devi
- 	alg->encrypt			= qce_aead_encrypt;
- 	alg->decrypt			= qce_aead_decrypt;
- 	alg->init			= qce_aead_init;
-+	alg->exit			= qce_aead_exit;
- 
- 	alg->base.cra_priority		= 300;
- 	alg->base.cra_flags		= CRYPTO_ALG_ASYNC |
- 					  CRYPTO_ALG_ALLOCATES_MEMORY |
--					  CRYPTO_ALG_KERN_DRIVER_ONLY;
-+					  CRYPTO_ALG_KERN_DRIVER_ONLY |
-+					  CRYPTO_ALG_NEED_FALLBACK;
- 	alg->base.cra_ctxsize		= sizeof(struct qce_aead_ctx);
- 	alg->base.cra_alignmask		= 0;
- 	alg->base.cra_module		= THIS_MODULE;
-diff --git a/drivers/crypto/qce/aead.h b/drivers/crypto/qce/aead.h
-index 3d1f2039930b..efb8477cc088 100644
---- a/drivers/crypto/qce/aead.h
-+++ b/drivers/crypto/qce/aead.h
-@@ -19,6 +19,8 @@ struct qce_aead_ctx {
- 	unsigned int enc_keylen;
- 	unsigned int auth_keylen;
- 	unsigned int authsize;
-+	bool need_fallback;
-+	struct crypto_aead *fallback;
- };
- 
- struct qce_aead_reqctx {
-@@ -39,6 +41,7 @@ struct qce_aead_reqctx {
- 	u8 ccm_nonce[QCE_MAX_NONCE];
- 	u8 ccmresult_buf[QCE_BAM_BURST_SIZE];
- 	u8 ccm_rfc4309_iv[QCE_MAX_IV_SIZE];
-+	struct aead_request fallback_req;
- };
- 
- static inline struct qce_alg_template *to_aead_tmpl(struct crypto_aead *tfm)
+ 		ndl = per_cpu_ptr(nd_region->lane, i);
 -- 
-2.25.1
+2.17.1
 
