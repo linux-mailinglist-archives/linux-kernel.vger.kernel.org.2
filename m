@@ -2,147 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C49F36E25D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 02:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CAFF36E25E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 02:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231610AbhD2AIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 20:08:31 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:53849 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhD2AIa (ORCPT
+        id S232035AbhD2AJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 20:09:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34669 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231627AbhD2AJf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 20:08:30 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210429000742epoutp02f3e5ee81425c5802546a905a3ca5d68f~6K4Qlx4U42761227612epoutp02j
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 00:07:42 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210429000742epoutp02f3e5ee81425c5802546a905a3ca5d68f~6K4Qlx4U42761227612epoutp02j
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1619654862;
-        bh=BE/TME4CiVTJ9+/nAG2rbZFGe6UK/I6jrCxlF+ekePs=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=KMJF6dN4zN0VXfreDa+VuynVAf/7sUFfhFbxdZ9PSdkGiDE6nvyLxjhbGxDReidwr
-         rP0hllHnQGhWkyuWrS8wrtUnqr3p1x4MsxugAv6KZ3dbEnzuyCftbhbzymoE1w1EKx
-         IuqWbyhtfW8tVwurvxcnoSixbayAppmq8JcRW6/o=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20210429000741epcas1p43570f019561fe71fea71c9dee09df2e8~6K4QCjalA0040000400epcas1p44;
-        Thu, 29 Apr 2021 00:07:41 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.165]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4FVwms0FQDz4x9QK; Thu, 29 Apr
-        2021 00:07:41 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        7E.55.09578.CC8F9806; Thu, 29 Apr 2021 09:07:40 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210429000740epcas1p2f0638dd4cbf636663fd7ef7108c22c57~6K4OaPKvv0998309983epcas1p2P;
-        Thu, 29 Apr 2021 00:07:40 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210429000740epsmtrp23b49ec0a1d7e8c7125d6fbff9180defb~6K4OZMPBa0820508205epsmtrp2n;
-        Thu, 29 Apr 2021 00:07:40 +0000 (GMT)
-X-AuditID: b6c32a35-fcfff7000000256a-76-6089f8cc8e28
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        29.A7.08163.BC8F9806; Thu, 29 Apr 2021 09:07:40 +0900 (KST)
-Received: from namjaejeon01 (unknown [10.89.31.77]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210429000739epsmtip203142cd272020caec2157d10ca1980bb~6K4OHnDqB1239812398epsmtip2b;
-        Thu, 29 Apr 2021 00:07:39 +0000 (GMT)
-From:   "Namjae Jeon" <namjae.jeon@samsung.com>
-To:     "'J. Bruce Fields'" <bfields@fieldses.org>
-Cc:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <smfrench@gmail.com>, <senozhatsky@chromium.org>,
-        <hyc.lee@gmail.com>, <viro@zeniv.linux.org.uk>, <hch@lst.de>,
-        <hch@infradead.org>, <ronniesahlberg@gmail.com>,
-        <aurelien.aptel@gmail.com>, <aaptel@suse.com>,
-        <sandeen@sandeen.net>, <dan.carpenter@oracle.com>,
-        <colin.king@canonical.com>, <rdunlap@infradead.org>,
-        <willy@infradead.org>
-In-Reply-To: <20210428191325.GA7400@fieldses.org>
-Subject: RE: [PATCH v2 00/10] cifsd: introduce new SMB3 kernel server
-Date:   Thu, 29 Apr 2021 09:07:39 +0900
-Message-ID: <005c01d73c8b$ab309ed0$0191dc70$@samsung.com>
+        Wed, 28 Apr 2021 20:09:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619654929;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=r7GVrafhqBt/NzEHPShnR5kpF2aomX40MHGlLdQ6KOU=;
+        b=InhhHjuE7QNDE2xwEwSZW8DUThLmnPvaaSs0kU1Eyw3NEjLXn3NLWzZE8xahzwVMkTcGxi
+        kDqifjMo6uBgA7ewdKGpxr4qL23ZVYUl/gX30xMHl4truBdktYXCMiXEZtjHx1HdzpYGvE
+        mW4C7zWX1uEcNrI97XX9uB/fu32sTiE=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-414-f9WpmmTaNrqsKr82kTU0xg-1; Wed, 28 Apr 2021 20:08:47 -0400
+X-MC-Unique: f9WpmmTaNrqsKr82kTU0xg-1
+Received: by mail-qk1-f197.google.com with SMTP id m4-20020a37a3040000b02902e6776757c3so1878131qke.13
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 17:08:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=r7GVrafhqBt/NzEHPShnR5kpF2aomX40MHGlLdQ6KOU=;
+        b=Rn5FhgqmYAFgJOIrF/zt9eh5K5AiGK6bI0htpWxRCVtONeofeF/Qx/Rk2C5+WPfWhy
+         VA60S7bALrGKDVFABxuxSoik5+FqCFZE7yGxwEPUKVwrBdvRli8oqcMPOONuOmPOTxxZ
+         +AN7aWSPKFFlCIUBKP/DOaQC6OpVJJoZal7bc96d6kG/sW+InFNsxnDzHPyR4a2G6wqB
+         3ilRpQlbXYahZ558swPgH6VppJrd6j7ujqJMxU7cpSUwfZjexNARfHobbq/JUuwfu4tZ
+         CfpLXwbqhuSh84X4c0HHAX27aSU/tbG/P6MxHVKyDal3msyh2nrIo+FNTRodtRJMcvOE
+         Huyg==
+X-Gm-Message-State: AOAM530jEvp3YeGHs5pJa1utBCSavR9McLaeTZm6ra0d+wg0sgBLTrO0
+        Zeb4BSOewI/pBMPhq2ANgEsPfo/a2LGcVhzMB4q6OsC3Ix6cpI8JhISiU58ifnjNW2v1HIJMPgF
+        9d+BZufbhJerkknDb1f/VSEo+
+X-Received: by 2002:ac8:7947:: with SMTP id r7mr28544012qtt.104.1619654927363;
+        Wed, 28 Apr 2021 17:08:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwQLfa/KlJZWVO0hAU0gE3hKxnxPGdpA0sAAuc1Zb74f4W5OFsDvnexehY7/o3Vt2whfyC1ZQ==
+X-Received: by 2002:ac8:7947:: with SMTP id r7mr28543999qtt.104.1619654927126;
+        Wed, 28 Apr 2021 17:08:47 -0700 (PDT)
+Received: from xz-x1 (bras-base-toroon474qw-grc-77-184-145-104-227.dsl.bell.ca. [184.145.104.227])
+        by smtp.gmail.com with ESMTPSA id a22sm1020526qtp.80.2021.04.28.17.08.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 17:08:46 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 20:08:45 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] userfaultfd: release page in error path to avoid
+ BUG_ON
+Message-ID: <20210429000845.GA8339@xz-x1>
+References: <20210428180109.293606-1-axelrasmussen@google.com>
+ <20210428230858.348400-1-axelrasmussen@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQEyw8UcQFiOkygfL6nbawEwj6LAkgNL6ZwbA1HSEiar3p7MkA==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xTVxzHc+69vb0g1UsBPWGJ1Ca+WHjUUrgYWAygu4H9Ab6mbgm9ode2
-        s7RdHzo1ww4jrw2kugcWRAdi5hzP4bAgOmFA0CY+BmaO9wIGhbpCEdwQtpbLMv77nN/5/s73
-        fM+DQIV/4MGEWmtiDVpGI8Z9sZ/at0aEOV7nyyMHSrZTnznvY1TXxAKfGv/yEDV/vRCnJha/
-        waj7xRUIde16B0I9GfqTT91q7caoX5vLcMrZ75ktLJrmUWd6QqmW+gqcmhxvx6kHC108av51
-        Gb7Dn7ZZCnG61PIIo+u+ysZpu22AT//4XSjd8tSC01Njv2N0Y+UIQtc29mK0u2E93TDqRFJX
-        HdLEqVhGwRpErDZDp1BrlfHilD3piemy6EhJmCSWihGLtEwmGy9Oei81bJda48kkFh1lNGZP
-        KZUxGsUR78QZdGYTK1LpjKZ4MatXaPSSSH24kck0mrXK8Axd5nZJZOQ2mUcp16jqf5lC9D/7
-        feIeU1lACVEAfAhIRsHiHBe/APgSQvImgE8qXyHcYBrAe8UvcG7gBrDwYhMoAMRSS4k7i6s3
-        A/h40A28SwnJcQAnW7O8jJNhcPHNHdzLgWQ47DvrXLJAyTIU9vflLjX4kBL4w6QL8XIAuRPe
-        rVlEvYyRG2Hn7ekljYCMhdWdLpRjf9h9YRTzMkqGwCZnGcplEMG/xq7yOLMEaH9TzuM0gbA0
-        P2dZ87kPbKoWcpwEKzvr+RwHwBddjcscDN0vW3Eu5Ek4dWe5NQ/A8bl4jqXwaW0dzytBya2w
-        tjmCK2+A9vmLgHNdDV+++oLHrSKAeTnLphth0eN2hOO3YEGui18MxLYVuWwrctlW7N/2v9ll
-        gH0P1rJ6Y6aSNUr0kpU33QCWHnuo7CawOl3hbQAhQBuABCoOFMzX5MuFAgVz/ARr0KUbzBrW
-        2AZknpO2osFBGTrPb9Ga0iWybVKplIqKjomWScXrBMrEk3IhqWRM7BGW1bOG//oQwifYgjiY
-        7LyjZ6VDXze38CtM8xUHd6ZsVkgv3Nhz+9vh8nvniFNvryYS/D8u5RFz06qIECs/YO2jvqC5
-        ykRnql9a+ZmxmiLq4Udp9uSq5H2xO1q6BZsfOg7Ht/Xlnp6dXj/T2vuMqbulfncg+bTfqX6H
-        MNMfO75rSPBbt2/qP5ap/hp71d6DamzTmjTD5XrYeUwdHtC/6YZC5nAoOi4dG3m+KiRmv9V+
-        pSHFGXRi97C1JeOA1XRtQ2Pemg97k9NHlJ/ORB8J2TvUc8Usz76U+/7z2av7Bh/E/d2XJT+w
-        Dmc/GNAJFhJNozNR1f5+d5PM56J2Vz47XHzeNTvcsyUjpVw0MdhQ1ZEgxowqRhKKGozMv9xr
-        8al1BAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrLIsWRmVeSWpSXmKPExsWy7bCSvO6ZH50JBqc7mC0a355msTj++i+7
-        xYspURa/V/eyWbz+N53F4vSERUwWK1cfZbK4dv89u8WevSdZLC7vmsNm8fYOULa37xOrResV
-        LYvdGxexWbx5cZjN4vzf46wWv3/MYXMQ9JjV0MvmMbvhIovHhqlNbB47Z91l99i8Qstj980G
-        No+PT2+xeGxZ/JDJY/2WqywenzfJeWx68pYpgDuKyyYlNSezLLVI3y6BK2PjkY9MBQd4Kj4/
-        zWhgnMHRxcjBISFgIjHjc10XIxeHkMAORokjsxvZuxg5geLSEsdOnGGGqBGWOHy4GKLmGaPE
-        4m+TmEBq2AR0Jf792c8GYosI6Enc7n/LDlLELLCBWWJH8102iI7NjBIbL51hBKniFDCUWPPm
-        A1i3sICrxMF1/5hBbBYBVYlj+z6B1fAKWEqsPfaBGcIWlDg58wkLyBXMQBvaNoKVMAvIS2x/
-        O4cZ4lAFiZ9Pl7FCHOEksfPPPFaIGhGJ2Z1tzBMYhWchmTQLYdIsJJNmIelYwMiyilEytaA4
-        Nz232LDAKC+1XK84Mbe4NC9dLzk/dxMjOMa1tHYw7ln1Qe8QIxMH4yFGCQ5mJRHe3+s6E4R4
-        UxIrq1KL8uOLSnNSiw8xSnOwKInzXug6GS8kkJ5YkpqdmlqQWgSTZeLglGpg2tJ372jgMo25
-        6tkbLO6XJkXL6xV+6BA/k/DimXeT2vYC+ahNHyRf1te/fSAdqzZXu3WqvLDoVrvwp1VpV4rF
-        Vm7ulNvTtClyVdDlmJ2ajwsvS3492hznWunC+eqMS0h8ROXV1TZL3S682usiOv/kifdLDacs
-        figez673o2Tdv/e/tpd7qfEUVC1R+rqKv1dhO2vzr7+lJ250R2/WfyNsJfo9aZ5ngOyR0lvh
-        vq5aiZkdP66dC+rb8L547pxnfLs7LnZ3uD8NUxdYaz7rwPmfXzpn5u5S+h35iDdDrm+x4K8p
-        /pmbGqZeVX/XHPdR+f0DlrvHFRWu1Oj0/Pr8plaLvVRxcqCF9CPuIAe3tZsClFiKMxINtZiL
-        ihMBMwEakWADAAA=
-X-CMS-MailID: 20210429000740epcas1p2f0638dd4cbf636663fd7ef7108c22c57
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210422003835epcas1p246c40c6a6bbc0e9f5d4ccf9b69bef0d7
-References: <CGME20210422003835epcas1p246c40c6a6bbc0e9f5d4ccf9b69bef0d7@epcas1p2.samsung.com>
-        <20210422002824.12677-1-namjae.jeon@samsung.com>
-        <20210428191325.GA7400@fieldses.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210428230858.348400-1-axelrasmussen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 28, 2021 at 04:08:58PM -0700, Axel Rasmussen wrote:
+> Consider the following sequence of events:
+> 
+> 1. Userspace issues a UFFD ioctl, which ends up calling into
+>    shmem_mfill_atomic_pte(). We successfully account the blocks, we
+>    shmem_alloc_page(), but then the copy_from_user() fails. We return
+>    -ENOENT. We don't release the page we allocated.
+> 2. Our caller detects this error code, tries the copy_from_user() after
+>    dropping the mmap_lock, and retries, calling back into
+>    shmem_mfill_atomic_pte().
+> 3. Meanwhile, let's say another process filled up the tmpfs being used.
+> 4. So shmem_mfill_atomic_pte() fails to account blocks this time, and
+>    immediately returns - without releasing the page.
+> 
+> This triggers a BUG_ON in our caller, which asserts that the page
+> should always be consumed, unless -ENOENT is returned.
+> 
+> To fix this, detect if we have such a "dangling" page when accounting
+> fails, and if so, release it before returning.
+> 
+> Fixes: cb658a453b93 ("userfaultfd: shmem: avoid leaking blocks and used blocks in UFFDIO_COPY")
+> Reported-by: Hugh Dickins <hughd@google.com>
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
-> On Thu, Apr 22, 2021 at 09:28:14AM +0900, Namjae Jeon wrote:
-> > ACLs                           Partially Supported. only DACLs available, SACLs
-> >                                (auditing) is planned for the future. For
-> >                                ownership (SIDs) ksmbd generates random subauth
-> >                                values(then store it to disk) and use uid/gid
-> >                                get from inode as RID for local domain SID.
-> >                                The current acl implementation is limited to
-> >                                standalone server, not a domain member.
-> >                                Integration with Samba tools is being worked on to
-> >                                allow future support for running as a domain member.
-> 
-Hi Bruce,
-> How exactly is this implementing ACLs?  I grepped through the code a bit and couldn't quite figure it
-> out--it looked like maybe it's both converting to a POSIX ACL and storing the full SBM ACL in an xattr,
-> is that correct?  When you read an ACL, and both are present, which do you use?
-If 'vfs objects = acl_xattr' parameter is defined in smb.conf, ksmbd store both.
-If not, only posix acl will be stored. To avoid translation from posix acl to ntacl from request of client,
-ksmbd use ntacl in xattr first.
-> 
-> Also it looked like there's some code from fs/nfsd/nfs4acl.c, could we share that somehow instead of
-> copying?
-Hm.. I do not know how to share the code with nfsd at present. Maybe we can discuss it again after upstream ?
-Any thought ?
-> 
-> --b.
+Reviewed-by: Peter Xu <peterx@redhat.com>
+
+Thanks,
+
+-- 
+Peter Xu
 
