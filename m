@@ -2,87 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DDFE36EB86
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 15:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F75C36EB95
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 15:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236635AbhD2Nr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 09:47:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42126 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232867AbhD2Nrz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 09:47:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5264D6143A;
-        Thu, 29 Apr 2021 13:47:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619704027;
-        bh=nEj5ApFsa05rNr3edqc+iuuZeqpPkKOq8myr5Uh93pI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lMzeK9w35hZmAxzPn2Od8x3u6jOSa3X0AOjBnNPHhia2O/xtF4lsWufox79JtzPlZ
-         k3wyGBpiKyb0ImfjYLsaKyMhezxWPtAf1+HcL1xDcfd8EEIJpun+stbebaqqanQB2p
-         WX1gwRJCPCYuBYxVdIZl+WpKkZdoI7MmnBp/u4EQ=
-Date:   Thu, 29 Apr 2021 15:47:05 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kangjie Lu <kjlu@umn.edu>, Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/7] Revert "regulator: tps65910: fix a missing check of
- return value"
-Message-ID: <YIq42bcPgic3y6iQ@kroah.com>
-References: <20210429130811.3353369-1-gregkh@linuxfoundation.org>
- <20210429130811.3353369-6-gregkh@linuxfoundation.org>
+        id S239194AbhD2Nss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 09:48:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233862AbhD2Nsr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 09:48:47 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71ACFC06138B;
+        Thu, 29 Apr 2021 06:48:00 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id a11so3884809plh.3;
+        Thu, 29 Apr 2021 06:48:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PlH3+2vfZTyuFfAqFBDTmRaRDdNNygl3Tgthx29aiWE=;
+        b=C0AkQKD0SAMi4Wyu71J5JywvoQzblYpGXd4pTiwkoBY3JmovzQKSQaKYVb8Jd2UDHb
+         gagiQtYRjqKVBxw5zTR5vGN9ucSKnzuNWiixecHwx1D3q8E/JwwKH0/T8E6ykWJUi+nQ
+         Mw1IKlzIchnCInVjXwXRkae3CUsX4B+aiyTTIj403sEi+K+vg9TPyE5UeCM8lRNv6Fc2
+         SgOmVEVGVw1relf9JjfDWdz8RGkMkkKvi08uw/nO1aYBW0eqEH1kiHS4xlBtjIqjLBSV
+         hRVXwGw6I2qcFtYYJ28dVdWrOvJOMRmiwKkcTYwZIDsjcfeGXkP4QeO6FLzIUCzjThOg
+         8Cdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PlH3+2vfZTyuFfAqFBDTmRaRDdNNygl3Tgthx29aiWE=;
+        b=XXuOcglCxi7AOIAnP7KwQAIgm1xAxLu9FJ6je988NGUABqIAUbw4b3ZEVqZmJEHaBs
+         2SxYsetEC6oCGLQ1S49STBJ4BiSfL1IBkz+n/PK7dsRmtu2rFZvGy7xIwMdABvsJrSeV
+         80a15X4LzoVMqSLn/GJ6fFUnnLL2kYAZoEs4ZX86GkJTG4sdgnrBjPGS3K/Q0PvojJej
+         YJTcIGOpieGPVmOq3N0YSSGFB137C7qYX1ZIpNqkBBDirMmstIN7ast2pDyRbFlq/Bk1
+         wGBXyRaroiImSnGR2lzY1n+AK8vNBS5Bav905RdBsxvHC3zXidtfDYVYHVXyK6UZKwpi
+         uVNQ==
+X-Gm-Message-State: AOAM533InAWbWO99BikUpbm6wt3+koKeGUGsGHBRWFOPdvaKSFfEfW0T
+        XtAmPIzjxSDO3vJY0jFLOcU=
+X-Google-Smtp-Source: ABdhPJxcrHPq0Yh2vzbld5D+XYsyxSrLVwVp1i8jSMbpNjL77MDoBAE9H02D6VqQOX42z8fGsjVxsA==
+X-Received: by 2002:a17:903:1243:b029:ed:8298:7628 with SMTP id u3-20020a1709031243b02900ed82987628mr6112715plh.11.1619704080057;
+        Thu, 29 Apr 2021 06:48:00 -0700 (PDT)
+Received: from localhost.localdomain ([103.248.31.149])
+        by smtp.googlemail.com with ESMTPSA id n9sm37175pgt.35.2021.04.29.06.47.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 06:47:59 -0700 (PDT)
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Ryder Lee <ryder.lee@mediatek.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Amey Narkhede <ameynarkhede03@gmail.com>
+Subject: [PATCH] PCI: mediatek: Verify whether the free_ck clock is ungated or not
+Date:   Thu, 29 Apr 2021 19:17:49 +0530
+Message-Id: <20210429134749.75157-1-ameynarkhede03@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429130811.3353369-6-gregkh@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 03:08:09PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit cd07e3701fa6a4c68f8493ee1d12caa18d46ec6a.
-> 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper submitted to the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota) but later
-> withdrawn.
-> 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: Kangjie Lu <kjlu@umn.edu>
-> Cc: Mark Brown <broonie@kernel.org>
-> ---
->  drivers/regulator/tps65910-regulator.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/regulator/tps65910-regulator.c b/drivers/regulator/tps65910-regulator.c
-> index 1d5b0a1b86f7..8ad1ecc1559f 100644
-> --- a/drivers/regulator/tps65910-regulator.c
-> +++ b/drivers/regulator/tps65910-regulator.c
-> @@ -1098,10 +1098,8 @@ static int tps65910_probe(struct platform_device *pdev)
->  	platform_set_drvdata(pdev, pmic);
->  
->  	/* Give control of all register to control port */
-> -	err = regmap_set_bits(pmic->mfd->regmap, TPS65910_DEVCTRL,
-> +	regmap_set_bits(pmic->mfd->regmap, TPS65910_DEVCTRL,
->  				DEVCTRL_SR_CTL_I2C_SEL_MASK);
-> -	if (err < 0)
-> -		return err;
->  
->  	switch (tps65910_chip_id(tps65910)) {
->  	case TPS65910:
-> -- 
-> 2.31.1
-> 
+Verify that the free_ck clock is ungated on device resume
+by checking return value of clk_prepare_enable().
 
-This looks correct to me, I'll drop the revert.
+Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+---
+ drivers/pci/controller/pcie-mediatek.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-thanks,
+diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
+index 23548b517..9b13214bf 100644
+--- a/drivers/pci/controller/pcie-mediatek.c
++++ b/drivers/pci/controller/pcie-mediatek.c
+@@ -1154,11 +1154,14 @@ static int __maybe_unused mtk_pcie_resume_noirq(struct device *dev)
+ {
+ 	struct mtk_pcie *pcie = dev_get_drvdata(dev);
+ 	struct mtk_pcie_port *port, *tmp;
++	int ret;
 
-greg k-h
+ 	if (list_empty(&pcie->ports))
+ 		return 0;
+
+-	clk_prepare_enable(pcie->free_ck);
++	ret = clk_prepare_enable(pcie->free_ck);
++	if (ret)
++		return ret;
+
+ 	list_for_each_entry_safe(port, tmp, &pcie->ports, list)
+ 		mtk_pcie_enable_port(port);
+--
+2.31.1
