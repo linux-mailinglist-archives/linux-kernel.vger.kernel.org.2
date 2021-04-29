@@ -2,174 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6768236F199
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 23:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B8436F19E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 23:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234423AbhD2VNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 17:13:10 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:38833 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233284AbhD2VNI (ORCPT
+        id S236882AbhD2VNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 17:13:16 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:58834 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234795AbhD2VNM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 17:13:08 -0400
-X-Originating-IP: 78.45.89.65
-Received: from [192.168.1.23] (ip-78-45-89-65.net.upcbroadband.cz [78.45.89.65])
-        (Authenticated sender: i.maximets@ovn.org)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 5AA0F1BF209;
-        Thu, 29 Apr 2021 21:12:14 +0000 (UTC)
-To:     Ilya Maximets <i.maximets@ovn.org>, jean.tourrilhes@hpe.com,
-        Tonghao Zhang <xiangxia.m.yue@gmail.com>
-Cc:     Pravin B Shelar <pshelar@ovn.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andy Zhou <azhou@ovn.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        ovs dev <dev@openvswitch.org>, William Tu <u9012063@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Davide Caratti <dcaratti@redhat.com>
-References: <20210421135747.312095-1-i.maximets@ovn.org>
- <CAMDZJNVQ64NEhdfu3Z_EtnVkA2D1DshPzfur2541wA+jZgX+9Q@mail.gmail.com>
- <20210428064553.GA19023@labs.hpe.com>
- <04bd0073-6eb7-6747-a0b1-3c25cca7873a@ovn.org>
-From:   Ilya Maximets <i.maximets@ovn.org>
-Subject: Re: [PATCH net] openvswitch: meter: remove rate from the bucket size
- calculation
-Message-ID: <e6d2ed86-9088-7d9a-85c3-a8168d213def@ovn.org>
-Date:   Thu, 29 Apr 2021 23:12:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 29 Apr 2021 17:13:12 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 151021C0BA1; Thu, 29 Apr 2021 23:12:24 +0200 (CEST)
+Date:   Thu, 29 Apr 2021 23:12:23 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Martin Botka <martin.botka1@gmail.com>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v6 2/4] leds: Add driver for Qualcomm LPG
+Message-ID: <20210429211223.GA5480@amd>
+References: <20201021201224.3430546-1-bjorn.andersson@linaro.org>
+ <20201021201224.3430546-3-bjorn.andersson@linaro.org>
+ <20201029181357.GE26053@duo.ucw.cz>
+ <YIn50NW+Pimqfsih@builder.lan>
 MIME-Version: 1.0
-In-Reply-To: <04bd0073-6eb7-6747-a0b1-3c25cca7873a@ovn.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="wRRV7LY7NUeQGEoC"
+Content-Disposition: inline
+In-Reply-To: <YIn50NW+Pimqfsih@builder.lan>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/28/21 1:22 PM, Ilya Maximets wrote:
-> On 4/28/21 8:45 AM, Jean Tourrilhes wrote:
->> On Wed, Apr 28, 2021 at 02:24:10PM +0800, Tonghao Zhang wrote:
->>> Hi Ilya
->>> If we set the burst size too small, the meters of ovs don't work.
->>
->> 	Most likely, you need to set the burst size larger.
->> 	A quick Google on finding a good burst size :
->> https://www.juniper.net/documentation/us/en/software/junos/routing-policy/topics/concept/policer-mx-m120-m320-burstsize-determining.html
-> 
-> +1.
-> Tonghao, If you're configuring burst size too low, meter will not pass
-> packets.  That's expected behavior.  In your example with 1400B packets
-> and 1500B (12 kbit) burst size there is a very high probability that a
-> lot of packets will be dropped and not pass the meter unless you're
-> sending them in a very precise points in time.  I don't think that anyone
-> will recommend setting burst size so close to the MTU.  The article above
-> suggests using 10x MTU value, but I don't know if that will be enough
-> with high speed devices.
-> 
->>
->> 	Now, the interesting question, is the behaviour of OVS
->> different from a standard token bucket, such as a kernel policer ?
-> 
-> I didn't test it, but I looked at the implementation in
-> net/sched/act_police.c and net/sched/sch_tbf.c, and they should work
-> in a same way as this patch, i.e. it's a classic token bucket where
-> burst is a burst and nothing else.  These implementations uses burst
-> in nanoseconds instead of bytes, but that doesn't matter (nanoseconds
-> calculated from the rate and burst in bytes specified by user).
-> For example, net/sched/act_police.c works like this:
-> 
->   toks = min_t(s64, now - police->tcfp_t_c, p->tcfp_burst);
->           ^---- calculating how many tokens needs to be added 
->   toks += police->tcfp_toks; <-- also adding all existing tokens
->   if (toks > p->tcfp_burst)
->       toks = p->tcfp_burst;  <-- hard limit of tokens by the burst size
->   toks -= (s64)psched_l2t_ns(&p->rate, qdisc_pkt_len(skb));
->         ^-- spending tokens to pass the packet
->   if (toks >= 0) {           <-- Did we have enough tokens?
->       /* Packet passed. */
->       police->tcfp_t_c = now;
->       police->tcfp_toks = toks;
->   }
-> 
-> net/sched/sch_tbf.c works in almost exactly same way.  So, there is
-> *no algorithmic difference* here.
-> 
-> ---
-> 
-> There is one difference though.  I said that it doesn't matter that
-> tc uses time instead of bytes as a measure for tokens, but it actually
-> does matter because time is calculated based on the configured rate,
-> but applied to the actual rate.  Let me explain:
-> 
-> Assuming configuration "rate 200mbit burst 20K" as in example below.
-> iproute2 will calculate burst using tc_calc_xmittime function:
->   https://github.com/shemminger/iproute2/blob/9f366536edb5158343152604e82b968be46dbf26/tc/tc_core.c#L60
-> 
-> So the burst configuration passed to kernel will be:
-> 
->  TIME_UNITS_PER_SEC(1000000) * (20 * 1024) / (200 * 1024*1024/8) = 781 usec
->          10^-6                     bytes           bytes/sec
-> 
-> That means that burst is not 20K bytes as configured, but any number of
-> bytes in 781 usec window regardless of a line rate.
 
-OK.  I found my mistake here.  Even though the burst size is in units of
-time, it doesn't matter because, when tokens are consumed, algorithm
-subtracts time needed to pass a packet with a configured rate (see
-psched_l2t_ns() function).  This evens out the difference.
+--wRRV7LY7NUeQGEoC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So, everything is perfectly fine here. :)
+Hi!
 
-Sorry for the noise.
+> > > +static int lpg_add_pwm(struct lpg *lpg)
+> > > +{
+> > > +	int ret;
+> > > +
+> > > +	lpg->pwm.base =3D -1;
+> > > +	lpg->pwm.dev =3D lpg->dev;
+> > > +	lpg->pwm.npwm =3D lpg->num_channels;
+> > > +	lpg->pwm.ops =3D &lpg_pwm_ops;
+> > > +
+> > > +	ret =3D pwmchip_add(&lpg->pwm);
+> > > +	if (ret)
+> > > +		dev_err(lpg->dev, "failed to add PWM chip: ret %d\n", ret);
+> > > +
+> > > +	return ret;
+> > > +}
+> >=20
+> > Do we need to do this? I'd rather have LED driver, than LED+PWM
+> > driver...
+> >=20
+>=20
+> Yes, I believe we need to do this.
+>=20
+> Because each piece of hardware has N channels, which can be wired to
+> LEDs, grouped with other channels and wired to multicolor LEDs or be
+> used as PWM signals. And this configuration is board specific.
+>=20
+> One such example is the laptop in front of me, which has 3 channels
+> wired to an RGB LED and 1 channel wired as a backlight control signal
+> (i.e. using pwm-backlight).  Another example is a devboard where the
+> 4 channels are wired to 4 LEDs.
 
-> For example, if traffic goes from 10 Gbps interface, effective burst size
-> will be 10^9 / 8 * 781 * 10^-6 = 97K which is almost 5 times higher than
-> the configured value.  And the difference scales linearly with the increase
-> of the line rate speed.  For 100G interface it will be 970K.
-> 
-> It might be much more noticeable with lower configured rate.
-> For "rate 10mbit burst 20K", real burst interval will be 15.6 msec, which
-> will translate into 1.9M burst size for a 10G line rate, which is almost
-> 100 times larger than configured 20K.  And it will be 19M for a 100Gbps
-> interface, making the average rate triple as high as configured for a
-> policer.
-> 
-> All in all this looks more like an issue of TC and iproute implementation.
-> IMHO, tc command should not allow configuration of burst in bytes just
-> because it can not configure that in kernel and therefore can not guarantee
-> that behavior.  Configuration should be in micro/nanoseconds instead.
-> 
-> CC: Cong, Davide
-> Maybe someone from the TC side can comment on that?
-> 
-> We can try to mimic this behavior in OVS, but I'm not sure if it's correct.
-> Current OVS implementation, unlike TC, guarantees the burst size in bytes.
-> And it's also a completely different kind of difference with OVS meters, so
-> unrelated to the current patch.
-> 
-> Best regards, Ilya Maximets.
-> 
->> 	Here is how to set up a kernel policer :
->> ----------------------------------------------------------
->> # Create a dummy classful discipline to attach filter
->> tc qdisc del dev eth6 root
->> tc qdisc add dev eth6 root handle 1: prio bands 2 priomap  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
->> tc qdisc add dev eth6 parent 1:1 handle 10: pfifo limit 1000
->> tc qdisc add dev eth6 parent 1:2 handle 20: pfifo limit 1000
->> tc -s qdisc show dev eth6
->> tc -s class show dev eth6
->>
->> # Filter to do hard rate limiting
->> tc filter del dev eth6 parent 1: protocol all prio 1 handle 800::100 u32 
->> tc filter add dev eth6 parent 1: protocol all prio 1 handle 800::100 u32 match u32 0 0 police rate 200mbit burst 20K mtu 10000 drop
->> tc -s filter show dev eth6
->> tc filter change dev eth6 parent 1: protocol all prio 1 handle 800::100 u32 match u32 0 0 police rate 200mbit burst 50K mtu 10000 drop
->> ----------------------------------------------------------
->>
->> 	Regards,
->>
->> 	Jean
->>
-> 
+Ok, so this is actually important. In this case you should have PWM
+layer, exporting PWMs, and then rgb-LED driver that takes three of
+those PWMs and turns them into LED, no?
 
+And ... surprise ... that is likely to help other people, as LEDs
+connected to PWMs are quite common.
+
+Hmm.?
+
+If you can't do this for some reason, you should probably explain in
+the changelog, because this is going to be FAQ.
+
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--wRRV7LY7NUeQGEoC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmCLITcACgkQMOfwapXb+vK+BACeMLv8lEYnpH1WKHwqzQQfYMGc
+5O4AoKuyGX4vAejCvrj2ZaEI2S6+fTMH
+=al0Q
+-----END PGP SIGNATURE-----
+
+--wRRV7LY7NUeQGEoC--
