@@ -2,191 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D64736E435
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 06:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5998B36E3F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 06:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238228AbhD2ETF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 00:19:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46602 "EHLO
+        id S236978AbhD2EEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 00:04:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236873AbhD2ETD (ORCPT
+        with ESMTP id S235202AbhD2EEK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 00:19:03 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C285C06138B;
-        Wed, 28 Apr 2021 21:18:17 -0700 (PDT)
-Received: by ozlabs.org (Postfix, from userid 1007)
-        id 4FW2Kx30D2z9sXM; Thu, 29 Apr 2021 14:18:13 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=gibson.dropbear.id.au; s=201602; t=1619669893;
-        bh=CG0C1TtA2qTxavaiVAaS4f+9gUTbGNBMGx1ubjdyJ4M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FUk8ozxaSPoOFI5vFuUiW8LWW08MXqMNOqVJsKKJJki3yNWJx2/aaXJ78/2tlg8xn
-         ZNPGggQaTjc4DHHiTSrWSvtyYTsKBc04Rnj12XujF07YobhtvaHzq/ULiRcwvfW0hE
-         S0z6xcIcW9nJNujpxOgM0GT5u5BHhoUZJSXimg7w=
-Date:   Thu, 29 Apr 2021 13:20:22 +1000
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <YIol9p3z8BTWFRh8@yekko>
-References: <20210421162307.GM1370958@nvidia.com>
- <20210421105451.56d3670a@redhat.com>
- <20210421175203.GN1370958@nvidia.com>
- <20210421133312.15307c44@redhat.com>
- <20210421230301.GP1370958@nvidia.com>
- <20210422111337.6ac3624d@redhat.com>
- <YIeYJZOdgMN/orl0@yekko.fritz.box>
- <20210427172432.GE1370958@nvidia.com>
- <YIi5G4Wg/hpFqNdX@yekko.fritz.box>
- <20210429002149.GZ1370958@nvidia.com>
+        Thu, 29 Apr 2021 00:04:10 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E33C06138D
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 21:03:24 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id l10-20020a17090a850ab0290155b06f6267so4064978pjn.5
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 21:03:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BgKRdomt1eM7oewQ+UA6utKIEhGUPS/zeW1fYoQll3U=;
+        b=kVDAcgAuPe+/NbI2rxd0BlbgqIAyC8fhu/ek3Yb9xSySx4dsD7WKs3lRupAG0cMXtY
+         FP5RzPf/gAMMOsonUOM2GPIJz2rw4Gt/gqhqxYBslfv4SyDlxQtGLfYWxW0EGFJVY12Q
+         LKLGG5slmnuXOwaGHK3p2AoghFFOVcGS1DnaD11za2Cb2aEcxCxEdKfaXntmqxxo5rUj
+         6H7r+htb+3yudEcWzZ0QDPcPU2DtrF3RxIqoQkQsaY/Pace5nTvXJYb04EDGggbVpq01
+         8khI4ZnXRxLV4Rmf0HyBgUouxWa8zVv1sWHXzTqex/SkwOt9eSxKcYJ0nnamnyCkk1lI
+         gWCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BgKRdomt1eM7oewQ+UA6utKIEhGUPS/zeW1fYoQll3U=;
+        b=iDnFYIGQW68lnRsVKgStDw66akPXXM8sil1v4ogSfmIrRjwlxYwDW9JdIPa/9DPoIo
+         dIy8UOoU5LeiPQ+VLMCJ37SFvFSDpnhybEzjNCG2CtDWsnueD9SGn5wEzKJtwxEPNkxW
+         Bk1T3ZXreiBUHKPQC1Yecxzoa2UKga+UptA2n5Yp5zJ6rCQ0uORoa0owTvkEfSUYDh7Y
+         36enyk12XSaXeeOpduaNkKWt942CTlHCL1uoVcJHWm19Tg7ta9e8MSmkBbzIpMhi0mss
+         YFhP8apofHsug+VTFAYF/69/EPNAg9lEl6YcuiDbMXhV6elMfPtZFT8zR9OMe+58w1ET
+         WTWw==
+X-Gm-Message-State: AOAM532A1lbVrIS9npUtMJEV3EThltdqCIuNbHqBmuLHSwFS/h+IUS4Z
+        1ZJgflr3MNXlzvqcbhaUgL7ZTREbmomTJJXePgQJKw==
+X-Google-Smtp-Source: ABdhPJyKOjVYbyArfKUcKkdzEn5LiMhEGJaQDb94gqC4bSYk8kPeWBkXPfUoPD/pQRBUMMKbMO3L8y2/dyBk0IUHW94=
+X-Received: by 2002:a17:902:8308:b029:e9:d69:a2f with SMTP id
+ bd8-20020a1709028308b02900e90d690a2fmr33676088plb.20.1619669004051; Wed, 28
+ Apr 2021 21:03:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="VnpCiNDu5ri/I2+C"
-Content-Disposition: inline
-In-Reply-To: <20210429002149.GZ1370958@nvidia.com>
+References: <20210425070752.17783-1-songmuchun@bytedance.com>
+ <ee3903ae-7033-7608-c7ed-1f16f0359663@oracle.com> <CAMZfGtVbB6YwUMg2ECpdmniQ_vt_3AwdVAuu0GdUJfzWZgQpyg@mail.gmail.com>
+ <98f191e8-b509-e541-9d9d-76029c74d241@oracle.com>
+In-Reply-To: <98f191e8-b509-e541-9d9d-76029c74d241@oracle.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 29 Apr 2021 12:02:46 +0800
+Message-ID: <CAMZfGtUqE6OzWwK6o5h0j6qHPotfvbKpGbzYpSPLLhYH2nJiAw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v21 0/9] Free some vmemmap pages of HugeTLB page
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, bp@alien8.de,
+        X86 ML <x86@kernel.org>, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        fam.zheng@bytedance.com, zhengqi.arch@bytedance.com,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 29, 2021 at 10:32 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>
+> On 4/28/21 5:26 AM, Muchun Song wrote:
+> > On Wed, Apr 28, 2021 at 7:47 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+> >>
+> >> Thanks!  I will take a look at the modifications soon.
+> >>
+> >> I applied the patches to Andrew's mmotm-2021-04-21-23-03, ran some tests and
+> >> got the following warning.  We may need to special case that call to
+> >> __prep_new_huge_page/free_huge_page_vmemmap from alloc_and_dissolve_huge_page
+> >> as it is holding hugetlb lock with IRQs disabled.
+> >
+> > Good catch. Thanks Mike. I will fix it in the next version. How about this:
+> >
+> > @@ -1618,7 +1617,8 @@ static void __prep_new_huge_page(struct hstate
+> > *h, struct page *page)
+> >
+> >  static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
+> >  {
+> > +       free_huge_page_vmemmap(h, page);
+> >         __prep_new_huge_page(page);
+> >         spin_lock_irq(&hugetlb_lock);
+> >         __prep_account_new_huge_page(h, nid);
+> >         spin_unlock_irq(&hugetlb_lock);
+> > @@ -2429,6 +2429,7 @@ static int alloc_and_dissolve_huge_page(struct
+> > hstate *h, struct page *old_page,
+> >         if (!new_page)
+> >                 return -ENOMEM;
+> >
+> > +       free_huge_page_vmemmap(h, new_page);
+> >  retry:
+> >         spin_lock_irq(&hugetlb_lock);
+> >         if (!PageHuge(old_page)) {
+> > @@ -2489,7 +2490,7 @@ static int alloc_and_dissolve_huge_page(struct
+> > hstate *h, struct page *old_page,
+> >
+> >  free_new:
+> >         spin_unlock_irq(&hugetlb_lock);
+> > -       __free_pages(new_page, huge_page_order(h));
+> > +       update_and_free_page(h, new_page, false);
+> >
+> >         return ret;
+> >  }
+> >
+> >
+>
+> Another option would be to leave the prep* routines as is and only
+> modify alloc_and_dissolve_huge_page as follows:
 
---VnpCiNDu5ri/I2+C
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+OK. LGTM. I will use this. Thanks Mike.
 
-On Wed, Apr 28, 2021 at 09:21:49PM -0300, Jason Gunthorpe wrote:
-> On Wed, Apr 28, 2021 at 11:23:39AM +1000, David Gibson wrote:
->=20
-> > Yes.  My proposed model for a unified interface would be that when you
-> > create a new container/IOASID, *no* IOVAs are valid.
->=20
-> Hurm, it is quite tricky. All IOMMUs seem to have a dead zone around
-> the MSI window, so negotiating this all in a general way is not going
-> to be a very simple API.
->=20
-> To be general it would be nicer to say something like 'I need XXGB of
-> IOVA space' 'I need 32 bit IOVA space' etc and have the kernel return
-> ranges that sum up to at least that big. Then the kernel can do its
-> all its optimizations.
-
-Ah, yes, sorry.  We do need an API that lets the kernel make more of
-the decisions too.  For userspace drivers it would generally be
-sufficient to just ask for XXX size of IOVA space wherever you can get
-it.  Handling guests requires more precision.  So, maybe a request
-interface with a bunch of hint variables and a matching set of
-MAP_FIXED-like flags to assert which ones aren't negotiable.
-
-> I guess you are going to say that the qemu PPC vIOMMU driver needs
-> more exact control..
-
-*Every* vIOMMU driver needs more exact control.  The guest drivers
-will expect to program the guest devices with IOVAs matching the guest
-platform's IOMMU model.  Therefore the backing host IOMMU has to be
-programmed to respond to those IOVAs.  If it can't be, there's no way
-around it, and you want to fail out early.  With this model that will
-happen when qemu (say) requests the host IOMMU window(s) to match the
-guest's expected IOVA ranges.
-
-Actually, come to that even guests without a vIOMMU need more exact
-control: they'll expect IOVA to match GPA, so if your host IOMMU can't
-be set up translate the full range of GPAs, again, you're out of luck.
-
-The only reason x86 has been able to ignore this is that the
-assumption has been that all IOMMUs can translate IOVAs from 0..<a big
-enough number for any reasonable RAM size>.  Once you really start to
-look at what the limits are, you need the exact window control I'm
-describing.
-
-> > I expect we'd need some kind of query operation to expose limitations
-> > on the number of windows, addresses for them, available pagesizes etc.
->=20
-> Is page size an assumption that hugetlbfs will always be used for backing
-> memory or something?
-
-So for TCEs (and maybe other IOMMUs out there), the IO page tables are
-independent of the CPU page tables.  They don't have the same format,
-and they don't necessarily have the same page size.  In the case of a
-bare metal kernel working in physical addresses they can use that TCE
-page size however they like.  For userspace you get another layer of
-complexity.  Essentially to implement things correctly the backing
-IOMMU needs to have a page size granularity that's the minimum of
-whatever granularity the userspace or guest driver expects and the
-host page size backing the memory.
-
-> > > As an ideal, only things like the HW specific qemu vIOMMU driver
-> > > should be reaching for all the special stuff.
-> >=20
-> > I'm hoping we can even avoid that, usually.  With the explicitly
-> > created windows model I propose above, it should be able to: qemu will
-> > create the windows according to the IOVA windows the guest platform
-> > expects to see and they either will or won't work on the host platform
-> > IOMMU.  If they do, generic maps/unmaps should be sufficient.  If they
-> > don't well, the host IOMMU simply cannot emulate the vIOMMU so you're
-> > out of luck anyway.
->=20
-> It is not just P9 that has special stuff, and this whole area of PASID
-> seems to be quite different on every platform
->=20
-> If things fit very naturally and generally then maybe, but I've been
-> down this road before of trying to make a general description of a
-> group of very special HW. It ended in tears after 10 years when nobody
-> could understand the "general" API after it was Frankenstein'd up with
-> special cases for everything. Cautionary tale
->=20
-> There is a certain appeal to having some
-> 'PPC_TCE_CREATE_SPECIAL_IOASID' entry point that has a wack of extra
-> information like windows that can be optionally called by the viommu
-> driver and it remains well defined and described.
-
-Windows really aren't ppc specific.  They're absolutely there on x86
-and everything else as well - it's just that people are used to having
-a window at 0..<something largish> that you can often get away with
-treating it sloppily.
-
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
-
---VnpCiNDu5ri/I2+C
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmCKJfQACgkQbDjKyiDZ
-s5LJkw//bITy91FckatPRCEx8u5jctT/DbzHeYnr8pGEugv3JmhVq72mk2XGwuHB
-svC41OVYOD8PC7hX52SQ3PGA+3fNIYvPwALynj2wLlSI7ce79J+NGuREB+7cgB1K
-GoOWrzuWf23tFL16G7OhY88nothHY7vUWjil4FWrBZVKxj7vnQZ7SZmlasiDN46m
-V9FwTCfu1Mbv8r+FqgTnytjio5wVIxQSfEhIbbevpbyeCZmcvFT4PQfpKiyrM9hp
-oRGJibDfILmgCsM20Pj33rNqPcL42Xk/bEllzKnTitoSIcfYBQAUHKjrv3QfPb3d
-dR/C8E/jEADfIHvfCLdM3IX9CouAwzcQv+TWg9YDydPKawB9F+3tEEwZj9rH/IOk
-12d1AxSNv9ruQ4VLkXqbIANcxAau5iuk2pgd8Gm45MmICvSEtNKCpfHkOCsfgREf
-WUAb3vn95RuxSLXJTtEU6SOk4lBzLjFl4tjv7nCZ5ikAz6EQnjEuN0jybXqNC9dX
-xdBeT+6Tjq0l8NQxekOv0b1/3ReLenR+MAKsYL1y2OkVVgUiMrBSNtwc3nMqE2ZH
-WkBzXWyTy/it2/gR7fesmmvpEFNTaovXfHPkApuHBbX45rABjiLD/vh+j/i1lkTL
-WvUcE7BSx27vbWtRfWXHgjrHIfgGe1yIjG3ogwx8sBd5nLSXoC0=
-=R90G
------END PGP SIGNATURE-----
-
---VnpCiNDu5ri/I2+C--
+>
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 9c617c19fc18..f8e5013a6b46 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -2420,14 +2420,15 @@ static int alloc_and_dissolve_huge_page(struct hstate *h, struct page *old_page,
+>
+>         /*
+>          * Before dissolving the page, we need to allocate a new one for the
+> -        * pool to remain stable. Using alloc_buddy_huge_page() allows us to
+> -        * not having to deal with prep_new_huge_page() and avoids dealing of any
+> -        * counters. This simplifies and let us do the whole thing under the
+> -        * lock.
+> +        * pool to remain stable.  Here, we allocate the page and 'prep' it
+> +        * by doing everything but actually updating counters and adding to
+> +        * the pool.  This simplifies and let us do most of the processing
+> +        * under the lock.
+>          */
+>         new_page = alloc_buddy_huge_page(h, gfp_mask, nid, NULL, NULL);
+>         if (!new_page)
+>                 return -ENOMEM;
+> +       __prep_new_huge_page(h, new_page);
+>
+>  retry:
+>         spin_lock_irq(&hugetlb_lock);
+> @@ -2473,7 +2474,6 @@ static int alloc_and_dissolve_huge_page(struct hstate *h, struct page *old_page,
+>                  * Reference count trick is needed because allocator gives us
+>                  * referenced page but the pool requires pages with 0 refcount.
+>                  */
+> -               __prep_new_huge_page(h, new_page);
+>                 __prep_account_new_huge_page(h, nid);
+>                 page_ref_dec(new_page);
+>                 enqueue_huge_page(h, new_page);
+> @@ -2489,7 +2489,7 @@ static int alloc_and_dissolve_huge_page(struct hstate *h, struct page *old_page,
+>
+>  free_new:
+>         spin_unlock_irq(&hugetlb_lock);
+> -       __free_pages(new_page, huge_page_order(h));
+> +       update_and_free_page(h, old_page, false);
+>
+>         return ret;
+>  }
+>
+> --
+> Mike Kravetz
