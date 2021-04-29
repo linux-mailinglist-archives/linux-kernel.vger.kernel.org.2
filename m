@@ -2,100 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F62A36EEB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1D836EEC8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240941AbhD2RRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 13:17:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42606 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233552AbhD2RRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 13:17:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 733E46144B;
-        Thu, 29 Apr 2021 17:16:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619716583;
-        bh=xCE9kiuLbHXwsZ1KM6w/Tl3VqKcpO4AP4M7f6sN//EQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DtxMrFqA9p7JcfQiuEV1zxzYYkLtjwQ8IrfXzjheChjOdPze0WwnoNsisQwllBRnu
-         mzrV77uJ39oHAL90UPCgmwI+qy+EQOdywuNtNSZne1YykrslESVV92jDtQhzSABAM2
-         zL+E9K9BVm13BmTnZdu+M7Iw0RXyS6M3UhQV801M=
-Date:   Thu, 29 Apr 2021 19:16:20 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Tariq Toukan <ttoukan.linux@gmail.com>,
-        Atul Gopinathan <atulgopinathan@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 046/190] Revert "net/mlx4_core: fix a memory leak bug."
-Message-ID: <YIrp5CMmMugYg4Zk@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-47-gregkh@linuxfoundation.org>
- <1027d8d1-5cea-0a04-4974-3f9672ff7d4e@gmail.com>
- <YIgK2Hbnmxz2dPCe@kroah.com>
+        id S240859AbhD2RXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 13:23:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233333AbhD2RXD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 13:23:03 -0400
+Received: from bues.ch (bues.ch [IPv6:2a01:138:9005::1:4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05130C06138B;
+        Thu, 29 Apr 2021 10:22:16 -0700 (PDT)
+Received: by bues.ch with esmtpsa (Exim 4.92)
+        (envelope-from <m@bues.ch>)
+        id 1lcAMU-0001MZ-Jx; Thu, 29 Apr 2021 19:22:02 +0200
+Date:   Thu, 29 Apr 2021 19:21:22 +0200
+From:   Michael =?UTF-8?B?QsO8c2No?= <m@bues.ch>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     nathan@kernel.org, ndesaulniers@google.com,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] ssb: Remove redundant assignment to err
+Message-ID: <20210429192122.56acf711@wiggum>
+In-Reply-To: <1619693230-108804-1-git-send-email-yang.lee@linux.alibaba.com>
+References: <1619693230-108804-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YIgK2Hbnmxz2dPCe@kroah.com>
+Content-Type: multipart/signed; boundary="Sig_/2V4K/B7ucivuZf+W3L2fsGM";
+ protocol="application/pgp-signature"; micalg=pgp-sha512
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 03:00:08PM +0200, Greg Kroah-Hartman wrote:
-> On Mon, Apr 26, 2021 at 02:18:37PM +0300, Tariq Toukan wrote:
-> > 
-> > 
-> > On 4/21/2021 3:58 PM, Greg Kroah-Hartman wrote:
-> > > This reverts commit febfd9d3c7f74063e8e630b15413ca91b567f963.
-> > > 
-> > > Commits from @umn.edu addresses have been found to be submitted in "bad
-> > > faith" to try to test the kernel community's ability to review "known
-> > > malicious" changes.  The result of these submissions can be found in a
-> > > paper published at the 42nd IEEE Symposium on Security and Privacy
-> > > entitled, "Open Source Insecurity: Stealthily Introducing
-> > > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> > > of Minnesota) and Kangjie Lu (University of Minnesota).
-> > > 
-> > > Because of this, all submissions from this group must be reverted from
-> > > the kernel tree and will need to be re-reviewed again to determine if
-> > > they actually are a valid fix.  Until that work is complete, remove this
-> > > change to ensure that no problems are being introduced into the
-> > > codebase.
-> > > 
-> > > Cc: Qiushi Wu <wu000273@umn.edu>
-> > > Cc: David S. Miller <davem@davemloft.net>
-> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > ---
-> > >   drivers/net/ethernet/mellanox/mlx4/fw.c | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/net/ethernet/mellanox/mlx4/fw.c b/drivers/net/ethernet/mellanox/mlx4/fw.c
-> > > index f6cfec81ccc3..380e027ba5df 100644
-> > > --- a/drivers/net/ethernet/mellanox/mlx4/fw.c
-> > > +++ b/drivers/net/ethernet/mellanox/mlx4/fw.c
-> > > @@ -2734,7 +2734,7 @@ void mlx4_opreq_action(struct work_struct *work)
-> > >   		if (err) {
-> > >   			mlx4_err(dev, "Failed to retrieve required operation: %d\n",
-> > >   				 err);
-> > > -			goto out;
-> > > +			return;
-> > >   		}
-> > >   		MLX4_GET(modifier, outbox, GET_OP_REQ_MODIFIER_OFFSET);
-> > >   		MLX4_GET(token, outbox, GET_OP_REQ_TOKEN_OFFSET);
-> > > 
-> > 
-> > Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-> > 
-> > The original commit febfd9d3c7f74063e8e630b15413ca91b567f963 is a bad
-> > commit. Not to be re-submitted.
-> 
-> Thanks for the review, will keep!
+--Sig_/2V4K/B7ucivuZf+W3L2fsGM
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-In looking closer (well, Atul looked closer after I asked them too), it
-seems that the original commit is ok, so I'm going to drop this revert
-from my tree.
+On Thu, 29 Apr 2021 18:47:10 +0800
+Yang Li <yang.lee@linux.alibaba.com> wrote:
 
-Tariq, unless you can point out the problem you see here?
+> Variable 'err' is set to zero but this value is never read as it is
+> overwritten with a new value later on, hence it is a redundant
+> assignment and can be removed.
+>=20
+> Clean up the following clang-analyzer warning:
+>=20
+> drivers/ssb/main.c:1306:3: warning: Value stored to 'err' is never read
+> [clang-analyzer-deadcode.DeadStores]
+> drivers/ssb/main.c:1312:3: warning: Value stored to 'err' is never read
+> [clang-analyzer-deadcode.DeadStores]
+>=20
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>  drivers/ssb/main.c | 2 --
+>  1 file changed, 2 deletions(-)
+>=20
+> diff --git a/drivers/ssb/main.c b/drivers/ssb/main.c
+> index 0a26984..ab23554 100644
+> --- a/drivers/ssb/main.c
+> +++ b/drivers/ssb/main.c
+> @@ -1303,13 +1303,11 @@ static int __init ssb_modinit(void)
+>  	if (err) {
+>  		pr_err("Broadcom 43xx PCI-SSB-bridge initialization failed\n");
+>  		/* don't fail SSB init because of this */
+> -		err =3D 0;
+>  	}
+>  	err =3D ssb_host_pcmcia_init();
+>  	if (err) {
+>  		pr_err("PCMCIA host initialization failed\n");
+>  		/* don't fail SSB init because of this */
+> -		err =3D 0;
+>  	}
+>  	err =3D ssb_gige_init();
+>  	if (err) {
 
-thanks,
 
-greg k-h
+The assignment is there just as a visual guide to tell the reader that
+we ignore the error.
+However, there's also a comment that says the same thing. Therefore:
+
+Acked-by: Michael B=C3=BCsch <m@bues.ch>
+
+--=20
+Michael
+
+--Sig_/2V4K/B7ucivuZf+W3L2fsGM
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEihRzkKVZOnT2ipsS9TK+HZCNiw4FAmCK6xIACgkQ9TK+HZCN
+iw4TsBAApcU9A/M/yPldF+nzyK7yf5LvDfQGGmvF+iX8QZLo80xZvVEW+MJjm0+o
+jj4k1KuIzmb+c03FizX6CnbpKvcCYZ7D1UObt+OjBSlhPDer6SFsUHgVzaVI7TaS
+Ryi8rlIU+K2PPIM713rc25+D7wK+XotMYMFlZobj75YBoJwYSiyPOYcWnWtCYp/Q
+fFjyQQFlstZuvc0gZicPLrhi6bVynmQsm6eqItQMWJgEqWqLOpq/xCw9Ug6J/n33
+b7H6QvAY+orrfl3Su92QWxmN6EVoeWbVWfD7sw0zcxYWW+3I9OoVP3A+2mFpuiLN
+VoqPsw+R/KrPLSgfzff2i+CXwirYSDtNQSVHIu9FsbPfIoF2xEn3x0tJniqG8O1Y
+sLOpYABMCOOVtZtd5QV+G05UKAwr2JFg/eaaPdbnUn8uiOIbLnSyn50PZOCUTljt
+hDu9ptXZBmhkyJ47ypH3xsYz7Luc6ftHIwNr9VS0tC2J/el9ymvXFxSfZDDEKC9J
+vtRya1cJWyRQzNpondBAHZaaHHnxT2cdV0pRIutoFgXXJC7Chwa/rsP6e45ARxEJ
+NrNrpylFZmQ9saaD3Ax6cnYFzIRHr3wceGRpVRjicjbf3l6YkYK8/WUxzPCkSRBr
+fa8iXCxpieyogCz/ODXZDWhH87NBUGS7Ix2/Icvvhi5AHXxvmyU=
+=rOhK
+-----END PGP SIGNATURE-----
+
+--Sig_/2V4K/B7ucivuZf+W3L2fsGM--
