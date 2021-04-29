@@ -2,93 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1C436EA95
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A78536EAA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236612AbhD2MfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 08:35:06 -0400
-Received: from foss.arm.com ([217.140.110.172]:48938 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231490AbhD2MfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 08:35:05 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 740AF1FB;
-        Thu, 29 Apr 2021 05:34:18 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F08B23F70D;
-        Thu, 29 Apr 2021 05:34:15 -0700 (PDT)
-Subject: Re: [PATCH] sched: Fix out-of-bound access in uclamp
-To:     Quentin Perret <qperret@google.com>, mingo@redhat.com,
-        peterz@infradead.org, vincent.guittot@linaro.org,
-        juri.lelli@redhat.com
-Cc:     rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, qais.yousef@arm.com, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, patrick.bellasi@matbug.net
-References: <20210428172722.3908735-1-qperret@google.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <b30e5815-441c-b4d3-85ad-65a4020f6d93@arm.com>
-Date:   Thu, 29 Apr 2021 14:34:14 +0200
+        id S231564AbhD2MjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 08:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232657AbhD2MjG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 08:39:06 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54B5C06138B;
+        Thu, 29 Apr 2021 05:38:19 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id b21so3762335ljf.11;
+        Thu, 29 Apr 2021 05:38:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=C9ADd+O1J2g7WPah5TPp1y5aPWH188p57AR71wN8M7Y=;
+        b=jNb3LRNDZRY9dtWQ93oZg3Us255+OUEcb5r+MjK5sgkqGm7K9ak2patahQ6FZcQ4SG
+         28gHOMaQhLQK4D5cZpgiMVK1xT5XaPCU5pkFtSOVIMAZQ9BBiOgPnc/cXivzWcDrNz2i
+         H9506pQwYfGU9WiNOhZ3cIL0FTWvHooUSMBpK5u6BPyF2ggTLCQG09bdSv95I1JnkX3g
+         nh3pI0amvi5YoTJBsug51S7QoV+mrkdy5sDhpRttOD/vmKonfuRbaUBS+GKkabP6a7Az
+         uTEygRG6Qdg7dwzw0ebu4kUpHrNm2Jc9NyFuOLXfFVRJyurvbkzpJUP+ZLKUZztvchJ2
+         eX7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=C9ADd+O1J2g7WPah5TPp1y5aPWH188p57AR71wN8M7Y=;
+        b=Mm9rHTI72nTTyaQzdJGEmKuoNrI/jp4EG2F7DanwU9C+0/F+sQBAk/Xf1clfXU02X/
+         +l8H4sKrAZvMPMofSR+4/fGpeNBMuemSaYoxa8J9+aP20lz+F+mpk8Jwe8t+XtxyNmtF
+         xOR8CW3Sp8WLF+oPxl1m8nmM5Vu6xISI/Dwhov619MZF36BqEQaCS1uOn2A72blmFrW+
+         A03w+1PDvX06uY5iDGJjTY5KVWIquZpgGCXxq7rJ88M3Gv4Y0piGe7XfY8bdQABppbmB
+         ntswtyKkpFgypWAoB8B8m2nwGVytgl6orrj0lFoIXwVgnM9V56M1VyvsXHvHE03MzG9I
+         y5iw==
+X-Gm-Message-State: AOAM531Xb1KTWqW1fdbWLTTHfNpBSwFHLXeEnGjj9hvKIZ4q6kvANgFV
+        gXOkDwtyTPW+lZdlstvJmJcHF5p3tcI=
+X-Google-Smtp-Source: ABdhPJzTvng8yQNg4q9VfyFfl15qNbeKD7GZ3dV96aB9VC37IqAWamJguU8SXFBqPTn3oiUW9HRVMA==
+X-Received: by 2002:a2e:140b:: with SMTP id u11mr24386345ljd.125.1619699898040;
+        Thu, 29 Apr 2021 05:38:18 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-102.dynamic.spd-mgts.ru. [109.252.193.102])
+        by smtp.googlemail.com with ESMTPSA id v130sm515026lfa.262.2021.04.29.05.38.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Apr 2021 05:38:17 -0700 (PDT)
+Subject: Re: [PATCH v4 25/79] staging: media: tegra-vde: use
+ pm_runtime_resume_and_get()
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <cover.1619621413.git.mchehab+huawei@kernel.org>
+ <bc2b9048d4ad510eec97988ce8f3fd0d2bb26f39.1619621413.git.mchehab+huawei@kernel.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <ec7048b0-bd5e-82e5-08fb-b51d633105ff@gmail.com>
+Date:   Thu, 29 Apr 2021 15:38:17 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210428172722.3908735-1-qperret@google.com>
+In-Reply-To: <bc2b9048d4ad510eec97988ce8f3fd0d2bb26f39.1619621413.git.mchehab+huawei@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/04/2021 19:27, Quentin Perret wrote:
-> Util-clamp places tasks in different buckets based on their clamp values
-> for performance reasons. However, the size of buckets is currently
-> computed using a rounding division, which can lead to an off-by-one
-> error in some configurations.
-> 
-> For instance, with 20 buckets, the bucket size will be 1024/20=51.2,
-> rounded to the closest value: 51. Now, a task with a clamp of 1024 (as
-> is the default for the min clamp of RT tasks) will be mapped to bucket
-> id 1024/51=20 as we're now using a standard integer division. Sadly,
-> correct indexes are in range [0,19], hence leading to an out of bound
-> memory access.
-> 
-> Fix this by using a rounding-up division when computing the bucket size.
-
-But in case you use e.g. 16 buckets, wouldn't you still end up with this
-task mapped into bucket_id=16?
-
-1024/16=64
-
-1024/64=16
-
-> 
-> Fixes: 69842cba9ace ("sched/uclamp: Add CPU's clamp buckets refcounting")
-> Suggested-by: Qais Yousef <qais.yousef@arm.com>
-> Signed-off-by: Quentin Perret <qperret@google.com>
-> 
-> ---
-> 
-> This was found thanks to the SCHED_WARN_ON() in uclamp_rq_dec_id() which
-> indicated a broken state while running with 20 buckets on Android.
-> 
-> Big thanks to Qais for the help with this one.
-> ---
->  kernel/sched/core.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 98191218d891..ec175909e8b0 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -920,8 +920,7 @@ static struct uclamp_se uclamp_default[UCLAMP_CNT];
->   */
->  DEFINE_STATIC_KEY_FALSE(sched_uclamp_used);
+28.04.2021 17:51, Mauro Carvalho Chehab пишет:
+> @@ -1069,11 +1071,17 @@ static int tegra_vde_probe(struct platform_device *pdev)
+>  	 * power-cycle it in order to put hardware into a predictable lower
+>  	 * power state.
+>  	 */
+> -	pm_runtime_get_sync(dev);
+> +	if (pm_runtime_resume_and_get(dev) < 0)
+> +		goto err_pm_runtime;
+> +
+>  	pm_runtime_put(dev);
 >  
-> -/* Integer rounded range for each bucket */
-> -#define UCLAMP_BUCKET_DELTA DIV_ROUND_CLOSEST(SCHED_CAPACITY_SCALE, UCLAMP_BUCKETS)
-> +#define UCLAMP_BUCKET_DELTA DIV_ROUND_UP(SCHED_CAPACITY_SCALE, UCLAMP_BUCKETS)
+>  	return 0;
 >  
->  #define for_each_clamp_id(clamp_id) \
->  	for ((clamp_id) = 0; (clamp_id) < UCLAMP_CNT; (clamp_id)++)
-> 
+> +err_pm_runtime:
+> +	pm_runtime_dont_use_autosuspend(dev);
+> +	pm_runtime_disable(dev);
+> +
+>  err_deinit_iommu:
+>  	tegra_vde_iommu_deinit(vde);
 
+This is incorrect error unwinding, the miscdev isn't unregistered.
