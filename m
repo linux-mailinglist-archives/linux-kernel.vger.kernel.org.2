@@ -2,147 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 374A036EDB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD0636EDB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234668AbhD2Pxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 11:53:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47510 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232004AbhD2Pxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 11:53:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A1E9061409;
-        Thu, 29 Apr 2021 15:52:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619711570;
-        bh=0apMfOT7yVxKteFX5jy7z8m501eJwcSbWxO68VHKSRk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=LTi6GOSaGUd+ShHp6T14DN+0KcAC/Cf+iJ2wo3JeY4KcVLGrNG7PJX/9lwfGjbBxY
-         xTDUu4H8qbLvYG/bZdRYHjvMpNWvsHCLMLEMJIxagThFeNcyS2oFcoADgUJm66fmy2
-         pNMUT97gaDLMpoH/LXSAHJgmq92dUwedEYxRW9E5ZrweAl2gVcGUE84KvAewzfqDf3
-         oVryRx81P1d8gW5CUIUeFOfEVnrodkdPAAcn0ktZzpZvArHntb4DE/cSYIWiEBBrrC
-         xw8Kf8ja7mJLZPAMMRPa4ouCPVy29JrJx3wBy3gM1Mfib7jmRf8aN06yAR8W82z/El
-         oY1ohtDICNDpg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 30F475C00E9; Thu, 29 Apr 2021 08:52:50 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 08:52:50 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Michel Lespinasse <michel@lespinasse.org>
-Cc:     Andy Lutomirski <luto@kernel.org>, Linux-MM <linux-mm@kvack.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
+        id S234710AbhD2PzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 11:55:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232989AbhD2Py7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 11:54:59 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D585C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:54:12 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id b17so54477648ilh.6
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:54:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=70fNwGQ2+wnm+RsZQ37LOGldOw8Lk2bCC2vptNmZyrQ=;
+        b=oEVICcUeVEnXPNMN2DH0TbLTP5Ex38Q4NWBnvIO0sV+5D2i8TWzp6V+edgIvpk1Ah6
+         SW6GKSl++6hSuIVKF4tSltHbb73hf3XbSOAGOl+fH/SPDOoMpurQm3lTgPZEYQ2EANnU
+         9JISVKdlR8/YytrKr8z03+bUEm6Y3T7qCwmKFFPF7ykbaX/U0IkCoNgokxHoNbzWhJ+R
+         ivMHm/gA0esFjjwV/LGgIgKuzghmWf/K5Ek6ALZn11oBC8RD/99vAixDacRh5ICtZS8l
+         h8wtYCUV4CufDCjPq0VqB1f3p8qTYP2NfAhktxHNGvp13yh+EE3I/0P3b3BI17G8okYY
+         ECRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=70fNwGQ2+wnm+RsZQ37LOGldOw8Lk2bCC2vptNmZyrQ=;
+        b=L8+UQIxwkvf62SRHO5xvy1GFNtAdnOLpNnA6Xq733n0x23JtTbYTiQ4MDNcFYmzfyF
+         a5y90dK47S05bl6BaxPC45yAnuPDi0eGZGxQNlHYrq9Hw+IyPYWUepFnfWVZDL3WO6vs
+         39MZo+hlTT6GF9r60mjYLyO4awvKLLyKrb6qEzJtevYhD2gRnspYg/d/P7DEEUedpfp5
+         PxQ+1I7e/p9wy7VLk82lTxeUPv0tDJ+7tXYmG0AcENmbcAGKCN2Xl3DzQe0eeaUOsaak
+         CkpfS4c332RyK6WXVmut+G6v8saVinpKUhime7f/LMbg3ST6Q97yEUZO1zSLiMJDlcuS
+         a2ZA==
+X-Gm-Message-State: AOAM530d4WDUAjsttA3rl4yi/i8GzKQJGSOYYnr64ApPrV+GJ9kgFubr
+        D9J2WGsD3FJv5VNOI4hyf5blOg==
+X-Google-Smtp-Source: ABdhPJyoEgLRtMbV6qtNsLK18iz5OQwyuRm137+ckSle536tgpbGbK7/aLQWWWwlSp6UquiUV9Mo+A==
+X-Received: by 2002:a92:6012:: with SMTP id u18mr320869ilb.92.1619711651814;
+        Thu, 29 Apr 2021 08:54:11 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id r11sm134797iob.1.2021.04.29.08.54.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Apr 2021 08:54:11 -0700 (PDT)
+Subject: Re: [PATCH] smp: fix smp_call_function_single_async prototype
+To:     Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jian Cai <jiancai@google.com>,
+        Guenter Roeck <linux@roeck-us.net>,
         Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Rik van Riel <riel@surriel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Rom Lemarchand <romlem@google.com>,
-        Linux-Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 13/37] mm: implement speculative handling in
- __handle_mm_fault().
-Message-ID: <20210429155250.GV975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210407014502.24091-1-michel@lespinasse.org>
- <20210407014502.24091-14-michel@lespinasse.org>
- <eee7431c-3dc8-ca3c-02fb-9e059d30e951@kernel.org>
- <20210428145823.GA856@lespinasse.org>
- <CALCETrVRGtVqv9cMSryfg5q3iZ9s3jBey20cY4K23YLRhQRzbQ@mail.gmail.com>
- <20210428161108.GP975577@paulmck-ThinkPad-P17-Gen-1>
- <20210429000225.GC10973@lespinasse.org>
+        "Huang, Ying" <ying.huang@intel.com>, Borislav Petkov <bp@suse.de>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Juergen Gross <jgross@suse.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <20210429150940.3256656-1-arnd@kernel.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <90e5aaa8-20d4-fbb7-1924-2dc1b6257824@kernel.dk>
+Date:   Thu, 29 Apr 2021 09:54:10 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429000225.GC10973@lespinasse.org>
+In-Reply-To: <20210429150940.3256656-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 05:02:25PM -0700, Michel Lespinasse wrote:
-> On Wed, Apr 28, 2021 at 09:11:08AM -0700, Paul E. McKenney wrote:
-> > On Wed, Apr 28, 2021 at 08:13:53AM -0700, Andy Lutomirski wrote:
-> > > On Wed, Apr 28, 2021 at 8:05 AM Michel Lespinasse <michel@lespinasse.org> wrote:
-> > > >
-> > > > On Wed, Apr 07, 2021 at 08:36:01AM -0700, Andy Lutomirski wrote:
-> > > > > On 4/6/21 6:44 PM, Michel Lespinasse wrote:
-> > > > > > The page table tree is walked with local irqs disabled, which prevents
-> > > > > > page table reclamation (similarly to what fast GUP does). The logic is
-> > > > > > otherwise similar to the non-speculative path, but with additional
-> > > > > > restrictions: in the speculative path, we do not handle huge pages or
-> > > > > > wiring new pages tables.
-> > > > >
-> > > > > Not on most architectures.  Quoting the actual comment in mm/gup.c:
-> > > > >
-> > > > > >  * Before activating this code, please be aware that the following assumptions
-> > > > > >  * are currently made:
-> > > > > >  *
-> > > > > >  *  *) Either MMU_GATHER_RCU_TABLE_FREE is enabled, and tlb_remove_table() is used to
-> > > > > >  *  free pages containing page tables or TLB flushing requires IPI broadcast.
-> > > > >
-> > > > > On MMU_GATHER_RCU_TABLE_FREE architectures, you cannot make the
-> > > > > assumption that it is safe to dereference a pointer in a page table just
-> > > > > because irqs are off.  You need RCU protection, too.
-> > > > >
-> > > > > You have the same error in the cover letter.
-> > > >
-> > > > Hi Andy,
-> > > >
-> > > > Thanks for your comment. At first I thought did not matter, because we
-> > > > only enable ARCH_SUPPORTS_SPECULATIVE_PAGE_FAULT on selected
-> > > > architectures, and I thought MMU_GATHER_RCU_TABLE_FREE is not set on
-> > > > these. But I was wrong - MMU_GATHER_RCU_TABLE_FREE is enabled on X86
-> > > > with paravirt. So I took another look at fast GUP to make sure I
-> > > > actually understand it.
-> > > >
-> > > > This brings a question about lockless_pages_from_mm() - I see it
-> > > > disabling interrupts, which it explains is necessary for disabling THP
-> > > > splitting IPIs, but I do not see it taking an RCU read lock as would
-> > > > be necessary for preventing paga table freeing on
-> > > > MMU_GATHER_RCU_TABLE_FREE configs. I figure local_irq_save()
-> > > > indirectly takes an rcu read lock somehow ? I think this is something
-> > > > I should also mention in my explanation, and I have not seen a good
-> > > > description of this on the fast GUP side...
-> > > 
-> > > Sounds like a bug!  That being said, based on my extremely limited
-> > > understanding of how the common RCU modes work, local_irq_save()
-> > > probably implies an RCU lock in at least some cases.  Hi Paul!
-> > 
-> > In modern kernels, local_irq_save() does have RCU reader semantics,
-> > meaning that synchronize_rcu() will wait for pre-exiting irq-disabled
-> > regions.  It will also wait for pre-existing bh-disable, preempt-disable,
-> > and of course rcu_read_lock() sections of code.
+On 4/29/21 9:09 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Thanks Paul for confirming / clarifying this. BTW, it would be good to
-> add this to the rcu header files, just so people have something to
-> reference to when they depend on such behavior (like fast GUP
-> currently does).
-
-There is this in the synchronize_rcu() header block comment:
-
- * synchronize_rcu() was waiting.  RCU read-side critical sections are
- * delimited by rcu_read_lock() and rcu_read_unlock(), and may be nested.
- * In addition, regions of code across which interrupts, preemption, or
- * softirqs have been disabled also serve as RCU read-side critical
- * sections.  This includes hardware interrupt handlers, softirq handlers,
- * and NMI handlers.
-
-I have pulled this into a separate paragraph to increase its visibility,
-and will check out other locations in comments and documentation.
-
-							Thanx, Paul
-
-> Going back to my patch. I don't need to protect against THP splitting
-> here, as I'm only handling the small page case. So when
-> MMU_GATHER_RCU_TABLE_FREE is enabled, I *think* I could get away with
-> using only an rcu read lock, instead of disabling interrupts which
-> implicitly creates the rcu read lock. I'm not sure which way to go -
-> fast GUP always disables interrupts regardless of the
-> MMU_GATHER_RCU_TABLE_FREE setting, and I think there is a case to be
-> made for following the fast GUP stes rather than trying to be smarter.
+> As of commit 966a967116e6 ("smp: Avoid using two cache lines for struct
+> call_single_data"), the smp code prefers 32-byte aligned call_single_data
+> objects for performance reasons, but the block layer includes an instance
+> of this structure in the main 'struct request' that is more senstive
+> to size than to performance here, see 4ccafe032005 ("block: unalign
+> call_single_data in struct request").
 > 
-> Andy, do you have any opinion on this ? Or anyone else really ?
+> The result is a violation of the calling conventions that clang correctly
+> points out:
 > 
-> Thanks,
+> block/blk-mq.c:630:39: warning: passing 8-byte aligned argument to 32-byte aligned parameter 2 of 'smp_call_function_single_async' may result in an unaligned pointer access [-Walign-mismatch]
+>                 smp_call_function_single_async(cpu, &rq->csd);
 > 
-> --
-> Michel "walken" Lespinasse
+> It does seem that the usage of the call_single_data without cache line
+> alignment should still be allowed by the smp code, so just change the
+> function prototype so it accepts both, but leave the default alignment
+> unchanged for the other users. This seems better to me than adding
+> a local hack to shut up an otherwise correct warning in the caller.
+
+I think that's the right approach, rather than work-around it in eg
+blk-mq.
+
+Acked-by: Jens Axboe <axboe@kernel.dk>
+
+-- 
+Jens Axboe
+
