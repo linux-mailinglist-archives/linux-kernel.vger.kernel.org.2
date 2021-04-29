@@ -2,102 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9098436E3D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 06:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB5836E3DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 06:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237094AbhD2DqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 23:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236938AbhD2DqT (ORCPT
+        id S237625AbhD2Dqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 23:46:45 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:38552 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S237116AbhD2Dql (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 23:46:19 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97EAC06138B;
-        Wed, 28 Apr 2021 20:45:32 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id lr7so15764488pjb.2;
-        Wed, 28 Apr 2021 20:45:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=n6WkvByEe9jHaNKcirxDjwO3RlSDD2tbJyA9X2kwaTQ=;
-        b=bfPcKpaJTct/b2KwfgS8IybVcnm9hhayC5Pnp6OLWSF5gkgA8MquRdYGp74PdaqoWY
-         pfsoqKZe8B13t2VyFkBNxF3U0QO/CMO24ivr8ZUcv9Bk5ME9QqdCj9WW+azt44dzwHNh
-         9v6S6S5ZHG2zW3JRKkXdWdqBmNlJpUENkpsTrAXtGN4EBWbNFJRl9nWHCWPLrMOlB6V2
-         DvJgsIgdevB674C7FyBgMCc3X3aq9sX1jj0WMhFION1Yqluq13ci8RuQbZmUcjrj8HAz
-         KcE37M6cH1+vGKzlD+AHonwhRWJIUx/1JLdrQQFaxU3m/wvKJTDWrYPboYv9jOHWvgpZ
-         /2Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=n6WkvByEe9jHaNKcirxDjwO3RlSDD2tbJyA9X2kwaTQ=;
-        b=MO1BMIlk+XNv4Dk/gtJUK//EfmEGF9JrY2SoajcuXwr5yJxSX7C8Yp5XXUZC0lvFec
-         I0/9ZEOVeFKq5qeKLWT3N3c3goz7WmWF/LwzX67i84dyOYPx13m5KAPBuGQI4NzNFArN
-         LZX5/yGaK9tw238ky2R6zlaDwcCtYXXY7UB0/RdmTDmMZbBHAKY+wiwjwIkJTaUiN3ey
-         9V6+XFKb/Eg2pl/2ev1ueXYc8SLhlkDsuCdC7vomZpmmb4RfHBT864Xs6ATS7OgEROFu
-         dhJEBePDfUT6YnRB1BSVhR7TNOd9tuckI9I6MwVw/6R6gQKfdW+6PfbV1yjfHpPHyEzO
-         6YDQ==
-X-Gm-Message-State: AOAM533s1IB45T4TdjoKMXOblWYJfybmpM5U+s7I1sFpuKySFi2jvUaG
-        RopxV4UwWSYjCIcHLMt1yew=
-X-Google-Smtp-Source: ABdhPJyYGwGA8oBreArmkmwClyXIRL01ti98rbAHl2WUaNM56XVWv7IdnC8nmsb/0qMNVtwyzpMjEw==
-X-Received: by 2002:a17:90a:9405:: with SMTP id r5mr7683239pjo.139.1619667932282;
-        Wed, 28 Apr 2021 20:45:32 -0700 (PDT)
-Received: from localhost (natp-s01-129-78-56-229.gw.usyd.edu.au. [129.78.56.229])
-        by smtp.gmail.com with ESMTPSA id x18sm988009pfp.57.2021.04.28.20.45.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Apr 2021 20:45:31 -0700 (PDT)
-From:   Baptiste Lepers <baptiste.lepers@gmail.com>
-Cc:     trivial@kernel.org, Baptiste Lepers <baptiste.lepers@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miklos Szeredi <mszeredi@suse.cz>,
-        Tejun Heo <htejun@gmail.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] poll: Ignore benign race on pwd->triggered
-Date:   Thu, 29 Apr 2021 13:44:11 +1000
-Message-Id: <20210429034411.6379-1-baptiste.lepers@gmail.com>
-X-Mailer: git-send-email 2.17.1
-To:     unlisted-recipients:; (no To-header on input)
+        Wed, 28 Apr 2021 23:46:41 -0400
+X-UUID: 6237e3a9ae3040b8ba946f44d9de7c69-20210429
+X-UUID: 6237e3a9ae3040b8ba946f44d9de7c69-20210429
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+        (envelope-from <rex-bc.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 388143764; Thu, 29 Apr 2021 11:45:52 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 29 Apr 2021 11:45:50 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 29 Apr 2021 11:45:50 +0800
+From:   Rex-BC Chen <rex-bc.chen@mediatek.com>
+To:     <chunkuang.hu@kernel.org>, <matthias.bgg@gmail.com>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Rex-BC Chen <rex-bc.chen@mediatek.com>
+Subject: [v3,PATCH 0/3] mt8183 dpi supports dual edge
+Date:   Thu, 29 Apr 2021 11:45:45 +0800
+Message-ID: <20210429034548.28030-1-rex-bc.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark data races to pwd->triggered as benign using READ_ONCE and
-WRITE_ONCE. These accesses are expected to be racy per comment.
+v3:
+Modify clock rate for dual edge setting.
+Add more bridge function.
 
-This patch is part of a series of patches aiming at reducing the number
-of benign races reported by KCSAN in order to focus future debugging
-effort on harmful races.
+v2:
+Modify unused code
 
-Reported-by: syzbot+9b3fb64bcc8c1d807595@syzkaller.appspotmail.com
-Fixes: 5f820f648c92a ("poll: allow f_op->poll to sleep")
-Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
----
- fs/select.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+v1:
+DPI can sample on falling, rising or both edge.
+When DPI sample the data both rising and falling edge.
+It can reduce half data io pins.
 
-diff --git a/fs/select.c b/fs/select.c
-index 945896d0ac9e..e71b4d1a2606 100644
---- a/fs/select.c
-+++ b/fs/select.c
-@@ -194,7 +194,7 @@ static int __pollwake(wait_queue_entry_t *wait, unsigned mode, int sync, void *k
- 	 * and is paired with smp_store_mb() in poll_schedule_timeout.
- 	 */
- 	smp_wmb();
--	pwq->triggered = 1;
-+	WRITE_ONCE(pwq->triggered, 1);
- 
- 	/*
- 	 * Perform the default wake up operation using a dummy
-@@ -239,7 +239,7 @@ static int poll_schedule_timeout(struct poll_wqueues *pwq, int state,
- 	int rc = -EINTR;
- 
- 	set_current_state(state);
--	if (!pwq->triggered)
-+	if (!READ_ONCE(pwq->triggered))
- 		rc = schedule_hrtimeout_range(expires, slack, HRTIMER_MODE_ABS);
- 	__set_current_state(TASK_RUNNING);
- 
+Rex-BC Chen (3):
+  drm/mediatek: dpi dual edge sample mode support
+  drm/mediatek: config mt8183 driver data to support dual edge sample
+  drm/mediatek: dpi: add bus format negotiation
+
+ drivers/gpu/drm/mediatek/mtk_dpi.c | 107 +++++++++++++++++++++++++++--
+ 1 file changed, 101 insertions(+), 6 deletions(-)
+
 -- 
-2.17.1
+2.18.0
 
