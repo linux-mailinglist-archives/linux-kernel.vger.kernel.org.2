@@ -2,67 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF4A36F161
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 22:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A7F36F164
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 22:51:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237145AbhD2Uvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 16:51:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40184 "EHLO
+        id S237123AbhD2UwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 16:52:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237285AbhD2Uvb (ORCPT
+        with ESMTP id S233729AbhD2UwB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 16:51:31 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC442C06138B;
-        Thu, 29 Apr 2021 13:50:43 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id t4so18609541ejo.0;
-        Thu, 29 Apr 2021 13:50:43 -0700 (PDT)
+        Thu, 29 Apr 2021 16:52:01 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0100C06138D
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 13:51:13 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id i19-20020a0cf3930000b02901c3869f9a1dso1702718qvk.5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 13:51:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1uxYngYQxqk+PVDP3WJw3Xc00kGb4JNoTKGlf4NQlJc=;
-        b=NjFf6rcAhMZJ3GP8Kb1G1y+aZenxrUqBwabfgT9kgHGhlUE35Z5svXqKB7D1HsLZdq
-         4vNZ9y1RAcJ5oSk/jgxWokzecNIGV8ebSCUEZtF51B7VxgxodF273ui10iaT3aFhA12w
-         1TPuOI4kc+JyLYRZ1CmWjuH6t+150V7CvpAkJbbpAWPx6VI+mUK+9zv+BzgyQ5hl6L7K
-         o8hlMHPcZvR/APjvGsXVTr9dTOCUe+OKBeGt0WoxRHNro9aI+XgHNcJtGeBt5/RlFHtP
-         EjASYbSMruZvLJtXIwSCe4AVMBavhyv2RG0l10u50udkJT+Td910zOzpPEsc5FDzxVjT
-         3O3A==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=dtgYO1S7XdMlHmgHKpXOFlISeb7ZWP6ta+z/fi7RlbU=;
+        b=jFuL+TlClLAojEheY7NZlwRso47kGA92K349+XUxYpYLyR/RKh2MEe7I83WJEM1Qfz
+         epQnQJlai5kQ4+6T4OKujuxZVIUgu9d+zVurCcHmZMRzu5bkgc7UyCZSAMwmCRay7Mg6
+         yNuyebBe8gTvEKTdWhHEhLqbyxN43NJ2YFF+dC9pk1hyefxaR/4BsQSpBfp6yCG+saZW
+         +Dhs2/3tO0qb9Wb8v8VzGLKgTp5rQ4uvLXI0HlkvNzBJvpzS/6TB2qyPdoJDyyTMgX7a
+         J+0NjB4V7uFYISLkGYRq6ZLTniZZJJLqsbXkZx3gkUhoMNiTKGpe08QzH+8X4xpDatAu
+         /F3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1uxYngYQxqk+PVDP3WJw3Xc00kGb4JNoTKGlf4NQlJc=;
-        b=qNO1hTchVEmTQWDrwmlJaLo9eofGPm519cRW7ZaGO50nq4fBMFUSGeAV6yAvZlFSIl
-         SEtUpFftSPrxQQ+7b5nNllSDasjW7WNtXWi8qJaflAhfY4tE1fnuhr01d0XJu/+AUuKZ
-         4DA8CydVwkKo9KwizGbzChDlN6GMn/qUBdmMQY1Pr+BWxDhTzLffQnVqBKkSu70VRpa5
-         wdIWfqevQyAv5F8CniJNpXBKroKHu0xGMwcvdMrI7WrSw+hQC9LMB7aDX1mDFKmM1JK6
-         2gwfPuGWY7Y0pkCill+mXoamCcbm4o9MwaTTxRu/MLsbFxX45MHHn7WswtoD7Hbi+65F
-         h2XA==
-X-Gm-Message-State: AOAM531VyvCON5bRJX9OZVCopFUAS/gikT+MZvJKcRJDCI5kZ+ahh12X
-        8d7ryOKGXiiVEWT0RLh8TZJc+GSejSfD3kjwaDk=
-X-Google-Smtp-Source: ABdhPJysjlV6wcuLfYd06FMw2pBaznePZVcE1hTvCj8elYYMmCQAATV5o2uqzLuxQYLtP0GSZtEYWBLOTySqdAlfFco=
-X-Received: by 2002:a17:906:85c1:: with SMTP id i1mr454865ejy.216.1619729442540;
- Thu, 29 Apr 2021 13:50:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210429170404.3616111-1-narmstrong@baylibre.com> <20210429170404.3616111-3-narmstrong@baylibre.com>
-In-Reply-To: <20210429170404.3616111-3-narmstrong@baylibre.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Thu, 29 Apr 2021 22:50:31 +0200
-Message-ID: <CAFBinCBJvW2i2P98d_0d-ZJq2=Koh4vaQXUW=Sb94mEq_KWt2g@mail.gmail.com>
-Subject: Re: [PATCH 2/3] dt-bindings: arm: amlogic: add Banana PI M5 bindings
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     khilman@baylibre.com, jbrunet@baylibre.com,
-        devicetree@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=dtgYO1S7XdMlHmgHKpXOFlISeb7ZWP6ta+z/fi7RlbU=;
+        b=KAog5UemB2i5AprBdeb/fbt1r5wEmpAlNOI0hzGJ0/Z1bKqAEkpVeTuJ8H+yjpUv9K
+         YUBr6V+ImtWZ6H/ZUL17Oz/SkcQnKzA42axazUG/pdjSvuITBwQ46AJfG0coM5NfQUw7
+         LFm+I1zOMvWexf4FBUG4JNliLw+kZDuD2Sv74VVFfmIHMZA/BqS2lurmKwVI1o6zmeFd
+         NQKMrSuaMiLdGR6wdfutlGsYPWfvvcvp4bGCxfzYWCEBUWCQO8vbx6QA3GTF5+n7j5cT
+         dAC27enN9QMwC0871IKspHN1rAp21VlCJSjZfHmtClKCZonXVQQ2/JwN12Ja6Ow3anrW
+         tRVw==
+X-Gm-Message-State: AOAM532HyBF3CT4+3RJu4+G54646lMwpDe1mG7vMp19DPSAoiJV0/2aL
+        uL+PeIIZRzJYrQm3Osts+VP51QxoHqGFn1EoqmQ8VA==
+X-Google-Smtp-Source: ABdhPJz5HQSIb3IbjAgzFERiyYXy98nvz2QX7ZMYpTInmokbaHrSH4oBuXMiGKV6ElZs0qQyqGSM6UzTe3GLlFuZJPoqzA==
+X-Received: from mactruck.svl.corp.google.com ([2620:15c:2cb:201:bab5:c64e:5a6c:36bd])
+ (user=brendanhiggins job=sendgmr) by 2002:a0c:fd8e:: with SMTP id
+ p14mr1770099qvr.23.1619729473077; Thu, 29 Apr 2021 13:51:13 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 13:51:05 -0700
+Message-Id: <20210429205109.2847831-1-brendanhiggins@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
+Subject: [RFC v2 0/4] kunit: tool: add support for QEMU
+From:   Brendan Higgins <brendanhiggins@google.com>
+To:     shuah@kernel.org, davidgow@google.com
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, corbet@lwn.net,
+        linux-doc@vger.kernel.org, sboyd@kernel.org, keescook@chromium.org,
+        frowand.list@gmail.com, dlatypov@google.com,
+        Brendan Higgins <brendanhiggins@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 7:04 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
->
-> Add bindings for the Banana PI M5 board.
->
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+TL;DR: Add support to kunit_tool to dispatch tests via QEMU. Also add
+support to immediately shutdown a kernel after running KUnit tests.
+
+Background
+----------
+
+KUnit has supported running on all architectures for quite some time;
+however, kunit_tool - the script commonly used to invoke KUnit tests -
+has only fully supported KUnit run on UML. Its functionality has been
+broken up for some time to separate the configure, build, run, and parse
+phases making it possible to be used in part on other architectures to a
+small extent. Nevertheless, kunit_tool has not supported running tests
+on other architectures.
+
+What this patchset does
+-----------------------
+
+This patchset introduces first class support to kunit_tool for KUnit to
+be run on many popular architectures via QEMU. It does this by adding
+two new flags: `--arch` and `--cross_compile`.
+
+`--arch` allows an architecture to be specified by the name the
+architecture is given in `arch/`. It uses the specified architecture to
+select a minimal amount of Kconfigs and QEMU configs needed for the
+architecture to run in QEMU and provide a console from which KTAP
+results can be scraped.
+
+`--cross_compile` allows a toolchain prefix to be specified to make
+similar to how `CROSS_COMPILE` is used.
+
+Additionally, this patchset revives the previously considered "kunit:
+tool: add support for QEMU"[1] patchs. The motivation for this new
+kernel command line flags, `kunit_shutdown`, is to better support
+running KUnit tests inside of QEMU. For most popular architectures, QEMU
+can be made to terminate when the Linux kernel that is being run is
+reboted, halted, or powered off. As Kees pointed out in a previous
+discussion[2], it is possible to make a kernel initrd that can reboot
+the kernel immediately, doing this for every architecture would likely
+be infeasible. Instead, just having an option for the kernel to shutdown
+when it is done with testing seems a lot simpler, especially since it is
+an option which would only available in testing configurations of the
+kernel anyway.
+
+What discussion remains for this patchset?
+------------------------------------------
+
+The first most obvious thing is settling the debate about
+`kunit_shutdown`. If I recall correctly, Kees suggested that it might be
+better to just add a new initrd; however, as I mentioned above, now to
+support many new architectures, it may be substantially easier to
+support this option. So I am hoping with this new usecase, the argument
+for `kunit_shutdown` will be more compelling.
+
+The second and likely harder issue is figuring out the best way to
+configure and provide configs for running KUnit tests via QEMU. I
+provide a pretty primitive way in this patchset which is not super
+flexible; for example, for our PPC support we have it set to build big
+endian, and POWER8 - we currently don't support a way to change that.
+Nevertheless, having sensible defaults is handy too, so we will probably
+want to have some support for overriding defaults, while still being
+able to have defaults.
+
+[1] http://patches.linaro.org/patch/208336/
+[2] https://lkml.org/lkml/2020/6/26/988
+
+Brendan Higgins (3):
+  Documentation: Add kunit_shutdown to kernel-parameters.txt
+  kunit: tool: add support for QEMU
+  Documentation: kunit: document support for QEMU in kunit_tool
+
+David Gow (1):
+  kunit: Add 'kunit_shutdown' option
+
+ .../admin-guide/kernel-parameters.txt         |   8 +
+ Documentation/dev-tools/kunit/usage.rst       |  37 +++-
+ lib/kunit/executor.c                          |  20 ++
+ tools/testing/kunit/kunit.py                  |  33 ++-
+ tools/testing/kunit/kunit_config.py           |   2 +-
+ tools/testing/kunit/kunit_kernel.py           | 209 +++++++++++++++---
+ tools/testing/kunit/kunit_parser.py           |   2 +-
+ tools/testing/kunit/kunit_tool_test.py        |  15 +-
+ 8 files changed, 278 insertions(+), 48 deletions(-)
+
+
+base-commit: 7af08140979a6e7e12b78c93b8625c8d25b084e2
+-- 
+2.31.1.498.g6c1eba8ee3d-goog
+
