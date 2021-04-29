@@ -2,91 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C0C36E771
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 10:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A2936E775
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 10:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239896AbhD2IzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 04:55:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232924AbhD2IzF (ORCPT
+        id S240176AbhD2Izc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 04:55:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20061 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239982AbhD2Izb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 04:55:05 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6FDFC06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 01:54:19 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id gj14so2383750pjb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 01:54:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=uHXXhY/T3rlk5SzYZqYvb/APFM47I0gVLkI+iRA8gUg=;
-        b=KXBJi/7kdWtmb8LMRnGE+rGbgPP4Pw2GSRHeMarjuWOhrD9BU93Qi9Tsh54Y8uVNrZ
-         6nHMQe3DYXakIRaqDJnST6cyZt/Kf4pOl1ZqvfodmFN0+HzxQq/1qsql73M/IWmFIXAJ
-         W7ZS5Duuat1/fjHCOJ05q/LFFIKpF4YEWft/RcBbUWyn1GrKJUtoOLoPfR+lHgL78bia
-         y6/N9aJTRxFAu22o7wWmetUY42uwt6+t206M9dgU3CptMdeXN44x8mWv3OV+zMjuItCh
-         8Vpy+yz03iO/WcBB72U9QasJuUBw9ce6m/QsmEZT7b3SRsN5uLupPsJ88ainxB5Z1ACz
-         zkqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=uHXXhY/T3rlk5SzYZqYvb/APFM47I0gVLkI+iRA8gUg=;
-        b=cP/LlWJPMpPSTtdkpjfXxH60odwJTNpFMv8nZtCV5y9eSri9YHFC0aM7wk2Ikhg61a
-         6YiO8lracrCuZdNl0Fxhb51rWxl8SN2dPFOQZ6Zwm9g28Uw1iLC8tUNz46nPtBA+PLsU
-         AzOpEzQmUmYP0QW9qPeURNC8B6QwXcUCz80VD7i8wF+qsgXp6zCLMEA169Bd+HzO9jgF
-         KkVDeOUktyCj6G7rYvCZWzUwtSXbl2FH0Kde5y/3JSLrm0XWt/ZIH6+7rLpJhh+2Hylf
-         BrkplULhGidHKiklY6oyLkvi0X4bceCxT88kRAuxqYf6UOS6TYnmk58RgTScDubmZfJX
-         xMTQ==
-X-Gm-Message-State: AOAM530FEbusvvtfNt+njzHXpOoJaFG3bc09uETV3bXnkPmRPuNPAlM/
-        B8wsPjejZB0rwANR3HXr9o//9xDTWepQEjYE
-X-Google-Smtp-Source: ABdhPJxP1fyIxo4+FahDE5EKJD2fTHh6Q73j72AHDk28uwnyGkImsLZsYqDOHqC1zBWd7Qb987L99g==
-X-Received: by 2002:a17:90a:af95:: with SMTP id w21mr8411667pjq.178.1619686459326;
-        Thu, 29 Apr 2021 01:54:19 -0700 (PDT)
-Received: from localhost ([115.99.169.0])
-        by smtp.gmail.com with ESMTPSA id k22sm1907148pfa.93.2021.04.29.01.54.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 01:54:19 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 14:24:16 +0530
-From:   Sanjana Srinidhi <sanjanasrinidhi1810@gmail.com>
-To:     linux@dominikbrodowski.net
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] Add blank line after declarations
-Message-ID: <20210429085416.aevoiyl6kbdeciw4@sanjana-VirtualBox>
+        Thu, 29 Apr 2021 04:55:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619686485;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MJmZaciikGlYP7vXYgk4XTNBBfK7yKCOZZwkCAQl4Oc=;
+        b=OYMwjwyjeZsmbXubcb0WogPeLMZSC+ZEFMSzZsRyhU91dPgy0QnRBEEr7i9cVYgGYakRLL
+        npqialipal/XXVoQyL0EhnqwcWQoBMDCjELC89lxgvcK4w2pqP3Sg8iqUvyB8aH0c4gzt3
+        3k9cO6fUiFsgAo3I9tBQx4rXA5lp5oU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-579-XMzTNDZLPY-xdejBATNeRQ-1; Thu, 29 Apr 2021 04:54:40 -0400
+X-MC-Unique: XMzTNDZLPY-xdejBATNeRQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2D6DA501E3;
+        Thu, 29 Apr 2021 08:54:38 +0000 (UTC)
+Received: from [10.36.113.191] (ovpn-113-191.ams2.redhat.com [10.36.113.191])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 71B161002D71;
+        Thu, 29 Apr 2021 08:54:29 +0000 (UTC)
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
+ APIs
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>
+References: <20210416094547.1774e1a3@redhat.com>
+ <BN6PR11MB406854F56D18E1187A2C98ACC3479@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <20210421162307.GM1370958@nvidia.com> <20210421105451.56d3670a@redhat.com>
+ <20210421175203.GN1370958@nvidia.com> <20210421133312.15307c44@redhat.com>
+ <20210421230301.GP1370958@nvidia.com>
+ <MWHPR11MB1886188698A6E20338196F788C469@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210422121020.GT1370958@nvidia.com>
+ <MWHPR11MB1886E688D2128C98A1F240B18C459@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210423114944.GF1370958@nvidia.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <0d1d0240-865e-c4f0-7b3b-41ac8ae2e550@redhat.com>
+Date:   Thu, 29 Apr 2021 10:54:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20210423114944.GF1370958@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Blank line is added after declarations to maintain code uniformity.
+Hi,
 
-Signed-off-by: Sanjana Srinidhi <sanjanasrinidhi1810@gmail.com>
----
- drivers/pcmcia/soc_common.c | 2 ++
- 1 file changed, 2 insertions(+)
+On 4/23/21 1:49 PM, Jason Gunthorpe wrote:
+> On Fri, Apr 23, 2021 at 09:06:44AM +0000, Tian, Kevin wrote:
+> 
+>> Or could we still have just one /dev/ioasid but allow userspace to create
+>> multiple gpa_ioasid_id's each associated to a different iommu domain? 
+>> Then the compatibility check will be done at ATTACH_IOASID instead of 
+>> JOIN_IOASID_FD.
+> 
+> To my mind what makes sense that that /dev/ioasid presents a single
+> IOMMU behavior that is basically the same. This may ultimately not be
+> what we call a domain today.
+> 
+> We may end up with a middle object which is a group of domains that
+> all have the same capabilities, and we define capabilities in a way
+> that most platforms have a single group of domains.
+> 
+> The key capability of a group of domains is they can all share the HW
+> page table representation, so if an IOASID instantiates a page table
+> it can be assigned to any device on any domain in the gruop of domains.
+> 
+> If you try to say that /dev/ioasid has many domains and they can't
+> have their HW page tables shared then I think the implementation
+> complexity will explode.
+> 
+>> This does impose one burden to userspace though, to understand the 
+>> IOMMU compatibilities and figure out which incompatible features may
+>> affect the page table management (while such knowledge is IOMMU
+>> vendor specific) and then explicitly manage multiple /dev/ioasid's or 
+>> multiple gpa_ioasid_id's.
+> 
+> Right, this seems very hard in the general case..
+>  
+>> Alternatively is it a good design by having the kernel return error at
+>> attach/join time to indicate that incompatibility is detected then the 
+>> userspace should open a new /dev/ioasid or creates a new gpa_ioasid_id
+>> for the failing device upon such failure, w/o constructing its own 
+>> compatibility knowledge?
+> 
+> Yes, this feels workable too
+> 
+>>> This means qemue might have multiple /dev/ioasid's if the system has
+>>> multiple incompatible IOMMUs (is this actually a thing?) The platform
+>>
+>> One example is Intel platform with igd. Typically there is one IOMMU
+>> dedicated for igd and the other IOMMU serving all the remaining devices.
+>> The igd IOMMU may not support IOMMU_CACHE while the other one
+>> does.
+> 
+> If we can do as above the two domains may be in the same group of
+> domains and the IOMMU_CACHE is not exposed at the /dev/ioasid level.
+> 
+> For instance the API could specifiy IOMMU_CACHE during attach, not
+> during IOASID creation.
+> 
+> Getting all the data model right in the API is going to be trickiest
+> part of this.
+> 
+>> yes, e.g. in vSVA both devices (behind divergence IOMMUs) are bound
+>> to a single guest process which has an unique PASID and 1st-level page
+>> table. Earlier incompatibility example is only for 2nd-level.
+> 
+> Because when we get to here, things become inscrutable as an API if
+> you are trying to say two different IOMMU presentations can actually
+> be nested.
+> 
+>>> Sure.. The tricky bit will be to define both of the common nested
+>>> operating modes.
+>>>
+>>>   nested_ioasid = ioctl(ioasid_fd, CREATE_NESTED_IOASID,  gpa_ioasid_id);
+>>>   ioctl(ioasid_fd, SET_NESTED_IOASID_PAGE_TABLES, nested_ioasid, ..)
+>>>
+>>>    // IOMMU will match on the device RID, no PASID:
+>>>   ioctl(vfio_device, ATTACH_IOASID, nested_ioasid);
+>>>
+>>>    // IOMMU will match on the device RID and PASID:
+>>>   ioctl(vfio_device, ATTACH_IOASID_PASID, pasid, nested_ioasid);
+>>
+>> I'm a bit confused here why we have both pasid and ioasid notations together.
+>> Why not use nested_ioasid as pasid directly (i.e. every pasid in nested mode
+>> is created by CREATE_NESTED_IOASID)?
+> 
+> The IOASID is not a PASID, it is just a page table.
+> 
+> A generic IOMMU matches on either RID or (RID,PASID), so you should
+> specify the PASID when establishing the match.
+> 
+> IOASID only specifies the page table.
+> 
+> So you read the above as configuring the path
+> 
+>   PCI_DEVICE -> (RID,PASID) -> nested_ioasid -> gpa_ioasid_id -> physical
+> 
+> Where (RID,PASID) indicate values taken from the PCI packet.
+> 
+> In principle the IOMMU could also be commanded to reuse the same
+> ioasid page table with a different PASID:
+> 
+>   PCI_DEVICE_B -> (RID_B,PASID_B) -> nested_ioasid -> gpa_ioasid_id -> physical
+> 
+> This is impossible if the ioasid == PASID in the API.
+> 
+>> Below I list different scenarios for ATTACH_IOASID in my view. Here 
+>> vfio_device could be a real PCI function (RID), or a subfunction device 
+>> (RID+def_ioasid). 
+> 
+> What is RID+def_ioasid? The IOMMU does not match on IOASID's.
+> 
+> A subfunction device always need to use PASID, or an internal IOMMU,
+> confused what you are trying to explain?
+> 
+>> If the whole PASID table is delegated to the guest in ARM case, the guest
+>> can select its own PASIDs w/o telling the hypervisor. 
+> 
+> The hypervisor has to route the PASID's to the guest at some point - a
+> guest can't just claim a PASID unilaterally, that would not be secure.
+AFAIU On ARM the stage 2 table is uniquely defined per RID and the PASID
+space is local to the RID. in other words all PASIDs used along with a
+given RID share the same stage 2 page table. So the minimum granularity
+for guest assignment still is the RID and not the PASID (there is no
+scalable mode on ARM). on x86, with scalable mode, each RID/PASID can
+have different stage1/stage2 tables which make the minimum granularity
+for guest device assignment the PASID.
 
-diff --git a/drivers/pcmcia/soc_common.c b/drivers/pcmcia/soc_common.c
-index 3a8c84bb174d..98b6d96a4435 100644
---- a/drivers/pcmcia/soc_common.c
-+++ b/drivers/pcmcia/soc_common.c
-@@ -63,6 +63,7 @@ void soc_pcmcia_debug(struct soc_pcmcia_socket *skt, const char *func,
- {
- 	struct va_format vaf;
- 	va_list args;
-+
- 	if (pc_debug > lvl) {
- 		va_start(args, fmt);
- 
-@@ -464,6 +465,7 @@ static void soc_common_check_status(struct soc_pcmcia_socket *skt)
- static void soc_common_pcmcia_poll_event(struct timer_list *t)
- {
- 	struct soc_pcmcia_socket *skt = from_timer(skt, t, poll_timer);
-+
- 	debug(skt, 4, "polling for events\n");
- 
- 	mod_timer(&skt->poll_timer, jiffies + SOC_PCMCIA_POLL_PERIOD);
--- 
-2.25.1
+So on ARM the guest can allocate PASIDs without interfering with the
+host. We just need to make sure the PASID table format and max entries
+matches the capability of the HW.
+
+If the min granularity for guest assignment were the RID/PASID
+effectively a guest could steal all the PASIDs for a given RID.
+
+Thanks
+
+Eric
+> 
+> If it is not done with per-PASID hypercalls then the hypervisor has to
+> route all PASID's for a RID to the guest and /dev/ioasid needs to have
+> a nested IOASID object that represents this connection - ie it points
+> to the PASID table of the guest vIOMMU or something.
+> 
+> Remember this all has to be compatible with mdev's too and without
+> hypercalls to create PASIDs that will be hard: mdev sharing a RID and
+> slicing the physical PASIDs can't support a 'send all PASIDs to the
+> guest' model, or even a 'the guest gets to pick the PASID' option.
+> 
+> Jason
+> 
 
