@@ -2,85 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 926CD36EF8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 20:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63F7D36EF94
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 20:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241110AbhD2SkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 14:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241002AbhD2SkF (ORCPT
+        id S241224AbhD2Skz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 14:40:55 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:59817 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241205AbhD2Sky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 14:40:05 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76C3C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 11:39:15 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id b21so5193061ljf.11
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 11:39:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FcFyf0v1qT/C1YQXGjM2gAonNFAnMg7U0aOFeLZ7M+0=;
-        b=u9We45PnGjsIrZhdweakZeaWx4AIe4T2kFARCqBR/dHZGvYqbZY67pb1x4VnQH20V5
-         1dDcZKoOqdCZjvTLUBy5ATDyuKYy00UFBdjRcz0uf+MSP5zOryrv1qPDKCkjyQgmf3oW
-         CLQTiUP9AkrHVN7duS+5NeEueO4+pz5DIVK5jPjL1JSNYumJmNeNBZZLd5Qlo1Yz/7Ux
-         tTsXHi7lkRg1+RWgkwruYcMPuPZRvdpdCZ9Cv8NBEr15pY3J0Wm3lPHayja7d5QXRAyZ
-         5YWP1Gbn5JMwZEz/PCTqaMlkpusENf/Pys1EtLikjDWVNftaqFqePVkmnwJ/WpwTH4Be
-         2fhQ==
+        Thu, 29 Apr 2021 14:40:54 -0400
+Received: from mail-pl1-f199.google.com ([209.85.214.199])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <tim.gardner@canonical.com>)
+        id 1lcBa2-0001uY-I1
+        for linux-kernel@vger.kernel.org; Thu, 29 Apr 2021 18:40:06 +0000
+Received: by mail-pl1-f199.google.com with SMTP id 70-20020a170902044cb02900ed8431f861so2004119ple.5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 11:40:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FcFyf0v1qT/C1YQXGjM2gAonNFAnMg7U0aOFeLZ7M+0=;
-        b=mtfo8LcccPqqVOJS8IAJkNhD9e0SCJWDVxRaQbm8icLin/zoYyI9T/4xtV/nGQU1JF
-         DlHiRQg7K/uOmLbyq/ueMYZFwS2pC5CxZcBi0G0dEPNQeqJZEVhOCkKuBq6XerWH/ifM
-         g05vgpPmtFW0PpnC5tc3hfoIaaAL4A1bU+8ZsHQRVJURMatcVi/mkjJ1PTzcIoKSiOfD
-         mpCQse/OwmaHEX4Dv1Y8sKpHjVIpZwH7MURlyOAdiFmcWZhPtv3VqkWblZg1d4wIs47q
-         zQJnlKKLOd/8ujGbROiagM31q9EfVSckYsSY07chRQoTLGL+GDC+gXlnGkma1tge86ie
-         tYhg==
-X-Gm-Message-State: AOAM5307sYCGPokB2d1cg7lXNAhpQvENjtWyM6bt0M9rv50QkQnd8Yiv
-        3E5UuAfjZYMUWGBSsPuyiomK5ui4g1XpDqHCw/t8CQ==
-X-Google-Smtp-Source: ABdhPJwURcaOwPoIeI4cChhVTUw5UPqhkC2hqh+bsf8Vy8cYKKABNPAXL6l1YU9a9nG+dCjviRMPgLPQJRhTdHBORPg=
-X-Received: by 2002:a2e:b5cd:: with SMTP id g13mr832554ljn.0.1619721554177;
- Thu, 29 Apr 2021 11:39:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210429150940.3256656-1-arnd@kernel.org> <20210429181716.2409874-1-ndesaulniers@google.com>
- <CAKwvOd=5sLHssCf0Umfh+E__TjSwpxtO9K2MYVcXEhxvVp8okw@mail.gmail.com> <CAK8P3a1S0ct832wN0aM8ZAKbbQ3=w2_vSprhzQ4rLN=Ue=L0JQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a1S0ct832wN0aM8ZAKbbQ3=w2_vSprhzQ4rLN=Ue=L0JQ@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 29 Apr 2021 11:39:03 -0700
-Message-ID: <CAKwvOdmEybM=Vij+DP0O8waL4Awi1pip2VzHhcczgNQsryqBoA@mail.gmail.com>
-Subject: Re: [PATCH] smp: fix smp_call_function_single_async prototype
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, Borislav Petkov <bp@suse.de>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Juergen Gross <jgross@suse.com>, Jian Cai <jiancai@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Huang Ying <ying.huang@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=6ISdJhxPA0Q81HhhbPQowkOtokNi1L68q+uJq16mjrQ=;
+        b=S+D9ZE1MQFYDcdZMtmh4n1LNe5XPvtPZG+TtRWyohK1l1CeoW2r1QGPNksJ7lLcZ6I
+         o5MkQBrps7ZDJGIU7HvR3d26ugK2q16/0j5eZMuREVYoot+Rm0sQlH7pB+G+P7ATUAKr
+         CkjEJQOy0m/L/bTN6NdAIZofyS25qfAodWhW8HpDdLJWNXLPLrkesiWwrSvni4bbZhBP
+         2m9pPeLTB3cR6tcedQvnwTr9M8tcqBaaHODC16fKNSc92cZw6AMcWKjUiHcfRfFEq7YF
+         I0CbdliWHdAX356DgdKaERvfAP2sR++p62DMP+MQYR7fFcczeDRUNF556ka6xP+N/ws0
+         Lhkg==
+X-Gm-Message-State: AOAM5326h7nrVPI8/f0MQ2j+vWz+6cY9CXYS+3OO9Qf8JnOMktg0QeZG
+        1IOg4XRy+Fxb0dc8dnTswpG6mYNuIqoUyMKA09WfeRlUtFa5nb7lMI7aG3ZOH+g85MJxpfqeu0X
+        sN0H4l1dd+S0BO3a/iYxbopa4qNLTW4c0hwMKEIwr4A==
+X-Received: by 2002:a17:90a:c7d4:: with SMTP id gf20mr1275742pjb.106.1619721604716;
+        Thu, 29 Apr 2021 11:40:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJznlTU0FLh/a/y3qttY/aCK6bTZoKBFq19ZesrnJ0eRu0rUGJ1crYWi4jCsj69yn9y3SLiV2w==
+X-Received: by 2002:a17:90a:c7d4:: with SMTP id gf20mr1275724pjb.106.1619721604511;
+        Thu, 29 Apr 2021 11:40:04 -0700 (PDT)
+Received: from localhost.localdomain ([69.163.84.166])
+        by smtp.gmail.com with ESMTPSA id i123sm3566618pfc.53.2021.04.29.11.40.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 11:40:03 -0700 (PDT)
+From:   Tim Gardner <tim.gardner@canonical.com>
+To:     dave.hansen@linux.intel.com
+Cc:     tim.gardner@canonical.com, jarkko@kernel.org, shuah@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Subject: [PATCH 0/1] SGX self test fails
+Date:   Thu, 29 Apr 2021 12:39:51 -0600
+Message-Id: <20210429183952.22797-1-tim.gardner@canonical.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 11:27 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> Either way, I'll give it some more time on the randconfig build machine
-> before I send out v2.
+I'm just starting my learning curve on SGX, so I don't know if I've missed
+some setup for the SGX device entries. After looking at arch/x86/kernel/cpu/sgx/driver.c
+I see that there is no mode value for either sgx_dev_enclave or sgx_dev_provision.
 
-SGTM and thanks for the fix.  Perhaps worth a note that this isn't
-just "a violation of the calling conventions" but straight up
-undefined behavior, full stop.
+With this patch I can get the SGX self test to complete:
 
-UBSAN folks are working on adding a catch for this as well:
-https://reviews.llvm.org/D100037, see the relevant citations from the
-standard.
--- 
-Thanks,
-~Nick Desaulniers
+sudo ./test_sgx
+Warning: no execute permissions on device file /dev/sgx_enclave
+0x0000000000000000 0x0000000000002000 0x03
+0x0000000000002000 0x0000000000001000 0x05
+0x0000000000003000 0x0000000000003000 0x03
+SUCCESS
+
+Is the warning even necessary ?
+
+Tim
+
+
