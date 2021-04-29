@@ -2,110 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC7136EF02
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD3036EF05
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240986AbhD2Rhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 13:37:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22789 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240969AbhD2Rhg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 13:37:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619717809;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=K4rNwoUrsBxVZzoadAn6uvb1lrOSv00d53aEi1UZj3U=;
-        b=R84VLNkFqpM7GHnpj9QO9duzXPPB00Q7eRbdhyt8voO2oq4QT1/k1dv1Tg/t680aBOzIgV
-        ApbXeCHCOW8LUCUmRJ7ur/HOCfkUM3yIoF8zE52+sCeo0msf60pWxMEvCxT6JgtQ7TaezK
-        /tYs0bwJ6Drz2DpWofiLfMhcM+4bLAs=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-478-WQIzpuYHPtKcsVomKskp-w-1; Thu, 29 Apr 2021 13:36:47 -0400
-X-MC-Unique: WQIzpuYHPtKcsVomKskp-w-1
-Received: by mail-qk1-f198.google.com with SMTP id c4-20020a3781040000b02902e46e29acf5so11539031qkd.22
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:36:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=K4rNwoUrsBxVZzoadAn6uvb1lrOSv00d53aEi1UZj3U=;
-        b=oEtjvcvcRwEmsip6n7yxGHZ5abHf5BNZx9WWy3wHjDIY6n57hW19YsLy0+B8+o76XK
-         N7bzBEblQ/jlkneXrPXlNDkVL6+EQoe+QxpFCFrMhN4v8k0TWTC+cdDU5sYIiQJBOQQA
-         wor5mbFa/+2+BdByQWBh/f3J/3DiwHSJxc+2v9jlG7+eRDMTnSPuMZl845M7nIVY8Aat
-         /aryCXYX7hluhrP/N2dodeVpN9nnbuwuBTAjxHPcXdUInibPQVStmZh7+Uif3c1MNUV1
-         4n/XCtzgmpqUSQh4Sk2ALaOGs9MBdZ2GVLVixZRCM5pU3bIMYqv1YbzZn46Nw5iMVUJD
-         k5sA==
-X-Gm-Message-State: AOAM532dGCOw9blnitB7W5ikrC09WqrqhDaUqb9GEUBXAcXs3kPE9xKY
-        fbMNaZ2ISRyz06IZo0QKLjJOlxmTvptbfJMlEAPz46BX5pYjXc7OzvoDZDnsgcBs3cDSaN/FwJa
-        vK2GOu4Fc3e0b78DHPiibF9In
-X-Received: by 2002:ad4:55ab:: with SMTP id f11mr621354qvx.49.1619717806933;
-        Thu, 29 Apr 2021 10:36:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxm+KAbmVoVRhpdIdwacN/+bTi3+qtiMBy4JkP5iV66UBMlTFgUYy5K73549+vcQxt8ZOEYFg==
-X-Received: by 2002:ad4:55ab:: with SMTP id f11mr621331qvx.49.1619717806749;
-        Thu, 29 Apr 2021 10:36:46 -0700 (PDT)
-Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id 144sm2725453qkn.108.2021.04.29.10.36.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 10:36:46 -0700 (PDT)
-From:   trix@redhat.com
-To:     srinivas.kandagatla@linaro.org, bgoswami@codeaurora.org,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] ASoC: codecs: lpass-wsa-macro: make sure array index is set
-Date:   Thu, 29 Apr 2021 10:36:42 -0700
-Message-Id: <20210429173642.3230615-1-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
+        id S240884AbhD2Rib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 13:38:31 -0400
+Received: from foss.arm.com ([217.140.110.172]:57466 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232991AbhD2Ri3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 13:38:29 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 181881FB;
+        Thu, 29 Apr 2021 10:37:42 -0700 (PDT)
+Received: from [10.57.61.145] (unknown [10.57.61.145])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B102E3F70D;
+        Thu, 29 Apr 2021 10:37:39 -0700 (PDT)
+Subject: Re: [PATCH] [v2] coresight: etm4x: avoid build failure with unrolled
+ loops
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Qi Liu <liuqi115@huawei.com>,
+        Tingwei Zhang <tingwei@codeaurora.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+References: <20210429145752.3218324-1-arnd@kernel.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <dff8cbd8-8c56-ae6e-ecc2-9ca183113ab2@arm.com>
+Date:   Thu, 29 Apr 2021 18:37:38 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210429145752.3218324-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+Hi Arnd
 
-Static analysis reports this problem
+On 29/04/2021 15:57, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> clang-12 fails to build the etm4x driver with -fsanitize=array-bounds,
+> where it decides to unroll certain loops in a way that result in a
+> C variable getting put into an inline assembly
+> 
+> <instantiation>:1:7: error: expected constant expression in '.inst' directive
+> .inst (0xd5200000|((((2) << 19) | ((1) << 16) | (((((((((((0x160 + (i * 4))))) >> 2))) >> 7) & 0x7)) << 12) | ((((((((((0x160 + (i * 4))))) >> 2))) & 0xf)) << 8) | (((((((((((0x160 + (i * 4))))) >> 2))) >> 4) & 0x7)) << 5)))|(.L__reg_num_x8))
+>        ^
+> drivers/hwtracing/coresight/coresight-etm4x-core.c:702:4: note: while in macro instantiation
+>                          etm4x_relaxed_read32(csa, TRCCNTVRn(i));
+>                          ^
+> drivers/hwtracing/coresight/coresight-etm4x.h:403:4: note: expanded from macro 'etm4x_relaxed_read32'
+>                   read_etm4x_sysreg_offset((offset), false)))
+>                   ^
+> drivers/hwtracing/coresight/coresight-etm4x.h:383:12: note: expanded from macro 'read_etm4x_sysreg_offset'
+>                          __val = read_etm4x_sysreg_const_offset((offset));       \
+>                                  ^
+> drivers/hwtracing/coresight/coresight-etm4x.h:149:2: note: expanded from macro 'read_etm4x_sysreg_const_offset'
+>          READ_ETM4x_REG(ETM4x_OFFSET_TO_REG(offset))
+>          ^
+> drivers/hwtracing/coresight/coresight-etm4x.h:144:2: note: expanded from macro 'READ_ETM4x_REG'
+>          read_sysreg_s(ETM4x_REG_NUM_TO_SYSREG((reg)))
+>          ^
+> arch/arm64/include/asm/sysreg.h:1108:15: note: expanded from macro 'read_sysreg_s'
+>          asm volatile(__mrs_s("%0", r) : "=r" (__val));                  \
+>                       ^
+> arch/arm64/include/asm/sysreg.h:1074:2: note: expanded from macro '__mrs_s'
+> "       mrs_s " v ", " __stringify(r) "\n"                      \
+>   ^
+> 
+> This only happened in a few loops in which the array bounds sanitizer
+> added a special case for an array overflow that clang determined to be
+> possible, but any compiler is free to unroll any of the loops in the
+> same way that breaks the sysreg macros.
+> 
+> Introduce helper functions that perform a sysreg access with a
+> non-constant register number and use them in each call that passes
+> a loop counter.
 
-lpass-wsa-macro.c:1732:6: warning: Array subscript is undefined
-        if (wsa->ec_hq[ec_tx]) {
-            ^~~~~~~~~~~~~~~~~
+You don't need to add this special helper. We have the exact 
+infrastructure already. So these could simply be replaced with:
 
-The happens because 'ec_tx' is never initialized and there is
-no default in the switch statement that sets ec_tx.  Because there
-are only two cases for the switch, convert it to an if-else.
+csdev_access_xxx(csa, ...)
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- sound/soc/codecs/lpass-wsa-macro.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+see :
 
-diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
-index 1a7fa5492f28..c11ae72f2148 100644
---- a/sound/soc/codecs/lpass-wsa-macro.c
-+++ b/sound/soc/codecs/lpass-wsa-macro.c
-@@ -1718,15 +1718,13 @@ static int wsa_macro_enable_echo(struct snd_soc_dapm_widget *w,
- 
- 	val = snd_soc_component_read(component, CDC_WSA_RX_INP_MUX_RX_MIX_CFG0);
- 
--	switch (w->shift) {
--	case WSA_MACRO_EC0_MUX:
-+	if (w->shift == WSA_MACRO_EC0_MUX) {
- 		val = val & CDC_WSA_RX_MIX_TX0_SEL_MASK;
- 		ec_tx = val - 1;
--		break;
--	case WSA_MACRO_EC1_MUX:
-+	} else {
-+		/* WSA_MACRO_EC1_MUX */
- 		val = val & CDC_WSA_RX_MIX_TX1_SEL_MASK;
- 		ec_tx = (val >> CDC_WSA_RX_MIX_TX1_SEL_SHFT) - 1;
--		break;
- 	}
- 
- 	if (wsa->ec_hq[ec_tx]) {
--- 
-2.26.3
+include/linux/coresight.h
 
+Cheers
+Suzuki
