@@ -2,69 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8980F36F281
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 00:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5163E36F287
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 00:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229672AbhD2WQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 18:16:14 -0400
-Received: from msg-2.mailo.com ([213.182.54.12]:49422 "EHLO msg-2.mailo.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229570AbhD2WQJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 18:16:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
-        t=1619734382; bh=fqVkx3TPT2hzWCKBQXOQPX3j7Tp/i9ftQf4QckfR9jw=;
-        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
-         MIME-Version:Content-Type:In-Reply-To;
-        b=TfgP1zmnQpIeBk4GhCUEnowGIWyTg+lHHP7BB5dE2DLN2tzaz8NjNu64VRoRL0Wn/
-         2f8ivAXa+3rYeOdJ6HB/3WOjbZzv33N7lpuPXFlByo91axybr8YpKJXEHBHOdh5Ij5
-         fRx8BXz0KOA4rXosl/47xJmJsuKpFI1EckrC/wgU=
-Received: by 192.168.90.13 [192.168.90.13] with ESMTP
-        via ip-206.mailobj.net [213.182.55.206]
-        Fri, 30 Apr 2021 00:13:01 +0200 (CEST)
-X-EA-Auth: FGh2PRfjIk7MPz+rAvHCky0S4v4blJapa6WZTmW7IuCPXm1pW1kq24GIKw0REpzL7qNl0raovijQQu6jMgDT+5ScuxVTW+CF
-Date:   Fri, 30 Apr 2021 03:42:58 +0530
-From:   Deepak R Varma <drv@mailo.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: code clean up confirmation => staging: media: atomisp: pci driver
-Message-ID: <YIsvamW5HT+PkJMB@dU2104>
-References: <YIrfVFhW8ufjm/tB@192.168.1.8>
- <YIrmwYeSU0Clt7U4@kroah.com>
+        id S229708AbhD2WVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 18:21:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229578AbhD2WVD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 18:21:03 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E60FC06138B;
+        Thu, 29 Apr 2021 15:20:16 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 741622224D;
+        Fri, 30 Apr 2021 00:20:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1619734813;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=la6VLsxOJVtAExCAynbfZPh1rnm5vHPZ1THtd/hTHcY=;
+        b=U1hNdI7EaTGjYM4poaPfhkmA5c76axn4jj3YiAyBX56MOJQoXCvwx/44i8od6G5H/YKUum
+        lHdmylGQ99VQvHC/vqZj3663T77p2LReCJzpgTtY8fHUJWF8AEGfuccJwg5sklLtzTuXgy
+        hUu31FWHRAF9cKaEdUhINy1f5hlLAnI=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YIrmwYeSU0Clt7U4@kroah.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 30 Apr 2021 00:20:13 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Tudor.Ambarus@microchip.com, nm@ti.com, kristo@kernel.org,
+        robh+dt@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+        vigneshr@ti.com, broonie@kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-spi@vger.kernel.org, lokeshvutla@ti.com
+Subject: Re: [RFC PATCH 4/6] spi: cadence-qspi: Use PHY for DAC reads if
+ possible
+In-Reply-To: <20210429181908.bwb45eljn5nxscf6@ti.com>
+References: <20210311191216.7363-1-p.yadav@ti.com>
+ <20210311191216.7363-5-p.yadav@ti.com>
+ <2f26456e-59ff-2625-5d65-c1537052839d@microchip.com>
+ <20210312101757.sqeyledbwjnpqdoy@ti.com>
+ <ee2b753b16e76ecbede4c1373b6f2d77@walle.cc>
+ <20210429181908.bwb45eljn5nxscf6@ti.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <e17722c30deb7f2dcb94a9aa43bbc6dd@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 07:02:57PM +0200, Greg Kroah-Hartman wrote:
-> On Thu, Apr 29, 2021 at 10:01:16PM +0530, Deepak R Varma wrote:
-> > Hello All,
-> > Is anyone already working on code clean up of the following driver
-> > /files? I am specifically targeting addressing the checkpatch
-> > complaints. Let me know.
-> > 
-> > 	drivers/staging/media/atomisp/pci
+Am 2021-04-29 20:19, schrieb Pratyush Yadav:
+> On 29/04/21 06:28PM, Michael Walle wrote:
+>> Am 2021-03-12 11:17, schrieb Pratyush Yadav:
+>> > On 12/03/21 09:13AM, Tudor.Ambarus@microchip.com wrote:
+>> > > On 3/11/21 9:12 PM, Pratyush Yadav wrote:
+>> > > > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>> > > >
+>> > > > Check if a read is eligible for PHY and if it is, enable PHY and DQS.
+>> > >
+>> > > DQS as in data strobe? Shouldn't the upper layer inform the QSPI
+>> > > controller
+>> > > whether DS is required or not?
+>> >
+>> > Yes, DQS as in data strobe. I need to check this again, but IIRC the
+>> > controller cannot run in PHY mode unless DS is used. Ideally the upper
+>> > layer should indeed inform the controller whether DS is supported/in-use
+>> > or not. That can be used to decide whether PHY mode (and consequently
+>> > the DS line) is to be used or not.
+>> >
+>> > Currently there are only two flashes that use 8D-8D-8D mode (S28HS512T
+>> > and MT35XU512ABA), and both of them drive the DS line.
+>> 
+>> The LS1028A datasheet explicitly states that the calibration is only
+>> used for non-DQS flashes. Which makes sense, because it just determine 
+>> at
+>> which point the input data is sampled. And if the flash provides a 
+>> data
+>> strobe, it already know when to sample it. What I am missing here?
 > 
-> There's no need to ask, just do the work and submit the patches.
+> If there was 0 delay in transferring the signals from flash to
+> SoC/controller, you would be right. But in practice there is a small 
+> but
+> noticeable delay from when the flash launches the signal and when it is
+> received by the device. So by the time the DQS signal reaches the SoC 
+> it
+> might already be too late and the data lines might not be valid any
+> more. The calibration accounts for these (and some others) delays.
+
+DQS and the data signals are trace length matched, so for data reads
+they will end up on the IO pad of the SoC at the same time. This is
+also mentioned in [1] (Fig 1.1, point 4 and 5). So while there needs
+to be a delay on the clock line for the receiving FF, the best value
+for this should be half the SCK clock period.
+
+Does this work without DQS? That should be the main purpose for a
+calibration, no? Because in this case, you'll have to determine
+the delay between SCK and the data signals (for reads).
+
+Btw. I can't get my head around how the TX delay search would work.
+Basically you shift the SCK to the command / data to the flash. So
+the flash will either recognize a valid read command or if the delay
+is too short/too long the flash will (hopefully) ignore the wrong
+command, correct? Might there be any misinterpreted commands which
+might be harmful? Are there any flashes which actually need a delay
+between data out and SCK?
+
+Of course, the calibration might help with broken hardware where the
+SCK/DQ/DQS traces are not length matched.
+
+-michael
+
 > 
-> We do not "claim" work ahead of time in the kernel, that is what has
-> killed other open source projects numerous times in the past.  We know
-> to learn from other's mistakes. :)
+> See [0] for a somewhat similar discussion I had with Tudor.
 > 
-Hello Greg,
-Thank you for the guidance. Just wanted to make sure I am not overstepping on someone else's
-work. I will go ahead and work on the clean up.
+> [0] 
+> https://lore.kernel.org/linux-mtd/20210312181447.dlecnw2oed7jtxe7@ti.com/
 
-Thank you,
-deepak.
-
-> thanks,
-> 
-> greg k-h
-
-
+[1] https://www.ti.com/lit/an/spract2/spract2.pdf
