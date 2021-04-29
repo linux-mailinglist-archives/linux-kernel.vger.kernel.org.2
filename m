@@ -2,111 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8394536EF37
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F030836EF3A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240989AbhD2R4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 13:56:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58118 "EHLO
+        id S241048AbhD2R45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 13:56:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232572AbhD2R4M (ORCPT
+        with ESMTP id S241007AbhD2R4w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 13:56:12 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB45C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:55:25 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id d14so15796898edc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:55:25 -0700 (PDT)
+        Thu, 29 Apr 2021 13:56:52 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E8BC06138C;
+        Thu, 29 Apr 2021 10:56:05 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 4-20020a05600c26c4b0290146e1feccd8so226264wmv.1;
+        Thu, 29 Apr 2021 10:56:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PHY0KopoGt2jmHwl+eKZ+gMG2i1OKFgtzB7nz2g7rXM=;
-        b=P43Ohrzl+8R4swusRNtAj4tOcBohHPeMOuDQJJcu2LXIqHfAsaQzh0ZIHMsbbrqOJn
-         QsA1cZ1OUw6iw3pY1xKvaKelStWOLTKY/hC6UgG9I0VIk4zp9PmPFaN7DoQ63eVdPTu0
-         veQbdWc2W+ufXQDy3/CzlEl+pshky3b1TAbafFm2ApD7wvNbQkCNQUh5o0y0DmS/ZCtW
-         KEu0djbE6FPsfu7HRzV5+2gNQUQCbzSaMiwO2B7Jn568aK4l8zMe3cpP6BNUP44qsfNp
-         L7NbqJ0YgOj58B20Jj1EP7qP2U1rkKlMEHDl+a4IwQVdE0LRUAN5QA1sSTcTM/x0EQhG
-         e6yA==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=x03N4U2d63n3eKi2aMlVnMhqfVRDG+Wr9njWqMaaWpE=;
+        b=jtdhJq7eER/wGoAmMMV79BT+Pgj+kvjuArVHpXctq8kXcSIIxJdgdxZQyRtSQfquld
+         wp6OnaFc+wq0yFxTvTA4sDbNnKdwCZuIECr3R1mq32W73Vc3AnB4/uVZsAQAsntlqFeH
+         OfOFoWCOthKnFsSUWK9NEYFtM32rjK2bGdCkobqkm5TkOzRhhzfXjtIoyW+YDWprj3JM
+         iejkoY6xwm+zhUuiaFGdaGoQY3qzbRJSTpiZs4Ub4nDm8gTwgw1CWIcGa0tXZaNnUV3L
+         lvYE7a8npJWRTUjA7h0p7b1HSWmEHHETtTXPyEn+6To/Xy3SloAAEj9xb9L6KJp5wTVq
+         e6ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PHY0KopoGt2jmHwl+eKZ+gMG2i1OKFgtzB7nz2g7rXM=;
-        b=HsouKgi20Y4Mm/8OsGx6bWK5eD3R42zJGwfrpw0qLS15az6NOF2Su67o6ypJqwgdmY
-         oAx3jK0b8urqmYtjZmi0P7LS3ho1eIkAG11H19wNvjXCtWL4Dx/Laqlwb3iil0j7QEZj
-         GDeDRQh4A62HtOAA7YnN+lqpZAMXxgdG4ApylzrcfWTKmYIbTtEglKnZhrKgJnj7H+VP
-         bk9qAMb6qX7nZQnZ/d9bkVHYN70bfdO/KD9SyuSfCMxiJFY5l8uTLYcthq1fuo4ZInLd
-         rjmjGE0J9Pu1vm6wMdJtvil/ONf5xNpsxswsHtiUFQS+0klJC8K/V1kHuoCzpb/eXEI+
-         QZ/Q==
-X-Gm-Message-State: AOAM532/bMqcWEc3n9Fr9w2NjCyIR1Q4ZiZQOD/pW6EIR9i9vfV8hX1R
-        MULSV5Qwf0QXkV3NFw8EW2MGDDIZ4sJWbdFftJA=
-X-Google-Smtp-Source: ABdhPJzb6RRhFjjAr4kXAzFrvemYzwT/kPxG+lWrqfmjA0xnzpUWx8Vcas5k4b7bm7r2HNA1W8mxdmEjsAon22PGF6I=
-X-Received: by 2002:aa7:d658:: with SMTP id v24mr985550edr.290.1619718924045;
- Thu, 29 Apr 2021 10:55:24 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=x03N4U2d63n3eKi2aMlVnMhqfVRDG+Wr9njWqMaaWpE=;
+        b=LnbtqoXALlxhXD0M34PU8ZNM6L04mHby4tyTg+8OLDSjJBy6i2VMhVYJs22nFkKCm1
+         7d6e/bcMHDW0xw7vRdAvR33nI7dSiGER8jChgbr/XgTdmoTPy8+pXd9nfhRkQj3VlJHl
+         1lpcRd0JHgxYhvm96lMSQkgs+IYCLAXXIeDYknaTIuDJ+7w6SrBgXKKSugb/aNAlpWRI
+         WDyAjBt3+tbCm6nHI4D4KMUGh4EyJguM/eJd14GEAjrOZ3Smf80juXtKu/hM+UTmJ+nY
+         cwLQ2ojwGUX7AM3cguxx30wyMUffyCSoGdO3Dybp1RJ5nPUjBztkdOhiAouJYD1vn+Zm
+         Gjqw==
+X-Gm-Message-State: AOAM530huQBedif6giKaQDvBn8bX4kBnZSrAv7oIry8YeZ0m12D0V9a+
+        xnKDb1rJhEfj8UwW7gc2d/Q=
+X-Google-Smtp-Source: ABdhPJxj1FuYyb3Uyrh4aTzIUcJpgQ6k1FcvqhGdtA7GiQvLNNGUxnxmsmsBNCCaLeaJy9Rn+kOmeA==
+X-Received: by 2002:a05:600c:41c2:: with SMTP id t2mr1431647wmh.169.1619718964505;
+        Thu, 29 Apr 2021 10:56:04 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.132.80])
+        by smtp.gmail.com with ESMTPSA id v4sm995021wme.14.2021.04.29.10.56.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Apr 2021 10:56:04 -0700 (PDT)
+Subject: Re: [syzbot] WARNING in io_uring_setup (2)
+To:     syzbot <syzbot+1eca5b0d7ac82b74d347@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <00000000000014ec7c05c12012b1@google.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <8eec9ad4-3341-f136-0983-52f3c687f9da@gmail.com>
+Date:   Thu, 29 Apr 2021 18:55:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <20210429132648.305447-1-linmiaohe@huawei.com> <20210429132648.305447-5-linmiaohe@huawei.com>
-In-Reply-To: <20210429132648.305447-5-linmiaohe@huawei.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 29 Apr 2021 10:55:12 -0700
-Message-ID: <CAHbLzkr2o1xjY4sHFPMv=vZm9Dysu+YJkaiab9AtJd9FcZJ5sg@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] mm/huge_memory.c: remove unnecessary
- tlb_remove_page_size() for huge zero pmd
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>,
-        william.kucharski@oracle.com, Matthew Wilcox <willy@infradead.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        aneesh.kumar@linux.ibm.com, Ralph Campbell <rcampbell@nvidia.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Rik van Riel <riel@surriel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <00000000000014ec7c05c12012b1@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 6:27 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
->
-> Commit aa88b68c3b1d ("thp: keep huge zero page pinned until tlb flush")
-> introduced tlb_remove_page() for huge zero page to keep it pinned until
-> flush is complete and prevents the page from being split under us. But
-> huge zero page is kept pinned until all relevant mm_users reach zero since
-> the commit 6fcb52a56ff6 ("thp: reduce usage of huge zero page's atomic
-> counter"). So tlb_remove_page_size() for huge zero pmd is unnecessary now.
+On 4/29/21 6:46 PM, syzbot wrote:
+> syzbot has bisected this issue to:
+> 
+> commit eae071c9b4cefbcc3f985c5abf9a6e32c1608ca9
+> Author: Pavel Begunkov <asml.silence@gmail.com>
+> Date:   Sun Apr 25 13:32:24 2021 +0000
+> 
+>     io_uring: prepare fixed rw for dynanic buffers
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13f639edd00000
+> start commit:   d72cd4ad Merge tag 'scsi-misc' of git://git.kernel.org/pub..
+> git tree:       upstream
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=100e39edd00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=17f639edd00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=53fdf14defd48c56
+> dashboard link: https://syzkaller.appspot.com/bug?extid=1eca5b0d7ac82b74d347
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15aeff43d00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1747117dd00000
+> 
+> Reported-by: syzbot+1eca5b0d7ac82b74d347@syzkaller.appspotmail.com
+> Fixes: eae071c9b4ce ("io_uring: prepare fixed rw for dynanic buffers")
+> 
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-By reading the git history, it seems the lifecycle of huge zero page
-is bound to process instead of page table due to the latter commit.
-The patch looks correct to me. Reviewed-by: Yang Shi
-<shy828301@gmail.com>
+#syz test: git://git.kernel.dk/linux-block io_uring-5.13
 
->
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->  mm/huge_memory.c | 3 ---
->  1 file changed, 3 deletions(-)
->
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index e24a96de2e37..af30338ac49c 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -1680,12 +1680,9 @@ int zap_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
->                 if (arch_needs_pgtable_deposit())
->                         zap_deposited_table(tlb->mm, pmd);
->                 spin_unlock(ptl);
-> -               if (is_huge_zero_pmd(orig_pmd))
-> -                       tlb_remove_page_size(tlb, pmd_page(orig_pmd), HPAGE_PMD_SIZE);
->         } else if (is_huge_zero_pmd(orig_pmd)) {
->                 zap_deposited_table(tlb->mm, pmd);
->                 spin_unlock(ptl);
-> -               tlb_remove_page_size(tlb, pmd_page(orig_pmd), HPAGE_PMD_SIZE);
->         } else {
->                 struct page *page = NULL;
->                 int flush_needed = 1;
-> --
-> 2.23.0
->
->
+-- 
+Pavel Begunkov
