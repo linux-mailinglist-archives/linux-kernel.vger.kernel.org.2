@@ -2,142 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61BAE36E484
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 07:35:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28A5436E482
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 07:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238103AbhD2FgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 01:36:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229792AbhD2FgL (ORCPT
+        id S236837AbhD2FeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 01:34:22 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:34102 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229792AbhD2FeU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 01:36:11 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0879C06138C
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 22:28:47 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id h15so13168767wre.11
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 22:28:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=b2FQYBTKIQxxvWpLdBy5hB+f/AWhIJ7bCL/fYgN0lJQ=;
-        b=FU2tLJOp60qtDYlvEuc18TDIthKQB9ReglgwbUXVP2x7iCCHX7xvaZmKp3ymcyeEu/
-         MPSqkCuPdt1ZOddmwCU0Em9cJPc+H2sdFtwGLD+/QLuafbgTUzda/8EkfrI7OkX4ho8p
-         RBkbJ1kt6iu8aUcK8Xca2eyI9hLguf7s8gGscGAmjPG6/eTJHkgxTz2O1deUXqNOztRO
-         cPwlE60xK+y5YSQiBGieg8yGK8hsVJCg3+jo9FbRZDYqstr2/Uzbo+jOWWKfSSi/q6JL
-         UqWFX+gpYm6ewbY7StMqdyo1j2uOmQtm35+8O3L7JkibT7/7sQk7rRQBXT2kzniE4gb8
-         oz+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=b2FQYBTKIQxxvWpLdBy5hB+f/AWhIJ7bCL/fYgN0lJQ=;
-        b=kQ4Ciuj92JO2Kwhj95+eZ4TEN28QuN/WZHQEpGgTqaJ3yaRUU8D9/o6mjjoH3KehSK
-         ycOJTwNPdJU/CXJVC8iRYl7s/ZwGScn/dbVyvQ69VPYYKC+oxhrW/a/kgRtXAF+u7NoJ
-         lf9u97tRYzfKUdNy3T0E3imr084l3qMjp3EpkMD8qTqOoaqPH7lPv7pJHd9m1TTF26WN
-         +dH1L/fQjwUBYD8ELzCqIBoDPXZ0HVXy6TefqBGMrojo9Rj2GN5q+5K6GG/ycIBtAQfg
-         0UqfU4acb6EiQ7saY471uA0x4NcvHDGHzWuhlVfIi0hARBKB5TNlTNcL8VMJFG5nYNex
-         ob7A==
-X-Gm-Message-State: AOAM5322sCIF01dvDGCLbl4x12qowGegGXolBSA4vjF9kL91BzwGIyqg
-        2Ft7CU6r1NraBZGVERNTrd6nOxPKI1b59Bk0W8Q=
-X-Google-Smtp-Source: ABdhPJzooUa35nX4yFBCXDLpj0pcryfvAdRjdK+YaKHFUJYl3oHfFAcvYO/goHMqqU0PLZ8qOiQCCfxfVKey94Uwm8U=
-X-Received: by 2002:adf:dd4f:: with SMTP id u15mr26096807wrm.308.1619674126471;
- Wed, 28 Apr 2021 22:28:46 -0700 (PDT)
+        Thu, 29 Apr 2021 01:34:20 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619674414; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=bsA0nxUjD3KYsDuCWjb6jWZWnBa2V9HdYdOfdgr6mLY=;
+ b=HWR8K4TWI3Ctb9WoEGphVT0Y1EzJLfiH0XkZoov4VfO+CAuujkKviL4OhyQvaY21O2yD3Yyr
+ EQafd5qsuPpE71tXmffICruFHBVe9utCCfxtlc1CQiRvq9MDC1iV7/UL7TqwGoNKsZiiEh6n
+ Zu+pPCFEQg9A/y7L0yqTQNcEhmA=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 608a452de0e9c9a6b6864edf (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 29 Apr 2021 05:33:33
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BB093C433D3; Thu, 29 Apr 2021 05:33:33 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E371DC4338A;
+        Thu, 29 Apr 2021 05:33:32 +0000 (UTC)
 MIME-Version: 1.0
-Received: by 2002:a1c:f401:0:0:0:0:0 with HTTP; Wed, 28 Apr 2021 22:28:46
- -0700 (PDT)
-Reply-To: yakubujohn940@gmail.com
-From:   Yakubu John <akachimiracle9@gmail.com>
-Date:   Thu, 29 Apr 2021 06:28:46 +0100
-Message-ID: <CAJbOLe8j2awsb=v+XYwtS7nfcL5No6KfQa=XuPJHQOdzW69F+A@mail.gmail.com>
-Subject: Greetings Dear Friend,
-To:     natural.jeon@gmail.com, tuckerfamilydent@gmail.com,
-        duongbaongan3012@gmail.com, damienjeon@gmail.com,
-        ieoneugene@gmail.com, jayeonjeon@gmail.com, ddpcrea@gmail.com,
-        tacticalcombativesdiv@gmail.com, emily.yj.jeon@gmail.com,
-        maxace70@gmail.com, mojavemel@aol.com, zzbroker@aol.com,
-        katherineziff@aol.com, GottfriedAnger@aol.com, eugenecoin@aol.com,
-        tanujac@aol.com, chaudhary.t@pg.com, shiulin@aol.com,
-        ecsdel@aol.com, scohe078@aol.com, pastornancy8192@aol.com,
-        marco.cozzolino@aol.com, huanganchi@hotmail.com,
-        daizostudio@aol.com, carpiwlks@aol.com, amsellent@aol.com,
-        phoeenixorg@aol.com, cjiwakurax@aol.com, jeansnotes@aol.com,
-        qmi2@aol.com, tradeswomn@aol.com, skalash555@aol.com,
-        lillianhg@aol.com, denisezao@yahoo.com, dzao@aol.com,
-        jasonzao@hotmail.com, kenninomi@aol.com, worldaqua@aol.com,
-        rblgirlie@aol.com, SFPResearc@aol.com, Awcantor@aol.com,
-        KingFamilyReacts@aol.com, bruce4d@aol.com, k1tarsh1@aol.com,
-        jhinte5635@aol.com, dcpozza@aol.com, RedDogFerris@aol.com,
-        Abn187thpf@aol.com, agriwaste2@aol.com, Is0913@aol.com,
-        namjae.jeon@samsung.com, sergey.senozhatsky.work@gmail.com,
-        linux-kernel@vger.kernel.org, ljk0201@gmail.com,
-        dohshin.jeon@gmail.com, jeonwonkwan@gmail.com, kimnaehye@gmail.com,
-        j2motion@gmail.com, junjin0403@gmail.com, Rayjeon9695@gmail.com,
-        mjsensei@gmail.com, mjeon@mccsc.edu, jeonoju@gmail.com,
-        andrew.jeon@gmail.com, cybersurfer240@bright.net,
-        jjeon0923@gmail.com, DanielRufoloMusic@gmail.com,
-        isshjeon@gmail.com, hongseok.jeon@gmail.com, hanjunjeon@gmail.com,
-        djkashnl@gmail.com, Redaksikabarwonosobo@gmail.com,
-        choijm@gmail.com, kimleang_khun@yahoo.com, jeon@snu.ac.kr,
-        clonghofer79@yahoo.com, liyatai118@yahoo.com.cn,
-        micronpt@yahoo.com, g_e_montenegro@yahoo.com, meeess22@gmail.com,
-        zbeans90@gmail.com, alswls4127@hanmail.net, parkwndjs@naver.com,
-        hhj3274@naver.com, richcanz@yahoo.com, jeaninhollrp@gmail.com,
-        bjovanovic@outlook.com, qilei.li@outlook.com, kjkintl@outlook.com,
-        chu@hotmail.com, jyj@yahoo.co.kr, shjeon@intelpus.com,
-        info@gnm-mail.com, Hwayoung.Jeon@colostate.edu,
-        carlos.moura@mail.com, mail_a@mail.com, mail_b@mail.com,
-        keemfunny@mail.com, cherrytreeproject@mail.com, info@jeonsa.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 29 Apr 2021 11:03:32 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     robh+dt@kernel.org, bjorn.andersson@linaro.org, sboyd@kernel.org,
+        agross@kernel.org, mani@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/5] reset: qcom: Add PDC Global reset signals for WPSS
+In-Reply-To: <0c5f747fe0a3f757a4160e4fd28cc2b56a57a39d.camel@pengutronix.de>
+References: <1619508824-14413-1-git-send-email-sibis@codeaurora.org>
+ <1619508824-14413-5-git-send-email-sibis@codeaurora.org>
+ <0c5f747fe0a3f757a4160e4fd28cc2b56a57a39d.camel@pengutronix.de>
+Message-ID: <e28b74712d66f298af793ceb873216bb@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hey Philipp,
+
+Thanks for the review. Will get them
+fixed in the next re-spin.
+
+On 2021-04-27 13:28, Philipp Zabel wrote:
+> Hi Sibi,
+> 
+> On Tue, 2021-04-27 at 13:03 +0530, Sibi Sankar wrote:
+>> Add PDC Global reset signals for Wireless Processor Subsystem (WPSS)
+>> on SC7280 SoCs.
+>> 
+>> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+>> ---
+>> 
+>> v2:
+>>  * place resets and num_resets adjacent to each other [Stephen]
+> [...]
+>> +struct qcom_pdc_reset_desc {
+>> +	const struct qcom_pdc_reset_map *resets;
+>> +	size_t num_resets;
+>> +	unsigned int offset;
+>> +};
+> [...]
+> 
+> For consistency, please do the same here:
+> 
+>> +static const struct qcom_pdc_reset_desc sdm845_pdc_reset_desc = {
+>> +	.resets = sdm845_pdc_resets,
+>> +	.offset = RPMH_SDM845_PDC_SYNC_RESET,
+>> +	.num_resets = ARRAY_SIZE(sdm845_pdc_resets),
+>> +};
+> [...]
+> 
+> and here:
+> 
+>> +static const struct qcom_pdc_reset_desc sc7280_pdc_reset_desc = {
+>> +	.resets = sc7280_pdc_resets,
+>> +	.offset = RPMH_SC7280_PDC_SYNC_RESET,
+>> +	.num_resets = ARRAY_SIZE(sc7280_pdc_resets),
+>> +};
+> 
+> [...]
+>> @@ -54,19 +89,18 @@ static int qcom_pdc_control_assert(struct 
+>> reset_controller_dev *rcdev,
+>>  					unsigned long idx)
+>>  {
+>>  	struct qcom_pdc_reset_data *data = to_qcom_pdc_reset_data(rcdev);
+>> +	const struct qcom_pdc_reset_map *map = &data->desc->resets[idx];
+>> 
+>> -	return regmap_update_bits(data->regmap, RPMH_PDC_SYNC_RESET,
+>> -				  BIT(sdm845_pdc_resets[idx].bit),
+>> -				  BIT(sdm845_pdc_resets[idx].bit));
+>> +	return regmap_update_bits(data->regmap, data->desc->offset, 
+>> BIT(map->bit), BIT(map->bit));
+>>  }
+> 
+> Why not go one step further:
+> 
+> 	u32 mask = BIT(data->desc->resets[idx].bit);
+> 
+> 	return regmap_update_bits(data->regmap, data->desc->offset, mask, 
+> mask);
+> 
+> That seems to be a common pattern in other qcom drivers.
+
+will send out a separate patch for
+the other reset driver.
+
+> Either way, with the above reset/num_reset changes:
+> 
+> Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+> 
+> Also,
+> 
+> Acked-by: Philipp Zabel <p.zabel@pengutronix.de>
+> 
+> for the whole series to go through the qcom tree, or let me know if you
+> want me to pick up patches 2-4 next round.
+> 
+> regards
+> Philipp
+
 -- 
-
-
--- 
-
-
-Greetings Dear Friend,
-
-
-I need little of your time i have a business transaction to share with
-you in sum of $10.2 Million USD which rightful
-
-belongs to our customer Late Dr. Walid Ahmed Juffali who deposited the
-money in our bank, bank of Africa(BOA)but
-
-he died of cancer ever since then no one has been able to apply to the
-bank regarding to the fund and the bank
-
-is able to transfer this fund to your wish named bank account in your
-Country also this deal is risk-free i am
-
-absolutely assuring you that no trouble or problems will involved in
-this transaction either In the short-run
-
-or in the long-run of it, i need you to apply to the bank as his
-business partner also kindly note that it will
-
-be shared among us in the ratio Of 60%40 So my beloved kindly forward
-Your details to me If you are in interested.
-
-
-
-Your Full Name....
-
-Your Bank Name....
-
-Your Age And Sex....
-
-Your Occupation....
-
-Your Telephone Number...
-
-Your Country Address....
-
-A Copy Of Your Identity Card...
-
-Yours Faithfully
-Mr.Yakubu John
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
