@@ -2,116 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B35236E7AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 11:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7765336E7B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 11:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237089AbhD2JMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 05:12:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232775AbhD2JMy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 05:12:54 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5274C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:12:07 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 4so43808618lfp.11
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 02:12:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jUQerQ7HmMjJ6I/BYS0A6Oi2QMhIX3dppb9FwnW9e9Y=;
-        b=qRK90K4NjKongoIsln74lxIykKe/b2JvthSH33TfE2+g+CFr5PbnjGg4nkINSkxGpz
-         PfmGGOHik/6elmqnxUB14vTAM9+M6l+nlU/atjUAKRk7y+0fpq5cEqtkyXYHkJBo89Bp
-         7/5BschtB4EGHak5z7CgmUf45Bw/uy55yFMQ4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jUQerQ7HmMjJ6I/BYS0A6Oi2QMhIX3dppb9FwnW9e9Y=;
-        b=AwuUEEzfecgI9P3boDenYqmhzlyKRDbRnk8K5Ui6UkwvPlKE3o+5qjLk4trwWyvbK1
-         dnNV9UUE4ACQZZrkvSmu7a6YN8egq5ldBb1vDVl4EvvHdeu6dGSunmlF9n1uDtboCXs7
-         R0rGRVuejR/ZVkzcmMxNwMJcXE/M9U7smhpVfJJj829vPCgb64CdVIImOm6VCGlDS/kZ
-         cXPsUm3EEx5prAFmLDyzilfY7uSKNmVpbzizVWYUTAnsRv5DRRDrMzksIDDojajS6Emg
-         E9g4P/pVFm87SAP5qZ8MdXrT7vRN+Escq9q3GCUF1j23hcndN0iVDlqHTu6nuOLAKIRU
-         YU7Q==
-X-Gm-Message-State: AOAM530rpspfflc8Ngkq3CfyeRe7DdHZUlVkfo5BScaHZySpaJyGg/1W
-        hM1vJhWcEa+V7iNx/brrir6hgAi8uJ4Bsn7tGKgNDg==
-X-Google-Smtp-Source: ABdhPJwspHTwzOKICOpQaGFTHLVSyBQKTmIgOM5MIuJdnlGQ9vUHRtihLVXMxS4r52+QEJjZjC3nMP7Y9gaLzBivkx4=
-X-Received: by 2002:ac2:5335:: with SMTP id f21mr23886022lfh.288.1619687526274;
- Thu, 29 Apr 2021 02:12:06 -0700 (PDT)
+        id S237299AbhD2JNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 05:13:07 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:42134 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232775AbhD2JNE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 05:13:04 -0400
+Received: from zn.tnic (p200300ec2f0a4f00fa8ecda271c3a3d7.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:4f00:fa8e:cda2:71c3:a3d7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1DC2B1EC0288;
+        Thu, 29 Apr 2021 11:12:16 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1619687536;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=7zGmhNtr9fSMXiAv9CTHWxetCafBFfr5+g4Pp2O1zPA=;
+        b=VJ8KU5gDLEDcc86e/EfzBa0Fu1gTt/agw1fFBUNcKkgElWJVHz5ezJ1+abvUNWA/+YPW+c
+        hhXKF5mKvOhNpbhEILpk4RsYp4zZM9GJdcTDDXSIzZSnW5O74QppV0bnYsVdEpAKdndzIb
+        /RedeShYZzUdYUN0WSeW2H8EvvtriFM=
+Date:   Thu, 29 Apr 2021 11:12:19 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v26 22/30] x86/cet/shstk: Add user-mode shadow stack
+ support
+Message-ID: <YIp4c95E9/9DYR6z@zn.tnic>
+References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
+ <20210427204315.24153-23-yu-cheng.yu@intel.com>
+ <YImg5hmBnTZTkYIp@zn.tnic>
+ <3a0ed2e3-b13d-0db6-87af-fecd394ddd2e@intel.com>
 MIME-Version: 1.0
-References: <20210429084541.28083-1-alex@ghiti.fr>
-In-Reply-To: <20210429084541.28083-1-alex@ghiti.fr>
-From:   Vitaly Wool <vitaly.wool@konsulko.com>
-Date:   Thu, 29 Apr 2021 11:11:55 +0200
-Message-ID: <CAM4kBBK=yQ=jXYw85Ti7Y3EyGd11aOYt7QnD4+fFFkDhvrwcxA@mail.gmail.com>
-Subject: Re: [PATCH] riscv: Disallow to build XIP_KERNEL with SOC_SIFIVE
-To:     Alexandre Ghiti <alex@ghiti.fr>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <3a0ed2e3-b13d-0db6-87af-fecd394ddd2e@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 10:47 AM Alexandre Ghiti <alex@ghiti.fr> wrote:
->
-> RISCV_ERRATA_ALTERNATIVE patches text at runtime which is not possible when
-> the kernel is executed from the flash in XIP mode, and as the SIFIVE
-> errata must be fixed somehow, disallow to build a XIP kernel that
-> supports SIFIVE socs.
+On Wed, Apr 28, 2021 at 11:39:00AM -0700, Yu, Yu-cheng wrote:
+> Sorry about that.  After that email thread, we went ahead to separate shadow
+> stack and ibt into different files.  I thought about the struct, the file
+> names cet.h, etc.  The struct still needs to include ibt status, and if it
+> is shstk_desc, the name is not entirely true.  One possible approach is, we
+> don't make it a struct here, and put every item directly in thread_struct.
+> However, the benefit of putting all in a struct is understandable (you might
+> argue the opposite :-)).  Please make the call, and I will do the change.
 
-Could you please hold off this patch for a bit? I will try to come up
-with an alternative solution. It should be possible to define a
-special section within the RW area and place the functions that need
-such patching there.
-Not that I like that much but at least we'll keep the ability to use
-XIP on SiFive.
+/me looks forward into the patchset...
 
-Best regards,
-   Vitaly
+So this looks like the final version of it:
 
-> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
-> ---
->  arch/riscv/Kconfig.erratas | 2 +-
->  arch/riscv/Kconfig.socs    | 1 +
->  2 files changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/Kconfig.erratas b/arch/riscv/Kconfig.erratas
-> index d5d03ae8d685..9537dbd67357 100644
-> --- a/arch/riscv/Kconfig.erratas
-> +++ b/arch/riscv/Kconfig.erratas
-> @@ -2,7 +2,7 @@ menu "CPU errata selection"
->
->  config RISCV_ERRATA_ALTERNATIVE
->         bool "RISC-V alternative scheme"
-> -       default y
-> +       default y if !XIP_KERNEL
->         help
->           This Kconfig allows the kernel to automatically patch the
->           errata required by the execution platform at run time. The
-> diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-> index 00c2b205654c..9cb38bc9d7cd 100644
-> --- a/arch/riscv/Kconfig.socs
-> +++ b/arch/riscv/Kconfig.socs
-> @@ -9,6 +9,7 @@ config SOC_MICROCHIP_POLARFIRE
->
->  config SOC_SIFIVE
->         bool "SiFive SoCs"
-> +       depends on !XIP_KERNEL
->         select SERIAL_SIFIVE if TTY
->         select SERIAL_SIFIVE_CONSOLE if TTY
->         select CLK_SIFIVE
-> --
-> 2.20.1
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+@@ -15,6 +15,7 @@ struct cet_status {
+ 	unsigned long	shstk_base;
+ 	unsigned long	shstk_size;
+ 	unsigned int	locked:1;
++	unsigned int	ibt_enabled:1;
+ };
+
+If so, that thing should be simply:
+
+	struct cet {
+		unsigned long shstk_base;
+		unsigned long shstk_size;
+		unsigned int shstk_lock : 1,
+			     ibt	: 1;
+	}
+
+Is that ibt flag per thread or why is it here? I guess I'll find out.
+
+/me greps...
+
+ah yes, it is.
+
+> Yes, the comments are in patch #23: Handle thread shadow stack.  I wanted to
+> add that in the patch that takes the path.
+
+That comes next, I'll look there.
+
+> > vm_munmap() can return other negative error values, where are you
+> > handling those?
+> > 
+> 
+> For other error values, the loop stops.
+
+And then what happens?
+
+> > > +	cet->shstk_base = 0;
+> > > +	cet->shstk_size = 0;
+
+You clear those here without even checking whether unmap failed somehow.
+And then stuff leaks but we don't care, right?
+
+Someone else's problem, I'm sure.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
