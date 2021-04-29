@@ -2,124 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C4936E9CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 13:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C338436E9CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 13:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231665AbhD2Lu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 07:50:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231168AbhD2Lu0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 07:50:26 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E71C06138B;
-        Thu, 29 Apr 2021 04:49:38 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id a4so66625113wrr.2;
-        Thu, 29 Apr 2021 04:49:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=z6/XNYCpDCxd2T01X3C5oYnHIXvWBFT6Gme1aHiNx7o=;
-        b=DSzseGNaAkSIp4f/Xporo0k+PTw8ejBlx3y0VkFdMmGU427Y5gamsLO6UKZovS2R2Y
-         J7XXqDzhzlI5k4LKsr9E8/2QoG/FEz/mMY192BhY/1P0a9puQYuAcRPqhSTTzJr0lQNX
-         ZYpHqqc6EYwKWDkyyVAenNgGFbQLMwqdVR6VOQ83OFN/pSgmyt0/6qcTG10brIWpNX2A
-         93/ZixMx/P/DAWEdAeQD6kPqcysSrF/gL1QI9IZQ8dsPyYlO3lBAXWsejwzNwIAihncl
-         Cd3KNUzkgorksTYG/bBlAB3Cb4ojRhSAerifLxVc3AP7jJWrDS5omT0O9EoPbyOpVMn4
-         ySJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=z6/XNYCpDCxd2T01X3C5oYnHIXvWBFT6Gme1aHiNx7o=;
-        b=cmnqSIniYmqxdGtJnRaIyDpa4oXZ/fIs3EBDnyXDOpydIhEmwMucKstXjb8ejMw1FD
-         Bj8om4lglFIzHl5JSZokIPprkS8Jry8bVlGgSoqDMEpk/qljCKw950RmGcBPCIW4uQYA
-         N7qIgKxn+KqivnOTaNeUqz4kmPRytVgdVQw5hiUc/lyCJJEWEu5AUxc0psIGWxMlGTbL
-         CQYHm9G9FcQSkCSPZUkUoSFQaZK2zX+O/v7y+/1R9l5jTJf5epu1Niao0JVsnQzx5M3v
-         8kkHZPWxVbc9JFjambp5wInuGSA/JOw4izLp2zDBjRBpE+OGutnNbRmRCv8gN3f/4KAO
-         U9Ng==
-X-Gm-Message-State: AOAM533hKgL3yMD3HKlxYAYu9zLYacVUeM9/nQx1esPrdlQr8j3dMwX3
-        cZIJMKY4kCvayWpoQp9ZRn0=
-X-Google-Smtp-Source: ABdhPJwqSykzR/8x8k3TkKv0LDYDxycrpAycLoCGADKMQlblVpHsXMaTeCknwte65fCRj8I6aGPBhQ==
-X-Received: by 2002:adf:ffcc:: with SMTP id x12mr26438614wrs.162.1619696977158;
-        Thu, 29 Apr 2021 04:49:37 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.132.80])
-        by smtp.gmail.com with ESMTPSA id l21sm11667546wme.10.2021.04.29.04.49.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Apr 2021 04:49:36 -0700 (PDT)
-Subject: Re: [syzbot] WARNING in io_rsrc_node_switch
-To:     syzbot <syzbot+a4715dd4b7c866136f79@syzkaller.appspotmail.com>,
-        axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <0000000000008dfbaf05c11a023c@google.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <311be205-e56a-cc06-dfed-df9aef527268@gmail.com>
-Date:   Thu, 29 Apr 2021 12:49:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S234349AbhD2Lum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 07:50:42 -0400
+Received: from msg-1.mailo.com ([213.182.54.11]:44600 "EHLO msg-1.mailo.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231168AbhD2Lul (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 07:50:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
+        t=1619696983; bh=twcZvohCwjd1Si2IWjo5hMQiJhmHeTywKFGo7trrjmM=;
+        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
+         MIME-Version:Content-Type:In-Reply-To;
+        b=Si/1+HM4CPa/2TYbFN7rtLmZ1ad+o6SRowrXVbNwE7SHbCb8toW79VTxXzFpFwbe2
+         49Zop4iHdeDCHZxnXUZl9YNLG3bwbJ2WtrtNd0/bhtLnnZl6cUv6t4TkSz2DewZhwM
+         wuSG2Ov/k5NBo2520SqEgo5oKGcfImkjO3Sa62Nk=
+Received: by 192.168.90.11 [192.168.90.11] with ESMTP
+        via ip-206.mailobj.net [213.182.55.206]
+        Thu, 29 Apr 2021 13:49:43 +0200 (CEST)
+X-EA-Auth: Qhap1+fDGjjyE3FPac3PuXQI/P8frPknoRrQRqU1eiTe0gP2ff7WVl63dMDg3Cpt3C2zzvRXSXvQ/QWwYu0b6zHK+UFq7S08
+Date:   Thu, 29 Apr 2021 17:19:35 +0530
+From:   Deepak R Varma <drv@mailo.com>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 5/9] staging: media: atomisp: reformat code comment
+ blocks
+Message-ID: <YIqdT6wsrlNP/cEo@192.168.1.8>
+References: <cover.1619630709.git.drv@mailo.com>
+ <034c3cc993191feb8fda719dd1b2adc9e2074e78.1619630709.git.drv@mailo.com>
+ <20210429070611.GA1409@agape.jhs>
 MIME-Version: 1.0
-In-Reply-To: <0000000000008dfbaf05c11a023c@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210429070611.GA1409@agape.jhs>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/29/21 11:32 AM, syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
-> 
-> HEAD commit:    d72cd4ad Merge tag 'scsi-misc' of git://git.kernel.org/pub..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=12c045d5d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=65c207250bba4efe
-> dashboard link: https://syzkaller.appspot.com/bug?extid=a4715dd4b7c866136f79
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11893de1d00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=161c19d5d00000
+On Thu, Apr 29, 2021 at 09:06:12AM +0200, Fabio Aiuto wrote:
+> Hi Deepak,
 
-#syz test: https://github.com/isilence/linux.git syz_test4
+Hello Fabio :)
 
 > 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+a4715dd4b7c866136f79@syzkaller.appspotmail.com
+> On Wed, Apr 28, 2021 at 11:38:45PM +0530, Deepak R Varma wrote:
+> > Reformat code comment blocks according to the coding style guidelines.
+> > This resolves different checkpatch script WARNINGs around block comments.
+> > 
+> > Suggested-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+> > Signed-off-by: Deepak R Varma <drv@mailo.com>
+> > ---
+> > 
+> > Changes since v3:
+> >    - Include additional header files in the clean up
+> > Changes since v2:
+> >    - Tag Fabio Auito for the patch suggestion
+> > 
+> > diff --git a/drivers/staging/media/atomisp/i2c/mt9m114.h b/drivers/staging/media/atomisp/i2c/mt9m114.h
+> > index 787bbf59e895..aad98f37aaa6 100644
+> > --- a/drivers/staging/media/atomisp/i2c/mt9m114.h
+> > +++ b/drivers/staging/media/atomisp/i2c/mt9m114.h
+> > @@ -765,7 +765,8 @@ static struct misensor_reg const mt9m114_common[] = {
+> >  	{MISENSOR_16BIT, 0xC868, 0x0280}, /* cam_output_width = 952 */
+> >  	{MISENSOR_16BIT, 0xC86A, 0x01E0}, /* cam_output_height = 538 */
+> >  	/* LOAD = Step3-Recommended
+> > -	 * Patch,Errata and Sensor optimization Setting */
+> > +	 * Patch,Errata and Sensor optimization Setting
+> > +	 */
 > 
-> RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 0000000000440a49
-> RDX: 0000000000000010 RSI: 00000000200002c0 RDI: 0000000000000182
-> RBP: 00007fff0b88f050 R08: 0000000000000001 R09: 00007fff0b88f038
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
-> R13: 00007fff0b88f03a R14: 00000000004b74b0 R15: 000000000000000c
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 8397 at fs/io_uring.c:7081 io_rsrc_node_switch+0x2a5/0x390 fs/io_uring.c:7081
-> Modules linked in:
-> CPU: 0 PID: 8397 Comm: syz-executor469 Not tainted 5.12.0-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:io_rsrc_node_switch+0x2a5/0x390 fs/io_uring.c:7081
-> Code: ff 4d 85 e4 74 a4 48 83 c4 20 5b 5d 41 5c 41 5d 41 5e 41 5f e9 fc 00 99 ff e8 f7 00 99 ff 0f 0b e9 ee fd ff ff e8 eb 00 99 ff <0f> 0b e9 9d fd ff ff 4c 89 f7 e8 7c e0 dc ff eb 8b 4c 89 ef e8 72
-> RSP: 0018:ffffc9000164fd90 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: ffff8880196fe000 RCX: 0000000000000000
-> RDX: ffff88801c7a1c40 RSI: ffffffff81db5d25 RDI: ffff8880196fe000
-> RBP: 0000000000000000 R08: 0000000000000dc0 R09: ffffffff8c0b37d3
-> R10: fffffbfff18166fa R11: 0000000000000000 R12: 0000000000000000
-> R13: 0000000000000000 R14: ffff8880196fe808 R15: 0000000000000000
-> FS:  0000000001485300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000000200002c4 CR3: 00000000160b2000 CR4: 0000000000350ef0
-> Call Trace:
->  io_uring_create fs/io_uring.c:9611 [inline]
->  io_uring_setup+0xf75/0x2a80 fs/io_uring.c:9689
->  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x440a49
-> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 41 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007fff0b88f008 EFLAGS: 00000246 ORIG_RAX: 00000000000001a9
-> RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 0000000000440a49
-> RDX: 0000000000000010 RSI: 00000000200002c0 RDI: 0000000000000182
-> RBP: 00007fff0b88f050 R08: 0000000000000001 R09: 00007fff0b88f038
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
-> R13: 00007fff0b88f03a R14: 00000000004b74b0 R15: 000000000000000c
+> 	/*
+> 	 * LOAD = Step3-Recommended
 > 
+> :(
 
--- 
-Pavel Begunkov
+oops... sorry for the oversight. Not sure how I missed it.
+I will wait for any other feedback on other patches and send
+in a corrected version shortly.
+
+Thank you,
+deepak.
+
+
+
+> 
+> 
+> >  	{MISENSOR_16BIT, 0x316A, 0x8270}, /* DAC_TXLO_ROW */
+> > 
+> 
+> thank you,
+> 
+> fabio
+
+
