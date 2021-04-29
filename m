@@ -2,92 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3ACB36EB75
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 15:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D570736EB77
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 15:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237206AbhD2Nmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 09:42:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233602AbhD2Nmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 09:42:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 950ED613B4;
-        Thu, 29 Apr 2021 13:41:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619703714;
-        bh=vvRNtOkqtNMjx9g2FdxC079vvj9ChvxYQOsboD7bjSM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qR6eDpq/TYQSD5w95RS0eEN08nTqrHIbLfiHZdvj8e4eZBYuiITFOXN3oT15jrJ5F
-         SJIu+EN2nJzeH3FyZqv7I7vtFpl9AWq4G4OADcmCPYSd0ws+IQVSw8vo45Dv4o992D
-         Y0668cnhFiCQMYaEAv9iPcnzAJjlhADcldNHKrdI=
-Date:   Thu, 29 Apr 2021 15:41:51 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kangjie Lu <kjlu@umn.edu>
-Subject: Re: [PATCH 7/7] Revert "serial: max310x: pass return value of
- spi_register_driver"
-Message-ID: <YIq3nzLCKEKI/Mnx@kroah.com>
-References: <20210429130811.3353369-1-gregkh@linuxfoundation.org>
- <20210429130811.3353369-8-gregkh@linuxfoundation.org>
+        id S237292AbhD2Nn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 09:43:58 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:54285 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231343AbhD2Nn5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 09:43:57 -0400
+X-Originating-IP: 2.7.49.219
+Received: from [192.168.1.100] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 934956000F;
+        Thu, 29 Apr 2021 13:43:06 +0000 (UTC)
+Subject: Re: [PATCH v2] RISC-V: Always define XIP_FIXUP
+To:     Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv@lists.infradead.org
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        Atish Patra <Atish.Patra@wdc.com>, akpm@linux-foundation.org,
+        rppt@kernel.org, Anup Patel <Anup.Patel@wdc.com>,
+        wangkefeng.wang@huawei.com, vitaly.wool@konsulko.com,
+        greentime.hu@sifive.com, 0x7f454c46@gmail.com,
+        chenhuang5@huawei.com, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, Palmer Dabbelt <palmerdabbelt@google.com>,
+        Guenter Roeck <linux@roeck-us.net>
+References: <20210428214512.551153-1-palmer@dabbelt.com>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <fd30ede9-b105-e9e2-c9e8-f2d88dc2a653@ghiti.fr>
+Date:   Thu, 29 Apr 2021 09:43:05 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429130811.3353369-8-gregkh@linuxfoundation.org>
+In-Reply-To: <20210428214512.551153-1-palmer@dabbelt.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 03:08:11PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit 51f689cc11333944c7a457f25ec75fcb41e99410.
+Le 4/28/21 à 5:45 PM, Palmer Dabbelt a écrit :
+> From: Palmer Dabbelt <palmerdabbelt@google.com>
 > 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper submitted to the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota) but later
-> withdrawn.
+> XIP depends on MMU, but XIP_FIXUP is used throughout the kernel in
+> order to avoid excessive ifdefs.  This just makes sure to always define
+> XIP_FIXUP, which will fix MMU=n builds.  XIP_OFFSET is used by assembly
+> but XIP_FIXUP is C-only, so they're split.
 > 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: Kangjie Lu <kjlu@umn.edu>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Fixes: 44c922572952 ("RISC-V: enable XIP")
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 > ---
->  drivers/tty/serial/max310x.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Changes since v1:
 > 
-> diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-> index 8534d6e45a1d..a3ba0e6520a1 100644
-> --- a/drivers/tty/serial/max310x.c
-> +++ b/drivers/tty/serial/max310x.c
-> @@ -1518,10 +1518,10 @@ static int __init max310x_uart_init(void)
->  		return ret;
->  
->  #ifdef CONFIG_SPI_MASTER
-> -	ret = spi_register_driver(&max310x_spi_driver);
-> +	spi_register_driver(&max310x_spi_driver);
->  #endif
->  
-> -	return ret;
-> +	return 0;
->  }
->  module_init(max310x_uart_init);
->  
-> -- 
-> 2.31.1
+> * Clean up the commit text.
+> * Define XIP_OFFSET for assembly.
+> ---
+>   arch/riscv/include/asm/pgtable.h | 23 +++++++++++++----------
+>   1 file changed, 13 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> index 2f1384e14e31..9469f464e71a 100644
+> --- a/arch/riscv/include/asm/pgtable.h
+> +++ b/arch/riscv/include/asm/pgtable.h
+> @@ -73,18 +73,10 @@
+>   #endif
+>   #define FIXADDR_START    (FIXADDR_TOP - FIXADDR_SIZE)
+>   
+> +#endif
+> +
+>   #ifdef CONFIG_XIP_KERNEL
+>   #define XIP_OFFSET		SZ_8M
+> -#define XIP_FIXUP(addr) ({							\
+> -	uintptr_t __a = (uintptr_t)(addr);					\
+> -	(__a >= CONFIG_XIP_PHYS_ADDR && __a < CONFIG_XIP_PHYS_ADDR + SZ_16M) ?	\
+> -		__a - CONFIG_XIP_PHYS_ADDR + CONFIG_PHYS_RAM_BASE - XIP_OFFSET :\
+> -		__a;								\
+> -	})
+> -#else
+> -#define XIP_FIXUP(addr)		(addr)
+> -#endif /* CONFIG_XIP_KERNEL */
+> -
+>   #endif
+>   
+>   #ifndef __ASSEMBLY__
+> @@ -101,6 +93,17 @@
+>   #include <asm/pgtable-32.h>
+>   #endif /* CONFIG_64BIT */
+>   
+> +#ifdef CONFIG_XIP_KERNEL
+> +#define XIP_FIXUP(addr) ({							\
+> +	uintptr_t __a = (uintptr_t)(addr);					\
+> +	(__a >= CONFIG_XIP_PHYS_ADDR && __a < CONFIG_XIP_PHYS_ADDR + SZ_16M) ?	\
+> +		__a - CONFIG_XIP_PHYS_ADDR + CONFIG_PHYS_RAM_BASE - XIP_OFFSET :\
+> +		__a;								\
+> +	})
+> +#else
+> +#define XIP_FIXUP(addr)		(addr)
+> +#endif /* CONFIG_XIP_KERNEL */
+> +
+>   #ifdef CONFIG_MMU
+>   /* Number of entries in the page global directory */
+>   #define PTRS_PER_PGD    (PAGE_SIZE / sizeof(pgd_t))
 > 
 
-This is incorrect because if spi_register_driver fails, the uart needs
-to be properly unregistered before the module is unloaded automatically,
-causing a crash.
+XIP_KERNEL works now and !MMU compiles so you can add:
 
-I'll keep the revert and fix this up properly.
+Tested-by: Alexandre Ghiti <alex@ghiti.fr>
 
-thanks,
-
-greg k-h
+Thanks!
