@@ -2,184 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C46936F2B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 00:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0CB636F2B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 00:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbhD2WrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 18:47:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhD2Wq7 (ORCPT
+        id S229905AbhD2WtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 18:49:12 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3972 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229757AbhD2WtH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 18:46:59 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F177C06138B;
-        Thu, 29 Apr 2021 15:46:12 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 8F18422239;
-        Fri, 30 Apr 2021 00:46:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1619736370;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=S2l6YZvxOM9B91GZzRwiNDNIKI1R5n/pf9yHC+ysRqE=;
-        b=RAL8GgCuIWCgRFv3OE5uRyqcDDSv0O0Uxpic3XN5Crzp/YesK7qwhtMxzVViz3OBKLXmga
-        pbfRTZT+vVhcpyI+rq3pI+9A8sY/sSnK2779ed7ppwYB30YwJNEDi5X0Q+M4JkD/44Iaq2
-        6K2hhk5wznd2q4057Z2OO9JHiEkDn8A=
+        Thu, 29 Apr 2021 18:49:07 -0400
+Received: from dggeme760-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FWVw55cB6zYdM5;
+        Fri, 30 Apr 2021 06:45:57 +0800 (CST)
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggeme760-chm.china.huawei.com (10.3.19.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 30 Apr 2021 06:48:16 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
+ Fri, 30 Apr 2021 06:48:15 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Dave Hansen <dave.hansen@intel.com>,
+        "tiantao (H)" <tiantao6@hisilicon.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Valentin Schneider" <valentin.schneider@arm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: RE: [PATCH 1/2] CPU, NUMA topology ABIs: clarify the overflow issue
+ of sysfs pagebuf
+Thread-Topic: [PATCH 1/2] CPU, NUMA topology ABIs: clarify the overflow issue
+ of sysfs pagebuf
+Thread-Index: AQHXPMXH0SQBD1qG+ECo3ZrOidSRtqrLBimAgADzHOD//4cYAIAAjhuw//+CrICAAIZiwA==
+Date:   Thu, 29 Apr 2021 22:48:15 +0000
+Message-ID: <1daf0e3e1bc342c091304f1d168491a3@hisilicon.com>
+References: <1619679819-45256-1-git-send-email-tiantao6@hisilicon.com>
+ <1619679819-45256-2-git-send-email-tiantao6@hisilicon.com>
+ <146e051b-603c-a6d3-43d8-d083cf2c8119@intel.com>
+ <602918a1e2214ea7bd0890a751975566@hisilicon.com>
+ <7c663f7e-07e0-6d95-3012-6e31a1b78f7e@intel.com>
+ <4bf6870f7f3942398e4d1fdaa42184c7@hisilicon.com>
+ <fd78ac30-dd3b-a7d7-eae8-193b09a7d49a@intel.com>
+In-Reply-To: <fd78ac30-dd3b-a7d7-eae8-193b09a7d49a@intel.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.200.93]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 30 Apr 2021 00:46:10 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-spi@vger.kernel.org, Lokesh Vutla <lokeshvutla@ti.com>
-Subject: Re: [RFC PATCH 1/6] spi: spi-mem: Tell controller when device is
- ready for calibration
-In-Reply-To: <20210429184109.f2pf3iyaiylumoyp@ti.com>
-References: <20210311191216.7363-1-p.yadav@ti.com>
- <20210311191216.7363-2-p.yadav@ti.com>
- <934c8c6f7bb71729bfdaefd39c63a262@walle.cc>
- <20210324080804.x7oemmpt2khi72mp@ti.com>
- <6dfbb3e4107887dc9ee3e19e4940e87c@walle.cc>
- <20210429184109.f2pf3iyaiylumoyp@ti.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <2c3461f38c93871fbc715a19aeecdd2a@walle.cc>
-X-Sender: michael@walle.cc
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-04-29 20:41, schrieb Pratyush Yadav:
-> On 29/04/21 06:23PM, Michael Walle wrote:
->> I've had a look at the LS1028A FlexSPI calibration feature. The
->> reference manual is very sparse on details, though. What you need to
->> do there is to program a special read command sequence (the whole
->> controller is made of these lookup table entries, where you can
->> have a short sequence of operations for read/write/program and so
->> on). Therefore, for data learning you'll take the read operation
->> and insert a LEARN op in between and read a specific data pattern.
->> Then the hardware will automatically figure out the correct sample
->> phase for the read data pins.
->> 
->> Unfortunately, it does not mention how often you have to do it. It
->> might be the case that is has to be calibrated more than once.
-> 
-> I haven't read the datasheet, I wonder how long this calibration takes.
-> If it is too long then the overhead might not even be worth the extra
-> read throughput. Especially when using a file system on top which
-> generally don't do very large reads in one go.
-
-I was just thinking of compensating a possible temperature drift. You
-wouldn't have to do it on every read.
-
-There is a second mode, where it is actually done on every read. But
-that will be used where the flash supports a read preamble, where
-dummy bytes after the read opcode are replaced by a calibration pattern.
-If the pattern has the same length as the dummy bytes there is no 
-penalty.
-IIRC the controller just supports a pattern of max 32 bits.
-
-Oh I forgot to mention, this doesn't need to be repeated. I guess
-the hardware already captures all possible phases (there are only
-16) and compares each one with a predefined pattern.
-
-> Anyway, when the do_calibration() is called the controller can save the
-> calibration op and use it later as needed. It knows when an exec_op()
-> will result in a read since it has access to the whole op.
-> 
->> 
->> I'm just mentioning this so it won't be lost. If needed, it can
->> be added later.
->> 
->> Am 2021-03-24 09:08, schrieb Pratyush Yadav:
->> > On 24/03/21 12:07AM, Michael Walle wrote:
->> > > Am 2021-03-11 20:12, schrieb Pratyush Yadav:
->> > > > Some controllers like the Cadence OSPI controller need to perform a
->> > > > calibration sequence to operate at high clock speeds. This calibration
->> > > > should happen after the flash is fully initialized otherwise the
->> > > > calibration might happen in a different SPI mode from the one the flash
->> > > > is finally set to. Add a hook that can be used to tell the controller
->> > > > when the flash is ready for calibration. Whether calibration is needed
->> > > > depends on the controller.
->> > > >
->> > > > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
->> > > > ---
->> > > >  drivers/spi/spi-mem.c       | 12 ++++++++++++
->> > > >  include/linux/spi/spi-mem.h |  8 ++++++++
->> > > >  2 files changed, 20 insertions(+)
->> > > >
->> > > > diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
->> > > > index dc713b0c3c4d..e2f05ad3f4dc 100644
->> > > > --- a/drivers/spi/spi-mem.c
->> > > > +++ b/drivers/spi/spi-mem.c
->> > > > @@ -464,6 +464,18 @@ int spi_mem_adjust_op_size(struct spi_mem *mem,
->> > > > struct spi_mem_op *op)
->> > > >  }
->> > > >  EXPORT_SYMBOL_GPL(spi_mem_adjust_op_size);
->> > > >
->> > > > +int spi_mem_do_calibration(struct spi_mem *mem, struct spi_mem_op *op)
->> > > > +{
->> > > > +	struct spi_controller *ctlr = mem->spi->controller;
->> > > > +
->> > > > +	if (!ctlr->mem_ops || !ctlr->mem_ops->do_calibration)
->> > > > +		return -EOPNOTSUPP;
->> > > > +
->> > > > +	ctlr->mem_ops->do_calibration(mem, op);
->> > >
->> > > Can't a calibration fail?
->> >
->> > It can. If it does, the controller falls back to lower speed transfers.
->> > There is not much the upper layer can do about this. That's why it is
->> > not informed whether it succeeded or not.
->> 
->> Ok, if needed, that should be an easy change.
->> 
->> op is there to decide if we need a calibration at all, correct?
-> 
-> Yes. It can also be used to choose which calibration algorithm to use.
-> For example on the Cadence controller, there are different algorithms
-> for 8S and 8D operations.
-> 
->> What if there are different factors, like frequency? For example
->> on the LS1028A its just a matter of the SCK frequency. It seems
->> that this parameter is tailored to the OPHY.
-> 
-> As of now there is no way in SPI MEM to tell the controller the 
-> expected
-> speed of the operation. AFAIK most controllers get the speed via device
-> tree. So in the current case, the controller already knows the speed it
-> should run at, and can decide if calibration is needed or not.
-> 
-> But if operation speed is eventually added to SPI MEM, I would assume 
-> it
-> would be part of struct spi_mem_op. The op passed in would have this
-> information filled, and the controller can use that information to
-> decide if it needs to perform the calibration or not.
-> 
-> I am all for making this API flexible, but with very few controllers
-> supporting this feature in the wild, it is difficult to predict all the
-> information that might be needed. In the current state, I think the API
-> provides a fair bit of information to the controller about how a read
-> operation would look like.
-
-Sure, and its also quite hard to review without any other hardware
-which supports that ;) I was thinking about letting the spi driver
-call into spi-mem to retrieve the information it needs instead of
-having that second argument. Anyway, if we need any changes in the
-future this isn't set in stone.
-
--michael
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRGF2ZSBIYW5zZW4gW21h
+aWx0bzpkYXZlLmhhbnNlbkBpbnRlbC5jb21dDQo+IFNlbnQ6IEZyaWRheSwgQXByaWwgMzAsIDIw
+MjEgMTA6MzkgQU0NCj4gVG86IFNvbmcgQmFvIEh1YSAoQmFycnkgU29uZykgPHNvbmcuYmFvLmh1
+YUBoaXNpbGljb24uY29tPjsgdGlhbnRhbyAoSCkNCj4gPHRpYW50YW82QGhpc2lsaWNvbi5jb20+
+OyBjb3JiZXRAbHduLm5ldDsgZ3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5vcmcNCj4gQ2M6IGxpbnV4
+LWRvY0B2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IFJhZmFl
+bCBKLg0KPiBXeXNvY2tpIDxyYWZhZWxAa2VybmVsLm9yZz47IFBldGVyIFppamxzdHJhIDxwZXRl
+cnpAaW5mcmFkZWFkLm9yZz47IFZhbGVudGluDQo+IFNjaG5laWRlciA8dmFsZW50aW4uc2NobmVp
+ZGVyQGFybS5jb20+OyBEYXZlIEhhbnNlbg0KPiA8ZGF2ZS5oYW5zZW5AbGludXguaW50ZWwuY29t
+PjsgRGFuaWVsIEJyaXN0b3QgZGUgT2xpdmVpcmEgPGJyaXN0b3RAcmVkaGF0LmNvbT4NCj4gU3Vi
+amVjdDogUmU6IFtQQVRDSCAxLzJdIENQVSwgTlVNQSB0b3BvbG9neSBBQklzOiBjbGFyaWZ5IHRo
+ZSBvdmVyZmxvdyBpc3N1ZQ0KPiBvZiBzeXNmcyBwYWdlYnVmDQo+IA0KPiBPbiA0LzI5LzIxIDM6
+MzIgUE0sIFNvbmcgQmFvIEh1YSAoQmFycnkgU29uZykgd3JvdGU6DQo+ID4gJCBzdHJhY2UgbnVt
+YWN0bCAtLWhhcmR3YXJlICAyPiYxIHwgZ3JlcCBjcHUNCj4gPiBvcGVuYXQoQVRfRkRDV0QsICIv
+c3lzL2RldmljZXMvc3lzdGVtL2NwdSIsDQo+ID4gT19SRE9OTFl8T19OT05CTE9DS3xPX0RJUkVD
+VE9SWXxPX0NMT0VYRUMpID0gMw0KPiA+IG9wZW5hdChBVF9GRENXRCwgIi9zeXMvZGV2aWNlcy9z
+eXN0ZW0vbm9kZS9ub2RlMC9jcHVtYXAiLCBPX1JET05MWSkgPSAzDQo+ID4gb3BlbmF0KEFUX0ZE
+Q1dELCAiL3N5cy9kZXZpY2VzL3N5c3RlbS9ub2RlL25vZGUxL2NwdW1hcCIsIE9fUkRPTkxZKSA9
+IDMNCj4gPiBvcGVuYXQoQVRfRkRDV0QsICIvc3lzL2RldmljZXMvc3lzdGVtL25vZGUvbm9kZTIv
+Y3B1bWFwIiwgT19SRE9OTFkpID0gMw0KPiA+IG9wZW5hdChBVF9GRENXRCwgIi9zeXMvZGV2aWNl
+cy9zeXN0ZW0vbm9kZS9ub2RlMy9jcHVtYXAiLCBPX1JET05MWSkgPSAzDQo+ID4NCj4gPiBJZiB3
+ZSBtb3ZlIHRvIGJpbmFyeSwgaXQgbWVhbnMgd2UgaGF2ZSB0byBjaGFuZ2UgdGhvc2UgYXBwbGlj
+YXRpb25zLg0KPiANCj4gSSB0aG91Z2h0IEdyZWcgd2FzIHNheWluZyB0byB1c2luZyBhIHN5c2Zz
+IGJpbmFyeSBhdHRyaWJ1dGUgdXNpbmcNCj4gc29tZXRoaW5nIGxpa2UgbGlrZSBzeXNmc19jcmVh
+dGVfYmluX2ZpbGUoKS4gIFRob3NlIGRvbid0IGhhdmUgdGhlDQo+IFBBR0VfU0laRSBsaW1pdGF0
+aW9uLiAgQnV0LCB0aGVyZSdzIGFsc28gbm90aGluZyB0byBrZWVwIHVzIGZyb20gc3Bld2luZw0K
+PiBuaWNlIGh1bWFuLXJlYWRhYmxlIHRleHQgdmlhIHRoZSAiYmluYXJ5IiBmaWxlLg0KPiANCj4g
+V2UgZG9uJ3QgbmVlZCB0byBjaGFuZ2UgdGhlIGZpbGUgZm9ybWF0LCBqdXN0IHRoZSBpbnRlcm5h
+bCBrZXJuZWwgQVBJDQo+IHRoYXQgd2UgcHJvZHVjZSB0aGUgZmlsZXMgd2l0aC4NCg0KRGF2ZSwg
+dGhhbmtzIGZvciBjbGFyaWZpY2F0aW9uLiBTb3VuZHMgYSB3YXkgdG8gZ28uDQoNCkJhcnJ5DQo=
