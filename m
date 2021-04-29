@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD3836F07E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 21:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E58E636F096
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 22:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229751AbhD2TZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 15:25:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49150 "EHLO
+        id S229773AbhD2T1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 15:27:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231725AbhD2TYV (ORCPT
+        with ESMTP id S229646AbhD2T0z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 15:24:21 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CDFEC06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 12:23:33 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id k14so18109185wrv.5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 12:23:33 -0700 (PDT)
+        Thu, 29 Apr 2021 15:26:55 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AA1AC061241
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 12:25:11 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 82-20020a1c01550000b0290142562ff7c9so388197wmb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 12:25:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=mZR6yJJg0IBSnPE9su+AvonxGsm8ZfFFCm7ShdjTwvQ=;
-        b=ssmtpDvjIDmJyk5nxi7ilK1rS/PfcgPrdlPqB0yDXDfix4oLBHhspiB1cA0BxZFHL0
-         fzl19sp6iG2WIJfo8AcYmKD7PD9H/xhA9jFXuIW5GC9Nb64iN4pSa/+omhb1qzEL+JDn
-         e9BGy30ocZBmOQ95/onlHVbXHHgr9BQ6B3Efah0h2d18SWOUxZ5i5lBIpvtn2uhkU3Sj
-         YJSDBSqP+Hh6NS8/xCYDWXtVPlRXdKkxpfPkYxs6TKCt+fS9G724Z99u3LwGxIY51Xt0
-         YfqGe3RKRw+J45fwUwdg8qQzy/4K28eD2P785rjIwWXGSzT7LSMuzTWWbww/tdwXRTGG
-         g0CQ==
+        bh=FwO92DrnPsKVPwus54vmUdiWfGkOW+bLS6zDiNcyBmI=;
+        b=cHk5rJqmgjp+4d8Ii0xqQ7CuIjZzZ/wk9qu/IYMdPbkLUQKk9O6X6JLgQkNJu4XPXE
+         Afo4/kxdw8rbpQ5ukSdkDLSuJgq5RYiogN69oNXpWSIy7C/hR4uS8+un2irhJy4xYOri
+         eVvEjHOg1/OfkTLmbpgltWt54/p02QTFTupbzczAW4Vv7B60pp1Q2moKooMk5IOAEAWn
+         iCIcUzzuHP8pVxEKrlxP9NGNi5y6tpLfkJEGdRzH2UC/TlvyF8UE/t7Wlfm69FfL0/AI
+         6RHoC49xg0OzjYna4vFStVKAA+gjHU53SgxwGGD3Qycukh13M2Ner9FNENVVZZoEiofM
+         fo7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=mZR6yJJg0IBSnPE9su+AvonxGsm8ZfFFCm7ShdjTwvQ=;
-        b=AlxKKQqT/aFny/9p984z+PuvDBNNaYggD2oeDRhuXhlHDRQzpdoWDKFI+zzbSxqERj
-         65WS5s095u36xtw28lcoKMCKaGwH0IxAbSl60jc2VzUJkeY4IG7ZpTpmy6gb5HYSEoF3
-         DILSdhNsD3slliIGenhrbWc+y+IzX5iz9RkBEJmGui6E9qQmAP2gIq3em7qqoODfhEFj
-         Mjui9dzWsYqbT7+UAP9OO9uWOGuyJ4rxSK1lSO12+kkuIXJoueeQbUACzuo8NKtZ2hFQ
-         a1GyaYjBbKg3YgcoaYpl1LlHQiYPWO+VxbCCaxBDJEoZkrBNXWTEYXgTR82o136bXaio
-         3/Zg==
-X-Gm-Message-State: AOAM530xyAOQ1jzmuJuDFz4Y355oZMGW7Y8cexDa+VkFcBn/Sq8F79lU
-        0iSqDhia/ZElLBqsBlzulDdfQw==
-X-Google-Smtp-Source: ABdhPJza9qioQpEDGVoOtJ96QdX0eM9IWtCXsQyzsWrrlvDYObClYYuO0Plmm5pjMypo0szdZ9lSNA==
-X-Received: by 2002:adf:a316:: with SMTP id c22mr1513474wrb.202.1619724212082;
-        Thu, 29 Apr 2021 12:23:32 -0700 (PDT)
+        bh=FwO92DrnPsKVPwus54vmUdiWfGkOW+bLS6zDiNcyBmI=;
+        b=SRNpcoYktIc4TavRDHb3lAVLeIcU7TnpUxuB736cCRexoZm1GoJiBYinPNal/eiXRz
+         mfY6Gu9utHr9Iog19UyDucggcB4d7oa0DWKENfA5I3bOlt/ERPR0AlpLuz/hWq7zFu8i
+         NyLlVw+BEQV+uIny9fSr25cRFWhLnckyeETC+Ow4N/uHgpN2Scj9dsFKe/8X88+B3HN9
+         lLG5woVmtuyaHw05Xl11lEcA1iH22nBZdhqI3FGhPxr42VKwFJ6ZFB1YggLh34W+ZeId
+         ddE32LsMR8Xyj2pH1rBEjB3vabKaPbnMMaR3R9KuvFxiqkG0HvO8VOfaEP0TB9e3qhij
+         5nXA==
+X-Gm-Message-State: AOAM5308mvr/i8OKeBVPLM4Lze+JP0dT4fFRqP/iygIBviGRHIm2Kf4z
+        IKyFY2fu6A8E+1DY5GXMy0tsJQ==
+X-Google-Smtp-Source: ABdhPJz3JuvnbQfWlxw2RaXg9/x7pHzO0+4Yn1MNLuILGMsetLcTIFnrS5C5LlYuyJXCCFb+YOUzZg==
+X-Received: by 2002:a05:600c:3643:: with SMTP id y3mr12043754wmq.159.1619724310264;
+        Thu, 29 Apr 2021 12:25:10 -0700 (PDT)
 Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id 61sm6708000wrm.52.2021.04.29.12.23.31
+        by smtp.googlemail.com with ESMTPSA id l14sm6133316wrv.94.2021.04.29.12.25.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 12:23:31 -0700 (PDT)
+        Thu, 29 Apr 2021 12:25:09 -0700 (PDT)
 From:   Corentin Labbe <clabbe@baylibre.com>
-To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH v2] dt-bindings: net: Convert mdio-gpio to yaml
-Date:   Thu, 29 Apr 2021 19:23:26 +0000
-Message-Id: <20210429192326.1148440-1-clabbe@baylibre.com>
+To:     robh+dt@kernel.org, vkoul@kernel.org
+Cc:     devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH v2] dt-bindings: dma: convert arm-pl08x to yaml
+Date:   Thu, 29 Apr 2021 19:25:04 +0000
+Message-Id: <20210429192504.1148842-1-clabbe@baylibre.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -63,116 +62,234 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Converts net/mdio-gpio.txt to yaml
+Converts dma/arm-pl08x.txt to yaml.
+In the process, I add an example for the faraday variant.
 
 Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
 Changes since v1:
 - fixes yamllint warning about indent
-- added maxItems 3
+- added select
+- fixed example (needed includes)
 
- .../devicetree/bindings/net/mdio-gpio.txt     | 27 ---------
- .../devicetree/bindings/net/mdio-gpio.yaml    | 57 +++++++++++++++++++
- 2 files changed, 57 insertions(+), 27 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/net/mdio-gpio.txt
- create mode 100644 Documentation/devicetree/bindings/net/mdio-gpio.yaml
+ .../devicetree/bindings/dma/arm-pl08x.txt     |  59 --------
+ .../devicetree/bindings/dma/arm-pl08x.yaml    | 141 ++++++++++++++++++
+ 2 files changed, 141 insertions(+), 59 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/dma/arm-pl08x.txt
+ create mode 100644 Documentation/devicetree/bindings/dma/arm-pl08x.yaml
 
-diff --git a/Documentation/devicetree/bindings/net/mdio-gpio.txt b/Documentation/devicetree/bindings/net/mdio-gpio.txt
+diff --git a/Documentation/devicetree/bindings/dma/arm-pl08x.txt b/Documentation/devicetree/bindings/dma/arm-pl08x.txt
 deleted file mode 100644
-index 4d91a36c5cf5..000000000000
---- a/Documentation/devicetree/bindings/net/mdio-gpio.txt
+index 0ba81f79266f..000000000000
+--- a/Documentation/devicetree/bindings/dma/arm-pl08x.txt
 +++ /dev/null
-@@ -1,27 +0,0 @@
--MDIO on GPIOs
+@@ -1,59 +0,0 @@
+-* ARM PrimeCells PL080 and PL081 and derivatives DMA controller
 -
--Currently defined compatibles:
--- virtual,gpio-mdio
--- microchip,mdio-smi0
+-Required properties:
+-- compatible: "arm,pl080", "arm,primecell";
+-	      "arm,pl081", "arm,primecell";
+-	      "faraday,ftdmac020", "arm,primecell"
+-- arm,primecell-periphid: on the FTDMAC020 the primecell ID is not hard-coded
+-  in the hardware and must be specified here as <0x0003b080>. This number
+-  follows the PrimeCell standard numbering using the JEP106 vendor code 0x38
+-  for Faraday Technology.
+-- reg: Address range of the PL08x registers
+-- interrupt: The PL08x interrupt number
+-- clocks: The clock running the IP core clock
+-- clock-names: Must contain "apb_pclk"
+-- lli-bus-interface-ahb1: if AHB master 1 is eligible for fetching LLIs
+-- lli-bus-interface-ahb2: if AHB master 2 is eligible for fetching LLIs
+-- mem-bus-interface-ahb1: if AHB master 1 is eligible for fetching memory contents
+-- mem-bus-interface-ahb2: if AHB master 2 is eligible for fetching memory contents
+-- #dma-cells: must be <2>. First cell should contain the DMA request,
+-              second cell should contain either 1 or 2 depending on
+-              which AHB master that is used.
 -
--MDC and MDIO lines connected to GPIO controllers are listed in the
--gpios property as described in section VIII.1 in the following order:
+-Optional properties:
+-- dma-channels: contains the total number of DMA channels supported by the DMAC
+-- dma-requests: contains the total number of DMA requests supported by the DMAC
+-- memcpy-burst-size: the size of the bursts for memcpy: 1, 4, 8, 16, 32
+-  64, 128 or 256 bytes are legal values
+-- memcpy-bus-width: the bus width used for memcpy in bits: 8, 16 or 32 are legal
+-  values, the Faraday FTDMAC020 can also accept 64 bits
 -
--MDC, MDIO.
--
--Note: Each gpio-mdio bus should have an alias correctly numbered in "aliases"
--node.
+-Clients
+-Required properties:
+-- dmas: List of DMA controller phandle, request channel and AHB master id
+-- dma-names: Names of the aforementioned requested channels
 -
 -Example:
 -
--aliases {
--	mdio-gpio0 = &mdio0;
+-dmac0: dma-controller@10130000 {
+-	compatible = "arm,pl080", "arm,primecell";
+-	reg = <0x10130000 0x1000>;
+-	interrupt-parent = <&vica>;
+-	interrupts = <15>;
+-	clocks = <&hclkdma0>;
+-	clock-names = "apb_pclk";
+-	lli-bus-interface-ahb1;
+-	lli-bus-interface-ahb2;
+-	mem-bus-interface-ahb2;
+-	memcpy-burst-size = <256>;
+-	memcpy-bus-width = <32>;
+-	#dma-cells = <2>;
 -};
 -
--mdio0: mdio {
--	compatible = "virtual,mdio-gpio";
--	#address-cells = <1>;
--	#size-cells = <0>;
--	gpios = <&qe_pio_a 11
--		 &qe_pio_c 6>;
+-device@40008000 {
+-	...
+-	dmas = <&dmac0 0 2
+-		&dmac0 1 2>;
+-	dma-names = "tx", "rx";
+-	...
 -};
-diff --git a/Documentation/devicetree/bindings/net/mdio-gpio.yaml b/Documentation/devicetree/bindings/net/mdio-gpio.yaml
+diff --git a/Documentation/devicetree/bindings/dma/arm-pl08x.yaml b/Documentation/devicetree/bindings/dma/arm-pl08x.yaml
 new file mode 100644
-index 000000000000..70103ef17f53
+index 000000000000..06dec6f3e9a8
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/net/mdio-gpio.yaml
-@@ -0,0 +1,57 @@
++++ b/Documentation/devicetree/bindings/dma/arm-pl08x.yaml
+@@ -0,0 +1,141 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/net/mdio-gpio.yaml#
++$id: http://devicetree.org/schemas/dma/arm-pl08x.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: MDIO on GPIOs
++title: ARM PrimeCells PL080 and PL081 and derivatives DMA controller
 +
 +maintainers:
-+  - Andrew Lunn <andrew@lunn.ch>
-+  - Florian Fainelli <f.fainelli@gmail.com>
-+  - Heiner Kallweit <hkallweit1@gmail.com>
++  - Vinod Koul <vkoul@kernel.org>
 +
 +allOf:
-+  - $ref: "mdio.yaml#"
++  - $ref: "dma-controller.yaml#"
++
++# We need a select here so we don't match all nodes with 'arm,primecell'
++select:
++  properties:
++    compatible:
++      contains:
++        enum:
++          - arm,pl080
++          - arm,pl081
++  required:
++    - compatible
 +
 +properties:
 +  compatible:
++    oneOf:
++      - items:
++          - const: "arm,pl080"
++          - const: "arm,primecell"
++      - items:
++          - const: "arm,pl081"
++          - const: "arm,primecell"
++      - items:
++          - const: faraday,ftdma020
++          - const: arm,pl080
++          - const: arm,primecell
++  arm,primecell-periphid:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: on the FTDMAC020 the primecell ID is not hard-coded
++                 in the hardware and must be specified here as <0x0003b080>. This number
++                 follows the PrimeCell standard numbering using the JEP106 vendor code 0x38
++                 for Faraday Technology.
++  reg:
++    minItems: 1
++    description: Address range of the PL08x registers
++  interrupts:
++    minItems: 1
++    description: The PL08x interrupt number
++  clocks:
++    minItems: 1
++    description: The clock running the IP core clock
++  clock-names:
++    const: "apb_pclk"
++  lli-bus-interface-ahb1:
++    type: boolean
++    description: if AHB master 1 is eligible for fetching LLIs
++  lli-bus-interface-ahb2:
++    type: boolean
++    description: if AHB master 2 is eligible for fetching LLIs
++  mem-bus-interface-ahb1:
++    type: boolean
++    description: if AHB master 1 is eligible for fetching memory contents
++  mem-bus-interface-ahb2:
++    type: boolean
++    description: if AHB master 2 is eligible for fetching memory contents
++  "#dma-cells":
++    const: 2
++    description: must be <2>. First cell should contain the DMA request,
++                 second cell should contain either 1 or 2 depending on
++                 which AHB master that is used.
++
++  memcpy-burst-size:
++    $ref: /schemas/types.yaml#/definitions/uint32
 +    enum:
-+      - virtual,mdio-gpio
-+      - microchip,mdio-smi0
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 0
-+
-+  gpios:
-+    minItems: 2
-+    maxItems: 3
++      - 1
++      - 4
++      - 8
++      - 16
++      - 32
++      - 64
++      - 128
++      - 256
++    description: the size of the bursts for memcpy
++  memcpy-bus-width:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum:
++      - 8
++      - 16
++      - 32
++      - 64
 +    description: |
-+      MDC and MDIO lines connected to GPIO controllers are listed in
-+      the gpios property as described in section VIII.1 in the
-+      following order: MDC, MDIO.
++                 the bus width used for memcpy in bits: 8, 16 or 32 are legal
++                 values, the Faraday FTDMAC020 can also accept 64 bits
 +
-+#Note: Each gpio-mdio bus should have an alias correctly numbered in "aliases"
-+#node.
++required:
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - "#dma-cells"
++
 +unevaluatedProperties: false
 +
 +examples:
 +  - |
-+    aliases {
-+        mdio-gpio0 = &mdio0;
++    dmac0: dma-controller@10130000 {
++      compatible = "arm,pl080", "arm,primecell";
++      reg = <0x10130000 0x1000>;
++      interrupt-parent = <&vica>;
++      interrupts = <15>;
++      clocks = <&hclkdma0>;
++      clock-names = "apb_pclk";
++      lli-bus-interface-ahb1;
++      lli-bus-interface-ahb2;
++      mem-bus-interface-ahb2;
++      memcpy-burst-size = <256>;
++      memcpy-bus-width = <32>;
++      #dma-cells = <2>;
 +    };
-+
-+    mdio0: mdio {
-+      compatible = "virtual,mdio-gpio";
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+      gpios = <&qe_pio_a 11
-+               &qe_pio_c 6>;
-+      ethphy0: ethernet-phy@0 {
-+        reg = <0>;
-+      };
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/reset/cortina,gemini-reset.h>
++    #include <dt-bindings/clock/cortina,gemini-clock.h>
++    dma-controller@67000000 {
++      compatible = "faraday,ftdma020", "arm,pl080", "arm,primecell";
++      /* Faraday Technology FTDMAC020 variant */
++      arm,primecell-periphid = <0x0003b080>;
++      reg = <0x67000000 0x1000>;
++      interrupts = <9 IRQ_TYPE_EDGE_RISING>;
++      resets = <&syscon GEMINI_RESET_DMAC>;
++      clocks = <&syscon GEMINI_CLK_AHB>;
++      clock-names = "apb_pclk";
++      /* Bus interface AHB1 (AHB0) is totally tilted */
++      lli-bus-interface-ahb2;
++      mem-bus-interface-ahb2;
++      memcpy-burst-size = <256>;
++      memcpy-bus-width = <32>;
++      #dma-cells = <2>;
 +    };
-+...
 -- 
 2.26.3
 
