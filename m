@@ -2,70 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86F5136F09A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 22:02:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 778CB36F09C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 22:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbhD2TbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 15:31:01 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:49326 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhD2Ta7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 15:30:59 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id EE0E21C0BA2; Thu, 29 Apr 2021 21:30:11 +0200 (CEST)
-Date:   Thu, 29 Apr 2021 21:30:11 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 1/7] Revert "rocker: fix incorrect error handling in
- dma_rings_init"
-Message-ID: <20210429193011.GB31692@amd>
-References: <20210429130811.3353369-1-gregkh@linuxfoundation.org>
- <20210429130811.3353369-2-gregkh@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="8P1HSweYDcXXzwPJ"
-Content-Disposition: inline
-In-Reply-To: <20210429130811.3353369-2-gregkh@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+        id S229705AbhD2TbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 15:31:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39102 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229519AbhD2TbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 15:31:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 4068B6142A;
+        Thu, 29 Apr 2021 19:30:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619724625;
+        bh=A1mukU4trUFDCSyu43vEpDdjoH9acfRJG6n3Wz/gxj0=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=XthmSD40W48wbhJtgBR/Se5g2qR5uS7W+Zl12A3Z/KFLQDQQdkcyZRD75XnE43kQk
+         zvgHNWCIhzXv/5Wv+BdtPsI2PnRAops/4RAsnhRrbzJ5pLEsb6pUosBDDXjhJJIEN7
+         ffACyCpE+YUm74T81zulj9m30GCs8xQ3frfcG4Ph0I/giM96NCzNr2JCtl/hg2JPfL
+         tEu3cl5XcnLDyWthYvEAiC9YvyWZmgOalyd0AuOEiaP9fcmB8PyOtDQlXCz0FGhzX9
+         e6uENZkysjYhUJYymFKv/K8yTIgeHbQUBBcRq0rNRkfswKEuXb2DX7/d31+6t9fv+A
+         TCkoRmEaUUiLA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3471260A1B;
+        Thu, 29 Apr 2021 19:30:25 +0000 (UTC)
+Subject: Re: [GIT PULL] Networking for 5.13
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210429023712.2011727-1-kuba@kernel.org>
+References: <20210429023712.2011727-1-kuba@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210429023712.2011727-1-kuba@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git tags/net-next-5.13
+X-PR-Tracked-Commit-Id: 4a52dd8fefb45626dace70a63c0738dbd83b7edb
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 9d31d2338950293ec19d9b095fbaa9030899dcb4
+Message-Id: <161972462514.25798.5039273411134868006.pr-tracker-bot@kernel.org>
+Date:   Thu, 29 Apr 2021 19:30:25 +0000
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The pull request you sent on Wed, 28 Apr 2021 19:37:12 -0700:
 
---8P1HSweYDcXXzwPJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git tags/net-next-5.13
 
-On Thu 2021-04-29 15:08:05, Greg Kroah-Hartman wrote:
-> This reverts commit 58d0c864e1a759a15c9df78f50ea5a5c32b3989e.
->=20
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/9d31d2338950293ec19d9b095fbaa9030899dcb4
 
-This is a lie.
+Thank you!
 
-Known bad _patches_ were sent from @gmail.com addresses, and this is not
-one of them.
-
-									Pavel
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---8P1HSweYDcXXzwPJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmCLCUMACgkQMOfwapXb+vJ62gCgpX1EMdbDa55/ATgGMHq8Ju5q
-JroAoJobXDlCuHinr30LL/uAl8D6BNld
-=uavN
------END PGP SIGNATURE-----
-
---8P1HSweYDcXXzwPJ--
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
