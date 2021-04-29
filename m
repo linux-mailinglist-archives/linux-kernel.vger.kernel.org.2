@@ -2,143 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEEC36E258
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 02:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C49F36E25D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 02:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231383AbhD2AGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 20:06:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47648 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229474AbhD2AGP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 20:06:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D590661448
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 00:05:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619654729;
-        bh=ZC+xd/7ZmNYK1PhNfcZ+lZ3Q54ZiPxXwCjpfba43YdE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BPGUaW9NjOjSklWrJV4EudWx4GiPPpCbrp1sn7n3BcBIzTe3PSt69QWSgqqSHLlFM
-         ZEKeMifrvmPnX4NLPy51VnBjLcC8wEMVEbbQVgGCbfelAKCfzKvbmNAJEh3g8pRWlH
-         8RetqPpS712RdtUTQ2Nyp/SYVwpEbj+h37ENyJoc4yLPwVlSRTwIG01GQNT7KQYnBN
-         Gwu1BcHjwHOZDxnIDDyinm55tq9b5fdubTd7buB0M9kJvS5Zh7hdyfFr02iLTTT8qV
-         UONB0nGtcVf0qbGNMKzHDeSAj3981TfhYt+m0nw8mNazBSOn1n5T16vthpnHvbRQZU
-         DoqgYmzhokzxQ==
-Received: by mail-ed1-f43.google.com with SMTP id h10so76382804edt.13
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 17:05:29 -0700 (PDT)
-X-Gm-Message-State: AOAM532/HYFJT9zLz3Nd4s6KPXZMQII3x7Ldz6lkLVa+RE9e6nozJWVe
-        ngxQBRAyyO8jYNpotV/fepKjsi+VZ/eb2RRZJrOR0w==
-X-Google-Smtp-Source: ABdhPJxp//vlm9G8en7jFepxpsQZsjbMVNlpknDqIon2nNUjFJgRW5sOhZiVskEANO9YQ4YcgDXg2lRfC5Tpn5A7IIk=
-X-Received: by 2002:a50:fc91:: with SMTP id f17mr14647157edq.23.1619654728429;
- Wed, 28 Apr 2021 17:05:28 -0700 (PDT)
+        id S231610AbhD2AIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 20:08:31 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:53849 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229479AbhD2AIa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 20:08:30 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210429000742epoutp02f3e5ee81425c5802546a905a3ca5d68f~6K4Qlx4U42761227612epoutp02j
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 00:07:42 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210429000742epoutp02f3e5ee81425c5802546a905a3ca5d68f~6K4Qlx4U42761227612epoutp02j
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1619654862;
+        bh=BE/TME4CiVTJ9+/nAG2rbZFGe6UK/I6jrCxlF+ekePs=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=KMJF6dN4zN0VXfreDa+VuynVAf/7sUFfhFbxdZ9PSdkGiDE6nvyLxjhbGxDReidwr
+         rP0hllHnQGhWkyuWrS8wrtUnqr3p1x4MsxugAv6KZ3dbEnzuyCftbhbzymoE1w1EKx
+         IuqWbyhtfW8tVwurvxcnoSixbayAppmq8JcRW6/o=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20210429000741epcas1p43570f019561fe71fea71c9dee09df2e8~6K4QCjalA0040000400epcas1p44;
+        Thu, 29 Apr 2021 00:07:41 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.165]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4FVwms0FQDz4x9QK; Thu, 29 Apr
+        2021 00:07:41 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        7E.55.09578.CC8F9806; Thu, 29 Apr 2021 09:07:40 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210429000740epcas1p2f0638dd4cbf636663fd7ef7108c22c57~6K4OaPKvv0998309983epcas1p2P;
+        Thu, 29 Apr 2021 00:07:40 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210429000740epsmtrp23b49ec0a1d7e8c7125d6fbff9180defb~6K4OZMPBa0820508205epsmtrp2n;
+        Thu, 29 Apr 2021 00:07:40 +0000 (GMT)
+X-AuditID: b6c32a35-fcfff7000000256a-76-6089f8cc8e28
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        29.A7.08163.BC8F9806; Thu, 29 Apr 2021 09:07:40 +0900 (KST)
+Received: from namjaejeon01 (unknown [10.89.31.77]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210429000739epsmtip203142cd272020caec2157d10ca1980bb~6K4OHnDqB1239812398epsmtip2b;
+        Thu, 29 Apr 2021 00:07:39 +0000 (GMT)
+From:   "Namjae Jeon" <namjae.jeon@samsung.com>
+To:     "'J. Bruce Fields'" <bfields@fieldses.org>
+Cc:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <smfrench@gmail.com>, <senozhatsky@chromium.org>,
+        <hyc.lee@gmail.com>, <viro@zeniv.linux.org.uk>, <hch@lst.de>,
+        <hch@infradead.org>, <ronniesahlberg@gmail.com>,
+        <aurelien.aptel@gmail.com>, <aaptel@suse.com>,
+        <sandeen@sandeen.net>, <dan.carpenter@oracle.com>,
+        <colin.king@canonical.com>, <rdunlap@infradead.org>,
+        <willy@infradead.org>
+In-Reply-To: <20210428191325.GA7400@fieldses.org>
+Subject: RE: [PATCH v2 00/10] cifsd: introduce new SMB3 kernel server
+Date:   Thu, 29 Apr 2021 09:07:39 +0900
+Message-ID: <005c01d73c8b$ab309ed0$0191dc70$@samsung.com>
 MIME-Version: 1.0
-References: <20210407014502.24091-1-michel@lespinasse.org> <20210407014502.24091-14-michel@lespinasse.org>
- <eee7431c-3dc8-ca3c-02fb-9e059d30e951@kernel.org> <20210428145823.GA856@lespinasse.org>
- <CALCETrVRGtVqv9cMSryfg5q3iZ9s3jBey20cY4K23YLRhQRzbQ@mail.gmail.com>
- <20210428161108.GP975577@paulmck-ThinkPad-P17-Gen-1> <20210429000225.GC10973@lespinasse.org>
-In-Reply-To: <20210429000225.GC10973@lespinasse.org>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 28 Apr 2021 17:05:17 -0700
-X-Gmail-Original-Message-ID: <CALCETrWybk8k8Z=9+x3Ns7zMUPMzganzPY47pqOJCbB3LkfQ+A@mail.gmail.com>
-Message-ID: <CALCETrWybk8k8Z=9+x3Ns7zMUPMzganzPY47pqOJCbB3LkfQ+A@mail.gmail.com>
-Subject: Re: [RFC PATCH 13/37] mm: implement speculative handling in __handle_mm_fault().
-To:     Michel Lespinasse <michel@lespinasse.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Rik van Riel <riel@surriel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Rom Lemarchand <romlem@google.com>,
-        Linux-Kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQEyw8UcQFiOkygfL6nbawEwj6LAkgNL6ZwbA1HSEiar3p7MkA==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xTVxzHc+69vb0g1UsBPWGJ1Ca+WHjUUrgYWAygu4H9Ab6mbgm9ode2
+        s7RdHzo1ww4jrw2kugcWRAdi5hzP4bAgOmFA0CY+BmaO9wIGhbpCEdwQtpbLMv77nN/5/s73
+        fM+DQIV/4MGEWmtiDVpGI8Z9sZ/at0aEOV7nyyMHSrZTnznvY1TXxAKfGv/yEDV/vRCnJha/
+        waj7xRUIde16B0I9GfqTT91q7caoX5vLcMrZ75ktLJrmUWd6QqmW+gqcmhxvx6kHC108av51
+        Gb7Dn7ZZCnG61PIIo+u+ysZpu22AT//4XSjd8tSC01Njv2N0Y+UIQtc29mK0u2E93TDqRFJX
+        HdLEqVhGwRpErDZDp1BrlfHilD3piemy6EhJmCSWihGLtEwmGy9Oei81bJda48kkFh1lNGZP
+        KZUxGsUR78QZdGYTK1LpjKZ4MatXaPSSSH24kck0mrXK8Axd5nZJZOQ2mUcp16jqf5lC9D/7
+        feIeU1lACVEAfAhIRsHiHBe/APgSQvImgE8qXyHcYBrAe8UvcG7gBrDwYhMoAMRSS4k7i6s3
+        A/h40A28SwnJcQAnW7O8jJNhcPHNHdzLgWQ47DvrXLJAyTIU9vflLjX4kBL4w6QL8XIAuRPe
+        rVlEvYyRG2Hn7ekljYCMhdWdLpRjf9h9YRTzMkqGwCZnGcplEMG/xq7yOLMEaH9TzuM0gbA0
+        P2dZ87kPbKoWcpwEKzvr+RwHwBddjcscDN0vW3Eu5Ek4dWe5NQ/A8bl4jqXwaW0dzytBya2w
+        tjmCK2+A9vmLgHNdDV+++oLHrSKAeTnLphth0eN2hOO3YEGui18MxLYVuWwrctlW7N/2v9ll
+        gH0P1rJ6Y6aSNUr0kpU33QCWHnuo7CawOl3hbQAhQBuABCoOFMzX5MuFAgVz/ARr0KUbzBrW
+        2AZknpO2osFBGTrPb9Ga0iWybVKplIqKjomWScXrBMrEk3IhqWRM7BGW1bOG//oQwifYgjiY
+        7LyjZ6VDXze38CtM8xUHd6ZsVkgv3Nhz+9vh8nvniFNvryYS/D8u5RFz06qIECs/YO2jvqC5
+        ykRnql9a+ZmxmiLq4Udp9uSq5H2xO1q6BZsfOg7Ht/Xlnp6dXj/T2vuMqbulfncg+bTfqX6H
+        MNMfO75rSPBbt2/qP5ap/hp71d6DamzTmjTD5XrYeUwdHtC/6YZC5nAoOi4dG3m+KiRmv9V+
+        pSHFGXRi97C1JeOA1XRtQ2Pemg97k9NHlJ/ORB8J2TvUc8Usz76U+/7z2av7Bh/E/d2XJT+w
+        Dmc/GNAJFhJNozNR1f5+d5PM56J2Vz47XHzeNTvcsyUjpVw0MdhQ1ZEgxowqRhKKGozMv9xr
+        8al1BAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrLIsWRmVeSWpSXmKPExsWy7bCSvO6ZH50JBqc7mC0a355msTj++i+7
+        xYspURa/V/eyWbz+N53F4vSERUwWK1cfZbK4dv89u8WevSdZLC7vmsNm8fYOULa37xOrResV
+        LYvdGxexWbx5cZjN4vzf46wWv3/MYXMQ9JjV0MvmMbvhIovHhqlNbB47Z91l99i8Qstj980G
+        No+PT2+xeGxZ/JDJY/2WqywenzfJeWx68pYpgDuKyyYlNSezLLVI3y6BK2PjkY9MBQd4Kj4/
+        zWhgnMHRxcjBISFgIjHjc10XIxeHkMAORokjsxvZuxg5geLSEsdOnGGGqBGWOHy4GKLmGaPE
+        4m+TmEBq2AR0Jf792c8GYosI6Enc7n/LDlLELLCBWWJH8102iI7NjBIbL51hBKniFDCUWPPm
+        A1i3sICrxMF1/5hBbBYBVYlj+z6B1fAKWEqsPfaBGcIWlDg58wkLyBXMQBvaNoKVMAvIS2x/
+        O4cZ4lAFiZ9Pl7FCHOEksfPPPFaIGhGJ2Z1tzBMYhWchmTQLYdIsJJNmIelYwMiyilEytaA4
+        Nz232LDAKC+1XK84Mbe4NC9dLzk/dxMjOMa1tHYw7ln1Qe8QIxMH4yFGCQ5mJRHe3+s6E4R4
+        UxIrq1KL8uOLSnNSiw8xSnOwKInzXug6GS8kkJ5YkpqdmlqQWgSTZeLglGpg2tJ372jgMo25
+        6tkbLO6XJkXL6xV+6BA/k/DimXeT2vYC+ahNHyRf1te/fSAdqzZXu3WqvLDoVrvwp1VpV4rF
+        Vm7ulNvTtClyVdDlmJ2ajwsvS3492hznWunC+eqMS0h8ROXV1TZL3S682usiOv/kifdLDacs
+        figez673o2Tdv/e/tpd7qfEUVC1R+rqKv1dhO2vzr7+lJ250R2/WfyNsJfo9aZ5ngOyR0lvh
+        vq5aiZkdP66dC+rb8L547pxnfLs7LnZ3uD8NUxdYaz7rwPmfXzpn5u5S+h35iDdDrm+x4K8p
+        /pmbGqZeVX/XHPdR+f0DlrvHFRWu1Oj0/Pr8plaLvVRxcqCF9CPuIAe3tZsClFiKMxINtZiL
+        ihMBMwEakWADAAA=
+X-CMS-MailID: 20210429000740epcas1p2f0638dd4cbf636663fd7ef7108c22c57
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210422003835epcas1p246c40c6a6bbc0e9f5d4ccf9b69bef0d7
+References: <CGME20210422003835epcas1p246c40c6a6bbc0e9f5d4ccf9b69bef0d7@epcas1p2.samsung.com>
+        <20210422002824.12677-1-namjae.jeon@samsung.com>
+        <20210428191325.GA7400@fieldses.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 5:02 PM Michel Lespinasse <michel@lespinasse.org> wrote:
->
-> On Wed, Apr 28, 2021 at 09:11:08AM -0700, Paul E. McKenney wrote:
-> > On Wed, Apr 28, 2021 at 08:13:53AM -0700, Andy Lutomirski wrote:
-> > > On Wed, Apr 28, 2021 at 8:05 AM Michel Lespinasse <michel@lespinasse.org> wrote:
-> > > >
-> > > > On Wed, Apr 07, 2021 at 08:36:01AM -0700, Andy Lutomirski wrote:
-> > > > > On 4/6/21 6:44 PM, Michel Lespinasse wrote:
-> > > > > > The page table tree is walked with local irqs disabled, which prevents
-> > > > > > page table reclamation (similarly to what fast GUP does). The logic is
-> > > > > > otherwise similar to the non-speculative path, but with additional
-> > > > > > restrictions: in the speculative path, we do not handle huge pages or
-> > > > > > wiring new pages tables.
-> > > > >
-> > > > > Not on most architectures.  Quoting the actual comment in mm/gup.c:
-> > > > >
-> > > > > >  * Before activating this code, please be aware that the following assumptions
-> > > > > >  * are currently made:
-> > > > > >  *
-> > > > > >  *  *) Either MMU_GATHER_RCU_TABLE_FREE is enabled, and tlb_remove_table() is used to
-> > > > > >  *  free pages containing page tables or TLB flushing requires IPI broadcast.
-> > > > >
-> > > > > On MMU_GATHER_RCU_TABLE_FREE architectures, you cannot make the
-> > > > > assumption that it is safe to dereference a pointer in a page table just
-> > > > > because irqs are off.  You need RCU protection, too.
-> > > > >
-> > > > > You have the same error in the cover letter.
-> > > >
-> > > > Hi Andy,
-> > > >
-> > > > Thanks for your comment. At first I thought did not matter, because we
-> > > > only enable ARCH_SUPPORTS_SPECULATIVE_PAGE_FAULT on selected
-> > > > architectures, and I thought MMU_GATHER_RCU_TABLE_FREE is not set on
-> > > > these. But I was wrong - MMU_GATHER_RCU_TABLE_FREE is enabled on X86
-> > > > with paravirt. So I took another look at fast GUP to make sure I
-> > > > actually understand it.
-> > > >
-> > > > This brings a question about lockless_pages_from_mm() - I see it
-> > > > disabling interrupts, which it explains is necessary for disabling THP
-> > > > splitting IPIs, but I do not see it taking an RCU read lock as would
-> > > > be necessary for preventing paga table freeing on
-> > > > MMU_GATHER_RCU_TABLE_FREE configs. I figure local_irq_save()
-> > > > indirectly takes an rcu read lock somehow ? I think this is something
-> > > > I should also mention in my explanation, and I have not seen a good
-> > > > description of this on the fast GUP side...
-> > >
-> > > Sounds like a bug!  That being said, based on my extremely limited
-> > > understanding of how the common RCU modes work, local_irq_save()
-> > > probably implies an RCU lock in at least some cases.  Hi Paul!
-> >
-> > In modern kernels, local_irq_save() does have RCU reader semantics,
-> > meaning that synchronize_rcu() will wait for pre-exiting irq-disabled
-> > regions.  It will also wait for pre-existing bh-disable, preempt-disable,
-> > and of course rcu_read_lock() sections of code.
->
-> Thanks Paul for confirming / clarifying this. BTW, it would be good to
-> add this to the rcu header files, just so people have something to
-> reference to when they depend on such behavior (like fast GUP
-> currently does).
 
-Or, even better, fast GUP could add an explicit RCU read lock.
+> On Thu, Apr 22, 2021 at 09:28:14AM +0900, Namjae Jeon wrote:
+> > ACLs                           Partially Supported. only DACLs available, SACLs
+> >                                (auditing) is planned for the future. For
+> >                                ownership (SIDs) ksmbd generates random subauth
+> >                                values(then store it to disk) and use uid/gid
+> >                                get from inode as RID for local domain SID.
+> >                                The current acl implementation is limited to
+> >                                standalone server, not a domain member.
+> >                                Integration with Samba tools is being worked on to
+> >                                allow future support for running as a domain member.
+> 
+Hi Bruce,
+> How exactly is this implementing ACLs?  I grepped through the code a bit and couldn't quite figure it
+> out--it looked like maybe it's both converting to a POSIX ACL and storing the full SBM ACL in an xattr,
+> is that correct?  When you read an ACL, and both are present, which do you use?
+If 'vfs objects = acl_xattr' parameter is defined in smb.conf, ksmbd store both.
+If not, only posix acl will be stored. To avoid translation from posix acl to ntacl from request of client,
+ksmbd use ntacl in xattr first.
+> 
+> Also it looked like there's some code from fs/nfsd/nfs4acl.c, could we share that somehow instead of
+> copying?
+Hm.. I do not know how to share the code with nfsd at present. Maybe we can discuss it again after upstream ?
+Any thought ?
+> 
+> --b.
 
->
-> Going back to my patch. I don't need to protect against THP splitting
-> here, as I'm only handling the small page case. So when
-> MMU_GATHER_RCU_TABLE_FREE is enabled, I *think* I could get away with
-> using only an rcu read lock, instead of disabling interrupts which
-> implicitly creates the rcu read lock. I'm not sure which way to go -
-> fast GUP always disables interrupts regardless of the
-> MMU_GATHER_RCU_TABLE_FREE setting, and I think there is a case to be
-> made for following the fast GUP stes rather than trying to be smarter.
-
-How about adding some little helpers:
-
-lockless_page_walk_begin();
-
-lockless_page_walk_end();
-
-these turn into RCU read locks if MMU_GATHER_RCU_TABLE_FREE and into
-irqsave otherwise.  And they're somewhat self-documenting.
-
---Andy
