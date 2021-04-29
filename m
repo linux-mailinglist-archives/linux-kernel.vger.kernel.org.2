@@ -2,88 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 695DC36E6F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 10:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0AD836E6A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 10:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232480AbhD2IRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 04:17:02 -0400
-Received: from mail-m17640.qiye.163.com ([59.111.176.40]:34682 "EHLO
-        mail-m17640.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232455AbhD2IQ5 (ORCPT
+        id S239781AbhD2IMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 04:12:50 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:32854 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230071AbhD2IMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 04:16:57 -0400
-X-Greylist: delayed 308 seconds by postgrey-1.27 at vger.kernel.org; Thu, 29 Apr 2021 04:16:56 EDT
-Received: from ubuntu.localdomain (unknown [36.152.145.182])
-        by mail-m17640.qiye.163.com (Hmail) with ESMTPA id 5512A5403B8;
-        Thu, 29 Apr 2021 16:10:58 +0800 (CST)
-From:   zhouchuangao <zhouchuangao@vivo.com>
-To:     David Howells <dhowells@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-afs@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     zhouchuangao <zhouchuangao@vivo.com>
-Subject: [PATCH] net/rxrpc: Use BUG_ON instead of if condition followed by BUG.
-Date:   Thu, 29 Apr 2021 01:10:52 -0700
-Message-Id: <1619683852-2247-1-git-send-email-zhouchuangao@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGk4fHVYYTBpJGh9IHUxOSBpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NT46Hio*Fz8XDkkjNg0DGC4s
-        OC8KFEhVSlVKTUpCTUNIQ05DTE5DVTMWGhIXVQETFA4YEw4aFRwaFDsNEg0UVRgUFkVZV1kSC1lB
-        WUhNVUpOSVVKT05VSkNJWVdZCAFZQUlOTE43Bg++
-X-HM-Tid: 0a791cae5831d995kuws5512a5403b8
+        Thu, 29 Apr 2021 04:12:48 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id C9D1FBA3C9;
+        Thu, 29 Apr 2021 16:11:57 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P31919T139684105664256S1619683913541485_;
+        Thu, 29 Apr 2021 16:11:55 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <41a6df718de389cfa6fbb4c2f6a8f7af>
+X-RL-SENDER: cl@rock-chips.com
+X-SENDER: cl@rock-chips.com
+X-LOGIN-NAME: cl@rock-chips.com
+X-FST-TO: heiko@sntech.de
+X-RCPT-COUNT: 30
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   <cl@rock-chips.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, jagan@amarulasolutions.com, wens@csie.org,
+        uwe@kleine-koenig.org, mail@david-bauer.net, jbx6244@gmail.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
+        cnsztl@gmail.com, devicetree@vger.kernel.org,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
+        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
+        zhangqing@rock-chips.com, huangtao@rock-chips.com,
+        cl@rock-chips.com, wim@linux-watchdog.org, linux@roeck-us.net,
+        jamie@jamieiles.com, linux-watchdog@vger.kernel.org, maz@kernel.org
+Subject: [PATCH v4 00/10] arm64: dts: rockchip: add basic dtsi/dts files for RK3568 SoC
+Date:   Thu, 29 Apr 2021 16:11:41 +0800
+Message-Id: <20210429081151.17558-1-cl@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BUG_ON() uses unlikely in if(), which can be optimized at compile time.
+From: Liang Chen <cl@rock-chips.com>
 
-              do { if (unlikely(condition)) BUG(); } while (0)
+v1:
+1. add some dt-bindings for RK3568 devices.
+2. add core dtsi for RK3568 SoC.
+3. add basic dts for RK3568 EVB
 
-Through disassembly, we can see that brk #0x800 is compiled to the
-end of the function.
-As you can see below:
-    ......
-    ffffff8008660bec:   d65f03c0    ret
-    ffffff8008660bf0:   d4210000    brk #0x800
+v2:
+1. sort device nodes by some rules.
 
-Usually, the condition in if () is not satisfied. For the multi-stage
-pipeline, we do not need to perform fetch decode and excute operation
-on brk instruction.
+v3:
+1. make ARCH=arm64 dtbs_check, then fix some errors and add some documents.
 
-IMO, this can improve the efficiency of the multi-stage pipeline.
+v4:
+1. make ARCH=arm64 dt_binding_check, then fix grf.yaml.
+2. correct gic node.
 
-Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
----
- net/rxrpc/call_object.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Liang Chen (10):
+  dt-bindings: i2c: i2c-rk3x: add description for rk3568
+  dt-bindings: serial: snps-dw-apb-uart: add description for rk3568
+  dt-bindings: mmc: rockchip-dw-mshc: add description for rk3568
+  dt-bindings: watchdog: dw-wdt: add description for rk3568
+  dt-bindings: pwm: rockchip: add description for rk3568
+  dt-bindings: gpio: change items restriction of clock for
+    rockchip,gpio-bank
+  dt-bindings: soc: rockchip: Convert grf.txt to YAML
+  arm64: dts: rockchip: add generic pinconfig settings used by most
+    Rockchip socs
+  arm64: dts: rockchip: add core dtsi for RK3568 SoC
+  arm64: dts: rockchip: add basic dts for RK3568 EVB
 
-diff --git a/net/rxrpc/call_object.c b/net/rxrpc/call_object.c
-index 4eb91d95..e5deb6f 100644
---- a/net/rxrpc/call_object.c
-+++ b/net/rxrpc/call_object.c
-@@ -505,8 +505,7 @@ void rxrpc_release_call(struct rxrpc_sock *rx, struct rxrpc_call *call)
- 	ASSERTCMP(call->state, ==, RXRPC_CALL_COMPLETE);
- 
- 	spin_lock_bh(&call->lock);
--	if (test_and_set_bit(RXRPC_CALL_RELEASED, &call->flags))
--		BUG();
-+	BUG_ON(test_and_set_bit(RXRPC_CALL_RELEASED, &call->flags));
- 	spin_unlock_bh(&call->lock);
- 
- 	rxrpc_put_call_slot(call);
-@@ -636,8 +635,7 @@ static void rxrpc_rcu_destroy_call(struct rcu_head *rcu)
- 
- 	if (in_softirq()) {
- 		INIT_WORK(&call->processor, rxrpc_destroy_call);
--		if (!rxrpc_queue_work(&call->processor))
--			BUG();
-+		BUG_ON(!rxrpc_queue_work(&call->processor));
- 	} else {
- 		rxrpc_destroy_call(&call->processor);
- 	}
+ .../devicetree/bindings/arm/rockchip.yaml     |    5 +
+ .../bindings/gpio/rockchip,gpio-bank.yaml     |    3 +-
+ .../devicetree/bindings/i2c/i2c-rk3x.yaml     |    1 +
+ .../bindings/mmc/rockchip-dw-mshc.yaml        |    9 +-
+ .../devicetree/bindings/pwm/pwm-rockchip.yaml |    1 +
+ .../bindings/serial/snps-dw-apb-uart.yaml     |    1 +
+ .../devicetree/bindings/soc/rockchip/grf.txt  |   61 -
+ .../devicetree/bindings/soc/rockchip/grf.yaml |   60 +
+ .../bindings/watchdog/snps,dw-wdt.yaml        |    1 +
+ arch/arm64/boot/dts/rockchip/Makefile         |    1 +
+ .../boot/dts/rockchip/rk3568-evb1-v10.dts     |   79 +
+ .../boot/dts/rockchip/rk3568-pinctrl.dtsi     | 3111 +++++++++++++++++
+ arch/arm64/boot/dts/rockchip/rk3568.dtsi      |  779 +++++
+ .../boot/dts/rockchip/rockchip-pinconf.dtsi   |  344 ++
+ 14 files changed, 4386 insertions(+), 70 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/grf.txt
+ create mode 100644 Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3568.dtsi
+ create mode 100644 arch/arm64/boot/dts/rockchip/rockchip-pinconf.dtsi
+
 -- 
-2.7.4
+2.17.1
+
+
 
