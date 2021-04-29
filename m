@@ -2,127 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F4A36F29F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 00:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 161BB36F2A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 00:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbhD2WfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 18:35:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhD2WfQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 18:35:16 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A265FC06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 15:34:29 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id l21so23432729iob.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 15:34:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=q4/CBPJmmorp9wRvE6qOkTgg1jysVhBrmkTVBuHe6QQ=;
-        b=U2bio64BQ8Wz3mb2blawMVJjOkMenmh+TW/n8wt1su4ybLHJZbq0Qclep6aw5ZN5bN
-         1HqdGR3v11kybihvRTWcYYwsit9rKGPsw84yLsP6i3ycJDM2Li1FjOIQ6HpfEM6z43Dd
-         AM8Xf8FMLtW7cUtUyAhjxtBeC+ddXA+ASk8C0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=q4/CBPJmmorp9wRvE6qOkTgg1jysVhBrmkTVBuHe6QQ=;
-        b=stnpgAkDHhn6jM+HmAaR2A34WlZEJsNf3oqLwnxhG032tnJSbH5lr3SeSNUxVX1Gdq
-         lMsOZ5XsvwI7SC4WtHnUgZPwsyNJ8Ygvw8yXtJ4TsJZqrCwrJ2vsAu9fc4AR64HRBCBG
-         y8CMMsb/HsarmySMCioqxnIm81eDsZ5YSSHkPbHjvKT+WXUG5gB+9QSEByBUp4EF1l3Z
-         iiGSUFZLeUmS19H2TxCUzraRS9wR5qD0TATXlH4VdaanHK8dZLUxKZVTV3HGzOPgRTQA
-         uGtGi1MAU05Rb70eQC0cwFPM1YbiSi9mYmsigXINioHUHfgyhW711RKzIy9PjDKxOryZ
-         1axQ==
-X-Gm-Message-State: AOAM532Ps0852PZ0lZ+vXYhk8KdO1cyIc9rgY9t9TssAU5cgquhzRraJ
-        BhXuNBOPv/kvSCw89cg3sr3ncA==
-X-Google-Smtp-Source: ABdhPJwx2FmDvSaSoJMnMUkOhkH4tC+t0JNKguzmILeYGpWGPk/JWDXqmVVJm9N6xY/S4+EuHufriw==
-X-Received: by 2002:a05:6602:81e:: with SMTP id z30mr1431268iow.90.1619735669154;
-        Thu, 29 Apr 2021 15:34:29 -0700 (PDT)
-Received: from rrangel920.bld.corp.google.com (h184-60-195-141.arvdco.broadband.dynamic.tds.net. [184.60.195.141])
-        by smtp.gmail.com with ESMTPSA id o26sm554177ioo.7.2021.04.29.15.34.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 15:34:28 -0700 (PDT)
-From:   Raul E Rangel <rrangel@chromium.org>
-To:     linux-gpio@vger.kernel.org
-Cc:     kramasub@chromium.org, Raul E Rangel <rrangel@chromium.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] pinctrl: amd: Implement irq_set_wake
-Date:   Thu, 29 Apr 2021 16:34:24 -0600
-Message-Id: <20210429163341.1.I7631534622233689dd81410525e0dd617b9b2012@changeid>
-X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
+        id S229751AbhD2Wj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 18:39:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39454 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229591AbhD2Wj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 18:39:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 069696143A;
+        Thu, 29 Apr 2021 22:38:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619735920;
+        bh=FJMABtH4cJ+ulkHtvdjpFRnQDT287AnLQBcU7uZ3HuE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=gbNHxJKNLFLiIv667svdxfipXsmqwezyoKN/2QseSq68pQHGrhCXFI1k5WYaonlPa
+         HRSLQp0J02skiT876VSW68SmZQKq9ghR3q9P79Hg0lp9ExFqadO+4CPN1Qx1FxKINA
+         +CQnaHo4GEKHUeY8JMU8SZJDOyqBHvtM/8k4+1kM18OL90GlTkbJQkfCu/yzf9UBIO
+         uiR5Uiiv+Bk9uhNQqii6u4+AKkw7/V2ndzQx3rhOGODbDkUoz8ImsgsK7cf5b+yAj2
+         TRaTD0P0MPnV/JFKoQVCsruDhTwD4eHs505iuu97gvowpVPYBDnw8X2rjCdAS7wewv
+         l0KQ29yN4laxA==
+Date:   Thu, 29 Apr 2021 17:38:38 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     Ryder Lee <ryder.lee@mediatek.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] PCI: mediatek: Verify whether the free_ck clock is
+ ungated or not
+Message-ID: <20210429223838.GA588275@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210429134749.75157-1-ameynarkhede03@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows the OS to control which devices produce wake events.
+Can you make the subject say something at a higher level instead of
+just paraphrasing the C code?  I'm guessing this means resume will now
+fail if the clock isn't turned on?
 
-$ grep enabled /sys/kernel/irq/*/wakeup
-/sys/kernel/irq/24/wakeup:enabled
+On Thu, Apr 29, 2021 at 07:17:49PM +0530, Amey Narkhede wrote:
+> Verify that the free_ck clock is ungated on device resume
+> by checking return value of clk_prepare_enable().
 
-Signed-off-by: Raul E Rangel <rrangel@chromium.org>
----
+Also the commit log -- this doesn't say anything more than the code
+itself.  Did you find this by tripping over it?  Or just by code
+inspection?  I guess without the check, we continue on and try to
+resume, but accesses to PCI devices fail and maybe return ~0 data or
+cause machine checks or something?
 
- drivers/pinctrl/pinctrl-amd.c | 32 +++++++++++++++++++++++++++++++-
- 1 file changed, 31 insertions(+), 1 deletion(-)
+> Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> ---
+>  drivers/pci/controller/pcie-mediatek.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
+> index 23548b517..9b13214bf 100644
+> --- a/drivers/pci/controller/pcie-mediatek.c
+> +++ b/drivers/pci/controller/pcie-mediatek.c
+> @@ -1154,11 +1154,14 @@ static int __maybe_unused mtk_pcie_resume_noirq(struct device *dev)
+>  {
+>  	struct mtk_pcie *pcie = dev_get_drvdata(dev);
+>  	struct mtk_pcie_port *port, *tmp;
+> +	int ret;
+> 
+>  	if (list_empty(&pcie->ports))
+>  		return 0;
+> 
+> -	clk_prepare_enable(pcie->free_ck);
+> +	ret = clk_prepare_enable(pcie->free_ck);
+> +	if (ret)
+> +		return ret;
 
-diff --git a/drivers/pinctrl/pinctrl-amd.c b/drivers/pinctrl/pinctrl-amd.c
-index 899c16c17b6d..27ad759e5958 100644
---- a/drivers/pinctrl/pinctrl-amd.c
-+++ b/drivers/pinctrl/pinctrl-amd.c
-@@ -399,6 +399,29 @@ static void amd_gpio_irq_unmask(struct irq_data *d)
- 	raw_spin_unlock_irqrestore(&gpio_dev->lock, flags);
- }
- 
-+static int amd_gpio_irq_set_wake(struct irq_data *d, unsigned int on)
-+{
-+	u32 pin_reg;
-+	unsigned long flags;
-+	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
-+	struct amd_gpio *gpio_dev = gpiochip_get_data(gc);
-+	u32 wake_mask = BIT(WAKE_CNTRL_OFF_S0I3) | BIT(WAKE_CNTRL_OFF_S3) |
-+			BIT(WAKE_CNTRL_OFF_S4);
-+
-+	raw_spin_lock_irqsave(&gpio_dev->lock, flags);
-+	pin_reg = readl(gpio_dev->base + (d->hwirq)*4);
-+
-+	if (on)
-+		pin_reg |= wake_mask;
-+	else
-+		pin_reg &= ~wake_mask;
-+
-+	writel(pin_reg, gpio_dev->base + (d->hwirq)*4);
-+	raw_spin_unlock_irqrestore(&gpio_dev->lock, flags);
-+
-+	return 0;
-+}
-+
- static void amd_gpio_irq_eoi(struct irq_data *d)
- {
- 	u32 reg;
-@@ -513,9 +536,16 @@ static struct irq_chip amd_gpio_irqchip = {
- 	.irq_disable  = amd_gpio_irq_disable,
- 	.irq_mask     = amd_gpio_irq_mask,
- 	.irq_unmask   = amd_gpio_irq_unmask,
-+	.irq_set_wake = amd_gpio_irq_set_wake,
- 	.irq_eoi      = amd_gpio_irq_eoi,
- 	.irq_set_type = amd_gpio_irq_set_type,
--	.flags        = IRQCHIP_SKIP_SET_WAKE,
-+	/*
-+	 * We need to set IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND so that a wake event
-+	 * also generates an IRQ. We need the IRQ so the irq_handler can clear
-+	 * the wake event. Otherwise the wake event will never clear and
-+	 * prevent the system from suspending.
-+	 */
-+	.flags        = IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND,
- };
- 
- #define PIN_IRQ_PENDING	(BIT(INTERRUPT_STS_OFF) | BIT(WAKE_STS_OFF))
--- 
-2.31.1.527.g47e6f16901-goog
+Most callers print an error message when clk_prepare_enable() fails.
 
+>  	list_for_each_entry_safe(port, tmp, &pcie->ports, list)
+>  		mtk_pcie_enable_port(port);
+> --
+> 2.31.1
