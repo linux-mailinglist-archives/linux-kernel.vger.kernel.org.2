@@ -2,163 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BB1636EE56
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 18:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9551536EE5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 18:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240873AbhD2Qp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 12:45:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42484 "EHLO
+        id S240915AbhD2Qqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 12:46:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232724AbhD2Qp1 (ORCPT
+        with ESMTP id S240890AbhD2Qqq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 12:45:27 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96F4CC06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 09:44:40 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 70FBA2224D;
-        Thu, 29 Apr 2021 18:44:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1619714678;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lOnX55mTU7vLL2DHd0LKX5pk2bsXFmUc1Ibom8J1lfI=;
-        b=CcpbZ/rOaxtfl/zF/iR0A5KY0G00xotJ3hiJn2IKgCBkyUcrmgaaZxVR6FJ7GQW0C5hulI
-        bqMwT4kRo4D6psH4UBHaTNJjCSEc/S/QoDcF4er8GB0dyYpOh23BS5PmouFvUWdWi7jgpN
-        TxF/ft3NxxNRxZKXdNmKLQve6HB1Npk=
+        Thu, 29 Apr 2021 12:46:46 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE6E1C06138C
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 09:45:58 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id h36so51695625lfv.7
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 09:45:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fv1o4ACMgluHoz1tubBqI30O1OAulg9d7QxnCnSiG9c=;
+        b=KDkNvN4NBhwsvv2Vt/X74vt7KVgzUpJkoRwK5HYd1W+ax7k1/dGgufUKiRP3X8w5Ql
+         H5lHQo0imA8GXWxUOZUx++5LlJIaiJwjb17/VyeO+Shqq/nhIWw9KJuVJxGvXm/uTM1x
+         86MzDL52wXvA28OjsoGhD6CKmP2Q62dV3Gr70=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fv1o4ACMgluHoz1tubBqI30O1OAulg9d7QxnCnSiG9c=;
+        b=rHN2v/grCpVcugb26HU2Kny3h0kPom6RBgQxLojoEerofJuZJZbk2AUk4l5YSvq6Yx
+         G4CIl7wIJFdQW0VC80Zt9pX7LzaOr0I+yHdHK1w/HZcT9nVt6eZ+HPROP3qo4bglQ66H
+         wyc7DauJpg3FXSpOR2cxOrdWHQtjRbd5XVGxEiW28gbEQG3yVYDFHRJYb5YDsD1ozc61
+         1awp+PxzQ4JSNDzkZGgdgubBAw85tWqUzAXg0If8ow6L4r89MW+qao7BoKAQkUXa/q1Y
+         tSW8mkZYD/0ZuHgR6YXyV/nEgoCZmKNSsgp1P6rjwpHeMsLtSnJWb9wmwjMfzVej2E+W
+         TZCw==
+X-Gm-Message-State: AOAM53198ybcCOYWSM6J2B4Ejr4/RvZgqyk6lyGZGaqbAx0SjHsVpzTe
+        i/SuDoRhxEyBdsLYy3J8+Qp3xDEJUbq2v3Mn
+X-Google-Smtp-Source: ABdhPJzXmB0T//ZVz92H5c7gltl8gh+sMFEB8K9DzehzzuqV2hd2f3RvUTX947T2wgCzBDIFbnSf/g==
+X-Received: by 2002:a19:ac09:: with SMTP id g9mr280946lfc.547.1619714757171;
+        Thu, 29 Apr 2021 09:45:57 -0700 (PDT)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id q3sm555135ljp.67.2021.04.29.09.45.55
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Apr 2021 09:45:55 -0700 (PDT)
+Received: by mail-lf1-f51.google.com with SMTP id c11so1885622lfi.9
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 09:45:55 -0700 (PDT)
+X-Received: by 2002:a05:6512:a90:: with SMTP id m16mr284849lfu.201.1619714755208;
+ Thu, 29 Apr 2021 09:45:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 29 Apr 2021 18:44:38 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Alexander Williams <awill@google.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Heiko Thiery <heiko.thiery@gmail.com>
-Subject: Re: [PATCH v3 2/2] mtd: spi-nor: add initial sysfs support
-In-Reply-To: <CACqsJN8mrHUB9Ls3PG5R_B84+xUjf-2VakA=09mP_bodWnUgmw@mail.gmail.com>
-References: <20210429155713.28808-1-michael@walle.cc>
- <20210429155713.28808-3-michael@walle.cc>
- <CACqsJN8mrHUB9Ls3PG5R_B84+xUjf-2VakA=09mP_bodWnUgmw@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <04bc3eda0fa5a84ffff4b2f05721e2ac@walle.cc>
-X-Sender: michael@walle.cc
+References: <20210427025805.GD3122264@magnolia> <CAHk-=wj6XUGJCgsr+hx3rz=4KvBP-kspn3dqG5v-cKMzzMktUw@mail.gmail.com>
+ <20210427195727.GA9661@lst.de> <CAHk-=wjrpinf=8gAjxyPoXT0jbK6-U3Urawiykh-zpxeo47Vhg@mail.gmail.com>
+ <20210428061706.GC5084@lst.de> <CAHk-=whWnFu4wztnOtySjFVYXmBR4Mb2wxrp6OayZqnpKeQw0g@mail.gmail.com>
+ <20210428064110.GA5883@lst.de> <CAHk-=wjeUhrznxM95ni4z+ynMqhgKGsJUDU8g0vrDLc+fDtYWg@mail.gmail.com>
+ <1de23de2-12a9-2b13-3b86-9fe4102fdc0c@rasmusvillemoes.dk> <CAHk-=wimsMqGdzik187YWLb-ru+iktb4MYbMQG1rnZ81dXYFVg@mail.gmail.com>
+ <26d06c27-4778-bf75-e39a-3b02cd22d0e3@rasmusvillemoes.dk>
+In-Reply-To: <26d06c27-4778-bf75-e39a-3b02cd22d0e3@rasmusvillemoes.dk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 29 Apr 2021 09:45:39 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whJmDjTLYLeF=Ax31vTOq4PHXKo6JUqm1mQNGZdy-6=3Q@mail.gmail.com>
+Message-ID: <CAHk-=whJmDjTLYLeF=Ax31vTOq4PHXKo6JUqm1mQNGZdy-6=3Q@mail.gmail.com>
+Subject: Re: [GIT PULL] iomap: new code for 5.13-rc1
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jia He <justin.he@arm.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Eric Sandeen <sandeen@sandeen.net>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+On Wed, Apr 28, 2021 at 11:40 PM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
+>
+> > That also does explain the arguably odd %pD defaults: %pd came first,
+> > and then %pD came afterwards.
+>
+> Eh? 4b6ccca701ef5977d0ffbc2c932430dea88b38b6 added them both at the same
+> time.
 
-Am 2021-04-29 18:23, schrieb Alexander Williams:
-> On Thu, Apr 29, 2021 at 8:57 AM Michael Walle <michael@walle.cc> wrote:
->> 
->> Add support to show the manufacturer, the partname and JEDEC 
->> identifier
->> as well as to dump the SFDP table. Not all flashes list their SFDP 
->> table
->> contents in their datasheet. So having that is useful. It might also 
->> be
->> helpful in bug reports from users.
->> 
->> Signed-off-by: Michael Walle <michael@walle.cc>
->> ---
->> Pratyush, Heiko, I've dropped your Acked and Tested-by because there
->> were some changes.
->> 
->>  .../ABI/testing/sysfs-bus-spi-devices-spi-nor | 31 +++++++
->>  drivers/mtd/spi-nor/Makefile                  |  2 +-
->>  drivers/mtd/spi-nor/core.c                    |  1 +
->>  drivers/mtd/spi-nor/core.h                    |  2 +
->>  drivers/mtd/spi-nor/sysfs.c                   | 92 
->> +++++++++++++++++++
->>  5 files changed, 127 insertions(+), 1 deletion(-)
->>  create mode 100644 
->> Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
->>  create mode 100644 drivers/mtd/spi-nor/sysfs.c
->> 
->> diff --git a/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor 
->> b/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
->> new file mode 100644
->> index 000000000000..4c88307759e2
->> --- /dev/null
->> +++ b/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
->> @@ -0,0 +1,31 @@
->> +What:          /sys/bus/spi/devices/.../jedec_id
->> +Date:          April 2021
->> +KernelVersion: 5.14
->> +Contact:       linux-mtd@lists.infradead.org
->> +Description:   (RO) The JEDEC ID of the SPI NOR flash as reported by 
->> the
->> +               flash device.
->> +
->> +
->> +What:          /sys/bus/spi/devices/.../manufacturer
->> +Date:          April 2021
->> +KernelVersion: 5.14
->> +Contact:       linux-mtd@lists.infradead.org
->> +Description:   (RO) Manufacturer of the SPI NOR flash.
->> +
->> +
->> +What:          /sys/bus/spi/devices/.../partname
->> +Date:          April 2021
->> +KernelVersion: 5.14
->> +Contact:       linux-mtd@lists.infradead.org
->> +Description:   (RO) Part name of the SPI NOR flash.
->> +
->> +
->> +What:          /sys/bus/spi/devices/.../sfdp
->> +Date:          April 2021
->> +KernelVersion: 5.14
->> +Contact:       linux-mtd@lists.infradead.org
->> +Description:   (RO) This attribute is only present if the SPI NOR 
->> flash
->> +               device supports the "Read SFDP" command (5Ah).
->> +
->> +               If present, it contains the complete SFDP (serial 
->> flash
->> +               discoverable parameters) binary data of the flash.
->> diff --git a/drivers/mtd/spi-nor/Makefile 
->> b/drivers/mtd/spi-nor/Makefile
->> index 136f245c91dc..6b904e439372 100644
->> --- a/drivers/mtd/spi-nor/Makefile
->> +++ b/drivers/mtd/spi-nor/Makefile
->> @@ -1,6 +1,6 @@
->>  # SPDX-License-Identifier: GPL-2.0
->> 
->> -spi-nor-objs                   := core.o sfdp.o swp.o otp.o
->> +spi-nor-objs                   := core.o sfdp.o swp.o otp.o sysfs.o
->>  spi-nor-objs                   += atmel.o
->>  spi-nor-objs                   += catalyst.o
->>  spi-nor-objs                   += eon.o
->> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
->> index 20c7ee604731..57d8a4dae5fd 100644
->> --- a/drivers/mtd/spi-nor/core.c
->> +++ b/drivers/mtd/spi-nor/core.c
->> @@ -3349,6 +3349,7 @@ static struct spi_mem_driver spi_nor_driver = {
->>                 .driver = {
->>                         .name = "spi-nor",
->>                         .of_match_table = spi_nor_of_table,
->> +                       .dev_groups = spi_nor_sysfs_groups,
-> 
-> Putting these in the driver's dev_groups does create a divergence 
-> between
-> different spi-nor controllers. For all the controllers supported in
-> drivers/mtd/spi-nor/controllers/, would their drivers need to add the 
-> same sysfs
-> groups to get the same support?
+Ahh, I looked at "git blame", and saw that file_dentry_name() was
+added later. But that turns out to have been an additional fix on top,
+not actually "later support".
 
-Well, one supports it and one does not, no? If support is added later,
-we should keep an eye on it. Unfortunately, I don't have any hardware
-to see if just adding the .dev_groups to another driver will just work.
+Looking more at that code, I am starting to think that
+"file_dentry_name()" simply shouldn't use "dentry_name()" at all.
+Despite that shared code origin, and despite that similar letter
+choice (lower-vs-upper case), a dentry and a file really are very very
+different from a name standpoint.
 
--michael
+And it's not the "a filename is the whale pathname, and a dentry has
+its own private dentry name" issue. It's really that the 'struct file'
+contains a _path_ - which is not just the dentry pointer, but the
+'struct vfsmount' pointer too.
+
+So '%pD' really *could* get the real path right (because it has all
+the required information) in ways that '%pd' fundamentally cannot.
+
+At the same time, I really don't like printk specifiers to take any
+real locks (ie mount_lock or rename_lock), so I wouldn't want them to
+use the full  d_path() logic.
+
+                Linus
