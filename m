@@ -2,111 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6919036EF75
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 20:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0765236EF8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 20:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241172AbhD2S3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 14:29:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46950 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233705AbhD2S3c (ORCPT
+        id S241031AbhD2SjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 14:39:06 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:10721
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240974AbhD2SjG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 14:29:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619720925;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ahhdjeTzVRBlGxvftGs550exL2vN9CqbDTNttH8KlQg=;
-        b=iPwczHvoU0s35NX/pPwl4NRZvm7BrTYfgurtZPQl6F+BU9f/AL1vFXn0J6uI7Bz3Fm5k0o
-        7O6SFn4/AdVZfJBrl4DBCPaPAGg+NFh0bjt4VaW1QgsffF8MeQluKZLRHffi8fY/M/5YMB
-        jvDRKa44hNbFgsrgHTJ80hc2Xk1vXHQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-270-vDUQF24aPjCkdRuuxwsczA-1; Thu, 29 Apr 2021 14:28:43 -0400
-X-MC-Unique: vDUQF24aPjCkdRuuxwsczA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C7D1D1922966;
-        Thu, 29 Apr 2021 18:28:41 +0000 (UTC)
-Received: from redhat.com (ovpn-113-225.phx2.redhat.com [10.3.113.225])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E40B75D6DC;
-        Thu, 29 Apr 2021 18:28:40 +0000 (UTC)
-Date:   Thu, 29 Apr 2021 12:28:40 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Shanker Donthineni <sdonthineni@nvidia.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoffer Dall <christoffer.dall@arm.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>,
-        <kvm@vger.kernel.org>, Vikram Sethi <vsethi@nvidia.com>,
-        "Jason Sequeira" <jsequeira@nvidia.com>
-Subject: Re: [RFC 1/2] vfio/pci: keep the prefetchable attribute of a BAR
- region in VMA
-Message-ID: <20210429122840.4f98f78e@redhat.com>
-In-Reply-To: <20210429162906.32742-2-sdonthineni@nvidia.com>
-References: <20210429162906.32742-1-sdonthineni@nvidia.com>
-        <20210429162906.32742-2-sdonthineni@nvidia.com>
+        Thu, 29 Apr 2021 14:39:06 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AG/vuIKym4zfRSgGlnE3oKrPw571zdoIgy1kn?=
+ =?us-ascii?q?xilNYDZeG/b0q+mFmvMH2RjozAsLUHY7ltyafIWGS3XQ9Zl6iLNhXouKcQH6tA?=
+ =?us-ascii?q?KTQ71KwpDlx1TbcBHW0s54+eNef7NlCNv2ZGIbse/f7BOjG9gthPmLmZrHuc7k?=
+ =?us-ascii?q?w31gTR5nZshbhm9EIzyGGU57ThQuP/YEPaebj/AsmxOQPVAebsG2HRA+PtT+mw?=
+ =?us-ascii?q?=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.82,260,1613430000"; 
+   d="scan'208";a="380062492"
+Received: from palace.rsr.lip6.fr (HELO palace.lip6.fr) ([132.227.105.202])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-SHA; 29 Apr 2021 20:38:16 +0200
+From:   Julia Lawall <Julia.Lawall@inria.fr>
+To:     Julia Lawall <Julia.Lawall@inria.fr>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     kernel-janitors@vger.kernel.org,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        Michal Marek <michal.lkml@markovi.net>, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Johan Hovold <johan@kernel.org>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH v4] coccinelle: api: semantic patch to use pm_runtime_resume_and_get
+Date:   Thu, 29 Apr 2021 19:43:43 +0200
+Message-Id: <20210429174343.2509714-1-Julia.Lawall@inria.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Apr 2021 11:29:05 -0500
-Shanker Donthineni <sdonthineni@nvidia.com> wrote:
+pm_runtime_get_sync keeps a reference count on failure, which can lead
+to leaks.  pm_runtime_resume_and_get drops the reference count in the
+failure case.  This rule very conservatively follows the definition of
+pm_runtime_resume_and_get to address the cases where the reference
+count is unlikely to be needed in the failure case.  Specifically, the
+change is only done when pm_runtime_get_sync is followed immediately
+by an if and when the branch of the if is immediately a call to
+pm_runtime_put_noidle (like in the definition of
+pm_runtime_resume_and_get) or something that is likely a print
+statement followed by a pm_runtime_put_noidle call.  The patch
+case appears somewhat more complicated, because it also deals with the
+cases where {}s need to be removed.
 
-> For pass-through device assignment, the ARM64 KVM hypervisor retrieves
-> the memory region properties physical address, size, and whether a
-> region backed with struct page or not from VMA. The prefetchable
-> attribute of a BAR region isn't visible to KVM to make an optimal
-> decision for stage2 attributes.
-> 
-> This patch updates vma->vm_page_prot and maps with write-combine
-> attribute if the associated BAR is prefetchable. For ARM64
-> pgprot_writecombine() is mapped to memory-type MT_NORMAL_NC which
-> has no side effects on reads and multiple writes can be combined.
-> 
-> Signed-off-by: Shanker Donthineni <sdonthineni@nvidia.com>
-> ---
->  drivers/vfio/pci/vfio_pci.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-> index 5023e23db3bc..1b734fe1dd51 100644
-> --- a/drivers/vfio/pci/vfio_pci.c
-> +++ b/drivers/vfio/pci/vfio_pci.c
-> @@ -1703,7 +1703,11 @@ static int vfio_pci_mmap(void *device_data, struct vm_area_struct *vma)
->  	}
->  
->  	vma->vm_private_data = vdev;
-> -	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
-> +	if (IS_ENABLED(CONFIG_ARM64) &&
-> +	    (pci_resource_flags(pdev, index) & IORESOURCE_PREFETCH))
-> +		vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
-> +	else
-> +		vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+pm_runtime_resume_and_get was introduced in
+commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to
+deal with usage counter")
 
-If this were a valid thing to do, it should be done for all
-architectures, not just ARM64.  However, a prefetchable range only
-necessarily allows merged writes, which seems like a subset of the
-semantics implied by a WC attribute, therefore this doesn't seem
-universally valid.
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-I'm also a bit confused by your problem statement that indicates that
-without WC you're seeing unaligned accesses, does this suggest that
-your driver is actually relying on WC semantics to perform merging to
-achieve alignment?  That seems rather like a driver bug, I'd expect UC
-vs WC is largely a difference in performance, not a means to enforce
-proper driver access patterns.  Per the PCI spec, the bridge itself can
-merge writes to prefetchable areas, presumably regardless of this
-processor attribute, perhaps that's the feature your driver is relying
-on that might be missing here.  Thanks,
+---
+v5: print a message with the new function name, as suggested by Markus Elfring
+v4: s/pm_runtime_resume_and_get/pm_runtime_put_noidle/ as noted by John Hovold
+v3: add the people who signed off on commit dd8088d5a896, expand the log message
+v2: better keyword
 
-Alex
+ scripts/coccinelle/api/pm_runtime_resume_and_get.cocci |  153 +++++++++++++++++
+ 1 file changed, 153 insertions(+)
+
+diff --git a/scripts/coccinelle/api/pm_runtime_resume_and_get.cocci b/scripts/coccinelle/api/pm_runtime_resume_and_get.cocci
+new file mode 100644
+index 000000000000..3387cb606f9b
+--- /dev/null
++++ b/scripts/coccinelle/api/pm_runtime_resume_and_get.cocci
+@@ -0,0 +1,153 @@
++// SPDX-License-Identifier: GPL-2.0-only
++///
++/// Use pm_runtime_resume_and_get.
++/// pm_runtime_get_sync keeps a reference count on failure,
++/// which can lead to leaks.  pm_runtime_resume_and_get
++/// drops the reference count in the failure case.
++/// This rule addresses the cases where the reference count
++/// is unlikely to be needed in the failure case.
++///
++// Confidence: High
++// Copyright: (C) 2021 Julia Lawall, Inria
++// URL: https://coccinelle.gitlabpages.inria.fr/website
++// Options: --include-headers --no-includes
++// Keywords: pm_runtime_get_sync
++
++virtual patch
++virtual context
++virtual org
++virtual report
++
++@r0 depends on patch && !context && !org && !report@
++expression ret,e;
++@@
++
++-     ret = pm_runtime_get_sync(e);
+++     ret = pm_runtime_resume_and_get(e);
++-     if (ret < 0)
++-             pm_runtime_put_noidle(e);
++
++@r1 depends on patch && !context && !org && !report@
++expression ret,e;
++statement S1,S2;
++@@
++
++-     ret = pm_runtime_get_sync(e);
+++     ret = pm_runtime_resume_and_get(e);
++      if (ret < 0)
++-     {
++-             pm_runtime_put_noidle(e);
++	      S1
++-     }
++      else S2
++
++@r2 depends on patch && !context && !org && !report@
++expression ret,e;
++statement S;
++@@
++
++-     ret = pm_runtime_get_sync(e);
+++     ret = pm_runtime_resume_and_get(e);
++      if (ret < 0) {
++-             pm_runtime_put_noidle(e);
++	      ...
++      } else S
++
++@r3 depends on patch && !context && !org && !report@
++expression ret,e;
++identifier f;
++constant char[] c;
++statement S;
++@@
++
++-     ret = pm_runtime_get_sync(e);
+++     ret = pm_runtime_resume_and_get(e);
++      if (ret < 0)
++-     {
++              f(...,c,...);
++-             pm_runtime_put_noidle(e);
++-     }
++      else S
++
++@r4 depends on patch && !context && !org && !report@
++expression ret,e;
++identifier f;
++constant char[] c;
++statement S;
++@@
++
++-     ret = pm_runtime_get_sync(e);
+++     ret = pm_runtime_resume_and_get(e);
++      if (ret < 0) {
++              f(...,c,...);
++-             pm_runtime_put_noidle(e);
++	      ...
++      } else S
++
++// ----------------------------------------------------------------------------
++
++@r2_context depends on !patch && (context || org || report)@
++statement S;
++expression e, ret;
++position j0, j1;
++@@
++
++*     ret@j0 = pm_runtime_get_sync(e);
++      if (ret < 0) {
++*             pm_runtime_put_noidle@j1(e);
++	      ...
++      } else S
++
++@r3_context depends on !patch && (context || org || report)@
++identifier f;
++statement S;
++constant char []c;
++expression e, ret;
++position j0, j1;
++@@
++
++*     ret@j0 = pm_runtime_get_sync(e);
++      if (ret < 0) {
++              f(...,c,...);
++*             pm_runtime_put_noidle@j1(e);
++	      ...
++      } else S
++
++// ----------------------------------------------------------------------------
++
++@script:python r2_org depends on org@
++j0 << r2_context.j0;
++j1 << r2_context.j1;
++@@
++
++msg = "WARNING: opportunity for pm_runtime_resume_and_get"
++coccilib.org.print_todo(j0[0], msg)
++coccilib.org.print_link(j1[0], "")
++
++@script:python r3_org depends on org@
++j0 << r3_context.j0;
++j1 << r3_context.j1;
++@@
++
++msg = "WARNING: opportunity for pm_runtime_resume_and_get"
++coccilib.org.print_todo(j0[0], msg)
++coccilib.org.print_link(j1[0], "")
++
++// ----------------------------------------------------------------------------
++
++@script:python r2_report depends on report@
++j0 << r2_context.j0;
++j1 << r2_context.j1;
++@@
++
++msg = "WARNING: opportunity for pm_runtime_resume_and_get on line %s." % (j0[0].line)
++coccilib.report.print_report(j0[0], msg)
++
++@script:python r3_report depends on report@
++j0 << r3_context.j0;
++j1 << r3_context.j1;
++@@
++
++msg = "WARNING: opportunity for pm_runtime_resume_and_get on %s." % (j0[0].line)
++coccilib.report.print_report(j0[0], msg)
++
 
