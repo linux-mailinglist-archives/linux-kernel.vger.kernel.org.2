@@ -2,106 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9155D36EC25
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 16:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB6836EC2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 16:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239718AbhD2OKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 10:10:47 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:43485 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239617AbhD2OKq (ORCPT
+        id S239973AbhD2ONS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 10:13:18 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:52758 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234473AbhD2ONQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 10:10:46 -0400
-X-Originating-IP: 2.7.49.219
-Received: from [192.168.1.100] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 2EDBA2000A;
-        Thu, 29 Apr 2021 14:09:53 +0000 (UTC)
-Subject: Re: [PATCH] riscv: Only extend kernel reservation if mapped read-only
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     Damien Le Moal <damien.lemoal@wdc.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <1a7660125046b94db9c6a7d62aa0ce88c8cd2f1d.1619617340.git.geert+renesas@glider.be>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <605dc5e8-0a41-7458-6037-d6263b0ffd59@ghiti.fr>
-Date:   Thu, 29 Apr 2021 10:09:53 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Thu, 29 Apr 2021 10:13:16 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TDtYAt137755;
+        Thu, 29 Apr 2021 14:12:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=7wO3S1awYKukxfXx/AgA8BN45wRenl6f8tRf1DRHcFo=;
+ b=MIX3H+CEVlP5dw1fBFOyp2izPwL8FkgDd6T9ci1sXkthxSvFklK0NauWygvEvfkW9qhm
+ /nNFrkG7HxhXO/4jF9RDGeR2X35VH76XSoycdBh7AL8lHpLopKLFwpVpOJe2mFKAc5xJ
+ 3Cay2sKYFkOXEhVhQGMd5MSL/CwUNLqrZIyVEBn5LK+o9zh93dIoDoffbqt2h/YKo+GJ
+ S/V9kTPQuyeojadKHtAFiXqMxmRohYkMWpZYaf3cqgvZG2u1FTswL8csHFy2mx/ZYChv
+ tIxapZ3Yxmu0pmmTBUMsk1b/6QV2kzENG/Oaod5rK9VPBGDi+QE2/m5S0TmardtPSKEh kw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 385aft4gt2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 14:12:09 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TDtxNO169381;
+        Thu, 29 Apr 2021 14:12:08 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 384b5acmjd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 14:12:08 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13TEC1LK092501;
+        Thu, 29 Apr 2021 14:12:08 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 384b5acmhp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 14:12:08 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13TEC7Hu011472;
+        Thu, 29 Apr 2021 14:12:07 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 29 Apr 2021 07:12:06 -0700
+Date:   Thu, 29 Apr 2021 17:12:00 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Khaled ROMDHANI <khaledromdhani216@gmail.com>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH-V2] fs/btrfs: Fix uninitialized variable
+Message-ID: <20210429141200.GB1981@kadam>
+References: <20210427171627.32356-1-khaledromdhani216@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1a7660125046b94db9c6a7d62aa0ce88c8cd2f1d.1619617340.git.geert+renesas@glider.be>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210427171627.32356-1-khaledromdhani216@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: 5XMmar-2JWd8WARv3s5ERz9mr6XXrbzN
+X-Proofpoint-ORIG-GUID: 5XMmar-2JWd8WARv3s5ERz9mr6XXrbzN
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9969 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 lowpriorityscore=0
+ mlxlogscore=999 malwarescore=0 phishscore=0 priorityscore=1501
+ clxscore=1015 spamscore=0 bulkscore=0 suspectscore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104290093
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
-
-Le 4/28/21 à 9:45 AM, Geert Uytterhoeven a écrit :
-> When the kernel mapping was moved outside of the linear mapping, the
-> kernel memory reservation was increased, to take into account mapping
-> granularity.  However, this is done unconditionally, regardless of
-> whether the kernel memory is mapped read-only or not.
+On Tue, Apr 27, 2021 at 06:16:27PM +0100, Khaled ROMDHANI wrote:
+> The variable 'zone' is uninitialized which
+> introduce some build warning.
 > 
-> If this extension is not needed, up to 2 MiB may be lost, which has a
-> big impact on e.g. Canaan K210 (64-bit nommu) platforms with only 8 MiB
-> of RAM.
-> 
-> Reclaim the lost memory by only extending the reserved region when
-> needed, i.e. matching the conditional logic around the call to
-> protect_kernel_linear_mapping_text_rodata().
-> 
-> Fixes: 2bfc6cd81bd17e43 ("riscv: Move kernel mapping outside of linear mapping")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
 > ---
-> Only tested on K210 (SiPeed MAIX BiT):
-> 
->      -Memory: 5852K/8192K available (1344K kernel code, 147K rwdata, 272K rodata, 106K init, 72K bss, 2340K reserved, 0K cma-reserved)
->      +Memory: 5948K/8192K available (1344K kernel code, 147K rwdata, 272K rodata, 106K init, 72K bss, 2244K reserved, 0K cma-reserved)
-> 
-> Yes, I was lucky, as only 96 KiB was lost ;-)
+> v2: catch the init as an assertion
 > ---
->   arch/riscv/mm/init.c | 10 ++++++++--
->   1 file changed, 8 insertions(+), 2 deletions(-)
+>  fs/btrfs/zoned.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index 788eb222deacf994..3439783f26abc488 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -136,11 +136,17 @@ void __init setup_bootmem(void)
->   
->   	/*
->   	 * Reserve from the start of the kernel to the end of the kernel
-> -	 * and make sure we align the reservation on PMD_SIZE since we will
-> +	 */
-> +#if defined(CONFIG_STRICT_KERNEL_RWX) && defined(CONFIG_64BIT) && \
-> +    defined(CONFIG_MMU) && !defined(CONFIG_XIP_KERNEL)
+> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> index 432509f4b3ac..70c0b1b2ff04 100644
+> --- a/fs/btrfs/zoned.c
+> +++ b/fs/btrfs/zoned.c
+> @@ -144,7 +144,7 @@ static inline u32 sb_zone_number(int shift, int mirror)
+>  	case 1: zone = 1ULL << (BTRFS_SB_LOG_FIRST_SHIFT - shift); break;
+>  	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
+>  	default:
+> -		ASSERT(zone);
+> +		ASSERT(zone = 0);
 
-ARCH_HAS_STRICT_KERNEL_RWX depends on MMU and !XIP_KERNEL so I think you 
-can get rid of those checks.
+I'm sorry but this doesn't make any kind of sense.
 
-> +	/*
-> +	 * Make sure we align the reservation on PMD_SIZE since we will
->   	 * map the kernel in the linear mapping as read-only: we do not want
->   	 * any allocation to happen between _end and the next pmd aligned page.
->   	 */
-> -	memblock_reserve(vmlinux_start, (vmlinux_end - vmlinux_start + PMD_SIZE - 1) & PMD_MASK);
-> +	vmlinux_end = (vmlinux_end + PMD_SIZE - 1) & PMD_MASK;
-> +#endif
-> +	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
->   
->   	/*
->   	 * memblock allocator is not aware of the fact that last 4K bytes of
-> 
+>  		break;
+>  	}
 
-Thanks for fixing this,
-
-Alex
-
-
+regards,
+dan carpenter
 
