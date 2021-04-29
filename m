@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 246A236E942
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A7936E943
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 12:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240595AbhD2K7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 06:59:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50164 "EHLO
+        id S240614AbhD2K7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 06:59:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231904AbhD2K7J (ORCPT
+        with ESMTP id S240450AbhD2K7L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 06:59:09 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9590AC06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 03:58:22 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id x5so16156862wrv.13
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 03:58:22 -0700 (PDT)
+        Thu, 29 Apr 2021 06:59:11 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68557C061342
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 03:58:23 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id n2so13263191wrm.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 03:58:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=nBXsu4hoUYVEN5DNp1Kv5q5f0FvqemBCsQCdEh5XBkc=;
-        b=ySv6XmAm+iC7pw2L7aHI8nQI+7E7BOcbBzQ6MllFX9piRQF3WBxMNgc91BcQzStqOi
-         OBaZ3syju5vPQmmoH6Of9wZOmgB2tpPW48/DkjKv5ZAZf+srv6/EgcRDgyhEKpqM/ymo
-         GR6GByYgtM7wvpM9c3R0WmX+H6BPJ/1icbtwD/ZTv9u5Ajy8V0BjGhPjI/96b5fKRQZd
-         x/UXUjevLcL5qkWeOYtKlk3cF9qRuQTVBQ1l9Rmrt6+b2B0K4kUCw3rf/JaXLU+it4pe
-         KVAbg7gFpbFljqSc2ulL0ZZSZuFbaF0SK0TV3+y8W+z7waamShaXc9VL5r/NVzsx0nMB
-         Wewg==
+        bh=jYGJrgcD3VZ6SXpUQWlC7sPvB5W5iGe6cdJ7Wlftem4=;
+        b=ADIoes40mv9HPIIbqdGFoDHMemrLKFIIoekd16bjNbrdN0jTPOABBHL6aVDrZtbFQu
+         7yk3Ot02f5nje4Dfdavqy/n6jXkmJhVsKKM6ODhMiL4XHbz18aF6X0PQo9i6ImbgrUyD
+         OjgKTI+8ledcS6TazyTztiodS79qw9g4xLDhe69oI54YQ33KjU2eGgHAXnqiXBDxJDja
+         lTDSTikmPZZFnJLmwdgeHTAuOzpg6iUEsfE5yipAg1HwUKST/Iud/WqweIL2UAP4Ih7C
+         P2s0cC/MdYNPRPMR19Z782MZ2QXyr0NLZjHVfHlld6ZW9Vn3zqkRax4EK4gJaM0rJfOX
+         4uNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nBXsu4hoUYVEN5DNp1Kv5q5f0FvqemBCsQCdEh5XBkc=;
-        b=DKP2HR0Xu/8Cgfn0e7WucgtJkN6FpMfCkXInwRF1ODC4lde458i6FUQZZPrUBTCRU+
-         XlPxawsJABujTMrXMP8JyUsXNo6lONAGZ5cPRuST1ddu2xvAX6qTFN4X29gL0sGbqULY
-         9qYNSy7WSjnYNL2lrVfWnRG/TFpzgLCPv70u2v+uMs1EVT97ESfQIp9WnLoU1HIZMzR2
-         PV3+aj6NyEDinfKqV5AJyFbzAKHVdTfMrtauMEF1oaWSiUf5v+RYT5kD67tfSjcxkq6n
-         RnQFRtghkDqkayAElxs/7mrZM7N6tZ6gZmUTxixH5Bqiz4C/ZN2UGDn7QNfg29EmgKbd
-         fZUw==
-X-Gm-Message-State: AOAM532kqTIdH93mfdhQdEpKNab3Z+sdnL5nG165K/gvrdhn49ZosbXQ
-        BjBZ27KBWHJ31i8hO6+tQiE7SA==
-X-Google-Smtp-Source: ABdhPJy4cMsMQ7Q6k/nhH6/7CT/fOMZhRWoaFkUowy2RsJo3l0IuB8hcnYOXvuVVw3zVTZI7XDablQ==
-X-Received: by 2002:a5d:43c1:: with SMTP id v1mr24404406wrr.248.1619693901308;
-        Thu, 29 Apr 2021 03:58:21 -0700 (PDT)
+        bh=jYGJrgcD3VZ6SXpUQWlC7sPvB5W5iGe6cdJ7Wlftem4=;
+        b=QDC7xyFiJekW01wCMXQM0vXds2u+c6pa7sAMM7mGfXM/JJ5Q4Btr0Ke4tHMawvkUzy
+         jzy84OXQzgMUEizsat3QLNuifW9jVwL6Ltbo3oQXVYtH6VaUb1ljOVlVmbX2mpILlJVm
+         v3O2a3lel5TXsgtcPfkwMnmMQG0aRu0B006wTEIU7mPuFYcOdYzSYeGseOMgaA3elFuN
+         jS063+oheXfF9GO5QxuXo3I0aM7+rqjaMv1LghZRp9AmQCfcla0WLvHYifHLhTb7o2Gh
+         c7ehy4sBNrAApGg8GWTWaYvdvv7YX8nhSZLkCHV/KBsPZLyySt5I907lTKljbO54wGey
+         bgsw==
+X-Gm-Message-State: AOAM532GpFwZOCZL5egnFGh+LTLTSlSqYmqovNlIf4Ibd4sQDCoeVXra
+        AIr4ubMGrmRymdIOSVsU9RXDUA==
+X-Google-Smtp-Source: ABdhPJxs4frVcC9W4IjKEh3ILkFuHPl45eBX5Yb/vr2WGh+ggar5ciZCQHRNii0ISDvr/1UlX1nB3g==
+X-Received: by 2002:a05:6000:2c6:: with SMTP id o6mr164098wry.203.1619693902137;
+        Thu, 29 Apr 2021 03:58:22 -0700 (PDT)
 Received: from localhost.localdomain (hst-221-29.medicom.bg. [84.238.221.29])
-        by smtp.gmail.com with ESMTPSA id a9sm3372903wmj.1.2021.04.29.03.58.20
+        by smtp.gmail.com with ESMTPSA id a9sm3372903wmj.1.2021.04.29.03.58.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 29 Apr 2021 03:58:21 -0700 (PDT)
 From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
@@ -54,9 +54,9 @@ To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
 Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH 1/3] v4l: Add Qualcomm custom compressed pixel formats
-Date:   Thu, 29 Apr 2021 13:58:13 +0300
-Message-Id: <20210429105815.2790770-2-stanimir.varbanov@linaro.org>
+Subject: [PATCH 2/3] venus: Add a handling of QC8C compressed format
+Date:   Thu, 29 Apr 2021 13:58:14 +0300
+Message-Id: <20210429105815.2790770-3-stanimir.varbanov@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210429105815.2790770-1-stanimir.varbanov@linaro.org>
 References: <20210429105815.2790770-1-stanimir.varbanov@linaro.org>
@@ -66,65 +66,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Here we add custom Qualcomm raw compressed pixel formats. They are
-used in Qualcomm SoCs to optimaize the interconnect bandwidth.
+This adds QC8C compressed pixel format in the Venus driver, and
+make it enumeratable from v4l2 clients.
 
 Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
 ---
- .../userspace-api/media/v4l/pixfmt-reserved.rst      | 12 ++++++++++++
- drivers/media/v4l2-core/v4l2-ioctl.c                 |  2 ++
- include/uapi/linux/videodev2.h                       |  2 ++
- 3 files changed, 16 insertions(+)
+ drivers/media/platform/qcom/venus/helpers.c |  2 ++
+ drivers/media/platform/qcom/venus/vdec.c    | 12 +++++++++++-
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst b/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
-index 0b879c0da713..30b9cef4cbf0 100644
---- a/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
-+++ b/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
-@@ -260,6 +260,18 @@ please make a proposal on the linux-media mailing list.
- 	of tiles, resulting in 32-aligned resolutions for the luminance plane
- 	and 16-aligned resolutions for the chrominance plane (with 2x2
- 	subsampling).
-+    * .. _V4L2-PIX-FMT-QC8C:
-+
-+      - ``V4L2_PIX_FMT_QC8C``
-+      - 'QC8C'
-+      - Compressed Macro-tile 8Bit YUV420 format used by Qualcomm platforms.
-+	The compression is lossless. It contains four planes.
-+    * .. _V4L2-PIX-FMT-QC10C:
-+
-+      - ``V4L2_PIX_FMT_QC10C``
-+      - 'QC10C'
-+      - Compressed Macro-tile 10Bit YUV420 format used by Qualcomm platforms.
-+	The compression is lossless. It contains four planes.
+diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
+index 9b8ff76e3c43..3a0b07d237a5 100644
+--- a/drivers/media/platform/qcom/venus/helpers.c
++++ b/drivers/media/platform/qcom/venus/helpers.c
+@@ -561,6 +561,8 @@ static u32 to_hfi_raw_fmt(u32 v4l2_fmt)
+ 		return HFI_COLOR_FORMAT_NV12;
+ 	case V4L2_PIX_FMT_NV21:
+ 		return HFI_COLOR_FORMAT_NV21;
++	case V4L2_PIX_FMT_QC8C:
++		return HFI_COLOR_FORMAT_NV12_UBWC;
+ 	default:
+ 		break;
+ 	}
+diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+index 5e5584fc21e9..d4cc51fc019c 100644
+--- a/drivers/media/platform/qcom/venus/vdec.c
++++ b/drivers/media/platform/qcom/venus/vdec.c
+@@ -31,6 +31,10 @@
+  */
+ static const struct venus_format vdec_formats[] = {
+ 	{
++		.pixfmt = V4L2_PIX_FMT_QC8C,
++		.num_planes = 1,
++		.type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE,
++	}, {
+ 		.pixfmt = V4L2_PIX_FMT_NV12,
+ 		.num_planes = 1,
+ 		.type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE,
+@@ -696,7 +700,13 @@ static int vdec_output_conf(struct venus_inst *inst)
+ 	inst->output2_buf_size =
+ 			venus_helper_get_framesz_raw(out2_fmt, width, height);
  
- .. raw:: latex
- 
-diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 6a5d1c6d11d6..33ee12b97aa0 100644
---- a/drivers/media/v4l2-core/v4l2-ioctl.c
-+++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -1455,6 +1455,8 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
- 		case V4L2_PIX_FMT_S5C_UYVY_JPG:	descr = "S5C73MX interleaved UYVY/JPEG"; break;
- 		case V4L2_PIX_FMT_MT21C:	descr = "Mediatek Compressed Format"; break;
- 		case V4L2_PIX_FMT_SUNXI_TILED_NV12: descr = "Sunxi Tiled NV12 Format"; break;
-+		case V4L2_PIX_FMT_QC8C:		descr = "QCOM Compressed 8bit Format"; break;
-+		case V4L2_PIX_FMT_QC10C:	descr = "QCOM Compressed 10bit Format"; break;
- 		default:
- 			if (fmt->description[0])
- 				return;
-diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-index 311a01cc5775..c57628a16cf4 100644
---- a/include/uapi/linux/videodev2.h
-+++ b/include/uapi/linux/videodev2.h
-@@ -737,6 +737,8 @@ struct v4l2_pix_format {
- #define V4L2_PIX_FMT_SUNXI_TILED_NV12 v4l2_fourcc('S', 'T', '1', '2') /* Sunxi Tiled NV12 Format */
- #define V4L2_PIX_FMT_CNF4     v4l2_fourcc('C', 'N', 'F', '4') /* Intel 4-bit packed depth confidence information */
- #define V4L2_PIX_FMT_HI240    v4l2_fourcc('H', 'I', '2', '4') /* BTTV 8-bit dithered RGB */
-+#define V4L2_PIX_FMT_QC8C     v4l2_fourcc('Q', '0', '8', 'C') /* Qualcomm 8-bit compressed */
-+#define V4L2_PIX_FMT_QC10C    v4l2_fourcc('Q', '1', '0', 'C') /* Qualcomm 10-bit compresed */
- 
- /* 10bit raw bayer packed, 32 bytes for every 25 pixels, last LSB 6 bits unused */
- #define V4L2_PIX_FMT_IPU3_SBGGR10	v4l2_fourcc('i', 'p', '3', 'b') /* IPU3 packed 10-bit BGGR bayer */
+-	if (is_ubwc_fmt(out_fmt)) {
++	if (is_ubwc_fmt(out_fmt) && is_ubwc_fmt(out2_fmt)) {
++		inst->output2_buf_size = 0;
++		inst->opb_buftype = HFI_BUFFER_OUTPUT;
++		inst->opb_fmt = out_fmt;
++		inst->dpb_buftype = 0;
++		inst->dpb_fmt = 0;
++	} else if (is_ubwc_fmt(out_fmt)) {
+ 		inst->opb_buftype = HFI_BUFFER_OUTPUT2;
+ 		inst->opb_fmt = out2_fmt;
+ 		inst->dpb_buftype = HFI_BUFFER_OUTPUT;
 -- 
 2.25.1
 
