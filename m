@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B0936EB25
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 15:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E21E36EB26
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 15:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237680AbhD2NJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 09:09:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34416 "EHLO mail.kernel.org"
+        id S238251AbhD2NJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 09:09:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238456AbhD2NJM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 09:09:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B73A61057;
-        Thu, 29 Apr 2021 13:08:25 +0000 (UTC)
+        id S238815AbhD2NJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 09:09:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED4B961057;
+        Thu, 29 Apr 2021 13:08:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619701706;
-        bh=vQaYKW+5nQgdI7Y2naghwyxtzkgbBNkMPs+FtpwjlaY=;
+        s=korg; t=1619701708;
+        bh=+TElKSOoYADfybP5EYFHwW3GqSEegDoUj/EoYNFv5sk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T7HL1uZG+VieWMUO3PIAiWmxjrEpjoduDtqDExdoNG4P6FvXTCwkDE1fk7hJ9lkNv
-         gHU0m+m5bQmhYhUki+uekkCOjQ6YPW8V/Uq6Y6dFUdbyXFH9fHHi71QCwLeGBwdKH9
-         By8rGt1gIgBOQKcblqJkDDrygLYY0CvAYwVBzGPE=
+        b=e1kQyQ08SWcKN9h2k8tTBjyBmUrvoxuUPpjEImnh8NBrZcmehByKBSdtb8OwXtykR
+         icm0QPFmDc6H4tLz14sNSWz0DkG1ovB9tz6hV2Vjb4XblW5sA9ZiQm9sWn+28a5F10
+         46pYk+MEF+5z5Y9X+JJxC/3twUO9sCRmSag227g4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Aditya Pakki <pakki001@umn.edu>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 3/7] Revert "orinoco: avoid assertion in case of NULL pointer"
-Date:   Thu, 29 Apr 2021 15:08:07 +0200
-Message-Id: <20210429130811.3353369-4-gregkh@linuxfoundation.org>
+        Wenwen Wang <wang6495@umn.edu>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH 4/7] Revert "ethtool: fix a potential missing-check bug"
+Date:   Thu, 29 Apr 2021 15:08:08 +0200
+Message-Id: <20210429130811.3353369-5-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210429130811.3353369-1-gregkh@linuxfoundation.org>
 References: <20210429130811.3353369-1-gregkh@linuxfoundation.org>
@@ -37,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit c705f9fc6a1736dcf6ec01f8206707c108dca824.
+This reverts commit d656fe49e33df48ee6bc19e871f5862f49895c9e.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -54,27 +54,29 @@ they actually are a valid fix.  Until that work is complete, remove this
 change to ensure that no problems are being introduced into the
 codebase.
 
-Cc: Aditya Pakki <pakki001@umn.edu>
-Cc: Kalle Valo <kvalo@codeaurora.org>
+Cc: Wenwen Wang <wang6495@umn.edu>
+Cc: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/intersil/orinoco/orinoco_usb.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ net/ethtool/ioctl.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/net/wireless/intersil/orinoco/orinoco_usb.c b/drivers/net/wireless/intersil/orinoco/orinoco_usb.c
-index dd31929261ab..60e626eb913d 100644
---- a/drivers/net/wireless/intersil/orinoco/orinoco_usb.c
-+++ b/drivers/net/wireless/intersil/orinoco/orinoco_usb.c
-@@ -1392,8 +1392,7 @@ static int ezusb_init(struct hermes *hw)
- 	struct ezusb_priv *upriv = hw->priv;
- 	int retval;
+diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
+index 771688e1b0da..34688ebfd74e 100644
+--- a/net/ethtool/ioctl.c
++++ b/net/ethtool/ioctl.c
+@@ -869,11 +869,6 @@ static noinline_for_stack int ethtool_get_rxnfc(struct net_device *dev,
+ 		info_size = sizeof(info);
+ 		if (copy_from_user(&info, useraddr, info_size))
+ 			return -EFAULT;
+-		/* Since malicious users may modify the original data,
+-		 * we need to check whether FLOW_RSS is still requested.
+-		 */
+-		if (!(info.flow_type & FLOW_RSS))
+-			return -EINVAL;
+ 	}
  
--	if (!upriv)
--		return -EINVAL;
-+	BUG_ON(!upriv);
- 
- 	upriv->reply_count = 0;
- 	/* Write the MAGIC number on the simulated registers to keep
+ 	if (info.cmd != cmd)
 -- 
 2.31.1
 
