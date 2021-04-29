@@ -2,103 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F182F36F040
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 21:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D2936F045
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 21:25:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233420AbhD2TRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 15:17:46 -0400
-Received: from bedivere.hansenpartnership.com ([96.44.175.130]:34908 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238738AbhD2TJW (ORCPT
+        id S233679AbhD2TR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 15:17:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239559AbhD2TL2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 15:09:22 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id B4D6B128060F;
-        Thu, 29 Apr 2021 12:08:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1619723315;
-        bh=Wr5b4YST9tl/BuuCQuNcLA2CvwkZHmyGHlsVuX6DZQ8=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=l73StIMHozzf/YnymVM3GIVZyJdmOM4eJ9AR5UhAIUp9LATjTdvU1Vp863KHVixDP
-         tr5Dn0mIkExYdmXbNdjwTbBH9OdJIfGgeL5eUFOKegKs7HXOrdUazUeAdR9m0fSBgT
-         I29v9viBAFrF3o7nqoTDFRpSJZC6MlXt0UBnHe5U=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ST3JDx_pPKLa; Thu, 29 Apr 2021 12:08:35 -0700 (PDT)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 4465612805FA;
-        Thu, 29 Apr 2021 12:08:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1619723315;
-        bh=Wr5b4YST9tl/BuuCQuNcLA2CvwkZHmyGHlsVuX6DZQ8=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=l73StIMHozzf/YnymVM3GIVZyJdmOM4eJ9AR5UhAIUp9LATjTdvU1Vp863KHVixDP
-         tr5Dn0mIkExYdmXbNdjwTbBH9OdJIfGgeL5eUFOKegKs7HXOrdUazUeAdR9m0fSBgT
-         I29v9viBAFrF3o7nqoTDFRpSJZC6MlXt0UBnHe5U=
-Message-ID: <08179943c02b0952546d01713e24ccba62d1a566.camel@HansenPartnership.com>
-Subject: Re: [PATCH 1/1] trusted-keys: match tpm_get_ops on all return paths
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Ben Boeckel <me@benboeckel.net>
-Cc:     keyrings@vger.kernel.org, Ben Boeckel <mathstuf@gmail.com>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Date:   Thu, 29 Apr 2021 12:08:34 -0700
-In-Reply-To: <YIsC9mT8XmIi/fbB@erythro>
-References: <20210429183742.756766-1-list.lkml.keyrings@me.benboeckel.net>
-         <20210429183742.756766-2-list.lkml.keyrings@me.benboeckel.net>
-         <9eea988ff637af57511107c6c0941bff2aa7c6c5.camel@HansenPartnership.com>
-         <YIsC9mT8XmIi/fbB@erythro>
+        Thu, 29 Apr 2021 15:11:28 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D17E8C06138E
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 12:10:39 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id q4so21619425qtn.5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 12:10:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=ltkj3GwXMNWaqEgIRsYEcolYZKDxC8Ql9gepvrB9Q24=;
+        b=TaBriJpTEbcq6utoehleZ+bDiikQrmpNSJk00MCJpyDMZLKOyVSneUzbn7CH4f/qn3
+         FE1yimgmQ0EwoN8URvM9nU5Uvda1kkFueNohCj18W7thbi5clbQhHBwE3hQzUgPp2fJB
+         +YvpPQTKoOeAx+4wu1ZyUrXd/xHbqG6PZTZrE4k1/hg2zTSqMVaysYRKZY29qGUbpo00
+         xtHnnxqdp5jV/qFiADbiy6m9EHcrePboNKaCsSdRdB7pMQzuqaqt9xoqUyEm+YTh8LM7
+         dOAa10WdrQiqJdkNPsoDoz+umXwoXcx66oHDICInmvjRXr4/sLOWjeQOwGQVr+F9lm5f
+         QEbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=ltkj3GwXMNWaqEgIRsYEcolYZKDxC8Ql9gepvrB9Q24=;
+        b=kikTQm9X24LNyoU3379Do1rjILB8IxCj6pLMMEVytZWX5UpkZq12Um85QTb5iI9ODn
+         bXWfScz++dhWfa6sWUC4AnJIK2pBgQqY5qDnwyV6bUZeVjSU8UZoH4KAqxjRD6PKSKcK
+         YdjRxyo1Ih43FnLVfovXMP0I6qDf2AnV1mFy1uUDA9LmhKYYeuXoyDU9XURXpTWKm+gK
+         jXJsXEsiZ5Z0wUfLccc/AQYBC2lHmbSQ5co0hTYr0CrajNs7khDsTirxkMjt0DlyAWk3
+         KpC9DK284afY/48P6qu8qVXadwQUmA9tJe8B9oErCmhMWoKm6mLbjtrmApkdNh3GL5cT
+         lJ6g==
+X-Gm-Message-State: AOAM5334VKMklo/wilKirev8oMEmxX7L8ppy1mM0GdeYuMROfPDwgAEp
+        u1zYmbDTTnxx5d/IgE2HdLdHCA==
+X-Google-Smtp-Source: ABdhPJwZc2TDsodYdDvwl5OmNVUqcCm1bJyFDAHw3Z1GnVU7wF1KEyZShesHOjlg0t2Qjj5w0p+z7A==
+X-Received: by 2002:ac8:7774:: with SMTP id h20mr901414qtu.79.1619723438687;
+        Thu, 29 Apr 2021 12:10:38 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
+        by smtp.gmail.com with ESMTPSA id r81sm2824049qka.82.2021.04.29.12.10.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 12:10:37 -0700 (PDT)
+Message-ID: <d54b1bb7956e1e3bea47fde1216084c7f2eae87e.camel@ndufresne.ca>
+Subject: Re: [PATCH 1/3] v4l: Add Qualcomm custom compressed pixel formats
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-api@vger.kernel.org
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Date:   Thu, 29 Apr 2021 15:10:36 -0400
+In-Reply-To: <20210429105815.2790770-2-stanimir.varbanov@linaro.org>
+References: <20210429105815.2790770-1-stanimir.varbanov@linaro.org>
+         <20210429105815.2790770-2-stanimir.varbanov@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+User-Agent: Evolution 3.40.0 (3.40.0-1.fc34) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-04-29 at 15:03 -0400, Ben Boeckel wrote:
-> On Thu, Apr 29, 2021 at 11:50:50 -0700, James Bottomley wrote:
-> > Actually, I think this is a better fix to avoid multiple put and
-> > returns.
-> > 
-> > James
-> > 
-> > ---
-> > 
-> > diff --git a/security/keys/trusted-keys/trusted_tpm2.c
-> > b/security/keys/trusted-keys/trusted_tpm2.c
-> > index d225ad140960..cbf2a932577b 100644
-> > --- a/security/keys/trusted-keys/trusted_tpm2.c
-> > +++ b/security/keys/trusted-keys/trusted_tpm2.c
-> > @@ -336,9 +336,9 @@ int tpm2_seal_trusted(struct tpm_chip *chip,
-> >  			rc = -EPERM;
-> >  	}
-> >  	if (blob_len < 0)
-> > -		return blob_len;
-> > -
-> > -	payload->blob_len = blob_len;
-> > +		rc = blob_len;
-> > +	else
-> > +		payload->blob_len = blob_len;
-> >  
-> >  	tpm_put_ops(chip);
-> >  	return rc;
+Le jeudi 29 avril 2021 à 13:58 +0300, Stanimir Varbanov a écrit :
+> Here we add custom Qualcomm raw compressed pixel formats. They are
+> used in Qualcomm SoCs to optimaize the interconnect bandwidth.
+
+Wasn't reviewing, just skimming the lists, but s/optimaize/optimize/
+
 > 
-> Ah, that does look better. I had first added a new label, but that
-> didn't seem like an improvement in readability. I grabbed this
-> pattern from an early return earlier in the function. But given that
-> this is the end (and appears to be unlikely to have more logic
-> inserted in the future), this seems more reasonable to me as well. Do
-> you want me to respin or just let it up to you at this point?
+> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> ---
+>  .../userspace-api/media/v4l/pixfmt-reserved.rst      | 12 ++++++++++++
+>  drivers/media/v4l2-core/v4l2-ioctl.c                 |  2 ++
+>  include/uapi/linux/videodev2.h                       |  2 ++
+>  3 files changed, 16 insertions(+)
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst b/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
+> index 0b879c0da713..30b9cef4cbf0 100644
+> --- a/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
+> +++ b/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
+> @@ -260,6 +260,18 @@ please make a proposal on the linux-media mailing list.
+>  	of tiles, resulting in 32-aligned resolutions for the luminance plane
+>  	and 16-aligned resolutions for the chrominance plane (with 2x2
+>  	subsampling).
+> +    * .. _V4L2-PIX-FMT-QC8C:
+> +
+> +      - ``V4L2_PIX_FMT_QC8C``
+> +      - 'QC8C'
+> +      - Compressed Macro-tile 8Bit YUV420 format used by Qualcomm platforms.
+> +	The compression is lossless. It contains four planes.
 
-Can you respin? ... I'm a bit lossy at the moment due to pressure of
-work.
+Would be nice to document if the bytesperline is meaningful or not. Basically,
+what information need to be carried to other drivers ?
 
-Thanks,
-
-James
+> +    * .. _V4L2-PIX-FMT-QC10C:
+> +
+> +      - ``V4L2_PIX_FMT_QC10C``
+> +      - 'QC10C'
+> +      - Compressed Macro-tile 10Bit YUV420 format used by Qualcomm platforms.
+> +	The compression is lossless. It contains four planes.
+>  
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+>  .. raw:: latex
+>  
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+> index 6a5d1c6d11d6..33ee12b97aa0 100644
+> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+> @@ -1455,6 +1455,8 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
+>  		case V4L2_PIX_FMT_S5C_UYVY_JPG:	descr = "S5C73MX interleaved UYVY/JPEG"; break;
+>  		case V4L2_PIX_FMT_MT21C:	descr = "Mediatek Compressed Format"; break;
+>  		case V4L2_PIX_FMT_SUNXI_TILED_NV12: descr = "Sunxi Tiled NV12 Format"; break;
+> +		case V4L2_PIX_FMT_QC8C:		descr = "QCOM Compressed 8bit Format"; break;
+> +		case V4L2_PIX_FMT_QC10C:	descr = "QCOM Compressed 10bit Format"; break;
+>  		default:
+>  			if (fmt->description[0])
+>  				return;
+> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+> index 311a01cc5775..c57628a16cf4 100644
+> --- a/include/uapi/linux/videodev2.h
+> +++ b/include/uapi/linux/videodev2.h
+> @@ -737,6 +737,8 @@ struct v4l2_pix_format {
+>  #define V4L2_PIX_FMT_SUNXI_TILED_NV12 v4l2_fourcc('S', 'T', '1', '2') /* Sunxi Tiled NV12 Format */
+>  #define V4L2_PIX_FMT_CNF4     v4l2_fourcc('C', 'N', 'F', '4') /* Intel 4-bit packed depth confidence information */
+>  #define V4L2_PIX_FMT_HI240    v4l2_fourcc('H', 'I', '2', '4') /* BTTV 8-bit dithered RGB */
+> +#define V4L2_PIX_FMT_QC8C     v4l2_fourcc('Q', '0', '8', 'C') /* Qualcomm 8-bit compressed */
+> +#define V4L2_PIX_FMT_QC10C    v4l2_fourcc('Q', '1', '0', 'C') /* Qualcomm 10-bit compresed */
+>  
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+>  /* 10bit raw bayer packed, 32 bytes for every 25 pixels, last LSB 6 bits unused */
+>  #define V4L2_PIX_FMT_IPU3_SBGGR10	v4l2_fourcc('i', 'p', '3', 'b') /* IPU3 packed 10-bit BGGR bayer */
 
 
