@@ -2,125 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6234B36F170
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 22:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1F636F172
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 22:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237310AbhD2Uw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 16:52:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237021AbhD2UwM (ORCPT
+        id S231201AbhD2UyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 16:54:01 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:40711 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233097AbhD2UyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 16:52:12 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE66FC061348
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 13:51:21 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id h12-20020a0cf44c0000b02901c0e9c3e1d0so4083539qvm.4
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 13:51:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=HDU3fipI2jIYDh7sBk6Haj682lgh4FX1OTAOz5rXBjE=;
-        b=VeNMi853XgTR4ZwjSKWeWZuMZT/uXhbsLUHgqCEBiTm+tUFXgXnoASbHoG35P5WbXc
-         SzDwqVMcH6jW1fHi0TwZ9me6Ro1qBgGgGypMF6UkWVgyAHRlTpASDKwZ9f8cXFayswQr
-         7+zODIxeNotj4t6CnPVzIxySK3W5YTet/jQyRV0mwQHOJub3U0rDuOE7t1COGeTSQwz+
-         iAqgKrVHTX3oREq8abD1LJhHq8usujK5hQYp2jb7n28twW8+G+nASLqSxFFpT5PrvAcF
-         YBqWduQpYUfpHDiEkmuaNrMvuMkwFC93KmWaFXT+3ojNYK9kla53DVD0EHLbjaam15lm
-         EVDg==
+        Thu, 29 Apr 2021 16:54:00 -0400
+Received: by mail-ot1-f48.google.com with SMTP id g4-20020a9d6b040000b029029debbbb3ecso29632281otp.7;
+        Thu, 29 Apr 2021 13:53:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=HDU3fipI2jIYDh7sBk6Haj682lgh4FX1OTAOz5rXBjE=;
-        b=mVwF7goW5si8LNITOT5045XfNzCUIHSg06cAAgSLUcV2XyaJ9nWgodTszaEyWm+Y3N
-         dDV9bazwOs111K1nV8qoltjqm+Bo9ysiQoEvSnSIG+Wjn2NTIxuuRuN9QvgsybXY+oiC
-         jk77sSPMS++uclMOBVmGobiklPfQBez/Tm06678uXKfO0ryOu2krTWd5rd14xTMajulR
-         57ILsf9E2sdbw/S0+l2SDesbAEnpmteQRkZn+os1Cnt5LJ90G+fij2BzOwKSJFWC4XrB
-         fgP+kH7+LUb3hcDLttGSnk5G+ayMVjxkIFM66jj5+zc+LzCajRK0jyGrKVwWGUBbD8pG
-         9O1Q==
-X-Gm-Message-State: AOAM531B9sstMkjI4UxeL5008PEwN2OH5AAYh/B4lx9gVYvqK9LNB+Hq
-        ITTqAV+NiFEQhjvI/ReHFClN0eccPDv5H7JkNEdX2Q==
-X-Google-Smtp-Source: ABdhPJyczsqt0L1kdH5oIPdV6BbHXgNmTZ19a4myQKyLHjLLIPiLuVdM3HOvyO/rJh9EfN7C8i5Q/JqxLoPeuUqu81n1+A==
-X-Received: from mactruck.svl.corp.google.com ([2620:15c:2cb:201:bab5:c64e:5a6c:36bd])
- (user=brendanhiggins job=sendgmr) by 2002:a0c:c20b:: with SMTP id
- l11mr1999080qvh.1.1619729480971; Thu, 29 Apr 2021 13:51:20 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 13:51:09 -0700
-In-Reply-To: <20210429205109.2847831-1-brendanhiggins@google.com>
-Message-Id: <20210429205109.2847831-5-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20210429205109.2847831-1-brendanhiggins@google.com>
-X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
-Subject: [RFC v2 4/4] Documentation: kunit: document support for QEMU in kunit_tool
-From:   Brendan Higgins <brendanhiggins@google.com>
-To:     shuah@kernel.org, davidgow@google.com
-Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, corbet@lwn.net,
-        linux-doc@vger.kernel.org, sboyd@kernel.org, keescook@chromium.org,
-        frowand.list@gmail.com, dlatypov@google.com,
-        Brendan Higgins <brendanhiggins@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=k2kIvQcj5VKTETi9VR5NeuJxVfXG0eL9B2iMENedQi4=;
+        b=VJDUGwtowlu0HnzjjgKbE2FnLoITvWRQtrhgN+VelJJSnSpF3QGtsnIOhN+R2NDDIK
+         UsI1kW6qeQbWcLh1aMoLtBxoj7tiGQs+Fl6yMkGXC7XaqCuYLPVe47BHNlVBuNgpKoR8
+         l+gDo8bTwky7tT0wtEicHAFXlA4+QoNWyPExzUPop1330GsHIM5/jnuSvkGTGKFxMxqn
+         ibWNIRu3ZMo3qq1uC+bm2h5rxultN6lFDDp8/B5BUUCLdfdn79WGzoXVbBiGDzGOttU4
+         yPHKDN83Quw/TG+h8cBTJvA9KAcnO1ZJcWCG8tAr+Jq6REwxn31Omg71j0i4mii0DhQz
+         wbLA==
+X-Gm-Message-State: AOAM532bn16aGeBBPTjmYhg0ZCjJpS2Cafd2Kb4XQyv9Ubp+Kv3hrddy
+        pjoHBBYm90IJl0yFYsrUcQ==
+X-Google-Smtp-Source: ABdhPJyR1Inhgik7ojUPmW4noVf7zMJAyrLMSyxi4P9HOKhvCG2lqk6R2xzrW2ugDeMh/krkBqQnDA==
+X-Received: by 2002:a9d:449:: with SMTP id 67mr754977otc.333.1619729591989;
+        Thu, 29 Apr 2021 13:53:11 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id l3sm84635otj.37.2021.04.29.13.53.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 13:53:11 -0700 (PDT)
+Received: (nullmailer pid 1758066 invoked by uid 1000);
+        Thu, 29 Apr 2021 20:53:10 -0000
+Date:   Thu, 29 Apr 2021 15:53:10 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Nandor Han <nandor.han@vaisala.com>
+Cc:     srinivas.kandagatla@linaro.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] dt-bindings: nvmem: Add bootcount-nvmem
+Message-ID: <20210429205310.GA1729011@robh.at.kernel.org>
+References: <cover.1619617498.git.nandor.han@vaisala.com>
+ <e0f9c2629ad651817a4726cd4f2d8e1775201595.1619617498.git.nandor.han@vaisala.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e0f9c2629ad651817a4726cd4f2d8e1775201595.1619617498.git.nandor.han@vaisala.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document QEMU support, what it does, and how to use it in kunit_tool.
+On Wed, Apr 28, 2021 at 04:50:38PM +0300, Nandor Han wrote:
+> Documents the device tree bindings for `bootcount-nvmem` driver.
+> 
+> Signed-off-by: Nandor Han <nandor.han@vaisala.com>
+> ---
+>  .../bindings/nvmem/bootcount-nvmem.yaml       | 66 +++++++++++++++++++
+>  1 file changed, 66 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/nvmem/bootcount-nvmem.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/nvmem/bootcount-nvmem.yaml b/Documentation/devicetree/bindings/nvmem/bootcount-nvmem.yaml
+> new file mode 100644
+> index 000000000000..cc673452fe0f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/nvmem/bootcount-nvmem.yaml
+> @@ -0,0 +1,66 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +# Copyright (c) Vaisala Oyj. All rights reserved.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/nvmem/bootcount-nvmem.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Bootcount NVMEM bindings
+> +
+> +maintainers:
+> +  - Nandor Han <nandor.han@vaisala.com>
+> +
+> +description: |
+> +  This binding is intendent to describe the hardware location for
+> +  storing the bootcount value and magic combo.
+> +
+> +  The NVMEM cell size should be 2 or 4 bytes.
+> +
+> +allOf:
+> +  - $ref: "nvmem-consumer.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - linux,bootcount-nvmem
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- Documentation/dev-tools/kunit/usage.rst | 37 +++++++++++++++++++++----
- 1 file changed, 31 insertions(+), 6 deletions(-)
+What makes this Linux specific? IIRC, u-boot has boot counting function 
+too.
 
-diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
-index 650f99590df57..b74bd7c87cc20 100644
---- a/Documentation/dev-tools/kunit/usage.rst
-+++ b/Documentation/dev-tools/kunit/usage.rst
-@@ -612,14 +612,39 @@ only things to be aware of when doing so.
- The biggest impediment will likely be that certain KUnit features and
- infrastructure may not support your target environment. For example, at this
- time the KUnit Wrapper (``tools/testing/kunit/kunit.py``) does not work outside
--of UML. Unfortunately, there is no way around this. Using UML (or even just a
--particular architecture) allows us to make a lot of assumptions that make it
--possible to do things which might otherwise be impossible.
-+of UML and QEMU. Unfortunately, there is no way around this. Using UML and QEMU
-+(or even just a particular architecture) allows us to make a lot of assumptions
-+that make it possible to do things which might otherwise be impossible.
- 
- Nevertheless, all core KUnit framework features are fully supported on all
--architectures, and using them is straightforward: all you need to do is to take
--your kunitconfig, your Kconfig options for the tests you would like to run, and
--merge them into whatever config your are using for your platform. That's it!
-+architectures, and using them is straightforward: Most popular architectures
-+are supported directly in the KUnit Wrapper via QEMU.  Currently, supported
-+architectures on QEMU include:
-+
-+*   i386
-+*   x86_64
-+*   arm
-+*   arm64
-+*   alpha
-+*   powerpc
-+*   riscv
-+*   s390
-+*   sparc
-+
-+In order to run KUnit tests on one of these architectures via QEMU with the
-+KUnit wrapper, all you need to do is specify the flags ``--arch`` and
-+``--cross_compile`` when invoking the KUnit Wrapper. For example, we could run
-+the default KUnit tests on ARM in the following manner (assuming we have an ARM
-+toolchain installed):
-+
-+.. code-block:: bash
-+
-+	tools/testing/kunit/kunit.py run --timeout=60 --jobs=12 --arch=arm --cross_compile=arm-linux-gnueabihf-
-+
-+Alternatively, if you want to run your tests on real hardware or in some other
-+emulation environment, all you need to do is to take your kunitconfig, your
-+Kconfig options for the tests you would like to run, and merge them into
-+whatever config your are using for your platform. That's it!
- 
- For example, let's say you have the following kunitconfig:
- 
--- 
-2.31.1.498.g6c1eba8ee3d-goog
+> +
+> +  nvmem-cells:
+> +    description: Phandle to reboot mode nvmem data cell.
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +
+> +  nvmem-cell-names:
+> +    description: Name of the NVMEM cell.
+> +    $ref: /schemas/types.yaml#/definitions/string-array
+> +    enum:
+> +      - bootcount-regs
+> +
+> +  linux,bootcount-magic:
+> +    description: Override default mask value.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
 
+I don't understand what this is. Is it magic or a mask?
+
+> +
+> +dependencies:
+> +  nvmem-cell-names: [ nvmem-cells ]
+
+Core schema takes care of this.
+
+> +
+> +required:
+> +  - compatible
+> +  - nvmem-cells
+> +  - nvmem-cell-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  # example with 16 bit nvram cell:
+> +  - |
+> +    bootcount {
+> +        compatible = "linux,bootcount-nvmem";
+> +        nvmem-cells = <&bootcount_regs>;
+> +        nvmem-cell-names = "bootcount-regs";
+> +    };
+> +
+> +    rtc: rtc@68 {
+> +        bootcount_regs: bootcount_nvmem_regs@e {
+> +            reg = <0x0e 0x2>;
+
+It would be simpler to just add a compatible here and get rid of the 
+'bootcount' node here.
+
+> +        };
+> +    };
+> +
+> +...
+> -- 
+> 2.26.3
+> 
