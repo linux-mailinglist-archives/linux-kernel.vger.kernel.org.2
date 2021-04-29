@@ -2,85 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6553B36E493
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 07:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A84B36E4A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 07:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238329AbhD2Fll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 01:41:41 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:34313 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230103AbhD2Flj (ORCPT
+        id S238429AbhD2F5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 01:57:41 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:60450 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229814AbhD2F5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 01:41:39 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1619674853; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=dc5YfAFxIeIG4gkWLs5NO9q4YN3bRlCZ5C/n++G+trY=; b=JXqshI4ynqi/Iiw7+MqeDYKCvJrg2HMi6vUH6woTipcC3Si9NdxVowWNa5OWwdhTBMeumlH3
- 0SrQ9Qxbu88sUxkXOrcJhijGmrO4teL+Pvj/1fpo0lTriWpnpiS7L+vtgdfchOHlqfd3ykqz
- fKu+50sMkmiFdXQ2FHNLocWhl44=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 608a46e4853c0a2c4672140e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 29 Apr 2021 05:40:52
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BFF69C4338A; Thu, 29 Apr 2021 05:40:51 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BEFAFC43217;
-        Thu, 29 Apr 2021 05:40:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BEFAFC43217
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dianders@chromium.org,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Subject: [PATCH 2/2] arm64: dts: qcom: sc7280: Add "google,senor" to the compatible
-Date:   Thu, 29 Apr 2021 11:10:27 +0530
-Message-Id: <1619674827-26650-2-git-send-email-rnayak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1619674827-26650-1-git-send-email-rnayak@codeaurora.org>
-References: <1619674827-26650-1-git-send-email-rnayak@codeaurora.org>
+        Thu, 29 Apr 2021 01:57:39 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13T5sTMo189481;
+        Thu, 29 Apr 2021 05:56:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=hGTyGt9noPt67Cw1LsQXYDQXCJu92JsiJuvxMAxCMMM=;
+ b=Qvmzx64VuqWu0acTsyHbvRzHxKl5/RQOnbPHfTSRFkp7TWHHvdB//von1yV+hujZSPRj
+ TwgCE+c5VjNtfhi9JmBUHKETzqbWx3XtYEDhZcw56eM9jIeR0But4iNgR4BZkxkoMCTr
+ JKVGyLt5+LK229yWP/mAoYlDXKRO4B9i93Ey6d5IEpZpNCk6pGoZyOpOHS9lH9CB+K7k
+ lNcrpPIahV/JSNObMOpQMZQpR5WmnxVPJWg5vLAkETZf+ov+x5kwXPni9rzjglDk3Ilk
+ 4bIbTF8QXwQC9vh34TZOXYiHNAY3IrmQqJqBOHpSPQEUgQ/sbkp5qmOS39Nd9XsngP3Z AQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 385aeq33ka-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 05:56:43 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13T5sqgJ162583;
+        Thu, 29 Apr 2021 05:56:43 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 3848f0k264-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 05:56:43 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13T5ughd166809;
+        Thu, 29 Apr 2021 05:56:42 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 3848f0k25t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Apr 2021 05:56:42 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13T5ufk1022348;
+        Thu, 29 Apr 2021 05:56:41 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 29 Apr 2021 05:56:40 +0000
+Date:   Thu, 29 Apr 2021 08:56:34 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Muhammad Usama Anjum <musamaanjum@gmail.com>
+Cc:     Coly Li <colyli@suse.de>, Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-bcache@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Hulk Robot <hulkci@huawei.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] bcache: use DEFINE_MUTEX() for mutex lock
+Message-ID: <20210429055634.GW1981@kadam>
+References: <20210405101453.15096-1-zhengyongjun3@huawei.com>
+ <42c3e33d-c20e-0fdd-f316-5084e33f9a3b@suse.de>
+ <d7f70ce31f6f61a50c05a5d5ba03582054f144fe.camel@gmail.com>
+ <0b4b7c5cc2f19d2d77a66c0d2ce42f63692174d9.camel@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0b4b7c5cc2f19d2d77a66c0d2ce42f63692174d9.camel@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: kYTj2TlPmLhcVFf4NH8LINeIEXi0YT8g
+X-Proofpoint-GUID: kYTj2TlPmLhcVFf4NH8LINeIEXi0YT8g
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9968 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
+ phishscore=0 spamscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0
+ clxscore=1011 suspectscore=0 malwarescore=0 mlxlogscore=999
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104290046
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sc7280 IDP board is also called senor in the Chrome OS builds.
-Add the "google,senor" compatible so coreboot/depthcharge knows what
-device tree blob to pick
+On Wed, Apr 28, 2021 at 09:19:26PM +0500, Muhammad Usama Anjum wrote:
+> On Tue, 2021-04-06 at 02:17 +0500, Muhammad Usama Anjum wrote:
+> > On Mon, 2021-04-05 at 22:02 +0800, Coly Li wrote:
+> > > On 4/5/21 6:14 PM, Zheng Yongjun wrote:
+> > > > mutex lock can be initialized automatically with DEFINE_MUTEX()
+> > > > rather than explicitly calling mutex_init().
+> > > > 
+> > > > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > > > Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> > > 
+> > > NACK. This is not the first time people try to "fix" this location...
+> > > 
+> > > Using DEFINE_MUTEX() does not gain anything for us, it will generate
+> > > unnecessary extra size for the bcache.ko.
+> > > ines.
+> > 
+> > How can the final binary have larger size by just static declaration?
+> > By using DEFINE_MUTEX, the mutex is initialized at compile time. It'll
+> > save initialization at run time and one line of code will be less also
+> > from text section. 
+> > 
+> > #### with no change (dynamic initialization)
+> > size drivers/md/bcache/bcache.ko
+> >    text	   data	    bss	    dec	    hex	filename
+> >  187792	  25310	    152	 213254	  34106	drivers/md/bcache/bcache.ko
+> > 
+> > #### with patch applied (static initialization)
+> >    text	   data	    bss	    dec	    hex	filename
+> >  187751	  25342	    120	 213213	  340dd	drivers/md/bcache/bcache.ko
+> > 
+> > Module's binary size has decreased by 41 bytes with the path applied
+> > (x86_64 arch).
+> > 
+> Anybody has any thoughts on it?
+>
 
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7280-idp.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think you're right and the response is puzzling.  But who cares?  It's
+a small thing.  Leave it and move on.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-index 54d2cb3..a79fb5a 100644
---- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-@@ -11,7 +11,7 @@
- 
- / {
- 	model = "Qualcomm Technologies, Inc. sc7280 IDP platform";
--	compatible = "qcom,sc7280-idp", "qcom,sc7280";
-+	compatible = "qcom,sc7280-idp", "google,senor", "qcom,sc7280";
- 
- 	aliases {
- 		serial0 = &uart5;
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+regards,
+dan carpenter
