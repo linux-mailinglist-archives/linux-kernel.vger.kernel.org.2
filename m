@@ -2,87 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D1B36EAB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D45E36EAB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 14:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235958AbhD2Mme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 08:42:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44624 "EHLO
+        id S237075AbhD2Mnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 08:43:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231343AbhD2Mm3 (ORCPT
+        with ESMTP id S231490AbhD2Mnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 08:42:29 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F748C06138B;
-        Thu, 29 Apr 2021 05:41:41 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id e7so78275395edu.10;
-        Thu, 29 Apr 2021 05:41:41 -0700 (PDT)
+        Thu, 29 Apr 2021 08:43:51 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50D9C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 05:43:03 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id d10so8673113pgf.12
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 05:43:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=KpoRY41AF/OOHS14vTdGwor5lyD+2aObyNv/uzMvDE8=;
-        b=sKp/ST+iN+nr0XPCl51JGFgXE4DiE6w2Jl9pYOqKgAZ+FQpH0QUnBXAjrciOLY7MJS
-         upkT1d0iGjdYMKrY0lca4e0AVZlif+jlQ3qVHyxO+/51cPrFHBL9EwCd/b/K4gw5s4Dz
-         NxlsdAsbShzS9g5Acpz5r07hkacmqQJLch+WLaXyFSRNlvJ8uRgAF2rDWveEXbGK4hjn
-         jb+R1N0UdxzUlFomYtL/finyC0xLdUD4imtQl9FsRWJ0hg+eLxK1zh7lzsQ1usl0AUMc
-         yfPjWenw8mcnPl4g3KP5UHpivcF4Z5LSsiK+XtEpmo5ycXGa5gsaMMKb3Mkgbizg48mv
-         zPmA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=crS9ky0D82Wt0+fljR8qv3pG4hOh+6EKRJ+LxnWrSUM=;
+        b=Xi9/ECHF1kiL4sZQf8ePRrM4sFvJothu07czMfM7+0rwkeT5dz/ETyQhkXAU5BFSQ8
+         0dkUq2GFrQNUGjO3JTGEikhD+BcmDJ1rRkFvQ2sfpG5mJTu4idtkCnYXLlIKP+inBLP0
+         xGd59D2SvVU6Q7vhQ3ckga/4AVopXB+jq3ntU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=KpoRY41AF/OOHS14vTdGwor5lyD+2aObyNv/uzMvDE8=;
-        b=Q65rIaTqJRG8jtkKDG590xDLdVCi5W0t87QRcHGrxQ/QhjbNTa5Gr2yrz1m11x8Ybb
-         IG2QpiuNoUMDL8XYJMN4ISUlrHkAL0QmEn9RDhdLiS2NuLZeChmqX/No5aTJbA6NftdE
-         CXttHi70z2jJZcRLPgi4unXylnnNwhMVWq5j0EDX5EpGgJW1hrYs8E9IGT/zUa0CjBtQ
-         NBTWieqvwInuecFJj2dFLlWikUakRoSV2hDiOhVTEVT9ValcFaL3Wnpd7r+wkxBnfg7d
-         IjjraRebTV2tJ/6HuHAOllckPVIrhwcS7WGevu7KoEo285NhKLVv6dZou4/O0Mo94pBk
-         P30g==
-X-Gm-Message-State: AOAM533c4ZMh+VZfg8f0HpyPq4wufko0TXEbAh+2HJFH5/C/zT5ysi/4
-        njKJxAKaS2l4hd/ptEQGUjE=
-X-Google-Smtp-Source: ABdhPJw8t2bxvS6sMwo8sHjmzTfLvVJSst9VeriEMMM+BRKRUTegQIOdsokxh332+2CTkV4Y4Yx07Q==
-X-Received: by 2002:aa7:c454:: with SMTP id n20mr18387352edr.138.1619700100185;
-        Thu, 29 Apr 2021 05:41:40 -0700 (PDT)
-Received: from ubuntu-laptop (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
-        by smtp.googlemail.com with ESMTPSA id d15sm2283510edu.86.2021.04.29.05.41.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 05:41:39 -0700 (PDT)
-Message-ID: <b14312f5e6c2bcf711397a7c26782710b7a4707b.camel@gmail.com>
-Subject: Re: [PATCH RESEND v3] mmc-utils: Add eMMC erase command support
-From:   Bean Huo <huobean@gmail.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        "luserhker@gmail.com" <luserhker@gmail.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "kenny.gibbons@oracle.com" <kenny.gibbons@oracle.com>,
-        "kimito.sakata@oracle.com" <kimito.sakata@oracle.com>,
-        "rkamdar@micron.com" <rkamdar@micron.com>,
-        "chris@printf.net" <chris@printf.net>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Thu, 29 Apr 2021 14:41:34 +0200
-In-Reply-To: <DM6PR04MB657542B3CB77F6D894B1EA84FC409@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20210427195157.26568-1-luserhker@gmail.com>
-         <DM6PR04MB657542B3CB77F6D894B1EA84FC409@DM6PR04MB6575.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=crS9ky0D82Wt0+fljR8qv3pG4hOh+6EKRJ+LxnWrSUM=;
+        b=Tp9ewSnI4UR2+Ks6egwLQxWUrD8bBZtzrbnb8816SvSTjHDjPaLOyds3DesVOHIV70
+         B4TXjqgmhEd9qwNAMUuQ5lFScLrYQtu3Q5fzIqhrEadbAw4fxoEhNoGyXH76gybF8Roq
+         v/Ft5tNkaH5scqfv/Zs34qgwuXXHW4OlsQa019Zs3k5V7U8y4pKv1UAoIYSTuTNsTXGZ
+         i/QVYl2ch9yBferpVFKHbTox5cIiCpZv2NB0oL7jIX9eZi3gEUmv3xYi8M/O8/yyYtTk
+         KIrJiSXxBBBc5BUzujEzRdO0szWMRjTx51QeVK00FmnTz1T2IHlFqtgW5yuL10PPMdvx
+         nglA==
+X-Gm-Message-State: AOAM530URSFIDqLzf70duVV7EQpDoqeaZ7TTOxPG51J5QCI6tni+NtIL
+        WUCbnOA+RPDR6ns1T7DZ2+KZ/Q==
+X-Google-Smtp-Source: ABdhPJz2MzWWnfUD0vMOFMEvRNGbWDQvlbTZcrSRb22eap40StYH4HAhvSDiQFk31bfH/TttXMOHyg==
+X-Received: by 2002:a63:5458:: with SMTP id e24mr31905415pgm.170.1619700183382;
+        Thu, 29 Apr 2021 05:43:03 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:59f:ddfb:1a03:fe23])
+        by smtp.gmail.com with UTF8SMTPSA id k17sm2467759pfa.68.2021.04.29.05.43.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Apr 2021 05:43:03 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 05:43:02 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dianders@chromium.org
+Subject: Re: [PATCH 1/2] dt-bindings: arm: qcom: Document google,senor board
+Message-ID: <YIqp1g//jV7gxepo@google.com>
+References: <1619674827-26650-1-git-send-email-rnayak@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1619674827-26650-1-git-send-email-rnayak@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-04-28 at 05:57 +0000, Avri Altman wrote:
-> > We need to send 3 MMC commands and it is important that they
-> > stay in sequence. Therefore we are using MMC_IOC_MULTI_CMD.
+On Thu, Apr 29, 2021 at 11:10:26AM +0530, Rajendra Nayak wrote:
+> Document the google,senor board based on sc7280 SoC
 > 
-> 
-> You might also want to indicate on which platform it was tested.
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
 
-
-I tested on HP laptop PC X86 based and xilinx Zedboard ARM based.
-
-thanks,
-Bean
-
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
