@@ -2,95 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4C736EF72
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 20:27:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6919036EF75
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 20:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241058AbhD2S2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 14:28:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53614 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233338AbhD2S2K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 14:28:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 384E96145A
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 18:27:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619720843;
-        bh=1dZL19SfAvPWGNrE++ag9v5BV8bXH6/Msa+N94lCj90=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nrw6p1vOaYuOyrm4FKbSq1E7BLtBFErpmvElV7bIGxmf2FQzXhQV7o3M5qrwxvaAG
-         WEyyq4uGQ5l18v9M2/igBLVEf9DlUlFZ6lsJ7Q4swZIFJEGmK7+9LrnihsJKoXtVgr
-         zqEhfE1RyzZ89Lox2f7mdNfGPfzI5qw6qeC2GUOO9t0NJomQczWt/O21z5QjJDZ7MW
-         QTbzKVvAKqXhbIV8lQNKsY72cxNN2ocxk8JWtMfHerFsV8EyvYG2bFD9h/ePv2qMCq
-         mSxI6PwqRIk1rgyBYTqjQ0rk4uHzIMZf6HT0EnuPMCbM3rGd0hO9dVGHYipUkhys1r
-         gSHgFlhdxJTJg==
-Received: by mail-wm1-f42.google.com with SMTP id k128so36429765wmk.4
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 11:27:23 -0700 (PDT)
-X-Gm-Message-State: AOAM532njDKwkYdho1YKWGu+XI+4CcfkWzND/i5Qv1Tm29xZT61OdQxX
-        KO4yVYa+oJ8Z1cPVek7gYO33BxWOn7HM33BTV7Y=
-X-Google-Smtp-Source: ABdhPJyfPyXCkEz3y4yjciJou1bBLTGnSGTL7kfY+577u6BUkQ4IhgkvzcnM3c6srKX61CtxX+uMYkuauLkoN/LM+gw=
-X-Received: by 2002:a1c:a949:: with SMTP id s70mr12305016wme.84.1619720841576;
- Thu, 29 Apr 2021 11:27:21 -0700 (PDT)
+        id S241172AbhD2S3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 14:29:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46950 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233705AbhD2S3c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 14:29:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619720925;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ahhdjeTzVRBlGxvftGs550exL2vN9CqbDTNttH8KlQg=;
+        b=iPwczHvoU0s35NX/pPwl4NRZvm7BrTYfgurtZPQl6F+BU9f/AL1vFXn0J6uI7Bz3Fm5k0o
+        7O6SFn4/AdVZfJBrl4DBCPaPAGg+NFh0bjt4VaW1QgsffF8MeQluKZLRHffi8fY/M/5YMB
+        jvDRKa44hNbFgsrgHTJ80hc2Xk1vXHQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-270-vDUQF24aPjCkdRuuxwsczA-1; Thu, 29 Apr 2021 14:28:43 -0400
+X-MC-Unique: vDUQF24aPjCkdRuuxwsczA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C7D1D1922966;
+        Thu, 29 Apr 2021 18:28:41 +0000 (UTC)
+Received: from redhat.com (ovpn-113-225.phx2.redhat.com [10.3.113.225])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E40B75D6DC;
+        Thu, 29 Apr 2021 18:28:40 +0000 (UTC)
+Date:   Thu, 29 Apr 2021 12:28:40 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Shanker Donthineni <sdonthineni@nvidia.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoffer Dall <christoffer.dall@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>,
+        <kvm@vger.kernel.org>, Vikram Sethi <vsethi@nvidia.com>,
+        "Jason Sequeira" <jsequeira@nvidia.com>
+Subject: Re: [RFC 1/2] vfio/pci: keep the prefetchable attribute of a BAR
+ region in VMA
+Message-ID: <20210429122840.4f98f78e@redhat.com>
+In-Reply-To: <20210429162906.32742-2-sdonthineni@nvidia.com>
+References: <20210429162906.32742-1-sdonthineni@nvidia.com>
+        <20210429162906.32742-2-sdonthineni@nvidia.com>
 MIME-Version: 1.0
-References: <20210429150940.3256656-1-arnd@kernel.org> <20210429181716.2409874-1-ndesaulniers@google.com>
- <CAKwvOd=5sLHssCf0Umfh+E__TjSwpxtO9K2MYVcXEhxvVp8okw@mail.gmail.com>
-In-Reply-To: <CAKwvOd=5sLHssCf0Umfh+E__TjSwpxtO9K2MYVcXEhxvVp8okw@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 29 Apr 2021 20:26:45 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1S0ct832wN0aM8ZAKbbQ3=w2_vSprhzQ4rLN=Ue=L0JQ@mail.gmail.com>
-Message-ID: <CAK8P3a1S0ct832wN0aM8ZAKbbQ3=w2_vSprhzQ4rLN=Ue=L0JQ@mail.gmail.com>
-Subject: Re: [PATCH] smp: fix smp_call_function_single_async prototype
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Borislav Petkov <bp@suse.de>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Juergen Gross <jgross@suse.com>, Jian Cai <jiancai@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Huang Ying <ying.huang@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 8:24 PM 'Nick Desaulniers' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
->
-> On Thu, Apr 29, 2021 at 11:17 AM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > (replying manually to
-> > https://lore.kernel.org/lkml/20210429150940.3256656-1-arnd@kernel.org/)
-> >
-> > Thanks for the patch; with this applied I observe the following new warnings
-> > though (for x86_64 defconfig; make LLVM=1 LLVM_IAS=1 -j72)
-> >
-> > kernel/smp.c:515:19: warning: passing 8-byte aligned argument to 32-byte
-> > aligned parameter 1 of 'csd_lock_record' may result in an unaligned pointer
-> > access [-Walign-mismatch]
-> >                 csd_lock_record(csd);
-> >                                 ^
-> > kernel/smp.c:516:14: warning: passing 8-byte aligned argument to 32-byte
-> > aligned parameter 1 of 'csd_unlock' may result in an unaligned pointer access
-> > [-Walign-mismatch]
-> >                 csd_unlock(csd);
-> >                            ^
-> > kernel/smp.c:525:14: warning: passing 8-byte aligned argument to 32-byte
-> > aligned parameter 1 of 'csd_unlock' may result in an unaligned pointer access
-> > [-Walign-mismatch]
-> >                 csd_unlock(csd);
-> >                            ^
->
-> Perhaps roll this into a v2?
->
+On Thu, 29 Apr 2021 11:29:05 -0500
+Shanker Donthineni <sdonthineni@nvidia.com> wrote:
 
-Right, I just did the same thing. I wonder if I failed to hit those because of
-differences in configuration or because I tested the wrong way.
+> For pass-through device assignment, the ARM64 KVM hypervisor retrieves
+> the memory region properties physical address, size, and whether a
+> region backed with struct page or not from VMA. The prefetchable
+> attribute of a BAR region isn't visible to KVM to make an optimal
+> decision for stage2 attributes.
+> 
+> This patch updates vma->vm_page_prot and maps with write-combine
+> attribute if the associated BAR is prefetchable. For ARM64
+> pgprot_writecombine() is mapped to memory-type MT_NORMAL_NC which
+> has no side effects on reads and multiple writes can be combined.
+> 
+> Signed-off-by: Shanker Donthineni <sdonthineni@nvidia.com>
+> ---
+>  drivers/vfio/pci/vfio_pci.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+> index 5023e23db3bc..1b734fe1dd51 100644
+> --- a/drivers/vfio/pci/vfio_pci.c
+> +++ b/drivers/vfio/pci/vfio_pci.c
+> @@ -1703,7 +1703,11 @@ static int vfio_pci_mmap(void *device_data, struct vm_area_struct *vma)
+>  	}
+>  
+>  	vma->vm_private_data = vdev;
+> -	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+> +	if (IS_ENABLED(CONFIG_ARM64) &&
+> +	    (pci_resource_flags(pdev, index) & IORESOURCE_PREFETCH))
+> +		vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
+> +	else
+> +		vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
 
-Either way, I'll give it some more time on the randconfig build machine
-before I send out v2.
+If this were a valid thing to do, it should be done for all
+architectures, not just ARM64.  However, a prefetchable range only
+necessarily allows merged writes, which seems like a subset of the
+semantics implied by a WC attribute, therefore this doesn't seem
+universally valid.
 
-       Arnd
+I'm also a bit confused by your problem statement that indicates that
+without WC you're seeing unaligned accesses, does this suggest that
+your driver is actually relying on WC semantics to perform merging to
+achieve alignment?  That seems rather like a driver bug, I'd expect UC
+vs WC is largely a difference in performance, not a means to enforce
+proper driver access patterns.  Per the PCI spec, the bridge itself can
+merge writes to prefetchable areas, presumably regardless of this
+processor attribute, perhaps that's the feature your driver is relying
+on that might be missing here.  Thanks,
+
+Alex
+
