@@ -2,92 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA6636E2D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A132E36E2D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232308AbhD2BEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 21:04:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52528 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229479AbhD2BEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 21:04:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D70AE61433;
-        Thu, 29 Apr 2021 01:03:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619658231;
-        bh=QelXBbSgBUyrBKlgyxSwVEOZEOdLf7nE1gbuDs5Zp2g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aYwN3D8qFwmrI+nK9zY/A1ycwLtx3ON1QCbwvYVqg3ZsA6DwL+Ivf35eF/zMMmrAi
-         mFqIofIChqxZMeFkBDJ8TkrPR2iXw+b7ZkbQ4W1KTZMAhAgNZ041F0VTO7wtvVaIk9
-         jGGRTt+NnkHgOW/7s0H32742JUzfyYikmklDPhC/ZjMJYs/KsZG/UmYq0LHzT44Lc6
-         MY2UulNn63LFet5m1NzeyVHf9CnZxM/l9sOaQWrkOE9cahSHrhMsdFeBBmjx69jnyJ
-         2F/m8Mmge2sSyolAegGWChTna3Qjhj1PUhmgYC4Cr4xBvKf2D6L9LYck+qAaht1bAk
-         iV/dVApS5cFsA==
-Date:   Wed, 28 Apr 2021 18:03:51 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>, pakki001@umn.edu,
-        gregkh@linuxfoundation.org, arnd@arndb.de
-Subject: Re: [PATCH] ics932s401: fix broken handling of errors when word
- reading fails
-Message-ID: <20210429010351.GI1251862@magnolia>
-References: <20210428222534.GJ3122264@magnolia>
- <20210428224624.GD1847222@casper.infradead.org>
+        id S232095AbhD2BJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 21:09:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229479AbhD2BJU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 21:09:20 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B23FC06138B;
+        Wed, 28 Apr 2021 18:08:34 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id mu3so6253867ejc.6;
+        Wed, 28 Apr 2021 18:08:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=i3qk61v6/wN3MGlWoF+r4JwD22Y4XdPrwsgszsckLgU=;
+        b=jC7wpQgmfQ5JUXQFCrctkS1fxj+Vj2en1tUWBDEBIcmLcA4VONXVsZUPESP5lJVJXc
+         FSVcB/dBWvaA2THu4qghzHRd2unPdpB4K4IO1HYl1YovutjeN/nGKG/KpV4/d+z2B6L5
+         luC9IBEJMPlp4I0cmbgkAfoWonnpBDkXU2FloRS5b5XXvrJhCuqZgZqneEeIDynGlNlL
+         C5EIN19egyCdzbP8Jwy/5Dnwgw5ihhdC6loy9KfS+DLHOJI1AmfvB/a4SRt0u1X7gLH6
+         ZgWazqlSS0q9mtXbGSghcKbcuZACvqAxRkjrXxVYZxxz797uaCX8xcGtSnKUPsxvfUnJ
+         Pv0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=i3qk61v6/wN3MGlWoF+r4JwD22Y4XdPrwsgszsckLgU=;
+        b=rcwUZ2eG8a0dGS6G081DChrgOdA5zLBn2ABlBBO6ajyU2Xe3s9pHJ2OM1Ggi23yBqF
+         cXZivS4vTrUguwqxJetlsfU4HfhIxKDKdhtqu5VMmoddwL2LDq6d8LvVhEWhG/lLFxKv
+         J/4Ky/N4ECuRufZDAmX8y4xv5SAGhZXe+Lok+TS9sPrd3JzTck7Nbvy/AJln9421AZ/p
+         3L/uTh/2L0AGjWj1kNqm0rcuYZwF2I16zP76MTDdeGlVgm2Py8upZ+ntVIqakrFXO6RI
+         fYwTHKpW9HnzwL4YCwEVi0YcpGQjTTJb5o/+LuCmWMmjNBi9DMEMtvpfoNyFsGm9Y2Ik
+         tXMg==
+X-Gm-Message-State: AOAM532yD1P7Pxh028lLOn36AN+fECjYbD5kLDK2en07wsa0PfwiyZZo
+        g6Bxyr/8cSmllYxSSEg1c/TaqDvbfwZMMA==
+X-Google-Smtp-Source: ABdhPJymZvUW8c5gDKYNY62IKRVxMZqMpSBuTd7MOPlAcy9YbqBq3M90wQ8wveOqcogHhnYooztOCg==
+X-Received: by 2002:a17:906:b253:: with SMTP id ce19mr16957336ejb.531.1619658512946;
+        Wed, 28 Apr 2021 18:08:32 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
+        by smtp.googlemail.com with ESMTPSA id d5sm1113398edt.49.2021.04.28.18.08.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 18:08:32 -0700 (PDT)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] Minor fix for qcom tsens driver
+Date:   Thu, 29 Apr 2021 03:05:16 +0200
+Message-Id: <20210429010518.13319-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210428224624.GD1847222@casper.infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 11:46:24PM +0100, Matthew Wilcox wrote:
-> On Wed, Apr 28, 2021 at 03:25:34PM -0700, Darrick J. Wong wrote:
-> > In commit b05ae01fdb89, someone tried to make the driver handle i2c read
-> > errors by simply zeroing out the register contents, but for some reason
-> > left unaltered the code that sets the cached register value the function
-> > call return value.
-> > 
-> > The original patch was authored by a member of the Underhanded
-> > Mangle-happy Nerds, I'm not terribly surprised.  I don't have the
-> > hardware anymore so I can't test this, but it seems like a pretty
-> > obvious API usage fix to me...
-> 
-> Not sure why you cc'd linux-fsdevel, but that's how i got to see it ...
+This is a small series to fix some warning arised testing the 8960 tsens
+driver. 8960 calibration function can return PROBE_DEFER and cause
+reregistration of debugfs. Move debugfs registration deeper in the probe
+function and fix a small problem with wrong tsens version reported. 
 
-I whacked the wrong mutt shortcut key. :)
+v2:
+- Address review comments from Thara
 
-> > +++ b/drivers/misc/ics932s401.c
-> > @@ -134,7 +134,7 @@ static struct ics932s401_data *ics932s401_update_device(struct device *dev)
-> >  	for (i = 0; i < NUM_MIRRORED_REGS; i++) {
-> >  		temp = i2c_smbus_read_word_data(client, regs_to_copy[i]);
-> >  		if (temp < 0)
-> > -			data->regs[regs_to_copy[i]] = 0;
-> > +			temp = 0;
-> >  		data->regs[regs_to_copy[i]] = temp >> 8;
-> >  	}
-> 
-> Looking at a bit more context in this function, shouldn't we rather clear
-> 'sensors_valid'?  or does it really make sense to pretend we read zero
-> (rather than 255) from this register?
+Ansuel Smith (2):
+  thermal: qcom: tsens: init debugfs only with successful probe
+  thermal: qcom: tsens: simplify debugfs init function
 
-Dunno.  As I said, I don't have that piece of hardware anymore.
-It probably does make more sense to fail the read or something, but
-since I can't QA it properly I'll go with "return a batch of zeroes".
+ drivers/thermal/qcom/tsens.c | 21 ++++++++++-----------
+ 1 file changed, 10 insertions(+), 11 deletions(-)
 
-Though ... if memory serves, the current behavior will probably shift
-the interesting parts of the errno code off the right end, filling the
-u8 buffer with all ones.  Maybe?
+-- 
+2.30.2
 
-> But then we'd have to actually check sensors_valid in functions like
-> calculate_src_freq, and i just don't know if it's worthwhile.  Why not
-> just revert this patch?
-
-I had half expected them all to get reverted immediately, but since 5.12
-went out with this still included, I thought it worth pointing out that
-despite UMN claims that none of their junk patches made it to Linus,
-this (mostly benign) one did.  Granted, maybe 18 Jan 2019 was earlier
-than that, but who knows and who cares? :P
-
---D
