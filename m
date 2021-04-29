@@ -2,128 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 295B236F14A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 22:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACBEB36F14C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 22:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236892AbhD2UuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 16:50:10 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:54623 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231201AbhD2UuG (ORCPT
+        id S236872AbhD2Uu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 16:50:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229966AbhD2Uux (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 16:50:06 -0400
-Received: from mail-wm1-f41.google.com ([209.85.128.41]) by
- mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1N4yyQ-1lUlMv1UpQ-010wy8; Thu, 29 Apr 2021 22:49:17 +0200
-Received: by mail-wm1-f41.google.com with SMTP id 4-20020a05600c26c4b0290146e1feccd8so521816wmv.1;
-        Thu, 29 Apr 2021 13:49:17 -0700 (PDT)
-X-Gm-Message-State: AOAM533Lsa8YXw7vetbN82yaMhNUIX/cxsJQ3o0zJumPSHkeUDH4ZlrO
-        E2NdMfX1mGTztpCj5Y3ak1IEvnDZGYHfo9QU+VU=
-X-Google-Smtp-Source: ABdhPJwlxMNdSsRwR0fdPNqNypLLItyjoOqUJmBY9r3HaMsASmwKpwt6rd7DUEn1wPswZS5VmrYEijB1isok1r6KSGg=
-X-Received: by 2002:a7b:c4da:: with SMTP id g26mr2183043wmk.43.1619729356972;
- Thu, 29 Apr 2021 13:49:16 -0700 (PDT)
+        Thu, 29 Apr 2021 16:50:53 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B653C06138B;
+        Thu, 29 Apr 2021 13:50:06 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id h8so40068976edb.2;
+        Thu, 29 Apr 2021 13:50:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gYep7DOlIrBwf9rsY4DQWIcoFlibsgvSZY3B/DcJdfg=;
+        b=I25T9hixgQAsDaNe83dVEDp50wP1nN6G63BPhGqPcFsE2D5fUk/NTom7hVS70E4DRA
+         VhvrxRR9YtQ02ExDrIkFXqjDFp7mnrpJjQA5Ra+hqaL3IgOFJelW95+rYKQ8OsL9Ft44
+         flHVH0IVmclqSFS4asalpYPc6lQO4ZKkbEzXzh//j2DVZOjxObUaLKKltYPxXMydK9W2
+         1bVV6+GIol/5a1eM/UxaYzBucIDBoDQPP58MneazC6EflvUABOhm8q2qXH3XI17dt+vt
+         GhyWVd3H6XsBoQCZjSpfoMkwt6PfobGaiV/j5dc1Npb4cgLIE67REI/XQ4rJogA9YNFc
+         Nkag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gYep7DOlIrBwf9rsY4DQWIcoFlibsgvSZY3B/DcJdfg=;
+        b=sXPGUL6tEGudHvQWNIBxn1jIkmtBw3CnsqQPi15yOklg9xQ327AyLABF8GxZKL0xYi
+         /IttLG46pJVnQuRChzYcB207VPHhl8aMcb1+4PTvn5Wq8ULsyUIdzGgdd/CjSIQsp/8w
+         BzGKMsAwqtTGr6tYimvS+hSq8kaSBn3gqnZYLvbCBC+mImnr18QpLJab8P0hjSKM1y42
+         qJT5csnfHvMV/hpbdYudwwjruGtMaQaKwvGZJk3hgW+pAQSO4NcX28G8jt4245qLizoB
+         MlBBoPbvoZLYHQQj3u47SQcMO/o0/RvqUpJNyASL+sBQGzZn3/JSkEPUunesT3llZqnK
+         +39Q==
+X-Gm-Message-State: AOAM531bY0JKP9vzC3V7gnuazukAOXSvzUF7T4Cwpss8EvFFB3KYoDeR
+        wZrH9nvMiNltS//QqiVydU0eX3xVx6qG25FwaeQ=
+X-Google-Smtp-Source: ABdhPJz8oW/YGEAMbGIiBMqPkwePjgTRbJCwGYkAtXYds2j96mVj2F2/CsZH1CG9WOp4AOfV5vP0fYnhzUgu+uuDVEU=
+X-Received: by 2002:a05:6402:3109:: with SMTP id dc9mr1833460edb.13.1619729404817;
+ Thu, 29 Apr 2021 13:50:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <YIpkvGrBFGlB5vNj@elver.google.com> <m11rat9f85.fsf@fess.ebiederm.org>
-In-Reply-To: <m11rat9f85.fsf@fess.ebiederm.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 29 Apr 2021 22:48:40 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
-Message-ID: <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
-Subject: Re: siginfo_t ABI break on sparc64 from si_addr_lsb move 3y ago
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Marco Elver <elver@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
+References: <20210429090516.61085-1-jbrunet@baylibre.com>
+In-Reply-To: <20210429090516.61085-1-jbrunet@baylibre.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Thu, 29 Apr 2021 22:49:54 +0200
+Message-ID: <CAFBinCCcKHqd7Mh3bV9NyyWzi=96pCWxzSZBOjg5Puy9wOuihQ@mail.gmail.com>
+Subject: Re: [PATCH] clk: meson: axg-audio: do not print error on defer
+To:     Jerome Brunet <jbrunet@baylibre.com>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:Y5+kRV9UPqKJX/D/7aStG7U/Py7dIw+sGe7g3Wp8tNykx536WRq
- iv7bhZcLn7MPQIK+Gsjut2r2Itj6RnUpzjoS5iGld/vCXEhrGh/Df0y2laAfdIIVWqQjYsF
- qJI0oQN0aJfc67ZCbPr2aLvhIAp+UGPF3D9E0vMbh/JrPrLq+vGNDfq5TQtBp+fTWKRYaCR
- rOsFCo+6OdKTmhFtRMwow==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:0gnD6TDUOGU=:VQyZMBvfQy1PO9+fgiyh4r
- ueF8VvNBMmTBRRaDtlb+077rlOEFzdMgDjMwS8Okn2sDCgz5IB1TForHNfA5k5lhFjLK0S7sa
- BxWimh/mdubIO40EmLhbOs2XjMv1rr4YzC2flihFITSBaO5rL9M1fldhPs0zLjfveHNV63g1D
- BB5XqARpRCbi81hm89Yn56Qy0c3NWBA/6SZBrw0KaUjiQGPY3F3j5bozH7lhroDbXOEbW8l0W
- +cklcRFYePQw18i4fS0Z9l5WohNFS21H3x5xVSZuaerf1tDra5KIZDBQyN0SBga36FYnO55Gp
- RC1JrkceZDDqfYOMmRjkWp5jRdcN9CsCDOlwZyZTnzOoSW/OpgbIMYl5CurgWd0ugiETJDykW
- x93WVKNNyY8jyryfbqgyUdBjfpQHpPFnTbvlBkn8hsZyuMnTPj+XWRDHdZ9SF7fez1BWkcHb6
- Y3rBRdFmnueYn6OdAW+QeId4qwhnyb5NNmxUUa9H0Nw/qb65slp5VdjlBYnAqNTeX+mT6Vkpl
- P0p7x9WVPIkywSg84RUSk0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 7:23 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+Hi Jerome,
 
-> > Which option do you prefer? Are there better options?
+On Thu, Apr 29, 2021 at 11:06 AM Jerome Brunet <jbrunet@baylibre.com> wrote:
+[...]
+> diff --git a/drivers/clk/meson/axg-audio.c b/drivers/clk/meson/axg-audio.c
+> index 7c8d02164443..5e501eff0840 100644
+> --- a/drivers/clk/meson/axg-audio.c
+> +++ b/drivers/clk/meson/axg-audio.c
+> @@ -1811,7 +1811,8 @@ static int axg_audio_clkc_probe(struct platform_device *pdev)
 >
-> Personally the most important thing to have is a single definition
-> shared by all architectures so that we consolidate testing.
->
-> A little piece of me cries a little whenever I see how badly we
-> implemented the POSIX design.  As specified by POSIX the fields can be
-> place in siginfo such that 32bit and 64bit share a common definition.
-> Unfortunately we did not addpadding after si_addr on 32bit to
-> accommodate a 64bit si_addr.
->
-> I find it unfortunate that we are adding yet another definition that
-> requires translation between 32bit and 64bit, but I am glad
-> that at least the translation is not architecture specific.  That common
-> definition is what has allowed this potential issue to be caught
-> and that makes me very happy to see.
->
-> Let's go with Option 3.
->
-> Confirm BUS_MCEERR_AR, BUS_MCEERR_AO, SEGV_BNDERR, SEGV_PKUERR are not
-> in use on any architecture that defines __ARCH_SI_TRAPNO, and then fixup
-> the userspace definitions of these fields.
->
-> To the kernel I would add some BUILD_BUG_ON's to whatever the best
-> maintained architecture (sparc64?) that implements __ARCH_SI_TRAPNO just
-> to confirm we don't create future regressions by accident.
->
-> I did a quick search and the architectures that define __ARCH_SI_TRAPNO
-> are sparc, mips, and alpha.  All have 64bit implementations.
+>         ret = device_reset(dev);
+>         if (ret) {
+> -               dev_err(dev, "failed to reset device\n");
+> +               if (ret != -EPROBE_DEFER)
+> +                       dev_err(dev, "failed to reset device\n");
+many drivers are switching to dev_err_probe nowadays
+According to it's documentation:
+  In case of -EPROBE_DEFER it sets also defer probe reason, which can be
+  checked later by reading devices_deferred debugfs attribute.
 
-I think you (slightly) misread: mips has "#undef __ARCH_SI_TRAPNO", not
-"#define __ARCH_SI_TRAPNO". This means it's only sparc and
-alpha.
+so I think it makes sense to use dev_err_probe here as well
 
-I can see that the alpha instance was added to the kernel during linux-2.5,
-but never made it into the glibc or uclibc copy of the struct definition, and
-musl doesn't support alpha or sparc. Debian codesearch only turns up
-sparc (and BSD) references to si_trapno.
 
-> I did a quick search and the architectures that define __ARCH_SI_TRAPNO
-> are sparc, mips, and alpha.  All have 64bit implementations.  A further
-> quick search shows that none of those architectures have faults that
-> use BUS_MCEERR_AR, BUS_MCEERR_AO, SEGV_BNDERR, SEGV_PKUERR, nor do
-> they appear to use mm/memory-failure.c
->
-> So it doesn't look like we have an ABI regression to fix.
-
-Even better!
-
-So if sparc is the only user of _trapno and it uses none of the later
-fields in _sigfault, I wonder if we could take even more liberty at
-trying to have a slightly saner definition. Can you think of anything that
-might break if we put _trapno inside of the union along with _perf
-and _addr_lsb?
-
-I suppose in theory sparc64 or alpha might start using the other
-fields in the future, and an application might be compiled against
-mismatched headers, but that is unlikely and is already broken
-with the current headers.
-
-       Arnd
+Best regards,
+Martin
