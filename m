@@ -2,107 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6591236EF6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 20:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 640B836EF6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 20:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241195AbhD2SUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 14:20:23 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:57176 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241181AbhD2SUU (ORCPT
+        id S241064AbhD2SZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 14:25:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233338AbhD2SZT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 14:20:20 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13TIJB2E064801;
-        Thu, 29 Apr 2021 13:19:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1619720351;
-        bh=qn9kzRdRLypsLGuwsWHINLPGN27LGJ4D1oTG14gSrhQ=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=XxMhfy7DhE9uwt78+5kErww92qqIjMvt17+diJMmsltgv+9LOtJwyenI4lwnJy9SL
-         DBcZyt75V1rWchPr+n4ecd8EbenekLHTf8Qg1CY7jTIT9c2zbhAvCIxF2tIahtcjQ0
-         2CGHGv6FbOa4ql+DcvCpP53SmH2zY5TTOYS9Wh9o=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13TIJBdB131020
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 29 Apr 2021 13:19:11 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 29
- Apr 2021 13:19:11 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 29 Apr 2021 13:19:11 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13TIJAWs025236;
-        Thu, 29 Apr 2021 13:19:11 -0500
-Date:   Thu, 29 Apr 2021 23:49:10 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Michael Walle <michael@walle.cc>
-CC:     <Tudor.Ambarus@microchip.com>, <nm@ti.com>, <kristo@kernel.org>,
-        <robh+dt@kernel.org>, <miquel.raynal@bootlin.com>,
-        <richard@nod.at>, <vigneshr@ti.com>, <broonie@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
-        <lokeshvutla@ti.com>
-Subject: Re: [RFC PATCH 4/6] spi: cadence-qspi: Use PHY for DAC reads if
- possible
-Message-ID: <20210429181908.bwb45eljn5nxscf6@ti.com>
-References: <20210311191216.7363-1-p.yadav@ti.com>
- <20210311191216.7363-5-p.yadav@ti.com>
- <2f26456e-59ff-2625-5d65-c1537052839d@microchip.com>
- <20210312101757.sqeyledbwjnpqdoy@ti.com>
- <ee2b753b16e76ecbede4c1373b6f2d77@walle.cc>
+        Thu, 29 Apr 2021 14:25:19 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 299A7C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 11:24:32 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id x20so76008980lfu.6
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 11:24:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ykWrXGycxSeYLE6z1WE0zVh/XXJJOlGXtFhHyus2kiU=;
+        b=DXTovYi6u/rI4R6PUosmg+OSoth6e+DYO//fTTMJJQoT3qBj/rN3BitqhpxxjTzXNU
+         /tJJsiKvrSYFQcbZPsgc5UVeFdvS3hezgrvlWe4wn/C5pucaV2p0tbXGRAu91LKcg9PY
+         7T01WkxzoIyUen9+PE2kIYtVl5R77vMTtQrKJ2AMliqIc8aRy837DomZpLwncprSZwC4
+         xeBEde2jOulktL1a5VqUWTUiEFIavDywzFBUJdKR6VzBt0LwOF0mU9eDRkTLmrgBqkRl
+         wdzrma8nJpYv0Xe3tyX/luekMqSA8eyjJorGd0DbSMjEpmOgCdcj3EDZQ5p5ISVbZsXJ
+         VvHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ykWrXGycxSeYLE6z1WE0zVh/XXJJOlGXtFhHyus2kiU=;
+        b=CF9bO8xIDNBUThZZxJUHB3ZkRp4JXEXc/BkDiMiDTNN/4VXR2W5lqoc4YOScB68A69
+         wZC0yuOAco9usWFO1jaqg2s+n3fxEIci7YlEQrQmHCjQyq0IZ01GBQmk5IJDzv6Y6FDJ
+         rr3B6YG+ZkTnqSCroJ9698oQcGvkixUu3p1ZJFiO/Z62Y6tw5eI8GhzXTMLiaWJ7W5tQ
+         npGlNTLOY+UsvvHjM5gyzBbH66yqOSt6HtTAEXf4kMn8cKPJ3E8ZZlmdoGIBKxQc/d7V
+         etHV+OPXEOos0u1yzRRhO6K911cEwEr8ZOLp5/iVGKaAEBRBqOonX3ss1bj2ZaejG9fn
+         Zzmw==
+X-Gm-Message-State: AOAM530QkfKkwaDlduAHe79GKdDjcMHtyGJ/qVRYaoxph49Hp+w4Nqsd
+        21/dfR2AmWTQEvFM06otWQM9Wj3PoQKDyGqw98z3rg==
+X-Google-Smtp-Source: ABdhPJzj7RNt80aN/ZcabS0fIh0N0udJkgfrCyqYCYUL9n+FWsnH8uqslrJ2S63RqPuA7jawo+dAFFEpcgFq+6VgNz8=
+X-Received: by 2002:a05:6512:94d:: with SMTP id u13mr588562lft.368.1619720668888;
+ Thu, 29 Apr 2021 11:24:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ee2b753b16e76ecbede4c1373b6f2d77@walle.cc>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210429150940.3256656-1-arnd@kernel.org> <20210429181716.2409874-1-ndesaulniers@google.com>
+In-Reply-To: <20210429181716.2409874-1-ndesaulniers@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 29 Apr 2021 11:24:18 -0700
+Message-ID: <CAKwvOd=5sLHssCf0Umfh+E__TjSwpxtO9K2MYVcXEhxvVp8okw@mail.gmail.com>
+Subject: Re: [PATCH] smp: fix smp_call_function_single_async prototype
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jens Axboe <axboe@kernel.dk>,
+        Borislav Petkov <bp@suse.de>, eric.dumazet@gmail.com,
+        Juergen Gross <jgross@suse.com>, Jian Cai <jiancai@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, ying.huang@intel.com,
+        Nathan Chancellor <nathan@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/04/21 06:28PM, Michael Walle wrote:
-> Am 2021-03-12 11:17, schrieb Pratyush Yadav:
-> > On 12/03/21 09:13AM, Tudor.Ambarus@microchip.com wrote:
-> > > On 3/11/21 9:12 PM, Pratyush Yadav wrote:
-> > > > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > > >
-> > > > Check if a read is eligible for PHY and if it is, enable PHY and DQS.
-> > > 
-> > > DQS as in data strobe? Shouldn't the upper layer inform the QSPI
-> > > controller
-> > > whether DS is required or not?
-> > 
-> > Yes, DQS as in data strobe. I need to check this again, but IIRC the
-> > controller cannot run in PHY mode unless DS is used. Ideally the upper
-> > layer should indeed inform the controller whether DS is supported/in-use
-> > or not. That can be used to decide whether PHY mode (and consequently
-> > the DS line) is to be used or not.
-> > 
-> > Currently there are only two flashes that use 8D-8D-8D mode (S28HS512T
-> > and MT35XU512ABA), and both of them drive the DS line.
-> 
-> The LS1028A datasheet explicitly states that the calibration is only
-> used for non-DQS flashes. Which makes sense, because it just determine at
-> which point the input data is sampled. And if the flash provides a data
-> strobe, it already know when to sample it. What I am missing here?
+On Thu, Apr 29, 2021 at 11:17 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> (replying manually to
+> https://lore.kernel.org/lkml/20210429150940.3256656-1-arnd@kernel.org/)
+>
+> Thanks for the patch; with this applied I observe the following new warnings
+> though (for x86_64 defconfig; make LLVM=1 LLVM_IAS=1 -j72)
+>
+> kernel/smp.c:515:19: warning: passing 8-byte aligned argument to 32-byte
+> aligned parameter 1 of 'csd_lock_record' may result in an unaligned pointer
+> access [-Walign-mismatch]
+>                 csd_lock_record(csd);
+>                                 ^
+> kernel/smp.c:516:14: warning: passing 8-byte aligned argument to 32-byte
+> aligned parameter 1 of 'csd_unlock' may result in an unaligned pointer access
+> [-Walign-mismatch]
+>                 csd_unlock(csd);
+>                            ^
+> kernel/smp.c:525:14: warning: passing 8-byte aligned argument to 32-byte
+> aligned parameter 1 of 'csd_unlock' may result in an unaligned pointer access
+> [-Walign-mismatch]
+>                 csd_unlock(csd);
+>                            ^
 
-If there was 0 delay in transferring the signals from flash to 
-SoC/controller, you would be right. But in practice there is a small but 
-noticeable delay from when the flash launches the signal and when it is 
-received by the device. So by the time the DQS signal reaches the SoC it 
-might already be too late and the data lines might not be valid any 
-more. The calibration accounts for these (and some others) delays.
+Perhaps roll this into a v2?
 
-See [0] for a somewhat similar discussion I had with Tudor.
+diff --git a/kernel/smp.c b/kernel/smp.c
+index 1ec771d9f91c..499be1eb5189 100644
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -226,7 +226,7 @@ static void __csd_lock_record(call_single_data_t *csd)
+                  /* Or before unlock, as the case may be. */
+ }
 
-[0] https://lore.kernel.org/linux-mtd/20210312181447.dlecnw2oed7jtxe7@ti.com/
+-static __always_inline void csd_lock_record(call_single_data_t *csd)
++static __always_inline void csd_lock_record(struct __call_single_data *csd)
+ {
+        if (static_branch_unlikely(&csdlock_debug_enabled))
+                __csd_lock_record(csd);
+@@ -431,7 +431,7 @@ static void __smp_call_single_queue_debug(int cpu,
+struct llist_node *node)
+ #else
+ #define cfd_seq_store(var, src, dst, type)
+
+-static void csd_lock_record(call_single_data_t *csd)
++static void csd_lock_record(struct __call_single_data *csd)
+ {
+ }
+
+@@ -454,7 +454,7 @@ static __always_inline void
+csd_lock(call_single_data_t *csd)
+        smp_wmb();
+ }
+
+-static __always_inline void csd_unlock(call_single_data_t *csd)
++static __always_inline void csd_unlock(struct __call_single_data *csd)
+ {
+        WARN_ON(!(csd->node.u_flags & CSD_FLAG_LOCK));
 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Thanks,
+~Nick Desaulniers
