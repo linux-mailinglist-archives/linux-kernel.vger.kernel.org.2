@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21E6A36EB9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 15:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC50236EBA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 15:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237832AbhD2NxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 09:53:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43444 "EHLO mail.kernel.org"
+        id S237915AbhD2NzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 09:55:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234147AbhD2NxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 09:53:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D70F61107;
-        Thu, 29 Apr 2021 13:52:13 +0000 (UTC)
+        id S233862AbhD2NzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 09:55:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 344F861407;
+        Thu, 29 Apr 2021 13:54:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619704334;
-        bh=BLkm7FxPcrs2A5cvv+VrvrXuUBdRYNu8fzHF0nnt8PY=;
+        s=korg; t=1619704458;
+        bh=y/KSgaD2/mqGMlekuhyd5x478LgNEJTau9K+E8yRMlY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F6ioZ8bjRoL8CEdayr/h5QWpwEqIPFoCAuBPbGcy1ryb/zKc8YPZMuZRC6ihO3a/k
-         iG/Ryug8Z0oR4REj1RVCRuJ7RizI61JE6QHBZ82qZnfA2v6uQTzGb4GgeVxOoUsndR
-         oIUKdjcqa00InAPqnBUHvbefr8yv97GmgMjM5/bQ=
-Date:   Thu, 29 Apr 2021 15:52:12 +0200
+        b=SfYs0JlfAyjPspN8DJlYf1seeCx45i8MoX8QD7xYEL9Vi8Fvdz5rnpIBpref/AQSJ
+         5jVuVicHwjQIYXHDtQrySVwEDqugFUZ00qIWeJD2Zo2o2B+TLmIkrsgga+2JShOWyO
+         1k9nU+ZZa9RS6Y7B5MzYNSm2FgrgsNT4cQS2B3GQ=
+Date:   Thu, 29 Apr 2021 15:54:16 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Qiushi Wu <wu000273@umn.edu>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH 2/7] Revert "rtc: mc13xxx: fix a double-unlock issue"
-Message-ID: <YIq6DAb3drmrseJD@kroah.com>
+Cc:     Aditya Pakki <pakki001@umn.edu>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 1/7] Revert "rocker: fix incorrect error handling in
+ dma_rings_init"
+Message-ID: <YIq6iA+C1gdfopYj@kroah.com>
 References: <20210429130811.3353369-1-gregkh@linuxfoundation.org>
- <20210429130811.3353369-3-gregkh@linuxfoundation.org>
+ <20210429130811.3353369-2-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210429130811.3353369-3-gregkh@linuxfoundation.org>
+In-Reply-To: <20210429130811.3353369-2-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 03:08:06PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit 8816cd726a4fee197af2d851cbe25991ae19ea14.
+On Thu, Apr 29, 2021 at 03:08:05PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit 58d0c864e1a759a15c9df78f50ea5a5c32b3989e.
 > 
 > Commits from @umn.edu addresses have been found to be submitted in "bad
 > faith" to try to test the kernel community's ability to review "known
@@ -55,35 +56,36 @@ On Thu, Apr 29, 2021 at 03:08:06PM +0200, Greg Kroah-Hartman wrote:
 > change to ensure that no problems are being introduced into the
 > codebase.
 > 
-> Cc: Qiushi Wu <wu000273@umn.edu>
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Cc: Aditya Pakki <pakki001@umn.edu>
+> Cc: David S. Miller <davem@davemloft.net>
 > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > ---
->  drivers/rtc/rtc-mc13xxx.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+>  drivers/net/ethernet/rocker/rocker_main.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/rtc/rtc-mc13xxx.c b/drivers/rtc/rtc-mc13xxx.c
-> index d4234e78497e..0921ca792847 100644
-> --- a/drivers/rtc/rtc-mc13xxx.c
-> +++ b/drivers/rtc/rtc-mc13xxx.c
-> @@ -308,10 +308,8 @@ static int __init mc13xxx_rtc_probe(struct platform_device *pdev)
->  	mc13xxx_unlock(mc13xxx);
->  
->  	ret = devm_rtc_register_device(priv->rtc);
-> -	if (ret) {
-> -		mc13xxx_lock(mc13xxx);
-> +	if (ret)
->  		goto err_irq_request;
-> -	}
->  
->  	return 0;
->  
+> diff --git a/drivers/net/ethernet/rocker/rocker_main.c b/drivers/net/ethernet/rocker/rocker_main.c
+> index 3473d296b2e2..35ebeeb40639 100644
+> --- a/drivers/net/ethernet/rocker/rocker_main.c
+> +++ b/drivers/net/ethernet/rocker/rocker_main.c
+> @@ -650,10 +650,10 @@ static int rocker_dma_rings_init(struct rocker *rocker)
+>  err_dma_event_ring_bufs_alloc:
+>  	rocker_dma_ring_destroy(rocker, &rocker->event_ring);
+>  err_dma_event_ring_create:
+> -	rocker_dma_cmd_ring_waits_free(rocker);
+> -err_dma_cmd_ring_waits_alloc:
+>  	rocker_dma_ring_bufs_free(rocker, &rocker->cmd_ring,
+>  				  DMA_BIDIRECTIONAL);
+> +err_dma_cmd_ring_waits_alloc:
+> +	rocker_dma_cmd_ring_waits_free(rocker);
+>  err_dma_cmd_ring_bufs_alloc:
+>  	rocker_dma_ring_destroy(rocker, &rocker->cmd_ring);
+>  	return err;
 > -- 
 > 2.31.1
 > 
 
-The original change here looks correct to me, I'll drop this revert from
-my tree.
+The original commit here looks correct to me, so unless someone objects,
+I'll drop this revert from my tree.
 
 thanks,
 
