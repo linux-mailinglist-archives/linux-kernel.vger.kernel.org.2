@@ -2,107 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE97A36EDC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 18:02:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C9D36EDD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 18:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235560AbhD2QDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 12:03:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232004AbhD2QDf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 12:03:35 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5651DC06138B;
-        Thu, 29 Apr 2021 09:02:48 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1619712165;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8plJW1VXqdM/pu1ulaDOFaCnsDTuvu4fwYJsVAeb39E=;
-        b=tDCrPYi8epRqOfmXjzRVd+hbooSGl783ckl6sQX1A5heow2ufo0jVGFKEUwjXHcqxVH/u2
-        UEDVrPawKlRzU0u1CeXG3MZ5zw7lLsQBOasplVMnlEMkdIQ9luxXJqYbNP5lLTOPeObQPC
-        T8beFcOEQkHWSLIGJkuXPLvurVYfijBce/i4AElu/rvpMDGyRAy/63pdV/bmltVUUhBqeW
-        YsM5rPA1ksv03dHKMXgRe+SI4SfxX97eoIncb4TO/9UYcYzl28ZFpjVnUPIaYwk4Hlcrzi
-        Np7Jy14haEfQb1uDWblpVZHg7dkZwLkRdDKQT7syPiQ+ul4VMSPT18dzLoVPqA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1619712165;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8plJW1VXqdM/pu1ulaDOFaCnsDTuvu4fwYJsVAeb39E=;
-        b=PTZIOGrGSXFPL5ab1UCrpZmd2Ah5VfdyMmMYN0nmPDQUhJGuf7ilDznRsamgSV3WP2R7n0
-        UFI1Xp9muTi41NDw==
-To:     Zelin Deng <zelin.deng@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH] Guest system time jumps when new vCPUs is hot-added
-In-Reply-To: <2df3de0e-670a-ba28-fdd2-0002cebde545@linux.alibaba.com>
-References: <1619576521-81399-1-git-send-email-zelin.deng@linux.alibaba.com> <87lf92n5r1.ffs@nanos.tec.linutronix.de> <e33920a0-24bc-fa40-0a23-c2eb5693f85d@linux.alibaba.com> <875z057a12.ffs@nanos.tec.linutronix.de> <2df3de0e-670a-ba28-fdd2-0002cebde545@linux.alibaba.com>
-Date:   Thu, 29 Apr 2021 18:02:44 +0200
-Message-ID: <87o8dxf597.ffs@nanos.tec.linutronix.de>
+        id S237123AbhD2QHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 12:07:03 -0400
+Received: from foss.arm.com ([217.140.110.172]:54794 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233302AbhD2QHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 12:07:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 288011FB;
+        Thu, 29 Apr 2021 09:06:13 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6DA9B3F70D;
+        Thu, 29 Apr 2021 09:06:10 -0700 (PDT)
+From:   Steven Price <steven.price@arm.com>
+Subject: Re: [PATCH v11 1/6] arm64: mte: Sync tags for pages where PTE is
+ untagged
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+References: <20210416154309.22129-1-steven.price@arm.com>
+ <20210416154309.22129-2-steven.price@arm.com>
+ <20210427174357.GA17872@arm.com>
+Message-ID: <0ab0017c-1eaf-201e-587f-101e03da6b80@arm.com>
+Date:   Thu, 29 Apr 2021 17:06:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210427174357.GA17872@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29 2021 at 17:38, Zelin Deng wrote:
-> On 2021/4/29 =E4=B8=8B=E5=8D=884:46, Thomas Gleixner wrote:
->> And that validation expects that the CPUs involved run in a tight loop
->> concurrently so the TSC readouts which happen on both can be reliably
->> compared.
+On 27/04/2021 18:43, Catalin Marinas wrote:
+> On Fri, Apr 16, 2021 at 04:43:04PM +0100, Steven Price wrote:
+>> A KVM guest could store tags in a page even if the VMM hasn't mapped
+>> the page with PROT_MTE. So when restoring pages from swap we will
+>> need to check to see if there are any saved tags even if !pte_tagged().
 >>
->> But this cannot be guaranteed on vCPUs at all, because the host can
->> schedule out one or both at any point during that synchronization
->> check.
->
-> Is there any plan to fix this?
+>> However don't check pages which are !pte_valid_user() as these will
+>> not have been swapped out.
+> 
+> You should remove the pte_valid_user() mention from the commit log as
+> well.
 
-The above cannot be fixed.
+Good spot - sorry about that. I really must get better at reading my own 
+commit messages.
 
-As I said before the solution is:
+>> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+>> index e17b96d0e4b5..cf4b52a33b3c 100644
+>> --- a/arch/arm64/include/asm/pgtable.h
+>> +++ b/arch/arm64/include/asm/pgtable.h
+>> @@ -312,7 +312,7 @@ static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
+>>   		__sync_icache_dcache(pte);
+>>   
+>>   	if (system_supports_mte() &&
+>> -	    pte_present(pte) && pte_tagged(pte) && !pte_special(pte))
+>> +	    pte_present(pte) && (pte_val(pte) & PTE_USER) && !pte_special(pte))
+> 
+> I would add a pte_user() macro here or, if we restore the tags only when
+> the page is readable, use pte_access_permitted(pte, false). Also add a
+> comment why we do this.
 
->> A two socket guest setup needs to have information from the host that
->> TSC is usable and that the socket sync check can be skipped. Anything
->> else is just doomed to fail in hard to diagnose ways.
->
-> Yes, I had tried to add "tsc=3Dunstable" to skip tsc sync.=C2=A0 However =
-if a=20
+pte_access_permitted() looks like it describes what we want (user space 
+can access the memory). I'll add the following comment:
 
-tsc=3Dunstable? Oh well.
+  /*
+   * If the PTE would provide user space will access to the tags
+   * associated with it then ensure that the MTE tags are synchronised.
+   * Exec-only mappings don't expose tags (instruction fetches don't
+   * check tags).
+   */
 
-> user process which is not pined to vCPU is using rdtsc, it can get tsc=20
-> warp, because it can be scheduled among vCPUs.=C2=A0 Does it mean user
+> There's also the pte_user_exec() case which may not have the PTE_USER
+> set (exec-only permission) but I don't think it matters. We don't do tag
+> checking on instruction fetches, so if the user adds a PROT_READ to it,
+> it would go through set_pte_at() again. I'm not sure KVM does anything
+> special with exec-only mappings at stage 2, I suspect they won't be
+> accessible by the guest (but needs checking).
 
-Only if the hypervisor is not doing the right thing and makes sure that
-all vCPUs have the same tsc offset vs. the host TSC.
+It comes down to the behaviour of get_user_pages(). AFAICT that will 
+fail if the memory is exec-only, so no stage 2 mapping will be created. 
+Which of course means the guest can't do anything with that memory. That 
+certainly seems like the only sane behaviour even without MTE.
 
-> applications have to guarantee itself to use rdtsc only when TSC is=20
-> reliable?
+>>   		mte_sync_tags(ptep, pte);
+>>   
+>>   	__check_racy_pte_update(mm, ptep, pte);
+>> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+>> index b3c70a612c7a..e016ab57ea36 100644
+>> --- a/arch/arm64/kernel/mte.c
+>> +++ b/arch/arm64/kernel/mte.c
+>> @@ -26,17 +26,23 @@ u64 gcr_kernel_excl __ro_after_init;
+>>   
+>>   static bool report_fault_once = true;
+>>   
+>> -static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
+>> +static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap,
+>> +			       bool pte_is_tagged)
+>>   {
+>>   	pte_t old_pte = READ_ONCE(*ptep);
+>>   
+>>   	if (check_swap && is_swap_pte(old_pte)) {
+>>   		swp_entry_t entry = pte_to_swp_entry(old_pte);
+>>   
+>> -		if (!non_swap_entry(entry) && mte_restore_tags(entry, page))
+>> +		if (!non_swap_entry(entry) && mte_restore_tags(entry, page)) {
+>> +			set_bit(PG_mte_tagged, &page->flags);
+>>   			return;
+>> +		}
+>>   	}
+>>   
+>> +	if (!pte_is_tagged || test_and_set_bit(PG_mte_tagged, &page->flags))
+>> +		return;
+> 
+> I don't think we need another test_bit() here, it was done in the
+> caller (bar potential races which need more thought).
 
-If the TSCs of CPUs are not in sync then the kernel does the right thing
-and uses some other clocksource for the various time interfaces, e.g.
-the kernel provides clock_getttime() which guarantees to be correct
-whether TSC is usable or not.
+Good point - I'll change that to a straight set_bit().
 
-Any application using RDTSC directly is own their own and it's not a
-kernel problem.
+>> +
+>>   	page_kasan_tag_reset(page);
+>>   	/*
+>>   	 * We need smp_wmb() in between setting the flags and clearing the
+>> @@ -54,11 +60,13 @@ void mte_sync_tags(pte_t *ptep, pte_t pte)
+>>   	struct page *page = pte_page(pte);
+>>   	long i, nr_pages = compound_nr(page);
+>>   	bool check_swap = nr_pages == 1;
+>> +	bool pte_is_tagged = pte_tagged(pte);
+>>   
+>>   	/* if PG_mte_tagged is set, tags have already been initialised */
+>>   	for (i = 0; i < nr_pages; i++, page++) {
+>> -		if (!test_and_set_bit(PG_mte_tagged, &page->flags))
+>> -			mte_sync_page_tags(page, ptep, check_swap);
+>> +		if (!test_bit(PG_mte_tagged, &page->flags))
+>> +			mte_sync_page_tags(page, ptep, check_swap,
+>> +					   pte_is_tagged);
+>>   	}
+>>   }
+> 
+> You were right in the previous thread that if we have a race, it's
+> already there even without your patches KVM patches.
+> 
+> If it's the same pte in a multithreaded app, we should be ok as the core
+> code holds the ptl (the arch code also holds the mmap_lock during
+> exception handling but only as a reader, so you can have multiple
+> holders).
+> 
+> If there are multiple ptes to the same page, for example mapped with
+> MAP_ANONYMOUS | MAP_SHARED, metadata recovery is done via
+> arch_swap_restore() before we even set the pte and with the page locked.
+> So calling lock_page() again in mte_restore_tags() would deadlock.
+> 
+> I can see that do_swap_page() also holds the page lock around
+> set_pte_at(), so I think we are covered.
+> 
+> Any other scenario I may have missed? My understanding is that if the
+> pte is the same, we have the ptl. Otherwise we have the page lock for
+> shared pages.
 
-The host kernel cannot make guarantees that the hardware is sane neither
-can a guest kernel make guarantees that the hypervisor is sane.
+That is my understanding - either the PTL is held or the page is locked. 
+But I am aware I was partly basing that on an assumption that the 
+existing code is correct. If there's a way that a new PTE can be created 
+which races with the arch_swap_restore() path then there is a problem. 
+I'm not aware of how that would happen though.
 
-Thanks,
-
-        tglx
-
-
-
-
+Steve
