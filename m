@@ -2,79 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF3C36F0C2
+	by mail.lfdr.de (Postfix) with ESMTP id 86CED36F0C3
 	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 22:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237001AbhD2UCB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 29 Apr 2021 16:02:01 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:51808 "EHLO
+        id S237019AbhD2UCD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 29 Apr 2021 16:02:03 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:51970 "EHLO
         jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237580AbhD2UAd (ORCPT
+        with ESMTP id S238445AbhD2UBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 16:00:33 -0400
+        Thu, 29 Apr 2021 16:01:37 -0400
 Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 339D01C0BA4; Thu, 29 Apr 2021 21:59:45 +0200 (CEST)
-Date:   Thu, 29 Apr 2021 21:59:44 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Chris von Recklinghausen <crecklin@redhat.com>,
-        Ard Biesheuvel <ardb@kernel.org>, Simo Sorce <simo@redhat.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 1/1] use crc32 instead of md5 for hibernation e820
- integrity check
-Message-ID: <20210429195944.GB1067@bug>
-References: <20210408131506.17941-1-crecklin@redhat.com>
- <CAJZ5v0ib+jmbsD9taGW0RujY5c9BCK8yLHv065u44mb0AwO9vQ@mail.gmail.com>
- <YG8gqZoZGutPmROz@sol.localdomain>
- <CAJZ5v0g65irXKmy7pdgD8-5KWrxdtwiWbJsBD2A=PKf1D3RVZg@mail.gmail.com>
+        id ED5E11C0BA5; Thu, 29 Apr 2021 22:00:49 +0200 (CEST)
+Date:   Thu, 29 Apr 2021 22:00:49 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: Re: [PATCH 003/190] Revert "media: sti: Fix reference count leaks"
+Message-ID: <20210429200049.GA1175@bug>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-4-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: 8BIT
-In-Reply-To: <CAJZ5v0g65irXKmy7pdgD8-5KWrxdtwiWbJsBD2A=PKf1D3RVZg@mail.gmail.com>
+In-Reply-To: <20210421130105.1226686-4-gregkh@linuxfoundation.org>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-
-> > > > Suspend fails on a system in fips mode because md5 is used for the e820
-> > > > integrity check and is not available. Use crc32 instead.
-> > > >
-> > > > This patch changes the integrity check algorithm from md5 to
-> > > > crc32. This integrity check is used only to verify accidental
-> > > > corruption of the hybernation data
-> > >
-> > > It isn't used for that.
-> > >
-> > > In fact, it is used to detect differences between the memory map used
-> > > before hibernation and the one made available by the BIOS during the
-> > > subsequent resume.  And the check is there, because it is generally
-> > > unsafe to load the hibernation image into memory if the current memory
-> > > map doesn't match the one used when the image was created.
-> >
-> > So what types of "differences" are you trying to detect?  If you need to detect
-> > differences caused by someone who maliciously made changes ("malicious" implies
-> > they may try to avoid detection), then you need to use a cryptographic hash
-> > function (or a cryptographic MAC if the hash value isn't stored separately).  If
-> > you only need to detect non-malicious changes (normally these would be called
-> > "accidental" changes, but sure, it could be changes that are "intentionally"
-> > made provided that the other side can be trusted to not try to avoid
-> > detection...)
+On Wed 2021-04-21 14:57:58, Greg Kroah-Hartman wrote:
+> This reverts commit 6f4432bae9f2d12fc1815b5e26cc07e69bcad0df.
 > 
-> That's the case here.
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
+> 
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
 
-md5 is fine for this purpose. crc32 may be too weak. I don't see why this needs changing.
+NAK. This fixes minor bug and should not be reverted.
+										Pavel
 
-Maybe fips should understand that md5 has other uses than crypto?
-
-Best regards,
-									Pavel
+> @@ -272,7 +272,6 @@ static unsigned long int hva_hw_get_ip_version(struct hva_dev *hva)
+>  
+>  	if (pm_runtime_get_sync(dev) < 0) {
+>  		dev_err(dev, "%s     failed to get pm_runtime\n", HVA_PREFIX);
+> -		pm_runtime_put_noidle(dev);
+>  		mutex_unlock(&hva->protect_mutex);
+>  		return -EFAULT;
+>  	}
+> @@ -555,7 +554,6 @@ void hva_hw_dump_regs(struct hva_dev *hva, struct seq_file *s)
+>  
+>  	if (pm_runtime_get_sync(dev) < 0) {
+>  		seq_puts(s, "Cannot wake up IP\n");
+> -		pm_runtime_put_noidle(dev);
+>  		mutex_unlock(&hva->protect_mutex);
+>  		return;
+>  	}
 
 -- 
 (english) http://www.livejournal.com/~pavelmachek
