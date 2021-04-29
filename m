@@ -2,143 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E4C36ECAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 16:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6376736ECC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 16:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240584AbhD2Otw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 10:49:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44846 "EHLO
+        id S240440AbhD2Ovu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 10:51:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240633AbhD2Otq (ORCPT
+        with ESMTP id S232820AbhD2Ovt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 10:49:46 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 343B4C06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 07:48:58 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id m9so54496377wrx.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 07:48:58 -0700 (PDT)
+        Thu, 29 Apr 2021 10:51:49 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C13C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 07:51:02 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id a4so67264804wrr.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 07:51:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=vngK38/uzYnT4W+jr6IRjRIJAM+iJCix31NgQ9EuLvg=;
-        b=YTSzJGcJHQgMlVXHNlXeaegByzcdO/Ixq9cwa3gZIFs3WIVEICy7i6oaNv6IY9heK7
-         3c+2qFCcvore/t6PybqZ371mANjlIO6Gow70D+otyIZbAmzdIs25wLSskUQbnAeN6e/F
-         Ka3IZAu9ACMS2YqTyCoGjzJdaTJLf6Bh5Q3u0ojWvmh3ox6/A/oHVkgYkmtR5Uk5ykVn
-         9MciTdw6XCQoZaeHTMxi/igOej912jK01qR+4ZtYYNTFHrluX9deMM+JEN8vmzveHWyr
-         iUd6sEyPOAhufRaw9anUNU86N5EcjVMvyafncjUCAGlePRQXghhvzVcsKb39+t+pipJY
-         iuwQ==
+        d=kynesim-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:references:in-reply-to
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=0snjfriunXokbhjSMJ9Eyiap4guJwiDtJ6KT7smyyik=;
+        b=zZuvgHd91qgQwjw10MKn4hrMbBJwZ/VIUK2nLx6HRcitCkkzaZtGkyAJUgUI4Aet1g
+         wyTdxhA2NL7uTPT2v3OoLOQTp+Uw+KBC13mIBQb07A7NfrpOiECd/kO4dDlwwr3jpNwv
+         5Y44aLLZ0lheYTLUioJBmD5//UBatavi2PwfoPIk/0LkFx25xI3gGo+EqwTFElyrot6S
+         Pe4kotbwcdBCM4az9Ak0Lvcc4un9xQOc7na5Z2Vq5cK4YhWgcv2Y8Zt92uI+l7rEVkES
+         uWFEby+By7MjeuLaNm7ruUSy7Kx3V3ilZYyVuUKVLZO075FXuHGOXQQvTx8riRiZR03Z
+         /sjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=vngK38/uzYnT4W+jr6IRjRIJAM+iJCix31NgQ9EuLvg=;
-        b=oDZ0aJD++drAMFutT8Iwk48RjRNMvtRibp6ueU5zROr4E2r5w7fN6el7mFlhOT6jeq
-         kueh7ySPE76HGrxk9hSpeq2DU/o/qGsqyQeOSBgLWUCY3OQJmV/FA9ZEXnqPj3gX5Tk8
-         zmkB2y9mCXx0rKhNr0l1MigDSuVM/vcb47JDKIZvJe6g0LHFl7hbDpAT7cm3WexLsyOn
-         y/dsUjmAC3I/6ygiKcO8riHN7CncZUkA66A74kPcUhoQEz0LzNDw32zHQnqDE+gvd+nI
-         9hsP4P123jw1lB/8VRI6z/b2ndtsSOL0mPtWc5MHBS/VuDqB2heGDLXXpRuDuA5FWPMv
-         PFKA==
-X-Gm-Message-State: AOAM531T4k0zBVC/ywXEraWJjv8JMXMBUffo6LRJHE3oH/Vrl7TD6xp1
-        zQO2PAFmnKPgQWe+2+s5QMCoeQ==
-X-Google-Smtp-Source: ABdhPJzRr1ptHoMK+F/hhQ1TsfC2223uBRcGsPIsIY79GHjAwVNUN4USMf1S/BuOGfztjsVVwGhQrA==
-X-Received: by 2002:a5d:6da8:: with SMTP id u8mr218171wrs.48.1619707736884;
-        Thu, 29 Apr 2021 07:48:56 -0700 (PDT)
-Received: from localhost ([2a01:cb19:826e:8e00:f37e:9091:b397:6f48])
-        by smtp.gmail.com with ESMTPSA id r2sm4995675wrt.79.2021.04.29.07.48.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 07:48:56 -0700 (PDT)
-From:   Mattijs Korpershoek <mkorpershoek@baylibre.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>, fparent@baylibre.com,
-        linux-input@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/7] Input: mtk-pmic-keys - check for NULL on
- of_match_device()
-In-Reply-To: <875z05y4a2.fsf@baylibre.com>
-References: <20210428164219.1115537-1-mkorpershoek@baylibre.com>
- <20210428164219.1115537-2-mkorpershoek@baylibre.com>
- <YIm9Bb3eBjYwY53R@google.com> <875z05y4a2.fsf@baylibre.com>
-Date:   Thu, 29 Apr 2021 16:48:55 +0200
-Message-ID: <87wnslw3hk.fsf@baylibre.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:references
+         :in-reply-to:user-agent:mime-version:content-transfer-encoding;
+        bh=0snjfriunXokbhjSMJ9Eyiap4guJwiDtJ6KT7smyyik=;
+        b=esHuyFoR8OZx18zV5zGQlnLBbPehy6KYmDsl/q5sqqYU1B34ddB160aqlO9JzJ4uQ3
+         x0ON68xuZH3pEwOfxipZaLFYOiyHNj0i14DXJO/68drH1B7v+KJoC3MgT+c7Enc2suWL
+         BBnvhhC9M9UOTRqoiEA4mzZ2dOWqqaa+WltdrsQVINfapg+4TQGELSeK1peCOTKrXjP7
+         2IilHxpFWFkqcVJDh5xFOjI8R0W31zsXmWn8mUxJOMznhMrEjqtivi7zO5NzTvSYNZIO
+         iBhQgFKTWcivb6K+DC/qtJFj0Su5I4cq70z+FPosZVcfJXNmnfmLFBgiEVC216TLVHdq
+         Ihxw==
+X-Gm-Message-State: AOAM5337gkbbW9Uw2Ioj3y4RSlFDJ7UFuki755KJwxCEm+H237RXGD3U
+        oOgrExLJZ5YSn23e0Pwp/D8wjg==
+X-Google-Smtp-Source: ABdhPJzj4vvtS0ITy4N2nOoIEmto/xNvRB0C1X+g/W+l+SSz8bMWSXmMg681Oss3TiWJNDLomY4WSA==
+X-Received: by 2002:a5d:6d48:: with SMTP id k8mr155304wri.93.1619707861191;
+        Thu, 29 Apr 2021 07:51:01 -0700 (PDT)
+Received: from CTHALPA.outer.uphall.net (cpc1-cmbg20-2-0-cust759.5-4.cable.virginm.net. [86.21.218.248])
+        by smtp.gmail.com with ESMTPSA id n7sm3245336wri.14.2021.04.29.07.51.00
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 29 Apr 2021 07:51:00 -0700 (PDT)
+From:   John Cox <jc@kynesim.co.uk>
+To:     Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        ezequiel@collabora.com, benjamin.gaignard@collabora.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH] media: hevc: Fix dependent slice segment flags
+Date:   Thu, 29 Apr 2021 15:51:00 +0100
+Message-ID: <lrhl8gl392tcpss5rcpkqr1cahujnlqq9k@4ax.com>
+References: <20210427071554.2222625-1-jernej.skrabec@siol.net>
+In-Reply-To: <20210427071554.2222625-1-jernej.skrabec@siol.net>
+User-Agent: ForteAgent/8.00.32.1272
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
-
-Mattijs Korpershoek <mkorpershoek@baylibre.com> writes:
-
-> Hi Dmitry,
+>Dependent slice segment flag for PPS control is misnamed. It should have
+>"enabled" at the end. It only tells if this flag is present in slice
+>header or not and not the actual value.
 >
-> Dmitry Torokhov <dmitry.torokhov@gmail.com> writes:
+>Fix this by renaming the PPS flag and introduce another flag for slice
+>control which tells actual value.
 >
->> Hi Mattijs,
->>
->> On Wed, Apr 28, 2021 at 06:42:13PM +0200, Mattijs Korpershoek wrote:
->>> mtk-pmic-keys being a child device of mt6397, it will always get probed
->>> when mt6397_probe() is called.
->>> 
->>> This also happens when we have no device tree node matching
->>> mediatek,mt6397-keys.
->>
->> It sounds for me that creating a platform device instance in case where
->> we know need OF node, but do not have one, is wasteful. Can
->> mt6397-core.c and/or MFD core be adjusted to not do that.
+>Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+>---
+> Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 5 ++++-
+> drivers/staging/media/sunxi/cedrus/cedrus_h265.c          | 4 ++--
+> include/media/hevc-ctrls.h                                | 3 ++-
+> 3 files changed, 8 insertions(+), 4 deletions(-)
 >
-> You are right. Maybe I can fix MFD core instead. I will look into it.
->
-> Thanks for your review.
->>
->>> 
->>> In that case, the mfd core warns us:
->>> 
->>>   [    0.352175] mtk-pmic-keys: Failed to locate of_node [id: -1]
->>> 
->>> Check return value from call to of_match_device()
->>> in order to prevent a NULL pointer dereference.
->>> 
->>> In case of NULL print error message and return -ENODEV
->>> 
->>> Signed-off-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
->>> ---
->>>  drivers/input/keyboard/mtk-pmic-keys.c | 3 +++
->>>  1 file changed, 3 insertions(+)
->>> 
->>> diff --git a/drivers/input/keyboard/mtk-pmic-keys.c b/drivers/input/keyboard/mtk-pmic-keys.c
->>> index 62391d6c7da6..12c449eed026 100644
->>> --- a/drivers/input/keyboard/mtk-pmic-keys.c
->>> +++ b/drivers/input/keyboard/mtk-pmic-keys.c
->>> @@ -247,6 +247,9 @@ static int mtk_pmic_keys_probe(struct platform_device *pdev)
->>>  	const struct of_device_id *of_id =
->>>  		of_match_device(of_mtk_pmic_keys_match_tbl, &pdev->dev);
->>>  
->>> +	if (!of_id)
->>> +		return -ENODEV;
->>> +
->>
->> So if we make MFD/6396 core smarter we would not be needing this. I
->> guess there is still a possibility of someone stuffing "mtk-pmic-keys"
->> into "driver_override" attribute of a random platform device but I
->> wonder if we really need to take care of such scenarios...
-It turns out it was possible to make 6397-core smarter.
-I've submitted [1] to replace this patch.
+>diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst =
+b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>index 7b90cb939e9d..5ed343ddd1ea 100644
+>--- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>@@ -3059,7 +3059,7 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
+>     :stub-columns: 0
+>     :widths:       1 1 2
+>=20
+>-    * - ``V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT``
+>+    * - ``V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT_ENABLED``
+>       - 0x00000001
+>       -
+>     * - ``V4L2_HEVC_PPS_FLAG_OUTPUT_FLAG_PRESENT``
+>@@ -3274,6 +3274,9 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
+>     * - =
+``V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_LOOP_FILTER_ACROSS_SLICES_ENABLED``
+>       - 0x00000100
+>       -
+>+    * - ``V4L2_HEVC_SLICE_PARAMS_FLAG_DEPENDENT_SLICE_SEGMENT``
+>+      - 0x00000200
+>+      -
+>=20
+> .. raw:: latex
+>=20
+>diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c =
+b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
+>index 397a4ba5df4c..6821e3d05d34 100644
+>--- a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
+>+++ b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
+>@@ -479,8 +479,8 @@ static void cedrus_h265_setup(struct cedrus_ctx =
+*ctx,
+> 				slice_params->flags);
+>=20
+> 	reg |=3D =
+VE_DEC_H265_FLAG(VE_DEC_H265_DEC_SLICE_HDR_INFO0_FLAG_DEPENDENT_SLICE_SEG=
+MENT,
+>-				V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT,
+>-				pps->flags);
+>+				V4L2_HEVC_SLICE_PARAMS_FLAG_DEPENDENT_SLICE_SEGMENT,
+>+				slice_params->flags);
+>=20
+> 	/* FIXME: For multi-slice support. */
+> 	reg |=3D =
+VE_DEC_H265_DEC_SLICE_HDR_INFO0_FLAG_FIRST_SLICE_SEGMENT_IN_PIC;
+>diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
+>index b713eeed1915..dc964ff7cd29 100644
+>--- a/include/media/hevc-ctrls.h
+>+++ b/include/media/hevc-ctrls.h
+>@@ -83,7 +83,7 @@ struct v4l2_ctrl_hevc_sps {
+> 	__u64	flags;
+> };
+>=20
+>-#define V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT		(1ULL << 0)
+>+#define V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT_ENABLED	(1ULL << 0)
+> #define V4L2_HEVC_PPS_FLAG_OUTPUT_FLAG_PRESENT			(1ULL << 1)
+> #define V4L2_HEVC_PPS_FLAG_SIGN_DATA_HIDING_ENABLED		(1ULL << 2)
+> #define V4L2_HEVC_PPS_FLAG_CABAC_INIT_PRESENT			(1ULL << 3)
+>@@ -166,6 +166,7 @@ struct v4l2_hevc_pred_weight_table {
+> #define V4L2_HEVC_SLICE_PARAMS_FLAG_USE_INTEGER_MV		(1ULL << 6)
+> #define V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_DEBLOCKING_FILTER_DISABLED =
+(1ULL << 7)
+> #define =
+V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_LOOP_FILTER_ACROSS_SLICES_ENABLED (1ULL=
+ << 8)
+>+#define V4L2_HEVC_SLICE_PARAMS_FLAG_DEPENDENT_SLICE_SEGMENT	(1ULL << 9)
+>=20
+> struct v4l2_ctrl_hevc_slice_params {
+> 	__u32	bit_size;
 
-Thanks again for your suggestion. Please let me know if I should add
-your Suggested-by: in [1].
+Happy to see this flag finally making it
 
-[1] https://patchwork.kernel.org/project/linux-mediatek/patch/20210429143811.2030717-1-mkorpershoek@baylibre.com/ instead
->>
->>>  	keys = devm_kzalloc(&pdev->dev, sizeof(*keys), GFP_KERNEL);
->>>  	if (!keys)
->>>  		return -ENOMEM;
->>> -- 
->>> 2.27.0
->>> 
->>
->> Thanks.
->>
->> -- 
->> Dmitry
+Many thanks
+
+John Cox
