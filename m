@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2633636E78C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 11:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B0B36E78E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 11:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240171AbhD2JFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 05:05:41 -0400
-Received: from mail-m17655.qiye.163.com ([59.111.176.55]:63808 "EHLO
+        id S240261AbhD2JFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 05:05:50 -0400
+Received: from mail-m17655.qiye.163.com ([59.111.176.55]:64050 "EHLO
         mail-m17655.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240008AbhD2JFg (ORCPT
+        with ESMTP id S240008AbhD2JFr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 05:05:36 -0400
+        Thu, 29 Apr 2021 05:05:47 -0400
 Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.250.176.229])
-        by mail-m17655.qiye.163.com (Hmail) with ESMTPA id 0A578400B3;
-        Thu, 29 Apr 2021 17:04:47 +0800 (CST)
+        by mail-m17655.qiye.163.com (Hmail) with ESMTPA id 4A7D9400A7;
+        Thu, 29 Apr 2021 17:04:57 +0800 (CST)
 From:   Wang Qing <wangqing@vivo.com>
 To:     Jonathan Corbet <corbet@lwn.net>, Wang Qing <wangqing@vivo.com>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
@@ -27,74 +27,61 @@ To:     Jonathan Corbet <corbet@lwn.net>, Wang Qing <wangqing@vivo.com>,
         Petr Mladek <pmladek@suse.com>,
         Santosh Sivaraj <santosh@fossix.org>,
         Vlastimil Babka <vbabka@suse.cz>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V2,RESEND 1/4] kernel: watchdog: Modify the explanation related to watchdog thread
-Date:   Thu, 29 Apr 2021 17:04:25 +0800
-Message-Id: <1619687073-24686-2-git-send-email-wangqing@vivo.com>
+        linux-kernel@vger.kernel.org,
+        Mathieu Chouquet-Stringer <me@mathieu.digital>
+Subject: [PATCH V2,RESEND 2/4] doc: watchdog: Delete the explanation about "watchdog/%u".
+Date:   Thu, 29 Apr 2021 17:04:26 +0800
+Message-Id: <1619687073-24686-3-git-send-email-wangqing@vivo.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1619687073-24686-2-git-send-email-wangqing@vivo.com>
+References: <1619687073-24686-2-git-send-email-wangqing@vivo.com>
 X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQhgYT1YfTUgfQhlKS04eHR1VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        oVCBIfWUFZGh8aGVZIGUxCSkMeSExNT0NVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
         hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Ni46Ijo5Hj8LHkkICUwqFzg0
-        PQhPCTBVSlVKTUpCTUNMS0NMQ0lKVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5LVUpMTVVJSUJZV1kIAVlBSE1ITDcG
-X-HM-Tid: 0a791cdf9d82da01kuws0a578400b3
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6P006STo6PT8RHklNN0MLFzIe
+        NSsKFDRVSlVKTUpCTUNMS0JDSk9KVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5LVUpMTVVJSUJZV1kIAVlBSE5DQzcG
+X-HM-Tid: 0a791cdfc5aeda01kuws4a7d9400a7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The watchdog thread has been replaced by cpu_stop_work, modify the 
-explanation related.
+"watchdog/%u" threads has be replaced by cpu_stop_work. The current description
+is extremely misleading, so delete the explanation about "watchdog/%u".
 
 Signed-off-by: Wang Qing <wangqing@vivo.com>
 ---
- kernel/watchdog.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ .../admin-guide/kernel-per-CPU-kthreads.rst          | 20 --------------------
+ 1 file changed, 20 deletions(-)
 
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 7110906..d7fb4fb
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -92,7 +92,7 @@ __setup("nmi_watchdog=", hardlockup_panic_setup);
-  * own hardlockup detector.
-  *
-  * watchdog_nmi_enable/disable can be implemented to start and stop when
-- * softlockup watchdog threads start and stop. The arch must select the
-+ * softlockup watchdog start and stop. The arch must select the
-  * SOFTLOCKUP_DETECTOR Kconfig.
-  */
- int __weak watchdog_nmi_enable(unsigned int cpu)
-@@ -322,7 +322,7 @@ static DEFINE_PER_CPU(struct completion, softlockup_completion);
- static DEFINE_PER_CPU(struct cpu_stop_work, softlockup_stop_work);
- 
- /*
-- * The watchdog thread function - touches the timestamp.
-+ * The watchdog feed function - touches the timestamp.
-  *
-  * It only runs once every sample_period seconds (4 seconds by
-  * default) to reset the softlockup timestamp. If this gets delayed
-@@ -551,11 +551,7 @@ static void lockup_detector_reconfigure(void)
- }
- 
- /*
-- * Create the watchdog thread infrastructure and configure the detector(s).
-- *
-- * The threads are not unparked as watchdog_allowed_mask is empty.  When
-- * the threads are successfully initialized, take the proper locks and
-- * unpark the threads in the watchdog_cpumask if the watchdog is enabled.
-+ * Create the watchdog infrastructure and configure the detector(s).
-  */
- static __init void lockup_detector_setup(void)
- {
-@@ -621,7 +617,7 @@ void lockup_detector_soft_poweroff(void)
- 
- #ifdef CONFIG_SYSCTL
- 
--/* Propagate any changes to the watchdog threads */
-+/* Propagate any changes to the watchdog infrastructure */
- static void proc_watchdog_update(void)
- {
- 	/* Remove impossible cpus to keep sysctl output clean. */
+diff --git a/Documentation/admin-guide/kernel-per-CPU-kthreads.rst b/Documentation/admin-guide/kernel-per-CPU-kthreads.rst
+index 531f689..5e51ee5
+--- a/Documentation/admin-guide/kernel-per-CPU-kthreads.rst
++++ b/Documentation/admin-guide/kernel-per-CPU-kthreads.rst
+@@ -332,23 +332,3 @@ To reduce its OS jitter, do at least one of the following:
+ 	kthreads from being created in the first place.  However, please
+ 	note that this will not eliminate OS jitter, but will instead
+ 	shift it to RCU_SOFTIRQ.
+-
+-Name:
+-  watchdog/%u
+-
+-Purpose:
+-  Detect software lockups on each CPU.
+-
+-To reduce its OS jitter, do at least one of the following:
+-
+-1.	Build with CONFIG_LOCKUP_DETECTOR=n, which will prevent these
+-	kthreads from being created in the first place.
+-2.	Boot with "nosoftlockup=0", which will also prevent these kthreads
+-	from being created.  Other related watchdog and softlockup boot
+-	parameters may be found in Documentation/admin-guide/kernel-parameters.rst
+-	and Documentation/watchdog/watchdog-parameters.rst.
+-3.	Echo a zero to /proc/sys/kernel/watchdog to disable the
+-	watchdog timer.
+-4.	Echo a large number of /proc/sys/kernel/watchdog_thresh in
+-	order to reduce the frequency of OS jitter due to the watchdog
+-	timer down to a level that is acceptable for your workload.
 -- 
 2.7.4
 
