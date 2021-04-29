@@ -2,110 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5769636E5A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 09:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1428336E5AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 09:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238596AbhD2HNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 03:13:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237080AbhD2HNg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 03:13:36 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E79C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 00:12:45 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id l22so67855752ljc.9
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 00:12:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3WbNLgzVbrVpx/2c/s1NzjwYtEIInb7jUS0YQaKGOUA=;
-        b=g3OoNN4m7i9nwQSNeFCamQND78UWDlVv4sikr+xLcOtyPi4bvSVdaNvszmOh22bxQY
-         RpOCy/7p+MN8HHNfQjCLqIONi/h/kzFIcluYaDYYTB5TjbQSmBt2Vt3TR79yVDzGhogz
-         uIu6ZW/nmvU7bc4pV8AMguKSf4nhPXrd1Azle5lN2hNc3AX6PRCBHzG0AHxYWJC0Lu+U
-         0wTJAMOSZx+XSPWnexDrM6z3P5kKX6OSRQ6GdBbhMCjuKwmxnRAGzFRLHkzj90WTXyMr
-         AUXP4tJQQHXZCVLxtmUZ5w1OxgplNVkvJZMgY4YDQ46/qt+mg7PAVXu4VNJznHJAE47w
-         VQ7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3WbNLgzVbrVpx/2c/s1NzjwYtEIInb7jUS0YQaKGOUA=;
-        b=NbiZ2YdsU2Pv+DRDisKaiGbH9yHgD1arUj8CNp94zO8IbfM6K2MCfKpEI+fcfpWFLK
-         IGNiyH80t7yA6jmQrKRgjBKAXxIOjk3HgpY5iiw7ygA0QFIrb0CpfQV9V61uCkFSmlhg
-         AtrJWbGN8b/YGiVuGdXQR3n/6GFuh4iJ/I7efhGpz3ehRQSi0CGLIPsX/LssHpmYTjHU
-         ELrzPhqBSv643Y8+p8t25jlSkJw8taMF7LdRJGfihNZ93uCs2WlphPWiIYtT3B4fZMZn
-         WGMCnKe3HZhKWa0/VS2dR+qk3l9ToG3P98+5PvdClmEAx94Bs0RE+hiL8JZB+xMyv4UD
-         zl4w==
-X-Gm-Message-State: AOAM530tFL+ZOhWOel4IvQxwzxQWfoU9jslWkdG5pA8rUGHF5DJ3zmXt
-        nGT/6lb9sJ44vo+v6Se2tUrouNR9LJtBKzKkh8jMuA==
-X-Google-Smtp-Source: ABdhPJynwwCixdiNsvRc886hSdFjYV7YWBNR5qexh/o9NJoVJDV6etAkxH1II4aYpazq7C0FmcWQ8/Y01bqOl4kv31g=
-X-Received: by 2002:a2e:8794:: with SMTP id n20mr22956202lji.401.1619680363850;
- Thu, 29 Apr 2021 00:12:43 -0700 (PDT)
+        id S239454AbhD2HOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 03:14:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33790 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232075AbhD2HO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 03:14:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 177EF6141E;
+        Thu, 29 Apr 2021 07:13:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619680421;
+        bh=58tmw40R8d7hq0bYQ7ucYztt+FsoRTyGxT8Or5otJ0Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=u57bft8gaxqZ58WFZiZsaUCAj2+SFYgQnW+zHQWeVoDKQuNe28Ui9nkShXq8gVFJP
+         CxAeWwIPITWLcLLSYO5a8o1543Vr7+nNrZWBDirk+efgJkiDxpcY4TllSycRwVeHqg
+         D5XQknT64m26ahQWr9FzltYNllvJes0t6xG92DVAzgEcUYHABn0wodLonRFrXo+4WZ
+         5gby7lVxrfSdnbgxKvu763v6/b6KwHgoB5P54m1Hq6INKRHT4092QQMLAxJBZggXG6
+         C4dTCZbYAp6DMa/E3SHwqVrYbvqocLq0CDv4pM58sLQpLqyduPUhwBWODkU91qqkXU
+         1Q14nXullZdgg==
+Date:   Thu, 29 Apr 2021 09:13:35 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v4 79/79] media: hantro: do a PM resume earlier
+Message-ID: <20210429091335.2b563ab5@coco.lan>
+In-Reply-To: <e5eeffbbad6ee90204cb3928cfd6774efb6174f3.camel@collabora.com>
+References: <cover.1619621413.git.mchehab+huawei@kernel.org>
+        <569838d406dde80dcc64989a663882817a54cbb2.1619621413.git.mchehab+huawei@kernel.org>
+        <e5eeffbbad6ee90204cb3928cfd6774efb6174f3.camel@collabora.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20210428232821.2506201-1-swood@redhat.com>
-In-Reply-To: <20210428232821.2506201-1-swood@redhat.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 29 Apr 2021 09:12:32 +0200
-Message-ID: <CAKfTPtBrJNBg3847R_b8A-1c5rb9Fb5FFNMX+z11QGAiO0ofkw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] newidle_balance() PREEMPT_RT latency mitigations
-To:     Scott Wood <swood@redhat.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Scott,
+Em Wed, 28 Apr 2021 14:17:50 -0300
+Ezequiel Garcia <ezequiel@collabora.com> escreveu:
 
-On Thu, 29 Apr 2021 at 01:28, Scott Wood <swood@redhat.com> wrote:
->
-> These patches mitigate latency caused by newidle_balance() on large
-> systems when PREEMPT_RT is enabled, by enabling interrupts when the lock
-> is dropped, and exiting early at various points if an RT task is runnable
-> on the current CPU.
->
-> On a system with 128 CPUs, these patches dropped latency (as measured by
-> a 12 hour rteval run) from 1045us to 317us (when applied to
-> 5.12.0-rc3-rt3).
+> Hi Mauro,
+>=20
+> Thanks a lot for taking care of this.
+>=20
+> On Wed, 2021-04-28 at 16:52 +0200, Mauro Carvalho Chehab wrote:
+> > The device_run() first enables the clock and then
+> > tries to resume PM runtime, checking for errors.
+> >=20
+> > Well, if for some reason the pm_runtime can not resume,
+> > it would be better to detect it beforehand.
+> >=20
+> > So, change the order inside device_run().
+> >=20
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org> =20
+>=20
+> Clocks could be behind power-domains, IIRC, so this change
+> is fixing that.
+>=20
+> However, this has ever been a problem for this driver,
+> so I don't think it makes sense to bother with Fixes tag.
 
-The patch below has been queued for v5.13 and removed the update of
-blocked load what seemed to be the major reason for long preempt/irq
-off during newly idle balance:
-https://lore.kernel.org/lkml/20210224133007.28644-1-vincent.guittot@linaro.org/
+I would prefer to move this patch to the first part of this
+series, together with other fixes, rebasing it to apply cleanly
+before the pm_runtime_resume_and_get() patch, with:
 
-I would be curious to see how it impacts your cases
+    Fixes: 775fec69008d ("media: add Rockchip VPU JPEG encoder driver")
 
->
-> I tried a couple scheduler benchmarks (perf bench sched pipe, and
-> sysbench threads) to try to determine whether the overhead is measurable
-> on non-RT, but the results varied widely enough (with or without the patches)
-> that I couldn't draw any conclusions from them.  So at least for now, I
-> limited the balance callback change to when PREEMPT_RT is enabled.
->
-> Link to v1 RFC patches:
-> https://lore.kernel.org/lkml/20200428050242.17717-1-swood@redhat.com/
->
-> Scott Wood (3):
->   sched/fair: Call newidle_balance() from balance_callback on PREEMPT_RT
->   sched/fair: Enable interrupts when dropping lock in newidle_balance()
->   sched/fair: break out of newidle balancing if an RT task appears
->
->  kernel/sched/fair.c  | 66 ++++++++++++++++++++++++++++++++++++++------
->  kernel/sched/sched.h |  6 ++++
->  2 files changed, 64 insertions(+), 8 deletions(-)
->
-> --
-> 2.27.0
->
+This way, people that could be interested on backporting it will be
+capable to apply it as is to stable Kernel releases that came
+with this driver.
+
+>=20
+> Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+>=20
+> Thanks,
+> Ezequiel
+>=20
+> > ---
+> > =C2=A0drivers/staging/media/hantro/hantro_drv.c | 8 ++++----
+> > =C2=A01 file changed, 4 insertions(+), 4 deletions(-)
+> >=20
+> > diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/stagin=
+g/media/hantro/hantro_drv.c
+> > index 25fa36e7e773..67de6b15236d 100644
+> > --- a/drivers/staging/media/hantro/hantro_drv.c
+> > +++ b/drivers/staging/media/hantro/hantro_drv.c
+> > @@ -160,14 +160,14 @@ static void device_run(void *priv)
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0src =3D hantro_get_src_=
+buf(ctx);
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0dst =3D hantro_get_dst_=
+buf(ctx);
+> > =C2=A0
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ret =3D clk_bulk_enable(ctx-=
+>dev->variant->num_clocks, ctx->dev->clocks);
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (ret)
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0goto err_cancel_job;
+> > -
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ret =3D pm_runtime_resu=
+me_and_get(ctx->dev->dev);
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (ret < 0)
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0goto err_cancel_job;
+> > =C2=A0
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ret =3D clk_bulk_enable(ctx-=
+>dev->variant->num_clocks, ctx->dev->clocks);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (ret)
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0goto err_cancel_job;
+> > +
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0v4l2_m2m_buf_copy_metad=
+ata(src, dst, true);
+> > =C2=A0
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ctx->codec_ops->run(ctx=
+); =20
+>=20
+>=20
+
+
+
+Thanks,
+Mauro
