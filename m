@@ -2,161 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FDD536F1C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 23:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 076A136F1C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 23:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237388AbhD2VQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 17:16:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45708 "EHLO
+        id S233349AbhD2VRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 17:17:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237268AbhD2VQK (ORCPT
+        with ESMTP id S233293AbhD2VRa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 17:16:10 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 555D9C061352
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 14:15:22 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id i11so5947594oig.8
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 14:15:22 -0700 (PDT)
+        Thu, 29 Apr 2021 17:17:30 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB397C06138C;
+        Thu, 29 Apr 2021 14:16:41 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id e14so229781ils.12;
+        Thu, 29 Apr 2021 14:16:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uMJoe+vUrfgBQEq7kVx0XYeKeargRfuihI9VgkHYtiA=;
-        b=wxr1SsFiEfFb/fpq6xoNyH409ZwaJoA5FgMsaki/bg3OYpXxoigMTJYRPK9ASxP+em
-         jysubih129PB5RTSLbXM5Mm9JP8X1T14Omx2t88zNBKVMFXOpzg+Fhbaag9DK5vFIAGO
-         ZBM0ZacTftyZuIdYS5tBJHlBMfznNxPeRVY9flovABrWqutDlGc8GiOa1CV3cG1Lu+4g
-         ZZ5BWZ0UY91D8sGmek6Q730s/vTplSLsHPWvXIRE/Xh+utDU+UbaD54583BwlkhSavxj
-         /0H1wG05VPeET7IRirKN8OG8bH0iPluj0QD6eRa/sn53JaQBCIhYMky1tiGTROMZPcOi
-         rbew==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PLmAbaiqDgXsfehVsfQxBE/NoaMPlbdkvn0mL6TiaaY=;
+        b=OHVHpOiLo43hskM9fq3HHxoZHN+xbU9C8D828PXJlGscbjMGCamVk99WegqVrFZbLh
+         QkE1XXNoiHmM0KCsJSHARrBQTPWxsBZJfTCTa+2vi4UGh+T+Pvqn4I/F8dinjJYVhagA
+         ryi3N2iULkIKHyE2iVMZTE5J/6LCw3cbyUalyBH01H/hRJrOtEASkp0si2jNrk2OFDY4
+         bwzx2kbij5lkL1jMfmVxm/nvAqj1RCkcP6TAM/+UCSA/OxfOwO334vzuGP3rqS17wp81
+         hT33q3w5ZYvKorfVWj517DW2ow1VqshyLqaitAA7BxZwP5XDqST/YSPZGsSG278PgWFj
+         MW0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uMJoe+vUrfgBQEq7kVx0XYeKeargRfuihI9VgkHYtiA=;
-        b=ng6qnI0DwWpG6POAu9VkCiE8hhaGtrnQsDwozC0u681W10I3PdWF0bNiBgEsWUpT0K
-         7zNvdPNKlA+Fq5haexAwDPSZASxu0jpHmT/yMfRYdVjYNh6DsAvVGpW0I55Uy4Lr9acf
-         mTIJFOLkWc8lgiyW3oNpwg4nuy0Gk2wkXBVc95yDXjSgwfgs/uhXL0lB5hyqNpKZ3GMv
-         uriuh29Kme6pz2YZr3wZ0xxjLWZPFDYl+CbLKVh0DLCIdzYhyv0HptfnUgpoPHZ0ZZs6
-         C/H59FUP7Xz0mxbX31zj1DqmJ0h7gPgHQCE2W1Gn1FvGv/v0kqdicvjyUe0jeeEJutT4
-         +pCg==
-X-Gm-Message-State: AOAM5323Rr80zOT5zf82LI58925Eg2F4c6uov+oWLsJqLrIuCXNdESXo
-        zKrFfz2hoWxv9Up/37GLZ3sIdg==
-X-Google-Smtp-Source: ABdhPJy/n4govBiRSCfjzIykABf5J674t4vnN5+OPUK++1h6JrCE4GBeaKuK7jP4HN0htaVAP6d3FQ==
-X-Received: by 2002:aca:a947:: with SMTP id s68mr1515804oie.8.1619730921749;
-        Thu, 29 Apr 2021 14:15:21 -0700 (PDT)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id y67sm242707otb.1.2021.04.29.14.15.20
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PLmAbaiqDgXsfehVsfQxBE/NoaMPlbdkvn0mL6TiaaY=;
+        b=KuSGLXvNsKPBF4TQWcbsdfEGRBDSpghxKQX68vlKaH7PxFab0ZDQP/+BB5D7W9wuYf
+         zwakUS+577eVbFwhUfxnbnJg7TZGIkOIegpKDP4bgwsdi3qDI1j19cBXTt1iOmEK7tc8
+         bQV7DvzaaCvgNLLzMTMx40RL9s323SwlGTHNfvZmvh/LkxtsZRgGUT/RrdvxIuzyhlI1
+         rKTq7V5X6ajjbPlWqbM2zFpGmzu4sMioOLTVgzhNSTpyMMNWu/a7JoTkNoRyarI35ssV
+         sYebINcWAOW48Sd810aANYDFpOn323Gfn46TGrW+dTK7Bqw8k9XXFQBHMhWYvafFWNdZ
+         bfnw==
+X-Gm-Message-State: AOAM533tIAXvS8YuZ5VC/d1b6yCintZFi0IGIrC2zHOlQv5sYaXttMc/
+        6dafaRh8fNLtLxVQhNBoF98=
+X-Google-Smtp-Source: ABdhPJxIS4VXXNgUZgos9bwHUCZiCmUnqf8uTn94VwlVwYH++jwtzW4E/RkGLUSnKpYVtbbucwDpVg==
+X-Received: by 2002:a05:6e02:1d0e:: with SMTP id i14mr1261188ila.230.1619731001114;
+        Thu, 29 Apr 2021 14:16:41 -0700 (PDT)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:8a74:d2ad:27b:e619])
+        by smtp.gmail.com with ESMTPSA id q11sm1808076ile.56.2021.04.29.14.16.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 14:15:21 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-pwm@vger.kernel.org,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Yassine Oudjana <y.oudjana@protonmail.com>,
-        Luca Weiss <luca@z3ntu.xyz>,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>
-Subject: [PATCH v7 6/6] arm64: dts: qcom: db820c: Add user LEDs
-Date:   Thu, 29 Apr 2021 14:15:17 -0700
-Message-Id: <20210429211517.312792-7-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210429211517.312792-1-bjorn.andersson@linaro.org>
-References: <20210429211517.312792-1-bjorn.andersson@linaro.org>
+        Thu, 29 Apr 2021 14:16:40 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     peng.fan@oss.nxp.com, marex@denx.de, frieder.schrempf@kontron.de,
+        tharvey@gateworks.com, aford@beaconembedded.com,
+        Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V3 0/5] soc: imx8mn:  Add gpcv2, USB and GPU 
+Date:   Thu, 29 Apr 2021 16:16:19 -0500
+Message-Id: <20210429211625.1835702-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The db820c has 4 "user LEDs", all connected to the PMI8994. The first
-three are connected to the three current sinks provided by the TRILED
-and the fourth is connected to MPP2.
+With the updates to the GPCv2 driver for i.MX8M Mini [1], much of this
+can be applied to work with the i.MX8M Nano.  With the added
+GPCv2 domains, additional functions like USB and GPU are available.
+This series does not utilize any power domains requiring the blk-ctl.
 
-By utilizing the DTEST bus the MPP is fed the control signal from the
-fourth LPG block, providing a consistent interface to the user.
+[1] -  https://lkml.org/lkml/2021/4/29/72
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
+Adam Ford (5):
+  dt-bindings: add defines for i.MX8MN power domains
+  soc: imx: gpcv2: add support for i.MX8MN power domains
+  arm64: dts: imx8mn: add GPC node and power domains
+  arm64: dts: imx8mn: Add power-domain reference in USB controller
+  arm64: dts: imx8mn: Add GPU node
 
-Changes since v6:
-- Changed sort order
+ .../bindings/power/fsl,imx-gpcv2.yaml         |  1 +
+ arch/arm64/boot/dts/freescale/imx8mn.dtsi     | 62 +++++++++++++
+ drivers/soc/imx/gpcv2.c                       | 93 +++++++++++++++++++
+ include/dt-bindings/power/imx8mn-power.h      | 15 +++
+ 4 files changed, 171 insertions(+)
+ create mode 100644 include/dt-bindings/power/imx8mn-power.h
 
- arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi | 49 ++++++++++++++++++++
- 1 file changed, 49 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-index defcbd15edf9..2b90ceb84f84 100644
---- a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-+++ b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-@@ -8,6 +8,7 @@
- #include "pmi8994.dtsi"
- #include <dt-bindings/input/input.h>
- #include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/leds/common.h>
- #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
- #include <dt-bindings/sound/qcom,q6afe.h>
- #include <dt-bindings/sound/qcom,q6asm.h>
-@@ -682,6 +683,54 @@ pinconf {
- 	};
- };
- 
-+&pmi8994_lpg {
-+	qcom,power-source = <1>;
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pmi8994_mpp2_userled4>;
-+
-+	qcom,dtest = <0 0
-+		      0 0
-+		      0 0
-+		      4 1>;
-+
-+	status = "okay";
-+
-+	led@1 {
-+		reg = <1>;
-+		label = "green:user1";
-+
-+		linux,default-trigger = "heartbeat";
-+		default-state = "on";
-+	};
-+
-+	led@2 {
-+		reg = <2>;
-+		label = "green:user0";
-+		default-state = "on";
-+	};
-+
-+	led@3 {
-+		reg = <3>;
-+		label = "green:user2";
-+	};
-+
-+	led@4 {
-+		reg = <4>;
-+		label = "green:user3";
-+	};
-+};
-+
-+&pmi8994_mpps {
-+	pmi8994_mpp2_userled4: mpp2-userled4-state {
-+		pins = "mpp2";
-+		function = "sink";
-+
-+		output-low;
-+		qcom,dtest = <4>;
-+	};
-+};
-+
- &pmi8994_spmi_regulators {
- 	vdd_gfx: s2@1700 {
- 		reg = <0x1700 0x100>;
 -- 
-2.29.2
+2.25.1
 
