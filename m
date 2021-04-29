@@ -2,85 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9D236F078
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 21:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 564F736F07A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 21:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231976AbhD2TYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 15:24:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48378 "EHLO
+        id S232006AbhD2TY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 15:24:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234294AbhD2TUu (ORCPT
+        with ESMTP id S234450AbhD2TVU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 15:20:50 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA84C06138D
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 12:20:01 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id l2so15725723wrm.9
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 12:20:00 -0700 (PDT)
+        Thu, 29 Apr 2021 15:21:20 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C479C06138B;
+        Thu, 29 Apr 2021 12:20:33 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id p12so875132ljg.1;
+        Thu, 29 Apr 2021 12:20:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=a3CpVQZ8aV3Tj3Vdd2PnPs8NyjMlVHJ8Wg502P1LUKo=;
-        b=OZrJaow6sYDuvdfYXiA2HW4XGAuP5hH7jyYb3zhlY5TxVBKxnV+DEhGNJWqfuci6ci
-         Z3c+oTp2maAKG2g1TPVJgWIidZHvww8/2w2FBTbJ/7GUeMM+az911CN5h/MMEmAQeuaF
-         lU3jG9IBz2AMqTpH35XgrZqIp+m8jfG4UZ8JxTL1iqICrq6guN8bKp5dxTmGWv94eUin
-         Qq/1IqwgCZaoZpBMlpELHBT0JRbua2RWR0XhToJpTJaNJmStmL2MKSgRHyzqTFdfwxsF
-         Qp+DWDODZ/ZKahL4cuQ3LrUUlWYsjGiytIR9KuOCrUgJYMbnplGtAs34WWQ786Ubbben
-         KeJA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=g8d4Y+3fQnVXcrWsarbuVfuo1sLNCCMSP2te5/Kx4NI=;
+        b=XpqcPXbEJI5DMvLw09LOKf2n2k+1/27+46TZ0HM6lgNhYHw3HCncidDOTfUMSEO8Jd
+         9mAbUO/9zQYxYLyWBRfYRXVpOf81MWQT3yI4jBdv0sFJ6qg47ZaZ+3ht88QwBPdvIutX
+         Gw+Wq1pYEixuCvWZXrqCNwwrfRcvitcD+6MoFc7M9nE7jEO00E+BSik8lyktPs3+qZfS
+         H+xxGc6r/Rmb9g+nPv3rUN0gcRH2kA82n0ridnM+vJioh/2GJxF7aYs4ws0Hb2WVrb+z
+         ZPpc/hw384UvKEvFju3yIVpITbnHiC2UCGStnXYiicsOKb9y2r2E6FUC0vK0AuLAf7HH
+         yFAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=a3CpVQZ8aV3Tj3Vdd2PnPs8NyjMlVHJ8Wg502P1LUKo=;
-        b=CzgFdnNSuku9z89tfvlCf23q2Bv/5u1ZNhwwohUriwB2pzBjA0tXdApWZDywHMkPlY
-         4mY39NlyVU+ZBM/hdOmQTAueFMjNymkEzZgSOHF0iNd9rRF5z3djOPhWBsHIVyUmu6dM
-         RvtXW8DVuLMpyRZEuPwxz4ya6DsjgnUlFnQakDc4JJLltYeCDHtGeqYZYgKspXO+nv2h
-         smc/98rYs8iUWw43t2g3dvvHmeH+6VkQtS/y9PYw2FPhGPFWEV07YrhQuous3C2WJyK3
-         jpIl/blgRrwtRJjrwPlmdAqtHo6oNxdmM6Rb+QmbR5MbNWZRHgTygGRaO+c5OHIHHYaC
-         GyxQ==
-X-Gm-Message-State: AOAM532XPYghSi+VfbIWX2cNImdNQ8Mv3dR0QvoSHKwlTWl1aWSQ6zZR
-        J9GXhdaf0JDe8yxJ7X8LbCsNMg==
-X-Google-Smtp-Source: ABdhPJzWUa9ryD/T+eDkGPNcW0qKaF99RcmCbCJvHT51XVxGZiZ+3gCFC+u06g7mKkh+kxlio7sz8g==
-X-Received: by 2002:a5d:674c:: with SMTP id l12mr1456412wrw.357.1619723999741;
-        Thu, 29 Apr 2021 12:19:59 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id a15sm7078207wrx.9.2021.04.29.12.19.58
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=g8d4Y+3fQnVXcrWsarbuVfuo1sLNCCMSP2te5/Kx4NI=;
+        b=cnjbhh23xLSUKzVj/VMf5XRD+vEKzOoVaoqIjT/dzrhBHB1G6dJvFYRXBm3mKk0ebs
+         h10W+EfFcahGQT5csLRKnSH1idp/g0yvYI/qu3gH1ZzgAaAH4ovBEVNmFHdumhnTUuny
+         xUimPLn54QatIEje7/0znGVNGthibvZx6tegxJozP0y+fbMycpILdo2MuNDHtSiIkZVK
+         r1+s7LktRalgyxWo8tLxrWGzpd877Ic8WS5lDtQRONDPwMs9XCaRXFda2u6lcOmojK3h
+         ShsYzzuFzpIOCZt0l5qkgzGz+WC7cD4SUoFO2cpg7izcR3WO1V4vSUI4jJEOrQ7hEZKv
+         7fnA==
+X-Gm-Message-State: AOAM533Y6906uncizR/CQ/SQvgMn5xx+Sr371MaqshyHlk0tgKPMVNUr
+        6285OCqn3JC91H5EgasjRls=
+X-Google-Smtp-Source: ABdhPJzNMSO4Jy694qhCMtqQC5FrV35QXxVEEzdV87vmhE/8zAlZOiz0gL/Zl82BUIQ7YvQ9s+urHw==
+X-Received: by 2002:a2e:808d:: with SMTP id i13mr921622ljg.366.1619724031505;
+        Thu, 29 Apr 2021 12:20:31 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.226.84])
+        by smtp.gmail.com with ESMTPSA id i12sm43798lfb.256.2021.04.29.12.20.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 12:19:59 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 21:19:57 +0200
-From:   LABBE Corentin <clabbe@baylibre.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, robh+dt@kernel.org,
-        linus.walleij@linaro.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: net: Convert mdio-gpio to yaml
-Message-ID: <YIsG3dOpVxqyC5J4@Red>
-References: <20210428163120.3657234-1-clabbe@baylibre.com>
- <YIm1REuYDPUwqSYf@lunn.ch>
+        Thu, 29 Apr 2021 12:20:31 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 22:20:23 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Vegard Nossum <vegard.nossum@oracle.com>,
+        akpm@linux-foundation.org, peterz@infradead.org, axboe@kernel.dk,
+        pmladek@suse.com, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
+Subject: Re: [PATCH] ext4: fix memory leak in ext4_fill_super
+Message-ID: <20210429222023.43db6fb1@gmail.com>
+In-Reply-To: <YIrnPXJo/n68NrQs@mit.edu>
+References: <20210428172828.12589-1-paskripkin@gmail.com>
+        <3c3877a4-fef2-9e24-f99f-2ecc46deb7e4@oracle.com>
+        <20210429143354.418248a7@gmail.com>
+        <YIrnPXJo/n68NrQs@mit.edu>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YIm1REuYDPUwqSYf@lunn.ch>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Wed, Apr 28, 2021 at 09:19:32PM +0200, Andrew Lunn a écrit :
-> > +  gpios:
-> > +    minItems: 2
-> > +    description: |
-> > +      MDC and MDIO lines connected to GPIO controllers are listed in
-> > +      the gpios property as described in section VIII.1 in the
-> > +      following order: MDC, MDIO.
+Hi! Thanks for your reply.
+
+On Thu, 29 Apr 2021 13:05:01 -0400
+"Theodore Ts'o" <tytso@mit.edu> wrote:
+> On Thu, Apr 29, 2021 at 02:33:54PM +0300, Pavel Skripkin wrote:
+> > 
+> > There is a chance, that kthread_stop() call will happen before
+> > threadfn call. It means, that kthread_stop() return value must be
+> > checked everywhere, isn't it? Otherwise, there are a lot of
+> > potential memory leaks, because some developers rely on the fact,
+> > that data allocated for the thread will be freed _inside_ thread
+> > function.
 > 
-> You should probably add maxItems: 3, or however you describe this in
-> yaml. You often find with x86 machines you don't have GPIOs, just GPI
-> and GPO, and you need to combine two to form the MDIO line of the MDIO
-> bus.
+> That's not the only potential way that we could leak memory.  Earlier
+> in kthread(), if this memory allocation fails,
+> 
+> 	self = kzalloc(sizeof(*self), GFP_KERNEL);
+> 
+> we will exit with -ENOMEM.  So at the very least all callers of
+> kthread_stop() also need to check for -ENOMEM as well as -EINTR ---
+> or, be somehow sure that the thread function was successfully called
+> and started.  In this particular case, the ext4 mount code had just
+> started the kmmpd thread, and then detected that something else had
+> gone wrong, and failed the mount before the kmmpd thread ever had a
+> chance to run.
+> 
+> I think if we want to fix this more generally across the whole kernel,
+> we would need to have a variant of kthread_run which supplies two
+> functions --- one which is the thread function, and the other which is
+> a cleanup function.  The cleanup function could just be kfree, but
+> there will be other cases where the cleanup function will need to do
+> other work before freeing the data structure (e.g., brelse((struct
+> mmpd_data *)data->bh)).
+
+I skimmed through kernel code and I didn't find any code
+examples, except ext4, where kthread is freeing something. Maybe, this
+API isn't required, but, as Vegard said, comment over
+kthread_stop() should be changed, because it's confusing.
+
+I have already added kthread.c developers (I hope, I chose
+the right emails) to CC. Maybe, they will think about this API. 
+
+> 
+> Is it worth it to provide such a cleanup function, which if present
+> would be called any time the thread exits or is killed?  I dunno.
+> It's probably simpler to just strongly recommend that the cleanup work
+> should never be done in the thread function, but after kthread_stop()
+> is called, whether it returns an error or not.  That's probably the
+> right fix for ext4, I think.
+> 
+> (Although note that kthread_stop(sbi->s_mmp_task) is called in
+> multiple places in fs/ext4/super.c, not just in the single location
+> which this patch touches.)
 > 
 
-I will do it.
-Thanks
+Good point, I'll add this and -ENOMEM checks and will send v2.
+
+Thanks!
+
+> 						- Ted
+
+
+
+With regards,
+Pavel Skripkin
