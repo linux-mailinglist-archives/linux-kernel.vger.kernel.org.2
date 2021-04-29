@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A219936E541
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 08:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D00336E543
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 08:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237259AbhD2HAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 03:00:03 -0400
-Received: from mail-vi1eur05on2056.outbound.protection.outlook.com ([40.107.21.56]:64865
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        id S237334AbhD2HAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 03:00:08 -0400
+Received: from mail-db8eur05on2085.outbound.protection.outlook.com ([40.107.20.85]:11425
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232511AbhD2HAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 03:00:01 -0400
+        id S237267AbhD2HAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 03:00:07 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DecZbwKf4oRRFA0Sxgjoz4Vby/Wz5HoRVIi1SIYhTzDq6n+X3IG6ziwznjCLVSDr+GbrTDImA41i1M7PWFbo6NHr4s+UZazFW96djWi807giwY0U8/Ab/4gD3c3XkMwtSuYM7AtoCSHamncw5iynIfHN1K05ww/PUU1t/gzq/0epibGOf+eErTwRQr3SaNyiyFLEKpFEaOdwz5EJc3cRwtOqCxxd4jc5XS5W/OJ94E2B/4co3oVlKf4Zu777zkchuf5q9wKNR9x5u9LMh5aTCJRbQPoJd73mdVSDtvNpVW/NNI12GDsa3RObZ7kM8ydpVp38JaTUOpbT/67QLowJxQ==
+ b=MDFOMtaaeL9/YIUC/qkFfLD+E6wy4UThoqQ237Dog/hF/EHwaob6bDa+e+pnkNAnf/h34Szi/n4EUCMM8HoS8QJiOAYMhalYs0GN2jsz+VSzeDAk5gbbEAtHTVrILyO1A9HSsSaUvt6iE0LZJZ24iPzg8WBQh1Cf7hzUKycDpwyblUqdp4/zhTJSXGOsRORfaiarfm5fjdDYN9vRzIgkAKquqftdrZ1l1spN636pBUCjjmBKpUbrempfOCG8ku8JtB2JrXiMNnuintu77OLOWQjE2Fo7jbC6ajow+0l/LrpzeDYvOEIQfT1BkT6JsqS/FssLdrGBpy8VQgM9IPdERg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0M2nSZgAEBwt4XdHnOocGRksY3hFRWrV85V4mkf3QPc=;
- b=NcpkTzKmHOWMZh7ovU17ivB4egM3569Uzu3d7Lh8jxDd9YbyePmOdyfoeSjJr46yrfgoUFhip+01LAx8xwbN1BY6WFlxUrte8sF/K87Z4SwlPL9TqkoyLVUCyNRVefj92qMXbxG/D0Lw57hAW2Nwkmzj9gq89enoB+Gt3VAJI/iKwUZOC/upmQIFJl+ldykYIHfzhUh/nCOFS487gnqm0GxUve/duFta9bn6SLzxp+rdO7UJEGlIKjQt95+3yKrff35aI+qWdfx3ajJJ7poUNbv0vbiGNOvk5lUjY8yugQ9ygjmIRqwvbaEDxlnWJKT18cb6DdHQItHo3I1hdhBa3g==
+ bh=kC7LQN2bjLXeLZ/WIeQhj39T2YZ0qC/FFSLx4nhi2E8=;
+ b=fm0wvmRjRG824sKSBWf0G/1GWBYKqoiDZRDEFKw9Qf55hR8mDcMpbz8s7CsVmfpbFy4eXRLvyOq+d0Tr91z/3QaAeE/EH5H2mPooq0c7CfTT2oiDeir9DwzXerOCx3ecdYJDvjc4KPUL5L+GflRhVFbBxgjDykyk0/R2ZjgFdXrZGWsF/pvisqYlC42tKHpH+GNnFIJtOAfVojdAfC1sXLOuQx161F5L5XaBciQe6h9wk2VutfPcFwkR01lgTjwaOmjXMh3ruvt4zsuT4J6RP6ovJt4U5dBWc2ZNV9jlHGzdlh83A1TycGPuucA5s+W/+yD8SD6rCzXj0mZUIZiAKg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0M2nSZgAEBwt4XdHnOocGRksY3hFRWrV85V4mkf3QPc=;
- b=ZxDdxttbcAInHCe6kOtNa57HN6j6nJmjBkEWpfJXXjsjgopwackQy4m3Oa9mRML8E/93AUzIV0HrF1aWE97ysDJN8098VeAowdz6LMmbx7YbKCQ9ewihb9g4sakayWSV2f5fgTFtuOeDDF+jBXm02HJ/v+aHEx0eATzrzBaOeFQ=
+ bh=kC7LQN2bjLXeLZ/WIeQhj39T2YZ0qC/FFSLx4nhi2E8=;
+ b=QsCrpsmRRVOQBztm4hkT+95WEJ1tdfHvYBrZnmhYJppOwjqhbruJvYeX5z94gpouRmVE37t7XQyNTc+ylGNT/Qv0TE7swRqq35B4cTghZZSrrqPcCQenJsthR5OBd685y6jGwqz58Lp0+lr+xrSvehKfztb7rwN8rtgDIbL4KYY=
 Authentication-Results: kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
 Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
  by DB7PR04MB5468.eurprd04.prod.outlook.com (2603:10a6:10:86::26) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.25; Thu, 29 Apr
- 2021 06:59:10 +0000
+ 2021 06:59:16 +0000
 Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
  ([fe80::45b9:c993:87ec:9a64]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
  ([fe80::45b9:c993:87ec:9a64%8]) with mapi id 15.20.4065.023; Thu, 29 Apr 2021
- 06:59:10 +0000
+ 06:59:16 +0000
 From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
 To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de
 Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
@@ -46,9 +46,9 @@ Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, ping.bai@nxp.com,
         frieder.schrempf@kontron.de, aford173@gmail.com, abel.vesa@nxp.com
-Subject: [PATCH 01/16] soc: imx: gpcv2: move to more ideomatic error handling in probe
-Date:   Thu, 29 Apr 2021 15:30:35 +0800
-Message-Id: <20210429073050.21039-2-peng.fan@oss.nxp.com>
+Subject: [PATCH 02/16] soc: imx: gpcv2: move domain mapping to domain driver probe
+Date:   Thu, 29 Apr 2021 15:30:36 +0800
+Message-Id: <20210429073050.21039-3-peng.fan@oss.nxp.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210429073050.21039-1-peng.fan@oss.nxp.com>
 References: <20210429073050.21039-1-peng.fan@oss.nxp.com>
@@ -60,51 +60,51 @@ X-ClientProxiedBy: HK2PR02CA0208.apcprd02.prod.outlook.com
  (2603:10a6:4:a1::14)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by HK2PR02CA0208.apcprd02.prod.outlook.com (2603:1096:201:20::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.29 via Frontend Transport; Thu, 29 Apr 2021 06:59:05 +0000
+Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by HK2PR02CA0208.apcprd02.prod.outlook.com (2603:1096:201:20::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.29 via Frontend Transport; Thu, 29 Apr 2021 06:59:11 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8cbd03d9-b45e-438a-90f8-08d90adc4a33
+X-MS-Office365-Filtering-Correlation-Id: e27b32e6-f0c7-47b0-c88e-08d90adc4dba
 X-MS-TrafficTypeDiagnostic: DB7PR04MB5468:
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB7PR04MB5468AEF58FE79B469D02170DC95F9@DB7PR04MB5468.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-Microsoft-Antispam-PRVS: <DB7PR04MB5468B0B1251B4CCCF397DBEBC95F9@DB7PR04MB5468.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Xo4fOsQYv68abhzfTfP5TOPCcPG9ERq3QlExxZ7G00ZDdsetMR9VyhsL5oBn3DvR7PeQO35YSDbnZbSlh4aCNMqfAKdI/QMQFdVNWVvU4tl6eR9b1553/90eVQW0fZSa+iqRCIS76rQHP5vwBYYgnPucsnfEQ/EYZHFep4HTg1wTO+YKiQdSTRve3cic+xzFSHHzEEvpOtDEQM/O2ppioWbW/AULtlwa4tCo++cSndfRKjtFLLji1JrdvQWFdLWbEUWyW3EUeYEQ81boIlU2KqzDWhTj7Of4aYagD+vWwaOO+aQN+uwnXo8tptr2odhd2BdNCaQfyy56dUhqOZpFwI/7+6mo7CxBTGv5W4V/APyDMtKSe1oTHJumUWetGxnJjt6MRuoLd9e0Sep3bJ+1WQOt++Y1iXxzuJGk1ifPjVkpUMGj+JPzrFtWQDXE2xC4wAPTKz/hWH20PLB7LpMrY8ExXH2DiBwEw57cmDITb+sRZTXcQ426t974ULdwrSUjzeHwOM72QkdE8PtQZg/msfGmUt3QBogEBbwzu+r90EkWAVgD8X4DlN7RwnsoekbSKw+y1R2reK+rupnfSIIdTFzs1OkoPNpdR8qewlC37Ann2k1vsS46p9JEzaxrRz11QZjSX1anojQb4hVuxCfShEy77o/1EOdYNAdL5CMdjaA=
+X-Microsoft-Antispam-Message-Info: MzL+sOZzVd8rsM34Tc+ZK30jA2QJyvOWvfE/Pb2MuSdkLomEI+bt9SpTYkGcaBpaMo7FLLpZQrHOMoWi83wKqu8GglM1No9zV7ToS/7DxfWi3Kj0f8Spue2CWNwyuftHpFeDIBpiiWZ/3wz72N3PdIKmBSpeXFpMdnMt9FiS9O/gmSwVh5vWjusstv8sNIgEDYJU3v1viALMlRk+3NAMnr96dJbCNykNl9/kiWDyBsKC0DTN9Pu/rcT5KqVyAB1yjWteTOZ8Ucl1GEJ7U8l/s5k4YaE6OJedneQpQdhCDx/CELaZcjOTkiyHgUGLW+nfR/sbccgYuqXOXO6+QkPtU/euhYwIcS/qx7V3jI1kE1rWW+EuqXwrLfLiIa1AFR4tQfqFq2PwmC36GrJIf/QqJ3fWabrSvHhfR2nSwnTeL2aDXcbnKO49s7SRlzSZoz/dTVM2a4ldNv+/ynOBiwJ+rQ2LhUi7CQECwOscdRT0yW1t6C0cMFcAED22LSib8ed5wxoG8Iqz8QJKPqnhLHO7l9bFNT2IYnMOx/nvSmK0qqSA3kO02bKcr4JaP88GXWSyazBpcsxmL9FgTY0058mZIhgGnVrWBSK13rroVQUc88pzBkCkqkegyNGLKTf9E4fg6d2NWBiFhlnr1NZOh++iS6ZhA+Mum0+Cgb6bjp1aSos=
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(376002)(39860400002)(346002)(136003)(2906002)(8936002)(4326008)(52116002)(38100700002)(38350700002)(6666004)(956004)(6512007)(83380400001)(8676002)(66946007)(66476007)(16526019)(2616005)(1076003)(6506007)(186003)(6486002)(66556008)(7416002)(478600001)(5660300002)(26005)(316002)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?xjXZj7TuCCA5FVG6Adc3g0Gk4Sv4MPuAMHKWVRRDLD+/2cbrByzfKGQP/rIl?=
- =?us-ascii?Q?nUHk+wbgh1wnrE9fWzAZAJFIY1pPFTrlGxVh/HgYvQsQi2TunQC/kWaeZjUw?=
- =?us-ascii?Q?BDizoWRR2R1YGYRSFiqN9c/8Z4IfNOuYSj1m7x8m4t+uIWWFWAquupcW2ePV?=
- =?us-ascii?Q?TgvKXQ5GrjFUSZlejJN896ztUJQrZaBRZiTIN3JvLfoLjZlGCPUXMQ8fv+Pu?=
- =?us-ascii?Q?Yrpne0VLuoxclB3DRnkfcBIS2Tu6McQPCH/hXzkVfGDGeJfRKEIumBrUK+iF?=
- =?us-ascii?Q?Rh8286M27TbCZIRyKQn/oEzWcG846/FDn9wbRSi0Oi+rwIEKpBiSAN5sUEFi?=
- =?us-ascii?Q?5R6jwtEphTBzRX2DqGfXxKYYFzEeLW57SSPXmkp4me7LzxP9mpVHdVNjMfIz?=
- =?us-ascii?Q?panfXWwrdhnbDvL3PsplPjtAvQASJmWk2WQIdllsrY5YEqQhC4i4mb4kixbY?=
- =?us-ascii?Q?pqaAGssZYQ2FjKskLwZk5A7/4QbzeJeK/RQwpEwvMH7XOb6fOaUNxoe/TUi4?=
- =?us-ascii?Q?opAtmvDi+MSU6HU1N2tP2LjUqgPCBSaNVepb/4QSUSO8OWlou7aD4HbHdrGK?=
- =?us-ascii?Q?WflFX+lPU6LTpiflMjQNPGIWV4JfW0sBzLfRflVmzfyBP4EaBbti0kr5dDC6?=
- =?us-ascii?Q?/tAWKus5BLsae6pjTIrMKh1idl7I6g4KFQUG7U17oFOtqFVScwCrzi/bfVbo?=
- =?us-ascii?Q?cIWRi+XJ51Ku3rXmNFBkeeJSYkf5TiZtJgXeP1lKy1uCvJ7ZaD+pUkJEJm3k?=
- =?us-ascii?Q?ixPR+Wb3hRWJ8OmiaTrQ5Zz3gLN3ojsv4+fUcLoREtMZfhGYUZK/pZjOiiBA?=
- =?us-ascii?Q?9LiZLpewlLjzfa2hb0v9rFXi9YhcKvwg2zuAwhG4dQsPTpCV0r23AKW2dQ+0?=
- =?us-ascii?Q?Fepn0u7nsoGpUCs3ZEdcFEwSNa+DPMQzZKEaayARVuQBMSJTGn0fQGtVj8Bh?=
- =?us-ascii?Q?RZYq8lyUsjACXmS1nHwKAEFPWRiE9P8Suy5wcTJVYGws76WWeFQ3rYL5eRM6?=
- =?us-ascii?Q?UUexZuIb+54CyfROJAcbJD/km9imvAoUDHeJYzMQv/cveblUv3n7YkhB6a0r?=
- =?us-ascii?Q?rHOXUngVVgcFPOVcKQh8RdKiY3XmsiV0lQVhfqRA+KQapO0fgTcM/mMiqvUv?=
- =?us-ascii?Q?pb+TQx/kcge6oFv55EjgHEnjjh0NGr1BVH9s3rqs3cuC3BQZ4w59Q8DErtP0?=
- =?us-ascii?Q?SuJPfXXnEH4nlxxmgSHwbuoMZTVbotwmselNxPMHg5dvAWkzFgYyWUXRY9kZ?=
- =?us-ascii?Q?q2o2nrTWLQ6tg9nFb7a+1g5RDah4fVWhpv48Trg9xRmu+Dr1+Gq8PIsdROYt?=
- =?us-ascii?Q?qW7adkHYDd16BiU8/5InDQ0F?=
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?wf8uYUp+16dinba1F7uA/de6g2OxXID+S7PgNXX+qKy+oY3ePf0qk1xYlfzq?=
+ =?us-ascii?Q?SrYJJaDU4kPlGBur+qHOPJyc9TiI8HW2huHuFpsZOyY7srVUc0zJMbb84/d/?=
+ =?us-ascii?Q?VSo3Gix+vXpcKfR2K0xKQUoE1BTLbLbwMy/mF7T78PxCT+ddcvj49r23wSoL?=
+ =?us-ascii?Q?ZVUJkOK68SqFBtlKlD6/avF5H7G8oqhpHxKcmKndiNTNaPOGtzlN1ZAF6M52?=
+ =?us-ascii?Q?sGObaZsOOMR1O1ZqO10BJNvxdOrDtEHGUK/gkOvRuD5yWCsQgi6J4ZDG1KvE?=
+ =?us-ascii?Q?3ymqb6tUHQCvAIlulSqKLSBAHP9kqluKVsHLwNeER+EX02s8dDBKO/ZRsCej?=
+ =?us-ascii?Q?NjTjscyV8kaKQ+zGoGUbUblnYAAwPUayPjBenCMZLpK+DDcF/WjrHJFm+5gE?=
+ =?us-ascii?Q?DoiXPH2aASS8fIQVBf1HXPyjix0q2p+X0w+0uerhihBMvahnK7PpBl+F3JVW?=
+ =?us-ascii?Q?nHmsMLedNifu1UQPQqi0Woz0Tnl/SrvUJZ3GzgbHAWNWOZxc9WNrC/w8OoYx?=
+ =?us-ascii?Q?fq+WI15PQCBiG5+yRQXQ0R2xc7DDGke6WiAHut/Sjw/Kmg4WssgvB4+9d7UY?=
+ =?us-ascii?Q?IecmooRy52bPg7Fg3hfh1pD4FJMP2nLI0oTFH1pn/ZGabocQN9ATtr/AYHIW?=
+ =?us-ascii?Q?s1AGaaNbfG1lDcdoHwAPRn7Fb4YnQr8vN8eODfQsIxEVwXFxrWtY44bdJeKL?=
+ =?us-ascii?Q?OrbZwHwn9UEJRQcrSqOszNf+yi8wumlAWAgyEzmB9BGMqRbIPRC4TzLZ9QWh?=
+ =?us-ascii?Q?yrVJUVCzSvHlM07cukAwMc9sKMLZTxGylEkeLoqdiO+5vIQvb/0uUCVaIqQu?=
+ =?us-ascii?Q?tAQdZ5/00Ysh7R9vlvnLIgBtatwg/SX/g51JWvJfvLXrJnw7HjO4nroWW2NU?=
+ =?us-ascii?Q?SBB3oKgx8lz36WNnrDSXBc2WSeff60Oo3BHuBNDoiMVD8ePF0+TC5epOTgIE?=
+ =?us-ascii?Q?+4ezt6mE29WBXQglpF9X6iiqhvEqr2ueq84p34+5D+S4ypCLfdkQlUmripvw?=
+ =?us-ascii?Q?BEBn6lgmZfiQBohR9jEZ7hKQsML34LZRMw2VCX/pMfpmD0kumnmvcgo6XsXC?=
+ =?us-ascii?Q?EHVrJHsXaU0cMlRx5J1EwaOVAVzYYoROd4fwEyZmarvOPf6yPU8XPWqjahxb?=
+ =?us-ascii?Q?DfuQa2JejsUM/pKnD6DlZQXnJ+pdyU89l5FOLL7oUnhc0T7obU4YhnzhdYHu?=
+ =?us-ascii?Q?ZDQap1yzkMfToSIl991tc87FwFmVKS8RoyeHw+0kSo5JWhHeYx0+QQfLUcq2?=
+ =?us-ascii?Q?rZ5FckII+Sh9crXA4SEDVmQ7JUgAXAGHpASICfgSFyRROCqtagi5bTn4d8wj?=
+ =?us-ascii?Q?165FSLDHsmNaaL2Bkv9GhpIz?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8cbd03d9-b45e-438a-90f8-08d90adc4a33
+X-MS-Exchange-CrossTenant-Network-Message-Id: e27b32e6-f0c7-47b0-c88e-08d90adc4dba
 X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2021 06:59:10.7560
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2021 06:59:16.4924
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UT5wIPx60TxOSb1Orqm9sCb6waIFSpvP7TkAe7hgImHFByvqzv/Zl/gRxAs+AO2X0ajbZwv5h1v7h09Kk3Xzog==
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1XoSYUklCoPK1UtCbqho9pLmdHTMFpyyz4LpOYqeMb1w8Olb0eTTpqRrRmkUiNYx7aSiKsftbCmVTLtIQ3Y7ew==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5468
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -112,48 +112,84 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lucas Stach <l.stach@pengutronix.de>
 
-Switch to "goto out..." error handling in domain driver probe to
-avoid repeating all the error paths.
+As long as the power domain driver is active we want power control
+over the domain (which is what the mapping bit requests), so there
+is no point in whacking it for every power control action, simply
+set the bit in driver probe and clear it when the driver is removed.
 
 Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
-Reviewed-by: Marek Vasut <marex@denx.de>
-Tested-by: Adam Ford <aford173@gmail.com>
 ---
- drivers/soc/imx/gpcv2.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ drivers/soc/imx/gpcv2.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/soc/imx/gpcv2.c b/drivers/soc/imx/gpcv2.c
-index db7e7fc321b1..512e6f4acafd 100644
+index 512e6f4acafd..552d3e6bee52 100644
 --- a/drivers/soc/imx/gpcv2.c
 +++ b/drivers/soc/imx/gpcv2.c
-@@ -502,18 +502,23 @@ static int imx_pgc_domain_probe(struct platform_device *pdev)
- 	ret = pm_genpd_init(&domain->genpd, NULL, true);
- 	if (ret) {
- 		dev_err(domain->dev, "Failed to init power domain\n");
--		imx_pgc_put_clocks(domain);
--		return ret;
-+		goto out_put_clocks;
+@@ -140,14 +140,11 @@ static int imx_gpc_pu_pgc_sw_pxx_req(struct generic_pm_domain *genpd,
+ 	int i, ret = 0;
+ 	u32 pxx_req;
+ 
+-	regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
+-			   domain->bits.map, domain->bits.map);
+-
+ 	if (has_regulator && on) {
+ 		ret = regulator_enable(domain->regulator);
+ 		if (ret) {
+ 			dev_err(domain->dev, "failed to enable regulator\n");
+-			goto unmap;
++			return ret;
+ 		}
  	}
  
- 	ret = of_genpd_add_provider_simple(domain->dev->of_node,
- 					   &domain->genpd);
- 	if (ret) {
- 		dev_err(domain->dev, "Failed to add genpd provider\n");
--		pm_genpd_remove(&domain->genpd);
--		imx_pgc_put_clocks(domain);
-+		goto out_genpd_remove;
+@@ -203,9 +200,7 @@ static int imx_gpc_pu_pgc_sw_pxx_req(struct generic_pm_domain *genpd,
+ 		/* Preserve earlier error code */
+ 		ret = ret ?: err;
  	}
- 
-+	return 0;
-+
-+out_genpd_remove:
-+	pm_genpd_remove(&domain->genpd);
-+out_put_clocks:
-+	imx_pgc_put_clocks(domain);
+-unmap:
+-	regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
+-			   domain->bits.map, 0);
 +
  	return ret;
  }
  
+@@ -499,10 +494,13 @@ static int imx_pgc_domain_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return dev_err_probe(domain->dev, ret, "Failed to get domain's clocks\n");
+ 
++	regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
++			   domain->bits.map, domain->bits.map);
++
+ 	ret = pm_genpd_init(&domain->genpd, NULL, true);
+ 	if (ret) {
+ 		dev_err(domain->dev, "Failed to init power domain\n");
+-		goto out_put_clocks;
++		goto out_domain_unmap;
+ 	}
+ 
+ 	ret = of_genpd_add_provider_simple(domain->dev->of_node,
+@@ -516,7 +514,9 @@ static int imx_pgc_domain_probe(struct platform_device *pdev)
+ 
+ out_genpd_remove:
+ 	pm_genpd_remove(&domain->genpd);
+-out_put_clocks:
++out_domain_unmap:
++	regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
++			   domain->bits.map, 0);
+ 	imx_pgc_put_clocks(domain);
+ 
+ 	return ret;
+@@ -528,6 +528,10 @@ static int imx_pgc_domain_remove(struct platform_device *pdev)
+ 
+ 	of_genpd_del_provider(domain->dev->of_node);
+ 	pm_genpd_remove(&domain->genpd);
++
++	regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
++			   domain->bits.map, 0);
++
+ 	imx_pgc_put_clocks(domain);
+ 
+ 	return 0;
 -- 
 2.30.0
 
