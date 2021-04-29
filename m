@@ -2,63 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E86E636E625
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 09:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B35A036E629
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 09:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239583AbhD2HiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 03:38:25 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:48614 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231405AbhD2HiL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 03:38:11 -0400
-Received: from smtpclient.apple (p4fefc624.dip0.t-ipconnect.de [79.239.198.36])
-        by mail.holtmann.org (Postfix) with ESMTPSA id C5F08CECDC;
-        Thu, 29 Apr 2021 09:44:11 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
-Subject: Re: [PATCH v1] Bluetooth: Fix the HCI to MGMT status conversion table
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210419165323.v1.1.I9f9e8bcc849d91c1bb588a5181317c3e2ad48461@changeid>
-Date:   Thu, 29 Apr 2021 09:36:22 +0200
-Cc:     Bluetooth Kernel Mailing List <linux-bluetooth@vger.kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org
+        id S239742AbhD2HjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 03:39:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231701AbhD2Hiy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 03:38:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8702661440;
+        Thu, 29 Apr 2021 07:38:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619681888;
+        bh=Y5crhDIS0X94Stj4taWISifyBjWiDlyEREug0v7j/OI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OJG3pGxq/gzp0qcJrK4Fp3ViY6gx1JeLW4gLq02MzOAna5k0LzekaFNduyW/6MpFZ
+         YHYx3csBuKFHZJjC/szlyuF3hqyxcn3CxAN/CGNX+DOalvNJ8opf5pzLWng53xz5TE
+         6JkilcpcSTSw8JKfB8cEwyhhdpdvGcOFq6svZDHUaqi/ukE5+Hk010w5flQET5Xxku
+         1gVmS+IapfAj0A8ehu3xge59x/Hny23j0dVjkWVJLI1y3LssOgBbbKUdVs4fzm1M2J
+         VtGHDACSlzatSWaFXsEpxaotb6LFQ4W4/CYm9bVK7ohLllaaDYmiaZEs0hQXoH78A3
+         Y/e9p2bFdDoEw==
+Date:   Thu, 29 Apr 2021 09:38:02 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     devel@driverdev.osuosl.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linuxarm@huawei.com, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH v4 20/79] staging: media: rkvdec: fix
+ pm_runtime_get_sync() usage count
+Message-ID: <20210429093802.01ed6980@coco.lan>
+In-Reply-To: <YIl6xZegj9o5m8EF@hovoldconsulting.com>
+References: <cover.1619621413.git.mchehab+huawei@kernel.org>
+        <4bc46252a7c7ae3612da6da8620ef7db775e27ca.1619621413.git.mchehab+huawei@kernel.org>
+        <YIl6xZegj9o5m8EF@hovoldconsulting.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <8FB7AEF0-3E8A-4CC9-82FD-B647BAEF9765@holtmann.org>
-References: <20210419165323.v1.1.I9f9e8bcc849d91c1bb588a5181317c3e2ad48461@changeid>
-To:     Yu Liu <yudiliu@google.com>
-X-Mailer: Apple Mail (2.3654.80.0.2.43)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yu,
+Em Wed, 28 Apr 2021 17:09:57 +0200
+Johan Hovold <johan@kernel.org> escreveu:
 
-> 0x2B, 0x31 and 0x33 are reserved for future use but were not present in
-> the HCI to MGMT conversion table, this caused the conversion to be
-> incorrect for the HCI status code greater than 0x2A.
+> On Wed, Apr 28, 2021 at 04:51:41PM +0200, Mauro Carvalho Chehab wrote:
+> > The pm_runtime_get_sync() internally increments the
+> > dev->power.usage_count without decrementing it, even on errors.
+> > Replace it by the new pm_runtime_resume_and_get(), introduced by:
+> > commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> > in order to properly decrement the usage counter and avoid memory
+> > leaks.  
 > 
-> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
-> Signed-off-by: Yu Liu <yudiliu@google.com>
-> ---
-> 
-> Changes in v1:
-> - Initial change
-> 
-> net/bluetooth/mgmt.c | 3 +++
-> 1 file changed, 3 insertions(+)
+> Again, there is no memory leak here either. Just a potential PM usage
+> counter leak.
 
-patch has been applied to bluetooth-next tree.
+True. Will fix it at the entire series with:
 
-Regards
+	FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch -f --msg-filter "cat|perl -0pe 's/ and avoid memory\n\s*leaks./, avoiding\na potential PM usage counter leak./igs'" BASE..
 
-Marcel
-
+Regards,
+Mauro
