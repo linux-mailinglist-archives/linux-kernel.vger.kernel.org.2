@@ -2,83 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1337836EEF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E36636EF01
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:36:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240967AbhD2Rc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 13:32:57 -0400
-Received: from mga17.intel.com ([192.55.52.151]:11003 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232991AbhD2Rc4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 13:32:56 -0400
-IronPort-SDR: W63xBrubrE5qYXKY92Pr5EC2YJBuEW4rIM5d2YhyGp0vO49YvQjMvcwd8Q0cRBrOkLMbTc4Mrc
- nKquoGkpGEuA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9969"; a="177177761"
-X-IronPort-AV: E=Sophos;i="5.82,259,1613462400"; 
-   d="scan'208";a="177177761"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 10:32:08 -0700
-IronPort-SDR: TnxOrJZEtmY/kB2S7cpaJ5lojTrPFtPea7GvvhLZQylZpLtTFuDPxCVdUaYmo5zd6GWwgEV5Z3
- XutSpmtVadTw==
-X-IronPort-AV: E=Sophos;i="5.82,259,1613462400"; 
-   d="scan'208";a="430953584"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.75.159]) ([10.212.75.159])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 10:32:05 -0700
-Subject: Re: [PATCH v26 00/30] Control-flow Enforcement: Shadow Stack
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
- <YIrpT1UxXqFtzySx@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <aa1ac406-84c8-b0f0-b70b-7224df4c8c77@intel.com>
-Date:   Thu, 29 Apr 2021 10:32:04 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S240955AbhD2Rhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 13:37:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236036AbhD2Rhb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 13:37:31 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A54C06138C
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:36:44 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id j189so643832pgd.13
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:36:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AXnNG//uI6UzI+LacV/tB+eSQ+ET+C4V/gt9RJQIfIY=;
+        b=NZvMJliuNZgK1+eGDe80k5PB/1SBfEGOr5B1t5miC6z3ORr3TuxDY2K+ZwSDmC8Cye
+         qz/sHCHGmT6YO1rQNm0AP0t0OdCqOrt+Fg4DCap2Q64VCB4vXmUj+KBECPsK3gIHZr+T
+         727s3ESZZPHCuaeuXGpDK291q7bim+AwsrgrA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AXnNG//uI6UzI+LacV/tB+eSQ+ET+C4V/gt9RJQIfIY=;
+        b=FhOyRTCBS+WJ84JcoRb7SrztVYJmzS2SLMs2H7oQHn9E18Hz8ibJoO0UI4Kl5sWk4w
+         6bmF6Y0ENdU+hoQjDnJG7mIkclk7h6o6cXPre8HKDveEQSuqbZ2sjp5MjC2xecZ7CJVk
+         G5OEKH6IXL2Gtqf69633zE/9CazS/QZGW7lc8CvHDtAdTSSFyseoB4UDhRquKRbLIFaU
+         PuaJ8Y0tBfJAOBTJ7jGc5rp9Q1GpUQhpC3EWvQO6xMElMCybRvGVtUfAr3iwQjdHKcYC
+         C/mfiSAOW1fpV9mEta04r4VJ+cSJkQgtrCZg94Dq6HYW7mw2VRZ6Wef4+G2+1lu3sowF
+         ekKA==
+X-Gm-Message-State: AOAM531uMM71ZtPV75ZFYqZpRg/MeYR83Edi7XZ9BGnYo12hdOPPufb6
+        M31A0Mz+qv1YLVhSLyxHS9SxazrAMfR3ww==
+X-Google-Smtp-Source: ABdhPJyOCIIrVgLByDkjGatJhd5XRT9aDrboAZZ282bTbIMJYMV9LlHmy+wM5N9j4lTY2jx0LF9aiA==
+X-Received: by 2002:a63:e347:: with SMTP id o7mr828830pgj.184.1619717804263;
+        Thu, 29 Apr 2021 10:36:44 -0700 (PDT)
+Received: from mrr-linux.mtv.corp.google.com (047-224-219-247.res.spectrum.com. [47.224.219.247])
+        by smtp.gmail.com with ESMTPSA id c24sm2187072pfi.32.2021.04.29.10.36.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 10:36:44 -0700 (PDT)
+From:   Matt Reynolds <mattreynolds@chromium.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Matt Reynolds <mattreynolds@chromium.org>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Benjamin Valentin <benpicco@googlemail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?q?Olivier=20Cr=C3=AAte?= <olivier.crete@ocrete.ca>,
+        Sanjay Govind <sanjay.govind9@gmail.com>,
+        linux-input@vger.kernel.org
+Subject: [PATCH] Input: xpad - add support for Amazon Game Controller
+Date:   Thu, 29 Apr 2021 10:36:11 -0700
+Message-Id: <20210429103548.1.If5f9a44cb81e25b9350f7c6c0b3c88b4ecd81166@changeid>
+X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
 MIME-Version: 1.0
-In-Reply-To: <YIrpT1UxXqFtzySx@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/29/2021 10:13 AM, Borislav Petkov wrote:
-> On Tue, Apr 27, 2021 at 01:42:45PM -0700, Yu-cheng Yu wrote:
->> I have run tests on these patches for quite some time, and they have been
->> very stable.
-> 
-> While at it, how about adding a simple selftest too, so that people can
-> play with it and perhaps it could even run a bunch of tests?
-> 
+The Amazon Luna controller (product name "Amazon Game Controller") behaves
+like an Xbox 360 controller when connected over USB.
 
-I did send out some selftest patches (link is in the cover letter). 
-However, those need to be updated to the Linux standard, and I would 
-like to do it separately.
+Signed-off-by: Matt Reynolds <mattreynolds@chromium.org>
+---
 
-Yu-cheng
+ drivers/input/joystick/xpad.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
+index 9f0d07dcbf06..d69d7657ab12 100644
+--- a/drivers/input/joystick/xpad.c
++++ b/drivers/input/joystick/xpad.c
+@@ -268,6 +268,7 @@ static const struct xpad_device {
+ 	{ 0x1689, 0xfd00, "Razer Onza Tournament Edition", 0, XTYPE_XBOX360 },
+ 	{ 0x1689, 0xfd01, "Razer Onza Classic Edition", 0, XTYPE_XBOX360 },
+ 	{ 0x1689, 0xfe00, "Razer Sabertooth", 0, XTYPE_XBOX360 },
++	{ 0x1949, 0x041a, "Amazon Game Controller", 0, XTYPE_XBOX360 },
+ 	{ 0x1bad, 0x0002, "Harmonix Rock Band Guitar", 0, XTYPE_XBOX360 },
+ 	{ 0x1bad, 0x0003, "Harmonix Rock Band Drumkit", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360 },
+ 	{ 0x1bad, 0x0130, "Ion Drum Rocker", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360 },
+@@ -440,6 +441,7 @@ static const struct usb_device_id xpad_table[] = {
+ 	XPAD_XBOX360_VENDOR(0x15e4),		/* Numark X-Box 360 controllers */
+ 	XPAD_XBOX360_VENDOR(0x162e),		/* Joytech X-Box 360 controllers */
+ 	XPAD_XBOX360_VENDOR(0x1689),		/* Razer Onza */
++	XPAD_XBOX360_VENDOR(0x1949),		/* Amazon controllers */
+ 	XPAD_XBOX360_VENDOR(0x1bad),		/* Harminix Rock Band Guitar and Drums */
+ 	XPAD_XBOX360_VENDOR(0x20d6),		/* PowerA Controllers */
+ 	XPAD_XBOXONE_VENDOR(0x20d6),		/* PowerA Controllers */
+-- 
+2.31.1.527.g47e6f16901-goog
+
