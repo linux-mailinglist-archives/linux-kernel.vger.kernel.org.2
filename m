@@ -2,111 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9551536EE5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 18:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB59436EE5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 18:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240915AbhD2Qqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 12:46:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240890AbhD2Qqq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S240880AbhD2Qqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 29 Apr 2021 12:46:46 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE6E1C06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 09:45:58 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id h36so51695625lfv.7
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 09:45:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fv1o4ACMgluHoz1tubBqI30O1OAulg9d7QxnCnSiG9c=;
-        b=KDkNvN4NBhwsvv2Vt/X74vt7KVgzUpJkoRwK5HYd1W+ax7k1/dGgufUKiRP3X8w5Ql
-         H5lHQo0imA8GXWxUOZUx++5LlJIaiJwjb17/VyeO+Shqq/nhIWw9KJuVJxGvXm/uTM1x
-         86MzDL52wXvA28OjsoGhD6CKmP2Q62dV3Gr70=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fv1o4ACMgluHoz1tubBqI30O1OAulg9d7QxnCnSiG9c=;
-        b=rHN2v/grCpVcugb26HU2Kny3h0kPom6RBgQxLojoEerofJuZJZbk2AUk4l5YSvq6Yx
-         G4CIl7wIJFdQW0VC80Zt9pX7LzaOr0I+yHdHK1w/HZcT9nVt6eZ+HPROP3qo4bglQ66H
-         wyc7DauJpg3FXSpOR2cxOrdWHQtjRbd5XVGxEiW28gbEQG3yVYDFHRJYb5YDsD1ozc61
-         1awp+PxzQ4JSNDzkZGgdgubBAw85tWqUzAXg0If8ow6L4r89MW+qao7BoKAQkUXa/q1Y
-         tSW8mkZYD/0ZuHgR6YXyV/nEgoCZmKNSsgp1P6rjwpHeMsLtSnJWb9wmwjMfzVej2E+W
-         TZCw==
-X-Gm-Message-State: AOAM53198ybcCOYWSM6J2B4Ejr4/RvZgqyk6lyGZGaqbAx0SjHsVpzTe
-        i/SuDoRhxEyBdsLYy3J8+Qp3xDEJUbq2v3Mn
-X-Google-Smtp-Source: ABdhPJzXmB0T//ZVz92H5c7gltl8gh+sMFEB8K9DzehzzuqV2hd2f3RvUTX947T2wgCzBDIFbnSf/g==
-X-Received: by 2002:a19:ac09:: with SMTP id g9mr280946lfc.547.1619714757171;
-        Thu, 29 Apr 2021 09:45:57 -0700 (PDT)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
-        by smtp.gmail.com with ESMTPSA id q3sm555135ljp.67.2021.04.29.09.45.55
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Apr 2021 09:45:55 -0700 (PDT)
-Received: by mail-lf1-f51.google.com with SMTP id c11so1885622lfi.9
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 09:45:55 -0700 (PDT)
-X-Received: by 2002:a05:6512:a90:: with SMTP id m16mr284849lfu.201.1619714755208;
- Thu, 29 Apr 2021 09:45:55 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232724AbhD2Qqk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 12:46:40 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB09C06138B;
+        Thu, 29 Apr 2021 09:45:53 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0a4f00c0c5be88e2edfd96.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:4f00:c0c5:be88:e2ed:fd96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 253F71EC0266;
+        Thu, 29 Apr 2021 18:45:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1619714752;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=+ad63PVCcTY8G5quIEl9VpmY7+0tV15lo66Ty6GyFEc=;
+        b=WllWCfTKHtk2grwTb0bcROdTjEBFSTbW4IXMbRR95A5UWvb7B3LcyCQW5zVPfLHYDOLscW
+        jsc6FXvL4pMBHB6B4gOUdPm+a6YuR+cRRSAow3GJ7FqHIB60Joq69Zy9+HQF+gB0Efqk/F
+        eXiJMErDV5h38KquyvNSKrSczvhY63o=
+Date:   Thu, 29 Apr 2021 18:45:49 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v26 22/30] x86/cet/shstk: Add user-mode shadow stack
+ support
+Message-ID: <YIrivcpkUwrmoO7w@zn.tnic>
+References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
+ <20210427204315.24153-23-yu-cheng.yu@intel.com>
+ <YImg5hmBnTZTkYIp@zn.tnic>
+ <3a0ed2e3-b13d-0db6-87af-fecd394ddd2e@intel.com>
+ <YIp4c95E9/9DYR6z@zn.tnic>
+ <bdd41e35-29f0-896a-72ec-8b1abeafda0d@intel.com>
 MIME-Version: 1.0
-References: <20210427025805.GD3122264@magnolia> <CAHk-=wj6XUGJCgsr+hx3rz=4KvBP-kspn3dqG5v-cKMzzMktUw@mail.gmail.com>
- <20210427195727.GA9661@lst.de> <CAHk-=wjrpinf=8gAjxyPoXT0jbK6-U3Urawiykh-zpxeo47Vhg@mail.gmail.com>
- <20210428061706.GC5084@lst.de> <CAHk-=whWnFu4wztnOtySjFVYXmBR4Mb2wxrp6OayZqnpKeQw0g@mail.gmail.com>
- <20210428064110.GA5883@lst.de> <CAHk-=wjeUhrznxM95ni4z+ynMqhgKGsJUDU8g0vrDLc+fDtYWg@mail.gmail.com>
- <1de23de2-12a9-2b13-3b86-9fe4102fdc0c@rasmusvillemoes.dk> <CAHk-=wimsMqGdzik187YWLb-ru+iktb4MYbMQG1rnZ81dXYFVg@mail.gmail.com>
- <26d06c27-4778-bf75-e39a-3b02cd22d0e3@rasmusvillemoes.dk>
-In-Reply-To: <26d06c27-4778-bf75-e39a-3b02cd22d0e3@rasmusvillemoes.dk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 29 Apr 2021 09:45:39 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whJmDjTLYLeF=Ax31vTOq4PHXKo6JUqm1mQNGZdy-6=3Q@mail.gmail.com>
-Message-ID: <CAHk-=whJmDjTLYLeF=Ax31vTOq4PHXKo6JUqm1mQNGZdy-6=3Q@mail.gmail.com>
-Subject: Re: [GIT PULL] iomap: new code for 5.13-rc1
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jia He <justin.he@arm.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Eric Sandeen <sandeen@sandeen.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <bdd41e35-29f0-896a-72ec-8b1abeafda0d@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 11:40 PM Rasmus Villemoes
-<linux@rasmusvillemoes.dk> wrote:
->
-> > That also does explain the arguably odd %pD defaults: %pd came first,
-> > and then %pD came afterwards.
->
-> Eh? 4b6ccca701ef5977d0ffbc2c932430dea88b38b6 added them both at the same
-> time.
+On Thu, Apr 29, 2021 at 09:17:06AM -0700, Yu, Yu-cheng wrote:
+> The lock applies to both shadow stack and ibt.  So maybe just "locked"?
 
-Ahh, I looked at "git blame", and saw that file_dentry_name() was
-added later. But that turns out to have been an additional fix on top,
-not actually "later support".
+Sure.
 
-Looking more at that code, I am starting to think that
-"file_dentry_name()" simply shouldn't use "dentry_name()" at all.
-Despite that shared code origin, and despite that similar letter
-choice (lower-vs-upper case), a dentry and a file really are very very
-different from a name standpoint.
+> vm_munmap() returns error as the following:
+> 
+> (1) -EINVAL: address/size/alignment is wrong.
+> 	For shadow stack, the kernel keeps track of it, this cannot/should not
+> happen.
 
-And it's not the "a filename is the whale pathname, and a dentry has
-its own private dentry name" issue. It's really that the 'struct file'
-contains a _path_ - which is not just the dentry pointer, but the
-'struct vfsmount' pointer too.
+You mean nothing might corrupt
 
-So '%pD' really *could* get the real path right (because it has all
-the required information) in ways that '%pd' fundamentally cannot.
+        cet->shstk_base
+        cet->shstk_size
 
-At the same time, I really don't like printk specifiers to take any
-real locks (ie mount_lock or rename_lock), so I wouldn't want them to
-use the full  d_path() logic.
+?
 
-                Linus
+I can't count the ways I've heard "should not happen" before and then it
+happening anyway.
+
+So probably not but we better catch stuff like that instead of leaking.
+
+> Should it happen, it is a bug.
+
+Ack.
+
+> The kernel can probably do WARN().
+
+Most definitely WARN. You need to catch funsies like that. But WARN_ONCE
+should be enough for now.
+
+> (2) -ENOMEM: when doing __split_vma()/__vma_adjust(), kmem_cache_alloc()
+> fails.
+> 	Not much we can do.  Perhaps WARN()?
+
+You got it.
+
+Bottom line is: if you can check for this and it is cheap, then
+definitely. Code changes, gets rewritten, reorganized, the old
+assertions change significance, and so on...
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
