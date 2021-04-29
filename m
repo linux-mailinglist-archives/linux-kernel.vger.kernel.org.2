@@ -2,143 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A18836ED9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0589336EDA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240747AbhD2Ps7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 11:48:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58152 "EHLO
+        id S240802AbhD2PtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 11:49:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233420AbhD2Ps5 (ORCPT
+        with ESMTP id S240796AbhD2PtE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 11:48:57 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 517C4C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:48:09 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id x19so75220963lfa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:48:09 -0700 (PDT)
+        Thu, 29 Apr 2021 11:49:04 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1495C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:48:14 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id md17so7430071pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:48:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        d=pesu-pes-edu.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3NyxbJCwhqb1aqLdIOSz5lukrN8T+dDDlsyMoLY0gW4=;
-        b=cbYC8SxTjuN7PL/HHpWnlrg/QN1hbVMX8F6WKSRM2DjP4eDx+2x+t4E0/GMgzTxeUO
-         8IZnyKtuvzyQ3D8CHxgPBCUcbxohWBWSZeMojKYswbWhlX3U9Q7Th0J/+IhWbre9r0Eb
-         5cKkEh5sjhR2Us2DIWa/9crBm8yfFuMvC1foJOzjGZQrUSCMc4K4SAcEAyLTokeM1vWn
-         PILewUSWyy4LQur7FqhLQWHTyKwEPBcJDwFFE4IoDouS9bHTEzFU4Ch1b6fDojeAV6on
-         6mS/xGS/4MMurv31BIf6i016OPdTJjBIyh9tq7CKBVCAiaEeLWvq8GgyjFLUMkr5oOaJ
-         o4FQ==
+         :content-disposition:in-reply-to:user-agent;
+        bh=D4F+wo9iH0mt9UWTRjPeCJ8BBxETi2fl88I2WsDRfN4=;
+        b=2C0SbTU/Tq/QYnadPog1MB9i7StPlUxXscyoNeLtxVVz9zAA9AA2ipM6pvS89y2yjG
+         NlxM/tfMAtHKTKAKa22B9qr6F/SKzdS5RGrmOWAzsoed2c4FEEwMnRh8gapJlXS3/GPA
+         AH9ndB7lgvN+UnSU0mpUaCwFgMtWjzPa0zM2aaZXfeILR5ZRh9qxv0X6RYdYDx+oHVhL
+         P0MWluNNkX8Iw9Hl7g8LDdKvFM5kXkeGp/GRDZfZFz+SKNckf+6iqFiN5MrM9G8W96wp
+         XcD2XE3/mUVq01WUqP/VT0T0yZrRYXAB9czTxeLbvy7ESVYYO3dp0Y7Yb5qYKxdDNr8o
+         0Icw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3NyxbJCwhqb1aqLdIOSz5lukrN8T+dDDlsyMoLY0gW4=;
-        b=icju8V0QGfn9+x6swRZKvK8ugZe/0bBVvlpNDA5xLpAf0eWA9JvyVgpz/1fYtaKSnS
-         epp/T9IXef25UAJxsP7Xcxz35d/ZP9Bb8CcmDnVX4/aO3XMg5m40fM9+Kd3AJcRFo/cV
-         VSnJfIkDlGJzDDEUdhJtjQ0cAYYny6zB7o7iTdn+ctk5oxSOoPTgobfu/Lc+8FdqTWaM
-         5U5gFDSzGirkv3wgB/MhUcK2DFxzMe4WO3qyV+OEC/JllsHaRTTLad2JspIY1N9V9qsa
-         +fwO55utshm8Cx900h5xvTuLl+OUQPdBYVnoZoKUB8GMG/fjIg79HGAkTNmxXLFAvP6W
-         aZxg==
-X-Gm-Message-State: AOAM530xpbJTYJ2LjKKSSxWR6KITFmEovi2p8dRFKOnQ3p1rluE3fO2E
-        doAtJpF8ga5Es0eahKBlrhRweg==
-X-Google-Smtp-Source: ABdhPJxG/sG67SG3OP0g0HlxPZkucJvHMsVb7rMJuwC8Q4cClb/EyKqoa1z0wyOYJzSIY4vZ+1XSmQ==
-X-Received: by 2002:ac2:5f6a:: with SMTP id c10mr159706lfc.286.1619711287786;
-        Thu, 29 Apr 2021 08:48:07 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id j8sm13949lfg.250.2021.04.29.08.48.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 08:48:06 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 29D45101C51; Thu, 29 Apr 2021 18:48:07 +0300 (+03)
-Date:   Thu, 29 Apr 2021 18:48:07 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     Simon Ser <contact@emersion.fr>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Peter Xu <peterx@redhat.com>, Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Herrmann <dh.herrmann@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        "tytso@mit.edu" <tytso@mit.edu>
-Subject: Re: Sealed memfd & no-fault mmap
-Message-ID: <20210429154807.hptls4vnmq2svuea@box>
-References: <vs1Us2sm4qmfvLOqNat0-r16GyfmWzqUzQ4KHbXJwEcjhzeoQ4sBTxx7QXDG9B6zk5AeT7FsNb3CSr94LaKy6Novh1fbbw8D_BBxYsbPLms=@emersion.fr>
- <CAHk-=wgmGv2EGscKSi8SrQWtEVpEQyk-ZN1Xj4EoAB87Dmx1gA@mail.gmail.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=D4F+wo9iH0mt9UWTRjPeCJ8BBxETi2fl88I2WsDRfN4=;
+        b=c6fMhBqjShMQWfE4tV62/vQkv0aMCm8qZwdXYJYW/9rfMvSwK+m5SLeRTr1WvCn5Kd
+         AU5jB5e5HP5QbPP/tSOfXxsqGqv+ktx/PVH28FVlA3tdFs/2tdMtSEI27rPDtwxWw55a
+         uFeXNJzCohOFzt7Ndi9JQVKhcZtw6kU2kVEmx6Ae3AthrGKR+HOGeZGe+UFqBDRTqFNi
+         ZKAhxpekIviJq3CH28QX/pPUyK+FwqGsa/usFz9JkPLleJs6uIx476p3bthWSWA3V8VT
+         0O7qk0FuJhuzOF8TMNVAGwRJ/uA7YrGDOlfffS93gtKjWGowKafAgZX/+9H87qHJ+ixU
+         ygJA==
+X-Gm-Message-State: AOAM532n+JE0XYhhGNbMoTCMHDj1fLjQTC3uvujvtFDLRw+Hl0j2IRgc
+        yIrIDzL9qpvf0pNIv+QW42C1ow==
+X-Google-Smtp-Source: ABdhPJzkyNDAEJgLQXBmtqs9eWxmOdsjWnc93NAtJ7wa9BcT2lCIrOrlfV5/iAEAdr/To26qXeLtXQ==
+X-Received: by 2002:a17:902:ea8b:b029:ed:3b25:15f7 with SMTP id x11-20020a170902ea8bb02900ed3b2515f7mr238488plb.62.1619711294344;
+        Thu, 29 Apr 2021 08:48:14 -0700 (PDT)
+Received: from localhost ([2406:7400:73:e1e3:c171:cfac:f6dd:2a24])
+        by smtp.gmail.com with ESMTPSA id k17sm2851467pfa.68.2021.04.29.08.48.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 29 Apr 2021 08:48:13 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 21:18:08 +0530
+From:   B K Karthik <bkkarthik@pesu.pes.edu>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Anupama K Patil <anupamakpatil123@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, Leon Romanovsky <leon@kernel.org>,
+        kernelnewbies@kernelnewbies.org
+Subject: Re: [PATCH] MAINTAINERS: mark isapnp as obsolete
+Message-ID: <20210429154808.wm4vnozzub3umrp2@burgerking>
+References: <20210428110536.edy74gsobkgtd6al@ubuntu>
+ <YIrP4TI2T18aH5NG@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wqdaotscv33wsied"
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wgmGv2EGscKSi8SrQWtEVpEQyk-ZN1Xj4EoAB87Dmx1gA@mail.gmail.com>
+In-Reply-To: <YIrP4TI2T18aH5NG@kroah.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 09:51:58AM -0700, Linus Torvalds wrote:
-> On Tue, Apr 27, 2021 at 1:25 AM Simon Ser <contact@emersion.fr> wrote:
-> >
-> > Rather than requiring changes in all compositors *and* clients, can we
-> > maybe only require changes in compositors? For instance, OpenBSD has a
-> > __MAP_NOFAULT flag. When passed to mmap, it means that out-of-bound
-> > accesses will read as zeroes instead of triggering SIGBUS. Such a flag
-> > would be very helpful to unblock the annoying SIGBUS situation.
-> >
-> > Would something among these lines be welcome in the Linux kernel?
-> 
-> Hmm. It doesn't look too hard to do. The biggest problem is actually
-> that we've run out of flags in the vma (on 32-bit architectures), but
-> you could try this UNTESTED patch that just does the MAP_NOFAULT thing
-> unconditionally.
-> 
-> NOTE! Not only is it untested, not only is this a "for your testing
-> only" (because it does it unconditionally rather than only for
-> __MAP_NOFAULT), but it might be bogus for other reasons. In
-> particular, this patch depends on "vmf->address" not being changed by
-> the ->fault() infrastructure, so that we can just re-use the vmf for
-> the anonymous case if we get a SIGBUS.
-> 
-> I think that's all ok these days, because Kirill and Peter Xu cleaned
-> up those paths, but I didn't actually check. So I'm cc'ing Kirill,
-> Peter and Will, who have been working in this area for other reasons
-> fairly recently.
-> 
-> Side note: this will only ever work for non-shared mappings.
 
-I think it's show-stopper for the use-case, no? IIUC, the mappings is used
-for communication between a compositor and a client and has to be shared.
+--wqdaotscv33wsied
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> That's fundamental. We won't add an anonymous page to a shared mapping,
-> and do_anonymous_page() does verify that. So a MAP_SHARED mappign will
-> still return SIGBUS even with this patch (although it's not obvious from
-> the patch - the VM_FAULT_SIGBUS will just be re-created by
-> do_anonymous_page()).
-> 
-> So if you want a _shared_ mapping to honor __MAP_NOFAULT and insert
-> random anonymous pages into it, I think the answer is "no, that's not
-> going to be viable".
+On 21/04/29 05:25PM, Greg KH wrote:
+> On Wed, Apr 28, 2021 at 04:35:36PM +0530, Anupama K Patil wrote:
+> > isapnp code is very old and according to this link
+> > https://en.wikipedia.org/wiki/Legacy_Plug_and_Play#Specifications
+> > from Wikipedia, even Windows Vista disabled ISA PnP by default.
+> >=20
+> > This change is in follow up to
+> > https://lore.kernel.org/lkml/20210422180322.7wlyg63kv3n2k6id@ubuntu/T/#u
+> > and https://lore.kernel.org/lkml/20210424194301.jmsqpycvsm7izbk3@ubuntu=
+/T/#u
+> >=20
+> > Suggested-by: B K Karthik <bkkarthik@pesu.pes.edu>
+>=20
+> This person should not have suggested this, sorry if you were lead
+> astray.  The maintainer is in charge of this type of thing, it's a bit
+> rude to try to "force" someone's hand by doing this.  Be careful.
 
-+ Matthew, Dan.
+Yes I shouldn't have suggested this change. Sorry for that!
+I won't make such a mistake again.
 
-DAX uses zero pages in page cache to avoid allocating backing storage read
-accesses to holes. Maybe we can generalize it beyond DAX to any page cache
-and add a (per-inode?) flag to do the same for accesses beyond i_size?
+Sorry for wasting your valuable time to everyone cc'ed in this thread.
 
-> So _if_ this works for you, and if it's ok that only MAP_PRIVATE can
-> have __MAP_NOFAULT, and if Kirill/Peter/Will don't say "Oh, Linus,
-> you're completely off your rocker and clearly need to be taking your
-> meds", something like this - if we figure out the conditional bit -
-> might be doable.
-> 
-> That's a fair number of "ifs".
-> 
-> Ok, back to the merge window for me, I'll be throwing away this crazy
-> untested patch immediately after hitting "send". This is very much a
-> "throw the idea over to other people" patch, in other words.
-> 
->             Linus
+Karthik
 
+--wqdaotscv33wsied
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
--- 
- Kirill A. Shutemov
+iQGzBAEBCgAdFiEEIRwfsurAmIAiSNrGB1QtCt0juC0FAmCK1TgACgkQB1QtCt0j
+uC3Nsgv+MD3sv523LR/KwkWZH3AGzVZ+laQHEXa6oVKWjeR+jCVCUu2sWnarEKbZ
+n0nTWFkcxyFWVcmy/hHAXXiC0wHlfyEW5x37m1Yyuw9Gjjoohi95vvjyXPeXFHNg
+zrem7v304ePz6CJ8hQPx49WeZeg5AoFtRvBKSGzFpfc2Uyiy4YDT63tNQbyRMlVE
+gc2aPuwpa53R87p9pxtmcxZli1p3OxTpDLnkPefQvjQXc6U4eFLcUd7ZNFgXAy5i
+45t5+mXh3Na7okawEa4ksN9BXsaqet+eJoq88J7vl1zNCXDv8GgHfd76NO0tr6Qo
+iLtawjWqFREe22sSQFhUitCQg6OUCOFLHPWNaOO1VjBnFKsmlKSbCT3QcuL+6JFG
+GBSHmVhBkP4f4ctNjquTEGh47h9H9sIxuDSc/F/tCOw7uB4mABiEyCs9SZGQMzRc
+VedHlmX02ezRwcRjNa0OXhF1Z9e3GNaOwe5La9DppYQwZ10veCtc13vMWqj5CrR9
++7bGSTTW
+=jJZu
+-----END PGP SIGNATURE-----
+
+--wqdaotscv33wsied--
