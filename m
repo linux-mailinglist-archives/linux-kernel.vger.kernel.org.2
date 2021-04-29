@@ -2,78 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0F736E376
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 05:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C94A336E373
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 05:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236675AbhD2DFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 23:05:24 -0400
-Received: from mail-m17635.qiye.163.com ([59.111.176.35]:52600 "EHLO
-        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229762AbhD2DFL (ORCPT
+        id S236543AbhD2DFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 23:05:08 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16930 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229762AbhD2DFG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 23:05:11 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id A113E4002B9;
-        Thu, 29 Apr 2021 11:04:21 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Aric Cyr <aric.cyr@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Wesley Chalmers <Wesley.Chalmers@amd.com>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Wayne Lin <Wayne.Lin@amd.com>,
-        Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>,
-        Chiawen Huang <chiawen.huang@amd.com>,
-        Anson Jacob <Anson.Jacob@amd.com>,
-        Alvin Lee <alvin.lee2@amd.com>, Eric Yang <Eric.Yang2@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] drm/amd/display: Remove duplicate include of hubp.h
-Date:   Thu, 29 Apr 2021 11:04:01 +0800
-Message-Id: <20210429030412.18344-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 28 Apr 2021 23:05:06 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FW0dm3ztdzvTLq;
+        Thu, 29 Apr 2021 11:01:48 +0800 (CST)
+Received: from [10.174.178.100] (10.174.178.100) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 29 Apr 2021 11:04:13 +0800
+Subject: Re: Linux 4.14.232
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
+        <torvalds@linux-foundation.org>, <stable@vger.kernel.org>
+CC:     <lwn@lwn.net>, <jslaby@suse.cz>
+References: <16196085924920@kroah.com>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <52f2fa04-be87-1c90-c6bb-fe63bdbf8efd@huawei.com>
+Date:   Thu, 29 Apr 2021 11:04:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQk8ZSVZOGkIYT0hNTUpLQxpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hOSFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6ODY6Nhw4Kj8JOElLPxQtSAwc
-        GDgaCjFVSlVKTUpCTU1OT01IT0JLVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFIS05ONwY+
-X-HM-Tid: 0a791b95a6c3d991kuwsa113e4002b9
+In-Reply-To: <16196085924920@kroah.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.100]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit 482812d56698e ("drm/amd/display: Set max TTU on
-DPG enable"), "hubp.h" was added which caused the duplicate include.
-To be on the safe side, remove the later duplicate include.
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- drivers/gpu/drm/amd/display/dc/core/dc.c | 1 -
- 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
-index 8f0a13807d05..dcaa6b1e16af 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
-@@ -58,7 +58,6 @@
- #include "dc_link_ddc.h"
- #include "dm_helpers.h"
- #include "mem_input.h"
--#include "hubp.h"
- 
- #include "dc_link_dp.h"
- #include "dc_dmub_srv.h"
--- 
-2.25.1
+On 2021/4/28 19:16, Greg Kroah-Hartman wrote:
+> I'm announcing the release of the 4.14.232 kernel.
+> 
+> All users of the 4.14 kernel series must upgrade.
+> 
+> The updated 4.14.y git tree can be found at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.14.y
+> and can be browsed at the normal kernel.org git web browser:
+> 	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
+Tested on x86 for 4.14.232,
+
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-4.14.y
+Version: 4.14.232
+Commit: 7d7d1c0ab3eb7c8d8f63a126535018007823b207
+Compiler: gcc version 7.3.0 (GCC)
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 6251
+passed: 6251
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
