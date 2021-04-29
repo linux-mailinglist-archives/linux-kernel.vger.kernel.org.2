@@ -2,122 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1D3936EF19
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C1636EF20
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240970AbhD2RuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 13:50:21 -0400
-Received: from mout.gmx.net ([212.227.17.22]:58685 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233706AbhD2RuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 13:50:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1619718565;
-        bh=TLR0WvaxCXxogG6JvG/nF6/gcp1ajg6LXdzIQjIi9T0=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=g/RWP4q9tDttZ6BrquP/DE7GLTvO+LPkfhaotfKv0tHvKJGoiKr2SIfwvAFqctuu1
-         V/cF5hZ07fPnCatktURFBin7WDymP7dOfsbiYSqScI9y0tIFOIJgsb/yK3GngMZAXE
-         Fud3sXL1DwUlsGtSHrxtrfZrQfZ9OQvlnWCrSB5o=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.214.126]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MhlGq-1l7Dgz1AA4-00dqDI; Thu, 29
- Apr 2021 19:49:25 +0200
-Date:   Thu, 29 Apr 2021 19:49:21 +0200
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, j.neuschaefer@gmx.net,
-        jniethe5@gmail.com, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] powerpc/32: Fix boot failure with CONFIG_STACKPROTECTOR
-Message-ID: <YIrxoYIjH9L8Fqzs@latitude>
-References: <b688fe82927b330349d9e44553363fa451ea4d95.1619715114.git.christophe.leroy@csgroup.eu>
+        id S241028AbhD2Rum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 13:50:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233706AbhD2Rul (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 13:50:41 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAAEEC06138B;
+        Thu, 29 Apr 2021 10:49:54 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0a4f007f02d405bcb749ad.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:4f00:7f02:d405:bcb7:49ad])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 944CF1EC047F;
+        Thu, 29 Apr 2021 19:49:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1619718592;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=nqBClF7AH8n5dyvE3ZI5y/m01GvXUhCLBNoFKZDQARk=;
+        b=IIJWw7wniB9ciZLWpUxNQ3Whs/jCo7pAKplYwyesU44NleMyX8DQkgKbiRu/Uf+ZO759K5
+        UyufCRNfP1HfuwLGYlUNvxoRnrpyjAo+Y+vR3xULUMgEWcM8vsMN2jdlw3olY68A4QRYUE
+        b2OnOsfxQL59yYyvI2rxM+Un7j32iQQ=
+Date:   Thu, 29 Apr 2021 19:49:50 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v26 00/30] Control-flow Enforcement: Shadow Stack
+Message-ID: <YIrxvk4iM+7DaLhl@zn.tnic>
+References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
+ <YIrpT1UxXqFtzySx@zn.tnic>
+ <aa1ac406-84c8-b0f0-b70b-7224df4c8c77@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="CW+PUTTtArehJYIf"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <b688fe82927b330349d9e44553363fa451ea4d95.1619715114.git.christophe.leroy@csgroup.eu>
-X-Provags-ID: V03:K1:p4FsD8KQFCU+14fTrKsidcY2qU6TK0OtAyTVpjyVZyQKuM8vl6m
- iMV4YtO4iGzKV18zGjOPFsslKE7to32t6qSfqnOpq6xAbPYfqJCNQCVCxuTsl8y32h5CAF8
- WcMqSVxfNJ/AXDMyqqvsLZ7qBU9M7jNYN2HZ6wUTKPZCsUeOPYa9X2yNHPb5SP4y5adVS/u
- u6fWyk115xLJt4AbVMCcg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:i+tmxP5GTFI=:o42bVvRz8nG0bH0XGZ7uoy
- bKuo3mPBoAH8V07Cr5om352RpmiSWswq+Kj1vPze6//jl3NVA6xe4MkBanVAVh1B8vD69Tqnx
- Vpg7gI4yxqc3iJzRkIS5iCqBlbdYrNfa6M9KER8ZKk/Rg17IRn38ohYZOi6Ur2cxnQqQRAAzK
- 3ij8CkqO1uuyxcgix3lAFN2Eu+eExfF/O30D8rAhTWAxdHAyHJliTw+7cbJrCdP9ID/PqxRZF
- 77dMdFkLFGm+WclBqp2P4wMTe5wERdP6bYTAkPoRIIx37FzRo4w4QvvO8/HBPl8MDWFJfe/cH
- L/QE3XhY/xai2d5G/xfO3TGLlYX5szZ14EeHveMWy7X6UfWrCt8B81tBkT3BB1x28BnCT6AHj
- 6itkKFYGRDXzsIXPc29KI61N4ztSRGJUppTYNx6DObe08pEiHfPsTNpmiccRpUx60lNJNn4TC
- V2TFwSaEPI6aubd3PJh3tkGANpjO4OKwh5IXNdQipyUIqG93AGETf5FsHQe6mLd5i3DG9f1nc
- GY8VC/J0fKDuIxp9495QaoT6zWl4zkMIFMzGO4dyZ0FbbhI8yrogAAbCbMhGb4+WNJiNPfzT/
- 8WL05l50grCLGIoBVNtwzk39636Qkw9XqVu16gC3sonyoOO+AoUX9twxOo3SChbaQ+CcOfbz4
- aDjbEJ2wlRJNBMCu7P4XH124AA9OPABNSUtjVe5HnMs3Df60sycf0m28vG0rWtNhb49NZJ1zX
- zuHPdveoNS9q1qwkc2TkXzsLYsM/5UQ6hDRbxvUFwtmdbHp2edTTO+pGohUfypNfGsBxOx2/o
- I0T/bhQV6g9RaeuWON+rP0AAGQj89HisFZogjo9AJZXc3QbWJLvhNGSDSRhXNzPpnxJAOIzKT
- R2LFTuUUbDOmiHGy34+KB3RSIjiCBO58zBe9bSjGG+AtCtYu5L96xAyoCvy++oRp43WhavRJp
- 0QZgj5ssmlEtjaSrGws0M28cvslbz/1U8AjZe3ZFCPWDdjHgWzMxKlYbIvGSRpdAb2Bkwbf3p
- a5Fhip/l67l2skvlmKgPqtaT3Lzfum/fsswzgGnuq9BIooqBd5Q1r0khA1vrDEzWluG93TnOG
- cNRt6gaLP2ZR0WEuAgj7GHUc6Ii7vurhPpkjBes7aHb9FSXV3iIeZrfZH681Kn3m6vRXvZz5g
- jM0/GD90j586xNpoF5IGxPVswEQN5qV9kDa/sk697B5aXbmvDY0tH/Znc4x4zlwZiatjNm4OB
- SHFb8ygTfoS3x1wah
+In-Reply-To: <aa1ac406-84c8-b0f0-b70b-7224df4c8c77@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 29, 2021 at 10:32:04AM -0700, Yu, Yu-cheng wrote:
+> I did send out some selftest patches (link is in the cover letter). However,
+> those need to be updated to the Linux standard, and I would like to do it
+> separately.
 
---CW+PUTTtArehJYIf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ok, and they look exactly like what I had in mind.
 
-On Thu, Apr 29, 2021 at 04:52:09PM +0000, Christophe Leroy wrote:
-> Commit 7c95d8893fb5 ("powerpc: Change calling convention for
-> create_branch() et. al.") complexified the frame of function
-> do_feature_fixups(), leading to GCC setting up a stack
-> guard when CONFIG_STACKPROTECTOR is selected.
->=20
-> The problem is that do_feature_fixups() is called very early
-> while 'current' in r2 is not set up yet and the code is still
-> not at the final address used at link time.
->=20
-> So, like other instrumentation, stack protection needs to be
-> deactivated for feature-fixups.c and code-patching.c
->=20
-> Reported-by: Jonathan Neuschaefer <j.neuschaefer@gmx.net>
-> Fixes: 7c95d8893fb5 ("powerpc: Change calling convention for create_branc=
-h() et. al.")
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
+Thx.
 
-Thank you for looking into this issue. This patch does indeed fix my
-issue.
+-- 
+Regards/Gruss,
+    Boris.
 
-Tested-by: Jonathan Neuschaefer <j.neuschaefer@gmx.net>
-
-
-Thanks again,
-Jonathan
-
---CW+PUTTtArehJYIf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmCK8ZoACgkQCDBEmo7z
-X9uuchAAyWiE+icouGPWkwy+BxaJD2oISzzlCt6AJmVAmMvTWHn8349SsLXQT1dv
-5U1GaZfRluK6DXSaBQGv5LTSPw/Z1Z3E27XVF7kaAGDnWEeulQ+69aMwSGnZDxQX
-qMASPo4X3MEIi4f/ySa2/ksXTLXsIZtJxnk8V6x0q+rOyilHVai4ckKMSBG6/QcC
-/kACTtq2ttol/U00I40uqvQ2Hk54PSqs54T0JXf5QMlns9Tcc2B48ynJCQBv3lJP
-IKUwY53kmvSTgYW3x8eHyYZ/JU5RcRAQZS9lH6/Fccp20r61itbVh+r58jyew/mP
-9qoe8LwtEb+cJq7npQNs3fdghpaaLyCJR1eUgperrOcafEBSSrybZdLY+46f6P7+
-ZwRJsPNno+PLjAC+dvcxZNcYcwkRzv2JzRbbI95ALHoFkAmTb/DTErAbKYi/Gc9d
-zyglAc9nc5LQPDyqrxxp5KQU4dAWeuBtz/40rVEKv6kF6hFuVop05by+57aaYmzy
-Sdy+YrxR9OBCxbl5orzgCDneA65COm2m4YwapT3pfjE/9qxC/mAIjxksj9ejkPeH
-XMsTMxTh0YV3KxmlVk7pn5oljn8aeauGc0uOdo6dt9ATnUHxqVzCMN2HMWcRLhPG
-sHsffOO19NVAWbBXGOyEB70tXX3kCIBp+Oq/wiGFGBwqkyVwE0c=
-=vmtD
------END PGP SIGNATURE-----
-
---CW+PUTTtArehJYIf--
+https://people.kernel.org/tglx/notes-about-netiquette
