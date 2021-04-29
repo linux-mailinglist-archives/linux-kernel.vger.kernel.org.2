@@ -2,231 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0470A36EF0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1337C36EF10
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240971AbhD2RnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 13:43:08 -0400
-Received: from mga05.intel.com ([192.55.52.43]:27281 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233706AbhD2RnH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 13:43:07 -0400
-IronPort-SDR: LLzlh/oKVCsKawRsmSg7sqWJFeEVYzZ1+NXOb3ehRwLCC3AflOPCACdlytOxX1J0QNgMv5D9GB
- rUliNRixupcQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9969"; a="282413260"
-X-IronPort-AV: E=Sophos;i="5.82,259,1613462400"; 
-   d="scan'208";a="282413260"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 10:42:20 -0700
-IronPort-SDR: rGxoQqgtr2qWXW9UFdqyYRzXQ2jmRIasW04rGsgYLHn//VGI3ZdLMiNqfXJ+e5+WLSKV579vgR
- NmQW0DYc/jMw==
-X-IronPort-AV: E=Sophos;i="5.82,259,1613462400"; 
-   d="scan'208";a="537448690"
-Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.251.29.105]) ([10.251.29.105])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 10:42:20 -0700
-Subject: Re: About add an A64FX cache control function into resctrl
-To:     "tan.shaopeng@fujitsu.com" <tan.shaopeng@fujitsu.com>,
-        "'fenghua.yu@intel.com'" <fenghua.yu@intel.com>
-Cc:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-        "'linux-arm-kernel@lists.infradead.org'" 
-        <linux-arm-kernel@lists.infradead.org>,
-        'James Morse' <james.morse@arm.com>,
-        "misono.tomohiro@fujitsu.com" <misono.tomohiro@fujitsu.com>,
-        "Luck, Tony" <tony.luck@intel.com>
-References: <OSAPR01MB214600C7923AEF7C35B02E648B739@OSAPR01MB2146.jpnprd01.prod.outlook.com>
- <OSAPR01MB214657641D532FB8D112DD528B479@OSAPR01MB2146.jpnprd01.prod.outlook.com>
- <bb0967c0-5b88-c6c2-0242-1e3928189a04@intel.com>
- <OSAPR01MB2146D42FC04779268BA231878B409@OSAPR01MB2146.jpnprd01.prod.outlook.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <14ddf86b-89e1-ba26-b684-f3d5d5f8ade7@intel.com>
-Date:   Thu, 29 Apr 2021 10:42:19 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S240998AbhD2Rn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 13:43:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232991AbhD2Rn5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 13:43:57 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D52BC06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:43:09 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id gx5so9044376ejb.11
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:43:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
+         :date:mime-version;
+        bh=BRjhSBhHMw0cfh8McFGX3T1RGcT74vqYpGonK7mWYDI=;
+        b=Kiq0l4riPAKiNrT7WJO38D0K2S1WMBBF2WDDoJYhcaFGNwXSu6bwya5fgqLoocpIPD
+         OsdN/9XBiFLxC8xL4EdVJp+Xrvc9Wti1b8t1aPWQWuH1msE9XiPLnG/NE6OpkTQBsD5j
+         pMMWNN3OJOJmB00zYIioJfkMihUkBabKT6p+oP0ATQUZ/sr1nbp0An9yeszAe4Y7mtZR
+         BBqr9c8jl3OFLieEYDvoVUb0gahKb766iwSp0mvFTeYJo/ddUY00IBk3YfgT8BzDTwHQ
+         cy7OEJwYCiCOnfZ+8OL2Eyv/gnCBDDnkgiX8B4JZvXl4H05uO+OQCquxXTaGQ0bHM6/a
+         RKGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=BRjhSBhHMw0cfh8McFGX3T1RGcT74vqYpGonK7mWYDI=;
+        b=pv/qBazzfTpax/gMFNwM0IL9Kv8vH1P9G12TyxKp6xicOgvqcXRK9EloS9dqLAwBCc
+         gzgT9bidhaawqrQhNaaTpcgYyfOrmTFn1Us7ivnnHerefDyUSrSXvwXF545Fvi6IUDa/
+         U2zPYU6bDxOWG3fuK8RuIRsJGlCoiwS96oiwjp+qbnXyZRFTcWfItZ/nOIzjuPKHShPf
+         ABHVi7n0AXiqjSQXa366IhaTsjCfbbvclGEwf2I1bOnegPA87IMbvVrb4UCVO2MoRo+a
+         2stOXieiIfZa2ZCEvT+Fam640jYv6S40Zl2KUTM9fi4IA+gH+uSzdyek/HAmoxwwFbXz
+         ymxw==
+X-Gm-Message-State: AOAM533E3Ti4jzx6Wh/5jwQ9UxfvLzIpcfnGTrYXBh5Xu/5KSuQ3ynDX
+        JW9u83TPImFgY35kQOctacCkkw==
+X-Google-Smtp-Source: ABdhPJx1ZgmV97KuEwi9+JdPZAVO4jUb2ew4j//svpTXFE+Kseaa2P/yi/AHDBRde4cmoKrvVSnHGw==
+X-Received: by 2002:a17:906:6544:: with SMTP id u4mr1065841ejn.455.1619718187971;
+        Thu, 29 Apr 2021 10:43:07 -0700 (PDT)
+Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.gmail.com with ESMTPSA id d5sm2877135edt.49.2021.04.29.10.43.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 10:43:07 -0700 (PDT)
+References: <20210429170147.3615883-1-narmstrong@baylibre.com>
+User-agent: mu4e 1.4.15; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Neil Armstrong <narmstrong@baylibre.com>, broonie@kernel.org
+Cc:     alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: meson: g12a-toacodec: add support for SM1 TOACODEC
+In-reply-to: <20210429170147.3615883-1-narmstrong@baylibre.com>
+Message-ID: <1jo8dx9ec5.fsf@starbuckisacylon.baylibre.com>
+Date:   Thu, 29 Apr 2021 19:43:06 +0200
 MIME-Version: 1.0
-In-Reply-To: <OSAPR01MB2146D42FC04779268BA231878B409@OSAPR01MB2146.jpnprd01.prod.outlook.com>
-Content-Type: text/plain; charset=iso-2022-jp; format=flowed; delsp=yes
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tan Shaopeng,
 
-On 4/28/2021 1:16 AM, tan.shaopeng@fujitsu.com wrote:
-> Hi Reinette,
-> 
->> On 4/21/2021 1:37 AM, tan.shaopeng@fujitsu.com wrote:
->>> Hi,
->>>
->>> Ping... any comments&advice about add an A64FX cache control function
->> into resctrl?
->>
->> My apologies for the delay.
->>
->>>
->>> Best regards
->>> Tan Shaopeng
->>>
->>>> Hello
->>>>
->>>>
->>>> I'm Tan Shaopeng from Fujitsu Limited.
->>>>
->>>> I’m trying to implement Fujitsu A64FX’s cache related features.
->>>> It is a cache partitioning function we called sector cache function
->>>> that using the value of the tag that is upper 8 bits of the 64bit
->>>> address and the value of the sector cache register to control virtual cache
->> capacity of the L1D&L2 cache.
->>>>
->>>> A few days ago, when I sent a driver that realizes this function to
->>>> ARM64 kernel community, Will Deacon and Arnd Bergmann suggested an
->>>> idea to add the sector cache function of A64FX into resctrl.
->>>>
->> https://lore.kernel.org/linux-arm-kernel/CAK8P3a2pFcNTw9NpRtQfYr7A5Oc
->>>> Z=As2kM0D_sbfFcGQ_J2Q+Q@mail.gmail.com/
->>>>
->>>> Based on my study, I think the sector cache function of A64FX can be
->>>> added into the allocation features of resctrl after James' resctrl rework has
->> finished.
->>>> But, in order to implement this function, more interfaces for resctrl are
->> need.
->>>> The details are as follow, and could you give me some advice?
->>>>
->>>> [Sector cache function]
->>>> The sector cache function split cache into multiple sectors and
->>>> control them separately. It is implemented on the L1D cache and
->>>> L2 cache in the A64FX processor and can be controlled individually
->>>> for L1D cache and L2 cache. A64FX has no L3 cache. Each L1D cache and
->>>> L2 cache has 4 sectors. Which L1D sector is used is specified by the
->>>> value of [57:56] bits of address, how many ways of sector are
->>>> specified by the value of register (IMP_SCCR_L1_EL0).
->>>> Which L2 sector is used is specified by the value of [56] bits of
->>>> address, and how many ways of sector are specified by value of
->>>> register (IMP_SCCR_ASSIGN_EL1, IMP_SCCR_SET0_L2_EL1,
->>>> IMP_SCCR_SET1_L2_EL1).
->>>>
->>>> For more details of sector cache function, see A64FX HPC extension
->>>> specification (1.2. Sector cache) in https://github.com/fujitsu/A64FX
->>
->> The overview in section 12 was informative but very high level.
-> 
-> I'm considering how to answer your questions from your email which
-> I received before, when I check the email again, I am sorry that
-> the information I provided before are insufficient.
-> 
-> To understand the sector cache function of A64FX, could you please see
-> A64FX_Microarchitecture_Manual - section 12. Sector Cache
-> https://github.com/fujitsu/A64FX/blob/master/doc/A64FX_Microarchitecture_Manual_en_1.4.pdf
-> and,
-> A64FX_Specification_HPC_Extension ? section 1.2. Sector Cache
-> https://github.com/fujitsu/A64FX/blob/master/doc/A64FX_Specification_HPC_Extension_v1_EN.pdf
+On Thu 29 Apr 2021 at 19:01, Neil Armstrong <narmstrong@baylibre.com> wrote:
 
-Thank you for the direct links - I missed that there are two documents  
-available.
 
-After reading the spec portion it does seem to me even more as though  
-"sectors" could be considered the same as the resctrl "classes of  
-service". The Fujitsu hardware supports four sectors that can be  
-configured with different number of ways using the registers you mention  
-above. In resctrl this could be considered as hardware that supports  
-four classes of service and each class of service can be allocated a  
-different number of ways.
+>  
+> +static int sm1_toacodec_mux_put_enum(struct snd_kcontrol *kcontrol,
+> +				     struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_component *component =
+> +		snd_soc_dapm_kcontrol_component(kcontrol);
+> +	struct snd_soc_dapm_context *dapm =
+> +		snd_soc_dapm_kcontrol_dapm(kcontrol);
+> +	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+> +	unsigned int mux, changed;
+> +
+> +	mux = snd_soc_enum_item_to_val(e, ucontrol->value.enumerated.item[0]);
+> +	changed = snd_soc_component_test_bits(component, e->reg,
+> +					      CTRL0_DAT_SEL_SM1,
+> +					      FIELD_PREP(CTRL0_DAT_SEL_SM1, mux));
+> +
+> +	if (!changed)
+> +		return 0;
+> +
+> +	/* Force disconnect of the mux while updating */
+> +	snd_soc_dapm_mux_update_power(dapm, kcontrol, 0, NULL, NULL);
+> +
+> +	snd_soc_component_update_bits(component, e->reg,
+> +				      CTRL0_DAT_SEL_SM1 |
+> +				      CTRL0_LRCLK_SEL_SM1 |
+> +				      CTRL0_BCLK_SEL_SM1,
+> +				      FIELD_PREP(CTRL0_DAT_SEL_SM1, mux) |
+> +				      FIELD_PREP(CTRL0_LRCLK_SEL_SM1, mux) |
+> +				      FIELD_PREP(CTRL0_BCLK_SEL_SM1, mux));
+> +
+> +	/*
+> +	 * FIXME:
+> +	 * On this soc, the glue gets the MCLK directly from the clock
+> +	 * controller instead of going the through the TDM interface.
+> +	 *
+> +	 * Here we assume interface A uses clock A, etc ... While it is
+> +	 * true for now, it could be different. Instead the glue should
+> +	 * find out the clock used by the interface and select the same
+> +	 * source. For that, we will need regmap backed clock mux which
+> +	 * is a work in progress
+> +	 */
+> +	snd_soc_component_update_bits(component, e->reg,
+> +				      CTRL0_MCLK_SEL,
+> +				      FIELD_PREP(CTRL0_MCLK_SEL, mux));
+> +
+> +	snd_soc_dapm_mux_update_power(dapm, kcontrol, mux, e, NULL);
+> +
+> +	return 0;
+> +}
 
-The other part is how hardware knows which sector is being used at any  
-moment in time. In resctrl that is programmed by writing the active  
-class of service into needed register at the time the application is  
-context switched (resctrl_sched_in()). This seems different here since  
-as you describe the sector is chosen by bits in the address. Even so,  
-which bits to set in the address needs to be programmed also and I also  
-understand that there is a "default" sector that can be programmed via  
-register. Could these be equivalent to what is done currently in resctrl?
+Instead of duplicating this function, I'd prefer if you could use regmap fields
 
-(Could you please also consider my original questions?)
 
-> 
-> In addition, Japan will be on a long holiday about one week from
-> April 29th, I will answer your other questions after the holidays.
-> 
->> I was not able to find any instance of "IMP_SCCR" in this document to explore
->> how this cache allocation works.
->>
->> Are these cache sectors exposed to the OS in any way? For example, when the
->> OS discovers the cache, does it learn about these sectors and expose the
->> details to user space (/sys/devices/system/cpuX/cache)?
->>
->> The overview of Sector Cache in that document provides details of how the size
->> of the sector itself is dynamically adjusted to usage. That description is quite
->> cryptic but it seems like a sector, since the number of ways associated with it
->> can dynamically change, is more equivalent to a class of service or resource
->> group in the resctrl environment.
->>
->> I really may be interpreting things wrong here, could you perhaps point me to
->> where I can obtain more details?
->>
->>
->>>> [Difference between resctrl(CAT) and this sector cache function]
->>>> L2/L3 CAT (Cache Allocation Technology) enables the user to specify
->>>> some physical partition of cache space that an application can fill.
->>>> A64FX's L1D/L2 cache has 4 sectors and 16ways. This sector function
->>>> enables a user to specify number of ways each sector uses.
->>>> Therefore, for CAT it is enough to specify a cache portion for each
->>>> cache_id (socket). On the other hand, sector cache needs to specify
->>>> cache portion of each sector for each cache_id, and following
->>>> extension to resctrl interface is needed to support sector cache.
->>>>
->>>> [Idear for A64FX sector cache function control interface (schemata
->>>> file details)]
->>>>
->> L1:<cache_id0>=<cwbm>,<cwbm>,<cwbm>,<cwbm>;<cache_id1>=<cw
->>>> bm>,<cwbm>,<cwbm>,<cwbm>;…
->>>>
->> L2:<cache_id0>=>=<cwbm>,<cwbm>,<cwbm>,<cwbm>;<cache_id1>=
->>>> <cwbm>,<cwbm>,<cwbm>,<cwbm>;…
->>>>
->>>> ・L1: Add a new interface to control the L1D cache.
->>>> ・<cwbm>,<cwbm>,<cwbm>,<cwbm>：Specify the number of ways for
->> each
->>>> sector.
->>>> ・cwbm：Specify the number of ways in each sector as a bitmap
->> (percentage),
->>>>     but the bitmap does not indicate the location of the cache.
->>>> * In the sector cache function, L2 sector cache way setting register is
->>>>     shared among PEs (Processor Element) in shared domain. If two PEs
->>>>     which share L2 cache belongs to different resource groups, one
->> resource
->>>>     group's L2 setting will affect to other resource group's L2 setting.
->>
->> In resctrl a "resource group" can be viewed as a class of service.
->>
->>>> * Since A64FX does not support MPAM, it is not necessary to consider
->>>>     how to switch between MPAM and sector cache function now.
->>>>
->>>> Some questions:
->>>> 1.I'm still studying about RDT, could you tell me whether RDT has
->>>>     the similar mechanism with sector cache function?
->>
->> This is not clear to me yet. One thing to keep in mind is that a bit in the capacity
->> bitmask could correspond to some number of ways in a cache, but it does not
->> have to. It is essentially a hint to hardware on how much cache space needs to
->> be allocated while also indicating overlap and isolation from other allocations.
->>
->> resctrl already supports the bitmask being interpreted differently between
->> architectures and with the MPAM support there will be even more support for
->> different interpretations.
->>
->>>> 2.In RDT, L3 cache is shared among cores in socket. If two cores which
->>>>     share L3 cache belongs to different resource groups, one resource
->>>>     group's L3 setting will affect to other resource group's L3 setting?
->>
->> This question is not entirely clear to me. Are you referring to the hardware layout
->> or configuration changes via the resctrl "cpus" file?
->>
->> Each resource group is a class of service (CLOS) that is supported by all cache
->> instances. By default each resource group would thus contain all cache
->> instances on the system (even if some cache instances do not support the
->> same number of CLOS resctrl would only support the CLOS supported by all
->> resources).
-> 
-
-Reinette
