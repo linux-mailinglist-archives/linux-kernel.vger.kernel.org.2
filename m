@@ -2,106 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB4536E5E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 09:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 506F536E5DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 09:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239308AbhD2H2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 03:28:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59934 "EHLO
+        id S233230AbhD2H1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 03:27:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239050AbhD2H2e (ORCPT
+        with ESMTP id S230309AbhD2H1N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 03:28:34 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A26C06138D
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 00:27:48 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id u14-20020a17090a1f0eb029014e38011b09so10481269pja.5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 00:27:48 -0700 (PDT)
+        Thu, 29 Apr 2021 03:27:13 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BCB2C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 00:26:24 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id u3so19678907eja.12
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 00:26:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lG7fN/8t7j6+iLVQDFN6M3QfpChMwMgL2bDEqLa02Qg=;
-        b=o60cTcFzKjZX8No9QlOUH0ywJR5DGB2ckobVxKGj1L3r3yyfwakt0O58LTrx85TMaW
-         ALH1hf0SggjV3NhjAH7Rx2OVX25cLd+rmewdhEKcfD7X+aH1uquihIKdlsB06SM1jvQ+
-         E7EIOPcGKx78e2lMjav+mliBO7ne05IjYkIQ02cCkNBleG2PSqrKOdtPgEXw9MohfzPG
-         /08g4DLCOlEl+7kd1eIV3DivNXcZERo4zcmt4Z+ajuytA/VM0+zuIXgq2/4IusAmUtj8
-         a99w+D6UTZFgkScfcqdNddLqV75Gi65qbPyG4JNHichuA5jbPR+iwuL63SiORK4wuc0g
-         7LwQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=fKADZqVqSc0IQida3fCMkFkfc3lO4PjliPGIsHxxals=;
+        b=AIjRR4E3nM59Xx7lq22qZifXk7zFyDH16ehnF8+kS+odSosc2HjT9yf6HLsME8yCZN
+         3unezDVryQUxBu18wamkoKk96UfqcxfcLUhNgYeKbwhkhxtxokmrHBACYbg0YPmELa8H
+         9icRo0oxhbE0Umgz9BWVN75nDycpXP0oF0lEIeZ/SGTHWeN/zOuYRTXwDS7ba9hm1LDo
+         aqP4x6kk7eHJsA51LPiPvwNrNzGV/sOnaoNEQLDjPRf5V1IkJmGeZTKPdoH2ev4TbIrV
+         pfC6oWgteX5fPnGT6SVvtLd38YPJjbFSq8mUO3pQ0MUwrWvUNgvncDU01gP4DozvxQps
+         UjXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lG7fN/8t7j6+iLVQDFN6M3QfpChMwMgL2bDEqLa02Qg=;
-        b=UF4E+IW871oJI4oHK2rat9cloK70BNSGdo4OdqU1zvjfsVlk6jNJrAUyP83uFolS8R
-         ujHS94vtu7OWZSyVxyklXr8XTKHroU1SQMqL/YzQj5oazhX1I2MXsKeltO+DtKKreVtP
-         dk5sk2XjbwXpILE9uC1q7YasVPK1tmanwNrFqgWMV1PDR5gth2qcYJOTcmzAyvTEozLx
-         Z8+pL86p0r7JzZ/gKe1m6eaYYZnF2ShucyQaVqa5GSxeEHTQG+zWYsTo8cuisdN79B0+
-         hoPGQtDi2bUL9xeIMUhq037wF6gq3w0CgIf+uJ8oejRCokaVjOaI3JujKB9NK8N+E3PE
-         5qkQ==
-X-Gm-Message-State: AOAM531EYWPfqUY64nsTQ/r8E14mKgbQ4rXpHDwV9aB9P8OOn+Bi1U0D
-        I5Ynplh7kYbkqNsOKHwRdOsnSQ==
-X-Google-Smtp-Source: ABdhPJx4W5jNoRZhQiC9645r/h31OFGTNwljVCcUp6NkakGEw9IMReUvVm8qBOVVaZtRC9a9uoS/5Q==
-X-Received: by 2002:a17:902:ec84:b029:ea:b28d:e53e with SMTP id x4-20020a170902ec84b02900eab28de53emr33378997plg.77.1619681268180;
-        Thu, 29 Apr 2021 00:27:48 -0700 (PDT)
-Received: from starnight.localdomain (123-204-46-122.static.seed.net.tw. [123.204.46.122])
-        by smtp.googlemail.com with ESMTPSA id m9sm1674753pgt.65.2021.04.29.00.27.43
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=fKADZqVqSc0IQida3fCMkFkfc3lO4PjliPGIsHxxals=;
+        b=MKm6N5udJkmofExoYKJESm8twjT9oFgDbbEz9CXgF6fpP+hn+nTKgvozsFPf/cIOkq
+         EpyiL411KK5z98JERb6x5qrViwLqRNqeNSkgYG3Wf5wLphV7W2J0D0tCjjoIegE4tTi1
+         Q//YxfUMkphCJAQh8APS72cHlWMTgwUyo+IpD3+cBcZ/USypDcSsG10A76HzDlAxe0oK
+         8dkNd7MAZdbgkr1z7OroOFvai2EFPfiR786gt1YTmX5lXFKbkeyd0p+ETTPhjzy6HMUC
+         tkZ8WJ8xFo/xn8sq6fK63UZtV2trnKwoK2SEZrm4O6SZtlROtVHMKcSlhkdZEig/pmpb
+         OE+Q==
+X-Gm-Message-State: AOAM531XT59K+MCDHcxvZQ+t/p+jbdlUCTgin1gjGACuspdQt8OMN6b9
+        xRGtxUjGAfOMArP+YJVJ9XntcQMQAYkDGg==
+X-Google-Smtp-Source: ABdhPJx36094XEd9oE9B0Pr9ryHSzM/l/3aZPDz4WPmIrlL0GbRn/4rlKygM5Br6EUQwTZyo68vcpA==
+X-Received: by 2002:a17:906:7f97:: with SMTP id f23mr14673562ejr.74.1619681183343;
+        Thu, 29 Apr 2021 00:26:23 -0700 (PDT)
+Received: from agape.jhs ([5.171.81.14])
+        by smtp.gmail.com with ESMTPSA id u11sm1688315edr.13.2021.04.29.00.26.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 00:27:47 -0700 (PDT)
-From:   Jian-Hong Pan <jhp@endlessos.org>
-To:     =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
-        linux-firmware@kernel.org
-Cc:     linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux@endlessos.org,
-        Jian-Hong Pan <jhp@endlessos.org>
-Subject: [PATCH v2] brcm: Add a link to enable khadas VIM2's WiFi
-Date:   Thu, 29 Apr 2021 15:25:03 +0800
-Message-Id: <20210429072502.4350-1-jhp@endlessos.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <c62e9f94-25fc-6791-c328-5454abc403b9@gmail.com>
-References: <c62e9f94-25fc-6791-c328-5454abc403b9@gmail.com>
+        Thu, 29 Apr 2021 00:26:23 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 09:26:20 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     outreachy-kernel@googlegroups.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH 1/2] staging: rtl8723bs: hal: Remove
+ set but unused variables
+Message-ID: <20210429072619.GB1409@agape.jhs>
+References: <20210428113346.28305-1-fmdefrancesco@gmail.com>
+ <20210428113346.28305-2-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210428113346.28305-2-fmdefrancesco@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to kernel message on khadas VIM2 board equipped with BCM4356:
+Hi Fabio,
 
-brcmfmac: brcmf_fw_alloc_request: using brcm/brcmfmac4356-sdio for chip BCM4356/2
-usbcore: registered new interface driver brcmfmac
-brcmfmac mmc0:0001:1: Direct firmware load for brcm/brcmfmac4356-sdio.khadas,vim2.txt failed with error -2
-brcmfmac mmc0:0001:1: Direct firmware load for brcm/brcmfmac4356-sdio.txt failed with error -2
+On Wed, Apr 28, 2021 at 01:33:45PM +0200, Fabio M. De Francesco wrote:
+> Removed four set but unused variables. Issue detected by gcc.
+> 
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> ---
+>  drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c | 5 -----
+>  1 file changed, 5 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+> index 082448557b53..96cb4426a0f4 100644
+> --- a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+> +++ b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+> @@ -3900,14 +3900,11 @@ u8 GetHalDefVar8723B(struct adapter *padapter, enum hal_def_variable variable, v
+>  			u32 cmd;
+>  			u32 ra_info1, ra_info2;
+>  			u32 rate_mask1, rate_mask2;
+> -			u8 curr_tx_rate, curr_tx_sgi, hight_rate, lowest_rate;
+>  
+>  			cmd = 0x40000100 | mac_id;
+>  			rtw_write32(padapter, REG_HMEBOX_DBG_2_8723B, cmd);
+>  			msleep(10);
+>  			ra_info1 = rtw_read32(padapter, 0x2F0);
+> -			curr_tx_rate = ra_info1&0x7F;
+> -			curr_tx_sgi = (ra_info1>>7)&0x01;
+>  
+>  			cmd = 0x40000400 | mac_id;
+>  			rtw_write32(padapter, REG_HMEBOX_DBG_2_8723B, cmd);
+> @@ -3916,8 +3913,6 @@ u8 GetHalDefVar8723B(struct adapter *padapter, enum hal_def_variable variable, v
+>  			ra_info2 = rtw_read32(padapter, 0x2F4);
+>  			rate_mask1 = rtw_read32(padapter, 0x2F8);
+>  			rate_mask2 = rtw_read32(padapter, 0x2FC);
+> -			hight_rate = ra_info2&0xFF;
+> -			lowest_rate = (ra_info2>>8)  & 0xFF;
+>  
+>  		}
+>  		break;
+> -- 
+> 2.31.1
+> 
+>
 
-System needs the NVRAM file "brcmfmac4356-sdio.khadas,vim2.txt" to
-enable the WiFi chip BCM4356. Found it can share with the same file
-"brcmfmac4356-sdio.vamrs,rock960.txt" with a soft link as
-"brcmfmac4356-sdio.khadas,vim2.txt". Both 2.4GHz and 5GHz WiFi are
-enabled with the linked config.
+rate_mask{1,2} and ra_info{1,2} seems to be unused as well.
 
-This patch adds the link to brcmfmac4356-sdio.vamrs,rock960.txt for it.
+thank you,
 
-Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
----
-v2: Modified the commit description.
-
- WHENCE | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/WHENCE b/WHENCE
-index 3c29304..5773020 100644
---- a/WHENCE
-+++ b/WHENCE
-@@ -2780,6 +2780,7 @@ Link: brcm/brcmfmac43455-sdio.Raspberry\ Pi\ Foundation-Raspberry\ Pi\ Compute\
- File: "brcm/brcmfmac43455-sdio.MINIX-NEO Z83-4.txt"
- File: "brcm/brcmfmac4356-pcie.gpd-win-pocket.txt"
- File: brcm/brcmfmac4356-sdio.vamrs,rock960.txt
-+Link: brcm/brcmfmac4356-sdio.khadas,vim2.txt -> brcmfmac4356-sdio.vamrs,rock960.txt
- 
- Licence: GPLv2. See GPL-2 for details.
- 
--- 
-2.31.1
-
+fabio 
