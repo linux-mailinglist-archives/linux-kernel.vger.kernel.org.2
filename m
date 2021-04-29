@@ -2,177 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2B1A36EE7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 766BE36EE83
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 19:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240875AbhD2RAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 13:00:54 -0400
-Received: from smtp-fw-9103.amazon.com ([207.171.188.200]:10516 "EHLO
-        smtp-fw-9103.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233099AbhD2RAv (ORCPT
+        id S240840AbhD2RCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 13:02:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232724AbhD2RCj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 13:00:51 -0400
+        Thu, 29 Apr 2021 13:02:39 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFB96C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:01:52 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id g65so7136714wmg.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 10:01:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1619715604; x=1651251604;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=36NT0ag+PSZSNAfEleywXJUlZYv9YutgKNtt3fuQsnM=;
-  b=SQr1Q4EQxhuA8YWdxnCLLw3rrpDax4+fvo5mVKMVtyV63VPn0+fLXKua
-   0EcXlOT52zlDD1pYPeJX2QpShuhwQFPpeu4ivEi6UMKTZO6i6tZjjORCl
-   ESjwAzzf2n1zhrgqHiz+dpR+J1PDPa6jrUovmF+X3h+6fBEEy1aQw1nmk
-   8=;
-X-IronPort-AV: E=Sophos;i="5.82,259,1613433600"; 
-   d="scan'208";a="930133175"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1d-e69428c4.us-east-1.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-9103.sea19.amazon.com with ESMTP; 29 Apr 2021 16:59:56 +0000
-Received: from EX13D16EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1d-e69428c4.us-east-1.amazon.com (Postfix) with ESMTPS id 6478EC42CB;
-        Thu, 29 Apr 2021 16:59:55 +0000 (UTC)
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.161.85) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 29 Apr 2021 16:59:51 +0000
-From:   Andra Paraschiv <andraprs@amazon.com>
-To:     linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Greg KH <gregkh@linuxfoundation.org>,
-        Mathias Krause <minipli@grsecurity.net>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>,
-        stable <stable@vger.kernel.org>,
-        Andra Paraschiv <andraprs@amazon.com>
-Subject: [PATCH v1 1/1] nitro_enclaves: Fix stale file descriptors on failed usercopy
-Date:   Thu, 29 Apr 2021 19:59:41 +0300
-Message-ID: <20210429165941.27020-2-andraprs@amazon.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
-In-Reply-To: <20210429165941.27020-1-andraprs@amazon.com>
-References: <20210429165941.27020-1-andraprs@amazon.com>
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xIJhQgvErzZ8YMPk+WYILQGnbeAVai9jg3fngQlpAFY=;
+        b=C8R+f1fz5aqV1aulPZMLyBy7ioGqZPPUaP9lhWiP8PGwu6kzgShmo9w283OnMqawKP
+         r0inAbP/0RMeenxINyC0o+RhuvvXRQxK0XDZz1QzwIi6S47nKiBOhWddaW/ijUvzQwZ4
+         SZFOIyFy7ceWkqWtfUjSOtRyM949EqABmIp9kXGeri+a/h778ssHwE7hE4mue7GhcgBI
+         1itvHPaY3CZCVXgrT440G/VMXt+yLzMB0LzvRKGaB1AjDW5cP1k7f5/K+24e/nsPzQVB
+         H8S2MJ1Oy3IaX+SNk7ZepjZdPshgULUbyTLC7puWEigLoL0/kbF6cVje/eXOxE1VAvLz
+         SlKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xIJhQgvErzZ8YMPk+WYILQGnbeAVai9jg3fngQlpAFY=;
+        b=rjW/hxD+fTDuFCJmD4vDjZQZVB1vD+9E9WZYZU2o7BGWH33G9j3mtE0SmPDQqC4OPb
+         cFfj1IaCLU3r/IFuwFQqtR6JyvaUrtB00bODUEmLw9EVLE9Xro/Z9xXu/RM0H/oQF8j7
+         RYiw0G0hTLAKmL3aFlt1B3m1+lBJJP7aasZA2s/KUXqHBM8iMvTU1DYuK0u1m5BBGxiZ
+         5AJ4+ZAFJsDeuE/rW5NkIVcsbOFcL67ieBeX9jTGWlPpH/XCBoaB5fmO+dH6hoNjajQ7
+         YvY3IDIyvfNS6rfj43VOqqNsjvGjONepPFqyxpXwUlHwnOaYxvdHWDKt856Ed0ySpimZ
+         VdgA==
+X-Gm-Message-State: AOAM532L3lXWlKbFL0aXfFVu9QPMi3POt8nd6dutjnZcmoqKzYnMMDU+
+        hKsR2a9RZCi1+oNmptrqyFrirw==
+X-Google-Smtp-Source: ABdhPJzn+h/p0FeOd3nf2UYBKZclZfjL/iW/fxdfxs84vUy7LiQ6oOuoxj4pZ+rH/LZ8wrpqQ6MI9g==
+X-Received: by 2002:a1c:6606:: with SMTP id a6mr9009573wmc.160.1619715711326;
+        Thu, 29 Apr 2021 10:01:51 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e0a:90c:e290:c304:4b2b:4a79:1da9])
+        by smtp.gmail.com with ESMTPSA id z6sm623856wmf.9.2021.04.29.10.01.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 10:01:50 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     broonie@kernel.org, jbrunet@baylibre.com
+Cc:     alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH] ASoC: meson: g12a-toacodec: add support for SM1 TOACODEC
+Date:   Thu, 29 Apr 2021 19:01:47 +0200
+Message-Id: <20210429170147.3615883-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Originating-IP: [10.43.161.85]
-X-ClientProxiedBy: EX13D11UWC003.ant.amazon.com (10.43.162.162) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+X-Patch-Hashes: v=1; h=sha256; i=vFgn4HeF6fYyIrfNSO2XBhPEbABG+KXl/lGRiyykmRg=; m=qGwWmF5o4d9qBXb6Klih2uuRcBA5bhVPUwJGlRovDlc=; p=vp2pFauRu8dJuiKftRhsEDtc6Q3vQLibGNeuvotvOGE=; g=4d0a05e4e909af8ccb1fe6c76a86ad52487fdcb2
+X-Patch-Sig: m=pgp; i=narmstrong@baylibre.com; s=0xA4CFF8AE; b=iQIzBAABCgAdFiEEPVPGJshWBf4d9CyLd9zb2sjISdEFAmCK5mIACgkQd9zb2sjISdEdvxAAw5d e2XqTkQnzlfJIn1tQmSYHoz81ZtVFGPP53ViZZH+67cXEkFR2+XmN73kN6KWEodFVcqppGeDhQSzu yJQjWC8/QBgTQtsr789LhO6+88w7J/xOLFQx1JZz5wu2Av+Lbqwt2GnqZqFYRt55w85tJa5cSJMkz IG7lHD4oaieUBWxFCrwQPCXBwjAcieHDutEvlh7BqFw80/rPpKvTtAWSSl2mWWSlggrFdgWOS+OQL 16zrk5aqIyhXDPbWenDupzNn7GzR5S7AVEUN82FDagfcLuXaTMbQMmsOaq01Lyqxg2kQRty/06GYo hrBQlSjsoBPHJ2iVAm3xTi5pN2LZhmPF/nCjgBL9cQ5AKzATSwruCrczQfVxD98AvGIxQ9PtjZQox RUiAG5MZFw2vb5hJU8WnFKQ/za+3uP1Tc7GBWxjQRtkWy+EbJb57VlWTCbIeXwT3yj9XDbMzuh5FF IV5aSp3FTa8riR2Sh28cs8ewMuVgreiA6rEt4Trbx9XXW0tGPXt9aM95YNhj8+Fsusj5xdqJMpZJ6 ZaTTJvDdgQWXGGs7N+P+34zAC+czNJegcSr+3MoHmoySVDwtESZ2Jbok/tmBzFD7n0TGXf/jqn2pO 2PdagjpqWq+SKlp2vmyYFtMlBlEz7U8vENnEQza3Ast8wTSi1rTSJEGJctA3CVHc=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Krause <minipli@grsecurity.net>
+This adds support for the TOACODEC found in Amlogic SM1 SoCs.
 
-A failing usercopy of the slot uid will lead to a stale entry in the
-file descriptor table as put_unused_fd() won't release it. This enables
-userland to refer to a dangling 'file' object through that still valid
-file descriptor, leading to all kinds of use-after-free exploitation
-scenarios.
+The bits are shifted for more selection of clock sources, so this only
+maps the same support for G12A to the SM1 bits.
 
-Exchanging put_unused_fd() for close_fd(), ksys_close() or alike won't
-solve the underlying issue, as the file descriptor might have been
-replaced in the meantime, e.g. via userland calling close() on it
-(leading to a NULL pointer dereference in the error handling code as
-'fget(enclave_fd)' will return a NULL pointer) or by dup2()'ing a
-completely different file object to that very file descriptor, leading
-to the same situation: a dangling file descriptor pointing to a freed
-object -- just in this case to a file object of user's choosing.
-
-Generally speaking, after the call to fd_install() the file descriptor
-is live and userland is free to do whatever with it. We cannot rely on
-it to still refer to our enclave object afterwards. In fact, by abusing
-userfaultfd() userland can hit the condition without any racing and
-abuse the error handling in the nitro code as it pleases.
-
-To fix the above issues, defer the call to fd_install() until all
-possible errors are handled. In this case it's just the usercopy, so do
-it directly in ne_create_vm_ioctl() itself.
-
-Signed-off-by: Mathias Krause <minipli@grsecurity.net>
-Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
 ---
- drivers/virt/nitro_enclaves/ne_misc_dev.c | 43 +++++++++--------------
- 1 file changed, 17 insertions(+), 26 deletions(-)
+ sound/soc/meson/g12a-toacodec.c | 126 +++++++++++++++++++++++++++++++-
+ 1 file changed, 124 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/virt/nitro_enclaves/ne_misc_dev.c b/drivers/virt/nitro_enclaves/ne_misc_dev.c
-index f1964ea4b8269..e21e1e86ad15f 100644
---- a/drivers/virt/nitro_enclaves/ne_misc_dev.c
-+++ b/drivers/virt/nitro_enclaves/ne_misc_dev.c
-@@ -1524,7 +1524,8 @@ static const struct file_operations ne_enclave_fops = {
-  *			  enclave file descriptor to be further used for enclave
-  *			  resources handling e.g. memory regions and CPUs.
-  * @ne_pci_dev :	Private data associated with the PCI device.
-- * @slot_uid:		Generated unique slot id associated with an enclave.
-+ * @slot_uid:		User pointer to store the generated unique slot id
-+ *			associated with an enclave to.
-  *
-  * Context: Process context. This function is called with the ne_pci_dev enclave
-  *	    mutex held.
-@@ -1532,7 +1533,7 @@ static const struct file_operations ne_enclave_fops = {
-  * * Enclave fd on success.
-  * * Negative return value on failure.
-  */
--static int ne_create_vm_ioctl(struct ne_pci_dev *ne_pci_dev, u64 *slot_uid)
-+static int ne_create_vm_ioctl(struct ne_pci_dev *ne_pci_dev, u64 __user *slot_uid)
- {
- 	struct ne_pci_dev_cmd_reply cmd_reply = {};
- 	int enclave_fd = -1;
-@@ -1634,7 +1635,18 @@ static int ne_create_vm_ioctl(struct ne_pci_dev *ne_pci_dev, u64 *slot_uid)
+diff --git a/sound/soc/meson/g12a-toacodec.c b/sound/soc/meson/g12a-toacodec.c
+index 9339fabccb79..9c1c6b65baad 100644
+--- a/sound/soc/meson/g12a-toacodec.c
++++ b/sound/soc/meson/g12a-toacodec.c
+@@ -23,15 +23,27 @@
+ #define  CTRL0_ENABLE_SHIFT		31
+ #define  CTRL0_DAT_SEL_SHIFT		14
+ #define  CTRL0_DAT_SEL			(0x3 << CTRL0_DAT_SEL_SHIFT)
++#define  CTRL0_DAT_SEL_SHIFT_SM1	18
++#define  CTRL0_DAT_SEL_SM1		(0x3 << CTRL0_DAT_SEL_SHIFT_SM1)
+ #define  CTRL0_LANE_SEL			12
++#define  CTRL0_LANE_SEL_SM1		16
+ #define  CTRL0_LRCLK_SEL		GENMASK(9, 8)
++#define  CTRL0_LRCLK_INV_SM1		BIT(10)
++#define  CTRL0_LRCLK_SEL_SM1		GENMASK(14, 12)
+ #define  CTRL0_BLK_CAP_INV		BIT(7)
++#define  CTRL0_BLK_CAP_INV_SM1		BIT(9)
+ #define  CTRL0_BCLK_O_INV		BIT(6)
++#define  CTRL0_BCLK_O_INV_SM1		BIT(8)
+ #define  CTRL0_BCLK_SEL			GENMASK(5, 4)
++#define  CTRL0_BCLK_SEL_SM1		GENMASK(6, 4)
+ #define  CTRL0_MCLK_SEL			GENMASK(2, 0)
  
- 	list_add(&ne_enclave->enclave_list_entry, &ne_pci_dev->enclaves_list);
+ #define TOACODEC_OUT_CHMAX		2
  
--	*slot_uid = ne_enclave->slot_uid;
-+	if (copy_to_user(slot_uid, &ne_enclave->slot_uid, sizeof(ne_enclave->slot_uid))) {
-+		/*
-+		 * As we're holding the only reference to 'enclave_file', fput()
-+		 * will call ne_enclave_release() which will do a proper cleanup
-+		 * of all so far allocated resources, leaving only the unused fd
-+		 * for us to free.
-+		 */
-+		fput(enclave_file);
-+		put_unused_fd(enclave_fd);
++struct g12a_toacodec_match_data {
++	const struct snd_soc_component_driver *component_drv;
++};
 +
-+		return -EFAULT;
+ static const char * const g12a_toacodec_mux_texts[] = {
+ 	"I2S A", "I2S B", "I2S C",
+ };
+@@ -85,15 +97,73 @@ static int g12a_toacodec_mux_put_enum(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
+ 
++static int sm1_toacodec_mux_put_enum(struct snd_kcontrol *kcontrol,
++				     struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component =
++		snd_soc_dapm_kcontrol_component(kcontrol);
++	struct snd_soc_dapm_context *dapm =
++		snd_soc_dapm_kcontrol_dapm(kcontrol);
++	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
++	unsigned int mux, changed;
++
++	mux = snd_soc_enum_item_to_val(e, ucontrol->value.enumerated.item[0]);
++	changed = snd_soc_component_test_bits(component, e->reg,
++					      CTRL0_DAT_SEL_SM1,
++					      FIELD_PREP(CTRL0_DAT_SEL_SM1, mux));
++
++	if (!changed)
++		return 0;
++
++	/* Force disconnect of the mux while updating */
++	snd_soc_dapm_mux_update_power(dapm, kcontrol, 0, NULL, NULL);
++
++	snd_soc_component_update_bits(component, e->reg,
++				      CTRL0_DAT_SEL_SM1 |
++				      CTRL0_LRCLK_SEL_SM1 |
++				      CTRL0_BCLK_SEL_SM1,
++				      FIELD_PREP(CTRL0_DAT_SEL_SM1, mux) |
++				      FIELD_PREP(CTRL0_LRCLK_SEL_SM1, mux) |
++				      FIELD_PREP(CTRL0_BCLK_SEL_SM1, mux));
++
++	/*
++	 * FIXME:
++	 * On this soc, the glue gets the MCLK directly from the clock
++	 * controller instead of going the through the TDM interface.
++	 *
++	 * Here we assume interface A uses clock A, etc ... While it is
++	 * true for now, it could be different. Instead the glue should
++	 * find out the clock used by the interface and select the same
++	 * source. For that, we will need regmap backed clock mux which
++	 * is a work in progress
++	 */
++	snd_soc_component_update_bits(component, e->reg,
++				      CTRL0_MCLK_SEL,
++				      FIELD_PREP(CTRL0_MCLK_SEL, mux));
++
++	snd_soc_dapm_mux_update_power(dapm, kcontrol, mux, e, NULL);
++
++	return 0;
++}
++
+ static SOC_ENUM_SINGLE_DECL(g12a_toacodec_mux_enum, TOACODEC_CTRL0,
+ 			    CTRL0_DAT_SEL_SHIFT,
+ 			    g12a_toacodec_mux_texts);
+ 
++static SOC_ENUM_SINGLE_DECL(sm1_toacodec_mux_enum, TOACODEC_CTRL0,
++			    CTRL0_DAT_SEL_SHIFT_SM1,
++			    g12a_toacodec_mux_texts);
++
+ static const struct snd_kcontrol_new g12a_toacodec_mux =
+ 	SOC_DAPM_ENUM_EXT("Source", g12a_toacodec_mux_enum,
+ 			  snd_soc_dapm_get_enum_double,
+ 			  g12a_toacodec_mux_put_enum);
+ 
++static const struct snd_kcontrol_new sm1_toacodec_mux =
++	SOC_DAPM_ENUM_EXT("Source", sm1_toacodec_mux_enum,
++			  snd_soc_dapm_get_enum_double,
++			  sm1_toacodec_mux_put_enum);
++
+ static const struct snd_kcontrol_new g12a_toacodec_out_enable =
+ 	SOC_DAPM_SINGLE_AUTODISABLE("Switch", TOACODEC_CTRL0,
+ 				    CTRL0_ENABLE_SHIFT, 1, 0);
+@@ -105,6 +175,13 @@ static const struct snd_soc_dapm_widget g12a_toacodec_widgets[] = {
+ 			    &g12a_toacodec_out_enable),
+ };
+ 
++static const struct snd_soc_dapm_widget sm1_toacodec_widgets[] = {
++	SND_SOC_DAPM_MUX("SRC", SND_SOC_NOPM, 0, 0,
++			 &sm1_toacodec_mux),
++	SND_SOC_DAPM_SWITCH("OUT EN", SND_SOC_NOPM, 0, 0,
++			    &g12a_toacodec_out_enable),
++};
++
+ static int g12a_toacodec_input_hw_params(struct snd_pcm_substream *substream,
+ 					 struct snd_pcm_hw_params *params,
+ 					 struct snd_soc_dai *dai)
+@@ -175,6 +252,13 @@ static int g12a_toacodec_component_probe(struct snd_soc_component *c)
+ 				       CTRL0_BLK_CAP_INV);
+ }
+ 
++static int sm1_toacodec_component_probe(struct snd_soc_component *c)
++{
++	/* Initialize the static clock parameters */
++	return snd_soc_component_write(c, TOACODEC_CTRL0,
++				       CTRL0_BLK_CAP_INV_SM1);
++}
++
+ static const struct snd_soc_dapm_route g12a_toacodec_routes[] = {
+ 	{ "SRC", "I2S A", "IN A Playback" },
+ 	{ "SRC", "I2S B", "IN B Playback" },
+@@ -187,6 +271,10 @@ static const struct snd_kcontrol_new g12a_toacodec_controls[] = {
+ 	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL, 3, 0),
+ };
+ 
++static const struct snd_kcontrol_new sm1_toacodec_controls[] = {
++	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL_SM1, 3, 0),
++};
++
+ static const struct snd_soc_component_driver g12a_toacodec_component_drv = {
+ 	.probe			= g12a_toacodec_component_probe,
+ 	.controls		= g12a_toacodec_controls,
+@@ -199,25 +287,59 @@ static const struct snd_soc_component_driver g12a_toacodec_component_drv = {
+ 	.non_legacy_dai_naming	= 1,
+ };
+ 
++static const struct snd_soc_component_driver sm1_toacodec_component_drv = {
++	.probe			= sm1_toacodec_component_probe,
++	.controls		= sm1_toacodec_controls,
++	.num_controls		= ARRAY_SIZE(sm1_toacodec_controls),
++	.dapm_widgets		= sm1_toacodec_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(sm1_toacodec_widgets),
++	.dapm_routes		= g12a_toacodec_routes,
++	.num_dapm_routes	= ARRAY_SIZE(g12a_toacodec_routes),
++	.endianness		= 1,
++	.non_legacy_dai_naming	= 1,
++};
++
+ static const struct regmap_config g12a_toacodec_regmap_cfg = {
+ 	.reg_bits	= 32,
+ 	.val_bits	= 32,
+ 	.reg_stride	= 4,
+ };
+ 
++static const struct g12a_toacodec_match_data g12a_toacodec_match_data = {
++	.component_drv          = &g12a_toacodec_component_drv,
++};
++
++static const struct g12a_toacodec_match_data sm1_toacodec_match_data = {
++	.component_drv          = &sm1_toacodec_component_drv,
++};
++
+ static const struct of_device_id g12a_toacodec_of_match[] = {
+-	{ .compatible = "amlogic,g12a-toacodec", },
++	{
++		.compatible = "amlogic,g12a-toacodec",
++		.data = &g12a_toacodec_match_data,
++	},
++	{
++		.compatible = "amlogic,sm1-toacodec",
++		.data = &sm1_toacodec_match_data,
++	},
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, g12a_toacodec_of_match);
+ 
+ static int g12a_toacodec_probe(struct platform_device *pdev)
+ {
++	const struct g12a_toacodec_match_data *data;
+ 	struct device *dev = &pdev->dev;
+ 	void __iomem *regs;
+ 	struct regmap *map;
+ 	int ret;
+ 
++	data = device_get_match_data(dev);
++	if (!data) {
++		dev_err(dev, "failed to match device\n");
++		return -ENODEV;
 +	}
- 
- 	fd_install(enclave_fd, enclave_file);
- 
-@@ -1671,34 +1683,13 @@ static long ne_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	switch (cmd) {
- 	case NE_CREATE_VM: {
- 		int enclave_fd = -1;
--		struct file *enclave_file = NULL;
- 		struct ne_pci_dev *ne_pci_dev = ne_devs.ne_pci_dev;
--		int rc = -EINVAL;
--		u64 slot_uid = 0;
-+		u64 __user *slot_uid = (void __user *)arg;
- 
- 		mutex_lock(&ne_pci_dev->enclaves_list_mutex);
--
--		enclave_fd = ne_create_vm_ioctl(ne_pci_dev, &slot_uid);
--		if (enclave_fd < 0) {
--			rc = enclave_fd;
--
--			mutex_unlock(&ne_pci_dev->enclaves_list_mutex);
--
--			return rc;
--		}
--
-+		enclave_fd = ne_create_vm_ioctl(ne_pci_dev, slot_uid);
- 		mutex_unlock(&ne_pci_dev->enclaves_list_mutex);
- 
--		if (copy_to_user((void __user *)arg, &slot_uid, sizeof(slot_uid))) {
--			enclave_file = fget(enclave_fd);
--			/* Decrement file refs to have release() called. */
--			fput(enclave_file);
--			fput(enclave_file);
--			put_unused_fd(enclave_fd);
--
--			return -EFAULT;
--		}
--
- 		return enclave_fd;
++
+ 	ret = device_reset(dev);
+ 	if (ret)
+ 		return ret;
+@@ -234,7 +356,7 @@ static int g12a_toacodec_probe(struct platform_device *pdev)
  	}
  
+ 	return devm_snd_soc_register_component(dev,
+-			&g12a_toacodec_component_drv, g12a_toacodec_dai_drv,
++			data->component_drv, g12a_toacodec_dai_drv,
+ 			ARRAY_SIZE(g12a_toacodec_dai_drv));
+ }
+ 
 -- 
-2.20.1 (Apple Git-117)
-
-
-
-
-Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
+2.25.1
 
