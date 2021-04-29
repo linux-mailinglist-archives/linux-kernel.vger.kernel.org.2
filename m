@@ -2,114 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8658336ECEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D596436ECEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240689AbhD2PCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 11:02:16 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:56926 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240611AbhD2PCL (ORCPT
+        id S240673AbhD2PD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 11:03:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43495 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232556AbhD2PDY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 11:02:11 -0400
-Received: by mail-il1-f199.google.com with SMTP id u5-20020a92da850000b0290167339353beso35168124iln.23
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:01:23 -0700 (PDT)
+        Thu, 29 Apr 2021 11:03:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619708557;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xdMySnQAmB6rNT6+jogSDdKQ2HhVWfHBEjIsczqBe4Y=;
+        b=SLDM1KxIGlAZZJYOyZfLfj0dAST0TC6HXQUI07W6pQJ3g1mVttrcpsRDsX2/qRL/TAmswA
+        c3pfRjnmfxpX3Jz2mQ4OECrKS8o/StriNSTJ3UoERk2Heon34G00wJeATVl9HAr55IC/vy
+        BRrDBOnH6X5wrvaVuvuuI/eeyFq1Vp8=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-386-nJBefy6qN4yuf7M4tpL6eA-1; Thu, 29 Apr 2021 11:02:33 -0400
+X-MC-Unique: nJBefy6qN4yuf7M4tpL6eA-1
+Received: by mail-wm1-f71.google.com with SMTP id y184-20020a1ce1c10000b0290143299f39d7so2924840wmg.4
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:02:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=p08hvBbKA+73t6PrwVyec5Fgw0enIkiE1avPmk1LtBY=;
-        b=p45KDYeJRVUMAI3+RVKiIb4l3PvFS8SfWCbx44bXxyuPR8b5OJMKgeBcs+UC0ke0TA
-         DpBUqngGe4Ib531xXYA+mzZPDnOyphtbKi+/+Jy/e25FQ1G11IxVGgT5eOufIxkNVPY5
-         fpGtJl5Dyd0jN88+nFmNwpaswIEA0u3WZaSD9NPlxSlsAYIUYgv7rizytfm8B7qRD7o9
-         dtf8GHbp3NHIOdTS+ghk+T15W/KpyP42ptiCpOTFdhFx4StJRqNgpyMID+855V6UCYzf
-         DfMglljnB9d31lg9xiZpXGTNjJGhDE7Z9iP8nZojZW9nbY2KOokpdrBD+x4QpF5dMtsQ
-         CkIg==
-X-Gm-Message-State: AOAM530ufwMH1scJGfDrihYGIOG+NO2sFQfZP3SRIs9x4tqbE35ksewN
-        QKEUqDT7wQlT0yWqgPmf68kR72N7zzIcWjSe5JMdQzuGbF2v
-X-Google-Smtp-Source: ABdhPJyFL2nLdyv3A910LI1aEMALDvqFplKoJdnPUb6yPAgJUhSJ3fsN1630b3VlOcRDd6M4OTjoLlX6nskl/dPjzntWIgoHoMVl
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=xdMySnQAmB6rNT6+jogSDdKQ2HhVWfHBEjIsczqBe4Y=;
+        b=WMEAoUJlVBVJFxTdpe3HVuq5VPZ2j5W2xpDQpwWF9etybhJbuPdmu4zEGfvcmzhAAV
+         J/qfE4q/W7qeKe5DhxTZ/91U6Jpned2RtezF0FSmB34EuOxGtdpQ5YWTMI8xfKS8Gbzm
+         9vCLw8n8SmJ5MC/p1/3NSh6EgtYHd2xgit1DEaqmM0nvvB0SckCX2fNyf3linPc83JSN
+         9nQQ9q7YMDlBI3hFicv/g2S5uBUBhJRGRlfZp6AZOKaieSRm56jocd4XK+ASFVTRz+d/
+         tJtKfFP4N48s1mEd9wrq9nT/Q/fgF4TEh7mqH+opili3yhKVpON9Qk1s0zYshwppyR3F
+         H2CA==
+X-Gm-Message-State: AOAM530EK92LK+hCI+JofEFMJgX+NmyiEdEKXCGZp3C/9wqj3vV+U0DK
+        Xac3mxBX8G6fmjm2CJWtiqmWm/UpXZ4qNXhtGDae2N0RXzJ1hSR6bpwQRfVLDlt+l0Sis3dMJTi
+        82qg8Q8ff+gwr+NmxPMQLa/Cq
+X-Received: by 2002:a05:600c:249:: with SMTP id 9mr433355wmj.175.1619708552046;
+        Thu, 29 Apr 2021 08:02:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyVmC0YQ8yWtx9WOhJSq1hs5RMGemUIOou6z5QyX84IKGnzum5fv69U4+GLRPkiN4uR3v6sYg==
+X-Received: by 2002:a05:600c:249:: with SMTP id 9mr433332wmj.175.1619708551792;
+        Thu, 29 Apr 2021 08:02:31 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6158.dip0.t-ipconnect.de. [91.12.97.88])
+        by smtp.gmail.com with ESMTPSA id l5sm317821wmh.0.2021.04.29.08.02.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Apr 2021 08:02:31 -0700 (PDT)
+Subject: Re: [PATCH v2 4/5] mm/huge_memory.c: remove unnecessary
+ tlb_remove_page_size() for huge zero pmd
+To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
+Cc:     ziy@nvidia.com, william.kucharski@oracle.com, willy@infradead.org,
+        yang.shi@linux.alibaba.com, aneesh.kumar@linux.ibm.com,
+        rcampbell@nvidia.com, songliubraving@fb.com,
+        kirill.shutemov@linux.intel.com, riel@surriel.com,
+        hannes@cmpxchg.org, minchan@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Aaron Lu <aaron.lu@intel.com>
+References: <20210429132648.305447-1-linmiaohe@huawei.com>
+ <20210429132648.305447-5-linmiaohe@huawei.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <f1390cf8-6428-fd17-794b-cc2336cf238d@redhat.com>
+Date:   Thu, 29 Apr 2021 17:02:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9a8c:: with SMTP id c12mr29251309iom.166.1619708483616;
- Thu, 29 Apr 2021 08:01:23 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 08:01:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ce433f05c11dc4e6@google.com>
-Subject: [syzbot] WARNING in io_uring_setup (2)
-From:   syzbot <syzbot+1eca5b0d7ac82b74d347@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210429132648.305447-5-linmiaohe@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 29.04.21 15:26, Miaohe Lin wrote:
+> Commit aa88b68c3b1d ("thp: keep huge zero page pinned until tlb flush")
+> introduced tlb_remove_page() for huge zero page to keep it pinned until
+> flush is complete and prevents the page from being split under us. But
+> huge zero page is kept pinned until all relevant mm_users reach zero since
+> the commit 6fcb52a56ff6 ("thp: reduce usage of huge zero page's atomic
+> counter"). So tlb_remove_page_size() for huge zero pmd is unnecessary now.
+> 
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>   mm/huge_memory.c | 3 ---
+>   1 file changed, 3 deletions(-)
+> 
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index e24a96de2e37..af30338ac49c 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -1680,12 +1680,9 @@ int zap_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
+>   		if (arch_needs_pgtable_deposit())
+>   			zap_deposited_table(tlb->mm, pmd);
+>   		spin_unlock(ptl);
+> -		if (is_huge_zero_pmd(orig_pmd))
+> -			tlb_remove_page_size(tlb, pmd_page(orig_pmd), HPAGE_PMD_SIZE);
+>   	} else if (is_huge_zero_pmd(orig_pmd)) {
+>   		zap_deposited_table(tlb->mm, pmd);
+>   		spin_unlock(ptl);
+> -		tlb_remove_page_size(tlb, pmd_page(orig_pmd), HPAGE_PMD_SIZE);
+>   	} else {
+>   		struct page *page = NULL;
+>   		int flush_needed = 1;
+> 
 
-syzbot found the following issue on:
+This sounds sane to me
 
-HEAD commit:    d72cd4ad Merge tag 'scsi-misc' of git://git.kernel.org/pub..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=175285a3d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=53fdf14defd48c56
-dashboard link: https://syzkaller.appspot.com/bug?extid=1eca5b0d7ac82b74d347
-compiler:       Debian clang version 11.0.1-2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15aeff43d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1747117dd00000
+Acked-by: David Hildenbrand <david@redhat.com>
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1eca5b0d7ac82b74d347@syzkaller.appspotmail.com
+-- 
+Thanks,
 
-RSP: 002b:00007ffe79f6a2c8 EFLAGS: 00000202 ORIG_RAX: 00000000000001a9
-RAX: ffffffffffffffda RBX: 0000000020000000 RCX: 000000000043fa99
-RDX: 0000000000000010 RSI: 0000000020000000 RDI: 0000000000000345
-RBP: 0000000000000001 R08: 0000000000000001 R09: bfe829bde5bd92dc
-R10: 0000000000000000 R11: 0000000000000202 R12: 0000000020ffd000
-R13: 0000000000000000 R14: 00000000004ad018 R15: 0000000000400488
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 8379 at fs/io_uring.c:7081 io_rsrc_node_switch_start fs/io_uring.c:7107 [inline]
-WARNING: CPU: 0 PID: 8379 at fs/io_uring.c:7081 io_uring_create fs/io_uring.c:9610 [inline]
-WARNING: CPU: 0 PID: 8379 at fs/io_uring.c:7081 io_uring_setup fs/io_uring.c:9689 [inline]
-WARNING: CPU: 0 PID: 8379 at fs/io_uring.c:7081 __do_sys_io_uring_setup fs/io_uring.c:9695 [inline]
-WARNING: CPU: 0 PID: 8379 at fs/io_uring.c:7081 __se_sys_io_uring_setup+0x2059/0x3100 fs/io_uring.c:9692
-Modules linked in:
-CPU: 0 PID: 8379 Comm: syz-executor223 Not tainted 5.12.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:io_rsrc_node_switch fs/io_uring.c:7107 [inline]
-RIP: 0010:io_uring_create fs/io_uring.c:9611 [inline]
-RIP: 0010:io_uring_setup fs/io_uring.c:9689 [inline]
-RIP: 0010:__do_sys_io_uring_setup fs/io_uring.c:9695 [inline]
-RIP: 0010:__se_sys_io_uring_setup+0x2059/0x3100 fs/io_uring.c:9692
-Code: dc ff eb 05 e8 78 09 97 ff 48 b8 00 00 00 00 00 fc ff df 41 80 7c 05 00 00 74 08 4c 89 ff e8 ce a1 dd ff 49 c7 07 00 00 00 00 <0f> 0b e9 e1 00 00 00 e8 4b 09 97 ff 49 8d 5c 24 10 48 89 d8 48 c1
-RSP: 0000:ffffc9000112fd00 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffff88802fee0000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff888011441780
-RBP: ffffc9000112ff20 R08: 0000000000000dc0 R09: fffffbfff19bc9e3
-R10: fffffbfff19bc9e3 R11: 0000000000000000 R12: ffff88802452010c
-R13: 1ffff11005c31501 R14: 0000000000000000 R15: ffff88802e18a808
-FS:  00000000009a23c0(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f8918d3b000 CR3: 00000000133b0000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43fa99
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c4 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe79f6a2c8 EFLAGS: 00000202 ORIG_RAX: 00000000000001a9
-RAX: ffffffffffffffda RBX: 0000000020000000 RCX: 000000000043fa99
-RDX: 0000000000000010 RSI: 0000000020000000 RDI: 0000000000000345
-RBP: 0000000000000001 R08: 0000000000000001 R09: bfe829bde5bd92dc
-R10: 0000000000000000 R11: 0000000000000202 R12: 0000000020ffd000
-R13: 0000000000000000 R14: 00000000004ad018 R15: 0000000000400488
+David / dhildenb
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
