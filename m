@@ -2,109 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D026C36E9B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 13:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2521536E9BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 13:45:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232317AbhD2LoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 07:44:15 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:48282 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230148AbhD2LoN (ORCPT
+        id S233620AbhD2Lp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 07:45:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230148AbhD2Lpz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 07:44:13 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TBcjmt082930;
-        Thu, 29 Apr 2021 11:43:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=l9paM8Sw26fpexoC/EnBzpLilcBGWGzN9ia2QZD4Amc=;
- b=y6v92FQfduysPPZYd19YGHWDnYvjbZ1LP0NJvh2Dssu98G29di71pKF4ZR+E4vBJS/1B
- 7Zxjhi+EFdIXpPdQken01brewrB2+KzBSgx6wl5JLlmrN6ehYF1ZdmOzqBREstoMQhS4
- EsK9krJk0y/cINKXlEADpOZSkvJQJk/6UzyDouDEo0TmzOIHPTtQk4nDwW3qsbPy5J0o
- nS/IM+pyuNmEMsGCVGVROcstbKBslXAkTYpnMUXc3tqmtXTxZfuSUseeIzUUIuVnDsTt
- E3HyIoLkUCS0x2XEydFoM0papsOf0ERxoWCAIgk0++iyTqYpvI1Flm3gq6d1ArPckd87 TQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 385afq44cu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 11:43:15 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TBesH7031945;
-        Thu, 29 Apr 2021 11:43:15 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 3848f0xhme-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 11:43:15 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13TBhETP042674;
-        Thu, 29 Apr 2021 11:43:14 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 3848f0xhks-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 11:43:14 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13TBhCKb001721;
-        Thu, 29 Apr 2021 11:43:12 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 29 Apr 2021 04:43:12 -0700
-Date:   Thu, 29 Apr 2021 14:43:04 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Deepak R Varma <drv@mailo.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com
-Subject: Re: [PATCH v1 4/6] staging: media: atomisp: reformat code comment
- blocks
-Message-ID: <20210429114304.GC21598@kadam>
-References: <cover.1619022192.git.drv@mailo.com>
- <efdd8910b519dd55838570c72e3ce35e063f4a11.1619022192.git.drv@mailo.com>
- <20210429100808.GZ1981@kadam>
- <YIqZHWkHi8HWnF0C@192.168.1.8>
+        Thu, 29 Apr 2021 07:45:55 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE127C06138B;
+        Thu, 29 Apr 2021 04:45:07 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 82-20020a1c01550000b0290142562ff7c9so6503311wmb.3;
+        Thu, 29 Apr 2021 04:45:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=F/E93CRR5FQ463ng5fsR0yJfZQcAbVR1kzGbCsVjcsM=;
+        b=sI9Ui8m9o3qQiQBmaDpT7Kbk4HWncskcTosi2V1YtnxOxHoEhYll9gRZvSTKT/FXdX
+         XeiFUu8W2qRNW6IwrOSstna5nTK0/E8+YDtAxIvEtdemwkg40Inx+QGOuXI82k1ObEx3
+         +XaxuZEofDivKU4QMDj+o8q9ij+PTdbN+5q0INwOx+W6kGN5zzHIYhLH8IalyGg7Slwv
+         QuJh4RDpopDoEXjmLmtzzaTnSwj0zXkjw9sPHB0ALS1Y0wRYNFxx2GOxuFpLmfg7PsJ1
+         DZrDGjPRdPctUsqMHrRM/9JeRS8km5kAm8Vnvo1Tk/Dh4xiw8AYBNTBqgNOoOs9DPiBh
+         9jUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=F/E93CRR5FQ463ng5fsR0yJfZQcAbVR1kzGbCsVjcsM=;
+        b=EF/0JwEUblDfDuwUjQMJSl0qjguwEXJdJP1jA1Qs1D0bQe649e0myOtJOKVErhk1pu
+         VPckbtW/e6bYRhgjSAqH2xEJqEGnydVLBuBQnMeZHTZ08ZPal6K6VpiPpKl85b9u7cSY
+         DK+9xIdaxk6ms5ZFHGqLQPRIO3lppdIYB8CJYmv1RZKhwaxpL1ymgM/39irpXGTk/R9e
+         fnRfEaR9xFhLOThOVLOiTADoS0jnJpuvUmqNsY1AgmFb6qZ6ZTueXoRTOePEaAx6uCbO
+         pSQsj3zR54sqR6bmcYihGaSNCwdgfPI5lfUFf8k8Xw3qFdzVw4khabL8Jv2q2hn6CVU2
+         qf1g==
+X-Gm-Message-State: AOAM530WlLus1HFvKm833bn21hWdQYp5H5OsUxjsCCxkQz8CqfyrwTDA
+        vDy4nqv4pGP+MHtKJD+kvt4qHNQWfHE=
+X-Google-Smtp-Source: ABdhPJxyaXwzqJgFghBRmR1lYh/G//aPzgSelniw6V8gNedEaFZTuBR2679knDVqnMNPUSZBJYYR2A==
+X-Received: by 2002:a05:600c:35cc:: with SMTP id r12mr9991089wmq.147.1619696706253;
+        Thu, 29 Apr 2021 04:45:06 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.132.80])
+        by smtp.gmail.com with ESMTPSA id k15sm4379209wro.87.2021.04.29.04.45.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Apr 2021 04:45:05 -0700 (PDT)
+Subject: Re: [PATCH][next][V2] io_uring: Fix premature return from loop and
+ memory leak
+To:     Colin King <colin.king@canonical.com>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210429104602.62676-1-colin.king@canonical.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <5c8db42c-3b5c-be23-1c4e-f7438fe02e54@gmail.com>
+Date:   Thu, 29 Apr 2021 12:45:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YIqZHWkHi8HWnF0C@192.168.1.8>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: ag1sDwXR2LCzP4n4viOwz5Kl6tbQ9qNP
-X-Proofpoint-GUID: ag1sDwXR2LCzP4n4viOwz5Kl6tbQ9qNP
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9968 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 phishscore=0
- clxscore=1015 suspectscore=0 lowpriorityscore=0 mlxlogscore=999 mlxscore=0
- adultscore=0 malwarescore=0 impostorscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104290080
+In-Reply-To: <20210429104602.62676-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 05:01:41PM +0530, Deepak R Varma wrote:
-> On Thu, Apr 29, 2021 at 01:08:09PM +0300, Dan Carpenter wrote:
-> > On Wed, Apr 21, 2021 at 10:26:09PM +0530, Deepak R Varma wrote:
-> > > @@ -1044,7 +1048,7 @@ static long mt9m114_s_exposure(struct v4l2_subdev *sd,
-> > >  	}
-> > >  
-> > >  	/*
-> > > -	// set analog/digital gain
-> > > +	 * set analog/digital gain
-> > >  	switch(AnalogGain)
-> > >  	{
-> > >  	case 0:
-> > 
-> > How on earth does this compile?
+On 4/29/21 11:46 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> There is a closing */ down under after the entire switch block. The
-> change I made is within the comment block. I have compiled the built the
-> driver successfully.
+> Currently the -EINVAL error return path is leaking memory allocated
+> to data. Fix this by not returning immediately but instead setting
+> the error return variable to -EINVAL and breaking out of the loop.
+> 
+> Kudos to Pavel Begunkov for suggesting a correct fix.
 
-Oh...  Duh.  I thought you converted the // to /*.  This patch doesn't
-make any sense though because originally it was commented out code, but
-now it's a commented out ball of code and notes.
+Looks good, thanks
+Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
 
-Just delete any commented out code.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+> 
+> V2: set ret/err to -EINVAL and break rather than kfree and return,
+>     fix both occurrences of this issue.
+> 
+> ---
+>  fs/io_uring.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index 47c2f126f885..c783ad83f220 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -8417,8 +8417,10 @@ static int io_sqe_buffers_register(struct io_ring_ctx *ctx, void __user *arg,
+>  		ret = io_buffer_validate(&iov);
+>  		if (ret)
+>  			break;
+> -		if (!iov.iov_base && tag)
+> -			return -EINVAL;
+> +		if (!iov.iov_base && tag) {
+> +			ret = -EINVAL;
+> +			break;
+> +		}
+>  
+>  		ret = io_sqe_buffer_register(ctx, &iov, &ctx->user_bufs[i],
+>  					     &last_hpage);
+> @@ -8468,8 +8470,10 @@ static int __io_sqe_buffers_update(struct io_ring_ctx *ctx,
+>  		err = io_buffer_validate(&iov);
+>  		if (err)
+>  			break;
+> -		if (!iov.iov_base && tag)
+> -			return -EINVAL;
+> +		if (!iov.iov_base && tag) {
+> +			err = -EINVAL;
+> +			break;
+> +		}
+>  		err = io_sqe_buffer_register(ctx, &iov, &imu, &last_hpage);
+>  		if (err)
+>  			break;
+> 
 
-regards,
-dan carpenter
-
+-- 
+Pavel Begunkov
