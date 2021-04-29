@@ -2,220 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C75036F048
+	by mail.lfdr.de (Postfix) with ESMTP id E32F136F04A
 	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 21:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233741AbhD2TR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 15:17:58 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54950 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242072AbhD2TOA (ORCPT
+        id S233792AbhD2TSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 15:18:00 -0400
+Received: from server.lespinasse.org ([63.205.204.226]:59883 "EHLO
+        server.lespinasse.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242622AbhD2TPQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 15:14:00 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13TJ44aM074069;
-        Thu, 29 Apr 2021 15:12:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=huAJF92NWRC93NOn3XV+LPpOVtQxgb1PRH05BQA/EVs=;
- b=OxMOjI5528eIX9eApkD+p1rjK1J7Ih47NQQyKs67EtFRJ3Ou4vRz1vml/FNINf3Nmr/e
- tmK7bn58D6mU8NZQszsD9MfImgJZeA9VYG9jPfMvdycyKLjaHa9+fJ6NNiFuCWw/qDBJ
- Xomg/z6hl0AQfvd0zDUyUr4cs2uUyo+Of8M46kugzBabV6ChuIBypYZYG4EnxHlSR4mJ
- iyzF3dZCys86uSaJlO4UWMTP9lJrWI5dRoL4q7LHMTDH5Cr8QewxJW6Hd+OQ6tB6gSEF
- U5jnjxm7c04JKBnmjRiPcxN5GFbB1YOg4kJm3PA0Q72QZ6X5Ki9RFCgFyZ6ICBrWreMn 4A== 
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38807qccy0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Apr 2021 15:12:51 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13TJ7FW8004157;
-        Thu, 29 Apr 2021 19:12:51 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma04dal.us.ibm.com with ESMTP id 384aya81un-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Apr 2021 19:12:51 +0000
-Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13TJCoD313501072
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 19:12:50 GMT
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5708B124052;
-        Thu, 29 Apr 2021 19:12:50 +0000 (GMT)
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2CFA7124055;
-        Thu, 29 Apr 2021 19:12:49 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.160.61.17])
-        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu, 29 Apr 2021 19:12:48 +0000 (GMT)
-Subject: Re: [PATCH v3] pseries/drmem: update LMBs after LPM
-To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org
-Cc:     nathanl@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-References: <20210428094758.28665-1-ldufour@linux.ibm.com>
- <87fsz95qso.fsf@linux.ibm.com>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <9d29bf8c-9e97-c179-6897-8e25fa4eb516@linux.ibm.com>
-Date:   Thu, 29 Apr 2021 12:12:48 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Thu, 29 Apr 2021 15:15:16 -0400
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+ d=lespinasse.org; i=@lespinasse.org; q=dns/txt; s=srv-14-ed;
+ t=1619723668; h=date : from : to : cc : subject : message-id :
+ references : mime-version : content-type : in-reply-to : from;
+ bh=nrbq9B7dG+NCQxkteDtV1okkrNphDZCfGcOZNCMSQkU=;
+ b=2aFz00E0Y24Rhdz7Fqx5QsvnOFlMBK1oW0+IhoIU9Irj5snllxZmt2t1v5ilB6npR5/w5
+ gaVcVTxxmISCbNZCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lespinasse.org;
+ i=@lespinasse.org; q=dns/txt; s=srv-14-rsa; t=1619723668; h=date :
+ from : to : cc : subject : message-id : references : mime-version :
+ content-type : in-reply-to : from;
+ bh=nrbq9B7dG+NCQxkteDtV1okkrNphDZCfGcOZNCMSQkU=;
+ b=X7rNkDBMH428Ypz2fZG/kkDKqTWsYVMzTG+fA/iXVsd6nSYsDKIT4PYIS8Cme++SNHnZh
+ gmU0NDZXd4iTNvb7sVYdFR/ZPQYQVFdMMc75zP9tCObIoNqx/s2PATVl9JF56lzXUdlkESP
+ 7dQphM7PjcxgdcjddepwWQMWw8RZc5/PGaGiHpARm/Un9y4uGL/3ok28vtoJJgrauQaH+1f
+ S5YqOHXFtRfvQqg8Qou7DgyKFbBh1INSxBaiIwweReMIWHs1lYBNm++XqrDmNfxv78wcs8Z
+ jVgi867PySjlJzDpRZPFiWMLwQoW3mT+NET6t6HBddX60PBj2FmYNtwc3PDg==
+Received: by server.lespinasse.org (Postfix, from userid 1000)
+        id 3E71D160305; Thu, 29 Apr 2021 12:14:28 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 12:14:28 -0700
+From:   Michel Lespinasse <michel@lespinasse.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Michel Lespinasse <michel@lespinasse.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Rom Lemarchand <romlem@google.com>,
+        Linux-Kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 13/37] mm: implement speculative handling in
+ __handle_mm_fault().
+Message-ID: <20210429191428.GD10973@lespinasse.org>
+References: <20210407014502.24091-1-michel@lespinasse.org>
+ <20210407014502.24091-14-michel@lespinasse.org>
+ <eee7431c-3dc8-ca3c-02fb-9e059d30e951@kernel.org>
+ <20210428145823.GA856@lespinasse.org>
+ <CALCETrVRGtVqv9cMSryfg5q3iZ9s3jBey20cY4K23YLRhQRzbQ@mail.gmail.com>
+ <20210428161108.GP975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210429000225.GC10973@lespinasse.org>
+ <CALCETrWybk8k8Z=9+x3Ns7zMUPMzganzPY47pqOJCbB3LkfQ+A@mail.gmail.com>
+ <20210429161234.GG1847222@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <87fsz95qso.fsf@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: cGIzZKfDz5NwiMOEPFOqbgPzwkoOzPSl
-X-Proofpoint-ORIG-GUID: cGIzZKfDz5NwiMOEPFOqbgPzwkoOzPSl
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-29_10:2021-04-28,2021-04-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- suspectscore=0 adultscore=0 lowpriorityscore=0 mlxlogscore=999 spamscore=0
- clxscore=1015 impostorscore=0 phishscore=0 malwarescore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104290121
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210429161234.GG1847222@casper.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/29/21 3:27 AM, Aneesh Kumar K.V wrote:
-> Laurent Dufour <ldufour@linux.ibm.com> writes:
+On Thu, Apr 29, 2021 at 05:12:34PM +0100, Matthew Wilcox wrote:
+> On Wed, Apr 28, 2021 at 05:05:17PM -0700, Andy Lutomirski wrote:
+> > On Wed, Apr 28, 2021 at 5:02 PM Michel Lespinasse <michel@lespinasse.org> wrote:
+> > > Thanks Paul for confirming / clarifying this. BTW, it would be good to
+> > > add this to the rcu header files, just so people have something to
+> > > reference to when they depend on such behavior (like fast GUP
+> > > currently does).
+> > 
+> > Or, even better, fast GUP could add an explicit RCU read lock.
+> > 
+> > >
+> > > Going back to my patch. I don't need to protect against THP splitting
+> > > here, as I'm only handling the small page case. So when
+> > > MMU_GATHER_RCU_TABLE_FREE is enabled, I *think* I could get away with
+> > > using only an rcu read lock, instead of disabling interrupts which
+> > > implicitly creates the rcu read lock. I'm not sure which way to go -
+> > > fast GUP always disables interrupts regardless of the
+> > > MMU_GATHER_RCU_TABLE_FREE setting, and I think there is a case to be
+> > > made for following the fast GUP stes rather than trying to be smarter.
+> > 
+> > How about adding some little helpers:
+> > 
+> > lockless_page_walk_begin();
+> > 
+> > lockless_page_walk_end();
+> > 
+> > these turn into RCU read locks if MMU_GATHER_RCU_TABLE_FREE and into
+> > irqsave otherwise.  And they're somewhat self-documenting.
 > 
->> After a LPM, the device tree node ibm,dynamic-reconfiguration-memory may be
->> updated by the hypervisor in the case the NUMA topology of the LPAR's
->> memory is updated.
->>
->> This is caught by the kernel, but the memory's node is updated because
->> there is no way to move a memory block between nodes.
->>
->> If later a memory block is added or removed, drmem_update_dt() is called
->> and it is overwriting the DT node to match the added or removed LMB. But
->> the LMB's associativity node has not been updated after the DT node update
->> and thus the node is overwritten by the Linux's topology instead of the
->> hypervisor one.
->>
->> Introduce a hook called when the ibm,dynamic-reconfiguration-memory node is
->> updated to force an update of the LMB's associativity.
->>
->> Cc: Tyrel Datwyler <tyreld@linux.ibm.com>
->> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
->> ---
->>
->> V3:
->>  - Check rd->dn->name instead of rd->dn->full_name
->> V2:
->>  - Take Tyrel's idea to rely on OF_RECONFIG_UPDATE_PROPERTY instead of
->>  introducing a new hook mechanism.
->> ---
->>  arch/powerpc/include/asm/drmem.h              |  1 +
->>  arch/powerpc/mm/drmem.c                       | 35 +++++++++++++++++++
->>  .../platforms/pseries/hotplug-memory.c        |  4 +++
->>  3 files changed, 40 insertions(+)
->>
->> diff --git a/arch/powerpc/include/asm/drmem.h b/arch/powerpc/include/asm/drmem.h
->> index bf2402fed3e0..4265d5e95c2c 100644
->> --- a/arch/powerpc/include/asm/drmem.h
->> +++ b/arch/powerpc/include/asm/drmem.h
->> @@ -111,6 +111,7 @@ int drmem_update_dt(void);
->>  int __init
->>  walk_drmem_lmbs_early(unsigned long node, void *data,
->>  		      int (*func)(struct drmem_lmb *, const __be32 **, void *));
->> +void drmem_update_lmbs(struct property *prop);
->>  #endif
->>  
->>  static inline void invalidate_lmb_associativity_index(struct drmem_lmb *lmb)
->> diff --git a/arch/powerpc/mm/drmem.c b/arch/powerpc/mm/drmem.c
->> index 9af3832c9d8d..f0a6633132af 100644
->> --- a/arch/powerpc/mm/drmem.c
->> +++ b/arch/powerpc/mm/drmem.c
->> @@ -307,6 +307,41 @@ int __init walk_drmem_lmbs_early(unsigned long node, void *data,
->>  	return ret;
->>  }
->>  
->> +/*
->> + * Update the LMB associativity index.
->> + */
->> +static int update_lmb(struct drmem_lmb *updated_lmb,
->> +		      __maybe_unused const __be32 **usm,
->> +		      __maybe_unused void *data)
->> +{
->> +	struct drmem_lmb *lmb;
->> +
->> +	/*
->> +	 * Brut force there may be better way to fetch the LMB
->> +	 */
->> +	for_each_drmem_lmb(lmb) {
->> +		if (lmb->drc_index != updated_lmb->drc_index)
->> +			continue;
->> +
->> +		lmb->aa_index = updated_lmb->aa_index;
->> +		break;
->> +	}
->> +	return 0;
->> +}
->> +
->> +/*
->> + * Update the LMB associativity index.
->> + *
->> + * This needs to be called when the hypervisor is updating the
->> + * dynamic-reconfiguration-memory node property.
->> + */
->> +void drmem_update_lmbs(struct property *prop)
->> +{
->> +	if (!strcmp(prop->name, "ibm,dynamic-memory"))
->> +		__walk_drmem_v1_lmbs(prop->value, NULL, NULL, update_lmb);
->> +	else if (!strcmp(prop->name, "ibm,dynamic-memory-v2"))
->> +		__walk_drmem_v2_lmbs(prop->value, NULL, NULL, update_lmb);
->> +}
->>  #endif
->>  
->>  static int init_drmem_lmb_size(struct device_node *dn)
->> diff --git a/arch/powerpc/platforms/pseries/hotplug-memory.c b/arch/powerpc/platforms/pseries/hotplug-memory.c
->> index 8377f1f7c78e..672ffbee2e78 100644
->> --- a/arch/powerpc/platforms/pseries/hotplug-memory.c
->> +++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
->> @@ -949,6 +949,10 @@ static int pseries_memory_notifier(struct notifier_block *nb,
->>  	case OF_RECONFIG_DETACH_NODE:
->>  		err = pseries_remove_mem_node(rd->dn);
->>  		break;
->> +	case OF_RECONFIG_UPDATE_PROPERTY:
->> +		if (!strcmp(rd->dn->name,
->> +			    "ibm,dynamic-reconfiguration-memory"))
->> +			drmem_update_lmbs(rd->prop);
->>  	}
->>  	return notifier_from_errno(err);
-> 
-> How will this interact with DLPAR memory? When we dlpar memory,
-> ibm,configure-connector is used to fetch the new associativity details
-> and set drmem_lmb->aa_index correctly there. Once that is done kernel
-> then call drmem_update_dt() which will result in the above notifier
-> callback? 
-> 
-> IIUC, the call back then will update drmem_lmb->aa_index again?
+> One of the worst things we can do while holding a spinlock is take a
+> cache miss because we then delay for several thousand cycles to wait for
+> the cache line.  That gives every other CPU a really long opportunity
+> to slam into the spinlock and things go downhill fast at that point.
+> We've even seen patches to do things like read A, take lock L, then read
+> A to avoid the cache miss while holding the lock.
 
-After digging through some of this code I'm a bit concerned about all the kernel
-device tree manipulation around memory DLPAR both with the assoc-lookup-array
-prop update and post dynamic-memory prop updating. We build a drmem_info array
-of the LMBs from the device-tree at boot. I don't really understand why we are
-manipulating the device tree property every time we add/remove an LMB. Not sure
-the reasoning was to write back in particular the aa_index and flags for each
-LMB into the device tree when we already have them in the drmem_info array. On
-the other hand the assoc-lookup-array I suppose would need to have an in kernel
-representation to avoid updating the device tree property every time.
+I understand the effect your are describing, but I do not see how it
+applies here - what cacheline are we likely to miss on when using
+local_irq_disable() that we wouldn't touch if using rcu_read_lock() ?
 
-Changes to the device tree should be things reported to the system from the
-hypervisor through the proper interfaces, and as a result any code that cares
-can register an of_reconfig_notifier to respond to device tree updates. The
-memory dlpar code seems to be needlessly manipulating the device-tree which
-leads to the problem here where a notifier callback is now duplicating work.
+> What sort of performance effect would it have to free page tables
+> under RCU for all architectures?  It's painful on s390 & powerpc because
+> different tables share the same struct page, but I have to believe that's
+> a solvable problem.
 
-Just my two cents FWIW.
+I agree using RCU to free page tables would be a good thing to try.
+I am afraid of adding that to this patchset though, as it seems
+somewhate unrelated and adds risk. IMO we are most likely to find
+justification for pushing this if/when we try accessing remote mm's without
+taking the mmap lock, since disabling IPIs clearly wouldn't work there.
 
--Tyrel
-
-> 
-> -aneesh
-> 
-
+--
+Michel "walken" Lespinasse
