@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FAE636ECE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4ACD36ECE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 17:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240515AbhD2PCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 11:02:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47644 "EHLO
+        id S240602AbhD2PCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 11:02:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233420AbhD2PB7 (ORCPT
+        with ESMTP id S240376AbhD2PCD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 11:01:59 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F41C6C06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:01:12 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id t13so8699143pji.4
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:01:12 -0700 (PDT)
+        Thu, 29 Apr 2021 11:02:03 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8584C06138E
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:01:16 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id y30so2169531pgl.7
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 08:01:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=SE2j4G0rnU+RbiAnIU0X9z105Hwk3a+nEYNJ2sTp6CU=;
-        b=o2ddHO/AJTn4nUM9kptqP2uMHAMJ+tXCezYjcHsPtHtR80o3MLq8ZcI0kgffb1PEfg
-         YzVpScqWNeHsXdYbKZD/1Dn1dqBQQCHG+AuDXc5TXsUlYKmJ/IXGBqvUJhmE9e5Bp0rG
-         AXSAhRsjkIjhCW3rnSIFonB08/nLdXVP+rlcb4QdcnUTmEtQWSHLQCJQqLCROz4BeUDG
-         nzCk76wnyt2npPUsVmwQeHWlhBOMmqJkBnsECFgxrlTEaHPlrceAgHkwo82nBbvKsrOr
-         Gm6kmwW/TlN3MRUppOT0xr7TuVUxXUseXw8agsFhll17BSzCcN5uIae2xBoycb3vMscr
-         tA1g==
+        bh=kKALg3mdCIPQXLNAB5VYdkufEFOWrU4WkUMpgl9QzUE=;
+        b=Iz9sOTAaVV/ExNsgTbz8EJRpo7emfPqpNUJOUagetQg1r5WM58iT155wkgu3nZLaXU
+         /on+JnGNm6L0urdVJY30uVWupmNFeOXJ1tGMsEayPSQkDUe7V6QpOJdrB14AomSEZc6Q
+         p9Mus2luS1g2ZJOpFA+Qtuw1LJAgoODKQi5BlABbmAWRSE1FxHOm44VdnFRvC7tIPY2e
+         if3WtfID6mzd6309I/ShyyJAYSwIK6w2u3Rgpa494ulJOci78eQU27cpm7H8lRBq3fkM
+         ckhJh095HbhLJZGnlHxBsn1evO+IV5CzfO0q5+YpFJ+2sIFu1ieeGwx92JRQC0ipTUtR
+         2fDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SE2j4G0rnU+RbiAnIU0X9z105Hwk3a+nEYNJ2sTp6CU=;
-        b=qan33Owi+k8kl3dSN1Tb4ouX7Dn0YcudO1uOLzRXV+dhNyTuPOUkMKHMs4FvfjtmOs
-         TbOBwWGnQqQIKke+JM5vtCun87FYMPSM0iru7lppD4DJM5uqvuPTSHmPIEnrqaFsQdO0
-         68wL7u2TSc2IElcLJCuS/8I1aPO8ipRWQNAx24nWD1T4+tI5p1b5G51tjStpI5jr6hwr
-         Yy94m7jnrtiPmWiRLrg5filFX/bC7yijBt1zqHJtikq+xH6puXrIv6nC5Uj2eKSub4xi
-         ByDrgWB5LGWNK82Zkry/ynEsm/5NE4llGTmtQAuadWhHYLBO/x4+7w4tTz3J/cHP2MAo
-         9ANA==
-X-Gm-Message-State: AOAM531SOOb95pHX4zBMMXDE3EV4dOyww77dynO9WuINT9s77Xy7jgGn
-        2WnTE+d/NB+zh1AVibC6jBXKWw==
-X-Google-Smtp-Source: ABdhPJwf7g1oC6ruN3H77OZGGIRAb6C00AkhUyagpmFnha9GKdP+iU7Pm4OP9a7ydWBuovm7owxq/A==
-X-Received: by 2002:a17:902:778f:b029:ec:d04d:4556 with SMTP id o15-20020a170902778fb02900ecd04d4556mr152564pll.43.1619708472144;
-        Thu, 29 Apr 2021 08:01:12 -0700 (PDT)
+        bh=kKALg3mdCIPQXLNAB5VYdkufEFOWrU4WkUMpgl9QzUE=;
+        b=Y53oUGVzdT1+fcoHh2K5ZBvXEi/VOFe01TKg6azZ4YFjueWjWOu2CSzBxZCn3o8XiX
+         tIgo7DZpbRGewW/V/rbSBXYD5Ug8R5NaabxhVZHzGmxCIpAo3a2cZy1L3V0TRRGOB0+x
+         MG7ShYQu0jD9/+qp6sJuWJyQt+HjlR8ESg+70aPbS404PWFS+LDbILy1+oTkrdPiXWsZ
+         doAznOjYxZDUbagR0S2IeyXVKJKxLutz5RicOfccQbckq0HnLCyIZKow9hP4C3jzB/dU
+         Q8xKBlmr3SwabJDRCTckZ2jSMLp+nm1BtOnSdTEvovRlVmul7kDVPLuz7PTf5uB63II4
+         bm2A==
+X-Gm-Message-State: AOAM532rTnJUr00kmbijEPygw91x9jh+1FJ1cDlPqmHaCFnFZFBMmgkm
+        r8PrbRveSssbMMDaziZ0bhjMOg==
+X-Google-Smtp-Source: ABdhPJwul8+2yIAI7+lC44DnHk4W6dca44WS0deVPwTk2JwaNCFtRQMzn1H07FIdZa/rX1sk6E9DsA==
+X-Received: by 2002:aa7:84d0:0:b029:27d:fff:40c9 with SMTP id x16-20020aa784d00000b029027d0fff40c9mr110903pfn.7.1619708476222;
+        Thu, 29 Apr 2021 08:01:16 -0700 (PDT)
 Received: from localhost ([204.124.180.30])
-        by smtp.gmail.com with ESMTPSA id e2sm2627677pjk.31.2021.04.29.08.01.11
+        by smtp.gmail.com with ESMTPSA id q5sm2747191pfu.5.2021.04.29.08.01.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 08:01:11 -0700 (PDT)
+        Thu, 29 Apr 2021 08:01:15 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         James Clark <James.Clark@arm.com>,
@@ -64,9 +64,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
         Al Grant <Al.Grant@arm.com>
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v1 1/3] perf arm-spe: Correct sample flags for SPE event
-Date:   Thu, 29 Apr 2021 23:00:58 +0800
-Message-Id: <20210429150100.282180-2-leo.yan@linaro.org>
+Subject: [PATCH v1 2/3] perf arm-spe: Correct sample flags for dummy event
+Date:   Thu, 29 Apr 2021 23:00:59 +0800
+Message-Id: <20210429150100.282180-3-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210429150100.282180-1-leo.yan@linaro.org>
 References: <20210429150100.282180-1-leo.yan@linaro.org>
@@ -76,52 +76,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now it's hard code to set sample flags for CPU, TIME and TID for SPE
-event, which is pointless.
+The dummy event is mainly used for mmap, the TIME sample is only needed
+for per-cpu case so that the perf tool can rely on the correct timing
+for parsing symbols.  And the CPU sample is useless for mmap.
 
-The CPU is useful for sampling only for per-mmap case, it is used to
-indicate the AUX trace is associated to which CPU.
-
-The TIME sample is not needed for AUX event, since the time for AUX
-event is not really used and this time is a different thing from the
-timestamp in Arm SPE trace, the timestamp tracing which is controlled
-by Arm SPE's config bit.
-
-The TID sample is not useful for AUX event.
-
-This patch corrects the sample flags for SPE event, it only set CPU
-sample bit for per-cpu mmap case.
+This patch enables TIME sample for per-cpu mmap and doesn't enable CPU
+sample.  For later extension (e.g. support multiple AUX events), it sets
+the dummy event when the condition "opts->full_auxtrace" is true.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
- tools/perf/arch/arm64/util/arm-spe.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ tools/perf/arch/arm64/util/arm-spe.c | 30 ++++++++++++++++------------
+ 1 file changed, 17 insertions(+), 13 deletions(-)
 
 diff --git a/tools/perf/arch/arm64/util/arm-spe.c b/tools/perf/arch/arm64/util/arm-spe.c
-index 414c8a5584b1..902e73a64184 100644
+index 902e73a64184..f6eec0900604 100644
 --- a/tools/perf/arch/arm64/util/arm-spe.c
 +++ b/tools/perf/arch/arm64/util/arm-spe.c
-@@ -68,6 +68,7 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
- 			container_of(itr, struct arm_spe_recording, itr);
- 	struct perf_pmu *arm_spe_pmu = sper->arm_spe_pmu;
+@@ -70,7 +70,6 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
  	struct evsel *evsel, *arm_spe_evsel = NULL;
-+	struct perf_cpu_map *cpus = evlist->core.cpus;
+ 	struct perf_cpu_map *cpus = evlist->core.cpus;
  	bool privileged = perf_event_paranoid_check(-1);
- 	struct evsel *tracking_evsel;
+-	struct evsel *tracking_evsel;
  	int err;
-@@ -120,9 +121,9 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
- 	 */
- 	evlist__to_front(evlist, arm_spe_evsel);
  
--	evsel__set_sample_bit(arm_spe_evsel, CPU);
--	evsel__set_sample_bit(arm_spe_evsel, TIME);
--	evsel__set_sample_bit(arm_spe_evsel, TID);
-+	/* In the case of per-cpu mmaps, sample CPU for AUX event. */
-+	if (!perf_cpu_map__empty(cpus))
-+		evsel__set_sample_bit(arm_spe_evsel, CPU);
+ 	sper->evlist = evlist;
+@@ -126,18 +125,23 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
+ 		evsel__set_sample_bit(arm_spe_evsel, CPU);
  
  	/* Add dummy event to keep tracking */
- 	err = parse_events(evlist, "dummy:u", NULL);
+-	err = parse_events(evlist, "dummy:u", NULL);
+-	if (err)
+-		return err;
+-
+-	tracking_evsel = evlist__last(evlist);
+-	evlist__set_tracking_event(evlist, tracking_evsel);
+-
+-	tracking_evsel->core.attr.freq = 0;
+-	tracking_evsel->core.attr.sample_period = 1;
+-	evsel__set_sample_bit(tracking_evsel, TIME);
+-	evsel__set_sample_bit(tracking_evsel, CPU);
+-	evsel__reset_sample_bit(tracking_evsel, BRANCH_STACK);
++	if (opts->full_auxtrace) {
++		struct evsel *tracking_evsel;
++
++		err = parse_events(evlist, "dummy:u", NULL);
++		if (err)
++			return err;
++
++		tracking_evsel = evlist__last(evlist);
++		evlist__set_tracking_event(evlist, tracking_evsel);
++
++		tracking_evsel->core.attr.freq = 0;
++		tracking_evsel->core.attr.sample_period = 1;
++
++		/* In per-cpu case, always need the time of mmap events etc */
++		if (!perf_cpu_map__empty(cpus))
++			evsel__set_sample_bit(tracking_evsel, TIME);
++	}
+ 
+ 	return 0;
+ }
 -- 
 2.25.1
 
