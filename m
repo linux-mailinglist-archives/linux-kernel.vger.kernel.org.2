@@ -2,53 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C807B36EBBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 15:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3ACB36EB75
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 15:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237367AbhD2OAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 10:00:22 -0400
-Received: from vps.thesusis.net ([34.202.238.73]:37074 "EHLO vps.thesusis.net"
+        id S237206AbhD2Nmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 09:42:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233862AbhD2OAU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 10:00:20 -0400
-X-Greylist: delayed 441 seconds by postgrey-1.27 at vger.kernel.org; Thu, 29 Apr 2021 10:00:20 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by vps.thesusis.net (Postfix) with ESMTP id AD44A2EC64;
-        Thu, 29 Apr 2021 09:52:10 -0400 (EDT)
-Received: from vps.thesusis.net ([127.0.0.1])
-        by localhost (vps.thesusis.net [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id F20wM5zUlzsp; Thu, 29 Apr 2021 09:52:10 -0400 (EDT)
-Received: by vps.thesusis.net (Postfix, from userid 1000)
-        id 753582EC66; Thu, 29 Apr 2021 09:52:10 -0400 (EDT)
-User-agent: mu4e 1.5.7; emacs 26.3
-From:   Phillip Susi <phill@thesusis.net>
-To:     gregkh@linuxfoundation.org, rafael@kernel.org, jeyu@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     msekleta@redhat.com, Peter Rajnoha <prajnoha@redhat.com>
-Subject: Re: [PATCH 1/2] kobject: return error code if writing /sys/.../uevent
- fails
-In-Reply-To: <20181205112745.12276-2-prajnoha@redhat.com>
-Date:   Thu, 29 Apr 2021 09:40:08 -0400
-Message-ID: <878s515hbp.fsf@vps.thesusis.net>
+        id S233602AbhD2Nmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 09:42:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 950ED613B4;
+        Thu, 29 Apr 2021 13:41:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619703714;
+        bh=vvRNtOkqtNMjx9g2FdxC079vvj9ChvxYQOsboD7bjSM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qR6eDpq/TYQSD5w95RS0eEN08nTqrHIbLfiHZdvj8e4eZBYuiITFOXN3oT15jrJ5F
+         SJIu+EN2nJzeH3FyZqv7I7vtFpl9AWq4G4OADcmCPYSd0ws+IQVSw8vo45Dv4o992D
+         Y0668cnhFiCQMYaEAv9iPcnzAJjlhADcldNHKrdI=
+Date:   Thu, 29 Apr 2021 15:41:51 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kangjie Lu <kjlu@umn.edu>
+Subject: Re: [PATCH 7/7] Revert "serial: max310x: pass return value of
+ spi_register_driver"
+Message-ID: <YIq3nzLCKEKI/Mnx@kroah.com>
+References: <20210429130811.3353369-1-gregkh@linuxfoundation.org>
+ <20210429130811.3353369-8-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210429130811.3353369-8-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just an FYI, I've been tracking down a bug that was causing the debian
-bullseye installer to immediately crash and reboot the xen domU and
-bisected it to this commit.  It appears that the Xen Virtual Keyboard
-driver ( and at least one other, probably more ) were always broken and
-failed to trigger the udev event, but this was never noticed.  When this
-patch returned the error code, it caused the d-i init scripts triggering
-coldplug events to fail, which caused init to bail out, causing a kernel
-panic.
+On Thu, Apr 29, 2021 at 03:08:11PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit 51f689cc11333944c7a457f25ec75fcb41e99410.
+> 
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper submitted to the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota) but later
+> withdrawn.
+> 
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+> 
+> Cc: Kangjie Lu <kjlu@umn.edu>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/tty/serial/max310x.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
+> index 8534d6e45a1d..a3ba0e6520a1 100644
+> --- a/drivers/tty/serial/max310x.c
+> +++ b/drivers/tty/serial/max310x.c
+> @@ -1518,10 +1518,10 @@ static int __init max310x_uart_init(void)
+>  		return ret;
+>  
+>  #ifdef CONFIG_SPI_MASTER
+> -	ret = spi_register_driver(&max310x_spi_driver);
+> +	spi_register_driver(&max310x_spi_driver);
+>  #endif
+>  
+> -	return ret;
+> +	return 0;
+>  }
+>  module_init(max310x_uart_init);
+>  
+> -- 
+> 2.31.1
+> 
 
-In the future, when fixing error returns like this, could you please add
-a big fat printk so that hopefully things that always should have failed
-but didn't and now do can get noticed and fixed more quickly.
+This is incorrect because if spi_register_driver fails, the uart needs
+to be properly unregistered before the module is unloaded automatically,
+causing a crash.
 
-https://bugzilla.kernel.org/show_bug.cgi?id=207695
-https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=983357
+I'll keep the revert and fix this up properly.
 
+thanks,
+
+greg k-h
