@@ -2,106 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 853A636E31D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 03:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 999BA36E321
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 04:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235740AbhD2Bzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 21:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbhD2Bzd (ORCPT
+        id S234549AbhD2CB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 22:01:28 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:17068 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229888AbhD2CB1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 21:55:33 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD44EC06138B;
-        Wed, 28 Apr 2021 18:54:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=CJN5Kcexc5YmqOT6pv9lP9gGODhHyBXgg7ljmhraqDk=; b=MgrtTnP78RCXUa07uJ+CbKbio8
-        iUKZZ0tjhYvwjvMrQCHIPLZi8HY9EV5m9xJvSSnCDbNElxcVU9P8fARoRCTzT5c5/qxfHGwvPlZct
-        HrxzaFsQ83Kj6zqcZamFXINPoqWlDdC3fFjYcdEXmtQzb2oz2NoiINdoxlbXVC9nGUT2sYJg/PXar
-        /tmt/2dtPlKTp37K3ZzyDrntnMe/5N7pX9fRtdP5GLrAjzIQkfTQc8cldIP6CNyv5jryXHu8Bk2LX
-        gpE4CNUoBrk35pNxozJVVHrARz538ghHjLrOPWE3VRqxZogzNFLaaQp/3TjmRG1P3YgyOx0akvnLX
-        bT+7TSfA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lbvsU-0093XD-V2; Thu, 29 Apr 2021 01:54:38 +0000
-Date:   Thu, 29 Apr 2021 02:54:06 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>, pakki001@umn.edu,
-        gregkh@linuxfoundation.org, arnd@arndb.de
-Subject: Re: [PATCH] ics932s401: fix broken handling of errors when word
- reading fails
-Message-ID: <20210429015406.GE1847222@casper.infradead.org>
-References: <20210428222534.GJ3122264@magnolia>
- <20210428224624.GD1847222@casper.infradead.org>
- <20210429010351.GI1251862@magnolia>
+        Wed, 28 Apr 2021 22:01:27 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FVzDM1Xx1z16N0m;
+        Thu, 29 Apr 2021 09:58:11 +0800 (CST)
+Received: from [10.174.176.174] (10.174.176.174) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 29 Apr 2021 10:00:34 +0800
+Subject: Re: [PATCH 3/5] mm/huge_memory.c: add missing read-only THP checking
+ in transparent_hugepage_enabled()
+To:     Yang Shi <shy828301@gmail.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>,
+        <william.kucharski@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Yang Shi" <yang.shi@linux.alibaba.com>,
+        <aneesh.kumar@linux.ibm.com>,
+        "Ralph Campbell" <rcampbell@nvidia.com>,
+        Song Liu <songliubraving@fb.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Rik van Riel <riel@surriel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+References: <20210427133214.2270207-1-linmiaohe@huawei.com>
+ <20210427133214.2270207-4-linmiaohe@huawei.com>
+ <CAHbLzkrBAtTM8aE_pM4ASQ6cGyfPcs7_7HPJLCd9T24VyqU5wQ@mail.gmail.com>
+ <1fa95721-2ae0-af5f-b2e4-cdb430ebc263@huawei.com>
+ <CAHbLzkr6j2TFUTUv3kEXR-jKQ+Qc11su2r9U-KiDjG4KrnGRkQ@mail.gmail.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <18d8302c-3ff0-c508-2e8f-61d55bafe4fd@huawei.com>
+Date:   Thu, 29 Apr 2021 10:00:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429010351.GI1251862@magnolia>
+In-Reply-To: <CAHbLzkr6j2TFUTUv3kEXR-jKQ+Qc11su2r9U-KiDjG4KrnGRkQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.174]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 06:03:51PM -0700, Darrick J. Wong wrote:
-> On Wed, Apr 28, 2021 at 11:46:24PM +0100, Matthew Wilcox wrote:
-> > On Wed, Apr 28, 2021 at 03:25:34PM -0700, Darrick J. Wong wrote:
-> > > In commit b05ae01fdb89, someone tried to make the driver handle i2c read
-> > > errors by simply zeroing out the register contents, but for some reason
-> > > left unaltered the code that sets the cached register value the function
-> > > call return value.
-> > > 
-> > > The original patch was authored by a member of the Underhanded
-> > > Mangle-happy Nerds, I'm not terribly surprised.  I don't have the
-> > > hardware anymore so I can't test this, but it seems like a pretty
-> > > obvious API usage fix to me...
-> > 
-> > Not sure why you cc'd linux-fsdevel, but that's how i got to see it ...
+On 2021/4/29 0:21, Yang Shi wrote:
+> On Tue, Apr 27, 2021 at 7:06 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>>
+>> On 2021/4/28 5:03, Yang Shi wrote:
+>>> On Tue, Apr 27, 2021 at 6:32 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>>>>
+>>>> Since commit 99cb0dbd47a1 ("mm,thp: add read-only THP support for
+>>>> (non-shmem) FS"), read-only THP file mapping is supported. But it
+>>>> forgot to add checking for it in transparent_hugepage_enabled().
+>>>>
+>>>> Fixes: 99cb0dbd47a1 ("mm,thp: add read-only THP support for (non-shmem) FS")
+>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>> ---
+>>>>  mm/huge_memory.c | 3 +++
+>>>>  1 file changed, 3 insertions(+)
+>>>>
+>>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>>>> index 76ca1eb2a223..aa22a0ae9894 100644
+>>>> --- a/mm/huge_memory.c
+>>>> +++ b/mm/huge_memory.c
+>>>> @@ -74,6 +74,9 @@ bool transparent_hugepage_enabled(struct vm_area_struct *vma)
+>>>>                 return __transparent_hugepage_enabled(vma);
+>>>>         if (vma_is_shmem(vma))
+>>>>                 return shmem_huge_enabled(vma);
+>>>> +       if (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS) && vma->vm_file &&
+>>>> +           (vma->vm_flags & VM_DENYWRITE))
+>>>> +               return true;
+>>>
+>>
+>> Many thanks for your quick respond and Reviewed-by tag!
+>>
+>>> I don't think this change is correct. This function is used to
+>>> indicate if allocating THP is eligible for the VMAs or not showed by
+>>> smap. And currently readonly FS THP is collapsed by khugepaged only.
+>>>
+>>> So, you need check if the vma is suitable for khugepaged. Take a look
+>>> at what hugepage_vma_check() does.
+>>>
+>>> And, the new patch
+>>> (https://lore.kernel.org/linux-mm/20210406000930.3455850-1-cfijalkovich@google.com/)
+>>> relax the constraints for readonly FS THP, it might be already in -mm
+>>> tree, so you need adopt the new condition as well.
+>>>
+>>
+>> Many thanks for your comment. I referred to what hugepage_vma_check() does about
+>> Read-only file mappings when I came up this patch. But it seems I am miss something.
 > 
-> I whacked the wrong mutt shortcut key. :)
-
-"A computer lets you make more mistakes faster than any other invention
-with the possible exceptions of handguns and Tequila."
-
-> > Looking at a bit more context in this function, shouldn't we rather clear
-> > 'sensors_valid'?  or does it really make sense to pretend we read zero
-> > (rather than 255) from this register?
+> Yes, you need do the below check for readonly FS THP too:
 > 
-> Dunno.  As I said, I don't have that piece of hardware anymore.
-> It probably does make more sense to fail the read or something, but
-> since I can't QA it properly I'll go with "return a batch of zeroes".
+> if ((vm_flags & VM_NOHUGEPAGE) ||
+>     test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags))
+> return false;
+> 
+> This check is done separately for anonymous and shmem. It seems not
+> perfect to do it three times in a row. So I'd suggest extracting the
+> check into a common helper then call it at the top of
+> transparent_hugepage_enabled() .
+> 
+> The helper also could replace the same check in
+> __transparent_hugepage_enabled() and shmem_huge_enabled().
+> 
 
-It's from 2008 ... does anyone have that piece of hardware any more,
-or should we delete the driver?  Seems like it's for use with the Intel
-Pentium 4/D 955X chipset, which is from 2005.  Definitely out of support,
-but I guess not entirely dead yet.
+I see. Many thanks for detailed explanation and good suggestion! Will do it in v2. :)
 
-> Though ... if memory serves, the current behavior will probably shift
-> the interesting parts of the errno code off the right end, filling the
-> u8 buffer with all ones.  Maybe?
+>> Take the new patch into account, the check for READ_ONLY_THP now should be:
+>>
+>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>> index 76ca1eb2a223..a46a558233b4 100644
+>> --- a/mm/huge_memory.c
+>> +++ b/mm/huge_memory.c
+>> @@ -74,6 +74,10 @@ bool transparent_hugepage_enabled(struct vm_area_struct *vma)
+>>                 return __transparent_hugepage_enabled(vma);
+>>         if (vma_is_shmem(vma))
+>>                 return shmem_huge_enabled(vma);
+>> +       if (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS) && vma->vm_file &&
+>> +           !inode_is_open_for_write(vma->vm_file->f_inode) &&
+>> +           (vma->vm_flags & VM_EXEC))
+>> +               return true;
+>>
+>>         return false;
+>>  }
+>>
+>> Am I miss something about checking for READ_ONLY_THP case? Or READ_ONLY_THP case is ok
+>> but other case is missed? Could you please explain this more detailed for me?
+>>
+>> Many thanks!
+>>
+>>>>
+>>>>         return false;
+>>>>  }
+>>>
+>>>> --
+>>>> 2.23.0
+>>>>
+>>>>
+>>>
+>>> .
+>>>
+>>
+> .
+> 
 
-Right.  I mean, my smartwatch sometimes reads my heart rate as 255 bpm
-when it gets cold.  I don't think they did QA at -40C.
-
-But what's being read here is a bit more complex than beats-per-minute;
-there's divisors and control registers and stuff.  I just don't feel
-like '0' is a good fake value to pretend to have read.  I think we have
-four options -- complicate the driver to make it understand that it
-didn't read a value, pretend we read 0, 255 or the-last-value-we-read.
-And the last option seems like the best to me?  So ...
-
-@@ -134,7 +134,7 @@ static struct ics932s401_data *ics932s401_update_device(struct device *dev)
-        for (i = 0; i < NUM_MIRRORED_REGS; i++) {
-                temp = i2c_smbus_read_word_data(client, regs_to_copy[i]);
-                if (temp < 0)
--                       data->regs[regs_to_copy[i]] = 0;
-+                       continue;
-                data->regs[regs_to_copy[i]] = temp >> 8;
-        }
- 
-
-might be the best we can do?
