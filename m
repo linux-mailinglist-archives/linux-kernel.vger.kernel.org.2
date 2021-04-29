@@ -2,128 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB6B36E485
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 07:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B69736E48A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 07:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238308AbhD2Fht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 01:37:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229792AbhD2Fhq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 01:37:46 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D112C06138B
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 22:37:00 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id j4so63498498lfp.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 22:37:00 -0700 (PDT)
+        id S238465AbhD2FjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 01:39:24 -0400
+Received: from mail-mw2nam10on2048.outbound.protection.outlook.com ([40.107.94.48]:29889
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229792AbhD2FjJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 01:39:09 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hkQ68B3u3olv4J9cYxRUXx4/mb5DnYkNJ4zd+vIWbJ5VpkdqPgGWzqzCB+jD14kAjKfAs8WQ/oIz9JkFZFrMMP33DP2FMtMb6K4olFNnZUnkz4VjJxAJo7mGalDBl4mzEaslAnUKzTFY6OW/UYsuq8qatKzUwEHbDzajEAmdUPEXCOjktgf68yxwoZkiJnAdxj6LljVcUFTRs73NMxzF5aTFVEZfwGgJcTifvo3K8s6XsgYFmSVHu6QVkoSo5rKKj4Vyla/5ws+7bfiBbPXZu2K1drnJiVKueASr6guB9D1k+piH9HW8eKZmFqximaRBw2b4f41CISAvZZebMiLaIw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hHTEL2i0OGkFRmEhw6NvJ7GhVBn0N5h4tG73vjYnJ3w=;
+ b=cIM7ONFe/Fr5HooaSRdY+gWI/NNb+Gtl+TnZlPx8ZMThz9B/Tmw9Em8BbJVOHuF9sOOdX9LnRWiJkXyt9xU8b33I4yDmIaDTNsh9bfdy4qvq2ue41cudxJvP5fwdAoMxxwEk/LyEPli3mUgpZm6VGINmD66b/+MG6cRntwJI1L8pinbXaTXUxFjA7+7EqH58KUDnKPT8SE4099ktYtcHxdwmcJolG4EG6sMa9b0ZZtt5sAA5scZPfSjX/uHM4aZ8hv5g6yMhHWwqRPIgJ37YgWrLzYptLYhMsfpVf2QQvuHpY9Jwd2jbwlYWcBgJLZ7j4oz6VcksrtvSbOxwCGz6Jw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xZdjO0RFzZ36whN0nqHe2gpIIEZmqiH1THH/jtnnt+U=;
-        b=CWIBXDifnBdQIfmH7fbeslO7HP2eB+tTmyS2+tE28FSFjzEoZbGTu0dwfbn2UFv+gO
-         5GC4piK1lG0xbMdstaNzlVQvx+loNPyJ77w2K99aZCLdLZzAsUJeEg/qqDPNCmcGa61c
-         EufhXxsrRrt/3dTxVhgt7dfueNJVuDHmw1hpc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xZdjO0RFzZ36whN0nqHe2gpIIEZmqiH1THH/jtnnt+U=;
-        b=MlrKzYLp3mwtSgvgNK77jzVONT/wjhyo9e5Lybz8fSC3+hv/LzUs0UgEmNtpnUUcjS
-         I4hoL5Mq06wQ+xmBaIgZA48p0mXCpwXQR9r6xraAnGMMGM6/ygbiSUy6rAMhksRtf3vq
-         hD4ZV+G+fEL7gDNBL/seaPDNyQJ3W67ua1aGP9m/MOrzwdm8NCKfSyi2bG7Sx1Gzu4wj
-         DYnVza86qFnRfqIr0RI0ZTRZZ9Di4uCU49VxndZSWt8tLCv0i7i25NlNLOOwYmkA+G/S
-         7UdWSdwAZa/0Yf4c1ksWYNn7IR6XaysFuM1Muv3NdiROaONuThLHW+13IhHY0Mx6+f6u
-         iEMg==
-X-Gm-Message-State: AOAM530/E0tk1ywNLizzOnoRKA9GCFge3n8Hln1sboqzR6nWhkLhuwcW
-        iF+TjtNq1IBbbSVaVurqX1Kxh8IEYG6NKYc2KaMuCA==
-X-Google-Smtp-Source: ABdhPJyQ2IZxORPjDeTCdOrxZkBNm/7PwLV9TJURE53nbZgLwQeggPI1ZudCFD1WHsd77x8hIsDt4W34NsAy5o90BhQ=
-X-Received: by 2002:a19:6d10:: with SMTP id i16mr19428164lfc.126.1619674618681;
- Wed, 28 Apr 2021 22:36:58 -0700 (PDT)
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hHTEL2i0OGkFRmEhw6NvJ7GhVBn0N5h4tG73vjYnJ3w=;
+ b=dp5X80BSaYKCUvRZCvUGw3zZqv5IuxkuDATXiU/vIL/I0G8yXHH8zGedM+xww6uTb80cmnRnmUYEFy9HqoApjQHa34uGwn+GgCoY4ai7p0v8qL+I28rilsL4bK2ktrUtmLgo96Ax61UmKSotLjzhLYKT8lEO0GqO0q4Ik8caA1k=
+Received: from SN4PR0501CA0100.namprd05.prod.outlook.com
+ (2603:10b6:803:42::17) by BN6PR02MB2275.namprd02.prod.outlook.com
+ (2603:10b6:404:32::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20; Thu, 29 Apr
+ 2021 05:38:20 +0000
+Received: from SN1NAM02FT061.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:803:42:cafe::f8) by SN4PR0501CA0100.outlook.office365.com
+ (2603:10b6:803:42::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.8 via Frontend
+ Transport; Thu, 29 Apr 2021 05:38:20 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT061.mail.protection.outlook.com (10.152.72.196) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4065.21 via Frontend Transport; Thu, 29 Apr 2021 05:38:20 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 28 Apr 2021 22:38:08 -0700
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Wed, 28 Apr 2021 22:38:07 -0700
+Envelope-to: git@xilinx.com,
+ broonie@kernel.org,
+ linux-spi@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Received: from [10.140.6.25] (port=50950 helo=xhdnagasure40.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <amit.kumar-mahapatra@xilinx.com>)
+        id 1lbzNG-0000R3-LF; Wed, 28 Apr 2021 22:38:07 -0700
+From:   Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
+To:     <broonie@kernel.org>
+CC:     <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <git@xilinx.com>,
+        Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
+Subject: [RESEND 0/2]spi: spi-zynq-qspi: Fix stack violation bug
+Date:   Wed, 28 Apr 2021 23:38:00 -0600
+Message-ID: <20210429053802.17650-1-amit.kumar-mahapatra@xilinx.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20200909224226.2177401-1-swboyd@chromium.org> <CABXOdTeWfuZHLywMU1d+No-NSZ4uusAgkhs=2hNZGFM-uYz2wA@mail.gmail.com>
- <c3ba5d92-8bfe-30d7-44f0-c8a3e40d1906@collabora.com> <CABXOdTdsVyae9oHKEMSbXOsi5VWUZhLbKVxeNVedc4redZineQ@mail.gmail.com>
- <6b546379-d5ce-f0bd-7907-be36f90c15ed@collabora.com> <159978558757.2295844.13766111546939928492@swboyd.mtv.corp.google.com>
- <161801995912.3764895.7559313428958998666@swboyd.mtv.corp.google.com>
-In-Reply-To: <161801995912.3764895.7559313428958998666@swboyd.mtv.corp.google.com>
-From:   Gwendal Grignou <gwendal@chromium.org>
-Date:   Wed, 28 Apr 2021 22:36:46 -0700
-Message-ID: <CAPUE2utFmQ6YJxi4zi90i8iBSq6QCDii-HoUW-X1w1bFQ6MqEw@mail.gmail.com>
-Subject: Re: [PATCH v2] platform/chrome: Don't populate lightbar device if it
- isn't there
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@google.com>,
-        Benson Leung <bleung@chromium.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Lee Jones <lee.jones@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c94db0b3-0d99-4dc0-9505-08d90ad0ff88
+X-MS-TrafficTypeDiagnostic: BN6PR02MB2275:
+X-Microsoft-Antispam-PRVS: <BN6PR02MB2275A5CDF31A0F91E7772E07BA5F9@BN6PR02MB2275.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: S1ufjAS0YsDJiTV/0oEbXeXKWABUp4lGn7UhUtqEQmL1kW9u2y7lWkvTfO5Viilkd/l8wbx2HcvJfNj8Ov5zAcNi2kS81nmF8DyaRqdSJxqPv05oCi2KIV2kiR2JRAvMNQaKL4r0JWsXhUOvAlKlfIGC38xbNqKmmpF5pnFh2ISNOHNiGRzQ+g2KggIkOwz8Aydr71iMfO7wFGlTLjq2e3PaQjieB/2VQBv+unsMlE8IWkXFxmXHFH8/U5BO9OdHiIeGT6ckXjIv5AQOyt8kYq/ivKU1rLrKoxOxRquxAEcfVO5ue+i33pHh1SXpNq9m+ieqPkkcFXLlw+W33SsEAoudeOvA8CBy55CUvKZkP/8F5FsxlL2VBfaY7mEVJDnw5BlBzmrLGrUIPD1q+YAhcekT8wjf67JWbOaIeXI+DayrIsvRBB0I4BAn27+1Ks10Ki4jSXOZBySRv+T5V3Xo7GsARBKiyBOpCfHSe6juiRTQTvJ4myNBFwnAp6EMOoOoow4Xsp+xsj1foTlKUhs/8tImqSkfzgBvYi+gUUmolWEhMIL0lw5ngyMAyp6Sgq4+ZbuuVxgPnfoflk1OZDfFj+W6NHMCRTkneJ1QXB04aB19OWQCANxfkuhVRlmZ7ThmMMfpFq0oGUfiZTsA0gGx1FZliZNGNvRwW0t/5Cn3YsUD00OFAJC1RxWcKgzgir3w
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(136003)(39860400002)(36840700001)(46966006)(8676002)(316002)(26005)(36906005)(6916009)(4744005)(2616005)(1076003)(356005)(478600001)(5660300002)(54906003)(8936002)(9786002)(70206006)(7636003)(70586007)(83380400001)(82740400003)(82310400003)(107886003)(426003)(186003)(4326008)(7696005)(6666004)(36860700001)(2906002)(336012)(36756003)(47076005)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2021 05:38:20.5422
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c94db0b3-0d99-4dc0-9505-08d90ad0ff88
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT061.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR02MB2275
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 6:59 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Stephen Boyd (2020-09-10 17:53:07)
-> > Quoting Enric Balletbo i Serra (2020-09-10 08:49:42)
-> > > On 10/9/20 16:52, Guenter Roeck wrote:
-> > > > On Thu, Sep 10, 2020 at 7:32 AM Enric Balletbo i Serra
-> > > > <enric.balletbo@collabora.com> wrote:
-> > > >> On 10/9/20 16:18, Guenter Roeck wrote:
-> > > >>> On Wed, Sep 9, 2020 at 3:42 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> > > >>>> @@ -206,6 +209,17 @@ static int ec_device_probe(struct platform_device *pdev)
-> > > >>>>                 }
-> > > >>>>         }
-> > > >>>>
-> > > >>>> +       if (!strcmp(ec_platform->ec_name, CROS_EC_DEV_NAME) &&
-> > > >>>> +           !cros_ec_get_lightbar_version(ec, NULL, NULL)) {
-> > > >>>
-> > > >>> Any idea why the lightbar code doesn't use cros_ec_check_features() ?
-> > > >>> There is a definition for EC_FEATURE_LIGHTBAR, but it doesn't seem to
-> > > >>> be used. It would be much more convenient if that feature check could
-> > > >>> be used instead of moving the get_lightbar_version command and its
-> > > >>> helper function around.
-> > > >>>
-> > > >>
-> > > >> IIRC it was to support a very old device, the Pixel Chromebook (Link). This flag
-> > > >> is not set in this device but has a lightbar, hence we had this 'weird' way to
-> > > >> detect the lightbar.
-> > > >>
-> > > >
-> > > > If that is the only reason, wouldn't it be better to use something
-> > > > else (eg dmi_match) to determine if the system in question is a  Pixel
-> > > > Chromebook (Link) ?
-> > > >
-> > > >              if (!strcmp(ec_platform->ec_name, CROS_EC_DEV_NAME) &&
-> > > >                  (cros_ec_check_features(ec, EC_FEATURE_LIGHTBAR) ||
-> > > >                   dmi_match(DMI_PRODUCT_NAME, "Link")) {
+This patch series fixes kernel-doc warnings and stack violation
+issues in Zynq qspi driver.
+---
+Branch: for-next
+---
+Amit Kumar Mahapatra (1):
+  spi: spi-zynq-qspi: Fix kernel-doc warning
 
-check_features supporting lightbar was introduced with crrev.com/c/263463
-in 2015. It is present devices with lightbar like Pixel C and
-backported to Pixel 2 (samus) with crrev.com/c/274047.
-Remaining boards that have lightbar support and not check_features support are:
-link
-bolt (reference board for early samus).
+Karen Dombroski (1):
+  spi: spi-zynq-qspi: Fix stack violation bug
 
-Therefore, that solution is right. I will send a patch based on that
-code snippet.
+ drivers/spi/spi-zynq-qspi.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-Gwendal.
+-- 
+2.17.1
 
-> > > >
-> > >
-> > > That looks a better solution, indeed. And definetely I'd prefer use the check
-> > > features way.
-> > >
-> > > Gwendal, can you confirm that the Pixel Chromebook (Link) is the _only_ one
-> > > affected? This one is the only that comes to my mind but I might miss others.
-> > >
-> > > I think that Samus has this flag (I can double check) and this was discussed
-> > > with you (long, long time ago :-) )
-> > >
-> >
-> > Sounds fine by me. I'll wait for Gwendal to inform us.
->
-> Anything come of this? I haven't seen any updates.
