@@ -2,113 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B85F36EFE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 21:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 286CB36F039
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 21:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241222AbhD2TEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 15:04:09 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:40275 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233830AbhD2TEH (ORCPT
+        id S232523AbhD2TRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 15:17:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238507AbhD2TIk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 15:04:07 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 450205C013B;
-        Thu, 29 Apr 2021 15:03:20 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Thu, 29 Apr 2021 15:03:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=benboeckel.net;
-         h=date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=0qAdwqSnnmXWMaIHBBgYRffE9iU
-        D9R846lYUjFsFhzg=; b=llYugO1zP4dn+Ebi9q4GVu/rJ5jWHj7vbVGmWT8N5wz
-        MJvnt5HNV2CP0/c2egMni3ihePnyKEI8+eXvIYW1Muwqkf6rLQXhWYmiFnaqcmp6
-        9Y6VHOHu3X+MAR09bAnr8lW6aaxl4o1ajv+5orsEViRRAuGi+od5EEtpMjlxo4dd
-        bbdCLAKLKh/x1YoSfk4DZ7aPI0vSCv9LFcIQ2NoUEiEd5B1+kMuPGslbOy3TjZab
-        tCjWsdPirP0y6Irflsro8zZS81RW1tc4ngz6TmxajAC6GfUb062t+sE5/GfgjJNO
-        DjSJ/B2OCjfcTbqarbjf889K38+Z3FV7efmnRwXaXYQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=0qAdwq
-        SnnmXWMaIHBBgYRffE9iUD9R846lYUjFsFhzg=; b=ZwHGKGTiZBxxy179ej0jIb
-        7ENvIdIJ3x/6zbYuMXl+tGT413BeQj6UWtX+p8Bgn2HItKkzdT6y7QQ8z+Nsfj12
-        Ur80VOjzWcge5w74UPp+TyjaL7y5l8u5+6exhXwFbETmmfYlmRoihya9k8HZ4npU
-        YdHWgOE7HuEtfR2NVN1SoLJW454smJAPCSs9ejl+80pvCnoOAbZugCyJMuDTZVRZ
-        xjr3b5iBAlkDvxPepmdC+/4e+23e4xBXlBlTVOUvS7tv3MqDUX9y4s4jrd/ng4c6
-        zsxC6fDe6ipNMV2+GAGQ1QlAjscM6S97/4rCG4UyYEUjcwpV/eOwtwld5OK1DA+w
-        ==
-X-ME-Sender: <xms:9wKLYAhJa1_JWM9TfZVbzYt09STwReBJgckaMljpGqYOciPhoh9ENw>
-    <xme:9wKLYJBkoY_jFt-ibe1VxUm3JGLNO_zuRS6H1GSQFakjnVqz8H-6aNlG8pTCsjFtv
-    k3uezUHWX5rrs8YEjc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddvgedgudefgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujggfsehttdertddtreejnecuhfhrohhmpeeuvghn
-    uceuohgvtghkvghluceomhgvsegsvghnsghovggtkhgvlhdrnhgvtheqnecuggftrfgrth
-    htvghrnhepvefftdettefgtddtkeeufeegtddttdeuueegkeegteffueetffejudeihefh
-    kedtnecukfhppedvgedrudeiledrvddtrddvheehnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomhepmhgvsegsvghnsghovggtkhgvlhdrnhgvth
-X-ME-Proxy: <xmx:9wKLYIGJMbQrYqIMulg-YNQfLslFr5KV7nZjEoEX3ZvNwPPFGGijAg>
-    <xmx:9wKLYBTecCDbA_46OiOCDSSaMaVNyemmlQWT2jL31tjuAOST0cYVyg>
-    <xmx:9wKLYNxKSIYXvgGR8TYP5S5S6z7qRcgle4BYsTsCWwOzyu91zhwjgA>
-    <xmx:-AKLYPuQbuGLAekf_BNVT9DoEokw-A2NjJAYakIZhXjA2HPv4cKbKQ>
-Received: from localhost (unknown [24.169.20.255])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Thu, 29 Apr 2021 15:03:19 -0400 (EDT)
-Date:   Thu, 29 Apr 2021 15:03:18 -0400
-From:   Ben Boeckel <me@benboeckel.net>
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     keyrings@vger.kernel.org, Ben Boeckel <mathstuf@gmail.com>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH 1/1] trusted-keys: match tpm_get_ops on all return paths
-Message-ID: <YIsC9mT8XmIi/fbB@erythro>
-References: <20210429183742.756766-1-list.lkml.keyrings@me.benboeckel.net>
- <20210429183742.756766-2-list.lkml.keyrings@me.benboeckel.net>
- <9eea988ff637af57511107c6c0941bff2aa7c6c5.camel@HansenPartnership.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <9eea988ff637af57511107c6c0941bff2aa7c6c5.camel@HansenPartnership.com>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+        Thu, 29 Apr 2021 15:08:40 -0400
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64699C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 12:07:53 -0700 (PDT)
+Received: by mail-wm1-x34a.google.com with SMTP id v2-20020a7bcb420000b0290146b609814dso228430wmj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 12:07:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=a+M03Ojo2ep3ZRi34mKtUekE+PIXB83y3AJCXMraWzo=;
+        b=dF9WJLioSQrbRuzCoNwwUPt/Vr8RLQvQyQyo0LOsjAWYk3FM7a+nBqYqettaUNAlHa
+         LiiTz1VGyiB+mykTMwMpeky8vvhoXMMUkWzQhh9qLmw34bugTcqySao7tleast8c469n
+         mKLzci3S4T7bmY+tjxRBZkJVvu3H0vxlySV1fPvpHl/g+2NuEs0zv5XxBIkqwaLWX5Xf
+         tE/a6xOOsLQ7ukUvb0tNay98YLQrFMVfm8vBxxuj+gkBPTue2rY2GErFnLTLjYr0C6pP
+         h40iwUYuB60pwe4+YNd7YDP/yNBBflO0HATK8xylCNstpMKY4Vaw9pnIRfR9tjWRti+M
+         gtdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=a+M03Ojo2ep3ZRi34mKtUekE+PIXB83y3AJCXMraWzo=;
+        b=clskHIAsP4Wtih4cWDQknd5vcZcb4Kt6zcBVQkCkDJjnehkKi88sAhopcfFdw5jHko
+         tJNVdFXdbJBBIRQ6S9sDJNBG5hXfLQ6wTN+cnqB85kQb16Q41k3u9G+eKt18ClKfnIxh
+         AeCnAYIJpJpiaq5i3on9lhcIAnXzk8ZREr0/QLFVKHI2Fc89pgUXeOqcylpuwYY67yNL
+         /D/jWKBLUXU2U/7nKga455uSrpR7oZQGDjbVbcNfIPWR5oIu29BcPi9B2XHT4VUVW5PK
+         YEg/tubi8g1gvIKGNFI5KiEWiVkG0dfJzZAfNa/bz/Dm1LCDKjQH5ex5HKZL3+2nbCZ1
+         yWIQ==
+X-Gm-Message-State: AOAM5334VabLP5I4dsy+XhTe9mJY2lb3VeTQhdaGVggX4tb8aEv8/yn9
+        BtyaUDupFBGuYYLxEgXxirU0hVvZrg==
+X-Google-Smtp-Source: ABdhPJzlg1wh/uLXKKhwRP5BcTAKO6bbMsP7iOQaaVlBytkU4SUateXusjlaHr17ej3J+IyJeoI9N2H4hA==
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:4399:f8b0:aefa:628])
+ (user=elver job=sendgmr) by 2002:a1c:c915:: with SMTP id f21mr1249320wmb.0.1619723271698;
+ Thu, 29 Apr 2021 12:07:51 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 21:07:32 +0200
+Message-Id: <20210429190734.624918-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
+Subject: [PATCH 1/3] sparc64: Add compile-time asserts for siginfo_t offsets
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, ebiederm@xmission.com
+Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        davem@davemloft.net, mark.rutland@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        sparclinux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 11:50:50 -0700, James Bottomley wrote:
-> Actually, I think this is a better fix to avoid multiple put and
-> returns.
-> 
-> James
-> 
-> ---
-> 
-> diff --git a/security/keys/trusted-keys/trusted_tpm2.c b/security/keys/trusted-keys/trusted_tpm2.c
-> index d225ad140960..cbf2a932577b 100644
-> --- a/security/keys/trusted-keys/trusted_tpm2.c
-> +++ b/security/keys/trusted-keys/trusted_tpm2.c
-> @@ -336,9 +336,9 @@ int tpm2_seal_trusted(struct tpm_chip *chip,
->  			rc = -EPERM;
->  	}
->  	if (blob_len < 0)
-> -		return blob_len;
-> -
-> -	payload->blob_len = blob_len;
-> +		rc = blob_len;
-> +	else
-> +		payload->blob_len = blob_len;
->  
->  	tpm_put_ops(chip);
->  	return rc;
+To help catch ABI breaks at compile-time, add compile-time assertions to
+verify the siginfo_t layout. Unlike other architectures, sparc64 is
+special, because it is one of few architectures requiring si_trapno.
+ABI breaks around that field would only be caught here.
 
-Ah, that does look better. I had first added a new label, but that
-didn't seem like an improvement in readability. I grabbed this pattern
-from an early return earlier in the function. But given that this is the
-end (and appears to be unlikely to have more logic inserted in the
-future), this seems more reasonable to me as well. Do you want me to
-respin or just let it up to you at this point?
+Link: https://lkml.kernel.org/r/m11rat9f85.fsf@fess.ebiederm.org
+Suggested-by: Eric W. Biederman <ebiederm@xmission.com>
+Signed-off-by: Marco Elver <elver@google.com>
+---
+ arch/sparc/kernel/signal32.c  | 34 ++++++++++++++++++++++++++++++++++
+ arch/sparc/kernel/signal_64.c | 33 +++++++++++++++++++++++++++++++++
+ 2 files changed, 67 insertions(+)
 
-Thanks,
+diff --git a/arch/sparc/kernel/signal32.c b/arch/sparc/kernel/signal32.c
+index e9695a06492f..778ed5c26d4a 100644
+--- a/arch/sparc/kernel/signal32.c
++++ b/arch/sparc/kernel/signal32.c
+@@ -745,3 +745,37 @@ asmlinkage int do_sys32_sigstack(u32 u_ssptr, u32 u_ossptr, unsigned long sp)
+ out:
+ 	return ret;
+ }
++
++/*
++ * Compile-time assertions for siginfo_t offsets. Check NSIG* as well, as
++ * changes likely come with new fields that should be added below.
++ */
++static_assert(NSIGILL	== 11);
++static_assert(NSIGFPE	== 15);
++static_assert(NSIGSEGV	== 9);
++static_assert(NSIGBUS	== 5);
++static_assert(NSIGTRAP	== 6);
++static_assert(NSIGCHLD	== 6);
++static_assert(NSIGSYS	== 2);
++static_assert(offsetof(compat_siginfo_t, si_signo)	== 0x00);
++static_assert(offsetof(compat_siginfo_t, si_errno)	== 0x04);
++static_assert(offsetof(compat_siginfo_t, si_code)	== 0x08);
++static_assert(offsetof(compat_siginfo_t, si_pid)	== 0x0c);
++static_assert(offsetof(compat_siginfo_t, si_uid)	== 0x10);
++static_assert(offsetof(compat_siginfo_t, si_tid)	== 0x0c);
++static_assert(offsetof(compat_siginfo_t, si_overrun)	== 0x10);
++static_assert(offsetof(compat_siginfo_t, si_status)	== 0x14);
++static_assert(offsetof(compat_siginfo_t, si_utime)	== 0x18);
++static_assert(offsetof(compat_siginfo_t, si_stime)	== 0x1c);
++static_assert(offsetof(compat_siginfo_t, si_value)	== 0x14);
++static_assert(offsetof(compat_siginfo_t, si_int)	== 0x14);
++static_assert(offsetof(compat_siginfo_t, si_ptr)	== 0x14);
++static_assert(offsetof(compat_siginfo_t, si_addr)	== 0x0c);
++static_assert(offsetof(compat_siginfo_t, si_trapno)	== 0x10);
++static_assert(offsetof(compat_siginfo_t, si_addr_lsb)	== 0x14);
++static_assert(offsetof(compat_siginfo_t, si_lower)	== 0x18);
++static_assert(offsetof(compat_siginfo_t, si_upper)	== 0x1c);
++static_assert(offsetof(compat_siginfo_t, si_pkey)	== 0x18);
++static_assert(offsetof(compat_siginfo_t, si_perf)	== 0x14);
++static_assert(offsetof(compat_siginfo_t, si_band)	== 0x0c);
++static_assert(offsetof(compat_siginfo_t, si_fd)		== 0x10);
+diff --git a/arch/sparc/kernel/signal_64.c b/arch/sparc/kernel/signal_64.c
+index a0eec62c825d..c9bbf5f29078 100644
+--- a/arch/sparc/kernel/signal_64.c
++++ b/arch/sparc/kernel/signal_64.c
+@@ -556,3 +556,36 @@ void do_notify_resume(struct pt_regs *regs, unsigned long orig_i0, unsigned long
+ 	user_enter();
+ }
+ 
++/*
++ * Compile-time assertions for siginfo_t offsets. Check NSIG* as well, as
++ * changes likely come with new fields that should be added below.
++ */
++static_assert(NSIGILL	== 11);
++static_assert(NSIGFPE	== 15);
++static_assert(NSIGSEGV	== 9);
++static_assert(NSIGBUS	== 5);
++static_assert(NSIGTRAP	== 6);
++static_assert(NSIGCHLD	== 6);
++static_assert(NSIGSYS	== 2);
++static_assert(offsetof(siginfo_t, si_signo)	== 0x00);
++static_assert(offsetof(siginfo_t, si_errno)	== 0x04);
++static_assert(offsetof(siginfo_t, si_code)	== 0x08);
++static_assert(offsetof(siginfo_t, si_pid)	== 0x10);
++static_assert(offsetof(siginfo_t, si_uid)	== 0x14);
++static_assert(offsetof(siginfo_t, si_tid)	== 0x10);
++static_assert(offsetof(siginfo_t, si_overrun)	== 0x14);
++static_assert(offsetof(siginfo_t, si_status)	== 0x18);
++static_assert(offsetof(siginfo_t, si_utime)	== 0x20);
++static_assert(offsetof(siginfo_t, si_stime)	== 0x28);
++static_assert(offsetof(siginfo_t, si_value)	== 0x18);
++static_assert(offsetof(siginfo_t, si_int)	== 0x18);
++static_assert(offsetof(siginfo_t, si_ptr)	== 0x18);
++static_assert(offsetof(siginfo_t, si_addr)	== 0x10);
++static_assert(offsetof(siginfo_t, si_trapno)	== 0x18);
++static_assert(offsetof(siginfo_t, si_addr_lsb)	== 0x20);
++static_assert(offsetof(siginfo_t, si_lower)	== 0x28);
++static_assert(offsetof(siginfo_t, si_upper)	== 0x30);
++static_assert(offsetof(siginfo_t, si_pkey)	== 0x28);
++static_assert(offsetof(siginfo_t, si_perf)	== 0x20);
++static_assert(offsetof(siginfo_t, si_band)	== 0x10);
++static_assert(offsetof(siginfo_t, si_fd)	== 0x14);
+-- 
+2.31.1.527.g47e6f16901-goog
 
---Ben
