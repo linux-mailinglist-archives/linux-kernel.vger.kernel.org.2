@@ -2,120 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0383936FB7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 15:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD2136FB80
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 15:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232313AbhD3Nbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 09:31:43 -0400
-Received: from mout.gmx.net ([212.227.17.22]:35337 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230047AbhD3Nbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 09:31:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1619789440;
-        bh=wBWV1n40caDOgrQ2BfyJAqo0nMeqSBjp9jDoQLpvWHM=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=ghF7UPIJNA0JfQgR6cQD+g/WrjD2mNmkMTWtc+i1ysnKCw8mz6o4SSLkuYFhMNExU
-         eg4ptKk1bntw/zkqWBxYBg8Rz4ZBRg6Zr1MrdthtGkSntIi8L8r2JLzQNUmi4jpXpJ
-         PZMS9LJ5bOGfVE2SKETtMy5mQV2cZlOrfuaADgS0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [157.180.225.50] ([157.180.225.50]) by web-mail.gmx.net
- (3c-app-gmx-bap03.server.lan [172.19.172.73]) (via HTTP); Fri, 30 Apr 2021
- 15:30:39 +0200
+        id S232575AbhD3Nc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 09:32:56 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:44953 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230047AbhD3Ncv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 09:32:51 -0400
+Received: by mail-ot1-f45.google.com with SMTP id z25-20020a9d65d90000b02902a560806ca7so5701060oth.11;
+        Fri, 30 Apr 2021 06:32:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kLVdihhgQNggYlan5oTIeC7fztaYes5nMicbhpxCOR8=;
+        b=UxPSsmBUt4FJeZBg4CdEJjap1JdyhaZkgLU1PFioZViBpXhCV3KizIzrohWPzm9p+O
+         vhfq4RoXq2uMX8bUUrN9VMb+bAC3npekDQ8e+VuhIazaHhEGLrlIN6so7xKIqyEDrkT5
+         go05RZpj/RxVobldzAU5drUB1y77X3GifjYswSSKKDIDMRDbtDrT5Ke6mGzInUIKu+cD
+         d+hWHJe40Mbt+oOynv9XCfKRbzV2eeAh2j+ap6iJ6VWGs9B+ZbF0piruJ/ArUfwpwkQE
+         IeitfltmzS7QXW+lF7KK8YSANZ/sRe//Jrp5vJJ8+nUyujR1OS4eTcgz2L7UY+1glbiH
+         c30w==
+X-Gm-Message-State: AOAM532IGWU79S4u8/hYHZ6HlPV0aUV7rwvQZSfsud8S+j2VP4Y2FloY
+        76eBseWeR+a11oVgwUlnPED6q68U+Bg9hCi+b+8=
+X-Google-Smtp-Source: ABdhPJxOdZMw5rEiLlSaYhxL1pnIqrAM4TbAWONhgWwdlJ3DHgE1RyN4x/WtZLEjCFsSO7kx5aYtHuRPapMK0N+EqQU=
+X-Received: by 2002:a9d:5a7:: with SMTP id 36mr3440541otd.321.1619789522557;
+ Fri, 30 Apr 2021 06:32:02 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <trinity-5166e76d-779d-4b05-870b-59971bd1571c-1619789439850@3c-app-gmx-bap03>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Frank Wunderlich <linux@fw-web.de>,
-        linux-mediatek@lists.infradead.org, Bin Liu <b-liu@ti.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        David Miller <davem@davemloft.net>,
-        DENG Qingfang <dqfext@gmail.com>
-Subject: Aw: Re: [PATCH] musb: mediatek: rename driver
-Content-Type: text/plain; charset=UTF-8
-Date:   Fri, 30 Apr 2021 15:30:39 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <YIv969BCnPgXzrcg@kroah.com>
-References: <20210430124317.97376-1-linux@fw-web.de>
- <YIv969BCnPgXzrcg@kroah.com>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:O2hp7OW+fifRI8eAdwQTGlSRc7RQGQRHjGKV7R+/sfpy5gS5/3HrXkKQT+/QdPXYlj0cx
- jb1M3oKXGQUTU6Jw656MGBfepLAMqcqq3H/TAoCwGASuAN6sV2EzXgCYYhcYzH15I/64jtnHj8tp
- dI+bLsar/LUg245vGdek/qNb+QPSe0pwYfb76G80fw3HerDmyOwwVf608ElQMODVxOkERnY/yLRa
- SyFJLYNe32O3839JWez1ljV1ebiTkSFQmrg8nxZNg6y0ihsEko3lkM3aVlRd4lxCTBVXooLBFVe9
- 5I=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vG56YfbUZuM=:bj8W/P3We5md9A0oKJW09R
- jTPqjDabgXGHdAlPgSsnVXy4PgxdlAVJmG/ZP3016sB6XZjDdCszTimYBl5YqkhAWXNRcTDpd
- lA8hcOam3O0Ih9dWXnyDKaIINl7ods7yasDBBb4JFZrNOCaaVqzZEGfZinUCf+o584pIT+XgC
- fD/DFXYJMGupqzDIVd8CI+V8NIzCLiTRIU3TpeW3w2YmqaUvcIPQ5iBE+VD6I0ps7WW1Moq4r
- PI16/CwJyV+76npULFPkjfEQcn+8hxxCGckkurfm9iXjG5d/+8TMVEdhW2WbTz9hKcuAGSl6P
- PtJwD0WXW3mV1bRMtUmf5EQ90gFy0+nl4Ow+lAzs3k1hz1vlnFxEy4nfY+tegaGFrvAZjBS2Q
- rxopa7/pgK3RQHYUPdyCgXbhvPgJO8bINPi3JvG32DdXODm7RfoZ7ypHFtDaKo6jIXAInrmPd
- lAXDMvpLRGlpypXA2NJTMR0VF7o9xiPnX4vqqjYZz3XJdqfTQTKhDUgQmkjfWt6woLAPBvr5i
- RSjaID0mxKsLeazhcfh+TM1TPzAHrofkFxIncbUf4J9w3Z/TP9Qjv492ReDX98xjUIEeAnkTA
- QxM02RAedKz17tt8OS7073efxerGtN4xBjbzLZcE0eqSp3vUsYHrGjmLeZV6ZK9SklHRwd7LX
- Zix4uciA5OomNivSTdfgjM4Ays7cPLfRzTrXmA0fKnk/EwXvHB4h9Pmu0RU3a0/R/l4q6dhOT
- cLbNLIz7hEAqWI5FiTsk33pvRJdRYta1b5NtTEadRFLiWer1lHCLCE7FbmtfhGTZAJsO0Srmf
- 3nPBUa0bjGSWU4ErKJulBjud6FxLiG3O6wkdidAOWcux6Rf4UfBzn3yBv0ijXQvo3Cq2w0qWt
- e1TyprCbQnXyLYuBBJpds88WLa/VGIYrw8WukP4pBPQmQlbQJEmwzlXKbh02Xf3Bm2SqhNS8/
- UadVRkQ2Izg==
-Content-Transfer-Encoding: quoted-printable
+References: <20210430124224.6383-1-wsj20369@163.com>
+In-Reply-To: <20210430124224.6383-1-wsj20369@163.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 30 Apr 2021 15:31:49 +0200
+Message-ID: <CAJZ5v0jk+wYtJwqTh-RiwOxE+57BM+T-f=2jAVTjz_ZGHx0ehw@mail.gmail.com>
+Subject: Re: [PATCH] Revert "ACPI: power: Turn off unused power resources unconditionally"
+To:     Shujun Wang <wsj20369@163.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Box <david.e.box@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Grek
-
-the problem is that the name mediatek.ko does not point to musb-subsystem.=
- I had discussed with Min Gao (author of this driver) some time ago about =
-this as the name may conflict with other modules (don't remember which was=
- that).
-We have searched issue using the driver on my board (not yet resolved).
-
-if the module is loaded it shows (based on name) only "mediatek" and user =
-does not know that is the mediatek musb driver, not very good in my eyes a=
-s mediatek is a vendor designing many different hardware and so drivers. I=
-mho the module-name should at least give a clue to the subsystem to avoid =
-confusion/conflicts
-
-Now the discussion comes up again here for a new driver:
-https://patchwork.kernel.org/project/linux-mediatek/cover/20210429062130.2=
-9403-1-dqfext@gmail.com/#24148777
-
-so i decided to rebase and post my patch created in past to clean this up.
-
-and yes this can result in user-space issues depending on the name...becau=
-se of this i have not added stable-tag ;)
-
-regards Frank
-
-
-> Gesendet: Freitag, 30. April 2021 um 14:54 Uhr
-> Von: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-
-> On Fri, Apr 30, 2021 at 02:43:17PM +0200, Frank Wunderlich wrote:
-> > From: Frank Wunderlich <frank-w@public-files.de>
-> >
-> > currently unspecific mediatek.ko is built,
-> > change this by adding subsystem
+On Fri, Apr 30, 2021 at 2:43 PM Shujun Wang <wsj20369@163.com> wrote:
 >
-> I am sorry, I do not understand this changelog text.  What are you doing
-> here and why?
->
-> > Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-> > ---
-> >  drivers/usb/musb/Makefile                   | 2 +-
-> >  drivers/usb/musb/{mediatek.c =3D> musb_mtk.c} | 0
->
-> Why rename this file, will that not break existing setups that expect
-> the module to be named this?
->
-> thanks,
->
-> greg k-h
+> This reverts commit 7e4fdeafa61f2b653fcf9678f09935e55756aed2.
 
+OK, I'll revert that commit, thanks!
+
+> It may cause some NVMe device probes to fail, and the system may get
+> stuck when using an NVMe device as the root filesystem.
+>
+> In the function nvme_pci_enable(struct nvme_dev *dev), as shown below,
+> readl(NVME_REG_CSTS) always returns -1 with the commit, which results in
+> the probe failed.
+>
+>   if (readl(dev->bar + NVME_REG_CSTS) == -1) {
+>         result = -ENODEV;
+>         goto disable;
+>   }
+>
+> dmesg:
+>   [    1.106280] nvme 0000:04:00.0: platform quirk: setting simple suspend
+>   [    1.109111] nvme nvme0: pci function 0000:04:00.0
+>   [    1.113066] nvme 0000:04:00.0: enabling device (0000 -> 0002)
+>   [    1.121040] nvme nvme0: Removing after probe failure status: -19
+>
+> lspci:
+>   Non-Volatile memory controller: KIOXIA Corporation Device 0001
+>
+> device uevent:
+>   DRIVER=nvme
+>   PCI_CLASS=10802
+>   PCI_ID=1E0F:0001
+>   PCI_SUBSYS_ID=1E0F:0001
+>   PCI_SLOT_NAME=0000:04:00.0
+>   MODALIAS=pci:v00001E0Fd00000001sv00001E0Fsd00000001bc01sc08i02
+>
+> This patch was tested in Lenovo Thinkpad X1.
+>
+> Signed-off-by: Shujun Wang <wsj20369@163.com>
+> ---
+>  drivers/acpi/power.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/acpi/power.c b/drivers/acpi/power.c
+> index 56102eaaa2da..8bf10abeb2e0 100644
+> --- a/drivers/acpi/power.c
+> +++ b/drivers/acpi/power.c
+> @@ -1004,9 +1004,18 @@ void acpi_turn_off_unused_power_resources(void)
+>         mutex_lock(&power_resource_list_lock);
+>
+>         list_for_each_entry_reverse(resource, &acpi_power_resource_list, list_node) {
+> +               int result, state;
+> +
+>                 mutex_lock(&resource->resource_lock);
+>
+> -               if (!resource->ref_count) {
+> +               result = acpi_power_get_state(resource->device.handle, &state);
+> +               if (result) {
+> +                       mutex_unlock(&resource->resource_lock);
+> +                       continue;
+> +               }
+> +
+> +               if (state == ACPI_POWER_RESOURCE_STATE_ON
+> +                   && !resource->ref_count) {
+>                         dev_info(&resource->device.dev, "Turning OFF\n");
+>                         __acpi_power_off(resource);
+>                 }
+> --
+> 2.25.1
+>
