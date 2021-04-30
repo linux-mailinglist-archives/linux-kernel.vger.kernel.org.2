@@ -2,86 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD9336FEE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 18:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B24F436FF03
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 18:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbhD3Qtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 12:49:53 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2964 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbhD3Qtw (ORCPT
+        id S231218AbhD3Q5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 12:57:48 -0400
+Received: from ms11p00im-qufo17291901.me.com ([17.58.38.48]:47118 "EHLO
+        ms11p00im-qufo17291901.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230492AbhD3Q5n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 12:49:52 -0400
-Received: from fraeml738-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FWyml2sMGz686Ph;
-        Sat,  1 May 2021 00:41:11 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml738-chm.china.huawei.com (10.206.15.219) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 30 Apr 2021 18:49:02 +0200
-Received: from localhost (10.52.125.96) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 30 Apr
- 2021 17:49:01 +0100
-Date:   Fri, 30 Apr 2021 17:47:27 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
-        Hugues Fruchet <hugues.fruchet@st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>
-Subject: Re: [PATCH v4 18/79] media: sti/delta: fix pm_runtime_get_sync()
- usage count
-Message-ID: <20210430174658.00002e26@Huawei.com>
-In-Reply-To: <e4d120126b7c3be15d33ed8bcf07c285e14c25bf.1619621413.git.mchehab+huawei@kernel.org>
-References: <cover.1619621413.git.mchehab+huawei@kernel.org>
-        <e4d120126b7c3be15d33ed8bcf07c285e14c25bf.1619621413.git.mchehab+huawei@kernel.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Fri, 30 Apr 2021 12:57:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1619801323; bh=gKPg4laKAZy+RHF+D3ii19N0LJXtiXVtOwEzgUk8ws8=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+        b=0fMvPTXZl/U10xLNN7Azbfa6h2gCnmFs8IsrXw2Kzg3a8g8MkG7EfFbtpbvfASNGp
+         Q3D2O3XLBT3f42D6QQI8/JinbPlES5tAtXr2OL+hT5fh+fMPcg4oO2kfqOwMbpHUjI
+         gtnfS00rfXjqUWOLl8/I1BdFuwnloSemHH8qIoAH4vFWUzlJAjRNTA8wkdNSrageYh
+         DvOIRJyaYfgdiuZtp6G4I+NlHvw0h4tZ31ZhOtUY2L/YwrJKTGvP/F3GDJFlC5OGKJ
+         F/x5z0ezR4GRhovArt2CqpmtlTm5iVy8k2sCcD5P1OurUlUT5p92UBZHRAoUAjfW38
+         l4ysE6hag5A8A==
+Received: from gnbcxl0029.gnb.st.com (101.220.150.77.rev.sfr.net [77.150.220.101])
+        by ms11p00im-qufo17291901.me.com (Postfix) with ESMTPSA id 3E7B3CA0477;
+        Fri, 30 Apr 2021 16:48:40 +0000 (UTC)
+Date:   Fri, 30 Apr 2021 18:48:31 +0200
+From:   Alain Volmat <avolmat@me.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Patrice Chotard <patrice.chotard@foss.st.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 0/7] clk: st: embed clock outputs within drivers
+Message-ID: <20210430164830.GA6248@gnbcxl0029.gnb.st.com>
+Mail-Followup-To: Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210331201632.24530-1-avolmat@me.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.125.96]
-X-ClientProxiedBy: lhreml721-chm.china.huawei.com (10.201.108.72) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210331201632.24530-1-avolmat@me.com>
+X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
+ =?UTF-8?Q?2903e8d5c8f:6.0.391,18.0.761,17.0.607.475.0000000_definitions?=
+ =?UTF-8?Q?=3D2021-04-30=5F08:2021-04-30=5F02,2021-04-30=5F08,2020-04-07?=
+ =?UTF-8?Q?=5F01_signatures=3D0?=
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=862 mlxscore=0 phishscore=0
+ bulkscore=0 suspectscore=0 spamscore=0 adultscore=0 malwarescore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2104300110
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Apr 2021 16:51:39 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+Hi,
 
-> The pm_runtime_get_sync() internally increments the
-> dev->power.usage_count without decrementing it, even on errors.
-> Replace it by the new pm_runtime_resume_and_get(), introduced by:
-> commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-> in order to properly decrement the usage counter and avoid memory
-> leaks.
+Gentle reminder about this serie concerning STi platform clock drivers.
+Could you have a look at them ?
+
+Thanks.
+Alain
+
+On Wed, Mar 31, 2021 at 10:16:25PM +0200, Alain Volmat wrote:
+> Most of ST clock drivers used by STi platform are updated in
+> order to introduce clock outputs informations within each drivers
+> and thus allow to avoid having to rely on clock-output-names properties
+> within DT clock nodes.
+> For that purpose, drivers are updated to allow handling both modes
+> (with or without clock-output-names).
+> Once all DT will have been updated, the legacy mode could be removed
+> from the drivers.
+> This will also allow, once all STi DT will be corrected, to remove the
+> of_clk_detect_critical API from clk core code since STi clock drivers
+> are the only drivers using this API.
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-This looks wrong.    The caller of this calls delta_put_autosuspend()
-on error which calls pm_runtime_put_autosuspend() on something where
-we never incremented the count after your change.
-
+> Alain Volmat (7):
+>   clk: st: clkgen-pll: remove unused variable of struct clkgen_pll
+>   clk: st: flexgen: embed soc clock outputs within compatible data
+>   dt-bindings: clock: st: flexgen: add new introduced compatible
+>   clk: st: clkgen-pll: embed soc clock outputs within compatible data
+>   dt-bindings: clock: st: clkgen-pll: add new introduced compatible
+>   clk: st: clkgen-fsyn: embed soc clock outputs within compatible data
+>   dt-bindings: clock: st: clkgen-fsyn: add new introduced compatible
+> 
+>  .../bindings/clock/st/st,clkgen-pll.txt       |   3 +
+>  .../bindings/clock/st/st,flexgen.txt          |  10 +
+>  .../bindings/clock/st/st,quadfs.txt           |   3 +
+>  drivers/clk/st/clk-flexgen.c                  | 367 +++++++++++++++++-
+>  drivers/clk/st/clkgen-fsyn.c                  | 113 +++++-
+>  drivers/clk/st/clkgen-pll.c                   | 121 +++++-
+>  6 files changed, 576 insertions(+), 41 deletions(-)
+> 
 > ---
->  drivers/media/platform/sti/delta/delta-v4l2.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> v4: - add an additional CLK_IS_CRITICAL within flexgen driver
+> v3: - removal some useless CLK_IS_CRITICAL and add some comments
+>     - only keep clk drivers/binding patches within the serie
 > 
-> diff --git a/drivers/media/platform/sti/delta/delta-v4l2.c b/drivers/media/platform/sti/delta/delta-v4l2.c
-> index c691b3d81549..9928b7c46a41 100644
-> --- a/drivers/media/platform/sti/delta/delta-v4l2.c
-> +++ b/drivers/media/platform/sti/delta/delta-v4l2.c
-> @@ -1277,9 +1277,9 @@ int delta_get_sync(struct delta_ctx *ctx)
->  	int ret = 0;
->  
->  	/* enable the hardware */
-> -	ret = pm_runtime_get_sync(delta->dev);
-> +	ret = pm_runtime_resume_and_get(delta->dev);
->  	if (ret < 0) {
-> -		dev_err(delta->dev, "%s pm_runtime_get_sync failed (%d)\n",
-> +		dev_err(delta->dev, "%s pm_runtime_resume_and_get failed (%d)\n",
->  			__func__, ret);
->  		return ret;
->  	}
-
+> -- 
+> 2.17.1
+> 
