@@ -2,90 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7878F36F6CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 031D136F6D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230407AbhD3IDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 04:03:03 -0400
-Received: from meesny.iki.fi ([195.140.195.201]:56436 "EHLO meesny.iki.fi"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229538AbhD3IDA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 04:03:00 -0400
-X-Greylist: delayed 391 seconds by postgrey-1.27 at vger.kernel.org; Fri, 30 Apr 2021 04:03:00 EDT
-Received: from hillosipuli.retiisi.eu (unknown [IPv6:2001:2003:f75d:b010:afd2:773e:79db:477b])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sailus)
-        by meesny.iki.fi (Postfix) with ESMTPSA id 4870B20B84;
-        Fri, 30 Apr 2021 10:55:36 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
-        t=1619769336;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=At6PZRFKsbGNruG3GNKdBBrXc6Ob2m8mGDbBrb0V0Eg=;
-        b=YUqsBSdhv3hkiXIa/ey5fy7GyrH7I2IRqkijej/0lpv/oFzI//aSmtxzjdEuABfj07abjL
-        AGbIGbp6k9DafgibIskqftuDlxTC+pVuzeGi7Z6LGrUZpUo4S8xmzNQuKom3cQ1vrwU4kb
-        3niv3N6D7rJsALxOgvMfCsd+3rlHu6g=
-Received: from valkosipuli.localdomain (valkosipuli.localdomain [IPv6:fd35:1bc8:1a6:d3d5::80:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 450A7634C89;
-        Fri, 30 Apr 2021 10:53:32 +0300 (EEST)
-Received: from localhost ([127.0.0.1] helo=valkosipuli.retiisi.eu)
-        by valkosipuli.localdomain with esmtp (Exim 4.92)
-        (envelope-from <sakari.ailus@iki.fi>)
-        id 1lcNzs-0004z1-De; Fri, 30 Apr 2021 10:55:36 +0300
-Date:   Fri, 30 Apr 2021 10:55:36 +0300
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     dev.dragon@bk.ru
-Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Staging: media: atomisp: pci: fixed a curly bracket
- coding style issue.
-Message-ID: <20210430075536.GA3@valkosipuli.retiisi.eu>
-References: <20210410191655.32719-1-dev.dragon@bk.ru>
- <20210430075423.GZ3@valkosipuli.retiisi.eu>
+        id S230494AbhD3IDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 04:03:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229566AbhD3IDs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 04:03:48 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B92C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:02:59 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id gx5so11818725ejb.11
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:02:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
+         :date:mime-version;
+        bh=gEXOq4bTfcSUdUpLFcNhC6eN04AyrduIgQ9uuxLC6OQ=;
+        b=CyLMRHNZPKD5a43+OjCNpQu0X+iMse+Mr2s56g3TR5iXy+jXFzudjJpE2fTY4RhNBj
+         4V8hEHqAG7ZxzBoVsDu4/+iassEyaCRU+seGci3cHCaPgMa7O1v9riFc45YLhEzJ2VLs
+         qWKOrXNo3xeXuo8CDVK5AQWFvHgggovEvtvxZrLztYPbJG8tkcZTYNYlpgwHyjSkSPBZ
+         lbu9SRDRXQqGvEKSHcr3qbsVzwQdqGr6CV4kfMIMcOR7un+52eImiIMbSDR4dngbdH+6
+         +ih3cdClm3/L/I/Nt0KRkGBhKQovaluwXwzYoE6z58qK5mgRHdROcwNWLG+HAEzNSMR0
+         c7wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=gEXOq4bTfcSUdUpLFcNhC6eN04AyrduIgQ9uuxLC6OQ=;
+        b=gBZSxi4+1YmBxRfLpI0+P5VLDix6+Nwh7ZdpRevdrjdKTpLbQKc7UHbb9p9v5ZbuYo
+         21JlbzEd0tTo9ikp0NDs4q11Tx1GYp/LXIX3EEIWC2YmJisCzxe93OQlxELiDNVrfrS/
+         RbpQ+TNgVaegFG/imEYPwn9A6h8N98jft0LchTa8xXFAR6qNLdboshDZN5NGdsytmXUS
+         u0Yn7400iHgMjxIQ8riOjOD9zcQtX/IZYF+92zekx7QQHYTap55Qegy1nn4TP0dTn1vt
+         t/fWpCM2GA2omvmborGMa1doWxGdu+05Boz9hw2tayCM5VoHFAM34ZvhOVsFKbK8zIyz
+         W22w==
+X-Gm-Message-State: AOAM533Ucgn9X58hg/96DhOrBNMXOkDYGLdhLrNUDvB1wPOYun5nU/hz
+        zjkRyMFHm8pfQRFUToBIvoMG5A==
+X-Google-Smtp-Source: ABdhPJwWRSCUbw6PZjmgVFMqTWKuf9gCMZIlgo3uw/ckGNvacB1VpAMS8tzpBCnM3QlRu6BINi1NpQ==
+X-Received: by 2002:a17:906:a20b:: with SMTP id r11mr2884072ejy.323.1619769777683;
+        Fri, 30 Apr 2021 01:02:57 -0700 (PDT)
+Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.gmail.com with ESMTPSA id x20sm666852edd.58.2021.04.30.01.02.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 01:02:57 -0700 (PDT)
+References: <20210429090516.61085-1-jbrunet@baylibre.com>
+ <CAFBinCCcKHqd7Mh3bV9NyyWzi=96pCWxzSZBOjg5Puy9wOuihQ@mail.gmail.com>
+User-agent: mu4e 1.4.15; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: meson: axg-audio: do not print error on defer
+In-reply-to: <CAFBinCCcKHqd7Mh3bV9NyyWzi=96pCWxzSZBOjg5Puy9wOuihQ@mail.gmail.com>
+Message-ID: <1jlf909p3j.fsf@starbuckisacylon.baylibre.com>
+Date:   Fri, 30 Apr 2021 10:02:56 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210430075423.GZ3@valkosipuli.retiisi.eu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-ARC-Seal: i=1; s=meesny; d=iki.fi; t=1619769336; a=rsa-sha256; cv=none;
-        b=rlU3Xk/unWYF1DYfyc3psg8hrK5pATUEmMYY+CCk1jduxYZzftRKT0LlYFUEbt97MadRB/
-        AVQAiTQDaD+7JEz5imgcx2u5OQmu1QHLZFKkkGaBPn+5zb1vw3g7MfJFYLGzo47RCrXTon
-        QTdLR4SmILsGsOBE3r9BFS9ixLlTd6Y=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-        s=meesny; t=1619769336;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=At6PZRFKsbGNruG3GNKdBBrXc6Ob2m8mGDbBrb0V0Eg=;
-        b=wB/8SPRq3GKoj+AJheJvD+ia53tUVs5lhzM+8ObfqB8V4gWZTgPInrFC+7QktZ4yQkMKzf
-        l/sLCf0kjFiIDGnK2LGKKBNCpxl8kRe6heqmGf77J4GICzKAahKe+remGUMD/Za6Zl0kas
-        YXCbI3moEDPCoRz4rRqe/voOXb7WOac=
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 10:54:23AM +0300, Sakari Ailus wrote:
-> Hi Dmitrii,
-> 
-> On Sat, Apr 10, 2021 at 10:16:56PM +0300, dev.dragon@bk.ru wrote:
-> > From: Dmitrii Wolf <dev.dragon@bk.ru>
-> > 
-> > Fixed a coding style issue.
-> 
-> You'll need a Signed-off-by: line here. Please see
-> Documentation/process/submitting-patches.rst .
 
-Oh well. Please ignore. I see this was fixed in another patch (please use
-v2 on the next time for the second version).
+On Thu 29 Apr 2021 at 22:49, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
 
--- 
-Sakari Ailus
+> Hi Jerome,
+>
+> On Thu, Apr 29, 2021 at 11:06 AM Jerome Brunet <jbrunet@baylibre.com> wrote:
+> [...]
+>> diff --git a/drivers/clk/meson/axg-audio.c b/drivers/clk/meson/axg-audio.c
+>> index 7c8d02164443..5e501eff0840 100644
+>> --- a/drivers/clk/meson/axg-audio.c
+>> +++ b/drivers/clk/meson/axg-audio.c
+>> @@ -1811,7 +1811,8 @@ static int axg_audio_clkc_probe(struct platform_device *pdev)
+>>
+>>         ret = device_reset(dev);
+>>         if (ret) {
+>> -               dev_err(dev, "failed to reset device\n");
+>> +               if (ret != -EPROBE_DEFER)
+>> +                       dev_err(dev, "failed to reset device\n");
+> many drivers are switching to dev_err_probe nowadays
+> According to it's documentation:
+>   In case of -EPROBE_DEFER it sets also defer probe reason, which can be
+>   checked later by reading devices_deferred debugfs attribute.
+>
+> so I think it makes sense to use dev_err_probe here as well
+
+Old habits ;) thanks for pointing this out. Will do
+
+>
+>
+> Best regards,
+> Martin
+
