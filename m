@@ -2,86 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC2536FD94
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8DAA36FD9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbhD3PUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 11:20:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32968 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230187AbhD3PUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 11:20:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A772161407;
-        Fri, 30 Apr 2021 15:19:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619795982;
-        bh=ENA3ABoJbCZuijsVd4K0y84DVv2hOGedvQdYNfFhILE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j5p6Zd7cX8GW9SXLUoZBJ5o8HJfiKh14Hoi8wieFH33H1S0f27HIYZ5bfTh0TSkwC
-         1wMJCtDUgI1dvRQBsUquWVzL8WdnotvMAFpFfkH6vx0xP6K6wJvkEipQd73LC9K+0n
-         DkrKZATabQRihQlPmkdFKAReuNREFT954iq2X3TSqhQgL8aVigJVwXn4Uooap/fjvU
-         7pCVTFtLoCfph7WNlRDRmad99V9Fu9uSiwJypKshZ8woaZYKKWwNJj5ZGvrvFfcjbe
-         SVJXzxjjqSVqrF8ROINLpEzzCMG/AADm+Apka85SnamquX0qjlt/nKtZ8DcpT1uZtg
-         uCOs5ajtCkBJw==
-Date:   Fri, 30 Apr 2021 16:19:09 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH 1/2] regmap: add regmap_might_sleep()
-Message-ID: <20210430151908.GC5981@sirena.org.uk>
-References: <20210430130645.31562-1-michael@walle.cc>
+        id S230217AbhD3PWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 11:22:02 -0400
+Received: from mail-oo1-f47.google.com ([209.85.161.47]:44599 "EHLO
+        mail-oo1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229810AbhD3PV7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 11:21:59 -0400
+Received: by mail-oo1-f47.google.com with SMTP id i3-20020a4ad3830000b02901ef20f8cae8so8272436oos.11;
+        Fri, 30 Apr 2021 08:21:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=K/nJwkgRAXqwdVzM6o6lLqjZ+U6/JacCPuepUB7jiw4=;
+        b=VzxDFWWWJ90k9+MnlyMURS5RkFpPAGHphqUgp3Mn8VCk1Q2VV5rgYUxbmXbhFQxjC9
+         q6GzrHlZjXggiPLWPPJ2FL24zH5PVaVD2keiT+xlDdYP/QkRrW1E/zgumEN2DqasiTrk
+         8lcBcp/fXEH8GC5ttjWiXiGTN0vuH8Fw5o1h83CtaAcyoeM2KQnDMqLWAbUJAoj5iSXs
+         lRJxlSFQLmwQa4X781jej4FXX1qOm++qa4UCmRTXqbhK/5uzQTpxybyIHLG2dNFYbhhn
+         2Ua165dj5funKpHuIXFZDH+FCVDScxABuL/aVTZPGaOhEhUS+rZC5uz2NRhEvGUZqIQN
+         raTg==
+X-Gm-Message-State: AOAM5332dEqdVgq7jnKDQSTQZpgzVBA8UEMQzwMOMFUgURGtqDkDn0pH
+        9Ou1vr7W7SjmB/n5wv+m9w==
+X-Google-Smtp-Source: ABdhPJw2d5bcg23XAyoaeqsvA2LCgrU/4JHIpHaFIgr85/rVl1gXgp/F2SzdE5eO6kAyQXuGCodaPQ==
+X-Received: by 2002:a4a:4c42:: with SMTP id a63mr1898053oob.33.1619796069909;
+        Fri, 30 Apr 2021 08:21:09 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id e12sm747891otq.46.2021.04.30.08.21.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 08:21:08 -0700 (PDT)
+Received: (nullmailer pid 3347909 invoked by uid 1000);
+        Fri, 30 Apr 2021 15:21:08 -0000
+Date:   Fri, 30 Apr 2021 10:21:08 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/3] dt-bindings: serial: pl011: Change to reference
+ the kernel-defined serial.yaml
+Message-ID: <20210430152108.GA3344055@robh.at.kernel.org>
+References: <20210422085837.513-1-thunder.leizhen@huawei.com>
+ <20210422085837.513-3-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="HG+GLK89HZ1zG0kk"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210430130645.31562-1-michael@walle.cc>
-X-Cookie: QOTD:
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210422085837.513-3-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 22, 2021 at 04:58:36PM +0800, Zhen Lei wrote:
+> The /schemas/serial.yaml from dt-schema only has the property $nodename,
+> whereas the kernel-defined /schemas/serial/serial.yaml contains more
+> useful properties, support for more complex application scenarios.
+> 
+> For example:
+> 1) The property "current-speed" in fsl-lx2160a.dtsi
+> 2) The subnode "bluetooth" in hi3660-hikey960.dts
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  Documentation/devicetree/bindings/serial/pl011.yaml | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
---HG+GLK89HZ1zG0kk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+What about all these:
 
-On Fri, Apr 30, 2021 at 03:06:44PM +0200, Michael Walle wrote:
-
-> Sometimes a driver needs to know if the underlying regmap could sleep.
-> For example, consider the gpio-regmap driver which needs to fill the
-> gpiochip->can_sleep property.
-
-Whatever is creating the regmap really ought to know what device it's
-dealing with...
-
-> It might be possible to pass this information via the
-> gpio_regmap_config, but this has the following drawbacks. First, that
-> property is redundant and both places might contratict each other. And
-> secondly, the driver might not even know the type of the regmap because
-> it just gets an opaque pointer by querying the device tree.
-
-If it's a generic GPIO driver from a code correctness point of view it's
-always got a risk of sleeping...
-
---HG+GLK89HZ1zG0kk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCMH+wACgkQJNaLcl1U
-h9AwsQf+OapHHPJboJLbJVrs6ODnuJ1aJa4YJWqxhqh+/mJXRRYsV4O9PDFacYDT
-aFqHwzvB364wtityGw0MeeOOVEfvjkrMeVaPfUf6vegIcpMzKAqv5KOxo7fXLHGV
-Zz6QoVuhqq4fKRV+LOEQ6whDaKqm+YhleQN5e5rQgPiI6ipwVk7DtBqLnibZqj5I
-zWWp66hKrqGeiimSdc3tUyNBv5gQjdXzRg4r9WKBHByPyzQH5PN/j0xiRK2x+nzW
-Gkj89BSRB/huHGHErNvdYTyjcFbsrWbWFwDeEcbvtfUhVEyGrojWR5tlZhRnvMtw
-R1U3GEY84VSjdbkSjenuatTpfBk+1g==
-=DSyN
------END PGP SIGNATURE-----
-
---HG+GLK89HZ1zG0kk--
+$ git grep 'schemas/serial.yaml'
+Documentation/devicetree/bindings/serial/8250.yaml:  - $ref: /schemas/serial.yaml#
+Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml:  - $ref: /schemas/serial.yaml#
+Documentation/devicetree/bindings/serial/ingenic,uart.yaml:  - $ref: /schemas/serial.yaml#
+Documentation/devicetree/bindings/serial/pl011.yaml:  - $ref: /schemas/serial.yaml#
+Documentation/devicetree/bindings/serial/qca,ar9330-uart.yaml:  - $ref: /schemas/serial.yaml#
+Documentation/devicetree/bindings/serial/samsung_uart.yaml:  - $ref: /schemas/serial.yaml#
+Documentation/devicetree/bindings/serial/sifive-serial.yaml:  - $ref: /schemas/serial.yaml#
+Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml:  - $ref: /schemas/serial.yaml#
+Documentation/devicetree/bindings/soc/qcom/qcom,geni-se.yaml:    $ref: /schemas/serial.yaml#
