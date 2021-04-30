@@ -2,101 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 674EB36F6DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E991336F6E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230316AbhD3IHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 04:07:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54448 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229532AbhD3IHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 04:07:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B29D861186;
-        Fri, 30 Apr 2021 08:06:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619770012;
-        bh=WwcaFyczo1H0haJlGIG06rvrYQmQEvklII1MuwRovvY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WyLOyP92lS2p2AT5P++VJHVeW1p29hiOO0GBK1Q9BQskN8mY6dfKqjzi7Jq5qTFiJ
-         I2lQufVkFEMoNBeF65vgo+IWKQQYzRsU62+qre0XcBEYHIaOXewKP7NHsrTET7LOSL
-         NugoPn86rn6DKxrdZcC9My2tRDcizjucFqF0/AwQ=
-Date:   Fri, 30 Apr 2021 10:06:49 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, Du Cheng <ducheng2@gmail.com>
-Cc:     Kangjie Lu <kjlu@umn.edu>, "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 169/190] Revert "atl1e: checking the status of
- atl1e_write_phy_reg"
-Message-ID: <YIu6meOO5SSuCW/D@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-170-gregkh@linuxfoundation.org>
- <YIhURb44nXaYDuBG@kroah.com>
+        id S230512AbhD3IJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 04:09:29 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4682 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229532AbhD3IJ0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 04:09:26 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13U84UR4182102;
+        Fri, 30 Apr 2021 04:08:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=vvo1pSCVS7zMsZ8Ln/uUqypFHGnWS/LCsiBgVa0A7W4=;
+ b=GYTt21Yg/vX9pUPuWd/mA8lOmsVDMZOk+OOoEtrleAy//HrEig1fbfNpLt4NucwJB1Px
+ hFcciudpMpgWh8EGOD852qVExvYkbd8e1UFYVTk+gr133f4KA7waoIr3KDBAu0Sx4Js2
+ sTw5Hq3PXSwusAuDCbqfIonHz5+plHh+otuRj0w11gttz9ZmVLswjvM8WSstM5UflzmP
+ yz6rF7p+MzEZQ8ybQDlBFuxVc8YKs3JQ9ZtzxWk9HsxhDiEY+GJM/OxTu5Pl79Dtnb+f
+ znY5EIaM8t7Q4vEIbS7P+oZGA1veopBILPJ2OfyggZiNYEAgMswA1WUV2bBvC+m4mWib xA== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 388e1v03p0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Apr 2021 04:08:17 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13U87qGm025468;
+        Fri, 30 Apr 2021 08:08:15 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 384akhaxsv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Apr 2021 08:08:15 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13U87lNj17891618
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Apr 2021 08:07:47 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 277B7A4055;
+        Fri, 30 Apr 2021 08:08:12 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CF0B7A4051;
+        Fri, 30 Apr 2021 08:08:11 +0000 (GMT)
+Received: from pomme.local (unknown [9.145.168.97])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 30 Apr 2021 08:08:11 +0000 (GMT)
+Subject: Re: [PATCH] ppc64/numa: consider the max numa node for migratable
+ LPAR
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org
+Cc:     nathanl@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20210429181901.17674-1-ldufour@linux.ibm.com>
+ <ae59de4d-17a3-6c39-ddb5-a151909992c3@linux.ibm.com>
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+Message-ID: <a8199d1d-33f5-62cb-646f-fa3630bc1681@linux.ibm.com>
+Date:   Fri, 30 Apr 2021 10:08:11 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YIhURb44nXaYDuBG@kroah.com>
+In-Reply-To: <ae59de4d-17a3-6c39-ddb5-a151909992c3@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: -WpW5l8oCQh3SFVLWwkjN04P_O54GsAz
+X-Proofpoint-ORIG-GUID: -WpW5l8oCQh3SFVLWwkjN04P_O54GsAz
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-30_03:2021-04-28,2021-04-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 impostorscore=0 lowpriorityscore=0 spamscore=0
+ mlxscore=0 mlxlogscore=999 adultscore=0 suspectscore=0 phishscore=0
+ bulkscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104300056
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 08:13:25PM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Apr 21, 2021 at 03:00:44PM +0200, Greg Kroah-Hartman wrote:
-> > This reverts commit ff07d48d7bc0974d4f96a85a4df14564fb09f1ef.
-> > 
-> > Commits from @umn.edu addresses have been found to be submitted in "bad
-> > faith" to try to test the kernel community's ability to review "known
-> > malicious" changes.  The result of these submissions can be found in a
-> > paper published at the 42nd IEEE Symposium on Security and Privacy
-> > entitled, "Open Source Insecurity: Stealthily Introducing
-> > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> > of Minnesota) and Kangjie Lu (University of Minnesota).
-> > 
-> > Because of this, all submissions from this group must be reverted from
-> > the kernel tree and will need to be re-reviewed again to determine if
-> > they actually are a valid fix.  Until that work is complete, remove this
-> > change to ensure that no problems are being introduced into the
-> > codebase.
-> > 
-> > Cc: Kangjie Lu <kjlu@umn.edu>
-> > Cc: David S. Miller <davem@davemloft.net>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > ---
-> >  drivers/net/ethernet/atheros/atl1e/atl1e_main.c | 4 +---
-> >  1 file changed, 1 insertion(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/atheros/atl1e/atl1e_main.c b/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
-> > index ff9f96de74b8..85f9cb769e30 100644
-> > --- a/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
-> > +++ b/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
-> > @@ -455,9 +455,7 @@ static void atl1e_mdio_write(struct net_device *netdev, int phy_id,
-> >  {
-> >  	struct atl1e_adapter *adapter = netdev_priv(netdev);
-> >  
-> > -	if (atl1e_write_phy_reg(&adapter->hw,
-> > -				reg_num & MDIO_REG_ADDR_MASK, val))
-> > -		netdev_err(netdev, "write phy register failed\n");
-> > +	atl1e_write_phy_reg(&adapter->hw, reg_num & MDIO_REG_ADDR_MASK, val);
-> >  }
-> >  
-> >  static int atl1e_mii_ioctl(struct net_device *netdev,
-> > -- 
-> > 2.31.1
-> > 
+Le 29/04/2021 à 21:29, Tyrel Datwyler a écrit :
+> On 4/29/21 11:19 AM, Laurent Dufour wrote:
+>> When a LPAR is migratable, we should consider the maximum possible NUMA
+>> node instead the number of NUMA node from the actual system.
+>>
+>> The DT property 'ibm,current-associativity-domains' is defining the maximum
+>> number of nodes the LPAR can see when running on that box. But if the LPAR
+>> is being migrated on another box, it may seen up to the nodes defined by
+>> 'ibm,max-associativity-domains'. So if a LPAR is migratable, that value
+>> should be used.
+>>
+>> Unfortunately, there is no easy way to know if a LPAR is migratable or
+>> not. The hypervisor is exporting the property 'ibm,migratable-partition' in
+>> the case it set to migrate partition, but that would not mean that the
+>> current partition is migratable.
 > 
-> The original change here is a mess, what is a user supposed to do if
-> this call fails?  I will revert it and properly pass the error value up
-> to the callers, as that is the correct thing to do here, not paper over
-> the issue with a commit message that claims this change "fixes"
-> anything.
+> Wording is a little hard to follow for me here. From PAPR the
+> 'ibm,migratable-partition' property presence indicates that the platform
+> supports the potential migration of the partition. I guess maybe the point is
+> that all migratable partitions define 'ibm,migratable-partition', but all
+> partitions that define 'ibm,migratable-partition' are not necessarily migratable.
 
-In looking at this further, Du has pointed out to me that the
-atl1e_mdio_write function can not easily be changed to return an error
-value, because that would require all callbacks for mdio_write in struct
-mii_if_info would need to be changed and handled properly.
+That's what I meant.
 
-So the original commit was as correct as is possible at the moment,
-making a much larger change like this really isn't needed, so I'll drop
-the revert.
+Laurent
 
-thanks to Du Cheng for the additional review, it is much appreciated.
+> -Tyrel
+> 
+>>
+>> Without that patch, when a LPAR is started on a 2 nodes box and then
+>> migrated to a 3 nodes box, the hypervisor may spread the LPAR's CPUs on the
+>> 3rd node. In that case if a CPU from that 3rd node is added to the LPAR, it
+>> will be wrongly assigned to the node because the kernel has been set to use
+>> up to 2 nodes (the configuration of the departure node). With that patch
+>> applies, the CPU is correctly added to the 3rd node.
+>>
+>> Cc: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+>> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+>> ---
+>>   arch/powerpc/mm/numa.c | 14 +++++++++++---
+>>   1 file changed, 11 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/arch/powerpc/mm/numa.c b/arch/powerpc/mm/numa.c
+>> index f2bf98bdcea2..673fa6e47850 100644
+>> --- a/arch/powerpc/mm/numa.c
+>> +++ b/arch/powerpc/mm/numa.c
+>> @@ -893,7 +893,7 @@ static void __init setup_node_data(int nid, u64 start_pfn, u64 end_pfn)
+>>   static void __init find_possible_nodes(void)
+>>   {
+>>   	struct device_node *rtas;
+>> -	const __be32 *domains;
+>> +	const __be32 *domains = NULL;
+>>   	int prop_length, max_nodes;
+>>   	u32 i;
+>>
+>> @@ -909,9 +909,14 @@ static void __init find_possible_nodes(void)
+>>   	 * it doesn't exist, then fallback on ibm,max-associativity-domains.
+>>   	 * Current denotes what the platform can support compared to max
+>>   	 * which denotes what the Hypervisor can support.
+>> +	 *
+>> +	 * If the LPAR is migratable, new nodes might be activated after a LPM,
+>> +	 * so we should consider the max number in that case.
+>>   	 */
+>> -	domains = of_get_property(rtas, "ibm,current-associativity-domains",
+>> -					&prop_length);
+>> +	if (!of_get_property(of_root, "ibm,migratable-partition", NULL))
+>> +		domains = of_get_property(rtas,
+>> +					  "ibm,current-associativity-domains",
+>> +					  &prop_length);
+>>   	if (!domains) {
+>>   		domains = of_get_property(rtas, "ibm,max-associativity-domains",
+>>   					&prop_length);
+>> @@ -920,6 +925,9 @@ static void __init find_possible_nodes(void)
+>>   	}
+>>
+>>   	max_nodes = of_read_number(&domains[min_common_depth], 1);
+>> +	printk(KERN_INFO "Partition configured for %d NUMA nodes.\n",
+>> +	       max_nodes);
+>> +
+>>   	for (i = 0; i < max_nodes; i++) {
+>>   		if (!node_possible(i))
+>>   			node_set(i, node_possible_map);
+>>
+> 
 
-greg k-h
