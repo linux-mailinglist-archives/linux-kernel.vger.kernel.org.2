@@ -2,134 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB44E36F901
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 13:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C238C36F915
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 13:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbhD3LQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 07:16:58 -0400
-Received: from msg-1.mailo.com ([213.182.54.11]:40474 "EHLO msg-1.mailo.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229543AbhD3LQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 07:16:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
-        t=1619781352; bh=1A9xugSi8dzriGXM3Bh1afWQ+qsOl8QuZQW0kkzn40A=;
-        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
-         MIME-Version:Content-Type:In-Reply-To;
-        b=g1OQzwh+k4j+j86Ea2+Z/6qPgaoXqHhFEqC8cD8VeZ1DAO4ThMkAPExSBgjZztFXt
-         MPNgYtbEv/gD8JzhT3bF5hqwYD0IOJqXm4X+FOh4f741B+ljK6KURjWWbqzb4rRTII
-         v/LtsFy6TTbeRhBuSCvj2a++OxfPyS3dGVz47WVg=
-Received: by 192.168.90.13 [192.168.90.13] with ESMTP
-        via ip-206.mailobj.net [213.182.55.206]
-        Fri, 30 Apr 2021 13:15:51 +0200 (CEST)
-X-EA-Auth: Nhd7YcevGYtiOWwz05vY70n6fQirNtfkI4paUVkpiMDQpDpswVj2Hfh7sZKO3YFpZO7Xp+AfLeufe24ONKHSo2JJ4rhmNaOc
-Date:   Fri, 30 Apr 2021 16:45:44 +0530
-From:   Deepak R Varma <drv@mailo.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Fabio Aiuto <fabioaiuto83@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 5/9] staging: media: atomisp: reformat code comment
- blocks
-Message-ID: <YIvm4M0Gru+RpV5O@dU2104>
-References: <cover.1619630709.git.drv@mailo.com>
- <034c3cc993191feb8fda719dd1b2adc9e2074e78.1619630709.git.drv@mailo.com>
- <20210429070611.GA1409@agape.jhs>
- <YIqdT6wsrlNP/cEo@192.168.1.8>
- <693e054f-6a7b-d9e7-a72a-07d7fa295487@xs4all.nl>
+        id S231696AbhD3LRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 07:17:54 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:1336 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229849AbhD3LRo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 07:17:44 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13UB3H4M016527;
+        Fri, 30 Apr 2021 07:16:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=X7H6Thm5vVvEdOzIMF99WmtzE3yIxl5XgPZmIRQQpSM=;
+ b=BNfwknSmGRvxLT33wsoOPyxeWMipoQHfo4/O8XDyHNyLU3gvh8qbW034jnOI7FEaMKx8
+ w/E94NrQRqe3rrMpZldpxGgH/oq3dFrBlmhhvWULuXv5BAEUnkJumCPxyzLdeY5ed9Qy
+ dkxAY+ckatHVlhtbFO+Bzr9l7DjrmzSRgWP3TeHcum2SAMJ9K/Acv1oFwc+KT0OPTfZ3
+ TeDUYe7FcNbOzkZHs4jW7WR/LcqXLfIcKCUD90/+sep4DpRYIZ3nmZ6TxW6E6txtyaAy
+ zrXh7kCoawUz7cjYZss189Gkqxa4tx5iDpAgngnWmpito7it3tKJRzPC0BeTaKeNUFBA 0g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 388drswy1k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Apr 2021 07:16:47 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13UBDd8B052160;
+        Fri, 30 Apr 2021 07:16:46 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 388drswy0h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Apr 2021 07:16:46 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13UBCsJJ010967;
+        Fri, 30 Apr 2021 11:16:44 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma01fra.de.ibm.com with ESMTP id 384ay81q8s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Apr 2021 11:16:44 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13UBGf4C45809994
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Apr 2021 11:16:42 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D2843A4057;
+        Fri, 30 Apr 2021 11:16:41 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7DF82A4040;
+        Fri, 30 Apr 2021 11:16:41 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 30 Apr 2021 11:16:41 +0000 (GMT)
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org, sparclinux@vger.kernel.org
+Subject: [PATCH v4 0/3] asm-generic/io.h: Silence -Wnull-pointer-arithmetic warning on PCI_IOBASE
+Date:   Fri, 30 Apr 2021 13:16:38 +0200
+Message-Id: <20210430111641.1911207-1-schnelle@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <693e054f-6a7b-d9e7-a72a-07d7fa295487@xs4all.nl>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: xRR3TU8l-97YDHOxFoi3RsZeyFN6kn-G
+X-Proofpoint-GUID: RZlDyf6cM3uzqma3gwaEolsaHKGd2vpX
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-30_06:2021-04-30,2021-04-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ impostorscore=0 mlxscore=0 bulkscore=0 spamscore=0 malwarescore=0
+ clxscore=1015 suspectscore=0 adultscore=0 priorityscore=1501
+ mlxlogscore=729 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104060000 definitions=main-2104300080
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 12:04:33PM +0200, Hans Verkuil wrote:
-> On 29/04/2021 13:49, Deepak R Varma wrote:
-> > On Thu, Apr 29, 2021 at 09:06:12AM +0200, Fabio Aiuto wrote:
-> >> Hi Deepak,
-> > 
-> > Hello Fabio :)
-> > 
-> >>
-> >> On Wed, Apr 28, 2021 at 11:38:45PM +0530, Deepak R Varma wrote:
-> >>> Reformat code comment blocks according to the coding style guidelines.
-> >>> This resolves different checkpatch script WARNINGs around block comments.
-> >>>
-> >>> Suggested-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-> >>> Signed-off-by: Deepak R Varma <drv@mailo.com>
-> >>> ---
-> >>>
-> >>> Changes since v3:
-> >>>    - Include additional header files in the clean up
-> >>> Changes since v2:
-> >>>    - Tag Fabio Auito for the patch suggestion
-> >>>
-> >>> diff --git a/drivers/staging/media/atomisp/i2c/mt9m114.h b/drivers/staging/media/atomisp/i2c/mt9m114.h
-> >>> index 787bbf59e895..aad98f37aaa6 100644
-> >>> --- a/drivers/staging/media/atomisp/i2c/mt9m114.h
-> >>> +++ b/drivers/staging/media/atomisp/i2c/mt9m114.h
-> >>> @@ -765,7 +765,8 @@ static struct misensor_reg const mt9m114_common[] = {
-> >>>  	{MISENSOR_16BIT, 0xC868, 0x0280}, /* cam_output_width = 952 */
-> >>>  	{MISENSOR_16BIT, 0xC86A, 0x01E0}, /* cam_output_height = 538 */
-> >>>  	/* LOAD = Step3-Recommended
-> >>> -	 * Patch,Errata and Sensor optimization Setting */
-> >>> +	 * Patch,Errata and Sensor optimization Setting
-> >>> +	 */
-> >>
-> >> 	/*
-> >> 	 * LOAD = Step3-Recommended
-> >>
-> >> :(
-> > 
-> > oops... sorry for the oversight. Not sure how I missed it.
-> > I will wait for any other feedback on other patches and send
-> > in a corrected version shortly.
-> 
-> I've fixed this up myself.
-> 
-> I'm taking this series and make a PR for this, wrapping up these
-> atomisp cleanups.
-> 
-> If you plan any more cleanups, then please do this on top of this
-> branch: https://git.linuxtv.org/hverkuil/media_tree.git/log/?h=for-v5.14-out1
-> 
-> That contains all pending cleanups for staging/media.
+From: Niklas Schnelle <niklas@komani.de>
 
-Thank you Hans and everyone. Appreciate your time, comments and patience. I
-understand this entire patch series is acceptable for your consideration and
-that I can now move on to other changes.
+Hi,
 
-I will be sending additional clean up patches and I will base those on top of the
-mentioned branch.
+This is version 4 of my attempt to get rid of a clang
+-Wnull-pointer-arithmetic warning for the use of PCI_IOBASE in
+asm-generic/io.h. This was originally found on s390 but should apply to
+all platforms leaving PCI_IOBASE undefined while making use of the inb()
+and friends helpers from asm-generic/io.h.
 
-Have a good one.
-deepak.
+This applies cleanly and was compile tested on top of v5.12 for the
+previously broken ARC, nds32, h8300 and risc-v architecture
 
-> 
-> Regards,
-> 
-> 	Hans
-> 
-> > 
-> > Thank you,
-> > deepak.
-> > 
-> > 
-> > 
-> >>
-> >>
-> >>>  	{MISENSOR_16BIT, 0x316A, 0x8270}, /* DAC_TXLO_ROW */
-> >>>
-> >>
-> >> thank you,
-> >>
-> >> fabio
-> > 
-> > 
-> 
+I did boot test this only on x86_64 and s390x the former implements
+inb() itself while the latter would emit a WARN_ONCE() but no drivers
+use inb().
 
+Thanks,
+Niklas
+
+Changes since v3:
+- Changed the subject of the last patch to better reflect the actual
+  change i.e. the addition of WARN_ONCE() to the helpers not the
+  silencing of the clang warning
+- Added asm/bug.h to asm-generic/io.h so it doesn't have to be included
+  previously by all arches to be available for the WARN_ONCE()
+- Added patch for risc-v which defines PCI_IOBASE except when compiled
+  for nommu
+
+Changes since v2:
+- Improved comment for SPARC PCI_IOBASE definition as suggested
+  by David Laight
+- Added a patch for ARC which is missing the asm/bug.h include for
+  WARN_ONCE() (kernel test robot)
+- Added ifdefs to ioport_map() and __pci_ioport_map() since apparently
+  at least test configs enable CONFIG_HAS_IOPORT_MAP even on
+  architectures which leave PCI_IOBASE unset (kernel test robot for
+  nds32 and ARC).
+
+Changes since v1:
+- Added patch to explicitly set PCI_IOBASE to 0 on sparc as suggested by
+  Arnd Bergmann
+- Instead of working around the warning with a uintptr_t PCI_IOBASE make
+  inb() and friends explicitly WARN_ONCE() and return 0xff... (Arnd
+  Bergmann)
+
+Niklas Schnelle (3):
+  sparc: explicitly set PCI_IOBASE to 0
+  risc-v: Use generic io.h helpers for nommu
+  asm-generic/io.h: warn in inb() and friends with undefined PCI_IOBASE
+
+ arch/riscv/include/asm/io.h |  5 +--
+ arch/sparc/include/asm/io.h |  8 +++++
+ include/asm-generic/io.h    | 65 ++++++++++++++++++++++++++++++++++---
+ 3 files changed, 72 insertions(+), 6 deletions(-)
+
+-- 
+2.31.1
 
