@@ -2,159 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AFBA37005F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B66370062
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbhD3SWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 14:22:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229750AbhD3SWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 14:22:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FE6F613D9
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 18:21:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619806871;
-        bh=RmbbiAkH4JmT/dChtltom/gbGZbNXlnFFpa0oAzvEHY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jb8+CroDi15WxNlFfeN6QehcgAP0ZzVbNlwkyhc2zDdYtMr8cwocIXDdOqut6Zlxo
-         tx/N1emgcE7kYkBmG9DxjdjhndwlNSeP1wugzci9jE7KXbYRDphjNz0B4i4oINfQkx
-         PUlEwFkKBazlEZd6kCldqrINVecD8fzujKlJ8X/j3IYt3WcZVbdObJJxD7kYYSzLL7
-         G8aZ1iCe11VBd6jTgRJKmwb4PmiCba1H6jm5r3779x3RidY7Rvw6B1CnFBOwG/P7Oi
-         /bIcSmXB/mMwNkO6pUMRFw4aGIRyF4+kUwG1YUgVblbc9ZnVLJhot3GVuPrItcrHt7
-         Lub3yC+RSAFtQ==
-Received: by mail-ej1-f41.google.com with SMTP id l4so106591911ejc.10
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 11:21:11 -0700 (PDT)
-X-Gm-Message-State: AOAM530FOacHfLe6wcTEviy70e8eareLUM8Sq4hGzh8wdop4vbK/UJAP
-        8cd9m8xKvzb2uM7mEbVjMFjDrciO7GKnUFy9SQ==
-X-Google-Smtp-Source: ABdhPJwHkSMe/mYVAAVGPC2+KXlI3GNhx6kzDKqwhEBQ/HpLosIGDYaVeGF82y8WrsP5K6BzDlRPTrhGsfr5/OKSV40=
-X-Received: by 2002:a17:906:18e1:: with SMTP id e1mr5746788ejf.341.1619806870144;
- Fri, 30 Apr 2021 11:21:10 -0700 (PDT)
+        id S231438AbhD3SW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 14:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229750AbhD3SWZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 14:22:25 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC67C06174A;
+        Fri, 30 Apr 2021 11:21:37 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619806893;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=As7DtcWhMuF7h0TJSZIn85h3WNKtXg9d7v6tEvOH+qs=;
+        b=Hf0zeuoMznsXlwihwhVMhTEAKd/4k0Ku0M8qkgHH8iMN7iFVDrrBrlgDLNn/uPoy1iKACk
+        iV7CRZB9Ietru5dVJrPzai9l+ANGERnoM8JgXjnkJPawpmserZobzznAl4wU8HbP20NjTi
+        gRqE9n6dM5ioAwOCZzVGZkF7OsPPc/k3SqU4YMn9gzpCgcbhffPUGSRy5PXGDSRcu5/oUG
+        wMHNT2SxUnZSEpx3ujEh29oxbC6yg30BKCWoswhigidBvafirSYlgeZ/dMOPKhz0vEmMTg
+        dznmUDpTXBgikHUhP3rSy7pyiXwMs922CziEhTbkikOCwWL8a0FjSqJ788N/7g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619806893;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=As7DtcWhMuF7h0TJSZIn85h3WNKtXg9d7v6tEvOH+qs=;
+        b=FfdE0kUFkRqEf4ebx700jPou/iScTJY9te1G3qeOnRcZC57twD9Fxky/GZRsh+TKE1KvJx
+        INh75Tmvp3C5AmBA==
+To:     Nitesh Lal <nilal@redhat.com>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        "frederic\@kernel.org" <frederic@kernel.org>,
+        "juri.lelli\@redhat.com" <juri.lelli@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>, abelits@marvell.com,
+        Robin Murphy <robin.murphy@arm.com>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-api\@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "bhelgaas\@google.com" <bhelgaas@google.com>,
+        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "rostedt\@goodmis.org" <rostedt@goodmis.org>,
+        "mingo\@kernel.org" <mingo@kernel.org>,
+        "peterz\@infradead.org" <peterz@infradead.org>,
+        "davem\@davemloft.net" <davem@davemloft.net>,
+        "akpm\@linux-foundation.org" <akpm@linux-foundation.org>,
+        "sfr\@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "stephen\@networkplumber.org" <stephen@networkplumber.org>,
+        "rppt\@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
+        "jinyuqi\@huawei.com" <jinyuqi@huawei.com>,
+        "zhangshaokun\@hisilicon.com" <zhangshaokun@hisilicon.com>,
+        netdev@vger.kernel.org, chris.friesen@windriver.com
+Subject: Re: [Patch v4 1/3] lib: Restrict cpumask_local_spread to houskeeping CPUs
+In-Reply-To: <CAFki+LmmRyvOkWoNNLk5JCwtaTnabyaRUKxnS+wyAk_kj8wzyw@mail.gmail.com>
+References: <20200625223443.2684-1-nitesh@redhat.com> <3e9ce666-c9cd-391b-52b6-3471fe2be2e6@arm.com> <20210127121939.GA54725@fuller.cnet> <87r1m5can2.fsf@nanos.tec.linutronix.de> <20210128165903.GB38339@fuller.cnet> <87h7n0de5a.fsf@nanos.tec.linutronix.de> <20210204181546.GA30113@fuller.cnet> <cfa138e9-38e3-e566-8903-1d64024c917b@redhat.com> <20210204190647.GA32868@fuller.cnet> <d8884413-84b4-b204-85c5-810342807d21@redhat.com> <87y2g26tnt.fsf@nanos.tec.linutronix.de> <d0aed683-87ae-91a2-d093-de3f5d8a8251@redhat.com> <7780ae60-efbd-2902-caaa-0249a1f277d9@redhat.com> <07c04bc7-27f0-9c07-9f9e-2d1a450714ef@redhat.com> <20210406102207.0000485c@intel.com> <1a044a14-0884-eedb-5d30-28b4bec24b23@redhat.com> <20210414091100.000033cf@intel.com> <54ecc470-b205-ea86-1fc3-849c5b144b3b@redhat.com> <CAFki+Lm0W_brLu31epqD3gAV+WNKOJfVDfX2M8ZM__aj3nv9uA@mail.gmail.com> <87czucfdtf.ffs@nanos.tec.linutronix.de> <CAFki+LmmRyvOkWoNNLk5JCwtaTnabyaRUKxnS+wyAk_kj8wzyw@mail.gmail.com>
+Date:   Fri, 30 Apr 2021 20:21:33 +0200
+Message-ID: <87sg37eiqa.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210420031511.2348977-1-robh@kernel.org> <20210420031511.2348977-8-robh@kernel.org>
- <20210430164616.pzb7yxrsugexso25@gabell> <CAL_JsqLtkik656hjHMqvPc3Ta6qR+nWx1BxPcj8GvzYypTUVWQ@mail.gmail.com>
-In-Reply-To: <CAL_JsqLtkik656hjHMqvPc3Ta6qR+nWx1BxPcj8GvzYypTUVWQ@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 30 Apr 2021 13:20:58 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLvHh5Ekpmb_au8Y9a7zF4w_izgaVnhzi9255XuqQUjrQ@mail.gmail.com>
-Message-ID: <CAL_JsqLvHh5Ekpmb_au8Y9a7zF4w_izgaVnhzi9255XuqQUjrQ@mail.gmail.com>
-Subject: Re: [PATCH v7 7/9] perf: arm64: Add test for userspace counter access
- on heterogeneous systems
-To:     Masayoshi Mizuma <msys.mizuma@gmail.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
-        Zachary.Leaf@arm.com, Raphael Gault <raphael.gault@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 1:17 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Fri, Apr 30, 2021 at 11:46 AM Masayoshi Mizuma <msys.mizuma@gmail.com>=
- wrote:
-> >
-> > On Mon, Apr 19, 2021 at 10:15:09PM -0500, Rob Herring wrote:
-> > > Userspace counter access only works on heterogeneous systems with som=
-e
-> > > restrictions. The userspace process must be pinned to a homogeneous
-> > > subset of CPUs and must open the corresponding PMU for those CPUs. Th=
-is
-> > > commit adds a test implementing these requirements.
-> > >
-> > > Signed-off-by: Rob Herring <robh@kernel.org>
-> > > ---
-> > > v6:
-> > >  - Add a check on cap_user_rdpmc
-> > > v5:
-> > >  - Adapt to libperf mmap API changes
-> > > v4:
-> > >  - Update perf_evsel__mmap params
-> > > v2:
-> > >  - Drop all but heterogeneous test as others covered by libperf tests
-> > >  - Rework to use libperf
-> > > ---
-> > >  tools/perf/arch/arm64/include/arch-tests.h |   7 +
-> > >  tools/perf/arch/arm64/tests/Build          |   1 +
-> > >  tools/perf/arch/arm64/tests/arch-tests.c   |   4 +
-> > >  tools/perf/arch/arm64/tests/user-events.c  | 177 +++++++++++++++++++=
-++
-> > >  4 files changed, 189 insertions(+)
-> > >  create mode 100644 tools/perf/arch/arm64/tests/user-events.c
-> > >
-> > > diff --git a/tools/perf/arch/arm64/include/arch-tests.h b/tools/perf/=
-arch/arm64/include/arch-tests.h
-> > > index 90ec4c8cb880..380ad34a3f09 100644
-> > > --- a/tools/perf/arch/arm64/include/arch-tests.h
-> > > +++ b/tools/perf/arch/arm64/include/arch-tests.h
-> > > @@ -2,11 +2,18 @@
-> > >  #ifndef ARCH_TESTS_H
-> > >  #define ARCH_TESTS_H
-> > >
-> > > +#include <linux/compiler.h>
-> > > +
-> > >  #ifdef HAVE_DWARF_UNWIND_SUPPORT
-> > >  struct thread;
-> > >  struct perf_sample;
-> > > +int test__arch_unwind_sample(struct perf_sample *sample,
-> > > +                          struct thread *thread);
-> > >  #endif
-> >
-> > Hello,
-> >
-> > I got the following compile error with aarch64 on Fedora33.
-> >
-> >     # make tools/perf
-> >     ...
-> >     In file included from arch/arm64/tests/arch-tests.c:4:
-> >     /root//libperf_v7/tools/perf/arch/arm64/include/arch-tests.h:10:5: =
-error: redundant redeclaration of =E2=80=98test__arch_unwind_sample=E2=80=
-=99 [-Werror=3Dredundant-decls]
-> >        10 | int test__arch_unwind_sample(struct perf_sample *sample,
-> >           |     ^~~~~~~~~~~~~~~~~~~~~~~~
-> >     In file included from arch/arm64/tests/arch-tests.c:3:
-> >     /root//libperf_v7/tools/perf/tests/tests.h:140:5: note: previous de=
-claration of =E2=80=98test__arch_unwind_sample=E2=80=99 was here
-> >       140 | int test__arch_unwind_sample(struct perf_sample *sample,
-> >           |     ^~~~~~~~~~~~~~~~~~~~~~~~
-> >     cc1: all warnings being treated as errors
-> >     make[8]: *** [/root//libperf_v7/tools/build/Makefile.build:97: /roo=
-t/libperf_v7/tools/perf/arch/arm64/tests/arch-tests.o] Error 1
-> >     make[8]: *** Waiting for unfinished jobs....
-> >     In file included from arch/arm64/tests/user-events.c:13:
-> >     /root//libperf_v7/tools/perf/arch/arm64/include/arch-tests.h:10:5: =
-error: redundant redeclaration of =E2=80=98test__arch_unwind_sample=E2=80=
-=99 [-Werror=3Dredundant-decls]
-> >        10 | int test__arch_unwind_sample(struct perf_sample *sample,
-> >           |     ^~~~~~~~~~~~~~~~~~~~~~~~
-> >     In file included from arch/arm64/tests/user-events.c:12:
-> >     /root//libperf_v7/tools/perf/tests/tests.h:140:5: note: previous de=
-claration of =E2=80=98test__arch_unwind_sample=E2=80=99 was here
-> >       140 | int test__arch_unwind_sample(struct perf_sample *sample,
-> >           |     ^~~~~~~~~~~~~~~~~~~~~~~~
-> >     cc1: all warnings being treated as errors
-> >     ...
-> >
-> > The error is gone after the following patch is applied.
->
-> Thanks. Honestly, I'm not sure why it was there in the first place.
-> Looking at the git history and this series history doesn't give any
-> clues.
+Nitesh,
 
-Well, except that both x86 and powerpc have the same hunk in their
-arch-tests.h. Do you see errors on those arches?
+On Fri, Apr 30 2021 at 12:14, Nitesh Lal wrote:
+> Based on this analysis and the fact that with your re-work the interrupts
+> seems to be naturally spread across the CPUs, will it be safe to revert
+> Jesse's patch
+>
+> e2e64a932 genirq: Set initial affinity in irq_set_affinity_hint()
+>
+> as it overwrites the previously set IRQ affinity mask for some of the
+> devices?
 
-Rob
+That's a good question. My gut feeling says yes.
+
+> IMHO if we think that this patch is still solving some issue other than
+> what Jesse has mentioned then perhaps we should reproduce that and fix it
+> directly from the request_irq code path.
+
+Makes sense.
+
+Thanks,
+
+        tglx
