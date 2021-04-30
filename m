@@ -2,153 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 660FA36F81E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 11:45:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F57A36F825
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 11:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231665AbhD3JqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 05:46:03 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:40303 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231678AbhD3Jp6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 05:45:58 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id AC1D45800D7;
-        Fri, 30 Apr 2021 05:45:10 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 30 Apr 2021 05:45:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=+1jVcZdjfORyp
-        rwDU8d7SzSPEQYAqkZClde0yfqzLq4=; b=jcJfqu+yfkofKEq6OAhV3P/ojh66h
-        AKwMz4VJR5Eh7AFt/iCNux6zabsBKGY/rrB39PyF48kkcSRf/w4tBtYOxF/vTXlr
-        HuxWhlpm7a770c7qXQ/0I1z1ITQbM6ZS8TZTrsrEdoYYsi4RaCzQzg9NK64FeVkZ
-        Sox6ywrndPB03eJQHmvYd8yvMTRCi25CMi9xhf2OEjE9xOSxTy56nbNFmHo/UpLM
-        0UbyDymBWBM9qT6UxgV89kueVr4WcATDZUagIxklphFvEcSTI4NnxYGJXnuMr3I+
-        GyPLXSh5gHtvMbtbiG0k1ALKvPEJeuEgIeVtXZbxGVE7++gonlk8GhMxg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=+1jVcZdjfORyprwDU8d7SzSPEQYAqkZClde0yfqzLq4=; b=Msa9nCat
-        bPWQ9xl1pljP9Qxdnj3eGhocRTpYCl0DGWF+ve5gCOBLJNNOADTWBnT1qtckRQeN
-        Wymt6YHz9fxcpNREdkajMWFF6zfb6ecio+KMj9fgTs9f+ZLRCpWT0RStlswTV4l+
-        eQJaCBGd/HyRa2bfUisUbAZBIVYLs0mHwFPVTQRHVeL6QPv8fhp25km2KZEqssvC
-        1pJigUX0q0QpwrEWiV/NlXKeoww4FEB5fdwLxt2Mlf3ORE+DSHmeJQE38OQyioxk
-        CforjQj2yikTbqudTZ7rt1HnX8trK6+FYMMCzZdCoJszdDyZrWW1EFO0q0Io5GSI
-        chV/V1nJMyscnQ==
-X-ME-Sender: <xms:ptGLYGuMw2jPo4DXmebqO63tNBLp3vxLzzSRr3ohgLFTn9NWI8xszg>
-    <xme:ptGLYLcHBdCOF6w0FC83wSQPiDSludwn8WrannYB4V3tn4BYtOoBjyh_39VTO3SM8
-    ukw2SjCPmNw_bH4ffo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddviedgudelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
-    hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:ptGLYBwLJ90G_soKRBipo0VcEyfG_fXy8vERY2H5jr7g3cdwSeEPdg>
-    <xmx:ptGLYBNPTghXWUS6BBrwWZProxg4gQofIaV-aHuo45lu8mpUDHkkmA>
-    <xmx:ptGLYG-BKoADuw3ZoM0d3T4jmqFXF_PishVOM27hCSRbO4AMyCcmYQ>
-    <xmx:ptGLYKRIuuIqkeXJNivuq4EWHDvbVkWGe0LVYzXgKcftrWBzD_0U6g>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Fri, 30 Apr 2021 05:45:09 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        linux-kernel@vger.kernel.org, Leo Li <sunpeng.li@amd.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Eric Anholt <eric@anholt.net>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>
-Subject: [PATCH v3 5/5] drm/vc4: hdmi: Signal the proper colorimetry info in the infoframe
-Date:   Fri, 30 Apr 2021 11:44:51 +0200
-Message-Id: <20210430094451.2145002-5-maxime@cerno.tech>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210430094451.2145002-1-maxime@cerno.tech>
-References: <20210430094451.2145002-1-maxime@cerno.tech>
+        id S229793AbhD3Jwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 05:52:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229524AbhD3Jwn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 05:52:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CFF961407;
+        Fri, 30 Apr 2021 09:51:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619776316;
+        bh=Px2AMr4e1QMYYfndBRW+4O9uoWJPIKb0VAJFMbMPdls=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e+fIYuDsW759TrYASvgsJEYis+WkbQI1lLeuNfwE57ngu1WuFws3BVi2LIaW8UEIQ
+         gt84CE9dY2iE/z0vr6E1VZzJzJuLwtEkoBZvo709R+n/06XiAIMQUOnomzBl362bLU
+         tDTYtn3exnOLp7VMc8LZpOM5EW7ExnmoF/SWOsHpuk9I5izfhBGGLovE9iIslRJcJ/
+         HK+iC+TedK/fJmhDt4z8BCY7JEtg4H3aQtEHg4ZbE7qdG39guB4RKswrdevVRhysJy
+         rFnyb+cU2VJzmrT4pr14s7mS4JatHHYZVJjhlQOah3/4IuZLQsp5rdHS7UDr0IlQcN
+         KM1dquuO4pf5A==
+Date:   Fri, 30 Apr 2021 12:51:47 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: arm32: panic in move_freepages (Was [PATCH v2 0/4] arm64: drop
+ pfn_valid_within() and simplify pfn_valid())
+Message-ID: <YIvTM5Yqit8AB4W8@kernel.org>
+References: <YIUYG8N9T3/C/tSG@kernel.org>
+ <52f7d03b-7219-46bc-c62d-b976bc31ebd5@huawei.com>
+ <YIZNq5HMfJ1rWytv@kernel.org>
+ <2d879629-3059-fd42-428f-4b7c2a73d698@huawei.com>
+ <YIet5X7lgygD9rpZ@kernel.org>
+ <259d14df-a713-72e7-4ccb-c06a8ee31e13@huawei.com>
+ <YIj5zcbHBHt7CC8B@kernel.org>
+ <6ad2956c-70ae-c423-ed7d-88e94c88060f@huawei.com>
+ <YIpY8TXCSc7Lfa2Z@kernel.org>
+ <0cb013e4-1157-f2fa-96ec-e69e60833f72@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <0cb013e4-1157-f2fa-96ec-e69e60833f72@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Our driver while supporting HDR didn't send the proper colorimetry info
-in the AVI infoframe.
+On Thu, Apr 29, 2021 at 06:22:55PM +0800, Kefeng Wang wrote:
+> 
+> On 2021/4/29 14:57, Mike Rapoport wrote:
+> 
+> > > > Do you use SPARSMEM? If yes, what is your section size?
+> > > > What is the value if CONFIG_FORCE_MAX_ZONEORDER in your configuration?
+> > > Yes,
+> > > 
+> > > CONFIG_SPARSEMEM=y
+> > > 
+> > > CONFIG_SPARSEMEM_STATIC=y
+> > > 
+> > > CONFIG_FORCE_MAX_ZONEORDER = 11
+> > > 
+> > > CONFIG_PAGE_OFFSET=0xC0000000
+> > > CONFIG_HAVE_ARCH_PFN_VALID=y
+> > > CONFIG_HIGHMEM=y
+> > > #define SECTION_SIZE_BITS    26
+> > > #define MAX_PHYSADDR_BITS    32
+> > > #define MAX_PHYSMEM_BITS     32
+> 
+> 
+> With the patch,  the addr is aligned, but the panic still occurred,
 
-Let's add the property needed so that the userspace can let us know what
-the colorspace is supposed to be.
+Is this the same panic at move_freepages() for range [de600, de7ff]?
 
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Do you enable CONFIG_ARM_LPAE?
 
----
+> new free memory log is below,
+> 
+> memblock_free: [0xaf430000-0xaf44ffff] mem_init+0x158/0x23c
+> 
+> memblock_free: [0xaf510000-0xaf53ffff] mem_init+0x158/0x23c
+> memblock_free: [0xaf560000-0xaf57ffff] mem_init+0x158/0x23c
+> memblock_free: [0xafd98000-0xafdc7fff] mem_init+0x158/0x23c
+> memblock_free: [0xafdd8000-0xafdfffff] mem_init+0x158/0x23c
+> memblock_free: [0xafe18000-0xafe7ffff] mem_init+0x158/0x23c
+> memblock_free: [0xafee0000-0xafefffff] mem_init+0x158/0x23c
+> __free_memory_core, range: 0x80a03000 - 0x80a04000, pfn: 80a03 - 80a04
+> __free_memory_core, range: 0x80a08000 - 0x80b00000, pfn: 80a08 - 80b00
+> __free_memory_core, range: 0x812e8058 - 0x83000000, pfn: 812e9 - 83000
+> __free_memory_core, range: 0x85000000 - 0x85600000, pfn: 85000 - 85600
+> __free_memory_core, range: 0x86a00000 - 0x87e00000, pfn: 86a00 - 87e00
+> __free_memory_core, range: 0x8bd00000 - 0x8c500000, pfn: 8bd00 - 8c500
+> __free_memory_core, range: 0x8e300000 - 0x8ed00000, pfn: 8e300 - 8ed00
+> __free_memory_core, range: 0x90d00000 - 0xaf2c0000, pfn: 90d00 - af2c0
+> __free_memory_core, range: 0xaf430000 - 0xaf450000, pfn: af430 - af450
+> __free_memory_core, range: 0xaf510000 - 0xaf540000, pfn: af510 - af540
+> __free_memory_core, range: 0xaf560000 - 0xaf580000, pfn: af560 - af580
+> __free_memory_core, range: 0xafd98000 - 0xafdc8000, pfn: afd98 - afdc8
+> __free_memory_core, range: 0xafdd8000 - 0xafe00000, pfn: afdd8 - afe00
+> __free_memory_core, range: 0xafe18000 - 0xafe80000, pfn: afe18 - afe80
+> __free_memory_core, range: 0xafee0000 - 0xaff00000, pfn: afee0 - aff00
+> __free_memory_core, range: 0xaff80000 - 0xaff8d000, pfn: aff80 - aff8d
+> __free_memory_core, range: 0xafff2000 - 0xafff4580, pfn: afff2 - afff4
+> __free_memory_core, range: 0xafffe000 - 0xafffe0e0, pfn: afffe - afffe
+> __free_memory_core, range: 0xafffe4fc - 0xafffe500, pfn: affff - afffe
+> __free_memory_core, range: 0xafffe6e4 - 0xafffe700, pfn: affff - afffe
+> __free_memory_core, range: 0xafffe8dc - 0xafffe8e0, pfn: affff - afffe
+> __free_memory_core, range: 0xafffe970 - 0xafffe980, pfn: affff - afffe
+> __free_memory_core, range: 0xafffe990 - 0xafffe9a0, pfn: affff - afffe
+> __free_memory_core, range: 0xafffe9a4 - 0xafffe9c0, pfn: affff - afffe
+> __free_memory_core, range: 0xafffeb54 - 0xafffeb60, pfn: affff - afffe
+> __free_memory_core, range: 0xafffecf4 - 0xafffed00, pfn: affff - afffe
+> __free_memory_core, range: 0xafffefc4 - 0xafffefd8, pfn: affff - afffe
+> __free_memory_core, range: 0xb0200000 - 0xc0000000, pfn: b0200 - b0200
+> __free_memory_core, range: 0xcc000000 - 0xdca00000, pfn: cc000 - b0200
+> __free_memory_core, range: 0xde700000 - 0xdea00000, pfn: de700 - b0200
 
-Changes from v2:
-  - Rebased on current drm-misc-next
+The range [de600, de7ff] 
 
-Changes from v1:
-  - New patch
----
- drivers/gpu/drm/vc4/vc4_hdmi.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+> __free_memory_core, range: 0xe0800000 - 0xe0c00000, pfn: e0800 - b0200
+> __free_memory_core, range: 0xf4b00000 - 0xf7000000, pfn: f4b00 - b0200
+> __free_memory_core, range: 0xfda00000 - 0xffffffff, pfn: fda00 - b0200
+> > It seems that with SPARSEMEM we don't align the freed parts on pageblock
+> > boundaries.
+> > 
+> > Can you try the patch below:
+> > 
+> > diff --git a/mm/memblock.c b/mm/memblock.c
+> > index afaefa8fc6ab..1926369b52ec 100644
+> > --- a/mm/memblock.c
+> > +++ b/mm/memblock.c
+> > @@ -1941,14 +1941,13 @@ static void __init free_unused_memmap(void)
+> >   		 * due to SPARSEMEM sections which aren't present.
+> >   		 */
+> >   		start = min(start, ALIGN(prev_end, PAGES_PER_SECTION));
+> > -#else
+> > +#endif
+> >   		/*
+> >   		 * Align down here since the VM subsystem insists that the
+> >   		 * memmap entries are valid from the bank start aligned to
+> >   		 * MAX_ORDER_NR_PAGES.
+> >   		 */
+> >   		start = round_down(start, MAX_ORDER_NR_PAGES);
+> > -#endif
+> >   		/*
+> >   		 * If we had a previous bank, and there is a space
+> > 
 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index a33fa1662588..a22e17788074 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -226,7 +226,8 @@ static int vc4_hdmi_connector_atomic_check(struct drm_connector *connector,
- 	if (!crtc)
- 		return 0;
- 
--	if (!drm_connector_atomic_hdr_metadata_equal(old_state, new_state)) {
-+	if (old_state->colorspace != new_state->colorspace ||
-+	    !drm_connector_atomic_hdr_metadata_equal(old_state, new_state)) {
- 		struct drm_crtc_state *crtc_state;
- 
- 		crtc_state = drm_atomic_get_crtc_state(state, crtc);
-@@ -316,6 +317,11 @@ static int vc4_hdmi_connector_init(struct drm_device *dev,
- 	if (ret)
- 		return ret;
- 
-+	ret = drm_mode_create_hdmi_colorspace_property(connector);
-+	if (ret)
-+		return ret;
-+
-+	drm_connector_attach_colorspace_property(connector);
- 	drm_connector_attach_tv_margin_properties(connector);
- 	drm_connector_attach_max_bpc_property(connector, 8, 12);
- 
-@@ -424,7 +430,7 @@ static void vc4_hdmi_set_avi_infoframe(struct drm_encoder *encoder)
- 					   vc4_encoder->limited_rgb_range ?
- 					   HDMI_QUANTIZATION_RANGE_LIMITED :
- 					   HDMI_QUANTIZATION_RANGE_FULL);
--
-+	drm_hdmi_avi_infoframe_colorspace(&frame.avi, cstate);
- 	drm_hdmi_avi_infoframe_bars(&frame.avi, cstate);
- 
- 	vc4_hdmi_write_infoframe(encoder, &frame);
 -- 
-2.31.1
-
+Sincerely yours,
+Mike.
