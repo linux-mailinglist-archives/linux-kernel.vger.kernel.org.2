@@ -2,103 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A534436F7AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 11:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7060B36F7AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 11:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231378AbhD3JSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 05:18:45 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:52800 "EHLO honk.sigxcpu.org"
+        id S231421AbhD3JT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 05:19:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58792 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229507AbhD3JSp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 05:18:45 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 40E37FB03;
-        Fri, 30 Apr 2021 11:17:55 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id mNeG7bnrk71z; Fri, 30 Apr 2021 11:17:53 +0200 (CEST)
-Date:   Fri, 30 Apr 2021 11:17:52 +0200
-From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        a.hajda@samsung.com, narmstrong@baylibre.com,
-        robert.foss@linaro.org, Laurent.pinchart@ideasonboard.com,
-        jonas@kwiboo.se, jernej.skrabec@siol.net, airlied@linux.ie,
-        daniel@ffwll.ch, robert.chiras@nxp.com, linux-imx@nxp.com
-Subject: Re: [PATCH v3 0/3] drm/bridge: nwl-dsi: Get MIPI DSI controller and
- PHY ready in ->mode_set()
-Message-ID: <YIvLQLEjWjCFVmXI@bogon.m.sigxcpu.org>
-References: <1619170003-4817-1-git-send-email-victor.liu@nxp.com>
+        id S229507AbhD3JTy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 05:19:54 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6AC75AF52;
+        Fri, 30 Apr 2021 09:19:05 +0000 (UTC)
+From:   Mian Yousaf Kaukab <ykaukab@suse.de>
+To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com
+Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        biwen.li@nxp.com, Mian Yousaf Kaukab <ykaukab@suse.de>
+Subject: [PATCH v2] rtc: pcf2127: handle timestamp interrupts
+Date:   Fri, 30 Apr 2021 11:18:52 +0200
+Message-Id: <20210430091852.16444-1-ykaukab@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1619170003-4817-1-git-send-email-victor.liu@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Liu,
-On Fri, Apr 23, 2021 at 05:26:40PM +0800, Liu Ying wrote:
-> Hi,
-> 
-> This series aims to make the nwl-dsi bridge be able to connect with
-> more MIPI DSI panels.  Some MIPI DSI panel drivers like 'raydium,rm68200'
-> send MIPI_DCS_SET_DISPLAY_ON commands in panel_funcs->prepare(), which
-> requires the MIPI DSI controller and PHY to be ready beforehand.
-> However, the existing nwl-dsi driver gets the MIPI DSI controller and
-> PHY ready in bridge_funcs->pre_enable(), which happens after the
-> panel_funcs->prepare().  So, this series shifts the bridge operation
-> ealier from bridge_funcs->pre_enable() to bridge_funcs->mode_set().
-> 
-> Patch 3/3 does the essential bridge operation shift.
-> 
-> Patch 1/3 and 2/3 are split from the original single patch in v2 and
-> are needed by patch 3/3.  This split-up helps clarify changes better.
-> The split-up is done in this way:
-> 
-> 1) Patch 1/3 forces a full modeset when crtc_state->active is changed to
->    be true(which implies only connector's DPMS is brought out of "Off"
->    status, though not necessarily).  This makes sure ->mode_set() and
->    ->atomic_disable() will be called in pairs.
-> 2) Patch 2/3 removes a check on unchanged HS clock rate from ->mode_set(),
->    to make sure MIPI DSI controller and PHY are brought up and taken down
->    in pairs.
-> 3) Patch 3/3 shifts the bridge operation as the last step.
+commit 03623b4b041c ("rtc: pcf2127: add tamper detection support")
+added support for timestamp interrupts. However they are not being
+handled in the irq handler. If a timestamp interrupt occurs it
+results in kernel disabling the interrupt and displaying the call
+trace:
 
-Looks good to me and tested on imx8mq Librem 5 Devkit with
+[  121.145580] irq 78: nobody cared (try booting with the "irqpoll" option)
+...
+[  121.238087] [<00000000c4d69393>] irq_default_primary_handler threaded [<000000000a90d25b>] pcf2127_rtc_irq [rtc_pcf2127]
+[  121.248971] Disabling IRQ #78
 
-https://lore.kernel.org/linux-arm-kernel/cover.1617968250.git.agx@sigxcpu.org/
+Handle timestamp interrupts in pcf2127_rtc_irq(). Set a flag to mark
+the timestamp as valid and only report to sysfs if the flag is set.
 
-on top so
+Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
+---
+history:
+v2: -Add a flag to mark the occurrence of timestamp interrupt
+    -Add Biwen Li in Cc
 
-Reviewed-by: Guido Günther <agx@sigxcpu.org>
-Tested-by: Guido Günther <agx@sigxcpu.org>
+ drivers/rtc/rtc-pcf2127.c | 53 +++++++++++++++++++++------------------
+ 1 file changed, 28 insertions(+), 25 deletions(-)
 
-Cheers,
- -- Guido
+diff --git a/drivers/rtc/rtc-pcf2127.c b/drivers/rtc/rtc-pcf2127.c
+index d13c20a2adf7..0e2333ea1243 100644
+--- a/drivers/rtc/rtc-pcf2127.c
++++ b/drivers/rtc/rtc-pcf2127.c
+@@ -94,10 +94,18 @@
+ #define PCF2127_WD_VAL_MAX		255
+ #define PCF2127_WD_VAL_DEFAULT		60
+ 
++/* Mask for currently enabled interrupts */
++#define PCF2127_CTRL1_IRQ_MASK (PCF2127_BIT_CTRL1_TSF1)
++#define PCF2127_CTRL2_IRQ_MASK ( \
++		PCF2127_BIT_CTRL2_AF | \
++		PCF2127_BIT_CTRL2_WDTF | \
++		PCF2127_BIT_CTRL2_TSF2)
++
+ struct pcf2127 {
+ 	struct rtc_device *rtc;
+ 	struct watchdog_device wdd;
+ 	struct regmap *regmap;
++	bool timestamp_valid;
+ };
+ 
+ /*
+@@ -437,20 +445,33 @@ static int pcf2127_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alrm)
+ static irqreturn_t pcf2127_rtc_irq(int irq, void *dev)
+ {
+ 	struct pcf2127 *pcf2127 = dev_get_drvdata(dev);
+-	unsigned int ctrl2 = 0;
++	unsigned int ctrl1, ctrl2;
+ 	int ret = 0;
+ 
++	ret = regmap_read(pcf2127->regmap, PCF2127_REG_CTRL1, &ctrl1);
++	if (ret)
++		return IRQ_NONE;
++
+ 	ret = regmap_read(pcf2127->regmap, PCF2127_REG_CTRL2, &ctrl2);
+ 	if (ret)
+ 		return IRQ_NONE;
+ 
+-	if (!(ctrl2 & PCF2127_BIT_CTRL2_AF))
++	if (!(ctrl1 & PCF2127_CTRL1_IRQ_MASK || ctrl2 & PCF2127_CTRL2_IRQ_MASK))
+ 		return IRQ_NONE;
+ 
+-	regmap_write(pcf2127->regmap, PCF2127_REG_CTRL2,
+-		     ctrl2 & ~(PCF2127_BIT_CTRL2_AF | PCF2127_BIT_CTRL2_WDTF));
++	if (ctrl1 & PCF2127_CTRL1_IRQ_MASK)
++		regmap_write(pcf2127->regmap, PCF2127_REG_CTRL1,
++			ctrl1 & ~PCF2127_CTRL1_IRQ_MASK);
++
++	if (ctrl2 & PCF2127_CTRL2_IRQ_MASK)
++		regmap_write(pcf2127->regmap, PCF2127_REG_CTRL2,
++			ctrl2 & ~PCF2127_CTRL2_IRQ_MASK);
+ 
+-	rtc_update_irq(pcf2127->rtc, 1, RTC_IRQF | RTC_AF);
++	if (ctrl1 & PCF2127_BIT_CTRL1_TSF1 || ctrl2 & PCF2127_BIT_CTRL2_TSF2)
++		pcf2127->timestamp_valid = true;
++
++	if (ctrl2 & PCF2127_BIT_CTRL2_AF)
++		rtc_update_irq(pcf2127->rtc, 1, RTC_IRQF | RTC_AF);
+ 
+ 	pcf2127_wdt_active_ping(&pcf2127->wdd);
+ 
+@@ -473,25 +494,8 @@ static ssize_t timestamp0_store(struct device *dev,
+ 				const char *buf, size_t count)
+ {
+ 	struct pcf2127 *pcf2127 = dev_get_drvdata(dev->parent);
+-	int ret;
+ 
+-	ret = regmap_update_bits(pcf2127->regmap, PCF2127_REG_CTRL1,
+-				 PCF2127_BIT_CTRL1_TSF1, 0);
+-	if (ret) {
+-		dev_err(dev, "%s: update ctrl1 ret=%d\n", __func__, ret);
+-		return ret;
+-	}
+-
+-	ret = regmap_update_bits(pcf2127->regmap, PCF2127_REG_CTRL2,
+-				 PCF2127_BIT_CTRL2_TSF2, 0);
+-	if (ret) {
+-		dev_err(dev, "%s: update ctrl2 ret=%d\n", __func__, ret);
+-		return ret;
+-	}
+-
+-	ret = pcf2127_wdt_active_ping(&pcf2127->wdd);
+-	if (ret)
+-		return ret;
++	pcf2127->timestamp_valid = false;
+ 
+ 	return count;
+ };
+@@ -524,8 +528,7 @@ static ssize_t timestamp0_show(struct device *dev,
+ 	if (ret)
+ 		return ret;
+ 
+-	if (!(data[PCF2127_REG_CTRL1] & PCF2127_BIT_CTRL1_TSF1) &&
+-	    !(data[PCF2127_REG_CTRL2] & PCF2127_BIT_CTRL2_TSF2))
++	if (!pcf2127->timestamp_valid)
+ 		return 0;
+ 
+ 	tm.tm_sec = bcd2bin(data[PCF2127_REG_TS_SC] & 0x7F);
+-- 
+2.26.2
 
-> 
-> 
-> v2->v3:
-> * Split the single patch in v2 into 3 patches. (Neil)
-> 
-> v1->v2:
-> * Fix a typo in commit message - s/unchange/unchanged/
-> 
-> 
-> Liu Ying (3):
->   drm/bridge: nwl-dsi: Force a full modeset when crtc_state->active is
->     changed to be true
->   drm/bridge: nwl-dsi: Remove a check on unchanged HS clock rate from
->     ->mode_set()
->   drm/bridge: nwl-dsi: Get MIPI DSI controller and PHY ready in
->     ->mode_set()
-> 
->  drivers/gpu/drm/bridge/nwl-dsi.c | 86 +++++++++++++++++---------------
->  1 file changed, 46 insertions(+), 40 deletions(-)
-> 
-> -- 
-> 2.25.1
-> 
