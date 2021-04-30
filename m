@@ -2,94 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CBF36F328
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 02:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D19CF36F32D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 02:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbhD3AZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 20:25:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33624 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229519AbhD3AZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 20:25:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF8A861433;
-        Fri, 30 Apr 2021 00:24:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619742299;
-        bh=En+FczNIwvLyCaIjOro7KVVQ1zy4lAiRsirNKCBYG2s=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=nSAS/DXBQ9SUXI9ju8j9Ny2q3Usx+T2UZ5jlssLAkRqw/7NAqKLKT8sry0fuEZSc3
-         SB8yFGOjsqqA24JChpSiCGnuS7qYS6jGVQp22bpkzr3TPkK9y04VrEZyAvlqlAWgRo
-         gsflzwRBlwV7KwDAlvt9rsnGaxtlkugeIisRJagP/XYfbkqdgVmlprfZL+3h0KwMBq
-         DJ53BUiN2oIHJQ33qsvU7mM9GBgqOAxVBQR1b31Tk6vSoDP3fe44brYLP5eswqf3rj
-         dCRp0vJ8J2qOf1zVRrv/OAI9N7x5+/6oeNEmQeodNbypc7hf7VMOZhGuAz0zKtjRAa
-         nKR6eAAqz8b5A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 759335C051D; Thu, 29 Apr 2021 17:24:59 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 17:24:59 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Feng Tang <feng.tang@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel-team@fb.com, neeraju@codeaurora.org,
-        zhengjun.xing@intel.com, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [clocksource]  8c30ace35d:
- WARNING:at_kernel/time/clocksource.c:#clocksource_watchdog
-Message-ID: <20210430002459.GB975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <87y2d3mo2q.ffs@nanos.tec.linutronix.de>
- <87a6pimt1f.ffs@nanos.tec.linutronix.de>
- <20210428183118.GR975577@paulmck-ThinkPad-P17-Gen-1>
- <878s517axu.ffs@nanos.tec.linutronix.de>
- <20210429142641.GU975577@paulmck-ThinkPad-P17-Gen-1>
- <87lf91f177.ffs@nanos.tec.linutronix.de>
- <20210429230411.GK4032392@tassilo.jf.intel.com>
+        id S229783AbhD3AhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 20:37:00 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16932 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229519AbhD3Ag7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 20:36:59 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FWYJN55CwzwSlZ;
+        Fri, 30 Apr 2021 08:33:40 +0800 (CST)
+Received: from [10.174.178.100] (10.174.178.100) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 30 Apr 2021 08:36:07 +0800
+Subject: Re: Linux 5.10.33
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
+        <torvalds@linux-foundation.org>, <stable@vger.kernel.org>
+CC:     <lwn@lwn.net>, <jslaby@suse.cz>
+References: <16196144259654@kroah.com>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <7c4570a7-d156-1d61-b03f-281b3dfff41c@huawei.com>
+Date:   Fri, 30 Apr 2021 08:36:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429230411.GK4032392@tassilo.jf.intel.com>
+In-Reply-To: <16196144259654@kroah.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.100]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 04:04:11PM -0700, Andi Kleen wrote:
-> > > The idea is to leave the watchdog code in kernel/time/clocksource.c,
-> > > but to move the fault injection into kernel/time/clocksourcefault.c or
-> > > some such.  In this new file, new clocksource structures are created that
-> > > use some existing timebase/clocksource under the covers.  These then
-> > > inject delays based on module parameters (one senstive to CPU number,
-> > > the other unconditional).  They register these clocksources using the
-> > > normal interfaces, and verify that they are eventually marked unstable
-> > > when the fault-injection parameters warrant it.  This is combined with
-> > > the usual checking of the console log.
-> > >
-> > > Or am I missing your point?
-> > 
-> > That's what I meant.
+
+
+On 2021/4/28 20:53, Greg Kroah-Hartman wrote:
+> I'm announcing the release of the 5.10.33 kernel.
 > 
-> I still think all this stuff should be in the fault injection framework,
-> like other fault injections, to have a consistent discoverable interface. 
+> All users of the 5.10 kernel series must upgrade.
 > 
-> I actually checked now and the standard fault injection supports boot arguments,
-> so needing it at boot time shouldn't be a barrier.
+> The updated 5.10.y git tree can be found at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.10.y
+> and can be browsed at the normal kernel.org git web browser:
+> 	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Per Thomas's feedback, I am in the midst of converting this to a unit
-test implemented as a kernel module, at which point the only fault
-injection will be in the unit test.
+Tested on arm64 and x86 for 5.10.33,
 
-At the moment, the code just registers, reads, unregisters, and verifies
-that the bogus unit-test clocksources act normally.  Fault injection is
-next on the list for the fine-grained clocksource.  Which, as Thomas
-noted, is quite a bit simpler, as I just need to force a delay until
-the clocksource gets marked unstable with no need for fancy counting.
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.10.y
+Version: 5.10.33
+Commit: 8bd8301ccc115b7885517077a097ee028fcb1ec2
+Compiler: gcc version 7.3.0 (GCC)
 
-							Thanx, Paul
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 6304
+passed: 6304
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 6304
+passed: 6304
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
