@@ -2,83 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8DAA36FD9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E8B36FDAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbhD3PWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 11:22:02 -0400
-Received: from mail-oo1-f47.google.com ([209.85.161.47]:44599 "EHLO
-        mail-oo1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbhD3PV7 (ORCPT
+        id S230395AbhD3PXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 11:23:39 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2954 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230507AbhD3PXh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 11:21:59 -0400
-Received: by mail-oo1-f47.google.com with SMTP id i3-20020a4ad3830000b02901ef20f8cae8so8272436oos.11;
-        Fri, 30 Apr 2021 08:21:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=K/nJwkgRAXqwdVzM6o6lLqjZ+U6/JacCPuepUB7jiw4=;
-        b=VzxDFWWWJ90k9+MnlyMURS5RkFpPAGHphqUgp3Mn8VCk1Q2VV5rgYUxbmXbhFQxjC9
-         q6GzrHlZjXggiPLWPPJ2FL24zH5PVaVD2keiT+xlDdYP/QkRrW1E/zgumEN2DqasiTrk
-         8lcBcp/fXEH8GC5ttjWiXiGTN0vuH8Fw5o1h83CtaAcyoeM2KQnDMqLWAbUJAoj5iSXs
-         lRJxlSFQLmwQa4X781jej4FXX1qOm++qa4UCmRTXqbhK/5uzQTpxybyIHLG2dNFYbhhn
-         2Ua165dj5funKpHuIXFZDH+FCVDScxABuL/aVTZPGaOhEhUS+rZC5uz2NRhEvGUZqIQN
-         raTg==
-X-Gm-Message-State: AOAM5332dEqdVgq7jnKDQSTQZpgzVBA8UEMQzwMOMFUgURGtqDkDn0pH
-        9Ou1vr7W7SjmB/n5wv+m9w==
-X-Google-Smtp-Source: ABdhPJw2d5bcg23XAyoaeqsvA2LCgrU/4JHIpHaFIgr85/rVl1gXgp/F2SzdE5eO6kAyQXuGCodaPQ==
-X-Received: by 2002:a4a:4c42:: with SMTP id a63mr1898053oob.33.1619796069909;
-        Fri, 30 Apr 2021 08:21:09 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id e12sm747891otq.46.2021.04.30.08.21.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 08:21:08 -0700 (PDT)
-Received: (nullmailer pid 3347909 invoked by uid 1000);
-        Fri, 30 Apr 2021 15:21:08 -0000
-Date:   Fri, 30 Apr 2021 10:21:08 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/3] dt-bindings: serial: pl011: Change to reference
- the kernel-defined serial.yaml
-Message-ID: <20210430152108.GA3344055@robh.at.kernel.org>
-References: <20210422085837.513-1-thunder.leizhen@huawei.com>
- <20210422085837.513-3-thunder.leizhen@huawei.com>
+        Fri, 30 Apr 2021 11:23:37 -0400
+Received: from fraeml738-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FWwnw2JLqz6xhhn;
+        Fri, 30 Apr 2021 23:12:04 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml738-chm.china.huawei.com (10.206.15.219) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 30 Apr 2021 17:22:46 +0200
+Received: from localhost (10.52.124.90) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 30 Apr
+ 2021 16:22:45 +0100
+Date:   Fri, 30 Apr 2021 16:21:10 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "Hans Verkuil" <hans.verkuil@cisco.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-media@vger.kernel.org>
+Subject: Re: [PATCH v4 01/79] media: venus: fix PM runtime logic at
+ venus_sys_error_handler()
+Message-ID: <20210430162110.000058e0@Huawei.com>
+In-Reply-To: <6d463d21f0dd55c3d84db0458c7a5c4e0d7c5bc1.1619621413.git.mchehab+huawei@kernel.org>
+References: <cover.1619621413.git.mchehab+huawei@kernel.org>
+        <6d463d21f0dd55c3d84db0458c7a5c4e0d7c5bc1.1619621413.git.mchehab+huawei@kernel.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422085837.513-3-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.124.90]
+X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 04:58:36PM +0800, Zhen Lei wrote:
-> The /schemas/serial.yaml from dt-schema only has the property $nodename,
-> whereas the kernel-defined /schemas/serial/serial.yaml contains more
-> useful properties, support for more complex application scenarios.
+On Wed, 28 Apr 2021 16:51:22 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+
+> The venus_sys_error_handler() assumes that pm_runtime was
+> able to resume, as it does things like:
 > 
-> For example:
-> 1) The property "current-speed" in fsl-lx2160a.dtsi
-> 2) The subnode "bluetooth" in hi3660-hikey960.dts
+> 	while (pm_runtime_active(core->dev_dec) || pm_runtime_active(core->dev_enc))
+> 		msleep(10);
 > 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> Well, if, for whatever reason, this won't happen, the routine
+> won't do what's expected. So, check for the returned error
+> condition, warning if it returns an error.
+> 
+> Fixes: af2c3834c8ca ("[media] media: venus: adding core part and helper functions")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
->  Documentation/devicetree/bindings/serial/pl011.yaml | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  drivers/media/platform/qcom/venus/core.c | 14 +++++++++++---
+>  1 file changed, 11 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+> index 54bac7ec14c5..c80c27c87ccc 100644
+> --- a/drivers/media/platform/qcom/venus/core.c
+> +++ b/drivers/media/platform/qcom/venus/core.c
+> @@ -84,7 +84,11 @@ static void venus_sys_error_handler(struct work_struct *work)
+>  			container_of(work, struct venus_core, work.work);
+>  	int ret = 0;
+>  
+> -	pm_runtime_get_sync(core->dev);
+> +	ret = pm_runtime_get_sync(core->dev);
+> +	if (WARN_ON(ret < 0)) {
+> +		pm_runtime_put_noidle(core->dev);
+> +		return;
+> +	}
+>  
+>  	hfi_core_deinit(core, true);
+>  
+> @@ -106,9 +110,13 @@ static void venus_sys_error_handler(struct work_struct *work)
+>  
+>  	hfi_reinit(core);
+>  
+> -	pm_runtime_get_sync(core->dev);
+> +	ret = pm_runtime_get_sync(core->dev);
+> +	if (WARN_ON(ret < 0)) {
+> +		pm_runtime_put_noidle(core->dev);
 
-What about all these:
+mutex_unlock(&core->lock);
+(the unlock is currently just below the enable_irq() in 5.12)
 
-$ git grep 'schemas/serial.yaml'
-Documentation/devicetree/bindings/serial/8250.yaml:  - $ref: /schemas/serial.yaml#
-Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml:  - $ref: /schemas/serial.yaml#
-Documentation/devicetree/bindings/serial/ingenic,uart.yaml:  - $ref: /schemas/serial.yaml#
-Documentation/devicetree/bindings/serial/pl011.yaml:  - $ref: /schemas/serial.yaml#
-Documentation/devicetree/bindings/serial/qca,ar9330-uart.yaml:  - $ref: /schemas/serial.yaml#
-Documentation/devicetree/bindings/serial/samsung_uart.yaml:  - $ref: /schemas/serial.yaml#
-Documentation/devicetree/bindings/serial/sifive-serial.yaml:  - $ref: /schemas/serial.yaml#
-Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml:  - $ref: /schemas/serial.yaml#
-Documentation/devicetree/bindings/soc/qcom/qcom,geni-se.yaml:    $ref: /schemas/serial.yaml#
+
+> +		return;
+> +	}
+>  
+> -	ret |= venus_boot(core);
+> +	ret = venus_boot(core);
+>  	ret |= hfi_core_resume(core, true);
+>  
+>  	enable_irq(core->irq);
+
