@@ -2,95 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E62F36F8E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 12:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F64A36F8EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 13:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231615AbhD3LAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 07:00:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46418 "EHLO mail.kernel.org"
+        id S229911AbhD3LFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 07:05:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:45636 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230394AbhD3LAb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 07:00:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D8AE61418;
-        Fri, 30 Apr 2021 10:59:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619780382;
-        bh=tBELwnH1I1kwn2Zj7bFGqXscPmPp5QXvntbnnDhS2kU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mAjGvjkP7U5JZxnCcAnzTz6gYNVoauPkUYtlO6jCLPmvB/XCTb5HM5Csvs7xqAbZ9
-         DI2l37T0/wDXaciIpsojFGMaotMQHwmRpB2x14wjjV499SDoaF/G2fDkO6vjTDRjZP
-         MBkK3drVMkZrNnhrgB42LNO4vAmuN8QPk3M5iWNPLiII3fXFuXC8UdEN2FILIU/0qN
-         x+fLL/fjPdlpMLlBAxA5JvfVUTHEJVO8cETnaauLuXOKxAL125iL0nuG86OTtUD8Mz
-         YsKZraR9C/IO0WFKmlwqpOHQaOncBwcy3cnaKbSkTpEY+W9bptSFdKu+RiF1wc46pS
-         wDjWJYecn922Q==
-Date:   Fri, 30 Apr 2021 11:59:10 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Art Nikpal <email2tema@gmail.com>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>, jbrunet@baylibre.com,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        dri-devel@lists.freedesktop.org, linux-spi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        Artem Lapkin <art@khadas.com>, nick@khadas.com,
-        Gouwa Wang <gouwa@khadas.com>
-Subject: Re: [PATCH] SPI: meson-spifc add missed calls to remove function
-Message-ID: <20210430105910.GA5981@sirena.org.uk>
-References: <20210423034247.992052-1-art@khadas.com>
- <20210423114735.GA5507@sirena.org.uk>
- <CAKaHn9+d5crmmG-aKyLuvyxk+A7aC9qqfX_3wuMXm50pg+pZ4w@mail.gmail.com>
- <20210426115645.GB4590@sirena.org.uk>
- <CAKaHn9JM-KEiz3_Btsz8_fr7hcZ2Sm8B64VyLvgpvKK-NKco3w@mail.gmail.com>
+        id S229543AbhD3LFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 07:05:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AE8A5ED1;
+        Fri, 30 Apr 2021 04:04:01 -0700 (PDT)
+Received: from [10.57.29.245] (unknown [10.57.29.245])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7D2F73F70D;
+        Fri, 30 Apr 2021 04:03:58 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2] sched/fair: Only compute base_energy_pd if
+ necessary
+To:     Pierre.Gondois@arm.com
+Cc:     linux-kernel@vger.kernel.org, xuewen.yan@unisoc.com,
+        qperret@qperret.net, dietmar.eggemann@arm.com,
+        Vincent.Donnefort@arm.com, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com
+References: <20210429101948.31224-1-Pierre.Gondois@arm.com>
+ <20210429101948.31224-2-Pierre.Gondois@arm.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <c7dba0eb-9e82-06ff-299c-aa3fc28c1107@arm.com>
+Date:   Fri, 30 Apr 2021 12:03:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5mCyUwZo2JvN/JJP"
-Content-Disposition: inline
-In-Reply-To: <CAKaHn9JM-KEiz3_Btsz8_fr7hcZ2Sm8B64VyLvgpvKK-NKco3w@mail.gmail.com>
-X-Cookie: QOTD:
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210429101948.31224-2-Pierre.Gondois@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Pierre,
 
---5mCyUwZo2JvN/JJP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 4/29/21 11:19 AM, Pierre.Gondois@arm.com wrote:
+> From: Pierre Gondois <Pierre.Gondois@arm.com>
+> 
+> find_energy_efficient_cpu() searches the best energy CPU
+> to place a task on. To do so, the energy of each performance domain
+> (pd) is computed w/ and w/o the task placed in each pd.
+> 
+> The energy of a pd w/o the task (base_energy_pd) is computed prior
+> knowing whether a CPU is available in the pd.
+> 
+> Move the base_energy_pd computation after looping through the CPUs
+> of a pd and only computes it if at least one CPU is available.
+> 
+> Suggested-by: Xuewen Yan <xuewen.yan@unisoc.com>
+> Signed-off-by: Pierre Gondois <Pierre.Gondois@arm.com>
+> ---
+>   kernel/sched/fair.c | 38 ++++++++++++++++++++++----------------
+>   1 file changed, 22 insertions(+), 16 deletions(-)
+> 
 
-On Fri, Apr 30, 2021 at 04:49:35PM +0800, Art Nikpal wrote:
+Make sense. I will speed-up feec() on Android devices for tasks
+being moved into 'background' cgroup (limited to subset of CPUs,
+e.g. to only Little cores). LGTM.
 
-> Yep! but
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
 
-Please don't top post, reply in line with needed context.  This allows
-readers to readily follow the flow of conversation and understand what
-you are talking about and also helps ensure that everything in the
-discussion is being addressed.
-
-> if i try call spi_master_put(master) or spi_unregister_controller(master);
-> it's made Segmentation fault for me
->=20
-> what's wrong - may be somebody can help me
-
-Probably something is referencing the controller afer it was freed, I do
-notice that the current version of the driver uses devm_ to register the
-controller so you'd end up with a double free unless you either use devm_
-when freeing or change to a normal registration.
-
---5mCyUwZo2JvN/JJP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCL4v0ACgkQJNaLcl1U
-h9C+ygf/aSVidn4I4EOCKFzVvuP8YtVO/LlZ673fdMyXlahIvobO2X+Q+kJBMo2J
-s7Lj6lM7SL6CA4AKXi5oiGD/nDKxNzlPzm4YsCiqmmtXov0lJlvIPI9WP5eCI4vh
-4tFrzc86tskjj1elOlGLTDgYDoEoxF11+Qmo34pOBNlPiDQcGzoN2u0IHPgmEZIr
-8PaJ0kFyD0svdptByZp5auKmNWSaOfUYSCqTD6NLqXgO/7kiS9gt40a3X2zlcSNB
-fhU5us6mx5hC0snp0O1rzjQDaHZBfi5WYk431gzG3ZG81uyJdKQ7iFjuz71Vo+nJ
-cG5VuDJ8NoOV25w4rCnh/b2IscFWPA==
-=YmgC
------END PGP SIGNATURE-----
-
---5mCyUwZo2JvN/JJP--
+Regards,
+Lukasz
