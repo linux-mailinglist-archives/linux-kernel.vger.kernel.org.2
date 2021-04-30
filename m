@@ -2,96 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF62B36FD39
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:05:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2C436FD3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230092AbhD3PDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 11:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbhD3PDX (ORCPT
+        id S230316AbhD3PD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 11:03:28 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:37659 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229750AbhD3PD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 11:03:23 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FFE2C06174A;
-        Fri, 30 Apr 2021 08:02:35 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id u20so81173981lja.13;
-        Fri, 30 Apr 2021 08:02:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=G0037Jf1ObgVnWJX3giHmaVlY4h3vdc7P44Jc0d03qY=;
-        b=l+7pA/sTRV5Tya+cXRjZYJbBVBrn7NPzPJZRWLrdPSjuak9PKrv3GGp7pBkcyBU+0H
-         NncCDbb13A3P1IpPztCi29rWDOtqDSVSGRJUi3gZZVBxSmRwlBjPrkivz/GvxOolZfm2
-         uvcBV7ekYUqgKnriu1IWenBux+nbLZa8yqN+dF3hm79o8cWFrVbnXAvKrkGTC6GEDawH
-         9+ZkS/EJreYgbXYu9E6GdHAyvdkm2M0zPH/CTSxGMdlT+ThMWNdU1gbOf31V3YRZmq16
-         QWRY5QOhq44IG7eUh+SDVrMbfch7eNuOTdQJvihSWaYeyQ8STzGRSKnyzyzrXvcYSCTR
-         GuOA==
+        Fri, 30 Apr 2021 11:03:26 -0400
+Received: by mail-ot1-f49.google.com with SMTP id c8-20020a9d78480000b0290289e9d1b7bcso50590059otm.4;
+        Fri, 30 Apr 2021 08:02:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G0037Jf1ObgVnWJX3giHmaVlY4h3vdc7P44Jc0d03qY=;
-        b=VS6tgXT4uLg6C7t7jnCN68VyFYrC0enD262M2hCgn+pmAzHDGdxoQSXbFFbTTJtn7l
-         9y9+zT6n5LJ70DBENlaNVZDjz0g6DstaBI7oZmGCi9hjPsaWAfGqQNHx0o0hRdy5AyyH
-         75hLlv3Wpu2y/T4bbH6+29LhxDLs6RzhDZ89cRaxPwYScIt6m54InlPmw1Fk4ukOfmDo
-         mgrxd0+Skhos/PrQ381uiKvmbZ0TwPgTw1uDXLAvc35o8Clte3OyE8uHEdnWFeip92YF
-         10unTrxM4t9K6ykYeZFoOQGGg9QcledzvIumPt9OI4JHx8FZQAE31KWF00DaOD0yJ2Gq
-         8eYw==
-X-Gm-Message-State: AOAM532XT0IW2u1OJzcEYYMbmnALxo7XI1aeJ6j4AzpJL4rOI4/phIqw
-        oBvHOn6cSyuQXutHsVknYwrPMoct61lujRLmTXA=
-X-Google-Smtp-Source: ABdhPJzzRoiphDcV4Xb+RnsfSFP2UaDKR4I7TM3sTpQ4SJXRK/Adr0+lnKDKVxJhT/yhizd9ezEVGZgTS4wboajtAfE=
-X-Received: by 2002:a2e:a7cc:: with SMTP id x12mr4098497ljp.473.1619794953707;
- Fri, 30 Apr 2021 08:02:33 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ihZB6yDiM7/1BLJJs/4skMaPojPVqSkyPXWsToa7Z7E=;
+        b=p6qwYW9wcK+yxBC4VVYN/DPj8Fxiu9C2CRnCn3sudLHqhyLhr7IDlz5A7RbrTJPkTO
+         awZMmbBq9A5+6PXvcSIGFjPG0vNBN+jaKoN4uh9+pgqi0+BniE5Kq34iT45WvpmFRwrC
+         p5HJEYJqi/wcLtttagEpIodVSCuShMJEEVETGlz92doQN9V8u/jNogtyo1fZ9T9Hy1zb
+         DtEIItG0f7q1Peb1eSdjvnK+P1I8dHBo0Iav6XigCNNoulbLyC3QXfuODvqjuURortMC
+         8U5sEPoSKNc/dPkRN9eRXyno+hZ6r5BO25tEpolzApeBl3AO5bJv6VpXX4Y7fQynqFOi
+         S3Aw==
+X-Gm-Message-State: AOAM5335n2w3L+ZV29F77Vf6llB6h8+33JjyPj4FJwEqE+xr9EG56VGE
+        fyNWFYqctzGTHqbjMoAQOA==
+X-Google-Smtp-Source: ABdhPJwH9oo3aLQiqeBbk/J+VM/LSrW/6BkULhZAPr8wFTJTS7hl+WkVHK+SVf8Pok+emEfMk2KAGQ==
+X-Received: by 2002:a9d:6e8f:: with SMTP id a15mr3969921otr.169.1619794957696;
+        Fri, 30 Apr 2021 08:02:37 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id p65sm819330oia.46.2021.04.30.08.02.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 08:02:36 -0700 (PDT)
+Received: (nullmailer pid 3318259 invoked by uid 1000);
+        Fri, 30 Apr 2021 15:02:35 -0000
+Date:   Fri, 30 Apr 2021 10:02:35 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-remoteproc@vger.kernel.org, agross@kernel.org,
+        ohad@wizery.com, rishabhb@codeaurora.org, ulf.hansson@linaro.org,
+        devicetree@vger.kernel.org, dianders@chromium.org,
+        mathieu.poirier@linaro.org, rjw@rjwysocki.net,
+        sidgup@codeaurora.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, swboyd@chromium.org
+Subject: Re: [PATCH 04/12] dt-bindings: remoteproc: qcom: Add QMP bindings
+Message-ID: <20210430150235.GA3318229@robh.at.kernel.org>
+References: <1618574638-5117-1-git-send-email-sibis@codeaurora.org>
+ <1618574638-5117-5-git-send-email-sibis@codeaurora.org>
 MIME-Version: 1.0
-References: <0000000000000c97e505bdd1d60e@google.com> <cfa0f9b8-91ec-4772-a6c2-c5206f32373fn@googlegroups.com>
- <53a22ab4-7a2d-4ebd-802d-9d1b4ce4e087n@googlegroups.com> <CAGyP=7fpNBhbmczjDq-vpzbSDyqwCw2jS7xQo4XO=bxwsy2ddQ@mail.gmail.com>
- <a6ce21f4-04e7-f34c-8cfc-f8158f7fe163@gmail.com>
-In-Reply-To: <a6ce21f4-04e7-f34c-8cfc-f8158f7fe163@gmail.com>
-From:   Palash Oswal <oswalpalash@gmail.com>
-Date:   Fri, 30 Apr 2021 20:32:22 +0530
-Message-ID: <CAGyP=7czG1nmzpM5T784iBdApVL14hGoAfw-nhS=tNH5t9C79g@mail.gmail.com>
-Subject: Re: INFO: task hung in io_uring_cancel_sqpoll
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzbot+11bf59db879676f59e52@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1618574638-5117-5-git-send-email-sibis@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 8:03 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
->
-> On 4/30/21 3:21 PM, Palash Oswal wrote:
-> > On Thursday, March 18, 2021 at 9:40:21 PM UTC+5:30 syzbot wrote:
-> >>
-> >> Hello,
-> >>
-> >> syzbot found the following issue on:
-> >>
-> >> HEAD commit: 0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
-> >> git tree: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-> >> console output: https://syzkaller.appspot.com/x/log.txt?x=12dde5aed00000
-> >> kernel config: https://syzkaller.appspot.com/x/.config?x=81c0b708b31626cc
-> >> dashboard link: https://syzkaller.appspot.com/bug?extid=11bf59db879676f59e52
-> >> userspace arch: riscv64
-> >> CC: [asml.s...@gmail.com ax...@kernel.dk io-u...@vger.kernel.org linux-...@vger.kernel.org]
-> >>
-> >> Unfortunately, I don't have any reproducer for this issue yet.
->
-> There was so many fixes in 5.12 after this revision, including sqpoll
-> cancellation related... Can you try something more up-to-date? Like
-> released 5.12 or for-next
->
+On Fri, 16 Apr 2021 17:33:50 +0530, Sibi Sankar wrote:
+> Add Qualcomm Mailbox Protocol (QMP) binding to replace the power domains
+> exposed by the AOSS QMP node.
+> 
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> ---
+>  Documentation/devicetree/bindings/remoteproc/qcom,q6v5.txt | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
 
-The reproducer works for 5.12.
-
-I tested against the HEAD b1ef997bec4d5cf251bfb5e47f7b04afa49bcdfe
-commit on for-next tree
-https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/?h=for-next
-and the reproducer fails.
-
-
-Palash
+Acked-by: Rob Herring <robh@kernel.org>
