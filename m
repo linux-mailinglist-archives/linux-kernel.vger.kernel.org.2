@@ -2,111 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E280B370102
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 21:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE06370106
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 21:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231803AbhD3TID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 15:08:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52438 "EHLO
+        id S231790AbhD3TIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 15:08:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230356AbhD3TH7 (ORCPT
+        with ESMTP id S230356AbhD3TIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 15:07:59 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14988C06174A;
-        Fri, 30 Apr 2021 12:07:09 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id h15so19482980wre.11;
-        Fri, 30 Apr 2021 12:07:09 -0700 (PDT)
+        Fri, 30 Apr 2021 15:08:04 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C5D8C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 12:07:14 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id n84so11207363wma.0
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 12:07:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aveJ9Y/DaKlYULaGHHEd5Zq7IUOjFmr/T5fZyY4IRnE=;
-        b=GCwEItj17qYJY04RQI3ryj2DqPd3AfUlnlJD1csKxfWxQNzI28YtdnsOvzA1q0ztPq
-         byeFNEOgeXqAXWN89PiOmy1h2XnFaNpA5uLlWzGM2sfeNVvr6Ky0zNKgXBvaST9ikstG
-         3nurseIGkET+d9Ex8X8u2Gc+F4j8xyQ0eNuAX8lqMhGW2HAp3UmdRr6Rk4CIi6iGXYdU
-         lw/FSGKxz+z+cbMdLZjC2ff/vpNvgo3poWGqbETQ8Y6MI4Ghj5s8Mu1Iy0FtB+NMJyJZ
-         psF35aHvvnFSqJLCwPLJY45h/P3Ph/Qlg41IxRyuSigC9MZnMYAkF8YBh4QmfzC42Fvk
-         ikVw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=QsIOjRVDObuzB3TAj/QUXyHP2hTbDXsiJXpMnud8bTw=;
+        b=feNJVQ1RjmiP25z0XbDMVEl3Wt/CAfZNpYgdwRSY9Wh2+n0aM8JgX8jY0QwDZgMchX
+         Ups7Y3KALpWGD3bV3U8n/QnNnUitq+p4g/Gr1Whcokp7pVBff36nf6A7RGqYn18dJtGH
+         2wwrQ+RcyNFulDrIRN5DxCjp/98T8R/hXzPOBw+SSjANKqZRdGJvPoT2HfmOzpAGy0r6
+         1+yDwfdq2MLhyqfYd21/L/j8eRS9P8HtE5KNJe3xHCLruZEn91N7DcV3mRLCrQkPwsMd
+         j+4llQf4dyL1rVltTM6lZD5/PXY8JvsN9DQFroofvOnMC6/gQW40X1GAVLwKjemIC8Ok
+         TjBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=aveJ9Y/DaKlYULaGHHEd5Zq7IUOjFmr/T5fZyY4IRnE=;
-        b=YmrhKfJZDk4Pe0T4lC0DFpqCtPgk5kYzsrZNblJiIbb5lflCOUv9FdPLgENBC/s7Qn
-         KCqfbwEeNwJIPHxv5MbXcpvTHKIZQcjBI2/Kw5PxWjjFadiO6JCmpVFSxqQfNJEkeiQv
-         UgB1hNy2Pe1MdlAkbRFA1AcgborE/bK0ZRmiafwgLPp99SoONfag6KfaSqlo5MFVIbZO
-         UQaOoTnNaOlJZqdq68nEFN29pxaNiK/VCAm/f97SwQh6ta+LvEsvkO5gFPNKw+SLOkZ4
-         +HCuKCoZ190dpUgE7WWZvekCgZRRn5/QtazknyND5Kg57KN1YKFKPNwWl3wGs2xDFKaF
-         mwyg==
-X-Gm-Message-State: AOAM530mZrUupMiGZTdRYMEJZP4Tq6YdOjOkUU0tP2Aj7fMjWrTP3nY9
-        eYvZwfyAW9TT0Ywq2Iw3FH6QJNHkMOnUFg==
-X-Google-Smtp-Source: ABdhPJwkYSPnPbaYqjrdqtN8ivY0o3kYpZTpV6cNF3nK/qBSvUmP3LNrsaL1w+uVonRG27Q9Cokayg==
-X-Received: by 2002:adf:ff89:: with SMTP id j9mr8953565wrr.416.1619809627838;
-        Fri, 30 Apr 2021 12:07:07 -0700 (PDT)
-Received: from pevik ([62.201.25.198])
-        by smtp.gmail.com with ESMTPSA id u17sm13487650wmq.30.2021.04.30.12.07.07
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=QsIOjRVDObuzB3TAj/QUXyHP2hTbDXsiJXpMnud8bTw=;
+        b=NNlwvpe/GHDJ41nm9ZihIDhR715AyYvNXIfDpNQGpj+II/5s/xTPCu29Db76KOifBY
+         lm4oa5uWe6Jnct8bupMIqsWSIk2c47Pa2d+L1WY/5f4SgiyPqkWQ8XXHZz+uTHEnpHhi
+         ThxfSmavq3yHc936fFH5I+DcgxijZiRBrb87/0mCIC/rCmn/RWONS/8AorS0XN7THD3d
+         YRc6lXY1bbVK0Vuv4oQ1FwHdVrx+VG+2//gHEx4yzBAWTmEFmJc6MPRUdgSZWpEtxvbT
+         edtRQvh++fasovPXROb8XHpHeRX6SOWby93IchL1sjFuYE/RH47PG28FCEpHUPmFPQiw
+         dalQ==
+X-Gm-Message-State: AOAM531INyJnpgZ4lHiqg7UNfQYFKafGxrnlmGWlPgW/lbtHDQ2zmjD0
+        kXaN6bEnBKE//9HNu4g4NncojA==
+X-Google-Smtp-Source: ABdhPJxl3CmvBsFsTgbZKT8UBCmij5XM7DUxig/6GHwehvyMQxbQwicz0ECpF7YdTMQ9sty2UELYvA==
+X-Received: by 2002:a1c:545c:: with SMTP id p28mr18332214wmi.118.1619809633033;
+        Fri, 30 Apr 2021 12:07:13 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:15:13:8eae:7187:8db5:a3e])
+        by smtp.gmail.com with ESMTPSA id a9sm3801655wmj.1.2021.04.30.12.07.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 12:07:07 -0700 (PDT)
-Date:   Fri, 30 Apr 2021 21:07:05 +0200
-From:   Petr Vorel <petr.vorel@gmail.com>
-To:     Heiko Thiery <heiko.thiery@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Hemminger <stephen@networkplumber.org>
-Subject: Re: [PATCH iproute2-next v2] lib/fs: fix issue when
- {name,open}_to_handle_at() is not implemented
-Message-ID: <YIxVWXqBkkS6l5lB@pevik>
-Reply-To: Petr Vorel <petr.vorel@gmail.com>
-References: <20210430062632.21304-1-heiko.thiery@gmail.com>
+        Fri, 30 Apr 2021 12:07:12 -0700 (PDT)
+Date:   Fri, 30 Apr 2021 21:07:06 +0200
+From:   Marco Elver <elver@google.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Subject: Re: siginfo_t ABI break on sparc64 from si_addr_lsb move 3y ago
+Message-ID: <YIxVWkT03TqcJLY3@elver.google.com>
+References: <YIpkvGrBFGlB5vNj@elver.google.com>
+ <m11rat9f85.fsf@fess.ebiederm.org>
+ <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
+ <m15z031z0a.fsf@fess.ebiederm.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210430062632.21304-1-heiko.thiery@gmail.com>
+In-Reply-To: <m15z031z0a.fsf@fess.ebiederm.org>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Apr 30, 2021 at 12:08PM -0500, Eric W. Biederman wrote:
+> Arnd Bergmann <arnd@arndb.de> writes:
+[...] 
+> >> I did a quick search and the architectures that define __ARCH_SI_TRAPNO
+> >> are sparc, mips, and alpha.  All have 64bit implementations.  A further
+> >> quick search shows that none of those architectures have faults that
+> >> use BUS_MCEERR_AR, BUS_MCEERR_AO, SEGV_BNDERR, SEGV_PKUERR, nor do
+> >> they appear to use mm/memory-failure.c
+> >>
+> >> So it doesn't look like we have an ABI regression to fix.
+> >
+> > Even better!
+> >
+> > So if sparc is the only user of _trapno and it uses none of the later
+> > fields in _sigfault, I wonder if we could take even more liberty at
+> > trying to have a slightly saner definition. Can you think of anything that
+> > might break if we put _trapno inside of the union along with _perf
+> > and _addr_lsb?
+> 
+> On sparc si_trapno is only set when SIGILL ILL_TRP is set.  So we can
+> limit si_trapno to that combination, and it should not be a problem for
+> a new signal/si_code pair to use that storage.  Precisely because it is
+> new.
+> 
+> Similarly on alpha si_trapno is only set for:
+> 
+> SIGFPE {FPE_INTOVF, FPE_INTDIV, FPE_FLTOVF, FPE_FLTDIV, FPE_FLTUND,
+> FPE_FLTINV, FPE_FLTRES, FPE_FLTUNK} and SIGTRAP {TRAP_UNK}.
+> 
+> Placing si_trapno into the union would also make the problem that the
+> union is pointer aligned a non-problem as then the union immediate
+> follows a pointer.
+> 
+> I hadn't had a chance to look before but we must deal with this.  The
+> definition of perf_sigtrap in 42dec9a936e7696bea1f27d3c5a0068cd9aa95fd
+> is broken on sparc, alpha, and ia64 as it bypasses the code in
+> kernel/signal.c that ensures the si_trapno or the ia64 special fields
+> are set.
+> 
+> Not to mention that perf_sigtrap appears to abuse si_errno.
 
-> +++ b/lib/fs.c
-> @@ -30,6 +30,27 @@
->  /* if not already mounted cgroup2 is mounted here for iproute2's use */
->  #define MNT_CGRP2_PATH  "/var/run/cgroup2"
+There are a few other places in the kernel that repurpose si_errno
+similarly, e.g. arch/arm64/kernel/ptrace.c, kernel/seccomp.c -- it was
+either that or introduce another field or not have it. It is likely we
+could do without, but if there are different event types the user would
+have to sacrifice a few bits of si_perf to encode the event type, and
+I'd rather keep those bits for something else. Thus the decision fell to
+use si_errno.
 
-> +
-> +#ifndef defined HAVE_HANDLE_AT
-This is also wrong, it must be:
-#ifndef HAVE_HANDLE_AT
+Given it'd be wasted space otherwise, and we define the semantics of
+whatever is stored in siginfo on the new signal, it'd be good to keep.
 
-> +struct file_handle {
-> +	unsigned handle_bytes;
-> +	int handle_type;
-> +	unsigned char f_handle[];
-> +};
-> +
-> +int name_to_handle_at(int dirfd, const char *pathname,
-> +	struct file_handle *handle, int *mount_id, int flags)
-> +{
-> +	return syscall(name_to_handle_at, 5, dirfd, pathname, handle,
-> +	               mount_id, flags);
-Also I overlooked bogus 5 parameter, why is here? Correct is:
+> The code is only safe if the analysis that says we can move si_trapno
+> and perhaps the ia64 fields into the union is correct.  It looks like
+> ia64 much more actively uses it's signal extension fields including for
+> SIGTRAP, so I am not at all certain the generic definition of
+> perf_sigtrap is safe on ia64.
 
-	return syscall(__NR_name_to_handle_at, dfd, pathname, handle,
-			   mount_id, flags);
-> +}
-> +
-> +int open_by_handle_at(int mount_fd, struct file_handle *handle, int flags)
-> +{
-> +	return syscall(open_by_handle_at, 3, mount_fd, handle, flags);
-And here 3, correct version is is:
-	return syscall(__NR_open_by_handle_at, mount_fd, handle, flags);
+Trying to understand the requirements of si_trapno myself: safe here
+would mean that si_trapno is not required if we fire our SIGTRAP /
+TRAP_PERF.
 
+As far as I can tell that is the case -- see below.
 
-+ adding at the top:
+> > I suppose in theory sparc64 or alpha might start using the other
+> > fields in the future, and an application might be compiled against
+> > mismatched headers, but that is unlikely and is already broken
+> > with the current headers.
+> 
+> If we localize the use of si_trapno to just a few special cases on alpha
+> and sparc I think we don't even need to worry about breaking userspace
+> on any architecture.  It will complicate siginfo_layout, but it is a
+> complication that reflects reality.
+> 
+> I don't have a clue how any of this affects ia64.  Does perf work on
+> ia64?  Does perf work on sparc, and alpha?
+> 
+> If perf works on ia64 we need to take a hard look at what is going on
+> there as well.
 
-#ifndef HAVE_HANDLE_AT
-# include <sys/syscall.h>
-#endif
+No perf on ia64, but it seems alpha and sparc have perf:
 
-Kind regards,
-Petr
+	$ git grep 'select.*HAVE_PERF_EVENTS$' -- arch/
+	arch/alpha/Kconfig:	select HAVE_PERF_EVENTS    <--
+	arch/arc/Kconfig:	select HAVE_PERF_EVENTS
+	arch/arm/Kconfig:	select HAVE_PERF_EVENTS
+	arch/arm64/Kconfig:	select HAVE_PERF_EVENTS
+	arch/csky/Kconfig:	select HAVE_PERF_EVENTS
+	arch/hexagon/Kconfig:	select HAVE_PERF_EVENTS
+	arch/mips/Kconfig:	select HAVE_PERF_EVENTS
+	arch/nds32/Kconfig:	select HAVE_PERF_EVENTS
+	arch/parisc/Kconfig:	select HAVE_PERF_EVENTS
+	arch/powerpc/Kconfig:	select HAVE_PERF_EVENTS
+	arch/riscv/Kconfig:	select HAVE_PERF_EVENTS
+	arch/s390/Kconfig:	select HAVE_PERF_EVENTS
+	arch/sh/Kconfig:	select HAVE_PERF_EVENTS
+	arch/sparc/Kconfig:	select HAVE_PERF_EVENTS    <--
+	arch/x86/Kconfig:	select HAVE_PERF_EVENTS
+	arch/xtensa/Kconfig:	select HAVE_PERF_EVENTS
+
+Now, given ia64 is not an issue, I wanted to understand the semantics of
+si_trapno. Per https://man7.org/linux/man-pages/man2/sigaction.2.html, I
+see:
+
+	int si_trapno;    /* Trap number that caused
+			     hardware-generated signal
+			     (unused on most architectures) */
+
+... its intended semantics seem to suggest it would only be used by some
+architecture-specific signal like you identified above. So if the
+semantics is some code of a hardware trap/fault, then we're fine and do
+not need to set it.
+
+Also bearing in mind we define the semantics any new signal, and given
+most architectures do not have si_trapno, definitions of new generic
+signals should probably not include odd architecture specific details
+related to old architectures.
+
+From all this, my understanding now is that we can move si_trapno into
+the union, correct? What else did you have in mind?
+
+Thanks,
+-- Marco
