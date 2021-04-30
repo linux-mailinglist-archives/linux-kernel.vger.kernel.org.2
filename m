@@ -2,119 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0CA36FDB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7691B36FDC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhD3PZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 11:25:47 -0400
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:44826 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230105AbhD3PZq (ORCPT
+        id S229990AbhD3P2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 11:28:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229712AbhD3P23 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 11:25:46 -0400
-Received: by mail-ot1-f46.google.com with SMTP id z25-20020a9d65d90000b02902a560806ca7so6022241oth.11;
-        Fri, 30 Apr 2021 08:24:58 -0700 (PDT)
+        Fri, 30 Apr 2021 11:28:29 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF7F8C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 08:27:40 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id a36so70445078ljq.8
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 08:27:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Mh9VQ4lqbG7PU0zxXU61/zkGzqt9dmCvOlEJ8ZziR28=;
+        b=ea9RAHoe2Ux5JNof44BAAmQ+7CdlNsH0U5oQ6DbQ5dFbl/jcRANVrFEG/Ble+DepZA
+         nTASlF5DqX4NkNDhpruSeSdq61WKLCxlcmCc7027/SKbtctl9I1uhm/J3QSkk6Kytw97
+         D1FyoITx0h4kdaGYISpk1AzXFEw2hB/zuc57U4phXp0zD3S8ZXz4rpaDCc3S7y4bNfak
+         8ltgHlNCY2giMpyfV6Q5zBXHujWTEvxOjHqC28Wgf6fozeWcCmof6WOjjgiuGnkjwofR
+         tnpj1TcRdiYLtAVMUZPSncupK432OP0wGyY+QTiaMElNgt3DGhseznl3ndNiRJj6SKI/
+         PfLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=5FfXtxbf2+1RT69S9AA6R5xDes94gPxdY4zFREGjPU4=;
-        b=WOt+IL0LHraVcxQOdGW2R25jZxIoCRCNC36S+Addb5j4Ke6repENJFe+3+vpCNz+zo
-         /9fl2UomzrisMaTBkY2T+c97Fa41xbQ24ZubldKNEhFOIpXC7zyT/kzHGsV1oLeRi31d
-         AjMEcXo/iz9vyyK8OAJrTnD2oxdoSLNPtO5sQfrFOKPDhlCGTA7A39Ssqe4lWRAuhedj
-         411H3pVr7QfNvbVLZYzzvixCN/BYuZFVw4XNfhY5qlIU9XjGWpdw54hKLkiR9NuHVDXK
-         ulSC02pKUUH7SyzGIO1Pgm28RiBF9O7nTwY9OtkwSqIhODrYVXt9hpNi3/nkZoGl9nXL
-         MWTA==
-X-Gm-Message-State: AOAM532Vza9eSge13PHGBC7LeKvn8hSdLAk/dw3q1r711EmGpLT8l73a
-        HnBwu4yalFhFHJQOfyo35Q==
-X-Google-Smtp-Source: ABdhPJzl7TZAjS/JHU4Kn3ojk7o8O0fWkXJU/cjLK3k6oupxy5IcPcWakw/i3Ek1NYI6k+ruJyHyyw==
-X-Received: by 2002:a05:6830:4111:: with SMTP id w17mr4111512ott.99.1619796297875;
-        Fri, 30 Apr 2021 08:24:57 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id c7sm803077oot.42.2021.04.30.08.24.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 08:24:57 -0700 (PDT)
-Received: (nullmailer pid 3353973 invoked by uid 1000);
-        Fri, 30 Apr 2021 15:24:53 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     linux-kernel@vger.kernel.org, martin.blumenstingl@googlemail.com,
-        devicetree@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        khilman@baylibre.com, jbrunet@baylibre.com,
-        linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20210429170404.3616111-3-narmstrong@baylibre.com>
-References: <20210429170404.3616111-1-narmstrong@baylibre.com> <20210429170404.3616111-3-narmstrong@baylibre.com>
-Subject: Re: [PATCH 2/3] dt-bindings: arm: amlogic: add Banana PI M5 bindings
-Date:   Fri, 30 Apr 2021 10:24:53 -0500
-Message-Id: <1619796293.730307.3353972.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Mh9VQ4lqbG7PU0zxXU61/zkGzqt9dmCvOlEJ8ZziR28=;
+        b=eOgwt5kIIz0RXCqN6j1fTkm5mtWVuU6IqNym0hhpl5VOmPKEK8/qGhHyQil84PB9Qo
+         0MwX7OcYEj+bzFFvjivOHmmxpt+u6hVZW6sJAlB+9xOKAyEDtguWCCyHW9EeO4QgVdfi
+         Xc4woA46oXRKVCzeUFQJIT7LMRM2SYYnHxto/b5PdMc3DP6ziz4Y0CFmggMgEFO4/rAK
+         0E9YUwEnBFVGXdJZlyq0ZYtCiE2XFZoYN1O9RWp9+BdtEZrCevMOQDC/Qwre/aoneppV
+         mdBpInzCiVJrevW7c3rFdrx/xy+Zh0oQ01yRONGPIQoXOTgGIc6382yOh0RfV4YKLXKX
+         Hg1Q==
+X-Gm-Message-State: AOAM531no3MShL+PLRNqXhuFmGbQpr4Td07viF0vPByH76B4O/V6Yzqz
+        R7P6vUDTKdDZdEEmcsj/wergAf5LXN/r4W4OSVhX0Q==
+X-Google-Smtp-Source: ABdhPJzP/6ULxEPud3dZTDR/T+limAF1K4IjfJ/SqxG3YtIz2/mXboaRnyHyUpfHqu/zxuAKcPyXizaNPsWgzLKWTPs=
+X-Received: by 2002:a2e:8794:: with SMTP id n20mr4031314lji.401.1619796459418;
+ Fri, 30 Apr 2021 08:27:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210430151412.160913-1-qperret@google.com>
+In-Reply-To: <20210430151412.160913-1-qperret@google.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 30 Apr 2021 17:27:27 +0200
+Message-ID: <CAKfTPtCxVc+KSOJW0a3xK1mGc-qWH0v3wmAuqeB467t+wza78g@mail.gmail.com>
+Subject: Re: [PATCH v3] sched: Fix out-of-bound access in uclamp
+To:     Quentin Perret <qperret@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Apr 2021 19:04:03 +0200, Neil Armstrong wrote:
-> Add bindings for the Banana PI M5 board.
-> 
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+On Fri, 30 Apr 2021 at 17:14, Quentin Perret <qperret@google.com> wrote:
+>
+> Util-clamp places tasks in different buckets based on their clamp values
+> for performance reasons. However, the size of buckets is currently
+> computed using a rounding division, which can lead to an off-by-one
+> error in some configurations.
+>
+> For instance, with 20 buckets, the bucket size will be 1024/20=51. A
+> task with a clamp of 1024 will be mapped to bucket id 1024/51=20. Sadly,
+> correct indexes are in range [0,19], hence leading to an out of bound
+> memory access.
+>
+> Clamp the bucket id to fix the issue.
+>
+> Fixes: 69842cba9ace ("sched/uclamp: Add CPU's clamp buckets refcounting")
+> Suggested-by: Qais Yousef <qais.yousef@arm.com>
+> Signed-off-by: Quentin Perret <qperret@google.com>
+
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+
 > ---
->  Documentation/devicetree/bindings/arm/amlogic.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
-
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/arm/amlogic.yaml:167:1: [error] syntax error: found character '\t' that cannot start any token (syntax)
-
-dtschema/dtc warnings/errors:
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/arm/amlogic.example.dts'
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-extract-example", line 45, in <module>
-    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 421, in load
-    return constructor.get_single_data()
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 109, in get_single_data
-    node = self.composer.get_single_node()
-  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
-  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 773, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 850, in _ruamel_yaml.CParser._compose_sequence_node
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 773, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 850, in _ruamel_yaml.CParser._compose_sequence_node
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 731, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
-ruamel.yaml.scanner.ScannerError: while scanning for the next token
-found character that cannot start any token
-  in "<unicode string>", line 167, column 1
-make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/arm/amlogic.example.dts] Error 1
-make[1]: *** Waiting for unfinished jobs....
-./Documentation/devicetree/bindings/arm/amlogic.yaml:  while scanning for the next token
-found character that cannot start any token
-  in "<unicode string>", line 167, column 1
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/amlogic.yaml: ignoring, error parsing file
-warning: no schema found in file: ./Documentation/devicetree/bindings/arm/amlogic.yaml
-make: *** [Makefile:1414: dt_binding_check] Error 2
-
-See https://patchwork.ozlabs.org/patch/1471788
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+> Changes in v3:
+>  - Keep rounding div to improve fairness (Vincent)
+> ---
+>  kernel/sched/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 98191218d891..c12ec648423e 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -928,7 +928,7 @@ DEFINE_STATIC_KEY_FALSE(sched_uclamp_used);
+>
+>  static inline unsigned int uclamp_bucket_id(unsigned int clamp_value)
+>  {
+> -       return clamp_value / UCLAMP_BUCKET_DELTA;
+> +       return min_t(unsigned int, clamp_value / UCLAMP_BUCKET_DELTA, UCLAMP_BUCKETS - 1);
+>  }
+>
+>  static inline unsigned int uclamp_none(enum uclamp_id clamp_id)
+> --
+> 2.31.1.527.g47e6f16901-goog
+>
