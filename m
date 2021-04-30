@@ -2,423 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 225DE36F6AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 09:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11D5A36F6B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 09:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232101AbhD3Hs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 03:48:27 -0400
-Received: from mga03.intel.com ([134.134.136.65]:45970 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231665AbhD3Hrq (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 03:47:46 -0400
-IronPort-SDR: XejBNCppOhNjyarXQikmX7ndVgNQoGdUB7pelBwaewYY/mOV5UuMzp7zdM1MkAw6/erkASb2H1
- WevB9psCzmLQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9969"; a="197268483"
-X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
-   d="scan'208";a="197268483"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2021 00:46:58 -0700
-IronPort-SDR: G02kBr5rgPsErJbkZ9igIVF2RynunDknxg/kZfD6zSV6vQmMChjBOgq2Ze4Snd4IMd16d9w/np
- fjEBS7SYP5Lg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
-   d="scan'208";a="527549183"
-Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga001.fm.intel.com with ESMTP; 30 Apr 2021 00:46:52 -0700
-From:   Jin Yao <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v1 2/2] perf header: Support hybrid CPU_PMU_CAPS
-Date:   Fri, 30 Apr 2021 15:46:02 +0800
-Message-Id: <20210430074602.3028-2-yao.jin@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210430074602.3028-1-yao.jin@linux.intel.com>
-References: <20210430074602.3028-1-yao.jin@linux.intel.com>
+        id S231504AbhD3Hsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 03:48:35 -0400
+Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:27842 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230445AbhD3Hr6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 03:47:58 -0400
+Received: from [192.168.1.18] ([86.243.172.93])
+        by mwinf5d87 with ME
+        id yvn72400521Fzsu03vn7oy; Fri, 30 Apr 2021 09:47:08 +0200
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 30 Apr 2021 09:47:08 +0200
+X-ME-IP: 86.243.172.93
+Subject: Re: [PATCH][next] PCI: mediatek-gen3: Add missing null pointer check
+To:     Colin King <colin.king@canonical.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Jianjun Wang <jianjun.wang@mediatek.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210429110040.63119-1-colin.king@canonical.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <7a512e3a-2897-ac12-ac6e-06be28735279@wanadoo.fr>
+Date:   Fri, 30 Apr 2021 09:47:06 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210429110040.63119-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On hybrid platform, it may have several cpu pmus, such as,
-"cpu_core" and "cpu_atom". The CPU_PMU_CAPS feature in perf
-header needs to be improved to support multiple cpu pmus.
+Le 29/04/2021 à 13:00, Colin King a écrit :
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The call to platform_get_resource_byname can potentially return null, so
+> add a null pointer check to avoid a null pointer dereference issue.
+> 
+> Addresses-Coverity: ("Dereference null return")
+> Fixes: 441903d9e8f0 ("PCI: mediatek-gen3: Add MediaTek Gen3 driver for MT8192")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>   drivers/pci/controller/pcie-mediatek-gen3.c | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/pcie-mediatek-gen3.c b/drivers/pci/controller/pcie-mediatek-gen3.c
+> index 20165e4a75b2..3c5b97716d40 100644
+> --- a/drivers/pci/controller/pcie-mediatek-gen3.c
+> +++ b/drivers/pci/controller/pcie-mediatek-gen3.c
+> @@ -721,6 +721,8 @@ static int mtk_pcie_parse_port(struct mtk_pcie_port *port)
+>   	int ret;
+>   
+>   	regs = platform_get_resource_byname(pdev, IORESOURCE_MEM, "pcie-mac");
+> +	if (!regs)
+> +		return -EINVAL;
+>   	port->base = devm_ioremap_resource(dev, regs);
+>   	if (IS_ERR(port->base)) {
+>   		dev_err(dev, "failed to map register base\n");
+> 
 
-The new layout in header is defined as:
+Nitpick:
+    Using 'devm_platform_ioremap_resource_byname' is slightly less 
+verbose and should please Coverity.
 
-<nr_caps>
-<caps string>
-<caps string>
-<pmu name>
-<nr of rest pmus>
 
-It's considered to be compatible with old perf.data (the
-perf.data generated by old perf tool).
+Also, which git repo are you using? On linux-next ([1)], your proposed 
+patch is already part of "PCI: mediatek-gen3: Add MediaTek Gen3 driver 
+for MT8192".
 
-With this patch, some examples,
+[1]: 
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/drivers/pci/controller/pcie-mediatek-gen3.c
 
-New perf tool with new perf.data
-(new perf.data is generated on hybrid platform):
-
-  root@otcpl-adl-s-2:~# perf report --header-only -I
-  ...
-  # cpu_core pmu capabilities: branches=32, max_precise=3, pmu_name=alderlake_hybrid
-  # cpu_atom pmu capabilities: branches=32, max_precise=3, pmu_name=alderlake_hybrid
-
-New perf tool with new perf.data
-(new perf.data is generated on non-hybrid platform):
-
-  root@kbl-ppc:~# perf report --header-only -I
-  ...
-  # cpu pmu capabilities: branches=32, max_precise=3, pmu_name=skylake
-
-New perf tool with old perf.data
-(old perf.data is generated by old perf tool on non-hybrid platform):
-
-  root@kbl-ppc:~# perf report --header-only -I
-  ...
-  # cpu pmu capabilities: branches=32, max_precise=3, pmu_name=skylake
-
-Note that: this patch is on tmp.perf/core.
-
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
----
- tools/perf/util/env.c    |   6 ++
- tools/perf/util/env.h    |  11 ++-
- tools/perf/util/header.c | 175 ++++++++++++++++++++++++++++++++++-----
- 3 files changed, 168 insertions(+), 24 deletions(-)
-
-diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
-index 9e05eca324a1..8ef24aad2152 100644
---- a/tools/perf/util/env.c
-+++ b/tools/perf/util/env.c
-@@ -208,6 +208,12 @@ void perf_env__exit(struct perf_env *env)
- 		zfree(&env->hybrid_nodes[i].pmu_name);
- 	}
- 	zfree(&env->hybrid_nodes);
-+
-+	for (i = 0; i < env->nr_cpu_pmu_caps_nodes; i++) {
-+		zfree(&env->cpu_pmu_caps_nodes[i].cpu_pmu_caps);
-+		zfree(&env->cpu_pmu_caps_nodes[i].pmu_name);
-+	}
-+	zfree(&env->cpu_pmu_caps_nodes);
- }
- 
- void perf_env__init(struct perf_env *env __maybe_unused)
-diff --git a/tools/perf/util/env.h b/tools/perf/util/env.h
-index 9ca7633787e1..5552c98a6a76 100644
---- a/tools/perf/util/env.h
-+++ b/tools/perf/util/env.h
-@@ -42,6 +42,13 @@ struct hybrid_node {
- 	struct perf_cpu_map	*map;
- };
- 
-+struct cpu_pmu_caps_node {
-+	int		nr_cpu_pmu_caps;
-+	unsigned int	max_branches;
-+	char		*cpu_pmu_caps;
-+	char		*pmu_name;
-+};
-+
- struct perf_env {
- 	char			*hostname;
- 	char			*os_release;
-@@ -63,15 +70,14 @@ struct perf_env {
- 	int			nr_memory_nodes;
- 	int			nr_pmu_mappings;
- 	int			nr_groups;
--	int			nr_cpu_pmu_caps;
- 	int			nr_hybrid_nodes;
-+	int			nr_cpu_pmu_caps_nodes;
- 	char			*cmdline;
- 	const char		**cmdline_argv;
- 	char			*sibling_cores;
- 	char			*sibling_dies;
- 	char			*sibling_threads;
- 	char			*pmu_mappings;
--	char			*cpu_pmu_caps;
- 	struct cpu_topology_map	*cpu;
- 	struct cpu_cache_level	*caches;
- 	int			 caches_cnt;
-@@ -84,6 +90,7 @@ struct perf_env {
- 	struct memory_node	*memory_nodes;
- 	unsigned long long	 memory_bsize;
- 	struct hybrid_node	*hybrid_nodes;
-+	struct cpu_pmu_caps_node	*cpu_pmu_caps_nodes;
- #ifdef HAVE_LIBBPF_SUPPORT
- 	/*
- 	 * bpf_info_lock protects bpf rbtrees. This is needed because the
-diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-index dff89c0be79c..6989c57b57e6 100644
---- a/tools/perf/util/header.c
-+++ b/tools/perf/util/header.c
-@@ -49,6 +49,7 @@
- #include "cputopo.h"
- #include "bpf-event.h"
- #include "clockid.h"
-+#include "pmu-hybrid.h"
- 
- #include <linux/ctype.h>
- #include <internal/lib.h>
-@@ -1459,18 +1460,22 @@ static int write_compressed(struct feat_fd *ff __maybe_unused,
- 	return do_write(ff, &(ff->ph->env.comp_mmap_len), sizeof(ff->ph->env.comp_mmap_len));
- }
- 
--static int write_cpu_pmu_caps(struct feat_fd *ff,
--			      struct evlist *evlist __maybe_unused)
-+static int write_per_cpu_pmu_caps(struct feat_fd *ff, struct perf_pmu *pmu,
-+				  int nr)
- {
--	struct perf_pmu *cpu_pmu = perf_pmu__find("cpu");
- 	struct perf_pmu_caps *caps = NULL;
- 	int nr_caps;
- 	int ret;
- 
--	if (!cpu_pmu)
--		return -ENOENT;
--
--	nr_caps = perf_pmu__caps_parse(cpu_pmu);
-+	/*
-+	 * The layout is:
-+	 * <nr_caps>
-+	 * <caps string>
-+	 * <caps string>
-+	 * <pmu name>
-+	 * <nr of rest pmus>
-+	 */
-+	nr_caps = perf_pmu__caps_parse(pmu);
- 	if (nr_caps < 0)
- 		return nr_caps;
- 
-@@ -1478,7 +1483,7 @@ static int write_cpu_pmu_caps(struct feat_fd *ff,
- 	if (ret < 0)
- 		return ret;
- 
--	list_for_each_entry(caps, &cpu_pmu->caps, list) {
-+	list_for_each_entry(caps, &pmu->caps, list) {
- 		ret = do_write_string(ff, caps->name);
- 		if (ret < 0)
- 			return ret;
-@@ -1488,9 +1493,49 @@ static int write_cpu_pmu_caps(struct feat_fd *ff,
- 			return ret;
- 	}
- 
-+	ret = do_write_string(ff, pmu->name);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = do_write(ff, &nr, sizeof(nr));
-+	if (ret < 0)
-+		return ret;
-+
- 	return ret;
- }
- 
-+static int write_cpu_pmu_caps(struct feat_fd *ff,
-+			      struct evlist *evlist __maybe_unused)
-+{
-+	struct perf_pmu *pmu = perf_pmu__find("cpu");
-+	u32 nr;
-+	int ret;
-+
-+	if (pmu)
-+		nr = 1;
-+	else {
-+		nr = perf_pmu__hybrid_pmu_num();
-+		pmu = NULL;
-+	}
-+
-+	if (nr == 0)
-+		return -1;
-+
-+	if (pmu) {
-+		ret = write_per_cpu_pmu_caps(ff, pmu, 0);
-+		if (ret < 0)
-+			return ret;
-+	} else {
-+		perf_pmu__for_each_hybrid_pmu(pmu) {
-+			ret = write_per_cpu_pmu_caps(ff, pmu, --nr);
-+			if (ret < 0)
-+				return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static void print_hostname(struct feat_fd *ff, FILE *fp)
- {
- 	fprintf(fp, "# hostname : %s\n", ff->ph->env.hostname);
-@@ -1963,18 +2008,28 @@ static void print_compressed(struct feat_fd *ff, FILE *fp)
- 		ff->ph->env.comp_level, ff->ph->env.comp_ratio);
- }
- 
--static void print_cpu_pmu_caps(struct feat_fd *ff, FILE *fp)
-+static void print_per_cpu_pmu_caps(FILE *fp, struct cpu_pmu_caps_node *n)
- {
--	const char *delimiter = "# cpu pmu capabilities: ";
--	u32 nr_caps = ff->ph->env.nr_cpu_pmu_caps;
--	char *str;
-+	const char *delimiter;
-+	u32 nr_caps = n->nr_cpu_pmu_caps;
-+	char *str, buf[128];
- 
- 	if (!nr_caps) {
--		fprintf(fp, "# cpu pmu capabilities: not available\n");
-+		if (!n->pmu_name)
-+			fprintf(fp, "# cpu pmu capabilities: not available\n");
-+		else
-+			fprintf(fp, "# %s pmu capabilities: not available\n", n->pmu_name);
- 		return;
- 	}
- 
--	str = ff->ph->env.cpu_pmu_caps;
-+	if (!n->pmu_name)
-+		scnprintf(buf, sizeof(buf), "# cpu pmu capabilities: ");
-+	else
-+		scnprintf(buf, sizeof(buf), "# %s pmu capabilities: ", n->pmu_name);
-+
-+	delimiter = buf;
-+
-+	str = n->cpu_pmu_caps;
- 	while (nr_caps--) {
- 		fprintf(fp, "%s%s", delimiter, str);
- 		delimiter = ", ";
-@@ -1984,6 +2039,17 @@ static void print_cpu_pmu_caps(struct feat_fd *ff, FILE *fp)
- 	fprintf(fp, "\n");
- }
- 
-+static void print_cpu_pmu_caps(struct feat_fd *ff, FILE *fp)
-+{
-+	struct cpu_pmu_caps_node *n;
-+	int i;
-+
-+	for (i = 0; i < ff->ph->env.nr_cpu_pmu_caps_nodes; i++) {
-+		n = &ff->ph->env.cpu_pmu_caps_nodes[i];
-+		print_per_cpu_pmu_caps(fp, n);
-+	}
-+}
-+
- static void print_pmu_mappings(struct feat_fd *ff, FILE *fp)
- {
- 	const char *delimiter = "# pmu mappings: ";
-@@ -3093,13 +3159,14 @@ static int process_compressed(struct feat_fd *ff,
- 	return 0;
- }
- 
--static int process_cpu_pmu_caps(struct feat_fd *ff,
--				void *data __maybe_unused)
-+static int process_cpu_pmu_caps_node(struct feat_fd *ff,
-+				     struct cpu_pmu_caps_node *n, bool *end)
- {
--	char *name, *value;
-+	char *name, *value, *pmu_name;
- 	struct strbuf sb;
--	u32 nr_caps;
-+	u32 nr_caps, nr;
- 
-+	*end = false;
- 	if (do_read_u32(ff, &nr_caps))
- 		return -1;
- 
-@@ -3108,7 +3175,7 @@ static int process_cpu_pmu_caps(struct feat_fd *ff,
- 		return 0;
- 	}
- 
--	ff->ph->env.nr_cpu_pmu_caps = nr_caps;
-+	n->nr_cpu_pmu_caps = nr_caps;
- 
- 	if (strbuf_init(&sb, 128) < 0)
- 		return -1;
-@@ -3129,13 +3196,33 @@ static int process_cpu_pmu_caps(struct feat_fd *ff,
- 		if (strbuf_add(&sb, "", 1) < 0)
- 			goto free_value;
- 
--		if (!strcmp(name, "branches"))
--			ff->ph->env.max_branches = atoi(value);
-+		if (!strcmp(name, "branches")) {
-+			n->max_branches = atoi(value);
-+			if (n->max_branches > ff->ph->env.max_branches)
-+				ff->ph->env.max_branches = n->max_branches;
-+		}
- 
- 		free(value);
- 		free(name);
- 	}
--	ff->ph->env.cpu_pmu_caps = strbuf_detach(&sb, NULL);
-+
-+	/*
-+	 * Old perf.data may not have pmu_name,
-+	 */
-+	pmu_name = do_read_string(ff);
-+	if (!pmu_name || strncmp(pmu_name, "cpu_", 4)) {
-+		*end = true;
-+		goto out;
-+	}
-+
-+	if (do_read_u32(ff, &nr))
-+		return -1;
-+
-+	if (nr == 0)
-+		*end = true;
-+out:
-+	n->cpu_pmu_caps = strbuf_detach(&sb, NULL);
-+	n->pmu_name = pmu_name;
- 	return 0;
- 
- free_value:
-@@ -3147,6 +3234,50 @@ static int process_cpu_pmu_caps(struct feat_fd *ff,
- 	return -1;
- }
- 
-+static int process_cpu_pmu_caps(struct feat_fd *ff,
-+				void *data __maybe_unused)
-+{
-+	struct cpu_pmu_caps_node *nodes = NULL, *tmp;
-+	int ret, i, nr_alloc = 1, nr_used = 0;
-+	bool end;
-+
-+	while (1) {
-+		if (nr_used == nr_alloc || !nodes) {
-+			nr_alloc *= 2;
-+			tmp = realloc(nodes, sizeof(*nodes) * nr_alloc);
-+			if (!tmp)
-+				return -ENOMEM;
-+			memset(tmp + nr_used, 0,
-+			       sizeof(*nodes) * (nr_alloc - nr_used));
-+			nodes = tmp;
-+		}
-+
-+		ret = process_cpu_pmu_caps_node(ff, &nodes[nr_used], &end);
-+		if (ret) {
-+			if (nr_used)
-+				break;
-+			goto err;
-+		}
-+
-+		nr_used++;
-+		if (end)
-+			break;
-+	}
-+
-+	ff->ph->env.nr_cpu_pmu_caps_nodes = (u32)nr_used;
-+	ff->ph->env.cpu_pmu_caps_nodes = nodes;
-+	return 0;
-+
-+err:
-+	for (i = 0; i < nr_used; i++) {
-+		free(nodes[i].cpu_pmu_caps);
-+		free(nodes[i].pmu_name);
-+	}
-+
-+	free(nodes);
-+	return ret;
-+}
-+
- #define FEAT_OPR(n, func, __full_only) \
- 	[HEADER_##n] = {					\
- 		.name	    = __stringify(n),			\
--- 
-2.17.1
-
+CJ
