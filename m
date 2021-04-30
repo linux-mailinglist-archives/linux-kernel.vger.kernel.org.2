@@ -2,188 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42733370149
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 21:32:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 634B337014D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 21:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231992AbhD3TdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 15:33:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57928 "EHLO
+        id S232101AbhD3Tds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 15:33:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230356AbhD3Tc7 (ORCPT
+        with ESMTP id S231809AbhD3Tdq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 15:32:59 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B06DC06138B
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 12:32:11 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id z6so10496990wrm.4
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 12:32:11 -0700 (PDT)
+        Fri, 30 Apr 2021 15:33:46 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9272BC06138B;
+        Fri, 30 Apr 2021 12:32:56 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id z6so10498718wrm.4;
+        Fri, 30 Apr 2021 12:32:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=L0GYf6baFnb9u6edRpidG5ads8GNWpz6pco+MMOUP/0=;
-        b=Lw1Ob5m10OEyioZRZM1wOdM2YDbcvuo2L3Pi2PFLvwvhC1mViXQNPjaWMkQjPJt7j8
-         NPd8HVvoSyI7OJ1uE/OAyXfSLT5eLwnE9E7k8y2dJZdpUMjp673IwteYD+MChb3PJR5l
-         9ZzURM1bkuwkXT/EpnYT7o+69+uwxN1dXzfQFPskW76rREYzXgTQ9bHvXMVk2PYtzxUN
-         7pOAUI+9BcjSL6N74b7Nht7RcCcKpt+GuRfnVp2WPy0fgAYDgMbjkYqqMacKWYoHWNcG
-         Yy8mdUkI20Mxw9FTgmbohbYg+fPsRS6dnvVp8pN8ceOs3q9TfW89/d8LGAz8oH7tNvRd
-         nUeg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YGxJur6BpkCaw3OzABXrg+qG7M6lysHFEiPjPM8O8jM=;
+        b=XbBK4VfeB5HSc9VnsPbCGaLMOUGma5aINBFJEeaHajUizyf/o35ykT8yudbK0WOGRs
+         7EbWBY9Y0f16Et0zoxlGpoDFxWbUapu0El35CKgPAXRHwtRVvkQLgtar//qiWYhxKNz4
+         39l2EMmUMRIhPnK9jjQxB1YPA/YgzjHRe5QMBCLNeLk4460d1NOwtPiLTAQqObmdSUxq
+         uB/wFVzfVbRAxW84BGVd/NwRSCgz8TWy7JVXgvNKDeNFh/yWZVMIk6vcuUVD3jsM6fMT
+         QPjev0ngvs7RqRqiNU61+km8kxYP9M2ieCHzn5mOmlUJAq3znWycBeDb46OJgDuuUPU5
+         MmMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=L0GYf6baFnb9u6edRpidG5ads8GNWpz6pco+MMOUP/0=;
-        b=YDDTO5F0dHCxpAO3XSzTb26W3nKDtCc7BkOZd0ZHOlrkSL446T9BXAgfZldfCQunuC
-         3A7TpWTuNlGzcqZv6nssdYA35Ob4SSYKHaCneS1GSAO2uPgV9d/c+4YVAglEm9CpuGav
-         12Xq7hCmw9pC1vVv2pH+aHxyRGk1UqQ/OtJNeIeb0U61egeWdoeA1tJxCQCtkj2P94fj
-         Rg0SSBbud5LKOlNFfu+tMKeB04EKvDOHgXbvfSqV7UaSYHRa6S28VCVsFcrUR4T1yPR1
-         0Kv2stvgJkv1oimyiRED1DNITFno5P4chke0VkRIJJ+Ov6K+9hxnTQ7iGrEd2Fvu9gio
-         LrWA==
-X-Gm-Message-State: AOAM531frwyjZB8cafdPkKSZ4YVdks8VsgqtjdStJ29mrO8Bh5Fag9Dq
-        nXYZREQpCz9EbPyE5ZYIEQSXqOdnCCGM/GhFce5wfA==
-X-Google-Smtp-Source: ABdhPJyLkjX7J7cxhEKCYBjEKTwu/VHiNSFjiHxos+0U7mbdiJXF+wsjLM9Azfw8v/+N948+NzejVpToxqi6tdpFrJs=
-X-Received: by 2002:adf:e9c2:: with SMTP id l2mr8807856wrn.323.1619811129737;
- Fri, 30 Apr 2021 12:32:09 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YGxJur6BpkCaw3OzABXrg+qG7M6lysHFEiPjPM8O8jM=;
+        b=REfJ54hxvYNUc9owpfZV+eDSiPuO+08p/owZc3c4H0KYY/SD3qFjUUk0S5Jfs8OuB7
+         L6mJ4Qv/1+vFEBLvS4/NJCxirqloo4m3z6aMjwDvA1lpgAwNno79rw/flPaSGYkqBTMw
+         6aMg/CFgtQxk2Cub/8244esZN4mdrHaOiyeC9F6T/Uxnz3v1wExEc+lt3kK/ZfVlSQMB
+         EnTZHCLlxd6zzGOaizy55F79y7ctD3VqHsvPiTPDmdvAI7rrbcNBntacYo0umvF56NJ4
+         KPSezAb9EYM3NP7zhqVHwXpOenU2YATfkfsvxrtBcmg32eCtmgM5If5TgRVMVovJbgIU
+         yKfQ==
+X-Gm-Message-State: AOAM53294UVyAjo48N0zwni7soHi4gTfSOJf0J4rBs3MCoEyCmdjKViv
+        mGkVjdwoefW9QwVp+vyuq1871vO4YqEYXQ==
+X-Google-Smtp-Source: ABdhPJyhTths+KvVLUS8knCdFfcch3pczopIQyF+cUUbjW4A7vhF++ZfvubKihT1guzh9Wvy0oBFMw==
+X-Received: by 2002:adf:dfcd:: with SMTP id q13mr9248597wrn.363.1619811174183;
+        Fri, 30 Apr 2021 12:32:54 -0700 (PDT)
+Received: from [192.168.0.160] ([170.253.36.171])
+        by smtp.gmail.com with ESMTPSA id m2sm13348394wmq.15.2021.04.30.12.32.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Apr 2021 12:32:53 -0700 (PDT)
+Subject: Re: netdevice.7 SIOCGIFFLAGS/SIOCSIFFLAGS
+To:     Erik Flodin <erik@flodin.me>, mtk.manpages@gmail.com
+Cc:     linux-man@vger.kernel.org, Stefan Rompf <stefan@loplof.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        John Dykstra <john.dykstra1@gmail.com>, netdev@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <CAAMKmof+Y+qrro7Ohd9FSw1bf+-tLMPzaTba-tVniAMY0zwTOQ@mail.gmail.com>
+ <b0a534b3-9bdf-868e-1f28-8e32d31013a2@gmail.com>
+ <CAAMKmodhSsckMxH9jLKKwXN_B76RoLmDttbq5X9apE-eCo0hag@mail.gmail.com>
+ <1cde5a72-033e-05e7-be58-b1b2ef95c80f@gmail.com>
+ <CAAMKmoe8rUuoxFK2gKZL4um79gmtn-__-1ZDWuBgGTqfqPjZdw@mail.gmail.com>
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Message-ID: <ec0d0a2d-235c-a71f-92bc-45e1156bff9e@gmail.com>
+Date:   Fri, 30 Apr 2021 21:32:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <20210413065633.2782273-1-yuzhao@google.com> <140226722f2032c86301fbd326d91baefe3d7d23.camel@yandex.ru>
- <8ce5be3df2137e975d7333024b6120b71b214617.camel@yandex.ru>
-In-Reply-To: <8ce5be3df2137e975d7333024b6120b71b214617.camel@yandex.ru>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Fri, 30 Apr 2021 13:31:57 -0600
-Message-ID: <CAOUHufaoGe1=Vigp7cHbvx0G1=zvHQrNc_et4C9UTw4bYOSY8Q@mail.gmail.com>
-Subject: Re: [PATCH v2 00/16] Multigenerational LRU Framework
-To:     Konstantin Kharlamov <hi-angel@yandex.ru>
-Cc:     Linux-MM <linux-mm@kvack.org>, Alex Shi <alexs@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Benjamin Manes <ben.manes@gmail.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Hillf Danton <hdanton@sina.com>, Jens Axboe <axboe@kernel.dk>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Michael Larabel <michael@michaellarabel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Michel Lespinasse <michel@lespinasse.org>,
-        Rik van Riel <riel@surriel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Rong Chen <rong.a.chen@intel.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>,
-        Ying Huang <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        Kernel Page Reclaim v2 <page-reclaim@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAAMKmoe8rUuoxFK2gKZL4um79gmtn-__-1ZDWuBgGTqfqPjZdw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 12:38 AM Konstantin Kharlamov
-<hi-angel@yandex.ru> wrote:
->
-> Btw, I noticed a fun thing, an improvement. I don't know yet if it can be
-> attributed to 5.12 (which I didn't try alone yet) or to the LRU patchset,=
- but
-> I'd assume the latter, because 5.12 seems didn't to have had anything
-> interesting regarding memory performance=C2=B9.
+[PING mtk, netdev@]
+[CC += linux-kernel]
 
-I appreciate the testing and the report. They mean a lot to us.
+Hi Erik,
 
-This improvement is to be expected, and it works both ways. There are
-cases that swapping is not a good idea, for example, when building
-large repos. Without this patchset, some of my browser memory usually
-gets swapped out while tons of memory is used to cache files I don't
-really care about.
+On 4/29/21 9:45 PM, Erik Flodin wrote:
+> On Wed, 14 Apr 2021 at 21:56, Alejandro Colomar (man-pages)
+> <alx.manpages@gmail.com> wrote:
+>>
+>> [CC += netdev]
+>>
+>> Hi Erik,
+>>
+>> On 4/14/21 8:52 PM, Erik Flodin wrote:
+>>> Hi,
+>>>
+>>> On Fri, 19 Mar 2021 at 20:53, Alejandro Colomar (man-pages)
+>>> <alx.manpages@gmail.com> wrote:
+>>>> On 3/17/21 3:12 PM, Erik Flodin wrote:
+>>>>> The documentation for SIOCGIFFLAGS/SIOCSIFFLAGS in netdevice.7 lists
+>>>>> IFF_LOWER_UP, IFF_DORMANT and IFF_ECHO, but those can't be set in
+>>>>> ifr_flags as it is only a short and the flags start at 1<<16.
+>>>>>
+>>>>> See also https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=746e6ad23cd6fec2edce056e014a0eabeffa838c
+>>>>>
+>>>>
+>>>> I don't know what's the history of that.
+>>>
+>>> Judging from commit message in the commit linked above it was added by
+>>> mistake. As noted the flags are accessible via netlink, just not via
+>>> SIOCGIFFLAGS.
+>>>
+>>> // Erik
+>>>
+>>
+>> I should have CCd netdev@ before.  Thanks for the update.  Let's see if
+>> anyone there can comment.
+>>
+>> Thanks,
+>>
+>> Alex
+>>
 
-I completely agree with you on the memory cgroup part: theoretically
-it could work around the problem but nobody knows how much memory to
-reserve for Skype or Firefox :)
+> Hi again,
+> 
+> Have there been any updates on this one?
 
-I will keep you posted on the following developments.
+No, Noone from the kernel answered.  And I'm sorry, but I'm not sure
+what is going on in the code, so I don't want to close this here by just
+removing those flags from the manual page, because I worry that the
+actual code may be wrong or something.  So I prefer that when Michael
+has some time he can maybe review this and say something.  Ideally,
+someone from the kernel would also respond, but they haven't.  I've CCd
+the LKML; let's see if someone reads this and can help.
 
-Thanks!
+Thanks,
 
-> I usually have Skype running in background for work purposes, which is on=
-ly used
-> 2-3 times in a week. So one would expect it to be one the first victims t=
-o
-> memory reclaim. Unfortunately, I never seen this to actually happen (till=
- now,
-> that is): all skypeforlinux processes routinely have 0 bytes in SWAP, and=
- the
-> only circumstances under which its processes can get into SWAP is after
-> experiencing many SWAP-storms. It was so hard for the kernel to move thes=
-e
-> unused processes to SWAP that at some point I even tried to research if t=
-here
-> are any odd flags a userspace may have set on a process to keep it in RAM=
-, just
-> in case that's what happens to Skype (A: no, that wasn't the case, runnin=
-g Skype
-> in a memory limited cgroup makes it swap. It's just that kernel decision =
-were
-> lacking for some reason).
->
-> So, anyway, I am delighted to see now that while testing this patchset, a=
-nd
-> without encountering even a single SWAP-storm yet, skypeforlinux are one =
-of the
-> processes residing in SWAP!!
->
->      =CE=BB smem -kc "name user pid pss swap" | grep skype
->     skypeforlinux            constantine  1151    60.0K     7.5M
->     skypeforlinux            constantine  1215   195.0K     8.1M
->     skypeforlinux            constantine  1149   706.0K     7.5M
->     skypeforlinux            constantine  1148   743.0K     7.3M
->     skypeforlinux            constantine  1307     1.4M     8.0M
->     skypeforlinux            constantine  1213     2.1M    46.1M
->     skypeforlinux            constantine  1206    14.0M    10.8M
->     skypeforlinux            constantine   818    38.5M    34.3M
->     skypeforlinux            constantine  1242   103.2M    46.8M
->
-> !!!
->
-> 1: https://kernelnewbies.org/Linux_5.12#Memory_management
->
-> On Fri, 2021-04-30 at 02:46 +0300, Konstantin Kharlamov wrote:
-> > In case you need it yet, this series is:
-> >
-> > Tested-by: Konstantin Kharlamov <Hi-Angel@yandex.ru>
-> >
-> > My success story: I have Archlinux with 8G RAM + zswap + swap. While de=
-veloping,
-> > I have lots of apps opened such as multiple LSP-servers for different l=
-angs,
-> > chats, two browsers, etc=E2=80=A6 Usually, my system gets quickly to a =
-point of SWAP-
-> > storms, where I have to kill LSP-servers, restart browsers to free memo=
-ry, etc,
-> > otherwise the system lags heavily and is barely usable.
-> >
-> > 1.5 day ago I migrated from 5.11.15 kernel to 5.12 + the LRU patchset, =
-and I
-> > started up by opening lots of apps to create memory pressure, and worke=
-d for a
-> > day like this. Till now I had *not a single SWAP-storm*, and mind you I=
- got 3.4G
-> > in SWAP. I was never getting to the point of 3G in SWAP before without =
-a single
-> > SWAP-storm.
-> >
-> > Right now my gf on Fedora 33 also suffers from SWAP-storms on her old M=
-acbook
-> > 2013 with 4G RAM + zswap + swap, I think the next week I'll build for h=
-er 5.12 +
-> > LRU patchset as well. Will see how it goes, I expect it will improve he=
-r
-> > experience by a lot too.
-> >
-> > P.S.: upon replying please keep me CCed, I'm not subscribed to the list
->
+Alex
+
+P.S.:  Please, if we haven't responded in a month from now, ping us
+again.  Thanks again.
+
+> 
+> // Erik
+> 
+>>
+>> --
+>> Alejandro Colomar
+>> Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
+>> http://www.alejandro-colomar.es/
+
+-- 
+Alejandro Colomar
+Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
+http://www.alejandro-colomar.es/
