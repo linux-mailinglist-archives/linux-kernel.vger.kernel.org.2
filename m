@@ -2,80 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5FD36F722
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2319236F723
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231482AbhD3IbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 04:31:06 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:27479 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229529AbhD3IbB (ORCPT
+        id S231340AbhD3IcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 04:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229529AbhD3IcE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 04:31:01 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-40-Np76YJq-M2y5OMSF4pVFtw-1; Fri, 30 Apr 2021 09:30:08 +0100
-X-MC-Unique: Np76YJq-M2y5OMSF4pVFtw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Fri, 30 Apr 2021 09:30:08 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Fri, 30 Apr 2021 09:30:08 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Thomas Schoebel-Theuer' <tst@schoebel-theuer.de>,
-        Kajetan Puchalski <mrkajetanp@gmail.com>,
-        "mceier+kernel@gmail.com" <mceier+kernel@gmail.com>
-CC:     "ojeda@kernel.org" <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 00/13] [RFC] Rust support
-Thread-Topic: [PATCH 00/13] [RFC] Rust support
-Thread-Index: AQHXPYuWOFPh/tHqwUWOAL+H8MAuYKrMuQKA
-Date:   Fri, 30 Apr 2021 08:30:08 +0000
-Message-ID: <ac41b3c803364f0cbc6c931449c2a51d@AcuMS.aculab.com>
-References: <20210414184604.23473-1-ojeda@kernel.org>
- <CAJTyqKP4Ud7aWxdCihfzeZ3dQe_5yeTAVnXcKDonciez-g2zWA@mail.gmail.com>
- <878s51e3jc.fsf@gmail.com>
- <7999ba57-9b95-265e-a189-d9ca01304b13@schoebel-theuer.de>
-In-Reply-To: <7999ba57-9b95-265e-a189-d9ca01304b13@schoebel-theuer.de>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 30 Apr 2021 04:32:04 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC51C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:31:16 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id a4so69626530wrr.2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:31:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=I0ktwXj/LufSDPcWIwR3A5LuKeogVGJ5D0aKzv45ni0=;
+        b=K3FRPCTIOIcVfiM0ikTVUZ3B7q7yS5+SWHMujMW3/BgCEhHutSOBoeb0898FV39FxT
+         mqSxqwkOo1C5lJTz+zcuBI0f50DMWz20m/Ok9rQGuJdnWfZG4JgQz0qUIzaO2ablgg5W
+         NkczboABhPeV3qoIDLElyeSpYNN7br7gA0QsoLWTMG/N0JoYz77cVWjHYb3izoDXLcMB
+         RieL5ogADKcxmPQcouMikRV2Ga+BmTJgEggatDH1KAOFdkKHw5cu2F6DMfVIlBHhlW12
+         d1nfBps3hwhCt5X4XAoNACsrIgUj/kNkeK4aNqtHxu3aYBt0AE2k3oMxd/xL3bZFYSmz
+         lvYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=I0ktwXj/LufSDPcWIwR3A5LuKeogVGJ5D0aKzv45ni0=;
+        b=T4zMGV5rdW2Z73jpcVw0xGjpV46h84Tnp2wxAmiidwv1xEeLImhxbUSQPLuozl3tqg
+         KmkfrdTJoSUnkdAZ5Fz34F3mLQxksZeeFdNp4AXMyYVKmGUaBkTK0qTfr8fvGmW9cUpV
+         f4g3LOvc7s2BmMTKqCaXsbP/XI3uMFvOyI1bKWmjkklOLlKBMS+XP2arGmVA7Va+tADo
+         AUr/NQGe+ZOxU7HvNag5nz8Fyg58OSiJMKfHTHIT8Iy776jHBggn17+SZ9BWEVpJVk5g
+         z358KOOIh7Lcl83CmirWgEijcewNj/a1/th4pQUuQlwdUeVFyAqJCnLyv2b7bBQ/8BUe
+         MGGQ==
+X-Gm-Message-State: AOAM533hwGXeBk9qUIrV27Ap8uG0xNgF+5VSMLYTRhhHzc0cg/zm24Fk
+        TJ9H8DGnIt0+QJxPcH+GtMrlTi7dZEL23hWY
+X-Google-Smtp-Source: ABdhPJw9xLve5QbQXAL8IJ5O7GPw9kwlS+yguKzOeJ+oWdNivqpvwzKU4zA1UTZYbWOcU3Iijj4iTA==
+X-Received: by 2002:adf:ff89:: with SMTP id j9mr5243182wrr.416.1619771474844;
+        Fri, 30 Apr 2021 01:31:14 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:90c:e290:4a89:8c32:4adc:fc67? ([2a01:e0a:90c:e290:4a89:8c32:4adc:fc67])
+        by smtp.gmail.com with ESMTPSA id s10sm1433195wrt.23.2021.04.30.01.31.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Apr 2021 01:31:14 -0700 (PDT)
+Subject: Re: [PATCH] ASoC: meson: g12a-toacodec: add support for SM1 TOACODEC
+To:     Jerome Brunet <jbrunet@baylibre.com>, broonie@kernel.org
+Cc:     alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210429170147.3615883-1-narmstrong@baylibre.com>
+ <1jo8dx9ec5.fsf@starbuckisacylon.baylibre.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <d2e9fc82-1483-e4d0-db10-6c11d9fdbba9@baylibre.com>
+Date:   Fri, 30 Apr 2021 10:31:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <1jo8dx9ec5.fsf@starbuckisacylon.baylibre.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogVGhvbWFzIFNjaG9lYmVsLVRoZXVlcg0KPiBTZW50OiAzMCBBcHJpbCAyMDIxIDA3OjQw
-DQouLi4NCj4gSW5kdXN0cnkgKHdoZXJlIEkgYW0gd29ya2luZykgb2Z0ZW4gcmVxdWlyZXMgYSAi
-c2Vjb25kIHNvdXJjZSIgdG8gYXZvaWQNCj4gdGhlIHNvLWNhbGxlZCAidmVuZG9yIGxvY2staW4i
-LCB3aGljaCBpcyB0aGUga2V5IHBvaW50IG9mIHRoaXMgcGFydCBvZg0KPiB0aGUgZGlzY3Vzc2lv
-bi4NCg0KVGhlcmUgaXMgYWxzbyB0aGUgcmVsYXRlZCBwcm9ibGVtIHRoYXQgeW91IG5lZWQgdG8g
-YmUgYWJsZSB0byBjb21lDQpiYWNrIGluIDUgeWVhcnMgdGltZSBhbmQgcmUtYnVpbGQgdGhlIG9y
-aWdpbmFsIGltYWdlLg0KWW91IGNhbiB0aGVuIG1ha2UgbWlub3IgY2hhbmdlcywgcmVidWlsZCwg
-YW5kIGhhdmUgYSByZWFzb25hYmxlDQpjb25maWRlbmNlIHRoYXQgdGhlcmUgYXJlIG5vIHNpZGUg
-ZWZmZWN0cy4NCg0KVGhpcyBtZWFucyB0aGF0IHdlYi1iYXNlZCBhbmQgYXV0by11cGRhdGVkIHRv
-b2xzIGNhbm5vdCBiZSB1c2VkLg0KRXZlbiBhIFZNIGltYWdlIG1pZ2h0IHN1ZGRlbmx5IGZhbGwg
-Zm91bCBvZiBjaGFuZ2VzIHRvIGh5cGVydmlzb3JzLg0KU28geW91IG5lZWQgdG8ga2VlcCAoYXQg
-bGVhc3QpIDIgc3lzdGVtIHRoYW4gY29udGFpbiBhbGwgdGhlIGJ1aWxkDQp0b29scyBqdXN0IGlu
-IGNhc2UgeW91IG5lZWQgdG8gZG8gYSBtYWludGVuYW5jZSBidWlsZCBvZiBhbiBvbGQgcmVsZWFz
-ZS4NCg0KQnV0IGV2ZW4gdGhlbiB3ZSBjYW4gbm8gbG9uZ2VyIGJ1aWxkIGRyaXZlcnMgZm9yIHNv
-bWUgd2luZG93cw0Kc3lzdGVtcyBiZWNhdXNlIHdlIGNhbid0IHNpZ24gdGhlbSB3aXRoIHRoZSBv
-bGQga2V5cy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJh
-bWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0
-cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On 29/04/2021 19:43, Jerome Brunet wrote:
+> 
+> On Thu 29 Apr 2021 at 19:01, Neil Armstrong <narmstrong@baylibre.com> wrote:
+> 
+> 
+>>  
+>> +static int sm1_toacodec_mux_put_enum(struct snd_kcontrol *kcontrol,
+>> +				     struct snd_ctl_elem_value *ucontrol)
+>> +{
+>> +	struct snd_soc_component *component =
+>> +		snd_soc_dapm_kcontrol_component(kcontrol);
+>> +	struct snd_soc_dapm_context *dapm =
+>> +		snd_soc_dapm_kcontrol_dapm(kcontrol);
+>> +	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+>> +	unsigned int mux, changed;
+>> +
+>> +	mux = snd_soc_enum_item_to_val(e, ucontrol->value.enumerated.item[0]);
+>> +	changed = snd_soc_component_test_bits(component, e->reg,
+>> +					      CTRL0_DAT_SEL_SM1,
+>> +					      FIELD_PREP(CTRL0_DAT_SEL_SM1, mux));
+>> +
+>> +	if (!changed)
+>> +		return 0;
+>> +
+>> +	/* Force disconnect of the mux while updating */
+>> +	snd_soc_dapm_mux_update_power(dapm, kcontrol, 0, NULL, NULL);
+>> +
+>> +	snd_soc_component_update_bits(component, e->reg,
+>> +				      CTRL0_DAT_SEL_SM1 |
+>> +				      CTRL0_LRCLK_SEL_SM1 |
+>> +				      CTRL0_BCLK_SEL_SM1,
+>> +				      FIELD_PREP(CTRL0_DAT_SEL_SM1, mux) |
+>> +				      FIELD_PREP(CTRL0_LRCLK_SEL_SM1, mux) |
+>> +				      FIELD_PREP(CTRL0_BCLK_SEL_SM1, mux));
+>> +
+>> +	/*
+>> +	 * FIXME:
+>> +	 * On this soc, the glue gets the MCLK directly from the clock
+>> +	 * controller instead of going the through the TDM interface.
+>> +	 *
+>> +	 * Here we assume interface A uses clock A, etc ... While it is
+>> +	 * true for now, it could be different. Instead the glue should
+>> +	 * find out the clock used by the interface and select the same
+>> +	 * source. For that, we will need regmap backed clock mux which
+>> +	 * is a work in progress
+>> +	 */
+>> +	snd_soc_component_update_bits(component, e->reg,
+>> +				      CTRL0_MCLK_SEL,
+>> +				      FIELD_PREP(CTRL0_MCLK_SEL, mux));
+>> +
+>> +	snd_soc_dapm_mux_update_power(dapm, kcontrol, mux, e, NULL);
+>> +
+>> +	return 0;
+>> +}
+> 
+> Instead of duplicating this function, I'd prefer if you could use regmap fields
+> 
+> 
 
+Sure, will do
