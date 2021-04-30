@@ -2,143 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8543236FFBC
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 19:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD4C636FFB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 19:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhD3Rha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 13:37:30 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2974 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbhD3Rh3 (ORCPT
+        id S231563AbhD3RgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 13:36:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231178AbhD3RgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 13:37:29 -0400
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FWztB25k8z6wjs0;
-        Sat,  1 May 2021 01:30:58 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 30 Apr 2021 19:36:39 +0200
-Received: from localhost (10.52.125.96) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 30 Apr
- 2021 18:36:38 +0100
-Date:   Fri, 30 Apr 2021 18:35:03 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
-        Jean-Christophe Trotin <jean-christophe.trotin@st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>
-Subject: Re: [PATCH v4 58/79] media: sti/hva: use
- pm_runtime_resume_and_get()
-Message-ID: <20210430183503.00002a9e@Huawei.com>
-In-Reply-To: <58543e7897c8700b5529182343e189a6345ff5d2.1619621413.git.mchehab+huawei@kernel.org>
-References: <cover.1619621413.git.mchehab+huawei@kernel.org>
-        <58543e7897c8700b5529182343e189a6345ff5d2.1619621413.git.mchehab+huawei@kernel.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+        Fri, 30 Apr 2021 13:36:16 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2CFC06174A;
+        Fri, 30 Apr 2021 10:35:27 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id d14so19726190edc.12;
+        Fri, 30 Apr 2021 10:35:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=tPDS2D22rwXWws+Y8XJI8512tkIXRC3MZ9HOlTsZiy4=;
+        b=U3439mmhZ4Ak97M5/Ia+jb+TDAGWJ8Hsfg5z5FcnwSkdo+ACQQezVqzs7b4xjNetG0
+         VGW/jgBFgO1X0PG9Ap5wM5c2/vUaLPJwoviCX5PB6TZWC+kRvpEvf3sAjdP/Sq9h4J5+
+         hsc6SLDJE930DbyQtXnu9TBnJYZztIihzp/A7PxpnrBD1hua1g9aEb/bKp0kZ3D49pP8
+         +/1FP82veVYLhwoLoClCxkfHa9JoHwktZMqo6mbvQKnQUkiyfOEBBnFoMd4GQ+nxvnv8
+         0DRvWwAZN/2bSCMmWed7bH8MZSG9onPQdRco3NGDcyeUbf/GD+DQVUCIzf2rwfzXbTAb
+         Zj7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=tPDS2D22rwXWws+Y8XJI8512tkIXRC3MZ9HOlTsZiy4=;
+        b=BcyI0KH8yMkk8Tx1XQFd+PBJ9LJB/5PBdildrnyiA+JcWvqtz5vyRftCsNdC7+yo/g
+         2tA0ldv/SollGnAuYNysuopkIZ7h9wMnhZ81gUgs/ZuRhWTzDSqNOmjraZ2sTgjxPxVf
+         sqvKM0DjDSRD8Wk2SEs93WFI3U4XplOH9E4Ucu505PH4QY04uE1f2cokr4DkaxkLL5nJ
+         diAMmUewMJRlpQuof9i/X89Kz6/TQShnEjxkqiN74oPBBDMmMbb+p9VdBRfYxpNB121a
+         TECM3mGU+wuZId3yuG6zE5VATI/A8ldvElfBH0bhWPFbv6Pueqeq+2I49tM2pYPJRJQ/
+         rzPg==
+X-Gm-Message-State: AOAM5332a/yrQd4sc3rsd+oz5BG065Nfxfb2Yxo5hOxFormJpqKf3KXt
+        rsjy9sBKRLqgZz/zWQopViF6294FEITRoGbw3G853Q==
+X-Google-Smtp-Source: ABdhPJy1PMHuKFQxpWi7H0OYElixThscYwv46io+aKS3XWP/mqP5uxM46xSTw5eY7aoyQ+S2Dli0fQ==
+X-Received: by 2002:a05:6402:144d:: with SMTP id d13mr7433488edx.101.1619804125726;
+        Fri, 30 Apr 2021 10:35:25 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id v26sm2463444ejk.66.2021.04.30.10.35.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 10:35:25 -0700 (PDT)
+Message-ID: <608c3fdd.1c69fb81.6db8d.7b5d@mx.google.com>
+Date:   Fri, 30 Apr 2021 10:35:25 -0700 (PDT)
+X-Google-Original-Date: Fri, 30 Apr 2021 17:35:21 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210430141910.473289618@linuxfoundation.org>
+Subject: RE: [PATCH 5.10 0/2] 5.10.34-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.125.96]
-X-ClientProxiedBy: lhreml721-chm.china.huawei.com (10.201.108.72) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Apr 2021 16:52:19 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+On Fri, 30 Apr 2021 16:20:41 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.10.34 release.
+> There are 2 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 02 May 2021 14:19:04 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.34-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-> added pm_runtime_resume_and_get() in order to automatically handle
-> dev->power.usage_count decrement on errors.
-> 
-> While the hva driver does it right, there are lots of errors
-> on other drivers due to its misusage. So, let's change
-> this driver to also use pm_runtime_resume_and_get(), as we're
-> doing similar changes all over the media subsystem.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Bit of a fiddly one, but looks right to me.
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-> ---
->  drivers/media/platform/sti/hva/hva-hw.c | 17 +++++++++--------
->  1 file changed, 9 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/media/platform/sti/hva/hva-hw.c b/drivers/media/platform/sti/hva/hva-hw.c
-> index f59811e27f51..77b8bfa5e0c5 100644
-> --- a/drivers/media/platform/sti/hva/hva-hw.c
-> +++ b/drivers/media/platform/sti/hva/hva-hw.c
-> @@ -270,9 +270,8 @@ static unsigned long int hva_hw_get_ip_version(struct hva_dev *hva)
->  	struct device *dev = hva_to_dev(hva);
->  	unsigned long int version;
->  
-> -	if (pm_runtime_get_sync(dev) < 0) {
-> +	if (pm_runtime_resume_and_get(dev) < 0) {
->  		dev_err(dev, "%s     failed to get pm_runtime\n", HVA_PREFIX);
-> -		pm_runtime_put_noidle(dev);
->  		mutex_unlock(&hva->protect_mutex);
->  		return -EFAULT;
->  	}
-> @@ -386,10 +385,10 @@ int hva_hw_probe(struct platform_device *pdev, struct hva_dev *hva)
->  	pm_runtime_set_suspended(dev);
->  	pm_runtime_enable(dev);
->  
-> -	ret = pm_runtime_get_sync(dev);
-> +	ret = pm_runtime_resume_and_get(dev);
->  	if (ret < 0) {
->  		dev_err(dev, "%s     failed to set PM\n", HVA_PREFIX);
-> -		goto err_pm;
-> +		goto err_clk;
->  	}
->  
->  	/* check IP hardware version */
-> @@ -462,6 +461,7 @@ int hva_hw_execute_task(struct hva_ctx *ctx, enum hva_hw_cmd_type cmd,
->  	u8 client_id = ctx->id;
->  	int ret;
->  	u32 reg = 0;
-> +	bool got_pm = false;
->  
->  	mutex_lock(&hva->protect_mutex);
->  
-> @@ -469,12 +469,13 @@ int hva_hw_execute_task(struct hva_ctx *ctx, enum hva_hw_cmd_type cmd,
->  	enable_irq(hva->irq_its);
->  	enable_irq(hva->irq_err);
->  
-> -	if (pm_runtime_get_sync(dev) < 0) {
-> +	if (pm_runtime_resume_and_get(dev) < 0) {
->  		dev_err(dev, "%s     failed to get pm_runtime\n", ctx->name);
->  		ctx->sys_errors++;
->  		ret = -EFAULT;
->  		goto out;
->  	}
-> +	got_pm = true;
->  
->  	reg = readl_relaxed(hva->regs + HVA_HIF_REG_CLK_GATING);
->  	switch (cmd) {
-> @@ -537,7 +538,8 @@ int hva_hw_execute_task(struct hva_ctx *ctx, enum hva_hw_cmd_type cmd,
->  		dev_dbg(dev, "%s     unknown command 0x%x\n", ctx->name, cmd);
->  	}
->  
-> -	pm_runtime_put_autosuspend(dev);
-> +	if (got_pm)
-> +		pm_runtime_put_autosuspend(dev);
->  	mutex_unlock(&hva->protect_mutex);
->  
->  	return ret;
-> @@ -553,9 +555,8 @@ void hva_hw_dump_regs(struct hva_dev *hva, struct seq_file *s)
->  
->  	mutex_lock(&hva->protect_mutex);
->  
-> -	if (pm_runtime_get_sync(dev) < 0) {
-> +	if (pm_runtime_resume_and_get(dev) < 0) {
->  		seq_puts(s, "Cannot wake up IP\n");
-> -		pm_runtime_put_noidle(dev);
->  		mutex_unlock(&hva->protect_mutex);
->  		return;
->  	}
+5.10.34-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
