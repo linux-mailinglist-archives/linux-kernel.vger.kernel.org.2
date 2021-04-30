@@ -2,253 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70FF36FE8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 18:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2563036FE8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 18:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230468AbhD3QdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 12:33:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46364 "EHLO
+        id S230303AbhD3Qcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 12:32:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230380AbhD3Qcz (ORCPT
+        with ESMTP id S229720AbhD3Qcg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 12:32:55 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F6BC06138B
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 09:32:06 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id 8so37530599qkv.8
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 09:32:06 -0700 (PDT)
+        Fri, 30 Apr 2021 12:32:36 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E920FC06174A;
+        Fri, 30 Apr 2021 09:31:47 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id x131so2835783ybg.11;
+        Fri, 30 Apr 2021 09:31:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xWQWoz1GIqfeB3sOPAAV8NNTSBRFI82N4HdMiBQEXUs=;
-        b=AvHtKkVewNfLnEEOr5louxEQR4hqWA4gRIBMwwHDMpMu8LEOuqeR6pToI0N5EiYa76
-         yuRkH5yWVtEalZYehkRdd+df5gNxPuv8rNKZhcyTXnc9Iv5smDRQY0SXKVLFD5ODtaah
-         jnJUvolcRo+W8zGGBJ34SPnkCcP2o6yNwezJwaEGccaulMjrHBZBK3bl1cWdQFLcPB3j
-         zvHpsQjz0EAGmLCbo716OnOI4cFAeBsjGc6xFGvVdrWM5dhKs5R+Jt4g6bVxxQ4zF1Jn
-         rn7T1XYEDXVWP6QJfN6KUJwRpUrS9odmTVvb3cQLvaTzZPQFdJiIh9Kha6P6m84BQg9i
-         zpsg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b2mLV6on/AScC+J+olqrHsUjmUN/LKY8yJTmwsZh9o8=;
+        b=Ews3etYbRH1SAXxMpCQ3HzT8GqoLm0S6KlnyPkm8GDmGNNs21zoeXWeQB7kVRWCZ78
+         asA/wpbZBsb96S8dSuoYFtxvNPGHh42qBysRhMcEGCkpk3buxXUi8dCjr3j63c6AVxKc
+         a1quoTAEYQreh7fJuEzUczoZbR4qafpmQTa6bcrGALxjCBsbFYyKQBhx/JYKyAxH5zxl
+         l7PRFyl55cDFErDvY5HKP5Z5KdKPp+VFjHDBZQjgDVUjbLhdELiavNRlJt+GKnVD+hr2
+         iUX3dZxEMdpmfyHxFrXte61dXoVkPbiKqqCuaIW3LjYQ83+rM4waTff/rm7YBAK0aGxh
+         C0LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xWQWoz1GIqfeB3sOPAAV8NNTSBRFI82N4HdMiBQEXUs=;
-        b=QQ02Tw38ALn31daKEcdcu78BYHVXyExQuYZUOpVKf+z9g8VyqiUEGhS/nbkOXlWytY
-         aPEOh1pMqoABHSQVRphVsREtTsNRtF6M13tuE+EMe4l3sIICvTMtioDm+6YZdlNgnpXI
-         KIY4JaadnmQluUoznKq2nun2/+uZMZUO5Xw3XTyMgMsDmbzWwdYJolQLwfA6JaWUj+if
-         Lw7P9L76EGMUYgycPn3bB14+o/yZZ5a+yzOSClAPc8kk6Ln85/hbB1VA6wq36ZBVR76E
-         4FyCg69KqRKm75mfiu3hOkxw0gDd/jHmY9TeIO4Oay+XwqETDi+gqkuCt+FSdEq9M5Qf
-         rsrw==
-X-Gm-Message-State: AOAM533a2MQiiEo1No7dgJsMLkKmg781ODyjpddPN4SsMNFl8t/HiL7G
-        NFyN1juOYCZ0ptWWLHchZ4k=
-X-Google-Smtp-Source: ABdhPJyvhdPo9ZKz0t5BbyWcsx6eqQ/0YE6NRlZogbXDBEm5UEnHdGfq0J+PQa22b9YPWvmBgTshZg==
-X-Received: by 2002:a05:620a:1233:: with SMTP id v19mr6203307qkj.418.1619800326135;
-        Fri, 30 Apr 2021 09:32:06 -0700 (PDT)
-Received: from li-908e0a4c-2250-11b2-a85c-f027e903211b.ibm.com.com ([2804:14c:482:7b04::1001])
-        by smtp.gmail.com with ESMTPSA id p1sm2624334qtu.89.2021.04.30.09.32.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 09:32:05 -0700 (PDT)
-From:   Leonardo Bras <leobras.c@gmail.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 01/11] powerpc/pseries/iommu: Replace hard-coded page shift
-Date:   Fri, 30 Apr 2021 13:31:36 -0300
-Message-Id: <20210430163145.146984-2-leobras.c@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210430163145.146984-1-leobras.c@gmail.com>
-References: <20210430163145.146984-1-leobras.c@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b2mLV6on/AScC+J+olqrHsUjmUN/LKY8yJTmwsZh9o8=;
+        b=B7UXY8mR1G/+lyqZaCTZeSJJTaHxPAW5XcjtLIBiduRn5xP77vPx2CLMINo7e5qmQQ
+         +fPMCTCKmhRIqZH7rBIt7fS2ktKvU+Js8der2TchSO0xXgHlqqsW57U183sYkthcu4eX
+         efN8piGGCNEimyHYwQwOpKeap2iR0hQfUURGeP/jeJBS9gXA/6yUo+Atg1i+WTUOi/hk
+         QpBh6q2L08DcL2eviwRQ7fR9kJag4Iwh2mt9KI1qP/QUC1wYxyKBH+gTmsuHlwVmkQmt
+         eB4q0ql5LhVaRl/V2WA+9WME4kHc3Tc3A91jvfG3cWKJm7af7QfmSGKhAMADKOTTnTmq
+         /DMQ==
+X-Gm-Message-State: AOAM530X9VsrLMVQQBlWZMwCRy2wGJsUHOhm/nZtLp18+bWV4dApr2Qv
+        xK2akNBQTGAT8XHOOPQV0zgi0uKYXahtfga2MKI=
+X-Google-Smtp-Source: ABdhPJwJ5e05hCeVD6W/60BrOQQAMF3qO9FZdE9Q20e+qRXpHN/C4dXiihjalWS0c/RSVsM6rZoNHh3JZtCpdBUSPbM=
+X-Received: by 2002:a25:7507:: with SMTP id q7mr8303198ybc.27.1619800307186;
+ Fri, 30 Apr 2021 09:31:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210429130510.1621665-1-jackmanb@google.com>
+In-Reply-To: <20210429130510.1621665-1-jackmanb@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 30 Apr 2021 09:31:36 -0700
+Message-ID: <CAEf4BzY7sx0gW=o5rM8WDzW1J0U_Yep3MMuJScoMg-hBAeBPCg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] libbpf: Fix signed overflow in ringbuf_process_ring
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Florent Revest <revest@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some functions assume IOMMU page size can only be 4K (pageshift == 12).
-Update them to accept any page size passed, so we can use 64K pages.
+On Thu, Apr 29, 2021 at 6:05 AM Brendan Jackman <jackmanb@google.com> wrote:
+>
+> One of our benchmarks running in (Google-internal) CI pushes data
+> through the ringbuf faster htan than userspace is able to consume
+> it. In this case it seems we're actually able to get >INT_MAX entries
+> in a single ringbuf_buffer__consume call. ASAN detected that cnt
+> overflows in this case.
+>
+> Fix by using 64-bit counter internally and then capping the result to
+> INT_MAX before converting to the int return type.
+>
+> Fixes: bf99c936f947 (libbpf: Add BPF ring buffer support)
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> ---
+>
+> diff v1->v2: Now we don't break the loop at INT_MAX, we just cap the reported
+> entry count.
+>
+> Note: I feel a bit guilty about the fact that this makes the reader
+> think about implicit conversions. Nobody likes thinking about that.
+>
+> But explicit casts don't really help with clarity:
+>
+>   return (int)min(cnt, (int64_t)INT_MAX); // ugh
+>
 
-In the process, some defines like TCE_SHIFT were made obsolete, and then
-removed.
+I'd go with
 
-IODA3 Revision 3.0_prd1 (OpenPowerFoundation), Figures 3.4 and 3.5 show
-a RPN of 52-bit, and considers a 12-bit pageshift, so there should be
-no need of using TCE_RPN_MASK, which masks out any bit after 40 in rpn.
-It's usage removed from tce_build_pSeries(), tce_build_pSeriesLP(), and
-tce_buildmulti_pSeriesLP().
+if (cnt > INT_MAX)
+    return INT_MAX;
 
-Most places had a tbl struct, so using tbl->it_page_shift was simple.
-tce_free_pSeriesLP() was a special case, since callers not always have a
-tbl struct, so adding a tceshift parameter seems the right thing to do.
+return cnt;
 
-Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
-Reviewed-by: Alexey Kardashevskiy <aik@ozlabs.ru>
----
- arch/powerpc/include/asm/tce.h         |  8 ------
- arch/powerpc/platforms/pseries/iommu.c | 39 +++++++++++++++-----------
- 2 files changed, 23 insertions(+), 24 deletions(-)
+If you don't mind, I can patch it up while applying?
 
-diff --git a/arch/powerpc/include/asm/tce.h b/arch/powerpc/include/asm/tce.h
-index db5fc2f2262d..0c34d2756d92 100644
---- a/arch/powerpc/include/asm/tce.h
-+++ b/arch/powerpc/include/asm/tce.h
-@@ -19,15 +19,7 @@
- #define TCE_VB			0
- #define TCE_PCI			1
- 
--/* TCE page size is 4096 bytes (1 << 12) */
--
--#define TCE_SHIFT	12
--#define TCE_PAGE_SIZE	(1 << TCE_SHIFT)
--
- #define TCE_ENTRY_SIZE		8		/* each TCE is 64 bits */
--
--#define TCE_RPN_MASK		0xfffffffffful  /* 40-bit RPN (4K pages) */
--#define TCE_RPN_SHIFT		12
- #define TCE_VALID		0x800		/* TCE valid */
- #define TCE_ALLIO		0x400		/* TCE valid for all lpars */
- #define TCE_PCI_WRITE		0x2		/* write from PCI allowed */
-diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
-index 67c9953a6503..796ab356341c 100644
---- a/arch/powerpc/platforms/pseries/iommu.c
-+++ b/arch/powerpc/platforms/pseries/iommu.c
-@@ -107,6 +107,8 @@ static int tce_build_pSeries(struct iommu_table *tbl, long index,
- 	u64 proto_tce;
- 	__be64 *tcep;
- 	u64 rpn;
-+	const unsigned long tceshift = tbl->it_page_shift;
-+	const unsigned long pagesize = IOMMU_PAGE_SIZE(tbl);
- 
- 	proto_tce = TCE_PCI_READ; // Read allowed
- 
-@@ -117,10 +119,10 @@ static int tce_build_pSeries(struct iommu_table *tbl, long index,
- 
- 	while (npages--) {
- 		/* can't move this out since we might cross MEMBLOCK boundary */
--		rpn = __pa(uaddr) >> TCE_SHIFT;
--		*tcep = cpu_to_be64(proto_tce | (rpn & TCE_RPN_MASK) << TCE_RPN_SHIFT);
-+		rpn = __pa(uaddr) >> tceshift;
-+		*tcep = cpu_to_be64(proto_tce | rpn << tceshift);
- 
--		uaddr += TCE_PAGE_SIZE;
-+		uaddr += pagesize;
- 		tcep++;
- 	}
- 	return 0;
-@@ -146,7 +148,7 @@ static unsigned long tce_get_pseries(struct iommu_table *tbl, long index)
- 	return be64_to_cpu(*tcep);
- }
- 
--static void tce_free_pSeriesLP(unsigned long liobn, long, long);
-+static void tce_free_pSeriesLP(unsigned long liobn, long, long, long);
- static void tce_freemulti_pSeriesLP(struct iommu_table*, long, long);
- 
- static int tce_build_pSeriesLP(unsigned long liobn, long tcenum, long tceshift,
-@@ -166,12 +168,12 @@ static int tce_build_pSeriesLP(unsigned long liobn, long tcenum, long tceshift,
- 		proto_tce |= TCE_PCI_WRITE;
- 
- 	while (npages--) {
--		tce = proto_tce | (rpn & TCE_RPN_MASK) << tceshift;
-+		tce = proto_tce | rpn << tceshift;
- 		rc = plpar_tce_put((u64)liobn, (u64)tcenum << tceshift, tce);
- 
- 		if (unlikely(rc == H_NOT_ENOUGH_RESOURCES)) {
- 			ret = (int)rc;
--			tce_free_pSeriesLP(liobn, tcenum_start,
-+			tce_free_pSeriesLP(liobn, tcenum_start, tceshift,
- 			                   (npages_start - (npages + 1)));
- 			break;
- 		}
-@@ -205,10 +207,11 @@ static int tce_buildmulti_pSeriesLP(struct iommu_table *tbl, long tcenum,
- 	long tcenum_start = tcenum, npages_start = npages;
- 	int ret = 0;
- 	unsigned long flags;
-+	const unsigned long tceshift = tbl->it_page_shift;
- 
- 	if ((npages == 1) || !firmware_has_feature(FW_FEATURE_PUT_TCE_IND)) {
- 		return tce_build_pSeriesLP(tbl->it_index, tcenum,
--					   tbl->it_page_shift, npages, uaddr,
-+					   tceshift, npages, uaddr,
- 		                           direction, attrs);
- 	}
- 
-@@ -225,13 +228,13 @@ static int tce_buildmulti_pSeriesLP(struct iommu_table *tbl, long tcenum,
- 		if (!tcep) {
- 			local_irq_restore(flags);
- 			return tce_build_pSeriesLP(tbl->it_index, tcenum,
--					tbl->it_page_shift,
-+					tceshift,
- 					npages, uaddr, direction, attrs);
- 		}
- 		__this_cpu_write(tce_page, tcep);
- 	}
- 
--	rpn = __pa(uaddr) >> TCE_SHIFT;
-+	rpn = __pa(uaddr) >> tceshift;
- 	proto_tce = TCE_PCI_READ;
- 	if (direction != DMA_TO_DEVICE)
- 		proto_tce |= TCE_PCI_WRITE;
-@@ -245,12 +248,12 @@ static int tce_buildmulti_pSeriesLP(struct iommu_table *tbl, long tcenum,
- 		limit = min_t(long, npages, 4096/TCE_ENTRY_SIZE);
- 
- 		for (l = 0; l < limit; l++) {
--			tcep[l] = cpu_to_be64(proto_tce | (rpn & TCE_RPN_MASK) << TCE_RPN_SHIFT);
-+			tcep[l] = cpu_to_be64(proto_tce | rpn << tceshift);
- 			rpn++;
- 		}
- 
- 		rc = plpar_tce_put_indirect((u64)tbl->it_index,
--					    (u64)tcenum << 12,
-+					    (u64)tcenum << tceshift,
- 					    (u64)__pa(tcep),
- 					    limit);
- 
-@@ -277,12 +280,13 @@ static int tce_buildmulti_pSeriesLP(struct iommu_table *tbl, long tcenum,
- 	return ret;
- }
- 
--static void tce_free_pSeriesLP(unsigned long liobn, long tcenum, long npages)
-+static void tce_free_pSeriesLP(unsigned long liobn, long tcenum, long tceshift,
-+			       long npages)
- {
- 	u64 rc;
- 
- 	while (npages--) {
--		rc = plpar_tce_put((u64)liobn, (u64)tcenum << 12, 0);
-+		rc = plpar_tce_put((u64)liobn, (u64)tcenum << tceshift, 0);
- 
- 		if (rc && printk_ratelimit()) {
- 			printk("tce_free_pSeriesLP: plpar_tce_put failed. rc=%lld\n", rc);
-@@ -301,9 +305,11 @@ static void tce_freemulti_pSeriesLP(struct iommu_table *tbl, long tcenum, long n
- 	u64 rc;
- 
- 	if (!firmware_has_feature(FW_FEATURE_STUFF_TCE))
--		return tce_free_pSeriesLP(tbl->it_index, tcenum, npages);
-+		return tce_free_pSeriesLP(tbl->it_index, tcenum,
-+					  tbl->it_page_shift, npages);
- 
--	rc = plpar_tce_stuff((u64)tbl->it_index, (u64)tcenum << 12, 0, npages);
-+	rc = plpar_tce_stuff((u64)tbl->it_index,
-+			     (u64)tcenum << tbl->it_page_shift, 0, npages);
- 
- 	if (rc && printk_ratelimit()) {
- 		printk("tce_freemulti_pSeriesLP: plpar_tce_stuff failed\n");
-@@ -319,7 +325,8 @@ static unsigned long tce_get_pSeriesLP(struct iommu_table *tbl, long tcenum)
- 	u64 rc;
- 	unsigned long tce_ret;
- 
--	rc = plpar_tce_get((u64)tbl->it_index, (u64)tcenum << 12, &tce_ret);
-+	rc = plpar_tce_get((u64)tbl->it_index,
-+			   (u64)tcenum << tbl->it_page_shift, &tce_ret);
- 
- 	if (rc && printk_ratelimit()) {
- 		printk("tce_get_pSeriesLP: plpar_tce_get failed. rc=%lld\n", rc);
--- 
-2.30.2
-
+> shrug..
+>
+>  tools/lib/bpf/ringbuf.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+> index e7a8d847161f..2e114c2d0047 100644
+> --- a/tools/lib/bpf/ringbuf.c
+> +++ b/tools/lib/bpf/ringbuf.c
+> @@ -204,7 +204,9 @@ static inline int roundup_len(__u32 len)
+>
+>  static int ringbuf_process_ring(struct ring* r)
+>  {
+> -       int *len_ptr, len, err, cnt = 0;
+> +       int *len_ptr, len, err;
+> +       /* 64-bit to avoid overflow in case of extreme application behavior */
+> +       int64_t cnt = 0;
+>         unsigned long cons_pos, prod_pos;
+>         bool got_new_data;
+>         void *sample;
+> @@ -240,7 +242,7 @@ static int ringbuf_process_ring(struct ring* r)
+>                 }
+>         } while (got_new_data);
+>  done:
+> -       return cnt;
+> +       return min(cnt, INT_MAX);
+>  }
+>
+>  /* Consume available ring buffer(s) data without event polling.
+> @@ -263,8 +265,8 @@ int ring_buffer__consume(struct ring_buffer *rb)
+>  }
+>
+>  /* Poll for available data and consume records, if any are available.
+> - * Returns number of records consumed, or negative number, if any of the
+> - * registered callbacks returned error.
+> + * Returns number of records consumed (or INT_MAX, whichever is less), or
+> + * negative number, if any of the registered callbacks returned error.
+>   */
+>  int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms)
+>  {
+> --
+> 2.31.1.498.g6c1eba8ee3d-goog
+>
