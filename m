@@ -2,86 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A0F37032D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 23:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54353370337
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 23:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbhD3Vrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 17:47:45 -0400
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:35387 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229915AbhD3Vro (ORCPT
+        id S231336AbhD3VuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 17:50:02 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56210 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229915AbhD3Vt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 17:47:44 -0400
-Received: by mail-ot1-f54.google.com with SMTP id b5-20020a9d5d050000b02902a5883b0f4bso2414691oti.2;
-        Fri, 30 Apr 2021 14:46:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=k5kmXfi6wS0LsDCeqnGbubfxQdvywaGfWylg+z/ACgY=;
-        b=rpQNwyIfCznFsYBIWdz2ChpJy96ggdXncB3uDeiiJRXL4JVfgS1rlurZt28Q57KRQJ
-         uYyc34lygPd2f9r3VmHlS7yzx66fbi9SYCaefZWwAftJlm+Vz/xyi+48boNW4hwuJQIs
-         M/oH7mTXM14/gtSNl0j4KNupVkomuoWP/N3cW4Fbp3HPdNHvEhUXCxPhj9jSoaY5Kqa/
-         ldht0gI0esWDB8naUzL68axxCi2Tm573zVQTtPKeG/V22pHDADVowu5HbIApEMEUAU3f
-         zqqMyg06sRywTN4OruxceUeB+unTh4nYnkutohH8DVctCmWHMVO38E/5yzH/46DVPp2T
-         gacQ==
-X-Gm-Message-State: AOAM530sU5dpQ1jcJUyHZFn/ecVbPpK3o1DGnpKiAGRnYilbUsLsWOqh
-        Ye0iNRFmXDwB6kSWZd/1Eg==
-X-Google-Smtp-Source: ABdhPJwKtFBJD2trSsc1PUC+PlbrdkflmhMc8z5zMaI7tTFlTGq8MJAqXla/kw0olV4yL4+Kr0sHpw==
-X-Received: by 2002:a05:6830:119:: with SMTP id i25mr5219815otp.39.1619819214229;
-        Fri, 30 Apr 2021 14:46:54 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 16sm272196otu.79.2021.04.30.14.46.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 14:46:53 -0700 (PDT)
-Received: (nullmailer pid 3957362 invoked by uid 1000);
-        Fri, 30 Apr 2021 21:46:52 -0000
-Date:   Fri, 30 Apr 2021 16:46:52 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Rajeshwari <rkambl@codeaurora.org>
-Cc:     amitk@kernel.org, thara.gopinath@linaro.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sanm@codeaurora.org,
-        manafm@codeaurora.org
-Subject: Re: [PATCH V3 1/3] dt-bindings: thermal: tsens: Add compatible
- string to TSENS binding for SC7280
-Message-ID: <20210430214652.GA3956278@robh.at.kernel.org>
-References: <1619778592-8112-1-git-send-email-rkambl@codeaurora.org>
- <1619778592-8112-2-git-send-email-rkambl@codeaurora.org>
+        Fri, 30 Apr 2021 17:49:59 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 13ULmu1e024684
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Apr 2021 17:48:56 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id E6B1F15C39C4; Fri, 30 Apr 2021 17:48:55 -0400 (EDT)
+Date:   Fri, 30 Apr 2021 17:48:55 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     ksummit@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org
+Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
+Message-ID: <YIx7R6tmcRRCl/az@mit.edu>
+References: <YH2hs6EsPTpDAqXc@mit.edu>
+ <nycvar.YFH.7.76.2104281228350.18270@cbobk.fhfr.pm>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1619778592-8112-2-git-send-email-rkambl@codeaurora.org>
+In-Reply-To: <nycvar.YFH.7.76.2104281228350.18270@cbobk.fhfr.pm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 03:59:50PM +0530, Rajeshwari wrote:
-> Adding compatible string in TSENS dt-bindings for SC7280.
+On Wed, Apr 28, 2021 at 12:29:52PM +0200, Jiri Kosina wrote:
+> On Mon, 19 Apr 2021, Theodore Ts'o wrote:
 > 
-> Signed-off-by: Rajeshwari <rkambl@codeaurora.org>
+> > This year, the Maintainers and Kernel Summit is currently planned to
+> > be held in Dublin, Ireland, September 27 -- 29th.  
+> 
+> Given the fact that OSS is being relocated from Dublin to Washington [1], 
+> is Kernel Summit following that direction?
+> 
+> [1] https://www.linuxfoundation.org/en/press-release/the-linux-foundation-announces-open-source-summit-embedded-linux-conference-2021-will-move-from-dublin-ireland-to-seattle-washington/
 
-Is this your full name?
+Apologies for the delay in responding; I wasiting for the LPC to post
+its announcement that the LPC will be going 100% virtual:
 
-> ---
->  Documentation/devicetree/bindings/thermal/qcom-tsens.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-> index b7a832f..23cf265 100644
-> --- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-> +++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-> @@ -46,6 +46,7 @@ properties:
->                - qcom,msm8996-tsens
->                - qcom,msm8998-tsens
->                - qcom,sc7180-tsens
-> +              - qcom,sc7280-tsens
->                - qcom,sdm845-tsens
->                - qcom,sm8150-tsens
->                - qcom,sm8250-tsens
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-> of Code Aurora Forum, hosted by The Linux Foundation
-> 
+   https://www.linuxplumbersconf.org/blog/2021/index.php/2021/04/30/linux-plumbers-goes-fully-virtual/
+
+As the LPC planning committee stated,
+
+   "Unfortunately, the safety protocols imposed by event venues in the
+   US require masks and social distancing which make it impossible to
+   hold the interactive part of Plumbers (the Microconferences)."
+
+The Maintainer's Summit is even more interactive and discussion
+focused than most of the Microconferences.  In addition, for the last
+few years, the Kernel Summit is run as a track at the LPC.  As a
+result, both the Maintainer's and Kernel Summit will be held virtually
+this year, using the LPC infrastructure, and will not be colocated
+with OSS to Seattle.  We'll make sure the dates (plus some buffer for
+travel) won't overlap to avoid creating conflicts for those who are
+planning to attend OSS in Seattle.
+
+I know we're all really hungry for some in-person meetups and
+discussions, but at least for LPC, Kernel Summit, and Maintainer's
+Summit, we're going to have to wait for another year,
+
+Cheers,
+
+					- Ted
