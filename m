@@ -2,131 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E12FA3702A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 23:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 552FA3702B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 23:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236019AbhD3VIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 17:08:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40515 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236122AbhD3VIu (ORCPT
+        id S236160AbhD3VLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 17:11:34 -0400
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:38788 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231328AbhD3VLd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 17:08:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619816881;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7bjSqgt4w42d2y2oUh6BGNJmeVzILv9yAjfoz9hqHZ8=;
-        b=Tl7al7NV5S7ilgesGLruvMVpsvfYiQj/S8MbDe0dH5a9KnDznhZxAZm93vI2r9EGoiRwuF
-        VDf4d+q3nwv3liXuLabwzBMPADPiJRmOK2WsTvBbNx4lTsExBTM837eGhbrkWUmvTk4xoZ
-        nU2DsO5aXq59/GSqc6r06EmMQt8DI08=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-2-12Z1n4vzMYWesYkNXta_zw-1; Fri, 30 Apr 2021 17:07:59 -0400
-X-MC-Unique: 12Z1n4vzMYWesYkNXta_zw-1
-Received: by mail-lj1-f199.google.com with SMTP id e6-20020a05651c04c6b02900c01712738eso5897299lji.2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 14:07:59 -0700 (PDT)
+        Fri, 30 Apr 2021 17:11:33 -0400
+Received: by mail-oi1-f180.google.com with SMTP id d25so33808949oij.5;
+        Fri, 30 Apr 2021 14:10:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7bjSqgt4w42d2y2oUh6BGNJmeVzILv9yAjfoz9hqHZ8=;
-        b=n0v0gs6vxr+Wr204oDHj2ILUnw1cmfQPorFIR4si8joovrr+WNDKQLdnRcrUHmup3h
-         xAuq47/3PCwNfxuY/QEVIiy0H/gWx3/DMN7kbANUB86dtnKNUAHt+xszEbvRPlXNSHhE
-         47coDfRER18GxPtpRSqycNH8ZUzdGziPKOBJEqOBU8rPO77wVCaHpMwmwoQFvTs3uReG
-         Bs0Kt+3ZrPwLRsT9OsU2oGmLdUR2Sn874OmsKQ4+prBLA/d81pqmS/p6f+Feuei3ZRiX
-         fuYn56bU+5T6l5hzWJwy92vj2602II8Ghx3adtQdcGfnuDKP2tbi5dQ5+vn+WSfqZxbb
-         zbEA==
-X-Gm-Message-State: AOAM532zP/R4cm1G7UFUxbTvJTn1X5uCOPVm4t95kMwjCAQl2BhwWPzp
-        rMb2RmwB7vT+/17bgtGMn3vYlMBtnwkoUPH4AftwNdIwVPmTYzTQKeqVo1wZZRYALN9pFoP+zLb
-        Gvgx9I4oY/fLip8hrrIY8XIriFmkkCCm4K5NxS711
-X-Received: by 2002:a05:6512:2312:: with SMTP id o18mr3109217lfu.159.1619816878352;
-        Fri, 30 Apr 2021 14:07:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzBW+2eTpJ1b/0aVBVfHtEHUDBvWA8EKipw/hV7udwyS3zot1KXF8xLRaYzeqXtLDjqsJJZJTOxweH+MiRCp/U=
-X-Received: by 2002:a05:6512:2312:: with SMTP id o18mr3109190lfu.159.1619816878110;
- Fri, 30 Apr 2021 14:07:58 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kSEgVUlltgSDOONBiS4sAFkzxQMosR8q2b8hfma9UC8=;
+        b=rDyrWi6/RI8ccI76ewcjhI12T+GGI6UL9VtQsyOO1Kr1A0OZ7XlWRHfXEfrRQDHsvm
+         BQRV2NIq1seKF9k+vCyp60KnVu4apbP8iHiSbkSkuiOzP2O6adPrTWJnADu6Z22+9w4K
+         2v/EHJrko7TWaWL0PidHJohaPI4lIshvM47V0qdiwRe6IPe+Xnsb7nG2YoGaV6nr8V7H
+         FAlq7lhhp5LxmM0VMn+qHTJL4qQNtTMKcl1D8KwVL5AbzeN+zwcnsfHXpetkZxTlUNuZ
+         BeRNRIvpcZrLSMPtgXUPhzZl39xm7uTJg18PZ4KLd6a9IOXy+wFYeJuiQrQPxjoGVpIA
+         jMSQ==
+X-Gm-Message-State: AOAM531g8b77EfmEBNw+bIrWFXcWi8ciEscYBdWFR7BEV+aUs/vBMT/x
+        wFuNQ7rc+MsAXO60V5bdyw==
+X-Google-Smtp-Source: ABdhPJyC09D8lASABIQOXdJUS4e0eg6y4Lwzcjjkv84brMLnJFgup/NBDzBUDxNZkEwVZYlQzZxdWQ==
+X-Received: by 2002:aca:1211:: with SMTP id 17mr5508725ois.20.1619817044122;
+        Fri, 30 Apr 2021 14:10:44 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id q130sm1010654oif.40.2021.04.30.14.10.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 14:10:43 -0700 (PDT)
+Received: (nullmailer pid 3899661 invoked by uid 1000);
+        Fri, 30 Apr 2021 21:10:41 -0000
+Date:   Fri, 30 Apr 2021 16:10:41 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     cl@rock-chips.com
+Cc:     jbx6244@gmail.com, david.wu@rock-chips.com,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, jagan@amarulasolutions.com,
+        linux@roeck-us.net, maz@kernel.org, linux-serial@vger.kernel.org,
+        cnsztl@gmail.com, wim@linux-watchdog.org, shawn.lin@rock-chips.com,
+        devicetree@vger.kernel.org, ulf.hansson@linaro.org,
+        linux-arm-kernel@lists.infradead.org, zhangqing@rock-chips.com,
+        linux-watchdog@vger.kernel.org, jensenhuang@friendlyarm.com,
+        huangtao@rock-chips.com, heiko@sntech.de, jamie@jamieiles.com,
+        uwe@kleine-koenig.org, linux-i2c@vger.kernel.org,
+        jay.xu@rock-chips.com, mail@david-bauer.net,
+        linux-mmc@vger.kernel.org, wens@csie.org,
+        michael@amarulasolutions.com, robh+dt@kernel.org
+Subject: Re: [PATCH v4 01/10] dt-bindings: i2c: i2c-rk3x: add description for
+ rk3568
+Message-ID: <20210430211041.GA3899631@robh.at.kernel.org>
+References: <20210429081151.17558-1-cl@rock-chips.com>
+ <20210429081151.17558-2-cl@rock-chips.com>
 MIME-Version: 1.0
-References: <20200625223443.2684-1-nitesh@redhat.com> <3e9ce666-c9cd-391b-52b6-3471fe2be2e6@arm.com>
- <20210127121939.GA54725@fuller.cnet> <87r1m5can2.fsf@nanos.tec.linutronix.de>
- <20210128165903.GB38339@fuller.cnet> <87h7n0de5a.fsf@nanos.tec.linutronix.de>
- <20210204181546.GA30113@fuller.cnet> <cfa138e9-38e3-e566-8903-1d64024c917b@redhat.com>
- <20210204190647.GA32868@fuller.cnet> <d8884413-84b4-b204-85c5-810342807d21@redhat.com>
- <87y2g26tnt.fsf@nanos.tec.linutronix.de> <d0aed683-87ae-91a2-d093-de3f5d8a8251@redhat.com>
- <7780ae60-efbd-2902-caaa-0249a1f277d9@redhat.com> <07c04bc7-27f0-9c07-9f9e-2d1a450714ef@redhat.com>
- <20210406102207.0000485c@intel.com> <1a044a14-0884-eedb-5d30-28b4bec24b23@redhat.com>
- <20210414091100.000033cf@intel.com> <54ecc470-b205-ea86-1fc3-849c5b144b3b@redhat.com>
- <CAFki+Lm0W_brLu31epqD3gAV+WNKOJfVDfX2M8ZM__aj3nv9uA@mail.gmail.com>
- <87czucfdtf.ffs@nanos.tec.linutronix.de> <CAFki+LmmRyvOkWoNNLk5JCwtaTnabyaRUKxnS+wyAk_kj8wzyw@mail.gmail.com>
- <87sg37eiqa.ffs@nanos.tec.linutronix.de>
-In-Reply-To: <87sg37eiqa.ffs@nanos.tec.linutronix.de>
-From:   Nitesh Lal <nilal@redhat.com>
-Date:   Fri, 30 Apr 2021 17:07:46 -0400
-Message-ID: <CAFki+L=_dd+JgAR12_eBPX0kZO2_6=1dGdgkwHE=u=K6chMeLQ@mail.gmail.com>
-Subject: Re: [Patch v4 1/3] lib: Restrict cpumask_local_spread to houskeeping CPUs
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>
-Cc:     "frederic@kernel.org" <frederic@kernel.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>, abelits@marvell.com,
-        Robin Murphy <robin.murphy@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "stephen@networkplumber.org" <stephen@networkplumber.org>,
-        "rppt@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
-        "jinyuqi@huawei.com" <jinyuqi@huawei.com>,
-        "zhangshaokun@hisilicon.com" <zhangshaokun@hisilicon.com>,
-        netdev@vger.kernel.org, chris.friesen@windriver.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210429081151.17558-2-cl@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 2:21 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> Nitesh,
->
-> On Fri, Apr 30 2021 at 12:14, Nitesh Lal wrote:
-> > Based on this analysis and the fact that with your re-work the interrupts
-> > seems to be naturally spread across the CPUs, will it be safe to revert
-> > Jesse's patch
-> >
-> > e2e64a932 genirq: Set initial affinity in irq_set_affinity_hint()
-> >
-> > as it overwrites the previously set IRQ affinity mask for some of the
-> > devices?
->
-> That's a good question. My gut feeling says yes.
->
+On Thu, 29 Apr 2021 16:11:42 +0800, cl@rock-chips.com wrote:
+> From: Liang Chen <cl@rock-chips.com>
+> 
+> add "rockchip,rk3568-i2c", "rockchip,rk3399-i2c" for i2c nodes on
+> a rk3568 platform to i2c-rk3x.yaml.
+> 
+> Signed-off-by: Liang Chen <cl@rock-chips.com>
+> ---
+>  Documentation/devicetree/bindings/i2c/i2c-rk3x.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-Jesse do you want to send the revert for the patch?
-
-Also, I think it was you who suggested cc'ing
-intel-wired-lan ml as that allows intel folks, to do some initial
-testing?
-If so, we can do that here (IMHO).
-
-> > IMHO if we think that this patch is still solving some issue other than
-> > what Jesse has mentioned then perhaps we should reproduce that and fix it
-> > directly from the request_irq code path.
->
-> Makes sense.
->
-> Thanks,
->
->         tglx
->
-
-
--- 
-Thanks
-Nitesh
-
+Acked-by: Rob Herring <robh@kernel.org>
