@@ -2,120 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C1A37029C
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 23:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D04463702A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 23:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236101AbhD3VF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 17:05:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
+        id S236066AbhD3VIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 17:08:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236019AbhD3VFy (ORCPT
+        with ESMTP id S231278AbhD3VIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 17:05:54 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EAC3C06138B;
-        Fri, 30 Apr 2021 14:05:05 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id d11so14158010wrw.8;
-        Fri, 30 Apr 2021 14:05:05 -0700 (PDT)
+        Fri, 30 Apr 2021 17:08:36 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D758BC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 14:07:47 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id k3-20020a17090ad083b0290155b934a295so2415869pju.2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 14:07:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4AFQFdYIK2aHm1d5xFyje/tGT6Iuc52lwDSkAKiwQ+0=;
-        b=T7Clnp0nW+dl1zkqChEKs3pKarwzuucCmhLXTyDQDkSQgn823ebNRcK6CGXdLrueJh
-         2JSQqctkyVfO32WId5f4qMJULZC8/UwNz4ZHeE0dlh/I1vTUYYtQbKWStcK88wWva0oK
-         O6+sqUwigxN7zrsJXATlgGi6sArWmbI5SBTglVCtTzoRXrVi5UgsV2DV/7EnnbkM9goQ
-         t7p+qNNVixGc4b8WD8tMng7x+Mv8h3vouwpEUj+hHG3Ci1Zf/ApDHQzx3E991D9+9k5T
-         lypYVkn7+Cw7wRYHo65pGSnJbMgGG2nS9DwXorZqXBGuYH3jO6xUfi6e0c9jtSndf6J0
-         l7OA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=53bzAf1u6JW5+ZWhmzMnt7EtP/jXlqbD8WQc/gJHHsU=;
+        b=JmsMhoTpI0+TSwVGnU4CF2vZzkoRyGe/DvdJjvEhutMZ1eRxJXQHQOVEauAnHhJp4F
+         1nWQogpFyj8imgLEZWUuewf1cpy4MjclZ0g8lQ2EyCU4SwnFN/4NL7MfTkEfVCDVs3+Q
+         0ENcaxTlnGvnQ/tDLU1K86u9ug7Vj1s9VDkfl3Ua1/14L6tvZAZNjG1lFUkugEXrb7lX
+         ArdkBg75K19ybReQV4x8S4vEzZwihKJS8AJNpkDBIG+z5OeTBlfYpeL8UEHCNmQGHzpg
+         SixvO1Og3gWAe7ytI5dH0xUd866GXCPMA4l4jS1s9f/Z+SgPvWiUeMtFDZZdziDvDygJ
+         9e2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=4AFQFdYIK2aHm1d5xFyje/tGT6Iuc52lwDSkAKiwQ+0=;
-        b=SP2XN6kCHXpAFUbzV7KK2j+PUy58pT7l8UMSB/yPFRdXWm3FbyPuCpX+yTVye7m50N
-         VF4UsK9bTnES9Nya1RircZFQCe85p3Yqz4zwNBOZUujEBnQbIFebC0y76aWCMrqd82N4
-         xebATBpVCpil5UkdYIksMO0k4w3THUkOvxF9StuZacmZnsLUZ5VX/+zWeOnIJ+X9w5fO
-         oiaXfpKZZmUMbgrYyhOFd2qT51dQ9/uF2jdARO+nmU0FTjKG5jTR0FSzrIt3ChPDuIRU
-         Vplk9DkBa8PgxOaN8W3Tykd/iAHYBMrKwXBRe+nDMw4QsgK56aoT+L3M56ZftjoYPhTF
-         r3mw==
-X-Gm-Message-State: AOAM531trenLUjncXYDT47lFLBlwrkd6O815NX994x8RDUXNifJaMm6G
-        3uyTpMhNyH8lJBwR1JaNOYo=
-X-Google-Smtp-Source: ABdhPJwAjh2UP9hVb62pJ4UiJuGK/XfSrZhDaWcnN/VAqrY5Tx8p4w1UhRTw2xZmFmHfI8xCwvqcJw==
-X-Received: by 2002:adf:d091:: with SMTP id y17mr9356684wrh.107.1619816704466;
-        Fri, 30 Apr 2021 14:05:04 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.132.80])
-        by smtp.gmail.com with ESMTPSA id h5sm14025866wmq.23.2021.04.30.14.05.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Apr 2021 14:05:03 -0700 (PDT)
-Subject: Re: INFO: task hung in io_uring_cancel_sqpoll
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Palash Oswal <oswalpalash@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzbot+11bf59db879676f59e52@syzkaller.appspotmail.com
-References: <0000000000000c97e505bdd1d60e@google.com>
- <cfa0f9b8-91ec-4772-a6c2-c5206f32373fn@googlegroups.com>
- <53a22ab4-7a2d-4ebd-802d-9d1b4ce4e087n@googlegroups.com>
- <CAGyP=7fpNBhbmczjDq-vpzbSDyqwCw2jS7xQo4XO=bxwsy2ddQ@mail.gmail.com>
- <a6ce21f4-04e7-f34c-8cfc-f8158f7fe163@gmail.com>
- <CAGyP=7czG1nmzpM5T784iBdApVL14hGoAfw-nhS=tNH5t9C79g@mail.gmail.com>
- <d350afac-eef2-c33f-e435-fe0ec7ffd1cf@gmail.com>
-Message-ID: <9a7c2040-e26f-1c59-b7e9-25784d5b854e@gmail.com>
-Date:   Fri, 30 Apr 2021 22:04:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        bh=53bzAf1u6JW5+ZWhmzMnt7EtP/jXlqbD8WQc/gJHHsU=;
+        b=SmkPNdrNVWTUhF5sw0MO6q5ZzXMFXDW+izhvBSWrD5/SrthsQbymQ37FZuNlOU74HW
+         TXCMwbw2huSC9skzDserEf+Vw9bIxW+k2Wlm3F98OI8gS2OffvMN4bTmmgRjg+79Ywia
+         K/XYFa4ukeh+IalpDD8YzmZcUXeWcl9uOiY+pfba2e1Bc+Y9TFt7RoEVi3wVsWleyqGF
+         JNW7RRbA8vXkxXjQHK4n7TrwlHB3Qc4p0vdUSiRn5vU8Ua2kY1VcIxMwEuGjjI8efwtG
+         1ZScVOaxD/AM8y/vO0iSEYi/TeMbQTaSXWmDqUSVu0musIiKeZ0iK9AZbEhOUz+r74u9
+         CNEw==
+X-Gm-Message-State: AOAM531v/vOjE1foBbl1t89gzGtLfOwOK8N9Y1hEnEZjobOTL8b6Ds+E
+        j9u/7b7RD6lGFGwt7XM/RiU=
+X-Google-Smtp-Source: ABdhPJzkU6Vr1uJDTQW28yS3VNZ/g/UPHb8qUUGaniLy4HHglcude70O4HJsgRRIgWAZSON2M8K+Fw==
+X-Received: by 2002:a17:902:7281:b029:ea:afe2:b356 with SMTP id d1-20020a1709027281b02900eaafe2b356mr7284919pll.16.1619816867376;
+        Fri, 30 Apr 2021 14:07:47 -0700 (PDT)
+Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
+        by smtp.gmail.com with ESMTPSA id w1sm2746698pfu.153.2021.04.30.14.07.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 14:07:46 -0700 (PDT)
+From:   Yang Shi <shy828301@gmail.com>
+To:     kirill.shutemov@linux.intel.com, wangyugui@e16-tech.com,
+        ziy@nvidia.com, hughd@google.com, akpm@linux-foundation.org
+Cc:     shy828301@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: thp: check total_mapcount instead of page_mapcount
+Date:   Fri, 30 Apr 2021 14:07:44 -0700
+Message-Id: <20210430210744.216095-1-shy828301@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <d350afac-eef2-c33f-e435-fe0ec7ffd1cf@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/30/21 7:34 PM, Pavel Begunkov wrote:
-> On 4/30/21 4:02 PM, Palash Oswal wrote:
->> On Fri, Apr 30, 2021 at 8:03 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
->>>
->>> On 4/30/21 3:21 PM, Palash Oswal wrote:
->>>> On Thursday, March 18, 2021 at 9:40:21 PM UTC+5:30 syzbot wrote:
->>>>>
->>>>> Hello,
->>>>>
->>>>> syzbot found the following issue on:
->>>>>
->>>>> HEAD commit: 0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
->>>>> git tree: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
->>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=12dde5aed00000
->>>>> kernel config: https://syzkaller.appspot.com/x/.config?x=81c0b708b31626cc
->>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=11bf59db879676f59e52
->>>>> userspace arch: riscv64
->>>>> CC: [asml.s...@gmail.com ax...@kernel.dk io-u...@vger.kernel.org linux-...@vger.kernel.org]
->>>>>
->>>>> Unfortunately, I don't have any reproducer for this issue yet.
->>>
->>> There was so many fixes in 5.12 after this revision, including sqpoll
->>> cancellation related... Can you try something more up-to-date? Like
->>> released 5.12 or for-next
->>>
->>
->> The reproducer works for 5.12.
->>
->> I tested against the HEAD b1ef997bec4d5cf251bfb5e47f7b04afa49bcdfe
->> commit on for-next tree
->> https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/?h=for-next
->> and the reproducer fails.
-> 
-> Can't reproduce. Does it hang as in the original's report dmesg?
-> Can you paste logs?
+When debugging the bug reported by Wang Yugui [1], try_to_unmap() may
+return false positive for PTE-mapped THP since page_mapcount() is used
+to check if the THP is unmapped, but it just checks compound mapount and
+head page's mapcount.  If the THP is PTE-mapped and head page is not
+mapped, it may return false positive.
 
-and `uname -r` if you could
+Use total_mapcount() instead of page_mapcount() and do so for the
+VM_BUG_ON_PAGE in split_huge_page_to_list as well.
 
-> 
-> #syz test: git://git.kernel.dk/linux-block io_uring-5.13
-> 
+[1] https://lore.kernel.org/linux-mm/20210412180659.B9E3.409509F4@e16-tech.com/
 
+Signed-off-by: Yang Shi <shy828301@gmail.com>
+---
+ mm/huge_memory.c | 2 +-
+ mm/rmap.c        | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 63ed6b25deaa..2122c3e853b9 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2718,7 +2718,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+ 	}
+ 
+ 	unmap_page(head);
+-	VM_BUG_ON_PAGE(compound_mapcount(head), head);
++	VM_BUG_ON_PAGE(total_mapcount(head), head);
+ 
+ 	/* block interrupt reentry in xa_lock and spinlock */
+ 	local_irq_disable();
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 693a610e181d..2e547378ab5f 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -1777,7 +1777,7 @@ bool try_to_unmap(struct page *page, enum ttu_flags flags)
+ 	else
+ 		rmap_walk(page, &rwc);
+ 
+-	return !page_mapcount(page) ? true : false;
++	return !total_mapcount(page) ? true : false;
+ }
+ 
+ /**
 -- 
-Pavel Begunkov
+2.26.2
+
