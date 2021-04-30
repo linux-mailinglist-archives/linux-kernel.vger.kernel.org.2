@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A5AC36F4A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 05:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE9A36F4AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 05:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbhD3D7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 23:59:52 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:48483 "EHLO
+        id S230080AbhD3D7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 23:59:54 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:43411 "EHLO
         new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229965AbhD3D7u (ORCPT
+        by vger.kernel.org with ESMTP id S229577AbhD3D7v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 23:59:50 -0400
+        Thu, 29 Apr 2021 23:59:51 -0400
 Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id D0A3B58098B;
-        Thu, 29 Apr 2021 23:59:02 -0400 (EDT)
+        by mailnew.nyi.internal (Postfix) with ESMTP id 73E4D58098C;
+        Thu, 29 Apr 2021 23:59:03 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Thu, 29 Apr 2021 23:59:02 -0400
+  by compute1.internal (MEProxy); Thu, 29 Apr 2021 23:59:03 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm2; bh=xVY04ejPlSyjMR303yZ9gk9uyq
-        UXH76hunsc1D+ucg8=; b=gjHSHAxptF0w8Pf5Dvk0ucNQQoYJLA9+1Cs195XphT
-        9JFLUT7m5J/ObR7I50nVgb1Ti2qgNpRp6uj1v8ksv/SgOeM5CsCpcNYsOMIUlF7b
-        Ozos/PTPsINxVl8Ede/+wpkOESOCNCktKsi/HON9STzTccJMR5/E4/0DTY3M9ZEF
-        maFQCEjj4mXRQo7r8fQsIseD319V+sdYLgTlkUQMouFIACgrp7mql1pVCBGyJMXU
-        cd1/ZoS5eOu4nv9xjdXmMh9fJuK04hz3cXwMAqvaW+DB7X5+gY2my9K3BNPQiOx2
-        4vBLVzzuL7K3GVdzm48ebNyOmyygt5nuFRZRiIM3hFiw==
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm2; bh=C/zv9YAufZEA1
+        vYQZ89gyFjqQ5tKRBiTvd9OZQm7wS4=; b=p7X+/8zVRC7OM40ixXor7PStlAf1B
+        d+fNjICLPlm7O2B1ySMbXOrsSQv1RYYl6fIVW2mNAwh1fiSGtJojBTKMW3k+VmHy
+        yjoaBRZIchoE7h4troyMEUKU04LB1wBcMKH3+1VhkHzou7A7LlIH/zAGLQtqzxOZ
+        tANQwDh0GwQvSu++j7PuawlbM1C9hnmFp7vunN9wGkkG5XLOlYLBQUInSzhXo6fF
+        tqGngYhNEOs7TrN2h+UfJDdspYSSqO3MX32KZPy4ZQbFRq8KiBuGcfzCLwAtl6GN
+        x8U0DWCg0tvbE6EBoMyo5J9s5a83igXxsGfcmARVSIgWoBw8jWmKyo/pA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=xVY04ejPlSyjMR303
-        yZ9gk9uyqUXH76hunsc1D+ucg8=; b=T/9KMg4EQsjz6xUkFYRE8DjBFTvtFZa0+
-        lupIfLi/iNKx+ncf2uY53M7Uw6e+JE7yVTM9omCbxNkGmrhgcCtEbo6b7oyrT+qu
-        wDSW8lLWnwX4EJRDo89JLG0t8y+3YD7HxDn9D6F/ye9etEc98f3BxVbfALWJ5H3w
-        HhdoeXhBw0OW5GOlyWhwM3VyUUdm0ItbN8FkbFNCwZqwzYjcCoqJ9MO6gUaXf/OH
-        YsnvMrW27Htle0mFF36/MS/2KFOzsUSrBWL8SgQ1SpX1M4EsEpmkTZ5MAVgeu3Y1
-        YBuK4lphXr9QNMJrYPySIAFmkIWJS25Iz8beVdUs066EEUtHm9f4g==
-X-ME-Sender: <xms:hYCLYJZ1vT_eSbn-8aPJhM29rn8XBZRwL2W8OrztpvfBtLJNp_iCPw>
-    <xme:hYCLYAbxjR1cFAhxT36RxaXSj3ugDjygKPIPa3j9bkZNLJeIX7XEYxdbzsxo4VVUU
-    iDkxEXmyexOYIHW8A>
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm2; bh=C/zv9YAufZEA1vYQZ89gyFjqQ5tKRBiTvd9OZQm7wS4=; b=AwUnA8+k
+        otv4GjsfgS/kRNyRZADBOpKQMrJ3616aHugx7CPyZJ65/X0reIOr7KukHTe4WmMQ
+        RjlgLFtDpDYNq8ZRb9ddHKmJfE4X6Mz6zTGm639bwuH7uyNZHmWkpaeVJ81sfAKT
+        J+XxkDmHco5uq5r3NY27wBGrxozUxM8hRiw9m2ZYJuTDwSv1IFw6X3E5NzVcPtvZ
+        42oB8nd88KvQgNBwfr2CxlQKqR/FBMZ/5ozoYancNLYfgSuNT/E9FgFrA+N/qgMg
+        yN8AxmG1Px02qA5Eq2qVfjNx2sekjEzRqyquDNLdroQPRT+6EBkIMYTK+sl8IRW+
+        dJ2RBH4shXXu6A==
+X-ME-Sender: <xms:h4CLYHEcWZ5Qd0-n7d4TaD7b8-TE3lWyAUW0GhvCKLeN4GD1_iOSJg>
+    <xme:h4CLYEW-oPmd4CtO_h4u6piOvYszuFNmPWzNO6Uxuv-Hp1Pz7YZNPSWGfuy3_R0qD
+    fW3dRHzp807TWm6kg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddvhedgjeejucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
-    jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtffrrg
-    htthgvrhhnpeeiteekhfehuddugfeltddufeejjeefgeevheekueffhffhjeekheeiffdt
-    vedtveenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdr
-    ohhrgh
-X-ME-Proxy: <xmx:hYCLYL9b43hiWASNECLJhkYoQsLlxgL4n777uv08FJtEcW6dtHpE0g>
-    <xmx:hYCLYHoWMzjc1tJssE0HadIvsWUSBa3lDacaKBOl3quyi5wGENodTA>
-    <xmx:hYCLYEryrZQYGn9epi-6jDXxGyLtTNnfqUEwMzVvDxanXTflbey95Q>
-    <xmx:hoCLYL3JgresNieHYASlfJWUgwAwop1uFmUfMGZ7OrPUjmWhJHgPaQ>
+    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgv
+    lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
+    frrghtthgvrhhnpeduhfejfedvhffgfeehtefghfeiiefgfeehgfdvvdevfeegjeehjedv
+    gfejheeuieenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuih
+    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
+    ugdrohhrgh
+X-ME-Proxy: <xmx:h4CLYJJZX-kPUviKas-CZ1w3kv6CkPJa6lvnQIx4P-waSTanyJTcgQ>
+    <xmx:h4CLYFG7jXs-fj6O-ypKcLAdXk0uHTmrcHlEWkx0Zrzw0uWYsHZLvQ>
+    <xmx:h4CLYNVLkxqUY2-bw6t-m9LLFHXo9MmdzfsvPCRFeM7iWAbuqjsdYw>
+    <xmx:h4CLYFRSPNiupws35jXNVXHU1xtD7cfrLxWnT4a7RSDPocV-G10FxQ>
 Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
         by mail.messagingengine.com (Postfix) with ESMTPA;
-        Thu, 29 Apr 2021 23:59:00 -0400 (EDT)
+        Thu, 29 Apr 2021 23:59:02 -0400 (EDT)
 From:   Samuel Holland <samuel@sholland.org>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Jernej Skrabec <jernej.skrabec@siol.net>,
@@ -64,51 +65,55 @@ To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
 Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
         linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>
-Subject: [PATCH v3 0/7] PinePhone BT audio bringup
-Date:   Thu, 29 Apr 2021 22:58:52 -0500
-Message-Id: <20210430035859.3487-1-samuel@sholland.org>
+Subject: [PATCH v3 1/7] ASoC: dt-bindings: sun8i-codec: Increase #sound-dai-cells
+Date:   Thu, 29 Apr 2021 22:58:53 -0500
+Message-Id: <20210430035859.3487-2-samuel@sholland.org>
 X-Mailer: git-send-email 2.26.3
+In-Reply-To: <20210430035859.3487-1-samuel@sholland.org>
+References: <20210430035859.3487-1-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series uses the additional DAIs added to the sun8i-codec driver to
-add hardware routing for BT SCO (headset) audio on the PinePhone.
+Increase sound-dai-cells to 1 to allow using the DAIs in the codec
+corresponding to AIF2 and AIF3.
 
-The BT audio connection is represented by the "dummy" bt-sco codec. The
-connection to the Quectel EG-25G modem via AIF2 works as well, but I do
-not include it here because there is no appropriate codec driver in
-tree. We have been using an out-of-tree "dummy" codec driver for the
-modem similar to bt-sco, and I'm not sure if such a driver would be
-desired upstream.
+The generic ASoC OF code supports a #sound-dai-cells value of 0 or 1
+with no impact to the driver, so this is a backward-compatible change.
 
-Changes from v2:
-  - Also accept #sound-dai-cells in the binding. Since dt-core.yaml
-    already sets the type of this property, it is not possible to use
-    oneOf, nor make a specific value deprecated.
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+---
+ .../bindings/sound/allwinner,sun8i-a33-codec.yaml         | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Changes from v1:
-  - Fixed DT binding example to follow new binding
-
-Arnaud Ferraris (1):
-  arm64: dts: allwinner: pinephone: Set audio card name
-
-Samuel Holland (6):
-  ASoC: dt-bindings: sun8i-codec: Increase #sound-dai-cells
-  ARM: dts: sun8i-a33: Allow using multiple codec DAIs
-  arm64: dts: allwinner: a64: Allow using multiple codec DAIs
-  arm64: dts: allwinner: a64: Add pinmux nodes for AIF2/AIF3
-  arm64: dts: allwinner: a64: Allow multiple DAI links
-  arm64: dts: allwinner: pinephone: Add support for Bluetooth audio
-
- .../sound/allwinner,sun8i-a33-codec.yaml      |  8 +++-
- arch/arm/boot/dts/sun8i-a33.dtsi              |  4 +-
- .../dts/allwinner/sun50i-a64-pinephone.dtsi   | 25 +++++++++++++
- arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 37 ++++++++++++++-----
- 4 files changed, 60 insertions(+), 14 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
+index 67405e6d8168..19f111f40225 100644
+--- a/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
++++ b/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
+@@ -12,7 +12,11 @@ maintainers:
+ 
+ properties:
+   "#sound-dai-cells":
+-    const: 0
++    minimum: 0
++    maximum: 1
++    description:
++      A value of 0 is deprecated. When used, it only allows access to
++      the ADC/DAC and AIF1 (the CPU DAI), not the other two AIFs/DAIs.
+ 
+   compatible:
+     oneOf:
+@@ -50,7 +54,7 @@ additionalProperties: false
+ examples:
+   - |
+     audio-codec@1c22e00 {
+-      #sound-dai-cells = <0>;
++      #sound-dai-cells = <1>;
+       compatible = "allwinner,sun8i-a33-codec";
+       reg = <0x01c22e00 0x400>;
+       interrupts = <0 29 4>;
 -- 
 2.26.3
 
