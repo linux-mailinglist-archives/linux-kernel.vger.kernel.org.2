@@ -2,131 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7600736F760
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:50:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F71136F761
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231271AbhD3Iuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 04:50:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhD3Iuv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 04:50:51 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89CACC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:50:03 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id b23so26434703lfv.8
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:50:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q0yIHgo1JUyr9NoiprUJP0BOnhoVbOctvNZNK5RJx5E=;
-        b=Z7RZxT2etLjVangalvPR8VTZoPL4Yz7c4tQX6kYWzzvroScMF6qw2aLTwWOF/LyIzA
-         dqT/7Wvgr20rBQd4S9G6DeQCi+Am35QeSZZ9BRMzs3gwR7O6MEKZ+Z43DkpXvg8WdouC
-         HS64KBCoWYe6hxBOMzNSKTPOdjcwMuSKVzNEgMDvJtzLmCvbEp80F8SNlxwZfaY1mgc0
-         xV5xge1LY3ygi4boxMy3sIRtpR3cCpjv8fCqSfSooiWy8CWzBumX6A1g2R1TemnLyoyK
-         UrDZBMFicHO5CCnhLMxq1LmXv/pv2RBLCpxxTZPCYOnN/c6H0tkMZUbt+eZrx5FMJ41K
-         EpIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q0yIHgo1JUyr9NoiprUJP0BOnhoVbOctvNZNK5RJx5E=;
-        b=lOQA6yDQYbu1pKHFa/qHfOhzrklGo/YivkhsqDc19uPKYfUhi3zKfJtAvtfZPUD1fj
-         25ojQz4absLou7CDqQgYCtx7PDJQLGeZCaNW/XPABkxLP2OAgp2nGsNQGFStAT8EF4Nv
-         OscH3B2Xw4ZPvwhkTcW2ObXKmQLHwNP3N0hI84opGddLWcqD9CVbQmk9Ei3y7Ys1282d
-         jzPyJz2H6fxE5d+y76NvpzGA2mOpo7jVY+RfbmUmm9Xd4HDOc/t76oiKp6dWVxccxrnE
-         k/ayzqgX6j1xtZRzK5mWUQC0i8v9r94ol8zANBlkGPbumlii5MnX6ALgdRBW1MieUzOd
-         xU/A==
-X-Gm-Message-State: AOAM533xaEnDhbSqmdKAkZ3KKnNKoel9w6NGWEZJy0xZKxbetcxbJUoI
-        qGlA9VHOgROvKvraZvMK5VuSYW7AweT8Cz3UG9yjIA==
-X-Google-Smtp-Source: ABdhPJyF6NWUq2SZvZcMzxwZ2Gz8DxjsHYrfZeLDmnFFVfT49EUq/IieGHi6uixeynoKgGUmBFU2l91RnMPXabsupFQ=
-X-Received: by 2002:ac2:4f03:: with SMTP id k3mr2615472lfr.254.1619772601846;
- Fri, 30 Apr 2021 01:50:01 -0700 (PDT)
+        id S231384AbhD3Ivc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 04:51:32 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:53838 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229507AbhD3Iva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 04:51:30 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4FWmKr500Kz9wlW;
+        Fri, 30 Apr 2021 10:50:40 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id LtnO2pUgK6nm; Fri, 30 Apr 2021 10:50:40 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FWmKr3zFDz9wlV;
+        Fri, 30 Apr 2021 10:50:40 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 79E9C8B87A;
+        Fri, 30 Apr 2021 10:50:40 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id gRrp_tXDaClb; Fri, 30 Apr 2021 10:50:40 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id DA57F8B876;
+        Fri, 30 Apr 2021 10:50:39 +0200 (CEST)
+Subject: Re: [PATCH 1/3] lib: early_string: allow early usage of some string
+ functions
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Daniel Walker <danielwa@cisco.com>, linuxppc-dev@lists.ozlabs.org,
+        x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>
+Cc:     xe-linux-external@cisco.com, linux-kernel@vger.kernel.org
+References: <20210430042217.1198052-1-danielwa@cisco.com>
+ <dc26a67e-dba0-1b8c-3718-3c75415c61f1@csgroup.eu>
+Message-ID: <1929b3a8-f882-c930-4b99-10c6a8f127c7@csgroup.eu>
+Date:   Fri, 30 Apr 2021 10:50:39 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <20210429152656.4118460-1-qperret@google.com> <CAKfTPtAfgVnMYkY_M+SDmNQDb_EsxSctQw-fkt2WJhczZakOjQ@mail.gmail.com>
- <YIu/EjZ8QsEl9sum@google.com>
-In-Reply-To: <YIu/EjZ8QsEl9sum@google.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 30 Apr 2021 10:49:50 +0200
-Message-ID: <CAKfTPtDOuB0UzZM5OtNzCUABftz_A40Z4W1z9OAORzFitfPDEQ@mail.gmail.com>
-Subject: Re: [PATCH v2] sched: Fix out-of-bound access in uclamp
-To:     Quentin Perret <qperret@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <dc26a67e-dba0-1b8c-3718-3c75415c61f1@csgroup.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Apr 2021 at 10:25, Quentin Perret <qperret@google.com> wrote:
->
-> On Friday 30 Apr 2021 at 09:45:32 (+0200), Vincent Guittot wrote:
-> > On Thu, 29 Apr 2021 at 17:27, Quentin Perret <qperret@google.com> wrote:
-> > >
-> > > Util-clamp places tasks in different buckets based on their clamp values
-> > > for performance reasons. However, the size of buckets is currently
-> > > computed using a rounding division, which can lead to an off-by-one
-> > > error in some configurations.
-> > >
-> > > For instance, with 20 buckets, the bucket size will be 1024/20=51. A
-> > > task with a clamp of 1024 will be mapped to bucket id 1024/51=20. Sadly,
-> > > correct indexes are in range [0,19], hence leading to an out of bound
-> > > memory access.
-> > >
-> > > Fix the math to compute the bucket size.
-> > >
-> > > Fixes: 69842cba9ace ("sched/uclamp: Add CPU's clamp buckets refcounting")
-> > > Suggested-by: Qais Yousef <qais.yousef@arm.com>
-> > > Signed-off-by: Quentin Perret <qperret@google.com>
-> > >
-> > > ---
-> > >
-> > > Changes in v2:
-> > >  - replaced the DIV_ROUND_UP(a,b) with a/b+1 (Dietmar)
-> >
-> > Doesn't this create unfairness between buckets ?
-> >
-> > If we take your example above of 20 buckets, delta is now 52. Then we
-> > expect the last bucket to get the range [972-1024] but values lower
-> > than 988 will go in the idx 18.
->
-> Well, that's just the limitation of integer arithmetics isn't it?
->
-> > And the more bucket you will have, the
-> > worse it will be
->
-> Sure, but 20 is a hard limit, and if we ever need more than that then
-> maybe we should think about getting rid of the buckets altogether.
->
-> > Your problem comes from the fact that we use 1025 values instead of
-> > 1024.
->
-> I don't understand what you mean here. Right now we'll assign bucket id
-> 20 for any clamp in the range [1020-1024], so I don't think we can
-> special case 1024.
 
-20 buckets is probably not the best example because of the rounding of
-the division. With 16 buckets, each bucket should be exactly 64 steps
-large except the last one which will have 65 steps because of the
-value 1024. With your change, buckets will be 65 large and the last
-one will be only 49 large
 
->
-> > Wouldn't it be easier to have a special condition for
-> > SCHED_CAPACITY_SCALE value
->
-> As per the above, I don't see how that'll work.
->
-> Thanks,
-> Quentin
+Le 30/04/2021 à 10:47, Christophe Leroy a écrit :
+> 
+> 
+> Le 30/04/2021 à 06:22, Daniel Walker a écrit :
+>> This systems allows some string functions to be moved into
+>> lib/early_string.c and they will be prepended with "early_" and compiled
+>> without debugging like KASAN.
+>>
+>> This is already done on x86 for,
+>> "AMD Secure Memory Encryption (SME) support"
+>>
+>> and on powerpc prom_init.c , and EFI's libstub.
+>>
+>> The AMD memory feature disabled KASAN for all string functions, and
+>> prom_init.c and efi libstub implement their own versions of the
+>> functions.
+>>
+>> This implementation allows sharing of the string functions without
+>> removing the debugging features for the whole system.
+> 
+> This looks good. I prefer that rather than the way you proposed to do it two years ago.
+> 
+> Only one problem, see below.
+> 
+>> +size_t strlcat(char *dest, const char *src, size_t count)
+>> +{
+>> +    size_t dsize = strlen(dest);
+>> +    size_t len = strlen(src);
+>> +    size_t res = dsize + len;
+>> +
+>> +    /* This would be a bug */
+>> +    BUG_ON(dsize >= count);
+> 
+> powerpc is not ready to handle BUG_ON() in when in prom_init.
+> 
+> Can you do:
+> 
+> #ifndef __EARLY_STRING_ENABLED
+>      BUG_ON(dsize >= count);
+> #endif
+
+In fact, should be like in prom_init today:
+
+#ifdef __EARLY_STRING_ENABLED
+	if (dsize >= count)
+		return count;
+#else
+	BUG_ON(dsize >= count);
+#endif
+
+> 
+> 
+>> +
+>> +    dest += dsize;
+>> +    count -= dsize;
+>> +    if (len >= count)
+>> +        len = count-1;
+>> +    memcpy(dest, src, len);
+>> +    dest[len] = 0;
+>> +    return res;
+>> +}
+>> +EXPORT_SYMBOL(strlcat);
+>> +#endif
+>> +
