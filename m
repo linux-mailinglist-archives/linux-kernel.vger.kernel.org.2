@@ -2,212 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7F236F5AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 08:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C2E36F5B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 08:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230357AbhD3G3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 02:29:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51344 "EHLO mx2.suse.de"
+        id S230284AbhD3GcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 02:32:17 -0400
+Received: from mga01.intel.com ([192.55.52.88]:16014 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229482AbhD3G3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 02:29:36 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3B5D7AD5C;
-        Fri, 30 Apr 2021 06:28:47 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id 14DB0607C3; Fri, 30 Apr 2021 08:28:46 +0200 (CEST)
-Date:   Fri, 30 Apr 2021 08:28:46 +0200
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, olteanv@gmail.com,
-        ast@kernel.org, daniel@iogearbox.net, andriin@fb.com,
-        edumazet@google.com, weiwan@google.com, cong.wang@bytedance.com,
-        ap420073@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@openeuler.org,
-        mkl@pengutronix.de, linux-can@vger.kernel.org, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        pabeni@redhat.com, mzhivich@akamai.com, johunt@akamai.com,
-        albcamus@gmail.com, kehuan.feng@gmail.com, a.fatoum@pengutronix.de,
-        atenart@kernel.org, alexander.duyck@gmail.com, hdanton@sina.com,
-        jgross@suse.com, JKosina@suse.com
-Subject: Re: [PATCH net v4 1/2] net: sched: fix packet stuck problem for
- lockless qdisc
-Message-ID: <20210430062846.vrdf7ggsgskkhgzp@lion.mk-sys.cz>
-References: <20210419235503.eo77f6s73a4d25oh@lion.mk-sys.cz>
- <20210420203459.h7top4zogn56oa55@lion.mk-sys.cz>
- <80d64438-e3e5-e861-4da0-f6c89e3c73f7@huawei.com>
- <20210421053123.wdq3kwlvf72kwtch@lion.mk-sys.cz>
- <6a8dea49-3a3e-4172-1d65-5dbcb0125eda@huawei.com>
- <20210421084428.xbjgoi4r2d6t65gy@lion.mk-sys.cz>
- <b3dacf14-0fb6-0cad-8b85-f5c8d7cd97ef@huawei.com>
- <a6abb3d8-f857-14e1-4212-a12df36027cf@huawei.com>
- <e90e662d-ace1-1f32-6050-861db0a7e976@huawei.com>
- <f06355b4-2b00-fc52-4d9d-9c866436e559@huawei.com>
+        id S229482AbhD3GcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 02:32:16 -0400
+IronPort-SDR: znuy7+9FuX3kLqurB5DM/4/tFzQvoWyMok4pb9pdzk7CPl1HW98aC7hI8vOzquDRIflKLIIrSx
+ jWTgY1gIMwnQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9969"; a="217946662"
+X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
+   d="scan'208";a="217946662"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 23:31:28 -0700
+IronPort-SDR: DEpKX/quVAJUECcz1EuKcdOe+V3ayUdpQ7HlQm3KFF6bK7lj5x8u/Mx0NdAMlw3x5MVk/32r7k
+ wfFoAS2Yl/rA==
+X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
+   d="scan'208";a="431269262"
+Received: from lingshan-mobl5.ccr.corp.intel.com (HELO [10.254.210.192]) ([10.254.210.192])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 23:31:26 -0700
+Subject: Re: [PATCH] vdpa/mlx5: Add support for doorbell bypassing
+To:     Jason Wang <jasowang@redhat.com>, Eli Cohen <elic@nvidia.com>
+Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20210421104145.115907-1-elic@nvidia.com>
+ <e1885255-34f2-9e90-6478-ff0850a5a3d4@redhat.com>
+ <20210422060358.GA140698@mtl-vdi-166.wap.labs.mlnx>
+ <20210422080725.GB140698@mtl-vdi-166.wap.labs.mlnx>
+ <9d3d8976-800d-bb14-0a4a-c4b008f6872c@redhat.com>
+ <20210422083902.GA146406@mtl-vdi-166.wap.labs.mlnx>
+ <bdf10e38-8746-51cf-b460-a904a133329c@redhat.com>
+ <20210429100033.GA215200@mtl-vdi-166.wap.labs.mlnx>
+ <fc887d99-7058-1057-2d1a-3bdc5802a59a@redhat.com>
+From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
+Message-ID: <836263af-6791-0bd3-22c7-22197da021e9@intel.com>
+Date:   Fri, 30 Apr 2021 14:31:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f06355b4-2b00-fc52-4d9d-9c866436e559@huawei.com>
+In-Reply-To: <fc887d99-7058-1057-2d1a-3bdc5802a59a@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 11:15:01AM +0800, Yunsheng Lin wrote:
-> On 2021/4/30 11:11, Yunsheng Lin wrote:
-> > On 2021/4/23 17:42, Yunsheng Lin wrote:
-> >> On 2021/4/21 17:25, Yunsheng Lin wrote:
-> >>> On 2021/4/21 16:44, Michal Kubecek wrote:
-> >>>
-> >>>>
-> >>>> I'll try running some tests also on other architectures, including arm64
-> >>>> and s390x (to catch potential endinanity issues).
-> >>
-> >> I tried debugging nperf in arm64, with the below patch:
-> >>
-> >> Any idea what went wrong here?
-> >>
-> >> Also, Would you mind running netperf to see if there is similar issue
-> >> in your system?
-> > 
-> > Hi, Michal
-> >     I was able to reproduce the fluctuation for one thread TCP_STREAM test,
-> 
-> I was *not* able
-> Sorry for the typo.
 
-I was able to reproduce the same problem with netperf:
 
-marfak:~ # for i in {1..60}; do netperf -H 172.17.1.1 -l 30 -t TCP_STREAM -- -m 1048576; done
-131072  16384 1048576    30.00    9413.36   
-131072  16384 1048576    30.01    7473.68   <---
-131072  16384 1048576    30.00    9413.97   
-131072  16384 1048576    30.00    9413.76   
-131072  16384 1048576    30.01    9024.25   
-131072  16384 1048576    30.01    8364.78   
-131072  16384 1048576    30.00    9413.22   
-131072  16384 1048576    30.00    9414.29   
-131072  16384 1048576    30.00    9414.32   
-131072  16384 1048576    30.00    9412.58   
-131072  16384 1048576    30.00    9412.79   
-131072  16384 1048576    30.00    9413.18   
-131072  16384 1048576    30.01    8771.57   <---
-131072  16384 1048576    30.00    9414.01   
-131072  16384 1048576    30.00    9413.93   
-131072  16384 1048576    30.00    9413.97   
-131072  16384 1048576    30.00    9414.05   
-131072  16384 1048576    30.00    9412.92   
-131072  16384 1048576    30.00    9413.40   
-131072  16384 1048576    30.00    9414.41   
-131072  16384 1048576    30.00    9413.25   
-131072  16384 1048576    30.00    9413.38   
-131072  16384 1048576    30.00    9412.28   
-131072  16384 1048576    30.00    9413.50   
-131072  16384 1048576    30.00    9414.12   
-131072  16384 1048576    30.00    9414.27   
-131072  16384 1048576    30.00    9412.96   
-131072  16384 1048576    30.00    9413.71   
-131072  16384 1048576    30.01    9205.98   
-131072  16384 1048576    30.00    9413.69   
-131072  16384 1048576    30.00    9413.60   
-131072  16384 1048576    30.01    8297.03   <---
-131072  16384 1048576    30.00    9414.09   
-131072  16384 1048576    30.00    9414.38   
-131072  16384 1048576    30.00    9413.62   
-131072  16384 1048576    30.00    9411.09   
-131072  16384 1048576    30.00    9414.37   
-131072  16384 1048576    30.00    9414.37   
-131072  16384 1048576    30.00    9412.52   
-131072  16384 1048576    30.00    9414.06   
-131072  16384 1048576    30.00    9413.66   
-131072  16384 1048576    30.00    9411.63   
-131072  16384 1048576    30.00    9414.17   
-131072  16384 1048576    30.00    9414.07   
-131072  16384 1048576    30.00    9414.09   
-131072  16384 1048576    30.00    9414.37   
-131072  16384 1048576    30.00    9390.00   
-131072  16384 1048576    30.00    9413.72   
-131072  16384 1048576    30.01    9260.97   
-131072  16384 1048576    30.01    9334.91   
-131072  16384 1048576    30.00    9413.57   
-131072  16384 1048576    30.00    9412.01   
-131072  16384 1048576    30.00    9414.36   
-131072  16384 1048576    30.00    9412.47   
-131072  16384 1048576    30.00    9413.73   
-131072  16384 1048576    30.00    9413.48   
-131072  16384 1048576    30.00    9413.36   
-131072  16384 1048576    30.01    9327.42   
-131072  16384 1048576    30.01    9240.33   
-131072  16384 1048576    30.00    9413.97   
+On 4/30/2021 12:40 PM, Jason Wang wrote:
+>
+> 在 2021/4/29 下午6:00, Eli Cohen 写道:
+>> On Thu, Apr 22, 2021 at 04:59:11PM +0800, Jason Wang wrote:
+>>> 在 2021/4/22 下午4:39, Eli Cohen 写道:
+>>>> On Thu, Apr 22, 2021 at 04:21:45PM +0800, Jason Wang wrote:
+>>>>> 在 2021/4/22 下午4:07, Eli Cohen 写道:
+>>>>>> On Thu, Apr 22, 2021 at 09:03:58AM +0300, Eli Cohen wrote:
+>>>>>>> On Thu, Apr 22, 2021 at 10:37:38AM +0800, Jason Wang wrote:
+>>>>>>>> 在 2021/4/21 下午6:41, Eli Cohen 写道:
+>>>>>>>>> Implement mlx5_get_vq_notification() to return the doorbell 
+>>>>>>>>> address.
+>>>>>>>>> Size is set to one system page as required.
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Eli Cohen <elic@nvidia.com>
+>>>>>>>>> ---
+>>>>>>>>>      drivers/vdpa/mlx5/core/mlx5_vdpa.h | 1 +
+>>>>>>>>>      drivers/vdpa/mlx5/core/resources.c | 1 +
+>>>>>>>>>      drivers/vdpa/mlx5/net/mlx5_vnet.c  | 6 ++++++
+>>>>>>>>>      3 files changed, 8 insertions(+)
+>>>>>>>>>
+>>>>>>>>> diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h 
+>>>>>>>>> b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+>>>>>>>>> index b6cc53ba980c..49de62cda598 100644
+>>>>>>>>> --- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+>>>>>>>>> +++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+>>>>>>>>> @@ -41,6 +41,7 @@ struct mlx5_vdpa_resources {
+>>>>>>>>>          u32 pdn;
+>>>>>>>>>          struct mlx5_uars_page *uar;
+>>>>>>>>>          void __iomem *kick_addr;
+>>>>>>>>> +    u64 phys_kick_addr;
+>>>>>>>>>          u16 uid;
+>>>>>>>>>          u32 null_mkey;
+>>>>>>>>>          bool valid;
+>>>>>>>>> diff --git a/drivers/vdpa/mlx5/core/resources.c 
+>>>>>>>>> b/drivers/vdpa/mlx5/core/resources.c
+>>>>>>>>> index 6521cbd0f5c2..665f8fc1710f 100644
+>>>>>>>>> --- a/drivers/vdpa/mlx5/core/resources.c
+>>>>>>>>> +++ b/drivers/vdpa/mlx5/core/resources.c
+>>>>>>>>> @@ -247,6 +247,7 @@ int mlx5_vdpa_alloc_resources(struct 
+>>>>>>>>> mlx5_vdpa_dev *mvdev)
+>>>>>>>>>              goto err_key;
+>>>>>>>>>          kick_addr = mdev->bar_addr + offset;
+>>>>>>>>> +    res->phys_kick_addr = kick_addr;
+>>>>>>>>>          res->kick_addr = ioremap(kick_addr, PAGE_SIZE);
+>>>>>>>>>          if (!res->kick_addr) {
+>>>>>>>>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c 
+>>>>>>>>> b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>>>>>>> index 10c5fef3c020..680751074d2a 100644
+>>>>>>>>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>>>>>>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>>>>>>> @@ -1865,8 +1865,14 @@ static void mlx5_vdpa_free(struct 
+>>>>>>>>> vdpa_device *vdev)
+>>>>>>>>>      static struct vdpa_notification_area 
+>>>>>>>>> mlx5_get_vq_notification(struct vdpa_device *vdev, u16 idx)
+>>>>>>>>>      {
+>>>>>>>>> +    struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
+>>>>>>>>>          struct vdpa_notification_area ret = {};
+>>>>>>>>> +    struct mlx5_vdpa_net *ndev;
+>>>>>>>>> +
+>>>>>>>>> +    ndev = to_mlx5_vdpa_ndev(mvdev);
+>>>>>>>>> +    ret.addr = (phys_addr_t)ndev->mvdev.res.phys_kick_addr;
+>>>>>>>>> +    ret.size = PAGE_SIZE;
+>>>>>>>> Note that the page will be mapped in to guest, so it's only 
+>>>>>>>> safe if the
+>>>>>>>> doorbeel exclusively own the page. This means if there're other 
+>>>>>>>> registers in
+>>>>>>>> the page, we can not let the doorbell bypass to work.
+>>>>>>>>
+>>>>>>>> So this is suspicious at least in the case of subfunction where 
+>>>>>>>> we calculate
+>>>>>>>> the bar length in mlx5_sf_dev_table_create() as:
+>>>>>>>>
+>>>>>>>> table->sf_bar_length = 1 << (MLX5_CAP_GEN(dev, log_min_sf_size) 
+>>>>>>>> + 12);
+>>>>>>>>
+>>>>>>>> It looks to me this can only work for the arch with PAGE_SIZE = 
+>>>>>>>> 4096,
+>>>>>>>> otherwise we can map more into the userspace(guest).
+>>>>>>>>
+>>>>>>> Correct, so I guess I should return here 4096.
+>>>>> I'm not quite sure but since the calculation of the sf_bar_length 
+>>>>> is doen
+>>>>> via a shift of 12, it might be correct.
+>>>>>
+>>>>> And please double check if the doorbell own the page exclusively.
+>>>> I am checking if it is safe to map the any part of the SF's BAR to
+>>>> userspace without harming other functions. If this is true, I will 
+>>>> check
+>>>> if I can return PAGE_SIZE without compromising security.
+>>>
+>>> It's usally not safe and a layer violation if other registers are 
+>>> placed at
+>>> the same page.
+>>>
+>>>
+>>>>    I think we may
+>>>> need to extend struct vdpa_notification_area to contain another field
+>>>> offset which indicates the offset from addr where the actual doorbell
+>>>> resides.
+>>>
+>>> The movitiaton of the current design is to be fit seamless into how 
+>>> Qemu
+>>> model doorbell layouts currently:
+>>>
+>>> 1) page-per-vq, each vq has its own page aligned doorbell
+>>> 2) 2 bytes doorbell, each vq has its own 2 byte aligend doorbell
+>>>
+>>> Only 1) is support in vhost-vDPA (and vhost-user) since it's rather 
+>>> simple
+>>> and secure (page aligned) to be modelled and implemented via mmap().
+>>>
+>>> Exporting a complex layout is possbile but requires careful design.
+>>>
+>>> Actually, we had antoher option
+>>>
+>>> 3) shared doorbell: all virtqueue shares a single page aligned doorbell
+>> I am not sure how this could solve the problem of 64KB archs.
+>> The point is that in ConnectX devices, the virtio queue objects doorbell
+>> is aligned to 4K. For larger system page sizes, the doorbell may not be
+>> aligned to a system page.
+>> So it seems not too complex to introduce offset within the page.
+>
+>
+> Three major issues:
+>
+> 1) single mmap() works at page level, it means we need map 64K to 
+> guest and we can only do this safely if no other registers are placed 
+> into the same page
+> 2) new uAPI to let the userspace know the offset
+> 3) how to model them with the virtio-pci in Qemu, and this may 
+> introduce burdens for management (need some changes in the qemu 
+> command line) to deal with the migration compatibility
+>
+> So consider the complexity, we can just stick to the current code. 
+> That means mmap() will fail and qemu will keep using the eventfd based 
+> kick.
+There is another case, mmap() works at page level, page size is at least 
+4K. Consider if a device has a bar containing the shared doorbell page 
+at its last 4K space. In this bar layout, map a arch.page_size=64K page 
+to usersapce would lead to fatal errors.
+I think we can assign the actual size of the doorbell area size to 
+vdpa_notification.size than arch.page_size to avoid such issues. Then 
+upper layers like vhost_vdpa should check whether this size can work 
+with the machine arch and its alignment, if not, should fail over to use 
+eventfd.
+Then do we still need a uAPI tell the offset within the page?
 
-(filtered only the interesting lines)
+Thanks
+Zhu Lingshan
+>
+>
+>
+>>
+>> BTW, for now, I am going to send another patch that makes sure page
+>> boundaries are not vilated. It requires some support from mlx5_core
+>> which is currently being reviewed internally.
+>
+>
+> Sure.
+>
+> Thanks
+>
+>
+>>
+>>> This is not yet supported by Qemu.
+>>>
+>>> Thanks
+>>>
+>>>
+>>>>>>> I also think that the check in vhost_vdpa_mmap() should verify 
+>>>>>>> that the
+>>>>>>> returned size is not smaller than PAGE_SIZE because the returned 
+>>>>>>> address
+>>>>>> Actually I think it's ok since you verify the size equals 
+>>>>>> vma->vm_end -
+>>>>>> vma->vm_start which must be at least PAGE_SIZE.
+>>>>> Yes.
+>>>>>
+>>>>> Thanks
+>>>>>
+>>>>>
+>>>>>>> might just be aligned to PAGE_SIZE. I think this should be 
+>>>>>>> enoght but
+>>>>>>> maybe also use the same logic in vhost_vdpa_fault().
+>
 
-But after some more testing, I was also able to see similar results with
-unpatched mainline kernel:
-
-131072  16384 1048576    30.00    9413.28   
-131072  16384 1048576    30.01    9007.17   
-131072  16384 1048576    30.01    9153.22   
-131072  16384 1048576    30.00    9414.28   
-131072  16384 1048576    30.01    9244.68   
-131072  16384 1048576    30.01    9230.49   
-131072  16384 1048576    30.00    8723.24   <---
-131072  16384 1048576    30.01    8289.21   <---
-131072  16384 1048576    30.01    9258.33   
-131072  16384 1048576    30.00    9251.47   
-131072  16384 1048576    30.00    9414.23   
-131072  16384 1048576    30.01    9276.87   
-131072  16384 1048576    30.01    9255.61   
-131072  16384 1048576    30.00    9072.78   
-131072  16384 1048576    30.00    9412.09   
-131072  16384 1048576    30.01    9393.00   
-131072  16384 1048576    30.00    9413.39   
-131072  16384 1048576    30.01    9404.01   
-131072  16384 1048576    30.01    8412.83   <---
-131072  16384 1048576    30.01    9368.23   
-131072  16384 1048576    30.01    9259.11   
-131072  16384 1048576    30.01    9121.65   
-131072  16384 1048576    30.01    9169.87   
-131072  16384 1048576    30.01    9154.03   
-131072  16384 1048576    30.01    9336.34   
-131072  16384 1048576    30.00    9187.73   
-131072  16384 1048576    30.00    9412.54   
-131072  16384 1048576    30.01    6836.37   <---
-131072  16384 1048576    30.01    9388.09   
-131072  16384 1048576    30.01    8755.78   <---
-131072  16384 1048576    30.01    9167.63   
-131072  16384 1048576    30.00    9410.80   
-131072  16384 1048576    30.01    9392.71   
-131072  16384 1048576    30.01    9238.50   
-131072  16384 1048576    30.01    9382.78   
-131072  16384 1048576    30.01    9328.23   
-131072  16384 1048576    30.01    9396.04   
-131072  16384 1048576    30.01    9286.10   
-131072  16384 1048576    30.00    9412.44   
-131072  16384 1048576    30.01    7952.34   <---
-131072  16384 1048576    30.01    9309.95   
-131072  16384 1048576    30.00    9133.38   
-131072  16384 1048576    30.01    8672.75   
-131072  16384 1048576    30.00    9414.28   
-131072  16384 1048576    30.00    9411.34   
-131072  16384 1048576    30.00    9414.27   
-131072  16384 1048576    30.01    9313.60   
-131072  16384 1048576    30.01    9315.10   
-131072  16384 1048576    30.00    9413.23   
-131072  16384 1048576    30.01    9285.77   
-131072  16384 1048576    30.00    9414.28   
-131072  16384 1048576    30.00    9406.39   
-131072  16384 1048576    30.01    9343.74   
-131072  16384 1048576    30.01    9179.17   
-131072  16384 1048576    30.01    9081.18   
-131072  16384 1048576    30.00    9412.85   
-131072  16384 1048576    30.00    9413.66   
-131072  16384 1048576    30.01    9346.16   
-131072  16384 1048576    30.00    9410.01   
-131072  16384 1048576    30.00    9411.22   
-
-It's not clear why I haven't seen these before but the problem is
-unlikely to by related to your patch set.
-
-Michal
