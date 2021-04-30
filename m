@@ -2,116 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA8A36F714
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2974836F719
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231349AbhD3I2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 04:28:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbhD3I2j (ORCPT
+        id S231437AbhD3I3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 04:29:09 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:5326 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229529AbhD3I3F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 04:28:39 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF92C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:27:50 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id t18so12008262wry.1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:27:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x12D1fSgMXo84/StrNDXFY95BOlA8w3dEtySPm5wCgQ=;
-        b=q5RkY2TEzEE6oWZZbW+87d2glkkz6bArkK6G7aeyOTL/H6i5S97xaGLHvQ7feTUwKC
-         1yaM5gV/avDemn8LUsrGG4ttN8Njingl5hDQcXiFweWa77q5BSlgh8DTBXxWlaQQXQ4k
-         r1lSJznmcSEPRoyRX6erX7SDkpU6d2SLI6M8bWaGqGtY1ruPepci6ZZIwFNRYe5YKJa3
-         yjAHDDUPwDNtlN2+gWew99O3ATqgPaq1drQVwYnfKrBxevD6IPejzjmuF6NGbn7gSLsS
-         uOmK0IYiYEIpsf4jXL+Yqb+Qsa02G5V/KRmeYGuii/TEAavD6FHr3X7gsIieEtzPeQj7
-         wX1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x12D1fSgMXo84/StrNDXFY95BOlA8w3dEtySPm5wCgQ=;
-        b=hQbOyuctWD3tLLc5UTS3P/gt3Q2fjtM1x34QmKB71HojNBSqx2FaQRptQ3ovXxMRqc
-         ulxRgfIjS7v+GFJC2tK5MFJIgCR11crVnnp2Jf2Tq5MET9q9uiIWSquyCj4UphijcBK5
-         mxLJAK4tb7AJByC4QgF6YkSWu0BgtRHiX0OjPEgHh45rOe9enjOYEjk0TY9wnleIlewY
-         WHsorpC2IMoHtfoypajXKUMZBM9UC+FgKtqJXuOmEbfXP3zwLmzeJsRysvCGwDy1k8tp
-         voucv/38ivdxT/ktQiUhIcxspvH0TN5sLuLePKa7geS/4mYRlxSFH37SQc7eGjC3iW0i
-         soWQ==
-X-Gm-Message-State: AOAM533A48QvxNOQRqPDtDmQT/ul6FiQyEhrPbYrAt/DcaQeAuNOCXCS
-        M7yTiYwZuRXbaeQctCoxjw/ADD9IJR46n2Qk
-X-Google-Smtp-Source: ABdhPJxGoyaka1SwUgXjXPuWPXVdSHHYtgAfq3tVpjG7MANHxCuZPbgUWnsHDmVM463gHiGYmCPtyg==
-X-Received: by 2002:adf:efca:: with SMTP id i10mr1630979wrp.284.1619771268768;
-        Fri, 30 Apr 2021 01:27:48 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e0a:90c:e290:4a89:8c32:4adc:fc67])
-        by smtp.gmail.com with ESMTPSA id e12sm1336677wrt.51.2021.04.30.01.27.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 01:27:47 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Stefan Agner <stefan@agner.ch>
-Subject: [PATCH] drm/meson: fix shutdown crash when component not probed
-Date:   Fri, 30 Apr 2021 10:27:44 +0200
-Message-Id: <20210430082744.3638743-1-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
+        Fri, 30 Apr 2021 04:29:05 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13U83EqE157389;
+        Fri, 30 Apr 2021 04:28:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : subject :
+ date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=fE9zG0FYYuQF2wymHMuGmv1VN1rgn/UZKsrdJ55RUq0=;
+ b=YA2CDqftoRLPHX48nQG3uF4e9EYYhfw2N934egBUlEllInh+ewsM7HACXHTT9c1bs0co
+ zFI4lpdVWGg/caaiM+NnLuR+9KNtBaTk8AR8ibJ/M5vUWfKxxwnrwyGbjWmObB4HXUmh
+ FyD1YRqoUXMVmc5k1uyqGt+l2L+JGYEc5sVJbHHeAa8/Ijb1pL8NcAlbdYY7ysuJA/mM
+ DeuncxTPTlg4BbLvk+V6Dq8+7KPVZvutLQ1jZPf2slf6nnuwe30inlDSlOkhHBITieMy
+ yUMfXHHDKNwxigNoWKA09lbksHJ6uowuTF2bNwG4x3Xhuq16is4GPm4rY2RBI9DbcQeF Fg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3889t272wk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Apr 2021 04:28:12 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13U83ara162593;
+        Fri, 30 Apr 2021 04:28:12 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3889t272vr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Apr 2021 04:28:12 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13U8JUU8002817;
+        Fri, 30 Apr 2021 08:28:10 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 384akhay0v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Apr 2021 08:28:10 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13U8RhYT29688290
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Apr 2021 08:27:43 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2EA7C52057;
+        Fri, 30 Apr 2021 08:28:08 +0000 (GMT)
+Received: from pratiks-thinkpad.in.ibm.com (unknown [9.85.87.236])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id BE81552050;
+        Fri, 30 Apr 2021 08:28:05 +0000 (GMT)
+From:   "Pratik R. Sampat" <psampat@linux.ibm.com>
+To:     rjw@rjwysocki.net, daniel.lezcano@linaro.org, shuah@kernel.org,
+        dsmythies@telus.net, dedekind1@gmail.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        pratik.r.sampat@gmail.com, psampat@linux.ibm.com
+Subject: [PATCH v5 0/2] CPU-Idle latency selftest framework
+Date:   Fri, 30 Apr 2021 13:58:02 +0530
+Message-Id: <20210430082804.38018-1-psampat@linux.ibm.com>
+X-Mailer: git-send-email 2.30.2
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: zFLV_2iD0pfcz4rCzmsbKIT057gkM308
+X-Proofpoint-ORIG-GUID: 8QIB4FOBu4RV4Wea_UEHzSEtDS8Byf_F
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-30_05:2021-04-28,2021-04-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ impostorscore=0 bulkscore=0 clxscore=1015 malwarescore=0 suspectscore=0
+ adultscore=0 spamscore=0 lowpriorityscore=0 priorityscore=1501
+ phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104300056
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When main component is not probed, by example when the dw-hdmi module is
-not loaded yet or in probe defer, the following crash appears on shutdown:
+Changelog RFC v4 --> PATCH v5:
+1. Added a CPU online check prior to parsing the CPU topology to avoid
+   parsing topologies for CPUs unavailable for the latency test
+2. Added comment describing the selftest in cpuidle.sh
 
-Unable to handle kernel NULL pointer dereference at virtual address 0000000000000038
-...
-pc : meson_drv_shutdown+0x24/0x50
-lr : platform_drv_shutdown+0x20/0x30
-...
-Call trace:
-meson_drv_shutdown+0x24/0x50
-platform_drv_shutdown+0x20/0x30
-device_shutdown+0x158/0x360
-kernel_restart_prepare+0x38/0x48
-kernel_restart+0x18/0x68
-__do_sys_reboot+0x224/0x250
-__arm64_sys_reboot+0x24/0x30
-...
+As I have made changes to cpuidle.sh's working, hence dropping
+"Reviewed-by" from Doug Smythies for the second patch, while retaining
+it for the first patch.
 
-Simply check if the priv struct has been allocated before using it.
-
-Fixes: fa0c16caf3d7 ("drm: meson_drv add shutdown function")
-Reported-by: Stefan Agner <stefan@agner.ch>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+RFC v4: https://lkml.org/lkml/2021/4/12/99
 ---
- drivers/gpu/drm/meson/meson_drv.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+A kernel module + userspace driver to estimate the wakeup latency
+caused by going into stop states. The motivation behind this program is
+to find significant deviations behind advertised latency and residency
+values.
 
-diff --git a/drivers/gpu/drm/meson/meson_drv.c b/drivers/gpu/drm/meson/meson_drv.c
-index 453d8b4c5763..07fcd12dca16 100644
---- a/drivers/gpu/drm/meson/meson_drv.c
-+++ b/drivers/gpu/drm/meson/meson_drv.c
-@@ -485,11 +485,12 @@ static int meson_probe_remote(struct platform_device *pdev,
- static void meson_drv_shutdown(struct platform_device *pdev)
- {
- 	struct meson_drm *priv = dev_get_drvdata(&pdev->dev);
--	struct drm_device *drm = priv->drm;
- 
--	DRM_DEBUG_DRIVER("\n");
--	drm_kms_helper_poll_fini(drm);
--	drm_atomic_helper_shutdown(drm);
-+	if (!priv)
-+		return;
-+
-+	drm_kms_helper_poll_fini(priv->drm);
-+	drm_atomic_helper_shutdown(priv->drm);
- }
- 
- static int meson_drv_probe(struct platform_device *pdev)
+The patchset measures latencies for two kinds of events. IPIs and Timers
+As this is a software-only mechanism, there will additional latencies of
+the kernel-firmware-hardware interactions. To account for that, the
+program also measures a baseline latency on a 100 percent loaded CPU
+and the latencies achieved must be in view relative to that.
+
+To achieve this, we introduce a kernel module and expose its control
+knobs through the debugfs interface that the selftests can engage with.
+
+The kernel module provides the following interfaces within
+/sys/kernel/debug/latency_test/ for,
+
+IPI test:
+    ipi_cpu_dest = Destination CPU for the IPI
+    ipi_cpu_src = Origin of the IPI
+    ipi_latency_ns = Measured latency time in ns
+Timeout test:
+    timeout_cpu_src = CPU on which the timer to be queued
+    timeout_expected_ns = Timer duration
+    timeout_diff_ns = Difference of actual duration vs expected timer
+
+Sample output on a POWER9 system is as follows:
+# --IPI Latency Test---
+# Baseline Average IPI latency(ns): 3114
+# Observed Average IPI latency(ns) - State0: 3265
+# Observed Average IPI latency(ns) - State1: 3507
+# Observed Average IPI latency(ns) - State2: 3739
+# Observed Average IPI latency(ns) - State3: 3807
+# Observed Average IPI latency(ns) - State4: 17070
+# Observed Average IPI latency(ns) - State5: 1038174
+# Observed Average IPI latency(ns) - State6: 1068784
+# 
+# --Timeout Latency Test--
+# Baseline Average timeout diff(ns): 1420
+# Observed Average timeout diff(ns) - State0: 1640
+# Observed Average timeout diff(ns) - State1: 1764
+# Observed Average timeout diff(ns) - State2: 1715
+# Observed Average timeout diff(ns) - State3: 1845
+# Observed Average timeout diff(ns) - State4: 16581
+# Observed Average timeout diff(ns) - State5: 939977
+# Observed Average timeout diff(ns) - State6: 1073024
+
+
+Things to keep in mind:
+
+1. This kernel module + bash driver does not guarantee idleness on a
+   core when the IPI and the Timer is armed. It only invokes sleep and
+   hopes that the core is idle once the IPI/Timer is invoked onto it.
+   Hence this program must be run on a completely idle system for best
+   results
+
+2. Even on a completely idle system, there maybe book-keeping tasks or
+   jitter tasks that can run on the core we want idle. This can create
+   outliers in the latency measurement. Thankfully, these outliers
+   should be large enough to easily weed them out.
+
+3. A userspace only selftest variant was also sent out as RFC based on
+   suggestions over the previous patchset to simply the kernel
+   complexeity. However, a userspace only approach had more noise in
+   the latency measurement due to userspace-kernel interactions
+   which led to run to run variance and a lesser accurate test.
+   Another downside of the nature of a userspace program is that it
+   takes orders of magnitude longer to complete a full system test
+   compared to the kernel framework.
+   RFC patch: https://lkml.org/lkml/2020/9/2/356
+
+4. For Intel Systems, the Timer based latencies don't exactly give out
+   the measure of idle latencies. This is because of a hardware
+   optimization mechanism that pre-arms a CPU when a timer is set to
+   wakeup. That doesn't make this metric useless for Intel systems,
+   it just means that is measuring IPI/Timer responding latency rather
+   than idle wakeup latencies.
+   (Source: https://lkml.org/lkml/2020/9/2/610)
+   For solution to this problem, a hardware based latency analyzer is
+   devised by Artem Bityutskiy from Intel.
+   https://youtu.be/Opk92aQyvt0?t=8266
+   https://intel.github.io/wult/
+
+Pratik R. Sampat (2):
+  cpuidle: Extract IPI based and timer based wakeup latency from idle
+    states
+  selftest/cpuidle: Add support for cpuidle latency measurement
+
+ drivers/cpuidle/Makefile                   |   1 +
+ drivers/cpuidle/test-cpuidle_latency.c     | 157 ++++++++
+ lib/Kconfig.debug                          |  10 +
+ tools/testing/selftests/Makefile           |   1 +
+ tools/testing/selftests/cpuidle/Makefile   |   6 +
+ tools/testing/selftests/cpuidle/cpuidle.sh | 414 +++++++++++++++++++++
+ tools/testing/selftests/cpuidle/settings   |   2 +
+ 7 files changed, 591 insertions(+)
+ create mode 100644 drivers/cpuidle/test-cpuidle_latency.c
+ create mode 100644 tools/testing/selftests/cpuidle/Makefile
+ create mode 100755 tools/testing/selftests/cpuidle/cpuidle.sh
+ create mode 100644 tools/testing/selftests/cpuidle/settings
+
 -- 
-2.25.1
+2.17.1
 
