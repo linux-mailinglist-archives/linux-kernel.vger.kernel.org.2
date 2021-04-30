@@ -2,103 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9EA436FF78
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 19:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A4436FFA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 19:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230499AbhD3R10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 13:27:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46948 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229750AbhD3R1Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 13:27:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9F40613E1;
-        Fri, 30 Apr 2021 17:26:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619803596;
-        bh=1rUgNSN7FcJQXauj0ZsJ1XOjvcnWQfWVkDhofbK+0ig=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ugms4PpvNVoSYYXSKuM73dyHM9jSuiQetkar6RaGMVfECdYSwGLamjK5G8hlwg/Pj
-         Zs3eoN8E2hsha6DUV9c7XWxSJEBDtimdT3r5lye60orZ4tXNRDLNv8jGsvJHSj5j0l
-         qFpeEgZBX3pvY8EgjEbZpIAPt4Aqas/60oWgwH1j/c4mg8J5lOcpY3rSDfLvudBJCk
-         IFRFp0Cd5etrGrlLI2a75ioFOGFxSTKdyO5vlCVSBP0ScgggnZ3zvgmOGHiprYLJ7U
-         UzUS0m+LJ1geyZuo5dszDXCQORKatENtmucUxEqNkde9E/KQ4DvsekgTJBHWhTf8A/
-         DvPa1XgIWLoHQ==
-Date:   Fri, 30 Apr 2021 18:26:03 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH 1/2] regmap: add regmap_might_sleep()
-Message-ID: <20210430172603.GE5981@sirena.org.uk>
-References: <20210430130645.31562-1-michael@walle.cc>
- <20210430151908.GC5981@sirena.org.uk>
- <df27a6508e9edcd8b56058ac4834fd56@walle.cc>
+        id S231484AbhD3RgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 13:36:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57748 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231160AbhD3Rf4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 13:35:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619804107;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=rnOgPKZjZy0onTXRBA27q6w7KxyfRvenQEgxZ63aGEE=;
+        b=QwxO8YgiP3jNaXNS8rmLRFCnBxktdRfoM3/sMu/yNbLONjCKapaNz2f6+5eEy6Ts4jrmuR
+        IAzCPxFvJItRPR6ciTkVPp/ezLlIe1F1jFjoYpf3OD6QmA5hc/fzawtImAlPgbNlX2k9j+
+        IyrBte7lRvHu7D/ywhpVzXCcxLuVwKk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-470-6zgAS2f6Nnmac7MOH3zjHQ-1; Fri, 30 Apr 2021 13:35:00 -0400
+X-MC-Unique: 6zgAS2f6Nnmac7MOH3zjHQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1F69F501ED;
+        Fri, 30 Apr 2021 17:34:58 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.3.128.45])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 79AB136DE;
+        Fri, 30 Apr 2021 17:34:48 +0000 (UTC)
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Richard Guy Briggs <rgb@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Eric Paris <eparis@redhat.com>, x86@kernel.org,
+        linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        Aleksa Sarai <cyphar@cyphar.com>
+Subject: [PATCH v2 0/3] audit: add support for openat2
+Date:   Fri, 30 Apr 2021 13:29:34 -0400
+Message-Id: <cover.1619729297.git.rgb@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="VUDLurXRWRKrGuMn"
-Content-Disposition: inline
-In-Reply-To: <df27a6508e9edcd8b56058ac4834fd56@walle.cc>
-X-Cookie: QOTD:
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The openat2(2) syscall was added in v5.6.  Add support for openat2 to the
+audit syscall classifier and for recording openat2 parameters that cannot
+be captured in the syscall parameters of the SYSCALL record.
 
---VUDLurXRWRKrGuMn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Supporting userspace code can be found in
+https://github.com/rgbriggs/audit-userspace/tree/ghau-openat2
 
-On Fri, Apr 30, 2021 at 06:01:49PM +0200, Michael Walle wrote:
-> Am 2021-04-30 17:19, schrieb Mark Brown:
+Supporting test case can be found in
+https://github.com/linux-audit/audit-testsuite/pull/103
 
-> > Whatever is creating the regmap really ought to know what device it's
-> > dealing with...
+Richard Guy Briggs (3):
+  audit: replace magic audit syscall class numbers with macros
+  audit: add support for the openat2 syscall
+  audit: add OPENAT2 record to list how
 
-> But creating and using the regmap are two seperate things, no? Consider
-> the gpio-sl28cpld. It will just use whatever regmap the parent has created.
-> How would it know what type of regmap it is?
+ arch/alpha/kernel/audit.c          | 10 ++++++----
+ arch/ia64/kernel/audit.c           | 10 ++++++----
+ arch/parisc/kernel/audit.c         | 10 ++++++----
+ arch/parisc/kernel/compat_audit.c  | 11 +++++++----
+ arch/powerpc/kernel/audit.c        | 12 +++++++-----
+ arch/powerpc/kernel/compat_audit.c | 13 ++++++++-----
+ arch/s390/kernel/audit.c           | 12 +++++++-----
+ arch/s390/kernel/compat_audit.c    | 13 ++++++++-----
+ arch/sparc/kernel/audit.c          | 12 +++++++-----
+ arch/sparc/kernel/compat_audit.c   | 13 ++++++++-----
+ arch/x86/ia32/audit.c              | 13 ++++++++-----
+ arch/x86/kernel/audit_64.c         | 10 ++++++----
+ fs/open.c                          |  2 ++
+ include/linux/audit.h              | 11 +++++++++++
+ include/linux/auditscm.h           | 24 +++++++++++++++++++++++
+ include/uapi/linux/audit.h         |  1 +
+ kernel/audit.h                     |  2 ++
+ kernel/auditsc.c                   | 31 ++++++++++++++++++++++++------
+ lib/audit.c                        | 14 +++++++++-----
+ lib/compat_audit.c                 | 15 ++++++++++-----
+ 20 files changed, 168 insertions(+), 71 deletions(-)
+ create mode 100644 include/linux/auditscm.h
 
-But that's a driver for a specific device AFAICT which looks like it's
-only got an I2C binding on the MFD so the driver knows that it's for a
-device that's on a bus that's going to sleep and doesn't need to infer
-anything?  This looks like the common case I'd expect where there's no
-variation.
+-- 
+2.27.0
 
-> > > It might be possible to pass this information via the
-> > > gpio_regmap_config, but this has the following drawbacks. First, that
-> > > property is redundant and both places might contratict each other. And
-> > > secondly, the driver might not even know the type of the regmap
-> > > because
-> > > it just gets an opaque pointer by querying the device tree.
-
-> > If it's a generic GPIO driver from a code correctness point of view it's
-> > always got a risk of sleeping...
-
-> I can't follow you here.
-
-If users happen to end up with a map flagged as fast they can work on
-the whatever driver uses this stuff and not realise they're breaking
-other users of the same driver that end up with slow I/O.  The whole
-point of the flag in GPIO is AIUI warnings to help with that case.
-
---VUDLurXRWRKrGuMn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCMPasACgkQJNaLcl1U
-h9CnCAf/UXniZtyrlKutaOFYFv/DIS5vgZNPX9TKPSpuf7OSIdu3/Su5BCBIdz8U
-607bHT20bfXcATQf0VqNm7mJ5+mQA4GcDa+z0SggpsBB1PqkMXqsGHgMEpxe9/yR
-DzRAm+aaQFWkp4MWQh7AYkNcN0ctgP+IWH1eV8e5dv8c+6eDH2h8Dp90JtfsYU7q
-wUUxm4xco031Oz1ciiNjDqlZxV7d5KJpVbWd8hgGqmtABAIzcva6DaPw1MwCnEpF
-c+JX0FRUlI0hPiDDbt07QJbaNwbAA4X9WVZz8e6soFjr5O/kjiiSmTy9qudB3UE3
-5w5PxpCBVGXSrSDBPl5EKFHjgtBKFA==
-=UiNe
------END PGP SIGNATURE-----
-
---VUDLurXRWRKrGuMn--
