@@ -2,208 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D372737023E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 22:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0927370243
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 22:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235936AbhD3Uhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 16:37:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39358 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235921AbhD3Uhm (ORCPT
+        id S235991AbhD3UjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 16:39:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231325AbhD3Ui6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 16:37:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619815011;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=N6V30Sob6slzfesQyLeYP7vBnXqoSeHwGk+XUPTQPFo=;
-        b=ZkxL4mHCLY0bCgCJibhAEcD798wRiqXmbmrtmoOLfTolGJIIMaKEk4/rA8ShBpcTC52EOs
-        aNqMJxcJ0ocD2k7YwLpL+FINF9UXbzI+JgLPEtAVa6ZDFfZ0kL+66hAiQO2ibzgcOiCtlj
-        sM4K3WnvxBeAe+VIDS9s9z6Illf8PbI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-210-wihMuOlBO9S_Itlyxz2nCA-1; Fri, 30 Apr 2021 16:36:49 -0400
-X-MC-Unique: wihMuOlBO9S_Itlyxz2nCA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BCC00107ACCD;
-        Fri, 30 Apr 2021 20:36:48 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.3.128.45])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1C8705C674;
-        Fri, 30 Apr 2021 20:36:36 +0000 (UTC)
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Richard Guy Briggs <rgb@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Eric Paris <eparis@redhat.com>, linux-fsdevel@vger.kernel.org,
-        Aleksa Sarai <cyphar@cyphar.com>
-Subject: [PATCH v3 3/3] audit: add OPENAT2 record to list how
-Date:   Fri, 30 Apr 2021 16:35:23 -0400
-Message-Id: <f9c0e777e9cbd0b473a551384306f3654b1ddf42.1619811762.git.rgb@redhat.com>
-In-Reply-To: <cover.1619811762.git.rgb@redhat.com>
-References: <cover.1619811762.git.rgb@redhat.com>
+        Fri, 30 Apr 2021 16:38:58 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8269DC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 13:38:09 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id m5so11725219wmf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 13:38:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=DEq0/bKuKyVdL1JH6Xf7qoLNGy26OvZqXWZScmfZsZ4=;
+        b=I0VCihY9/Yzgm/gCe6zh6hq4ak+g7rW7WwWNXOZLJwv3HS3q0LwY+uzRRU+GDnGnwU
+         Dfsr9wtVZZqei7Pm45e5k9igK9KbjtsJIspFn5T2ktkjRepnnfZdQQvZArGDh+5HKQXD
+         kuly2T25iQN1F5yHFGu+RFM4tsnKPROSuc5VZin4RzNXdLdRHBSTDl3kDDoHwugOuAPi
+         0+Y+wzZ5IEnYgFL+Ymzo8OXo+u8oHws3UDy33mRUJgyRLI+MaQkhlrqeeDJM5u1NjXNK
+         UXlJLLFUnEW4jprVbwuej2R6LJd5nimX1Eui0/9A1XVCVB+6q/kmhmk6P8pB/etduWRJ
+         WDZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=DEq0/bKuKyVdL1JH6Xf7qoLNGy26OvZqXWZScmfZsZ4=;
+        b=WiccS/xqaR1kNulSgk1PNB8qNmQHaP6i38MMrL7Q09diALpO1ZD1km3yUwmKb2e5vi
+         0NDbzfNsR6nugF0Qfms+A998PskcPGg+9YRHE5qNzASKXNLxaB0FDG83W9FUMYv9Kfvx
+         D+Vi2ZSa5/PbeeKlSMwcFKgAXCjpvLfhHmCLj1ufAPRuQKPd5blASyC1LaBIY0AaTg8X
+         8c0vKMewl5DXRTymEb8uZQbfETqxDl6iJdhgbkxdL/+GZ37Xpy2dQQDsduumtOCQqQ6R
+         u0ktS7tZy5w7cAOmdZ3JC1WfCZRSkkZpR5y+zjqaPFD4wR71o9OrmTAURtlPZ/oRudeM
+         lDNA==
+X-Gm-Message-State: AOAM533Ejfua+aPlh/LlltR98JnnrmcEnT0r5oFgYilpxTU9lGoTeAzz
+        zHA6QL2H3J/oj8Z+pfcamZU=
+X-Google-Smtp-Source: ABdhPJwpWgPw/hEcwnrnkgZN1FYmu83wrXI+9Z4H4NQtFJEKT9jTEWCNqWFNvppzg+i5y9ogbxbJHg==
+X-Received: by 2002:a7b:c156:: with SMTP id z22mr18616237wmi.86.1619815088327;
+        Fri, 30 Apr 2021 13:38:08 -0700 (PDT)
+Received: from amanieu-desktop.home ([2a00:23c6:f081:f801:93ef:94e:9f8:1f0])
+        by smtp.gmail.com with ESMTPSA id r5sm4384239wmh.23.2021.04.30.13.38.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 13:38:08 -0700 (PDT)
+From:   Amanieu d'Antras <amanieu@gmail.com>
+Cc:     Amanieu d'Antras <amanieu@gmail.com>,
+        Ryan Houdek <Houdek.Ryan@fex-emu.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 2/8] hugetlbfs: Use arch_get_mmap_* macros
+Date:   Fri, 30 Apr 2021 21:37:51 +0100
+Message-Id: <20210430203757.47653-1-amanieu@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210430202810.44092-1-amanieu@gmail.com>
+References: <20210430202810.44092-1-amanieu@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the openat2(2) syscall uses a struct open_how pointer to communicate
-its parameters they are not usefully recorded by the audit SYSCALL record's
-four existing arguments.
+hugetlb_get_unmapped_area should obey the same arch-specific constraints
+as mmap when selecting an address.
 
-Add a new audit record type OPENAT2 that reports the parameters in its
-third argument, struct open_how with fields oflag, mode and resolve.
-
-The new record in the context of an event would look like:
-time->Wed Mar 17 16:28:53 2021
-type=PROCTITLE msg=audit(1616012933.531:184): proctitle=73797363616C6C735F66696C652F6F70656E617432002F746D702F61756469742D7465737473756974652D737641440066696C652D6F70656E617432
-type=PATH msg=audit(1616012933.531:184): item=1 name="file-openat2" inode=29 dev=00:1f mode=0100600 ouid=0 ogid=0 rdev=00:00 obj=unconfined_u:object_r:user_tmp_t:s0 nametype=CREATE cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0
-type=PATH msg=audit(1616012933.531:184): item=0 name="/root/rgb/git/audit-testsuite/tests" inode=25 dev=00:1f mode=040700 ouid=0 ogid=0 rdev=00:00 obj=unconfined_u:object_r:user_tmp_t:s0 nametype=PARENT cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0
-type=CWD msg=audit(1616012933.531:184): cwd="/root/rgb/git/audit-testsuite/tests"
-type=OPENAT2 msg=audit(1616012933.531:184): oflag=0100302 mode=0600 resolve=0xa
-type=SYSCALL msg=audit(1616012933.531:184): arch=c000003e syscall=437 success=yes exit=4 a0=3 a1=7ffe315f1c53 a2=7ffe315f1550 a3=18 items=2 ppid=528 pid=540 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=ttyS0 ses=1 comm="openat2" exe="/root/rgb/git/audit-testsuite/tests/syscalls_file/openat2" subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key="testsuite-1616012933-bjAUcEPO"
-
-Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+Signed-off-by: Amanieu d'Antras <amanieu@gmail.com>
+Co-developed-by: Ryan Houdek <Houdek.Ryan@fex-emu.org>
+Signed-off-by: Ryan Houdek <Houdek.Ryan@fex-emu.org>
 ---
- fs/open.c                  |  2 ++
- include/linux/audit.h      | 10 ++++++++++
- include/uapi/linux/audit.h |  1 +
- kernel/audit.h             |  2 ++
- kernel/auditsc.c           | 18 +++++++++++++++++-
- 5 files changed, 32 insertions(+), 1 deletion(-)
+ fs/hugetlbfs/inode.c | 22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
 
-diff --git a/fs/open.c b/fs/open.c
-index e53af13b5835..2a15bec0cf6d 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -1235,6 +1235,8 @@ SYSCALL_DEFINE4(openat2, int, dfd, const char __user *, filename,
- 	if (err)
- 		return err;
+diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+index 701c82c36138..526ccb524329 100644
+--- a/fs/hugetlbfs/inode.c
++++ b/fs/hugetlbfs/inode.c
+@@ -191,6 +191,18 @@ static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
+  */
  
-+	audit_openat2_how(&tmp);
+ #ifndef HAVE_ARCH_HUGETLB_UNMAPPED_AREA
++#ifndef arch_get_mmap_end
++#define arch_get_mmap_end(addr)			(TASK_SIZE)
++#endif
 +
- 	/* O_LARGEFILE is only allowed for non-O_PATH. */
- 	if (!(tmp.flags & O_PATH) && force_o_largefile())
- 		tmp.flags |= O_LARGEFILE;
-diff --git a/include/linux/audit.h b/include/linux/audit.h
-index 1137df4d4171..32095e1f5bac 100644
---- a/include/linux/audit.h
-+++ b/include/linux/audit.h
-@@ -399,6 +399,7 @@ extern int __audit_log_bprm_fcaps(struct linux_binprm *bprm,
- 				  const struct cred *old);
- extern void __audit_log_capset(const struct cred *new, const struct cred *old);
- extern void __audit_mmap_fd(int fd, int flags);
-+extern void __audit_openat2_how(struct open_how *how);
- extern void __audit_log_kern_module(char *name);
- extern void __audit_fanotify(unsigned int response);
- extern void __audit_tk_injoffset(struct timespec64 offset);
-@@ -495,6 +496,12 @@ static inline void audit_mmap_fd(int fd, int flags)
- 		__audit_mmap_fd(fd, flags);
- }
- 
-+static inline void audit_openat2_how(struct open_how *how)
-+{
-+	if (unlikely(!audit_dummy_context()))
-+		__audit_openat2_how(how);
-+}
++#ifndef arch_get_mmap_base
++#define arch_get_mmap_base(addr)		(current->mm->mmap_base)
++#endif
 +
- static inline void audit_log_kern_module(char *name)
- {
- 	if (!audit_dummy_context())
-@@ -646,6 +653,9 @@ static inline void audit_log_capset(const struct cred *new,
- static inline void audit_mmap_fd(int fd, int flags)
- { }
- 
-+static inline void audit_openat2_how(struct open_how *how)
-+{ }
++#ifndef arch_get_mmap_base_topdown
++#define arch_get_mmap_base_topdown(addr)	(current->mm->mmap_base)
++#endif
 +
- static inline void audit_log_kern_module(char *name)
- {
- }
-diff --git a/include/uapi/linux/audit.h b/include/uapi/linux/audit.h
-index cd2d8279a5e4..67aea2370c6d 100644
---- a/include/uapi/linux/audit.h
-+++ b/include/uapi/linux/audit.h
-@@ -118,6 +118,7 @@
- #define AUDIT_TIME_ADJNTPVAL	1333	/* NTP value adjustment */
- #define AUDIT_BPF		1334	/* BPF subsystem */
- #define AUDIT_EVENT_LISTENER	1335	/* Task joined multicast read socket */
-+#define AUDIT_OPENAT2		1336	/* Record showing openat2 how args */
+ static unsigned long
+ hugetlb_get_unmapped_area_bottomup(struct file *file, unsigned long addr,
+ 		unsigned long len, unsigned long pgoff, unsigned long flags)
+@@ -200,8 +212,8 @@ hugetlb_get_unmapped_area_bottomup(struct file *file, unsigned long addr,
  
- #define AUDIT_AVC		1400	/* SE Linux avc denial or grant */
- #define AUDIT_SELINUX_ERR	1401	/* Internal SE Linux Errors */
-diff --git a/kernel/audit.h b/kernel/audit.h
-index 1522e100fd17..c5af17905976 100644
---- a/kernel/audit.h
-+++ b/kernel/audit.h
-@@ -11,6 +11,7 @@
- #include <linux/skbuff.h>
- #include <uapi/linux/mqueue.h>
- #include <linux/tty.h>
-+#include <uapi/linux/openat2.h> // struct open_how
+ 	info.flags = 0;
+ 	info.length = len;
+-	info.low_limit = current->mm->mmap_base;
+-	info.high_limit = TASK_SIZE;
++	info.low_limit = arch_get_mmap_base(addr);
++	info.high_limit = arch_get_mmap_end(addr);
+ 	info.align_mask = PAGE_MASK & ~huge_page_mask(h);
+ 	info.align_offset = 0;
+ 	return vm_unmapped_area(&info);
+@@ -217,7 +229,7 @@ hugetlb_get_unmapped_area_topdown(struct file *file, unsigned long addr,
+ 	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
+ 	info.length = len;
+ 	info.low_limit = max(PAGE_SIZE, mmap_min_addr);
+-	info.high_limit = current->mm->mmap_base;
++	info.high_limit = arch_get_mmap_base_topdown(addr);
+ 	info.align_mask = PAGE_MASK & ~huge_page_mask(h);
+ 	info.align_offset = 0;
+ 	addr = vm_unmapped_area(&info);
+@@ -231,8 +243,8 @@ hugetlb_get_unmapped_area_topdown(struct file *file, unsigned long addr,
+ 	if (unlikely(offset_in_page(addr))) {
+ 		VM_BUG_ON(addr != -ENOMEM);
+ 		info.flags = 0;
+-		info.low_limit = current->mm->mmap_base;
+-		info.high_limit = TASK_SIZE;
++		info.low_limit = arch_get_mmap_base(addr);
++		info.high_limit = arch_get_mmap_end(addr);
+ 		addr = vm_unmapped_area(&info);
+ 	}
  
- /* AUDIT_NAMES is the number of slots we reserve in the audit_context
-  * for saving names from getname().  If we get more names we will allocate
-@@ -185,6 +186,7 @@ struct audit_context {
- 			int			fd;
- 			int			flags;
- 		} mmap;
-+		struct open_how openat2;
- 		struct {
- 			int			argc;
- 		} execve;
-diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-index 27c747e0d5ab..2e9a1eea8b12 100644
---- a/kernel/auditsc.c
-+++ b/kernel/auditsc.c
-@@ -76,7 +76,7 @@
- #include <linux/fsnotify_backend.h>
- #include <uapi/linux/limits.h>
- #include <uapi/linux/netfilter/nf_tables.h>
--#include <uapi/linux/openat2.h>
-+#include <uapi/linux/openat2.h> // struct open_how
- 
- #include "audit.h"
- 
-@@ -1310,6 +1310,12 @@ static void show_special(struct audit_context *context, int *call_panic)
- 		audit_log_format(ab, "fd=%d flags=0x%x", context->mmap.fd,
- 				 context->mmap.flags);
- 		break;
-+	case AUDIT_OPENAT2:
-+		audit_log_format(ab, "oflag=0%llo mode=0%llo resolve=0x%llx",
-+				 context->openat2.flags,
-+				 context->openat2.mode,
-+				 context->openat2.resolve);
-+		break;
- 	case AUDIT_EXECVE:
- 		audit_log_execve_info(context, &ab);
- 		break;
-@@ -2529,6 +2535,16 @@ void __audit_mmap_fd(int fd, int flags)
- 	context->type = AUDIT_MMAP;
- }
- 
-+void __audit_openat2_how(struct open_how *how)
-+{
-+	struct audit_context *context = audit_context();
-+
-+	context->openat2.flags = how->flags;
-+	context->openat2.mode = how->mode;
-+	context->openat2.resolve = how->resolve;
-+	context->type = AUDIT_OPENAT2;
-+}
-+
- void __audit_log_kern_module(char *name)
- {
- 	struct audit_context *context = audit_context();
 -- 
-2.27.0
+2.31.1
 
