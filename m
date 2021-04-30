@@ -2,124 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF9D36F35C
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 02:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C9A36F378
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 03:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbhD3BAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 21:00:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36868 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229519AbhD3BAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 21:00:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E1F6613ED;
-        Fri, 30 Apr 2021 00:59:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619744359;
-        bh=GZNvsGnrPxvovRidLnOihcjHTpLGj9pQkIEbFHJe7UA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Ji7kRmZ3VS2RmjiM8EjIZPT5xnmxoZUPzOK7vE5oBSaprYIT5zVAcAsL9HwAU2dEy
-         XEA08Zwqexp+B+qBLK7pSKqz0m0VbYBGR+BxUIISmSoUqEwwy6TnxI6Ctg5dZ2YJV4
-         Yttj2pJyesdqIXK09xZI2psobWMwfgiapU03fNKPkiIyH/aH3S7VKLEZACI9ds3Wf5
-         xLBK6yzUrFBHT8AW8U9wbYG2f7KY/mJwVe+DUpAmw4lrf46M6SBntdL0W02PYVJHf/
-         9bFdiKnkFsiUMG3Fk1W8ULU0DXsVvgcbxw9G/kgHVd8+7VDzIUJm6Nox4skslNB4qu
-         +JpMFfPtjQfOQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 538AB5C051D; Thu, 29 Apr 2021 17:59:19 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 17:59:19 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Feng Tang <feng.tang@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel-team@fb.com, neeraju@codeaurora.org,
-        zhengjun.xing@intel.com, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [clocksource]  8c30ace35d:
- WARNING:at_kernel/time/clocksource.c:#clocksource_watchdog
-Message-ID: <20210430005919.GA983840@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <87y2d3mo2q.ffs@nanos.tec.linutronix.de>
- <87a6pimt1f.ffs@nanos.tec.linutronix.de>
- <20210428183118.GR975577@paulmck-ThinkPad-P17-Gen-1>
- <878s517axu.ffs@nanos.tec.linutronix.de>
- <20210429142641.GU975577@paulmck-ThinkPad-P17-Gen-1>
- <87lf91f177.ffs@nanos.tec.linutronix.de>
- <20210429230411.GK4032392@tassilo.jf.intel.com>
- <20210430002459.GB975577@paulmck-ThinkPad-P17-Gen-1>
+        id S229795AbhD3BYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 21:24:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229519AbhD3BYP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 21:24:15 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F94FC06138B;
+        Thu, 29 Apr 2021 18:23:26 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id t24so11061308oic.10;
+        Thu, 29 Apr 2021 18:23:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=1SYSV1ST5CmyKauB1cfHt/lTjzM1JtgTjndM7qycV2o=;
+        b=Y1xm6h0jsXhEjU0x8/UPm/ebG9B1+44LoKVQV9r5rnnas+5rYWJObWCn8SZo6tSMZ1
+         cGtznuA8KXtzD+a3KJgBiRpw5l3cTwIHQUxNZT8zUqp07Rhx4BMZFAn8vMSLJSirEz6c
+         fiv0HTIG8Th+seaIerFKPHoWMlf7O6xyzsrT6nZdccuUgfexudsLEMyCbX8t1aF8TiDg
+         +1qJcvWbSL45Ld3V/7iTZvnJS6dmb35psqoGcvGT1hfIWKayXTipB1/SvfAx6c04P9wN
+         1KH3PflvzzZ+ZjbpJEncNHyBCDeM3jwz9pYUfaTJwWh7sqGe2Wz+Qlw2G3mJ0YMWevob
+         106g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=1SYSV1ST5CmyKauB1cfHt/lTjzM1JtgTjndM7qycV2o=;
+        b=VrBOG3eojB9s5R83OahWGvBceVlV+lCtjAm43I7yV/3+7+7tBNkO/+pePzjNgmThfg
+         nR8gbJcqjaSwvNWjKVL07lctio9bu+HeI/jdvCDCkkamsyQZw8AyccyAgm6vQtN0IuCc
+         1I59BT2cVoXEcaxn28uDeh6ayz0px/7j3KmA6N9yEaSjRYYUR1no+l9IzRqhXsz+4Uey
+         eBIcEzizoZ5yeYxecIn6DHveFJXvx4kIEla/fEbALI1PWu9Ph+SKkOVIOWS3TTVCiunS
+         dgkx+/kca2mhPI3WCaqXLYsOkQTFjm4D6E/phOiN4GExAJHdoNOV2b7BWvo6HsIbhDiA
+         jxYw==
+X-Gm-Message-State: AOAM530TBwjTMJbt6DN+mU3fnhuftslcmYA/1w5r0RjBfl9TgVIa1rzT
+        X0y+tzfs3Jddk8ogag3KdcOrmg+h4lQ=
+X-Google-Smtp-Source: ABdhPJzhRt2piz5wYQRbzUjle3i0pXTPwyn8+KVGHk8JUisg/wusbUU9Dm6Mk1x9240e2ds0mb6WGg==
+X-Received: by 2002:a05:6808:2d0:: with SMTP id a16mr2127647oid.116.1619745805896;
+        Thu, 29 Apr 2021 18:23:25 -0700 (PDT)
+Received: from localhost (108-223-40-66.lightspeed.sntcca.sbcglobal.net. [108.223.40.66])
+        by smtp.gmail.com with ESMTPSA id k16sm397760ooa.36.2021.04.29.18.23.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 29 Apr 2021 18:23:25 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 29 Apr 2021 18:23:23 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Eddie James <eajames@linux.ibm.com>
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jdelvare@suse.com
+Subject: Re: [PATCH] hwmon: (occ) Fix poll rate limiting
+Message-ID: <20210430012323.GA186319@roeck-us.net>
+References: <20210429151336.18980-1-eajames@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210430002459.GB975577@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20210429151336.18980-1-eajames@linux.ibm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 05:24:59PM -0700, Paul E. McKenney wrote:
-> On Thu, Apr 29, 2021 at 04:04:11PM -0700, Andi Kleen wrote:
-> > > > The idea is to leave the watchdog code in kernel/time/clocksource.c,
-> > > > but to move the fault injection into kernel/time/clocksourcefault.c or
-> > > > some such.  In this new file, new clocksource structures are created that
-> > > > use some existing timebase/clocksource under the covers.  These then
-> > > > inject delays based on module parameters (one senstive to CPU number,
-> > > > the other unconditional).  They register these clocksources using the
-> > > > normal interfaces, and verify that they are eventually marked unstable
-> > > > when the fault-injection parameters warrant it.  This is combined with
-> > > > the usual checking of the console log.
-> > > >
-> > > > Or am I missing your point?
-> > > 
-> > > That's what I meant.
-> > 
-> > I still think all this stuff should be in the fault injection framework,
-> > like other fault injections, to have a consistent discoverable interface. 
-> > 
-> > I actually checked now and the standard fault injection supports boot arguments,
-> > so needing it at boot time shouldn't be a barrier.
+On Thu, Apr 29, 2021 at 10:13:36AM -0500, Eddie James wrote:
+> The poll rate limiter time was initialized at zero. This breaks the
+> comparison in time_after if jiffies is large. Switch to storing the
+> next update time rather than the previous time, and initialize the
+> time when the device is probed.
 > 
-> Per Thomas's feedback, I am in the midst of converting this to a unit
-> test implemented as a kernel module, at which point the only fault
-> injection will be in the unit test.
+> Fixes: c10e753d43eb ("hwmon (occ): Add sensor types and versions")
+> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+
+Applied.
+
+Thanks,
+Guenter
+
+> ---
+>  drivers/hwmon/occ/common.c | 5 +++--
+>  drivers/hwmon/occ/common.h | 2 +-
+>  2 files changed, 4 insertions(+), 3 deletions(-)
 > 
-> At the moment, the code just registers, reads, unregisters, and verifies
-> that the bogus unit-test clocksources act normally.  Fault injection is
-> next on the list for the fine-grained clocksource.  Which, as Thomas
-> noted, is quite a bit simpler, as I just need to force a delay until
-> the clocksource gets marked unstable with no need for fancy counting.
-
-And this is what I currently get on the console from a successful test:
-
-------------------------------------------------------------------------
-
-clocksource_wdtest: --- holdoff=20
-clocksource_wdtest: --- Verify jiffies-like uncertainty margin.
-clocksource: wdtest-jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 1911260446275000 ns
-clocksource_wdtest: --- Verify tsc-like uncertainty margin.
-clocksource: wdtest-ktime: mask: 0xffffffffffffffff max_cycles: 0x1cd42e4dffb, max_idle_ns: 881590591483 ns
-clocksource_wdtest: --- tsc-like times: 1619743817068433427 - 1619743817068432303 = 1124.
-clocksource_wdtest: --- Watchdog without error injection.
-clocksource_wdtest: --- Watchdog with singleton error injection.
-clocksource_wdtest: --- Watchdog with doublet error injection, expect console messages.
-clocksource: timekeeping watchdog on CPU4: kvm-clock retried 2 times before success
-clocksource_wdtest: --- Watchdog with quadruplet error injection, expect clock skew.
-clocksource: timekeeping watchdog on CPU8: kvm-clock read-back delay of 401209ns, attempt 4, marking unstable
-clocksource_wdtest: --- Marking wdtest-ktime unstable due to clocksource watchdog.
-clocksource_wdtest: --- Done with test.
-
-------------------------------------------------------------------------
-
-The code currently looks like a dog's breakfast, so I will clean it
-up before sending it out.  And of course add the time-readout error
-injection to test the other clock-skew code path.
-
-And yes, there are WARNs to verify that skew happens when it is supposed
-to and so on.
-
-							Thanx, Paul
+> diff --git a/drivers/hwmon/occ/common.c b/drivers/hwmon/occ/common.c
+> index f1ac153d0b56..967532afb1c0 100644
+> --- a/drivers/hwmon/occ/common.c
+> +++ b/drivers/hwmon/occ/common.c
+> @@ -217,9 +217,9 @@ int occ_update_response(struct occ *occ)
+>  		return rc;
+>  
+>  	/* limit the maximum rate of polling the OCC */
+> -	if (time_after(jiffies, occ->last_update + OCC_UPDATE_FREQUENCY)) {
+> +	if (time_after(jiffies, occ->next_update)) {
+>  		rc = occ_poll(occ);
+> -		occ->last_update = jiffies;
+> +		occ->next_update = jiffies + OCC_UPDATE_FREQUENCY;
+>  	} else {
+>  		rc = occ->last_error;
+>  	}
+> @@ -1165,6 +1165,7 @@ int occ_setup(struct occ *occ, const char *name)
+>  		return rc;
+>  	}
+>  
+> +	occ->next_update = jiffies + OCC_UPDATE_FREQUENCY;
+>  	occ_parse_poll_response(occ);
+>  
+>  	rc = occ_setup_sensor_attrs(occ);
+> diff --git a/drivers/hwmon/occ/common.h b/drivers/hwmon/occ/common.h
+> index 67e6968b8978..e6df719770e8 100644
+> --- a/drivers/hwmon/occ/common.h
+> +++ b/drivers/hwmon/occ/common.h
+> @@ -99,7 +99,7 @@ struct occ {
+>  	u8 poll_cmd_data;		/* to perform OCC poll command */
+>  	int (*send_cmd)(struct occ *occ, u8 *cmd);
+>  
+> -	unsigned long last_update;
+> +	unsigned long next_update;
+>  	struct mutex lock;		/* lock OCC access */
+>  
+>  	struct device *hwmon;
