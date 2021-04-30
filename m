@@ -2,74 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E03236F748
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 764BA36F74F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229669AbhD3IqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 04:46:07 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:51493 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhD3IqF (ORCPT
+        id S231129AbhD3IsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 04:48:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229529AbhD3IsJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 04:46:05 -0400
-Received: from 223-138-45-215.emome-ip.hinet.net ([223.138.45.215] helo=[192.168.43.35])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <ike.pan@canonical.com>)
-        id 1lcOlq-0001ON-Eg; Fri, 30 Apr 2021 08:45:13 +0000
-Subject: Re: [PATCH] platform/x86: ideapad-laptop: fix a NULL pointer
- dereference
-To:     Qiu Wenbo <qiuwenbo@kylinos.com.cn>, hdegoede@redhat.com,
-        mgross@linux.intel.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210428050636.8003-1-qiuwenbo@kylinos.com.cn>
-From:   Ike Panhc <ike.pan@canonical.com>
-Message-ID: <a95f27a5-bc5a-a195-09e4-db56d024629e@canonical.com>
-Date:   Fri, 30 Apr 2021 16:45:02 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 30 Apr 2021 04:48:09 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF45EC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:47:21 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1lcOnm-0002EN-QZ; Fri, 30 Apr 2021 10:47:10 +0200
+Message-ID: <914b4e28b1313fc3b0293faa60a21cb6afb83e40.camel@pengutronix.de>
+Subject: Re: [PATCH 16/16] soc: imx: gpcv2: remove waiting handshake in
+ power up
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de
+Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        p.zabel@pengutronix.de, krzk@kernel.org, agx@sigxcpu.org,
+        marex@denx.de, andrew.smirnov@gmail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, ping.bai@nxp.com,
+        frieder.schrempf@kontron.de, aford173@gmail.com, abel.vesa@nxp.com,
+        Peng Fan <peng.fan@nxp.com>
+Date:   Fri, 30 Apr 2021 10:47:08 +0200
+In-Reply-To: <e5a94506-7bd3-93b6-b331-1cf04672a459@oss.nxp.com>
+References: <20210429073050.21039-1-peng.fan@oss.nxp.com>
+         <20210429073050.21039-17-peng.fan@oss.nxp.com>
+         <abde5337ac265287f8e1225846e140e8df370f47.camel@pengutronix.de>
+         <e5a94506-7bd3-93b6-b331-1cf04672a459@oss.nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <20210428050636.8003-1-qiuwenbo@kylinos.com.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/28/21 1:06 PM, Qiu Wenbo wrote:
-> The third parameter of dytc_cql_command should not be NULL since it will
-> be dereferenced immediately.
+Am Freitag, dem 30.04.2021 um 15:14 +0800 schrieb Peng Fan (OSS):
 > 
-> Signed-off-by: Qiu Wenbo <qiuwenbo@kylinos.com.cn>
+> On 2021/4/29 22:34, Lucas Stach wrote:
+> > Am Donnerstag, dem 29.04.2021 um 15:30 +0800 schrieb Peng Fan (OSS):
+> > > From: Peng Fan <peng.fan@nxp.com>
+> > > 
+> > > i.MX8MM has blk ctl module, the handshake can only finish after setting
+> > > blk ctl. The blk ctl driver will set the bus clk bit and the handshake
+> > > will finish there. we just add a delay and suppose the handshake will
+> > > finish after that.
+> > 
+> > Instead of this patch, just drop patch 05/16 from this series. I think
+> > we should leave a comment in the code on why we aren't waiting for the
+> > handshake ack, as this is non-obvious from looking at the driver code.
+> > 
+> > Basically add a polished version of the commit log from this patch into
+> > the driver code.
+> 
+> After thinking more, for power down, we need wait handshake. For power 
+> up, we could ignore handshake, because BLK-CTL setting bus clk en
+> will auto trigger handshake.
+> 
+> For power down, the bus clk en already set, and we need wait, otherwise
+> we need add delay there.
+> 
+> So I would only drop the power up waiting and add some comments there.
 
-Fixes: ff36b0d953dc4 ("platform/x86: ideapad-laptop: rework and create new ACPI helpers")
-Acked-by: Ike Panhc <ike.pan@canonical.com>
+Ah, right. This way makes a lot of sense.
 
-> ---
->  drivers/platform/x86/ideapad-laptop.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/platform/x86/ideapad-laptop.c b/drivers/platform/x86/ideapad-laptop.c
-> index 6cb5ad4be231..8f871151f0cc 100644
-> --- a/drivers/platform/x86/ideapad-laptop.c
-> +++ b/drivers/platform/x86/ideapad-laptop.c
-> @@ -809,6 +809,7 @@ static int dytc_profile_set(struct platform_profile_handler *pprof,
->  {
->  	struct ideapad_dytc_priv *dytc = container_of(pprof, struct ideapad_dytc_priv, pprof);
->  	struct ideapad_private *priv = dytc->priv;
-> +	unsigned long output;
->  	int err;
->  
->  	err = mutex_lock_interruptible(&dytc->mutex);
-> @@ -829,7 +830,7 @@ static int dytc_profile_set(struct platform_profile_handler *pprof,
->  
->  		/* Determine if we are in CQL mode. This alters the commands we do */
->  		err = dytc_cql_command(priv, DYTC_SET_COMMAND(DYTC_FUNCTION_MMC, perfmode, 1),
-> -				       NULL);
-> +				       &output);
->  		if (err)
->  			goto unlock;
->  	}
-> 
+Regards,
+Lucas
 
