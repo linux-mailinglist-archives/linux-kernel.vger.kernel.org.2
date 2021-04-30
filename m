@@ -2,82 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2FF136F7E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 11:25:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5D4236F7E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 11:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231678AbhD3J03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 05:26:29 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:60867 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229760AbhD3J0Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 05:26:25 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UXFcJAj_1619774730;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UXFcJAj_1619774730)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 30 Apr 2021 17:25:34 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     willy@infradead.org
-Cc:     hare@suse.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] advansys: Remove redundant assignment to err and n_q_required
-Date:   Fri, 30 Apr 2021 17:25:28 +0800
-Message-Id: <1619774728-120808-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S231718AbhD3J0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 05:26:52 -0400
+Received: from wind.enjellic.com ([76.10.64.91]:47762 "EHLO wind.enjellic.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229760AbhD3J0t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 05:26:49 -0400
+Received: from wind.enjellic.com (localhost [127.0.0.1])
+        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 13U9PdY5006270;
+        Fri, 30 Apr 2021 04:25:39 -0500
+Received: (from greg@localhost)
+        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 13U9PcEj006269;
+        Fri, 30 Apr 2021 04:25:38 -0500
+Date:   Fri, 30 Apr 2021 04:25:38 -0500
+From:   "Dr. Greg" <greg@enjellic.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Tim Gardner <tim.gardner@canonical.com>,
+        dave.hansen@linux.intel.com, jarkko@kernel.org, shuah@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Subject: [PATCH 0/1] SGX self test fails
+Message-ID: <20210430092538.GA5887@wind.enjellic.com>
+Reply-To: "Dr. Greg" <greg@enjellic.com>
+References: <20210429183952.22797-1-tim.gardner@canonical.com> <c0725600-0a00-31dd-2ec3-20d4a86b33c5@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c0725600-0a00-31dd-2ec3-20d4a86b33c5@intel.com>
+User-Agent: Mutt/1.4i
+X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Fri, 30 Apr 2021 04:25:39 -0500 (CDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Variable err and n_q_required is set to '-ENOMEM' and '1', but they are
-either overwritten or unused later on, so these are redundant assignments
-that can be removed.
+On Thu, Apr 29, 2021 at 11:55:23AM -0700, Dave Hansen wrote:
 
-Clean up the following clang-analyzer warning:
+Good morning, I hope the end of the week is going well for everyone.
 
-drivers/scsi/advansys.c:11235:2: warning: Value stored to 'err' is never
-read [clang-analyzer-deadcode.DeadStores].
+> On 4/29/21 11:39 AM, Tim Gardner wrote:
+> > I'm just starting my learning curve on SGX, so I don't know if
+> > I've missed some setup for the SGX device entries. After looking
+> > at arch/x86/kernel/cpu/sgx/driver.c I see that there is no mode
+> > value for either sgx_dev_enclave or sgx_dev_provision.
+> >
+> > With this patch I can get the SGX self test to complete:
+> > 
+> > sudo ./test_sgx
+> > Warning: no execute permissions on device file /dev/sgx_enclave
+> > 0x0000000000000000 0x0000000000002000 0x03
+> > 0x0000000000002000 0x0000000000001000 0x05
+> > 0x0000000000003000 0x0000000000003000 0x03
+> > SUCCESS
+> > 
+> > Is the warning even necessary ?
+> 
+> Dang, I just added that warning.  I thought it was necessary, but I
+> guess not:
+> 
+> $ ls -l /dev/sgx_enclave
+> crw------- 1 dave dave 10, 125 Apr 28 11:32 /dev/sgx_enclave
+> $ ./test_sgx
+> 0x0000000000000000 0x0000000000002000 0x03
+> 0x0000000000002000 0x0000000000001000 0x05
+> 0x0000000000003000 0x0000000000003000 0x03
+> SUCCESS
+> 
+> *But*, is that OK?  Should we be happily creating a PROT_EXEC mapping on
+> a ugo-x file?  Why were we respecting noexec on the filesystem but not
+> ugo-x on the file?
 
-drivers/scsi/advansys.c:8091:2: warning: Value stored to 'n_q_required'
-is never read [clang-analyzer-deadcode.DeadStores].
+Because no one placed any explicit executable mode bit checks on the
+inode that is underlying the character device file in
+arch/x86/kernel/cpu/sgx/driver.c:sgx_open() and the controls on
+executable virtual memory are implemented in the mm/mmap.c:do_mmap()
+path when the mmap system call is executed.
 
-drivers/scsi/advansys.c:11484:2: warning: Value stored to 'err' is never
-read [clang-analyzer-deadcode.DeadStores].
+The notion of using discretionary access controls, and arguably MAC's,
+since the true identity of a file is its inode label, to gate
+executable permissions by a user on the contents of a file are a
+function of the exec* system calls.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/scsi/advansys.c | 3 ---
- 1 file changed, 3 deletions(-)
+The notion of whether or not it is 'OK' to not allow system
+administrators the ability to control SGX usage with file level exec
+privileges would seem to be more philosophical then practical.  The
+SGX device node does not represent an executable entity, it represents
+a gateway to the right to create and then populate anonymous
+executable memory.
 
-diff --git a/drivers/scsi/advansys.c b/drivers/scsi/advansys.c
-index 800052f..f9969d4 100644
---- a/drivers/scsi/advansys.c
-+++ b/drivers/scsi/advansys.c
-@@ -8088,7 +8088,6 @@ static int AscExeScsiQueue(ASC_DVC_VAR *asc_dvc, ASC_SCSI_Q *scsiq)
- 	sta = 0;
- 	target_ix = scsiq->q2.target_ix;
- 	tid_no = ASC_TIX_TO_TID(target_ix);
--	n_q_required = 1;
- 	if (scsiq->cdbptr[0] == REQUEST_SENSE) {
- 		if ((asc_dvc->init_sdtr & scsiq->q1.target_id) != 0) {
- 			asc_dvc->sdtr_done &= ~scsiq->q1.target_id;
-@@ -11232,7 +11231,6 @@ static int advansys_vlb_probe(struct device *dev, unsigned int id)
- 	if (AscGetChipVersion(iop_base, ASC_IS_VL) > ASC_CHIP_MAX_VER_VL)
- 		goto release_region;
- 
--	err = -ENOMEM;
- 	shost = scsi_host_alloc(&advansys_template, sizeof(*board));
- 	if (!shost)
- 		goto release_region;
-@@ -11457,7 +11455,6 @@ static int advansys_pci_probe(struct pci_dev *pdev,
- 
- 	ioport = pci_resource_start(pdev, 0);
- 
--	err = -ENOMEM;
- 	shost = scsi_host_alloc(&advansys_template, sizeof(*board));
- 	if (!shost)
- 		goto release_region;
--- 
-1.8.3.1
+From the standpoint of current systems administration practice, the
+notion and need for executable bits being important on device nodes is
+foreign, and violates the concept of least surprise.  As we have
+already seen with the issue of noexec on /dev, the historical notion
+of security has been that executable files should not be allowed in
+the /dev heirarchy.
 
+With that mindset, the notion of gating SGX permissions with only the
+write bit on the character device would seem to make conceptual sense.
+It does, however, limit the utility of using the bprm* LSM hooks to
+implement whatever LSM controls over SGX that are envisioned for the
+future.
+
+At the risk of fanning dormant embers into flame, the relevance of all
+of this needs to be considered in a future that will include Enclave
+Dynamic Memory Management (EDMM).  At that point in time, access to
+the SGX device node, gated through either discretionary or mandatory
+access controls, means that an eligible entity will have unrestricted
+rights to load completely anonymous, in fact cryptographically
+anonymous, text into memory and execute it.
+
+The utility of anything but yes/no decisions needs to be made with
+that concept in mind.
+
+To avoid the risk of being classified as a blatherer, I will return to
+my work on maintaining support for cryptographic access controls on
+all of this... :-)
+
+Best wishes for a pleasant spring weekend to everyone.
+
+Dr. Greg
+
+As always,
+Dr. Greg Wettstein, Ph.D, Worker      Autonomously self-defensive
+Enjellic Systems Development, LLC     IOT platforms and edge devices.
+4206 N. 19th Ave.
+Fargo, ND  58102
+PH: 701-281-1686                      EMAIL: greg@enjellic.com
+------------------------------------------------------------------------------
+"Everything should be made as simple as possible, but not simpler."
+                                -- Albert Einstein
