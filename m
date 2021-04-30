@@ -2,58 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 373CD370376
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 00:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCFB337037C
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 00:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231782AbhD3W2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 18:28:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbhD3W2v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 18:28:51 -0400
-Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B39CC06174A;
-        Fri, 30 Apr 2021 15:28:03 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id 7EF194F7E7593;
-        Fri, 30 Apr 2021 15:28:01 -0700 (PDT)
-Date:   Fri, 30 Apr 2021 15:28:01 -0700 (PDT)
-Message-Id: <20210430.152801.713225083548143754.davem@davemloft.net>
-To:     michael.wei.hong.sit@intel.com
-Cc:     Jose.Abreu@synopsys.com, andrew@lunn.ch, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, kuba@kernel.org, netdev@vger.kernel.org,
-        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        mcoquelin.stm32@gmail.com, weifeng.voon@intel.com,
-        boon.leong.ong@intel.com, tee.min.tan@intel.com,
-        vee.khee.wong@linux.intel.com, vee.khee.wong@intel.com,
+        id S232056AbhD3WbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 18:31:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231439AbhD3WbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 18:31:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 2A00F6147F;
+        Fri, 30 Apr 2021 22:30:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619821811;
+        bh=XVCO9O9G7bisl1YNGCySOUbejBlFNAz4x2iboi+HPMM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=P9ap/x9ZZ85fjGARq/R5Mx/7yINZ5m2vDn0crZ0pRnL67E9R3C8D1iy1Gz0Y+0L8a
+         qrjt/ByO8Es0bUMCdCVDrOfxD0GNXFNx0gVkj4JtGt2Hfv1D7RON4QgUd0nRhGyGQ1
+         VBR8n1K7TXqFHx0Avk6V3wz/rER4D/zkhXG2u5I5FL7j6ZG9oCtA6MAbvAGvCZj0gD
+         pdE5JD+n+P2IsoPe4Z2BeEX20jpxW5RQtiQ1x9HWGlDp6nmBEFZgKAJ50l0WhcO++V
+         pvC1W0678QKrRs+6jDm85TsI/nsYyAyjv07iSpwkbaroO9+FgHbKcck0eWyI1Wa8Zn
+         ibXsMIlvrPnrA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1D1D160CD1;
+        Fri, 30 Apr 2021 22:30:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: stmmac: Remove duplicate declaration of stmmac_priv
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161982181111.1234.7541800919565959093.git-patchwork-notify@kernel.org>
+Date:   Fri, 30 Apr 2021 22:30:11 +0000
+References: <20210430031047.34888-1-wanjiabing@vivo.com>
+In-Reply-To: <20210430031047.34888-1-wanjiabing@vivo.com>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
+        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 0/2] Introducing support for DWC xpcs Energy
- Efficient Ethernet
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20210429084636.24752-1-michael.wei.hong.sit@intel.com>
-References: <20210429084636.24752-1-michael.wei.hong.sit@intel.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Fri, 30 Apr 2021 15:28:02 -0700 (PDT)
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kael_w@yeah.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-Date: Thu, 29 Apr 2021 16:46:34 +0800
+Hello:
 
-> The goal of this patch set is to enable EEE in the xpcs so that when
-> EEE is enabled, the MAC-->xpcs-->PHY have all the EEE related
-> configurations enabled.
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Fri, 30 Apr 2021 11:10:47 +0800 you wrote:
+> In commit f4da56529da60 ("net: stmmac: Add support for external
+> trigger timestamping"), struct stmmac_priv was declared at line 507
+> which caused duplicate struct declarations.
+> Remove later duplicate declaration here.
 > 
-> Patch 1 adds the functions to enable EEE in the xpcs and sets it to
-> transparent mode.
-> Patch 2 adds the callbacks to configure the xpcs EEE mode.
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+> 
+> [...]
 
-net-next is closed, please resubit this when it opensd back up.
+Here is the summary with links:
+  - net: stmmac: Remove duplicate declaration of stmmac_priv
+    https://git.kernel.org/netdev/net/c/f18c51b6513c
 
-Thank you.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
