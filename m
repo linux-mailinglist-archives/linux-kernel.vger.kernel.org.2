@@ -2,80 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF7636F3FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 04:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC0A36F401
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 04:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbhD3CSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 22:18:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43228 "EHLO mail.kernel.org"
+        id S229757AbhD3CWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 22:22:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229577AbhD3CSD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 22:18:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F239613EE;
-        Fri, 30 Apr 2021 02:17:15 +0000 (UTC)
+        id S229577AbhD3CV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 22:21:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70B24613EE;
+        Fri, 30 Apr 2021 02:21:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619749035;
-        bh=Hv1C2LyXJqO2i3JKRnZtQbt4ua6L32rnPt3ObKyL2NI=;
+        s=k20201202; t=1619749272;
+        bh=ai/sj/47LFXF31eZSRetrDDH+VBnWkLmpdNbx7cy0kM=;
         h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=M6wiVI4fIVtHzldUu5wZztmxWCZp/lKGbCnzCkiorRaFxMy9wHWvnfcvh94LQBi5H
-         nZI/789x4cNgbLqMo8Yp8QxSnE8+h/fZ6Gm2cM0pZ81pShzZ0H26VPHJGENYglAjdA
-         exSaEp/8+m8mgKr+kla8Qd9+Ha6TylTvNXhbiAElKBso+qbND2N0hL/bH2VyIUL41m
-         ZF1qzzkM8QQaJbPNICeTiB1wQ2ezV/XCHgsXOUQOccmAnxhhNppNiqHUYxjFPtv+MZ
-         Tkyit8DYSzQc+/TcCA7SVUcUMLTSaqrOox5m3rFyw/xBemDFGnLB2gxnnr6XVcqAoF
-         ZIRxFXwmjZL4w==
+        b=EoyLj6kLG/1nlo2L2O+xYbiTMuQ92j2snnXPguTYeX6Sy+wECS2U7lp/vk9hSNb0k
+         yKX5ENpmHW4Mzcqz0ObHBxg7NQfPf8fS5LQbIXEpGixMVTcFOA9oHOHx36Hkl25VF+
+         OX64XjT4Y4/ev8xIy3zoMRA9mLfFEhlS5f/3WCtXRym5ZCMxBbULTMpTD2wJJ0GMY4
+         EVu0j4c/HxqxQt3DfzXIjd3jvRz2aI/aaf6ivXQgE/U2kWDZlxVY8nldEdbKDK/6C8
+         gYmTV/bKEEgkVA+vEGtQIjSZ8oSHZFvDC++wxJ1dyFXJWVSl6koWW87FPfluhr0FIP
+         h/qXncpVFzq3Q==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <87v98dqzfe.fsf@kokedama.swc.toshiba.co.jp>
-References: <20210421134844.3297838-1-arnd@kernel.org> <871rb2swd9.fsf@kokedama.swc.toshiba.co.jp> <01e78b64-8ad1-dfc8-9fc0-6afff4841492@xilinx.com> <87v98dqzfe.fsf@kokedama.swc.toshiba.co.jp>
-Subject: Re: [PATCH] clk: zynqmp: fix compile testing without ZYNQMP_FIRMWARE
+In-Reply-To: <ed64fe46-361b-5bf9-88a6-d35cac2c98e7@codeaurora.org>
+References: <1619334502-9880-1-git-send-email-tdas@codeaurora.org> <161956919717.177949.9925740807826300314@swboyd.mtv.corp.google.com> <ed64fe46-361b-5bf9-88a6-d35cac2c98e7@codeaurora.org>
+Subject: Re: [PATCH v3] Add support for duty-cycle for RCG
 From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jolly Shah <jolly.shah@xilinx.com>,
-        Quanyang Wang <quanyang.wang@windriver.com>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-To:     Michal Simek <michal.simek@xilinx.com>,
-        Punit Agrawal <punit1.agrawal@toshiba.co.jp>
-Date:   Thu, 29 Apr 2021 19:17:14 -0700
-Message-ID: <161974903429.177949.6659170601321970979@swboyd.mtv.corp.google.com>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Taniya Das <tdas@codeaurora.org>
+Date:   Thu, 29 Apr 2021 19:21:11 -0700
+Message-ID: <161974927117.177949.8019204674384480875@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Punit Agrawal (2021-04-22 23:37:25)
-> Michal Simek <michal.simek@xilinx.com> writes:
-> >
-> >
-> >>> =20
-> >>>     rate =3D  parent_rate * fbdiv;
-> >>>     if (zynqmp_pll_get_mode(hw) =3D=3D PLL_MODE_FRAC) {
-> >>=20
-> >> The changes make sense in that the functions error out sensibly when t=
-he
-> >> zynqmp firmware driver is not enabled.
-> >>=20
-> >> Acked-by: Punit Agrawal <punit1.agrawal@toshiba.co.jp>
-> >
-> > I think code should be checked that these error values are handled how
-> > they should be handled.
+Quoting Taniya Das (2021-04-28 23:55:16)
+> Thank you for your review.
 >=20
-> I only looked at it from the point of view of getting rid of the
-> warnings - based on the commit log, Arnd's patch is only taking care of
-> the compiler warnings when the driver is built with
-> CONFIG_COMPILE_TEST=3Dy and likely CONFIG_ZYNQMP_FIRMWARE=3Dn.
-
-The subject line basically says this.
-
+> On 4/28/2021 5:49 AM, Stephen Boyd wrote:
+> > Quoting Taniya Das (2021-04-25 00:08:21)
+> >> The root clock generators with MND divider has the capability to suppo=
+rt
+> >> change in duty-cycle by updating the 'D'. Add the clock ops which would
+> >> check all the boundary conditions and enable setting the desired duty-=
+cycle
+> >> as per the consumer.
+> >>
+> >> [v3]
+> >>    * Implement clockops for get_duty_cycle.
+> >>    * Return -EINVAL for Non-MND or HID RCGs.
+> >=20
+> > We don't need cover letters for single patches. Please add these details
+> > after the dash before the diffstat on the single patch.
+> >=20
 >=20
-> In practice, the code should not be hit at runtime due to the dependency
-> on the firmware driver. Even then, a better fix would indeed be taking
-> the returned values at call sites into account.
+> Sure Stephen, will take care from next time. Let me know in case I need=20
+> to re-submit the patch again.
+>=20
 
-Still needs to be fixed. If a better patch is sent I would apply it, but
-if that isn't going to happen I'll apply this one.
+Don't think so. Merge window is open so I'll apply it in another week.
