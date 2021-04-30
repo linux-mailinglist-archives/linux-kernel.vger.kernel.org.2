@@ -2,126 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7448C36F41F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 04:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 286E136F424
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 04:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbhD3CrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 22:47:15 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:47900 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229577AbhD3CrO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 22:47:14 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0UXD5Pfd_1619750782;
-Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0UXD5Pfd_1619750782)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 30 Apr 2021 10:46:23 +0800
-Subject: Re: [PATCH 3/4] KVM/VMX: Invoke NMI non-IST entry instead of IST
- entry
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20210426230949.3561-1-jiangshanlai@gmail.com>
- <20210426230949.3561-4-jiangshanlai@gmail.com>
-From:   Lai Jiangshan <laijs@linux.alibaba.com>
-Message-ID: <0bec6872-4d08-d00b-9922-61c5038f2476@linux.alibaba.com>
-Date:   Fri, 30 Apr 2021 10:46:22 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        id S229951AbhD3Csf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 22:48:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45916 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229591AbhD3Cse (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 22:48:34 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A4CF561406;
+        Fri, 30 Apr 2021 02:47:44 +0000 (UTC)
+Date:   Thu, 29 Apr 2021 22:47:42 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Changbin Du <changbin.du@gmail.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, peterz@infradead.org, jpoimboe@redhat.com,
+        jbaron@akamai.com, ardb@kernel.org,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Anup Patel <Anup.Patel@wdc.com>, akpm@linux-foundation.org,
+        rppt@kernel.org, mhiramat@kernel.org, zong.li@sifive.com,
+        guoren@linux.alibaba.com, wangkefeng.wang@huawei.com,
+        0x7f454c46@gmail.com, chenhuang5@huawei.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH] RISC-V: insn: Use a raw spinlock to protect TEXT_POKE*
+Message-ID: <20210429224742.391154ae@oasis.local.home>
+In-Reply-To: <20210429215451.yuey5gzmfh2dkzp5@mail.google.com>
+References: <20210429061713.783628-1-palmer@dabbelt.com>
+        <20210429123007.5144fc0d@gandalf.local.home>
+        <20210429215451.yuey5gzmfh2dkzp5@mail.google.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210426230949.3561-4-jiangshanlai@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 30 Apr 2021 05:54:51 +0800
+Changbin Du <changbin.du@gmail.com> wrote:
 
+> The problem is that lockdep cannot handle locks across tasks since we use
+> stopmachine to patch code for risc-v. So there's a false positive report.
+> See privious disscussion here:
 
-On 2021/4/27 07:09, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
-> 
-> In VMX, the NMI handler needs to be invoked after NMI VM-Exit.
-> 
-> Before the commit 1a5488ef0dcf6 ("KVM: VMX: Invoke NMI handler via
-> indirect call instead of INTn"), the work is done by INTn ("int $2").
-> 
-> But INTn microcode is relatively expensive, so the commit reworked
-> NMI VM-Exit handling to invoke the kernel handler by function call.
-> And INTn doesn't set the NMI blocked flag required by the linux kernel
-> NMI entry.  So moving away from INTn are very reasonable.
-> 
-> Yet some details were missed.  After the said commit applied, the NMI
-> entry pointer is fetched from the IDT table and called from the kernel
-> stack.  But the NMI entry pointer installed on the IDT table is
-> asm_exc_nmi() which expects to be invoked on the IST stack by the ISA.
-> And it relies on the "NMI executing" variable on the IST stack to work
-> correctly.  When it is unexpectedly called from the kernel stack, the
-> RSP-located "NMI executing" variable is also on the kernel stack and
-> is "uninitialized" and can cause the NMI entry to run in the wrong way.
-> 
-> So we should not used the NMI entry installed on the IDT table.  Rather,
-> we should use the NMI entry allowed to be used on the kernel stack which
-> is asm_noist_exc_nmi() which is also used for XENPV and early booting.
-> 
+> https://lkml.org/lkml/2021/4/29/63
 
-The problem can be tested by the following testing-patch.
+Please use lore.kernel.org, lkml.org is highly unreliable, and is
+considered deprecated for use of referencing linux kernel archives.
 
-1) the testing-patch can be applied without conflict before this patch 3.
-    And it shows the problem that the NMI is missed in the case.
+Would the following patch work?
 
-2) you need to manually copy the same logic of this testing-patch to verify
-    this patch 3. And it shows that the problem is fixed.
+(note, I did not even compile test it)
 
-3) the only one line of code in vmenter.S just emulates the situation that
-    a "uninitialized" garbage in the kernel stack happens to be 1 and it happens
-    to be at the same location of the RSP-located "NMI executing" variable.
+-- Steve
 
-
-diff --git a/arch/x86/kvm/vmx/vmenter.S b/arch/x86/kvm/vmx/vmenter.S
-index 3a6461694fc2..32096049c2a2 100644
---- a/arch/x86/kvm/vmx/vmenter.S
-+++ b/arch/x86/kvm/vmx/vmenter.S
-@@ -316,6 +316,7 @@ SYM_FUNC_START(vmx_do_interrupt_nmi_irqoff)
-  #endif
-  	pushf
-  	push $__KERNEL_CS
-+	movq $1, -24(%rsp) // "NMI executing": 1 = nested, non-1 = not-nested
-  	CALL_NOSPEC _ASM_ARG1
-
-  	/*
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index bcbf0d2139e9..9509d2edd50d 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6416,8 +6416,12 @@ static void handle_exception_nmi_irqoff(struct vcpu_vmx *vmx)
-  	else if (is_machine_check(intr_info))
-  		kvm_machine_check();
-  	/* We need to handle NMIs before interrupts are enabled */
--	else if (is_nmi(intr_info))
-+	else if (is_nmi(intr_info)) {
-+		unsigned long count = this_cpu_read(irq_stat.__nmi_count);
-  		handle_interrupt_nmi_irqoff(&vmx->vcpu, intr_info);
-+		if (count == this_cpu_read(irq_stat.__nmi_count))
-+			pr_info("kvm nmi miss\n");
-+	}
-  }
-
-  static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu)
-
+diff --git a/arch/riscv/include/asm/ftrace.h b/arch/riscv/include/asm/ftrace.h
+index 845002cc2e57..19acbb4aaeff 100644
+--- a/arch/riscv/include/asm/ftrace.h
++++ b/arch/riscv/include/asm/ftrace.h
+@@ -25,6 +25,8 @@ struct dyn_arch_ftrace {
+ };
+ #endif
+ 
++extern int running_ftrace;
++
+ #ifdef CONFIG_DYNAMIC_FTRACE
+ /*
+  * A general call in RISC-V is a pair of insts:
+diff --git a/arch/riscv/kernel/ftrace.c b/arch/riscv/kernel/ftrace.c
+index 7f1e5203de88..834ab4fad637 100644
+--- a/arch/riscv/kernel/ftrace.c
++++ b/arch/riscv/kernel/ftrace.c
+@@ -11,15 +11,19 @@
+ #include <asm/cacheflush.h>
+ #include <asm/patch.h>
+ 
++int running_ftrace;
++
+ #ifdef CONFIG_DYNAMIC_FTRACE
+ int ftrace_arch_code_modify_prepare(void) __acquires(&text_mutex)
+ {
+ 	mutex_lock(&text_mutex);
++	running_ftrace = 1;
+ 	return 0;
+ }
+ 
+ int ftrace_arch_code_modify_post_process(void) __releases(&text_mutex)
+ {
++	running_ftrace = 0;
+ 	mutex_unlock(&text_mutex);
+ 	return 0;
+ }
+diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
+index 0b552873a577..4cd1c79a9689 100644
+--- a/arch/riscv/kernel/patch.c
++++ b/arch/riscv/kernel/patch.c
+@@ -12,6 +12,7 @@
+ #include <asm/cacheflush.h>
+ #include <asm/fixmap.h>
+ #include <asm/patch.h>
++#include <asm/ftrace.h>
+ 
+ struct patch_insn {
+ 	void *addr;
+@@ -59,8 +60,13 @@ static int patch_insn_write(void *addr, const void *insn, size_t len)
+ 	 * Before reaching here, it was expected to lock the text_mutex
+ 	 * already, so we don't need to give another lock here and could
+ 	 * ensure that it was safe between each cores.
++	 *
++	 * ftrace uses stop machine, and even though the text_mutex is
++	 * held, the stop machine task that calls this function will not
++	 * be the owner.
+ 	 */
+-	lockdep_assert_held(&text_mutex);
++	if (!running_ftrace)
++		lockdep_assert_held(&text_mutex);
+ 
+ 	if (across_pages)
+ 		patch_map(addr + len, FIX_TEXT_POKE1);
