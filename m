@@ -2,113 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A550A36FD69
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 543C536FD70
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbhD3PMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 11:12:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56862 "EHLO
+        id S230506AbhD3PPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 11:15:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230164AbhD3PMq (ORCPT
+        with ESMTP id S230106AbhD3PPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 11:12:46 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6AEC06174A;
-        Fri, 30 Apr 2021 08:11:58 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id x2so4680465lff.10;
-        Fri, 30 Apr 2021 08:11:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=G4XAE3TlEyF9fA4m3YMw+2jvC4+14CWS6gkqAplYmdk=;
-        b=kgb5MnVXCrQeptQyCf2PPt/HryccLSOVl5xJax2QZe2DvhmR53i+WAw6ZhidJ6KWvz
-         Zirmc299HvsXIOP4kKoZI+jgIaqB9zvhQJlCLqWG8Bv/k6cos2zcVk0FBVzgMm1IBNYb
-         2rAS5aAgWKFTvQhBM9ml6t6M84eRLtbjLz3j5EgZjm9fBWu7u7JXzJC+8CGnziYbvJee
-         TaFjA5HrepyE4xNAPDyULQ/4YyL4YgM1RnAgsO+DpirxQ3w8Ngaclhxv+etPOLksNMCd
-         zbIC4YKoTzfHmk6svVcGn8HntNXriwNvO7uZBElaw9EcZ4/iuv4RzcYIKQ7f30PKfVp8
-         3M1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G4XAE3TlEyF9fA4m3YMw+2jvC4+14CWS6gkqAplYmdk=;
-        b=HmPbyCpKemyGUhTbOWfnzHFbkuJpWx5PfHjPIczBbf1YhtAg9rRprihUb8ITgBf9EI
-         OxgVWiOxym9vc0VlrSlTVFzhVwetI5xkQaYFy4lF3BcfNUn6DRdzz3MgIHHnNAX+gavB
-         pWU+YFWqQJj8PfrFkbWvD68kmB8zmT1qevwXfO+eOucXvuRilEXvn6D3XGG9939tCsFh
-         TBujwu5Z4m3ZcxTifQJQujGfz0BhYu/KB8g+fS8L3ess4z0ijRQQ1LcWgPXc2V04DZ3a
-         sCADKIkl8kP220D764Te48pMlpXFW3WP+AuaXraCo/1GO3o6Mh8NNLyxRFxwwJzAR6cB
-         Sa1g==
-X-Gm-Message-State: AOAM533GN5dSABnasLqBTLqmRccGfKQOBelroxVkxbJNsp69M9SWPgz5
-        5d3k8Rr0aYvcbxnRtKHFqHt2KfkTNSNN32WXJaE=
-X-Google-Smtp-Source: ABdhPJzvAMchvkMNSOX0H33boDmHIaru7yPnDVUZBiHyXTzdfHbssplJZIqibTS4TmDKn2pQ96Z6GY8+N92dbMf0uAs=
-X-Received: by 2002:a05:6512:3b07:: with SMTP id f7mr3724203lfv.470.1619795516626;
- Fri, 30 Apr 2021 08:11:56 -0700 (PDT)
+        Fri, 30 Apr 2021 11:15:08 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30948C06174A;
+        Fri, 30 Apr 2021 08:14:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=vkFMbuZAZ/puHNl5B/OrVt67vNKKlW694NLPue0ybHQ=; b=ETJkd5rAALSRQHU96f9wHczJ8n
+        crIsJrjDIqi0M3Sz0s+TmvfaaZA4Im+odul9V3kDkkpfNrES2O6RNjIXoE9COlGx15bsdneNDusI3
+        xSFURWW+3+Pyfew+b6/Y6++J4oUVSk+bDptDGUl6IZ7J9eWhHWmjjm3kQyeX+TiORTiNGIKTInrRc
+        +f0ot2Jc8dOjciAtk5QzP1k6K+5BfQ+6iMpzZkqShdol6XpvSqgH9nO33QM5vLrqiHzq/DtlNd2D6
+        BvNiw29R8vlCrnVxj5KRpUfKOsfzdVb1LMw+2Dk3nWHJ01o/Hfkr1NtyKzIc4bg4Tc8TWwsgPkUv+
+        Zp2FrHOg==;
+Received: from [2601:1c0:6280:3f0::df68]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lcUpR-00BBpW-Tk; Fri, 30 Apr 2021 15:13:27 +0000
+Subject: Re: [PATCH net-next v1 1/1] net: selftest: provide option to disable
+ generic selftests
+To:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Fugang Duan <fugang.duan@nxp.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>, kernel@pengutronix.de,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
+        Fabio Estevam <festevam@gmail.com>,
+        David Jander <david@protonic.nl>,
+        Russell King <linux@armlinux.org.uk>,
+        Philippe Schenker <philippe.schenker@toradex.com>
+References: <20210430095308.14465-1-o.rempel@pengutronix.de>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <f0905c84-6bb2-702f-9ae7-614dcd85c458@infradead.org>
+Date:   Fri, 30 Apr 2021 08:13:12 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-References: <0000000000000c97e505bdd1d60e@google.com> <cfa0f9b8-91ec-4772-a6c2-c5206f32373fn@googlegroups.com>
- <53a22ab4-7a2d-4ebd-802d-9d1b4ce4e087n@googlegroups.com> <CAGyP=7fpNBhbmczjDq-vpzbSDyqwCw2jS7xQo4XO=bxwsy2ddQ@mail.gmail.com>
- <a6ce21f4-04e7-f34c-8cfc-f8158f7fe163@gmail.com> <CAGyP=7czG1nmzpM5T784iBdApVL14hGoAfw-nhS=tNH5t9C79g@mail.gmail.com>
- <6d682c9d-a3ec-ec74-c8be-89e1ea5e24ca@gmail.com>
-In-Reply-To: <6d682c9d-a3ec-ec74-c8be-89e1ea5e24ca@gmail.com>
-From:   Palash Oswal <oswalpalash@gmail.com>
-Date:   Fri, 30 Apr 2021 20:41:45 +0530
-Message-ID: <CAGyP=7eN4Eu2RwUQvXOYwaXAfYmxhU1gmQ9adSVUOmJNE+=teQ@mail.gmail.com>
-Subject: Re: INFO: task hung in io_uring_cancel_sqpoll
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzbot+11bf59db879676f59e52@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210430095308.14465-1-o.rempel@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 8:37 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
->
-> On 4/30/21 4:02 PM, Palash Oswal wrote:
-> > On Fri, Apr 30, 2021 at 8:03 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
-> >>
-> >> On 4/30/21 3:21 PM, Palash Oswal wrote:
-> >>> On Thursday, March 18, 2021 at 9:40:21 PM UTC+5:30 syzbot wrote:
-> >>>>
-> >>>> Hello,
-> >>>>
-> >>>> syzbot found the following issue on:
-> >>>>
-> >>>> HEAD commit: 0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
-> >>>> git tree: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-> >>>> console output: https://syzkaller.appspot.com/x/log.txt?x=12dde5aed00000
-> >>>> kernel config: https://syzkaller.appspot.com/x/.config?x=81c0b708b31626cc
-> >>>> dashboard link: https://syzkaller.appspot.com/bug?extid=11bf59db879676f59e52
-> >>>> userspace arch: riscv64
-> >>>> CC: [asml.s...@gmail.com ax...@kernel.dk io-u...@vger.kernel.org linux-...@vger.kernel.org]
-> >>>>
-> >>>> Unfortunately, I don't have any reproducer for this issue yet.
-> >>
-> >> There was so many fixes in 5.12 after this revision, including sqpoll
-> >> cancellation related... Can you try something more up-to-date? Like
-> >> released 5.12 or for-next
-> >>
-> >
-> > The reproducer works for 5.12.
->
-> Ok, any chance you have syz repro as well? it's easier to read
->
-> >
+On 4/30/21 2:53 AM, Oleksij Rempel wrote:
+> Some systems may need to disable selftests to reduce kernel size or for
+> some policy reasons. This patch provide option to disable generic selftests.
+> 
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Fixes: 3e1e58d64c3d ("net: add generic selftest support")
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  net/Kconfig | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/net/Kconfig b/net/Kconfig
+> index f5ee7c65e6b4..dac98c73fcd8 100644
+> --- a/net/Kconfig
+> +++ b/net/Kconfig
+> @@ -431,7 +431,12 @@ config SOCK_VALIDATE_XMIT
+>  
+>  config NET_SELFTESTS
+>  	def_tristate PHYLIB
+> +	prompt "Support for generic selftests"
+>  	depends on PHYLIB && INET
+> +	help
+> +	  These selftests are build automatically if any driver with generic
 
+	                      built
 
-Syzkaller reproducer:
-# {Threaded:false Collide:false Repeat:true RepeatTimes:0 Procs:1
-Slowdown:1 Sandbox: Fault:false FaultCall:-1 FaultNth:0 Leak:false
-NetInjection:false NetDevices:false NetReset:false Cgroups:false
-BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false USB:false
-VhciInjection:false Wifi:false IEEE802154:false Sysctl:false
-UseTmpDir:false HandleSegv:false Repro:false Trace:false}
-r0 = syz_io_uring_setup(0x7987, &(0x7f0000000200)={0x0, 0x0, 0x2},
-&(0x7f0000400000/0xc00000)=nil, &(0x7f0000ffd000/0x3000)=nil,
-&(0x7f00000000c0)=<r1=>0x0, &(0x7f00000001c0)=<r2=>0x0)
-syz_io_uring_submit(r1, r2, &(0x7f0000000180)=@IORING_OP_TIMEOUT={0xb,
-0x1, 0x0, 0x0, 0x4, &(0x7f0000000140)={0x77359400}}, 0x1)
-syz_io_uring_setup(0x4bf1, &(0x7f0000000540)={0x0, 0x0, 0x36, 0x0,
-0x0, 0x0, r0}, &(0x7f0000ffd000/0x2000)=nil,
-&(0x7f0000ffc000/0x1000)=nil, 0x0, 0x0)
+> +	  selftests support is enabled. This option can be used to disable
+> +	  selftests to reduce kernel size.
+>  
+>  config NET_SOCK_MSG
+>  	bool
+> 
+
+Thanks for the patch/option. But I think it should just default to n,
+not PHYLIB.
+
+-- 
+~Randy
+
