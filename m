@@ -2,154 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 546F536F8B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 12:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8689D36F8B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 12:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbhD3Kww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 06:52:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbhD3Kwu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 06:52:50 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC39AC06174A;
-        Fri, 30 Apr 2021 03:52:01 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id i11so7597966oig.8;
-        Fri, 30 Apr 2021 03:52:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=J+unp5PxhVpVjsMmrUBBaWya53dQDO0EzZZu8+eM3+I=;
-        b=XFHLC735K7ymnVmtQsWhC9FjVFYpPScmcTv2+RP1VW9z5oYgd1lAwOwOstSswRHOyJ
-         545q0JFeb6kq4yr3xq4WtmT204UlhCQe2bHRTnAl0V98tmL7mX+pGvMPiFERGVP82aan
-         ERKH3L3ZUx/TpBmnNmL88zLhIJ7NkKw/IBh65AAuILate/SB2OUS5Ie9bXtr1+Bp6bZw
-         qWrw7dkt6/1Gamrwmi8t4woaEIeo86TIFP3X0hDg6+eP4QFZvli5k7XJZlakS9640N4P
-         zzXGO7dUPj+uOBcBHxZ6lxhbAI0P1WgRWYqPaGzPL85N11mpeMkFQ0UPCabuL/8PR2Zy
-         /WwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=J+unp5PxhVpVjsMmrUBBaWya53dQDO0EzZZu8+eM3+I=;
-        b=gpyUN9ZDkVhKz73RPPNzte9GpeMgPiO5r6Fo5hDiwe6C2Tjit+81ahZg3No1neHBdu
-         yHvtUSpufYGjYtGM+p5xPjgmTz7HIOs1nQYetNS5vt6maRuOJUEjfMlKW1JuVzIFAp9C
-         nKgD9t03Hwp9Sb3xnbSncsEqzui8vu2wFMJZbsX9UlyYuleidOrPy+uoc+dcV29lXiNz
-         flZNMK9qjavVfZhVZIQSb3ZRVJZVaxb9rjyw051tstZIQLYyL7xAb0D1iLdADIr2BCaf
-         9TTq8YDDmRIZPAMCxYWbLaDYNQg3u+KcmqXM+FnwcNQNZfbb4fZn/FSiA8jZkN3xn16O
-         P0Jg==
-X-Gm-Message-State: AOAM533w1qjUcLyiclK4/zwRtNnjfPkJuKVUwDksCciiui6I595lOw8u
-        m5WiUOIswdFbK0mC6Hck8yQRZvYWB2v09L//5+k=
-X-Google-Smtp-Source: ABdhPJy+GiAEHYfOIz4cuRhk484cKT5p7rlLipy9wJQmZLHTz/2ayiVJDyo8ddyePyWeppIdMwRBplABoh4mqv59LoM=
-X-Received: by 2002:aca:cf09:: with SMTP id f9mr10361216oig.95.1619779921114;
- Fri, 30 Apr 2021 03:52:01 -0700 (PDT)
+        id S229911AbhD3K5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 06:57:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:45226 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229543AbhD3K5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 06:57:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 32134113E;
+        Fri, 30 Apr 2021 03:56:32 -0700 (PDT)
+Received: from slackpad.fritz.box (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE4243F70D;
+        Fri, 30 Apr 2021 03:56:30 -0700 (PDT)
+Date:   Fri, 30 Apr 2021 11:55:45 +0100
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Chen-Yu Tsai <wens@csie.org>, Samuel Holland <samuel@sholland.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-sunxi@lists.linux.dev,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/2] sunxi: Enforce consistent MMC numbering
+Message-ID: <20210430115545.6a45d1dc@slackpad.fritz.box>
+In-Reply-To: <20210430091035.i4zoyzb4c2l22msb@gilmour>
+References: <20210419025246.21722-1-samuel@sholland.org>
+        <CAGb2v642Z3iH7fUWa31Rb5j+nWdZ=sXn2BYw3_dyE9P6iuL0Cg@mail.gmail.com>
+        <20210419095443.1548432e@slackpad.fritz.box>
+        <20210430091035.i4zoyzb4c2l22msb@gilmour>
+Organization: Arm Ltd.
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
 MIME-Version: 1.0
-References: <20200602080425.93712-1-kerneljasonxing@gmail.com>
- <20200604090014.23266-1-kerneljasonxing@gmail.com> <CANn89iKt=3iDZM+vUbCvO_aGuedXFhzdC6OtQMeVTMDxyp9bAg@mail.gmail.com>
- <CAL+tcoCU157eGmMMabT5icdFJTMEWymNUNxHBbxY1OTir0=0FQ@mail.gmail.com>
- <CAL+tcoA9SYUfge02=0dGbVidO0098NtT2+Ab_=OpWXnM82=RWQ@mail.gmail.com> <bcbaf21e-681e-2797-023e-000dbd6434d1@gmail.com>
-In-Reply-To: <bcbaf21e-681e-2797-023e-000dbd6434d1@gmail.com>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Fri, 30 Apr 2021 18:51:25 +0800
-Message-ID: <CAL+tcoB8q5q-Kp-Z8mfzStJHtDt9OmRzuS=i0VQ2KY_YSygQQQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4.19] tcp: fix TCP socks unreleased in BBR mode
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Neal Cardwell <ncardwell@google.com>,
-        David Miller <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        liweishi <liweishi@kuaishou.com>,
-        Shujin Li <lishujin@kuaishou.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 11:33 PM Eric Dumazet <eric.dumazet@gmail.com> wrote:
->
->
->
-> On 8/11/20 3:37 AM, Jason Xing wrote:
-> > Hi everyone,
-> >
-> > Could anyone take a look at this issue? I believe it is of high-importance.
-> > Though Eric gave the proper patch a few months ago, the stable branch
-> > still hasn't applied or merged this fix. It seems this patch was
-> > forgotten :(
->
->
-> Sure, I'll take care of this shortly.
+On Fri, 30 Apr 2021 11:10:35 +0200
+Maxime Ripard <maxime@cerno.tech> wrote:
 
-Hi Eric,
+Hi Maxime,
 
-It has been a very long time. It seems this issue was left behind and
-almost forgotten, I think.
-Could you mind taking some time to fix this up if you still consider
-it as important?
-Our team has been waiting for your patchset. Afterall, it once had a
-huge impact on our
-thousands and hundreds of machines.
+> On Mon, Apr 19, 2021 at 09:54:43AM +0100, Andre Przywara wrote:
+> > On Mon, 19 Apr 2021 11:17:19 +0800
+> > Chen-Yu Tsai <wens@csie.org> wrote:
+> > 
+> > Hi,
+> >   
+> > > On Mon, Apr 19, 2021 at 10:52 AM Samuel Holland <samuel@sholland.org> wrote:  
+> > > >
+> > > > Dealing with the inconsistent numbering has been a major pain, and
+> > > > there is a solution with (as far as I can tell) no tangible downsides.
+> > > > So let's use it.  
+> > 
+> > Thanks Samuel for sending this!
+> >   
+> > > > Yes, I know the kernel supports UUIDs for root=. But UUIDs do not help
+> > > > when referencing the whole, unpartitioned device, like is needed for
+> > > > updating the bootloader and firmware. So for the use case of "write a
+> > > > bootloader to the SD card, regardless of where the board is currently
+> > > > booted from", I know of two options:
+> > > >   - Dig around in sysfs to find the mmc number from the MMIO address,
+> > > >     which means I have to know the MMIO addresses for every SoC, or
+> > > >   - Apply patches like these.
+> > > >
+> > > > Samuel Holland (2):
+> > > >   ARM: dts: sunxi: h3/h5: Enforce consistent MMC numbering
+> > > >   arm64: dts: allwinner: Enforce consistent MMC numbering
+> > > >
+> > > >  arch/arm/boot/dts/sunxi-h3-h5.dtsi            | 6 ++++++
+> > > >  arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 6 ++++++
+> > > >  arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  | 6 ++++++    
+> > > 
+> > > At least with Rockchip this is now done at the board level. IIRC it was
+> > > a request from other people to not do it at the SoC level. I don't recall
+> > > exactly who though.  
+> > 
+> > FWIW, I am very much in favour of these patches, at a SoC level:
+> > The *SoC* BootROM imposes an order, by probing the first (by MMIO
+> > address order) MMC controller first for boot devices. IIRC that's a
+> > different story for Rockchip?
+> > And if people really don't care about the order, then having a certain
+> > order doesn't hurt, so we could as well use the "natural" order, as it
+> > was before.  
+> 
+> This doesn't have anything to do with the BootRom though but what we
+> provide to the userspace?
 
-thanks,
-Jason
+My argument was that there is a "natural" order, not only by the
+location in the MMIO space, but on a more logical level: the "first" SD
+controller is first checked by the BootROM, so the SoC puts a "number
+0" tag on this particular one. This is just because I heard the
+(reasonable) argument that location in MMIO space should not be
+significant, and deriving an order from that is arbitrary.
 
->
-> Thanks.
->
-> >
-> > Thanks,
-> > Jason
-> >
-> > On Thu, Jun 4, 2020 at 9:47 PM Jason Xing <kerneljasonxing@gmail.com> wrote:
-> >>
-> >> On Thu, Jun 4, 2020 at 9:10 PM Eric Dumazet <edumazet@google.com> wrote:
-> >>>
-> >>> On Thu, Jun 4, 2020 at 2:01 AM <kerneljasonxing@gmail.com> wrote:
-> >>>>
-> >>>> From: Jason Xing <kerneljasonxing@gmail.com>
-> >>>>
-> >>>> When using BBR mode, too many tcp socks cannot be released because of
-> >>>> duplicate use of the sock_hold() in the manner of tcp_internal_pacing()
-> >>>> when RTO happens. Therefore, this situation maddly increases the slab
-> >>>> memory and then constantly triggers the OOM until crash.
-> >>>>
-> >>>> Besides, in addition to BBR mode, if some mode applies pacing function,
-> >>>> it could trigger what we've discussed above,
-> >>>>
-> >>>> Reproduce procedure:
-> >>>> 0) cat /proc/slabinfo | grep TCP
-> >>>> 1) switch net.ipv4.tcp_congestion_control to bbr
-> >>>> 2) using wrk tool something like that to send packages
-> >>>> 3) using tc to increase the delay and loss to simulate the RTO case.
-> >>>> 4) cat /proc/slabinfo | grep TCP
-> >>>> 5) kill the wrk command and observe the number of objects and slabs in
-> >>>> TCP.
-> >>>> 6) at last, you could notice that the number would not decrease.
-> >>>>
-> >>>> v2: extend the timer which could cover all those related potential risks
-> >>>> (suggested by Eric Dumazet and Neal Cardwell)
-> >>>>
-> >>>> Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
-> >>>> Signed-off-by: liweishi <liweishi@kuaishou.com>
-> >>>> Signed-off-by: Shujin Li <lishujin@kuaishou.com>
-> >>>
-> >>> That is not how things work really.
-> >>>
-> >>> I will submit this properly so that stable teams do not have to guess
-> >>> how to backport this to various kernels.
-> >>>
-> >>> Changelog is misleading, this has nothing to do with BBR, we need to be precise.
-> >>>
-> >>
-> >> Thanks for your help. I can finally apply this patch into my kernel.
-> >>
-> >> Looking forward to your patchset :)
-> >>
-> >> Jason
-> >>
-> >>> Thank you.
+> The userspace has no guarantee about the
+> kernel enumeration order for any bus (but UART for some reason), I'm not
+> really sure why MMC would be an exception.
+
+Userspace is one thing, but arguably there are ways to find the
+partition you are looking for, because you have all the kernel *and*
+userlevel tools at hand. The question is whether this needs to be overly
+complicated and harder for the user.
+But the other, more pressing problem is the kernel-only code in
+init/do_mounts.c, which has very limited means to find a
+certain partition (see below).
+
+> Especially since the kernel will not try to catch up, this will be
+> bound to be broken on a regular basis.
+
+What do you mean with "will not try to catch up"? Do you mean there
+might be other kernel changes that spoil the numbering again, in the
+future?
+
+> And that aside, assuming that a device only has an eMMC this would
+> create the mmc2 device, which is completely weird and inconsistent
+> with how any other bus behaves.
+
+You have a point there, but I don't see how this would be a problem. I
+think one advantage is *consistent* numbering across reboots, so it
+will always be mmc2, even if you add a WiFi chip later (some boards
+have that as an option). Also those SD-card less system could surely
+override the labels in their board .dts files?
+
+> > Also UUIDs only help if you boot with an initramfs to resolve them,
+> > which proves to be extra pain if you don't compile kernels on the
+> > device, or not inside a distribution environment.  
+> 
+> I'm not sure what you mean? The kernel is perfectly able to resolve
+> them. You can also use PARTLABEL if you want something more user
+> friendly.
+
+init/do_mounts.c supports PARTUUID only, but most people/distributions
+use UUID, which is filesystem metadata, so not easily accessible for
+the kernel early and on a partition level only. And IIRC PARTLABEL is
+only available on GPT partitioned disks.
+Also PARTUUID is set at partition time, so a user formatting her own SD
+card (or just changing the partition table) will have a unique PARTUUID,
+and it cannot be used from within a filesystem image or
+prefabricated boot script to reference its own partition
+(in /etc/fstab).
+And in general UUIDs are not very human friendly, so their main domain
+is to be handled by code. I definitely don't memorise a single one of
+them, but I do remember root=/dev/mmcblk0p2.
+
+I find it *very* annoying to load my development kernel over TFTP, then
+booting them with the rootfs from SD card or eMMC, and seeing it fail
+about 50% of the time, because the numbering is off.
+ 
+Cheers,
+Andre
