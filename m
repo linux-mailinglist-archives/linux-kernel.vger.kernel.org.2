@@ -2,252 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 316FA36FF14
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 19:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1080936FF17
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 19:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbhD3RBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 13:01:48 -0400
-Received: from mga09.intel.com ([134.134.136.24]:13918 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230428AbhD3RBq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 13:01:46 -0400
-IronPort-SDR: BUr2MuC7xgLryPzhQ8P/UovGTsKvhRLcCoL+7fjQ+sv72kAoCFqRi5lVN/v09M1ToPd7HPFKsZ
- N4mGQ1HwyBlw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9970"; a="197416939"
-X-IronPort-AV: E=Sophos;i="5.82,263,1613462400"; 
-   d="scan'208";a="197416939"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2021 10:00:53 -0700
-IronPort-SDR: 8QwAOLtabmDg1mS99F3nT1I95E80eSon+n2uG3kTLCjmvDOMM2JY0oOq8/UUMTvEHLSRha/Wyl
- nljC4lygAejw==
-X-IronPort-AV: E=Sophos;i="5.82,263,1613462400"; 
-   d="scan'208";a="387423627"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.119.226]) ([10.212.119.226])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2021 10:00:49 -0700
-Subject: Re: extending ucontext (Re: [PATCH v26 25/30] x86/cet/shstk: Handle
- signals for shadow stack)
-To:     Andy Lutomirski <luto@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>
-Cc:     X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
- <20210427204315.24153-26-yu-cheng.yu@intel.com>
- <CALCETrVTeYfzO-XWh+VwTuKCyPyp-oOMGH=QR_msG9tPQ4xPmA@mail.gmail.com>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <8fd86049-930d-c9b7-379c-56c02a12cd77@intel.com>
-Date:   Fri, 30 Apr 2021 10:00:47 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S231178AbhD3RCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 13:02:42 -0400
+Received: from mail-bn7nam10on2086.outbound.protection.outlook.com ([40.107.92.86]:16032
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230428AbhD3RCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 13:02:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MYz/JRBLmXOIeaY8h0uLHjutkFeWmW8yYFu2AY3qF4RcgiXtkpbY2h91l9N7JNQpfJM95EKQ87zFpecSvUi2xbFPSBd0y0CA+JZu+IvVPrzGiqzan1dTMPvvmAFOqg5r6HCncY3Ldxkc8d5tf50ajWtbD20pDWp8MvSRe9Z4BK6zHpqxEchEYgxT26tqGz/DRREydtoNpgQDJY4pjElvpJEwwePEC/ldP/ozSUeErxlAGBwkeBf5mQ7vn5+DAUnHX8dVYHzR7//CRFjjQ8RPPvfTprkP/R4Aki9aQdNYoQcIFHQp6xAdq6kbBo7S72zzjlTDWFP7ELz8kOXQtU3ElA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tfcv6MW3tTJBx0Gx4Cq+zI7KjeSwB9wyggiNDQe6jig=;
+ b=gMEogn+gFHtQXRMmjmzqdTiNWDDkhBw+5H8LJkYTSrUA4mhVV0jhi7oRJ02X31rdP0taxTNwotelhX7qmTLKS3jtnHw08cZ3saK2cORu1HdRNofRp4fkwvQXGt5pj78agNifL/J01XPyHX8jrTIpA9QooVBJvUkwGOfj4qgaFECbbtQNF3qDbYGn/QvGjxZVZ9USuC/zjpH8E5va0UF9PEPiSRx5tFOlt9xhxjQ7z5QAilSAyJ+aA53pVnXSF8A0DZ2qN0gNMhYsY4zVhAIdiQ4Bk0S3godOshcYsrXORUD0uGQk4aYOxjJNmCcKjyjUTPAiPeVji8upG23gFhNWCQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tfcv6MW3tTJBx0Gx4Cq+zI7KjeSwB9wyggiNDQe6jig=;
+ b=KPAyQ6d2CEAdeWfCPi6dG7qLeeJLU3rWEqtqbOHGbP5EJ4ExkKD3pRgcswoJkXChcTu/I7iNCNzdURPTcAJ9H1tjfZynIdyPgGvhyvDFykJXFwEnbhTHHStXl/LSWGgkh3WZpKxFAM8rGkWX0ex8KZreMzyEAnchWZvXQaIJ2x1GTiSRZPoh42MHDoXLrVuEil/idEC84MX3529G9n5/vh2acKz8ktIQa9VfzvJCy170+oIRLqmMOfAycXOBMQdq7e72k0bvnaDO4DNqM9PHUYp/A5JzfkggPIcPxDPywswk/IqKGaWXmeRjvNSJELe2wcN0ex5DwDSU/ZJXSwDe7g==
+Authentication-Results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4513.namprd12.prod.outlook.com (2603:10b6:5:2ad::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20; Fri, 30 Apr
+ 2021 17:01:50 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4065.027; Fri, 30 Apr 2021
+ 17:01:50 +0000
+Date:   Fri, 30 Apr 2021 14:01:48 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Doug Ledford <dledford@redhat.com>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+Message-ID: <20210430170148.GA3574442@nvidia.com>
+References: <20210430165527.GA3573658@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210430165527.GA3573658@nvidia.com>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: CH2PR12CA0020.namprd12.prod.outlook.com
+ (2603:10b6:610:57::30) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <CALCETrVTeYfzO-XWh+VwTuKCyPyp-oOMGH=QR_msG9tPQ4xPmA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by CH2PR12CA0020.namprd12.prod.outlook.com (2603:10b6:610:57::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.27 via Frontend Transport; Fri, 30 Apr 2021 17:01:49 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lcWWS-00EzuW-OY; Fri, 30 Apr 2021 14:01:48 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9e970868-f6ce-417f-03dc-08d90bf9a557
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4513:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB45132C772308186BD3826A5EC25E9@DM6PR12MB4513.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dY6EF72gXsE4WCH1+A6WzvLZ20SYqBncsW/17w82jS/sq7VvUwzb4EEAJe2UhQ3d/2YmXqVEtiMfe8UH1PVrYPF7xnZX5U2N4K66y4RaUc92eYhZoa6YGT0yd0A9hr0LQJO5FjFqClBVqWcVJ0KOxlcHCxFlX6WPNtYDHkQxIdnx1d0723pxyN+f55hg59Gw5byQRhLKZ6+1H2769WpYoKaTrHwtaPLOjidLodWTyZtbBW6+ryjyjjMIjWWSagBKLyFQePDp5r4gNJD6t+4enhUzKwdFHRDuyKVWZbDVRPnxeaYdsR5R4Y90GzDHwkYinyXupwwviP718xO8v50g5jmB97ozr7OATyTei4eLn5q7QT/fcFAtNMkMdaaKMHoJeCigEvT+oLx2lJQS+z/PPC/MAtO83Lt9GTbh9p0TSDC+BgrwGN9nMBGeHM1VPKpIfGKxAGVoHjlNCzs8M55z6G979S/3j1nRXyRZ7aCpXl2q6MQt9WacC1cuZfvmF3WuKhgE7zqd/jz0P2LNKQjoDPFmuWEmzak4nYBcS+hmcQK+cKzD52NpnwM4+NGivxYetZbPE5aQv0bwDQya8igCP2vKtfh8yVI8KBPlkyLkO8k=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(136003)(366004)(346002)(396003)(426003)(66946007)(1076003)(66476007)(4326008)(83380400001)(8936002)(36756003)(26005)(33656002)(38100700002)(5660300002)(66556008)(2906002)(8676002)(9786002)(9746002)(4744005)(316002)(186003)(86362001)(2616005)(110136005)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?aUvzlh1H5+fkmk0/A5k/GFa97YTLMihwv/498CyJL9LkcwEZUU2cRknXXL9a?=
+ =?us-ascii?Q?/A7m+7AABqPzkn/uvy11s90ydGE/KwMYRShNKtv0/o2BTXMcN947mHL6LUlG?=
+ =?us-ascii?Q?qszSq2tHH1kCC2oy9pIUHlLZEw2j5MGH4qXjbQUmIAWkWxFKtrB6ZBygTHcl?=
+ =?us-ascii?Q?OV5ZguY/8nvb7YsE7dmVBNdYv42oab9vfnq6/5IDy6J6NpamCWOIZHQtFOZ/?=
+ =?us-ascii?Q?y8BJFyt/JxNRgTezJwjhqMqbXalNmn4lQ50DG5Yu0gAZN7ASw5vtlVdeZfV6?=
+ =?us-ascii?Q?5y2Da6bW/P7CtwxhQM/4qoEHyWE9vydclJAsZq40QnwJQelFKF0Lbtnkcmmh?=
+ =?us-ascii?Q?7IDb7QHTTClhKTmU9xx0IwANKm1Dz1p8WMPETQYz7cpz2fY+KpD/oKfwDT4T?=
+ =?us-ascii?Q?aSvP7zZBEIX+A04WmTvlvALuKvJ9d44oJwOOqLynkblETbQy+Hr8VL8a3y8b?=
+ =?us-ascii?Q?zCqk8BgwojtFrsxmS2QvHkLcKb3R1X/4pamXQuW7GqjihFAHitTMTdWCcDsz?=
+ =?us-ascii?Q?xArMinRlHFOS3bPbxqmL1bUDGrrSTRabGAa2ZRbqLt9hqhD1WE/5ij+IhqzV?=
+ =?us-ascii?Q?riF6gvzy5D17e7OCA11o0QKn7sIA9WGGcLU0kUSSKqZO9XNSJmfr2TbEoGhs?=
+ =?us-ascii?Q?c3Up3D97g8lwC/IG6d5ZbHVgt8j+6Rch2veYHalez7/2MbyEoOGuMWOMx3dv?=
+ =?us-ascii?Q?3oQeogubLT33ZzoO9fJ62Zrj24n4MpqOgV5D/skKOw53HnnKJmqgOgzoovct?=
+ =?us-ascii?Q?aG8f8YVI65jXJV8OGTnYNRMnrbKtuEY1BTcqKtzg15m65Uic9dNArDlmbx6F?=
+ =?us-ascii?Q?8znIDFk6RxT4oopIyrhEXLSTMRebwKju3wJ8cO48vSy93+d6r2dER6tIcV+m?=
+ =?us-ascii?Q?cVtkwOqK2XpZCauPXYHnshrnCQLiffxYeoAhqaz9egXsR1yPWUmkJsGMJPcH?=
+ =?us-ascii?Q?MRidz2YIe7Zr2/rJxzpgMqEseb3IoIJgI+OmazDawLO2I3cWUgmcu+sn45Oj?=
+ =?us-ascii?Q?TF11Bd3GlHcdEV52Sc7uwyJex0yU0/XqlbrDB3fcELZUZFIBMr7oME9Q5jSE?=
+ =?us-ascii?Q?/rF/AKFnzNsp5q4QNLktY3lcc7qNxSkcmqH8yyEIAHrdJdw4Q2Mqof27YQgF?=
+ =?us-ascii?Q?G7q4jlO6B7xZ/dl+XZ6RD3lpFDGazvOuDxURQP5koWeQ522bJ1h+QQRwftor?=
+ =?us-ascii?Q?jlHrNboqG3r46zpEQXp3hBa8yLROX1mBbPMfDfdDO7jvhANw6UDX7HsK+uxN?=
+ =?us-ascii?Q?HRlk5KU4ooOUjxGq/4/8V9faKq+HXf6GG66VTiUITLBZvesoZ2DpiEQa5snh?=
+ =?us-ascii?Q?3wsLSUJO7wUK6djTw4TiMhNi?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e970868-f6ce-417f-03dc-08d90bf9a557
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2021 17:01:49.9460
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VkT+f4pIiKCYYvM0LeR10Od2N6vezYIFAari34FOCgCdqYX2fw3bnUC0uhkrfSis
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4513
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/28/2021 4:03 PM, Andy Lutomirski wrote:
-> On Tue, Apr 27, 2021 at 1:44 PM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
->>
->> When shadow stack is enabled, a task's shadow stack states must be saved
->> along with the signal context and later restored in sigreturn.  However,
->> currently there is no systematic facility for extending a signal context.
->> There is some space left in the ucontext, but changing ucontext is likely
->> to create compatibility issues and there is not enough space for further
->> extensions.
->>
->> Introduce a signal context extension struct 'sc_ext', which is used to save
->> shadow stack restore token address.  The extension is located above the fpu
->> states, plus alignment.  The struct can be extended (such as the ibt's
->> wait_endbr status to be introduced later), and sc_ext.total_size field
->> keeps track of total size.
+On Fri, Apr 30, 2021 at 01:55:27PM -0300, Jason Gunthorpe wrote:
+> Hi Linus,
 > 
-> I still don't like this.
+> These are the proposed RDMA patches for 5.13.
 > 
-> Here's how the signal layout works, for better or for worse:
+> We are continuing to see small cycles in RDMA, this may be a new
+> structural normal.
 > 
-> The kernel has:
-> 
-> struct rt_sigframe {
->      char __user *pretcode;
->      struct ucontext uc;
->      struct siginfo info;
->      /* fp state follows here */
-> };
-> 
-> This is roughly the actual signal frame.  But userspace does not have
-> this struct declared, and user code does not know the sizes of the
-> fields.  So it's accessed in a nonsensical way.  The signal handler
-> function is passed a pointer to the whole sigframe implicitly in RSP,
-> a pointer to &frame->info in RSI, anda pointer to &frame->uc in RDX.
-> User code can *find* the fp state by following a pointer from
-> mcontext, which is, in turn, found via uc:
-> 
-> struct ucontext {
->      unsigned long      uc_flags;
->      struct ucontext  *uc_link;
->      stack_t          uc_stack;
->      struct sigcontext uc_mcontext;  <-- fp pointer is in here
->      sigset_t      uc_sigmask;    /* mask last for extensibility */
-> };
-> 
-> The kernel, in sigreturn, works a bit differently.  The sigreturn
-> variants know the base address of the frame but don't have the benefit
-> of receiving pointers to the fields.  So instead the kernel takes
-> advantage of the fact that it knows the offset to uc and parses uc
-> accordingly.  And the kernel follows the pointer in mcontext to find
-> the fp state.  The latter bit is quite important later.  The kernel
-> does not parse info at all.
-> 
-> The fp state is its own mess.  When XSAVE happened, Intel kindly (?)
-> gave us a software defined area between the "legacy" x87 region and
-> the modern supposedly extensible part.  Linux sticks the following
-> structure in that hole:
-> 
-> struct _fpx_sw_bytes {
->      /*
->       * If set to FP_XSTATE_MAGIC1 then this is an xstate context.
->       * 0 if a legacy frame.
->       */
->      __u32                magic1;
-> 
->      /*
->       * Total size of the fpstate area:
->       *
->       *  - if magic1 == 0 then it's sizeof(struct _fpstate)
->       *  - if magic1 == FP_XSTATE_MAGIC1 then it's sizeof(struct _xstate)
->       *    plus extensions (if any)
->       */
->      __u32                extended_size;
-> 
->      /*
->       * Feature bit mask (including FP/SSE/extended state) that is present
->       * in the memory layout:
->       */
->      __u64                xfeatures;
-> 
->      /*
->       * Actual XSAVE state size, based on the xfeatures saved in the layout.
->       * 'extended_size' is greater than 'xstate_size':
->       */
->      __u32                xstate_size;
-> 
->      /* For future use: */
->      __u32                padding[7];
-> };
-> 
-> 
-> That's where we are right now upstream.  The kernel has a parser for
-> the FPU state that is bugs piled upon bugs and is going to have to be
-> rewritten sometime soon.  On top of all this, we have two upcoming
-> features, both of which require different kinds of extensions:
-> 
-> 1. AVX-512.  (Yeah, you thought this story was over a few years ago,
-> but no.  And AMX makes it worse.)  To make a long story short, we
-> promised user code many years ago that a signal frame fit in 2048
-> bytes with some room to spare.  With AVX-512 this is false.  With AMX
-> it's so wrong it's not even funny.  The only way out of the mess
-> anyone has come up with involves making the length of the FPU state
-> vary depending on which features are INIT, i.e. making it more compact
-> than "compact" mode is.  This has a side effect: it's no longer
-> possible to modify the state in place, because enabling a feature with
-> no space allocated will make the structure bigger, and the stack won't
-> have room.  Fortunately, one can relocate the entire FPU state, update
-> the pointer in mcontext, and the kernel will happily follow the
-> pointer.  So new code on a new kernel using a super-compact state
-> could expand the state by allocating new memory (on the heap? very
-> awkwardly on the stack?) and changing the pointer.  For all we know,
-> some code already fiddles with the pointer.  This is great, except
-> that your patch sticks more data at the end of the FPU block that no
-> one is expecting, and your sigreturn code follows that pointer, and
-> will read off into lala land.
-> 
+> This time hns and rtrs lead the pack in change volume, but must is
+> cleaning not features.
 
-Then, what about we don't do that at all.  Is it possible from now on we 
-don't stick more data at the end, and take the relocating-fpu approach?
+Oh! I forget to include the minor conflict resolution for hfi against v5.12:
 
-> 2. CET.  CET wants us to find a few more bytes somewhere, and those
-> bytes logically belong in ucontext, and here we are.
-> 
+@@@ -1402,7 -1408,8 +1402,8 @@@ struct hfi1_devdata 
+        /* Lock to protect IRQ SRC register access */
+        spinlock_t irq_src_lock;
+        int vnic_num_vports;
+ -      struct net_device *dummy_netdev;
+ +      struct hfi1_netdev_rx *netdev_rx;
++       struct hfi1_affinity_node *affinity_entry;
+  
+        /* Keeps track of IPoIB RSM rule users */
+        atomic_t ipoib_rsm_usr_num;
 
-Fortunately, we can spare CET the need of ucontext extension.  When the 
-kernel handles sigreturn, the user-mode shadow stack pointer is right at 
-the restore token.  There is no need to put that in ucontext.
-
-However, the WAIT_ENDBR status needs to be saved/restored for signals. 
-Since IBT is now dependent on shadow stack, we can use a spare bit of 
-the shadow stack restore token for that.
-
-I have tested the change, and will send out another version of the whole 
-series.
-
-> This is *almost*, but not quite, easy: struct ucontext is already
-> variable length!  Unfortunately, the whole variable length portion is
-> used up by uc_sigmask.  So I propose that we introduce a brand new
-> bona fide extension mechanism.  It works like this:
-> 
-> First, we add a struct ucontext_extension at the end.  It looks like:
-> 
-> struct ucontext_extension {
->    u64 length;  /* sizeof(struct ucontext_extension) */
->    u64 flags;  /* we will want this some day */
->    [CET stuff here]
->    [future stuff here]
-> };
-> 
-> And we locate it by scrounging a word somewhere in ucontext to give
-> the offset from the beginning of struct ucontext to
-> ucontext_extension.  We indicate the presence of this feature using a
-> new uc_flags bit.  I can think of a couple of vaguely reasonable
-> places:
-> 
-> a) the reserved word in sigcontext.  This is fine for x86 but not so
-> great if other architectures want to do this.
-> 
-> b) uc_link.  Fine everywhere but powerpc.  Oops.
-> 
-> c) use the high bits of uc_flags.  After all, once we add extensions,
-> we don't need new flags, so we can steal 16 high bits of uc_flags for
-> this.
-> 
-> I think I'm in favor of (c).  We do:
-> 
-> (uc_flags & 0xffff0000) == 0: extension not present
-> 
-> Otherwise the extension region is at ucontext + (uc_flags >> 16).
-> 
-> And sigreturn finds the extension the same way, because CRIU can
-> already migrate a signal frame from one kernel to another, your patch
-> breaks this, and having sigreturn hardcode the offset would also break
-> it.
-> 
-> What do you think?
-> 
-
+Sorry,
+Jason
