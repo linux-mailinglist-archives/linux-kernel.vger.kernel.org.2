@@ -2,107 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6599736FA20
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 14:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A26DD36FA22
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 14:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231834AbhD3M2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 08:28:09 -0400
-Received: from msg-1.mailo.com ([213.182.54.11]:53330 "EHLO msg-1.mailo.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229864AbhD3M2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 08:28:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
-        t=1619785625; bh=2HIgowVCeeS0VSBy4mZ1r3TtIT+EekDnKb318+ZW250=;
-        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
-         MIME-Version:Content-Type:In-Reply-To;
-        b=CuyXQ0DH9TpisKyDUcPiqQdq2o2D4FM8/q781u+fAH6lfTK7KNKDPANEwFukBezem
-         fJ2z+Lfn1PsqgV/YVZ49Apho8vye1AmE03f0K3/W1KYUZgfEG1RtwblA0WhoZzOiEU
-         aO3nKkhoWf4n/jSnIBFNWXsaTGKfVIGDl56/C2Es=
-Received: by 192.168.90.16 [192.168.90.16] with ESMTP
-        via ip-206.mailobj.net [213.182.55.206]
-        Fri, 30 Apr 2021 14:27:05 +0200 (CEST)
-X-EA-Auth: ShcEcij6R581OKL0kHBcfmQVUrY5LT0DiOcT6LDwen/2s9qMz+pqzjfVcOIVzQf6B4lON2Ga3UJC1mQTGAFINdq0K3da5cpV
-Date:   Fri, 30 Apr 2021 17:57:00 +0530
-From:   Deepak R Varma <drv@mailo.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Fabio Aiuto <fabioaiuto83@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 5/9] staging: media: atomisp: reformat code comment
- blocks
-Message-ID: <YIv3lEAC8d8LsCb+@dU2104>
-References: <cover.1619630709.git.drv@mailo.com>
- <034c3cc993191feb8fda719dd1b2adc9e2074e78.1619630709.git.drv@mailo.com>
- <20210429070611.GA1409@agape.jhs>
- <YIqdT6wsrlNP/cEo@192.168.1.8>
- <693e054f-6a7b-d9e7-a72a-07d7fa295487@xs4all.nl>
- <YIvm4M0Gru+RpV5O@dU2104>
+        id S231963AbhD3M3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 08:29:35 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:59318 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229864AbhD3M3e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 08:29:34 -0400
+Received: from localhost (unknown [192.168.167.13])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 71894BA115;
+        Fri, 30 Apr 2021 20:28:27 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED: 0
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [124.126.19.250])
+        by smtp.263.net (postfix) whith ESMTP id P1751T140588856878848S1619785707734504_;
+        Fri, 30 Apr 2021 20:28:27 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <2bd590c5b17d06d909c8054a1b06d97d>
+X-RL-SENDER: zhaoxiao@uniontech.com
+X-SENDER: zhaoxiao@uniontech.com
+X-LOGIN-NAME: zhaoxiao@uniontech.com
+X-FST-TO: gregkh@linuxfoundation.org
+X-RCPT-COUNT: 10
+X-SENDER-IP: 124.126.19.250
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   zhaoxiao <zhaoxiao@uniontech.com>
+To:     gregkh@linuxfoundation.org
+Cc:     will+git@drnd.me, dan.carpenter@oracle.com, phil@philpotter.co.uk,
+        apais@linux.microsoft.com, gustavoars@kernel.org,
+        davidsondfgl@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, zhaoxiao <zhaoxiao@uniontech.com>
+Subject: [PATCH] staging: rtl8192e: remove unnecesasry ftrace-like logging
+Date:   Fri, 30 Apr 2021 20:28:25 +0800
+Message-Id: <20210430122826.9899-1-zhaoxiao@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YIvm4M0Gru+RpV5O@dU2104>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 04:45:56PM +0530, Deepak R Varma wrote:
-> On Fri, Apr 30, 2021 at 12:04:33PM +0200, Hans Verkuil wrote:
-> > On 29/04/2021 13:49, Deepak R Varma wrote:
-> > > On Thu, Apr 29, 2021 at 09:06:12AM +0200, Fabio Aiuto wrote:
-> > >> Hi Deepak,
-> > >>>  	{MISENSOR_16BIT, 0xC868, 0x0280}, /* cam_output_width = 952 */
-> > >>>  	{MISENSOR_16BIT, 0xC86A, 0x01E0}, /* cam_output_height = 538 */
-> > >>>  	/* LOAD = Step3-Recommended
-> > >>> -	 * Patch,Errata and Sensor optimization Setting */
-> > >>> +	 * Patch,Errata and Sensor optimization Setting
-> > >>> +	 */
-> > >>
-> > >> 	/*
-> > >> 	 * LOAD = Step3-Recommended
-> > >>
-> > >> :(
-> > > 
-> > > oops... sorry for the oversight. Not sure how I missed it.
-> > > I will wait for any other feedback on other patches and send
-> > > in a corrected version shortly.
-> > 
-> > I've fixed this up myself.
-> > 
-> > I'm taking this series and make a PR for this, wrapping up these
-> > atomisp cleanups.
-> > 
-> > If you plan any more cleanups, then please do this on top of this
-> > branch: https://git.linuxtv.org/hverkuil/media_tree.git/log/?h=for-v5.14-out1
-> > 
-> > That contains all pending cleanups for staging/media.
-> 
-> Thank you Hans and everyone. Appreciate your time, comments and patience. I
-> understand this entire patch series is acceptable for your consideration and
-> that I can now move on to other changes.
-> 
-> I will be sending additional clean up patches and I will base those on top of the
-> mentioned branch.
+Fixed Check: Remove unnecessary ftrace-like logging by simply deleting
+that statement as we have other modes of logging like ftrace.
+Reported by checkpatch.
 
-Hello Hans,
-I have cloned media_tree repository and checked out branch for-v5.14-out1
+Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+---
+ drivers/staging/rtl8192e/rtllib_softmac.c | 1 -
+ drivers/staging/rtl8192e/rtllib_wx.c      | 4 ----
+ 2 files changed, 5 deletions(-)
 
-Is it okay for me to start my next patch in this branch? I do not need for
-you the last patch set to be applied to the git tree, correct?
+diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
+index f9a51f3620d2..25b3d3950a3c 100644
+--- a/drivers/staging/rtl8192e/rtllib_softmac.c
++++ b/drivers/staging/rtl8192e/rtllib_softmac.c
+@@ -730,7 +730,6 @@ EXPORT_SYMBOL(rtllib_act_scanning);
+ /* called with ieee->lock held */
+ static void rtllib_start_scan(struct rtllib_device *ieee)
+ {
+-	RT_TRACE(COMP_DBG, "===>%s()\n", __func__);
+ 	if (ieee->rtllib_ips_leave_wq != NULL)
+ 		ieee->rtllib_ips_leave_wq(ieee->dev);
+ 
+diff --git a/drivers/staging/rtl8192e/rtllib_wx.c b/drivers/staging/rtl8192e/rtllib_wx.c
+index ab1b8217c4e0..0d67d5880377 100644
+--- a/drivers/staging/rtl8192e/rtllib_wx.c
++++ b/drivers/staging/rtl8192e/rtllib_wx.c
+@@ -293,8 +293,6 @@ int rtllib_wx_set_encode(struct rtllib_device *ieee,
+ 	int i, key, key_provided, len;
+ 	struct lib80211_crypt_data **crypt;
+ 
+-	netdev_dbg(ieee->dev, "%s()\n", __func__);
+-
+ 	key = erq->flags & IW_ENCODE_INDEX;
+ 	if (key) {
+ 		if (key > NUM_WEP_KEYS)
+@@ -463,8 +461,6 @@ int rtllib_wx_get_encode(struct rtllib_device *ieee,
+ 	int len, key;
+ 	struct lib80211_crypt_data *crypt;
+ 
+-	netdev_dbg(ieee->dev, "%s()\n", __func__);
+-
+ 	if (ieee->iw_mode == IW_MODE_MONITOR)
+ 		return -1;
+ 
+-- 
+2.20.1
 
-Thank you,
-deepak.
-
-> 
-> Have a good one.
-> deepak.
-> 
-> > 
-> > Regards,
-> > 
-> > 	Hans
-> > 
 
 
