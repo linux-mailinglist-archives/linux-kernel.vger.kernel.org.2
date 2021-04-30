@@ -2,182 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCBA136F434
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 05:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC33136F438
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 05:05:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbhD3DCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 23:02:44 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:3348 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbhD3DCl (ORCPT
+        id S229723AbhD3DGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 23:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229577AbhD3DGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 23:02:41 -0400
-Received: from dggeml706-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FWcVl0gH5z19K60;
-        Fri, 30 Apr 2021 10:57:51 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggeml706-chm.china.huawei.com (10.3.17.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 30 Apr 2021 11:01:49 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 30 Apr
- 2021 11:01:49 +0800
-Subject: Re: [PATCH net-next v3 0/5] page_pool: recycle buffers
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC:     Matteo Croce <mcroce@linux.microsoft.com>,
-        <netdev@vger.kernel.org>, <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        "Vinay Kumar Yadav" <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        "Tariq Toukan" <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "John Fastabend" <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
- <e873c16e-8f49-6e70-1f56-21a69e2e37ce@huawei.com>
- <YIsAIzecktXXBlxn@apalos.home>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <9bf7c5b3-c3cf-e669-051f-247aa8df5c5a@huawei.com>
-Date:   Fri, 30 Apr 2021 11:01:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Thu, 29 Apr 2021 23:06:34 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C74CC06138B;
+        Thu, 29 Apr 2021 20:05:47 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id c22so17302849edn.7;
+        Thu, 29 Apr 2021 20:05:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+teXO3nFNlWI1PW484JBXgFP/en9bwQPRWXtW1e1gls=;
+        b=Bm7GWNfj+xfSofAANTYyA6/3xFqCCw/acTZAcQKyU/TbSfCEiL0YpIOan5XLLAZw9C
+         OSj6dqrAtXa9nw/ivJmZbff6lJz5GlYJPf5rNy6bqsdLU6YQ5yT2mzthH9nW4RIlUi2N
+         KQWff7dC8StwEUhbhDGjuRypXY9GQp1ejVSivUAahVm55HfyGZh319KZrJHi35ooOLFY
+         CfGsBGY85Mq83z86LaIgHEDH3khXDSYt3xiAfmd5ad46EhePOlBpByse2/G31Z8z+C0d
+         mmleJMSMwK9e7eblsHqpBzxktnPAWrzp4Uwl+y3IZarp4JFDFHmEvMylJuRdA9p3OwXl
+         ySwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+teXO3nFNlWI1PW484JBXgFP/en9bwQPRWXtW1e1gls=;
+        b=ttDPfCSxDoFQrYyTlwJ0Nh4BOR9mwcbwl3uaornW9jhPOceiw56bJxnCCHr+PtjzdV
+         cIGhDF6C4lxaN8YezFAGRGx1Uja9TgxJj/t7arJ01PfkS/sEcW1X/KvJOaw8Cztjcvp6
+         FWSgGqVRgszpHB6J807lC00HjMU5q4ll2wsQ4aqcRdo7IDQB0xjpvB55JpZW4YTmC9XY
+         +Eosa57M0vbydJYq/lS6ErdQl7EAfbcMoeJawOarcxUXXGrDjL+s25dBYt5CN6DUIUu9
+         sKXYlRI+/bFS6sy2jo5tzJBMY9Q8N5AnBCknrdR3u/U3lYnPSzecckSRYIeZLusfH7e9
+         XcsQ==
+X-Gm-Message-State: AOAM533v6I7PUhnBrJMhL6/PKUpVbCPUmc7Kc9+dRtUQQK11CYVM0eV8
+        KJA1ERE3f0ae7BwNYUsdiMhjexwCGG+kMr2FU/M=
+X-Google-Smtp-Source: ABdhPJzE3tN+vPT4JoRO1U/cas6Z9ORtvt9xImbsxFf3ps5mnHjGI4/2VgXXD2tTL1/FA7ZVpRua7H634GSjKkudOUw=
+X-Received: by 2002:a05:6402:27d3:: with SMTP id c19mr3164137ede.129.1619751945745;
+ Thu, 29 Apr 2021 20:05:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YIsAIzecktXXBlxn@apalos.home>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme708-chm.china.huawei.com (10.1.199.104) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+References: <20210429073050.21039-1-peng.fan@oss.nxp.com> <CAHCN7xL11GUSVB3PThsfhxXPtgu1nm1LWSzkJYqj4MHf-aLbVw@mail.gmail.com>
+ <DB6PR0402MB276065DF476EBEDABF312CF9885E9@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+In-Reply-To: <DB6PR0402MB276065DF476EBEDABF312CF9885E9@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Thu, 29 Apr 2021 22:05:34 -0500
+Message-ID: <CAHCN7x+zauc-8knQCGsvFB=YDrBB3T7bEHisdNEvQYgVnFsNGA@mail.gmail.com>
+Subject: Re: [PATCH 00/16] soc: imx: gpcv2: support i.MX8MM
+To:     Peng Fan <peng.fan@nxp.com>
+Cc:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
+        Marek Vasut <marex@denx.de>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jacky Bai <ping.bai@nxp.com>,
+        Schrempf Frieder <frieder.schrempf@kontron.de>,
+        Abel Vesa <abel.vesa@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/30 2:51, Ilias Apalodimas wrote:
-> Hi Yunsheng,
-> 
-> On Thu, Apr 29, 2021 at 04:27:21PM +0800, Yunsheng Lin wrote:
->> On 2021/4/10 6:37, Matteo Croce wrote:
->>> From: Matteo Croce <mcroce@microsoft.com>
+On Thu, Apr 29, 2021 at 8:34 PM Peng Fan <peng.fan@nxp.com> wrote:
+>
+> > Subject: Re: [PATCH 00/16] soc: imx: gpcv2: support i.MX8MM
+> >
+> > On Thu, Apr 29, 2021 at 1:59 AM Peng Fan (OSS) <peng.fan@oss.nxp.com>
+> > wrote:
+> > >
+> > > From: Peng Fan <peng.fan@nxp.com>
+> > >
+> > > This patchset is a pick up Lucas's gpcv2 work for i.MX8MM and several
+> > > minor changes from me to make it could work with i.MX BLK-CTL driver.
+> > >
+> > > Thanks for Lucas's work and suggestion, Frieder Schrempf for
+> > > collecting all the patches, Jacky Bai on help debug issues.
+> >
+> > Thank for you all the work.  I have an i.MX8M Nano that I'll work to add
+> > support for gpcv2 unless NXP has started this already.  At one time, I posted
+> > some patches for Nano based on Lucas' work, but since that work wasn't
+> > accepted, mine wasn't either.
+>
+> Please continue your work on i.MX8MN, I not work on this. The following
+> work from me is i.MX8MP.
 
-[...]
+No problem.  I thought the focus would be on the 8MP,m so I went ahead
+and posted a series [1] for enabling the gpcv2 for the Nano and the
+power domains which don't require blk-ctl for now which include the
+USB OTG, and the GPU.
 
->>
->> 1. skb frag page recycling do not need "struct xdp_rxq_info" or
->>    "struct xdp_mem_info" to bond the relation between "struct page" and
->>    "struct page_pool", which seems uncessary at this point if bonding
->>    a "struct page_pool" pointer directly in "struct page" does not cause
->>    space increasing.
-> 
-> We can't do that. The reason we need those structs is that we rely on the
-> existing XDP code, which already recycles it's buffers, to enable
-> recycling.  Since we allocate a page per packet when using page_pool for a
-> driver , the same ideas apply to an SKB and XDP frame. We just recycle the
+If you and/or your colleagues have time to review it, it would be
+appreciated.  I was able to suspend and resume with USB attached, and
+it continued to operate.  I didn't do extensive testing yet.
+I'm starting on the blk-ctl stuff now.  It seems to have changed quite
+a bit since the initial submission from Abel, so I'll have to spend a
+bit more time porting what I had before.
 
-I am not really familar with XDP here, but a packet from hw is either a
-"struct xdp_frame/xdp_buff" for XDP or a "struct sk_buff" for TCP/IP stack,
-a packet can not be both "struct xdp_frame/xdp_buff" and "struct sk_buff" at
-the same time, right?
+Thanks again for this series.  It will be nice to have the Mini, Nano
+and Plus domains functional.
 
-What does not really make sense to me is that the page has to be from page
-pool when a skb's frag page can be recycled, right? If it is ture, the switch
-case in __xdp_return() does not really make sense for skb recycling, why go
-all the trouble of checking the mem->type and mem->id to find the page_pool
-pointer when recyclable page for skb can only be from page pool?
+adam
 
-> payload and we don't really care what's in that.  We could rename the functions
-> to something more generic in the future though ?
-> 
->>
->> 2. it would be good to do the page reference count updating batching
->>    in page pool instead of specific driver.
->>
->>
->> page_pool_atomic_sub_if_positive() is added to decide who can call
->> page_pool_put_full_page(), because the driver and stack may hold
->> reference to the same page, only if last one which hold complete
->> reference to a page can call page_pool_put_full_page() to decide if
->> recycling is possible, if not, the page is released, so I am wondering
->> if a similar page_pool_atomic_sub_if_positive() can added to specific
->> user space address unmapping path to allow skb recycling for RX zerocopy
->> too?
->>
-> 
-> I would prefer a different page pool type if we wanted to support the split
-> page model.  The changes as is are quite intrusive, since they change the 
-> entire skb return path.  So I would prefer introducing the changes one at a 
-> time. 
+[1] - https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210429211625.1835702-2-aford173@gmail.com/
 
-I understand there may be fundamental semantic change when split page model
-is supported by page pool, but the split page support change mainly affect the
-skb recycling path and the driver that uses page pool(XDP too) if we are careful
-enough, not the entire skb return path as my understanding.
-
-Anyway, one changes at a time is always prefered if supporting split page is
-proved to be non-trivel and intrusive.
-
-> 
-> The fundamental difference between having the recycling in the driver vs
-> having it in a generic API is pretty straightforward.  When a driver holds
-> the extra page references he is free to decide what to reuse, when he is about
-> to refill his Rx descriptors.  So TCP zerocopy might work even if the
-> userspace applications hold the buffers for an X amount of time.
-> On this proposal though we *need* to decide what to do with the buffer when we
-> are about to free the skb.
-
-I am not sure I understand what you meant by "free the skb", does it mean
-that kfree_skb() is called to free the skb.
-
-As my understanding, if the skb completely own the page(which means page_count()
-== 1) when kfree_skb() is called, __page_pool_put_page() is called, otherwise
-page_ref_dec() is called, which is exactly what page_pool_atomic_sub_if_positive()
-try to handle it atomically.
-
-> 
-> [...]
-> 
-> 
-> Cheers
-> /Ilias
-> 
-> .
-> 
-
+>
+> Thanks,
+> Peng.
+>
+> >
+> > adam
+> > >
+> > > Lucas Stach (12):
+> > >   soc: imx: gpcv2: move to more ideomatic error handling in probe
+> > >   soc: imx: gpcv2: move domain mapping to domain driver probe
+> > >   soc: imx: gpcv2: switch to clk_bulk_* API
+> > >   soc: imx: gpcv2: split power up and power down sequence control
+> > >   soc: imx: gpcv2: wait for ADB400 handshake
+> > >   soc: imx: gpcv2: add runtime PM support for power-domains
+> > >   soc: imx: gpcv2: allow domains without power-sequence control
+> > >   dt-bindings: imx: gpcv2: add support for optional resets
+> > >   soc: imx: gpcv2: add support for optional resets
+> > >   dt-bindings: power: add defines for i.MX8MM power domains
+> > >   soc: imx: gpcv2: add support for i.MX8MM power domains
+> > >   soc: imx: gpcv2: Add support for missing i.MX8MM VPU/DISPMIX power
+> > >     domains
+> > >
+> > > Peng Fan (4):
+> > >   soc: imx: gpcv2: correct pm_runtime_get_sync usage
+> > >   soc: imx: gpcv2: move reset assert after requesting domain power up
+> > >   soc: imx: gpcv2: support reset defer probe
+> > >   soc: imx: gpcv2: remove waiting handshake in power up
+> > >
+> > >  .../bindings/power/fsl,imx-gpcv2.yaml         |   9 +
+> > >  drivers/soc/imx/gpcv2.c                       | 534
+> > ++++++++++++++----
+> > >  include/dt-bindings/power/imx8mm-power.h      |  22 +
+> > >  3 files changed, 450 insertions(+), 115 deletions(-)  create mode
+> > > 100644 include/dt-bindings/power/imx8mm-power.h
+> > >
+> > > --
+> > > 2.30.0
+> > >
