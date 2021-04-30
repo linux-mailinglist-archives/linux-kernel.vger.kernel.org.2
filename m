@@ -2,79 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B13C36F763
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 961C136F76B
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230444AbhD3Iwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 04:52:36 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:64434 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229507AbhD3Iwf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 04:52:35 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4FWmM65lWcz9wpv;
-        Fri, 30 Apr 2021 10:51:46 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id kDMDiR5czLYa; Fri, 30 Apr 2021 10:51:46 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FWmM64dTtz9wkP;
-        Fri, 30 Apr 2021 10:51:46 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8E0978B87A;
-        Fri, 30 Apr 2021 10:51:46 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id ILHb2NrNnZ0M; Fri, 30 Apr 2021 10:51:46 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B86C08B876;
-        Fri, 30 Apr 2021 10:51:45 +0200 (CEST)
-Subject: Re: [PATCH 2/3] powerpc: prom_init: switch to early string functions
-To:     Daniel Walker <danielwa@cisco.com>, linuxppc-dev@lists.ozlabs.org,
-        x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>
-Cc:     xe-linux-external@cisco.com, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, linux-kernel@vger.kernel.org
-References: <20210430042217.1198052-1-danielwa@cisco.com>
- <20210430042217.1198052-2-danielwa@cisco.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <e5de3724-ea9d-45a5-8f08-98ff325d055f@csgroup.eu>
-Date:   Fri, 30 Apr 2021 10:51:45 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S229775AbhD3I4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 04:56:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229601AbhD3I4t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 04:56:49 -0400
+X-Greylist: delayed 100386 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 30 Apr 2021 01:56:01 PDT
+Received: from mout-u-107.mailbox.org (mout-u-107.mailbox.org [IPv6:2001:67c:2050:1::465:107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C777C06174A;
+        Fri, 30 Apr 2021 01:56:01 -0700 (PDT)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-u-107.mailbox.org (Postfix) with ESMTPS id 4FWmRx73FvzQjp3;
+        Fri, 30 Apr 2021 10:55:57 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp1.mailbox.org ([80.241.60.240])
+        by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172]) (amavisd-new, port 10030)
+        with ESMTP id Tl5rxeJGiWZH; Fri, 30 Apr 2021 10:55:53 +0200 (CEST)
+Subject: Re: [PATCH v4 1/2] dt-bindings: dma: add schema for altr,msgdma
+To:     Olivier Dautricourt <olivier.dautricourt@orolia.com>,
+        Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>
+Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <YIq/qObuYw+8ikxg@orolia.com>
+From:   Stefan Roese <sr@denx.de>
+Message-ID: <1c112356-ebfd-bcf0-6cee-60903c171b9b@denx.de>
+Date:   Fri, 30 Apr 2021 10:55:52 +0200
 MIME-Version: 1.0
-In-Reply-To: <20210430042217.1198052-2-danielwa@cisco.com>
+In-Reply-To: <YIq/qObuYw+8ikxg@orolia.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
+Content-Language: de-DE
 Content-Transfer-Encoding: 8bit
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -7.83 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 761031882
+X-Rspamd-UID: a3f292
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 30/04/2021 à 06:22, Daniel Walker a écrit :
-> This converts the prom_init string users to the early string function
-> which don't suffer from KASAN or any other debugging enabled.
+On 29.04.21 16:16, Olivier Dautricourt wrote:
+> - add schema for Altera mSGDMA bindings in devicetree.
+> - add myself as 'Odd fixes' maintainer for this driver
 > 
-> Cc: xe-linux-external@cisco.com
-> Signed-off-by: Daniel Walker <danielwa@cisco.com>
+> Signed-off-by: Olivier Dautricourt <olivier.dautricourt@orolia.com>
+
+Reviewed-by: Stefan Roese <sr@denx.de>
+
+Thanks,
+Stefan
+
 > ---
->   arch/powerpc/kernel/prom_init.c        | 185 ++++++-------------------
->   arch/powerpc/kernel/prom_init_check.sh |   9 +-
->   2 files changed, 51 insertions(+), 143 deletions(-)
 > 
-> diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
-> index ccf77b985c8f..4d4343da1280 100644
-> --- a/arch/powerpc/kernel/prom_init.c
-> +++ b/arch/powerpc/kernel/prom_init.c
-> @@ -225,105 +225,6 @@ static bool  __prombss rtas_has_query_cpu_stopped;
->   #define PHANDLE_VALID(p)	((p) != 0 && (p) != PROM_ERROR)
->   #define IHANDLE_VALID(i)	((i) != 0 && (i) != PROM_ERROR)
->   
-> -/* Copied from lib/string.c and lib/kstrtox.c */
+> Notes:
+>      Changes in v2:
+>       - fix reg size in dt example
+>       - fix dt_binding check warning
+>       - add list in MAINTAINERS entry
+> 
+>      Changes from v2 to v3:
+>       none
+> 
+>      Changes from v3 to v4:
+>       none
+> 
+>   .../devicetree/bindings/dma/altr,msgdma.yaml  | 62 +++++++++++++++++++
+>   MAINTAINERS                                   |  7 +++
+>   2 files changed, 69 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/dma/altr,msgdma.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/dma/altr,msgdma.yaml b/Documentation/devicetree/bindings/dma/altr,msgdma.yaml
+> new file mode 100644
+> index 000000000000..295e46c84bf9
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dma/altr,msgdma.yaml
+> @@ -0,0 +1,62 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/dma/altr,msgdma.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Altera mSGDMA IP core
+> +
+> +maintainers:
+> +  - Olivier Dautricourt <olivier.dautricourt@orolia.com>
+> +
+> +description: |
+> +  Altera / Intel modular Scatter-Gather Direct Memory Access (mSGDMA)
+> +  intellectual property (IP)
+> +
+> +allOf:
+> +  - $ref: "dma-controller.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    const: altr,msgdma
+> +
+> +  reg:
+> +    description:
+> +      csr, desc, resp resgisters
+> +    maxItems: 3
+> +    minItems: 3
+> +
+> +  reg-names:
+> +    items:
+> +      - const: csr
+> +      - const: desc
+> +      - const: resp
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  "#dma-cells":
+> +    description: |
+> +      The dma controller discards the argument but one must be specified
+> +      to keep compatibility with dma-controller schema.
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - interrupts
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    msgdma_controller: dma-controller@ff200b00 {
+> +        compatible = "altr,msgdma";
+> +        reg = <0xff200b00 0x100>, <0xff200c00 0x100>, <0xff200d00 0x100>;
+> +        reg-names = "csr", "desc", "resp";
+> +        interrupts = <0 67 IRQ_TYPE_LEVEL_HIGH>;
+> +        #dma-cells = <1>;
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 5c90148f0369..359ab4877024 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -782,6 +782,13 @@ M:	Ley Foon Tan <ley.foon.tan@intel.com>
+>   S:	Maintained
+>   F:	drivers/mailbox/mailbox-altera.c
+> 
+> +ALTERA MSGDMA IP CORE DRIVER
+> +M:	Olivier Dautricourt <olivier.dautricourt@orolia.com>
+> +L:	dmaengine@vger.kernel.org
+> +S:	Odd Fixes
+> +F:	Documentation/devicetree/bindings/dma/altr,msgdma.yaml
+> +F:	drivers/dma/altera-msgdma.c
+> +
+>   ALTERA PIO DRIVER
+>   M:	Joyce Ooi <joyce.ooi@intel.com>
+>   L:	linux-gpio@vger.kernel.org
+> --
+> 2.31.0.rc2
+> 
 
-Please leave the second part of the comment as you have not removed prom_strtobool()
 
+Viele Grüße,
+Stefan
+
+-- 
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-51 Fax: (+49)-8142-66989-80 Email: sr@denx.de
