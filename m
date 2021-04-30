@@ -2,118 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 051CF36FDF4
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D9C36FE03
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbhD3Pmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 11:42:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35358 "EHLO
+        id S230421AbhD3PsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 11:48:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229969AbhD3Pmx (ORCPT
+        with ESMTP id S229532AbhD3PsK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 11:42:53 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B0E0C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 08:42:05 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lcVHA-0005oA-Q4; Fri, 30 Apr 2021 17:41:56 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lcVH7-0007ic-IQ; Fri, 30 Apr 2021 17:41:53 +0200
-Date:   Fri, 30 Apr 2021 17:41:53 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Fugang Duan <fugang.duan@nxp.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        kernel@pengutronix.de, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com, Fabio Estevam <festevam@gmail.com>,
-        David Jander <david@protonic.nl>,
-        Russell King <linux@armlinux.org.uk>,
-        Philippe Schenker <philippe.schenker@toradex.com>
-Subject: Re: [PATCH net-next v1 1/1] net: selftest: provide option to disable
- generic selftests
-Message-ID: <20210430154153.zhdnxzkm2fhcuogo@pengutronix.de>
-References: <20210430095308.14465-1-o.rempel@pengutronix.de>
- <f0905c84-6bb2-702f-9ae7-614dcd85c458@infradead.org>
+        Fri, 30 Apr 2021 11:48:10 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A674C06174A;
+        Fri, 30 Apr 2021 08:47:22 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id i13so1773289pfu.2;
+        Fri, 30 Apr 2021 08:47:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lffHW6+bJT/jZDB8NYsrRLnITHeQydH7o4/HNDXB/bE=;
+        b=F9b+y7ve5qhrZlKuh1/yt7HQb9WBRvr0iHAHK5ZB1iM1Wb07+SpOX3ly02CaQqMPYw
+         ZvwIKs1KUQRxND3PRLKNVeUOjr6J6sQRpZ0iJ1Sq+aHS6g07NAh2gSkLuMZM0cY+KVij
+         ribE4iNgGTDvpQS8orQFimPuuLd8jdtP7Yx5X68nb/PcuckwhvwyvRGImXOSHX2qm4su
+         ba6h4bU45Lw5FhyTz1NfERNZEkfM6SdygGyNT/uyYrxKWFtJTJX9aGTCWhHJHZMP+5n6
+         lFViF/YE+eOGH8tFh2Ew4YQI/EAA4SvzAZQx6WwVqWuHXh4J+WQ3Cuji1MWNM2YXlm5c
+         InDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lffHW6+bJT/jZDB8NYsrRLnITHeQydH7o4/HNDXB/bE=;
+        b=HmMb9yg2xgjZsnb0fr2HP9gi9e8YLldFkXSgEHt38/rqb7YQXwOzgSyg0relaqAu/W
+         VadiKFjJ/qI1q/c10ky1QsHn8ri/aLCTB1+nRoJKjwnpssfE7rODAMC2ZT41t2dlzn0r
+         S9O+hUyCGJsu7A5t/tk3XlwWLHTDbHQ1akyDBVKnapPhzQYiXcqhpnkRTA6HmZ6fxL9K
+         Ps8bRssYu7o1lP1sEmMyJOgaZ1Tmx0fGkbOjfE+Ceh+Y13VL8B/ciSrqq1T13SwkJ0gv
+         ZeTaLa+cVMfgqYEE/qGaaJX6/afq7j3pD2Y4rLFsUi4KS3VggPpgGu7DWZv+CemuFJO0
+         SkRg==
+X-Gm-Message-State: AOAM530GG2wpalc8hnYtyM1djqfRFC2yZNW+QS99PicJucmVZkBlzpCn
+        LBxOzc1jcslj2aUtvQalLno=
+X-Google-Smtp-Source: ABdhPJwfUcD6npZ/WFw2T4e3EQ/gIVuHDruqdpSurSMdWProQoCVwcrieIBymf3rsBRQ+O/iFJihdA==
+X-Received: by 2002:aa7:97a1:0:b029:27f:aa90:c7a6 with SMTP id d1-20020aa797a10000b029027faa90c7a6mr5672426pfq.10.1619797641772;
+        Fri, 30 Apr 2021 08:47:21 -0700 (PDT)
+Received: from localhost.localdomain ([2402:8100:30a6:a362:7862:2436:1c0a:c59d])
+        by smtp.gmail.com with ESMTPSA id o187sm2530591pfb.190.2021.04.30.08.47.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 08:47:21 -0700 (PDT)
+From:   Piyush Thange <pthange19@gmail.com>
+To:     mchehab@kernel.org, leon@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Piyush Thange <pthange19@gmail.com>
+Subject: [PATCH 1/4] media: usb: cpia2: Fixed coding style issues
+Date:   Fri, 30 Apr 2021 21:13:11 +0530
+Message-Id: <20210430154314.3152-1-pthange19@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f0905c84-6bb2-702f-9ae7-614dcd85c458@infradead.org>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 17:34:20 up 149 days,  5:40, 45 users,  load average: 0.06, 0.06,
- 0.02
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 08:13:12AM -0700, Randy Dunlap wrote:
-> On 4/30/21 2:53 AM, Oleksij Rempel wrote:
-> > Some systems may need to disable selftests to reduce kernel size or for
-> > some policy reasons. This patch provide option to disable generic selftests.
-> > 
-> > Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > Fixes: 3e1e58d64c3d ("net: add generic selftest support")
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > ---
-> >  net/Kconfig | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> > 
-> > diff --git a/net/Kconfig b/net/Kconfig
-> > index f5ee7c65e6b4..dac98c73fcd8 100644
-> > --- a/net/Kconfig
-> > +++ b/net/Kconfig
-> > @@ -431,7 +431,12 @@ config SOCK_VALIDATE_XMIT
-> >  
-> >  config NET_SELFTESTS
-> >  	def_tristate PHYLIB
-> > +	prompt "Support for generic selftests"
-> >  	depends on PHYLIB && INET
-> > +	help
-> > +	  These selftests are build automatically if any driver with generic
-> 
-> 	                      built
-> 
-> > +	  selftests support is enabled. This option can be used to disable
-> > +	  selftests to reduce kernel size.
-> >  
-> >  config NET_SOCK_MSG
-> >  	bool
-> > 
-> 
-> Thanks for the patch/option. But I think it should just default to n,
-> not PHYLIB.
+Fixed coding style issues with spaces for if condition &
+others statements.
 
-It should be enabled by default for every device supporting this kind of
-selftests. This tests extend functionality of cable tests, which are not
-optional. Disabling it by default makes even less sense, at least for
-me.
+Signed-off-by: Piyush Thange <pthange19@gmail.com>
+---
+ drivers/media/usb/cpia2/cpia2_v4l.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-It depends on PHYLIB, if PHYLIB is build as module, this
-this part should be build as module too. And since Geert asking to make
-it optional, I provided this patch.
-
-Regards,
-Oleksij
+diff --git a/drivers/media/usb/cpia2/cpia2_v4l.c b/drivers/media/usb/cpia2/cpia2_v4l.c
+index 69d5c628a797..4b58b1e7847e 100644
+--- a/drivers/media/usb/cpia2/cpia2_v4l.c
++++ b/drivers/media/usb/cpia2/cpia2_v4l.c
+@@ -143,7 +143,7 @@ static ssize_t cpia2_v4l_read(struct file *file, char __user *buf, size_t count,
+ 	int noblock = file->f_flags&O_NONBLOCK;
+ 	ssize_t ret;
+ 
+-	if(!cam)
++	if (!cam)
+ 		return -EINVAL;
+ 
+ 	if (mutex_lock_interruptible(&cam->v4l2_lock))
+@@ -247,8 +247,8 @@ static int cpia2_querycap(struct file *file, void *fh, struct v4l2_capability *v
+ 		break;
+ 	}
+ 
+-	if (usb_make_path(cam->dev, vc->bus_info, sizeof(vc->bus_info)) <0)
+-		memset(vc->bus_info,0, sizeof(vc->bus_info));
++	if (usb_make_path(cam->dev, vc->bus_info, sizeof(vc->bus_info)) < 0)
++		memset(vc->bus_info, 0, sizeof(vc->bus_info));
+ 	return 0;
+ }
+ 
+@@ -377,7 +377,7 @@ static int cpia2_s_fmt_vid_cap(struct file *file, void *_fh,
+ 	int err, frame;
+ 
+ 	err = cpia2_try_fmt_vid_cap(file, _fh, f);
+-	if(err != 0)
++	if (err != 0)
+ 		return err;
+ 
+ 	cam->pixelformat = f->fmt.pix.pixelformat;
+@@ -665,13 +665,13 @@ static int cpia2_g_jpegcomp(struct file *file, void *fh, struct v4l2_jpegcompres
+ 	parms->quality = 80; // TODO: Can this be made meaningful?
+ 
+ 	parms->jpeg_markers = V4L2_JPEG_MARKER_DQT | V4L2_JPEG_MARKER_DRI;
+-	if(!cam->params.compression.inhibit_htables) {
++	if (!cam->params.compression.inhibit_htables)
+ 		parms->jpeg_markers |= V4L2_JPEG_MARKER_DHT;
+-	}
++
+ 
+ 	parms->APPn = cam->APPn;
+ 	parms->APP_len = cam->APP_len;
+-	if(cam->APP_len > 0) {
++	if (cam->APP_len > 0) {
+ 		memcpy(parms->APP_data, cam->APP_data, cam->APP_len);
+ 		parms->jpeg_markers |= V4L2_JPEG_MARKER_APP;
+ 	}
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.25.1
+
