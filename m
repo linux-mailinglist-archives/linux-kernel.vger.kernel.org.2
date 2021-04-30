@@ -2,80 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E45236FA00
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 14:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9139E36FA04
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 14:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232876AbhD3MTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 08:19:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39036 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232736AbhD3MSm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 08:18:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7A1A60249;
-        Fri, 30 Apr 2021 12:17:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619785074;
-        bh=tOCogmVNxmjV78pkQC6x1nqdqq2lnBYT5qR52UQRme8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0BhLbTXpHz/Ym4Vc/JiWYoou5ncMrdUye22i8s3BCbydUq4WVI2sXlhApILenhrVx
-         qEoiSQO8qp+8jj85PX+LZmedsUirbgkGJlotN70F/hLqidRtn3FyTzzDEZma3t+D+u
-         78Pi5l6yq3Zq6AEFWGTRUlBimrBfTRlPbBhAuRBM=
-Date:   Fri, 30 Apr 2021 14:17:52 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kangjie Lu <kjlu@umn.edu>
-Subject: Re: [PATCH 074/190] Revert "drm/gma500: fix memory disclosures due
- to uninitialized bytes"
-Message-ID: <YIv1cJyvGHiTCE64@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-75-gregkh@linuxfoundation.org>
- <CAKMK7uF6sWeKX0DAaXoT9=xkD9eAAjHtkE0gn+v9YxmYAd3vdg@mail.gmail.com>
- <YIgVDakyru+kuhoV@kroah.com>
+        id S232403AbhD3MTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 08:19:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26681 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232648AbhD3MTF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 08:19:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619785097;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QFoo+RFhSNZCaYS4vaZHmUV9XYlNWKNVH9g7dlU2Z6g=;
+        b=gkr3IOB0J919dOxudVWSMNEGMrd5SuJlLAvZN931DI/Z6bf2gG0BLNj9vS3pI7PAzKgpvH
+        Kk9GrgwL4XBGGtDD+0tpSfBmh6AFnJ4BRXRQWPXB8Si3dS5gNQ0w/qMB6lzP4DtjXRN5QL
+        V/LWMuHyU4LadjH5twQ7hZY+D69W/r0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-441-y_bAABREPW-S6Zzk2Wddsw-1; Fri, 30 Apr 2021 08:18:13 -0400
+X-MC-Unique: y_bAABREPW-S6Zzk2Wddsw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2016610CE781;
+        Fri, 30 Apr 2021 12:18:12 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-114-26.rdu2.redhat.com [10.10.114.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EFE6719C79;
+        Fri, 30 Apr 2021 12:17:57 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 8004322054F; Fri, 30 Apr 2021 08:17:57 -0400 (EDT)
+Date:   Fri, 30 Apr 2021 08:17:57 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Greg Kurz <groug@kaod.org>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        virtualization@lists.linux-foundation.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        virtio-fs@redhat.com, Robert Krawitz <rlk@redhat.com>
+Subject: Re: [PATCH v2] virtiofs: propagate sync() to file server
+Message-ID: <20210430121757.GA1936051@redhat.com>
+References: <20210426151011.840459-1-groug@kaod.org>
+ <20210427171206.GA1805363@redhat.com>
+ <20210427210921.7b01c661@bahia.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YIgVDakyru+kuhoV@kroah.com>
+In-Reply-To: <20210427210921.7b01c661@bahia.lan>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 03:43:41PM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Apr 21, 2021 at 07:51:49PM +0200, Daniel Vetter wrote:
-> > On Wed, Apr 21, 2021 at 3:06 PM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > This reverts commit ec3b7b6eb8c90b52f61adff11b6db7a8db34de19.
-> > >
-> > > Commits from @umn.edu addresses have been found to be submitted in "bad
-> > > faith" to try to test the kernel community's ability to review "known
-> > > malicious" changes.  The result of these submissions can be found in a
-> > > paper published at the 42nd IEEE Symposium on Security and Privacy
-> > > entitled, "Open Source Insecurity: Stealthily Introducing
-> > > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> > > of Minnesota) and Kangjie Lu (University of Minnesota).
-> > >
-> > > Because of this, all submissions from this group must be reverted from
-> > > the kernel tree and will need to be re-reviewed again to determine if
-> > > they actually are a valid fix.  Until that work is complete, remove this
-> > > change to ensure that no problems are being introduced into the
-> > > codebase.
-> > >
-> > > Cc: Kangjie Lu <kjlu@umn.edu>
-> > > Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > > Cc: https
-> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Tue, Apr 27, 2021 at 09:09:21PM +0200, Greg Kurz wrote:
+[..]
+> > > diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
+> > > index 54442612c48b..1265ca17620c 100644
+> > > --- a/include/uapi/linux/fuse.h
+> > > +++ b/include/uapi/linux/fuse.h
+> > > @@ -179,6 +179,9 @@
+> > >   *  7.33
+> > >   *  - add FUSE_HANDLE_KILLPRIV_V2, FUSE_WRITE_KILL_SUIDGID, FATTR_KILL_SUIDGID
+> > >   *  - add FUSE_OPEN_KILL_SUIDGID
+> > > + *
+> > > + *  7.34
+> > > + *  - add FUSE_SYNCFS
+> > >   */
+> > >  
+> > >  #ifndef _LINUX_FUSE_H
+> > > @@ -214,7 +217,7 @@
+> > >  #define FUSE_KERNEL_VERSION 7
+> > >  
+> > >  /** Minor version number of this interface */
+> > > -#define FUSE_KERNEL_MINOR_VERSION 33
+> > > +#define FUSE_KERNEL_MINOR_VERSION 34
+> > >  
+> > >  /** The node ID of the root inode */
+> > >  #define FUSE_ROOT_ID 1
+> > > @@ -499,6 +502,7 @@ enum fuse_opcode {
+> > >  	FUSE_COPY_FILE_RANGE	= 47,
+> > >  	FUSE_SETUPMAPPING	= 48,
+> > >  	FUSE_REMOVEMAPPING	= 49,
+> > > +	FUSE_SYNCFS		= 50,
+> > >  
+> > >  	/* CUSE specific operations */
+> > >  	CUSE_INIT		= 4096,
+> > > @@ -957,4 +961,8 @@ struct fuse_removemapping_one {
+> > >  #define FUSE_REMOVEMAPPING_MAX_ENTRY   \
+> > >  		(PAGE_SIZE / sizeof(struct fuse_removemapping_one))
+> > >  
+> > > +struct fuse_syncfs_in {
+> > > +	uint64_t flags;
+> > > +};
+> > > +
 > > 
-> > Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> > Hi Greg,
 > > 
-> > gma500 is dead enough I'm not going to spend a single cycle thinking
-> > whether this fixes anything or not and hence whether the revert is ok
-> > or not.
+> > Will it be better if 32bits are for flags and reset 32 are
+> > padding and can be used in whatever manner.
+> > 
+> > struct fuse_syncfs_in {
+> > 	uint32_t flags;
+> > 	uint32_t padding;
+> > };
+> > 
+> > This will increase the flexibility if we were to send more information
+> > in future.
+> > 
+> > I already see bunch of structures where flags are 32 bit and reset
+> > are padding bits. fuse_read_in, fuse_write_in, fuse_rename2_in etc.
+> > 
+> > Thanks
+> > Vivek
+> > 
 > 
-> Sounds good to me, I'll keep the reverts.
+> Yes, it makes sense. I'll wait a few more days and roll out a v3.
 
-I've re-reviewed this one, and it seems sane, so I'll drop the revert.
+Thinking more about it. We are not using any of the fields of this
+structure right now. So may be all of it can be padding and no need
+to add "flags".
 
-thanks,
+struct fuse_syncfs_in {
+	uint64_t padding;
+};
 
-greg k-h
+Essentially what you have already done  :-). Just rename flags to
+padding/unused to make it clear its unused for now.
+
+Vivek
+
