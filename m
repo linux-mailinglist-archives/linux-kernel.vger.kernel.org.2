@@ -2,120 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15ABA36F78D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 11:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A905F36F798
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 11:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231502AbhD3JH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 05:07:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54011 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229731AbhD3JH0 (ORCPT
+        id S229731AbhD3JL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 05:11:27 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:58945 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229522AbhD3JL0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 05:07:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619773598;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RHj3aPSNlnR+e/0iWYEPIjVJ3UrGKFYzhAQvYOuwStw=;
-        b=bV1hHm1nu2U2p7UhK1mr8X9e7FEb4pdF8Rui6749Zxy3wK4jsgG4NR1F0zpAFRfnsYEjmA
-        BzFTKpg8xonZ92YeiU/NDGfO2mHjb+oaN0n6X0PEZeL2D3dHYQhEzZmtsX0nIj5+07qVZ9
-        x3RZAfVrkHYy9ZGGmkVyudfDQd9cGoc=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-500-6fv3LmgdNHaSPMBrjWqpdw-1; Fri, 30 Apr 2021 05:06:35 -0400
-X-MC-Unique: 6fv3LmgdNHaSPMBrjWqpdw-1
-Received: by mail-ed1-f70.google.com with SMTP id v5-20020a0564023485b029037ff13253bcso29977679edc.3
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 02:06:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RHj3aPSNlnR+e/0iWYEPIjVJ3UrGKFYzhAQvYOuwStw=;
-        b=JaKFkVW9XYN5zr7jaKDd2gusgacrRcD1Xbh5W4F5oYb+CictX7+ZOnY64uJR+mQDCj
-         zq8tj+UW/4RHc3SjSL5EBBLBuwHqiV48S4UJZ3hPLGZoXn103VKv2gSmeYFpFsyN26QV
-         D0s68tp6U35GZNavKhcIOFMPIDmL7smpDDorbvOBo5fxB7rbAE0J/EHwvRo2C6EOTHaS
-         UyK19nav6rSSzWfIM1zrWlBiq0mKWmvkprbYGK6/2XWdalO0Ft7t2Saj/isUQraYxyTH
-         t/+AYxZmTqI9PX3GyaIY7ffAtaeIviIeoLxaGR7h1R4oh558iO6WyK6iufTzXbMNkOvj
-         gwPw==
-X-Gm-Message-State: AOAM532WT5hfzZbI/vAz+3CNLRQM/JFLIXMDVGdUE1FCrYIB1mvU3l92
-        yeXUwYzNRgO0X19F5EpJItizR8vDns5nr1GRdeTPTMd7KPdRfIaC1+HDFRYn7S3VNrkXTmIa/6Z
-        GAl9p9HD5WU4IW48Dj4SAaQtr
-X-Received: by 2002:a17:906:d7a6:: with SMTP id pk6mr3163127ejb.118.1619773594716;
-        Fri, 30 Apr 2021 02:06:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxtG83XWilui4ZuscSx08I+jXgXF0/RCmbV8LwAJ1PdCF0RybYjpi+E/Tvo0xdY5zHVXHdDFw==
-X-Received: by 2002:a17:906:d7a6:: with SMTP id pk6mr3163103ejb.118.1619773594523;
-        Fri, 30 Apr 2021 02:06:34 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id z12sm786035edr.17.2021.04.30.02.06.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Apr 2021 02:06:33 -0700 (PDT)
-Subject: Re: [PATCH 4/4] KVM/VMX: Fold handle_interrupt_nmi_irqoff() into its
- solo caller
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org
-References: <20210426230949.3561-1-jiangshanlai@gmail.com>
- <20210426230949.3561-5-jiangshanlai@gmail.com>
- <87y2d0du02.ffs@nanos.tec.linutronix.de>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <ba3f6230-8766-92e5-1189-a114c236fd48@redhat.com>
-Date:   Fri, 30 Apr 2021 11:06:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Fri, 30 Apr 2021 05:11:26 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 875515C0032;
+        Fri, 30 Apr 2021 05:10:38 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Fri, 30 Apr 2021 05:10:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=DgPXkCNwhuM1PvuNpQB5vO85GXk
+        9IVTLv4pIOEkACM8=; b=v3lFalLS2TrtaF/aAKRNtCRKo3X9KKsTJPpbZDbALtO
+        TBZfUyMeRdDSnVkzhYJ0hTaRqiK1la++4dg3x/o/lFAZJjWKEjouSxHiXjpp/7V3
+        GcZtuH7Jz0vb+aK9kQO1NpHjdSqA5NXZLm98uz0dE+LLfiWsso+BoBulMdGJ/BCg
+        NLCkTemN9sdyyOjFIoYRBoi6CmjhlsZtIEreEnIiXVY1XbP512vkemu76JtmQG+T
+        soYufUFwf6paOCwAS1zu4aYfjUlf9YzruiIRIHy/If8w/vi2uH6E7PsDslYx2T5v
+        3dtGpNGWPDK9N/b2IdfhOtXKPuoPtRKbRukx/PplrCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=DgPXkC
+        NwhuM1PvuNpQB5vO85GXk9IVTLv4pIOEkACM8=; b=sFY/ECTsNNXUjSfwBt6lFu
+        BJfDhttISlFO4bU/nzfmphsiTRMvkRfPRdPP3Sdy7C557AhTifO5usvA7iVzrPLM
+        PPbR9noGUEONxwEuDcYz4ok5Nv30zc5qOZ1xsdmqn5H5dzBHHZSSMupZrqZ/EI+h
+        WOwfJ/agiVqE4OYuviOXyC5Sc9/x8NvvZvG4uPV2ompJWuIW8s767yW0+NRj+lrD
+        wm2W/SQ9YVQAoF7jfGN9bf+ORVQ+hE3IZRw79eCSw9Jebt31hDV5XQ2bTYaEiB8b
+        GMyxricEnXr5+kmywZ7x/VpkKnJLij8chr3yWx10Ol+dvSTGsHCpUO1Ai8AvC74Q
+        ==
+X-ME-Sender: <xms:jcmLYIv46PFH2I-yNC0GBVVTHo1wtbmhmYsub_r28nDlmmxaw0tsAw>
+    <xme:jcmLYFfRmEELpEAy70HCBIzKVxE80lyJz2ULLpqLaoXCz8BOPoxox3Ox7ouChhBym
+    R-ddg5bofsDlBhBMog>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddviedguddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:jcmLYDykuZ_CP5JV8lF6npKjNeBo-VDdNnCaVq7GS4m2DlyhlQkQbQ>
+    <xmx:jcmLYLNBzH8upGuc3c63EbYnRSgWC2Mo3kPlHuKBOb_f6LF8dW91Ew>
+    <xmx:jcmLYI-PRvTdFHdebQ7onUcahcQaSSxSIq1af5ejZkNGAoWQECaG0A>
+    <xmx:jsmLYHl0OezGXOTggnNmAyoPAE5wTh9EwOZg8wVI6WS3gXwxvSkBsg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Fri, 30 Apr 2021 05:10:37 -0400 (EDT)
+Date:   Fri, 30 Apr 2021 11:10:35 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>, Samuel Holland <samuel@sholland.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-sunxi@lists.linux.dev,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/2] sunxi: Enforce consistent MMC numbering
+Message-ID: <20210430091035.i4zoyzb4c2l22msb@gilmour>
+References: <20210419025246.21722-1-samuel@sholland.org>
+ <CAGb2v642Z3iH7fUWa31Rb5j+nWdZ=sXn2BYw3_dyE9P6iuL0Cg@mail.gmail.com>
+ <20210419095443.1548432e@slackpad.fritz.box>
 MIME-Version: 1.0
-In-Reply-To: <87y2d0du02.ffs@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="5enpgdo5lledv3vf"
+Content-Disposition: inline
+In-Reply-To: <20210419095443.1548432e@slackpad.fritz.box>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/04/21 11:03, Thomas Gleixner wrote:
-> Lai,
-> 
-> On Tue, Apr 27 2021 at 07:09, Lai Jiangshan wrote:
->>   	u32 intr_info = vmx_get_intr_info(&vmx->vcpu);
->> @@ -6427,12 +6417,19 @@ static void handle_exception_nmi_irqoff(struct vcpu_vmx *vmx)
->>   static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu)
->>   {
->>   	u32 intr_info = vmx_get_intr_info(vcpu);
->> +	unsigned int vector;
->> +	gate_desc *desc;
->>   
->>   	if (WARN_ONCE(!is_external_intr(intr_info),
->>   	    "KVM: unexpected VM-Exit interrupt info: 0x%x", intr_info))
->>   		return;
->>   
->> -	handle_interrupt_nmi_irqoff(vcpu, intr_info);
->> +	vector = intr_info & INTR_INFO_VECTOR_MASK;
->> +	desc = (gate_desc *)host_idt_base + vector;
->> +
->> +	kvm_before_interrupt(vcpu);
->> +	vmx_do_interrupt_nmi_irqoff(gate_offset(desc));
->> +	kvm_after_interrupt(vcpu);
-> 
-> So the previous patch does:
-> 
-> +               kvm_before_interrupt(&vmx->vcpu);
-> +               vmx_do_interrupt_nmi_irqoff((unsigned long)asm_noist_exc_nmi);
-> +               kvm_after_interrupt(&vmx->vcpu);
-> 
-> What is this idt gate descriptor dance for in this code?
 
-NMIs are sent through a different vmexit code (the same one as 
-exceptions).  This one is for interrupts.
+--5enpgdo5lledv3vf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Paolo
+On Mon, Apr 19, 2021 at 09:54:43AM +0100, Andre Przywara wrote:
+> On Mon, 19 Apr 2021 11:17:19 +0800
+> Chen-Yu Tsai <wens@csie.org> wrote:
+>=20
+> Hi,
+>=20
+> > On Mon, Apr 19, 2021 at 10:52 AM Samuel Holland <samuel@sholland.org> w=
+rote:
+> > >
+> > > Dealing with the inconsistent numbering has been a major pain, and
+> > > there is a solution with (as far as I can tell) no tangible downsides.
+> > > So let's use it.
+>=20
+> Thanks Samuel for sending this!
+>=20
+> > > Yes, I know the kernel supports UUIDs for root=3D. But UUIDs do not h=
+elp
+> > > when referencing the whole, unpartitioned device, like is needed for
+> > > updating the bootloader and firmware. So for the use case of "write a
+> > > bootloader to the SD card, regardless of where the board is currently
+> > > booted from", I know of two options:
+> > >   - Dig around in sysfs to find the mmc number from the MMIO address,
+> > >     which means I have to know the MMIO addresses for every SoC, or
+> > >   - Apply patches like these.
+> > >
+> > > Samuel Holland (2):
+> > >   ARM: dts: sunxi: h3/h5: Enforce consistent MMC numbering
+> > >   arm64: dts: allwinner: Enforce consistent MMC numbering
+> > >
+> > >  arch/arm/boot/dts/sunxi-h3-h5.dtsi            | 6 ++++++
+> > >  arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 6 ++++++
+> > >  arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  | 6 ++++++ =20
+> >=20
+> > At least with Rockchip this is now done at the board level. IIRC it was
+> > a request from other people to not do it at the SoC level. I don't reca=
+ll
+> > exactly who though.
+>=20
+> FWIW, I am very much in favour of these patches, at a SoC level:
+> The *SoC* BootROM imposes an order, by probing the first (by MMIO
+> address order) MMC controller first for boot devices. IIRC that's a
+> different story for Rockchip?
+> And if people really don't care about the order, then having a certain
+> order doesn't hurt, so we could as well use the "natural" order, as it
+> was before.
 
+This doesn't have anything to do with the BootRom though but what we
+provide to the userspace? The userspace has no guarantee about the
+kernel enumeration order for any bus (but UART for some reason), I'm not
+really sure why MMC would be an exception. Especially since the kernel
+will not try to catch up, this will be bound to be broken on a regular
+basis.
+
+And that aside, assuming that a device only has an eMMC this would
+create the mmc2 device, which is completely weird and inconsistent with
+how any other bus behaves.
+
+> Also UUIDs only help if you boot with an initramfs to resolve them,
+> which proves to be extra pain if you don't compile kernels on the
+> device, or not inside a distribution environment.
+
+I'm not sure what you mean? The kernel is perfectly able to resolve
+them. You can also use PARTLABEL if you want something more user
+friendly.
+
+Maxime
+
+--5enpgdo5lledv3vf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYIvJiwAKCRDj7w1vZxhR
+xezdAQDIY6qe0cw/YeAwFhjlA5dAKEDjlxwmNTpj6ztkqfs/4wD/ckzHAVsRq/tR
+KkQbbJcdqKeAzIEY1dSy+rvOusXqqAA=
+=DXm6
+-----END PGP SIGNATURE-----
+
+--5enpgdo5lledv3vf--
