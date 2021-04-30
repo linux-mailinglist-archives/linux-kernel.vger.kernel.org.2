@@ -2,94 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6853D36FE80
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 18:29:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB6436FE83
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 18:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230290AbhD3Qal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 12:30:41 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2958 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbhD3Qak (ORCPT
+        id S229901AbhD3Qa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 12:30:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229720AbhD3Qax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 12:30:40 -0400
-Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FWyLb22clz71fjS;
-        Sat,  1 May 2021 00:21:59 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 30 Apr 2021 18:29:50 +0200
-Received: from localhost (10.52.124.90) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 30 Apr
- 2021 17:29:49 +0100
-Date:   Fri, 30 Apr 2021 17:28:15 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-renesas-soc@vger.kernel.org>
-Subject: Re: [PATCH v4 12/79] media: renesas-ceu: Properly check for PM
- errors
-Message-ID: <20210430172815.00007111@Huawei.com>
-In-Reply-To: <70e2f612d1d3b7ad74fbfc5f90850f3874670fb2.1619621413.git.mchehab+huawei@kernel.org>
-References: <cover.1619621413.git.mchehab+huawei@kernel.org>
-        <70e2f612d1d3b7ad74fbfc5f90850f3874670fb2.1619621413.git.mchehab+huawei@kernel.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Fri, 30 Apr 2021 12:30:53 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC82C06174A;
+        Fri, 30 Apr 2021 09:30:05 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id a12so6526897pfc.7;
+        Fri, 30 Apr 2021 09:30:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GGnjFPqxnyb5x82q+W2CEVoaczedymBQh3usKng2HjI=;
+        b=Mq8BnpcggakwdADR+l7TEADjpZCptUOLodAA2Fk2Cu/wikEtBTG1Gq4ByBdcX08JG7
+         XwmRwmfAQLmGztsG2cdLOFYuZ9lBtkOEpUNTSuSf62GJdP+VVXVvPY/UnbHoY+ksYXXU
+         h62l+uJsXshOLalIAk0u6ZTbogqQHJjOmIv9gdztyhc9bAORRajPXfwO/+JLUXsRbHQ4
+         SXvAEn+tKgl1sKLo3GmUTyXbf0C5o1ruHqJR9YplMGhaFTwx8RFxX6G7cBjWBwEUk/6y
+         QcDu+q4bF0gDWolqiGqKc9mdkfLO1qhqtpub3DzCggBF5B1YrdgN7lE7ReCL0ch5agQC
+         k3tA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GGnjFPqxnyb5x82q+W2CEVoaczedymBQh3usKng2HjI=;
+        b=nQi+s7nVe7V8pfdtMFEccNQeVRmYLu4ge+S6hRYz+wzTs+cQQcujNzLyL7zk664Ex+
+         V0WMGluVnQDIQEsDYPhA0rB/xV62HhhjLenTXTZRbqJHQxLpTtP+F9Tgtqst2DCPeFem
+         cWrd23SvA4eaJqDoix5VYI0HcRd3lMcVyhtsVsLdOAELDdUU5rQrVtJX2CK0Ff7OBRqp
+         eOz5D2p1NVSWLetctM6PhGtPHEJ152P4w3veMk8W6bUINtf0S/myATDVz6rPWzNgtpZM
+         hXPnIP/hYdBiXIKUwgRKiZguz4HemLGpvE7Zy6XWdQQq3x7FIuR7vO7YHmX8vSAcOmys
+         tOzA==
+X-Gm-Message-State: AOAM531AorZm6XWKhoCCurlHRmJXktTbNpSxVnPJwXrvufBIrm/JZ9rp
+        TOA44GYUs3GsdP3ZBQLSmqkETeLyctRFk949YsY=
+X-Google-Smtp-Source: ABdhPJz4Wo0tSXk/MEkFk+6tZ5WpZD121L1ZAR3xvO6qKPh7FOaDtxTIgZhkVktO0lqILvWBdyc7vMdKL9mTOmJzcy8=
+X-Received: by 2002:a65:5a4d:: with SMTP id z13mr5388538pgs.4.1619800204608;
+ Fri, 30 Apr 2021 09:30:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.124.90]
-X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+References: <20210423182441.50272-1-andriy.shevchenko@linux.intel.com>
+ <CAHp75VeiHsk15QoG3X-OV8V8jqzCNeKkif9V=cx4nvKVHaKbKA@mail.gmail.com>
+ <20210427143457.GI4605@sirena.org.uk> <YIglWpz8lSidXmDd@smile.fi.intel.com>
+In-Reply-To: <YIglWpz8lSidXmDd@smile.fi.intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 30 Apr 2021 19:29:48 +0300
+Message-ID: <CAHp75VfBSjHP1LJZJTdwXzGuE2YjxdW6r7Zf6ofHsquJBPMyWA@mail.gmail.com>
+Subject: Re: [PATCH v2 00/14] spi: pxa2xx: Set of cleanups
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Apr 2021 16:51:33 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+On Tue, Apr 27, 2021 at 5:54 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Tue, Apr 27, 2021 at 03:34:57PM +0100, Mark Brown wrote:
+> > On Tue, Apr 27, 2021 at 02:46:02PM +0300, Andy Shevchenko wrote:
+> >
+> > > Mark, are you accepting patches for v5.14 now, or should I resend
+> > > after v5.13-rc1 is out?
+> >
+> > > (I have few more in my queue :-)
+> >
+> > Send them now if you like.
+>
+> Got it!
+>
+> I think I prefer to produce a less noise in case this series for some reason
+> needs to be changed / amended. I'll wait till this series lands in your queue.
+>
+> P.S. basically my question was about this series.
 
-> Right now, the driver just assumes that PM runtime resume
-> worked, but it may fail.
-> 
-> Well, the pm_runtime_get_sync() internally increments the
-> dev->power.usage_count without decrementing it, even on errors.
-> 
-> So, using it is tricky. Let's replace it by the new
-> pm_runtime_resume_and_get(), introduced by:
-> commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-> and return an error if something bad happens.
-> 
-> This should ensure that the PM runtime usage_count will be
-> properly decremented if an error happens at open time.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-LGTM
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+One item is still unclear to me. I noticed that you started already
+applying patches for-next release cycle (if I understood it
+correctly). Hence the question should or shouldn't I resend this
+series after rc1 is out?
+If I shouldn't, do you have any comments on it? If no, can it be applied now?
 
-> ---
->  drivers/media/platform/renesas-ceu.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/platform/renesas-ceu.c b/drivers/media/platform/renesas-ceu.c
-> index cd137101d41e..17f01b6e3fe0 100644
-> --- a/drivers/media/platform/renesas-ceu.c
-> +++ b/drivers/media/platform/renesas-ceu.c
-> @@ -1099,10 +1099,10 @@ static int ceu_open(struct file *file)
->  
->  	mutex_lock(&ceudev->mlock);
->  	/* Causes soft-reset and sensor power on on first open */
-> -	pm_runtime_get_sync(ceudev->dev);
-> +	ret = pm_runtime_resume_and_get(ceudev->dev);
->  	mutex_unlock(&ceudev->mlock);
->  
-> -	return 0;
-> +	return ret;
->  }
->  
->  static int ceu_release(struct file *file)
-
+-- 
+With Best Regards,
+Andy Shevchenko
