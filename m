@@ -2,97 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621E036F6BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 09:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9010236F6C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 09:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbhD3HzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 03:55:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbhD3HzR (ORCPT
+        id S231174AbhD3H6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 03:58:48 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:17830 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229532AbhD3H6p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 03:55:17 -0400
-Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [IPv6:2a0b:5c81:1c1::37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C21C06174A;
-        Fri, 30 Apr 2021 00:54:27 -0700 (PDT)
-Received: from hillosipuli.retiisi.eu (unknown [IPv6:2001:2003:f75d:b010:afd2:773e:79db:477b])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sailus)
-        by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 7EFB41B00F45;
-        Fri, 30 Apr 2021 10:54:23 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
-        t=1619769263;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3U4TwvCNSP5Ieq1hIP9Sa1BflL5QZOrUpAEsHU6H8XU=;
-        b=fQCCSlco6qa44izNHBA8d6fDLU9t/oi2ULCR2mpTIUnI8WD5pF/V5vavZhfYVjC9p15sH1
-        9BtgdYULvBNWGvSTuZNlbB8d0/PHOyobFxekhHhly2G26/V5QhIvV3vFy6KMa/0HdNFKCy
-        4bz/EXrQiUUIqCatEJ6KFfGMb4H7xRUswi27AixmUqrORYO4pB6VEn3AL0a9G9CQET5LQK
-        MBn7JEc86MMEerTgZUkqeGQ7lSi8bWKjAoeVGCnWNhBWp+YYrBaK61OxCam0rBTML2Ytcv
-        ThPbxUp1z9q0e7PJoHzbViQbkBq+XcKESJ6KIQCxrzOJ29Cy27CNDuEU7TwMFg==
-Received: from valkosipuli.localdomain (valkosipuli.localdomain [IPv6:fd35:1bc8:1a6:d3d5::80:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 63E7D634C89;
-        Fri, 30 Apr 2021 10:52:19 +0300 (EEST)
-Received: from localhost ([127.0.0.1] helo=valkosipuli.retiisi.eu)
-        by valkosipuli.localdomain with esmtp (Exim 4.92)
-        (envelope-from <sakari.ailus@iki.fi>)
-        id 1lcNyh-0004yu-FC; Fri, 30 Apr 2021 10:54:23 +0300
-Date:   Fri, 30 Apr 2021 10:54:23 +0300
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     dev.dragon@bk.ru
-Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Staging: media: atomisp: pci: fixed a curly bracket
- coding style issue.
-Message-ID: <20210430075423.GZ3@valkosipuli.retiisi.eu>
-References: <20210410191655.32719-1-dev.dragon@bk.ru>
+        Fri, 30 Apr 2021 03:58:45 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FWl662qVnzBtGb;
+        Fri, 30 Apr 2021 15:55:26 +0800 (CST)
+Received: from [127.0.0.1] (10.69.38.196) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.498.0; Fri, 30 Apr 2021
+ 15:57:47 +0800
+From:   Yicong Yang <yangyicong@hisilicon.com>
+Subject: [Question] Indefinitely block in the host when remove the PF driver
+To:     Alex Williamson <alex.williamson@redhat.com>, <cohuck@redhat.com>,
+        <kvm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+CC:     "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        Linuxarm <linuxarm@huawei.com>,
+        Yicong Yang <yangyicong@hisilicon.com>
+Message-ID: <c9466e2c-385d-8298-d03c-80dcfc359f52@hisilicon.com>
+Date:   Fri, 30 Apr 2021 15:57:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210410191655.32719-1-dev.dragon@bk.ru>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-        s=lahtoruutu; t=1619769263;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3U4TwvCNSP5Ieq1hIP9Sa1BflL5QZOrUpAEsHU6H8XU=;
-        b=XOMJlrwMJpx77f+GpeWh1bZkXtNUdzBvR+QqAnadcBRqpum+y0nCjzIQwhcv4El0008hqS
-        IvSkwNdhwtb6sju3F/V3ydQMVTTjqDdhe0+jAgy3KacacD40IzemGL41qJxBP+cP25/asT
-        Ij0Odol5TENjs5ad3zeckhIRwsBTHu0PyWDUlxaMGYE+oInCKgL00T4Z9RtQtbue1OPk4T
-        S/ryC5e8Jyg1zEMlsdVD6V02I3Rkeyxlr3eDWqCn4O7g2pxe0moCnhRraU93dAbl1Vy7y1
-        +Xf1cXSD3rilbGnSWRqGVWC0xKdsKrBQfpQDbnNhtGzisNY1HZoF3V1tD+69Dg==
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
-ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1619769263; a=rsa-sha256;
-        cv=none;
-        b=BFrqSDwPkn5EbbJtfrVtJiSc1M9WAM2aBT5amM+NaiWSAy8DaZUrQV+3TmliHO9IHpSAji
-        AMS9uKDNSHL/kfg8NIt0sNhUBCsH0JyV+0P15F5nfX7bqHJX+ELWcN+k7zFWJdwZB3vNIC
-        2XNTtnyllzcD0WGOhxHbBUfwkzIN4inNZHTJJYmjUdrEHY/4Cb+jrU7ANjX6eoiRN9857a
-        umkwwqVrwPXR2El3RD6zazX+X0cxOGt171Jr/F4WLGCg5NSZr11o5oR2UMk90+uLzZ5vSH
-        MNA6V+JlUXAXg/4oZeEHCfKCxVM3ybnwr0NufdRPspVJ7MmLS4KGBMEsNrR5bg==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.38.196]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitrii,
+When I try to remove the PF driver in the host, the process will be blocked
+if the related VF of the device is added in the Qemu as an iEP.
 
-On Sat, Apr 10, 2021 at 10:16:56PM +0300, dev.dragon@bk.ru wrote:
-> From: Dmitrii Wolf <dev.dragon@bk.ru>
-> 
-> Fixed a coding style issue.
+here's what I got in the host:
 
-You'll need a Signed-off-by: line here. Please see
-Documentation/process/submitting-patches.rst .
+[root@localhost 0000:75:00.0]# rmmod hisi_zip
+[99760.571352] vfio-pci 0000:75:00.1: Relaying device request to user (#0)
+[99862.992099] vfio-pci 0000:75:00.1: Relaying device request to user (#10)
+[...]
 
--- 
-Kind regards,
+and in the Qemu:
 
-Sakari Ailus
+estuary:/$ lspci -tv
+-[0000:00]-+-00.0  Device 1b36:0008
+           +-01.0  Device 1af4:1000
+           +-02.0  Device 1af4:1009
+           \-03.0  Device 19e5:a251 <----- the related VF device
+estuary:/$ qemu-system-aarch64: warning: vfio 0000:75:00.1: Bus 'pcie.0' does not support hotplugging
+qemu-system-aarch64: warning: vfio 0000:75:00.1: Bus 'pcie.0' does not support hotplugging
+qemu-system-aarch64: warning: vfio 0000:75:00.1: Bus 'pcie.0' does not support hotplugging
+qemu-system-aarch64: warning: vfio 0000:75:00.1: Bus 'pcie.0' does not support hotplugging
+[...]
+
+The rmmod process will be blocked until I kill the Qemu process. That's the only way if I
+want to end the rmmod.
+
+So my question is: is such block reasonable? If the VF devcie is occupied or doesn't
+support hotplug in the Qemu, shouldn't we fail the rmmod and return something like -EBUSY
+rather than make the host blocked indefinitely?
+
+Add the VF under a pcie root port will avoid this. Is it encouraged to always
+add the VF under a pcie root port rather than directly add it as an iEP?
+
+Thanks,
+Yicong
+
+
+
