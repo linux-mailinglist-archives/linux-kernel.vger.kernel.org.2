@@ -2,128 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D9C36FC61
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 16:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D86F36FC69
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 16:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233309AbhD3O3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 10:29:39 -0400
-Received: from mail-bn8nam12on2057.outbound.protection.outlook.com ([40.107.237.57]:52788
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232619AbhD3O3h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 10:29:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lUOcwpUBJArkO8en5TK8uegAsam6zYPHhN+3JzU9bAzwxXAkP99cqZleFn4ju1Kl67tJii6imH0OKbfp7YGL0attqYM3QNY+OPpf22Dm0qwo4iCllHNwuYP6N5nZx/AlTqTnoXT8cBHaebzcg0aj24PAIYp9hpvBmkmnd6+YQqE5Vm9K7hfnaWMcnpRS7xlKMeCjsAN8EjudCx05sNRCEiBWd80q437BPcQJVVw8lDLHYa1KtHaJQZ88eEyGdrOWKVrUhXEfR9UvirlmySQLIcdsOerq77UIllamv0SGrpz1GjPPixYjqItvqeagZ/dISEWa0N6z74pvfLX41gqq7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qguFZneb1fOavwhVt1T+MV0mTTScFXAZTXKk0ky7hgg=;
- b=IPBw0WCYbaUIexHNS3mtJfPA7ntHHn2FbaVyxRmX2t6Hm8Ia08jIwBfR2PrGbPWlNjuZVogTAEjxjxFeMMXkDPI+PuiNiPeLqLRhimP90ByPn1+wT9l9GX35N3lCzkSe38wNhXBsJ44FSfxiKftisQzTByLzcws7nP/eX2qK9Z9vGZb+s4dTejkxyi6WrP258b5BwqEzZCjtT06P/b3ANekiXvZNEPtckG7j4rHTJcu1uUk0NuVqDz3mUvWMiCTWF3iAMHFejNrSwDiX7lkRC7zKpNX9KE4eFR/Yi0zDNXjecYCoxpquNGmtNjGDS5g8+GOhTl8Y9Wzb3Si2ugQSsw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qguFZneb1fOavwhVt1T+MV0mTTScFXAZTXKk0ky7hgg=;
- b=dC2nl8HjvQMHSsGdNpFIVI5Gn24ChaEZ5i4LNw4iV0g/yrYDfH5G5zCOgTfK76xoSux/nc9K8tcs6PqB8dTuke2MZTzzOzHMlDJY7UwAczVSuR8IPsADir+7Yc8WrqtTr62uPpDQjl1O+Y5d2QdZKqI6ld4ZpjH1R87oNBUZimuAIKzebMslSJxX+WM28K9mqnnb2fUcmBw9DB4h1ApdkMKIvjUf26obsp6tc76CAfAN792XWW7e8+kYy9kqemoAnpRwA7CkBJZ33ky4E7JVd/bz/2OfDVI/AgzAONSGk8Dn/VZDTjHoyRktcE/OxeunGSUlQlAebUlVAXPj1vAsqg==
-Authentication-Results: linux.alibaba.com; dkim=none (message not signed)
- header.d=none;linux.alibaba.com; dmarc=none action=none
- header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4499.namprd12.prod.outlook.com (2603:10b6:5:2ab::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.25; Fri, 30 Apr
- 2021 14:28:47 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4065.027; Fri, 30 Apr 2021
- 14:28:47 +0000
-Date:   Fri, 30 Apr 2021 11:28:46 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        nathan@kernel.org, ndesaulniers@google.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] IB/qib: Remove redundant assignment to ret
-Message-ID: <20210430142846.GA3518700@nvidia.com>
-References: <1619692940-104771-1-git-send-email-yang.lee@linux.alibaba.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1619692940-104771-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Originating-IP: [206.223.160.26]
-X-ClientProxiedBy: CH2PR19CA0016.namprd19.prod.outlook.com
- (2603:10b6:610:4d::26) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S233443AbhD3OaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 10:30:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233361AbhD3OaD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 10:30:03 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34619C06174A;
+        Fri, 30 Apr 2021 07:29:14 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id y26so3242619eds.4;
+        Fri, 30 Apr 2021 07:29:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lkzMRDz3EKi3qa9HUgoov0nFfmSvHU5WWdnRd2PhEfY=;
+        b=Djek82IazPreK1nAfG7GyGE8CUKxRqOVvi0sX6P9Hki4Sdbox5lbWVWM8phK/zx8/E
+         OA0mdloRD+8T6tARQ3cAieaThw7Ww2/vBYoUiwuyt24htWijgxFoNJ9QK3qbgb/hjKa8
+         UkQJwAeJg9OlkvxpbIesRVHN5nIIZmgguDgTmHJY/FBp/8l3++32riFNcFlQJW/YFfTF
+         ATBKorPWiOWguRvbKrojZZHwLg8rhCD2GcrgdLNm2ovwlOqL+pgRNgMf0ZqQWkaZupZQ
+         n87N/3/5iPBXynK/k988PtaN9lViIq2DW3AGQn0ZrIeYiUkqHj6S/y2BYxmzitOjj/+X
+         CKNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lkzMRDz3EKi3qa9HUgoov0nFfmSvHU5WWdnRd2PhEfY=;
+        b=QbJclMcxfXWCn+mH/BXqM607nMlr5xaTealB/qqVRbWZXT552nW48bnbtPSH42lW8v
+         Wi6JfyTQyDfmtuGcvE/JSgi+M2iWlLtdVs0cFBLiRiWvq7xdg/LdfETD2C39FQQDYeIg
+         MheVG5Jf+Z585suy78VMy1HZHw9+Fw6y7QE6xhnv3dzkTTWLF8YaItRlGtLBFhIsnJpM
+         CeWDUjgkEryH8NEKjEH2+0pgsAQ2dBjwq26S7APmj1Hzkd7PCGim8IWhcSUq6GmJw+fI
+         HxIH9+FAPIIBle/iQ2bzHzRpXN7254mcgGmivavbb+xw6swZDJftZ0ZJZqlMpX0yNh6X
+         7OSQ==
+X-Gm-Message-State: AOAM531l4rPjClF8qejmf/vFBKL7N/3zRIyK7Oosc+G3VJMh6zqKo1Xk
+        VTv+Mpu2fz4ATqnPwhUvF8jFSxObRsQ=
+X-Google-Smtp-Source: ABdhPJyK6nisePrI1zhyReqfVdYYFwPRp5NNscbrAQ2ojGDNZdbHyjLPoxaXyaLnj7FAJt/MdPRmkg==
+X-Received: by 2002:a05:6402:4d1:: with SMTP id n17mr6231689edw.118.1619792952913;
+        Fri, 30 Apr 2021 07:29:12 -0700 (PDT)
+Received: from [192.168.178.40] (ipbcc11466.dynamic.kabel-deutschland.de. [188.193.20.102])
+        by smtp.gmail.com with ESMTPSA id p4sm2064792ejr.81.2021.04.30.07.29.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Apr 2021 07:29:12 -0700 (PDT)
+Subject: Re: [PATCH] scsi: target: configfs: Remove redundant assignment to
+ ret
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1619774627-118766-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Bodo Stroesser <bostroesser@gmail.com>
+Message-ID: <69ef77bd-4ef8-6446-8192-6d8569516f33@gmail.com>
+Date:   Fri, 30 Apr 2021 16:29:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by CH2PR19CA0016.namprd19.prod.outlook.com (2603:10b6:610:4d::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.28 via Frontend Transport; Fri, 30 Apr 2021 14:28:47 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lcU8M-00ElQ4-2f; Fri, 30 Apr 2021 11:28:46 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 94df1694-0f0e-4151-8e56-08d90be44427
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4499:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4499BCC3BBA4EBEA127BE5C3C25E9@DM6PR12MB4499.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FYeC+Amo+CmBNPTaOWIDs8xwRsX+WFW7tfCSpI/jRZsq/XE4JXhmRKhVbBM0RDH9jNZ0OWoWQpdJdc6Eo6XJdG/oMi8SNNJc+JFunAJMwF/M+n2ks/7JgllRM42RWaQFETztcLS0A+p9q4PIBIHj5lV7ylfYtkYr8gibB7Uh+BxwRjEHCqDFATrt/kO2Nfgo1ekSGChbldFXmY8qS5p0ba8HY7cxMmKLs+3MPjFXhhdMo9ys7Opx39fyP6Y+B68yZQHXVkhpXwyq1jgmbM7a+GeJbB4V315FR2T2CSkeAMAknED1sWU3d54/VVo4RZWMyNUNM4b7ohpvDS7jMD1vLOd+58a40RARPuoacwSJBfWC+9nGzjVt4f63HsE4V8OsKRRuuOCDLP1iAYIydz8xbSuMiQvfWEeRFSyE28B5KnRi43OLmzbncyRHHrIJ8ZcOucUrmmYE6P3Ql8+FW68Uwa/yGyHvDTDtgno9HI+BlogCKPZ96d0SlekscVY9WDaNVkqV9VM89dbfmyif/icac2yFsKbi+8kp9XOXEl3Fo09uKfyQKXN2yDIEkpzmBwcEGEyCuJpWBlJPXXY7qHwZtTVL1UO+8dri9O0L4KYiyH8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39850400004)(396003)(366004)(346002)(376002)(38100700002)(9786002)(8676002)(66476007)(316002)(36756003)(33656002)(83380400001)(66556008)(8936002)(6916009)(2906002)(2616005)(1076003)(426003)(66946007)(4326008)(9746002)(86362001)(186003)(478600001)(5660300002)(26005)(4744005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?d2cILjGZ5DWp2rFavDU6tCt9kdgCnQb8sPiOJgdB0YTGU8nk82yhajTtlz1G?=
- =?us-ascii?Q?G7xzvSFAqbWWdSZe2HQr/etxVE8PMx/gvQ3aN9XX4OLTlSCA8C/qQGIgQ3Sr?=
- =?us-ascii?Q?beDlTpRN8SU8xAtR2Ku5M13TIgw+MTdQaHyybsSHCWXYHyCyAJ5lnOD0ARV/?=
- =?us-ascii?Q?USM67Up+E3vUhmP0LPxtYxI1JAV4XHq6yTfh07NYrdFXeS2mND4M1EKfHzQ/?=
- =?us-ascii?Q?tuwb4r6M/Weni9zCwzqe9w4d6phlzNFQqbjkVlv0nhXXe5O2eTtJB5Roh7I9?=
- =?us-ascii?Q?zb5Bw2uYXJOwvwGXKukdWYf9evJDMgen/GcehCTxBQ+ZB0qkGnkdKwmj4l2b?=
- =?us-ascii?Q?elmiHMAGIJ7xxpWKPl6Gc+GS5ZIbWAHXnTE5eFC9+aFjhBcSd26bbt5F4um5?=
- =?us-ascii?Q?pDSRhF1wgmq9zIZb5PE+8oifiSdImwthqY1GfmKcBor5Cs2BFXqqg0bSRiof?=
- =?us-ascii?Q?reBjRCYqKvHb5yiRT2NPSc0vck9+ZHkURKRBrB8agY1BpZ2d4knu8EmoJ1sY?=
- =?us-ascii?Q?1sGPsS2w0m9oZKbdcjKnDkDNZJdlbev02Mc9F33isgfgUM8GlA8q8LW7Mupk?=
- =?us-ascii?Q?qstp7tStapyLHuIDSqrbX6hkwSTINsjIdBB7/BfJ4RkGzFcYfmyhmiON+0Lg?=
- =?us-ascii?Q?D73trNn+UCqNFEdCHYSO9cvnak+JJyVoiB8IveAGudtkG1s5wuStfDM4Ugzo?=
- =?us-ascii?Q?3AVm3rGr/mAfkMQc323Tdi1rRXR66q6sxK/hAa2ob2r/GAyMLUtvgsIHG7Mp?=
- =?us-ascii?Q?OuOLCcP6vCHiCfZ9GtEPDZ9lYWJ1lL2L7xowSh3oyJwFdvQQC9K+Ewyl2UYf?=
- =?us-ascii?Q?mSbDnL6TD0MeTfotXiugxxoRJ4PmLW8ja0UtrWMJNV0IrffWqruGpUlAZuTV?=
- =?us-ascii?Q?o2Xn8nkINADo7BoUl0X3N97kH5o3ESiBlK1SuxE8SuAknRKuC9U0rXiKi/xL?=
- =?us-ascii?Q?fySdmg60z5h9rl2Z+Yvn88pw8o4kh1PARO5yrPjOVpLhPpHBFEOMfPkEgc+S?=
- =?us-ascii?Q?f8piW2MJrWihEXjWHqkXXxVrxJhhUYz4z3Oz9t2nv49l/Ms022V7jkXQjhOJ?=
- =?us-ascii?Q?gSrRjzEXQYshLoSDghb4ksmO6PvaBzqMiPvM2KbbxpZBaYr1Nudmz8Xcqx8K?=
- =?us-ascii?Q?papyTQsfHghwuITVAzKupdQoQ5vqCxgNzAxPHKR0LKjUNFWhux99lkjuEmxu?=
- =?us-ascii?Q?Xf5ESsTS2R5eyaTJHPlfnRrxKf2hkjrRJvYiYzWBpSvP5vCg7NvNB4P2j8QE?=
- =?us-ascii?Q?HY/QB9UD5BSv0zgjxp4pZ+vVJHfqmAjNdXlg3kGr/xpRprMbTU0D5pBZoS+a?=
- =?us-ascii?Q?ATjnbQtCr3thUL+rbXkJ9BiF?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 94df1694-0f0e-4151-8e56-08d90be44427
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2021 14:28:47.6096
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rXNsjGrOCe7Zm+EJysDhFhTptNNLell6noDIWgx3KsEQgVfLX14BndnQYpiI3WdL
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4499
+In-Reply-To: <1619774627-118766-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 06:42:20PM +0800, Yang Li wrote:
-> Variable 'ret' is set to zero but this value is never read as it is
-> overwritten with a new value later on, hence it is a redundant
-> assignment and can be removed
+On 30.04.21 11:23, Jiapeng Chong wrote:
+> Variable ret is set to '-EINVAL' but this value is never read as it is
+> overwritten later on, hence it is a redundant assignment and can be
+> removed.
 > 
 > Clean up the following clang-analyzer warning:
 > 
-> drivers/infiniband/hw/qib/qib_sd7220.c:690:2: warning: Value stored to
-> 'ret' is never read [clang-analyzer-deadcode.DeadStores]
+> drivers/target/target_core_configfs.c:2037:5: warning: Value stored to
+> 'ret' is never read [clang-analyzer-deadcode.DeadStores].
+> 
+> drivers/target/target_core_configfs.c:1973:5: warning: Value stored to
+> 'ret' is never read [clang-analyzer-deadcode.DeadStores].
+> 
+> drivers/target/target_core_configfs.c:1959:5: warning: Value stored to
+> 'ret' is never read [clang-analyzer-deadcode.DeadStores].
 > 
 > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 > ---
->  drivers/infiniband/hw/qib/qib_sd7220.c | 1 -
->  1 file changed, 1 deletion(-)
+>   drivers/target/target_core_configfs.c | 3 ---
+>   1 file changed, 3 deletions(-)
+> 
+> diff --git a/drivers/target/target_core_configfs.c b/drivers/target/target_core_configfs.c
+> index 4b2e493..bda05c3 100644
+> --- a/drivers/target/target_core_configfs.c
+> +++ b/drivers/target/target_core_configfs.c
+> @@ -1956,7 +1956,6 @@ static ssize_t target_pr_res_aptpl_metadata_store(struct config_item *item,
+>   				pr_err("APTPL metadata initiator_node="
+>   					" exceeds PR_APTPL_MAX_IPORT_LEN: %d\n",
+>   					PR_APTPL_MAX_IPORT_LEN);
+> -				ret = -EINVAL;
+>   				break;
+>   			}
+>   			break;
+> @@ -1970,7 +1969,6 @@ static ssize_t target_pr_res_aptpl_metadata_store(struct config_item *item,
+>   				pr_err("APTPL metadata initiator_isid"
+>   					"= exceeds PR_REG_ISID_LEN: %d\n",
+>   					PR_REG_ISID_LEN);
+> -				ret = -EINVAL;
+>   				break;
+>   			}
+>   			break;
+> @@ -2034,7 +2032,6 @@ static ssize_t target_pr_res_aptpl_metadata_store(struct config_item *item,
+>   				pr_err("APTPL metadata target_node="
+>   					" exceeds PR_APTPL_MAX_TPORT_LEN: %d\n",
+>   					PR_APTPL_MAX_TPORT_LEN);
+> -				ret = -EINVAL;
+>   				break;
+>   			}
+>   			break;
+> 
 
-Applied to for-next, thanks
+I don't think storing -EINVAL in ret is wrong. But maybe the "break" in
+the next line should better be "goto out"?
 
-Jason
+AFAICS, the "break" finally leads to calling
+core_scsi3_alloc_aptpl_registration () despite a too long string in
+i_port, isid or t_port. Is this behaviour intentional?
+
+BTW: why is "initiator_sid" input handled as string?
+core_scsi3_alloc_aptpl_registration later calls get_unaligned_be64 for
+that string. I don't think this makes sense.
+
+Finally, I think there is a possible memory leak. If the input written
+to res_aptpl_metadata for example contains "initiator_sid=xxxxx" more
+than once, a previously created string isid ("isid = match_strdup(args)")
+is not freed before it is overwritten in the loop. The same is true for
+all tokens handled with match_strdup.
