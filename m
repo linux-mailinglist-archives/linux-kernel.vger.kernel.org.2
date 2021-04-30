@@ -2,61 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5074036FA19
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 14:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99AD836FA1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 14:25:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231993AbhD3MZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 08:25:22 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:47616 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230208AbhD3MZR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 08:25:17 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lcSBs-001oHb-52; Fri, 30 Apr 2021 14:24:16 +0200
-Date:   Fri, 30 Apr 2021 14:24:16 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     David Miller <davem@davemloft.net>, f.fainelli@gmail.com,
-        hkallweit1@gmail.com, kuba@kernel.org, Landen.Chao@mediatek.com,
-        matthias.bgg@gmail.com, linux@armlinux.org.uk,
-        sean.wang@mediatek.com, vivien.didelot@gmail.com,
-        olteanv@gmail.com, robh+dt@kernel.org, linus.walleij@linaro.org,
-        gregkh@linuxfoundation.org, sergio.paracuellos@gmail.com,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-staging@lists.linux.dev, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org, weijie.gao@mediatek.com,
-        gch981213@gmail.com, opensource@vdorst.com,
-        frank-w@public-files.de, tglx@linutronix.de, maz@kernel.org
-Subject: Re: [PATCH net-next 0/4] MT7530 interrupt support
-Message-ID: <YIv28APpOP9tnuO+@lunn.ch>
-References: <20210429062130.29403-1-dqfext@gmail.com>
- <20210429.170815.956010543291313915.davem@davemloft.net>
- <20210430023839.246447-1-dqfext@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210430023839.246447-1-dqfext@gmail.com>
+        id S232058AbhD3M0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 08:26:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232048AbhD3M0Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 08:26:16 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A55C06138B
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 05:25:27 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id v13so22905122ple.9
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 05:25:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=9JpNmPz9+A6Ds6QUoV6S8ikIWMpjgKdHINWt1h/gwng=;
+        b=X9XNj76ML0b1qKgrgsV4pOWOns/E1Zr2YoFjUeRjCooUmozvxtDCqJ5f+EtISJ4sYU
+         GcTwIEhvbhZs5g5VJRUndzjrGhPyDhLaKVCrAPEPHPm8g437kBIL6e/V2/i9zX3TTvmb
+         R481ItI9LodJawfOAWPQ20ZMeP4/EXjdBh6BqyPUkYadwll5fFOdqN3zL+F/7/uMxoJm
+         EFQDIW9XdR/7cf5Wyq109l+6TmCmfH9fbtD0dKfYU94YP7X17qXqRuDiYOgCHMdzUjSR
+         6Gt4hKZ7t1RcF8FGIWyS5Ph0hu5BSN7Y7QQFD5D7bYUcAWq6k91NykPTubKEH6QrtFHx
+         AM1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=9JpNmPz9+A6Ds6QUoV6S8ikIWMpjgKdHINWt1h/gwng=;
+        b=nHF4EnVlBF4OpfwZAoblu+MDv8usN5825rufnVyJBILK/h5tyuQ6RREzi4KUjvnHmV
+         /JUgXmBDULRQwLy1aKN+G/MB/bshEoK1zokAjRqM3AlxxYrfjpNb+WH8ONv2nQ80mpM8
+         UMUJkEP8R795KM1w35PEGNmccED57PY+VjofwgMD4PkrNRyYT/hHyArDjtt25P//8Y5J
+         it9qHm2pM/rSqE06xmJaMHN0hMYTgF5QzJirRn25WL/xcRTARyxihhMeqQonv7U3WWUo
+         Cdf3qtVxnQJQbBzfSyjXWatY/CscLt9xGPP43PhSD9FKjR8Img7R2CnwWtKDY6sS/HL7
+         0gjQ==
+X-Gm-Message-State: AOAM530kp2BJlRK+WUSUxx51X2mlq9dcKj9n5vX5Xo9V/SwvyKBPfZD/
+        Lt3dnfh5cGbQExFty7EbnBk=
+X-Google-Smtp-Source: ABdhPJxzKPAOlKyFitPRSYeUcdTn0P0xeHrj8CJMOgAMGTYzpUxsjQq0ncd1SIj3HXp3wQ/uKxguPw==
+X-Received: by 2002:a17:90a:e384:: with SMTP id b4mr15533666pjz.157.1619785527133;
+        Fri, 30 Apr 2021 05:25:27 -0700 (PDT)
+Received: from localhost.localdomain ([183.129.167.42])
+        by smtp.gmail.com with ESMTPSA id j23sm2239785pfh.179.2021.04.30.05.25.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 05:25:26 -0700 (PDT)
+From:   Mingzhe Yang <cainiao666999@gmail.com>
+To:     tglx@linutronix.de, peterz@infradead.org
+Cc:     linux-kernel@vger.kernel.org, yuxin.wooo@gmail.com,
+        becausehan@gmail.com, huan.xie@suse.com,
+        Mingzhe Yang <cainiao666999@gmail.com>
+Subject: [PATCH] tasklets: simplify code in tasklet_action_common()
+Date:   Fri, 30 Apr 2021 20:25:21 +0800
+Message-Id: <20210430122521.13957-1-cainiao666999@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 10:38:39AM +0800, DENG Qingfang wrote:
-> On Thu, Apr 29, 2021 at 05:08:15PM -0700, David Miller wrote:
-> > 
-> > Please fix this:
-> > 
-> > error: the following would cause module name conflict:
-> >   drivers/net/phy/mediatek.ko
-> >   drivers/usb/musb/mediatek.ko
-> 
-> So I still have to rename the PHY driver..
-> Andrew, what is your suggestion? Is mediatek_phy.c okay?
+Use tasklet_is_disabled() to simplify the code in tasklet_action_common.
 
-mediatek_phy.c gets you into trouble with the generic PHY drivers.
-Most Ethernet PHY drivers have the model number in the file name. Does
-the PHY have its own name/numbering, or is it always considered part
-of the switch?  If the PHY has an identity of its own, use
-that. Otherwise maybe mediatek75xx.c?
+Signed-off-by: Mingzhe Yang <cainiao666999@gmail.com>
+---
+ include/linux/interrupt.h | 11 +++++++++++
+ kernel/softirq.c          | 14 +++++++-------
+ 2 files changed, 18 insertions(+), 7 deletions(-)
 
-      Andrew
+diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
+index 4777850..b0fba4d 100644
+--- a/include/linux/interrupt.h
++++ b/include/linux/interrupt.h
+@@ -721,6 +721,17 @@ static inline void tasklet_enable(struct tasklet_struct *t)
+ 	atomic_dec(&t->count);
+ }
+ 
++static inline bool tasklet_is_enabled(struct tasklet_struct *t)
++{
++	smp_rmb();
++	return !atomic_read(&t->count);
++}
++
++static inline bool tasklet_is_disabled(struct tasklet_struct *t)
++{
++	return !tasklet_is_enabled(t);
++}
++
+ extern void tasklet_kill(struct tasklet_struct *t);
+ extern void tasklet_init(struct tasklet_struct *t,
+ 			 void (*func)(unsigned long), unsigned long data);
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index 4992853..ee36b15 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -778,16 +778,16 @@ static void tasklet_action_common(struct softirq_action *a,
+ 		list = list->next;
+ 
+ 		if (tasklet_trylock(t)) {
+-			if (!atomic_read(&t->count)) {
+-				if (tasklet_clear_sched(t)) {
+-					if (t->use_callback)
+-						t->callback(t);
+-					else
+-						t->func(t->data);
+-				}
++			if (tasklet_is_disabled(t) || !tasklet_clear_sched(t)) {
+ 				tasklet_unlock(t);
+ 				continue;
+ 			}
++
++			if (t->use_callback)
++				t->callback(t);
++			else
++				t->func(t->data);
++
+ 			tasklet_unlock(t);
+ 		}
+ 
+-- 
+1.8.3.1
+
