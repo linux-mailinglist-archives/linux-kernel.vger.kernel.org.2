@@ -2,110 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D04463702A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 23:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E12FA3702A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 23:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236066AbhD3VIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 17:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231278AbhD3VIg (ORCPT
+        id S236019AbhD3VIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 17:08:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40515 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236122AbhD3VIu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 17:08:36 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D758BC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 14:07:47 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id k3-20020a17090ad083b0290155b934a295so2415869pju.2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 14:07:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=53bzAf1u6JW5+ZWhmzMnt7EtP/jXlqbD8WQc/gJHHsU=;
-        b=JmsMhoTpI0+TSwVGnU4CF2vZzkoRyGe/DvdJjvEhutMZ1eRxJXQHQOVEauAnHhJp4F
-         1nWQogpFyj8imgLEZWUuewf1cpy4MjclZ0g8lQ2EyCU4SwnFN/4NL7MfTkEfVCDVs3+Q
-         0ENcaxTlnGvnQ/tDLU1K86u9ug7Vj1s9VDkfl3Ua1/14L6tvZAZNjG1lFUkugEXrb7lX
-         ArdkBg75K19ybReQV4x8S4vEzZwihKJS8AJNpkDBIG+z5OeTBlfYpeL8UEHCNmQGHzpg
-         SixvO1Og3gWAe7ytI5dH0xUd866GXCPMA4l4jS1s9f/Z+SgPvWiUeMtFDZZdziDvDygJ
-         9e2g==
+        Fri, 30 Apr 2021 17:08:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619816881;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7bjSqgt4w42d2y2oUh6BGNJmeVzILv9yAjfoz9hqHZ8=;
+        b=Tl7al7NV5S7ilgesGLruvMVpsvfYiQj/S8MbDe0dH5a9KnDznhZxAZm93vI2r9EGoiRwuF
+        VDf4d+q3nwv3liXuLabwzBMPADPiJRmOK2WsTvBbNx4lTsExBTM837eGhbrkWUmvTk4xoZ
+        nU2DsO5aXq59/GSqc6r06EmMQt8DI08=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-2-12Z1n4vzMYWesYkNXta_zw-1; Fri, 30 Apr 2021 17:07:59 -0400
+X-MC-Unique: 12Z1n4vzMYWesYkNXta_zw-1
+Received: by mail-lj1-f199.google.com with SMTP id e6-20020a05651c04c6b02900c01712738eso5897299lji.2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 14:07:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=53bzAf1u6JW5+ZWhmzMnt7EtP/jXlqbD8WQc/gJHHsU=;
-        b=SmkPNdrNVWTUhF5sw0MO6q5ZzXMFXDW+izhvBSWrD5/SrthsQbymQ37FZuNlOU74HW
-         TXCMwbw2huSC9skzDserEf+Vw9bIxW+k2Wlm3F98OI8gS2OffvMN4bTmmgRjg+79Ywia
-         K/XYFa4ukeh+IalpDD8YzmZcUXeWcl9uOiY+pfba2e1Bc+Y9TFt7RoEVi3wVsWleyqGF
-         JNW7RRbA8vXkxXjQHK4n7TrwlHB3Qc4p0vdUSiRn5vU8Ua2kY1VcIxMwEuGjjI8efwtG
-         1ZScVOaxD/AM8y/vO0iSEYi/TeMbQTaSXWmDqUSVu0musIiKeZ0iK9AZbEhOUz+r74u9
-         CNEw==
-X-Gm-Message-State: AOAM531v/vOjE1foBbl1t89gzGtLfOwOK8N9Y1hEnEZjobOTL8b6Ds+E
-        j9u/7b7RD6lGFGwt7XM/RiU=
-X-Google-Smtp-Source: ABdhPJzkU6Vr1uJDTQW28yS3VNZ/g/UPHb8qUUGaniLy4HHglcude70O4HJsgRRIgWAZSON2M8K+Fw==
-X-Received: by 2002:a17:902:7281:b029:ea:afe2:b356 with SMTP id d1-20020a1709027281b02900eaafe2b356mr7284919pll.16.1619816867376;
-        Fri, 30 Apr 2021 14:07:47 -0700 (PDT)
-Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
-        by smtp.gmail.com with ESMTPSA id w1sm2746698pfu.153.2021.04.30.14.07.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 14:07:46 -0700 (PDT)
-From:   Yang Shi <shy828301@gmail.com>
-To:     kirill.shutemov@linux.intel.com, wangyugui@e16-tech.com,
-        ziy@nvidia.com, hughd@google.com, akpm@linux-foundation.org
-Cc:     shy828301@gmail.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mm: thp: check total_mapcount instead of page_mapcount
-Date:   Fri, 30 Apr 2021 14:07:44 -0700
-Message-Id: <20210430210744.216095-1-shy828301@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7bjSqgt4w42d2y2oUh6BGNJmeVzILv9yAjfoz9hqHZ8=;
+        b=n0v0gs6vxr+Wr204oDHj2ILUnw1cmfQPorFIR4si8joovrr+WNDKQLdnRcrUHmup3h
+         xAuq47/3PCwNfxuY/QEVIiy0H/gWx3/DMN7kbANUB86dtnKNUAHt+xszEbvRPlXNSHhE
+         47coDfRER18GxPtpRSqycNH8ZUzdGziPKOBJEqOBU8rPO77wVCaHpMwmwoQFvTs3uReG
+         Bs0Kt+3ZrPwLRsT9OsU2oGmLdUR2Sn874OmsKQ4+prBLA/d81pqmS/p6f+Feuei3ZRiX
+         fuYn56bU+5T6l5hzWJwy92vj2602II8Ghx3adtQdcGfnuDKP2tbi5dQ5+vn+WSfqZxbb
+         zbEA==
+X-Gm-Message-State: AOAM532zP/R4cm1G7UFUxbTvJTn1X5uCOPVm4t95kMwjCAQl2BhwWPzp
+        rMb2RmwB7vT+/17bgtGMn3vYlMBtnwkoUPH4AftwNdIwVPmTYzTQKeqVo1wZZRYALN9pFoP+zLb
+        Gvgx9I4oY/fLip8hrrIY8XIriFmkkCCm4K5NxS711
+X-Received: by 2002:a05:6512:2312:: with SMTP id o18mr3109217lfu.159.1619816878352;
+        Fri, 30 Apr 2021 14:07:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzBW+2eTpJ1b/0aVBVfHtEHUDBvWA8EKipw/hV7udwyS3zot1KXF8xLRaYzeqXtLDjqsJJZJTOxweH+MiRCp/U=
+X-Received: by 2002:a05:6512:2312:: with SMTP id o18mr3109190lfu.159.1619816878110;
+ Fri, 30 Apr 2021 14:07:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200625223443.2684-1-nitesh@redhat.com> <3e9ce666-c9cd-391b-52b6-3471fe2be2e6@arm.com>
+ <20210127121939.GA54725@fuller.cnet> <87r1m5can2.fsf@nanos.tec.linutronix.de>
+ <20210128165903.GB38339@fuller.cnet> <87h7n0de5a.fsf@nanos.tec.linutronix.de>
+ <20210204181546.GA30113@fuller.cnet> <cfa138e9-38e3-e566-8903-1d64024c917b@redhat.com>
+ <20210204190647.GA32868@fuller.cnet> <d8884413-84b4-b204-85c5-810342807d21@redhat.com>
+ <87y2g26tnt.fsf@nanos.tec.linutronix.de> <d0aed683-87ae-91a2-d093-de3f5d8a8251@redhat.com>
+ <7780ae60-efbd-2902-caaa-0249a1f277d9@redhat.com> <07c04bc7-27f0-9c07-9f9e-2d1a450714ef@redhat.com>
+ <20210406102207.0000485c@intel.com> <1a044a14-0884-eedb-5d30-28b4bec24b23@redhat.com>
+ <20210414091100.000033cf@intel.com> <54ecc470-b205-ea86-1fc3-849c5b144b3b@redhat.com>
+ <CAFki+Lm0W_brLu31epqD3gAV+WNKOJfVDfX2M8ZM__aj3nv9uA@mail.gmail.com>
+ <87czucfdtf.ffs@nanos.tec.linutronix.de> <CAFki+LmmRyvOkWoNNLk5JCwtaTnabyaRUKxnS+wyAk_kj8wzyw@mail.gmail.com>
+ <87sg37eiqa.ffs@nanos.tec.linutronix.de>
+In-Reply-To: <87sg37eiqa.ffs@nanos.tec.linutronix.de>
+From:   Nitesh Lal <nilal@redhat.com>
+Date:   Fri, 30 Apr 2021 17:07:46 -0400
+Message-ID: <CAFki+L=_dd+JgAR12_eBPX0kZO2_6=1dGdgkwHE=u=K6chMeLQ@mail.gmail.com>
+Subject: Re: [Patch v4 1/3] lib: Restrict cpumask_local_spread to houskeeping CPUs
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>
+Cc:     "frederic@kernel.org" <frederic@kernel.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>, abelits@marvell.com,
+        Robin Murphy <robin.murphy@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "stephen@networkplumber.org" <stephen@networkplumber.org>,
+        "rppt@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
+        "jinyuqi@huawei.com" <jinyuqi@huawei.com>,
+        "zhangshaokun@hisilicon.com" <zhangshaokun@hisilicon.com>,
+        netdev@vger.kernel.org, chris.friesen@windriver.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When debugging the bug reported by Wang Yugui [1], try_to_unmap() may
-return false positive for PTE-mapped THP since page_mapcount() is used
-to check if the THP is unmapped, but it just checks compound mapount and
-head page's mapcount.  If the THP is PTE-mapped and head page is not
-mapped, it may return false positive.
+On Fri, Apr 30, 2021 at 2:21 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> Nitesh,
+>
+> On Fri, Apr 30 2021 at 12:14, Nitesh Lal wrote:
+> > Based on this analysis and the fact that with your re-work the interrupts
+> > seems to be naturally spread across the CPUs, will it be safe to revert
+> > Jesse's patch
+> >
+> > e2e64a932 genirq: Set initial affinity in irq_set_affinity_hint()
+> >
+> > as it overwrites the previously set IRQ affinity mask for some of the
+> > devices?
+>
+> That's a good question. My gut feeling says yes.
+>
 
-Use total_mapcount() instead of page_mapcount() and do so for the
-VM_BUG_ON_PAGE in split_huge_page_to_list as well.
+Jesse do you want to send the revert for the patch?
 
-[1] https://lore.kernel.org/linux-mm/20210412180659.B9E3.409509F4@e16-tech.com/
+Also, I think it was you who suggested cc'ing
+intel-wired-lan ml as that allows intel folks, to do some initial
+testing?
+If so, we can do that here (IMHO).
 
-Signed-off-by: Yang Shi <shy828301@gmail.com>
----
- mm/huge_memory.c | 2 +-
- mm/rmap.c        | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+> > IMHO if we think that this patch is still solving some issue other than
+> > what Jesse has mentioned then perhaps we should reproduce that and fix it
+> > directly from the request_irq code path.
+>
+> Makes sense.
+>
+> Thanks,
+>
+>         tglx
+>
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 63ed6b25deaa..2122c3e853b9 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2718,7 +2718,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
- 	}
- 
- 	unmap_page(head);
--	VM_BUG_ON_PAGE(compound_mapcount(head), head);
-+	VM_BUG_ON_PAGE(total_mapcount(head), head);
- 
- 	/* block interrupt reentry in xa_lock and spinlock */
- 	local_irq_disable();
-diff --git a/mm/rmap.c b/mm/rmap.c
-index 693a610e181d..2e547378ab5f 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1777,7 +1777,7 @@ bool try_to_unmap(struct page *page, enum ttu_flags flags)
- 	else
- 		rmap_walk(page, &rwc);
- 
--	return !page_mapcount(page) ? true : false;
-+	return !total_mapcount(page) ? true : false;
- }
- 
- /**
+
 -- 
-2.26.2
+Thanks
+Nitesh
 
