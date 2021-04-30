@@ -2,134 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D4236F7E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 11:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F99F36F7E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 11:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231718AbhD3J0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 05:26:52 -0400
-Received: from wind.enjellic.com ([76.10.64.91]:47762 "EHLO wind.enjellic.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229760AbhD3J0t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 05:26:49 -0400
-Received: from wind.enjellic.com (localhost [127.0.0.1])
-        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 13U9PdY5006270;
-        Fri, 30 Apr 2021 04:25:39 -0500
-Received: (from greg@localhost)
-        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 13U9PcEj006269;
-        Fri, 30 Apr 2021 04:25:38 -0500
-Date:   Fri, 30 Apr 2021 04:25:38 -0500
-From:   "Dr. Greg" <greg@enjellic.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Tim Gardner <tim.gardner@canonical.com>,
-        dave.hansen@linux.intel.com, jarkko@kernel.org, shuah@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Subject: [PATCH 0/1] SGX self test fails
-Message-ID: <20210430092538.GA5887@wind.enjellic.com>
-Reply-To: "Dr. Greg" <greg@enjellic.com>
-References: <20210429183952.22797-1-tim.gardner@canonical.com> <c0725600-0a00-31dd-2ec3-20d4a86b33c5@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c0725600-0a00-31dd-2ec3-20d4a86b33c5@intel.com>
-User-Agent: Mutt/1.4i
-X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Fri, 30 Apr 2021 04:25:39 -0500 (CDT)
+        id S231519AbhD3J1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 05:27:44 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:46802 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229543AbhD3J1m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 05:27:42 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UXFfKkM_1619774807;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UXFfKkM_1619774807)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 30 Apr 2021 17:26:52 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     efremov@linux.com
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] floppy: Remove redundant assignment to nr_sectors
+Date:   Fri, 30 Apr 2021 17:26:45 +0800
+Message-Id: <1619774805-121562-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 11:55:23AM -0700, Dave Hansen wrote:
+Variable nr_sectors is set to zero but this value is never
+read as it is overwritten later on, hence it is a redundant
+assignment and can be removed.
 
-Good morning, I hope the end of the week is going well for everyone.
+Clean up the following clang-analyzer warning:
 
-> On 4/29/21 11:39 AM, Tim Gardner wrote:
-> > I'm just starting my learning curve on SGX, so I don't know if
-> > I've missed some setup for the SGX device entries. After looking
-> > at arch/x86/kernel/cpu/sgx/driver.c I see that there is no mode
-> > value for either sgx_dev_enclave or sgx_dev_provision.
-> >
-> > With this patch I can get the SGX self test to complete:
-> > 
-> > sudo ./test_sgx
-> > Warning: no execute permissions on device file /dev/sgx_enclave
-> > 0x0000000000000000 0x0000000000002000 0x03
-> > 0x0000000000002000 0x0000000000001000 0x05
-> > 0x0000000000003000 0x0000000000003000 0x03
-> > SUCCESS
-> > 
-> > Is the warning even necessary ?
-> 
-> Dang, I just added that warning.  I thought it was necessary, but I
-> guess not:
-> 
-> $ ls -l /dev/sgx_enclave
-> crw------- 1 dave dave 10, 125 Apr 28 11:32 /dev/sgx_enclave
-> $ ./test_sgx
-> 0x0000000000000000 0x0000000000002000 0x03
-> 0x0000000000002000 0x0000000000001000 0x05
-> 0x0000000000003000 0x0000000000003000 0x03
-> SUCCESS
-> 
-> *But*, is that OK?  Should we be happily creating a PROT_EXEC mapping on
-> a ugo-x file?  Why were we respecting noexec on the filesystem but not
-> ugo-x on the file?
+drivers/block/floppy.c:2333:2: warning: Value stored to 'nr_sectors' is
+never read [clang-analyzer-deadcode.DeadStores].
 
-Because no one placed any explicit executable mode bit checks on the
-inode that is underlying the character device file in
-arch/x86/kernel/cpu/sgx/driver.c:sgx_open() and the controls on
-executable virtual memory are implemented in the mm/mmap.c:do_mmap()
-path when the mmap system call is executed.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/block/floppy.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-The notion of using discretionary access controls, and arguably MAC's,
-since the true identity of a file is its inode label, to gate
-executable permissions by a user on the contents of a file are a
-function of the exec* system calls.
+diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
+index 8a9d222..e96ad5b 100644
+--- a/drivers/block/floppy.c
++++ b/drivers/block/floppy.c
+@@ -2330,7 +2330,6 @@ static void rw_interrupt(void)
+ 	if (!drive_state[current_drive].first_read_date)
+ 		drive_state[current_drive].first_read_date = jiffies;
+ 
+-	nr_sectors = 0;
+ 	ssize = DIV_ROUND_UP(1 << raw_cmd->cmd[SIZECODE], 4);
+ 
+ 	if (reply_buffer[ST1] & ST1_EOC)
+-- 
+1.8.3.1
 
-The notion of whether or not it is 'OK' to not allow system
-administrators the ability to control SGX usage with file level exec
-privileges would seem to be more philosophical then practical.  The
-SGX device node does not represent an executable entity, it represents
-a gateway to the right to create and then populate anonymous
-executable memory.
-
-From the standpoint of current systems administration practice, the
-notion and need for executable bits being important on device nodes is
-foreign, and violates the concept of least surprise.  As we have
-already seen with the issue of noexec on /dev, the historical notion
-of security has been that executable files should not be allowed in
-the /dev heirarchy.
-
-With that mindset, the notion of gating SGX permissions with only the
-write bit on the character device would seem to make conceptual sense.
-It does, however, limit the utility of using the bprm* LSM hooks to
-implement whatever LSM controls over SGX that are envisioned for the
-future.
-
-At the risk of fanning dormant embers into flame, the relevance of all
-of this needs to be considered in a future that will include Enclave
-Dynamic Memory Management (EDMM).  At that point in time, access to
-the SGX device node, gated through either discretionary or mandatory
-access controls, means that an eligible entity will have unrestricted
-rights to load completely anonymous, in fact cryptographically
-anonymous, text into memory and execute it.
-
-The utility of anything but yes/no decisions needs to be made with
-that concept in mind.
-
-To avoid the risk of being classified as a blatherer, I will return to
-my work on maintaining support for cryptographic access controls on
-all of this... :-)
-
-Best wishes for a pleasant spring weekend to everyone.
-
-Dr. Greg
-
-As always,
-Dr. Greg Wettstein, Ph.D, Worker      Autonomously self-defensive
-Enjellic Systems Development, LLC     IOT platforms and edge devices.
-4206 N. 19th Ave.
-Fargo, ND  58102
-PH: 701-281-1686                      EMAIL: greg@enjellic.com
-------------------------------------------------------------------------------
-"Everything should be made as simple as possible, but not simpler."
-                                -- Albert Einstein
