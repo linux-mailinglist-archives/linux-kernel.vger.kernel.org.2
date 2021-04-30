@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D869E36FCC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 16:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A23DD36FCC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 16:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233958AbhD3Oqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 10:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50638 "EHLO
+        id S232785AbhD3Oqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 10:46:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233680AbhD3Opq (ORCPT
+        with ESMTP id S233684AbhD3Opr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 10:45:46 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CABDBC061351
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:44:50 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id t4so22343351ejo.0
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:44:50 -0700 (PDT)
+        Fri, 30 Apr 2021 10:45:47 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30523C061352
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:44:52 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id n2so105629836ejy.7
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:44:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=A8UHA9rSzQVhyxXvVNgcpiOrcASMmZu8u6+fbC09MUc=;
-        b=PuMu0kJIhztQnU0ZMn3dZsNib7K9itM3uniM3T4z02MkaToBQlY73DeS4BIXS7wVKw
-         yLzcl3gqeyjnZshQLnVeO3Tvd16eNWmwt1eNdayEf8B1HpS35s4qsUPsOaLX+GgB8LP9
-         9xFMxuS/f+RImsDif/gyNUHq5PmvlrFasGv99pgWUuFY7CDqExiydVmZ/Y3U3zRWv8CW
-         uuy8sLWQC9il11TmohoK0ndsii7YIc8SAoqIjz04IKFcUbVgz7qfzqtUMUvf9htzlTsM
-         SmXt5WueJnT9g8OLdsnoZslCU/bpwlUW1k7CoGMdgjOEi1ZMOVdGG1JPGt7BpDyOwcoF
-         p3ew==
+        bh=Z2J3mDg2zWp/DiXrFZERoJKoUUydS2LszSVYaoRZjCo=;
+        b=SofdKNmG4M4wWj56waA5VPE51JKS2z6vGXr7RCBdj2Jqz9sah/4l8wn875Q2jNDuuS
+         Wmh386IfakectVnnxKFiRLOmrvVKiHE3E6jxuMpmH6v1M1Q/QTfYdRxcviI8USsxMNjx
+         nU1Nyfvxq15+O+d9rd6a+eX2znYNCQcU3KSvrEatsSUx1j5R3jnjLLqmRqo3QZrilc5z
+         jcPjmniQ61BZe6qd3c9DJ7JdKMilA7SvXoMr8cCl1Gvhc3va9Xjd4mepY3RmQlZYld6v
+         /PGrgbS7x5FpfnR0vYQNrDGL3kPmz7xx1tVoFVclRl5bEK7HH9rGLdsSzewrxHM8IWpd
+         XNuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=A8UHA9rSzQVhyxXvVNgcpiOrcASMmZu8u6+fbC09MUc=;
-        b=jLMCjsf5pKZ44GRma7h+RgdkjW35GYXLr3UMMbTuSPjYLtpn/vhyyZQEEjnbytwRvQ
-         BEStbe/cxgTjKOyF+aCxUGjDcDhyrj0XKMFjgpXIl32iK7HIKO1QxtQfbgGOkSAgKzlw
-         COmCsfRMjzpE2hIfha5DUNpUHT+nmruKmrEjYWkubSXzhcjF5sb+aocyQX7K/NNwW+tE
-         aAfPtp/F5ZgqwtrAspjt21giZ/zhi6ONSkYDYKOk+bKrDel+mwCtpzs2t4dP1Sbt5vCK
-         luWCDIrgO12rbYj2vMF7UR1WhDHVKEeg/knMJCHoDdT23qhl2e1+5OIoC8zllvKVd/u7
-         ACBQ==
-X-Gm-Message-State: AOAM531Z/vyoukBMo/2Os4yhRDaOWVe5C48zmFhVFHNtk38AlZ+eZx/C
-        0TEnjL/fvcn3GkOWd8DPTeOzYQvVWf0=
-X-Google-Smtp-Source: ABdhPJx08sC+svdFaU0I9I14aV2BPr0sD9/jTxbE+tjwspk5PhxFE0pXNOjC7PpffVy47U51SO1yKw==
-X-Received: by 2002:a17:906:f01:: with SMTP id z1mr59313eji.535.1619793889354;
-        Fri, 30 Apr 2021 07:44:49 -0700 (PDT)
+        bh=Z2J3mDg2zWp/DiXrFZERoJKoUUydS2LszSVYaoRZjCo=;
+        b=pt2CorU0hiwK1vio3ssoxuvz7dVuDvyFY3T8ucDRyOOqr84IigYY4dAeOEz0q2bC2h
+         UXbKN3t1Yln8gktkUHa/xoAJAetiH126ssyl3tjRID7gNYE1oESNBMmNULjnUuWqk0dr
+         ZmQ+Zhq3QWKjIG0Aq/ihRryG9HeVlgKQdsbOKzB3b1ipgKBetwVNKnK0LUwGN2xXe+Lw
+         eaORwqOVXRP2KqJDYpa2DxcZszEx2ePuem2qAbnBaytUQvB7B49IY66QvY8P5hoT1F4m
+         NrVl7NGJILYrkr0mD3HC2DGBLWthF8SQn2PeE6VBdFbhU04pfTszZZuiKaBslbc4g/5n
+         bvzw==
+X-Gm-Message-State: AOAM5305S8F0CZ9BmTX6a0MEI869T5Zwe4xiSqHhT0xbNqqd1yyNN0tt
+        6UfiCZn2PViLpH/WbFitHjYJegDmPHA=
+X-Google-Smtp-Source: ABdhPJx08SYq7K99CdroG6JOaaUFW1jzWU0NvOjD1iWV8A+kqwGhK5NliGnXFJn9FWOpvsvnH51a6A==
+X-Received: by 2002:a17:906:6544:: with SMTP id u4mr4750351ejn.455.1619793890726;
+        Fri, 30 Apr 2021 07:44:50 -0700 (PDT)
 Received: from agape ([109.52.244.36])
-        by smtp.gmail.com with ESMTPSA id ck4sm616122edb.56.2021.04.30.07.44.48
+        by smtp.gmail.com with ESMTPSA id g4sm1442761edq.0.2021.04.30.07.44.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 07:44:49 -0700 (PDT)
+        Fri, 30 Apr 2021 07:44:50 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 23/43] staging: rtl8723bs: remove commented out BTC_PRINT logs
-Date:   Fri, 30 Apr 2021 16:43:53 +0200
-Message-Id: <6879b04d65e595c9903ac0c8d8b6d96d3c13fff1.1619793406.git.fabioaiuto83@gmail.com>
+Subject: [PATCH v2 24/43] staging: rtl8723bs: remove BTC_PRINT macro definitions
+Date:   Fri, 30 Apr 2021 16:43:54 +0200
+Message-Id: <7bb4e54fcf8a17d71d1e8361d62a97c9cd9ebe35.1619793406.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1619793405.git.fabioaiuto83@gmail.com>
 References: <cover.1619793405.git.fabioaiuto83@gmail.com>
@@ -63,62 +63,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove commented out BTC_PRINT logs.
+remove unused BTC_PRINT macro definitions.
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c | 10 ----------
- 1 file changed, 10 deletions(-)
+ drivers/staging/rtl8723bs/hal/HalBtcOutSrc.h | 7 -------
+ 1 file changed, 7 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c b/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
-index 911d753e51f6..300327f8706c 100644
---- a/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
-+++ b/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
-@@ -1055,8 +1055,6 @@ static void halbtc8723b1ant_PsTdma(
- 	s8 nWiFiDurationAdjust = 0x0;
- 	/* u32 		fwVer = 0; */
+diff --git a/drivers/staging/rtl8723bs/hal/HalBtcOutSrc.h b/drivers/staging/rtl8723bs/hal/HalBtcOutSrc.h
+index 7b2d94a33d9c..ad19ffc2de57 100644
+--- a/drivers/staging/rtl8723bs/hal/HalBtcOutSrc.h
++++ b/drivers/staging/rtl8723bs/hal/HalBtcOutSrc.h
+@@ -114,12 +114,6 @@ extern u32 		GLBtcDbgType[];
  
--	/* BTC_PRINT(BTC_MSG_ALGORITHM, ALGO_TRACE_FW, ("[BTCoex], %s turn %s PS TDMA, type =%d\n", */
--	/* 	(bForceExec? "force to":""), (bTurnOn? "ON":"OFF"), type)); */
- 	pCoexDm->bCurPsTdmaOn = bTurnOn;
- 	pCoexDm->curPsTdma = type;
- 
-@@ -1423,9 +1421,6 @@ static void halbtc8723b1ant_TdmaDurationAdjustForAcl(
- 		/* acquire the BT TRx retry count from BT_Info byte2 */
- 		retryCount = pCoexSta->btRetryCnt;
- 		btInfoExt = pCoexSta->btInfoExt;
--		/* BTC_PRINT(BTC_MSG_ALGORITHM, ALGO_TRACE_FW_DETAIL, ("[BTCoex], retryCount = %d\n", retryCount)); */
--		/* BTC_PRINT(BTC_MSG_ALGORITHM, ALGO_TRACE_FW_DETAIL, ("[BTCoex], up =%d, dn =%d, m =%d, n =%d, WaitCount =%d\n", */
--		/* 	up, dn, m, n, WaitCount)); */
- 
- 		if (pCoexSta->lowPriorityTx > 1050 || pCoexSta->lowPriorityRx > 1250)
- 			retryCount++;
-@@ -2788,13 +2783,11 @@ void EXhalbtc8723b1ant_ScanNotify(struct btc_coexist *pBtCoexist, u8 type)
- 	}
- 
- 	if (BTC_SCAN_START == type) {
--		/* BTC_PRINT(BTC_MSG_INTERFACE, INTF_NOTIFY, ("[BTCoex], SCAN START notify\n")); */
- 		if (!bWifiConnected)	/*  non-connected scan */
- 			halbtc8723b1ant_ActionWifiNotConnectedScan(pBtCoexist);
- 		else	/*  wifi is connected */
- 			halbtc8723b1ant_ActionWifiConnectedScan(pBtCoexist);
- 	} else if (BTC_SCAN_FINISH == type) {
--		/* BTC_PRINT(BTC_MSG_INTERFACE, INTF_NOTIFY, ("[BTCoex], SCAN FINISH notify\n")); */
- 		if (!bWifiConnected)	/*  non-connected scan */
- 			halbtc8723b1ant_ActionWifiNotConnected(pBtCoexist);
- 		else
-@@ -2844,11 +2837,8 @@ void EXhalbtc8723b1ant_ConnectNotify(struct btc_coexist *pBtCoexist, u8 type)
- 	}
- 
- 	if (BTC_ASSOCIATE_START == type) {
--		/* BTC_PRINT(BTC_MSG_INTERFACE, INTF_NOTIFY, ("[BTCoex], CONNECT START notify\n")); */
- 		halbtc8723b1ant_ActionWifiNotConnectedAssoAuth(pBtCoexist);
- 	} else if (BTC_ASSOCIATE_FINISH == type) {
--		/* BTC_PRINT(BTC_MSG_INTERFACE, INTF_NOTIFY, ("[BTCoex], CONNECT FINISH notify\n")); */
+ /*  The following is for dbgview print */
+ #if DBG
+-#define BTC_PRINT(dbgtype, dbgflag, printstr)\
+-{\
+-	if (GLBtcDbgType[dbgtype] & dbgflag)\
+-		DbgPrint printstr;\
+-}
 -
- 		pBtCoexist->fBtcGet(pBtCoexist, BTC_GET_BL_WIFI_CONNECTED, &bWifiConnected);
- 		if (!bWifiConnected) /*  non-connected scan */
- 			halbtc8723b1ant_ActionWifiNotConnected(pBtCoexist);
+ #define BTC_PRINT_ADDR(dbgtype, dbgflag, printstr, _Ptr)\
+ {\
+ 	if (GLBtcDbgType[dbgtype] & dbgflag) {\
+@@ -149,7 +143,6 @@ extern u32 		GLBtcDbgType[];
+ }
+ 
+ #else
+-#define BTC_PRINT(dbgtype, dbgflag, printstr)		 no_printk printstr
+ #define BTC_PRINT_F(dbgtype, dbgflag, printstr)		 no_printk printstr
+ #define BTC_PRINT_ADDR(dbgtype, dbgflag, printstr, _Ptr) no_printk printstr
+ #define BTC_PRINT_DATA(dbgtype, dbgflag, _TitleString, _HexData, _HexDataLen) \
 -- 
 2.20.1
 
