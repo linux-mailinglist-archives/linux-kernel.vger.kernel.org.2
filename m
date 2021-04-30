@@ -2,98 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 211C336FDFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B90636FE08
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231260AbhD3PoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 11:44:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35626 "EHLO
+        id S231314AbhD3PsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 11:48:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbhD3PoG (ORCPT
+        with ESMTP id S230227AbhD3PsQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 11:44:06 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB06C06174A;
-        Fri, 30 Apr 2021 08:43:15 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id t4so22633654ejo.0;
-        Fri, 30 Apr 2021 08:43:15 -0700 (PDT)
+        Fri, 30 Apr 2021 11:48:16 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B043C06138C;
+        Fri, 30 Apr 2021 08:47:28 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id d10so11302104pgf.12;
+        Fri, 30 Apr 2021 08:47:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DxLuz6zxlWQreauy+362yBCD+2mrUuEObBBoPF+b4Lo=;
-        b=JF389vOx/7hgJ0QZ7mJVp93d+3s1Yduyp4zgZC36QBIsm+ktTWU+jrLaRQ+dPT9onu
-         8PouW6XdWGwNtGWZdTEU0B25x5ZRlf+bH5wzHXgy+ETBLiIz/4p2ScQjYlVtV8c6sDHS
-         xSmtTWm4D2KJDaih6TF8xVBqPYnASRLaNr/CXUy3DlNWSnUVJFXkEL+B4pKUe44NQw/O
-         1TTIATL5UJQiTTH3kkpsnu5e7kgGQbu23f5fuxuwsWVC4ugfJoJKE7XhRiRsOo8wBIgU
-         vPDEHSM4mi4JIkQp6ieeTvP0hYZpJOb35L5DXv3Ugtk/g6DWDwgxgLXxS1rVFvV/3q0f
-         +lIQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=IDmD6UL5zzFu8Hty4nIsR290r6jC597Ze/W65NxX2v0=;
+        b=T0L7Iqq4nM7ma40iDk+H+cSXnrC/Q0RorLQFIzQEiUGmtT3yrJXLuh39GKquLOtMkB
+         oCEUHLhxvSDjqffG9St/BlEH6oOWWK0s23M4dU3nlw1UlFZNPO3jXV/0FgW1v3mUJvja
+         rh18i9DuKRGSL1P2VYmWp1wlfYAGLK0jIed03eTxvnm2wNU9BvmqrwnsUKiY/06D7xD4
+         9d6flT5XbZ/b1JGBSz523JFnd+P3xWXu41spjyXjfgH+UQLtv3twZpv3F10gFPYnSFGm
+         szmy3zW1OHqIf4vumwKCDsGEn4HARVrkRCX8151CK3DCAvyn0WOKslBK00aL+RD4NU6x
+         Jw9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DxLuz6zxlWQreauy+362yBCD+2mrUuEObBBoPF+b4Lo=;
-        b=Z8fDMSctqKzNOZtQjBr19hO0qgovc3tBODg3sM/sxX1fzjM3yGayiG/pQ7GOlEID/x
-         2VQag7e9Vm+bk1iZhGDMB39GV2+Ict8BmGgyoFlJ+PO1bRkzhgSgXMkMAfgn/ODTf3VF
-         PuY0V2qR5c3pBX6AP8kuE8mVGfO0aLumkBdLN59w0Bq4AClH2eyzZg1CyqaN852x6HA5
-         75u38svrJG3OCPuWI4hFHKtdxkkJP4ap48cp01+Q0cxXg8sMPjM9J/r3HRQY67hrdDfM
-         ieM0u9pJkTMjW0MQzMZU6ZaerQROrCxPhtq/wnEcjGgIIlKkrzZXavRW1Is9guALEPAP
-         NyHw==
-X-Gm-Message-State: AOAM530yGYfxW4R7K1Xv5FeXIpm0jcr2ok8+lt0eA69Wjery/DLt73tg
-        lbGUdQFTihzbVESnacm0uhL6JsTGom8=
-X-Google-Smtp-Source: ABdhPJx4lt4NPgik3Npc5jEdzsOqNJ39xlemogXfnYRBoORbSiVjWiIICt1MEopwjEu4TOzgcv4JbA==
-X-Received: by 2002:a17:906:33da:: with SMTP id w26mr5147543eja.472.1619797394382;
-        Fri, 30 Apr 2021 08:43:14 -0700 (PDT)
-Received: from [192.168.178.40] (ipbcc11466.dynamic.kabel-deutschland.de. [188.193.20.102])
-        by smtp.gmail.com with ESMTPSA id e11sm1590716edq.76.2021.04.30.08.43.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Apr 2021 08:43:14 -0700 (PDT)
-Subject: Re: [PATCH] scsi: target: configfs: Remove redundant assignment to
- ret
-To:     michael.christie@oracle.com,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1619774627-118766-1-git-send-email-jiapeng.chong@linux.alibaba.com>
- <69ef77bd-4ef8-6446-8192-6d8569516f33@gmail.com>
- <90e67d9f-e524-62b4-df04-2ea2ea28559c@oracle.com>
-From:   Bodo Stroesser <bostroesser@gmail.com>
-Message-ID: <3fad772f-51da-6415-76a4-ed248736ced5@gmail.com>
-Date:   Fri, 30 Apr 2021 17:43:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=IDmD6UL5zzFu8Hty4nIsR290r6jC597Ze/W65NxX2v0=;
+        b=Dlr81SIeBGSV6p1wm88v14Hud171X1klTl+GGxSzj+XMZHhm8argwqAy3omz2XfvdP
+         2ZQ62Jxb+1vzhcpbvD0H7hZPUxDfU3fU5aQwmMUHymcoQQ1wQ6xhw7vRtx6Dyp7tpzRl
+         YwJET7O8qxPio190+zkh+KqLFqJQqahwJnHS3xZgtgjVvJE3noKDVf8pm6DS/QJgCoqc
+         YZkTZ0tLfyyng8PrmSw/ahaJlxB79GfC4++Sez0jMqs0XyUSu7Jxr2kzAYCcUwKUi0sa
+         ZHYllSoLy5pJlnJD7H9tccf3lVEpijs4pzocIpRYykNdgWhJ9yVvCgYUFNerpK32gadi
+         f2Hg==
+X-Gm-Message-State: AOAM530bVIhVX0conk+v07P4wUOHLuSdj4xDya002c4P4Kh9kYf5oINv
+        h9A/Ouxu6G5bD1zWz8Kw+rxN0MdTPweqeBLA
+X-Google-Smtp-Source: ABdhPJzeVXvdpkMHrZu0Mk4N0GSGHJqvzfr9ZjLW7G/dhGMjxY8ZuMi7Wkl+OmUvm7FAIR+A1Kz9fA==
+X-Received: by 2002:a05:6a00:845:b029:28d:e03:6d7e with SMTP id q5-20020a056a000845b029028d0e036d7emr2486493pfk.37.1619797647450;
+        Fri, 30 Apr 2021 08:47:27 -0700 (PDT)
+Received: from localhost.localdomain ([2402:8100:30a6:a362:7862:2436:1c0a:c59d])
+        by smtp.gmail.com with ESMTPSA id o187sm2530591pfb.190.2021.04.30.08.47.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 08:47:27 -0700 (PDT)
+From:   Piyush Thange <pthange19@gmail.com>
+To:     mchehab@kernel.org, leon@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Piyush Thange <pthange19@gmail.com>
+Subject: [PATCH 3/4] media: usb: cpia2: Fixed coding style issues
+Date:   Fri, 30 Apr 2021 21:13:13 +0530
+Message-Id: <20210430154314.3152-3-pthange19@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210430154314.3152-1-pthange19@gmail.com>
+References: <20210430154314.3152-1-pthange19@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <90e67d9f-e524-62b4-df04-2ea2ea28559c@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.04.21 17:40, michael.christie@oracle.com wrote:
-> On 4/30/21 9:29 AM, Bodo Stroesser wrote:
->> BTW: why is "initiator_sid" input handled as string?
->> core_scsi3_alloc_aptpl_registration later calls get_unaligned_be64 for
->> that string. I don't think this makes sense.
-> 
-> It's broken.
-> 
-> Remember the isid patches that you reviewed of mine trying to fix the
-> isid code in target_core_transport.c? I can't remember all the details but
-> I think it was that the aptpl code thinks the buffer is in the format that
-> sess_get_initiator_sid uses and is trying to do something similar as
-> target_core_transport.c.
-> 
-> I can't find the version of the patches you had looked at. This was the first
-> version of the patch:
-> 
-> https://patchwork.kernel.org/project/target-devel/patch/1531696591-8558-3-git-send-email-mchristi@redhat.com/
-> 
+Additional fixes about coding style.
 
-Ahh, yes. I remember. Thank you.
+Signed-off-by: Piyush Thange <pthange19@gmail.com>
+---
+ drivers/media/usb/cpia2/cpia2_v4l.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-
+diff --git a/drivers/media/usb/cpia2/cpia2_v4l.c b/drivers/media/usb/cpia2/cpia2_v4l.c
+index 2d9156ea7652..261ced144793 100644
+--- a/drivers/media/usb/cpia2/cpia2_v4l.c
++++ b/drivers/media/usb/cpia2/cpia2_v4l.c
+@@ -783,7 +783,7 @@ static int cpia2_querybuf(struct file *file, void *fh, struct v4l2_buffer *buf)
+ 
+ 	buf->memory = V4L2_MEMORY_MMAP;
+ 
+-	if(cam->mmapped)
++	if (cam->mmapped)
+ 		buf->flags = V4L2_BUF_FLAG_MAPPED;
+ 	else
+ 		buf->flags = 0;
+@@ -824,14 +824,14 @@ static int cpia2_qbuf(struct file *file, void *fh, struct v4l2_buffer *buf)
+ {
+ 	struct camera_data *cam = video_drvdata(file);
+ 
+-	if(buf->type != V4L2_BUF_TYPE_VIDEO_CAPTURE ||
++	if (buf->type != V4L2_BUF_TYPE_VIDEO_CAPTURE ||
+ 	   buf->memory != V4L2_MEMORY_MMAP ||
+ 	   buf->index >= cam->num_frames)
+ 		return -EINVAL;
+ 
+ 	DBG("QBUF #%d\n", buf->index);
+ 
+-	if(cam->buffers[buf->index].status == FRAME_READY)
++	if (cam->buffers[buf->index].status == FRAME_READY)
+ 		cam->buffers[buf->index].status = FRAME_EMPTY;
+ 
+ 	return 0;
+@@ -849,9 +849,10 @@ static int find_earliest_filled_buffer(struct camera_data *cam)
+ {
+ 	int i;
+ 	int found = -1;
+-	for (i=0; i<cam->num_frames; i++) {
+-		if(cam->buffers[i].status == FRAME_READY) {
+-			if(found < 0) {
++
++	for (i = 0; i < cam->num_frames; i++) {
++		if (cam->buffers[i].status == FRAME_READY) {
++			if (found < 0) {
+ 				found = i;
+ 			} else {
+ 				/* find which buffer is earlier */
+@@ -876,7 +877,7 @@ static int cpia2_dqbuf(struct file *file, void *fh, struct v4l2_buffer *buf)
+ 	struct camera_data *cam = video_drvdata(file);
+ 	int frame;
+ 
+-	if(buf->type != V4L2_BUF_TYPE_VIDEO_CAPTURE ||
++	if (buf->type != V4L2_BUF_TYPE_VIDEO_CAPTURE ||
+ 	   buf->memory != V4L2_MEMORY_MMAP)
+ 		return -EINVAL;
+ 
+-- 
+2.25.1
 
