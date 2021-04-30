@@ -2,101 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79BD236FC95
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 16:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C65C536FC9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 16:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233191AbhD3OjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 10:39:15 -0400
-Received: from mout.gmx.net ([212.227.17.22]:45179 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232648AbhD3OjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 10:39:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1619793490;
-        bh=cfsGfW8WX6Q1unP1IHR/X/PhgVV2sUsIKvQxdQwtyX8=;
-        h=X-UI-Sender-Class:Date:In-Reply-To:References:Subject:Reply-to:To:
-         CC:From;
-        b=HQBZa5+tUjuIgooJ+8YW9EtivqwxdfhwbqCCSivrEjZabG6lpJmTgXY/osn8xnpGj
-         B2WwOXvpCk8W0PtgM1ZIgPcohTw96nIOrZq2tbtemuMZpsHLBmvcJSlJVcfAXo1tIH
-         P8xyePnpsgPA+b16YXRLT1Je08VsmtuC0/QDcTTw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from frank-s9 ([157.180.225.50]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MXGr8-1m4cii1Zb4-00Yf3b; Fri, 30
- Apr 2021 16:38:10 +0200
-Date:   Fri, 30 Apr 2021 16:38:03 +0200
-User-Agent: K-9 Mail for Android
-In-Reply-To: <YIwMvUVmeeYT1aph@kroah.com>
-References: <20210430124317.97376-1-linux@fw-web.de> <YIv969BCnPgXzrcg@kroah.com> <trinity-5166e76d-779d-4b05-870b-59971bd1571c-1619789439850@3c-app-gmx-bap03> <YIwMvUVmeeYT1aph@kroah.com>
+        id S232975AbhD3OkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 10:40:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230342AbhD3OkW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 10:40:22 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC39FC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:39:31 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id q136so49883525qka.7
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:39:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BiN60F6dTP6DmE3gx9WBdjNyi1KofY1mmNmP2XjnsSI=;
+        b=XJVRHsHATzPcYtsl0wE6zJxEeHqIE27DR7APxA2Dfb/kUbSBHYtPvMWTzmnuzsJQZQ
+         abLGc20y+gAvMovdVTX6SpBOYdyDIWu0vdnkl+wzI1Yw8g2xNMlNzqthSLm22uYoB9E9
+         POiJSUdRMWOX24nVAz7yQ4aNlpcbJXRX10oodTVmJ5/Qd6Hk10zloE/ypas65b+xIvC2
+         8DxDa48toFnzgiV3vsA0oWmcxED+LQAHLpOi09wLT+vzCU00J552ZKkVxsckxUygrBMV
+         Kh3H8I+ERLVuYY3Sf9x2KS+cUNxzZUuH//yvsgUu4ZzKzNgNoqY+erzj3PelT+8G1MQV
+         9xDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=BiN60F6dTP6DmE3gx9WBdjNyi1KofY1mmNmP2XjnsSI=;
+        b=Z7i6PDWnP9K4tc5WxNtt2y5aa5I9qp0BZ4Wphi36rUFkyTjUq6Sapn2HDYcjUXX+AF
+         k8RUZbXmmpd32zbWVD6F3BrZyzDHKGD5LyMYvs9ZTNF/QeX68wL5qCzBh5bB29tgoipP
+         Ij87dGwQtQ2bYp9I9ZqlQhS1PSu4J/GAjMNt01q7Lgou04X0j043yyuhg6VOndK2+rzu
+         Ak+6fStJoKL+rbZ24TGSqUpu71fYZFRtNN+mEYVFhvhz4mk8NsbF2w0EFOD3tfWeZZgG
+         uZaU5it/KTOq/GHFS08Pd2UBJpbUAJYCTZUKGHaYyAFWH/82PRb3VKOBWazm5pu8ZdI9
+         mmXw==
+X-Gm-Message-State: AOAM533quW2yh+01zVVaGTOR3GdP93uQFFVUqnUmgakz2EbHIROqKDQX
+        m9DPSYxRR4dVsvXT+z4PFYo=
+X-Google-Smtp-Source: ABdhPJyjEAHdHUvmPLb2vBERPaJ3wO/pxq0gjZtDsTxNtsItKay7/tLp17gqmYaVUs8rEgSDzF5cBg==
+X-Received: by 2002:a05:620a:12ae:: with SMTP id x14mr5743022qki.471.1619793571085;
+        Fri, 30 Apr 2021 07:39:31 -0700 (PDT)
+Received: from ubuntu-mate-laptop.hsd1.fl.comcast.net ([2601:703:380:74f0:3016:5d78:eea0:48af])
+        by smtp.gmail.com with ESMTPSA id n16sm2329419qtl.48.2021.04.30.07.39.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 07:39:30 -0700 (PDT)
+Sender: Julian Braha <julian.braha@gmail.com>
+From:   Julian Braha <julianbraha@gmail.com>
+To:     tiwai@suse.com
+Cc:     linux-kernel@vger.kernel.org, fazilyildiran@gmail.com
+Subject: [PATCH] sound: soc: amd: fix missing dependencies on GPIOLIB
+Date:   Fri, 30 Apr 2021 10:39:19 -0400
+Message-Id: <20210430143919.43362-1-julianbraha@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: Re: [PATCH] musb: mediatek: rename driver
-Reply-to: frank-w@public-files.de
-To:     linux-mediatek@lists.infradead.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Frank Wunderlich <linux@fw-web.de>, Bin Liu <b-liu@ti.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        David Miller <davem@davemloft.net>,
-        DENG Qingfang <dqfext@gmail.com>
-From:   Frank Wunderlich <frank-w@public-files.de>
-Message-ID: <16ABF577-4EE1-4BB3-A801-A4498CBFCFCE@public-files.de>
-X-Provags-ID: V03:K1:nNdIy1J9VWHYvq27v3HRerK9WoB1HhAi5teVaPMzkMUr3nXD7bw
- pLyTYd5blwokALBrPe2HaQ7qyIQDPU6ZAkLsx1Aie3HaNoc4Hj9fEfliiMEsWbMugL67aYH
- BgHlUUjb3G0FN4+M6pcpL7MgSBDQA/v0afJbv+ILs3IIIZ/VI8VN2EacMLplH9P7UwAbcAI
- bTRqWJdcqP2SKCfY8EwmA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:4C+fKdX9Ows=:f28tvbwSYFV+fvbGFRkpaN
- UcyTVD3rW+h008YUpiLGiH2EIXpWYvuzGk2ewQNCo6BrlCaAndNP/m65wU4CjB5KHBtdjhcpz
- RKXouVpBnjLl4yZOXQ/OglmcWLNINJj/EsOYa40ZqRS7+cHTehqRX3MgoxVyFWajPIwROQJCj
- 8+pNr9JkLP9+x5Mn8VZOmTrUWZGLbldTF+i+yx6Wlm44XU5H3A3HSBoHGHXwKW/wGfslzaYnJ
- 95jRi69e8lN6swEz7TK5nH15JdGmRDjrRvgXH+ZI9NBAiQnwHUOTEJxm87b6POM7vqaRHXITf
- 5w1YI8jKLhj3jC7ITCcDjNl7SCSt/rppLNIVCnVtYmsbpObhqaypxportYBHw2120GcAqBZ/v
- ZUCGQJsKhkjvhW2lIJQnKtJo/wCdb2jOdHylq9AAeH3anke6YSbGnTGqyLGO2nKG4tBSHk3xN
- ZA1s9Fvgr5eW0Ixd34FQy1eXGUSX5VlBGfTZTKBpZe52hCQT5o+Zx/Td1caY5tTsn8f/ovm0e
- yvIGKPW7Y6/myarxtuhwcZln6zQ21uEvhjaHNzDY4TbFZ6E8NfWRWccw3HXijTpmfsKVsbFl0
- vjq+6d0oAPxFDzPevnuqAbdK+qRcs9ndNZ28FNc3NzXNRbtdfLgv08/DRhi/SrExKfk9MpU7S
- BEAWZihazoZf4MdMeRwjhCDPH/Mj2U5RHex6BuuIjg19kEo5zG6pY9uQDJ7i+94f2+T/s5Dct
- VIp1HW+UfY6tAb98biT3gQ6qZRa2W/DUZyD602/nRUJ0VS2B6zVDVUitwYa8XDUhH/VQClxYV
- fTZqYOywuMI0j+SupcpVyVMMy0Ox9oaWhCTQiOB2VCYjm1tFdHO8CxDESEvGgS9jkp782bccx
- vPUhZ13I1DVeeL3bv7lKaCaLkZDCZVkDQezbZcKPw58Tw6XpdGmvCdCRt93PGjG48Sr5G0Ok3
- vy1EPowUdY5qeuZJ5q9QBk8Z2NGx9rRjX46pECyNH0ZZm1EhUOmatHfApNsbjcVb7pA9mE5NN
- 7SvkUXBwCASnlwA2RRfoRUh9E2V/4DK1+t2ek0oceIFUU14Ezy058YCJchTRMdw671my8MSwU
- NrxP2hDuRhd5VZfFhi/YvTzFqht39Tx75b2K0GChvboHclQxhd/rZ+dLd6A002zsi8tIF6kZr
- qGDF62Tu0nRe5PqrrBl0ozuTthkhxDs3vNGJjW7nW6vaQiVNoUs5pkgpb/dPewFBQ2ED/g4qM
- pw7vU6a1sjlNOp2ki
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 30=2E April 2021 15:57:17 MESZ schrieb Greg Kroah-Hartman <gregkh@linuxf=
-oundation=2Eorg>:
+When SND_SOC_AMD_RENOIR_MACH or SND_SOC_AMD_RV_RT5682_MACH
+are selected, and GPIOLIB is not selected, Kbuild gives
+the following warnings, respectively:
 
->Why not just have any new driver not use this name, as it is, it's not
->hurting anything=2E
+WARNING: unmet direct dependencies detected for SND_SOC_DMIC
+  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && GPIOLIB [=n]
+  Selected by [y]:
+  - SND_SOC_AMD_RENOIR_MACH [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_AMD_RENOIR [=y]
 
-I just want to make it clean for users/admins for what kind of device this=
- module is for (vendor=2Eko is imho not good at least for vendors manufactu=
-ring such different devices)=2E
-And avoid such conflicts like the phy (which had reintroduced the unclear =
-module name)=2E
-The new module will be renamed in next version=2E=2Ethere is only discussi=
-on about the new name=2E=2E=2Eand so i tried to fix the "other end"=2E
+and
 
->Until you can guarantee that renaming this is not
->going to break anything, I can not take it=2E
+WARNING: unmet direct dependencies detected for SND_SOC_MAX98357A
+  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && GPIOLIB [=n]
+  Selected by [y]:
+  - SND_SOC_AMD_RV_RT5682_MACH [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_AMD_ACP3x [=y] && I2C [=y] && CROS_EC [=y]
 
-If a user/administrator installs a new major kernel version he needs to ch=
-eck if all is still working=2E Then the new module can be loaded=2E=2E=2Ei =
-don't see a real breakage or much work for "fix" this,but it's ok if you do=
- not take it up=2E
+This is because SND_SOC_DMIC and SND_SOC_MAX98357A are
+selected by SND_SOC_AMD_RV_RT5682_MACH and SND_SOC_AMD_RENOIR_MACH,
+respectively. However, neither of the selectors depend on or select GPIOLIB,
+despite their selectees depending on GPIOLIB.
 
-This driver is afair available since 5=2E4 so i guess not much spreading i=
-n large productive environments mostly still using 4=2E14 or 4=2E4
+These unmet dependency bugs were detected by Kismet,
+a static analysis tool for Kconfig. Please advise if this
+is not the appropriate solution.
 
-I can repost with better description,but this is not needed if change itse=
-lf will be rejected=2E So maybe anyone else can comment too=2E
+Signed-off-by: Julian Braha <julianbraha@gmail.com>
+---
+ sound/soc/amd/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-regards Frank
+diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
+index a6ce000fac3f..b7d41438d830 100644
+--- a/sound/soc/amd/Kconfig
++++ b/sound/soc/amd/Kconfig
+@@ -34,7 +34,7 @@ config SND_SOC_AMD_RV_RT5682_MACH
+ 	select SND_SOC_CROS_EC_CODEC
+ 	select I2C_CROS_EC_TUNNEL
+ 	select SND_SOC_RT1015
+-	depends on SND_SOC_AMD_ACP3x && I2C && CROS_EC
++	depends on SND_SOC_AMD_ACP3x && I2C && CROS_EC && GPIOLIB
+ 	help
+ 	 This option enables machine driver for RT5682 and MAX9835.
+ 
+@@ -47,6 +47,6 @@ config SND_SOC_AMD_RENOIR
+ config SND_SOC_AMD_RENOIR_MACH
+ 	tristate "AMD Renoir support for DMIC"
+ 	select SND_SOC_DMIC
+-	depends on SND_SOC_AMD_RENOIR
++	depends on SND_SOC_AMD_RENOIR && GPIOLIB
+ 	help
+ 	 This option enables machine driver for DMIC
+-- 
+2.27.0
+
