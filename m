@@ -2,96 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B95C636FAD9
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 14:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7371136FAD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 14:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232137AbhD3MrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 08:47:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232255AbhD3Mqw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 08:46:52 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 497B1C06134C
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 05:44:42 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id q10so49344647pgj.2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 05:44:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jw66FmD8Th0QIlNzmRqWGxuyLSOR24g11ihkkzBg7Ko=;
-        b=hlGRePkaxoY7sy4aSFDJZJ3iBE4O2EHbsMruaZcDCC25qBXEfd3VPxCjyljt+WdSYA
-         aGiSP8uZK5FGAyE8i8N4TUND0N5t3WzIGT7ApYUye2cZ/S6Bj7agyrzar9AbylkmAglL
-         q6uGsnISmgxKgPqgwyIzvz+BUeDKscJOxj1NscyaQBVo44cP57H43cGKhCaDlFRyN3D9
-         +8gknEmQIvz2hB/Zg+oYfyvUWrz1R/8HXwu2DZmMKlEhdrMird+6gqzITaZlHdZOtOct
-         EFLw5+hqAr4WyVUh/iBNMsm6+R0T1Yr+btQzMf6c+QrIZRly0ZI1ifYk9tLcBBS06AK3
-         rk8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jw66FmD8Th0QIlNzmRqWGxuyLSOR24g11ihkkzBg7Ko=;
-        b=Nllf7wnT/FTHXU4fpC0J2aFCCQ00x/ZJ53FrpUJbMyvnSpuaPF9KhzA6pGHw45fRR/
-         AkIWCQfomxz4owLGxvhFWr6JeqjB05BrRUzP26fqTKhT/jTkQ4IhKK0To3p0TbDqa9Ag
-         kluNhBEiVFPIL7+LfTf6E1rmrEDPN6UsIeR5GVvCcPfcVnQldeWMdJdJ3HfHbFffr8Ga
-         IWzrq+aF4Rm0shyF5kPPQvymEIk/bhQx9u7/93wC/nbrfZJCLp+gvi079wVtd4viEMsJ
-         OFNQQXNtkAIw9e2z7hG7SjXf5s0WMsebXEDYCs0F0KGQUm5D12clqELTzIp/9oC+AkvK
-         +0rg==
-X-Gm-Message-State: AOAM5307/yOGN/u13IDGOsCaqwLKVLn/prmUiq0Coz7664KQjo2fnSHQ
-        NGCVrLf6wTYhx6ezwX7oFMCx6P/D9NAPDg==
-X-Google-Smtp-Source: ABdhPJxp4RDv55/xdrSm4I4F9BxWtAc/wJ9l/k42USFudoXmPT9CwBFlfKrJabuvztMkL75wMOQgxw==
-X-Received: by 2002:a63:f957:: with SMTP id q23mr4522088pgk.430.1619786681543;
-        Fri, 30 Apr 2021 05:44:41 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id x38sm2145473pfu.22.2021.04.30.05.44.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Apr 2021 05:44:41 -0700 (PDT)
-Subject: Re: [PATCH] io_uring: Fix memory leak in io_sqe_buffers_register()
-To:     qiang.zhang@windriver.com, io-uring@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <20210430082515.13886-1-qiang.zhang@windriver.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <51a36bba-c6d7-1e31-36d2-899466738e97@kernel.dk>
-Date:   Fri, 30 Apr 2021 06:44:39 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232414AbhD3MqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 08:46:10 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:47718 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232141AbhD3Mpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 08:45:49 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lcSVn-001oQa-KO; Fri, 30 Apr 2021 14:44:51 +0200
+Date:   Fri, 30 Apr 2021 14:44:51 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Frank Wunderlich <frank-w@public-files.de>
+Cc:     DENG Qingfang <dqfext@gmail.com>,
+        David Miller <davem@davemloft.net>, f.fainelli@gmail.com,
+        hkallweit1@gmail.com, kuba@kernel.org, Landen.Chao@mediatek.com,
+        matthias.bgg@gmail.com, linux@armlinux.org.uk,
+        sean.wang@mediatek.com, vivien.didelot@gmail.com,
+        olteanv@gmail.com, robh+dt@kernel.org, linus.walleij@linaro.org,
+        gregkh@linuxfoundation.org, sergio.paracuellos@gmail.com,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-staging@lists.linux.dev, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, weijie.gao@mediatek.com,
+        gch981213@gmail.com, opensource@vdorst.com, tglx@linutronix.de,
+        maz@kernel.org
+Subject: Re: Re: [PATCH net-next 0/4] MT7530 interrupt support
+Message-ID: <YIv7w8Wy81fmU5A+@lunn.ch>
+References: <20210429062130.29403-1-dqfext@gmail.com>
+ <20210429.170815.956010543291313915.davem@davemloft.net>
+ <20210430023839.246447-1-dqfext@gmail.com>
+ <YIv28APpOP9tnuO+@lunn.ch>
+ <trinity-843c99ce-952a-434e-95e4-4ece3ba6b9bd-1619786236765@3c-app-gmx-bap03>
 MIME-Version: 1.0
-In-Reply-To: <20210430082515.13886-1-qiang.zhang@windriver.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <trinity-843c99ce-952a-434e-95e4-4ece3ba6b9bd-1619786236765@3c-app-gmx-bap03>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/30/21 2:25 AM, qiang.zhang@windriver.com wrote:
-> From: Zqiang <qiang.zhang@windriver.com>
+On Fri, Apr 30, 2021 at 02:37:16PM +0200, Frank Wunderlich wrote:
+> Hi,
 > 
-> unreferenced object 0xffff8881123bf0a0 (size 32):
-> comm "syz-executor557", pid 8384, jiffies 4294946143 (age 12.360s)
-> backtrace:
-> [<ffffffff81469b71>] kmalloc_node include/linux/slab.h:579 [inline]
-> [<ffffffff81469b71>] kvmalloc_node+0x61/0xf0 mm/util.c:587
-> [<ffffffff815f0b3f>] kvmalloc include/linux/mm.h:795 [inline]
-> [<ffffffff815f0b3f>] kvmalloc_array include/linux/mm.h:813 [inline]
-> [<ffffffff815f0b3f>] kvcalloc include/linux/mm.h:818 [inline]
-> [<ffffffff815f0b3f>] io_rsrc_data_alloc+0x4f/0xc0 fs/io_uring.c:7164
-> [<ffffffff815f26d8>] io_sqe_buffers_register+0x98/0x3d0 fs/io_uring.c:8383
-> [<ffffffff815f84a7>] __io_uring_register+0xf67/0x18c0 fs/io_uring.c:9986
-> [<ffffffff81609222>] __do_sys_io_uring_register fs/io_uring.c:10091 [inline]
-> [<ffffffff81609222>] __se_sys_io_uring_register fs/io_uring.c:10071 [inline]
-> [<ffffffff81609222>] __x64_sys_io_uring_register+0x112/0x230 fs/io_uring.c:10071
-> [<ffffffff842f616a>] do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
-> [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+> i prepare rename of musb-driver to musb_mtk.ko as this is also not the best name.
 > 
-> Fix data->tags memory leak, through io_rsrc_data_free() to release
-> data memory space.
+> if this module does only handle mt753x i would suggest
+> 
+> phy_mt753x.{c,ko}
 
-Applied, thanks.
+Hi Frank
 
--- 
-Jens Axboe
+That name will cause confusion with generic PHY drivers. They all seem
+to use phy- as a file name prefix. At the moment, no Ethernet PHY
+driver has phy as filename prefix or suffix.
 
+       Andrew
