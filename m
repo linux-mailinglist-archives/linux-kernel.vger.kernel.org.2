@@ -2,81 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FECF36FD91
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC2536FD94
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230247AbhD3PTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 11:19:18 -0400
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:40753 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbhD3PTQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 11:19:16 -0400
-Received: by mail-oi1-f173.google.com with SMTP id u16so53015140oiu.7;
-        Fri, 30 Apr 2021 08:18:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5384NKLEMU9HGIIjdN+H7n8KjDIELf2F9qcnO+c7HQk=;
-        b=kZI94bYTL6B0xEsuUo4MzDG+KZhV3nANmNAKO3p6BK9BYc+WmUfhEbKYM9PZzlZncS
-         jQ/8DOTIvjqa2j0HeOn8xz499+a3wUt08tJGKLP8BQBTucB2PrEmus0aDxDZ5cpqCXD0
-         1Kc9X9HJ20IYDy9KrualXs5OSW8iIhXsk18o3i3DjSOWQXzOUJIF0LMbfFjUGHz8/2pk
-         61IJaQVRgPrRwni3PWLt2vGHLeXlP849B9u0JET/3w747UbOQJIawxryiB+nTKomW1ea
-         6xCkqMpeKOJQf4wjoq2DKk3ILXijqfwLOD2+4Td0TkYMWil1NDD9ocV2QarEVLnVZgw8
-         aYig==
-X-Gm-Message-State: AOAM531ZMIL32hgtDT8OvkYnmVHPNdrUNztPIXNZNGTuuKyq9KPi1e7/
-        gbZ3OyeuimY/uGEZm/Zxkg==
-X-Google-Smtp-Source: ABdhPJwf/WD6axTKKyPNM4Yg1tES5AKc0U4Su/y1wYHek1a1jZozdjSNj0RN7KnSbGcODI1u/dhz7Q==
-X-Received: by 2002:a05:6808:13cf:: with SMTP id d15mr1747186oiw.11.1619795907672;
-        Fri, 30 Apr 2021 08:18:27 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id p22sm824449otf.25.2021.04.30.08.18.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 08:18:26 -0700 (PDT)
-Received: (nullmailer pid 3343637 invoked by uid 1000);
-        Fri, 30 Apr 2021 15:18:25 -0000
-Date:   Fri, 30 Apr 2021 10:18:25 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] dt-bindings: serial: Normalize the node name of
- the serial port
-Message-ID: <20210430151825.GA3339934@robh.at.kernel.org>
-References: <20210422085837.513-1-thunder.leizhen@huawei.com>
- <20210422085837.513-2-thunder.leizhen@huawei.com>
+        id S230418AbhD3PUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 11:20:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32968 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230187AbhD3PUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 11:20:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A772161407;
+        Fri, 30 Apr 2021 15:19:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619795982;
+        bh=ENA3ABoJbCZuijsVd4K0y84DVv2hOGedvQdYNfFhILE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j5p6Zd7cX8GW9SXLUoZBJ5o8HJfiKh14Hoi8wieFH33H1S0f27HIYZ5bfTh0TSkwC
+         1wMJCtDUgI1dvRQBsUquWVzL8WdnotvMAFpFfkH6vx0xP6K6wJvkEipQd73LC9K+0n
+         DkrKZATabQRihQlPmkdFKAReuNREFT954iq2X3TSqhQgL8aVigJVwXn4Uooap/fjvU
+         7pCVTFtLoCfph7WNlRDRmad99V9Fu9uSiwJypKshZ8woaZYKKWwNJj5ZGvrvFfcjbe
+         SVJXzxjjqSVqrF8ROINLpEzzCMG/AADm+Apka85SnamquX0qjlt/nKtZ8DcpT1uZtg
+         uCOs5ajtCkBJw==
+Date:   Fri, 30 Apr 2021 16:19:09 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH 1/2] regmap: add regmap_might_sleep()
+Message-ID: <20210430151908.GC5981@sirena.org.uk>
+References: <20210430130645.31562-1-michael@walle.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="HG+GLK89HZ1zG0kk"
 Content-Disposition: inline
-In-Reply-To: <20210422085837.513-2-thunder.leizhen@huawei.com>
+In-Reply-To: <20210430130645.31562-1-michael@walle.cc>
+X-Cookie: QOTD:
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 04:58:35PM +0800, Zhen Lei wrote:
-> Only letters, digits, and commas that describe the base address of the
-> serial port in hexadecimal format are allowed.
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  Documentation/devicetree/bindings/serial/serial.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/serial/serial.yaml b/Documentation/devicetree/bindings/serial/serial.yaml
-> index 65e75d040521..71aec7fda07d 100644
-> --- a/Documentation/devicetree/bindings/serial/serial.yaml
-> +++ b/Documentation/devicetree/bindings/serial/serial.yaml
-> @@ -21,7 +21,7 @@ description:
->  
->  properties:
->    $nodename:
-> -    pattern: "^serial(@.*)?$"
-> +    pattern: "^serial(@[0-9a-f,]+)?$"
 
-The format of unit-addresses is dictated by the bus (parent), so this is 
-the wrong place to enforce this. 
+--HG+GLK89HZ1zG0kk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Rob
+On Fri, Apr 30, 2021 at 03:06:44PM +0200, Michael Walle wrote:
+
+> Sometimes a driver needs to know if the underlying regmap could sleep.
+> For example, consider the gpio-regmap driver which needs to fill the
+> gpiochip->can_sleep property.
+
+Whatever is creating the regmap really ought to know what device it's
+dealing with...
+
+> It might be possible to pass this information via the
+> gpio_regmap_config, but this has the following drawbacks. First, that
+> property is redundant and both places might contratict each other. And
+> secondly, the driver might not even know the type of the regmap because
+> it just gets an opaque pointer by querying the device tree.
+
+If it's a generic GPIO driver from a code correctness point of view it's
+always got a risk of sleeping...
+
+--HG+GLK89HZ1zG0kk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCMH+wACgkQJNaLcl1U
+h9AwsQf+OapHHPJboJLbJVrs6ODnuJ1aJa4YJWqxhqh+/mJXRRYsV4O9PDFacYDT
+aFqHwzvB364wtityGw0MeeOOVEfvjkrMeVaPfUf6vegIcpMzKAqv5KOxo7fXLHGV
+Zz6QoVuhqq4fKRV+LOEQ6whDaKqm+YhleQN5e5rQgPiI6ipwVk7DtBqLnibZqj5I
+zWWp66hKrqGeiimSdc3tUyNBv5gQjdXzRg4r9WKBHByPyzQH5PN/j0xiRK2x+nzW
+Gkj89BSRB/huHGHErNvdYTyjcFbsrWbWFwDeEcbvtfUhVEyGrojWR5tlZhRnvMtw
+R1U3GEY84VSjdbkSjenuatTpfBk+1g==
+=DSyN
+-----END PGP SIGNATURE-----
+
+--HG+GLK89HZ1zG0kk--
