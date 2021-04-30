@@ -2,157 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8689D36F8B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 12:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A4636F8BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 12:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbhD3K5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 06:57:23 -0400
-Received: from foss.arm.com ([217.140.110.172]:45226 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229543AbhD3K5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 06:57:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 32134113E;
-        Fri, 30 Apr 2021 03:56:32 -0700 (PDT)
-Received: from slackpad.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE4243F70D;
-        Fri, 30 Apr 2021 03:56:30 -0700 (PDT)
-Date:   Fri, 30 Apr 2021 11:55:45 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Samuel Holland <samuel@sholland.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-sunxi@lists.linux.dev,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/2] sunxi: Enforce consistent MMC numbering
-Message-ID: <20210430115545.6a45d1dc@slackpad.fritz.box>
-In-Reply-To: <20210430091035.i4zoyzb4c2l22msb@gilmour>
-References: <20210419025246.21722-1-samuel@sholland.org>
-        <CAGb2v642Z3iH7fUWa31Rb5j+nWdZ=sXn2BYw3_dyE9P6iuL0Cg@mail.gmail.com>
-        <20210419095443.1548432e@slackpad.fritz.box>
-        <20210430091035.i4zoyzb4c2l22msb@gilmour>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
+        id S230102AbhD3K72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 06:59:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229543AbhD3K7Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 06:59:25 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB70AC06174A;
+        Fri, 30 Apr 2021 03:58:35 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id i24so22531560edy.8;
+        Fri, 30 Apr 2021 03:58:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8xWBaV10Gk5zTcf0lrE/jDunsZwOFiT6TlpRJiJ0iIY=;
+        b=aQFnixQurTO584qp0DZsR5R/Wc5Z5fm7hR/X9+wixuIhA95Wmy8ZO3VszL+nU52Um3
+         k+4Wwry05NUwbcBYvNWxfTfwUoLSnLyHxUP+JlMTJmDJ1SRsIqlhGQiL1ZMD/knFFeal
+         8V9PqpbAaVGwSB3dTSeMWooBGFGpujnkjOtwZ0oVkscjSMheVFewo6JDphhpWVJR9/Fu
+         16/0MH2Y9cKnJTGrLRMK/+yxg9ST5mQMWiUtMFazg8syjjnpAeg3IjEgBPIuxjWGDLJd
+         QUMUSUG2EwU7iO6UNSnMT2H03vXyDCbKGw+Bth0FaviumTUDEOwNGydzkQiQtP7gMj3j
+         F+ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8xWBaV10Gk5zTcf0lrE/jDunsZwOFiT6TlpRJiJ0iIY=;
+        b=bucUEJUixXj/MDdSlDscUMoUi9TE94YHq7wXPoUf0DFQ2t/PetpIgFqjlVKrc2dYhy
+         CCUkYZohIToPBaoM34jFmN51NvQ0HQCt2AKxFooGcm7vA4VGtNcnozi+cfXdvkiINjxW
+         ycIy3GUqoWVgutWq9L9Swr08GvseaSZxtgzBrM7PnX+dCfefWYlWGU5IpfgQn8F0sdfY
+         cbXoivpZizXNIib9CFCY8hqu9S6RM9qNyzGBIWZSGNN04F6iHTL23UeTu+uJaZymT0Lt
+         xF3oLGIf80brfjSQplXXEvo7aBPZMoIKVBHw34gONn0Tf+ZaMw79JgntMALUIPZD/lvr
+         P7Gg==
+X-Gm-Message-State: AOAM531BuyQIRYa6W14OsWreOJyoR92/TVmlGpvjGhpC2cPg5Pd+bY6q
+        XwTNtIxVWYWmC2cVQCK7pGI=
+X-Google-Smtp-Source: ABdhPJzEZgBgxrLbBy1c75XIgzs3f76jZHE+f6Wo2RFq5MUv8/4LZSZg2o9jG/a8kIGmh/jVYiWidA==
+X-Received: by 2002:a05:6402:3109:: with SMTP id dc9mr5137491edb.13.1619780314537;
+        Fri, 30 Apr 2021 03:58:34 -0700 (PDT)
+Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id x20sm958240edd.58.2021.04.30.03.58.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Apr 2021 03:58:34 -0700 (PDT)
+Subject: Re: [RESEND PATCH v4 07/10] dt-bindings: soc: rockchip: Convert
+ grf.txt to YAML
+To:     cl@rock-chips.com, heiko@sntech.de
+Cc:     robh+dt@kernel.org, jagan@amarulasolutions.com, wens@csie.org,
+        uwe@kleine-koenig.org, mail@david-bauer.net,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
+        cnsztl@gmail.com, devicetree@vger.kernel.org,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
+        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
+        zhangqing@rock-chips.com, huangtao@rock-chips.com,
+        wim@linux-watchdog.org, linux@roeck-us.net, jamie@jamieiles.com,
+        linux-watchdog@vger.kernel.org, maz@kernel.org
+References: <20210429081151.17558-1-cl@rock-chips.com>
+ <20210430005708.1821-1-cl@rock-chips.com>
+From:   Johan Jonker <jbx6244@gmail.com>
+Message-ID: <953e4240-77ea-ce1c-00a5-0625111ab2cd@gmail.com>
+Date:   Fri, 30 Apr 2021 12:58:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210430005708.1821-1-cl@rock-chips.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Apr 2021 11:10:35 +0200
-Maxime Ripard <maxime@cerno.tech> wrote:
+Hi Liang,
 
-Hi Maxime,
-
-> On Mon, Apr 19, 2021 at 09:54:43AM +0100, Andre Przywara wrote:
-> > On Mon, 19 Apr 2021 11:17:19 +0800
-> > Chen-Yu Tsai <wens@csie.org> wrote:
-> > 
-> > Hi,
-> >   
-> > > On Mon, Apr 19, 2021 at 10:52 AM Samuel Holland <samuel@sholland.org> wrote:  
-> > > >
-> > > > Dealing with the inconsistent numbering has been a major pain, and
-> > > > there is a solution with (as far as I can tell) no tangible downsides.
-> > > > So let's use it.  
-> > 
-> > Thanks Samuel for sending this!
-> >   
-> > > > Yes, I know the kernel supports UUIDs for root=. But UUIDs do not help
-> > > > when referencing the whole, unpartitioned device, like is needed for
-> > > > updating the bootloader and firmware. So for the use case of "write a
-> > > > bootloader to the SD card, regardless of where the board is currently
-> > > > booted from", I know of two options:
-> > > >   - Dig around in sysfs to find the mmc number from the MMIO address,
-> > > >     which means I have to know the MMIO addresses for every SoC, or
-> > > >   - Apply patches like these.
-> > > >
-> > > > Samuel Holland (2):
-> > > >   ARM: dts: sunxi: h3/h5: Enforce consistent MMC numbering
-> > > >   arm64: dts: allwinner: Enforce consistent MMC numbering
-> > > >
-> > > >  arch/arm/boot/dts/sunxi-h3-h5.dtsi            | 6 ++++++
-> > > >  arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 6 ++++++
-> > > >  arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  | 6 ++++++    
-> > > 
-> > > At least with Rockchip this is now done at the board level. IIRC it was
-> > > a request from other people to not do it at the SoC level. I don't recall
-> > > exactly who though.  
-> > 
-> > FWIW, I am very much in favour of these patches, at a SoC level:
-> > The *SoC* BootROM imposes an order, by probing the first (by MMIO
-> > address order) MMC controller first for boot devices. IIRC that's a
-> > different story for Rockchip?
-> > And if people really don't care about the order, then having a certain
-> > order doesn't hurt, so we could as well use the "natural" order, as it
-> > was before.  
+On 4/30/21 2:57 AM, cl@rock-chips.com wrote:
+> From: Liang Chen <cl@rock-chips.com>
 > 
-> This doesn't have anything to do with the BootRom though but what we
-> provide to the userspace?
-
-My argument was that there is a "natural" order, not only by the
-location in the MMIO space, but on a more logical level: the "first" SD
-controller is first checked by the BootROM, so the SoC puts a "number
-0" tag on this particular one. This is just because I heard the
-(reasonable) argument that location in MMIO space should not be
-significant, and deriving an order from that is arbitrary.
-
-> The userspace has no guarantee about the
-> kernel enumeration order for any bus (but UART for some reason), I'm not
-> really sure why MMC would be an exception.
-
-Userspace is one thing, but arguably there are ways to find the
-partition you are looking for, because you have all the kernel *and*
-userlevel tools at hand. The question is whether this needs to be overly
-complicated and harder for the user.
-But the other, more pressing problem is the kernel-only code in
-init/do_mounts.c, which has very limited means to find a
-certain partition (see below).
-
-> Especially since the kernel will not try to catch up, this will be
-> bound to be broken on a regular basis.
-
-What do you mean with "will not try to catch up"? Do you mean there
-might be other kernel changes that spoil the numbering again, in the
-future?
-
-> And that aside, assuming that a device only has an eMMC this would
-> create the mmc2 device, which is completely weird and inconsistent
-> with how any other bus behaves.
-
-You have a point there, but I don't see how this would be a problem. I
-think one advantage is *consistent* numbering across reboots, so it
-will always be mmc2, even if you add a WiFi chip later (some boards
-have that as an option). Also those SD-card less system could surely
-override the labels in their board .dts files?
-
-> > Also UUIDs only help if you boot with an initramfs to resolve them,
-> > which proves to be extra pain if you don't compile kernels on the
-> > device, or not inside a distribution environment.  
+> Current dts files with 'grf' nodes are manually verified. In order to
+> automate this process grf.txt has to be converted to YAML.
 > 
-> I'm not sure what you mean? The kernel is perfectly able to resolve
-> them. You can also use PARTLABEL if you want something more user
-> friendly.
+> Add new descriptions for:
+> "rockchip,rk3568-grf", "syscon", "simple-mfd"
+> "rockchip,rk3568-pmugrf", "syscon", "simple-mfd"
 
-init/do_mounts.c supports PARTUUID only, but most people/distributions
-use UUID, which is filesystem metadata, so not easily accessible for
-the kernel early and on a partition level only. And IIRC PARTLABEL is
-only available on GPT partitioned disks.
-Also PARTUUID is set at partition time, so a user formatting her own SD
-card (or just changing the partition table) will have a unique PARTUUID,
-and it cannot be used from within a filesystem image or
-prefabricated boot script to reference its own partition
-(in /etc/fstab).
-And in general UUIDs are not very human friendly, so their main domain
-is to be handled by code. I definitely don't memorise a single one of
-them, but I do remember root=/dev/mmcblk0p2.
+"rockchip,rv1108-pmugrf", "syscon"
 
-I find it *very* annoying to load my development kernel over TFTP, then
-booting them with the rootfs from SD card or eMMC, and seeing it fail
-about 50% of the time, because the numbering is off.
- 
-Cheers,
-Andre
+> 
+> Signed-off-by: Liang Chen <cl@rock-chips.com>
+> ---
+>  .../devicetree/bindings/soc/rockchip/grf.txt  | 61 -------------------
+>  .../devicetree/bindings/soc/rockchip/grf.yaml | 60 ++++++++++++++++++
+>  2 files changed, 60 insertions(+), 61 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/grf.txt
+>  create mode 100644 Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/soc/rockchip/grf.txt b/Documentation/devicetree/bindings/soc/rockchip/grf.txt
+> deleted file mode 100644
+> index f96511aa3897..000000000000
+> --- a/Documentation/devicetree/bindings/soc/rockchip/grf.txt
+> +++ /dev/null
+> @@ -1,61 +0,0 @@
+> -* Rockchip General Register Files (GRF)
+> -
+> -The general register file will be used to do static set by software, which
+> -is composed of many registers for system control.
+> -
+> -From RK3368 SoCs, the GRF is divided into two sections,
+> -- GRF, used for general non-secure system,
+> -- SGRF, used for general secure system,
+> -- PMUGRF, used for always on system
+> -
+> -On RK3328 SoCs, the GRF adds a section for USB2PHYGRF,
+> -
+> -ON RK3308 SoC, the GRF is divided into four sections:
+> -- GRF, used for general non-secure system,
+> -- SGRF, used for general secure system,
+> -- DETECTGRF, used for audio codec system,
+> -- COREGRF, used for pvtm,
+> -
+> -Required Properties:
+> -
+> -- compatible: GRF should be one of the following:
+> -   - "rockchip,px30-grf", "syscon": for px30
+> -   - "rockchip,rk3036-grf", "syscon": for rk3036
+> -   - "rockchip,rk3066-grf", "syscon": for rk3066
+> -   - "rockchip,rk3188-grf", "syscon": for rk3188
+> -   - "rockchip,rk3228-grf", "syscon": for rk3228
+> -   - "rockchip,rk3288-grf", "syscon": for rk3288
+> -   - "rockchip,rk3308-grf", "syscon": for rk3308
+> -   - "rockchip,rk3328-grf", "syscon": for rk3328
+> -   - "rockchip,rk3368-grf", "syscon": for rk3368
+> -   - "rockchip,rk3399-grf", "syscon": for rk3399
+> -   - "rockchip,rv1108-grf", "syscon": for rv1108
+> -- compatible: DETECTGRF should be one of the following:
+> -   - "rockchip,rk3308-detect-grf", "syscon": for rk3308
+> -- compatilbe: COREGRF should be one of the following:
+> -   - "rockchip,rk3308-core-grf", "syscon": for rk3308
+> -- compatible: PMUGRF should be one of the following:
+> -   - "rockchip,px30-pmugrf", "syscon": for px30
+> -   - "rockchip,rk3368-pmugrf", "syscon": for rk3368
+> -   - "rockchip,rk3399-pmugrf", "syscon": for rk3399
+> -- compatible: SGRF should be one of the following:
+> -   - "rockchip,rk3288-sgrf", "syscon": for rk3288
+> -- compatible: USB2PHYGRF should be one of the following:
+> -   - "rockchip,px30-usb2phy-grf", "syscon": for px30
+> -   - "rockchip,rk3328-usb2phy-grf", "syscon": for rk3328
+> -- compatible: USBGRF should be one of the following:
+> -   - "rockchip,rv1108-usbgrf", "syscon": for rv1108
+> -- reg: physical base address of the controller and length of memory mapped
+> -  region.
+> -
+> -Example: GRF and PMUGRF of RK3399 SoCs
+> -
+> -	pmugrf: syscon@ff320000 {
+> -		compatible = "rockchip,rk3399-pmugrf", "syscon";
+> -		reg = <0x0 0xff320000 0x0 0x1000>;
+> -	};
+> -
+> -	grf: syscon@ff770000 {
+> -		compatible = "rockchip,rk3399-grf", "syscon";
+> -		reg = <0x0 0xff770000 0x0 0x10000>;
+> -	};
+> diff --git a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+> new file mode 100644
+> index 000000000000..21a67b9ae59c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+> @@ -0,0 +1,60 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/soc/rockchip/grf.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Rockchip General Register Files
+> +
+> +maintainers:
+> +  - Heiko Stuebner <heiko@sntech.de>
+> +
+
+syscon.yaml uses select if compatible contains "syscon", so use select
+here too ??
+
+> +properties:
+
+> +  compatible:
+> +    items:
+
+When there are no other combinations then with syscon and simple-mfd
+then there's no need for "oneOf", but a look in the build log shows
+there are 2 (3) exceptions:
+
+#cat build-dtbs-1471909.log | grep short
+rv1108-elgin-r1.dt.yaml: syscon@202a0000: compatible:
+['rockchip,rv1108-usbgrf', 'syscon'] is too short
+rk3288-evb-act8846.dt.yaml: syscon@ff740000: compatible:
+['rockchip,rk3288-sgrf', 'syscon'] is too short
+
+https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20210430005708.1821-1-cl@rock-chips.com/
+
+===
+
+
+	pmugrf: syscon@20060000 {
+
+		compatible = "rockchip,rv1108-pmugrf", "syscon";
+
+rockchip,rv1108-pmugrf was never added to a document.
+
+		reg = <0x20060000 0x1000>;
+	};
+
+	usbgrf: syscon@202a0000 {
+		compatible = "rockchip,rv1108-usbgrf", "syscon";
+		reg = <0x202a0000 0x1000>;
+	};
+===
+
+  compatible:
+    oneOf:
+      - items:
+          - enum:
+              - rockchip,rk3288-sgrf
+===
+              - rockchip,rv1108-pmugrf
+===
+              - rockchip,rv1108-usbgrf
+          - const: syscon
+      - items:
+          - enum:
+              - rockchip,px30-grf
+              - rockchip,px30-pmugrf
+              - rockchip,px30-usb2phy-grf
+              - rockchip,rk3036-grf
+              - rockchip,rk3066-grf
+              - rockchip,rk3188-grf
+              - rockchip,rk3228-grf
+              - rockchip,rk3288-grf
+              - rockchip,rk3308-core-grf
+              - rockchip,rk3308-detect-grf
+              - rockchip,rk3308-grf
+              - rockchip,rk3328-grf
+              - rockchip,rk3328-usb2phy-grf
+              - rockchip,rk3368-grf
+              - rockchip,rk3368-pmugrf
+              - rockchip,rk3399-grf
+              - rockchip,rk3399-pmugrf
+              - rockchip,rk3568-grf
+              - rockchip,rk3568-pmugrf
+              - rockchip,rv1108-grf
+          - const: syscon
+          - const: simple-mfd
+
+> +      - enum:
+> +          - rockchip,px30-grf
+> +          - rockchip,px30-pmugrf
+> +          - rockchip,px30-usb2phy-grf
+> +          - rockchip,rk3036-grf
+> +          - rockchip,rk3066-grf
+> +          - rockchip,rk3188-grf
+> +          - rockchip,rk3228-grf
+> +          - rockchip,rk3288-grf
+> +          - rockchip,rk3288-sgrf
+> +          - rockchip,rk3308-core-grf
+> +          - rockchip,rk3308-detect-grf
+> +          - rockchip,rk3308-grf
+> +          - rockchip,rk3328-grf
+> +          - rockchip,rk3328-usb2phy-grf
+> +          - rockchip,rk3368-grf
+> +          - rockchip,rk3368-pmugrf
+> +          - rockchip,rk3399-grf
+> +          - rockchip,rk3399-pmugrf
+> +          - rockchip,rk3568-grf
+> +          - rockchip,rk3568-pmugrf
+> +          - rockchip,rv1108-grf
+> +          - rockchip,rv1108-usbgrf
+> +      - const: syscon
+> +      - const: simple-mfd
+
+> +
+> +  reg:> +    maxItems: 1
+
+"#address-cells":
+  const: 1
+
+"#size-cells":
+  const: 1
+
+rk3228-evb.dt.yaml: syscon@11000000: '#address-cells', '#size-cells',
+'io-domains', 'usb2-phy@760', 'usb2-phy@800' do not match any of the
+regexes: 'pinctrl-[0-9]+'
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+
+> +additionalProperties: false
+
+additionalProperties: true
+
+> +
+> +examples:
+> +  - |
+> +    pmugrf: syscon@ff320000 {
+> +       compatible = "rockchip,rk3399-pmugrf", "syscon", "simple-mfd";
+> +       reg = <0xff320000 0x1000>;
+> +    };
+> +
+> +    grf: syscon@ff770000 {
+> +       compatible = "rockchip,rk3399-grf", "syscon", "simple-mfd";
+> +       reg = <0xff770000 0x10000>;
+> +    };
+> 
