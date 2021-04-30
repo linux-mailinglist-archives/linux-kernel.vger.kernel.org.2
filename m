@@ -2,149 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E1F37002A
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DFD137002C
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231373AbhD3SHi convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 30 Apr 2021 14:07:38 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2980 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbhD3SHg (ORCPT
+        id S231499AbhD3SHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 14:07:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46243 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230093AbhD3SHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 14:07:36 -0400
-Received: from fraeml735-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FX0Xx1hhHz6wlJb;
-        Sat,  1 May 2021 02:01:05 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml735-chm.china.huawei.com (10.206.15.216) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 30 Apr 2021 20:06:46 +0200
-Received: from localhost (10.52.125.96) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 30 Apr
- 2021 19:06:45 +0100
-Date:   Fri, 30 Apr 2021 19:05:10 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
-        Niklas =?ISO-8859-1?Q?S?= =?ISO-8859-1?Q?=F6derlund?= 
-        <niklas.soderlund@ragnatech.se>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-renesas-soc@vger.kernel.org>,
-        Niklas =?ISO-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>
-Subject: Re: [PATCH v4 77/79] media: rcar-vin: use
- pm_runtime_resume_and_get()
-Message-ID: <20210430190510.0000298d@Huawei.com>
-In-Reply-To: <c0c8f8b07af20c354b946819f5dcdf9f5129654e.1619621413.git.mchehab+huawei@kernel.org>
-References: <cover.1619621413.git.mchehab+huawei@kernel.org>
-        <c0c8f8b07af20c354b946819f5dcdf9f5129654e.1619621413.git.mchehab+huawei@kernel.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Fri, 30 Apr 2021 14:07:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619806022;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=D7miYpQHKUyjQ+9R5jWrbmacmh9BSN80I7pxXKphNsc=;
+        b=Y75OeA/nY5Mrlo2ykQfETuarKJwXxHBf8uoJYJdm6ElnbQ7XTmPVjoLLMtVuROHM/38Ach
+        2I6tDybH8fyV0u9mFjtPndrcUlRuKn626c19cF6c/lIP1zcy12FRZ4HP7rY+A24Ijgjdvu
+        X+igsG8k10naG9WLsBuO7BTE7hNi0ZQ=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-527-MmSpV3DZPDqfRxNuqqelRA-1; Fri, 30 Apr 2021 14:07:00 -0400
+X-MC-Unique: MmSpV3DZPDqfRxNuqqelRA-1
+Received: by mail-qk1-f200.google.com with SMTP id m4-20020a37a3040000b02902e6776757c3so6195930qke.13
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 11:06:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=D7miYpQHKUyjQ+9R5jWrbmacmh9BSN80I7pxXKphNsc=;
+        b=pIyWZ09j9u1MtLvNsY2OJZ43JVokNqAGcVNiz3qxpXR6TQ/qdt+5EbPh+6iOlKnZh8
+         JGQz6/ekFhkNMJZ/DMJeqEZZy0jOA0F+5TwKvHZ2lf1PUPeSdFaybp4r65DeAFr3q94o
+         9Gi2hOFtDTiSk3/Uc2OH1Zij4wMhV8ZVqGnCmPhDw9zsPBsHB1kaQa6xuNQvYGDB+tIw
+         +ILBZQITQdUF7k68vpYyWQXFN8nu0D0xnzwZedXigwGi/4Vj7wkyJZQIKidhr2AE1biT
+         3zMgINBhjv2o0LyeOEQpGOMqMwOSUR6VZMPamw4EzSK2N3kNq75CW8iJuH8+1WuQDoDK
+         0W6A==
+X-Gm-Message-State: AOAM533ea+NHnz2GOJjojQoQbamZmoKEW6cFR1npDvZlPL077Od60su6
+        6il+JQbSj8VDQzrTz/PDL62Rp/wYBS71W7FvS9MC6ueFuziORc3uYsHpfU/JGFljOSJIGJrrHA6
+        aFWG5w6QRhPcNmrG+vcdEOo8H
+X-Received: by 2002:a37:7a05:: with SMTP id v5mr6870608qkc.266.1619806019279;
+        Fri, 30 Apr 2021 11:06:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxAlxc1hPUTwEYH0l2ED+glJWfPMlmvkcqtM/2BRdmPojLgUYqc00LlHS8YezDjVVdYYegf3Q==
+X-Received: by 2002:a37:7a05:: with SMTP id v5mr6870595qkc.266.1619806019138;
+        Fri, 30 Apr 2021 11:06:59 -0700 (PDT)
+Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id x19sm1965052qkx.107.2021.04.30.11.06.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 11:06:58 -0700 (PDT)
+From:   trix@redhat.com
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] btrfs: initialize return variable
+Date:   Fri, 30 Apr 2021 11:06:55 -0700
+Message-Id: <20210430180655.3328899-1-trix@redhat.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.52.125.96]
-X-ClientProxiedBy: lhreml721-chm.china.huawei.com (10.201.108.72) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Apr 2021 16:52:38 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+From: Tom Rix <trix@redhat.com>
 
-> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-> added pm_runtime_resume_and_get() in order to automatically handle
-> dev->power.usage_count decrement on errors.
-> 
-> Use the new API, in order to cleanup the error check logic.
-> 
-> Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Trivial thing inline.  Doesn't matter though if you prefer it as is.
+Static analysis reports this problem
+free-space-cache.c:3965:2: warning: Undefined or garbage value returned
+  return ret;
+  ^~~~~~~~~~
 
-> ---
->  drivers/media/platform/rcar-vin/rcar-csi2.c | 15 ++++++++++++---
->  drivers/media/platform/rcar-vin/rcar-dma.c  |  6 ++----
->  drivers/media/platform/rcar-vin/rcar-v4l2.c |  6 ++----
->  3 files changed, 16 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> index e06cd512aba2..436fb17f73ea 100644
-> --- a/drivers/media/platform/rcar-vin/rcar-csi2.c
-> +++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> @@ -406,10 +406,17 @@ static void rcsi2_enter_standby(struct rcar_csi2 *priv)
->  	pm_runtime_put(priv->dev);
->  }
->  
-> -static void rcsi2_exit_standby(struct rcar_csi2 *priv)
-> +static int rcsi2_exit_standby(struct rcar_csi2 *priv)
->  {
-> -	pm_runtime_get_sync(priv->dev);
-> +	int ret;
-> +
-> +	ret = pm_runtime_resume_and_get(priv->dev);
-> +	if (ret < 0)
-> +		return ret;
-> +
->  	reset_control_deassert(priv->rstc);
-> +
-> +	return ret;
+ret is set in the node handling loop.
+Treat doing nothing as a success and initialize ret to 0.
 
-Maybe return 0; to make it easy to see this returns <= 0;
-ret will always be 0 here anyway.
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ fs/btrfs/free-space-cache.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->  }
->  
->  static int rcsi2_wait_phy_start(struct rcar_csi2 *priv,
-> @@ -657,7 +664,9 @@ static int rcsi2_start(struct rcar_csi2 *priv)
->  {
->  	int ret;
->  
-> -	rcsi2_exit_standby(priv);
-> +	ret = rcsi2_exit_standby(priv);
-> +	if (ret < 0)
-> +		return ret;
->  
->  	ret = rcsi2_start_receiver(priv);
->  	if (ret) {
-> diff --git a/drivers/media/platform/rcar-vin/rcar-dma.c b/drivers/media/platform/rcar-vin/rcar-dma.c
-> index f30dafbdf61c..f5f722ab1d4e 100644
-> --- a/drivers/media/platform/rcar-vin/rcar-dma.c
-> +++ b/drivers/media/platform/rcar-vin/rcar-dma.c
-> @@ -1458,11 +1458,9 @@ int rvin_set_channel_routing(struct rvin_dev *vin, u8 chsel)
->  	u32 vnmc;
->  	int ret;
->  
-> -	ret = pm_runtime_get_sync(vin->dev);
-> -	if (ret < 0) {
-> -		pm_runtime_put_noidle(vin->dev);
-> +	ret = pm_runtime_resume_and_get(vin->dev);
-> +	if (ret < 0)
->  		return ret;
-> -	}
->  
->  	/* Make register writes take effect immediately. */
->  	vnmc = rvin_read(vin, VNMC_REG);
-> diff --git a/drivers/media/platform/rcar-vin/rcar-v4l2.c b/drivers/media/platform/rcar-vin/rcar-v4l2.c
-> index 457a65bf6b66..b1e9f86caa5c 100644
-> --- a/drivers/media/platform/rcar-vin/rcar-v4l2.c
-> +++ b/drivers/media/platform/rcar-vin/rcar-v4l2.c
-> @@ -870,11 +870,9 @@ static int rvin_open(struct file *file)
->  	struct rvin_dev *vin = video_drvdata(file);
->  	int ret;
->  
-> -	ret = pm_runtime_get_sync(vin->dev);
-> -	if (ret < 0) {
-> -		pm_runtime_put_noidle(vin->dev);
-> +	ret = pm_runtime_resume_and_get(vin->dev);
-> +	if (ret < 0)
->  		return ret;
-> -	}
->  
->  	ret = mutex_lock_interruptible(&vin->lock);
->  	if (ret)
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index e54466fc101f..4806295116d8 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -3949,7 +3949,7 @@ static int cleanup_free_space_cache_v1(struct btrfs_fs_info *fs_info,
+ {
+ 	struct btrfs_block_group *block_group;
+ 	struct rb_node *node;
+-	int ret;
++	int ret = 0;
+ 
+ 	btrfs_info(fs_info, "cleaning free space cache v1");
+ 
+-- 
+2.26.3
 
