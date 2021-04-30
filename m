@@ -2,109 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1207636F407
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 04:23:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF7636F3FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 04:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbhD3CXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 22:23:54 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:16621 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbhD3CXw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 22:23:52 -0400
-Received: from epcas3p3.samsung.com (unknown [182.195.41.21])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210430022302epoutp010260362dea56d81ef464c8864df13225~6gXtI3LLV2528225282epoutp01l
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 02:23:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210430022302epoutp010260362dea56d81ef464c8864df13225~6gXtI3LLV2528225282epoutp01l
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1619749382;
-        bh=j4LWkwldRLUrGOZFZYtV8wATCeynPe4551DILqQur/4=;
-        h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=KzV8x6qFK4eOk27ftngGS/MxvDWRnyXmeDdNSJEWoMbJ9dv2kOCWbfSwna+xohPve
-         IG3tXir8u+FdmBdug2ZnmGlAOr4lcIzDcYmqu3CYX6zAIbxv3155xi3cMsPFQZEDol
-         uGKYHcsaJZ0S2WqaPzZhAiIsazIy4wFTdtgg7pug=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas3p4.samsung.com (KnoxPortal) with ESMTP id
-        20210430022301epcas3p40a37b8920e942d2440983ff5a8aad732~6gXsi7Amt2702827028epcas3p4H;
-        Fri, 30 Apr 2021 02:23:01 +0000 (GMT)
-Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp4.localdomain
-        (Postfix) with ESMTP id 4FWbkY5Z1rz4x9Pv; Fri, 30 Apr 2021 02:23:01 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: [PATCH] scsi: ufs: remove redundant initialization of variable
-Reply-To: keosung.park@samsung.com
-Sender: Keoseong Park <keosung.park@samsung.com>
-From:   Keoseong Park <keosung.park@samsung.com>
-To:     ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
-        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Daejun Park <daejun7.park@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <2038148563.21619749381770.JavaMail.epsvc@epcpadp4>
-Date:   Fri, 30 Apr 2021 11:14:19 +0900
-X-CMS-MailID: 20210430021419epcms2p402717e968615d301ba18341d28a828ee
-Content-Transfer-Encoding: 7bit
+        id S229853AbhD3CSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 22:18:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43228 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229577AbhD3CSD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 22:18:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F239613EE;
+        Fri, 30 Apr 2021 02:17:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619749035;
+        bh=Hv1C2LyXJqO2i3JKRnZtQbt4ua6L32rnPt3ObKyL2NI=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=M6wiVI4fIVtHzldUu5wZztmxWCZp/lKGbCnzCkiorRaFxMy9wHWvnfcvh94LQBi5H
+         nZI/789x4cNgbLqMo8Yp8QxSnE8+h/fZ6Gm2cM0pZ81pShzZ0H26VPHJGENYglAjdA
+         exSaEp/8+m8mgKr+kla8Qd9+Ha6TylTvNXhbiAElKBso+qbND2N0hL/bH2VyIUL41m
+         ZF1qzzkM8QQaJbPNICeTiB1wQ2ezV/XCHgsXOUQOccmAnxhhNppNiqHUYxjFPtv+MZ
+         Tkyit8DYSzQc+/TcCA7SVUcUMLTSaqrOox5m3rFyw/xBemDFGnLB2gxnnr6XVcqAoF
+         ZIRxFXwmjZL4w==
 Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20210430021419epcms2p402717e968615d301ba18341d28a828ee
-References: <CGME20210430021419epcms2p402717e968615d301ba18341d28a828ee@epcms2p4>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87v98dqzfe.fsf@kokedama.swc.toshiba.co.jp>
+References: <20210421134844.3297838-1-arnd@kernel.org> <871rb2swd9.fsf@kokedama.swc.toshiba.co.jp> <01e78b64-8ad1-dfc8-9fc0-6afff4841492@xilinx.com> <87v98dqzfe.fsf@kokedama.swc.toshiba.co.jp>
+Subject: Re: [PATCH] clk: zynqmp: fix compile testing without ZYNQMP_FIRMWARE
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jolly Shah <jolly.shah@xilinx.com>,
+        Quanyang Wang <quanyang.wang@windriver.com>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+To:     Michal Simek <michal.simek@xilinx.com>,
+        Punit Agrawal <punit1.agrawal@toshiba.co.jp>
+Date:   Thu, 29 Apr 2021 19:17:14 -0700
+Message-ID: <161974903429.177949.6659170601321970979@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable d_lu_wb_buf_alloc may be repeatedly initialized to 0 in a for-loop.
-If the variable is set to a value other than 0, it exits the for-loop, so there is no need to reset it to 0.
+Quoting Punit Agrawal (2021-04-22 23:37:25)
+> Michal Simek <michal.simek@xilinx.com> writes:
+> >
+> >
+> >>> =20
+> >>>     rate =3D  parent_rate * fbdiv;
+> >>>     if (zynqmp_pll_get_mode(hw) =3D=3D PLL_MODE_FRAC) {
+> >>=20
+> >> The changes make sense in that the functions error out sensibly when t=
+he
+> >> zynqmp firmware driver is not enabled.
+> >>=20
+> >> Acked-by: Punit Agrawal <punit1.agrawal@toshiba.co.jp>
+> >
+> > I think code should be checked that these error values are handled how
+> > they should be handled.
+>=20
+> I only looked at it from the point of view of getting rid of the
+> warnings - based on the commit log, Arnd's patch is only taking care of
+> the compiler warnings when the driver is built with
+> CONFIG_COMPILE_TEST=3Dy and likely CONFIG_ZYNQMP_FIRMWARE=3Dn.
 
-Since lun and d_lu_wb_buf_alloc are just being used in a else statement inside a local scope, move the declaration of the variables to that scope.
+The subject line basically says this.
 
-Signed-off-by: Keoseong Park <keosung.park@samsung.com>
----
- drivers/scsi/ufs/ufshcd.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+>=20
+> In practice, the code should not be hit at runtime due to the dependency
+> on the firmware driver. Even then, a better fix would indeed be taking
+> the returned values at call sites into account.
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 0625da7a42ee..77cc473961a2 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -7277,8 +7277,6 @@ static int ufshcd_scsi_add_wlus(struct ufs_hba *hba)
- static void ufshcd_wb_probe(struct ufs_hba *hba, u8 *desc_buf)
- {
- 	struct ufs_dev_info *dev_info = &hba->dev_info;
--	u8 lun;
--	u32 d_lu_wb_buf_alloc;
- 	u32 ext_ufs_feature;
- 
- 	if (!ufshcd_is_wb_allowed(hba))
-@@ -7318,8 +7316,10 @@ static void ufshcd_wb_probe(struct ufs_hba *hba, u8 *desc_buf)
- 				   DEVICE_DESC_PARAM_WB_SHARED_ALLOC_UNITS))
- 			goto wb_disabled;
- 	} else {
-+		u8 lun;
-+		u32 d_lu_wb_buf_alloc = 0;
-+
- 		for (lun = 0; lun < UFS_UPIU_MAX_WB_LUN_ID; lun++) {
--			d_lu_wb_buf_alloc = 0;
- 			ufshcd_read_unit_desc_param(hba,
- 					lun,
- 					UNIT_DESC_PARAM_WB_BUF_ALLOC_UNITS,
--- 
-2.17.1
+Still needs to be fixed. If a better patch is sent I would apply it, but
+if that isn't going to happen I'll apply this one.
