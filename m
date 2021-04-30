@@ -2,90 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 532B536F495
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 05:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F38236F499
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 05:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229690AbhD3DjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 23:39:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51532 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229577AbhD3DjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 23:39:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A38C6613AD;
-        Fri, 30 Apr 2021 03:38:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619753911;
-        bh=62xpBMMoN3AZUrRgY+gs+zkDlkkWnEMVFBR8/hvHmAk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TABji03Yc2Uz5RoeVSnlLiu5JYNByHXM+VxBtmA2AMCMABU2UkZL/cKctsGi2NC9V
-         xibHvTMiOp+FB+uHYjLEt47QgseDRkjrt+Clp+sN/si4Ugp/GCV3B4kEQmoQQ9zN4F
-         E/eQ+Q6BOetOlwciv9gJZLf9TLjCTfpRCyyTMddsL4qo3uB81jFsIXJlO2xGbrah4h
-         KW+OkYFtMfhqH+mXivpPoABPBd+y9+gLYHOo9WpN6LK6xSiZWPo1NwBuPDLhgRuZvt
-         xnpNgzxbt0HPRPCDC+GY73NUujxwwJQPl2vYdyOQNmrU4JiNcoX7vB383ZgxeS5+c5
-         au/jB5TAA9ljQ==
-Date:   Fri, 30 Apr 2021 11:38:26 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Souptick Joarder <jrdr.linux@gmail.com>, pawell@cadence.com,
-        rogerq@kernel.org, a-govindraju@ti.com, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] usb: cdns3: Corrected comment to align with
- kernel-doc comment
-Message-ID: <20210430033826.GA3842@nchen>
-References: <1619338565-4574-1-git-send-email-jrdr.linux@gmail.com>
- <8cbc9ed6-4499-642c-3b49-53e80974f004@infradead.org>
+        id S229778AbhD3Dpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 23:45:44 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:35789 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229591AbhD3Dpm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 23:45:42 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 13U3iX2U017640
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Apr 2021 23:44:33 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 00C4215C39C4; Thu, 29 Apr 2021 23:44:32 -0400 (EDT)
+Date:   Thu, 29 Apr 2021 23:44:32 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     Vegard Nossum <vegard.nossum@oracle.com>,
+        akpm@linux-foundation.org, peterz@infradead.org, axboe@kernel.dk,
+        pmladek@suse.com, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
+Subject: Re: [PATCH] ext4: fix memory leak in ext4_fill_super
+Message-ID: <YIt9IFY4Xsf5K+eZ@mit.edu>
+References: <20210428172828.12589-1-paskripkin@gmail.com>
+ <3c3877a4-fef2-9e24-f99f-2ecc46deb7e4@oracle.com>
+ <20210429143354.418248a7@gmail.com>
+ <YIrnPXJo/n68NrQs@mit.edu>
+ <20210429230956.6ad23897@gmail.com>
+ <YIsn+JToAkPqDPq5@mit.edu>
+ <20210430010547.38f27e39@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8cbc9ed6-4499-642c-3b49-53e80974f004@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210430010547.38f27e39@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-04-25 08:53:33, Randy Dunlap wrote:
-> On 4/25/21 1:16 AM, Souptick Joarder wrote:
-> > Minor update in comment.
+On Fri, Apr 30, 2021 at 01:05:47AM +0300, Pavel Skripkin wrote:
+> > out of the thread function.  That means hanging struct mmpd_data off
+> > the struct ext4_sb_info structure, and then adding a function like
+> > this to fs/ext4/mmp.c
 > > 
-> > Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-> > ---
-> > v2:
-> > 	Updated change logs and address review comment.
-> 
-> LGTM. Thanks.
-> 
-> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+> > static void ext4_stop_mmpd(struct ext4_sb_info *sbi)
 
-Applied, thanks.
+That should "extern void ...", since it will be called from
+fs/ext4/super.c.  I had originally was thinking to put this function
+in fs/ext4/super.c, but from the perspective of keeping the MMP code
+in the same source file, it probably makes sense to keep this function
+with the other MMP functions.
 
-Peter
-
-> 
-> >  drivers/usb/cdns3/cdns3-gadget.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > {
+> > 	if (sbi->s_mmp_tsk) {
+> > 		kthread_stop(sbi->s_mmp_tsk);
+> > 		brelse(sbi->s_mmp_data->bh);
+> > 		kfree(sbi->s_mmp_data);
+> > 		sbi->s_mmp_data = NULL;
+> > 		sbi->s_mmp_tsk = NULL;
+> > 	}
+> > }
 > > 
-> > diff --git a/drivers/usb/cdns3/cdns3-gadget.c b/drivers/usb/cdns3/cdns3-gadget.c
-> > index 9b1bd41..21f026c 100644
-> > --- a/drivers/usb/cdns3/cdns3-gadget.c
-> > +++ b/drivers/usb/cdns3/cdns3-gadget.c
-> > @@ -484,7 +484,7 @@ static void __cdns3_descmiss_copy_data(struct usb_request *request,
-> >  }
-> >  
-> >  /**
-> > - * cdns3_wa2_descmiss_copy_data copy data from internal requests to
-> > + * cdns3_wa2_descmiss_copy_data - copy data from internal requests to
-> >   * request queued by class driver.
-> >   * @priv_ep: extended endpoint object
-> >   * @request: request object
-> > 
-> 
-> 
-> -- 
-> ~Randy
-> 
+> > Basically, just move all of the cleanup so it is done after the
+> > kthread is stopped, so we don't have to do any fancy error checking.
+> > We just do it unconditionally.
 
--- 
+Cheers,
 
-Thanks,
-Peter Chen
-
+						- Ted
+						
