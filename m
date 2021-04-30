@@ -2,57 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF21137000E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 19:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C327E370012
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 19:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbhD3R6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 13:58:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43620 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229954AbhD3R6o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 13:58:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 285A961449;
-        Fri, 30 Apr 2021 17:57:55 +0000 (UTC)
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Bill Wendling <morbo@google.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Kees Cook <keescook@google.com>, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/vdso: Discard .note.gnu.property sections in vDSO
-Date:   Fri, 30 Apr 2021 18:57:53 +0100
-Message-Id: <161980533328.3085.7369684692351119549.b4-ty@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210423205159.830854-1-morbo@google.com>
-References: <20210423205159.830854-1-morbo@google.com>
+        id S231217AbhD3SAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 14:00:44 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2978 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229954AbhD3SAm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 14:00:42 -0400
+Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FX0Ny6hwZz6wkr8;
+        Sat,  1 May 2021 01:54:10 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 30 Apr 2021 19:59:52 +0200
+Received: from localhost (10.52.125.96) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 30 Apr
+ 2021 18:59:51 +0100
+Date:   Fri, 30 Apr 2021 18:58:16 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Hugues Fruchet <hugues.fruchet@st.com>,
+        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: Re: [PATCH v4 73/79] media: stm32: use pm_runtime_resume_and_get()
+Message-ID: <20210430185816.00000ef5@Huawei.com>
+In-Reply-To: <cd918677e36e89196670cacd7027569e741f7d98.1619621413.git.mchehab+huawei@kernel.org>
+References: <cover.1619621413.git.mchehab+huawei@kernel.org>
+        <cd918677e36e89196670cacd7027569e741f7d98.1619621413.git.mchehab+huawei@kernel.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.125.96]
+X-ClientProxiedBy: lhreml721-chm.china.huawei.com (10.201.108.72) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Apr 2021 13:51:59 -0700, Bill Wendling wrote:
-> The arm64 assembler in binutils 2.32 and above generates a program
-> property note in a note section, .note.gnu.property, to encode used x86
-> ISAs and features. But the kernel linker script only contains a single
-> NOTE segment:
+On Wed, 28 Apr 2021 16:52:34 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+
+> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> added pm_runtime_resume_and_get() in order to automatically handle
+> dev->power.usage_count decrement on errors.
 > 
->   PHDRS
->   {
->     text    PT_LOAD    FLAGS(5) FILEHDR PHDRS; /* PF_R|PF_X */
->     dynamic PT_DYNAMIC FLAGS(4);               /* PF_R */
->     note    PT_NOTE    FLAGS(4);               /* PF_R */
->   }
+> Use the new API, in order to cleanup the error check logic.
 > 
-> [...]
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  drivers/media/platform/stm32/stm32-dcmi.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/platform/stm32/stm32-dcmi.c b/drivers/media/platform/stm32/stm32-dcmi.c
+> index bbcc2254fa2e..5f4e1db8cfcd 100644
+> --- a/drivers/media/platform/stm32/stm32-dcmi.c
+> +++ b/drivers/media/platform/stm32/stm32-dcmi.c
+> @@ -723,11 +723,11 @@ static int dcmi_start_streaming(struct vb2_queue *vq, unsigned int count)
+>  	u32 val = 0;
+>  	int ret;
+>  
+> -	ret = pm_runtime_get_sync(dcmi->dev);
+> +	ret = pm_runtime_resume_and_get(dcmi->dev);
+>  	if (ret < 0) {
+>  		dev_err(dcmi->dev, "%s: Failed to start streaming, cannot get sync (%d)\n",
+>  			__func__, ret);
+> -		goto err_pm_put;
+> +		goto err_unlock;
 
-Applied to arm64 (for-next/core). Thanks Bill and Szabolcs for
-clarifying the need for this patch.
+maybe err_unlocked; to indicate the lock isn't held.  This briefly confused me.
 
-[1/1] arm64/vdso: Discard .note.gnu.property sections in vDSO
-      https://git.kernel.org/arm64/c/388708028e69
-
--- 
-Catalin
+>  	}
+>  
+>  	ret = media_pipeline_start(&dcmi->vdev->entity, &dcmi->pipeline);
+> @@ -848,6 +848,7 @@ static int dcmi_start_streaming(struct vb2_queue *vq, unsigned int count)
+>  
+>  err_pm_put:
+>  	pm_runtime_put(dcmi->dev);
+> +err_unlock:
+>  	spin_lock_irq(&dcmi->irqlock);
+>  	/*
+>  	 * Return all buffers to vb2 in QUEUED state.
 
