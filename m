@@ -2,244 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 285CD36F5C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 08:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB4936F5C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 08:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbhD3Gjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 02:39:40 -0400
-Received: from mx21.baidu.com ([220.181.3.85]:38966 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229482AbhD3Gjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 02:39:39 -0400
-Received: from BC-Mail-Ex31.internal.baidu.com (unknown [172.31.51.25])
-        by Forcepoint Email with ESMTPS id 9EE6E655C2FEC6960F4F;
-        Fri, 30 Apr 2021 14:38:47 +0800 (CST)
-Received: from BJHW-MAIL-EX26.internal.baidu.com (10.127.64.41) by
- BC-Mail-Ex31.internal.baidu.com (172.31.51.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.4; Fri, 30 Apr 2021 14:38:47 +0800
-Received: from BJHW-MAIL-EX25.internal.baidu.com (10.127.64.40) by
- BJHW-MAIL-EX26.internal.baidu.com (10.127.64.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.4; Fri, 30 Apr 2021 14:38:47 +0800
-Received: from BJHW-MAIL-EX25.internal.baidu.com ([169.254.1.114]) by
- BJHW-MAIL-EX25.internal.baidu.com ([169.254.1.114]) with mapi id
- 15.01.2242.008; Fri, 30 Apr 2021 14:38:47 +0800
-From:   "Yuan,Zhaoxiong" <yuanzhaoxiong@baidu.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     "mingo@redhat.com" <mingo@redhat.com>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "bristot@redhat.com" <bristot@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] sched: Optimize housekeeping_cpumask in for_each_cpu_and
-Thread-Topic: [PATCH] sched: Optimize housekeeping_cpumask in for_each_cpu_and
-Thread-Index: AQHXNQJLuiRBYUnh2EurZGLxcXYop6q891IAgA+1mgA=
-Date:   Fri, 30 Apr 2021 06:38:47 +0000
-Message-ID: <FAA681A5-5D56-407C-865A-A640D28C577F@baidu.com>
-References: <1618671697-26098-1-git-send-email-yuanzhaoxiong@baidu.com>
- <YH1T2f96IWlR7aOi@hirez.programming.kicks-ass.net>
- <830177B0-45E0-4768-80AB-A99B85D3A52F@baidu.com>
-In-Reply-To: <830177B0-45E0-4768-80AB-A99B85D3A52F@baidu.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.22.206.45]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C31C94AC4F41264CA41DFBD0605A441F@internal.baidu.com>
-Content-Transfer-Encoding: base64
+        id S230310AbhD3Gkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 02:40:33 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:19693 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229482AbhD3Gkc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 02:40:32 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1619764777; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=bVm8aeh/RhVR+0lCg2A9CegWl8+Z/njjNXJhRMkx4BsdaZKye/ULvbqoCHBkdpD9eI
+    SOEy8M9tWBFcRS6byzbMHiAOi8Z/oSiaB7+447y3tOuay5jU/RHrVPqflzSHtNYzKAFu
+    KfSFzdn3Noh/dBIlGtEUdQLulKTT3nOHvZ3MhFL1HxohXDrZtU5HDy/pXJIiN7NS/P11
+    MksOvgmAcPkMz/2cbajVCett/uVqqs2r9A0pr7NYrQzZ2CosrG+jF9sFDjnLDDP02Lie
+    stLkG8Tf2SH8EhRNJCHQC1cFYcyjlNlMgymvWJaNKXe8UspocFmTL69TLfLQ7fjY2+En
+    mttw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1619764777;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=6z6l9+rojPJlZtid+Fe8AU76hH1sc4rG7fZbTRHV48w=;
+    b=JilQsVn8WE+2yytr725uF6gw9hzqROzu0VokNeG8McFt8c6/JySHZ7cywDkD+RIKvH
+    oBjiS2yoGDNZ4fCDI6HIy1F3QhoynSLjC69x2A/7agw2LDsSH/DJf3l2oEZdFwPzR608
+    nEYqHzE1RDwpWX6yBgRsA+bpulOBOHFhY+GwotXdX/f3aEacThvGmoOkYXJ5ccpiSc1+
+    PO7wmYED1U9qcJf9nq++XjipU1cRkAVqMRVdev2wO9I0c+uj2YGo/VPy9cWkN15aSbvI
+    hqBcnyz4N737aaxGXzqFImpp4kF4N9KX5R1RcfYHPrxWmym0Q4c97IKvsZ/ydha1dIwl
+    hjPg==
+ARC-Authentication-Results: i=1; strato.com;
+    dkim=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1619764777;
+    s=strato-dkim-0002; d=schoebel-theuer.de;
+    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=6z6l9+rojPJlZtid+Fe8AU76hH1sc4rG7fZbTRHV48w=;
+    b=BGRTb0gZLsxDJXWwHaMo38ytNFGAmOBE2h9QgLmzBykqTtQGWXN/TA8rgLOBTMWxrX
+    sYZku2a+bR8aOObXTpdlT3LD6QNEjJOCndEib5jT+2Jxehgn4rIwOzJzNdWDhy63rqJ6
+    Krv4Htb8aow6EtZSstRbtG0zXP4EAa3HHwVpZy6lAxPdb4guLtBzIN2Dv7A2NVKgMzfC
+    ajoFr7aoW/tzMdCKN69Q4L50F46yQRGqKfs6xwHbviYXnenG0+hqU4hXZU6uJoMF9yaD
+    9q/5Sow8Lo/aDRk1PJZgdduetc+1Ejsi1aJrKTPOxveB4AB/eOennUvXQa3Cz0qvXdsu
+    6Vpg==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":OH8QVVOrc/CP6za/qRmbF3BWedPGA1vjs2e0bDjfg8OiOrPJifeRMRhMYPeob5ctvy+gxYZSw1A="
+X-RZG-CLASS-ID: mo00
+Received: from [192.168.2.112]
+    by smtp.strato.de (RZmta 47.25.2 DYNA|AUTH)
+    with ESMTPSA id g052f6x3U6daAev
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Fri, 30 Apr 2021 08:39:36 +0200 (CEST)
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+To:     Kajetan Puchalski <mrkajetanp@gmail.com>, mceier+kernel@gmail.com
+Cc:     ojeda@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Schoebel-Theuer <tst@schoebel-theuer.de>
+References: <20210414184604.23473-1-ojeda@kernel.org>
+ <CAJTyqKP4Ud7aWxdCihfzeZ3dQe_5yeTAVnXcKDonciez-g2zWA@mail.gmail.com>
+ <878s51e3jc.fsf@gmail.com>
+From:   Thomas Schoebel-Theuer <tst@schoebel-theuer.de>
+Message-ID: <7999ba57-9b95-265e-a189-d9ca01304b13@schoebel-theuer.de>
+Date:   Fri, 30 Apr 2021 08:39:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
+In-Reply-To: <878s51e3jc.fsf@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiDlnKggMjAyMS80LzE5IOS4i+WNiDU6NTfvvIzigJxQZXRlciBaaWpsc3RyYeKAnTxwZXRlcnpA
-aW5mcmFkZWFkLm9yZz4g5YaZ5YWlOg0KDQo+IE9uIFNhdCwgQXByIDE3LCAyMDIxIGF0IDExOjAx
-OjM3UE0gKzA4MDAsIFl1YW4gWmhhb1hpb25nIHdyb3RlOg0KPj4gT24gYSAxMjggY29yZXMgQU1E
-IG1hY2hpbmUsIHRoZXJlIGFyZSA4IGNvcmVzIGluIG5vaHpfZnVsbCBtb2RlLCBhbmQNCj4+IHRo
-ZSBvdGhlcnMgYXJlIHVzZWQgZm9yIGhvdXNla2VlcGluZy4gV2hlbiBtYW55IGhvdXNla2VlcGlu
-ZyBjcHVzIGFyZQ0KPj4gaW4gaWRsZSBzdGF0ZSwgd2UgY2FuIG9ic2VydmUgaHVnZSB0aW1lIGJ1
-cm4gaW4gdGhlIGxvb3AgZm9yIHNlYXJjaGluZw0KPj4gbmVhcmVzdCBidXN5IGhvdXNla2VlcGVy
-IGNwdSBieSBmdHJhY2UuDQo+PiANCj4+ICAgIDkpICAgICAgICAgICAgICAgfCAgICAgICAgICAg
-ICAgZ2V0X25vaHpfdGltZXJfdGFyZ2V0KCkgew0KPj4gICAgOSkgICAgICAgICAgICAgICB8ICAg
-ICAgICAgICAgICAgIGhvdXNla2VlcGluZ190ZXN0X2NwdSgpIHsNCj4+ICAgIDkpICAgMC4zOTAg
-dXMgICAgfCAgICAgICAgICAgICAgICAgIGhvdXNla2VlcGluZ19nZXRfbWFzay5wYXJ0LjEoKTsN
-Cj4+ICAgIDkpICAgMC41NjEgdXMgICAgfCAgICAgICAgICAgICAgICB9DQo+PiAgICA5KSAgIDAu
-MDkwIHVzICAgIHwgICAgICAgICAgICAgICAgX19yY3VfcmVhZF9sb2NrKCk7DQo+PiAgICA5KSAg
-IDAuMDkwIHVzICAgIHwgICAgICAgICAgICAgICAgaG91c2VrZWVwaW5nX2NwdW1hc2soKTsNCj4+
-ICAgIDkpICAgMC41MjEgdXMgICAgfCAgICAgICAgICAgICAgICBob3VzZWtlZXBpbmdfY3B1bWFz
-aygpOw0KPj4gICAgOSkgICAwLjE0MCB1cyAgICB8ICAgICAgICAgICAgICAgIGhvdXNla2VlcGlu
-Z19jcHVtYXNrKCk7DQo+PiANCj4+ICAgIC4uLg0KPj4gDQo+PiAgICA5KSAgIDAuNTAwIHVzICAg
-IHwgICAgICAgICAgICAgICAgaG91c2VrZWVwaW5nX2NwdW1hc2soKTsNCj4+ICAgIDkpICAgICAg
-ICAgICAgICAgfCAgICAgICAgICAgICAgICBob3VzZWtlZXBpbmdfYW55X2NwdSgpIHsNCj4+ICAg
-IDkpICAgMC4wOTAgdXMgICAgfCAgICAgICAgICAgICAgICAgIGhvdXNla2VlcGluZ19nZXRfbWFz
-ay5wYXJ0LjEoKTsNCj4+ICAgIDkpICAgMC4xMDAgdXMgICAgfCAgICAgICAgICAgICAgICAgIHNj
-aGVkX251bWFfZmluZF9jbG9zZXN0KCk7DQo+PiAgICA5KSAgIDAuNDkxIHVzICAgIHwgICAgICAg
-ICAgICAgICAgfQ0KPj4gICAgOSkgICAwLjEwMCB1cyAgICB8ICAgICAgICAgICAgICAgIF9fcmN1
-X3JlYWRfdW5sb2NrKCk7DQo+PiAgICA5KSArIDc2LjE2MyB1cyAgIHwgICAgICAgICAgICAgIH0N
-Cj4+IA0KPj4gZm9yX2VhY2hfY3B1X2FuZCgpIGlzIGEgbWljcm8gZnVuY3Rpb24sIHNvIGluIGdl
-dF9ub2h6X3RpbWVyX3RhcmdldCgpDQo+PiBmdW5jdGlvbiB0aGUNCj4+ICAgICAgICAgZm9yX2Vh
-Y2hfY3B1X2FuZChpLCBzY2hlZF9kb21haW5fc3BhbihzZCksDQo+PiAgICAgICAgICAgICAgICAg
-aG91c2VrZWVwaW5nX2NwdW1hc2soSEtfRkxBR19USU1FUikpDQo+PiBlcXVhbHMgdG8gYmVsb3c6
-DQo+PiAgICAgICAgIGZvciAoaSA9IC0xOyBpID0gY3B1bWFza19uZXh0X2FuZChpLCBzY2hlZF9k
-b21haW5fc3BhbihzZCksDQo+PiAgICAgICAgICAgICAgICAgaG91c2VrZWVwaW5nX2NwdW1hc2so
-SEtfRkxBR19USU1FUikpLCBpIDwgbnJfY3B1X2lkczspDQo+PiBUaGF0IHdpbGwgY2F1c2UgdGhh
-dCBob3VzZWtlZXBpbmdfY3B1bWFzaygpIHdpbGwgYmUgaW52b2tlZCBtYW55IHRpbWVzLg0KPj4g
-VGhlIGhvdXNla2VlcGluZ19jcHVtYXNrKCkgZnVuY3Rpb24gcmV0dXJucyBhIGNvbnN0IHZhbHVl
-LCBzbyBpdCBpcw0KPj4gdW5uZWNlc3NhcnkgdG8gaW52b2tlIGl0IGV2ZXJ5IHRpbWUuIFRoaXMg
-cGF0Y2ggY2FuIG1pbmltaXplIHRoZSB3b3JzdA0KPj4gc2VhcmNoaW5nIHRpbWUgZnJvbSB+NzZ1
-cyB0byB+MTZ1cyBpbiBteSB0ZXN0aW5nLg0KPj4gDQo+PiBTaW1pbGFybHksIHRoZSBmaW5kX25l
-d19pbGIoKSBmdW5jdGlvbiBoYXMgdGhlIHNhbWUgcHJvYmxlbS4NCiAgICANCj4gIFdvdWxkIGl0
-IG5vdCBtYWtlIHNlbnNlIHRvIG1hcmsgaG91c2VrZWVwaW5nX2NwdW1hc2soKSBfX3B1cmUgaW5z
-dGVhZD8NCiAgICANCj4gQWZ0ZXIgbWFya2luZyBob3VzZWtlZXBpbmdfY3B1bWFzaygpIF9fcHVy
-ZSBhbmQgdGhlbiB0ZXN0IGFnYWluLCB0aGUgcmVzdWx0cyANCj4gcHJvdmVzIHRoYXQgaHVnZSB0
-aW1lIGJ1cm4gaW4gdGhlIGxvb3AgZm9yIHNlYXJjaGluZyB0aGUgbmVhcmVzdCBidXN5IGhvdXNl
-a2VlcGVyIA0KPiBzdGlsbCBleGlzdHMuIA0KPg0KPiBVc2luZyBvYmpkdW1wIC1EIHZtbGludXgg
-d2UgY2FuIHNlZSBnZXRfbm9oel90aW1lcl90YXJnZXQoKSBkaXNhc3NlbWJsZWQgY29kZSANCmFz
-IGJlbG93Og0KPiBmZmZmZmZmZjgxMGI5NmMwIDxnZXRfbm9oel90aW1lcl90YXJnZXQ+Og0KPiBm
-ZmZmZmZmZjgxMGI5NmMwOiAgICAgICBlOCBkYiA3ZiA5NCAwMCAgICAgICAgICBjYWxscSAgZmZm
-ZmZmZmY4MWEwMTZhMCA8X19mZW50cnlfXz4NCj4gZmZmZmZmZmY4MTBiOTZjNTogICAgICAgNDEg
-NTcgICAgICAgICAgICAgICAgICAgcHVzaCAgICVyMTUNCj4gZmZmZmZmZmY4MTBiOTZjNzogICAg
-ICAgNDEgNTYgICAgICAgICAgICAgICAgICAgcHVzaCAgICVyMTQNCj4gZmZmZmZmZmY4MTBiOTZj
-OTogICAgICAgNDEgNTUgICAgICAgICAgICAgICAgICAgcHVzaCAgICVyMTMNCj4gZmZmZmZmZmY4
-MTBiOTZjYjogICAgICAgNDEgNTQgICAgICAgICAgICAgICAgICAgcHVzaCAgICVyMTINCj4gZmZm
-ZmZmZmY4MTBiOTZjZDogICAgICAgNTUgICAgICAgICAgICAgICAgICAgICAgcHVzaCAgICVyYnAN
-Cj4gZmZmZmZmZmY4MTBiOTZjZTogICAgICAgNTMgICAgICAgICAgICAgICAgICAgICAgcHVzaCAg
-ICVyYngNCj4gZmZmZmZmZmY4MTBiOTZjZjogICAgICAgNDggODMgZWMgMDggICAgICAgICAgICAg
-c3ViICAgICQweDgsJXJzcA0KPiBmZmZmZmZmZjgxMGI5NmQzOiAgICAgICA2NSA4YiAxZCA1NiA1
-YSBmNSA3ZSAgICBtb3YgICAgJWdzOjB4N2VmNTVhNTYoJXJpcCksJWVieCAgICAgICAgIyBmMTMw
-IDxjcHVfbnVtYmVyPg0KPiBmZmZmZmZmZjgxMGI5NmRhOiAgICAgICA0MSA4OSBkYyAgICAgICAg
-ICAgICAgICBtb3YgICAgJWVieCwlcjEyZA0KPiBmZmZmZmZmZjgxMGI5NmRkOiAgICAgICAwZiAx
-ZiA0NCAwMCAwMCAgICAgICAgICBub3BsICAgMHgwKCVyYXgsJXJheCwxKQ0KPiBmZmZmZmZmZjgx
-MGI5NmUyOiAgICAgICA0YyA2MyBmMyAgICAgICAgICAgICAgICBtb3ZzbHEgJWVieCwlcjE0DQo+
-IGZmZmZmZmZmODEwYjk2ZTU6ICAgICAgIDQ4IGM3IGM1IDQwIDBiIDAyIDAwICAgIG1vdiAgICAk
-MHgyMGI0MCwlcmJwDQo+IGZmZmZmZmZmODEwYjk2ZWM6ICAgICAgIDRhIDhiIDA0IGY1IDIwIDc3
-IDEzICAgIG1vdiAgICAtMHg3ZGVjODhlMCgsJXIxNCw4KSwlcmF4DQo+IGZmZmZmZmZmODEwYjk2
-ZjM6ICAgICAgIDgyDQo+IGZmZmZmZmZmODEwYjk2ZjQ6ICAgICAgIDQ5IDg5IGVkICAgICAgICAg
-ICAgICAgIG1vdiAgICAlcmJwLCVyMTMNCj4gZmZmZmZmZmY4MTBiOTZmNzogICAgICAgNGMgMDEg
-ZTggICAgICAgICAgICAgICAgYWRkICAgICVyMTMsJXJheA0KPiBmZmZmZmZmZjgxMGI5NmZhOiAg
-ICAgICA0OCA4YiA4OCA5MCAwOSAwMCAwMCAgICBtb3YgICAgMHg5OTAoJXJheCksJXJjeA0KPiBm
-ZmZmZmZmZjgxMGI5NzAxOiAgICAgICA0OCAzOSA4OCA4OCAwOSAwMCAwMCAgICBjbXAgICAgJXJj
-eCwweDk4OCglcmF4KQ0KPiBmZmZmZmZmZjgxMGI5NzA4OiAgICAgICAwZiA4NCBjZSAwMCAwMCAw
-MCAgICAgICBqZSAgICAgZmZmZmZmZmY4MTBiOTdkYyA8Z2V0X25vaHpfdGltZXJfdGFyZ2V0KzB4
-MTFjPg0KPiBmZmZmZmZmZjgxMGI5NzBlOiAgICAgICA0OCA4MyBjNCAwOCAgICAgICAgICAgICBh
-ZGQgICAgJDB4OCwlcnNwDQo+IGZmZmZmZmZmODEwYjk3MTI6ICAgICAgIDQ0IDg5IGUwICAgICAg
-ICAgICAgICAgIG1vdiAgICAlcjEyZCwlZWF4DQo+IGZmZmZmZmZmODEwYjk3MTU6ICAgICAgIDVi
-ICAgICAgICAgICAgICAgICAgICAgIHBvcCAgICAlcmJ4DQo+IGZmZmZmZmZmODEwYjk3MTY6ICAg
-ICAgIDVkICAgICAgICAgICAgICAgICAgICAgIHBvcCAgICAlcmJwDQo+IGZmZmZmZmZmODEwYjk3
-MTc6ICAgICAgIDQxIDVjICAgICAgICAgICAgICAgICAgIHBvcCAgICAlcjEyDQo+IGZmZmZmZmZm
-ODEwYjk3MTk6ICAgICAgIDQxIDVkICAgICAgICAgICAgICAgICAgIHBvcCAgICAlcjEzDQo+IGZm
-ZmZmZmZmODEwYjk3MWI6ICAgICAgIDQxIDVlICAgICAgICAgICAgICAgICAgIHBvcCAgICAlcjE0
-DQo+IGZmZmZmZmZmODEwYjk3MWQ6ICAgICAgIDQxIDVmICAgICAgICAgICAgICAgICAgIHBvcCAg
-ICAlcjE1DQo+IGZmZmZmZmZmODEwYjk3MWY6ICAgICAgIGMzICAgICAgICAgICAgICAgICAgICAg
-IHJldHENCj4gZmZmZmZmZmY4MTBiOTcyMDogICAgICAgYmUgMDEgMDAgMDAgMDAgICAgICAgICAg
-bW92ICAgICQweDEsJWVzaQ0KPiBmZmZmZmZmZjgxMGI5NzI1OiAgICAgICA4OSBkZiAgICAgICAg
-ICAgICAgICAgICBtb3YgICAgJWVieCwlZWRpDQo+IGZmZmZmZmZmODEwYjk3Mjc6ICAgICAgIGU4
-IDc0IDg3IDAyIDAwICAgICAgICAgIGNhbGxxICBmZmZmZmZmZjgxMGUxZWEwIDxob3VzZWtlZXBp
-bmdfdGVzdF9jcHU+DQo+IGZmZmZmZmZmODEwYjk3MmM6ICAgICAgIDg0IGMwICAgICAgICAgICAg
-ICAgICAgIHRlc3QgICAlYWwsJWFsDQo+IGZmZmZmZmZmODEwYjk3MmU6ICAgICAgIDc1IGIyICAg
-ICAgICAgICAgICAgICAgIGpuZSAgICBmZmZmZmZmZjgxMGI5NmUyIDxnZXRfbm9oel90aW1lcl90
-YXJnZXQrMHgyMj4NCj4gZmZmZmZmZmY4MTBiOTczMDogICAgICAgZTggMGIgZWEgMDMgMDAgICAg
-ICAgICAgY2FsbHEgIGZmZmZmZmZmODEwZjgxNDAgPF9fcmN1X3JlYWRfbG9jaz4NCj4gZmZmZmZm
-ZmY4MTBiOTczNTogICAgICAgNDggYzcgYzUgNDAgMGIgMDIgMDAgICAgbW92ICAgICQweDIwYjQw
-LCVyYnANCj4gZmZmZmZmZmY4MTBiOTczYzogICAgICAgNDggNjMgZDMgICAgICAgICAgICAgICAg
-bW92c2xxICVlYngsJXJkeA0KPiBmZmZmZmZmZjgxMGI5NzNmOiAgICAgICBjNyA0NCAyNCAwNCBm
-ZiBmZiBmZiAgICBtb3ZsICAgJDB4ZmZmZmZmZmYsMHg0KCVyc3ApDQo+IGZmZmZmZmZmODEwYjk3
-NDY6ICAgICAgIGZmDQo+IGZmZmZmZmZmODEwYjk3NDc6ICAgICAgIDQ4IDg5IGU4ICAgICAgICAg
-ICAgICAgIG1vdiAgICAlcmJwLCVyYXgNCj4gZmZmZmZmZmY4MTBiOTc0YTogICAgICAgNDggMDMg
-MDQgZDUgMjAgNzcgMTMgICAgYWRkICAgIC0weDdkZWM4OGUwKCwlcmR4LDgpLCVyYXgNCj4gZmZm
-ZmZmZmY4MTBiOTc1MTogICAgICAgODINCj4gZmZmZmZmZmY4MTBiOTc1MjogICAgICAgNGMgOGIg
-YTggZDggMDkgMDAgMDAgICAgbW92ICAgIDB4OWQ4KCVyYXgpLCVyMTMNCj4gZmZmZmZmZmY4MTBi
-OTc1OTogICAgICAgNGQgODUgZWQgICAgICAgICAgICAgICAgdGVzdCAgICVyMTMsJXIxMw0KPiBm
-ZmZmZmZmZjgxMGI5NzVjOiAgICAgICAwZiA4NCBkMyAwMCAwMCAwMCAgICAgICBqZSAgICAgZmZm
-ZmZmZmY4MTBiOTgzNSA8Z2V0X25vaHpfdGltZXJfdGFyZ2V0KzB4MTc1Pg0KPiBmZmZmZmZmZjgx
-MGI5NzYyOiAgICAgICA0MSBiZSBmZiBmZiBmZiBmZiAgICAgICBtb3YgICAgJDB4ZmZmZmZmZmYs
-JXIxNGQNCj4gZmZmZmZmZmY4MTBiOTc2ODogICAgICAgNGQgOGQgYTUgMzggMDEgMDAgMDAgICAg
-bGVhICAgIDB4MTM4KCVyMTMpLCVyMTINCj4gZmZmZmZmZmY4MTBiOTc2ZjogICAgICAgNDUgODkg
-ZjcgICAgICAgICAgICAgICAgbW92ICAgICVyMTRkLCVyMTVkDQo+IGZmZmZmZmZmODEwYjk3NzI6
-ICAgICAgIGJmIDAxIDAwIDAwIDAwICAgICAgICAgIG1vdiAgICAkMHgxLCVlZGkNCj4gZmZmZmZm
-ZmY4MTBiOTc3NzogICAgICAgZTggZjQgODYgMDIgMDAgICAgICAgICAgY2FsbHEgIGZmZmZmZmZm
-ODEwZTFlNzAgPGhvdXNla2VlcGluZ19jcHVtYXNrPg0KPiBmZmZmZmZmZjgxMGI5NzdjOiAgICAg
-ICA0NCA4OSBmZiAgICAgICAgICAgICAgICBtb3YgICAgJXIxNWQsJWVkaQ0KPiBmZmZmZmZmZjgx
-MGI5NzdmOiAgICAgICA0OCA4OSBjMiAgICAgICAgICAgICAgICBtb3YgICAgJXJheCwlcmR4DQo+
-IGZmZmZmZmZmODEwYjk3ODI6ICAgICAgIDRjIDg5IGU2ICAgICAgICAgICAgICAgIG1vdiAgICAl
-cjEyLCVyc2kNCj4gZmZmZmZmZmY4MTBiOTc4NTogICAgICAgZTggYjYgZWEgNzkgMDAgICAgICAg
-ICAgY2FsbHEgIGZmZmZmZmZmODE4NTgyNDAgPGNwdW1hc2tfbmV4dF9hbmQ+DQo+IGZmZmZmZmZm
-ODEwYjk3OGE6ICAgICAgIDNiIDA1IGI0IDRlIDNlIDAxICAgICAgIGNtcCAgICAweDEzZTRlYjQo
-JXJpcCksJWVheCAgICAgICAgIyBmZmZmZmZmZjgyNDllNjQ0IDxucl9jcHVfaWRzPg0KPiBmZmZm
-ZmZmZjgxMGI5NzkwOiAgICAgICA0MSA4OSBjNyAgICAgICAgICAgICAgICBtb3YgICAgJWVheCwl
-cjE1ZA0KPiBmZmZmZmZmZjgxMGI5NzkzOiAgICAgICAwZiA4MyA4NCAwMCAwMCAwMCAgICAgICBq
-YWUgICAgZmZmZmZmZmY4MTBiOTgxZCA8Z2V0X25vaHpfdGltZXJfdGFyZ2V0KzB4MTVkPg0KPiBm
-ZmZmZmZmZjgxMGI5Nzk5OiAgICAgICA0NCAzOSBmYiAgICAgICAgICAgICAgICBjbXAgICAgJXIx
-NWQsJWVieA0KPiBmZmZmZmZmZjgxMGI5NzljOiAgICAgICA3NCBkNCAgICAgICAgICAgICAgICAg
-ICBqZSAgICAgZmZmZmZmZmY4MTBiOTc3MiA8Z2V0X25vaHpfdGltZXJfdGFyZ2V0KzB4YjI+DQo+
-IGZmZmZmZmZmODEwYjk3OWU6ICAgICAgIDQ5IDYzIGM3ICAgICAgICAgICAgICAgIG1vdnNscSAl
-cjE1ZCwlcmF4DQo+IGZmZmZmZmZmODEwYjk3YTE6ICAgICAgIDQ4IDg5IGVhICAgICAgICAgICAg
-ICAgIG1vdiAgICAlcmJwLCVyZHgNCj4gZmZmZmZmZmY4MTBiOTdhNDogICAgICAgNDggMDMgMTQg
-YzUgMjAgNzcgMTMgICAgYWRkICAgIC0weDdkZWM4OGUwKCwlcmF4LDgpLCVyZHgNCj4gZmZmZmZm
-ZmY4MTBiOTdhYjogICAgICAgODINCj4gZmZmZmZmZmY4MTBiOTdhYzogICAgICAgNDggOGIgODIg
-OTAgMDkgMDAgMDAgICAgbW92ICAgIDB4OTkwKCVyZHgpLCVyYXgNCj4gZmZmZmZmZmY4MTBiOTdi
-MzogICAgICAgNDggMzkgODIgODggMDkgMDAgMDAgICAgY21wICAgICVyYXgsMHg5ODgoJXJkeCkN
-Cj4gZmZmZmZmZmY4MTBiOTdiYTogICAgICAgNzUgMTMgICAgICAgICAgICAgICAgICAgam5lICAg
-IGZmZmZmZmZmODEwYjk3Y2YgPGdldF9ub2h6X3RpbWVyX3RhcmdldCsweDEwZj4NCj4gZmZmZmZm
-ZmY4MTBiOTdiYzogICAgICAgOGIgNDIgMDQgICAgICAgICAgICAgICAgbW92ICAgIDB4NCglcmR4
-KSwlZWF4DQo+IGZmZmZmZmZmODEwYjk3YmY6ICAgICAgIDg1IGMwICAgICAgICAgICAgICAgICAg
-IHRlc3QgICAlZWF4LCVlYXgNCj4gZmZmZmZmZmY4MTBiOTdjMTogICAgICAgNzUgMGMgICAgICAg
-ICAgICAgICAgICAgam5lICAgIGZmZmZmZmZmODEwYjk3Y2YgPGdldF9ub2h6X3RpbWVyX3Rhcmdl
-dCsweDEwZj4NCj4gZmZmZmZmZmY4MTBiOTdjMzogICAgICAgNDggOGIgODIgMjAgMGMgMDAgMDAg
-ICAgbW92ICAgIDB4YzIwKCVyZHgpLCVyYXgNCj4gZmZmZmZmZmY4MTBiOTdjYTogICAgICAgNDgg
-ODUgYzAgICAgICAgICAgICAgICAgdGVzdCAgICVyYXgsJXJheA0KPiBmZmZmZmZmZjgxMGI5N2Nk
-OiAgICAgICA3NCBhMyAgICAgICAgICAgICAgICAgICBqZSAgICAgZmZmZmZmZmY4MTBiOTc3MiA8
-Z2V0X25vaHpfdGltZXJfdGFyZ2V0KzB4YjI+DQo+IGZmZmZmZmZmODEwYjk3Y2Y6ICAgICAgIGU4
-IDFjIDMzIDA0IDAwICAgICAgICAgIGNhbGxxICBmZmZmZmZmZjgxMGZjYWYwIDxfX3JjdV9yZWFk
-X3VubG9jaz4NCj4gZmZmZmZmZmY4MTBiOTdkNDogICAgICAgNDUgODkgZmMgICAgICAgICAgICAg
-ICAgbW92ICAgICVyMTVkLCVyMTJkDQo+IGZmZmZmZmZmODEwYjk3ZDc6ICAgICAgIGU5IDMyIGZm
-IGZmIGZmICAgICAgICAgIGptcHEgICBmZmZmZmZmZjgxMGI5NzBlIDxnZXRfbm9oel90aW1lcl90
-YXJnZXQrMHg0ZT4NCj4gZmZmZmZmZmY4MTBiOTdkYzogICAgICAgOGIgNTAgMDQgICAgICAgICAg
-ICAgICAgbW92ICAgIDB4NCglcmF4KSwlZWR4DQo+IGZmZmZmZmZmODEwYjk3ZGY6ICAgICAgIDg1
-IGQyICAgICAgICAgICAgICAgICAgIHRlc3QgICAlZWR4LCVlZHgNCj4gZmZmZmZmZmY4MTBiOTdl
-MTogICAgICAgMGYgODUgMjcgZmYgZmYgZmYgICAgICAgam5lICAgIGZmZmZmZmZmODEwYjk3MGUg
-PGdldF9ub2h6X3RpbWVyX3RhcmdldCsweDRlPg0KPiBmZmZmZmZmZjgxMGI5N2U3OiAgICAgICA0
-OCA4YiA4MCAyMCAwYyAwMCAwMCAgICBtb3YgICAgMHhjMjAoJXJheCksJXJheA0KPiBmZmZmZmZm
-ZjgxMGI5N2VlOiAgICAgICA0OCA4NSBjMCAgICAgICAgICAgICAgICB0ZXN0ICAgJXJheCwlcmF4
-DQo+IGZmZmZmZmZmODEwYjk3ZjE6ICAgICAgIDBmIDg1IDE3IGZmIGZmIGZmICAgICAgIGpuZSAg
-ICBmZmZmZmZmZjgxMGI5NzBlIDxnZXRfbm9oel90aW1lcl90YXJnZXQrMHg0ZT4NCj4gZmZmZmZm
-ZmY4MTBiOTdmNzogICAgICAgZTggNDQgZTkgMDMgMDAgICAgICAgICAgY2FsbHEgIGZmZmZmZmZm
-ODEwZjgxNDAgPF9fcmN1X3JlYWRfbG9jaz4NCj4gZmZmZmZmZmY4MTBiOTdmYzogICAgICAgNGUg
-MDMgMmMgZjUgMjAgNzcgMTMgICAgYWRkICAgIC0weDdkZWM4OGUwKCwlcjE0LDgpLCVyMTMNCj4g
-ZmZmZmZmZmY4MTBiOTgwMzogICAgICAgODINCj4gZmZmZmZmZmY4MTBiOTgwNDogICAgICAgODkg
-NWMgMjQgMDQgICAgICAgICAgICAgbW92ICAgICVlYngsMHg0KCVyc3ApDQo+IGZmZmZmZmZmODEw
-Yjk4MDg6ICAgICAgIDQxIDg5IGRmICAgICAgICAgICAgICAgIG1vdiAgICAlZWJ4LCVyMTVkDQo+
-IGZmZmZmZmZmODEwYjk4MGI6ICAgICAgIDRkIDhiIGFkIGQ4IDA5IDAwIDAwICAgIG1vdiAgICAw
-eDlkOCglcjEzKSwlcjEzDQo+IGZmZmZmZmZmODEwYjk4MTI6ICAgICAgIDRkIDg1IGVkICAgICAg
-ICAgICAgICAgIHRlc3QgICAlcjEzLCVyMTMNCj4gZmZmZmZmZmY4MTBiOTgxNTogICAgICAgMGYg
-ODUgNDcgZmYgZmYgZmYgICAgICAgam5lICAgIGZmZmZmZmZmODEwYjk3NjIgPGdldF9ub2h6X3Rp
-bWVyX3RhcmdldCsweGEyPg0KPiBmZmZmZmZmZjgxMGI5ODFiOiAgICAgICBlYiAxMiAgICAgICAg
-ICAgICAgICAgICBqbXAgICAgZmZmZmZmZmY4MTBiOTgyZiA8Z2V0X25vaHpfdGltZXJfdGFyZ2V0
-KzB4MTZmPg0KPiBmZmZmZmZmZjgxMGI5ODFkOiAgICAgICA0ZCA4YiA2ZCAwMCAgICAgICAgICAg
-ICBtb3YgICAgMHgwKCVyMTMpLCVyMTMNCj4gZmZmZmZmZmY4MTBiOTgyMTogICAgICAgNGQgODUg
-ZWQgICAgICAgICAgICAgICAgdGVzdCAgICVyMTMsJXIxMw0KPiBmZmZmZmZmZjgxMGI5ODI0OiAg
-ICAgICAwZiA4NSAzZSBmZiBmZiBmZiAgICAgICBqbmUgICAgZmZmZmZmZmY4MTBiOTc2OCA8Z2V0
-X25vaHpfdGltZXJfdGFyZ2V0KzB4YTg+DQo+IGZmZmZmZmZmODEwYjk4MmE6ICAgICAgIDQ0IDhi
-IDdjIDI0IDA0ICAgICAgICAgIG1vdiAgICAweDQoJXJzcCksJXIxNWQNCj4gZmZmZmZmZmY4MTBi
-OTgyZjogICAgICAgNDEgODMgZmYgZmYgICAgICAgICAgICAgY21wICAgICQweGZmZmZmZmZmLCVy
-MTVkDQo+IGZmZmZmZmZmODEwYjk4MzM6ICAgICAgIDc1IDlhICAgICAgICAgICAgICAgICAgIGpu
-ZSAgICBmZmZmZmZmZjgxMGI5N2NmIDxnZXRfbm9oel90aW1lcl90YXJnZXQrMHgxMGY+DQo+IGZm
-ZmZmZmZmODEwYjk4MzU6ICAgICAgIGJmIDAxIDAwIDAwIDAwICAgICAgICAgIG1vdiAgICAkMHgx
-LCVlZGkNCj4gZmZmZmZmZmY4MTBiOTgzYTogICAgICAgZTggOTEgODYgMDIgMDAgICAgICAgICAg
-Y2FsbHEgIGZmZmZmZmZmODEwZTFlZDAgPGhvdXNla2VlcGluZ19hbnlfY3B1Pg0KPiBmZmZmZmZm
-ZjgxMGI5ODNmOiAgICAgICA0MSA4OSBjNyAgICAgICAgICAgICAgICBtb3YgICAgJWVheCwlcjE1
-ZA0KPiBmZmZmZmZmZjgxMGI5ODQyOiAgICAgICBlYiA4YiAgICAgICAgICAgICAgICAgICBqbXAg
-ICAgZmZmZmZmZmY4MTBiOTdjZiA8Z2V0X25vaHpfdGltZXJfdGFyZ2V0KzB4MTBmPg0KPiBmZmZm
-ZmZmZjgxMGI5ODQ0OiAgICAgICA2NiA5MCAgICAgICAgICAgICAgICAgICB4Y2hnICAgJWF4LCVh
-eA0KPiBmZmZmZmZmZjgxMGI5ODQ2OiAgICAgICA2NiAyZSAwZiAxZiA4NCAwMCAwMCAgICBub3B3
-ICAgJWNzOjB4MCglcmF4LCVyYXgsMSkNCj4gZmZmZmZmZmY4MTBiOTg0ZDogICAgICAgMDAgMDAg
-MDANCj4NCj4gVGhlIGRpc2Fzc2VtYmxlZCBjb2RlIHByb3ZlcyB0aGF0IHRoZSBfX3B1cmUgbWFy
-ayBkb2VzIG5vdCB3b3JrLg0KDQpVbnRpbCBub3csIHRoZSBfX3B1cmUgbWFyayBkb2VzIG5vdCB3
-b3JrIGluIG91ciB0ZXN0LCBzaG91bGQgdGhlIHBhdGNoIGJlIG1lcmdlZCBpbnRvIHRoZSBtYWlu
-bGluZT8NCg0KVGhhbmtzLA0KWXVhbiBaaGFvWGlvbmcNCg0K
+On 29/04/2021 13:25, Kajetan Puchalski wrote:
+>
+> Mariusz Ceier <mceier+kernel@gmail.com> writes:
+>
+>> Rust compiler license doesn't require for people to give back to the
+>> community - corporation can create their own version of rust compiler
+>> adding some proprietary extensions, develop drivers with it and even
+>> if the drivers code will be GPL'd they won't be buildable by anyone
+>> but that corporation.
+>
+> Could you explain exactly what the issue you see there is?
+
+
+Kajetan and others, this is an interesting discussion for me. Let us 
+compare the kernel-specific scope with general OpenSource community and 
+industry scope.
+
+Industry (where I am working) often requires a "second source" to avoid 
+the so-called "vendor lock-in", which is the key point of this part of 
+the discussion.
+
+As soon as Copyleft is involved, the requirement of "second source" is 
+_permanently_ met: anyone may fork it at any time, creating another 
+source, (theoretically) avoiding a dead end eternally. Lock-in is 
+prevented at license level.
+
+IMO this is a _requirement_ for Linux, otherwise its "business model" 
+wouldn't work in the long term (decades as is always necessary for basic 
+infrastructure / system software).
+
+If the requirement "second source" (by either way) is not met by Rust at 
+the moment, this needs to be fixed first.
+
+Other limitations like "development resources" might lead to similar 
+effects than lock-in. I am seeing the latter nearly every workday. 
+Software becomes "unmanageable" due to factors like technical debts / 
+resource restrictions / etc. Typical main reasons are almost always at a 
+_social_ / _human_ level, while purely technical reasons are playing 
+only a secondary role.
+
+This is the link to what Greg said earlier in this discussion: 
+development resources and their _dedication_ (e.g. maintenance vs 
+creation of "new" things) is the absolute key.
+
+Would Rust improve this problem area _provably_ by at least 30% ?
+
+I am insisting on a _quantifiable_ 30% improvement because this is the 
+"magic theshold" in industry after which the motto "never change a 
+running system" can be overcome from an investment perspective, and also 
+from a risk perspective.
+
+After this, another dimension is kicking in: maturity.
+
+You always need to invest a high effort for achieving "sufficient 
+maturity". According to the Pareto principle, maintenance is typically 
+around 70% to 90% of total cost for key infrastructure.
+
+In my working area where end-to-end SLAs of >99.98% have to met, the 
+Pareto ratio may be even higher.
+
+Pareto's law, as well as Zipf's law, are more or less observational 
+"natural laws" holding for almost _any_ complex / dynamic system. Even 
+if you try to improve such universal laws, e.g. by investing a lot of 
+effort / resources / money into maintenance reduction techniques, you 
+typically end up at a similar _total_ effort for maintenance (including 
+the extra effort for reduction of "ordinary" maintenance) than before.
+
+Otherwise, you would have found a way for bypassing natural laws like 
+the observed Pareto law. Even billions of years of biological evolution 
+on this earth weren't able to change this universal law in statistical 
+average (in global scale). Otherwise we couldn't observe it anymore.
+
+Even if you could improve the Pareto ratio, my experience is that upper 
+management will kick in and raise the SLA level so  that Pareto holds 
+again ;)
+
+So I'm sceptical that new technologies like Rust will change fundamental 
+laws, e.g. with respect to relative maintenance efforts.
+
+However, what _could_ be theoretically possible: _productivity_ gains, 
+improving both development of "new" things as well as "maintenance" 
+efforts, in total by more than 30% (but not the Pareto ratio between them).
+
+So the question is: can Rust _provably_ lead to *quantifiable* total 
+productivity gains of at least 30% ?
+
+If this would be the case, any business case needs further alternatives. 
+So it needs to be compared at least with alternative B: what would be 
+the effort and the productivity gain when introducing similar technology 
+non-disruptively into the current development ecosystem?
+
+Even if this A-B comparison would lead to a conclusion that 30% cannot 
+be met by a new and partly disruptive technology like Rust, the 
+discussion can be fruitful. There is always a chance to introduce some 
+parts of a new technology into a well-proven and mature "old" technology 
+non-disruptively.
+
+Cheers,
+
+Thomas
+
