@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17CAC3701D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 22:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3551B3701D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 22:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235358AbhD3ULp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 16:11:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47780 "EHLO mail.kernel.org"
+        id S235398AbhD3ULu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 16:11:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233140AbhD3ULg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233410AbhD3ULg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 30 Apr 2021 16:11:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 71C8261407;
+Received: by mail.kernel.org (Postfix) with ESMTPS id B679C6144B;
         Fri, 30 Apr 2021 20:10:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1619813447;
-        bh=7eb2iaMzAthFGWm5OPGE3w05Sc+jffJXOiGL8NeZzP4=;
+        bh=pR5N+oiFbElu2GBx/oDNZDMXxhU9QbD/MUxC10t0HEA=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=e/Xz3vX3eKHsXitSYttCQJcl8PpRG8T4JJDhiBbTn20/ASULuwl6GmeO6JSDAFqHb
-         A7noAk89A+ls/TbolUWr3uoA3Uq/AGXtGTkXLeJmy8J3PP325KL01KHig6w2RMjJrh
-         v4c02ylB+OPjnncd9eXusIVjPAouXeqRDoUtIpDtPk/RZYm2gRdWq0h2ecRVR6wld5
-         UJs9OpLShBXUU+WY5IcwsHO/FOvh1KhSFZBvvY2NPOg6fsCoZf6szsNIr111aSMLyQ
-         CbUXwJMA/EM7EvnxJvr2tubwNAxoR1pkBHS37w+2IT51sL3uh6DivYhJdXvOuPctjZ
-         XnbSa2DhZNSrQ==
+        b=OBScKiEqr9TaljSuJ6jbB541LH7oHNlsDFFA8oACuX1NrrDBIAagfLvkrDXk/R5d4
+         2r11a0lFWhGKD0OBWXsR83Kksx4he3HSWyIQZ+djbf0vdJbiKc8F2BDULhqSITQeFl
+         cqfG8C6y9HqAlu3ZTKbUxul0Oup1V2mFTRZHfhBRSqV9kWvBO/8SB3wp5p8EdZZNgu
+         LxZ5124VZ4lM7g3biE1MDRa/SkFCj4/nyuIqxqHTYtjd+WskAXlJaUjnmqQva41HCv
+         o703jkirjVr32H0kyP1WvYcF3Y4+UDhBmq4RnSSdlLitzlD7Z+tKHMpgx5dUnOw1Ei
+         8K1x/4uiGXrrg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5C43060A23;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B1B8B60A3A;
         Fri, 30 Apr 2021 20:10:47 +0000 (UTC)
-Subject: Re: [PULL REQUEST] i2c for 5.13
+Subject: Re: [GIT PULL] pin control bulk changes for the v5.13 kernel cycle
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210429195058.GA3179@kunai>
-References: <20210429195058.GA3179@kunai>
+In-Reply-To: <CACRpkdZUvurFuE5sJdg4mRmb2MNBR41auOonaoDz5N9VLqD5Vw@mail.gmail.com>
+References: <CACRpkdZUvurFuE5sJdg4mRmb2MNBR41auOonaoDz5N9VLqD5Vw@mail.gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210429195058.GA3179@kunai>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-5.13
-X-PR-Tracked-Commit-Id: a80f24945fcfdff31bdf04837145e56570741a67
+X-PR-Tracked-Message-Id: <CACRpkdZUvurFuE5sJdg4mRmb2MNBR41auOonaoDz5N9VLqD5Vw@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.13-1
+X-PR-Tracked-Commit-Id: 8b242ca700f8043be56542efd8360056358a42ed
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 592fa9532d4e4a7590ca383fd537eb4d53fa585a
-Message-Id: <161981344731.32283.14182986866825694750.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 65ec0a7d24913b146cd1500d759b8c340319d55e
+Message-Id: <161981344772.32283.13043056019664829363.pr-tracker-bot@kernel.org>
 Date:   Fri, 30 Apr 2021 20:10:47 +0000
-To:     Wolfram Sang <wsa@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 29 Apr 2021 21:50:58 +0200:
+The pull request you sent on Fri, 30 Apr 2021 13:23:10 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-5.13
+> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.13-1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/592fa9532d4e4a7590ca383fd537eb4d53fa585a
+https://git.kernel.org/torvalds/c/65ec0a7d24913b146cd1500d759b8c340319d55e
 
 Thank you!
 
