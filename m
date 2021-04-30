@@ -2,104 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3407C3703EA
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 01:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C3D3703F1
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 01:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232750AbhD3XH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 19:07:56 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:41833 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231502AbhD3XHz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 19:07:55 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1619824026; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=V+oj2FdgO738BZ62IBogKd0JpzcCrCkPU4H+tDaGYLE=;
- b=suFKIvyeJBoCzvR6y3xsuajYkU6VZ085yFxzY1C6v5BA61L85iT1Zd7VjCaQzuf8ctdEzxTN
- exO9CE/3L9fQ+29MU0ZWidzR3v583dzmZL9tuLLw0I4mqyVvJXi7PRyZJZi1vo+sdZC3RvLq
- r8qywMIPWejn4+8Ci4rkYs0Mbq4=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 608c8d9974f773a664283773 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Apr 2021 23:07:05
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 02233C4338A; Fri, 30 Apr 2021 23:07:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F3F79C433F1;
-        Fri, 30 Apr 2021 23:07:02 +0000 (UTC)
+        id S232764AbhD3XJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 19:09:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23599 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230508AbhD3XJv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 19:09:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619824142;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QSMo0z9Rxmagh5nEn6Z1ZpHmqk1+UCu4svG3FgyyVgw=;
+        b=USa43/mK5ohfKubVrmCB9uAykKLHftzkTof4hywWa+oLbHKJuAbf51YLXeVpRcqIGYl6+G
+        yLmED5L+laguulbpGQmEx2Cp8kwRs+eM2C/+iSi2eD9n2ZYHPNeF3vRZEd807aTmwYm05g
+        kGclFpZUrc7gjr9zpZGjYcJdZbgn/rU=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-403-9w76ml1BO_Cn722GER6sGg-1; Fri, 30 Apr 2021 19:09:00 -0400
+X-MC-Unique: 9w76ml1BO_Cn722GER6sGg-1
+Received: by mail-qv1-f69.google.com with SMTP id b10-20020a0cf04a0000b02901bda1df3afbso9570505qvl.13
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 16:09:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=QSMo0z9Rxmagh5nEn6Z1ZpHmqk1+UCu4svG3FgyyVgw=;
+        b=HlCsH/Lg8OChdjqnL0DSwIvfYn2mptknSoGVVzqHY7+QNZmnaL8VdbeHuupe/mKEZp
+         rnbAMG5fX23LCYCRljD3SYxFYI5BQQCzyERNDo/TY6dhEwL9Bu9MO++Z7PNcFfZDKnPX
+         6FXUUTnX/uJ6oQ97nuctr+FC+jH3kj61J2sibK1f80eC+3AbZL5jWPi0+aD9sS6eJO4I
+         ZOmeFzlGtF+3euE/RyYZ6IExzsTY/gBGUrnoMrE+cuGhCoOCbm2gbFNtzshgDZ0gIGN5
+         1yy7Sl2tA6sw0xHBn81sb51rSeukN52Ooe5WtbpZYqTaKczxPKM4wkt/JrDObh5PpTgG
+         kmVw==
+X-Gm-Message-State: AOAM533ea99ZFN9TUnu1pj8/IM31w345p5cVg0VKDZpa0DXNTxMXVQKj
+        oQ66CiwqKyzdmBLYp/Sek/o8aoY5Qnn/i5XSxhctzc5SYFLAL6a4dukxjv9+YTbP7DTMaIyadjN
+        x2N/cvdgi0wuvmZCsgOWCrfxh
+X-Received: by 2002:ac8:5704:: with SMTP id 4mr6367235qtw.379.1619824140096;
+        Fri, 30 Apr 2021 16:09:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxxRQVIutmu1/MxdsrOTKOKa2+oNtKY7kpqCZNcAy9Dt75nhfoypX4piStjUJwls24KKPWrfw==
+X-Received: by 2002:ac8:5704:: with SMTP id 4mr6367210qtw.379.1619824139909;
+        Fri, 30 Apr 2021 16:08:59 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id v65sm2624530qkc.125.2021.04.30.16.08.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Apr 2021 16:08:59 -0700 (PDT)
+Subject: Re: [PATCH] KEYS: trusted: fix memory leak
+To:     Ben Boeckel <me@benboeckel.net>
+Cc:     jejb@linux.ibm.com, jarkko@kernel.org, zohar@linux.ibm.com,
+        dhowells@redhat.com, jmorris@namei.org, serge@hallyn.com,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Colin King <colin.king@canonical.com>
+References: <20210430185810.3331311-1-trix@redhat.com>
+ <YIxfehTLhWe58sNE@erythro>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <baecdb22-6433-7ad0-6c9e-75f4c5d1201d@redhat.com>
+Date:   Fri, 30 Apr 2021 16:08:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <YIxfehTLhWe58sNE@erythro>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 30 Apr 2021 16:07:02 -0700
-From:   abhinavk@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        aravindh@codeaurora.org, freedreno@lists.freedesktop.org
-Subject: Re: [Freedreno] [PATCH 0/6] drm/msm: Trim down drm debugging logs
-In-Reply-To: <20210430193104.1770538-1-swboyd@chromium.org>
-References: <20210430193104.1770538-1-swboyd@chromium.org>
-Message-ID: <b11b19848701cd11cba5ee0d8befeeb8@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-04-30 12:30, Stephen Boyd wrote:
-> This patch series attempts to trim down the drm logging in the msm
-> driver to make it useable with DRM_UT_DRIVER, DRM_UT_KMS, and DRM_UT_DP
-> levels enabled. Right now the log is really spammy and prints multiple
-> lines for what feels like every frame. I moved those prints off to
-> other DRM_UT_* levels that felt appropriate. Please review.
-> 
-> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Cc: Abhinav Kumar <abhinavk@codeaurora.org>
-> Cc: Kuogee Hsieh <khsieh@codeaurora.org>
-> Cc: aravindh@codeaurora.org
-> Cc: Sean Paul <sean@poorly.run>
-> 
-For the entire series,
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
 
-> Stephen Boyd (6):
->   drm/msm: Move vblank debug prints to drm_dbg_vbl()
->   drm/msm: Use VERB() for extra verbose logging
->   drm/msm/dp: Drop malformed debug print
->   drm/msm: Move FB debug prints to drm_dbg_state()
->   drm/msm/disp: Use plane debug print helper
->   drm/msm/disp: Move various debug logs to atomic bucket
-> 
->  drivers/gpu/drm/msm/adreno/adreno_gpu.c       |  2 +-
->  drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c  | 16 ++++----
->  drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c | 22 +++++------
->  drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c      | 38 +++++++++----------
->  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c   | 10 ++---
->  .../drm/msm/disp/dpu1/dpu_encoder_phys_vid.c  |  2 +-
->  drivers/gpu/drm/msm/disp/dpu1/dpu_formats.c   |  6 +--
->  drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c     | 19 ++++------
->  drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c      | 14 +++----
->  drivers/gpu/drm/msm/dp/dp_panel.c             |  1 -
->  drivers/gpu/drm/msm/msm_drv.c                 |  4 +-
->  drivers/gpu/drm/msm/msm_fb.c                  |  8 ++--
->  12 files changed, 67 insertions(+), 75 deletions(-)
-> 
-> 
-> base-commit: 9f4ad9e425a1d3b6a34617b8ea226d56a119a717
+On 4/30/21 12:50 PM, Ben Boeckel wrote:
+> On Fri, Apr 30, 2021 at 11:58:10 -0700, trix@redhat.com wrote:
+>> From: Tom Rix <trix@redhat.com>
+>>
+>> Static analysis reports this problem
+>> trusted-keys/trusted_tpm1.c:496:10: warning: Potential memory leak
+>>    return ret;
+>>           ^~~
+>>
+>> In tpm_seal() some failure handling returns directly, without
+>> freeing memory.
+>>
+>> Fixes: 5df16caada3f ("KEYS: trusted: Fix incorrect handling of tpm_get_random()")
+>> Signed-off-by: Tom Rix <trix@redhat.com>
+>> ---
+>>   security/keys/trusted-keys/trusted_tpm1.c | 8 +++++---
+>>   1 file changed, 5 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/security/keys/trusted-keys/trusted_tpm1.c b/security/keys/trusted-keys/trusted_tpm1.c
+>> index 469394550801..aa108bea6739 100644
+>> --- a/security/keys/trusted-keys/trusted_tpm1.c
+>> +++ b/security/keys/trusted-keys/trusted_tpm1.c
+>> @@ -493,10 +493,12 @@ static int tpm_seal(struct tpm_buf *tb, uint16_t keytype,
+>>   
+>>   	ret = tpm_get_random(chip, td->nonceodd, TPM_NONCE_SIZE);
+>>   	if (ret < 0)
+>> -		return ret;
+>> +		goto out;
+>>   
+>> -	if (ret != TPM_NONCE_SIZE)
+>> -		return -EIO;
+>> +	if (ret != TPM_NONCE_SIZE) {
+>> +		ret = -EIO;
+>> +		goto out;
+>> +	}
+>>   
+>>   	ordinal = htonl(TPM_ORD_SEAL);
+>>   	datsize = htonl(datalen);
+> I see this patch also submitted by Colin (Cc'd) in Message-Id:
+>
+>      <20210430113724.110746-1-colin.king@canonical.com>
+
+Let's use Colin's.
+
+Tom
+
+>
+> To my eyes, the commit message seems a bit better over there.
+>
+> --Ben
+>
+
