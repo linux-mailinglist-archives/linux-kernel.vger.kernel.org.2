@@ -2,82 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40BF370389
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 00:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F8B370390
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 00:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231641AbhD3Wfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 18:35:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42588 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230226AbhD3Wfi (ORCPT
+        id S232010AbhD3Wgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 18:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231232AbhD3Wga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 18:35:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619822089;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hpm0s98PPk+LRziQ39f8+GcKnbjyOFaJ1uQAUz/hEno=;
-        b=ZGeaLFfTazn/8jdnnPUfIoTV5VB7qWxwtU5yBelTqPCJlWtifrJZvDMlrX4jNnN1NpG1ox
-        vO8AnJHG1omPTu4avWd/5p/rz/+KxdHsV/s0w8CMDZEQlMJYSmlWR16g/THjBDApKJNcp8
-        2cGLN2xuQddF/kmEtEXaCFfHYp3kLcA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-225-qEtSHmXMMH6ql5ukG17RhA-1; Fri, 30 Apr 2021 18:34:47 -0400
-X-MC-Unique: qEtSHmXMMH6ql5ukG17RhA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C3352107ACCA;
-        Fri, 30 Apr 2021 22:34:45 +0000 (UTC)
-Received: from Whitewolf.redhat.com (ovpn-112-36.rdu2.redhat.com [10.10.112.36])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DF1E85D719;
-        Fri, 30 Apr 2021 22:34:44 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] drm/dp: Drop open-coded drm_dp_is_branch() in drm_dp_read_downstream_info()
-Date:   Fri, 30 Apr 2021 18:34:28 -0400
-Message-Id: <20210430223428.10514-2-lyude@redhat.com>
-In-Reply-To: <20210430223428.10514-1-lyude@redhat.com>
-References: <20210430223428.10514-1-lyude@redhat.com>
+        Fri, 30 Apr 2021 18:36:30 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C4D4C06174A;
+        Fri, 30 Apr 2021 15:35:41 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id m9so59445853wrx.3;
+        Fri, 30 Apr 2021 15:35:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=k8/CPR1SQtlFQpLNUDP14fmqtgx55einIYItpasXTqg=;
+        b=iG8SKKfONgy7uKrCADoMrZ2eDreAD/s4qQcQyOunygqgIE9uYA8o0KL6bkSwuNxrEp
+         8Eb2Em4Sf5WI+45tlj3iagowuy/uSE5IDFZ5SekxcqaqFQadX9xgjvIsncp/t8thSWbI
+         BuIsLXsmMv6XgfjwQlj5JcN8xSDYTMMHYKDsUuDZWsyafZ9jLCjArofVIVCDpBieqt0t
+         odIo0E2G1avp/bZgjPCkOcDQJVMBygQpVit8HI9n4F4qEVn9WxgczzDJJitoPonPi3uH
+         2NWjgCnAcuyiw8yz6f2/wC8qUMK1z+d4HRYe9B/KlKmsFBY5DQX0/coczTr+/GoLFBWA
+         3P3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=k8/CPR1SQtlFQpLNUDP14fmqtgx55einIYItpasXTqg=;
+        b=XJeCqO+BgtuM0PgnoPLsQOkLnG6HonOVaUtSmM7Jy8t24XinlmX+gCQeIdKOs1Y2sZ
+         ZumJFBTiqGaVpMHIAVNbzgo9BcduVI/6WtF6BHlT1SYA3HaUmSwneqElJs8cb1NZItAe
+         M7uGHjfBgRUGFU3kFSYBFzG/9dAJ7hJS8b1Zd9vlh+W3XnhMFmVFDFFirQhEN+HaSBHV
+         0e3ajLGnSk2uoPMYUxazhJo3fG4l6YvCxxSjkbiT3wJmxj817sqaRd8ZWlby17fXNVY5
+         tG1Zz3cOqOSRRyzzaSEyyKvCYWVXo2zoXQGH0V/ZXPL8DSspizJsHzmgBAHltFlPI05k
+         bsLA==
+X-Gm-Message-State: AOAM530MSZHvSu7idvb4l8NqkzyWgMQWnSdoxxKLBjmNI7oYNnmuucja
+        NHHNi/ldCpVQkUbQcvuCdCg=
+X-Google-Smtp-Source: ABdhPJw1KaXz0C27H1d58N3hesq9rUoflPJQV3JocmKo80txGZBWBQuqHR/7dvmkUct5M1yzKl6eeQ==
+X-Received: by 2002:adf:eb0a:: with SMTP id s10mr10124984wrn.6.1619822140327;
+        Fri, 30 Apr 2021 15:35:40 -0700 (PDT)
+Received: from debian (host-84-13-30-150.opaltelecom.net. [84.13.30.150])
+        by smtp.gmail.com with ESMTPSA id h10sm3926309wrt.40.2021.04.30.15.35.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 15:35:39 -0700 (PDT)
+Date:   Fri, 30 Apr 2021 23:35:38 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 0/2] 5.10.34-rc1 review
+Message-ID: <YIyGOn7ucPFZf/dp@debian>
+References: <20210430141910.473289618@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210430141910.473289618@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Noticed this while fixing another issue in drm_dp_read_downstream_info(),
-the open coded DP_DOWNSTREAMPORT_PRESENT check here just duplicates what we
-already do in drm_dp_is_branch(), so just get rid of it.
+Hi Greg,
 
-Signed-off-by: Lyude Paul <lyude@redhat.com>
----
- drivers/gpu/drm/drm_dp_helper.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+On Fri, Apr 30, 2021 at 04:20:41PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.34 release.
+> There are 2 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 02 May 2021 14:19:04 +0000.
+> Anything received after that time might be too late.
 
-diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
-index 27c8c5bdf7d9..0f84df8798ab 100644
---- a/drivers/gpu/drm/drm_dp_helper.c
-+++ b/drivers/gpu/drm/drm_dp_helper.c
-@@ -677,9 +677,7 @@ int drm_dp_read_downstream_info(struct drm_dp_aux *aux,
- 	memset(downstream_ports, 0, DP_MAX_DOWNSTREAM_PORTS);
- 
- 	/* No downstream info to read */
--	if (!drm_dp_is_branch(dpcd) ||
--	    dpcd[DP_DPCD_REV] < DP_DPCD_REV_10 ||
--	    !(dpcd[DP_DOWNSTREAMPORT_PRESENT] & DP_DWN_STRM_PORT_PRESENT))
-+	if (!drm_dp_is_branch(dpcd) || dpcd[DP_DPCD_REV] < DP_DPCD_REV_10)
- 		return 0;
- 
- 	/* Some branches advertise having 0 downstream ports, despite also advertising they have a
--- 
-2.30.2
+Build test:
+mips (gcc version 11.1.1 20210430): 63 configs -> no new failure
+arm (gcc version 11.1.1 20210430): 105 configs -> no new failure
+x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
 
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression.
+arm: Booted on rpi3b. No regression.
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+--
+Regards
+Sudip
