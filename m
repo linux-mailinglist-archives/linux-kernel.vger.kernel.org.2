@@ -2,203 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE06370106
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 21:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B397F370118
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 21:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231790AbhD3TIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 15:08:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230356AbhD3TIE (ORCPT
+        id S231735AbhD3TTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 15:19:18 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:51187 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229990AbhD3TTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 15:08:04 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C5D8C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 12:07:14 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id n84so11207363wma.0
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 12:07:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=QsIOjRVDObuzB3TAj/QUXyHP2hTbDXsiJXpMnud8bTw=;
-        b=feNJVQ1RjmiP25z0XbDMVEl3Wt/CAfZNpYgdwRSY9Wh2+n0aM8JgX8jY0QwDZgMchX
-         Ups7Y3KALpWGD3bV3U8n/QnNnUitq+p4g/Gr1Whcokp7pVBff36nf6A7RGqYn18dJtGH
-         2wwrQ+RcyNFulDrIRN5DxCjp/98T8R/hXzPOBw+SSjANKqZRdGJvPoT2HfmOzpAGy0r6
-         1+yDwfdq2MLhyqfYd21/L/j8eRS9P8HtE5KNJe3xHCLruZEn91N7DcV3mRLCrQkPwsMd
-         j+4llQf4dyL1rVltTM6lZD5/PXY8JvsN9DQFroofvOnMC6/gQW40X1GAVLwKjemIC8Ok
-         TjBQ==
+        Fri, 30 Apr 2021 15:19:10 -0400
+Received: by mail-io1-f71.google.com with SMTP id k20-20020a5d97d40000b02903e994fab1f1so37323674ios.17
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 12:18:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=QsIOjRVDObuzB3TAj/QUXyHP2hTbDXsiJXpMnud8bTw=;
-        b=NNlwvpe/GHDJ41nm9ZihIDhR715AyYvNXIfDpNQGpj+II/5s/xTPCu29Db76KOifBY
-         lm4oa5uWe6Jnct8bupMIqsWSIk2c47Pa2d+L1WY/5f4SgiyPqkWQ8XXHZz+uTHEnpHhi
-         ThxfSmavq3yHc936fFH5I+DcgxijZiRBrb87/0mCIC/rCmn/RWONS/8AorS0XN7THD3d
-         YRc6lXY1bbVK0Vuv4oQ1FwHdVrx+VG+2//gHEx4yzBAWTmEFmJc6MPRUdgSZWpEtxvbT
-         edtRQvh++fasovPXROb8XHpHeRX6SOWby93IchL1sjFuYE/RH47PG28FCEpHUPmFPQiw
-         dalQ==
-X-Gm-Message-State: AOAM531INyJnpgZ4lHiqg7UNfQYFKafGxrnlmGWlPgW/lbtHDQ2zmjD0
-        kXaN6bEnBKE//9HNu4g4NncojA==
-X-Google-Smtp-Source: ABdhPJxl3CmvBsFsTgbZKT8UBCmij5XM7DUxig/6GHwehvyMQxbQwicz0ECpF7YdTMQ9sty2UELYvA==
-X-Received: by 2002:a1c:545c:: with SMTP id p28mr18332214wmi.118.1619809633033;
-        Fri, 30 Apr 2021 12:07:13 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:15:13:8eae:7187:8db5:a3e])
-        by smtp.gmail.com with ESMTPSA id a9sm3801655wmj.1.2021.04.30.12.07.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 12:07:12 -0700 (PDT)
-Date:   Fri, 30 Apr 2021 21:07:06 +0200
-From:   Marco Elver <elver@google.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Subject: Re: siginfo_t ABI break on sparc64 from si_addr_lsb move 3y ago
-Message-ID: <YIxVWkT03TqcJLY3@elver.google.com>
-References: <YIpkvGrBFGlB5vNj@elver.google.com>
- <m11rat9f85.fsf@fess.ebiederm.org>
- <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
- <m15z031z0a.fsf@fess.ebiederm.org>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=W21MpQbg2r+zNE3j8+vGWPwY3QTKyRcwFXVYnsEsdfk=;
+        b=SCz9LwmL5QF48ieX0k+nMq8U9Jr8aqrXQTolwoANyi72lUAy3Ii1Wj51ul2KgXjMQ+
+         Hmh6Th5yzR55logBwnUeCdNXmBKgWAH7ENFwmgtSixeofPhI6rTBEb8k04yZLtMlK1/J
+         ncA2fW8shtqmYYkHV2r8pVc3yEDAUpaGvRbz7gX399UwB9qA97TeGHn+ptv4DEYwg6VC
+         ZvbuzFjWHeZTCpa8YCNYFzSIU9AKu33g5qppeusIiaY3UU00xbDQ3+0yGbYRhXjVOvBJ
+         2NNaZChKYx7szqsKRnkZsGmdW38YhiIF1rhYxuR0vMK4/c6SOoovYCzhKBfvIh9goSp6
+         Qo5A==
+X-Gm-Message-State: AOAM530gw+LdU4sif7jLBAFYH+brcHdbIlJ9J8WVKgywJERSe0dqZNvy
+        FaqT1s/gu4adh7lOQg7McyF/pTNoocK5uTv3ex4ppGY6+g5T
+X-Google-Smtp-Source: ABdhPJwZS0tfegh2Qqjc0QKn+UUcf4HfJCvapdjl8XTuTXzuiIOy0BxLLiudFD2SpuxKFLCBNFeorHCXet+FSN9BdOrQwf79BoUu
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <m15z031z0a.fsf@fess.ebiederm.org>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+X-Received: by 2002:a05:6e02:1526:: with SMTP id i6mr5273750ilu.270.1619810301365;
+ Fri, 30 Apr 2021 12:18:21 -0700 (PDT)
+Date:   Fri, 30 Apr 2021 12:18:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009dd35c05c135792d@google.com>
+Subject: [syzbot] possible deadlock in sctp_addr_wq_timeout_handler
+From:   syzbot <syzbot+959223586843e69a2674@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, bp@alien8.de, davem@davemloft.net,
+        hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
+        kuba@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sctp@vger.kernel.org, marcelo.leitner@gmail.com,
+        mark.rutland@arm.com, masahiroy@kernel.org, mingo@redhat.com,
+        netdev@vger.kernel.org, nhorman@tuxdriver.com, pbonzini@redhat.com,
+        peterz@infradead.org, rafael.j.wysocki@intel.com,
+        rostedt@goodmis.org, seanjc@google.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        vkuznets@redhat.com, vyasevich@gmail.com, wanpengli@tencent.com,
+        will@kernel.org, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 12:08PM -0500, Eric W. Biederman wrote:
-> Arnd Bergmann <arnd@arndb.de> writes:
-[...] 
-> >> I did a quick search and the architectures that define __ARCH_SI_TRAPNO
-> >> are sparc, mips, and alpha.  All have 64bit implementations.  A further
-> >> quick search shows that none of those architectures have faults that
-> >> use BUS_MCEERR_AR, BUS_MCEERR_AO, SEGV_BNDERR, SEGV_PKUERR, nor do
-> >> they appear to use mm/memory-failure.c
-> >>
-> >> So it doesn't look like we have an ABI regression to fix.
-> >
-> > Even better!
-> >
-> > So if sparc is the only user of _trapno and it uses none of the later
-> > fields in _sigfault, I wonder if we could take even more liberty at
-> > trying to have a slightly saner definition. Can you think of anything that
-> > might break if we put _trapno inside of the union along with _perf
-> > and _addr_lsb?
-> 
-> On sparc si_trapno is only set when SIGILL ILL_TRP is set.  So we can
-> limit si_trapno to that combination, and it should not be a problem for
-> a new signal/si_code pair to use that storage.  Precisely because it is
-> new.
-> 
-> Similarly on alpha si_trapno is only set for:
-> 
-> SIGFPE {FPE_INTOVF, FPE_INTDIV, FPE_FLTOVF, FPE_FLTDIV, FPE_FLTUND,
-> FPE_FLTINV, FPE_FLTRES, FPE_FLTUNK} and SIGTRAP {TRAP_UNK}.
-> 
-> Placing si_trapno into the union would also make the problem that the
-> union is pointer aligned a non-problem as then the union immediate
-> follows a pointer.
-> 
-> I hadn't had a chance to look before but we must deal with this.  The
-> definition of perf_sigtrap in 42dec9a936e7696bea1f27d3c5a0068cd9aa95fd
-> is broken on sparc, alpha, and ia64 as it bypasses the code in
-> kernel/signal.c that ensures the si_trapno or the ia64 special fields
-> are set.
-> 
-> Not to mention that perf_sigtrap appears to abuse si_errno.
+Hello,
 
-There are a few other places in the kernel that repurpose si_errno
-similarly, e.g. arch/arm64/kernel/ptrace.c, kernel/seccomp.c -- it was
-either that or introduce another field or not have it. It is likely we
-could do without, but if there are different event types the user would
-have to sacrifice a few bits of si_perf to encode the event type, and
-I'd rather keep those bits for something else. Thus the decision fell to
-use si_errno.
+syzbot found the following issue on:
 
-Given it'd be wasted space otherwise, and we define the semantics of
-whatever is stored in siginfo on the new signal, it'd be good to keep.
+HEAD commit:    2a1d7946 Merge tag 'for-linus' of git://git.kernel.org/pub..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=159af1c1d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9404cfa686df2c05
+dashboard link: https://syzkaller.appspot.com/bug?extid=959223586843e69a2674
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11613d71d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12be674dd00000
 
-> The code is only safe if the analysis that says we can move si_trapno
-> and perhaps the ia64 fields into the union is correct.  It looks like
-> ia64 much more actively uses it's signal extension fields including for
-> SIGTRAP, so I am not at all certain the generic definition of
-> perf_sigtrap is safe on ia64.
+The issue was bisected to:
 
-Trying to understand the requirements of si_trapno myself: safe here
-would mean that si_trapno is not required if we fire our SIGTRAP /
-TRAP_PERF.
+commit 997acaf6b4b59c6a9c259740312a69ea549cc684
+Author: Mark Rutland <mark.rutland@arm.com>
+Date:   Mon Jan 11 15:37:07 2021 +0000
 
-As far as I can tell that is the case -- see below.
+    lockdep: report broken irq restoration
 
-> > I suppose in theory sparc64 or alpha might start using the other
-> > fields in the future, and an application might be compiled against
-> > mismatched headers, but that is unlikely and is already broken
-> > with the current headers.
-> 
-> If we localize the use of si_trapno to just a few special cases on alpha
-> and sparc I think we don't even need to worry about breaking userspace
-> on any architecture.  It will complicate siginfo_layout, but it is a
-> complication that reflects reality.
-> 
-> I don't have a clue how any of this affects ia64.  Does perf work on
-> ia64?  Does perf work on sparc, and alpha?
-> 
-> If perf works on ia64 we need to take a hard look at what is going on
-> there as well.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17c36a5dd00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=14236a5dd00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=10236a5dd00000
 
-No perf on ia64, but it seems alpha and sparc have perf:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+959223586843e69a2674@syzkaller.appspotmail.com
+Fixes: 997acaf6b4b5 ("lockdep: report broken irq restoration")
 
-	$ git grep 'select.*HAVE_PERF_EVENTS$' -- arch/
-	arch/alpha/Kconfig:	select HAVE_PERF_EVENTS    <--
-	arch/arc/Kconfig:	select HAVE_PERF_EVENTS
-	arch/arm/Kconfig:	select HAVE_PERF_EVENTS
-	arch/arm64/Kconfig:	select HAVE_PERF_EVENTS
-	arch/csky/Kconfig:	select HAVE_PERF_EVENTS
-	arch/hexagon/Kconfig:	select HAVE_PERF_EVENTS
-	arch/mips/Kconfig:	select HAVE_PERF_EVENTS
-	arch/nds32/Kconfig:	select HAVE_PERF_EVENTS
-	arch/parisc/Kconfig:	select HAVE_PERF_EVENTS
-	arch/powerpc/Kconfig:	select HAVE_PERF_EVENTS
-	arch/riscv/Kconfig:	select HAVE_PERF_EVENTS
-	arch/s390/Kconfig:	select HAVE_PERF_EVENTS
-	arch/sh/Kconfig:	select HAVE_PERF_EVENTS
-	arch/sparc/Kconfig:	select HAVE_PERF_EVENTS    <--
-	arch/x86/Kconfig:	select HAVE_PERF_EVENTS
-	arch/xtensa/Kconfig:	select HAVE_PERF_EVENTS
+======================================================
+WARNING: possible circular locking dependency detected
+5.12.0-rc8-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor044/8536 is trying to acquire lock:
+ffff8880183933a0 (slock-AF_INET6){+.-.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff8880183933a0 (slock-AF_INET6){+.-.}-{2:2}, at: sctp_addr_wq_timeout_handler+0x1a1/0x550 net/sctp/protocol.c:666
 
-Now, given ia64 is not an issue, I wanted to understand the semantics of
-si_trapno. Per https://man7.org/linux/man-pages/man2/sigaction.2.html, I
-see:
+but task is already holding lock:
+ffffffff8d659620 (&net->sctp.addr_wq_lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:359 [inline]
+ffffffff8d659620 (&net->sctp.addr_wq_lock){+.-.}-{2:2}, at: sctp_addr_wq_timeout_handler+0x38/0x550 net/sctp/protocol.c:626
 
-	int si_trapno;    /* Trap number that caused
-			     hardware-generated signal
-			     (unused on most architectures) */
+which lock already depends on the new lock.
 
-... its intended semantics seem to suggest it would only be used by some
-architecture-specific signal like you identified above. So if the
-semantics is some code of a hardware trap/fault, then we're fine and do
-not need to set it.
 
-Also bearing in mind we define the semantics any new signal, and given
-most architectures do not have si_trapno, definitions of new generic
-signals should probably not include odd architecture specific details
-related to old architectures.
+the existing dependency chain (in reverse order) is:
 
-From all this, my understanding now is that we can move si_trapno into
-the union, correct? What else did you have in mind?
+-> #1 (&net->sctp.addr_wq_lock){+.-.}-{2:2}:
+       __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
+       _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
+       spin_lock_bh include/linux/spinlock.h:359 [inline]
+       sctp_destroy_sock+0x204/0x440 net/sctp/socket.c:5028
+       sctp_v6_destroy_sock+0x11/0x20 net/sctp/socket.c:9528
+       sk_common_release+0x64/0x390 net/core/sock.c:3264
+       sctp_close+0x4da/0x940 net/sctp/socket.c:1531
+       inet_release+0x12e/0x280 net/ipv4/af_inet.c:431
+       inet6_release+0x4c/0x70 net/ipv6/af_inet6.c:478
+       __sock_release+0xcd/0x280 net/socket.c:599
+       sock_close+0x18/0x20 net/socket.c:1258
+       __fput+0x288/0x920 fs/file_table.c:280
+       task_work_run+0xdd/0x1a0 kernel/task_work.c:140
+       exit_task_work include/linux/task_work.h:30 [inline]
+       do_exit+0xbfc/0x2a60 kernel/exit.c:825
+       do_group_exit+0x125/0x310 kernel/exit.c:922
+       __do_sys_exit_group kernel/exit.c:933 [inline]
+       __se_sys_exit_group kernel/exit.c:931 [inline]
+       __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Thanks,
--- Marco
+-> #0 (slock-AF_INET6){+.-.}-{2:2}:
+       check_prev_add kernel/locking/lockdep.c:2937 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3060 [inline]
+       validate_chain kernel/locking/lockdep.c:3675 [inline]
+       __lock_acquire+0x2b14/0x54c0 kernel/locking/lockdep.c:4901
+       lock_acquire kernel/locking/lockdep.c:5511 [inline]
+       lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5476
+       __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+       _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+       spin_lock include/linux/spinlock.h:354 [inline]
+       sctp_addr_wq_timeout_handler+0x1a1/0x550 net/sctp/protocol.c:666
+       call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1431
+       expire_timers kernel/time/timer.c:1476 [inline]
+       __run_timers.part.0+0x67c/0xa50 kernel/time/timer.c:1745
+       __run_timers kernel/time/timer.c:1726 [inline]
+       run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1758
+       __do_softirq+0x29b/0x9f6 kernel/softirq.c:345
+       invoke_softirq kernel/softirq.c:221 [inline]
+       __irq_exit_rcu kernel/softirq.c:422 [inline]
+       irq_exit_rcu+0x134/0x200 kernel/softirq.c:434
+       sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
+       asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:632
+       __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:161 [inline]
+       _raw_spin_unlock_irqrestore+0x38/0x70 kernel/locking/spinlock.c:191
+       __debug_check_no_obj_freed lib/debugobjects.c:997 [inline]
+       debug_check_no_obj_freed+0x20c/0x420 lib/debugobjects.c:1018
+       slab_free_hook mm/slub.c:1554 [inline]
+       slab_free_freelist_hook+0x147/0x210 mm/slub.c:1600
+       slab_free mm/slub.c:3161 [inline]
+       kmem_cache_free+0x8a/0x740 mm/slub.c:3177
+       free_fs_struct fs/fs_struct.c:92 [inline]
+       exit_fs+0x123/0x170 fs/fs_struct.c:108
+       do_exit+0xbca/0x2a60 kernel/exit.c:821
+       do_group_exit+0x125/0x310 kernel/exit.c:922
+       __do_sys_exit_group kernel/exit.c:933 [inline]
+       __se_sys_exit_group kernel/exit.c:931 [inline]
+       __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&net->sctp.addr_wq_lock);
+                               lock(slock-AF_INET6);
+                               lock(&net->sctp.addr_wq_lock);
+  lock(slock-AF_INET6);
+
+ *** DEADLOCK ***
+
+2 locks held by syz-executor044/8536:
+ #0: ffffc90000007d78 ((&net->sctp.addr_wq_timer)){+.-.}-{0:0}, at: lockdep_copy_map include/linux/lockdep.h:35 [inline]
+ #0: ffffc90000007d78 ((&net->sctp.addr_wq_timer)){+.-.}-{0:0}, at: call_timer_fn+0xd5/0x6b0 kernel/time/timer.c:1421
+ #1: ffffffff8d659620 (&net->sctp.addr_wq_lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:359 [inline]
+ #1: ffffffff8d659620 (&net->sctp.addr_wq_lock){+.-.}-{2:2}, at: sctp_addr_wq_timeout_handler+0x38/0x550 net/sctp/protocol.c:626
+
+stack backtrace:
+CPU: 0 PID: 8536 Comm: syz-executor044 Not tainted 5.12.0-rc8-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2128
+ check_prev_add kernel/locking/lockdep.c:2937 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3060 [inline]
+ validate_chain kernel/locking/lockdep.c:3675 [inline]
+ __lock_acquire+0x2b14/0x54c0 kernel/locking/lockdep.c:4901
+ lock_acquire kernel/locking/lockdep.c:5511 [inline]
+ lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5476
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ sctp_addr_wq_timeout_handler+0x1a1/0x550 net/sctp/protocol.c:666
+ call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1431
+ expire_timers kernel/time/timer.c:1476 [inline]
+ __run_timers.part.0+0x67c/0xa50 kernel/time/timer.c:1745
+ __run_timers kernel/time/timer.c:1726 [inline]
+ run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1758
+ __do_softirq+0x29b/0x9f6 kernel/softirq.c:345
+ invoke_softirq kernel/softirq.c:221 [inline]
+ __irq_exit_rcu kernel/softirq.c:422 [inline]
+ irq_exit_rcu+0x134/0x200 kernel/softirq.c:434
+ sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:632
+RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:161 [inline]
+RIP: 0010:_raw_spin_unlock_irqrestore+0x38/0x70 kernel/locking/spinlock.c:191
+Code: 74 24 10 e8 4a f9 53 f8 48 89 ef e8 82 af 54 f8 81 e3 00 02 00 00 75 25 9c 58 f6 c4 02 75 2d 48 85 db 74 01 fb bf 01 00 00 00 <e8> 63 7d 48 f8 65 8b 05 0c 48 fc 76 85 c0 74 0a 5b 5d c3 e8 d0 3c
+RSP: 0018:ffffc9000173fc50 EFLAGS: 00000206
+RAX: 0000000000000002 RBX: 0000000000000200 RCX: 1ffffffff1b89e11
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000001
+RBP: ffffffff9006cf00 R08: 0000000000000001 R09: 0000000000000001
+R10: ffffffff8179e4c8 R11: 000000000000003f R12: 1ffffffff200d9df
+R13: 0000000000000000 R14: dead000000000100 R15: dffffc0000000000
+ __debug_check_no_obj_freed lib/debugobjects.c:997 [inline]
+ debug_check_no_obj_freed+0x20c/0x420 lib/debugobjects.c:1018
+ slab_free_hook mm/slub.c:1554 [inline]
+ slab_free_freelist_hook+0x147/0x210 mm/slub.c:1600
+ slab_free mm/slub.c:3161 [inline]
+ kmem_cache_free+0x8a/0x740 mm/slub.c:3177
+ free_fs_struct fs/fs_struct.c:92 [inline]
+ exit_fs+0x123/0x170 fs/fs_struct.c:108
+ do_exit+0xbca/0x2a60 kernel/exit.c:821
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ __do_sys_exit_group kernel/exit.c:933 [inline]
+ __se_sys_exit_group kernel/exit.c:931 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x43ea79
+Code: Unable to access opcode bytes at RIP 0x43ea4f.
+RSP: 002b:00007ffdbc348058 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 00000000004b0330 RCX: 000000000043ea79
+RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffffffffffc0 R09: 0000000000000001
+R10: 0000000000000001 R11: 0000000000000246 R12: 00000000004b0330
+R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
