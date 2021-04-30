@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39A9B36FCB7
+	by mail.lfdr.de (Postfix) with ESMTP id 863A936FCB8
 	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 16:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233646AbhD3Opn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 10:45:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50646 "EHLO
+        id S233676AbhD3Opp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 10:45:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233248AbhD3OpV (ORCPT
+        with ESMTP id S230379AbhD3OpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 10:45:21 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3632C061347
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:44:32 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id i3so57232554edt.1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:44:32 -0700 (PDT)
+        Fri, 30 Apr 2021 10:45:23 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E24FC06138B
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:44:34 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id w3so105674771ejc.4
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:44:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5KtDzlglqZBamkEg3baS39llf/wufOaHK1MWrZxa8uQ=;
-        b=Din4203pEgVpqjQKJGQkaXfTU30nqSKvYezRNXIoPMnpMevN7Vw87VJu9GfJRSJHB1
-         7OXoQyZh24fRxvijirNtacRDtxBQOdJGHkx/nBbZXUqdraGYaUlikVPK6LUTP4rDkU4p
-         b2lIuhxGjAO4ZXhxM+bClhUrX6pWq4kDNZHX5IbMokSr9kXkto7T4seWdcNrWuDnXcPl
-         1D9EjBZin40AjSyzwTet37R4Z1G1HQ0BrRfc+9OgbPJ5YyVzPQXzIpzaEYzISdgzqtTY
-         OKCi271mW6G0di3vGY8XIpUND9m47SgGFfeTtCObsYp9pHT/AlJIYtoYEERQoQ+5wlMD
-         6eyg==
+        bh=CBMRL9okd6exFYzTetsEZ3MsVPUnPB4cIvHOO2Zf8iE=;
+        b=bf7XtLmZ3a4j+WmxKgSroJgvhYtqdydN8eGUU3bLRx4+nLTGSFujzRAOSNmzeVIz9A
+         cDRi7AnXPXYR9BwyoNhcrtna34dV7hxCQSVA2rW0N440dcPBWFVFD0X7COB2+vEntow4
+         GXUYGDKbA6y6/zyWL8zLJ1N8I8ei5EXHIlWKH7ifKUgbzf/+w681Gf9ACs+g13tmP4Im
+         mLFTtyjXsA7L8dEa7lZykACJBILat+ImFEA4PpJLpK6wtILPnyM+A+xM0gNK/vAEl9MO
+         W52aDsZMYp30mfFPbCWiYfVb6+MSufFjfRykdTnaDWFO9XD3aWs0WowRiLEa3BpfZCbr
+         lUnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5KtDzlglqZBamkEg3baS39llf/wufOaHK1MWrZxa8uQ=;
-        b=tMcQA7eGXXnEHf/KWXulOC6K6kb/N8QwjXdVnifo35qMsxDyLX3YTt9gvFAjbC3jLb
-         MUYjoHe35az0s5oKLhq6nXRpjxo3BTi8JxMxvDbPpPBvycONSTH+ADBxOuuu1fk7MxqK
-         Uv48j43WcF2K3Q5Ao9KkcWjJ9mExISVs7/X6CaEYkg5rpCpmrEg8BvUVtyMbNz7Ea+pw
-         zNyJJ4wu9b8dHI7yVkbsy2TJcFGh0gljyQTED3hSXzTynrfQHyZvV+WRh22H3zgiV0QV
-         UKbfxQSu8xQiS/hVcL9Z9Mj2+oZeDPSFtR9QuJ7J6dRs8UIbs2+RC9OgPPbYBJ1O/HV0
-         buPQ==
-X-Gm-Message-State: AOAM533h5kBlMRnZ9JCLlEJj/ZAp7lqrv5w/E2LGnXBwxU/4RRAIXXAl
-        kBYfKr3vZ5DWgximvkzFa5C3QYCRAR4=
-X-Google-Smtp-Source: ABdhPJxOcVrMm3JvgAQV/iZfdDLo9lSHg+RYcGzEih4tDBOoPFcgoNXhe2P63S9BHCEmhP6sJWgvcQ==
-X-Received: by 2002:a05:6402:341:: with SMTP id r1mr6316402edw.113.1619793871368;
-        Fri, 30 Apr 2021 07:44:31 -0700 (PDT)
+        bh=CBMRL9okd6exFYzTetsEZ3MsVPUnPB4cIvHOO2Zf8iE=;
+        b=aRLrg5az8TzT/69zDaxNw11VeoGBVmNEN5uJNIp9UXTnTP8TovME5uqC9K+F+pDz83
+         EH56xLKp1JPMWcsQnWqWPZxK2kEBrPMpbkR4iMB4fwJhWQrxtaCANOvvlHy+MAT2/XWA
+         Y4ryyYSwtNM/8mliVF2KAx2wHR4PLgTVkbkwU+r1QzfvAXs6bH+AK+6OdcjRmfux8l66
+         V3QNPcEOtmmIpTmQc4Xj2AaFMsX6okXnuoNHyrZYbl+84wH56FyoX4BP3qH7v7WU1Fmd
+         sLg7ykfjmIch7IthtVytfWDv6XlRc8QDKsobL3jytwRnIcRepmqZDrya6W5ptG+j1kOa
+         PTFw==
+X-Gm-Message-State: AOAM530nVmyRuHvYqTxDBsJpL8xu7lx6JplzQpasHZRdz6GVhIRq1g3b
+        UcuasEEAWX989n5n3A03v4IqyAFk45c=
+X-Google-Smtp-Source: ABdhPJwvCC9wvGum1WaZzQWVctF4kGFrfEKzOGnvOaG2yRNK0cj5FIx6a7Eo/bBcAXSE8yn6ALxlHA==
+X-Received: by 2002:a17:906:a006:: with SMTP id p6mr4792278ejy.350.1619793872782;
+        Fri, 30 Apr 2021 07:44:32 -0700 (PDT)
 Received: from agape ([109.52.244.36])
-        by smtp.gmail.com with ESMTPSA id c19sm1466194edu.20.2021.04.30.07.44.30
+        by smtp.gmail.com with ESMTPSA id o13sm2084553ejx.86.2021.04.30.07.44.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 07:44:31 -0700 (PDT)
+        Fri, 30 Apr 2021 07:44:32 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 11/43] staging: rtl8723bs: remove unused ODM_PRINT_ADDR macro
-Date:   Fri, 30 Apr 2021 16:43:41 +0200
-Message-Id: <b4ecd3b4481f5ef4a526b7ca62d6389b8d097bd4.1619793405.git.fabioaiuto83@gmail.com>
+Subject: [PATCH v2 12/43] staging: rtl8723bs: remove unused ODM_dbg_trace macro
+Date:   Fri, 30 Apr 2021 16:43:42 +0200
+Message-Id: <00ffa6097928ef93cd1ef31d1b96f968d5b2b874.1619793405.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1619793405.git.fabioaiuto83@gmail.com>
 References: <cover.1619793405.git.fabioaiuto83@gmail.com>
@@ -63,44 +63,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove unused ODM_PRINT_ADDR macro definitions.
+remove unused ODM_dbg_trace macro definitions.
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/hal/odm_debug.h | 19 -------------------
- 1 file changed, 19 deletions(-)
+ drivers/staging/rtl8723bs/hal/odm_debug.h | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/drivers/staging/rtl8723bs/hal/odm_debug.h b/drivers/staging/rtl8723bs/hal/odm_debug.h
-index b4fc247242fe..58de4d16335e 100644
+index 58de4d16335e..cd68c583699a 100644
 --- a/drivers/staging/rtl8723bs/hal/odm_debug.h
 +++ b/drivers/staging/rtl8723bs/hal/odm_debug.h
-@@ -97,29 +97,10 @@
+@@ -96,11 +96,9 @@
+ #endif
  
  #if DBG
- #define ODM_dbg_trace(str) { DbgPrint("%s:%s\n", __func__, str); }
--
--#define ODM_PRINT_ADDR(pDM_Odm, comp, level, title_str, ptr)\
--	do {\
--		if (\
--			(comp & pDM_Odm->DebugComponents) &&\
--			(level <= pDM_Odm->DebugLevel)\
--		) {\
--			int __i;\
--			u8 *__ptr = (u8 *)ptr;\
--			DbgPrint("[ODM] ");\
--			DbgPrint(title_str);\
--			DbgPrint(" ");\
--			for (__i = 0; __i < 6; __i++)\
--				DbgPrint("%02X%s", __ptr[__i], (__i == 5) ? "" : "-");\
--			DbgPrint("\n");\
--		} \
--	} while (0)
+-#define ODM_dbg_trace(str) { DbgPrint("%s:%s\n", __func__, str); }
  #else
  #define ODM_dbg_enter()					do {} while (0)
  #define ODM_dbg_exit()					do {} while (0)
- #define ODM_dbg_trace(str)				no_printk("%s", str)
--#define ODM_PRINT_ADDR(pDM_Odm, comp, level, title_str, ptr) \
--	no_printk("%s %p", title_str, ptr)
+-#define ODM_dbg_trace(str)				no_printk("%s", str)
  #endif
  
  void ODM_InitDebugSetting(struct dm_odm_t *pDM_Odm);
