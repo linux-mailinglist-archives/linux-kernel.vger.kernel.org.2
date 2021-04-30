@@ -2,128 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B9436F712
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA8A36F714
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbhD3I15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 04:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51408 "EHLO
+        id S231349AbhD3I2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 04:28:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbhD3I14 (ORCPT
+        with ESMTP id S229529AbhD3I2j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 04:27:56 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B0CC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:27:08 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id s9so21866433ljj.6
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:27:08 -0700 (PDT)
+        Fri, 30 Apr 2021 04:28:39 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF92C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:27:50 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id t18so12008262wry.1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:27:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QnNs0Pg3Uye5i8nopt5eZq0rwEWCr4/gJMQBqKGNqXo=;
-        b=spJap/K+vD3s15E/46SMdkdy2ySiwVLQ9x92oPDUVUz1Hu0N7IoDS2Zl4NMv6t0gxO
-         vop/0v1edM9T0q2FTw2KSeYlsqvr2O0zQEOjCvZFnmaOjsZ270DZm2qVrOmqtgd3XoF4
-         20a2PlT7EulBMTNNj9lljh8PE44SmdTBV/tweE6eoPifaE+JDnI2aNT5OJKwxps8i5p3
-         rrn7UEbvcnBTZZlrXP2qfCJuWnwbzwLIXw1VRThUwyjZpgF+vITB8yVZ8CvyE5S1pfLn
-         eN99C+m5tnnh9MEkLbeYdJeDTTPfZX2WOeSQoBkdl7HzVgcPpBr+bzzE5Gt+VuB3qUh2
-         TqbA==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x12D1fSgMXo84/StrNDXFY95BOlA8w3dEtySPm5wCgQ=;
+        b=q5RkY2TEzEE6oWZZbW+87d2glkkz6bArkK6G7aeyOTL/H6i5S97xaGLHvQ7feTUwKC
+         1yaM5gV/avDemn8LUsrGG4ttN8Njingl5hDQcXiFweWa77q5BSlgh8DTBXxWlaQQXQ4k
+         r1lSJznmcSEPRoyRX6erX7SDkpU6d2SLI6M8bWaGqGtY1ruPepci6ZZIwFNRYe5YKJa3
+         yjAHDDUPwDNtlN2+gWew99O3ATqgPaq1drQVwYnfKrBxevD6IPejzjmuF6NGbn7gSLsS
+         uOmK0IYiYEIpsf4jXL+Yqb+Qsa02G5V/KRmeYGuii/TEAavD6FHr3X7gsIieEtzPeQj7
+         wX1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QnNs0Pg3Uye5i8nopt5eZq0rwEWCr4/gJMQBqKGNqXo=;
-        b=mOYYUehyEbO3NwX+oRXiR1u5y/Krp63KF6kRIEifjTWQ47Brj4+rsoyC0qR4+N+fOV
-         75DIY8PF7ybRzpWZzOH8yXzh67nb1FBBlfMF7eV1YLQwW7XYYr9brL8U78DUc55hfsbH
-         lJ1iqxc9BiT9qRSy34cmPFLUETom5H05C/W4IzKV3zua4lJSLwajgEbvd2OjBY9OI5cO
-         H/Q3OivYYgX+A5OITBn+ZCdfhEakR3YdKOC2UfGJRW/C0c4HSXKIEgjO88S9zoEh6Xes
-         1RMqcqS0QWvXeeRCHIrisZIAp032WESNuyc9whm2I4JNdlDiXHxKQW749e9MaQcKaRLz
-         OrbA==
-X-Gm-Message-State: AOAM531bBqds/W1DCQ/BcUJw6ge2TRXijgEaDo/rsdxzOt8ByAIkWaAC
-        HnppP5ySyf4uaJrg6isde9Pv7c39IvP/gEKh7V4b7uUcSyk=
-X-Google-Smtp-Source: ABdhPJwT3SYFLtwAJAoKSmEwCVG/S8A4RwlXeg18Ah1oXROHNfaOX8VALPdTBVEDl4Hitz2NCNDAxNrhE84fxxkO/cQ=
-X-Received: by 2002:a2e:b058:: with SMTP id d24mr2973416ljl.246.1619771227028;
- Fri, 30 Apr 2021 01:27:07 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x12D1fSgMXo84/StrNDXFY95BOlA8w3dEtySPm5wCgQ=;
+        b=hQbOyuctWD3tLLc5UTS3P/gt3Q2fjtM1x34QmKB71HojNBSqx2FaQRptQ3ovXxMRqc
+         ulxRgfIjS7v+GFJC2tK5MFJIgCR11crVnnp2Jf2Tq5MET9q9uiIWSquyCj4UphijcBK5
+         mxLJAK4tb7AJByC4QgF6YkSWu0BgtRHiX0OjPEgHh45rOe9enjOYEjk0TY9wnleIlewY
+         WHsorpC2IMoHtfoypajXKUMZBM9UC+FgKtqJXuOmEbfXP3zwLmzeJsRysvCGwDy1k8tp
+         voucv/38ivdxT/ktQiUhIcxspvH0TN5sLuLePKa7geS/4mYRlxSFH37SQc7eGjC3iW0i
+         soWQ==
+X-Gm-Message-State: AOAM533A48QvxNOQRqPDtDmQT/ul6FiQyEhrPbYrAt/DcaQeAuNOCXCS
+        M7yTiYwZuRXbaeQctCoxjw/ADD9IJR46n2Qk
+X-Google-Smtp-Source: ABdhPJxGoyaka1SwUgXjXPuWPXVdSHHYtgAfq3tVpjG7MANHxCuZPbgUWnsHDmVM463gHiGYmCPtyg==
+X-Received: by 2002:adf:efca:: with SMTP id i10mr1630979wrp.284.1619771268768;
+        Fri, 30 Apr 2021 01:27:48 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e0a:90c:e290:4a89:8c32:4adc:fc67])
+        by smtp.gmail.com with ESMTPSA id e12sm1336677wrt.51.2021.04.30.01.27.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 01:27:47 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Stefan Agner <stefan@agner.ch>
+Subject: [PATCH] drm/meson: fix shutdown crash when component not probed
+Date:   Fri, 30 Apr 2021 10:27:44 +0200
+Message-Id: <20210430082744.3638743-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210422120459.447350175@infradead.org> <20210422123308.196692074@infradead.org>
- <CABk29Ntop2nX+z1bV7giG8ToR_w3f_+GYGAw+hFQ6g9rCZunmw@mail.gmail.com>
- <YIZ6ZpkrMGQ9A9x2@hirez.programming.kicks-ass.net> <CABk29NvicqM_c2ssYnDrEy_FPsfD5GH38rB_XHooErALOabe5g@mail.gmail.com>
- <CAOY2WoyTq0AYMz+z=USxSpdcJqWMjkq-FDkuLN++brwhAkwTaQ@mail.gmail.com>
- <CABk29Nuz-FDCk23ajcr9gS4KD-wMpwyn=ASu+yuTTT445rwTvw@mail.gmail.com>
- <CAERHkrvU2Xzi5p9Dph3zZ7zkoYjSV1krK-UhqE7+Qb80FodEGg@mail.gmail.com>
- <5c289c5a-a120-a1d0-ca89-2724a1445fe8@linux.intel.com> <CAERHkrsoCR7d3N2rhwKCeFDDBv4-S4HzD567mOaV_pngXn_Hkg@mail.gmail.com>
- <CAOY2WowOR6HhoKMsGrg+2VFD6ySY67E7Kr1s2GCuO4LdyusyUw@mail.gmail.com>
- <CABk29Nt_xBaoawiyMv1RG+Yzg_a9w5RMc6Zy0ggmS5K-9LzrUA@mail.gmail.com> <CAOY2WozkceZ+B+AGTVLJ1H-jZDAbr2c7ksjtgrnr7DQ8h5raAg@mail.gmail.com>
-In-Reply-To: <CAOY2WozkceZ+B+AGTVLJ1H-jZDAbr2c7ksjtgrnr7DQ8h5raAg@mail.gmail.com>
-From:   Aubrey Li <aubrey.intel@gmail.com>
-Date:   Fri, 30 Apr 2021 16:26:55 +0800
-Message-ID: <CAERHkrtGSMiO30XAneNWY_ccGu1rqkAOCgRQnCgbSh78A_mvKw@mail.gmail.com>
-Subject: Re: [PATCH 04/19] sched: Prepare for Core-wide rq->lock
-To:     Don Hiatt <dhiatt@digitalocean.com>
-Cc:     Josh Don <joshdon@google.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 5:09 AM Don Hiatt <dhiatt@digitalocean.com> wrote:
->
-> On Thu, Apr 29, 2021 at 1:48 PM Josh Don <joshdon@google.com> wrote:
-> >
-> > On Wed, Apr 28, 2021 at 9:41 AM Don Hiatt <dhiatt@digitalocean.com> wrote:
-> > >
-> > > I'm still seeing hard lockups while repeatedly setting cookies on qemu
-> > > processes even with
-> > > the updated patch. If there is any debug you'd like me to turn on,
-> > > just let me know.
-> > >
-> > > Thanks!
-> > >
-> > > don
-> >
-> > Thanks for the added context on your repro configuration. In addition
-> > to the updated patch from earlier, could you try the modification to
-> > double_rq_lock() from
-> > https://lkml.kernel.org/r/CABk29NuS-B3n4sbmavo0NDA1OCCsz6Zf2VDjjFQvAxBMQoJ_Lg@mail.gmail.com
-> > ? I have a feeling this is what's causing your lockup.
-> >
-> > Best,
-> > Josh
->
-> Hi Josh,
->
-> I've been running Aubrey+Peter's patch (attached) for almost 5 hours
-> and haven't had a single issue. :)
->
-> I'm running a set-cookie script every 5 seconds on the two VMs (each
-> vm is running
-> 'sysbench --threads=1 --time=0 cpu run' to generate some load in the vm) and
-> I'm running two of the same sysbench runs on the HV while setting cookies
-> every 5 seconds.
->
-> Unless I jinxed us it looks like a great fix. :)
->
-> Let me know if there is anything else you'd like me to try. I'm going
-> to leave the tests running
-> and see what happens. I update with what I find.
->
+When main component is not probed, by example when the dw-hdmi module is
+not loaded yet or in probe defer, the following crash appears on shutdown:
 
-This sounds great, Thanks Don.
+Unable to handle kernel NULL pointer dereference at virtual address 0000000000000038
+...
+pc : meson_drv_shutdown+0x24/0x50
+lr : platform_drv_shutdown+0x20/0x30
+...
+Call trace:
+meson_drv_shutdown+0x24/0x50
+platform_drv_shutdown+0x20/0x30
+device_shutdown+0x158/0x360
+kernel_restart_prepare+0x38/0x48
+kernel_restart+0x18/0x68
+__do_sys_reboot+0x224/0x250
+__arm64_sys_reboot+0x24/0x30
+...
 
-However, I guess we have the same problem in _double_lock_balance(), which
-needs to be fixed as well.
+Simply check if the priv struct has been allocated before using it.
 
-I or Josh can make a better patch for this after Peter's comments.
+Fixes: fa0c16caf3d7 ("drm: meson_drv add shutdown function")
+Reported-by: Stefan Agner <stefan@agner.ch>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+---
+ drivers/gpu/drm/meson/meson_drv.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-Thanks,
--Aubrey
+diff --git a/drivers/gpu/drm/meson/meson_drv.c b/drivers/gpu/drm/meson/meson_drv.c
+index 453d8b4c5763..07fcd12dca16 100644
+--- a/drivers/gpu/drm/meson/meson_drv.c
++++ b/drivers/gpu/drm/meson/meson_drv.c
+@@ -485,11 +485,12 @@ static int meson_probe_remote(struct platform_device *pdev,
+ static void meson_drv_shutdown(struct platform_device *pdev)
+ {
+ 	struct meson_drm *priv = dev_get_drvdata(&pdev->dev);
+-	struct drm_device *drm = priv->drm;
+ 
+-	DRM_DEBUG_DRIVER("\n");
+-	drm_kms_helper_poll_fini(drm);
+-	drm_atomic_helper_shutdown(drm);
++	if (!priv)
++		return;
++
++	drm_kms_helper_poll_fini(priv->drm);
++	drm_atomic_helper_shutdown(priv->drm);
+ }
+ 
+ static int meson_drv_probe(struct platform_device *pdev)
+-- 
+2.25.1
+
