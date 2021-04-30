@@ -2,182 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2914B36FCD8
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 16:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0788036FCDD
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 16:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233706AbhD3Ord (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 10:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50684 "EHLO
+        id S233146AbhD3Osn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 10:48:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234003AbhD3Oqg (ORCPT
+        with ESMTP id S233753AbhD3Osb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 10:46:36 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D13C061342
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:45:19 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id u17so105749146ejk.2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:45:19 -0700 (PDT)
+        Fri, 30 Apr 2021 10:48:31 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6989C06138B
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:47:42 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id e7so82848754edu.10
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:47:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=EOZa0FsLTNmXREG+LfKtNmgMKRo0KsphLPysLx3lCcw=;
-        b=hEofMGmdZrd6ahnvksswvP74ViSKmqLIZUQEPa1lnDlTNHLt2F2/IpT3qeeloq7yg3
-         GsoqK/sVI3fu0IB1o13hNDcranl27tRlylmxvvumxI2OwnTPuhzWFCq/WPDqnVZBno/9
-         Tzz9bawSNT9FGrvgbGLYDKRZsDwxZppzQbr9ckwSv/9YI0Vn/l+65Iyqa1B4ojUoHj7y
-         Dp3DAlW8HdcV3R/ni5Ni0NXmQO91b26JfKTkDse9gefcn7Bcys2t/+zrJ9OylswWkpdR
-         6KcHsB3Xicae/zyHPW9r4A2Ch0mKcNxcqzWoIGQ8+w3l9JIkHUHPieHez8AciaphzDEZ
-         nImA==
+        d=szeredi.hu; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=JQLmS5eHkwn6ByRBjLLlFMn3xy32m1iFJYz+x96wxCE=;
+        b=PUkCAGlf1NCQAWJ1EjHeZR4YPIa7Co4t2eO8iAkTiWVfARHlRP9Q0hhUmJG+uRYK5n
+         O5O246HDaOt9f+iN7Pn+xOVABnFDBz/G8NEcDPO4R7o3kPmvVj6p4jGOWq6dz6WGL2xZ
+         2pZEKr5OgLY4shFybxxfaWmBt9oKyzbZi96eQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=EOZa0FsLTNmXREG+LfKtNmgMKRo0KsphLPysLx3lCcw=;
-        b=Va6K0v7+saI+6anV94nf8kcJwCvg2e+q9mXYFWzde+BdcmBLW85s/SZgsU+90E2GqK
-         crvKNKVITGF1eZbPFHmSBOqSVmvAdSNv3hmauXQ4cf1eVSul31OKtctAxP2QDfYGw9QM
-         bMVN3AHd0UVXR6o+zTzGAfkZRkUA7ark1NjEfxUxF689HiUJMNPtBaiDBAMetw09T8Gc
-         oHdNW17MP4RJ2cjM+Q9Qexomexn6UC53hrnpXH5GB8Fs39rTRb1meNZ4Rrzq2I04aNEX
-         t5taY7jcbjbBxJ9TMF932y7BzfPw+py2UIUd134N7xVjsV5jOsmuBPe/GheJ4Qok9yFf
-         m/gA==
-X-Gm-Message-State: AOAM531PWJJzkIdkiVLwo3Lo16vU2vtvc62aGptRli5cv+O914xax0uC
-        oQD/C9HRsZwr/zgGZ1wkNleI+RCCYzw=
-X-Google-Smtp-Source: ABdhPJwJdWmv9QFkTlhzM9QtED5UDQEjnkOfmuYZ0kr3sHMoggCl6Lqo+pfHx7lMj/o4jADjl3TxDQ==
-X-Received: by 2002:a17:906:2b97:: with SMTP id m23mr4756961ejg.498.1619793918371;
-        Fri, 30 Apr 2021 07:45:18 -0700 (PDT)
-Received: from agape ([109.52.244.36])
-        by smtp.gmail.com with ESMTPSA id d1sm2138272eje.26.2021.04.30.07.45.17
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=JQLmS5eHkwn6ByRBjLLlFMn3xy32m1iFJYz+x96wxCE=;
+        b=WsVrgU8ajaD7HK/XcwRH9Dtl+A6NQlNK6WoyTyfsL4VzbUtVdskOgqEmByJtWZWF5H
+         8qNFq3peL/xHJUebBgyH/dYQmZVEzSx3l6e1oSdcUMUEGuG48g09MqghPPq2YvEZoi77
+         HW8OQuSdSvxcyiJT1791ICHJCJ3WxaVyKUmDI1TVgtqOEDMH68Z/eMnsiVOA3aYZtUK2
+         UqBhfxtX7Z7V3GXT/nwiy+fSQSrBdkvGqu9gBgvIJnlLI26sUvvWm5jLcA+wbbqH3Nug
+         7mufFEIm2nedrXORL2fMCdfoni5U/omeAsjZjEUvC/fsSQVIRYGz8y7ZVOOFRZxPDZIj
+         X/sw==
+X-Gm-Message-State: AOAM5327qv4uA4LHuXw2eZB0GVVubSxvYOsD00u2SJDo8MavkAkzBx+Y
+        eI360GHr6vz2rQZNRPxag1hyGA==
+X-Google-Smtp-Source: ABdhPJzsab7bITvvSyivEQydDJ4lFuNpT2if0+5QPDVF06rOuKgGmlPrZVDMi7W45mEzy0vDX6pnkA==
+X-Received: by 2002:aa7:c510:: with SMTP id o16mr6424915edq.310.1619794061649;
+        Fri, 30 Apr 2021 07:47:41 -0700 (PDT)
+Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
+        by smtp.gmail.com with ESMTPSA id b22sm1424015edv.96.2021.04.30.07.47.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 07:45:18 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 43/43] staging: rtl8723bs: remove odm_debug.h header file
-Date:   Fri, 30 Apr 2021 16:44:13 +0200
-Message-Id: <94762f39159cf25b15cb3c44641de5be6aca35ab.1619793406.git.fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1619793405.git.fabioaiuto83@gmail.com>
-References: <cover.1619793405.git.fabioaiuto83@gmail.com>
+        Fri, 30 Apr 2021 07:47:41 -0700 (PDT)
+Date:   Fri, 30 Apr 2021 16:47:38 +0200
+From:   Miklos Szeredi <miklos@szeredi.hu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org
+Subject: [GIT PULL] overlayfs update for 5.13
+Message-ID: <YIwYirYCIdcVUjk6@miu.piliscsaba.redhat.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove obsolete odm_debug.h header file.
+Hi Linus,
 
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+Please pull from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git tags/ovl-update-5.13
+
+- Fix a regression introduced in 5.2 that resulted in valid overlayfs
+  mounts being rejected with ELOOP (Too many levels of symbolic links).
+
+- Fix bugs found by various tools.
+
+- Miscallenous improvements and cleanups.
+
+Thanks,
+Miklos
+
 ---
- drivers/staging/rtl8723bs/hal/odm_debug.h   | 88 ---------------------
- drivers/staging/rtl8723bs/hal/odm_precomp.h |  1 -
- 2 files changed, 89 deletions(-)
- delete mode 100644 drivers/staging/rtl8723bs/hal/odm_debug.h
+Amir Goldstein (4):
+      ovl: check that upperdir path is not on a read-only mount
+      ovl: restrict lower null uuid for "xino=auto"
+      ovl: invalidate readdir cache on changes to dir with origin
+      ovl: add debug print to ovl_do_getxattr()
 
-diff --git a/drivers/staging/rtl8723bs/hal/odm_debug.h b/drivers/staging/rtl8723bs/hal/odm_debug.h
-deleted file mode 100644
-index 94011343f7e7..000000000000
---- a/drivers/staging/rtl8723bs/hal/odm_debug.h
-+++ /dev/null
-@@ -1,88 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--/******************************************************************************
-- *
-- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
-- *
-- ******************************************************************************/
--
--#ifndef __ODM_DBG_H__
--#define __ODM_DBG_H__
--
--
--/*  */
--/* Define the debug levels */
--/*  */
--/* 1.	DBG_TRACE and DBG_LOUD are used for normal cases. */
--/* So that, they can help SW engineer to developed or trace states changed */
--/* and also help HW enginner to trace every operation to and from HW, */
--/* e.g IO, Tx, Rx. */
--/*  */
--/* 2.	DBG_WARNNING and DBG_SERIOUS are used for unusual or error cases, */
--/* which help us to debug SW or HW. */
--/*  */
--/*  */
--/*  */
--/* Never used in a call to ODM_RT_TRACE()! */
--/*  */
--#define ODM_DBG_OFF					1
--
--/*  */
--/* Fatal bug. */
--/* For example, Tx/Rx/IO locked up, OS hangs, memory access violation, */
--/* resource allocation failed, unexpected HW behavior, HW BUG and so on. */
--/*  */
--#define ODM_DBG_SERIOUS				2
--
--/*  */
--/* Abnormal, rare, or unexpected cases. */
--/* For example, */
--/* IRP/Packet/OID canceled, */
--/* device suprisely unremoved and so on. */
--/*  */
--#define ODM_DBG_WARNING				3
--
--/*  */
--/* Normal case with useful information about current SW or HW state. */
--/* For example, Tx/Rx descriptor to fill, Tx/Rx descriptor completed status, */
--/* SW protocol state change, dynamic mechanism state change and so on. */
--/*  */
--#define ODM_DBG_LOUD				4
--
--/*  */
--/* Normal case with detail execution flow or information. */
--/*  */
--#define ODM_DBG_TRACE				5
--
--/*  */
--/*  Define the tracing components */
--/*  */
--/*  */
--/* BB Functions */
--#define ODM_COMP_DIG				BIT0
--#define ODM_COMP_RA_MASK			BIT1
--#define ODM_COMP_DYNAMIC_TXPWR		BIT2
--#define ODM_COMP_FA_CNT				BIT3
--#define ODM_COMP_RSSI_MONITOR		BIT4
--#define ODM_COMP_CCK_PD				BIT5
--#define ODM_COMP_ANT_DIV			BIT6
--#define ODM_COMP_PWR_SAVE			BIT7
--#define ODM_COMP_PWR_TRAIN			BIT8
--#define ODM_COMP_RATE_ADAPTIVE		BIT9
--#define ODM_COMP_PATH_DIV			BIT10
--#define ODM_COMP_PSD				BIT11
--#define ODM_COMP_DYNAMIC_PRICCA		BIT12
--#define ODM_COMP_RXHP				BIT13
--#define ODM_COMP_MP					BIT14
--#define ODM_COMP_CFO_TRACKING		BIT15
--/* MAC Functions */
--#define ODM_COMP_EDCA_TURBO			BIT16
--#define ODM_COMP_EARLY_MODE			BIT17
--/* RF Functions */
--#define ODM_COMP_TX_PWR_TRACK		BIT24
--#define ODM_COMP_RX_GAIN_TRACK		BIT25
--#define ODM_COMP_CALIBRATION		BIT26
--/* Common Functions */
--#define ODM_COMP_COMMON				BIT30
--#define ODM_COMP_INIT				BIT31
--
--#endif	/*  __ODM_DBG_H__ */
-diff --git a/drivers/staging/rtl8723bs/hal/odm_precomp.h b/drivers/staging/rtl8723bs/hal/odm_precomp.h
-index 440a549bffc7..5041c9535e9a 100644
---- a/drivers/staging/rtl8723bs/hal/odm_precomp.h
-+++ b/drivers/staging/rtl8723bs/hal/odm_precomp.h
-@@ -27,7 +27,6 @@
- 
- #include "odm.h"
- #include "odm_HWConfig.h"
--#include "odm_debug.h"
- #include "odm_RegDefine11N.h"
- #include "odm_EdcaTurboCheck.h"
- #include "odm_DIG.h"
--- 
-2.20.1
+Bhaskar Chowdhury (1):
+      ovl: trivial typo fixes in the file inode.c
 
+Chengguang Xu (2):
+      ovl: fix error for ovl_fill_super()
+      ovl: do not copy attr several times
+
+Dan Carpenter (1):
+      ovl: fix missing revert_creds() on error path
+
+Giuseppe Scrivano (1):
+      ovl: show "userxattr" in the mount data
+
+Mickaël Salaün (1):
+      ovl: fix leaked dentry
+
+Miklos Szeredi (1):
+      ovl: allow upperdir inside lowerdir
+
+Sargun Dhillon (1):
+      ovl: plumb through flush method
+
+Xiong Zhenwu (1):
+      ovl: fix misspellings using codespell tool
+
+youngjun (1):
+      ovl: remove ovl_map_dev_ino() return value
+
+---
+ Documentation/filesystems/overlayfs.rst | 26 ++++++-------
+ fs/overlayfs/copy_up.c                  |  3 +-
+ fs/overlayfs/file.c                     | 21 +++++++++++
+ fs/overlayfs/inode.c                    | 18 ++++-----
+ fs/overlayfs/namei.c                    |  1 +
+ fs/overlayfs/overlayfs.h                | 37 ++++++++++++++++--
+ fs/overlayfs/readdir.c                  | 12 ------
+ fs/overlayfs/super.c                    | 66 +++++++++++++++++++++++++--------
+ fs/overlayfs/util.c                     | 33 +++++------------
+ 9 files changed, 136 insertions(+), 81 deletions(-)
