@@ -2,101 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3EBB36FC47
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 16:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C18036FC48
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 16:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232976AbhD3OXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 10:23:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233014AbhD3OXH (ORCPT
+        id S233025AbhD3OXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 10:23:32 -0400
+Received: from jptosegrel01.sonyericsson.com ([124.215.201.71]:3829 "EHLO
+        JPTOSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233014AbhD3OXY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 10:23:07 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C00A7C06138E
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:22:18 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lcU1w-000541-EV; Fri, 30 Apr 2021 16:22:08 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:454b:889d:aa6e:bca6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id E0D97619D4C;
-        Fri, 30 Apr 2021 14:22:04 +0000 (UTC)
-Date:   Fri, 30 Apr 2021 16:22:04 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     wg@grandegger.com, davem@davemloft.net, kuba@kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] can: softing: Remove redundant variable ptr
-Message-ID: <20210430142204.ifru27tgwweslnpa@pengutronix.de>
-References: <1619520767-80948-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        Fri, 30 Apr 2021 10:23:24 -0400
+From:   Peter Enderborg <peter.enderborg@sony.com>
+To:     <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Michel Lespinasse <walken@google.com>,
+        Jann Horn <jannh@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Minchan Kim <minchan@kernel.org>
+Subject: [PATCH 0/2] tracing: Add trace for task_exit
+Date:   Fri, 30 Apr 2021 16:22:21 +0200
+Message-ID: <20210430142223.25500-1-peter.enderborg@sony.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="exo2uog6yox3ifuk"
-Content-Disposition: inline
-In-Reply-To: <1619520767-80948-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=DLnxHBFb c=1 sm=1 tr=0 a=fZcToFWbXLKijqHhjJ02CA==:117 a=3YhXtTcJ-WEA:10 a=rGRZ3fmouuSb8VT6ISIA:9
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---exo2uog6yox3ifuk
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Patch 1 adds a tracepoint for task_exit and use trace strings for that.
+the second algin the other (task_newtask and task_rename) to use same
+string.
 
-On 27.04.2021 18:52:47, Jiapeng Chong wrote:
-> The value stored to ptr in the calculations this patch removes is not
-> used, so the calculation and the assignment can be removed.
->=20
-> Cleans up the following clang-analyzer warning:
->=20
-> drivers/net/can/softing/softing_main.c:279:3: warning: Value stored to
-> 'ptr' is never read [clang-analyzer-deadcode.DeadStores].
->=20
-> drivers/net/can/softing/softing_main.c:242:3: warning: Value stored to
-> 'ptr' is never read [clang-analyzer-deadcode.DeadStores].
->=20
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
-> Changes in v2:
->   -Make the commit message more clearer.
+Knowing when and why tasks dies are very useful for varius debugging
+aktivites in userspace and we can trace tasks complete life-cycle.
 
-Thanks - Applied to linux-can-next/testing
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---exo2uog6yox3ifuk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmCMEokACgkQqclaivrt
-76lfHAf/dGek2dTPwb8VhTajGZouFH7CNtizPxXa69GZb6Y/Ts/c/mn1Unkf+ZnH
-97etDra6fZtv2Zdo/+G//RlFcwBLl3pi3hgsZn/AEA5mop9GHRFwocIAcf+RAPwL
-RMRM2f6ifym5r7BihVqYcMAAwj9hpN/rjU2lsrCAC/9Y4XOkxZxIYE7ldmTxPqEV
-Llu5kviEJ4u+KEW2bJNWM4bTN0q3uisQN0jTRTjqRE1YOtDd+vmPhxkJWn7RmRpX
-S1mSd/gG2VSjNKgMsQrJ45i9OniYUUiyKwJFsXq157O63rd1zxL36wclq2xcHQaw
-5G0CQXbWazkR7ntz/43ianv2z645Og==
-=6wV2
------END PGP SIGNATURE-----
-
---exo2uog6yox3ifuk--
