@@ -2,100 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E7E36FA69
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 14:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32D0F36FA6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 14:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232406AbhD3Mgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 08:36:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50196 "EHLO
+        id S229911AbhD3Mh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 08:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232389AbhD3Mg3 (ORCPT
+        with ESMTP id S231476AbhD3Mhx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 08:36:29 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D4BC06134E
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 05:35:31 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id f24so6435866ejc.6
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 05:35:31 -0700 (PDT)
+        Fri, 30 Apr 2021 08:37:53 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A849AC06174A;
+        Fri, 30 Apr 2021 05:37:04 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id g65so8619124wmg.2;
+        Fri, 30 Apr 2021 05:37:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cLF6UjbQpAiSk+1C2cRPJjTl6Fxr5nN+XcLDFX38OUc=;
-        b=xGmTOesTxL8g9FKL+MsqLAHEbz8FjAV+meUFhGiuUAZNOpO4VhDYCpnpM5baKZZ4yT
-         DLNBm97Zsdsba4Fhcc6sJetAeNnW8gqYXy+PUzt93NeD3tkNdfm7e68mzGXCy9fqP4+D
-         jQwXe9wS0xdCgcukD7CpPUvaLRezu44FKeLtwWgK99jegz3BwmCpPMXWLn5Z4l7vJJ9c
-         m3MgKDZfENJvnY1gryDs0bNANjYtsEhGQqFPcWItwTeqYc71eeRqvXnPrO7rv6/zDug6
-         LhJIAE1NWkAP7pLfIXaCgEXkub1qT6301YSlytbQsXotlkjENoygk9NsDFTfxOqdx2Xh
-         cI4w==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=w64guxGS9FMEWcZon3B2qnFpVFodmAXPvDD4UORab6k=;
+        b=R67HR52vRDHFU9oQxAY+dvLc8wXKDQYHj3rYvvz3NlYx3rbcSCoMjFuEd8wKhMooRz
+         wZGbE3QSIFGCjeIy9zlB04qnIVdiwnaqEwPlGKP/7dKv/4DgAnbNlLNbyzOKyU1BZnFb
+         0c/OEdlGTweClDPtTxpw7HlDVrWcWXx/kO1gKGzgOokQhbi3nPxs+nctyzEJdmqe5fzm
+         8HdQEkC0fntaHHzIaO2hQw4QvUGNv2hmwU5C9ysMAjfpNAMpEir1AomtOffu3/WR8QJz
+         y2qXXC+ThRvRU2U/rCJeB7egcj68JpRJ64cy+0iaIRoSHnP+Cdm8IynvG4rCpumgV2bn
+         vAQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cLF6UjbQpAiSk+1C2cRPJjTl6Fxr5nN+XcLDFX38OUc=;
-        b=WnCy8toiyBgI425Mf+fszkJZryAAYC6n3gZmSQUrIQ8ZyuZYw1K97uEc2Xy2q8UYmx
-         RR6G9Tog+DXifQFvooV4Q4e2SV0RrC1Vqge1L26yWP50UnjV2eEISGe3upJiv58qPvEO
-         niY4RoP2b/pI1S68ERxkbQIRolTOLeYVEcNNpy7qIQoToFBCxy46t1aWlQmZiGar+d3y
-         9Mmm25e6S5pQvflsfUcdtxlyV6VjhbvM7EY9U8N9oL9CG/0eZP3Z3uWCD4d10Tc0UYOM
-         ZJ/CIB4VK0H8TqmrDGCHi54kOCpfFYe4yJPCjuChkz1XeyZXsto20dF73QGUU/bW+Vn/
-         sq7w==
-X-Gm-Message-State: AOAM532oC6Jkkfds54621TiYxZ9h48R4I+Dh6WHgDpAx2gGFZd81IKcT
-        /V2htH/JYzr1/+RspMuU5NhDSA==
-X-Google-Smtp-Source: ABdhPJwFg3XdDCuqkDBWAZNT1Y6uM9fsvwP/FCRzFDiREFeamN2RNu0EO4UoCJ8H64rkgg060yRFhg==
-X-Received: by 2002:a17:907:7216:: with SMTP id dr22mr4177146ejc.185.1619786129968;
-        Fri, 30 Apr 2021 05:35:29 -0700 (PDT)
-Received: from localhost.localdomain (dh207-97-15.xnet.hr. [88.207.97.15])
-        by smtp.googlemail.com with ESMTPSA id d15sm1822988ejj.42.2021.04.30.05.35.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 05:35:29 -0700 (PDT)
-From:   Robert Marko <robert.marko@sartura.hr>
-To:     lee.jones@linaro.org, robh+dt@kernel.org, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, jdelvare@suse.com, linux@roeck-us.net,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-hwmon@vger.kernel.org
-Cc:     luka.perkov@sartura.hr, jmp@epiphyte.org, pmenzel@molgen.mpg.de,
-        buczek@molgen.mpg.de, Robert Marko <robert.marko@sartura.hr>
-Subject: [PATCH 6/6] MAINTAINERS: Add Delta Networks TN48M CPLD drivers
-Date:   Fri, 30 Apr 2021 14:35:11 +0200
-Message-Id: <20210430123511.116057-6-robert.marko@sartura.hr>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210430123511.116057-1-robert.marko@sartura.hr>
-References: <20210430123511.116057-1-robert.marko@sartura.hr>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=w64guxGS9FMEWcZon3B2qnFpVFodmAXPvDD4UORab6k=;
+        b=FtFIukoCfHpaFiDu2rgrDj9ZPs8Ke0+imC6snugiXGURIasmPbckTou5xpuJb64tQe
+         9LGWHFmhF51PzC3hvr0YWA3p7PEbW1GrESvCLj0UZshDA4LI2jBPqAbrVl4Bg0VyrGDA
+         ap2aVVPzNEggzSceaN2EyKEaml+y1BhqTFcdXepciV3oKvExrnUzK1/HoseKh3rIclJV
+         YJt5NZw6Eery72ngx8at443jpBw5qtA1Wcogytj1K/IAYaqz2Oc1S9VOml7xzku4Pjnm
+         4QAYByNpOSB5pe9Ad4pXR3O6X3jgBI/YOy6X7QbdChj1SolTsSU1rZHHbDyp27Cj5HLm
+         Nc3A==
+X-Gm-Message-State: AOAM533gFrhOCivUpabWEZ6zONDtcizJRCmoAW6sTXILNo07NUVF72qX
+        6qy1HIoNAFxYmZ3njtqexnc=
+X-Google-Smtp-Source: ABdhPJwUrHApqG/2GAxHmuBEFvD+H6a+tok+3Mx8mmgRU3UCynwUKegz2hQbuiA1GSKWK51jcCtm+w==
+X-Received: by 2002:a1c:7fcd:: with SMTP id a196mr16646869wmd.180.1619786223227;
+        Fri, 30 Apr 2021 05:37:03 -0700 (PDT)
+Received: from [192.168.2.202] (p5487bc52.dip0.t-ipconnect.de. [84.135.188.82])
+        by smtp.gmail.com with ESMTPSA id h8sm2953616wmq.19.2021.04.30.05.37.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Apr 2021 05:37:02 -0700 (PDT)
+Subject: Re: Support for AMDI0022 UART
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Wang Hongcheng <annie.wang@amd.com>, Ken Xue <Ken.Xue@amd.com>
+References: <295686a0-240d-71d1-a6a0-f3752cf24477@gmail.com>
+ <CAHp75VcLoTsjyQyVAo6cd+HMd+z_irM8ofcenRm0P6CzYGOQNw@mail.gmail.com>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <85ec3e9a-e69b-ecd6-3d77-4364064c57a3@gmail.com>
+Date:   Fri, 30 Apr 2021 14:37:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75VcLoTsjyQyVAo6cd+HMd+z_irM8ofcenRm0P6CzYGOQNw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add maintainers entry for the Delta Networks TN48M
-CPLD MFD drivers.
 
-Signed-off-by: Robert Marko <robert.marko@sartura.hr>
----
- MAINTAINERS | 10 ++++++++++
- 1 file changed, 10 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9450e052f1b1..7193624868c7 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5096,6 +5096,16 @@ W:	https://linuxtv.org
- T:	git git://linuxtv.org/media_tree.git
- F:	drivers/media/platform/sti/delta
- 
-+DELTA NETWORKS TN48M CPLD DRIVERS
-+M:	Robert Marko <robert.marko@sartura.hr>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
-+F:	drivers/gpio/gpio-tn48m.c
-+F:	drivers/hwmon/tn48m-hwmon.c
-+F:	drivers/mfd/tn48m-cpld.c
-+F:	include/dt-bindings/gpio/tn48m-gpio.h
-+F:	include/linux/mfd/tn48m.h
-+
- DENALI NAND DRIVER
- L:	linux-mtd@lists.infradead.org
- S:	Orphan
--- 
-2.31.1
+On 4/24/21 12:25 PM, Andy Shevchenko wrote:
+> On Fri, Apr 23, 2021 at 10:58 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
+>>
+>> Hi all,
+>>
+>> I received a report from a Surface Laptop 4 which has a UART that is
+>> identified as AMDI0022 in ACPI [1] and that does not seem to be
+>> supported by the kernel yet.
+>>
+>>   From what I can tell via ACPI, this is similar to the AMDI0020 [2] UART
+>> that's already supported by the kernel (well, both are devices with two
+>> MMIO regions and an interrupt as far as I can tell...). So it's possible
+>> that all that's needed is adding it to the respective device ID lists
+>> [3, 4]. Unfortunately, I a) don't have a device to test this myself, b)
+>> haven't found any more details on that online, and c) don't want to tell
+>> others to test this without knowing a bit more about that (potentially
+>> writing random stuff to some unknown MMIO region that I don't know
+>> anything about doesn't sound as safe to me as I'd like).
+> 
+> To me they look completely the same. Depending on the device which is
+> connected to the UART, I would suggest just to add an ID and see if it
+> makes it work.
 
+Thanks! We've tried that now and we do have some progress, meaning that
+the serial device seems to work as expected (we have some basic
+communication working).
+
+The driver that we want to load (drivers/platform/surface/aggregator/)
+still doesn't quite load yet, but that now seems to be due to a missing
+GPIO driver for an AMDI0031 device. There's again an AMDI0030 in
+drivers/pinctrl/pinctrl-amd.c, but this time the definitions do seem a
+bit different (compare [5, 6]), specifically there are now two memory
+regions (altough the combined size is still the same).
+
+I'll try to have a look around and maybe ping the linux-gpio list if I
+don't find anything else. I'll post some patches once we've got the
+driver loading properly and can run some more tests.
+
+Regards,
+Max
+
+[5]: AMDI0030 on Surface Laptop 3
+https://github.com/linux-surface/acpidumps/blob/4da0148744164cea0c924dab92f45842fde03177/surface_laptop_3_amd/dsdt.dsl#L1767-L1802
+
+[6]: AMDI0031 on Surface Laptop 4
+https://github.com/linux-surface/acpidumps/blob/4da0148744164cea0c924dab92f45842fde03177/surface_laptop_4_amd/dsdt.dsl#L1404-L1428
