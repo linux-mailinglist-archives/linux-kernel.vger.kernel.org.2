@@ -2,88 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36B7636F56D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 07:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB8036F56E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 07:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbhD3FnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 01:43:14 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:42408 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhD3FnL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 01:43:11 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13U5gBwK061470;
-        Fri, 30 Apr 2021 00:42:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1619761331;
-        bh=GU3XCSNVHhrz0byCodnolDUzfyAhgWLfmDqWa9yFTCg=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=CJERJ7+lqAer2TSuJFXKSmzB4hvQjvFFt2dY8TSUbuRRP/567f4w633Dh7oVe47FD
-         KysV6VsxUAEiapzv5TvK/NVU/+WiCIhz1Sgpu8lL221tjf7fKsWEB3h2x8Sgm7ABVW
-         gO1ViMcpyPiWgdH7TvlZ9wg9+sQorl75FpyZLx04=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13U5gBej116963
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 30 Apr 2021 00:42:11 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 30
- Apr 2021 00:42:11 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 30 Apr 2021 00:42:11 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13U5gAVf094450;
-        Fri, 30 Apr 2021 00:42:10 -0500
-Date:   Fri, 30 Apr 2021 11:12:09 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Michael Walle <michael@walle.cc>
-CC:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-Subject: Re: [RFC PATCH 5/6] spi: cadence-qspi: Tune PHY to allow running at
- higher frequencies
-Message-ID: <20210430054207.gakq7evf47igzcm4@ti.com>
-References: <20210311191216.7363-1-p.yadav@ti.com>
- <20210311191216.7363-6-p.yadav@ti.com>
- <143b24c61109823f6e616cf91d28d16c@walle.cc>
+        id S230296AbhD3Fnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 01:43:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43122 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229482AbhD3Fnl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 01:43:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3C1E613E1;
+        Fri, 30 Apr 2021 05:42:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619761374;
+        bh=SNhPLoJUDYxXdeRDmWHuWy2hHqI1fkkBlG5cFr4P/Ds=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0B9ExcJ2PmIAm+vNSlMeJOwQ1lSD5E/tpgUusqptmtVHOUm5pHFF4YipfwHYTjyux
+         kBxVKVuDn8ug1p/FcTXorcsNSSRfwpy8tIX4dCZDEnqgqgrG80ANPblrNQGTdgS1H8
+         UUS1PJNjYVZT25paVaOxPTugVQLwvrlrAvP64p9Y=
+Date:   Fri, 30 Apr 2021 07:42:52 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jason Baron <jbaron@akamai.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Shuo Chen <giantchen@gmail.com>,
+        Jim Cromie <jim.cromie@gmail.com>,
+        linux-kernel@vger.kernel.org, Shuo Chen <shuochen@google.com>
+Subject: Re: [PATCH] dyndbg: fix parsing file query without a line-range
+ suffix
+Message-ID: <YIuY3GtRa1mO9/BG@kroah.com>
+References: <20210414212400.2927281-1-giantchen@gmail.com>
+ <a053afb1-bd3c-78f2-6414-e43014692a56@gmail.com>
+ <a98d420c-500d-2790-0ee9-71f4690c24d7@akamai.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <143b24c61109823f6e616cf91d28d16c@walle.cc>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <a98d420c-500d-2790-0ee9-71f4690c24d7@akamai.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/04/21 12:48AM, Michael Walle wrote:
-> Am 2021-03-11 20:12, schrieb Pratyush Yadav:
-> > +	if (of_property_read_u32(np, "cdns,phy-tx-start",
-> > &f_pdata->phy_tx_start))
-> > +		f_pdata->phy_tx_start = 16;
-> > +
-> > +	if (of_property_read_u32(np, "cdns,phy-tx-end", &f_pdata->phy_tx_end))
-> > +		f_pdata->phy_tx_end = 48;
-> > +
+On Thu, Apr 29, 2021 at 05:08:28PM -0400, Jason Baron wrote:
 > 
-> I didn't see a dt-bindings patch for these.
+> 
+> On 4/26/21 12:38 PM, Eric Dumazet wrote:
+> > 
+> > 
+> > On 4/14/21 11:24 PM, Shuo Chen wrote:
+> >> From: Shuo Chen <shuochen@google.com>
+> >>
+> >> Query like 'file tcp_input.c line 1234 +p' was broken by
+> >> commit aaebe329bff0 ("dyndbg: accept 'file foo.c:func1' and 'file
+> >> foo.c:10-100'") because a file name without a ':' now makes the loop in
+> >> ddebug_parse_query() exits early before parsing the 'line 1234' part.
+> >> As a result, all pr_debug() in tcp_input.c will be enabled, instead of only
+> >> the one on line 1234.  Changing 'break' to 'continue' fixes this.
+> >>
+> >> Fixes: aaebe329bff0 ("dyndbg: accept 'file foo.c:func1' and 'file foo.c:10-100'")
+> >> Signed-off-by: Shuo Chen <shuochen@google.com>
+> >> ---
+> >>  lib/dynamic_debug.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+> >> index c70d6347afa2..921d0a654243 100644
+> >> --- a/lib/dynamic_debug.c
+> >> +++ b/lib/dynamic_debug.c
+> >> @@ -396,7 +396,7 @@ static int ddebug_parse_query(char *words[], int nwords,
+> >>  			/* tail :$info is function or line-range */
+> >>  			fline = strchr(query->filename, ':');
+> >>  			if (!fline)
+> >> -				break;
+> >> +				continue;
+> >>  			*fline++ = '\0';
+> >>  			if (isalpha(*fline) || *fline == '*' || *fline == '?') {
+> >>  				/* take as function name */
+> >>
+> > 
+> > SGTM, thanks !
+> > 
+> > Reviewed-by: Eric Dumazet <edumazet@google.com>
+> > 
+> 
+> Hi Greg,
+> 
+> I acked this previously and is an important fix.
+> Can you please pick it up if you haven't done so?
 
-Right. Will add them in the next re-roll.
- 
-> -michael
+Will do, sorry for the delay.
 
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+greg k-h
