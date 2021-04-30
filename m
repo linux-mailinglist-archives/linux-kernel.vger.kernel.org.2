@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9789F36FD25
+	by mail.lfdr.de (Postfix) with ESMTP id E25EF36FD26
 	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232771AbhD3PAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 11:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53668 "EHLO
+        id S229901AbhD3PAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 11:00:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232110AbhD3O72 (ORCPT
+        with ESMTP id S232131AbhD3O73 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 10:59:28 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95CB5C061346
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:58:16 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id f24so7146685ejc.6
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:58:16 -0700 (PDT)
+        Fri, 30 Apr 2021 10:59:29 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43AFFC061349
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:58:18 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id d14so19169126edc.12
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:58:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=O0vgVpcNkS4mAjfiGNcrsQkfchPH8sG7BBuJp5aFS/s=;
-        b=MxohnjtG4Zit/GrLrEHFDEM30Ex/Y29dnnNb6kclsj47wQVh7406niOegbn/m9s5Fx
-         M4bd51RPknWNqmnFTKBgeIFttqGpxJM1qUUe1H8Hc04dZ2wkWpoJLhUOjeJlNxokwZbC
-         dEoJEFVV+x2uG8MyL8RXRJ2fbx/PUWqvLFhz5+alg+o5P+5tUTFxhDIhG8g4BqOB/453
-         GHqmwD0q+kdfcs0CU8QWLYEpmRwGF11oV1DcXOxoPW+Qtp3yD2cTFovny3quGAtPkEFD
-         4eFXctnkVdUullwFoz2zQplEReWxRevEAUlf6L4DU6M7IFY33YPsEl0JE7mZlnFH8I/i
-         T8Sg==
+        bh=EOZa0FsLTNmXREG+LfKtNmgMKRo0KsphLPysLx3lCcw=;
+        b=ubCAOAEEJdRw5h0zbivJpkjZsXqxXas6RrV0r86vmVy+Xy7GHqCSlApZZh0TZHylOF
+         iwAntHEitG2LGoy9TmE4q3/1lVrTLUItFyHB5avw/uAzgpK2opAZmcD1r/yNu2KzPaBT
+         482Va8Q6yH63L0+0RSXxLtbKu7MPdhYe6dIqqTAiEKvVxmjjoHm3P4oWoUJ2CZY8+LKT
+         tcaRaRbP5dLaTuMcRU7CMZCyBMd04e6B5pQRBEOtvc3uEslZMSLqOFwRHPbp/+R4oayh
+         4R2wnL3V/koLo5Gk4MOQtiIEnEjttsVuWWUmWf4lBYYNDqwVVpb9KRrlLxhJXKeDT8Uh
+         Y+3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=O0vgVpcNkS4mAjfiGNcrsQkfchPH8sG7BBuJp5aFS/s=;
-        b=c4Sl6b/r0syG5ciAvoKoWEM9uf1hiSfbn/L8FNMYBL6eAtRUDnZKsz15OYw2dRnzla
-         p2oqT9t8cusxH3hmuFV00h9+vIxWgQmmfagwC2F/lDAA9yVdLn911DyzHTnx0AgokvPP
-         g1TIeDdLTymuy6Ql4DYxf+cHUU7pEwPYTM4qIXYAy6qvb7/RuSoUsWjkyN7dUhUdasQg
-         D0csHw50cf/wSxL0xKsuHgnwNCMgYN+XxaSFrULVJ7EbhPGXfdzsO169s2JptdL34pSr
-         L8Lc8IFbAoWNF7nO6d9gso2tNV4FP1UYh0M8Bs3i4McHp67fI14IvNr5DG1tRHNcqCrA
-         szZg==
-X-Gm-Message-State: AOAM531KpyUMPcEQXGFrkoIPhHG7O8zhn4az0upWp65Zb64awGNbUakk
-        5iaHCIV/925TG3h1BXgi6GymlYzXZ6k=
-X-Google-Smtp-Source: ABdhPJxjGJ+Cca5lrtlEYXQLOBZWEVo/PjN4r1xsZLkefMs/OfhcBqgjJ36e1XF8a95Mupf7xlBJ+g==
-X-Received: by 2002:a17:906:1e44:: with SMTP id i4mr4826580ejj.61.1619794695142;
-        Fri, 30 Apr 2021 07:58:15 -0700 (PDT)
+        bh=EOZa0FsLTNmXREG+LfKtNmgMKRo0KsphLPysLx3lCcw=;
+        b=idnGpuqfP7YOcdba0lUurgh5XPD55zWtdgoEYMy2LU21oGbIPCuh0hSqL6ZBVH4f4Y
+         IT7EA6npKaEa/cz8u6SbNCZW+UpUUN8DQ1tG0Q9fxyqoQsTG8F6YznGhaXkcLE2bhhxH
+         MdN+BHp0IqgpZWLnE9vpJbBMizkZ9973erBuIsHo5F9zc0StnVTfLJ5x9oo3i4T9KxYV
+         LkzC9dYNi0CU/ub539mTtC6OsKTbQtli6m64CpNnwt5xyLH6y4NULUqX+ftBKNA7hK0d
+         BEnsO77hJOFRDfNh4biDmOnJCMWDPQcrbeeAvvs7xnoWIMbv3W8YHyHgnjHpIR4D2JXy
+         epVg==
+X-Gm-Message-State: AOAM530hkl2PtQyyvmbLewSCXkMssScTREQ9XwCzV7oaahhkpM3s98WR
+        n13Q6hWIcRqJVDZzAERt0RYQItAwr2Q=
+X-Google-Smtp-Source: ABdhPJxnBC9iko7os4+FU3MWsxpLXwKpFDJ1XEVXHO42xA6XRDNw8s1deLd0qoWZj6LC5yaZLnlo7w==
+X-Received: by 2002:a05:6402:35d3:: with SMTP id z19mr6445012edc.143.1619794696803;
+        Fri, 30 Apr 2021 07:58:16 -0700 (PDT)
 Received: from agape ([109.52.244.36])
-        by smtp.gmail.com with ESMTPSA id mp36sm2014260ejc.48.2021.04.30.07.58.14
+        by smtp.gmail.com with ESMTPSA id r19sm2091358ejr.55.2021.04.30.07.58.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 07:58:14 -0700 (PDT)
+        Fri, 30 Apr 2021 07:58:16 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 42/43] staging: rtl8723bs: remove DebugLevel member in dm_odm_t struct
-Date:   Fri, 30 Apr 2021 16:57:04 +0200
-Message-Id: <ac4afb00f904511e0cbb23136f8e7a3e204ad7ed.1619794331.git.fabioaiuto83@gmail.com>
+Subject: [PATCH v3 43/43] staging: rtl8723bs: remove odm_debug.h header file
+Date:   Fri, 30 Apr 2021 16:57:05 +0200
+Message-Id: <58f3ed0c7706fdb33614d3e38ed802d56d77f0ec.1619794331.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1619794331.git.fabioaiuto83@gmail.com>
 References: <cover.1619794331.git.fabioaiuto83@gmail.com>
@@ -63,67 +63,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove DebugLevel in dm_odm_t struct,
-remove private debug level tracing.
-
-remove unused variable as well to suppress compiler warning.
+remove obsolete odm_debug.h header file.
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/hal/hal_com.c | 4 ----
- drivers/staging/rtl8723bs/hal/odm.c     | 3 ---
- drivers/staging/rtl8723bs/hal/odm.h     | 2 --
- 3 files changed, 9 deletions(-)
+ drivers/staging/rtl8723bs/hal/odm_debug.h   | 88 ---------------------
+ drivers/staging/rtl8723bs/hal/odm_precomp.h |  1 -
+ 2 files changed, 89 deletions(-)
+ delete mode 100644 drivers/staging/rtl8723bs/hal/odm_debug.h
 
-diff --git a/drivers/staging/rtl8723bs/hal/hal_com.c b/drivers/staging/rtl8723bs/hal/hal_com.c
-index 8d1a18b5f914..5eb3bd45a959 100644
---- a/drivers/staging/rtl8723bs/hal/hal_com.c
-+++ b/drivers/staging/rtl8723bs/hal/hal_com.c
-@@ -1159,7 +1159,6 @@ u8 GetHalDefVar(
- )
- {
- 	struct hal_com_data *hal_data = GET_HAL_DATA(adapter);
--	struct dm_odm_t *odm = &(hal_data->odmpriv);
- 	u8 bResult = _SUCCESS;
- 
- 	switch (variable) {
-@@ -1176,9 +1175,6 @@ u8 GetHalDefVar(
- 				*((int *)value) = psta->rssi_stat.UndecoratedSmoothedPWDB;
- 		}
- 		break;
--	case HW_DEF_ODM_DBG_LEVEL:
--		*((u32 *)value) = odm->DebugLevel;
--		break;
- 	case HAL_DEF_DBG_DM_FUNC:
- 		*((u32 *)value) = hal_data->odmpriv.SupportAbility;
- 		break;
-diff --git a/drivers/staging/rtl8723bs/hal/odm.c b/drivers/staging/rtl8723bs/hal/odm.c
-index b867629a577b..fa275138c983 100644
---- a/drivers/staging/rtl8723bs/hal/odm.c
-+++ b/drivers/staging/rtl8723bs/hal/odm.c
-@@ -1172,9 +1172,6 @@ void ODM_CmnInfoUpdate(struct dm_odm_t *pDM_Odm, u32 CmnInfo, u64 Value)
- 		pDM_Odm->RSSI_Min = (u8)Value;
- 		break;
- 
--	case ODM_CMNINFO_DBG_LEVEL:
--		pDM_Odm->DebugLevel = (u32)Value;
--		break;
- 	case ODM_CMNINFO_RA_THRESHOLD_HIGH:
- 		pDM_Odm->RateAdaptive.HighRSSIThresh = (u8)Value;
- 		break;
-diff --git a/drivers/staging/rtl8723bs/hal/odm.h b/drivers/staging/rtl8723bs/hal/odm.h
-index 6b9865f5f283..950e7850bac2 100644
---- a/drivers/staging/rtl8723bs/hal/odm.h
-+++ b/drivers/staging/rtl8723bs/hal/odm.h
-@@ -709,8 +709,6 @@ struct dm_odm_t { /* DM_Out_Source_Dynamic_Mechanism_Structure */
- 	enum phy_reg_pg_type PhyRegPgValueType;
- 	u8 PhyRegPgVersion;
- 
--	u32 DebugLevel;
+diff --git a/drivers/staging/rtl8723bs/hal/odm_debug.h b/drivers/staging/rtl8723bs/hal/odm_debug.h
+deleted file mode 100644
+index 94011343f7e7..000000000000
+--- a/drivers/staging/rtl8723bs/hal/odm_debug.h
++++ /dev/null
+@@ -1,88 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/******************************************************************************
+- *
+- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+- *
+- ******************************************************************************/
 -
- 	u32 NumQryPhyStatusAll;	/* CCK + OFDM */
- 	u32 LastNumQryPhyStatusAll;
- 	u32 RxPWDBAve;
+-#ifndef __ODM_DBG_H__
+-#define __ODM_DBG_H__
+-
+-
+-/*  */
+-/* Define the debug levels */
+-/*  */
+-/* 1.	DBG_TRACE and DBG_LOUD are used for normal cases. */
+-/* So that, they can help SW engineer to developed or trace states changed */
+-/* and also help HW enginner to trace every operation to and from HW, */
+-/* e.g IO, Tx, Rx. */
+-/*  */
+-/* 2.	DBG_WARNNING and DBG_SERIOUS are used for unusual or error cases, */
+-/* which help us to debug SW or HW. */
+-/*  */
+-/*  */
+-/*  */
+-/* Never used in a call to ODM_RT_TRACE()! */
+-/*  */
+-#define ODM_DBG_OFF					1
+-
+-/*  */
+-/* Fatal bug. */
+-/* For example, Tx/Rx/IO locked up, OS hangs, memory access violation, */
+-/* resource allocation failed, unexpected HW behavior, HW BUG and so on. */
+-/*  */
+-#define ODM_DBG_SERIOUS				2
+-
+-/*  */
+-/* Abnormal, rare, or unexpected cases. */
+-/* For example, */
+-/* IRP/Packet/OID canceled, */
+-/* device suprisely unremoved and so on. */
+-/*  */
+-#define ODM_DBG_WARNING				3
+-
+-/*  */
+-/* Normal case with useful information about current SW or HW state. */
+-/* For example, Tx/Rx descriptor to fill, Tx/Rx descriptor completed status, */
+-/* SW protocol state change, dynamic mechanism state change and so on. */
+-/*  */
+-#define ODM_DBG_LOUD				4
+-
+-/*  */
+-/* Normal case with detail execution flow or information. */
+-/*  */
+-#define ODM_DBG_TRACE				5
+-
+-/*  */
+-/*  Define the tracing components */
+-/*  */
+-/*  */
+-/* BB Functions */
+-#define ODM_COMP_DIG				BIT0
+-#define ODM_COMP_RA_MASK			BIT1
+-#define ODM_COMP_DYNAMIC_TXPWR		BIT2
+-#define ODM_COMP_FA_CNT				BIT3
+-#define ODM_COMP_RSSI_MONITOR		BIT4
+-#define ODM_COMP_CCK_PD				BIT5
+-#define ODM_COMP_ANT_DIV			BIT6
+-#define ODM_COMP_PWR_SAVE			BIT7
+-#define ODM_COMP_PWR_TRAIN			BIT8
+-#define ODM_COMP_RATE_ADAPTIVE		BIT9
+-#define ODM_COMP_PATH_DIV			BIT10
+-#define ODM_COMP_PSD				BIT11
+-#define ODM_COMP_DYNAMIC_PRICCA		BIT12
+-#define ODM_COMP_RXHP				BIT13
+-#define ODM_COMP_MP					BIT14
+-#define ODM_COMP_CFO_TRACKING		BIT15
+-/* MAC Functions */
+-#define ODM_COMP_EDCA_TURBO			BIT16
+-#define ODM_COMP_EARLY_MODE			BIT17
+-/* RF Functions */
+-#define ODM_COMP_TX_PWR_TRACK		BIT24
+-#define ODM_COMP_RX_GAIN_TRACK		BIT25
+-#define ODM_COMP_CALIBRATION		BIT26
+-/* Common Functions */
+-#define ODM_COMP_COMMON				BIT30
+-#define ODM_COMP_INIT				BIT31
+-
+-#endif	/*  __ODM_DBG_H__ */
+diff --git a/drivers/staging/rtl8723bs/hal/odm_precomp.h b/drivers/staging/rtl8723bs/hal/odm_precomp.h
+index 440a549bffc7..5041c9535e9a 100644
+--- a/drivers/staging/rtl8723bs/hal/odm_precomp.h
++++ b/drivers/staging/rtl8723bs/hal/odm_precomp.h
+@@ -27,7 +27,6 @@
+ 
+ #include "odm.h"
+ #include "odm_HWConfig.h"
+-#include "odm_debug.h"
+ #include "odm_RegDefine11N.h"
+ #include "odm_EdcaTurboCheck.h"
+ #include "odm_DIG.h"
 -- 
 2.20.1
 
