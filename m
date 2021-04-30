@@ -2,212 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF94336F525
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 06:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4CD36F528
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 06:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230011AbhD3ElM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 00:41:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46999 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229448AbhD3ElM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 00:41:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619757623;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=To2cLzcWVVz6lbw33RhczIcVY53+vNvAR8xbNEhzNf4=;
-        b=VwwVt1ujIIBXx+QAye2uRVOLUZ6VXyDE6jEH0j2hkgAIqeCkObBCpsVqsE7N+/LHxsuyUH
-        6PmK4tnpeBVASHxa/JIWUdpUZUWF+funjypo4B1B2MvycBmz+SpeSksOywsVET0zq2aqEI
-        WGNWHrc4AHDqlqj+8fesoykRnJcL7EE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-542-QFk9OiYMMwyD7ceAnHe83w-1; Fri, 30 Apr 2021 00:40:20 -0400
-X-MC-Unique: QFk9OiYMMwyD7ceAnHe83w-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E0506107ACCA;
-        Fri, 30 Apr 2021 04:40:19 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-12-175.pek2.redhat.com [10.72.12.175])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5CCA55D9C6;
-        Fri, 30 Apr 2021 04:40:06 +0000 (UTC)
-Subject: Re: [PATCH] vdpa/mlx5: Add support for doorbell bypassing
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        "Zhu, Lingshan" <lingshan.zhu@intel.com>
-References: <20210421104145.115907-1-elic@nvidia.com>
- <e1885255-34f2-9e90-6478-ff0850a5a3d4@redhat.com>
- <20210422060358.GA140698@mtl-vdi-166.wap.labs.mlnx>
- <20210422080725.GB140698@mtl-vdi-166.wap.labs.mlnx>
- <9d3d8976-800d-bb14-0a4a-c4b008f6872c@redhat.com>
- <20210422083902.GA146406@mtl-vdi-166.wap.labs.mlnx>
- <bdf10e38-8746-51cf-b460-a904a133329c@redhat.com>
- <20210429100033.GA215200@mtl-vdi-166.wap.labs.mlnx>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <fc887d99-7058-1057-2d1a-3bdc5802a59a@redhat.com>
-Date:   Fri, 30 Apr 2021 12:40:04 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210429100033.GA215200@mtl-vdi-166.wap.labs.mlnx>
+        id S229806AbhD3Eo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 00:44:59 -0400
+Received: from mail-db8eur05on2040.outbound.protection.outlook.com ([40.107.20.40]:53344
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229448AbhD3Eo6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 00:44:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZGjsQZMKDD+ZCLo5BPr+S3Gg/Lzn6N9CXqFRGjYVMuAaokhiIOcq4QRCUOm3MWqnGHXPgwc9ZRYyFS89NrRWxE9xAXdr/cwycuJDPy1bbHtbrg8u/kRk/8C1FxHLhpt7t14uHqbIJfP7BFzNeAEGVVNJjq5mdwgSisB+WzxjSd23WHD1g9F9xtdThITVel8E+VRXdDu8ij4TDf5KjZpHvYSuPWSNnIOGRb+5oTxhZ+IFjBigsMn76OpS9vSUfHHEk89T5kMnpR9ggglzErKWNy6ExJAoC1o88mQHfA4z8fDQSLeEfGmYuqY9FzUXrxqg///FC0rjm/NDbhp7hnFTwg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=p3kBXDGz3pfXh/31shjmJTGHK6S6ofBbf7IHe0LTFak=;
+ b=M8bMi4ua6YeCc2FmTz9NhVZtGJ4IvoypQLVOLU77GKGLX0i89rlaE0YlOXst12OS5puK8kCnSQQ7VhjMaKuwvdtlwAZNN65NwoT4NOUuDVMkZyfqfCBrxs9i1ogSMyDZpJTg+FdREX49ReRu+WShppjw4UC4+fb8HA1OgnMYgT27Ctltaqy44W9EfVenUTE3aMS3Qd8pKyliFZrx+98c+y9wgZYJiEVelq1/tMcsmWwmxSZkMZgudP8rBfCqKInzcG/ggNssB/fnSesgPUlOH6W2MXJLbv8J4szXS396NczHw9uTxheuRjbdwbHQ7gflECLR9HnD4ivg9ghlrnfuNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=p3kBXDGz3pfXh/31shjmJTGHK6S6ofBbf7IHe0LTFak=;
+ b=bt7U2QnUS0K9gjjCLsRhf8q9QOvTlWdj6MT2FZvmhff+Qq2DVDjMl1Rr3YcI4sq8n2AeB5xXH12QUc7179XM/NKiz4PJ4uzuXOWC728sQHI/2kwIkaKdkBh2KYRjAj4Pd4tkvlDfieHTADWC0/IlrYTGawF36eEi7ASk40D2D7w=
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB8PR04MB5803.eurprd04.prod.outlook.com (2603:10a6:10:a9::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.25; Fri, 30 Apr
+ 2021 04:44:06 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::45b9:c993:87ec:9a64]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::45b9:c993:87ec:9a64%8]) with mapi id 15.20.4065.023; Fri, 30 Apr 2021
+ 04:44:06 +0000
+Subject: Re: [PATCH 13/16] soc: imx: gpcv2: correct pm_runtime_get_sync usage
+To:     Lucas Stach <l.stach@pengutronix.de>, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de
+Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        p.zabel@pengutronix.de, krzk@kernel.org, agx@sigxcpu.org,
+        marex@denx.de, andrew.smirnov@gmail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, ping.bai@nxp.com,
+        frieder.schrempf@kontron.de, aford173@gmail.com, abel.vesa@nxp.com,
+        Peng Fan <peng.fan@nxp.com>
+References: <20210429073050.21039-1-peng.fan@oss.nxp.com>
+ <20210429073050.21039-14-peng.fan@oss.nxp.com>
+ <08d8573e7395b341cdec55ee4f92d8cd3da7d0d3.camel@pengutronix.de>
+From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Message-ID: <90148b7c-a375-bc1e-1000-7452b702bc42@oss.nxp.com>
+Date:   Fri, 30 Apr 2021 12:43:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+In-Reply-To: <08d8573e7395b341cdec55ee4f92d8cd3da7d0d3.camel@pengutronix.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: HK2PR04CA0079.apcprd04.prod.outlook.com
+ (2603:1096:202:15::23) To DB6PR0402MB2760.eurprd04.prod.outlook.com
+ (2603:10a6:4:a1::14)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.193.102.190] (119.31.174.71) by HK2PR04CA0079.apcprd04.prod.outlook.com (2603:1096:202:15::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.25 via Frontend Transport; Fri, 30 Apr 2021 04:44:00 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8e4f4a9f-acb0-49dd-d07c-08d90b9295f3
+X-MS-TrafficTypeDiagnostic: DB8PR04MB5803:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB8PR04MB5803935CC0BAC20DE4501AEDC95E9@DB8PR04MB5803.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2xZLpfOX04vfKzPmRI5SBxbbB+fz/BKiULBQIW/+QWRkD0H4j90dPcf7UoFF9sBHfELKh1bA0a8ZxcUXAGvdqN1/OJqTvb4Y/SC8Z4hU9JQSrG3sA++sBov1AdIAFRW2nMP112NCqyPZiyuYrNsKoYuRdbJdHQ42bX03Hl+cTECRa3u1i6UM1Rq9FrtHSFoXlxM8MW9HoX3UYuMyqmn0Y+FDcgleCMC130aOmLUth2PBOwvhYNUXcrznlbUfndVtGMgEBLeN5ImqSyIe6t9xM9OICeQuGnuSAt+boMNlXIGdd4NuZUyIsRVE1X6uO7lDQ0IYf8rqL4Mw/Pel42ummtbfE3OWdTHgMPfGLUU89xZ3zFEHAz+mv9GGagrNCQMUnn+Wg9m+rV3g9nJIndrOerbh3cpbMDgEvVWySQFS40fqncAajrIU08C8Fuprhz6xTresysFRLg708bmQDw0t1Nw1lamUPrWfPcYzj0XaXxFSgZ0E/c5nagDJkcztFU9AAj39X8CFqnYZE6N7IiCkMxCLCGFmtR9hvCZ69nhIMzyTdumjHHYXTtCL/pPZDCMJUIm12L35+vRdza1lD72hwqGEqJZx4VIOVhpQbNSrPTbrGOlOiyw7pg/76mfRQHAYPTo6kq6jZv/W+TyNnY4QWo4EoxyT+nca7uC082Xx2f/bxs7h/pxYV1NughWSvbr1YS7qjbFODjGLzAEnC3+PBw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(366004)(396003)(39840400004)(346002)(316002)(66556008)(66946007)(86362001)(66476007)(26005)(956004)(2616005)(31696002)(16526019)(6486002)(5660300002)(83380400001)(186003)(31686004)(8676002)(8936002)(2906002)(478600001)(52116002)(4326008)(38350700002)(6666004)(16576012)(7416002)(53546011)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?M3FmZURyT2pFRWlnWjhpcWh4TmVzeHpaZjJtYUVpSmxOVVh1RHFRV05ueVZl?=
+ =?utf-8?B?S2hjbEp1QS9iQTVRdWs5ZDFyV2J4Z3RuSkcyYmptLzdVRlNGdFFlcXRmRFRm?=
+ =?utf-8?B?WU5zV3BkcXNhcGdiNWFMNngxVnBoOXRMaHZNS0tGWmFWbjRrSnhha1BDaFU5?=
+ =?utf-8?B?c05YNG9OWFlXVlUwRFRhUjFqS0l5WGx3MGhtOW81KzJZSHEzMjNRY1YyeXR3?=
+ =?utf-8?B?OFB1eHZCdXpyNGNqNFZuc3lodGQvWnYrRVJrTmVKZUZwNWxtcGRTTWFlT3JJ?=
+ =?utf-8?B?WnBsYndUTERsRytBL1kzU3FtN1doYWVWNzBqWnAwc2ZiSjN5UG9NbFNPM2tj?=
+ =?utf-8?B?ZW55OXZUcXc5R0ZKNklyZjQrcFlxaitiQjRnUXZZZFh3Wm16NER6RllHSCtQ?=
+ =?utf-8?B?L3ZwVjNWYWpMVUdSL2dBOWNRZGlFWEMvQUVpNHBzSGxhbng0VGdybGJNQS9i?=
+ =?utf-8?B?cDRyMWprS204YzBpWGRocCtlQTZZMzJIdkxhYnIyVFZJWm51NkMrSUpQNEcy?=
+ =?utf-8?B?YVdoVTlsS0xxTi9KZEd2QzFEVy9kRnJuRjl6a2pQbXU1VTRwZ0pDdE1OZGpR?=
+ =?utf-8?B?TVYvcy80UGdoMVFhdG5sdTNMeG1VY0dWYWJ1Rm1US0JyNjBtR01kUTVpd3lC?=
+ =?utf-8?B?QU5Ld1lDQkFvUDB0d2ZKN0c4UWlvWWQwaEgxbC9kdnRwc2ZtZjE5QytIck4y?=
+ =?utf-8?B?cTRsOEZPaTVobnQveStucjRsZXVUK3ZvYkl6RmhUMmY3a1FxdXNMZENHcmpV?=
+ =?utf-8?B?ZlBBZFlzd3cvWlRTbTJ5WGtVRzI2T1l6RU94cXdYR05NT0YrS0l0bm5ESnR6?=
+ =?utf-8?B?NUZpdVZDV29HdDhVZUdBaFdCdjdVMHhCcmNZd3hCZE5Mdzd2N2ZtMk9Tc0Ri?=
+ =?utf-8?B?QXRWTHNoL3VYTFVHUTRSL0FTYVBOZ2cxNldSbk9DUTRRbTJna1hGL1Jua1pt?=
+ =?utf-8?B?WmtzdHhwT003MmxlTHg2N2VOYWVhYU9VRThKT0paeGNRM1NwS0I0eHYraHBi?=
+ =?utf-8?B?eUE0N0hkNU5vbDhGL0FxNVp3c1NPTHdyM3VSUVNRNkRRcXgrZ2tqdHdxZHl4?=
+ =?utf-8?B?Y21GaXN6cGhlMko5NlFCdUxrNzJRYmpEaEp3eXNzUkVjQjhvaFdRTXVHcEtk?=
+ =?utf-8?B?RHlQcnBJQnZlK3YrWk5Ra0tyckw1QjVNcDBDd0FGR2JsbmFNMW4xalFGZ2NY?=
+ =?utf-8?B?bGtnK2xWcWZWMFlNN2xiWnBDMkM3TjY3SlFBUFRyZ000V21UTWZoMnhXNlJR?=
+ =?utf-8?B?QWx0YXJVRGYvM3h0eDR0MVBpOTVsbzZaK1l0U2NxOVJWOXdiNENiUTN6VjN4?=
+ =?utf-8?B?NTZxMkJzdks3M3FKeU1wSUpqczhxanhzanZTYnUrTDVHUnFEaGNSKzgyYzkv?=
+ =?utf-8?B?YTBaeVZDL29XTHRldE1LTXpmUkk3d1YzVDN3U0NGSHNCT1hUWGEyQVFyaVU5?=
+ =?utf-8?B?WXhKRUpFSlRYRzRZWWpyWkxIbWI3S3RhejBVTUwxeTVDRTlzR0JuektKM29X?=
+ =?utf-8?B?RHRIMVN2NHFpV2JQcDZHZ2d3WkZwbnNNZ3Z2b2Z5bG1aYVBxUis0ZFlYU1lv?=
+ =?utf-8?B?VkRHVnI0MkFYZ0MraG9mVUIvYy8yS1Rxd3lHV1VpbkZCRDJYa081RFZBNlVq?=
+ =?utf-8?B?OTROdlcvTHRzSHZqcDFQVUthS0lyN1E2bjV0L0R5SFFaZ2tzSTdmM0ZEYkIr?=
+ =?utf-8?B?c204M2Q4WUE2Wi9QUkdxZFZJNS9iajlBemgrREZDUC9jVjZzVzNWS3ZyMFZO?=
+ =?utf-8?Q?UMV9qtSLl6p0JNbxmQOP5Ptwq67U5Kb9SbCTm0g?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8e4f4a9f-acb0-49dd-d07c-08d90b9295f3
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2021 04:44:06.6116
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VjBTWpZT6foqG/UmVPpWWGRDjkui+J2l6iLpecnKb8I6IZxH2QNj7PBXP7Yy+X2sGnLgsXDS2y+oKub0zIIi4w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB5803
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-在 2021/4/29 下午6:00, Eli Cohen 写道:
-> On Thu, Apr 22, 2021 at 04:59:11PM +0800, Jason Wang wrote:
->> 在 2021/4/22 下午4:39, Eli Cohen 写道:
->>> On Thu, Apr 22, 2021 at 04:21:45PM +0800, Jason Wang wrote:
->>>> 在 2021/4/22 下午4:07, Eli Cohen 写道:
->>>>> On Thu, Apr 22, 2021 at 09:03:58AM +0300, Eli Cohen wrote:
->>>>>> On Thu, Apr 22, 2021 at 10:37:38AM +0800, Jason Wang wrote:
->>>>>>> 在 2021/4/21 下午6:41, Eli Cohen 写道:
->>>>>>>> Implement mlx5_get_vq_notification() to return the doorbell address.
->>>>>>>> Size is set to one system page as required.
->>>>>>>>
->>>>>>>> Signed-off-by: Eli Cohen <elic@nvidia.com>
->>>>>>>> ---
->>>>>>>>      drivers/vdpa/mlx5/core/mlx5_vdpa.h | 1 +
->>>>>>>>      drivers/vdpa/mlx5/core/resources.c | 1 +
->>>>>>>>      drivers/vdpa/mlx5/net/mlx5_vnet.c  | 6 ++++++
->>>>>>>>      3 files changed, 8 insertions(+)
->>>>>>>>
->>>>>>>> diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
->>>>>>>> index b6cc53ba980c..49de62cda598 100644
->>>>>>>> --- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
->>>>>>>> +++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
->>>>>>>> @@ -41,6 +41,7 @@ struct mlx5_vdpa_resources {
->>>>>>>>      	u32 pdn;
->>>>>>>>      	struct mlx5_uars_page *uar;
->>>>>>>>      	void __iomem *kick_addr;
->>>>>>>> +	u64 phys_kick_addr;
->>>>>>>>      	u16 uid;
->>>>>>>>      	u32 null_mkey;
->>>>>>>>      	bool valid;
->>>>>>>> diff --git a/drivers/vdpa/mlx5/core/resources.c b/drivers/vdpa/mlx5/core/resources.c
->>>>>>>> index 6521cbd0f5c2..665f8fc1710f 100644
->>>>>>>> --- a/drivers/vdpa/mlx5/core/resources.c
->>>>>>>> +++ b/drivers/vdpa/mlx5/core/resources.c
->>>>>>>> @@ -247,6 +247,7 @@ int mlx5_vdpa_alloc_resources(struct mlx5_vdpa_dev *mvdev)
->>>>>>>>      		goto err_key;
->>>>>>>>      	kick_addr = mdev->bar_addr + offset;
->>>>>>>> +	res->phys_kick_addr = kick_addr;
->>>>>>>>      	res->kick_addr = ioremap(kick_addr, PAGE_SIZE);
->>>>>>>>      	if (!res->kick_addr) {
->>>>>>>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>>>>>> index 10c5fef3c020..680751074d2a 100644
->>>>>>>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>>>>>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>>>>>> @@ -1865,8 +1865,14 @@ static void mlx5_vdpa_free(struct vdpa_device *vdev)
->>>>>>>>      static struct vdpa_notification_area mlx5_get_vq_notification(struct vdpa_device *vdev, u16 idx)
->>>>>>>>      {
->>>>>>>> +	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
->>>>>>>>      	struct vdpa_notification_area ret = {};
->>>>>>>> +	struct mlx5_vdpa_net *ndev;
->>>>>>>> +
->>>>>>>> +	ndev = to_mlx5_vdpa_ndev(mvdev);
->>>>>>>> +	ret.addr = (phys_addr_t)ndev->mvdev.res.phys_kick_addr;
->>>>>>>> +	ret.size = PAGE_SIZE;
->>>>>>> Note that the page will be mapped in to guest, so it's only safe if the
->>>>>>> doorbeel exclusively own the page. This means if there're other registers in
->>>>>>> the page, we can not let the doorbell bypass to work.
->>>>>>>
->>>>>>> So this is suspicious at least in the case of subfunction where we calculate
->>>>>>> the bar length in mlx5_sf_dev_table_create() as:
->>>>>>>
->>>>>>> table->sf_bar_length = 1 << (MLX5_CAP_GEN(dev, log_min_sf_size) + 12);
->>>>>>>
->>>>>>> It looks to me this can only work for the arch with PAGE_SIZE = 4096,
->>>>>>> otherwise we can map more into the userspace(guest).
->>>>>>>
->>>>>> Correct, so I guess I should return here 4096.
->>>> I'm not quite sure but since the calculation of the sf_bar_length is doen
->>>> via a shift of 12, it might be correct.
->>>>
->>>> And please double check if the doorbell own the page exclusively.
->>> I am checking if it is safe to map the any part of the SF's BAR to
->>> userspace without harming other functions. If this is true, I will check
->>> if I can return PAGE_SIZE without compromising security.
+On 2021/4/29 22:25, Lucas Stach wrote:
+> Am Donnerstag, dem 29.04.2021 um 15:30 +0800 schrieb Peng Fan (OSS):
+>> From: Peng Fan <peng.fan@nxp.com>
 >>
->> It's usally not safe and a layer violation if other registers are placed at
->> the same page.
+>> When the return value is negative, there is error, otherwise it is
+>> expected.
+> 
+> Good catch! As the runtime pm handling is added in this series, this
+> should be squashed into patch 06/16 to not add broken code and then fix
+> it in the same series. Change looks good to me.
+
+Sure. This will be squashed into patch 06/16 in V2.
+
+Thanks,
+Peng.
+
+> 
+>> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+>> ---
+>>   drivers/soc/imx/gpcv2.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/soc/imx/gpcv2.c b/drivers/soc/imx/gpcv2.c
+>> index 42b9be05e1f2..d2ce47a5ebad 100644
+>> --- a/drivers/soc/imx/gpcv2.c
+>> +++ b/drivers/soc/imx/gpcv2.c
+>> @@ -197,7 +197,7 @@ static int imx_pgc_power_up(struct generic_pm_domain *genpd)
+>>   	int ret;
+>>   
 >>
 >>
->>>    I think we may
->>> need to extend struct vdpa_notification_area to contain another field
->>> offset which indicates the offset from addr where the actual doorbell
->>> resides.
 >>
->> The movitiaton of the current design is to be fit seamless into how Qemu
->> model doorbell layouts currently:
->>
->> 1) page-per-vq, each vq has its own page aligned doorbell
->> 2) 2 bytes doorbell, each vq has its own 2 byte aligend doorbell
->>
->> Only 1) is support in vhost-vDPA (and vhost-user) since it's rather simple
->> and secure (page aligned) to be modelled and implemented via mmap().
->>
->> Exporting a complex layout is possbile but requires careful design.
->>
->> Actually, we had antoher option
->>
->> 3) shared doorbell: all virtqueue shares a single page aligned doorbell
-> I am not sure how this could solve the problem of 64KB archs.
-> The point is that in ConnectX devices, the virtio queue objects doorbell
-> is aligned to 4K. For larger system page sizes, the doorbell may not be
-> aligned to a system page.
-> So it seems not too complex to introduce offset within the page.
-
-
-Three major issues:
-
-1) single mmap() works at page level, it means we need map 64K to guest 
-and we can only do this safely if no other registers are placed into the 
-same page
-2) new uAPI to let the userspace know the offset
-3) how to model them with the virtio-pci in Qemu, and this may introduce 
-burdens for management (need some changes in the qemu command line) to 
-deal with the migration compatibility
-
-So consider the complexity, we can just stick to the current code. That 
-means mmap() will fail and qemu will keep using the eventfd based kick.
-
-
->
-> BTW, for now, I am going to send another patch that makes sure page
-> boundaries are not vilated. It requires some support from mlx5_core
-> which is currently being reviewed internally.
-
-
-Sure.
-
-Thanks
-
-
->
->> This is not yet supported by Qemu.
->>
->> Thanks
->>
->>
->>>>>> I also think that the check in vhost_vdpa_mmap() should verify that the
->>>>>> returned size is not smaller than PAGE_SIZE because the returned address
->>>>> Actually I think it's ok since you verify the size equals vma->vm_end -
->>>>> vma->vm_start which must be at least PAGE_SIZE.
->>>> Yes.
->>>>
->>>> Thanks
->>>>
->>>>
->>>>>> might just be aligned to PAGE_SIZE. I think this should be enoght but
->>>>>> maybe also use the same logic in vhost_vdpa_fault().
-
+>>   	ret = pm_runtime_get_sync(domain->dev);
+>> -	if (ret) {
+>> +	if (ret < 0) {
+>>   		pm_runtime_put_noidle(domain->dev);
+>>   		return ret;
+>>   	}
+> 
+> 
