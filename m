@@ -2,71 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FFD936FF1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 19:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1D5236FF27
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 19:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbhD3RER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 13:04:17 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:38233 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbhD3REP (ORCPT
+        id S231327AbhD3RGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 13:06:06 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2967 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230229AbhD3RGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 13:04:15 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lcWXf-0001yL-Cp; Fri, 30 Apr 2021 17:03:03 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Nathan Tempelman <natet@google.com>, kvm@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] KVM: x86: Fix potential fput on a null source_kvm_file
-Date:   Fri, 30 Apr 2021 18:03:03 +0100
-Message-Id: <20210430170303.131924-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 30 Apr 2021 13:06:04 -0400
+Received: from fraeml745-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FWz9x27bFz6wl4x;
+        Sat,  1 May 2021 00:59:33 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml745-chm.china.huawei.com (10.206.15.226) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 30 Apr 2021 19:05:14 +0200
+Received: from localhost (10.52.125.96) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 30 Apr
+ 2021 18:05:13 +0100
+Date:   Fri, 30 Apr 2021 18:03:38 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        <devel@driverdev.osuosl.org>, <linux-kernel@vger.kernel.org>,
+        <linux-media@vger.kernel.org>
+Subject: Re: [PATCH v4 23/79] staging: media: ipu3: use
+ pm_runtime_resume_and_get()
+Message-ID: <20210430180338.00006e62@Huawei.com>
+In-Reply-To: <ab2332b27d0043574a72a42ec8d757fd06279cc6.1619621413.git.mchehab+huawei@kernel.org>
+References: <cover.1619621413.git.mchehab+huawei@kernel.org>
+        <ab2332b27d0043574a72a42ec8d757fd06279cc6.1619621413.git.mchehab+huawei@kernel.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.125.96]
+X-ClientProxiedBy: lhreml721-chm.china.huawei.com (10.201.108.72) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, 28 Apr 2021 16:51:44 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 
-The fget can potentially return null, so the fput on the error return
-path can cause a null pointer dereference. Fix this by checking for
-a null source_kvm_file before doing a fput.
+> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> added pm_runtime_resume_and_get() in order to automatically handle
+> dev->power.usage_count decrement on errors.
+> 
+> Use the new API, in order to cleanup the error check logic.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Could add that pm_runtime_put() should have been pm_runtime_put_noidle()
+inorder to not potentially result in a call to runtime suspend when
+we never resumed in the first place.
 
-Addresses-Coverity: ("Dereference null return")
-Fixes: 54526d1fd593 ("KVM: x86: Support KVM VMs sharing SEV context")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- arch/x86/kvm/svm/sev.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Otherwise reasonable cleanup.
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 1356ee095cd5..8b11c711a0e4 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -1764,7 +1764,8 @@ int svm_vm_copy_asid_from(struct kvm *kvm, unsigned int source_fd)
- e_source_unlock:
- 	mutex_unlock(&source_kvm->lock);
- e_source_put:
--	fput(source_kvm_file);
-+	if (source_kvm_file)
-+		fput(source_kvm_file);
- 	return ret;
- }
- 
--- 
-2.30.2
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+> ---
+>  drivers/staging/media/ipu3/ipu3.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/media/ipu3/ipu3.c b/drivers/staging/media/ipu3/ipu3.c
+> index ee1bba6bdcac..8e1e9e46e604 100644
+> --- a/drivers/staging/media/ipu3/ipu3.c
+> +++ b/drivers/staging/media/ipu3/ipu3.c
+> @@ -392,10 +392,9 @@ int imgu_s_stream(struct imgu_device *imgu, int enable)
+>  	}
+>  
+>  	/* Set Power */
+> -	r = pm_runtime_get_sync(dev);
+> +	r = pm_runtime_resume_and_get(dev);
+>  	if (r < 0) {
+>  		dev_err(dev, "failed to set imgu power\n");
+> -		pm_runtime_put(dev);
+>  		return r;
+>  	}
+>  
 
