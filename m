@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C942636F6A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 09:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE8C36F6A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 09:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbhD3Hqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 03:46:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42122 "EHLO
+        id S232098AbhD3HrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 03:47:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231441AbhD3Hpy (ORCPT
+        with ESMTP id S231564AbhD3Hpy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 30 Apr 2021 03:45:54 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35625C061343
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 00:45:00 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id h10so81487283edt.13
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 00:45:00 -0700 (PDT)
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF39EC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 00:45:01 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id r12so103837965ejr.5
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 00:45:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=oXNpztwSPie87ZGBOUIq/Wsi+dyDvcyo8iFcSTDhBAs=;
-        b=lPymAkw9xVO0DT4C1g9346ZThkivOP2Ogkj9qHunM2NnG7ST1sNl0IX/IEWVdQgGy6
-         wAPHNRRRGDoN8rzrfNFnHoYbHU0H9tfYnFS0zdXs0YACfmslUg0b09D/diLVZtQRJaBf
-         gYXqxJ+GY3gvshQXHbX9rc4aPMrtFYv+Yj40kqRKQNaBgVT1sa5lrt9aWsi1thbv7JcX
-         wUif92mu8uSHWoPmjPXuF03G+4Xf0Lhsz4mf0UonlYvo93XZjX2EpxD/IQjNlqM6SOf1
-         BmP1VkBtOHMZ0bOS90xv5LOn8Hc5rZNrM8d+noodKKSBDSPSjY5rbIk/Wib7u0SSoAyo
-         4JEA==
+        bh=esklRFhcv92jAvcOLhHGS3GTMlKhQ0QkDSmO8wy1pRY=;
+        b=DEmJypMjFobuOJ5XvhfnQZxA/esaVQyTR6yeWPnguY9pNzbHanD/tLLGrLbG1UGIks
+         y9Mgd5AxPMDaKgzIfuSfpP8XDLNFJDY8XCgIWQGWpru9Xks0WSvAbhqSB+Q84iumQWZz
+         Pf/gw2LFTJYRVtx+Sv1rMCqvKTCsy7PagZ5+yhMzVSpn+GZRRu3Nnh8lyOprAEGQcIDK
+         IkP23cwgPhI5aA6qf7iqwg2iW737XzDIITh6cHFdJ9KAnrcX9I4g6LjziH3ZAbBVOrua
+         GHs2CorUzxsM/lk/zEdGTHowgP6jPdp/u1/u8axH79PSXpmgs346p21Ex81Nw9vQf2Dy
+         cwoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=oXNpztwSPie87ZGBOUIq/Wsi+dyDvcyo8iFcSTDhBAs=;
-        b=qfWIfvcUor6xfBONMRl6RiBShfgt2j6G3oOVcmd1g/v8KM72dOILKwAsJ7aAQ2dCZM
-         UoY4SW8jU9Zk9DDAoFulXVweFeMd2TCtRxBF+YV1sspThmXT2yWGMdsuXOZbX+XAr/6H
-         G5R68rdI8eA0sXdFOLZYZth8rLzBVH+FJDDyyLo0+R64AW0IkHnwZ54Fr21wZ06Mktqh
-         pStouoNWZ90Uc3Md7oUqNo/yAxg4Thi2DX2E+5rvuvTuq4h/gvafCGIT8epaBQOIxJIz
-         qOGJCi3AXo9JYVfuWv+Lm5a0tC1cxTZyN1u+tqq3xU8KyuMOjJJkvPrvleoVxbgg4x14
-         FXUw==
-X-Gm-Message-State: AOAM531I70gOkzUZpt5YFeP06ZbQHkDw9zUWNpOv9bRZqMbux7Dc1FuK
-        we3fGSnCP0UZFfpq/ZSjRgyf+j40CayTgw==
-X-Google-Smtp-Source: ABdhPJxgi+WQ5PaMjNdLs8Lnin5ZsGeYiG5HHaJA/rKn9zweY11i00O+tPnRdKUlfOCfoot7rtMC/g==
-X-Received: by 2002:aa7:d14f:: with SMTP id r15mr4059899edo.71.1619768698802;
-        Fri, 30 Apr 2021 00:44:58 -0700 (PDT)
+        bh=esklRFhcv92jAvcOLhHGS3GTMlKhQ0QkDSmO8wy1pRY=;
+        b=pbbqg8WwcAxE0EKX7OK/gAlKaob0YVBdGW/rDi7PH5IxDjN5gGv5qrw45Mthcwo2yh
+         JImvHTPNe+QUjP/GxcX5n5TJlXUjNT2zXASjK2Tnlv1TTRpqIpindKis39nEwp3/+Rt4
+         5zVk3/nXqFGOzMLCnIvjS7Z2isqkUk27PUy1Quo5Rl7Atm4PngHlAqbZ4aM9VXBD7xFZ
+         dzzf6APGV4UGZiiWBK3xsS58/L4IqE0ppAM5fia36YUHD3ubc7I1gsgI0aL2Guhf5a6X
+         T1hZqM4SWhhQrECRcpTCxnZx2Vu9pAXDGkm9LbbHRNjle+NsYGt8O0Zbcz+nx1otOLwD
+         A37Q==
+X-Gm-Message-State: AOAM533SUw+kpfaEC04yT3HuW0F2iqevmepQ9Rz9VJlq+NBqmku32AAw
+        y2iY5kSosginQzJBngqFaJOzeO+LUGoSVg==
+X-Google-Smtp-Source: ABdhPJwU1vbd6lj4zVUm60cea18MSzq0YMBZ3IoSjLRGzRBSS+aXfUvXO4vdpXsrhGQEfziQ+xqZdA==
+X-Received: by 2002:a17:906:49d3:: with SMTP id w19mr2917343ejv.116.1619768700325;
+        Fri, 30 Apr 2021 00:45:00 -0700 (PDT)
 Received: from agape ([5.171.81.86])
-        by smtp.gmail.com with ESMTPSA id mt26sm1456782ejc.32.2021.04.30.00.44.58
+        by smtp.gmail.com with ESMTPSA id hg24sm220684ejc.99.2021.04.30.00.44.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 00:44:58 -0700 (PDT)
+        Fri, 30 Apr 2021 00:45:00 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 32/43] staging: rtl8723bs: remove obsolete GLBtcDbgType array declarations
-Date:   Fri, 30 Apr 2021 09:43:50 +0200
-Message-Id: <cb1f030c561f95fd00b12b003993fbdaa5cc9cdf.1619768150.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 33/43] staging: rtl8723bs: remove unused enum
+Date:   Fri, 30 Apr 2021 09:43:51 +0200
+Message-Id: <61b92c9d686c28c77c591a82b18c44a85d2d4c8a.1619768150.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1619768150.git.fabioaiuto83@gmail.com>
 References: <cover.1619768150.git.fabioaiuto83@gmail.com>
@@ -63,39 +63,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove obsolete GLBtcDbgType declarations for it was intended
-for private debug facilities.
+remove unused enum.
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/hal/HalBtcOutSrc.h | 1 -
- drivers/staging/rtl8723bs/hal/hal_btcoex.c   | 1 -
- 2 files changed, 2 deletions(-)
+ drivers/staging/rtl8723bs/hal/HalBtcOutSrc.h | 6 ------
+ 1 file changed, 6 deletions(-)
 
 diff --git a/drivers/staging/rtl8723bs/hal/HalBtcOutSrc.h b/drivers/staging/rtl8723bs/hal/HalBtcOutSrc.h
-index f2793d5d9a30..c5444f965699 100644
+index c5444f965699..c4616a69425d 100644
 --- a/drivers/staging/rtl8723bs/hal/HalBtcOutSrc.h
 +++ b/drivers/staging/rtl8723bs/hal/HalBtcOutSrc.h
-@@ -83,7 +83,6 @@ enum {
- 	BTC_MSG_ALGORITHM	= 0x1,
- 	BTC_MSG_MAX
+@@ -78,12 +78,6 @@ enum {
+ 	BTC_CHIP_MAX
  };
--extern u32 		GLBtcDbgType[];
  
+-enum {
+-	BTC_MSG_INTERFACE	= 0x0,
+-	BTC_MSG_ALGORITHM	= 0x1,
+-	BTC_MSG_MAX
+-};
+-
  /*  following is for BTC_MSG_INTERFACE */
  #define INTF_INIT	BIT0
-diff --git a/drivers/staging/rtl8723bs/hal/hal_btcoex.c b/drivers/staging/rtl8723bs/hal/hal_btcoex.c
-index fd26187a976a..da545c4eaac0 100644
---- a/drivers/staging/rtl8723bs/hal/hal_btcoex.c
-+++ b/drivers/staging/rtl8723bs/hal/hal_btcoex.c
-@@ -17,7 +17,6 @@ struct btc_coexist GLBtCoexist;
- static u8 GLBtcWiFiInScanState;
- static u8 GLBtcWiFiInIQKState;
- 
--u32 GLBtcDbgType[BTC_MSG_MAX];
- static u8 GLBtcDbgBuf[BT_TMP_BUF_SIZE];
- 
- struct btcdbginfo { /* _btcoexdbginfo */
+ #define INTF_NOTIFY	BIT2
 -- 
 2.20.1
 
