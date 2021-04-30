@@ -2,64 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D572836F963
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 13:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4093A36F966
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 13:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231776AbhD3LhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 07:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36488 "EHLO
+        id S231861AbhD3Lhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 07:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbhD3LhV (ORCPT
+        with ESMTP id S229911AbhD3Lh3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 07:37:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD0D5C06174A;
-        Fri, 30 Apr 2021 04:36:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=reerZnOjvxm3GMx9XqqMTODNxQ861rsAvPAy5VxLa8c=; b=s5nC72gSvDbgfWEyNNPaN4COAB
-        BgPktEAeUuOSG1lI4zCtbAH49IMFPNigDUheDdkykoZrLJr6SsXuUuCL0/mXpX4vSNIYySvTnmyeS
-        M8jDcLndM/m49sN/6wezefjRz5HqqLkonHrFC1G6wKgnF7w2dc1I68y3KZawU5lpAialz1yAnRHM2
-        gGCy3UBHOWhgUb4G9RygBhFvLWTZAN+DLTzpgFmosjhYkqZCvtXUYuIS9z1TpvfN++H5n06a7qovi
-        VrIvi4Xc2lriDlXxChNF7edtJcVths2jf2Of3nojBTKIe1kqXK6/Xps3FXzuzjPb19WPPkNekioV7
-        G2RE7IfA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lcRQq-00Awzm-QS; Fri, 30 Apr 2021 11:35:48 +0000
-Date:   Fri, 30 Apr 2021 12:35:40 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     hare@suse.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] advansys: Remove redundant assignment to err and
- n_q_required
-Message-ID: <20210430113540.GK1847222@casper.infradead.org>
-References: <1619774728-120808-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        Fri, 30 Apr 2021 07:37:29 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 366AFC06174A;
+        Fri, 30 Apr 2021 04:36:41 -0700 (PDT)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1lcRRg-0023WH-DF; Fri, 30 Apr 2021 13:36:32 +0200
+Message-ID: <3a0671bd6a9650fdcdf5cb8414526f6204518774.camel@sipsolutions.net>
+Subject: Re: [PATCH] mac80211: Remove redundant assignment to ret
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Date:   Fri, 30 Apr 2021 13:36:31 +0200
+In-Reply-To: <1619774483-116805-1-git-send-email-yang.lee@linux.alibaba.com>
+References: <1619774483-116805-1-git-send-email-yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1619774728-120808-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 05:25:28PM +0800, Jiapeng Chong wrote:
-> Variable err and n_q_required is set to '-ENOMEM' and '1', but they are
-> either overwritten or unused later on, so these are redundant assignments
-> that can be removed.
+On Fri, 2021-04-30 at 17:21 +0800, Yang Li wrote:
+> Variable 'ret' is set to -ENODEV but this value is never read as it
+> is overwritten with a new value later on, hence it is a redundant
+> assignment and can be removed.
 > 
 > Clean up the following clang-analyzer warning:
 > 
-> drivers/scsi/advansys.c:11235:2: warning: Value stored to 'err' is never
-> read [clang-analyzer-deadcode.DeadStores].
-> 
-> drivers/scsi/advansys.c:8091:2: warning: Value stored to 'n_q_required'
-> is never read [clang-analyzer-deadcode.DeadStores].
-> 
-> drivers/scsi/advansys.c:11484:2: warning: Value stored to 'err' is never
-> read [clang-analyzer-deadcode.DeadStores].
+> net/mac80211/debugfs_netdev.c:60:2: warning: Value stored to 'ret' is
+> never read [clang-analyzer-deadcode.DeadStores]
 
-I don't want to spend any time figuring out if this is a legitimate patch
-or not.  Please stop running these analysers on this driver, and thank
-the University of Minnesota for making me suspicious.
+Can you just turn that warning off?
+
+It's really quite pointless to churn the tree for effectively nothing.
+
+johannes
+
