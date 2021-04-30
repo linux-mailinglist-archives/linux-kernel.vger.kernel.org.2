@@ -2,95 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA2836F5B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 08:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1809C36F5BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 08:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbhD3GeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 02:34:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhD3GeK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 02:34:10 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38642C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 23:33:22 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id g10so13368502edb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 23:33:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hcHFf3gTv35FziNzw1N04IYNOd/IGcKHr18KAtXIQ9o=;
-        b=usj7svzaCDGTwJB0q0lWBcA+tj83ZyqEzAHyZGF5Zyy83y55/HrRdLq5GVdYfsx4wr
-         jYbP0sNATPeVyQQHiTlV7as4n+rVCzzGjebAFu9cVhWdonhJhM4hlnA5xrT8I9QF2NbB
-         quRJ/vVEJfKXyzvZ04KsKBeiYBS0ymMIw5po9gzlOsJNr+ovBXQoXTp50d+fi20bW3vW
-         kM51jeugJcJEjgPQ296F6uAn+i/qtNrYl+OepAGGfLMQAEb4A1FtshSJCWGGT+tscBJu
-         /n2NZeEBbBkGZmsIlpo844MwjKktSM/ZhEnWYsW+3AcbFq750D2ldUve9fsfNKXvcm8z
-         0uDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hcHFf3gTv35FziNzw1N04IYNOd/IGcKHr18KAtXIQ9o=;
-        b=Az7NYs0SazZv/JX39sXkQ7TnOSKOoX9qOWC174bNkkUif9F2VRGa7IL+s8v3hyXZfF
-         HzWRTHXVs6+t9wJtFS82V6OKH6O8E4STq6UJGn16dwmhPP1QSaywUPdaPwgl0gAdkJRh
-         XNtZh8/oAV7Jp8Lc/Az/IGlrn9ABc71coIlX7kcqPHvvC8bYdd3HGjot5GGUXoXAD97X
-         L1dE+7YIQmSSbBy/O1MyM53ygH7mgKpsQ2oF7tfKSBPSr+EasjJzzceqTkUNYxH9PXuo
-         ZG+WotFW+Xiyj/KF1Sj87InpNW/hLfuy6kkpib6Uo9RHxqYsFCjYqoJFIMVh7HRA8S5t
-         D5oQ==
-X-Gm-Message-State: AOAM532xkd/fa771cXF4m5HXANARYf10eiPsof7UqnfbQMQhDLAmAZSJ
-        9xdf1hjn9D/Ibz+r9guX8ub+3hjMWqMroz42
-X-Google-Smtp-Source: ABdhPJzAmUUN7GjJhZmwW37mLPD9iFm+VR7zgvyhZMlyNVNhniWDubfvf4dujehgfL7wlO7m54TkKg==
-X-Received: by 2002:a50:ed0a:: with SMTP id j10mr3770520eds.22.1619764400647;
-        Thu, 29 Apr 2021 23:33:20 -0700 (PDT)
-Received: from ?IPv6:2a02:768:2307:40d6::45a? ([2a02:768:2307:40d6::45a])
-        by smtp.gmail.com with ESMTPSA id o6sm539810edw.24.2021.04.29.23.33.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Apr 2021 23:33:20 -0700 (PDT)
-Subject: Re: [GIT PULL] arch/microblaze patches for 5.13-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <ffad0699-7966-f601-3d88-8ad1157bf2b8@monstr.eu>
- <CAHk-=whyvvZO3M9=4AP7Ci9ge2wQAjvdDrkr36bYt=Ux_rx_wA@mail.gmail.com>
-From:   Michal Simek <monstr@monstr.eu>
-Message-ID: <b965ccc0-29a7-bb82-ec23-776f00ed67dc@monstr.eu>
-Date:   Fri, 30 Apr 2021 08:33:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S230382AbhD3Gfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 02:35:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34660 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230384AbhD3GfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 02:35:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE56960200;
+        Fri, 30 Apr 2021 06:34:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619764451;
+        bh=pWQNQ9e/jP/AYiYEiqTzrqfThKC7TzjsCETd4mso3Sk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1fYjpkirHkomluxMDi0xmsFhPMWZsfMpi+BxqRaNaIsBXFKj0Lrpzm64ZAbbKJvkB
+         5yTvPonWK9GDVB9xbN9Agdy4H/yfkWPqotOOnB3HoAAiELqCAG6l858CvouBXdF0ry
+         wOGmqvPjRDq5wTQSOdqi7TsSEoko58X/Li6eUNyw=
+Date:   Fri, 30 Apr 2021 08:34:09 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Guoqing Jiang <gqjiang@suse.com>,
+        Aditya Pakki <pakki001@umn.edu>
+Subject: Re: [PATCH 134/190] Revert "md: Fix failed allocation of
+ md_register_thread"
+Message-ID: <YIuk4Xa3iIDTQUct@kroah.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-135-gregkh@linuxfoundation.org>
+ <YIj2nsovH/+ujHL0@kroah.com>
+ <14DC41E8-99F5-491A-93EF-598D10E381FE@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=whyvvZO3M9=4AP7Ci9ge2wQAjvdDrkr36bYt=Ux_rx_wA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <14DC41E8-99F5-491A-93EF-598D10E381FE@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/29/21 8:40 PM, Linus Torvalds wrote:
-> On Thu, Apr 29, 2021 at 12:52 AM Michal Simek <monstr@monstr.eu> wrote:
->>
->> please pull these patches to your tree. There is no new feature added
->> but it just about cleaning up some code and moving to generic syscall
->> solution used by other architectures.
+On Fri, Apr 30, 2021 at 06:10:24AM +0000, Song Liu wrote:
 > 
-> Hmm. This ended up being based on the v5.12-rc1-dontuse tag.
 > 
-> I guess it doesn't matter all that much, but it would have been good
-> to try to avoid that.
+> > On Apr 27, 2021, at 10:46 PM, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> > 
+> > On Wed, Apr 21, 2021 at 03:00:09PM +0200, Greg Kroah-Hartman wrote:
+> >> This reverts commit e406f12dde1a8375d77ea02d91f313fb1a9c6aec.
+> >> 
+> >> Commits from @umn.edu addresses have been found to be submitted in "bad
+> >> faith" to try to test the kernel community's ability to review "known
+> >> malicious" changes.  The result of these submissions can be found in a
+> >> paper published at the 42nd IEEE Symposium on Security and Privacy
+> >> entitled, "Open Source Insecurity: Stealthily Introducing
+> >> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> >> of Minnesota) and Kangjie Lu (University of Minnesota).
+> >> 
+> >> Because of this, all submissions from this group must be reverted from
+> >> the kernel tree and will need to be re-reviewed again to determine if
+> >> they actually are a valid fix.  Until that work is complete, remove this
+> >> change to ensure that no problems are being introduced into the
+> >> codebase.
+> >> 
+> >> Cc: stable@vger.kernel.org # v3.16+
+> >> Cc: Guoqing Jiang <gqjiang@suse.com>
+> >> Cc: Aditya Pakki <pakki001@umn.edu>
+> >> Cc: Song Liu <songliubraving@fb.com>
+> >> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >> ---
+> >> drivers/md/raid10.c | 2 --
+> >> drivers/md/raid5.c  | 2 --
+> >> 2 files changed, 4 deletions(-)
+> >> 
+> >> diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
+> >> index a9ae7d113492..4fec1cdd4207 100644
+> >> --- a/drivers/md/raid10.c
+> >> +++ b/drivers/md/raid10.c
+> >> @@ -3896,8 +3896,6 @@ static int raid10_run(struct mddev *mddev)
+> >> 		set_bit(MD_RECOVERY_RUNNING, &mddev->recovery);
+> >> 		mddev->sync_thread = md_register_thread(md_do_sync, mddev,
+> >> 							"reshape");
+> >> -		if (!mddev->sync_thread)
+> >> -			goto out_free_conf;
+> >> 	}
+> >> 
+> >> 	return 0;
+> >> diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
+> >> index 5d57a5bd171f..9b2bd50beee7 100644
+> >> --- a/drivers/md/raid5.c
+> >> +++ b/drivers/md/raid5.c
+> >> @@ -7677,8 +7677,6 @@ static int raid5_run(struct mddev *mddev)
+> >> 		set_bit(MD_RECOVERY_RUNNING, &mddev->recovery);
+> >> 		mddev->sync_thread = md_register_thread(md_do_sync, mddev,
+> >> 							"reshape");
+> >> -		if (!mddev->sync_thread)
+> >> -			goto abort;
+> >> 	}
+> >> 
+> >> 	/* Ok, everything is just fine now */
+> >> -- 
+> >> 2.31.1
+> >> 
+> > 
+> > These changes look ok, but the error handling logic seems to be freeing
+> > the incorrect thread, not the one that these functions create.  That's
+> > independant of this change, but seems odd.  If someone cares about it,
+> > it should probably be looked at, or if correct, a comment would be nice
+> > as it's really confusing.
+> 
+> I don't think this is confusing. raid[5|10]_run() creates two threads:
+> first mddev->thread, then mddev->sync_thread. If we fail to create the
+> second thread (sync_thread), we free the first thread (mddev->thread) in 
+> the error handling logic. 
 
-Ah. My bad. I didn't realize that it shouldn't be really used.
+Look a bit lower, in "abort:" you do clean up "->thread", but never
+"->sync_thread"  You can get to "abort:" after sync_thread is properly
+registered.
 
-Thanks,
-Michal
+That is what I was trying to say above, as it's not obvious because
+"->thread" was created in a different function, setup_conf(), to see it
+be freed here in the error path of raid[5|10]_run() wasn't all that
+clear to me.
 
--- 
-Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
-w: www.monstr.eu p: +42-0-721842854
-Maintainer of Linux kernel - Xilinx Microblaze
-Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
-U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
+Anyway, these are code paths that are obviously never hit, so it's
+probably not a big deal.
 
+thanks,
+
+greg k-h
