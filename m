@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11676370146
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 21:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0B9370142
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 21:31:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232239AbhD3TcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 15:32:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57662 "EHLO
+        id S232108AbhD3TcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 15:32:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231503AbhD3TcC (ORCPT
+        with ESMTP id S231136AbhD3Tb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 15:32:02 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57294C06138D
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 12:31:09 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id lp8so6914943pjb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 12:31:09 -0700 (PDT)
+        Fri, 30 Apr 2021 15:31:59 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD33C06138B
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 12:31:10 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id z16so9163529pga.1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 12:31:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=n2cccSkj7JXebjAACv3dY79CWkpF/3vnYkH0432vsN0=;
-        b=lH+/t/xPez2h4UyesO9uFDNP4GndJvI8J25vCSNCbTSgYOm6a0n/oOU5sBKuVgOt/P
-         eCGeKtjeGDaYJY1E+VCKIWGZ+qL+b21CQaaBmQYEva1JC5cnDwOMMhYT1RaUMgXgDlBQ
-         ptm9KcFyPmY2Ac5hrtyDopsPvM3H004fDXyAg=
+        bh=8eS/xTlMU4yanK78QhNrvQNifSXibqIFiplWt/q5L1k=;
+        b=KCXSN9D4oQS7LHvR+QV4DLjbh3wWT+E5DDO6o26+KJeDhdxp3/oabXgJ6JLWM/ITAk
+         m32+aWrMwB/v67k1x0CqhUfGPA0nCw8TKpMvQAxE5LLuOKLTIp7Xqml50JqzlH+WMewS
+         c1JYcYUdemrC5LWNQ4Wgik+63DHfGDjQ/AN9s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=n2cccSkj7JXebjAACv3dY79CWkpF/3vnYkH0432vsN0=;
-        b=EyqnksG3ICqEpFIaMsFDwqVoDL/FTYuzjEIV4qWAOrATp67gt0C+g/xclT51amuYp+
-         OEYvtr1b/JzYFFfRbZlPpQcFSYCw7PYK0leS525Re+f+i31sDqV391MgwQaQa0z8gKSb
-         fPCdmf39c4ZKRfQB761rgRH7kYj966PQd7TOcahiKqiDxU0uI602eBqdB5CtTDQTCT0e
-         6oIK6nyZsim2lDK2BG2e0UsJSQ6pIyFtpgTUo3WOt8VtLaUnI46rbharQz2Can0QUA7E
-         utFeo0TSCJ6oFvErUjf4U7z8YMe3H5sdAPV/TV2Ivw3ZtPo+97g9/1YV1yOypWGCLYmW
-         lV+g==
-X-Gm-Message-State: AOAM531e3KQ4Rpml0Vosw+970GC+jLQb28leOqKP6kpN5DY2cwU5V+wP
-        cCmwaqw48uK9d2tLrpA/1Q180Q==
-X-Google-Smtp-Source: ABdhPJyCL+jzIviQs/sOUYaRU0bRw66UdTUP1twbpmgKv5DySUDv82iy4rCXRtq7Yo2AvxS/Z9LxiA==
-X-Received: by 2002:a17:90a:d184:: with SMTP id fu4mr16218726pjb.79.1619811068914;
-        Fri, 30 Apr 2021 12:31:08 -0700 (PDT)
+        bh=8eS/xTlMU4yanK78QhNrvQNifSXibqIFiplWt/q5L1k=;
+        b=IVCDdPFUkG4isDU0Zb5+LeCXFvvDN4wU6jgOWr13kqe5FVDIdIgxsS88vAoY4YnI07
+         u3dYSeWjFCyyKDtxikbGN5fOTpL/IMarIogZ9+F8gUFU69sojd1k2gKDAff+j03wBY6E
+         SUiOde7iEUXElZbTOG5caSxUpMlZGYmdQpqaHOCftbuvHGN0FBRX2GpWyDNBNP5YaalA
+         mvM0UIKXxJIdrRHJQPgF4V24orfIf4RtxwtSdyxfLGpYHLcf4NQ2xgkfa48GutGJ3R9A
+         xtS7DqcdMNyRe/+6VT0wAYBqJV8S9vOX+CrqEt+DtZi5mSRUXB8cCt611OF14EmUqRyM
+         wD5w==
+X-Gm-Message-State: AOAM530ivovRKBPAYCO1l0tiGaYMs/r87RsnRNZlLesyXWOQHNjJByCu
+        nubIL2IZmw8DXS7xYy+AqAZdTg==
+X-Google-Smtp-Source: ABdhPJw7m54lXAmk14ck5GErFdHIHCneNa/To8KxUQnr1t8xPgf4X7+p/TbfUiaShg6zqh7RyFnTcw==
+X-Received: by 2002:a63:e443:: with SMTP id i3mr6203308pgk.114.1619811069954;
+        Fri, 30 Apr 2021 12:31:09 -0700 (PDT)
 Received: from smtp.gmail.com ([2620:15c:202:201:dacb:8fee:a41f:12ac])
-        by smtp.gmail.com with ESMTPSA id t6sm3143500pjl.57.2021.04.30.12.31.07
+        by smtp.gmail.com with ESMTPSA id t6sm3143500pjl.57.2021.04.30.12.31.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 12:31:08 -0700 (PDT)
+        Fri, 30 Apr 2021 12:31:09 -0700 (PDT)
 From:   Stephen Boyd <swboyd@chromium.org>
 To:     Rob Clark <robdclark@gmail.com>
 Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
@@ -53,9 +53,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         Abhinav Kumar <abhinavk@codeaurora.org>,
         Kuogee Hsieh <khsieh@codeaurora.org>, aravindh@codeaurora.org,
         Sean Paul <sean@poorly.run>
-Subject: [PATCH 2/6] drm/msm: Use VERB() for extra verbose logging
-Date:   Fri, 30 Apr 2021 12:31:00 -0700
-Message-Id: <20210430193104.1770538-3-swboyd@chromium.org>
+Subject: [PATCH 3/6] drm/msm/dp: Drop malformed debug print
+Date:   Fri, 30 Apr 2021 12:31:01 -0700
+Message-Id: <20210430193104.1770538-4-swboyd@chromium.org>
 X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
 In-Reply-To: <20210430193104.1770538-1-swboyd@chromium.org>
 References: <20210430193104.1770538-1-swboyd@chromium.org>
@@ -65,11 +65,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These messages are useful for bringup/early development but in
-production they don't provide much value. We know what sort of GPU we
-have and interrupt information can be gathered other ways. This cuts
-down on lines in the drm debug logs that happen too often, making the
-debug logs practically useless.
+This print is missing a newline, and doesn't really provide any value.
+Drop it.
 
 Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 Cc: Abhinav Kumar <abhinavk@codeaurora.org>
@@ -78,99 +75,21 @@ Cc: aravindh@codeaurora.org
 Cc: Sean Paul <sean@poorly.run>
 Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- drivers/gpu/drm/msm/adreno/adreno_gpu.c      |  2 +-
- drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c | 16 ++++++++--------
- 2 files changed, 9 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/msm/dp/dp_panel.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-index 0f184c3dd9d9..b5072cec982d 100644
---- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-@@ -408,7 +408,7 @@ int adreno_hw_init(struct msm_gpu *gpu)
- 	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
- 	int ret, i;
- 
--	DBG("%s", gpu->name);
-+	VERB("%s", gpu->name);
- 
- 	ret = adreno_load_fw(adreno_gpu);
- 	if (ret)
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
-index 84ea09d9692f..cad65ec2acac 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
-@@ -24,7 +24,7 @@ static void dpu_core_irq_callback_handler(void *arg, int irq_idx)
- 	struct dpu_irq_callback *cb;
- 	unsigned long irq_flags;
- 
--	pr_debug("irq_idx=%d\n", irq_idx);
-+	VERB("irq_idx=%d\n", irq_idx);
- 
- 	if (list_empty(&irq_obj->irq_cb_tbl[irq_idx])) {
- 		DRM_ERROR("no registered cb, idx:%d enable_count:%d\n", irq_idx,
-@@ -85,7 +85,7 @@ static int _dpu_core_irq_enable(struct dpu_kms *dpu_kms, int irq_idx)
+diff --git a/drivers/gpu/drm/msm/dp/dp_panel.c b/drivers/gpu/drm/msm/dp/dp_panel.c
+index 9cc816663668..88196f7e4406 100644
+--- a/drivers/gpu/drm/msm/dp/dp_panel.c
++++ b/drivers/gpu/drm/msm/dp/dp_panel.c
+@@ -141,7 +141,6 @@ static int dp_panel_update_modes(struct drm_connector *connector,
+ 			return rc;
+ 		}
+ 		rc = drm_add_edid_modes(connector, edid);
+-		DRM_DEBUG_DP("%s -", __func__);
+ 		return rc;
  	}
  
- 	enable_count = atomic_read(&dpu_kms->irq_obj.enable_counts[irq_idx]);
--	DRM_DEBUG_KMS("irq_idx=%d enable_count=%d\n", irq_idx, enable_count);
-+	VERB("irq_idx=%d enable_count=%d\n", irq_idx, enable_count);
- 	trace_dpu_core_irq_enable_idx(irq_idx, enable_count);
- 
- 	if (atomic_inc_return(&dpu_kms->irq_obj.enable_counts[irq_idx]) == 1) {
-@@ -96,7 +96,7 @@ static int _dpu_core_irq_enable(struct dpu_kms *dpu_kms, int irq_idx)
- 			DPU_ERROR("Fail to enable IRQ for irq_idx:%d\n",
- 					irq_idx);
- 
--		DPU_DEBUG("irq_idx=%d ret=%d\n", irq_idx, ret);
-+		VERB("irq_idx=%d ret=%d\n", irq_idx, ret);
- 
- 		spin_lock_irqsave(&dpu_kms->irq_obj.cb_lock, irq_flags);
- 		/* empty callback list but interrupt is enabled */
-@@ -120,7 +120,7 @@ int dpu_core_irq_enable(struct dpu_kms *dpu_kms, int *irq_idxs, u32 irq_count)
- 
- 	counts = atomic_read(&dpu_kms->irq_obj.enable_counts[irq_idxs[0]]);
- 	if (counts)
--		DRM_ERROR("irq_idx=%d enable_count=%d\n", irq_idxs[0], counts);
-+		VERB("irq_idx=%d enable_count=%d\n", irq_idxs[0], counts);
- 
- 	for (i = 0; (i < irq_count) && !ret; i++)
- 		ret = _dpu_core_irq_enable(dpu_kms, irq_idxs[i]);
-@@ -148,7 +148,7 @@ static int _dpu_core_irq_disable(struct dpu_kms *dpu_kms, int irq_idx)
- 	}
- 
- 	enable_count = atomic_read(&dpu_kms->irq_obj.enable_counts[irq_idx]);
--	DRM_DEBUG_KMS("irq_idx=%d enable_count=%d\n", irq_idx, enable_count);
-+	VERB("irq_idx=%d enable_count=%d\n", irq_idx, enable_count);
- 	trace_dpu_core_irq_disable_idx(irq_idx, enable_count);
- 
- 	if (atomic_dec_return(&dpu_kms->irq_obj.enable_counts[irq_idx]) == 0) {
-@@ -158,7 +158,7 @@ static int _dpu_core_irq_disable(struct dpu_kms *dpu_kms, int irq_idx)
- 		if (ret)
- 			DPU_ERROR("Fail to disable IRQ for irq_idx:%d\n",
- 					irq_idx);
--		DPU_DEBUG("irq_idx=%d ret=%d\n", irq_idx, ret);
-+		VERB("irq_idx=%d ret=%d\n", irq_idx, ret);
- 	}
- 
- 	return ret;
-@@ -222,7 +222,7 @@ int dpu_core_irq_register_callback(struct dpu_kms *dpu_kms, int irq_idx,
- 		return -EINVAL;
- 	}
- 
--	DPU_DEBUG("[%pS] irq_idx=%d\n", __builtin_return_address(0), irq_idx);
-+	VERB("[%pS] irq_idx=%d\n", __builtin_return_address(0), irq_idx);
- 
- 	spin_lock_irqsave(&dpu_kms->irq_obj.cb_lock, irq_flags);
- 	trace_dpu_core_irq_register_callback(irq_idx, register_irq_cb);
-@@ -257,7 +257,7 @@ int dpu_core_irq_unregister_callback(struct dpu_kms *dpu_kms, int irq_idx,
- 		return -EINVAL;
- 	}
- 
--	DPU_DEBUG("[%pS] irq_idx=%d\n", __builtin_return_address(0), irq_idx);
-+	VERB("[%pS] irq_idx=%d\n", __builtin_return_address(0), irq_idx);
- 
- 	spin_lock_irqsave(&dpu_kms->irq_obj.cb_lock, irq_flags);
- 	trace_dpu_core_irq_unregister_callback(irq_idx, register_irq_cb);
 -- 
 https://chromeos.dev
 
