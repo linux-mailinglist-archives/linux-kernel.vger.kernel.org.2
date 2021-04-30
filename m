@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD4F36FCC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 16:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C61E36FCC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 16:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233906AbhD3OqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 10:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50684 "EHLO
+        id S233741AbhD3Oq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 10:46:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233589AbhD3Opk (ORCPT
+        with ESMTP id S233620AbhD3Opm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 10:45:40 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D381DC061344
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:44:47 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id j28so18914841edy.9
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:44:47 -0700 (PDT)
+        Fri, 30 Apr 2021 10:45:42 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42806C061350
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:44:49 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id y7so6760740ejj.9
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:44:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=auqmHaougiorEJiold25Fwbfcoe9phFoSmF9xCEzReU=;
-        b=Hp7VAnboDNvGyraKpj+1SLEakveg+O/oIvx6JL6f/ON1JjJdsb/i8uujyLxX+0dRpW
-         GMix+bWECTou1Di7bp5lNn5M1VZZiGVWm4Ic4ZGxnyjabmEN5NacDwYUccRQLwgh4XkE
-         lUQCMYyLH5X8Iph3g7iT6KQvmVJ9+J1na9cV6GCwCMzhebDTbjygbSc2v9i8czPv59YP
-         sb9dX550SGQMDBTuqlCtnzx3PUL67e3wTswETNaWl8KYZD9vn05zWKCtVdAi7xRYZTQr
-         pwJiQIOj7wqnzAtwd6Fso4/DmEH7DZOrqlA3mQlN11cULTvmag3DMCEHR2cNaPqWYIvg
-         +ZkA==
+        bh=ACO+R08CoyLCjvDMxXLNgD1Yym9DyLgjQx6IL72eiqo=;
+        b=ocEkSnt1xRxERdJb6RqywUM0s63yy7RUipSN3iA3L2FpfMdusWHFh0ty839Ub5schM
+         1dZ7di3cFygAx/fJjCOl6Sq3ZO8qiUhNQK2yP9a7LwFRJ4Kf5Hgj9gCQbkrAKbDUZpab
+         QgBVxZC6SnJILYVm+pluJP6VAoXQxrC37dCKiKyfYsO/b96rczLf33R0FcK+K9D8xyoO
+         rgPxTjaTz8NEdzTEqDujbK3m5EEtjGMcRJY4qF0/XKyYsFZhOs98tBeoYdlmJT46cdzA
+         uG7HW/E6j3v+2Bp3ZU5RxXQy9rm/s9zWJSfHr7ms3Y333uvBywiZzSXPGqtrpdLsxlD/
+         MT7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=auqmHaougiorEJiold25Fwbfcoe9phFoSmF9xCEzReU=;
-        b=rvXCH0ePuz9t4NDLY84KUF0/Dhh0xHDtJH04N02XDP25orRXLK1OQxx8BwIsJFsxlL
-         tWoKQ1woUZzPkGAbdb0aHQyRXowmMdmRWQ6gI0TS/h9zRvMmsCDJVN5VKwv66kBbhwAn
-         953A64GWgQpeISji9TlXGRSnRMz4W24OKlCt4YNKZRYGRERpFtz4+aD3vAyU0r7QVhRw
-         TMbQwO+BiFS7utNvsQRYz7nlKmmuhyVL2DpB9FUyadbuEvZoBZmR7gvh67uo8SbrfObb
-         SkZxssvotYG6fBPW69q8KFtiIDS7wRKLuojmRCuJq13h/gXczauvhUoWu8ina3T6E8LP
-         iiwg==
-X-Gm-Message-State: AOAM530fjZP5k8/tG6lMpnJs+t6UIcCqM8aMQ//Rau3L8EbOuvYILQw9
-        hwic6kxhzbftvdTAFxumgyGNwteWY8k=
-X-Google-Smtp-Source: ABdhPJzkCNGnj7vT5J761jhzNfxxexpO2oqIqRm3zEWN9WKG7Xs6UfO/0griXzOYFZGH+MnU1YdL/Q==
-X-Received: by 2002:aa7:ccc4:: with SMTP id y4mr6244576edt.171.1619793886311;
-        Fri, 30 Apr 2021 07:44:46 -0700 (PDT)
+        bh=ACO+R08CoyLCjvDMxXLNgD1Yym9DyLgjQx6IL72eiqo=;
+        b=WWF6uZgOuNw5D1XkYtudMmuezN7O56BzfMRosmu7sEY8eqVyi4XaR0pqe4puA1xQvy
+         SOfnQmrWqsk3ewwUZNP2NthHr7OMuCUChkcGkJoEwVgzdhCorzz28cHNFAxsP6ODcrVq
+         yGe/04E6a/GUxrgWY6crn/NkczAnCIwtrSsj6t3Ro32lseqq9B4zwgb39Gq4Dhd2dkNP
+         CALc/2+m+Y9LD0+QR5MhX8fIJqxwZqmNSWK/H4AdH0Oss+ewR7KnIGg2Snqo009bM8Yg
+         D4FnctzB/ByQ39quzAi1kedCvwykt1x3PmRtuB8xQ+I5Y1v4gLD0i20rR75KsNuPURcB
+         ekBg==
+X-Gm-Message-State: AOAM533ncnYBzFY4jSYWsxpNBNaVNefR7oKpyFgdDPzyo1XCjh41+waO
+        bX5wgDAIERY7+pGoMPq1MZTsOLSwFcE=
+X-Google-Smtp-Source: ABdhPJyzFLjtYzogS9E6jpp4fhbusewpqxLRg9JWqwHkde0c0UprUGv/RwjESNrSTf2Ad+q3IXp5Sg==
+X-Received: by 2002:a17:906:1dd3:: with SMTP id v19mr4696425ejh.4.1619793887824;
+        Fri, 30 Apr 2021 07:44:47 -0700 (PDT)
 Received: from agape ([109.52.244.36])
-        by smtp.gmail.com with ESMTPSA id mp36sm1985859ejc.48.2021.04.30.07.44.45
+        by smtp.gmail.com with ESMTPSA id x20sm1404347edd.58.2021.04.30.07.44.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 07:44:46 -0700 (PDT)
+        Fri, 30 Apr 2021 07:44:47 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 21/43] staging: rtl8723bs: remove empty if-else blocks after BTC_PRINT removal
-Date:   Fri, 30 Apr 2021 16:43:51 +0200
-Message-Id: <0f900bf15be532f2f224ae17c8fb7615dbca225f.1619793406.git.fabioaiuto83@gmail.com>
+Subject: [PATCH v2 22/43] staging: rtl8723bs: remove braces around single statement in if block
+Date:   Fri, 30 Apr 2021 16:43:52 +0200
+Message-Id: <c8a29e711f071926b0aec7dcfda970e3225219d2.1619793406.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1619793405.git.fabioaiuto83@gmail.com>
 References: <cover.1619793405.git.fabioaiuto83@gmail.com>
@@ -63,113 +63,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove if-else blocks left empty after BTC_PRINT removal.
+fix following post-commit hook checkatch issue:
+
+WARNING: braces {} are not necessary for single statement blocks
+21: FILE: drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c:609:
++				if (!bBtHsOn) {
+ 					algorithm =
+		BT_8723B_1ANT_COEX_ALGO_PANEDR_HID;
+ 				}
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c | 16 +---------------
- drivers/staging/rtl8723bs/hal/HalBtc8723b2Ant.c | 12 +-----------
- 2 files changed, 2 insertions(+), 26 deletions(-)
+ drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c b/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
-index 28f41a637c96..57579d7eab71 100644
+index 57579d7eab71..911d753e51f6 100644
 --- a/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
 +++ b/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
-@@ -606,8 +606,7 @@ static u8 halbtc8723b1ant_ActionAlgorithm(struct btc_coexist *pBtCoexist)
+@@ -606,9 +606,9 @@ static u8 halbtc8723b1ant_ActionAlgorithm(struct btc_coexist *pBtCoexist)
  				pBtLinkInfo->bPanExist &&
  				pBtLinkInfo->bA2dpExist
  			) {
--				if (bBtHsOn) {
--				} else {
-+				if (!bBtHsOn) {
+-				if (!bBtHsOn) {
++				if (!bBtHsOn)
  					algorithm = BT_8723B_1ANT_COEX_ALGO_PANEDR_HID;
- 				}
- 			}
-@@ -1063,10 +1062,6 @@ static void halbtc8723b1ant_PsTdma(
- 
- 	pBtCoexist->fBtcGet(pBtCoexist, BTC_GET_BL_WIFI_BUSY, &bWifiBusy);
- 
--	if (pCoexDm->bCurPsTdmaOn) {
--	} else {
--	}
--
- 	if (!bForceExec) {
- 		if (
- 			(pCoexDm->bPrePsTdmaOn == pCoexDm->bCurPsTdmaOn) &&
-@@ -1373,10 +1368,6 @@ static bool halbtc8723b1ant_IsCommonAction(struct btc_coexist *pBtCoexist)
- 
- 		bCommon = true;
- 	} else {
--		if (bWifiBusy) {
--		} else {
--		}
--
- 		bCommon = false;
- 	}
- 
-@@ -1528,7 +1519,6 @@ static void halbtc8723b1ant_TdmaDurationAdjustForAcl(
- 				halbtc8723b1ant_PsTdma(pBtCoexist, NORMAL_EXEC, true, 1);
- 				pCoexDm->psTdmaDuAdjType = 1;
- 			}
--		} else {	  /* no change */
- 		}
- 
- 		if (
-@@ -3012,10 +3002,6 @@ void EXhalbtc8723b1ant_BtInfoNotify(
- 		pCoexSta->btInfoC2h[rspSource][i] = tmpBuf[i];
- 		if (i == 1)
- 			btInfo = tmpBuf[i];
--		if (i == length - 1)
--			{}
--		else
--			{}
- 	}
- 
- 	if (BT_INFO_SRC_8723B_1ANT_WIFI_FW != rspSource) {
-diff --git a/drivers/staging/rtl8723bs/hal/HalBtc8723b2Ant.c b/drivers/staging/rtl8723bs/hal/HalBtc8723b2Ant.c
-index 73f1cc6bc27c..15304feb2442 100644
---- a/drivers/staging/rtl8723bs/hal/HalBtc8723b2Ant.c
-+++ b/drivers/staging/rtl8723bs/hal/HalBtc8723b2Ant.c
-@@ -1621,8 +1621,7 @@ static void halbtc8723b2ant_TdmaDurationAdjust(
- 
- 		if (!bScan && !bLink && !bRoam)
- 			halbtc8723b2ant_PsTdma(pBtCoexist, NORMAL_EXEC, true, pCoexDm->psTdmaDuAdjType);
--		else {
--		}
+-				}
 +
+ 			}
+ 		}
  	}
- }
- 
-@@ -2859,10 +2858,6 @@ void EXhalbtc8723b2ant_MediaStatusNotify(struct btc_coexist *pBtCoexist, u8 type
- 	u8 wifiCentralChnl;
- 	u8 apNum = 0;
- 
--	if (BTC_MEDIA_CONNECT == type) {
--	} else {
--	}
--
- 	/*  only 2.4G we need to inform bt the chnl mask */
- 	pBtCoexist->fBtcGet(pBtCoexist, BTC_GET_U1_WIFI_CENTRAL_CHNL, &wifiCentralChnl);
- 	if ((BTC_MEDIA_CONNECT == type) && (wifiCentralChnl <= 14)) {
-@@ -2889,8 +2884,6 @@ void EXhalbtc8723b2ant_MediaStatusNotify(struct btc_coexist *pBtCoexist, u8 type
- 
- void EXhalbtc8723b2ant_SpecialPacketNotify(struct btc_coexist *pBtCoexist, u8 type)
- {
--	if (type == BTC_PACKET_DHCP) {
--	}
- }
- 
- void EXhalbtc8723b2ant_BtInfoNotify(
-@@ -2915,9 +2908,6 @@ void EXhalbtc8723b2ant_BtInfoNotify(
- 		if (i == 1)
- 			btInfo = tmpBuf[i];
- 
--		if (i == length - 1) {
--		} else {
--		}
- 	}
- 
- 	if (pBtCoexist->bManualControl) {
 -- 
 2.20.1
 
