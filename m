@@ -2,93 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A9A3370393
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 00:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7517A37039D
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 00:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbhD3Whi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 18:37:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbhD3Whg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 18:37:36 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2974C06174A;
-        Fri, 30 Apr 2021 15:36:47 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id i21-20020a05600c3555b029012eae2af5d4so2425399wmq.4;
-        Fri, 30 Apr 2021 15:36:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xV2TyfqNfpvMDLuKyUFGZXgiGO95qoCXzch2s3MNOXc=;
-        b=n+UrfSN5UqRSGV4sjIEPSIaoC82Q9+aH0Jwcz7+3NyC4M8bey9ixewMGMefdWY6aMi
-         gYmOFpMGCrJrk8KQ5qn4CsuKQTz213o439yb+euPgIyq4LowVJ2MannDopZCo4cSYIvF
-         gPyAfPM/WeFq/A56iEiaVOhh9lsv8vVhe/ZQduz6N1yUygGhfwI4u3Cel4q3Vb5ivcU7
-         CR2NNkMyWXTAZ/SRKL37MELewHvM/13qFCAyHcKwRKgzX4RhidjYtg60hvYeIRyM5z8M
-         YY/6J17fLJyYSj5GV7ZuOc7nJ9evp2r4cvf1y2zcaezJ+ayJeEQrT3Hl3PM+CjUWi2YW
-         YxXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xV2TyfqNfpvMDLuKyUFGZXgiGO95qoCXzch2s3MNOXc=;
-        b=q3u8SbxMQJ5jQa15ERRaftu30wNHI0OrdcQvAV7winTyp+H82QdqnilGt4UEIVxvcC
-         p8U4Aw2+yHSU9VH3OPSIhTa2x11GaDIwRFlqvxESZ76wbGzd6fKPffZee0e2l8qkY1qw
-         bewsiQD+ryuNFA6BhF3RY02GH7ImjIWQ8DA5jzeVY0en2kHTt5FLGzc27LRt9llEyrej
-         bY7LtndiSClAynCrdSeSE4JWK4uXfovFNnj/kdi9Bm9aPiGbqR0CxCgByYemGQU2oXHd
-         /YNZp20HVQhUZ2NZ4VpFEZY71GN05iotPQk8xrANyWTBF50i5edzI3KjsMetIITHqdyx
-         W2Zw==
-X-Gm-Message-State: AOAM531yvKgekxNWUrzWFE/fpDfiEzKUpCX3Syqycnbpu5beCpJ6dB5Z
-        R5YG2WUEh0NC9GzVQUmB0lQ=
-X-Google-Smtp-Source: ABdhPJxeXRSqcbeiXlOUay+I7rpPBGGPhthTDHgcijpMgwj/myVEuNV8ndDUkt7Eo/uwy1D56IIxGQ==
-X-Received: by 2002:a7b:ce19:: with SMTP id m25mr8392577wmc.137.1619822206496;
-        Fri, 30 Apr 2021 15:36:46 -0700 (PDT)
-Received: from debian (host-84-13-30-150.opaltelecom.net. [84.13.30.150])
-        by smtp.gmail.com with ESMTPSA id s6sm16473025wms.0.2021.04.30.15.36.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 15:36:46 -0700 (PDT)
-Date:   Fri, 30 Apr 2021 23:36:44 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 0/8] 5.4.116-rc1 review
-Message-ID: <YIyGfJw4z3fVQF32@debian>
-References: <20210430141911.137473863@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210430141911.137473863@linuxfoundation.org>
+        id S231758AbhD3Wld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 18:41:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42328 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230226AbhD3Wlb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 18:41:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E30EC61210;
+        Fri, 30 Apr 2021 22:40:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619822442;
+        bh=fxlHNYXgieC6m1s7KsrjN7MvCwTb0qH/VjvuO3Yc0jQ=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Ue8Db4gUlOmKT/HGFs0eT7p3RtoDUH9Bw4f4gWz0TN8YUQgX92z4cNYfEZn3JFy3f
+         W6zfLIVoDkdvctkNw+uHrV3FC1mwgsy+dXcdtzr4iyIgyulWG9PYC6zRQYM6hqjTW3
+         VLc2tVJb03UOVDBu9/0AlQU0xKnjNO2aw7rHvj/mG3tIDjDaadb+0f9t+/YV3BQ7Ki
+         9emrPdzRIv0TrYOZhjHyH3LvKgKEWXGBU8DXTEZL8tUPpUXNS1PuZfhO4LG22vlbni
+         jGDKV+JsPQyKOsnyuY5tCUVmbMuj3FbP0KX4oufh1CXX0jFNvrz31eyBWM7Ndl0oUT
+         kWcotEk6oTANw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D066060A23;
+        Fri, 30 Apr 2021 22:40:42 +0000 (UTC)
+Subject: Re: [GIT PULL] overlayfs update for 5.13
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YIwYirYCIdcVUjk6@miu.piliscsaba.redhat.com>
+References: <YIwYirYCIdcVUjk6@miu.piliscsaba.redhat.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YIwYirYCIdcVUjk6@miu.piliscsaba.redhat.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git tags/ovl-update-5.13
+X-PR-Tracked-Commit-Id: 5e717c6fa41ff9b9b0c1e5959ccf5d8ef42f804b
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: d652502ef46895820533aada50ddfd94abe078fe
+Message-Id: <161982244278.6177.768802087309533777.pr-tracker-bot@kernel.org>
+Date:   Fri, 30 Apr 2021 22:40:42 +0000
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+The pull request you sent on Fri, 30 Apr 2021 16:47:38 +0200:
 
-On Fri, Apr 30, 2021 at 04:20:14PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.116 release.
-> There are 8 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 02 May 2021 14:19:04 +0000.
-> Anything received after that time might be too late.
+> git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git tags/ovl-update-5.13
 
-Build test:
-mips (gcc version 11.1.1 20210430): 65 configs -> no new failure
-arm (gcc version 11.1.1 20210430): 107 configs -> no new failure
-x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/d652502ef46895820533aada50ddfd94abe078fe
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression.
-arm: Booted on rpi3b. No regression.
+Thank you!
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
---
-Regards
-Sudip
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
