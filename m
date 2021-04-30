@@ -2,77 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F38236F499
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 05:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E8636F49D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 05:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229778AbhD3Dpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 23:45:44 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:35789 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229591AbhD3Dpm (ORCPT
+        id S229902AbhD3DrA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 29 Apr 2021 23:47:00 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:3411 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229590AbhD3Dq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 23:45:42 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 13U3iX2U017640
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Apr 2021 23:44:33 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 00C4215C39C4; Thu, 29 Apr 2021 23:44:32 -0400 (EDT)
-Date:   Thu, 29 Apr 2021 23:44:32 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Vegard Nossum <vegard.nossum@oracle.com>,
-        akpm@linux-foundation.org, peterz@infradead.org, axboe@kernel.dk,
-        pmladek@suse.com, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ext4: fix memory leak in ext4_fill_super
-Message-ID: <YIt9IFY4Xsf5K+eZ@mit.edu>
-References: <20210428172828.12589-1-paskripkin@gmail.com>
- <3c3877a4-fef2-9e24-f99f-2ecc46deb7e4@oracle.com>
- <20210429143354.418248a7@gmail.com>
- <YIrnPXJo/n68NrQs@mit.edu>
- <20210429230956.6ad23897@gmail.com>
- <YIsn+JToAkPqDPq5@mit.edu>
- <20210430010547.38f27e39@gmail.com>
+        Thu, 29 Apr 2021 23:46:56 -0400
+Received: from dggeml752-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FWdVm1yc9z5vZy;
+        Fri, 30 Apr 2021 11:42:56 +0800 (CST)
+Received: from dggpeml500026.china.huawei.com (7.185.36.106) by
+ dggeml752-chm.china.huawei.com (10.1.199.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 30 Apr 2021 11:46:05 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 30 Apr 2021 11:46:05 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
+ Fri, 30 Apr 2021 11:46:04 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Andrew Jones <drjones@redhat.com>
+CC:     "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "msys.mizuma@gmail.com" <msys.mizuma@gmail.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>, "xuwei (O)" <xuwei5@huawei.com>,
+        yangyicong <yangyicong@huawei.com>,
+        "tiantao (H)" <tiantao6@hisilicon.com>
+Subject: RE: [RFC PATCH v6 1/4] topology: Represent clusters of CPUs within a
+ die
+Thread-Topic: [RFC PATCH v6 1/4] topology: Represent clusters of CPUs within a
+ die
+Thread-Index: AQHXNXvAeoar4cxa7ESjcQhDUM7ABqrJNh+AgANDDqA=
+Date:   Fri, 30 Apr 2021 03:46:04 +0000
+Message-ID: <2fcccd7430f945e9badf693627298fdd@hisilicon.com>
+References: <20210420001844.9116-2-song.bao.hua@hisilicon.com>
+ <20210428094811.159245-1-drjones@redhat.com>
+In-Reply-To: <20210428094811.159245-1-drjones@redhat.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.200.93]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210430010547.38f27e39@gmail.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 01:05:47AM +0300, Pavel Skripkin wrote:
-> > out of the thread function.  That means hanging struct mmpd_data off
-> > the struct ext4_sb_info structure, and then adding a function like
-> > this to fs/ext4/mmp.c
-> > 
-> > static void ext4_stop_mmpd(struct ext4_sb_info *sbi)
 
-That should "extern void ...", since it will be called from
-fs/ext4/super.c.  I had originally was thinking to put this function
-in fs/ext4/super.c, but from the perspective of keeping the MMP code
-in the same source file, it probably makes sense to keep this function
-with the other MMP functions.
 
-> > {
-> > 	if (sbi->s_mmp_tsk) {
-> > 		kthread_stop(sbi->s_mmp_tsk);
-> > 		brelse(sbi->s_mmp_data->bh);
-> > 		kfree(sbi->s_mmp_data);
-> > 		sbi->s_mmp_data = NULL;
-> > 		sbi->s_mmp_tsk = NULL;
-> > 	}
-> > }
-> > 
-> > Basically, just move all of the cleanup so it is done after the
-> > kthread is stopped, so we don't have to do any fancy error checking.
-> > We just do it unconditionally.
+> -----Original Message-----
+> From: Andrew Jones [mailto:drjones@redhat.com]
+> Sent: Wednesday, April 28, 2021 9:48 PM
+> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> Cc: aubrey.li@linux.intel.com; bp@alien8.de; bsegall@google.com;
+> catalin.marinas@arm.com; dietmar.eggemann@arm.com;
+> gregkh@linuxfoundation.org; guodong.xu@linaro.org; hpa@zytor.com; Jonathan
+> Cameron <jonathan.cameron@huawei.com>; juri.lelli@redhat.com;
+> lenb@kernel.org; Liguozhu (Kenneth) <liguozhu@hisilicon.com>;
+> linux-acpi@vger.kernel.org; linux-arm-kernel@lists.infradead.org;
+> linux-kernel@vger.kernel.org; linuxarm@openeuler.org; mark.rutland@arm.com;
+> mgorman@suse.de; mingo@redhat.com; msys.mizuma@gmail.com;
+> peterz@infradead.org; Zengtao (B) <prime.zeng@hisilicon.com>;
+> rjw@rjwysocki.net; rostedt@goodmis.org; sudeep.holla@arm.com;
+> tglx@linutronix.de; tim.c.chen@linux.intel.com; valentin.schneider@arm.com;
+> vincent.guittot@linaro.org; will@kernel.org; x86@kernel.org; xuwei (O)
+> <xuwei5@huawei.com>; yangyicong <yangyicong@huawei.com>
+> Subject: Re: [RFC PATCH v6 1/4] topology: Represent clusters of CPUs within
+> a die
+> 
+> On 20/04/2021 12:18, Barry Song wrote:
+> ...
+> > Currently the ID provided is the offset of the Processor
+> > Hierarchy Nodes Structure within PPTT.  Whilst this is unique
+> > it is not terribly elegant so alternative suggestions welcome.
+> >
+> 
+> The ACPI table offsets are consistent with how other topology IDs are
+> generated. I once tried to make them a little more human friendly with
+> [1], but it was nacked.
+> 
+> [1] https://lore.kernel.org/lkml/20180629132934.GA16282@e107155-lin/t/
+> 
 
-Cheers,
+Ideally, we are going to check if cluster node has a valid UID,
+if yes, read this ID; otherwise, fall back to use offset.
 
-						- Ted
-						
+Will move to that way in next version.
+
+> Thanks,
+> drew
+
+Thanks
+Barry
