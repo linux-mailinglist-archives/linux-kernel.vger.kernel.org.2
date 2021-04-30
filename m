@@ -2,117 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76F6B36F5DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 08:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BD8C36F5E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 08:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbhD3Gqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 02:46:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31409 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230334AbhD3Gqj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 02:46:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619765151;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PFZmzCqPtD1TeQ1IgnxgwBuBBj2UfpUYGVhQ61V9gY0=;
-        b=CO1ZtfocqTxIz6aW0nd/4+5Y9Yz4QjnUh+TbPWjWzaTK7+XtPzCLTHUB9sBspp+qoA9r31
-        Lt6KUWv0GIPRF+EwGce5q45LOf/8sOfQQMuCOthTDWKdiym4vaK0bKSvVBnfVzUvwW0kk4
-        rxpPM0brZ8OkDEGQCoXHtIAcHgkpWP4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-147-bVvfBOJoOuGwtxj_hE5rSQ-1; Fri, 30 Apr 2021 02:45:46 -0400
-X-MC-Unique: bVvfBOJoOuGwtxj_hE5rSQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B23AB802939;
-        Fri, 30 Apr 2021 06:45:42 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (ovpn-115-124.ams2.redhat.com [10.36.115.124])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2A74C5D9C6;
-        Fri, 30 Apr 2021 06:45:27 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        linux-arch <linux-arch@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Subject: Re: extending ucontext (Re: [PATCH v26 25/30] x86/cet/shstk: Handle
- signals for shadow stack)
-References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
-        <20210427204315.24153-26-yu-cheng.yu@intel.com>
-        <CALCETrVTeYfzO-XWh+VwTuKCyPyp-oOMGH=QR_msG9tPQ4xPmA@mail.gmail.com>
-Date:   Fri, 30 Apr 2021 08:45:40 +0200
-In-Reply-To: <CALCETrVTeYfzO-XWh+VwTuKCyPyp-oOMGH=QR_msG9tPQ4xPmA@mail.gmail.com>
-        (Andy Lutomirski's message of "Wed, 28 Apr 2021 16:03:55 -0700")
-Message-ID: <87a6pgb78r.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        id S230418AbhD3GsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 02:48:11 -0400
+Received: from mga05.intel.com ([192.55.52.43]:49771 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230380AbhD3GsH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 02:48:07 -0400
+IronPort-SDR: KDEtbdC2Qa8sck0elFTOml1gb7KOGLPC7hhP9MX2GUl2bYdIwf8CfuTXenAuLivgMzp65OJA5Q
+ A0zOKDAYL9XA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9969"; a="282553786"
+X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
+   d="scan'208";a="282553786"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 23:47:19 -0700
+IronPort-SDR: u2p7OWvqmQgTFrdpJhl5YmbcyD4bBFh+TkqKl1qz1UlrTlCkaIcRXaVVtjcuAMC2toXOibNmOm
+ 4ijxR+6bjkdg==
+X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
+   d="scan'208";a="424720482"
+Received: from hongyuni-mobl1.ccr.corp.intel.com (HELO [10.238.1.82]) ([10.238.1.82])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 23:47:16 -0700
+Subject: Re: [PATCH 00/19] sched: Core Scheduling
+To:     Peter Zijlstra <peterz@infradead.org>, joel@joelfernandes.org,
+        chris.hyser@oracle.com, joshdon@google.com, mingo@kernel.org,
+        vincent.guittot@linaro.org, valentin.schneider@arm.com,
+        mgorman@suse.de
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        "Li, Aubrey" <aubrey.li@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>
+References: <20210422120459.447350175@infradead.org>
+From:   "Ning, Hongyu" <hongyu.ning@linux.intel.com>
+Message-ID: <a49ea23a-998e-2282-4c93-5c6c94f2c28d@linux.intel.com>
+Date:   Fri, 30 Apr 2021 14:47:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20210422120459.447350175@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Andy Lutomirski:
 
-> The kernel has:
->
-> struct rt_sigframe {
->     char __user *pretcode;
->     struct ucontext uc;
->     struct siginfo info;
->     /* fp state follows here */
-> };
->
-> This is roughly the actual signal frame.  But userspace does not have
-> this struct declared, and user code does not know the sizes of the
-> fields.  So it's accessed in a nonsensical way.  The signal handler
-> function is passed a pointer to the whole sigframe implicitly in RSP,
-> a pointer to &frame->info in RSI, anda pointer to &frame->uc in RDX.
-> User code can *find* the fp state by following a pointer from
-> mcontext, which is, in turn, found via uc:
->
-> struct ucontext {
->     unsigned long      uc_flags;
->     struct ucontext  *uc_link;
->     stack_t          uc_stack;
->     struct sigcontext uc_mcontext;  <-- fp pointer is in here
->     sigset_t      uc_sigmask;    /* mask last for extensibility */
-> };
+On 2021/4/22 20:04, Peter Zijlstra wrote:
+> Hai,
+> 
+> This is an agressive fold of all the core-scheduling work so far. I've stripped
+> a whole bunch of tags along the way (hopefully not too many, please yell if you
+> feel I made a mistake), including tested-by. Please retest.
+> 
+> Changes since the last partial post is dropping all the cgroup stuff and
+> PR_SCHED_CORE_CLEAR as well as that exec() behaviour in order to later resolve
+> the cgroup issue.
+> 
+> Since we're really rather late for the coming merge window, my plan was to
+> merge the lot right after the merge window.
+> 
+> Again, please test.
+> 
+> These patches should shortly be available in my queue.git.
+> 
+> ---
+>  b/kernel/sched/core_sched.c                     |  229 ++++++
+>  b/tools/testing/selftests/sched/.gitignore      |    1 
+>  b/tools/testing/selftests/sched/Makefile        |   14 
+>  b/tools/testing/selftests/sched/config          |    1 
+>  b/tools/testing/selftests/sched/cs_prctl_test.c |  338 +++++++++
+>  include/linux/sched.h                           |   19 
+>  include/uapi/linux/prctl.h                      |    8 
+>  kernel/Kconfig.preempt                          |    6 
+>  kernel/fork.c                                   |    4 
+>  kernel/sched/Makefile                           |    1 
+>  kernel/sched/core.c                             |  858 ++++++++++++++++++++++--
+>  kernel/sched/cpuacct.c                          |   12 
+>  kernel/sched/deadline.c                         |   38 -
+>  kernel/sched/debug.c                            |    4 
+>  kernel/sched/fair.c                             |  276 +++++--
+>  kernel/sched/idle.c                             |   13 
+>  kernel/sched/pelt.h                             |    2 
+>  kernel/sched/rt.c                               |   31 
+>  kernel/sched/sched.h                            |  393 ++++++++--
+>  kernel/sched/stop_task.c                        |   14 
+>  kernel/sched/topology.c                         |    4 
+>  kernel/sys.c                                    |    5 
+>  tools/include/uapi/linux/prctl.h                |    8 
+>  23 files changed, 2057 insertions(+), 222 deletions(-)
+> 
 
-I must say that I haven't reviewed this in detail, but for historic
-reasons, glibc userspace has a differently-sized sigset_t.  So the
-kernel ucontext (used in signals) and user ucontext (used for
-swapcontext et al.) are already fully decoupled?
 
-Thanks,
-Florian
+Adding sysbench/uperf/wis performance results for reference:
 
+- kernel under test:
+	-- above patchset of core-scheduling + local fix for softlockup issue: https://lore.kernel.org/lkml/5c289c5a-a120-a1d0-ca89-2724a1445fe8@linux.intel.com/
+	-- coresched_v10 kernel source: https://github.com/digitalocean/linux-coresched/commits/coresched/v10-v5.10.y
+
+- workloads: 
+	-- A. sysbench cpu (192 threads) + sysbench cpu (192 threads)
+	-- B. sysbench cpu (192 threads) + sysbench mysql (192 threads)
+	-- C. uperf netperf.xml (192 threads over TCP or UDP protocol separately)
+	-- D. will-it-scale context_switch via pipe (192 threads)
+
+- test machine setup: 
+	CPU(s):              192
+	On-line CPU(s) list: 0-191
+	Thread(s) per core:  2
+	Core(s) per socket:  48
+	Socket(s):           2
+	NUMA node(s):        4
+
+- performance change key info:
+	--workload B: coresched (cs_on), sysbench mysql performance drop around 20% vs coresched_v10
+	--workload C, coresched (cs_on), uperf performance increased almost double vs coresched_v10
+	--workload C, default (cs_off), uperf performance drop over 20% vs coresched_v10, same issue seen on v5.12-rc8 base (w/o coresched patchset)
+	--workload D, coresched (cs_on), wis performance increased almost double vs coresched_v10
+
+- performance info of workloads, normalized based on coresched_v10 results
+	--workload A:
+	Note: 
+	* no performance change compared to coresched_v10
++---------------------------------------+------+----------------------------------------------+------------------------------------------------+-------+-------------------------------+---------------------------------+
+|                                       | **   | coresched_peterz_aubrey_fix_base_v5.12-rc8   | coresched_peterz_aubrey_fix_base_v5.12-rc8     | ***   | coresched_v10_base_v5.10.11   | coresched_v10_base_v5.10.11     |
++=======================================+======+==============================================+================================================+=======+===============================+=================================+
+| workload                              | **   | sysbench cpu * 192                           | sysbench cpu * 192                             | ***   | sysbench cpu * 192            | sysbench cpu * 192              |
++---------------------------------------+------+----------------------------------------------+------------------------------------------------+-------+-------------------------------+---------------------------------+
+| prctl/cgroup                          | **   | prctl on workload cpu_0                      | prctl on workload cpu_1                        | ***   | cg_sysbench_cpu_0             | cg_sysbench_cpu_1               |
++---------------------------------------+------+----------------------------------------------+------------------------------------------------+-------+-------------------------------+---------------------------------+
+| record_item                           | **   | Tput_avg (events/s)                          | Tput_avg (events/s)                            | ***   | Tput_avg (events/s)           | Tput_avg (events/s)             |
++---------------------------------------+------+----------------------------------------------+------------------------------------------------+-------+-------------------------------+---------------------------------+
+| coresched normalized vs coresched_v10 | **   | 0.99                                         | 1.01                                           | ***   | 1                             | 1                               |
++---------------------------------------+------+----------------------------------------------+------------------------------------------------+-------+-------------------------------+---------------------------------+
+| default normalized vs coresched_v10   | **   | 1.03                                         | 0.98                                           | ***   | 1                             | 1                               |
++---------------------------------------+------+----------------------------------------------+------------------------------------------------+-------+-------------------------------+---------------------------------+
+| smtoff normalized vs coresched_v10    | **   | 1.01                                         | 0.99                                           | ***   | 1                             | 1                               |
++---------------------------------------+------+----------------------------------------------+------------------------------------------------+-------+-------------------------------+---------------------------------+
+
+	--workload B:
+	Note: 
+	* coresched (cs_on), sysbench mysql performance drop around 20% vs coresched_v10
++---------------------------------------+------+----------------------------------------------+------------------------------------------------+-------+-------------------------------+---------------------------------+
+|                                       | **   | coresched_peterz_aubrey_fix_base_v5.12-rc8   | coresched_peterz_aubrey_fix_base_v5.12-rc8     | ***   | coresched_v10_base_v5.10.11   | coresched_v10_base_v5.10.11     |
++=======================================+======+==============================================+================================================+=======+===============================+=================================+
+| workload                              | **   | sysbench cpu * 192                           | sysbench mysql * 192                           | ***   | sysbench cpu * 192            | sysbench mysql * 192            |
++---------------------------------------+------+----------------------------------------------+------------------------------------------------+-------+-------------------------------+---------------------------------+
+| prctl/cgroup                          | **   | prctl on workload cpu_0                      | prctl on workload mysql_0                      | ***   | cg_sysbench_cpu_0             | cg_sysbench_mysql_0             |
++---------------------------------------+------+----------------------------------------------+------------------------------------------------+-------+-------------------------------+---------------------------------+
+| record_item                           | **   | Tput_avg (events/s)                          | Tput_avg (events/s)                            | ***   | Tput_avg (events/s)           | Tput_avg (events/s)             |
++---------------------------------------+------+----------------------------------------------+------------------------------------------------+-------+-------------------------------+---------------------------------+
+| coresched normalized vs coresched_v10 | **   | 1.03                                         | 0.77                                           | ***   | 1                             | 1                               |
++---------------------------------------+------+----------------------------------------------+------------------------------------------------+-------+-------------------------------+---------------------------------+
+| default normalized vs coresched_v10   | **   | 1.02                                         | 0.9                                            | ***   | 1                             | 1                               |
++---------------------------------------+------+----------------------------------------------+------------------------------------------------+-------+-------------------------------+---------------------------------+
+| smtoff normalized vs coresched_v10    | **   | 0.94                                         | 1.14                                           | ***   | 1                             | 1                               |
++---------------------------------------+------+----------------------------------------------+------------------------------------------------+-------+-------------------------------+---------------------------------+
+	
+	--workload C:
+	Note: 
+	* coresched (cs_on), uperf performance increased almost double vs coresched_v10
+	* default (cs_off), uperf performance drop over 20% vs coresched_v10, same issue seen on v5.12-rc8 base (w/o coresched patchset)
++---------------------------------------+------+----------------------------------------------+------------------------------------------------+-------+-------------------------------+---------------------------------+
+|                                       | **   | coresched_peterz_aubrey_fix_base_v5.12-rc8   | coresched_peterz_aubrey_fix_base_v5.12-rc8     | ***   | coresched_v10_base_v5.10.11   | coresched_v10_base_v5.10.11     |
++=======================================+======+==============================================+================================================+=======+===============================+=================================+
+| workload                              | **   | uperf netperf TCP * 192                      | uperf netperf UDP * 192                        | ***   | uperf netperf TCP * 192       | uperf netperf UDP * 192         |
++---------------------------------------+------+----------------------------------------------+------------------------------------------------+-------+-------------------------------+---------------------------------+
+| prctl/cgroup                          | **   | prctl on workload uperf                      | prctl on workload uperf                        | ***   | cg_uperf                      | cg_uperf                        |
++---------------------------------------+------+----------------------------------------------+------------------------------------------------+-------+-------------------------------+---------------------------------+
+| record_item                           | **   | Tput_avg (Gb/s)                              | Tput_avg (Gb/s)                                | ***   | Tput_avg (Gb/s)               | Tput_avg (Gb/s)                 |
++---------------------------------------+------+----------------------------------------------+------------------------------------------------+-------+-------------------------------+---------------------------------+
+| coresched normalized vs coresched_v10 | **   | 1.87                                         | 1.99                                           | ***   | 1                             | 1                               |
++---------------------------------------+------+----------------------------------------------+------------------------------------------------+-------+-------------------------------+---------------------------------+
+| default normalized vs coresched_v10   | **   | 0.78                                         | 0.74                                           | ***   | 1                             | 1                               |
++---------------------------------------+------+----------------------------------------------+------------------------------------------------+-------+-------------------------------+---------------------------------+
+| smtoff normalized vs coresched_v10    | **   | 0.87                                         | 0.95                                           | ***   | 1                             | 1                               |
++---------------------------------------+------+----------------------------------------------+------------------------------------------------+-------+-------------------------------+---------------------------------+
+
+	--workload D:
+	Note: 
+	* coresched (cs_on), wis performance increased almost double vs coresched_v10
++---------------------------------------+------+----------------------------------------------+-------+-------------------------------+
+|                                       | **   | coresched_peterz_aubrey_fix_base_v5.12-rc8   | ***   | coresched_v10_base_v5.10.11   |
++=======================================+======+==============================================+=======+===============================+
+| workload                              | **   | will-it-scale  * 192                         | ***   | will-it-scale  * 192          |
+|                                       |      | (pipe based context_switch)                  |       | (pipe based context_switch)   |
++---------------------------------------+------+----------------------------------------------+-------+-------------------------------+
+| prctl/cgroup                          | **   | prctl on workload wis                        | ***   | cg_wis                        |
++---------------------------------------+------+----------------------------------------------+-------+-------------------------------+
+| record_item                           | **   | threads_avg                                  | ***   | threads_avg                   |
++---------------------------------------+------+----------------------------------------------+-------+-------------------------------+
+| coresched normalized vs coresched_v10 | **   | 1.98                                         | ***   | 1                             |
++---------------------------------------+------+----------------------------------------------+-------+-------------------------------+
+| default normalized vs coresched_v10   | **   | 1.13                                         | ***   | 1                             |
++---------------------------------------+------+----------------------------------------------+-------+-------------------------------+
+| smtoff normalized vs coresched_v10    | **   | 1.32                                         | ***   | 1                             |
++---------------------------------------+------+----------------------------------------------+-------+-------------------------------+
+
+	-- notes on record_item:
+	* coresched normalized vs coresched_v10: smton, cs enabled, test result normalized by result of coresched_v10 under same config
+	* default normalized vs coresched_v10: smton, cs disabled, test result normalized by result of coresched_v10 under same config
+	* smtoff normalized vs coresched_v10: smtoff, test result normalized by result of coresched_v10 under same config
+
+Hongyu
