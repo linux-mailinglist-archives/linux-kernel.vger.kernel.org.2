@@ -2,135 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CEBC36F5E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 08:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 285CD36F5C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 08:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbhD3GsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 02:48:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230366AbhD3GsH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 02:48:07 -0400
-X-Greylist: delayed 528 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 29 Apr 2021 23:47:18 PDT
-Received: from forward103j.mail.yandex.net (forward103j.mail.yandex.net [IPv6:2a02:6b8:0:801:2::106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E0CC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 23:46:55 -0700 (PDT)
-Received: from iva6-6951b41b66a9.qloud-c.yandex.net (iva6-6951b41b66a9.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:610b:0:640:6951:b41b])
-        by forward103j.mail.yandex.net (Yandex) with ESMTP id 300FD6742186;
-        Fri, 30 Apr 2021 09:38:03 +0300 (MSK)
-Received: from iva7-f62245f79210.qloud-c.yandex.net (iva7-f62245f79210.qloud-c.yandex.net [2a02:6b8:c0c:2e83:0:640:f622:45f7])
-        by iva6-6951b41b66a9.qloud-c.yandex.net (mxback/Yandex) with ESMTP id 5N2zMeQbUu-c0JekTBT;
-        Fri, 30 Apr 2021 09:38:03 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1619764683;
-        bh=OSUWNyoDwSwSlzocc2rtb85rgBPEIJvV7CLDYga9B8g=;
-        h=In-Reply-To:Cc:To:From:Subject:Message-ID:References:Date;
-        b=VhdTpXInNPf84/gSeTMBd4JRaOujt6TrG9MVNvWn5bdA/lyjvde5vnCBWeUcH1DLi
-         fnZPpqT+/ILh6zSFsr7t7gpoWIr1tGWrNYhwQo+urhbdPsrDwaDjJvttoLTObrUk03
-         8+MgeZw0uZRNZqxoV61Szyi0CNauM9L5/xP5X1uY=
-Authentication-Results: iva6-6951b41b66a9.qloud-c.yandex.net; dkim=pass header.i=@yandex.ru
-Received: by iva7-f62245f79210.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id 3WbXfJvglC-bwL0109t;
-        Fri, 30 Apr 2021 09:37:59 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Message-ID: <8ce5be3df2137e975d7333024b6120b71b214617.camel@yandex.ru>
-Subject: Re: [PATCH v2 00/16] Multigenerational LRU Framework
-From:   Konstantin Kharlamov <hi-angel@yandex.ru>
-To:     Yu Zhao <yuzhao@google.com>, linux-mm@kvack.org
-Cc:     Alex Shi <alexs@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Benjamin Manes <ben.manes@gmail.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Hillf Danton <hdanton@sina.com>, Jens Axboe <axboe@kernel.dk>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Michael Larabel <michael@michaellarabel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Michel Lespinasse <michel@lespinasse.org>,
-        Rik van Riel <riel@surriel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Rong Chen <rong.a.chen@intel.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>,
-        Ying Huang <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        linux-kernel@vger.kernel.org, lkp@lists.01.org,
-        page-reclaim@google.com
-Date:   Fri, 30 Apr 2021 09:37:58 +0300
-In-Reply-To: <140226722f2032c86301fbd326d91baefe3d7d23.camel@yandex.ru>
-References: <20210413065633.2782273-1-yuzhao@google.com>
-         <140226722f2032c86301fbd326d91baefe3d7d23.camel@yandex.ru>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0 
+        id S229741AbhD3Gjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 02:39:40 -0400
+Received: from mx21.baidu.com ([220.181.3.85]:38966 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229482AbhD3Gjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 02:39:39 -0400
+Received: from BC-Mail-Ex31.internal.baidu.com (unknown [172.31.51.25])
+        by Forcepoint Email with ESMTPS id 9EE6E655C2FEC6960F4F;
+        Fri, 30 Apr 2021 14:38:47 +0800 (CST)
+Received: from BJHW-MAIL-EX26.internal.baidu.com (10.127.64.41) by
+ BC-Mail-Ex31.internal.baidu.com (172.31.51.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.4; Fri, 30 Apr 2021 14:38:47 +0800
+Received: from BJHW-MAIL-EX25.internal.baidu.com (10.127.64.40) by
+ BJHW-MAIL-EX26.internal.baidu.com (10.127.64.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.4; Fri, 30 Apr 2021 14:38:47 +0800
+Received: from BJHW-MAIL-EX25.internal.baidu.com ([169.254.1.114]) by
+ BJHW-MAIL-EX25.internal.baidu.com ([169.254.1.114]) with mapi id
+ 15.01.2242.008; Fri, 30 Apr 2021 14:38:47 +0800
+From:   "Yuan,Zhaoxiong" <yuanzhaoxiong@baidu.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     "mingo@redhat.com" <mingo@redhat.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] sched: Optimize housekeeping_cpumask in for_each_cpu_and
+Thread-Topic: [PATCH] sched: Optimize housekeeping_cpumask in for_each_cpu_and
+Thread-Index: AQHXNQJLuiRBYUnh2EurZGLxcXYop6q891IAgA+1mgA=
+Date:   Fri, 30 Apr 2021 06:38:47 +0000
+Message-ID: <FAA681A5-5D56-407C-865A-A640D28C577F@baidu.com>
+References: <1618671697-26098-1-git-send-email-yuanzhaoxiong@baidu.com>
+ <YH1T2f96IWlR7aOi@hirez.programming.kicks-ass.net>
+ <830177B0-45E0-4768-80AB-A99B85D3A52F@baidu.com>
+In-Reply-To: <830177B0-45E0-4768-80AB-A99B85D3A52F@baidu.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.206.45]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C31C94AC4F41264CA41DFBD0605A441F@internal.baidu.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Btw, I noticed a fun thing, an improvement. I don't know yet if it can be
-attributed to 5.12 (which I didn't try alone yet) or to the LRU patchset, but
-I'd assume the latter, because 5.12 seems didn't to have had anything
-interesting regarding memory performance¹.
-
-I usually have Skype running in background for work purposes, which is only used
-2-3 times in a week. So one would expect it to be one the first victims to
-memory reclaim. Unfortunately, I never seen this to actually happen (till now,
-that is): all skypeforlinux processes routinely have 0 bytes in SWAP, and the
-only circumstances under which its processes can get into SWAP is after
-experiencing many SWAP-storms. It was so hard for the kernel to move these
-unused processes to SWAP that at some point I even tried to research if there
-are any odd flags a userspace may have set on a process to keep it in RAM, just
-in case that's what happens to Skype (A: no, that wasn't the case, running Skype
-in a memory limited cgroup makes it swap. It's just that kernel decision were
-lacking for some reason).
-
-So, anyway, I am delighted to see now that while testing this patchset, and
-without encountering even a single SWAP-storm yet, skypeforlinux are one of the
-processes residing in SWAP!!
-
-     λ smem -kc "name user pid pss swap" | grep skype    
-    skypeforlinux            constantine  1151    60.0K     7.5M 
-    skypeforlinux            constantine  1215   195.0K     8.1M 
-    skypeforlinux            constantine  1149   706.0K     7.5M 
-    skypeforlinux            constantine  1148   743.0K     7.3M 
-    skypeforlinux            constantine  1307     1.4M     8.0M 
-    skypeforlinux            constantine  1213     2.1M    46.1M 
-    skypeforlinux            constantine  1206    14.0M    10.8M 
-    skypeforlinux            constantine   818    38.5M    34.3M 
-    skypeforlinux            constantine  1242   103.2M    46.8M 
-
-!!!
-
-1: https://kernelnewbies.org/Linux_5.12#Memory_management
-
-On Fri, 2021-04-30 at 02:46 +0300, Konstantin Kharlamov wrote:
-> In case you need it yet, this series is:
-> 
-> Tested-by: Konstantin Kharlamov <Hi-Angel@yandex.ru>
-> 
-> My success story: I have Archlinux with 8G RAM + zswap + swap. While developing,
-> I have lots of apps opened such as multiple LSP-servers for different langs,
-> chats, two browsers, etc… Usually, my system gets quickly to a point of SWAP-
-> storms, where I have to kill LSP-servers, restart browsers to free memory, etc,
-> otherwise the system lags heavily and is barely usable.
-> 
-> 1.5 day ago I migrated from 5.11.15 kernel to 5.12 + the LRU patchset, and I
-> started up by opening lots of apps to create memory pressure, and worked for a
-> day like this. Till now I had *not a single SWAP-storm*, and mind you I got 3.4G
-> in SWAP. I was never getting to the point of 3G in SWAP before without a single
-> SWAP-storm.
-> 
-> Right now my gf on Fedora 33 also suffers from SWAP-storms on her old Macbook
-> 2013 with 4G RAM + zswap + swap, I think the next week I'll build for her 5.12 +
-> LRU patchset as well. Will see how it goes, I expect it will improve her
-> experience by a lot too.
-> 
-> P.S.: upon replying please keep me CCed, I'm not subscribed to the list
-
+PiDlnKggMjAyMS80LzE5IOS4i+WNiDU6NTfvvIzigJxQZXRlciBaaWpsc3RyYeKAnTxwZXRlcnpA
+aW5mcmFkZWFkLm9yZz4g5YaZ5YWlOg0KDQo+IE9uIFNhdCwgQXByIDE3LCAyMDIxIGF0IDExOjAx
+OjM3UE0gKzA4MDAsIFl1YW4gWmhhb1hpb25nIHdyb3RlOg0KPj4gT24gYSAxMjggY29yZXMgQU1E
+IG1hY2hpbmUsIHRoZXJlIGFyZSA4IGNvcmVzIGluIG5vaHpfZnVsbCBtb2RlLCBhbmQNCj4+IHRo
+ZSBvdGhlcnMgYXJlIHVzZWQgZm9yIGhvdXNla2VlcGluZy4gV2hlbiBtYW55IGhvdXNla2VlcGlu
+ZyBjcHVzIGFyZQ0KPj4gaW4gaWRsZSBzdGF0ZSwgd2UgY2FuIG9ic2VydmUgaHVnZSB0aW1lIGJ1
+cm4gaW4gdGhlIGxvb3AgZm9yIHNlYXJjaGluZw0KPj4gbmVhcmVzdCBidXN5IGhvdXNla2VlcGVy
+IGNwdSBieSBmdHJhY2UuDQo+PiANCj4+ICAgIDkpICAgICAgICAgICAgICAgfCAgICAgICAgICAg
+ICAgZ2V0X25vaHpfdGltZXJfdGFyZ2V0KCkgew0KPj4gICAgOSkgICAgICAgICAgICAgICB8ICAg
+ICAgICAgICAgICAgIGhvdXNla2VlcGluZ190ZXN0X2NwdSgpIHsNCj4+ICAgIDkpICAgMC4zOTAg
+dXMgICAgfCAgICAgICAgICAgICAgICAgIGhvdXNla2VlcGluZ19nZXRfbWFzay5wYXJ0LjEoKTsN
+Cj4+ICAgIDkpICAgMC41NjEgdXMgICAgfCAgICAgICAgICAgICAgICB9DQo+PiAgICA5KSAgIDAu
+MDkwIHVzICAgIHwgICAgICAgICAgICAgICAgX19yY3VfcmVhZF9sb2NrKCk7DQo+PiAgICA5KSAg
+IDAuMDkwIHVzICAgIHwgICAgICAgICAgICAgICAgaG91c2VrZWVwaW5nX2NwdW1hc2soKTsNCj4+
+ICAgIDkpICAgMC41MjEgdXMgICAgfCAgICAgICAgICAgICAgICBob3VzZWtlZXBpbmdfY3B1bWFz
+aygpOw0KPj4gICAgOSkgICAwLjE0MCB1cyAgICB8ICAgICAgICAgICAgICAgIGhvdXNla2VlcGlu
+Z19jcHVtYXNrKCk7DQo+PiANCj4+ICAgIC4uLg0KPj4gDQo+PiAgICA5KSAgIDAuNTAwIHVzICAg
+IHwgICAgICAgICAgICAgICAgaG91c2VrZWVwaW5nX2NwdW1hc2soKTsNCj4+ICAgIDkpICAgICAg
+ICAgICAgICAgfCAgICAgICAgICAgICAgICBob3VzZWtlZXBpbmdfYW55X2NwdSgpIHsNCj4+ICAg
+IDkpICAgMC4wOTAgdXMgICAgfCAgICAgICAgICAgICAgICAgIGhvdXNla2VlcGluZ19nZXRfbWFz
+ay5wYXJ0LjEoKTsNCj4+ICAgIDkpICAgMC4xMDAgdXMgICAgfCAgICAgICAgICAgICAgICAgIHNj
+aGVkX251bWFfZmluZF9jbG9zZXN0KCk7DQo+PiAgICA5KSAgIDAuNDkxIHVzICAgIHwgICAgICAg
+ICAgICAgICAgfQ0KPj4gICAgOSkgICAwLjEwMCB1cyAgICB8ICAgICAgICAgICAgICAgIF9fcmN1
+X3JlYWRfdW5sb2NrKCk7DQo+PiAgICA5KSArIDc2LjE2MyB1cyAgIHwgICAgICAgICAgICAgIH0N
+Cj4+IA0KPj4gZm9yX2VhY2hfY3B1X2FuZCgpIGlzIGEgbWljcm8gZnVuY3Rpb24sIHNvIGluIGdl
+dF9ub2h6X3RpbWVyX3RhcmdldCgpDQo+PiBmdW5jdGlvbiB0aGUNCj4+ICAgICAgICAgZm9yX2Vh
+Y2hfY3B1X2FuZChpLCBzY2hlZF9kb21haW5fc3BhbihzZCksDQo+PiAgICAgICAgICAgICAgICAg
+aG91c2VrZWVwaW5nX2NwdW1hc2soSEtfRkxBR19USU1FUikpDQo+PiBlcXVhbHMgdG8gYmVsb3c6
+DQo+PiAgICAgICAgIGZvciAoaSA9IC0xOyBpID0gY3B1bWFza19uZXh0X2FuZChpLCBzY2hlZF9k
+b21haW5fc3BhbihzZCksDQo+PiAgICAgICAgICAgICAgICAgaG91c2VrZWVwaW5nX2NwdW1hc2so
+SEtfRkxBR19USU1FUikpLCBpIDwgbnJfY3B1X2lkczspDQo+PiBUaGF0IHdpbGwgY2F1c2UgdGhh
+dCBob3VzZWtlZXBpbmdfY3B1bWFzaygpIHdpbGwgYmUgaW52b2tlZCBtYW55IHRpbWVzLg0KPj4g
+VGhlIGhvdXNla2VlcGluZ19jcHVtYXNrKCkgZnVuY3Rpb24gcmV0dXJucyBhIGNvbnN0IHZhbHVl
+LCBzbyBpdCBpcw0KPj4gdW5uZWNlc3NhcnkgdG8gaW52b2tlIGl0IGV2ZXJ5IHRpbWUuIFRoaXMg
+cGF0Y2ggY2FuIG1pbmltaXplIHRoZSB3b3JzdA0KPj4gc2VhcmNoaW5nIHRpbWUgZnJvbSB+NzZ1
+cyB0byB+MTZ1cyBpbiBteSB0ZXN0aW5nLg0KPj4gDQo+PiBTaW1pbGFybHksIHRoZSBmaW5kX25l
+d19pbGIoKSBmdW5jdGlvbiBoYXMgdGhlIHNhbWUgcHJvYmxlbS4NCiAgICANCj4gIFdvdWxkIGl0
+IG5vdCBtYWtlIHNlbnNlIHRvIG1hcmsgaG91c2VrZWVwaW5nX2NwdW1hc2soKSBfX3B1cmUgaW5z
+dGVhZD8NCiAgICANCj4gQWZ0ZXIgbWFya2luZyBob3VzZWtlZXBpbmdfY3B1bWFzaygpIF9fcHVy
+ZSBhbmQgdGhlbiB0ZXN0IGFnYWluLCB0aGUgcmVzdWx0cyANCj4gcHJvdmVzIHRoYXQgaHVnZSB0
+aW1lIGJ1cm4gaW4gdGhlIGxvb3AgZm9yIHNlYXJjaGluZyB0aGUgbmVhcmVzdCBidXN5IGhvdXNl
+a2VlcGVyIA0KPiBzdGlsbCBleGlzdHMuIA0KPg0KPiBVc2luZyBvYmpkdW1wIC1EIHZtbGludXgg
+d2UgY2FuIHNlZSBnZXRfbm9oel90aW1lcl90YXJnZXQoKSBkaXNhc3NlbWJsZWQgY29kZSANCmFz
+IGJlbG93Og0KPiBmZmZmZmZmZjgxMGI5NmMwIDxnZXRfbm9oel90aW1lcl90YXJnZXQ+Og0KPiBm
+ZmZmZmZmZjgxMGI5NmMwOiAgICAgICBlOCBkYiA3ZiA5NCAwMCAgICAgICAgICBjYWxscSAgZmZm
+ZmZmZmY4MWEwMTZhMCA8X19mZW50cnlfXz4NCj4gZmZmZmZmZmY4MTBiOTZjNTogICAgICAgNDEg
+NTcgICAgICAgICAgICAgICAgICAgcHVzaCAgICVyMTUNCj4gZmZmZmZmZmY4MTBiOTZjNzogICAg
+ICAgNDEgNTYgICAgICAgICAgICAgICAgICAgcHVzaCAgICVyMTQNCj4gZmZmZmZmZmY4MTBiOTZj
+OTogICAgICAgNDEgNTUgICAgICAgICAgICAgICAgICAgcHVzaCAgICVyMTMNCj4gZmZmZmZmZmY4
+MTBiOTZjYjogICAgICAgNDEgNTQgICAgICAgICAgICAgICAgICAgcHVzaCAgICVyMTINCj4gZmZm
+ZmZmZmY4MTBiOTZjZDogICAgICAgNTUgICAgICAgICAgICAgICAgICAgICAgcHVzaCAgICVyYnAN
+Cj4gZmZmZmZmZmY4MTBiOTZjZTogICAgICAgNTMgICAgICAgICAgICAgICAgICAgICAgcHVzaCAg
+ICVyYngNCj4gZmZmZmZmZmY4MTBiOTZjZjogICAgICAgNDggODMgZWMgMDggICAgICAgICAgICAg
+c3ViICAgICQweDgsJXJzcA0KPiBmZmZmZmZmZjgxMGI5NmQzOiAgICAgICA2NSA4YiAxZCA1NiA1
+YSBmNSA3ZSAgICBtb3YgICAgJWdzOjB4N2VmNTVhNTYoJXJpcCksJWVieCAgICAgICAgIyBmMTMw
+IDxjcHVfbnVtYmVyPg0KPiBmZmZmZmZmZjgxMGI5NmRhOiAgICAgICA0MSA4OSBkYyAgICAgICAg
+ICAgICAgICBtb3YgICAgJWVieCwlcjEyZA0KPiBmZmZmZmZmZjgxMGI5NmRkOiAgICAgICAwZiAx
+ZiA0NCAwMCAwMCAgICAgICAgICBub3BsICAgMHgwKCVyYXgsJXJheCwxKQ0KPiBmZmZmZmZmZjgx
+MGI5NmUyOiAgICAgICA0YyA2MyBmMyAgICAgICAgICAgICAgICBtb3ZzbHEgJWVieCwlcjE0DQo+
+IGZmZmZmZmZmODEwYjk2ZTU6ICAgICAgIDQ4IGM3IGM1IDQwIDBiIDAyIDAwICAgIG1vdiAgICAk
+MHgyMGI0MCwlcmJwDQo+IGZmZmZmZmZmODEwYjk2ZWM6ICAgICAgIDRhIDhiIDA0IGY1IDIwIDc3
+IDEzICAgIG1vdiAgICAtMHg3ZGVjODhlMCgsJXIxNCw4KSwlcmF4DQo+IGZmZmZmZmZmODEwYjk2
+ZjM6ICAgICAgIDgyDQo+IGZmZmZmZmZmODEwYjk2ZjQ6ICAgICAgIDQ5IDg5IGVkICAgICAgICAg
+ICAgICAgIG1vdiAgICAlcmJwLCVyMTMNCj4gZmZmZmZmZmY4MTBiOTZmNzogICAgICAgNGMgMDEg
+ZTggICAgICAgICAgICAgICAgYWRkICAgICVyMTMsJXJheA0KPiBmZmZmZmZmZjgxMGI5NmZhOiAg
+ICAgICA0OCA4YiA4OCA5MCAwOSAwMCAwMCAgICBtb3YgICAgMHg5OTAoJXJheCksJXJjeA0KPiBm
+ZmZmZmZmZjgxMGI5NzAxOiAgICAgICA0OCAzOSA4OCA4OCAwOSAwMCAwMCAgICBjbXAgICAgJXJj
+eCwweDk4OCglcmF4KQ0KPiBmZmZmZmZmZjgxMGI5NzA4OiAgICAgICAwZiA4NCBjZSAwMCAwMCAw
+MCAgICAgICBqZSAgICAgZmZmZmZmZmY4MTBiOTdkYyA8Z2V0X25vaHpfdGltZXJfdGFyZ2V0KzB4
+MTFjPg0KPiBmZmZmZmZmZjgxMGI5NzBlOiAgICAgICA0OCA4MyBjNCAwOCAgICAgICAgICAgICBh
+ZGQgICAgJDB4OCwlcnNwDQo+IGZmZmZmZmZmODEwYjk3MTI6ICAgICAgIDQ0IDg5IGUwICAgICAg
+ICAgICAgICAgIG1vdiAgICAlcjEyZCwlZWF4DQo+IGZmZmZmZmZmODEwYjk3MTU6ICAgICAgIDVi
+ICAgICAgICAgICAgICAgICAgICAgIHBvcCAgICAlcmJ4DQo+IGZmZmZmZmZmODEwYjk3MTY6ICAg
+ICAgIDVkICAgICAgICAgICAgICAgICAgICAgIHBvcCAgICAlcmJwDQo+IGZmZmZmZmZmODEwYjk3
+MTc6ICAgICAgIDQxIDVjICAgICAgICAgICAgICAgICAgIHBvcCAgICAlcjEyDQo+IGZmZmZmZmZm
+ODEwYjk3MTk6ICAgICAgIDQxIDVkICAgICAgICAgICAgICAgICAgIHBvcCAgICAlcjEzDQo+IGZm
+ZmZmZmZmODEwYjk3MWI6ICAgICAgIDQxIDVlICAgICAgICAgICAgICAgICAgIHBvcCAgICAlcjE0
+DQo+IGZmZmZmZmZmODEwYjk3MWQ6ICAgICAgIDQxIDVmICAgICAgICAgICAgICAgICAgIHBvcCAg
+ICAlcjE1DQo+IGZmZmZmZmZmODEwYjk3MWY6ICAgICAgIGMzICAgICAgICAgICAgICAgICAgICAg
+IHJldHENCj4gZmZmZmZmZmY4MTBiOTcyMDogICAgICAgYmUgMDEgMDAgMDAgMDAgICAgICAgICAg
+bW92ICAgICQweDEsJWVzaQ0KPiBmZmZmZmZmZjgxMGI5NzI1OiAgICAgICA4OSBkZiAgICAgICAg
+ICAgICAgICAgICBtb3YgICAgJWVieCwlZWRpDQo+IGZmZmZmZmZmODEwYjk3Mjc6ICAgICAgIGU4
+IDc0IDg3IDAyIDAwICAgICAgICAgIGNhbGxxICBmZmZmZmZmZjgxMGUxZWEwIDxob3VzZWtlZXBp
+bmdfdGVzdF9jcHU+DQo+IGZmZmZmZmZmODEwYjk3MmM6ICAgICAgIDg0IGMwICAgICAgICAgICAg
+ICAgICAgIHRlc3QgICAlYWwsJWFsDQo+IGZmZmZmZmZmODEwYjk3MmU6ICAgICAgIDc1IGIyICAg
+ICAgICAgICAgICAgICAgIGpuZSAgICBmZmZmZmZmZjgxMGI5NmUyIDxnZXRfbm9oel90aW1lcl90
+YXJnZXQrMHgyMj4NCj4gZmZmZmZmZmY4MTBiOTczMDogICAgICAgZTggMGIgZWEgMDMgMDAgICAg
+ICAgICAgY2FsbHEgIGZmZmZmZmZmODEwZjgxNDAgPF9fcmN1X3JlYWRfbG9jaz4NCj4gZmZmZmZm
+ZmY4MTBiOTczNTogICAgICAgNDggYzcgYzUgNDAgMGIgMDIgMDAgICAgbW92ICAgICQweDIwYjQw
+LCVyYnANCj4gZmZmZmZmZmY4MTBiOTczYzogICAgICAgNDggNjMgZDMgICAgICAgICAgICAgICAg
+bW92c2xxICVlYngsJXJkeA0KPiBmZmZmZmZmZjgxMGI5NzNmOiAgICAgICBjNyA0NCAyNCAwNCBm
+ZiBmZiBmZiAgICBtb3ZsICAgJDB4ZmZmZmZmZmYsMHg0KCVyc3ApDQo+IGZmZmZmZmZmODEwYjk3
+NDY6ICAgICAgIGZmDQo+IGZmZmZmZmZmODEwYjk3NDc6ICAgICAgIDQ4IDg5IGU4ICAgICAgICAg
+ICAgICAgIG1vdiAgICAlcmJwLCVyYXgNCj4gZmZmZmZmZmY4MTBiOTc0YTogICAgICAgNDggMDMg
+MDQgZDUgMjAgNzcgMTMgICAgYWRkICAgIC0weDdkZWM4OGUwKCwlcmR4LDgpLCVyYXgNCj4gZmZm
+ZmZmZmY4MTBiOTc1MTogICAgICAgODINCj4gZmZmZmZmZmY4MTBiOTc1MjogICAgICAgNGMgOGIg
+YTggZDggMDkgMDAgMDAgICAgbW92ICAgIDB4OWQ4KCVyYXgpLCVyMTMNCj4gZmZmZmZmZmY4MTBi
+OTc1OTogICAgICAgNGQgODUgZWQgICAgICAgICAgICAgICAgdGVzdCAgICVyMTMsJXIxMw0KPiBm
+ZmZmZmZmZjgxMGI5NzVjOiAgICAgICAwZiA4NCBkMyAwMCAwMCAwMCAgICAgICBqZSAgICAgZmZm
+ZmZmZmY4MTBiOTgzNSA8Z2V0X25vaHpfdGltZXJfdGFyZ2V0KzB4MTc1Pg0KPiBmZmZmZmZmZjgx
+MGI5NzYyOiAgICAgICA0MSBiZSBmZiBmZiBmZiBmZiAgICAgICBtb3YgICAgJDB4ZmZmZmZmZmYs
+JXIxNGQNCj4gZmZmZmZmZmY4MTBiOTc2ODogICAgICAgNGQgOGQgYTUgMzggMDEgMDAgMDAgICAg
+bGVhICAgIDB4MTM4KCVyMTMpLCVyMTINCj4gZmZmZmZmZmY4MTBiOTc2ZjogICAgICAgNDUgODkg
+ZjcgICAgICAgICAgICAgICAgbW92ICAgICVyMTRkLCVyMTVkDQo+IGZmZmZmZmZmODEwYjk3NzI6
+ICAgICAgIGJmIDAxIDAwIDAwIDAwICAgICAgICAgIG1vdiAgICAkMHgxLCVlZGkNCj4gZmZmZmZm
+ZmY4MTBiOTc3NzogICAgICAgZTggZjQgODYgMDIgMDAgICAgICAgICAgY2FsbHEgIGZmZmZmZmZm
+ODEwZTFlNzAgPGhvdXNla2VlcGluZ19jcHVtYXNrPg0KPiBmZmZmZmZmZjgxMGI5NzdjOiAgICAg
+ICA0NCA4OSBmZiAgICAgICAgICAgICAgICBtb3YgICAgJXIxNWQsJWVkaQ0KPiBmZmZmZmZmZjgx
+MGI5NzdmOiAgICAgICA0OCA4OSBjMiAgICAgICAgICAgICAgICBtb3YgICAgJXJheCwlcmR4DQo+
+IGZmZmZmZmZmODEwYjk3ODI6ICAgICAgIDRjIDg5IGU2ICAgICAgICAgICAgICAgIG1vdiAgICAl
+cjEyLCVyc2kNCj4gZmZmZmZmZmY4MTBiOTc4NTogICAgICAgZTggYjYgZWEgNzkgMDAgICAgICAg
+ICAgY2FsbHEgIGZmZmZmZmZmODE4NTgyNDAgPGNwdW1hc2tfbmV4dF9hbmQ+DQo+IGZmZmZmZmZm
+ODEwYjk3OGE6ICAgICAgIDNiIDA1IGI0IDRlIDNlIDAxICAgICAgIGNtcCAgICAweDEzZTRlYjQo
+JXJpcCksJWVheCAgICAgICAgIyBmZmZmZmZmZjgyNDllNjQ0IDxucl9jcHVfaWRzPg0KPiBmZmZm
+ZmZmZjgxMGI5NzkwOiAgICAgICA0MSA4OSBjNyAgICAgICAgICAgICAgICBtb3YgICAgJWVheCwl
+cjE1ZA0KPiBmZmZmZmZmZjgxMGI5NzkzOiAgICAgICAwZiA4MyA4NCAwMCAwMCAwMCAgICAgICBq
+YWUgICAgZmZmZmZmZmY4MTBiOTgxZCA8Z2V0X25vaHpfdGltZXJfdGFyZ2V0KzB4MTVkPg0KPiBm
+ZmZmZmZmZjgxMGI5Nzk5OiAgICAgICA0NCAzOSBmYiAgICAgICAgICAgICAgICBjbXAgICAgJXIx
+NWQsJWVieA0KPiBmZmZmZmZmZjgxMGI5NzljOiAgICAgICA3NCBkNCAgICAgICAgICAgICAgICAg
+ICBqZSAgICAgZmZmZmZmZmY4MTBiOTc3MiA8Z2V0X25vaHpfdGltZXJfdGFyZ2V0KzB4YjI+DQo+
+IGZmZmZmZmZmODEwYjk3OWU6ICAgICAgIDQ5IDYzIGM3ICAgICAgICAgICAgICAgIG1vdnNscSAl
+cjE1ZCwlcmF4DQo+IGZmZmZmZmZmODEwYjk3YTE6ICAgICAgIDQ4IDg5IGVhICAgICAgICAgICAg
+ICAgIG1vdiAgICAlcmJwLCVyZHgNCj4gZmZmZmZmZmY4MTBiOTdhNDogICAgICAgNDggMDMgMTQg
+YzUgMjAgNzcgMTMgICAgYWRkICAgIC0weDdkZWM4OGUwKCwlcmF4LDgpLCVyZHgNCj4gZmZmZmZm
+ZmY4MTBiOTdhYjogICAgICAgODINCj4gZmZmZmZmZmY4MTBiOTdhYzogICAgICAgNDggOGIgODIg
+OTAgMDkgMDAgMDAgICAgbW92ICAgIDB4OTkwKCVyZHgpLCVyYXgNCj4gZmZmZmZmZmY4MTBiOTdi
+MzogICAgICAgNDggMzkgODIgODggMDkgMDAgMDAgICAgY21wICAgICVyYXgsMHg5ODgoJXJkeCkN
+Cj4gZmZmZmZmZmY4MTBiOTdiYTogICAgICAgNzUgMTMgICAgICAgICAgICAgICAgICAgam5lICAg
+IGZmZmZmZmZmODEwYjk3Y2YgPGdldF9ub2h6X3RpbWVyX3RhcmdldCsweDEwZj4NCj4gZmZmZmZm
+ZmY4MTBiOTdiYzogICAgICAgOGIgNDIgMDQgICAgICAgICAgICAgICAgbW92ICAgIDB4NCglcmR4
+KSwlZWF4DQo+IGZmZmZmZmZmODEwYjk3YmY6ICAgICAgIDg1IGMwICAgICAgICAgICAgICAgICAg
+IHRlc3QgICAlZWF4LCVlYXgNCj4gZmZmZmZmZmY4MTBiOTdjMTogICAgICAgNzUgMGMgICAgICAg
+ICAgICAgICAgICAgam5lICAgIGZmZmZmZmZmODEwYjk3Y2YgPGdldF9ub2h6X3RpbWVyX3Rhcmdl
+dCsweDEwZj4NCj4gZmZmZmZmZmY4MTBiOTdjMzogICAgICAgNDggOGIgODIgMjAgMGMgMDAgMDAg
+ICAgbW92ICAgIDB4YzIwKCVyZHgpLCVyYXgNCj4gZmZmZmZmZmY4MTBiOTdjYTogICAgICAgNDgg
+ODUgYzAgICAgICAgICAgICAgICAgdGVzdCAgICVyYXgsJXJheA0KPiBmZmZmZmZmZjgxMGI5N2Nk
+OiAgICAgICA3NCBhMyAgICAgICAgICAgICAgICAgICBqZSAgICAgZmZmZmZmZmY4MTBiOTc3MiA8
+Z2V0X25vaHpfdGltZXJfdGFyZ2V0KzB4YjI+DQo+IGZmZmZmZmZmODEwYjk3Y2Y6ICAgICAgIGU4
+IDFjIDMzIDA0IDAwICAgICAgICAgIGNhbGxxICBmZmZmZmZmZjgxMGZjYWYwIDxfX3JjdV9yZWFk
+X3VubG9jaz4NCj4gZmZmZmZmZmY4MTBiOTdkNDogICAgICAgNDUgODkgZmMgICAgICAgICAgICAg
+ICAgbW92ICAgICVyMTVkLCVyMTJkDQo+IGZmZmZmZmZmODEwYjk3ZDc6ICAgICAgIGU5IDMyIGZm
+IGZmIGZmICAgICAgICAgIGptcHEgICBmZmZmZmZmZjgxMGI5NzBlIDxnZXRfbm9oel90aW1lcl90
+YXJnZXQrMHg0ZT4NCj4gZmZmZmZmZmY4MTBiOTdkYzogICAgICAgOGIgNTAgMDQgICAgICAgICAg
+ICAgICAgbW92ICAgIDB4NCglcmF4KSwlZWR4DQo+IGZmZmZmZmZmODEwYjk3ZGY6ICAgICAgIDg1
+IGQyICAgICAgICAgICAgICAgICAgIHRlc3QgICAlZWR4LCVlZHgNCj4gZmZmZmZmZmY4MTBiOTdl
+MTogICAgICAgMGYgODUgMjcgZmYgZmYgZmYgICAgICAgam5lICAgIGZmZmZmZmZmODEwYjk3MGUg
+PGdldF9ub2h6X3RpbWVyX3RhcmdldCsweDRlPg0KPiBmZmZmZmZmZjgxMGI5N2U3OiAgICAgICA0
+OCA4YiA4MCAyMCAwYyAwMCAwMCAgICBtb3YgICAgMHhjMjAoJXJheCksJXJheA0KPiBmZmZmZmZm
+ZjgxMGI5N2VlOiAgICAgICA0OCA4NSBjMCAgICAgICAgICAgICAgICB0ZXN0ICAgJXJheCwlcmF4
+DQo+IGZmZmZmZmZmODEwYjk3ZjE6ICAgICAgIDBmIDg1IDE3IGZmIGZmIGZmICAgICAgIGpuZSAg
+ICBmZmZmZmZmZjgxMGI5NzBlIDxnZXRfbm9oel90aW1lcl90YXJnZXQrMHg0ZT4NCj4gZmZmZmZm
+ZmY4MTBiOTdmNzogICAgICAgZTggNDQgZTkgMDMgMDAgICAgICAgICAgY2FsbHEgIGZmZmZmZmZm
+ODEwZjgxNDAgPF9fcmN1X3JlYWRfbG9jaz4NCj4gZmZmZmZmZmY4MTBiOTdmYzogICAgICAgNGUg
+MDMgMmMgZjUgMjAgNzcgMTMgICAgYWRkICAgIC0weDdkZWM4OGUwKCwlcjE0LDgpLCVyMTMNCj4g
+ZmZmZmZmZmY4MTBiOTgwMzogICAgICAgODINCj4gZmZmZmZmZmY4MTBiOTgwNDogICAgICAgODkg
+NWMgMjQgMDQgICAgICAgICAgICAgbW92ICAgICVlYngsMHg0KCVyc3ApDQo+IGZmZmZmZmZmODEw
+Yjk4MDg6ICAgICAgIDQxIDg5IGRmICAgICAgICAgICAgICAgIG1vdiAgICAlZWJ4LCVyMTVkDQo+
+IGZmZmZmZmZmODEwYjk4MGI6ICAgICAgIDRkIDhiIGFkIGQ4IDA5IDAwIDAwICAgIG1vdiAgICAw
+eDlkOCglcjEzKSwlcjEzDQo+IGZmZmZmZmZmODEwYjk4MTI6ICAgICAgIDRkIDg1IGVkICAgICAg
+ICAgICAgICAgIHRlc3QgICAlcjEzLCVyMTMNCj4gZmZmZmZmZmY4MTBiOTgxNTogICAgICAgMGYg
+ODUgNDcgZmYgZmYgZmYgICAgICAgam5lICAgIGZmZmZmZmZmODEwYjk3NjIgPGdldF9ub2h6X3Rp
+bWVyX3RhcmdldCsweGEyPg0KPiBmZmZmZmZmZjgxMGI5ODFiOiAgICAgICBlYiAxMiAgICAgICAg
+ICAgICAgICAgICBqbXAgICAgZmZmZmZmZmY4MTBiOTgyZiA8Z2V0X25vaHpfdGltZXJfdGFyZ2V0
+KzB4MTZmPg0KPiBmZmZmZmZmZjgxMGI5ODFkOiAgICAgICA0ZCA4YiA2ZCAwMCAgICAgICAgICAg
+ICBtb3YgICAgMHgwKCVyMTMpLCVyMTMNCj4gZmZmZmZmZmY4MTBiOTgyMTogICAgICAgNGQgODUg
+ZWQgICAgICAgICAgICAgICAgdGVzdCAgICVyMTMsJXIxMw0KPiBmZmZmZmZmZjgxMGI5ODI0OiAg
+ICAgICAwZiA4NSAzZSBmZiBmZiBmZiAgICAgICBqbmUgICAgZmZmZmZmZmY4MTBiOTc2OCA8Z2V0
+X25vaHpfdGltZXJfdGFyZ2V0KzB4YTg+DQo+IGZmZmZmZmZmODEwYjk4MmE6ICAgICAgIDQ0IDhi
+IDdjIDI0IDA0ICAgICAgICAgIG1vdiAgICAweDQoJXJzcCksJXIxNWQNCj4gZmZmZmZmZmY4MTBi
+OTgyZjogICAgICAgNDEgODMgZmYgZmYgICAgICAgICAgICAgY21wICAgICQweGZmZmZmZmZmLCVy
+MTVkDQo+IGZmZmZmZmZmODEwYjk4MzM6ICAgICAgIDc1IDlhICAgICAgICAgICAgICAgICAgIGpu
+ZSAgICBmZmZmZmZmZjgxMGI5N2NmIDxnZXRfbm9oel90aW1lcl90YXJnZXQrMHgxMGY+DQo+IGZm
+ZmZmZmZmODEwYjk4MzU6ICAgICAgIGJmIDAxIDAwIDAwIDAwICAgICAgICAgIG1vdiAgICAkMHgx
+LCVlZGkNCj4gZmZmZmZmZmY4MTBiOTgzYTogICAgICAgZTggOTEgODYgMDIgMDAgICAgICAgICAg
+Y2FsbHEgIGZmZmZmZmZmODEwZTFlZDAgPGhvdXNla2VlcGluZ19hbnlfY3B1Pg0KPiBmZmZmZmZm
+ZjgxMGI5ODNmOiAgICAgICA0MSA4OSBjNyAgICAgICAgICAgICAgICBtb3YgICAgJWVheCwlcjE1
+ZA0KPiBmZmZmZmZmZjgxMGI5ODQyOiAgICAgICBlYiA4YiAgICAgICAgICAgICAgICAgICBqbXAg
+ICAgZmZmZmZmZmY4MTBiOTdjZiA8Z2V0X25vaHpfdGltZXJfdGFyZ2V0KzB4MTBmPg0KPiBmZmZm
+ZmZmZjgxMGI5ODQ0OiAgICAgICA2NiA5MCAgICAgICAgICAgICAgICAgICB4Y2hnICAgJWF4LCVh
+eA0KPiBmZmZmZmZmZjgxMGI5ODQ2OiAgICAgICA2NiAyZSAwZiAxZiA4NCAwMCAwMCAgICBub3B3
+ICAgJWNzOjB4MCglcmF4LCVyYXgsMSkNCj4gZmZmZmZmZmY4MTBiOTg0ZDogICAgICAgMDAgMDAg
+MDANCj4NCj4gVGhlIGRpc2Fzc2VtYmxlZCBjb2RlIHByb3ZlcyB0aGF0IHRoZSBfX3B1cmUgbWFy
+ayBkb2VzIG5vdCB3b3JrLg0KDQpVbnRpbCBub3csIHRoZSBfX3B1cmUgbWFyayBkb2VzIG5vdCB3
+b3JrIGluIG91ciB0ZXN0LCBzaG91bGQgdGhlIHBhdGNoIGJlIG1lcmdlZCBpbnRvIHRoZSBtYWlu
+bGluZT8NCg0KVGhhbmtzLA0KWXVhbiBaaGFvWGlvbmcNCg0K
