@@ -2,173 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84FC5370172
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 21:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 443B8370179
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 21:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232158AbhD3TsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 15:48:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231250AbhD3Tr7 (ORCPT
+        id S232418AbhD3TxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 15:53:24 -0400
+Received: from server.lespinasse.org ([63.205.204.226]:36221 "EHLO
+        server.lespinasse.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232256AbhD3TxW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 15:47:59 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5707C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 12:47:10 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id m6-20020a17090a8586b02901507e1acf0fso2318441pjn.3
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 12:47:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JpP3SOMsyKbKdgdhycOI1PqF+crmAFSB33V4ZUkSKZs=;
-        b=GUZvOaan0TFHPmegXK/2LcZXVUNAnqkcrhKPmSPfOOdVTkxQQV08BB/++nr1roQ096
-         m8TSef8NvmbWBtrEh6mmfqt8Ghgq4ttaWzNUYXMhngaolLTlhz/xtLqUGAx3E9C/NdCp
-         WLoKm7MoGvdgUz71VGXN9eIpOwvF29VtzQpMDckGIIu/0mx4xyW2sBmVDKa9fA0PamPE
-         QKtZkIgr6HvzdPu4lxnLDqcMdTI9KKopz1YYMJwvJBh8/okjHYzPLT1VWQtnSEmmya4x
-         ibBHsOZ4etXDJGLTKU3q0dVUrsawI+U/66jRoXZLSmIAYKHYVLyc2qWFreqeRfzbw5W/
-         NamQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=JpP3SOMsyKbKdgdhycOI1PqF+crmAFSB33V4ZUkSKZs=;
-        b=qAU23pqK1zH8dHnIU0LTaP9wIpHHELaFqiNr/zVRAst3dbHIp2tftNuCb1h8k5DPOp
-         C0PkciVTWQzii9BDjQeAPh7O1TzRVux8oFcnDmVoitRDCK20/h7+x7t2it/NQigBHWZo
-         XqqDOzeox2hE9LyH8vFvRh0YJX8NscvDAhpViCieCfgwugfVvajVYIafMV+jdZBRR0DL
-         zDRJVPSTJktGaqwEZ4jp3oLHNaaeQ9SaFGKA4a6bOiz4ITEjrXkcvW8DoZKGlfsBzgDx
-         iwa1jGJJYOl7lqJ8CUHoH8EqJ+qXTNZhIWpe+Krod9mVAObDZP99c/WGVbwIEYCltCkn
-         wkLw==
-X-Gm-Message-State: AOAM5327uUkVEoVRtnsZCPGW/zmkXP8zkDyCObvJN363KJFR/2WowXcS
-        bt9N9VX4WSXbsfIqrZwp7c5ITQ==
-X-Google-Smtp-Source: ABdhPJx+PObPLCgu6rRhjlUXqLxkXBqF/d+dgd6UMd6Or54JjNDlPQAy4zbB21j8eBcs+s2bJeR7Yw==
-X-Received: by 2002:a17:90a:fa0e:: with SMTP id cm14mr16606392pjb.59.1619812030129;
-        Fri, 30 Apr 2021 12:47:10 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id e65sm3120704pfe.9.2021.04.30.12.47.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 12:47:09 -0700 (PDT)
-Date:   Fri, 30 Apr 2021 12:47:09 -0700 (PDT)
-X-Google-Original-Date: Fri, 30 Apr 2021 12:47:08 PDT (-0700)
-Subject:     Re: [PATCH] riscv: Disallow to build XIP_KERNEL with SOC_SIFIVE
-In-Reply-To: <35b97408-328a-a9cd-1bb8-6758f42bde2d@ghiti.fr>
-CC:     vitaly.wool@konsulko.com, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     alex@ghiti.fr
-Message-ID: <mhng-16ec61ad-00c2-4d7e-a85e-6f651bdff654@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Fri, 30 Apr 2021 15:53:22 -0400
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+ d=lespinasse.org; i=@lespinasse.org; q=dns/txt; s=srv-14-ed;
+ t=1619812353; h=from : to : cc : subject : date : message-id :
+ mime-version : content-transfer-encoding : from;
+ bh=Docz4GsclSOYnAtcUPpooJiiUyd92UO1SY1X6kPKA5k=;
+ b=ZcZnCIICkKrKgtWV/D10WMxk76DSRs9bYoGKetpTB/RM42XMYnoel50JwbAqhOHzkPtVc
+ jF4v3o1K4TQcRGrCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lespinasse.org;
+ i=@lespinasse.org; q=dns/txt; s=srv-14-rsa; t=1619812353; h=from : to
+ : cc : subject : date : message-id : mime-version :
+ content-transfer-encoding : from;
+ bh=Docz4GsclSOYnAtcUPpooJiiUyd92UO1SY1X6kPKA5k=;
+ b=Rla4/bnyR9pv95AHFeHJqtwhIURSnYkPq4hzkCV4PLXmty0pg50VwtHu6p6npsJk78KoY
+ zvQlc0z5sgfdB/bTq3FP1tZOVHsQ5vQgkHVGkOknqgo23TzIqdrgpnv9hi6vj/HiSOIV4Gv
+ 8Rf7mtvpq0UkUTfKwa6ZLfssqPzccSFyRVAuOd5sDAXa/M6en0Nu4sCEIYzT7Paqp3abJkJ
+ fE4GdndmmkqwPMfdRRJr0EBiKNldb+TvrHjkeu1nZAM3Z7mAMA+UdqDt5VBcmgCdW79URjN
+ ItAuChWCm8/2on5kao5gVfvGXPavPQzjyujyrkjdPcgolq4pyoMuQUYq7mlg==
+Received: from zeus.lespinasse.org (zeus.lespinasse.org [IPv6:fd00::150:0])
+        by server.lespinasse.org (Postfix) with ESMTPS id 151171600A2;
+        Fri, 30 Apr 2021 12:52:33 -0700 (PDT)
+Received: by zeus.lespinasse.org (Postfix, from userid 1000)
+        id EFF7619F521; Fri, 30 Apr 2021 12:52:32 -0700 (PDT)
+From:   Michel Lespinasse <michel@lespinasse.org>
+To:     Linux-MM <linux-mm@kvack.org>,
+        Linux-Kernel <linux-kernel@vger.kernel.org>
+Cc:     Laurent Dufour <ldufour@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Michel Lespinasse <michel@lespinasse.org>
+Subject: [PATCH 00/29] Speculative page faults (anon vmas only)
+Date:   Fri, 30 Apr 2021 12:52:01 -0700
+Message-Id: <20210430195232.30491-1-michel@lespinasse.org>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Apr 2021 01:09:14 PDT (-0700), alex@ghiti.fr wrote:
-> Le 4/29/21 à 8:13 AM, Alex Ghiti a écrit :
->> Le 4/29/21 à 5:11 AM, Vitaly Wool a écrit :
->>> On Thu, Apr 29, 2021 at 10:47 AM Alexandre Ghiti <alex@ghiti.fr> wrote:
->>>>
->>>> RISCV_ERRATA_ALTERNATIVE patches text at runtime which is not
->>>> possible when
->>>> the kernel is executed from the flash in XIP mode, and as the SIFIVE
->>>> errata must be fixed somehow, disallow to build a XIP kernel that
->>>> supports SIFIVE socs.
->>>
->>> Could you please hold off this patch for a bit? I will try to come up
->>> with an alternative solution. It should be possible to define a
->>> special section within the RW area and place the functions that need
->>> such patching there.
->>> Not that I like that much but at least we'll keep the ability to use
->>> XIP on SiFive.
->>
->> Ok, I'm wondering why I did not think of that...I'll give it a try just
->> to punish myself.
->>
->> Thanks Vitaly,
->>
->> Alex
->>
->
-> I tried what you proposed and it works well, *callers* must be placed
-> into this writable section in RAM and that's it, that may be more
-> complicated if at some point the patched functions are generic but I
-> think we can use an intermediate riscv function to patch instead or
-> something else.
->
-> The modifications I did only consist in putting alternative section in
-> RAM and place the exception vector table in this section.
->
-> If you can do the proper patch, I'll let you do it, otherwise I'll do
-> that later as I have other things to do before.
->
-> So Palmer you can drop this patch.
+This patchset is my take on speculative page faults (spf).
+It builds on ideas that have been previously proposed by Laurent Dufour,
+Peter Zijlstra and others before. While Laurent's previous proposal
+was rejected around the time of LSF/MM 2019, I am hoping we can revisit
+this now based on what I think is a simpler and more bisectable approach,
+much improved scaling numbers in the anonymous vma case, and the Android
+use case that has since emerged. I will expand on these points towards
+the end of this message.
 
-Great.  I was going to push back and just say "we should swap the 
-alternatives over to the errata implemnetation for XIP, as the current 
-ones are just a performance hit when unnecessary and XIP users are 
-likely to build for a single SOC anyway".  That would mean we'd need to 
-sort something out WRT errata that rely on design-specific 
-functionality, and everything I came up with there was a headache.
+The patch series applies on top of linux v5.12;
+a git tree is also available:
+git fetch https://github.com/lespinasse/linux.git v5.12-spf-anon
 
-It's way better if we can just full support the alternatives stuff, so 
-I'll just wait for that.
+I believe these patches should be considered for merging.
+My github also has a v5.12-spf branch which extends this mechanism
+for handling file mapped vmas too; however I believe these are less
+mature and I am not submitting them for inclusion at this point.
 
->
-> Thanks again,
->
->>>
->>> Best regards,
->>>     Vitaly
->>>
->>>> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
->>>> ---
->>>>   arch/riscv/Kconfig.erratas | 2 +-
->>>>   arch/riscv/Kconfig.socs    | 1 +
->>>>   2 files changed, 2 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/arch/riscv/Kconfig.erratas b/arch/riscv/Kconfig.erratas
->>>> index d5d03ae8d685..9537dbd67357 100644
->>>> --- a/arch/riscv/Kconfig.erratas
->>>> +++ b/arch/riscv/Kconfig.erratas
->>>> @@ -2,7 +2,7 @@ menu "CPU errata selection"
->>>>
->>>>   config RISCV_ERRATA_ALTERNATIVE
->>>>          bool "RISC-V alternative scheme"
->>>> -       default y
->>>> +       default y if !XIP_KERNEL
->>>>          help
->>>>            This Kconfig allows the kernel to automatically patch the
->>>>            errata required by the execution platform at run time. The
->>>> diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
->>>> index 00c2b205654c..9cb38bc9d7cd 100644
->>>> --- a/arch/riscv/Kconfig.socs
->>>> +++ b/arch/riscv/Kconfig.socs
->>>> @@ -9,6 +9,7 @@ config SOC_MICROCHIP_POLARFIRE
->>>>
->>>>   config SOC_SIFIVE
->>>>          bool "SiFive SoCs"
->>>> +       depends on !XIP_KERNEL
->>>>          select SERIAL_SIFIVE if TTY
->>>>          select SERIAL_SIFIVE_CONSOLE if TTY
->>>>          select CLK_SIFIVE
->>>> --
->>>> 2.20.1
->>>>
->>>>
->>>> _______________________________________________
->>>> linux-riscv mailing list
->>>> linux-riscv@lists.infradead.org
->>>> http://lists.infradead.org/mailman/listinfo/linux-riscv
->>>
->>> _______________________________________________
->>> linux-riscv mailing list
->>> linux-riscv@lists.infradead.org
->>> http://lists.infradead.org/mailman/listinfo/linux-riscv
->>>
->>
->> _______________________________________________
->> linux-riscv mailing list
->> linux-riscv@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
+Compared to the previous (RFC) proposal, I have split out / left out
+the file VMA handling parts, fixed some config specific build issues,
+added a few more comments and modified the speculative fault handling
+to use rcu_read_lock() rather than local_irq_disable() in the
+MMU_GATHER_RCU_TABLE_FREE case.
+
+
+Classical page fault processing takes the mmap read lock in order to
+prevent races with mmap writers. In contrast, speculative fault
+processing does not take the mmap read lock, and instead verifies,
+when the results of the page fault are about to get committed and
+become visible to other threads, that no mmap writers have been
+running concurrently with the page fault. If the check fails,
+speculative updates do not get committed and the fault is retried
+in the usual, non-speculative way (with the mmap read lock held).
+
+The concurrency check is implemented using a per-mm mmap sequence count.
+The counter is incremented at the beginning and end of each mmap write
+operation. If the counter is initially observed to have an even value,
+and has the same value later on, the observer can deduce that no mmap
+writers have been running concurrently with it between those two times.
+This is similar to a seqlock, except that readers never spin on the
+counter value (they would instead revert to taking the mmap read lock),
+and writers are allowed to sleep. One benefit of this approach is that
+it requires no writer side changes, just some hooks in the mmap write
+lock APIs that writers already use.
+
+The first step of a speculative page fault is to look up the vma and
+read its contents (currently by making a copy of the vma, though in
+principle it would be sufficient to only read the vma attributes that
+are used in page faults). The mmap sequence count is used to verify
+that there were no mmap writers concurrent to the lookup and copy steps.
+Note that walking rbtrees while there may potentially be concurrent
+writers is not an entirely new idea in linux, as latched rbtrees
+are already doing this. This is safe as long as the lookup is
+followed by a sequence check to verify that concurrency did not
+actually occur (and abort the speculative fault if it did).
+
+The next step is to walk down the existing page table tree to find the
+current pte entry. This is done with interrupts disabled to avoid
+races with munmap(). Again, not an entirely new idea, as this repeats
+a pattern already present in fast GUP. Similar precautions are also
+taken when taking the page table lock.
+
+
+Commits 1 to 5 are preparatory cleanups
+(which I would like to push regardless of what happens to the rest)
+
+Commits 6 and 7 introduce CONFIG_SPECULATIVE_PAGE_FAULT and lets us
+enable it on x86 so we can test the new code as it gets introduced.
+
+Commits 8 and 9 extend handle_mm_fault() so it can be used for
+speculative faults; initially these always abort with VM_FAULT_RETRY.
+
+Commits 10 to 16 introduce all the basic building blocks for speculative
+page faults:
+- Commit 10 adds the mmap sequence count that will be used for detecting
+  when writers have been running concurrently with an spf attempt
+  (in which case the attempt will be aborted);
+- Commit 11 adds RCU safe vma freeing;
+- Commit 12 does a lockless VMA lookup and starts the spf handling attempt;
+- Commit 13 introduces an API for preventing page table reclamation
+  (using RCU or disabling interrupts depending on build config options);
+- (Commit 14 is a small refactor preparing for the next commit);
+- Commit 15 walks down the existing page tables, carefully avoiding
+  races with potential writers (munmap in particular)
+- Commit 16 introduces pte_map_lock() and pte_spinlock(), which attempt
+  to (optionally map and) lock an existing page table when it's time to
+  commit page fault results to it.
+
+Commits 17 to 24 progressively implement spf for most anon vma cases.
+This mostly comes down to using the pte_map_lock() and pte_spinlock()
+APIs where needed, and making sure to abort speculation in unsupported
+cases (mostly anon_vma allocation and userfaultfd). The work is split
+in small steps so that changes can be tested soon after they are added.
+
+Commits 25 and 26 disable speculative handling for single threaded
+userspace. This is for (minor) performance tuning and is pushed
+towards the end of the series to make it easier to exercise the spf
+paths as they are introduced.
+
+Commit 27 adds some extra statistics.
+
+Commits 28 and 29 add spf support on the arm64 architecture. It should
+be easy to add other architectures too, given access to test machines.
+
+
+As Laurent's previous proposal before LSF/MM 2019 was rejected for
+complexity reasons, I think that some of the changes I made will
+help address these concerns:
+
+- First, the patchset is structured to be bisectable (at least on x86).
+  Every few commits the new code gets enabled, which makes for easier
+  testing and also should make it easier for reviewers to understand how
+  the various commits relate to each other.
+
+- This patchset requires no changes to mmap writers other than instrumenting
+  the mmap write lock APIs.
+
+- The fault handler operates on a stable copy of the vma, so it does not
+  require any special care to avoid the possibility of vma fields being
+  modified concurrently with it.
+
+
+mmtest results (from my previous RFC submission) on HP Z840 workstation
+(2 socket Xeon E5-2690 v3 @ 2.60GHz, 24 cores / 48 threads total):
+See https://www.lespinasse.org/kernel/v5.12-rc5-spf/mmtests/
+
+Highlights from the above:
+
+- pft results show some pretty damn good scalability. Throughput using
+  all 48 threads (24 cores) is 24x that of single-threaded tests, and
+  3.7x higher than when using the baseline kernel. This is the result
+  of avoiding writing into any shared cache lines, be it for mmap lock
+  or vma refcounting, during speculative page faults.
+  (Experiments show that adding a single atomic variable per vma,
+  which would be incremented and decremented before and after spf
+  copies the vma, would decrease the 48-threads throughput by 62%).
+
+- wis-pf page_fault1 (anon THP) shows some moderate improvement.
+
+- wis-mmap likes the change, even though it doesn't do much page faults.
+  This seems to be a side effect of rcu safe vma freeing reducing vma
+  reuse between threads running on separate CPUs.
+
+- wis-malloc benefits from a mix of the anon vma and rcu effects.
+
+- macro benchmarks are mostly performance neutral, with some small
+  benefit in limited cases.
+
+
+Another motivation for this is the Android use case. Several Android
+vendors have picked up the previous SPF proposal and included it on
+their devices because it reduces application start-up times,
+which is an important performance metric for them.
+
+
+Michel Lespinasse (29):
+  mm: export dump_mm
+  mmap locking API: mmap_lock_is_contended returns a bool
+  mmap locking API: name the return values
+  do_anonymous_page: use update_mmu_tlb()
+  do_anonymous_page: reduce code duplication
+  mm: introduce CONFIG_SPECULATIVE_PAGE_FAULT
+  x86/mm: define ARCH_SUPPORTS_SPECULATIVE_PAGE_FAULT
+  mm: add FAULT_FLAG_SPECULATIVE flag
+  mm: add do_handle_mm_fault()
+  mm: add per-mm mmap sequence counter for speculative page fault handling.
+  mm: rcu safe vma freeing
+  x86/mm: attempt speculative mm faults first
+  mm: add speculative_page_walk_begin() and speculative_page_walk_end()
+  mm: refactor __handle_mm_fault() / handle_pte_fault()
+  mm: implement speculative handling in __handle_mm_fault().
+  mm: add pte_map_lock() and pte_spinlock()
+  mm: implement speculative handling in do_anonymous_page()
+  mm: enable speculative fault handling through do_anonymous_page()
+  mm: implement speculative handling in do_numa_page()
+  mm: enable speculative fault handling in do_numa_page()
+  mm: implement speculative handling in wp_page_copy()
+  mm: implement and enable speculative fault handling in handle_pte_fault()
+  mm: implement speculative handling in do_swap_page()
+  mm: enable speculative fault handling through do_swap_page()
+  mm: disable speculative faults for single threaded user space
+  mm: disable rcu safe vma freeing for single threaded user space
+  mm: anon spf statistics
+  arm64/mm: define ARCH_SUPPORTS_SPECULATIVE_PAGE_FAULT
+  arm64/mm: attempt speculative mm faults first
+
+ arch/arm64/Kconfig            |   1 +
+ arch/arm64/mm/fault.c         |  63 ++++
+ arch/x86/Kconfig              |   1 +
+ arch/x86/mm/fault.c           |  62 ++++
+ include/linux/mm.h            |  57 +++-
+ include/linux/mm_types.h      |  25 +-
+ include/linux/mmap_lock.h     | 109 +++++--
+ include/linux/vm_event_item.h |  27 ++
+ include/linux/vmstat.h        |   6 +
+ kernel/fork.c                 |  15 +
+ mm/Kconfig                    |  22 ++
+ mm/Kconfig.debug              |   7 +
+ mm/debug.c                    |   1 +
+ mm/memory.c                   | 520 ++++++++++++++++++++++++----------
+ mm/vmstat.c                   |  27 ++
+ 15 files changed, 770 insertions(+), 173 deletions(-)
+
+-- 
+2.20.1
+
