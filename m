@@ -2,172 +2,381 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF2103700A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D7A3700AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbhD3Skk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 14:40:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46996 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229954AbhD3Skj (ORCPT
+        id S231610AbhD3SmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 14:42:10 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:52608 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229954AbhD3SmF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 14:40:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619807990;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VKM7JOerLxCkpDJY1rd1Atdc/Vr9eHPMO++f4IYLagk=;
-        b=hkFMXrB3PuZIZzaqxttRZZ6aVM8FdzVV9NKunGmMvX+80uf/+i5m0ysb5AM+hVGUY8/obH
-        1UqM2qo+0ATcQi+i6cLKHLo4VgBmfm6eprignyRcrkkIQAMU1zBzcdidJvKD9HhKur8uLT
-        6gAAsvoz+k/FrHCu2oM28zTiKFExozQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-231-L8Vm7CR2M1GEMld4nERLwA-1; Fri, 30 Apr 2021 14:39:47 -0400
-X-MC-Unique: L8Vm7CR2M1GEMld4nERLwA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 685F718BA280;
-        Fri, 30 Apr 2021 18:39:46 +0000 (UTC)
-Received: from redhat.com (ovpn-113-225.phx2.redhat.com [10.3.113.225])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C14725D9CC;
-        Fri, 30 Apr 2021 18:39:45 +0000 (UTC)
-Date:   Fri, 30 Apr 2021 12:39:45 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Shanker Donthineni <sdonthineni@nvidia.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Sinan Kaya <okaya@kernel.org>,
-        Vikram Sethi <vsethi@nvidia.com>,
-        Amey Narkhede <ameynarkhede03@gmail.com>
-Subject: Re: [PATCH v4 1/2] PCI: Add support for a function level reset
- based on _RST method
-Message-ID: <20210430123945.54dd479c@redhat.com>
-In-Reply-To: <20210429004907.29044-1-sdonthineni@nvidia.com>
-References: <20210429004907.29044-1-sdonthineni@nvidia.com>
+        Fri, 30 Apr 2021 14:42:05 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 7EAB51F43B85
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Alexandru Ciobotaru <alcioa@amazon.com>,
+        Alexandru Vasile <lexnv@amazon.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        devicetree@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2] .gitignore: prefix local generated files with a slash
+Organization: Collabora
+References: <20210430020308.66792-1-masahiroy@kernel.org>
+Date:   Fri, 30 Apr 2021 14:41:08 -0400
+In-Reply-To: <20210430020308.66792-1-masahiroy@kernel.org> (Masahiro Yamada's
+        message of "Fri, 30 Apr 2021 11:03:08 +0900")
+Message-ID: <87wnsj4nuj.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Apr 2021 19:49:06 -0500
-Shanker Donthineni <sdonthineni@nvidia.com> wrote:
+Masahiro Yamada <masahiroy@kernel.org> writes:
 
-> The _RST is a standard method specified in the ACPI specification. It
-> provides a function level reset when it is described in the acpi_device
-> context associated with PCI-device.
-> 
-> Implement a new reset function pci_dev_acpi_reset() for probing RST
-> method and execute if it is defined in the firmware. The ACPI binding
-> information is available only after calling device_add(), so move
-> pci_init_reset_methods() to end of the pci_device_add().
-> 
-> The default priority of the acpi reset is set to below device-specific
-> and above hardware resets.
-> 
-> Signed-off-by: Shanker Donthineni <sdonthineni@nvidia.com>
+> The pattern prefixed with '/' matches files in the same directory,
+> but not ones in sub-directories.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> Acked-by: Miguel Ojeda <ojeda@kernel.org>
+> Acked-by: Rob Herring <robh@kernel.org>
+> Acked-by: Andra Paraschiv <andraprs@amazon.com>
+
+Acked-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+
 > ---
-> changes since v2:
->  - fix typo in the commit text
-> changes since v2:
->  - rebase patch on top of https://lore.kernel.org/linux-pci/20210409192324.30080-1-ameynarkhede03@gmail.com/
-> 
->  drivers/pci/pci.c   | 30 ++++++++++++++++++++++++++++++
->  drivers/pci/probe.c |  2 +-
->  include/linux/pci.h |  2 +-
->  3 files changed, 32 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index 664cf2d358d6..510f9224a3b0 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -5076,6 +5076,35 @@ static void pci_dev_restore(struct pci_dev *dev)
->  		err_handler->reset_done(dev);
->  }
->  
-> +/**
-> + * pci_dev_acpi_reset - do a function level reset using _RST method
-> + * @dev: device to reset
-> + * @probe: check if _RST method is included in the acpi_device context.
-> + */
-> +static int pci_dev_acpi_reset(struct pci_dev *dev, int probe)
-> +{
-> +#ifdef CONFIG_ACPI
-> +	acpi_handle handle = ACPI_HANDLE(&dev->dev);
-> +
-> +	/* Return -ENOTTY if _RST method is not included in the dev context */
-> +	if (!handle || !acpi_has_method(handle, "_RST"))
-> +		return -ENOTTY;
-> +
-> +	/* Return 0 for probe phase indicating that we can reset this device */
-> +	if (probe)
-> +		return 0;
-> +
-> +	/* Invoke _RST() method to perform a function level reset */
-> +	if (ACPI_FAILURE(acpi_evaluate_object(handle, "_RST", NULL, NULL))) {
-> +		pci_warn(dev, "Failed to reset the device\n");
-> +		return -EINVAL;
-> +	}
-> +	return 0;
-> +#else
-> +	return -ENOTTY;
-> +#endif
-> +}
-> +
->  /*
->   * The ordering for functions in pci_reset_fn_methods
->   * is required for reset_methods byte array defined
-> @@ -5083,6 +5112,7 @@ static void pci_dev_restore(struct pci_dev *dev)
->   */
->  const struct pci_reset_fn_method pci_reset_fn_methods[] = {
->  	{ .reset_fn = &pci_dev_specific_reset, .name = "device_specific" },
-> +	{ .reset_fn = &pci_dev_acpi_reset, .name = "acpi_reset" },
+>
+> Changes in v2:
+>   - rebase
+>
+>  Documentation/devicetree/bindings/.gitignore |  4 ++--
+>  arch/.gitignore                              |  4 ++--
+>  certs/.gitignore                             |  4 ++--
+>  drivers/memory/.gitignore                    |  2 +-
+>  drivers/tty/vt/.gitignore                    |  6 +++---
+>  fs/unicode/.gitignore                        |  4 ++--
+>  kernel/.gitignore                            |  2 +-
+>  lib/.gitignore                               | 10 +++++-----
+>  samples/auxdisplay/.gitignore                |  2 +-
+>  samples/binderfs/.gitignore                  |  3 ++-
+>  samples/connector/.gitignore                 |  2 +-
+>  samples/hidraw/.gitignore                    |  2 +-
+>  samples/mei/.gitignore                       |  2 +-
+>  samples/nitro_enclaves/.gitignore            |  2 +-
+>  samples/pidfd/.gitignore                     |  2 +-
+>  samples/seccomp/.gitignore                   |  8 ++++----
+>  samples/timers/.gitignore                    |  2 +-
+>  samples/vfs/.gitignore                       |  4 ++--
+>  samples/watch_queue/.gitignore               |  3 ++-
+>  samples/watchdog/.gitignore                  |  2 +-
+>  scripts/.gitignore                           | 18 +++++++++---------
+>  scripts/basic/.gitignore                     |  2 +-
+>  scripts/dtc/.gitignore                       |  4 ++--
+>  scripts/gcc-plugins/.gitignore               |  2 +-
+>  scripts/genksyms/.gitignore                  |  2 +-
+>  scripts/mod/.gitignore                       |  8 ++++----
+>  usr/.gitignore                               |  4 ++--
+>  27 files changed, 56 insertions(+), 54 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/.gitignore b/Documentation/devicetree/bindings/.gitignore
+> index 3a05b99bfa26..a77719968a7e 100644
+> --- a/Documentation/devicetree/bindings/.gitignore
+> +++ b/Documentation/devicetree/bindings/.gitignore
+> @@ -1,4 +1,4 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  *.example.dts
+> -processed-schema*.yaml
+> -processed-schema*.json
+> +/processed-schema*.yaml
+> +/processed-schema*.json
+> diff --git a/arch/.gitignore b/arch/.gitignore
+> index 4191da401dbb..756c19c34f99 100644
+> --- a/arch/.gitignore
+> +++ b/arch/.gitignore
+> @@ -1,3 +1,3 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -i386
+> -x86_64
+> +/i386/
+> +/x86_64/
+> diff --git a/certs/.gitignore b/certs/.gitignore
+> index 6cbd1f1a5837..8c3763f80be3 100644
+> --- a/certs/.gitignore
+> +++ b/certs/.gitignore
+> @@ -1,3 +1,3 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -x509_certificate_list
+> -x509_revocation_list
+> +/x509_certificate_list
+> +/x509_revocation_list
+> diff --git a/drivers/memory/.gitignore b/drivers/memory/.gitignore
+> index caedc4c7d2db..5e84bee05ef8 100644
+> --- a/drivers/memory/.gitignore
+> +++ b/drivers/memory/.gitignore
+> @@ -1,2 +1,2 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -ti-emif-asm-offsets.h
+> +/ti-emif-asm-offsets.h
+> diff --git a/drivers/tty/vt/.gitignore b/drivers/tty/vt/.gitignore
+> index 3ecf42234d89..0221709b177d 100644
+> --- a/drivers/tty/vt/.gitignore
+> +++ b/drivers/tty/vt/.gitignore
+> @@ -1,4 +1,4 @@
+>  # SPDX-License-Identifier: GPL-2.0
+> -conmakehash
+> -consolemap_deftbl.c
+> -defkeymap.c
+> +/conmakehash
+> +/consolemap_deftbl.c
+> +/defkeymap.c
+> diff --git a/fs/unicode/.gitignore b/fs/unicode/.gitignore
+> index 9b2467e77b2d..361294571ab0 100644
+> --- a/fs/unicode/.gitignore
+> +++ b/fs/unicode/.gitignore
+> @@ -1,3 +1,3 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -mkutf8data
+> -utf8data.h
+> +/mkutf8data
+> +/utf8data.h
+> diff --git a/kernel/.gitignore b/kernel/.gitignore
+> index 4abc4e033ed8..4dc1ffe9770b 100644
+> --- a/kernel/.gitignore
+> +++ b/kernel/.gitignore
+> @@ -1,2 +1,2 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -kheaders.md5
+> +/kheaders.md5
+> diff --git a/lib/.gitignore b/lib/.gitignore
+> index 327cb2c7f2c9..5e7fa54c4536 100644
+> --- a/lib/.gitignore
+> +++ b/lib/.gitignore
+> @@ -1,6 +1,6 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -gen_crc32table
+> -gen_crc64table
+> -crc32table.h
+> -crc64table.h
+> -oid_registry_data.c
+> +/crc32table.h
+> +/crc64table.h
+> +/gen_crc32table
+> +/gen_crc64table
+> +/oid_registry_data.c
+> diff --git a/samples/auxdisplay/.gitignore b/samples/auxdisplay/.gitignore
+> index 2ed744c0e741..d023816849bd 100644
+> --- a/samples/auxdisplay/.gitignore
+> +++ b/samples/auxdisplay/.gitignore
+> @@ -1,2 +1,2 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -cfag12864b-example
+> +/cfag12864b-example
+> diff --git a/samples/binderfs/.gitignore b/samples/binderfs/.gitignore
+> index eb60241e8087..8fa415a3640b 100644
+> --- a/samples/binderfs/.gitignore
+> +++ b/samples/binderfs/.gitignore
+> @@ -1 +1,2 @@
+> -binderfs_example
+> +# SPDX-License-Identifier: GPL-2.0
+> +/binderfs_example
+> diff --git a/samples/connector/.gitignore b/samples/connector/.gitignore
+> index d86f2ff9c947..0e26039f39b5 100644
+> --- a/samples/connector/.gitignore
+> +++ b/samples/connector/.gitignore
+> @@ -1,2 +1,2 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -ucon
+> +/ucon
+> diff --git a/samples/hidraw/.gitignore b/samples/hidraw/.gitignore
+> index d7a6074ebcf9..5233ab63262e 100644
+> --- a/samples/hidraw/.gitignore
+> +++ b/samples/hidraw/.gitignore
+> @@ -1,2 +1,2 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -hid-example
+> +/hid-example
+> diff --git a/samples/mei/.gitignore b/samples/mei/.gitignore
+> index db5e802f041e..fe894bcb6a62 100644
+> --- a/samples/mei/.gitignore
+> +++ b/samples/mei/.gitignore
+> @@ -1,2 +1,2 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -mei-amt-version
+> +/mei-amt-version
+> diff --git a/samples/nitro_enclaves/.gitignore b/samples/nitro_enclaves/.gitignore
+> index 827934129c90..6a718eec71f4 100644
+> --- a/samples/nitro_enclaves/.gitignore
+> +++ b/samples/nitro_enclaves/.gitignore
+> @@ -1,2 +1,2 @@
+>  # SPDX-License-Identifier: GPL-2.0
+> -ne_ioctl_sample
+> +/ne_ioctl_sample
+> diff --git a/samples/pidfd/.gitignore b/samples/pidfd/.gitignore
+> index eea857fca736..d4cfa3176b1b 100644
+> --- a/samples/pidfd/.gitignore
+> +++ b/samples/pidfd/.gitignore
+> @@ -1,2 +1,2 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -pidfd-metadata
+> +/pidfd-metadata
+> diff --git a/samples/seccomp/.gitignore b/samples/seccomp/.gitignore
+> index 4a5a5b7db30b..a6df0da77c5d 100644
+> --- a/samples/seccomp/.gitignore
+> +++ b/samples/seccomp/.gitignore
+> @@ -1,5 +1,5 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -bpf-direct
+> -bpf-fancy
+> -dropper
+> -user-trap
+> +/bpf-direct
+> +/bpf-fancy
+> +/dropper
+> +/user-trap
+> diff --git a/samples/timers/.gitignore b/samples/timers/.gitignore
+> index 40510c33cf08..cd9ff7b95383 100644
+> --- a/samples/timers/.gitignore
+> +++ b/samples/timers/.gitignore
+> @@ -1,2 +1,2 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -hpet_example
+> +/hpet_example
+> diff --git a/samples/vfs/.gitignore b/samples/vfs/.gitignore
+> index 8fdabf7e5373..79212d91285b 100644
+> --- a/samples/vfs/.gitignore
+> +++ b/samples/vfs/.gitignore
+> @@ -1,3 +1,3 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -test-fsmount
+> -test-statx
+> +/test-fsmount
+> +/test-statx
+> diff --git a/samples/watch_queue/.gitignore b/samples/watch_queue/.gitignore
+> index 2aa3c7e56a1a..823b351d3db9 100644
+> --- a/samples/watch_queue/.gitignore
+> +++ b/samples/watch_queue/.gitignore
+> @@ -1 +1,2 @@
+> -watch_test
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +/watch_test
+> diff --git a/samples/watchdog/.gitignore b/samples/watchdog/.gitignore
+> index 74153b831244..a70a0150ed9f 100644
+> --- a/samples/watchdog/.gitignore
+> +++ b/samples/watchdog/.gitignore
+> @@ -1,2 +1,2 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -watchdog-simple
+> +/watchdog-simple
+> diff --git a/scripts/.gitignore b/scripts/.gitignore
+> index a6c11316c969..e83c620ef52c 100644
+> --- a/scripts/.gitignore
+> +++ b/scripts/.gitignore
+> @@ -1,11 +1,11 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -bin2c
+> -kallsyms
+> -unifdef
+> -recordmcount
+> -sorttable
+> -asn1_compiler
+> -extract-cert
+> -sign-file
+> -insert-sys-cert
+> +/asn1_compiler
+> +/bin2c
+> +/extract-cert
+> +/insert-sys-cert
+> +/kallsyms
+>  /module.lds
+> +/recordmcount
+> +/sign-file
+> +/sorttable
+> +/unifdef
+> diff --git a/scripts/basic/.gitignore b/scripts/basic/.gitignore
+> index 98ae1f509592..961c91c8a884 100644
+> --- a/scripts/basic/.gitignore
+> +++ b/scripts/basic/.gitignore
+> @@ -1,2 +1,2 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -fixdep
+> +/fixdep
+> diff --git a/scripts/dtc/.gitignore b/scripts/dtc/.gitignore
+> index 8a8b62bf3d3c..e0b5c1d2464a 100644
+> --- a/scripts/dtc/.gitignore
+> +++ b/scripts/dtc/.gitignore
+> @@ -1,3 +1,3 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -dtc
+> -fdtoverlay
+> +/dtc
+> +/fdtoverlay
+> diff --git a/scripts/gcc-plugins/.gitignore b/scripts/gcc-plugins/.gitignore
+> index b04e0f0f033e..5cc385b9eb97 100644
+> --- a/scripts/gcc-plugins/.gitignore
+> +++ b/scripts/gcc-plugins/.gitignore
+> @@ -1,2 +1,2 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -randomize_layout_seed.h
+> +/randomize_layout_seed.h
+> diff --git a/scripts/genksyms/.gitignore b/scripts/genksyms/.gitignore
+> index 999af710f83d..0b275abf9405 100644
+> --- a/scripts/genksyms/.gitignore
+> +++ b/scripts/genksyms/.gitignore
+> @@ -1,2 +1,2 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -genksyms
+> +/genksyms
+> diff --git a/scripts/mod/.gitignore b/scripts/mod/.gitignore
+> index 07e4a39f90a6..ed2e13b708ce 100644
+> --- a/scripts/mod/.gitignore
+> +++ b/scripts/mod/.gitignore
+> @@ -1,5 +1,5 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -elfconfig.h
+> -mk_elfconfig
+> -modpost
+> -devicetable-offsets.h
+> +/elfconfig.h
+> +/mk_elfconfig
+> +/modpost
+> +/devicetable-offsets.h
+> diff --git a/usr/.gitignore b/usr/.gitignore
+> index 935442ed1eb2..8996e7a88902 100644
+> --- a/usr/.gitignore
+> +++ b/usr/.gitignore
+> @@ -1,4 +1,4 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -gen_init_cpio
+> -initramfs_data.cpio
+> +/gen_init_cpio
+> +/initramfs_data.cpio
+>  /initramfs_inc_data
 
-Would it make sense to name this "acpi_rst" after the method name?
-Otherwise "_reset" is a bit redundant to the sysfs attribute, we could
-simply name it "acpi" to indicate an ACPI based reset.  Thanks,
-
-Alex
-
-
->  	{ .reset_fn = &pcie_reset_flr, .name = "flr" },
->  	{ .reset_fn = &pci_af_flr, .name = "af_flr" },
->  	{ .reset_fn = &pci_pm_reset, .name = "pm" },
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 4764e031a44b..d4becd6ffb52 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -2403,7 +2403,6 @@ static void pci_init_capabilities(struct pci_dev *dev)
->  	pci_rcec_init(dev);		/* Root Complex Event Collector */
->  
->  	pcie_report_downtraining(dev);
-> -	pci_init_reset_methods(dev);
->  }
->  
->  /*
-> @@ -2494,6 +2493,7 @@ void pci_device_add(struct pci_dev *dev, struct pci_bus *bus)
->  	dev->match_driver = false;
->  	ret = device_add(&dev->dev);
->  	WARN_ON(ret < 0);
-> +	pci_init_reset_methods(dev);
->  }
->  
->  struct pci_dev *pci_scan_single_device(struct pci_bus *bus, int devfn)
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 9f8347799634..b4a5d2146542 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -49,7 +49,7 @@
->  			       PCI_STATUS_SIG_TARGET_ABORT | \
->  			       PCI_STATUS_PARITY)
->  
-> -#define PCI_RESET_FN_METHODS 5
-> +#define PCI_RESET_FN_METHODS 6
->  
->  /*
->   * The PCI interface treats multi-function devices as independent
-
+-- 
+Gabriel Krisman Bertazi
