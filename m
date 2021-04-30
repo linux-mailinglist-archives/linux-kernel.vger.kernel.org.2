@@ -2,122 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D0F36FA6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 14:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C34636FA71
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 14:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbhD3Mh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 08:37:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231476AbhD3Mhx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 08:37:53 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A849AC06174A;
-        Fri, 30 Apr 2021 05:37:04 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id g65so8619124wmg.2;
-        Fri, 30 Apr 2021 05:37:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=w64guxGS9FMEWcZon3B2qnFpVFodmAXPvDD4UORab6k=;
-        b=R67HR52vRDHFU9oQxAY+dvLc8wXKDQYHj3rYvvz3NlYx3rbcSCoMjFuEd8wKhMooRz
-         wZGbE3QSIFGCjeIy9zlB04qnIVdiwnaqEwPlGKP/7dKv/4DgAnbNlLNbyzOKyU1BZnFb
-         0c/OEdlGTweClDPtTxpw7HlDVrWcWXx/kO1gKGzgOokQhbi3nPxs+nctyzEJdmqe5fzm
-         8HdQEkC0fntaHHzIaO2hQw4QvUGNv2hmwU5C9ysMAjfpNAMpEir1AomtOffu3/WR8QJz
-         y2qXXC+ThRvRU2U/rCJeB7egcj68JpRJ64cy+0iaIRoSHnP+Cdm8IynvG4rCpumgV2bn
-         vAQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=w64guxGS9FMEWcZon3B2qnFpVFodmAXPvDD4UORab6k=;
-        b=FtFIukoCfHpaFiDu2rgrDj9ZPs8Ke0+imC6snugiXGURIasmPbckTou5xpuJb64tQe
-         9LGWHFmhF51PzC3hvr0YWA3p7PEbW1GrESvCLj0UZshDA4LI2jBPqAbrVl4Bg0VyrGDA
-         ap2aVVPzNEggzSceaN2EyKEaml+y1BhqTFcdXepciV3oKvExrnUzK1/HoseKh3rIclJV
-         YJt5NZw6Eery72ngx8at443jpBw5qtA1Wcogytj1K/IAYaqz2Oc1S9VOml7xzku4Pjnm
-         4QAYByNpOSB5pe9Ad4pXR3O6X3jgBI/YOy6X7QbdChj1SolTsSU1rZHHbDyp27Cj5HLm
-         Nc3A==
-X-Gm-Message-State: AOAM533gFrhOCivUpabWEZ6zONDtcizJRCmoAW6sTXILNo07NUVF72qX
-        6qy1HIoNAFxYmZ3njtqexnc=
-X-Google-Smtp-Source: ABdhPJwUrHApqG/2GAxHmuBEFvD+H6a+tok+3Mx8mmgRU3UCynwUKegz2hQbuiA1GSKWK51jcCtm+w==
-X-Received: by 2002:a1c:7fcd:: with SMTP id a196mr16646869wmd.180.1619786223227;
-        Fri, 30 Apr 2021 05:37:03 -0700 (PDT)
-Received: from [192.168.2.202] (p5487bc52.dip0.t-ipconnect.de. [84.135.188.82])
-        by smtp.gmail.com with ESMTPSA id h8sm2953616wmq.19.2021.04.30.05.37.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Apr 2021 05:37:02 -0700 (PDT)
-Subject: Re: Support for AMDI0022 UART
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Wang Hongcheng <annie.wang@amd.com>, Ken Xue <Ken.Xue@amd.com>
-References: <295686a0-240d-71d1-a6a0-f3752cf24477@gmail.com>
- <CAHp75VcLoTsjyQyVAo6cd+HMd+z_irM8ofcenRm0P6CzYGOQNw@mail.gmail.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <85ec3e9a-e69b-ecd6-3d77-4364064c57a3@gmail.com>
-Date:   Fri, 30 Apr 2021 14:37:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S232269AbhD3Miu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 08:38:50 -0400
+Received: from mout.gmx.net ([212.227.17.21]:33679 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231476AbhD3Mis (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 08:38:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1619786236;
+        bh=aWA0qZW6OIJpsght0sPtlyAsUnhdMUN05yqm1M8XjsQ=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=g13+7uC+M2sTr28mFWdno+u9YNLBBvuAxHyhLqURCyV631eiTuzCxC50heLLwvlmZ
+         pgUKvHQYRW6d8nmkZ3OfmJNEm5syhOy4tUDmbTuP7Ldbo02DgRB4dbP0GuR4qx06ou
+         XetKgIDOAEjC8VCEsDvnnNyPs3WISEjzrlHJMuvg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [157.180.225.50] ([157.180.225.50]) by web-mail.gmx.net
+ (3c-app-gmx-bap03.server.lan [172.19.172.73]) (via HTTP); Fri, 30 Apr 2021
+ 14:37:16 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VcLoTsjyQyVAo6cd+HMd+z_irM8ofcenRm0P6CzYGOQNw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Message-ID: <trinity-843c99ce-952a-434e-95e4-4ece3ba6b9bd-1619786236765@3c-app-gmx-bap03>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     DENG Qingfang <dqfext@gmail.com>,
+        David Miller <davem@davemloft.net>, f.fainelli@gmail.com,
+        hkallweit1@gmail.com, kuba@kernel.org, Landen.Chao@mediatek.com,
+        matthias.bgg@gmail.com, linux@armlinux.org.uk,
+        sean.wang@mediatek.com, vivien.didelot@gmail.com,
+        olteanv@gmail.com, robh+dt@kernel.org, linus.walleij@linaro.org,
+        gregkh@linuxfoundation.org, sergio.paracuellos@gmail.com,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-staging@lists.linux.dev, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, weijie.gao@mediatek.com,
+        gch981213@gmail.com, opensource@vdorst.com, tglx@linutronix.de,
+        maz@kernel.org
+Subject: Aw: Re: [PATCH net-next 0/4] MT7530 interrupt support
+Content-Type: text/plain; charset=UTF-8
+Date:   Fri, 30 Apr 2021 14:37:16 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <YIv28APpOP9tnuO+@lunn.ch>
+References: <20210429062130.29403-1-dqfext@gmail.com>
+ <20210429.170815.956010543291313915.davem@davemloft.net>
+ <20210430023839.246447-1-dqfext@gmail.com> <YIv28APpOP9tnuO+@lunn.ch>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:ylYnjWFNykRWOKSx3UIDDPiFuY/keJ+N0BZCO5sR80bsR6BBg02Q7LKHjtxineS3ctVz8
+ sKaSAYh8o0agfbR2GR5smR5BnugCP1hWi/3SsM3xO/F1/R+7J/y6IP1o4QgzsineKPNdp0LU+TX4
+ jJQ9bqN1WylsDcDM7n63ojCcDg0IRCUOy62U1wsSaHKK7OrTS+bs77EVP30nb68bPCRdIEzuQ1un
+ KQZ4kyxNx2g15X3fGyAhb2XEIUXdpOrJQrQHTR+CCGpZ17u4HJL+b9P12g0coHlVgizLCzZAUZy4
+ w4=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:zbwz7g5Ns4I=:rTQz1sgb1ya6Byjhnt47jG
+ TDzlj/YX2nWyScSkr4eWxd0MAAevy3Zk2kWZhtyInMwNXQOY53v6Trz1pK7GmjEhMfbcS0gf4
+ PV28WlwT6EdY1LS/2W4fJ7YVdvMpLKLH8dzPv2hFnfKzKjCydHLzBEQaO9QujQNuTi4KL6NuN
+ Bb6zbFxR4mEzehanDp5ErAh+SxaCcsC/I9avKkSTiemAgYoC1ZUmKl+p1NqAa9I2oFoeZkJxV
+ gUhg9tecgwq3Lc/Yh69hQt5CtugbbC34BVwyIw0klB2tAaWi4GqeIEy5K9OkrLLa1fcWZ5ru1
+ 9i51QvmVQ2oBBgGNiXqPz0yb1ybve10MGpTQOgAVSU+KcMjv2jyOJevrMrzHU5zgS+PTcJXuz
+ yZC12UqX0mjetuotnLhUboWGfnUW0eoBvssVJUNgKBA56802cLwBjM/24wM8TWwCKg/8Zde+U
+ RMj99LAGYCTE12lX7y4nCE/F7tHCKghnQTqIEdvKVloDIJybWwnRiZJbUpJC7BbWRQJLQZVJY
+ YtUCtg1asMEptdUwjFtxQL7bZk/88dJSetCX+5TxQuLOkmYzLDMz2Ynvwfd5BoTJUwyQ/uoiT
+ U/N1Bv/wjCZJJFysR7/eW+a3FKUiVoB5wZedu5+DsDD3iGJePZ41IQNqfXuQ4gcjbDTJx/pdW
+ ych1QqWvel1+yRuWjEPRjRpymj4/Oh2owYa+WnTWh2rAlEiHvcLb2nA7LaRWKcHOUWfYQMIZI
+ vQHG7uSHKKTz1OiHCBs09Go7K23U9AxMaviVaky/MANc7PJn9UAa1WH8QUhEAl3N+n2lwUiFP
+ pBMCYv78cII6ke6dm5phsO0gNZIqkigcAmP13jOiE+zsr5GOdV4p+UhV0n3karEKIwhmzb+F/
+ dzcqdyvdwSYweBTXanMAe0Yo/r06mjZspbOftVuxWZVk/VqBZgd3rZcjpX1nGC7HA7Y05/Y2Z
+ sFe6Otyc0hQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
+
+i prepare rename of musb-driver to musb_mtk.ko as this is also not the best name.
+
+if this module does only handle mt753x i would suggest
+
+phy_mt753x.{c,ko}
+
+regards Frank
 
 
-On 4/24/21 12:25 PM, Andy Shevchenko wrote:
-> On Fri, Apr 23, 2021 at 10:58 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
->>
->> Hi all,
->>
->> I received a report from a Surface Laptop 4 which has a UART that is
->> identified as AMDI0022 in ACPI [1] and that does not seem to be
->> supported by the kernel yet.
->>
->>   From what I can tell via ACPI, this is similar to the AMDI0020 [2] UART
->> that's already supported by the kernel (well, both are devices with two
->> MMIO regions and an interrupt as far as I can tell...). So it's possible
->> that all that's needed is adding it to the respective device ID lists
->> [3, 4]. Unfortunately, I a) don't have a device to test this myself, b)
->> haven't found any more details on that online, and c) don't want to tell
->> others to test this without knowing a bit more about that (potentially
->> writing random stuff to some unknown MMIO region that I don't know
->> anything about doesn't sound as safe to me as I'd like).
-> 
-> To me they look completely the same. Depending on the device which is
-> connected to the UART, I would suggest just to add an ID and see if it
-> makes it work.
+> Gesendet: Freitag, 30. April 2021 um 14:24 Uhr
+> Von: "Andrew Lunn" <andrew@lunn.ch>
 
-Thanks! We've tried that now and we do have some progress, meaning that
-the serial device seems to work as expected (we have some basic
-communication working).
+> mediatek_phy.c gets you into trouble with the generic PHY drivers.
+> Most Ethernet PHY drivers have the model number in the file name. Does
+> the PHY have its own name/numbering, or is it always considered part
+> of the switch?  If the PHY has an identity of its own, use
+> that. Otherwise maybe mediatek75xx.c?
 
-The driver that we want to load (drivers/platform/surface/aggregator/)
-still doesn't quite load yet, but that now seems to be due to a missing
-GPIO driver for an AMDI0031 device. There's again an AMDI0030 in
-drivers/pinctrl/pinctrl-amd.c, but this time the definitions do seem a
-bit different (compare [5, 6]), specifically there are now two memory
-regions (altough the combined size is still the same).
-
-I'll try to have a look around and maybe ping the linux-gpio list if I
-don't find anything else. I'll post some patches once we've got the
-driver loading properly and can run some more tests.
-
-Regards,
-Max
-
-[5]: AMDI0030 on Surface Laptop 3
-https://github.com/linux-surface/acpidumps/blob/4da0148744164cea0c924dab92f45842fde03177/surface_laptop_3_amd/dsdt.dsl#L1767-L1802
-
-[6]: AMDI0031 on Surface Laptop 4
-https://github.com/linux-surface/acpidumps/blob/4da0148744164cea0c924dab92f45842fde03177/surface_laptop_4_amd/dsdt.dsl#L1404-L1428
