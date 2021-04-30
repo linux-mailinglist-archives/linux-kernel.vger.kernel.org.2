@@ -2,132 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F10E36FB8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 15:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B81836FBA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 15:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232579AbhD3Nem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 09:34:42 -0400
-Received: from alln-iport-6.cisco.com ([173.37.142.93]:6871 "EHLO
-        alln-iport-6.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232276AbhD3Nek (ORCPT
+        id S230198AbhD3NmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 09:42:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229688AbhD3NmH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 09:34:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=3133; q=dns/txt; s=iport;
-  t=1619789632; x=1620999232;
-  h=from:to:subject:date:message-id:in-reply-to:references:
-   mime-version:content-transfer-encoding;
-  bh=WigcQ1OHmuGN9IHW1rVUKCENXn5dQB3Iyfv7JC2jES8=;
-  b=ctJOx/8DgNsXCYGT7Q1clhe+mm6fAOvQbnVIBLW8jQ9r+NIPk0HRLmdk
-   QjRI7JyZHAIaXN+HCRNzQrbTtd4EVfXWsMrNiSepnhTLRSwyaYFsdNiDh
-   LFSs2SkmHtFyaotIWUX9x1LkpEgysMsyE9rCLHjILuV54cbUYvB1vnPw/
-   E=;
-X-IPAS-Result: =?us-ascii?q?A0B+AQCABoxgmJpdJa1agmCDIlYBOTGxMoF8CwEBAQ0BA?=
- =?us-ascii?q?SAUBAEBhFACgXsCJTYHDgIEAQEBAwIDAQEBAQEFAQEBAgEGBBQBAQEBAQEBA?=
- =?us-ascii?q?WiFUA2GRQYyAVYeMywrBxKCcQGDB6cogiyBAYg0gUSBOohtdIN2JxyBSUKBF?=
- =?us-ascii?q?YNgiAeCESIEgkd7EwGhcZw+gxqdGhAmg1SLCpZAlSyeYSBUhAcCBAYFAhY1g?=
- =?us-ascii?q?SYBMIFbMxoIGxWDJAlHGQ6OOIM+ixYhAy8CNgIGCgEBAwmNDwEB?=
-IronPort-HdrOrdr: A9a23:eF8EHqhZyDelMET+L/bZnJ1LBnBQXmMji2hD6mlwRA09T+Wzkc
- eykPMHkSLugDEKV3063fyGMq+MQXTTnKQFhbU5EL++UGDd1leAA5pl6eLZrgHIOyq7zeJF0L
- clTq4WMqySMXFfreLXpDa1CMwhxt7vytHMuc77w212RQ9nL4Fshj0ZNi+hHkd7RBZLCPMCff
- L2jPZvnDaudW8aac62HBA+Lor+jufWn5HrawNuPXEawTSJ5AnF1JfKVzyR3hITSFp0oYsKwC
- zijxHz4LmlvrWdzBLRvlWjiah+qZ/G1sZJAtCKh4wuDgjUziysZIhnRtS5zVcInN0=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="5.82,262,1613433600"; 
-   d="scan'208";a="729925261"
-Received: from rcdn-core-3.cisco.com ([173.37.93.154])
-  by alln-iport-6.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 30 Apr 2021 13:33:50 +0000
-Received: from sjc-ads-9103.cisco.com (sjc-ads-9103.cisco.com [10.30.208.113])
-        by rcdn-core-3.cisco.com (8.15.2/8.15.2) with ESMTPS id 13UDXo40027927
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Fri, 30 Apr 2021 13:33:50 GMT
-Received: by sjc-ads-9103.cisco.com (Postfix, from userid 487941)
-        id 2D7E3CC1254; Fri, 30 Apr 2021 06:33:50 -0700 (PDT)
-From:   Denys Zagorui <dzagorui@cisco.com>
-To:     jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        namhyung@kernel.org
-Subject: [PATCH v4 3/3] perf parse-events: add bison --file-prefix-map option
-Date:   Fri, 30 Apr 2021 06:33:50 -0700
-Message-Id: <20210430133350.20504-3-dzagorui@cisco.com>
-X-Mailer: git-send-email 2.26.2.Cisco
-In-Reply-To: <20210430133350.20504-1-dzagorui@cisco.com>
-References: <20210430133350.20504-1-dzagorui@cisco.com>
+        Fri, 30 Apr 2021 09:42:07 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76257C06138B
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 06:41:18 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id i11so8037221oig.8
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 06:41:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hxOtwSZu4oEXP0BEqDSu+lmsVsdNjWZtq/yvaEq4ie0=;
+        b=JQ8qNnJl3RfX3lhvLSC+wnbDqnYYVFDJWbbOG4C+0LYqhNoRHmZ+ioxoTRGC+KZtOt
+         OE+5o7YEmQMcVUUqXFonjBV4PTTBiOO5X5g0W+q6wcD6aovjiphKAH4AAcdzemc7P/jR
+         ST6oCTs2kykhuNhnL8iN5HvhXDh6jtmNunwyu1ZGtbXQgPHYAqKW4Oj6E0Bcqj6s27G/
+         zURFAt3QoKpQx76XYQfgfVbkeN8sVDVRtTw1JI5lysWt1VDH6S+cyNs1mMvQXusMoXei
+         5bbzP4aC7sdV/cfG0dGvAhnJkTo3cxk5nhbPvD1zehC/MFpzwuFUqmlLN+P9alBlx1Jp
+         V+Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hxOtwSZu4oEXP0BEqDSu+lmsVsdNjWZtq/yvaEq4ie0=;
+        b=cWT3xfN9zUDkPvx1quMAlQUKXddJZesYnEnrUkblMj3UfsjcUUDoEoRyr8eAWCQ7sp
+         l2cPNgxD/u01aMp7PWbSu22rA9Dp0ds7i0f2yKQgVRRmYnXZu6y31ZPOeLKs8Y7GzK0g
+         RpfGFiwLWEh4mXsvojTI5jsHcCSVaafrtbTtjLTYTOSAvTYuEVOHrp/GKOCCziCGofem
+         DmfTEEkmG2XeohFR3vREozC9hzua9b7bcYVs7NKkFmmoEDWUw570NCmLVmtY4f9kCVn6
+         zLwCaO3b+Iozfgumi6HmuDbmMTsGqZxZffjuywIHPJtKMuH38SR4BrwNm+g1Dz0S3S4j
+         lVxQ==
+X-Gm-Message-State: AOAM530PsJUcqKZGtxkhUP5EI9t8uw9/wGvyQKwri4n/g0q41zu2Blv/
+        Qf7/4N11afYmIGBOVDAC0VBcgQ==
+X-Google-Smtp-Source: ABdhPJzH74O4u7xM2xkFSoVY6BhPTcqN8QNcwgEy8zbUY9H0znIBwNBVvsog6sltP4mPQVJFPxVzOQ==
+X-Received: by 2002:aca:5856:: with SMTP id m83mr3949232oib.105.1619790077632;
+        Fri, 30 Apr 2021 06:41:17 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id z204sm205246oia.2.2021.04.30.06.41.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 06:41:17 -0700 (PDT)
+Date:   Fri, 30 Apr 2021 08:41:14 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Marijn Suijten <marijn.suijten@somainline.org>
+Cc:     linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] leds: ledtrig-pattern: Use last_repeat when applying hw
+ pattern
+Message-ID: <20210430134114.GC2484@yoga>
+References: <20210418213427.220638-1-marijn.suijten@somainline.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Outbound-SMTP-Client: 10.30.208.113, sjc-ads-9103.cisco.com
-X-Outbound-Node: rcdn-core-3.cisco.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210418213427.220638-1-marijn.suijten@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bison stores full paths in generated files and those paths are stored in
-resulting perf binary. Starting from v3.7.1. those paths can be remapped
-by using --file-prefix-map option. So use this option if it possible to
-make perf binary more reproducible.
+On Sun 18 Apr 16:34 CDT 2021, Marijn Suijten wrote:
 
-Signed-off-by: Denys Zagorui <dzagorui@cisco.com>
----
- tools/perf/Makefile.config | 9 +++++++++
- tools/perf/util/Build      | 6 +++---
- 2 files changed, 12 insertions(+), 3 deletions(-)
+> `last_repeat` holds the actual value requested by the user whereas
+> `repeat` is a software iteration variable that is unused in hardware
+> patterns.
+> 
+> Furthermore `last_repeat` is the field returned to the user when reading
+> the `repeat` sysfs property.  This field is initialized to `-1` which is
+> - together with `1` - the only valid value in the upcoming Qualcomm LPG
+> driver.  It is thus unexpected when `repeat` with an initialization
+> value of `0` is passed into the the driver, when the sysfs property
+> clearly presents a value of `-1`.
+> 
 
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index d8e59d31399a..2035bae6d5c5 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -195,6 +195,12 @@ ifeq ($(call get-executable,$(BISON)),)
-   dummy := $(error Error: $(BISON) is missing on this system, please install it)
- endif
- 
-+ifneq ($(OUTPUT),)
-+  ifeq ($(shell expr $(shell $(BISON) --version | grep bison | sed -e 's/.\+ \([0-9]\+\).\([0-9]\+\).\([0-9]\+\)/\1\2\3/g') \>\= 371), 1)
-+    BISON_FILE_PREFIX_MAP := --file-prefix-map=$(OUTPUT)=
-+  endif
-+endif
-+
- # Treat warnings as errors unless directed not to
- ifneq ($(WERROR),0)
-   CORE_CFLAGS += -Werror
-@@ -1208,3 +1214,6 @@ $(call detected_var,LIBDIR)
- $(call detected_var,GTK_CFLAGS)
- $(call detected_var,PERL_EMBED_CCOPTS)
- $(call detected_var,PYTHON_EMBED_CCOPTS)
-+ifneq ($(BISON_FILE_PREFIX_MAP),)
-+$(call detected_var,BISON_FILE_PREFIX_MAP)
-+endif
-diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-index e3e12f9d4733..33476b1d28d5 100644
---- a/tools/perf/util/Build
-+++ b/tools/perf/util/Build
-@@ -204,7 +204,7 @@ $(OUTPUT)util/parse-events-flex.c $(OUTPUT)util/parse-events-flex.h: util/parse-
- 
- $(OUTPUT)util/parse-events-bison.c $(OUTPUT)util/parse-events-bison.h: util/parse-events.y
- 	$(call rule_mkdir)
--	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) \
-+	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) $(BISON_FILE_PREFIX_MAP) \
- 		-o $(OUTPUT)util/parse-events-bison.c -p parse_events_
- 
- $(OUTPUT)util/expr-flex.c $(OUTPUT)util/expr-flex.h: util/expr.l $(OUTPUT)util/expr-bison.c
-@@ -214,7 +214,7 @@ $(OUTPUT)util/expr-flex.c $(OUTPUT)util/expr-flex.h: util/expr.l $(OUTPUT)util/e
- 
- $(OUTPUT)util/expr-bison.c $(OUTPUT)util/expr-bison.h: util/expr.y
- 	$(call rule_mkdir)
--	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) \
-+	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) $(BISON_FILE_PREFIX_MAP) \
- 		-o $(OUTPUT)util/expr-bison.c -p expr_
- 
- $(OUTPUT)util/pmu-flex.c $(OUTPUT)util/pmu-flex.h: util/pmu.l $(OUTPUT)util/pmu-bison.c
-@@ -224,7 +224,7 @@ $(OUTPUT)util/pmu-flex.c $(OUTPUT)util/pmu-flex.h: util/pmu.l $(OUTPUT)util/pmu-
- 
- $(OUTPUT)util/pmu-bison.c $(OUTPUT)util/pmu-bison.h: util/pmu.y
- 	$(call rule_mkdir)
--	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) \
-+	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) $(BISON_FILE_PREFIX_MAP) \
- 		-o $(OUTPUT)util/pmu-bison.c -p perf_pmu_
- 
- FLEX_GE_26 := $(shell expr $(shell $(FLEX) --version | sed -e  's/flex \([0-9]\+\).\([0-9]\+\)/\1\2/g') \>\= 26)
--- 
-2.26.2.Cisco
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Tested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
+Regards,
+Bjorn
+
+> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+> ---
+>  drivers/leds/trigger/ledtrig-pattern.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/leds/trigger/ledtrig-pattern.c b/drivers/leds/trigger/ledtrig-pattern.c
+> index 4d138d5317e9..2853b75df338 100644
+> --- a/drivers/leds/trigger/ledtrig-pattern.c
+> +++ b/drivers/leds/trigger/ledtrig-pattern.c
+> @@ -126,7 +126,8 @@ static int pattern_trig_start_pattern(struct led_classdev *led_cdev)
+>  
+>  	if (data->is_hw_pattern) {
+>  		return led_cdev->pattern_set(led_cdev, data->patterns,
+> -					     data->npatterns, data->repeat);
+> +					     data->npatterns,
+> +					     data->last_repeat);
+>  	}
+>  
+>  	/* At least 2 tuples for software pattern. */
+> -- 
+> 2.31.1
+> 
