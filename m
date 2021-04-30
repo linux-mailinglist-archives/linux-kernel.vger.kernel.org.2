@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E45373702D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 23:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6163702D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 23:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236274AbhD3VQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 17:16:10 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:34331 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231136AbhD3VQH (ORCPT
+        id S236283AbhD3VQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 17:16:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236216AbhD3VQe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 17:16:07 -0400
-Received: by mail-ot1-f50.google.com with SMTP id x54-20020a05683040b6b02902a527443e2fso14548307ott.1;
-        Fri, 30 Apr 2021 14:15:17 -0700 (PDT)
+        Fri, 30 Apr 2021 17:16:34 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A80BAC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 14:15:45 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id z13so31138379lft.1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 14:15:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=C+d3V08zDd3DRGPkmrz6cLG8abC6AMCvVe1lKK+2pIk=;
+        b=n464yko+sJXCQ5zG5fGgUcfxsGSte82vMguDeJ2wdemYlQMlZUnLEGIDCAQly2/a+j
+         U+7hCNu3bGJuqcHvkQ6raLlbSTpUCtGSwGuG67OVVQ+ELBgGqBag0CHVRxfEgfUYBOlZ
+         BJ+JyM+pb/Wz/bePOPX5mSklwwNufSypavJK9uT2WBg4sk2ZZr/HMfhtOdhTHehlDDf8
+         JUY2VYTGPGbAffCNsakSnfIxn531E7sMIX3IPqmdAuxJzCx1ym4GjZJU+FFWRy1MJdhZ
+         GJ2YaADbQtlSezJxuTLfyBBIgNdzTEfhma0dXqOkMu4lbQSu6oCcvA201BvyTptZXzTU
+         nmUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VxUW5OdCWJGNzSLfVlPjiWNNaJCqr+3fTpTcrVSH4ZY=;
-        b=PZZB09/iegdW85PRkrkiqjtGX4AXDr1XX1zxIxa6thIjfelTqKu0M8cY9nKtS2s3Za
-         lqG14U0YXLU9yVIzXoCxFKtQA+szX4+EJSMhg7309YQXazVLfmjO3SXPU2YS2UNPJD8y
-         yaFxbkUn0rKk1VNIOCLRhQTBIhTBKrBB521n6poDpcK08G/JbOKKO8we99EWAaVuS0TA
-         v3ampVwcxGwmH3YTLeFH4nDibqRgpaylALNTILt9DpidEs3DgOqPTyg5sUoNQMZx4UFL
-         QDLVHBWwUCqTzHGXoRUP5TSMtQ2Yv1C7bdXgVFOg1S6djNCdsvUMp6LRkV+5X5jIx9MP
-         wDGA==
-X-Gm-Message-State: AOAM531SERGEv8iIEZCEgaucm1vR304QJoXq2OUpEDFPaZSyi3Lj3MOW
-        iXMW1rE4vCW+5FzfrMNyow==
-X-Google-Smtp-Source: ABdhPJw7SRe7qPCQI/wcVuiwivDcq25XvfKU7E097UGMjVGG4wUzYEUfjYOOtZwSlRM3zkSLsuyZFQ==
-X-Received: by 2002:a9d:630e:: with SMTP id q14mr5179477otk.69.1619817317126;
-        Fri, 30 Apr 2021 14:15:17 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id w140sm1098248oif.42.2021.04.30.14.15.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 14:15:16 -0700 (PDT)
-Received: (nullmailer pid 3907199 invoked by uid 1000);
-        Fri, 30 Apr 2021 21:15:14 -0000
-Date:   Fri, 30 Apr 2021 16:15:14 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     cl@rock-chips.com
-Cc:     heiko@sntech.de, jagan@amarulasolutions.com, wens@csie.org,
-        uwe@kleine-koenig.org, mail@david-bauer.net, jbx6244@gmail.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
-        cnsztl@gmail.com, devicetree@vger.kernel.org,
-        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
-        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
-        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
-        zhangqing@rock-chips.com, huangtao@rock-chips.com,
-        wim@linux-watchdog.org, linux@roeck-us.net, jamie@jamieiles.com,
-        linux-watchdog@vger.kernel.org, maz@kernel.org
-Subject: Re: [PATCH v4 06/10] dt-bindings: gpio: change items restriction of
- clock for rockchip,gpio-bank
-Message-ID: <20210430211514.GA3905898@robh.at.kernel.org>
-References: <20210429081151.17558-1-cl@rock-chips.com>
- <20210429081306.17784-1-cl@rock-chips.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=C+d3V08zDd3DRGPkmrz6cLG8abC6AMCvVe1lKK+2pIk=;
+        b=nLG3mfWP30PAXcu6OKz4H3wpFoMJzEE0PHhoPwWh0J7fvgLFCslxQIzHiGdwim6hbH
+         vp4pQnq/Ci61vqfoN3qAUHNgEjxpZ+9fFFHqk11p4xNyMzQj8gFCULOi7pbY3EcaYOfC
+         wMvjQtn0Z0mLi+796YTkzF31n5a4rDJo25YRjnE3B4L00MrYqvz+iHoWp27E8a+q60p4
+         n7kzVCTUdV0KKGIgr691t0LBuiK7I1BPvRJKPp+TBrhMCCJe7GCeBpXjVXxCfuNkPbNU
+         WKJQTy9Xi3zLOh7aK+s4+4dESx9yh52y15mIr0rhiMn7V48rSZMab+Mg2j5VuFf4469T
+         akQg==
+X-Gm-Message-State: AOAM533+DDYKD0G4qs80rfYvtbEQHaW22raf9RwqUMTb7GXatyQRef6k
+        IAHVBnASZfvRlHdqnYS5wQFgmVMlNKo/MU2Mmn4=
+X-Google-Smtp-Source: ABdhPJzrFQD2KK0mbg7zyUSam2dWAjKYS5QiDIRSKeW8dj3jTx8v/HRZBdCTIoxZZYpJGdX/2Kv+1LBh3LlcGjpZ038=
+X-Received: by 2002:a05:6512:3d11:: with SMTP id d17mr4512276lfv.568.1619817344020;
+ Fri, 30 Apr 2021 14:15:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429081306.17784-1-cl@rock-chips.com>
+Received: by 2002:ab3:1288:0:0:0:0:0 with HTTP; Fri, 30 Apr 2021 14:15:43
+ -0700 (PDT)
+Reply-To: miss.aishsgaddafi5050@gmail.com
+From:   "Miss.Aisha Gaddafi" <samiramohamed50807@gmail.com>
+Date:   Fri, 30 Apr 2021 14:15:43 -0700
+Message-ID: <CACjYtGBF+gb-TNx8hUtrO4cHXT6uHgCo8TCbBw3p6xA470s3HA@mail.gmail.com>
+Subject: THE AMOUNT IS 27.5 MILLIOMS USD
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 04:13:06PM +0800, cl@rock-chips.com wrote:
-> From: Liang Chen <cl@rock-chips.com>
-> 
-> The clock property need 2 items on some rockchip chips.
-> 
-> Signed-off-by: Liang Chen <cl@rock-chips.com>
-> ---
->  Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml b/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml
-> index d993e002cebe..7b3fd2975c74 100644
-> --- a/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml
-> +++ b/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml
-> @@ -22,7 +22,8 @@ properties:
->      maxItems: 1
->  
->    clocks:
-> -    maxItems: 1
-> +    minItems: 1
-> +    maxItems: 2
-
-Need to define what they are:
-
-minItems: 1
-items:
-  - description: ...
-  - description: ...
-
->  
->    gpio-controller: true
->  
-> -- 
-> 2.17.1
-> 
-> 
-> 
+LS0gDQrYo9i52LIg2YjYp9it2K8g2IwNCg0K2KPZhtinINmF2YTZg9ipINis2YXYp9mEINin2YTZ
+gtiw2KfZgdmKINiMINil2K3Yr9mJINio2YbYp9iqINin2YTYsdim2YrYsyDYp9mE2YTZitio2Yog
+2KfZhNmF2K3Yp9i12LEg2Iwg2KPZhtinINmF2YLZitmFDQrYrdin2YTZitmL2Kcg2YHZiiDYpdit
+2K/ZiSDYp9mE2K/ZiNmEINin2YTYo9mB2LHZitmC2YrYqSDYjCDZhNiz2YjYoSDYp9mE2K3YuCDZ
+g9mE2KfYrNim2KkuINmB2Yog2YfYsNmHINin2YTYo9ir2YbYp9ihINiMDQrYudin2KbZhNiq2Yog
+2YfZiiDZh9iv2YEg2KfZhNiv2YjZhCDYp9mE2LrYsdio2YrYqSDYqNmC2YrYp9iv2Kkg2KfZhNmG
+2KfYqtmIINin2YTYsNmKINmK2LHZitivINiq2K/ZhdmK2LEg2YjYp9mE2K/ZiiDYqNij2YoNCtir
+2YXZhi4g2YXZhiDYo9mH2K/Yp9mB2YfZhSDYqtis2YXZitivINin2LPYqtir2YXYp9ix2KfYqtmG
+2Kcg2YjYrdiz2KfYqNin2KrZhtinINin2YTZhdi12LHZgdmK2Kkg2YHZiiDYp9mE2LnYr9mK2K8g
+2YXZhg0K2KfZhNio2YTYr9in2YYuDQoNCtmE2YLYryDYqtmFINiq2YPZhNmK2YHZiiDYqNin2YTY
+p9iq2LXYp9mEINio2YXYs9iq2KvZhdixIC8g2LTYsdmK2YMg2KPYrNmG2KjZiiDZhdmH2KrZhSDY
+s9mK2YPZiNmGINmC2KfYr9ix2YvYpyDYudmE2Ykg2KfZhNiq2LnYp9mF2YQg2YXYudmHDQrYp9mE
+2LPZiti32LHYqSDYp9mE2YXYt9mE2YLYqSDYudmE2Ykg2KzYstihINmF2YYg2KfZhNmG2YLYryDY
+p9mE2YfYp9im2YQg2KfZhNmF2KrYp9itINmE2YTYrdiz2KfYqCDYp9mE2K7Yp9i1INmF2Lkg2KPY
+rtmKDQrYp9mE2LHYp9it2YQg2KfZhNiw2Yog2YLZj9iq2YQg2YHZiiDYutin2LHYqSDYrNmI2YrY
+qSDZhNit2YTZgSDYtNmF2KfZhCDYp9mE2KPYt9mE2LPZiiDYjCDZhdmGINij2KzZhCDYp9iz2KrY
+q9mF2KfYsSDZhdit2KrZhdmEDQrZgdmKINio2YTYr9mDLg0KDQrYpdiw2Kcg2YPYp9mG2Kog2YfY
+sNmHINin2YTZhdi52KfZhdmE2Kkg2KrZh9mF2YMg2Iwg2YHZhNinINmK2KrYudmK2YYg2LnZhNmK
+2YMg2KfZhNil2YHYtdin2K0g2LnZhtmH2Kcg2YTYo9mKINi02K7YtSDYqNiz2KjYqA0K2YXYpyDZ
+itis2LHZiiDZhdi5INi52KfYptmE2KrZiiDYqNij2YPZhdmE2YfYpyDYjCDYpdiw2Kcg2LnYsdmB
+2Kog2KfZhNij2YXYqSDYp9mE2YXYqtit2K/YqSDZh9iw2Kcg2KfZhNit2LPYp9ioINiMINmB2LPZ
+iNmBDQrZitmC2YjZhdmI2YYg2KjYqtis2YXZitiv2Ycg2KPYq9mG2KfYoSDYqtis2YXZitivINin
+2YTYotiu2LHZitmGINmE2LDZhNmDINin2K3YqtmB2Lgg2KjZh9iw2Ycg2KfZhNmF2LnYp9mF2YTY
+qSDZhNmAINio2YbZgdiz2YMNCtmB2YLYtyDYrdiq2Ykg2YbZhtiq2YfZiiDZhdmGINiw2YTZgy4N
+Ctij2LHZitivINiq2K3ZiNmK2YQg2YfYsNmHINin2YTYo9mF2YjYp9mEINil2YTZiSDYrdiz2KfY
+qNmDINmB2YjYsdmL2Kcg2YTYp9iz2KrYq9mF2KfYsdmH2Kcg2YHZiiDYqNmE2K/ZgyDZhNij2YbZ
+htmKINmE2KcNCtij2LHZitivINij2YYg2KrYudix2YEg2KfZhNij2YXYqSDYp9mE2YXYqtit2K/Y
+qSDYudmGINmH2LDYpyDYp9mE2K3Ys9in2KguDQoNCtmE2LDZhNmDINil2LDYpyDZg9mG2Kog2YLY
+p9iv2LHZi9inINi52YTZiSDYpdiv2KfYsdipINmF2YbYtNij2Kkg2YjZitmF2YPZhtmDINin2YTY
+rdmB2KfYuCDYudmE2Ykg2YXYs9iq2YjZiSDYudin2YTZjSDZhdmGDQrYp9mE2LPYsdmK2Kkg2KfZ
+hNmF2LfZhNmI2Kgg2YHZiiDZh9iw2Kcg2KfZhNmF2LTYsdmI2Lkg2Iwg2YHZitix2KzZiSDYp9mE
+2LHYryDYqNin2YTZhdi52YTZiNmF2KfYqiDYp9mE2KrYp9mE2YrYqSDZhNmE2K3YtdmI2YQNCti5
+2YTZiSDYqtmB2KfYtdmK2YQg2KfZhNmF2LTYsdmI2LkuINmK2LHYrNmJINin2YTYp9iq2LXYp9mE
+INio2Yog2LnZhNmJINio2LHZitiv2Yog2KfZhNil2YTZg9iq2LHZiNmG2YoNCihtaXNzLmFpc2hz
+Z2FkZGFmaTUwNTBAZ21haWwuY29tKQ0KDQoNCjEuINin2LPZhdmDINin2YTZg9in2YXZhCDigKbi
+gKbigKbigKbigKYNCjIuINi52YbZiNin2YbZgyDYp9mE2K3Yp9mE2Yog4oCm4oCm4oCmDQozLiDY
+rNmG2LPZitiq2YMgLi4uLi4uLi4uLi4uLi4uLi4NCjQuINi52YXYsdmDIOKApuKApuKApuKApuKA
+pg0KNS4g2YXZh9mG2KrZgyAuLi4uLi4uLi4NCjYuINij2LHYs9mEINmE2Yog2YbYs9iu2Kkg2YXZ
+hdiz2YjYrdipINi22YjYptmK2YvYpyDZhdmGINi12YjYsdiq2YMNCg0K2KPZgdi22YQg2KfZhNiq
+2K3Yp9mK2KcNCtin2YTYotmG2LPYqSDYudin2KbYtNipINin2YTZgtiw2KfZgdmKDQo=
