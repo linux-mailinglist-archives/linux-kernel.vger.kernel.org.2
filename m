@@ -2,130 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7314736F709
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC25A36F708
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:20:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbhD3IVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 04:21:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbhD3IVX (ORCPT
+        id S231337AbhD3IVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 04:21:19 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:17072 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229567AbhD3IVS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 04:21:23 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37FCBC06138B
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:20:34 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id m7so68921758ljp.10
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:20:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U4VWZamcLyX3tXFReagmlsiBdD3QATx8tPBAnLOS9/g=;
-        b=TL1ydab5S3H75dWgmRs9qHH4Qw+2gebligvK+H8gdFjpHqYLs1eNFPEW0b/CYEdWX1
-         I4YPeDARQuUgFYO/0q0TAvXqQsJYFPHAcTM4PglRlhoEZ0tSGJn5JIdtD5zBLn1cjqas
-         JlA5C6F7vHt15cI0OC3ZZtl5gbpQj9yW7X6M4ZbxdmrT5mI9QcXNkG2hSv3HShrHCrDI
-         RSJ+jLEjTMDYGX+DYgZoZ6Fp6r3MJbdUBXVKyBI0x7LqyqG05lK6lLJrNGe1XfOjFPdX
-         OQ4q+qC9oF1shZcyv+xOlclirtnXSEaDnW6h9C8TN/2NtpaPUQaHDPBbY1WGoysrQ29u
-         9L2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U4VWZamcLyX3tXFReagmlsiBdD3QATx8tPBAnLOS9/g=;
-        b=WtA1u+WbUk5VuJN/DVSDeudheFGp59CoE3VpBx2odo4SC2Pl2F5uesj2LBI6MFdiGN
-         L3QNv9e27YrsRBIT+Ta1F+NWZYTNSmnpK82yOplHTEF56dIcckoB8kX+MeHpLOQDWcxy
-         jOjNkzhZQD8Ha9W/p3icYdtdNwWTdrezEMFrVkw/OeOthp0bSP3qzpMXizFczlYZ5blY
-         kgLzBoDy4309Y1XBYwtVuByTeOVi/OVn6siS1BLAHRLV4J/O9reT09UImAZ/CFvwhC6F
-         qQv0VfPYbXcupn/DZthkPR4NV97lmNM6qeZI4ZS4ayvNve531JK/6YXsiUIROgu4Ggan
-         PLyA==
-X-Gm-Message-State: AOAM531XuQ9C9qLYYFMaLylTTWp/vPGTnMFQaQuF8H+2IUJmhdFecFKS
-        2F+pSOaZ8LwRyivAtaRyf3+9bxUTJPW/5QQ0Gk0=
-X-Google-Smtp-Source: ABdhPJwOq56NPxXDR7noXnZ0KwtVPOL2kRzUQe6MccETqBntWleMoisK1siV31AzmDkYDSRX0MLUd1sQGnfob2ItHek=
-X-Received: by 2002:a05:651c:102e:: with SMTP id w14mr2267817ljm.238.1619770832776;
- Fri, 30 Apr 2021 01:20:32 -0700 (PDT)
+        Fri, 30 Apr 2021 04:21:18 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FWlc729JXz19M5r;
+        Fri, 30 Apr 2021 16:17:59 +0800 (CST)
+Received: from [10.174.176.174] (10.174.176.174) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 30 Apr 2021 16:20:24 +0800
+Subject: Re: [PATCH v2 3/5] mm/huge_memory.c: add missing read-only THP
+ checking in transparent_hugepage_enabled()
+To:     David Hildenbrand <david@redhat.com>, <akpm@linux-foundation.org>
+CC:     <ziy@nvidia.com>, <william.kucharski@oracle.com>,
+        <willy@infradead.org>, <yang.shi@linux.alibaba.com>,
+        <aneesh.kumar@linux.ibm.com>, <rcampbell@nvidia.com>,
+        <songliubraving@fb.com>, <kirill.shutemov@linux.intel.com>,
+        <riel@surriel.com>, <hannes@cmpxchg.org>, <minchan@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+References: <20210429132648.305447-1-linmiaohe@huawei.com>
+ <20210429132648.305447-4-linmiaohe@huawei.com>
+ <68c8c4a8-c4f8-83db-7326-dabeea74239c@redhat.com>
+ <9b511ad9-0ba1-e896-4eb5-0e91ca4b97ab@huawei.com>
+ <9c340151-6dbb-504c-e205-3edda6a5aff8@redhat.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <b793da18-215a-06db-1b08-55b5c0f737d9@huawei.com>
+Date:   Fri, 30 Apr 2021 16:20:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210422120459.447350175@infradead.org> <20210422123308.196692074@infradead.org>
- <CAERHkrsC9rC4Jrkz8r-7kp4SFPM6aU+EHN+Y+uQiTuPG5S72bA@mail.gmail.com> <CABk29NuS-B3n4sbmavo0NDA1OCCsz6Zf2VDjjFQvAxBMQoJ_Lg@mail.gmail.com>
-In-Reply-To: <CABk29NuS-B3n4sbmavo0NDA1OCCsz6Zf2VDjjFQvAxBMQoJ_Lg@mail.gmail.com>
-From:   Aubrey Li <aubrey.intel@gmail.com>
-Date:   Fri, 30 Apr 2021 16:20:21 +0800
-Message-ID: <CAERHkrvTkN3zJFr0RpO02wF1KdhgqWZL8VpFohc4i7qPzvr8Cg@mail.gmail.com>
-Subject: Re: [PATCH 04/19] sched: Prepare for Core-wide rq->lock
-To:     Josh Don <joshdon@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Don Hiatt <dhiatt@digitalocean.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <9c340151-6dbb-504c-e205-3edda6a5aff8@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.174]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 4:40 AM Josh Don <joshdon@google.com> wrote:
->
-> On Thu, Apr 29, 2021 at 1:03 AM Aubrey Li <aubrey.intel@gmail.com> wrote:
-> >
-> > On Thu, Apr 22, 2021 at 8:39 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> > ----snip----
-> > > @@ -199,6 +224,25 @@ void raw_spin_rq_unlock(struct rq *rq)
-> > >         raw_spin_unlock(rq_lockp(rq));
-> > >  }
-> > >
-> > > +#ifdef CONFIG_SMP
-> > > +/*
-> > > + * double_rq_lock - safely lock two runqueues
-> > > + */
-> > > +void double_rq_lock(struct rq *rq1, struct rq *rq2)
-> > > +{
-> > > +       lockdep_assert_irqs_disabled();
-> > > +
-> > > +       if (rq1->cpu > rq2->cpu)
-> >
-> > It's still a bit hard for me to digest this function, I guess using (rq->cpu)
-> > can't guarantee the sequence of locking when coresched is enabled.
-> >
-> > - cpu1 and cpu7 shares lockA
-> > - cpu2 and cpu8 shares lockB
-> >
-> > double_rq_lock(1,8) leads to lock(A) and lock(B)
-> > double_rq_lock(7,2) leads to lock(B) and lock(A)
-> >
-> > change to below to avoid ABBA?
-> > +       if (__rq_lockp(rq1) > __rq_lockp(rq2))
-> >
-> > Please correct me if I was wrong.
->
-> Great catch Aubrey. This is possibly what is causing the lockups that
-> Don is seeing.
->
-> The proposed usage of __rq_lockp() is prone to race with sched core
-> being enabled/disabled.It also won't order properly if we do
-> double_rq_lock(smt0, smt1) vs double_rq_lock(smt1, smt0), since these
-> would have equivalent __rq_lockp()
+On 2021/4/30 15:49, David Hildenbrand wrote:
+> On 30.04.21 03:57, Miaohe Lin wrote:
+>> On 2021/4/29 22:57, David Hildenbrand wrote:
+>>> On 29.04.21 15:26, Miaohe Lin wrote:
+>>>> Since commit 99cb0dbd47a1 ("mm,thp: add read-only THP support for
+>>>> (non-shmem) FS"), read-only THP file mapping is supported. But it
+>>>> forgot to add checking for it in transparent_hugepage_enabled().
+>>>> To fix it, we add checking for read-only THP file mapping and also
+>>>> introduce helper transhuge_vma_enabled() to check whether thp is
+>>>> enabled for specified vma to reduce duplicated code.
+>>>>
+>>>> Fixes: 99cb0dbd47a1 ("mm,thp: add read-only THP support for (non-shmem) FS")
+>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>> ---
+>>>>    include/linux/huge_mm.h | 21 +++++++++++++++++----
+>>>>    mm/huge_memory.c        |  6 ++++++
+>>>>    mm/khugepaged.c         |  4 +---
+>>>>    mm/shmem.c              |  3 +--
+>>>>    4 files changed, 25 insertions(+), 9 deletions(-)
+>>>>
+>>>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+>>>> index 0a526f211fec..f460b74619fc 100644
+>>>> --- a/include/linux/huge_mm.h
+>>>> +++ b/include/linux/huge_mm.h
+>>>> @@ -115,6 +115,16 @@ extern struct kobj_attribute shmem_enabled_attr;
+>>>>      extern unsigned long transparent_hugepage_flags;
+>>>>    +static inline bool transhuge_vma_enabled(struct vm_area_struct *vma,
+>>>> +                      unsigned long vm_flags)
+>>>
+>>> You're passing the vma already, why do you pass vma->vm_flags separately? It's sufficient to pass in the vma only.
+>>>
+>>
+>> Many thanks for comment! IMO, vm_flags may not always equal to vma->vm_flags. When hugepage_vma_check()
+>> is called from collapse_pte_mapped_thp, vma_flags = vma->vm_flags | VM_HUGEPAGE. So I think we should
+>> pass vm_flags here.
+> 
+> Oh, sorry, I missed the hugepage_vma_check() user. That's unfortunate.
 
-If __rq_lockp(smt0) == __rq_lockp(smt1), rq0 and rq1 won't swap,
-Later only one rq is locked and just returns. I'm not sure how does it not
-order properly?
+Yes, that's unfortunate.
 
-.> I'd propose an alternative but similar idea: order by core, then break ties
-> by ordering on cpu.
->
-> +#ifdef CONFIG_SCHED_CORE
-> +       if (rq1->core->cpu > rq2->core->cpu)
-> +               swap(rq1, rq2);
-> +       else if (rq1->core->cpu == rq2->core->cpu && rq1->cpu > rq2->cpu)
-> +               swap(rq1, rq2);
+> 
+>>>>    static inline void prep_transhuge_page(struct page *page) {}
+>>>>      static inline bool is_transparent_hugepage(struct page *page)
+>>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>>>> index 76ca1eb2a223..e24a96de2e37 100644
+>>>> --- a/mm/huge_memory.c
+>>>> +++ b/mm/huge_memory.c
+>>>> @@ -68,12 +68,18 @@ bool transparent_hugepage_enabled(struct vm_area_struct *vma)
+>>>>        /* The addr is used to check if the vma size fits */
+>>>>        unsigned long addr = (vma->vm_end & HPAGE_PMD_MASK) - HPAGE_PMD_SIZE;
+>>>>    +    if (!transhuge_vma_enabled(vma, vma->vm_flags))
+>>>> +        return false;
+>>>>        if (!transhuge_vma_suitable(vma, addr))
+>>>>            return false;
+>>>>        if (vma_is_anonymous(vma))
+>>>>            return __transparent_hugepage_enabled(vma);
+>>>>        if (vma_is_shmem(vma))
+>>>>            return shmem_huge_enabled(vma);
+>>>> +    if (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS) && vma->vm_file &&
+>>>> +        !inode_is_open_for_write(vma->vm_file->f_inode) &&
+>>>> +        (vma->vm_flags & VM_EXEC))
+>>>> +        return true;
+>>>
+>>> Nit: I'm really wondering why we have 3 different functions that sound like they are doing the same thing
+>>>
+>>> transparent_hugepage_enabled(vma)
+>>> transhuge_vma_enabled()
+>>> transhuge_vma_suitable()
+>>>
+>>> Which check belongs where? Does it really have to be that complicated?
+>>>
+>>
+>> IMO, transhuge_vma_suitable() checks whether pgoff , vm_start and vm_end is possible for thp.
+>> transhuge_vma_enabled() checks whether thp is explicitly disabled through madvise.
+>> And transparent_hugepage_enabled() use these helpers to get the conclusion whether thp is
+>> enabled for specified vma.
+>>
+>> Any suggestions?
+> 
+> transparent_hugepage_enabled() vs. transhuge_vma_enabled() is really sub-optimal naming. I guess "transparent_hugepage_active()" would have been clearer (enabled + suitable + applicable). Cannot really give a good suggestion here on how to name transhuge_vma_enabled() differently.
+> 
 
-That is, why the "else if" branch is needed?
+I think transparent_hugepage_active() sounds better too.
 
-> +#else
->         if (rq1->cpu > rq2->cpu)
->                 swap(rq1, rq2);
-> +#endif
+> 
+> We now have
+> 
+> transparent_hugepage_enabled()
+> -> transhuge_vma_enabled()
+> -> __transparent_hugepage_enabled() -> transhuge_vma_enabled()
+> -> shmem_huge_enabled() -> transhuge_vma_enabled()
+> 
+> That looks sub-optimal as well. Maybe we should have a
+> 
+> static inline bool file_thp_enabled(struct vma *vma)
+> {
+>     return transhuge_vma_enabled() &&
+>            IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS) &&
+>            !inode_is_open_for_write(vma->vm_file->f_inode) &&
+>            (vma->vm_flags & VM_EXEC))
+> }
+> 
+> and in transparent_hugepage_enabled() only do a
+> 
+> if (vma->vm_file)
+>     return file_thp_enabled(vma);
+> 
+
+Really good suggestion! I would try to do this one in next version. Many thanks for your time and suggestion! :)
+
+> 
+> Or move the transhuge_vma_enabled() check completely to transparent_hugepage_enabled() if possible.
+> 
