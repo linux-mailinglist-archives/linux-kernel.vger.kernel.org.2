@@ -2,139 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D86F36FC69
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 16:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C4F36FC73
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 16:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233443AbhD3OaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 10:30:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233361AbhD3OaD (ORCPT
+        id S232861AbhD3Oah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 10:30:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51401 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230351AbhD3Oae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 10:30:03 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34619C06174A;
-        Fri, 30 Apr 2021 07:29:14 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id y26so3242619eds.4;
-        Fri, 30 Apr 2021 07:29:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lkzMRDz3EKi3qa9HUgoov0nFfmSvHU5WWdnRd2PhEfY=;
-        b=Djek82IazPreK1nAfG7GyGE8CUKxRqOVvi0sX6P9Hki4Sdbox5lbWVWM8phK/zx8/E
-         OA0mdloRD+8T6tARQ3cAieaThw7Ww2/vBYoUiwuyt24htWijgxFoNJ9QK3qbgb/hjKa8
-         UkQJwAeJg9OlkvxpbIesRVHN5nIIZmgguDgTmHJY/FBp/8l3++32riFNcFlQJW/YFfTF
-         ATBKorPWiOWguRvbKrojZZHwLg8rhCD2GcrgdLNm2ovwlOqL+pgRNgMf0ZqQWkaZupZQ
-         n87N/3/5iPBXynK/k988PtaN9lViIq2DW3AGQn0ZrIeYiUkqHj6S/y2BYxmzitOjj/+X
-         CKNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lkzMRDz3EKi3qa9HUgoov0nFfmSvHU5WWdnRd2PhEfY=;
-        b=QbJclMcxfXWCn+mH/BXqM607nMlr5xaTealB/qqVRbWZXT552nW48bnbtPSH42lW8v
-         Wi6JfyTQyDfmtuGcvE/JSgi+M2iWlLtdVs0cFBLiRiWvq7xdg/LdfETD2C39FQQDYeIg
-         MheVG5Jf+Z585suy78VMy1HZHw9+Fw6y7QE6xhnv3dzkTTWLF8YaItRlGtLBFhIsnJpM
-         CeWDUjgkEryH8NEKjEH2+0pgsAQ2dBjwq26S7APmj1Hzkd7PCGim8IWhcSUq6GmJw+fI
-         HxIH9+FAPIIBle/iQ2bzHzRpXN7254mcgGmivavbb+xw6swZDJftZ0ZJZqlMpX0yNh6X
-         7OSQ==
-X-Gm-Message-State: AOAM531l4rPjClF8qejmf/vFBKL7N/3zRIyK7Oosc+G3VJMh6zqKo1Xk
-        VTv+Mpu2fz4ATqnPwhUvF8jFSxObRsQ=
-X-Google-Smtp-Source: ABdhPJyK6nisePrI1zhyReqfVdYYFwPRp5NNscbrAQ2ojGDNZdbHyjLPoxaXyaLnj7FAJt/MdPRmkg==
-X-Received: by 2002:a05:6402:4d1:: with SMTP id n17mr6231689edw.118.1619792952913;
-        Fri, 30 Apr 2021 07:29:12 -0700 (PDT)
-Received: from [192.168.178.40] (ipbcc11466.dynamic.kabel-deutschland.de. [188.193.20.102])
-        by smtp.gmail.com with ESMTPSA id p4sm2064792ejr.81.2021.04.30.07.29.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Apr 2021 07:29:12 -0700 (PDT)
-Subject: Re: [PATCH] scsi: target: configfs: Remove redundant assignment to
- ret
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1619774627-118766-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Bodo Stroesser <bostroesser@gmail.com>
-Message-ID: <69ef77bd-4ef8-6446-8192-6d8569516f33@gmail.com>
-Date:   Fri, 30 Apr 2021 16:29:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 30 Apr 2021 10:30:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619792985;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FPEELsSGx4cLbmxHKF7dTq3mC1Xpq1F0QvtZc08MVK4=;
+        b=eU8pU6YWtyzMvQAJmcdsD0F9MT9F9kK/xE4oQbrGs8xo/Q3WNsTrDVxQL/xInzXzPyDECB
+        gOVRt2LSD2/eoU1H8ZpqyY+vzcaDwErtDwj8GRAjftBIO8+zyKTyATouftUEe7RuvuP/p3
+        qUY1vHeqNpcOvasAgAzNDYhWaiMt+d8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-390-y0KmsgpjO0yM5DYo73n47Q-1; Fri, 30 Apr 2021 10:29:43 -0400
+X-MC-Unique: y0KmsgpjO0yM5DYo73n47Q-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 146AC107ACCD;
+        Fri, 30 Apr 2021 14:29:42 +0000 (UTC)
+Received: from redhat.com (ovpn-113-225.phx2.redhat.com [10.3.113.225])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 86B66100763C;
+        Fri, 30 Apr 2021 14:29:41 +0000 (UTC)
+Date:   Fri, 30 Apr 2021 08:29:40 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Yicong Yang <yangyicong@hisilicon.com>
+Cc:     <cohuck@redhat.com>, <kvm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [Question] Indefinitely block in the host when remove the PF
+ driver
+Message-ID: <20210430082940.4b0e0397@redhat.com>
+In-Reply-To: <c9466e2c-385d-8298-d03c-80dcfc359f52@hisilicon.com>
+References: <c9466e2c-385d-8298-d03c-80dcfc359f52@hisilicon.com>
 MIME-Version: 1.0
-In-Reply-To: <1619774627-118766-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.04.21 11:23, Jiapeng Chong wrote:
-> Variable ret is set to '-EINVAL' but this value is never read as it is
-> overwritten later on, hence it is a redundant assignment and can be
-> removed.
-> 
-> Clean up the following clang-analyzer warning:
-> 
-> drivers/target/target_core_configfs.c:2037:5: warning: Value stored to
-> 'ret' is never read [clang-analyzer-deadcode.DeadStores].
-> 
-> drivers/target/target_core_configfs.c:1973:5: warning: Value stored to
-> 'ret' is never read [clang-analyzer-deadcode.DeadStores].
-> 
-> drivers/target/target_core_configfs.c:1959:5: warning: Value stored to
-> 'ret' is never read [clang-analyzer-deadcode.DeadStores].
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->   drivers/target/target_core_configfs.c | 3 ---
->   1 file changed, 3 deletions(-)
-> 
-> diff --git a/drivers/target/target_core_configfs.c b/drivers/target/target_core_configfs.c
-> index 4b2e493..bda05c3 100644
-> --- a/drivers/target/target_core_configfs.c
-> +++ b/drivers/target/target_core_configfs.c
-> @@ -1956,7 +1956,6 @@ static ssize_t target_pr_res_aptpl_metadata_store(struct config_item *item,
->   				pr_err("APTPL metadata initiator_node="
->   					" exceeds PR_APTPL_MAX_IPORT_LEN: %d\n",
->   					PR_APTPL_MAX_IPORT_LEN);
-> -				ret = -EINVAL;
->   				break;
->   			}
->   			break;
-> @@ -1970,7 +1969,6 @@ static ssize_t target_pr_res_aptpl_metadata_store(struct config_item *item,
->   				pr_err("APTPL metadata initiator_isid"
->   					"= exceeds PR_REG_ISID_LEN: %d\n",
->   					PR_REG_ISID_LEN);
-> -				ret = -EINVAL;
->   				break;
->   			}
->   			break;
-> @@ -2034,7 +2032,6 @@ static ssize_t target_pr_res_aptpl_metadata_store(struct config_item *item,
->   				pr_err("APTPL metadata target_node="
->   					" exceeds PR_APTPL_MAX_TPORT_LEN: %d\n",
->   					PR_APTPL_MAX_TPORT_LEN);
-> -				ret = -EINVAL;
->   				break;
->   			}
->   			break;
-> 
+On Fri, 30 Apr 2021 15:57:47 +0800
+Yicong Yang <yangyicong@hisilicon.com> wrote:
 
-I don't think storing -EINVAL in ret is wrong. But maybe the "break" in
-the next line should better be "goto out"?
+> When I try to remove the PF driver in the host, the process will be blocked
+> if the related VF of the device is added in the Qemu as an iEP.
+> 
+> here's what I got in the host:
+> 
+> [root@localhost 0000:75:00.0]# rmmod hisi_zip
+> [99760.571352] vfio-pci 0000:75:00.1: Relaying device request to user (#0)
+> [99862.992099] vfio-pci 0000:75:00.1: Relaying device request to user (#10)
+> [...]
+> 
+> and in the Qemu:
+> 
+> estuary:/$ lspci -tv
+> -[0000:00]-+-00.0  Device 1b36:0008
+>            +-01.0  Device 1af4:1000
+>            +-02.0  Device 1af4:1009
+>            \-03.0  Device 19e5:a251 <----- the related VF device
+> estuary:/$ qemu-system-aarch64: warning: vfio 0000:75:00.1: Bus 'pcie.0' does not support hotplugging
+> qemu-system-aarch64: warning: vfio 0000:75:00.1: Bus 'pcie.0' does not support hotplugging
+> qemu-system-aarch64: warning: vfio 0000:75:00.1: Bus 'pcie.0' does not support hotplugging
+> qemu-system-aarch64: warning: vfio 0000:75:00.1: Bus 'pcie.0' does not support hotplugging
+> [...]
+> 
+> The rmmod process will be blocked until I kill the Qemu process. That's the only way if I
+> want to end the rmmod.
+> 
+> So my question is: is such block reasonable? If the VF devcie is occupied or doesn't
+> support hotplug in the Qemu, shouldn't we fail the rmmod and return something like -EBUSY
+> rather than make the host blocked indefinitely?
 
-AFAICS, the "break" finally leads to calling
-core_scsi3_alloc_aptpl_registration () despite a too long string in
-i_port, isid or t_port. Is this behaviour intentional?
+Where would we return -EBUSY?  pci_driver.remove() returns void.
+Without blocking, I think our only option would be to kill the user
+process.
+ 
+> Add the VF under a pcie root port will avoid this. Is it encouraged to always
+> add the VF under a pcie root port rather than directly add it as an iEP?
 
-BTW: why is "initiator_sid" input handled as string?
-core_scsi3_alloc_aptpl_registration later calls get_unaligned_be64 for
-that string. I don't think this makes sense.
+Releasing a device via the vfio request interrupt is always a
+cooperative process currently, the VM needs to be configured such that
+the device is capable of being unplugged and the guest needs to respond
+to the ejection request.  Thanks,
 
-Finally, I think there is a possible memory leak. If the input written
-to res_aptpl_metadata for example contains "initiator_sid=xxxxx" more
-than once, a previously created string isid ("isid = match_strdup(args)")
-is not freed before it is overwritten in the loop. The same is true for
-all tokens handled with match_strdup.
+Alex
+
