@@ -2,213 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2EB1370441
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 01:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC9E370447
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 02:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233070AbhD3XvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 19:51:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232828AbhD3XvJ (ORCPT
+        id S233045AbhD3X7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 19:59:43 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49974 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232828AbhD3X7m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 19:51:09 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD07BC06138B
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 16:50:20 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id i20-20020a4a8d940000b02901bc71746525so9345ook.2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 16:50:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q/q7DptLC8egYbR7opYakYP8H9u2iTP4dEK6HMA0wYI=;
-        b=cI3yQrkNwf6EUbrFxXy4L8iUKQfRVeS7b27mJg8q4vPtLahufJGGltwG+4Qf/9Ruwm
-         f/wwpUsV1hedJDN6gO+CDbXQFd1EDANy5OWSYC5txTLOr6HwQ3Hdp+RAJRrEyM51E0b1
-         Ay4KYZqHN+MIFPvtAgJRfdW8fCFI0WdceWauCiiGhO7jRSnzhliA82FIEVEeImYwJUse
-         gsrxp7fSduKCZ8Re3n2SedOIotgrbj3y0duChsFTVKbjNdb1Zdrbzjclv+ylIqUeYPWk
-         xYjRFZ0b1s3S9OjWnRDpozoQSQZ9qpwojgea2yAHW2WavS+J07N6pNxM5D4IJEv1vw3a
-         Hhqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q/q7DptLC8egYbR7opYakYP8H9u2iTP4dEK6HMA0wYI=;
-        b=ijskF1WEn4IYp0//e39xCtFMRjcBf6FY18pm+oLDKLUbgn6mtQez641cSWMZlSi/9a
-         zb5I6Ltp1JWExorOrzeTOFEZrkPR+Jb7b4mj+mq/F7NmNh29mkgSAY5p8XjJ2TSuqzFJ
-         HtaABikeEqYc6FO1HKqr5v+PxyCZnTDWFbJF1VmN/kkoIkjIKVFlUPcll5cAJGyLvLnU
-         H45mKyUdcp9+2aZOrh386oHXhb2QcMEnKpqvgXLp11OPJ3CCKNNypF16mTChvgam05GH
-         alZIh7O1lipQhVXBE7oPpeu8WJhDRMBDdn6r94e2IdYpB17DZzE6vZfcC8TrEShfwOzx
-         nfWg==
-X-Gm-Message-State: AOAM5325JypESoe6BiaLfDs+rUR5PWw3lkzdRxLNd0YUndzaMks5JzYf
-        4nb8oks02zgXAdHtNRU6U+W2UOXzGhiYuiMvzLrIlt+83W96YQ==
-X-Google-Smtp-Source: ABdhPJyxcbYG0z/wbFYM2KfbPDk4IEK2fp9FIJ5gR9LNAk+AoOPt5KThaXTWfhI4EkWsyRXXiXzxtUETGhL2umOnUNk=
-X-Received: by 2002:a4a:e692:: with SMTP id u18mr6616156oot.54.1619826619823;
- Fri, 30 Apr 2021 16:50:19 -0700 (PDT)
+        Fri, 30 Apr 2021 19:59:42 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13UNXG3G050553;
+        Fri, 30 Apr 2021 19:58:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=qwtE7nszsN4kim/BAqNLXNFcwcBkITIE3HX7zHOnqyw=;
+ b=SbiCdxfblI4F6vQzYCUx5Ff0RUrYD/6XYT9uRnAaYWKRRvnogNRVE8i7lviaCK83Pape
+ x4tfXSeQ0yV0H+M73abv+Romy1INZz4rs9KR43SdG4oElHOCwI/41MltRRkgJG5cShAA
+ FUDvS71NOLl7nFOZdykwxptYKsjqTZ1wUUPeiN0zjgipKc5OhgqXV9mZBM06gGpA45eJ
+ eZs5aGB3Ny8SHAlGimnVlDz6ylooMtoVENt30fpKMcDB+UVoFRqgc2jYm8lgMt/92F0t
+ Ii3rZPMykjOGsSjrZt8UpEnwKD/ONJYc7P145hlzKYTwqlnhw4/hpxlFXNRoGqKEOSzu TQ== 
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 388uhy8ens-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Apr 2021 19:58:37 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13UNuXRG017018;
+        Fri, 30 Apr 2021 23:58:36 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma03dal.us.ibm.com with ESMTP id 388gtrw72x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Apr 2021 23:58:36 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13UNwarj41746768
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Apr 2021 23:58:36 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EB0F32805A;
+        Fri, 30 Apr 2021 23:58:35 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B8AA128058;
+        Fri, 30 Apr 2021 23:58:34 +0000 (GMT)
+Received: from oc6857751186.ibm.com (unknown [9.160.126.175])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri, 30 Apr 2021 23:58:34 +0000 (GMT)
+Subject: Re: [PATCH v3] pseries/drmem: update LMBs after LPM
+To:     Laurent Dufour <ldufour@linux.ibm.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org
+Cc:     nathanl@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+References: <20210428094758.28665-1-ldufour@linux.ibm.com>
+ <87fsz95qso.fsf@linux.ibm.com>
+ <9d29bf8c-9e97-c179-6897-8e25fa4eb516@linux.ibm.com>
+ <271ef351-b89c-ba68-3b6d-baa24cc0021b@linux.ibm.com>
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+Message-ID: <c87e17d3-8956-9eb0-6f8a-ae316ea75f7e@linux.ibm.com>
+Date:   Fri, 30 Apr 2021 16:58:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <YIpkvGrBFGlB5vNj@elver.google.com> <m11rat9f85.fsf@fess.ebiederm.org>
- <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
- <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com> <m17dkjttpj.fsf@fess.ebiederm.org>
-In-Reply-To: <m17dkjttpj.fsf@fess.ebiederm.org>
-From:   Marco Elver <elver@google.com>
-Date:   Sat, 1 May 2021 01:50:08 +0200
-Message-ID: <CANpmjNNU=00iq50xyVpqeg21kata+cTS=wZ7zcU_78K=rWL-=w@mail.gmail.com>
-Subject: Re: siginfo_t ABI break on sparc64 from si_addr_lsb move 3y ago
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <271ef351-b89c-ba68-3b6d-baa24cc0021b@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: liXGrhYTm9POpe9SWTenkxzkEq6diay8
+X-Proofpoint-GUID: liXGrhYTm9POpe9SWTenkxzkEq6diay8
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-30_15:2021-04-30,2021-04-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 mlxscore=0 mlxlogscore=999 priorityscore=1501
+ adultscore=0 suspectscore=0 phishscore=0 clxscore=1015 impostorscore=0
+ spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104300167
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Apr 2021 at 22:15, Eric W. Biederman <ebiederm@xmission.com> wrote:
-[...]
-> arm64 only abuses si_errno in compat code for bug compatibility with
-> arm32.
->
-> > Given it'd be wasted space otherwise, and we define the semantics of
-> > whatever is stored in siginfo on the new signal, it'd be good to keep.
->
-> Except you don't completely.  You are not defining a new signal.  You
-> are extending the definition of SIGTRAP.  Anything generic that
-> responds to all SIGTRAPs can reasonably be looking at si_errno.
+On 4/30/21 9:13 AM, Laurent Dufour wrote:
+> Le 29/04/2021 à 21:12, Tyrel Datwyler a écrit :
+>> On 4/29/21 3:27 AM, Aneesh Kumar K.V wrote:
+>>> Laurent Dufour <ldufour@linux.ibm.com> writes:
+>>>
+>>>> After a LPM, the device tree node ibm,dynamic-reconfiguration-memory may be
+>>>> updated by the hypervisor in the case the NUMA topology of the LPAR's
+>>>> memory is updated.
+>>>>
+>>>> This is caught by the kernel, but the memory's node is updated because
+>>>> there is no way to move a memory block between nodes.
+>>>>
+>>>> If later a memory block is added or removed, drmem_update_dt() is called
+>>>> and it is overwriting the DT node to match the added or removed LMB. But
+>>>> the LMB's associativity node has not been updated after the DT node update
+>>>> and thus the node is overwritten by the Linux's topology instead of the
+>>>> hypervisor one.
+>>>>
+>>>> Introduce a hook called when the ibm,dynamic-reconfiguration-memory node is
+>>>> updated to force an update of the LMB's associativity.
+>>>>
+>>>> Cc: Tyrel Datwyler <tyreld@linux.ibm.com>
+>>>> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+>>>> ---
+>>>>
+>>>> V3:
+>>>>   - Check rd->dn->name instead of rd->dn->full_name
+>>>> V2:
+>>>>   - Take Tyrel's idea to rely on OF_RECONFIG_UPDATE_PROPERTY instead of
+>>>>   introducing a new hook mechanism.
+>>>> ---
+>>>>   arch/powerpc/include/asm/drmem.h              |  1 +
+>>>>   arch/powerpc/mm/drmem.c                       | 35 +++++++++++++++++++
+>>>>   .../platforms/pseries/hotplug-memory.c        |  4 +++
+>>>>   3 files changed, 40 insertions(+)
+>>>>
+>>>> diff --git a/arch/powerpc/include/asm/drmem.h
+>>>> b/arch/powerpc/include/asm/drmem.h
+>>>> index bf2402fed3e0..4265d5e95c2c 100644
+>>>> --- a/arch/powerpc/include/asm/drmem.h
+>>>> +++ b/arch/powerpc/include/asm/drmem.h
+>>>> @@ -111,6 +111,7 @@ int drmem_update_dt(void);
+>>>>   int __init
+>>>>   walk_drmem_lmbs_early(unsigned long node, void *data,
+>>>>                 int (*func)(struct drmem_lmb *, const __be32 **, void *));
+>>>> +void drmem_update_lmbs(struct property *prop);
+>>>>   #endif
+>>>>     static inline void invalidate_lmb_associativity_index(struct drmem_lmb
+>>>> *lmb)
+>>>> diff --git a/arch/powerpc/mm/drmem.c b/arch/powerpc/mm/drmem.c
+>>>> index 9af3832c9d8d..f0a6633132af 100644
+>>>> --- a/arch/powerpc/mm/drmem.c
+>>>> +++ b/arch/powerpc/mm/drmem.c
+>>>> @@ -307,6 +307,41 @@ int __init walk_drmem_lmbs_early(unsigned long node,
+>>>> void *data,
+>>>>       return ret;
+>>>>   }
+>>>>   +/*
+>>>> + * Update the LMB associativity index.
+>>>> + */
+>>>> +static int update_lmb(struct drmem_lmb *updated_lmb,
+>>>> +              __maybe_unused const __be32 **usm,
+>>>> +              __maybe_unused void *data)
+>>>> +{
+>>>> +    struct drmem_lmb *lmb;
+>>>> +
+>>>> +    /*
+>>>> +     * Brut force there may be better way to fetch the LMB
+>>>> +     */
+>>>> +    for_each_drmem_lmb(lmb) {
+>>>> +        if (lmb->drc_index != updated_lmb->drc_index)
+>>>> +            continue;
+>>>> +
+>>>> +        lmb->aa_index = updated_lmb->aa_index;
+>>>> +        break;
+>>>> +    }
+>>>> +    return 0;
+>>>> +}
+>>>> +
+>>>> +/*
+>>>> + * Update the LMB associativity index.
+>>>> + *
+>>>> + * This needs to be called when the hypervisor is updating the
+>>>> + * dynamic-reconfiguration-memory node property.
+>>>> + */
+>>>> +void drmem_update_lmbs(struct property *prop)
+>>>> +{
+>>>> +    if (!strcmp(prop->name, "ibm,dynamic-memory"))
+>>>> +        __walk_drmem_v1_lmbs(prop->value, NULL, NULL, update_lmb);
+>>>> +    else if (!strcmp(prop->name, "ibm,dynamic-memory-v2"))
+>>>> +        __walk_drmem_v2_lmbs(prop->value, NULL, NULL, update_lmb);
+>>>> +}
+>>>>   #endif
+>>>>     static int init_drmem_lmb_size(struct device_node *dn)
+>>>> diff --git a/arch/powerpc/platforms/pseries/hotplug-memory.c
+>>>> b/arch/powerpc/platforms/pseries/hotplug-memory.c
+>>>> index 8377f1f7c78e..672ffbee2e78 100644
+>>>> --- a/arch/powerpc/platforms/pseries/hotplug-memory.c
+>>>> +++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
+>>>> @@ -949,6 +949,10 @@ static int pseries_memory_notifier(struct
+>>>> notifier_block *nb,
+>>>>       case OF_RECONFIG_DETACH_NODE:
+>>>>           err = pseries_remove_mem_node(rd->dn);
+>>>>           break;
+>>>> +    case OF_RECONFIG_UPDATE_PROPERTY:
+>>>> +        if (!strcmp(rd->dn->name,
+>>>> +                "ibm,dynamic-reconfiguration-memory"))
+>>>> +            drmem_update_lmbs(rd->prop);
+>>>>       }
+>>>>       return notifier_from_errno(err);
+>>>
+>>> How will this interact with DLPAR memory? When we dlpar memory,
+>>> ibm,configure-connector is used to fetch the new associativity details
+>>> and set drmem_lmb->aa_index correctly there. Once that is done kernel
+>>> then call drmem_update_dt() which will result in the above notifier
+>>> callback?
+>>>
+>>> IIUC, the call back then will update drmem_lmb->aa_index again?
+>>
+>> After digging through some of this code I'm a bit concerned about all the kernel
+>> device tree manipulation around memory DLPAR both with the assoc-lookup-array
+>> prop update and post dynamic-memory prop updating. We build a drmem_info array
+>> of the LMBs from the device-tree at boot. I don't really understand why we are
+>> manipulating the device tree property every time we add/remove an LMB. Not sure
+>> the reasoning was to write back in particular the aa_index and flags for each
+>> LMB into the device tree when we already have them in the drmem_info array. On
+>> the other hand the assoc-lookup-array I suppose would need to have an in kernel
+>> representation to avoid updating the device tree property every time.
+> 
+> I think the reason is to keep the device tree in sync with the current set of LMBs.
 
-I see where you're coming from, and agree with this if si_errno
-already had some semantics for some subset of SIGTRAPs. I've tried to
-analyze the situation a bit further, since siginfo seems to be a giant
-minefield and semantics is underspecified at best. :-)
+I don't really think that is how the device tree is meant to be used. We have an
+in memory representation of the LMBs separate from the device tree, and that is
+were we should track OS specific state. The values in the device-tree property
+can be updated via device node remove/add or update-properties RTAS call. These
+are the means that the platform reports (OS discovers) underlying changes. The
+new property is going to blow away any previous state that the OS wrote there.
+This is likely, one of the culprits of memory DLPAR problems that have been
+observed after LPM.
 
-Do any of the existing SIGTRAPs define si_errno to be set? As far as I
-can tell, they don't.
+> 
+> My understanding is that the kernel is not really using the
+> 'ibm,dynamic-memory*' DT property once the boot is done. But user space tools
+> (like lsslot and drmgr) read it to built the LMB tree and get the DRC index for
+> each LMBs as it is not available in SYSFS.
 
-If this is true, I think there are benefits and downsides to
-repurposing si_errno (similar to what SIGSYS did). The obvious
-downside is as you suggest, it's not always a real errno. The benefit
-is that we avoid introducing more and more fields -- i.e. if we permit
-si_errno to be repurposed for SIGTRAP and its value depends on the
-precise si_code, too, we simplify siginfo's overall definition (also
-given every new field needs more code in kernel/signal.c, too).
+Yeah, but as I mentioned above the property can change as a result of an update
+we process from the hypervisor in response to something like LPM (or PRRN if we
+ever figure out how to make that work correctly). So, if there is some sort of
+state drmgr needs to know we have to figure out a different way to expose that
+information.
 
-Given SIGTRAPs are in response to some user-selected event in the
-user's code (breakpoints, ptrace, etc. ... now perf events), the user
-must already check the si_code to select the right action because
-SIGTRAPs are not alike (unlike, e.g. SIGSEGV). Because of this, I
-think that repurposing si_errno in an si_code-dependent way for
-SIGTRAPs is safe.
+> 
+>> Changes to the device tree should be things reported to the system from the
+>> hypervisor through the proper interfaces, and as a result any code that cares
+>> can register an of_reconfig_notifier to resepond to device tree updates. The
+>> memory dlpar code seems to be needlessly manipulating the device-tree which
+>> leads to the problem here where a notifier callback is now duplicating work.
+> 
+> I don't think the hypervisor is expected to update the 'ibm,dynamic-memory' each
+> time a LMB is added, this is not design this way AFAIK.
 
-If you think it is simply untenable to repurpose si_errno for
-SIGTRAPs, please confirm -- I'll just send a minimal patch to fix (I'd
-probably just remove setting it... everything else is too intrusive as
-a "fix".. sigh).
+It shouldn't need to for the most part. The only information that should change
+in ibm,dynamic-memory in the first place is the aa_index as a result of an
+underlying platform reassignment. The flags in ibm,dynamic-memory aren't
+changing as a result of DLPAR add/remove. The aa_index could be out of date as I
+mentioned above. The use of DRCONF_MEM_ASSIGNED in my opinion is actually a hack
+to mark LMBs as present and owned by the partition. Its actual PAPR definition
+is soley to identify LMBs that are present at boot.
 
-The cleanups as you outline below seem orthogonal and not urgent for
-5.13 (all changes and cleanups for __ARCH_SI_TRAPNO seem too intrusive
-without -next exposure).
+As of today I don't have a problem with your patch. This was more of me pointing
+out things that I think are currently wrong with our memory hotplug
+implementation, and that we need to take a long hard look at it down the road.
 
-Thanks,
--- Marco
+-Tyrel
 
-> Further you are already adding a field with si_perf you can just as
-> easily add a second field with well defined semantics for that data.
->
-> >> The code is only safe if the analysis that says we can move si_trapno
-> >> and perhaps the ia64 fields into the union is correct.  It looks like
-> >> ia64 much more actively uses it's signal extension fields including for
-> >> SIGTRAP, so I am not at all certain the generic definition of
-> >> perf_sigtrap is safe on ia64.
-> >
-> > Trying to understand the requirements of si_trapno myself: safe here
-> > would mean that si_trapno is not required if we fire our SIGTRAP /
-> > TRAP_PERF.
-> >
-> > As far as I can tell that is the case -- see below.
-> >
-> >> > I suppose in theory sparc64 or alpha might start using the other
-> >> > fields in the future, and an application might be compiled against
-> >> > mismatched headers, but that is unlikely and is already broken
-> >> > with the current headers.
-> >>
-> >> If we localize the use of si_trapno to just a few special cases on alpha
-> >> and sparc I think we don't even need to worry about breaking userspace
-> >> on any architecture.  It will complicate siginfo_layout, but it is a
-> >> complication that reflects reality.
-> >>
-> >> I don't have a clue how any of this affects ia64.  Does perf work on
-> >> ia64?  Does perf work on sparc, and alpha?
-> >>
-> >> If perf works on ia64 we need to take a hard look at what is going on
-> >> there as well.
-> >
-> > No perf on ia64, but it seems alpha and sparc have perf:
-> >
-> >       $ git grep 'select.*HAVE_PERF_EVENTS$' -- arch/
-> >       arch/alpha/Kconfig:     select HAVE_PERF_EVENTS    <--
-> >       arch/arc/Kconfig:       select HAVE_PERF_EVENTS
-> >       arch/arm/Kconfig:       select HAVE_PERF_EVENTS
-> >       arch/arm64/Kconfig:     select HAVE_PERF_EVENTS
-> >       arch/csky/Kconfig:      select HAVE_PERF_EVENTS
-> >       arch/hexagon/Kconfig:   select HAVE_PERF_EVENTS
-> >       arch/mips/Kconfig:      select HAVE_PERF_EVENTS
-> >       arch/nds32/Kconfig:     select HAVE_PERF_EVENTS
-> >       arch/parisc/Kconfig:    select HAVE_PERF_EVENTS
-> >       arch/powerpc/Kconfig:   select HAVE_PERF_EVENTS
-> >       arch/riscv/Kconfig:     select HAVE_PERF_EVENTS
-> >       arch/s390/Kconfig:      select HAVE_PERF_EVENTS
-> >       arch/sh/Kconfig:        select HAVE_PERF_EVENTS
-> >       arch/sparc/Kconfig:     select HAVE_PERF_EVENTS    <--
-> >       arch/x86/Kconfig:       select HAVE_PERF_EVENTS
-> >       arch/xtensa/Kconfig:    select HAVE_PERF_EVENTS
-> >
-> > Now, given ia64 is not an issue, I wanted to understand the semantics of
-> > si_trapno. Per https://man7.org/linux/man-pages/man2/sigaction.2.html, I
-> > see:
-> >
-> >       int si_trapno;    /* Trap number that caused
-> >                            hardware-generated signal
-> >                            (unused on most architectures) */
-> >
-> > ... its intended semantics seem to suggest it would only be used by some
-> > architecture-specific signal like you identified above. So if the
-> > semantics is some code of a hardware trap/fault, then we're fine and do
-> > not need to set it.
-> >
-> > Also bearing in mind we define the semantics any new signal, and given
-> > most architectures do not have si_trapno, definitions of new generic
-> > signals should probably not include odd architecture specific details
-> > related to old architectures.
-> >
-> > From all this, my understanding now is that we can move si_trapno into
-> > the union, correct? What else did you have in mind?
->
-> Yes.  Let's move si_trapno into the union.
->
-> That implies a few things like siginfo_layout needs to change.
->
-> The helpers in kernel/signal.c can change to not imply that
-> if you define __ARCH_SI_TRAPNO you must always define and
-> pass in si_trapno.  A force_sig_trapno could be defined instead
-> to handle the cases that alpha and sparc use si_trapno.
->
-> It would be nice if a force_sig_perf_trap could be factored
-> out of perf_trap and placed in kernel/signal.c.
->
-> My experience (especially this round) is that it becomes much easier to
-> audit the users of siginfo if there is a dedicated function in
-> kernel/signal.c that is simply passed the parameters that need
-> to be placed in siginfo.
->
-> So I would very much like to see if I can make force_sig_info static.
->
-> Eric
->
+> 
+> Laurent.
+> 
+>> Just my two cents FWIW.
+>>
+>> -Tyrel
+>>
+>>>
+>>> -aneesh
+>>>
+>>
+> 
+
