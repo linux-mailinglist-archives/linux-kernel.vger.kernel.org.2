@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F91C36FD22
+	by mail.lfdr.de (Postfix) with ESMTP id CF13B36FD23
 	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232526AbhD3PAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 11:00:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53600 "EHLO
+        id S232621AbhD3PAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 11:00:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231560AbhD3O7Y (ORCPT
+        with ESMTP id S231641AbhD3O70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 10:59:24 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD66C06138E
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:58:11 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id di13so726563edb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:58:11 -0700 (PDT)
+        Fri, 30 Apr 2021 10:59:26 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D7A8C061344
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:58:13 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id c22so19339928edn.7
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:58:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Wl769BdnSt1skLLR67Pc8JYCPc0C5/Mlxx5Ssv8fz88=;
-        b=GJgYujNyvAjqxVDaGaulEgggkMlrt0qZEGY3YCRo/fezcmYyHOrb7ew0N5zG9YHals
-         LRy6NGbtufaSGpEn/HpewqUehl9iXQtnOMH4dm7UmaSAIhIL33ZAEG40IDLSOrxGuLd0
-         8rkae7KgOL2Gm2XT1hQLAQvmP/1xicmvO3AyEDFxMYRtxmTONVWOTvdzKP2YJy0rRUyk
-         0DJc2P4Qlr9nlFbHxnNkC9RpUwHbUCDHoBkFhuKg2+OVm3K3yN2NnYY8T78F6JNGuLPA
-         FlDlvDHrPXc/PiOMo5N4gKAOuz9XrEPqhmkg8yl7gGRh5b7XmjHMf2YgIkSRs2ffbY+L
-         nlCQ==
+        bh=COla8THV9MLqgxdkc3FzpFMxvj3Sxk16di+Wdxq2A3k=;
+        b=vfyMn8NrfMAGI7+JQqgX5mLUxEs2WdoFuKJw5iEFBeq949/rxWaVKAZZOhuhu/DmUz
+         hkhE+2ywdIM0muE+AtsRgybLPGfAJUltWCkL8CDg54tbQDmiQUizxH7ZRakWFirouME7
+         YcRDom/hZS9kund6s/lrK9Ec2MblQ/XIrLBxilM2xOiwAKPfmkd/YOIkoM6ar3J6e173
+         CLAekfNBv3kZ0GPRekauWt956HGsT3B5ctOr8iM7KWvCCrDBwZWGqu8ibo/y22xuhT1z
+         WZMQQZJ6XW4QlL3IGJHvv6iareAfcfU0KH9iwBPKqDGRt8MgHv/A6TCU6Xb5yPUKX4VR
+         kbBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Wl769BdnSt1skLLR67Pc8JYCPc0C5/Mlxx5Ssv8fz88=;
-        b=nPZmm+Wi/yPYLEn81ns0K3kC3EaJ910fTWNzGT6ddswjI00Gu6fMlSaaRYXu3GMyJX
-         ELvce/cFz1dKAImvXmwGIFKXdPnvuoKa5RnfyyiurdJTJHE+oOFWxfPcZSHEEFHfz/lp
-         PZfoLvuci7HnqF5N9ZeMj0/+27fb7AXMgHC+fuYsycP5pCh8jQBIIHxiPGiA3PHH3dtf
-         2cNaDE2khzKVIV2eX7eJ81p1naASsVAO8Y7IWSgaXdfhy8sz+/X7b3rqIiSmVM2EGi4T
-         ZFQRI8/31DCT6V7GnwaoEZMHHBIy7dc7NeSiJm+1O89ukN0vqcFHx+ytuWh5HsATn6mW
-         36Bw==
-X-Gm-Message-State: AOAM5310T62+sTKr3V0wF0BvLPATN+FDhgOF4d1wWpiDduuVi3H937Rc
-        KEEMpxd2tyko6te3BFDvsIssFunU0TQ=
-X-Google-Smtp-Source: ABdhPJxr7WxKZBHZsQymBJGCirOcSkAsSw4/7gvUQ2J2YvGO1Pj/WhKbNONNY0h1911gclCdljHOEA==
-X-Received: by 2002:aa7:c412:: with SMTP id j18mr6509432edq.163.1619794690504;
-        Fri, 30 Apr 2021 07:58:10 -0700 (PDT)
+        bh=COla8THV9MLqgxdkc3FzpFMxvj3Sxk16di+Wdxq2A3k=;
+        b=itLZXncxlO6+eyyQCdl6nULuuQc/r3b08x5l+DQA+wRCpPHwhPjOkZo5zQXi/AQgC5
+         hO9/y79XMqjRatL4rvggJUravdVMl7HqvhYPQNjgXNYed8WSwEKj49puRKroqrIxx9ZK
+         KvO1UH6eLzEYVLQtQ4Rc1A0nfKO34t5/MSLO+gBGvEb4KdGBKF0cukg3hmGKUlGRvcO0
+         r67dn2nFQS9vCUsFnH9DGUfbyKXdQxh2GrfzK1MsmGxTEyNEGN79ee5UaVhFAisNS6uK
+         x5o9fgH7ABBQEMzPy75UVs1ah3zGVAjNR3CshIilK2eNldAjFQvjRYX9cyZNtdXrCF1R
+         8Npw==
+X-Gm-Message-State: AOAM533TRRM2CIPceoXDtUFLFIJPHfBmtg7MdEBAiQXxoTaEt/ZBRmBV
+        cbx9zngss9gO1omun3foxGG45ksqXFA=
+X-Google-Smtp-Source: ABdhPJykYYMOTuoCwSZeNKy9UqcoH0ZqAeevkuiWANoHm5o1e4hesuTDnCctIFzWkIW2PyLhydsuew==
+X-Received: by 2002:a05:6402:1ed:: with SMTP id i13mr4135328edy.27.1619794691978;
+        Fri, 30 Apr 2021 07:58:11 -0700 (PDT)
 Received: from agape ([109.52.244.36])
-        by smtp.gmail.com with ESMTPSA id v4sm2278385ejj.84.2021.04.30.07.58.09
+        by smtp.gmail.com with ESMTPSA id f19sm1497788edu.12.2021.04.30.07.58.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 07:58:10 -0700 (PDT)
+        Fri, 30 Apr 2021 07:58:11 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 39/43] staging: rtl8723bs: remove ODM_InitDebugSetting() function
-Date:   Fri, 30 Apr 2021 16:57:01 +0200
-Message-Id: <6a8524b780674d05f33977eb86878d95c7338a1a.1619794331.git.fabioaiuto83@gmail.com>
+Subject: [PATCH v3 40/43] staging: rtl8723bs: remove empty hal/odm_debug.c file
+Date:   Fri, 30 Apr 2021 16:57:02 +0200
+Message-Id: <0bd6ce2da09a5e2a671dc4a53f1c2e7ba1a64066.1619794331.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1619794331.git.fabioaiuto83@gmail.com>
 References: <cover.1619794331.git.fabioaiuto83@gmail.com>
@@ -63,84 +63,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove ODM_InitDebugSetting() function. It was
-intended to initialize removed private debug
-system. So remove it.
+remove file left empty after function deletion.
+remove related target in Makefile.
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/hal/odm.c       |  2 --
- drivers/staging/rtl8723bs/hal/odm_debug.c | 35 -----------------------
- drivers/staging/rtl8723bs/hal/odm_debug.h |  2 --
- 3 files changed, 39 deletions(-)
+ drivers/staging/rtl8723bs/Makefile        | 1 -
+ drivers/staging/rtl8723bs/hal/odm_debug.c | 9 ---------
+ 2 files changed, 10 deletions(-)
+ delete mode 100644 drivers/staging/rtl8723bs/hal/odm_debug.c
 
-diff --git a/drivers/staging/rtl8723bs/hal/odm.c b/drivers/staging/rtl8723bs/hal/odm.c
-index fcd3f97e7df5..45e4038530c0 100644
---- a/drivers/staging/rtl8723bs/hal/odm.c
-+++ b/drivers/staging/rtl8723bs/hal/odm.c
-@@ -290,8 +290,6 @@ static void odm_CommonInfoSelfInit(struct dm_odm_t *pDM_Odm)
- 	pDM_Odm->bCckHighPower = (bool) PHY_QueryBBReg(pDM_Odm->Adapter, ODM_REG(CCK_RPT_FORMAT, pDM_Odm), ODM_BIT(CCK_RPT_FORMAT, pDM_Odm));
- 	pDM_Odm->RFPathRxEnable = (u8) PHY_QueryBBReg(pDM_Odm->Adapter, ODM_REG(BB_RX_PATH, pDM_Odm), ODM_BIT(BB_RX_PATH, pDM_Odm));
- 
--	ODM_InitDebugSetting(pDM_Odm);
--
- 	pDM_Odm->TxRate = 0xFF;
- }
- 
+diff --git a/drivers/staging/rtl8723bs/Makefile b/drivers/staging/rtl8723bs/Makefile
+index c40983496608..fe45200ff53c 100644
+--- a/drivers/staging/rtl8723bs/Makefile
++++ b/drivers/staging/rtl8723bs/Makefile
+@@ -28,7 +28,6 @@ r8723bs-y = \
+ 		hal/HalPwrSeqCmd.o \
+ 		hal/odm.o \
+ 		hal/odm_CfoTracking.o \
+-		hal/odm_debug.o \
+ 		hal/odm_DIG.o \
+ 		hal/odm_DynamicBBPowerSaving.o \
+ 		hal/odm_DynamicTxPower.o \
 diff --git a/drivers/staging/rtl8723bs/hal/odm_debug.c b/drivers/staging/rtl8723bs/hal/odm_debug.c
-index b35451bcb437..1a2e367bb306 100644
+deleted file mode 100644
+index 1a2e367bb306..000000000000
 --- a/drivers/staging/rtl8723bs/hal/odm_debug.c
-+++ b/drivers/staging/rtl8723bs/hal/odm_debug.c
-@@ -7,38 +7,3 @@
- 
- #include "odm_precomp.h"
- 
--void ODM_InitDebugSetting(struct dm_odm_t *pDM_Odm)
--{
--	pDM_Odm->DebugLevel = ODM_DBG_LOUD;
++++ /dev/null
+@@ -1,9 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/******************************************************************************
+- *
+- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+- *
+- ******************************************************************************/
 -
--	pDM_Odm->DebugComponents =
--/* BB Functions */
--/* 		ODM_COMP_DIG					| */
--/* 		ODM_COMP_RA_MASK				| */
--/* 		ODM_COMP_DYNAMIC_TXPWR		| */
--/* 		ODM_COMP_FA_CNT				| */
--/* 		ODM_COMP_RSSI_MONITOR			| */
--/* 		ODM_COMP_CCK_PD				| */
--/* 		ODM_COMP_ANT_DIV				| */
--/* 		ODM_COMP_PWR_SAVE				| */
--/* 		ODM_COMP_PWR_TRAIN			| */
--/* 		ODM_COMP_RATE_ADAPTIVE		| */
--/* 		ODM_COMP_PATH_DIV				| */
--/* 		ODM_COMP_DYNAMIC_PRICCA		| */
--/* 		ODM_COMP_RXHP					| */
--/* 		ODM_COMP_MP					| */
--/* 		ODM_COMP_CFO_TRACKING		| */
+-#include "odm_precomp.h"
 -
--/* MAC Functions */
--/* 		ODM_COMP_EDCA_TURBO			| */
--/* 		ODM_COMP_EARLY_MODE			| */
--/* RF Functions */
--/* 		ODM_COMP_TX_PWR_TRACK		| */
--/* 		ODM_COMP_RX_GAIN_TRACK		| */
--/* 		ODM_COMP_CALIBRATION			| */
--/* Common */
--/* 		ODM_COMP_COMMON				| */
--/* 		ODM_COMP_INIT					| */
--/* 		ODM_COMP_PSD					| */
--0;
--}
-diff --git a/drivers/staging/rtl8723bs/hal/odm_debug.h b/drivers/staging/rtl8723bs/hal/odm_debug.h
-index c7c7865dd7e2..94011343f7e7 100644
---- a/drivers/staging/rtl8723bs/hal/odm_debug.h
-+++ b/drivers/staging/rtl8723bs/hal/odm_debug.h
-@@ -85,6 +85,4 @@
- #define ODM_COMP_COMMON				BIT30
- #define ODM_COMP_INIT				BIT31
- 
--void ODM_InitDebugSetting(struct dm_odm_t *pDM_Odm);
--
- #endif	/*  __ODM_DBG_H__ */
 -- 
 2.20.1
 
