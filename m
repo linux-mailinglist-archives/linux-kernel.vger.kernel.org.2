@@ -2,91 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 125E136FE78
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 18:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6853D36FE80
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 18:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbhD3Q3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 12:29:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45128 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229579AbhD3Q26 (ORCPT
+        id S230290AbhD3Qal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 12:30:41 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2958 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229821AbhD3Qak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 12:28:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619800088;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=x9ksO6ZCSFOGH5MOABSY/p3OrJ5NQvgB4b95HTK7c9U=;
-        b=XixyVF5kGysNiQiofqgB97kbbrtoShWkx3zjF5tRpJFJRJ9iB1tB0Dr/QhQkM3mNpLVVJB
-        DGONpmX2NSENx63lsJueNZgFuaqoL0MpAme/NEUxOzSVoFfzSToCP+TwGEI95HX4ziwC6t
-        UrtcCF3pFggrPtfI/MaVQPpipFpikMU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-256-oKgXHhbmMJ-TXJdPOVBniw-1; Fri, 30 Apr 2021 12:28:06 -0400
-X-MC-Unique: oKgXHhbmMJ-TXJdPOVBniw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 778D580D698;
-        Fri, 30 Apr 2021 16:28:05 +0000 (UTC)
-Received: from redhat.com (null.msp.redhat.com [10.15.80.136])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 318D75C1D0;
-        Fri, 30 Apr 2021 16:28:05 +0000 (UTC)
-Date:   Fri, 30 Apr 2021 11:28:03 -0500
-From:   David Teigland <teigland@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [GIT PULL] dlm updates for 5.13
-Message-ID: <20210430162803.GA15511@redhat.com>
+        Fri, 30 Apr 2021 12:30:40 -0400
+Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FWyLb22clz71fjS;
+        Sat,  1 May 2021 00:21:59 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 30 Apr 2021 18:29:50 +0200
+Received: from localhost (10.52.124.90) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 30 Apr
+ 2021 17:29:49 +0100
+Date:   Fri, 30 Apr 2021 17:28:15 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-renesas-soc@vger.kernel.org>
+Subject: Re: [PATCH v4 12/79] media: renesas-ceu: Properly check for PM
+ errors
+Message-ID: <20210430172815.00007111@Huawei.com>
+In-Reply-To: <70e2f612d1d3b7ad74fbfc5f90850f3874670fb2.1619621413.git.mchehab+huawei@kernel.org>
+References: <cover.1619621413.git.mchehab+huawei@kernel.org>
+        <70e2f612d1d3b7ad74fbfc5f90850f3874670fb2.1619621413.git.mchehab+huawei@kernel.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.8.3 (2017-05-23)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.124.90]
+X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, 28 Apr 2021 16:51:33 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 
-Please pull dlm updates from tag:
+> Right now, the driver just assumes that PM runtime resume
+> worked, but it may fail.
+> 
+> Well, the pm_runtime_get_sync() internally increments the
+> dev->power.usage_count without decrementing it, even on errors.
+> 
+> So, using it is tricky. Let's replace it by the new
+> pm_runtime_resume_and_get(), introduced by:
+> commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> and return an error if something bad happens.
+> 
+> This should ensure that the PM runtime usage_count will be
+> properly decremented if an error happens at open time.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+LGTM
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-git://git.kernel.org/pub/scm/linux/kernel/git/teigland/linux-dlm.git dlm-5.13
-
-This set includes more dlm networking cleanups and improvements for
-making dlm shutdowns more robust.
-
-Thanks,
-Dave
-
-
-Alexander Aring (13):
-      fs: dlm: fix debugfs dump
-      fs: dlm: fix mark setting deadlock
-      fs: dlm: set connected bit after accept
-      fs: dlm: set subclass for othercon sock_mutex
-      fs: dlm: add errno handling to check callback
-      fs: dlm: add check if dlm is currently running
-      fs: dlm: change allocation limits
-      fs: dlm: use GFP_ZERO for page buffer
-      fs: dlm: simplify writequeue handling
-      fs: dlm: check on minimum msglen size
-      fs: dlm: remove unaligned memory access handling
-      fs: dlm: flush swork on shutdown
-      fs: dlm: add shutdown hook
-
-Yang Yingliang (1):
-      fs: dlm: fix missing unlock on error in accept_from_sock()
-
-
- fs/dlm/config.c    |  86 ++++++++++++++++--------
- fs/dlm/config.h    |   1 -
- fs/dlm/debug_fs.c  |   1 +
- fs/dlm/lock.c      |   2 -
- fs/dlm/lockspace.c |  20 +++---
- fs/dlm/lowcomms.c  | 194 ++++++++++++++++++++++++++++++-----------------------
- fs/dlm/lowcomms.h  |   5 ++
- fs/dlm/midcomms.c  |  33 +++++----
- fs/dlm/rcom.c      |   2 -
- 9 files changed, 202 insertions(+), 142 deletions(-)
+> ---
+>  drivers/media/platform/renesas-ceu.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/platform/renesas-ceu.c b/drivers/media/platform/renesas-ceu.c
+> index cd137101d41e..17f01b6e3fe0 100644
+> --- a/drivers/media/platform/renesas-ceu.c
+> +++ b/drivers/media/platform/renesas-ceu.c
+> @@ -1099,10 +1099,10 @@ static int ceu_open(struct file *file)
+>  
+>  	mutex_lock(&ceudev->mlock);
+>  	/* Causes soft-reset and sensor power on on first open */
+> -	pm_runtime_get_sync(ceudev->dev);
+> +	ret = pm_runtime_resume_and_get(ceudev->dev);
+>  	mutex_unlock(&ceudev->mlock);
+>  
+> -	return 0;
+> +	return ret;
+>  }
+>  
+>  static int ceu_release(struct file *file)
 
