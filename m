@@ -2,255 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DAB437001A
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17093370025
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231384AbhD3SBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 14:01:19 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3315 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229750AbhD3SBK (ORCPT
+        id S231309AbhD3SGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 14:06:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58847 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230356AbhD3SGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 14:01:10 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13UHXfBu041442;
-        Fri, 30 Apr 2021 14:00:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=dlQ6N9A7X8KUPbXEssDvs9Lv+9ATvqt04iELCkYH8uc=;
- b=KN7/95UYqqoS9dp+Luw03BokChEsBMsd4RG29gUTm4fNrdYgNdf5LeIZafmwj73AkJz8
- EID8KnL2k/Vwe6LGrJ9OL9piNIPd4CcI0lZrGEZub550mQSoYVuLuUFyJdNK9QUd3jsl
- VhXaiVshKkp1yTEC/c5J16WVl9pdLKGS/2z3H8ZqmXaua7PcqWEXvHQfrSF6djRb/fbI
- CoeIgWyP01+CtsBRvQFc5xt212g0IbgqE9Mj6oT/wxAaDqRy7SoFULPMtH/dHtfGn15i
- ftImtF+zRgK4luEVDM9ncKSL7leWS28RQRG7xieD+UeMoW9JWrxNXHHZqnIy1XhwoX37 PA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 388nwhsk4k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Apr 2021 14:00:13 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13UHYNAI045483;
-        Fri, 30 Apr 2021 14:00:13 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 388nwhsk3e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Apr 2021 14:00:13 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13UHwBoc002154;
-        Fri, 30 Apr 2021 18:00:11 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 384ay8kbjr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Apr 2021 18:00:11 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13UI08MR28901756
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 30 Apr 2021 18:00:08 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 54A8E42067;
-        Fri, 30 Apr 2021 18:00:08 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5217642047;
-        Fri, 30 Apr 2021 18:00:06 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.32.5])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 30 Apr 2021 18:00:06 +0000 (GMT)
-Message-ID: <960b27ad2fa7e85a999f0ad600ba07546dc39f2b.camel@linux.ibm.com>
-Subject: Re: [PATCH v4 04/11] ima: Move ima_reset_appraise_flags() call to
- post hooks
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>,
-        "mjg59@google.com" <mjg59@google.com>
-Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Date:   Fri, 30 Apr 2021 14:00:05 -0400
-In-Reply-To: <8e62ae3f8cf94c798fc1b7ffd69cbdc4@huawei.com>
-References: <20210305151923.29039-1-roberto.sassu@huawei.com>
-         <20210305151923.29039-5-roberto.sassu@huawei.com>
-         <8e62ae3f8cf94c798fc1b7ffd69cbdc4@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: P1JWKCvGzsQV13jvwyTbBn3un9MDAyeV
-X-Proofpoint-GUID: HsFk_RrLgO1TlILkQnTairWOaITcN-LN
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-30_11:2021-04-30,2021-04-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- lowpriorityscore=0 adultscore=0 clxscore=1015 mlxscore=0 impostorscore=0
- mlxlogscore=999 suspectscore=0 priorityscore=1501 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104300116
+        Fri, 30 Apr 2021 14:06:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619805915;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=QlUIlAKYE4495cvc4WfUS3fiQGRr+yuPORiuKa9dPbk=;
+        b=cQ+VaG4wwFtosTGDQi+fXic8EK3y3KExweTXuhlCsHPyxdWHYhsPfRvc4kwa27R5fQjb45
+        ULtmRXxinhFcfop8xkOIp4SIFWhLh0ab93DYxKxgbbInz3j/piL4ZS/kItLf17RHuhh928
+        7J3+HDsvoCXENtO6byXU7LQyJe9xnYI=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-524-ASe6G9nkPbWJ6lcz8HIFxA-1; Fri, 30 Apr 2021 14:05:13 -0400
+X-MC-Unique: ASe6G9nkPbWJ6lcz8HIFxA-1
+Received: by mail-qv1-f72.google.com with SMTP id p2-20020ad452e20000b0290177fba4b9d5so33546434qvu.6
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 11:05:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QlUIlAKYE4495cvc4WfUS3fiQGRr+yuPORiuKa9dPbk=;
+        b=eFWheEcZ1AtIPUHxqqbXo6wfhGJ7PE1fbGycgPFcYIvjrxvUs9yiYrxH6LuAO9Ce95
+         le//Bbsv66eVQCDYUgdZM93ti9EOkgvlp0eT/hOConiPDNPiPhsLvFx33wGFj2G2Rxjy
+         OuDXRCP9zphLj2dp6HrgEIJ39QiIvaHHK4/ypm2FS8hGlKSiZaAV/HqlxKoJhp0toMFr
+         onSEnPfPLksUHoMG+ycfOk5sH4pWymBkWag9v1Hr9EbuUqTds7+BNLf7I6Z09TtH69hX
+         yxdRSU0VZYeZDQC/o8NrsG/eJuQI3auXRo9SiLQ2IMmMLZ4klbdXm3z9SPmgpKdb8j8B
+         SJGw==
+X-Gm-Message-State: AOAM531fBYhQ+ZNqPX78/E/yzEPFxPUWAmwDaB77nY+mAPKpy4/eBHvo
+        GK8ei05v41Y1T6mGE/mlIPZV54XfyHN5R8/UW9uarTwXVEvaATjFCV1EzIoB/4c0Pbmixs4RXS8
+        Yjy8dJIGIAYXir3cdjeGMQec3
+X-Received: by 2002:a05:620a:9dd:: with SMTP id y29mr6472031qky.83.1619805912662;
+        Fri, 30 Apr 2021 11:05:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw0fuV+OSVOqxqrRktaPY/gHGGzWK734pNZzRkulGOtAXJjRCbXyYaNKA83MtpCVXrMGEbhuw==
+X-Received: by 2002:a05:620a:9dd:: with SMTP id y29mr6472012qky.83.1619805912484;
+        Fri, 30 Apr 2021 11:05:12 -0700 (PDT)
+Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id p187sm2061155qkd.92.2021.04.30.11.05.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 11:05:11 -0700 (PDT)
+From:   trix@redhat.com
+To:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch, evan.quan@amd.com,
+        nirmoy.das@amd.com, kevin1.wang@amd.com, ray.huang@amd.com,
+        darren.powell@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] drm/amd/pm: initialize variable
+Date:   Fri, 30 Apr 2021 10:16:54 -0700
+Message-Id: <20210430171654.3326745-1-trix@redhat.com>
+X-Mailer: git-send-email 2.26.3
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-04-28 at 15:35 +0000, Roberto Sassu wrote:
-> > From: Roberto Sassu
-> > Sent: Friday, March 5, 2021 4:19 PM
-> > ima_inode_setxattr() and ima_inode_removexattr() hooks are called before
-> > an
-> > operation is performed. Thus, ima_reset_appraise_flags() should not be
-> > called there, as flags might be unnecessarily reset if the operation is
-> > denied.
-> > 
-> > This patch introduces the post hooks ima_inode_post_setxattr() and
-> > ima_inode_post_removexattr(), and adds the call to
-> > ima_reset_appraise_flags() in the new functions.
-> > 
-> > Cc: Casey Schaufler <casey@schaufler-ca.com>
-> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > ---
-> >  fs/xattr.c                            |  2 ++
-> >  include/linux/ima.h                   | 18 ++++++++++++++++++
-> >  security/integrity/ima/ima_appraise.c | 25 ++++++++++++++++++++++---
-> >  security/security.c                   |  1 +
-> >  4 files changed, 43 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/fs/xattr.c b/fs/xattr.c
-> > index b3444e06cded..81847f132d26 100644
-> > --- a/fs/xattr.c
-> > +++ b/fs/xattr.c
-> > @@ -16,6 +16,7 @@
-> >  #include <linux/namei.h>
-> >  #include <linux/security.h>
-> >  #include <linux/evm.h>
-> > +#include <linux/ima.h>
-> >  #include <linux/syscalls.h>
-> >  #include <linux/export.h>
-> >  #include <linux/fsnotify.h>
-> > @@ -502,6 +503,7 @@ __vfs_removexattr_locked(struct user_namespace
-> > *mnt_userns,
-> > 
-> >  	if (!error) {
-> >  		fsnotify_xattr(dentry);
-> > +		ima_inode_post_removexattr(dentry, name);
-> >  		evm_inode_post_removexattr(dentry, name);
-> >  	}
-> > 
-> > diff --git a/include/linux/ima.h b/include/linux/ima.h
-> > index 61d5723ec303..5e059da43857 100644
-> > --- a/include/linux/ima.h
-> > +++ b/include/linux/ima.h
-> > @@ -171,7 +171,13 @@ extern void ima_inode_post_setattr(struct
-> > user_namespace *mnt_userns,
-> >  				   struct dentry *dentry);
-> >  extern int ima_inode_setxattr(struct dentry *dentry, const char *xattr_name,
-> >  		       const void *xattr_value, size_t xattr_value_len);
-> > +extern void ima_inode_post_setxattr(struct dentry *dentry,
-> > +				    const char *xattr_name,
-> > +				    const void *xattr_value,
-> > +				    size_t xattr_value_len);
-> >  extern int ima_inode_removexattr(struct dentry *dentry, const char
-> > *xattr_name);
-> > +extern void ima_inode_post_removexattr(struct dentry *dentry,
-> > +				       const char *xattr_name);
-> >  #else
-> >  static inline bool is_ima_appraise_enabled(void)
-> >  {
-> > @@ -192,11 +198,23 @@ static inline int ima_inode_setxattr(struct dentry
-> > *dentry,
-> >  	return 0;
-> >  }
-> > 
-> > +static inline void ima_inode_post_setxattr(struct dentry *dentry,
-> > +					   const char *xattr_name,
-> > +					   const void *xattr_value,
-> > +					   size_t xattr_value_len)
-> > +{
-> > +}
-> > +
-> >  static inline int ima_inode_removexattr(struct dentry *dentry,
-> >  					const char *xattr_name)
-> >  {
-> >  	return 0;
-> >  }
-> > +
-> > +static inline void ima_inode_post_removexattr(struct dentry *dentry,
-> > +					      const char *xattr_name)
-> > +{
-> > +}
-> >  #endif /* CONFIG_IMA_APPRAISE */
-> > 
-> >  #if defined(CONFIG_IMA_APPRAISE) &&
-> > defined(CONFIG_INTEGRITY_TRUSTED_KEYRING)
-> > diff --git a/security/integrity/ima/ima_appraise.c
-> > b/security/integrity/ima/ima_appraise.c
-> > index 565e33ff19d0..1f029e4c8d7f 100644
-> > --- a/security/integrity/ima/ima_appraise.c
-> > +++ b/security/integrity/ima/ima_appraise.c
-> > @@ -577,21 +577,40 @@ int ima_inode_setxattr(struct dentry *dentry, const
-> > char *xattr_name,
-> >  	if (result == 1) {
-> >  		if (!xattr_value_len || (xvalue->type >= IMA_XATTR_LAST))
-> >  			return -EINVAL;
-> > -		ima_reset_appraise_flags(d_backing_inode(dentry),
-> > -			xvalue->type == EVM_IMA_XATTR_DIGSIG);
-> >  		result = 0;
-> >  	}
-> >  	return result;
-> >  }
-> > 
-> > +void ima_inode_post_setxattr(struct dentry *dentry, const char
-> > *xattr_name,
-> > +			     const void *xattr_value, size_t xattr_value_len)
-> > +{
-> > +	const struct evm_ima_xattr_data *xvalue = xattr_value;
-> > +	int result;
-> > +
-> > +	result = ima_protect_xattr(dentry, xattr_name, xattr_value,
-> > +				   xattr_value_len);
-> > +	if (result == 1)
-> > +		ima_reset_appraise_flags(d_backing_inode(dentry),
-> 
-> I found an issue in this patch.
-> 
-> Moving ima_reset_appraise_flags() to the post hook causes this
-> function to be executed also when __vfs_setxattr_noperm() is
-> called.
-> 
-> The problem is that at the end of a write IMA calls
-> ima_collect_measurement() to recalculate the file digest and
-> update security.ima. ima_collect_measurement() sets
-> IMA_COLLECTED.
-> 
-> However, after that __vfs_setxattr_noperm() causes
-> IMA_COLLECTED to be reset, and to unnecessarily recalculate
-> the file digest. This wouldn't happen if ima_reset_appraise_flags()
-> is in the pre hook.
-> 
-> I solved by replacing:
-> 	iint->flags &= ~IMA_DONE_MASK;
-> with:
-> 	iint->flags &= ~(IMA_DONE_MASK & ~IMA_COLLECTED);
-> 
-> just when the IMA_CHANGE_XATTR bit is set. It should
-> not be a problem since setting an xattr does not influence
-> the file content.
-> 
-> Mimi, what do you think?
+From: Tom Rix <trix@redhat.com>
 
-Thank yor for noticing this.
+Static analysis reports this problem
 
-Without seeing the actual change it is hard to tell.   The only place
-that "iint->flags &= ~IMA_DONE_MASK;" occurs is in neither of the above
-functions, but in process_measurement().  There it is a part of a
-compound "if" statement.  Perhaps it would be ok to change it for just
-the IMA_CHANGE_XATTR test, but definitely not for the other conditions,
-like untrusted mounts.
+amdgpu_pm.c:478:16: warning: The right operand of '<' is a garbage value
+  for (i = 0; i < data.nums; i++) {
+                ^ ~~~~~~~~~
 
-Moving ima_reset_appraise_flags() to the post hooks is to minimize
-resetting the flags unnecessarily.  That is really a performance fix,
-not something necessary for making the EVM portable & immutable
-signatures more usable.  As much as possible, please minimize the
-changes to facilitate review and testing.
+In some cases data is not set.  Initialize to 0 and flag not setting
+data as an error with the existing check.
 
-thanks,
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/gpu/drm/amd/pm/amdgpu_pm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Mimi
+diff --git a/drivers/gpu/drm/amd/pm/amdgpu_pm.c b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
+index 4e459ef632ef..9a54066ec0af 100644
+--- a/drivers/gpu/drm/amd/pm/amdgpu_pm.c
++++ b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
+@@ -451,7 +451,7 @@ static ssize_t amdgpu_get_pp_cur_state(struct device *dev,
+ 	struct drm_device *ddev = dev_get_drvdata(dev);
+ 	struct amdgpu_device *adev = drm_to_adev(ddev);
+ 	const struct amd_pm_funcs *pp_funcs = adev->powerplay.pp_funcs;
+-	struct pp_states_info data;
++	struct pp_states_info data = {0};
+ 	enum amd_pm_state_type pm = 0;
+ 	int i = 0, ret = 0;
+ 
+-- 
+2.26.3
 
