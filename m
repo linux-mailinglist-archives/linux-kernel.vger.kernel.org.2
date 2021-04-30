@@ -2,302 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8202336F701
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8524836F707
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231213AbhD3IRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 04:17:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49152 "EHLO
+        id S231271AbhD3IVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 04:21:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbhD3IRl (ORCPT
+        with ESMTP id S229567AbhD3IVJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 04:17:41 -0400
+        Fri, 30 Apr 2021 04:21:09 -0400
 Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1827BC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:16:52 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 26-20020a05600c22dab029013efd7879b8so1265381wmg.0
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:16:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A13C06138B
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:20:20 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id s5-20020a7bc0c50000b0290147d0c21c51so277557wmh.4
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:20:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kTfqtxl7Dvfhd1Z0f4lYwKHZLG/TReZfomqC8/c4JTw=;
-        b=vwCPR0krsg2zjfEDSkgSrUxntOxtAUmL2VhNRDGfV5M7tFF2RuWzg2OGqP/MQaZ3i0
-         8q1d+BTlpk+c/sx+wc6FZjef+S473QznEBaXzoR0csM1UZZT21a7vcE3sNJErz91q9ta
-         yFldHktFnNWvnygXb4Bwb5LUrC48xXy554YiEL8Bwrs/Cygl+4YcuCUDRN9EA5SY+Gw1
-         PDipIzqGekvqniaoXrvRI2ufqNecEBQMjzPqJq2+Lu8WIQVWiijsxMySDUpK32PgMm6q
-         Y2AFK7o+QnwgKtZAQZPGoySBd9ik4uV1Bux5m3DGuRboldKBJ5Zq21gFzT4/GunKaxrd
-         6GJg==
+        d=linaro.org; s=google;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=k3V7PIJt4df52x4EhJvQyNhxcs7GT3vwtzimn9FSBpE=;
+        b=JOFR5P4z2JgXwIzzvzUuxVUDGInvtmF/Ji0eODgv9me7xLvxYX+/YftiHdCIkMxwcq
+         dX8QUfX37saKnVR26QTbhiDI33H1uwjT+Zf5GCdFyvDHMdEC/KQKBSfp+4JEFjg6VQze
+         PUFoyG3opZ5Gh+E8Z3C3UR73y5Imz7ESWVqq0xMYlod7fMrRemuftXs9t3pvUUBPQYHS
+         JXp1kp8dMxWRjJfpwHMjEkJLT3Rati3hr/cF6k+npMbB9reFWiOPrpJXsIcmStFW4IjG
+         AR7FzIdL74nsE9HDPO4dHz5rxND0LRGh+Gueeu/OS+Yoe5xIz901CYyw06AT+AJht8ai
+         RSmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=kTfqtxl7Dvfhd1Z0f4lYwKHZLG/TReZfomqC8/c4JTw=;
-        b=kcuWvlLsgTaIdbggb5i+TL6ZyvMQtJMkSEbJTONAtAxIZVtcjfvrfQTz5g8GFU8GcC
-         VDlyUN1Sykq5EfhDisUKLJuQp5BysRuYex6GThXbzG5MxWtV60UCutnH5EaAw0KmdUbe
-         Ix+EeDfa4iobR/xi8Sxab/5l6Z32YvlU4tSuxaZVMustKyh86p/QTimnLS0KVgbkdmNJ
-         dIs71WJw7ecqGIOa0Pn4NejMl+Sm8jSkfD2a8zTniSu4yrtHeZ8RqKlopfo0arn7NEzm
-         c3loM/2BgWBbMMCiVMfAbHpKKqhfGwcKIDwUPbT4us2eqan2JD9dGED/FyO6LX6T8z0D
-         T9TA==
-X-Gm-Message-State: AOAM533NGGbATzWu3j5MenlXzHY2RNGNqet9gzu4W0gfzshK0/rj2IHD
-        jHVxkE6xFhMPxZfiYVEGHcC0mKGkxqdaIpVy
-X-Google-Smtp-Source: ABdhPJzqwyf/ue4KIFNecA/G9xSrqxU0lMhIIhkNb/siKozSBtuH+osOfqWUTsqAUXChkVnBDhwWfA==
-X-Received: by 2002:a05:600c:4ec9:: with SMTP id g9mr14991668wmq.145.1619770610092;
-        Fri, 30 Apr 2021 01:16:50 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:90c:e290:4a89:8c32:4adc:fc67? ([2a01:e0a:90c:e290:4a89:8c32:4adc:fc67])
-        by smtp.gmail.com with ESMTPSA id v18sm1568316wro.18.2021.04.30.01.16.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Apr 2021 01:16:49 -0700 (PDT)
-Subject: Re: [PATCH 3/3] arm64: dts: meson-sm1: add Banana PI BPI-M5 board dts
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     khilman@baylibre.com, jbrunet@baylibre.com,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210429170404.3616111-1-narmstrong@baylibre.com>
- <20210429170404.3616111-4-narmstrong@baylibre.com>
- <CAFBinCDQeTU0ss=oNmjX78MPyNZmmCt-haojNNcQqkjJUmJYKQ@mail.gmail.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <cafdf662-6f15-8e16-7752-5740f28b6682@baylibre.com>
-Date:   Fri, 30 Apr 2021 10:16:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=k3V7PIJt4df52x4EhJvQyNhxcs7GT3vwtzimn9FSBpE=;
+        b=RVlVBw9iXXU2TJGYb+gmc9qSCafuwLeE48LtmhJ6ug1EfPbHGljgnBwBTHYwqwOCDW
+         WpbxcodfgFzwejhmQXYUmwQZx/UChRmr/DcLORhuLGkRivf4tZYK0AkUj9wbctEbHXtq
+         CGg3GhtJ8UwNmpYJoLoKVU8gWfQypoXHcb1AlvJfs6UfCz/2IE7wZGRfkxaKjQZLvUkD
+         38QXE88x+RKHy2DyaNTwMKTch3CWyxpPAHG8XmOda88zxtSu8MHak1L/YEmNFG2IIbaW
+         BMuqI2KcNaYZAejvUPefyIDSLM/BA91HWSD3QR7x+3VT9juRqv0GMp9LOEL8i2zy4rAA
+         62TA==
+X-Gm-Message-State: AOAM532/4cPzYuhpaALcUmSPn46ojvaseB7bP6p/vBgMsJ7zJ28WUB4+
+        fnqD9/8woB/KU7o+88xBSvRFfQ==
+X-Google-Smtp-Source: ABdhPJwj2Jtz4lfgLVo8vX67xmuo0x4uN8Ad9r42TOq6WHEsTP+wOyClRvouTstm8/Iy4PJPH0I2JQ==
+X-Received: by 2002:a7b:c05a:: with SMTP id u26mr14890660wmc.172.1619770818847;
+        Fri, 30 Apr 2021 01:20:18 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id 18sm12705810wmo.47.2021.04.30.01.20.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 30 Apr 2021 01:20:18 -0700 (PDT)
+Subject: Re: [PATCH v4 1/9] ASoC: dt-bindings: wcd938x: add bindings for
+ wcd938x
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     broonie@kernel.org, devicetree@vger.kernel.org, perex@perex.cz,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        lgirdwood@gmail.com
+References: <20210414154845.21964-1-srinivas.kandagatla@linaro.org>
+ <20210414154845.21964-2-srinivas.kandagatla@linaro.org>
+ <20210415162947.GA1511094@robh.at.kernel.org>
+ <96e7c752-a962-cb5b-c936-8151fd4c32ea@linaro.org>
+Message-ID: <22bab947-e760-be72-084b-41059bf02d19@linaro.org>
+Date:   Fri, 30 Apr 2021 09:20:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAFBinCDQeTU0ss=oNmjX78MPyNZmmCt-haojNNcQqkjJUmJYKQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <96e7c752-a962-cb5b-c936-8151fd4c32ea@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+Hi Rob,
 
-On 29/04/2021 23:30, Martin Blumenstingl wrote:
-> Hi Neil,
+On 15/04/2021 17:53, Srinivas Kandagatla wrote:
+> Thanks Rob for quick review,
 > 
-> thanks for adding support for the BPI-M5!
-> I had this on my TODO-list for a long time but didn't have enough time
-> so far. so it's great to see this patch now :-)
-Same, so it's nearly done now !
-
+> On 15/04/2021 17:29, Rob Herring wrote:
+>> On Wed, Apr 14, 2021 at 04:48:37PM +0100, Srinivas Kandagatla wrote:
+>>> Qualcomm WCD9380/WCD9385 Codec is a standalone Hi-Fi audio codec IC
+>>> connected over SoundWire. This device has two SoundWire device RX and
+>>> TX respectively, supporting 4 x ADCs, ClassH, Ear, Aux PA, 2xHPH,
+>>> 7 x TX diff inputs, 8 DMICs, MBHC.
+>>>
+>>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>> ---
+>>>   .../bindings/sound/qcom,wcd938x.yaml          | 176 ++++++++++++++++++
+>>>   1 file changed, 176 insertions(+)
+>>>   create mode 100644 
+>>> Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
+>>>
+>>> diff --git 
+>>> a/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml 
+>>> b/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
+>>> new file mode 100644
+>>> index 000000000000..4c8fa8290af0
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
+>>> @@ -0,0 +1,176 @@
 > 
-> On Thu, Apr 29, 2021 at 7:04 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
-> [...]
->> +       adc_keys {
->> +               compatible = "adc-keys";
->> +               io-channels = <&saradc 2>;
->> +               io-channel-names = "buttons";
->> +               keyup-threshold-microvolt = <1800000>;
->> +
->> +               button-onoff {
-> maybe just "key" (as you used below for SW1)?
-
-Fixed
-
+> ...
 > 
->> +                       label = "SW3";
->> +                       linux,code = <BTN_3>;
->> +                       press-threshold-microvolt = <1700000>;
->> +               };
->> +       };
+>>> +additionalProperties: false
+>>> +
+>>> +examples:
+>>> +  - |
+>>> +    codec {
+>>> +        compatible = "qcom,wcd9380-codec";
+>>> +        reset-gpios = <&tlmm 32 0>;
+>>> +        #sound-dai-cells = <1>;
+>>> +        qcom,tx-device = <&wcd938x_tx>;
+>>> +        qcom,rx-device = <&wcd938x_rx>;
+>>> +        qcom,micbias1-microvolt = <1800000>;
+>>> +        qcom,micbias2-microvolt = <1800000>;
+>>> +        qcom,micbias3-microvolt = <1800000>;
+>>> +        qcom,micbias4-microvolt = <1800000>;
+>>> +        qcom,mbhc-hphl-switch;
+>>> +        qcom,mbhc-ground-switch;
+>>> +        qcom,mbhc-button0-vthreshold-microvolt = <75000>;
+>>> +        qcom,mbhc-button1-vthreshold-microvolt = <150000>;
+>>> +        qcom,mbhc-button2-vthreshold-microvolt = <237000>;
+>>> +        qcom,mbhc-button3-vthreshold-microvolt = <500000>;
+>>> +        qcom,mbhc-button5-vthreshold-microvolt = <500000>;
+>>> +        qcom,mbhc-button6-vthreshold-microvolt = <500000>;
+>>> +        qcom,mbhc-button7-vthreshold-microvolt = <500000>;
+>>> +    };
+>>> +
+>>> +    /* ... */
+>>> +
+>>> +    soundwire@3230000 {
+>>> +        #address-cells = <2>;
+>>> +        #size-cells = <0>;
+>>> +        reg = <0x03230000 0x2000>;
+>>> +        wcd938x_tx: codec@0,3 {
+>>> +            compatible = "sdw20217010d00";
+>>> +            reg  = <0 3>;
+>>> +            qcom,direction = "tx";
+>>> +            qcom,port-mapping = <2 3 4 5>;
+>>> +        };
+>>> +
+>>> +        wcd938x_rx: codec@0,4 {
+>>> +            compatible = "sdw20217010d00";
+>>> +            reg  = <0 4>;
+>>> +            qcom,direction = "rx";
+>>> +            qcom,port-mapping = <1 2 3 4 5>;
+>>> +        };
+>>
+>> This is a single device, right? We shouldn't need 3 nodes to describe
+>> it. I think this should all be a single node like this:
+>>
+> No, WCD938x is a Audio Codec which has two SoundWire Slave device (TX 
+> and RX). WCD938X reset lines and supplies are common for both TX and RX 
+> SoundWire devices.
 > 
->> +       /* TOFIX: handle CVBS_DET on SARADC channel 0 */
-> it's great to see that after many years at least some boards finally
-> can detect whether the CVBS connector is plugged it
-
-Yes, it's also available on Odroid-N2(+), so now no excuse for not supporting it !
-
+> However TX SoundWire device only has register access to codec 
+> CSR(Control Status registers).
 > 
->> +       memory@0 {
->> +               device_type = "memory";
->> +               reg = <0x0 0x0 0x0 0x40000000>;
->> +       };
-> note to self: u-boot will update this from 1GiB to 4GiB
+> So there are two SoundWire devices and a WCD938X common parts. Now 
+> making the common Codec part as a separate device made more sense here.
+> So we ended with total 3 devices.
 > 
->> +       flash_1v8: regulator-flash_1v8 {
->> +               compatible = "regulator-fixed";
->> +               regulator-name = "FLASH_1V8";
-> BPI-M5-SCH-V10-Release.pdf schematics are calling this EMMC_1V8. I
-> suggest to use that name so it's easier to compare this with the
-> schematics in the future
-
-Done
-
-> 
->> +               regulator-min-microvolt = <1800000>;
->> +               regulator-max-microvolt = <1800000>;
->> +               vin-supply = <&vddao_3v3>;
->> +               regulator-always-on;
->> +       };
->> +
->> +       dc_in: regulator-dc_in {
->> +               compatible = "regulator-fixed";
->> +               regulator-name = "5V";
-> maybe use "DC_IN" here as well so the node-name matches what we see in
-> userspace/kernel logs?
-
-Done
-
-> 
->> +       vddcpu: regulator-vddcpu {
->> +               /*
->> +                * SY8120B1ABC DC/DC Regulator.
->> +                */
->> +               compatible = "pwm-regulator";
->> +
->> +               regulator-name = "VDDCPU";
->> +               regulator-min-microvolt = <721000>;
->> +               regulator-max-microvolt = <1022000>;
-> the vendor .dts has:
->   regulator-min-microvolt = <690000>;
->   regulator-max-microvolt = <1050000>;
-> which also matches meson-sm1-sei610.dts (which uses the same regulator IC)
-
-Done, thanks
-
-> 
-> [...]
->> +&ethmac {
->> +       pinctrl-0 = <&eth_pins>, <&eth_rgmii_pins>;
->> +       pinctrl-names = "default";
->> +       status = "okay";
->> +       phy-mode = "rgmii";
->> +       phy-handle = <&external_phy>;
->> +       amlogic,tx-delay-ns = <2>;
-> I haven't checked their u-boot code but some of the newer Amlogic BSPs
-> seem to let the PHY add the TX delay (which is also what the netdev
-> maintainers recommend)
-> that can be achieved by setting:
->   phy-mode = "rgmii-txid";
-> and deleting the "amlogic,tx-delay-ns" property
-
-Done, but what about when we use mainline U-boot here ?
-
-> 
->> +&gpio {
->> +       gpio-line-names =
->> +               /* GPIOZ */
->> +               "", "", "", "", "", "", "", "",
-> GPIOZ_0 to GPIOZ_15:
-> - ETH_MDIO
-> - ETH_MDC
-> - ETH_RXCLK
-> - ETH_RX_DV
-> - ETH_RXD0
-> - ETH_RXD1
-> - ETH_RXD2
-> - ETH_RXD3
-> - ETH_TXCLK
-> - ETH_TXEN
-> - ETH_TXD0
-> - ETH_TXD1
-> - ETH_TXD2
-> - ETH_TXD3
-> - ETH_INTR
-> - ETH_NRST
-> 
->> +               /* GPIOH */
->> +               "", "", "", "", "",
-> GPIOH_0 to GPIOH_4:
-> - HDMI_SDA
-> - HDMI_SCL
-> - HDMI_HPD
-> - HDMI_CEC
-> - VL-RST_N
-> 
->> +               "CON1-P36", /* GPIOH_5 */
-> GPIOH_6 to GPIOH_8:
-> - VL-PWREN
-> - WiFi_3V3_1V8
-> - TFLASH_VDD_EN
-> 
->> +               /* BOOT */
->> +               "", "", "", "", "", "", "", "",
->> +               "", "", "", "", "", "", "", "",
-> BOOT_0 to BOOT_13:
-> - eMMC_D0
-> - eMMC_D1
-> - eMMC_D2
-> - eMMC_D3
-> - eMMC_D4
-> - eMMC_D5
-> - eMMC_D6
-> - eMMC_D7
-> - eMMC_CLK
-> - (BOOT_9 is unused)
-> - eMMC_CMD
-> - (BOOT_11 is unused)
-> - eMMC_RST#
-> - eMMC_DS
-> 
->> +               /* GPIOC */
->> +               "", "", "", "", "", "", "", "",
-> GPIOC_0 to GPIOC_7:
-> - SD_D0_B
-> - SD_D1_B
-> - SD_D2_B
-> - SD_D3_B
-> - SD_CLK_B
-> - SD_CMD_B
-> - CARD_EN_DET
-> - (GPIOC_7 is unused)
-> 
-> 
->> +&gpio_ao {
->> +       gpio-line-names =
->> +               /* GPIOAO */
->> +               "DEBUG TX", /* GPIOAO_0 */
->> +               "DEBUG RX", /* GPIOAO_1 */
->> +               "SYS_LED2", /* GPIOAO_2 */
->> +               "UPDATE_KEY", /* GPIOAO_3 */
->> +               "CON1-P40", /* GPIOAO_4 */
->> +               "",
-> GPIOAO_5 is IR_IN
-> 
->> +               "TF_3V3N_1V8_EN", /* GPIOAO_6 */
->> +               "CON1-P35", /* GPIOAO_7 */
->> +               "CON1-P12", /* GPIOAO_8 */
->> +               "CON1-P37", /* GPIOAO_9 */
->> +               "CON1-P38", /* GPIOAO_10 */
->> +               "SYS_LED", /* GPIOAO_11 */
->> +               /* GPIOE */
->> +               "", "", "";
-> GPIOE_0 to GPIOOE_2:
-> - VDDEE_PWM
-> - VDDCPU_PWM
-> - TF_PWR_EN
-
-I was to lazy to do that, so thanks !
-
-> 
->> +&usb2_phy0 {
->> +       phy-supply = <&dc_in>;
->> +};
->> +
->> +&usb2_phy1 {
->> +       /* Enable the hub which is connected to this port */
->> +       phy-supply = <&vl_pwr_en>;
->> +};
-> I think technically we'd need to use AVDD18_USB here (that said, I
-> chose the same approach as you are using here before..)
-> USB bus devices (AFAIK) still need to be detected before any
-> device-tree properties can be applied and there's (again AFAIK) still
-> no pwrseq concept.
-> so I guess for now this is the way to go as there's enough comments
-> about it in your patch
-
-yeah we'll see if there is proper pwrseq method to fix that (and the hub reset)
-
-Thanks for the review,
-
-Neil
-
-> 
-> 
-> Best regards,
-> Martin
+> 1 . WCD938x Codec which deals with all the codec side including Common 
+> parts.
+> 2. TX SoundWire device to configure TX SoundWire ports/interface and 
+> provide CSR access.
+> 3. RX SoundWire device to configure RX Soundwire ports/interface
 > 
 
+
+Are you okay with the existing device layout after providing the above 
+information?
+
+
+  codec {
+         compatible = "qcom,wcd9380-codec";
+         reset-gpios = <&tlmm 32 0>;
+         #sound-dai-cells = <1>;
+         qcom,tx-device = <&wcd938x_tx>;
+         qcom,rx-device = <&wcd938x_rx>;
+         qcom,micbias1-microvolt = <1800000>;
+         qcom,micbias2-microvolt = <1800000>;
+         qcom,micbias3-microvolt = <1800000>;
+         qcom,micbias4-microvolt = <1800000>;
+         qcom,mbhc-hphl-switch;
+         qcom,mbhc-ground-switch;
+         qcom,mbhc-button0-vthreshold-microvolt = <75000>;
+         qcom,mbhc-button1-vthreshold-microvolt = <150000>;
+         qcom,mbhc-button2-vthreshold-microvolt = <237000>;
+         qcom,mbhc-button3-vthreshold-microvolt = <500000>;
+         qcom,mbhc-button5-vthreshold-microvolt = <500000>;
+         qcom,mbhc-button6-vthreshold-microvolt = <500000>;
+         qcom,mbhc-button7-vthreshold-microvolt = <500000>;
+     };
+
+
+soundwire-controller@3230000 {
+     reg = <0 0x3230000 0 0x2000>;
+     compatible = "qcom,soundwire-v1.5.1";
+     wcd938x_tx: codec@0,3 {
+         compatible = "sdw20217010d00";
+         reg  = <0 3>;
+         qcom,direction = "tx";
+         qcom,port-mapping = <2 3 4 5>;
+     };
+};
+
+
+soundwire-controller@3210000 {
+     reg = <0 0x3210000 0 0x2000>;
+     compatible = "qcom,soundwire-v1.5.1";
+      wcd938x_rx: codec@0,4 {
+         compatible = "sdw20217010d00";
+         reg  = <0 4>;
+         qcom,direction = "rx";
+         qcom,port-mapping = <1 2 3 4 5>;
+     };
+};
+
+
+thanks,
+srini
+
+
+> 
+>> codec@0,3 {
+>>          reg = <0 3>, <0 4>;
+> 
+> We can't have this, as these two SoundWire devices hang on different 
+> SoundWire bus instances.
+> 
+>>     compatible = "sdw20217010d00";
+>>
+>>          reset-gpios = <&tlmm 32 0>;
+>>          #sound-dai-cells = <1>;
+>>          qcom,micbias1-microvolt = <1800000>;
+>>          qcom,micbias2-microvolt = <1800000>;
+>>          qcom,micbias3-microvolt = <1800000>;
+>>          qcom,micbias4-microvolt = <1800000>;
+>>          qcom,mbhc-hphl-switch;
+>>          qcom,mbhc-ground-switch;
+>>          qcom,mbhc-button0-vthreshold-microvolt = <75000>;
+>>          qcom,mbhc-button1-vthreshold-microvolt = <150000>;
+>>          qcom,mbhc-button2-vthreshold-microvolt = <237000>;
+>>          qcom,mbhc-button3-vthreshold-microvolt = <500000>;
+>>          qcom,mbhc-button5-vthreshold-microvolt = <500000>;
+>>          qcom,mbhc-button6-vthreshold-microvolt = <500000>;
+>>          qcom,mbhc-button7-vthreshold-microvolt = <500000>;
+>> };
+>>
+>> You'll have to figure out the qcom,direction and qcom,port-mapping parts
+>> though.
+> 
+> That is the reason why we ended up with 3 devices here.
+> 
+> --srini
+>>
+>> Rob
+>>
