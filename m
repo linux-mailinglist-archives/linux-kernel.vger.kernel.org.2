@@ -2,99 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 543C536FD70
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D780236FD6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbhD3PPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 11:15:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57374 "EHLO
+        id S230386AbhD3PPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 11:15:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbhD3PPI (ORCPT
+        with ESMTP id S229759AbhD3PPG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 11:15:08 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30948C06174A;
-        Fri, 30 Apr 2021 08:14:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=vkFMbuZAZ/puHNl5B/OrVt67vNKKlW694NLPue0ybHQ=; b=ETJkd5rAALSRQHU96f9wHczJ8n
-        crIsJrjDIqi0M3Sz0s+TmvfaaZA4Im+odul9V3kDkkpfNrES2O6RNjIXoE9COlGx15bsdneNDusI3
-        xSFURWW+3+Pyfew+b6/Y6++J4oUVSk+bDptDGUl6IZ7J9eWhHWmjjm3kQyeX+TiORTiNGIKTInrRc
-        +f0ot2Jc8dOjciAtk5QzP1k6K+5BfQ+6iMpzZkqShdol6XpvSqgH9nO33QM5vLrqiHzq/DtlNd2D6
-        BvNiw29R8vlCrnVxj5KRpUfKOsfzdVb1LMw+2Dk3nWHJ01o/Hfkr1NtyKzIc4bg4Tc8TWwsgPkUv+
-        Zp2FrHOg==;
-Received: from [2601:1c0:6280:3f0::df68]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lcUpR-00BBpW-Tk; Fri, 30 Apr 2021 15:13:27 +0000
-Subject: Re: [PATCH net-next v1 1/1] net: selftest: provide option to disable
- generic selftests
-To:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Fugang Duan <fugang.duan@nxp.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>, kernel@pengutronix.de,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        Fabio Estevam <festevam@gmail.com>,
-        David Jander <david@protonic.nl>,
-        Russell King <linux@armlinux.org.uk>,
-        Philippe Schenker <philippe.schenker@toradex.com>
-References: <20210430095308.14465-1-o.rempel@pengutronix.de>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <f0905c84-6bb2-702f-9ae7-614dcd85c458@infradead.org>
-Date:   Fri, 30 Apr 2021 08:13:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
-MIME-Version: 1.0
-In-Reply-To: <20210430095308.14465-1-o.rempel@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Fri, 30 Apr 2021 11:15:06 -0400
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD1AAC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 08:14:17 -0700 (PDT)
+Received: by mail-wm1-x349.google.com with SMTP id b16-20020a7bc2500000b029014587f5376dso2100922wmj.1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 08:14:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=R9A0FFHMxGak+rogDjXG1194mPgT82uPpYtaWutuk44=;
+        b=bF9llhs8keQZLeZb1rULfFR6RXdo3OGXFzcD46QMcHJEq+mENPol5dgQ5zpDTV5LFY
+         b+TdIt8ntPz6+hU7Wp7V9gAWsAiyuU4sq5G8qs67J+X/K0El2v73irFtdC8glrIEs0w7
+         gaG3SijwVaKyZ5TIzrKTeXrRxzpd0mjM5PCg8ZOYMpjbAp7sp3+Sf9ujKJl8FZeTwSks
+         iUma/Kxg0z/KxwGsLiuEMd/K3KkzrJ/LWniV5XDPdfsujuXGzr2xUHb6sDRaXj+9JQ/d
+         Fqw6IoliXH35GwonqJiFCm+S16XVDL6JVJ2eqMhwXA6vgIp/MPMmHMyamh9GZfaUf6bh
+         enYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=R9A0FFHMxGak+rogDjXG1194mPgT82uPpYtaWutuk44=;
+        b=PTefsjxEGlBqQe8r3nqusFzRs/e7Nwc/p6RxGBuL5zw5lGmSF56SvP0ey6jbViwOsY
+         mevMLrx58L8qIOWoY3C+gEk1R2Vee8Pa1+ZMW5nv3GKr5OSztCOHyNfBTZT/QPEC2itb
+         IekngHQsfiIeLugfaz+MKyrAM88GK2fXvbUSNtPg/mMFfOsuAFX4UEhdmajWHwh85fs9
+         fI0kzCjdz7YITOQ2FhiaPaQLJKw3/kxJHiYYPqW3ONCiAYquqT6i0OIlYQIa2bB01tEZ
+         pAv1p0d3pe9ednYLptoF+o+ubGbtIfi3BKKLgoZcv/xgKHsTIhTXhlgZ6e36bizOuZm4
+         FjbA==
+X-Gm-Message-State: AOAM533501LXmVdKJb5dWfdfvsiJw8bq5Q48NUjjZHikGLnzWWZL2Isg
+        VrxzbagpVffBw3l6euVlSchqDyOaUhMG
+X-Google-Smtp-Source: ABdhPJzWzEBxQ/TkaFJYFuwSAds1UbCagbUIle41a6jkUMcfZUkYazylW1NQvr0dh2YPOrQUoHQgW7bzX2jQ
+X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:1652])
+ (user=qperret job=sendgmr) by 2002:a1c:540b:: with SMTP id
+ i11mr17201265wmb.40.1619795656278; Fri, 30 Apr 2021 08:14:16 -0700 (PDT)
+Date:   Fri, 30 Apr 2021 15:14:12 +0000
+Message-Id: <20210430151412.160913-1-qperret@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
+Subject: [PATCH v3] sched: Fix out-of-bound access in uclamp
+From:   Quentin Perret <qperret@google.com>
+To:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        juri.lelli@redhat.com
+Cc:     dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, qais.yousef@arm.com,
+        kernel-team@android.com, linux-kernel@vger.kernel.org,
+        patrick.bellasi@matbug.net
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/30/21 2:53 AM, Oleksij Rempel wrote:
-> Some systems may need to disable selftests to reduce kernel size or for
-> some policy reasons. This patch provide option to disable generic selftests.
-> 
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Fixes: 3e1e58d64c3d ("net: add generic selftest support")
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  net/Kconfig | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/net/Kconfig b/net/Kconfig
-> index f5ee7c65e6b4..dac98c73fcd8 100644
-> --- a/net/Kconfig
-> +++ b/net/Kconfig
-> @@ -431,7 +431,12 @@ config SOCK_VALIDATE_XMIT
->  
->  config NET_SELFTESTS
->  	def_tristate PHYLIB
-> +	prompt "Support for generic selftests"
->  	depends on PHYLIB && INET
-> +	help
-> +	  These selftests are build automatically if any driver with generic
+Util-clamp places tasks in different buckets based on their clamp values
+for performance reasons. However, the size of buckets is currently
+computed using a rounding division, which can lead to an off-by-one
+error in some configurations.
 
-	                      built
+For instance, with 20 buckets, the bucket size will be 1024/20=51. A
+task with a clamp of 1024 will be mapped to bucket id 1024/51=20. Sadly,
+correct indexes are in range [0,19], hence leading to an out of bound
+memory access.
 
-> +	  selftests support is enabled. This option can be used to disable
-> +	  selftests to reduce kernel size.
->  
->  config NET_SOCK_MSG
->  	bool
-> 
+Clamp the bucket id to fix the issue.
 
-Thanks for the patch/option. But I think it should just default to n,
-not PHYLIB.
+Fixes: 69842cba9ace ("sched/uclamp: Add CPU's clamp buckets refcounting")
+Suggested-by: Qais Yousef <qais.yousef@arm.com>
+Signed-off-by: Quentin Perret <qperret@google.com>
+---
+Changes in v3:
+ - Keep rounding div to improve fairness (Vincent)
+---
+ kernel/sched/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 98191218d891..c12ec648423e 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -928,7 +928,7 @@ DEFINE_STATIC_KEY_FALSE(sched_uclamp_used);
+ 
+ static inline unsigned int uclamp_bucket_id(unsigned int clamp_value)
+ {
+-	return clamp_value / UCLAMP_BUCKET_DELTA;
++	return min_t(unsigned int, clamp_value / UCLAMP_BUCKET_DELTA, UCLAMP_BUCKETS - 1);
+ }
+ 
+ static inline unsigned int uclamp_none(enum uclamp_id clamp_id)
 -- 
-~Randy
+2.31.1.527.g47e6f16901-goog
 
