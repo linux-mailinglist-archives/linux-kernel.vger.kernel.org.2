@@ -2,85 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 188A637001C
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69DFB370023
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231136AbhD3SCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 14:02:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbhD3SCa (ORCPT
+        id S231194AbhD3SFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 14:05:39 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2979 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229750AbhD3SFh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 14:02:30 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD0E6C06174A;
-        Fri, 30 Apr 2021 11:01:41 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id x5so21281409wrv.13;
-        Fri, 30 Apr 2021 11:01:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8P8AUIJDD0CsuvU0cN5V+UaLYi6WAreX/VWn7wkB1hc=;
-        b=VAztjF92+NdUNr64Zc1zgfhAJfbpoJ/UJRXuzuiw+JolgdvgWczfpYGvF/NAJMNNjG
-         jnd7DrSwOFrJDqo9hjoe/mhtWcBno4yWHL5WErn5jrBFmdSY5X2pgbVY7VsZ/Vv40cLS
-         AEqtMs3FynkfDCoDRMO5ev3Jk1im15mCAePtJmsKiRxxWJPZiylQP7bxsISs23TfWF3Y
-         7r88Bs9SXXPCrW4gMfSkzKi4M7T9FUtOVIAvRMZDyOHAkQDwuklVzTRd5o8+mw5NsFn7
-         uYvePjmIkr6PoL9grk/rUta1CE1zqlor1x5etdWe9MmuNXvF2W4thaBXEVFeE0Aw6pwr
-         Q1Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8P8AUIJDD0CsuvU0cN5V+UaLYi6WAreX/VWn7wkB1hc=;
-        b=iXdmpbjgEcmYu1EggkCstCsZHlUN8soNmJjXWcCm4WONBhPBqujrAyvuhRR+8UJYYT
-         1W5XUfDSdnLyKKybBREieE40XXY/RUXlM/YUegdpzl7Gwj77EbUuRE/fs7euDTr5kIBi
-         vdbeFqwlfT33XnC8j0BiP+bGXG3YqlRmA/P7O6CbJBuU1SExliKevGc6E3aNok7jLp5L
-         qSpHTCVzisa5KtdAOj2woX3snMG4VbRqt1+ocdHmwLATSOZB4TsH8qy1nyfLUDlBcF9e
-         emFAHTsxzcQtcN0f5VKda87rReI1Ei9k9Em2gVKX6AMXzNT6JmrFxtLASnME6gd47Do8
-         2jNQ==
-X-Gm-Message-State: AOAM530obVYv2zHLf/4yERvQtdT+xAE0Sj/EFwKVuF16YWXYej59g+SB
-        yfB8skT/vV/yvXBGq+UafeuHAlAGGQ0=
-X-Google-Smtp-Source: ABdhPJz2RgZglpa3i3SHM9YnkMH3HkwmgJjY3o98L5iz7pSaaCNmGiXBeqWd+H2Gos00yk0Khbdujw==
-X-Received: by 2002:a05:6000:192:: with SMTP id p18mr8468813wrx.347.1619805700726;
-        Fri, 30 Apr 2021 11:01:40 -0700 (PDT)
-Received: from [10.17.0.10] ([37.58.58.229])
-        by smtp.gmail.com with ESMTPSA id a2sm3334782wrt.82.2021.04.30.11.01.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Apr 2021 11:01:40 -0700 (PDT)
-Subject: Re: [PATCH] HID: surface-hid: Fix integer endian conversion
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-References: <20210411113402.2594945-1-luzmaximilian@gmail.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <16133d79-eac0-4407-f494-c38459eadea4@gmail.com>
-Date:   Fri, 30 Apr 2021 20:01:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Fri, 30 Apr 2021 14:05:37 -0400
+Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FX0Nr2gr7z70gHM;
+        Sat,  1 May 2021 01:54:04 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 30 Apr 2021 20:04:46 +0200
+Received: from localhost (10.52.125.96) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 30 Apr
+ 2021 19:04:45 +0100
+Date:   Fri, 30 Apr 2021 19:03:11 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
+        Benoit Parrot <bparrot@ti.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>
+Subject: Re: [PATCH v4 75/79] media: ti-vpe: use pm_runtime_resume_and_get()
+Message-ID: <20210430190311.000039eb@Huawei.com>
+In-Reply-To: <bd62e8ed8b70a68a9173af82c26896d153657f9a.1619621413.git.mchehab+huawei@kernel.org>
+References: <cover.1619621413.git.mchehab+huawei@kernel.org>
+        <bd62e8ed8b70a68a9173af82c26896d153657f9a.1619621413.git.mchehab+huawei@kernel.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <20210411113402.2594945-1-luzmaximilian@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.125.96]
+X-ClientProxiedBy: lhreml721-chm.china.huawei.com (10.201.108.72) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/11/21 1:34 PM, Maximilian Luz wrote:
-> We want to convert from 16 bit (unsigned) little endian values contained
-> in a packed struct to CPU native endian values here, not the other way
-> around. So replace cpu_to_le16() with get_unaligned_le16(), using the
-> latter instead of le16_to_cpu() to acknowledge that we are reading from
-> a packed struct.
+On Wed, 28 Apr 2021 16:52:36 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+
+> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> added pm_runtime_resume_and_get() in order to automatically handle
+> dev->power.usage_count decrement on errors.
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Fixes: b05ff1002a5c ("HID: Add support for Surface Aggregator Module HID transport")
-> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+> Use the new API, in order to cleanup the error check logic.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  drivers/media/platform/ti-vpe/cal-video.c | 4 +++-
+>  drivers/media/platform/ti-vpe/cal.c       | 8 +++++---
+>  drivers/media/platform/ti-vpe/vpe.c       | 4 +---
+>  3 files changed, 9 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/media/platform/ti-vpe/cal-video.c b/drivers/media/platform/ti-vpe/cal-video.c
+> index 7b7436a355ee..15fb5360cf13 100644
+> --- a/drivers/media/platform/ti-vpe/cal-video.c
+> +++ b/drivers/media/platform/ti-vpe/cal-video.c
+> @@ -700,7 +700,9 @@ static int cal_start_streaming(struct vb2_queue *vq, unsigned int count)
+>  
+>  	addr = vb2_dma_contig_plane_dma_addr(&buf->vb.vb2_buf, 0);
+>  
+> -	pm_runtime_get_sync(ctx->cal->dev);
+> +	ret = pm_runtime_resume_and_get(ctx->cal->dev);
+> +	if (ret < 0)
+> +		goto error_pipeline;
+>  
+>  	cal_ctx_set_dma_addr(ctx, addr);
+>  	cal_ctx_start(ctx);
+> diff --git a/drivers/media/platform/ti-vpe/cal.c b/drivers/media/platform/ti-vpe/cal.c
+> index 2e2bef91b2b0..76fe7a8b33f6 100644
+> --- a/drivers/media/platform/ti-vpe/cal.c
+> +++ b/drivers/media/platform/ti-vpe/cal.c
+> @@ -1024,7 +1024,7 @@ static int cal_probe(struct platform_device *pdev)
+>  
+>  	/* Read the revision and hardware info to verify hardware access. */
+>  	pm_runtime_enable(&pdev->dev);
+> -	ret = pm_runtime_get_sync(&pdev->dev);
+> +	ret = pm_runtime_resume_and_get(&pdev->dev);
+>  	if (ret)
+>  		goto error_pm_runtime;
+>  
+> @@ -1098,10 +1098,11 @@ static int cal_remove(struct platform_device *pdev)
+>  {
+>  	struct cal_dev *cal = platform_get_drvdata(pdev);
+>  	unsigned int i;
+> +	int ret;
+>  
+>  	cal_dbg(1, cal, "Removing %s\n", CAL_MODULE_NAME);
+>  
+> -	pm_runtime_get_sync(&pdev->dev);
+> +	ret = pm_runtime_resume_and_get(&pdev->dev);
+>  
+>  	cal_media_unregister(cal);
+>  
+> @@ -1115,7 +1116,8 @@ static int cal_remove(struct platform_device *pdev)
+>  	for (i = 0; i < cal->data->num_csi2_phy; i++)
+>  		cal_camerarx_destroy(cal->phy[i]);
+>  
+> -	pm_runtime_put_sync(&pdev->dev);
+> +	if (ret >= 0)
+> +		pm_runtime_put_sync(&pdev->dev);
+>  	pm_runtime_disable(&pdev->dev);
+>  
+>  	return 0;
+> diff --git a/drivers/media/platform/ti-vpe/vpe.c b/drivers/media/platform/ti-vpe/vpe.c
+> index 10251b787674..07cb2c140295 100644
+> --- a/drivers/media/platform/ti-vpe/vpe.c
+> +++ b/drivers/media/platform/ti-vpe/vpe.c
+> @@ -2471,10 +2471,8 @@ static int vpe_runtime_get(struct platform_device *pdev)
+>  
+>  	dev_dbg(&pdev->dev, "vpe_runtime_get\n");
+>  
+> -	r = pm_runtime_get_sync(&pdev->dev);
+> +	r = pm_runtime_resume_and_get(&pdev->dev);
+>  	WARN_ON(r < 0);
+> -	if (r)
+> -		pm_runtime_put_noidle(&pdev->dev);
+>  	return r < 0 ? r : 0;
+r is <= 0 to zero so this isn't doing anything useful.
 
-Friendly ping as it seems this hasn't made it into the PR for v5.13 :)
+>  }
+>  
 
-Regards,
-Max
