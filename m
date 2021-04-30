@@ -2,109 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3E236F659
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 09:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3DA036F65E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 09:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229798AbhD3HWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 03:22:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbhD3HWg (ORCPT
+        id S230357AbhD3HZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 03:25:52 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:56878 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229590AbhD3HZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 03:22:36 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A9DC06174A;
-        Fri, 30 Apr 2021 00:21:47 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id j28so17421982edy.9;
-        Fri, 30 Apr 2021 00:21:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=HpxUMjyXbZkzEt83poK9Tqo10qlhUK6WE4i1dvnGncw=;
-        b=ZsHFvBVbicZVJzVSsqNQid4JAMFYeUIOyZkOT+udNp/f2A7H3Ir3UKS53jJytqxmv8
-         iJG2ptyRSUGte9cJhvHEHulQvv7oUkBSztznpLxf2vnpsCQ1sne0057OgdNPYLDB/NsA
-         yXSWowl3PYQpJRyTe9JppcrjzdDsShy6T79ti+2NEPRIpcy+fy5SAAMmo/6W6tb04euY
-         HymDgJeREiYV1PeQxBcBiILvEIgwZpkIqexAR+AM+S+3uTKXXm3zZifVPM1F+Fxoo7Oz
-         ahqqY704luqoKc5s8jniTuMFq/z8a6qRykKvsn/rVTzpmoeMleaQ7qhtp0JuA9j9cA3a
-         PSfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=HpxUMjyXbZkzEt83poK9Tqo10qlhUK6WE4i1dvnGncw=;
-        b=XocVrZnguNp/dhH4ZoMu0jKV2FTakvZsDd2BYY/DbNWYvpjUG0SjqT27bJcW40xOf6
-         0T8BWth2kZAparHRMbfcCEVkvh4UjtVI/J+ROqcZxDgyHKMirYbdtyCHOixa7OokyjlK
-         2dkDCO7BNzwHvyA5P0wlpA9xijQB+u/AXlpW8/Ezi0IuQT3SbPFDvN8uuXyRq09q4vG3
-         WBizpg1YRoqf5rLN1QvoOC0KCmIRd8sCG0z/e1mP02wWx4+08y2MLr8mGwTaAzRn8LDd
-         BRKGgMje/RJGEBuZOL+nT6gEowvqPFOJVHmvUx3TqHhJiksu0WkYKZaElhd0FiRxIsjV
-         a88A==
-X-Gm-Message-State: AOAM533B/VjgsUigVNR/T0NNL+4T0IpRJiUZdSGMNLQWO7OYPtnfATSL
-        +6vi9mCFNcfRmEjaYr1eOks=
-X-Google-Smtp-Source: ABdhPJxdQhNnPfC5GJPB2i3YmP+3TesomiWl9A9y9B69mHJpWDPDlaPa7tM76eTnXZ2arO7+qw1GHw==
-X-Received: by 2002:a50:eb47:: with SMTP id z7mr2208979edp.68.1619767306753;
-        Fri, 30 Apr 2021 00:21:46 -0700 (PDT)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id cw13sm1378858ejb.113.2021.04.30.00.21.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 30 Apr 2021 00:21:46 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     shawn.lin@rock-chips.com, robh+dt@kernel.org,
-        ulf.hansson@linaro.org, Jisheng.Zhang@synaptics.com,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v1] dt-bindings: mmc: snps,dwcmshc-sdhci: fix rockchip,txclk-tapnum
-Date:   Fri, 30 Apr 2021 09:21:38 +0200
-Message-Id: <20210430072138.6537-1-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        Fri, 30 Apr 2021 03:25:50 -0400
+X-UUID: 40e94ae71d2b470cb30089d2faf0ecd9-20210430
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=fYnTZjtZi+ChPsBsoKvCFsCx7AX5XBrzMnGC25v6LBM=;
+        b=mvXaxDuDdgyPXqi2LZaYW4uD81lp8SmL5kiv8z/Cc5t8Iwq6hG65og37ozLGgqoIVExkVXvoocYZsFXc4RpOGnuqESAST7+ThDxQS/OgkRPZhxiVNFXkFHeOFQYwXqI01rQ3gp2a1U3Hn8qVaQPXkvonVh4QlfKEv0C7uokzYfo=;
+X-UUID: 40e94ae71d2b470cb30089d2faf0ecd9-20210430
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+        (envelope-from <jianjun.wang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1956212543; Fri, 30 Apr 2021 15:24:58 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by mtkmbs08n2.mediatek.inc
+ (172.21.101.56) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 30 Apr
+ 2021 15:24:55 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 30 Apr 2021 15:24:54 +0800
+Message-ID: <1619767494.1027.3.camel@mhfsdcap03>
+Subject: Re: [PATCH][next] PCI: mediatek-gen3: Add missing null pointer check
+From:   Jianjun Wang <jianjun.wang@mediatek.com>
+To:     Colin King <colin.king@canonical.com>
+CC:     Ryder Lee <ryder.lee@mediatek.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Date:   Fri, 30 Apr 2021 15:24:54 +0800
+In-Reply-To: <20210429110040.63119-1-colin.king@canonical.com>
+References: <20210429110040.63119-1-colin.king@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: 8410CB59BBA8CE1684706891C6FE72A498F1C9DD1D6662302587175341C90FE22000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A test with the command below gives this error:
-mmc@fe310000: rockchip,txclk-tapnum: missing size tag in [[8]]
-
-With this added to a dts file:
-rockchip,txclk-tapnum = <0x8>;
-
-A look at the driver shows that:
-DLL_TXCLK_TAPNUM_DEFAULT	0x8
-
-Adding the default value to the dts files is not needed.
-Every clock is divided into 32 taps equally and
-the max value is 31.
-
-Fix rockchip,txclk-tapnum property in snps,dwcmshc-sdhci.yaml by
-adding a minimum, maximum and default.
-
-In the driver the function of_property_read_u8() is used,
-but with dtbs_check the notifications only disappear in YAML
-by changing uint8 to uint32.
-The driver has no limit check for rockchip,txclk-tapnum.
-
-make ARCH=arm64 dtbs_check
-
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml b/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
-index e6c9a2f77..f43d8d829 100644
---- a/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
-+++ b/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
-@@ -48,7 +48,10 @@ properties:
- 
-   rockchip,txclk-tapnum:
-     description: Specify the number of delay for tx sampling.
--    $ref: /schemas/types.yaml#/definitions/uint8
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    minimum: 0
-+    maximum: 31
-+    default: 8
- 
- 
- required:
--- 
-2.11.0
+SGkgQ29saW4sDQoNCk9uIFRodSwgMjAyMS0wNC0yOSBhdCAxMjowMCArMDEwMCwgQ29saW4gS2lu
+ZyB3cm90ZToNCj4gRnJvbTogQ29saW4gSWFuIEtpbmcgPGNvbGluLmtpbmdAY2Fub25pY2FsLmNv
+bT4NCj4gDQo+IFRoZSBjYWxsIHRvIHBsYXRmb3JtX2dldF9yZXNvdXJjZV9ieW5hbWUgY2FuIHBv
+dGVudGlhbGx5IHJldHVybiBudWxsLCBzbw0KPiBhZGQgYSBudWxsIHBvaW50ZXIgY2hlY2sgdG8g
+YXZvaWQgYSBudWxsIHBvaW50ZXIgZGVyZWZlcmVuY2UgaXNzdWUuDQo+IA0KPiBBZGRyZXNzZXMt
+Q292ZXJpdHk6ICgiRGVyZWZlcmVuY2UgbnVsbCByZXR1cm4iKQ0KPiBGaXhlczogNDQxOTAzZDll
+OGYwICgiUENJOiBtZWRpYXRlay1nZW4zOiBBZGQgTWVkaWFUZWsgR2VuMyBkcml2ZXIgZm9yIE1U
+ODE5MiIpDQo+IFNpZ25lZC1vZmYtYnk6IENvbGluIElhbiBLaW5nIDxjb2xpbi5raW5nQGNhbm9u
+aWNhbC5jb20+DQo+IC0tLQ0KPiAgZHJpdmVycy9wY2kvY29udHJvbGxlci9wY2llLW1lZGlhdGVr
+LWdlbjMuYyB8IDIgKysNCj4gIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykNCj4gDQo+
+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BjaS9jb250cm9sbGVyL3BjaWUtbWVkaWF0ZWstZ2VuMy5j
+IGIvZHJpdmVycy9wY2kvY29udHJvbGxlci9wY2llLW1lZGlhdGVrLWdlbjMuYw0KPiBpbmRleCAy
+MDE2NWU0YTc1YjIuLjNjNWI5NzcxNmQ0MCAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9wY2kvY29u
+dHJvbGxlci9wY2llLW1lZGlhdGVrLWdlbjMuYw0KPiArKysgYi9kcml2ZXJzL3BjaS9jb250cm9s
+bGVyL3BjaWUtbWVkaWF0ZWstZ2VuMy5jDQo+IEBAIC03MjEsNiArNzIxLDggQEAgc3RhdGljIGlu
+dCBtdGtfcGNpZV9wYXJzZV9wb3J0KHN0cnVjdCBtdGtfcGNpZV9wb3J0ICpwb3J0KQ0KPiAgCWlu
+dCByZXQ7DQo+ICANCj4gIAlyZWdzID0gcGxhdGZvcm1fZ2V0X3Jlc291cmNlX2J5bmFtZShwZGV2
+LCBJT1JFU09VUkNFX01FTSwgInBjaWUtbWFjIik7DQo+ICsJaWYgKCFyZWdzKQ0KPiArCQlyZXR1
+cm4gLUVJTlZBTDsNCg0KVGhhbmtzIGZvciB5b3VyIHBhdGNoLg0KDQpkZXZtX2lvcmVtYXBfcmVz
+b3VyY2UoKSB3aWxsIGNoZWNrIGFuZCBkZWNvZGUgdGhpcyBudWxsIHBvaW50ZXINCmRlcmVmZXJl
+bmNlIGVycm9yLCBzbyBJIGRvbid0IHRoaW5rIHdlIG5lZWQgdG8gY2hlY2sgaGVyZS4NCg0KVGhh
+bmtzLg0KDQo+ICAJcG9ydC0+YmFzZSA9IGRldm1faW9yZW1hcF9yZXNvdXJjZShkZXYsIHJlZ3Mp
+Ow0KPiAgCWlmIChJU19FUlIocG9ydC0+YmFzZSkpIHsNCj4gIAkJZGV2X2VycihkZXYsICJmYWls
+ZWQgdG8gbWFwIHJlZ2lzdGVyIGJhc2VcbiIpOw0KDQoNCg==
 
