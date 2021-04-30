@@ -2,112 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F1F936F395
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 03:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7200836F3AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 03:28:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbhD3B1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 21:27:39 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:5142 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbhD3B1a (ORCPT
+        id S230171AbhD3B2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 21:28:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230075AbhD3B2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 21:27:30 -0400
-Received: from dggeml701-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FWZQt4pRNzYYNM;
-        Fri, 30 Apr 2021 09:24:22 +0800 (CST)
-Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
- dggeml701-chm.china.huawei.com (10.3.17.134) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 30 Apr 2021 09:26:40 +0800
-Received: from ubuntu1804.huawei.com (10.67.174.61) by
- dggpemm000003.china.huawei.com (7.185.36.128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 30 Apr 2021 09:26:40 +0800
-From:   Yang Jihong <yangjihong1@huawei.com>
-To:     <will@kernel.org>, <mark.rutland@arm.com>, <peterz@infradead.org>,
-        <mingo@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
-        <namhyung@kernel.org>, <linux@armlinux.org.uk>,
-        <suzuki.poulose@arm.com>, <julien.thierry.kdev@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <yangjihong1@huawei.com>
-Subject: [PATCH] arm_pmu: Fix write counter incorrect in ARMv7 big-endian mode
-Date:   Fri, 30 Apr 2021 09:26:59 +0800
-Message-ID: <20210430012659.232110-1-yangjihong1@huawei.com>
-X-Mailer: git-send-email 2.30.GIT
+        Thu, 29 Apr 2021 21:28:48 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D54AEC06138D
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 18:27:59 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 12so107407312lfq.13
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 18:27:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5nYrcPFaE9JozlbdUYcBvuc3knwcBJ+KRlPBwjPg/eY=;
+        b=mWr/LU95sxRmIHn3zRMbluegyGD2oe6oRt4d/eRVIdu7KE3Hz+geRyAZlmU7D5TMAP
+         hBhqnVuVTVgUAhM0ZWa+OwuRT9bQbE3RnlfSljIXyeQtbRVE3csRBOvTZ2UblLcRM1QC
+         xxs3hrrGH/TOp0oQcLOkEQIwojDLhahdEkZ6uo900/o8WZPZ19oj42KYditGQucez/as
+         vUnwQLP3c6V6Z++gJIjubVeNlKS9+vW3LkRRxu3vS1WvzgEP3ZR5H+scAq2iwSyMhr+x
+         AmUwvYqwpyzEIbU+VnqL+66wxLgWtk7TUMbBixNYKsUb9BMpCwEI2TAVauzbB6jQtiw3
+         Iexg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5nYrcPFaE9JozlbdUYcBvuc3knwcBJ+KRlPBwjPg/eY=;
+        b=rpE/gDQ0mf3l6s0EZ4xP1sd9Mp30MghiEK6+2Gzdk5srcfUfXzi8CnyNs8pUnyNWFB
+         KXRRkMRX4EpK32NT0MEn89VUwxzCuJpFoaJQ8tOEfNdzBKPnM7XIgecIZtfcq/ZRmwOe
+         /Q25YjR9oV2OMfn8tH0L2JKZQgb5+mAPzLlZiurbpvOUEA+T3lFzbEqn5wCvMqTpzZi5
+         gFd31CQVwfz1iHKRv9PTWL90PfMuKoz5j2YnZN6v9V6YM/i7SCyYtQdqKxIykmcZRAJd
+         vsfEukCy6HboubNpTNXGzy6yGd2PXsk9LhY/0SRtZ9alYDF7PfShgeH1kRk8pckQlLIn
+         0uTw==
+X-Gm-Message-State: AOAM532ZXVfg2i+iyoT0OY3Cnodjcc5lObf5Ds1klTZyg5wDhVlcNsp2
+        +pebEr5+Me3+L8ALxBEHzY/k/wy2F3eSOtNQZu2ajA==
+X-Google-Smtp-Source: ABdhPJzFPmRotZN0fnw8kLXHW0mhRMJ6Y9pLJGkfe+X4ux0/23qoEes3nema+045FI+84RCCCXHVaXcNwdXLrns0we4=
+X-Received: by 2002:a05:6512:149:: with SMTP id m9mr1218659lfo.157.1619746078186;
+ Thu, 29 Apr 2021 18:27:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.61]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm000003.china.huawei.com (7.185.36.128)
-X-CFilter-Loop: Reflected
+References: <20210423165906.2504169-1-dianders@chromium.org>
+ <20210423095743.v5.1.I9e6af2529d6c61e5daf86a15a1211121c5223b9a@changeid>
+ <CACRpkdYkRFLvCRPSYNzYQG58QgPfhvjtHb+FBQZadyrnjC8=1A@mail.gmail.com> <CAD=FV=UX683grZ=poTwKXxSqYBCLdLAOCxOPhE_xVVgKbe36Mw@mail.gmail.com>
+In-Reply-To: <CAD=FV=UX683grZ=poTwKXxSqYBCLdLAOCxOPhE_xVVgKbe36Mw@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 30 Apr 2021 03:27:47 +0200
+Message-ID: <CACRpkdYfugrJ4WGn=w+viGXE6s5cdHjLC++jHPLVy_QH09KA8Q@mail.gmail.com>
+Subject: Re: [PATCH v5 01/20] drm/panel: panel-simple: Add missing
+ pm_runtime_disable() calls
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 3a95200d3f89a ("arm_pmu: Change API to support 64bit counter values")
-changes the input "value" type from 32-bit to 64-bit,
-which introduces the following problem:
-ARMv7 PMU counters is 32-bit width, in big-endian mode, write counter uses
-high 32-bit, which writes an incorrect value.
+On Fri, Apr 30, 2021 at 3:25 AM Doug Anderson <dianders@chromium.org> wrote:
 
-Before:
+> > I think pm_runtime_disable(); need to be added there?
+>
+> I'm a bit confused. You're saying that I need to add
+> pm_runtime_disable() to panel_simple_remove()? Doesn't this patch do
+> that?
 
- Performance counter stats for 'ls':
+It does, sorry, too late at night :D
 
-              2.22 msec task-clock                #    0.675 CPUs utilized
-                 0      context-switches          #    0.000 K/sec
-                 0      cpu-migrations            #    0.000 K/sec
-                49      page-faults               #    0.022 M/sec
-        2150476593      cycles                    #  966.663 GHz
-        2148588788      instructions              #    1.00  insn per cycle
-        2147745484      branches                  # 965435.074 M/sec
-        2147508540      branch-misses             #   99.99% of all branches
+I was looking at the previous patch and mixed up which was the
+patch and the patch to the patch...
 
-None of the above hw event counters are correct.
-
-Solution:
-
-"value" forcibly converted to 32-bit type before being written to PMU register.
-
-After:
-
- Performance counter stats for 'ls':
-
-              2.09 msec task-clock                #    0.681 CPUs utilized
-                 0      context-switches          #    0.000 K/sec
-                 0      cpu-migrations            #    0.000 K/sec
-                46      page-faults               #    0.022 M/sec
-           2807301      cycles                    #    1.344 GHz
-           1060159      instructions              #    0.38  insn per cycle
-            250496      branches                  #  119.914 M/sec
-             23192      branch-misses             #    9.26% of all branches
-
-Fixes: 3a95200d3f89a ("arm_pmu: Change API to support 64bit counter values")
-Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
----
- arch/arm/kernel/perf_event_v7.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm/kernel/perf_event_v7.c b/arch/arm/kernel/perf_event_v7.c
-index 2924d7910b10..eb2190477da1 100644
---- a/arch/arm/kernel/perf_event_v7.c
-+++ b/arch/arm/kernel/perf_event_v7.c
-@@ -773,10 +773,10 @@ static inline void armv7pmu_write_counter(struct perf_event *event, u64 value)
- 		pr_err("CPU%u writing wrong counter %d\n",
- 			smp_processor_id(), idx);
- 	} else if (idx == ARMV7_IDX_CYCLE_COUNTER) {
--		asm volatile("mcr p15, 0, %0, c9, c13, 0" : : "r" (value));
-+		asm volatile("mcr p15, 0, %0, c9, c13, 0" : : "r" ((u32)value));
- 	} else {
- 		armv7_pmnc_select_counter(idx);
--		asm volatile("mcr p15, 0, %0, c9, c13, 2" : : "r" (value));
-+		asm volatile("mcr p15, 0, %0, c9, c13, 2" : : "r" ((u32)value));
- 	}
- }
- 
--- 
-2.30.GIT
-
+Thanks, apply this!
+Linus Walleij
