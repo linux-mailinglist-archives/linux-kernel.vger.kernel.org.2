@@ -2,191 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C91E36FEE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 18:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D7136FEEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 18:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbhD3Qu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 12:50:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53944 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229579AbhD3Qu4 (ORCPT
+        id S230473AbhD3QwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 12:52:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229750AbhD3QwI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 12:50:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619801408;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dUyZztzZO3YqdQUCORSFVu1rmqXrzkEdyXhkRc59QkA=;
-        b=AJ+dsrQ++k19/AfltcOx0PkCy471FUNNrHpvIqrT/bNPCEc4V/JNTHKK4ihbxWG4sZjjQ9
-        LARBcccxI3dXIxmedOaOi8G9BVRJ01UHMftfWsfNsNP/Tk/dr+JuSXUXRSRTU7U/xwqXR1
-        eihhrREoVRPu7WOS2k4ipcPyup6S77E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-172-Udr-qfYRNVSKA-kC7vUPdw-1; Fri, 30 Apr 2021 12:50:04 -0400
-X-MC-Unique: Udr-qfYRNVSKA-kC7vUPdw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Fri, 30 Apr 2021 12:52:08 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5586C06174A;
+        Fri, 30 Apr 2021 09:51:19 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 257CE1008063;
-        Fri, 30 Apr 2021 16:50:03 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-2.gru2.redhat.com [10.97.112.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BB98119C66;
-        Fri, 30 Apr 2021 16:49:55 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 62909418AE03; Fri, 30 Apr 2021 13:49:33 -0300 (-03)
-Date:   Fri, 30 Apr 2021 13:49:33 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Alex Belits <abelits@marvell.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        John Stultz <john.stultz@linaro.org>
-Subject: Re: [patch V2 8/8] hrtimer: Avoid more SMP function calls in
- clock_was_set()
-Message-ID: <20210430164933.GA73701@fuller.cnet>
-References: <20210427082537.611978720@linutronix.de>
- <20210427083724.840364566@linutronix.de>
- <20210427151125.GA171315@fuller.cnet>
- <877dkno5w0.ffs@nanos.tec.linutronix.de>
- <87a6pgfdps.ffs@nanos.tec.linutronix.de>
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id BD3CF1F43BCF;
+        Fri, 30 Apr 2021 17:51:17 +0100 (BST)
+Date:   Fri, 30 Apr 2021 18:51:04 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     <patrice.chotard@foss.st.com>, Mark Brown <broonie@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
+Subject: Re: [PATCH 1/3] spi: spi-mem: add automatic poll status functions
+Message-ID: <20210430185104.377d1bc6@collabora.com>
+In-Reply-To: <20210426143934.25275-2-patrice.chotard@foss.st.com>
+References: <20210426143934.25275-1-patrice.chotard@foss.st.com>
+        <20210426143934.25275-2-patrice.chotard@foss.st.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87a6pgfdps.ffs@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 09:12:15AM +0200, Thomas Gleixner wrote:
-> By unconditionally updating the offsets there are more indicators
-> whether the SMP function calls on clock_was_set() can be avoided:
+On Mon, 26 Apr 2021 16:39:32 +0200
+<patrice.chotard@foss.st.com> wrote:
+
+> From: Christophe Kerello <christophe.kerello@foss.st.com>
 > 
->   - When the offset update already happened on the remote CPU then the
->     remote update attempt will yield the same seqeuence number and no
->     IPI is required.
+> With STM32 QSPI, it is possible to poll the status register of the device.
+> This could be done to offload the CPU during an operation (erase or
+> program a SPI NAND for example).
 > 
->   - When the remote CPU is currently handling hrtimer_interrupt(). In
->     that case the remote CPU will reevaluate the timer bases before
->     reprogramming anyway, so nothing to do.
+> spi_mem_poll_status API has been added to handle this feature.
 > 
->   - After updating it can be checked whether the first expiring timer in
->     the affected clock bases moves before the first expiring (softirq)
->     timer of the CPU. If that's not the case then sending the IPI is not
->     required.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
 > ---
-> V2: Fix the in_hrtirq thinko (Marcelo)
->     Add the missing masking (reported by 0day)
+>  drivers/spi/spi-mem.c       | 34 ++++++++++++++++++++++++++++++++++
+>  include/linux/spi/spi-mem.h |  8 ++++++++
+>  2 files changed, 42 insertions(+)
 > 
-> P.S.: The git branch is updated as well
-> 
-> ---
->  kernel/time/hrtimer.c |   74 +++++++++++++++++++++++++++++++++++++++++++-------
->  1 file changed, 65 insertions(+), 9 deletions(-)
-> 
-> --- a/kernel/time/hrtimer.c
-> +++ b/kernel/time/hrtimer.c
-> @@ -880,6 +880,68 @@ static void hrtimer_reprogram(struct hrt
->  	tick_program_event(expires, 1);
+> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+> index 1513553e4080..43dce4b0efa4 100644
+> --- a/drivers/spi/spi-mem.c
+> +++ b/drivers/spi/spi-mem.c
+> @@ -743,6 +743,40 @@ static inline struct spi_mem_driver *to_spi_mem_drv(struct device_driver *drv)
+>  	return container_of(drv, struct spi_mem_driver, spidrv.driver);
 >  }
 >  
-> +static bool update_needs_ipi(struct hrtimer_cpu_base *cpu_base,
-> +			     unsigned int active)
+> +/**
+> + * spi_mem_poll_status() - Poll memory device status
+> + * @mem: SPI memory device
+> + * @op: the memory operation to execute
+> + * @mask: status bitmask to ckeck
+> + * @match: status expected value
+> + * @timeout: timeout
+> + *
+> + * This function send a polling status request to the controller driver
+> + *
+> + * Return: 0 in case of success, -ETIMEDOUT in case of error,
+> + *         -EOPNOTSUPP if not supported.
+> + */
+> +int spi_mem_poll_status(struct spi_mem *mem,
+> +			const struct spi_mem_op *op,
+> +			u8 mask, u8 match, u16 timeout)
 > +{
-> +	struct hrtimer_clock_base *base;
-> +	unsigned int seq;
-> +	ktime_t expires;
+> +	struct spi_controller *ctlr = mem->spi->controller;
+> +	int ret = -EOPNOTSUPP;
 > +
-> +	/*
-> +	 * Update the base offsets unconditionally so the following
-> +	 * checks whether the SMP function call is required works.
-> +	 *
-> +	 * The update is safe even when the remote CPU is in the hrtimer
-> +	 * interrupt or the hrtimer soft interrupt and expiring affected
-> +	 * bases. Either it will see the update before handling a base or
-> +	 * it will see it when it finishes the processing and reevaluates
-> +	 * the next expiring timer.
-> +	 */
-> +	seq = cpu_base->clock_was_set_seq;
-> +	hrtimer_update_base(cpu_base);
-> +
-> +	/*
-> +	 * If the sequence did not change over the update then the
-> +	 * remote CPU already handled it.
-> +	 */
-> +	if (seq == cpu_base->clock_was_set_seq)
-> +		return false;
-> +
-> +	/*
-> +	 * If the remote CPU is currently handling an hrtimer interrupt, it
-> +	 * will reevaluate the first expiring timer of all clock bases
-> +	 * before reprogramming. Nothing to do here.
-> +	 */
-> +	if (cpu_base->in_hrtirq)
-> +		return false;
+> +	if (ctlr->mem_ops && ctlr->mem_ops->poll_status) {
+> +		ret = spi_mem_access_start(mem);
 
-Looks good, thanks.
+You should probably check that op is a single byte read before
+accepting the command.
+
+> +		if (ret)
+> +			return ret;
+> +
+> +		ret = ctlr->mem_ops->poll_status(mem, op, mask, match, timeout);
+
+You also need some sort of ->poll_status_is_supported() to validate
+that the controller supports the status polling for this specific op (I
+can imagine some controllers having a limit on the number of dummy
+cycles/address bytes). I guess you could just fall back on SW-based
+status polling if ctlr->mem_ops->poll_status() returns -ENOTSUPP.
 
 > +
-> +	/*
-> +	 * Walk the affected clock bases and check whether the first expiring
-> +	 * timer in a clock base is moving ahead of the first expiring timer of
-> +	 * @cpu_base. If so, the IPI must be invoked because per CPU clock
-> +	 * event devices cannot be remotely reprogrammed.
-> +	 */
-> +	active &= cpu_base->active_bases;
-> +
-> +	for_each_active_base(base, cpu_base, active) {
-> +		struct timerqueue_node *next;
-> +
-> +		next = timerqueue_getnext(&base->active);
-> +		expires = ktime_sub(next->expires, base->offset);
-> +		if (expires < cpu_base->expires_next)
-> +			return true;
-> +
-> +		/* Extra check for softirq clock bases */
-> +		if (base->clockid < HRTIMER_BASE_MONOTONIC_SOFT)
-> +			continue;
-> +		if (cpu_base->softirq_activated)
-> +			continue;
-> +		if (expires < cpu_base->softirq_expires_next)
-> +			return true;
+> +		spi_mem_access_end(mem);
 > +	}
-> +	return false;
+> +
+> +	return ret;
 > +}
+> +EXPORT_SYMBOL_GPL(spi_mem_poll_status);
 > +
->  /*
->   * Clock was set. This might affect CLOCK_REALTIME, CLOCK_TAI and
->   * CLOCK_BOOTTIME (for late sleep time injection).
-> @@ -914,16 +976,10 @@ void clock_was_set(unsigned int bases)
->  		unsigned long flags;
+>  static int spi_mem_probe(struct spi_device *spi)
+>  {
+>  	struct spi_mem_driver *memdrv = to_spi_mem_drv(spi->dev.driver);
+> diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+> index 2b65c9edc34e..5f78917c0f68 100644
+> --- a/include/linux/spi/spi-mem.h
+> +++ b/include/linux/spi/spi-mem.h
+> @@ -250,6 +250,7 @@ static inline void *spi_mem_get_drvdata(struct spi_mem *mem)
+>   *		  the currently mapped area), and the caller of
+>   *		  spi_mem_dirmap_write() is responsible for calling it again in
+>   *		  this case.
+> + * @poll_status: poll memory device status
+>   *
+>   * This interface should be implemented by SPI controllers providing an
+>   * high-level interface to execute SPI memory operation, which is usually the
+> @@ -274,6 +275,9 @@ struct spi_controller_mem_ops {
+>  			       u64 offs, size_t len, void *buf);
+>  	ssize_t (*dirmap_write)(struct spi_mem_dirmap_desc *desc,
+>  				u64 offs, size_t len, const void *buf);
+> +	int (*poll_status)(struct spi_mem *mem,
+> +			   const struct spi_mem_op *op,
+> +			   u8 mask, u8 match, u16 timeout);
+>  };
 >  
->  		raw_spin_lock_irqsave(&cpu_base->lock, flags);
-> -		/*
-> -		 * Only send the IPI when there are timers queued in one of
-> -		 * the affected clock bases. Otherwise update the base
-> -		 * remote to ensure that the next enqueue of a timer on
-> -		 * such a clock base will see the correct offsets.
-> -		 */
-> -		if (cpu_base->active_bases & bases)
-> +
-> +		if (update_needs_ipi(cpu_base, bases))
->  			cpumask_set_cpu(cpu, mask);
-> -		else
-> -			hrtimer_update_base(cpu_base);
-> +
->  		raw_spin_unlock_irqrestore(&cpu_base->lock, flags);
->  	}
+>  /**
+> @@ -369,6 +373,10 @@ devm_spi_mem_dirmap_create(struct device *dev, struct spi_mem *mem,
+>  void devm_spi_mem_dirmap_destroy(struct device *dev,
+>  				 struct spi_mem_dirmap_desc *desc);
 >  
-> 
-> 
+> +int spi_mem_poll_status(struct spi_mem *mem,
+> +			const struct spi_mem_op *op,
+> +			u8 mask, u8 match, u16 timeout);
+> +
+>  int spi_mem_driver_register_with_owner(struct spi_mem_driver *drv,
+>  				       struct module *owner);
+>  
 
