@@ -2,177 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 050D737024A
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 22:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A511370257
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 22:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236102AbhD3UjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 16:39:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236054AbhD3UjI (ORCPT
+        id S235867AbhD3Uok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 16:44:40 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:54357 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231325AbhD3Uoj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 16:39:08 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68008C06138B
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 13:38:19 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id h4so62900830wrt.12
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 13:38:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=W8HlNSywnIkavL/zIcpgi9C3SQjg+1ILx19xA07tItE=;
-        b=Tnwq+5UxdRYkBVHdXf/QrQ9s4F6nnVtKUKD2NYkttreUp9iUecEx1AKt/DzsxjodxD
-         X0lMEOhpA5f9h1KEPQ0NaUxS3WDq6Yb58ovj5y0OKHlqmw7xYsXu95tD66XtCVPpxhL1
-         zp2/hBkjR0a1b7KlJKVvnN9vd5t8T24iNbF/cg7CQGMQsxAZCxs26nkElLFObpMcridR
-         YJXB7X2j91NwAdja7B0bIQTjCesZaSS3wQNP7tYu7iSzcYAuDNjMEFUdiDx0Yx76kwdK
-         H6xh3IbtNg4prfokDfTgXw/h3I/ufVI2kaQm9kZbi6arBc/dj8gkNH+uOCo/5+rQBsV/
-         Gf2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=W8HlNSywnIkavL/zIcpgi9C3SQjg+1ILx19xA07tItE=;
-        b=e5N9X1pkPRI689vhNcCxmu0xNK09jZcDcggM04Llhicn7ieXLUc5Dq7lNdNP1yNVIo
-         0GyKD4daNb01rETt1ICu1SxwFHjBJZUT+WcuImHEVnq+634ax8GS+Bo/NtxjyWMXsblG
-         u7+N0i0m1HxNx2nuIsqMdvdrgqFKjMrkpyrHk0ECaD7o3Hy441nviLMIvHGP0a/Oxh7p
-         TCt28OtZO22yoH5spxj4ZYcubAgr8O3iJ0KEhRC9AbwxVjZLK6PjRTMS12ObmQU6qKNM
-         Da9YyWO1d3LPS02+0rp45DoN/nQJX0KyingrxXifFalEYAWF/r9lQjqgzXQXVm7gz09P
-         KcYw==
-X-Gm-Message-State: AOAM532FQPc3rDs2Fo/0yL6zMp8FZTPU8OyfqZfRkOK/Jrg+kHdvFg48
-        0CNF7nV2pVH8wYGivWh/rWg=
-X-Google-Smtp-Source: ABdhPJwkHUBHZjxsMejlk4q2z3yroJTh21vFO8NECQS2otHtdv4mPUmcoMfoHgrOhcxtXwFgXF+8jQ==
-X-Received: by 2002:adf:ffcc:: with SMTP id x12mr9722457wrs.162.1619815098163;
-        Fri, 30 Apr 2021 13:38:18 -0700 (PDT)
-Received: from amanieu-desktop.home ([2a00:23c6:f081:f801:93ef:94e:9f8:1f0])
-        by smtp.gmail.com with ESMTPSA id r5sm4384239wmh.23.2021.04.30.13.38.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 13:38:17 -0700 (PDT)
-From:   Amanieu d'Antras <amanieu@gmail.com>
-Cc:     Amanieu d'Antras <amanieu@gmail.com>,
-        Ryan Houdek <Houdek.Ryan@fex-emu.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 8/8] arm64: Allow 64-bit tasks to invoke compat syscalls
-Date:   Fri, 30 Apr 2021 21:37:57 +0100
-Message-Id: <20210430203757.47653-7-amanieu@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210430202810.44092-1-amanieu@gmail.com>
-References: <20210430202810.44092-1-amanieu@gmail.com>
+        Fri, 30 Apr 2021 16:44:39 -0400
+Received: from mail-wr1-f47.google.com ([209.85.221.47]) by
+ mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MPGJf-1lvUSH3dvB-00PeWe; Fri, 30 Apr 2021 22:43:48 +0200
+Received: by mail-wr1-f47.google.com with SMTP id x5so21688547wrv.13;
+        Fri, 30 Apr 2021 13:43:48 -0700 (PDT)
+X-Gm-Message-State: AOAM532Fd+80CDAQiJ4dOI5oYtlGRKoV1X6wNkWhf9P0klr/OCIMcsPU
+        mQxAr2GNWF6OKzcgxXkglDhw8V1ReNniXhYMa/I=
+X-Google-Smtp-Source: ABdhPJxA6TybANagJ0qyIQ6FUChGGFgSMR1TlFRyQOZs01sNXca04Touthsa7NzRGXFDTEGZCWPvtHhkVKpp9VirFF4=
+X-Received: by 2002:a05:6000:1843:: with SMTP id c3mr9808647wri.361.1619815428535;
+ Fri, 30 Apr 2021 13:43:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <YIpkvGrBFGlB5vNj@elver.google.com> <m11rat9f85.fsf@fess.ebiederm.org>
+ <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com> <m15z031z0a.fsf@fess.ebiederm.org>
+In-Reply-To: <m15z031z0a.fsf@fess.ebiederm.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 30 Apr 2021 22:43:09 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3mb6X4+4Q1WBQp22O2Bvc3w-Q=L25jh+WPvp2kJFwHiQ@mail.gmail.com>
+Message-ID: <CAK8P3a3mb6X4+4Q1WBQp22O2Bvc3w-Q=L25jh+WPvp2kJFwHiQ@mail.gmail.com>
+Subject: Re: siginfo_t ABI break on sparc64 from si_addr_lsb move 3y ago
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Marco Elver <elver@google.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:1T39EDIEGbC+K2EWO8vif5PitZfwh83eNXC5FhSEd6gpm6wI/mg
+ 0LsG6tKV2Wbj1GzC2XsrKRG/oSKE85phpvLwKPkcyh5KLDaOBzIsM52bwsO8uSACBGsYFX+
+ PzRDHD5mjgShUF7QVg6NwyzXadfx+3T7hAgSIr/cGcEKL6vqK/cIlbp4au1xdWJa74NG9Lw
+ vWkkVu41JAR1YOI6ToAVA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bD7bHAN+nZg=:nbPLcZgrKRCeaw9/+G+s4P
+ 6vCC3nyX46/35Fso9jkovVD1ok6BDjyqpM1cJtPfYGNbfl4kNZ8w50HaCWWtjoD+YD94sC38b
+ 69F+/x5Vyx0FzCaFh8CQTdyKRNAhHV6KWA3AVMeYvA0UzrGJyGb9mprWPbPblC2XNPMts4i8+
+ loDDg/qQRc3KMrtDDn5KnBG+g2X7e6Z17zSyVmjd/Cy4Ygg/zPuM3X7RP7J04WpkQkC019exW
+ A6HeWvSvI/4/3BXGx8xsgcGYEwDs6vFrK9lWHnlxzSVjWwmOwXhoG5Sm6gpMP5nkjMbP0inwo
+ n+TQhS6i9Cxl8VLAL7gP1qFTuR4uBoL0iMeVRKb8Ej1KpFOmImiB04cORNmIOLMlIZwl3sLjZ
+ 9T3u738ZckAnS0cE7yALGh6uif/D10BOo4WGBMa4vxfVZ2PxyDgdUjdmDU0OzyFf66W2LS7SB
+ bVNdtUQkMufFwZBsP/7t/uz0xc+deDtLPrvZBSYO7GyU82DY+NCrzfxv5vZky4s4WsoWPUyi6
+ 2p0pzDkSUvQTXZJTFg3Rc8=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Setting bit 31 in x8 when performing a syscall will do the following:
-- The remainder of x8 is treated as a compat syscall number and is used
-  to index the compat syscall table.
-- in_compat_syscall will return true for the duration of the syscall.
-- VM allocations performed by the syscall will be located in the lower
-  4G of the address space.
-- Interrupted syscalls are properly restarted as compat syscalls.
-- Seccomp will treats the syscall as having AUDIT_ARCH_ARM instead of
-  AUDIT_ARCH_AARCH64. This affects the arch value seen by seccomp
-  filters and reported by SIGSYS.
-- PTRACE_GET_SYSCALL_INFO also treats the syscall as having
-  AUDIT_ARCH_ARM. Recent versions of strace will correctly report the
-  system call name and parameters when an AArch64 task mixes 32-bit and
-  64-bit syscalls.
+On Fri, Apr 30, 2021 at 7:08 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>
+> The code is only safe if the analysis that says we can move si_trapno
+> and perhaps the ia64 fields into the union is correct.  It looks like
+> ia64 much more actively uses it's signal extension fields including for
+> SIGTRAP, so I am not at all certain the generic definition of
+> perf_sigtrap is safe on ia64.
+>
+> > I suppose in theory sparc64 or alpha might start using the other
+> > fields in the future, and an application might be compiled against
+> > mismatched headers, but that is unlikely and is already broken
+> > with the current headers.
+>
+> If we localize the use of si_trapno to just a few special cases on alpha
+> and sparc I think we don't even need to worry about breaking userspace
+> on any architecture.  It will complicate siginfo_layout, but it is a
+> complication that reflects reality.
 
-Previously, setting bit 31 of the syscall number would always cause the
-sygscall to return ENOSYS. This allows user programs to reliably detect
-kernel support for compat syscall by trying a simple syscall such as
-getpid.
+Ok.
 
-The AArch32-private compat syscalls (__ARM_NR_compat_*) are not exposed
-through this interface. These syscalls do not make sense in the context
-of an AArch64 task.
+> I don't have a clue how any of this affects ia64.  Does perf work on
+> ia64?  Does perf work on sparc, and alpha?
+>
+> If perf works on ia64 we need to take a hard look at what is going on
+> there as well.
 
-Signed-off-by: Amanieu d'Antras <amanieu@gmail.com>
-Co-developed-by: Ryan Houdek <Houdek.Ryan@fex-emu.org>
-Signed-off-by: Ryan Houdek <Houdek.Ryan@fex-emu.org>
----
- arch/arm64/include/uapi/asm/unistd.h |  2 ++
- arch/arm64/kernel/signal.c           |  5 +++++
- arch/arm64/kernel/syscall.c          | 21 ++++++++++++++++++++-
- 3 files changed, 27 insertions(+), 1 deletion(-)
+ia64 never had perf support. It had oprofile until very recently, and it
+had a custom thing before that. My feeling is that it's increasingly
+unlikely to ever gain perf support in the future, given that oprofile
+(in user space) has required kernel perf support (in kernel) for a
+long time and nobody cared about that being broken either.
 
-diff --git a/arch/arm64/include/uapi/asm/unistd.h b/arch/arm64/include/uapi/asm/unistd.h
-index f83a70e07df8..5574bc6ab0a3 100644
---- a/arch/arm64/include/uapi/asm/unistd.h
-+++ b/arch/arm64/include/uapi/asm/unistd.h
-@@ -15,6 +15,8 @@
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  */
- 
-+#define __ARM64_COMPAT_SYSCALL_BIT 0x80000000
-+
- #define __ARCH_WANT_RENAMEAT
- #define __ARCH_WANT_NEW_STAT
- #define __ARCH_WANT_SET_GET_RLIMIT
-diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
-index 6237486ff6bb..463c8a82050e 100644
---- a/arch/arm64/kernel/signal.c
-+++ b/arch/arm64/kernel/signal.c
-@@ -795,6 +795,11 @@ static void setup_restart_syscall(struct pt_regs *regs)
- {
- 	if (is_compat_task())
- 		compat_setup_restart_syscall(regs);
-+#ifdef COMPAT
-+	else if (in_compat_syscall())
-+		regs->regs[8] = __ARM64_COMPAT_SYSCALL_BIT |
-+				__NR_compat_restart_syscall;
-+#endif
- 	else
- 		regs->regs[8] = __NR_restart_syscall;
- }
-diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
-index e0e9d54de0a2..83747cf4b5b7 100644
---- a/arch/arm64/kernel/syscall.c
-+++ b/arch/arm64/kernel/syscall.c
-@@ -118,6 +118,11 @@ static void el0_svc_common(struct pt_regs *regs, int scno, int sc_nr,
- 		 * user-issued syscall(-1). However, requesting a skip and not
- 		 * setting the return value is unlikely to do anything sensible
- 		 * anyway.
-+		 *
-+		 * This edge case goes away with CONFIG_COMPAT since a
-+		 * user-issued syscall(-1) is interpreted as a
-+		 * compat_syscall(0x7fffffff) which still ends up returning
-+		 * -ENOSYS in x0.
- 		 */
- 		if (scno == NO_SYSCALL)
- 			regs->regs[0] = -ENOSYS;
-@@ -165,7 +170,21 @@ static inline void sve_user_discard(void)
- void do_el0_svc(struct pt_regs *regs)
- {
- 	sve_user_discard();
--	el0_svc_common(regs, regs->regs[8], __NR_syscalls, sys_call_table);
-+
-+#ifdef CONFIG_COMPAT
-+	/*
-+	 * Setting bit 31 of x8 allows a 64-bit processe to perform compat
-+	 * syscalls.
-+	 */
-+	if (regs->regs[8] & __ARM64_COMPAT_SYSCALL_BIT) {
-+		current_thread_info()->use_compat_syscall = true;
-+		el0_svc_common(regs,
-+			       regs->regs[8] & ~__ARM64_COMPAT_SYSCALL_BIT,
-+			       __NR_compat_syscalls, compat_sys_call_table);
-+		current_thread_info()->use_compat_syscall = false;
-+	} else
-+#endif
-+		el0_svc_common(regs, regs->regs[8], __NR_syscalls, sys_call_table);
- }
- 
- #ifdef CONFIG_COMPAT
--- 
-2.31.1
+sparc64 has perf support for Sun UltraSPARC 3/3+/3i/4+/T1/T2/T3
+and Oracle SPARC T4/T5/M7 but lacks support for most CPUs from
+Oracle, Fujitsu and the rest, in particular anything from the last
+ten years.
+Alpha has perf support for EV67, EV68, EV7, EV79, and EV69, i.e.
+anything from 1996 to the end in 2004.
 
+      Arnd
