@@ -2,84 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 764BA36F74F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 752D036F750
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231129AbhD3IsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 04:48:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbhD3IsJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 04:48:09 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF45EC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:47:21 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1lcOnm-0002EN-QZ; Fri, 30 Apr 2021 10:47:10 +0200
-Message-ID: <914b4e28b1313fc3b0293faa60a21cb6afb83e40.camel@pengutronix.de>
-Subject: Re: [PATCH 16/16] soc: imx: gpcv2: remove waiting handshake in
- power up
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        p.zabel@pengutronix.de, krzk@kernel.org, agx@sigxcpu.org,
-        marex@denx.de, andrew.smirnov@gmail.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, ping.bai@nxp.com,
-        frieder.schrempf@kontron.de, aford173@gmail.com, abel.vesa@nxp.com,
-        Peng Fan <peng.fan@nxp.com>
-Date:   Fri, 30 Apr 2021 10:47:08 +0200
-In-Reply-To: <e5a94506-7bd3-93b6-b331-1cf04672a459@oss.nxp.com>
-References: <20210429073050.21039-1-peng.fan@oss.nxp.com>
-         <20210429073050.21039-17-peng.fan@oss.nxp.com>
-         <abde5337ac265287f8e1225846e140e8df370f47.camel@pengutronix.de>
-         <e5a94506-7bd3-93b6-b331-1cf04672a459@oss.nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S231181AbhD3Isa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 04:48:30 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:39929 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229507AbhD3Is3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 04:48:29 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4FWmGN0sRgz9wct;
+        Fri, 30 Apr 2021 10:47:40 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Sa6dCHscddjg; Fri, 30 Apr 2021 10:47:40 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FWmGM728Qz9wc9;
+        Fri, 30 Apr 2021 10:47:39 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id DF53F8B87E;
+        Fri, 30 Apr 2021 10:47:39 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id EiSgWgqkncLp; Fri, 30 Apr 2021 10:47:39 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 602258B87A;
+        Fri, 30 Apr 2021 10:47:39 +0200 (CEST)
+Subject: Re: [PATCH 1/3] lib: early_string: allow early usage of some string
+ functions
+To:     Daniel Walker <danielwa@cisco.com>, linuxppc-dev@lists.ozlabs.org,
+        x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>
+Cc:     xe-linux-external@cisco.com, linux-kernel@vger.kernel.org
+References: <20210430042217.1198052-1-danielwa@cisco.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <dc26a67e-dba0-1b8c-3718-3c75415c61f1@csgroup.eu>
+Date:   Fri, 30 Apr 2021 10:47:39 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210430042217.1198052-1-danielwa@cisco.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Freitag, dem 30.04.2021 um 15:14 +0800 schrieb Peng Fan (OSS):
-> 
-> On 2021/4/29 22:34, Lucas Stach wrote:
-> > Am Donnerstag, dem 29.04.2021 um 15:30 +0800 schrieb Peng Fan (OSS):
-> > > From: Peng Fan <peng.fan@nxp.com>
-> > > 
-> > > i.MX8MM has blk ctl module, the handshake can only finish after setting
-> > > blk ctl. The blk ctl driver will set the bus clk bit and the handshake
-> > > will finish there. we just add a delay and suppose the handshake will
-> > > finish after that.
-> > 
-> > Instead of this patch, just drop patch 05/16 from this series. I think
-> > we should leave a comment in the code on why we aren't waiting for the
-> > handshake ack, as this is non-obvious from looking at the driver code.
-> > 
-> > Basically add a polished version of the commit log from this patch into
-> > the driver code.
-> 
-> After thinking more, for power down, we need wait handshake. For power 
-> up, we could ignore handshake, because BLK-CTL setting bus clk en
-> will auto trigger handshake.
-> 
-> For power down, the bus clk en already set, and we need wait, otherwise
-> we need add delay there.
-> 
-> So I would only drop the power up waiting and add some comments there.
 
-Ah, right. This way makes a lot of sense.
 
-Regards,
-Lucas
+Le 30/04/2021 à 06:22, Daniel Walker a écrit :
+> This systems allows some string functions to be moved into
+> lib/early_string.c and they will be prepended with "early_" and compiled
+> without debugging like KASAN.
+> 
+> This is already done on x86 for,
+> "AMD Secure Memory Encryption (SME) support"
+> 
+> and on powerpc prom_init.c , and EFI's libstub.
+> 
+> The AMD memory feature disabled KASAN for all string functions, and
+> prom_init.c and efi libstub implement their own versions of the
+> functions.
+> 
+> This implementation allows sharing of the string functions without
+> removing the debugging features for the whole system.
 
+This looks good. I prefer that rather than the way you proposed to do it two years ago.
+
+Only one problem, see below.
+
+> +size_t strlcat(char *dest, const char *src, size_t count)
+> +{
+> +	size_t dsize = strlen(dest);
+> +	size_t len = strlen(src);
+> +	size_t res = dsize + len;
+> +
+> +	/* This would be a bug */
+> +	BUG_ON(dsize >= count);
+
+powerpc is not ready to handle BUG_ON() in when in prom_init.
+
+Can you do:
+
+#ifndef __EARLY_STRING_ENABLED
+	BUG_ON(dsize >= count);
+#endif
+
+
+> +
+> +	dest += dsize;
+> +	count -= dsize;
+> +	if (len >= count)
+> +		len = count-1;
+> +	memcpy(dest, src, len);
+> +	dest[len] = 0;
+> +	return res;
+> +}
+> +EXPORT_SYMBOL(strlcat);
+> +#endif
+> +
