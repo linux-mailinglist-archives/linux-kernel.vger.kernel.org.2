@@ -2,68 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3EAC3702BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 23:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0D73702C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 23:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236244AbhD3VNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 17:13:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236130AbhD3VNW (ORCPT
+        id S236179AbhD3VOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 17:14:36 -0400
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:42628 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231268AbhD3VOf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 17:13:22 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF920C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 14:12:32 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id a11so16671838ioo.0
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 14:12:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PcgEFKNCdnw42RIDsezljjhLnXK1qfiVCOOOweDYBlI=;
-        b=eohrjV0GyDvZLNvHWpUDMAY8Uvpi+r+aZ9OIo2Va8CZqkCppfDp2HyuI/SsMFlv/A9
-         3t9wsz3op5E23cdblkz0r+Hjs8Dnmt7nZiz1ioMLhIQLzLeZa3Q5nkiYCg38HoBlEzQI
-         qRxNQLYaUyXy449HxxYJrj8I7sMbwL6dagtKM=
+        Fri, 30 Apr 2021 17:14:35 -0400
+Received: by mail-oi1-f172.google.com with SMTP id v24so3675736oiv.9;
+        Fri, 30 Apr 2021 14:13:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PcgEFKNCdnw42RIDsezljjhLnXK1qfiVCOOOweDYBlI=;
-        b=o7paMqNyKQ1JyP5YakOEZA5ZwkwwkMq8sC0P3V1J0HJvCmFwvUBsJDo+S/kq/4UlNs
-         5m33uSuslh8bODOE2ETqbZcxqJUsPlV9QXAhceukTBU9061X0xRoQwFu+x25s+T1UP6m
-         YnBkO42Ru1uRGEQ5Yx0xV50ArjkEqeNaf6wD7tzbS+wUIqQJPB4OEdsdPGbv6Cez869E
-         43wclIQn+xToFrQECygaYh8YFbWBqdASrO+tcGmlXNxvSBBcH1CSHKfJPM2RXU3gqez3
-         HnDMlQhb0UAPU46NYN0K4STeT4VKE5KWm7z/OFw3GpDVVBNjYYkqKLqYutYf5evkE8jw
-         DTQg==
-X-Gm-Message-State: AOAM531tRd6qZ4tuZzX3zvrz9Z1CDzW75het2i+76659Cc89IMuygzE5
-        XYRvb4dFTSEXj6Xc24NisVlg+FgTSxMiRaOeMf0ytg==
-X-Google-Smtp-Source: ABdhPJyYs89DRFVo91HEXLB1tGBFG5INxqSWzmI18cw6jcElxNQlRe/4OGx1ze4NTem+KSY4uP7wzeJ5BdmZDPIlQe0=
-X-Received: by 2002:a02:cab3:: with SMTP id e19mr5933863jap.64.1619817152185;
- Fri, 30 Apr 2021 14:12:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZoGE/qRaxEZUIqyf3vqexb9wxuutBvRZWgAehutLKvg=;
+        b=DYWYXkqOkIm6qBnXCZL93LothFwVAa4/QCRQxJCgHTE+mfgTZWKGBkhW1X4uG74VIj
+         I+KAXYnZlGVfsLLOdw4f3TcK7n0AVFQ7y4K6duPzvGcOY8AcDMjnLvRVtVAPSLen7c5K
+         pxCaGEU946ogIHbH+y94VXXTD6VH4E+PdHQu+lDzM4Zdx9YzmXkF2zZlRTohDI4PejHh
+         IUrFMX0tsDRewCbVU1gTAl4Drvv/av3e/cC9n2l3MuKGM+3h0/rhAlXlApQdRTEemetS
+         i2A5Un9Sx1B5LDSU9OSXo3fqQg5s4QLxM8x7Y+EUeAWHjJU09JfSz0ELHKw78/l30NbF
+         hU3A==
+X-Gm-Message-State: AOAM531cZ8dc7Fo2o7iiRIow7iOgRKMhneJbzRh0A1hm4xf7y6H/7DAB
+        k01fOZ3a0qpx/5GG4Zw6wQ==
+X-Google-Smtp-Source: ABdhPJxtf62483mldzmwxA9gvaVuMLo07/iGg2YzmtUAgcS5EYE0LWsNzf9lqQcShVCwo6Vx9MPrHA==
+X-Received: by 2002:a54:419a:: with SMTP id 26mr5563131oiy.157.1619817225858;
+        Fri, 30 Apr 2021 14:13:45 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 21sm1008680otg.4.2021.04.30.14.13.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 14:13:45 -0700 (PDT)
+Received: (nullmailer pid 3904574 invoked by uid 1000);
+        Fri, 30 Apr 2021 21:13:43 -0000
+Date:   Fri, 30 Apr 2021 16:13:43 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     cl@rock-chips.com
+Cc:     heiko@sntech.de, jagan@amarulasolutions.com, wens@csie.org,
+        uwe@kleine-koenig.org, mail@david-bauer.net, jbx6244@gmail.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
+        cnsztl@gmail.com, devicetree@vger.kernel.org,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
+        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
+        zhangqing@rock-chips.com, huangtao@rock-chips.com,
+        wim@linux-watchdog.org, linux@roeck-us.net, jamie@jamieiles.com,
+        linux-watchdog@vger.kernel.org, maz@kernel.org
+Subject: Re: [PATCH v4 03/10] dt-bindings: mmc: rockchip-dw-mshc: add
+ description for rk3568
+Message-ID: <20210430211343.GA3900779@robh.at.kernel.org>
+References: <20210429081151.17558-1-cl@rock-chips.com>
+ <20210429081151.17558-4-cl@rock-chips.com>
 MIME-Version: 1.0
-References: <20210326035035.3057800-1-jwerner@chromium.org>
- <CAODwPW_rdHnkKuAhCxbF9Lb3bPvAKR54G1wowFGyoDQ_sp-3Cg@mail.gmail.com> <3cf12c9eae59e4014865866529e580d7d0ede020.camel@perches.com>
-In-Reply-To: <3cf12c9eae59e4014865866529e580d7d0ede020.camel@perches.com>
-From:   Julius Werner <jwerner@chromium.org>
-Date:   Fri, 30 Apr 2021 14:12:20 -0700
-Message-ID: <CAODwPW_5gMmo8p6Amp=+u41=m2nPTQSgf2uTE1pvo8_KKnjGTw@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Detect suspicious indentation after conditional
-To:     Joe Perches <joe@perches.com>
-Cc:     Julius Werner <jwerner@chromium.org>,
-        Andy Whitcroft <apw@canonical.com>,
-        Ivo Sieben <meltedpianoman@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210429081151.17558-4-cl@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-*another friendly ping*
+On Thu, Apr 29, 2021 at 04:11:44PM +0800, cl@rock-chips.com wrote:
+> From: Liang Chen <cl@rock-chips.com>
+> 
+> add "rockchip,rk3568-dw-mshc", "rockchip,rk3288-dw-mshc" for mmc nodes on
+> a rk3568 platform to rockchip-dw-mshc.yaml.
+> 
+> Signed-off-by: Liang Chen <cl@rock-chips.com>
+> ---
+>  .../devicetree/bindings/mmc/rockchip-dw-mshc.yaml        | 9 +--------
+>  1 file changed, 1 insertion(+), 8 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml b/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml
+> index 3762f1c8de96..eaa3b0ef24f6 100644
+> --- a/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml
+> @@ -29,21 +29,14 @@ properties:
+>        - const: rockchip,rk3288-dw-mshc
+>        - items:
+>            - enum:
+> -            # for Rockchip PX30
+>                - rockchip,px30-dw-mshc
+> -            # for Rockchip RK3036
+>                - rockchip,rk3036-dw-mshc
+> -            # for Rockchip RK322x
+>                - rockchip,rk3228-dw-mshc
+> -            # for Rockchip RK3308
+>                - rockchip,rk3308-dw-mshc
+> -            # for Rockchip RK3328
+>                - rockchip,rk3328-dw-mshc
+> -            # for Rockchip RK3368
+>                - rockchip,rk3368-dw-mshc
+> -            # for Rockchip RK3399
+>                - rockchip,rk3399-dw-mshc
+> -            # for Rockchip RV1108
 
-Hi Andy, any comments?
+I find these comments redundant, so I'm fine with the change. But please 
+state why you are removing them in the commit msg.
 
-Joe, if Andy doesn't have time to look at this anymore at the moment
-(if I'm looking for this right I think the last mail from him I can
-find on LKML was in 2019?), is there anything else I can do to
-convince you to take this series?
+Acked-by: Rob Herring <robh@kernel.org>
+
+> +              - rockchip,rk3568-dw-mshc
+>                - rockchip,rv1108-dw-mshc
+>            - const: rockchip,rk3288-dw-mshc
+>  
+> -- 
+> 2.17.1
+> 
+> 
+> 
