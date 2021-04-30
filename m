@@ -2,123 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C9A36F378
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 03:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8001536F37B
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 03:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbhD3BYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 21:24:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43914 "EHLO
+        id S229862AbhD3B0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 21:26:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhD3BYP (ORCPT
+        with ESMTP id S229582AbhD3B0G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 21:24:15 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F94FC06138B;
-        Thu, 29 Apr 2021 18:23:26 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id t24so11061308oic.10;
-        Thu, 29 Apr 2021 18:23:26 -0700 (PDT)
+        Thu, 29 Apr 2021 21:26:06 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A42DFC06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 18:25:18 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id u48-20020a4a97330000b02901fa060b8066so428624ooi.8
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 18:25:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=1SYSV1ST5CmyKauB1cfHt/lTjzM1JtgTjndM7qycV2o=;
-        b=Y1xm6h0jsXhEjU0x8/UPm/ebG9B1+44LoKVQV9r5rnnas+5rYWJObWCn8SZo6tSMZ1
-         cGtznuA8KXtzD+a3KJgBiRpw5l3cTwIHQUxNZT8zUqp07Rhx4BMZFAn8vMSLJSirEz6c
-         fiv0HTIG8Th+seaIerFKPHoWMlf7O6xyzsrT6nZdccuUgfexudsLEMyCbX8t1aF8TiDg
-         +1qJcvWbSL45Ld3V/7iTZvnJS6dmb35psqoGcvGT1hfIWKayXTipB1/SvfAx6c04P9wN
-         1KH3PflvzzZ+ZjbpJEncNHyBCDeM3jwz9pYUfaTJwWh7sqGe2Wz+Qlw2G3mJ0YMWevob
-         106g==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V1QnMHl1bv4GYjD2nKUUJjqSbgwtkE7PlJ3sqyWNs7Y=;
+        b=PtHlsQZOZ+E4ykn+R3l13RBajbWKW9bc5n0CxdJOHTPMz4PSUer/AJh9vCysr5UYOv
+         SuCTrQprrgY+vi68vThE0YH88YfY2vB8BtuvkvLHFzNcfsD3Qo++eWfTMmQBN66+qcZx
+         YA3c9pl9Lat5hMK3NWhl/lTgmlPl8zmEwFMKU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1SYSV1ST5CmyKauB1cfHt/lTjzM1JtgTjndM7qycV2o=;
-        b=VrBOG3eojB9s5R83OahWGvBceVlV+lCtjAm43I7yV/3+7+7tBNkO/+pePzjNgmThfg
-         nR8gbJcqjaSwvNWjKVL07lctio9bu+HeI/jdvCDCkkamsyQZw8AyccyAgm6vQtN0IuCc
-         1I59BT2cVoXEcaxn28uDeh6ayz0px/7j3KmA6N9yEaSjRYYUR1no+l9IzRqhXsz+4Uey
-         eBIcEzizoZ5yeYxecIn6DHveFJXvx4kIEla/fEbALI1PWu9Ph+SKkOVIOWS3TTVCiunS
-         dgkx+/kca2mhPI3WCaqXLYsOkQTFjm4D6E/phOiN4GExAJHdoNOV2b7BWvo6HsIbhDiA
-         jxYw==
-X-Gm-Message-State: AOAM530TBwjTMJbt6DN+mU3fnhuftslcmYA/1w5r0RjBfl9TgVIa1rzT
-        X0y+tzfs3Jddk8ogag3KdcOrmg+h4lQ=
-X-Google-Smtp-Source: ABdhPJzhRt2piz5wYQRbzUjle3i0pXTPwyn8+KVGHk8JUisg/wusbUU9Dm6Mk1x9240e2ds0mb6WGg==
-X-Received: by 2002:a05:6808:2d0:: with SMTP id a16mr2127647oid.116.1619745805896;
-        Thu, 29 Apr 2021 18:23:25 -0700 (PDT)
-Received: from localhost (108-223-40-66.lightspeed.sntcca.sbcglobal.net. [108.223.40.66])
-        by smtp.gmail.com with ESMTPSA id k16sm397760ooa.36.2021.04.29.18.23.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 29 Apr 2021 18:23:25 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 29 Apr 2021 18:23:23 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Eddie James <eajames@linux.ibm.com>
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jdelvare@suse.com
-Subject: Re: [PATCH] hwmon: (occ) Fix poll rate limiting
-Message-ID: <20210430012323.GA186319@roeck-us.net>
-References: <20210429151336.18980-1-eajames@linux.ibm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V1QnMHl1bv4GYjD2nKUUJjqSbgwtkE7PlJ3sqyWNs7Y=;
+        b=Heys2vRbcKARvUeoM9/udEYWn3xGLbxcj6STLUWvZjB3QWcN2N7JTc2vMQ8IZpRxln
+         84s/cxe2mySZ+gZkFiYelmekq54WOXnY0XFUuVILMtm4TScACC0/ALHM1e82IQO5oZ+i
+         gqKPcVH45IKLDe4yErpsHhWoc7NnThsVUpNUgGeHcusG1XJcAqS9I6KX4l8EB53h+/fG
+         y1wxMR+aBncVwxlO6PdkAn8iINIUBs1rIngzEhcp9Rdn+rMqBoJt2N3Y1QfG6I0VXUAJ
+         WDvoZBWyIlwIif7bRHBYANloUDLEbYrJeNUtKevXbCSnGB69VepYYpdYxxcaNoNZutOF
+         BfTA==
+X-Gm-Message-State: AOAM5308HiRpNwTfytoEXwoUMlNHMEFe4JgbFtmbPGGP0AU8SqH+/+gl
+        bNrpEEpajMdpvUscncUZvTZBh9nVegx6vg==
+X-Google-Smtp-Source: ABdhPJyuC4fcv3NNraUgCNDDbHgiU9cKah/xwNV+N8Fts4Fdo5zrcfj7DY2VbE1rJIJX3hFkxUt9lg==
+X-Received: by 2002:a4a:e386:: with SMTP id l6mr2249671oov.81.1619745917921;
+        Thu, 29 Apr 2021 18:25:17 -0700 (PDT)
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com. [209.85.210.43])
+        by smtp.gmail.com with ESMTPSA id l7sm359977oov.5.2021.04.29.18.25.17
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Apr 2021 18:25:17 -0700 (PDT)
+Received: by mail-ot1-f43.google.com with SMTP id v23-20020a9d60570000b02902a53bac99a3so8344669otj.5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 18:25:17 -0700 (PDT)
+X-Received: by 2002:a25:80d4:: with SMTP id c20mr3510159ybm.345.1619745906527;
+ Thu, 29 Apr 2021 18:25:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429151336.18980-1-eajames@linux.ibm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210423165906.2504169-1-dianders@chromium.org>
+ <20210423095743.v5.1.I9e6af2529d6c61e5daf86a15a1211121c5223b9a@changeid> <CACRpkdYkRFLvCRPSYNzYQG58QgPfhvjtHb+FBQZadyrnjC8=1A@mail.gmail.com>
+In-Reply-To: <CACRpkdYkRFLvCRPSYNzYQG58QgPfhvjtHb+FBQZadyrnjC8=1A@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 29 Apr 2021 18:24:55 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UX683grZ=poTwKXxSqYBCLdLAOCxOPhE_xVVgKbe36Mw@mail.gmail.com>
+Message-ID: <CAD=FV=UX683grZ=poTwKXxSqYBCLdLAOCxOPhE_xVVgKbe36Mw@mail.gmail.com>
+Subject: Re: [PATCH v5 01/20] drm/panel: panel-simple: Add missing
+ pm_runtime_disable() calls
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 10:13:36AM -0500, Eddie James wrote:
-> The poll rate limiter time was initialized at zero. This breaks the
-> comparison in time_after if jiffies is large. Switch to storing the
-> next update time rather than the previous time, and initialize the
-> time when the device is probed.
-> 
-> Fixes: c10e753d43eb ("hwmon (occ): Add sensor types and versions")
-> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+Hi,
 
-Applied.
+On Thu, Apr 29, 2021 at 5:58 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Fri, Apr 23, 2021 at 6:59 PM Douglas Anderson <dianders@chromium.org> wrote:
+>
+> > In commit 3235b0f20a0a ("drm/panel: panel-simple: Use runtime pm to
+> > avoid excessive unprepare / prepare") we started using pm_runtime, but
+> > my patch neglected to add the proper pm_runtime_disable(). Doh! Add
+> > them now.
+> >
+> > Fixes: 3235b0f20a0a ("drm/panel: panel-simple: Use runtime pm to avoid excessive unprepare / prepare")
+> > Reported-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+>
+> This patch as such:
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>
+> Notice however: you turn on pm runtime pm_runtime_enable()
+> in panel_simple_probe() but are you ever turning it off in
+> panel_simple_remove()?
+>
+> I think pm_runtime_disable(); need to be added there?
 
-Thanks,
-Guenter
+I'm a bit confused. You're saying that I need to add
+pm_runtime_disable() to panel_simple_remove()? Doesn't this patch do
+that? This patch adds two calls to pm_runtime_disable(). One of those
+is in the probe error path and the other one is in
+panel_simple_remove().
 
-> ---
->  drivers/hwmon/occ/common.c | 5 +++--
->  drivers/hwmon/occ/common.h | 2 +-
->  2 files changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/hwmon/occ/common.c b/drivers/hwmon/occ/common.c
-> index f1ac153d0b56..967532afb1c0 100644
-> --- a/drivers/hwmon/occ/common.c
-> +++ b/drivers/hwmon/occ/common.c
-> @@ -217,9 +217,9 @@ int occ_update_response(struct occ *occ)
->  		return rc;
->  
->  	/* limit the maximum rate of polling the OCC */
-> -	if (time_after(jiffies, occ->last_update + OCC_UPDATE_FREQUENCY)) {
-> +	if (time_after(jiffies, occ->next_update)) {
->  		rc = occ_poll(occ);
-> -		occ->last_update = jiffies;
-> +		occ->next_update = jiffies + OCC_UPDATE_FREQUENCY;
->  	} else {
->  		rc = occ->last_error;
->  	}
-> @@ -1165,6 +1165,7 @@ int occ_setup(struct occ *occ, const char *name)
->  		return rc;
->  	}
->  
-> +	occ->next_update = jiffies + OCC_UPDATE_FREQUENCY;
->  	occ_parse_poll_response(occ);
->  
->  	rc = occ_setup_sensor_attrs(occ);
-> diff --git a/drivers/hwmon/occ/common.h b/drivers/hwmon/occ/common.h
-> index 67e6968b8978..e6df719770e8 100644
-> --- a/drivers/hwmon/occ/common.h
-> +++ b/drivers/hwmon/occ/common.h
-> @@ -99,7 +99,7 @@ struct occ {
->  	u8 poll_cmd_data;		/* to perform OCC poll command */
->  	int (*send_cmd)(struct occ *occ, u8 *cmd);
->  
-> -	unsigned long last_update;
-> +	unsigned long next_update;
->  	struct mutex lock;		/* lock OCC access */
->  
->  	struct device *hwmon;
+-Doug
