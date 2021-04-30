@@ -2,330 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C0B36FC7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 16:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92CF636FC86
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 16:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232736AbhD3OeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 10:34:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48112 "EHLO
+        id S232840AbhD3OhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 10:37:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230175AbhD3OeF (ORCPT
+        with ESMTP id S230351AbhD3OhK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 10:34:05 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3730C06174A;
-        Fri, 30 Apr 2021 07:33:13 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id z6so9539364wrm.4;
-        Fri, 30 Apr 2021 07:33:13 -0700 (PDT)
+        Fri, 30 Apr 2021 10:37:10 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96511C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:36:20 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id j19so11444452qtx.13
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:36:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=cIo70+kHFJP3Clo4Wwg12IWpqiM3/M+ffomNLABHqwc=;
-        b=jFDElSUR/OeZ7fFUrvIAU4XtAgNd86Xe8dqRjymmVFyTYZQvPK/0TGnHXHfN89d15t
-         83VPtX4Kaz3jLcgKqmRoE+c7TIcVkZyik7Ynjc3pKZCvEXLBKW46jgM++lFEjwR+z2EE
-         K2dMvNrHs3HfvoaHMRFfif2eQn79a5uFhH9KDb6RY7OvBCu2LCmbROuTmFi61x0AA2d0
-         iVlu2FfWxRPZfTTHsssHsqycMMooLHc6VQjE6+sjP4fRkz+LT2xTrV6POHyLms3jcOWS
-         ZAuu7dYvrvjihWpLJFKtrbAPO2/cP8BwnInLC8ZtAG6nfUq2WK8JJSmS5jmTDSK/U7JT
-         LX7g==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yn6cRUZOgPdZlOt5EBUKFzM6s47R+iRZGiASN1vYsQ4=;
+        b=aoxU14J5potZB1dXg9Q7C2x7LFjtZngLn0ahKSp/xAqYDnjc2hQh7xowvDgNRxoIvh
+         bD1EAWUgsw3EG4T/CHQstKVUN6kuiwE8Kw25LKuiq7rsry+TX5PciEfYjMd46u5/UHCm
+         ChFoJHL7WLq/DAP9PA+FIuYwxIffO755NsywxjdoHut0PXW3FoKVeqqSgK/DlO0pnIOJ
+         dLGkgdFBxHArWpThE9tUduLiMBjNudB6WmKCF1AtqKRxyE26IG8LsFG438Rbw/7mQLLI
+         ANANW+uL7T+W3Yx9w7rv1qdF8GdYNUXOcOWFleHHrW9eJjSCGue6iTOCHGkuqLgse8Dp
+         eMZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=cIo70+kHFJP3Clo4Wwg12IWpqiM3/M+ffomNLABHqwc=;
-        b=bR43yriSWOut1jSp8R2tXdvLhbGSB5FkOzZ0V8QNfHpLBARAwU4jA+cnPKw63CTCD9
-         sxz35KPsA6PUynyNnYRti1ndO+R4JoRD6HnIFwtGTXslNGNBXM3fPKQPtkv59Ku7Zp/5
-         J6SlptcqncVM7jy55xeLOTxvWdJdmkdd229UXJH1iWsU9mUTl83u+xU+L5QTQjvv6x26
-         7cS+SSX3cw6yJJxV+juSR6j+IHsZs7Y9huBXFwIDQLH0qjP9vbLjjykZ5TYiF6Ad/bSU
-         9lKPGY322jEkhWS06TglMspRM8Dl4BthRSR5r1gHp2dHLSRSmZw1jV1n2G0zju+ova1z
-         Ps+A==
-X-Gm-Message-State: AOAM533WHBtSF6jwDO46G37HSX5RQifo7uh1KQ2cSR/MWAeQR5fgkxhk
-        Ya+7GFyPBaGku+gNJ7NHDpIgJa4bMMk=
-X-Google-Smtp-Source: ABdhPJymbM5hlcze2Ua09vqCWCgnptKBHeIT9/iGQjx+vUb/QnHT29wYdhjtQ3u+pJ3ZOxycy7W/Rw==
-X-Received: by 2002:a5d:4884:: with SMTP id g4mr7311286wrq.191.1619793192527;
-        Fri, 30 Apr 2021 07:33:12 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.132.80])
-        by smtp.gmail.com with ESMTPSA id v13sm2524022wrt.65.2021.04.30.07.33.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Apr 2021 07:33:11 -0700 (PDT)
-Subject: Re: INFO: task hung in io_uring_cancel_sqpoll
-To:     Palash Oswal <oswalpalash@gmail.com>, Jens Axboe <axboe@kernel.dk>,
-        io-uring@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        syzbot+11bf59db879676f59e52@syzkaller.appspotmail.com
-References: <0000000000000c97e505bdd1d60e@google.com>
- <cfa0f9b8-91ec-4772-a6c2-c5206f32373fn@googlegroups.com>
- <53a22ab4-7a2d-4ebd-802d-9d1b4ce4e087n@googlegroups.com>
- <CAGyP=7fpNBhbmczjDq-vpzbSDyqwCw2jS7xQo4XO=bxwsy2ddQ@mail.gmail.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <a6ce21f4-04e7-f34c-8cfc-f8158f7fe163@gmail.com>
-Date:   Fri, 30 Apr 2021 15:33:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        bh=yn6cRUZOgPdZlOt5EBUKFzM6s47R+iRZGiASN1vYsQ4=;
+        b=es4VEmT5wGGmwiN3mt3mRV1Qm6odu7At/3nRMXfvpJ01oIWlPmCb3K76vrUYcWgR+m
+         +ie0hj3ZlnIH4gbc+VqGZcURj28masHo88ZqPojb/6wUwf1GFWjPL5FaciqPllu7H3Cc
+         hIPL0PJKHhqtCN81qTrupxTVC2ouNYwrJE28SFf/qKHGQu/rAkaPEhAKZoXeTZX3MgRj
+         K6EnDjor2/pkHRDbmorpZHHzncFVyzOKC4tfWHkKkMlPtObSxzYOjpS5BIZow4Z0Gsow
+         tlAsIJUsMVBF9udwtTtPIH1i2zL4b1WhlJhI5cSHl8tM8egIRfcPFpXl/6Se0aO54KHK
+         RLKg==
+X-Gm-Message-State: AOAM530Pj7LVcq2SwHqe27pTU+NUpEWTnQfMuf2kvuBVYW+wU8fX2RMe
+        1iL0sxNcJEz2V3qmfEtCmgKZv9nX42U=
+X-Google-Smtp-Source: ABdhPJyYWXW1/5+XXCLmoSfDUVveeDxgw8oPV0pE61dNT8mV2KAhhW8tMLPpeXpbnie+jHyvKi2O9Q==
+X-Received: by 2002:ac8:6b8d:: with SMTP id z13mr4744880qts.31.1619793379867;
+        Fri, 30 Apr 2021 07:36:19 -0700 (PDT)
+Received: from li-908e0a4c-2250-11b2-a85c-f027e903211b.ibm.com.com ([2804:14c:482:7b04::1001])
+        by smtp.gmail.com with ESMTPSA id 190sm1532560qki.115.2021.04.30.07.36.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 07:36:19 -0700 (PDT)
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] powerpc/mm/hash: Time improvements for memory hot(un)plug
+Date:   Fri, 30 Apr 2021 11:36:04 -0300
+Message-Id: <20210430143607.135005-1-leobras.c@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <CAGyP=7fpNBhbmczjDq-vpzbSDyqwCw2jS7xQo4XO=bxwsy2ddQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/30/21 3:21 PM, Palash Oswal wrote:
-> On Thursday, March 18, 2021 at 9:40:21 PM UTC+5:30 syzbot wrote:
->>
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit: 0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
->> git tree: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
->> console output: https://syzkaller.appspot.com/x/log.txt?x=12dde5aed00000
->> kernel config: https://syzkaller.appspot.com/x/.config?x=81c0b708b31626cc
->> dashboard link: https://syzkaller.appspot.com/bug?extid=11bf59db879676f59e52
->> userspace arch: riscv64
->> CC: [asml.s...@gmail.com ax...@kernel.dk io-u...@vger.kernel.org linux-...@vger.kernel.org]
->>
->> Unfortunately, I don't have any reproducer for this issue yet.
+This patchset intends to reduce time needed for processing memory
+hotplug/hotunplug in hash guests.
 
-There was so many fixes in 5.12 after this revision, including sqpoll
-cancellation related... Can you try something more up-to-date? Like
-released 5.12 or for-next
+The first one, makes sure guests with pagesize over 4k don't need to
+go through HPT resize-downs after memory hotplug.
 
+The second and third patches make hotplug / hotunplug perform a single
+HPT resize per operation, instead of one for each shift change, or one
+for each LMB in case of resize-down error.
 
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+11bf59...@syzkaller.appspotmail.com
->>
->> INFO: task iou-sqp-4867:4871 blocked for more than 430 seconds.
->> Not tainted 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
->> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
->> task:iou-sqp-4867 state:D stack: 0 pid: 4871 ppid: 4259 flags:0x00000004
->> Call Trace:
->> [<ffffffe003bc3252>] context_switch kernel/sched/core.c:4324 [inline]
->> [<ffffffe003bc3252>] __schedule+0x478/0xdec kernel/sched/core.c:5075
->> [<ffffffe003bc3c2a>] schedule+0x64/0x166 kernel/sched/core.c:5154
->> [<ffffffe0004b80ee>] io_uring_cancel_sqpoll+0x1de/0x294 fs/io_uring.c:8858
->> [<ffffffe0004c19cc>] io_sq_thread+0x548/0xe58 fs/io_uring.c:6750
->> [<ffffffe000005570>] ret_from_exception+0x0/0x14
->>
->> Showing all locks held in the system:
->> 3 locks held by kworker/u4:0/7:
->> 3 locks held by kworker/1:0/19:
->> 1 lock held by khungtaskd/1556:
->> #0: ffffffe00592b5e8 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x32/0x1fa kernel/locking/lockdep.c:6329
->> 1 lock held by klogd/3947:
->> 2 locks held by getty/4142:
->> #0: ffffffe00f1aa098 (&tty->ldisc_sem){++++}-{0:0}, at: ldsem_down_read+0x3c/0x48 drivers/tty/tty_ldsem.c:340
->> #1: ffffffd010b6f2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x9ac/0xb08 drivers/tty/n_tty.c:2178
->> 2 locks held by kworker/0:1/4375:
->>
->> =============================================
->>
->>
->>
->> ---
->> This report is generated by a bot. It may contain errors.
->> See https://goo.gl/tpsmEJ for more information about syzbot.
->> syzbot engineers can be reached at syzk...@googlegroups.com.
->>
->> syzbot will keep track of this issue. See:
->> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
-> Attaching a C reproducer for this bug:
-> 
-> #define _GNU_SOURCE
-> 
-> #include <fcntl.h>
-> #include <signal.h>
-> #include <stdint.h>
-> #include <stdlib.h>
-> #include <string.h>
-> #include <sys/mman.h>
-> #include <sys/syscall.h>
-> #include <sys/wait.h>
-> #include <time.h>
-> #include <unistd.h>
-> 
-> static uint64_t current_time_ms(void)
-> {
->     struct timespec ts;
->     if (clock_gettime(CLOCK_MONOTONIC, &ts))
->         exit(1);
->     return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
-> }
-> 
-> #define SIZEOF_IO_URING_SQE 64
-> #define SIZEOF_IO_URING_CQE 16
-> #define SQ_TAIL_OFFSET 64
-> #define SQ_RING_MASK_OFFSET 256
-> #define SQ_RING_ENTRIES_OFFSET 264
-> #define CQ_RING_ENTRIES_OFFSET 268
-> #define CQ_CQES_OFFSET 320
-> 
-> struct io_sqring_offsets {
->     uint32_t head;
->     uint32_t tail;
->     uint32_t ring_mask;
->     uint32_t ring_entries;
->     uint32_t flags;
->     uint32_t dropped;
->     uint32_t array;
->     uint32_t resv1;
->     uint64_t resv2;
-> };
-> 
-> struct io_cqring_offsets {
->     uint32_t head;
->     uint32_t tail;
->     uint32_t ring_mask;
->     uint32_t ring_entries;
->     uint32_t overflow;
->     uint32_t cqes;
->     uint64_t resv[2];
-> };
-> 
-> struct io_uring_params {
->     uint32_t sq_entries;
->     uint32_t cq_entries;
->     uint32_t flags;
->     uint32_t sq_thread_cpu;
->     uint32_t sq_thread_idle;
->     uint32_t features;
->     uint32_t resv[4];
->     struct io_sqring_offsets sq_off;
->     struct io_cqring_offsets cq_off;
-> };
-> 
-> #define IORING_OFF_SQ_RING 0
-> #define IORING_OFF_SQES 0x10000000ULL
-> 
-> #define sys_io_uring_setup 425
-> static long syz_io_uring_setup(volatile long a0, volatile long a1,
-> volatile long a2, volatile long a3, volatile long a4, volatile long
-> a5)
-> {
->     uint32_t entries = (uint32_t)a0;
->     struct io_uring_params* setup_params = (struct io_uring_params*)a1;
->     void* vma1 = (void*)a2;
->     void* vma2 = (void*)a3;
->     void** ring_ptr_out = (void**)a4;
->     void** sqes_ptr_out = (void**)a5;
->     uint32_t fd_io_uring = syscall(sys_io_uring_setup, entries, setup_params);
->     uint32_t sq_ring_sz = setup_params->sq_off.array +
-> setup_params->sq_entries * sizeof(uint32_t);
->     uint32_t cq_ring_sz = setup_params->cq_off.cqes +
-> setup_params->cq_entries * SIZEOF_IO_URING_CQE;
->     uint32_t ring_sz = sq_ring_sz > cq_ring_sz ? sq_ring_sz : cq_ring_sz;
->     *ring_ptr_out = mmap(vma1, ring_sz, PROT_READ | PROT_WRITE,
-> MAP_SHARED | MAP_POPULATE | MAP_FIXED, fd_io_uring,
-> IORING_OFF_SQ_RING);
->     uint32_t sqes_sz = setup_params->sq_entries * SIZEOF_IO_URING_SQE;
->     *sqes_ptr_out = mmap(vma2, sqes_sz, PROT_READ | PROT_WRITE,
-> MAP_SHARED | MAP_POPULATE | MAP_FIXED, fd_io_uring, IORING_OFF_SQES);
->     return fd_io_uring;
-> }
-> 
-> static long syz_io_uring_submit(volatile long a0, volatile long a1,
-> volatile long a2, volatile long a3)
-> {
->     char* ring_ptr = (char*)a0;
->     char* sqes_ptr = (char*)a1;
->     char* sqe = (char*)a2;
->     uint32_t sqes_index = (uint32_t)a3;
->     uint32_t sq_ring_entries = *(uint32_t*)(ring_ptr + SQ_RING_ENTRIES_OFFSET);
->     uint32_t cq_ring_entries = *(uint32_t*)(ring_ptr + CQ_RING_ENTRIES_OFFSET);
->     uint32_t sq_array_off = (CQ_CQES_OFFSET + cq_ring_entries *
-> SIZEOF_IO_URING_CQE + 63) & ~63;
->     if (sq_ring_entries)
->         sqes_index %= sq_ring_entries;
->     char* sqe_dest = sqes_ptr + sqes_index * SIZEOF_IO_URING_SQE;
->     memcpy(sqe_dest, sqe, SIZEOF_IO_URING_SQE);
->     uint32_t sq_ring_mask = *(uint32_t*)(ring_ptr + SQ_RING_MASK_OFFSET);
->     uint32_t* sq_tail_ptr = (uint32_t*)(ring_ptr + SQ_TAIL_OFFSET);
->     uint32_t sq_tail = *sq_tail_ptr & sq_ring_mask;
->     uint32_t sq_tail_next = *sq_tail_ptr + 1;
->     uint32_t* sq_array = (uint32_t*)(ring_ptr + sq_array_off);
->     *(sq_array + sq_tail) = sqes_index;
->     __atomic_store_n(sq_tail_ptr, sq_tail_next, __ATOMIC_RELEASE);
->     return 0;
-> }
-> 
-> static void kill_and_wait(int pid, int* status)
-> {
->     kill(-pid, SIGKILL);
->     kill(pid, SIGKILL);
->     while (waitpid(-1, status, __WALL) != pid) {
->     }
-> }
-> 
-> #define WAIT_FLAGS __WALL
-> 
-> uint64_t r[3] = {0xffffffffffffffff, 0x0, 0x0};
-> 
-> void trigger_bug(void)
-> {
->     intptr_t res = 0;
->     *(uint32_t*)0x20000204 = 0;
->     *(uint32_t*)0x20000208 = 2;
->     *(uint32_t*)0x2000020c = 0;
->     *(uint32_t*)0x20000210 = 0;
->     *(uint32_t*)0x20000218 = -1;
->     memset((void*)0x2000021c, 0, 12);
->     res = -1;
->     res = syz_io_uring_setup(0x7987, 0x20000200, 0x20400000,
-> 0x20ffd000, 0x200000c0, 0x200001c0);
->     if (res != -1) {
->         r[0] = res;
->         r[1] = *(uint64_t*)0x200000c0;
->         r[2] = *(uint64_t*)0x200001c0;
->     }
->     *(uint8_t*)0x20000180 = 0xb;
->     *(uint8_t*)0x20000181 = 1;
->     *(uint16_t*)0x20000182 = 0;
->     *(uint32_t*)0x20000184 = 0;
->     *(uint64_t*)0x20000188 = 4;
->     *(uint64_t*)0x20000190 = 0x20000140;
->     *(uint64_t*)0x20000140 = 0x77359400;
->     *(uint64_t*)0x20000148 = 0;
->     *(uint32_t*)0x20000198 = 1;
->     *(uint32_t*)0x2000019c = 0;
->     *(uint64_t*)0x200001a0 = 0;
->     *(uint16_t*)0x200001a8 = 0;
->     *(uint16_t*)0x200001aa = 0;
->     memset((void*)0x200001ac, 0, 20);
->     syz_io_uring_submit(r[1], r[2], 0x20000180, 1);
->     *(uint32_t*)0x20000544 = 0;
->     *(uint32_t*)0x20000548 = 0x36;
->     *(uint32_t*)0x2000054c = 0;
->     *(uint32_t*)0x20000550 = 0;
->     *(uint32_t*)0x20000558 = r[0];
->     memset((void*)0x2000055c, 0, 12);
->     syz_io_uring_setup(0x4bf1, 0x20000540, 0x20ffd000, 0x20ffc000, 0, 0);
-> 
-> }
-> int main(void)
-> {
->     syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 7ul, 0x32ul, -1, 0ul);
->     int pid = fork();
->     if (pid < 0)
->         exit(1);
->     if (pid == 0) {
->         trigger_bug();
->         exit(0);
->     }
->     int status = 0;
->     uint64_t start = current_time_ms();
->     for (;;) {
->         if (current_time_ms() - start < 1000) {
->             continue;
->         }
->         kill_and_wait(pid, &status);
->         break;
->     }
->     return 0;
-> }
-> 
+Why haven't the same mechanism used for both memory hotplug and hotunplug?
+They both have different requirements:
+
+Memory hotplug causes (usually) HPT resize-ups, which are fine happening
+at the start of hotplug, but resize-ups should not ever be disabled, as
+other mechanisms may try to increase memory, hitting issues with a HPT
+that is too small.
+
+Memory hotunplug causes HPT resize-downs, which can be disabled (HPT will
+just remain larger for a while), but need to happen at the end of an
+hotunplug operation. If we want to batch it, we need to disable
+resize-downs and perform it only at the end.
+
+Tests done with this patchset in the same machine / guest config:
+Starting memory: 129GB, DIMM: 256GB
+Before patchset: hotplug = 710s, hotunplug = 621s.
+After patchset: hotplug  = 21s, hotunplug = 100s.
+
+Any feedback will be appreciated!
+
+Changes since v1:
+- Atomic used to disable resize was replaced by a mutex
+- Removed wrappers, testing for !radix directly in hot(un)plug routine
+- Added bounds to HPT resize loop
+- Removed batching from dlpar_memory_*_by_index, as it adds a single LMB 
+
+Best regards,
+Leonardo Bras (3):
+  powerpc/mm/hash: Avoid resizing-down HPT on first memory hotplug
+  powerpc/mm/hash: Avoid multiple HPT resize-ups on memory hotplug
+  powerpc/mm/hash: Avoid multiple HPT resize-downs on memory hotunplug
+
+ arch/powerpc/include/asm/book3s/64/hash.h     |  4 +
+ arch/powerpc/mm/book3s64/hash_utils.c         | 95 ++++++++++++++++---
+ .../platforms/pseries/hotplug-memory.c        | 35 +++++++
+ 3 files changed, 119 insertions(+), 15 deletions(-)
 
 -- 
-Pavel Begunkov
+2.30.2
+
