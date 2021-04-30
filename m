@@ -2,393 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7510E37008C
+	by mail.lfdr.de (Postfix) with ESMTP id C316237008F
 	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231560AbhD3Sdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 14:33:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59132 "EHLO mx2.suse.de"
+        id S231652AbhD3Sdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 14:33:40 -0400
+Received: from mga06.intel.com ([134.134.136.31]:44389 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231499AbhD3Sdd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 14:33:33 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 24D5DAC36;
-        Fri, 30 Apr 2021 18:32:44 +0000 (UTC)
-From:   Enzo Matsumiya <ematsumiya@suse.de>
-To:     linux-leds@vger.kernel.org, linux-block@vger.kernel.org
-Cc:     u.kleine-koenig@pengutronix.de,
-        Enzo Matsumiya <ematsumiya@suse.de>,
-        Jens Axboe <axboe@kernel.dk>, Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 2/2] leds: trigger: implement block trigger
-Date:   Fri, 30 Apr 2021 15:32:11 -0300
-Message-Id: <20210430183216.27458-3-ematsumiya@suse.de>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210430183216.27458-1-ematsumiya@suse.de>
-References: <20210430183216.27458-1-ematsumiya@suse.de>
+        id S231204AbhD3Sdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 14:33:37 -0400
+IronPort-SDR: cDH+ydm3F3DplhIR4xQRkjN44Uz0eqO4qXpLj66XWX7W6MDjH6a9FzzKYJIfaD3ggGbwZXs7jH
+ u0o6Q9Z9+Hxg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9970"; a="258620576"
+X-IronPort-AV: E=Sophos;i="5.82,263,1613462400"; 
+   d="scan'208";a="258620576"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2021 11:32:48 -0700
+IronPort-SDR: BuEEwoZVskVpKur8QODMKzjWucceyRG+8FXzCydVCLpFg3qZhfZ48pTkcyex1irrACKguT+/Lo
+ QORo15MQgF7A==
+X-IronPort-AV: E=Sophos;i="5.82,263,1613462400"; 
+   d="scan'208";a="537852516"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.119.226]) ([10.212.119.226])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2021 11:32:46 -0700
+Subject: Re: extending ucontext (Re: [PATCH v26 25/30] x86/cet/shstk: Handle
+ signals for shadow stack)
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     linux-arch <linux-arch@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
+ <20210427204315.24153-26-yu-cheng.yu@intel.com>
+ <CALCETrVTeYfzO-XWh+VwTuKCyPyp-oOMGH=QR_msG9tPQ4xPmA@mail.gmail.com>
+ <8fd86049-930d-c9b7-379c-56c02a12cd77@intel.com>
+ <CALCETrX9z-73wpy-SCy8NE1XfQgXAN0mCmjv0jXDDomMyS7TKg@mail.gmail.com>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <a7c332c8-9368-40b1-e221-ec921f7db948@intel.com>
+Date:   Fri, 30 Apr 2021 11:32:45 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALCETrX9z-73wpy-SCy8NE1XfQgXAN0mCmjv0jXDDomMyS7TKg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Usage (using capslock LED as example/test):
+On 4/30/2021 10:47 AM, Andy Lutomirski wrote:
+> On Fri, Apr 30, 2021 at 10:00 AM Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
+>>
+>> On 4/28/2021 4:03 PM, Andy Lutomirski wrote:
+>>> On Tue, Apr 27, 2021 at 1:44 PM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
+>>>>
+>>>> When shadow stack is enabled, a task's shadow stack states must be saved
+>>>> along with the signal context and later restored in sigreturn.  However,
+>>>> currently there is no systematic facility for extending a signal context.
+>>>> There is some space left in the ucontext, but changing ucontext is likely
+>>>> to create compatibility issues and there is not enough space for further
+>>>> extensions.
+>>>>
+>>>> Introduce a signal context extension struct 'sc_ext', which is used to save
+>>>> shadow stack restore token address.  The extension is located above the fpu
+>>>> states, plus alignment.  The struct can be extended (such as the ibt's
+>>>> wait_endbr status to be introduced later), and sc_ext.total_size field
+>>>> keeps track of total size.
+>>>
+>>> I still don't like this.
+>>>
+>>> Here's how the signal layout works, for better or for worse:
+>>>
+>>> The kernel has:
+>>>
+>>> struct rt_sigframe {
+>>>       char __user *pretcode;
+>>>       struct ucontext uc;
+>>>       struct siginfo info;
+>>>       /* fp state follows here */
+>>> };
+>>>
+>>> This is roughly the actual signal frame.  But userspace does not have
+>>> this struct declared, and user code does not know the sizes of the
+>>> fields.  So it's accessed in a nonsensical way.  The signal handler
+>>> function is passed a pointer to the whole sigframe implicitly in RSP,
+>>> a pointer to &frame->info in RSI, anda pointer to &frame->uc in RDX.
+>>> User code can *find* the fp state by following a pointer from
+>>> mcontext, which is, in turn, found via uc:
+>>>
+>>> struct ucontext {
+>>>       unsigned long      uc_flags;
+>>>       struct ucontext  *uc_link;
+>>>       stack_t          uc_stack;
+>>>       struct sigcontext uc_mcontext;  <-- fp pointer is in here
+>>>       sigset_t      uc_sigmask;    /* mask last for extensibility */
+>>> };
+>>>
+>>> The kernel, in sigreturn, works a bit differently.  The sigreturn
+>>> variants know the base address of the frame but don't have the benefit
+>>> of receiving pointers to the fields.  So instead the kernel takes
+>>> advantage of the fact that it knows the offset to uc and parses uc
+>>> accordingly.  And the kernel follows the pointer in mcontext to find
+>>> the fp state.  The latter bit is quite important later.  The kernel
+>>> does not parse info at all.
+>>>
+>>> The fp state is its own mess.  When XSAVE happened, Intel kindly (?)
+>>> gave us a software defined area between the "legacy" x87 region and
+>>> the modern supposedly extensible part.  Linux sticks the following
+>>> structure in that hole:
+>>>
+>>> struct _fpx_sw_bytes {
+>>>       /*
+>>>        * If set to FP_XSTATE_MAGIC1 then this is an xstate context.
+>>>        * 0 if a legacy frame.
+>>>        */
+>>>       __u32                magic1;
+>>>
+>>>       /*
+>>>        * Total size of the fpstate area:
+>>>        *
+>>>        *  - if magic1 == 0 then it's sizeof(struct _fpstate)
+>>>        *  - if magic1 == FP_XSTATE_MAGIC1 then it's sizeof(struct _xstate)
+>>>        *    plus extensions (if any)
+>>>        */
+>>>       __u32                extended_size;
+>>>
+>>>       /*
+>>>        * Feature bit mask (including FP/SSE/extended state) that is present
+>>>        * in the memory layout:
+>>>        */
+>>>       __u64                xfeatures;
+>>>
+>>>       /*
+>>>        * Actual XSAVE state size, based on the xfeatures saved in the layout.
+>>>        * 'extended_size' is greater than 'xstate_size':
+>>>        */
+>>>       __u32                xstate_size;
+>>>
+>>>       /* For future use: */
+>>>       __u32                padding[7];
+>>> };
+>>>
+>>>
+>>> That's where we are right now upstream.  The kernel has a parser for
+>>> the FPU state that is bugs piled upon bugs and is going to have to be
+>>> rewritten sometime soon.  On top of all this, we have two upcoming
+>>> features, both of which require different kinds of extensions:
+>>>
+>>> 1. AVX-512.  (Yeah, you thought this story was over a few years ago,
+>>> but no.  And AMX makes it worse.)  To make a long story short, we
+>>> promised user code many years ago that a signal frame fit in 2048
+>>> bytes with some room to spare.  With AVX-512 this is false.  With AMX
+>>> it's so wrong it's not even funny.  The only way out of the mess
+>>> anyone has come up with involves making the length of the FPU state
+>>> vary depending on which features are INIT, i.e. making it more compact
+>>> than "compact" mode is.  This has a side effect: it's no longer
+>>> possible to modify the state in place, because enabling a feature with
+>>> no space allocated will make the structure bigger, and the stack won't
+>>> have room.  Fortunately, one can relocate the entire FPU state, update
+>>> the pointer in mcontext, and the kernel will happily follow the
+>>> pointer.  So new code on a new kernel using a super-compact state
+>>> could expand the state by allocating new memory (on the heap? very
+>>> awkwardly on the stack?) and changing the pointer.  For all we know,
+>>> some code already fiddles with the pointer.  This is great, except
+>>> that your patch sticks more data at the end of the FPU block that no
+>>> one is expecting, and your sigreturn code follows that pointer, and
+>>> will read off into lala land.
+>>>
+>>
+>> Then, what about we don't do that at all.  Is it possible from now on we
+>> don't stick more data at the end, and take the relocating-fpu approach?
+>>
+>>> 2. CET.  CET wants us to find a few more bytes somewhere, and those
+>>> bytes logically belong in ucontext, and here we are.
+>>>
+>>
+>> Fortunately, we can spare CET the need of ucontext extension.  When the
+>> kernel handles sigreturn, the user-mode shadow stack pointer is right at
+>> the restore token.  There is no need to put that in ucontext.
+> 
+> That seems entirely reasonable.  This might also avoid needing to
+> teach CRIU about CET at all.
+> 
+>>
+>> However, the WAIT_ENDBR status needs to be saved/restored for signals.
+>> Since IBT is now dependent on shadow stack, we can use a spare bit of
+>> the shadow stack restore token for that.
+> 
+> That seems like unnecessary ABI coupling.  We have plenty of bits in
+> uc_flags, and we have an entire reserved word in sigcontext.  How
+> about just sticking this bit in one of those places?
 
-    openSUSE-tw:/sys/class/leds/input0::capslock # echo block > trigger
-    openSUSE-tw:/sys/class/leds/input0::capslock # cat trigger
-    none usb-gadget ... ... [block]
+Yes, I will make it UC_WAIT_ENDBR.
 
-A single "block" trigger is created, with each non-empty block device
-being available to have its stats polled.
-
-    openSUSE-tw:/sys/class/leds/input0::capslock # ls
-    block_devices  brightness  device  max_brightness  power  subsystem  trigger  uevent
-    openSUSE-tw:/sys/class/leds/input0::capslock # ls block_devices/
-    sda  sr0
-    openSUSE-tw:/sys/class/leds/input0::capslock # cat block_devices/sda
-    1
-    openSUSE-tw:/sys/class/leds/input0::capslock # echo 0 > block_devices/sr0
-
-Activity is then represented in an accumulated manner (part_read_stat_accum()),
-with a fixed blinking interval of 50ms.
-
-Signed-off-by: Enzo Matsumiya <ematsumiya@suse.de>
----
- drivers/leds/trigger/Kconfig         |  10 +
- drivers/leds/trigger/Makefile        |   1 +
- drivers/leds/trigger/ledtrig-block.c | 293 +++++++++++++++++++++++++++
- 3 files changed, 304 insertions(+)
- create mode 100644 drivers/leds/trigger/ledtrig-block.c
-
-diff --git a/drivers/leds/trigger/Kconfig b/drivers/leds/trigger/Kconfig
-index b77a01bd27f4..bead31a19148 100644
---- a/drivers/leds/trigger/Kconfig
-+++ b/drivers/leds/trigger/Kconfig
-@@ -153,4 +153,14 @@ config LEDS_TRIGGER_TTY
- 
- 	  When build as a module this driver will be called ledtrig-tty.
- 
-+config LEDS_TRIGGER_BLOCK
-+	tristate "LED Block Device Trigger"
-+	depends on BLOCK
-+	default m
-+	help
-+	  This allows LEDs to be controlled by block device activity.
-+	  This trigger doesn't require the lower level drivers to have any
-+	  instrumentation. The activity is collected by polling the disk stats.
-+	  If unsure, say Y.
-+
- endif # LEDS_TRIGGERS
-diff --git a/drivers/leds/trigger/Makefile b/drivers/leds/trigger/Makefile
-index 25c4db97cdd4..cadc77d95802 100644
---- a/drivers/leds/trigger/Makefile
-+++ b/drivers/leds/trigger/Makefile
-@@ -16,3 +16,4 @@ obj-$(CONFIG_LEDS_TRIGGER_NETDEV)	+= ledtrig-netdev.o
- obj-$(CONFIG_LEDS_TRIGGER_PATTERN)	+= ledtrig-pattern.o
- obj-$(CONFIG_LEDS_TRIGGER_AUDIO)	+= ledtrig-audio.o
- obj-$(CONFIG_LEDS_TRIGGER_TTY)		+= ledtrig-tty.o
-+obj-$(CONFIG_LEDS_TRIGGER_BLOCK)	+= ledtrig-block.o
-diff --git a/drivers/leds/trigger/ledtrig-block.c b/drivers/leds/trigger/ledtrig-block.c
-new file mode 100644
-index 000000000000..b00dbf916876
---- /dev/null
-+++ b/drivers/leds/trigger/ledtrig-block.c
-@@ -0,0 +1,293 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * LED block trigger
-+ *
-+ * Copyright (C) 2021 Enzo Matsumiya <ematsumiya@suse.de>
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/module.h>
-+#include <linux/mutex.h>
-+#include <linux/genhd.h>
-+#include <linux/leds.h>
-+#include <linux/workqueue.h>
-+#include <linux/part_stat.h>
-+
-+#include "../leds.h"
-+
-+extern struct class block_class;
-+extern const struct device_type disk_type;
-+
-+struct ledtrig_blk_data {
-+	struct led_classdev *led_cdev;
-+	struct list_head block_devices;
-+};
-+
-+struct ledtrig_blk_device {
-+	struct list_head list;
-+
-+	struct ledtrig_blk_data *data;
-+
-+	struct gendisk *disk;
-+	struct device_attribute attr;
-+	struct delayed_work work;
-+	struct mutex lock;
-+	u64 last_activity;
-+	bool observed;
-+};
-+
-+/*
-+ * Blink interval in msecs
-+ */
-+#define BLINK_INTERVAL 50
-+
-+
-+/*
-+ * Helpers
-+ */
-+
-+static int _for_each_blk(void *data,
-+			  int (*fn)(void *, struct gendisk *))
-+{
-+	struct class_dev_iter iter;
-+	struct device *dev;
-+	int err;
-+
-+	/* iterate through all block devices on the system */
-+	class_dev_iter_init(&iter, &block_class, NULL, &disk_type);
-+	while ((dev = class_dev_iter_next(&iter))) {
-+	        struct gendisk *disk = dev_to_disk(dev);
-+
-+	        err = fn(data, disk);
-+
-+	        if (err) {
-+	                pr_err("error running fn() on disk %s\n", disk->disk_name);
-+	                return err;
-+	        }
-+	}
-+	class_dev_iter_exit(&iter);
-+
-+	return 0;
-+}
-+
-+
-+/*
-+ * Device attr
-+ */
-+
-+static ssize_t ledtrig_blk_device_show(struct device *dev,
-+				       struct device_attribute *attr, char *buf)
-+{
-+	struct ledtrig_blk_device *device = container_of(attr,
-+							 struct ledtrig_blk_device,
-+							 attr);
-+	bool observed;
-+
-+	mutex_lock(&device->lock);
-+	observed = device->observed;
-+	mutex_unlock(&device->lock);
-+
-+	return sprintf(buf, "%d\n", observed) + 1;
-+}
-+
-+static ssize_t ledtrig_blk_device_store(struct device *dev,
-+					struct device_attribute *attr,
-+					const char *buf, size_t size)
-+{
-+	struct ledtrig_blk_device *device = container_of(attr,
-+							 struct ledtrig_blk_device,
-+							 attr);
-+	int err = -EINVAL;
-+
-+	mutex_lock(&device->lock);
-+	if (!strcmp(buf, "0") || !strcmp(buf, "0\n"))
-+		device->observed = 0;
-+	else if (!strcmp(buf, "1") || !strcmp(buf, "1\n"))
-+		device->observed = 1;
-+	else
-+		goto out_unlock;
-+
-+	err = size;
-+
-+out_unlock:
-+	mutex_unlock(&device->lock);
-+
-+	return err;
-+}
-+
-+static struct attribute *devices_attrs[] = {
-+	NULL,
-+};
-+
-+static const struct attribute_group devices_group = {
-+	.name = "block_devices",
-+	.attrs = devices_attrs,
-+};
-+
-+
-+/*
-+ * Work
-+ */
-+
-+static void ledtrig_blk_work(struct work_struct *work)
-+{
-+	struct ledtrig_blk_device *device = container_of(work, struct ledtrig_blk_device, work.work);
-+	struct gendisk *disk;
-+	unsigned long interval = BLINK_INTERVAL;
-+	u64 activity;
-+
-+	if (!device->observed)
-+		goto out;
-+
-+	disk = device->disk;
-+	activity = part_stat_read_accum(disk->part0, ios);
-+
-+	if (device->last_activity != activity) {
-+		led_stop_software_blink(device->data->led_cdev);
-+		led_blink_set_oneshot(device->data->led_cdev, &interval, &interval, 0);
-+
-+		device->last_activity = activity;
-+	}
-+
-+out:
-+	schedule_delayed_work(&device->work, interval * 2);
-+}
-+
-+
-+/*
-+ * Adding & removing block devices
-+ */
-+
-+static int ledtrig_blk_add_device(void *data,
-+				  struct gendisk *disk)
-+{
-+	struct ledtrig_blk_data *led_blk_data = (struct ledtrig_blk_data *) data;
-+	struct led_classdev *led_cdev = led_blk_data->led_cdev;
-+	struct ledtrig_blk_device *device;
-+	int err;
-+
-+	device = kzalloc(sizeof(*device), GFP_KERNEL);
-+	if (!device) {
-+		err = -ENOMEM;
-+		goto err_out;
-+	}
-+
-+	device->data = led_blk_data;
-+	device->observed = true;
-+
-+	sysfs_attr_init(&device->attr.attr);
-+	device->attr.attr.name = disk->disk_name;
-+	device->attr.attr.mode = S_IRUSR | S_IWUSR;
-+	device->attr.show = ledtrig_blk_device_show;
-+	device->attr.store = ledtrig_blk_device_store;
-+	device->disk = disk;
-+	device->last_activity = 0;
-+
-+	INIT_DELAYED_WORK(&device->work, ledtrig_blk_work);
-+	mutex_init(&device->lock);
-+
-+	list_add_tail(&device->list, &led_blk_data->block_devices);
-+
-+	err = sysfs_add_file_to_group(&led_cdev->dev->kobj, &device->attr.attr,
-+				      devices_group.name);
-+	if (err)
-+		goto err_free;
-+
-+	schedule_delayed_work(&device->work, BLINK_INTERVAL * 2);
-+
-+	return 0;
-+
-+err_free:
-+	kfree(device);
-+err_out:
-+	return err;
-+}
-+
-+static int ledtrig_blk_add_all_devices(struct ledtrig_blk_data *led_blk_data)
-+{
-+	(void)_for_each_blk(led_blk_data, ledtrig_blk_add_device);
-+
-+	return 0;
-+}
-+
-+static void ledtrig_blk_remove_device(struct ledtrig_blk_data *led_blk_data,
-+				      struct ledtrig_blk_device *device)
-+{
-+	struct led_classdev *led_cdev = led_blk_data->led_cdev;
-+
-+	list_del(&device->list);
-+	sysfs_remove_file_from_group(&led_cdev->dev->kobj, &device->attr.attr,
-+				     devices_group.name);
-+	kfree(device);
-+}
-+
-+
-+/*
-+ * Init, exit, etc
-+ */
-+
-+static int ledtrig_blk_activate(struct led_classdev *led_cdev)
-+{
-+	struct ledtrig_blk_data *led_blk_data;
-+	int err;
-+
-+	led_blk_data = kzalloc(sizeof(*led_blk_data), GFP_KERNEL);
-+	if (!led_blk_data)
-+		return -ENOMEM;
-+
-+	led_blk_data->led_cdev = led_cdev;
-+
-+	/* List of devices */
-+	INIT_LIST_HEAD(&led_blk_data->block_devices);
-+	err = sysfs_create_group(&led_cdev->dev->kobj, &devices_group);
-+	if (err)
-+		goto err_free;
-+
-+	ledtrig_blk_add_all_devices(led_blk_data);
-+	led_set_trigger_data(led_cdev, led_blk_data);
-+
-+	return 0;
-+
-+err_free:
-+	kfree(led_blk_data);
-+	return err;
-+}
-+
-+static void ledtrig_blk_deactivate(struct led_classdev *led_cdev)
-+{
-+	struct ledtrig_blk_data *led_blk_data = led_get_trigger_data(led_cdev);
-+	struct ledtrig_blk_device *device, *tmp;
-+
-+	list_for_each_entry_safe(device, tmp, &led_blk_data->block_devices, list) {
-+		cancel_delayed_work_sync(&device->work);
-+		ledtrig_blk_remove_device(led_blk_data, device);
-+	}
-+
-+	sysfs_remove_group(&led_cdev->dev->kobj, &devices_group);
-+
-+	kfree(led_blk_data);
-+}
-+
-+static struct led_trigger ledtrig_blk_trigger = {
-+	.name = "block",
-+	.activate = ledtrig_blk_activate,
-+	.deactivate = ledtrig_blk_deactivate,
-+};
-+
-+static int __init ledtrig_blk_init(void)
-+{
-+	return led_trigger_register(&ledtrig_blk_trigger);
-+}
-+
-+static void __exit ledtrig_blk_exit(void)
-+{
-+	led_trigger_unregister(&ledtrig_blk_trigger);
-+}
-+
-+module_init(ledtrig_blk_init);
-+module_exit(ledtrig_blk_exit);
-+
-+MODULE_AUTHOR("Enzo Matsumiya <ematsumiya@suse.de>");
-+MODULE_DESCRIPTION("LED block trigger");
-+MODULE_LICENSE("GPL v2");
-+
--- 
-2.31.1
-
+Thanks,
+Yu-cheng
