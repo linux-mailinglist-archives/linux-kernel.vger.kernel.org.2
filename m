@@ -2,385 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C782136F3EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 04:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95D4336F3E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 04:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229892AbhD3CGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 22:06:41 -0400
-Received: from conuserg-12.nifty.com ([210.131.2.79]:48865 "EHLO
-        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbhD3CGk (ORCPT
+        id S229831AbhD3CEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 22:04:01 -0400
+Received: from smtprelay0060.hostedemail.com ([216.40.44.60]:49754 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229577AbhD3CEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 22:06:40 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 13U23Dpm021584;
-        Fri, 30 Apr 2021 11:03:14 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 13U23Dpm021584
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1619748196;
-        bh=gbda8k1gb5QKS5gh8B4B++CHlzzHQAOwdbtFLQCvdLk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Orr5vE45Xt9/3ihl6udKavMFU8B0yC8PfRCPS77DbaTQQFSrrT7E78T7ShFNzASEN
-         YIpzxwW6Yyklep/hYCuQm8MzIdE9HA8sOC/KC9vnzFesHX0H6Kmv9SLt+IwTkg3gd7
-         BlOLD5KrX9EZvhz22hhkivGM9w8EFyt3SjVNoSOVzbOtMGg/AQbh986225wsqj0EAD
-         3ORBPvk3OvzFyNIjqEbMrgfyZ5gdwBQpGiZtF8V5Zvgw0tUJa/T3kQnZ4q5LAwRsAv
-         BAFZWLFCpNjn4sVhrdxp8C5t0mFQMLeFt1hqQwlWu0TfTONUi25KD3aVShb2gFbUKT
-         KPICiVelmpKiA==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>, Rob Herring <robh@kernel.org>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Alexandru Ciobotaru <alcioa@amazon.com>,
-        Alexandru Vasile <lexnv@amazon.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        devicetree@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH v2] .gitignore: prefix local generated files with a slash
-Date:   Fri, 30 Apr 2021 11:03:08 +0900
-Message-Id: <20210430020308.66792-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Thu, 29 Apr 2021 22:04:00 -0400
+Received: from omf17.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 61B9F180278B4;
+        Fri, 30 Apr 2021 02:03:12 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf17.hostedemail.com (Postfix) with ESMTPA id 2A83527DD11;
+        Fri, 30 Apr 2021 02:03:11 +0000 (UTC)
+Message-ID: <8dc8272b78e2340a4244ded29d342ff0f0f519eb.camel@perches.com>
+Subject: Re: [RFC v3] scripts: kernel-doc: reduce repeated regex expressions
+ into variables
+From:   Joe Perches <joe@perches.com>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Aditya Srivastava <yashsri421@gmail.com>
+Cc:     lukas.bulwahn@gmail.com, willy@infradead.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 29 Apr 2021 19:03:09 -0700
+In-Reply-To: <8735v8d5ja.fsf@meer.lwn.net>
+References: <20210427165633.GA235567@casper.infradead.org>
+         <20210429063729.8144-1-yashsri421@gmail.com> <8735v8d5ja.fsf@meer.lwn.net>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.60
+X-Stat-Signature: xe1pdak8z3o5kcfrqusxzbhj9hisx4we
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 2A83527DD11
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+WL1RP+awhB6YUyhGH9yq3tt1EagZ+/iE=
+X-HE-Tag: 1619748191-726048
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pattern prefixed with '/' matches files in the same directory,
-but not ones in sub-directories.
+On Thu, 2021-04-29 at 17:39 -0600, Jonathan Corbet wrote:
+> Aditya Srivastava <yashsri421@gmail.com> writes:
+> 
+> > There are some regex expressions in the kernel-doc script, which are used
+> > repeatedly in the script.
+> > 
+> > Reduce such expressions into variables, which can be used everywhere.
+> > 
+> > A quick manual check found that no errors and warnings were added/removed
+> > in this process.
+> > 
+> > Suggested-by: Jonathan Corbet <corbet@lwn.net>
+> > Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+> > ---
+> > Changes in v3:
+> > - Remove variables for separate qualifiers in "sub dump_struct"
+> > - Make a common variable for all the qualifiers
+> > - Make $attribute global variable to use it at "sub check_sections" as well
+> > 
+> > Changes in v2:
+> > - Rename $pointer_function to $function_pointer
+> > - Combine elsif-block expressions at "sub dump_function" into lesser regex expressions
+> > - Combine $prototype_end1,$prototype_end2 expressions into a common $prototype_end
+> > 
+> >  scripts/kernel-doc | 71 ++++++++++++++++++++++------------------------
+> >  1 file changed, 34 insertions(+), 37 deletions(-)
+> 
+> So this looks good but ... it adds a warning to the build:
+> 
+> /stuff/k/git/kernel/Documentation/driver-api/media/v4l2-controls:823: ./include/media/v4l2-ctrls.h:964: WARNING: Invalid C declaration: Expected identifier in nested name. [error at 6]
+>   const * v4l2_ctrl_get_menu (u32 id)
+>   ------^
+> 
+> So it looks like something isn't being parsed quite identically?
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Acked-by: Miguel Ojeda <ojeda@kernel.org>
-Acked-by: Rob Herring <robh@kernel.org>
-Acked-by: Andra Paraschiv <andraprs@amazon.com>
----
+Perhaps a few of the regexes from checkpatch could be used or
+maybe a linux specific perl module produced.
 
-Changes in v2:
-  - rebase
-
- Documentation/devicetree/bindings/.gitignore |  4 ++--
- arch/.gitignore                              |  4 ++--
- certs/.gitignore                             |  4 ++--
- drivers/memory/.gitignore                    |  2 +-
- drivers/tty/vt/.gitignore                    |  6 +++---
- fs/unicode/.gitignore                        |  4 ++--
- kernel/.gitignore                            |  2 +-
- lib/.gitignore                               | 10 +++++-----
- samples/auxdisplay/.gitignore                |  2 +-
- samples/binderfs/.gitignore                  |  3 ++-
- samples/connector/.gitignore                 |  2 +-
- samples/hidraw/.gitignore                    |  2 +-
- samples/mei/.gitignore                       |  2 +-
- samples/nitro_enclaves/.gitignore            |  2 +-
- samples/pidfd/.gitignore                     |  2 +-
- samples/seccomp/.gitignore                   |  8 ++++----
- samples/timers/.gitignore                    |  2 +-
- samples/vfs/.gitignore                       |  4 ++--
- samples/watch_queue/.gitignore               |  3 ++-
- samples/watchdog/.gitignore                  |  2 +-
- scripts/.gitignore                           | 18 +++++++++---------
- scripts/basic/.gitignore                     |  2 +-
- scripts/dtc/.gitignore                       |  4 ++--
- scripts/gcc-plugins/.gitignore               |  2 +-
- scripts/genksyms/.gitignore                  |  2 +-
- scripts/mod/.gitignore                       |  8 ++++----
- usr/.gitignore                               |  4 ++--
- 27 files changed, 56 insertions(+), 54 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/.gitignore b/Documentation/devicetree/bindings/.gitignore
-index 3a05b99bfa26..a77719968a7e 100644
---- a/Documentation/devicetree/bindings/.gitignore
-+++ b/Documentation/devicetree/bindings/.gitignore
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
- *.example.dts
--processed-schema*.yaml
--processed-schema*.json
-+/processed-schema*.yaml
-+/processed-schema*.json
-diff --git a/arch/.gitignore b/arch/.gitignore
-index 4191da401dbb..756c19c34f99 100644
---- a/arch/.gitignore
-+++ b/arch/.gitignore
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0-only
--i386
--x86_64
-+/i386/
-+/x86_64/
-diff --git a/certs/.gitignore b/certs/.gitignore
-index 6cbd1f1a5837..8c3763f80be3 100644
---- a/certs/.gitignore
-+++ b/certs/.gitignore
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0-only
--x509_certificate_list
--x509_revocation_list
-+/x509_certificate_list
-+/x509_revocation_list
-diff --git a/drivers/memory/.gitignore b/drivers/memory/.gitignore
-index caedc4c7d2db..5e84bee05ef8 100644
---- a/drivers/memory/.gitignore
-+++ b/drivers/memory/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--ti-emif-asm-offsets.h
-+/ti-emif-asm-offsets.h
-diff --git a/drivers/tty/vt/.gitignore b/drivers/tty/vt/.gitignore
-index 3ecf42234d89..0221709b177d 100644
---- a/drivers/tty/vt/.gitignore
-+++ b/drivers/tty/vt/.gitignore
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
--conmakehash
--consolemap_deftbl.c
--defkeymap.c
-+/conmakehash
-+/consolemap_deftbl.c
-+/defkeymap.c
-diff --git a/fs/unicode/.gitignore b/fs/unicode/.gitignore
-index 9b2467e77b2d..361294571ab0 100644
---- a/fs/unicode/.gitignore
-+++ b/fs/unicode/.gitignore
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0-only
--mkutf8data
--utf8data.h
-+/mkutf8data
-+/utf8data.h
-diff --git a/kernel/.gitignore b/kernel/.gitignore
-index 4abc4e033ed8..4dc1ffe9770b 100644
---- a/kernel/.gitignore
-+++ b/kernel/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--kheaders.md5
-+/kheaders.md5
-diff --git a/lib/.gitignore b/lib/.gitignore
-index 327cb2c7f2c9..5e7fa54c4536 100644
---- a/lib/.gitignore
-+++ b/lib/.gitignore
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
--gen_crc32table
--gen_crc64table
--crc32table.h
--crc64table.h
--oid_registry_data.c
-+/crc32table.h
-+/crc64table.h
-+/gen_crc32table
-+/gen_crc64table
-+/oid_registry_data.c
-diff --git a/samples/auxdisplay/.gitignore b/samples/auxdisplay/.gitignore
-index 2ed744c0e741..d023816849bd 100644
---- a/samples/auxdisplay/.gitignore
-+++ b/samples/auxdisplay/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--cfag12864b-example
-+/cfag12864b-example
-diff --git a/samples/binderfs/.gitignore b/samples/binderfs/.gitignore
-index eb60241e8087..8fa415a3640b 100644
---- a/samples/binderfs/.gitignore
-+++ b/samples/binderfs/.gitignore
-@@ -1 +1,2 @@
--binderfs_example
-+# SPDX-License-Identifier: GPL-2.0
-+/binderfs_example
-diff --git a/samples/connector/.gitignore b/samples/connector/.gitignore
-index d86f2ff9c947..0e26039f39b5 100644
---- a/samples/connector/.gitignore
-+++ b/samples/connector/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--ucon
-+/ucon
-diff --git a/samples/hidraw/.gitignore b/samples/hidraw/.gitignore
-index d7a6074ebcf9..5233ab63262e 100644
---- a/samples/hidraw/.gitignore
-+++ b/samples/hidraw/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--hid-example
-+/hid-example
-diff --git a/samples/mei/.gitignore b/samples/mei/.gitignore
-index db5e802f041e..fe894bcb6a62 100644
---- a/samples/mei/.gitignore
-+++ b/samples/mei/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--mei-amt-version
-+/mei-amt-version
-diff --git a/samples/nitro_enclaves/.gitignore b/samples/nitro_enclaves/.gitignore
-index 827934129c90..6a718eec71f4 100644
---- a/samples/nitro_enclaves/.gitignore
-+++ b/samples/nitro_enclaves/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0
--ne_ioctl_sample
-+/ne_ioctl_sample
-diff --git a/samples/pidfd/.gitignore b/samples/pidfd/.gitignore
-index eea857fca736..d4cfa3176b1b 100644
---- a/samples/pidfd/.gitignore
-+++ b/samples/pidfd/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--pidfd-metadata
-+/pidfd-metadata
-diff --git a/samples/seccomp/.gitignore b/samples/seccomp/.gitignore
-index 4a5a5b7db30b..a6df0da77c5d 100644
---- a/samples/seccomp/.gitignore
-+++ b/samples/seccomp/.gitignore
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
--bpf-direct
--bpf-fancy
--dropper
--user-trap
-+/bpf-direct
-+/bpf-fancy
-+/dropper
-+/user-trap
-diff --git a/samples/timers/.gitignore b/samples/timers/.gitignore
-index 40510c33cf08..cd9ff7b95383 100644
---- a/samples/timers/.gitignore
-+++ b/samples/timers/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--hpet_example
-+/hpet_example
-diff --git a/samples/vfs/.gitignore b/samples/vfs/.gitignore
-index 8fdabf7e5373..79212d91285b 100644
---- a/samples/vfs/.gitignore
-+++ b/samples/vfs/.gitignore
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0-only
--test-fsmount
--test-statx
-+/test-fsmount
-+/test-statx
-diff --git a/samples/watch_queue/.gitignore b/samples/watch_queue/.gitignore
-index 2aa3c7e56a1a..823b351d3db9 100644
---- a/samples/watch_queue/.gitignore
-+++ b/samples/watch_queue/.gitignore
-@@ -1 +1,2 @@
--watch_test
-+# SPDX-License-Identifier: GPL-2.0-only
-+/watch_test
-diff --git a/samples/watchdog/.gitignore b/samples/watchdog/.gitignore
-index 74153b831244..a70a0150ed9f 100644
---- a/samples/watchdog/.gitignore
-+++ b/samples/watchdog/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--watchdog-simple
-+/watchdog-simple
-diff --git a/scripts/.gitignore b/scripts/.gitignore
-index a6c11316c969..e83c620ef52c 100644
---- a/scripts/.gitignore
-+++ b/scripts/.gitignore
-@@ -1,11 +1,11 @@
- # SPDX-License-Identifier: GPL-2.0-only
--bin2c
--kallsyms
--unifdef
--recordmcount
--sorttable
--asn1_compiler
--extract-cert
--sign-file
--insert-sys-cert
-+/asn1_compiler
-+/bin2c
-+/extract-cert
-+/insert-sys-cert
-+/kallsyms
- /module.lds
-+/recordmcount
-+/sign-file
-+/sorttable
-+/unifdef
-diff --git a/scripts/basic/.gitignore b/scripts/basic/.gitignore
-index 98ae1f509592..961c91c8a884 100644
---- a/scripts/basic/.gitignore
-+++ b/scripts/basic/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--fixdep
-+/fixdep
-diff --git a/scripts/dtc/.gitignore b/scripts/dtc/.gitignore
-index 8a8b62bf3d3c..e0b5c1d2464a 100644
---- a/scripts/dtc/.gitignore
-+++ b/scripts/dtc/.gitignore
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0-only
--dtc
--fdtoverlay
-+/dtc
-+/fdtoverlay
-diff --git a/scripts/gcc-plugins/.gitignore b/scripts/gcc-plugins/.gitignore
-index b04e0f0f033e..5cc385b9eb97 100644
---- a/scripts/gcc-plugins/.gitignore
-+++ b/scripts/gcc-plugins/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--randomize_layout_seed.h
-+/randomize_layout_seed.h
-diff --git a/scripts/genksyms/.gitignore b/scripts/genksyms/.gitignore
-index 999af710f83d..0b275abf9405 100644
---- a/scripts/genksyms/.gitignore
-+++ b/scripts/genksyms/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--genksyms
-+/genksyms
-diff --git a/scripts/mod/.gitignore b/scripts/mod/.gitignore
-index 07e4a39f90a6..ed2e13b708ce 100644
---- a/scripts/mod/.gitignore
-+++ b/scripts/mod/.gitignore
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
--elfconfig.h
--mk_elfconfig
--modpost
--devicetable-offsets.h
-+/elfconfig.h
-+/mk_elfconfig
-+/modpost
-+/devicetable-offsets.h
-diff --git a/usr/.gitignore b/usr/.gitignore
-index 935442ed1eb2..8996e7a88902 100644
---- a/usr/.gitignore
-+++ b/usr/.gitignore
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
--gen_init_cpio
--initramfs_data.cpio
-+/gen_init_cpio
-+/initramfs_data.cpio
- /initramfs_inc_data
--- 
-2.27.0
 
