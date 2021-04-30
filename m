@@ -2,254 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B397F370118
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 21:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A013337011F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 21:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231735AbhD3TTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 15:19:18 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:51187 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhD3TTK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 15:19:10 -0400
-Received: by mail-io1-f71.google.com with SMTP id k20-20020a5d97d40000b02903e994fab1f1so37323674ios.17
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 12:18:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=W21MpQbg2r+zNE3j8+vGWPwY3QTKyRcwFXVYnsEsdfk=;
-        b=SCz9LwmL5QF48ieX0k+nMq8U9Jr8aqrXQTolwoANyi72lUAy3Ii1Wj51ul2KgXjMQ+
-         Hmh6Th5yzR55logBwnUeCdNXmBKgWAH7ENFwmgtSixeofPhI6rTBEb8k04yZLtMlK1/J
-         ncA2fW8shtqmYYkHV2r8pVc3yEDAUpaGvRbz7gX399UwB9qA97TeGHn+ptv4DEYwg6VC
-         ZvbuzFjWHeZTCpa8YCNYFzSIU9AKu33g5qppeusIiaY3UU00xbDQ3+0yGbYRhXjVOvBJ
-         2NNaZChKYx7szqsKRnkZsGmdW38YhiIF1rhYxuR0vMK4/c6SOoovYCzhKBfvIh9goSp6
-         Qo5A==
-X-Gm-Message-State: AOAM530gw+LdU4sif7jLBAFYH+brcHdbIlJ9J8WVKgywJERSe0dqZNvy
-        FaqT1s/gu4adh7lOQg7McyF/pTNoocK5uTv3ex4ppGY6+g5T
-X-Google-Smtp-Source: ABdhPJwZS0tfegh2Qqjc0QKn+UUcf4HfJCvapdjl8XTuTXzuiIOy0BxLLiudFD2SpuxKFLCBNFeorHCXet+FSN9BdOrQwf79BoUu
+        id S231173AbhD3TYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 15:24:23 -0400
+Received: from mail-mw2nam12on2088.outbound.protection.outlook.com ([40.107.244.88]:12768
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229990AbhD3TYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 15:24:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kU5TCn17Wxy1LIrAwzWymqjPrN4F3Tlcc/2XqR40hzn/RSMIlxl6gmR9DCX0XG1Te7ZwM6iW0XMZmj8NBlD9IpOuDS4DLE3Jyd7YvZMnGXkAj2onpFRetJHdSQOSE3/o1u9+79LaN1jo0ostZY8TpWInOlvNaZMxVeIE+Lqquy1dIkwXfCvVfBMUlJh2SU9lS+cjrFhOb3d0HQnBeaUtOaKo5CkdxLrB4QE9MCvi58j2mSIVsO/pdj5jZ3Q/pRLyQGWKxU5ONj5PSc5miSyB9IpZa4yx9W3L0oTvoNdKwsZ4Mm/4JRgOGkwPU5c7gt8NLHGoaHu+kGyaFB9FOJVMPw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TKpVihbmKiBEZfDKnNpi6LEccFOQA/37xbZQSnS3Su8=;
+ b=YlaRVsmqryNwy1+670tt7UlsOEyFAubMUIGCDIG+6IEEGcPEkrs/VLjRyNtPs7gqWxVPDnmQwnWzXZroDHT4PuGncSZjJmcbjDIOg0bYPqIL2cg5gSp90w73hial2ykUzcAL+CJ5T4pKLfA+mZKb4bKoCsB9H6Fmw+PKz3WGghgqCFJztq+voYnUkn6KRj0em9isaYD2pgggWYHrUpU5ReiqUptFWF/w+cOp8Ywcy0XAaj/n92+moJGWnGV85C6PqkRzsZF9yOqT8w1/sqG+z1K5u2XE1GQTbHsJhleILNb5y7dULBQRKAqIX9IUX2Qe0vzSqLhwYyBsfcklKwkg3g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TKpVihbmKiBEZfDKnNpi6LEccFOQA/37xbZQSnS3Su8=;
+ b=WWmZtjKRXs8GGRRTq71dIs14Dw4W9+X5Kz9F6Eg63Ekgz9WW1819aNplChK4DZTWMDIYfNVte3++ObHLlONIOcpxYJRKovutmR25P37yO714udfgjSW6AkekZuM4oRssKi75E+WjX12M7XMNa8CQLHNLcbHoTufL2PtzJrECeOA=
+Received: from MN2PR12MB4488.namprd12.prod.outlook.com (2603:10b6:208:24e::19)
+ by BL0PR12MB4866.namprd12.prod.outlook.com (2603:10b6:208:1cf::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.23; Fri, 30 Apr
+ 2021 19:23:24 +0000
+Received: from MN2PR12MB4488.namprd12.prod.outlook.com
+ ([fe80::3d98:cefb:476c:c36e]) by MN2PR12MB4488.namprd12.prod.outlook.com
+ ([fe80::3d98:cefb:476c:c36e%8]) with mapi id 15.20.4087.026; Fri, 30 Apr 2021
+ 19:23:24 +0000
+From:   "Deucher, Alexander" <Alexander.Deucher@amd.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Arnd Bergmann <arnd@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Liang, Prike" <Prike.Liang@amd.com>,
+        "S-k, Shyam-sundar" <Shyam-sundar.S-k@amd.com>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        =?iso-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
+        Rajat Jain <rajatja@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] nvme: fix unused variable warning
+Thread-Topic: [PATCH] nvme: fix unused variable warning
+Thread-Index: AQHXNrdLp6h8G1JZ5Equar3750o+u6rNZxyAgAAKfYCAAAdGgIAABdtA
+Date:   Fri, 30 Apr 2021 19:23:24 +0000
+Message-ID: <MN2PR12MB448848FEBDCB3A5669A55FB6F75E9@MN2PR12MB4488.namprd12.prod.outlook.com>
+References: <CAHp75Vchfem1OmR=2Mawiebw-zisU57BEcF64PUKcOODeiLS-g@mail.gmail.com>
+ <20210430190057.GA671619@bjorn-Precision-5520>
+In-Reply-To: <20210430190057.GA671619@bjorn-Precision-5520>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Enabled=true;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SetDate=2021-04-30T19:23:21Z;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Method=Privileged;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Name=Public_0;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ActionId=c606c9a9-5c1d-4511-baaa-1bbca67f73bd;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ContentBits=1
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+x-originating-ip: [165.204.55.211]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: eda82c2f-1e50-45ea-be5b-08d90c0d6c99
+x-ms-traffictypediagnostic: BL0PR12MB4866:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BL0PR12MB4866916BC7F89E6EC25CBDE3F75E9@BL0PR12MB4866.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: D/DDeDJzaI0W8QWhmfI8osTujK2VXV+qvZpgMjutPYZJHbGPpXCWO2FSkyanwZnXCZ7ywLTvNT2lFJ3nwgUNQcsjHah2Y/zgOA/EZNf8ZVJB5LviQ+ND9I0xw2i/YLo3O39vsrZ376GiUgfsrByMKPEBEiNpSNuRewx0XAzOPBO7YKJ3JvU6U+g3GirLe0BeyXElmP8NXQh4YDDRGORgEsKPxI86CDq3mEQ6/zTvP4w0L6FhlbtWF6KqP7hU2daWaqpyHB6BedOmaZ0kp4uSZ9Kr+Q3mMe3Y6czEnbJh1YUfYO9ZoaHxDbuBUIlo567UNAkjjNQW/WzwkTvkrsJXtfWP8SHsOXHuT7Dk/HQ7iJi7+68NkF03bFanrxvmp/wwara1yJTuVYSlXwL9wsnS66LHMQU2m062HedECcYwQ5IzIJFS9qQHvARbOP4sGdaKzzj65cR2F5McbTWgMeik/EkjQAdumvsfqWT6ynNO4r+ogyx/86HJoiL0oZdxPbuyMMU32DZFkYVziPjR8pnTO06dgpIvlyusMMOzlSMIu7n8M8CFcSH5ZeDmEc9QYkkyFwxOU9Pb3Hvo83VTYGWhk08rnykB/zcDr40YnvFDD9RVPoF8gHjO5449IrsSfVpyd6L7/CKobwLqg+MQr0VdeI9QVcw6VgrYiYJMv5znEqYHRKy4pAHuY2oPKjlpTH3F
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4488.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(366004)(396003)(39860400002)(122000001)(83380400001)(33656002)(7416002)(71200400001)(86362001)(9686003)(45080400002)(76116006)(966005)(66574015)(26005)(4326008)(52536014)(186003)(6506007)(478600001)(66476007)(55016002)(38100700002)(2906002)(5660300002)(53546011)(66946007)(8676002)(7696005)(54906003)(8936002)(66446008)(64756008)(66556008)(316002)(110136005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?iso-8859-2?Q?4UJsF6sz/BBFRT32M5ISTduZJdqJbmhVjM0JsLNpg295ybiuKiV3ZLgqAN?=
+ =?iso-8859-2?Q?KTciw1Ypip0DIVylfYzpybjl7namS9J8wcub5LgyL76Z3AvNUFNmaPhTAV?=
+ =?iso-8859-2?Q?moNfdw14CiHbHl4MLfXVtvD0tG9Bu/uW0Pgyv/gEjss8NHYurQ9k/CGhpW?=
+ =?iso-8859-2?Q?CpjYrGZSpZ2Z6FG428uwWbIw4Iyh4mJKvfYAc3IrgkVCMdrK1FjjkKJuzw?=
+ =?iso-8859-2?Q?ypZwc5+otsKiA4ZKrtu/y99begaGc4fwOyGbxd2ltaLK+9JykMp+LSNsaC?=
+ =?iso-8859-2?Q?bwPpT9d5DeSdbdWPZk/cJ0g7uhfAD2HID62cdSxT2gRlvHySECDhgQej5B?=
+ =?iso-8859-2?Q?vN3F6P9zld12RiwU7haSCcB9OBESpI3I23BrTK6lWLm2XHrThHLXiakpOv?=
+ =?iso-8859-2?Q?zY2Xr8Mzwib2xRyrjq+DvR3719+YJUMNMr7GV5iIqtIZqwii8Zaarjox5n?=
+ =?iso-8859-2?Q?DBTJ3v7cV7G9dws0n85Y8d63pC3V5oVXdGabGAlpJT3h79VWE21okiigM5?=
+ =?iso-8859-2?Q?8bvtvpi3ajMcqlRDZCda16mVFxQoW+ETCCgobZTL+QDy1TumA3u7YuhvaX?=
+ =?iso-8859-2?Q?Cf+6K4NeO0N/rUPNoxHdlyl/cMrE2iiIm1rhbPhCyW0jNiPu6DDg+i/aDl?=
+ =?iso-8859-2?Q?sUSmoVusbnb0P0VRj99W5Xs60Es+ZRbybR3p/s2JETqyxqKzDCV8vSDD5U?=
+ =?iso-8859-2?Q?5kYrtxDSEcvv2EIeu2459SW+TIAizw/5Sd1LNC10hl0xxyyZmkLREni0xE?=
+ =?iso-8859-2?Q?q8QaPLS/qGVKO8rzqGGFpqGR0mXP6TKNwlqdj/Iyr5HScPGYh5DhGwr323?=
+ =?iso-8859-2?Q?i6VWdmMyLIC/HmKIcWG+vONPpLhfjwwevvenqZl069VszOUb+H4X5h8BYB?=
+ =?iso-8859-2?Q?QqJPonY7otsElQ3VgZXSbwWuAGSTqelXteRCfODP/mMbCW+/Oe4kvb+OLu?=
+ =?iso-8859-2?Q?xR20ShrOO1C/ALo5Ue2rU9fOzD+k9/tDFgng4YE+OzTj7tnrrqcBgP0GL/?=
+ =?iso-8859-2?Q?8MGvlk/dXKdEP9XCdf79nQGIb2S/KS6kFJTCv8MOvIKmWaxHQNkr/mO9QI?=
+ =?iso-8859-2?Q?XbQ+beffzKH9N4JLIj+3yWLvok6I3zwyJ5FO4Ghf5VxwdGHWe/kd1aYVr5?=
+ =?iso-8859-2?Q?tulxjRIqVh1KRelbE+n7//4YUEvjvoR8vGPOBHkq4/S+KIZI4e/9UyLkpk?=
+ =?iso-8859-2?Q?KX5yXJZJoSEaKEyUgs+poMkd+iw79ttYhTqXG93+pzcWBf29RTm6I131/T?=
+ =?iso-8859-2?Q?h8P5euDGQrOtpD1sCdlzXaXcdR5ZAu20dEqQLiA5MiPYcSXPZmZNZjiOpE?=
+ =?iso-8859-2?Q?mDzJUHWxvyUJ0sWQptLg7xvWT/A9OjO4IE7FMAgL039vvVwz/X99LOvP66?=
+ =?iso-8859-2?Q?ADToiaaqc9?=
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1526:: with SMTP id i6mr5273750ilu.270.1619810301365;
- Fri, 30 Apr 2021 12:18:21 -0700 (PDT)
-Date:   Fri, 30 Apr 2021 12:18:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009dd35c05c135792d@google.com>
-Subject: [syzbot] possible deadlock in sctp_addr_wq_timeout_handler
-From:   syzbot <syzbot+959223586843e69a2674@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, bp@alien8.de, davem@davemloft.net,
-        hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
-        kuba@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-sctp@vger.kernel.org, marcelo.leitner@gmail.com,
-        mark.rutland@arm.com, masahiroy@kernel.org, mingo@redhat.com,
-        netdev@vger.kernel.org, nhorman@tuxdriver.com, pbonzini@redhat.com,
-        peterz@infradead.org, rafael.j.wysocki@intel.com,
-        rostedt@goodmis.org, seanjc@google.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        vkuznets@redhat.com, vyasevich@gmail.com, wanpengli@tencent.com,
-        will@kernel.org, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4488.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eda82c2f-1e50-45ea-be5b-08d90c0d6c99
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Apr 2021 19:23:24.3767
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: tL46+Be5663sXeU/HCm9izmGD005jVeJ5b6wtMl7gRM0QkLyZA0JJiMqwCmMmAV3yL5QC2BMwM3D0ppte/FvyA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4866
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+[AMD Public Use]
 
-syzbot found the following issue on:
+> -----Original Message-----
+> From: Bjorn Helgaas <helgaas@kernel.org>
+> Sent: Friday, April 30, 2021 3:01 PM
+> To: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Cc: Arnd Bergmann <arnd@kernel.org>; Bjorn Helgaas
+> <bhelgaas@google.com>; Liang, Prike <Prike.Liang@amd.com>; S-k, Shyam-
+> sundar <Shyam-sundar.S-k@amd.com>; Deucher, Alexander
+> <Alexander.Deucher@amd.com>; Chaitanya Kulkarni
+> <chaitanya.kulkarni@wdc.com>; Arnd Bergmann <arnd@arndb.de>; Lorenzo
+> Pieralisi <lorenzo.pieralisi@arm.com>; Kai-Heng Feng
+> <kai.heng.feng@canonical.com>; Krzysztof Wilczy=F1ski <kw@linux.com>;
+> Rajat Jain <rajatja@google.com>; Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com>; linux-pci <linux-
+> pci@vger.kernel.org>; Linux Kernel Mailing List <linux-
+> kernel@vger.kernel.org>
+> Subject: Re: [PATCH] nvme: fix unused variable warning
+>=20
+> On Fri, Apr 30, 2021 at 09:34:55PM +0300, Andy Shevchenko wrote:
+> > On Fri, Apr 30, 2021 at 8:57 PM Bjorn Helgaas <helgaas@kernel.org> wrot=
+e:
+> > > On Wed, Apr 21, 2021 at 04:04:20PM +0200, Arnd Bergmann wrote:
+> > > > From: Arnd Bergmann <arnd@arndb.de>
+> > > >
+> > > > The function was introduced with a variable that is never reference=
+d:
+> > > >
+> > > > drivers/pci/quirks.c: In function 'quirk_amd_nvme_fixup':
+> > > > drivers/pci/quirks.c:312:25: warning: unused variable 'rdev'
+> > > > [-Wunused-variable]
+> > > >
+> > > > Fixes: 9597624ef606 ("nvme: put some AMD PCIE downstream NVME
+> > > > device to simple suspend/resume path")
+> > >
+> > > I guess this refers to
+> > >
+> https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flo
+> > > re.kernel.org%2Flinux-nvme%2F1618458725-17164-1-git-send-email-
+> Prike
+> > >
+> .Liang%40amd.com%2F&amp;data=3D04%7C01%7Calexander.deucher%40amd.
+> com%7
+> > >
+> C23a1908e8a394d957ce908d90c0a4b06%7C3dd8961fe4884e608e11a82d994e1
+> 83d
+> > >
+> %7C0%7C0%7C637554060633362710%7CUnknown%7CTWFpbGZsb3d8eyJWIj
+> oiMC4wLj
+> > >
+> AwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;
+> sdat
+> > >
+> a=3DZtcffnpa8rchwe%2Fb6HuHeRASSlNI7uMwAKZuoH5k6CY%3D&amp;reserv
+> ed=3D0
+> > >
+> > > But I don't know what the SHA1 means; I can't find it in linux-next
+> > > or my tree.
+> >
+> > $ git tag --contains 9597624ef606
+> > next-20210416
+> > next-20210419
+> > next-20210420
+> >
+> > Something is wrong with your tree.
+>=20
+> I think what's wrong is that it doesn't appear in the *current* linux-nex=
+t
+> (next-20210430) and I don't have all the old linux-next objects.
+>=20
+> It was in next-20210420, but seems to have been dropped since then:
 
-HEAD commit:    2a1d7946 Merge tag 'for-linus' of git://git.kernel.org/pub..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=159af1c1d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9404cfa686df2c05
-dashboard link: https://syzkaller.appspot.com/bug?extid=959223586843e69a2674
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11613d71d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12be674dd00000
+It was in my tree briefly to facilitate testing, but I since dropped it.
 
-The issue was bisected to:
+Alex
 
-commit 997acaf6b4b59c6a9c259740312a69ea549cc684
-Author: Mark Rutland <mark.rutland@arm.com>
-Date:   Mon Jan 11 15:37:07 2021 +0000
-
-    lockdep: report broken irq restoration
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17c36a5dd00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=14236a5dd00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=10236a5dd00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+959223586843e69a2674@syzkaller.appspotmail.com
-Fixes: 997acaf6b4b5 ("lockdep: report broken irq restoration")
-
-======================================================
-WARNING: possible circular locking dependency detected
-5.12.0-rc8-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor044/8536 is trying to acquire lock:
-ffff8880183933a0 (slock-AF_INET6){+.-.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
-ffff8880183933a0 (slock-AF_INET6){+.-.}-{2:2}, at: sctp_addr_wq_timeout_handler+0x1a1/0x550 net/sctp/protocol.c:666
-
-but task is already holding lock:
-ffffffff8d659620 (&net->sctp.addr_wq_lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:359 [inline]
-ffffffff8d659620 (&net->sctp.addr_wq_lock){+.-.}-{2:2}, at: sctp_addr_wq_timeout_handler+0x38/0x550 net/sctp/protocol.c:626
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (&net->sctp.addr_wq_lock){+.-.}-{2:2}:
-       __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
-       _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
-       spin_lock_bh include/linux/spinlock.h:359 [inline]
-       sctp_destroy_sock+0x204/0x440 net/sctp/socket.c:5028
-       sctp_v6_destroy_sock+0x11/0x20 net/sctp/socket.c:9528
-       sk_common_release+0x64/0x390 net/core/sock.c:3264
-       sctp_close+0x4da/0x940 net/sctp/socket.c:1531
-       inet_release+0x12e/0x280 net/ipv4/af_inet.c:431
-       inet6_release+0x4c/0x70 net/ipv6/af_inet6.c:478
-       __sock_release+0xcd/0x280 net/socket.c:599
-       sock_close+0x18/0x20 net/socket.c:1258
-       __fput+0x288/0x920 fs/file_table.c:280
-       task_work_run+0xdd/0x1a0 kernel/task_work.c:140
-       exit_task_work include/linux/task_work.h:30 [inline]
-       do_exit+0xbfc/0x2a60 kernel/exit.c:825
-       do_group_exit+0x125/0x310 kernel/exit.c:922
-       __do_sys_exit_group kernel/exit.c:933 [inline]
-       __se_sys_exit_group kernel/exit.c:931 [inline]
-       __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
-       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
--> #0 (slock-AF_INET6){+.-.}-{2:2}:
-       check_prev_add kernel/locking/lockdep.c:2937 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3060 [inline]
-       validate_chain kernel/locking/lockdep.c:3675 [inline]
-       __lock_acquire+0x2b14/0x54c0 kernel/locking/lockdep.c:4901
-       lock_acquire kernel/locking/lockdep.c:5511 [inline]
-       lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5476
-       __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
-       _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
-       spin_lock include/linux/spinlock.h:354 [inline]
-       sctp_addr_wq_timeout_handler+0x1a1/0x550 net/sctp/protocol.c:666
-       call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1431
-       expire_timers kernel/time/timer.c:1476 [inline]
-       __run_timers.part.0+0x67c/0xa50 kernel/time/timer.c:1745
-       __run_timers kernel/time/timer.c:1726 [inline]
-       run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1758
-       __do_softirq+0x29b/0x9f6 kernel/softirq.c:345
-       invoke_softirq kernel/softirq.c:221 [inline]
-       __irq_exit_rcu kernel/softirq.c:422 [inline]
-       irq_exit_rcu+0x134/0x200 kernel/softirq.c:434
-       sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
-       asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:632
-       __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:161 [inline]
-       _raw_spin_unlock_irqrestore+0x38/0x70 kernel/locking/spinlock.c:191
-       __debug_check_no_obj_freed lib/debugobjects.c:997 [inline]
-       debug_check_no_obj_freed+0x20c/0x420 lib/debugobjects.c:1018
-       slab_free_hook mm/slub.c:1554 [inline]
-       slab_free_freelist_hook+0x147/0x210 mm/slub.c:1600
-       slab_free mm/slub.c:3161 [inline]
-       kmem_cache_free+0x8a/0x740 mm/slub.c:3177
-       free_fs_struct fs/fs_struct.c:92 [inline]
-       exit_fs+0x123/0x170 fs/fs_struct.c:108
-       do_exit+0xbca/0x2a60 kernel/exit.c:821
-       do_group_exit+0x125/0x310 kernel/exit.c:922
-       __do_sys_exit_group kernel/exit.c:933 [inline]
-       __se_sys_exit_group kernel/exit.c:931 [inline]
-       __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
-       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&net->sctp.addr_wq_lock);
-                               lock(slock-AF_INET6);
-                               lock(&net->sctp.addr_wq_lock);
-  lock(slock-AF_INET6);
-
- *** DEADLOCK ***
-
-2 locks held by syz-executor044/8536:
- #0: ffffc90000007d78 ((&net->sctp.addr_wq_timer)){+.-.}-{0:0}, at: lockdep_copy_map include/linux/lockdep.h:35 [inline]
- #0: ffffc90000007d78 ((&net->sctp.addr_wq_timer)){+.-.}-{0:0}, at: call_timer_fn+0xd5/0x6b0 kernel/time/timer.c:1421
- #1: ffffffff8d659620 (&net->sctp.addr_wq_lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:359 [inline]
- #1: ffffffff8d659620 (&net->sctp.addr_wq_lock){+.-.}-{2:2}, at: sctp_addr_wq_timeout_handler+0x38/0x550 net/sctp/protocol.c:626
-
-stack backtrace:
-CPU: 0 PID: 8536 Comm: syz-executor044 Not tainted 5.12.0-rc8-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2128
- check_prev_add kernel/locking/lockdep.c:2937 [inline]
- check_prevs_add kernel/locking/lockdep.c:3060 [inline]
- validate_chain kernel/locking/lockdep.c:3675 [inline]
- __lock_acquire+0x2b14/0x54c0 kernel/locking/lockdep.c:4901
- lock_acquire kernel/locking/lockdep.c:5511 [inline]
- lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5476
- __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
- _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
- spin_lock include/linux/spinlock.h:354 [inline]
- sctp_addr_wq_timeout_handler+0x1a1/0x550 net/sctp/protocol.c:666
- call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1431
- expire_timers kernel/time/timer.c:1476 [inline]
- __run_timers.part.0+0x67c/0xa50 kernel/time/timer.c:1745
- __run_timers kernel/time/timer.c:1726 [inline]
- run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1758
- __do_softirq+0x29b/0x9f6 kernel/softirq.c:345
- invoke_softirq kernel/softirq.c:221 [inline]
- __irq_exit_rcu kernel/softirq.c:422 [inline]
- irq_exit_rcu+0x134/0x200 kernel/softirq.c:434
- sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
- </IRQ>
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:632
-RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:161 [inline]
-RIP: 0010:_raw_spin_unlock_irqrestore+0x38/0x70 kernel/locking/spinlock.c:191
-Code: 74 24 10 e8 4a f9 53 f8 48 89 ef e8 82 af 54 f8 81 e3 00 02 00 00 75 25 9c 58 f6 c4 02 75 2d 48 85 db 74 01 fb bf 01 00 00 00 <e8> 63 7d 48 f8 65 8b 05 0c 48 fc 76 85 c0 74 0a 5b 5d c3 e8 d0 3c
-RSP: 0018:ffffc9000173fc50 EFLAGS: 00000206
-RAX: 0000000000000002 RBX: 0000000000000200 RCX: 1ffffffff1b89e11
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000001
-RBP: ffffffff9006cf00 R08: 0000000000000001 R09: 0000000000000001
-R10: ffffffff8179e4c8 R11: 000000000000003f R12: 1ffffffff200d9df
-R13: 0000000000000000 R14: dead000000000100 R15: dffffc0000000000
- __debug_check_no_obj_freed lib/debugobjects.c:997 [inline]
- debug_check_no_obj_freed+0x20c/0x420 lib/debugobjects.c:1018
- slab_free_hook mm/slub.c:1554 [inline]
- slab_free_freelist_hook+0x147/0x210 mm/slub.c:1600
- slab_free mm/slub.c:3161 [inline]
- kmem_cache_free+0x8a/0x740 mm/slub.c:3177
- free_fs_struct fs/fs_struct.c:92 [inline]
- exit_fs+0x123/0x170 fs/fs_struct.c:108
- do_exit+0xbca/0x2a60 kernel/exit.c:821
- do_group_exit+0x125/0x310 kernel/exit.c:922
- __do_sys_exit_group kernel/exit.c:933 [inline]
- __se_sys_exit_group kernel/exit.c:931 [inline]
- __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43ea79
-Code: Unable to access opcode bytes at RIP 0x43ea4f.
-RSP: 002b:00007ffdbc348058 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 00000000004b0330 RCX: 000000000043ea79
-RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
-RBP: 0000000000000000 R08: ffffffffffffffc0 R09: 0000000000000001
-R10: 0000000000000001 R11: 0000000000000246 R12: 00000000004b0330
-R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+>=20
+> https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fgit.k
+> ernel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Fnext%2Flinux-
+> next.git%2Fcommit%2Finclude%2Flinux%2Fpci.h%3Fh%3Dnext-
+> 20210420%26id%3D9597624ef6067bab1500d0273a43d4f90e62e929&amp;data
+> =3D04%7C01%7Calexander.deucher%40amd.com%7C23a1908e8a394d957ce908
+> d90c0a4b06%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C6375540
+> 60633362710%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQ
+> IjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3D0Rb%2
+> F9p8VhmiPu4QP3mEJTUCPe4NNcroFHDhyiYb8h40%3D&amp;reserved=3D0
