@@ -2,102 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A837370001
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 19:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A22A836FFF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 19:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231630AbhD3Rw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 13:52:28 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2976 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbhD3Rw0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 13:52:26 -0400
-Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FX05f3ND9z6896y;
-        Sat,  1 May 2021 01:40:54 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 30 Apr 2021 19:51:36 +0200
-Received: from localhost (10.52.125.96) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 30 Apr
- 2021 18:51:35 +0100
-Date:   Fri, 30 Apr 2021 18:50:01 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        "Krzysztof Kozlowski" <krzk@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-samsung-soc@vger.kernel.org>
-Subject: Re: [PATCH v4 63/79] media: exynos-gsc: use
- pm_runtime_resume_and_get()
-Message-ID: <20210430185001.00005e76@Huawei.com>
-In-Reply-To: <31bdadf2f59e86c6a315ec390b44c6c681af6647.1619621413.git.mchehab+huawei@kernel.org>
-References: <cover.1619621413.git.mchehab+huawei@kernel.org>
-        <31bdadf2f59e86c6a315ec390b44c6c681af6647.1619621413.git.mchehab+huawei@kernel.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        id S231146AbhD3Ru7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 13:50:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229954AbhD3Ru6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 13:50:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1AD5B61469;
+        Fri, 30 Apr 2021 17:50:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619805010;
+        bh=AdWLSndMqQFHqoM9FWpxZlFSvWn281z5vS6Un2mfVg8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=bU7tIYfTNI8XVUpj2IEmxFRIeeHWVDaaczWEUQ8QoG3YRUuHumKMqNyyjjsyJrUNf
+         RldO/5uhhHTckztAb5sAhI7FeciItrh6PMA6gxCRlZJSirhya0vR5v3rFwMcU4cXuD
+         DRGuhZUsZFUpNW8ES+05/lOynzQDDQrnlfPG/pIK/T9F1k8bdBu9ONmygwx5ZtxebR
+         0lWSXOAim7vHhR5/qwxkH2+M1F1pKa58Uc7SPX+JrkH8/sXK5m86UM/wlf5HuJjSx1
+         I8qHt8qKkRX3suTriD8quQWN8qnl7Le5NNxAvhsVkQF1p9UaCbD4r/jEJQ7RMBxwZ8
+         XLrckqISionnw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0AE4360A72;
+        Fri, 30 Apr 2021 17:50:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.125.96]
-X-ClientProxiedBy: lhreml721-chm.china.huawei.com (10.201.108.72) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix the snprintf test
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161980501003.20779.4607601411037423780.git-patchwork-notify@kernel.org>
+Date:   Fri, 30 Apr 2021 17:50:10 +0000
+References: <20210428152501.1024509-1-revest@chromium.org>
+In-Reply-To: <20210428152501.1024509-1-revest@chromium.org>
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kpsingh@kernel.org, jackmanb@google.com,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Apr 2021 16:52:24 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+Hello:
 
-> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-> added pm_runtime_resume_and_get() in order to automatically handle
-> dev->power.usage_count decrement on errors.
+This patch was applied to bpf/bpf.git (refs/heads/master):
+
+On Wed, 28 Apr 2021 17:25:01 +0200 you wrote:
+> The BPF program for the snprintf selftest runs on all syscall entries.
+> On busy multicore systems this can cause concurrency issues.
 > 
-> Use the new API, in order to cleanup the error check logic.
+> For example it was observed that sometimes the userspace part of the
+> test reads "    4 0000" instead of "    4 000" (extra '0' at the end)
+> which seems to happen just before snprintf on another core sets
+> end[-1] = '\0'.
 > 
-> Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  drivers/media/platform/exynos-gsc/gsc-m2m.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/platform/exynos-gsc/gsc-m2m.c b/drivers/media/platform/exynos-gsc/gsc-m2m.c
-> index 27a3c92c73bc..09551e96ac15 100644
-> --- a/drivers/media/platform/exynos-gsc/gsc-m2m.c
-> +++ b/drivers/media/platform/exynos-gsc/gsc-m2m.c
-> @@ -58,7 +58,7 @@ static int gsc_m2m_start_streaming(struct vb2_queue *q, unsigned int count)
->  	struct gsc_ctx *ctx = q->drv_priv;
->  	int ret;
->  
-> -	ret = pm_runtime_get_sync(&ctx->gsc_dev->pdev->dev);
-> +	ret = pm_runtime_resume_and_get(&ctx->gsc_dev->pdev->dev);
->  	return ret > 0 ? 0 : ret;
-return pm_runtime_resume_and_get()
+> [...]
 
-as
-static inline int pm_runtime_resume_and_get(struct device *dev)
-{
-	int ret;
+Here is the summary with links:
+  - [bpf-next] selftests/bpf: Fix the snprintf test
+    https://git.kernel.org/bpf/bpf/c/f80f88f0e2f2
 
-	ret = __pm_runtime_resume(dev, RPM_GET_PUT);
-	if (ret < 0) {
-		pm_runtime_put_noidle(dev);
-		return ret;
-	}
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-	return 0;
-}
-
-Can't return >= 0
-
->  }
->  
 
