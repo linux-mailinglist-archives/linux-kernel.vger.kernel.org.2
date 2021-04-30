@@ -2,71 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B48E36F590
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 08:05:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A84DB36F592
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 08:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbhD3GGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 02:06:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229482AbhD3GGf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 02:06:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFF5761424;
-        Fri, 30 Apr 2021 06:05:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619762747;
-        bh=hqRzyDrn0g03rzVlU0l+LtjC2qwuU1eJezgKOZYtGLk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fy98sGODFAY6t0XGklcLMemfXkznN4XNdok3p1cL8YkvWQ7Oaewr8qcf/gbgFZ5j4
-         XgNp3kN3BBPHlQ7FC5DFGNzsAYHNce5vQD9CNExU2VwbYf77OZLhGMNJ0JRrpBkFOJ
-         wratqWZ/T0qVLvT1k8dbeemExr2TQpSToEv1fP4s=
-Date:   Fri, 30 Apr 2021 08:05:45 +0200
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        "tiantao (H)" <tiantao6@hisilicon.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH 1/2] CPU, NUMA topology ABIs: clarify the overflow issue
- of sysfs pagebuf
-Message-ID: <YIueOR4fOYa1dSAb@kroah.com>
-References: <1619679819-45256-1-git-send-email-tiantao6@hisilicon.com>
- <1619679819-45256-2-git-send-email-tiantao6@hisilicon.com>
- <146e051b-603c-a6d3-43d8-d083cf2c8119@intel.com>
- <602918a1e2214ea7bd0890a751975566@hisilicon.com>
- <7c663f7e-07e0-6d95-3012-6e31a1b78f7e@intel.com>
- <4bf6870f7f3942398e4d1fdaa42184c7@hisilicon.com>
- <fd78ac30-dd3b-a7d7-eae8-193b09a7d49a@intel.com>
+        id S230132AbhD3GIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 02:08:39 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:46926 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229482AbhD3GIh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 02:08:37 -0400
+Received: from 1-171-217-32.dynamic-ip.hinet.net ([1.171.217.32] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1lcMJS-0007vq-ET; Fri, 30 Apr 2021 06:07:43 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     hdegoede@redhat.com, mgross@linux.intel.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Eric Piel <eric.piel@tremplin-utc.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org (open list),
+        platform-driver-x86@vger.kernel.org (open list:X86 PLATFORM DRIVERS)
+Subject: [PATCH] platform/x86: hp_accel: Avoid invoking _INI to speed up resume
+Date:   Fri, 30 Apr 2021 14:07:35 +0800
+Message-Id: <20210430060736.590321-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fd78ac30-dd3b-a7d7-eae8-193b09a7d49a@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 03:38:39PM -0700, Dave Hansen wrote:
-> On 4/29/21 3:32 PM, Song Bao Hua (Barry Song) wrote:
-> > $ strace numactl --hardware  2>&1 | grep cpu
-> > openat(AT_FDCWD, "/sys/devices/system/cpu",
-> > O_RDONLY|O_NONBLOCK|O_DIRECTORY|O_CLOEXEC) = 3
-> > openat(AT_FDCWD, "/sys/devices/system/node/node0/cpumap", O_RDONLY) = 3
-> > openat(AT_FDCWD, "/sys/devices/system/node/node1/cpumap", O_RDONLY) = 3
-> > openat(AT_FDCWD, "/sys/devices/system/node/node2/cpumap", O_RDONLY) = 3
-> > openat(AT_FDCWD, "/sys/devices/system/node/node3/cpumap", O_RDONLY) = 3
-> > 
-> > If we move to binary, it means we have to change those applications.
-> 
-> I thought Greg was saying to using a sysfs binary attribute using
-> something like like sysfs_create_bin_file().  Those don't have the
-> PAGE_SIZE limitation.  But, there's also nothing to keep us from spewing
-> nice human-readable text via the "binary" file.
+hp_accel can take almost two seconds to resume on some HP laptops.
 
-That is correct.
+The bottleneck is on evaluating _INI, which is only needed to run once.
+
+Resolve the issue by only invoking _INI when it's necessary. Namely, on
+probe and on hibernation restore.
+
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ drivers/misc/lis3lv02d/lis3lv02d.h |  1 +
+ drivers/platform/x86/hp_accel.c    | 22 +++++++++++++++++++++-
+ 2 files changed, 22 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/misc/lis3lv02d/lis3lv02d.h b/drivers/misc/lis3lv02d/lis3lv02d.h
+index c394c0b08519a..7ac788fae1b86 100644
+--- a/drivers/misc/lis3lv02d/lis3lv02d.h
++++ b/drivers/misc/lis3lv02d/lis3lv02d.h
+@@ -271,6 +271,7 @@ struct lis3lv02d {
+ 	int			regs_size;
+ 	u8                      *reg_cache;
+ 	bool			regs_stored;
++	bool			init_required;
+ 	u8                      odr_mask;  /* ODR bit mask */
+ 	u8			whoami;    /* indicates measurement precision */
+ 	s16 (*read_data) (struct lis3lv02d *lis3, int reg);
+diff --git a/drivers/platform/x86/hp_accel.c b/drivers/platform/x86/hp_accel.c
+index 799cbe2ffcf36..8c0867bda8280 100644
+--- a/drivers/platform/x86/hp_accel.c
++++ b/drivers/platform/x86/hp_accel.c
+@@ -88,6 +88,9 @@ MODULE_DEVICE_TABLE(acpi, lis3lv02d_device_ids);
+ static int lis3lv02d_acpi_init(struct lis3lv02d *lis3)
+ {
+ 	struct acpi_device *dev = lis3->bus_priv;
++	if (!lis3->init_required)
++		return 0;
++
+ 	if (acpi_evaluate_object(dev->handle, METHOD_NAME__INI,
+ 				 NULL, NULL) != AE_OK)
+ 		return -EINVAL;
+@@ -356,6 +359,7 @@ static int lis3lv02d_add(struct acpi_device *device)
+ 	}
+ 
+ 	/* call the core layer do its init */
++	lis3_dev.init_required = true;
+ 	ret = lis3lv02d_init_device(&lis3_dev);
+ 	if (ret)
+ 		return ret;
+@@ -403,11 +407,27 @@ static int lis3lv02d_suspend(struct device *dev)
+ 
+ static int lis3lv02d_resume(struct device *dev)
+ {
++	lis3_dev.init_required = false;
++	lis3lv02d_poweron(&lis3_dev);
++	return 0;
++}
++
++static int lis3lv02d_restore(struct device *dev)
++{
++	lis3_dev.init_required = true;
+ 	lis3lv02d_poweron(&lis3_dev);
+ 	return 0;
+ }
+ 
+-static SIMPLE_DEV_PM_OPS(hp_accel_pm, lis3lv02d_suspend, lis3lv02d_resume);
++static const struct dev_pm_ops hp_accel_pm = {
++	.suspend = lis3lv02d_suspend,
++	.resume = lis3lv02d_resume,
++	.freeze = lis3lv02d_suspend,
++	.thaw = lis3lv02d_resume,
++	.poweroff = lis3lv02d_suspend,
++	.restore = lis3lv02d_restore,
++};
++
+ #define HP_ACCEL_PM (&hp_accel_pm)
+ #else
+ #define HP_ACCEL_PM NULL
+-- 
+2.30.2
 
