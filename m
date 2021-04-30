@@ -2,327 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD4336FA1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 14:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6599736FA20
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 14:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232101AbhD3M1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 08:27:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59827 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230394AbhD3M1E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 08:27:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619785575;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ICE4gsyWD3Jf/PdV6lkuOTdEcfDUow7eaHMByfqKnf0=;
-        b=h+VYvs3CZxZhhWNeZ0vNH8q+4vz4gdiY1oP0hPlV8MIn5uLTzWXwzTlubwE2/7fbVhxhQo
-        yziZOg2KCf8+hjFdKSnRrAJYZh1g8Sp4/ieIb8f8MyzW2E9EhUBg4RbM5HszwDMYwwSKUL
-        x27Qd0W8LbkhW/MPI0Q5xS+2Td+OyOM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-230-OePdr7_EMsqLF4Gs_kevow-1; Fri, 30 Apr 2021 08:26:13 -0400
-X-MC-Unique: OePdr7_EMsqLF4Gs_kevow-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 226461008062;
-        Fri, 30 Apr 2021 12:26:12 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.37.63])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B0FC25D9DD;
-        Fri, 30 Apr 2021 12:26:10 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@vger.kernel.org
-cc:     dhowells@redhat.com, Marc Dionne <marc.dionne@auristor.com>,
-        linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        id S231834AbhD3M2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 08:28:09 -0400
+Received: from msg-1.mailo.com ([213.182.54.11]:53330 "EHLO msg-1.mailo.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229864AbhD3M2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 08:28:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
+        t=1619785625; bh=2HIgowVCeeS0VSBy4mZ1r3TtIT+EekDnKb318+ZW250=;
+        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
+         MIME-Version:Content-Type:In-Reply-To;
+        b=CuyXQ0DH9TpisKyDUcPiqQdq2o2D4FM8/q781u+fAH6lfTK7KNKDPANEwFukBezem
+         fJ2z+Lfn1PsqgV/YVZ49Apho8vye1AmE03f0K3/W1KYUZgfEG1RtwblA0WhoZzOiEU
+         aO3nKkhoWf4n/jSnIBFNWXsaTGKfVIGDl56/C2Es=
+Received: by 192.168.90.16 [192.168.90.16] with ESMTP
+        via ip-206.mailobj.net [213.182.55.206]
+        Fri, 30 Apr 2021 14:27:05 +0200 (CEST)
+X-EA-Auth: ShcEcij6R581OKL0kHBcfmQVUrY5LT0DiOcT6LDwen/2s9qMz+pqzjfVcOIVzQf6B4lON2Ga3UJC1mQTGAFINdq0K3da5cpV
+Date:   Fri, 30 Apr 2021 17:57:00 +0530
+From:   Deepak R Varma <drv@mailo.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Fabio Aiuto <fabioaiuto83@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] afs: Fix speculative status fetches
+Subject: Re: [PATCH v4 5/9] staging: media: atomisp: reformat code comment
+ blocks
+Message-ID: <YIv3lEAC8d8LsCb+@dU2104>
+References: <cover.1619630709.git.drv@mailo.com>
+ <034c3cc993191feb8fda719dd1b2adc9e2074e78.1619630709.git.drv@mailo.com>
+ <20210429070611.GA1409@agape.jhs>
+ <YIqdT6wsrlNP/cEo@192.168.1.8>
+ <693e054f-6a7b-d9e7-a72a-07d7fa295487@xs4all.nl>
+ <YIvm4M0Gru+RpV5O@dU2104>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <621047.1619785569.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Fri, 30 Apr 2021 13:26:09 +0100
-Message-ID: <621048.1619785569@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YIvm4M0Gru+RpV5O@dU2104>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-    =
+On Fri, Apr 30, 2021 at 04:45:56PM +0530, Deepak R Varma wrote:
+> On Fri, Apr 30, 2021 at 12:04:33PM +0200, Hans Verkuil wrote:
+> > On 29/04/2021 13:49, Deepak R Varma wrote:
+> > > On Thu, Apr 29, 2021 at 09:06:12AM +0200, Fabio Aiuto wrote:
+> > >> Hi Deepak,
+> > >>>  	{MISENSOR_16BIT, 0xC868, 0x0280}, /* cam_output_width = 952 */
+> > >>>  	{MISENSOR_16BIT, 0xC86A, 0x01E0}, /* cam_output_height = 538 */
+> > >>>  	/* LOAD = Step3-Recommended
+> > >>> -	 * Patch,Errata and Sensor optimization Setting */
+> > >>> +	 * Patch,Errata and Sensor optimization Setting
+> > >>> +	 */
+> > >>
+> > >> 	/*
+> > >> 	 * LOAD = Step3-Recommended
+> > >>
+> > >> :(
+> > > 
+> > > oops... sorry for the oversight. Not sure how I missed it.
+> > > I will wait for any other feedback on other patches and send
+> > > in a corrected version shortly.
+> > 
+> > I've fixed this up myself.
+> > 
+> > I'm taking this series and make a PR for this, wrapping up these
+> > atomisp cleanups.
+> > 
+> > If you plan any more cleanups, then please do this on top of this
+> > branch: https://git.linuxtv.org/hverkuil/media_tree.git/log/?h=for-v5.14-out1
+> > 
+> > That contains all pending cleanups for staging/media.
+> 
+> Thank you Hans and everyone. Appreciate your time, comments and patience. I
+> understand this entire patch series is acceptable for your consideration and
+> that I can now move on to other changes.
+> 
+> I will be sending additional clean up patches and I will base those on top of the
+> mentioned branch.
 
-The generic/464 xfstest causes kAFS to emit occasional warnings of the
-form:
+Hello Hans,
+I have cloned media_tree repository and checked out branch for-v5.14-out1
 
-        kAFS: vnode modified {100055:8a} 30->31 YFS.StoreData64 (c=3D6015)
+Is it okay for me to start my next patch in this branch? I do not need for
+you the last patch set to be applied to the git tree, correct?
 
-This indicates that the data version received back from the server did not
-match the expected value (the DV should be incremented monotonically for
-each individual modification op committed to a vnode).
+Thank you,
+deepak.
 
-What is happening is that a lookup call is doing a bulk status fetch
-speculatively on a bunch of vnodes in a directory besides getting the
-status of the vnode it's actually interested in.  This is racing with a
-StoreData operation (though it could also occur with, say, a MakeDir op).
+> 
+> Have a good one.
+> deepak.
+> 
+> > 
+> > Regards,
+> > 
+> > 	Hans
+> > 
 
-On the client, a modification operation locks the vnode, but the bulk
-status fetch only locks the parent directory, so no ordering is imposed
-there (thereby avoiding an avenue to deadlock).
-
-On the server, the StoreData op handler doesn't lock the vnode until it's
-received all the request data, and downgrades the lock after committing th=
-e
-data until it has finished sending change notifications to other clients -
-which allows the status fetch to occur before it has finished.
-
-This means that:
-
- - a status fetch can access the target vnode either side of the exclusive
-   section of the modification
-
- - the status fetch could start before the modification, yet finish after,
-   and vice-versa.
-
- - the status fetch and the modification RPCs can complete in either order=
-.
-
- - the status fetch can return either the before or the after DV from the
-   modification.
-
- - the status fetch might regress the locally cached DV.
-
-Some of these are handled by the previous fix[1], but that's not sufficien=
-t
-because it checks the DV it received against the DV it cached at the start
-of the op, but the DV might've been updated in the meantime by a locally
-generated modification op.
-
-Fix this by the following means:
-
- (1) Keep track of when we're performing a modification operation on a
-     vnode.  This is done by marking vnode parameters with a 'modification=
-'
-     note that causes the AFS_VNODE_MODIFYING flag to be set on the vnode
-     for the duration.
-
- (2) Alter the speculation race detection to ignore speculative status
-     fetches if either the vnode is marked as being modified or the data
-     version number is not what we expected.
-
-Note that whilst the "vnode modified" warning does get recovered from as i=
-t
-causes the client to refetch the status at the next opportunity, it will
-also invalidate the pagecache, so changes might get lost.
-
-Fixes: a9e5c87ca744 ("afs: Fix speculative status fetch going out of order=
- wrt to modifications")
-Reported-by: Marc Dionne <marc.dionne@auristor.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Tested-and-reviewed-by: Marc Dionne <marc.dionne@auristor.com>
-cc: linux-afs@lists.infradead.org
-Link: https://lore.kernel.org/r/160605082531.252452.14708077925602709042.s=
-tgit@warthog.procyon.org.uk/ [1]
-Link: https://lore.kernel.org/linux-fsdevel/161961335926.39335.25526539721=
-95467566.stgit@warthog.procyon.org.uk/ # v1
----
- fs/afs/dir.c          |    7 +++++++
- fs/afs/dir_silly.c    |    3 +++
- fs/afs/fs_operation.c |    6 ++++++
- fs/afs/inode.c        |    6 ++++--
- fs/afs/internal.h     |    2 ++
- fs/afs/write.c        |    1 +
- 6 files changed, 23 insertions(+), 2 deletions(-)
-
-diff --git a/fs/afs/dir.c b/fs/afs/dir.c
-index 117df15e5367..9fbe5a5ec9bd 100644
---- a/fs/afs/dir.c
-+++ b/fs/afs/dir.c
-@@ -1419,6 +1419,7 @@ static int afs_mkdir(struct user_namespace *mnt_user=
-ns, struct inode *dir,
- =
-
- 	afs_op_set_vnode(op, 0, dvnode);
- 	op->file[0].dv_delta =3D 1;
-+	op->file[0].modification =3D true;
- 	op->file[0].update_ctime =3D true;
- 	op->dentry	=3D dentry;
- 	op->create.mode	=3D S_IFDIR | mode;
-@@ -1500,6 +1501,7 @@ static int afs_rmdir(struct inode *dir, struct dentr=
-y *dentry)
- =
-
- 	afs_op_set_vnode(op, 0, dvnode);
- 	op->file[0].dv_delta =3D 1;
-+	op->file[0].modification =3D true;
- 	op->file[0].update_ctime =3D true;
- =
-
- 	op->dentry	=3D dentry;
-@@ -1636,6 +1638,7 @@ static int afs_unlink(struct inode *dir, struct dent=
-ry *dentry)
- =
-
- 	afs_op_set_vnode(op, 0, dvnode);
- 	op->file[0].dv_delta =3D 1;
-+	op->file[0].modification =3D true;
- 	op->file[0].update_ctime =3D true;
- =
-
- 	/* Try to make sure we have a callback promise on the victim. */
-@@ -1718,6 +1721,7 @@ static int afs_create(struct user_namespace *mnt_use=
-rns, struct inode *dir,
- =
-
- 	afs_op_set_vnode(op, 0, dvnode);
- 	op->file[0].dv_delta =3D 1;
-+	op->file[0].modification =3D true;
- 	op->file[0].update_ctime =3D true;
- =
-
- 	op->dentry	=3D dentry;
-@@ -1792,6 +1796,7 @@ static int afs_link(struct dentry *from, struct inod=
-e *dir,
- 	afs_op_set_vnode(op, 0, dvnode);
- 	afs_op_set_vnode(op, 1, vnode);
- 	op->file[0].dv_delta =3D 1;
-+	op->file[0].modification =3D true;
- 	op->file[0].update_ctime =3D true;
- 	op->file[1].update_ctime =3D true;
- =
-
-@@ -1987,6 +1992,8 @@ static int afs_rename(struct user_namespace *mnt_use=
-rns, struct inode *old_dir,
- 	afs_op_set_vnode(op, 1, new_dvnode); /* May be same as orig_dvnode */
- 	op->file[0].dv_delta =3D 1;
- 	op->file[1].dv_delta =3D 1;
-+	op->file[0].modification =3D true;
-+	op->file[1].modification =3D true;
- 	op->file[0].update_ctime =3D true;
- 	op->file[1].update_ctime =3D true;
- =
-
-diff --git a/fs/afs/dir_silly.c b/fs/afs/dir_silly.c
-index 04f75a44f243..dae9a57d7ec0 100644
---- a/fs/afs/dir_silly.c
-+++ b/fs/afs/dir_silly.c
-@@ -73,6 +73,8 @@ static int afs_do_silly_rename(struct afs_vnode *dvnode,=
- struct afs_vnode *vnode
- 	afs_op_set_vnode(op, 1, dvnode);
- 	op->file[0].dv_delta =3D 1;
- 	op->file[1].dv_delta =3D 1;
-+	op->file[0].modification =3D true;
-+	op->file[1].modification =3D true;
- 	op->file[0].update_ctime =3D true;
- 	op->file[1].update_ctime =3D true;
- =
-
-@@ -201,6 +203,7 @@ static int afs_do_silly_unlink(struct afs_vnode *dvnod=
-e, struct afs_vnode *vnode
- 	afs_op_set_vnode(op, 0, dvnode);
- 	afs_op_set_vnode(op, 1, vnode);
- 	op->file[0].dv_delta =3D 1;
-+	op->file[0].modification =3D true;
- 	op->file[0].update_ctime =3D true;
- 	op->file[1].op_unlinked =3D true;
- 	op->file[1].update_ctime =3D true;
-diff --git a/fs/afs/fs_operation.c b/fs/afs/fs_operation.c
-index 2cb0951acca6..d222dfbe976b 100644
---- a/fs/afs/fs_operation.c
-+++ b/fs/afs/fs_operation.c
-@@ -118,6 +118,8 @@ static void afs_prepare_vnode(struct afs_operation *op=
-, struct afs_vnode_param *
- 		vp->cb_break_before	=3D afs_calc_vnode_cb_break(vnode);
- 		if (vnode->lock_state !=3D AFS_VNODE_LOCK_NONE)
- 			op->flags	|=3D AFS_OPERATION_CUR_ONLY;
-+		if (vp->modification)
-+			set_bit(AFS_VNODE_MODIFYING, &vnode->flags);
- 	}
- =
-
- 	if (vp->fid.vnode)
-@@ -225,6 +227,10 @@ int afs_put_operation(struct afs_operation *op)
- =
-
- 	if (op->ops && op->ops->put)
- 		op->ops->put(op);
-+	if (op->file[0].modification)
-+		clear_bit(AFS_VNODE_MODIFYING, &op->file[0].vnode->flags);
-+	if (op->file[1].modification && op->file[1].vnode !=3D op->file[0].vnode=
-)
-+		clear_bit(AFS_VNODE_MODIFYING, &op->file[1].vnode->flags);
- 	if (op->file[0].put_vnode)
- 		iput(&op->file[0].vnode->vfs_inode);
- 	if (op->file[1].put_vnode)
-diff --git a/fs/afs/inode.c b/fs/afs/inode.c
-index 3a129b9fd9b8..80b6c8d967d5 100644
---- a/fs/afs/inode.c
-+++ b/fs/afs/inode.c
-@@ -294,8 +294,9 @@ void afs_vnode_commit_status(struct afs_operation *op,=
- struct afs_vnode_param *v
- 			op->flags &=3D ~AFS_OPERATION_DIR_CONFLICT;
- 		}
- 	} else if (vp->scb.have_status) {
--		if (vp->dv_before + vp->dv_delta !=3D vp->scb.status.data_version &&
--		    vp->speculative)
-+		if (vp->speculative &&
-+		    (test_bit(AFS_VNODE_MODIFYING, &vnode->flags) ||
-+		     vp->dv_before !=3D vnode->status.data_version))
- 			/* Ignore the result of a speculative bulk status fetch
- 			 * if it splits around a modification op, thereby
- 			 * appearing to regress the data version.
-@@ -911,6 +912,7 @@ int afs_setattr(struct user_namespace *mnt_userns, str=
-uct dentry *dentry,
- 	}
- 	op->ctime =3D attr->ia_ctime;
- 	op->file[0].update_ctime =3D 1;
-+	op->file[0].modification =3D true;
- =
-
- 	op->ops =3D &afs_setattr_operation;
- 	ret =3D afs_do_sync_operation(op);
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index 52157a05796a..5ed416f4ff33 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -645,6 +645,7 @@ struct afs_vnode {
- #define AFS_VNODE_PSEUDODIR	7 		/* set if Vnode is a pseudo directory */
- #define AFS_VNODE_NEW_CONTENT	8		/* Set if file has new content (create/t=
-runc-0) */
- #define AFS_VNODE_SILLY_DELETED	9		/* Set if file has been silly-deleted =
-*/
-+#define AFS_VNODE_MODIFYING	10		/* Set if we're performing a modification=
- op */
- =
-
- 	struct list_head	wb_keys;	/* List of keys available for writeback */
- 	struct list_head	pending_locks;	/* locks waiting to be granted */
-@@ -762,6 +763,7 @@ struct afs_vnode_param {
- 	bool			set_size:1;	/* Must update i_size */
- 	bool			op_unlinked:1;	/* True if file was unlinked by op */
- 	bool			speculative:1;	/* T if speculative status fetch (no vnode lock) *=
-/
-+	bool			modification:1;	/* Set if the content gets modified */
- };
- =
-
- /*
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index dc66ff15dd16..3edb6204b937 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -377,6 +377,7 @@ static int afs_store_data(struct afs_vnode *vnode, str=
-uct iov_iter *iter, loff_t
- =
-
- 	afs_op_set_vnode(op, 0, vnode);
- 	op->file[0].dv_delta =3D 1;
-+	op->file[0].modification =3D true;
- 	op->store.write_iter =3D iter;
- 	op->store.pos =3D pos;
- 	op->store.size =3D size;
 
