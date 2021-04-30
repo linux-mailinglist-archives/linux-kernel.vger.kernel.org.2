@@ -2,91 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 731E4370279
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 22:54:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C389370272
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 22:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236053AbhD3Uxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 16:53:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231265AbhD3Uxg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 16:53:36 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9516C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 13:52:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=qKHOGRgzC7YnT+Ecg1F4J0o80yRMnRSqDzcjOADroEo=; b=o4Ow+GUsvockWChlSPm17pfQRD
-        p9QRtbrHHvBYDuPZmBeMqExIDnqDW71yT3fSw5/WGPEv/kt83NWbh09wpxCLMy42G2nhaOaliNlBY
-        Rq+T33hSOL+UgkfwLnP8YJ01lnxECMWtq5Vs2NQo1Z+FIY1ju09UXBoWB1PMyesI1j3eflxVod5t4
-        6EhnKRQIxHN5pa7sgzwNXb6stZrxXf9f8PfCwzXviKSQP0WdwSDGzSjkF7ZM9OImW6ApXYD4rzq2O
-        v7BJT0gG7mCkQJmUX839nofGF6dm1A0fTaZdSzfVmv/5BVMq6yqIcEBWFqeIpunv4l9zU7PAFo/NC
-        4ljPTj+g==;
-Received: from [2601:1c0:6280:3f0::df68] (helo=casper.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lca6F-00BWOZ-K6; Fri, 30 Apr 2021 20:51:57 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jinyang He <hejinyang@loongson.cn>
-Subject: [PATCH] mips: loongson64: fix reset.c build errors when SMP=n
-Date:   Fri, 30 Apr 2021 13:50:55 -0700
-Message-Id: <20210430205055.13594-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        id S235976AbhD3UwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 16:52:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40100 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231278AbhD3Uvz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 16:51:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B94D8613EF;
+        Fri, 30 Apr 2021 20:51:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619815867;
+        bh=425BKKf9d1upHtLcAyCMH6Ftd/hb03pDS4Y2KILynpY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=OTERdT9WtjZ9eJb63Jhk9+bIPcpKMIAehxtCv4FKI54U5WCZjqF44V4J0mDkgkER3
+         +7os0kmxLtgAzDqSZzz27Bf8RK2cMt3702JKM7b7TvOVx43BLRiUxl2kpohVuJ7JzL
+         jw6JjjJYjAIZlMzqihgYLfMsb4mSrPoIPZAeUhARaGEvs663ZupCA46Qyqx+jxSZ2D
+         2F3gGVzDGGqc89yLT7DTL5Cw7MokLbBxbmsRcLXA7Ma8jaCe0KjSK0NiPPo3WcIPcH
+         d1mYlltyGpcjQqXqdtF2J3Gtmp1pyGaTTQQG5eGqU+11UJwKRyNSKoAQrWqGKycf//
+         CBCFywTJUX4fg==
+Date:   Fri, 30 Apr 2021 15:51:05 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Robert Straw <drbawb@fatalsyntax.com>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Alex Williamson <alex.williamson@redhat.com>
+Subject: Re: [PATCH] pci: add NVMe FLR quirk to the SM951 SSD
+Message-ID: <20210430205105.GA683965@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210429230730.201266-1-drbawb@fatalsyntax.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable 'secondary_kexec_args' is only declared when
-CONFIG_SMP=y. When CONFIG_SMP is not set, referencing the variable
-causes syntax errors, so guard the references with #ifdef CONFIG_SMP.
+[+cc Alex, author of ffb0863426eb]
 
-../arch/mips/loongson64/reset.c: In function 'loongson_kexec_shutdown':
-../arch/mips/loongson64/reset.c:133:2: error: 'secondary_kexec_args' undeclared (first use in this function)
-  133 |  secondary_kexec_args[0] = TO_UNCAC(0x3ff01000);
-      |  ^~~~~~~~~~~~~~~~~~~~
-../arch/mips/loongson64/reset.c: In function 'loongson_crash_shutdown':
-../arch/mips/loongson64/reset.c:144:2: error: 'secondary_kexec_args' undeclared (first use in this function)
-  144 |  secondary_kexec_args[0] = TO_UNCAC(0x3ff01000);
-      |  ^~~~~~~~~~~~~~~~~~~~
+Please make your subject line match ffb0863426eb ("PCI: Disable
+Samsung SM961/PM961 NVMe before FLR")
 
-Fixes: 6ce48897ce47 ("MIPS: Loongson64: Add kexec/kdump support")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Huacai Chen <chenhc@lemote.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Jinyang He <hejinyang@loongson.cn>
----
- arch/mips/loongson64/reset.c |    4 ++++
- 1 file changed, 4 insertions(+)
+On Thu, Apr 29, 2021 at 06:07:30PM -0500, Robert Straw wrote:
+> The SM951/PM951, when used in conjunction with the vfio-pci driver and
+> passed to a KVM guest, can exhibit the fatal state addressed by the
+> existing `nvme_disable_and_flr` quirk. If the guest cleanly shuts down
+> the SSD, and vfio-pci attempts an FLR to the device while it is in this 
+> state, the nvme driver will fail when it attempts to bind to the device 
+> after the FLR due to the frozen config area, e.g:
+> 
+>   nvme nvme2: frozen state error detected, reset controller
+>   nvme nvme2: Removing after probe failure status: -12
+> 
+> By including this older model (Samsung 950 PRO) of the controller in the
+> existing quirk: the device is able to be cleanly reset after being used
+> by a KVM guest.
 
---- linux-next-20210430.orig/arch/mips/loongson64/reset.c
-+++ linux-next-20210430/arch/mips/loongson64/reset.c
-@@ -130,7 +130,9 @@ static void loongson_kexec_shutdown(void
- 	kexec_args[0] = kexec_argc;
- 	kexec_args[1] = fw_arg1;
- 	kexec_args[2] = fw_arg2;
-+#ifdef CONFIG_SMP
- 	secondary_kexec_args[0] = TO_UNCAC(0x3ff01000);
-+#endif
- 	memcpy((void *)fw_arg1, kexec_argv, KEXEC_ARGV_SIZE);
- 	memcpy((void *)fw_arg2, kexec_envp, KEXEC_ENVP_SIZE);
- }
-@@ -141,7 +143,9 @@ static void loongson_crash_shutdown(stru
- 	kexec_args[0] = kdump_argc;
- 	kexec_args[1] = fw_arg1;
- 	kexec_args[2] = fw_arg2;
-+#ifdef CONFIG_SMP
- 	secondary_kexec_args[0] = TO_UNCAC(0x3ff01000);
-+#endif
- 	memcpy((void *)fw_arg1, kdump_argv, KEXEC_ARGV_SIZE);
- 	memcpy((void *)fw_arg2, kexec_envp, KEXEC_ENVP_SIZE);
- }
+I don't see anything in the PCIe spec about software being required to
+do something special before initiating an FLR, so I assume this is a
+hardware defect in the Samsung 950 PRO?  Has Samsung published an
+erratum or at least acknowledged it?
+
+There's always the possibility that we are doing something wrong in
+Linux *after* the FLR, e.g., not waiting long enough, not
+reinitializing something correctly, etc.
+
+> Signed-off-by: Robert Straw <drbawb@fatalsyntax.com>
+> ---
+>  drivers/pci/quirks.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> index 653660e3b..e339ca238 100644
+> --- a/drivers/pci/quirks.c
+> +++ b/drivers/pci/quirks.c
+> @@ -3920,6 +3920,7 @@ static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
+>  		reset_ivb_igd },
+>  	{ PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_IVB_M2_VGA,
+>  		reset_ivb_igd },
+> +	{ PCI_VENDOR_ID_SAMSUNG, 0xa802, nvme_disable_and_flr },
+>  	{ PCI_VENDOR_ID_SAMSUNG, 0xa804, nvme_disable_and_flr },
+>  	{ PCI_VENDOR_ID_INTEL, 0x0953, delay_250ms_after_flr },
+>  	{ PCI_VENDOR_ID_CHELSIO, PCI_ANY_ID,
+> -- 
+> 2.31.1
+> 
