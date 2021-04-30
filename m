@@ -2,119 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF693700DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C42D3700E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231716AbhD3S7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 14:59:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231136AbhD3S7l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 14:59:41 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 301DFC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 11:58:52 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id s9so24119567ljj.6
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 11:58:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HR9HIh5t6ChKf4G2M+/v8UEXBtBcvCoA8Ko3upSQGEE=;
-        b=Gthh0M42pJvYCWBy3e13blM8tVYPzsKl3dsjSJfC6WPQE14dl0aGEMfGT9jr9z9r0w
-         zsppuIHNQXNvQnegVvGlCd5YB/6sVcBPAQvlzcTZcq9WavaVu35v8QiWsut/Uf2cZiRi
-         SROr1sstiMDfAGbtJG7YiUrELWg4w1bLfBT9o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HR9HIh5t6ChKf4G2M+/v8UEXBtBcvCoA8Ko3upSQGEE=;
-        b=SZH3BgWaEizT8cX6T5tExxLvUUD/o6K0/I8QOqFVBilZ92N2pJnqUdf7sYWR3Uc19v
-         nsPZu/BgrfUcAclXuTzuBjmAsmqdLsxjP8vgtgnKDQCL7P27Qpq9FGrnBHXXa0OXtlil
-         uCYSlUG4+4qg7mhmurg5z5XJulkH4klWdzvRpKj7NaFx4UbRuCNYKFIiu/VI9SC3wuI2
-         1O8P02ns6sDBGwRR33QHjCxiylraTRXcRH916845dCRNaDM29nxAhqQ5UBJ6Op4CHXA9
-         9Bkj3DCaZMtBCSj9iNnVFU9QYhbQKFcgKn4aztFMeTZd2mC+IW1ny6AlSuQrgLOkNcy7
-         o7JA==
-X-Gm-Message-State: AOAM531KyO+pTNeiDUlI4REgZkZLy2b2zZPWGj062RiYIeI57D587+tW
-        6EGchMxbA18mf2GRAamnhHO7fWCAwkmYFpMj
-X-Google-Smtp-Source: ABdhPJxK5hPaqJHWBxatw0F3sKNHLsDIpiYaGRTheQevuaM6ctcrjWClAP+hADvOjTyqXkHbUFCeTw==
-X-Received: by 2002:a05:651c:2c8:: with SMTP id f8mr4898418ljo.409.1619809130432;
-        Fri, 30 Apr 2021 11:58:50 -0700 (PDT)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id j14sm343275ljh.0.2021.04.30.11.58.49
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Apr 2021 11:58:49 -0700 (PDT)
-Received: by mail-lf1-f42.google.com with SMTP id j10so18466397lfb.12
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 11:58:49 -0700 (PDT)
-X-Received: by 2002:a05:6512:3763:: with SMTP id z3mr4084391lft.487.1619809128928;
- Fri, 30 Apr 2021 11:58:48 -0700 (PDT)
+        id S231754AbhD3TAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 15:00:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231136AbhD3TAA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 15:00:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3CFE60233;
+        Fri, 30 Apr 2021 18:59:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619809151;
+        bh=iLa54GJRd4w9lzNeN2FcvEnXnhXHBcTHxM2aqsdDVlo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MT8Qzi9wVH4Ixu3E8GU76/pxIz7iNSV4K9qkF0owrMA9q/Yw23s4du1l4MkW+EHxQ
+         yADaSCMiNnb4EaYH9dKF98g+VtgitNuQVJYchEPNe59rRGER7mq2jriwfGe26JWmXD
+         YWHAzk3LsIDZg7W2SpwFQCe8HGZI5h4tF6a74qHKy+GoE30xbOzy+6PB3GGhGK1ZL4
+         b94v2XrPGmgHS6Ad687aaezw7i8loQxiPq1RaVGqltCWASvpRKKfiHlDbFlFiPuubG
+         HX1r0L8FkKAj06dvgikinm0rEo6SHpmXjgsFbTwq12v6Dqu63t3+yzx0fYtOx0PxdB
+         tVwZdad4Cyd+w==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 7021A4034C; Fri, 30 Apr 2021 15:59:08 -0300 (-03)
+Date:   Fri, 30 Apr 2021 15:59:08 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        honnappa.nagarahalli@arm.com, Zachary.Leaf@arm.com,
+        Raphael Gault <raphael.gault@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 0/9] arm64 userspace counter access support
+Message-ID: <YIxTfKh6/uxvd0Fu@kernel.org>
+References: <20210420031511.2348977-1-robh@kernel.org>
 MIME-Version: 1.0
-References: <CAHk-=wjrpinf=8gAjxyPoXT0jbK6-U3Urawiykh-zpxeo47Vhg@mail.gmail.com>
- <20210428061706.GC5084@lst.de> <CAHk-=whWnFu4wztnOtySjFVYXmBR4Mb2wxrp6OayZqnpKeQw0g@mail.gmail.com>
- <20210428064110.GA5883@lst.de> <CAHk-=wjeUhrznxM95ni4z+ynMqhgKGsJUDU8g0vrDLc+fDtYWg@mail.gmail.com>
- <1de23de2-12a9-2b13-3b86-9fe4102fdc0c@rasmusvillemoes.dk> <CAHk-=wimsMqGdzik187YWLb-ru+iktb4MYbMQG1rnZ81dXYFVg@mail.gmail.com>
- <26d06c27-4778-bf75-e39a-3b02cd22d0e3@rasmusvillemoes.dk> <CAHk-=whJmDjTLYLeF=Ax31vTOq4PHXKo6JUqm1mQNGZdy-6=3Q@mail.gmail.com>
- <AM6PR08MB43769965CAF732F1DEA4A37AF75E9@AM6PR08MB4376.eurprd08.prod.outlook.com>
- <YIt3uKBQnlxHAo/Q@zeniv-ca.linux.org.uk>
-In-Reply-To: <YIt3uKBQnlxHAo/Q@zeniv-ca.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 30 Apr 2021 11:58:32 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjzBbEdpteXfRp6-WPKkZBZ1dtJSir0YqSKb_qi8AghuQ@mail.gmail.com>
-Message-ID: <CAHk-=wjzBbEdpteXfRp6-WPKkZBZ1dtJSir0YqSKb_qi8AghuQ@mail.gmail.com>
-Subject: Re: [GIT PULL] iomap: new code for 5.13-rc1
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Justin He <Justin.He@arm.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Eric Sandeen <sandeen@sandeen.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210420031511.2348977-1-robh@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 8:21 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> Just what does vfsmount have to do with rename_lock?  And what's the point
-> of the entire mess, anyway?
+Em Mon, Apr 19, 2021 at 10:15:02PM -0500, Rob Herring escreveu:
+> Hi all,
+> 
+> Another version of arm64 userspace counter access support. I sent out
+> the libperf bits separately and those are now applied (Thanks!), so this
+> is just the arm64 bits.
+> 
+> 
+> This originally resurrected Raphael's series[1] to enable userspace counter
+> access on arm64. My previous versions are here[2][3][4][5][6][7]. A git
+> branch is here[8].
 
-Currently "%pD" doesn't actually show a truly valid pathname.
+Rob, please don't mix kernel patches with tools patches. The kernel
+bits, if arch specific should go via the arch maintainer, core stuff to
+PeterZ/Ingo/bpetkov/tglx, and tooling stuff I'll collect.
 
-So we have three cases:
+We did it on purpose to avoid any semblance of kernel/tool lockstep.
 
- (a) __d_path and friends get the name right, but are being overly
-careful about it, and take mount_lock and rename_lock in prepend_path
+The kernel changes should not prevent the tooling from working and the
+tooling changes shouldn't require the kernel changes.
 
- (b) dentry_path() doesn't get the actual path name right (only the
-in-filesystem one), and takes rename_lock in __dentry_path
+Preexisting kernels should work with new tools and vice versa.
 
- (c) for the vsnprintf case, dentry_name() is the nice lockless "good
-for debugging and printk" that doesn't take any locks at all, and
-optimistically gives a valid end result, even if it's perhaps not
-*THE* valid end result
+Thanks,
 
-Basically, the vsnprintf case does the right thing for dentries, and
-the whole "you can use this for debugging messages even when you hold
-the rename lock" etc.
+- Arnaldo
+ 
+> 
+> Changes in v7:
+>  - Handling of dirty counter leakage and reworking of context switch and
+>    user access enabling. The .sched_task hook and undef instruction handler
+>    are now utilized. (Patch 3)
+>  - Add a userspace disable switch like x86. (Patch 5)
+> 
+> Changes in v6:
+>  - Reworking of the handling of 64-bit counters and user access. There's
+>    a new config1 flag to request user access. This takes priority over
+>    the 64-bit flag and the user will get the maximum size the h/w
+>    supports without chaining.
+>  - The libperf evsel mmap struct is stored in its own xyarray
+>  - New tests for user 64-bit and 32-bit counters
+>  - Rebase to v5.12-rc2
+> 
+> Changes in v5:
+>  - Limit enabling/disabling access to CPUs associated with the PMU
+>    (supported_cpus) and with the mm_struct matching current->active_mm.
+>    The x86 method of using mm_cpumask doesn't work for arm64 as it is not
+>    updated.
+>  - Only set cap_user_rdpmc if event is on current cpu. See patch 2.
+>  - Create an mmap for every event in an evsel. This results in some changes
+>    to the libperf mmap API from the last version.
+>  - Rebase to v5.11-rc2
+> 
+> Changes in v4:
+>  - Dropped 'arm64: pmu: Add hook to handle pmu-related undefined instructions'.
+>    The onus is on userspace to pin itself to a homogeneous subset of CPUs
+>    and avoid any aborts on heterogeneous systems, so the hook is not needed.
+>  - Make perf_evsel__mmap() take pages rather than bytes for size
+>  - Fix building arm64 heterogeneous test.
+> 
+> Changes in v3:
+>  - Dropped removing x86 rdpmc test until libperf tests can run via 'perf test'
+>  - Added verbose prints for tests
+>  - Split adding perf_evsel__mmap() to separate patch
+> 
+> The following changes to the arm64 support have been made compared to
+> Raphael's last version:
+> 
+> The major change is support for heterogeneous systems with some
+> restrictions. Specifically, userspace must pin itself to like CPUs, open
+> a specific PMU by type, and use h/w specific events. The tests have been
+> reworked to demonstrate this.
+> 
+> Chained events are not supported. The problem with supporting chained
+> events was there's no way to distinguish between a chained event and a
+> native 64-bit counter. We could add some flag, but do self monitoring
+> processes really need that? Native 64-bit counters are supported if the
+> PMU h/w has support. As there's already an explicit ABI to request 64-bit
+> counters, userspace can request 64-bit counters and if user
+> access is not enabled, then it must retry with 32-bit counters.
+> 
+> Prior versions broke the build on arm32 (surprisingly never caught by
+> 0-day). As a result, event_mapped and event_unmapped implementations have
+> been moved into the arm64 code.
+> 
+> There was a bug in that pmc_width was not set in the user page. The tests
+> now check for this.
+> 
+> The documentation has been converted to rST. I've added sections on
+> chained events and heterogeneous.
+> 
+> The tests have been expanded to test the cycle counter access.
+> 
+> Rob
+> 
+> [1] https://lore.kernel.org/r/20190822144220.27860-1-raphael.gault@arm.com/
+> [2] https://lore.kernel.org/r/20200707205333.624938-1-robh@kernel.org/
+> [3] https://lore.kernel.org/r/20200828205614.3391252-1-robh@kernel.org/
+> [4] https://lore.kernel.org/r/20200911215118.2887710-1-robh@kernel.org/
+> [5] https://lore.kernel.org/r/20201001140116.651970-1-robh@kernel.org/
+> [6] https://lore.kernel.org/r/20210114020605.3943992-1-robh@kernel.org/
+> [7] https://lore.kernel.org/r/20210311000837.3630499-1-robh@kernel.org/
+> [8] git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git user-perf-event-v7
+> 
+> Raphael Gault (4):
+>   arm64: Restrict undef hook for cpufeature registers
+>   arm64: pmu: Add function implementation to update event index in
+>     userpage
+>   arm64: perf: Enable PMU counter direct access for perf event
+>   Documentation: arm64: Document PMU counters access from userspace
+> 
+> Rob Herring (5):
+>   drivers/perf: arm_pmu: Export the per_cpu cpu_armpmu
+>   arm64: perf: Add userspace counter access disable switch
+>   libperf: Add arm64 support to perf_mmap__read_self()
+>   perf: arm64: Add test for userspace counter access on heterogeneous
+>     systems
+>   perf: arm64: Add tests for 32-bit and 64-bit counter size userspace
+>     access
+> 
+>  Documentation/arm64/perf.rst               |  67 +++++-
+>  arch/arm64/include/asm/mmu.h               |   5 +
+>  arch/arm64/kernel/cpufeature.c             |   4 +-
+>  arch/arm64/kernel/perf_event.c             | 254 ++++++++++++++++++++-
+>  drivers/perf/arm_pmu.c                     |   2 +-
+>  include/linux/perf/arm_pmu.h               |  14 +-
+>  tools/lib/perf/mmap.c                      |  98 ++++++++
+>  tools/lib/perf/tests/test-evsel.c          |   2 +-
+>  tools/perf/arch/arm64/include/arch-tests.h |  12 +
+>  tools/perf/arch/arm64/tests/Build          |   1 +
+>  tools/perf/arch/arm64/tests/arch-tests.c   |  12 +
+>  tools/perf/arch/arm64/tests/user-events.c  | 215 +++++++++++++++++
+>  12 files changed, 672 insertions(+), 14 deletions(-)
+>  create mode 100644 tools/perf/arch/arm64/tests/user-events.c
+> 
+> --
+> 2.27.0
 
-So (c) is the "debug messages version of (b)".
+-- 
 
-But there is no "debug messages version of (a)", which is what would
-be good for %pD.
-
-You can see it in how the s390 hmcdriv thing does that
-
-        pr_debug("open file '/dev/%pD' with return code %d\n", fp, rc);
-
-which is really just garbage: the "/dev/" part is just a guess, but
-yes, if /dev is devtmpfs - like it usually is - then '%pD' simply
-doesn't do the right thing (even if it had '%pD2')
-
-              Linus
+- Arnaldo
