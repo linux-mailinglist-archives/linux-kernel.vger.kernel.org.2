@@ -2,107 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA9236FACD
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 14:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B5836FAD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 14:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233072AbhD3Mop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 08:44:45 -0400
-Received: from mail-m972.mail.163.com ([123.126.97.2]:40852 "EHLO
-        mail-m972.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbhD3Mn1 (ORCPT
+        id S232553AbhD3Mqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 08:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232202AbhD3Mqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 08:43:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=rQfL+
-        bUtJX+3ZYhcK0QhJ3DHdXKx/pQWNF2tJzAgEVw=; b=WE8tgmFpRW+iST57T/pFO
-        /5I7M/g0tvmAIjKjPaGc7oz5WrlvZT0IZxG0S297v3mGvdxHGa9+4raRweNiQhWi
-        YVMWaWnBSDRQhmufyafxIRUDxF1wpb+56hJ1lOxyRdRAN09vUV3FW0dd0qJx6ekD
-        fth4a69TKQS6Zhm4oZs7Zg=
-Received: from localhost.localdomain (unknown [117.10.160.91])
-        by smtp2 (Coremail) with SMTP id GtxpCgA3JRox+4tgsgT1HA--.294S2;
-        Fri, 30 Apr 2021 20:42:26 +0800 (CST)
-From:   Shujun Wang <wsj20369@163.com>
-To:     rjw@rjwysocki.net, lenb@kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Shujun Wang <wsj20369@163.com>
-Subject: [PATCH] Revert "ACPI: power: Turn off unused power resources unconditionally"
-Date:   Fri, 30 Apr 2021 20:42:24 +0800
-Message-Id: <20210430124224.6383-1-wsj20369@163.com>
+        Fri, 30 Apr 2021 08:46:42 -0400
+Received: from mxout1.routing.net (mxout1.routing.net [IPv6:2a03:2900:1:a::a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F19C06123E
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 05:43:36 -0700 (PDT)
+Received: from mxbox3.masterlogin.de (unknown [192.168.10.78])
+        by mxout1.routing.net (Postfix) with ESMTP id 7C9764009A;
+        Fri, 30 Apr 2021 12:43:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
+        s=20200217; t=1619786614;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Icrc7EFL5BUHi1eYahCvzZ+YzD3iOur+Sxb89HRIcns=;
+        b=dSw6qOZOcuuy0Y16DK9t3T5tJDiGkH9DdNysT8eVGLodCZoYpJf5qnSjJ/8YB1XnebO720
+        +DuUAJ8cCqo7G3eYgEf443jhKFkv/mDD5gIlnM0R6VdTIkQ8U7WSDt9MH5TjCzwjcfF6Vx
+        P3/+ts9c3RX8y92JqgIIQYjSuB/1dVw=
+Received: from localhost.localdomain (fttx-pool-157.180.225.50.bambit.de [157.180.225.50])
+        by mxbox3.masterlogin.de (Postfix) with ESMTPSA id 7F99F360499;
+        Fri, 30 Apr 2021 12:43:33 +0000 (UTC)
+From:   Frank Wunderlich <linux@fw-web.de>
+To:     linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>, Bin Liu <b-liu@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        David Miller <davem@davemloft.net>,
+        DENG Qingfang <dqfext@gmail.com>
+Subject: [PATCH] musb: mediatek: rename driver
+Date:   Fri, 30 Apr 2021 14:43:17 +0200
+Message-Id: <20210430124317.97376-1-linux@fw-web.de>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GtxpCgA3JRox+4tgsgT1HA--.294S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7ur4UKrW3uF4xXFyUKr45ZFb_yoW8ZrWkpF
-        92gw17Cr4kXF17tFsIvF1jqFZ5uw429a1qkryxCwnxuanrWr98tr9rtry5Z345Jr18WF4Y
-        qr4DXr18tFWUuaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jCXdbUUUUU=
-X-Originating-IP: [117.10.160.91]
-X-CM-SenderInfo: hzvmjiqtwzqiywtou0bp/1tbiTBKEF1SInabxIgAAs5
+X-Mail-ID: 90a10fd3-9eba-4320-aec9-e63f16763ee2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 7e4fdeafa61f2b653fcf9678f09935e55756aed2.
-It may cause some NVMe device probes to fail, and the system may get
-stuck when using an NVMe device as the root filesystem.
+From: Frank Wunderlich <frank-w@public-files.de>
 
-In the function nvme_pci_enable(struct nvme_dev *dev), as shown below,
-readl(NVME_REG_CSTS) always returns -1 with the commit, which results in
-the probe failed.
+currently unspecific mediatek.ko is built,
+change this by adding subsystem
 
-  if (readl(dev->bar + NVME_REG_CSTS) == -1) {
-	result = -ENODEV;
-	goto disable;
-  }
-
-dmesg:
-  [    1.106280] nvme 0000:04:00.0: platform quirk: setting simple suspend
-  [    1.109111] nvme nvme0: pci function 0000:04:00.0
-  [    1.113066] nvme 0000:04:00.0: enabling device (0000 -> 0002)
-  [    1.121040] nvme nvme0: Removing after probe failure status: -19
-
-lspci:
-  Non-Volatile memory controller: KIOXIA Corporation Device 0001
-
-device uevent:
-  DRIVER=nvme
-  PCI_CLASS=10802
-  PCI_ID=1E0F:0001
-  PCI_SUBSYS_ID=1E0F:0001
-  PCI_SLOT_NAME=0000:04:00.0
-  MODALIAS=pci:v00001E0Fd00000001sv00001E0Fsd00000001bc01sc08i02
-
-This patch was tested in Lenovo Thinkpad X1.
-
-Signed-off-by: Shujun Wang <wsj20369@163.com>
+Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
 ---
- drivers/acpi/power.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ drivers/usb/musb/Makefile                   | 2 +-
+ drivers/usb/musb/{mediatek.c => musb_mtk.c} | 0
+ 2 files changed, 1 insertion(+), 1 deletion(-)
+ rename drivers/usb/musb/{mediatek.c => musb_mtk.c} (100%)
 
-diff --git a/drivers/acpi/power.c b/drivers/acpi/power.c
-index 56102eaaa2da..8bf10abeb2e0 100644
---- a/drivers/acpi/power.c
-+++ b/drivers/acpi/power.c
-@@ -1004,9 +1004,18 @@ void acpi_turn_off_unused_power_resources(void)
- 	mutex_lock(&power_resource_list_lock);
+diff --git a/drivers/usb/musb/Makefile b/drivers/usb/musb/Makefile
+index 932247360a9f..82928d4fd42a 100644
+--- a/drivers/usb/musb/Makefile
++++ b/drivers/usb/musb/Makefile
+@@ -24,7 +24,7 @@ obj-$(CONFIG_USB_MUSB_DA8XX)			+= da8xx.o
+ obj-$(CONFIG_USB_MUSB_UX500)			+= ux500.o
+ obj-$(CONFIG_USB_MUSB_JZ4740)			+= jz4740.o
+ obj-$(CONFIG_USB_MUSB_SUNXI)			+= sunxi.o
+-obj-$(CONFIG_USB_MUSB_MEDIATEK)      		+= mediatek.o
++obj-$(CONFIG_USB_MUSB_MEDIATEK)      		+= musb_mtk.o
  
- 	list_for_each_entry_reverse(resource, &acpi_power_resource_list, list_node) {
-+		int result, state;
-+
- 		mutex_lock(&resource->resource_lock);
- 
--		if (!resource->ref_count) {
-+		result = acpi_power_get_state(resource->device.handle, &state);
-+		if (result) {
-+			mutex_unlock(&resource->resource_lock);
-+			continue;
-+		}
-+
-+		if (state == ACPI_POWER_RESOURCE_STATE_ON
-+		    && !resource->ref_count) {
- 			dev_info(&resource->device.dev, "Turning OFF\n");
- 			__acpi_power_off(resource);
- 		}
+ # the kconfig must guarantee that only one of the
+ # possible I/O schemes will be enabled at a time ...
+diff --git a/drivers/usb/musb/mediatek.c b/drivers/usb/musb/musb_mtk.c
+similarity index 100%
+rename from drivers/usb/musb/mediatek.c
+rename to drivers/usb/musb/musb_mtk.c
 -- 
 2.25.1
 
