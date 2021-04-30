@@ -2,179 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5780736F931
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 13:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A63FB36F934
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 13:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231696AbhD3LZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 07:25:34 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:16935 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbhD3LZd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 07:25:33 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FWqhk0Hn2znTYF;
-        Fri, 30 Apr 2021 19:22:14 +0800 (CST)
-Received: from [10.174.177.244] (10.174.177.244) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 30 Apr 2021 19:24:38 +0800
-Subject: Re: arm32: panic in move_freepages (Was [PATCH v2 0/4] arm64: drop
- pfn_valid_within() and simplify pfn_valid())
-To:     Mike Rapoport <rppt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        "Will Deacon" <will@kernel.org>, <kvmarm@lists.cs.columbia.edu>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-References: <YIUYG8N9T3/C/tSG@kernel.org>
- <52f7d03b-7219-46bc-c62d-b976bc31ebd5@huawei.com>
- <YIZNq5HMfJ1rWytv@kernel.org>
- <2d879629-3059-fd42-428f-4b7c2a73d698@huawei.com>
- <YIet5X7lgygD9rpZ@kernel.org>
- <259d14df-a713-72e7-4ccb-c06a8ee31e13@huawei.com>
- <YIj5zcbHBHt7CC8B@kernel.org>
- <6ad2956c-70ae-c423-ed7d-88e94c88060f@huawei.com>
- <YIpY8TXCSc7Lfa2Z@kernel.org>
- <0cb013e4-1157-f2fa-96ec-e69e60833f72@huawei.com>
- <YIvTM5Yqit8AB4W8@kernel.org>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <ca5b00bd-1312-0c69-ab69-a1bd749f51b6@huawei.com>
-Date:   Fri, 30 Apr 2021 19:24:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S231758AbhD3L0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 07:26:12 -0400
+Received: from mail-bn1nam07on2077.outbound.protection.outlook.com ([40.107.212.77]:41068
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229543AbhD3L0K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 07:26:10 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DzcIZS1dVnqEvQ0Ij6Zn9Q5t/pSJ+0oUtA+2SxalrAaVdRPDSvaN1tZ4TV+5RIuY3St2hu+EC8ABgHcjOPf9f7jOOV/xr5BkXHKPCtmvDB69cnGf/CKIqjm6Oiz85voiUrV45DaVOiBESFY+uquj8G15foCTVBnbC9kTniUD785CD+WWYLZVmfphru2RuzH8lKdPRtCMjtTRkqgM2SpFYz8OKhpVkp5ouGCRNg6U8oSOrF79OncYkLL9NRiVpC4wV1dXmmrrNVljNSmcZJMozpTAbIRDA42soszo9b5n2ctazDgPeXJ3y9h1/ur3NjGDI9qO56ToUG/k7Hhk/m3dbg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kOg7mWXlvzqSZbaUzktvB1XOlz/XRYoTa/tgPQu2Jos=;
+ b=RNhsaheIiw23J61MOZoYLw+RMOe4MU/W9ZC5JMVKWEeIF6HsE89FVZNznTSgZkdWEn3h20ci71CD6tgJ2gYY1YPYnIxeIv5AfDhXhh4p2npMCSDbzeZMmKtZ5ppfPccm8m/3Tn6F2t0CWp9fu7D0ta8pzUJIlLhV+D8Ra2jfPOLRxUlGSOTKBcfYPKh3oAY5I1SRnHVB+Hha0csG1wMD7Fy1Xu7wuYCtnEhgi6Q79iOXuwzuDFKSqYcSnGBwvLfzr1F5JYbDztuKJxBh1rJSn9tVlLdRZnfGA+d5Ez8MaW15o/aAUSOUBh2df7ka/kpuCjQVaPOuLjWovMq9E3y0jw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kOg7mWXlvzqSZbaUzktvB1XOlz/XRYoTa/tgPQu2Jos=;
+ b=Qwcw4/9iwyksx3Q6CB/zn6K4q+XNr1TROuI4cK+qTf/TFG/5L0sMHkMBb7UvWlpHVUnMLWFrfE1dy6lyKnbZzx8oY8R5z7spVN9OukHRdeJTL3arAqmxQRMd0FMVpC+yaM7d9Hr97e+skla1SD99zXMRDPcc6gL+KQyfP5uSZ71CY+wp1S5E7+fFcmOFxCtZB5k3ujmEPwjHZv5noV688YgouauwIo3IEh27tIXv+IZle9epb/CRDhxGG9esiaWxwUliH6EKEWndbkOupDxjqV/gSATdMM7lyj+vTUE9zro4zUzWJ0yf6GiWiIDY5112GKhnxZg0NTFHbjz6y0A+0w==
+Received: from DS7PR03CA0247.namprd03.prod.outlook.com (2603:10b6:5:3b3::12)
+ by MN2PR12MB3776.namprd12.prod.outlook.com (2603:10b6:208:167::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21; Fri, 30 Apr
+ 2021 11:25:21 +0000
+Received: from DM6NAM11FT051.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:3b3:cafe::4b) by DS7PR03CA0247.outlook.office365.com
+ (2603:10b6:5:3b3::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.27 via Frontend
+ Transport; Fri, 30 Apr 2021 11:25:21 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT051.mail.protection.outlook.com (10.13.172.243) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4087.32 via Frontend Transport; Fri, 30 Apr 2021 11:25:20 +0000
+Received: from [10.20.22.163] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 30 Apr
+ 2021 11:25:18 +0000
+Subject: Re: [RFC 1/2] vfio/pci: keep the prefetchable attribute of a BAR
+ region in VMA
+To:     Alex Williamson <alex.williamson@redhat.com>
+CC:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        Christoffer Dall <christoffer.dall@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>,
+        <kvm@vger.kernel.org>, Vikram Sethi <vsethi@nvidia.com>,
+        Jason Sequeira <jsequeira@nvidia.com>
+References: <20210429162906.32742-1-sdonthineni@nvidia.com>
+ <20210429162906.32742-2-sdonthineni@nvidia.com>
+ <20210429122840.4f98f78e@redhat.com>
+ <470360a7-0242-9ae5-816f-13608f957bf6@nvidia.com>
+ <20210429134659.321a5c3c@redhat.com>
+From:   Shanker R Donthineni <sdonthineni@nvidia.com>
+Message-ID: <e3d7fda8-5263-211c-3686-f699765ab715@nvidia.com>
+Date:   Fri, 30 Apr 2021 06:25:08 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YIvTM5Yqit8AB4W8@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+In-Reply-To: <20210429134659.321a5c3c@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.244]
-X-CFilter-Loop: Reflected
+Content-Language: en-US
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6c4336d8-031b-43ee-6d92-08d90bcaa3d2
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3776:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB37768FB4AEAE765F79E44402C75E9@MN2PR12MB3776.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 32lF2LvzgbnB/C9WMdTNi0+MIcqDqmvcIt/juyUdkf+jE8ooIZfoSkBJTyH+B2RnwfdFjH1RJ1V9YjJzAMuV2dBUoJRLP/Oybnq/SsvHye/LWBgeoMp7HLDNCcqfGhLBKSDhMYl8ZT5QWc03VNCnFg8u7fmRv/yLuL8xWo0nwhgfKvZ0Q7N74TJU7DQiZ5p0pBWto7m7GuJvqxFmqOGHrVF8fJ3Mq0kMJFfqp59gAvhutGcDzWRhzeA775IHl6wdy1KgoM0w1080bKHmiBSrkv7DFHQen1PuxBCodhBBklI40MYyvpWWhDW3eDCeM/Y3nFFvKQ8nLnjJxDcBdcOq/M07Nyw58WI1WSxBDmYu3SLHfg7DcC253pEBl7C94g7LnIzoAK0+6T6p5tVR7gAbwlq8kfx9FjFS7GMes2+GHD/5dTtD4fMTiG8g6DmXULPbTBclOMF8nKgBJ4t+Eh5nwYHHn1Z/gn93/TWVfJuHVDim0m1TfBCnglJYazBkpvs2G+MtLfdTgYUwh7PU3bYqBGytzt0bxc6Q1AtJlSsJi6RE+J0Dtf+oEX0eg/g/PFR0w5Mf/P/uOi7bzCbScwG0AWyFgI4v6Q3zILRAP4OC0XvYuGMcan9WkvtKURvRUAL6ZpfqLHbfy1sWUST9Jpk3fZvt/4+GTLSBrJ+qeG9i8+0nFHsTvfdgMJ8a+k5XIrm/
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(39860400002)(136003)(346002)(396003)(36840700001)(46966006)(36860700001)(16526019)(36756003)(26005)(47076005)(426003)(82740400003)(36906005)(5660300002)(70586007)(53546011)(107886003)(70206006)(4326008)(31696002)(356005)(16576012)(2616005)(316002)(6666004)(7636003)(8936002)(54906003)(336012)(6916009)(31686004)(82310400003)(478600001)(83380400001)(86362001)(186003)(2906002)(8676002)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2021 11:25:20.8272
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6c4336d8-031b-43ee-6d92-08d90bcaa3d2
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT051.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3776
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Alex
+
+On 4/29/21 2:46 PM, Alex Williamson wrote:
+> If an alignment fault is fixed by configuring a WC mapping, doesn't
+> that suggest that the driver performed an unaligned access itself and
+> is relying on write combining by the processor to correct that error?
+> That's wrong.  Fix the driver or please offer another explanation of
+> how the WC mapping resolves this.  I suspect you could enable tracing
+> in QEMU, disable MMIO mmaps on the vfio-pci device and find the invalid
+> access.
+>
+>> We've two concerns here:
+>>    - Performance impacts for pass-through devices.
+>>    - The definition of ioremap_wc() function doesn't match the host
+>> kernel on ARM64
+> Performance I can understand, but I think you're also using it to mask
+> a driver bug which should be resolved first.  Thank
+
+We’ve already instrumented the driver code and found the code path for the unaligned
+accesses. We’ll fix this issue if it’s not following WC semantics.
+
+Fixing the performance concern will be under KVM stage-2 page-table control. We're
+looking for a guidance/solution for updating stage-2  PTE based on PCI-BAR attribute.
 
 
-On 2021/4/30 17:51, Mike Rapoport wrote:
-> On Thu, Apr 29, 2021 at 06:22:55PM +0800, Kefeng Wang wrote:
->>
->> On 2021/4/29 14:57, Mike Rapoport wrote:
->>
->>>>> Do you use SPARSMEM? If yes, what is your section size?
->>>>> What is the value if CONFIG_FORCE_MAX_ZONEORDER in your configuration?
->>>> Yes,
->>>>
->>>> CONFIG_SPARSEMEM=y
->>>>
->>>> CONFIG_SPARSEMEM_STATIC=y
->>>>
->>>> CONFIG_FORCE_MAX_ZONEORDER = 11
->>>>
->>>> CONFIG_PAGE_OFFSET=0xC0000000
->>>> CONFIG_HAVE_ARCH_PFN_VALID=y
->>>> CONFIG_HIGHMEM=y
->>>> #define SECTION_SIZE_BITS    26
->>>> #define MAX_PHYSADDR_BITS    32
->>>> #define MAX_PHYSMEM_BITS     32
->>
->>
->> With the patch,  the addr is aligned, but the panic still occurred,
-> 
-> Is this the same panic at move_freepages() for range [de600, de7ff]?
-> 
-> Do you enable CONFIG_ARM_LPAE?
-
-no, the CONFIG_ARM_LPAE is not set, and yes with same panic at 
-move_freepages at
-
-start_pfn/end_pfn [de600, de7ff], [de600000, de7ff000] :  pfn =de600, 
-page =ef3cc000, page-flags = ffffffff,  pfn2phy = de600000
-
-
-
-> 
->> new free memory log is below,
->>
->> memblock_free: [0xaf430000-0xaf44ffff] mem_init+0x158/0x23c
->>
->> memblock_free: [0xaf510000-0xaf53ffff] mem_init+0x158/0x23c
->> memblock_free: [0xaf560000-0xaf57ffff] mem_init+0x158/0x23c
->> memblock_free: [0xafd98000-0xafdc7fff] mem_init+0x158/0x23c
->> memblock_free: [0xafdd8000-0xafdfffff] mem_init+0x158/0x23c
->> memblock_free: [0xafe18000-0xafe7ffff] mem_init+0x158/0x23c
->> memblock_free: [0xafee0000-0xafefffff] mem_init+0x158/0x23c
->> __free_memory_core, range: 0x80a03000 - 0x80a04000, pfn: 80a03 - 80a04
->> __free_memory_core, range: 0x80a08000 - 0x80b00000, pfn: 80a08 - 80b00
->> __free_memory_core, range: 0x812e8058 - 0x83000000, pfn: 812e9 - 83000
->> __free_memory_core, range: 0x85000000 - 0x85600000, pfn: 85000 - 85600
->> __free_memory_core, range: 0x86a00000 - 0x87e00000, pfn: 86a00 - 87e00
->> __free_memory_core, range: 0x8bd00000 - 0x8c500000, pfn: 8bd00 - 8c500
->> __free_memory_core, range: 0x8e300000 - 0x8ed00000, pfn: 8e300 - 8ed00
->> __free_memory_core, range: 0x90d00000 - 0xaf2c0000, pfn: 90d00 - af2c0
->> __free_memory_core, range: 0xaf430000 - 0xaf450000, pfn: af430 - af450
->> __free_memory_core, range: 0xaf510000 - 0xaf540000, pfn: af510 - af540
->> __free_memory_core, range: 0xaf560000 - 0xaf580000, pfn: af560 - af580
->> __free_memory_core, range: 0xafd98000 - 0xafdc8000, pfn: afd98 - afdc8
->> __free_memory_core, range: 0xafdd8000 - 0xafe00000, pfn: afdd8 - afe00
->> __free_memory_core, range: 0xafe18000 - 0xafe80000, pfn: afe18 - afe80
->> __free_memory_core, range: 0xafee0000 - 0xaff00000, pfn: afee0 - aff00
->> __free_memory_core, range: 0xaff80000 - 0xaff8d000, pfn: aff80 - aff8d
->> __free_memory_core, range: 0xafff2000 - 0xafff4580, pfn: afff2 - afff4
->> __free_memory_core, range: 0xafffe000 - 0xafffe0e0, pfn: afffe - afffe
->> __free_memory_core, range: 0xafffe4fc - 0xafffe500, pfn: affff - afffe
->> __free_memory_core, range: 0xafffe6e4 - 0xafffe700, pfn: affff - afffe
->> __free_memory_core, range: 0xafffe8dc - 0xafffe8e0, pfn: affff - afffe
->> __free_memory_core, range: 0xafffe970 - 0xafffe980, pfn: affff - afffe
->> __free_memory_core, range: 0xafffe990 - 0xafffe9a0, pfn: affff - afffe
->> __free_memory_core, range: 0xafffe9a4 - 0xafffe9c0, pfn: affff - afffe
->> __free_memory_core, range: 0xafffeb54 - 0xafffeb60, pfn: affff - afffe
->> __free_memory_core, range: 0xafffecf4 - 0xafffed00, pfn: affff - afffe
->> __free_memory_core, range: 0xafffefc4 - 0xafffefd8, pfn: affff - afffe
->> __free_memory_core, range: 0xb0200000 - 0xc0000000, pfn: b0200 - b0200
->> __free_memory_core, range: 0xcc000000 - 0xdca00000, pfn: cc000 - b0200
->> __free_memory_core, range: 0xde700000 - 0xdea00000, pfn: de700 - b0200
-> 
-> The range [de600, de7ff]
-the __free_memory_core will check the start pfn and end pfn,
-
-  if (start_pfn >= end_pfn)
-          return 0;
-
-  __free_pages_memory(start_pfn, end_pfn);
-so the memory will not be freed to buddy, confused...
-> 
->> __free_memory_core, range: 0xe0800000 - 0xe0c00000, pfn: e0800 - b0200
->> __free_memory_core, range: 0xf4b00000 - 0xf7000000, pfn: f4b00 - b0200
->> __free_memory_core, range: 0xfda00000 - 0xffffffff, pfn: fda00 - b0200
->>> It seems that with SPARSEMEM we don't align the freed parts on pageblock
->>> boundaries.
->>>
->>> Can you try the patch below:
->>>
->>> diff --git a/mm/memblock.c b/mm/memblock.c
->>> index afaefa8fc6ab..1926369b52ec 100644
->>> --- a/mm/memblock.c
->>> +++ b/mm/memblock.c
->>> @@ -1941,14 +1941,13 @@ static void __init free_unused_memmap(void)
->>>    		 * due to SPARSEMEM sections which aren't present.
->>>    		 */
->>>    		start = min(start, ALIGN(prev_end, PAGES_PER_SECTION));
->>> -#else
->>> +#endif
->>>    		/*
->>>    		 * Align down here since the VM subsystem insists that the
->>>    		 * memmap entries are valid from the bank start aligned to
->>>    		 * MAX_ORDER_NR_PAGES.
->>>    		 */
->>>    		start = round_down(start, MAX_ORDER_NR_PAGES);
->>> -#endif
->>>    		/*
->>>    		 * If we had a previous bank, and there is a space
->>>
-> 
