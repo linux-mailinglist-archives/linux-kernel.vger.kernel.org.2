@@ -2,181 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA7936FFEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 19:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A0E36FFFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 19:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231136AbhD3RtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 13:49:03 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:58152 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhD3RtC (ORCPT
+        id S231384AbhD3Rvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 13:51:50 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2975 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230229AbhD3Rvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 13:49:02 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lcXFL-00C1aC-DO; Fri, 30 Apr 2021 11:48:11 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lcXFK-00054O-GW; Fri, 30 Apr 2021 11:48:11 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Peter Enderborg <peter.enderborg@sony.com>
-Cc:     <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Michel Lespinasse <walken@google.com>,
-        Jann Horn <jannh@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Minchan Kim <minchan@kernel.org>
-References: <20210430142223.25500-1-peter.enderborg@sony.com>
-        <20210430142223.25500-2-peter.enderborg@sony.com>
-Date:   Fri, 30 Apr 2021 12:48:06 -0500
-In-Reply-To: <20210430142223.25500-2-peter.enderborg@sony.com> (Peter
-        Enderborg's message of "Fri, 30 Apr 2021 16:22:22 +0200")
-Message-ID: <m14kfnzmsp.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 30 Apr 2021 13:51:37 -0400
+Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FX0BT5wC1z6wkfx;
+        Sat,  1 May 2021 01:45:05 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 30 Apr 2021 19:50:47 +0200
+Received: from localhost (10.52.125.96) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 30 Apr
+ 2021 18:50:46 +0100
+Date:   Fri, 30 Apr 2021 18:49:11 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "Sylwester Nawrocki" <s.nawrocki@samsung.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-samsung-soc@vger.kernel.org>
+Subject: Re: [PATCH v4 62/79] media: exynos4-is: use
+ pm_runtime_resume_and_get()
+Message-ID: <20210430184911.000075e1@Huawei.com>
+In-Reply-To: <31eadd61972541bf1e27706f9ff7be66a21e23e6.1619621413.git.mchehab+huawei@kernel.org>
+References: <cover.1619621413.git.mchehab+huawei@kernel.org>
+        <31eadd61972541bf1e27706f9ff7be66a21e23e6.1619621413.git.mchehab+huawei@kernel.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lcXFK-00054O-GW;;;mid=<m14kfnzmsp.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/enQOc0MGlBQxkqwCDNSajCkyZXxd/oKc=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4915]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Peter Enderborg <peter.enderborg@sony.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 601 ms - load_scoreonly_sql: 0.07 (0.0%),
-        signal_user_changed: 11 (1.9%), b_tie_ro: 10 (1.6%), parse: 1.02
-        (0.2%), extract_message_metadata: 12 (2.1%), get_uri_detail_list: 1.79
-        (0.3%), tests_pri_-1000: 5 (0.9%), tests_pri_-950: 1.28 (0.2%),
-        tests_pri_-900: 1.06 (0.2%), tests_pri_-90: 58 (9.7%), check_bayes: 57
-        (9.5%), b_tokenize: 9 (1.5%), b_tok_get_all: 8 (1.3%), b_comp_prob:
-        2.2 (0.4%), b_tok_touch_all: 35 (5.8%), b_finish: 0.85 (0.1%),
-        tests_pri_0: 456 (75.9%), check_dkim_signature: 0.67 (0.1%),
-        check_dkim_adsp: 2.5 (0.4%), poll_dns_idle: 0.56 (0.1%), tests_pri_10:
-        2.4 (0.4%), tests_pri_500: 48 (8.0%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 1/2] tracing: Add a trace for task_exit
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.125.96]
+X-ClientProxiedBy: lhreml721-chm.china.huawei.com (10.201.108.72) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Enderborg <peter.enderborg@sony.com> writes:
+On Wed, 28 Apr 2021 16:52:23 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 
-> This is the peer functions to task_rename and task_newtask.
-> With this we get hole "life-cycle" of task and can easily
-> see short livied task and their exit status.
-
-This patch is incorrect.  The location you are dealing with is not part
-of task exit.  The location you have instrumented is part of reaping a
-task which can come arbitrarily long after the task exits.
-
-There are some special rules associated with task_comm so I don't know
-if your change to __string from a fixed size character array is safe.
-
-Certainly something like that needs an explanation of why such a type
-change is safe.
-
-Eric
-
-
-> Format might look like:
->             bash-1144    [006] ....  1306.601707: task_newtask: pid=1181 comm=bash clone_flags=1200000 oom_score_adj=0
->            <...>-1181    [007] ....  1306.602080: task_rename: pid=1181 oldcomm=bash newcomm=ls oom_score_adj=0
->             bash-1144    [006] d...  1306.785960: task_exit: pid=1181 oom_score_adj=0 exit_signal=17 exit_code=0 exit_state=0x10 comm=ls
->
-> For a sequence when a bash shell runs the ls command.
->
-> Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
+> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> added pm_runtime_resume_and_get() in order to automatically handle
+> dev->power.usage_count decrement on errors.
+> 
+> Use the new API, in order to cleanup the error check logic.
+> 
+> Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
->  include/trace/events/task.h | 32 ++++++++++++++++++++++++++++++++
->  kernel/exit.c               |  3 +++
->  2 files changed, 35 insertions(+)
->
-> diff --git a/include/trace/events/task.h b/include/trace/events/task.h
-> index 64d160930b0d..2e977d2935e1 100644
-> --- a/include/trace/events/task.h
-> +++ b/include/trace/events/task.h
-> @@ -56,6 +56,38 @@ TRACE_EVENT(task_rename,
->  		__entry->newcomm, __entry->oom_score_adj)
->  );
+>  drivers/media/platform/exynos4-is/fimc-capture.c   | 6 ++----
+>  drivers/media/platform/exynos4-is/fimc-is.c        | 4 ++--
+>  drivers/media/platform/exynos4-is/fimc-isp-video.c | 3 +--
+>  drivers/media/platform/exynos4-is/fimc-isp.c       | 7 +++----
+>  drivers/media/platform/exynos4-is/fimc-lite.c      | 5 +++--
+>  drivers/media/platform/exynos4-is/fimc-m2m.c       | 2 +-
+>  drivers/media/platform/exynos4-is/media-dev.c      | 8 +++-----
+>  drivers/media/platform/exynos4-is/mipi-csis.c      | 8 +++-----
+>  8 files changed, 18 insertions(+), 25 deletions(-)
+> 
+> diff --git a/drivers/media/platform/exynos4-is/fimc-capture.c b/drivers/media/platform/exynos4-is/fimc-capture.c
+> index 13c838d3f947..0da36443173c 100644
+> --- a/drivers/media/platform/exynos4-is/fimc-capture.c
+> +++ b/drivers/media/platform/exynos4-is/fimc-capture.c
+> @@ -478,11 +478,9 @@ static int fimc_capture_open(struct file *file)
+>  		goto unlock;
 >  
-> +TRACE_EVENT(task_exit,
-> +
-> +	TP_PROTO(struct task_struct *task),
-> +
-> +	TP_ARGS(task),
-> +
-> +	TP_STRUCT__entry(
-> +		__field(pid_t,	pid)
-> +		__field(short,	oom_score_adj)
-> +		__field(int,	exit_signal)
-> +		__field(int,	exit_code)
-> +		__field(int,	exit_state)
-> +		__string(comm, task->comm)
-> +
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__entry->pid = task->pid;
-> +		__entry->oom_score_adj = task->signal->oom_score_adj;
-> +		__entry->exit_signal = task->exit_signal;
-> +		__entry->exit_code = task->exit_code;
-> +		__entry->exit_state = task->exit_state;
-> +		__assign_str(comm, task->comm);
-> +	),
-> +
-> +	TP_printk("pid=%d oom_score_adj=%hd exit_signal=%d exit_code=%d exit_state=0x%x comm=%s",
-> +		  __entry->pid,
-> +		  __entry->oom_score_adj, __entry->exit_signal,
-> +		  __entry->exit_code, __entry->exit_state,
-> +		  __get_str(comm))
-> +);
-> +
->  #endif
+>  	set_bit(ST_CAPT_BUSY, &fimc->state);
+> -	ret = pm_runtime_get_sync(&fimc->pdev->dev);
+> -	if (ret < 0) {
+> -		pm_runtime_put_sync(&fimc->pdev->dev);
+> +	ret = pm_runtime_resume_and_get(&fimc->pdev->dev);
+> +	if (ret < 0)
+>  		goto unlock;
+> -	}
 >  
->  /* This part must be outside protection */
-> diff --git a/kernel/exit.c b/kernel/exit.c
-> index 04029e35e69a..3ab0944e5dfc 100644
-> --- a/kernel/exit.c
-> +++ b/kernel/exit.c
-> @@ -68,6 +68,7 @@
->  #include <linux/uaccess.h>
->  #include <asm/unistd.h>
->  #include <asm/mmu_context.h>
-> +#include <trace/events/task.h>
+>  	ret = v4l2_fh_open(file);
+>  	if (ret) {
+> diff --git a/drivers/media/platform/exynos4-is/fimc-is.c b/drivers/media/platform/exynos4-is/fimc-is.c
+> index 972d9601d236..1b24f5bfc4af 100644
+> --- a/drivers/media/platform/exynos4-is/fimc-is.c
+> +++ b/drivers/media/platform/exynos4-is/fimc-is.c
+> @@ -828,9 +828,9 @@ static int fimc_is_probe(struct platform_device *pdev)
+>  			goto err_irq;
+>  	}
 >  
->  static void __unhash_process(struct task_struct *p, bool group_dead)
->  {
-> @@ -107,6 +108,8 @@ static void __exit_signal(struct task_struct *tsk)
->  		posix_cpu_timers_exit_group(tsk);
->  #endif
+> -	ret = pm_runtime_get_sync(dev);
+> +	ret = pm_runtime_resume_and_get(dev);
+>  	if (ret < 0)
+> -		goto err_pm;
+> +		goto err_irq;
 >  
-> +	trace_task_exit(tsk);
+
+I think the pm_runtime_put_noidle() below err_pm: should become
+a pm_runtime_put() because otherwise we won't call fimc_is_runtime_suspend()
+if runtime pm is enabled (either directly or via runtime pm count becoming zero.
+
+(not I'm not 100% sure of my argument here...)
+
+>  	vb2_dma_contig_set_max_seg_size(dev, DMA_BIT_MASK(32));
+>  
+> diff --git a/drivers/media/platform/exynos4-is/fimc-isp-video.c b/drivers/media/platform/exynos4-is/fimc-isp-video.c
+> index 612b9872afc8..8d9dc597deaa 100644
+> --- a/drivers/media/platform/exynos4-is/fimc-isp-video.c
+> +++ b/drivers/media/platform/exynos4-is/fimc-isp-video.c
+> @@ -275,7 +275,7 @@ static int isp_video_open(struct file *file)
+>  	if (ret < 0)
+>  		goto unlock;
+>  
+> -	ret = pm_runtime_get_sync(&isp->pdev->dev);
+> +	ret = pm_runtime_resume_and_get(&isp->pdev->dev);
+>  	if (ret < 0)
+>  		goto rel_fh;
+>  
+> @@ -293,7 +293,6 @@ static int isp_video_open(struct file *file)
+>  	if (!ret)
+>  		goto unlock;
+
+So the good path is to jump over the block.  I'd just unlock and return here
+to make it more readable but unrelated to this patch.
+
+>  rel_fh:
+> -	pm_runtime_put_noidle(&isp->pdev->dev);
+
+Logic flow here isn't very standard, but with this change, you'll not
+call anything to unwind a successful call to pm_runtime_resume_and_get if
+fmic_pipeline_call() returns and error.
+My guess is pm_runtime_put_sync() is needed before rel_fh; to balance this.
+ 
+>  	v4l2_fh_release(file);
+>  unlock:
+>  	mutex_unlock(&isp->video_lock);
+> diff --git a/drivers/media/platform/exynos4-is/fimc-isp.c b/drivers/media/platform/exynos4-is/fimc-isp.c
+> index a77c49b18511..74b49d30901e 100644
+> --- a/drivers/media/platform/exynos4-is/fimc-isp.c
+> +++ b/drivers/media/platform/exynos4-is/fimc-isp.c
+> @@ -304,11 +304,10 @@ static int fimc_isp_subdev_s_power(struct v4l2_subdev *sd, int on)
+>  	pr_debug("on: %d\n", on);
+>  
+>  	if (on) {
+> -		ret = pm_runtime_get_sync(&is->pdev->dev);
+> -		if (ret < 0) {
+> -			pm_runtime_put(&is->pdev->dev);
+> +		ret = pm_runtime_resume_and_get(&is->pdev->dev);
+> +		if (ret < 0)
+>  			return ret;
+> -		}
 > +
->  	if (group_dead) {
->  		tty = sig->tty;
->  		sig->tty = NULL;
+>  		set_bit(IS_ST_PWR_ON, &is->state);
+>  
+>  		ret = fimc_is_start_firmware(is);
+> diff --git a/drivers/media/platform/exynos4-is/fimc-lite.c b/drivers/media/platform/exynos4-is/fimc-lite.c
+> index fe20af3a7178..4d8b18078ff3 100644
+> --- a/drivers/media/platform/exynos4-is/fimc-lite.c
+> +++ b/drivers/media/platform/exynos4-is/fimc-lite.c
+> @@ -469,9 +469,9 @@ static int fimc_lite_open(struct file *file)
+>  	}
+>  
+>  	set_bit(ST_FLITE_IN_USE, &fimc->state);
+> -	ret = pm_runtime_get_sync(&fimc->pdev->dev);
+> +	ret = pm_runtime_resume_and_get(&fimc->pdev->dev);
+>  	if (ret < 0)
+> -		goto err_pm;
+> +		goto err_in_use;
+>  
+>  	ret = v4l2_fh_open(file);
+>  	if (ret < 0)
+> @@ -499,6 +499,7 @@ static int fimc_lite_open(struct file *file)
+>  	v4l2_fh_release(file);
+>  err_pm:
+>  	pm_runtime_put_sync(&fimc->pdev->dev);
+> +err_in_use:
+>  	clear_bit(ST_FLITE_IN_USE, &fimc->state);
+>  unlock:
+>  	mutex_unlock(&fimc->lock);
+> diff --git a/drivers/media/platform/exynos4-is/fimc-m2m.c b/drivers/media/platform/exynos4-is/fimc-m2m.c
+> index c9704a147e5c..7c1eb05c508f 100644
+> --- a/drivers/media/platform/exynos4-is/fimc-m2m.c
+> +++ b/drivers/media/platform/exynos4-is/fimc-m2m.c
+> @@ -75,7 +75,7 @@ static int start_streaming(struct vb2_queue *q, unsigned int count)
+>  	struct fimc_ctx *ctx = q->drv_priv;
+>  	int ret;
+>  
+> -	ret = pm_runtime_get_sync(&ctx->fimc_dev->pdev->dev);
+> +	ret = pm_runtime_resume_and_get(&ctx->fimc_dev->pdev->dev);
+Use the fact pm_runtime_resume_and_get only returns 0 or < 0 to
+make this
+return pm_runtime_resume_and_get()
+
+>  	return ret > 0 ? 0 : ret;
+>  }
+>  
+> diff --git a/drivers/media/platform/exynos4-is/media-dev.c b/drivers/media/platform/exynos4-is/media-dev.c
+> index 13d192ba4aa6..9346d44a06c2 100644
+> --- a/drivers/media/platform/exynos4-is/media-dev.c
+> +++ b/drivers/media/platform/exynos4-is/media-dev.c
+> @@ -512,11 +512,9 @@ static int fimc_md_register_sensor_entities(struct fimc_md *fmd)
+>  	if (!fmd->pmf)
+>  		return -ENXIO;
+>  
+> -	ret = pm_runtime_get_sync(fmd->pmf);
+> -	if (ret < 0) {
+> -		pm_runtime_put(fmd->pmf);
+> +	ret = pm_runtime_resume_and_get(fmd->pmf);
+> +	if (ret < 0)
+>  		return ret;
+> -	}
+>  
+>  	fmd->num_sensors = 0;
+>  
+> @@ -1291,7 +1289,7 @@ static int cam_clk_prepare(struct clk_hw *hw)
+>  	if (camclk->fmd->pmf == NULL)
+>  		return -ENODEV;
+>  
+> -	ret = pm_runtime_get_sync(camclk->fmd->pmf);
+> +	ret = pm_runtime_resume_and_get(camclk->fmd->pmf);
+return pm_...
+
+>  	return ret < 0 ? ret : 0;
+>  }
+>  
+> diff --git a/drivers/media/platform/exynos4-is/mipi-csis.c b/drivers/media/platform/exynos4-is/mipi-csis.c
+> index 1aac167abb17..2a6afb78a049 100644
+> --- a/drivers/media/platform/exynos4-is/mipi-csis.c
+> +++ b/drivers/media/platform/exynos4-is/mipi-csis.c
+> @@ -494,7 +494,7 @@ static int s5pcsis_s_power(struct v4l2_subdev *sd, int on)
+>  	struct device *dev = &state->pdev->dev;
+>  
+>  	if (on)
+> -		return pm_runtime_get_sync(dev);
+> +		return pm_runtime_resume_and_get(dev);
+>  
+>  	return pm_runtime_put_sync(dev);
+>  }
+> @@ -509,11 +509,9 @@ static int s5pcsis_s_stream(struct v4l2_subdev *sd, int enable)
+>  
+>  	if (enable) {
+>  		s5pcsis_clear_counters(state);
+> -		ret = pm_runtime_get_sync(&state->pdev->dev);
+> -		if (ret && ret != 1) {
+> -			pm_runtime_put_noidle(&state->pdev->dev);
+> +		ret = pm_runtime_resume_and_get(&state->pdev->dev);
+> +		if (ret && ret != 1)
+
+It won't be equal to 1 as pm_runtime_resume_and_get only returns <= 0
+
+>  			return ret;
+> -		}
+>  	}
+>  
+>  	mutex_lock(&state->lock);
+
