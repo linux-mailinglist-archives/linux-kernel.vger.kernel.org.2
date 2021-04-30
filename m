@@ -2,100 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17093370025
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C2C37001E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbhD3SGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 14:06:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58847 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230356AbhD3SGE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 14:06:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619805915;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=QlUIlAKYE4495cvc4WfUS3fiQGRr+yuPORiuKa9dPbk=;
-        b=cQ+VaG4wwFtosTGDQi+fXic8EK3y3KExweTXuhlCsHPyxdWHYhsPfRvc4kwa27R5fQjb45
-        ULtmRXxinhFcfop8xkOIp4SIFWhLh0ab93DYxKxgbbInz3j/piL4ZS/kItLf17RHuhh928
-        7J3+HDsvoCXENtO6byXU7LQyJe9xnYI=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-524-ASe6G9nkPbWJ6lcz8HIFxA-1; Fri, 30 Apr 2021 14:05:13 -0400
-X-MC-Unique: ASe6G9nkPbWJ6lcz8HIFxA-1
-Received: by mail-qv1-f72.google.com with SMTP id p2-20020ad452e20000b0290177fba4b9d5so33546434qvu.6
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 11:05:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QlUIlAKYE4495cvc4WfUS3fiQGRr+yuPORiuKa9dPbk=;
-        b=eFWheEcZ1AtIPUHxqqbXo6wfhGJ7PE1fbGycgPFcYIvjrxvUs9yiYrxH6LuAO9Ce95
-         le//Bbsv66eVQCDYUgdZM93ti9EOkgvlp0eT/hOConiPDNPiPhsLvFx33wGFj2G2Rxjy
-         OuDXRCP9zphLj2dp6HrgEIJ39QiIvaHHK4/ypm2FS8hGlKSiZaAV/HqlxKoJhp0toMFr
-         onSEnPfPLksUHoMG+ycfOk5sH4pWymBkWag9v1Hr9EbuUqTds7+BNLf7I6Z09TtH69hX
-         yxdRSU0VZYeZDQC/o8NrsG/eJuQI3auXRo9SiLQ2IMmMLZ4klbdXm3z9SPmgpKdb8j8B
-         SJGw==
-X-Gm-Message-State: AOAM531fBYhQ+ZNqPX78/E/yzEPFxPUWAmwDaB77nY+mAPKpy4/eBHvo
-        GK8ei05v41Y1T6mGE/mlIPZV54XfyHN5R8/UW9uarTwXVEvaATjFCV1EzIoB/4c0Pbmixs4RXS8
-        Yjy8dJIGIAYXir3cdjeGMQec3
-X-Received: by 2002:a05:620a:9dd:: with SMTP id y29mr6472031qky.83.1619805912662;
-        Fri, 30 Apr 2021 11:05:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw0fuV+OSVOqxqrRktaPY/gHGGzWK734pNZzRkulGOtAXJjRCbXyYaNKA83MtpCVXrMGEbhuw==
-X-Received: by 2002:a05:620a:9dd:: with SMTP id y29mr6472012qky.83.1619805912484;
-        Fri, 30 Apr 2021 11:05:12 -0700 (PDT)
-Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id p187sm2061155qkd.92.2021.04.30.11.05.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 11:05:11 -0700 (PDT)
-From:   trix@redhat.com
-To:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch, evan.quan@amd.com,
-        nirmoy.das@amd.com, kevin1.wang@amd.com, ray.huang@amd.com,
-        darren.powell@amd.com
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] drm/amd/pm: initialize variable
-Date:   Fri, 30 Apr 2021 10:16:54 -0700
-Message-Id: <20210430171654.3326745-1-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
+        id S231484AbhD3SCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 14:02:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47252 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231373AbhD3SCf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 14:02:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B74761481;
+        Fri, 30 Apr 2021 18:01:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619805706;
+        bh=eAR+xhSb4s1B6tCxGTMHtsSZAg/KO8Jwq88qvH4ZTp8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qKNqRBSj+/r0FDGLc2d69LiF2DFZqQauXAdXy9SdqQEYwxmZqpw+3XJXKYMQZ/ZH3
+         BxWoBtiwTQQy+EmRt3UD0JBitAVtncgXxz+Sj5Pd2+AXcaXK3MwStyefBESjl5hXWq
+         PeOWDUvvVzU6azXxZFAbynK+gkjVzq5NpNYuhMwr/ISGFXgR7C/TAOcFmh8ud8/qXp
+         LPCRYapq8jAW5CItPAkivs9yFLckysKCpiKwhjTUcT19+NNfHS0EE5+83BKdIpj3Ga
+         YhfXTv7icmPhuPs2EO7Fg+2TJAHwDcfMYyKx87Q9BzMrZADld0nuDLufOHTg0zgt8S
+         wcFf+GvpRO5+w==
+Date:   Fri, 30 Apr 2021 19:01:14 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH v2 00/14] spi: pxa2xx: Set of cleanups
+Message-ID: <20210430180114.GF5981@sirena.org.uk>
+References: <20210423182441.50272-1-andriy.shevchenko@linux.intel.com>
+ <CAHp75VeiHsk15QoG3X-OV8V8jqzCNeKkif9V=cx4nvKVHaKbKA@mail.gmail.com>
+ <20210427143457.GI4605@sirena.org.uk>
+ <YIglWpz8lSidXmDd@smile.fi.intel.com>
+ <CAHp75VfBSjHP1LJZJTdwXzGuE2YjxdW6r7Zf6ofHsquJBPMyWA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5Mfx4RzfBqgnTE/w"
+Content-Disposition: inline
+In-Reply-To: <CAHp75VfBSjHP1LJZJTdwXzGuE2YjxdW6r7Zf6ofHsquJBPMyWA@mail.gmail.com>
+X-Cookie: QOTD:
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
 
-Static analysis reports this problem
+--5Mfx4RzfBqgnTE/w
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-amdgpu_pm.c:478:16: warning: The right operand of '<' is a garbage value
-  for (i = 0; i < data.nums; i++) {
-                ^ ~~~~~~~~~
+On Fri, Apr 30, 2021 at 07:29:48PM +0300, Andy Shevchenko wrote:
 
-In some cases data is not set.  Initialize to 0 and flag not setting
-data as an error with the existing check.
+> One item is still unclear to me. I noticed that you started already
+> applying patches for-next release cycle (if I understood it
+> correctly). Hence the question should or shouldn't I resend this
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/gpu/drm/amd/pm/amdgpu_pm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+No I haven't, I'm only applying things to for-5.13.  I've not even
+created for-5.14 yet, that will only get created once -rc1 is out and
+nothing for it is fixed yet.  If I look at it and find an issue I will
+tell you, if I've not said anything and I've got through my first batch
+of v5.14 stuff it's gone AWOL and you should resend.
 
-diff --git a/drivers/gpu/drm/amd/pm/amdgpu_pm.c b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-index 4e459ef632ef..9a54066ec0af 100644
---- a/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-+++ b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-@@ -451,7 +451,7 @@ static ssize_t amdgpu_get_pp_cur_state(struct device *dev,
- 	struct drm_device *ddev = dev_get_drvdata(dev);
- 	struct amdgpu_device *adev = drm_to_adev(ddev);
- 	const struct amd_pm_funcs *pp_funcs = adev->powerplay.pp_funcs;
--	struct pp_states_info data;
-+	struct pp_states_info data = {0};
- 	enum amd_pm_state_type pm = 0;
- 	int i = 0, ret = 0;
- 
--- 
-2.26.3
+--5Mfx4RzfBqgnTE/w
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCMRekACgkQJNaLcl1U
+h9DGsQgAga0H+vmLX/93TTc/hepJINQX8s8kTSyvJCoOO+q1rlf0udjdUvQLrQqO
+wA+VsJ+h72RIEmIAKdPbHMBR16N/e9kYvWb7edSIhgIAbJTYCfra8ie835Ab+HJ/
+940AfNU6jFC4k1Ot4g9TkvjcL3mFjN4NYoUdFJTiLK7huhacheX8gmCF5XmrlwAZ
+w3CMCpuWocOWji2MO/w+m+2yjTelU6sQPnlT4Hfnk6l+eNJF8WcRNNM1OlX9kciX
+47Ja6kMLll/XX7kQsXJ3dz86Fv5Bz8jmQMynPS3fMe1cGS69+sxfa1ubiSRxs9gI
++YfKmy1ffamHjymkV8jSY/vN2Ud0cQ==
+=FhSI
+-----END PGP SIGNATURE-----
+
+--5Mfx4RzfBqgnTE/w--
