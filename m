@@ -2,132 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7AF136F75A
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF2236F75F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231314AbhD3Itd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 04:49:33 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:46035 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229507AbhD3Itc (ORCPT
+        id S229798AbhD3Iug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 04:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229507AbhD3Iue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 04:49:32 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 474F258097D;
-        Fri, 30 Apr 2021 04:48:44 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Fri, 30 Apr 2021 04:48:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=oUiXz1OlQ54S4d1LeQRnI53gSCx
-        TXESTKHtOkdxho+A=; b=hoCQdFtxDSK6UbfCGFYvv4TufwxJgDZL4/9hZpTmt3G
-        IDyRQW6DeUtd3QE8zRgKO1tTCnqZ1qI2WUsnXYFQUJGf2IYSAvPiMBY18vAS/I/9
-        xz4NsAEZqwL+JWXVYYq6sinO5hc5NbLREH3sW5oJDQW9EeNk6odbXD4nqOUvG4Ls
-        xjw9yFS12w+/F60Ysq95IatfYDFZAvz5UmDqMtU+AW2D+NNHUUfZPRnlPV+bbX5c
-        MdoHHNq0dWanAT4CNqQwjH0ssse5Mq2o2qL6HQywLqEA2tQeuFGHYXpO8+g8rkB6
-        ESylDPQz7LHNdntBdNqYw5iU/N0Du5/Y0b3huDggSfw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=oUiXz1
-        OlQ54S4d1LeQRnI53gSCxTXESTKHtOkdxho+A=; b=KsarDeBnF2RCHx6yUzdD+Z
-        Kt4Th+wOYTKmjc6DGrVr1aMJFrYKSfS7IBBh6BWQPIEOqn8x279iLr2hja+A+FuG
-        P5JkTxAdjfJHv4k5TCmlNWdB+59cPrwQSgnDxDsG8LCwsA2qTwUk13HWIpphZeYZ
-        aRJUIbC7V0mWVziFOnofqdQ6sTZyTqAHYY2gV7R0cCqP1AzT9c8w54zT5PSAxsec
-        DjVGdAA6gLEGXH8VACvJeyJhKbba61RK0juLx+S8QrhS4cBUXCacWcUu4CTwu5W0
-        DTbZ2APp50nnR7Dys9jxS2jO0kDaq+Wp9qvVzignIl2Y0j0Hlmm8G6imSlOih1qA
-        ==
-X-ME-Sender: <xms:asSLYGFkuaoda_aUdWnWjDa4fXG4YFA1lHvHY4X-T5yO_gnGge7nPg>
-    <xme:asSLYHX_gDBnCAg15Saed0wEQ4NRiKlqEJUYAX3QRJyylkT_pMyEtn2uuR8rJN4az
-    IknHLMavSNtKptfG9I>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddviedgtdekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepveevfeffudeviedtgeethffhteeuffetfeffvdehvedvheetteehvdelfffg
-    jedvnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepledtrdekledrieekrd
-    ejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehm
-    rgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:asSLYAI7rHlydogoT6wgI4x4S5i6HNCIkZh3EKqIyOMtsmhj0jwKuA>
-    <xmx:asSLYAFYFPIl788caQs-jmqj9ybujWnoKXDydLJbgdl-w14nIRyy8A>
-    <xmx:asSLYMUi6pSeFPncrAJAUWYFrC9n4lGs6fMo4DurcrwHI7YjSHvJzQ>
-    <xmx:bMSLYNVcx537Xg1x5xiBD_bP8UltEDfoKFcpB1iuFu9Ww8_eeDip8w>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Fri, 30 Apr 2021 04:48:42 -0400 (EDT)
-Date:   Fri, 30 Apr 2021 10:48:39 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Eric Anholt <eric@anholt.net>, Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>, linux-clk@vger.kernel.org
-Subject: Re: [PATCH 0/2] clk: Implement a clock request API
-Message-ID: <20210430084839.dwjey7qobtc7vi5q@gilmour>
-References: <20210413101320.321584-1-maxime@cerno.tech>
+        Fri, 30 Apr 2021 04:50:34 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 336C5C06174A;
+        Fri, 30 Apr 2021 01:49:47 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id v13so2289347ilj.8;
+        Fri, 30 Apr 2021 01:49:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6XpLFpvoM/MyCxucScV9GHbc1u0ufErrdczH8fINryA=;
+        b=XfdyiakISQV0rCr116VJNrN1pSVJBxJnhTJ36wAigGd+atH9iiXt0+lNxlH+horNLb
+         ITiUPgvRVyeFfalzkClX0syUiifPxjCE6CGSGGJp/t28z5etiIkNkRO9rIrnkUu15fhf
+         GIO1TP2+iIaDMYSRGGp2MyxlEKrb6aGXi9T+9uaIzTKMecoxdO77gb/cI3OjjYXfDElj
+         ozBDRGBu/DhpEiRe7fJsEXyaDafnVYnU0y4y4QTe42zmjWctSLpA+9WW9KGIDPCAgNoe
+         w3H/j2m9HLeM9sQcgJqcggbYuKqInYiWAIqck2rs3kHs5USyYLaW9h7KmKNfRrqPhiDV
+         Bghg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6XpLFpvoM/MyCxucScV9GHbc1u0ufErrdczH8fINryA=;
+        b=siq4NxdtLEL9nbmQeHimnzOI17bYt7pMqJAhlQbUadWJW7HSQnTeNo6tpkbeaEfQ/2
+         v9sDmYIxouWrtKttYChkiRCL9Ilz2VRZ3prcqqfEfdo5159ZkAe0d/bIZwMPzLNgSe/Z
+         +IhWW8aDXW/Q90Jpd29CmIlrLUwvPvuOdjNHgfZBj3tiY9q1eBNBzdrjL/LiqsbqpGwB
+         VYz6wAkw/ivXbJytBgGy1rdYt8jUlZ3tUjZhCROgwRB19Kf+KTjyLBw3HA6y7gGr9rn6
+         yOXy3cXVZg2ug0Gd8teWnQz+EdCUkshy7CvDpgfOoB7QAjsVlCtsVOx5uOzIKawxYIoZ
+         TQCA==
+X-Gm-Message-State: AOAM533zthye9ralLGZOTpzCthw78hZaZ0kgk/XLyjWIKizGJrpX9+oB
+        BlKu5cK5nvBiFSe7cAEWmwdP7fsIblxrwnVq+1c=
+X-Google-Smtp-Source: ABdhPJwq7AMNZNBViIBThuRjUDAbnJQd0R8zTalusTtudatSMQDlQfcewQ6cSi3aISJKRV4yX05N2MCV3b2pDAn5iAM=
+X-Received: by 2002:a92:3203:: with SMTP id z3mr3244322ile.22.1619772586655;
+ Fri, 30 Apr 2021 01:49:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="lsyads3gv67wbw5p"
-Content-Disposition: inline
-In-Reply-To: <20210413101320.321584-1-maxime@cerno.tech>
+References: <20210423034247.992052-1-art@khadas.com> <20210423114735.GA5507@sirena.org.uk>
+ <CAKaHn9+d5crmmG-aKyLuvyxk+A7aC9qqfX_3wuMXm50pg+pZ4w@mail.gmail.com> <20210426115645.GB4590@sirena.org.uk>
+In-Reply-To: <20210426115645.GB4590@sirena.org.uk>
+From:   Art Nikpal <email2tema@gmail.com>
+Date:   Fri, 30 Apr 2021 16:49:35 +0800
+Message-ID: <CAKaHn9JM-KEiz3_Btsz8_fr7hcZ2Sm8B64VyLvgpvKK-NKco3w@mail.gmail.com>
+Subject: Re: [PATCH] SPI: meson-spifc add missed calls to remove function
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>, jbrunet@baylibre.com,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        dri-devel@lists.freedesktop.org, linux-spi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        Artem Lapkin <art@khadas.com>, nick@khadas.com,
+        Gouwa Wang <gouwa@khadas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Yep! but
 
---lsyads3gv67wbw5p
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+if i try call spi_master_put(master) or spi_unregister_controller(master);
+it's made Segmentation fault for me
 
-Hi Mike, Stephen,
+what's wrong - may be somebody can help me
 
-On Tue, Apr 13, 2021 at 12:13:18PM +0200, Maxime Ripard wrote:
-> Hi,
->=20
-> This is a follow-up of the discussion here:
-> https://lore.kernel.org/linux-clk/20210319150355.xzw7ikwdaga2dwhv@gilmour/
->=20
-> This implements a mechanism to raise and lower clock rates based on consu=
-mer
-> workloads, with an example of such an implementation for the RaspberryPi4=
- HDMI
-> controller.
->=20
-> There's a couple of things worth discussing:
->=20
->   - The name is in conflict with clk_request_rate, and even though it fee=
-ls
->     like the right name to me, we should probably avoid any confusion
->=20
->   - The code so far implements a policy of always going for the lowest ra=
-te
->     possible. While we don't have an use-case for something else, this sh=
-ould
->     maybe be made more flexible?
 
-Ping?
-
-Maxime
-
---lsyads3gv67wbw5p
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYIvEWgAKCRDj7w1vZxhR
-xagEAP9KnN1cSuEGzs5QoVF1FGdo8VaW24bbM0i/ttjNxkFH+AD/TWU3q0YuBFlL
-6g93rwgyrmu9GDsqBS06BEr+FVlJgQk=
-=oTRU
------END PGP SIGNATURE-----
-
---lsyads3gv67wbw5p--
+On Mon, Apr 26, 2021 at 7:57 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Sat, Apr 24, 2021 at 07:57:19AM +0800, Art Nikpal wrote:
+>
+> > > I would expect the driver to unregister the controller at the start of
+> > > the remove function, suspend doesn't really make sense here
+>
+> > It's strange - But without spi_master_suspend i have randomly stucks when i
+> > try unload this module - as was written before
+> > i was test it (load/unload module in loop) and for me suspend make sense
+> > here
+>
+> > If anybody has another solution - or real problem not here - please write
+> > to me the right way!
+>
+> As I said above unregister the controller at the start of the remove
+> function.
