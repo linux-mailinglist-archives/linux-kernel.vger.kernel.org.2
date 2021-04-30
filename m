@@ -2,116 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3126336F71E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5FD36F722
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbhD3IaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 04:30:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbhD3IaO (ORCPT
+        id S231482AbhD3IbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 04:31:06 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:27479 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229529AbhD3IbB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 04:30:14 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F54C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:29:24 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id g10so13700786edb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:29:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xiDthqOA1PKLysyz3wEBzr+UCVf/K0s/TKR2SGLkpIA=;
-        b=GruLo53yNG6MBZKgHZj1JzSTn7ZktLWswSqtU0vQNU7BxStGMebOufdzCpM5uP0egC
-         tNSv+jkPs6o0V4dPXsBqFk8U1Aijbqt7G2T+9zhjUxam3hY6xQP7wHZ8xwolmVNanx97
-         /SFJmsRgrPi5tyDssGFTMw1dTKihSHwT3AKZa63d3F6JiHG1Il9GrjPh7ITJjOzh44tP
-         M6kGpN3PW442oBNXVIt9IL/02b9C+ENV2bgY6LXgCyIlLUaTI9k6v2dj6SlfZXDwKnd/
-         CQFIBicgBNMDso79g4c/Gy9lOhjhuq43EYPXYMDa3cm04EBuEhFYUw1gzbWJLO5f99D7
-         2VrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xiDthqOA1PKLysyz3wEBzr+UCVf/K0s/TKR2SGLkpIA=;
-        b=I0cs8l5pP4Bat0DaTZEkR52Aoy70T7ZI6qeEjQ9WoYt1CgdVE+C0nge5uE6avi0Jvz
-         WwB6weCA70A51MftdIpI+ElIpT2/pzK57qA2PvSHEp2ruSUZjRyla9wpxagotrOQpZNs
-         9lZVH/JR5LPCSD08N5SqQosnGOQJyiktraYmNKTRAG1JrDUvIqSWdpu38UufahMfHC9t
-         E5AgzpEzJ4GQrUkKEQ8wvLBHjRz1Dy7fcR54GkvZwxdnSYdT6/xGxlmDop1tPPPeuKJp
-         lT7uA5oBdteXu1IRUxNVYLFhTN0u+YfKDGp5D146FjzufaiuX8aFepbxPhizTBQC6oZy
-         C9bQ==
-X-Gm-Message-State: AOAM532WIRE00zx3bavhbJpA0Jes8D55RdmYYdVea4eLy+z4C3NzGKRW
-        ABKy/vg0cUy/mRT+xVKTgcCB5sifVSl74JIJF8UA
-X-Google-Smtp-Source: ABdhPJwBAUS8SfZ4s/ZySS64bjWjl+kpdjqmtnMQeW58mKxNjfZJR/SCaa+OVtAo9sYqzzoUX0IXzFjujcsuB0eVxh0=
-X-Received: by 2002:a05:6402:1255:: with SMTP id l21mr4337362edw.362.1619771363167;
- Fri, 30 Apr 2021 01:29:23 -0700 (PDT)
+        Fri, 30 Apr 2021 04:31:01 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-40-Np76YJq-M2y5OMSF4pVFtw-1; Fri, 30 Apr 2021 09:30:08 +0100
+X-MC-Unique: Np76YJq-M2y5OMSF4pVFtw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Fri, 30 Apr 2021 09:30:08 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Fri, 30 Apr 2021 09:30:08 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Thomas Schoebel-Theuer' <tst@schoebel-theuer.de>,
+        Kajetan Puchalski <mrkajetanp@gmail.com>,
+        "mceier+kernel@gmail.com" <mceier+kernel@gmail.com>
+CC:     "ojeda@kernel.org" <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>,
+        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 00/13] [RFC] Rust support
+Thread-Topic: [PATCH 00/13] [RFC] Rust support
+Thread-Index: AQHXPYuWOFPh/tHqwUWOAL+H8MAuYKrMuQKA
+Date:   Fri, 30 Apr 2021 08:30:08 +0000
+Message-ID: <ac41b3c803364f0cbc6c931449c2a51d@AcuMS.aculab.com>
+References: <20210414184604.23473-1-ojeda@kernel.org>
+ <CAJTyqKP4Ud7aWxdCihfzeZ3dQe_5yeTAVnXcKDonciez-g2zWA@mail.gmail.com>
+ <878s51e3jc.fsf@gmail.com>
+ <7999ba57-9b95-265e-a189-d9ca01304b13@schoebel-theuer.de>
+In-Reply-To: <7999ba57-9b95-265e-a189-d9ca01304b13@schoebel-theuer.de>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20210423205159.830854-1-morbo@google.com> <20210428172847.GC4022@arm.com>
- <20210428174010.GA4593@sirena.org.uk> <CAGG=3QUATefn9AG+HvnCfEOBv3iRu4fzFwfmA7Djrh2CmP_weA@mail.gmail.com>
- <CAGG=3QUNykCfkS22g+HRWb0Goa8DJ72TUueLtMe5v1YfnStojw@mail.gmail.com>
- <20210429075454.GQ9028@arm.com> <CAGG=3QV0kR__23yEmwwXBpcE1gvjLqRNmF667hhVeY0B3urTqQ@mail.gmail.com>
- <20210429095027.GR9028@arm.com> <CAGG=3QW9t2zUPYLt_La=qQTZeHzfLBCXgZRbiia8T6K7n=YrdQ@mail.gmail.com>
- <20210430081632.GS9028@arm.com>
-In-Reply-To: <20210430081632.GS9028@arm.com>
-From:   Bill Wendling <morbo@google.com>
-Date:   Fri, 30 Apr 2021 01:29:12 -0700
-Message-ID: <CAGG=3QWX+7aiF6okY0ybsaa1bK4pJn4YPGUhnGZotiz+cN8Xrg@mail.gmail.com>
-Subject: Re: [PATCH] arm64/vdso: Discard .note.gnu.property sections in vDSO
-To:     Szabolcs Nagy <szabolcs.nagy@arm.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Kees Cook <keescook@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Daniel Kiss <Daniel.Kiss@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 1:17 AM Szabolcs Nagy <szabolcs.nagy@arm.com> wrote:
-> The 04/29/2021 11:52, Bill Wendling wrote:
-> > $ readelf -lW arch/arm64/kernel/vdso/vdso.so
-> >
-> > Elf file type is DYN (Shared object file)
-> > Entry point 0x300
-> > There are 4 program headers, starting at offset 64
-> >
-> > Program Headers:
-> >   Type           Offset   VirtAddr           PhysAddr
-> > FileSiz  MemSiz   Flg Align
-> >   LOAD           0x000000 0x0000000000000000 0x0000000000000000
-> > 0x000968 0x000968 R E 0x8
-> >   DYNAMIC        0x0008a8 0x00000000000008a8 0x00000000000008a8
-> > 0x0000c0 0x0000c0 R   0x8
-> >   NOTE           0x000288 0x0000000000000288 0x0000000000000288
-> > 0x000074 0x000074 R   0x8
-> >   GNU_EH_FRAME   0x0008a4 0x00000000000008a4 0x00000000000008a4
-> > 0x000000 0x000000 R E 0x1
->
-> this is wrong because the abi specifically says properties
-> are in PT_GNU_PROPERTY, not in PT_NOTE.
->
-Right. The issue is more complex than this fix is meant for, to be
-honest. That is, it seems that there needs to be a generalized way of
-handling the different .note sections.
+RnJvbTogVGhvbWFzIFNjaG9lYmVsLVRoZXVlcg0KPiBTZW50OiAzMCBBcHJpbCAyMDIxIDA3OjQw
+DQouLi4NCj4gSW5kdXN0cnkgKHdoZXJlIEkgYW0gd29ya2luZykgb2Z0ZW4gcmVxdWlyZXMgYSAi
+c2Vjb25kIHNvdXJjZSIgdG8gYXZvaWQNCj4gdGhlIHNvLWNhbGxlZCAidmVuZG9yIGxvY2staW4i
+LCB3aGljaCBpcyB0aGUga2V5IHBvaW50IG9mIHRoaXMgcGFydCBvZg0KPiB0aGUgZGlzY3Vzc2lv
+bi4NCg0KVGhlcmUgaXMgYWxzbyB0aGUgcmVsYXRlZCBwcm9ibGVtIHRoYXQgeW91IG5lZWQgdG8g
+YmUgYWJsZSB0byBjb21lDQpiYWNrIGluIDUgeWVhcnMgdGltZSBhbmQgcmUtYnVpbGQgdGhlIG9y
+aWdpbmFsIGltYWdlLg0KWW91IGNhbiB0aGVuIG1ha2UgbWlub3IgY2hhbmdlcywgcmVidWlsZCwg
+YW5kIGhhdmUgYSByZWFzb25hYmxlDQpjb25maWRlbmNlIHRoYXQgdGhlcmUgYXJlIG5vIHNpZGUg
+ZWZmZWN0cy4NCg0KVGhpcyBtZWFucyB0aGF0IHdlYi1iYXNlZCBhbmQgYXV0by11cGRhdGVkIHRv
+b2xzIGNhbm5vdCBiZSB1c2VkLg0KRXZlbiBhIFZNIGltYWdlIG1pZ2h0IHN1ZGRlbmx5IGZhbGwg
+Zm91bCBvZiBjaGFuZ2VzIHRvIGh5cGVydmlzb3JzLg0KU28geW91IG5lZWQgdG8ga2VlcCAoYXQg
+bGVhc3QpIDIgc3lzdGVtIHRoYW4gY29udGFpbiBhbGwgdGhlIGJ1aWxkDQp0b29scyBqdXN0IGlu
+IGNhc2UgeW91IG5lZWQgdG8gZG8gYSBtYWludGVuYW5jZSBidWlsZCBvZiBhbiBvbGQgcmVsZWFz
+ZS4NCg0KQnV0IGV2ZW4gdGhlbiB3ZSBjYW4gbm8gbG9uZ2VyIGJ1aWxkIGRyaXZlcnMgZm9yIHNv
+bWUgd2luZG93cw0Kc3lzdGVtcyBiZWNhdXNlIHdlIGNhbid0IHNpZ24gdGhlbSB3aXRoIHRoZSBv
+bGQga2V5cy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJh
+bWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0
+cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
--bw
-
-> so the original patch that removes them from notes is fine,
-> but ideally they should be readded under PT_GNU_PROPERTY.
->
-> (x86 needs it there too, but also needs it under PT_NOTE for
-> historical reasons. ideally the section would have been named
-> other than .note and was not marked as SHF_NOTE, because
-> properties are merged completely differently by the linker
-> than notes, so now linkers have to special case it by section
-> name. properties should have been designed like the
->  .ARM.attributes section except that is not in a load segment
-> and thus has no runtime semantics while the key feature of
-> properties is the runtime semantics. however accessing the
-> program headers of the vdso is not trivial at runtime from
-> user code so dropping the properties might work too, but can
-> bite us in the future depending on how they evolve: the ld.so
-> can look at vdso program headers.)
