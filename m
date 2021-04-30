@@ -2,103 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BCAF36F5D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 08:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76F6B36F5DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 08:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbhD3Gq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 02:46:26 -0400
-Received: from mail-vs1-f47.google.com ([209.85.217.47]:33763 "EHLO
-        mail-vs1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbhD3GqE (ORCPT
+        id S230403AbhD3Gqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 02:46:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31409 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230334AbhD3Gqj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 02:46:04 -0400
-Received: by mail-vs1-f47.google.com with SMTP id k19so21969834vsg.0;
-        Thu, 29 Apr 2021 23:45:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pCyhrsMrcwz7eYUFY+u5FgUjdPWecvtS2RHoIzlp8Vk=;
-        b=S1urxnSZaklf0vxqVuh3yMV5lwWri++HAoyiuiO/COiYn2pBJo5DwSycOc6AzYQ9ok
-         4odD2fa6NW2bjnItV+JXTbi5dveBcsEAqLIjlT26aAy/AkfTCsf15ClUZC0WbdcwJemK
-         KMEvEexg+sjOmMHtBH+av7tpvqqgHZA/5+KBY35GFEJ6DZjJ7Fu8/lMpSJ5+d+DHsEdb
-         g+Vau88/gcQ4WYvScDc+3dhgJnFbluilluFA6doIzSaVdQ8Cj6vffmok76H+JGHbifDF
-         EoRDIcAI5B/HfJuGs3hh9GDL7SQFKI3Zg0FMfP7N8c+rqhgfiBH0Ar/9cuvSNY6Vl7Hs
-         OLYA==
-X-Gm-Message-State: AOAM532EWLYYLGJY5Ea1HR6II7KMGTdjEz/4oRKhkc4AuYORkM9Jd05C
-        nQ0zXzSnvTRlOr+KulNCyGWeuNRDMaA76MhGyVk=
-X-Google-Smtp-Source: ABdhPJyQ2vJRLPZY9BejYHXQot77jg6kkfHycihR8vioRYxfblpPU0JLybpwJcYR2r/oGWKRadVn1IJWmR5wxTbZuZ8=
-X-Received: by 2002:a67:f614:: with SMTP id k20mr4318456vso.42.1619765116419;
- Thu, 29 Apr 2021 23:45:16 -0700 (PDT)
+        Fri, 30 Apr 2021 02:46:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619765151;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PFZmzCqPtD1TeQ1IgnxgwBuBBj2UfpUYGVhQ61V9gY0=;
+        b=CO1ZtfocqTxIz6aW0nd/4+5Y9Yz4QjnUh+TbPWjWzaTK7+XtPzCLTHUB9sBspp+qoA9r31
+        Lt6KUWv0GIPRF+EwGce5q45LOf/8sOfQQMuCOthTDWKdiym4vaK0bKSvVBnfVzUvwW0kk4
+        rxpPM0brZ8OkDEGQCoXHtIAcHgkpWP4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-147-bVvfBOJoOuGwtxj_hE5rSQ-1; Fri, 30 Apr 2021 02:45:46 -0400
+X-MC-Unique: bVvfBOJoOuGwtxj_hE5rSQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B23AB802939;
+        Fri, 30 Apr 2021 06:45:42 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (ovpn-115-124.ams2.redhat.com [10.36.115.124])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2A74C5D9C6;
+        Fri, 30 Apr 2021 06:45:27 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        linux-arch <linux-arch@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: extending ucontext (Re: [PATCH v26 25/30] x86/cet/shstk: Handle
+ signals for shadow stack)
+References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
+        <20210427204315.24153-26-yu-cheng.yu@intel.com>
+        <CALCETrVTeYfzO-XWh+VwTuKCyPyp-oOMGH=QR_msG9tPQ4xPmA@mail.gmail.com>
+Date:   Fri, 30 Apr 2021 08:45:40 +0200
+In-Reply-To: <CALCETrVTeYfzO-XWh+VwTuKCyPyp-oOMGH=QR_msG9tPQ4xPmA@mail.gmail.com>
+        (Andy Lutomirski's message of "Wed, 28 Apr 2021 16:03:55 -0700")
+Message-ID: <87a6pgb78r.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-References: <20210419130106.6707-1-o.rempel@pengutronix.de> <20210419130106.6707-4-o.rempel@pengutronix.de>
-In-Reply-To: <20210419130106.6707-4-o.rempel@pengutronix.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 30 Apr 2021 08:45:05 +0200
-Message-ID: <CAMuHMdW+cX=vsZg2MyBOM+6Akp-nRQ0QrU=2XSiegFhHNA+jVg@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 3/6] net: add generic selftest support
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Fugang Duan <fugang.duan@nxp.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        netdev <netdev@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        David Jander <david@protonic.nl>,
-        Russell King <linux@armlinux.org.uk>,
-        Philippe Schenker <philippe.schenker@toradex.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oleksij,
+* Andy Lutomirski:
 
-On Mon, Apr 19, 2021 at 3:13 PM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
-> Port some parts of the stmmac selftest and reuse it as basic generic selftest
-> library. This patch was tested with following combinations:
-> - iMX6DL FEC -> AT8035
-> - iMX6DL FEC -> SJA1105Q switch -> KSZ8081
-> - iMX6DL FEC -> SJA1105Q switch -> KSZ9031
-> - AR9331 ag71xx -> AR9331 PHY
-> - AR9331 ag71xx -> AR9331 switch -> AR9331 PHY
+> The kernel has:
 >
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-
-Thanks for your patch, which is now commit 3e1e58d64c3d0a67 ("net: add
-generic selftest support") upstream.
-
-> --- a/net/Kconfig
-> +++ b/net/Kconfig
-> @@ -429,6 +429,10 @@ config GRO_CELLS
->  config SOCK_VALIDATE_XMIT
->         bool
+> struct rt_sigframe {
+>     char __user *pretcode;
+>     struct ucontext uc;
+>     struct siginfo info;
+>     /* fp state follows here */
+> };
 >
-> +config NET_SELFTESTS
-> +       def_tristate PHYLIB
+> This is roughly the actual signal frame.  But userspace does not have
+> this struct declared, and user code does not know the sizes of the
+> fields.  So it's accessed in a nonsensical way.  The signal handler
+> function is passed a pointer to the whole sigframe implicitly in RSP,
+> a pointer to &frame->info in RSI, anda pointer to &frame->uc in RDX.
+> User code can *find* the fp state by following a pointer from
+> mcontext, which is, in turn, found via uc:
+>
+> struct ucontext {
+>     unsigned long      uc_flags;
+>     struct ucontext  *uc_link;
+>     stack_t          uc_stack;
+>     struct sigcontext uc_mcontext;  <-- fp pointer is in here
+>     sigset_t      uc_sigmask;    /* mask last for extensibility */
+> };
 
-Why does this default to enabled if PHYLIB=y?
-Usually we allow the user to make selftests modular, independent of the
-feature under test, but I may misunderstand the purpose of this test.
+I must say that I haven't reviewed this in detail, but for historic
+reasons, glibc userspace has a differently-sized sigset_t.  So the
+kernel ucontext (used in signals) and user ucontext (used for
+swapcontext et al.) are already fully decoupled?
 
-Thanks for your clarification!
+Thanks,
+Florian
 
-> +       depends on PHYLIB
-> +
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
