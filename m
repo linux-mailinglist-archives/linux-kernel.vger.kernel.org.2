@@ -2,126 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E221B36F737
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F04D36F742
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231544AbhD3Igl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 04:36:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhD3Igj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 04:36:39 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCEDAC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:35:51 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id h15so17366764wre.11
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:35:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0Xn+KDZ1hNBBYXuNpXrEWWhuM2EQc3gWTNVgIKK2wDg=;
-        b=TXow1sF/QThOFfrsD8BjNqhVcrz6rkPFDJFQ/mgmEFd5sVoncRUaC4fIZ9GyOF4Wit
-         qcqkTGxXIym6P48ZRKuX1E5L7LbTu+ynEOo1IM91iXPPdFcUn2b0TTRRNY3pBsMZZc16
-         thQOFo3aJn8sqKj8RVliWu/2yZ/VcKjcmggsoGI8oAjekvhIKP7d4tELkpujYwCmaNBh
-         F1MblNjGw4tS07ACM4HV7mDY0ZtnBYEUPb5HZfyL9lyNrbkY3xial+dQNMGeN+8xqIx5
-         YqXg9AUnRFwXmrmbhyx7xz3fnuWXd/gnZ5q4YZThxNnoN+RkL8/6LZPv45S7EtqKtK3x
-         8I3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=0Xn+KDZ1hNBBYXuNpXrEWWhuM2EQc3gWTNVgIKK2wDg=;
-        b=BTP5935RxRm3kdUV7dnpYcO3hexEkv0tyWHARAMJIccvNn8FAEE+QHXs7Hv4yk+iYC
-         gugbUxDB43EE3fuOjKsEtx547/QFwnMjuVVbCltKJkCWcOwqLQ5j8zFW4ENhrnJCt7wC
-         jxyP10wZPa8u6411X3guo27kHHNhaltMyCA8NqxRqwvOD60cLqYrWMt7lwaSVEPxpMoH
-         Q5fHiFxvTfPg5Hxkip8hpOWTE7Lc/30OqPKa413sZ99wTllUCrD+h43iVV2pTEa5S3Di
-         ecY9PNyp9oyJUpmdaWHqqiV8/R/u8I9idANpCTcbL6OU/nmAFhgrvYgpH6NdsEv/I000
-         YGvw==
-X-Gm-Message-State: AOAM531c/KO67pGQW/dkbMGwHGptHLCtFGRu9xQJOkHIYHFhu5wgrRuN
-        jQ04QmQdSBVDD7WkXKPoM+48sg==
-X-Google-Smtp-Source: ABdhPJzcUSXLkLOLvpCukvUVXymQ9PtTmf9/a9LT8PMH7XFE2jhs9qfYHmTi10DiT/0WcPX33DSOfQ==
-X-Received: by 2002:a5d:6207:: with SMTP id y7mr3530550wru.39.1619771750428;
-        Fri, 30 Apr 2021 01:35:50 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:90c:e290:4a89:8c32:4adc:fc67? ([2a01:e0a:90c:e290:4a89:8c32:4adc:fc67])
-        by smtp.gmail.com with ESMTPSA id b12sm1471523wro.28.2021.04.30.01.35.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Apr 2021 01:35:50 -0700 (PDT)
-Subject: Re: [PATCH v3 0/3] drm/bridge: nwl-dsi: Get MIPI DSI controller and
- PHY ready in ->mode_set()
-To:     Liu Ying <victor.liu@nxp.com>, dri-devel@lists.freedesktop.org
-Cc:     jernej.skrabec@siol.net, jonas@kwiboo.se, airlied@linux.ie,
-        agx@sigxcpu.org, linux-kernel@vger.kernel.org,
-        robert.foss@linaro.org, a.hajda@samsung.com,
-        Laurent.pinchart@ideasonboard.com, robert.chiras@nxp.com,
-        linux-imx@nxp.com
-References: <1619170003-4817-1-git-send-email-victor.liu@nxp.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <e877868f-c5b4-ae8b-9871-c0633781e8e4@baylibre.com>
-Date:   Fri, 30 Apr 2021 10:35:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230444AbhD3IlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 04:41:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:43684 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229606AbhD3IlM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 04:41:12 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3907AED1;
+        Fri, 30 Apr 2021 01:40:08 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A61233F70D;
+        Fri, 30 Apr 2021 01:40:06 -0700 (PDT)
+Date:   Fri, 30 Apr 2021 09:40:01 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Ryder Lee <ryder.lee@mediatek.com>,
+        Jianjun Wang <jianjun.wang@mediatek.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] PCI: mediatek-gen3: Add missing null pointer check
+Message-ID: <20210430084001.GA12388@lpieralisi>
+References: <20210429110040.63119-1-colin.king@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <1619170003-4817-1-git-send-email-victor.liu@nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210429110040.63119-1-colin.king@canonical.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/04/2021 11:26, Liu Ying wrote:
-> Hi,
+On Thu, Apr 29, 2021 at 12:00:40PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> This series aims to make the nwl-dsi bridge be able to connect with
-> more MIPI DSI panels.  Some MIPI DSI panel drivers like 'raydium,rm68200'
-> send MIPI_DCS_SET_DISPLAY_ON commands in panel_funcs->prepare(), which
-> requires the MIPI DSI controller and PHY to be ready beforehand.
-> However, the existing nwl-dsi driver gets the MIPI DSI controller and
-> PHY ready in bridge_funcs->pre_enable(), which happens after the
-> panel_funcs->prepare().  So, this series shifts the bridge operation
-> ealier from bridge_funcs->pre_enable() to bridge_funcs->mode_set().
+> The call to platform_get_resource_byname can potentially return null, so
+> add a null pointer check to avoid a null pointer dereference issue.
 > 
-> Patch 3/3 does the essential bridge operation shift.
-> 
-> Patch 1/3 and 2/3 are split from the original single patch in v2 and
-> are needed by patch 3/3.  This split-up helps clarify changes better.
-> The split-up is done in this way:
-> 
-> 1) Patch 1/3 forces a full modeset when crtc_state->active is changed to
->    be true(which implies only connector's DPMS is brought out of "Off"
->    status, though not necessarily).  This makes sure ->mode_set() and
->    ->atomic_disable() will be called in pairs.
-> 2) Patch 2/3 removes a check on unchanged HS clock rate from ->mode_set(),
->    to make sure MIPI DSI controller and PHY are brought up and taken down
->    in pairs.
-> 3) Patch 3/3 shifts the bridge operation as the last step.
-> 
-> 
-> v2->v3:
-> * Split the single patch in v2 into 3 patches. (Neil)
-> 
-> v1->v2:
-> * Fix a typo in commit message - s/unchange/unchanged/
-> 
-> 
-> Liu Ying (3):
->   drm/bridge: nwl-dsi: Force a full modeset when crtc_state->active is
->     changed to be true
->   drm/bridge: nwl-dsi: Remove a check on unchanged HS clock rate from
->     ->mode_set()
->   drm/bridge: nwl-dsi: Get MIPI DSI controller and PHY ready in
->     ->mode_set()
-> 
->  drivers/gpu/drm/bridge/nwl-dsi.c | 86 +++++++++++++++++---------------
->  1 file changed, 46 insertions(+), 40 deletions(-)
-> 
+> Addresses-Coverity: ("Dereference null return")
+> Fixes: 441903d9e8f0 ("PCI: mediatek-gen3: Add MediaTek Gen3 driver for MT8192")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/pci/controller/pcie-mediatek-gen3.c | 2 ++
+>  1 file changed, 2 insertions(+)
 
-Applying to drm-misc-next
+Squashed into the commit it is fixing, in my pci/mediatek branch.
 
 Thanks,
-Neil
+Lorenzo
+
+> diff --git a/drivers/pci/controller/pcie-mediatek-gen3.c b/drivers/pci/controller/pcie-mediatek-gen3.c
+> index 20165e4a75b2..3c5b97716d40 100644
+> --- a/drivers/pci/controller/pcie-mediatek-gen3.c
+> +++ b/drivers/pci/controller/pcie-mediatek-gen3.c
+> @@ -721,6 +721,8 @@ static int mtk_pcie_parse_port(struct mtk_pcie_port *port)
+>  	int ret;
+>  
+>  	regs = platform_get_resource_byname(pdev, IORESOURCE_MEM, "pcie-mac");
+> +	if (!regs)
+> +		return -EINVAL;
+>  	port->base = devm_ioremap_resource(dev, regs);
+>  	if (IS_ERR(port->base)) {
+>  		dev_err(dev, "failed to map register base\n");
+> -- 
+> 2.30.2
+> 
