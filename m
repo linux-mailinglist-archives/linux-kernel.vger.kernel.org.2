@@ -2,153 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A149836F55B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 07:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC8CB36F55F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 07:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbhD3Fev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 01:34:51 -0400
-Received: from mga07.intel.com ([134.134.136.100]:33785 "EHLO mga07.intel.com"
+        id S229591AbhD3FfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 01:35:13 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:41493 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229482AbhD3Feu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 01:34:50 -0400
-IronPort-SDR: zsTH57E6kL56eGs5N9aExQ963JYQvxbmc69I0dIQMlsGC5ZdEyA0EYjDSyeekpNsBOfG32t4RM
- UytZggnyxvcg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9969"; a="261149254"
-X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
-   d="scan'208";a="261149254"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 22:34:02 -0700
-IronPort-SDR: NThRSyfq+B2eXPSttFzjjTOpmSIxzk5cZuVRR5CwVID8dBXoTNMHFbMNSYc012rlcMg3XSvyjX
- 5KwPkxazOq+w==
-X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
-   d="scan'208";a="424694985"
-Received: from xingzhen-mobl.ccr.corp.intel.com (HELO [10.238.4.46]) ([10.238.4.46])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 22:33:59 -0700
-Subject: Re: [RFC] mm/vmscan.c: avoid possible long latency caused by
- too_many_isolated()
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, ying.huang@intel.com,
-        tim.c.chen@linux.intel.com, Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@suse.com>, yuzhao@google.com,
-        wfg@mail.ustc.edu.cn
-References: <20210416023536.168632-1-zhengjun.xing@linux.intel.com>
- <20210422102325.1332-1-hdanton@sina.com>
-From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Message-ID: <9795a050-12a4-55c6-13e1-969cd4bbf795@linux.intel.com>
-Date:   Fri, 30 Apr 2021 13:33:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S230095AbhD3FfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 01:35:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619760864; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=WyIiMnFBS/zDlAuBJ6dVpP5Wm6YrC+/il7PmxfKg7BE=;
+ b=leaXCiyMf9FbmJ4zYthyycpV0hO3z75sRlRExcPVWACoex88OjlPpN3PR5F7gajTGv0VuLZB
+ 0854XEQGyAWDw0bY9H3py18nIYZAUzPVWZrfvdn3DCAiNsO3U/5W4b1qkKbGFQxC7D25WF7E
+ 0/OeQyIZ6wL8FEsqhmkhZwME5KQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 608b96da853c0a2c46e310de (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Apr 2021 05:34:18
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7778BC4323A; Fri, 30 Apr 2021 05:34:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AA03CC433F1;
+        Fri, 30 Apr 2021 05:34:16 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210422102325.1332-1-hdanton@sina.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 30 Apr 2021 11:04:16 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Odelu Kukatla <okukatla@codeaurora.org>
+Cc:     georgi.djakov@linaro.org, bjorn.andersson@linaro.org,
+        evgreen@google.com, Andy Gross <agross@kernel.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sboyd@kernel.org, ilina@codeaurora.org, seansw@qti.qualcomm.com,
+        elder@linaro.org, linux-arm-msm-owner@vger.kernel.org
+Subject: Re: [1/3] dt-bindings: interconnect: Add EPSS L3 DT binding on SC7280
+In-Reply-To: <1618556290-28303-2-git-send-email-okukatla@codeaurora.org>
+References: <1618556290-28303-1-git-send-email-okukatla@codeaurora.org>
+ <1618556290-28303-2-git-send-email-okukatla@codeaurora.org>
+Message-ID: <825aca2d853e5dd577d61396df49f44a@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hillf,
+Hey Odelu,
+Thanks for the patch!
 
-On 4/22/2021 6:23 PM, Hillf Danton wrote:
-> Hi Zhengjun
+On 2021-04-16 12:28, Odelu Kukatla wrote:
+> Add Epoch Subsystem (EPSS) L3 interconnect provider binding on SC7280
+> SoCs.
 > 
-> On Thu, 22 Apr 2021 16:36:19 +0800 Zhengjun Xing wrote:
->>      In the system with very few file pages (nr_active_file +
->> nr_inactive_file < 100), it is easy to reproduce "nr_isolated_file >
->> nr_inactive_file",  then too_many_isolated return true,
->> shrink_inactive_list enter "msleep(100)", the long latency will happen.
+> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
+> ---
+>  Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> We should skip reclaiming page cache in this case.
->>
->> The test case to reproduce it is very simple: allocate many huge
->> pages(near the DRAM size), then do free, repeat the same operation many
->> times.
->> In the test case, the system with very few file pages (nr_active_file +
->> nr_inactive_file < 100), I have dumpped the numbers of
->> active/inactive/isolated file pages during the whole test(see in the
->> attachments) , in shrink_inactive_list "too_many_isolated" is very easy
->> to return true, then enter "msleep(100)",in "too_many_isolated"
->> sc->gfp_mask is 0x342cca ("_GFP_IO" and "__GFP_FS" is masked) , it is
->> also very easy to enter “inactive >>=3”, then “isolated > inactive” will
->> be true.
->>
->> So I  have a proposal to set a threshold number for the total file pages
->> to ignore the system with very few file pages, and then bypass the 100ms
->> sleep.
->> It is hard to set a perfect number for the threshold, so I just give an
->> example of "256" for it.
-> 
-> Another option seems like we take a nap at the second time of lru tmi
-> with some allocators in your case served without the 100ms delay.
-> 
-> +++ x/mm/vmscan.c
-> @@ -118,6 +118,9 @@ struct scan_control {
->   	/* The file pages on the current node are dangerously low */
->   	unsigned int file_is_tiny:1;
->   
-> +	unsigned int file_tmi:1; /* too many isolated */
-> +	unsigned int anon_tmi:1;
-> +
->   	/* Allocation order */
->   	s8 order;
->   
-> @@ -1905,6 +1908,21 @@ static int current_may_throttle(void)
->   		bdi_write_congested(current->backing_dev_info);
->   }
->   
-> +static void update_sc_tmi(struct scan_control *sc, bool file, int set)
-> +{
-> +	if (file)
-> +		sc->file_tmi = set;
-> +	else
-> +		sc->anon_tmi = set;
-> +}
-> +static bool is_sc_tmi(struct scan_control *sc, bool file)
-> +{
-> +	if (file)
-> +		return sc->file_tmi != 0;
-> +	else
-> +		return sc->anon_tmi != 0;
-> +}
-> +
->   /*
->    * shrink_inactive_list() is a helper for shrink_node().  It returns the number
->    * of reclaimed pages
-> @@ -1927,6 +1945,11 @@ shrink_inactive_list(unsigned long nr_to
->   		if (stalled)
->   			return 0;
->   
-> +		if (!is_sc_tmi(sc, file)) {
-> +			update_sc_tmi(sc, file, 1);
-> +			return 0;
-> +		}
-> +
->   		/* wait a bit for the reclaimer. */
->   		msleep(100);
->   		stalled = true;
-> @@ -1936,6 +1959,9 @@ shrink_inactive_list(unsigned long nr_to
->   			return SWAP_CLUSTER_MAX;
->   	}
->   
-> +	if (is_sc_tmi(sc, file))
-> +		update_sc_tmi(sc, file, 0);
-> +
->   	lru_add_drain();
->   
->   	spin_lock_irq(&lruvec->lru_lock);
-> 
+> diff --git
+> a/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
+> b/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
+> index d6a95c3..98223f8 100644
+> --- a/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
+> +++ b/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
+> @@ -18,6 +18,7 @@ properties:
+>    compatible:
+>      enum:
+>        - qcom,sc7180-osm-l3
+> +      - qcom,sc7280-epss-l3
+>        - qcom,sdm845-osm-l3
+>        - qcom,sm8150-osm-l3
+>        - qcom,sm8250-epss-l3
 
-I use my compaction test case to test it, 1/10 ratio can reproduce 100ms 
-sleep.
-
-  60) @ 103942.6 us |      shrink_node();
-
-  60) @ 103795.8 us |      shrink_node();
-
-
-
+Based on the driver/dts changes the
+reg property maxItems will no longer
+be just 1.
 
 
 -- 
-Zhengjun Xing
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
