@@ -2,106 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A511370257
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 22:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0E437025A
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 22:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235867AbhD3Uok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 16:44:40 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:54357 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231325AbhD3Uoj (ORCPT
+        id S235960AbhD3UqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 16:46:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231325AbhD3UqF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 16:44:39 -0400
-Received: from mail-wr1-f47.google.com ([209.85.221.47]) by
- mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MPGJf-1lvUSH3dvB-00PeWe; Fri, 30 Apr 2021 22:43:48 +0200
-Received: by mail-wr1-f47.google.com with SMTP id x5so21688547wrv.13;
-        Fri, 30 Apr 2021 13:43:48 -0700 (PDT)
-X-Gm-Message-State: AOAM532Fd+80CDAQiJ4dOI5oYtlGRKoV1X6wNkWhf9P0klr/OCIMcsPU
-        mQxAr2GNWF6OKzcgxXkglDhw8V1ReNniXhYMa/I=
-X-Google-Smtp-Source: ABdhPJxA6TybANagJ0qyIQ6FUChGGFgSMR1TlFRyQOZs01sNXca04Touthsa7NzRGXFDTEGZCWPvtHhkVKpp9VirFF4=
-X-Received: by 2002:a05:6000:1843:: with SMTP id c3mr9808647wri.361.1619815428535;
- Fri, 30 Apr 2021 13:43:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <YIpkvGrBFGlB5vNj@elver.google.com> <m11rat9f85.fsf@fess.ebiederm.org>
- <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com> <m15z031z0a.fsf@fess.ebiederm.org>
-In-Reply-To: <m15z031z0a.fsf@fess.ebiederm.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 30 Apr 2021 22:43:09 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3mb6X4+4Q1WBQp22O2Bvc3w-Q=L25jh+WPvp2kJFwHiQ@mail.gmail.com>
-Message-ID: <CAK8P3a3mb6X4+4Q1WBQp22O2Bvc3w-Q=L25jh+WPvp2kJFwHiQ@mail.gmail.com>
-Subject: Re: siginfo_t ABI break on sparc64 from si_addr_lsb move 3y ago
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Marco Elver <elver@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
+        Fri, 30 Apr 2021 16:46:05 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE4B8C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 13:45:15 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id h7so8687094plt.1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 13:45:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XV1S7QX7pqISwKM1jB1GYc13VlD7bLx7ViM4ltZNWvc=;
+        b=kC7w1khTWN2G6MhIIRpBpH5C+waiMNYFwiSwBeCh3wxC25KAB+f8yT9YhWesbnJfs4
+         zMWJhDMZIYbi2lK09czlbTIiFHH1bBA/Za0YMgIVwnYV/NRmKubuM7y9YZIYe+LoIPaN
+         1fSifRORlDvCpL6MQQ9wNYvPLouiXkf7BDlAdnuCXR7/RHqB0D8KFHnppO3+Pvkt1Rav
+         3h7H7ghykzjdaDgp5Bt4WbJX5T320llMrzlGRW0N6paUrM9UX80KsAWbAN3DI4qRv7KI
+         mzh7sgPJGGy3qEtXi9GT2lZNuR3qN6ZhzrPtzGWJZm4pBpI6Axve4JYeZSzNSkogkbJM
+         zbcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XV1S7QX7pqISwKM1jB1GYc13VlD7bLx7ViM4ltZNWvc=;
+        b=XWMKwBD/2zAIVJzX1IPQDrkvMmKGBircjHi/Ao/VXSJN0nQrQPf2eStcLwAKe78erP
+         2UwCkBhtZSgcoYEAicay0gdX3HWAFwG21WnDl5sWBrgaFiRcZaPQm5ypgd1h9ozaXJXS
+         uTa5DJ6eAz0iIZNSzgUxKCdY60+K+WSnmkMoJPSoFRTPQ4XBWPFZv8NCEoe06RHApJsL
+         L4nW0BRYyYxoB3RQjf67CLYIKhuuC7fzFKWq1hNxkcp3SKHAPxF7ep18PYQ0JNnf7Wk2
+         WyoRtu1aKV6h/ePbyUMRGnUDriCq8sku7QFVC01sLpiy6t3kVy4O9bPqE4kAXMb/RkJd
+         LCfA==
+X-Gm-Message-State: AOAM530iT4ygkSwocvBjRf4OZq4KzpbHMKN2m72IvYPUy3x1UoMmOFjC
+        iFc7a/apwD+eSc8QFJbHkVg4GA==
+X-Google-Smtp-Source: ABdhPJwKn4YKXVr0RI440tpiiDhbuArtF+So3buArcfhCZhkihl8gczHEyvSsmApSw3Ba6k57GnaCw==
+X-Received: by 2002:a17:90a:dd45:: with SMTP id u5mr17554026pjv.15.1619815515285;
+        Fri, 30 Apr 2021 13:45:15 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id w124sm2962195pfb.73.2021.04.30.13.45.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 13:45:14 -0700 (PDT)
+Date:   Fri, 30 Apr 2021 20:45:11 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jon Kohler <jon@nutanix.com>
+Cc:     Bijan Mottahedeh <bijan.mottahedeh@nutanix.com>,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        Junaid Shahid <junaids@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:1T39EDIEGbC+K2EWO8vif5PitZfwh83eNXC5FhSEd6gpm6wI/mg
- 0LsG6tKV2Wbj1GzC2XsrKRG/oSKE85phpvLwKPkcyh5KLDaOBzIsM52bwsO8uSACBGsYFX+
- PzRDHD5mjgShUF7QVg6NwyzXadfx+3T7hAgSIr/cGcEKL6vqK/cIlbp4au1xdWJa74NG9Lw
- vWkkVu41JAR1YOI6ToAVA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:bD7bHAN+nZg=:nbPLcZgrKRCeaw9/+G+s4P
- 6vCC3nyX46/35Fso9jkovVD1ok6BDjyqpM1cJtPfYGNbfl4kNZ8w50HaCWWtjoD+YD94sC38b
- 69F+/x5Vyx0FzCaFh8CQTdyKRNAhHV6KWA3AVMeYvA0UzrGJyGb9mprWPbPblC2XNPMts4i8+
- loDDg/qQRc3KMrtDDn5KnBG+g2X7e6Z17zSyVmjd/Cy4Ygg/zPuM3X7RP7J04WpkQkC019exW
- A6HeWvSvI/4/3BXGx8xsgcGYEwDs6vFrK9lWHnlxzSVjWwmOwXhoG5Sm6gpMP5nkjMbP0inwo
- n+TQhS6i9Cxl8VLAL7gP1qFTuR4uBoL0iMeVRKb8Ej1KpFOmImiB04cORNmIOLMlIZwl3sLjZ
- 9T3u738ZckAnS0cE7yALGh6uif/D10BOo4WGBMa4vxfVZ2PxyDgdUjdmDU0OzyFf66W2LS7SB
- bVNdtUQkMufFwZBsP/7t/uz0xc+deDtLPrvZBSYO7GyU82DY+NCrzfxv5vZky4s4WsoWPUyi6
- 2p0pzDkSUvQTXZJTFg3Rc8=
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kvm: x86: move srcu lock out of kvm_vcpu_check_block
+Message-ID: <YIxsV6VgSDEdngKA@google.com>
+References: <20210428173820.13051-1-jon@nutanix.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210428173820.13051-1-jon@nutanix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 7:08 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> The code is only safe if the analysis that says we can move si_trapno
-> and perhaps the ia64 fields into the union is correct.  It looks like
-> ia64 much more actively uses it's signal extension fields including for
-> SIGTRAP, so I am not at all certain the generic definition of
-> perf_sigtrap is safe on ia64.
->
-> > I suppose in theory sparc64 or alpha might start using the other
-> > fields in the future, and an application might be compiled against
-> > mismatched headers, but that is unlikely and is already broken
-> > with the current headers.
->
-> If we localize the use of si_trapno to just a few special cases on alpha
-> and sparc I think we don't even need to worry about breaking userspace
-> on any architecture.  It will complicate siginfo_layout, but it is a
-> complication that reflects reality.
+On Wed, Apr 28, 2021, Jon Kohler wrote:
+> To improve performance, this moves kvm->srcu lock logic from
+> kvm_vcpu_check_block to kvm_vcpu_running and wraps directly around
+> check_events. Also adds a hint for callers to tell
+> kvm_vcpu_running whether or not to acquire srcu, which is useful in
+> situations where the lock may already be held. With this in place, we
+> see roughly 5% improvement in an internal benchmark [3] and no more
+> impact from this lock on non-nested workloads.
 
-Ok.
+...
 
-> I don't have a clue how any of this affects ia64.  Does perf work on
-> ia64?  Does perf work on sparc, and alpha?
->
-> If perf works on ia64 we need to take a hard look at what is going on
-> there as well.
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index efc7a82ab140..354f690cc982 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -9273,10 +9273,24 @@ static inline int vcpu_block(struct kvm *kvm, struct kvm_vcpu *vcpu)
+>  	return 1;
+>  }
+> 
+> -static inline bool kvm_vcpu_running(struct kvm_vcpu *vcpu)
+> +static inline bool kvm_vcpu_running(struct kvm_vcpu *vcpu, bool acquire_srcu)
+>  {
+> -	if (is_guest_mode(vcpu))
+> -		kvm_x86_ops.nested_ops->check_events(vcpu);
+> +	if (is_guest_mode(vcpu)) {
+> +		if (acquire_srcu) {
+> +			/*
+> +			 * We need to lock because check_events could call
+> +			 * nested_vmx_vmexit() which might need to resolve a
+> +			 * valid memslot. We will have this lock only when
+> +			 * called from vcpu_run but not when called from
+> +			 * kvm_vcpu_check_block > kvm_arch_vcpu_runnable.
+> +			 */
+> +			int idx = srcu_read_lock(&vcpu->kvm->srcu);
+> +			kvm_x86_ops.nested_ops->check_events(vcpu);
+> +			srcu_read_unlock(&vcpu->kvm->srcu, idx);
+> +		} else {
+> +			kvm_x86_ops.nested_ops->check_events(vcpu);
+> +		}
+> +	}
 
-ia64 never had perf support. It had oprofile until very recently, and it
-had a custom thing before that. My feeling is that it's increasingly
-unlikely to ever gain perf support in the future, given that oprofile
-(in user space) has required kernel perf support (in kernel) for a
-long time and nobody cared about that being broken either.
+Obviously not your fault, but I absolutely detest calling check_events() from
+kvm_vcpu_running.  I would much prefer to make baby steps toward cleaning up the
+existing mess instead of piling more weirdness on top.
 
-sparc64 has perf support for Sun UltraSPARC 3/3+/3i/4+/T1/T2/T3
-and Oracle SPARC T4/T5/M7 but lacks support for most CPUs from
-Oracle, Fujitsu and the rest, in particular anything from the last
-ten years.
-Alpha has perf support for EV67, EV68, EV7, EV79, and EV69, i.e.
-anything from 1996 to the end in 2004.
+Ideally, APICv support would be fixed to not require a deep probe into nested
+events just to see if a vCPU can run.  But, that's probably more than we want to
+bite off at this time.
 
-      Arnd
+What if we add another nested_ops API to check if the vCPU has an event, but not
+actually process the event?  I think that would allow eliminating the SRCU lock,
+and would get rid of the most egregious behavior of triggering a nested VM-Exit
+in a seemingly innocuous helper.
+
+If this works, we could even explore moving the call to nested_ops->has_events()
+out of kvm_vcpu_running() and into kvm_vcpu_has_events(); I can't tell if the
+side effects in vcpu_block() would get messed up with that change :-/
+
+Incomplete patch...
+
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index 00339d624c92..15f514891326 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -3771,15 +3771,17 @@ static bool nested_vmx_preemption_timer_pending(struct kvm_vcpu *vcpu)
+               to_vmx(vcpu)->nested.preemption_timer_expired;
+ }
+
+-static int vmx_check_nested_events(struct kvm_vcpu *vcpu)
++static int __vmx_check_nested_events(struct kvm_vcpu *vcpu, bool only_check)
+ {
+        struct vcpu_vmx *vmx = to_vmx(vcpu);
+        unsigned long exit_qual;
+-       bool block_nested_events =
+-           vmx->nested.nested_run_pending || kvm_event_needs_reinjection(vcpu);
+        bool mtf_pending = vmx->nested.mtf_pending;
+        struct kvm_lapic *apic = vcpu->arch.apic;
+
++       bool block_nested_events = only_check ||
++                                  vmx->nested.nested_run_pending ||
++                                  kvm_event_needs_reinjection(vcpu);
++
+        /*
+         * Clear the MTF state. If a higher priority VM-exit is delivered first,
+         * this state is discarded.
+@@ -3837,7 +3839,7 @@ static int vmx_check_nested_events(struct kvm_vcpu *vcpu)
+        }
+
+        if (vcpu->arch.exception.pending) {
+-               if (vmx->nested.nested_run_pending)
++               if (vmx->nested.nested_run_pending || only_check)
+                        return -EBUSY;
+                if (!nested_vmx_check_exception(vcpu, &exit_qual))
+                        goto no_vmexit;
+@@ -3886,10 +3888,23 @@ static int vmx_check_nested_events(struct kvm_vcpu *vcpu)
+        }
+
+ no_vmexit:
+-       vmx_complete_nested_posted_interrupt(vcpu);
++       if (!check_only)
++               vmx_complete_nested_posted_interrupt(vcpu);
++       else if (vmx->nested.pi_desc && vmx->nested.pi_pending)
++               return -EBUSY;
+        return 0;
+ }
+
++static bool vmx_has_nested_event(struct kvm_vcpu *vcpu)
++{
++       return !!__vmx_check_nested_events(vcpu, true);
++}
++
++static int vmx_check_nested_events(struct kvm_vcpu *vcpu)
++{
++       return __vmx_check_nested_events(vcpu, false);
++}
++
+ static u32 vmx_get_preemption_timer_value(struct kvm_vcpu *vcpu)
+ {
+        ktime_t remaining =
+@@ -6627,6 +6642,7 @@ __init int nested_vmx_hardware_setup(int (*exit_handlers[])(struct kvm_vcpu *))
+ }
+
+ struct kvm_x86_nested_ops vmx_nested_ops = {
++       .has_event = vmx_has_nested_event,
+        .check_events = vmx_check_nested_events,
+        .hv_timer_pending = nested_vmx_preemption_timer_pending,
+        .triple_fault = nested_vmx_triple_fault,
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index a829f1ab60c3..5df01012cb1f 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -9310,6 +9310,10 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+                        update_cr8_intercept(vcpu);
+                        kvm_lapic_sync_to_vapic(vcpu);
+                }
++       } else if (is_guest_mode(vcpu)) {
++               r = kvm_check_nested_events(vcpu);
++               if (r < 0)
++                       req_immediate_exit = true;
+        }
+
+        r = kvm_mmu_reload(vcpu);
+@@ -9516,8 +9520,10 @@ static inline int vcpu_block(struct kvm *kvm, struct kvm_vcpu *vcpu)
+
+ static inline bool kvm_vcpu_running(struct kvm_vcpu *vcpu)
+ {
+-       if (is_guest_mode(vcpu))
+-               kvm_check_nested_events(vcpu);
++       if (is_guest_mode(vcpu) &&
++           (kvm_test_request(KVM_REQ_TRIPLE_FAULT, vcpu) ||
++            kvm_x86_ops.nested_ops->has_event(vcpu)))
++               return true;
+
+        return (vcpu->arch.mp_state == KVM_MP_STATE_RUNNABLE &&
+                !vcpu->arch.apf.halted);
