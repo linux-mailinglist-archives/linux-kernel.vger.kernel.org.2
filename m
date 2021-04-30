@@ -2,101 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CFCD3700AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03EB63700AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231384AbhD3SoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 14:44:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47204 "EHLO
+        id S231681AbhD3SoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 14:44:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbhD3SoC (ORCPT
+        with ESMTP id S231267AbhD3SoY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 14:44:02 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C614DC06174A;
-        Fri, 30 Apr 2021 11:43:13 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id b19-20020a05600c06d3b029014258a636e8so2172377wmn.2;
-        Fri, 30 Apr 2021 11:43:13 -0700 (PDT)
+        Fri, 30 Apr 2021 14:44:24 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C14C06174A;
+        Fri, 30 Apr 2021 11:43:35 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id p12so49994603pgj.10;
+        Fri, 30 Apr 2021 11:43:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dBsvXDXquw1zBTgS0vLX+6A7jTM++QDpHc4jhzohuzw=;
-        b=BDlNnYwKejPczZXCKknRSlfOlr5NC+OJmcPLbve+nFGD4CRYj6lEQ2RUPBww4XZ/qQ
-         xpPe0qvnGqa0mArabnez5buWksZTax9JAhLtEcZZ3CJ5gi2SMsIn+ddS1/UiIgfnHJb/
-         TXWY+H46MKIxQ86p+11BXNJFsEDnLeiBvAqgn97FDgtTVK1z6ydDO+4yZzIWVs5lW3ru
-         5togt3KBB67AIkNjFb5Ar4Ng05NIocrzMELdBkk+ikohu9ZOWLY5twy8Al4HBJyV9i+F
-         8Os/lVlxRJhMHDcTo6smuHC5Sg+M1QIWsvHei39rNMWv446C6HBssYkh4Ti8eibSdRqU
-         3XDw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KI/MnFrdCFvAVp9lLRYtA+YcapFgP0IRl08eerf2/To=;
+        b=EEwXinkxNWph9iZIOreBSC7zDYIf1fW4nFLZ9aGiN3bwvDwrYmn92TWTRXOYPE/gU5
+         IEIGfcPhyvzGDxWsCp6G85OV3aytU4vjAqd6ZTQlvDIpFe7NuH5J/hWS+Gho6z/LU2mC
+         vLl7SnRb7g+jiDYNBc9VzyhHHyWENZN9vBOdNQvR+Bm3R0KQzdwO+3JCqXbeQWPUefDK
+         OI40DFmZm+IlTquzUee+j/GdeGb7NBy16gQ2LMtwHEBwww+Jvho3lJTcxObBnafL4DOo
+         vqFmzW5QtmyZEvQf5WvFN+wTpzJumIog+bKAvHkZYzRRkI9GMNMFPZgxf4h1YR8FHi2T
+         4wsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=dBsvXDXquw1zBTgS0vLX+6A7jTM++QDpHc4jhzohuzw=;
-        b=O3KPgmQeo1hoiH2r/7X+5Uxtc69r2cCij7sI1O52urvbktCkt+1SYVD7oxxoxgx0cz
-         +qH0cMWkxL9Lt3QBRaH6P9JI7LNUxfLyuA8IYui07eb+JXW9RhWtAi3iNAiB/7i2dIKW
-         qIkEFQXbHMplagGzEvklpbLsXhqksNzE1eK1ecIt0eZumXeJ5B1dHM4r9LZl0gwP+8C8
-         mGO00E2HR8jQ+ms76R2FolquDF8n61OAH2+P82OY1JCSjm3JoSPAhjRYe/IVtmRTD29h
-         rqnNdazYxP1GsytaqbkcbA4OGYsK7gEEfeZP1Zzvn6hQQBs0lTVU1GVrWtDL/7HOhQT/
-         53lg==
-X-Gm-Message-State: AOAM5302VeCUZ9vZqC8+e6jpsI6VV7Tk+YcDDgDhPSSsoVMioFLG7YUo
-        Tsy8KSCuPtNItsiO/0D7VMU=
-X-Google-Smtp-Source: ABdhPJzshtKGSkBKbF4haPfNVxr104tZYmJNuhxbF0laWTSbbulEgyZLzyfm8bIv2OXyXZcdSvp9Mw==
-X-Received: by 2002:a7b:ce14:: with SMTP id m20mr4063683wmc.179.1619808192496;
-        Fri, 30 Apr 2021 11:43:12 -0700 (PDT)
-Received: from pevik ([62.201.25.198])
-        by smtp.gmail.com with ESMTPSA id o17sm3603200wrg.80.2021.04.30.11.43.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 11:43:12 -0700 (PDT)
-Date:   Fri, 30 Apr 2021 20:43:09 +0200
-From:   Petr Vorel <petr.vorel@gmail.com>
-To:     Heiko Thiery <heiko.thiery@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Hemminger <stephen@networkplumber.org>
-Subject: Re: [PATCH iproute2-next v2] lib/fs: fix issue when
- {name,open}_to_handle_at() is not implemented
-Message-ID: <YIxPve/JoSv3GAwm@pevik>
-Reply-To: Petr Vorel <petr.vorel@gmail.com>
-References: <20210430062632.21304-1-heiko.thiery@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KI/MnFrdCFvAVp9lLRYtA+YcapFgP0IRl08eerf2/To=;
+        b=Ik692O+tvevhkBl9v2zdBdMQxXo7t77ZwHH+wjfnfvko1K403vfPgxtkhRl4ukqbCU
+         0jYovSDhVLwNgSj317fnM+ooD494gQ5OqaY2zCbd+I42kDnQGOx4LjazKZVesNF8SKb1
+         DU5xT1ekuIrgd9JKOdZTTWVhPcJAW2i2//mFPYmA99baOOdeeRmSk7JzRv3mJtVaciLr
+         i1VK+0VANlG468gJrRyx7uZBvaSoUHFP131P2CubhQh0e5s5wqORdKXFR4dhO7+IylTH
+         NOG8RcGVb5aNhe32255mGFIYs1X6I9p3StDWpAb27y0rWuBNYkVH4UV1ytEu3nwpOzt3
+         09Sw==
+X-Gm-Message-State: AOAM533dI+N9SHhctHMCPI8d2yQ7CMVPMN8Dxrg2JNVG9LzddvOnHhGY
+        7yS5+4zWyFxE1mnEyhNtAFS7+HXcJ1bD4NqnBhs=
+X-Google-Smtp-Source: ABdhPJxMPZpMkCGdC2AwEeUnojgwpbAa0yguUCDEQBxKd491/rtQyhV87+w7xmA2fqjNDpVJfvEvyYjKTUQmucHSixM=
+X-Received: by 2002:a63:a847:: with SMTP id i7mr5759407pgp.203.1619808215145;
+ Fri, 30 Apr 2021 11:43:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210430062632.21304-1-heiko.thiery@gmail.com>
+References: <20210423182441.50272-1-andriy.shevchenko@linux.intel.com>
+ <CAHp75VeiHsk15QoG3X-OV8V8jqzCNeKkif9V=cx4nvKVHaKbKA@mail.gmail.com>
+ <20210427143457.GI4605@sirena.org.uk> <YIglWpz8lSidXmDd@smile.fi.intel.com>
+ <CAHp75VfBSjHP1LJZJTdwXzGuE2YjxdW6r7Zf6ofHsquJBPMyWA@mail.gmail.com> <20210430180114.GF5981@sirena.org.uk>
+In-Reply-To: <20210430180114.GF5981@sirena.org.uk>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 30 Apr 2021 21:43:19 +0300
+Message-ID: <CAHp75Vd0MKSZJpw0=qKtORmHRijw0HZLGz+W=sG_cyhLr1JPoQ@mail.gmail.com>
+Subject: Re: [PATCH v2 00/14] spi: pxa2xx: Set of cleanups
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heiko,
+On Fri, Apr 30, 2021 at 9:01 PM Mark Brown <broonie@kernel.org> wrote:
+> On Fri, Apr 30, 2021 at 07:29:48PM +0300, Andy Shevchenko wrote:
+>
+> > One item is still unclear to me. I noticed that you started already
+> > applying patches for-next release cycle (if I understood it
+> > correctly). Hence the question should or shouldn't I resend this
+>
+> No I haven't, I'm only applying things to for-5.13.  I've not even
+> created for-5.14 yet, that will only get created once -rc1 is out and
+> nothing for it is fixed yet.  If I look at it and find an issue I will
+> tell you, if I've not said anything and I've got through my first batch
+> of v5.14 stuff it's gone AWOL and you should resend.
 
-...
-> +++ b/lib/fs.c
-> +int name_to_handle_at(int dirfd, const char *pathname,
-> +	struct file_handle *handle, int *mount_id, int flags)
-> +{
-> +	return syscall(name_to_handle_at, 5, dirfd, pathname, handle,
-I overlooked this in v1. name_to_handle_at must be replaced by __NR_name_to_handle_at:
-(name_to_handle_at is the function name, not a syscall number).
-It also requires to include <sys/syscall.h>:
+Ah, okay, it means I misread the idea of applied patches.
+Thanks for clarifying this for me!
 
-#include <sys/syscall.h>
-...
-	return syscall(__NR_name_to_handle_at, 5, dirfd, pathname, handle,
-	               mount_id, flags);
-
-> +	               mount_id, flags);
-> +}
-> +
-> +int open_by_handle_at(int mount_fd, struct file_handle *handle, int flags)
-> +{
-> +	return syscall(open_by_handle_at, 3, mount_fd, handle, flags);
-And here needs to be __NR_open_by_handle_at
-
-Kind regards,
-Petr
-
-> +}
-> +#endif
-> +
->  /* return mount path of first occurrence of given fstype */
->  static char *find_fs_mount(const char *fs_to_find)
->  {
+-- 
+With Best Regards,
+Andy Shevchenko
