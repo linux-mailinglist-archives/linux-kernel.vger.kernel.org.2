@@ -2,91 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD4C636FFB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 19:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2E3036FFC0
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 19:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231563AbhD3RgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 13:36:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60432 "EHLO
+        id S231223AbhD3RiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 13:38:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231178AbhD3RgQ (ORCPT
+        with ESMTP id S230229AbhD3RiX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 13:36:16 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2CFC06174A;
-        Fri, 30 Apr 2021 10:35:27 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id d14so19726190edc.12;
-        Fri, 30 Apr 2021 10:35:27 -0700 (PDT)
+        Fri, 30 Apr 2021 13:38:23 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47980C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 10:37:35 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id x20so81002295lfu.6
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 10:37:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=tPDS2D22rwXWws+Y8XJI8512tkIXRC3MZ9HOlTsZiy4=;
-        b=U3439mmhZ4Ak97M5/Ia+jb+TDAGWJ8Hsfg5z5FcnwSkdo+ACQQezVqzs7b4xjNetG0
-         VGW/jgBFgO1X0PG9Ap5wM5c2/vUaLPJwoviCX5PB6TZWC+kRvpEvf3sAjdP/Sq9h4J5+
-         hsc6SLDJE930DbyQtXnu9TBnJYZztIihzp/A7PxpnrBD1hua1g9aEb/bKp0kZ3D49pP8
-         +/1FP82veVYLhwoLoClCxkfHa9JoHwktZMqo6mbvQKnQUkiyfOEBBnFoMd4GQ+nxvnv8
-         0DRvWwAZN/2bSCMmWed7bH8MZSG9onPQdRco3NGDcyeUbf/GD+DQVUCIzf2rwfzXbTAb
-         Zj7A==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IyZoGH+lT+P8SU23gcGGsIVn6bGEnFnAdvfYbbDN9to=;
+        b=ryDFnWPDNEvnvXwTf0jcPPjjEXrVhjstRilHvsIA8HyK6O52T+H+wQ8OPQWWOwaWB8
+         CE9qwQA0/2kiylTlZnPXkbNG4DrQxLyX8gS5wTYZX0aMkmGTeckUGp+xCUcixrb7nKv0
+         z+mzVNUzvNKMXuro8JYl2HXNj2O20xvQLqllwQ5eYrlTm/Z/lpyJeVqbqW/9JsK2knKU
+         5LNmpveMyCCZbDUYFU695phQaFMgAMzzwWVCO2vUFO8DQAzgYvMxBI2ItJcnSrY6OYxp
+         SuRvUyWbEJIA/FcRCNQ5QW1ydXUp1tjV7ZyQmbNjtaVj15WO2SnS3LgH1s7CCIG1SPbZ
+         eMog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=tPDS2D22rwXWws+Y8XJI8512tkIXRC3MZ9HOlTsZiy4=;
-        b=BcyI0KH8yMkk8Tx1XQFd+PBJ9LJB/5PBdildrnyiA+JcWvqtz5vyRftCsNdC7+yo/g
-         2tA0ldv/SollGnAuYNysuopkIZ7h9wMnhZ81gUgs/ZuRhWTzDSqNOmjraZ2sTgjxPxVf
-         sqvKM0DjDSRD8Wk2SEs93WFI3U4XplOH9E4Ucu505PH4QY04uE1f2cokr4DkaxkLL5nJ
-         diAMmUewMJRlpQuof9i/X89Kz6/TQShnEjxkqiN74oPBBDMmMbb+p9VdBRfYxpNB121a
-         TECM3mGU+wuZId3yuG6zE5VATI/A8ldvElfBH0bhWPFbv6Pueqeq+2I49tM2pYPJRJQ/
-         rzPg==
-X-Gm-Message-State: AOAM5332a/yrQd4sc3rsd+oz5BG065Nfxfb2Yxo5hOxFormJpqKf3KXt
-        rsjy9sBKRLqgZz/zWQopViF6294FEITRoGbw3G853Q==
-X-Google-Smtp-Source: ABdhPJy1PMHuKFQxpWi7H0OYElixThscYwv46io+aKS3XWP/mqP5uxM46xSTw5eY7aoyQ+S2Dli0fQ==
-X-Received: by 2002:a05:6402:144d:: with SMTP id d13mr7433488edx.101.1619804125726;
-        Fri, 30 Apr 2021 10:35:25 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id v26sm2463444ejk.66.2021.04.30.10.35.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 10:35:25 -0700 (PDT)
-Message-ID: <608c3fdd.1c69fb81.6db8d.7b5d@mx.google.com>
-Date:   Fri, 30 Apr 2021 10:35:25 -0700 (PDT)
-X-Google-Original-Date: Fri, 30 Apr 2021 17:35:21 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210430141910.473289618@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 0/2] 5.10.34-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IyZoGH+lT+P8SU23gcGGsIVn6bGEnFnAdvfYbbDN9to=;
+        b=staX2P9IlB4c1UTSiP8sD+8G0lUdiPC1gCGc1VP34gIGIZFtE15jj69hnKoceVMNSF
+         0S2DKB4plcIkgTt6BjlfOpBMYa+1qcDSjwFkZ517yPVH3eMVEG5JJvRZZI3HkqKqatHi
+         30UqMUFMkD9CDm3P+zQx4Svtu4TYinWgWZfSXbT7/m97JSRI4i7zHgp89UDl8mIZJTvH
+         EbEUzu8bfNk08YSt63lEGrYhe1/Vx+Wt0N+3orSjtthYzGrtFi8Ef2vFRqy5wo9RJlUC
+         7Sj70DvuSsgNnQ+Oe/9cDvdvmOg1pcFMQrPMFFZlmnVfHS/xaDAgxFiuBDju7UZ2/dpM
+         KDJQ==
+X-Gm-Message-State: AOAM532s8QDJPqiGdAwTk0xSE9d7fXbnsuO3cm4zvblic3e55yivyCSK
+        gyqBP3+qhI0vm9XHm0m9L96P4N3jTNZ8e0JpKkoZWA==
+X-Google-Smtp-Source: ABdhPJyrJphBLygkbPOqBlyI3KGd158lA8+tnQCVqwm0BWpVup5VBgWBQRQB0f1PP1xd/VB51Pqr4tiWIdyHtQCG6fQ=
+X-Received: by 2002:ac2:593b:: with SMTP id v27mr3358056lfi.204.1619804253808;
+ Fri, 30 Apr 2021 10:37:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210430171744.1721408-1-robdclark@gmail.com>
+In-Reply-To: <20210430171744.1721408-1-robdclark@gmail.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Fri, 30 Apr 2021 10:37:22 -0700
+Message-ID: <CALAqxLU=zsaMuBikeEzjtgNFAcxZGdqMhETBHvveNC_JZ=B7JA@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/dpu: Delete bonkers code
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Rob Clark <robdclark@chromium.org>,
+        Stephen Boyd <sboyd@kernel.org>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Hongbo Yao <yaohongbo@huawei.com>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Apr 2021 16:20:41 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.34 release.
-> There are 2 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 02 May 2021 14:19:04 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.34-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Fri, Apr 30, 2021 at 10:14 AM Rob Clark <robdclark@gmail.com> wrote:
+>
+> From: Rob Clark <robdclark@chromium.org>
+>
+> dpu_crtc_atomic_flush() was directly poking it's attached planes in a
+> code path that ended up in dpu_plane_atomic_update(), even if the plane
+> was not involved in the current atomic update.  While a bit dubious,
+> this worked before because plane->state would always point to something
+> valid.  But now using drm_atomic_get_new_plane_state() we could get a
+> NULL state pointer instead, leading to:
+>
+>    [   20.873273] Call trace:
+>    [   20.875740]  dpu_plane_atomic_update+0x5c/0xed0
+>    [   20.880311]  dpu_plane_restore+0x40/0x88
+>    [   20.884266]  dpu_crtc_atomic_flush+0xf4/0x208
+>    [   20.888660]  drm_atomic_helper_commit_planes+0x150/0x238
+>    [   20.894014]  msm_atomic_commit_tail+0x1d4/0x7a0
+>    [   20.898579]  commit_tail+0xa4/0x168
+>    [   20.902102]  drm_atomic_helper_commit+0x164/0x178
+>    [   20.906841]  drm_atomic_commit+0x54/0x60
+>    [   20.910798]  drm_atomic_connector_commit_dpms+0x10c/0x118
+>    [   20.916236]  drm_mode_obj_set_property_ioctl+0x1e4/0x440
+>    [   20.921588]  drm_connector_property_set_ioctl+0x60/0x88
+>    [   20.926852]  drm_ioctl_kernel+0xd0/0x120
+>    [   20.930807]  drm_ioctl+0x21c/0x478
+>    [   20.934235]  __arm64_sys_ioctl+0xa8/0xe0
+>    [   20.938193]  invoke_syscall+0x64/0x130
+>    [   20.941977]  el0_svc_common.constprop.3+0x5c/0xe0
+>    [   20.946716]  do_el0_svc+0x80/0xa0
+>    [   20.950058]  el0_svc+0x20/0x30
+>    [   20.953145]  el0_sync_handler+0x88/0xb0
+>    [   20.957014]  el0_sync+0x13c/0x140
+>
+> The reason for the codepath seems dubious, the atomic suspend/resume
+> heplers should handle the power-collapse case.  If not, the CRTC's
+> atomic_check() should be adding the planes to the atomic update.
 
-5.10.34-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+Thanks! This patch gets things booting again!
 
+Tested-by: John Stultz <john.stultz@linaro.org>
+
+thanks
+-john
