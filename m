@@ -2,100 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031D136F6D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 674EB36F6DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbhD3IDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 04:03:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbhD3IDs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 04:03:48 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B92C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:02:59 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id gx5so11818725ejb.11
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 01:02:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
-         :date:mime-version;
-        bh=gEXOq4bTfcSUdUpLFcNhC6eN04AyrduIgQ9uuxLC6OQ=;
-        b=CyLMRHNZPKD5a43+OjCNpQu0X+iMse+Mr2s56g3TR5iXy+jXFzudjJpE2fTY4RhNBj
-         4V8hEHqAG7ZxzBoVsDu4/+iassEyaCRU+seGci3cHCaPgMa7O1v9riFc45YLhEzJ2VLs
-         qWKOrXNo3xeXuo8CDVK5AQWFvHgggovEvtvxZrLztYPbJG8tkcZTYNYlpgwHyjSkSPBZ
-         lbu9SRDRXQqGvEKSHcr3qbsVzwQdqGr6CV4kfMIMcOR7un+52eImiIMbSDR4dngbdH+6
-         +ih3cdClm3/L/I/Nt0KRkGBhKQovaluwXwzYoE6z58qK5mgRHdROcwNWLG+HAEzNSMR0
-         c7wA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:message-id:date:mime-version;
-        bh=gEXOq4bTfcSUdUpLFcNhC6eN04AyrduIgQ9uuxLC6OQ=;
-        b=gBZSxi4+1YmBxRfLpI0+P5VLDix6+Nwh7ZdpRevdrjdKTpLbQKc7UHbb9p9v5ZbuYo
-         21JlbzEd0tTo9ikp0NDs4q11Tx1GYp/LXIX3EEIWC2YmJisCzxe93OQlxELiDNVrfrS/
-         RbpQ+TNgVaegFG/imEYPwn9A6h8N98jft0LchTa8xXFAR6qNLdboshDZN5NGdsytmXUS
-         u0Yn7400iHgMjxIQ8riOjOD9zcQtX/IZYF+92zekx7QQHYTap55Qegy1nn4TP0dTn1vt
-         t/fWpCM2GA2omvmborGMa1doWxGdu+05Boz9hw2tayCM5VoHFAM34ZvhOVsFKbK8zIyz
-         W22w==
-X-Gm-Message-State: AOAM533Ucgn9X58hg/96DhOrBNMXOkDYGLdhLrNUDvB1wPOYun5nU/hz
-        zjkRyMFHm8pfQRFUToBIvoMG5A==
-X-Google-Smtp-Source: ABdhPJwWRSCUbw6PZjmgVFMqTWKuf9gCMZIlgo3uw/ckGNvacB1VpAMS8tzpBCnM3QlRu6BINi1NpQ==
-X-Received: by 2002:a17:906:a20b:: with SMTP id r11mr2884072ejy.323.1619769777683;
-        Fri, 30 Apr 2021 01:02:57 -0700 (PDT)
-Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
-        by smtp.gmail.com with ESMTPSA id x20sm666852edd.58.2021.04.30.01.02.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 01:02:57 -0700 (PDT)
-References: <20210429090516.61085-1-jbrunet@baylibre.com>
- <CAFBinCCcKHqd7Mh3bV9NyyWzi=96pCWxzSZBOjg5Puy9wOuihQ@mail.gmail.com>
-User-agent: mu4e 1.4.15; emacs 27.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] clk: meson: axg-audio: do not print error on defer
-In-reply-to: <CAFBinCCcKHqd7Mh3bV9NyyWzi=96pCWxzSZBOjg5Puy9wOuihQ@mail.gmail.com>
-Message-ID: <1jlf909p3j.fsf@starbuckisacylon.baylibre.com>
-Date:   Fri, 30 Apr 2021 10:02:56 +0200
+        id S230316AbhD3IHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 04:07:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54448 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229532AbhD3IHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 04:07:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B29D861186;
+        Fri, 30 Apr 2021 08:06:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619770012;
+        bh=WwcaFyczo1H0haJlGIG06rvrYQmQEvklII1MuwRovvY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WyLOyP92lS2p2AT5P++VJHVeW1p29hiOO0GBK1Q9BQskN8mY6dfKqjzi7Jq5qTFiJ
+         I2lQufVkFEMoNBeF65vgo+IWKQQYzRsU62+qre0XcBEYHIaOXewKP7NHsrTET7LOSL
+         NugoPn86rn6DKxrdZcC9My2tRDcizjucFqF0/AwQ=
+Date:   Fri, 30 Apr 2021 10:06:49 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, Du Cheng <ducheng2@gmail.com>
+Cc:     Kangjie Lu <kjlu@umn.edu>, "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 169/190] Revert "atl1e: checking the status of
+ atl1e_write_phy_reg"
+Message-ID: <YIu6meOO5SSuCW/D@kroah.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-170-gregkh@linuxfoundation.org>
+ <YIhURb44nXaYDuBG@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YIhURb44nXaYDuBG@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 27, 2021 at 08:13:25PM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Apr 21, 2021 at 03:00:44PM +0200, Greg Kroah-Hartman wrote:
+> > This reverts commit ff07d48d7bc0974d4f96a85a4df14564fb09f1ef.
+> > 
+> > Commits from @umn.edu addresses have been found to be submitted in "bad
+> > faith" to try to test the kernel community's ability to review "known
+> > malicious" changes.  The result of these submissions can be found in a
+> > paper published at the 42nd IEEE Symposium on Security and Privacy
+> > entitled, "Open Source Insecurity: Stealthily Introducing
+> > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> > of Minnesota) and Kangjie Lu (University of Minnesota).
+> > 
+> > Because of this, all submissions from this group must be reverted from
+> > the kernel tree and will need to be re-reviewed again to determine if
+> > they actually are a valid fix.  Until that work is complete, remove this
+> > change to ensure that no problems are being introduced into the
+> > codebase.
+> > 
+> > Cc: Kangjie Lu <kjlu@umn.edu>
+> > Cc: David S. Miller <davem@davemloft.net>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > ---
+> >  drivers/net/ethernet/atheros/atl1e/atl1e_main.c | 4 +---
+> >  1 file changed, 1 insertion(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/net/ethernet/atheros/atl1e/atl1e_main.c b/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
+> > index ff9f96de74b8..85f9cb769e30 100644
+> > --- a/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
+> > +++ b/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
+> > @@ -455,9 +455,7 @@ static void atl1e_mdio_write(struct net_device *netdev, int phy_id,
+> >  {
+> >  	struct atl1e_adapter *adapter = netdev_priv(netdev);
+> >  
+> > -	if (atl1e_write_phy_reg(&adapter->hw,
+> > -				reg_num & MDIO_REG_ADDR_MASK, val))
+> > -		netdev_err(netdev, "write phy register failed\n");
+> > +	atl1e_write_phy_reg(&adapter->hw, reg_num & MDIO_REG_ADDR_MASK, val);
+> >  }
+> >  
+> >  static int atl1e_mii_ioctl(struct net_device *netdev,
+> > -- 
+> > 2.31.1
+> > 
+> 
+> The original change here is a mess, what is a user supposed to do if
+> this call fails?  I will revert it and properly pass the error value up
+> to the callers, as that is the correct thing to do here, not paper over
+> the issue with a commit message that claims this change "fixes"
+> anything.
 
-On Thu 29 Apr 2021 at 22:49, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
+In looking at this further, Du has pointed out to me that the
+atl1e_mdio_write function can not easily be changed to return an error
+value, because that would require all callbacks for mdio_write in struct
+mii_if_info would need to be changed and handled properly.
 
-> Hi Jerome,
->
-> On Thu, Apr 29, 2021 at 11:06 AM Jerome Brunet <jbrunet@baylibre.com> wrote:
-> [...]
->> diff --git a/drivers/clk/meson/axg-audio.c b/drivers/clk/meson/axg-audio.c
->> index 7c8d02164443..5e501eff0840 100644
->> --- a/drivers/clk/meson/axg-audio.c
->> +++ b/drivers/clk/meson/axg-audio.c
->> @@ -1811,7 +1811,8 @@ static int axg_audio_clkc_probe(struct platform_device *pdev)
->>
->>         ret = device_reset(dev);
->>         if (ret) {
->> -               dev_err(dev, "failed to reset device\n");
->> +               if (ret != -EPROBE_DEFER)
->> +                       dev_err(dev, "failed to reset device\n");
-> many drivers are switching to dev_err_probe nowadays
-> According to it's documentation:
->   In case of -EPROBE_DEFER it sets also defer probe reason, which can be
->   checked later by reading devices_deferred debugfs attribute.
->
-> so I think it makes sense to use dev_err_probe here as well
+So the original commit was as correct as is possible at the moment,
+making a much larger change like this really isn't needed, so I'll drop
+the revert.
 
-Old habits ;) thanks for pointing this out. Will do
+thanks to Du Cheng for the additional review, it is much appreciated.
 
->
->
-> Best regards,
-> Martin
-
+greg k-h
