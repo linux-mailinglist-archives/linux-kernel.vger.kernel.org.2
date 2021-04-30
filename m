@@ -2,113 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC0F36FD33
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10DF536FD37
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbhD3PCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 11:02:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbhD3PCl (ORCPT
+        id S230229AbhD3PDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 11:03:07 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:42993 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230107AbhD3PDD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 11:02:41 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C01C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 08:01:53 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id u3so27028216eja.12
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 08:01:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=5UHGpcaMx0Q3w6doXFhQM8OM6zsZAjfn7y0jg47ADsI=;
-        b=fAgLtYs/1RcLvcplly/5At3yUZGCKdJek+xjcQPooAQjHnGfN6nc7AcCTRcKAtin/N
-         1Lw4aKyb6kVP0V+Kg7s3+h7kNJWDdgik3ilxLwECgkjd9jiGhWX+cKYnh5hfYmWJPk+F
-         6TQiXMKa7HCPL3BPNS67u7pjCxpEyNSl5i6fU=
+        Fri, 30 Apr 2021 11:03:03 -0400
+Received: by mail-ot1-f47.google.com with SMTP id y14-20020a056830208eb02902a1c9fa4c64so28165254otq.9;
+        Fri, 30 Apr 2021 08:02:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=5UHGpcaMx0Q3w6doXFhQM8OM6zsZAjfn7y0jg47ADsI=;
-        b=quH14tgsi8F04dJTf2snfGrzEsBlNzRW51e6Qwg1Q6GGlMCFZNy01Rdy3LQncG/1fQ
-         hIlUon8EtYRU6Mwl/kd+KSKhR4cJkl1uYU7OFYXH4vAkYVHmX3YdICSbzO33+Fzv1LdY
-         qnnRao5dq1iWudlV27yx1l3pCmtpX7eD7dmvmhV+NnD3/sh6RkKJmV89eraT1UI0TeIH
-         vFtxyfWQicJU8XW2tC0t1bVHgQdmQUhFaHhUNKiKZDQ7nj3wkO9q4ctlHi49STToVpY3
-         c2l2zXf9G5/G4olCv4cLUNOL7lKLAmMR4NKvRHz/gNivVZWUNlctMG0rcLCzN9hf7fvK
-         Dy7w==
-X-Gm-Message-State: AOAM532Gs9TUt5CGbeikpHwFfX0AUPD6ztsRqvGiWl1IhJiM5FJwFosV
-        cy3qApGDsd/87f3CQgrjgTEA0Al4NB2PzA==
-X-Google-Smtp-Source: ABdhPJzC2Nllq5OSNyxBNmAA3UzXxNQ+PCqsvXOlHf6ikdPfQoLtYnBpQiimp7XTxb1vQizmiCn0SA==
-X-Received: by 2002:a17:906:8390:: with SMTP id p16mr4694084ejx.430.1619794911863;
-        Fri, 30 Apr 2021 08:01:51 -0700 (PDT)
-Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
-        by smtp.gmail.com with ESMTPSA id um28sm1718043ejb.63.2021.04.30.08.01.50
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=F9GhsdpfMFw1XQS95oOaFtuQR68+94Cw1botEtYm2JA=;
+        b=Kgiv341fWdJPbpZsFTbisVNBmGCms3M+2MATXrhVEkhPP9EUxiyTNgMK03YFw8RHFT
+         LG6/koMv4xs+42dvkZPtlza12uYD0ZFRMfO5w7wl/mOYm/AfApU+g60eOPpwqdmsWHYl
+         aWv5ytBnsaVtNOpf52nltzcZHoIQQBLXdzqmKAPRIKfrzImuSquADGjTJHjN5Y+/Ce3G
+         1RPO+2Ds99fY1INYJ5sGaC/13EYU4dnJWlBNnpdtslkrfmXpY5faHrP35prLGDquq02c
+         7A6wEVUy+ARz0dJ6NsfjprrSD0ECnzConXOpqsrZdBYQnR69Y2ejWWkBXV+T61ahm+y/
+         kcDQ==
+X-Gm-Message-State: AOAM530Rud3zxVS8e8CZQctYMce5Aql7sYJLdSTDsR0zScSz1iI/DDzo
+        IVdQTmLALP8LdfStuv8Smg==
+X-Google-Smtp-Source: ABdhPJy7trg520HyRmD2pfZEyTOVNIA/o37CSin5+n1zGlQSwyIZveKd27XpU2dwbeDr1aPADSQ+4Q==
+X-Received: by 2002:a05:6830:17c7:: with SMTP id p7mr3673935ota.279.1619794933190;
+        Fri, 30 Apr 2021 08:02:13 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id r9sm803667ool.3.2021.04.30.08.02.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 08:01:51 -0700 (PDT)
-Date:   Fri, 30 Apr 2021 17:01:49 +0200
-From:   Miklos Szeredi <miklos@szeredi.hu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [GIT PULL] fuse update for 5.13
-Message-ID: <YIwb3caM4c2Mi7AR@miu.piliscsaba.redhat.com>
+        Fri, 30 Apr 2021 08:02:12 -0700 (PDT)
+Received: (nullmailer pid 3317530 invoked by uid 1000);
+        Fri, 30 Apr 2021 15:02:11 -0000
+Date:   Fri, 30 Apr 2021 10:02:11 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     rjw@rjwysocki.net, rishabhb@codeaurora.org, ulf.hansson@linaro.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        dianders@chromium.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sidgup@codeaurora.org,
+        ohad@wizery.com, robh+dt@kernel.org, devicetree@vger.kernel.org,
+        agross@kernel.org, swboyd@chromium.org, mathieu.poirier@linaro.org
+Subject: Re: [PATCH 03/12] dt-bindings: remoteproc: qcom: pas: Add QMP
+ bindings
+Message-ID: <20210430150211.GA3317476@robh.at.kernel.org>
+References: <1618574638-5117-1-git-send-email-sibis@codeaurora.org>
+ <1618574638-5117-4-git-send-email-sibis@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <1618574638-5117-4-git-send-email-sibis@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, 16 Apr 2021 17:33:49 +0530, Sibi Sankar wrote:
+> Add Qualcomm Mailbox Protocol (QMP) binding to replace the power domains
+> exposed by the AOSS QMP node.
+> 
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> ---
+>  Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
+> 
 
-Please pull from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git tags/fuse-update-5.13
-
-- Fix a page locking bug in write (introduced in 2.6.26).
-
-- Allow sgid bit to be killed in setacl().
-
-- Miscellaneous fixes and cleanups.
-
-Thanks,
-Miklos
-
----
-Alessio Balsini (1):
-      fuse: fix matching of FUSE_DEV_IOC_CLONE command
-
-Bhaskar Chowdhury (1):
-      fuse: fix a typo
-
-Connor Kuehl (2):
-      fuse: fix typo for fuse_conn.max_pages comment
-      virtiofs: split requests that exceed virtqueue size
-
-Jiapeng Chong (1):
-      virtiofs: remove useless function
-
-Luis Henriques (1):
-      virtiofs: fix memory leak in virtio_fs_probe()
-
-Miklos Szeredi (4):
-      fuse: don't zero pages twice
-      virtiofs: fix userns
-      cuse: prevent clone
-      cuse: simplify refcount
-
-Vivek Goyal (4):
-      fuse: fix write deadlock
-      fuse: extend FUSE_SETXATTR request
-      fuse: add a flag FUSE_SETXATTR_ACL_KILL_SGID to kill SGID
-      fuse: invalidate attrs when page writeback completes
-
----
- fs/fuse/acl.c             |  7 ++++-
- fs/fuse/cuse.c            | 12 ++++----
- fs/fuse/dev.c             |  7 ++---
- fs/fuse/file.c            | 71 +++++++++++++++++++++++++++++------------------
- fs/fuse/fuse_i.h          | 13 +++++++--
- fs/fuse/inode.c           |  7 +++--
- fs/fuse/virtio_fs.c       | 28 +++++++++++++------
- fs/fuse/xattr.c           |  9 ++++--
- include/uapi/linux/fuse.h | 14 ++++++++++
- 9 files changed, 111 insertions(+), 57 deletions(-)
+Acked-by: Rob Herring <robh@kernel.org>
