@@ -2,79 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3263E3702B9
+	by mail.lfdr.de (Postfix) with ESMTP id A6ACF3702BA
 	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 23:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236213AbhD3VMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 17:12:09 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:33319 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231328AbhD3VMH (ORCPT
+        id S236225AbhD3VMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 17:12:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236210AbhD3VMQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 17:12:07 -0400
-Received: by mail-ot1-f48.google.com with SMTP id 92-20020a9d02e50000b029028fcc3d2c9eso43141531otl.0;
-        Fri, 30 Apr 2021 14:11:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CUDa8mELslYYsnwCk0fnXA024TFYhBlM4dLFukV6z6c=;
-        b=Ho7Is8QxHcyY+dh34Nz2YKqMIeEJaBP6lLklb+HM/jZ/CxAxdzgwt6uw42diXbZe47
-         +VqiyAnRFLrXVUcxxeVOA5iAY5lYcd8u3V5CjusqfbzO696vzr0jseSylEDNBbhzI/Qi
-         WdeyamjW3d7qZRqTO/EjmDBlOEDCMKttzKsNOG2Nsjymf9OsCmmW1zInmjEp0ReWvMWu
-         ZGLQjBUaLrQiNi+vYSYR8XszLaxshg+AfQyuDZ357OJnczqqT5u8dUyvGHaY8Uwr26eI
-         P0pH6LzD5azviQ0efhlAUQkutBibaZRV+wGk8kNgBR04Fs/CSDchhc+6lm/0HNVIxqGZ
-         6Utg==
-X-Gm-Message-State: AOAM530OFUDf9Y+9DL/SxC+dEiRoL+z9RdQXLCbP6LK1lmnUe/IgUsfN
-        oZqpNNt319mhMBHspttj4A==
-X-Google-Smtp-Source: ABdhPJxZqLwNO1zjieg6NjX5EQB0zSGFIIjI8Lb0vVSY7a1bPvqP8LDCfXF2RiE2HNve3ZY7Hid9DQ==
-X-Received: by 2002:a9d:6106:: with SMTP id i6mr5108080otj.237.1619817077739;
-        Fri, 30 Apr 2021 14:11:17 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id y123sm1096826oia.7.2021.04.30.14.11.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 14:11:17 -0700 (PDT)
-Received: (nullmailer pid 3900648 invoked by uid 1000);
-        Fri, 30 Apr 2021 21:11:15 -0000
-Date:   Fri, 30 Apr 2021 16:11:15 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     cl@rock-chips.com
-Cc:     maz@kernel.org, jay.xu@rock-chips.com, zhangqing@rock-chips.com,
-        robh+dt@kernel.org, linux-serial@vger.kernel.org, wens@csie.org,
-        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
-        linux@roeck-us.net, shawn.lin@rock-chips.com,
-        linux-mmc@vger.kernel.org, jensenhuang@friendlyarm.com,
-        michael@amarulasolutions.com, mail@david-bauer.net,
-        cnsztl@gmail.com, heiko@sntech.de, huangtao@rock-chips.com,
-        ulf.hansson@linaro.org, david.wu@rock-chips.com,
-        linux-watchdog@vger.kernel.org, jamie@jamieiles.com,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        uwe@kleine-koenig.org, wim@linux-watchdog.org, jbx6244@gmail.com,
-        jagan@amarulasolutions.com
-Subject: Re: [PATCH v4 02/10] dt-bindings: serial: snps-dw-apb-uart: add
- description for rk3568
-Message-ID: <20210430211115.GA3900619@robh.at.kernel.org>
-References: <20210429081151.17558-1-cl@rock-chips.com>
- <20210429081151.17558-3-cl@rock-chips.com>
+        Fri, 30 Apr 2021 17:12:16 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73682C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 14:11:27 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0c57007f2124644a28e2fb.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:5700:7f21:2464:4a28:e2fb])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 052321EC0493;
+        Fri, 30 Apr 2021 23:11:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1619817086;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=R7SUAKctQXSO3bp7YOOvdGp4SijTzrM9sqUzSwirMSg=;
+        b=rVOucNWXmpJtuzMocO+sF8MKOqGLnu6cvuCx1isFubzfQdgX0upKzb7OAouqstsfhZuanR
+        H/YByaiBroaX4NXZMbIknjAOVD+ukcxRjHaQXjYtagqr7nVtUUFdgUF+n+7jR0TgQbRo1N
+        9SF7kNvsr/GSJTBrZYUCCIXlWKgVbAo=
+Date:   Fri, 30 Apr 2021 23:11:21 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Reiji Watanabe <reijiw@google.com>
+Cc:     Ramakrishna Saripalli <rsaripal@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com, Jonathan Corbet <corbet@lwn.net>,
+        bsd@redhat.com
+Subject: Re: [PATCH v4 1/1] x86/cpufeatures: Implement Predictive Store
+ Forwarding control.
+Message-ID: <YIxyeZodkm3KpRYK@zn.tnic>
+References: <20210430131733.192414-1-rsaripal@amd.com>
+ <20210430131733.192414-2-rsaripal@amd.com>
+ <CAAeT=Fw-nt5h3DhRCQr8Ma71NiP7dHB+WD2hie_55SpCHR=mDQ@mail.gmail.com>
+ <YIxhCSt6t5U/Eldb@zn.tnic>
+ <CAAeT=FxqM5P+6U8vBywuvnaJ0s4sWdRHK2fvn4b1zf5mMLKReg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210429081151.17558-3-cl@rock-chips.com>
+In-Reply-To: <CAAeT=FxqM5P+6U8vBywuvnaJ0s4sWdRHK2fvn4b1zf5mMLKReg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Apr 2021 16:11:43 +0800, cl@rock-chips.com wrote:
-> From: Liang Chen <cl@rock-chips.com>
-> 
-> add "rockchip,rk3568-uart", "snps,dw-apb-uart" for uart nodes on
-> a rk3568 platform to snps-dw-apb-uart.yaml.
-> 
-> Signed-off-by: Liang Chen <cl@rock-chips.com>
-> ---
->  Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+On Fri, Apr 30, 2021 at 02:03:07PM -0700, Reiji Watanabe wrote:
+> Could you please clarify ?
 
-Acked-by: Rob Herring <robh@kernel.org>
+Clarify what?
+
+I asked you whether you have a VM use case. Since you're talking/asking
+about virt support, you likely have some use case in mind...
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
