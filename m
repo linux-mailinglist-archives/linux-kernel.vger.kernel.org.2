@@ -2,235 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E6836FE4B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 18:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD0F36FE55
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 18:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbhD3QOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 12:14:53 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31452 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229579AbhD3QOw (ORCPT
+        id S230290AbhD3QQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 12:16:15 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2956 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229750AbhD3QQM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 12:14:52 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13UG4fp9098661;
-        Fri, 30 Apr 2021 12:13:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=EOZHrgGSMmfA8sfZIsPC7o2SDQRDRpbJl5mRXAW0OUU=;
- b=N0ul8jnCilykbevS0aNrDQfE7i1yaogwee8oO5/GkD3WQhVbQhRkUdSaD0FKcDOoSopJ
- yaTFKzASX14+eKPafEqWP/HfSvK+6zYCBncoFoz+NAfHCL8kWnF7z0K8MnFnfYCQDpbf
- X1IOMfhWnJqpBgeAOw8MxaHvJhAFOH2TpRLmvv/kPDdCwVuC3FxN6Q2EcCvDEMsgD9SB
- mJomJta1qdYMLW3Et/s+dplXaLdHgExMvOFOQvYtBjH4BI3pIk5VzTKh6LtBPrzs199C
- MsrV1mnGB9BEWm8koH3PdMK/SnpcDCVazvgfU8kOkAYv5Y+WtMMn0kopQZVs+OUSKmjr sQ== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 388mer9t8c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Apr 2021 12:13:34 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13UG44ju008864;
-        Fri, 30 Apr 2021 16:13:32 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 384ay8kafc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Apr 2021 16:13:32 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13UGDTo840239550
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 30 Apr 2021 16:13:29 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3A336A4051;
-        Fri, 30 Apr 2021 16:13:29 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E102DA4040;
-        Fri, 30 Apr 2021 16:13:28 +0000 (GMT)
-Received: from pomme.local (unknown [9.145.168.97])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 30 Apr 2021 16:13:28 +0000 (GMT)
-Subject: Re: [PATCH v3] pseries/drmem: update LMBs after LPM
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org
-Cc:     nathanl@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-References: <20210428094758.28665-1-ldufour@linux.ibm.com>
- <87fsz95qso.fsf@linux.ibm.com>
- <9d29bf8c-9e97-c179-6897-8e25fa4eb516@linux.ibm.com>
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-Message-ID: <271ef351-b89c-ba68-3b6d-baa24cc0021b@linux.ibm.com>
-Date:   Fri, 30 Apr 2021 18:13:28 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.0
+        Fri, 30 Apr 2021 12:16:12 -0400
+Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FWy4P4TKMz6rlml;
+        Sat,  1 May 2021 00:09:41 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 30 Apr 2021 18:15:22 +0200
+Received: from localhost (10.52.124.90) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 30 Apr
+ 2021 17:15:21 +0100
+Date:   Fri, 30 Apr 2021 17:13:47 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+CC:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        <mauro.chehab@huawei.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-media@vger.kernel.org>
+Subject: Re: [PATCH v4 08/79] media: atmel: properly get pm_runtime
+Message-ID: <20210430171347.00004e7b@Huawei.com>
+In-Reply-To: <3150349be99187c4f9290ac35d6227bb6a83519b.1619621413.git.mchehab+huawei@kernel.org>
+References: <cover.1619621413.git.mchehab+huawei@kernel.org>
+        <3150349be99187c4f9290ac35d6227bb6a83519b.1619621413.git.mchehab+huawei@kernel.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <9d29bf8c-9e97-c179-6897-8e25fa4eb516@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ejYf8IUz8E6jXXe4R_z-qeDTsBweZaE5
-X-Proofpoint-GUID: ejYf8IUz8E6jXXe4R_z-qeDTsBweZaE5
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-30_10:2021-04-30,2021-04-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 mlxscore=0
- spamscore=0 clxscore=1015 impostorscore=0 lowpriorityscore=0 phishscore=0
- suspectscore=0 bulkscore=0 priorityscore=1501 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104300108
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.124.90]
+X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 29/04/2021 à 21:12, Tyrel Datwyler a écrit :
-> On 4/29/21 3:27 AM, Aneesh Kumar K.V wrote:
->> Laurent Dufour <ldufour@linux.ibm.com> writes:
->>
->>> After a LPM, the device tree node ibm,dynamic-reconfiguration-memory may be
->>> updated by the hypervisor in the case the NUMA topology of the LPAR's
->>> memory is updated.
->>>
->>> This is caught by the kernel, but the memory's node is updated because
->>> there is no way to move a memory block between nodes.
->>>
->>> If later a memory block is added or removed, drmem_update_dt() is called
->>> and it is overwriting the DT node to match the added or removed LMB. But
->>> the LMB's associativity node has not been updated after the DT node update
->>> and thus the node is overwritten by the Linux's topology instead of the
->>> hypervisor one.
->>>
->>> Introduce a hook called when the ibm,dynamic-reconfiguration-memory node is
->>> updated to force an update of the LMB's associativity.
->>>
->>> Cc: Tyrel Datwyler <tyreld@linux.ibm.com>
->>> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
->>> ---
->>>
->>> V3:
->>>   - Check rd->dn->name instead of rd->dn->full_name
->>> V2:
->>>   - Take Tyrel's idea to rely on OF_RECONFIG_UPDATE_PROPERTY instead of
->>>   introducing a new hook mechanism.
->>> ---
->>>   arch/powerpc/include/asm/drmem.h              |  1 +
->>>   arch/powerpc/mm/drmem.c                       | 35 +++++++++++++++++++
->>>   .../platforms/pseries/hotplug-memory.c        |  4 +++
->>>   3 files changed, 40 insertions(+)
->>>
->>> diff --git a/arch/powerpc/include/asm/drmem.h b/arch/powerpc/include/asm/drmem.h
->>> index bf2402fed3e0..4265d5e95c2c 100644
->>> --- a/arch/powerpc/include/asm/drmem.h
->>> +++ b/arch/powerpc/include/asm/drmem.h
->>> @@ -111,6 +111,7 @@ int drmem_update_dt(void);
->>>   int __init
->>>   walk_drmem_lmbs_early(unsigned long node, void *data,
->>>   		      int (*func)(struct drmem_lmb *, const __be32 **, void *));
->>> +void drmem_update_lmbs(struct property *prop);
->>>   #endif
->>>   
->>>   static inline void invalidate_lmb_associativity_index(struct drmem_lmb *lmb)
->>> diff --git a/arch/powerpc/mm/drmem.c b/arch/powerpc/mm/drmem.c
->>> index 9af3832c9d8d..f0a6633132af 100644
->>> --- a/arch/powerpc/mm/drmem.c
->>> +++ b/arch/powerpc/mm/drmem.c
->>> @@ -307,6 +307,41 @@ int __init walk_drmem_lmbs_early(unsigned long node, void *data,
->>>   	return ret;
->>>   }
->>>   
->>> +/*
->>> + * Update the LMB associativity index.
->>> + */
->>> +static int update_lmb(struct drmem_lmb *updated_lmb,
->>> +		      __maybe_unused const __be32 **usm,
->>> +		      __maybe_unused void *data)
->>> +{
->>> +	struct drmem_lmb *lmb;
->>> +
->>> +	/*
->>> +	 * Brut force there may be better way to fetch the LMB
->>> +	 */
->>> +	for_each_drmem_lmb(lmb) {
->>> +		if (lmb->drc_index != updated_lmb->drc_index)
->>> +			continue;
->>> +
->>> +		lmb->aa_index = updated_lmb->aa_index;
->>> +		break;
->>> +	}
->>> +	return 0;
->>> +}
->>> +
->>> +/*
->>> + * Update the LMB associativity index.
->>> + *
->>> + * This needs to be called when the hypervisor is updating the
->>> + * dynamic-reconfiguration-memory node property.
->>> + */
->>> +void drmem_update_lmbs(struct property *prop)
->>> +{
->>> +	if (!strcmp(prop->name, "ibm,dynamic-memory"))
->>> +		__walk_drmem_v1_lmbs(prop->value, NULL, NULL, update_lmb);
->>> +	else if (!strcmp(prop->name, "ibm,dynamic-memory-v2"))
->>> +		__walk_drmem_v2_lmbs(prop->value, NULL, NULL, update_lmb);
->>> +}
->>>   #endif
->>>   
->>>   static int init_drmem_lmb_size(struct device_node *dn)
->>> diff --git a/arch/powerpc/platforms/pseries/hotplug-memory.c b/arch/powerpc/platforms/pseries/hotplug-memory.c
->>> index 8377f1f7c78e..672ffbee2e78 100644
->>> --- a/arch/powerpc/platforms/pseries/hotplug-memory.c
->>> +++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
->>> @@ -949,6 +949,10 @@ static int pseries_memory_notifier(struct notifier_block *nb,
->>>   	case OF_RECONFIG_DETACH_NODE:
->>>   		err = pseries_remove_mem_node(rd->dn);
->>>   		break;
->>> +	case OF_RECONFIG_UPDATE_PROPERTY:
->>> +		if (!strcmp(rd->dn->name,
->>> +			    "ibm,dynamic-reconfiguration-memory"))
->>> +			drmem_update_lmbs(rd->prop);
->>>   	}
->>>   	return notifier_from_errno(err);
->>
->> How will this interact with DLPAR memory? When we dlpar memory,
->> ibm,configure-connector is used to fetch the new associativity details
->> and set drmem_lmb->aa_index correctly there. Once that is done kernel
->> then call drmem_update_dt() which will result in the above notifier
->> callback?
->>
->> IIUC, the call back then will update drmem_lmb->aa_index again?
+On Wed, 28 Apr 2021 16:51:29 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+
+> There are several issues in the way the atmel driver handles
+> pm_runtime_get_sync():
 > 
-> After digging through some of this code I'm a bit concerned about all the kernel
-> device tree manipulation around memory DLPAR both with the assoc-lookup-array
-> prop update and post dynamic-memory prop updating. We build a drmem_info array
-> of the LMBs from the device-tree at boot. I don't really understand why we are
-> manipulating the device tree property every time we add/remove an LMB. Not sure
-> the reasoning was to write back in particular the aa_index and flags for each
-> LMB into the device tree when we already have them in the drmem_info array. On
-> the other hand the assoc-lookup-array I suppose would need to have an in kernel
-> representation to avoid updating the device tree property every time.
-
-I think the reason is to keep the device tree in sync with the current set of LMBs.
-
-My understanding is that the kernel is not really using the 
-'ibm,dynamic-memory*' DT property once the boot is done. But user space tools 
-(like lsslot and drmgr) read it to built the LMB tree and get the DRC index for 
-each LMBs as it is not available in SYSFS.
-
-> Changes to the device tree should be things reported to the system from the
-> hypervisor through the proper interfaces, and as a result any code that cares
-> can register an of_reconfig_notifier to resepond to device tree updates. The
-> memory dlpar code seems to be needlessly manipulating the device-tree which
-> leads to the problem here where a notifier callback is now duplicating work.
-
-I don't think the hypervisor is expected to update the 'ibm,dynamic-memory' each 
-time a LMB is added, this is not design this way AFAIK.
-
-Laurent.
-
-> Just my two cents FWIW.
+> - it doesn't check return codes;
+> - it doesn't properly decrement the usage_count on all places;
+> - it starts streaming even if pm_runtime_get_sync() fails.
+> - while it tries to get pm_runtime at the clock enable logic,
+>   it doesn't check if the operation was suceeded.
 > 
-> -Tyrel
+> Replace all occurrences of it to use the new kAPI:
+> pm_runtime_resume_and_get(), which ensures that, if the
+> return code is not negative, the usage_count was incremented.
 > 
->>
->> -aneesh
->>
+> With that, add additional checks when this is called, in order
+> to ensure that errors will be properly addressed.
 > 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  drivers/media/platform/atmel/atmel-isc-base.c | 27 ++++++++++++++-----
+>  drivers/media/platform/atmel/atmel-isi.c      | 19 ++++++++++---
+>  2 files changed, 35 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/media/platform/atmel/atmel-isc-base.c b/drivers/media/platform/atmel/atmel-isc-base.c
+> index fe3ec8d0eaee..02543fe42e9d 100644
+> --- a/drivers/media/platform/atmel/atmel-isc-base.c
+> +++ b/drivers/media/platform/atmel/atmel-isc-base.c
+> @@ -294,9 +294,13 @@ static int isc_wait_clk_stable(struct clk_hw *hw)
+>  static int isc_clk_prepare(struct clk_hw *hw)
+>  {
+>  	struct isc_clk *isc_clk = to_isc_clk(hw);
+> +	int ret;
+>  
+> -	if (isc_clk->id == ISC_ISPCK)
+> -		pm_runtime_get_sync(isc_clk->dev);
+> +	if (isc_clk->id == ISC_ISPCK) {
+> +		ret = pm_runtime_resume_and_get(isc_clk->dev);
+> +		if (ret < 0)
+> +			return 0;
+
+Why not the error?  isc_wait_clk_stable() is happy to return -ETIMEDOUT so I
+assume the callers should fine with errors.
+
+> +	}
+>  
+>  	return isc_wait_clk_stable(hw);
+>  }
+> @@ -353,9 +357,13 @@ static int isc_clk_is_enabled(struct clk_hw *hw)
+>  {
+>  	struct isc_clk *isc_clk = to_isc_clk(hw);
+>  	u32 status;
+> +	int ret;
+>  
+> -	if (isc_clk->id == ISC_ISPCK)
+> -		pm_runtime_get_sync(isc_clk->dev);
+> +	if (isc_clk->id == ISC_ISPCK) {
+> +		ret = pm_runtime_resume_and_get(isc_clk->dev);
+> +		if (ret < 0)
+> +			return 0;
+> +	}
+>  
+>  	regmap_read(isc_clk->regmap, ISC_CLKSR, &status);
+>  
+> @@ -807,7 +815,9 @@ static int isc_start_streaming(struct vb2_queue *vq, unsigned int count)
+>  		goto err_start_stream;
+>  	}
+>  
+> -	pm_runtime_get_sync(isc->dev);
+> +	ret = pm_runtime_resume_and_get(isc->dev);
+> +	if (ret < 0)
+> +		goto err_pm_get;
+>  
+>  	ret = isc_configure(isc);
+>  	if (unlikely(ret))
+> @@ -838,7 +848,7 @@ static int isc_start_streaming(struct vb2_queue *vq, unsigned int count)
+>  
+>  err_configure:
+>  	pm_runtime_put_sync(isc->dev);
+> -
+> +err_pm_get:
+>  	v4l2_subdev_call(isc->current_subdev->sd, video, s_stream, 0);
+>  
+>  err_start_stream:
+> @@ -1809,6 +1819,7 @@ static void isc_awb_work(struct work_struct *w)
+>  	u32 baysel;
+>  	unsigned long flags;
+>  	u32 min, max;
+> +	int ret;
+>  
+>  	/* streaming is not active anymore */
+>  	if (isc->stop)
+> @@ -1831,7 +1842,9 @@ static void isc_awb_work(struct work_struct *w)
+>  	ctrls->hist_id = hist_id;
+>  	baysel = isc->config.sd_format->cfa_baycfg << ISC_HIS_CFG_BAYSEL_SHIFT;
+>  
+> -	pm_runtime_get_sync(isc->dev);
+> +	ret = pm_runtime_resume_and_get(isc->dev);
+> +	if (ret < 0)
+
+Maybe warn or similar?
+
+> +		return;
+>  
+>  	/*
+>  	 * only update if we have all the required histograms and controls
+> diff --git a/drivers/media/platform/atmel/atmel-isi.c b/drivers/media/platform/atmel/atmel-isi.c
+> index 0514be6153df..6a433926726d 100644
+> --- a/drivers/media/platform/atmel/atmel-isi.c
+> +++ b/drivers/media/platform/atmel/atmel-isi.c
+> @@ -422,7 +422,9 @@ static int start_streaming(struct vb2_queue *vq, unsigned int count)
+>  	struct frame_buffer *buf, *node;
+>  	int ret;
+>  
+> -	pm_runtime_get_sync(isi->dev);
+> +	ret = pm_runtime_resume_and_get(isi->dev);
+> +	if (ret < 0)
+> +		return ret;
+>  
+>  	/* Enable stream on the sub device */
+>  	ret = v4l2_subdev_call(isi->entity.subdev, video, s_stream, 1);
+> @@ -782,9 +784,10 @@ static int isi_enum_frameintervals(struct file *file, void *fh,
+>  	return 0;
+>  }
+>  
+> -static void isi_camera_set_bus_param(struct atmel_isi *isi)
+> +static int isi_camera_set_bus_param(struct atmel_isi *isi)
+>  {
+>  	u32 cfg1 = 0;
+> +	int ret;
+>  
+>  	/* set bus param for ISI */
+>  	if (isi->pdata.hsync_act_low)
+> @@ -801,12 +804,16 @@ static void isi_camera_set_bus_param(struct atmel_isi *isi)
+>  	cfg1 |= ISI_CFG1_THMASK_BEATS_16;
+>  
+>  	/* Enable PM and peripheral clock before operate isi registers */
+> -	pm_runtime_get_sync(isi->dev);
+> +	ret = pm_runtime_resume_and_get(isi->dev);
+> +	if (ret < 0)
+> +		return ret;
+>  
+>  	isi_writel(isi, ISI_CTRL, ISI_CTRL_DIS);
+>  	isi_writel(isi, ISI_CFG1, cfg1);
+>  
+>  	pm_runtime_put(isi->dev);
+> +
+> +	return 0;
+>  }
+>  
+>  /* -----------------------------------------------------------------------*/
+> @@ -1085,7 +1092,11 @@ static int isi_graph_notify_complete(struct v4l2_async_notifier *notifier)
+>  		dev_err(isi->dev, "No supported mediabus format found\n");
+>  		return ret;
+>  	}
+> -	isi_camera_set_bus_param(isi);
+> +	ret = isi_camera_set_bus_param(isi);
+> +	if (ret) {
+> +		dev_err(isi->dev, "Can't wake up device\n");
+> +		return ret;
+> +	}
+>  
+>  	ret = isi_set_default_fmt(isi);
+>  	if (ret) {
 
