@@ -2,113 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AEC136FD8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:18:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FECF36FD91
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 17:18:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230164AbhD3PTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 11:19:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbhD3PTJ (ORCPT
+        id S230247AbhD3PTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 11:19:18 -0400
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:40753 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229934AbhD3PTQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 11:19:09 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792A7C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 08:18:21 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id o21so23731394qtp.7
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 08:18:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=w8qhoZjnAOoRGSspXxTVaK8T+itmNjOz7rF9WJiHL+Y=;
-        b=DbJ4ZO/so/jEi8PJ3cwjqsfrARU63Q46CsvWFvSJP1T6Vr5PmBMBAfVb/4WbZAHfQ5
-         zYPdHAGfEhknDGB8kKQ/O2awTCC/N5lZHJ3NjC++plr5mxYKdYadXjZVQchrUP397Zx0
-         KVnr4EwZ0FzCCUOTPeO8bFTjtSFldbp38tvlPquzuhg9cGmr3PWa+88p7sOuRBeWNcWy
-         EI+AQBMjwxwrAzgvmN+oVM8zbbY6Hz87Gk0DRgoBKDsjDgl/6O+8AxUatSi6hDHSlfex
-         ohKZo9M/XuB2V1c2x8tdot/uKPol7172/oUaVspmHHZspI5Lko+fObs0f9U/tWI71uLA
-         uqlw==
+        Fri, 30 Apr 2021 11:19:16 -0400
+Received: by mail-oi1-f173.google.com with SMTP id u16so53015140oiu.7;
+        Fri, 30 Apr 2021 08:18:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=w8qhoZjnAOoRGSspXxTVaK8T+itmNjOz7rF9WJiHL+Y=;
-        b=fC/2D9+4O1bCJXfqFNI1z9JLPFeWLa275hVw7tYxbZkxOMvLkPeCrskwQ+FS5Py4IG
-         /HLX1QfoXqLmk2CgamcSgqCeoPftV+hwqdrcBABm9dreT36JhDKrEKied7ZlB7D0SbyZ
-         O+k7KP3xyTWJZs7F4AACODwkqqutXl3TXn2+DywQxfsI3VSMthWliP8R4jX5KV1/R6oX
-         M0qvIwRVZIKMPuHUcbqtMKhA70+FEcX798ZsS1CVaIQFm+ydTmeh+K0k7bEDynlKKBV1
-         zxTJAJAxOkqnQv2y2TJ8RPHvGcuInX/uuZHlVBKsKUNVDZLu11IKSR4cS6TqdQkXLqrf
-         eX+g==
-X-Gm-Message-State: AOAM530pQZnt5bxYy9cNkRu472jGftQAUBrwkWAWLiH6x/1YJTnGxm/2
-        OkiEiep80N/mLp1XZ3vQppocRRmLa6exQQ==
-X-Google-Smtp-Source: ABdhPJyTJsTvLRanIbdxcoNKlBYr1At8qNb65WG/tfhK3T0iL3RdbG/9axmMsS9caI9gHfR5gmuiBQ==
-X-Received: by 2002:ac8:515a:: with SMTP id h26mr5052875qtn.109.1619795900108;
-        Fri, 30 Apr 2021 08:18:20 -0700 (PDT)
-Received: from ubuntu-mate-laptop.hsd1.fl.comcast.net ([2601:703:380:74f0:3016:5d78:eea0:48af])
-        by smtp.gmail.com with ESMTPSA id x85sm1614348qkb.44.2021.04.30.08.18.19
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5384NKLEMU9HGIIjdN+H7n8KjDIELf2F9qcnO+c7HQk=;
+        b=kZI94bYTL6B0xEsuUo4MzDG+KZhV3nANmNAKO3p6BK9BYc+WmUfhEbKYM9PZzlZncS
+         jQ/8DOTIvjqa2j0HeOn8xz499+a3wUt08tJGKLP8BQBTucB2PrEmus0aDxDZ5cpqCXD0
+         1Kc9X9HJ20IYDy9KrualXs5OSW8iIhXsk18o3i3DjSOWQXzOUJIF0LMbfFjUGHz8/2pk
+         61IJaQVRgPrRwni3PWLt2vGHLeXlP849B9u0JET/3w747UbOQJIawxryiB+nTKomW1ea
+         6xCkqMpeKOJQf4wjoq2DKk3ILXijqfwLOD2+4Td0TkYMWil1NDD9ocV2QarEVLnVZgw8
+         aYig==
+X-Gm-Message-State: AOAM531ZMIL32hgtDT8OvkYnmVHPNdrUNztPIXNZNGTuuKyq9KPi1e7/
+        gbZ3OyeuimY/uGEZm/Zxkg==
+X-Google-Smtp-Source: ABdhPJwf/WD6axTKKyPNM4Yg1tES5AKc0U4Su/y1wYHek1a1jZozdjSNj0RN7KnSbGcODI1u/dhz7Q==
+X-Received: by 2002:a05:6808:13cf:: with SMTP id d15mr1747186oiw.11.1619795907672;
+        Fri, 30 Apr 2021 08:18:27 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id p22sm824449otf.25.2021.04.30.08.18.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 08:18:19 -0700 (PDT)
-Sender: Julian Braha <julian.braha@gmail.com>
-From:   Julian Braha <julianbraha@gmail.com>
-To:     tiwai@suse.com
-Cc:     linux-kernel@vger.kernel.org, fazilyildiran@gmail.com
-Subject: [PATCH] sound: soc: intel: boards: fix missing dependencies on GPIOLIB
-Date:   Fri, 30 Apr 2021 11:18:14 -0400
-Message-Id: <20210430151814.50112-1-julianbraha@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Fri, 30 Apr 2021 08:18:26 -0700 (PDT)
+Received: (nullmailer pid 3343637 invoked by uid 1000);
+        Fri, 30 Apr 2021 15:18:25 -0000
+Date:   Fri, 30 Apr 2021 10:18:25 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] dt-bindings: serial: Normalize the node name of
+ the serial port
+Message-ID: <20210430151825.GA3339934@robh.at.kernel.org>
+References: <20210422085837.513-1-thunder.leizhen@huawei.com>
+ <20210422085837.513-2-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210422085837.513-2-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH is selected,
-and GPIOLIB is not selected, Kbuild gives the
-following warnings:
+On Thu, Apr 22, 2021 at 04:58:35PM +0800, Zhen Lei wrote:
+> Only letters, digits, and commas that describe the base address of the
+> serial port in hexadecimal format are allowed.
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  Documentation/devicetree/bindings/serial/serial.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/serial/serial.yaml b/Documentation/devicetree/bindings/serial/serial.yaml
+> index 65e75d040521..71aec7fda07d 100644
+> --- a/Documentation/devicetree/bindings/serial/serial.yaml
+> +++ b/Documentation/devicetree/bindings/serial/serial.yaml
+> @@ -21,7 +21,7 @@ description:
+>  
+>  properties:
+>    $nodename:
+> -    pattern: "^serial(@.*)?$"
+> +    pattern: "^serial(@[0-9a-f,]+)?$"
 
-WARNING: unmet direct dependencies detected for SND_SOC_MAX98357A
-  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && GPIOLIB [=n]
-  Selected by [y]:
-  - SND_SOC_INTEL_DA7219_MAX98357A_GENERIC [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_INTEL_MACH [=y]
+The format of unit-addresses is dictated by the bus (parent), so this is 
+the wrong place to enforce this. 
 
-WARNING: unmet direct dependencies detected for SND_SOC_DMIC
-  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && GPIOLIB [=n]
-  Selected by [y]:
-  - SND_SOC_INTEL_DA7219_MAX98357A_GENERIC [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_INTEL_MACH [=y]
-
-WARNING: unmet direct dependencies detected for SND_SOC_INTEL_DA7219_MAX98357A_GENERIC
-  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_INTEL_MACH [=y] && GPIOLIB [=n]
-  Selected by [y]:
-  - SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_INTEL_MACH [=y] && SND_SOC_INTEL_KBL [=y] && I2C [=y] && ACPI [=y] && (MFD_INTEL_LPSS [=y] || COMPILE_TEST [=n])
-
-This is because SND_SOC_DMIC and SND_SOC_MAX98357A are
-selected by SND_SOC_INTEL_DA7219_MAX98357A_GENERIC, which
-is also selected by SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH.
-However, the selectors do not depend on or select GPIOLIB,
-despite SND_SOC_DMIC and SND_SOC_MAX98357A depending on GPIOLIB.
-
-These unmet dependency bugs were detected by Kismet,
-a static analysis tool for Kconfig. Please advise if this
-is not the appropriate solution.
-
-Signed-off-by: Julian Braha <julianbraha@gmail.com>
----
- sound/soc/intel/boards/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index d1d28129a32b..6c6c8e55a3cb 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -363,7 +363,7 @@ config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
- 
- config SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH
- 	tristate "KBL with DA7219 and MAX98357A in I2S Mode"
--	depends on I2C && ACPI
-+	depends on I2C && ACPI && GPIOLIB
- 	depends on MFD_INTEL_LPSS || COMPILE_TEST
- 	select SND_SOC_INTEL_DA7219_MAX98357A_GENERIC
- 	help
--- 
-2.27.0
-
+Rob
