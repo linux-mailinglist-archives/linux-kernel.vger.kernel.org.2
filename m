@@ -2,236 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF8C36FF22
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 19:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E09F436FF25
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 19:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231144AbhD3RFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 13:05:44 -0400
-Received: from msg-2.mailo.com ([213.182.54.12]:36960 "EHLO msg-2.mailo.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230106AbhD3RFm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 13:05:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
-        t=1619802283; bh=0XYa1cIxMp6ry7BQp+iBAAMsYjpA9bq5oFPYJviKL0w=;
-        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
-         MIME-Version:Content-Type:In-Reply-To;
-        b=CGHicr48z/LSUIZrWWhvySxy8jwRIV1rDCIKuQnzq1e4hYpeXBukRSSnGwXm6OtBr
-         KpHhICYLX852NNtZ44q2S9GBeXoH0K1hZzJSiEGubTi93sxcTlMNw9s2I1gzcdLjRX
-         bOuF+agnozRs5o4iU0hvy9pAYv2LgACs/jwj01Sk=
-Received: by 192.168.90.14 [192.168.90.14] with ESMTP
-        via ip-206.mailobj.net [213.182.55.206]
-        Fri, 30 Apr 2021 19:04:42 +0200 (CEST)
-X-EA-Auth: x1MTBCL9u+Tyv0hPP6OEHuOnfuipMqcNBjSighRosnNz+Uikl3zpO/rcsjcNSUUcPVi/6ms77KTeY8y5WGGdYeqRi/ZRL7Q8
-Date:   Fri, 30 Apr 2021 22:34:37 +0530
-From:   Deepak R Varma <drv@mailo.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: media: atomisp: pci: reposition braces as per
- coding style
-Message-ID: <YIw4pUzTOHV6E9WZ@dU2104>
-References: <YIwk3KbVGRPJwKa4@dU2104>
- <20210430163327.GI3@paasikivi.fi.intel.com>
+        id S231270AbhD3RFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 13:05:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231160AbhD3RFv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 13:05:51 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E22B8C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 10:05:02 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id l14so1520930wrx.5
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 10:05:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ef9fe3Au6iXOg8oECw1gAvJSq17/+FtuOxHdnbd2qQs=;
+        b=cOM9YxXnZubuDxhIIhQclr+NWsfxbIv47SymfwxBPEOqNt9XlUcghOKU24KL1ydckx
+         +STiiwZcwOExlo6OBZGoRcqvd34Q0mqMQVY3ioXlmC1LC3Ia65e5BccxlsBSvjlufLNK
+         aDQmTS/AiPy0ihx5cHPRBESHL7AxHHs7e+LiPF57P1uZCnTC684leybf0VmVgjDtwngW
+         s63XNL9xdaWeGl5/LKPWH6Y8vMlJiAn5/1j+vejyMwM6EjNktxViycRQE97XHwSi33jR
+         Mj0+VNM47KdMw9iQDqfSaII216I24Ft+D2SIPJkw/Fs1BA+19FRhlYNx382HtGRQcSBz
+         HTOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ef9fe3Au6iXOg8oECw1gAvJSq17/+FtuOxHdnbd2qQs=;
+        b=eLDdtrdm64SCLorPTcHlDH91zlt79ZZYEiZD1r/OK97e2k5vmkdQUa6xY7dyjxmQkW
+         HntL4IvjI+nDDKv2QAqtfKD8vDQ/hmWW39KSx/cTabql8FVeDdlf6wNuAcrOM1Tkcfkg
+         0zwaS5CGS8NibfHz3L5QGpTQhYBQEspUGZUw4Mdc0fefLeslu0P5ptubIz1f7SsY0vpT
+         7rp/JhuVbj6xhBbYKsXX4MhtVRPtS8svVxH72CMgwrwjgTAatEpDmmk6Hg7NqPQpQwAV
+         ppsgC0RWvsL8RC0sXkENTt9TuBMwCszvHqpXT1rAfa/U7oiVvD1+oABLV5AhgOpDonl7
+         DOUA==
+X-Gm-Message-State: AOAM530ysBlEd1ZCtnRM3k/O0NsLsf3y2789WiFA1Y5tnKBPqD223JLE
+        +ECEVyvBY7TPCAeWa87JEH6SavLtfl7iYKgSMvfmSg==
+X-Google-Smtp-Source: ABdhPJzHYZmcpnQymDYuByc9ZujNal8ViIJt+704AIhqtiT8ouyvDBK9b7Mk4guwLGPFlDMUjbPrbfssdGFosS6oYWw=
+X-Received: by 2002:a05:6000:110d:: with SMTP id z13mr8394875wrw.92.1619802301471;
+ Fri, 30 Apr 2021 10:05:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210430163327.GI3@paasikivi.fi.intel.com>
+References: <20210416023536.168632-1-zhengjun.xing@linux.intel.com>
+ <7b7a1c09-3d16-e199-15d2-ccea906d4a66@linux.intel.com> <YIGuvh70JbE1Cx4U@google.com>
+ <YIlNKds8klSiOalo@dhcp22.suse.cz> <CAOUHufYXzYs__HSgXC2NfYJGHQzZEE6C+AZ78cvNbrZk_VyKxQ@mail.gmail.com>
+ <YIqDv+dQL73KAqjm@dhcp22.suse.cz> <CAOUHufZEAVKYvLXQJsmYVmPkX1CDrMziq4Kd=GtauMW2G30g=g@mail.gmail.com>
+ <YIvLHX74rFrq0n9w@dhcp22.suse.cz>
+In-Reply-To: <YIvLHX74rFrq0n9w@dhcp22.suse.cz>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Fri, 30 Apr 2021 11:04:49 -0600
+Message-ID: <CAOUHufaTS+m35tQmrVvpn7FWAMXPELtWr=ZavAbR7Ew06L9OFw@mail.gmail.com>
+Subject: Re: [RFC] mm/vmscan.c: avoid possible long latency caused by too_many_isolated()
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Shakeel Butt <shakeelb@google.com>, wfg@mail.ustc.edu.cn,
+        Rik van Riel <riel@surriel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 07:33:27PM +0300, Sakari Ailus wrote:
-> Hi Deepak,
-> 
-> If you're touching all these lines, I might do a little more. Please see
-> the comments below.
-> 
-Hello Sakari,
-I can definitely include other changes, but then it will be many different
-types of changes into a single patch. Will that be okay?
+On Fri, Apr 30, 2021 at 3:17 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Fri 30-04-21 02:34:28, Yu Zhao wrote:
+> > On Thu, Apr 29, 2021 at 4:00 AM Michal Hocko <mhocko@suse.com> wrote:
+> [...]
+> > > Still, I do not think that the above heuristic will work properly.
+> > > Different reclaimers have a different reclaim target (e.g. lower zones
+> > > and/or numa node mask) and strength (e.g.  GFP_NOFS vs. GFP_KERNEL). A
+> > > simple count based throttling would be be prone to different sorts of
+> > > priority inversions.
+> >
+> > I see where your concern is coming from. Let's look at it from
+> > multiple angles, and hopefully this will clear things up.
+> >
+> > 1, looking into this approach:
+> > This approach limits the number of direct reclaimers without any bias.
+> > It doesn't favor or disfavor anybody. IOW, everyone has an equal
+> > chance to run, regardless of the reclaim parameters. So where does the
+> > inversion come from?
+>
+> Say you have a flood of GFP_KERNEL allocations contending with *MOVABLE
+> allocations. The former will not be able to reclaim for any non-kernel
+> zones. Similar effect would be contention of a heavy GFP_NOFS workload
+> condending with others but not being able to release filesystem
+> metadata.
+>
+> > 2, comparing it with the existing code:
+> > Both try to limit direct reclaims,: one by the number of isolated
+> > pages and the other by the number of concurrent direct reclaimers.
+> > Neither numbers are correlated with any parameters you mentioned above
+> > except the following:
+> >
+> > too_many_isolated()
+> > {
+> > ...
+> >         /*
+> >          * GFP_NOIO/GFP_NOFS callers are allowed to isolate more pages, so they
+> >          * won't get blocked by normal direct-reclaimers, forming a circular
+> >          * deadlock.
+> >          */
+> >         if ((sc->gfp_mask & (__GFP_IO | __GFP_FS)) == (__GFP_IO | __GFP_FS))
+> >                 inactive >>= 3;
+> > ...
+> > }
+> >
+> > Let's at the commit that added the above:
+> >
+> > commit 3cf23841b4b7 ("mm/vmscan.c: avoid possible deadlock caused by
+> > too_many_isolated()"):
+> > Date:   Tue Dec 18 14:23:31 2012 -0800
+> >
+> >     Neil found that if too_many_isolated() returns true while performing
+> >     direct reclaim we can end up waiting for other threads to complete their
+> >     direct reclaim.  If those threads are allowed to enter the FS or IO to
+> >     free memory, but this thread is not, then it is possible that those
+> >     threads will be waiting on this thread and so we get a circular deadlock.
+> >
+> >     some task enters direct reclaim with GFP_KERNEL
+> >       => too_many_isolated() false
+> >         => vmscan and run into dirty pages
+> >           => pageout()
+> >             => take some FS lock
+> >               => fs/block code does GFP_NOIO allocation
+> >                 => enter direct reclaim again
+> >                   => too_many_isolated() true
+> >                     => waiting for others to progress, however the other
+> >                        tasks may be circular waiting for the FS lock..
+> >
+> > Hmm, how could reclaim be recursive nowadays?
+>
+> I do not think it is. And I doubt it was back then and I also think the
+> above is not suggesting a recursion really. I tries to avoid a situation
+> when fs/block layer cannot make a fwd progress because it is being
+> blocked.
+>
+> > __alloc_pages_slowpath()
+> > {
+> > ...
+> >
+> >         /* Avoid recursion of direct reclaim */
+> >         if (current->flags & PF_MEMALLOC)
+> >                 goto nopage;
+> >
+> >         /* Try direct reclaim and then allocating */
+> >         page = __alloc_pages_direct_reclaim()
+> > ...
+> > }
+> >
+> > Let's assume it still could, do you remember the following commit?
+> >
+> > commit db73ee0d4637 ("mm, vmscan: do not loop on too_many_isolated for ever")
+> > Date:   Wed Sep 6 16:21:11 2017 -0700
+> >
+> > If too_many_isolated() does loop forever anymore, how could the above
+> > deadlock happen? IOW, why would we need the first commit nowadays?
+>
+> Whether the Neil's commit is still needed would require a deeper
+> analysis. Even back then we didn't perform pageout for fs dirty pages
+> from the direct reclaim IIRC.
+>
+> > If you don't remember the second commit, let me jog your memory:
+>
+> Yes i do remember that one and that was handling a dependency between
+> kswapd (which is allowed to perform pageout on diryt fs data) which
+> is blocked and it prevents direct reclaimers to make a fwd progress e.g.
+> by declaring OOM. This was mostly a band aid rather than a systematic
+> solution. And it clearly shows limits of the existing approach. Please
+> note that I am not trying to defend what we have now. I am just pointing
+> out that strict count based approach will hit other problems.
+>
+> > Author: Michal Hocko <mhocko@suse.com>
+> >
+> > 3, thinking abstractly
+> > A problem hard to solve in one domain can become a walk in the park in
+> > another domain. This problem is a perfect example: it's different to
+> > solve based on the number of isolated pages; but it becomes a lot
+> > easier based on the number of direct reclaimers.
+>
+> This would be really true if all those reclaimers where equal in their
+> capabilities. But they are not due to reclaim constrains if nothing
+> else.
 
-I was planning to address one issue per patch as I think the volume of
-change is going to be high.  I mentioned that in the notes section of the patch
-message.
+Thanks for the clarification above.
 
-Let me know if you still suggest I combine those.
+> IMHO the best way forward would be removing the throttling from the
+> reclaim path altogether. The reclaim should be only throttled by the
+> work it does. Both allocator and memcg charging path implement some sort
+> of retry logic and I believe this would be much better suited to
+> implement any backoff.
 
-Thank you,
-deepak.
-
-
-
-> On Fri, Apr 30, 2021 at 09:10:12PM +0530, Deepak R Varma wrote:
-> > Misplaced braces makes it difficult to follow the code easily. This also
-> > goes against the code style guidelines. This resolved following checkpatch
-> > complaints:
-> > 
-> > ERROR: open brace '{' following function definitions go on the next line
-> > ERROR: that open brace { should be on the previous line
-> > 
-> > Signed-off-by: Deepak R Varma <drv@mailo.com>
-> > ---
-> > 
-> > Please Note: There are several other checkpatch triggered warnings and
-> > errors that should be addressed in separate patches.
-> > 
-> > 
-> >  .../staging/media/atomisp/pci/atomisp_csi2.c  |   3 +-
-> >  .../staging/media/atomisp/pci/sh_css_mipi.c   |  69 +++----
-> >  .../staging/media/atomisp/pci/sh_css_params.c | 171 ++++++++----------
-> >  drivers/staging/media/atomisp/pci/sh_css_sp.c | 108 +++++------
-> >  .../media/atomisp/pci/sh_css_version.c        |   3 +-
-> >  5 files changed, 157 insertions(+), 197 deletions(-)
-> > 
-> > diff --git a/drivers/staging/media/atomisp/pci/atomisp_csi2.c b/drivers/staging/media/atomisp/pci/atomisp_csi2.c
-> > index 060b8765ae96..200f16994f3a 100644
-> > --- a/drivers/staging/media/atomisp/pci/atomisp_csi2.c
-> > +++ b/drivers/staging/media/atomisp/pci/atomisp_csi2.c
-> > @@ -29,7 +29,8 @@ static struct v4l2_mbus_framefmt *__csi2_get_format(struct
-> >  	v4l2_subdev_pad_config *cfg,
-> >  	enum
-> >  	v4l2_subdev_format_whence
-> 
-> You could have more arguments on the same line up to 80 characters per
-> line.
-> 
-> > -	which, unsigned int pad) {
-> > +	which, unsigned int pad)
-> > +{
-> >  	if (which == V4L2_SUBDEV_FORMAT_TRY)
-> >  		return v4l2_subdev_get_try_format(&csi2->subdev, cfg, pad);
-> >  	else
-> > diff --git a/drivers/staging/media/atomisp/pci/sh_css_mipi.c b/drivers/staging/media/atomisp/pci/sh_css_mipi.c
-> > index 3f34cc81be87..75489f7d75ee 100644
-> > --- a/drivers/staging/media/atomisp/pci/sh_css_mipi.c
-> > +++ b/drivers/staging/media/atomisp/pci/sh_css_mipi.c
-> > @@ -91,7 +91,8 @@ ia_css_mipi_frame_calculate_size(const unsigned int width,
-> >  				 const enum atomisp_input_format format,
-> >  				 const bool hasSOLandEOL,
-> >  				 const unsigned int embedded_data_size_words,
-> > -				 unsigned int *size_mem_words) {
-> > +				 unsigned int *size_mem_words)
-> > +{
-> >  	int err = 0;
-> >  
-> >  	unsigned int bits_per_pixel = 0;
-> > @@ -118,8 +119,7 @@ ia_css_mipi_frame_calculate_size(const unsigned int width,
-> >  	IA_CSS_ENTER("padded_width=%d, height=%d, format=%d, hasSOLandEOL=%d, embedded_data_size_words=%d\n",
-> >  		     width_padded, height, format, hasSOLandEOL, embedded_data_size_words);
-> >  
-> > -	switch (format)
-> > -	{
-> > +	switch (format) {
-> >  	case ATOMISP_INPUT_FORMAT_RAW_6:		/* 4p, 3B, 24bits */
-> >  		bits_per_pixel = 6;
-> >  		break;
-> > @@ -178,12 +178,10 @@ ia_css_mipi_frame_calculate_size(const unsigned int width,
-> >  	/* Even lines for YUV420 formats are double in bits_per_pixel. */
-> >  	if (format == ATOMISP_INPUT_FORMAT_YUV420_8
-> >  	    || format == ATOMISP_INPUT_FORMAT_YUV420_10
-> > -	    || format == ATOMISP_INPUT_FORMAT_YUV420_16)
-> > -	{
-> > +	    || format == ATOMISP_INPUT_FORMAT_YUV420_16) {
-> >  		even_line_bytes = (width_padded * 2 * bits_per_pixel + 7) >>
-> >  			3; /* ceil ( bits per line / 8) */
-> > -	} else
-> > -	{
-> > +	} else {
-> >  		even_line_bytes = odd_line_bytes;
-> >  	}
-> >  
-> > @@ -236,7 +234,8 @@ ia_css_mipi_frame_calculate_size(const unsigned int width,
-> >  #if !defined(ISP2401)
-> >  int
-> >  ia_css_mipi_frame_enable_check_on_size(const enum mipi_port_id port,
-> > -				       const unsigned int	size_mem_words) {
-> > +				       const unsigned int	size_mem_words)
-> 
-> Tab after int, should be a space.
-> 
-> > +{
-> >  	u32 idx;
-> >  
-> >  	int err = -EBUSY;
-> > @@ -246,11 +245,9 @@ ia_css_mipi_frame_enable_check_on_size(const enum mipi_port_id port,
-> >  
-> >  	for (idx = 0; idx < IA_CSS_MIPI_SIZE_CHECK_MAX_NOF_ENTRIES_PER_PORT &&
-> >  	     my_css.mipi_sizes_for_check[port][idx] != 0;
-> > -	     idx++)   /* do nothing */
-> > -	{
-> > +	     idx++) { /* do nothing */
-> >  	}
-> 
-> A semicolon suffices here. I guess this could be also written as:
-> 
-> 	for (idx = 0; idx < ... & ... != 0; )
-> 		idx++;
-> 
-> As it's easy to just miss the semicolon at the end of the for loop.
-> 
-> > -	if (idx < IA_CSS_MIPI_SIZE_CHECK_MAX_NOF_ENTRIES_PER_PORT)
-> > -	{
-> > +	if (idx < IA_CSS_MIPI_SIZE_CHECK_MAX_NOF_ENTRIES_PER_PORT) {
-> >  		my_css.mipi_sizes_for_check[port][idx] = size_mem_words;
-> >  		err = 0;
-> >  	}
-> > @@ -271,7 +268,8 @@ mipi_init(void)
-> >  int
-> >  calculate_mipi_buff_size(
-> >      struct ia_css_stream_config *stream_cfg,
-> > -    unsigned int *size_mem_words) {
-> > +    unsigned int *size_mem_words)
-> 
-> I think both arguments might fit on the same line. If not, then the return
-> type (int) does. I think there are other similar cases.
-> 
-> > +{
-> >  #if !defined(ISP2401)
-> >  	int err = -EINVAL;
-> >  	(void)stream_cfg;
-> > @@ -346,12 +344,10 @@ calculate_mipi_buff_size(
-> >  
-> >  	/* Even lines for YUV420 formats are double in bits_per_pixel. */
-> >  	if (format == ATOMISP_INPUT_FORMAT_YUV420_8
-> > -	    || format == ATOMISP_INPUT_FORMAT_YUV420_10)
-> > -	{
-> > +	    || format == ATOMISP_INPUT_FORMAT_YUV420_10) {
-> >  		even_line_bytes = (width_padded * 2 * bits_per_pixel + 7) >>
-> >  			3; /* ceil ( bits per line / 8) */
-> 
-> You don't need braces here.
-> 
-> > -	} else
-> > -	{
-> > +	} else {
-> >  		even_line_bytes = odd_line_bytes;
-> >  	}
-> >  
-> > @@ -393,7 +389,8 @@ static bool buffers_needed(struct ia_css_pipe *pipe)
-> >  
-> >  int
-> >  allocate_mipi_frames(struct ia_css_pipe *pipe,
-> > -		     struct ia_css_stream_info *info) {
-> > +		     struct ia_css_stream_info *info)
-> > +{
-> >  	int err = -EINVAL;
-> >  	unsigned int port;
-> >  
-> > @@ -402,8 +399,7 @@ allocate_mipi_frames(struct ia_css_pipe *pipe,
-> >  
-> >  	assert(pipe);
-> >  	assert(pipe->stream);
-> > -	if ((!pipe) || (!pipe->stream))
-> > -	{
-> > +	if ((!pipe) || (!pipe->stream)) {
-> 
-> Extra parentheses.
-> 
-> -- 
-> Kind regards,
-> 
-> Sakari Ailus
-
-
+I completely agree with this.
