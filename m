@@ -2,100 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3091E36F85A
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 12:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D2536F880
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 12:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhD3KPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 06:15:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbhD3KPw (ORCPT
+        id S231775AbhD3KbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 06:31:25 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:32283 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230020AbhD3KbT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 06:15:52 -0400
-Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6066C06174A;
-        Fri, 30 Apr 2021 03:15:04 -0700 (PDT)
-Received: from [192.168.1.107] (unknown [81.0.122.160])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hs@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 239B282A8B;
-        Fri, 30 Apr 2021 12:15:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1619777703;
-        bh=GvJpbj/IkUt6NOGcBJRfVARVgloLsNnxV0D+I2RPASU=;
-        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=M25zclbgun5gh3CTuDQSW2XO8xr85zjfRUafPBHl+hyi/TdJr4e4thfNQdiqC+GSF
-         zq9xarQ8gRRlU3AmPw3oDGJLEgMQf8NstcElUFTPnDTHkCW1AjHn1cJJXsjvQSbu45
-         ihHJEgw543lBa+zryPdXxtaqA4lXMhs4rwR3ydY566J2J92e8GTSXujlSgwYk7Gkd5
-         xm7lm2yMTuJ53NWUO0P8lwAsYy2faPXmJrLns9gjYYX0OZqUSBVRlxv2mV0+v3j78d
-         VZeP/bKvoqa9vMJefGCjDp+CkDS3WcM+NwxScDG0nelJl4JOyVkyK4/eN9O/AhebsQ
-         xNyaucHYstUsg==
-Reply-To: hs@denx.de
-Subject: Re: [PATCH] usb: dwc3: imx8mp: detect dwc3 child nodes with name
- "usb*"
-To:     Felipe Balbi <balbi@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Fabio Estevam <festevam@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Teresa Remmet <t.remmet@phytec.de>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
+        Fri, 30 Apr 2021 06:31:19 -0400
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 30 Apr 2021 03:30:32 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 30 Apr 2021 03:30:29 -0700
+X-QCInternal: smtphost
+Received: from c-rkambl-linux1.ap.qualcomm.com (HELO c-rkambl-linux1.qualcomm.com) ([10.242.50.221])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 30 Apr 2021 15:59:54 +0530
+Received: by c-rkambl-linux1.qualcomm.com (Postfix, from userid 2344811)
+        id D5226488D; Fri, 30 Apr 2021 15:59:53 +0530 (IST)
+From:   Rajeshwari <rkambl@codeaurora.org>
+To:     amitk@kernel.org, thara.gopinath@linaro.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, robh+dt@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-References: <20210430091512.1026996-1-hs@denx.de> <87o8dwhywu.fsf@kernel.org>
-From:   Heiko Schocher <hs@denx.de>
-Message-ID: <94d4d4ca-4910-99fa-18cf-478daeccc3b4@denx.de>
-Date:   Fri, 30 Apr 2021 12:15:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <87o8dwhywu.fsf@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.102.4 at phobos.denx.de
-X-Virus-Status: Clean
+        sanm@codeaurora.org, manafm@codeaurora.org,
+        Rajeshwari <rkambl@codeaurora.org>
+Subject: [PATCH V3 0/3] Add DT bindings and device tree nodes for TSENS in SC7280
+Date:   Fri, 30 Apr 2021 15:59:49 +0530
+Message-Id: <1619778592-8112-1-git-send-email-rkambl@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Felipe,
+Adding compatible string in TSENS dt-bindings, device node for TSENS controller and 
+critical interrupt support, Thermal zone, cooling maps support and changing Hysteresis 
+value for critical trip point, adding cooling-cells property.
 
-On 30.04.21 12:03, Felipe Balbi wrote:
-> Heiko Schocher <hs@denx.de> writes:
-> 
->> commit:
->> d1689cd3c0f4: ("arm64: dts: imx8mp: Use the correct name for child node "snps, dwc3")
->>
->> renamed "dwc3@3*" nodes in imx8mp.dtsi to "usb@3*"
->>
->> glue layer dwc3-imx8mp.c searches for "dwc3" and so drop failure
->> on boot:
->> imx8mp-dwc3 32f10100.usb: failed to find dwc3 core child
->> imx8mp-dwc3: probe of 32f10100.usb failed with error 1
->> imx8mp-dwc3 32f10108.usb: failed to find dwc3 core child
->> imx8mp-dwc3: probe of 32f10108.usb failed with error 1
->>
->> now. Fix this (and allow old style too)
->>
->> Tested on "PHYTEC phyBOARD-Pollux i.MX8MP" board.
->>
->> fixes: d1689cd3c0f4: ("arm64: dts: imx8mp: Use the correct name for child node "snps, dwc3")
->> Signed-off-by: Heiko Schocher <hs@denx.de>
-> 
-> already sent, see https://lore.kernel.org/r/1619765836-20387-1-git-send-email-jun.li@nxp.com
+Changes:
+1) Adding sensors according to sensor index rules under thermal-zones.
+2) Changing Hysteresis, as it is not needed for critical trip point, when it reaches 
+   critical threshold system will go for shutdown.
+3) Adding cooling-cells property under cpus node.
 
-Ah, great. Missed this patch, thanks!
+Dependencies:
+https://lore.kernel.org/patchwork/project/lkml/list/?series=487403
+https://lore.kernel.org/patchwork/patch/1410952/
 
-So, please forget this patch.
+Rajeshwari (3):
+  dt-bindings: thermal: tsens: Add compatible string to TSENS binding
+    for SC7280
+  arm64: dts: qcom: SC7280:  Add device node support for TSENS
+  arm64: dts: qcom: SC7280: Add thermal zone support
 
-bye,
-Heiko
+ .../devicetree/bindings/thermal/qcom-tsens.yaml    |   1 +
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               | 874 +++++++++++++++++++++
+ 2 files changed, 875 insertions(+)
+
 -- 
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-52   Fax: +49-8142-66989-80   Email: hs@denx.de
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
+
