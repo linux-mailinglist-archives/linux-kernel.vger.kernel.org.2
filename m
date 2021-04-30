@@ -2,134 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1298736F89C
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 12:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A13C36F8A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 12:45:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbhD3Kn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 06:43:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:45010 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229543AbhD3Kn5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 06:43:57 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4BBFA31B;
-        Fri, 30 Apr 2021 03:43:09 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 468CD3F73B;
-        Fri, 30 Apr 2021 03:42:58 -0700 (PDT)
-Subject: Re: [RFC PATCH v6 3/4] scheduler: scan idle cpu in cluster for tasks
- within one LLC
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "msys.mizuma@gmail.com" <msys.mizuma@gmail.com>,
-        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
-        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>, "xuwei (O)" <xuwei5@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
-        yangyicong <yangyicong@huawei.com>,
-        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "hpa@zytor.com" <hpa@zytor.com>
-References: <20210420001844.9116-1-song.bao.hua@hisilicon.com>
- <20210420001844.9116-4-song.bao.hua@hisilicon.com>
- <80f489f9-8c88-95d8-8241-f0cfd2c2ac66@arm.com>
- <b42c762a287b4360bfa3179a5c7c3e8c@hisilicon.com>
- <CAKfTPtC51eO2mAuW6mHQ-SdznAtfDL3D4UOs4HmnXaPOOCN_cA@mail.gmail.com>
- <8b5277d9-e367-566d-6bd1-44ac78d21d3f@arm.com>
- <185746c4d02a485ca8f3509439328b26@hisilicon.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <d31a65af-d1d5-5fd1-276c-d2318cdba078@arm.com>
-Date:   Fri, 30 Apr 2021 12:42:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231519AbhD3Kp6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 30 Apr 2021 06:45:58 -0400
+Received: from de-smtp-delivery-1.mimecast.com ([62.140.7.241]:47814 "EHLO
+        de-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229543AbhD3Kpz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 06:45:55 -0400
+Received: from GBR01-CWL-obe.outbound.protection.outlook.com
+ (mail-cwlgbr01lp2053.outbound.protection.outlook.com [104.47.20.53]) (Using
+ TLS) by relay.mimecast.com with ESMTP id de-mta-6-Fbehm8RlMRmkeoOgjm058Q-1;
+ Fri, 30 Apr 2021 12:45:04 +0200
+X-MC-Unique: Fbehm8RlMRmkeoOgjm058Q-1
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:89::10)
+ by CWXP265MB4008.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:126::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.25; Fri, 30 Apr
+ 2021 10:45:02 +0000
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::a91f:361d:5554:3958]) by CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::a91f:361d:5554:3958%5]) with mapi id 15.20.4065.027; Fri, 30 Apr 2021
+ 10:45:02 +0000
+From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
+CC:     "pali@kernel.org" <pali@kernel.org>,
+        "huyue2@yulong.com" <huyue2@yulong.com>,
+        "tiantao6@hisilicon.com" <tiantao6@hisilicon.com>
+Subject: Re: [PATCH] mmc: enable UHS voltage switch for SDSC if supported
+Thread-Topic: [PATCH] mmc: enable UHS voltage switch for SDSC if supported
+Thread-Index: AQHXN3kp02z8n6vh+UmW3TCHxA6qwqrM7HJ8
+Date:   Fri, 30 Apr 2021 10:45:02 +0000
+Message-ID: <CWXP265MB2680E13C9509570773ABD792C45E9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+References: <CWXP265MB2680766F673A99D2F296B878C4469@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+In-Reply-To: <CWXP265MB2680766F673A99D2F296B878C4469@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+Accept-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [185.80.168.10]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5e42933d-171c-4a8e-3be2-08d90bc50293
+x-ms-traffictypediagnostic: CWXP265MB4008:
+x-microsoft-antispam-prvs: <CWXP265MB400826F3FF040DD4D01BBBF6C45E9@CWXP265MB4008.GBRP265.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:9508
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0
+x-microsoft-antispam-message-info: N/wVmkxVh3JuA3Bk6+BFGRj/kVRuO5fE1LtabCiH1P00q5hKw184dgVjsXsAxAErV9M+d5aZM7FSKduTiGQuZFkCAF1ErOHwRwE9tNbroqHhUiBuV1yq4R/+ZbBFJnkFHmvO0WV32pZF5pyKm8BTcu9HlXH5Hk28C6lrTMCqB7HyuRwm4nxRRdGFour2NvAWqXqBjeoyApoqvx3kIBQt3e40BDyzmt5AAdpmjupRb38gejikHu/vd847aOlN6yic4rsQaFxqmIDrY+tlCsgtmrRngNpR68JofMsx5UTgeoS+6LM+pWwsbV6uqxNvMZHD6a83yhlitzZUhskR2NS0bF5S6DCP7hVWHL7bNYE5OFAv5Qf3Pzh3L0vSHTs6KE9NETF9at+jCwnaO76L5Hc+hlefkD6DpQD4KOrqTTZpi1lOZfQSp6ZnlV8TOQlXqqPu+3nn7n8kNCgIS3s8CNcZiQxyEb4lwTHf8NAx3aAOHBh1J6Mo93FYHp0+kahrP4wHj6jLh9qMZa9wK4eYcEtDO+bWsmKviwDyUA9x3+GlY52QtsytrMWB69Ps+QiPLZwxnNCIxy/3w5YxZ94bdkadpfj/8fwO8g8mcgcjFwF+xX4=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(39830400003)(346002)(136003)(396003)(366004)(376002)(7696005)(122000001)(66556008)(9686003)(66446008)(8936002)(71200400001)(64756008)(38100700002)(110136005)(52536014)(55016002)(316002)(66476007)(5660300002)(91956017)(4326008)(54906003)(76116006)(26005)(66946007)(6506007)(33656002)(478600001)(83380400001)(86362001)(53546011)(186003)(8676002)(2906002);DIR:OUT;SFP:1101
+x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?yOTuETUOzMb1oyHekb8DKCbq97XZMsew2lku6CKunKzVyA9ZCz5wIhAX76?=
+ =?iso-8859-1?Q?SrGyczuHKXn8fo+AVZ4nUPG3mt+vo6a7MXcTudXHmDq9WIgxdYX6S8L23/?=
+ =?iso-8859-1?Q?W8uyfft9nhy4KGwlUxgcnV+At5UBRzZlO3ye5KyN4B0RyRlo+w54h36nbY?=
+ =?iso-8859-1?Q?U1epG6yitwwTjFNCg1O8jk4Nb+PNCBdixZ4oTHzZDL3yHDfiT73Vm+fkCM?=
+ =?iso-8859-1?Q?T1zuT8qex8N8AgXRDMGuJ/cz7baIvzjetib++Z0wii6be7wCprYN4QVjlR?=
+ =?iso-8859-1?Q?9Wjzdg9sCvnZbuBs4yiTCCbYGhe57ltVIYLX6gCZ/g/cZge9skufBPi84+?=
+ =?iso-8859-1?Q?SQMPsrA6HU7Hu1ikwdE/u6CTBrS8nncwBMrbekIVfOWZDPcfrI4NM14/zx?=
+ =?iso-8859-1?Q?OSp6OdnpuuXnmNnrgBsrok3f7HW27prnbSY/v80JupLs5lCTdWq0QtjG9b?=
+ =?iso-8859-1?Q?gx/7vGdmOE6pEKHuoFU2fxh36qe5swV4P0E7sPmD/Ztu6WNKvxozzlAwYu?=
+ =?iso-8859-1?Q?8ogC0qeWXAzlDO8Wmrt8T3K6aKxyuWPXLdKrCOnP4j2Zkv1b0k5ZxIQs7X?=
+ =?iso-8859-1?Q?40VpyImxDX5lIIcc1q/NtLmU13HjcFFfhpf5lieYQsmfisYYNU0mFFmUXI?=
+ =?iso-8859-1?Q?2xrSLLE8ZBCREUAh9cf3cNvPiKZ4ROGRUqbVnc21WWMV3fB+63tbBODA8q?=
+ =?iso-8859-1?Q?ak2BI84DC2ilNtxjvadkbFBKKlLAut1RxWIteRlE4t29yUD//avmi2/w+N?=
+ =?iso-8859-1?Q?OcTdNsEi0SVmkKLT+1BWRgklgut3Kcf+H2pOV14QJxYMJk3E3NqzjI6zGb?=
+ =?iso-8859-1?Q?Y68IEN8d+3Futoo3aWTTEdPh2Wa5xTmIQFMG4nuSsJ8pwyw8EyRLQcb3yK?=
+ =?iso-8859-1?Q?o5zNGE+SAJW26cHh+sjBP5rK/CgpA5O9JimrdSBSYqIC+KdFuzC8a1v1eO?=
+ =?iso-8859-1?Q?/d4ZF60+gA35U/drhBDNnfUWlFDFmwbpYpUmGC6mvpJbiLhro2PQiHJ7t/?=
+ =?iso-8859-1?Q?flqNocOa5CcxPjHyTx0i659ollyxOV0ny8ZrPrN5RjFw/G+PSeixPEOkkQ?=
+ =?iso-8859-1?Q?7knmIapw3F4XFphaoA3g4BDL0nz1u/6QkO7EBgU2wdIdqy4LD4I3RT7m8w?=
+ =?iso-8859-1?Q?B6It+qaB+vxdEbycWaYMyouzX5DffKFl8kdcxS49Ne5RB9Em060EKfCQpj?=
+ =?iso-8859-1?Q?XgBjBN5UIfKc6RyUXFkrzWs38SoNpMrH4dda8b4XNTSLAD6OV4IYuNxqP4?=
+ =?iso-8859-1?Q?t70oO/WhugY4P9qVsckmhJEwTb/ikGquWHiw8tKooYYBHSDVxxu4O/vN/4?=
+ =?iso-8859-1?Q?E0eokmPYWv3a74bBXng4Dt3hJXX1T7ttxgMnhP161/ERZoU=3D?=
+x-ms-exchange-transport-forked: True
 MIME-Version: 1.0
-In-Reply-To: <185746c4d02a485ca8f3509439328b26@hisilicon.com>
-Content-Type: text/plain; charset=utf-8
+X-OriginatorOrg: hyperstone.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5e42933d-171c-4a8e-3be2-08d90bc50293
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Apr 2021 10:45:02.8157
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 86f203eb-e878-4188-b297-34c118c18b11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 58Q5ehqJPvhSbUhQcLaiRYlyEtKxY/y8i7FSktB7BUVBaz6zAKonV/H9J6QsJs2of0NQ6zdT5KNX95ENnDOy9w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB4008
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: hyperstone.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/04/2021 00:41, Song Bao Hua (Barry Song) wrote:
-> 
-> 
->> -----Original Message-----
->> From: Dietmar Eggemann [mailto:dietmar.eggemann@arm.com]
+So are there any other concerns, comments or opinions about this?
 
-[...]
 
->>>>> From: Dietmar Eggemann [mailto:dietmar.eggemann@arm.com]
->>
->> [...]
->>
->>>>> On 20/04/2021 02:18, Barry Song wrote:
+From: Christian Löhle <CLoehle@hyperstone.com>
+Sent: Thursday, April 22, 2021 3:18 PM
+To: linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>; linux-mmc@vger.kernel.org <linux-mmc@vger.kernel.org>; Christian Löhle <CLoehle@hyperstone.com>; ulf.hansson@linaro.org <ulf.hansson@linaro.org>
+Cc: pali@kernel.org <pali@kernel.org>; huyue2@yulong.com <huyue2@yulong.com>; tiantao6@hisilicon.com <tiantao6@hisilicon.com>
+Subject: [PATCH] mmc: enable UHS voltage switch for SDSC if supported 
+ 
+Ignore the reported capacity if the card otherwise reports UHS support.
 
-[...]
+Currently SDSC cards reporting UHS support except for the CCS do not run
+through the voltage switch.
+While strictly speaking a SDSC card cannot support UHS in compliance
+with the standard, there is no good reason to throttle them that way.
+Especially for pSLCs in practice such cards benefit greatly by this patch,
+as they can be new and UHS supporting, but must not lie about their CCS.
+The behaviour of linux-mmc for SDSC is deviating from the standard anyway
+in such a case, as the card is treated as UHS card not supporting the
+voltage switch in general.
+Such a card will come up as
+mmc0: new ultra high speed SDR25 SD card at address 0001.
+Thus the subsystem will support CMD23 and others to the card.
+But if we deviate from the standard anyway, then we might as well
+not throttle SDSC to 25MB/s.
 
-> Though we will never go to slow path, wake_wide() will affect want_affine,
-> so eventually affect the "new_cpu"?
+Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
+---
+ drivers/mmc/core/sd.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-yes.
+diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
+index 6fa51a6ed058..281ca2da8e0b 100644
+--- a/drivers/mmc/core/sd.c
++++ b/drivers/mmc/core/sd.c
+@@ -841,11 +841,10 @@ int mmc_sd_get_cid(struct mmc_host *host, u32 ocr, u32 *cid, u32 *rocr)
+                 return err;
+ 
+         /*
+-        * In case CCS and S18A in the response is set, start Signal Voltage
+-        * Switch procedure. SPI mode doesn't support CMD11.
++        * In case S18A in the response is set, start Signal Voltage Switch
++        * procedure. SPI mode doesn't support CMD11.
+          */
+-       if (!mmc_host_is_spi(host) && rocr &&
+-          ((*rocr & 0x41000000) == 0x41000000)) {
++       if (!mmc_host_is_spi(host) && rocr && (*rocr & 0x01000000)) {
+                 err = mmc_set_uhs_voltage(host, pocr);
+                 if (err == -EAGAIN) {
+                         retries--;
+-- 
+2.31.1
+Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
+Managing Directors: Dr. Jan Peter Berns.
+Commercial register of local courts: Freiburg HRB381782
 
-> 
-> 	for_each_domain(cpu, tmp) {
-> 		/*
-> 		 * If both 'cpu' and 'prev_cpu' are part of this domain,
-> 		 * cpu is a valid SD_WAKE_AFFINE target.
-> 		 */
-> 		if (want_affine && (tmp->flags & SD_WAKE_AFFINE) &&
-> 		    cpumask_test_cpu(prev_cpu, sched_domain_span(tmp))) {
-> 			if (cpu != prev_cpu)
-> 				new_cpu = wake_affine(tmp, p, cpu, prev_cpu, sync);
-> 
-> 			sd = NULL; /* Prefer wake_affine over balance flags */
-> 			break;
-> 		}
-> 
-> 		if (tmp->flags & sd_flag)
-> 			sd = tmp;
-> 		else if (!want_affine)
-> 			break;
-> 	}
-> 
-> If wake_affine is false, the above won't execute, new_cpu(target) will
-> always be "prev_cpu"? so when task size > cluster size in wake_wide(),
-> this means we won't pull the wakee to the cluster of waker? It seems
-> sensible.
-
-What is `task size` here?
-
-The criterion is `!(slave < factor || master < slave * factor)` or
-`slave >= factor && master >= slave * factor` to wake wide.
-
-I see that since you effectively change the sched domain size from LLC
-to CLUSTER (e.g. 24->6) for wakeups with cpu and prev_cpu sharing LLC
-(hence the `numactl -N 0` in your workload), wake_wide() has to take
-CLUSTER size into consideration.
-
-I was wondering if you saw wake_wide() returning 1 with your use cases:
-
-numactl -N 0 /usr/lib/lmbench/bin/stream -P [6,12] -M 1024M -N 5
