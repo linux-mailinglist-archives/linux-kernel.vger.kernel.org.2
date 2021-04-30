@@ -2,141 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B2B370032
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E43370040
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231204AbhD3SK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 14:10:59 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:54980 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbhD3SKy (ORCPT
+        id S231484AbhD3SM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 14:12:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230356AbhD3SM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 14:10:54 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lcXaU-00CRau-5a; Fri, 30 Apr 2021 12:10:02 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lcXaR-00085W-UW; Fri, 30 Apr 2021 12:10:01 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     kbuild@lists.01.org, legion@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        linux-mm@kvack.org, lkp@intel.com, kbuild-all@lists.01.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jann Horn <jannh@google.com>
-References: <202104272256.9Y5ZQxrO-lkp@intel.com>
-Date:   Fri, 30 Apr 2021 13:09:55 -0500
-In-Reply-To: <202104272256.9Y5ZQxrO-lkp@intel.com> (Dan Carpenter's message of
-        "Thu, 29 Apr 2021 17:04:23 +0300")
-Message-ID: <m1tunny77w.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 30 Apr 2021 14:12:27 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0CDAC06138B
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 11:11:38 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id 65-20020a9d03470000b02902808b4aec6dso60424964otv.6
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 11:11:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vf2+S1x6r/e/FcKWzWWIRvMeVi3Dg4asX+PnCt1Zm1M=;
+        b=BdzY8EOhoBQLTLtrVJMYviKEWJlUGJb4q8AoIXnB9KZMggfTz9LDL3Lr9vOR6ZpH13
+         y4UMwzaN2tWVSm3h9bLgXcM8pjfp/EWXhNMJzrw8JweoLuSnFXFmmEut+vxb/RpxKPFk
+         KS8edKMlFL6AF99NnjkC5H5mybGYPAnJRFUM+os1Iy+nppzVamfYx1Slf1+v2+c3Ymio
+         7ozrLVU/NDeeaM+/u0eQEw1IRf/WQ5xzq9Py5Crg0CPc7EcRbocZ505dcbP5QGk1U6xg
+         GfqvB0CkXG42IOxTtquxQhWDBUp/sPEvlwrY91NI2vjO2AiVjmJqAaj8vT2Bml6fltMM
+         VmuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vf2+S1x6r/e/FcKWzWWIRvMeVi3Dg4asX+PnCt1Zm1M=;
+        b=eeQoV6FhGZHvweyTKF0Hv/kv5nhUw19ZgQnS6RWksXIKKU4MXj66/bMRC/EixICkct
+         coNFjO943RZbRlSMQwHp0cV88wjtaOWXJOj3XsHg8GqssBhQ4JG7+mi+uHavKc4j8GKs
+         qYjd67kDHk3IEC8rCVzeAx1nCXZog3pndhnZ5fhyiQSAk0086G/ZOUQ/riXgHnuDAAFJ
+         3e/NM2Z7vKTs4N3RNrhT6ZIvz+DO4linwBfJzxuxpP0Hv97jd/CqrSP0LI9o6FptUfN+
+         WLIzGKZ/0i13g4PGgQKxVB0ISBxMQscYeBbyi3gF/qp0WVNmOvMfQgRb3m9CcoDtoCXm
+         dMTg==
+X-Gm-Message-State: AOAM530Ln6kJUqvE4gUy09VWD6gU0gerQfQ3tntEORNrBzgpFylieZMv
+        RFR3m7AHoP2T69UWJ0lV8D+MZAMFATNizABEfnSXNyNFiw8=
+X-Google-Smtp-Source: ABdhPJw6A5NO8ufHNyJhyR5vHTtTeI1hfXYafTfJa00BpLpdODn4quTFm5wLD0i7Z8HZs3TwO1SDIchfi3B9nR+H06Y=
+X-Received: by 2002:a9d:60c8:: with SMTP id b8mr4635783otk.17.1619806298042;
+ Fri, 30 Apr 2021 11:11:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lcXaR-00085W-UW;;;mid=<m1tunny77w.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18u6Xoo8s58CoWsQdxvXXEoS28W8e953RU=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa04.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,LotsOfNums_01 autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4226]
-        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa04 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa04 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Dan Carpenter <dan.carpenter@oracle.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1699 ms - load_scoreonly_sql: 0.12 (0.0%),
-        signal_user_changed: 14 (0.8%), b_tie_ro: 12 (0.7%), parse: 1.59
-        (0.1%), extract_message_metadata: 25 (1.5%), get_uri_detail_list: 3.8
-        (0.2%), tests_pri_-1000: 15 (0.9%), tests_pri_-950: 1.28 (0.1%),
-        tests_pri_-900: 1.05 (0.1%), tests_pri_-90: 353 (20.8%), check_bayes:
-        342 (20.2%), b_tokenize: 9 (0.5%), b_tok_get_all: 8 (0.5%),
-        b_comp_prob: 2.6 (0.2%), b_tok_touch_all: 319 (18.8%), b_finish: 0.93
-        (0.1%), tests_pri_0: 1276 (75.1%), check_dkim_signature: 0.53 (0.0%),
-        check_dkim_adsp: 2.3 (0.1%), poll_dns_idle: 0.80 (0.0%), tests_pri_10:
-        1.95 (0.1%), tests_pri_500: 6 (0.4%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH] ucounts: Silence warning in dec_rlimit_ucounts
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+References: <20210429190734.624918-1-elver@google.com> <m1im43zn2g.fsf@fess.ebiederm.org>
+In-Reply-To: <m1im43zn2g.fsf@fess.ebiederm.org>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 30 Apr 2021 20:11:26 +0200
+Message-ID: <CANpmjNMxehkR+NHyJpqfSBYo9Ru7Hbs8j7c=G0Q5+966orQunw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] sparc64: Add compile-time asserts for siginfo_t offsets
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, sparclinux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 30 Apr 2021 at 19:42, Eric W. Biederman <ebiederm@xmission.com> wrote:
+>
+> Marco Elver <elver@google.com> writes:
+>
+> > To help catch ABI breaks at compile-time, add compile-time assertions to
+> > verify the siginfo_t layout. Unlike other architectures, sparc64 is
+> > special, because it is one of few architectures requiring si_trapno.
+> > ABI breaks around that field would only be caught here.
+>
+> Arnd Bergman recently pointed out that we can move si_trapno into the
+> union and make it specific to a handful of signals.  Like we do other
+> items in the union.
+>
+> Given that the code of perf_sigtrap is pretty much broken if si_trapno
+> needs to be filled out.  I think we should make that change before
+> we set this ABI in stone like this.
+>
+> Otherwise this looks good.
 
-Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> url:    https://github.com/0day-ci/linux/commits/legion-kernel-org/Count-rlimits-in-each-user-namespace/20210427-162857
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git next
-> config: arc-randconfig-m031-20210426 (attached as .config)
-> compiler: arceb-elf-gcc (GCC) 9.3.0
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
->
-> smatch warnings:
-> kernel/ucount.c:270 dec_rlimit_ucounts() error: uninitialized symbol 'new'.
->
-> vim +/new +270 kernel/ucount.c
->
-> 176ec2b092cc22 Alexey Gladkov 2021-04-22  260  bool dec_rlimit_ucounts(struct ucounts *ucounts, enum ucount_type type, long v)
-> 176ec2b092cc22 Alexey Gladkov 2021-04-22  261  {
-> 176ec2b092cc22 Alexey Gladkov 2021-04-22  262   struct ucounts *iter;
-> 176ec2b092cc22 Alexey Gladkov 2021-04-22  263   long new;
->                                                 ^^^^^^^^
->
-> 176ec2b092cc22 Alexey Gladkov 2021-04-22  264   for (iter = ucounts; iter; iter = iter->ns->ucounts) {
-> 176ec2b092cc22 Alexey Gladkov 2021-04-22  265    long dec = atomic_long_add_return(-v, &iter->ucount[type]);
-> 176ec2b092cc22 Alexey Gladkov 2021-04-22  266    WARN_ON_ONCE(dec < 0);
-> 176ec2b092cc22 Alexey Gladkov 2021-04-22  267    if (iter == ucounts)
-> 176ec2b092cc22 Alexey Gladkov 2021-04-22  268     new = dec;
-> 176ec2b092cc22 Alexey Gladkov 2021-04-22  269   }
-> 176ec2b092cc22 Alexey Gladkov 2021-04-22 @270   return (new == 0);
->                                                         ^^^^^^^^
-> I don't know if this is a bug or not, but I can definitely tell why the
-> static checker complains about it.
->
-> 176ec2b092cc22 Alexey Gladkov 2021-04-22  271  }
+Thanks, that's reasonable -- I'll reply to the other thread in a few minutes.
 
-In the only two cases that care about the return value of
-dec_rlimit_ucounts the code first tests to see that ucounts is not
-NULL.  In those cases it is guaranteed at least one iteration of the
-loop will execute guaranteeing the variable new will be initialized.
+-- Marco
 
-Initialize new to -1 so that the return value is well defined even
-when the loop does not execute and the static checker is silenced.
-
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- kernel/ucount.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/ucount.c b/kernel/ucount.c
-index d316bac3e520..12a48457bb86 100644
---- a/kernel/ucount.c
-+++ b/kernel/ucount.c
-@@ -263,7 +263,7 @@ long inc_rlimit_ucounts(struct ucounts *ucounts, enum ucount_type type, long v)
- bool dec_rlimit_ucounts(struct ucounts *ucounts, enum ucount_type type, long v)
- {
- 	struct ucounts *iter;
--	long new;
-+	long new = -1; /* Silence compiler warnings */
- 	for (iter = ucounts; iter; iter = iter->ns->ucounts) {
- 		long dec = atomic_long_add_return(-v, &iter->ucount[type]);
- 		WARN_ON_ONCE(dec < 0);
--- 
-2.30.1
-
+> Eric
+>
+> > Link: https://lkml.kernel.org/r/m11rat9f85.fsf@fess.ebiederm.org
+> > Suggested-by: Eric W. Biederman <ebiederm@xmission.com>
+> > Signed-off-by: Marco Elver <elver@google.com>
+> > ---
+> >  arch/sparc/kernel/signal32.c  | 34 ++++++++++++++++++++++++++++++++++
+> >  arch/sparc/kernel/signal_64.c | 33 +++++++++++++++++++++++++++++++++
+> >  2 files changed, 67 insertions(+)
+> >
+> > diff --git a/arch/sparc/kernel/signal32.c b/arch/sparc/kernel/signal32.c
+> > index e9695a06492f..778ed5c26d4a 100644
+> > --- a/arch/sparc/kernel/signal32.c
+> > +++ b/arch/sparc/kernel/signal32.c
+> > @@ -745,3 +745,37 @@ asmlinkage int do_sys32_sigstack(u32 u_ssptr, u32 u_ossptr, unsigned long sp)
+> >  out:
+> >       return ret;
+> >  }
+> > +
+> > +/*
+> > + * Compile-time assertions for siginfo_t offsets. Check NSIG* as well, as
+> > + * changes likely come with new fields that should be added below.
+> > + */
+> > +static_assert(NSIGILL        == 11);
+> > +static_assert(NSIGFPE        == 15);
+> > +static_assert(NSIGSEGV       == 9);
+> > +static_assert(NSIGBUS        == 5);
+> > +static_assert(NSIGTRAP       == 6);
+> > +static_assert(NSIGCHLD       == 6);
+> > +static_assert(NSIGSYS        == 2);
+> > +static_assert(offsetof(compat_siginfo_t, si_signo)   == 0x00);
+> > +static_assert(offsetof(compat_siginfo_t, si_errno)   == 0x04);
+> > +static_assert(offsetof(compat_siginfo_t, si_code)    == 0x08);
+> > +static_assert(offsetof(compat_siginfo_t, si_pid)     == 0x0c);
+> > +static_assert(offsetof(compat_siginfo_t, si_uid)     == 0x10);
+> > +static_assert(offsetof(compat_siginfo_t, si_tid)     == 0x0c);
+> > +static_assert(offsetof(compat_siginfo_t, si_overrun) == 0x10);
+> > +static_assert(offsetof(compat_siginfo_t, si_status)  == 0x14);
+> > +static_assert(offsetof(compat_siginfo_t, si_utime)   == 0x18);
+> > +static_assert(offsetof(compat_siginfo_t, si_stime)   == 0x1c);
+> > +static_assert(offsetof(compat_siginfo_t, si_value)   == 0x14);
+> > +static_assert(offsetof(compat_siginfo_t, si_int)     == 0x14);
+> > +static_assert(offsetof(compat_siginfo_t, si_ptr)     == 0x14);
+> > +static_assert(offsetof(compat_siginfo_t, si_addr)    == 0x0c);
+> > +static_assert(offsetof(compat_siginfo_t, si_trapno)  == 0x10);
+> > +static_assert(offsetof(compat_siginfo_t, si_addr_lsb)        == 0x14);
+> > +static_assert(offsetof(compat_siginfo_t, si_lower)   == 0x18);
+> > +static_assert(offsetof(compat_siginfo_t, si_upper)   == 0x1c);
+> > +static_assert(offsetof(compat_siginfo_t, si_pkey)    == 0x18);
+> > +static_assert(offsetof(compat_siginfo_t, si_perf)    == 0x14);
+> > +static_assert(offsetof(compat_siginfo_t, si_band)    == 0x0c);
+> > +static_assert(offsetof(compat_siginfo_t, si_fd)              == 0x10);
+> > diff --git a/arch/sparc/kernel/signal_64.c b/arch/sparc/kernel/signal_64.c
+> > index a0eec62c825d..c9bbf5f29078 100644
+> > --- a/arch/sparc/kernel/signal_64.c
+> > +++ b/arch/sparc/kernel/signal_64.c
+> > @@ -556,3 +556,36 @@ void do_notify_resume(struct pt_regs *regs, unsigned long orig_i0, unsigned long
+> >       user_enter();
+> >  }
+> >
+> > +/*
+> > + * Compile-time assertions for siginfo_t offsets. Check NSIG* as well, as
+> > + * changes likely come with new fields that should be added below.
+> > + */
+> > +static_assert(NSIGILL        == 11);
+> > +static_assert(NSIGFPE        == 15);
+> > +static_assert(NSIGSEGV       == 9);
+> > +static_assert(NSIGBUS        == 5);
+> > +static_assert(NSIGTRAP       == 6);
+> > +static_assert(NSIGCHLD       == 6);
+> > +static_assert(NSIGSYS        == 2);
+> > +static_assert(offsetof(siginfo_t, si_signo)  == 0x00);
+> > +static_assert(offsetof(siginfo_t, si_errno)  == 0x04);
+> > +static_assert(offsetof(siginfo_t, si_code)   == 0x08);
+> > +static_assert(offsetof(siginfo_t, si_pid)    == 0x10);
+> > +static_assert(offsetof(siginfo_t, si_uid)    == 0x14);
+> > +static_assert(offsetof(siginfo_t, si_tid)    == 0x10);
+> > +static_assert(offsetof(siginfo_t, si_overrun)        == 0x14);
+> > +static_assert(offsetof(siginfo_t, si_status) == 0x18);
+> > +static_assert(offsetof(siginfo_t, si_utime)  == 0x20);
+> > +static_assert(offsetof(siginfo_t, si_stime)  == 0x28);
+> > +static_assert(offsetof(siginfo_t, si_value)  == 0x18);
+> > +static_assert(offsetof(siginfo_t, si_int)    == 0x18);
+> > +static_assert(offsetof(siginfo_t, si_ptr)    == 0x18);
+> > +static_assert(offsetof(siginfo_t, si_addr)   == 0x10);
+> > +static_assert(offsetof(siginfo_t, si_trapno) == 0x18);
+> > +static_assert(offsetof(siginfo_t, si_addr_lsb)       == 0x20);
+> > +static_assert(offsetof(siginfo_t, si_lower)  == 0x28);
+> > +static_assert(offsetof(siginfo_t, si_upper)  == 0x30);
+> > +static_assert(offsetof(siginfo_t, si_pkey)   == 0x28);
+> > +static_assert(offsetof(siginfo_t, si_perf)   == 0x20);
+> > +static_assert(offsetof(siginfo_t, si_band)   == 0x10);
+> > +static_assert(offsetof(siginfo_t, si_fd)     == 0x14);
