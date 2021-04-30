@@ -2,143 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E72636F677
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 09:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 609E336F67D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 09:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbhD3HlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 03:41:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35613 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229610AbhD3HlD (ORCPT
+        id S230375AbhD3Hoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 03:44:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229610AbhD3How (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 03:41:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619768408;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eghNfNwYK/C3iXjA4b8fOp1z7unJQGi+R6RSjtyNSC0=;
-        b=ZDvGswANyfvlDMBxKSae8UZV6toM2f3O+Dy2yR0FfDw1rVAnbq09leCHIbyVynDA0IRxF6
-        PbTx99185dC61t+x6Koqr/5MQT/pX/K6/MPBbRFOuy59Myf1mcDgHLGjUvejl2LTJ++eFw
-        P8IjI3jEv9OOoKnEQSgapKStY10IKaU=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-375-doYU3A1pPOWnUXsv5BilvA-1; Fri, 30 Apr 2021 03:40:06 -0400
-X-MC-Unique: doYU3A1pPOWnUXsv5BilvA-1
-Received: by mail-ed1-f71.google.com with SMTP id k10-20020a50cb8a0000b0290387e0173bf7so5856911edi.8
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 00:40:06 -0700 (PDT)
+        Fri, 30 Apr 2021 03:44:52 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD094C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 00:44:04 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id w3so103867022ejc.4
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 00:44:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LVubrsY2JZC5Vs7OTrJ5CTDcb8Ckyj/Ri95jZiKVPiI=;
+        b=GYzq8BCFMMbX2PRdEkOp8fnW9BPieaHNg0p+ihboIXi2qykzA7/DXnia4d0Rvbi+Cl
+         nOeKdD6N8SFTslmfeApTjveOOscrhMT7RcXurw2Kd9qXVy4k2BJAiwPk7oUZXVM+b5RV
+         HKfOW3ZUkSvU3nCcAZzbogrtZ0DindeQFM0BStvTkwgRj/o6cZ76tvjFe+0MbENmYsP4
+         Pc28yMJAQZ5IsXCUqETqDl76Oly1PmLFKtXPGbTVaiW0qUUsxSuzemnYQl9ZzcWGc17X
+         s+Byeoi0226lIcPQrFeip4gPKDyJQHG6iME0RUVCmXqfoRFYnQbp80yYx+R+9G+KeA3m
+         pO3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=eghNfNwYK/C3iXjA4b8fOp1z7unJQGi+R6RSjtyNSC0=;
-        b=WM1A4QXu/YRYLv3gGjkzCvrZoCamfQ9hYXXzMeYEr3VZACfr50E/MdpL98lpwu25Km
-         WVSD9Fj2Jf0E5Xvz36fReYAtWggZA0q2pZmHGB7MuYJlJpYWL6mIqjavArVIgRUjrBCc
-         wBFD/pWEZczHPgZJBwFQnOuxPyKoPsav0bDNQgv/RxyPXA+eDGFcewyG9M0cCopMsvfd
-         tvmuc98mLGZbvzZzWpa4mJ/SpzF6pQpgKcPjx7o5ZzfUIJvmP7ZGvKZUYx21iDtNjfjQ
-         V91SaMCexDBFcf1wAiQ1vUGbPRxCNN2uVgPf1EFU2DdiB3NoLssEAzWdxhuiBqeKVCWv
-         G0Qg==
-X-Gm-Message-State: AOAM533tqO/CJ09p7RcCEgb5dA2dgbOTFkXEbC48HPr9VhVyFzws+LbA
-        LzrBRkZqvSjTqi/tS4r9KehHEm3KmHvDcHRQdKAHmb1+8daQ/Bvb3b9XBlAyD2kN1+TIiz4nF6N
-        rJ8xfgjzxV33Ljaj8/kOpHwTG
-X-Received: by 2002:a17:906:6a41:: with SMTP id n1mr2796615ejs.401.1619768405041;
-        Fri, 30 Apr 2021 00:40:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwCK5v9EG1ShABi3WWrKBuJeUHtTwHg4LMzvkk6H+YB7k0j6X+Mt1rUMaG4kH2ghtCxD3agSA==
-X-Received: by 2002:a17:906:6a41:: with SMTP id n1mr2796585ejs.401.1619768404832;
-        Fri, 30 Apr 2021 00:40:04 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id z17sm1440309ejc.69.2021.04.30.00.40.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Apr 2021 00:40:04 -0700 (PDT)
-Subject: Re: [PATCH v2 0/4] Add guest support for SEV live migration.
-To:     Ashish Kalra <ashish.kalra@amd.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        joro@8bytes.org, bp@suse.de, thomas.lendacky@amd.com,
-        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srutherford@google.com, seanjc@google.com,
-        venu.busireddy@oracle.com, brijesh.singh@amd.com
-References: <cover.1619193043.git.ashish.kalra@amd.com>
- <20210430071927.GA8033@ashkalra_ubuntu_server>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f180f7f0-58c0-8370-1724-070ec89c1a40@redhat.com>
-Date:   Fri, 30 Apr 2021 09:40:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        bh=LVubrsY2JZC5Vs7OTrJ5CTDcb8Ckyj/Ri95jZiKVPiI=;
+        b=IRfk+UFQvJKWoxg04CFCR7JvgXbnno8Ao0WeOlXTAplBVXpSOdboPE87WNwOa+4Tv5
+         W4CR/s4i4EYXOoSVe/nVXddXJsNYQfoopNb0zJAwbOeLbHmJenNZ7gG291ZN3BVFX0EN
+         gdhWsRWpdQpxAtbNGXJktZ1nm3CR7vvhXYeJ9/palT5hUBdMvOnk8YiXIM3kvjux8Psc
+         623BS35jCIpV3aYDwM1pOzY1Bmf4j8YSRajVsh8ZRrp5eNIw3FWN9/BsmIrl1EI5BUtd
+         58QacOhdKi6Td8iMCwCkBF+1XtFL6VCP7cEgMjDEApDdxiqCI0nuGauQUw4N4tgDlWfr
+         6ydw==
+X-Gm-Message-State: AOAM531ZJWKa2O7Ws2AFmC6gF3E3lU9pWsPi/1dJ92EK8L281ydV7RoV
+        bjrt8Ml5dd+5ja/iUjl/uC0MmyLckcyrlw==
+X-Google-Smtp-Source: ABdhPJwNTuCEhkyp+D8n9Y9GQoJFdf7fsNtdgI/ZNFO6gIRscAoBTqJHzTEbyIA56ehYKDnHjGshJA==
+X-Received: by 2002:a17:906:858:: with SMTP id f24mr2852697ejd.347.1619768643432;
+        Fri, 30 Apr 2021 00:44:03 -0700 (PDT)
+Received: from agape ([5.171.81.86])
+        by smtp.gmail.com with ESMTPSA id c25sm651944edt.43.2021.04.30.00.44.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 00:44:02 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH 00/43] staging: rtl8723bs: clean up driver from private debug facilities
+Date:   Fri, 30 Apr 2021 09:43:18 +0200
+Message-Id: <cover.1619768150.git.fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210430071927.GA8033@ashkalra_ubuntu_server>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/04/21 09:19, Ashish Kalra wrote:
-> Hello Boris, Paolo,
-> 
-> Do you have additional comments, feedback on this updated patchset ?
+This patchset remove all private debug facilities.
+It removes unused macros and _do nothing_ ones (i.e. macros
+whose behaviour is activated by manual code update).
+Replace tracing macros wrapping raw printk calls by
+netdev_dbg() calls which is best suited for a network
+driver.
 
-Just a small one that the guest ABI isn't finished yet; some #defines 
-are going to change names and there will be two separate CPUIDs, one for 
-the hypercall and one for the MSR.  It would be nice to provide correct 
-encryption status even if the migration MSR is not there, because it can 
-be useful for debugging.
+Remove all unused macros and function definition tied to
+the whole private tracing facility.
 
-Paolo
+Fabio Aiuto (43):
+  staging: rtl8723bs: remove ODM_RT_TRACE logs
+  staging: rlt8723bs: remove if-else blocks left empty by ODM_RT_TRACE
+    deletion
+  staging: rtl8723bs: remove empty functions
+  staging: rtl8723bs: remove empty .c source file
+  staging: rtl8723bs: remove undefined function prototypes
+  staging: rtl8723bs: remove empty header file
+  staging: rtl8723bs: remove ODM_RT_TRACE* unused macro defs
+  staging: rtl8723bs: remove all commented out ODM_RT_TRACE logs
+  staging: rtl8723bs: replace ODM_RT_ASSERT with netdev_dbg()
+  staging: rtl8723bs: remove unused ODM_RT_ASSERT macro
+  staging: rtl8723bs: remove unused ODM_PRINT_ADDR macro
+  staging: rtl8723bs: remove unused ODM_dbg_trace macro
+  staging: rtl8723bs: remove unused ODM_dbg_enter
+  staging: rtl8723bs: remove unused ODM_dbg_exit macro
+  staging: rtl8723bs: remove empty ifdef block
+  staging: rtl8723bs: remove unused ASSERT macro
+  staging: rtl8723bs: remove empty #ifndef block
+  staging: rtl8723bs: remove commented out RT_ASSERT occurrences
+  staging: rtl8723bs: remove unused RT_PRINTK macro
+  staging: rtl8723bs: remove BTC_PRINT logs
+  staging: rtl8723bs: remove empty if-else blocks after BTC_PRINT
+    removal
+  staging: rtl8723bs: remove braces around single statement in if block
+  staging: rtl8723bs: remove commented out BTC_PRINT logs
+  staging: rtl8723bs: remove BTC_PRINT macro definitions
+  staging: rtl8723bs: remove BTC_PRINT_ADDR macro definitions
+  staging: rtl8723bs: remove BTC_PRINT_DATA definitions
+  staging: rtl8723bs: remove BTC_PRINT_F macro definition
+  staging: rtl8723bs: remove empty #ifdef block
+  staging: rtl8723bs: remove unsed hal_btcoex_SetDBG() function
+  staging: rtl8723bs: remove hal_btcoex_GetDBG() function
+  staging: rtl8723bs: remove unnecessary halbtcoutsrc_DbgInit() function
+  staging: rtl8723bs: remove obsolete GLBtcDbgType array declarations
+  staging: rtl8723bs: remove unused enum
+  staging: rtl8723bs: remove obsolete debug macros
+  staging: rtl8723bs: remove commented out DbgPrint logs
+  staging: rtl8723bs: remove unused DbgPrint macro
+  staging: rtl8723bs: remove commented out *RT_DISP logs
+  staging: rtl8723bs: remove RT_DISP macro definition
+  staging: rtl8723bs: remove ODM_InitDebugSetting() function
+  staging: rtl8723bs: remove empty file
+  staging: rtl8723bs: remove member in dm_odm_t struct
+  staging: rtl8723bs: remove DebugLevel member in dm_odm_t struct
+  staging: rtl8723bs: remove odm_debug.h header file
 
-> Thanks,
-> Ashish
-> 
-> On Fri, Apr 23, 2021 at 03:57:37PM +0000, Ashish Kalra wrote:
->> From: Ashish Kalra <ashish.kalra@amd.com>
->>
->> The series adds guest support for SEV live migration.
->>
->> The patch series introduces a new hypercall. The guest OS can use this
->> hypercall to notify the page encryption status. If the page is encrypted
->> with guest specific-key then we use SEV command during the migration.
->> If page is not encrypted then fallback to default.
->>
->> This section descibes how the SEV live migration feature is negotiated
->> between the host and guest, the host indicates this feature support via
->> KVM_FEATURE_CPUID. The guest firmware (OVMF) detects this feature and
->> sets a UEFI enviroment variable indicating OVMF support for live
->> migration, the guest kernel also detects the host support for this
->> feature via cpuid and in case of an EFI boot verifies if OVMF also
->> supports this feature by getting the UEFI enviroment variable and if it
->> set then enables live migration feature on host by writing to a custom
->> MSR, if not booted under EFI, then it simply enables the feature by
->> again writing to the custom MSR.
->>
->> Changes since v1:
->>   - Avoid having an SEV specific variant of kvm_hypercall3() and instead
->>     invert the default to VMMCALL.
->>
->> Ashish Kalra (3):
->>    KVM: x86: invert KVM_HYPERCALL to default to VMMCALL
->>    EFI: Introduce the new AMD Memory Encryption GUID.
->>    x86/kvm: Add guest support for detecting and enabling SEV Live
->>      Migration feature.
->>
->> Brijesh Singh (1):
->>    mm: x86: Invoke hypercall when page encryption status is changed
->>
->>   arch/x86/include/asm/kvm_para.h       |   2 +-
->>   arch/x86/include/asm/mem_encrypt.h    |   4 +
->>   arch/x86/include/asm/paravirt.h       |   6 ++
->>   arch/x86/include/asm/paravirt_types.h |   2 +
->>   arch/x86/include/asm/set_memory.h     |   2 +
->>   arch/x86/kernel/kvm.c                 | 106 ++++++++++++++++++++++++++
->>   arch/x86/kernel/paravirt.c            |   1 +
->>   arch/x86/mm/mem_encrypt.c             |  72 ++++++++++++++---
->>   arch/x86/mm/pat/set_memory.c          |   7 ++
->>   include/linux/efi.h                   |   1 +
->>   10 files changed, 193 insertions(+), 10 deletions(-)
->>
->> -- 
->> 2.17.1
->>
-> 
+ drivers/staging/rtl8723bs/core/rtw_efuse.c    |   1 -
+ drivers/staging/rtl8723bs/core/rtw_recv.c     |  22 -
+ .../staging/rtl8723bs/hal/HalBtc8723b1Ant.c   | 604 +-----------------
+ .../staging/rtl8723bs/hal/HalBtc8723b2Ant.c   | 502 +--------------
+ drivers/staging/rtl8723bs/hal/HalBtcOutSrc.h  |  67 --
+ .../staging/rtl8723bs/hal/HalHWImg8723B_BB.c  |  62 --
+ .../staging/rtl8723bs/hal/HalHWImg8723B_MAC.c |  49 --
+ .../staging/rtl8723bs/hal/HalHWImg8723B_RF.c  |  63 --
+ drivers/staging/rtl8723bs/hal/HalPhyRf.c      | 332 ----------
+ .../staging/rtl8723bs/hal/HalPhyRf_8723B.c    | 177 +----
+ drivers/staging/rtl8723bs/hal/hal_btcoex.c    | 171 -----
+ drivers/staging/rtl8723bs/hal/hal_com.c       |  14 -
+ drivers/staging/rtl8723bs/hal/odm.c           |  53 +-
+ drivers/staging/rtl8723bs/hal/odm.h           |   4 -
+ .../staging/rtl8723bs/hal/odm_CfoTracking.c   | 107 ----
+ drivers/staging/rtl8723bs/hal/odm_DIG.c       | 320 ----------
+ .../rtl8723bs/hal/odm_EdcaTurboCheck.c        |  18 -
+ drivers/staging/rtl8723bs/hal/odm_HWConfig.c  |  38 --
+ .../staging/rtl8723bs/hal/odm_NoiseMonitor.c  |  27 -
+ drivers/staging/rtl8723bs/hal/odm_PathDiv.c   |  34 -
+ drivers/staging/rtl8723bs/hal/odm_PathDiv.h   |  21 -
+ drivers/staging/rtl8723bs/hal/odm_RTL8723B.c  |   1 -
+ .../rtl8723bs/hal/odm_RegConfig8723B.c        |  66 --
+ drivers/staging/rtl8723bs/hal/odm_debug.c     |  44 --
+ drivers/staging/rtl8723bs/hal/odm_debug.h     | 165 -----
+ drivers/staging/rtl8723bs/hal/odm_precomp.h   |   2 -
+ .../staging/rtl8723bs/hal/rtl8723b_hal_init.c |   3 -
+ drivers/staging/rtl8723bs/hal/sdio_halinit.c  |   7 -
+ .../staging/rtl8723bs/include/hal_btcoex.h    |   2 -
+ 29 files changed, 6 insertions(+), 2970 deletions(-)
+ delete mode 100644 drivers/staging/rtl8723bs/hal/odm_PathDiv.c
+ delete mode 100644 drivers/staging/rtl8723bs/hal/odm_PathDiv.h
+ delete mode 100644 drivers/staging/rtl8723bs/hal/odm_debug.c
+ delete mode 100644 drivers/staging/rtl8723bs/hal/odm_debug.h
+
+-- 
+2.20.1
 
