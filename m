@@ -2,178 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA7F37029E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 23:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C1A37029C
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 23:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236145AbhD3VGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 17:06:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50242 "EHLO
+        id S236101AbhD3VF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 17:05:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231278AbhD3VFy (ORCPT
+        with ESMTP id S236019AbhD3VFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 30 Apr 2021 17:05:54 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97440C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 14:05:04 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id a18so28856264qtj.10
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 14:05:04 -0700 (PDT)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EAC3C06138B;
+        Fri, 30 Apr 2021 14:05:05 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id d11so14158010wrw.8;
+        Fri, 30 Apr 2021 14:05:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ydzc/UQSfGeVQNFG/QnxGDWnpFhecwtLoJxqG8ZG8Cg=;
-        b=Ov5R523poXhFI1+DTO58fwJyVG5rNJSwtnBjJkc2d0NfuddPNjyjVNuQDvPuV3xvSz
-         HvpREttduQPxVSPQAOIyOYBQxfZyhIf/3wphxaf8asWM5RUMbVBRfrz5KxXU54bvlJws
-         Xz7/VHZ58xLOEFJrCnt8mUt8eX7GqtBE7DXmA=
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4AFQFdYIK2aHm1d5xFyje/tGT6Iuc52lwDSkAKiwQ+0=;
+        b=T7Clnp0nW+dl1zkqChEKs3pKarwzuucCmhLXTyDQDkSQgn823ebNRcK6CGXdLrueJh
+         2JSQqctkyVfO32WId5f4qMJULZC8/UwNz4ZHeE0dlh/I1vTUYYtQbKWStcK88wWva0oK
+         O6+sqUwigxN7zrsJXATlgGi6sArWmbI5SBTglVCtTzoRXrVi5UgsV2DV/7EnnbkM9goQ
+         t7p+qNNVixGc4b8WD8tMng7x+Mv8h3vouwpEUj+hHG3Ci1Zf/ApDHQzx3E991D9+9k5T
+         lypYVkn7+Cw7wRYHo65pGSnJbMgGG2nS9DwXorZqXBGuYH3jO6xUfi6e0c9jtSndf6J0
+         l7OA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ydzc/UQSfGeVQNFG/QnxGDWnpFhecwtLoJxqG8ZG8Cg=;
-        b=jPQr8pjQKF2dZHFbe8EtUq2cmVTGnuHz/vzTD1xRnpszNahSwmluDm/nIml6rLfSRf
-         5+12kxWvw2PyOjeD6/+CSbvPziBuHfJl9TfGwMRSa2IqSR5XT89x3qms78XKFPq7F1Pk
-         LjNHPHzfCGbAHSmT8HXQAWAMD5MGgXry1qixjDeO1ES4YebIQf3RpAMuLUuBhDGS0lpr
-         K215UDtNGCPJOqa5i0XM8TfCv//I1esJ9k1vgytKcja85dhpy3PQpJx/cJB9DrbbrgtB
-         ZkjFhv+gCqspvLZKKxoO1Su7T22t6HQhYzsIMR8pJi1cDBvvO6Zmn7LL2vOd72Tw43Y5
-         VOeA==
-X-Gm-Message-State: AOAM531sKr6hKzE0GYthlgE7i17GWa9CuoxVbvCj+AUqr9YJX23YNL7e
-        7AH6UrpTLllfTk//pUMK2qksvMEpKu8Lmw==
-X-Google-Smtp-Source: ABdhPJxo8UhplmueTQqqHVJqBPLhoKtJ0hsR545cWCekYrabIDZsZd1iPKSA/jRo0AkltzhvL+2Org==
-X-Received: by 2002:ac8:70a:: with SMTP id g10mr6186411qth.328.1619816703622;
-        Fri, 30 Apr 2021 14:05:03 -0700 (PDT)
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
-        by smtp.gmail.com with ESMTPSA id 194sm2427125qke.51.2021.04.30.14.05.03
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4AFQFdYIK2aHm1d5xFyje/tGT6Iuc52lwDSkAKiwQ+0=;
+        b=SP2XN6kCHXpAFUbzV7KK2j+PUy58pT7l8UMSB/yPFRdXWm3FbyPuCpX+yTVye7m50N
+         VF4UsK9bTnES9Nya1RircZFQCe85p3Yqz4zwNBOZUujEBnQbIFebC0y76aWCMrqd82N4
+         xebATBpVCpil5UkdYIksMO0k4w3THUkOvxF9StuZacmZnsLUZ5VX/+zWeOnIJ+X9w5fO
+         oiaXfpKZZmUMbgrYyhOFd2qT51dQ9/uF2jdARO+nmU0FTjKG5jTR0FSzrIt3ChPDuIRU
+         Vplk9DkBa8PgxOaN8W3Tykd/iAHYBMrKwXBRe+nDMw4QsgK56aoT+L3M56ZftjoYPhTF
+         r3mw==
+X-Gm-Message-State: AOAM531trenLUjncXYDT47lFLBlwrkd6O815NX994x8RDUXNifJaMm6G
+        3uyTpMhNyH8lJBwR1JaNOYo=
+X-Google-Smtp-Source: ABdhPJwAjh2UP9hVb62pJ4UiJuGK/XfSrZhDaWcnN/VAqrY5Tx8p4w1UhRTw2xZmFmHfI8xCwvqcJw==
+X-Received: by 2002:adf:d091:: with SMTP id y17mr9356684wrh.107.1619816704466;
+        Fri, 30 Apr 2021 14:05:04 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.132.80])
+        by smtp.gmail.com with ESMTPSA id h5sm14025866wmq.23.2021.04.30.14.05.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Fri, 30 Apr 2021 14:05:03 -0700 (PDT)
-Received: by mail-yb1-f174.google.com with SMTP id t94so31610040ybi.3
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 14:05:03 -0700 (PDT)
-X-Received: by 2002:a25:6088:: with SMTP id u130mr10217798ybb.257.1619816691670;
- Fri, 30 Apr 2021 14:04:51 -0700 (PDT)
+Subject: Re: INFO: task hung in io_uring_cancel_sqpoll
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Palash Oswal <oswalpalash@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzbot+11bf59db879676f59e52@syzkaller.appspotmail.com
+References: <0000000000000c97e505bdd1d60e@google.com>
+ <cfa0f9b8-91ec-4772-a6c2-c5206f32373fn@googlegroups.com>
+ <53a22ab4-7a2d-4ebd-802d-9d1b4ce4e087n@googlegroups.com>
+ <CAGyP=7fpNBhbmczjDq-vpzbSDyqwCw2jS7xQo4XO=bxwsy2ddQ@mail.gmail.com>
+ <a6ce21f4-04e7-f34c-8cfc-f8158f7fe163@gmail.com>
+ <CAGyP=7czG1nmzpM5T784iBdApVL14hGoAfw-nhS=tNH5t9C79g@mail.gmail.com>
+ <d350afac-eef2-c33f-e435-fe0ec7ffd1cf@gmail.com>
+Message-ID: <9a7c2040-e26f-1c59-b7e9-25784d5b854e@gmail.com>
+Date:   Fri, 30 Apr 2021 22:04:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <20210423165906.2504169-1-dianders@chromium.org>
- <20210423095743.v5.1.I9e6af2529d6c61e5daf86a15a1211121c5223b9a@changeid>
- <CACRpkdYkRFLvCRPSYNzYQG58QgPfhvjtHb+FBQZadyrnjC8=1A@mail.gmail.com>
- <CAD=FV=UX683grZ=poTwKXxSqYBCLdLAOCxOPhE_xVVgKbe36Mw@mail.gmail.com> <CACRpkdYfugrJ4WGn=w+viGXE6s5cdHjLC++jHPLVy_QH09KA8Q@mail.gmail.com>
-In-Reply-To: <CACRpkdYfugrJ4WGn=w+viGXE6s5cdHjLC++jHPLVy_QH09KA8Q@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 30 Apr 2021 14:04:39 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XXxTz8hi92y6p3hX7iVEHuqKHsrKPSnX_a__WCEQRAKw@mail.gmail.com>
-Message-ID: <CAD=FV=XXxTz8hi92y6p3hX7iVEHuqKHsrKPSnX_a__WCEQRAKw@mail.gmail.com>
-Subject: Re: [PATCH v5 01/20] drm/panel: panel-simple: Add missing
- pm_runtime_disable() calls
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <d350afac-eef2-c33f-e435-fe0ec7ffd1cf@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 4/30/21 7:34 PM, Pavel Begunkov wrote:
+> On 4/30/21 4:02 PM, Palash Oswal wrote:
+>> On Fri, Apr 30, 2021 at 8:03 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>>>
+>>> On 4/30/21 3:21 PM, Palash Oswal wrote:
+>>>> On Thursday, March 18, 2021 at 9:40:21 PM UTC+5:30 syzbot wrote:
+>>>>>
+>>>>> Hello,
+>>>>>
+>>>>> syzbot found the following issue on:
+>>>>>
+>>>>> HEAD commit: 0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
+>>>>> git tree: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=12dde5aed00000
+>>>>> kernel config: https://syzkaller.appspot.com/x/.config?x=81c0b708b31626cc
+>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=11bf59db879676f59e52
+>>>>> userspace arch: riscv64
+>>>>> CC: [asml.s...@gmail.com ax...@kernel.dk io-u...@vger.kernel.org linux-...@vger.kernel.org]
+>>>>>
+>>>>> Unfortunately, I don't have any reproducer for this issue yet.
+>>>
+>>> There was so many fixes in 5.12 after this revision, including sqpoll
+>>> cancellation related... Can you try something more up-to-date? Like
+>>> released 5.12 or for-next
+>>>
+>>
+>> The reproducer works for 5.12.
+>>
+>> I tested against the HEAD b1ef997bec4d5cf251bfb5e47f7b04afa49bcdfe
+>> commit on for-next tree
+>> https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/?h=for-next
+>> and the reproducer fails.
+> 
+> Can't reproduce. Does it hang as in the original's report dmesg?
+> Can you paste logs?
 
-On Thu, Apr 29, 2021 at 6:28 PM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Fri, Apr 30, 2021 at 3:25 AM Doug Anderson <dianders@chromium.org> wrote:
->
-> > > I think pm_runtime_disable(); need to be added there?
-> >
-> > I'm a bit confused. You're saying that I need to add
-> > pm_runtime_disable() to panel_simple_remove()? Doesn't this patch do
-> > that?
->
-> It does, sorry, too late at night :D
->
-> I was looking at the previous patch and mixed up which was the
-> patch and the patch to the patch...
->
-> Thanks, apply this!
+and `uname -r` if you could
 
-Pushed this one patch. Rest of the series is pending adult
-supervision. Overall summary:
+> 
+> #syz test: git://git.kernel.dk/linux-block io_uring-5.13
+> 
 
-1. I could probably push some of the early sn65dsi86 cleanup patches
-in this series since they have Bjorn's review and are pretty much
-no-ops / simple cleanups, but there's probably not tons gained for
-shoving those in early.
-
-2. The whole concept of breaking up the patch into sub-drivers has no
-official Reviewed-by tags yet. Presumably Bjorn will give those a
-re-review when he has time again. Assuming nobody is really upset
-about it, I could land those which might unblock some of Bjorn's
-future PWM work. It would probably be good to get an extra set of eyes
-on them, though, just so someone else agrees that they're not "too
-hacky" or anything. IMO it's actually a pretty nice solution, but I'm
-biased!
-
-3. Laurent and I had a big discussion on #dri-devel yesterday about
-the EDID reading. He's not totally convinced with the idea of doing
-this in the panel when the bridge could just do it by itself, but it
-sounded like he might be coming around. Right now this is waiting on
-Laurent to have time to get back to this.
-
-My summary of the IRC discussion with Laurent (please correct if I got
-this wrong):
-
-a) In general I argued that it was important to be able to provide the
-EDID and the DDC bus to the panel driver. Providing the EDID to the
-panel driver allows the panel driver is one of the prerequisites for
-my proposal for solving the "panel second sourcing" problem [1]. Being
-able to provide the DDC bus to the panel will likely be important in
-the eventual solution to Rajeev's problem [2].
-
-b) Today, if we provide the DDC bus to simple-panel then simple-panel
-will assume it's in charge of reading the EDID.
-
-c) Having the panel driver involved in reading the EDID feels like it
-makes sense to me. The panel driver knows how to power the panel on
-enough to read the EDID. It also might know extra quirks needed to
-read the EDID on a given panel. This feels a little cleaner (to me)
-than just re-using the panel's "prepare" and assuming that a prepared
-panel was ready for EDID read, though I can see that both may have
-their advantages.
-
-d) Laurent proposed that some eDP controllers might have special ways
-to read an EDID but might not be able to provide a DDC bus or an i2c
-bus. If we run into controllers like this then we would be painted
-into a corner and we'd have to come up with a new solution. This is
-definitely a good point, though it remains to be seen if this is
-common with eDP (like Laurent says it is for HDMI). Some eDP panels
-need custom DDC commands in order to be configured and so hopefully
-all eDP bridges out there at least provide a DDC bus. It does feel
-like this could be solved later, though. My patch series is leveraging
-the existing concept that the panel driver is in charge of reading the
-EDID if it's given the DDC bus, so it's not creating a new mechanism
-but instead just continuing to use the existing mechanism. If the
-existing mechanism doesn't work then it can be improved when there is
-a need.
-
-e) Laurent worried about circular dependencies and wanted to see my
-solution to the problem before deciding if it was too big of a hack.
-Hopefully it looks OK since it solves not only this problem but also
-the HPD GPIO problem and will be important for when Bjorn exports the
-PWM from the bridge chip.
-
-[1] https://lore.kernel.org/lkml/CAD=FV=VZYOMPwQZzWdhJGh5cjJWw_EcM-wQVEivZ-bdGXjPrEQ@mail.gmail.com/
-[2] https://lore.kernel.org/r/78c4bd291bd4a17ae2a1d02d0217de43@codeaurora.org
-
-OK, I'll shut up now. ;-)
-
--Doug
+-- 
+Pavel Begunkov
