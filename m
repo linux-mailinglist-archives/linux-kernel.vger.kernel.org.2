@@ -2,241 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C2E36F5B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 08:31:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA2836F5B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 08:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230284AbhD3GcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 02:32:17 -0400
-Received: from mga01.intel.com ([192.55.52.88]:16014 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229482AbhD3GcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 02:32:16 -0400
-IronPort-SDR: znuy7+9FuX3kLqurB5DM/4/tFzQvoWyMok4pb9pdzk7CPl1HW98aC7hI8vOzquDRIflKLIIrSx
- jWTgY1gIMwnQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9969"; a="217946662"
-X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
-   d="scan'208";a="217946662"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 23:31:28 -0700
-IronPort-SDR: DEpKX/quVAJUECcz1EuKcdOe+V3ayUdpQ7HlQm3KFF6bK7lj5x8u/Mx0NdAMlw3x5MVk/32r7k
- wfFoAS2Yl/rA==
-X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
-   d="scan'208";a="431269262"
-Received: from lingshan-mobl5.ccr.corp.intel.com (HELO [10.254.210.192]) ([10.254.210.192])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 23:31:26 -0700
-Subject: Re: [PATCH] vdpa/mlx5: Add support for doorbell bypassing
-To:     Jason Wang <jasowang@redhat.com>, Eli Cohen <elic@nvidia.com>
-Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20210421104145.115907-1-elic@nvidia.com>
- <e1885255-34f2-9e90-6478-ff0850a5a3d4@redhat.com>
- <20210422060358.GA140698@mtl-vdi-166.wap.labs.mlnx>
- <20210422080725.GB140698@mtl-vdi-166.wap.labs.mlnx>
- <9d3d8976-800d-bb14-0a4a-c4b008f6872c@redhat.com>
- <20210422083902.GA146406@mtl-vdi-166.wap.labs.mlnx>
- <bdf10e38-8746-51cf-b460-a904a133329c@redhat.com>
- <20210429100033.GA215200@mtl-vdi-166.wap.labs.mlnx>
- <fc887d99-7058-1057-2d1a-3bdc5802a59a@redhat.com>
-From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
-Message-ID: <836263af-6791-0bd3-22c7-22197da021e9@intel.com>
-Date:   Fri, 30 Apr 2021 14:31:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S230377AbhD3GeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 02:34:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229482AbhD3GeK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 02:34:10 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38642C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 23:33:22 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id g10so13368502edb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 23:33:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hcHFf3gTv35FziNzw1N04IYNOd/IGcKHr18KAtXIQ9o=;
+        b=usj7svzaCDGTwJB0q0lWBcA+tj83ZyqEzAHyZGF5Zyy83y55/HrRdLq5GVdYfsx4wr
+         jYbP0sNATPeVyQQHiTlV7as4n+rVCzzGjebAFu9cVhWdonhJhM4hlnA5xrT8I9QF2NbB
+         quRJ/vVEJfKXyzvZ04KsKBeiYBS0ymMIw5po9gzlOsJNr+ovBXQoXTp50d+fi20bW3vW
+         kM51jeugJcJEjgPQ296F6uAn+i/qtNrYl+OepAGGfLMQAEb4A1FtshSJCWGGT+tscBJu
+         /n2NZeEBbBkGZmsIlpo844MwjKktSM/ZhEnWYsW+3AcbFq750D2ldUve9fsfNKXvcm8z
+         0uDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hcHFf3gTv35FziNzw1N04IYNOd/IGcKHr18KAtXIQ9o=;
+        b=Az7NYs0SazZv/JX39sXkQ7TnOSKOoX9qOWC174bNkkUif9F2VRGa7IL+s8v3hyXZfF
+         HzWRTHXVs6+t9wJtFS82V6OKH6O8E4STq6UJGn16dwmhPP1QSaywUPdaPwgl0gAdkJRh
+         XNtZh8/oAV7Jp8Lc/Az/IGlrn9ABc71coIlX7kcqPHvvC8bYdd3HGjot5GGUXoXAD97X
+         L1dE+7YIQmSSbBy/O1MyM53ygH7mgKpsQ2oF7tfKSBPSr+EasjJzzceqTkUNYxH9PXuo
+         ZG+WotFW+Xiyj/KF1Sj87InpNW/hLfuy6kkpib6Uo9RHxqYsFCjYqoJFIMVh7HRA8S5t
+         D5oQ==
+X-Gm-Message-State: AOAM532xkd/fa771cXF4m5HXANARYf10eiPsof7UqnfbQMQhDLAmAZSJ
+        9xdf1hjn9D/Ibz+r9guX8ub+3hjMWqMroz42
+X-Google-Smtp-Source: ABdhPJzAmUUN7GjJhZmwW37mLPD9iFm+VR7zgvyhZMlyNVNhniWDubfvf4dujehgfL7wlO7m54TkKg==
+X-Received: by 2002:a50:ed0a:: with SMTP id j10mr3770520eds.22.1619764400647;
+        Thu, 29 Apr 2021 23:33:20 -0700 (PDT)
+Received: from ?IPv6:2a02:768:2307:40d6::45a? ([2a02:768:2307:40d6::45a])
+        by smtp.gmail.com with ESMTPSA id o6sm539810edw.24.2021.04.29.23.33.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Apr 2021 23:33:20 -0700 (PDT)
+Subject: Re: [GIT PULL] arch/microblaze patches for 5.13-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <ffad0699-7966-f601-3d88-8ad1157bf2b8@monstr.eu>
+ <CAHk-=whyvvZO3M9=4AP7Ci9ge2wQAjvdDrkr36bYt=Ux_rx_wA@mail.gmail.com>
+From:   Michal Simek <monstr@monstr.eu>
+Message-ID: <b965ccc0-29a7-bb82-ec23-776f00ed67dc@monstr.eu>
+Date:   Fri, 30 Apr 2021 08:33:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <fc887d99-7058-1057-2d1a-3bdc5802a59a@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHk-=whyvvZO3M9=4AP7Ci9ge2wQAjvdDrkr36bYt=Ux_rx_wA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 4/30/2021 12:40 PM, Jason Wang wrote:
->
-> 在 2021/4/29 下午6:00, Eli Cohen 写道:
->> On Thu, Apr 22, 2021 at 04:59:11PM +0800, Jason Wang wrote:
->>> 在 2021/4/22 下午4:39, Eli Cohen 写道:
->>>> On Thu, Apr 22, 2021 at 04:21:45PM +0800, Jason Wang wrote:
->>>>> 在 2021/4/22 下午4:07, Eli Cohen 写道:
->>>>>> On Thu, Apr 22, 2021 at 09:03:58AM +0300, Eli Cohen wrote:
->>>>>>> On Thu, Apr 22, 2021 at 10:37:38AM +0800, Jason Wang wrote:
->>>>>>>> 在 2021/4/21 下午6:41, Eli Cohen 写道:
->>>>>>>>> Implement mlx5_get_vq_notification() to return the doorbell 
->>>>>>>>> address.
->>>>>>>>> Size is set to one system page as required.
->>>>>>>>>
->>>>>>>>> Signed-off-by: Eli Cohen <elic@nvidia.com>
->>>>>>>>> ---
->>>>>>>>>      drivers/vdpa/mlx5/core/mlx5_vdpa.h | 1 +
->>>>>>>>>      drivers/vdpa/mlx5/core/resources.c | 1 +
->>>>>>>>>      drivers/vdpa/mlx5/net/mlx5_vnet.c  | 6 ++++++
->>>>>>>>>      3 files changed, 8 insertions(+)
->>>>>>>>>
->>>>>>>>> diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h 
->>>>>>>>> b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
->>>>>>>>> index b6cc53ba980c..49de62cda598 100644
->>>>>>>>> --- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
->>>>>>>>> +++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
->>>>>>>>> @@ -41,6 +41,7 @@ struct mlx5_vdpa_resources {
->>>>>>>>>          u32 pdn;
->>>>>>>>>          struct mlx5_uars_page *uar;
->>>>>>>>>          void __iomem *kick_addr;
->>>>>>>>> +    u64 phys_kick_addr;
->>>>>>>>>          u16 uid;
->>>>>>>>>          u32 null_mkey;
->>>>>>>>>          bool valid;
->>>>>>>>> diff --git a/drivers/vdpa/mlx5/core/resources.c 
->>>>>>>>> b/drivers/vdpa/mlx5/core/resources.c
->>>>>>>>> index 6521cbd0f5c2..665f8fc1710f 100644
->>>>>>>>> --- a/drivers/vdpa/mlx5/core/resources.c
->>>>>>>>> +++ b/drivers/vdpa/mlx5/core/resources.c
->>>>>>>>> @@ -247,6 +247,7 @@ int mlx5_vdpa_alloc_resources(struct 
->>>>>>>>> mlx5_vdpa_dev *mvdev)
->>>>>>>>>              goto err_key;
->>>>>>>>>          kick_addr = mdev->bar_addr + offset;
->>>>>>>>> +    res->phys_kick_addr = kick_addr;
->>>>>>>>>          res->kick_addr = ioremap(kick_addr, PAGE_SIZE);
->>>>>>>>>          if (!res->kick_addr) {
->>>>>>>>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c 
->>>>>>>>> b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>>>>>>> index 10c5fef3c020..680751074d2a 100644
->>>>>>>>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>>>>>>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>>>>>>> @@ -1865,8 +1865,14 @@ static void mlx5_vdpa_free(struct 
->>>>>>>>> vdpa_device *vdev)
->>>>>>>>>      static struct vdpa_notification_area 
->>>>>>>>> mlx5_get_vq_notification(struct vdpa_device *vdev, u16 idx)
->>>>>>>>>      {
->>>>>>>>> +    struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
->>>>>>>>>          struct vdpa_notification_area ret = {};
->>>>>>>>> +    struct mlx5_vdpa_net *ndev;
->>>>>>>>> +
->>>>>>>>> +    ndev = to_mlx5_vdpa_ndev(mvdev);
->>>>>>>>> +    ret.addr = (phys_addr_t)ndev->mvdev.res.phys_kick_addr;
->>>>>>>>> +    ret.size = PAGE_SIZE;
->>>>>>>> Note that the page will be mapped in to guest, so it's only 
->>>>>>>> safe if the
->>>>>>>> doorbeel exclusively own the page. This means if there're other 
->>>>>>>> registers in
->>>>>>>> the page, we can not let the doorbell bypass to work.
->>>>>>>>
->>>>>>>> So this is suspicious at least in the case of subfunction where 
->>>>>>>> we calculate
->>>>>>>> the bar length in mlx5_sf_dev_table_create() as:
->>>>>>>>
->>>>>>>> table->sf_bar_length = 1 << (MLX5_CAP_GEN(dev, log_min_sf_size) 
->>>>>>>> + 12);
->>>>>>>>
->>>>>>>> It looks to me this can only work for the arch with PAGE_SIZE = 
->>>>>>>> 4096,
->>>>>>>> otherwise we can map more into the userspace(guest).
->>>>>>>>
->>>>>>> Correct, so I guess I should return here 4096.
->>>>> I'm not quite sure but since the calculation of the sf_bar_length 
->>>>> is doen
->>>>> via a shift of 12, it might be correct.
->>>>>
->>>>> And please double check if the doorbell own the page exclusively.
->>>> I am checking if it is safe to map the any part of the SF's BAR to
->>>> userspace without harming other functions. If this is true, I will 
->>>> check
->>>> if I can return PAGE_SIZE without compromising security.
->>>
->>> It's usally not safe and a layer violation if other registers are 
->>> placed at
->>> the same page.
->>>
->>>
->>>>    I think we may
->>>> need to extend struct vdpa_notification_area to contain another field
->>>> offset which indicates the offset from addr where the actual doorbell
->>>> resides.
->>>
->>> The movitiaton of the current design is to be fit seamless into how 
->>> Qemu
->>> model doorbell layouts currently:
->>>
->>> 1) page-per-vq, each vq has its own page aligned doorbell
->>> 2) 2 bytes doorbell, each vq has its own 2 byte aligend doorbell
->>>
->>> Only 1) is support in vhost-vDPA (and vhost-user) since it's rather 
->>> simple
->>> and secure (page aligned) to be modelled and implemented via mmap().
->>>
->>> Exporting a complex layout is possbile but requires careful design.
->>>
->>> Actually, we had antoher option
->>>
->>> 3) shared doorbell: all virtqueue shares a single page aligned doorbell
->> I am not sure how this could solve the problem of 64KB archs.
->> The point is that in ConnectX devices, the virtio queue objects doorbell
->> is aligned to 4K. For larger system page sizes, the doorbell may not be
->> aligned to a system page.
->> So it seems not too complex to introduce offset within the page.
->
->
-> Three major issues:
->
-> 1) single mmap() works at page level, it means we need map 64K to 
-> guest and we can only do this safely if no other registers are placed 
-> into the same page
-> 2) new uAPI to let the userspace know the offset
-> 3) how to model them with the virtio-pci in Qemu, and this may 
-> introduce burdens for management (need some changes in the qemu 
-> command line) to deal with the migration compatibility
->
-> So consider the complexity, we can just stick to the current code. 
-> That means mmap() will fail and qemu will keep using the eventfd based 
-> kick.
-There is another case, mmap() works at page level, page size is at least 
-4K. Consider if a device has a bar containing the shared doorbell page 
-at its last 4K space. In this bar layout, map a arch.page_size=64K page 
-to usersapce would lead to fatal errors.
-I think we can assign the actual size of the doorbell area size to 
-vdpa_notification.size than arch.page_size to avoid such issues. Then 
-upper layers like vhost_vdpa should check whether this size can work 
-with the machine arch and its alignment, if not, should fail over to use 
-eventfd.
-Then do we still need a uAPI tell the offset within the page?
+On 4/29/21 8:40 PM, Linus Torvalds wrote:
+> On Thu, Apr 29, 2021 at 12:52 AM Michal Simek <monstr@monstr.eu> wrote:
+>>
+>> please pull these patches to your tree. There is no new feature added
+>> but it just about cleaning up some code and moving to generic syscall
+>> solution used by other architectures.
+> 
+> Hmm. This ended up being based on the v5.12-rc1-dontuse tag.
+> 
+> I guess it doesn't matter all that much, but it would have been good
+> to try to avoid that.
 
-Thanks
-Zhu Lingshan
->
->
->
->>
->> BTW, for now, I am going to send another patch that makes sure page
->> boundaries are not vilated. It requires some support from mlx5_core
->> which is currently being reviewed internally.
->
->
-> Sure.
->
-> Thanks
->
->
->>
->>> This is not yet supported by Qemu.
->>>
->>> Thanks
->>>
->>>
->>>>>>> I also think that the check in vhost_vdpa_mmap() should verify 
->>>>>>> that the
->>>>>>> returned size is not smaller than PAGE_SIZE because the returned 
->>>>>>> address
->>>>>> Actually I think it's ok since you verify the size equals 
->>>>>> vma->vm_end -
->>>>>> vma->vm_start which must be at least PAGE_SIZE.
->>>>> Yes.
->>>>>
->>>>> Thanks
->>>>>
->>>>>
->>>>>>> might just be aligned to PAGE_SIZE. I think this should be 
->>>>>>> enoght but
->>>>>>> maybe also use the same logic in vhost_vdpa_fault().
->
+Ah. My bad. I didn't realize that it shouldn't be really used.
+
+Thanks,
+Michal
+
+-- 
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
 
