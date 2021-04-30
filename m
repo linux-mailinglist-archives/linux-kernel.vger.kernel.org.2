@@ -2,265 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84D6B36F6C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 09:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7878F36F6CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbhD3H5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 03:57:31 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:16934 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbhD3H5V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 03:57:21 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FWl4T70yPznTVV;
-        Fri, 30 Apr 2021 15:54:01 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Fri, 30 Apr 2021
- 15:56:23 +0800
-From:   Nanyong Sun <sunnanyong@huawei.com>
-To:     <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
-        <aou@eecs.berkeley.edu>
-CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <palmerdabbelt@google.com>, <atish.patra@wdc.com>,
-        <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
-Subject: [PATCH -next 4/4] riscv: mm: add THP support on 64-bit
-Date:   Fri, 30 Apr 2021 16:28:50 +0800
-Message-ID: <20210430082850.462609-5-sunnanyong@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210430082850.462609-1-sunnanyong@huawei.com>
-References: <20210430082850.462609-1-sunnanyong@huawei.com>
+        id S230407AbhD3IDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 04:03:03 -0400
+Received: from meesny.iki.fi ([195.140.195.201]:56436 "EHLO meesny.iki.fi"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229538AbhD3IDA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 04:03:00 -0400
+X-Greylist: delayed 391 seconds by postgrey-1.27 at vger.kernel.org; Fri, 30 Apr 2021 04:03:00 EDT
+Received: from hillosipuli.retiisi.eu (unknown [IPv6:2001:2003:f75d:b010:afd2:773e:79db:477b])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sailus)
+        by meesny.iki.fi (Postfix) with ESMTPSA id 4870B20B84;
+        Fri, 30 Apr 2021 10:55:36 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
+        t=1619769336;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=At6PZRFKsbGNruG3GNKdBBrXc6Ob2m8mGDbBrb0V0Eg=;
+        b=YUqsBSdhv3hkiXIa/ey5fy7GyrH7I2IRqkijej/0lpv/oFzI//aSmtxzjdEuABfj07abjL
+        AGbIGbp6k9DafgibIskqftuDlxTC+pVuzeGi7Z6LGrUZpUo4S8xmzNQuKom3cQ1vrwU4kb
+        3niv3N6D7rJsALxOgvMfCsd+3rlHu6g=
+Received: from valkosipuli.localdomain (valkosipuli.localdomain [IPv6:fd35:1bc8:1a6:d3d5::80:2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 450A7634C89;
+        Fri, 30 Apr 2021 10:53:32 +0300 (EEST)
+Received: from localhost ([127.0.0.1] helo=valkosipuli.retiisi.eu)
+        by valkosipuli.localdomain with esmtp (Exim 4.92)
+        (envelope-from <sakari.ailus@iki.fi>)
+        id 1lcNzs-0004z1-De; Fri, 30 Apr 2021 10:55:36 +0300
+Date:   Fri, 30 Apr 2021 10:55:36 +0300
+From:   Sakari Ailus <sakari.ailus@iki.fi>
+To:     dev.dragon@bk.ru
+Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Staging: media: atomisp: pci: fixed a curly bracket
+ coding style issue.
+Message-ID: <20210430075536.GA3@valkosipuli.retiisi.eu>
+References: <20210410191655.32719-1-dev.dragon@bk.ru>
+ <20210430075423.GZ3@valkosipuli.retiisi.eu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.32]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210430075423.GZ3@valkosipuli.retiisi.eu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+ARC-Seal: i=1; s=meesny; d=iki.fi; t=1619769336; a=rsa-sha256; cv=none;
+        b=rlU3Xk/unWYF1DYfyc3psg8hrK5pATUEmMYY+CCk1jduxYZzftRKT0LlYFUEbt97MadRB/
+        AVQAiTQDaD+7JEz5imgcx2u5OQmu1QHLZFKkkGaBPn+5zb1vw3g7MfJFYLGzo47RCrXTon
+        QTdLR4SmILsGsOBE3r9BFS9ixLlTd6Y=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+        s=meesny; t=1619769336;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=At6PZRFKsbGNruG3GNKdBBrXc6Ob2m8mGDbBrb0V0Eg=;
+        b=wB/8SPRq3GKoj+AJheJvD+ia53tUVs5lhzM+8ObfqB8V4gWZTgPInrFC+7QktZ4yQkMKzf
+        l/sLCf0kjFiIDGnK2LGKKBNCpxl8kRe6heqmGf77J4GICzKAahKe+remGUMD/Za6Zl0kas
+        YXCbI3moEDPCoRz4rRqe/voOXb7WOac=
+ARC-Authentication-Results: i=1;
+        ORIGINATING;
+        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bring Transparent HugePage support to riscv. A
-transparent huge page is always represented as a pmd.
+On Fri, Apr 30, 2021 at 10:54:23AM +0300, Sakari Ailus wrote:
+> Hi Dmitrii,
+> 
+> On Sat, Apr 10, 2021 at 10:16:56PM +0300, dev.dragon@bk.ru wrote:
+> > From: Dmitrii Wolf <dev.dragon@bk.ru>
+> > 
+> > Fixed a coding style issue.
+> 
+> You'll need a Signed-off-by: line here. Please see
+> Documentation/process/submitting-patches.rst .
 
-Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
----
- arch/riscv/Kconfig               |   1 +
- arch/riscv/include/asm/pgtable.h | 156 +++++++++++++++++++++++++++++++
- arch/riscv/mm/tlbflush.c         |   7 ++
- 3 files changed, 164 insertions(+)
+Oh well. Please ignore. I see this was fixed in another patch (please use
+v2 on the next time for the second version).
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 4e124b2eb..3628f9f12 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -101,6 +101,7 @@ config RISCV
- 	select SYSCTL_EXCEPTION_TRACE
- 	select THREAD_INFO_IN_TASK
- 	select UACCESS_MEMCPY if !MMU
-+	select HAVE_ARCH_TRANSPARENT_HUGEPAGE if 64BIT
- 
- config ARCH_MMAP_RND_BITS_MIN
- 	default 18 if 64BIT
-diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-index f7fc47c58..ceb4b9c82 100644
---- a/arch/riscv/include/asm/pgtable.h
-+++ b/arch/riscv/include/asm/pgtable.h
-@@ -148,10 +148,23 @@ extern pgd_t swapper_pg_dir[];
- #define __S110	PAGE_SHARED_EXEC
- #define __S111	PAGE_SHARED_EXEC
- 
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+static inline int pmd_present(pmd_t pmd)
-+{
-+	/*
-+	 * Checking for _PAGE_LEAF is needed too because:
-+	 * When splitting a THP, split_huge_page() will temporarily clear
-+	 * the present bit, in this situation, pmd_present() and
-+	 * pmd_trans_huge() still needs to return true.
-+	 */
-+	return (pmd_val(pmd) & (_PAGE_PRESENT | _PAGE_PROT_NONE | _PAGE_LEAF));
-+}
-+#else
- static inline int pmd_present(pmd_t pmd)
- {
- 	return (pmd_val(pmd) & (_PAGE_PRESENT | _PAGE_PROT_NONE));
- }
-+#endif
- 
- static inline int pmd_none(pmd_t pmd)
- {
-@@ -345,6 +358,14 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
- 	local_flush_tlb_page(address);
- }
- 
-+static inline void update_mmu_cache_pmd(struct vm_area_struct *vma,
-+		unsigned long address, pmd_t *pmdp)
-+{
-+	pte_t *ptep = (pte_t *)pmdp;
-+
-+	update_mmu_cache(vma, address, ptep);
-+}
-+
- #define __HAVE_ARCH_PTE_SAME
- static inline int pte_same(pte_t pte_a, pte_t pte_b)
- {
-@@ -438,6 +459,141 @@ static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
- 	return ptep_test_and_clear_young(vma, address, ptep);
- }
- 
-+/*
-+ * THP functions
-+ */
-+static inline pmd_t pte_pmd(pte_t pte)
-+{
-+	return __pmd(pte_val(pte));
-+}
-+
-+static inline pmd_t pmd_mkhuge(pmd_t pmd)
-+{
-+	return pmd;
-+}
-+
-+static inline pmd_t pmd_mkinvalid(pmd_t pmd)
-+{
-+	return __pmd(pmd_val(pmd) & ~(_PAGE_PRESENT|_PAGE_PROT_NONE));
-+}
-+
-+#define __pmd_to_phys(pmd)  (pmd_val(pmd) >> _PAGE_PFN_SHIFT << PAGE_SHIFT)
-+
-+static inline unsigned long pmd_pfn(pmd_t pmd)
-+{
-+	return ((__pmd_to_phys(pmd) & PMD_MASK) >> PAGE_SHIFT);
-+}
-+
-+static inline pmd_t mk_pmd(struct page *page, pgprot_t prot)
-+{
-+	return pfn_pmd(page_to_pfn(page), prot);
-+}
-+
-+static inline pmd_t pmd_modify(pmd_t pmd, pgprot_t newprot)
-+{
-+	return pte_pmd(pte_modify(pmd_pte(pmd), newprot));
-+}
-+
-+#define pmd_write pmd_write
-+static inline int pmd_write(pmd_t pmd)
-+{
-+	return pte_write(pmd_pte(pmd));
-+}
-+
-+static inline int pmd_dirty(pmd_t pmd)
-+{
-+	return pte_dirty(pmd_pte(pmd));
-+}
-+
-+static inline int pmd_young(pmd_t pmd)
-+{
-+	return pte_young(pmd_pte(pmd));
-+}
-+
-+static inline pmd_t pmd_mkold(pmd_t pmd)
-+{
-+	return pte_pmd(pte_mkold(pmd_pte(pmd)));
-+}
-+
-+static inline pmd_t pmd_mkyoung(pmd_t pmd)
-+{
-+	return pte_pmd(pte_mkyoung(pmd_pte(pmd)));
-+}
-+
-+static inline pmd_t pmd_mkwrite(pmd_t pmd)
-+{
-+	return pte_pmd(pte_mkwrite(pmd_pte(pmd)));
-+}
-+
-+static inline pmd_t pmd_wrprotect(pmd_t pmd)
-+{
-+	return pte_pmd(pte_wrprotect(pmd_pte(pmd)));
-+}
-+
-+static inline pmd_t pmd_mkclean(pmd_t pmd)
-+{
-+	return pte_pmd(pte_mkclean(pmd_pte(pmd)));
-+}
-+
-+static inline pmd_t pmd_mkdirty(pmd_t pmd)
-+{
-+	return pte_pmd(pte_mkdirty(pmd_pte(pmd)));
-+}
-+
-+static inline void set_pmd_at(struct mm_struct *mm, unsigned long addr,
-+				pmd_t *pmdp, pmd_t pmd)
-+{
-+	return set_pte_at(mm, addr, (pte_t *)pmdp, pmd_pte(pmd));
-+}
-+
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+static inline int pmd_trans_huge(pmd_t pmd)
-+{
-+	return pmd_leaf(pmd);
-+}
-+
-+#define __HAVE_ARCH_PMDP_SET_ACCESS_FLAGS
-+static inline int pmdp_set_access_flags(struct vm_area_struct *vma,
-+					unsigned long address, pmd_t *pmdp,
-+					pmd_t entry, int dirty)
-+{
-+	return ptep_set_access_flags(vma, address, (pte_t *)pmdp, pmd_pte(entry), dirty);
-+}
-+
-+#define __HAVE_ARCH_PMDP_TEST_AND_CLEAR_YOUNG
-+static inline int pmdp_test_and_clear_young(struct vm_area_struct *vma,
-+					unsigned long address, pmd_t *pmdp)
-+{
-+	return ptep_test_and_clear_young(vma, address, (pte_t *)pmdp);
-+}
-+
-+#define __HAVE_ARCH_PMDP_HUGE_GET_AND_CLEAR
-+static inline pmd_t pmdp_huge_get_and_clear(struct mm_struct *mm,
-+					unsigned long address, pmd_t *pmdp)
-+{
-+	return pte_pmd(ptep_get_and_clear(mm, address, (pte_t *)pmdp));
-+}
-+
-+#define __HAVE_ARCH_PMDP_SET_WRPROTECT
-+static inline void pmdp_set_wrprotect(struct mm_struct *mm,
-+					unsigned long address, pmd_t *pmdp)
-+{
-+	ptep_set_wrprotect(mm, address, (pte_t *)pmdp);
-+}
-+
-+#define pmdp_establish pmdp_establish
-+static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
-+				unsigned long address, pmd_t *pmdp, pmd_t pmd)
-+{
-+	return __pmd(atomic_long_xchg((atomic_long_t *)pmdp, pmd_val(pmd)));
-+}
-+
-+#define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
-+void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
-+			unsigned long end);
-+
-+#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
-+
- /*
-  * Encode and decode a swap entry
-  *
-diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-index 382781abf..fea45af91 100644
---- a/arch/riscv/mm/tlbflush.c
-+++ b/arch/riscv/mm/tlbflush.c
-@@ -54,3 +54,10 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
- {
- 	__sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), start, end - start, PAGE_SIZE);
- }
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
-+			unsigned long end)
-+{
-+	__sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), start, end - start, PMD_SIZE);
-+}
-+#endif
 -- 
-2.25.1
-
+Sakari Ailus
