@@ -2,117 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C65C536FC9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 16:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9483D36FC9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 16:42:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232975AbhD3OkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 10:40:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49528 "EHLO
+        id S232764AbhD3Om5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 10:42:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230342AbhD3OkW (ORCPT
+        with ESMTP id S230328AbhD3Om4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 10:40:22 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC39FC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:39:31 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id q136so49883525qka.7
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:39:31 -0700 (PDT)
+        Fri, 30 Apr 2021 10:42:56 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF86C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:42:06 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id dl3so2219672qvb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 07:42:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BiN60F6dTP6DmE3gx9WBdjNyi1KofY1mmNmP2XjnsSI=;
-        b=XJVRHsHATzPcYtsl0wE6zJxEeHqIE27DR7APxA2Dfb/kUbSBHYtPvMWTzmnuzsJQZQ
-         abLGc20y+gAvMovdVTX6SpBOYdyDIWu0vdnkl+wzI1Yw8g2xNMlNzqthSLm22uYoB9E9
-         POiJSUdRMWOX24nVAz7yQ4aNlpcbJXRX10oodTVmJ5/Qd6Hk10zloE/ypas65b+xIvC2
-         8DxDa48toFnzgiV3vsA0oWmcxED+LQAHLpOi09wLT+vzCU00J552ZKkVxsckxUygrBMV
-         Kh3H8I+ERLVuYY3Sf9x2KS+cUNxzZUuH//yvsgUu4ZzKzNgNoqY+erzj3PelT+8G1MQV
-         9xDw==
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :organization:user-agent:mime-version:content-transfer-encoding;
+        bh=Oi7QuYoVpkckRDLbY1jEPH0cB2iAdS8yGwTIyJKz/hI=;
+        b=iRrhDC4OVkCL63311ThWgLTjC961g9wxj1E6V4cmMI1URotwmd3hFFJ0R2XMRyQpJF
+         R5bjBbUonPTT0puEwgiKZsQ1o0jKQi54MtKjyhPtD+sEbytoZ5njD5jyTJOCo0L7t+pd
+         G560IdIvH2Tu6jPvlYjJz/jqMcJ3F7Ho+WcMJAPkz3XTiUZXkdeFilWRn9LEQih3J+wQ
+         JPHcHYq89Djik1hipyzbumGODyItyH9LN8PFYHyE1RIm1WVbDwduhwUK1NAoDZtvo1gf
+         sdxVJ3ZexFw6qtQ/pP8gs7tLvsEiA7NY6DhWFhnNu7bLBLeA2Dn01IdqLPCbpW+Hnak3
+         IpAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=BiN60F6dTP6DmE3gx9WBdjNyi1KofY1mmNmP2XjnsSI=;
-        b=Z7i6PDWnP9K4tc5WxNtt2y5aa5I9qp0BZ4Wphi36rUFkyTjUq6Sapn2HDYcjUXX+AF
-         k8RUZbXmmpd32zbWVD6F3BrZyzDHKGD5LyMYvs9ZTNF/QeX68wL5qCzBh5bB29tgoipP
-         Ij87dGwQtQ2bYp9I9ZqlQhS1PSu4J/GAjMNt01q7Lgou04X0j043yyuhg6VOndK2+rzu
-         Ak+6fStJoKL+rbZ24TGSqUpu71fYZFRtNN+mEYVFhvhz4mk8NsbF2w0EFOD3tfWeZZgG
-         uZaU5it/KTOq/GHFS08Pd2UBJpbUAJYCTZUKGHaYyAFWH/82PRb3VKOBWazm5pu8ZdI9
-         mmXw==
-X-Gm-Message-State: AOAM533quW2yh+01zVVaGTOR3GdP93uQFFVUqnUmgakz2EbHIROqKDQX
-        m9DPSYxRR4dVsvXT+z4PFYo=
-X-Google-Smtp-Source: ABdhPJyjEAHdHUvmPLb2vBERPaJ3wO/pxq0gjZtDsTxNtsItKay7/tLp17gqmYaVUs8rEgSDzF5cBg==
-X-Received: by 2002:a05:620a:12ae:: with SMTP id x14mr5743022qki.471.1619793571085;
-        Fri, 30 Apr 2021 07:39:31 -0700 (PDT)
-Received: from ubuntu-mate-laptop.hsd1.fl.comcast.net ([2601:703:380:74f0:3016:5d78:eea0:48af])
-        by smtp.gmail.com with ESMTPSA id n16sm2329419qtl.48.2021.04.30.07.39.29
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=Oi7QuYoVpkckRDLbY1jEPH0cB2iAdS8yGwTIyJKz/hI=;
+        b=avGxjUBOgPTQXrnT32FThkO6X/VXe9H/Lii570Gq/h/DlT3X93Uz4II+gkEH28PDCg
+         qBxkXYgGms2C6uKD5LeghJuNrosCNDAUA+KmDdJZYNC1cixH3tcMYr0C8mM5DLHrQg1y
+         vXiqwKQdNcAweF7ZCWn4RAeYE6H7rsDNTF/BjGJwj0bP4v/7m4QK+dwUDtLRspvcRifm
+         GnUgyP2OMMTF20y581Fbp6ehu9cgScGQmQeP9/NMu8IWA/yEu/G0n0NpgkvqgisE8lgq
+         9AQi2+qS4wgRz9mVnv2ROanoWrA56xP+avftzz2QWwWxmNobfF/XLtpnmBTlDAa+ZZ7z
+         +Z/w==
+X-Gm-Message-State: AOAM533aSPcVlptwGUW7ypvlUEKYIKq/oaQEdR2OIf+MuVAtpTWwlGm5
+        ILY/h4yxdY/ku+yCdLA0Lhg=
+X-Google-Smtp-Source: ABdhPJzQTFz7FuFvopRcGCrsZbrAiq7Pk3GuRgEXaeMjtXUT8jIzwIQlsZqybs2+vOSi1PUpo5F9sA==
+X-Received: by 2002:ad4:4b33:: with SMTP id s19mr5525924qvw.35.1619793725519;
+        Fri, 30 Apr 2021 07:42:05 -0700 (PDT)
+Received: from li-908e0a4c-2250-11b2-a85c-f027e903211b.ibm.com ([2804:14c:482:7b04::1001])
+        by smtp.gmail.com with ESMTPSA id x13sm2387967qtf.32.2021.04.30.07.42.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 07:39:30 -0700 (PDT)
-Sender: Julian Braha <julian.braha@gmail.com>
-From:   Julian Braha <julianbraha@gmail.com>
-To:     tiwai@suse.com
-Cc:     linux-kernel@vger.kernel.org, fazilyildiran@gmail.com
-Subject: [PATCH] sound: soc: amd: fix missing dependencies on GPIOLIB
-Date:   Fri, 30 Apr 2021 10:39:19 -0400
-Message-Id: <20210430143919.43362-1-julianbraha@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Fri, 30 Apr 2021 07:42:05 -0700 (PDT)
+Message-ID: <90ce7c8849c1a1c1c42ec2901d1c3b689846f6c7.camel@gmail.com>
+Subject: Re: [PATCH v2 0/3] powerpc/mm/hash: Time improvements for memory
+ hot(un)plug
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     avid Gibson <david@gibson.dropbear.id.au>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Date:   Fri, 30 Apr 2021 11:41:59 -0300
+In-Reply-To: <20210430143607.135005-1-leobras.c@gmail.com>
+References: <20210430143607.135005-1-leobras.c@gmail.com>
+Organization: IBM
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When SND_SOC_AMD_RENOIR_MACH or SND_SOC_AMD_RV_RT5682_MACH
-are selected, and GPIOLIB is not selected, Kbuild gives
-the following warnings, respectively:
+CC: David Gibson
 
-WARNING: unmet direct dependencies detected for SND_SOC_DMIC
-  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && GPIOLIB [=n]
-  Selected by [y]:
-  - SND_SOC_AMD_RENOIR_MACH [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_AMD_RENOIR [=y]
-
-and
-
-WARNING: unmet direct dependencies detected for SND_SOC_MAX98357A
-  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && GPIOLIB [=n]
-  Selected by [y]:
-  - SND_SOC_AMD_RV_RT5682_MACH [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_AMD_ACP3x [=y] && I2C [=y] && CROS_EC [=y]
-
-This is because SND_SOC_DMIC and SND_SOC_MAX98357A are
-selected by SND_SOC_AMD_RV_RT5682_MACH and SND_SOC_AMD_RENOIR_MACH,
-respectively. However, neither of the selectors depend on or select GPIOLIB,
-despite their selectees depending on GPIOLIB.
-
-These unmet dependency bugs were detected by Kismet,
-a static analysis tool for Kconfig. Please advise if this
-is not the appropriate solution.
-
-Signed-off-by: Julian Braha <julianbraha@gmail.com>
----
- sound/soc/amd/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-index a6ce000fac3f..b7d41438d830 100644
---- a/sound/soc/amd/Kconfig
-+++ b/sound/soc/amd/Kconfig
-@@ -34,7 +34,7 @@ config SND_SOC_AMD_RV_RT5682_MACH
- 	select SND_SOC_CROS_EC_CODEC
- 	select I2C_CROS_EC_TUNNEL
- 	select SND_SOC_RT1015
--	depends on SND_SOC_AMD_ACP3x && I2C && CROS_EC
-+	depends on SND_SOC_AMD_ACP3x && I2C && CROS_EC && GPIOLIB
- 	help
- 	 This option enables machine driver for RT5682 and MAX9835.
- 
-@@ -47,6 +47,6 @@ config SND_SOC_AMD_RENOIR
- config SND_SOC_AMD_RENOIR_MACH
- 	tristate "AMD Renoir support for DMIC"
- 	select SND_SOC_DMIC
--	depends on SND_SOC_AMD_RENOIR
-+	depends on SND_SOC_AMD_RENOIR && GPIOLIB
- 	help
- 	 This option enables machine driver for DMIC
--- 
-2.27.0
+http://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=241574&state=%2A&archive=both
 
