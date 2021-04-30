@@ -2,160 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 207B736F563
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 07:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5885136F569
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 07:41:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbhD3FjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 01:39:21 -0400
-Received: from mga17.intel.com ([192.55.52.151]:36530 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229482AbhD3FjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 01:39:20 -0400
-IronPort-SDR: nV8UR7FJUzEL1Dl/ki2X1y+tvyC0kZ3sl1fJ8rABt7rUToPSniHu4+hU9/C7lwARIBMJqNCYNv
- NLdhA9+uff4w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9969"; a="177358451"
-X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
-   d="scan'208";a="177358451"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 22:38:32 -0700
-IronPort-SDR: msy/FuCR5VF5ovvLSU/Hz4x1bzvBQGV0Gb2AP4dXFo6vh1DZTQjSKotF8puF9WUWIhSwcEnIzp
- x0aQjF0ZERuQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
-   d="scan'208";a="426316625"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 29 Apr 2021 22:38:30 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lcLrC-00080D-2y; Fri, 30 Apr 2021 05:38:30 +0000
-Date:   Fri, 30 Apr 2021 13:38:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/Warray-bounds] BUILD SUCCESS
- 5701d11321a650d1100ae0d352a16e83b926de97
-Message-ID: <608b97c1.573nj3MlSM73h2gI%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230150AbhD3FmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 01:42:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229482AbhD3FmL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 01:42:11 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 215D8C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 22:41:22 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id x27so33873952qvd.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Apr 2021 22:41:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=Zx8pZdhiNX5aPOyXUOIzWq8zYQHmuVtq5hGUZrL+hxk=;
+        b=leXLFTKdISvneTcPmvgUXPy0vucswWlGanD1F9s2b2AM5ZlSIVmek08Oc6xCvLso+i
+         SdFwKFSs0p3/a0i1XzlDr/VTxcPgVkORFyoRglFCTeGrRFseFEJ+CxlNWsvKUSJXuj29
+         e2usBGYSeWD10SugISYejx9upWSBnBuzwpRZSo5jq7Kyif963vjzwqVdy+G2OMJsuAIY
+         AMax8Z5vPcJOaLCzLCIgM2y5pYstLLiJMIKgGWoto6LU7i998eaIsejstUfW6WVQ2dsA
+         gJyujCd7bfz6Q8RZH3JjXzcVN0TCeMNA46pWSoZitsTFYxkzrDpr00mzSd75n/k3JNmg
+         1JWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=Zx8pZdhiNX5aPOyXUOIzWq8zYQHmuVtq5hGUZrL+hxk=;
+        b=SVJdQ5PrkEET3Lc9EzIcYAJiaXU/uqHndX6wKmoksAEM9AuIX3FjqhdnxgtYprmNt2
+         AnBj5nWW8Thkgi7PZqGimO2pVxTYvlBOoMQc1qMzBl1bvRec4acVyswSX/P/kiFskqI4
+         Dd6K9Yg1t81kC7n5ExV2v8HmORyajc3vZdsXUGPdSYvnZrLqXfrrZGCIFVOrBr39saIH
+         0gK+rDGHOD1eBuWpq3OtkXSg0hdxh4EUzjzejxdWjCshUB7py8YuB1fCelVTW65s7DbG
+         5MnqG7COWwMlkLcZLz0Bamvu48OSC1RzPbNKu0uR/yI66OoCe3In7tNGG4mkmiLEWxgB
+         Vk3g==
+X-Gm-Message-State: AOAM531/GHp6p+Zhmv2LU7BKxQ+NqCWH3RqPsk7PM43jzRJe4uDU0u1G
+        tvoiQgBlB1lxIYJfBz7Lwm/hRg==
+X-Google-Smtp-Source: ABdhPJzY13DAJCoJ5dcDvmbdoiHlkA74Mjnt1G1gxrRT/Of1Bop6wAym2XmFy51k0T+0YZ2pDLUGsg==
+X-Received: by 2002:a0c:e242:: with SMTP id x2mr3422063qvl.45.1619761281109;
+        Thu, 29 Apr 2021 22:41:21 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id a24sm672835qkn.104.2021.04.29.22.41.19
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 29 Apr 2021 22:41:20 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 22:41:05 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: BUG_ON(!mapping_empty(&inode->i_data))
+In-Reply-To: <20210429211634.de4e0fb98d27b3ab9d05757c@linux-foundation.org>
+Message-ID: <alpine.LSU.2.11.2104292229380.16080@eggly.anvils>
+References: <alpine.LSU.2.11.2103301654520.2648@eggly.anvils> <20210331024913.GS351017@casper.infradead.org> <alpine.LSU.2.11.2103311413560.1201@eggly.anvils> <20210401170615.GH351017@casper.infradead.org> <20210402031305.GK351017@casper.infradead.org>
+ <20210402132708.GM351017@casper.infradead.org> <20210402170414.GQ351017@casper.infradead.org> <alpine.LSU.2.11.2104021239060.1092@eggly.anvils> <alpine.LSU.2.11.2104021354150.1029@eggly.anvils>
+ <20210429211634.de4e0fb98d27b3ab9d05757c@linux-foundation.org>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/Warray-bounds
-branch HEAD: 5701d11321a650d1100ae0d352a16e83b926de97  scsi: aacraid: Replace one-element array with flexible-array member
+On Thu, 29 Apr 2021, Andrew Morton wrote:
+> 
+> I'm not sure this ever was resolved?
 
-elapsed time: 725m
+It was not resolved: Matthew had prospective fixes for one way in which
+it could happen, but they did not help the case which still hits my
+testing (well, I replace the BUG_ON by a WARN_ON, so not hit badly).
 
-configs tested: 98
-configs skipped: 2
+> 
+> Is it the case that the series "Remove nrexceptional tracking v2" at
+> least exposed this bug?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Yes: makes a BUG out of a long-standing issue not noticed before.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-arm                           omap1_defconfig
-arm                        mvebu_v7_defconfig
-arm                         mv78xx0_defconfig
-arc                        nsimosci_defconfig
-arm                             pxa_defconfig
-sh                          rsk7203_defconfig
-arm                      tct_hammer_defconfig
-arc                            hsdk_defconfig
-arm                           sunxi_defconfig
-powerpc                 mpc85xx_cds_defconfig
-m68k                            q40_defconfig
-arc                              alldefconfig
-m68k                        m5272c3_defconfig
-openrisc                 simple_smp_defconfig
-powerpc                     ppa8548_defconfig
-arc                          axs103_defconfig
-mips                           gcw0_defconfig
-sh                          kfr2r09_defconfig
-arm                          pxa168_defconfig
-sh                   rts7751r2dplus_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210429
-i386                 randconfig-a002-20210429
-i386                 randconfig-a001-20210429
-i386                 randconfig-a006-20210429
-i386                 randconfig-a003-20210429
-i386                 randconfig-a004-20210429
-i386                 randconfig-a012-20210429
-i386                 randconfig-a014-20210429
-i386                 randconfig-a013-20210429
-i386                 randconfig-a011-20210429
-i386                 randconfig-a015-20210429
-i386                 randconfig-a016-20210429
-x86_64               randconfig-a004-20210429
-x86_64               randconfig-a002-20210429
-x86_64               randconfig-a005-20210429
-x86_64               randconfig-a006-20210429
-x86_64               randconfig-a001-20210429
-x86_64               randconfig-a003-20210429
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+> 
+> IOW, what the heck should I do with
+> 
+> mm-introduce-and-use-mapping_empty.patch
+> mm-stop-accounting-shadow-entries.patch
+> dax-account-dax-entries-as-nrpages.patch
+> mm-remove-nrexceptional-from-inode.patch
 
-clang tested configs:
-x86_64               randconfig-a015-20210429
-x86_64               randconfig-a016-20210429
-x86_64               randconfig-a011-20210429
-x86_64               randconfig-a014-20210429
-x86_64               randconfig-a013-20210429
-x86_64               randconfig-a012-20210429
+If Matthew doesn't have a proper fix yet (and it's a bit late for more
+than an obvious fix), I think those should go in, with this addition:
 
+[PATCH] mm: remove nrexceptional from inode: remove BUG_ON
+
+clear_inode()'s BUG_ON(!mapping_empty(&inode->i_data)) is unsafe: we know
+of two ways in which nodes can and do (on rare occasions) get left behind.
+Until those are fixed, do not BUG_ON() nor even WARN_ON(). Yes, this will
+then leak those nodes (or the next user of the struct inode may use them);
+but this has been happening for years, and the new BUG_ON(!mapping_empty)
+was only guilty of revealing that. A proper fix will follow, but no hurry.
+
+Signed-off-by: Hugh Dickins <hughd@google.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+ fs/inode.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+--- mmotm/fs/inode.c	2021-04-22 18:30:46.285908982 -0700
++++ linux/fs/inode.c	2021-04-29 22:13:54.096530691 -0700
+@@ -529,7 +529,14 @@ void clear_inode(struct inode *inode)
+ 	 */
+ 	xa_lock_irq(&inode->i_data.i_pages);
+ 	BUG_ON(inode->i_data.nrpages);
+-	BUG_ON(!mapping_empty(&inode->i_data));
++	/*
++	 * Almost always, mapping_empty(&inode->i_data) here; but there are
++	 * two known and long-standing ways in which nodes may get left behind
++	 * (when deep radix-tree node allocation failed partway; or when THP
++	 * collapse_file() failed). Until those two known cases are cleaned up,
++	 * or a cleanup function is called here, do not BUG_ON(!mapping_empty),
++	 * nor even WARN_ON(!mapping_empty).
++	 */
+ 	xa_unlock_irq(&inode->i_data.i_pages);
+ 	BUG_ON(!list_empty(&inode->i_data.private_list));
+ 	BUG_ON(!(inode->i_state & I_FREEING));
