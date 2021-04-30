@@ -2,75 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F04D36F742
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E03236F748
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230444AbhD3IlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 04:41:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:43684 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229606AbhD3IlM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 04:41:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3907AED1;
-        Fri, 30 Apr 2021 01:40:08 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A61233F70D;
-        Fri, 30 Apr 2021 01:40:06 -0700 (PDT)
-Date:   Fri, 30 Apr 2021 09:40:01 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Ryder Lee <ryder.lee@mediatek.com>,
-        Jianjun Wang <jianjun.wang@mediatek.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] PCI: mediatek-gen3: Add missing null pointer check
-Message-ID: <20210430084001.GA12388@lpieralisi>
-References: <20210429110040.63119-1-colin.king@canonical.com>
+        id S229669AbhD3IqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 04:46:07 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:51493 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229507AbhD3IqF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 04:46:05 -0400
+Received: from 223-138-45-215.emome-ip.hinet.net ([223.138.45.215] helo=[192.168.43.35])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <ike.pan@canonical.com>)
+        id 1lcOlq-0001ON-Eg; Fri, 30 Apr 2021 08:45:13 +0000
+Subject: Re: [PATCH] platform/x86: ideapad-laptop: fix a NULL pointer
+ dereference
+To:     Qiu Wenbo <qiuwenbo@kylinos.com.cn>, hdegoede@redhat.com,
+        mgross@linux.intel.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210428050636.8003-1-qiuwenbo@kylinos.com.cn>
+From:   Ike Panhc <ike.pan@canonical.com>
+Message-ID: <a95f27a5-bc5a-a195-09e4-db56d024629e@canonical.com>
+Date:   Fri, 30 Apr 2021 16:45:02 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429110040.63119-1-colin.king@canonical.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210428050636.8003-1-qiuwenbo@kylinos.com.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 12:00:40PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On 4/28/21 1:06 PM, Qiu Wenbo wrote:
+> The third parameter of dytc_cql_command should not be NULL since it will
+> be dereferenced immediately.
 > 
-> The call to platform_get_resource_byname can potentially return null, so
-> add a null pointer check to avoid a null pointer dereference issue.
-> 
-> Addresses-Coverity: ("Dereference null return")
-> Fixes: 441903d9e8f0 ("PCI: mediatek-gen3: Add MediaTek Gen3 driver for MT8192")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Signed-off-by: Qiu Wenbo <qiuwenbo@kylinos.com.cn>
+
+Fixes: ff36b0d953dc4 ("platform/x86: ideapad-laptop: rework and create new ACPI helpers")
+Acked-by: Ike Panhc <ike.pan@canonical.com>
+
 > ---
->  drivers/pci/controller/pcie-mediatek-gen3.c | 2 ++
->  1 file changed, 2 insertions(+)
-
-Squashed into the commit it is fixing, in my pci/mediatek branch.
-
-Thanks,
-Lorenzo
-
-> diff --git a/drivers/pci/controller/pcie-mediatek-gen3.c b/drivers/pci/controller/pcie-mediatek-gen3.c
-> index 20165e4a75b2..3c5b97716d40 100644
-> --- a/drivers/pci/controller/pcie-mediatek-gen3.c
-> +++ b/drivers/pci/controller/pcie-mediatek-gen3.c
-> @@ -721,6 +721,8 @@ static int mtk_pcie_parse_port(struct mtk_pcie_port *port)
->  	int ret;
->  
->  	regs = platform_get_resource_byname(pdev, IORESOURCE_MEM, "pcie-mac");
-> +	if (!regs)
-> +		return -EINVAL;
->  	port->base = devm_ioremap_resource(dev, regs);
->  	if (IS_ERR(port->base)) {
->  		dev_err(dev, "failed to map register base\n");
-> -- 
-> 2.30.2
+>  drivers/platform/x86/ideapad-laptop.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
+> diff --git a/drivers/platform/x86/ideapad-laptop.c b/drivers/platform/x86/ideapad-laptop.c
+> index 6cb5ad4be231..8f871151f0cc 100644
+> --- a/drivers/platform/x86/ideapad-laptop.c
+> +++ b/drivers/platform/x86/ideapad-laptop.c
+> @@ -809,6 +809,7 @@ static int dytc_profile_set(struct platform_profile_handler *pprof,
+>  {
+>  	struct ideapad_dytc_priv *dytc = container_of(pprof, struct ideapad_dytc_priv, pprof);
+>  	struct ideapad_private *priv = dytc->priv;
+> +	unsigned long output;
+>  	int err;
+>  
+>  	err = mutex_lock_interruptible(&dytc->mutex);
+> @@ -829,7 +830,7 @@ static int dytc_profile_set(struct platform_profile_handler *pprof,
+>  
+>  		/* Determine if we are in CQL mode. This alters the commands we do */
+>  		err = dytc_cql_command(priv, DYTC_SET_COMMAND(DYTC_FUNCTION_MMC, perfmode, 1),
+> -				       NULL);
+> +				       &output);
+>  		if (err)
+>  			goto unlock;
+>  	}
+> 
+
