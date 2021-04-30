@@ -2,138 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 641AD36FBBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 15:49:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47BCA36FBC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 15:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232704AbhD3Ntr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 09:49:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbhD3Ntq (ORCPT
+        id S230235AbhD3Nu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 09:50:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60218 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229688AbhD3Nu4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 09:49:46 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7169C06174A;
-        Fri, 30 Apr 2021 06:48:58 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id d25so32510325oij.5;
-        Fri, 30 Apr 2021 06:48:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TZFUbfNvpT7fbj8sNiRF6SOdSs72X7RGCFWwHq6pMJw=;
-        b=szZcaxPtpapObT1Oa0rHL3G8oPL0Zq33ptUHl/B60ekDYxFw1O9DYH1F1nvSTdvowp
-         g+Hh5GdF6SZ1q5eguZbkcw5fwNMcyzxgrlrayYLC6hPgMxRjQQuWafSEXKPoCE1K1dF/
-         OkHj0wxdDgg40f6Y9DGBiWQPWoOB+gdI7dDiEkQk/dJJmfksqBWpF5t5for9Bb0iilld
-         DboXTWZiemP0bAyDQJimwZvIdpROzV0OtLb9ia6W8RknKyyOdASTk6nrBudetWoMMdu4
-         QmWz2Epzp3HmHO4451IGFDQfHQODF8GVWTePMOGgmapjCMYnWqQIWhelHXrx5gO3N//3
-         QecQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=TZFUbfNvpT7fbj8sNiRF6SOdSs72X7RGCFWwHq6pMJw=;
-        b=YuL3cYkwfEf/Bn4rqE2KUk6uQO4mX6bikMR/k7V8ljuretcNWSsD21HF8Z9HF/YK4/
-         U4IBd75uLIPuhqDH7hJSYC2ffrfIvK+8fVdm4XQou+fcYeB5iwniIBk0+Mhwr6pBX1Rh
-         5NfBZ3Cx4c8AopIziqDSuLAc78hnc71R5hTGd727GAn+jcbouLPNDhQxWjxwKyR9yvCC
-         9UwzWvLBHKVemcT4ZQ9eDmFW9GYkqe/0XXXGgp+QXKU3ZW9oclZ6RJ4ZTTIws3L42DYH
-         JFDHa83CRBGm9gtW0co0npObBKUVN3UddJ3oKfT+YFlykOkN+cUaMxulrm7oJAsjR3f1
-         NgZA==
-X-Gm-Message-State: AOAM533LmD/hTT4XdnpC672gYd+yGzSdTxfi6iKZsjuG1m+9O+YxaXi+
-        bH0FgOA3dnJE5wU1RDDeXHZ4vDL+xpk=
-X-Google-Smtp-Source: ABdhPJwNCQtHd5hP/pnaakJqj0PKg6w+KBGyekyx7wLQKb1i8wDVlpeVIKVQkUj04dR2Rt2joCqCyA==
-X-Received: by 2002:aca:ed50:: with SMTP id l77mr3932373oih.13.1619790538105;
-        Fri, 30 Apr 2021 06:48:58 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u195sm734630oif.55.2021.04.30.06.48.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 06:48:57 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 30 Apr 2021 06:48:56 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     jdelvare@suse.com, corbet@lwn.net, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luka.perkov@sartura.hr, jmp@epiphyte.org, pmenzel@molgen.mpg.de,
-        buczek@molgen.mpg.de
-Subject: Re: [PATCH 2/3] dt-bindings: hwmon: pmbus: Add Delta DPS920AB PSU
- driver bindings
-Message-ID: <20210430134856.GB2714262@roeck-us.net>
-References: <20210430132735.127342-1-robert.marko@sartura.hr>
- <20210430132735.127342-2-robert.marko@sartura.hr>
+        Fri, 30 Apr 2021 09:50:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619790608;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=O2j5F4fhc46JGejyh96okpN24V0XsQ1KpEWdcsoSTK0=;
+        b=dsDsHskspvwJjQ7c4OmFYeIyjrnEouukRx7oF6N+bRP9b7LKywOX6xuiUrlULQVSzk5b0D
+        RToIU4lfjbYopk0rB+X5s/lBOSZXOT+n3W4eNjGOJw9pggK0RKMh5of4mc3h0JPApgjWc/
+        6ArHJ5YduFzDrfa+IL2TJqcChgwpL14=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-441-V8kcEtmoMBSUQFSPzOG68g-1; Fri, 30 Apr 2021 09:50:04 -0400
+X-MC-Unique: V8kcEtmoMBSUQFSPzOG68g-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A8CE7107ACCA;
+        Fri, 30 Apr 2021 13:50:02 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-12-38.pek2.redhat.com [10.72.12.38])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 778B15D9E2;
+        Fri, 30 Apr 2021 13:49:56 +0000 (UTC)
+Subject: Re: [PATCH] vdpa/mlx5: Add support for doorbell bypassing
+To:     "Zhu, Lingshan" <lingshan.zhu@intel.com>,
+        Eli Cohen <elic@nvidia.com>
+Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20210421104145.115907-1-elic@nvidia.com>
+ <e1885255-34f2-9e90-6478-ff0850a5a3d4@redhat.com>
+ <20210422060358.GA140698@mtl-vdi-166.wap.labs.mlnx>
+ <20210422080725.GB140698@mtl-vdi-166.wap.labs.mlnx>
+ <9d3d8976-800d-bb14-0a4a-c4b008f6872c@redhat.com>
+ <20210422083902.GA146406@mtl-vdi-166.wap.labs.mlnx>
+ <bdf10e38-8746-51cf-b460-a904a133329c@redhat.com>
+ <20210429100033.GA215200@mtl-vdi-166.wap.labs.mlnx>
+ <fc887d99-7058-1057-2d1a-3bdc5802a59a@redhat.com>
+ <836263af-6791-0bd3-22c7-22197da021e9@intel.com>
+ <79d57f53-a5c9-58df-4a79-6cc7892ab1a2@redhat.com>
+ <35c30715-f24b-704c-af3c-2b0259c2fd43@intel.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <2b5dc35a-13ee-863f-16cb-cc6a96d7f738@redhat.com>
+Date:   Fri, 30 Apr 2021 21:49:54 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210430132735.127342-2-robert.marko@sartura.hr>
+In-Reply-To: <35c30715-f24b-704c-af3c-2b0259c2fd43@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 03:27:34PM +0200, Robert Marko wrote:
-> Add binding document for the Delta DPS920AB PSU driver.
-> 
 
-Is there a reason to not just add delta,dps920ab to the list of trivial
-devices ?
+在 2021/4/30 下午5:25, Zhu, Lingshan 写道:
+>
+>
+> On 4/30/2021 3:03 PM, Jason Wang wrote:
+>>
+>> 在 2021/4/30 下午2:31, Zhu, Lingshan 写道:
+>>>
+>>>
+>>> On 4/30/2021 12:40 PM, Jason Wang wrote:
+>>>>
+>>>> 在 2021/4/29 下午6:00, Eli Cohen 写道:
+>>>>> On Thu, Apr 22, 2021 at 04:59:11PM +0800, Jason Wang wrote:
+>>>>>> 在 2021/4/22 下午4:39, Eli Cohen 写道:
+>>>>>>> On Thu, Apr 22, 2021 at 04:21:45PM +0800, Jason Wang wrote:
+>>>>>>>> 在 2021/4/22 下午4:07, Eli Cohen 写道:
+>>>>>>>>> On Thu, Apr 22, 2021 at 09:03:58AM +0300, Eli Cohen wrote:
+>>>>>>>>>> On Thu, Apr 22, 2021 at 10:37:38AM +0800, Jason Wang wrote:
+>>>>>>>>>>> 在 2021/4/21 下午6:41, Eli Cohen 写道:
+>>>>>>>>>>>> Implement mlx5_get_vq_notification() to return the doorbell 
+>>>>>>>>>>>> address.
+>>>>>>>>>>>> Size is set to one system page as required.
+>>>>>>>>>>>>
+>>>>>>>>>>>> Signed-off-by: Eli Cohen <elic@nvidia.com>
+>>>>>>>>>>>> ---
+>>>>>>>>>>>>      drivers/vdpa/mlx5/core/mlx5_vdpa.h | 1+
+>>>>>>>>>>>>      drivers/vdpa/mlx5/core/resources.c | 1+
+>>>>>>>>>>>>      drivers/vdpa/mlx5/net/mlx5_vnet.c  | 6 ++++++
+>>>>>>>>>>>>      3 files changed, 8 insertions(+)
+>>>>>>>>>>>>
+>>>>>>>>>>>> diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h 
+>>>>>>>>>>>> b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+>>>>>>>>>>>> index b6cc53ba980c..49de62cda598 100644
+>>>>>>>>>>>> --- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+>>>>>>>>>>>> +++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+>>>>>>>>>>>> @@ -41,6 +41,7 @@ struct mlx5_vdpa_resources {
+>>>>>>>>>>>>          u32 pdn;
+>>>>>>>>>>>>          struct mlx5_uars_page *uar;
+>>>>>>>>>>>>          void __iomem *kick_addr;
+>>>>>>>>>>>> +    u64 phys_kick_addr;
+>>>>>>>>>>>>          u16 uid;
+>>>>>>>>>>>>          u32 null_mkey;
+>>>>>>>>>>>>          bool valid;
+>>>>>>>>>>>> diff --git a/drivers/vdpa/mlx5/core/resources.c 
+>>>>>>>>>>>> b/drivers/vdpa/mlx5/core/resources.c
+>>>>>>>>>>>> index 6521cbd0f5c2..665f8fc1710f 100644
+>>>>>>>>>>>> --- a/drivers/vdpa/mlx5/core/resources.c
+>>>>>>>>>>>> +++ b/drivers/vdpa/mlx5/core/resources.c
+>>>>>>>>>>>> @@ -247,6 +247,7 @@ int mlx5_vdpa_alloc_resources(struct 
+>>>>>>>>>>>> mlx5_vdpa_dev *mvdev)
+>>>>>>>>>>>>              goto err_key;
+>>>>>>>>>>>>          kick_addr = mdev->bar_addr + offset;
+>>>>>>>>>>>> +    res->phys_kick_addr = kick_addr;
+>>>>>>>>>>>>          res->kick_addr= ioremap(kick_addr, PAGE_SIZE);
+>>>>>>>>>>>>          if (!res->kick_addr) {
+>>>>>>>>>>>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c 
+>>>>>>>>>>>> b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>>>>>>>>>> index 10c5fef3c020..680751074d2a 100644
+>>>>>>>>>>>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>>>>>>>>>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>>>>>>>>>> @@ -1865,8 +1865,14 @@ static void mlx5_vdpa_free(struct 
+>>>>>>>>>>>> vdpa_device *vdev)
+>>>>>>>>>>>>      static struct vdpa_notification_area 
+>>>>>>>>>>>> mlx5_get_vq_notification(struct vdpa_device *vdev, u16 idx)
+>>>>>>>>>>>>      {
+>>>>>>>>>>>> +    struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
+>>>>>>>>>>>>          struct vdpa_notification_area ret = {};
+>>>>>>>>>>>> +    struct mlx5_vdpa_net *ndev;
+>>>>>>>>>>>> +
+>>>>>>>>>>>> +    ndev = to_mlx5_vdpa_ndev(mvdev);
+>>>>>>>>>>>> +    ret.addr = (phys_addr_t)ndev->mvdev.res.phys_kick_addr;
+>>>>>>>>>>>> +    ret.size = PAGE_SIZE;
+>>>>>>>>>>> Note that the page will be mapped in to guest, so it's only 
+>>>>>>>>>>> safe if the
+>>>>>>>>>>> doorbeel exclusively own the page. This means if there're 
+>>>>>>>>>>> other registers in
+>>>>>>>>>>> the page, we can not let the doorbell bypass to work.
+>>>>>>>>>>>
+>>>>>>>>>>> So this is suspicious at least in the case of subfunction 
+>>>>>>>>>>> where we calculate
+>>>>>>>>>>> the bar length in mlx5_sf_dev_table_create() as:
+>>>>>>>>>>>
+>>>>>>>>>>> table->sf_bar_length = 1 << (MLX5_CAP_GEN(dev, 
+>>>>>>>>>>> log_min_sf_size) + 12);
+>>>>>>>>>>>
+>>>>>>>>>>> It looks to me this can only work for the arch with 
+>>>>>>>>>>> PAGE_SIZE = 4096,
+>>>>>>>>>>> otherwise we can map more into the userspace(guest).
+>>>>>>>>>>>
+>>>>>>>>>> Correct, so I guess I should return here 4096.
+>>>>>>>> I'm not quite sure but since the calculation of the 
+>>>>>>>> sf_bar_length is doen
+>>>>>>>> via a shift of 12, it might be correct.
+>>>>>>>>
+>>>>>>>> And please double check if the doorbell own the page exclusively.
+>>>>>>> I am checking if it is safe to map the any part of the SF's BAR to
+>>>>>>> userspace without harming other functions. If this is true, I 
+>>>>>>> will check
+>>>>>>> if I can return PAGE_SIZE without compromising security.
+>>>>>>
+>>>>>> It's usally not safe and a layer violation if other registers are 
+>>>>>> placed at
+>>>>>> the same page.
+>>>>>>
+>>>>>>
+>>>>>>>    I think we may
+>>>>>>> need to extend struct vdpa_notification_area to contain another 
+>>>>>>> field
+>>>>>>> offset which indicates the offset from addr where the actual 
+>>>>>>> doorbell
+>>>>>>> resides.
+>>>>>>
+>>>>>> The movitiaton of the current design is to be fit seamless into 
+>>>>>> how Qemu
+>>>>>> model doorbell layouts currently:
+>>>>>>
+>>>>>> 1) page-per-vq, each vq has its own page aligned doorbell
+>>>>>> 2) 2 bytes doorbell, each vq has its own 2 byte aligend doorbell
+>>>>>>
+>>>>>> Only 1) is support in vhost-vDPA (and vhost-user) since it's 
+>>>>>> rather simple
+>>>>>> and secure (page aligned) to be modelled and implemented via mmap().
+>>>>>>
+>>>>>> Exporting a complex layout is possbile but requires careful design.
+>>>>>>
+>>>>>> Actually, we had antoher option
+>>>>>>
+>>>>>> 3) shared doorbell: all virtqueue shares a single page aligned 
+>>>>>> doorbell
+>>>>> I am not sure how this could solve the problem of 64KB archs.
+>>>>> The point is that in ConnectX devices, the virtio queue objects 
+>>>>> doorbell
+>>>>> is aligned to 4K. For larger system page sizes, the doorbell may 
+>>>>> not be
+>>>>> aligned to a system page.
+>>>>> So it seems not too complex to introduce offset within the page.
+>>>>
+>>>>
+>>>> Three major issues:
+>>>>
+>>>> 1) single mmap() works at page level, it means we need map 64K to 
+>>>> guest and we can only do this safely if no other registers are 
+>>>> placed into the same page
+>>>> 2) new uAPI to let the userspace know the offset
+>>>> 3) how to model them with the virtio-pci in Qemu, and this may 
+>>>> introduce burdens for management (need some changes in the qemu 
+>>>> command line) to deal with the migration compatibility
+>>>>
+>>>> So consider the complexity, we can just stick to the current code. 
+>>>> That means mmap() will fail and qemu will keep using the eventfd 
+>>>> based kick.
+>>> There is another case, mmap() works at page level, page size is at 
+>>> least 4K. Consider if a device has a bar containing the shared 
+>>> doorbell page at its last 4K space. In this bar layout, map a 
+>>> arch.page_size=64K page to usersapce would lead to fatal errors.
+>>
+>>
+>> Why it's a fatal error? Userspace should survive from mmap() errors 
+>> and keep using the kickfd.
+> I mean vhost-vdpa should not only check the alignment, also need to 
+> check whether the doorbell size no less than a arch.page_size. 
 
-Thanks,
-Guenter
 
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> ---
->  .../bindings/hwmon/pmbus/delta,dps920ab.yaml  | 43 +++++++++++++++++++
->  1 file changed, 43 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/pmbus/delta,dps920ab.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/hwmon/pmbus/delta,dps920ab.yaml b/Documentation/devicetree/bindings/hwmon/pmbus/delta,dps920ab.yaml
-> new file mode 100644
-> index 000000000000..e05363a8e455
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwmon/pmbus/delta,dps920ab.yaml
-> @@ -0,0 +1,43 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +
-> +$id: http://devicetree.org/schemas/hwmon/pmbus/delta,dps920ab.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Delta DPS920AB power supply
-> +
-> +maintainers:
-> +  - Robert Marko <robert.marko@sartura.hr>
-> +
-> +description: |
-> +  Delta DPS920AB is a 920W 54V DC single output power supply
-> +  with active PFC capable of 16.88A on the 54V output.
-> +  It has a built in PWM capable fan with tachometer.
-> +  PMBus is used to expose information about the PSU.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - delta,dps920ab
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        psu@5a {
-> +            compatible = "delta,dps920ab";
-> +            reg = <0x5a>;
-> +        };
-> +    };
-> -- 
-> 2.31.1
-> 
+The code has already did this, isn't it?
+
+         if (vma->vm_end - vma->vm_start != PAGE_SIZE)
+                 return -EINVAL;
+
+...
+
+         notify = ops->get_vq_notification(vdpa, index);
+         if (notify.addr & (PAGE_SIZE - 1))
+                 return -EINVAL;
+         if (vma->vm_end - vma->vm_start != notify.size)
+                 return -ENOTSUPP;
+
+
+> If the doorbell placed at the last 4K in bar, map 64k page could be an 
+> error.
+
+
+mmap() will fail in this case.
+
+Thanks
+
+
+>
+> Thanks
+>>
+>>
+>>> I think we can assign the actual size of the doorbell area size to 
+>>> vdpa_notification.size than arch.page_size to avoid such issues. 
+>>> Then upper layers like vhost_vdpa should check whether this size can 
+>>> work with the machine arch and its alignment, if not, should fail 
+>>> over to use eventfd.
+>>
+>>
+>> Isn't this how get_vet_notification() designed and implemented right 
+>> now? What parent need is just to report the doorbell size, it's the 
+>> bus driver (vhost-vDPA) to decide if and how it is used.
+>>
+>> Thanks
+>>
+>>
+>>> Then do we still need a uAPI tell the offset within the page?
+>>>
+>>> Thanks
+>>> Zhu Lingshan
+>>>>
+>>>>
+>>>>
+>>>>>
+>>>>> BTW, for now, I am going to send another patch that makes sure page
+>>>>> boundaries are not vilated. It requires some support from mlx5_core
+>>>>> which is currently being reviewed internally.
+>>>>
+>>>>
+>>>> Sure.
+>>>>
+>>>> Thanks
+>>>>
+>>>>
+>>>>>
+>>>>>> This is not yet supported by Qemu.
+>>>>>>
+>>>>>> Thanks
+>>>>>>
+>>>>>>
+>>>>>>>>>> I also think that the check in vhost_vdpa_mmap() should 
+>>>>>>>>>> verify that the
+>>>>>>>>>> returned size is not smaller than PAGE_SIZE because the 
+>>>>>>>>>> returned address
+>>>>>>>>> Actually I think it's ok since you verify the size equals 
+>>>>>>>>> vma->vm_end -
+>>>>>>>>> vma->vm_start which must be at least PAGE_SIZE.
+>>>>>>>> Yes.
+>>>>>>>>
+>>>>>>>> Thanks
+>>>>>>>>
+>>>>>>>>
+>>>>>>>>>> might just be aligned to PAGE_SIZE. I think this should be 
+>>>>>>>>>> enoght but
+>>>>>>>>>> maybe also use the same logic in vhost_vdpa_fault().
+>>>>
+>>>
+>>
+>
+
