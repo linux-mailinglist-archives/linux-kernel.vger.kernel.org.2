@@ -2,187 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C5737035E
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 00:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 402AE370368
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 00:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231406AbhD3WPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 18:15:35 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:37876 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbhD3WPd (ORCPT
+        id S231596AbhD3WUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 18:20:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230508AbhD3WUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 18:15:33 -0400
-Received: by mail-ot1-f45.google.com with SMTP id c8-20020a9d78480000b0290289e9d1b7bcso51691377otm.4;
-        Fri, 30 Apr 2021 15:14:44 -0700 (PDT)
+        Fri, 30 Apr 2021 18:20:30 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B860DC06138B
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 15:19:40 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id i26so16155642oii.3
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 15:19:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=oDUfi1mAqdAqTPRErgDIlIf3220Ov5qdnaUWhvxN8K4=;
+        b=MVv9jdyq/jOUgaFKQCGIGX9JPwrKfp18Kdfb5Xjjx7qciNVbCFm99mRmHDyitTVupF
+         EKQaYf3hc+Ghrh6x2PDhIwSgDlTEa4Vvg1ELBSfEkoMrYmU5CNyrmm3F0nd/qwT3X0pS
+         lJPNxgP1/jf05FZ7KN97JSvNJMOG8MC1SLvPA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=7SSvv02TsbkrWOwWlBM9seTIZP42kaPiNEe9dizb4ew=;
-        b=hm9jYwBoMcaV2ol559bImj4OjLzGp7t9+hn/V9bDsN05TUSK39Zx2F1G30VjUBoyUx
-         rkodwc/b9MJmdmqUEzSlz7M+FntAhnNrqAIhr1YL0MqU/NSMDJrtejGmJepO7DByPs1h
-         3o1DON7fvEpXzVHkjBk4rfkDWDcWlbVp2Lu2jGfZqHcDrb8FMO6S35PXwapG893qdDIj
-         QvEpxfp0kc8NUSn3U2gLeyJlPI6//TeJd88Z+fTSKMSMkDjzgVHgJfstetpbrn8mpiM+
-         5PBljYHVM+FvuyG5VPUxhyOdJt725PqVuY/rn8FrhOMUvK+o1wiGIuly+bBFoQFhEdvv
-         cI6w==
-X-Gm-Message-State: AOAM531psffEKMgNX+waQHhQ4nQItAUM/UB2VYmNg7jl1Ekdikfls5VX
-        514rk7uRnS87fqDWgqlrXA==
-X-Google-Smtp-Source: ABdhPJybcXW/btKHlVv6/oMKk9lt8LC61n8INzSUoyfrM2mjKCMtaL7sricjsJZqmqqq5BQ8Q/rsZA==
-X-Received: by 2002:a05:6830:1103:: with SMTP id w3mr5343380otq.304.1619820884331;
-        Fri, 30 Apr 2021 15:14:44 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id b64sm215922oii.12.2021.04.30.15.14.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 15:14:43 -0700 (PDT)
-Received: (nullmailer pid 4001411 invoked by uid 1000);
-        Fri, 30 Apr 2021 22:14:42 -0000
-Date:   Fri, 30 Apr 2021 17:14:42 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Ezequiel Garcia <ezequiel@collabora.com>
-Cc:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        joro@8bytes.org, will@kernel.org, heiko@sntech.de,
-        xxm@rock-chips.com, iommu@lists.linux-foundation.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, Kever Yang <kever.yang@rock-chips.com>
-Subject: Re: [PATCH v2 1/4] dt-bindings: iommu: rockchip: Convert IOMMU to DT
- schema
-Message-ID: <20210430221442.GA3970483@robh.at.kernel.org>
-References: <20210422141602.350746-1-benjamin.gaignard@collabora.com>
- <20210422141602.350746-2-benjamin.gaignard@collabora.com>
- <7557bc8aaaa1924ad39676b32ba6a3f6474a3722.camel@collabora.com>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=oDUfi1mAqdAqTPRErgDIlIf3220Ov5qdnaUWhvxN8K4=;
+        b=EU7ggXdAIKDIcxd6RaF+92iBaKt1azvnSjkHOBcuSKtLo6ZsybTpraSrg6C4+6cE/+
+         qUcBGy5F6mWWNB/f0laZacn7WmyFZaRuquth/ljuFNfurZg0FJgjedUlZLrIFV5jghBK
+         fO2RnNcqQ4bwvW2RoXNGIsjqhPzHNrzMPMla1pbH/gH/7sUZx825i94t4gC2xmrSLJjn
+         q6JSwXS3KBNVZ4GrCaVOg/GQ1ivL8xSBQJvKg0z7FMiuV2y0/K5e/qW0UA+gtukGnMc1
+         DSRns6bwhjcFenWOCoNXuykL2HcXNkhccu8/Dm/4DGTMrhdPp2X1gobBMO6G+g76uOu3
+         vGLQ==
+X-Gm-Message-State: AOAM533wGtLf9eSWFFMUVsT85+N2Of57MhsIr7wouZGiNkZrQhMnyj4W
+        hCLrmu9D8g5SnamzaEiNc3Qm8PtzBQaIoreGSvJOlg==
+X-Google-Smtp-Source: ABdhPJxahhnPuiK5wEbENVKmMmcsE4TUMDYMc1rwK1fJjfCALvC6UnO7579JPQdU7bLb1E2hbuB4rDfvPPKhjRmJRYc=
+X-Received: by 2002:aca:ed12:: with SMTP id l18mr12520500oih.24.1619821180025;
+ Fri, 30 Apr 2021 15:19:40 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 30 Apr 2021 15:19:39 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7557bc8aaaa1924ad39676b32ba6a3f6474a3722.camel@collabora.com>
+In-Reply-To: <CAPDyKFryT63Jc7+DXWSpAC19qpZRqFr1orxwYGMuSqx247O8cQ@mail.gmail.com>
+References: <20210413003621.1403300-1-swboyd@chromium.org> <CAPDyKFquhnG1tGAx+GGNKM7_haThSa34FcONHGhdBwFYuryeag@mail.gmail.com>
+ <161851496169.46595.399410018266490859@swboyd.mtv.corp.google.com>
+ <CAPDyKFoZL6mygBQZiU329nagPJQzELPiFYjuJ0V3PfvaiJRv2w@mail.gmail.com>
+ <161859541950.46595.6083644321477114769@swboyd.mtv.corp.google.com> <CAPDyKFryT63Jc7+DXWSpAC19qpZRqFr1orxwYGMuSqx247O8cQ@mail.gmail.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Fri, 30 Apr 2021 15:19:39 -0700
+Message-ID: <CAE-0n51LFWeHpiWGUcbpHyqhKYPZsi0N83Ho6VPbpRxJVKZAjA@mail.gmail.com>
+Subject: Re: [PATCH] mmc: core: Don't allocate IDA for OF aliases
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Sujit Kautkar <sujitka@chromium.org>,
+        Zubin Mithra <zsm@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 02:16:53PM -0300, Ezequiel Garcia wrote:
-> (Adding Kever)
-> 
-> Hi Benjamin,
-> 
-> Thanks a lot for working on this, it looks amazing. Together with the great work
-> that Rockchip is doing, it seems RK3566/RK3568 will have decent support very soon.
-> 
-> One comment here:
-> 
-> On Thu, 2021-04-22 at 16:15 +0200, Benjamin Gaignard wrote:
-> > Convert Rockchip IOMMU to DT schema
-> > 
-> > Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> > ---
-> > version 2:
-> >  - Change maintainer
-> >  - Change reg maxItems
-> >  - Change interrupt maxItems
-> > 
-> >  .../bindings/iommu/rockchip,iommu.txt         | 38 ---------
-> >  .../bindings/iommu/rockchip,iommu.yaml        | 79 +++++++++++++++++++
-> >  2 files changed, 79 insertions(+), 38 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/iommu/rockchip,iommu.txt
-> >  create mode 100644 Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/iommu/rockchip,iommu.txt b/Documentation/devicetree/bindings/iommu/rockchip,iommu.txt
-> > deleted file mode 100644
-> > index 6ecefea1c6f9..000000000000
-> > --- a/Documentation/devicetree/bindings/iommu/rockchip,iommu.txt
-> > +++ /dev/null
-> > @@ -1,38 +0,0 @@
-> > -Rockchip IOMMU
-> > -==============
-> > -
-> > -A Rockchip DRM iommu translates io virtual addresses to physical addresses for
-> > -its master device.  Each slave device is bound to a single master device, and
-> > -shares its clocks, power domain and irq.
-> > -
-> > -Required properties:
-> > -- compatible      : Should be "rockchip,iommu"
-> > -- reg             : Address space for the configuration registers
-> > -- interrupts      : Interrupt specifier for the IOMMU instance
-> > -- interrupt-names : Interrupt name for the IOMMU instance
-> > -- #iommu-cells    : Should be <0>.  This indicates the iommu is a
-> > -                    "single-master" device, and needs no additional information
-> > -                    to associate with its master device.  See:
-> > -                    Documentation/devicetree/bindings/iommu/iommu.txt
-> > -- clocks          : A list of clocks required for the IOMMU to be accessible by
-> > -                    the host CPU.
-> > -- clock-names     : Should contain the following:
-> > -       "iface" - Main peripheral bus clock (PCLK/HCL) (required)
-> > -       "aclk"  - AXI bus clock (required)
-> > -
-> > -Optional properties:
-> > -- rockchip,disable-mmu-reset : Don't use the mmu reset operation.
-> > -                              Some mmu instances may produce unexpected results
-> > -                              when the reset operation is used.
-> > -
-> > -Example:
-> > -
-> > -       vopl_mmu: iommu@ff940300 {
-> > -               compatible = "rockchip,iommu";
-> > -               reg = <0xff940300 0x100>;
-> > -               interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
-> > -               interrupt-names = "vopl_mmu";
-> > -               clocks = <&cru ACLK_VOP1>, <&cru HCLK_VOP1>;
-> > -               clock-names = "aclk", "iface";
-> > -               #iommu-cells = <0>;
-> > -       };
-> > diff --git a/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml b/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
-> > new file mode 100644
-> > index 000000000000..0db208cf724a
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
-> > @@ -0,0 +1,79 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/iommu/rockchip,iommu.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Rockchip IOMMU
-> > +
-> > +maintainers:
-> > +  - Heiko Stuebner <heiko@sntech.de>
-> > +
-> > +description: |+
-> > +  A Rockchip DRM iommu translates io virtual addresses to physical addresses for
-> > +  its master device. Each slave device is bound to a single master device and
-> > +  shares its clocks, power domain and irq.
-> > +
-> > +  For information on assigning IOMMU controller to its peripheral devices,
-> > +  see generic IOMMU bindings.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: rockchip,iommu
-> > +
-> > +  reg:
-> > +    minItems: 1
-> > +    maxItems: 2
-> > +
-> > +  interrupts:
-> > +    minItems: 1
-> > +    maxItems: 2
-> > +
-> > +  interrupt-names:
-> > +    minItems: 1
-> > +    maxItems: 2
-> > +
-> 
-> AFAICS, the driver supports handling multiple MMUs, and there's one reg and
-> interrupt cell for each MMU. IOW, there's no requirement that maxItems is 2.
-> 
-> Is there any way we can describe that? Or maybe just allow a bigger maximum?
+Quoting Ulf Hansson (2021-04-16 16:07:11)
+> On Fri, 16 Apr 2021 at 19:50, Stephen Boyd <swboyd@chromium.org> wrote:
+> >
+> > Ok. Can you share the KASAN reports? The memory allocated for this class
+> > object and associated index from the IDA will be unique for each call
+> > the mmc_alloc_host() so I don't see how KASAN could be noticing
+> > something unless a reference to the host is leaking out without the
+> > proper get_device() call being made to keep the underlying memory from
+> > being freed.
+>
+> Removing the host, also means removing the card. Although, as I said,
+> I need some more time to think of the best solution.
+>
+> Here's a report, triggered with some manual hacks and by using the
+> mmc-utils usesland tool.
 
-With #iommu-cells == 0, how would one distinguish which IOMMU is 
-associated with a device? IOW, is more that 1 really usable?
+Thanks! I'm just getting back to this mail on a Friday afternoon!
 
-If you need more just pick a maxItems value that's either the most seen 
-or 'should be enough'TM. If the entries are just multiple instances of 
-the same thing, please note that here.
+>
+> /mmc status get /dev/mmcblk1
+> [   95.905913] DEBUG: mmc_blk_open: Let's sleep for 10s..
+> [   98.806639] mmc1: card 0007 removed
+> [  105.972139] BUG: KASAN: use-after-free in mmc_blk_get+0x58/0xb8
+> [  105.979144] Read of size 4 at addr ffff00000a394a28 by task mmc/180
+> [  105.984945]
+> [  105.991209] CPU: 2 PID: 180 Comm: mmc Not tainted
+> 5.10.0-rc4-00069-gcc758c8c7127-dirty #5
+> [  105.992943] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+> [  106.001010] Call trace:
+> [  106.007799]  dump_backtrace+0x0/0x2b4
+> [  106.009965]  show_stack+0x18/0x6c
+> [  106.013779]  dump_stack+0xfc/0x168
+> [  106.017083]  print_address_description.constprop.0+0x6c/0x488
+> [  106.020384]  kasan_report+0x118/0x210
+> [  106.026193]  __asan_load4+0x94/0xd0
+> [  106.029844]  mmc_blk_get+0x58/0xb8
+> [  106.033141]  mmc_blk_open+0x7c/0xdc
+> [  106.036614]  __blkdev_get+0x3b4/0x964
+> [  106.039996]  blkdev_get+0x64/0x100
+> [  106.043815]  blkdev_open+0xe8/0x104
+> [  106.047114]  do_dentry_open+0x234/0x61c
+> [  106.050498]  vfs_open+0x54/0x64
+> [  106.054324]  path_openat+0xe04/0x1584
+> [  106.057450]  do_filp_open+0xe8/0x1e4
+> [  106.061263]  do_sys_openat2+0x120/0x230
+> [  106.064911]  __arm64_sys_openat+0xf0/0x15c
+> [  106.068477]  el0_svc_common.constprop.0+0xac/0x234
+> [  106.072639]  do_el0_svc+0x84/0xa0
+> [  106.077410]  el0_sync_handler+0x264/0x270
+> [  106.080790]  el0_sync+0x174/0x180
+> [  106.084768]
+> [  106.088070] Allocated by task 33:
+> [  106.089647]  stack_trace_save+0x9c/0xdc
+> [  106.092858]  kasan_save_stack+0x28/0x60
+> [  106.096506]  __kasan_kmalloc.constprop.0+0xc8/0xf0
+> [  106.100325]  kasan_kmalloc+0x10/0x20
+> [  106.105183]  mmc_blk_alloc_req+0x94/0x4b0
 
-Rob
+I see that this is a different IDA managed object, for mmc_blk_ida.
+Presumably the object allocated is md?
+
+	md = kzalloc(sizeof(struct mmc_blk_data), GFP_KERNEL);
+
+Is that the line?
+
+> [  106.108913]  mmc_blk_probe+0x2d4/0xaa4
+> [  106.112829]  mmc_bus_probe+0x34/0x4c
+> [  106.116471]  really_probe+0x148/0x6e0
+> [  106.120202]  driver_probe_device+0x78/0xec
+> [  106.123764]  __device_attach_driver+0x108/0x16c
+> [  106.127754]  bus_for_each_drv+0xf4/0x15c
+> [  106.132180]  __device_attach+0x168/0x240
+> [  106.136349]  device_initial_probe+0x14/0x20
+> [  106.140253]  bus_probe_device+0xec/0x100
+> [  106.144167]  device_add+0x55c/0xaf0
+> [  106.148332]  mmc_add_card+0x288/0x380
+> [  106.151540]  mmc_attach_sd+0x18c/0x22c
+> [  106.155363]  mmc_rescan+0x444/0x4f0
+> [  106.159014]  process_one_work+0x3b8/0x650
+> [  106.162396]  worker_thread+0xa0/0x724
+> [  106.166556]  kthread+0x218/0x220
+> [  106.170201]  ret_from_fork+0x10/0x38
+> [  106.173482]
+> [  106.177045] Freed by task 33:
+> [  106.178533]  stack_trace_save+0x9c/0xdc
+> [  106.181399]  kasan_save_stack+0x28/0x60
+> [  106.185045]  kasan_set_track+0x28/0x40
+> [  106.188868]  kasan_set_free_info+0x24/0x4c
+> [  106.192684]  __kasan_slab_free+0x100/0x180
+> [  106.196764]  kasan_slab_free+0x14/0x20
+> [  106.200838]  kfree+0xb8/0x46c
+> [  106.204583]  mmc_blk_put+0xe4/0x11c
+
+Looking at mmc_blk_put() and mmc_blk_get() I see
+
+
+	static struct mmc_blk_data *mmc_blk_get(struct gendisk *disk)
+	{
+		...
+		md = disk->private_data;
+		if (md && md->usage == 0)
+			md = NULL;
+		...
+	}
+
+	static void mmc_blk_put(struct mmc_blk_data *md)
+	{
+		...
+		if (md->usage == 0) {
+			int devidx = mmc_get_devidx(md->disk);
+			blk_put_queue(md->queue.queue);
+			ida_simple_remove(&mmc_blk_ida, devidx);
+			put_disk(md->disk);
+			kfree(md);
+		}
+		...
+	}
+
+and notice that mmc_blk_get() takes a gendisk but mmc_blk_put() takes a
+mmc_blk_data. That's already weird, but then I notice that 'md' comes
+from disk->private_data in mmc_blk_get() and in mmc_blk_put() we kfree
+'md' if usage drops to 0. The storage for md is inside
+disk->private_data, according to mmc_blk_alloc_req()
+
+	md->disk->private_data = md
+
+so 'md' points to itself through gendisk private_data. Alright.
+
+Either way, KASAN is telling us that 'md' got freed in mmc_blk_put() but
+the gendisk is still around and valid, because it's held alive via some
+kobject_get(). When we go to blkdev_open() we have that gendisk that has
+private_data pointing to the freed 'md'.
+
+This is a classic dangling pointer bug.
+
+Given that mmc_blk_get() is checking for disk->private_data being
+non-NULL, I looked to see where that is assigned to NULL, but I don't
+see it. Is it ever set to NULL? We could set private_data to NULL after
+freeing it, but that feels hacky. The md->usage code looks like a kref
+design open-coded; probably replace that with a kref that does the code
+in the if (md->usage == 0) path on the kref release function and then we
+wouldn't need a mutex around these get/put APIs.
+
+Does this patch fix it?
+
+---8<----
+diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+index d666e24fbe0e..c7939e8fe76f 100644
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -203,6 +203,7 @@ static void mmc_blk_put(struct mmc_blk_data *md)
+ 		int devidx = mmc_get_devidx(md->disk);
+ 		blk_put_queue(md->queue.queue);
+ 		ida_simple_remove(&mmc_blk_ida, devidx);
++		md->disk->private_data = NULL;
+ 		put_disk(md->disk);
+ 		kfree(md);
+ 	}
+
+> [  106.207624]  mmc_blk_remove_req.part.0+0x6c/0xe4
+> [  106.210914]  mmc_blk_remove+0x368/0x370
+> [  106.215778]  mmc_bus_remove+0x34/0x50
+> [  106.219336]  __device_release_driver+0x228/0x31c
+> [  106.223155]  device_release_driver+0x2c/0x44
+> [  106.227840]  bus_remove_device+0x1e4/0x200
+> [  106.232100]  device_del+0x2b0/0x770
+> [  106.236005]  mmc_remove_card+0xf0/0x150
+> [  106.239383]  mmc_sd_detect+0x9c/0x150
+> [  106.243207]  mmc_rescan+0x110/0x4f0
+> [  106.247032]  process_one_work+0x3b8/0x650
+> [  106.250329]  worker_thread+0xa0/0x724
+> [  106.254488]  kthread+0x218/0x220
+> [  106.258134]  ret_from_fork+0x10/0x38
+> [  106.261416]
+> [  106.264986] The buggy address belongs to the object at ffff00000a394800
+> [  106.264986]  which belongs to the cache kmalloc-1k of size 1024
+> [  106.266485] The buggy address is located 552 bytes inside of
+> [  106.266485]  1024-byte region [ffff00000a394800, ffff00000a394c00)
+> [  106.278710] The buggy address belongs to the page:
+> [  106.290520] page:00000000ff84ed53 refcount:1 mapcount:0
+> mapping:0000000000000000 index:0x0 pfn:0x8a390
+> [  106.295381] head:00000000ff84ed53 order:3 compound_mapcount:0
+> compound_pincount:0
+> [  106.304669] flags: 0x3fffc0000010200(slab|head)
+> [  106.312234] raw: 03fffc0000010200 dead000000000100 dead000000000122
+> ffff000009f03800
+> [  106.316571] raw: 0000000000000000 0000000000100010 00000001ffffffff
+> 0000000000000000
+> [  106.324537] page dumped because: kasan: bad access detected
+> [  106.332254]
+> [  106.337543] Memory state around the buggy address:
+> [  106.339302]  ffff00000a394900: fb fb fb fb fb fb fb fb fb fb fb fb
+> fb fb fb fb
+> [  106.343907]  ffff00000a394980: fb fb fb fb fb fb fb fb fb fb fb fb
+> fb fb fb fb
+> [  106.351111] >ffff00000a394a00: fb fb fb fb fb fb fb fb fb fb fb fb
+> fb fb fb fb
+> [  106.358303]                                   ^
+> [  106.365515]  ffff00000a394a80: fb fb fb fb fb fb fb fb fb fb fb fb
+> fb fb fb fb
+> [  106.369948]  ffff00000a394b00: fb fb fb fb fb fb fb fb fb fb fb fb
+> fb fb fb fb
+
+If you're interested in the kref patch it may also clean it up a bit. I
+left the mutex in place, but otherwise now the refcount is an atomic
+variable, so mmc_blk_put() can happen in parallel to mmc_blk_get() and
+the release part can run later. This lets mmc_blk_get() start failing
+earlier and returning NULL when the last user has called mmc_blk_put()
+but the disk is still hanging around. No idea if this works though.
+
+----8<----
+diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+index d666e24fbe0e..8a300cc2c8be 100644
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -27,6 +27,7 @@
+ #include <linux/errno.h>
+ #include <linux/hdreg.h>
+ #include <linux/kdev_t.h>
++#include <linux/kref.h>
+ #include <linux/blkdev.h>
+ #include <linux/cdev.h>
+ #include <linux/mutex.h>
+@@ -110,7 +111,7 @@ struct mmc_blk_data {
+ #define MMC_BLK_CMD23	(1 << 0)	/* Can do SET_BLOCK_COUNT for multiblock */
+ #define MMC_BLK_REL_WR	(1 << 1)	/* MMC Reliable write support */
+
+-	unsigned int	usage;
++	struct kref	kref;
+ 	unsigned int	read_only;
+ 	unsigned int	part_type;
+ 	unsigned int	reset_done;
+@@ -180,10 +181,8 @@ static struct mmc_blk_data *mmc_blk_get(struct
+gendisk *disk)
+
+ 	mutex_lock(&open_lock);
+ 	md = disk->private_data;
+-	if (md && md->usage == 0)
++	if (md && !kref_get_unless_zero(&md->kref))
+ 		md = NULL;
+-	if (md)
+-		md->usage++;
+ 	mutex_unlock(&open_lock);
+
+ 	return md;
+@@ -195,20 +194,26 @@ static inline int mmc_get_devidx(struct gendisk *disk)
+ 	return devidx;
+ }
+
+-static void mmc_blk_put(struct mmc_blk_data *md)
++static void mmc_blk_kref_release(struct kref *ref)
+ {
++	struct mmc_blk_data *md = container_of(ref, struct mmc_blk_data, kref);
++	int devidx;
++
+ 	mutex_lock(&open_lock);
+-	md->usage--;
+-	if (md->usage == 0) {
+-		int devidx = mmc_get_devidx(md->disk);
+-		blk_put_queue(md->queue.queue);
+-		ida_simple_remove(&mmc_blk_ida, devidx);
+-		put_disk(md->disk);
+-		kfree(md);
+-	}
++	devidx = mmc_get_devidx(md->disk);
++	blk_put_queue(md->queue.queue);
++	ida_simple_remove(&mmc_blk_ida, devidx);
++	md->disk->private_data = NULL;
++	put_disk(md->disk);
++	kfree(md);
+ 	mutex_unlock(&open_lock);
+ }
+
++static void mmc_blk_put(struct mmc_blk_data *md)
++{
++	kref_put(&md->kref, mmc_blk_kref_release);
++}
++
+ static ssize_t power_ro_lock_show(struct device *dev,
+ 		struct device_attribute *attr, char *buf)
+ {
+@@ -2300,7 +2305,7 @@ static struct mmc_blk_data
+*mmc_blk_alloc_req(struct mmc_card *card,
+
+ 	INIT_LIST_HEAD(&md->part);
+ 	INIT_LIST_HEAD(&md->rpmbs);
+-	md->usage = 1;
++	kref_init(&md->kref);
+
+ 	ret = mmc_init_queue(&md->queue, card);
+ 	if (ret)
