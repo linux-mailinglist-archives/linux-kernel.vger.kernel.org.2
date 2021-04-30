@@ -2,96 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E443E36F839
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 11:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA43C36F842
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 12:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231698AbhD3J5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 05:57:16 -0400
-Received: from mail-qv1-f41.google.com ([209.85.219.41]:37592 "EHLO
-        mail-qv1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbhD3J5O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 05:57:14 -0400
-Received: by mail-qv1-f41.google.com with SMTP id z1so4241967qvo.4;
-        Fri, 30 Apr 2021 02:56:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oRPEHfS+vSYCIONrVawXpCs4yEHxp0IL6Y97k0y3PeI=;
-        b=VVVMWjWVQdwWCdB6T5uzYgcLFeXyN3YNdSA++4j6dYNXU/lKb+O7yeztgOL1Dr1h4X
-         ALNrVlKQvA/Mh5m9Sqtsje8bvIfs/wTJsR929RBw4pnFPws8u1/U/DaE301tWFiWK9v7
-         F9jgBFOoNOMFYX3uUUw5KVCef+9/eb8REyPG3bH/DsPs9fK+YK3SdBVqCDo0SKnOxWvq
-         Yz09sC06nHKARNxissS9QN68+DLy9yhz9occ1q9dHaRNDiMwkYOJbN0Gl6zSpLO+q925
-         g8Elmb5dzsgzxjPsPWBV6tzASB1/dAInmok0j8jQ9n4Hk5rIdkyYFKq3OUc+dRyY3fdR
-         tXDA==
-X-Gm-Message-State: AOAM531DkvZIDTQPsrIrGlh2Tt5JVRnoayxdenUPhcQGiIvwxDp23QM0
-        MbClK+0kAuVNs/BdwzRr0KeYfXTCJyU=
-X-Google-Smtp-Source: ABdhPJzOYGorbPzGAxEiYXUPKFui1fN65UVJpDH6MaQo2iG3DPbut20gFn07dkzrPFAMXvg8WkLJBg==
-X-Received: by 2002:ad4:59c7:: with SMTP id el7mr4536296qvb.26.1619776586182;
-        Fri, 30 Apr 2021 02:56:26 -0700 (PDT)
-Received: from [10.68.32.192] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
-        by smtp.gmail.com with ESMTPSA id e10sm995465qka.56.2021.04.30.02.56.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Apr 2021 02:56:24 -0700 (PDT)
-Subject: Re: [PATCH] floppy: Remove redundant assignment to nr_sectors
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1619774805-121562-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Denis Efremov <efremov@linux.com>
-Message-ID: <691dcf37-a771-26f1-cd6d-ee49226550a3@linux.com>
-Date:   Fri, 30 Apr 2021 12:56:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231181AbhD3KEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 06:04:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55362 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229699AbhD3KEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 06:04:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BF7E61434;
+        Fri, 30 Apr 2021 10:03:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619777035;
+        bh=EsspZG1wgaNj6zxFbJZ+pC1jl1In7YfEjcxpJcD5C18=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Ks9kPDTlsbf2k8QONXVwjyYdmNM/oLdGwKS0at8YnVdOs3m55uX7awgXTVceT5Ba3
+         tUDkg+IpykT8Hpm6jSGlGpGq1Ir1Dcb+L4NaoyXOwltM0cuFF93SH4FT36Ov1IHcov
+         /Eu02B1s+jE+cYfpttFk1rMrQ2ClrfhrtTTpxhioNcPrZg1FQfNBbn5rr6dLS75QJ3
+         Zx1Z/P7ots5vBYinbNGLKckI3hK3lgxPdGVvd1oVn9O6wYiK50cuYEfH7ntbvvVKg9
+         /eWN9C0ehC9M8nf+ziwpow4q7r9pLxYPpyYEclrRh1YZTG5s4kmBv1kIn5TZugzX1K
+         g2UdsmTs+ozag==
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Heiko Schocher <hs@denx.de>, linux-arm-kernel@lists.infradead.org
+Cc:     Heiko Schocher <hs@denx.de>, Fabio Estevam <festevam@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Teresa Remmet <t.remmet@phytec.de>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH] usb: dwc3: imx8mp: detect dwc3 child nodes with name
+ "usb*"
+In-Reply-To: <20210430091512.1026996-1-hs@denx.de>
+References: <20210430091512.1026996-1-hs@denx.de>
+Date:   Fri, 30 Apr 2021 13:03:45 +0300
+Message-ID: <87o8dwhywu.fsf@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <1619774805-121562-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-On 4/30/21 12:26 PM, Jiapeng Chong wrote:
-> Variable nr_sectors is set to zero but this value is never
-> read as it is overwritten later on, hence it is a redundant
-> assignment and can be removed.
-> 
-> Clean up the following clang-analyzer warning:
-> 
-> drivers/block/floppy.c:2333:2: warning: Value stored to 'nr_sectors' is
-> never read [clang-analyzer-deadcode.DeadStores].
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Heiko Schocher <hs@denx.de> writes:
 
-Looks good, applied.
-https://github.com/evdenis/linux-floppy/commit/a2d3f991fb51beb1376fb257a316e9b9e3c99737
+> commit:
+> d1689cd3c0f4: ("arm64: dts: imx8mp: Use the correct name for child node "=
+snps, dwc3")
+>
+> renamed "dwc3@3*" nodes in imx8mp.dtsi to "usb@3*"
+>
+> glue layer dwc3-imx8mp.c searches for "dwc3" and so drop failure
+> on boot:
+> imx8mp-dwc3 32f10100.usb: failed to find dwc3 core child
+> imx8mp-dwc3: probe of 32f10100.usb failed with error 1
+> imx8mp-dwc3 32f10108.usb: failed to find dwc3 core child
+> imx8mp-dwc3: probe of 32f10108.usb failed with error 1
+>
+> now. Fix this (and allow old style too)
+>
+> Tested on "PHYTEC phyBOARD-Pollux i.MX8MP" board.
+>
+> fixes: d1689cd3c0f4: ("arm64: dts: imx8mp: Use the correct name for child=
+ node "snps, dwc3")
+> Signed-off-by: Heiko Schocher <hs@denx.de>
 
-I slightly changed the title. I guess this will go with other cleanup patches
-to 5.14 release. Jens already merged 5.13 patches to master.
+already sent, see https://lore.kernel.org/r/1619765836-20387-1-git-send-ema=
+il-jun.li@nxp.com
 
-Thanks,
-Denis
+=2D-=20
+balbi
 
-> ---
->  drivers/block/floppy.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
-> index 8a9d222..e96ad5b 100644
-> --- a/drivers/block/floppy.c
-> +++ b/drivers/block/floppy.c
-> @@ -2330,7 +2330,6 @@ static void rw_interrupt(void)
->  	if (!drive_state[current_drive].first_read_date)
->  		drive_state[current_drive].first_read_date = jiffies;
->  
-> -	nr_sectors = 0;
->  	ssize = DIV_ROUND_UP(1 << raw_cmd->cmd[SIZECODE], 4);
->  
->  	if (reply_buffer[ST1] & ST1_EOC)
-> 
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmCL1gERHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzlfNM9wDzUiqMQgAkPTeaoKTrLM3Twvb0gZVanRZuuC5+uCq
+UM9HH/Lj08k9Z9JLyDH3iqiXhFMupGeBlj41yjQrOStg/gFzyzoqlzpxhHgscXix
+kO942is5cV7e71rz09f5NYi2QhL5CZ//KgUptJ6VWZUaV8KC/6cAFTcvsdoKMyj1
+tV7mEY7dBiEttAT8wmUqOqchOBW7zX8OyQhgM1EbVqdgJM/kGUKd/Q+OTPogpnd+
+3kGWQ5U1OgXILnsZH4VV9i8E+EGNwdHF6XE3TjFEkbM4NwLK9Xiv6j16B3IRoJ8h
+vw+EfB60BhPwLGbnw9PTjN7IImVmdkYgfg56bnOFdbEVXpTE3TPsPg==
+=8edI
+-----END PGP SIGNATURE-----
+--=-=-=--
