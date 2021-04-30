@@ -2,241 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC11B3701EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 22:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E3A3701F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 22:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235877AbhD3UQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 16:16:26 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:60950 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235383AbhD3UQY (ORCPT
+        id S235906AbhD3URW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 16:17:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235709AbhD3URR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 16:16:24 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lcZXv-00CEwB-EO; Fri, 30 Apr 2021 14:15:31 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lcZXp-0000S1-Nv; Fri, 30 Apr 2021 14:15:30 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Marco Elver <elver@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Fri, 30 Apr 2021 16:17:17 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C948AC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 13:16:28 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id t17so43567233qkg.4
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 13:16:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=418LuZVb96KeBroUoNBO/Ka2cAOhu5+UpkObObtMrmg=;
+        b=GjpWCEb1KmimqRmuj7zRxJd42iWbVWtHE6af0lobM99yfQteIp+Aj83tGNywqZkPmY
+         z9ujmdtMusJnX3yFulMZaOQ0J3TGrPZsNwjCD9dkpDggTcSn2TWDwcM2oVSamgUcmNmA
+         /ZBfnDkRwoJStNvj9O01xahs2IPyfYWqOVqDXuaC08pbMz06PWLrXQ9WngqiX/3LcnEI
+         xT49UXwHbiWUZsR92ZOwWMBmzXmVnfxM+Rqy8Mx45S4vRC+LiXMLlfQdnoJajJz9pcKh
+         TeE6o9K8Ws6o9HZLHw9yzFR9pcThVExV/c012NIayENd3L4F7LawELV1H8UHm2t9KJCa
+         /DSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=418LuZVb96KeBroUoNBO/Ka2cAOhu5+UpkObObtMrmg=;
+        b=Vm6oJaboENxQwDOFT28sPCbU6eLz3BXRXJIGGXIWsKGBPaCN1enCqN0fhAOw3+lRY3
+         fUJTwrWcC7v03KMyxgkawY5c6ntcn4KY3yRa1jsDdr42NpQm2ZD2tWd8PYovnQO5jxJk
+         QAgIV6ld67CQtI9NDi7/bJwQ/z6TUULxzqwMgYIvK9oEoApjnAWgvzuE6FhNYCMUnxvP
+         xAac2GO+hYP66hgpmcdJnBPNd+Ykf9hpL0HkNLwevNAbfAjbI1w0H4frWBfHDtaxrD+g
+         yitqk4/8/TwYCXvCozzUI/nd1ldpaFkHsR6rwsFhOuDW2Ad44vLS5kPOROJH/cUAxAOO
+         EnhQ==
+X-Gm-Message-State: AOAM531FYRLIbWKyzXcPGc8yDktUE0aTKZ2Svg4CIx6kFMEp87ItY58w
+        8voUnonwOTfyu35nl0YrIA==
+X-Google-Smtp-Source: ABdhPJw+PYJVdy/b4DcfipUKlwneSI6SQhn7z0gM1sjg6Jg7K1bzdihxcO7bnGWX5paTyfA4WopyEw==
+X-Received: by 2002:a05:620a:4c3:: with SMTP id 3mr7246058qks.282.1619813788033;
+        Fri, 30 Apr 2021 13:16:28 -0700 (PDT)
+Received: from gabell (209-6-122-159.s2973.c3-0.arl-cbr1.sbo-arl.ma.cable.rcncustomer.com. [209.6.122.159])
+        by smtp.gmail.com with ESMTPSA id o189sm2350100qka.86.2021.04.30.13.16.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 13:16:27 -0700 (PDT)
+Date:   Fri, 30 Apr 2021 16:16:25 -0400
+From:   Masayoshi Mizuma <msys.mizuma@gmail.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-References: <YIpkvGrBFGlB5vNj@elver.google.com>
-        <m11rat9f85.fsf@fess.ebiederm.org>
-        <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
-        <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
-Date:   Fri, 30 Apr 2021 15:15:20 -0500
-In-Reply-To: <YIxVWkT03TqcJLY3@elver.google.com> (Marco Elver's message of
-        "Fri, 30 Apr 2021 21:07:06 +0200")
-Message-ID: <m17dkjttpj.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
+        Zachary.Leaf@arm.com, Raphael Gault <raphael.gault@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 7/9] perf: arm64: Add test for userspace counter
+ access on heterogeneous systems
+Message-ID: <20210430201625.mpxeop6niyxnnvbk@gabell>
+References: <20210420031511.2348977-1-robh@kernel.org>
+ <20210420031511.2348977-8-robh@kernel.org>
+ <20210430164616.pzb7yxrsugexso25@gabell>
+ <CAL_JsqLtkik656hjHMqvPc3Ta6qR+nWx1BxPcj8GvzYypTUVWQ@mail.gmail.com>
+ <CAL_JsqLvHh5Ekpmb_au8Y9a7zF4w_izgaVnhzi9255XuqQUjrQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lcZXp-0000S1-Nv;;;mid=<m17dkjttpj.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+N6RHdIHHOmi2pb7aC1y1Z6j2yxh0sqxg=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa04.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.3 required=8.0 tests=ALL_TRUSTED,BAYES_40,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
-        *      [score: 0.3510]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa04 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa04 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Marco Elver <elver@google.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 5048 ms - load_scoreonly_sql: 0.07 (0.0%),
-        signal_user_changed: 10 (0.2%), b_tie_ro: 9 (0.2%), parse: 1.11 (0.0%),
-         extract_message_metadata: 15 (0.3%), get_uri_detail_list: 3.5 (0.1%),
-        tests_pri_-1000: 6 (0.1%), tests_pri_-950: 1.15 (0.0%),
-        tests_pri_-900: 0.93 (0.0%), tests_pri_-90: 127 (2.5%), check_bayes:
-        125 (2.5%), b_tokenize: 12 (0.2%), b_tok_get_all: 13 (0.3%),
-        b_comp_prob: 3.5 (0.1%), b_tok_touch_all: 92 (1.8%), b_finish: 0.90
-        (0.0%), tests_pri_0: 1445 (28.6%), check_dkim_signature: 0.63 (0.0%),
-        check_dkim_adsp: 2.5 (0.0%), poll_dns_idle: 3410 (67.5%),
-        tests_pri_10: 4.6 (0.1%), tests_pri_500: 3434 (68.0%), rewrite_mail:
-        0.00 (0.0%)
-Subject: Re: siginfo_t ABI break on sparc64 from si_addr_lsb move 3y ago
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL_JsqLvHh5Ekpmb_au8Y9a7zF4w_izgaVnhzi9255XuqQUjrQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Marco Elver <elver@google.com> writes:
+On Fri, Apr 30, 2021 at 01:20:58PM -0500, Rob Herring wrote:
+> On Fri, Apr 30, 2021 at 1:17 PM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Fri, Apr 30, 2021 at 11:46 AM Masayoshi Mizuma <msys.mizuma@gmail.com> wrote:
+> > >
+> > > On Mon, Apr 19, 2021 at 10:15:09PM -0500, Rob Herring wrote:
+> > > > Userspace counter access only works on heterogeneous systems with some
+> > > > restrictions. The userspace process must be pinned to a homogeneous
+> > > > subset of CPUs and must open the corresponding PMU for those CPUs. This
+> > > > commit adds a test implementing these requirements.
+> > > >
+> > > > Signed-off-by: Rob Herring <robh@kernel.org>
+> > > > ---
+> > > > v6:
+> > > >  - Add a check on cap_user_rdpmc
+> > > > v5:
+> > > >  - Adapt to libperf mmap API changes
+> > > > v4:
+> > > >  - Update perf_evsel__mmap params
+> > > > v2:
+> > > >  - Drop all but heterogeneous test as others covered by libperf tests
+> > > >  - Rework to use libperf
+> > > > ---
+> > > >  tools/perf/arch/arm64/include/arch-tests.h |   7 +
+> > > >  tools/perf/arch/arm64/tests/Build          |   1 +
+> > > >  tools/perf/arch/arm64/tests/arch-tests.c   |   4 +
+> > > >  tools/perf/arch/arm64/tests/user-events.c  | 177 +++++++++++++++++++++
+> > > >  4 files changed, 189 insertions(+)
+> > > >  create mode 100644 tools/perf/arch/arm64/tests/user-events.c
+> > > >
+> > > > diff --git a/tools/perf/arch/arm64/include/arch-tests.h b/tools/perf/arch/arm64/include/arch-tests.h
+> > > > index 90ec4c8cb880..380ad34a3f09 100644
+> > > > --- a/tools/perf/arch/arm64/include/arch-tests.h
+> > > > +++ b/tools/perf/arch/arm64/include/arch-tests.h
+> > > > @@ -2,11 +2,18 @@
+> > > >  #ifndef ARCH_TESTS_H
+> > > >  #define ARCH_TESTS_H
+> > > >
+> > > > +#include <linux/compiler.h>
+> > > > +
+> > > >  #ifdef HAVE_DWARF_UNWIND_SUPPORT
+> > > >  struct thread;
+> > > >  struct perf_sample;
+> > > > +int test__arch_unwind_sample(struct perf_sample *sample,
+> > > > +                          struct thread *thread);
+> > > >  #endif
+> > >
+> > > Hello,
+> > >
+> > > I got the following compile error with aarch64 on Fedora33.
+> > >
+> > >     # make tools/perf
+> > >     ...
+> > >     In file included from arch/arm64/tests/arch-tests.c:4:
+> > >     /root//libperf_v7/tools/perf/arch/arm64/include/arch-tests.h:10:5: error: redundant redeclaration of ‘test__arch_unwind_sample’ [-Werror=redundant-decls]
+> > >        10 | int test__arch_unwind_sample(struct perf_sample *sample,
+> > >           |     ^~~~~~~~~~~~~~~~~~~~~~~~
+> > >     In file included from arch/arm64/tests/arch-tests.c:3:
+> > >     /root//libperf_v7/tools/perf/tests/tests.h:140:5: note: previous declaration of ‘test__arch_unwind_sample’ was here
+> > >       140 | int test__arch_unwind_sample(struct perf_sample *sample,
+> > >           |     ^~~~~~~~~~~~~~~~~~~~~~~~
+> > >     cc1: all warnings being treated as errors
+> > >     make[8]: *** [/root//libperf_v7/tools/build/Makefile.build:97: /root/libperf_v7/tools/perf/arch/arm64/tests/arch-tests.o] Error 1
+> > >     make[8]: *** Waiting for unfinished jobs....
+> > >     In file included from arch/arm64/tests/user-events.c:13:
+> > >     /root//libperf_v7/tools/perf/arch/arm64/include/arch-tests.h:10:5: error: redundant redeclaration of ‘test__arch_unwind_sample’ [-Werror=redundant-decls]
+> > >        10 | int test__arch_unwind_sample(struct perf_sample *sample,
+> > >           |     ^~~~~~~~~~~~~~~~~~~~~~~~
+> > >     In file included from arch/arm64/tests/user-events.c:12:
+> > >     /root//libperf_v7/tools/perf/tests/tests.h:140:5: note: previous declaration of ‘test__arch_unwind_sample’ was here
+> > >       140 | int test__arch_unwind_sample(struct perf_sample *sample,
+> > >           |     ^~~~~~~~~~~~~~~~~~~~~~~~
+> > >     cc1: all warnings being treated as errors
+> > >     ...
+> > >
+> > > The error is gone after the following patch is applied.
+> >
+> > Thanks. Honestly, I'm not sure why it was there in the first place.
+> > Looking at the git history and this series history doesn't give any
+> > clues.
+> 
+> Well, except that both x86 and powerpc have the same hunk in their
+> arch-tests.h. Do you see errors on those arches?
 
-> On Fri, Apr 30, 2021 at 12:08PM -0500, Eric W. Biederman wrote:
->> Arnd Bergmann <arnd@arndb.de> writes:
-> [...] 
->> >> I did a quick search and the architectures that define __ARCH_SI_TRAPNO
->> >> are sparc, mips, and alpha.  All have 64bit implementations.  A further
->> >> quick search shows that none of those architectures have faults that
->> >> use BUS_MCEERR_AR, BUS_MCEERR_AO, SEGV_BNDERR, SEGV_PKUERR, nor do
->> >> they appear to use mm/memory-failure.c
->> >>
->> >> So it doesn't look like we have an ABI regression to fix.
->> >
->> > Even better!
->> >
->> > So if sparc is the only user of _trapno and it uses none of the later
->> > fields in _sigfault, I wonder if we could take even more liberty at
->> > trying to have a slightly saner definition. Can you think of anything that
->> > might break if we put _trapno inside of the union along with _perf
->> > and _addr_lsb?
->> 
->> On sparc si_trapno is only set when SIGILL ILL_TRP is set.  So we can
->> limit si_trapno to that combination, and it should not be a problem for
->> a new signal/si_code pair to use that storage.  Precisely because it is
->> new.
->> 
->> Similarly on alpha si_trapno is only set for:
->> 
->> SIGFPE {FPE_INTOVF, FPE_INTDIV, FPE_FLTOVF, FPE_FLTDIV, FPE_FLTUND,
->> FPE_FLTINV, FPE_FLTRES, FPE_FLTUNK} and SIGTRAP {TRAP_UNK}.
->> 
->> Placing si_trapno into the union would also make the problem that the
->> union is pointer aligned a non-problem as then the union immediate
->> follows a pointer.
->> 
->> I hadn't had a chance to look before but we must deal with this.  The
->> definition of perf_sigtrap in 42dec9a936e7696bea1f27d3c5a0068cd9aa95fd
->> is broken on sparc, alpha, and ia64 as it bypasses the code in
->> kernel/signal.c that ensures the si_trapno or the ia64 special fields
->> are set.
->> 
->> Not to mention that perf_sigtrap appears to abuse si_errno.
->
-> There are a few other places in the kernel that repurpose si_errno
-> similarly, e.g. arch/arm64/kernel/ptrace.c, kernel/seccomp.c -- it was
-> either that or introduce another field or not have it. It is likely we
-> could do without, but if there are different event types the user would
-> have to sacrifice a few bits of si_perf to encode the event type, and
-> I'd rather keep those bits for something else. Thus the decision fell to
-> use si_errno.
+I didn't see the errors on x86_64.
+It seems that the errors happen on aarch64 because 
+test__arch_unwind_sample() is defined only if the arch
+is arm or arm64 in tools/perf/tests/tests.h:
 
-arm64 only abuses si_errno in compat code for bug compatibility with
-arm32.
+    #if defined(__arm__) || defined(__aarch64__)
+    #ifdef HAVE_DWARF_UNWIND_SUPPORT
+    struct thread;
+    struct perf_sample;
+    int test__arch_unwind_sample(struct perf_sample *sample,
+                                 struct thread *thread);
+    #endif
+    #endif
 
-> Given it'd be wasted space otherwise, and we define the semantics of
-> whatever is stored in siginfo on the new signal, it'd be good to keep.
+The following patch may be another solution which is same way as
+commit d8b167f9d8af ("perf tests: Move x86 tests into arch directory").
 
-Except you don't completely.  You are not defining a new signal.  You
-are extending the definition of SIGTRAP.  Anything generic that
-responds to all SIGTRAPs can reasonably be looking at si_errno.
+---
+ tools/perf/arch/arm64/tests/dwarf-unwind.c | 1 +
+ tools/perf/tests/dwarf-unwind.c            | 2 +-
+ tools/perf/tests/tests.h                   | 2 +-
+ 3 files changed, 3 insertions(+), 2 deletions(-)
 
-Further you are already adding a field with si_perf you can just as
-easily add a second field with well defined semantics for that data.
+diff --git a/tools/perf/arch/arm64/tests/dwarf-unwind.c b/tools/perf/arch/arm64/tests/dwarf-unwind.c
+index 46147a483..02ba87f2b 100644
+--- a/tools/perf/arch/arm64/tests/dwarf-unwind.c
++++ b/tools/perf/arch/arm64/tests/dwarf-unwind.c
+@@ -7,6 +7,7 @@
+ #include "event.h"
+ #include "debug.h"
+ #include "tests/tests.h"
++#include "arch-tests.h"
+ 
+ #define STACK_SIZE 8192
+ 
+diff --git a/tools/perf/tests/dwarf-unwind.c b/tools/perf/tests/dwarf-unwind.c
+index 83638097c..daffe2d66 100644
+--- a/tools/perf/tests/dwarf-unwind.c
++++ b/tools/perf/tests/dwarf-unwind.c
+@@ -17,7 +17,7 @@
+ #include "callchain.h"
+ #include "util/synthetic-events.h"
+ 
+-#if defined (__x86_64__) || defined (__i386__) || defined (__powerpc__)
++#if defined (__x86_64__) || defined (__i386__) || defined (__powerpc__) || defined(__aarch64__)
+ #include "arch-tests.h"
+ #endif
+ 
+diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
+index b85f00530..40cbdfa46 100644
+--- a/tools/perf/tests/tests.h
++++ b/tools/perf/tests/tests.h
+@@ -133,7 +133,7 @@ bool test__bp_account_is_supported(void);
+ bool test__wp_is_supported(void);
+ bool test__tsc_is_supported(void);
+ 
+-#if defined(__arm__) || defined(__aarch64__)
++#if defined(__arm__)
+ #ifdef HAVE_DWARF_UNWIND_SUPPORT
+ struct thread;
+ struct perf_sample;
+-- 
 
->> The code is only safe if the analysis that says we can move si_trapno
->> and perhaps the ia64 fields into the union is correct.  It looks like
->> ia64 much more actively uses it's signal extension fields including for
->> SIGTRAP, so I am not at all certain the generic definition of
->> perf_sigtrap is safe on ia64.
->
-> Trying to understand the requirements of si_trapno myself: safe here
-> would mean that si_trapno is not required if we fire our SIGTRAP /
-> TRAP_PERF.
->
-> As far as I can tell that is the case -- see below.
->
->> > I suppose in theory sparc64 or alpha might start using the other
->> > fields in the future, and an application might be compiled against
->> > mismatched headers, but that is unlikely and is already broken
->> > with the current headers.
->> 
->> If we localize the use of si_trapno to just a few special cases on alpha
->> and sparc I think we don't even need to worry about breaking userspace
->> on any architecture.  It will complicate siginfo_layout, but it is a
->> complication that reflects reality.
->> 
->> I don't have a clue how any of this affects ia64.  Does perf work on
->> ia64?  Does perf work on sparc, and alpha?
->> 
->> If perf works on ia64 we need to take a hard look at what is going on
->> there as well.
->
-> No perf on ia64, but it seems alpha and sparc have perf:
->
-> 	$ git grep 'select.*HAVE_PERF_EVENTS$' -- arch/
-> 	arch/alpha/Kconfig:	select HAVE_PERF_EVENTS    <--
-> 	arch/arc/Kconfig:	select HAVE_PERF_EVENTS
-> 	arch/arm/Kconfig:	select HAVE_PERF_EVENTS
-> 	arch/arm64/Kconfig:	select HAVE_PERF_EVENTS
-> 	arch/csky/Kconfig:	select HAVE_PERF_EVENTS
-> 	arch/hexagon/Kconfig:	select HAVE_PERF_EVENTS
-> 	arch/mips/Kconfig:	select HAVE_PERF_EVENTS
-> 	arch/nds32/Kconfig:	select HAVE_PERF_EVENTS
-> 	arch/parisc/Kconfig:	select HAVE_PERF_EVENTS
-> 	arch/powerpc/Kconfig:	select HAVE_PERF_EVENTS
-> 	arch/riscv/Kconfig:	select HAVE_PERF_EVENTS
-> 	arch/s390/Kconfig:	select HAVE_PERF_EVENTS
-> 	arch/sh/Kconfig:	select HAVE_PERF_EVENTS
-> 	arch/sparc/Kconfig:	select HAVE_PERF_EVENTS    <--
-> 	arch/x86/Kconfig:	select HAVE_PERF_EVENTS
-> 	arch/xtensa/Kconfig:	select HAVE_PERF_EVENTS
->
-> Now, given ia64 is not an issue, I wanted to understand the semantics of
-> si_trapno. Per https://man7.org/linux/man-pages/man2/sigaction.2.html, I
-> see:
->
-> 	int si_trapno;    /* Trap number that caused
-> 			     hardware-generated signal
-> 			     (unused on most architectures) */
->
-> ... its intended semantics seem to suggest it would only be used by some
-> architecture-specific signal like you identified above. So if the
-> semantics is some code of a hardware trap/fault, then we're fine and do
-> not need to set it.
->
-> Also bearing in mind we define the semantics any new signal, and given
-> most architectures do not have si_trapno, definitions of new generic
-> signals should probably not include odd architecture specific details
-> related to old architectures.
->
-> From all this, my understanding now is that we can move si_trapno into
-> the union, correct? What else did you have in mind?
-
-Yes.  Let's move si_trapno into the union.
-
-That implies a few things like siginfo_layout needs to change.
-
-The helpers in kernel/signal.c can change to not imply that
-if you define __ARCH_SI_TRAPNO you must always define and
-pass in si_trapno.  A force_sig_trapno could be defined instead
-to handle the cases that alpha and sparc use si_trapno.
-
-It would be nice if a force_sig_perf_trap could be factored
-out of perf_trap and placed in kernel/signal.c.
-
-My experience (especially this round) is that it becomes much easier to
-audit the users of siginfo if there is a dedicated function in
-kernel/signal.c that is simply passed the parameters that need
-to be placed in siginfo.
-
-So I would very much like to see if I can make force_sig_info static.
-
-Eric
-
+Thanks,
+Masa
