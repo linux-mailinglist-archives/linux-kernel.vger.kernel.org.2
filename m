@@ -2,122 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EFB33701AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 22:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E60CF37017F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 22:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233604AbhD3T5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 15:57:18 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:45389 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233671AbhD3T5L (ORCPT
+        id S232986AbhD3Txf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 15:53:35 -0400
+Received: from server.lespinasse.org ([63.205.204.226]:60983 "EHLO
+        server.lespinasse.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232272AbhD3TxW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 15:57:11 -0400
-X-Greylist: delayed 356 seconds by postgrey-1.27 at vger.kernel.org; Fri, 30 Apr 2021 15:57:11 EDT
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.west.internal (Postfix) with ESMTP id 139241EAC;
-        Fri, 30 Apr 2021 15:50:22 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Fri, 30 Apr 2021 15:50:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=benboeckel.net;
-         h=date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=PtajBDBgytedXM7xt9/aNsUr4Q+
-        i946QjqQp1VhqJa0=; b=mJJOo7rS8hXM00Wzh05jeER5Vf3Ld3NnGG9ASX9Do7n
-        MTQnxS+peMdL2PAAmeXBAnOliWXZLjWbVORnHc2tZ+zdVAq+FrrjQrRghZYGMNsu
-        C5jiv/W4NiHy73v+9zORRbE5bfhqAdk5uMGH7iHztDco185BwAgjLaJJCbwi4b/U
-        +DRbmVu/soNpkYIzA8wVINuZJKBdidbNeTXZP9HYSSqPTSM4v7SgmCy3MMqW1r6K
-        zBNCCqC0o+QorvcPBEjr4IsTgkh3AQxYBi/khA8kYojegwY2uDp47E9ITbTJAS7w
-        0Af8o5u0sHR27UR4Y5ePJFGpY3WQmaLs0QrzcYlYjSQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=PtajBD
-        BgytedXM7xt9/aNsUr4Q+i946QjqQp1VhqJa0=; b=CQw2WcmK0fpUBvOrNdkrDt
-        AAWM/QVfy+qlNpPT+VPwx9PNzbCCq6ePBp+b4Q6Wl4hI/bAsqgRjZ8DFUSC9fizQ
-        vhVXOsCZzuvOq9dpF0s9UpB6oo4tuMcm1jvtFdkegkhtFMwLRKeyjLkQlVsuk7Tf
-        113wZGyzLKai5j5g8jRONyowqb0RWqak+oaGvlNW4fpWE42y8S3ikxlUp/cVgSi4
-        DlGTd/JD3/4/Ogcf4sFEGhFVlH9jlAziHaYdXSg3v5cJhEn4s27xBB52ZCuAqtgq
-        nYhZGf5ybpWEpS3ddGuvLxz4raHynVZmOj+jy7n6qQ2cndY0uVaABLoQj7PUzbmA
-        ==
-X-ME-Sender: <xms:fV-MYGCuNY33RtIZbJ2dAPFK-P6e3VGSCt-Qz7WlOG0ov0WXdKygwQ>
-    <xme:fV-MYAib-6LePyxvkfHUzCAv0PJnkZ9MgCo72TC797hKCm5nhhNnE9_dhkA_80FKW
-    cQclyz51QwWwlVkpZ0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddviedgudegfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujggfsehttdertddtreejnecuhfhrohhmpeeuvghn
-    uceuohgvtghkvghluceomhgvsegsvghnsghovggtkhgvlhdrnhgvtheqnecuggftrfgrth
-    htvghrnhepvefftdettefgtddtkeeufeegtddttdeuueegkeegteffueetffejudeihefh
-    kedtnecukfhppedvgedrudeiledrvddtrddvheehnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomhepmhgvsegsvghnsghovggtkhgvlhdrnhgvth
-X-ME-Proxy: <xmx:fV-MYJmKKkUaZ3Vg6hQeQFv6z0sonlUX9aZ6s_HkpIQ4Iqvw1acM_A>
-    <xmx:fV-MYEzlkWO2rbOYKSWEGCIc0TwEtVU7W6_Fz3V-YsQKTFki7ArI7g>
-    <xmx:fV-MYLStdP-ko4iAxttjv0Qh8tF8vO1MUVQH82APFsVxUDNIfv4oGw>
-    <xmx:fV-MYA_xWu_ni5RFR_Vbc-9xPIpzruTB8Xs3eqDeuNBkSKU6b0r3VDOOCBo>
-Received: from localhost (unknown [24.169.20.255])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Fri, 30 Apr 2021 15:50:20 -0400 (EDT)
-Date:   Fri, 30 Apr 2021 15:50:18 -0400
-From:   Ben Boeckel <me@benboeckel.net>
-To:     trix@redhat.com
-Cc:     jejb@linux.ibm.com, jarkko@kernel.org, zohar@linux.ibm.com,
-        dhowells@redhat.com, jmorris@namei.org, serge@hallyn.com,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Colin King <colin.king@canonical.com>
-Subject: Re: [PATCH] KEYS: trusted: fix memory leak
-Message-ID: <YIxfehTLhWe58sNE@erythro>
-References: <20210430185810.3331311-1-trix@redhat.com>
+        Fri, 30 Apr 2021 15:53:22 -0400
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+ d=lespinasse.org; i=@lespinasse.org; q=dns/txt; s=srv-14-ed;
+ t=1619812353; h=from : to : cc : subject : date : message-id :
+ in-reply-to : references : mime-version : content-transfer-encoding :
+ from; bh=dcNLsbG8ESP+Ilb2xQiBJzAJk+o/uP7LiOGbYa0CH8k=;
+ b=iJHs7S2FhfzxsM5ZRN/CH8+fjzCuZRuo/hgPczw1mcsHrnYWGrcytzQk4NwGC92fRXUCU
+ uiSidepjrq/aPuGBg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lespinasse.org;
+ i=@lespinasse.org; q=dns/txt; s=srv-14-rsa; t=1619812353; h=from : to
+ : cc : subject : date : message-id : in-reply-to : references :
+ mime-version : content-transfer-encoding : from;
+ bh=dcNLsbG8ESP+Ilb2xQiBJzAJk+o/uP7LiOGbYa0CH8k=;
+ b=sqVkVXJ54YWrcpEgKimcRpZ3iFRXUGqdiCVvBF7rKz+gE60KC7qjif9ujbBFpfoVFiQD9
+ nkrCNg1nPyBt6kLu5GjQhXzrZYswefKB5kwcfLnqoKD6JeXsBBhz4m++FtCPxxbXt2MkB0B
+ H4vAE8H4X/yUazmvbq5X5t1k6OSMDnyzb+Qn0GTQqojPRFSwAOfsi7ZRbNQwbQ1rAURWhT2
+ Wt37f3z59KF3ATgtogcYZt6dQ9JZbsxo8rikFyYLuDzhTSDiAr0jOu1WhRdu6LPgSDLcKqo
+ 3KEYNVWT76EXbKMvU6p1Qalm4p/j7DCJh1E+8KrDqNbbC/+f2cVLunOLzknA==
+Received: from zeus.lespinasse.org (zeus.lespinasse.org [IPv6:fd00::150:0])
+        by server.lespinasse.org (Postfix) with ESMTPS id 1F95B16030B;
+        Fri, 30 Apr 2021 12:52:33 -0700 (PDT)
+Received: by zeus.lespinasse.org (Postfix, from userid 1000)
+        id 0036A19F520; Fri, 30 Apr 2021 12:52:32 -0700 (PDT)
+From:   Michel Lespinasse <michel@lespinasse.org>
+To:     Linux-MM <linux-mm@kvack.org>,
+        Linux-Kernel <linux-kernel@vger.kernel.org>
+Cc:     Laurent Dufour <ldufour@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Michel Lespinasse <michel@lespinasse.org>
+Subject: [PATCH 01/29] mm: export dump_mm
+Date:   Fri, 30 Apr 2021 12:52:02 -0700
+Message-Id: <20210430195232.30491-2-michel@lespinasse.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210430195232.30491-1-michel@lespinasse.org>
+References: <20210430195232.30491-1-michel@lespinasse.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210430185810.3331311-1-trix@redhat.com>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 11:58:10 -0700, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> Static analysis reports this problem
-> trusted-keys/trusted_tpm1.c:496:10: warning: Potential memory leak
->   return ret;
->          ^~~
-> 
-> In tpm_seal() some failure handling returns directly, without
-> freeing memory.
-> 
-> Fixes: 5df16caada3f ("KEYS: trusted: Fix incorrect handling of tpm_get_random()")
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  security/keys/trusted-keys/trusted_tpm1.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/security/keys/trusted-keys/trusted_tpm1.c b/security/keys/trusted-keys/trusted_tpm1.c
-> index 469394550801..aa108bea6739 100644
-> --- a/security/keys/trusted-keys/trusted_tpm1.c
-> +++ b/security/keys/trusted-keys/trusted_tpm1.c
-> @@ -493,10 +493,12 @@ static int tpm_seal(struct tpm_buf *tb, uint16_t keytype,
->  
->  	ret = tpm_get_random(chip, td->nonceodd, TPM_NONCE_SIZE);
->  	if (ret < 0)
-> -		return ret;
-> +		goto out;
->  
-> -	if (ret != TPM_NONCE_SIZE)
-> -		return -EIO;
-> +	if (ret != TPM_NONCE_SIZE) {
-> +		ret = -EIO;
-> +		goto out;
-> +	}
->  
->  	ordinal = htonl(TPM_ORD_SEAL);
->  	datsize = htonl(datalen);
+This is necessary in order to allow VM_BUG_ON_MM to be used in modules
+(I encountered the issue when adding VM_BUG_ON_MM in mmap locking functions).
 
-I see this patch also submitted by Colin (Cc'd) in Message-Id:
+Signed-off-by: Michel Lespinasse <michel@lespinasse.org>
+---
+ mm/debug.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-    <20210430113724.110746-1-colin.king@canonical.com>
+diff --git a/mm/debug.c b/mm/debug.c
+index 0bdda8407f71..979d505e2c6d 100644
+--- a/mm/debug.c
++++ b/mm/debug.c
+@@ -275,6 +275,7 @@ void dump_mm(const struct mm_struct *mm)
+ 		mm->def_flags, &mm->def_flags
+ 	);
+ }
++EXPORT_SYMBOL(dump_mm);
+ 
+ static bool page_init_poisoning __read_mostly = true;
+ 
+-- 
+2.20.1
 
-To my eyes, the commit message seems a bit better over there.
-
---Ben
