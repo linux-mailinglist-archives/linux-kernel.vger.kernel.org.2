@@ -2,164 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A905F36F798
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 11:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8098636F7A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 11:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbhD3JL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 05:11:27 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:58945 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229522AbhD3JL0 (ORCPT
+        id S231314AbhD3JN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 05:13:26 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:51635 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229507AbhD3JNV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 05:11:26 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 875515C0032;
-        Fri, 30 Apr 2021 05:10:38 -0400 (EDT)
+        Fri, 30 Apr 2021 05:13:21 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 5904A580502;
+        Fri, 30 Apr 2021 05:12:33 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Fri, 30 Apr 2021 05:10:38 -0400
+  by compute3.internal (MEProxy); Fri, 30 Apr 2021 05:12:33 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=DgPXkCNwhuM1PvuNpQB5vO85GXk
-        9IVTLv4pIOEkACM8=; b=v3lFalLS2TrtaF/aAKRNtCRKo3X9KKsTJPpbZDbALtO
-        TBZfUyMeRdDSnVkzhYJ0hTaRqiK1la++4dg3x/o/lFAZJjWKEjouSxHiXjpp/7V3
-        GcZtuH7Jz0vb+aK9kQO1NpHjdSqA5NXZLm98uz0dE+LLfiWsso+BoBulMdGJ/BCg
-        NLCkTemN9sdyyOjFIoYRBoi6CmjhlsZtIEreEnIiXVY1XbP512vkemu76JtmQG+T
-        soYufUFwf6paOCwAS1zu4aYfjUlf9YzruiIRIHy/If8w/vi2uH6E7PsDslYx2T5v
-        3dtGpNGWPDK9N/b2IdfhOtXKPuoPtRKbRukx/PplrCA==
+        :content-type:in-reply-to; s=fm2; bh=avsxOVAtvbPgpF3DzABnelX9YGb
+        evrpv2itbsc94Fxc=; b=adg5wJCsVVgihT85I8rgAiVZdtHlmUD9snVJH+ToKk/
+        lN5fdL5r5nF7GTYMMRqXXUuKeGJ6uZIKFymcxKkGIN9rcsyVhItpT3hGp7EpJrxj
+        +Ay0SpQQzCkQS5+DpDTd6RWoE8Q6byZKa7b7Ukguh8DvCReDKwQ1tMfqJgviydem
+        ierjDG5cPCBB1CBko/IpaxCOfJYgEaSiPwEFieOC/y3aSkxUtbMy0xS426TowTD4
+        vgj4v8KEA0n6wIrOBO4vFogxehWGtvU8PAwTOkXFUKOI6BX9d9fXpxAnnL5KcLuA
+        AQLZMOfF2vmXZFSiNSgwXjBgSzE9Enc/C9jNJoRQavg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-type:date:from:in-reply-to
         :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=DgPXkC
-        NwhuM1PvuNpQB5vO85GXk9IVTLv4pIOEkACM8=; b=sFY/ECTsNNXUjSfwBt6lFu
-        BJfDhttISlFO4bU/nzfmphsiTRMvkRfPRdPP3Sdy7C557AhTifO5usvA7iVzrPLM
-        PPbR9noGUEONxwEuDcYz4ok5Nv30zc5qOZ1xsdmqn5H5dzBHHZSSMupZrqZ/EI+h
-        WOwfJ/agiVqE4OYuviOXyC5Sc9/x8NvvZvG4uPV2ompJWuIW8s767yW0+NRj+lrD
-        wm2W/SQ9YVQAoF7jfGN9bf+ORVQ+hE3IZRw79eCSw9Jebt31hDV5XQ2bTYaEiB8b
-        GMyxricEnXr5+kmywZ7x/VpkKnJLij8chr3yWx10Ol+dvSTGsHCpUO1Ai8AvC74Q
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=avsxOV
+        AtvbPgpF3DzABnelX9YGbevrpv2itbsc94Fxc=; b=KbFhzd8UzYblygwuCVG4Z7
+        tdr0p+teLymQzp13X6JLsDXehFi2DM6rzv1mJ8Dv+e4Pdh+xtrjEWSwAdPkn2O0S
+        zT4JjTv3zwQx61mKUKqZY7oAwq4akVaozeE75esk9N+/4s+W7O/tXvGLzPmRUaoc
+        b5OJD9QATKhsr132uLgcH6CaGaCGddF0Wa3Y1WnUo6lxpkXZqCU8Oz8m3VbqC4xd
+        5oXR4W9x9F1Zt5QJ354wMTsREuNfrdIxMok53Hi0H+w/WVu9ofKNcsqw3mXYp8BJ
+        FMXa5X+tlxnpnxfIl2ggTv+5xDk/ebAhA4LpVN6gwBIbl8oskB/MXHSW7M36EZxQ
         ==
-X-ME-Sender: <xms:jcmLYIv46PFH2I-yNC0GBVVTHo1wtbmhmYsub_r28nDlmmxaw0tsAw>
-    <xme:jcmLYFfRmEELpEAy70HCBIzKVxE80lyJz2ULLpqLaoXCz8BOPoxox3Ox7ouChhBym
-    R-ddg5bofsDlBhBMog>
+X-ME-Sender: <xms:_8mLYK_OBfykP08KuhxKXvQi0z9rLH9Tdz8l80ZVGixoMz_aBbUQIw>
+    <xme:_8mLYKtWdBkTKQ2w3tu_uf0CdzhMSlQkOzQjnbJYnaMRfju5u2XbEBXwG_rtMdhoD
+    073F-pKjFYaRg_s7L8>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddviedguddvucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
     vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:jcmLYDykuZ_CP5JV8lF6npKjNeBo-VDdNnCaVq7GS4m2DlyhlQkQbQ>
-    <xmx:jcmLYLNBzH8upGuc3c63EbYnRSgWC2Mo3kPlHuKBOb_f6LF8dW91Ew>
-    <xmx:jcmLYI-PRvTdFHdebQ7onUcahcQaSSxSIq1af5ejZkNGAoWQECaG0A>
-    <xmx:jsmLYHl0OezGXOTggnNmAyoPAE5wTh9EwOZg8wVI6WS3gXwxvSkBsg>
+    htvghrnhepffetteevieejteeuhfffgeektefghfeileehhedtuddutefhhfejtddvtddu
+    ledvnecuffhomhgrihhnpeguvghvihgtvghtrhgvvgdrohhrghenucfkphepledtrdekle
+    drieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhr
+    ohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:_8mLYADhaoPQYlwmqfm8kiS12OGqDjJmS9r34F16kGCsGz6jj3h6Sg>
+    <xmx:_8mLYCc5i6s85hL5HinjpGBLOPlPJqiJXz6Tw5v4lcZc2JnHVGnyeQ>
+    <xmx:_8mLYPMj2N35ExUd7FPFwB4q-uVUeXHPI6cTTl1wjWfN7VlbxWC75A>
+    <xmx:AcqLYKrxjEdT7Jqmi_bR9cylNl54Rmas4Jjymt0cZsOvGZAQR1Z8-w>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
         by mail.messagingengine.com (Postfix) with ESMTPA;
-        Fri, 30 Apr 2021 05:10:37 -0400 (EDT)
-Date:   Fri, 30 Apr 2021 11:10:35 +0200
+        Fri, 30 Apr 2021 05:12:31 -0400 (EDT)
+Date:   Fri, 30 Apr 2021 11:12:30 +0200
 From:   Maxime Ripard <maxime@cerno.tech>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Samuel Holland <samuel@sholland.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-sunxi@lists.linux.dev,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/2] sunxi: Enforce consistent MMC numbering
-Message-ID: <20210430091035.i4zoyzb4c2l22msb@gilmour>
-References: <20210419025246.21722-1-samuel@sholland.org>
- <CAGb2v642Z3iH7fUWa31Rb5j+nWdZ=sXn2BYw3_dyE9P6iuL0Cg@mail.gmail.com>
- <20210419095443.1548432e@slackpad.fritz.box>
+To:     Kevin Tang <kevin3.tang@gmail.com>
+Cc:     maarten.lankhorst@linux.intel.com, sean@poorly.run,
+        airlied@linux.ie, daniel@ffwll.ch, robh+dt@kernel.org,
+        mark.rutland@arm.com, orsonzhai@gmail.com, zhang.lyra@gmail.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 1/6] dt-bindings: display: add Unisoc's drm master
+ bindings
+Message-ID: <20210430091230.5gf3jzhd7hjmxjnq@gilmour>
+References: <20210425123607.26537-1-kevin3.tang@gmail.com>
+ <20210425123607.26537-2-kevin3.tang@gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5enpgdo5lledv3vf"
+        protocol="application/pgp-signature"; boundary="ckdz3meppmjafuxn"
 Content-Disposition: inline
-In-Reply-To: <20210419095443.1548432e@slackpad.fritz.box>
+In-Reply-To: <20210425123607.26537-2-kevin3.tang@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---5enpgdo5lledv3vf
+--ckdz3meppmjafuxn
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 19, 2021 at 09:54:43AM +0100, Andre Przywara wrote:
-> On Mon, 19 Apr 2021 11:17:19 +0800
-> Chen-Yu Tsai <wens@csie.org> wrote:
+On Sun, Apr 25, 2021 at 08:36:02PM +0800, Kevin Tang wrote:
+> From: Kevin Tang <kevin.tang@unisoc.com>
 >=20
-> Hi,
+> The Unisoc DRM master device is a virtual device needed to list all
+> DPU devices or other display interface nodes that comprise the
+> graphics subsystem
 >=20
-> > On Mon, Apr 19, 2021 at 10:52 AM Samuel Holland <samuel@sholland.org> w=
-rote:
-> > >
-> > > Dealing with the inconsistent numbering has been a major pain, and
-> > > there is a solution with (as far as I can tell) no tangible downsides.
-> > > So let's use it.
+> Unisoc's display pipeline have several components as below
+> description, multi display controllers and corresponding physical
+> interfaces.
+> For different display scenarios, dpu0 and dpu1 maybe binding to
+> different encoder.
 >=20
-> Thanks Samuel for sending this!
+> E.g:
+>   dpu0 and dpu1 both binding to DSI for dual mipi-dsi display;
+>   dpu0 binding to DSI for primary display, and dpu1 binding to DP for
+>   external display;
 >=20
-> > > Yes, I know the kernel supports UUIDs for root=3D. But UUIDs do not h=
-elp
-> > > when referencing the whole, unpartitioned device, like is needed for
-> > > updating the bootloader and firmware. So for the use case of "write a
-> > > bootloader to the SD card, regardless of where the board is currently
-> > > booted from", I know of two options:
-> > >   - Dig around in sysfs to find the mmc number from the MMIO address,
-> > >     which means I have to know the MMIO addresses for every SoC, or
-> > >   - Apply patches like these.
-> > >
-> > > Samuel Holland (2):
-> > >   ARM: dts: sunxi: h3/h5: Enforce consistent MMC numbering
-> > >   arm64: dts: allwinner: Enforce consistent MMC numbering
-> > >
-> > >  arch/arm/boot/dts/sunxi-h3-h5.dtsi            | 6 ++++++
-> > >  arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 6 ++++++
-> > >  arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  | 6 ++++++ =20
-> >=20
-> > At least with Rockchip this is now done at the board level. IIRC it was
-> > a request from other people to not do it at the SoC level. I don't reca=
-ll
-> > exactly who though.
+> Cc: Orson Zhai <orsonzhai@gmail.com>
+> Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+> Signed-off-by: Kevin Tang <kevin.tang@unisoc.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../display/sprd/sprd,display-subsystem.yaml  | 64 +++++++++++++++++++
+>  1 file changed, 64 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,d=
+isplay-subsystem.yaml
 >=20
-> FWIW, I am very much in favour of these patches, at a SoC level:
-> The *SoC* BootROM imposes an order, by probing the first (by MMIO
-> address order) MMC controller first for boot devices. IIRC that's a
-> different story for Rockchip?
-> And if people really don't care about the order, then having a certain
-> order doesn't hurt, so we could as well use the "natural" order, as it
-> was before.
+> diff --git a/Documentation/devicetree/bindings/display/sprd/sprd,display-=
+subsystem.yaml b/Documentation/devicetree/bindings/display/sprd/sprd,displa=
+y-subsystem.yaml
+> new file mode 100644
+> index 000000000..3d107e943
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/sprd/sprd,display-subsyst=
+em.yaml
+> @@ -0,0 +1,64 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/sprd/sprd,display-subsystem.y=
+aml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Unisoc DRM master device
+> +
+> +maintainers:
+> +  - Kevin Tang <kevin.tang@unisoc.com>
+> +
+> +description: |
+> +  The Unisoc DRM master device is a virtual device needed to list all
+> +  DPU devices or other display interface nodes that comprise the
+> +  graphics subsystem.
+> +
+> +  Unisoc's display pipeline have several components as below description,
+> +  multi display controllers and corresponding physical interfaces.
+> +  For different display scenarios, dpu0 and dpu1 maybe binding to differ=
+ent
+> +  encoder.
+> +
+> +  E.g:
+> +  dpu0 and dpu1 both binding to DSI for dual mipi-dsi display;
+> +  dpu0 binding to DSI for primary display, and dpu1 binding to DP for ex=
+ternal display;
+> +
+> +          +-----------------------------------------+
+> +          |                                         |
+> +          |                            +---------+  |
+> +  +----+  |   +----+    +---------+    |DPHY/CPHY|  |   +------+
+> +  |    +----->+dpu0+--->+MIPI|DSI +--->+Combo    +----->+Panel0|
+> +  |AXI |  |   +----+    +---------+    +---------+  |   +------+
+> +  |    |  |                  ^                      |
+> +  |    |  |                  |                      |
+> +  |    |  |      +-----------+                      |
+> +  |    |  |      |                                  |
+> +  |APB |  |   +--+-+    +-----------+    +---+      |   +------+
+> +  |    +----->+dpu1+--->+DisplayPort+--->+PHY+--------->+Panel1|
+> +  |    |  |   +----+    +-----------+    +---+      |   +------+
+> +  +----+  |                                         |
+> +          +-----------------------------------------+
+> +
+> +properties:
+> +  compatible:
+> +    const: sprd,display-subsystem
+> +
+> +  ports:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description:
+> +      Should contain a list of phandles pointing to display interface po=
+rt
+> +      of DPU devices.
+> +
+> +required:
+> +  - compatible
+> +  - ports
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    display-subsystem {
+> +        compatible =3D "sprd,display-subsystem";
+> +        ports =3D <&dpu_out>;
+> +    };
 
-This doesn't have anything to do with the BootRom though but what we
-provide to the userspace? The userspace has no guarantee about the
-kernel enumeration order for any bus (but UART for some reason), I'm not
-really sure why MMC would be an exception. Especially since the kernel
-will not try to catch up, this will be bound to be broken on a regular
-basis.
-
-And that aside, assuming that a device only has an eMMC this would
-create the mmc2 device, which is completely weird and inconsistent with
-how any other bus behaves.
-
-> Also UUIDs only help if you boot with an initramfs to resolve them,
-> which proves to be extra pain if you don't compile kernels on the
-> device, or not inside a distribution environment.
-
-I'm not sure what you mean? The kernel is perfectly able to resolve
-them. You can also use PARTLABEL if you want something more user
-friendly.
+Given your diagram, I guess it should be the dpu input?
 
 Maxime
 
---5enpgdo5lledv3vf
+--ckdz3meppmjafuxn
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYIvJiwAKCRDj7w1vZxhR
-xezdAQDIY6qe0cw/YeAwFhjlA5dAKEDjlxwmNTpj6ztkqfs/4wD/ckzHAVsRq/tR
-KkQbbJcdqKeAzIEY1dSy+rvOusXqqAA=
-=DXm6
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYIvJ/gAKCRDj7w1vZxhR
+xTq6AQCqZKEHkztnHiklozfzjR7wJ4k41aVx8gMmXSmNJExpHwD/b88xdl0VmOY9
+M8CsGWdBFk3WsY4AoPfSrFwxwgFr5Qc=
+=G+SR
 -----END PGP SIGNATURE-----
 
---5enpgdo5lledv3vf--
+--ckdz3meppmjafuxn--
