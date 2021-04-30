@@ -2,118 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFDCF36F53E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 06:57:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6003336F524
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 06:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbhD3E54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 00:57:56 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:43724 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhD3E5z (ORCPT
+        id S229795AbhD3Ejr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 00:39:47 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:17825 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229448AbhD3Ejq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 00:57:55 -0400
-Received: from 1-171-217-32.dynamic-ip.hinet.net ([1.171.217.32] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1lcLD6-0003dM-4f; Fri, 30 Apr 2021 04:57:04 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     alexander.deucher@amd.com, christian.koenig@amd.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        amd-gfx@lists.freedesktop.org (open list:RADEON and AMDGPU DRM DRIVERS),
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] drm/radeon/dpm: Disable sclk switching on Oland when two 4K 60Hz monitors are connected
-Date:   Fri, 30 Apr 2021 12:56:56 +0800
-Message-Id: <20210430045656.577395-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 30 Apr 2021 00:39:46 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FWfhV36fjzBrxk;
+        Fri, 30 Apr 2021 12:36:26 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Fri, 30 Apr 2021
+ 12:38:50 +0800
+From:   Nanyong Sun <sunnanyong@huawei.com>
+To:     <shuah@kernel.org>, <sfr@canb.auug.org.au>,
+        <linux-kselftest@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <kirill.shutemov@linux.intel.com>,
+        <yang.shi@linux.alibaba.com>, <sunnanyong@huawei.com>,
+        <wangkefeng.wang@huawei.com>
+Subject: [PATCH -next] khugepaged: selftests: remove debug_cow
+Date:   Fri, 30 Apr 2021 13:11:17 +0800
+Message-ID: <20210430051117.400189-1-sunnanyong@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.32]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Screen flickers rapidly when two 4K 60Hz monitors are in use. This issue
-doesn't happen when one monitor is 4K 60Hz (pixelclock 594MHz) and
-another one is 4K 30Hz (pixelclock 297MHz).
+The debug_cow attribute had been removed since commit 4958e4d86ecb01
+("mm: thp: remove debug_cow switch"), so remove it in selftest code too,
+otherwise the khugepaged test will fail.
 
-The issue is gone after setting "power_dpm_force_performance_level" to
-"high". Following the indication, we found that the issue occurs when
-sclk is too low.
-
-So resolve the issue by disabling sclk switching when there are two
-monitors requires high pixelclock (> 297MHz).
-
-v2:
- - Only apply the fix to Oland.
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
 ---
- drivers/gpu/drm/radeon/radeon.h    | 1 +
- drivers/gpu/drm/radeon/radeon_pm.c | 8 ++++++++
- drivers/gpu/drm/radeon/si_dpm.c    | 3 +++
- 3 files changed, 12 insertions(+)
+ tools/testing/selftests/vm/khugepaged.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/radeon/radeon.h b/drivers/gpu/drm/radeon/radeon.h
-index 42281fce552e6..56ed5634cebef 100644
---- a/drivers/gpu/drm/radeon/radeon.h
-+++ b/drivers/gpu/drm/radeon/radeon.h
-@@ -1549,6 +1549,7 @@ struct radeon_dpm {
- 	void                    *priv;
- 	u32			new_active_crtcs;
- 	int			new_active_crtc_count;
-+	int			high_pixelclock_count;
- 	u32			current_active_crtcs;
- 	int			current_active_crtc_count;
- 	bool single_display;
-diff --git a/drivers/gpu/drm/radeon/radeon_pm.c b/drivers/gpu/drm/radeon/radeon_pm.c
-index 0c1950f4e146f..3861c0b98fcf3 100644
---- a/drivers/gpu/drm/radeon/radeon_pm.c
-+++ b/drivers/gpu/drm/radeon/radeon_pm.c
-@@ -1767,6 +1767,7 @@ static void radeon_pm_compute_clocks_dpm(struct radeon_device *rdev)
- 	struct drm_device *ddev = rdev->ddev;
- 	struct drm_crtc *crtc;
- 	struct radeon_crtc *radeon_crtc;
-+	struct radeon_connector *radeon_connector;
+diff --git a/tools/testing/selftests/vm/khugepaged.c b/tools/testing/selftests/vm/khugepaged.c
+index 8b7582130..155120b67 100644
+--- a/tools/testing/selftests/vm/khugepaged.c
++++ b/tools/testing/selftests/vm/khugepaged.c
+@@ -86,7 +86,6 @@ struct settings {
+ 	enum thp_enabled thp_enabled;
+ 	enum thp_defrag thp_defrag;
+ 	enum shmem_enabled shmem_enabled;
+-	bool debug_cow;
+ 	bool use_zero_page;
+ 	struct khugepaged_settings khugepaged;
+ };
+@@ -95,7 +94,6 @@ static struct settings default_settings = {
+ 	.thp_enabled = THP_MADVISE,
+ 	.thp_defrag = THP_DEFRAG_ALWAYS,
+ 	.shmem_enabled = SHMEM_NEVER,
+-	.debug_cow = 0,
+ 	.use_zero_page = 0,
+ 	.khugepaged = {
+ 		.defrag = 1,
+@@ -268,7 +266,6 @@ static void write_settings(struct settings *settings)
+ 	write_string("defrag", thp_defrag_strings[settings->thp_defrag]);
+ 	write_string("shmem_enabled",
+ 			shmem_enabled_strings[settings->shmem_enabled]);
+-	write_num("debug_cow", settings->debug_cow);
+ 	write_num("use_zero_page", settings->use_zero_page);
  
- 	if (!rdev->pm.dpm_enabled)
- 		return;
-@@ -1776,6 +1777,7 @@ static void radeon_pm_compute_clocks_dpm(struct radeon_device *rdev)
- 	/* update active crtc counts */
- 	rdev->pm.dpm.new_active_crtcs = 0;
- 	rdev->pm.dpm.new_active_crtc_count = 0;
-+	rdev->pm.dpm.high_pixelclock_count = 0;
- 	if (rdev->num_crtc && rdev->mode_info.mode_config_initialized) {
- 		list_for_each_entry(crtc,
- 				    &ddev->mode_config.crtc_list, head) {
-@@ -1783,6 +1785,12 @@ static void radeon_pm_compute_clocks_dpm(struct radeon_device *rdev)
- 			if (crtc->enabled) {
- 				rdev->pm.dpm.new_active_crtcs |= (1 << radeon_crtc->crtc_id);
- 				rdev->pm.dpm.new_active_crtc_count++;
-+				if (!radeon_crtc->connector)
-+					continue;
-+
-+				radeon_connector = to_radeon_connector(radeon_crtc->connector);
-+				if (radeon_connector->pixelclock_for_modeset > 297000)
-+					rdev->pm.dpm.high_pixelclock_count++;
- 			}
- 		}
- 	}
-diff --git a/drivers/gpu/drm/radeon/si_dpm.c b/drivers/gpu/drm/radeon/si_dpm.c
-index 9186095518047..3cc2b96a7f368 100644
---- a/drivers/gpu/drm/radeon/si_dpm.c
-+++ b/drivers/gpu/drm/radeon/si_dpm.c
-@@ -2979,6 +2979,9 @@ static void si_apply_state_adjust_rules(struct radeon_device *rdev,
- 		    (rdev->pdev->device == 0x6605)) {
- 			max_sclk = 75000;
- 		}
-+
-+		if (rdev->pm.dpm.high_pixelclock_count > 1)
-+			disable_sclk_switching = true;
- 	}
- 
- 	if (rps->vce_active) {
+ 	write_num("khugepaged/defrag", khugepaged->defrag);
+@@ -304,7 +301,6 @@ static void save_settings(void)
+ 		.thp_defrag = read_string("defrag", thp_defrag_strings),
+ 		.shmem_enabled =
+ 			read_string("shmem_enabled", shmem_enabled_strings),
+-		.debug_cow = read_num("debug_cow"),
+ 		.use_zero_page = read_num("use_zero_page"),
+ 	};
+ 	saved_settings.khugepaged = (struct khugepaged_settings) {
 -- 
-2.30.2
+2.25.1
 
