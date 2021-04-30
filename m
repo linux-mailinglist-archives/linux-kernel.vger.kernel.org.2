@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E26F370185
+	by mail.lfdr.de (Postfix) with ESMTP id 9A481370186
 	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 22:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233532AbhD3Txs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 15:53:48 -0400
-Received: from server.lespinasse.org ([63.205.204.226]:44459 "EHLO
+        id S233571AbhD3Txu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 15:53:50 -0400
+Received: from server.lespinasse.org ([63.205.204.226]:59681 "EHLO
         server.lespinasse.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232301AbhD3TxX (ORCPT
+        with ESMTP id S232306AbhD3TxY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 15:53:23 -0400
+        Fri, 30 Apr 2021 15:53:24 -0400
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
  d=lespinasse.org; i=@lespinasse.org; q=dns/txt; s=srv-14-ed;
  t=1619812353; h=from : to : cc : subject : date : message-id :
  in-reply-to : references : mime-version : content-transfer-encoding :
- from; bh=9K/3R1jhcIp0kkAhPFf8lQIqNdjGzS/Dm2et+ThCVUU=;
- b=t9iVfFmnuULsrM9oO60Hza/+gie/Dmpqd4k2nIs6SwThp5++nNppPCoAFZbqrB3NfW9JY
- dfvfPJa4Uo5WFApAQ==
+ from; bh=52xfj//MRWSrbPuyYyafld4PYpnTwPxqkOlVrkxjHfQ=;
+ b=TpC4loRIPK/cBkY+s+mjCdbTT494398fFNDLLdCWbY8EjH0I7Q6xyMRMBhAMkCrGIlfJb
+ WLj8GxiP95c6LU6Cg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lespinasse.org;
  i=@lespinasse.org; q=dns/txt; s=srv-14-rsa; t=1619812353; h=from : to
  : cc : subject : date : message-id : in-reply-to : references :
  mime-version : content-transfer-encoding : from;
- bh=9K/3R1jhcIp0kkAhPFf8lQIqNdjGzS/Dm2et+ThCVUU=;
- b=uEw7dwjyMOux+wwSljJXnIIqA/dK09jeoMJkyTCBCKK5n/WQFc2Jh1sBuHb7wdGSlG+vA
- szGj7oU2M48eP7P4pRSbOyMeEYx4k3EqrWwtUBkB1aW/51TMwsThVt5E3GH232n+7KvpnLu
- tLLAk7PW2CmZIXaRUyEgVLyjFQEmpyMQ0qQwayxn7wQTIvagBEQkLbYehTiXIWsm2UMNCQ+
- e/RvX5+VotMZSpZWu7qd3QFEvGdFf8211H/4/EPu31iLqZ0UOtMlw0Ys0+BBakQNxvith3F
- GJJ8mE6+rBT78syxuJYCgCDidAoII+PzyuxW66nEDKW+9RUoK1PaljZpGcTw==
-Received: from zeus.lespinasse.org (zeus.lespinasse.org [IPv6:fd00::150:0])
-        by server.lespinasse.org (Postfix) with ESMTPS id 39D0D160311;
+ bh=52xfj//MRWSrbPuyYyafld4PYpnTwPxqkOlVrkxjHfQ=;
+ b=Rcaa6wo5In854wslLI8fHcjWWfxBAKiir/rzHwUBRFIEnuVBPxCeFwAG02rsrjXM7Bq0Q
+ VbrQJ58H7fljGUwNJiymWqrH99zWjGRobxOBG9yeQ19O42RornJsrL5dYksqq7Nnv5+v/l4
+ R4Z6gk0nTJMTPzhQ0jKX1jf/6k91/HazkacrdXkZupbgQ2NikLzFcxlAEMVMbKoc1y0ZTfh
+ H2E6I24Yo4YWFnBohNLUIfbP5zt1E/C4reBuh9X3iD3aMEP901bBgjHrLdjRxSohz1fPXIM
+ 1wXb4ixDcUSAyq6ywFADgJIDN0/q+GIkFpghPd0QHf4p2YkLcNXNEObrTppg==
+Received: from zeus.lespinasse.org (zeus.lespinasse.org [10.0.0.150])
+        by server.lespinasse.org (Postfix) with ESMTPS id 3DAB9160312;
         Fri, 30 Apr 2021 12:52:33 -0700 (PDT)
 Received: by zeus.lespinasse.org (Postfix, from userid 1000)
-        id 2811719F522; Fri, 30 Apr 2021 12:52:33 -0700 (PDT)
+        id 2F05F19F524; Fri, 30 Apr 2021 12:52:33 -0700 (PDT)
 From:   Michel Lespinasse <michel@lespinasse.org>
 To:     Linux-MM <linux-mm@kvack.org>,
         Linux-Kernel <linux-kernel@vger.kernel.org>
@@ -48,9 +48,9 @@ Cc:     Laurent Dufour <ldufour@linux.ibm.com>,
         Joel Fernandes <joelaf@google.com>,
         Andy Lutomirski <luto@kernel.org>,
         Michel Lespinasse <michel@lespinasse.org>
-Subject: [PATCH 07/29] x86/mm: define ARCH_SUPPORTS_SPECULATIVE_PAGE_FAULT
-Date:   Fri, 30 Apr 2021 12:52:08 -0700
-Message-Id: <20210430195232.30491-8-michel@lespinasse.org>
+Subject: [PATCH 08/29] mm: add FAULT_FLAG_SPECULATIVE flag
+Date:   Fri, 30 Apr 2021 12:52:09 -0700
+Message-Id: <20210430195232.30491-9-michel@lespinasse.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210430195232.30491-1-michel@lespinasse.org>
 References: <20210430195232.30491-1-michel@lespinasse.org>
@@ -60,26 +60,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set ARCH_SUPPORTS_SPECULATIVE_PAGE_FAULT so that the speculative fault
-handling code can be compiled on this architecture.
+Define the new FAULT_FLAG_SPECULATIVE flag, which indicates when we are
+attempting speculative fault handling (without holding the mmap lock).
 
 Signed-off-by: Michel Lespinasse <michel@lespinasse.org>
 ---
- arch/x86/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/mm.h | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 2792879d398e..a93e4ed7040e 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -33,6 +33,7 @@ config X86_64
- 	select NEED_DMA_MAP_STATE
- 	select SWIOTLB
- 	select ARCH_HAS_ELFCORE_COMPAT
-+	select ARCH_SUPPORTS_SPECULATIVE_PAGE_FAULT
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 8ba434287387..021fdab5b721 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -434,6 +434,7 @@ extern pgprot_t protection_map[16];
+  * @FAULT_FLAG_REMOTE: The fault is not for current task/mm.
+  * @FAULT_FLAG_INSTRUCTION: The fault was during an instruction fetch.
+  * @FAULT_FLAG_INTERRUPTIBLE: The fault can be interrupted by non-fatal signals.
++ * @FAULT_FLAG_SPECULATIVE: The fault is handled without holding the mmap_sem.
+  *
+  * About @FAULT_FLAG_ALLOW_RETRY and @FAULT_FLAG_TRIED: we can specify
+  * whether we would allow page faults to retry by specifying these two
+@@ -464,6 +465,7 @@ extern pgprot_t protection_map[16];
+ #define FAULT_FLAG_REMOTE			0x80
+ #define FAULT_FLAG_INSTRUCTION  		0x100
+ #define FAULT_FLAG_INTERRUPTIBLE		0x200
++#define FAULT_FLAG_SPECULATIVE			0x400
  
- config FORCE_DYNAMIC_FTRACE
- 	def_bool y
+ /*
+  * The default fault flags that should be used by most of the
+@@ -501,7 +503,8 @@ static inline bool fault_flag_allow_retry_first(unsigned int flags)
+ 	{ FAULT_FLAG_USER,		"USER" }, \
+ 	{ FAULT_FLAG_REMOTE,		"REMOTE" }, \
+ 	{ FAULT_FLAG_INSTRUCTION,	"INSTRUCTION" }, \
+-	{ FAULT_FLAG_INTERRUPTIBLE,	"INTERRUPTIBLE" }
++	{ FAULT_FLAG_INTERRUPTIBLE,	"INTERRUPTIBLE" }, \
++	{ FAULT_FLAG_SPECULATIVE,	"SPECULATIVE" }
+ 
+ /*
+  * vm_fault is filled by the pagefault handler and passed to the vma's
 -- 
 2.20.1
 
