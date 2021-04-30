@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA0D36F463
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 05:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C504D36F461
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 05:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbhD3DUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 23:20:11 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:45429 "EHLO
+        id S229951AbhD3DUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 23:20:09 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:57607 "EHLO
         new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229582AbhD3DUD (ORCPT
+        by vger.kernel.org with ESMTP id S229577AbhD3DUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 29 Apr 2021 23:20:03 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id DD4CA5809A7;
-        Thu, 29 Apr 2021 23:19:14 -0400 (EDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 958CC5809A8;
+        Thu, 29 Apr 2021 23:19:15 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Thu, 29 Apr 2021 23:19:14 -0400
+  by compute3.internal (MEProxy); Thu, 29 Apr 2021 23:19:15 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm2; bh=7a3B4rcYlKzes6Q1o/O33ZK9lp
-        KHHVnQxsvgMFUEdxc=; b=B5qp+eO0DskdaIxSYZIKB/GwTM8+gaEYMI2eWpmXFQ
-        XKh623relchjKSnt/H/q5WHOk4YdrumJ/YK4/nwdhFZuh9yCb04gxZynuA95wntG
-        B/kjQwfvIZ1EOmKzSyL7wDaEioelOj5BrX05LQp1t5Pm0phEkvx+TCG2kf0hORcI
-        UmtRxIYgn8MDCFVb+PT9nDVzxGJhrKQZ1q72QsQX63V9eG5Bj/iZ5vwNurRUoiY7
-        YYhM04mVRSA2CNbp59eudQk0rWZeTCBz6xpQQFmKThbHVatvephk+jc5Os091vwg
-        1n74ISYJAU8ylSoZiFaoHEQRJwsV3YjBfFI5tkrLkXsA==
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm2; bh=zsgS/p6h6LoM1
+        J8DV/As4w6mpp5Hjtcaqy0MGncfGb0=; b=IVsYgx6Erbps3DgoGNfDzo/Dnv+W7
+        sX5dHISsksPYcGH8ivoGx0d37/qXrbx4dN2E9pMrSfWk156r1MjXW+PL2AkoYwpL
+        gamy1ihTjJAvFO7V8QHuf1YGlt2vj5va4P6f/hXR+v4sXxi3n0fpXF/0rKIVHFGF
+        Q21OZw4lYHlG7/DMPZHW9XgLSuX2nNIDcuZA4SCd3HtDbochEMAlksxcsRA9lz/q
+        AyyF0QDLkKCBRA42ccZcoCU21kk3TFI4aLRsS0oRW379U2jMEZ7kbL6H0HBwCyJ2
+        Lx4n3Xqssv2f7dzcibMzdD1cdzd+8WuHI1tHWGoyuv+/Tn7UjlaUiBOPw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=7a3B4rcYlKzes6Q1o
-        /O33ZK9lpKHHVnQxsvgMFUEdxc=; b=imaUocYJKYptSmtmViFFsmMU1+4FKRnjB
-        YD0Y1wlVeW77YNI5RKLpJFVVN9DmDzS8rWs7bLzseLqhwgrYVDDTyDR1ypvt5lui
-        n+aNrrhzLkaYastnN2lqFpeH8+mn8HBgPvwJpXAtAECF+UB0CRWBi39qjWuVR8Jh
-        cnTCEiyTVjeSROtFuN6DAhH80u/d0GXD0yZn7R8zR7HH6cINi5sLgrWrbjbshRY7
-        s+1pVvcCxR5nSlurxtSt11Z0YAXrpRmEvt3bIO8shWA3ZTaDXRWlA5DEdC5CXTI9
-        lL25HSxN3bFULeFZjGfKC+D1wEA8+KxghfWDefX7kLmdmdNkDDAAg==
-X-ME-Sender: <xms:MneLYB6hHTawAtddmHnvxlCxcYUpQmVPfXkrfIz9vDlEx1NXueNKNQ>
-    <xme:MneLYO6p_HwnnZGopI4Y9N32wYXAQ4e3otZ8M9vgYtdcowBuaURpiF897x6qXhoC1
-    Rl4Dy0lVTRAk4_lMw>
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm2; bh=zsgS/p6h6LoM1J8DV/As4w6mpp5Hjtcaqy0MGncfGb0=; b=cNpNOlW3
+        AuctOc5lh4O+sPjFtMK1RMY968PFYAz7eSWZbjlBu6Lau8lCjrZyx37CAwKzeimQ
+        FWcVe4FooA9Bfd6xhZccFK90XH9oKWonQzLqce1ao5iRZ7gPrEgqJg8s7Udc/2PG
+        JJ5iZrROaVgXo9bF6hT9mnmLdsZX9h58wUu4T+i+qd218gvwBOfWJfRFlFKkUjz7
+        AcpAu5yhUvRYvTd073ME2qESj9owFvADP7kvBy8QXnb8tufzZ9EKmhPvbCK9/Os4
+        lkqUrfW+RkPD6ylOAlcxwszxRmyJ7LEdZFNu2oH/pFLVMCUR29KsaC1ZVXs7v+gP
+        c93znQ4HxEO5Ig==
+X-ME-Sender: <xms:M3eLYNjtvhRbxk22WIaCiCeU3NWSqXS-MkxmYqaNXnGM_rUzWxRwUg>
+    <xme:M3eLYCBxETrowlmwqaUuZ3TF2_rhPQb9TIjXbAg9KVbgm8M4nnomJa4DnRBQX2dkk
+    jaAp6BiqOCmZkCUgg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddvhedgieelucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
-    jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtffrrg
-    htthgvrhhnpeeiteekhfehuddugfeltddufeejjeefgeevheekueffhffhjeekheeiffdt
-    vedtveenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdr
-    ohhrgh
-X-ME-Proxy: <xmx:MneLYIeGCDtqjOJfRqJKFq0mpnHvcjJVE8nFcZ5OL3wTnJ_xjJmYLw>
-    <xmx:MneLYKL91SYbwWwMEcXDdguCEk0_fqyrz955zQzVIIU2w9qJ0jHG5g>
-    <xmx:MneLYFJOmFTYxRP7cKcQrNoC_Cyzf-K2Pswc6vxiwIzBtUjbv2_eGA>
-    <xmx:MneLYOXKzVJekHmPMeU0ThoQFXVwdhtjRWu_C0SsVJ8RtX4jxujggA>
+    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgv
+    lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
+    frrghtthgvrhhnpeelueelgeettdfggfeuffevkefhuddtteeigfevhfdtffdtjefgteeg
+    leeggedvudenucffohhmrghinhepuggvvhhitggvthhrvggvrdhorhhgnecukfhppeejtd
+    drudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
+    mhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
+X-ME-Proxy: <xmx:M3eLYNFC8GXIGtFuqHo6fiMUzeMqh7U3bf1itF7AsFd8vL6vo_mePA>
+    <xmx:M3eLYCSl415GyMNpwJo0Q7eUWFdkqPueByMA0QueLZh03rgR0ioUiA>
+    <xmx:M3eLYKxsv57SBgwKU2whVxQ9R6ua7cFv2litdS8_T4Ft5jMXtexVmw>
+    <xmx:M3eLYOdWfFB-em7dvyZR1KTlNMemnElENRiScqLKaZZdafj46dZG4g>
 Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
         by mail.messagingengine.com (Postfix) with ESMTPA;
-        Thu, 29 Apr 2021 23:19:13 -0400 (EDT)
+        Thu, 29 Apr 2021 23:19:14 -0400 (EDT)
 From:   Samuel Holland <samuel@sholland.org>
 To:     Rob Herring <robh+dt@kernel.org>,
         Maxime Ripard <mripard@kernel.org>,
@@ -65,56 +66,109 @@ To:     Rob Herring <robh+dt@kernel.org>,
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-sunxi@lists.linux.dev, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>
-Subject: [PATCH v2 0/2] Allwinner H6 USB3 device tree updates
-Date:   Thu, 29 Apr 2021 22:19:10 -0500
-Message-Id: <20210430031912.42252-1-samuel@sholland.org>
+Subject: [PATCH v2 1/2] dt-bindings: usb: Document the Allwinner H6 DWC3 glue
+Date:   Thu, 29 Apr 2021 22:19:11 -0500
+Message-Id: <20210430031912.42252-2-samuel@sholland.org>
 X-Mailer: git-send-email 2.26.3
+In-Reply-To: <20210430031912.42252-1-samuel@sholland.org>
+References: <20210430031912.42252-1-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While implementing support for this USB controller in U-Boot, I noticed
-that the reset line alsp affects they PHY. It looks like most platforms
-use a separate glue node to represent this, and in fact there is already
-a compatible for the H6 listed in drivers/usb/dwc3/dwc3-of-simple.c.
+The RST_BUS_XHCI reset line in the H6 affects both the DWC3 core and the
+USB3 PHY. This suggests the reset line controls the USB3 IP as a whole.
+Represent this by attaching the reset line to a glue layer device.
 
-Since this layout matches the usual way of modeling this hardware, it
-allows using the existing drivers without adding platform-specific code.
-
-
-I tried to follow the existing DWC3 glue bindings (most of which are
-still .txt). With this version, `make dt_binding_check` still raises a
-couple of issues, which I do not know how best to fix:
-
-  - Warning (unit_address_vs_reg): /example-0/usb@5200000: node has a
-    unit name, but no reg or ranges property
-    => Since there is no MMIO translation, an empty `ranges;` seemed
-       appropriate, but it causes this warning.
-
-  - usb@5200000: usb@5200000:phy-names:0: 'usb2-phy' was expected
-    => This may be an issue with the snps,dwc3 binding, where the
-       `items` list overrides `minItems`. I believe the intention is
-       that both PHY references are optional. This implementation has
-       only one PHY.
-
-Changes from v1 to v2:
-  - Updated the binding to reference the PHY binding by path correctly
-  - Dropped DT updates for Pine H64
-
-Samuel Holland (2):
-  dt-bindings: usb: Document the Allwinner H6 DWC3 glue
-  arm64: dts: allwinner: h6: Wrap DWC3 and PHY in glue layer
-
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+---
  .../usb/allwinner,sun50i-h6-dwc3.yaml         | 75 +++++++++++++++++++
- .../dts/allwinner/sun50i-h6-beelink-gs1.dts   |  6 +-
- .../dts/allwinner/sun50i-h6-orangepi-3.dts    |  6 +-
- .../dts/allwinner/sun50i-h6-tanix-tx6.dts     |  6 +-
- arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  | 60 ++++++++-------
- 5 files changed, 111 insertions(+), 42 deletions(-)
+ 1 file changed, 75 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/usb/allwinner,sun50i-h6-dwc3.yaml
 
+diff --git a/Documentation/devicetree/bindings/usb/allwinner,sun50i-h6-dwc3.yaml b/Documentation/devicetree/bindings/usb/allwinner,sun50i-h6-dwc3.yaml
+new file mode 100644
+index 000000000000..936b5c74043f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/usb/allwinner,sun50i-h6-dwc3.yaml
+@@ -0,0 +1,75 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/usb/allwinner,sun50i-h6-dwc3.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Allwinner H6 DWC3 USB controller
++
++maintainers:
++  - Chen-Yu Tsai <wens@csie.org>
++  - Maxime Ripard <mripard@kernel.org>
++
++properties:
++  compatible:
++    const: allwinner,sun50i-h6-dwc3
++
++  "#address-cells": true
++
++  "#size-cells": true
++
++  ranges: true
++
++  resets:
++    maxItems: 1
++
++# Required child node:
++
++patternProperties:
++  "^phy@[0-9a-f]+$":
++    $ref: ../phy/allwinner,sun50i-h6-usb3-phy.yaml#
++
++  "^usb@[0-9a-f]+$":
++    $ref: snps,dwc3.yaml#
++
++required:
++  - compatible
++  - ranges
++  - resets
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/clock/sun50i-h6-ccu.h>
++    #include <dt-bindings/reset/sun50i-h6-ccu.h>
++
++    usb3: usb@5200000 {
++        compatible = "allwinner,sun50i-h6-dwc3";
++        #address-cells = <1>;
++        #size-cells = <1>;
++        ranges;
++        resets = <&ccu RST_BUS_XHCI>;
++
++        dwc3: usb@5200000 {
++            compatible = "snps,dwc3";
++            reg = <0x05200000 0x10000>;
++            interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
++            clocks = <&ccu CLK_BUS_XHCI>,
++                     <&ccu CLK_BUS_XHCI>,
++                     <&rtc 0>;
++            clock-names = "ref", "bus_early", "suspend";
++            dr_mode = "host";
++            phys = <&usb3phy>;
++            phy-names = "usb3-phy";
++        };
++
++        usb3phy: phy@5210000 {
++            compatible = "allwinner,sun50i-h6-usb3-phy";
++            reg = <0x5210000 0x10000>;
++            clocks = <&ccu CLK_USB_PHY1>;
++            resets = <&ccu RST_USB_PHY1>;
++            #phy-cells = <0>;
++        };
++    };
 -- 
 2.26.3
 
