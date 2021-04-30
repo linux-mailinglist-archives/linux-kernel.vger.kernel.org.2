@@ -2,132 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1080936FF17
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC1736FF18
 	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 19:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbhD3RCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S231280AbhD3RCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 13:02:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36754 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231150AbhD3RCm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 30 Apr 2021 13:02:42 -0400
-Received: from mail-bn7nam10on2086.outbound.protection.outlook.com ([40.107.92.86]:16032
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230428AbhD3RCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 13:02:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MYz/JRBLmXOIeaY8h0uLHjutkFeWmW8yYFu2AY3qF4RcgiXtkpbY2h91l9N7JNQpfJM95EKQ87zFpecSvUi2xbFPSBd0y0CA+JZu+IvVPrzGiqzan1dTMPvvmAFOqg5r6HCncY3Ldxkc8d5tf50ajWtbD20pDWp8MvSRe9Z4BK6zHpqxEchEYgxT26tqGz/DRREydtoNpgQDJY4pjElvpJEwwePEC/ldP/ozSUeErxlAGBwkeBf5mQ7vn5+DAUnHX8dVYHzR7//CRFjjQ8RPPvfTprkP/R4Aki9aQdNYoQcIFHQp6xAdq6kbBo7S72zzjlTDWFP7ELz8kOXQtU3ElA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tfcv6MW3tTJBx0Gx4Cq+zI7KjeSwB9wyggiNDQe6jig=;
- b=gMEogn+gFHtQXRMmjmzqdTiNWDDkhBw+5H8LJkYTSrUA4mhVV0jhi7oRJ02X31rdP0taxTNwotelhX7qmTLKS3jtnHw08cZ3saK2cORu1HdRNofRp4fkwvQXGt5pj78agNifL/J01XPyHX8jrTIpA9QooVBJvUkwGOfj4qgaFECbbtQNF3qDbYGn/QvGjxZVZ9USuC/zjpH8E5va0UF9PEPiSRx5tFOlt9xhxjQ7z5QAilSAyJ+aA53pVnXSF8A0DZ2qN0gNMhYsY4zVhAIdiQ4Bk0S3godOshcYsrXORUD0uGQk4aYOxjJNmCcKjyjUTPAiPeVji8upG23gFhNWCQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tfcv6MW3tTJBx0Gx4Cq+zI7KjeSwB9wyggiNDQe6jig=;
- b=KPAyQ6d2CEAdeWfCPi6dG7qLeeJLU3rWEqtqbOHGbP5EJ4ExkKD3pRgcswoJkXChcTu/I7iNCNzdURPTcAJ9H1tjfZynIdyPgGvhyvDFykJXFwEnbhTHHStXl/LSWGgkh3WZpKxFAM8rGkWX0ex8KZreMzyEAnchWZvXQaIJ2x1GTiSRZPoh42MHDoXLrVuEil/idEC84MX3529G9n5/vh2acKz8ktIQa9VfzvJCy170+oIRLqmMOfAycXOBMQdq7e72k0bvnaDO4DNqM9PHUYp/A5JzfkggPIcPxDPywswk/IqKGaWXmeRjvNSJELe2wcN0ex5DwDSU/ZJXSwDe7g==
-Authentication-Results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4513.namprd12.prod.outlook.com (2603:10b6:5:2ad::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20; Fri, 30 Apr
- 2021 17:01:50 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4065.027; Fri, 30 Apr 2021
- 17:01:50 +0000
-Date:   Fri, 30 Apr 2021 14:01:48 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Doug Ledford <dledford@redhat.com>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
-Message-ID: <20210430170148.GA3574442@nvidia.com>
-References: <20210430165527.GA3573658@nvidia.com>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F394F613D9;
+        Fri, 30 Apr 2021 17:01:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619802113;
+        bh=CJZScALS9cnd+GBYjBOkKMx4s0KKYFVf2f3/B/tAj7k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=mUA0u5f4u4cvG3Yb23XgtGYv4+mGVrXjlY8dinVe9xz+vGpui6NwcOKloR1UdmG2u
+         MYs/qHUtdcSQyfqtEqROjFmBmjzZx06nUNLJ457Htz4tmn1CjreaQ0QTkWCzg+2vFO
+         Y0zyREmuI+q5C0MSuUBiN6Goprjmc0T1XZ9zXwoc6MhGKuCoouVhHg7E0uzauisZzF
+         q2gL63RYq1xJNWW8+S4eLV/unomdUNCBwFAKbP/SkBiVOsO69mJs5ZAFnEVYNp5DDK
+         Rc762pGC0ACXRsfy9TG90m0wSLcr+cPqrn1dPtceNRrPfApG+tPd/hTBmmol6MmWnN
+         wN0IQTLcXPPOw==
+Date:   Fri, 30 Apr 2021 12:01:51 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Shanker Donthineni <sdonthineni@nvidia.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sinan Kaya <okaya@kernel.org>,
+        Vikram Sethi <vsethi@nvidia.com>,
+        Amey Narkhede <ameynarkhede03@gmail.com>
+Subject: Re: [PATCH v4 2/2] PCI: Enable NO_BUS_RESET quirk for Nvidia GPUs
+Message-ID: <20210430170151.GA660969@bjorn-Precision-5520>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210430165527.GA3573658@nvidia.com>
-X-Originating-IP: [206.223.160.26]
-X-ClientProxiedBy: CH2PR12CA0020.namprd12.prod.outlook.com
- (2603:10b6:610:57::30) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by CH2PR12CA0020.namprd12.prod.outlook.com (2603:10b6:610:57::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.27 via Frontend Transport; Fri, 30 Apr 2021 17:01:49 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lcWWS-00EzuW-OY; Fri, 30 Apr 2021 14:01:48 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9e970868-f6ce-417f-03dc-08d90bf9a557
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4513:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB45132C772308186BD3826A5EC25E9@DM6PR12MB4513.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dY6EF72gXsE4WCH1+A6WzvLZ20SYqBncsW/17w82jS/sq7VvUwzb4EEAJe2UhQ3d/2YmXqVEtiMfe8UH1PVrYPF7xnZX5U2N4K66y4RaUc92eYhZoa6YGT0yd0A9hr0LQJO5FjFqClBVqWcVJ0KOxlcHCxFlX6WPNtYDHkQxIdnx1d0723pxyN+f55hg59Gw5byQRhLKZ6+1H2769WpYoKaTrHwtaPLOjidLodWTyZtbBW6+ryjyjjMIjWWSagBKLyFQePDp5r4gNJD6t+4enhUzKwdFHRDuyKVWZbDVRPnxeaYdsR5R4Y90GzDHwkYinyXupwwviP718xO8v50g5jmB97ozr7OATyTei4eLn5q7QT/fcFAtNMkMdaaKMHoJeCigEvT+oLx2lJQS+z/PPC/MAtO83Lt9GTbh9p0TSDC+BgrwGN9nMBGeHM1VPKpIfGKxAGVoHjlNCzs8M55z6G979S/3j1nRXyRZ7aCpXl2q6MQt9WacC1cuZfvmF3WuKhgE7zqd/jz0P2LNKQjoDPFmuWEmzak4nYBcS+hmcQK+cKzD52NpnwM4+NGivxYetZbPE5aQv0bwDQya8igCP2vKtfh8yVI8KBPlkyLkO8k=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(136003)(366004)(346002)(396003)(426003)(66946007)(1076003)(66476007)(4326008)(83380400001)(8936002)(36756003)(26005)(33656002)(38100700002)(5660300002)(66556008)(2906002)(8676002)(9786002)(9746002)(4744005)(316002)(186003)(86362001)(2616005)(110136005)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?aUvzlh1H5+fkmk0/A5k/GFa97YTLMihwv/498CyJL9LkcwEZUU2cRknXXL9a?=
- =?us-ascii?Q?/A7m+7AABqPzkn/uvy11s90ydGE/KwMYRShNKtv0/o2BTXMcN947mHL6LUlG?=
- =?us-ascii?Q?qszSq2tHH1kCC2oy9pIUHlLZEw2j5MGH4qXjbQUmIAWkWxFKtrB6ZBygTHcl?=
- =?us-ascii?Q?OV5ZguY/8nvb7YsE7dmVBNdYv42oab9vfnq6/5IDy6J6NpamCWOIZHQtFOZ/?=
- =?us-ascii?Q?y8BJFyt/JxNRgTezJwjhqMqbXalNmn4lQ50DG5Yu0gAZN7ASw5vtlVdeZfV6?=
- =?us-ascii?Q?5y2Da6bW/P7CtwxhQM/4qoEHyWE9vydclJAsZq40QnwJQelFKF0Lbtnkcmmh?=
- =?us-ascii?Q?7IDb7QHTTClhKTmU9xx0IwANKm1Dz1p8WMPETQYz7cpz2fY+KpD/oKfwDT4T?=
- =?us-ascii?Q?aSvP7zZBEIX+A04WmTvlvALuKvJ9d44oJwOOqLynkblETbQy+Hr8VL8a3y8b?=
- =?us-ascii?Q?zCqk8BgwojtFrsxmS2QvHkLcKb3R1X/4pamXQuW7GqjihFAHitTMTdWCcDsz?=
- =?us-ascii?Q?xArMinRlHFOS3bPbxqmL1bUDGrrSTRabGAa2ZRbqLt9hqhD1WE/5ij+IhqzV?=
- =?us-ascii?Q?riF6gvzy5D17e7OCA11o0QKn7sIA9WGGcLU0kUSSKqZO9XNSJmfr2TbEoGhs?=
- =?us-ascii?Q?c3Up3D97g8lwC/IG6d5ZbHVgt8j+6Rch2veYHalez7/2MbyEoOGuMWOMx3dv?=
- =?us-ascii?Q?3oQeogubLT33ZzoO9fJ62Zrj24n4MpqOgV5D/skKOw53HnnKJmqgOgzoovct?=
- =?us-ascii?Q?aG8f8YVI65jXJV8OGTnYNRMnrbKtuEY1BTcqKtzg15m65Uic9dNArDlmbx6F?=
- =?us-ascii?Q?8znIDFk6RxT4oopIyrhEXLSTMRebwKju3wJ8cO48vSy93+d6r2dER6tIcV+m?=
- =?us-ascii?Q?cVtkwOqK2XpZCauPXYHnshrnCQLiffxYeoAhqaz9egXsR1yPWUmkJsGMJPcH?=
- =?us-ascii?Q?MRidz2YIe7Zr2/rJxzpgMqEseb3IoIJgI+OmazDawLO2I3cWUgmcu+sn45Oj?=
- =?us-ascii?Q?TF11Bd3GlHcdEV52Sc7uwyJex0yU0/XqlbrDB3fcELZUZFIBMr7oME9Q5jSE?=
- =?us-ascii?Q?/rF/AKFnzNsp5q4QNLktY3lcc7qNxSkcmqH8yyEIAHrdJdw4Q2Mqof27YQgF?=
- =?us-ascii?Q?G7q4jlO6B7xZ/dl+XZ6RD3lpFDGazvOuDxURQP5koWeQ522bJ1h+QQRwftor?=
- =?us-ascii?Q?jlHrNboqG3r46zpEQXp3hBa8yLROX1mBbPMfDfdDO7jvhANw6UDX7HsK+uxN?=
- =?us-ascii?Q?HRlk5KU4ooOUjxGq/4/8V9faKq+HXf6GG66VTiUITLBZvesoZ2DpiEQa5snh?=
- =?us-ascii?Q?3wsLSUJO7wUK6djTw4TiMhNi?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9e970868-f6ce-417f-03dc-08d90bf9a557
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2021 17:01:49.9460
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VkT+f4pIiKCYYvM0LeR10Od2N6vezYIFAari34FOCgCdqYX2fw3bnUC0uhkrfSis
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4513
+In-Reply-To: <20210429004907.29044-2-sdonthineni@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 01:55:27PM -0300, Jason Gunthorpe wrote:
-> Hi Linus,
-> 
-> These are the proposed RDMA patches for 5.13.
-> 
-> We are continuing to see small cycles in RDMA, this may be a new
-> structural normal.
-> 
-> This time hns and rtrs lead the pack in change volume, but must is
-> cleaning not features.
+On Wed, Apr 28, 2021 at 07:49:07PM -0500, Shanker Donthineni wrote:
+> On select platforms, some Nvidia GPU devices do not work with SBR.
+> Triggering SBR would leave the device inoperable for the current
+> system boot. It requires a system hard-reboot to get the GPU device
+> back to normal operating condition post-SBR. For the affected
+> devices, enable NO_BUS_RESET quirk to fix the issue.
 
-Oh! I forget to include the minor conflict resolution for hfi against v5.12:
+Since 1/2 adds _RST support, should I infer that _RST works on these
+Nvidia GPUs even though SBR does not?  If so, how does _RST do the
+reset?
 
-@@@ -1402,7 -1408,8 +1402,8 @@@ struct hfi1_devdata 
-        /* Lock to protect IRQ SRC register access */
-        spinlock_t irq_src_lock;
-        int vnic_num_vports;
- -      struct net_device *dummy_netdev;
- +      struct hfi1_netdev_rx *netdev_rx;
-+       struct hfi1_affinity_node *affinity_entry;
-  
-        /* Keeps track of IPoIB RSM rule users */
-        atomic_t ipoib_rsm_usr_num;
+Do you have a root cause for why SBR doesn't work?  I'm not super
+confident that we perform resets correctly in general, and if the
+problem is an issue in Linux, it'd be nice to fix that.
 
-Sorry,
-Jason
+> This issue will be fixed in the next generation of hardware.
+> 
+> Signed-off-by: Shanker Donthineni <sdonthineni@nvidia.com>
+> ---
+> Changes since v1:
+>  - Split patch into 2, code for handling _RST and SBR specific quirk
+>  - The RST based reset is called as a first-class mechanism in the reset code path
+> 
+>  drivers/pci/quirks.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> index 8f47d139c381..e1216a8165df 100644
+> --- a/drivers/pci/quirks.c
+> +++ b/drivers/pci/quirks.c
+> @@ -3910,6 +3910,18 @@ static int delay_250ms_after_flr(struct pci_dev *dev, int probe)
+>  	return 0;
+>  }
+>  
+> +/*
+> + * Some Nvidia GPU devices do not work with bus reset, SBR needs to be
+> + * prevented for those affected devices.
+> + */
+> +static void quirk_nvidia_no_bus_reset(struct pci_dev *dev)
+> +{
+> +	if ((dev->device & 0xffc0) == 0x2340)
+> +		dev->dev_flags |= PCI_DEV_FLAGS_NO_BUS_RESET;
+> +}
+> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_NVIDIA, PCI_ANY_ID,
+> +			 quirk_nvidia_no_bus_reset);
+
+Can you move this next to the existing quirk_no_bus_reset(), and maybe
+even just call quirk_no_bus_reset(), e.g.,
+
+  if ((dev->device & 0xffc0) == 0x2340)
+    quirk_no_bus_reset(dev);
+
+It doesn't look connected to this spot.
+
+>  static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
+>  	{ PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82599_SFP_VF,
+>  		 reset_intel_82599_sfp_virtfn },
+> -- 
+> 2.17.1
+> 
