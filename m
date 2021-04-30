@@ -2,128 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F5836FFE1
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 19:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3694A36FFE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 19:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbhD3RrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 13:47:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhD3RrH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 13:47:07 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF20C06174A;
-        Fri, 30 Apr 2021 10:46:18 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id 130so40342936ybd.10;
-        Fri, 30 Apr 2021 10:46:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=62+jAKHL3iRdRP5891cITslrAksunRH6DgJafoyqJ/0=;
-        b=j3FJa11YfEHoJDoQmpb5RK4rezGBYA4RhTplCHBXsyAGgmHADcZZaZKucjcpgwIkFy
-         kiJ9M22Z9rJePC/wrSGmQq9aZlivtKetXtlq5Q+OUjCZz0SUmDYBBJSbLpnJlh8kgsyc
-         SVy2DEEqrPQM5b6583u5smqhxnABC7Mrmssg1ntcJyDxKl3T5S2FfB2xt9llebVk+boE
-         QTlfeIQhwBee688zLcrXOhc5+p2Jjl6xd4x6ipo64nwg2/waOk05QWFxaDGlXCgntRry
-         A2ppA54gxR5i2tEdLgWxxOm88EHVfBEmqeWkjt3FhgCrcmZvIigHfyQULkbUSrUyEU3F
-         F+Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=62+jAKHL3iRdRP5891cITslrAksunRH6DgJafoyqJ/0=;
-        b=LiPXsH63pSZf+wILTgqMNKMwAgkrSp09mvcIx2ypAWVdK8vB1iEZ9z9IBNb2L7yOUP
-         kg7feACdJqJWt5gxmN1RTjCijxKnP8PXvsOhPaAQSJloZ7d59UDNMCfp7uC0V66vvOBS
-         DvMtcJq3nYi88IMblYU/m8F9vgwUVWGJSsrpmVBOFVLQjjh48PFvTBjf3Q3oLvCCWfZE
-         c5z25ulr523TacM5G/NoFcGQab/0j5DI2kdAy+DWQ/n9Eujcd4DoiFXu7tgwfXX2GFhB
-         mOGSUrJIoHHDI5ED6lW3VUiQS/ldWFzgVrhoCtD3KoWGmdvLQ1dSPRmsMQ/8CGjvt7kG
-         o8Ew==
-X-Gm-Message-State: AOAM533+xp4cp5v1QOLn+XOECupB7RDhmpIe+tT92E+3y5dEmd/clg1B
-        4vk3SmRGh2aDOwzAiSppy80JTzLRf0eUog+OhRE=
-X-Google-Smtp-Source: ABdhPJz0E+/fzP97L86dhtM5otyrPY8toYlEVj4ynTLivX0Cl7sY4OkIn//Dsbn/lE18s04jQmFtBGpEtJmNUtj6VKw=
-X-Received: by 2002:a25:c4c5:: with SMTP id u188mr8116760ybf.425.1619804778138;
- Fri, 30 Apr 2021 10:46:18 -0700 (PDT)
+        id S231484AbhD3Rs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 13:48:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34794 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231318AbhD3RsW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 13:48:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 753D161186
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 17:47:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619804853;
+        bh=0ko+ih9vB2EkIJYcPJvGTrOw7LReSx1K4pbFb4KglZ8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=u0OQNfD/tdO78n8gFDTR/vXtatEd8FiKKcWK6Izb1ZJ5d/mRNkZGyax+blhxsVZxL
+         qrNczschLXVXwBz2co31C4/VWkDmVNscJriy1FGUg4z3nmtx6n/FrybqnMbKiaZxFx
+         3CCgyVZAprEa0r8R31Tid1tDMFdzAtVnGsbcEzdKWJOyp85wPbFDKmpx+0KQ5tUsSI
+         Qndead/XCaXW2abYdezizkxHBaYCpcyczwKncaHupSzCAVoWQvqTEel1fweBmTixs/
+         yX4qsNwDFU7zINmAjkh3mahfLNwJCwpsfgn2GfBvI/Tc2C3fkUOKMZ8nkeRQaN0Awu
+         zXmjdp7YW5W6g==
+Received: by mail-ej1-f49.google.com with SMTP id u3so27785417eja.12
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 10:47:33 -0700 (PDT)
+X-Gm-Message-State: AOAM5307rRbXK2tAezXu6856Hn6+0w67wzEoBS+YPG/SVGgoo9QLalev
+        TcBPqKZBUfhWE5uXvxRgoBkY+M09RK4ZC9EfgvyFZw==
+X-Google-Smtp-Source: ABdhPJyJzN7XxMwwKKuZTcr2REAqArJDgZ4GoNgkwt77+CR2AQjbuqYhdzSwvJvyRGHpZ3DAmy/UXg3207t6lMFw9E4=
+X-Received: by 2002:a17:906:270a:: with SMTP id z10mr5586253ejc.204.1619804851823;
+ Fri, 30 Apr 2021 10:47:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210428152501.1024509-1-revest@chromium.org>
-In-Reply-To: <20210428152501.1024509-1-revest@chromium.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 30 Apr 2021 10:46:07 -0700
-Message-ID: <CAEf4BzbXqSDL84j3Cb5WOCcghqN=C7eUEPKmw-h8bmN6EyyPwQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix the snprintf test
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20210427204315.24153-1-yu-cheng.yu@intel.com> <20210427204315.24153-26-yu-cheng.yu@intel.com>
+ <CALCETrVTeYfzO-XWh+VwTuKCyPyp-oOMGH=QR_msG9tPQ4xPmA@mail.gmail.com> <8fd86049-930d-c9b7-379c-56c02a12cd77@intel.com>
+In-Reply-To: <8fd86049-930d-c9b7-379c-56c02a12cd77@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 30 Apr 2021 10:47:20 -0700
+X-Gmail-Original-Message-ID: <CALCETrX9z-73wpy-SCy8NE1XfQgXAN0mCmjv0jXDDomMyS7TKg@mail.gmail.com>
+Message-ID: <CALCETrX9z-73wpy-SCy8NE1XfQgXAN0mCmjv0jXDDomMyS7TKg@mail.gmail.com>
+Subject: Re: extending ucontext (Re: [PATCH v26 25/30] x86/cet/shstk: Handle
+ signals for shadow stack)
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 8:25 AM Florent Revest <revest@chromium.org> wrote:
+On Fri, Apr 30, 2021 at 10:00 AM Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
 >
-> The BPF program for the snprintf selftest runs on all syscall entries.
-> On busy multicore systems this can cause concurrency issues.
+> On 4/28/2021 4:03 PM, Andy Lutomirski wrote:
+> > On Tue, Apr 27, 2021 at 1:44 PM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
+> >>
+> >> When shadow stack is enabled, a task's shadow stack states must be saved
+> >> along with the signal context and later restored in sigreturn.  However,
+> >> currently there is no systematic facility for extending a signal context.
+> >> There is some space left in the ucontext, but changing ucontext is likely
+> >> to create compatibility issues and there is not enough space for further
+> >> extensions.
+> >>
+> >> Introduce a signal context extension struct 'sc_ext', which is used to save
+> >> shadow stack restore token address.  The extension is located above the fpu
+> >> states, plus alignment.  The struct can be extended (such as the ibt's
+> >> wait_endbr status to be introduced later), and sc_ext.total_size field
+> >> keeps track of total size.
+> >
+> > I still don't like this.
+> >
+> > Here's how the signal layout works, for better or for worse:
+> >
+> > The kernel has:
+> >
+> > struct rt_sigframe {
+> >      char __user *pretcode;
+> >      struct ucontext uc;
+> >      struct siginfo info;
+> >      /* fp state follows here */
+> > };
+> >
+> > This is roughly the actual signal frame.  But userspace does not have
+> > this struct declared, and user code does not know the sizes of the
+> > fields.  So it's accessed in a nonsensical way.  The signal handler
+> > function is passed a pointer to the whole sigframe implicitly in RSP,
+> > a pointer to &frame->info in RSI, anda pointer to &frame->uc in RDX.
+> > User code can *find* the fp state by following a pointer from
+> > mcontext, which is, in turn, found via uc:
+> >
+> > struct ucontext {
+> >      unsigned long      uc_flags;
+> >      struct ucontext  *uc_link;
+> >      stack_t          uc_stack;
+> >      struct sigcontext uc_mcontext;  <-- fp pointer is in here
+> >      sigset_t      uc_sigmask;    /* mask last for extensibility */
+> > };
+> >
+> > The kernel, in sigreturn, works a bit differently.  The sigreturn
+> > variants know the base address of the frame but don't have the benefit
+> > of receiving pointers to the fields.  So instead the kernel takes
+> > advantage of the fact that it knows the offset to uc and parses uc
+> > accordingly.  And the kernel follows the pointer in mcontext to find
+> > the fp state.  The latter bit is quite important later.  The kernel
+> > does not parse info at all.
+> >
+> > The fp state is its own mess.  When XSAVE happened, Intel kindly (?)
+> > gave us a software defined area between the "legacy" x87 region and
+> > the modern supposedly extensible part.  Linux sticks the following
+> > structure in that hole:
+> >
+> > struct _fpx_sw_bytes {
+> >      /*
+> >       * If set to FP_XSTATE_MAGIC1 then this is an xstate context.
+> >       * 0 if a legacy frame.
+> >       */
+> >      __u32                magic1;
+> >
+> >      /*
+> >       * Total size of the fpstate area:
+> >       *
+> >       *  - if magic1 == 0 then it's sizeof(struct _fpstate)
+> >       *  - if magic1 == FP_XSTATE_MAGIC1 then it's sizeof(struct _xstate)
+> >       *    plus extensions (if any)
+> >       */
+> >      __u32                extended_size;
+> >
+> >      /*
+> >       * Feature bit mask (including FP/SSE/extended state) that is present
+> >       * in the memory layout:
+> >       */
+> >      __u64                xfeatures;
+> >
+> >      /*
+> >       * Actual XSAVE state size, based on the xfeatures saved in the layout.
+> >       * 'extended_size' is greater than 'xstate_size':
+> >       */
+> >      __u32                xstate_size;
+> >
+> >      /* For future use: */
+> >      __u32                padding[7];
+> > };
+> >
+> >
+> > That's where we are right now upstream.  The kernel has a parser for
+> > the FPU state that is bugs piled upon bugs and is going to have to be
+> > rewritten sometime soon.  On top of all this, we have two upcoming
+> > features, both of which require different kinds of extensions:
+> >
+> > 1. AVX-512.  (Yeah, you thought this story was over a few years ago,
+> > but no.  And AMX makes it worse.)  To make a long story short, we
+> > promised user code many years ago that a signal frame fit in 2048
+> > bytes with some room to spare.  With AVX-512 this is false.  With AMX
+> > it's so wrong it's not even funny.  The only way out of the mess
+> > anyone has come up with involves making the length of the FPU state
+> > vary depending on which features are INIT, i.e. making it more compact
+> > than "compact" mode is.  This has a side effect: it's no longer
+> > possible to modify the state in place, because enabling a feature with
+> > no space allocated will make the structure bigger, and the stack won't
+> > have room.  Fortunately, one can relocate the entire FPU state, update
+> > the pointer in mcontext, and the kernel will happily follow the
+> > pointer.  So new code on a new kernel using a super-compact state
+> > could expand the state by allocating new memory (on the heap? very
+> > awkwardly on the stack?) and changing the pointer.  For all we know,
+> > some code already fiddles with the pointer.  This is great, except
+> > that your patch sticks more data at the end of the FPU block that no
+> > one is expecting, and your sigreturn code follows that pointer, and
+> > will read off into lala land.
+> >
 >
-> For example it was observed that sometimes the userspace part of the
-> test reads "    4 0000" instead of "    4 000" (extra '0' at the end)
-> which seems to happen just before snprintf on another core sets
-> end[-1] = '\0'.
+> Then, what about we don't do that at all.  Is it possible from now on we
+> don't stick more data at the end, and take the relocating-fpu approach?
 >
-> This patch adds a pid filter to the test to ensure that no
-> bpf_snprintf() will write over the test's output buffers while the
-> userspace reads the values.
+> > 2. CET.  CET wants us to find a few more bytes somewhere, and those
+> > bytes logically belong in ucontext, and here we are.
+> >
 >
-> Fixes: c2e39c6bdc7e ("selftests/bpf: Add a series of tests for bpf_snprintf")
-> Reported-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Florent Revest <revest@chromium.org>
-> ---
+> Fortunately, we can spare CET the need of ucontext extension.  When the
+> kernel handles sigreturn, the user-mode shadow stack pointer is right at
+> the restore token.  There is no need to put that in ucontext.
 
-Applied to bpf tree. Thanks.
+That seems entirely reasonable.  This might also avoid needing to
+teach CRIU about CET at all.
 
->  tools/testing/selftests/bpf/prog_tests/snprintf.c | 2 ++
->  tools/testing/selftests/bpf/progs/test_snprintf.c | 5 +++++
->  2 files changed, 7 insertions(+)
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf.c b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-> index a958c22aec75..dffbcaa1ec98 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/snprintf.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-> @@ -43,6 +43,8 @@ void test_snprintf_positive(void)
->         if (!ASSERT_OK_PTR(skel, "skel_open"))
->                 return;
->
-> +       skel->bss->pid = getpid();
-> +
->         if (!ASSERT_OK(test_snprintf__attach(skel), "skel_attach"))
->                 goto cleanup;
->
-> diff --git a/tools/testing/selftests/bpf/progs/test_snprintf.c b/tools/testing/selftests/bpf/progs/test_snprintf.c
-> index 951a0301c553..e35129bea0a0 100644
-> --- a/tools/testing/selftests/bpf/progs/test_snprintf.c
-> +++ b/tools/testing/selftests/bpf/progs/test_snprintf.c
-> @@ -5,6 +5,8 @@
->  #include <bpf/bpf_helpers.h>
->  #include <bpf/bpf_tracing.h>
->
-> +__u32 pid = 0;
-> +
->  char num_out[64] = {};
->  long num_ret = 0;
->
-> @@ -42,6 +44,9 @@ int handler(const void *ctx)
->         static const char str1[] = "str1";
->         static const char longstr[] = "longstr";
->
-> +       if ((int)bpf_get_current_pid_tgid() != pid)
-> +               return 0;
-> +
->         /* Integer types */
->         num_ret  = BPF_SNPRINTF(num_out, sizeof(num_out),
->                                 "%d %u %x %li %llu %lX",
-> --
-> 2.31.1.498.g6c1eba8ee3d-goog
->
+> However, the WAIT_ENDBR status needs to be saved/restored for signals.
+> Since IBT is now dependent on shadow stack, we can use a spare bit of
+> the shadow stack restore token for that.
+
+That seems like unnecessary ABI coupling.  We have plenty of bits in
+uc_flags, and we have an entire reserved word in sigcontext.  How
+about just sticking this bit in one of those places?
+
+--Andy
