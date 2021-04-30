@@ -2,192 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C651836FFB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 19:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1E936FF8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 19:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231649AbhD3Rg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 13:36:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33309 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231567AbhD3RgT (ORCPT
+        id S231211AbhD3Rde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 13:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230478AbhD3Rdc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 13:36:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619804130;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qtmdW6EUUNczJ/CI6cxYgV8DuofmDzJc9V+euofp2eQ=;
-        b=V8+SMLQozlLRQDD4A9mqtbOmo0JvNBq5nTwDzRY7DD+c6X72aAIRmTaGvT6ogeIroaakEU
-        cOhWlo2zhvk+fdkD2JpcrxXvhnzx620beup3n8fAc+lnBySVuSKIUINrVz8WovB/VIRC4A
-        XoyKnqvyFF3b23c5HLbHKXA1WvPVEOI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-Jrazkov1NPewOb0owEvikg-1; Fri, 30 Apr 2021 13:35:26 -0400
-X-MC-Unique: Jrazkov1NPewOb0owEvikg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6FB6A801FD8;
-        Fri, 30 Apr 2021 17:35:25 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.3.128.45])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6DE2D2AE9A;
-        Fri, 30 Apr 2021 17:35:09 +0000 (UTC)
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Richard Guy Briggs <rgb@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Eric Paris <eparis@redhat.com>, linux-fsdevel@vger.kernel.org,
-        Aleksa Sarai <cyphar@cyphar.com>
-Subject: [PATCH v2 3/3] audit: add OPENAT2 record to list how
-Date:   Fri, 30 Apr 2021 13:29:37 -0400
-Message-Id: <dc78151ab8563c04d6015d708c6fee7123e6ecb7.1619729297.git.rgb@redhat.com>
-In-Reply-To: <cover.1619729297.git.rgb@redhat.com>
-References: <cover.1619729297.git.rgb@redhat.com>
+        Fri, 30 Apr 2021 13:33:32 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F566C06138D
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 10:32:44 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id p126so30471005yba.1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 10:32:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w28WRBH0pxau981XEZacM0SFQfgpPmWMOWl6GXZOO88=;
+        b=kfJ5pYSRxCrK5Nv1bBw8qk3WW1/R6t3ZWXvwh2SCPInbHVO+J37aD4srPrqba1setk
+         Cc61N7btKFWPhmutzj9hF8aspJhNZ7b8b54leYMnAN4XxlPdQ1XniKMMdMHrDbI0Ru1f
+         37v6DU4S18qC8KiOVRJEMtO3wsYgc+KtADjBjo53d50pPRkIRp7Zy6yhQAvvOaj8RaGd
+         xMsMvjv3ybgm3J5Z1XHt5EAb8hMqTzjUXuHk8332nfpk0IEGTcyfVHaOZDYuhRFxukhl
+         C4F6fAi4lAnJyRbK3wBs57fY4cQjLNui2hOEyA6whg2dQv6lpl23OJLFh5iItymg3ks5
+         PA2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w28WRBH0pxau981XEZacM0SFQfgpPmWMOWl6GXZOO88=;
+        b=G74DstV2a3OLj3ca+WtT432j0K7zBkqgUWE3xpm4oimVn1O2qs/DCNhUqyls8asiC1
+         jajFQsM3U9EIa6Bru5HwrJFe5tFl2h7kWDRolSv1e2dmUBLCS05y0XpuxVTMDXUKeUp2
+         LWO8KDNTlfjpmvdzzBpHo3eKpmwpfmmT9zK3qDXHwaEr/ZILrMDD2dcSdifJ5uRDRPMl
+         Ak095S3pp51afiMToZVQUYuGo//AEMV9+ngRpzo9q0sTbHxofwCXPThICs4WAFtVQYHD
+         nbm52tM2ohigJ6I1aRgq/EXYi2RMXd/GYtpLkiVXjiXNg/veXq4BbuSV1ToMJuTVSCYX
+         Vipg==
+X-Gm-Message-State: AOAM532okHVAt0EB/L/XFCT55o52sf+ZEgv4NRGrhzkbiKGs4f8OJLCw
+        ZxnrcNNNLa/KRlimRaxYUa2F+FUxfEnN7uNQ7IiFTQ==
+X-Google-Smtp-Source: ABdhPJwf0ba4S4CAR8YlNz7JkqPcbsCFRtXCKlAg7b5ghE/jYJhnWaG4CkTeyEP02aqCI06O8itXJGcSbVdNnpOLHlI=
+X-Received: by 2002:a25:3c3:: with SMTP id 186mr8860593ybd.408.1619803963458;
+ Fri, 30 Apr 2021 10:32:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+ <e873c16e-8f49-6e70-1f56-21a69e2e37ce@huawei.com> <YIsAIzecktXXBlxn@apalos.home>
+ <9bf7c5b3-c3cf-e669-051f-247aa8df5c5a@huawei.com> <YIwvI5/ygBvZG5sy@apalos.home>
+In-Reply-To: <YIwvI5/ygBvZG5sy@apalos.home>
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date:   Fri, 30 Apr 2021 20:32:07 +0300
+Message-ID: <CAC_iWj+wkjcGjwbVqEFXFyUi_zgn4-uYhQKKHKk84jkgo1sxRw@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 0/5] page_pool: recycle buffers
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>,
+        Networking <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-rdma@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
----
- fs/open.c                  |  2 ++
- include/linux/audit.h      | 10 ++++++++++
- include/uapi/linux/audit.h |  1 +
- kernel/audit.h             |  2 ++
- kernel/auditsc.c           | 18 +++++++++++++++++-
- 5 files changed, 32 insertions(+), 1 deletion(-)
+(-cc invalid emails)
+Replying to my self here but....
 
-diff --git a/fs/open.c b/fs/open.c
-index e53af13b5835..2a15bec0cf6d 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -1235,6 +1235,8 @@ SYSCALL_DEFINE4(openat2, int, dfd, const char __user *, filename,
- 	if (err)
- 		return err;
- 
-+	audit_openat2_how(&tmp);
-+
- 	/* O_LARGEFILE is only allowed for non-O_PATH. */
- 	if (!(tmp.flags & O_PATH) && force_o_largefile())
- 		tmp.flags |= O_LARGEFILE;
-diff --git a/include/linux/audit.h b/include/linux/audit.h
-index 1137df4d4171..32095e1f5bac 100644
---- a/include/linux/audit.h
-+++ b/include/linux/audit.h
-@@ -399,6 +399,7 @@ extern int __audit_log_bprm_fcaps(struct linux_binprm *bprm,
- 				  const struct cred *old);
- extern void __audit_log_capset(const struct cred *new, const struct cred *old);
- extern void __audit_mmap_fd(int fd, int flags);
-+extern void __audit_openat2_how(struct open_how *how);
- extern void __audit_log_kern_module(char *name);
- extern void __audit_fanotify(unsigned int response);
- extern void __audit_tk_injoffset(struct timespec64 offset);
-@@ -495,6 +496,12 @@ static inline void audit_mmap_fd(int fd, int flags)
- 		__audit_mmap_fd(fd, flags);
- }
- 
-+static inline void audit_openat2_how(struct open_how *how)
-+{
-+	if (unlikely(!audit_dummy_context()))
-+		__audit_openat2_how(how);
-+}
-+
- static inline void audit_log_kern_module(char *name)
- {
- 	if (!audit_dummy_context())
-@@ -646,6 +653,9 @@ static inline void audit_log_capset(const struct cred *new,
- static inline void audit_mmap_fd(int fd, int flags)
- { }
- 
-+static inline void audit_openat2_how(struct open_how *how)
-+{ }
-+
- static inline void audit_log_kern_module(char *name)
- {
- }
-diff --git a/include/uapi/linux/audit.h b/include/uapi/linux/audit.h
-index cd2d8279a5e4..67aea2370c6d 100644
---- a/include/uapi/linux/audit.h
-+++ b/include/uapi/linux/audit.h
-@@ -118,6 +118,7 @@
- #define AUDIT_TIME_ADJNTPVAL	1333	/* NTP value adjustment */
- #define AUDIT_BPF		1334	/* BPF subsystem */
- #define AUDIT_EVENT_LISTENER	1335	/* Task joined multicast read socket */
-+#define AUDIT_OPENAT2		1336	/* Record showing openat2 how args */
- 
- #define AUDIT_AVC		1400	/* SE Linux avc denial or grant */
- #define AUDIT_SELINUX_ERR	1401	/* Internal SE Linux Errors */
-diff --git a/kernel/audit.h b/kernel/audit.h
-index 1522e100fd17..c5af17905976 100644
---- a/kernel/audit.h
-+++ b/kernel/audit.h
-@@ -11,6 +11,7 @@
- #include <linux/skbuff.h>
- #include <uapi/linux/mqueue.h>
- #include <linux/tty.h>
-+#include <uapi/linux/openat2.h> // struct open_how
- 
- /* AUDIT_NAMES is the number of slots we reserve in the audit_context
-  * for saving names from getname().  If we get more names we will allocate
-@@ -185,6 +186,7 @@ struct audit_context {
- 			int			fd;
- 			int			flags;
- 		} mmap;
-+		struct open_how openat2;
- 		struct {
- 			int			argc;
- 		} execve;
-diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-index 27c747e0d5ab..2e9a1eea8b12 100644
---- a/kernel/auditsc.c
-+++ b/kernel/auditsc.c
-@@ -76,7 +76,7 @@
- #include <linux/fsnotify_backend.h>
- #include <uapi/linux/limits.h>
- #include <uapi/linux/netfilter/nf_tables.h>
--#include <uapi/linux/openat2.h>
-+#include <uapi/linux/openat2.h> // struct open_how
- 
- #include "audit.h"
- 
-@@ -1310,6 +1310,12 @@ static void show_special(struct audit_context *context, int *call_panic)
- 		audit_log_format(ab, "fd=%d flags=0x%x", context->mmap.fd,
- 				 context->mmap.flags);
- 		break;
-+	case AUDIT_OPENAT2:
-+		audit_log_format(ab, "oflag=0%llo mode=0%llo resolve=0x%llx",
-+				 context->openat2.flags,
-+				 context->openat2.mode,
-+				 context->openat2.resolve);
-+		break;
- 	case AUDIT_EXECVE:
- 		audit_log_execve_info(context, &ab);
- 		break;
-@@ -2529,6 +2535,16 @@ void __audit_mmap_fd(int fd, int flags)
- 	context->type = AUDIT_MMAP;
- }
- 
-+void __audit_openat2_how(struct open_how *how)
-+{
-+	struct audit_context *context = audit_context();
-+
-+	context->openat2.flags = how->flags;
-+	context->openat2.mode = how->mode;
-+	context->openat2.resolve = how->resolve;
-+	context->type = AUDIT_OPENAT2;
-+}
-+
- void __audit_log_kern_module(char *name)
- {
- 	struct audit_context *context = audit_context();
--- 
-2.27.0
+[...]
+> > >
+> > > We can't do that. The reason we need those structs is that we rely on the
+> > > existing XDP code, which already recycles it's buffers, to enable
+> > > recycling.  Since we allocate a page per packet when using page_pool for a
+> > > driver , the same ideas apply to an SKB and XDP frame. We just recycle the
+> >
+> > I am not really familar with XDP here, but a packet from hw is either a
+> > "struct xdp_frame/xdp_buff" for XDP or a "struct sk_buff" for TCP/IP stack,
+> > a packet can not be both "struct xdp_frame/xdp_buff" and "struct sk_buff" at
+> > the same time, right?
+> >
+>
+> Yes, but the payload is irrelevant in both cases and that's what we use
+> page_pool for.  You can't use this patchset unless your driver usues
+> build_skb().  So in both cases you just allocate memory for the payload and
+> decide what the wrap the buffer with (XDP or SKB) later.
+>
+> > What does not really make sense to me is that the page has to be from page
+> > pool when a skb's frag page can be recycled, right? If it is ture, the switch
+> > case in __xdp_return() does not really make sense for skb recycling, why go
+> > all the trouble of checking the mem->type and mem->id to find the page_pool
+> > pointer when recyclable page for skb can only be from page pool?
+>
+> In any case you need to find in which pool the buffer you try to recycle
+> belongs.  In order to make the whole idea generic and be able to recycle skb
+> fragments instead of just the skb head you need to store some information on
+> struct page.  That's the fundamental difference of this patchset compared to
+> the RFC we sent a few years back [1] which was just storing information on the
+> skb.  The way this is done on the current patchset is that we store the
+> struct xdp_mem_info in page->private and then look it up on xdp_return().
+>
+> Now that being said Matthew recently reworked struct page, so we could see if
+> we can store the page pool pointer directly instead of the struct
+> xdp_mem_info. That would allow us to call into page pool functions directly.
+> But we'll have to agree if that makes sense to go into struct page to begin
+> with and make sure the pointer is still valid when we take the recycling path.
+>
 
+Thinking more about it the reason that prevented us from storing a
+page pool pointer directly is not there anymore. Jesper fixed that
+already a while back. So we might as well store the page_pool ptr in
+page->private and call into the functions directly.  I'll have a look
+before v4.
+
+[...]
+
+Thanks
+/Ilias
