@@ -2,166 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2923370161
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 21:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C5C370169
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 21:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233010AbhD3Tky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 15:40:54 -0400
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:41925 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232813AbhD3Tkw (ORCPT
+        id S232265AbhD3Tnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 15:43:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230508AbhD3Tnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 15:40:52 -0400
-Received: by mail-oi1-f171.google.com with SMTP id i11so9116038oig.8;
-        Fri, 30 Apr 2021 12:40:03 -0700 (PDT)
+        Fri, 30 Apr 2021 15:43:52 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C6CC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 12:43:03 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id j189so3093191pgd.13
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 12:43:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sTsNm6Ls4TUy5ckEe/aB3j0eDGPr1MXObQaGCGMAocE=;
+        b=lN9muvcXbwSPl+TaH5GLQ8oX4P5CO9Mgkx/U/wX+rBit/3d0X0MZXNioHL1hv7ig3W
+         WBUnkBSV5C8yd1doS7DQBWx+4W3zAoELx7I1SgLraW/Zqk7jMmbbA5ETtEUoC6a+pv/o
+         itLUPlp46SU3JbUv3swZNM2/ULMZb9+ncnlakg+yAvPRj1NCRWfFOE3L66tVd0SBx2/e
+         pxuKAtRJ1pY1LaG3/w+HbdP2AOcyUU9Ex6wGi/OOxhSfmzAldG1DXecnRZnu/UHPhwhg
+         N5i4ZIBhGGNMRfB0LVwQeMY6tM6JpLjzy/NjEs8kMABtO/h1XzUTFTgDR1MW/wo47Ytf
+         5rWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oRTCLLrLVLX1YzXLCpau0W/3eis7qio3LTfXUrFMGeA=;
-        b=YVKiR0XqczB9ByD1FQJRlGrqOh2QoSeBWG2db4p0E6HHTbexbzmU2LqDJV0/X2D7q3
-         ZExC2BthHh4U2+MEJBfwB6ikmZo+7o/lN7Q7Y9rS5CeHn+chSx9vyv+gotp4KOWmJcFn
-         Oi1lKFMe01x/R/xnUnWsYwJ0vwoeoubqKl6fJ5eScXjjE69lA/8B9sxm0BkurIYiFgVC
-         izT0K7oXY0QY5BhgxBln1pBjz7poRzCBtul+sQ2qLDsftXWoqmhuuHtceTsTk28xCfb1
-         bZmzVyaWECbKl4ebWiaEh5t9nu9xhdDOa9BmFIQ7qiYBAZ3uzqGvWOi2LYk2YJUwYQV/
-         tC6A==
-X-Gm-Message-State: AOAM531N/OEGO87lNOvlQC3dyv1J003G8mPCVdfRJsaX020yEZNKVM+p
-        OoWXbLScfCfS/5X8Gc+pdA==
-X-Google-Smtp-Source: ABdhPJx6E2XvFlAmdZxj8E8iaeTBP64l5MeiyFxM/eFPrfNxlgKWgdl2oMxZphJvRjvi30v4ahnJig==
-X-Received: by 2002:aca:4056:: with SMTP id n83mr12485002oia.47.1619811603100;
-        Fri, 30 Apr 2021 12:40:03 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t84sm983409oih.35.2021.04.30.12.40.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 12:40:02 -0700 (PDT)
-Received: (nullmailer pid 3752697 invoked by uid 1000);
-        Fri, 30 Apr 2021 19:40:00 -0000
-Date:   Fri, 30 Apr 2021 14:40:00 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Nava kishore Manne <nava.manne@xilinx.com>
-Cc:     michal.simek@xilinx.com, mdf@kernel.org, trix@redhat.com,
-        gregkh@linuxfoundation.org, arnd@arndb.de, rajan.vaja@xilinx.com,
-        amit.sunil.dhamne@xilinx.com, manish.narani@xilinx.com,
-        zou_wei@huawei.com, lakshmi.sai.krishna.potthuri@xilinx.com,
-        iwamatsu@nigauri.org, wendy.liang@xilinx.com,
-        linus.walleij@linaro.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-fpga@vger.kernel.org, chinnikishore369@gmail.com,
-        git@xilinx.com
-Subject: Re: [PATCH v4 1/4] dt-bindings: firmware: Add bindings for xilinx
- firmware
-Message-ID: <20210430194000.GA3742101@robh.at.kernel.org>
-References: <20210429140408.23194-1-nava.manne@xilinx.com>
- <20210429140408.23194-2-nava.manne@xilinx.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sTsNm6Ls4TUy5ckEe/aB3j0eDGPr1MXObQaGCGMAocE=;
+        b=LXCMAwRtki3rkKe2WPLOmBc8q68vB7xHFeAL6eSVl2e2rANKKWoC4LWcJtOXka6tsY
+         2+5+z3KnTLG37wuQKzBonHhcouyOuEKvJYAYyN14OuPipdys3ehmdXM5/y8ELsEOKu5e
+         kW/IzVWMv4Awz6iCPHroR6CVE6gYjX85Xjy+mQDCYerOm/no8spIr2MOBiAGr3p0wIf6
+         SFHuAEoG6YU+eSdVQTheLQC+0/M65u0YHlutUsTvtKE6zik/lxcd7OeYF3is5SxxG7Qm
+         nPndpPtF0dxfUNtAlRK2VNEoGQo+mhZBlHFafxYiREhqqyNEdEuVt8LznsUyJGeUXpVa
+         5+0g==
+X-Gm-Message-State: AOAM5307ETrrJKF55xdMKuj7k+WmcIjPaE8QTHzhZK9gyYSnK3t44POd
+        JrZG16rncStT8PvyG6xdKM7EUgDP/RD2enlP0J9E7V/kvJVipIri
+X-Google-Smtp-Source: ABdhPJxNM+CocJtBk1fxCsWHqK0IQip/tJ5KmZIYqj3Nd01BifyBBkKw4peHw8Y37id6AI0Ic/qE4abGfr4hTQXoALc=
+X-Received: by 2002:aa7:91d1:0:b029:1fe:2a02:73b9 with SMTP id
+ z17-20020aa791d10000b02901fe2a0273b9mr6637574pfa.2.1619811782689; Fri, 30 Apr
+ 2021 12:43:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429140408.23194-2-nava.manne@xilinx.com>
+References: <20210430131733.192414-1-rsaripal@amd.com> <20210430131733.192414-2-rsaripal@amd.com>
+In-Reply-To: <20210430131733.192414-2-rsaripal@amd.com>
+From:   Reiji Watanabe <reijiw@google.com>
+Date:   Fri, 30 Apr 2021 12:42:46 -0700
+Message-ID: <CAAeT=Fw-nt5h3DhRCQr8Ma71NiP7dHB+WD2hie_55SpCHR=mDQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/1] x86/cpufeatures: Implement Predictive Store
+ Forwarding control.
+To:     Ramakrishna Saripalli <rsaripal@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        Jonathan Corbet <corbet@lwn.net>, bsd@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 07:34:05PM +0530, Nava kishore Manne wrote:
-> Add documentation to describe Xilinx firmware driver bindings.
-> Firmware driver provides an interface to firmware APIs.
-> Interface APIs can be used by any driver to communicate
-> to Platform Management Unit.
-> 
-> Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
-> ---
-> Changes for v4:
->                 -Added new yaml file for xilinx firmware
->                  as suggested by Rob.
-> 
->  .../firmware/xilinx/xlnx,zynqmp-firmware.yaml | 63 +++++++++++++++++++
->  1 file changed, 63 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
+> +static int __init psf_cmdline(char *str)
+> +{
+> +       u64 tmp = 0;
+> +
+> +       if (!boot_cpu_has(X86_FEATURE_PSFD))
+> +               return 0;
+> +
+> +       if (!str)
+> +               return -EINVAL;
+> +
+> +       if (!strcmp(str, "off")) {
+> +               set_cpu_cap(&boot_cpu_data, X86_FEATURE_MSR_SPEC_CTRL);
+> +               rdmsrl(MSR_IA32_SPEC_CTRL, tmp);
+> +               tmp |= SPEC_CTRL_PSFD;
+> +               x86_spec_ctrl_base |= tmp;
+> +               wrmsrl(MSR_IA32_SPEC_CTRL, x86_spec_ctrl_base);
+> +       }
+> +
+> +       return 0;
+> +}
 
-What about the old doc?:
 
-Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.txt
+Shouldn't X86_FEATURE_MSR_SPEC_CTRL always be set if the CPU has
+X86_FEATURE_PSFD even if the new kernel parameter is not used ?
+(e.g. set X86_FEATURE_MSR_SPEC_CTRL in init_speculation_control()
+and have psf_cmdline() do the rest)
 
-> 
-> diff --git a/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml b/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
-> new file mode 100644
-> index 000000000000..4b97f005bed7
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
-> @@ -0,0 +1,63 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/firmware/xilinx/xlnx,zynqmp-firmware.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Xilinx firmware driver
-> +
-> +maintainers:
-> +  - Nava kishore Manne <nava.manne@xilinx.com>
-> +
-> +description:
-> +  The zynqmp-firmware node describes the interface to platform firmware.
-> +  ZynqMP has an interface to communicate with secure firmware. Firmware
-> +  driver provides an interface to firmware APIs. Interface APIs can be
-> +  used by any driver to communicate to PMUFW(Platform Management Unit).
-> +  These requests include clock management, pin control, device control,
-> +  power management service, FPGA service and other platform management
-> +  services.
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - description:
-> +          For implementations complying for Zynq Ultrascale+ MPSoC.
-> +        const: xlnx,zynqmp-firmware
-> +
-> +      - description:
-> +          For implementations complying for Versal.
-> +        const: xlnx,versal-firmware
-> +
-> +  method:
-> +    description: The method of calling the PM-API firmware layer.
-> +                #  Permitted values are:
-> +                #  - "smc" : SMC #0, following the SMCCC
-> +                #  - "hvc" : HVC #0, following the SMCCC
+Considering KVM/virtualization for a CPU that has X86_FEATURE_PSFD
+but no other existing feature with MSR_IA32_SPEC_CTRL, if a host
+doesn't enable PSFD with the new parameter, the host doesn't have
+X86_FEATURE_MSR_SPEC_CTRL.  Then, it would be a problem if its
+guests want to use PSFD looking at x86_virt_spec_ctrl().
+(I'm not sure how you will change your previous KVM patch though)
 
-Drop the '#'. If you want to maintain the formatting, then use '|' after 
-'description:' for a literal block.
-
-> +    $ref: /schemas/types.yaml#/definitions/string-array
-> +    enum:
-> +      - smc
-> +      - hvc
-> +
-> +patternProperties:
-> +  "fpga":
-
-So 'foofpgabar' is valid?
-
-> +    description: Compatible of the FPGA device.
-> +    type: object
-> +
-> +    required:
-> +      - compatible
-
-This belongs in the fpga schema which should have a $ref here. (Which 
-means this patch needs to come 2nd.)
-
-> +
-> +required:
-> +  - compatible
-> +
-> +examples:
-> +  - |
-> +    versal-firmware {
-> +      compatible = "xlnx,versal-firmware";
-> +      method = "smc";
-> +      fpga {
-> +        compatible = "xlnx,versal-fpga";
-> +      };
-> +    };
-> +
-> +additionalProperties: false
-> -- 
-> 2.17.1
-> 
+Thanks,
+Reiji
