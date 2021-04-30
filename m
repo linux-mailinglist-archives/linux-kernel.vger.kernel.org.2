@@ -2,106 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 385DF3700DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAF693700DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbhD3S7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 14:59:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27638 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230462AbhD3S7G (ORCPT
+        id S231716AbhD3S7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 14:59:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231136AbhD3S7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 14:59:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619809097;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=k42L3xryaez+oSKmSu1QdAMryLEAIpMx64ypVwr/urA=;
-        b=HSCfNmcC5FNNo0sClUmd7Qv56qS+P6IBK7c2S84PLUFA2CtCYPAVlNIlBQe/TYGH6KRh+3
-        A5TpflRhccUa2yx20sbmKW1p56t9ewBTFZdVjOWoCRhNNHhCyRAkK1EC4XEfy38ZZbiQ6J
-        CiqdsDsoNnHH7fxHVqbBQV3FYoZNhTQ=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-235-Lw9Yc7kYNFCwR4oEwn_xkA-1; Fri, 30 Apr 2021 14:58:15 -0400
-X-MC-Unique: Lw9Yc7kYNFCwR4oEwn_xkA-1
-Received: by mail-qt1-f200.google.com with SMTP id h2-20020a05622a1702b02901b9123889b0so22579635qtk.10
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 11:58:15 -0700 (PDT)
+        Fri, 30 Apr 2021 14:59:41 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 301DFC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 11:58:52 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id s9so24119567ljj.6
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 11:58:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HR9HIh5t6ChKf4G2M+/v8UEXBtBcvCoA8Ko3upSQGEE=;
+        b=Gthh0M42pJvYCWBy3e13blM8tVYPzsKl3dsjSJfC6WPQE14dl0aGEMfGT9jr9z9r0w
+         zsppuIHNQXNvQnegVvGlCd5YB/6sVcBPAQvlzcTZcq9WavaVu35v8QiWsut/Uf2cZiRi
+         SROr1sstiMDfAGbtJG7YiUrELWg4w1bLfBT9o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=k42L3xryaez+oSKmSu1QdAMryLEAIpMx64ypVwr/urA=;
-        b=WHHYtEEPCxqlUyVrY3Ny+hgB8ntbjGj4kXwtWqfYKox3sfEePc1iMaZaeoYe8DOKYi
-         BZbtWZFRmLiRuEN/a1HhWUILzEjYedvt0jAzZihywqDpkUo4vcUssMz8+wqcJtubT3qI
-         WVCR2e/o+ScdzxeZioKD1s8z0GjjaIUQfSk1ziJ/KVY+XyoB34vJ2HcVxH0+fVmgxvP4
-         s5E65H8jw1GcbEdduSDsGLlUrtdTnWPJOI4ZnfodIVsijU/BebhpVtTearFN2ZuMn3KR
-         XjEBXUOCTOQMfrleboqRdkwqrJzuihdnWl4yfUlq+4vdQk+mH/x4rR59dMCgPh03p4yd
-         PVtw==
-X-Gm-Message-State: AOAM532WJbIZsiFXPij6yEIOsiSvS5WGJty9ZbDOjsmGkMtLwVDur2W7
-        4Qu4Hhu6LV2ulOBfBwntP3yupIFnf+gFtSVOZcpOg3OU+E+f+UhMHA5WeDVoK0O/cYeT6hAszOO
-        Ct/Kv4UpEM/WFYa3zAQOEnxgp
-X-Received: by 2002:ae9:f205:: with SMTP id m5mr6950983qkg.101.1619809095101;
-        Fri, 30 Apr 2021 11:58:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyR2o64jnSyLn3IiYpCSQfqm0Tweb+Lrh1Ejl4G4c7Bimvr+FTabvOuLg5CiYAx+Ty5nMnEEg==
-X-Received: by 2002:ae9:f205:: with SMTP id m5mr6950963qkg.101.1619809094911;
-        Fri, 30 Apr 2021 11:58:14 -0700 (PDT)
-Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id b17sm2802557qto.88.2021.04.30.11.58.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 11:58:14 -0700 (PDT)
-From:   trix@redhat.com
-To:     jejb@linux.ibm.com, jarkko@kernel.org, zohar@linux.ibm.com,
-        dhowells@redhat.com, jmorris@namei.org, serge@hallyn.com
-Cc:     linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] KEYS: trusted: fix memory leak
-Date:   Fri, 30 Apr 2021 11:58:10 -0700
-Message-Id: <20210430185810.3331311-1-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HR9HIh5t6ChKf4G2M+/v8UEXBtBcvCoA8Ko3upSQGEE=;
+        b=SZH3BgWaEizT8cX6T5tExxLvUUD/o6K0/I8QOqFVBilZ92N2pJnqUdf7sYWR3Uc19v
+         nsPZu/BgrfUcAclXuTzuBjmAsmqdLsxjP8vgtgnKDQCL7P27Qpq9FGrnBHXXa0OXtlil
+         uCYSlUG4+4qg7mhmurg5z5XJulkH4klWdzvRpKj7NaFx4UbRuCNYKFIiu/VI9SC3wuI2
+         1O8P02ns6sDBGwRR33QHjCxiylraTRXcRH916845dCRNaDM29nxAhqQ5UBJ6Op4CHXA9
+         9Bkj3DCaZMtBCSj9iNnVFU9QYhbQKFcgKn4aztFMeTZd2mC+IW1ny6AlSuQrgLOkNcy7
+         o7JA==
+X-Gm-Message-State: AOAM531KyO+pTNeiDUlI4REgZkZLy2b2zZPWGj062RiYIeI57D587+tW
+        6EGchMxbA18mf2GRAamnhHO7fWCAwkmYFpMj
+X-Google-Smtp-Source: ABdhPJxK5hPaqJHWBxatw0F3sKNHLsDIpiYaGRTheQevuaM6ctcrjWClAP+hADvOjTyqXkHbUFCeTw==
+X-Received: by 2002:a05:651c:2c8:: with SMTP id f8mr4898418ljo.409.1619809130432;
+        Fri, 30 Apr 2021 11:58:50 -0700 (PDT)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id j14sm343275ljh.0.2021.04.30.11.58.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Apr 2021 11:58:49 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id j10so18466397lfb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 11:58:49 -0700 (PDT)
+X-Received: by 2002:a05:6512:3763:: with SMTP id z3mr4084391lft.487.1619809128928;
+ Fri, 30 Apr 2021 11:58:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAHk-=wjrpinf=8gAjxyPoXT0jbK6-U3Urawiykh-zpxeo47Vhg@mail.gmail.com>
+ <20210428061706.GC5084@lst.de> <CAHk-=whWnFu4wztnOtySjFVYXmBR4Mb2wxrp6OayZqnpKeQw0g@mail.gmail.com>
+ <20210428064110.GA5883@lst.de> <CAHk-=wjeUhrznxM95ni4z+ynMqhgKGsJUDU8g0vrDLc+fDtYWg@mail.gmail.com>
+ <1de23de2-12a9-2b13-3b86-9fe4102fdc0c@rasmusvillemoes.dk> <CAHk-=wimsMqGdzik187YWLb-ru+iktb4MYbMQG1rnZ81dXYFVg@mail.gmail.com>
+ <26d06c27-4778-bf75-e39a-3b02cd22d0e3@rasmusvillemoes.dk> <CAHk-=whJmDjTLYLeF=Ax31vTOq4PHXKo6JUqm1mQNGZdy-6=3Q@mail.gmail.com>
+ <AM6PR08MB43769965CAF732F1DEA4A37AF75E9@AM6PR08MB4376.eurprd08.prod.outlook.com>
+ <YIt3uKBQnlxHAo/Q@zeniv-ca.linux.org.uk>
+In-Reply-To: <YIt3uKBQnlxHAo/Q@zeniv-ca.linux.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 30 Apr 2021 11:58:32 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjzBbEdpteXfRp6-WPKkZBZ1dtJSir0YqSKb_qi8AghuQ@mail.gmail.com>
+Message-ID: <CAHk-=wjzBbEdpteXfRp6-WPKkZBZ1dtJSir0YqSKb_qi8AghuQ@mail.gmail.com>
+Subject: Re: [GIT PULL] iomap: new code for 5.13-rc1
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Justin He <Justin.He@arm.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Eric Sandeen <sandeen@sandeen.net>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Thu, Apr 29, 2021 at 8:21 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> Just what does vfsmount have to do with rename_lock?  And what's the point
+> of the entire mess, anyway?
 
-Static analysis reports this problem
-trusted-keys/trusted_tpm1.c:496:10: warning: Potential memory leak
-  return ret;
-         ^~~
+Currently "%pD" doesn't actually show a truly valid pathname.
 
-In tpm_seal() some failure handling returns directly, without
-freeing memory.
+So we have three cases:
 
-Fixes: 5df16caada3f ("KEYS: trusted: Fix incorrect handling of tpm_get_random()")
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- security/keys/trusted-keys/trusted_tpm1.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ (a) __d_path and friends get the name right, but are being overly
+careful about it, and take mount_lock and rename_lock in prepend_path
 
-diff --git a/security/keys/trusted-keys/trusted_tpm1.c b/security/keys/trusted-keys/trusted_tpm1.c
-index 469394550801..aa108bea6739 100644
---- a/security/keys/trusted-keys/trusted_tpm1.c
-+++ b/security/keys/trusted-keys/trusted_tpm1.c
-@@ -493,10 +493,12 @@ static int tpm_seal(struct tpm_buf *tb, uint16_t keytype,
- 
- 	ret = tpm_get_random(chip, td->nonceodd, TPM_NONCE_SIZE);
- 	if (ret < 0)
--		return ret;
-+		goto out;
- 
--	if (ret != TPM_NONCE_SIZE)
--		return -EIO;
-+	if (ret != TPM_NONCE_SIZE) {
-+		ret = -EIO;
-+		goto out;
-+	}
- 
- 	ordinal = htonl(TPM_ORD_SEAL);
- 	datsize = htonl(datalen);
--- 
-2.26.3
+ (b) dentry_path() doesn't get the actual path name right (only the
+in-filesystem one), and takes rename_lock in __dentry_path
 
+ (c) for the vsnprintf case, dentry_name() is the nice lockless "good
+for debugging and printk" that doesn't take any locks at all, and
+optimistically gives a valid end result, even if it's perhaps not
+*THE* valid end result
+
+Basically, the vsnprintf case does the right thing for dentries, and
+the whole "you can use this for debugging messages even when you hold
+the rename lock" etc.
+
+So (c) is the "debug messages version of (b)".
+
+But there is no "debug messages version of (a)", which is what would
+be good for %pD.
+
+You can see it in how the s390 hmcdriv thing does that
+
+        pr_debug("open file '/dev/%pD' with return code %d\n", fp, rc);
+
+which is really just garbage: the "/dev/" part is just a guess, but
+yes, if /dev is devtmpfs - like it usually is - then '%pD' simply
+doesn't do the right thing (even if it had '%pD2')
+
+              Linus
