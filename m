@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85A036F941
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 13:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6508136F942
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 13:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231946AbhD3L13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 07:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34248 "EHLO
+        id S231964AbhD3L1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 07:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231931AbhD3L1V (ORCPT
+        with ESMTP id S231894AbhD3L1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 07:27:21 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FDF9C06138E
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 04:26:32 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so1566640pjh.1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 04:26:32 -0700 (PDT)
+        Fri, 30 Apr 2021 07:27:24 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F0FFC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 04:26:35 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id i13so1269058pfu.2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 04:26:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8PgAXsMUjjBGPRGp9xcOay+JzomkodD/BbZ1Wc3R58Q=;
-        b=Oz5xbfHqolQ4qkzkrw0OZwnPcDpv2J11ep1PWMTH6smS9/7RjPD6HiO25i03bMDv3f
-         pjIB/AjNQINf0U92m1pozzfj1lsg18QwC1NztJ68FLWrdtVeUNsnfCU0V0IIWHe1lXIZ
-         +1l4aZ0FOZACFaoXzSqdCHmolD1S4wTjRsO48=
+        bh=tWbnebzY/SCalv5CLDUzsq2VSK849EXYk/c3zQI/mpY=;
+        b=SUkqYNMflQ276DJ4ik+rnlG2BUrmkiNNxiv3+bdrpXQLiHhAHDrCIAb/guz6qe+m1h
+         KLDt3E9xFYG1FGlOIW7hmuIk69/X+pv3FZh2gdPsCjZsTFhsRsWQnCpBiMIXb5zV2gz7
+         pwpM671vRQ4OrZHM901/l+lKVm/4ziPjnnpak=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8PgAXsMUjjBGPRGp9xcOay+JzomkodD/BbZ1Wc3R58Q=;
-        b=fz34bBKz+FQPkStFioeadarNjVhetx3/ozsJKfCvHmWQnTUf9bxdu7VNXyLxhbKNvZ
-         vonN5aAgCqKdJ9HEAK4RPofPC9fxycXqDrfQt8dd/VRZJm/TzdrfQ40R43JjUO5jVdEh
-         ymArT5NR62qovWkFDgeOWMuSwJKKH1O3FK+AgaU22HTR3Goac5w3OVgePIgcdqPhclLT
-         ocEq9t6ycoAxbMm61jS+AdJGJFNokuHlE4WTRb76bvGIs3pNdeuwKKsh26yzw519hQBp
-         +DFZmX8Tuh12bdqxWK7Cu/KBYTVZ5OUK/OL4llnD433KsZXNhu4zmFv9NT0DdlKUYYNd
-         +NUA==
-X-Gm-Message-State: AOAM532OEuitdYveAw+AQS7Sgwz0ajbvQEhPmC5Xl8ukR+8ZgdBsmhTH
-        M9MwIWTUmri3KO3X6izn2QsHAg==
-X-Google-Smtp-Source: ABdhPJxi+PS12sWqFpA9ygfTTwgTQO966ZUsdgGOH8dQByLrvZxvrqvr1CIyZVamW25GKBaB/tuonA==
-X-Received: by 2002:a17:902:aa04:b029:ec:f779:3a2b with SMTP id be4-20020a170902aa04b02900ecf7793a2bmr4718095plb.44.1619781991688;
-        Fri, 30 Apr 2021 04:26:31 -0700 (PDT)
+        bh=tWbnebzY/SCalv5CLDUzsq2VSK849EXYk/c3zQI/mpY=;
+        b=LCZkyiZIXUBzXtkBrH2poe24CPEkadxb/Kkz1dzL9cTQT96Ys5JqFn+UCmJ8yHP5zm
+         an0VebFL9uS4GppJibI9MoFZegKfIrRGKkJLwOPeZNd3dIabzacwewTsJse7eB5bel/G
+         YveYH2SDzfwptynepEmqy8S4OhT7s1D0hPFB9eb3HrePfTm5qAR5f0ePdYIARo+p8/d+
+         aSrzDghUQnC2Mx4Un66NX57c54FgFqxwth7wurniVCllexEaSaCSoArkgW7G34EvxIJR
+         14bExX0vdP3jgguZmD6J3FEv/SbKsqWAMLxnZI+xZD4cM9M5+B8RUzw49kTB4XkLAYeV
+         ke9w==
+X-Gm-Message-State: AOAM530ReZz9WV2UTFcW1IktO27XvpGTrcl2ENJW5H8MqnGcS3uL2nSW
+        lsj6AdRQTj7gbUMqxZHOJh8CwA==
+X-Google-Smtp-Source: ABdhPJwiW+KMFAzt34715myGZwmix+KKr58KHtttwGkYaM7iqy4nz6R6dJaSGzOx7Riwt7eoFSHOpA==
+X-Received: by 2002:a05:6a00:16c5:b029:280:4678:5c94 with SMTP id l5-20020a056a0016c5b029028046785c94mr4509105pfc.18.1619781994916;
+        Fri, 30 Apr 2021 04:26:34 -0700 (PDT)
 Received: from senozhatsky.flets-east.jp ([2409:10:2e40:5100:2c33:77c9:7bef:267e])
-        by smtp.gmail.com with ESMTPSA id l10sm1809457pjy.42.2021.04.30.04.26.29
+        by smtp.gmail.com with ESMTPSA id l10sm1809457pjy.42.2021.04.30.04.26.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 04:26:31 -0700 (PDT)
+        Fri, 30 Apr 2021 04:26:34 -0700 (PDT)
 From:   Sergey Senozhatsky <senozhatsky@chromium.org>
 To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Ricardo Ribalda <ribalda@chromium.org>
@@ -53,71 +53,252 @@ Cc:     Tomasz Figa <tfiga@chromium.org>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCHv4 4/5] media: v4l UAPI: document ROI auto_controls
-Date:   Fri, 30 Apr 2021 20:26:10 +0900
-Message-Id: <20210430112611.475039-5-senozhatsky@chromium.org>
+Subject: [PATCHv4 5/5] media: uvcvideo: add UVC 1.5 ROI control
+Date:   Fri, 30 Apr 2021 20:26:11 +0900
+Message-Id: <20210430112611.475039-6-senozhatsky@chromium.org>
 X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
 In-Reply-To: <20210430112611.475039-1-senozhatsky@chromium.org>
 References: <20210430112611.475039-1-senozhatsky@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UVC 1.5 defines the following Region of Interest auto_controls
+This patch implements UVC 1.5 Region of Interest (ROI) control.
 
-|D0: Auto Exposure
-|D1: Auto Iris
-|D2: Auto White Balance
-|D3: Auto Focus
-|D4: Auto Face Detect
-|D5: Auto Detect and Track
-|D6: Image Stabilization
-|D7: Higher Quality
-|D8 – D15: Reserved, set to zero
+Note that, UVC 1.5 defines CT_DIGITAL_WINDOW_CONTROL controls
+and mentions that ROI rectangle coordinates "must be within
+the current Digital Window as specified by the CT_WINDOW control."
+(4.2.2.1.20 Digital Region of Interest (ROI) Control).
+
+It's is not entirely clear if we need to implement WINDOW_CONTROL.
+ROI is naturally limited by GET_MIN and GET_MAX rectangles.
+
+Another thing to note is that ROI support is implemented as
+V4L2 selection target: selection rectangle represents ROI
+rectangle.
 
 Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 ---
- .../media/v4l/ext-ctrls-camera.rst            | 23 +++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ drivers/media/usb/uvc/uvc_v4l2.c | 185 ++++++++++++++++++++++++++++++-
+ 1 file changed, 182 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-camera.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-camera.rst
-index 4c5061aa9cd4..ab24930848b6 100644
---- a/Documentation/userspace-api/media/v4l/ext-ctrls-camera.rst
-+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-camera.rst
-@@ -217,7 +217,30 @@ enum v4l2_auto_focus_range -
-     * - ``V4L2_AUTO_FOCUS_RANGE_INFINITY``
-       - The lens is set to focus on an object at infinite distance.
+diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+index 252136cc885c..eb4e306d7a38 100644
+--- a/drivers/media/usb/uvc/uvc_v4l2.c
++++ b/drivers/media/usb/uvc/uvc_v4l2.c
+@@ -1139,14 +1139,73 @@ static int uvc_ioctl_querymenu(struct file *file, void *fh,
+ 	return uvc_query_v4l2_menu(chain, qm);
+ }
  
-+``V4L2_CID_REGION_OF_INTEREST_AUTO (bitmask)``
-+    This determines which, if any, on board features should track to the
-+    Region of Interest.
- 
-+.. flat-table::
-+    :header-rows:  0
-+    :stub-columns: 0
+-static int uvc_ioctl_g_selection(struct file *file, void *fh,
+-				 struct v4l2_selection *sel)
++/* UVC 1.5 ROI rectangle is half the size of v4l2_rect */
++struct uvc_roi_rect {
++	__u16			top;
++	__u16			left;
++	__u16			bottom;
++	__u16			right;
++	__u16			auto_controls;
++} __packed;
 +
-+    * - ``V4L2_CID_REGION_OF_INTEREST_AUTO_EXPOSURE``
-+      - Auto Exposure.
-+    * - ``V4L2_CID_REGION_OF_INTEREST_AUTO_IRIS``
-+      - Auto Iris.
-+    * - ``V4L2_CID_REGION_OF_INTEREST_AUTO_WHITE_BALANCE``
-+      - Auto White Balance.
-+    * - ``V4L2_CID_REGION_OF_INTEREST_AUTO_FOCUS``
-+      - Auto Focus.
-+    * - ``V4L2_CID_REGION_OF_INTEREST_AUTO_FACE_DETECT``
-+      - Auto Face Detect.
-+    * - ``V4L2_CID_REGION_OF_INTEREST_AUTO_DETECT_AND_TRACK``
-+      - Auto Detect and Track.
-+    * - ``V4L2_CID_REGION_OF_INTEREST_AUTO_IMAGE_STABILIXATION``
-+      - Image Stabilization.
-+    * - ``V4L2_CID_REGION_OF_INTEREST_AUTO_HIGHER_QUALITY``
-+      - Higher Quality.
++static int uvc_ioctl_g_roi_target(struct file *file, void *fh,
++				  struct v4l2_selection *sel)
+ {
+ 	struct uvc_fh *handle = fh;
+ 	struct uvc_streaming *stream = handle->stream;
++	struct uvc_video_chain *chain = handle->chain;
++	struct uvc_roi_rect *roi;
++	u8 query;
++	int ret;
  
- ``V4L2_CID_ZOOM_ABSOLUTE (integer)``
-     Specify the objective lens focal length as an absolute value. The
+-	if (sel->type != stream->type)
++	switch (sel->target) {
++	case V4L2_SEL_TGT_ROI:
++		query = UVC_GET_CUR;
++		break;
++	case V4L2_SEL_TGT_ROI_DEFAULT:
++		query = UVC_GET_DEF;
++		break;
++	case V4L2_SEL_TGT_ROI_BOUNDS_MIN:
++		query = UVC_GET_MAX;
++		break;
++	case V4L2_SEL_TGT_ROI_BOUNDS_MAX:
++		query = UVC_GET_MAX;
++		break;
++	default:
+ 		return -EINVAL;
++	}
++
++	roi = kzalloc(sizeof(struct uvc_roi_rect), GFP_KERNEL);
++	if (!roi)
++		return -ENOMEM;
++
++	/*
++	 * Synchronize with uvc_ioctl_query_ext_ctrl() that can set
++	 * ROI auto_controls concurrently.
++	 */
++	mutex_lock(&chain->ctrl_mutex);
++
++	ret = uvc_query_ctrl(stream->dev, query, 1, stream->dev->intfnum,
++			     UVC_CT_REGION_OF_INTEREST_CONTROL, roi,
++			     sizeof(struct uvc_roi_rect));
++	if (!ret) {
++		/* ROI left, top, right, bottom are global coordinates. */
++		sel->r.left	= roi->left;
++		sel->r.top	= roi->top;
++		sel->r.width	= roi->right - roi->left + 1;
++		sel->r.height	= roi->bottom - roi->top + 1;
++	}
++
++	mutex_unlock(&chain->ctrl_mutex);
++	kfree(roi);
++	return ret;
++}
++
++static int uvc_ioctl_g_sel_target(struct file *file, void *fh,
++				  struct v4l2_selection *sel)
++{
++	struct uvc_fh *handle = fh;
++	struct uvc_streaming *stream = handle->stream;
+ 
+ 	switch (sel->target) {
+ 	case V4L2_SEL_TGT_CROP_DEFAULT:
+@@ -1173,6 +1232,125 @@ static int uvc_ioctl_g_selection(struct file *file, void *fh,
+ 	return 0;
+ }
+ 
++static int uvc_ioctl_g_selection(struct file *file, void *fh,
++				 struct v4l2_selection *sel)
++{
++	struct uvc_fh *handle = fh;
++	struct uvc_streaming *stream = handle->stream;
++
++	if (sel->type != stream->type)
++		return -EINVAL;
++
++	switch (sel->target) {
++	case V4L2_SEL_TGT_CROP_DEFAULT:
++	case V4L2_SEL_TGT_CROP_BOUNDS:
++	case V4L2_SEL_TGT_COMPOSE_DEFAULT:
++	case V4L2_SEL_TGT_COMPOSE_BOUNDS:
++		return uvc_ioctl_g_sel_target(file, fh, sel);
++	case V4L2_SEL_TGT_ROI:
++	case V4L2_SEL_TGT_ROI_DEFAULT:
++	case V4L2_SEL_TGT_ROI_BOUNDS_MIN:
++	case V4L2_SEL_TGT_ROI_BOUNDS_MAX:
++		return uvc_ioctl_g_roi_target(file, fh, sel);
++	}
++
++	return -EINVAL;
++}
++
++static void validate_roi_bounds(struct uvc_streaming *stream,
++				struct v4l2_selection *sel)
++{
++	if (sel->r.left > USHRT_MAX)
++		sel->r.left = 0;
++
++	if (sel->r.top > USHRT_MAX)
++		sel->r.top = 0;
++
++	if (sel->r.width + sel->r.left > USHRT_MAX || !sel->r.width) {
++		sel->r.left = 0;
++		sel->r.width = stream->cur_frame->wWidth;
++	}
++
++	if (sel->r.height + sel->r.top > USHRT_MAX || !sel->r.height) {
++		sel->r.top = 0;
++		sel->r.height = stream->cur_frame->wHeight;
++	}
++}
++
++static int uvc_ioctl_s_roi(struct file *file, void *fh,
++			   struct v4l2_selection *sel)
++{
++	struct uvc_fh *handle = fh;
++	struct uvc_streaming *stream = handle->stream;
++	struct uvc_video_chain *chain = handle->chain;
++	struct uvc_roi_rect *roi;
++	int ret;
++
++	roi = kzalloc(sizeof(struct uvc_roi_rect), GFP_KERNEL);
++	if (!roi)
++		return -ENOMEM;
++
++	/*
++	 * Synchronize with uvc_ioctl_query_ext_ctrl() that can set
++	 * ROI auto_controls concurrently.
++	 */
++	mutex_lock(&chain->ctrl_mutex);
++
++	/*
++	 * Get current ROI configuration. We are especially interested in
++	 * ->auto_controls, because we will use GET_CUR ->auto_controls
++	 * value for SET_CUR. Some firmwares require sizeof(uvc_roi_rect)
++	 * to be 5 * sizeof(__u16) so we need to set correct rectangle
++	 * dimensions and correct auto_controls value.
++	 */
++	ret = uvc_query_ctrl(stream->dev, UVC_GET_CUR, 1, stream->dev->intfnum,
++			     UVC_CT_REGION_OF_INTEREST_CONTROL, roi,
++			     sizeof(struct uvc_roi_rect));
++	if (ret)
++		goto out;
++
++	mutex_lock(&stream->mutex);
++
++	validate_roi_bounds(stream, sel);
++
++	/*
++	 * ROI left, top, right, bottom are global coordinates.
++	 * Note that we use ->auto_controls value which we read earlier.
++	 */
++	roi->left		= sel->r.left;
++	roi->top		= sel->r.top;
++	roi->right		= sel->r.width + sel->r.left - 1;
++	roi->bottom		= sel->r.height + sel->r.top - 1;
++
++	ret = uvc_query_ctrl(stream->dev, UVC_SET_CUR, 1, stream->dev->intfnum,
++			     UVC_CT_REGION_OF_INTEREST_CONTROL, roi,
++			     sizeof(struct uvc_roi_rect));
++
++	mutex_unlock(&stream->mutex);
++
++out:
++	mutex_unlock(&chain->ctrl_mutex);
++	kfree(roi);
++	return ret;
++}
++
++static int uvc_ioctl_s_selection(struct file *file, void *fh,
++				 struct v4l2_selection *sel)
++{
++	struct uvc_fh *handle = fh;
++	struct uvc_streaming *stream = handle->stream;
++
++	if (sel->type != stream->type)
++		return -EINVAL;
++
++	switch (sel->target) {
++	case V4L2_SEL_TGT_ROI:
++		return uvc_ioctl_s_roi(file, fh, sel);
++	}
++
++	return -EINVAL;
++}
++
+ static int uvc_ioctl_g_parm(struct file *file, void *fh,
+ 			    struct v4l2_streamparm *parm)
+ {
+@@ -1533,6 +1711,7 @@ const struct v4l2_ioctl_ops uvc_ioctl_ops = {
+ 	.vidioc_try_ext_ctrls = uvc_ioctl_try_ext_ctrls,
+ 	.vidioc_querymenu = uvc_ioctl_querymenu,
+ 	.vidioc_g_selection = uvc_ioctl_g_selection,
++	.vidioc_s_selection = uvc_ioctl_s_selection,
+ 	.vidioc_g_parm = uvc_ioctl_g_parm,
+ 	.vidioc_s_parm = uvc_ioctl_s_parm,
+ 	.vidioc_enum_framesizes = uvc_ioctl_enum_framesizes,
 -- 
 2.31.1.527.g47e6f16901-goog
 
