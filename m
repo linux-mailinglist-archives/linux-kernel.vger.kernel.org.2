@@ -2,155 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D9C36F76F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096A336F771
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 10:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231349AbhD3I5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 04:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbhD3I45 (ORCPT
+        id S231326AbhD3I6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 04:58:11 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:59668 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229524AbhD3I6K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 04:56:57 -0400
-Received: from mout-u-204.mailbox.org (mout-u-204.mailbox.org [IPv6:2001:67c:2050:1::465:204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68A80C06174A;
-        Fri, 30 Apr 2021 01:56:09 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-u-204.mailbox.org (Postfix) with ESMTPS id 4FWmS75rt0zQjwd;
-        Fri, 30 Apr 2021 10:56:07 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp1.mailbox.org ([80.241.60.240])
-        by spamfilter03.heinlein-hosting.de (spamfilter03.heinlein-hosting.de [80.241.56.117]) (amavisd-new, port 10030)
-        with ESMTP id 9F8beDW6lYQs; Fri, 30 Apr 2021 10:56:04 +0200 (CEST)
-Subject: Re: [PATCH v4 2/2] drivers: dma: altera-msgdma: add OF support
-To:     Olivier Dautricourt <olivier.dautricourt@orolia.com>,
-        Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>
-Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <YIrAJce3Ej8hNbkA@orolia.com>
-From:   Stefan Roese <sr@denx.de>
-Message-ID: <5377361b-5602-1c03-04be-384f06150240@denx.de>
-Date:   Fri, 30 Apr 2021 10:56:04 +0200
+        Fri, 30 Apr 2021 04:58:10 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619773041;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7TvOyBzXvgra4jDnrI42WzEmRAmKfAJx8nWVdE6lSe4=;
+        b=q+waqDS2CYqSTglpaX38I4CX7hFJQxj9fE46I6TcpgbFvbwIPOf3zcXAZwMT1EieU2zxo2
+        IZGcS7Db5QPjX4oaf8idaK3HjmZ3Jq11EWrOZvGJr26mw059wUL2QqZlfvshgcrsI392i0
+        rP58sHQIwyLygIuAmyG59QlQcOYE5U/t9GgYBMbXPvTPb4Nhi+9J3q2WpiCckrDXJhTN8r
+        zNFw8l6vglYMkElecMwbGyFlAs2kLzkzkau0PdUvOoBjSLIXLiftS1ttW8L+sC4MeeBxoQ
+        vuTD81V28X3a6rIlM83ChAzD+sxGGfVfXu1VmgBEnRo1bhq9ILDs/y1/MiqHCw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619773041;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7TvOyBzXvgra4jDnrI42WzEmRAmKfAJx8nWVdE6lSe4=;
+        b=rgvoH4K40TJ8wA0jIbKHl0zQ6XyJIrCtwMfGroc/BtwyatB078YkRXT5S/Pki7fE3cbcsc
+        Y/O/EWoh0PmMVzAw==
+To:     Feng Tang <feng.tang@intel.com>,
+        kernel test robot <oliver.sang@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
+        zhengjun.xing@intel.com
+Subject: Re: [signal]  4bad58ebc8:  will-it-scale.per_thread_ops -3.3% regression
+In-Reply-To: <20210430081359.GB79529@shbuild999.sh.intel.com>
+References: <20210420030837.GB31773@xsang-OptiPlex-9020> <20210430081359.GB79529@shbuild999.sh.intel.com>
+Date:   Fri, 30 Apr 2021 10:57:20 +0200
+Message-ID: <874kfof8un.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <YIrAJce3Ej8hNbkA@orolia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: de-DE
-Content-Transfer-Encoding: 8bit
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -5.03 / 15.00 / 15.00
-X-Rspamd-Queue-Id: CAD9E1857
-X-Rspamd-UID: f04d74
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.04.21 16:18, Olivier Dautricourt wrote:
-> This driver had no device tree support.
-> 
-> - add compatible field "altr,msgdma"
-> - define msgdma_of_xlate, with no argument
-> - register dma controller with of_dma_controller_register
-> 
-> Signed-off-by: Olivier Dautricourt <olivier.dautricourt@orolia.com>
+Feng,
 
-Reviewed-by: Stefan Roese <sr@denx.de>
+On Fri, Apr 30 2021 at 16:13, Feng Tang wrote:
+> On Tue, Apr 20, 2021 at 11:08:37AM +0800, kernel test robot wrote:
+>> commit: 
+>>   69995ebbb9 ("signal: Hand SIGQUEUE_PREALLOC flag to __sigqueue_alloc()")
+>>   4bad58ebc8 ("signal: Allow tasks to cache one sigqueue struct")
+>> 
+>> 69995ebbb9d37173 4bad58ebc8bc4f20d89cff95417 
+>> ---------------- --------------------------- 
+>>          %stddev     %change         %stddev
+>>              \          |                \  
+>>  1.273e+09            -3.3%  1.231e+09        will-it-scale.192.threads
+>>    6630224            -3.3%    6409738        will-it-scale.per_thread_ops
+>>  1.273e+09            -3.3%  1.231e+09        will-it-scale.workload
+>
+> We've double checked this, and it seems to be another case of
+> the code alignment change caused regression change, just like
+> the other case we debugged " [genirq]  cbe16f35be:
+> will-it-scale.per_thread_ops -5.2% regression" 
+>
+> https://lore.kernel.org/lkml/20210428050758.GB52098@shbuild999.sh.intel.com/
+>
+> With the same debug patch of forcing function address 64 bytes
+> aligned, then commit 4bad58ebc8 will bring no change on this case. 
+>
+> commit 09c60546f04f "./Makefile: add debug option to enable function
+> aligned on 32 bytes" only forced 32 bytes align, with thinking 64B
+> align will occupy more code space, and affect iTLB more. Maybe we
+> should just extend it to 64B align, as it is for debug only anyway. 
+
+thanks for the heads up!
+
+But why is this restricted to debug mode?
+
+The fact that adding a few bytes of text causes regressions in unrelated
+code is not restricted to debug or am I missing something here?
 
 Thanks,
-Stefan
 
-> ---
-> 
-> Notes:
->      Changes in v2:
->      	none
-> 
->      Changes from v2 to v3:
->      	Removed CONFIG_OF #ifdef's and use if (IS_ENABLED(CONFIG_OF))
->      	only once.
-> 
->      Changes from v3 to v4
->      	Reintroduce #ifdef CONFIG_OF for msgdma_match
->      	as it produces a unused variable warning
-> 
->   drivers/dma/altera-msgdma.c | 29 +++++++++++++++++++++++++++++
->   1 file changed, 29 insertions(+)
-> 
-> diff --git a/drivers/dma/altera-msgdma.c b/drivers/dma/altera-msgdma.c
-> index 9a841ce5f0c5..7e58385facef 100644
-> --- a/drivers/dma/altera-msgdma.c
-> +++ b/drivers/dma/altera-msgdma.c
-> @@ -19,6 +19,7 @@
->   #include <linux/module.h>
->   #include <linux/platform_device.h>
->   #include <linux/slab.h>
-> +#include <linux/of_dma.h>
-> 
->   #include "dmaengine.h"
-> 
-> @@ -784,6 +785,14 @@ static int request_and_map(struct platform_device *pdev, const char *name,
->   	return 0;
->   }
-> 
-> +static struct dma_chan *msgdma_of_xlate(struct of_phandle_args *dma_spec,
-> +					struct of_dma *ofdma)
-> +{
-> +	struct msgdma_device *d = ofdma->of_dma_data;
-> +
-> +	return dma_get_any_slave_channel(&d->dmadev);
-> +}
-> +
->   /**
->    * msgdma_probe - Driver probe function
->    * @pdev: Pointer to the platform_device structure
-> @@ -888,6 +897,16 @@ static int msgdma_probe(struct platform_device *pdev)
->   	if (ret)
->   		goto fail;
-> 
-> +	if (IS_ENABLED(CONFIG_OF)) {
-> +		ret = of_dma_controller_register(pdev->dev.of_node,
-> +						 msgdma_of_xlate, mdev);
-> +		if (ret) {
-> +			dev_err(&pdev->dev,
-> +				"failed to register dma controller");
-> +			goto fail;
-> +		}
-> +	}
-> +
->   	dev_notice(&pdev->dev, "Altera mSGDMA driver probe success\n");
-> 
->   	return 0;
-> @@ -916,9 +935,19 @@ static int msgdma_remove(struct platform_device *pdev)
->   	return 0;
->   }
-> 
-> +#ifdef CONFIG_OF
-> +static const struct of_device_id msgdma_match[] = {
-> +	{ .compatible = "altr,msgdma",},
-> +	{ }
-> +};
-> +
-> +MODULE_DEVICE_TABLE(of, msgdma_match);
-> +#endif
-> +
->   static struct platform_driver msgdma_driver = {
->   	.driver = {
->   		.name = "altera-msgdma",
-> +		.of_match_table = of_match_ptr(msgdma_match),
->   	},
->   	.probe = msgdma_probe,
->   	.remove = msgdma_remove,
-> --
-> 2.31.0.rc2
-> 
-
-
-Viele Grüße,
-Stefan
-
--- 
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-51 Fax: (+49)-8142-66989-80 Email: sr@denx.de
+        tglx
