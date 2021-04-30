@@ -2,105 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5939236F3D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 03:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AFF936F3D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 03:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230024AbhD3Bsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 21:48:53 -0400
-Received: from mga18.intel.com ([134.134.136.126]:1029 "EHLO mga18.intel.com"
+        id S230045AbhD3Bt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 21:49:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229577AbhD3Bsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 21:48:51 -0400
-IronPort-SDR: X+g1ejYcjJ2JXyZvSASSPzFXNyvYYPhXEXBz9x8QV5D72pr0XxNh6y+g5rabSC3g2hZk42E2uE
- ADw0yXK1IwTw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9969"; a="184646243"
-X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
-   d="scan'208";a="184646243"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 18:48:03 -0700
-IronPort-SDR: VCNCi44upo9HW3I6bWsf05cfpZFM8Nfapyq8zjSxUuparGWrXoSKUUhB0YE+Tzb9aHx5t92MMt
- U2O1V25OFqRg==
-X-IronPort-AV: E=Sophos;i="5.82,260,1613462400"; 
-   d="scan'208";a="431182560"
-Received: from jbrandeb-mobl4.amr.corp.intel.com (HELO localhost) ([10.209.109.170])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 18:48:03 -0700
-Date:   Thu, 29 Apr 2021 18:48:02 -0700
-From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
-To:     Nitesh Lal <nilal@redhat.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>, abelits@marvell.com,
-        Robin Murphy <robin.murphy@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "stephen@networkplumber.org" <stephen@networkplumber.org>,
-        "rppt@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
-        "jinyuqi@huawei.com" <jinyuqi@huawei.com>,
-        "zhangshaokun@hisilicon.com" <zhangshaokun@hisilicon.com>,
-        netdev@vger.kernel.org, chris.friesen@windriver.com
-Subject: Re: [Patch v4 1/3] lib: Restrict cpumask_local_spread to
- houskeeping CPUs
-Message-ID: <20210429184802.0000641e@intel.com>
-In-Reply-To: <CAFki+Lm0W_brLu31epqD3gAV+WNKOJfVDfX2M8ZM__aj3nv9uA@mail.gmail.com>
-References: <20200625223443.2684-1-nitesh@redhat.com>
-        <20200625223443.2684-2-nitesh@redhat.com>
-        <3e9ce666-c9cd-391b-52b6-3471fe2be2e6@arm.com>
-        <20210127121939.GA54725@fuller.cnet>
-        <87r1m5can2.fsf@nanos.tec.linutronix.de>
-        <20210128165903.GB38339@fuller.cnet>
-        <87h7n0de5a.fsf@nanos.tec.linutronix.de>
-        <20210204181546.GA30113@fuller.cnet>
-        <cfa138e9-38e3-e566-8903-1d64024c917b@redhat.com>
-        <20210204190647.GA32868@fuller.cnet>
-        <d8884413-84b4-b204-85c5-810342807d21@redhat.com>
-        <87y2g26tnt.fsf@nanos.tec.linutronix.de>
-        <d0aed683-87ae-91a2-d093-de3f5d8a8251@redhat.com>
-        <7780ae60-efbd-2902-caaa-0249a1f277d9@redhat.com>
-        <07c04bc7-27f0-9c07-9f9e-2d1a450714ef@redhat.com>
-        <20210406102207.0000485c@intel.com>
-        <1a044a14-0884-eedb-5d30-28b4bec24b23@redhat.com>
-        <20210414091100.000033cf@intel.com>
-        <54ecc470-b205-ea86-1fc3-849c5b144b3b@redhat.com>
-        <CAFki+Lm0W_brLu31epqD3gAV+WNKOJfVDfX2M8ZM__aj3nv9uA@mail.gmail.com>
-X-Mailer: Claws Mail 3.12.0 (GTK+ 2.24.28; i686-w64-mingw32)
+        id S229577AbhD3Bt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 21:49:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB7AD613D8;
+        Fri, 30 Apr 2021 01:48:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619747319;
+        bh=R+Br+ByigmFx8GICfJM2Z3csLqKD2/XlBGg2xyizbhs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eVOOZh0eukyoXkjzWytUDenxV7bez2Y4Eee3JLk/SP3d3cZkGnsKPlh9c31qRTXGa
+         Xo7p8L7zrFJvJqa4E5yPr/1Q+rW9CxraFPFzKDJL6dqGSdz/3IYI7dg6h2MNH+bKRL
+         lTIwIvg+o+EIYDaru1B4gBy8J6darKe8151Sd3MB/0HNJlZueNjzg0ayIJKoOnTlE/
+         KNG3P4A+UCmSGtuShws4x1ZAxmn4u8oeq670kUfiTNYryOwc65/0pnRU+o6qKMKWI1
+         IHdHLaQGXKWJOon49HwGe9EP2cBBpPv/Z0b7yskfG9G0iBXtwzVwe0ykIaRATaJn9b
+         DKlYWvwGZI5dA==
+Date:   Fri, 30 Apr 2021 09:48:23 +0800
+From:   Gao Xiang <xiang@kernel.org>
+To:     Weichao Guo <guoweichao@oppo.com>
+Cc:     Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        Huang Jianan <huangjianan@oppo.com>,
+        Matthew Wilcox <willy@infradead.org>, rpalethorpe@suse.de,
+        kernel test robot <oliver.sang@intel.com>, lkp@intel.com,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        ltp@lists.linux.it
+Subject: Re: [LTP] [f2fs] 02eb84b96b: ltp.swapon03.fail
+Message-ID: <20210430014823.GA3132@hsiangkao-HP-ZHAN-66-Pro-G1>
+References: <20210308072510.GA902@xsang-OptiPlex-9020>
+ <87h7llhnfe.fsf@suse.de>
+ <c75229cc-e325-1c8b-0afa-fd236db8319c@oppo.com>
+ <20210309040144.GH3479805@casper.infradead.org>
+ <c84bf5c9-501e-6c25-1728-a7c6281093fd@oppo.com>
+ <YEkw0J9VEg66AgIt@google.com>
+ <e2009f2d-253d-264c-53ca-fa644897a952@huawei.com>
+ <cf28837a-9558-b00c-bca3-601a70b752ea@oppo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <cf28837a-9558-b00c-bca3-601a70b752ea@oppo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nitesh Lal wrote:
-
-> @Jesse do you think the Part-1 findings explain the behavior that you have
-> observed in the past?
+On Thu, Apr 29, 2021 at 09:08:42PM +0800, Weichao Guo wrote:
 > 
-> Also, let me know if there are any suggestions or experiments to try here.
+> On 2021/3/23 17:04, Chao Yu wrote:
+> > On 2021/3/11 4:49, Jaegeuk Kim wrote:
+> > > On 03/10, Huang Jianan wrote:
+> > > > Hi Richard,
+> > > > 
+> > > > On 2021/3/9 12:01, Matthew Wilcox wrote:
+> > > > > On Tue, Mar 09, 2021 at 10:23:35AM +0800, Weichao Guo wrote:
+> > > > > > Hi Richard,
+> > > > > > 
+> > > > > > On 2021/3/8 19:53, Richard Palethorpe wrote:
+> > > > > > > Hello,
+> > > > > > > 
+> > > > > > > > kern  :err   : [  187.461914] F2FS-fs (sda1):
+> > > > > > > > Swapfile does not align to section
+> > > > > > > > commit 02eb84b96bc1b382dd138bf60724edbefe77b025
+> > > > > > > > Author: huangjianan@oppo.com <huangjianan@oppo.com>
+> > > > > > > > Date:   Mon Mar 1 12:58:44 2021 +0800
+> > > > > > > >        f2fs: check if swapfile is section-alligned
+> > > > > > > >        If the swapfile isn't created by pin and
+> > > > > > > > fallocate, it can't be
+> > > > > > > >        guaranteed section-aligned, so it may be
+> > > > > > > > selected by f2fs gc. When
+> > > > > > > >        gc_pin_file_threshold is reached, the
+> > > > > > > > address of swapfile may change,
+> > > > > > > >        but won't be synchronized to swap_extent,
+> > > > > > > > so swap will write to wrong
+> > > > > > > >        address, which will cause data corruption.
+> > > > > > > >        Signed-off-by: Huang Jianan <huangjianan@oppo.com>
+> > > > > > > >        Signed-off-by: Guo Weichao <guoweichao@oppo.com>
+> > > > > > > >        Reviewed-by: Chao Yu <yuchao0@huawei.com>
+> > > > > > > >        Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> > > > > > > The test uses fallocate to preallocate the swap file
+> > > > > > > and writes zeros to
+> > > > > > > it. I'm not sure what pin refers to?
+> > > > > > 'pin' refers to pinned file feature in F2FS, the
+> > > > > > LBA(Logical Block Address)
+> > > > > > of a file is fixed after pinned. Without this operation
+> > > > > > before fallocate,
+> > > > > > the LBA may not align with section(F2FS GC unit), some
+> > > > > > LBA of the file may
+> > > > > > be changed by F2FS GC in some extreme cases.
+> > > > > > 
+> > > > > > For this test case, how about pin the swap file before
+> > > > > > fallocate for F2FS as
+> > > > > > following:
+> > > > > > 
+> > > > > > ioctl(fd, F2FS_IOC_SET_PIN_FILE, true);
+> > > > > No special ioctl should be needed.  f2fs_swap_activate()
+> > > > > should pin the
+> > > > > file, just like it converts inline inodes and disables compression.
+> > > > 
+> > > > Now f2fs_swap_activate() will pin the file. The problem is that when
+> > > > f2fs_swap_activate()
+> > > > 
+> > > > is executed, the file has been created and may not be section-aligned.
+> > > > 
+> > > > So I think it would be better to consider aligning the swapfile during
+> > > > f2fs_swap_activate()?
+> > > 
+> > > Does it make sense to reallocate blocks like
+> > > in f2fs_swap_activate(),
+> > >     set_inode_flag(inode, FI_PIN_FILE);
+> > >     truncate_pagecache(inode, 0);
+> > >     f2fs_truncate_blocks(inode, 0, true);
+> > 
+> > It will corrupt swap header info while relocating whole swapfile...
+> How about back up the header page, and recover it after expand_inode_data()
+> ?
 
-Wow Nitesh, nice work! That's quite a bit of spelunking you had to do
-there!
+That sounds somewhat hacky, since I don't think fs should take care of swap
+detailed format.
 
-Your results that show the older kernels with ranged affinity issues is
-consistent with what I remember from that time, and the original
-problem.
+My premature suggesttion, how about
+ a) for non-pinned files, f2fs_swap_activate() pins the file and move
+    (reallocate) pre-fallocated data blocks if needed;
+ b) for already pinned files and not section-aligned when
+    f2fs_swap_activate(), just reject it.
 
-I'm glad to see that a) Thomas fixed the kernel to even do better than
-ranged affinity masks, and that b) if you revert my patch, the new
-behavior is better and still maintains the fix from a).
+I think it would pass the test since pinned operation is f2fs-specific only.
+Or am I still missing something?
 
-For me this explains the whole picture and makes me feel comfortable
-with the patch that reverts the initial affinity mask (that also
-introduces a subtle bug with the reserved CPUs that I believe you've
-noted already).
+Thanks,
+Gao Xiang
 
-Thanks for this work!
-Jesse
+> > 
+> > >     expand_inode_data();
+> > > .
+> > > 
