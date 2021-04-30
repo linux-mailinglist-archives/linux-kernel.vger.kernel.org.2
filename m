@@ -2,114 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ADB036F778
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 11:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE1736F77C
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 11:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229838AbhD3JC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 05:02:59 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:42733 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229522AbhD3JC7 (ORCPT
+        id S231253AbhD3JEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 05:04:16 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:59716 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229598AbhD3JEP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 05:02:59 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id BC9C75C0118;
-        Fri, 30 Apr 2021 05:02:10 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Fri, 30 Apr 2021 05:02:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=LBzjAjyqCc1e4sP1bTKmc/cmLpW
-        CamoN7o0fYtct81I=; b=awonTkN68REndsZcnpID7W38cJkTCu7OqNGccxyBOnA
-        N6UZjRAyijOivshXWVXozbucAkXyceL3vhDamUMT43j421/Hk47B/ZM8q/s0dkU6
-        qWDGYv5g9iFd8/Zl8amPHNyQo7aaaky+KLWvGkliUIezxvkOvhvjzdw87u8ALJFl
-        Eh6IA8+FiFk/Mf1UD1+Ll4+yILXBuOyN/V4QYmj3uzWNn4wtCYnGzT+tcmWpGQkm
-        ZOOcLJr6bF4jap33tllpmueikvEqCci9s30rfRdxUca9G2A1mR5Qy1aGQ+SKjLfu
-        ZRc3MLcHUEZ1iFEMiIeYGodv2T9grXGuhUv4HO1GmOg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=LBzjAj
-        yqCc1e4sP1bTKmc/cmLpWCamoN7o0fYtct81I=; b=aUblvTdZi/LTdLuSIA5sFE
-        0qglvFq4opr4CjQ9js4T+DLaq0p6+eG8XV542BBByouZvL4UV4T5pvAEpG26l64W
-        lmff7Lg353JjoWmM4EJlGctklM4zinz4RpwR6vdxvtJlGbnqfLjHJuK4dcDb5InK
-        przkLo5v65Hm85CvSvDGyrG8M8TC5cFUL9PdipiKc+/QCEbzN50AEn8pHss4GS4o
-        QFZLlMBmPWZWe3qFID9dVicbtsFmN/+9wyMWyQcV3FPXS6ESo1mblljpZ1iLZpSY
-        oT5OsR8slqPjz0gdYwGE8PrhGrCsAmGk++kcH9W7M+2mW7Zp8I3MW65UuLeMP4Og
-        ==
-X-ME-Sender: <xms:kceLYB6QxBzqUsGVbR5h5Ajv0b0aucQ8XYjrOrDJ4NjIV5HkHEAZAw>
-    <xme:kceLYO5sygDvFMMXGfCL9EkTqbejwNMYDAeUEwU2UoBsx1hLwA7sutM7Ile1CjEw9
-    tUw4L1FRT6HbY_eMGI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddviedguddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:kceLYIeN1vrMROvytKXHLHAibp_HEC-0IZm4iaDpHk3q_00oN-y_7Q>
-    <xmx:kceLYKL42F89SoGFFuCpq47qv0xDeYNyS0R4LmIGHdoayVkb1Hz2rA>
-    <xmx:kceLYFItX6wfmOzyzYVlPKUIj6YLlpR_hVLgAqzI6-6vgO0qEQd94g>
-    <xmx:kseLYN84DhBh-2iv-NvMDB9AZAVf-xlTGX2BsAorJyuVXgBecldRLQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Fri, 30 Apr 2021 05:02:09 -0400 (EDT)
-Date:   Fri, 30 Apr 2021 11:02:06 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rtc: sun6i: Add NVMEM provider
-Message-ID: <20210430090206.lybmygrt636nysoc@gilmour>
-References: <20210419014549.26900-1-samuel@sholland.org>
+        Fri, 30 Apr 2021 05:04:15 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619773405;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bQLJe2vWc77QZO90MG/WZK52RC28OAEA93KFg1edhos=;
+        b=RKCg+BApqYuVq7uEf/l3PnLOt+vVeI1FI9YvgjIu3V32QCQUNu3+G7gB+vWO4I4u3vzVQM
+        98oDDxwoGtW0q9YcZZ/r08BmGaTdkoanliK0uDB5GXn1fAlrDJ3duh65/K51XMMSceOJIR
+        hir50rUQGaNTkXEoVCpGPgO+X3OD4+nT7t3XF/krEH3OJPL19ezSRkq1ZK1RfLRTdWUjtq
+        lHmq5wiICOgQ2PzK1r497nihQlNZHwCp9WGru7ZZbuWN/x/jP9k1yob0uh9VOCgvH2jXEK
+        TA5tfQaOIcFOOwj2A+assSH/qQkphcApwVV5wSy3NtiMs9dhaVbcoGSKONaB2Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619773405;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bQLJe2vWc77QZO90MG/WZK52RC28OAEA93KFg1edhos=;
+        b=tQCKyw1A0DB2zxwte4lI4q+fVS+chFnBaPqnDZh6nwoaxiWHbZfWeyUyAnHEsA66/whM5F
+        nOKhLIr6vo/vtPDw==
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org
+Subject: Re: [PATCH 4/4] KVM/VMX: Fold handle_interrupt_nmi_irqoff() into its solo caller
+In-Reply-To: <20210426230949.3561-5-jiangshanlai@gmail.com>
+References: <20210426230949.3561-1-jiangshanlai@gmail.com> <20210426230949.3561-5-jiangshanlai@gmail.com>
+Date:   Fri, 30 Apr 2021 11:03:25 +0200
+Message-ID: <87y2d0du02.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="fagotahmttw7paj5"
-Content-Disposition: inline
-In-Reply-To: <20210419014549.26900-1-samuel@sholland.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Lai,
 
---fagotahmttw7paj5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, Apr 27 2021 at 07:09, Lai Jiangshan wrote:
+>  	u32 intr_info = vmx_get_intr_info(&vmx->vcpu);
+> @@ -6427,12 +6417,19 @@ static void handle_exception_nmi_irqoff(struct vcpu_vmx *vmx)
+>  static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu)
+>  {
+>  	u32 intr_info = vmx_get_intr_info(vcpu);
+> +	unsigned int vector;
+> +	gate_desc *desc;
+>  
+>  	if (WARN_ONCE(!is_external_intr(intr_info),
+>  	    "KVM: unexpected VM-Exit interrupt info: 0x%x", intr_info))
+>  		return;
+>  
+> -	handle_interrupt_nmi_irqoff(vcpu, intr_info);
+> +	vector = intr_info & INTR_INFO_VECTOR_MASK;
+> +	desc = (gate_desc *)host_idt_base + vector;
+> +
+> +	kvm_before_interrupt(vcpu);
+> +	vmx_do_interrupt_nmi_irqoff(gate_offset(desc));
+> +	kvm_after_interrupt(vcpu);
 
-Hi,
+So the previous patch does:
 
-On Sun, Apr 18, 2021 at 08:45:49PM -0500, Samuel Holland wrote:
-> The sun6i RTC provides 32 bytes of general-purpose data registers.
-> They can be used to save data in the always-on RTC power domain.
-> The registers are writable via 32-bit MMIO accesses only.
->=20
-> Expose the region as a NVMEM provider so it can be used by userspace and
-> other drivers.
->=20
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
++               kvm_before_interrupt(&vmx->vcpu);
++               vmx_do_interrupt_nmi_irqoff((unsigned long)asm_noist_exc_nmi);
++               kvm_after_interrupt(&vmx->vcpu);
 
-As far as I understood, you want to use those registers to implement
-super-standby? If so, while it makes sense for the kernel to be able to
-be able to write to those registers, I guess it would be a bit unwise to
-allow the userspace to access it?
+What is this idt gate descriptor dance for in this code?
 
-Maxime
+Thanks,
 
---fagotahmttw7paj5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYIvHjgAKCRDj7w1vZxhR
-xTOBAP0Rfdrjnm4BacZf9DU1EbJC54KUDmMAzK50SbcJXtbhHAD/eNcNK0T9vFFg
-I7pP8ZUb2A08JyqHhtYcV4WAI+g8mQw=
-=2kGL
------END PGP SIGNATURE-----
-
---fagotahmttw7paj5--
+        tglx
