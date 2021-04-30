@@ -2,230 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0E437025A
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 22:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9800370260
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 22:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235960AbhD3UqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 16:46:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231325AbhD3UqF (ORCPT
+        id S235984AbhD3UrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 16:47:13 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:52048 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231265AbhD3UrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 16:46:05 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE4B8C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 13:45:15 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id h7so8687094plt.1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 13:45:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XV1S7QX7pqISwKM1jB1GYc13VlD7bLx7ViM4ltZNWvc=;
-        b=kC7w1khTWN2G6MhIIRpBpH5C+waiMNYFwiSwBeCh3wxC25KAB+f8yT9YhWesbnJfs4
-         zMWJhDMZIYbi2lK09czlbTIiFHH1bBA/Za0YMgIVwnYV/NRmKubuM7y9YZIYe+LoIPaN
-         1fSifRORlDvCpL6MQQ9wNYvPLouiXkf7BDlAdnuCXR7/RHqB0D8KFHnppO3+Pvkt1Rav
-         3h7H7ghykzjdaDgp5Bt4WbJX5T320llMrzlGRW0N6paUrM9UX80KsAWbAN3DI4qRv7KI
-         mzh7sgPJGGy3qEtXi9GT2lZNuR3qN6ZhzrPtzGWJZm4pBpI6Axve4JYeZSzNSkogkbJM
-         zbcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XV1S7QX7pqISwKM1jB1GYc13VlD7bLx7ViM4ltZNWvc=;
-        b=XWMKwBD/2zAIVJzX1IPQDrkvMmKGBircjHi/Ao/VXSJN0nQrQPf2eStcLwAKe78erP
-         2UwCkBhtZSgcoYEAicay0gdX3HWAFwG21WnDl5sWBrgaFiRcZaPQm5ypgd1h9ozaXJXS
-         uTa5DJ6eAz0iIZNSzgUxKCdY60+K+WSnmkMoJPSoFRTPQ4XBWPFZv8NCEoe06RHApJsL
-         L4nW0BRYyYxoB3RQjf67CLYIKhuuC7fzFKWq1hNxkcp3SKHAPxF7ep18PYQ0JNnf7Wk2
-         WyoRtu1aKV6h/ePbyUMRGnUDriCq8sku7QFVC01sLpiy6t3kVy4O9bPqE4kAXMb/RkJd
-         LCfA==
-X-Gm-Message-State: AOAM530iT4ygkSwocvBjRf4OZq4KzpbHMKN2m72IvYPUy3x1UoMmOFjC
-        iFc7a/apwD+eSc8QFJbHkVg4GA==
-X-Google-Smtp-Source: ABdhPJwKn4YKXVr0RI440tpiiDhbuArtF+So3buArcfhCZhkihl8gczHEyvSsmApSw3Ba6k57GnaCw==
-X-Received: by 2002:a17:90a:dd45:: with SMTP id u5mr17554026pjv.15.1619815515285;
-        Fri, 30 Apr 2021 13:45:15 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id w124sm2962195pfb.73.2021.04.30.13.45.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 13:45:14 -0700 (PDT)
-Date:   Fri, 30 Apr 2021 20:45:11 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jon Kohler <jon@nutanix.com>
-Cc:     Bijan Mottahedeh <bijan.mottahedeh@nutanix.com>,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        Junaid Shahid <junaids@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kvm: x86: move srcu lock out of kvm_vcpu_check_block
-Message-ID: <YIxsV6VgSDEdngKA@google.com>
-References: <20210428173820.13051-1-jon@nutanix.com>
+        Fri, 30 Apr 2021 16:47:12 -0400
+Received: from mailhost.synopsys.com (badc-mailhost4.synopsys.com [10.192.0.82])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 546874043E;
+        Fri, 30 Apr 2021 20:46:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1619815583; bh=GbMIczPTnnRephqd+l3mI3WYBrJvTxGXKuKlWzS4Wsw=;
+        h=From:To:CC:Subject:Date:From;
+        b=AtqV5aaAXE4Y3WYEqXhblkBXoY/HSuPnE/lqXvWiv5nHoWNPHmcKsezac2qsCZPWR
+         r7DQgIWYi1Ld8TzGUsdddHSqBw/GzDXMK7t8AasLQ1d/OPaYJl/U/vz3QhjD39FL66
+         F5QIMbHSsEF94h4dBjqSpFoRLm3kZ62ym9djjUlKxsdDfkNuA8PHukq5cPSolY2iJr
+         jZqoYTWSGBQZ76c0sXi2CikD/HvKXIAFreAdekp+JAUEegg49OpAD8PCxzc38c1Z9X
+         KINSo3e1oxjc3n5p3gHGmdk6QWwJpv3awpRiOCXqGM+F1FBBNji7+wqOk2Ut/YC7Fj
+         eBg+IWiEtl04g==
+Received: from o365relay-in.synopsys.com (sv2-o365relay1.synopsys.com [10.202.1.137])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mailhost.synopsys.com (Postfix) with ESMTPS id B756BA005E;
+        Fri, 30 Apr 2021 20:46:20 +0000 (UTC)
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2041.outbound.protection.outlook.com [104.47.73.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "mail.protection.outlook.com", Issuer "DigiCert Cloud Services CA-1" (verified OK))
+        by o365relay-in.synopsys.com (Postfix) with ESMTPS id 859D44061D;
+        Fri, 30 Apr 2021 20:46:19 +0000 (UTC)
+Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
+Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=vgupta@synopsys.com
+Authentication-Results: o365relay-in.synopsys.com;
+        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="BrBuSWqN";
+        dkim-atps=neutral
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ddTUClwdYcG9BlEw5cwTPgpvCD0KrUUxl9AjP0nzHtx4tN8s5bV0h4tV0fGlSqyx0SEyWpQuaK7YQRJkz+G1Uvrq4vdGiAMGI+VFy/kc8HFwb68Yz91aUOcOw09szYVh+IUw2oMQ8Ovzuu7q5+J+JoFbuRV/eVXsO8kO2JnR/rCnN9JrvxMe86ywQR4K8w7R7yh0EgA4x3tS4EkAqhBVuLHqfh6/YkmSLFTgBTNGZ78E6F7tLJUhQQIHCz/NSsLIncWgY+1xc7cjWwQv4xPCTT4ITI3HAp4Xet6vXJTG0DnRHiypviJEyaDx+VFyyjM3yShgx/VuoFQHNitwggq2uQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GbMIczPTnnRephqd+l3mI3WYBrJvTxGXKuKlWzS4Wsw=;
+ b=JdMiF3+YNWVZi4dq4uBSrcKUy1bFvW/cdJBYf57VgDEJwASFmEOXCQsGRdnoyYuecNg7Q4ni4RAZoye0vuCcVd6rVYikEvUhI0ZS26ZKAU+ojQgbk5Weqv81iMjl48o/wwJWhhGWK2AtvYHNZOWl6L9sBJlCy/T/4m6JuSbB5D/2KDVNiOw2RbLB/hEVrb8k+l5FYt57s5ruNrtQD7QRDcg41aJSZxsQRHMNQJ30INp/lFNd7fELOkABLYCp6Gmb1hRM10PIdiVoYZqrwMHhMDKHq3fOs58YL9sfCX797baa3orGVr1G1MU/vXcxlG6Kfq2pfKhak9iqqxiFPGQiHg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
+ dkim=pass header.d=synopsys.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GbMIczPTnnRephqd+l3mI3WYBrJvTxGXKuKlWzS4Wsw=;
+ b=BrBuSWqN5//l3+TpqiVjECHuPGuydoVPlDJAA7YLZZjIP8MuzPZZW/uiGUWBGEXk2asQYEDfPAYCEKnihL3T4NyLq1PzSu56L2C8L4S37PV9qzBXqRc/BdH5S/3V4+97+B96KijFTCHEobtmKvanIZ8TYAspWAMPg4jUKPrlNvo=
+Received: from BYAPR12MB3479.namprd12.prod.outlook.com (2603:10b6:a03:dc::26)
+ by BY5PR12MB4098.namprd12.prod.outlook.com (2603:10b6:a03:205::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.22; Fri, 30 Apr
+ 2021 20:46:17 +0000
+Received: from BYAPR12MB3479.namprd12.prod.outlook.com
+ ([fe80::d1a0:ed05:b9cc:e94d]) by BYAPR12MB3479.namprd12.prod.outlook.com
+ ([fe80::d1a0:ed05:b9cc:e94d%7]) with mapi id 15.20.4087.035; Fri, 30 Apr 2021
+ 20:46:16 +0000
+X-SNPS-Relay: synopsys.com
+From:   Vineet Gupta <Vineet.Gupta1@synopsys.com>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jann Horn <jannh@google.com>
+CC:     lkml <linux-kernel@vger.kernel.org>,
+        arcml <linux-snps-arc@lists.infradead.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
+Subject: Heads up: gcc miscompiling initramfs zlib decompression code at -O3
+Thread-Topic: Heads up: gcc miscompiling initramfs zlib decompression code at
+ -O3
+Thread-Index: AQHXPgHd1RlrjZ3rIE6wtN03PsVzsg==
+Date:   Fri, 30 Apr 2021 20:46:16 +0000
+Message-ID: <75d07691-1e4f-741f-9852-38c0b4f520bc@synopsys.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=synopsys.com;
+x-originating-ip: [149.117.75.11]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5f48d204-db90-486e-ca0d-08d90c190062
+x-ms-traffictypediagnostic: BY5PR12MB4098:
+x-microsoft-antispam-prvs: <BY5PR12MB409871071C90523DAD9AB324B65E9@BY5PR12MB4098.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 0jEudJzTWMPdpVg7CrD3KUb9kPpYi7U5wqr00Wb/kj2AInt4QmRZIewWelT+gXvP32ccJ4VYtfeUZtbXSVSEE+tU0onVLJKa/uAikS/nGP4EEG2d9RLexi2sMGSKz4c2n7g6vupJTKugB2TkJd3pbch5a3R7mVzwenrA/JicL+htnHpSYOBhT0ioQMizqwJdrNoYOXZGU62MDX9m94xm4Us/Me/wpq1zJbUOLo20lIEv9gT2NsNcSd27TS3HnDeLU6c6u7m5A4xj4HcFxzZ74kqYcQqARnPtaueRYltRyp2uGvAZo7zmqHilcK4Yk0D9GJ35kDwQSnAShUbP9/ryibc2u36sXyGK/142JpOf2Bm6ZEoFVTD/w1edKxyQl8xKR7tCd1NYREwqxSXmZtU3nD7OERIbqaWPnjHlyqoP+eFf4xQesx2+Bsj8tonjlwBXDbG2cCyHaeXHAnwwGw8mfLnMhfzKBIKnnIlXC3o2MmC8SDUZqkfCovikt2+oDh1Un31Wjf2YMh8AshOrqu6c9X/+JMLg+5+DUI/793FGmNZLAwAYKBmw4estaNMMAQ+uocwszTTSWd+hAA0zDL9/XeNoogDxaNe3OOaB6DkJg+8hSkpM3ZGZG07042Cdw6zx3WkN3ZtEtbOCI3hqNksgPFhuzPKao135W5j2ao8k73aHf0oJ/0C7+CIh8BfwNzKqcbFFqiPLKQ6fHZ99qtr0snwDyxGa05KOlGMr8WeAb9koRs1OikCb/R/o+9HYdKDJ5UjYebtQaGO3zKBOY0JWNg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3479.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(366004)(39850400004)(346002)(396003)(26005)(478600001)(186003)(8936002)(6512007)(54906003)(64756008)(38100700002)(6506007)(110136005)(2616005)(71200400001)(6486002)(966005)(36756003)(66476007)(4326008)(316002)(86362001)(83380400001)(31686004)(8676002)(2906002)(5660300002)(66556008)(122000001)(66946007)(66446008)(76116006)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?UEpqTDVTdnJNa1kwYVUxTUFiZkxQR00xamk2Z0FtdmRMcDdFK2ZaTlorRXR6?=
+ =?utf-8?B?QU11MVg4WFhxN0NzcXAzU1JEMkV5bC8vUXdQNmpyNTdlcmllTm92K1c0a3kr?=
+ =?utf-8?B?akNoM3Vzbk1EUGNaM3lRZHNjejBuamVuekUyNkI2ajZ4STRnY3pVTm9qeDk5?=
+ =?utf-8?B?WEFCYUM1M1p3UFFMOHVuOE5LcEk5L2VRUmxmUkNtTGEzL3Z3R1gxMDRVK2g0?=
+ =?utf-8?B?NFZsNUR0SXdlR0ZUeUJ5Q1o0cHpUc3paaTR3eEE0UjhBYXVLYlZLRjA0ejNP?=
+ =?utf-8?B?MGNPNVVTQkt5WURHN3pXdVBNNUtJZlBhYTN0NHU0NitEWC94QUlKOXJzS0t1?=
+ =?utf-8?B?b21kWHYrdWovZWszVUFlQzZUWXdYYVM3Um5CdEFyZXA0OUYwdFQ4M2RGMGpo?=
+ =?utf-8?B?YzBaeU9pRWkxQ29qWGJoY3d5SnNKRkpaN04vZmREZ0E0TExpYnd3SWd3akxM?=
+ =?utf-8?B?UDNyNkk5SHpDbnB1cW0zcCtqRU5VdmUrbUtSKzA5WTBQOFNkdFU3YVdsR1h6?=
+ =?utf-8?B?MVhSMXJpdmpnYk1qZHAwTkNoTTBIUEh4UHF4TSt1Z1JFL3dYdnczQkhlbnB4?=
+ =?utf-8?B?c1dLM2tFNUlEME93V2NXMVh6ZW4yakVHVFpFc1hLVzlSczhaK0ltaG1DdUdi?=
+ =?utf-8?B?VkYvQzZQUGFRYmNjTjVYdEpGU1l0YWpPRGMvV041RzVoMTdsOG9xNGg1bTZK?=
+ =?utf-8?B?eW9VSUpyVGl3SnUxRmp1ME5vWWlVSUxPZW5BbVhxWko2YSswb0xhOHl2dkR5?=
+ =?utf-8?B?UU95YU9aZmJDRXNKUGxRZWRjRk53d0V3UnVQckxHVGRXQjZhdmRuNVhCY1RT?=
+ =?utf-8?B?QVFoNXZXalJ0bkRWcGpTOGhJd3N0NGZ6eUtqQVd2WlRlNG5wdkNpNTBid05q?=
+ =?utf-8?B?UkNqZFZSajZJRExOakdRQm5zQTdsWG9LRkdGVmJjMWFrRkhBY2toS1NRQjh0?=
+ =?utf-8?B?VlVldlRiZ0JiMkZxaGNGVE42MVBVYzZtTFF4eWZGR2l6QStUQk1xZzJSVktr?=
+ =?utf-8?B?aURkZUN1MlFwTlJieUNXQlJNandvcG41U2dFcDEvSmQzZkRaK2kyWDRWbGY4?=
+ =?utf-8?B?SFpUQjJVQ3ZuVklxNkF6b3RJaUlZMHR6dnQzSW1iQmR6RFRoSWU3U0htV2dn?=
+ =?utf-8?B?MkVrT1dGVmhpbm13b05vZzNTLzRxZ1pDdU40NVJiR2JIcHc0QVVxYzd3TWhl?=
+ =?utf-8?B?WDNoVTZiOHlUUE1xaldNYkljamIwdTFKRzd6VHpoSDRKdDdzanBQQ3RydFYw?=
+ =?utf-8?B?Q2w5ZmNtblF3bFVYRExRMWVjTk5NZk5pM2FXUFA1L291RHpxNC82YlQwYVlq?=
+ =?utf-8?B?S2NBWGJJVnFaYUFNOGE4d3kxamc5OVhqdnFrbmRTdndiTTdOeGxwbVBlZ0dh?=
+ =?utf-8?B?VWhmS25CdzhIZ0xSSXVNUUk0c3BIN1g2Y3pYZ3VlTENTMUpHR0lkVUtSWkor?=
+ =?utf-8?B?V0RvWGFseEZSUmd3NHl5VkNjV012NkNKajBCU040d0J6RTdPMllBZ0VNMjJo?=
+ =?utf-8?B?dUZZUnMyY2tCTzlwWjBEV3d4bjNiWjVIMlB2QWhtMy9jRkpteXk4Y1J5R3E5?=
+ =?utf-8?B?SXdBRW1wSWtFejNSSEErS2x2Um9wSDdBR096a3hna29SU1ZjQlBGL2VyWXpi?=
+ =?utf-8?B?VWtnOHZnUmtoWDJoV3Z0c3Bka0tQdWlXRXdqQzRkYVNvNmlmRGpWMzkwMWI2?=
+ =?utf-8?B?UjJIQlNDQ0t0bVh0WVpUZ3kwcHhnT2tFWGFFT1h0RXdrNzRPcXh0TGcxbzV0?=
+ =?utf-8?Q?4MyTDsA0H4V4jdcLFA=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <74ED9ADC53D2A8419A08C9C5B00033D8@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210428173820.13051-1-jon@nutanix.com>
+X-OriginatorOrg: synopsys.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3479.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5f48d204-db90-486e-ca0d-08d90c190062
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Apr 2021 20:46:16.8816
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 96BnqSiMyOuvMw3OzEdNXKDpuNu3rxyse/KTO8pLOnYGrXzRfpIrkJwbCDU/smVi7crhbn11Plv8Z2bMVliRQA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4098
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021, Jon Kohler wrote:
-> To improve performance, this moves kvm->srcu lock logic from
-> kvm_vcpu_check_block to kvm_vcpu_running and wraps directly around
-> check_events. Also adds a hint for callers to tell
-> kvm_vcpu_running whether or not to acquire srcu, which is useful in
-> situations where the lock may already be held. With this in place, we
-> see roughly 5% improvement in an internal benchmark [3] and no more
-> impact from this lock on non-nested workloads.
-
-...
-
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index efc7a82ab140..354f690cc982 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -9273,10 +9273,24 @@ static inline int vcpu_block(struct kvm *kvm, struct kvm_vcpu *vcpu)
->  	return 1;
->  }
-> 
-> -static inline bool kvm_vcpu_running(struct kvm_vcpu *vcpu)
-> +static inline bool kvm_vcpu_running(struct kvm_vcpu *vcpu, bool acquire_srcu)
->  {
-> -	if (is_guest_mode(vcpu))
-> -		kvm_x86_ops.nested_ops->check_events(vcpu);
-> +	if (is_guest_mode(vcpu)) {
-> +		if (acquire_srcu) {
-> +			/*
-> +			 * We need to lock because check_events could call
-> +			 * nested_vmx_vmexit() which might need to resolve a
-> +			 * valid memslot. We will have this lock only when
-> +			 * called from vcpu_run but not when called from
-> +			 * kvm_vcpu_check_block > kvm_arch_vcpu_runnable.
-> +			 */
-> +			int idx = srcu_read_lock(&vcpu->kvm->srcu);
-> +			kvm_x86_ops.nested_ops->check_events(vcpu);
-> +			srcu_read_unlock(&vcpu->kvm->srcu, idx);
-> +		} else {
-> +			kvm_x86_ops.nested_ops->check_events(vcpu);
-> +		}
-> +	}
-
-Obviously not your fault, but I absolutely detest calling check_events() from
-kvm_vcpu_running.  I would much prefer to make baby steps toward cleaning up the
-existing mess instead of piling more weirdness on top.
-
-Ideally, APICv support would be fixed to not require a deep probe into nested
-events just to see if a vCPU can run.  But, that's probably more than we want to
-bite off at this time.
-
-What if we add another nested_ops API to check if the vCPU has an event, but not
-actually process the event?  I think that would allow eliminating the SRCU lock,
-and would get rid of the most egregious behavior of triggering a nested VM-Exit
-in a seemingly innocuous helper.
-
-If this works, we could even explore moving the call to nested_ops->has_events()
-out of kvm_vcpu_running() and into kvm_vcpu_has_events(); I can't tell if the
-side effects in vcpu_block() would get messed up with that change :-/
-
-Incomplete patch...
-
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 00339d624c92..15f514891326 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -3771,15 +3771,17 @@ static bool nested_vmx_preemption_timer_pending(struct kvm_vcpu *vcpu)
-               to_vmx(vcpu)->nested.preemption_timer_expired;
- }
-
--static int vmx_check_nested_events(struct kvm_vcpu *vcpu)
-+static int __vmx_check_nested_events(struct kvm_vcpu *vcpu, bool only_check)
- {
-        struct vcpu_vmx *vmx = to_vmx(vcpu);
-        unsigned long exit_qual;
--       bool block_nested_events =
--           vmx->nested.nested_run_pending || kvm_event_needs_reinjection(vcpu);
-        bool mtf_pending = vmx->nested.mtf_pending;
-        struct kvm_lapic *apic = vcpu->arch.apic;
-
-+       bool block_nested_events = only_check ||
-+                                  vmx->nested.nested_run_pending ||
-+                                  kvm_event_needs_reinjection(vcpu);
-+
-        /*
-         * Clear the MTF state. If a higher priority VM-exit is delivered first,
-         * this state is discarded.
-@@ -3837,7 +3839,7 @@ static int vmx_check_nested_events(struct kvm_vcpu *vcpu)
-        }
-
-        if (vcpu->arch.exception.pending) {
--               if (vmx->nested.nested_run_pending)
-+               if (vmx->nested.nested_run_pending || only_check)
-                        return -EBUSY;
-                if (!nested_vmx_check_exception(vcpu, &exit_qual))
-                        goto no_vmexit;
-@@ -3886,10 +3888,23 @@ static int vmx_check_nested_events(struct kvm_vcpu *vcpu)
-        }
-
- no_vmexit:
--       vmx_complete_nested_posted_interrupt(vcpu);
-+       if (!check_only)
-+               vmx_complete_nested_posted_interrupt(vcpu);
-+       else if (vmx->nested.pi_desc && vmx->nested.pi_pending)
-+               return -EBUSY;
-        return 0;
- }
-
-+static bool vmx_has_nested_event(struct kvm_vcpu *vcpu)
-+{
-+       return !!__vmx_check_nested_events(vcpu, true);
-+}
-+
-+static int vmx_check_nested_events(struct kvm_vcpu *vcpu)
-+{
-+       return __vmx_check_nested_events(vcpu, false);
-+}
-+
- static u32 vmx_get_preemption_timer_value(struct kvm_vcpu *vcpu)
- {
-        ktime_t remaining =
-@@ -6627,6 +6642,7 @@ __init int nested_vmx_hardware_setup(int (*exit_handlers[])(struct kvm_vcpu *))
- }
-
- struct kvm_x86_nested_ops vmx_nested_ops = {
-+       .has_event = vmx_has_nested_event,
-        .check_events = vmx_check_nested_events,
-        .hv_timer_pending = nested_vmx_preemption_timer_pending,
-        .triple_fault = nested_vmx_triple_fault,
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index a829f1ab60c3..5df01012cb1f 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9310,6 +9310,10 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
-                        update_cr8_intercept(vcpu);
-                        kvm_lapic_sync_to_vapic(vcpu);
-                }
-+       } else if (is_guest_mode(vcpu)) {
-+               r = kvm_check_nested_events(vcpu);
-+               if (r < 0)
-+                       req_immediate_exit = true;
-        }
-
-        r = kvm_mmu_reload(vcpu);
-@@ -9516,8 +9520,10 @@ static inline int vcpu_block(struct kvm *kvm, struct kvm_vcpu *vcpu)
-
- static inline bool kvm_vcpu_running(struct kvm_vcpu *vcpu)
- {
--       if (is_guest_mode(vcpu))
--               kvm_check_nested_events(vcpu);
-+       if (is_guest_mode(vcpu) &&
-+           (kvm_test_request(KVM_REQ_TRIPLE_FAULT, vcpu) ||
-+            kvm_x86_ops.nested_ops->has_event(vcpu)))
-+               return true;
-
-        return (vcpu->arch.mp_state == KVM_MP_STATE_RUNNABLE &&
-                !vcpu->arch.apf.halted);
+SGksDQoNCkkndmUgaGl0IGEgbWFpbmxpbmUgZ2NjIDEwLjIgKGFsc28gZ2NjIDkuMykgYnVnIHdo
+aWNoIHRyaWdnZXJzIGF0IC1PMyANCmNhdXNpbmcgd3JvbmcgY29kZWdlbi4NCg0KICBDb25maWcg
+bmVlZHMgdG8gaGF2ZSBpbml0cmFtZnMgKyBnemlwIGNvbXByZXNzZWQuDQoNCglDT05GSUdfSEFW
+RV9LRVJORUxfR1pJUD15DQoJQ09ORklHX0tFUk5FTF9HWklQPXkNCglDT05GSUdfREVDT01QUkVT
+U19HWklQPXkNCglDT05GSUdfSU5JVFJBTUZTX0NPTVBSRVNTSU9OX0daSVA9eQ0KDQogIGxpYi96
+bGliX2luZmxhdGUvaW5mZmFzdC5jDQoNCiAgICAgaWYgKGRpc3QgPiAyKSB7DQoJdW5zaWduZWQg
+c2hvcnQgKnNmcm9tOw0KDQoJc2Zyb20gPSAodW5zaWduZWQgc2hvcnQgKikoZnJvbSk7DQoJbG9v
+cHMgPSBsZW4gPj4gMTsNCglkbw0KCSAgICAqc291dCsrID0gKnNmcm9tKys7DQogICAgICAgICAg
+ICAgIF5eXl5eXiAgICBeXl5eXl5eXg0KCXdoaWxlICgtLWxvb3BzKTsNCglvdXQgPSAodW5zaWdu
+ZWQgY2hhciAqKXNvdXQ7DQoJZnJvbSA9ICh1bnNpZ25lZCBjaGFyICopc2Zyb207DQogICAgIH0N
+CiAgICAgLi4uDQoNClRoZSBnaXN0IG9mIGlzc3VlIGlzIHRoYXQgZGVzcGl0ZSB1c2Ugb2YgdW5z
+aWduZWQgc2hvcnQgcG9pbnRlcnMsIGdjYyBpcyANCmdlbmVyYXRpbmcgd2lkZXIgbG9hZC9zdG9y
+ZXMgKDgtYnl0ZSBMREQvU1REIG9uIGFyY3YyIGFuZCAxNi1ieXRlIG9uIA0KYWFyY2g2NCkgY2F1
+c2luZyBleHRyYW5lb3VzIGJ5dGVzIHRvIGNvcGllZCBpbnRvIGluZmxhdGVkIGd6aXAgYmluYXJp
+ZXMNCm1hbmlmZXN0aW5nIGxhdGVyIGFzIGNvcnJ1cHRlZCBmcmFnbWVudHMgaW4gdGhlIGJpbmFy
+aWVzLg0KDQpJJ3ZlIG9wZW5lZCBhIGdjYyBidWcgYXQ6DQogICBodHRwczovL2djYy5nbnUub3Jn
+L2J1Z3ppbGxhL3Nob3dfYnVnLmNnaT9pZD0xMDAzNjMNCg0KVGhlIHdvcmthcm91bmQgaXMgdG8g
+YnVpbGQgbGliL3psaWJfaW5mbGF0ZS9pbmZmYXN0LmMgd2l0aCAtTzIsIGFsdGhvdWdoIA0KSSBy
+ZWNrb24gbm90IG1hbnkgYXJjaGVzIGJ1aWxkIHdpdGggLU8zIGFzIGRlZmF1bHQuIEknbGwgYmUg
+cHJvcG9zaW5nIGFuIA0KQVJDIG9ubHkgcGF0Y2ggdG8gYnVpbGQgdGhpcyBmaWxlIHdpdGggLU8y
+LCB1bmxlc3MgcGVvcGxlIHRoaW5rIGl0IG5lZWRzIA0KdG8gYmUgZ2VuZXJhbGl6ZWQuDQoNCkFs
+c28gcHJvYmxlbSBvcmlnaW5hbGx5IHNlZW4gb24gNS42IGtlcm5lbCwgYWx0aG91Z2ggSSBjb25m
+aXJtIGl0IHNob3dzIA0Kb24gbGF0ZXN0IG1haW5saW5lIGFzIHdlbGwuDQoNClVucmF2ZWxpbmcg
+dGhpcyBwcmV0dHkgZnVuLCBnb3J5IGRldGFpbHMgZm9yIHRob3NlIGludGVyZXN0ZWQgYXQ6DQoN
+CiANCmh0dHBzOi8vZ2l0aHViLmNvbS9mb3NzLWZvci1zeW5vcHN5cy1kd2MtYXJjLXByb2Nlc3Nv
+cnMvdG9vbGNoYWluL2lzc3Vlcy8zNzINCg0KDQpUaHgsDQotVmluZWV0DQo=
