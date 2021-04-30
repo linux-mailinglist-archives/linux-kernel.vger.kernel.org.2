@@ -2,190 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F6E3703D5
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 00:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A9663703DA
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 00:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232664AbhD3W5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 18:57:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231265AbhD3W45 (ORCPT
+        id S232724AbhD3W5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 18:57:50 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:57272 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231265AbhD3W5s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 18:56:57 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BCAC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 15:56:08 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id u21so107539122ejo.13
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 15:56:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=43RdY4J01ubRDzd5g6EG2t/oZB879vC8jt3238dCcs0=;
-        b=Mx50A2iy1FlEe+zLekdead91PpW+PDcjsTYGU+y4zfGgdao6k2ptEai2z7Tk1J6jQX
-         Dx8WpHP3QZBLbrDRJkvK3kXt3rs15dTcraPO89OUhL65ZhlypvXPO55stCUO1vvA/QqV
-         JAbOAtUUA31rAQ/NCdSAkoD54/t8sqJ797KFQCBTUH7q1iOm5arzsZ57jCGkuZ9Yp6MM
-         AtlOneM+a82iiRYQo2k18iBO4mMI2hK4t1/emQCyQ1ql06o+e92L1todxrcphvaq3B4w
-         K9/xKTQjLPocQyDTMbEhB6dvzVDj1NLSMiyXu+fFaw4s9zSQt1GC+aH4a2E6felkegis
-         xfHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=43RdY4J01ubRDzd5g6EG2t/oZB879vC8jt3238dCcs0=;
-        b=FdNmzVfozsqCnU5lFNkpTV+X4XBnakW/5ZJN8U57OPRXzX4Y7K9krrbXST8ayCWdhd
-         p2W3zjIgJT6jcS7ACtauBvfbv8XVASOZpxTNQoaM16DFZ29IWmJEk1g67u2T1dk64UoF
-         l5rF7+IZWsDh/tK/GFUT9PkmTYqp99xcSmkLc1Y7gfMDanwKoxSh1CLoN7w+P1/F1wiO
-         4ED6lyS2+LAq/gpGLbv5iuxHT5ErS/UMpUqXYUACN/nQfqPgRFr4Pa46xZ093Uah1Qpu
-         7YU4dcQZXdpZEnBWBW23/XrLy1GpsoyCoyHt6oMoUGN+nfyeeM1G+MTsxz7v/cbK0Bce
-         TFZw==
-X-Gm-Message-State: AOAM5308fTmMBhmWfOS8l18f833in+8fsLWZihJVPQDToMgQsXOng657
-        GRHvyNm1UWQzU2KHISfmCj+Vm+MZmYO7j9D8mS1I8xztkNE=
-X-Google-Smtp-Source: ABdhPJy/S3reHe9A4CyRyZ7t0e43+EGuChbikZ8E+imKfTVItGYuDJlK4v+35CpdXBEJdR08KpAq7e2Y8Q+hFHWHe8g=
-X-Received: by 2002:a17:906:c099:: with SMTP id f25mr6644244ejz.499.1619823367028;
- Fri, 30 Apr 2021 15:56:07 -0700 (PDT)
+        Fri, 30 Apr 2021 18:57:48 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lcc4A-004BNH-0M; Fri, 30 Apr 2021 16:56:58 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lcc49-007EZu-4g; Fri, 30 Apr 2021 16:56:57 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Marco Elver <elver@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+References: <YIpkvGrBFGlB5vNj@elver.google.com>
+        <m11rat9f85.fsf@fess.ebiederm.org>
+        <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
+        <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
+        <m1zgxfs7zq.fsf_-_@fess.ebiederm.org>
+Date:   Fri, 30 Apr 2021 17:56:53 -0500
+In-Reply-To: <m1zgxfs7zq.fsf_-_@fess.ebiederm.org> (Eric W. Biederman's
+        message of "Fri, 30 Apr 2021 17:49:45 -0500")
+Message-ID: <m18s4zs7nu.fsf_-_@fess.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210430210744.216095-1-shy828301@gmail.com> <F8189ACA-DE85-45F0-8C9B-A6F9D2099777@nvidia.com>
- <CAHbLzkqC8bdWtCMigmef4n0KwxKo4UuWoP1xphJiQgYChBB62Q@mail.gmail.com> <07E637C5-3FCD-4D78-936F-186FD051D6A9@nvidia.com>
-In-Reply-To: <07E637C5-3FCD-4D78-936F-186FD051D6A9@nvidia.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Fri, 30 Apr 2021 15:55:54 -0700
-Message-ID: <CAHbLzkqAM-2Dg-JSy8Yqq99ch39BeSEnxPkmRg2BrhTF1M1N2A@mail.gmail.com>
-Subject: Re: [PATCH] mm: thp: check total_mapcount instead of page_mapcount
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-XM-SPF: eid=1lcc49-007EZu-4g;;;mid=<m18s4zs7nu.fsf_-_@fess.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+BMZLJbzu3OHJko4MsxvJEsyXiW561s2M=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa04.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TooManySym_01,XMNoVowels autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4900]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa04 1397; Body=1 Fuz1=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa04 1397; Body=1 Fuz1=1 
+X-Spam-Combo: *;Marco Elver <elver@google.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 309 ms - load_scoreonly_sql: 0.09 (0.0%),
+        signal_user_changed: 10 (3.2%), b_tie_ro: 9 (2.9%), parse: 0.74 (0.2%),
+         extract_message_metadata: 9 (3.0%), get_uri_detail_list: 0.95 (0.3%),
+        tests_pri_-1000: 11 (3.6%), tests_pri_-950: 6 (1.8%), tests_pri_-900:
+        1.54 (0.5%), tests_pri_-90: 74 (23.9%), check_bayes: 72 (23.4%),
+        b_tokenize: 10 (3.1%), b_tok_get_all: 7 (2.2%), b_comp_prob: 2.1
+        (0.7%), b_tok_touch_all: 50 (16.2%), b_finish: 1.20 (0.4%),
+        tests_pri_0: 179 (57.7%), check_dkim_signature: 0.62 (0.2%),
+        check_dkim_adsp: 2.9 (0.9%), poll_dns_idle: 0.79 (0.3%), tests_pri_10:
+        1.89 (0.6%), tests_pri_500: 14 (4.6%), rewrite_mail: 0.00 (0.0%)
+Subject: [PATCH 4/3] signal: Remove __ARCH_SI_TRAPNO
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 3:30 PM Zi Yan <ziy@nvidia.com> wrote:
->
-> On 30 Apr 2021, at 17:56, Yang Shi wrote:
->
-> > On Fri, Apr 30, 2021 at 2:30 PM Zi Yan <ziy@nvidia.com> wrote:
-> >>
-> >> On 30 Apr 2021, at 17:07, Yang Shi wrote:
-> >>
-> >>> When debugging the bug reported by Wang Yugui [1], try_to_unmap() may
-> >>> return false positive for PTE-mapped THP since page_mapcount() is use=
-d
-> >>> to check if the THP is unmapped, but it just checks compound mapount =
-and
-> >>> head page's mapcount.  If the THP is PTE-mapped and head page is not
-> >>> mapped, it may return false positive.
-> >>>
-> >>> Use total_mapcount() instead of page_mapcount() and do so for the
-> >>> VM_BUG_ON_PAGE in split_huge_page_to_list as well.
-> >>>
-> >>> [1] https://lore.kernel.org/linux-mm/20210412180659.B9E3.409509F4@e16=
--tech.com/
-> >>>
-> >>> Signed-off-by: Yang Shi <shy828301@gmail.com>
-> >>> ---
-> >>>  mm/huge_memory.c | 2 +-
-> >>>  mm/rmap.c        | 2 +-
-> >>>  2 files changed, 2 insertions(+), 2 deletions(-)
-> >>>
-> >>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> >>> index 63ed6b25deaa..2122c3e853b9 100644
-> >>> --- a/mm/huge_memory.c
-> >>> +++ b/mm/huge_memory.c
-> >>> @@ -2718,7 +2718,7 @@ int split_huge_page_to_list(struct page *page, =
-struct list_head *list)
-> >>>       }
-> >>>
-> >>>       unmap_page(head);
-> >>> -     VM_BUG_ON_PAGE(compound_mapcount(head), head);
-> >>> +     VM_BUG_ON_PAGE(total_mapcount(head), head);
-> >>
-> >> I am not sure about this change. The code below also checks total_mapc=
-ount(head)
-> >> and returns EBUSY if the count is non-zero. This change makes the code=
- dead.
-> >
-> > It is actually dead if CONFIG_DEBUG_VM is enabled and total_mapcount
-> > is not 0 regardless of this change due to the below code, right?
-> >
-> > if (IS_ENABLED(CONFIG_DEBUG_VM) && mapcount) {
-> >                         pr_alert("total_mapcount: %u, page_count(): %u\=
-n",
-> >                                         mapcount, count);
-> >                         if (PageTail(page))
-> >                                 dump_page(head, NULL);
-> >                         dump_page(page, "total_mapcount(head) > 0");
-> >                         BUG();
-> >                 }
->
-> Right. But with this change, mapcount will never be non-zero. The code ab=
-ove
-> will be useless and can be removed.
 
-Yes, you are correct.
+Now that this define is no longer used remove it from the kernel.
 
->
-> >> On the other hand, the change will force all mappings to the page have=
- to be
-> >> successfully unmapped all the time. I am not sure if we want to do tha=
-t.
-> >> Maybe it is better to just check total_mapcount() and fail the split.
-> >> The same situation happens with the code change below.
-> >
-> > IIUC, the code did force all mappings to the page to be unmapped in
-> > order to split it.
-> >>
-> >>>
-> >>>       /* block interrupt reentry in xa_lock and spinlock */
-> >>>       local_irq_disable();
-> >>> diff --git a/mm/rmap.c b/mm/rmap.c
-> >>> index 693a610e181d..2e547378ab5f 100644
-> >>> --- a/mm/rmap.c
-> >>> +++ b/mm/rmap.c
-> >>> @@ -1777,7 +1777,7 @@ bool try_to_unmap(struct page *page, enum ttu_f=
-lags flags)
-> >>>       else
-> >>>               rmap_walk(page, &rwc);
-> >>>
-> >>> -     return !page_mapcount(page) ? true : false;
-> >>> +     return !total_mapcount(page) ? true : false;
-> >>>  }
-> >>
-> >> In unmap_page(), VM_BUG_ON_PAGE(!unmap_success, page) will force all m=
-appings
-> >> to the page have to be all unmapped, which might not be the case we wa=
-nt.
-> >
-> > AFAICT, I don't see such a case from all the callers of
-> > try_to_unmap(). Imay miss something, but I do have a hard time
-> > thinking of a usecase which can proceed safely with "not fully
-> > unmapped" page.
->
-> This code change is correct, but after the change unmap_page() will fire =
-VM_BUG_ON
-> when not all mappings are unmapped. Along with the change above, we will =
-have
-> two identical VM_BUG_ONs happen one after another. We might want to remov=
-e one
-> of them.
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ arch/alpha/include/uapi/asm/siginfo.h | 2 --
+ arch/mips/include/uapi/asm/siginfo.h  | 2 --
+ arch/sparc/include/uapi/asm/siginfo.h | 3 ---
+ 3 files changed, 7 deletions(-)
 
-Yes. I'd prefer keep the one after unmap_page() since it seems more
-obvious. Any objection?
+diff --git a/arch/alpha/include/uapi/asm/siginfo.h b/arch/alpha/include/uapi/asm/siginfo.h
+index 6e1a2af2f962..e08eae88182b 100644
+--- a/arch/alpha/include/uapi/asm/siginfo.h
++++ b/arch/alpha/include/uapi/asm/siginfo.h
+@@ -2,8 +2,6 @@
+ #ifndef _ALPHA_SIGINFO_H
+ #define _ALPHA_SIGINFO_H
+ 
+-#define __ARCH_SI_TRAPNO
+-
+ #include <asm-generic/siginfo.h>
+ 
+ #endif
+diff --git a/arch/mips/include/uapi/asm/siginfo.h b/arch/mips/include/uapi/asm/siginfo.h
+index c34c7eef0a1c..8cb8bd061a68 100644
+--- a/arch/mips/include/uapi/asm/siginfo.h
++++ b/arch/mips/include/uapi/asm/siginfo.h
+@@ -10,9 +10,7 @@
+ #ifndef _UAPI_ASM_SIGINFO_H
+ #define _UAPI_ASM_SIGINFO_H
+ 
+-
+ #define __ARCH_SIGEV_PREAMBLE_SIZE (sizeof(long) + 2*sizeof(int))
+-#undef __ARCH_SI_TRAPNO /* exception code needs to fill this ...  */
+ 
+ #define __ARCH_HAS_SWAPPED_SIGINFO
+ 
+diff --git a/arch/sparc/include/uapi/asm/siginfo.h b/arch/sparc/include/uapi/asm/siginfo.h
+index 68bdde4c2a2e..0e7c27522aed 100644
+--- a/arch/sparc/include/uapi/asm/siginfo.h
++++ b/arch/sparc/include/uapi/asm/siginfo.h
+@@ -8,9 +8,6 @@
+ 
+ #endif /* defined(__sparc__) && defined(__arch64__) */
+ 
+-
+-#define __ARCH_SI_TRAPNO
+-
+ #include <asm-generic/siginfo.h>
+ 
+ 
+-- 
+2.30.1
 
->
-> Also, this changes the semantics of try_to_unmap. The comment for try_to_=
-unmap
-> might need to be updated.
-
-What comment do you refer to?
-
->
->
-> =E2=80=94
-> Best Regards,
-> Yan Zi
