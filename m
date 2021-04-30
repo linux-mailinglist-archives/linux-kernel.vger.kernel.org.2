@@ -2,172 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D96DF36F631
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 09:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 831D036F636
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 09:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230426AbhD3HNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 03:13:07 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:59236 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbhD3HNE (ORCPT
+        id S230055AbhD3HPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 03:15:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38145 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229744AbhD3HPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 03:13:04 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1619766735;
+        Fri, 30 Apr 2021 03:15:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619766869;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=IrXy/HXeHVQq2gwOsAyIXri8trNqU3yD0eyvkZ6A8uU=;
-        b=v/YWcvj/xCNHpp8TslwR24tvt5Nmv0KHceo8RHmEEnYanaMPksweZziTT3kTukYAtX8/vC
-        MEpxOwtzeLfa8JuufZuPeMRKeACpDiNKL8n7YDxfvYLbfEj4tUS5etFfN4KRsdthp8dOgS
-        pH0LK40UVcj1J5sH31a/792V+JNxHRw3QzXRG0/TwwWkyFBDdKcqBmx/8hM8vpHW+WPCrX
-        LxNhp/cp+9bVapgURxBQwFjvDOVDW1/evuhw0gT4KLSGZ/xWlU76K849tmUSB2fLHRgsYJ
-        RB5O6kPDKs8zFCAubu/2ZLgNVYhtCDuLz0na4Q9wX8dTBHFR3QNsTd59YiBFkA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1619766735;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IrXy/HXeHVQq2gwOsAyIXri8trNqU3yD0eyvkZ6A8uU=;
-        b=qM6YkwXFsZLIO7PyaT81HfSNgHV2NR4wkyne7HDp+LXMM5IsVX7EFoJ0Dy+6ophu2l+4Z9
-        b3Omaf2/MQk2spBg==
-To:     Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Alex Belits <abelits@marvell.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        John Stultz <john.stultz@linaro.org>
-Subject: [patch V2 8/8] hrtimer: Avoid more SMP function calls in clock_was_set()
-In-Reply-To: <877dkno5w0.ffs@nanos.tec.linutronix.de>
-References: <20210427082537.611978720@linutronix.de> <20210427083724.840364566@linutronix.de> <20210427151125.GA171315@fuller.cnet> <877dkno5w0.ffs@nanos.tec.linutronix.de>
-Date:   Fri, 30 Apr 2021 09:12:15 +0200
-Message-ID: <87a6pgfdps.ffs@nanos.tec.linutronix.de>
+        bh=88zcHBIvkFYTLwFj8R82kvHFKJmjmnE4dPY/zw0a/o0=;
+        b=ZfntUJi3eOl/hZGp0aJhKmJk8j81A1TDHhmoH8eQ3aaq8ZdJrCP79lwA+5hWvUx6JAt8H2
+        NBxUS8ueBHS1DJ92DZAUBxhyCkANCGOkXQAl2F+s8zysnJQZLycvHWF8oZ0Fj9wn89GP++
+        ltbbN76mrM1IQ/FN8AY7QzaTmpld6bM=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-301-DwWAaNo0N5GNDw-zcdxi9A-1; Fri, 30 Apr 2021 03:14:27 -0400
+X-MC-Unique: DwWAaNo0N5GNDw-zcdxi9A-1
+Received: by mail-ej1-f69.google.com with SMTP id bx15-20020a170906a1cfb029037415131f28so14693267ejb.18
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 00:14:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=88zcHBIvkFYTLwFj8R82kvHFKJmjmnE4dPY/zw0a/o0=;
+        b=lWyfEjGTmRgg/EClZiDXDMgqKlh/cAw7PzcTgF/TQXnAE/hZoEkWTnFmX+GlJrCn7O
+         fE9SQ6V8WGGNtUfKZJUPj/82zdo+WE0kVzKMpAXrxXry8c5TIaB+bnLSMFUZCxbtjaED
+         g/zI/a0iRv4hyTcHR80aDBEH+pj7qK32d+dj0O608TP6WwKlRLLAnQvB/H0ymvBY3csn
+         0F2ro6lIJn1JsR2babSVaNdAZxaItojfWor1L3ciD+l6qnv8ErdX4fe/JLRHxa/qq8N3
+         d4CDXU9sF1xFx7Y+bu7FRfcQI7KNYuJcPtw7EjWV7kidLQg8vsuVxjzDFDA+eJEu6QJX
+         Jwvg==
+X-Gm-Message-State: AOAM531DwXQNAeYJ70cPV2hGRL8L9xpRxl/YTmt29g8t2tN1RfPCF7Di
+        gAmb4NLM+skOPPGW316OPSnSi8umy1KTYDpTRMuscZlnau0quvtWMlaSKsEMQr8So+aJgpNEShy
+        5TOfSHl2DTNfb8BEXvCpthQKv
+X-Received: by 2002:a50:fe03:: with SMTP id f3mr3981334edt.92.1619766865757;
+        Fri, 30 Apr 2021 00:14:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxkX5+0d05v5IY9ScipRTZGdRgvaqONdXqS9ZQ2Ai/Zcc7UxMAXTt3J9TbGGUsBNxv8PqJXNw==
+X-Received: by 2002:a50:fe03:: with SMTP id f3mr3981317edt.92.1619766865577;
+        Fri, 30 Apr 2021 00:14:25 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id d18sm1402990eja.71.2021.04.30.00.14.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Apr 2021 00:14:24 -0700 (PDT)
+Subject: Re: [PATCH 0/4] x86: Don't invoke asm_exc_nmi() on the kernel stack
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+References: <20210426230949.3561-1-jiangshanlai@gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <228d8b10-84cb-4dd2-8810-3c94bc3ae07b@redhat.com>
+Date:   Fri, 30 Apr 2021 09:14:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210426230949.3561-1-jiangshanlai@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By unconditionally updating the offsets there are more indicators
-whether the SMP function calls on clock_was_set() can be avoided:
+On 27/04/21 01:09, Lai Jiangshan wrote:
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
+> 
+> In VMX, the NMI handler needs to be invoked after NMI VM-Exit.
+> 
+> Before the commit 1a5488ef0dcf6 ("KVM: VMX: Invoke NMI handler via
+> indirect call instead of INTn"), the work is done by INTn ("int $2").
+> 
+> But INTn microcode is relatively expensive, so the commit reworked
+> NMI VM-Exit handling to invoke the kernel handler by function call.
+> And INTn doesn't set the NMI blocked flag required by the linux kernel
+> NMI entry.  So moving away from INTn are very reasonable.
+> 
+> Yet some details were missed.  After the said commit applied, the NMI
+> entry pointer is fetched from the IDT table and called from the kernel
+> stack.  But the NMI entry pointer installed on the IDT table is
+> asm_exc_nmi() which expects to be invoked on the IST stack by the ISA.
+> And it relies on the "NMI executing" variable on the IST stack to work
+> correctly.  When it is unexpectedly called from the kernel stack, the
+> RSP-located "NMI executing" variable is also on the kernel stack and
+> is "uninitialized" and can cause the NMI entry to run in the wrong way.
+> 
+> During fixing the problem for KVM, I found that there might be the same
+> problem for early booting stage where the IST is not set up. asm_exc_nmi()
+> is not allowed to be used in this stage for the same reason about
+> the RSP-located "NMI executing" variable.
+> 
+> For both cases, we should use asm_noist_exc_nmi() which is introduced
+> in the patch 1 via renaming from an existing asm_xenpv_exc_nmi() and
+> which is safe on the kernel stack.
+> 
+> https://lore.kernel.org/lkml/20200915191505.10355-3-sean.j.christopherson@intel.com/
 
-  - When the offset update already happened on the remote CPU then the
-    remote update attempt will yield the same seqeuence number and no
-    IPI is required.
+For the KVM part,
 
-  - When the remote CPU is currently handling hrtimer_interrupt(). In
-    that case the remote CPU will reevaluate the timer bases before
-    reprogramming anyway, so nothing to do.
+Acked-by: Paolo Bonzini <pbonzini@redhat.com>
 
-  - After updating it can be checked whether the first expiring timer in
-    the affected clock bases moves before the first expiring (softirq)
-    timer of the CPU. If that's not the case then sending the IPI is not
-    required.
+Thanks,
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
-V2: Fix the in_hrtirq thinko (Marcelo)
-    Add the missing masking (reported by 0day)
+Paolo
 
-P.S.: The git branch is updated as well
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Andi Kleen <ak@linux.intel.com>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Cc: Wanpeng Li <wanpengli@tencent.com>
+> Cc: Jim Mattson <jmattson@google.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: kvm@vger.kernel.org
+> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+> Cc: Uros Bizjak <ubizjak@gmail.com>
+> Cc: Maxim Levitsky <mlevitsk@redhat.com>
+> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> 
+> Lai Jiangshan (4):
+>    x86/xen/entry: Rename xenpv_exc_nmi to noist_exc_nmi
+>    x86/entry: Use asm_noist_exc_nmi() for NMI in early booting stage
+>    KVM/VMX: Invoke NMI non-IST entry instead of IST entry
+>    KVM/VMX: fold handle_interrupt_nmi_irqoff() into its solo caller
+> 
+>   arch/x86/include/asm/idtentry.h |  4 +---
+>   arch/x86/kernel/idt.c           |  8 +++++++-
+>   arch/x86/kernel/nmi.c           | 12 ++++++++++++
+>   arch/x86/kvm/vmx/vmx.c          | 27 ++++++++++++++-------------
+>   arch/x86/xen/enlighten_pv.c     |  9 +++------
+>   arch/x86/xen/xen-asm.S          |  2 +-
+>   6 files changed, 38 insertions(+), 24 deletions(-)
+> 
 
----
- kernel/time/hrtimer.c |   74 +++++++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 65 insertions(+), 9 deletions(-)
-
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -880,6 +880,68 @@ static void hrtimer_reprogram(struct hrt
- 	tick_program_event(expires, 1);
- }
- 
-+static bool update_needs_ipi(struct hrtimer_cpu_base *cpu_base,
-+			     unsigned int active)
-+{
-+	struct hrtimer_clock_base *base;
-+	unsigned int seq;
-+	ktime_t expires;
-+
-+	/*
-+	 * Update the base offsets unconditionally so the following
-+	 * checks whether the SMP function call is required works.
-+	 *
-+	 * The update is safe even when the remote CPU is in the hrtimer
-+	 * interrupt or the hrtimer soft interrupt and expiring affected
-+	 * bases. Either it will see the update before handling a base or
-+	 * it will see it when it finishes the processing and reevaluates
-+	 * the next expiring timer.
-+	 */
-+	seq = cpu_base->clock_was_set_seq;
-+	hrtimer_update_base(cpu_base);
-+
-+	/*
-+	 * If the sequence did not change over the update then the
-+	 * remote CPU already handled it.
-+	 */
-+	if (seq == cpu_base->clock_was_set_seq)
-+		return false;
-+
-+	/*
-+	 * If the remote CPU is currently handling an hrtimer interrupt, it
-+	 * will reevaluate the first expiring timer of all clock bases
-+	 * before reprogramming. Nothing to do here.
-+	 */
-+	if (cpu_base->in_hrtirq)
-+		return false;
-+
-+	/*
-+	 * Walk the affected clock bases and check whether the first expiring
-+	 * timer in a clock base is moving ahead of the first expiring timer of
-+	 * @cpu_base. If so, the IPI must be invoked because per CPU clock
-+	 * event devices cannot be remotely reprogrammed.
-+	 */
-+	active &= cpu_base->active_bases;
-+
-+	for_each_active_base(base, cpu_base, active) {
-+		struct timerqueue_node *next;
-+
-+		next = timerqueue_getnext(&base->active);
-+		expires = ktime_sub(next->expires, base->offset);
-+		if (expires < cpu_base->expires_next)
-+			return true;
-+
-+		/* Extra check for softirq clock bases */
-+		if (base->clockid < HRTIMER_BASE_MONOTONIC_SOFT)
-+			continue;
-+		if (cpu_base->softirq_activated)
-+			continue;
-+		if (expires < cpu_base->softirq_expires_next)
-+			return true;
-+	}
-+	return false;
-+}
-+
- /*
-  * Clock was set. This might affect CLOCK_REALTIME, CLOCK_TAI and
-  * CLOCK_BOOTTIME (for late sleep time injection).
-@@ -914,16 +976,10 @@ void clock_was_set(unsigned int bases)
- 		unsigned long flags;
- 
- 		raw_spin_lock_irqsave(&cpu_base->lock, flags);
--		/*
--		 * Only send the IPI when there are timers queued in one of
--		 * the affected clock bases. Otherwise update the base
--		 * remote to ensure that the next enqueue of a timer on
--		 * such a clock base will see the correct offsets.
--		 */
--		if (cpu_base->active_bases & bases)
-+
-+		if (update_needs_ipi(cpu_base, bases))
- 			cpumask_set_cpu(cpu, mask);
--		else
--			hrtimer_update_base(cpu_base);
-+
- 		raw_spin_unlock_irqrestore(&cpu_base->lock, flags);
- 	}
- 
