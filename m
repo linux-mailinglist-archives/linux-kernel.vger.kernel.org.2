@@ -2,126 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3DC536F341
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 02:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BEB436F34A
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 02:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbhD3At5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 20:49:57 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:45743 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229753AbhD3At4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 20:49:56 -0400
-Received: from dread.disaster.area (pa49-179-143-157.pa.nsw.optusnet.com.au [49.179.143.157])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 2B51C5EC55D;
-        Fri, 30 Apr 2021 10:49:04 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1lcHL5-00E0Dg-3G; Fri, 30 Apr 2021 10:49:03 +1000
-Date:   Fri, 30 Apr 2021 10:49:03 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     willy@infradead.org, akpm@linux-foundation.org, hannes@cmpxchg.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com, shakeelb@google.com,
-        guro@fb.com, shy828301@gmail.com, alexs@kernel.org,
-        alexander.h.duyck@linux.intel.com, richard.weiyang@gmail.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 0/9] Shrink the list lru size on memory cgroup removal
-Message-ID: <20210430004903.GF1872259@dread.disaster.area>
-References: <20210428094949.43579-1-songmuchun@bytedance.com>
+        id S229711AbhD3Axh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 20:53:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36314 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229573AbhD3Axh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Apr 2021 20:53:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0165861264;
+        Fri, 30 Apr 2021 00:52:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619743970;
+        bh=K5IBWra87J8wUjGBcJk1YPVpoR5q+8lnzOJzz7Z0dFU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oF/1+OWEBgDxc8NSV5JVB0xUYR+zgyviW9vzvLQUaG/aaRepyWkOPifzjc70GoarN
+         WA7T6dCRcVGg+PeeR7v5SBUuMw87lDJFu9NEvItvXFwB+TKsgZu8+IEbF+d59hOm1L
+         BcJH9dPR+npkvLBlAFWIE63uFRH2gSeo0m+0yGMFEDsDXocyqVOTYHBjoYql+u740Y
+         IjrNTqPqKCVl9WmkJ/ZW894SJo0UhW1IoH5YWk3WUT1qlmeQe67JKtXjOsarBCyk97
+         005cLbDT4JgYsMDyXRghCfsp6nqXAWfjDs++99Xt6T+MSsk6UtRpFv1+lDcL3vpJDN
+         Eb2IV8uoXX8Lg==
+Date:   Thu, 29 Apr 2021 17:52:45 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: Very slow clang kernel config ..
+Message-ID: <YItU3YrFi8REwkRA@archlinux-ax161>
+References: <CAHk-=wjmNOoX8iPtYsM8PVa+7DE1=5bv-XVe_egP0ZOiuT=7CQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210428094949.43579-1-songmuchun@bytedance.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0
-        a=I9rzhn+0hBG9LkCzAun3+g==:117 a=I9rzhn+0hBG9LkCzAun3+g==:17
-        a=kj9zAlcOel0A:10 a=3YhXtTcJ-WEA:10 a=7-415B0cAAAA:8
-        a=gRuEtl0_YJUf-htUwt8A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHk-=wjmNOoX8iPtYsM8PVa+7DE1=5bv-XVe_egP0ZOiuT=7CQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 05:49:40PM +0800, Muchun Song wrote:
-> In our server, we found a suspected memory leak problem. The kmalloc-32
-> consumes more than 6GB of memory. Other kmem_caches consume less than 2GB
-> memory.
+On Thu, Apr 29, 2021 at 02:53:08PM -0700, Linus Torvalds wrote:
+> I haven't looked into why this is so slow with clang, but it really is
+> painfully slow:
 > 
-> After our in-depth analysis, the memory consumption of kmalloc-32 slab
-> cache is the cause of list_lru_one allocation.
+>    time make CC=clang allmodconfig
+>    real 0m2.667s
 > 
->   crash> p memcg_nr_cache_ids
->   memcg_nr_cache_ids = $2 = 24574
+> vs the gcc case:
 > 
-> memcg_nr_cache_ids is very large and memory consumption of each list_lru
-> can be calculated with the following formula.
+>     time make CC=gcc allmodconfig
+>     real 0m0.903s
 > 
->   num_numa_node * memcg_nr_cache_ids * 32 (kmalloc-32)
+> Yeah, yeah, three seconds may sound like "not a lot of time, but
+> considering that the subsequent full build (which for me is often
+> empty) doesn't take all that much longer, that config time clang waste
+> is actually quite noticeable.
 > 
-> There are 4 numa nodes in our system, so each list_lru consumes ~3MB.
+> I actually don't do allmodconfig builds with clang, but I do my
+> default kernel builds with it:
 > 
->   crash> list super_blocks | wc -l
->   952
+>     time make oldconfig
+>     real 0m2.748s
+> 
+>     time sh -c "make -j128 > ../makes"
+>     real 0m3.546s
+> 
+> so that "make oldconfig" really is almost as slow as the whole
+> "confirm build is done" thing. Its' quite noticeable in my workflow.
+> 
+> The gcc config isn't super-fast either, but there's a big 3x
+> difference, so the clang case really is doing something extra wrong.
+> 
+> I've not actually looked into _why_. Except I do see that "clang" gets
+> invoked with small (empty?) test files several times, probably to
+> check for command line flags being valid.
+> 
+> Sending this to relevant parties in the hope that somebody goes "Yeah,
+> that's silly" and fixes it.
+> 
+> This is on my F34 machine:
+> 
+>      clang version 12.0.0 (Fedora 12.0.0-0.3.rc1.fc34)
+> 
+> in case it matters (but I don't see why it should).
+> 
+> Many many moons ago the promise for clang was faster build speeds.
+> That didn't turn out to be true, but can we please at least try to
+> make them not painfully much slower?
 
-The more I see people trying to work around this, the more I think
-that the way memcgs have been grafted into the list_lru is back to
-front.
+Hi Linus,
 
-We currently allocate scope for every memcg to be able to tracked on
-every not on every superblock instantiated in the system, regardless
-of whether that superblock is even accessible to that memcg.
+I benchmarked this with your latest tree
+(8ca5297e7e38f2dc8c753d33a5092e7be181fff0) with my distribution versions
+of clang 11.1.0 and gcc 10.2.0 and I saw the same results, benchmarking
+with hyperfine.
 
-These huge memcg counts come from container hosts where memcgs are
-confined to just a small subset of the total number of superblocks
-that instantiated at any given point in time.
+$ hyperfine -L comp_var "","CC=clang " -r 100 -S /bin/sh -w 5 'make {comp_var}allmodconfig'
+Benchmark #1: make allmodconfig
+  Time (mean ± σ):      1.490 s ±  0.012 s    [User: 1.153 s, System: 0.374 s]
+  Range (min … max):    1.462 s …  1.522 s    100 runs
 
-IOWs, for these systems with huge container counts, list_lru does
-not need the capability of tracking every memcg on every superblock.
+Benchmark #2: make CC=clang allmodconfig
+  Time (mean ± σ):      4.001 s ±  0.020 s    [User: 2.761 s, System: 1.274 s]
+  Range (min … max):    3.939 s …  4.038 s    100 runs
 
-What it comes down to is that the list_lru is only needed for a
-given memcg if that memcg is instatiating and freeing objects on a
-given list_lru.
+Summary
+  'make allmodconfig' ran
+    2.69 ± 0.03 times faster than 'make CC=clang allmodconfig'
 
-Which makes me think we should be moving more towards "add the memcg
-to the list_lru at the first insert" model rather than "instantiate
-all at memcg init time just in case". The model we originally came
-up with for supprting memcgs is really starting to show it's limits,
-and we should address those limitations rahter than hack more
-complexity into the system that does nothing to remove the
-limitations that are causing the problems in the first place.
+It was also reproducible in a Fedora Docker image, which has newer
+versions of those tools than my distro does (GCC 11.1.0 and clang
+12.0.0):
 
-> Every mount will register 2 list lrus, one is for inode, another is for
-> dentry. There are 952 super_blocks. So the total memory is 952 * 2 * 3
-> MB (~5.6GB).  But the number of memory cgroup is less than 500. So I
-> guess more than 12286 containers have been deployed on this machine (I
-> do not know why there are so many containers, it may be a user's bug or
-> the user really want to do that). But now there are less than 500
-> containers in the system. And memcg_nr_cache_ids has not been reduced
-> to a suitable value. This can waste a lot of memory. If we want to reduce
-> memcg_nr_cache_ids, we have to reboot the server. This is not what we
-> want.
+$ hyperfine -L comp_var "","CC=clang " -r 100 -S /bin/sh -w 5 'make {comp_var}allmodconfig'
+Benchmark #1: make allmodconfig
+  Time (mean ± σ):     989.9 ms ±   3.5 ms    [User: 747.0 ms, System: 271.1 ms]
+  Range (min … max):   983.0 ms … 998.2 ms    100 runs
 
-Exactly my point. This model is broken and doesn't scale to large
-counts of either memcgs or superblocks.
+Benchmark #2: make CC=clang allmodconfig
+  Time (mean ± σ):      3.328 s ±  0.005 s    [User: 2.408 s, System: 0.948 s]
+  Range (min … max):    3.316 s …  3.343 s    100 runs
 
-We need a different model for dynamically adding, removing and
-mapping memcgs to LRU lists they are actually using so that we can
-efficiently scale to tens of thousands of memcgs instances along
-with tens of thousands of unique superblock instants. That's the
-real problem that needs solving here.
+Summary
+  'make allmodconfig' ran
+    3.36 ± 0.01 times faster than 'make CC=clang allmodconfig'
 
-> So this patchset will dynamically adjust the value of memcg_nr_cache_ids
-> to keep healthy memory consumption.
+Unfortunately, I doubt there is much that can be done on the kernel side
+because this is reproducible just invoking the compilers without any
+source input.
 
-Gigabytes of RAM for largely unused memcg list_lrus on every
-superblock is not healthy. It's highly inefficient because the
-infrastructure we currently have was never designed to scale to
-these numbers of unique containers and superblocks...
+Clang 11.1.0 and GCC 10.2.0:
+
+$ hyperfine -i -L compiler gcc,clang -r 5000 -S /bin/sh -w 5  'echo | {compiler} -x c -c -o /dev/null -'
+Benchmark #1: echo | gcc -x c -c -o /dev/null -
+  Time (mean ± σ):       9.6 ms ±   1.0 ms    [User: 6.5 ms, System: 3.4 ms]
+  Range (min … max):     5.8 ms …  12.7 ms    5000 runs
+
+Benchmark #2: echo | clang -x c -c -o /dev/null -
+  Time (mean ± σ):      33.0 ms ±   0.8 ms    [User: 22.4 ms, System: 10.9 ms]
+  Range (min … max):    30.3 ms …  36.0 ms    5000 runs
+
+Summary
+  'echo | gcc -x c -c -o /dev/null -' ran
+    3.45 ± 0.39 times faster than 'echo | clang -x c -c -o /dev/null -'
+
+$ hyperfine -i -L compiler gcc,clang -r 5000 -S /bin/sh -w 5  'echo | {compiler} -Werror -Wflag-that-does-not-exit -x c -c -o /dev/null -'
+Benchmark #1: echo | gcc -Werror -Wflag-that-does-not-exit -x c -c -o /dev/null -
+  Time (mean ± σ):      11.9 ms ±   1.1 ms    [User: 10.5 ms, System: 1.8 ms]
+  Range (min … max):     8.2 ms …  15.1 ms    5000 runs
+
+  Warning: Ignoring non-zero exit code.
+
+Benchmark #2: echo | clang -Werror -Wflag-that-does-not-exit -x c -c -o /dev/null -
+  Time (mean ± σ):      31.0 ms ±   0.8 ms    [User: 20.3 ms, System: 10.9 ms]
+  Range (min … max):    27.9 ms …  33.8 ms    5000 runs
+
+  Warning: Ignoring non-zero exit code.
+
+Summary
+  'echo | gcc -Werror -Wflag-that-does-not-exit -x c -c -o /dev/null -' ran
+    2.62 ± 0.26 times faster than 'echo | clang -Werror -Wflag-that-does-not-exit -x c -c -o /dev/null -'
+
+Clang 12.0.0 and GCC 11.1.0:
+
+$ hyperfine -i -L compiler gcc,clang -r 5000 -S /bin/sh -w 5  'echo | {compiler} -x c -c -o /dev/null -'
+Benchmark #1: echo | gcc -x c -c -o /dev/null -
+  Time (mean ± σ):       8.5 ms ±   0.3 ms    [User: 5.6 ms, System: 3.3 ms]
+  Range (min … max):     7.6 ms …   9.8 ms    5000 runs
+
+Benchmark #2: echo | clang -x c -c -o /dev/null -
+  Time (mean ± σ):      27.4 ms ±   0.4 ms    [User: 19.6 ms, System: 8.1 ms]
+  Range (min … max):    26.4 ms …  29.1 ms    5000 runs
+
+Summary
+  'echo | gcc -x c -c -o /dev/null -' ran
+    3.22 ± 0.13 times faster than 'echo | clang -x c -c -o /dev/null -'
+
+$ hyperfine -i -L compiler gcc,clang -r 5000 -S /bin/sh -w 5  'echo | {compiler} -Werror -Wflag-that-does-not-exit -x c -c -o /dev/null -'
+Benchmark #1: echo | gcc -Werror -Wflag-that-does-not-exit -x c -c -o /dev/null -
+  Time (mean ± σ):      12.2 ms ±   0.3 ms    [User: 11.5 ms, System: 1.0 ms]
+  Range (min … max):    11.7 ms …  13.9 ms    5000 runs
+
+  Warning: Ignoring non-zero exit code.
+
+Benchmark #2: echo | clang -Werror -Wflag-that-does-not-exit -x c -c -o /dev/null -
+  Time (mean ± σ):      26.3 ms ±   0.5 ms    [User: 19.1 ms, System: 7.5 ms]
+  Range (min … max):    25.2 ms …  28.1 ms    5000 runs
+
+  Warning: Ignoring non-zero exit code.
+
+Summary
+  'echo | gcc -Werror -Wflag-that-does-not-exit -x c -c -o /dev/null -' ran
+    2.16 ± 0.06 times faster than 'echo | clang -Werror -Wflag-that-does-not-exit -x c -c -o /dev/null -'
+
+Seems that GCC is faster to complete when it does not have to parse
+warning flags while clang shows no major variance. Thinking more about,
+cc-option gives clang an empty file so it should not have to actually
+parse anything so I do not think '-fsyntax-only' will gain us a whole
+ton because we should not be dipping into the backend at all.
+
+Tangentially, my version of clang built with Profile Guided Optimization
+gets me closed to GCC. I am surprised to see this level of gain.
+
+$ hyperfine -i -L compiler gcc,clang -r 5000 -S /bin/sh -w 5  'echo | {compiler} -x c -c -o /dev/null -'
+Benchmark #1: echo | gcc -x c -c -o /dev/null -
+  Time (mean ± σ):       9.6 ms ±   1.0 ms    [User: 6.4 ms, System: 3.5 ms]
+  Range (min … max):     5.6 ms …  12.9 ms    5000 runs
+
+Benchmark #2: echo | clang -x c -c -o /dev/null -
+  Time (mean ± σ):       8.7 ms ±   1.3 ms    [User: 4.3 ms, System: 4.9 ms]
+  Range (min … max):     4.9 ms …  12.1 ms    5000 runs
+
+  Warning: Command took less than 5 ms to complete. Results might be inaccurate.
+
+Summary
+  'echo | clang -x c -c -o /dev/null -' ran
+    1.10 ± 0.20 times faster than 'echo | gcc -x c -c -o /dev/null -'
+
+$ hyperfine -L comp_var "","CC=clang " -r 100 -S /bin/sh -w 5 'make {comp_var}allmodconfig'
+Benchmark #1: make allmodconfig
+  Time (mean ± σ):      1.531 s ±  0.011 s    [User: 1.180 s, System: 0.388 s]
+  Range (min … max):    1.501 s …  1.561 s    100 runs
+
+Benchmark #2: make CC=clang allmodconfig
+  Time (mean ± σ):      1.828 s ±  0.015 s    [User: 1.209 s, System: 0.760 s]
+  Range (min … max):    1.802 s …  1.872 s    100 runs
+
+Summary
+  'make allmodconfig' ran
+    1.19 ± 0.01 times faster than 'make CC=clang allmodconfig'
+
+I think that we should definitely see what we can do to speed up the front end.
 
 Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Nathan
