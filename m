@@ -2,150 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634B337014D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 21:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D021370154
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 21:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232101AbhD3Tds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 15:33:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58090 "EHLO
+        id S231567AbhD3TiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 15:38:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231809AbhD3Tdq (ORCPT
+        with ESMTP id S229534AbhD3TiQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 15:33:46 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9272BC06138B;
-        Fri, 30 Apr 2021 12:32:56 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id z6so10498718wrm.4;
-        Fri, 30 Apr 2021 12:32:56 -0700 (PDT)
+        Fri, 30 Apr 2021 15:38:16 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53BCFC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 12:37:26 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id m7so71311380ljp.10
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 12:37:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YGxJur6BpkCaw3OzABXrg+qG7M6lysHFEiPjPM8O8jM=;
-        b=XbBK4VfeB5HSc9VnsPbCGaLMOUGma5aINBFJEeaHajUizyf/o35ykT8yudbK0WOGRs
-         7EbWBY9Y0f16Et0zoxlGpoDFxWbUapu0El35CKgPAXRHwtRVvkQLgtar//qiWYhxKNz4
-         39l2EMmUMRIhPnK9jjQxB1YPA/YgzjHRe5QMBCLNeLk4460d1NOwtPiLTAQqObmdSUxq
-         uB/wFVzfVbRAxW84BGVd/NwRSCgz8TWy7JVXgvNKDeNFh/yWZVMIk6vcuUVD3jsM6fMT
-         QPjev0ngvs7RqRqiNU61+km8kxYP9M2ieCHzn5mOmlUJAq3znWycBeDb46OJgDuuUPU5
-         MmMg==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ojW04pTTBQuwFAYIuJX83wagA1+sJZvXJIs45pEY1Cc=;
+        b=T/QeiNHmF/TAkd0R68dxA9bdEHpyhyt4JHhgAhSs0wyo7exB2KJ5cf0VzYIUZtaH9i
+         GORF5lTUTNDZPm6oBF7NAkvXAmxG4aCphsJ6FPHwIzbfR4tXbl2iQ1jLvcfuggQfTOu5
+         02aeG4jwbOtUd7eRBmd56qDdou2uaF9Yh8FbA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YGxJur6BpkCaw3OzABXrg+qG7M6lysHFEiPjPM8O8jM=;
-        b=REfJ54hxvYNUc9owpfZV+eDSiPuO+08p/owZc3c4H0KYY/SD3qFjUUk0S5Jfs8OuB7
-         L6mJ4Qv/1+vFEBLvS4/NJCxirqloo4m3z6aMjwDvA1lpgAwNno79rw/flPaSGYkqBTMw
-         6aMg/CFgtQxk2Cub/8244esZN4mdrHaOiyeC9F6T/Uxnz3v1wExEc+lt3kK/ZfVlSQMB
-         EnTZHCLlxd6zzGOaizy55F79y7ctD3VqHsvPiTPDmdvAI7rrbcNBntacYo0umvF56NJ4
-         KPSezAb9EYM3NP7zhqVHwXpOenU2YATfkfsvxrtBcmg32eCtmgM5If5TgRVMVovJbgIU
-         yKfQ==
-X-Gm-Message-State: AOAM53294UVyAjo48N0zwni7soHi4gTfSOJf0J4rBs3MCoEyCmdjKViv
-        mGkVjdwoefW9QwVp+vyuq1871vO4YqEYXQ==
-X-Google-Smtp-Source: ABdhPJyhTths+KvVLUS8knCdFfcch3pczopIQyF+cUUbjW4A7vhF++ZfvubKihT1guzh9Wvy0oBFMw==
-X-Received: by 2002:adf:dfcd:: with SMTP id q13mr9248597wrn.363.1619811174183;
-        Fri, 30 Apr 2021 12:32:54 -0700 (PDT)
-Received: from [192.168.0.160] ([170.253.36.171])
-        by smtp.gmail.com with ESMTPSA id m2sm13348394wmq.15.2021.04.30.12.32.53
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ojW04pTTBQuwFAYIuJX83wagA1+sJZvXJIs45pEY1Cc=;
+        b=r61hIel7ciBPXSd8HXQ5Hw3jcRXbXPZsfa8JSZmtRBdZxeOtn6C1QWZJEB+LuTSv9u
+         R8+V1aVVErjJqOropH36Ae6tlNxZpzrCByaNUkmgmb+7F2J2SpPLEUFQugfL/bZ1St3v
+         Tk8Sl4G1F+DTrF1wx7NbLkatV2A0ibAwUN82BLX9vzJB/kvENn46rdFRzA76JVNxop4p
+         gc6hQxdHmAb3DsYNe0esXAcRZ3tTxF7kF8TAQPTQIpxYtIBFwl4zk3HF9VHHtZ0A9+8K
+         bs6fEmiAix7EG8pXy93QJt4n/XGFY5zjhtSMS/5IcCqGppcfC8FCTBhv8ZmmhHFVW3tD
+         2IDA==
+X-Gm-Message-State: AOAM531/4MK3vUszvFHtslevwmVzbEF6ZTo4Lwb0N205MVOqBkGgY57K
+        rmEYSG6anEU36+ATpNEzjPIjfXlKYgNSlmlH
+X-Google-Smtp-Source: ABdhPJwn66gBYukmwcEvUZeGeH7DZpdOVhWpMlyqVFG8K85tRI1WsBnmsobA4ddXLSI1m4XhRLTeCA==
+X-Received: by 2002:a2e:9c07:: with SMTP id s7mr4873021lji.26.1619811444606;
+        Fri, 30 Apr 2021 12:37:24 -0700 (PDT)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id w7sm24566ljo.43.2021.04.30.12.37.23
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Apr 2021 12:32:53 -0700 (PDT)
-Subject: Re: netdevice.7 SIOCGIFFLAGS/SIOCSIFFLAGS
-To:     Erik Flodin <erik@flodin.me>, mtk.manpages@gmail.com
-Cc:     linux-man@vger.kernel.org, Stefan Rompf <stefan@loplof.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        John Dykstra <john.dykstra1@gmail.com>, netdev@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <CAAMKmof+Y+qrro7Ohd9FSw1bf+-tLMPzaTba-tVniAMY0zwTOQ@mail.gmail.com>
- <b0a534b3-9bdf-868e-1f28-8e32d31013a2@gmail.com>
- <CAAMKmodhSsckMxH9jLKKwXN_B76RoLmDttbq5X9apE-eCo0hag@mail.gmail.com>
- <1cde5a72-033e-05e7-be58-b1b2ef95c80f@gmail.com>
- <CAAMKmoe8rUuoxFK2gKZL4um79gmtn-__-1ZDWuBgGTqfqPjZdw@mail.gmail.com>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Message-ID: <ec0d0a2d-235c-a71f-92bc-45e1156bff9e@gmail.com>
-Date:   Fri, 30 Apr 2021 21:32:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Fri, 30 Apr 2021 12:37:24 -0700 (PDT)
+Received: by mail-lf1-f50.google.com with SMTP id 4so51851538lfp.11
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 12:37:23 -0700 (PDT)
+X-Received: by 2002:a05:6512:a90:: with SMTP id m16mr4179629lfu.201.1619811443761;
+ Fri, 30 Apr 2021 12:37:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAAMKmoe8rUuoxFK2gKZL4um79gmtn-__-1ZDWuBgGTqfqPjZdw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <YIlcBHhuR9LvKZ7q@gunter>
+In-Reply-To: <YIlcBHhuR9LvKZ7q@gunter>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 30 Apr 2021 12:37:07 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgoC=9tJZg391exBryFYK04e_BSpKwCmJLMwDntar4x_w@mail.gmail.com>
+Message-ID: <CAHk-=wgoC=9tJZg391exBryFYK04e_BSpKwCmJLMwDntar4x_w@mail.gmail.com>
+Subject: Re: [GIT PULL] Modules updates for v5.13
+To:     Jessica Yu <jeyu@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[PING mtk, netdev@]
-[CC += linux-kernel]
+On Wed, Apr 28, 2021 at 5:58 AM Jessica Yu <jeyu@kernel.org> wrote:
+>
+>    Therefore, load the __exit sections even when
+>    CONFIG_MODULE_UNLOAD=n, and discard them after init.
 
-Hi Erik,
+So I've pulled this, but I have two questions based on reading the patch..
 
-On 4/29/21 9:45 PM, Erik Flodin wrote:
-> On Wed, 14 Apr 2021 at 21:56, Alejandro Colomar (man-pages)
-> <alx.manpages@gmail.com> wrote:
->>
->> [CC += netdev]
->>
->> Hi Erik,
->>
->> On 4/14/21 8:52 PM, Erik Flodin wrote:
->>> Hi,
->>>
->>> On Fri, 19 Mar 2021 at 20:53, Alejandro Colomar (man-pages)
->>> <alx.manpages@gmail.com> wrote:
->>>> On 3/17/21 3:12 PM, Erik Flodin wrote:
->>>>> The documentation for SIOCGIFFLAGS/SIOCSIFFLAGS in netdevice.7 lists
->>>>> IFF_LOWER_UP, IFF_DORMANT and IFF_ECHO, but those can't be set in
->>>>> ifr_flags as it is only a short and the flags start at 1<<16.
->>>>>
->>>>> See also https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=746e6ad23cd6fec2edce056e014a0eabeffa838c
->>>>>
->>>>
->>>> I don't know what's the history of that.
->>>
->>> Judging from commit message in the commit linked above it was added by
->>> mistake. As noted the flags are accessible via netlink, just not via
->>> SIOCGIFFLAGS.
->>>
->>> // Erik
->>>
->>
->> I should have CCd netdev@ before.  Thanks for the update.  Let's see if
->> anyone there can comment.
->>
->> Thanks,
->>
->> Alex
->>
+ (a) Where's that "discard them after init" logic?
 
-> Hi again,
-> 
-> Have there been any updates on this one?
+ (b) ARM has its own module_init/exit_section() functions, and now
+seems to have different logic than everybody else as a result..
 
-No, Noone from the kernel answered.  And I'm sorry, but I'm not sure
-what is going on in the code, so I don't want to close this here by just
-removing those flags from the manual page, because I worry that the
-actual code may be wrong or something.  So I prefer that when Michael
-has some time he can maybe review this and say something.  Ideally,
-someone from the kernel would also respond, but they haven't.  I've CCd
-the LKML; let's see if someone reads this and can help.
+but maybe I'm not reading that patch right.
 
-Thanks,
-
-Alex
-
-P.S.:  Please, if we haven't responded in a month from now, ping us
-again.  Thanks again.
-
-> 
-> // Erik
-> 
->>
->> --
->> Alejandro Colomar
->> Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
->> http://www.alejandro-colomar.es/
-
--- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es/
+               Linus
