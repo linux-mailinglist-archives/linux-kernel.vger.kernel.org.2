@@ -2,99 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AAF737009B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E983700A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231418AbhD3SgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 14:36:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45428 "EHLO
+        id S231194AbhD3Shu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 14:37:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230329AbhD3SgD (ORCPT
+        with ESMTP id S230329AbhD3Shs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 14:36:03 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6283C06174A;
-        Fri, 30 Apr 2021 11:35:11 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id b21so8578201plz.0;
-        Fri, 30 Apr 2021 11:35:11 -0700 (PDT)
+        Fri, 30 Apr 2021 14:37:48 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 193FBC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 11:36:59 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id t18so14067817wry.1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 11:36:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q4QFQGXIhykAw/4JLDw3bDN7aa3oAVb41+jlAtxjgCA=;
-        b=OixQfk3Gq/u0S4G7tcJWjb5zHz46vKlQxyGxNW9679LKWcMndd6kqcZFT0XJFDSG5x
-         a9QDkgo7ySgdIPZ6CSCR5ZisJo4+LUf923AE0I6V2q/4v0FwRHOZkE93aX4tgxzlGtW5
-         g53vlfNZNrToZ8Ji9xE0f3UvDrH4cuuM2ZiDwxUEx/TiqY91lzsRgnKcUzj7ZCODDyUh
-         DYN1k/Rhdpi3UXLwW2tyeNK7uehmn6TWW28SCT0mFuqb8fAaoG522OpHWRIh/opN7BSV
-         i5P/KSub7ypVL2boEdYRY35HWmQZCZm57GYP5PX64igQ/wx867tkkzjfuko0Pp84k7ch
-         HmwQ==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NFNZ7i0cF38YBK0xp7pTtVlEjV54KF0wRBddOCem090=;
+        b=cv/Wf1QAK11HQZOI0vXfs6ZfFzFZeSZj7zzbYxt2eOBjtwbqHqzO0PA+hrm7lYsx2+
+         /4rs2Ov7gsAAfPszq9WTiMvzjNBrLK/N9BAngwec4VkBxuWsf8qRJDTlSd633b7qrVdI
+         /Z3ODWHdIOKiFu05Oa+3TFcL4B9bal9e54kOPQNDiI/0mHtBl+X1JQBHtg8ixBRgnxme
+         E6quGVm4Rb0w89TKDZ3TSaBfvzc0t2EEuJ5IsnkJ/gQAUFM5YkyC/VRWG6vqXdyEODH0
+         7fHdoP0J9XkqS+BcKSUSIS/L5ZSggK6SS3gmHI1g2WIMowSrHtvJVv9543cZZsuDI5UU
+         a8pQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q4QFQGXIhykAw/4JLDw3bDN7aa3oAVb41+jlAtxjgCA=;
-        b=WUbXj6OW4bxXWp9bP5yy12H+sVB0RdYgB9xWhzta28+DmFAV37Vc2YtsqXSzZHLCI7
-         Pg0fkECPNxDttL1sfqnSMCZvNPQ4d+0+A/K7BWJBQFhkvvhMVP65m3KP/3+Az6yRT6ey
-         IcpZzzpCobxHG8vfF5I7aY+N+yPkAZ7ReS+2UiYrJPG5Wd6wfb0JJXFO2VPs18oGMrXw
-         0Otfv1/NzBWYTX3CdAzbGRFSHA+nZpIWViC7oZ1IEhJjwja4ZUlKO7MM6GxwCzW7dxl2
-         1C+/wX0zthsmdCI3pqzGlPGfi26Kr91Mo2DjE8I7fUt7Y04iLKsbu6LoLxI29peGEQs+
-         ZIEw==
-X-Gm-Message-State: AOAM5337lvde0b656CDAnM32LZQ3Rw9RioXZfifh/DodmkSNBvDmCjsQ
-        giTfGVN13+4m+44OxWy7lLb11wiYbOjzu0PAHyg=
-X-Google-Smtp-Source: ABdhPJzbfKMnL+zQ8y6n+7TJjSrQeF7FzmUD31QF0cQgEe2x46yJ+iL9hUUEUUpzmC4Chu0iO4MVARCs88qp+/zahDA=
-X-Received: by 2002:a17:902:ecc6:b029:ee:af8f:899e with SMTP id
- a6-20020a170902ecc6b02900eeaf8f899emr437401plh.21.1619807711284; Fri, 30 Apr
- 2021 11:35:11 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NFNZ7i0cF38YBK0xp7pTtVlEjV54KF0wRBddOCem090=;
+        b=ZdveYWkqRXIu8DQavQBoEfG/pk5Ges9EICPftysUbkwjMF5K3n/170jSpTmb02cs8l
+         tZVEHg59CGwS30diMhMXGeIRyQkRtUKTOcN+x2NRVNT+F+J1aZ2hQnA2dNmjA5AYV+Zc
+         zrSovCLALHu0A6FazcpQzLZ5V1hi8EOwkNoG4dSZTnH1NThEBdQGBvM+j+f9WdMtfUs8
+         ez5Yy2B5gvQW7OuagcQ2IVTajFIAJiJUlsoE64v2ap1jU3LAQeV22x2+F3tppzbFIyGI
+         MiRvdyOlkNdBfMp6ziRORX1SaphJH+XndQ9IBqbZKvbZhS04JEQIS49EJWGu+D7UwWIN
+         3eiQ==
+X-Gm-Message-State: AOAM53035ZLfeIrBrskrlRdqfCbrCaI/l99/6UZA+OxGmwdEy8OZrhCw
+        x476e+8fR/t+WWNfMZoEQLFwzQ==
+X-Google-Smtp-Source: ABdhPJyVTlMVqspQZFB2Xwk9VhB3Mi9Ja1/UO42nXr0T9aMT68OKgXA1pPSFePN2Sx31hts9mJpjjA==
+X-Received: by 2002:a5d:4e52:: with SMTP id r18mr8544205wrt.179.1619807818496;
+        Fri, 30 Apr 2021 11:36:58 -0700 (PDT)
+Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.googlemail.com with ESMTPSA id i2sm3927854wro.0.2021.04.30.11.36.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 11:36:57 -0700 (PDT)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     robh+dt@kernel.org, vkoul@kernel.org
+Cc:     devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH v3] dt-bindings: dma: convert arm-pl08x to yaml
+Date:   Fri, 30 Apr 2021 18:36:51 +0000
+Message-Id: <20210430183651.919317-1-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210421140436.3882411-1-arnd@kernel.org> <20210430175723.GA664165@bjorn-Precision-5520>
-In-Reply-To: <20210430175723.GA664165@bjorn-Precision-5520>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 30 Apr 2021 21:34:55 +0300
-Message-ID: <CAHp75Vchfem1OmR=2Mawiebw-zisU57BEcF64PUKcOODeiLS-g@mail.gmail.com>
-Subject: Re: [PATCH] nvme: fix unused variable warning
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Prike Liang <Prike.Liang@amd.com>,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Rajat Jain <rajatja@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 8:57 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> On Wed, Apr 21, 2021 at 04:04:20PM +0200, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > The function was introduced with a variable that is never referenced:
-> >
-> > drivers/pci/quirks.c: In function 'quirk_amd_nvme_fixup':
-> > drivers/pci/quirks.c:312:25: warning: unused variable 'rdev' [-Wunused-variable]
-> >
-> > Fixes: 9597624ef606 ("nvme: put some AMD PCIE downstream NVME device to simple suspend/resume path")
->
-> I guess this refers to https://lore.kernel.org/linux-nvme/1618458725-17164-1-git-send-email-Prike.Liang@amd.com/
->
-> But I don't know what the SHA1 means; I can't find it in linux-next or
-> my tree.
+Converts dma/arm-pl08x.txt to yaml.
+In the process, I add an example for the faraday variant.
 
-$ git tag --contains 9597624ef606
-next-20210416
-next-20210419
-next-20210420
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+---
+Changes since v1:
+- fixes yamllint warning about indent
+- added select
 
-Something is wrong with your tree.
+Changes since v2:
+- fixed all Rob's comment on v2
 
+ .../devicetree/bindings/dma/arm-pl08x.txt     |  59 --------
+ .../devicetree/bindings/dma/arm-pl08x.yaml    | 136 ++++++++++++++++++
+ 2 files changed, 136 insertions(+), 59 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/dma/arm-pl08x.txt
+ create mode 100644 Documentation/devicetree/bindings/dma/arm-pl08x.yaml
+
+diff --git a/Documentation/devicetree/bindings/dma/arm-pl08x.txt b/Documentation/devicetree/bindings/dma/arm-pl08x.txt
+deleted file mode 100644
+index 0ba81f79266f..000000000000
+--- a/Documentation/devicetree/bindings/dma/arm-pl08x.txt
++++ /dev/null
+@@ -1,59 +0,0 @@
+-* ARM PrimeCells PL080 and PL081 and derivatives DMA controller
+-
+-Required properties:
+-- compatible: "arm,pl080", "arm,primecell";
+-	      "arm,pl081", "arm,primecell";
+-	      "faraday,ftdmac020", "arm,primecell"
+-- arm,primecell-periphid: on the FTDMAC020 the primecell ID is not hard-coded
+-  in the hardware and must be specified here as <0x0003b080>. This number
+-  follows the PrimeCell standard numbering using the JEP106 vendor code 0x38
+-  for Faraday Technology.
+-- reg: Address range of the PL08x registers
+-- interrupt: The PL08x interrupt number
+-- clocks: The clock running the IP core clock
+-- clock-names: Must contain "apb_pclk"
+-- lli-bus-interface-ahb1: if AHB master 1 is eligible for fetching LLIs
+-- lli-bus-interface-ahb2: if AHB master 2 is eligible for fetching LLIs
+-- mem-bus-interface-ahb1: if AHB master 1 is eligible for fetching memory contents
+-- mem-bus-interface-ahb2: if AHB master 2 is eligible for fetching memory contents
+-- #dma-cells: must be <2>. First cell should contain the DMA request,
+-              second cell should contain either 1 or 2 depending on
+-              which AHB master that is used.
+-
+-Optional properties:
+-- dma-channels: contains the total number of DMA channels supported by the DMAC
+-- dma-requests: contains the total number of DMA requests supported by the DMAC
+-- memcpy-burst-size: the size of the bursts for memcpy: 1, 4, 8, 16, 32
+-  64, 128 or 256 bytes are legal values
+-- memcpy-bus-width: the bus width used for memcpy in bits: 8, 16 or 32 are legal
+-  values, the Faraday FTDMAC020 can also accept 64 bits
+-
+-Clients
+-Required properties:
+-- dmas: List of DMA controller phandle, request channel and AHB master id
+-- dma-names: Names of the aforementioned requested channels
+-
+-Example:
+-
+-dmac0: dma-controller@10130000 {
+-	compatible = "arm,pl080", "arm,primecell";
+-	reg = <0x10130000 0x1000>;
+-	interrupt-parent = <&vica>;
+-	interrupts = <15>;
+-	clocks = <&hclkdma0>;
+-	clock-names = "apb_pclk";
+-	lli-bus-interface-ahb1;
+-	lli-bus-interface-ahb2;
+-	mem-bus-interface-ahb2;
+-	memcpy-burst-size = <256>;
+-	memcpy-bus-width = <32>;
+-	#dma-cells = <2>;
+-};
+-
+-device@40008000 {
+-	...
+-	dmas = <&dmac0 0 2
+-		&dmac0 1 2>;
+-	dma-names = "tx", "rx";
+-	...
+-};
+diff --git a/Documentation/devicetree/bindings/dma/arm-pl08x.yaml b/Documentation/devicetree/bindings/dma/arm-pl08x.yaml
+new file mode 100644
+index 000000000000..3bd9eea543ca
+--- /dev/null
++++ b/Documentation/devicetree/bindings/dma/arm-pl08x.yaml
+@@ -0,0 +1,136 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/dma/arm-pl08x.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: ARM PrimeCells PL080 and PL081 and derivatives DMA controller
++
++maintainers:
++  - Vinod Koul <vkoul@kernel.org>
++
++allOf:
++  - $ref: "dma-controller.yaml#"
++
++# We need a select here so we don't match all nodes with 'arm,primecell'
++select:
++  properties:
++    compatible:
++      contains:
++        enum:
++          - arm,pl080
++          - arm,pl081
++  required:
++    - compatible
++
++properties:
++  compatible:
++    oneOf:
++      - items:
++          - enum:
++              - arm,pl080
++              - arm,pl081
++          - const: arm,primecell
++      - items:
++          - const: faraday,ftdma020
++          - const: arm,pl080
++          - const: arm,primecell
++
++  reg:
++    maxItems: 1
++    description: Address range of the PL08x registers
++
++  interrupts:
++    minItems: 1
++    description: The PL08x interrupt number
++
++  clocks:
++    minItems: 1
++    description: The clock running the IP core clock
++
++  clock-names:
++    maxItems: 1
++
++  lli-bus-interface-ahb1:
++    type: boolean
++    description: if AHB master 1 is eligible for fetching LLIs
++
++  lli-bus-interface-ahb2:
++    type: boolean
++    description: if AHB master 2 is eligible for fetching LLIs
++
++  mem-bus-interface-ahb1:
++    type: boolean
++    description: if AHB master 1 is eligible for fetching memory contents
++
++  mem-bus-interface-ahb2:
++    type: boolean
++    description: if AHB master 2 is eligible for fetching memory contents
++
++  memcpy-burst-size:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum:
++      - 1
++      - 4
++      - 8
++      - 16
++      - 32
++      - 64
++      - 128
++      - 256
++    description: the size of the bursts for memcpy
++
++  memcpy-bus-width:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum:
++      - 8
++      - 16
++      - 32
++      - 64
++    description: bus width used for memcpy in bits. FTDMAC020 also accept 64 bits
++
++required:
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - "#dma-cells"
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    dmac0: dma-controller@10130000 {
++      compatible = "arm,pl080", "arm,primecell";
++      reg = <0x10130000 0x1000>;
++      interrupt-parent = <&vica>;
++      interrupts = <15>;
++      clocks = <&hclkdma0>;
++      clock-names = "apb_pclk";
++      lli-bus-interface-ahb1;
++      lli-bus-interface-ahb2;
++      mem-bus-interface-ahb2;
++      memcpy-burst-size = <256>;
++      memcpy-bus-width = <32>;
++      #dma-cells = <2>;
++    };
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/reset/cortina,gemini-reset.h>
++    #include <dt-bindings/clock/cortina,gemini-clock.h>
++    dma-controller@67000000 {
++      compatible = "faraday,ftdma020", "arm,pl080", "arm,primecell";
++      /* Faraday Technology FTDMAC020 variant */
++      arm,primecell-periphid = <0x0003b080>;
++      reg = <0x67000000 0x1000>;
++      interrupts = <9 IRQ_TYPE_EDGE_RISING>;
++      resets = <&syscon GEMINI_RESET_DMAC>;
++      clocks = <&syscon GEMINI_CLK_AHB>;
++      clock-names = "apb_pclk";
++      /* Bus interface AHB1 (AHB0) is totally tilted */
++      lli-bus-interface-ahb2;
++      mem-bus-interface-ahb2;
++      memcpy-burst-size = <256>;
++      memcpy-bus-width = <32>;
++      #dma-cells = <2>;
++    };
 -- 
-With Best Regards,
-Andy Shevchenko
+2.26.3
+
