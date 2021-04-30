@@ -2,103 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B4DC36F4D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 06:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 331CD36F4DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 06:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbhD3EVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 00:21:23 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:36188 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhD3EUl (ORCPT
+        id S230095AbhD3EVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 00:21:33 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:43689 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229831AbhD3EVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 00:20:41 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1619756394; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=p96M617M0cLXWMwRYD86v31l/3RAtWy/K/4ZMBXEbpM=; b=wU8QIJHIRDAX63eBuo0ymiFv5hMyWCvlXojmDNrNE9alP/SlcfOhaKD6Jug0gyL82tZ0nQvH
- a1aR+K9prBpTqcMpUV34lg3AMIezSJpNe8s/p3eqbjqYe3SQBROWfPF3n3l2zCpScs+13jlm
- iiOWZgG8k8VOHKDGcGxfvq/Mn9Y=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 608b8551a817abd39a570273 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Apr 2021 04:19:29
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F271BC4323A; Fri, 30 Apr 2021 04:19:28 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.15] (unknown [61.3.17.29])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8A251C433D3;
-        Fri, 30 Apr 2021 04:19:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8A251C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: sc7280: Add "google,senor" to the
- compatible
-To:     "Robert P. J. Day" <rpjday@crashcourse.ca>,
-        Doug Anderson <dianders@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Fri, 30 Apr 2021 00:21:22 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id C488A58098D;
+        Fri, 30 Apr 2021 00:20:05 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Fri, 30 Apr 2021 00:20:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=2RsfJX3qRNd+TubqaEaS4NIHrv
+        LwBjSMn2o26kiiNuA=; b=XE5yVhGcAT8L9kh+C/VeZo/f3yYl16FoHtoHYfgwm4
+        Vm6GdmljNvvbp+hXcYIxmyEsijzN3e7xoWpmS90Ki3xgJzQyd/6HUiDom8hiDlnG
+        JVmsv3a3NqiY4YS31QkAUfghs4mvv/FkM7VbyDEhLrU0SjmHHNPttPq8XiCj14es
+        FugGfDRvkb8E5k11CnA2a60g2KyM6A3tEZB84X3EDRnzGzZNBfydUXs70INT4cTJ
+        yWR334bLdpfGktc6LYloX++r+2Tza/lFRrWI9Y4D8Yn5RlSXloT/qmvRmvcelEJ6
+        gS+7JuKgg2pDp7+OFExcN/rfYSKIrxK9tQAtmEdP5+Wg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=2RsfJX3qRNd+Tubqa
+        EaS4NIHrvLwBjSMn2o26kiiNuA=; b=QSQ+q1SBGrvTh2crttF0IZF0ECv9DpuHB
+        RDLEN9ztQpl0Fwj4z/RI5LNRWis9C/qxuOt5Oo/UcyHMBzWjZO3nKO/SGkINyi2j
+        CN8rkQ/fj4iLzHm9Qr/PTKVrRFn8IenGH/eCUHpu1zxM93IZ/5ZkfujHP+ia6vA4
+        Ixbp7/As4Gug4DzIZ4RH3BiY0JpZ7mfLBHGsKO/UuhtPHrvBK87x0vZ1dp7tYDF0
+        KGT0psg2NBJNKD/6XbJ2lPNFlM/8G6bwZ2m/LinrVsRYFjHOKE/ilLSzliGTIMka
+        CG1ruYNWMCCj+sp0lYtatS1hE6/2U7VFbp5+aQv9C1Rzz21iY7zzA==
+X-ME-Sender: <xms:dIWLYHbnJTFS3ArLfX59oa3IFNrQ9VnHlNWxbbLywbsp3qtIvvFP0Q>
+    <xme:dIWLYGat1feZ0cuK4hB4yzVdBUoXqOP_wLk-yoQJOygcQA-80USqTbQHqc9rUZZX9
+    YQXVhoJis6luyYOmg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddvhedgkeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
+    jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtffrrg
+    htthgvrhhnpeeiteekhfehuddugfeltddufeejjeefgeevheekueffhffhjeekheeiffdt
+    vedtveenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdr
+    ohhrgh
+X-ME-Proxy: <xmx:dIWLYJ_QLMX4_EvCcpt3SCP_2NBliJxTm6hIAdPsmjuEdA9FJIWIfA>
+    <xmx:dIWLYNoZ-7Cdq1dZq1KpkiVP2cdo14zhDht1XwCA7TVBexDDhujybQ>
+    <xmx:dIWLYCqiXxHQMTCAmE0ylj0_0y7LE5xtfhEmWLepVSAh4KjQo6EvOA>
+    <xmx:dYWLYOcevcl8bDRtZse8QpFEYp9Qta8KAa-z75AMvqWIR8dP6foHew>
+Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Fri, 30 Apr 2021 00:20:04 -0400 (EDT)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
         Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-References: <1619674827-26650-1-git-send-email-rnayak@codeaurora.org>
- <1619674827-26650-2-git-send-email-rnayak@codeaurora.org>
- <CAD=FV=UUowpvn_2uPrOQG9hOCdX6GYZDojBdW+w8hg5q6PfvAQ@mail.gmail.com>
- <a26e7152-208e-3343-a9f8-8dfdeb222aeb@crashcourse.ca>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <8391f7e4-b727-f369-2494-86609438012c@codeaurora.org>
-Date:   Fri, 30 Apr 2021 09:49:18 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        devicetree@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        Samuel Holland <samuel@sholland.org>
+Subject: [PATCH v3 0/2] sunxi LRADC/volume key wakeup support
+Date:   Thu, 29 Apr 2021 23:20:01 -0500
+Message-Id: <20210430042003.4591-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-In-Reply-To: <a26e7152-208e-3343-a9f8-8dfdeb222aeb@crashcourse.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series allows the volume keys on the PinePhone (and other devices
+with LRADC buttons) to wake up the device.
 
-On 4/29/2021 7:13 PM, Robert P. J. Day wrote:
-> On Thu, 29 Apr 2021, Doug Anderson wrote:
-> 
->> Hi,
->>
->> On Wed, Apr 28, 2021 at 10:40 PM Rajendra Nayak <rnayak@codeaurora.org> wrote:
->>>
->>> The sc7280 IDP board is also called senor in the Chrome OS builds.
->>> Add the "google,senor" compatible so coreboot/depthcharge knows what
->>> device tree blob to pick
->>>
->>> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
->>> ---
->>>   arch/arm64/boot/dts/qcom/sc7280-idp.dts | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> 
->    subject line contains "google,senor"
+Currently `make dtbs_check` complains because the DT update was merged
+without the binding.
 
-are you suggesting it should not?
+Changes since v2:
+  - Dropped unnecessary pr_err in platform_get_irq() error path
+  - Dropped patch 3 (DT update) as it was merged
+  - Added Acked-by/Reviewed-by tags
 
-> 
-> rday
-> 
+Changes since v1:
+  - Add requisite DT binding change
+  - Only add wakeup capability if "wakeup-source" is present
+  - Warn but do not error out if setting the wake IRQ fails
+  - Add "wakeup-source" property to PinePhone device tree
+
+Ondrej Jirman (1):
+  input: sun4i-lradc-keys -  Add wakup support
+
+Samuel Holland (1):
+  dt-bindings: sun4i-a10-lradc-keys: Accept wakeup-source property
+
+ .../input/allwinner,sun4i-a10-lradc-keys.yaml |  2 ++
+ drivers/input/keyboard/sun4i-lradc-keys.c     | 20 +++++++++++++++----
+ 2 files changed, 18 insertions(+), 4 deletions(-)
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.26.3
+
