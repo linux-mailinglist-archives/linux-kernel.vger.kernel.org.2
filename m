@@ -2,58 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A01370261
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 22:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 939E0370264
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 22:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236016AbhD3Urd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 16:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231265AbhD3Urb (ORCPT
+        id S235927AbhD3UtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 16:49:07 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:47951 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231265AbhD3UtB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 16:47:31 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AF2AC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 13:46:42 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id r18so30389743vso.12
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 13:46:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=nmpig/Ub2Fa9FU47p1YGyl++M/6a0RjiWVYMVpAEZH8=;
-        b=JOS0AFhjZY6p8PImy8Z07BzmZbEdeHCl1Wh8BrxrPefARa0j+5lVAjIfxYW/IBA8Ha
-         dFS2u8eJ3B0AT2eBERiEfqHdcx2wqy2R2o+ZfK+bxSDSBBzOg4TPph7mazefL5EHrImN
-         9N3Ny9WyouVJjPJtxZZEOFDYvBaCxtRfxZNj+a8T7niIZUSpj7xjcNT/JqtzlkBYMKpZ
-         I21COwMuaqKEccYgTuEfWpCZkbZYhqhzrLuuirU+mF13FJydIfFFdMJLSHLGVsXwtmrV
-         L0v8mi7uyAd51InNdS/3tFyl4VzA5Qb2buCHfdPKXe6rKnGiAU/pVjdw+eoMTtMYPpzp
-         znCA==
+        Fri, 30 Apr 2021 16:49:01 -0400
+Received: by mail-il1-f198.google.com with SMTP id b7-20020a920b070000b029016965167fa7so38190446ilf.14
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 13:48:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=nmpig/Ub2Fa9FU47p1YGyl++M/6a0RjiWVYMVpAEZH8=;
-        b=JiYiWirwWGkuZAiFQ+181k9t5LuUvey+kxf6NATd/OxwUwxempdRSck6Pucv3DS7nU
-         f1WDGhrdcePGw2RE4SpgTf5B7FkGCyuwWssVqTxgt13gORTwbTesI0IgP+0y1MKtAUuk
-         34F9xbZ47AOvMYrnBsYEqXT65rbNaX4WluMcMfrMH0Dz7q/hFOVhLeQP5UJhMDiJ8xFy
-         SWKcZczTVdljVqiBT30L2aInqjWXzrsTZR8BC4/WPUYEM08MMFATZAEIhj8/gHEYJXYf
-         CLLlf2eNgpu5btZY1TVn4WbcL2RtXJGlUCn9I0KDWPblvCi7z9FtM8V99ERnwxCTiWTP
-         V4ug==
-X-Gm-Message-State: AOAM533T3/37MTTlTErp6Vi6BYtl66mdepfrBDSHekprZVmszjF2sDIK
-        rA4ILie2yt+Ds/4w+pYYgM3nShB0ZZMWVJC0Hik=
-X-Google-Smtp-Source: ABdhPJypJkQhXBYP/KOBgyLww9mWxwEp7/97CG74igq3TwC7pooXWG5+YM6c3Bc1TAqlHOwNoq9UzOUgDZUZ/8gD9gY=
-X-Received: by 2002:a67:f498:: with SMTP id o24mr8748572vsn.6.1619815601783;
- Fri, 30 Apr 2021 13:46:41 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=IxAm+3dAHzK4phyxV1ggsOjobYz5RB8dA3+m953Q/78=;
+        b=Ew7GsDnajlcdHnfprTPpDL45sD5o7obW2pn8GUp2Zzt294jx/UkjkuZaLtl282yY7g
+         Xm93rvpTqX2Q1mf7+KJtRmzTP4xs+NQTGpFBjBr5oPWxSXpc6OBTWCfz34DVvfrgqzav
+         B7vaCWDFGlTzzWp9jH8//O1OSiGxkiAIwi0dNlfMyXkwD3lk7fLgFPre4Nx+PjWeS6AR
+         +j2opP5PFXP90iNq1k+Z0/zo5uFSnvPkIId9kuX1dfjRJY4691W1rY3UWZ4IuWZPSfOr
+         8nOsFYi1q+fS9zbubrvGoE+zUbSz/g9isKaoj76pVfCw3TioXnwa/iEZI3YhrkQlzlqL
+         Z74Q==
+X-Gm-Message-State: AOAM532xbKtGamIzOcRN/1AZM2k8H6QcUe5eTO1wAS6OS/CjVd4fypKd
+        19l/yeplJTqo8GLSCgfjMDzmf+rrmNLNZmjORrM8n8F9FIzM
+X-Google-Smtp-Source: ABdhPJwWQ1a2WhIjNb/rfXCFN1dwNcHUmU2mMTU38g0te2Wg4XpbsEA6t7M5TJ9rksuxv23hkxdbXUixoIqmKPXPlM28jwALNC5a
 MIME-Version: 1.0
-Reply-To: mrsdaniella.kyle@yandex.com
-Sender: munasalemmustapha@gmail.com
-Received: by 2002:ab0:60aa:0:0:0:0:0 with HTTP; Fri, 30 Apr 2021 13:46:41
- -0700 (PDT)
-From:   Mrs Daniella Kyle <mrsdaniellakyle6@gmail.com>
-Date:   Fri, 30 Apr 2021 13:46:41 -0700
-X-Google-Sender-Auth: nxEv-tavsCGiGE0VCoq1q47gjlI
-Message-ID: <CAKASgyJ-xOBHiFsi_16bxX5B3=kwi9nOQBw87U+fwmQvbZ1pzA@mail.gmail.com>
-Subject: ATM Visa card compensation, Thanks for your past effort
-To:     undisclosed-recipients:;
+X-Received: by 2002:a6b:6013:: with SMTP id r19mr5362028iog.208.1619815693058;
+ Fri, 30 Apr 2021 13:48:13 -0700 (PDT)
+Date:   Fri, 30 Apr 2021 13:48:13 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fc85d105c136baf5@google.com>
+Subject: [syzbot] BUG: sleeping function called from invalid context in
+ do_page_fault (2)
+From:   syzbot <syzbot+66bcf89bc98a2524351b@syzkaller.appspotmail.com>
+To:     boqun.feng@gmail.com, linux-kernel@vger.kernel.org,
+        longman@redhat.com, mingo@redhat.com, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, will@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -61,58 +47,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello,
 
-This message might come to you as surprises today, I just wanted to
-inform you that It is a very joyful moment for me to share this good
-news with you, although i have really missed you because you give me
-the faith to carry on despite all that happened,you really brought
-hope to my hopeless situation then, therefore i made a vow to myself
-that even if we fail to complete the transaction together,i must
-surely still compensate you.
+syzbot found the following issue on:
 
-To be very honest with you, It is a joyful moment for me and my family
-right now, so therefore am using this opportunity to inform you that
-have successfully move to Vietnam where am currently living with my
-business partner who assisted me to complete the transfer, but due to
-the willingness and acceptance you showed during my pain have decided
-to willingly compensated you and show my gratitude to you with these
-sum of $950,000.00 Nine Hundred and fifty Thousand US Dollars).
+HEAD commit:    7ae11635 riscv: keep interrupts disabled for BREAKPOINT ex..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+console output: https://syzkaller.appspot.com/x/log.txt?x=132778c1d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f8af20e245283c9a
+dashboard link: https://syzkaller.appspot.com/bug?extid=66bcf89bc98a2524351b
+userspace arch: riscv64
 
-I want you to accept it as a gift from the bottom of my heart, Have
-issued the check and I instructed the bank to roll the fund on an ATM
-credit card for security reasons,you can use the ATM card to withdraw
-money from any ATM machine world wide with a maximum of US$10,000
-daily.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-This vow I made to myself about compensating you has been in my mind
-so I am here to fulfill it to you, although I did not tell you what
-was in my mind, my bank account manager said you can receive the card
-and use it anywhere in this global world. Go ahead contact the Global
-ATM Alliance directly with this below information. Email Address:
-..... atmcardroyaldepartment106@outlook.com
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+66bcf89bc98a2524351b@syzkaller.appspotmail.com
 
- Name: ........... ....... Global ATM Visa Card Alliance
-Office Address; ...... 01BP 23 Rue Des Grands Moulins.Ouagadougou, Burkina Faso
-Email Address: ..... [atmcardroyaldepartment106@outlook.com]
-Name Of Manager In charge ATM CARD: Mrs Zoure Gueratou
+BUG: sleeping function called from invalid context at kernel/locking/rwsem.c:1352
+in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 6832, name: syz-executor.1
+Unable to handle kernel paging request at virtual address ffffffe024768000
+Oops [#1]
+Modules linked in:
+CPU: 1 PID: 6832 Comm: syz-executor.1 Not tainted 5.12.0-rc6-syzkaller-00183-g7ae11635ec90 #0
+Hardware name: riscv-virtio,qemu (DT)
+epc : ___might_sleep+0x21c/0x2c0 kernel/sched/core.c:8317
+ ra : ___might_sleep+0x21c/0x2c0 kernel/sched/core.c:8317
+epc : ffffffe00008456c ra : ffffffe00008456c sp : ffffffe07fdffd90
+ gp : ffffffe004588ad0 tp : ffffffe008680000 t0 : ffffffe004ffdbb7
+ t1 : ffffffc40ffbff52 t2 : 0000000000000000 s0 : ffffffe07fdffdd0
+ s1 : ffffffe024768000 a0 : ffffffe024768000 a1 : 0000000000000007
+ a2 : 1ffffffc048ed000 a3 : ffffffe00008456c a4 : 0000000000000000
+ a5 : ffffffe024768000 a6 : 0000000000f00000 a7 : ffffffe07fdffa97
+ s2 : 0000000000000000 s3 : 0000000000000100 s4 : ffffffe008680000
+ s5 : ffffffe0000274ec s6 : 0000000000000000 s7 : ffffffe07fdfffe0
+ s8 : 0000000000000214 s9 : ffffffe0071e4ed8 s10: 0000000000001000
+ s11: ffffffe003000c68 t3 : dd4b702f2cefd800 t4 : ffffffc40ffbff51
+ t5 : ffffffc40ffbff53 t6 : ffffffe07fdffa98
+status: 0000000000000100 badaddr: ffffffe024768000 cause: 000000000000000d
+Call Trace:
+[<ffffffe00008456c>] ___might_sleep+0x21c/0x2c0 kernel/sched/core.c:8317
+[<ffffffe00008466a>] __might_sleep+0x5a/0x8a kernel/sched/core.c:8282
+[<ffffffe002a996ec>] down_read+0x2e/0x1a4 kernel/locking/rwsem.c:1352
+[<ffffffe00000fef8>] mmap_read_lock include/linux/mmap_lock.h:117 [inline]
+[<ffffffe00000fef8>] do_page_fault+0x1e6/0x95e arch/riscv/mm/fault.c:263
+[<ffffffe000005586>] ret_from_exception+0x0/0x14
 
-Ask the manager to send you the ATM card and the pin code of the ATM
-card that i gave to you as compensation, So feel free and get in
-touched directly with the ATM office and instruct him where to send
-you the ATM card so that you can start to withdraw the money. Please
-do let me know immediately you receive it so that we can share the joy
-of your success.
 
-Presently I am very busy here in Vietnam because of the investment
-projects which I and my new partner are having at hand, I have given
-instructions to the ATM Visa card office on your behalf to release the
-ATM card which I gave to you as compensation. Therefore feel free and
-get in touch with him and he shall send the ATM card for you in order
-for you to start withdrawing the compensation money without delay.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-I and my family wish you best of luck in whatever business you shall
-invest this money into. Kindly let me know as soon you received the
-ATM visa card together with the pin code at your disposal.
-
-Thank you
-Yours Sincerely
-Daniela Kyle
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
