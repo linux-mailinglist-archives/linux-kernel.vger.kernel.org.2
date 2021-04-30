@@ -2,291 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E983700A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF2103700A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Apr 2021 20:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231194AbhD3Shu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 14:37:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230329AbhD3Shs (ORCPT
+        id S231216AbhD3Skk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 14:40:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46996 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229954AbhD3Skj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 14:37:48 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 193FBC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 11:36:59 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id t18so14067817wry.1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 11:36:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NFNZ7i0cF38YBK0xp7pTtVlEjV54KF0wRBddOCem090=;
-        b=cv/Wf1QAK11HQZOI0vXfs6ZfFzFZeSZj7zzbYxt2eOBjtwbqHqzO0PA+hrm7lYsx2+
-         /4rs2Ov7gsAAfPszq9WTiMvzjNBrLK/N9BAngwec4VkBxuWsf8qRJDTlSd633b7qrVdI
-         /Z3ODWHdIOKiFu05Oa+3TFcL4B9bal9e54kOPQNDiI/0mHtBl+X1JQBHtg8ixBRgnxme
-         E6quGVm4Rb0w89TKDZ3TSaBfvzc0t2EEuJ5IsnkJ/gQAUFM5YkyC/VRWG6vqXdyEODH0
-         7fHdoP0J9XkqS+BcKSUSIS/L5ZSggK6SS3gmHI1g2WIMowSrHtvJVv9543cZZsuDI5UU
-         a8pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NFNZ7i0cF38YBK0xp7pTtVlEjV54KF0wRBddOCem090=;
-        b=ZdveYWkqRXIu8DQavQBoEfG/pk5Ges9EICPftysUbkwjMF5K3n/170jSpTmb02cs8l
-         tZVEHg59CGwS30diMhMXGeIRyQkRtUKTOcN+x2NRVNT+F+J1aZ2hQnA2dNmjA5AYV+Zc
-         zrSovCLALHu0A6FazcpQzLZ5V1hi8EOwkNoG4dSZTnH1NThEBdQGBvM+j+f9WdMtfUs8
-         ez5Yy2B5gvQW7OuagcQ2IVTajFIAJiJUlsoE64v2ap1jU3LAQeV22x2+F3tppzbFIyGI
-         MiRvdyOlkNdBfMp6ziRORX1SaphJH+XndQ9IBqbZKvbZhS04JEQIS49EJWGu+D7UwWIN
-         3eiQ==
-X-Gm-Message-State: AOAM53035ZLfeIrBrskrlRdqfCbrCaI/l99/6UZA+OxGmwdEy8OZrhCw
-        x476e+8fR/t+WWNfMZoEQLFwzQ==
-X-Google-Smtp-Source: ABdhPJyVTlMVqspQZFB2Xwk9VhB3Mi9Ja1/UO42nXr0T9aMT68OKgXA1pPSFePN2Sx31hts9mJpjjA==
-X-Received: by 2002:a5d:4e52:: with SMTP id r18mr8544205wrt.179.1619807818496;
-        Fri, 30 Apr 2021 11:36:58 -0700 (PDT)
-Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id i2sm3927854wro.0.2021.04.30.11.36.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 11:36:57 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     robh+dt@kernel.org, vkoul@kernel.org
-Cc:     devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH v3] dt-bindings: dma: convert arm-pl08x to yaml
-Date:   Fri, 30 Apr 2021 18:36:51 +0000
-Message-Id: <20210430183651.919317-1-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 30 Apr 2021 14:40:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619807990;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VKM7JOerLxCkpDJY1rd1Atdc/Vr9eHPMO++f4IYLagk=;
+        b=hkFMXrB3PuZIZzaqxttRZZ6aVM8FdzVV9NKunGmMvX+80uf/+i5m0ysb5AM+hVGUY8/obH
+        1UqM2qo+0ATcQi+i6cLKHLo4VgBmfm6eprignyRcrkkIQAMU1zBzcdidJvKD9HhKur8uLT
+        6gAAsvoz+k/FrHCu2oM28zTiKFExozQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-231-L8Vm7CR2M1GEMld4nERLwA-1; Fri, 30 Apr 2021 14:39:47 -0400
+X-MC-Unique: L8Vm7CR2M1GEMld4nERLwA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 685F718BA280;
+        Fri, 30 Apr 2021 18:39:46 +0000 (UTC)
+Received: from redhat.com (ovpn-113-225.phx2.redhat.com [10.3.113.225])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C14725D9CC;
+        Fri, 30 Apr 2021 18:39:45 +0000 (UTC)
+Date:   Fri, 30 Apr 2021 12:39:45 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Shanker Donthineni <sdonthineni@nvidia.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Sinan Kaya <okaya@kernel.org>,
+        Vikram Sethi <vsethi@nvidia.com>,
+        Amey Narkhede <ameynarkhede03@gmail.com>
+Subject: Re: [PATCH v4 1/2] PCI: Add support for a function level reset
+ based on _RST method
+Message-ID: <20210430123945.54dd479c@redhat.com>
+In-Reply-To: <20210429004907.29044-1-sdonthineni@nvidia.com>
+References: <20210429004907.29044-1-sdonthineni@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Converts dma/arm-pl08x.txt to yaml.
-In the process, I add an example for the faraday variant.
+On Wed, 28 Apr 2021 19:49:06 -0500
+Shanker Donthineni <sdonthineni@nvidia.com> wrote:
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
-Changes since v1:
-- fixes yamllint warning about indent
-- added select
+> The _RST is a standard method specified in the ACPI specification. It
+> provides a function level reset when it is described in the acpi_device
+> context associated with PCI-device.
+> 
+> Implement a new reset function pci_dev_acpi_reset() for probing RST
+> method and execute if it is defined in the firmware. The ACPI binding
+> information is available only after calling device_add(), so move
+> pci_init_reset_methods() to end of the pci_device_add().
+> 
+> The default priority of the acpi reset is set to below device-specific
+> and above hardware resets.
+> 
+> Signed-off-by: Shanker Donthineni <sdonthineni@nvidia.com>
+> ---
+> changes since v2:
+>  - fix typo in the commit text
+> changes since v2:
+>  - rebase patch on top of https://lore.kernel.org/linux-pci/20210409192324.30080-1-ameynarkhede03@gmail.com/
+> 
+>  drivers/pci/pci.c   | 30 ++++++++++++++++++++++++++++++
+>  drivers/pci/probe.c |  2 +-
+>  include/linux/pci.h |  2 +-
+>  3 files changed, 32 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 664cf2d358d6..510f9224a3b0 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -5076,6 +5076,35 @@ static void pci_dev_restore(struct pci_dev *dev)
+>  		err_handler->reset_done(dev);
+>  }
+>  
+> +/**
+> + * pci_dev_acpi_reset - do a function level reset using _RST method
+> + * @dev: device to reset
+> + * @probe: check if _RST method is included in the acpi_device context.
+> + */
+> +static int pci_dev_acpi_reset(struct pci_dev *dev, int probe)
+> +{
+> +#ifdef CONFIG_ACPI
+> +	acpi_handle handle = ACPI_HANDLE(&dev->dev);
+> +
+> +	/* Return -ENOTTY if _RST method is not included in the dev context */
+> +	if (!handle || !acpi_has_method(handle, "_RST"))
+> +		return -ENOTTY;
+> +
+> +	/* Return 0 for probe phase indicating that we can reset this device */
+> +	if (probe)
+> +		return 0;
+> +
+> +	/* Invoke _RST() method to perform a function level reset */
+> +	if (ACPI_FAILURE(acpi_evaluate_object(handle, "_RST", NULL, NULL))) {
+> +		pci_warn(dev, "Failed to reset the device\n");
+> +		return -EINVAL;
+> +	}
+> +	return 0;
+> +#else
+> +	return -ENOTTY;
+> +#endif
+> +}
+> +
+>  /*
+>   * The ordering for functions in pci_reset_fn_methods
+>   * is required for reset_methods byte array defined
+> @@ -5083,6 +5112,7 @@ static void pci_dev_restore(struct pci_dev *dev)
+>   */
+>  const struct pci_reset_fn_method pci_reset_fn_methods[] = {
+>  	{ .reset_fn = &pci_dev_specific_reset, .name = "device_specific" },
+> +	{ .reset_fn = &pci_dev_acpi_reset, .name = "acpi_reset" },
 
-Changes since v2:
-- fixed all Rob's comment on v2
+Would it make sense to name this "acpi_rst" after the method name?
+Otherwise "_reset" is a bit redundant to the sysfs attribute, we could
+simply name it "acpi" to indicate an ACPI based reset.  Thanks,
 
- .../devicetree/bindings/dma/arm-pl08x.txt     |  59 --------
- .../devicetree/bindings/dma/arm-pl08x.yaml    | 136 ++++++++++++++++++
- 2 files changed, 136 insertions(+), 59 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/dma/arm-pl08x.txt
- create mode 100644 Documentation/devicetree/bindings/dma/arm-pl08x.yaml
+Alex
 
-diff --git a/Documentation/devicetree/bindings/dma/arm-pl08x.txt b/Documentation/devicetree/bindings/dma/arm-pl08x.txt
-deleted file mode 100644
-index 0ba81f79266f..000000000000
---- a/Documentation/devicetree/bindings/dma/arm-pl08x.txt
-+++ /dev/null
-@@ -1,59 +0,0 @@
--* ARM PrimeCells PL080 and PL081 and derivatives DMA controller
--
--Required properties:
--- compatible: "arm,pl080", "arm,primecell";
--	      "arm,pl081", "arm,primecell";
--	      "faraday,ftdmac020", "arm,primecell"
--- arm,primecell-periphid: on the FTDMAC020 the primecell ID is not hard-coded
--  in the hardware and must be specified here as <0x0003b080>. This number
--  follows the PrimeCell standard numbering using the JEP106 vendor code 0x38
--  for Faraday Technology.
--- reg: Address range of the PL08x registers
--- interrupt: The PL08x interrupt number
--- clocks: The clock running the IP core clock
--- clock-names: Must contain "apb_pclk"
--- lli-bus-interface-ahb1: if AHB master 1 is eligible for fetching LLIs
--- lli-bus-interface-ahb2: if AHB master 2 is eligible for fetching LLIs
--- mem-bus-interface-ahb1: if AHB master 1 is eligible for fetching memory contents
--- mem-bus-interface-ahb2: if AHB master 2 is eligible for fetching memory contents
--- #dma-cells: must be <2>. First cell should contain the DMA request,
--              second cell should contain either 1 or 2 depending on
--              which AHB master that is used.
--
--Optional properties:
--- dma-channels: contains the total number of DMA channels supported by the DMAC
--- dma-requests: contains the total number of DMA requests supported by the DMAC
--- memcpy-burst-size: the size of the bursts for memcpy: 1, 4, 8, 16, 32
--  64, 128 or 256 bytes are legal values
--- memcpy-bus-width: the bus width used for memcpy in bits: 8, 16 or 32 are legal
--  values, the Faraday FTDMAC020 can also accept 64 bits
--
--Clients
--Required properties:
--- dmas: List of DMA controller phandle, request channel and AHB master id
--- dma-names: Names of the aforementioned requested channels
--
--Example:
--
--dmac0: dma-controller@10130000 {
--	compatible = "arm,pl080", "arm,primecell";
--	reg = <0x10130000 0x1000>;
--	interrupt-parent = <&vica>;
--	interrupts = <15>;
--	clocks = <&hclkdma0>;
--	clock-names = "apb_pclk";
--	lli-bus-interface-ahb1;
--	lli-bus-interface-ahb2;
--	mem-bus-interface-ahb2;
--	memcpy-burst-size = <256>;
--	memcpy-bus-width = <32>;
--	#dma-cells = <2>;
--};
--
--device@40008000 {
--	...
--	dmas = <&dmac0 0 2
--		&dmac0 1 2>;
--	dma-names = "tx", "rx";
--	...
--};
-diff --git a/Documentation/devicetree/bindings/dma/arm-pl08x.yaml b/Documentation/devicetree/bindings/dma/arm-pl08x.yaml
-new file mode 100644
-index 000000000000..3bd9eea543ca
---- /dev/null
-+++ b/Documentation/devicetree/bindings/dma/arm-pl08x.yaml
-@@ -0,0 +1,136 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/dma/arm-pl08x.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: ARM PrimeCells PL080 and PL081 and derivatives DMA controller
-+
-+maintainers:
-+  - Vinod Koul <vkoul@kernel.org>
-+
-+allOf:
-+  - $ref: "dma-controller.yaml#"
-+
-+# We need a select here so we don't match all nodes with 'arm,primecell'
-+select:
-+  properties:
-+    compatible:
-+      contains:
-+        enum:
-+          - arm,pl080
-+          - arm,pl081
-+  required:
-+    - compatible
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - enum:
-+              - arm,pl080
-+              - arm,pl081
-+          - const: arm,primecell
-+      - items:
-+          - const: faraday,ftdma020
-+          - const: arm,pl080
-+          - const: arm,primecell
-+
-+  reg:
-+    maxItems: 1
-+    description: Address range of the PL08x registers
-+
-+  interrupts:
-+    minItems: 1
-+    description: The PL08x interrupt number
-+
-+  clocks:
-+    minItems: 1
-+    description: The clock running the IP core clock
-+
-+  clock-names:
-+    maxItems: 1
-+
-+  lli-bus-interface-ahb1:
-+    type: boolean
-+    description: if AHB master 1 is eligible for fetching LLIs
-+
-+  lli-bus-interface-ahb2:
-+    type: boolean
-+    description: if AHB master 2 is eligible for fetching LLIs
-+
-+  mem-bus-interface-ahb1:
-+    type: boolean
-+    description: if AHB master 1 is eligible for fetching memory contents
-+
-+  mem-bus-interface-ahb2:
-+    type: boolean
-+    description: if AHB master 2 is eligible for fetching memory contents
-+
-+  memcpy-burst-size:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum:
-+      - 1
-+      - 4
-+      - 8
-+      - 16
-+      - 32
-+      - 64
-+      - 128
-+      - 256
-+    description: the size of the bursts for memcpy
-+
-+  memcpy-bus-width:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum:
-+      - 8
-+      - 16
-+      - 32
-+      - 64
-+    description: bus width used for memcpy in bits. FTDMAC020 also accept 64 bits
-+
-+required:
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - "#dma-cells"
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    dmac0: dma-controller@10130000 {
-+      compatible = "arm,pl080", "arm,primecell";
-+      reg = <0x10130000 0x1000>;
-+      interrupt-parent = <&vica>;
-+      interrupts = <15>;
-+      clocks = <&hclkdma0>;
-+      clock-names = "apb_pclk";
-+      lli-bus-interface-ahb1;
-+      lli-bus-interface-ahb2;
-+      mem-bus-interface-ahb2;
-+      memcpy-burst-size = <256>;
-+      memcpy-bus-width = <32>;
-+      #dma-cells = <2>;
-+    };
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #include <dt-bindings/reset/cortina,gemini-reset.h>
-+    #include <dt-bindings/clock/cortina,gemini-clock.h>
-+    dma-controller@67000000 {
-+      compatible = "faraday,ftdma020", "arm,pl080", "arm,primecell";
-+      /* Faraday Technology FTDMAC020 variant */
-+      arm,primecell-periphid = <0x0003b080>;
-+      reg = <0x67000000 0x1000>;
-+      interrupts = <9 IRQ_TYPE_EDGE_RISING>;
-+      resets = <&syscon GEMINI_RESET_DMAC>;
-+      clocks = <&syscon GEMINI_CLK_AHB>;
-+      clock-names = "apb_pclk";
-+      /* Bus interface AHB1 (AHB0) is totally tilted */
-+      lli-bus-interface-ahb2;
-+      mem-bus-interface-ahb2;
-+      memcpy-burst-size = <256>;
-+      memcpy-bus-width = <32>;
-+      #dma-cells = <2>;
-+    };
--- 
-2.26.3
+
+>  	{ .reset_fn = &pcie_reset_flr, .name = "flr" },
+>  	{ .reset_fn = &pci_af_flr, .name = "af_flr" },
+>  	{ .reset_fn = &pci_pm_reset, .name = "pm" },
+> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> index 4764e031a44b..d4becd6ffb52 100644
+> --- a/drivers/pci/probe.c
+> +++ b/drivers/pci/probe.c
+> @@ -2403,7 +2403,6 @@ static void pci_init_capabilities(struct pci_dev *dev)
+>  	pci_rcec_init(dev);		/* Root Complex Event Collector */
+>  
+>  	pcie_report_downtraining(dev);
+> -	pci_init_reset_methods(dev);
+>  }
+>  
+>  /*
+> @@ -2494,6 +2493,7 @@ void pci_device_add(struct pci_dev *dev, struct pci_bus *bus)
+>  	dev->match_driver = false;
+>  	ret = device_add(&dev->dev);
+>  	WARN_ON(ret < 0);
+> +	pci_init_reset_methods(dev);
+>  }
+>  
+>  struct pci_dev *pci_scan_single_device(struct pci_bus *bus, int devfn)
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index 9f8347799634..b4a5d2146542 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -49,7 +49,7 @@
+>  			       PCI_STATUS_SIG_TARGET_ABORT | \
+>  			       PCI_STATUS_PARITY)
+>  
+> -#define PCI_RESET_FN_METHODS 5
+> +#define PCI_RESET_FN_METHODS 6
+>  
+>  /*
+>   * The PCI interface treats multi-function devices as independent
 
