@@ -2,79 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E053704BC
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 03:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6EF63704CF
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 03:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231432AbhEABvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 21:51:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55612 "EHLO
+        id S231335AbhEAB7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 21:59:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230508AbhEABvc (ORCPT
+        with ESMTP id S230508AbhEAB7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 21:51:32 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCFEEC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 18:50:42 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id 10so369281pfl.1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 18:50:42 -0700 (PDT)
+        Fri, 30 Apr 2021 21:59:04 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 938F5C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 18:58:15 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id i13so368087pfu.2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 18:58:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ozd6VF4VBSI5hJlHvANgfOYMt6KOui3CNQPSfuNTfQ8=;
-        b=b+JDT3AWwu9N0GRp5QhVwxqHKUG78K+dd+wSEbWugHxKKnwu3m1yiL+Gsp6Ljf4iKb
-         JMR/EO2vlaN7r4EMQMmJ+uvLlo1dGDZZD1vk/c+S5KKC5UvyQ6ZhuIdQwK6EfkDJIh0U
-         ShmOUstjS2MMSweHvXYV+UgNKxjleveEecH9qInlFICsUAK5KFSoth9Zw7fu5uMLnMkQ
-         gIGS6t5N7uo6V9kCntttT49ngYKMamBWkS0CYdW7F8DB1ZbpnMIVj/Z0ZfomUDDz8BE2
-         F8QLNZJd0hys1dWa5ILcTW1ndM4uPsnW3ez0LxoThRt7oLcS3QYbs6VLIxNdzGOmp8qL
-         Qn6A==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yVa38kJPC+cK1H2CrwZPR6KXx0sym2UwEQNGXo2MV9k=;
+        b=LouRuo1KhG5HfKIE18SSLzzyAiL6qq08DRIzJ2RKnYPIofDPinrzzMlcc4/KlT2b8s
+         KHy0OJ0QHBKlaxhq72uCdxEHcSm4TjjMIprzqGyb1d3j3gf4fVsVXFif2kDsUzrPqkeF
+         RACajck1q5OcLlEnKBweAMw/2jDAw1NONEBH0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ozd6VF4VBSI5hJlHvANgfOYMt6KOui3CNQPSfuNTfQ8=;
-        b=DPAJGO7FKCY3xDYmj3Z9VgyR3ptCDjMe/TrZtziYPB/Tt9VpG58DKt/sB46FcnzwvA
-         H1MJ8LreDWRpOAeLGF5MUhIwTBjFbPIEdcblMu/mb0u54fXuw+CW0jw8p6ECwlt1uUTs
-         bOGTU6eEGNeROzVpUsGgfFjK1+zmfSpRKkCHtgBE1dhvN/4evPRGKgfx6H5iTmfWyku3
-         pOkUxu+T6PGrF6oh2zFUC9fmYHKXQu9dSJnMJxSV852zEiXvy3oDJN01iYdfvAdlDLgg
-         ch1C2ptTNaMlNt9zKIX2Z/qY/840FTkZYArF6kvbsEX9Gk5I4nVy/Ol6LsBFRM7zg4bk
-         YIQQ==
-X-Gm-Message-State: AOAM532y5CFgiVwcuUwyUyy8OD6CC1EAhtn/Ixl76vj6dCQvHgUUrF4B
-        pfYkW1eBTo7OPgBBR/MrA734kNkd5try2A8iIxrRhw==
-X-Google-Smtp-Source: ABdhPJwojJeOuN6oE6yy/4ZraukwNSHvsD+eP0ETgWX24l0YudXi/7UALMh1waxOAAlx1TfV/6juez2qo0MfyNOmz3c=
-X-Received: by 2002:a63:a1d:: with SMTP id 29mr7324748pgk.271.1619833842289;
- Fri, 30 Apr 2021 18:50:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yVa38kJPC+cK1H2CrwZPR6KXx0sym2UwEQNGXo2MV9k=;
+        b=bjjDFx5N9S2+3gSSMkB+VIUx/c04cRK+gHCgAz2LRxiZu/2E92Dm5k5U392EmRjGv0
+         WrFLuYAZ4kedf5lln/LaiUSyrDmha6R23aJI7P1pJ0B/wbM3x2va0tL4+mucE8a1h6tA
+         YvRW1csvnmId8LJNTBuC4q74q85K4ysNIWvXd5CCA01vSvAYlOJrMAcD3sTeaEsGDq43
+         IN2XyPM52jnwH2EJ6sMJjyYG/x2/gJCsNs+XQsRIMWlhOoJr4cVCVSjLgHZQbzSgYXzk
+         H61yQPmCTOi14aEG+ZJ5HcdCdGXEqKKF2I+NGCNONWTEe893wHGJ3YuavoKH2Otx6eaH
+         TuZw==
+X-Gm-Message-State: AOAM531JMrKAwOXOMXUEY+TVMn9DiajuR/VgXtQyxaJO9B1ysoYIzU5E
+        2jRA9lbbKj3dyQxNRCq/wFIF1g==
+X-Google-Smtp-Source: ABdhPJwsJWJrJdg0SGvIuKRDkm1rsOTTCGC7m82O1elQFz0E4yHPLMvoc2lCerKHsvpWvgxopmZcCg==
+X-Received: by 2002:a63:5503:: with SMTP id j3mr7371724pgb.256.1619834295062;
+        Fri, 30 Apr 2021 18:58:15 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:8be7:e987:d00a:1442])
+        by smtp.gmail.com with ESMTPSA id x38sm3241502pfu.22.2021.04.30.18.58.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 18:58:14 -0700 (PDT)
+Date:   Sat, 1 May 2021 10:58:10 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv4 0/5] media: uvcvideo: implement UVC 1.5 ROI
+Message-ID: <YIy1suAHDrArv8fz@google.com>
+References: <20210430112611.475039-1-senozhatsky@chromium.org>
+ <8a175117-d142-9265-65ee-43302bb82444@xs4all.nl>
 MIME-Version: 1.0
-References: <20210430131733.192414-1-rsaripal@amd.com> <20210430131733.192414-2-rsaripal@amd.com>
- <CAAeT=Fw-nt5h3DhRCQr8Ma71NiP7dHB+WD2hie_55SpCHR=mDQ@mail.gmail.com> <e53887f8-c09d-28db-5041-bf8822370c46@amd.com>
-In-Reply-To: <e53887f8-c09d-28db-5041-bf8822370c46@amd.com>
-From:   Reiji Watanabe <reijiw@google.com>
-Date:   Fri, 30 Apr 2021 18:50:26 -0700
-Message-ID: <CAAeT=FyAmSxKy5cpGLBH_kqDohXeQOdi4r02KjQO_vycq=4y=Q@mail.gmail.com>
-Subject: Re: [PATCH v4 1/1] x86/cpufeatures: Implement Predictive Store
- Forwarding control.
-To:     "Saripalli, RK" <rsaripal@amd.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, Borislav Petkov <bp@alien8.de>, hpa@zytor.com,
-        Jonathan Corbet <corbet@lwn.net>, bsd@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8a175117-d142-9265-65ee-43302bb82444@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Considering KVM/virtualization for a CPU that has X86_FEATURE_PSFD
-> > but no other existing feature with MSR_IA32_SPEC_CTRL, if a host
-> > doesn't enable PSFD with the new parameter, the host doesn't have
-> > X86_FEATURE_MSR_SPEC_CTRL.  Then, it would be a problem if its
-> > guests want to use PSFD looking at x86_virt_spec_ctrl().
-> > (I'm not sure how you will change your previous KVM patch though)
->
-> Reiji, you are correct that X86_FEATURE_MSR_SPEC_CTRL should be enabled so KVM guests can use PSFD
-> even if host does not use it.
-> I have this change in my KVM patch.
+Hi Hans,
 
+On (21/04/30 14:49), Hans Verkuil wrote:
+> Hi Sergey,
+> 
+> On 30/04/2021 13:26, Sergey Senozhatsky wrote:
+> > Hello,
+> > 
+> > 	This patch set implements UVC 1.5 ROI using v4l2_selection API.
+> 
+> Is the selection API the right approach for this? Wouldn't it make
+> sense to use controls instead?
 
-Thank you for the response. Yes, that sounds good.
+[..]
 
-Thanks,
-Reiji
+> If this was discussed before, then can you give a me pointer to that discussion?
+> I couldn't find anything for that, but I didn't look very long for it :-)
+
+I believe Tomasz raised this question over IRC back in the days and there
+was no clear conclusion at the end: selection API vs control - 50/50 split.
+After internal discussions we decided to go with the selection API.
+
+> In any case, it doesn't really feel like it is the right API for this job.
+
+Well, we pass a rectangle to the driver. The driver already knows what
+to do with some of those rectangles, we teach it to handle one more. So
+we don't introduce anything new, but use the existing API instead.
