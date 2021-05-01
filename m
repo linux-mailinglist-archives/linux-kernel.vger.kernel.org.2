@@ -2,94 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2DE37045C
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 02:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57FF1370461
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 02:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231392AbhEAA0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 20:26:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbhEAA0E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 20:26:04 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC4EC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 17:25:15 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id j10so19545269lfb.12
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 17:25:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nUs/JERTrW3HUrDL/wVgoAkdrrpfaLfIyhV+eubJz2w=;
-        b=ovfeJotqKRsfWrPIH6AIxi/XyxgV6ULfCeDnbzlEglpH+gp/04eFGbHmqgeptZTVki
-         +cRjF3KDoiPmfsOylvLmq9YJ+5oVUtZezoVdzJQRGmHbiHOr5+mcn/S9yT+yZkGYkOVQ
-         40grV2eLwoILokTAGYdmPUS19V78mI8XFkXWyvWBqM4B4PBTl3cxTyy83t9WHv7BFKlT
-         pxsqNAvzWLJ2uqb98WFaSSM6BmSN8Q65f+C6HBk6/XeCYl3vSbJmmrw7AQUu4IXHpub+
-         acTOcakDRFyCPDtvu50Db9IB+E5EteLRCjViFP8rcIQPLPDYI2o5yK5wT7SNJn1gqJtf
-         LoLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nUs/JERTrW3HUrDL/wVgoAkdrrpfaLfIyhV+eubJz2w=;
-        b=P+PWY8tWNBBnYnIR0H1cfVdIxhWjzx9wfN+sgrkZfPbC1fhQynrJGFFcliiPfVjUva
-         qwgExKKH6S/rDowlkBQ1x/CEUthX+YZ3xADcZbg09EPhqCwsrIYMICrKZ2HDf0F42SBK
-         W20Jeu4wM4PF6ZK8/Y5ep8QXzeaZOQ6LvB2hQ2DtJ78aefpvik5vi0YHs6zaeHLYJvop
-         PkvhYbzvCqajclgDvGhUwZelbrgCZeNZ2pzKEF6r5LHnrSVQTE05g0qTEgY02j5Gvp+X
-         X5+jx3uGeHGwxdJg1xRNBPuxJwLSl9PztlSOK7GLpECb9JHq3kuLm5zZCg0acOfUGlli
-         COmA==
-X-Gm-Message-State: AOAM530vPOw9Yb/L2EJnJgt/kUTjlxYvNqlNhpJTTVoqSwDPxDLg+wW+
-        PIufKQZcvte4dZkMJbDqPJCHn16qYnZzjkqzcVXJEA==
-X-Google-Smtp-Source: ABdhPJwrCGjFzrIGadve5J2FKRLLJTGo55M0OYqu4dLKi7taQ4gue28o+B8PwwPcGzfInNpsLVa4xR4vwG+ra3TmWNI=
-X-Received: by 2002:a05:6512:94d:: with SMTP id u13mr4794407lft.368.1619828713748;
- Fri, 30 Apr 2021 17:25:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAHk-=wjmNOoX8iPtYsM8PVa+7DE1=5bv-XVe_egP0ZOiuT=7CQ@mail.gmail.com>
- <CAKwvOdmMF_v9TzBtFn2S1qSS_yCDO8D-u3WhBehUM7gzjcdjUQ@mail.gmail.com>
- <CAKwvOdk+V2dc31guafFM=N2ez4SrwCmah+mimUG3MzPMx_2efQ@mail.gmail.com>
- <CAKwvOdn3uXniVedgtpD8QFAd-hdVuVjGPa4-n0h64PTxT4XhWg@mail.gmail.com> <CAKwvOdm3D=dqKw=kx46PLaiqfHOZJL3QFKGc8kxqJqpwdFFWqw@mail.gmail.com>
-In-Reply-To: <CAKwvOdm3D=dqKw=kx46PLaiqfHOZJL3QFKGc8kxqJqpwdFFWqw@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 30 Apr 2021 17:25:02 -0700
-Message-ID: <CAKwvOdkp_P8BCtFuKqDrtC_=A89ZfDf66Yr3FL2e=ojwv4KaMA@mail.gmail.com>
-Subject: Re: Very slow clang kernel config ..
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S231596AbhEAA1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 20:27:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230298AbhEAA1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 20:27:51 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E46386143D;
+        Sat,  1 May 2021 00:27:02 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1lcdTJ-008tCz-Oj; Fri, 30 Apr 2021 20:27:01 -0400
+Message-ID: <20210501002625.540979896@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Fri, 30 Apr 2021 20:26:25 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [for-next][PATCH 0/2] tracing: A couple of last minute fixes before pushing to 5.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 5:23 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Fri, Apr 30, 2021 at 5:19 PM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > A quick:
-> > $ perf record -e cycles:pp --call-graph lbr make LLVM=1 LLVM_IAS=1
-> > -j72 allmodconfig
-> > $ perf report --no-children --sort=dso,symbol
-> > shows:
-> >      2.35%  [unknown]                [k] 0xffffffffabc00fc7
-> > +    2.29%  libc-2.31.so             [.] _int_malloc
-> >      1.24%  libc-2.31.so             [.] _int_free
-> > +    1.23%  ld-2.31.so               [.] do_lookup_x
->
-> ^ bfd
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+for-next
+
+Head SHA1: aafe104aa9096827a429bc1358f8260ee565b7cc
 
 
-> > +    0.63%  ld-2.31.so               [.] _dl_lookup_symbol_x
->
-> ^ bfd
+Steven Rostedt (VMware) (2):
+      tracing: Map all PIDs to command lines
+      tracing: Restructure trace_clock_global() to never block
 
-Ah, no, sorry, these are the runtime link editor/loader. So probably
-spending quite some time resolving symbols in large binaries.
-
--- 
-Thanks,
-~Nick Desaulniers
+----
+ kernel/trace/trace.c       | 41 +++++++++++++++--------------------------
+ kernel/trace/trace_clock.c | 44 ++++++++++++++++++++++++++++++--------------
+ 2 files changed, 45 insertions(+), 40 deletions(-)
