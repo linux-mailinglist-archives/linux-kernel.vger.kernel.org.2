@@ -2,96 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BED3704A3
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 03:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 855B13704AF
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 03:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231342AbhEABMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 21:12:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47328 "EHLO
+        id S231316AbhEABXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 21:23:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230226AbhEABMs (ORCPT
+        with ESMTP id S230226AbhEABXg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 21:12:48 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 875D0C06174A;
-        Fri, 30 Apr 2021 18:11:58 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id i21-20020a05600c3555b029012eae2af5d4so2541461wmq.4;
-        Fri, 30 Apr 2021 18:11:58 -0700 (PDT)
+        Fri, 30 Apr 2021 21:23:36 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B8D7C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 18:22:47 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 12so112498053lfq.13
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 18:22:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=xPblVCEaArGgHbp1X7XGnW+D1CWWpswQPWTndCDP/GI=;
-        b=sHVQuBjXOSBuWh2JrfAgHReMokw8R2v3/fzfk5cpRU3KSpYV8w9vB/rxJUetPrzkYS
-         YiVVSrHqr5KnYnReQ1xLsRva9e98uzb+XwqYR4IguT20fBzvhVC/l3D7IED5NYH7eki8
-         oXcIshoTY6SZLNddkMPiocaP73Esc/hJk79NxsRKfCxan5C74PKXlWhKAubKZEqXtL9R
-         SbV2r2YLBiATpuccu7EFWEDcybLAVH1c7nKSQwT8qRrl5Gz5GorEzi7ElFG5AQfb9r+B
-         XNyp1+cAgjVHVwXoLOkgwmJ+t4/k6+jJGxVT2xVbj7GBlLVCGxFM8C+hNAwMtKwGnL5E
-         CEfQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AYQ9Il+dA/pq2ZY5nJ7eyP52AYYn0pZLbsxAJBCe+mw=;
+        b=cWa96zKJSn/iv11BQQ85n+L5O6NSSLrS/x4DnwB4QnZGc2VleTsOV+GzzeiyILVulW
+         dqsQTIGaohhzpoupQQpDsyRxUPXu4Mzv/NoilAB+OJCOCWYzm+FJxWM26b7kGfiQBtWu
+         JNiOxboSIimSA5d1tKM0uRpO+/861n7M5g61E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=xPblVCEaArGgHbp1X7XGnW+D1CWWpswQPWTndCDP/GI=;
-        b=BHQazefE6UEKn2dRCg/RU/pxqjeCT9pAr8oT3ChyiAI++N5BwTmRb8aa00U6D8+vKJ
-         yCwqZr8G6c7sNC+m+eDDO/x3i+IQzW0CRpkoHSKb17NqFfs/9hrB69NtQwGiaUmLnLRY
-         vfSGw/dtAHEsB5e/9mhUpjDJyOQMYcJBWGXGIyt+rW9ibxmRJyFMoGDdt+bOUJJuAmdr
-         y4nZg0sMuEkj2T39I6N9/NVsbGNyqIGQWqe1G+Bi2lnSqJU/Q7EtYSqQDMUfkLIC4OMX
-         GdPjWXhmPY+uLN7+vUmQZ3niOly1hHbtH0V/xniCcE1evxhCZ9sjsARj6b53wZDGJE5g
-         S7KQ==
-X-Gm-Message-State: AOAM530Yk9FFmTVsme3e/UXDH2AC9HCXTrCZtNca26yCUstrmPm1oVH9
-        SazORtg9ERnbeSwQEuckzBY=
-X-Google-Smtp-Source: ABdhPJz3D8kChOC5NxvJr0DA1jCNSsf/HtSQbVWqTUdO9jRcj/nR8Of5KWBgCnraatZIpAeaS4AZBw==
-X-Received: by 2002:a05:600c:221a:: with SMTP id z26mr11748140wml.93.1619831517149;
-        Fri, 30 Apr 2021 18:11:57 -0700 (PDT)
-Received: from localhost.localdomain ([41.62.193.191])
-        by smtp.gmail.com with ESMTPSA id y5sm4081960wrm.61.2021.04.30.18.11.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 18:11:56 -0700 (PDT)
-From:   Khaled ROMDHANI <khaledromdhani216@gmail.com>
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-Cc:     Khaled ROMDHANI <khaledromdhani216@gmail.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH-V3] fs/btrfs: Fix uninitialized variable
-Date:   Sat,  1 May 2021 02:11:36 +0100
-Message-Id: <20210501011136.29240-1-khaledromdhani216@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AYQ9Il+dA/pq2ZY5nJ7eyP52AYYn0pZLbsxAJBCe+mw=;
+        b=GKjkUifEa0NvyhClrk9aB3TDUAULiu80TnotoZRpZisSl/B2xzfzqOrShXW/H4Ua9X
+         uwVcO5cC75GN0QY1MIOv6kbEuJprSUkPh8giEiqUWC5Po5AVDE9ScXixAR8oKl1X95MK
+         o0Z8iHfqJP6kLQFnEfxG+OnG6ddnVsqsphUe+XPlWNv8n0iv8XtIbONL4okJ3oBd32NJ
+         aSzLrMXXwvEc/VyxiXTPpEiLII0wzl5ZmIHfBL3qkCAbQbTpaluyboONcVhOtnIOfgx8
+         ELNT5VL6Ir2H0pYDJLfh0c/3aiSrwzFX1nJ3NfdWygCKlbMF/kLdVEw/M57s/Aw4nFH6
+         vjgg==
+X-Gm-Message-State: AOAM533jSpLLkgMCxzveMgjgdTbtN3Iazhnhgn6HGORrTojZYECk4Z/h
+        bTmHCaAfPCMbWhgFaqlZNPXjr40HCB5MbTGq
+X-Google-Smtp-Source: ABdhPJxpB+cB13J8TXUEDH9HXcwRaKp0sWX/OKZwHf9JTzlAhYhwQ6K0xiny7WRZ8w7fP8rGgfCukg==
+X-Received: by 2002:a19:e015:: with SMTP id x21mr5323306lfg.390.1619832165850;
+        Fri, 30 Apr 2021 18:22:45 -0700 (PDT)
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
+        by smtp.gmail.com with ESMTPSA id n13sm433219lfa.209.2021.04.30.18.22.45
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Apr 2021 18:22:45 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id s9so334573ljj.6
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 18:22:45 -0700 (PDT)
+X-Received: by 2002:a2e:b555:: with SMTP id a21mr5593886ljn.507.1619832164814;
+ Fri, 30 Apr 2021 18:22:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAHk-=wjmNOoX8iPtYsM8PVa+7DE1=5bv-XVe_egP0ZOiuT=7CQ@mail.gmail.com>
+ <CAKwvOdmMF_v9TzBtFn2S1qSS_yCDO8D-u3WhBehUM7gzjcdjUQ@mail.gmail.com>
+ <CAKwvOdk+V2dc31guafFM=N2ez4SrwCmah+mimUG3MzPMx_2efQ@mail.gmail.com>
+ <CAKwvOdn3uXniVedgtpD8QFAd-hdVuVjGPa4-n0h64PTxT4XhWg@mail.gmail.com>
+ <CAKwvOdm3D=dqKw=kx46PLaiqfHOZJL3QFKGc8kxqJqpwdFFWqw@mail.gmail.com> <CAKwvOdkp_P8BCtFuKqDrtC_=A89ZfDf66Yr3FL2e=ojwv4KaMA@mail.gmail.com>
+In-Reply-To: <CAKwvOdkp_P8BCtFuKqDrtC_=A89ZfDf66Yr3FL2e=ojwv4KaMA@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 30 Apr 2021 18:22:28 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi1yiBBr3b3RbCEte6-yzAApsZN5zRdr3xoW8Av9jOX=Q@mail.gmail.com>
+Message-ID: <CAHk-=wi1yiBBr3b3RbCEte6-yzAApsZN5zRdr3xoW8Av9jOX=Q@mail.gmail.com>
+Subject: Re: Very slow clang kernel config ..
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable 'zone' is uninitialized which
-introduce some build warning when introduced
-within the switch.
+On Fri, Apr 30, 2021 at 5:25 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> Ah, no, sorry, these are the runtime link editor/loader. So probably
+> spending quite some time resolving symbols in large binaries.
 
-Fix that by changing the passed condition:
-Catch explicitly any invalid 'mirror' value
-as an assertion failure.
+Yeah. Appended is the profile I see when I profile that "make
+oldconfig", so about 45% of all time seems to be spent in just symbol
+lookup and relocation.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
----
-V3: catch explicitly invalid mirror value
-V2: force assertion failure by zeroing the zone variable
-V1: initialize the zone variable
----
- fs/btrfs/zoned.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+And a fair amount of time just creating and tearing down that huge
+executable (with a lot of copy-on-write overhead too), with the kernel
+side of that being another 15%. The cost of that is likely also fairly
+directly linked to all the dynamic linking costs, which brings in all
+that data.
 
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 432509f4b3ac..8250ab3f0868 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -144,7 +144,7 @@ static inline u32 sb_zone_number(int shift, int mirror)
- 	case 1: zone = 1ULL << (BTRFS_SB_LOG_FIRST_SHIFT - shift); break;
- 	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
- 	default:
--		ASSERT(zone);
-+		ASSERT((u32)mirror < 3);
- 		break;
- 	}
- 
+Just to compare, btw, this is the symbol lookup overhead for the gcc case:
 
-base-commit: c05b2a58c9ed11bd753f1e64695bd89da715fbaa
--- 
-2.17.1
+   1.43%  ld-2.33.so             do_lookup_x
+   0.96%  ld-2.33.so             _dl_relocate_object
+   0.69%  ld-2.33.so             _dl_lookup_symbol_x
 
+so it really does seem to be something very odd going on with the clang binary.
+
+Maybe the Fedora binary is built some odd way, but it's likely just
+the default clang build.
+
+             Linus
+
+----
+  23.59%  ld-2.33.so          _dl_lookup_symbol_x
+  11.41%  ld-2.33.so          _dl_relocate_object
+   9.95%  ld-2.33.so          do_lookup_x
+   4.00%  [kernel.vmlinux]    copy_page
+   3.98%  [kernel.vmlinux]    next_uptodate_page
+   3.05%  [kernel.vmlinux]    zap_pte_range
+   1.81%  [kernel.vmlinux]    clear_page_rep
+   1.68%  [kernel.vmlinux]    asm_exc_page_fault
+   1.33%  ld-2.33.so          strcmp
+   1.33%  ld-2.33.so          check_match
+   0.92%  libLLVM-12.so       llvm::StringMapImpl::LookupBucketFor
+   0.83%  [kernel.vmlinux]    rmqueue_bulk
+   0.77%  conf                yylex
+   0.75%  libc-2.33.so        __gconv_transform_utf8_internal
+   0.74%  libc-2.33.so        _int_malloc
+   0.69%  libc-2.33.so        __strlen_avx2
+   0.62%  [kernel.vmlinux]    pagecache_get_page
+   0.58%  [kernel.vmlinux]    page_remove_rmap
+   0.56%  [kernel.vmlinux]    __handle_mm_fault
+   0.54%  [kernel.vmlinux]    filemap_map_pages
+   0.54%  libc-2.33.so        __strcmp_avx2
+   0.54%  [kernel.vmlinux]    __free_one_page
+   0.52%  [kernel.vmlinux]    release_pages
