@@ -2,253 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE4637074F
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 15:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292EA370751
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 15:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232149AbhEANGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 09:06:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52685 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232129AbhEANGi (ORCPT
+        id S232171AbhEANLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 09:11:07 -0400
+Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21351 "EHLO
+        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232129AbhEANLH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 09:06:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619874347;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QaLGggxWsR4nhRyo4uKvEE71cIOf16ehgKiX+853OaA=;
-        b=Ehs/5Ck1OGcTtfpT9S0HSWI0COUB4C6nOrkhnG8ZbEgYFdir6UfWFT7WUG7hdC+KnELa/B
-        3BYVryfkPyZlumXnV9xBe+Db0AXyCEiktBYg3TBN/UxTXsR980mAgz1v/PMaWw6YjaaQ1d
-        LLA+2JQJPGXhkNBYkFLpKUMpHmFCDVQ=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-602-266-VW-cNcWGUjf23Xhurg-1; Sat, 01 May 2021 09:05:46 -0400
-X-MC-Unique: 266-VW-cNcWGUjf23Xhurg-1
-Received: by mail-ej1-f69.google.com with SMTP id 16-20020a1709063010b029037417ca2d43so105741ejz.5
-        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 06:05:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QaLGggxWsR4nhRyo4uKvEE71cIOf16ehgKiX+853OaA=;
-        b=Q6/iahG6uAX9tzdjmpj/Pi2lJIroW00gkN52ifJSmkqRHV+AnhXtTVFqpxH6goQ26r
-         F/VK4f5c/pGwfzyXz3JbIREgF5Jz09ASX51BtgApVuO1VVW0Y5aPOlVS4PnYvu+JwpQt
-         xAlRoYUwReGEpArFA8ElvEvfe3yiae0uAJfMLIKvBdvyzHWaXAQkQcZ7PBfUsXKnIjRJ
-         ofCh8d5dn+gm9eTQkNEn5JHLbqypuwn4W8cHrVXVxczofUP1CphosgXHTz4JUwN9lwaV
-         BFSm+DdEn22vBLegFbV/ro57VlLFgLoiRxX92R3Uq+xqjjDzh+xiOQ7KSzbr0qDE/Khx
-         jOfw==
-X-Gm-Message-State: AOAM530EvnRmYqUmHfXIlTZsQ1qSmGcHTSHffQsToVXKe4yeS9/+IBsn
-        pfCegpa1k7nq5FiGvUMa1dNCXSLHcvcejFL9h/EmXuVDcG06H+ViEgTD1fGDBupFUrJwcGqXw7c
-        SYOdejgZx59/XCrYROUzvZd3TAmYvAfdLcFudkV9MLTMc3CPPojAckPDD8LWPgOVV3wvT9LR7Ja
-        KJ
-X-Received: by 2002:aa7:c4d0:: with SMTP id p16mr11660667edr.102.1619874345234;
-        Sat, 01 May 2021 06:05:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzfPBoD0Tz5aS6Kb7+tMFf+gd+mveeXHCH2rRPVw30Y5rlCQwGj5gNS6DyfYYpOXxlizqCTAQ==
-X-Received: by 2002:aa7:c4d0:: with SMTP id p16mr11660597edr.102.1619874344783;
-        Sat, 01 May 2021 06:05:44 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id s20sm5617392edu.93.2021.05.01.06.05.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 01 May 2021 06:05:44 -0700 (PDT)
-Subject: Re: [PATCH] kvm: x86: move srcu lock out of kvm_vcpu_check_block
-To:     Sean Christopherson <seanjc@google.com>,
-        Jon Kohler <jon@nutanix.com>
-Cc:     Bijan Mottahedeh <bijan.mottahedeh@nutanix.com>,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        Junaid Shahid <junaids@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210428173820.13051-1-jon@nutanix.com>
- <YIxsV6VgSDEdngKA@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <9040b3d8-f83f-beb5-a703-42202d78fabb@redhat.com>
-Date:   Sat, 1 May 2021 15:05:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Sat, 1 May 2021 09:11:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1619874614; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=G0fLoottJfClpiGHND3lXJB5oSzfIOTtRAieLbHQHVU8pRdjNRMzsv8CDo2HnN0JKdh2HgTEbe2DaIwiF/PJDYRx1qminEUh/4h81vU9IwF+POaBdrv6Z6ANLbB85GMLENg1QmdLTlkimw/EUxGMDNafTope5Qgq2Fz6kLnA3LI=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1619874614; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=aeVb9tMtN8VP+qEMHO0j4WwukXcb48yCZRdEb9bMQYU=; 
+        b=eb8SDlX02QzYFdxZCQ7HxT1BXAA912qnTO7kS/0fihv4lzIXMpFGhhpjmqWqtcOeHrW12H2MqMy+Jccmx1uYRLQF3Jv5Szhz84dy7ZOKoY/tWT6lgPoY9EGQdcZFCFTQg7uazv4decjcygLumf0mfQOolR9Yd/uBYB/UCkcGjhY=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=anirudhrb.com;
+        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
+        dmarc=pass header.from=<mail@anirudhrb.com> header.from=<mail@anirudhrb.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1619874614;
+        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:Content-Transfer-Encoding:In-Reply-To;
+        bh=aeVb9tMtN8VP+qEMHO0j4WwukXcb48yCZRdEb9bMQYU=;
+        b=oyoMkL+eiS8SxK/h+JHxBeyZF4UM/bPruSmjD+vR7sO8TIhpgLl/sLO4PBQWmHkz
+        chlSSTPWM4S45ENS+6Tc9+cODRrHG5oigHYokwci2jj2n3mZf64yElnPjUdrfThhV35
+        fIQ4vjAP/a1bmbyNyV4FP13AIdqCU1HI94QNRpUU=
+Received: from anirudhrb.com (49.207.211.62 [49.207.211.62]) by mx.zohomail.com
+        with SMTPS id 1619874611701231.35758212814903; Sat, 1 May 2021 06:10:11 -0700 (PDT)
+Date:   Sat, 1 May 2021 18:40:04 +0530
+From:   Anirudh Rayabharam <mail@anirudhrb.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Matt Porter <mporter@kernel.crashing.org>,
+        Alexandre Bounine <alex.bou9@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, mail@anirudhrb.com
+Subject: Re: [PATCH] rapidio: remove unused variable in rio_cm.c
+Message-ID: <YI1TLAOXoQozBa1M@anirudhrb.com>
+References: <20210501055018.9244-1-mail@anirudhrb.com>
+ <YI0sIoDv6H+aSyNE@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <YIxsV6VgSDEdngKA@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YI0sIoDv6H+aSyNE@kroah.com>
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/04/21 22:45, Sean Christopherson wrote:
-> On Wed, Apr 28, 2021, Jon Kohler wrote:
->> To improve performance, this moves kvm->srcu lock logic from
->> kvm_vcpu_check_block to kvm_vcpu_running and wraps directly around
->> check_events. Also adds a hint for callers to tell
->> kvm_vcpu_running whether or not to acquire srcu, which is useful in
->> situations where the lock may already be held. With this in place, we
->> see roughly 5% improvement in an internal benchmark [3] and no more
->> impact from this lock on non-nested workloads.
+On Sat, May 01, 2021 at 12:23:30PM +0200, Greg KH wrote:
+> On Sat, May 01, 2021 at 11:20:17AM +0530, Anirudh Rayabharam wrote:
+> > Remove unused variable 'rc' to fix gcc warning:
+> > 
+> > 	drivers/rapidio/rio_cm.c: In function ‘rio_txcq_handler’:
+> > 	drivers/rapidio/rio_cm.c:673:7: warning: variable ‘rc’ set but
+> > 	not used [-Wunused-but-set-variable]
+> > 
+> > Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+> > ---
+> >  drivers/rapidio/rio_cm.c | 3 +--
+> >  1 file changed, 1 insertion(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/rapidio/rio_cm.c b/drivers/rapidio/rio_cm.c
+> > index 50ec53d67a4c..545693bd86a3 100644
+> > --- a/drivers/rapidio/rio_cm.c
+> > +++ b/drivers/rapidio/rio_cm.c
+> > @@ -670,12 +670,11 @@ static void rio_txcq_handler(struct cm_dev *cm, int slot)
+> >  	 */
+> >  	if (!list_empty(&cm->tx_reqs) && (cm->tx_cnt < RIOCM_TX_RING_SIZE)) {
+> >  		struct tx_req *req, *_req;
+> > -		int rc;
+> >  
+> >  		list_for_each_entry_safe(req, _req, &cm->tx_reqs, node) {
+> >  			list_del(&req->node);
+> >  			cm->tx_buf[cm->tx_slot] = req->buffer;
+> > -			rc = rio_add_outb_message(cm->mport, req->rdev, cmbox,
+> > +			rio_add_outb_message(cm->mport, req->rdev, cmbox,
+> >  						  req->buffer, req->len);
 > 
-> ...
-> 
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index efc7a82ab140..354f690cc982 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -9273,10 +9273,24 @@ static inline int vcpu_block(struct kvm *kvm, struct kvm_vcpu *vcpu)
->>   	return 1;
->>   }
->>
->> -static inline bool kvm_vcpu_running(struct kvm_vcpu *vcpu)
->> +static inline bool kvm_vcpu_running(struct kvm_vcpu *vcpu, bool acquire_srcu)
->>   {
->> -	if (is_guest_mode(vcpu))
->> -		kvm_x86_ops.nested_ops->check_events(vcpu);
->> +	if (is_guest_mode(vcpu)) {
->> +		if (acquire_srcu) {
->> +			/*
->> +			 * We need to lock because check_events could call
->> +			 * nested_vmx_vmexit() which might need to resolve a
->> +			 * valid memslot. We will have this lock only when
->> +			 * called from vcpu_run but not when called from
->> +			 * kvm_vcpu_check_block > kvm_arch_vcpu_runnable.
->> +			 */
->> +			int idx = srcu_read_lock(&vcpu->kvm->srcu);
->> +			kvm_x86_ops.nested_ops->check_events(vcpu);
->> +			srcu_read_unlock(&vcpu->kvm->srcu, idx);
->> +		} else {
->> +			kvm_x86_ops.nested_ops->check_events(vcpu);
->> +		}
->> +	}
-> 
-> Obviously not your fault, but I absolutely detest calling check_events() from
-> kvm_vcpu_running.  I would much prefer to make baby steps toward cleaning up the
-> existing mess instead of piling more weirdness on top.
-> 
-> Ideally, APICv support would be fixed to not require a deep probe into nested
-> events just to see if a vCPU can run.  But, that's probably more than we want to
-> bite off at this time.
-> 
-> What if we add another nested_ops API to check if the vCPU has an event, but not
-> actually process the event?  I think that would allow eliminating the SRCU lock,
-> and would get rid of the most egregious behavior of triggering a nested VM-Exit
-> in a seemingly innocuous helper.
-> 
-> If this works, we could even explore moving the call to nested_ops->has_events()
-> out of kvm_vcpu_running() and into kvm_vcpu_has_events(); I can't tell if the
-> side effects in vcpu_block() would get messed up with that change :-/
-> 
-> Incomplete patch...
+> Why not handle the potential error sent here?
 
-I think it doesn't even have to be *nested* events.  Most events are the 
-same inside or outside guest mode, as they already special case guest 
-mode inside the kvm_x86_ops callbacks (e.g. kvm_arch_interrupt_allowed 
-is already called by kvm_vcpu_has_events).
+I don't know how it should be handled (these functions don't return anything).
+I assumed that since it is not currently being handled, it's probably not
+useful.
 
-I think we only need to extend kvm_x86_ops.nested_ops->hv_timer_pending 
-to cover MTF, plus double check that INIT and SIPI are handled 
-correctly, and then the call to check_nested_events can go away.
+I'll look into it though. I guess we could simply log it at the very least.
 
-Paolo
+Thanks!
 
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index 00339d624c92..15f514891326 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -3771,15 +3771,17 @@ static bool nested_vmx_preemption_timer_pending(struct kvm_vcpu *vcpu)
->                 to_vmx(vcpu)->nested.preemption_timer_expired;
->   }
-> 
-> -static int vmx_check_nested_events(struct kvm_vcpu *vcpu)
-> +static int __vmx_check_nested_events(struct kvm_vcpu *vcpu, bool only_check)
->   {
->          struct vcpu_vmx *vmx = to_vmx(vcpu);
->          unsigned long exit_qual;
-> -       bool block_nested_events =
-> -           vmx->nested.nested_run_pending || kvm_event_needs_reinjection(vcpu);
->          bool mtf_pending = vmx->nested.mtf_pending;
->          struct kvm_lapic *apic = vcpu->arch.apic;
-> 
-> +       bool block_nested_events = only_check ||
-> +                                  vmx->nested.nested_run_pending ||
-> +                                  kvm_event_needs_reinjection(vcpu);
-> +
->          /*
->           * Clear the MTF state. If a higher priority VM-exit is delivered first,
->           * this state is discarded.
-> @@ -3837,7 +3839,7 @@ static int vmx_check_nested_events(struct kvm_vcpu *vcpu)
->          }
-> 
->          if (vcpu->arch.exception.pending) {
-> -               if (vmx->nested.nested_run_pending)
-> +               if (vmx->nested.nested_run_pending || only_check)
->                          return -EBUSY;
->                  if (!nested_vmx_check_exception(vcpu, &exit_qual))
->                          goto no_vmexit;
-> @@ -3886,10 +3888,23 @@ static int vmx_check_nested_events(struct kvm_vcpu *vcpu)
->          }
-> 
->   no_vmexit:
-> -       vmx_complete_nested_posted_interrupt(vcpu);
-> +       if (!check_only)
-> +               vmx_complete_nested_posted_interrupt(vcpu);
-> +       else if (vmx->nested.pi_desc && vmx->nested.pi_pending)
-> +               return -EBUSY;
->          return 0;
->   }
-> 
-> +static bool vmx_has_nested_event(struct kvm_vcpu *vcpu)
-> +{
-> +       return !!__vmx_check_nested_events(vcpu, true);
-> +}
-> +
-> +static int vmx_check_nested_events(struct kvm_vcpu *vcpu)
-> +{
-> +       return __vmx_check_nested_events(vcpu, false);
-> +}
-> +
->   static u32 vmx_get_preemption_timer_value(struct kvm_vcpu *vcpu)
->   {
->          ktime_t remaining =
-> @@ -6627,6 +6642,7 @@ __init int nested_vmx_hardware_setup(int (*exit_handlers[])(struct kvm_vcpu *))
->   }
-> 
->   struct kvm_x86_nested_ops vmx_nested_ops = {
-> +       .has_event = vmx_has_nested_event,
->          .check_events = vmx_check_nested_events,
->          .hv_timer_pending = nested_vmx_preemption_timer_pending,
->          .triple_fault = nested_vmx_triple_fault,
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index a829f1ab60c3..5df01012cb1f 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -9310,6 +9310,10 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->                          update_cr8_intercept(vcpu);
->                          kvm_lapic_sync_to_vapic(vcpu);
->                  }
-> +       } else if (is_guest_mode(vcpu)) {
-> +               r = kvm_check_nested_events(vcpu);
-> +               if (r < 0)
-> +                       req_immediate_exit = true;
->          }
-> 
->          r = kvm_mmu_reload(vcpu);
-> @@ -9516,8 +9520,10 @@ static inline int vcpu_block(struct kvm *kvm, struct kvm_vcpu *vcpu)
-> 
->   static inline bool kvm_vcpu_running(struct kvm_vcpu *vcpu)
->   {
-> -       if (is_guest_mode(vcpu))
-> -               kvm_check_nested_events(vcpu);
-> +       if (is_guest_mode(vcpu) &&
-> +           (kvm_test_request(KVM_REQ_TRIPLE_FAULT, vcpu) ||
-> +            kvm_x86_ops.nested_ops->has_event(vcpu)))
-> +               return true;
-> 
->          return (vcpu->arch.mp_state == KVM_MP_STATE_RUNNABLE &&
->                  !vcpu->arch.apf.halted);
-> 
-
+	- Anirudh.
