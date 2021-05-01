@@ -2,98 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB06F370725
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 14:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7DF37072A
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 14:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232072AbhEAMOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 08:14:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231994AbhEAMOh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 08:14:37 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8270C06138B
-        for <linux-kernel@vger.kernel.org>; Sat,  1 May 2021 05:13:47 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id a36so1294910ljq.8
-        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 05:13:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CRiIei4iU9eOLt+6VGICqdff4yVs7VnZIcLiYMXSOVg=;
-        b=NmP4LrlfqgqiXwoaAwml0at2WV7mraCZbNWddlk2q8oVvLaaM2j2605TzOqQ0VpkSc
-         84zavwow6Bc+rZ/+pp2zIe+o/KUolwWY9HQSpVHZqcu5TWm2sMaI3T9ZbkkK6TleHuz5
-         9ZiqpJQ+NGPLbImFS6DByNVCoCYAT1hFulLMBGuTmSfkEmkVasPg07OoguODib13kIZQ
-         Q4TAzL/B9P3mhNNZSBhu869XzyUur3wKoBkv8xKfbmypHrEEm0D48lH2yhYx2WSBfwyv
-         LgWwjECwAIF7vpGKJb0dn07j9XxaT5XJgLzDDblA+ucT+Msy2fER1Y4gzpqwoEBFTe21
-         OXvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CRiIei4iU9eOLt+6VGICqdff4yVs7VnZIcLiYMXSOVg=;
-        b=YLS1LiXsTZFHwr/FOt4SfflVKfGdTanSQ2YzGChaqN62TnE2UugoMFfe+To0R4Z2L+
-         6Yzf1t3mVyBkk3zuuPKtMvmKhelh0/KcrJDtLC/WxGJHR41hrrbX+l4e9lPSE6NiFNi1
-         RhprgQ+v7JDM71L/KF3hvUc2Hs/sIIOyLJo/6v9fOkDwcxLTlQttpHjCsdYSnWIbK29N
-         3UyLfibaBIFwjASXP+BT677wIIH+y686o9a5a9sw1iNN4e/qNafd9yuM+lnu8Z1dnfOs
-         or/vZsZCDSeuAhcTMrH9eXn7kA5XfFf18Srr/+L+2WUvEleAQbTEAmQtljRuS5lJBo7P
-         ZAbA==
-X-Gm-Message-State: AOAM533rEKa1v/gH7uK+/t5SKxTh/kQAj/81QxCsSfhRDsmh/q1rbJ3Y
-        42PdWPKJmbk+hII71ndcWwJkcuvolIPwv7wLABVQiQ==
-X-Google-Smtp-Source: ABdhPJwEvZiVUzjL5fiCUWcltqWrkyBzoejxaPSLl+jQo2XqeGW/AGSuOCc28BFe9PZw7LiIvB9x5RqEvOhmPwnPW1M=
-X-Received: by 2002:a05:651c:1316:: with SMTP id u22mr184428lja.438.1619871226159;
- Sat, 01 May 2021 05:13:46 -0700 (PDT)
+        id S232021AbhEAMYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 08:24:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51806 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231960AbhEAMYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 May 2021 08:24:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 83BB361409;
+        Sat,  1 May 2021 12:23:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619871795;
+        bh=IsCKUsoaFkNF0OuX9NN16ruS+Rs+wIjJ1sC465dv+ss=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VrUvaZIIpBrfM8muwRro4KSxyB0Mzsqk01yyP6fxljWk+3gydENOCBECUqia5mQ5z
+         PeImyO+f4Kw4I8A8+ye3FWfwyC+x00NkBXCFj/8kzuQx1UHYtriIwDtR0SVy32So4h
+         bnRXLZi8T4FRwUZQqCbOOZnZO4iu3f7vsGkt4/Go=
+Date:   Sat, 1 May 2021 14:23:12 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Ashish Kalra <eashishkalra@gmail.com>
+Cc:     Ivan Safonov <insafonov@gmail.com>,
+        Abheek Dhawan <adawesomeguy222@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Waiman Long <longman@redhat.com>,
+        Pritthijit Nath <pritthijit.nath@icloud.com>,
+        Allen Pais <apais@linux.microsoft.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] staging: wlan-ng: silence incorrect type in argument
+ 1 (different address spaces)
+Message-ID: <YI1IMG8tCvvRMq3i@kroah.com>
+References: <YI098DQNtK3i2Fge@ashish-NUC8i5BEH>
 MIME-Version: 1.0
-References: <20210426095426.118356-1-tsbogend@alpha.franken.de> <20210426095426.118356-2-tsbogend@alpha.franken.de>
-In-Reply-To: <20210426095426.118356-2-tsbogend@alpha.franken.de>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 1 May 2021 14:13:35 +0200
-Message-ID: <CACRpkda7n3VL-EpwdXDxt47azFo8Wkp67-urUy7--3D6TJs7iA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] dt-bindings: gpio: Add devicetree binding for IDT
- 79RC32434 GPIO controller
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YI098DQNtK3i2Fge@ashish-NUC8i5BEH>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 11:54 AM Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
+On Sat, May 01, 2021 at 05:09:28PM +0530, Ashish Kalra wrote:
+> Currently p80211knetdev_do_ioctl use type casting to req->data to prevent sparse warning while calling memdup_user, instead of type casting it here, its better to change data type for data inside p80211ioctl_req to include __user.
 
-> Add YAML devicetree binding for IDT 79RC32434 GPIO controller
->
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> ---
-> Changes in v4:
->  - renamed to idt,32434-gpio this time for real
+Please properly line-wrap your changelog comments.
 
-Overall looks good to me.
+Can you fix it up and resend it as v3?
 
-> +required:
-(...)
-> +  - ngpios
+thanks,
 
-Is there a *technical* reason why this is required?
-
-Can't the driver just default to 32 gpios when not specified?
-
-> +  - interrupt-controller
-> +  - "#interrupt-cells"
-> +  - interrupts
-
-Why can't interrupt support be made optional?
-
-It is fine if the driver errors out if not provided, but
-for the bindings this feels optional.
-
-Or does the thing break unless you handle the IRQs?
-
-Yours,
-Linus Walleij
+greg k-h
