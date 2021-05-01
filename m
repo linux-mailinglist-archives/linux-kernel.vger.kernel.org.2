@@ -2,66 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D0137090E
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 23:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D6637090F
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 23:20:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232043AbhEAVT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 17:19:57 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:52185 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231739AbhEAVT4 (ORCPT
+        id S232182AbhEAVUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 17:20:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231739AbhEAVUc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 17:19:56 -0400
-Received: from mail-wr1-f44.google.com ([209.85.221.44]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1Mzyi6-1lP0fe1CZq-00x0e8; Sat, 01 May 2021 23:19:04 +0200
-Received: by mail-wr1-f44.google.com with SMTP id x5so1589432wrv.13;
-        Sat, 01 May 2021 14:19:04 -0700 (PDT)
-X-Gm-Message-State: AOAM532vq+bZNwVlwWxVcsEMyeFRVaQ0jdkzC3/btMkcGGbH4x7/3iuC
-        q2VEl4dWMoROGcwY11Zh5PuzCQihQaiMwAL+xG4=
-X-Google-Smtp-Source: ABdhPJwxX7UQ1JNp+JEAHWeZp2Bq20dQ0+HLXAT1u6dZ+Krmnx72KZxLPc//au7Gj4to2+E8DyJZ2Tgr7fgRNdrVKcY=
-X-Received: by 2002:a05:6000:1843:: with SMTP id c3mr16285978wri.361.1619903944009;
- Sat, 01 May 2021 14:19:04 -0700 (PDT)
+        Sat, 1 May 2021 17:20:32 -0400
+Received: from server.lespinasse.org (server.lespinasse.org [IPv6:2001:470:82ab::100:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2789C06174A
+        for <linux-kernel@vger.kernel.org>; Sat,  1 May 2021 14:19:41 -0700 (PDT)
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+ d=lespinasse.org; i=@lespinasse.org; q=dns/txt; s=srv-14-ed;
+ t=1619903980; h=date : from : to : cc : subject : message-id :
+ references : mime-version : content-type : in-reply-to : from;
+ bh=fxspQE6J46fpci/mpefNS4T/eb7joLnEP0aTqZqFgW0=;
+ b=AZsJ8AeZwmXRGrpbeuTLUSxDEcpI14NOygbMazaZe1Al1ADs/zW/05TflRkukTGK3cPgc
+ y1yxPOqEMoLgow1CQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lespinasse.org;
+ i=@lespinasse.org; q=dns/txt; s=srv-14-rsa; t=1619903980; h=date :
+ from : to : cc : subject : message-id : references : mime-version :
+ content-type : in-reply-to : from;
+ bh=fxspQE6J46fpci/mpefNS4T/eb7joLnEP0aTqZqFgW0=;
+ b=MiAu4anbDTn8MQyuu7fzvGVdVevm8qWIPGbZ8EimyoSyf9Q7zTt/j/CfwWjgpszsVABkn
+ st/RqdVCbPV+vZjsjxwqbNtCdi5YtQJJLaz7NlS55fZG04ZuI11VI0U5oiQ2RDbBOs3u1SF
+ H8rTNHbIKI/AH58t2VHE3JFGR1IIjXaCURsN0/1E+5Yyccqg2ljTTL1mM9hY98P/ETWxg0B
+ Uug2gTKbyBYaNzhv4jaXv+ThWRHsogEDft6fsqHLMmXC7lSlqP04cvG+Cxh8KOhZNX3vvhb
+ 0FOV4Zv3xWOuTIU5FBzZUgbryKHIrVGFBXBuGnCH2Msb8Foq0SA+lLQbT8DA==
+Received: by server.lespinasse.org (Postfix, from userid 1000)
+        id 9710F160048; Sat,  1 May 2021 14:19:40 -0700 (PDT)
+Date:   Sat, 1 May 2021 14:19:40 -0700
+From:   Michel Lespinasse <michel@lespinasse.org>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Michel Lespinasse <michel@lespinasse.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-Kernel <linux-kernel@vger.kernel.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCH 00/29] Speculative page faults (anon vmas only)
+Message-ID: <20210501211940.GA11658@lespinasse.org>
+References: <20210430195232.30491-1-michel@lespinasse.org>
+ <YI2yZ+10MGrlFDBg@mit.edu>
 MIME-Version: 1.0
-References: <20210501172437.156926-1-masahiroy@kernel.org>
-In-Reply-To: <20210501172437.156926-1-masahiroy@kernel.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sat, 1 May 2021 23:18:23 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2Ng7ZvRh4iT5jrFvp9=Z7oQJ4Ay_OWJ76bnZfn=VEZVw@mail.gmail.com>
-Message-ID: <CAK8P3a2Ng7ZvRh4iT5jrFvp9=Z7oQJ4Ay_OWJ76bnZfn=VEZVw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kbuild: remove ARCH=sh64 support from top Makefile
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:5Ft+P2rdsLOh6+FnG5AS5WqyqsU0zmZ5Ti2UTDZlvpNSwIMgNAp
- hWqhItN9bZ8BT+EajdtFcnYfLfkmuRtzqE6N/yL/s1zvFjTklptYhV6opiejOWy81JOqtj0
- wo84RgfX0QJ42d6ZJj2L3DnnVhEgQa/cWnQ2JCux7Hg+CA//1PzJ+gC5Y/5dxL2mr0vDKDC
- F8XXK7Wmd71D7HDUxREGQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:sqSjb95dxcc=:rZRL8wczBfudxEIfW7QvpA
- 9l20oxSvA3P3gCxVMvYcoJrU+UR3d5XbitszkfdJzxL/+94KR3k72vHKWJJldHWhPJyFP8Xbi
- 4jqL/AdhbJC4XtDQN0qXj8e7Na3SuhEg62IY+XzJZX4QtVE1MJ+Wnd1Tv4c3IW8XvVXiQM870
- CLDld0pH56vu/+0B3nuSfSfrIHGQrKmML3hLU9FC3EiTsXu7Eim7EAPVpcKag2k49ALmdRCeL
- X+1B5klQII+K6plG31W3JY5e2YwYl6rkNISF85rVA667x/ZosjIy3/qigBid/jXF/gdvehwFS
- AYVwqKHESc/o7eFkqYI1r2yVhsIVVD/63wteBqu2wvcMLFYSq1+oaxYVzikI4BnoOjNHI4SeL
- xdCGjhER2dXTAl4JoGjvWOuQuunCnD19ioK2VttSwSaGAhRzJruLvCTqeOdFF2npqKIEnH9Sz
- BSoF/B+ScMANn8KbFOiuxYR3EfooiU0pYx2ekXvai7Iqw2f0jzPBPD8e7Px3TplSovEn4iZvh
- I5dIshdKwjekBL3eZxgRxQ=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YI2yZ+10MGrlFDBg@mit.edu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 1, 2021 at 7:26 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> Commit 37744feebc08 ("sh: remove sh5 support") removed the SUPERH64
-> support entirely.
->
-> Remove the left-over code from the top Makefile.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Hi Ted,
 
-Good catch!
+On Sat, May 01, 2021 at 03:56:23PM -0400, Theodore Ts'o wrote:
+> I tried running xfstests against the spf branch, and I've noticed it's
+> causing regression for generic/619.  It's failing due to a umount
+> failure due to a busy mount point:
+> 
+> QA output created by 619
+> umount: /vdc: target is busy.
+> 
+> I haven't had a chance to investigate, but I thought I should let you know.
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+Thanks for the report. I think the issue is likely caused by commit
+06adfeb8150d "mm: rcu safe vma->vm_file freeing", which will defer
+fput on mapped files for one rcu grace period. I expect adding
+synchronize_rcu to the proper place (I'm not sure exactly where though)
+when unmounting file systems would be a workable fix.
+
+Note though - at this point I am only submitting the anon part of the
+patchset for inclusion. That is, the v5.12-spf-anon branch, rather
+than the v5.12-spf branch which has the additional / less mature
+changes for file mapped vma faults.
+
+--
+Michel "walken" Lespinasse
