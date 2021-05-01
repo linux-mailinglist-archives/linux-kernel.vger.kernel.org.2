@@ -2,99 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B897370450
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 02:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C73370452
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 02:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233127AbhEAAKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 20:10:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33966 "EHLO
+        id S233171AbhEAALH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 20:11:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232893AbhEAAKx (ORCPT
+        with ESMTP id S233120AbhEAAKx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 30 Apr 2021 20:10:53 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B4B8C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 17:10:03 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id b10so11534446iot.4
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 17:10:03 -0700 (PDT)
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEEC0C06174A;
+        Fri, 30 Apr 2021 17:10:04 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id m37so7906292pgb.8;
+        Fri, 30 Apr 2021 17:10:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8nmI0Z6GpJ669OoqTL4ZRS5HBzAE6mZbx+jGtxyj3s4=;
-        b=TAk5su9x4YNFiIahiV9a5aaJzJsZ734/S9ixVX7Bz0n5yF+3hMGaPGzcXNECetsqWg
-         JkHS1ySxd3AQSEDQjy+xEZqIembgrUUi7vL6ea9plM5m16ZqVnUV0HCviU/AnqQAXtPQ
-         WY0OTMD6LH4B6yZmmlK4gYsgcNJM2o8nMR04c=
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=v6iX4wiVzn0CF0AR8f9+wiH67gWfwkDuxVsnuyMU9ao=;
+        b=QYVsbJTr7ice6Yurwsp+f0783kQ3AiQnSc6Xc8n+XR924Cj2LWvIPogDcBiMmpo2Gz
+         XYOhpUET9TWlIovXH0G0+y+2T6sFHV86QC1Y7jHnbrjcVjFHmZDgXRZj+haxPfKHwug4
+         MSg82LZ4kj1HD/GRh27on3ag+c+e7SuhWHpAGjqYlsQnpQ8dD/cHfRREwbVVxzy0ZVBv
+         OrpM988RT3eT46Iky57tapKHnVqlnGJKiZ//M7qvaeyx2F56+cgil/0fjpAgzpEnM4ic
+         +jpq+ut4fmceBtA8GrXGyYSVRK9CaG1Q9xvkw88doYRo+0Zrcq4xyZUYe3bcmzdmYprA
+         ultA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8nmI0Z6GpJ669OoqTL4ZRS5HBzAE6mZbx+jGtxyj3s4=;
-        b=CrgO/bSUT7b8ks5pTUTI3TMfrcsZWZXNWR4cxmk4dqn6SVIwraFW5sonMgLUnpH3DL
-         xlLHVrY1m0samsLkWDsKB2VXqF8tujVJognyF/Vit/XAsNWLQLiv0NLoczlTmE7FL5sD
-         VQ/M3HVEmBziSuljk6jQU1pvQNpuU6YBukd8ZzB8PsbYZm9564F5PkXfOA7TvQUuZLVh
-         /S+KGtvtBUZja0Bocc+cLeiFGWNoXX86Tzvn7xGjfRrJAkx4vZOtoBpWG95pE6VgNA+j
-         /DU7qXAEEoMyiQnCHiqI2VPcZaGWVOTxTpkmD1h5AmhX4yfSumOAlHm4hpe8hzcHZ4R7
-         Sk7Q==
-X-Gm-Message-State: AOAM533D1QTG0aX2hoATXvZOY9odO92tYhdJhpTCkVtuMzm8X8ybdJYg
-        PxfM7RvSAEMOQ7yWzgNRupJ1gc4qVRUmaj41obEaRg==
-X-Google-Smtp-Source: ABdhPJyT0j0QeyzLWjQB1x7+UCsurnHz/q9/z3ussQHoMN5YDGUGkx6sJfukt1wBMQ+0ZnLAhavewmPl1lpbl04zjDE=
-X-Received: by 2002:a5d:84c5:: with SMTP id z5mr5722665ior.33.1619827802465;
- Fri, 30 Apr 2021 17:10:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210430204939.5152-1-sargun@sargun.me> <20210430204939.5152-3-sargun@sargun.me>
- <CALCETrXWFbB7v8wRKeNC-gxMqUZ9ZJUZx9nQiLu64qYi2Bx5FQ@mail.gmail.com>
-In-Reply-To: <CALCETrXWFbB7v8wRKeNC-gxMqUZ9ZJUZx9nQiLu64qYi2Bx5FQ@mail.gmail.com>
-From:   Sargun Dhillon <sargun@sargun.me>
-Date:   Fri, 30 Apr 2021 17:09:26 -0700
-Message-ID: <CAMp4zn8A2n7EtbR_=fG99MPgpDTgn-Ju-AzQ8F2rYU9Fri3YTg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] seccomp: Add wait_killable semantic to seccomp
- user notifier
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>,
-        Rodrigo Campos <rodrigo@kinvolk.io>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=v6iX4wiVzn0CF0AR8f9+wiH67gWfwkDuxVsnuyMU9ao=;
+        b=KdYtR1XhnT2Lg9s8CDhoF+cSDqlKXlK+rmau11swI4e7mdeNHgkldwZlKnvw2tnGer
+         g+SYvVW34G3m2/V7S0jYtUFfr7ghQxQhoHWotUoG9+yh6r5hoousfm4MMut0d49MxG0b
+         1pWd56WSRf1IdxFQnTihJxjKbt1js7TjJGiXJUd+WpZ/aW8V2nEcF092hYt0HMoc4MoG
+         flJm2/a8qRzwfds+6QcmVTo+b/nQap5Su9lQxk314fJSe3GXuvKQkiY3cjxy95Qav3IF
+         6vHj7bP+1c77708Q0yGrGuw8SvyvvCj/1TS3cXs1X/iNY3akauZY9RIGM4RvP5jYDqui
+         ll+Q==
+X-Gm-Message-State: AOAM533dNWDpMiIkIypvtwISVBgjxP28PF7tysQ7IZ/v1oZt81CWQsaU
+        gwuFWrf/FvIih82c4NOlqBI=
+X-Google-Smtp-Source: ABdhPJy6ogV528OF9EBbdDXDiXjNuOt7DXwKoMOX9SVQ/DB16Jl86H49Kb5c+AJLs2bXMqqo80lPhQ==
+X-Received: by 2002:a63:4652:: with SMTP id v18mr7142249pgk.386.1619827804247;
+        Fri, 30 Apr 2021 17:10:04 -0700 (PDT)
+Received: from ?IPv6:2601:646:8100:c5c1:bacc:5f54:da58:762d? ([2601:646:8100:c5c1:bacc:5f54:da58:762d])
+        by smtp.gmail.com with ESMTPSA id 1sm2884019pjx.46.2021.04.30.17.10.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Apr 2021 17:10:03 -0700 (PDT)
+Message-ID: <8e420732d2aabccca8b5e932b589ce90d9f70d6b.camel@gmail.com>
+Subject: Re: [BUG] ethernet:enic: A use after free bug in
+ enic_hard_start_xmit
+From:   Govindarajulu Varadarajan <govind.varadar@gmail.com>
+To:     lyl2019@mail.ustc.edu.cn, benve@cisco.com, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 30 Apr 2021 17:10:02 -0700
+In-Reply-To: <65becad9.62766.17911406ff0.Coremail.lyl2019@mail.ustc.edu.cn>
+References: <65becad9.62766.17911406ff0.Coremail.lyl2019@mail.ustc.edu.cn>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 4:23 PM Andy Lutomirski <luto@kernel.org> wrote:
->
-> On Fri, Apr 30, 2021 at 1:49 PM Sargun Dhillon <sargun@sargun.me> wrote:
-> >
-> > The user notifier feature allows for filtering of seccomp notifications in
-> > userspace. While the user notifier is handling the syscall, the notifying
-> > process can be preempted, thus ending the notification. This has become a
-> > growing problem, as Golang has adopted signal based async preemption[1]. In
-> > this, it will preempt every 10ms, thus leaving the supervisor less than
-> > 10ms to respond to a given notification. If the syscall require I/O (mount,
-> > connect) on behalf of the process, it can easily take 10ms.
-> >
-> > This allows the supervisor to set a flag that moves the process into a
-> > state where it is only killable by terminating signals as opposed to all
-> > signals. The process can still be terminated before the supervisor receives
-> > the notification.
->
-> This is still racy, right?  If a signal arrives after the syscall
-> enters the seccomp code but before the supervisor gets around to
-> issuing the new ioctl, the syscall will erroneously return -EINTR,
-> right?
->
-> Can we please just fully fix this instead of piling a racy partial fix
-> on top of an incorrect design?
->
-> --Andy
+On Tue, 2021-04-27 at 10:55 +0800, lyl2019@mail.ustc.edu.cn wrote:
+> Hi, maintainers.
+>     Our code analyzer reported a uaf bug, but it is a little
+> difficult for me to fix it directly.
+> 
+> File: drivers/net/ethernet/cisco/enic/enic_main.c
+> In enic_hard_start_xmit, it calls enic_queue_wq_skb(). Inside
+> enic_queue_wq_skb, if some error happens, the skb will be freed
+> by dev_kfree_skb(skb). But the freed skb is still used in 
+> skb_tx_timestamp(skb).
+> 
+> ```
+>         enic_queue_wq_skb(enic, wq, skb);// skb could freed here
+> 
+>         if (vnic_wq_desc_avail(wq) < MAX_SKB_FRAGS + ENIC_DESC_MAX_SPLITS)
+>                 netif_tx_stop_queue(txq);
+>         skb_tx_timestamp(skb); // freed skb is used here.
+> ```
+> Bug introduced by fb7516d42478e ("enic: add sw timestamp support").
 
-I thought that you were fine with this approach. Sorry.
+Thank you for reporting this.
 
-Maybe this is a dumb question, what's wrong with returning an EINTR if the
-syscall was never observed by the supervisor?
+One solution is to make enic_queue_wq_skb() return error and goto spin_unlock()
+incase of error.
 
-I think that the only other reasonable design is that we add data to the
-existing action which makes it sleep in wait_killable state.
+Would you like to send the fix for this?
+
+--
+Govind
+
