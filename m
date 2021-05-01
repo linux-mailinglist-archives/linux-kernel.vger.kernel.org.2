@@ -2,237 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2264A37063F
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 09:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED0D370647
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 09:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231753AbhEAHrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 03:47:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhEAHrD (ORCPT
+        id S230195AbhEAH7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 03:59:06 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:54920 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231194AbhEAH7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 03:47:03 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25094C06138B
-        for <linux-kernel@vger.kernel.org>; Sat,  1 May 2021 00:46:13 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id c22so642015edn.7
-        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 00:46:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=p8T708C5DjNrPFEpb0TPBJzVht0PGsjLXnkGrmBOKFE=;
-        b=rCEwJqelJgn14DUrzXBJrQl7us2HqjPx0Je7BzXsoz3ZdP731Gg6lbqWuFgFtvnVku
-         VSHec+znd2qrVzDJh4hpQA74g5s22M4o/571/tJzOTo9Yf1UNZtYRWkyNTIni+ll8wG/
-         J7fA2lXOflyle46YJ+OAMsV0A1U6tPHZu5MXUj2d72skyw+8YPNZAksUwFxYB8X3Q2j2
-         LdSWSbp63YHNvFFxOERSOnDaYd3Rfz0H3N2anWL2+U98q0ZVEta5G/HKsgx1GIfTERAO
-         u5WuLPkqSKkYUtj2T3Duodhe064yy8dY7RG57ix1bb8UnQvUkJOADjff81ZStrSGrs76
-         jiew==
+        Sat, 1 May 2021 03:59:04 -0400
+Received: by mail-il1-f197.google.com with SMTP id a1-20020a92c5410000b02901689a5cd3bdso514872ilj.21
+        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 00:58:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=p8T708C5DjNrPFEpb0TPBJzVht0PGsjLXnkGrmBOKFE=;
-        b=gM/GRSv+Ej3BgD2odlQoKCXe/5bFYa4v9JmT9suIGV/1zwt2rtuoP1zOZ77JqBXHj7
-         TFHWlDE0K61AY8AnDEwUlMrbdiFwzxPmyxp9vSSMh8NsJ3g2obR9rdpI8PNyh/KVJCSo
-         krhaB/8Xpm8Hd7r6jwTskl22Qr+pp7rqdFjUMymOMQdKveYyLjXWT9I8CBXF2WUPybfB
-         bPjBoZd18MyEY6XvHQl0Q6AKuztAAmY3L3l1cM18Ehcw1D7vtSj+5p+8oxptAWY+0eTS
-         UPvcC4L9byPSJzHdzw/Il3Lil8M7Wu825ivMJM6JVFcZ2U6NMveqQZauq0HlkePvs2zL
-         suNg==
-X-Gm-Message-State: AOAM531y6UcY4Pmm63lYuOp6zF0is679aikIXV3/9u8FwiWK0h+vB1ZA
-        309hBbrA4hgeK+3XPC0rBQf6HSbNqUKRzak2WD2bug==
-X-Google-Smtp-Source: ABdhPJzlNaZRGMQg9fy6oiwy2jCs7adAj8fa5NZWFJQMrlOeNmzsNgPioljt3BWaNr+1mC9KzXTT8hEHuX1G5UWVnew=
-X-Received: by 2002:a05:6402:145:: with SMTP id s5mr10060295edu.221.1619855171618;
- Sat, 01 May 2021 00:46:11 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=V6CoVXrou85PCbE3OFabws+tjrhLI+Hm1V8ygTXVsoU=;
+        b=JLh7zIIqQf0O0hXaJqLf938rnp1k1tEShCKUTOxBzUbiALwPpYHibcVg8bCqQJ6rYn
+         Y/QHgnNtCGIUcdLv8aa3LbCuwy0UjXzOHtRIenLhw9bRSMN+cj1WxqQ4khHzSxHjUfUc
+         f0D5Pve3nEapst1lhvVwZ1Jknp/cd0aJzRg5CMRM/H2A04GZ92vSWPGtfY/+XCBxtVj2
+         OvZGp4oYAhS7TZ9DOdBV8QzrLJi7NdlgFhLUnuFbyRQk3alvTAtKDzsXh9FQazhAC1fM
+         fDlcVaTehUOxujWQZ9YgaOxMhzx/ERNUxB357nsmyiklvEMJoGszFTjbHaPLHeCdTbZo
+         vJyg==
+X-Gm-Message-State: AOAM531lgM2sQdNeSHAlblC3vDnqEUNQXtytwGzSGErT/e69uvNfsYhn
+        Hqg/LPGfIoCb0U0xsfvAijaYiFETPcls/nZ7LTQqdS2ZlsNn
+X-Google-Smtp-Source: ABdhPJypGJw5aoqBi/5x0cHc2iY+k3seJpZ4P/QqUK4QubnvK3hhK2CpLUim2n7SOWCDfXODH67Onwsg9Dd2RWI+McF0WO+31iFt
 MIME-Version: 1.0
-References: <20210430141910.473289618@linuxfoundation.org>
-In-Reply-To: <20210430141910.473289618@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 1 May 2021 13:15:59 +0530
-Message-ID: <CA+G9fYt=R7TJT7jM2LhxSNaakAUtJZr5X2q9S6goNes5eJ0Y_Q@mail.gmail.com>
-Subject: Re: [PATCH 5.10 0/2] 5.10.34-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
+X-Received: by 2002:a05:6e02:1c24:: with SMTP id m4mr7566857ilh.279.1619855895319;
+ Sat, 01 May 2021 00:58:15 -0700 (PDT)
+Date:   Sat, 01 May 2021 00:58:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003a5d4c05c140175f@google.com>
+Subject: [syzbot] linux-next test error: WARNING in __nf_unregister_net_hook
+From:   syzbot <syzbot+dcccba8a1e41a38cb9df@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
+        kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, sfr@canb.auug.org.au,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Apr 2021 at 19:50, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.34 release.
-> There are 2 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 02 May 2021 14:19:04 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.34-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hello,
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+syzbot found the following issue on:
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+HEAD commit:    74f961f4 Add linux-next specific files for 20210430
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=156e6f15d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=acf3aa1c9f3e62f8
+dashboard link: https://syzkaller.appspot.com/bug?extid=dcccba8a1e41a38cb9df
 
-## Build
-* kernel: 5.10.34-rc1
-* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stabl=
-e-rc.git
-* git branch: linux-5.10.y
-* git commit: 9fe3189f108d04763059a2dc87e213f4e2064ec6
-* git describe: v5.10.33-3-g9fe3189f108d
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-.33-3-g9fe3189f108d
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+dcccba8a1e41a38cb9df@syzkaller.appspotmail.com
 
-## No regressions (compared to v5.10.33)
+------------[ cut here ]------------
+hook not found, pf 3 num 0
+WARNING: CPU: 0 PID: 224 at net/netfilter/core.c:480 __nf_unregister_net_hook+0x1eb/0x610 net/netfilter/core.c:480
+Modules linked in:
+CPU: 0 PID: 224 Comm: kworker/u4:5 Not tainted 5.12.0-next-20210430-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: netns cleanup_net
+RIP: 0010:__nf_unregister_net_hook+0x1eb/0x610 net/netfilter/core.c:480
+Code: 0f b6 14 02 48 89 c8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 11 04 00 00 8b 53 1c 89 ee 48 c7 c7 c0 4d 6e 8a e8 e8 5b 8a 01 <0f> 0b e9 e5 00 00 00 e8 99 dd 2c fa 44 8b 3c 24 4c 89 f8 48 c1 e0
+RSP: 0018:ffffc900015bfbc0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffff8880243de500 RCX: 0000000000000000
+RDX: ffff888012df3900 RSI: ffffffff815cc9f5 RDI: fffff520002b7f6a
+RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815c685e R11: 0000000000000000 R12: ffff88802e9c0f20
+R13: 0000000000000000 R14: ffff888019fb2180 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc78cbbe010 CR3: 0000000012d10000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ nf_unregister_net_hook net/netfilter/core.c:502 [inline]
+ nf_unregister_net_hooks+0x117/0x160 net/netfilter/core.c:576
+ arpt_unregister_table_pre_exit+0x67/0x80 net/ipv4/netfilter/arp_tables.c:1565
+ ops_pre_exit_list net/core/net_namespace.c:165 [inline]
+ cleanup_net+0x451/0xb10 net/core/net_namespace.c:583
+ process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:313
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
-## No Fixes (compared to v5.10.33)
 
-## Test result summary
- total: 78188, pass: 63866, fail: 3046, skip: 11021, xfail: 255,
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 26 total, 26 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 27 total, 26 passed, 1 failed
-
-## Test suites summary
-* fwts
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
