@@ -2,131 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1B53707E6
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 18:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFAE437081A
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 19:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231426AbhEAQdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 12:33:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47166 "EHLO
+        id S231629AbhEARMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 13:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230195AbhEAQdf (ORCPT
+        with ESMTP id S231415AbhEARME (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 12:33:35 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D1AC06174A
-        for <linux-kernel@vger.kernel.org>; Sat,  1 May 2021 09:32:44 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id n138so1759548lfa.3
-        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 09:32:44 -0700 (PDT)
+        Sat, 1 May 2021 13:12:04 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49CB9C06138B
+        for <linux-kernel@vger.kernel.org>; Sat,  1 May 2021 10:11:13 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id d15so1851038ljo.12
+        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 10:11:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=MZW1EyHy79UfqUVwrUmwZE+wtdLBfVdkxB4jvLroyEk=;
-        b=eFriZnXe6wAI8zO+VW8KKD055WxxPNqYoov2j/At6g9drhJwYeJQ7xKbZeKV/RLlbf
-         PE1RAhRXVs9Ej+sgAh6Q/MZpQ5AydWNgOvFHdr/dp8MfG8eHRrZYGFBKbi7sDMYlXRlL
-         R2gUVRB1wHwHx3W6mZ6ZUqqNyXrMQlLHLNs+A=
+        bh=/4MiGambOH4Q41KUPDr0utbfXa2gDpNvnZNfFaeSWGI=;
+        b=OcQ/r1/syjv1XULz5t4nXGvygGmxbigE6rMcT7tyo7mea/qVET26A82gNFVc49DGOr
+         wXH+ksm///CLTcAfiAPFZ4ZQhDg/6VeINM52p83MWFH9rn+hrY+f8busw+3oa9Mei3mp
+         9ZgD6h5qO5bMzZKithNwl8cwo0vQX6zbrqZ7M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=MZW1EyHy79UfqUVwrUmwZE+wtdLBfVdkxB4jvLroyEk=;
-        b=KRv/D+QI1RwRZ3aH+raVMnytoFUTydxqYlkKkqWjP/5AS6ofQR3O8KyHflWU07QCYX
-         h4Sr7PvTSF2zNT/I2qO+SlV6DaaiCqgnoyq0UMfAayDQuT34DORxnSAZVHMZUySPeRth
-         JcwGvZGuizFh7Hb/aQWZleDf4u8Q6a3ey+K9hy4/eopukVyu13SFtUkiTgfRRshVHY5F
-         zwGsdWpKoR+y7X1mf97F2UHUrjd1M6Uj5Ccl627outo/LxMwM4lWoRBromorY8hA61Rs
-         ORd8ExRCn8GNmxOL6In+IgalmUPPdutsquFjY76c6EI3hFHg9WgQ/q7pfw3g8wovcvzy
-         ed6A==
-X-Gm-Message-State: AOAM533h/wI0le8A1VuC6yP1OOTp9nopzX1Ic5dcfPQDdjKJPD8m84//
-        qIXZQp+MtbByvvgq0KJV+8owKd6hXTf1PcYq
-X-Google-Smtp-Source: ABdhPJyfsXkq925ukDsdmkQMd1bNWugb8LlsULg7x8Fa7/vCPdq0poh5TmliLEhSbeUeUUkQNzFmBQ==
-X-Received: by 2002:ac2:538b:: with SMTP id g11mr7095772lfh.108.1619886762316;
-        Sat, 01 May 2021 09:32:42 -0700 (PDT)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
-        by smtp.gmail.com with ESMTPSA id y22sm611387lfl.36.2021.05.01.09.32.41
+        bh=/4MiGambOH4Q41KUPDr0utbfXa2gDpNvnZNfFaeSWGI=;
+        b=affkne93eHGf6kVofPA9NDZ5eUlnpRG0GlOI2MQpdn56k2cMAJMUdvCpBWsRsYgdey
+         KshhcjQBGsPnKmaK52cMv11HKiMVNgA7Ln+6sOpIQgJNUvdtV01suPDslDWSLhANQarb
+         M9uOhPue34s1a65lTdBoukP5zHPgWVyixsbEVetnN+98ouSPZMjXAVpq+qJyv068Azq/
+         ikyrw5UrjZjJzdHseIzuEub0eaOa7q4MolyYyXXiAO85ynGrOokxBno/vKYBVYovlZ49
+         qG8RAe1HDj04d5ONqltKdHI7YonRrVsTST4vD9Gq8mnlim/7Y48td3GVOAy5csB5fjKp
+         ztsw==
+X-Gm-Message-State: AOAM533C05m5IknNQ8e+L4rP58JpXOFw++S1Un03gKMiIfz1p52Wn+E8
+        8nMF0vR81dMKl31Ug3bmHvdfwjYrxnY8e1g/
+X-Google-Smtp-Source: ABdhPJxWAazuXMNhKFckytfeFcjyjRy/LNSAMqHq7Onu/rMjKjhlEjI8MkDIZyxjf/YWaQn8L4d3XQ==
+X-Received: by 2002:a05:651c:102b:: with SMTP id w11mr7272348ljm.449.1619889071340;
+        Sat, 01 May 2021 10:11:11 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id v16sm572874lfd.110.2021.05.01.10.11.10
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 01 May 2021 09:32:41 -0700 (PDT)
-Received: by mail-lf1-f51.google.com with SMTP id x20so1741208lfu.6
-        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 09:32:41 -0700 (PDT)
-X-Received: by 2002:a05:6512:a90:: with SMTP id m16mr6986867lfu.201.1619886761106;
- Sat, 01 May 2021 09:32:41 -0700 (PDT)
+        Sat, 01 May 2021 10:11:10 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id z13so1861864lft.1
+        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 10:11:10 -0700 (PDT)
+X-Received: by 2002:a05:6512:3763:: with SMTP id z3mr7025614lft.487.1619889069713;
+ Sat, 01 May 2021 10:11:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAHk-=wjmNOoX8iPtYsM8PVa+7DE1=5bv-XVe_egP0ZOiuT=7CQ@mail.gmail.com>
- <CAKwvOdmMF_v9TzBtFn2S1qSS_yCDO8D-u3WhBehUM7gzjcdjUQ@mail.gmail.com>
- <CAKwvOdk+V2dc31guafFM=N2ez4SrwCmah+mimUG3MzPMx_2efQ@mail.gmail.com>
- <CAKwvOdn3uXniVedgtpD8QFAd-hdVuVjGPa4-n0h64PTxT4XhWg@mail.gmail.com>
- <CAKwvOdm3D=dqKw=kx46PLaiqfHOZJL3QFKGc8kxqJqpwdFFWqw@mail.gmail.com>
- <CAKwvOdkp_P8BCtFuKqDrtC_=A89ZfDf66Yr3FL2e=ojwv4KaMA@mail.gmail.com>
- <CAHk-=wi1yiBBr3b3RbCEte6-yzAApsZN5zRdr3xoW8Av9jOX=Q@mail.gmail.com>
- <CAKwvOdk0nxxUATg2jEKgx4HutXCMXcW92SX3DT+uCTgqBwQHBg@mail.gmail.com> <1c5e05fa-a246-9456-ff4e-287960acb18c@redhat.com>
-In-Reply-To: <1c5e05fa-a246-9456-ff4e-287960acb18c@redhat.com>
+References: <20210428230528.189146-1-pbonzini@redhat.com>
+In-Reply-To: <20210428230528.189146-1-pbonzini@redhat.com>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 1 May 2021 09:32:25 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whs8QZf3YnifdLv57+FhBi5_WeNTG1B-suOES=RcUSmQg@mail.gmail.com>
-Message-ID: <CAHk-=whs8QZf3YnifdLv57+FhBi5_WeNTG1B-suOES=RcUSmQg@mail.gmail.com>
-Subject: Re: Very slow clang kernel config ..
-To:     Tom Stellard <tstellar@redhat.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>,
-        Serge Guelton <sguelton@redhat.com>,
-        Sylvestre Ledru <sylvestre@mozilla.com>
+Date:   Sat, 1 May 2021 10:10:53 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjMc55HFTxEiJi=3iUcFm7fBeYHUvUmP1ZFYxbbs8nfXA@mail.gmail.com>
+Message-ID: <CAHk-=wjMc55HFTxEiJi=3iUcFm7fBeYHUvUmP1ZFYxbbs8nfXA@mail.gmail.com>
+Subject: Re: [GIT PULL] KVM, AMD PSP and ARM CoreSight changes for 5.13 merge window
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 8:33 PM Tom Stellard <tstellar@redhat.com> wrote:
+Ok, got around to this now, one comment:
+
+On Wed, Apr 28, 2021 at 4:05 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
 >
-> Yes, it's intentional.  Dynamic linking libraries from other packages is
-> the Fedora policy[1], and clang and llvm are separate packages (in Fedora).
+> - the coresight/next-ETE-TRBE branch from the KVM ARM tree hasn't yet
+> reached you, so I am CCing the maintainer.  Since he sent the patches
+> as a pull request to Marc Zyngier (the KVM ARM maintainer) at
+> https://lore.kernel.org/kvmarm/20210406224437.330939-1-mathieu.poirier@linaro.org/T/#u,
+> I actually suspect that from his point of view he's done.
 
-Side note: I really wish Fedora stopped doing that.
+So the problem with this is not the code, it's the merge (and
+admittedly the pull request in that case).
 
-Shared libraries are not a good thing in general. They add a lot of
-overhead in this case, but more importantly they also add lots of
-unnecessary dependencies and complexity, and almost no shared
-libraries are actually version-safe, so it adds absolutely zero
-upside.
+The totality of the merge message for the coresight pull is this:
 
-Yes, it can save on disk use, but unless it's some very core library
-used by a lot of things (ie particularly things like GUI libraries
-like gnome or Qt or similar), the disk savings are often not all that
-big - and disk is cheap. And the memory savings are often actually
-negative (again, unless it's some big library that is typically used
-by lots of different programs at the same time).
+    Merge remote-tracking branch 'coresight/next-ETE-TRBE' into
+kvmarm-master/next
 
-In this case, for example, it's true that a parallel build will be
-running possibly hundreds of copies of clang at the same time - and
-they'll all share the shared llvm library. But they'd share those same
-pages even if it wasn't a shared library, because it's the same
-executable! And the dynamic linking will actually cause a lot _less_
-sharing because of all the fixups.
+    Signed-off-by: Marc Zyngier <maz@kernel.org>
 
-We hit this in the subsurface project too. We had a couple of
-libraries that *nobody* else used. Literally *nobody*. But the Fedora
-policy meant that a Fedora package had to go the extra mile to make
-those other libraries be shared libraries, for actual negative gain,
-and a much more fragile end result (since those libraries were in no
-way compatible across different versions - so it all had to be updated
-in lock-step).
+Can you spot the problem?
 
-I think people have this incorrect picture that "shared libraries are
-inherently good". They really really aren't. They cause a lot of
-problems, and the advantage really should always be weighed against
-those (big) disadvantages.
+And  honestly, it's not just that merge. *Most* of the merges in this
+tree have absolutely garbage commit messages. This is particularly
+true of Marc's merges, but there's one from you too, with the merge
+message being:
 
-Pretty much the only case shared libraries really make sense is for
-truly standardized system libraries that are everywhere, and are part
-of the base distro.
+    Merge branch 'kvm-sev-cgroup' into HEAD
 
-[ Or, for those very rare programs that end up dynamically loading
-rare modules at run-time - not at startup - because that's their
-extension model. But that's a different kind of "shared library"
-entirely, even if ELF makes the technical distinction between
-"loadable module" and "shared library" be a somewhat moot point ]
+Guys, merges need explanations. A one-liner "I merged this" is not ok.
+The reason I ask for pull requests to have explanations is exactly so
+that I can write reasonable merge messages.
 
-                        Linus
+Pull requests need to have explanations of what they pull - not just
+because it needs to go into the merge message, but because the
+maintainer needs to keep track of what's happening.
+
+And even when you merge your own topic branch, you should explain
+*what* you are merging and why.
+
+Yes, it can be some simple extra line for trivial stuff ("Fix ARM
+memory slot handling"), but even when it's that simple, that extra
+line should be in addition to the "this is where I merged things from"
+like
+
+    Merge branch 'kvm-arm64/memslot-fixes' into kvmarm-master/next
+
+so sometimes you only need one extra short line as a human-readable
+"this is what's going on".
+
+But then when you have something like that commit 53648ed3f085
+
+    Merge remote-tracking branch 'coresight/next-ETE-TRBE' into
+kvmarm-master/next
+
+that actually brings in a lot of new code, that "merge from where"
+really doesn't cut it.
+
+Put another way - just look at
+
+    gitk 53648ed3f085^..53648ed3f085^2
+
+and tell me that that merge message is enough for what got merged.
+
+Because it damn well isn't.
+
+Merges are *important*. Even if nothing goes wrong, that's where
+history can get messy, and the message really tells outsides what's
+going on in the big picture.
+
+And heaven forbid that a bisect points to a merge as an issue - it's
+rare, but it happens - then you really want the merge to talk about
+what is going on, and what it brings in.
+
+So please people: fix your useless merge messages.
+
+            Linus
