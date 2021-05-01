@@ -2,90 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2208370790
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 16:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 503C3370792
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 16:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhEAOcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 10:32:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49470 "EHLO
+        id S231416AbhEAOfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 10:35:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229979AbhEAOcn (ORCPT
+        with ESMTP id S229979AbhEAOfM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 10:32:43 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13FB9C06174A
-        for <linux-kernel@vger.kernel.org>; Sat,  1 May 2021 07:31:53 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id 4-20020a05600c26c4b0290146e1feccd8so846443wmv.1
-        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 07:31:53 -0700 (PDT)
+        Sat, 1 May 2021 10:35:12 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D60C06174A
+        for <linux-kernel@vger.kernel.org>; Sat,  1 May 2021 07:34:22 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id 8so1061361qkv.8
+        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 07:34:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=T2mWFV3/WFGFmdkyFbf1R2stSAFOawE/+iZtuo8e7Qc=;
-        b=mW3BcuyKXI2jtNAPMdojciCpO/1bjRuUjNxUTHn5K+H1XOadceNfUryLU2z2TfSisZ
-         hBzPpAOUlYMB05LAeMPVF5ulpwWvAx4E6NNEi2+FSfKyy/j3iJ8yju7B8zcOziqpEvWW
-         cY6/avjeskLgxNfRKltnJa5FVqPkw7TLL+V2OW2/kv4zB+UqqPNbxCCX3xN3x9iPSpTm
-         RmeX1Cz10+E/vhjdtX0GtXOJ6BIZZWcnM7/FdUKBKti7rNvHedK79dIYSEnUdHuWqEfV
-         s40ZU+mZ5aIP7jzGe2LwqmwtuGosy5Mtd5bhNwGxFS5RDU8++Na0Kn5yUxL0QJ4hzHnn
-         6Pnw==
+        d=ugedal.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=35m+0g71EHp5JplTjNeuJu6NM0nqBbYx65WIaAvO81I=;
+        b=Td0Qom2EuAirsDIjUOJ5NTSXMc6m+HoFdvNW0EXDUhwC96V38cn6E5O/bRpDdyBQnm
+         uiWzjyJZoMTN5y1XpAumatFyMlf7QmF72mHuNAmk/HIh5ZmlSpeje2HpMJGXRvjt4OML
+         3bCPXB3bH4JnS70m0uLbFi6wI2vjBPOvcWx7de8Yc93nEhFkZ5IlskiqazIkNCPEwtOt
+         5PLVCbJhez74FqLCbWYhISCvuSpEtTFSJ0VznD7pRztIrVh/AVHnh1X7sqfPsRsO1IVG
+         w8Q/muGzvFG1YpIFxJZbB4ekUm+LTxM4o4z+glwtB+o5YhYtxqbane1csM1IRJ2tB7Sf
+         lwTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=T2mWFV3/WFGFmdkyFbf1R2stSAFOawE/+iZtuo8e7Qc=;
-        b=P11WyDs835yWyfZg7UL59w96XeL63arBCxD+kxMtPVkQzFrl4noLlc6f8gKvA9tRV9
-         zfxvSR6PkzXaSRfVbxXTiehVtMCAwHHRyEfrZU2XGzFdRQANp8SfjPJ53/1z3iJ5m3W9
-         mAQm8Tz7ihfeqvGCSpsFzX349t+UWQsPZRx4M0+Um5RYV3EfhlOVgixTQmspINZbggsh
-         d72uFpTWwlRx+bvyni6aIq2xPtYdLR9OhCuNbcEXzI9XclWKycvLh7apBTOPW6gJzteF
-         HuU2lsSL6RgiDhV75vcXOHnIKY6u0z0WeGUa2Wqed/pxNyZVtFrDDGxJJe8dTGLKU/Mr
-         vUuw==
-X-Gm-Message-State: AOAM532Gsam15NmyBK/vV/Fek0OJaIZ7Uw5PlCyfaBSPIPnjfKmYU1A+
-        fqA+0W+XjArwv7nZVAGHahFl4fTsExcHNSEloCQ=
-X-Google-Smtp-Source: ABdhPJxJn8hgkYVGOxgU9M+lwI28/OwepMzA03EWadvmmfcJD0MobI6YipvdwuXb7rSZcjyprSM0E2iW8uWdPSk37e8=
-X-Received: by 2002:a05:600c:251:: with SMTP id 17mr22745116wmj.64.1619879511580;
- Sat, 01 May 2021 07:31:51 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=35m+0g71EHp5JplTjNeuJu6NM0nqBbYx65WIaAvO81I=;
+        b=SMnn4qWA3gDxOKHbkWhH+M9/zzT20JYCOF0yO5Wb/5tDhqTDF6HtfBy9t8pzjiHkWR
+         AkHXFXgZk+V295CaRZzy9Mb9bddo6AZiKY0FU8/iOM6N+uH8Qoac412T6yY4jGFCUZwa
+         W0iXuig0wSfLNSHAnUMVQj+izLAwS9zci8IvKNxUG/TlfnQlJU4wLkOcAW0oCZMIce/I
+         I2V9ZUkWxhRcmNzjf2yfNxz+4WQZVq6wPMjrUr/1Cek3O4Vhy2zT24oRR2dJUlaN4r4R
+         wtymxQAdzGGD+NJze9iUAUSu6IyCAhB4CNBlFoKRJSkjfWbP4rMEqYPXDqH8V8EkqcWm
+         oRhw==
+X-Gm-Message-State: AOAM531pk8WY0/um2En6d+0AmDs8uQc4z7uyHWHKGR6/q5EzVRbxeRFN
+        CTJl6aWC9mDBFfYa/A5yRQg16TfBr90Xu3Gul49X2g==
+X-Google-Smtp-Source: ABdhPJxfigbEVrRhx6S8Gv2veQDPeufN51YDgEvvGsR4HvobRxvQn9OdI3B+cY5gBsBmAbVt6Z4yCltvrjHP3le99W4=
+X-Received: by 2002:a37:4496:: with SMTP id r144mr1989828qka.242.1619879662008;
+ Sat, 01 May 2021 07:34:22 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a5d:4001:0:0:0:0:0 with HTTP; Sat, 1 May 2021 07:31:51 -0700 (PDT)
-Reply-To: elizabethelizabethedward@gmail.com
-From:   Elizabeth Edward <alimanibrahim4@gmail.com>
-Date:   Sat, 1 May 2021 07:31:51 -0700
-Message-ID: <CAAQ2OVyhHAVT4s-aZpiPXZjfaBouNRgETA5__yRJda9BLnEJwA@mail.gmail.com>
-Subject: REPLY ME URGENTLY
-To:     undisclosed-recipients:;
+References: <20210425080902.11854-1-odin@uged.al> <20210425080902.11854-2-odin@uged.al>
+ <20210427142611.GA22056@vingu-book> <CAFpoUr1KOvLSUoUac8MMTD+TREDWmDpeku950U=_p-oBDE4Avw@mail.gmail.com>
+ <CAKfTPtCtt9V69AvkJTuMDRPJXGPboFsnSmwLM5RExnU2h5stSw@mail.gmail.com>
+In-Reply-To: <CAKfTPtCtt9V69AvkJTuMDRPJXGPboFsnSmwLM5RExnU2h5stSw@mail.gmail.com>
+From:   Odin Ugedal <odin@ugedal.com>
+Date:   Sat, 1 May 2021 16:33:49 +0200
+Message-ID: <CAFpoUr1D5URSODXKaOOHaBbmkNiNNbsCL1WCcEAWrdhJ8gXs8w@mail.gmail.com>
+Subject: Re: [PATCH 1/1] sched/fair: Fix unfairness caused by missing load decay
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My Dear Friend,
+ons. 28. apr. 2021 kl. 17:36 skrev Vincent Guittot <vincent.guittot@linaro.org>:
+> You can keep both fixes tags
 
-Please forgive me for stressing you with my predicaments and am  sorry
-to approach you through this media, it is because it serves the
-fastest means of communication. I came across your E-mail from my
-personal search and I decided to contact you believing you will be
-honest to fulfill my final wish before I die.
+ACK
 
-I am Mrs. Elizabeth Edward, 63 years, from USA, I am childless and I
-am suffering from a pro-long critical cancer, my doctors confirmed
+> If the cfs_rq is already in the list list_add_leaf_cfs_rq() will exit
+> early but if it's not, we don't have to make sure that the whole
+> branch in the list
 
-I may not live beyond two months from now as my ill health has defiled
-all forms of medical treatment.
+Yeah, thats right. Calling list_add_leaf_cfs_rq once "too much" doesnt
+hurt after all.
 
-Since my days are numbered, I=E2=80=99ve decided, willingly to fulfill my
-long-time promise to donate you the sum ($5.000.000.00) million
-dollars I inherited from my late husband Mr. Edward Herbart, foreign
-bank account over years. I need a very honest person who can assist in
-transfer of this money to his or her account and use the funds for
-charities work of God while you use 50% for yourself. I want you to
-know there are no risk involved, it is 100% hitch free & safe. If you
-will be interesting to assist in getting this fund into your account
-for charity project to fulfill my promise before I die please let me
-know immediately. I will appreciate your utmost confidentiality as I
-wait for your reply.
+> In fact, we can break as soon as list_add_leaf_cfs_rq() and
+> cfs_rq_throttled() return true
 
+ACK, that makes sense.
 
+> When a cfs_rq is throttled, it is not accounted in its parent anymore
+> so we don't have to update and propagate the load down.
 
-Best Regards
+Okay. Still need to wrap my head around this a bit more I guess. I
+have looked a bit around, and there
+is actually a similar issue as "this one" for the case when a
+throttled cgroup is "moved" via cpuset. It is however waaay
+harder to reproduce, but it is doable, and it _will_ happen in real
+life systems if the timing is "correct". I will dig deeper
+and finish the patch for that case some time next week (hopefully). I
+think that however deserve a separate patchset,
+so I will come back with that later.
 
-Mrs. Elizabeth Edward.
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 33b1ee31ae0f..18441ce7316c 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -11026,10 +11026,10 @@ static void propagate_entity_cfs_rq(struct sched_entity *se)
+>         for_each_sched_entity(se) {
+>                 cfs_rq = cfs_rq_of(se);
+>
+> -               if (cfs_rq_throttled(cfs_rq))
+> -                       break;
+> +               if (!cfs_rq_throttled(cfs_rq))
+> +                       update_load_avg(cfs_rq, se, UPDATE_TG);
+>
+> -               update_load_avg(cfs_rq, se, UPDATE_TG);
+> +               list_add_leaf_cfs_rq(cfs_rq);
+>         }
+> }
+
+Sent a v2 with something like this now; that exit if
+(list_add_leaf_cfs_rq(cfs_rq) && throttled). Since this loop start at
+the parent of
+the cfs_rq of the supplied se, I added a list_add_leaf_cfs_rq to the
+top in order to insert the leaf cfs_rq as well.
+
+Thanks
+Odin
