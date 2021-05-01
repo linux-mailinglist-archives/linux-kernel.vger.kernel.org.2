@@ -2,76 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FCE13705DD
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 08:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFBB43705E2
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 08:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231652AbhEAGO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 02:14:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbhEAGOZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 02:14:25 -0400
-Received: from server.lespinasse.org (server.lespinasse.org [IPv6:2001:470:82ab::100:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387B0C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 23:13:36 -0700 (PDT)
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
- d=lespinasse.org; i=@lespinasse.org; q=dns/txt; s=srv-14-ed;
- t=1619849615; h=date : from : to : cc : subject : message-id :
- references : mime-version : content-type : in-reply-to : from;
- bh=xPSpvQ0vttQgx8vc8QjpV7QF/EF3iUal+uGRHaKvlj0=;
- b=jUnjHtkSxb7nb0OZ37iv4gYEshItyzYBHm0FDbN9mDJnhcmm06HsKu9mZcZ96rnLKXig5
- WWSAj6zduZ8qM/CBg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lespinasse.org;
- i=@lespinasse.org; q=dns/txt; s=srv-14-rsa; t=1619849615; h=date :
- from : to : cc : subject : message-id : references : mime-version :
- content-type : in-reply-to : from;
- bh=xPSpvQ0vttQgx8vc8QjpV7QF/EF3iUal+uGRHaKvlj0=;
- b=WeoTKebCC/3VeDmCMTrygVvWJTQDvus+H+s7pfqy9UhH1vWDDireyvUoYtWmbsXxsmTP/
- vZa0ESgLCFh440zJozXX3aFbZYsusiwe0fq5cuY8vpf32j7Waeio7/m48knfyfFPMQxeP8a
- tfeKYP33OjoEBHaxBjWVJc6lAaiUrD8unRfsTyVVcp2+NOSsyY0ppkcboyhLhn7fASdFR3j
- HV+oPzAVlan6uidHPIk6iwo3N/wE0gI4CJZi4GIsVMB/Nqd8eZRQk5IirQX4alENP3yuL0B
- VKtR6Sner2DIgp/Q24MwT0+nMpsFcjM5fBLYVHV1IJgXN/4x/sPtKOJCnvAg==
-Received: by server.lespinasse.org (Postfix, from userid 1000)
-        id E0F29160324; Fri, 30 Apr 2021 23:13:35 -0700 (PDT)
-Date:   Fri, 30 Apr 2021 23:13:35 -0700
-From:   Michel Lespinasse <michel@lespinasse.org>
-To:     Liam Howlett <liam.howlett@oracle.com>
-Cc:     "maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Song Liu <songliubraving@fb.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        David Rientjes <rientjes@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Rik van Riel <riel@surriel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michel Lespinasse <walken.cr@gmail.com>
-Subject: Re: [PATCH 94/94] mm: Move mas locking outside of munmap() path.
-Message-ID: <20210501061335.GD5188@lespinasse.org>
-References: <20210428153542.2814175-1-Liam.Howlett@Oracle.com>
- <20210428153542.2814175-95-Liam.Howlett@Oracle.com>
+        id S231517AbhEAGZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 02:25:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46940 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229505AbhEAGZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 May 2021 02:25:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F033D613C2;
+        Sat,  1 May 2021 06:24:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619850261;
+        bh=X9cYeVXcga7kObVA/p1U0zrIolbkSZQkyIvB3ZJbuEc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vvKskF8A3MqcJvyaMlaBzRiSpwXUFgxqqJHthqQW9syCx4jeqsxXZHSR1s7Lbyw4E
+         3wPyrmR6mxInIoxNzLFq+tNhN931Q2HKNpucp9/6KjWh2+M+2IKcnJ5MVnKZseGzHY
+         rENlfN6cHDZgqqutaby3B12wsgoThhqjMiCCfzPs=
+Date:   Sat, 1 May 2021 08:24:16 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Enzo Matsumiya <ematsumiya@suse.de>
+Cc:     linux-leds@vger.kernel.org, linux-block@vger.kernel.org,
+        u.kleine-koenig@pengutronix.de, Jens Axboe <axboe@kernel.dk>,
+        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/2] block: export block_class and disk_type symbols
+Message-ID: <YIz0EBqKTHhB+n8N@kroah.com>
+References: <20210430183216.27458-1-ematsumiya@suse.de>
+ <20210430183216.27458-2-ematsumiya@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210428153542.2814175-95-Liam.Howlett@Oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210430183216.27458-2-ematsumiya@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 03:36:32PM +0000, Liam Howlett wrote:
-> Now that there is a split variant that allows splitting to use a maple state,
-> move the locks to a more logical position.
+On Fri, Apr 30, 2021 at 03:32:10PM -0300, Enzo Matsumiya wrote:
+> Export symbols to be used by _for_each_blk() helper in LED block
+> trigger.
+> 
+> Signed-off-by: Enzo Matsumiya <ematsumiya@suse.de>
+> ---
+>  block/genhd.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/block/genhd.c b/block/genhd.c
+> index 8c8f543572e6..516495179230 100644
+> --- a/block/genhd.c
+> +++ b/block/genhd.c
+> @@ -1218,6 +1218,7 @@ static void disk_release(struct device *dev)
+>  struct class block_class = {
+>  	.name		= "block",
+>  };
+> +EXPORT_SYMBOL(block_class);
+>  
+>  static char *block_devnode(struct device *dev, umode_t *mode,
+>  			   kuid_t *uid, kgid_t *gid)
+> @@ -1235,6 +1236,7 @@ const struct device_type disk_type = {
+>  	.release	= disk_release,
+>  	.devnode	= block_devnode,
+>  };
+> +EXPORT_SYMBOL(disk_type);
+>  
+>  #ifdef CONFIG_PROC_FS
+>  /*
 
-In this patch set, is the maple tree lock ever held outside of code
-sections already protected by the mmap write lock ?
+Please please no.  These should not be needed by anything.
 
---
-Michel "walken" Lespinasse
+And if they really do, they must be EXPORT_SYMBOL_GPL().
+
+thanks,
+
+greg k-h
