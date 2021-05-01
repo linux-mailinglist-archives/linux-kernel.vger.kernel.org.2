@@ -2,123 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68360370469
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 02:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F7037046E
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 02:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231392AbhEAA3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 20:29:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230226AbhEAA3e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 20:29:34 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07CB2C06138B
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 17:28:46 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id t24so14335210oic.10
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 17:28:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wrSDrh86BIUH92uxEEUIIzYXakmk5H1bASu7Ra8z2vg=;
-        b=cvM0ZoU48pK2bYkaKMuHnSoQ06aWqFfkle9mtgOE/Ush8rIB5JVJRuoCRAzplzdNNl
-         I8sBtiJuY+Wewk8R0f9ELuux1yOcHKWmMSma4409yzW1wIDhiddWDFYV9WPOb8jS9KEY
-         LASs1C1i+LifJunVK3i65hUcADSM/TcSa7HX5GTfeaERdUOeUnTpL/0JoA6Nwi5GDJnJ
-         yftzIBkHJmylhsDacSB0TT2ywGtL+Rwk9MPNLWm9iMRXMEv0/Aw8K4aGrQnyKHcS9by4
-         LqL7xbL0BirIf5oh0qpJIKXzj4gS6APG4yb3UqYogyYAVhgHkscBpZvU728ThVeDXKFx
-         NfDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wrSDrh86BIUH92uxEEUIIzYXakmk5H1bASu7Ra8z2vg=;
-        b=k6LWGe0PQrCK4pZ29QDNRHM+Q4xY8gYhkoUpXy2c8N31LrccZsp2VX4+lCNP5cZPJW
-         J07UaKiyKDKQpjtgg3GmWb4k8Up3sXl4wwJUV9Uss5pCB9lqOAcoFKn6aeUpGQDdb+78
-         kxl/wsLoMbEV2jLedNcDwBqHZvNo1A06cMHwJktFOTXXrzAz++v5ZXBfjk74MKVBgke2
-         4PWJhqBUW1uD7XY1TplRTDlOpvVUENiaG6UOQ04pjrIp+fYpmFSqXn35HwkV7IOQnBbC
-         4sOKbBuvXRveuyWL7jeV8dMENDVSrwRmvGjq8f+/3aJfN3nQJY/pHYkAaCMptUpYTEJ7
-         ah8Q==
-X-Gm-Message-State: AOAM530uIOK+UgjKjnfMmo4PfJV4h6uIAFGhWRqDI4YBpzJFTwL3LHNt
-        B33k8ObdMLiBaAl5BNUv5sgDpD8X1LCXEeoB0gbJLQ==
-X-Google-Smtp-Source: ABdhPJwd0pDQ1vHrS8Z2nkyzNABox9/lzR97Z3rpScDEZ96BeynLMF42t/vDPTiSITQxEl86WXm5uwEG3bhnj95lNz8=
-X-Received: by 2002:aca:408a:: with SMTP id n132mr6068321oia.70.1619828924536;
- Fri, 30 Apr 2021 17:28:44 -0700 (PDT)
+        id S231382AbhEAAbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 20:31:40 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:50257 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230226AbhEAAbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 20:31:39 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619829050; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=WvWz0gbRm48kAWe+L3LFpw5iHaX9Gmr44pfC0e7Kx8I=; b=rG6GSbta3mgVGF/1t/S0XZQHOdQo5qfMY4qUh+mWQQRf+GnP/ZQIqd+0s/7UhJvg97ZQpWPM
+ OIbQ5HdxulpbZmTjgJfDuVX4G6j7f14eTwGlh4rQ5MwAx8H1PZQZvrTtMSgxQFJVEjhzwsNi
+ zWoNosnPGCtDf9OS2+/V+CWnZ84=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 608ca12efebcffa80f391558 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 01 May 2021 00:30:38
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D8D0DC4338A; Sat,  1 May 2021 00:30:38 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1D8CBC433F1;
+        Sat,  1 May 2021 00:30:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1D8CBC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+Subject: Re: [PATCH] bus: mhi: core: Improve debug messages for power on
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
+        linux-kernel@vger.kernel.org, loic.poulain@linaro.org
+References: <1619485258-35689-1-git-send-email-bbhatt@codeaurora.org>
+From:   Hemant Kumar <hemantk@codeaurora.org>
+Message-ID: <c26a8005-3bd6-eab0-185d-6341419dd59c@codeaurora.org>
+Date:   Fri, 30 Apr 2021 17:30:37 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <YIpkvGrBFGlB5vNj@elver.google.com> <m11rat9f85.fsf@fess.ebiederm.org>
- <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
- <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
- <m1zgxfs7zq.fsf_-_@fess.ebiederm.org> <m1im43qrug.fsf_-_@fess.ebiederm.org>
-In-Reply-To: <m1im43qrug.fsf_-_@fess.ebiederm.org>
-From:   Marco Elver <elver@google.com>
-Date:   Sat, 1 May 2021 02:28:33 +0200
-Message-ID: <CANpmjNOwUfcCrBfCjtq9ngjqkqjYzehrqS+=+2oA=703tNP=aA@mail.gmail.com>
-Subject: Re: Is perf_sigtrap synchronous?
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1619485258-35689-1-git-send-email-bbhatt@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 1 May 2021 at 01:23, Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> I am looking at perf_sigtrap and I am confused by the code.
->
->
->         /*
->          * We'd expect this to only occur if the irq_work is delayed and either
->          * ctx->task or current has changed in the meantime. This can be the
->          * case on architectures that do not implement arch_irq_work_raise().
->          */
->         if (WARN_ON_ONCE(event->ctx->task != current))
->                 return;
->
->         /*
->          * perf_pending_event() can race with the task exiting.
->          */
->         if (current->flags & PF_EXITING)
->                 return;
->
->
-> It performs tests that absolutely can never fail if we are talking about
-> a synchronous exception.  The code force_sig family of functions only
-> make sense to use with and are only safe to use with synchronous
-> exceptions.
->
-> Are the tests in perf_sigtrap necessary or is perf_sigtrap not reporting
-> a synchronous event?
 
-Yes it's synchronous, insofar that the user will receive the signal
-right when the event happens (I've tested this extensively, also see
-tools/testing/selftests/perf_events). Of course, there's some effort
-involved from the point where the event triggered to actually safely
-delivering the signal. In particular, for HW events, these arrive in
-NMI, and we can't do much in NMI, and therefore will queue an
-irq_work.
+Hi Bhaumik,
 
-On architectures that properly implement irq_work, it will do a
-self-IPI, so that once it is safe to do so, another interrupt is
-delivered where we process the event and do the force_sig_info(). The
-task where the event occurred never got a chance to run -- except for
-bad architectures with broken irq_work, and the first WARN_ON() is
-there so we don't crash the kernel if somebody botched their irq_work.
-
-Since we're talking about various HW events, these can still trigger
-while the task is exiting, before perf_event_exit_task() being called
-during do_exit(). That's why we have the 2nd check.
+On 4/26/21 6:00 PM, Bhaumik Bhatt wrote:
+> Improve error message to be more descriptive if a failure occurs
+> with an invalid power on execution environment. Also add a debug
+> message to print the execution environment and MHI state before
+> a power on is attempted to get a better view of device states.
+Can we add a scenario where this dbg log can help ? That gives a good 
+justification for addition of new log.
+> 
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> ---
+>   drivers/bus/mhi/core/pm.c | 6 +++++-
+>   1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+> index adf426c..f4a8b9a 100644
+> --- a/drivers/bus/mhi/core/pm.c
+> +++ b/drivers/bus/mhi/core/pm.c
+> @@ -1076,12 +1076,16 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
+>   
+>   	/* Confirm that the device is in valid exec env */
+>   	if (!MHI_IN_PBL(current_ee) && current_ee != MHI_EE_AMSS) {
+> -		dev_err(dev, "Not a valid EE for power on\n");
+> +		dev_err(dev, "%s is not a valid EE for power on\n",
+> +			TO_MHI_EXEC_STR(current_ee));
+>   		ret = -EIO;
+>   		goto error_async_power_up;
+>   	}
+>   
+>   	state = mhi_get_mhi_state(mhi_cntrl);
+> +	dev_dbg(dev, "Attempting power on with EE: %s, state: %s\n",
+> +		TO_MHI_EXEC_STR(current_ee), TO_MHI_STATE_STR(state));
+> +
+>   	if (state == MHI_STATE_SYS_ERR) {
+>   		mhi_set_mhi_state(mhi_cntrl, MHI_STATE_RESET);
+>   		ret = wait_event_timeout(mhi_cntrl->state_event,
+> 
 
 Thanks,
--- Marco
+Hemant
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
