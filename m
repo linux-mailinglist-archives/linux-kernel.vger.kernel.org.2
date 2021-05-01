@@ -2,42 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 022D13705C2
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 07:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25E443705C5
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 07:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231629AbhEAFvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 01:51:12 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:42875 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbhEAFvK (ORCPT
+        id S231717AbhEAFwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 01:52:06 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:38428 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231695AbhEAFwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 01:51:10 -0400
-Received: by mail-il1-f197.google.com with SMTP id d3-20020a9287430000b0290181f7671fa1so388973ilm.9
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 22:50:21 -0700 (PDT)
+        Sat, 1 May 2021 01:52:05 -0400
+Received: by mail-io1-f70.google.com with SMTP id v1-20020a5d94810000b02903e0f4d732b4so66430ioj.5
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 22:51:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=cxWeREtVAU3i0zIzuSe74eJXM2sfcCnf5zyODCYIsJc=;
-        b=q0CkE6s2b2WSgStvJYGcM5JN6Rmhr3w11W9b0n/+euWWr4To7NhKZh6j/51WxKwJEG
-         SFilYq53hBgotJ8aBpRcaZZZuDug2ognBYbfo+wPay9se2G90udDASNB7RAVWqNgU5AB
-         hqvJWomOBF/kA7Zf641WGyNfQTRbIkbZK1jJiTEVXwaCXAunEfr6/MfANO7P3KN5w5+s
-         bdcptuTrFWtX+ZHz4ErZBdmnY5UhyjOcJBlhEKM704MRXw9Ur55jGyXAvkxljWafBvxu
-         ExIX/ehpSXBFgSIdyF4jZU2N0+TfBTG+5ORCzF7Z6aCUHBJy+dfYGxdUokf6whRfm70Y
-         tssQ==
-X-Gm-Message-State: AOAM533a41AH6WAKkUC35mrspLpK12rc8hzifM2EKLtOzhumh6rFLBpL
-        NCEnS6pW7FebIXkv6g5tykCLFmms9PoGc1PM+U4wOC4hY4eT
-X-Google-Smtp-Source: ABdhPJx26dVYAsMVWukIp8RbFgSyH1efBObI79uQ7y/Jpsn8TOWSsifONXOaUU3MBCT2WKiBvdfpkujE4Aet0HdODglIYYRDCArE
+        bh=diU0RNkAZollR/UrfKoeFvOTmJ41JtW3kpnG7nzIye4=;
+        b=HuQTgteMiVL5BuLzyQoYYjba/XtEbgCjmRL2eFk1EBU8Gvts4Ukdb3+B4CqRodMma1
+         Y6v2iirpSa/Z2OQszW+GdJqab419X/DvyULP7wloNtWFK6rpJDCUEaboD7luGjuZYJen
+         06GaLt0kDjBQFLq46KN/l7HGgb0+hydEbEDmBjkAQ0YkXAWzVchJfyXy1zhrU18768gx
+         Tw7HxDIp4UiV35hO6i2tHpknHa3b8GN/OvhD7j9IzFlTKsYpdlexnpfVTADiJkCWJAMD
+         5IeUzIZIFyXUv7WjXmkEeBjPklVeEH0p9kc8JG4/rWZuib+H9XZlRS8ADczVIRv6fBU0
+         Y8zA==
+X-Gm-Message-State: AOAM53089HYL/KNfbRy7vOqStTDK+tWzen/ziBcCQCqi25/DwgJsIsUw
+        8FaVxidi6P+fJTfrxYbj6u6F5FW6mFiJ7BbshwJtGE7sRXJb
+X-Google-Smtp-Source: ABdhPJwtMxjHUuqXVYXVlLQ77T5B4K3t2pi07rUtT0Z+ek7e9SxkH3ZKKqcRXNa5CTthibApvwZDyxYs5Jzsx5dy9bMcuvi71Otn
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:1546:: with SMTP id h6mr6558154iow.32.1619848220924;
- Fri, 30 Apr 2021 22:50:20 -0700 (PDT)
-Date:   Fri, 30 Apr 2021 22:50:20 -0700
+X-Received: by 2002:a92:c26a:: with SMTP id h10mr7042919ild.294.1619848275818;
+ Fri, 30 Apr 2021 22:51:15 -0700 (PDT)
+Date:   Fri, 30 Apr 2021 22:51:15 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cc615405c13e4dfe@google.com>
-Subject: [syzbot] KASAN: use-after-free Read in nfc_llcp_put_ssap
-From:   syzbot <syzbot+e4689b43d2ed2ed63611@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <00000000000011fd4305c13e51c7@google.com>
+Subject: [syzbot] KASAN: user-memory-access Read in do_syscall_trace_enter
+From:   syzbot <syzbot+e00eb4c4f40728f9bcde@syzkaller.appspotmail.com>
+To:     aou@eecs.berkeley.edu, keescook@chromium.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        luto@amacapital.net, oleg@redhat.com, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, syzkaller-bugs@googlegroups.com,
+        wad@chromium.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,137 +51,45 @@ Hello,
 syzbot found the following issue on:
 
 HEAD commit:    18a3c5f7 Merge tag 'for_linus' of git://git.kernel.org/pub..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=161628b9d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9404cfa686df2c05
-dashboard link: https://syzkaller.appspot.com/bug?extid=e4689b43d2ed2ed63611
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+console output: https://syzkaller.appspot.com/x/log.txt?x=14fa7ca5d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=105967f18e189a79
+dashboard link: https://syzkaller.appspot.com/bug?extid=e00eb4c4f40728f9bcde
+userspace arch: riscv64
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e4689b43d2ed2ed63611@syzkaller.appspotmail.com
+Reported-by: syzbot+e00eb4c4f40728f9bcde@syzkaller.appspotmail.com
 
 ==================================================================
-BUG: KASAN: use-after-free in __mutex_lock_common kernel/locking/mutex.c:931 [inline]
-BUG: KASAN: use-after-free in __mutex_lock+0x1034/0x1120 kernel/locking/mutex.c:1096
-Read of size 8 at addr ffff88801a106080 by task syz-executor.0/31485
+BUG: KASAN: user-memory-access in test_bit include/asm-generic/bitops/non-atomic.h:106 [inline]
+BUG: KASAN: user-memory-access in cpumask_test_cpu include/linux/cpumask.h:373 [inline]
+BUG: KASAN: user-memory-access in trace_sys_enter include/trace/events/syscalls.h:18 [inline]
+BUG: KASAN: user-memory-access in do_syscall_trace_enter+0x24c/0x5ae arch/riscv/kernel/ptrace.c:255
+Read of size 8 at addr 000000000118e9ae by task syz-executor.1/3237
 
-CPU: 1 PID: 31485 Comm: syz-executor.0 Not tainted 5.12.0-rc8-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+CPU: 1 PID: 3237 Comm: syz-executor.1 Not tainted 5.12.0-rc8-syzkaller-00194-g18a3c5f7abfd #0
+Hardware name: riscv-virtio,qemu (DT)
 Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
- __kasan_report mm/kasan/report.c:399 [inline]
- kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
- __mutex_lock_common kernel/locking/mutex.c:931 [inline]
- __mutex_lock+0x1034/0x1120 kernel/locking/mutex.c:1096
- nfc_llcp_put_ssap+0x49/0x2e0 net/nfc/llcp_core.c:492
- llcp_sock_release+0x1d2/0x580 net/nfc/llcp_sock.c:626
- __sock_release+0xcd/0x280 net/socket.c:599
- sock_close+0x18/0x20 net/socket.c:1258
- __fput+0x288/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x1a0 kernel/task_work.c:140
- exit_task_work include/linux/task_work.h:30 [inline]
- do_exit+0xbfc/0x2a60 kernel/exit.c:825
- do_group_exit+0x125/0x310 kernel/exit.c:922
- get_signal+0x47f/0x2150 kernel/signal.c:2781
- arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:789
- handle_signal_work kernel/entry/common.c:147 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x148/0x250 kernel/entry/common.c:208
- __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665f9
-Code: Unable to access opcode bytes at RIP 0x4665cf.
-RSP: 002b:00007fc68dddd218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: 0000000000000000 RBX: 000000000056bf68 RCX: 00000000004665f9
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000056bf68
-RBP: 000000000056bf60 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf6c
-R13: 00007fff0986484f R14: 00007fc68dddd300 R15: 0000000000022000
-
-Allocated by task 1:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:427 [inline]
- ____kasan_kmalloc mm/kasan/common.c:506 [inline]
- ____kasan_kmalloc mm/kasan/common.c:465 [inline]
- __kasan_kmalloc+0x99/0xc0 mm/kasan/common.c:515
- kmalloc include/linux/slab.h:554 [inline]
- kzalloc include/linux/slab.h:684 [inline]
- nfc_llcp_register_device+0x45/0x9d0 net/nfc/llcp_core.c:1572
- nfc_register_device+0x6d/0x360 net/nfc/core.c:1124
- nfcsim_device_new+0x345/0x5c1 drivers/nfc/nfcsim.c:408
- nfcsim_init+0x71/0x14d drivers/nfc/nfcsim.c:455
- do_one_initcall+0x103/0x650 init/main.c:1226
- do_initcall_level init/main.c:1299 [inline]
- do_initcalls init/main.c:1315 [inline]
- do_basic_setup init/main.c:1335 [inline]
- kernel_init_freeable+0x63e/0x6c2 init/main.c:1537
- kernel_init+0xd/0x1b8 init/main.c:1424
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-Freed by task 31485:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
- ____kasan_slab_free mm/kasan/common.c:360 [inline]
- ____kasan_slab_free mm/kasan/common.c:325 [inline]
- __kasan_slab_free+0xf5/0x130 mm/kasan/common.c:367
- kasan_slab_free include/linux/kasan.h:199 [inline]
- slab_free_hook mm/slub.c:1562 [inline]
- slab_free_freelist_hook+0x92/0x210 mm/slub.c:1600
- slab_free mm/slub.c:3161 [inline]
- kfree+0xe5/0x7f0 mm/slub.c:4213
- local_release net/nfc/llcp_core.c:175 [inline]
- kref_put include/linux/kref.h:65 [inline]
- nfc_llcp_local_put net/nfc/llcp_core.c:183 [inline]
- nfc_llcp_local_put+0x194/0x200 net/nfc/llcp_core.c:178
- llcp_sock_destruct+0x81/0x150 net/nfc/llcp_sock.c:950
- __sk_destruct+0x4b/0x900 net/core/sock.c:1795
- sk_destruct+0xbd/0xe0 net/core/sock.c:1839
- __sk_free+0xef/0x3d0 net/core/sock.c:1850
- sk_free+0x78/0xa0 net/core/sock.c:1861
- sock_put include/net/sock.h:1807 [inline]
- llcp_sock_release+0x3c9/0x580 net/nfc/llcp_sock.c:644
- __sock_release+0xcd/0x280 net/socket.c:599
- sock_close+0x18/0x20 net/socket.c:1258
- __fput+0x288/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x1a0 kernel/task_work.c:140
- exit_task_work include/linux/task_work.h:30 [inline]
- do_exit+0xbfc/0x2a60 kernel/exit.c:825
- do_group_exit+0x125/0x310 kernel/exit.c:922
- get_signal+0x47f/0x2150 kernel/signal.c:2781
- arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:789
- handle_signal_work kernel/entry/common.c:147 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x148/0x250 kernel/entry/common.c:208
- __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-The buggy address belongs to the object at ffff88801a106000
- which belongs to the cache kmalloc-2k of size 2048
-The buggy address is located 128 bytes inside of
- 2048-byte region [ffff88801a106000, ffff88801a106800)
-The buggy address belongs to the page:
-page:ffffea0000684000 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1a100
-head:ffffea0000684000 order:3 compound_mapcount:0 compound_pincount:0
-flags: 0xfff00000010200(slab|head)
-raw: 00fff00000010200 dead000000000100 dead000000000122 ffff888010442000
-raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff88801a105f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff88801a106000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff88801a106080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                   ^
- ffff88801a106100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88801a106180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[<ffffffe000009708>] walk_stackframe+0x0/0x23c arch/riscv/kernel/traps.c:202
+[<ffffffe002a631dc>] dump_backtrace+0x40/0x4e arch/riscv/kernel/stacktrace.c:113
+[<ffffffe002a6320c>] show_stack+0x22/0x2e arch/riscv/kernel/stacktrace.c:118
+[<ffffffe002a6ca98>] __dump_stack lib/dump_stack.c:79 [inline]
+[<ffffffe002a6ca98>] dump_stack+0x148/0x1d8 lib/dump_stack.c:120
+[<ffffffe0003bd560>] __kasan_report mm/kasan/report.c:403 [inline]
+[<ffffffe0003bd560>] kasan_report+0x146/0x18c mm/kasan/report.c:416
+[<ffffffe0003bddc8>] check_region_inline mm/kasan/generic.c:174 [inline]
+[<ffffffe0003bddc8>] __asan_load8+0x4a/0x80 mm/kasan/generic.c:253
+[<ffffffe000006fe8>] test_bit include/asm-generic/bitops/non-atomic.h:106 [inline]
+[<ffffffe000006fe8>] cpumask_test_cpu include/linux/cpumask.h:373 [inline]
+[<ffffffe000006fe8>] trace_sys_enter include/trace/events/syscalls.h:18 [inline]
+[<ffffffe000006fe8>] do_syscall_trace_enter+0x24c/0x5ae arch/riscv/kernel/ptrace.c:255
+[<ffffffe000005664>] handle_syscall_trace_enter+0x6/0x1e
 ==================================================================
+Kernel panic - not syncing: panic_on_warn set ...
+SMP: stopping secondary CPUs
+Rebooting in 86400 seconds..
 
 
 ---
