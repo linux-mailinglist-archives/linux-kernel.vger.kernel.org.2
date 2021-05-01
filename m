@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CCE837082C
+	by mail.lfdr.de (Postfix) with ESMTP id F0FC037082E
 	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 19:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231629AbhEARVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 13:21:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56302 "EHLO mail.kernel.org"
+        id S231724AbhEARVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 13:21:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231556AbhEARVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 13:21:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 48B5D61625;
-        Sat,  1 May 2021 17:20:54 +0000 (UTC)
+        id S231556AbhEARVt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 May 2021 13:21:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6798D61284;
+        Sat,  1 May 2021 17:20:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619889654;
-        bh=t/3lgDnpeyvCdPtZDjLXkOXI5cE2Vg0kvNu9zEys41E=;
+        s=k20201202; t=1619889659;
+        bh=M8fSXRspM+gfwTBc56Q72oXMJRbZEUo4slnyxyJ7Xpc=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=AWEXf1eQRWeTEF+40JT8DkVdBLPEuwrtWAFBHpOqoL+x09uN5kmw9ub9WLvTvBvC4
-         XAqO5StzQLoxhDudwrPV0MkYpLuR0OaKIBbdTXwq2gObicfaUXdl3Gjictvr9qnPVV
-         0Zg00puaAWDh3/IGn/qeTo5yBkWJIomICSQBQcaapmnxuF0DtYXs+fwjoHITAOR5rt
-         Cscg9TUegI+DCWKdBZD1JNMAFqW0KUJryPttMeuWkiveRyZ6hEtEPQ1VC3R27JT9/z
-         g9Abb9n0msQ2wtS26RKvv3dSSYBTMfYlFCNj9lhMIFO4tKCZTC7H0bB5ojqj70Gbip
-         l2dXcrkxMGkLg==
+        b=mxRORHQswXRYGlLL0JIVVzBat6a9A9SBSYg4XQTDKgxF8PfJG59GLNlFTuykrC6Gq
+         SZfmrZ9t7THK6Mk1YjsekxP/zgg1M6I4MlmjSFluDOtfLQ0tSkBN7ugbIj1Bfqk3oX
+         hTZNadG2vaTRLVwhPgQQTjp1GZnnE/MWpidu+XQDjVPy9Ru9EnuUlgtfJ7pPp8ERXS
+         h+DhHBVk0vTSPGGPmS0yTomwEovkBgVG+QVgkcQ0W6t82sGQHnGamKB7j8jp82YlWn
+         sI8OH3/VkDpLzT76CrgLCUXWtVg/+/qFPSGHxUtzvbM3D/Nckbz4TQ+LeIN61rfx+w
+         pSmzrcA+HGMiQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 42FE760978;
-        Sat,  1 May 2021 17:20:54 +0000 (UTC)
-Subject: Re: [git pull] IOMMU Updates for Linux v5.13
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6163A60978;
+        Sat,  1 May 2021 17:20:59 +0000 (UTC)
+Subject: Re: [GIT PULL] KVM, AMD PSP and ARM CoreSight changes for 5.13 merge window
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YIwRbkQcElemYSjz@8bytes.org>
-References: <YIwRbkQcElemYSjz@8bytes.org>
-X-PR-Tracked-List-Id: Development issues for Linux IOMMU support
- <iommu.lists.linux-foundation.org>
-X-PR-Tracked-Message-Id: <YIwRbkQcElemYSjz@8bytes.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-updates-v5.13
-X-PR-Tracked-Commit-Id: 2d471b20c55e13c98d1dba413bf2de618e89cdac
+In-Reply-To: <20210428230528.189146-1-pbonzini@redhat.com>
+References: <20210428230528.189146-1-pbonzini@redhat.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210428230528.189146-1-pbonzini@redhat.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+X-PR-Tracked-Commit-Id: 3bf0fcd754345d7ea63e1446015ba65ece6788ca
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4f9701057a9cc1ae6bfc533204c9d3ba386687de
-Message-Id: <161988965426.32500.6869537324714282066.pr-tracker-bot@kernel.org>
-Date:   Sat, 01 May 2021 17:20:54 +0000
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        iommu@lists.linux-foundation.org, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org
+X-PR-Merge-Commit-Id: 152d32aa846835987966fd20ee1143b0e05036a0
+Message-Id: <161988965939.32500.10161046609992297351.pr-tracker-bot@kernel.org>
+Date:   Sat, 01 May 2021 17:20:59 +0000
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 30 Apr 2021 16:17:18 +0200:
+The pull request you sent on Wed, 28 Apr 2021 19:05:28 -0400:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-updates-v5.13
+> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4f9701057a9cc1ae6bfc533204c9d3ba386687de
+https://git.kernel.org/torvalds/c/152d32aa846835987966fd20ee1143b0e05036a0
 
 Thank you!
 
