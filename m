@@ -2,76 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8E7370544
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 06:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D88370549
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 06:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231508AbhEAESF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 00:18:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58986 "EHLO
+        id S231500AbhEAESg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 00:18:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbhEAESD (ORCPT
+        with ESMTP id S229540AbhEAESe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 00:18:03 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB84C06174A;
-        Fri, 30 Apr 2021 21:17:05 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id c36-20020a05683034a4b02902a5b84b1d12so17787otu.8;
-        Fri, 30 Apr 2021 21:17:05 -0700 (PDT)
+        Sat, 1 May 2021 00:18:34 -0400
+Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 709ADC06174A;
+        Fri, 30 Apr 2021 21:17:45 -0700 (PDT)
+Received: by mail-oo1-xc33.google.com with SMTP id h9-20020a4a94090000b02901f9d4f64172so91492ooi.5;
+        Fri, 30 Apr 2021 21:17:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=TioPQGknrE8mOW5JK4a866RtUyCeNLERCGZbj3eKG4M=;
-        b=S0NLPsH9fKpNUBl2/OSFwb2Q75VZM9HVOGfsx+q5/yyKAmKw+3P1AmjuCh8teYVYqz
-         V45JRSgL3xCvUoG27GUhLND143K97I+skZ9RuVHII4tJ+D96QmjwvLMOTYQAfVWZqJwg
-         67ddJy2QWGbsQGgOfCi90obZVNMgGW0nFHHPYJnBxqVWSU9WihlnHrNLcPsGIqaMjYIH
-         dPk086R0gnoa9u992KOGi41xzhy7rAutkdGpK39MNsyHEBhjh+doauDBvE644yjR7pox
-         iuiNt41Xbhdm1jlXX1x3YQfmiO05iSdK0YJqcLtembHZW2AePaLewNL+ZlHsUCE5HVcK
-         QLkA==
+        bh=mJDuvtfrc0RGLNATyN9LqOHLzLo5/nuR2eVlldf361U=;
+        b=F/XTece4lPxvU7e+hDbA5ZTepqltaHWDke39ztuxl5EdWMWw6Cd3qpLsFAtpX1GgQr
+         XRPyUJwrU8DNT6a6x/+uYOUfOLqPd75NCalZf3v8edobW8zC9AIL4D83cQtIv319zEHt
+         7ho0SGmb0mURmmxEg1+68QwJdwa/7wMRO582lrA1Ktff4do3NC/AEgiDSW/Lkd2It0Tv
+         lhQzoQrjPLP2ke1sJXclGN7vQUmB6z8wdpSr4KXWCNEJ9H7ymSYzdTn0Xkafw+OgpzLK
+         Pva7G9aQCSvmLu5M5HggI/p+W/KPQ9ObBr/SQhPBVMHl/6jtENT7nIH08sJbPZfqW6T3
+         7nsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=TioPQGknrE8mOW5JK4a866RtUyCeNLERCGZbj3eKG4M=;
-        b=bTap9EL1xokaVI87ihnUPp3iMGF5HhY772OAXHSJ8+56WO6zaYZ6nJybY30Chobpo/
-         HMS9jAA0bvk5LSwhKXozvsSQQbJVvtx8WW0BmC/zYIYDEpU8GEnpv4G9dmIfftI+BEd2
-         fFgUnI5rp/1rvm10ROPfDqNpN0mKniyW4YLj8E1wOtNX5vOs0ws13/qfUOi3pYc8Uguv
-         Erwcl2t6rmzj9pT1TFxjV7ztnUeTxB3CAqDX8d/BxxWAZ4dlJJbsfGhrfhnGi5fT8icx
-         FSCBmQoT1AGEbReAn78tuEqPcNGjOuGrMR+VS/m3Dx1WBduYkseiuVDmB3MZ+N/CWUtM
-         0d3g==
-X-Gm-Message-State: AOAM531Y8qspNTFFa2UEShaKZfU77J56kdTGWG4DwXBLhEkxHF9k/Uv0
-        kqu+kRYkRRiTZ69aJnsuZ4yqoAdi9vk=
-X-Google-Smtp-Source: ABdhPJy41iykhChNUIwJKR3C89x8q8oKwXMKxZG6PsgD6qPQN85YVOsKh6ua2BXNfk0vVPdomqRsjw==
-X-Received: by 2002:a05:6830:30af:: with SMTP id g15mr740082ots.202.1619842624393;
-        Fri, 30 Apr 2021 21:17:04 -0700 (PDT)
+        bh=mJDuvtfrc0RGLNATyN9LqOHLzLo5/nuR2eVlldf361U=;
+        b=AkujpaFUVMC/oze5K9rBIl1glod39AqTk6VYjSOJM26AkhY1VnPeyb3l0VaD+0fpkU
+         FsSB6cD4go5UJDV5Rnd/+ZtjqzrZIEO1fcZGMHEcR2VfeY2r5ZFGTvAqEEyJ2d3BfPkw
+         1gRvY+wrTLhAA97VU2EahCuvsLCv8yTH8KcDuQh1UF2b4NR0Sgg79PpDdqc2c1V4RdyX
+         DJdjWCzFzRTvBNrKJ6BJfN1U1bPiGQglq761zHP9n3KD9gKW9NWmvo2jyNWBVd/KPXcG
+         T+vleqGJkldJD0K+Ys3JkOQuEP3lqmDqKNU+qHpd54yGaH0/pHvlcMTud57E4rXXU/Yl
+         bw4w==
+X-Gm-Message-State: AOAM533Z3wQub0esYOxRzZrAZX+YbX6zLnzXYJdu3mE/qz1H+yZcWg4f
+        wB0bfwV3DiIwsTEXvTgH9vXtf3uvOes=
+X-Google-Smtp-Source: ABdhPJwR0dk3it5pmx6p0GD9EvVkBCXIdejSuukp1/zah2aiYz48ygtpTYbqRlov+oh6qcHBI2enJw==
+X-Received: by 2002:a4a:96e3:: with SMTP id t32mr7193949ooi.14.1619842664826;
+        Fri, 30 Apr 2021 21:17:44 -0700 (PDT)
 Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f21sm1194091otp.52.2021.04.30.21.17.02
+        by smtp.gmail.com with ESMTPSA id z133sm949940ooa.2.2021.04.30.21.17.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 21:17:03 -0700 (PDT)
+        Fri, 30 Apr 2021 21:17:44 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 30 Apr 2021 21:17:01 -0700
+Date:   Fri, 30 Apr 2021 21:17:43 -0700
 From:   Guenter Roeck <linux@roeck-us.net>
 To:     Erik Rosen <erik.rosen@metormote.com>
 Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
         linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] hwmon: (pmbus/zl6100) Add support for ZLS1003,
- ZLS4009 and ZL8802
-Message-ID: <20210501041701.GA3201929@roeck-us.net>
+Subject: Re: [PATCH 2/2] hwmon: (pmbus/zl6100) Update documentation for
+ zl6100 driver
+Message-ID: <20210501041743.GA3202083@roeck-us.net>
 References: <20210423153329.33457-1-erik.rosen@metormote.com>
- <20210423153329.33457-2-erik.rosen@metormote.com>
+ <20210423153329.33457-3-erik.rosen@metormote.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210423153329.33457-2-erik.rosen@metormote.com>
+In-Reply-To: <20210423153329.33457-3-erik.rosen@metormote.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 05:33:28PM +0200, Erik Rosen wrote:
-> Add support for Renesas ZL8802 Dual Channel/Dual Phase PMBus DC/DC
-> Digital Controller as well as ZLS1003 and ZLS4009 custom DC/DC
-> controller chips.
+On Fri, Apr 23, 2021 at 05:33:29PM +0200, Erik Rosen wrote:
+> Update documentation for zl6100 driver and fix dead links to technical
+> specifications
 > 
 > Signed-off-by: Erik Rosen <erik.rosen@metormote.com>
 
@@ -81,179 +80,252 @@ Thanks,
 Guenter
 
 > ---
->  drivers/hwmon/pmbus/zl6100.c | 94 ++++++++++++++++++++++++++++++------
->  1 file changed, 80 insertions(+), 14 deletions(-)
+>  Documentation/hwmon/zl6100.rst | 132 ++++++++++++++++++++++-----------
+>  1 file changed, 89 insertions(+), 43 deletions(-)
 > 
-> diff --git a/drivers/hwmon/pmbus/zl6100.c b/drivers/hwmon/pmbus/zl6100.c
-> index 69120ca7aaa8..757039bb8a62 100644
-> --- a/drivers/hwmon/pmbus/zl6100.c
-> +++ b/drivers/hwmon/pmbus/zl6100.c
-> @@ -18,7 +18,7 @@
->  #include "pmbus.h"
+> diff --git a/Documentation/hwmon/zl6100.rst b/Documentation/hwmon/zl6100.rst
+> index 968aff10ce0a..d42ed9d3ac69 100644
+> --- a/Documentation/hwmon/zl6100.rst
+> +++ b/Documentation/hwmon/zl6100.rst
+> @@ -3,87 +3,103 @@ Kernel driver zl6100
 >  
->  enum chips { zl2004, zl2005, zl2006, zl2008, zl2105, zl2106, zl6100, zl6105,
-> -	     zl9101, zl9117 };
-> +	     zl8802, zl9101, zl9117, zls1003, zls4009 };
+>  Supported chips:
 >  
->  struct zl6100_data {
->  	int id;
-> @@ -34,6 +34,13 @@ struct zl6100_data {
+> -  * Intersil / Zilker Labs ZL2004
+> +  * Renesas / Intersil / Zilker Labs ZL2004
 >  
->  #define ZL6100_MFR_XTEMP_ENABLE		BIT(7)
+>      Prefix: 'zl2004'
 >  
-> +#define ZL8802_MFR_USER_GLOBAL_CONFIG	0xe9
-> +#define ZL8802_MFR_TMON_ENABLE		BIT(12)
-> +#define ZL8802_MFR_USER_CONFIG		0xd1
-> +#define ZL8802_MFR_XTEMP_ENABLE_2	BIT(1)
-> +#define ZL8802_MFR_DDC_CONFIG		0xd3
-> +#define ZL8802_MFR_PHASES_MASK		0x0007
+>      Addresses scanned: -
+>  
+> -    Datasheet: http://www.intersil.com/data/fn/fn6847.pdf
+> +    Datasheet: https://www.renesas.com/us/en/document/dst/zl2004-datasheet.pdf
+>  
+> -  * Intersil / Zilker Labs ZL2005
+> +  * Renesas / Intersil / Zilker Labs ZL2005
+>  
+>      Prefix: 'zl2005'
+>  
+>      Addresses scanned: -
+>  
+> -    Datasheet: http://www.intersil.com/data/fn/fn6848.pdf
+> +    Datasheet: https://www.renesas.com/us/en/document/dst/zl2005-datasheet.pdf
+>  
+> -  * Intersil / Zilker Labs ZL2006
+> +  * Renesas / Intersil / Zilker Labs ZL2006
+>  
+>      Prefix: 'zl2006'
+>  
+>      Addresses scanned: -
+>  
+> -    Datasheet: http://www.intersil.com/data/fn/fn6850.pdf
+> +    Datasheet: https://www.renesas.com/us/en/document/dst/zl2006-datasheet.pdf
+>  
+> -  * Intersil / Zilker Labs ZL2008
+> +  * Renesas / Intersil / Zilker Labs ZL2008
+>  
+>      Prefix: 'zl2008'
+>  
+>      Addresses scanned: -
+>  
+> -    Datasheet: http://www.intersil.com/data/fn/fn6859.pdf
+> +    Datasheet: https://www.renesas.com/us/en/document/dst/zl2008-datasheet.pdf
+>  
+> -  * Intersil / Zilker Labs ZL2105
+> +  * Renesas / Intersil / Zilker Labs ZL2105
+>  
+>      Prefix: 'zl2105'
+>  
+>      Addresses scanned: -
+>  
+> -    Datasheet: http://www.intersil.com/data/fn/fn6851.pdf
+> +    Datasheet: https://www.renesas.com/us/en/document/dst/zl2105-datasheet.pdf
+>  
+> -  * Intersil / Zilker Labs ZL2106
+> +  * Renesas / Intersil / Zilker Labs ZL2106
+>  
+>      Prefix: 'zl2106'
+>  
+>      Addresses scanned: -
+>  
+> -    Datasheet: http://www.intersil.com/data/fn/fn6852.pdf
+> +    Datasheet: https://www.renesas.com/us/en/document/dst/zl2106-datasheet.pdf
+>  
+> -  * Intersil / Zilker Labs ZL6100
+> +  * Renesas / Intersil / Zilker Labs ZL6100
+>  
+>      Prefix: 'zl6100'
+>  
+>      Addresses scanned: -
+>  
+> -    Datasheet: http://www.intersil.com/data/fn/fn6876.pdf
+> +    Datasheet: https://www.renesas.com/us/en/document/dst/zl6100-datasheet.pdf
+>  
+> -  * Intersil / Zilker Labs ZL6105
+> +  * Renesas / Intersil / Zilker Labs ZL6105
+>  
+>      Prefix: 'zl6105'
+>  
+>      Addresses scanned: -
+>  
+> -    Datasheet: http://www.intersil.com/data/fn/fn6906.pdf
+> +    Datasheet: https://www.renesas.com/us/en/document/dst/zl6105-datasheet.pdf
+>  
+> -  * Intersil / Zilker Labs ZL9101M
+> +  * Renesas / Intersil / Zilker Labs ZL8802
 > +
->  #define MFR_VMON_OV_FAULT_LIMIT		0xf5
->  #define MFR_VMON_UV_FAULT_LIMIT		0xf6
->  #define MFR_READ_VMON			0xf7
-> @@ -132,7 +139,7 @@ static int zl6100_read_word_data(struct i2c_client *client, int page,
->  	struct zl6100_data *data = to_zl6100_data(info);
->  	int ret, vreg;
->  
-> -	if (page > 0)
-> +	if (page >= info->pages)
->  		return -ENXIO;
->  
->  	if (data->id == zl2005) {
-> @@ -191,7 +198,7 @@ static int zl6100_read_byte_data(struct i2c_client *client, int page, int reg)
->  	struct zl6100_data *data = to_zl6100_data(info);
->  	int ret, status;
->  
-> -	if (page > 0)
-> +	if (page >= info->pages)
->  		return -ENXIO;
->  
->  	zl6100_wait(data);
-> @@ -230,7 +237,7 @@ static int zl6100_write_word_data(struct i2c_client *client, int page, int reg,
->  	struct zl6100_data *data = to_zl6100_data(info);
->  	int ret, vreg;
->  
-> -	if (page > 0)
-> +	if (page >= info->pages)
->  		return -ENXIO;
->  
->  	switch (reg) {
-> @@ -271,7 +278,7 @@ static int zl6100_write_byte(struct i2c_client *client, int page, u8 value)
->  	struct zl6100_data *data = to_zl6100_data(info);
->  	int ret;
->  
-> -	if (page > 0)
-> +	if (page >= info->pages)
->  		return -ENXIO;
->  
->  	zl6100_wait(data);
-> @@ -287,6 +294,10 @@ static const struct i2c_device_id zl6100_id[] = {
->  	{"bmr462", zl2008},
->  	{"bmr463", zl2008},
->  	{"bmr464", zl2008},
-> +	{"bmr465", zls4009},
-> +	{"bmr466", zls1003},
-> +	{"bmr467", zls4009},
-> +	{"bmr469", zl8802},
->  	{"zl2004", zl2004},
->  	{"zl2005", zl2005},
->  	{"zl2006", zl2006},
-> @@ -295,15 +306,18 @@ static const struct i2c_device_id zl6100_id[] = {
->  	{"zl2106", zl2106},
->  	{"zl6100", zl6100},
->  	{"zl6105", zl6105},
-> +	{"zl8802", zl8802},
->  	{"zl9101", zl9101},
->  	{"zl9117", zl9117},
-> +	{"zls1003", zls1003},
-> +	{"zls4009", zls4009},
->  	{ }
->  };
->  MODULE_DEVICE_TABLE(i2c, zl6100_id);
->  
->  static int zl6100_probe(struct i2c_client *client)
->  {
-> -	int ret;
-> +	int ret, i;
->  	struct zl6100_data *data;
->  	struct pmbus_driver_info *info;
->  	u8 device_id[I2C_SMBUS_BLOCK_MAX + 1];
-> @@ -367,18 +381,70 @@ static int zl6100_probe(struct i2c_client *client)
->  	  | PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP;
->  
->  	/*
-> -	 * ZL2004, ZL9101M, and ZL9117M support monitoring an extra voltage
-> -	 * (VMON for ZL2004, VDRV for ZL9101M and ZL9117M). Report it as vmon.
-> +	 * ZL2004, ZL8802, ZL9101M, ZL9117M and ZLS4009 support monitoring
-> +	 * an extra voltage (VMON for ZL2004, ZL8802 and ZLS4009,
-> +	 * VDRV for ZL9101M and ZL9117M). Report it as vmon.
->  	 */
-> -	if (data->id == zl2004 || data->id == zl9101 || data->id == zl9117)
-> +	if (data->id == zl2004 || data->id == zl8802 || data->id == zl9101 ||
-> +	    data->id == zl9117 || data->id == zls4009)
->  		info->func[0] |= PMBUS_HAVE_VMON | PMBUS_HAVE_STATUS_VMON;
->  
-> -	ret = i2c_smbus_read_word_data(client, ZL6100_MFR_CONFIG);
-> -	if (ret < 0)
-> -		return ret;
-> +	/*
-> +	 * ZL8802 has two outputs that can be used either independently or in
-> +	 * a current sharing configuration. The driver uses the DDC_CONFIG
-> +	 * register to check if the module is running with independent or
-> +	 * shared outputs. If the module is in shared output mode, only one
-> +	 * output voltage will be reported.
-> +	 */
-> +	if (data->id == zl8802) {
-> +		info->pages = 2;
-> +		info->func[0] |= PMBUS_HAVE_IIN;
+> +    Prefix: 'zl8802'
 > +
-> +		ret = i2c_smbus_read_word_data(client, ZL8802_MFR_DDC_CONFIG);
-> +		if (ret < 0)
-> +			return ret;
+> +    Addresses scanned: -
 > +
-> +		data->access = ktime_get();
-> +		zl6100_wait(data);
+> +    Datasheet: https://www.renesas.com/us/en/document/dst/zl8802-datasheet
 > +
-> +		if (ret & ZL8802_MFR_PHASES_MASK)
-> +			info->func[1] |= PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT;
-> +		else
-> +			info->func[1] = PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT
-> +				| PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT;
+> +  * Renesas / Intersil / Zilker Labs ZL9101M
 >  
-> -	if (ret & ZL6100_MFR_XTEMP_ENABLE)
-> -		info->func[0] |= PMBUS_HAVE_TEMP2;
-> +		for (i = 0; i < 2; i++) {
-> +			ret = i2c_smbus_write_byte_data(client, PMBUS_PAGE, i);
-> +			if (ret < 0)
-> +				return ret;
-> +
-> +			data->access = ktime_get();
-> +			zl6100_wait(data);
-> +
-> +			ret = i2c_smbus_read_word_data(client, ZL8802_MFR_USER_CONFIG);
-> +			if (ret < 0)
-> +				return ret;
-> +
-> +			if (ret & ZL8802_MFR_XTEMP_ENABLE_2)
-> +				info->func[i] |= PMBUS_HAVE_TEMP2;
-> +
-> +			data->access = ktime_get();
-> +			zl6100_wait(data);
-> +		}
-> +		ret = i2c_smbus_read_word_data(client, ZL8802_MFR_USER_GLOBAL_CONFIG);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		if (ret & ZL8802_MFR_TMON_ENABLE)
-> +			info->func[0] |= PMBUS_HAVE_TEMP3;
-> +	} else {
-> +		ret = i2c_smbus_read_word_data(client, ZL6100_MFR_CONFIG);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		if (ret & ZL6100_MFR_XTEMP_ENABLE)
-> +			info->func[0] |= PMBUS_HAVE_TEMP2;
-> +	}
+>      Prefix: 'zl9101'
 >  
->  	data->access = ktime_get();
->  	zl6100_wait(data);
+>      Addresses scanned: -
+>  
+> -    Datasheet: http://www.intersil.com/data/fn/fn7669.pdf
+> +    Datasheet: https://www.renesas.com/us/en/document/dst/zl9101m-datasheet
+>  
+> -  * Intersil / Zilker Labs ZL9117M
+> +  * Renesas / Intersil / Zilker Labs ZL9117M
+>  
+>      Prefix: 'zl9117'
+>  
+>      Addresses scanned: -
+>  
+> -    Datasheet: http://www.intersil.com/data/fn/fn7914.pdf
+> +    Datasheet: https://www.renesas.com/us/en/document/dst/zl9117m-datasheet
+> +
+> +  * Renesas / Intersil / Zilker Labs ZLS1003, ZLS4009
+> +
+> +    Prefix: 'zls1003', zls4009
+> +
+> +    Addresses scanned: -
+> +
+> +    Datasheet: Not published
+>  
+> -  * Ericsson BMR450, BMR451
+> +  * Flex BMR450, BMR451
+>  
+>      Prefix: 'bmr450', 'bmr451'
+>  
+> @@ -91,17 +107,39 @@ Supported chips:
+>  
+>      Datasheet:
+>  
+> -http://archive.ericsson.net/service/internet/picov/get?DocNo=28701-EN/LZT146401
+> +https://flexpowermodules.com/resources/fpm-techspec-bmr450-digital-pol-regulators-20a
+>  
+> -  * Ericsson BMR462, BMR463, BMR464
+> +  * Flex BMR462, BMR463, BMR464
+>  
+>      Prefixes: 'bmr462', 'bmr463', 'bmr464'
+>  
+>      Addresses scanned: -
+>  
+> -    Datasheet:
+> +    Datasheet: https://flexpowermodules.com/resources/fpm-techspec-bmr462
+> +
+> +  * Flex BMR465, BMR467
+> +
+> +    Prefixes: 'bmr465', 'bmr467'
+> +
+> +    Addresses scanned: -
+> +
+> +    Datasheet: https://flexpowermodules.com/resources/fpm-techspec-bmr465-digital-pol
+> +
+> +  * Flex BMR466
+> +
+> +    Prefixes: 'bmr466'
+> +
+> +    Addresses scanned: -
+> +
+> +    Datasheet: https://flexpowermodules.com/resources/fpm-techspec-bmr466-8x12
+>  
+> -	http://archive.ericsson.net/service/internet/picov/get?DocNo=28701-EN/LZT146256
+> +  * Flex BMR469
+> +
+> +    Prefixes: 'bmr469'
+> +
+> +    Addresses scanned: -
+> +
+> +    Datasheet: https://flexpowermodules.com/resources/fpm-techspec-bmr4696001
+>  
+>  Author: Guenter Roeck <linux@roeck-us.net>
+>  
+> @@ -109,8 +147,8 @@ Author: Guenter Roeck <linux@roeck-us.net>
+>  Description
+>  -----------
+>  
+> -This driver supports hardware monitoring for Intersil / Zilker Labs ZL6100 and
+> -compatible digital DC-DC controllers.
+> +This driver supports hardware monitoring for Renesas / Intersil / Zilker Labs
+> +ZL6100 and compatible digital DC-DC controllers.
+>  
+>  The driver is a client driver to the core PMBus driver. Please see
+>  Documentation/hwmon/pmbus.rst and Documentation.hwmon/pmbus-core for details
+> @@ -147,12 +185,12 @@ Module parameters
+>  delay
+>  -----
+>  
+> -Intersil/Zilker Labs DC-DC controllers require a minimum interval between I2C
+> -bus accesses. According to Intersil, the minimum interval is 2 ms, though 1 ms
+> -appears to be sufficient and has not caused any problems in testing. The problem
+> -is known to affect all currently supported chips. For manual override, the
+> -driver provides a writeable module parameter, 'delay', which can be used to set
+> -the interval to a value between 0 and 65,535 microseconds.
+> +Renesas/Intersil/Zilker Labs DC-DC controllers require a minimum interval
+> +between I2C bus accesses. According to Intersil, the minimum interval is 2 ms,
+> +though 1 ms appears to be sufficient and has not caused any problems in testing.
+> +The problem is known to affect all currently supported chips. For manual override,
+> +the driver provides a writeable module parameter, 'delay', which can be used
+> +to set the interval to a value between 0 and 65,535 microseconds.
+>  
+>  
+>  Sysfs entries
+> @@ -182,24 +220,32 @@ in2_crit		Critical maximum VMON/VDRV voltage.
+>  in2_lcrit_alarm		VMON/VDRV voltage critical low alarm.
+>  in2_crit_alarm		VMON/VDRV voltage critical high alarm.
+>  
+> -			vmon attributes are supported on ZL2004, ZL9101M,
+> -			and ZL9117M only.
+> +			vmon attributes are supported on ZL2004, ZL8802,
+> +			ZL9101M, ZL9117M and ZLS4009 only.
+>  
+> -inX_label		"vout1"
+> +inX_label		"vout[12]"
+>  inX_input		Measured output voltage.
+>  inX_lcrit		Critical minimum output Voltage.
+>  inX_crit		Critical maximum output voltage.
+>  inX_lcrit_alarm		Critical output voltage critical low alarm.
+>  inX_crit_alarm		Critical output voltage critical high alarm.
+>  
+> -			X is 3 for ZL2004, ZL9101M, and ZL9117M, 2 otherwise.
+> +			X is 3 for ZL2004, ZL9101M, and ZL9117M,
+> +			3, 4 for ZL8802 and 2 otherwise.
+> +
+> +curr1_label		"iin"
+> +curr1_input		Measured input current.
+> +
+> +			iin attributes are supported on ZL8802 only
+> +
+> +currY_label		"iout[12]"
+> +currY_input		Measured output current.
+> +currY_lcrit		Critical minimum output current.
+> +currY_crit		Critical maximum output current.
+> +currY_lcrit_alarm	Output current critical low alarm.
+> +currY_crit_alarm	Output current critical high alarm.
+>  
+> -curr1_label		"iout1"
+> -curr1_input		Measured output current.
+> -curr1_lcrit		Critical minimum output current.
+> -curr1_crit		Critical maximum output current.
+> -curr1_lcrit_alarm	Output current critical low alarm.
+> -curr1_crit_alarm	Output current critical high alarm.
+> +			Y is 2, 3 for ZL8802, 1 otherwise
+>  
+>  temp[12]_input		Measured temperature.
+>  temp[12]_min		Minimum temperature.
