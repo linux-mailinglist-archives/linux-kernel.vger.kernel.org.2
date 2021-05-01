@@ -2,75 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED17B370690
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 11:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08E4E370696
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 11:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231790AbhEAJS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 05:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38618 "EHLO
+        id S231710AbhEAJ3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 05:29:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230117AbhEAJS6 (ORCPT
+        with ESMTP id S230117AbhEAJ3T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 05:18:58 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1589AC06138B
-        for <linux-kernel@vger.kernel.org>; Sat,  1 May 2021 02:18:08 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id d4so432086wru.7
-        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 02:18:08 -0700 (PDT)
+        Sat, 1 May 2021 05:29:19 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65194C06174A
+        for <linux-kernel@vger.kernel.org>; Sat,  1 May 2021 02:28:28 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id l4so684372ejc.10
+        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 02:28:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :in-reply-to;
-        bh=cxHTQEn4CMsRRZJNaIEpfxdSAuaxYGXto5pLQbQufGE=;
-        b=vRHw82Kea5MncNLB92TKVEk058YJGRACCYsueHhoVPboSQJwaQrPGnbUyEa7ySlQgG
-         GbchnOKmlRV98YaL89NPDkKGerG9SvfgvSLBSb7a5uq65evQTYQW0HC97lbFxVAXLqgM
-         LoGfGbN85f9/NcTBk4buae24uzmTNGS7xHOSJZeVnreYaxgOcodpipFAqY05kKfVHjk3
-         9v+aH4dPiorXt+R6hFgda8ZkanxdgYjDBGzHn+zQ8dk0mjIzIVzck0IAumOjIP+8g07D
-         w0nhKmQjkfSc8U1iOuuVh0R+UWcqMF/vuN0XwUnEc8oMOJ9U7MeY/WBIu8TGAjplbRy1
-         hwLA==
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SyGYqVikn3sRvr8oBxpMkevusdQYlEUroZdr1msedCw=;
+        b=sPwxNQlVV9CppL4NWcVqlYriHNWEQ1jnrUky72n7dWeTrSjnoShtCz1UmjSjIXKeP1
+         fiTOIlRGqn5mcAjAkwNN9/4E/vyAdhV4Vp/NpCFU2euSm4GMYStdi6jtNibwkV487KFy
+         X9+cALwYZ6NToc/MYX7WyVi/4KJMmStpkuIjGqpY+/t610JLjww4dx6TTNBbZBNr3W76
+         4Jqrg2qSHis/Sn7t7qc04lkCQv++qvC+5odOc5zbl+lwsjkyxY/UnIGHn2F+VhXcT/00
+         MA31SzIymM8KGROsE1pA50qxsb7sMQoDT5A7LslAdzdR5CT4dHdN+Rp0aVJdyLkYIhPp
+         Ot+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:in-reply-to;
-        bh=cxHTQEn4CMsRRZJNaIEpfxdSAuaxYGXto5pLQbQufGE=;
-        b=bAkwMBTxTPcyRO97vqjluSBCoXznawBeMoDSaRqHbTh6M9SsIJeDzX6IZDmLQ/FzGP
-         y+si/OvFjiYvB0oCUHpJit6tepduhIbHqCNqnuGLYSPk4jRPHnoOUKSDm/+NtSAPfv6C
-         BPq1U2sGmcy9JqYdfrIG8yYzh2fiQRQEnk9qTUSVqAvH/m/FJ5SCrNQux15hww8rnVmk
-         ICgpxjOJo9Af3O/U2B8kkcaBtIPrLD+3d+KFVA+CP8XNiCQnIqShonNS29+KQHz+eZay
-         iOILt3UX5wU8Uq+Z2YtLovvGnUxsYB/aSt4Bu6y+p/hibGz2BvyF0QJrGDn+b0Kc9Ps9
-         s2Ug==
-X-Gm-Message-State: AOAM53253jgwx/wO+zfc79p2B80uEb+Q8bOwPbrHtzB5w4fWqEk6GT2b
-        EFZ/4xbkLnIktykLYGb8G2ZPcQ==
-X-Google-Smtp-Source: ABdhPJyx+Zk3GjYruvL28LxuKpwgcHeMfokdODi8yIgFZ9W9ZAy/D0ULBvGdKXqhAL+0/HVpORKHTQ==
-X-Received: by 2002:a5d:4a87:: with SMTP id o7mr13092536wrq.102.1619860686837;
-        Sat, 01 May 2021 02:18:06 -0700 (PDT)
-Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id g11sm4898095wri.59.2021.05.01.02.18.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 May 2021 02:18:06 -0700 (PDT)
-Date:   Sat, 1 May 2021 10:18:04 +0100
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     linux-ext4@vger.kernel.org
-Cc:     adilger.kernel@dilger.ca, linux-kernel@vger.kernel.org,
-        tytso@mit.edu
-Subject: Re: [PATCH] fs: ext4: mballoc: amend goto to cleanup groupinfo
- memory correctly
-Message-ID: <YI0czH0auvWlU8bA@equinox>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SyGYqVikn3sRvr8oBxpMkevusdQYlEUroZdr1msedCw=;
+        b=s1yCPShnQIZDSv9tiHnLtIrr7eMhi58jR0QNQO87LjN6UsP85GYu8ZFcHgahjAzA/U
+         4BM1HBMMZlOTVlQuDcR6WNNKilD8jUd4xOudX2iBRP+eVmCUq4l4Ww+E7Vg5zhp+Ut96
+         GM1F6ZbPqEIbwYxFyVxJMwfSg2TlW5nrxO+7r4yftjvbGWZinn/n8KVh3uRxIromGv5L
+         U9PXP6devZscTwg+G1QEQDyQxxHSEWd0gCs1LdwdykFTeo8YzmWfjvvfMqB/oqGgn77i
+         1JVhqLyJgLiJfH+uDTi9mGDEMfDaIGOaI6QfpuR9vM/86O37FP1Db5UbDV1E31q6n8oF
+         dCqw==
+X-Gm-Message-State: AOAM530fhWQTNZvJotkysl4Xv6ffhd6hpV6imTkz75hYdsMZUSZI2+QP
+        qgg0XUECEBqWidQovJ5NR9lvRnRDCDTbViKSmQA=
+X-Google-Smtp-Source: ABdhPJwL4T7Awvt9Npw1jmNY5GUe7UBmVuRvRtXR9P7lvQ1b3cJnmJdcuCfMyjJWCMPtCTNZY1uuTR5hVVqKhk1/37Y=
+X-Received: by 2002:a17:907:e87:: with SMTP id ho7mr8119874ejc.2.1619861307057;
+ Sat, 01 May 2021 02:28:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210412073837.1686-1-phil@philpotter.co.uk>
+References: <20210429170404.3616111-1-narmstrong@baylibre.com>
+ <20210429170404.3616111-4-narmstrong@baylibre.com> <CAFBinCDQeTU0ss=oNmjX78MPyNZmmCt-haojNNcQqkjJUmJYKQ@mail.gmail.com>
+ <cafdf662-6f15-8e16-7752-5740f28b6682@baylibre.com>
+In-Reply-To: <cafdf662-6f15-8e16-7752-5740f28b6682@baylibre.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Sat, 1 May 2021 11:28:16 +0200
+Message-ID: <CAFBinCDNhErxk3va=rMUpOoh8b7iNNqWJh6Ry_Y5sC5AxYLn2Q@mail.gmail.com>
+Subject: Re: [PATCH 3/3] arm64: dts: meson-sm1: add Banana PI BPI-M5 board dts
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     khilman@baylibre.com, jbrunet@baylibre.com,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+Hi Neil,
 
-Sorry to be pushy (I know everyone is busy) but I've had no feedback on
-this patch yet:
-https://lore.kernel.org/linux-ext4/20210412073837.1686-1-phil@philpotter.co.uk/T/#u
+On Fri, Apr 30, 2021 at 10:16 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
+[...]
+> >> +&ethmac {
+> >> +       pinctrl-0 = <&eth_pins>, <&eth_rgmii_pins>;
+> >> +       pinctrl-names = "default";
+> >> +       status = "okay";
+> >> +       phy-mode = "rgmii";
+> >> +       phy-handle = <&external_phy>;
+> >> +       amlogic,tx-delay-ns = <2>;
+> > I haven't checked their u-boot code but some of the newer Amlogic BSPs
+> > seem to let the PHY add the TX delay (which is also what the netdev
+> > maintainers recommend)
+> > that can be achieved by setting:
+> >   phy-mode = "rgmii-txid";
+> > and deleting the "amlogic,tx-delay-ns" property
+>
+> Done, but what about when we use mainline U-boot here ?
+I think it will work just fine if
+- the PRG_ETH0/PRG_ETH1 register is programmed correctly (that's what
+we have in dwmac-meson8b), which according to [0] is partially (RX
+delay not being supported in u-boot yet) the case
+- and the RTL8211F PHY driver can set the RX/TX delay on the PHY side,
+which according to [1] it can
 
-Could I please ask for it to be reviewed? Many thanks.
+So I have not tried it but I think it should just work
 
-Regards,
-Phil Potter
+
+Best regards,
+Martin
+
+
+[0] https://source.denx.de/u-boot/u-boot/-/blob/798424e8573a6b642a1bb507d41c1f73e6736e2e/drivers/net/dwmac_meson8b.c
+[1] https://source.denx.de/u-boot/u-boot/-/blob/fa6539a3dcbf269121ca64084cff4c146fcdaf19/drivers/net/phy/realtek.c#L204
