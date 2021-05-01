@@ -2,135 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F2E3706FC
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 12:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E4C370706
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 13:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231982AbhEAKyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 06:54:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39988 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231893AbhEAKyx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 06:54:53 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B6469AFDC;
-        Sat,  1 May 2021 10:54:02 +0000 (UTC)
-Date:   Sat, 1 May 2021 12:54:00 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Jiri Slaby <jslaby@suse.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Yonghong Song <yhs@fb.com>,
-        linux-kernel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: linux-next failing build due to missing cubictcp_state symbol
-Message-ID: <20210501105400.GG6564@kitsune.suse.cz>
-References: <20210425111545.GL15381@kitsune.suse.cz>
- <20210426113215.GM15381@kitsune.suse.cz>
- <20210426121220.GN15381@kitsune.suse.cz>
- <20210426121401.GO15381@kitsune.suse.cz>
- <49f84147-bf32-dc59-48e0-f89241cf6264@fb.com>
- <YIbkR6z6mxdNSzGO@krava>
- <YIcRlHQWWKbOlcXr@krava>
- <20210427121237.GK6564@kitsune.suse.cz>
- <20210430174723.GP15381@kitsune.suse.cz>
- <3d148516-0472-8f0a-085b-94d68c5cc0d5@suse.com>
+        id S231950AbhEALZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 07:25:28 -0400
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:48218 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231882AbhEALZ1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 May 2021 07:25:27 -0400
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d12 with ME
+        id zPQZ2400621Fzsu03PQZHM; Sat, 01 May 2021 13:24:35 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 01 May 2021 13:24:35 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     mturquette@baylibre.com, sboyd@kernel.org, michal.simek@xilinx.com,
+        quanyang.wang@windriver.com, rajan.vaja@xilinx.com,
+        jolly.shah@xilinx.com, tejasp@xilinx.com,
+        shubhrajyoti.datta@xilinx.com
+Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] clk: zynqmp: pll: Remove some dead code
+Date:   Sat,  1 May 2021 13:24:32 +0200
+Message-Id: <71a9fed5f762a71248b8ac73c0a15af82f3ce1e2.1619867987.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <3d148516-0472-8f0a-085b-94d68c5cc0d5@suse.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 01, 2021 at 08:45:50AM +0200, Jiri Slaby wrote:
-> On 30. 04. 21, 19:47, Michal Suchánek wrote:
-> > CC another Jiri
-> > 
-> > On Tue, Apr 27, 2021 at 02:12:37PM +0200, Michal Suchánek wrote:
-> > > On Mon, Apr 26, 2021 at 09:16:36PM +0200, Jiri Olsa wrote:
-> > > > On Mon, Apr 26, 2021 at 06:03:19PM +0200, Jiri Olsa wrote:
-> > > > > On Mon, Apr 26, 2021 at 08:41:49AM -0700, Yonghong Song wrote:
-> > > > > > 
-> > > > > > 
-> > > > > > On 4/26/21 5:14 AM, Michal Suchánek wrote:
-> > > > > > > On Mon, Apr 26, 2021 at 02:12:20PM +0200, Michal Suchánek wrote:
-> > > > > > > > On Mon, Apr 26, 2021 at 01:32:15PM +0200, Michal Suchánek wrote:
-> > > > > > > > > On Sun, Apr 25, 2021 at 01:15:45PM +0200, Michal Suchánek wrote:
-> > > > > > > > > > On Fri, Apr 23, 2021 at 07:55:28PM +0200, Michal Suchánek wrote:
-> > > > > > > > > > > On Fri, Apr 23, 2021 at 07:41:29AM -0700, Yonghong Song wrote:
-> > > > > > > > > > > > 
-> > > > > > > > > > > > 
-> > > > > > > > > > > > On 4/23/21 6:05 AM, Michal Suchánek wrote:
-> > > > > > > > > > > > > Hello,
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > I see this build error in linux-next (config attached).
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > [ 4939s]   LD      vmlinux
-> > > > > > > > > > > > > [ 4959s]   BTFIDS  vmlinux
-> > > > > > > > > > > > > [ 4959s] FAILED unresolved symbol cubictcp_state
-> > > > > > > > > > > > > [ 4960s] make[1]: ***
-> > > > > > > > > > > > > [/home/abuild/rpmbuild/BUILD/kernel-vanilla-5.12~rc8.next.20210422/linux-5.12-rc8-next-20210422/Makefile:1277:
-> > > > > > > > > > > > > vmlinux] Error 255
-> > > > > > > > > > > > > [ 4960s] make: *** [../Makefile:222: __sub-make] Error 2
-> > > > > 
-> > > > > this one was reported by Jesper and was fixed by upgrading pahole
-> > > > > that contains the new function generation fixes (v1.19)
-> > > > > 
-> > > > > > > > > > > > 
-> > > > > > > > > > > > Looks like you have DYNAMIC_FTRACE config option enabled already.
-> > > > > > > > > > > > Could you try a later version of pahole?
-> > > > > > > > > > > 
-> > > > > > > > > > > Is this requireent new?
-> > > > > > > > > > > 
-> > > > > > > > > > > I have pahole 1.20, and master does build without problems.
-> > > > > > > > > > > 
-> > > > > > > > > > > If newer version is needed can a check be added?
-> > > > > > > > > > 
-> > > > > > > > > > With dwarves 1.21 some architectures are fixed and some report other
-> > > > > > > > > > missing symbol. Definitely an improvenent.
-> > > > > > > > > > 
-> > > > > > > > > > I see some new type support was added so it makes sense if that type is
-> > > > > > > > > > used the new dwarves are needed.
-> > > > > > > > > 
-> > > > > > > > > Ok, here is the current failure with dwarves 1.21 on 5.12:
-> > > > > > > > > 
-> > > > > > > > > [ 2548s]   LD      vmlinux
-> > > > > > > > > [ 2557s]   BTFIDS  vmlinux
-> > > > > > > > > [ 2557s] FAILED unresolved symbol vfs_truncate
-> > > > > > > > > [ 2558s] make[1]: ***
-> > > > > > > > > [/home/abuild/rpmbuild/BUILD/kernel-kvmsmall-5.12.0/linux-5.12/Makefile:1213:
-> > > > > > > > > vmlinux] Error 255
-> > > > > > 
-> > > > > > This is PPC64, from attached config:
-> > > > > >    CONFIG_PPC64=y
-> > > > > > I don't have environment to cross-compile for PPC64.
-> > > > > > Jiri, could you take a look? Thanks!
-> > > > > 
-> > > > > looks like vfs_truncate did not get into BTF data,
-> > > > > I'll try to reproduce
-> 
-> _None_ of the functions are generated by pahole -J from debuginfo on ppc64.
-> debuginfo appears to be correct. Neither pahole -J fs/open.o works
-> correctly. collect_functions in dwarves seems to be defunct on ppc64...
-> "functions" array is bogus (so find_function -- the bsearch -- fails). I
-> didn't have more time to continue debugging. This is where I stopped.
+'clk_hw_set_rate_range()' does not return any error code and 'ret' is
+known to be 0 at this point, so this message can never be displayed.
 
-A workaround is to apply
-https://lore.kernel.org/linuxppc-dev/20200428112517.1402927-1-npiggin@gmail.com/
-and build as ABI v2
+Remove it.
 
-Thanks
+Fixes: 3fde0e16d016 ("drivers: clk: Add ZynqMP clock driver")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+HOWEVER, the message is about 'clk_set_rate_range()', not
+'clk_hw_set_rate_range()'. So the message is maybe correct and the
+'xxx_rate_range()' function incorrect.
+---
+ drivers/clk/zynqmp/pll.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Michal
+diff --git a/drivers/clk/zynqmp/pll.c b/drivers/clk/zynqmp/pll.c
+index abe6afbf3407..af11e9400058 100644
+--- a/drivers/clk/zynqmp/pll.c
++++ b/drivers/clk/zynqmp/pll.c
+@@ -331,8 +331,6 @@ struct clk_hw *zynqmp_clk_register_pll(const char *name, u32 clk_id,
+ 	}
+ 
+ 	clk_hw_set_rate_range(hw, PS_PLL_VCO_MIN, PS_PLL_VCO_MAX);
+-	if (ret < 0)
+-		pr_err("%s:ERROR clk_set_rate_range failed %d\n", name, ret);
+ 
+ 	return hw;
+ }
+-- 
+2.30.2
+
