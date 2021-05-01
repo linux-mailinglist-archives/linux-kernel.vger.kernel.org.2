@@ -2,84 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A14370526
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 05:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD10370529
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 05:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231556AbhEAD30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 23:29:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbhEAD3Y (ORCPT
+        id S231622AbhEADay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 23:30:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49732 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231566AbhEADaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 23:29:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98579C06174A;
-        Fri, 30 Apr 2021 20:28:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=pCVpEmSBNkHbA2xrBVXJgYpV5Pdig67bJUCkTSad33Y=; b=HNQVUXqFNihjOn1gK2a+jWUJ52
-        8sH4dGp5W5Ok9alYuoGDlG7K4N7e5UHqIZkkRmvb6F7+0qdiQ8wdKKufTxNnl7dcTCzSXfOmXse3d
-        35KqSQw6HHQpLk2ZRQWtHDbbYzWSq7t8aI/03gBf5KnxSgs4JH/e28nYLyfUtr7jL8CEIEay+N9P3
-        x9q0TQdjpyJuhYJrPLyjoCD7ksBuqlJiTjIoaQJ17Gn9Z9mixbjcuftGo32sSKhuPI9tIxaJ6TrTU
-        AEJM9Y0RdWYczLhQ0PlGUigNn9I9xIzx5VYfgI3XU3OrXCTPeLi6GZdqg9UuLBwj7GwIEXhKeg0zW
-        aRZrKAxQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lcgIH-00BuPw-3b; Sat, 01 May 2021 03:27:59 +0000
-Date:   Sat, 1 May 2021 04:27:49 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Dave Chinner <david@fromorbit.com>, Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yang Shi <shy828301@gmail.com>, alexs@kernel.org,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: [External] Re: [PATCH 0/9] Shrink the list lru size on memory
- cgroup removal
-Message-ID: <20210501032749.GQ1847222@casper.infradead.org>
-References: <20210428094949.43579-1-songmuchun@bytedance.com>
- <20210430004903.GF1872259@dread.disaster.area>
- <YItf3GIUs2skeuyi@carbon.dhcp.thefacebook.com>
- <20210430032739.GG1872259@dread.disaster.area>
- <CAMZfGtXawtMT4JfBtDLZ+hES4iEHFboe2UgJee_s-NhZR5faAw@mail.gmail.com>
+        Fri, 30 Apr 2021 23:30:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619839803;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type;
+        bh=cLw324W+h4aff9KOf/JPfSaakJj/rbJdzvMw/riyeDE=;
+        b=CqgftGxLl4uvtSvOVLpscO2+cDQOt/u6DkrnNopChsVaPGlqGfNDYkW2vJku0dLpa4GTY9
+        EFH1ihqExRoE2C5KP7pHyGbgIx5Tce+G9oNdRknsI/T2LA5qOcV+5VM3l7/9FLIuo0MZvn
+        daOqwBbbCYwSf1AI+a01ICoAwH8ePYs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-574-XoeH7PoWN8K0DoTSo-x1Rw-1; Fri, 30 Apr 2021 23:30:01 -0400
+X-MC-Unique: XoeH7PoWN8K0DoTSo-x1Rw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 299FA10060C3;
+        Sat,  1 May 2021 03:30:00 +0000 (UTC)
+Received: from lclaudio.dyndns.org (ovpn-117-234.phx2.redhat.com [10.3.117.234])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E222A6A05A;
+        Sat,  1 May 2021 03:29:59 +0000 (UTC)
+Received: by lclaudio.dyndns.org (Postfix, from userid 1000)
+        id 5438D3C0053; Sat,  1 May 2021 00:29:58 -0300 (-03)
+Date:   Sat, 1 May 2021 00:29:58 -0300
+From:   "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <daniel.wagner@suse.com>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>,
+        Luis Goncalves <lgoncalv@redhat.com>
+Subject: [ANNOUNCE] 4.14.232-rt111
+Message-ID: <YIzLNua6b2utBIfA@uudg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMZfGtXawtMT4JfBtDLZ+hES4iEHFboe2UgJee_s-NhZR5faAw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 04:32:39PM +0800, Muchun Song wrote:
-> Before start, we should know about the following rules of list lrus.
-> 
-> - Only objects allocated with __GFP_ACCOUNT need to allocate
->   the struct list_lru_node.
-> - The caller of allocating memory must know which list_lru the
->   object will insert.
-> 
-> So we can allocate struct list_lru_node when allocating the
-> object instead of allocating it when list_lru_add().  It is easy, because
-> we already know the list_lru and memcg which the object belongs
-> to. So we can introduce a new helper to allocate the object and
-> list_lru_node. Like below.
+Hello RT-list!
 
-I feel like there may be a simpler solution, although I'm not really
-familiar with the list_lru situation.  The three caches you mention:
+I'm pleased to announce the 4.14.232-rt111 stable release.
 
-> I have looked at the code closely. There are 3 different kmem_caches that
-> need to use this new API to allocate memory. They are inode_cachep,
-> dentry_cache and radix_tree_node_cachep. I think that it is easy to migrate.
+You can get this release via the git tree at:
 
-are all filesystem.  So if there's a way of knowing which filesystems
-are exposed to each container, we can allocate the list_lru structures at
-"mount" time rather than at first allocation for a given cache/lru/memcg
-combination.
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+
+  branch: v4.14-rt
+  Head SHA1: 746ebb3ffc9c1ff8e89fc57ef13e694b48e93963
+
+Or to build 4.14.232-rt111 directly, the following patches should be applied:
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.14.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.14.232.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/patch-4.14.232-rt111.patch.xz
+
+
+Enjoy!
+Luis
+
