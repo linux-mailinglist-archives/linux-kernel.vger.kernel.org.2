@@ -2,101 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 755C53707A0
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 17:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B185C3707A2
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 17:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231640AbhEAPEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 11:04:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56240 "EHLO
+        id S231706AbhEAPFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 11:05:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230522AbhEAPEQ (ORCPT
+        with ESMTP id S230450AbhEAPFr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 11:04:16 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36020C06138B;
-        Sat,  1 May 2021 08:03:26 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d:444a:d152:279d:1dbb])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 6D2142DD;
-        Sat,  1 May 2021 15:03:25 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 6D2142DD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1619881405; bh=xiUPjVQBLypVmmHFGUuNCDr9cDHqM/YBFlPvHnb84os=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=jN8i5S4IfYqrKNIICU2CvnzCY5G5LyjU0vt55s+ZZ5mSUzYdfMoHfHbMpXgJUP/RU
-         rM2KAJr0tewI8typMBOclpKHDZHlbSrCg8doaIv7NcRUFQ9igy7hlUAufeMClhrH0y
-         Vik6XynVb/wNTKJ/875tPSTqWLeg7LVCxkYOww5eA0Q1r6LzVyWvnlOPACjM9uQboR
-         YYTL5Js/aF3rgFJHD6YNVHkbvjLMeTgAWuLAZM18EkGXy3Wkm7gaBLPqepRMc2JaN1
-         QbumUeC1fE0+e3FKmmQL6K9N69jk/LX031jh3MfCoAq8XmGpdFcgo3W5UcT6edO6jx
-         SWdTq8NSWh8CQ==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     lukas.bulwahn@gmail.com, willy@infradead.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC v3] scripts: kernel-doc: reduce repeated regex expressions
- into variables
-In-Reply-To: <99186604-8ed6-ff72-0308-9ca788db3a51@gmail.com>
-References: <20210427165633.GA235567@casper.infradead.org>
- <20210429063729.8144-1-yashsri421@gmail.com> <8735v8d5ja.fsf@meer.lwn.net>
- <99186604-8ed6-ff72-0308-9ca788db3a51@gmail.com>
-Date:   Sat, 01 May 2021 09:03:24 -0600
-Message-ID: <87bl9ujy2r.fsf@meer.lwn.net>
+        Sat, 1 May 2021 11:05:47 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC0CC06174A;
+        Sat,  1 May 2021 08:04:57 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id l22so1610147ljc.9;
+        Sat, 01 May 2021 08:04:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mf/H2xj+zflf+YaL54FKklUQahHRX1dyDemWMHhs3v4=;
+        b=vM9gpUh1nSEnhQ+KSB+C96fyyyKdfnosujRityuYC0foXKl1UEDHZZ35nKY8MHfZDJ
+         TkJu+2dDjyPFvqWkl8AXpBuAwoHsVLL4FPdCf+VWsxGdEiNxzSMsMtr7agGYWaBifH5T
+         sM5O1rRksM8+O9WliOObH8oQz3DlvxuJolS4XGTXC9n25uNwvkC7atQ4g5OZ6jtfNQY4
+         gp+hSxxXumDiCkOeZ9HfmkXehh/II9/Gui+Xv8xQTm2QgANR1OW72FsV88RtxGhu7qyR
+         7UsL7E/srW8Y0/6rtWWSJOo2KepDkvCpmZ1CEirtH02F00KPKkE2ZXDkGt/MHjYdjx5p
+         iqlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mf/H2xj+zflf+YaL54FKklUQahHRX1dyDemWMHhs3v4=;
+        b=pHqb1vym+u+v8gcYB4XyHnZCJsy7MtQ9JFXeCMkMNJyJh5YrpQs7uJuwPzrT8wgY0z
+         PZIUkd1Ja/W0n59fV3aUKrm9UybK+sjcN0VGIzaNOTnInmkb4DXeS4io4Kb4pn8/I4BV
+         wTHw840+g2ToqO+PZs4fiF2FJ0JBmyx1LQNPj2eDoHnaqWSfQ7LdZsI9xeWqKPmVxqSN
+         UM49v31ww9D0NQ/ilz3elIampY+6F32381ihAB7v+a3vcWqTvEArlTBpLFaleaCBqsRG
+         tF/YGPnvvUJTYGZeMZ4QRVEp9IIGuKOJ9Vf2ptqhsm0o4vwNNEgNajXD8tuQtMCsoXix
+         MXjg==
+X-Gm-Message-State: AOAM532iquLRgv5KoVz+ASy4hCLRWM4TVrWAaXlpT8J2a/A9OIpclUTA
+        wq8ZYg/9E055C+Etve6rFXU2r/erF8i4Kg==
+X-Google-Smtp-Source: ABdhPJypu1oYdCdyikUBFguR96Xj4xOO23e8b8lIjgTX0Revw1tCAulGcBqvGrynXoK13NrsqjvJpg==
+X-Received: by 2002:a2e:9f07:: with SMTP id u7mr7295566ljk.423.1619881496223;
+        Sat, 01 May 2021 08:04:56 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.226.84])
+        by smtp.gmail.com with ESMTPSA id j10sm592999lfb.176.2021.05.01.08.04.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 01 May 2021 08:04:55 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com
+Cc:     luiz.dentz@gmail.com, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH] bluetooth: fix potential gfp
+Date:   Sat,  1 May 2021 18:04:45 +0300
+Message-Id: <20210501150445.4055-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Aditya Srivastava <yashsri421@gmail.com> writes:
+In qca_power_shutdown() qcadev local variable is
+initialized by hu->serdev.dev private data, but
+hu->serdev can be NULL and there is a check for it.
 
-> On 30/4/21 5:09 am, Jonathan Corbet wrote:
->> Aditya Srivastava <yashsri421@gmail.com> writes:
->> 
->>> There are some regex expressions in the kernel-doc script, which are used
->>> repeatedly in the script.
->>>
->>> Reduce such expressions into variables, which can be used everywhere.
->>>
->>> A quick manual check found that no errors and warnings were added/removed
->>> in this process.
->>>
->>> Suggested-by: Jonathan Corbet <corbet@lwn.net>
->>> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
->>> ---
->>> Changes in v3:
->>> - Remove variables for separate qualifiers in "sub dump_struct"
->>> - Make a common variable for all the qualifiers
->>> - Make $attribute global variable to use it at "sub check_sections" as well
->>>
->>> Changes in v2:
->>> - Rename $pointer_function to $function_pointer
->>> - Combine elsif-block expressions at "sub dump_function" into lesser regex expressions
->>> - Combine $prototype_end1,$prototype_end2 expressions into a common $prototype_end
->>>
->>>  scripts/kernel-doc | 71 ++++++++++++++++++++++------------------------
->>>  1 file changed, 34 insertions(+), 37 deletions(-)
->> 
->> So this looks good but ... it adds a warning to the build:
->> 
->> /stuff/k/git/kernel/Documentation/driver-api/media/v4l2-controls:823: ./include/media/v4l2-ctrls.h:964: WARNING: Invalid C declaration: Expected identifier in nested name. [error at 6]
->>   const * v4l2_ctrl_get_menu (u32 id)
->>   ------^
->> 
->> So it looks like something isn't being parsed quite identically?
->>
->
-> Hi Jonathan!
-> I could not reproduce this error..
-> Can you suggest me how can I reproduce this error?
-> I ran kernel-doc -none {$file} over the tree.
->
-> Probably, this is not a kernel-doc error
+Since, qcadev is not used before
 
-It's a Sphinx error; run "make htmldocs" to see it.  That said, the
-error itself should be enough to point at where the problem is.
+	if (!hu->serdev)
+		return;
 
-Thanks,
+we can move its initialization after this "if" to
+prevent gfp.
 
-jon
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ drivers/bluetooth/hci_qca.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+index de36af63e182..9589ef6c0c26 100644
+--- a/drivers/bluetooth/hci_qca.c
++++ b/drivers/bluetooth/hci_qca.c
+@@ -1820,8 +1820,6 @@ static void qca_power_shutdown(struct hci_uart *hu)
+ 	unsigned long flags;
+ 	enum qca_btsoc_type soc_type = qca_soc_type(hu);
+ 
+-	qcadev = serdev_device_get_drvdata(hu->serdev);
+-
+ 	/* From this point we go into power off state. But serial port is
+ 	 * still open, stop queueing the IBS data and flush all the buffered
+ 	 * data in skb's.
+@@ -1837,6 +1835,8 @@ static void qca_power_shutdown(struct hci_uart *hu)
+ 	if (!hu->serdev)
+ 		return;
+ 
++	qcadev = serdev_device_get_drvdata(hu->serdev);
++
+ 	if (qca_is_wcn399x(soc_type)) {
+ 		host_set_baudrate(hu, 2400);
+ 		qca_send_power_pulse(hu, false);
+-- 
+2.31.1
+
