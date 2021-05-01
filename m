@@ -2,81 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 144923707CF
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 18:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 779C73707D9
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 18:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231593AbhEAQGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 12:06:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41264 "EHLO
+        id S231500AbhEAQZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 12:25:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230391AbhEAQGG (ORCPT
+        with ESMTP id S230195AbhEAQZ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 12:06:06 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9577C06174A
-        for <linux-kernel@vger.kernel.org>; Sat,  1 May 2021 09:05:15 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id j4so1719694lfp.0
-        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 09:05:15 -0700 (PDT)
+        Sat, 1 May 2021 12:25:27 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B6DDC06138C
+        for <linux-kernel@vger.kernel.org>; Sat,  1 May 2021 09:24:36 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id 103-20020a9d0d700000b02902a5baf33f37so833614oti.9
+        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 09:24:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7nlYoQExVbXQhvC/EaGOIk1M5S2Uav+x5xdbORmDf5o=;
-        b=XEwq9R1H0HQHrvXfOtBwmFEP/4cLHs/4p+ksTho0zU/9blcwQfdwK5hL9D2Fzcq8az
-         EOQw+j65UGDc/TZyaKkUq96pjaSLUS/g+SStreW1U+h9AEsuMlL1Vq6MLI/+dFDlwqm5
-         GJvv7frzqQ0MYxZDAzcJOI+MbEF2787l/ezlo=
+        bh=CyRw8Tn64/8GQf/qvRpik9Jpd4CoRgx2tUKy0Z4v2kk=;
+        b=eF/f5QKwpZj4P0iRgwV9mG08ATE6TtljmgOwFiZt6YvZXdccsD5UWUHr3XvSwu//qG
+         NPJJumNb1Zr68wu1wpu1k66hY/gXorsicuXcYJFtGZGJhTD3zkyGC1NlFeVevEyC1VJY
+         CRmSkGTGR/sM1sCwBRfLDIx4qq1Z1WbZpsa+rKG3t/LR2XoiQJovPWIT4VkR5fc/nAs8
+         4wn6Tzmc2CG2whHqu1l7tRE+chGrFt3lXNXaaWepgbANGpj6o05TW6iLrAseEa03Iw23
+         5lXhasqa0NDzEaj1UbE6BGTHoKHGohYMhVnJdcWhiNjg0tp9CJUZrIoy5Teb9U/6Cem1
+         5g/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7nlYoQExVbXQhvC/EaGOIk1M5S2Uav+x5xdbORmDf5o=;
-        b=HxXWpJDCikZ4SMn3kWP8C4FivMJO2MAkFsaEHC9iNNvArYn09aFeMKq7/7YGw818hV
-         MRU1Eaq9IfEWboDZfR0oixdBXse6SXY9LHLLHpvv8AsHw0OKUOZuARivtepD0uTbDa+M
-         dqjql8InuPsvcLqGcxV/NC6Aig8YNFt4ak/ML0xkQk+udimoEtwNc7zy5OF+t7VJCNI+
-         knJSDn/4pp1IuPmMjr/+OyGdO2whDPtOJKA2btrzPILKj+UTOy/dYejyvT+OLlN1avzP
-         RptvMrtUmmN6cdVEbQSDGzdlixBMDjXWrbC3WWSltGvy2prAWWFlGCvsmenIjrUhFAdy
-         OMCg==
-X-Gm-Message-State: AOAM5321gc132p1AogQHj2dV1r8eI3RgmQlKMKkDQQpDicUoO6q+n4Us
-        yREoJPsOdyDBRIq0hpFTXJhBT6wEarpYFhQT
-X-Google-Smtp-Source: ABdhPJyC/jsEiPEdGx+rNROl6d6713mEMnLq89XZyVjVqkf9kxR8n2VP5hkQUGecFmNGYiNqxoUy8w==
-X-Received: by 2002:a19:614c:: with SMTP id m12mr6999031lfk.606.1619885113079;
-        Sat, 01 May 2021 09:05:13 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id w26sm605455lfn.82.2021.05.01.09.05.09
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 01 May 2021 09:05:10 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id c11so1657499lfi.9
-        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 09:05:09 -0700 (PDT)
-X-Received: by 2002:ac2:5f97:: with SMTP id r23mr6990675lfe.377.1619885109537;
- Sat, 01 May 2021 09:05:09 -0700 (PDT)
+        bh=CyRw8Tn64/8GQf/qvRpik9Jpd4CoRgx2tUKy0Z4v2kk=;
+        b=i9OEV0T5i9paQ471eM5LO6QcgBZjlxAZ714b2bgLet+gBNgdBuw1udH5iM0xaNKZ17
+         ibaX610l+rwyFSYi6bAN+o9PRh2NTuAqBKBcNgPytVX1zpXrU06cI+Tqo6UYSBxfqOcK
+         /tgv1kmLU8LG3JNuytDdWJxyJpRWdXSTo2iSHpTNmhFVx6C+Gvt2ou2iCg8eXfZ0qfY5
+         qQnBs/ND7jaG6V66Vbbl5HHE/gF3twOB1ZLoHmKPYqyFcVBiOrNoZSb+jR0HaILXGVeh
+         I7ax0RyUNsY2b27XqN2wVlGMOBnbVDQQ/mLCCvuNExSfaUfdgsphrLvQc+jxqBgDmTLQ
+         dmrA==
+X-Gm-Message-State: AOAM533oaBMHz4rRTryYbxdOa2RgynB9WxU6Ykf+DPNZIIdTGJuJI9tu
+        Ztd9OJmlCGh2iDE+9xT1TuBrKJ82X+wQF/p701QpSQ==
+X-Google-Smtp-Source: ABdhPJxP2xABVwsxq8iuIy2TqPxCCxagtYWhXnnuGIb0YzWKLQ9rVYtpLctNHuotNan+7uHcpM+rhlw76MQT8E/rFJ8=
+X-Received: by 2002:a9d:60c8:: with SMTP id b8mr8272179otk.17.1619886275343;
+ Sat, 01 May 2021 09:24:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210428230528.189146-1-pbonzini@redhat.com> <61aa0633-d69c-f1b6-dc9f-6ca9442fbbab@redhat.com>
-In-Reply-To: <61aa0633-d69c-f1b6-dc9f-6ca9442fbbab@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 1 May 2021 09:04:53 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjhLXDRdxfhzHS8bPOxtNQuQLVpepsytCzN=LPxJuejTg@mail.gmail.com>
-Message-ID: <CAHk-=wjhLXDRdxfhzHS8bPOxtNQuQLVpepsytCzN=LPxJuejTg@mail.gmail.com>
-Subject: Re: [GIT PULL] KVM, AMD PSP and ARM CoreSight changes for 5.13 merge window
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>
+References: <YIpkvGrBFGlB5vNj@elver.google.com> <m11rat9f85.fsf@fess.ebiederm.org>
+ <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
+ <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
+ <m1zgxfs7zq.fsf_-_@fess.ebiederm.org> <m1r1irpc5v.fsf@fess.ebiederm.org>
+ <CANpmjNNfiSgntiOzgMc5Y41KVAV_3VexdXCMADekbQEqSP3vqQ@mail.gmail.com> <m1czuapjpx.fsf@fess.ebiederm.org>
+In-Reply-To: <m1czuapjpx.fsf@fess.ebiederm.org>
+From:   Marco Elver <elver@google.com>
+Date:   Sat, 1 May 2021 18:24:24 +0200
+Message-ID: <CANpmjNNyifBNdpejc6ofT6+n6FtUw-Cap_z9Z9YCevd7Wf3JYQ@mail.gmail.com>
+Subject: Re: [RFC][PATCH 0/3] signal: Move si_trapno into the _si_fault union
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 1, 2021 at 1:00 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+On Sat, 1 May 2021 at 17:17, Eric W. Biederman <ebiederm@xmission.com> wrote:
 >
-> is there anything wrong with this pull request?
+> Marco Elver <elver@google.com> writes:
+>
+> > On Sat, 1 May 2021 at 01:48, Eric W. Biederman <ebiederm@xmission.com> wrote:
+> >>
+> >> Well with 7 patches instead of 3 that was a little more than I thought
+> >> I was going to send.
+> >>
+> >> However that does demonstrate what I am thinking, and I think most of
+> >> the changes are reasonable at this point.
+> >>
+> >> I am very curious how synchronous this all is, because if this code
+> >> is truly synchronous updating signalfd to handle this class of signal
+> >> doesn't really make sense.
+> >>
+> >> If the code is not synchronous using force_sig is questionable.
+> >>
+> >> Eric W. Biederman (7):
+> >>       siginfo: Move si_trapno inside the union inside _si_fault
+> >>       signal: Implement SIL_FAULT_TRAPNO
+> >>       signal: Use dedicated helpers to send signals with si_trapno set
+> >>       signal: Remove __ARCH_SI_TRAPNO
+> >>       signal: Rename SIL_PERF_EVENT SIL_FAULT_PERF_EVENT for consistency
+> >>       signal: Factor force_sig_perf out of perf_sigtrap
+> >>       signal: Deliver all of the perf_data in si_perf
+> >
+> > Thank you for doing this so quickly -- it looks much cleaner. I'll
+> > have a more detailed look next week and also run some tests myself.
+> >
+> > At a first glance, you've broken our tests in
+> > tools/testing/selftests/perf_events/ -- needs a
+> > s/si_perf/si_perf.data/, s/si_errno/si_perf.type/
+>
+> Yeah.  I figured I did, but I couldn't figure out where the tests were
+> and I didn't have a lot of time.  I just wanted to get this out so we
+> can do as much as reasonable before the ABI starts being actively used
+> by userspace and we can't change it.
 
-No, it's still in my pending queue, and in fact I'll get around to it
-today. It's just that I've always had something else I wanted to look
-at, and this was always "I'll get to it when my queue is emptier"".
-And the queue never emptied (but today is the first time I don't have
-a lot of new pull requests pending overnight, yay!)
+No worries, and agreed. I've run tools/testing/selftests/perf_events
+tests on x86-64 (native + 32-bit compat), and compile-tested x86-32,
+arm64, arm (with my static asserts), m68k, and sparc64. Some trivial
+breakages, note comments in other patches.
 
-             Linus
+With the trivial fixes this looks good to me. I'll happily retest v2
+when you send it.
+
+Thanks,
+-- Marco
