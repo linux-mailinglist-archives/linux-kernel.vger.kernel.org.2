@@ -2,93 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B05303708CF
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 21:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E569D3708D7
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 21:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231547AbhEATfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 15:35:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42798 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231556AbhEATfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 15:35:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8FB0D613AD;
-        Sat,  1 May 2021 19:33:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619897632;
-        bh=kDN2nlfsi6/KnbTkNqD7tL6K/EHafQy0xAF9Rz2GfZE=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=R6F5pcu+tGas0zwFYiFePJB5iLzBHxcNv+eBiiFECVPUCO9vqIMe9rskvFePrw9Mm
-         tqwPR/2mXqmunlGs3DHHf1Kectt34E4zf6oyJW4eOkdYmIAVR/KPm64fewqcb6khw5
-         yzqn46UswbPIHh2hTXM3qqm+GFt2Cz9AVIbKgGJvIeTQ6dZKq3jlYHUcC9SJ49j8lD
-         2JZgvDJes+nWAA8nfZyeK6vitqceDJlbasm9eopY582Io2Q4abTxABm0q62NErG2jg
-         KM1L6mJOrNquDtT1KNUvb55wrKktf7zwnMe0angBQOhl1NW6yuSb1K05/u3RRNoMsW
-         LSOvvAbJpIW+g==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 76F3860A72;
-        Sat,  1 May 2021 19:33:52 +0000 (UTC)
-Subject: Re: [GIT PULL] perf tools changes for v5.13
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210429211516.2748106-1-acme@kernel.org>
-References: <20210429211516.2748106-1-acme@kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210429211516.2748106-1-acme@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-for-v5.13-2021-04-29
-X-PR-Tracked-Commit-Id: c6e3bf437184d41d885ba679eab0ddd43f95db56
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 10a3efd0fee5e881b1866cf45950808575cb0f24
-Message-Id: <161989763241.29777.12736155921673673221.pr-tracker-bot@kernel.org>
-Date:   Sat, 01 May 2021 19:33:52 +0000
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Archer Yan <ayan@wavecomp.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Changbin Du <changbin.du@gmail.com>,
-        David Daney <david.daney@cavium.com>,
-        Fabian Hemmer <copy@copy.sh>, Ian Rogers <irogers@google.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Kajol Jain <kjain@linux.ibm.com>, Leo Yan <leo.yan@linaro.org>,
-        =?UTF-8?q?Martin=20Li=C5=A1ka?= <mliska@suse.cz>,
-        Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Nicholas Fraser <nfraser@codeweavers.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        Ralf Ba echle <ralf@linux-mips.org>,
-        Ray Kinsella <mdr@ashroe.eu>, Rob Herring <robh@kernel.org>,
-        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-        Song Liu <songliubraving@fb.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        Xiong Zhenwu <xiong.zhenwu@zte.com.cn>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
+        id S231668AbhEATxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 15:53:13 -0400
+Received: from bmailout2.hostsharing.net ([83.223.78.240]:39245 "EHLO
+        bmailout2.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231670AbhEATxL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 May 2021 15:53:11 -0400
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
+        by bmailout2.hostsharing.net (Postfix) with ESMTPS id 9B61F2800B3D0;
+        Sat,  1 May 2021 21:51:35 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 8EE261BC5; Sat,  1 May 2021 21:51:35 +0200 (CEST)
+Date:   Sat, 1 May 2021 21:51:35 +0200
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Joe Burmeister <joe.burmeister@devtank.co.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-spi@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        nsaenz@kernel.org, phil@raspberrypi.com
+Subject: Re: [PATCH] spi: bcm2835: Fix buffer overflow with CS able to go
+ beyond limit.
+Message-ID: <20210501195135.GA18501@wunner.de>
+References: <20210420083402.6950-1-joe.burmeister@devtank.co.uk>
+ <c087ba2c-7839-02d1-a522-b104d8ffb8d2@gmail.com>
+ <7c9f9376-1a80-b624-7b9e-0f6d04437c02@devtank.co.uk>
+ <271ad212-a606-620e-3f0c-d6bff272be3c@gmail.com>
+ <380624c4-82f3-0e6e-8cdb-8a9732636db8@devtank.co.uk>
+ <20210423115724.GB5507@sirena.org.uk>
+ <672e8d77-ee5c-f10f-0bd3-f8708dfc24c8@devtank.co.uk>
+ <20210423162055.GE5507@sirena.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210423162055.GE5507@sirena.org.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 29 Apr 2021 18:15:16 -0300:
+On Fri, Apr 23, 2021 at 05:20:55PM +0100, Mark Brown wrote:
+> Part of the issue here is that there has been some variation in how
+> num_chipselect is interpreted with regard to GPIO based chip selects
+> over time.  It *should* be redundant, I'm not clear why it's in the
+> generic bindings at all but that's lost to history AFAICT.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-for-v5.13-2021-04-29
+It seems num_chipselect is meant to be set to the maximum number of
+*native* chipselects supported by the controller.  Which is overwritten
+if GPIO chipselects are used.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/10a3efd0fee5e881b1866cf45950808575cb0f24
+I failed to appreciate that when I changed num_chipselects for
+spi-bcm2835.c with commit 571e31fa60b3.  That single line change
+in the commit ought to be reverted.
 
-Thank you!
+And the kernel-doc ought to be amended because the crucial detail
+that num_chipselect needs to be set to the maximum *native* chipselects
+isn't mentioned anywhere.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+
+> The best thing would be to have it not have a single array of chip
+> select specific data and instead store everything in the controller_data
+> that's there per-device.
+
+Unfortunately that's non-trivial.  The slave-specific data is DMA-mapped.
+It could be DMA-mapped in ->setup but there's no ->unsetup to DMA-unmap
+the memory once the slave is removed.  Note that the slave could be removed
+dynamically with a DT overlay, not just when the controller is unbound.
+
+So we'd need a new ->unsetup hook at the very least to make this work.
+
+The Foundation's downstream kernel now contains a bandaid commit which
+raises the limit to 24 and errors out of ->probe if the limit is exceeded.
+I would have preferred if it errored out of ->setup.  That way only
+the slaves exceeding the limit would fail to instantiate:
+
+https://github.com/raspberrypi/linux/commit/05f8d5826e28
+
+Thoughts?
+
+Lukas
