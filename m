@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F829370470
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 02:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D86370474
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 02:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbhEAAdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 20:33:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54386 "EHLO mail.kernel.org"
+        id S231561AbhEAAdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 20:33:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230298AbhEAAdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230226AbhEAAdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 30 Apr 2021 20:33:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9567961420;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9797B61423;
         Sat,  1 May 2021 00:32:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1619829168;
-        bh=PHTrEb6iG8eqDN0PHXnrRaSumyHPzG3GyaFtiSi0kX8=;
+        bh=VGp+EnEo6bJM2uYI1Zf7i2BonaUudIbyRMUx9u9PEY0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=erf9KOHQtv15byNdA5CPf8l8QnlqPVAhUuI3wXUQsrBWA+xpyPxvwH4rHZkz8U54a
-         DyNl8yT2+5dPNiyewndIngJfJ50BwN449S8thdNfwYypj17yJwi0vgQnPt2vRwnmFJ
-         ii/cat5guEgpyopOuW22jcTIppC1RrXDkTN1NL05Y701lIsMmgWfmFbZVIxW87X1Sk
-         /B5OMI4Rih0aOzoBUmGRlyMNKadTlFg1nOtlNiLFCf7HpdUReaKrERwvWlJ5kmISRv
-         yaR5LiNgHAlvM2De8Q6DsfNYOQDppYGSspAT0LOZUxOckymbN36RHzJSe1MiavhZ5T
-         c59l3zbKiFGCg==
+        b=bOQtcvonzAohbG1ylnpik4InepzfhulZEjVl7Gm60jlA9zwNc4Pfs9IX4Ch7LG/IP
+         EG5BBHlPjchIHjRoVSCUrWm62WjgKghjtShHLJwdKWw8bJNZ6hpuUmKs9rb/U1KuoU
+         99PsutLmaGwaVwmvJAPWOHLeML04e8/0WzqB22wtZS0v4MZ9ySyI9klaa/ZWKKRqir
+         mE1qmD2lwN3WYeUpF5N7MPsu6cis2bwQ9Cf6NS0bdj+XWEdhVSnHubqJ/ONoxW1lfU
+         Kt/vHeo7ULUSlbav0owcD1KeBmx4P5N2CgNGmR8wLf3oVYt0xuPNSG/DN+jIumQXWx
+         DN1A6Q0uJRqig==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3A1695C034F; Fri, 30 Apr 2021 17:32:48 -0700 (PDT)
+        id 3CB8D5C0361; Fri, 30 Apr 2021 17:32:48 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     tglx@linutronix.de
 Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
@@ -32,10 +32,11 @@ Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
         maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
         ak@linux.intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
         "Paul E. McKenney" <paulmck@kernel.org>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Subject: [PATCH v12 clocksource 4/5] clocksource: Reduce clocksource-skew threshold for TSC
-Date:   Fri, 30 Apr 2021 17:32:46 -0700
-Message-Id: <20210501003247.2448287-4-paulmck@kernel.org>
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Chris Mason <clm@fb.com>
+Subject: [PATCH v12 clocksource 5/5] clocksource: Provide kernel module to test clocksource watchdog
+Date:   Fri, 30 Apr 2021 17:32:47 -0700
+Message-Id: <20210501003247.2448287-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210501003204.GA2447938@paulmck-ThinkPad-P17-Gen-1>
 References: <20210501003204.GA2447938@paulmck-ThinkPad-P17-Gen-1>
@@ -45,48 +46,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, WATCHDOG_THRESHOLD is set to detect a 62.5-millisecond skew in
-a 500-millisecond WATCHDOG_INTERVAL.  This requires that clocks be skewed
-by more than 12.5% in order to be marked unstable.  Except that a clock
-that is skewed by that much is probably destroying unsuspecting software
-right and left.  And given that there are now checks for false-positive
-skews due to delays between reading the two clocks, it should be possible
-to greatly decrease WATCHDOG_THRESHOLD, at least for fine-grained clocks
-such as TSC.
+When the clocksource watchdog marks a clock as unstable, this might
+be due to that clock being unstable or it might be due to delays that
+happen to occur between the reads of the two clocks.  It would be good
+to have a way of testing the clocksource watchdog's ability to
+distinguish between these two causes of clock skew and instability.
 
-Therefore, add a new uncertainty_margin field to the clocksource
-structure that contains the maximum uncertainty in nanoseconds for
-the corresponding clock.  This field may be initialized manually,
-as it is for clocksource_tsc_early and clocksource_jiffies, which
-is copied to refined_jiffies.  If the field is not initialized
-manually, it will be computed at clock-registry time as the period
-of the clock in question based on the scale and freq parameters to
-__clocksource_update_freq_scale() function.  If either of those two
-parameters are zero, the tens-of-milliseconds WATCHDOG_THRESHOLD is
-used as a cowardly alternative to dividing by zero.  No matter how the
-uncertainty_margin field is calculated, it is bounded below by twice
-WATCHDOG_MAX_SKEW, that is, by 100 microseconds.
+Therefore, provide a new clocksource-wdtest module selected by a new
+TEST_CLOCKSOURCE_WATCHDOG Kconfig option.  This module has a single module
+parameter named "holdoff" that provides the number of seconds of delay
+before testing should start, which defaults to zero when built as a module
+and to 10 seconds when built directly into the kernel.  Very large systems
+that boot slowly may need to increase the value of this module parameter.
 
-Note that manually initialized uncertainty_margin fields are not adjusted,
-but there is a WARN_ON_ONCE() that triggers if any such field is less than
-twice WATCHDOG_MAX_SKEW.  This WARN_ON_ONCE() is intended to discourage
-production use of the one-nanosecond uncertainty_margin values that are
-used to test the clock-skew code itself.
+This module uses hand-crafted clocksource structures to do its testing,
+thus avoiding messing up timing for the rest of the kernel and for user
+applications.  This module first verifies that the ->uncertainty_margin
+field of the clocksource structures are set sanely.  It then tests the
+delay-detection capability of the clocksource watchdog, increasing the
+number of consecutive delays injected, first provoking console messages
+complaining about the delays and finally forcing a clock-skew event.
+Unexpected test results cause at least one WARN_ON_ONCE() console splat.
+If there are no splats, the test has passed.  Finally, it fuzzes the
+value returned from a clocksource to test the clocksource watchdog's
+ability to detect time skew.
 
-The actual clock-skew check uses the sum of the uncertainty_margin fields
-of the two clocksource structures being compared.  Integer overflow is
-avoided because the largest computed value of the uncertainty_margin
-fields is one billion (10^9), and double that value fits into an
-unsigned int.  However, if someone manually specifies (say) UINT_MAX,
-they will get what they deserve.
+This module checks the state of its clocksource after each test, and
+uses WARN_ON_ONCE() to emit a console splat if there are any failures.
+This should enable all types of test frameworks to detect any such
+failures.
 
-Note that the refined_jiffies uncertainty_margin field is initialized to
-TICK_NSEC, which means that skew checks involving this clocksource will
-be sufficently forgiving.  In a similar vein, the clocksource_tsc_early
-uncertainty_margin field is initialized to 32*NSEC_PER_MSEC, which
-replicates the current behavior and allows custom setting if needed
-in order to address the rare skews detected for this clocksource in
-current mainline.
+This facility is intended for diagnostic use only, and should be avoided
+on production systems.
 
 Link: https://lore.kernel.org/lkml/202104291438.PuHsxRkl-lkp@intel.com/
 Link: https://lore.kernel.org/lkml/20210429140440.GT975577@paulmck-ThinkPad-P17-Gen-1
@@ -102,164 +93,332 @@ Cc: Jonathan Corbet <corbet@lwn.net>
 Cc: Mark Rutland <Mark.Rutland@arm.com>
 Cc: Marc Zyngier <maz@kernel.org>
 Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Xing Zhengjun <zhengjun.xing@linux.intel.com>
 Cc: Feng Tang <feng.tang@intel.com>
+Cc: Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Reported-by: Chris Mason <clm@fb.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- arch/x86/kernel/tsc.c       |  1 +
- include/linux/clocksource.h |  3 +++
- kernel/time/clocksource.c   | 48 +++++++++++++++++++++++++++++--------
- kernel/time/jiffies.c       | 15 ++++++------
- 4 files changed, 50 insertions(+), 17 deletions(-)
+ .../admin-guide/kernel-parameters.txt         |   6 +
+ include/linux/clocksource.h                   |   3 +
+ kernel/time/Makefile                          |   1 +
+ kernel/time/clocksource-wdtest.c              | 202 ++++++++++++++++++
+ kernel/time/clocksource.c                     |  11 +-
+ lib/Kconfig.debug                             |  12 ++
+ 6 files changed, 230 insertions(+), 5 deletions(-)
+ create mode 100644 kernel/time/clocksource-wdtest.c
 
-diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-index 56289170753c..6e11c9619437 100644
---- a/arch/x86/kernel/tsc.c
-+++ b/arch/x86/kernel/tsc.c
-@@ -1127,6 +1127,7 @@ static int tsc_cs_enable(struct clocksource *cs)
- static struct clocksource clocksource_tsc_early = {
- 	.name			= "tsc-early",
- 	.rating			= 299,
-+	.uncertainty_margin	= 32 * NSEC_PER_MSEC,
- 	.read			= read_tsc,
- 	.mask			= CLOCKSOURCE_MASK(64),
- 	.flags			= CLOCK_SOURCE_IS_CONTINUOUS |
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 485023c99244..79733e7c04a9 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -599,6 +599,12 @@
+ 			The actual CPUs are chosen randomly, with
+ 			no replacement if the same CPU is chosen twice.
+ 
++	clocksource-wdtest.holdoff= [KNL]
++			Set the time in seconds that the clocksource
++			watchdog test waits before commencing its tests.
++			Defaults to zero when built as a module and to
++			10 seconds when built into the kernel.
++
+ 	clearcpuid=BITNUM[,BITNUM...] [X86]
+ 			Disable CPUID feature X for the kernel. See
+ 			arch/x86/include/asm/cpufeatures.h for the valid bit
 diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
-index 83a3ebff7456..8f87c1a6f323 100644
+index 8f87c1a6f323..83b3c6639c39 100644
 --- a/include/linux/clocksource.h
 +++ b/include/linux/clocksource.h
-@@ -42,6 +42,8 @@ struct module;
-  * @shift:		Cycle to nanosecond divisor (power of two)
-  * @max_idle_ns:	Maximum idle time permitted by the clocksource (nsecs)
-  * @maxadj:		Maximum adjustment value to mult (~11%)
-+ * @uncertainty_margin:	Maximum uncertainty in nanoseconds per half second.
-+ *			Zero says to use default WATCHDOG_THRESHOLD.
-  * @archdata:		Optional arch-specific data
-  * @max_cycles:		Maximum safe cycle value which won't overflow on
-  *			multiplication
-@@ -93,6 +95,7 @@ struct clocksource {
- 	u32			shift;
- 	u64			max_idle_ns;
- 	u32			maxadj;
-+	u32			uncertainty_margin;
- #ifdef CONFIG_ARCH_CLOCKSOURCE_DATA
- 	struct arch_clocksource_data archdata;
- #endif
-diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index 8a7d704aa46b..a6de23800b65 100644
---- a/kernel/time/clocksource.c
-+++ b/kernel/time/clocksource.c
-@@ -95,6 +95,20 @@ static char override_name[CS_NAME_LEN];
- static int finished_booting;
- static u64 suspend_start;
+@@ -285,4 +285,7 @@ static inline void timer_probe(void) {}
+ #define TIMER_ACPI_DECLARE(name, table_id, fn)		\
+ 	ACPI_DECLARE_PROBE_ENTRY(timer, name, table_id, 0, NULL, 0, fn)
  
++extern ulong max_cswd_read_retries;
++void clocksource_verify_percpu(struct clocksource *cs);
++
+ #endif /* _LINUX_CLOCKSOURCE_H */
+diff --git a/kernel/time/Makefile b/kernel/time/Makefile
+index 1fb1c1ef6a19..1ed85b25b096 100644
+--- a/kernel/time/Makefile
++++ b/kernel/time/Makefile
+@@ -21,3 +21,4 @@ obj-$(CONFIG_HAVE_GENERIC_VDSO)			+= vsyscall.o
+ obj-$(CONFIG_DEBUG_FS)				+= timekeeping_debug.o
+ obj-$(CONFIG_TEST_UDELAY)			+= test_udelay.o
+ obj-$(CONFIG_TIME_NS)				+= namespace.o
++obj-$(CONFIG_TEST_CLOCKSOURCE_WATCHDOG)		+= clocksource-wdtest.o
+diff --git a/kernel/time/clocksource-wdtest.c b/kernel/time/clocksource-wdtest.c
+new file mode 100644
+index 000000000000..01df12395c0e
+--- /dev/null
++++ b/kernel/time/clocksource-wdtest.c
+@@ -0,0 +1,202 @@
++// SPDX-License-Identifier: GPL-2.0+
 +/*
-+ * Threshold: 0.0312s, when doubled: 0.0625s.
-+ * Also a default for cs->uncertainty_margin when registering clocks.
++ * Unit test for the clocksource watchdog.
++ *
++ * Copyright (C) 2021 Facebook, Inc.
++ *
++ * Author: Paul E. McKenney <paulmck@kernel.org>
 + */
-+#define WATCHDOG_THRESHOLD (NSEC_PER_SEC >> 5)
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 +
-+/*
-+ * Maximum permissible delay between two readouts of the watchdog
-+ * clocksource surrounding a read of the clocksource being validated.
-+ * This delay could be due to SMIs, NMIs, or to VCPU preemptions.  Used as
-+ * a lower bound for cs->uncertainty_margin values when registering clocks.
-+ */
-+#define WATCHDOG_MAX_SKEW (50 * NSEC_PER_USEC)
++#include <linux/device.h>
++#include <linux/clocksource.h>
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/sched.h> /* for spin_unlock_irq() using preempt_count() m68k */
++#include <linux/tick.h>
++#include <linux/kthread.h>
++#include <linux/delay.h>
++#include <linux/prandom.h>
++#include <linux/cpu.h>
 +
- #ifdef CONFIG_CLOCKSOURCE_WATCHDOG
- static void clocksource_watchdog_work(struct work_struct *work);
- static void clocksource_select(void);
-@@ -121,17 +135,9 @@ static int clocksource_watchdog_kthread(void *data);
- static void __clocksource_change_rating(struct clocksource *cs, int rating);
- 
- /*
-- * Interval: 0.5sec Threshold: 0.0625s
-+ * Interval: 0.5sec.
-  */
- #define WATCHDOG_INTERVAL (HZ >> 1)
--#define WATCHDOG_THRESHOLD (NSEC_PER_SEC >> 4)
--
--/*
-- * Maximum permissible delay between two readouts of the watchdog
-- * clocksource surrounding a read of the clocksource being validated.
-- * This delay could be due to SMIs, NMIs, or to VCPU preemptions.
-- */
--#define WATCHDOG_MAX_SKEW (100 * NSEC_PER_USEC)
- 
- static void clocksource_watchdog_work(struct work_struct *work)
- {
-@@ -347,6 +353,7 @@ static void clocksource_watchdog(struct timer_list *unused)
- 	int next_cpu, reset_pending;
- 	int64_t wd_nsec, cs_nsec;
- 	struct clocksource *cs;
-+	u32 md;
- 
- 	spin_lock(&watchdog_lock);
- 	if (!watchdog_running)
-@@ -393,7 +400,8 @@ static void clocksource_watchdog(struct timer_list *unused)
- 			continue;
- 
- 		/* Check the deviation from the watchdog clocksource. */
--		if (abs(cs_nsec - wd_nsec) > WATCHDOG_THRESHOLD) {
-+		md = cs->uncertainty_margin + watchdog->uncertainty_margin;
-+		if (abs(cs_nsec - wd_nsec) > md) {
- 			pr_warn("timekeeping watchdog on CPU%d: Marking clocksource '%s' as unstable because the skew is too large:\n",
- 				smp_processor_id(), cs->name);
- 			pr_warn("                      '%s' wd_now: %llx wd_last: %llx mask: %llx\n",
-@@ -1046,6 +1054,26 @@ void __clocksource_update_freq_scale(struct clocksource *cs, u32 scale, u32 freq
- 		clocks_calc_mult_shift(&cs->mult, &cs->shift, freq,
- 				       NSEC_PER_SEC / scale, sec * scale);
- 	}
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Paul E. McKenney <paulmck@kernel.org>");
 +
-+	/*
-+	 * If the uncertainty margin is not specified, calculate it.
-+	 * If both scale and freq are non-zero, calculate the clock
-+	 * period, but bound below at 2*WATCHDOG_MAX_SKEW.  However,
-+	 * if either of scale or freq is zero, be very conservative and
-+	 * take the tens-of-milliseconds WATCHDOG_THRESHOLD value for the
-+	 * uncertainty margin.  Allow stupidly small uncertainty margins
-+	 * to be specified by the caller for testing purposes, but warn
-+	 * to discourage production use of this capability.
-+	 */
-+	if (scale && freq && !cs->uncertainty_margin) {
-+		cs->uncertainty_margin = NSEC_PER_SEC / (scale * freq);
-+		if (cs->uncertainty_margin < 2 * WATCHDOG_MAX_SKEW)
-+			cs->uncertainty_margin = 2 * WATCHDOG_MAX_SKEW;
-+	} else if (!cs->uncertainty_margin) {
-+		cs->uncertainty_margin = WATCHDOG_THRESHOLD;
-+	}
-+	WARN_ON_ONCE(cs->uncertainty_margin < 2 * WATCHDOG_MAX_SKEW);
++static int holdoff = IS_BUILTIN(CONFIG_TEST_CLOCKSOURCE_WATCHDOG) ? 10 : 0;
++module_param(holdoff, int, 0444);
++MODULE_PARM_DESC(holdoff, "Time to wait to start test (s).");
 +
- 	/*
- 	 * Ensure clocksources that have large 'mult' values don't overflow
- 	 * when adjusted.
-diff --git a/kernel/time/jiffies.c b/kernel/time/jiffies.c
-index a5cffe2a1770..165b85bcdf29 100644
---- a/kernel/time/jiffies.c
-+++ b/kernel/time/jiffies.c
-@@ -49,13 +49,14 @@ static u64 jiffies_read(struct clocksource *cs)
-  * for "tick-less" systems.
-  */
- static struct clocksource clocksource_jiffies = {
--	.name		= "jiffies",
--	.rating		= 1, /* lowest valid rating*/
--	.read		= jiffies_read,
--	.mask		= CLOCKSOURCE_MASK(32),
--	.mult		= TICK_NSEC << JIFFIES_SHIFT, /* details above */
--	.shift		= JIFFIES_SHIFT,
--	.max_cycles	= 10,
-+	.name			= "jiffies",
++/* Watchdog kthread's task_struct pointer for debug purposes. */
++static struct task_struct *wdtest_task;
++
++static u64 wdtest_jiffies_read(struct clocksource *cs)
++{
++	return (u64)jiffies;
++}
++
++/* Assume HZ > 100. */
++#define JIFFIES_SHIFT	8
++
++static struct clocksource clocksource_wdtest_jiffies = {
++	.name			= "wdtest-jiffies",
 +	.rating			= 1, /* lowest valid rating*/
 +	.uncertainty_margin	= TICK_NSEC,
-+	.read			= jiffies_read,
++	.read			= wdtest_jiffies_read,
 +	.mask			= CLOCKSOURCE_MASK(32),
++	.flags			= CLOCK_SOURCE_MUST_VERIFY,
 +	.mult			= TICK_NSEC << JIFFIES_SHIFT, /* details above */
 +	.shift			= JIFFIES_SHIFT,
 +	.max_cycles		= 10,
- };
++};
++
++static int wdtest_ktime_read_ndelays;
++static bool wdtest_ktime_read_fuzz;
++
++static u64 wdtest_ktime_read(struct clocksource *cs)
++{
++	int wkrn = READ_ONCE(wdtest_ktime_read_ndelays);
++	static int sign = 1;
++	u64 ret;
++
++	if (wkrn) {
++		udelay(cs->uncertainty_margin / 250);
++		WRITE_ONCE(wdtest_ktime_read_ndelays, wkrn - 1);
++	}
++	ret = ktime_get_real_fast_ns();
++	if (READ_ONCE(wdtest_ktime_read_fuzz)) {
++		sign = -sign;
++		ret = ret + sign * 100 * NSEC_PER_MSEC;
++	}
++	return ret;
++}
++
++static void wdtest_ktime_cs_mark_unstable(struct clocksource *cs)
++{
++	pr_info("--- Marking %s unstable due to clocksource watchdog.\n", cs->name);
++}
++
++#define KTIME_FLAGS (CLOCK_SOURCE_IS_CONTINUOUS | \
++		     CLOCK_SOURCE_VALID_FOR_HRES | \
++		     CLOCK_SOURCE_MUST_VERIFY | \
++		     CLOCK_SOURCE_VERIFY_PERCPU)
++
++static struct clocksource clocksource_wdtest_ktime = {
++	.name			= "wdtest-ktime",
++	.rating			= 300,
++	.read			= wdtest_ktime_read,
++	.mask			= CLOCKSOURCE_MASK(64),
++	.flags			= KTIME_FLAGS,
++	.mark_unstable		= wdtest_ktime_cs_mark_unstable,
++	.list			= LIST_HEAD_INIT(clocksource_wdtest_ktime.list),
++};
++
++/* Reset the clocksource if needed. */
++static void wdtest_ktime_clocksource_reset(void)
++{
++	if (clocksource_wdtest_ktime.flags & CLOCK_SOURCE_UNSTABLE) {
++		clocksource_unregister(&clocksource_wdtest_ktime);
++		clocksource_wdtest_ktime.flags = KTIME_FLAGS;
++		schedule_timeout_uninterruptible(HZ / 10);
++		clocksource_register_khz(&clocksource_wdtest_ktime, 1000 * 1000);
++	}
++}
++
++/* Run the specified series of watchdog tests. */
++static int wdtest_func(void *arg)
++{
++	unsigned long j1, j2;
++	char *s;
++	int i;
++
++	schedule_timeout_uninterruptible(holdoff * HZ);
++
++	/*
++	 * Verify that jiffies-like clocksources get the manually
++	 * specified uncertainty margin.
++	 */
++	pr_info("--- Verify jiffies-like uncertainty margin.\n");
++	__clocksource_register(&clocksource_wdtest_jiffies);
++	WARN_ON_ONCE(clocksource_wdtest_jiffies.uncertainty_margin != TICK_NSEC);
++
++	j1 = clocksource_wdtest_jiffies.read(&clocksource_wdtest_jiffies);
++	schedule_timeout_uninterruptible(HZ);
++	j2 = clocksource_wdtest_jiffies.read(&clocksource_wdtest_jiffies);
++	WARN_ON_ONCE(j1 == j2);
++
++	clocksource_unregister(&clocksource_wdtest_jiffies);
++
++	/*
++	 * Verify that tsc-like clocksources are assigned a reasonable
++	 * uncertainty margin.
++	 */
++	pr_info("--- Verify tsc-like uncertainty margin.\n");
++	clocksource_register_khz(&clocksource_wdtest_ktime, 1000 * 1000);
++	WARN_ON_ONCE(clocksource_wdtest_ktime.uncertainty_margin < NSEC_PER_USEC);
++
++	j1 = clocksource_wdtest_ktime.read(&clocksource_wdtest_ktime);
++	udelay(1);
++	j2 = clocksource_wdtest_ktime.read(&clocksource_wdtest_ktime);
++	pr_info("--- tsc-like times: %lu - %lu = %lu.\n", j2, j1, j2 - j1);
++	WARN_ON_ONCE(time_before(j2, j1 + NSEC_PER_USEC));
++
++	/* Verify tsc-like stability with various numbers of errors injected. */
++	for (i = 0; i <= max_cswd_read_retries + 1; i++) {
++		if (i <= 1 && i < max_cswd_read_retries)
++			s = "";
++		else if (i <= max_cswd_read_retries)
++			s = ", expect message";
++		else
++			s = ", expect clock skew";
++		pr_info("--- Watchdog with %dx error injection, %lu retries%s.\n", i, max_cswd_read_retries, s);
++		WRITE_ONCE(wdtest_ktime_read_ndelays, i);
++		schedule_timeout_uninterruptible(2 * HZ);
++		WARN_ON_ONCE(READ_ONCE(wdtest_ktime_read_ndelays));
++		WARN_ON_ONCE((i <= max_cswd_read_retries) !=
++			     !(clocksource_wdtest_ktime.flags & CLOCK_SOURCE_UNSTABLE));
++		wdtest_ktime_clocksource_reset();
++	}
++
++	/* Verify tsc-like stability with clock-value-fuzz error injection. */
++	pr_info("--- Watchdog clock-value-fuzz error injection, expect clock skew and per-CPU mismatches.\n");
++	WRITE_ONCE(wdtest_ktime_read_fuzz, true);
++	schedule_timeout_uninterruptible(2 * HZ);
++	WARN_ON_ONCE(!(clocksource_wdtest_ktime.flags & CLOCK_SOURCE_UNSTABLE));
++	clocksource_verify_percpu(&clocksource_wdtest_ktime);
++	WRITE_ONCE(wdtest_ktime_read_fuzz, false);
++
++	clocksource_unregister(&clocksource_wdtest_ktime);
++
++	pr_info("--- Done with test.\n");
++	return 0;
++}
++
++static void wdtest_print_module_parms(void)
++{
++	pr_alert("--- holdoff=%d\n", holdoff);
++}
++
++/* Cleanup function. */
++static void clocksource_wdtest_cleanup(void)
++{
++}
++
++static int __init clocksource_wdtest_init(void)
++{
++	int ret = 0;
++
++	wdtest_print_module_parms();
++
++	/* Create watchdog-test task. */
++	wdtest_task = kthread_run(wdtest_func, NULL, "wdtest");
++	if (IS_ERR(wdtest_task)) {
++		ret = PTR_ERR(wdtest_task);
++		pr_warn("%s: Failed to create wdtest kthread.\n", __func__);
++		wdtest_task = NULL;
++		return ret;
++	}
++
++	return 0;
++}
++
++module_init(clocksource_wdtest_init);
++module_exit(clocksource_wdtest_cleanup);
+diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+index a6de23800b65..f9466dcd4bf3 100644
+--- a/kernel/time/clocksource.c
++++ b/kernel/time/clocksource.c
+@@ -199,8 +199,9 @@ void clocksource_mark_unstable(struct clocksource *cs)
+ 	spin_unlock_irqrestore(&watchdog_lock, flags);
+ }
  
- __cacheline_aligned_in_smp DEFINE_RAW_SPINLOCK(jiffies_lock);
+-static ulong max_read_retries = 3;
+-module_param(max_read_retries, ulong, 0644);
++ulong max_cswd_read_retries = 3;
++module_param(max_cswd_read_retries, ulong, 0644);
++EXPORT_SYMBOL_GPL(max_cswd_read_retries);
+ static int verify_n_cpus = 8;
+ module_param(verify_n_cpus, int, 0644);
+ 
+@@ -210,7 +211,7 @@ static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
+ 	u64 wd_end, wd_delta;
+ 	int64_t wd_delay;
+ 
+-	for (nretries = 0; nretries <= max_read_retries; nretries++) {
++	for (nretries = 0; nretries <= max_cswd_read_retries; nretries++) {
+ 		local_irq_disable();
+ 		*wdnow = watchdog->read(watchdog);
+ 		*csnow = cs->read(cs);
+@@ -220,7 +221,7 @@ static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
+ 		wd_delta = clocksource_delta(wd_end, *wdnow, watchdog->mask);
+ 		wd_delay = clocksource_cyc2ns(wd_delta, watchdog->mult, watchdog->shift);
+ 		if (wd_delay <= WATCHDOG_MAX_SKEW) {
+-			if (nretries > 1 || nretries >= max_read_retries) {
++			if (nretries > 1 || nretries >= max_cswd_read_retries) {
+ 				pr_warn("timekeeping watchdog on CPU%d: %s retried %d times before success\n",
+ 					smp_processor_id(), watchdog->name, nretries);
+ 			}
+@@ -293,7 +294,7 @@ static void clocksource_verify_one_cpu(void *csin)
+ 	csnow_mid = cs->read(cs);
+ }
+ 
+-static void clocksource_verify_percpu(struct clocksource *cs)
++void clocksource_verify_percpu(struct clocksource *cs)
+ {
+ 	int64_t cs_nsec, cs_nsec_max = 0, cs_nsec_min = LLONG_MAX;
+ 	u64 csnow_begin, csnow_end;
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 2779c29d9981..344735b8b151 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2513,6 +2513,18 @@ config TEST_FPU
+ 
+ 	  If unsure, say N.
+ 
++config TEST_CLOCKSOURCE_WATCHDOG
++	tristate "Test clocksource watchdog in kernel space"
++	depends on CLOCKSOURCE_WATCHDOG
++	help
++	  Enable this option to create a kernel module that will trigger
++	  a test of the clocksource watchdog.  This module may be loaded
++	  via modprobe or insmod in which case it will run upon being
++	  loaded, or it may be built in, in which case it will run
++	  shortly after boot.
++
++	  If unsure, say N.
++
+ endif # RUNTIME_TESTING_MENU
+ 
+ config MEMTEST
 -- 
 2.31.1.189.g2e36527f23
 
