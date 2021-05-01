@@ -2,84 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A231370943
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 00:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FFA1370941
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 00:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231877AbhEAWuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 18:50:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231266AbhEAWuw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 18:50:52 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 920E7C06138B
-        for <linux-kernel@vger.kernel.org>; Sat,  1 May 2021 15:50:01 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id s9so2448576ljj.6
-        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 15:50:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FyUcLRZ0Rt19UEL/ZLBgHf+f8fvCiwACi2cQWFH2R+4=;
-        b=WIQvM5n8kzuO83VPn1XaK4ss2X3KkxUzpwTAcspVwQI3/ZUorcYOqLyFfKnr/9fmxS
-         XCr8wo3tGgeIhK1S/ZssUeq3S/LesQ0YbtwC5nlCPPLh3nidZfPMIk8CZUmkHcaGAQ5y
-         HZ7KOHdUd0BEvG1AKdeUOnn9e92SM75vQdfgQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FyUcLRZ0Rt19UEL/ZLBgHf+f8fvCiwACi2cQWFH2R+4=;
-        b=PIJ6Wu7vZmtSHmtoxdBd5CYiO3QVYazNMEUGjGaeAfzP4tva/yMjyrZTeya4bXq3aL
-         nDM3cS/aW93RwJY9Pr1doih5sv7ZZEjV/nll2iHsH5U2pO+2nPV+xlhC2Z+pWCxE7TG7
-         OZLuGLNjvZe7qYRFfNnWFcdg4jrCX8kPRUqPSYKX+6Y5BmVng2YmErlQAT8hoLJ1J1Y0
-         cUq/dLt6iebzGgVV2LomCZoPleFLMMK44YOPLX1aKpEeinCD+5+tO8y3sUWLRSV5J+At
-         6FaIXrr5rarlEQm0Uy5qpErjJQnlWA8haP+rAp4ZXpTC9EhKjRwUu2nnVpYgfXCxnZBK
-         vQDQ==
-X-Gm-Message-State: AOAM5302025yfHwFDwUS46P9DOG2oDOM9TnkaBCM81h6jtyyblHS5zXv
-        aCwoMMpr1oACMUctKKr6nZ8roIvI4frQBLfH
-X-Google-Smtp-Source: ABdhPJznQU1lPbkYJezEYfj9unwrW4CI+TOBWdI82sdvK+1IIActwPT1ml5XsIfQpQdn8btmVTTMFw==
-X-Received: by 2002:a2e:8596:: with SMTP id b22mr8179050lji.482.1619909399774;
-        Sat, 01 May 2021 15:49:59 -0700 (PDT)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
-        by smtp.gmail.com with ESMTPSA id v5sm675650ljc.64.2021.05.01.15.49.59
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 01 May 2021 15:49:59 -0700 (PDT)
-Received: by mail-lj1-f181.google.com with SMTP id e12so139225ljn.2
-        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 15:49:59 -0700 (PDT)
-X-Received: by 2002:a05:651c:44f:: with SMTP id g15mr8049801ljg.48.1619909398916;
- Sat, 01 May 2021 15:49:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <33e5687f1e4c7becdc41136704fa239f81b82fec.camel@linux.ibm.com>
-In-Reply-To: <33e5687f1e4c7becdc41136704fa239f81b82fec.camel@linux.ibm.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 1 May 2021 15:49:43 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjBSomE81D=dXN5Z1r_qTLDeKfOzXH4T+mPK6AeSWhW0w@mail.gmail.com>
-Message-ID: <CAHk-=wjBSomE81D=dXN5Z1r_qTLDeKfOzXH4T+mPK6AeSWhW0w@mail.gmail.com>
+        id S231790AbhEAWut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 18:50:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47372 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231266AbhEAWus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 May 2021 18:50:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6C2D061409;
+        Sat,  1 May 2021 22:49:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619909397;
+        bh=82eWlceGI55fQ3Qub29OMBT2jOMBdnA4b9bliDQF4HE=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=bRE4n61QAh5IagtfwPfDMD3km3j1+oFzpw2GTdH+GW/KRuh5cAvg2+JBak/fX5eZm
+         uT/p1VnSqrFF4YFf3h/heOBBr1GdZpIv4aaX1VI+ycZaDEUvO0UPR0IOG0UIagGSuW
+         iOg68JAT2RkOIBklkSURcTvvQ0DTs43UKdTlk4ntw5jXCFE6uAIIvUlOgNvm3FQmVt
+         J5LZRxduAtq1Avu/ZeaVzMTwGDoKg53gK8pKK8TTGjvN6zty4QJWQLm/QA2At4DThH
+         GCPfuiUP05WMOZ/LKvB3KEl0g+TFVcrxZQUvHna3m10fcyoUMdYxvgFNkG6k3jOREL
+         s8OMiq5Ev1CKA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 55A0660A3A;
+        Sat,  1 May 2021 22:49:57 +0000 (UTC)
 Subject: Re: [GIT PULL] integrity subsystem updates for v5.13
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <33e5687f1e4c7becdc41136704fa239f81b82fec.camel@linux.ibm.com>
+References: <33e5687f1e4c7becdc41136704fa239f81b82fec.camel@linux.ibm.com>
+X-PR-Tracked-List-Id: <linux-integrity.vger.kernel.org>
+X-PR-Tracked-Message-Id: <33e5687f1e4c7becdc41136704fa239f81b82fec.camel@linux.ibm.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.13
+X-PR-Tracked-Commit-Id: 781a5739489949fd0f32432a9da17f7ddbccf1cc
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: e6f0bf09f0669b3c2cd77fa906830123279a0a21
+Message-Id: <161990939728.12607.3075496329166566135.pr-tracker-bot@kernel.org>
+Date:   Sat, 01 May 2021 22:49:57 +0000
 To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 6:47 AM Mimi Zohar <zohar@linux.ibm.com> wrote:
->
-> In addition to loading the kernel module signing key onto the builtin
-> keyring, load it onto the IMA keyring as well.
+The pull request you sent on Wed, 28 Apr 2021 09:46:57 -0400:
 
-This clashed pretty badly with the other cert changes.
+> git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.13
 
-I think the end result looks nice and clean (the cert updates mesh
-well with the _intention_ of your code, just not with the
-implementation), but you should really double-check that I didn't mess
-anything up in the merge and whatever test-case you have for IMA still
-works.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/e6f0bf09f0669b3c2cd77fa906830123279a0a21
 
-I only verified that the kernel module signing key still works for
-modules - no IMA test-case.
+Thank you!
 
-              Linus
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
