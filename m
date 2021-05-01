@@ -2,98 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08E4E370696
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 11:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42366370699
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 11:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231710AbhEAJ3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 05:29:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230117AbhEAJ3T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 05:29:19 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65194C06174A
-        for <linux-kernel@vger.kernel.org>; Sat,  1 May 2021 02:28:28 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id l4so684372ejc.10
-        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 02:28:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SyGYqVikn3sRvr8oBxpMkevusdQYlEUroZdr1msedCw=;
-        b=sPwxNQlVV9CppL4NWcVqlYriHNWEQ1jnrUky72n7dWeTrSjnoShtCz1UmjSjIXKeP1
-         fiTOIlRGqn5mcAjAkwNN9/4E/vyAdhV4Vp/NpCFU2euSm4GMYStdi6jtNibwkV487KFy
-         X9+cALwYZ6NToc/MYX7WyVi/4KJMmStpkuIjGqpY+/t610JLjww4dx6TTNBbZBNr3W76
-         4Jqrg2qSHis/Sn7t7qc04lkCQv++qvC+5odOc5zbl+lwsjkyxY/UnIGHn2F+VhXcT/00
-         MA31SzIymM8KGROsE1pA50qxsb7sMQoDT5A7LslAdzdR5CT4dHdN+Rp0aVJdyLkYIhPp
-         Ot+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SyGYqVikn3sRvr8oBxpMkevusdQYlEUroZdr1msedCw=;
-        b=s1yCPShnQIZDSv9tiHnLtIrr7eMhi58jR0QNQO87LjN6UsP85GYu8ZFcHgahjAzA/U
-         4BM1HBMMZlOTVlQuDcR6WNNKilD8jUd4xOudX2iBRP+eVmCUq4l4Ww+E7Vg5zhp+Ut96
-         GM1F6ZbPqEIbwYxFyVxJMwfSg2TlW5nrxO+7r4yftjvbGWZinn/n8KVh3uRxIromGv5L
-         U9PXP6devZscTwg+G1QEQDyQxxHSEWd0gCs1LdwdykFTeo8YzmWfjvvfMqB/oqGgn77i
-         1JVhqLyJgLiJfH+uDTi9mGDEMfDaIGOaI6QfpuR9vM/86O37FP1Db5UbDV1E31q6n8oF
-         dCqw==
-X-Gm-Message-State: AOAM530fhWQTNZvJotkysl4Xv6ffhd6hpV6imTkz75hYdsMZUSZI2+QP
-        qgg0XUECEBqWidQovJ5NR9lvRnRDCDTbViKSmQA=
-X-Google-Smtp-Source: ABdhPJwL4T7Awvt9Npw1jmNY5GUe7UBmVuRvRtXR9P7lvQ1b3cJnmJdcuCfMyjJWCMPtCTNZY1uuTR5hVVqKhk1/37Y=
-X-Received: by 2002:a17:907:e87:: with SMTP id ho7mr8119874ejc.2.1619861307057;
- Sat, 01 May 2021 02:28:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210429170404.3616111-1-narmstrong@baylibre.com>
- <20210429170404.3616111-4-narmstrong@baylibre.com> <CAFBinCDQeTU0ss=oNmjX78MPyNZmmCt-haojNNcQqkjJUmJYKQ@mail.gmail.com>
- <cafdf662-6f15-8e16-7752-5740f28b6682@baylibre.com>
-In-Reply-To: <cafdf662-6f15-8e16-7752-5740f28b6682@baylibre.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sat, 1 May 2021 11:28:16 +0200
-Message-ID: <CAFBinCDNhErxk3va=rMUpOoh8b7iNNqWJh6Ry_Y5sC5AxYLn2Q@mail.gmail.com>
-Subject: Re: [PATCH 3/3] arm64: dts: meson-sm1: add Banana PI BPI-M5 board dts
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     khilman@baylibre.com, jbrunet@baylibre.com,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S231846AbhEAJbR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 1 May 2021 05:31:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32888 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231713AbhEAJbP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 May 2021 05:31:15 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 32D206141E;
+        Sat,  1 May 2021 09:30:26 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lclx9-00AJhV-T1; Sat, 01 May 2021 10:30:24 +0100
+Date:   Sat, 01 May 2021 10:30:22 +0100
+Message-ID: <87eeeqvm1d.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Vikram Sethi <vsethi@nvidia.com>
+Cc:     Shanker Donthineni <sdonthineni@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoffer Dall <christoffer.dall@arm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jason Sequeira <jsequeira@nvidia.com>
+Subject: Re: [RFC 1/2] vfio/pci: keep the prefetchable attribute of a BAR region in VMA
+In-Reply-To: <BL0PR12MB2532CC436EBF626966B15994BD5E9@BL0PR12MB2532.namprd12.prod.outlook.com>
+References: <20210429162906.32742-1-sdonthineni@nvidia.com>
+        <20210429162906.32742-2-sdonthineni@nvidia.com>
+        <20210429122840.4f98f78e@redhat.com>
+        <470360a7-0242-9ae5-816f-13608f957bf6@nvidia.com>
+        <20210429134659.321a5c3c@redhat.com>
+        <e3d7fda8-5263-211c-3686-f699765ab715@nvidia.com>
+        <87czucngdc.wl-maz@kernel.org>
+        <1edb2c4e-23f0-5730-245b-fc6d289951e1@nvidia.com>
+        <878s4zokll.wl-maz@kernel.org>
+        <BL0PR12MB2532CC436EBF626966B15994BD5E9@BL0PR12MB2532.namprd12.prod.outlook.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: vsethi@nvidia.com, sdonthineni@nvidia.com, alex.williamson@redhat.com, will@kernel.org, catalin.marinas@arm.com, christoffer.dall@arm.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, jsequeira@nvidia.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Neil,
+Hi Vikram,
 
-On Fri, Apr 30, 2021 at 10:16 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
-[...]
-> >> +&ethmac {
-> >> +       pinctrl-0 = <&eth_pins>, <&eth_rgmii_pins>;
-> >> +       pinctrl-names = "default";
-> >> +       status = "okay";
-> >> +       phy-mode = "rgmii";
-> >> +       phy-handle = <&external_phy>;
-> >> +       amlogic,tx-delay-ns = <2>;
-> > I haven't checked their u-boot code but some of the newer Amlogic BSPs
-> > seem to let the PHY add the TX delay (which is also what the netdev
-> > maintainers recommend)
-> > that can be achieved by setting:
-> >   phy-mode = "rgmii-txid";
-> > and deleting the "amlogic,tx-delay-ns" property
->
-> Done, but what about when we use mainline U-boot here ?
-I think it will work just fine if
-- the PRG_ETH0/PRG_ETH1 register is programmed correctly (that's what
-we have in dwmac-meson8b), which according to [0] is partially (RX
-delay not being supported in u-boot yet) the case
-- and the RTL8211F PHY driver can set the RX/TX delay on the PHY side,
-which according to [1] it can
+On Fri, 30 Apr 2021 17:57:14 +0100,
+Vikram Sethi <vsethi@nvidia.com> wrote:
+> 
+> Hi Marc, 
+> 
+> > -----Original Message-----
+> > From: Marc Zyngier <maz@kernel.org>
+> > Sent: Friday, April 30, 2021 10:31 AM
+> > On Fri, 30 Apr 2021 15:58:14 +0100,
+> > Shanker R Donthineni <sdonthineni@nvidia.com> wrote:
+> > >
+> > > Hi Marc,
+> > >
+> > > On 4/30/21 6:47 AM, Marc Zyngier wrote:
+> > > >
+> > > >>>> We've two concerns here:
+> > > >>>>    - Performance impacts for pass-through devices.
+> > > >>>>    - The definition of ioremap_wc() function doesn't match the
+> > > >>>> host kernel on ARM64
+> > > >>> Performance I can understand, but I think you're also using it to
+> > > >>> mask a driver bug which should be resolved first.  Thank
+> > > >> We’ve already instrumented the driver code and found the code path
+> > > >> for the unaligned accesses. We’ll fix this issue if it’s not
+> > > >> following WC semantics.
+> > > >>
+> > > >> Fixing the performance concern will be under KVM stage-2 page-table
+> > > >> control. We're looking for a guidance/solution for updating stage-2
+> > > >> PTE based on PCI-BAR attribute.
+> > > > Before we start discussing the *how*, I'd like to clearly understand
+> > > > what *arm64* memory attributes you are relying on. We already have
+> > > > established that the unaligned access was a bug, which was the
+> > > > biggest argument in favour of NORMAL_NC. What are the other
+> > requirements?
+> > > Sorry, my earlier response was not complete...
+> > >
+> > > ARMv8 architecture has two features Gathering and Reorder
+> > > transactions, very important from a performance point of view. Small
+> > > inline packets for NIC cards and accesses to GPU's frame buffer are
+> > > CPU-bound operations. We want to take advantages of GRE features to
+> > > achieve higher performance.
+> > >
+> > > Both these features are disabled for prefetchable BARs in VM because
+> > > memory-type MT_DEVICE_nGnRE enforced in stage-2.
+> > 
+> > Right, so Normal_NC is a red herring, and it is Device_GRE that
+> > you really are after, right?
+> > 
+> I think Device GRE has some practical problems.
+> 1. A lot of userspace code which is used to getting write combined
+> mappings to GPU memory from kernel drivers does memcpy/memset on it
+> which can insert ldp/stp which can crash on Device Memory Type. From
+> a quick search I didn't find a memcpy_io or memset_io in
+> glibc. Perhaps there are some other functions available, but a lot
+> of userspace applications that work on x86 and ARM baremetal won't
+> work on ARM VMs without such changes. Changes to all of userspace
+> may not always be practical, specially if linking to binaries
 
-So I have not tried it but I think it should just work
+This seems to go against what Alex was hinting at earlier, which is
+that unaligned accesses were not expected on prefetchable regions, and
+Shanker latter confirming that it was an actual bug. Where do we stand
+here?
 
+> 
+> 2. Sometimes even if application is not using memset/memcpy directly, 
+> gcc may insert a builtin memcpy/memset. 
+> 
+> 3. Recompiling all applications with gcc -m strict-align has
+> performance issues.  In our experiments that resulted in an increase
+> in code size, and also 3-5% performance decrease reliably.  Also, it
+> is not always practical to recompile all of userspace, depending on
+> who owns the code/linked binaries etc.
+> 
+> From KVM-ARM point of view, what is it about Normal NC at stage 2
+> for Prefetchable BAR (however KVM gets the hint, whether from
+> userspace or VMA) that is undesirable vs Device GRE? I couldn't
+> think of a difference to devices whether the combining or
+> prefetching or reordering happened because of one or the other.
 
-Best regards,
-Martin
+The problem I see is that we have VM and userspace being written in
+terms of Write-Combine, which is:
 
+- loosely defined even on x86
 
-[0] https://source.denx.de/u-boot/u-boot/-/blob/798424e8573a6b642a1bb507d41c1f73e6736e2e/drivers/net/dwmac_meson8b.c
-[1] https://source.denx.de/u-boot/u-boot/-/blob/fa6539a3dcbf269121ca64084cff4c146fcdaf19/drivers/net/phy/realtek.c#L204
+- subject to interpretations in the way it maps to PCI
+
+- has no direct equivalent in the ARMv8 collection of memory
+  attributes (and Normal_NC comes with speculation capabilities which
+  strikes me as extremely undesirable on arbitrary devices)
+
+How do we translate this into something consistent? I'd like to see an
+actual description of what we *really* expect from WC on prefetchable
+PCI regions, turn that into a documented definition agreed across
+architectures, and then we can look at implementing it with one memory
+type or another on arm64.
+
+Because once we expose that memory type at S2 for KVM guests, it
+becomes ABI and there is no turning back. So I want to get it right
+once and for all.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
