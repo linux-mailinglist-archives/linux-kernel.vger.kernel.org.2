@@ -2,177 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA4EF3706C2
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 12:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23CD63706D0
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 12:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231857AbhEAKGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 06:06:46 -0400
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:53007 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231252AbhEAKGp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 06:06:45 -0400
-X-Originating-IP: 90.65.108.55
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 56A7340007;
-        Sat,  1 May 2021 10:05:51 +0000 (UTC)
-Date:   Sat, 1 May 2021 12:05:51 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Martin Kaiser <martin@kaiser.cx>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>, linux-rtc@vger.kernel.org,
+        id S231906AbhEAKYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 06:24:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58056 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231819AbhEAKYW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 May 2021 06:24:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D0E4613C6;
+        Sat,  1 May 2021 10:23:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619864612;
+        bh=ZQ5/Bd9dgaWBN1kInWuLHSCQJfYNRchdvGct/JB3d3U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=n7OtcFmn7uZbMMZgIoz71UxbAOtt1ZlsZyTtBaRbiHUcMSACrg3Y0aH1KQ/7XTbXj
+         ZU5N2gQ5WVzR70B0qq79PD9xZVUYG/MbQjr2RHiineUfACMcSOtcL3Yl93x8kQrLeG
+         AJISZopmfGvCq8I681FMERnyZcgJ+oym+OyqZEzE=
+Date:   Sat, 1 May 2021 12:23:30 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Anirudh Rayabharam <mail@anirudhrb.com>
+Cc:     Matt Porter <mporter@kernel.crashing.org>,
+        Alexandre Bounine <alex.bou9@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rtc: imxdi: add wakeup support
-Message-ID: <YI0n/7M3Ke4DAwG2@piout.net>
-References: <20210430093210.7034-1-martin@kaiser.cx>
+Subject: Re: [PATCH] rapidio: remove unused variable in rio_cm.c
+Message-ID: <YI0sIoDv6H+aSyNE@kroah.com>
+References: <20210501055018.9244-1-mail@anirudhrb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210430093210.7034-1-martin@kaiser.cx>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210501055018.9244-1-mail@anirudhrb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On 30/04/2021 11:32:10+0200, Martin Kaiser wrote:
-> The DryIce-based RTC supports alarms that trigger an interrupt.
+On Sat, May 01, 2021 at 11:20:17AM +0530, Anirudh Rayabharam wrote:
+> Remove unused variable 'rc' to fix gcc warning:
 > 
-> Add an option to configure this interrupt as a wakeup source that wakes
-> the system up from standby mode.
+> 	drivers/rapidio/rio_cm.c: In function ‘rio_txcq_handler’:
+> 	drivers/rapidio/rio_cm.c:673:7: warning: variable ‘rc’ set but
+> 	not used [-Wunused-but-set-variable]
 > 
-> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
 > ---
+>  drivers/rapidio/rio_cm.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> simple test
-> 
->    [root@board ]# echo enabled > /sys/class/rtc/rtc0/device/power/wakeup
->    [root@board ]# rtcwake -s 3 -m mem
->    wakeup from "mem" at Fri Apr 30 09:23:52 2021
->    ...
->    [root@board ]#
-> 
->  drivers/rtc/rtc-imxdi.c | 39 ++++++++++++++++++++++++++++++++++-----
->  1 file changed, 34 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/rtc/rtc-imxdi.c b/drivers/rtc/rtc-imxdi.c
-> index c1806f4d68e7..63957be25759 100644
-> --- a/drivers/rtc/rtc-imxdi.c
-> +++ b/drivers/rtc/rtc-imxdi.c
-> @@ -98,6 +98,7 @@
->   * @pdev: pointer to platform dev
->   * @rtc: pointer to rtc struct
->   * @ioaddr: IO registers pointer
-> + * @norm_irq: irq number of the "normal" irq
->   * @clk: input reference clock
->   * @dsr: copy of the DSR register
->   * @irq_lock: interrupt enable register (DIER) lock
-> @@ -109,6 +110,7 @@ struct imxdi_dev {
->  	struct platform_device *pdev;
->  	struct rtc_device *rtc;
->  	void __iomem *ioaddr;
-> +	int norm_irq;
->  	struct clk *clk;
->  	u32 dsr;
->  	spinlock_t irq_lock;
-> @@ -741,7 +743,7 @@ static void dryice_work(struct work_struct *work)
->  static int __init dryice_rtc_probe(struct platform_device *pdev)
->  {
->  	struct imxdi_dev *imxdi;
-> -	int norm_irq, sec_irq;
-> +	int sec_irq;
->  	int rc;
+> diff --git a/drivers/rapidio/rio_cm.c b/drivers/rapidio/rio_cm.c
+> index 50ec53d67a4c..545693bd86a3 100644
+> --- a/drivers/rapidio/rio_cm.c
+> +++ b/drivers/rapidio/rio_cm.c
+> @@ -670,12 +670,11 @@ static void rio_txcq_handler(struct cm_dev *cm, int slot)
+>  	 */
+>  	if (!list_empty(&cm->tx_reqs) && (cm->tx_cnt < RIOCM_TX_RING_SIZE)) {
+>  		struct tx_req *req, *_req;
+> -		int rc;
 >  
->  	imxdi = devm_kzalloc(&pdev->dev, sizeof(*imxdi), GFP_KERNEL);
-> @@ -756,9 +758,9 @@ static int __init dryice_rtc_probe(struct platform_device *pdev)
->  
->  	spin_lock_init(&imxdi->irq_lock);
->  
-> -	norm_irq = platform_get_irq(pdev, 0);
-> -	if (norm_irq < 0)
-> -		return norm_irq;
-> +	imxdi->norm_irq = platform_get_irq(pdev, 0);
-> +	if (imxdi->norm_irq < 0)
-> +		return imxdi->norm_irq;
->  
->  	/* the 2nd irq is the security violation irq
->  	 * make this optional, don't break the device tree ABI
-> @@ -795,7 +797,7 @@ static int __init dryice_rtc_probe(struct platform_device *pdev)
->  	if (rc != 0)
->  		goto err;
->  
-> -	rc = devm_request_irq(&pdev->dev, norm_irq, dryice_irq,
-> +	rc = devm_request_irq(&pdev->dev, imxdi->norm_irq, dryice_irq,
->  			      IRQF_SHARED, pdev->name, imxdi);
->  	if (rc) {
->  		dev_warn(&pdev->dev, "interrupt not available.\n");
-> @@ -811,6 +813,8 @@ static int __init dryice_rtc_probe(struct platform_device *pdev)
->  
->  	platform_set_drvdata(pdev, imxdi);
->  
-> +	device_set_wakeup_capable(&pdev->dev, true);
+>  		list_for_each_entry_safe(req, _req, &cm->tx_reqs, node) {
+>  			list_del(&req->node);
+>  			cm->tx_buf[cm->tx_slot] = req->buffer;
+> -			rc = rio_add_outb_message(cm->mport, req->rdev, cmbox,
+> +			rio_add_outb_message(cm->mport, req->rdev, cmbox,
+>  						  req->buffer, req->len);
 
-Maybe it makes sense to simply use device_init_wakeup here.
+Why not handle the potential error sent here?
 
-> +
->  	imxdi->rtc->ops = &dryice_rtc_ops;
->  	imxdi->rtc->range_max = U32_MAX;
->  
-> @@ -830,6 +834,8 @@ static int __exit dryice_rtc_remove(struct platform_device *pdev)
->  {
->  	struct imxdi_dev *imxdi = platform_get_drvdata(pdev);
->  
-> +	device_set_wakeup_capable(&pdev->dev, false);
-> +
->  	flush_work(&imxdi->work);
->  
->  	/* mask all interrupts */
-> @@ -847,10 +853,33 @@ static const struct of_device_id dryice_dt_ids[] = {
->  
->  MODULE_DEVICE_TABLE(of, dryice_dt_ids);
->  
-> +#ifdef CONFIG_PM_SLEEP
-> +static int dryice_suspend(struct device *dev)
-> +{
-> +	struct imxdi_dev *imxdi = dev_get_drvdata(dev);
-> +
-> +	if (device_may_wakeup(dev))
-> +		enable_irq_wake(imxdi->norm_irq);
-> +	return 0;
-> +}
-> +
-> +static int dryice_resume(struct device *dev)
-> +{
-> +	struct imxdi_dev *imxdi = dev_get_drvdata(dev);
-> +
-> +	if (device_may_wakeup(dev))
-> +		disable_irq_wake(imxdi->norm_irq);
-> +	return 0;
-> +}
-> +#endif
-> +
-> +static SIMPLE_DEV_PM_OPS(dryice_pm, dryice_suspend, dryice_resume);
-> +
+thanks,
 
-I'm wondering, can't you use dev_pm_set_wake_irq to avoid having to
-keep the changes to a minimum?
-
->  static struct platform_driver dryice_rtc_driver = {
->  	.driver = {
->  		   .name = "imxdi_rtc",
->  		   .of_match_table = dryice_dt_ids,
-> +		   .pm = &dryice_pm,
->  		   },
->  	.remove = __exit_p(dryice_rtc_remove),
->  };
-> -- 
-> 2.20.1
-> 
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+greg k-h
