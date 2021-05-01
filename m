@@ -2,122 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C0E837053D
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 06:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F4A0370540
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 06:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbhEAEMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 00:12:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbhEAEMA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 00:12:00 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A81CDC06174A;
-        Fri, 30 Apr 2021 21:11:11 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id v191so471068pfc.8;
-        Fri, 30 Apr 2021 21:11:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=hVGtcaN7IxhSF58aBPwgD0NHN6yjMWXDQ72QVDTqI/k=;
-        b=QHNtUvWtzzcnGeXw15lvCryEF/SjMqI1wdcbsphejH2mQ0bjIRQGGRiGdDJHSJrmoP
-         czbGI3ej14ezc3f93p8VDYApXMP2M1YZR146m2Bi2x5J99y+/4zJWV+qqIiMxVR3CYnn
-         jhqHffYHfsEQvXtovXBPDY2oOjibtTb7v1A3lMwlkdkt2OYD5XlBZu1NOpbQc1qKu8Iq
-         Ig9iBgjWwHNbVjHmMuDXFqWEii6mHzJE7kxg/s6g5RgLiaasx4v0MijRZ78Xk5pIkFqP
-         PnVBYz8upOtC+FTNQvA6bsxEGIE6PeFnde9qay83MeHF/YYZpNqfgnIJRxZkuTjrgfAw
-         leyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=hVGtcaN7IxhSF58aBPwgD0NHN6yjMWXDQ72QVDTqI/k=;
-        b=fjhDHonnoJFqx0IWfqahXK8E43AOOKnZbWybrbJg0dyzLmHM4SromaHSUg91moRsMj
-         B3kbiUIF4i3aNxrOqaaMzDnHN7P6qxTK29dkOmw+ma/EKGsBSoNNmCB9py/+MgT6E22F
-         HhQWoF5Cd9Glujij5+Bj6r59ykJiSkTBvWrkTr+Gf9Y5IR23MQVbv5JalNFLQ0Kv/++p
-         Uui3EIpDROTLifKs54vm63Z8y4kr8Ms86t3MY2ZB9fOnF68fwkMMSRfF0DTCnhcWYEV9
-         CUf1iIutlQseKh3cYMttIpUKKnHNoX0wjVDCGVRmth00PhVtTPwTXn2YlqnDdv3Qd/qF
-         zTTQ==
-X-Gm-Message-State: AOAM5313D79kjaefMx1SUharDIxcjJ/9N+mEPqBdaAmJr4QbYa4pqdWx
-        aJsip2fvjk/XmT9QoR7gZLQXMBdhEv1KYw==
-X-Google-Smtp-Source: ABdhPJxrlWNT/b7l1xZrUndeHP7fvV7R93rnZowYHTeBwkUdkmqsnp7ef384NvGLyrKvEl9ZAmw/aA==
-X-Received: by 2002:a65:52c3:: with SMTP id z3mr7782350pgp.338.1619842270283;
-        Fri, 30 Apr 2021 21:11:10 -0700 (PDT)
-Received: from localhost (natp-s01-129-78-56-229.gw.usyd.edu.au. [129.78.56.229])
-        by smtp.gmail.com with ESMTPSA id i62sm3520547pfc.162.2021.04.30.21.11.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Apr 2021 21:11:10 -0700 (PDT)
-From:   Baptiste Lepers <baptiste.lepers@gmail.com>
-Cc:     Baptiste Lepers <baptiste.lepers@gmail.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-nfs@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net] sunrpc: Fix misplaced barrier in call_decode
-Date:   Sat,  1 May 2021 14:10:51 +1000
-Message-Id: <20210501041051.8920-1-baptiste.lepers@gmail.com>
-X-Mailer: git-send-email 2.17.1
-To:     unlisted-recipients:; (no To-header on input)
+        id S231415AbhEAEOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 00:14:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229733AbhEAEOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 May 2021 00:14:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C33EB6143D;
+        Sat,  1 May 2021 04:13:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619842393;
+        bh=rZkUEmWuORYzrFh3ZGN+u1VrkOvfZ6ioX1N/wXlRhT8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fYqkKVidNSEWrYSre3relENB+/LhNBGJTFBZG0V7qwT7V9I6AUdgUvl881k9Tmr/r
+         3wP0q6aQFpqTLz6VohS2ChhmdM5qBzWktugErRjplKuvnPzalaH+vcRsy28OVOXT9w
+         1y0dkp+DqEuElbHKIcpuEvB142eH2QyhjeR5muV4WiJ50J/IEm/G/5Yr+huuLWZM9a
+         fB96SJayqWxpvnAzNvq74ulOcZmYASHYXDcpIAWiV4oaZbuYCfO4KVFI0P71fNn0oa
+         nLdjGxkWY6l2NpoJGdNqzsRuA0kcEuizDPP4SfPoZmbAiRkJgva3heD81FzyWtLTQR
+         J4EjN8gm2Hb6A==
+Received: by mail-ej1-f48.google.com with SMTP id f24so136758ejc.6;
+        Fri, 30 Apr 2021 21:13:13 -0700 (PDT)
+X-Gm-Message-State: AOAM530TKugI21ZRiZ7Po9ITTZuvODXhkJQKoeAD11IMNBQomwb8b8fN
+        kLZBWAFbuSeVfIyJ2HipbJGsNrubklVQUjNfKQ==
+X-Google-Smtp-Source: ABdhPJxnC6UDbmKBHF8gvCRW9YTLGWrnRCI6f7HVRl4NQ9Fnv7HEZ7PTr7+e4xfWR+t0j874t8lbSwZFwtkzb60aqLk=
+X-Received: by 2002:a17:906:3da9:: with SMTP id y9mr7566517ejh.303.1619842392342;
+ Fri, 30 Apr 2021 21:13:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <1619838819-11309-1-git-send-email-yongqiang.niu@mediatek.com> <1619838819-11309-3-git-send-email-yongqiang.niu@mediatek.com>
+In-Reply-To: <1619838819-11309-3-git-send-email-yongqiang.niu@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Sat, 1 May 2021 12:13:00 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-hQ=6TbbL+usSUd+ygxBVK+xzD2Q1zL_SvoGx2s7hyWQ@mail.gmail.com>
+Message-ID: <CAAOTY_-hQ=6TbbL+usSUd+ygxBVK+xzD2Q1zL_SvoGx2s7hyWQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] drm/mediatek: clear pending flag when cmdq packet is done.
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Chun-Hung Wu <chun-hung.wu@mediatek.com>,
+        CK Hu <ck.hu@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a misplaced barrier in call_decode. The struct rpc_rqst is modified
-as follows by xprt_complete_rqst:
+Hi, Yongqiang:
 
-req->rq_private_buf.len = copied;
-/* Ensure all writes are done before we update */
-/* req->rq_reply_bytes_recvd */
-smp_wmb();
-req->rq_reply_bytes_recvd = copied;
+Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2021=E5=B9=B45=E6=9C=
+=881=E6=97=A5 =E9=80=B1=E5=85=AD =E4=B8=8A=E5=8D=8811:13=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+>
+> In cmdq mode, packet may be flushed before it is executed, so
+> the pending flag should be cleared after cmdq packet is done.
+>
+> Signed-off-by: CK Hu <ck.hu@mediatek.com>
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 57 +++++++++++++++++++++++++++=
++++---
+>  1 file changed, 52 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/me=
+diatek/mtk_drm_crtc.c
+> index c37881b..6a3cf47 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> @@ -231,18 +231,57 @@ static void ddp_cmdq_cb(struct cmdq_cb_data data)
+>  {
+>         struct mtk_cmdq_cb_data *cb_data =3D data.data;
+>         struct mtk_drm_crtc *mtk_crtc;
+> +       struct mtk_crtc_state *state;
+> +       unsigned int i;
+>
+>         if (!cb_data) {
+>                 DRM_ERROR("cmdq callback data is null pointer!\n");
+>                 return;
+>         }
+>
+> +       if (data.sta =3D=3D CMDQ_CB_ERROR) {
 
-And currently read as follows by call_decode:
+I would like this patch to depend on [1].
 
-smp_rmb(); // misplaced
-if (!req->rq_reply_bytes_recvd)
-   goto out;
-req->rq_rcv_buf.len = req->rq_private_buf.len;
+[1] https://patchwork.kernel.org/project/linux-mediatek/patch/2021031423332=
+3.23377-2-chunkuang.hu@kernel.org/
 
-This patch places the smp_rmb after the if to ensure that
-rq_reply_bytes_recvd and rq_private_buf.len are read in order.
+Regards,
+Chun-Kuang.
 
-Fixes: 9ba828861c56a ("SUNRPC: Don't try to parse incomplete RPC messages")
-Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
----
- net/sunrpc/clnt.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
-
-diff --git a/net/sunrpc/clnt.c b/net/sunrpc/clnt.c
-index 612f0a641f4c..77c4bb8816ed 100644
---- a/net/sunrpc/clnt.c
-+++ b/net/sunrpc/clnt.c
-@@ -2457,12 +2457,6 @@ call_decode(struct rpc_task *task)
- 		task->tk_flags &= ~RPC_CALL_MAJORSEEN;
- 	}
- 
--	/*
--	 * Ensure that we see all writes made by xprt_complete_rqst()
--	 * before it changed req->rq_reply_bytes_recvd.
--	 */
--	smp_rmb();
--
- 	/*
- 	 * Did we ever call xprt_complete_rqst()? If not, we should assume
- 	 * the message is incomplete.
-@@ -2471,6 +2465,11 @@ call_decode(struct rpc_task *task)
- 	if (!req->rq_reply_bytes_recvd)
- 		goto out;
- 
-+	/* Ensure that we see all writes made by xprt_complete_rqst()
-+	 * before it changed req->rq_reply_bytes_recvd.
-+	 */
-+	smp_rmb();
-+
- 	req->rq_rcv_buf.len = req->rq_private_buf.len;
- 	trace_rpc_xdr_recvfrom(task, &req->rq_rcv_buf);
- 
--- 
-2.17.1
-
+> +               DRM_WARN("cmdq callback error!!\n");
+> +               goto destroy_pkt;
+> +       }
+> +
+>         mtk_crtc =3D cb_data->mtk_crtc;
+>         if (!mtk_crtc) {
+>                 DRM_ERROR("cmdq callback mtk_crtc is null pointer!\n");
+>                 goto destroy_pkt;
+>         }
+>
+> +       state =3D to_mtk_crtc_state(mtk_crtc->base.state);
+> +
+> +       if (state->pending_config) {
+> +               state->pending_config =3D false;
+> +       }
+> +
+> +       if (mtk_crtc->pending_planes) {
+> +               for (i =3D 0; i < mtk_crtc->layer_nr; i++) {
+> +                       struct drm_plane *plane =3D &mtk_crtc->planes[i];
+> +                       struct mtk_plane_state *plane_state;
+> +
+> +                       plane_state =3D to_mtk_plane_state(plane->state);
+> +
+> +                       if (plane_state->pending.config)
+> +                               plane_state->pending.config =3D false;
+> +               }
+> +               mtk_crtc->pending_planes =3D false;
+> +       }
+> +
+> +       if (mtk_crtc->pending_async_planes) {
+> +               for (i =3D 0; i < mtk_crtc->layer_nr; i++) {
+> +                       struct drm_plane *plane =3D &mtk_crtc->planes[i];
+> +                       struct mtk_plane_state *plane_state;
+> +
+> +                       plane_state =3D to_mtk_plane_state(plane->state);
+> +
+> +                       if (plane_state->pending.async_config)
+> +                               plane_state->pending.async_config =3D fal=
+se;
+> +               }
+> +               mtk_crtc->pending_async_planes =3D false;
+> +       }
+> +
+>         mtk_drm_finish_page_flip(mtk_crtc);
+>
+>  destroy_pkt:
+> @@ -403,7 +442,8 @@ static void mtk_crtc_ddp_config(struct drm_crtc *crtc=
+,
+>                                     state->pending_vrefresh, 0,
+>                                     cmdq_handle);
+>
+> -               state->pending_config =3D false;
+> +               if (!cmdq_handle)
+> +                       state->pending_config =3D false;
+>         }
+>
+>         if (mtk_crtc->pending_planes) {
+> @@ -423,9 +463,12 @@ static void mtk_crtc_ddp_config(struct drm_crtc *crt=
+c,
+>                                 mtk_ddp_comp_layer_config(comp, local_lay=
+er,
+>                                                           plane_state,
+>                                                           cmdq_handle);
+> -                       plane_state->pending.config =3D false;
+> +                       if (!cmdq_handle)
+> +                               plane_state->pending.config =3D false;
+>                 }
+> -               mtk_crtc->pending_planes =3D false;
+> +
+> +               if (!cmdq_handle)
+> +                       mtk_crtc->pending_planes =3D false;
+>         }
+>
+>         if (mtk_crtc->pending_async_planes) {
+> @@ -445,9 +488,13 @@ static void mtk_crtc_ddp_config(struct drm_crtc *crt=
+c,
+>                                 mtk_ddp_comp_layer_config(comp, local_lay=
+er,
+>                                                           plane_state,
+>                                                           cmdq_handle);
+> -                       plane_state->pending.async_config =3D false;
+> +
+> +                       if (!cmdq_handle)
+> +                               plane_state->pending.async_config =3D fal=
+se;
+>                 }
+> -               mtk_crtc->pending_async_planes =3D false;
+> +
+> +               if (!cmdq_handle)
+> +                       mtk_crtc->pending_async_planes =3D false;
+>         }
+>  }
+>
+> --
+> 1.8.1.1.dirty
+>
