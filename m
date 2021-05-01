@@ -2,100 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED0D370647
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 09:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31446370649
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 09:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbhEAH7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 03:59:06 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:54920 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbhEAH7E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 03:59:04 -0400
-Received: by mail-il1-f197.google.com with SMTP id a1-20020a92c5410000b02901689a5cd3bdso514872ilj.21
-        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 00:58:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=V6CoVXrou85PCbE3OFabws+tjrhLI+Hm1V8ygTXVsoU=;
-        b=JLh7zIIqQf0O0hXaJqLf938rnp1k1tEShCKUTOxBzUbiALwPpYHibcVg8bCqQJ6rYn
-         Y/QHgnNtCGIUcdLv8aa3LbCuwy0UjXzOHtRIenLhw9bRSMN+cj1WxqQ4khHzSxHjUfUc
-         f0D5Pve3nEapst1lhvVwZ1Jknp/cd0aJzRg5CMRM/H2A04GZ92vSWPGtfY/+XCBxtVj2
-         OvZGp4oYAhS7TZ9DOdBV8QzrLJi7NdlgFhLUnuFbyRQk3alvTAtKDzsXh9FQazhAC1fM
-         fDlcVaTehUOxujWQZ9YgaOxMhzx/ERNUxB357nsmyiklvEMJoGszFTjbHaPLHeCdTbZo
-         vJyg==
-X-Gm-Message-State: AOAM531lgM2sQdNeSHAlblC3vDnqEUNQXtytwGzSGErT/e69uvNfsYhn
-        Hqg/LPGfIoCb0U0xsfvAijaYiFETPcls/nZ7LTQqdS2ZlsNn
-X-Google-Smtp-Source: ABdhPJypGJw5aoqBi/5x0cHc2iY+k3seJpZ4P/QqUK4QubnvK3hhK2CpLUim2n7SOWCDfXODH67Onwsg9Dd2RWI+McF0WO+31iFt
-MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c24:: with SMTP id m4mr7566857ilh.279.1619855895319;
- Sat, 01 May 2021 00:58:15 -0700 (PDT)
-Date:   Sat, 01 May 2021 00:58:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003a5d4c05c140175f@google.com>
-Subject: [syzbot] linux-next test error: WARNING in __nf_unregister_net_hook
-From:   syzbot <syzbot+dcccba8a1e41a38cb9df@syzkaller.appspotmail.com>
-To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
-        kadlec@netfilter.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, sfr@canb.auug.org.au,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S231784AbhEAH7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 03:59:52 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:58111 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231473AbhEAH7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 May 2021 03:59:51 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4FXM7m4mYsz9sRr;
+        Sat,  1 May 2021 09:59:00 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id mS7MmxrsT2gK; Sat,  1 May 2021 09:59:00 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4FXM7m3drZz9sRq;
+        Sat,  1 May 2021 09:59:00 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3F5568B76F;
+        Sat,  1 May 2021 09:59:00 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id kcd0fiO55LPK; Sat,  1 May 2021 09:59:00 +0200 (CEST)
+Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id F21BB8B763;
+        Sat,  1 May 2021 09:58:59 +0200 (CEST)
+Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id AFBBF642A9; Sat,  1 May 2021 07:58:59 +0000 (UTC)
+Message-Id: <0d615a242c4470462da547dc332e4ec5f00479dd.1619855673.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] mm/ioremap: Fix iomap_max_page_shift
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Date:   Sat,  1 May 2021 07:58:59 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+iomap_max_page_shift is expected to contain a page shift,
+so it can't be a 'bool', has to be an 'unsigned int'
 
-syzbot found the following issue on:
+And fix the default values: P4D_SHIFT is when huge iomap is allowed.
 
-HEAD commit:    74f961f4 Add linux-next specific files for 20210430
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=156e6f15d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=acf3aa1c9f3e62f8
-dashboard link: https://syzkaller.appspot.com/bug?extid=dcccba8a1e41a38cb9df
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+dcccba8a1e41a38cb9df@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-hook not found, pf 3 num 0
-WARNING: CPU: 0 PID: 224 at net/netfilter/core.c:480 __nf_unregister_net_hook+0x1eb/0x610 net/netfilter/core.c:480
-Modules linked in:
-CPU: 0 PID: 224 Comm: kworker/u4:5 Not tainted 5.12.0-next-20210430-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: netns cleanup_net
-RIP: 0010:__nf_unregister_net_hook+0x1eb/0x610 net/netfilter/core.c:480
-Code: 0f b6 14 02 48 89 c8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 11 04 00 00 8b 53 1c 89 ee 48 c7 c7 c0 4d 6e 8a e8 e8 5b 8a 01 <0f> 0b e9 e5 00 00 00 e8 99 dd 2c fa 44 8b 3c 24 4c 89 f8 48 c1 e0
-RSP: 0018:ffffc900015bfbc0 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffff8880243de500 RCX: 0000000000000000
-RDX: ffff888012df3900 RSI: ffffffff815cc9f5 RDI: fffff520002b7f6a
-RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815c685e R11: 0000000000000000 R12: ffff88802e9c0f20
-R13: 0000000000000000 R14: ffff888019fb2180 R15: 0000000000000001
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fc78cbbe010 CR3: 0000000012d10000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- nf_unregister_net_hook net/netfilter/core.c:502 [inline]
- nf_unregister_net_hooks+0x117/0x160 net/netfilter/core.c:576
- arpt_unregister_table_pre_exit+0x67/0x80 net/ipv4/netfilter/arp_tables.c:1565
- ops_pre_exit_list net/core/net_namespace.c:165 [inline]
- cleanup_net+0x451/0xb10 net/core/net_namespace.c:583
- process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Fixes: bbc180a5adb0 ("mm: HUGE_VMAP arch support cleanup")
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ mm/ioremap.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/mm/ioremap.c b/mm/ioremap.c
+index d1dcc7e744ac..2f7193c6a99e 100644
+--- a/mm/ioremap.c
++++ b/mm/ioremap.c
+@@ -16,16 +16,16 @@
+ #include "pgalloc-track.h"
+ 
+ #ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+-static bool __ro_after_init iomap_max_page_shift = PAGE_SHIFT;
++static unsigned int __ro_after_init iomap_max_page_shift = P4D_SHIFT;
+ 
+ static int __init set_nohugeiomap(char *str)
+ {
+-	iomap_max_page_shift = P4D_SHIFT;
++	iomap_max_page_shift = PAGE_SHIFT;
+ 	return 0;
+ }
+ early_param("nohugeiomap", set_nohugeiomap);
+ #else /* CONFIG_HAVE_ARCH_HUGE_VMAP */
+-static const bool iomap_max_page_shift = PAGE_SHIFT;
++static const unsigned int iomap_max_page_shift = PAGE_SHIFT;
+ #endif	/* CONFIG_HAVE_ARCH_HUGE_VMAP */
+ 
+ int ioremap_page_range(unsigned long addr,
+-- 
+2.25.0
+
