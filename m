@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D589937076C
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 15:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB9F737076E
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 15:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232147AbhEANhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 09:37:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37564 "EHLO
+        id S232164AbhEANlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 09:41:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232107AbhEANhl (ORCPT
+        with ESMTP id S231876AbhEANlJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 09:37:41 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08654C06174A;
-        Sat,  1 May 2021 06:36:50 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id h15so868123wre.11;
-        Sat, 01 May 2021 06:36:50 -0700 (PDT)
+        Sat, 1 May 2021 09:41:09 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F050C06174A;
+        Sat,  1 May 2021 06:40:19 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id b11-20020a7bc24b0000b0290148da0694ffso657676wmj.2;
+        Sat, 01 May 2021 06:40:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=9fJDEPRtx8F0wZgIPBQTd/NyWgsYPwm8Q8r9gpufr/o=;
-        b=er9cKr/IQsFG034YhVXSb/SmzkXnlFOMpsB2sHvJ/SiwrzvrL3/MEKSSkBENOUkX0m
-         eYCep3nNO+/6fo3OATnnbcUtQ0cM0g6RutU/iBXg2X02tO1MVWpaGy79+9yroVy8aFtx
-         yfP1P3XsAeQag3Rqu2vuapVvlmhhXE1iWNkFEiAlwXSjQA8ob6NekwMYWi94Wr+LAUCt
-         VVUwrS8K7bQAY/eM13qWDMEvld3snLeU2cOAXbbfpwFoYrjO7+phsIQBTSHhdKb8jrVb
-         eQoluzMC7vM48ZYP4kviOfWURuaqL6Oa6ml2pnWMiLE3UAD3uxUdOZyzQF5obkOPkalA
-         MO/A==
+        bh=pVoCWrgBRL3LkewGRMX31zlnWZpo67hre0Kc6JXmaxc=;
+        b=obiSUlmz0WRPZD/j596L2tpSH48VenhCbXqd3AjuXNt9c6Eu69NykoQFtK8V20Ezwg
+         qlmG94HnCKNPw6PBwQ7K/7Rk1sM1GLaz9E90egu++WPvuZRQ3TCd6SnRIa44XCYcmAuh
+         LJ6bT+hXXo3d0fuOJyCa5Kx/ZgT9de4+ij9qSKQ9cjflk+B/bnCy8CGyK9JnG9izXLgp
+         MWpL9EusfYqPAR0D43K83c7/cpk5inhe3A2oc/kovQ02GigkujGrIv+2wFe4mJLilRXC
+         H0MiiigzuaHHk5fYSm5CsaSc652lT3U2iCMYtEfwfT4zZnQsIjq8DZARH1BhxzGLlgmO
+         NVCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=9fJDEPRtx8F0wZgIPBQTd/NyWgsYPwm8Q8r9gpufr/o=;
-        b=VVHyC7Mn9H3RImP864oN7scNzCCSjFuh7Fuvw67xFC4e/lj7yix5vhwI//3EYsjKWu
-         9+2TFHkvTJB+zJPcgGdQTKJCrQsgo1zmp/DD1yIW3S3r1wlx05e1W0nG1I5iyIglaaN3
-         0Wuf3QgX9s9sATBqDeYBL28jUloaEGzcfSiWqzL3boM88Gpnp2iVt5sc6EuMiFwzV6lw
-         TT5cdzw31IH8ANa+lLVJT1eaUjXb4m0FI0vIMopb0iuf8DVAgFebd9OfleGd/QmJrQ7a
-         xVzXHBhIYgV1u8oHu2YwV6tWFuDyM5XkHpMwQh+Z9qZ5rg0wADVXlUoBqkBtvcnjkOd9
-         p1Tg==
-X-Gm-Message-State: AOAM532bqFeh2UV1/gGRcn/GeG7QP1tjue+7pdSQY0Msp9IRDRdJ55BW
-        zTA25wXokW3tF57gNU3M/Im2ObilZoXxyGqv
-X-Google-Smtp-Source: ABdhPJxRYg56zr6yeVYypa5NzAPpIIGo25jRB2O7FyfSYqzvVc9MCesv94maKgpnoxK1+pvUHZMjxw==
-X-Received: by 2002:a5d:47cc:: with SMTP id o12mr13920490wrc.227.1619876209048;
-        Sat, 01 May 2021 06:36:49 -0700 (PDT)
+        bh=pVoCWrgBRL3LkewGRMX31zlnWZpo67hre0Kc6JXmaxc=;
+        b=IA1Os+SVRTbfLNE8MaPzceeLbfskmDQBeRGbKKK50gvhGAc5XOmphsSc6YxjXFaBqB
+         jS0EpiYVuU3kdXcM3n0Eg1p5nm7Zf0ifJF6XxeUhcgyDAjFs23q5PM7ejNG12KfFg3xR
+         rkAvi3NHFLYlwMNzZnPso97E2va08tB63sVJZQvs3C92bZNEeg94AzPzP4roN1jaC/sk
+         jMtcodCpDIBcYiy2XQBnlAbIMR6e2HuMi4jB3QJddc2HUXIcPBCLXCrPUMNgO6iI2yxb
+         a8orv7qDy6Jiu9rwJjOjQbr9N56PM5vfiaZVKk0Rv7Hwyz2d/AzAVT8heZFQM3dIJTqq
+         JgYg==
+X-Gm-Message-State: AOAM5319U0hx79hpsFL56FSDyqlgxmm+EX2kEmnKYt1N0cEQyEw9ZkNn
+        oEUwJkGV83l6JCc9LHuaLMguMU79G0OvY0Hb
+X-Google-Smtp-Source: ABdhPJxKPDi9Yvanv/GMo33Uoo9lKEOqXho6OHjtlru+BZo2Nhh+EgQ94P0gEoudVuYKfW2qVxdDqw==
+X-Received: by 2002:a7b:c145:: with SMTP id z5mr8061095wmi.77.1619876417930;
+        Sat, 01 May 2021 06:40:17 -0700 (PDT)
 Received: from localhost.localdomain (225.red-83-57-119.dynamicip.rima-tde.net. [83.57.119.225])
-        by smtp.gmail.com with ESMTPSA id q4sm5821425wrs.21.2021.05.01.06.36.48
+        by smtp.gmail.com with ESMTPSA id f6sm6958680wru.72.2021.05.01.06.40.17
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 01 May 2021 06:36:48 -0700 (PDT)
+        Sat, 01 May 2021 06:40:17 -0700 (PDT)
 From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
 To:     devicetree@vger.kernel.org
 Cc:     linux-staging@lists.linux.dev, robh+dt@kernel.org,
         gregkh@linuxfoundation.org, neil@brown.name,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: staging: mt7621-pci: PCIe binding documentation for MT76721 SoCs
-Date:   Sat,  1 May 2021 15:36:46 +0200
-Message-Id: <20210501133647.14350-1-sergio.paracuellos@gmail.com>
+Subject: [PATCH v2] dt-bindings: staging: mt7621-pci: PCIe binding documentation for MT7621 SoCs
+Date:   Sat,  1 May 2021 15:40:16 +0200
+Message-Id: <20210501134016.14516-1-sergio.paracuellos@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -67,6 +67,9 @@ Add device tree binding documentation for PCIe in MT7621 SoCs.
 
 Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 ---
+
+Changes in v2:
+    - Correct SoC name in subject.
 
 Hi Rob,
 
