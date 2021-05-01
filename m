@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8FD37082A
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 19:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CCE837082C
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 19:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231517AbhEARVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 13:21:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56176 "EHLO mail.kernel.org"
+        id S231629AbhEARVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 13:21:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230195AbhEARVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 13:21:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9C03661284;
-        Sat,  1 May 2021 17:20:44 +0000 (UTC)
+        id S231556AbhEARVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 May 2021 13:21:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 48B5D61625;
+        Sat,  1 May 2021 17:20:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619889644;
-        bh=QY85+Vd3yh8ScTdhcUF7j7rN+Hgd+6M6ADK5QYYSLL0=;
+        s=k20201202; t=1619889654;
+        bh=t/3lgDnpeyvCdPtZDjLXkOXI5cE2Vg0kvNu9zEys41E=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=ddcElWtwy3A8QQHoWqNWYCGXRhRp/zdzdgtbETBheDQG2hYW2GiLaVnPU/1TQFAO/
-         MKktSC4vkbnEBcgIMOhOAjE8VxqYZx8ByxRo5myvpUI0bUTgVRaiaAQDQcFbtjjfmw
-         89dsYsRnOuqtjbOT8IUz5I8oq5uHfzp9U6ICo5b0jJNkTcQb2Mcc76sWUZei17+MVr
-         clv4KCPJfc3Gyqs3WccrY2FdafnkGVlMoO9qOad6r87geCxNoeZ4TVHWCMexz0Anhs
-         hMcZXD1E7uLZb2F3DLTEmB09GXjXpLfSE9gs7xIhnTpdHIOVrmYZQxMc8fiGeMzZt8
-         jLGt4fp66kMZQ==
+        b=AWEXf1eQRWeTEF+40JT8DkVdBLPEuwrtWAFBHpOqoL+x09uN5kmw9ub9WLvTvBvC4
+         XAqO5StzQLoxhDudwrPV0MkYpLuR0OaKIBbdTXwq2gObicfaUXdl3Gjictvr9qnPVV
+         0Zg00puaAWDh3/IGn/qeTo5yBkWJIomICSQBQcaapmnxuF0DtYXs+fwjoHITAOR5rt
+         Cscg9TUegI+DCWKdBZD1JNMAFqW0KUJryPttMeuWkiveRyZ6hEtEPQ1VC3R27JT9/z
+         g9Abb9n0msQ2wtS26RKvv3dSSYBTMfYlFCNj9lhMIFO4tKCZTC7H0bB5ojqj70Gbip
+         l2dXcrkxMGkLg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 88D6A60A72;
-        Sat,  1 May 2021 17:20:44 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 42FE760978;
+        Sat,  1 May 2021 17:20:54 +0000 (UTC)
+Subject: Re: [git pull] IOMMU Updates for Linux v5.13
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210430165527.GA3573658@nvidia.com>
-References: <20210430165527.GA3573658@nvidia.com>
-X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210430165527.GA3573658@nvidia.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-X-PR-Tracked-Commit-Id: 6da7bda36388ae00822f732c11febfe2ebbb5544
+In-Reply-To: <YIwRbkQcElemYSjz@8bytes.org>
+References: <YIwRbkQcElemYSjz@8bytes.org>
+X-PR-Tracked-List-Id: Development issues for Linux IOMMU support
+ <iommu.lists.linux-foundation.org>
+X-PR-Tracked-Message-Id: <YIwRbkQcElemYSjz@8bytes.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-updates-v5.13
+X-PR-Tracked-Commit-Id: 2d471b20c55e13c98d1dba413bf2de618e89cdac
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f34b2cf17825d69ae1e227871059ab18c2f57817
-Message-Id: <161988964449.32500.5703350496456231951.pr-tracker-bot@kernel.org>
-Date:   Sat, 01 May 2021 17:20:44 +0000
-To:     Jason Gunthorpe <jgg@nvidia.com>
+X-PR-Merge-Commit-Id: 4f9701057a9cc1ae6bfc533204c9d3ba386687de
+Message-Id: <161988965426.32500.6869537324714282066.pr-tracker-bot@kernel.org>
+Date:   Sat, 01 May 2021 17:20:54 +0000
+To:     Joerg Roedel <joro@8bytes.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        iommu@lists.linux-foundation.org, Will Deacon <will@kernel.org>,
         linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 30 Apr 2021 13:55:27 -0300:
+The pull request you sent on Fri, 30 Apr 2021 16:17:18 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+> git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-updates-v5.13
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f34b2cf17825d69ae1e227871059ab18c2f57817
+https://git.kernel.org/torvalds/c/4f9701057a9cc1ae6bfc533204c9d3ba386687de
 
 Thank you!
 
