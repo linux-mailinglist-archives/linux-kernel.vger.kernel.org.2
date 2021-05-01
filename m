@@ -2,220 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0AAC3705ED
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 08:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4C53705F0
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 08:43:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231589AbhEAGnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 02:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhEAGnD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 02:43:03 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B24C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 23:42:12 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id q6so568961edr.3
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 23:42:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4/HAzDClSV9cd3IA4IU82EbSzswcxIt5d30z8c58+Jo=;
-        b=sRrfFuH3W0uM3lMr1sMIYdJ8vyCJv8Jb9202SCa3T9brUHetxXhVFmB0a1zlbKp0ii
-         Jc6AQ0BGEMV2IJxiucqezUoCzDIboAiGP0kFzhcgNC+yreuUcww3WLFwtKa4oTTExmeM
-         2BEXXms4BOr8khwqifOWUsGsQxiP9nPSNf5IsPCkNtV67cY22wd7tNASVJb+ptBBom/t
-         X1ADV+flvzVQ/xxUIDPbhk1TfQb+R+GdmG3PDnATJ1XQKVJRqGOwXOcdtVOKw8AtP6tl
-         NZQMfa4+OpvwJq19n9S/YKoxbowx8mS7VQv2V/+co3lNZlid5tBqYJsGb3Prm+c9j2Uj
-         OA4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4/HAzDClSV9cd3IA4IU82EbSzswcxIt5d30z8c58+Jo=;
-        b=Ls8cL+k2HfBz/olqdpqHcArhjNhDoICs+p+bty5JAYAZpgmxKdHU4k+tesR+fXDaY5
-         Sjsy+GE8T8q9/Lg4SftebuSDFnPor46Ot9+R9/SvwNKT65uctqVNw7/tm3szaCqmUxrq
-         +cYdjgNoKlZEmv2QYkfR5m89r1pFWAfbKMHpP5AZTq9ii+C2C1ETBUErIcYHEYowY0ZA
-         gxeV2acuus/lwBzW5tGoRTtE1ltjlMwEmakn5EIlr4B4St38wEOTzxKppJ9Blmf2Rf5e
-         NIwfB7Jsjgs/I6C3hoO1il+NzMxBXadzyqCSB1iwFvBUsUZ+bmPl4rszJfjUxKxx0TMM
-         n49A==
-X-Gm-Message-State: AOAM531q8CatCWmHBNCtJnd3knTJcKQpJgZ4vM0rblo1m/E1jLRHbDIO
-        ZffBBokpTB7zn/juTZ8hEcfdPLQESJphJY0eHt3+1Q==
-X-Google-Smtp-Source: ABdhPJxCKVf2mC1n6u2xeUQW5MBS96S9pSrkm+0QjeSM1UPZYNO+mXs0av/LXMM9KUg4EZyJZV/1qWx0QqOnGmPXWN8=
-X-Received: by 2002:a05:6402:5113:: with SMTP id m19mr10199228edd.78.1619851330902;
- Fri, 30 Apr 2021 23:42:10 -0700 (PDT)
+        id S231624AbhEAGoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 02:44:19 -0400
+Received: from msg-1.mailo.com ([213.182.54.11]:41924 "EHLO msg-1.mailo.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229505AbhEAGoK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 May 2021 02:44:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
+        t=1619851390; bh=d3WL2gA2XAUnc6D2ONecCXP5byI2wSg4bDECMI4RMxg=;
+        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:MIME-Version:
+         Content-Type;
+        b=ZRUqjCG1bMPsw770xKEiwz9XzzBUtbgczS9TSb71i85IqTxSISfvTR9RgxHK6SAPw
+         DKQsIC21b1W9eJzddlwQ3MH3ISV9xFmNHCl4GAyG99VBI1zbhA4K2ZRVpugHq8lWm7
+         cvnHu1mx+M+f0A9h/mXaFkYn4WcBr6LB+ptdCwLs=
+Received: by 192.168.90.16 [192.168.90.16] with ESMTP
+        via ip-206.mailobj.net [213.182.55.206]
+        Sat,  1 May 2021 08:43:10 +0200 (CEST)
+X-EA-Auth: aorXokUL045zv58Vn/CrdmwgxYKaUVEP5UMMTSECyPc0RO0tye9oPFXBiQUD4gB6tcPVY26l2cP6NXPcJaBdGl7tpBZdJdIP
+Date:   Sat, 1 May 2021 12:13:04 +0530
+From:   Deepak R Varma <drv@mailo.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, drv@mailo.com
+Subject: [PATCH 0/5] staging: media: atomisp: code formatting changes
+Message-ID: <cover.1619850663.git.drv@mailo.com>
 MIME-Version: 1.0
-References: <20210430141910.899518186@linuxfoundation.org>
-In-Reply-To: <20210430141910.899518186@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 1 May 2021 12:11:59 +0530
-Message-ID: <CA+G9fYt6AATtvdPjGrRVYOXPOMk=jRQE+Q=0u5kj6=2VU__-7w@mail.gmail.com>
-Subject: Re: [PATCH 5.12 0/5] 5.12.1-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Apr 2021 at 19:51, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.12.1 release.
-> There are 5 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 02 May 2021 14:19:04 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.12.1-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.12.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+This patch set overall improves the code organisation and readability of
+the files of atomisp drivers. There are several complaints reported by
+checkpatch including ERROR and WARNING types on the files under atomisp/pci
+directory.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+The changes are proposed on a per file basis since there are many
+issues to be addressed in each individual file. The patches are built
+on the media_tree/for-v5.14-out1 tree/branch. 
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Deepak R Varma (5):
+  staging: media: atomisp: code formatting changes atomisp_csi2.c
+  staging: media: atomisp: code formatting changes sh_css_mipi.c
+  staging: media: atomisp: code formatting changes sh_css_params.c
+  staging: media: atomisp: code formatting changes sh_css_sp.c
+  staging: media: atomisp: code formatting changes sh_css_version.c
 
-## Build
-* kernel: 5.12.1-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.12.y
-* git commit: 94990849b4da1a85c0e8aaed7cb3285a6ecff018
-* git describe: v5.12-6-g94990849b4da
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.12.y/build/v5.12=
--6-g94990849b4da
+ .../staging/media/atomisp/pci/atomisp_csi2.c  |  72 +-
+ .../staging/media/atomisp/pci/sh_css_mipi.c   | 170 ++--
+ .../staging/media/atomisp/pci/sh_css_params.c | 929 +++++++++---------
+ drivers/staging/media/atomisp/pci/sh_css_sp.c | 471 ++++-----
+ .../media/atomisp/pci/sh_css_version.c        |   4 +-
+ 5 files changed, 754 insertions(+), 892 deletions(-)
 
-## No regressions (compared to v5.12)
+-- 
+2.30.2
 
-## No fixes (compared to v5.12)
 
-## Test result summary
- total: 72055, pass: 60456, fail: 1438, skip: 10161, xfail: 0,
 
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* i386: 25 total, 25 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x86_64: 26 total, 26 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kvm
-* kselftest-lib
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
