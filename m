@@ -2,45 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E443705C5
+	by mail.lfdr.de (Postfix) with ESMTP id 963CD3705C6
 	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 07:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231717AbhEAFwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 01:52:06 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:38428 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231695AbhEAFwF (ORCPT
+        id S231758AbhEAFwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 01:52:09 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:53854 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231695AbhEAFwH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 01:52:05 -0400
-Received: by mail-io1-f70.google.com with SMTP id v1-20020a5d94810000b02903e0f4d732b4so66430ioj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 22:51:16 -0700 (PDT)
+        Sat, 1 May 2021 01:52:07 -0400
+Received: by mail-io1-f71.google.com with SMTP id q11-20020a5d87cb0000b02903ef3c4c5374so55294ios.20
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 22:51:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=diU0RNkAZollR/UrfKoeFvOTmJ41JtW3kpnG7nzIye4=;
-        b=HuQTgteMiVL5BuLzyQoYYjba/XtEbgCjmRL2eFk1EBU8Gvts4Ukdb3+B4CqRodMma1
-         Y6v2iirpSa/Z2OQszW+GdJqab419X/DvyULP7wloNtWFK6rpJDCUEaboD7luGjuZYJen
-         06GaLt0kDjBQFLq46KN/l7HGgb0+hydEbEDmBjkAQ0YkXAWzVchJfyXy1zhrU18768gx
-         Tw7HxDIp4UiV35hO6i2tHpknHa3b8GN/OvhD7j9IzFlTKsYpdlexnpfVTADiJkCWJAMD
-         5IeUzIZIFyXUv7WjXmkEeBjPklVeEH0p9kc8JG4/rWZuib+H9XZlRS8ADczVIRv6fBU0
-         Y8zA==
-X-Gm-Message-State: AOAM53089HYL/KNfbRy7vOqStTDK+tWzen/ziBcCQCqi25/DwgJsIsUw
-        8FaVxidi6P+fJTfrxYbj6u6F5FW6mFiJ7BbshwJtGE7sRXJb
-X-Google-Smtp-Source: ABdhPJwtMxjHUuqXVYXVlLQ77T5B4K3t2pi07rUtT0Z+ek7e9SxkH3ZKKqcRXNa5CTthibApvwZDyxYs5Jzsx5dy9bMcuvi71Otn
+        bh=dAtoNwPD7FCF677AGpToLr51wbvur/5fNAZn5Ya0mW8=;
+        b=ZsV8HhIoDTG5ykEXVl5roWQE4m1NWGDO9yTOoGzRuMBK4qLCzdTLuBibA9SNSwJ9yu
+         H0hB0LYJmoXHMwgHwDNRVClQtN4zEDlP6aysq2cAC4Q0rO2C9C/dg2mdd5LR70yylw3v
+         Sfd9DqZ0cwDH9UkecYA70cAby1Nys+v1CBkMf2NwMzcAXhyJ/KfF0y7ah6r/4MucWNnd
+         UCKpk49Ebqw+9ixgasJetmuOahTNBPBe/c70tzb97uLwxmtF37+MlNQ5WNMMz1bj/nO9
+         py8iGu9I0RLRlrRJXjLgkWEV6fdsf4i6KRgplC4oTdyFvth3AWuaN6reTs5bOsm7z7l8
+         LaIQ==
+X-Gm-Message-State: AOAM530XigjhPkPRuUwdrMtiVrA3/ZJBXZgzOyMd73MgM6MxWsasO+/U
+        0X5aRz0lUXB0zKikhf+vgNzonwQ+EUPpzCRX+3hx9SV5ZvQo
+X-Google-Smtp-Source: ABdhPJwXIG82/d2Q8uOyVXJvuhpdm0Za7/yPa8xvd+6E620WPkeTofOL8AhlNblUhTCa8UoCZnj7MAxHLP9G+vDbUSlKkcNA+xcu
 MIME-Version: 1.0
-X-Received: by 2002:a92:c26a:: with SMTP id h10mr7042919ild.294.1619848275818;
- Fri, 30 Apr 2021 22:51:15 -0700 (PDT)
-Date:   Fri, 30 Apr 2021 22:51:15 -0700
+X-Received: by 2002:a02:ca45:: with SMTP id i5mr8156252jal.118.1619848276068;
+ Fri, 30 Apr 2021 22:51:16 -0700 (PDT)
+Date:   Fri, 30 Apr 2021 22:51:16 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000011fd4305c13e51c7@google.com>
-Subject: [syzbot] KASAN: user-memory-access Read in do_syscall_trace_enter
-From:   syzbot <syzbot+e00eb4c4f40728f9bcde@syzkaller.appspotmail.com>
-To:     aou@eecs.berkeley.edu, keescook@chromium.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        luto@amacapital.net, oleg@redhat.com, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, syzkaller-bugs@googlegroups.com,
-        wad@chromium.org
+Message-ID: <00000000000015ce3005c13e512a@google.com>
+Subject: [syzbot] WARNING: refcount bug in __io_queue_sqe
+From:   syzbot <syzbot+a2910119328ce8e7996f@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -50,46 +47,58 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    18a3c5f7 Merge tag 'for_linus' of git://git.kernel.org/pub..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-console output: https://syzkaller.appspot.com/x/log.txt?x=14fa7ca5d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=105967f18e189a79
-dashboard link: https://syzkaller.appspot.com/bug?extid=e00eb4c4f40728f9bcde
-userspace arch: riscv64
+HEAD commit:    16fc44d6 Merge tag 'mmc-v5.12-rc5' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1450f471d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c0a6882014fd3d45
+dashboard link: https://syzkaller.appspot.com/bug?extid=a2910119328ce8e7996f
+compiler:       Debian clang version 11.0.1-2
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e00eb4c4f40728f9bcde@syzkaller.appspotmail.com
+Reported-by: syzbot+a2910119328ce8e7996f@syzkaller.appspotmail.com
 
-==================================================================
-BUG: KASAN: user-memory-access in test_bit include/asm-generic/bitops/non-atomic.h:106 [inline]
-BUG: KASAN: user-memory-access in cpumask_test_cpu include/linux/cpumask.h:373 [inline]
-BUG: KASAN: user-memory-access in trace_sys_enter include/trace/events/syscalls.h:18 [inline]
-BUG: KASAN: user-memory-access in do_syscall_trace_enter+0x24c/0x5ae arch/riscv/kernel/ptrace.c:255
-Read of size 8 at addr 000000000118e9ae by task syz-executor.1/3237
-
-CPU: 1 PID: 3237 Comm: syz-executor.1 Not tainted 5.12.0-rc8-syzkaller-00194-g18a3c5f7abfd #0
-Hardware name: riscv-virtio,qemu (DT)
+------------[ cut here ]------------
+refcount_t: underflow; use-after-free.
+WARNING: CPU: 0 PID: 10242 at lib/refcount.c:28 refcount_warn_saturate+0x15b/0x1a0 lib/refcount.c:28
+Modules linked in:
+CPU: 0 PID: 10242 Comm: syz-executor.2 Not tainted 5.12.0-rc8-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:refcount_warn_saturate+0x15b/0x1a0 lib/refcount.c:28
+Code: c7 20 5a 71 8a 31 c0 e8 23 03 55 fd 0f 0b eb 85 e8 9a a0 88 fd c6 05 44 db 0b 0a 01 48 c7 c7 80 5a 71 8a 31 c0 e8 05 03 55 fd <0f> 0b e9 64 ff ff ff e8 79 a0 88 fd c6 05 24 db 0b 0a 01 48 c7 c7
+RSP: 0018:ffffc90002e77928 EFLAGS: 00010246
+RAX: 15eb98be5e94ee00 RBX: 0000000000000003 RCX: 0000000000040000
+RDX: ffffc9000d56a000 RSI: 0000000000006606 RDI: 0000000000006607
+RBP: 0000000000000003 R08: ffffffff8164f2f2 R09: ffffed1017383f1c
+R10: ffffed1017383f1c R11: 0000000000000000 R12: dffffc0000000000
+R13: ffff8881412ea608 R14: 00000000ffffffff R15: ffff888013dd9cdc
+FS:  00007ffb95ca5700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffffd5a8690 CR3: 0000000023ce1000 CR4: 00000000001526e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
-[<ffffffe000009708>] walk_stackframe+0x0/0x23c arch/riscv/kernel/traps.c:202
-[<ffffffe002a631dc>] dump_backtrace+0x40/0x4e arch/riscv/kernel/stacktrace.c:113
-[<ffffffe002a6320c>] show_stack+0x22/0x2e arch/riscv/kernel/stacktrace.c:118
-[<ffffffe002a6ca98>] __dump_stack lib/dump_stack.c:79 [inline]
-[<ffffffe002a6ca98>] dump_stack+0x148/0x1d8 lib/dump_stack.c:120
-[<ffffffe0003bd560>] __kasan_report mm/kasan/report.c:403 [inline]
-[<ffffffe0003bd560>] kasan_report+0x146/0x18c mm/kasan/report.c:416
-[<ffffffe0003bddc8>] check_region_inline mm/kasan/generic.c:174 [inline]
-[<ffffffe0003bddc8>] __asan_load8+0x4a/0x80 mm/kasan/generic.c:253
-[<ffffffe000006fe8>] test_bit include/asm-generic/bitops/non-atomic.h:106 [inline]
-[<ffffffe000006fe8>] cpumask_test_cpu include/linux/cpumask.h:373 [inline]
-[<ffffffe000006fe8>] trace_sys_enter include/trace/events/syscalls.h:18 [inline]
-[<ffffffe000006fe8>] do_syscall_trace_enter+0x24c/0x5ae arch/riscv/kernel/ptrace.c:255
-[<ffffffe000005664>] handle_syscall_trace_enter+0x6/0x1e
-==================================================================
-Kernel panic - not syncing: panic_on_warn set ...
-SMP: stopping secondary CPUs
-Rebooting in 86400 seconds..
+ __refcount_sub_and_test include/linux/refcount.h:283 [inline]
+ __refcount_dec_and_test include/linux/refcount.h:315 [inline]
+ refcount_dec_and_test include/linux/refcount.h:333 [inline]
+ io_put_req fs/io_uring.c:2140 [inline]
+ io_queue_linked_timeout fs/io_uring.c:6300 [inline]
+ __io_queue_sqe+0xbef/0xec0 fs/io_uring.c:6354
+ io_submit_sqe fs/io_uring.c:6534 [inline]
+ io_submit_sqes+0x2bbd/0x7c50 fs/io_uring.c:6660
+ __do_sys_io_uring_enter fs/io_uring.c:9240 [inline]
+ __se_sys_io_uring_enter+0x256/0x1d60 fs/io_uring.c:9182
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x466459
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffb95ca5188 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
+RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000466459
+RDX: 0000000000000000 RSI: 00000000000055bc RDI: 0000000000000003
+RBP: 00000000004bf9fb R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
+R13: 00007ffcaf4241ff R14: 00007ffb95ca5300 R15: 0000000000022000
 
 
 ---
