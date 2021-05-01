@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9063705D9
+	by mail.lfdr.de (Postfix) with ESMTP id A7E943705D8
 	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 08:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231782AbhEAGJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 02:09:10 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:57162 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231596AbhEAGJG (ORCPT
+        id S231759AbhEAGJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 02:09:09 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:42641 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231575AbhEAGJG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 1 May 2021 02:09:06 -0400
-Received: by mail-io1-f72.google.com with SMTP id y20-20020a6bd8140000b02903e6787c4986so71028iob.23
+Received: by mail-il1-f198.google.com with SMTP id d3-20020a9287430000b0290181f7671fa1so412878ilm.9
         for <linux-kernel@vger.kernel.org>; Fri, 30 Apr 2021 23:08:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=QY3ro5vJAuKZcXJFutAbvXy9Ia4spy8FSXQM0sKzA2o=;
-        b=MmcRn2OEN5dt7VVIi8HJ1i7NSUrPYMypzbiYgrW6a7+BYsIDzzUUNnCwkThiiL3DUb
-         WuHWBikko/VHtuyvjUVkUYkhFOqo4m2+OxwuLkajTuRr/4R5kMOU4M3LwEyuUplnb/6O
-         PlMGk2j+f6uKv00p+c5gAIkHNpzv93sxxMzhD4SH1ufpoLkWMu9Dker1l7GVl8vjncrb
-         jYSi8579S9AgFm4eGg7QQQws/TR3vUy+JNclzW3aL3F22addlcDuvxZ7Qd0eBrMjLWRR
-         qI80Jyvjcv3sWvaARs9WRCksJmlT6sj3hwIfLA2rv7vPurCKSJiE0lXYBqfoOxPZ8l7N
-         g98g==
-X-Gm-Message-State: AOAM533sNBG4PofAcCi0s+ipF7yvSApkODmY1A10UvOWIhSLpESVY0jB
-        u78tGOyEYOrm66BU/145ua4vCqPfU6R69lY3BmTLX/5SYzwg
-X-Google-Smtp-Source: ABdhPJwuuqf5VV+V00mQs202MmayRDhx21Bc0SwnQcRDlXBjYSIFtj/nJBTTt6A4syijuBfLuLMsPgHqiJO1SfL+UtskZiC6b8qD
+        bh=QYNQL12w8nlDdWsl7a7uYJK/eVQrZRWtohuLnhPUUFw=;
+        b=HQwFHVxS4e9BoZi0ciz3tw3IV33rYXUKoHqoBm3w92ci9z11Yvwl5EPyO7jikmLE+j
+         7BnJ6k1ExE24ophmZh/8INqdk9n1PtHKR1fjGPZcSxx9V8FZ/3ZxGjrdF1lBhJ0V90de
+         Asm0PLtE5htfuQFq4IXnEphex020BfJ+WP/7zzsxmIePM0RIOtc6jHwwUm4xmixumVzt
+         N1FmTMD+6dskEVIjrsjDFGUOkmBpgCAzM0FaBfNwXW9aj89A5kF82sym1YUX1NB85F6w
+         hPsr0bgEJQmxbJor5vEEtKhhsXiXgbeN21qcpDebk0XQhPewaSq6avA7Y3J0ets5FerZ
+         SzNQ==
+X-Gm-Message-State: AOAM533Uq5h/1wJs3CA+kxru+I+6pxHKMpghlQ3P83uL4PPdJ+sPpQU4
+        UKk4YiW7WpO2EvWyYSc/XEPQ24fNBtV/+Y9pAG12PPVmDlag
+X-Google-Smtp-Source: ABdhPJxzxMnZ8YaHhfGdbW5xZYhFnD3D+VIHsNU9rtc7/uHMDUr00xzQauP/+7p/BdgNR4hALKcysSeH36eW/9YbljdIXVpSWTrO
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9a8c:: with SMTP id c12mr6914300iom.166.1619849296648;
+X-Received: by 2002:a05:6e02:13d0:: with SMTP id v16mr7251690ilj.8.1619849296404;
  Fri, 30 Apr 2021 23:08:16 -0700 (PDT)
 Date:   Fri, 30 Apr 2021 23:08:16 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000eaa2f805c13e8def@google.com>
-Subject: [syzbot] KMSAN: uninit-value in __mpol_equal
-From:   syzbot <syzbot+b1d978f749455b49537a@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, glider@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+Message-ID: <000000000000e6e54c05c13e8d84@google.com>
+Subject: [syzbot] KMSAN: uninit-value in ax25cmp
+From:   syzbot <syzbot+a6a652af5d212bb29329@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, glider@google.com, kuba@kernel.org,
+        linux-hams@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, ralf@linux-mips.org,
         syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
@@ -50,197 +51,525 @@ syzbot found the following issue on:
 
 HEAD commit:    4ebaab5f kmsan: drop unneeded references to kmsan_context_..
 git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=10f34961d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17e99e05d00000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=647ca0f5bbe7703a
-dashboard link: https://syzkaller.appspot.com/bug?extid=b1d978f749455b49537a
+dashboard link: https://syzkaller.appspot.com/bug?extid=a6a652af5d212bb29329
 compiler:       Debian clang version 11.0.1-2
+userspace arch: i386
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b1d978f749455b49537a@syzkaller.appspotmail.com
+Reported-by: syzbot+a6a652af5d212bb29329@syzkaller.appspotmail.com
 
 =====================================================
-BUG: KMSAN: uninit-value in __mpol_equal+0x617/0x690 mm/mempolicy.c:2340
-CPU: 0 PID: 20507 Comm: syz-executor.4 Not tainted 5.12.0-rc6-syzkaller #0
+BUG: KMSAN: uninit-value in ax25cmp+0x49c/0x5f0 net/ax25/ax25_addr.c:119
+CPU: 0 PID: 26805 Comm: syz-executor.5 Not tainted 5.12.0-rc6-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  __dump_stack lib/dump_stack.c:79 [inline]
  dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
  kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
  __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
- __mpol_equal+0x617/0x690 mm/mempolicy.c:2340
- mpol_equal include/linux/mempolicy.h:108 [inline]
- vma_merge+0x47e/0x2210 mm/mmap.c:1187
- mbind_range mm/mempolicy.c:830 [inline]
- do_mbind+0x19c9/0x38c0 mm/mempolicy.c:1350
- kernel_mbind mm/mempolicy.c:1478 [inline]
- __do_sys_mbind mm/mempolicy.c:1485 [inline]
- __se_sys_mbind+0x3a6/0x3c0 mm/mempolicy.c:1481
- __x64_sys_mbind+0x6e/0x90 mm/mempolicy.c:1481
- do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665f9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fd2ba516188 EFLAGS: 00000246 ORIG_RAX: 00000000000000ed
-RAX: ffffffffffffffda RBX: 000000000056c008 RCX: 00000000004665f9
-RDX: 0000000000002001 RSI: 0000000000800000 RDI: 0000000020001000
-RBP: 00000000004bfbb9 R08: 0000000000000007 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c008
-R13: 0000000000a9fb1f R14: 00007fd2ba516300 R15: 0000000000022000
+ ax25cmp+0x49c/0x5f0 net/ax25/ax25_addr.c:119
+ nr_dev_get net/netrom/nr_route.c:598 [inline]
+ nr_route_frame+0x477/0x1ff0 net/netrom/nr_route.c:771
+ nr_xmit+0x9c/0x270 net/netrom/nr_dev.c:144
+ __netdev_start_xmit include/linux/netdevice.h:4825 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4839 [inline]
+ xmit_one+0x2b6/0x760 net/core/dev.c:3605
+ dev_hard_start_xmit net/core/dev.c:3621 [inline]
+ __dev_queue_xmit+0x3432/0x4600 net/core/dev.c:4194
+ dev_queue_xmit+0x4b/0x60 net/core/dev.c:4227
+ raw_sendmsg+0x7ce/0xcc0 net/ieee802154/socket.c:295
+ ieee802154_sock_sendmsg+0xec/0x130 net/ieee802154/socket.c:97
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2350
+ ___sys_sendmsg net/socket.c:2404 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2433
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
+ __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+ __do_fast_syscall_32+0x127/0x180 arch/x86/entry/common.c:142
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:167
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:210
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f1d549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f55175fc EFLAGS: 00000296 ORIG_RAX: 0000000000000172
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000020009c40
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
 
 Uninit was created at:
  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
  kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
  kmsan_slab_alloc+0x8e/0xe0 mm/kmsan/kmsan_hooks.c:76
  slab_alloc_node mm/slub.c:2922 [inline]
- slab_alloc mm/slub.c:2931 [inline]
- kmem_cache_alloc+0x895/0x1030 mm/slub.c:2936
- mpol_new mm/mempolicy.c:302 [inline]
- do_mbind+0x8d5/0x38c0 mm/mempolicy.c:1306
- kernel_mbind mm/mempolicy.c:1478 [inline]
- __do_sys_mbind mm/mempolicy.c:1485 [inline]
- __se_sys_mbind+0x3a6/0x3c0 mm/mempolicy.c:1481
- __x64_sys_mbind+0x6e/0x90 mm/mempolicy.c:1481
- do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+ __kmalloc_node_track_caller+0xa4f/0x1470 mm/slub.c:4609
+ kmalloc_reserve net/core/skbuff.c:353 [inline]
+ __alloc_skb+0x4dd/0xe90 net/core/skbuff.c:424
+ alloc_skb include/linux/skbuff.h:1103 [inline]
+ alloc_skb_with_frags+0x1f3/0xc10 net/core/skbuff.c:5948
+ sock_alloc_send_pskb+0xdc1/0xf90 net/core/sock.c:2362
+ sock_alloc_send_skb+0xca/0xe0 net/core/sock.c:2379
+ raw_sendmsg+0x459/0xcc0 net/ieee802154/socket.c:278
+ ieee802154_sock_sendmsg+0xec/0x130 net/ieee802154/socket.c:97
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2350
+ ___sys_sendmsg net/socket.c:2404 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2433
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
+ __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+ __do_fast_syscall_32+0x127/0x180 arch/x86/entry/common.c:142
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:167
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:210
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
 =====================================================
 =====================================================
-BUG: KMSAN: uninit-value in __mpol_equal+0x617/0x690 mm/mempolicy.c:2340
-CPU: 0 PID: 20507 Comm: syz-executor.4 Tainted: G    B             5.12.0-rc6-syzkaller #0
+BUG: KMSAN: uninit-value in ax25cmp+0x49c/0x5f0 net/ax25/ax25_addr.c:119
+CPU: 0 PID: 26805 Comm: syz-executor.5 Tainted: G    B             5.12.0-rc6-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  __dump_stack lib/dump_stack.c:79 [inline]
  dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
  kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
  __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
- __mpol_equal+0x617/0x690 mm/mempolicy.c:2340
- mpol_equal include/linux/mempolicy.h:108 [inline]
- vma_merge+0x47e/0x2210 mm/mmap.c:1187
- mbind_range mm/mempolicy.c:830 [inline]
- do_mbind+0x19c9/0x38c0 mm/mempolicy.c:1350
- kernel_mbind mm/mempolicy.c:1478 [inline]
- __do_sys_mbind mm/mempolicy.c:1485 [inline]
- __se_sys_mbind+0x3a6/0x3c0 mm/mempolicy.c:1481
- __x64_sys_mbind+0x6e/0x90 mm/mempolicy.c:1481
- do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665f9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fd2ba516188 EFLAGS: 00000246 ORIG_RAX: 00000000000000ed
-RAX: ffffffffffffffda RBX: 000000000056c008 RCX: 00000000004665f9
-RDX: 0000000000002001 RSI: 0000000000800000 RDI: 0000000020001000
-RBP: 00000000004bfbb9 R08: 0000000000000007 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c008
-R13: 0000000000a9fb1f R14: 00007fd2ba516300 R15: 0000000000022000
+ ax25cmp+0x49c/0x5f0 net/ax25/ax25_addr.c:119
+ nr_dev_get net/netrom/nr_route.c:598 [inline]
+ nr_route_frame+0x477/0x1ff0 net/netrom/nr_route.c:771
+ nr_xmit+0x9c/0x270 net/netrom/nr_dev.c:144
+ __netdev_start_xmit include/linux/netdevice.h:4825 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4839 [inline]
+ xmit_one+0x2b6/0x760 net/core/dev.c:3605
+ dev_hard_start_xmit net/core/dev.c:3621 [inline]
+ __dev_queue_xmit+0x3432/0x4600 net/core/dev.c:4194
+ dev_queue_xmit+0x4b/0x60 net/core/dev.c:4227
+ raw_sendmsg+0x7ce/0xcc0 net/ieee802154/socket.c:295
+ ieee802154_sock_sendmsg+0xec/0x130 net/ieee802154/socket.c:97
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2350
+ ___sys_sendmsg net/socket.c:2404 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2433
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
+ __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+ __do_fast_syscall_32+0x127/0x180 arch/x86/entry/common.c:142
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:167
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:210
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f1d549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f55175fc EFLAGS: 00000296 ORIG_RAX: 0000000000000172
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000020009c40
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
 
 Uninit was created at:
  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
  kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
  kmsan_slab_alloc+0x8e/0xe0 mm/kmsan/kmsan_hooks.c:76
  slab_alloc_node mm/slub.c:2922 [inline]
- slab_alloc mm/slub.c:2931 [inline]
- kmem_cache_alloc+0x895/0x1030 mm/slub.c:2936
- mpol_new mm/mempolicy.c:302 [inline]
- do_mbind+0x8d5/0x38c0 mm/mempolicy.c:1306
- kernel_mbind mm/mempolicy.c:1478 [inline]
- __do_sys_mbind mm/mempolicy.c:1485 [inline]
- __se_sys_mbind+0x3a6/0x3c0 mm/mempolicy.c:1481
- __x64_sys_mbind+0x6e/0x90 mm/mempolicy.c:1481
- do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+ __kmalloc_node_track_caller+0xa4f/0x1470 mm/slub.c:4609
+ kmalloc_reserve net/core/skbuff.c:353 [inline]
+ __alloc_skb+0x4dd/0xe90 net/core/skbuff.c:424
+ alloc_skb include/linux/skbuff.h:1103 [inline]
+ alloc_skb_with_frags+0x1f3/0xc10 net/core/skbuff.c:5948
+ sock_alloc_send_pskb+0xdc1/0xf90 net/core/sock.c:2362
+ sock_alloc_send_skb+0xca/0xe0 net/core/sock.c:2379
+ raw_sendmsg+0x459/0xcc0 net/ieee802154/socket.c:278
+ ieee802154_sock_sendmsg+0xec/0x130 net/ieee802154/socket.c:97
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2350
+ ___sys_sendmsg net/socket.c:2404 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2433
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
+ __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+ __do_fast_syscall_32+0x127/0x180 arch/x86/entry/common.c:142
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:167
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:210
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
 =====================================================
 =====================================================
-BUG: KMSAN: uninit-value in __mpol_equal+0x617/0x690 mm/mempolicy.c:2340
-CPU: 0 PID: 20507 Comm: syz-executor.4 Tainted: G    B             5.12.0-rc6-syzkaller #0
+BUG: KMSAN: uninit-value in ax25cmp+0x49c/0x5f0 net/ax25/ax25_addr.c:119
+CPU: 0 PID: 26805 Comm: syz-executor.5 Tainted: G    B             5.12.0-rc6-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  __dump_stack lib/dump_stack.c:79 [inline]
  dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
  kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
  __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
- __mpol_equal+0x617/0x690 mm/mempolicy.c:2340
- mpol_equal include/linux/mempolicy.h:108 [inline]
- vma_merge+0x47e/0x2210 mm/mmap.c:1187
- mbind_range mm/mempolicy.c:830 [inline]
- do_mbind+0x19c9/0x38c0 mm/mempolicy.c:1350
- kernel_mbind mm/mempolicy.c:1478 [inline]
- __do_sys_mbind mm/mempolicy.c:1485 [inline]
- __se_sys_mbind+0x3a6/0x3c0 mm/mempolicy.c:1481
- __x64_sys_mbind+0x6e/0x90 mm/mempolicy.c:1481
- do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665f9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fd2ba516188 EFLAGS: 00000246 ORIG_RAX: 00000000000000ed
-RAX: ffffffffffffffda RBX: 000000000056c008 RCX: 00000000004665f9
-RDX: 0000000000002001 RSI: 0000000000800000 RDI: 0000000020001000
-RBP: 00000000004bfbb9 R08: 0000000000000007 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c008
-R13: 0000000000a9fb1f R14: 00007fd2ba516300 R15: 0000000000022000
+ ax25cmp+0x49c/0x5f0 net/ax25/ax25_addr.c:119
+ nr_dev_get net/netrom/nr_route.c:598 [inline]
+ nr_route_frame+0x477/0x1ff0 net/netrom/nr_route.c:771
+ nr_xmit+0x9c/0x270 net/netrom/nr_dev.c:144
+ __netdev_start_xmit include/linux/netdevice.h:4825 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4839 [inline]
+ xmit_one+0x2b6/0x760 net/core/dev.c:3605
+ dev_hard_start_xmit net/core/dev.c:3621 [inline]
+ __dev_queue_xmit+0x3432/0x4600 net/core/dev.c:4194
+ dev_queue_xmit+0x4b/0x60 net/core/dev.c:4227
+ raw_sendmsg+0x7ce/0xcc0 net/ieee802154/socket.c:295
+ ieee802154_sock_sendmsg+0xec/0x130 net/ieee802154/socket.c:97
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2350
+ ___sys_sendmsg net/socket.c:2404 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2433
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
+ __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+ __do_fast_syscall_32+0x127/0x180 arch/x86/entry/common.c:142
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:167
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:210
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f1d549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f55175fc EFLAGS: 00000296 ORIG_RAX: 0000000000000172
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000020009c40
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
 
 Uninit was created at:
  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
  kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
  kmsan_slab_alloc+0x8e/0xe0 mm/kmsan/kmsan_hooks.c:76
  slab_alloc_node mm/slub.c:2922 [inline]
- slab_alloc mm/slub.c:2931 [inline]
- kmem_cache_alloc+0x895/0x1030 mm/slub.c:2936
- mpol_new mm/mempolicy.c:302 [inline]
- do_mbind+0x8d5/0x38c0 mm/mempolicy.c:1306
- kernel_mbind mm/mempolicy.c:1478 [inline]
- __do_sys_mbind mm/mempolicy.c:1485 [inline]
- __se_sys_mbind+0x3a6/0x3c0 mm/mempolicy.c:1481
- __x64_sys_mbind+0x6e/0x90 mm/mempolicy.c:1481
- do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+ __kmalloc_node_track_caller+0xa4f/0x1470 mm/slub.c:4609
+ kmalloc_reserve net/core/skbuff.c:353 [inline]
+ __alloc_skb+0x4dd/0xe90 net/core/skbuff.c:424
+ alloc_skb include/linux/skbuff.h:1103 [inline]
+ alloc_skb_with_frags+0x1f3/0xc10 net/core/skbuff.c:5948
+ sock_alloc_send_pskb+0xdc1/0xf90 net/core/sock.c:2362
+ sock_alloc_send_skb+0xca/0xe0 net/core/sock.c:2379
+ raw_sendmsg+0x459/0xcc0 net/ieee802154/socket.c:278
+ ieee802154_sock_sendmsg+0xec/0x130 net/ieee802154/socket.c:97
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2350
+ ___sys_sendmsg net/socket.c:2404 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2433
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
+ __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+ __do_fast_syscall_32+0x127/0x180 arch/x86/entry/common.c:142
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:167
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:210
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
 =====================================================
 =====================================================
-BUG: KMSAN: uninit-value in __mpol_equal mm/mempolicy.c:2340 [inline]
-BUG: KMSAN: uninit-value in mpol_equal include/linux/mempolicy.h:108 [inline]
-BUG: KMSAN: uninit-value in mbind_range mm/mempolicy.c:836 [inline]
-BUG: KMSAN: uninit-value in do_mbind+0x2ee6/0x38c0 mm/mempolicy.c:1350
-CPU: 0 PID: 20507 Comm: syz-executor.4 Tainted: G    B             5.12.0-rc6-syzkaller #0
+BUG: KMSAN: uninit-value in ax25cmp+0x49c/0x5f0 net/ax25/ax25_addr.c:119
+CPU: 0 PID: 26805 Comm: syz-executor.5 Tainted: G    B             5.12.0-rc6-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  __dump_stack lib/dump_stack.c:79 [inline]
  dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
  kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
  __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
- __mpol_equal mm/mempolicy.c:2340 [inline]
- mpol_equal include/linux/mempolicy.h:108 [inline]
- mbind_range mm/mempolicy.c:836 [inline]
- do_mbind+0x2ee6/0x38c0 mm/mempolicy.c:1350
- kernel_mbind mm/mempolicy.c:1478 [inline]
- __do_sys_mbind mm/mempolicy.c:1485 [inline]
- __se_sys_mbind+0x3a6/0x3c0 mm/mempolicy.c:1481
- __x64_sys_mbind+0x6e/0x90 mm/mempolicy.c:1481
- do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665f9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fd2ba516188 EFLAGS: 00000246 ORIG_RAX: 00000000000000ed
-RAX: ffffffffffffffda RBX: 000000000056c008 RCX: 00000000004665f9
-RDX: 0000000000002001 RSI: 0000000000800000 RDI: 0000000020001000
-RBP: 00000000004bfbb9 R08: 0000000000000007 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c008
-R13: 0000000000a9fb1f R14: 00007fd2ba516300 R15: 0000000000022000
+ ax25cmp+0x49c/0x5f0 net/ax25/ax25_addr.c:119
+ nr_dev_get net/netrom/nr_route.c:598 [inline]
+ nr_route_frame+0x477/0x1ff0 net/netrom/nr_route.c:771
+ nr_xmit+0x9c/0x270 net/netrom/nr_dev.c:144
+ __netdev_start_xmit include/linux/netdevice.h:4825 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4839 [inline]
+ xmit_one+0x2b6/0x760 net/core/dev.c:3605
+ dev_hard_start_xmit net/core/dev.c:3621 [inline]
+ __dev_queue_xmit+0x3432/0x4600 net/core/dev.c:4194
+ dev_queue_xmit+0x4b/0x60 net/core/dev.c:4227
+ raw_sendmsg+0x7ce/0xcc0 net/ieee802154/socket.c:295
+ ieee802154_sock_sendmsg+0xec/0x130 net/ieee802154/socket.c:97
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2350
+ ___sys_sendmsg net/socket.c:2404 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2433
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
+ __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+ __do_fast_syscall_32+0x127/0x180 arch/x86/entry/common.c:142
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:167
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:210
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f1d549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f55175fc EFLAGS: 00000296 ORIG_RAX: 0000000000000172
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000020009c40
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
 
 Uninit was created at:
  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
  kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
  kmsan_slab_alloc+0x8e/0xe0 mm/kmsan/kmsan_hooks.c:76
  slab_alloc_node mm/slub.c:2922 [inline]
- slab_alloc mm/slub.c:2931 [inline]
- kmem_cache_alloc+0x895/0x1030 mm/slub.c:2936
- mpol_new mm/mempolicy.c:302 [inline]
- do_mbind+0x8d5/0x38c0 mm/mempolicy.c:1306
- kernel_mbind mm/mempolicy.c:1478 [inline]
- __do_sys_mbind mm/mempolicy.c:1485 [inline]
- __se_sys_mbind+0x3a6/0x3c0 mm/mempolicy.c:1481
- __x64_sys_mbind+0x6e/0x90 mm/mempolicy.c:1481
- do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+ __kmalloc_node_track_caller+0xa4f/0x1470 mm/slub.c:4609
+ kmalloc_reserve net/core/skbuff.c:353 [inline]
+ __alloc_skb+0x4dd/0xe90 net/core/skbuff.c:424
+ alloc_skb include/linux/skbuff.h:1103 [inline]
+ alloc_skb_with_frags+0x1f3/0xc10 net/core/skbuff.c:5948
+ sock_alloc_send_pskb+0xdc1/0xf90 net/core/sock.c:2362
+ sock_alloc_send_skb+0xca/0xe0 net/core/sock.c:2379
+ raw_sendmsg+0x459/0xcc0 net/ieee802154/socket.c:278
+ ieee802154_sock_sendmsg+0xec/0x130 net/ieee802154/socket.c:97
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2350
+ ___sys_sendmsg net/socket.c:2404 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2433
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
+ __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+ __do_fast_syscall_32+0x127/0x180 arch/x86/entry/common.c:142
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:167
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:210
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in ax25cmp+0x49c/0x5f0 net/ax25/ax25_addr.c:119
+CPU: 0 PID: 26805 Comm: syz-executor.5 Tainted: G    B             5.12.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
+ ax25cmp+0x49c/0x5f0 net/ax25/ax25_addr.c:119
+ nr_dev_get net/netrom/nr_route.c:598 [inline]
+ nr_route_frame+0x477/0x1ff0 net/netrom/nr_route.c:771
+ nr_xmit+0x9c/0x270 net/netrom/nr_dev.c:144
+ __netdev_start_xmit include/linux/netdevice.h:4825 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4839 [inline]
+ xmit_one+0x2b6/0x760 net/core/dev.c:3605
+ dev_hard_start_xmit net/core/dev.c:3621 [inline]
+ __dev_queue_xmit+0x3432/0x4600 net/core/dev.c:4194
+ dev_queue_xmit+0x4b/0x60 net/core/dev.c:4227
+ raw_sendmsg+0x7ce/0xcc0 net/ieee802154/socket.c:295
+ ieee802154_sock_sendmsg+0xec/0x130 net/ieee802154/socket.c:97
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2350
+ ___sys_sendmsg net/socket.c:2404 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2433
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
+ __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+ __do_fast_syscall_32+0x127/0x180 arch/x86/entry/common.c:142
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:167
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:210
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f1d549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f55175fc EFLAGS: 00000296 ORIG_RAX: 0000000000000172
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000020009c40
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
+ kmsan_slab_alloc+0x8e/0xe0 mm/kmsan/kmsan_hooks.c:76
+ slab_alloc_node mm/slub.c:2922 [inline]
+ __kmalloc_node_track_caller+0xa4f/0x1470 mm/slub.c:4609
+ kmalloc_reserve net/core/skbuff.c:353 [inline]
+ __alloc_skb+0x4dd/0xe90 net/core/skbuff.c:424
+ alloc_skb include/linux/skbuff.h:1103 [inline]
+ alloc_skb_with_frags+0x1f3/0xc10 net/core/skbuff.c:5948
+ sock_alloc_send_pskb+0xdc1/0xf90 net/core/sock.c:2362
+ sock_alloc_send_skb+0xca/0xe0 net/core/sock.c:2379
+ raw_sendmsg+0x459/0xcc0 net/ieee802154/socket.c:278
+ ieee802154_sock_sendmsg+0xec/0x130 net/ieee802154/socket.c:97
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2350
+ ___sys_sendmsg net/socket.c:2404 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2433
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
+ __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+ __do_fast_syscall_32+0x127/0x180 arch/x86/entry/common.c:142
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:167
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:210
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in ax25cmp+0x49c/0x5f0 net/ax25/ax25_addr.c:119
+CPU: 0 PID: 26805 Comm: syz-executor.5 Tainted: G    B             5.12.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
+ ax25cmp+0x49c/0x5f0 net/ax25/ax25_addr.c:119
+ nr_dev_get net/netrom/nr_route.c:598 [inline]
+ nr_route_frame+0x477/0x1ff0 net/netrom/nr_route.c:771
+ nr_xmit+0x9c/0x270 net/netrom/nr_dev.c:144
+ __netdev_start_xmit include/linux/netdevice.h:4825 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4839 [inline]
+ xmit_one+0x2b6/0x760 net/core/dev.c:3605
+ dev_hard_start_xmit net/core/dev.c:3621 [inline]
+ __dev_queue_xmit+0x3432/0x4600 net/core/dev.c:4194
+ dev_queue_xmit+0x4b/0x60 net/core/dev.c:4227
+ raw_sendmsg+0x7ce/0xcc0 net/ieee802154/socket.c:295
+ ieee802154_sock_sendmsg+0xec/0x130 net/ieee802154/socket.c:97
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2350
+ ___sys_sendmsg net/socket.c:2404 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2433
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
+ __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+ __do_fast_syscall_32+0x127/0x180 arch/x86/entry/common.c:142
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:167
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:210
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f1d549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f55175fc EFLAGS: 00000296 ORIG_RAX: 0000000000000172
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000020009c40
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
+ kmsan_slab_alloc+0x8e/0xe0 mm/kmsan/kmsan_hooks.c:76
+ slab_alloc_node mm/slub.c:2922 [inline]
+ __kmalloc_node_track_caller+0xa4f/0x1470 mm/slub.c:4609
+ kmalloc_reserve net/core/skbuff.c:353 [inline]
+ __alloc_skb+0x4dd/0xe90 net/core/skbuff.c:424
+ alloc_skb include/linux/skbuff.h:1103 [inline]
+ alloc_skb_with_frags+0x1f3/0xc10 net/core/skbuff.c:5948
+ sock_alloc_send_pskb+0xdc1/0xf90 net/core/sock.c:2362
+ sock_alloc_send_skb+0xca/0xe0 net/core/sock.c:2379
+ raw_sendmsg+0x459/0xcc0 net/ieee802154/socket.c:278
+ ieee802154_sock_sendmsg+0xec/0x130 net/ieee802154/socket.c:97
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2350
+ ___sys_sendmsg net/socket.c:2404 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2433
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
+ __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+ __do_fast_syscall_32+0x127/0x180 arch/x86/entry/common.c:142
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:167
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:210
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in nr_route_frame+0x7c8/0x1ff0 net/netrom/nr_route.c:784
+CPU: 0 PID: 26805 Comm: syz-executor.5 Tainted: G    B             5.12.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
+ nr_route_frame+0x7c8/0x1ff0 net/netrom/nr_route.c:784
+ nr_xmit+0x9c/0x270 net/netrom/nr_dev.c:144
+ __netdev_start_xmit include/linux/netdevice.h:4825 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4839 [inline]
+ xmit_one+0x2b6/0x760 net/core/dev.c:3605
+ dev_hard_start_xmit net/core/dev.c:3621 [inline]
+ __dev_queue_xmit+0x3432/0x4600 net/core/dev.c:4194
+ dev_queue_xmit+0x4b/0x60 net/core/dev.c:4227
+ raw_sendmsg+0x7ce/0xcc0 net/ieee802154/socket.c:295
+ ieee802154_sock_sendmsg+0xec/0x130 net/ieee802154/socket.c:97
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2350
+ ___sys_sendmsg net/socket.c:2404 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2433
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
+ __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+ __do_fast_syscall_32+0x127/0x180 arch/x86/entry/common.c:142
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:167
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:210
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f1d549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f55175fc EFLAGS: 00000296 ORIG_RAX: 0000000000000172
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000020009c40
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
+ kmsan_slab_alloc+0x8e/0xe0 mm/kmsan/kmsan_hooks.c:76
+ slab_alloc_node mm/slub.c:2922 [inline]
+ __kmalloc_node_track_caller+0xa4f/0x1470 mm/slub.c:4609
+ kmalloc_reserve net/core/skbuff.c:353 [inline]
+ __alloc_skb+0x4dd/0xe90 net/core/skbuff.c:424
+ alloc_skb include/linux/skbuff.h:1103 [inline]
+ alloc_skb_with_frags+0x1f3/0xc10 net/core/skbuff.c:5948
+ sock_alloc_send_pskb+0xdc1/0xf90 net/core/sock.c:2362
+ sock_alloc_send_skb+0xca/0xe0 net/core/sock.c:2379
+ raw_sendmsg+0x459/0xcc0 net/ieee802154/socket.c:278
+ ieee802154_sock_sendmsg+0xec/0x130 net/ieee802154/socket.c:97
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2350
+ ___sys_sendmsg net/socket.c:2404 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2433
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
+ __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+ __do_fast_syscall_32+0x127/0x180 arch/x86/entry/common.c:142
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:167
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:210
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
 =====================================================
 
 
