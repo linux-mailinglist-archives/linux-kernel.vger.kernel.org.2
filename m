@@ -2,94 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D223708F0
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 22:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC053708FD
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 23:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231996AbhEAUgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 16:36:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42982 "EHLO
+        id S231906AbhEAVEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 17:04:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231853AbhEAUgY (ORCPT
+        with ESMTP id S231547AbhEAVEe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 16:36:24 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87DE6C06138B;
-        Sat,  1 May 2021 13:35:32 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a4so2177328ejk.1;
-        Sat, 01 May 2021 13:35:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=lihGSNM/MK5Li+Q6R5o1M4YyP4+yQiLVtLIt/qjFJZU=;
-        b=ej1YiTxIsXvvThZwJuqr06opWozes8XB1/NByI6RR22UWOOVRGjqifemJ6ZkZ6OrqW
-         CnwSbQZ2ylaCgsUOh77Mo2Xg80pYQMM5RSRHp8g90hhSGqKj9A3CDBjFnS9kTtA6NUpz
-         PGFoWfOhquZajkxt6cqbPwfw3GPSoO0KU+R4OdEttjRKi6RIlcLcXXEkjerpibKzUoBY
-         4sT8Y7AHq0IrKBy2S8ylhwGDyoAXonIT8ORpwNNHByMb/QsdhTlwqNrWcy4eo3Cm2z0W
-         kLQqh/FUvHxtNHcUUg3rJw1ppoSZHcP1uudIR/uU4E7dRhZ9WGsN7r/132yCCmtdk3Aq
-         lfPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=lihGSNM/MK5Li+Q6R5o1M4YyP4+yQiLVtLIt/qjFJZU=;
-        b=qtmyRabdC3YOJ6R/eNtvM+VNaJcvP9Hf6dItJNtSj7ETOre6aYGDFC4Awzta8Yx10R
-         SAxrsT1nXQiqBJcxI8gPRgJ0ibnJYJ9nmp2ucCYc6/xXhyBJzbg1e8xbpVhK/zCkTzC8
-         dgo6bwiiTbQKM25AH/jxMPbd5fkDUV5T3FhKzPWRxQOUzEayDCjJhXS7rNOp6UyRmiAx
-         03/jQl3ObIk8uXamAVOGogphWVaVjZ9VWEEEqaPea1kxJy1wq0GjsUPxtccYjSDZSiBK
-         Y7tCBOW6lSRKPPRX5CUByATSVjWYdDIOVeq+2VasX7AVbsDyc3qtZ6QLNgyC+ikpuS5y
-         hWIA==
-X-Gm-Message-State: AOAM531jwOC8eam1earoXbVzUnUHRccUJ8PiOcvdwHE5PH2MUgCx6xW1
-        jRT77wRRHulI8m31/vycxHg=
-X-Google-Smtp-Source: ABdhPJxH69sLzo2KS4iHxStQmHaYmLrWsQBPfikpwxpVjaAYl0ljwzCmShI0ddrv5Lt/zD/SBpYANg==
-X-Received: by 2002:a17:906:994f:: with SMTP id zm15mr8213057ejb.24.1619901331279;
-        Sat, 01 May 2021 13:35:31 -0700 (PDT)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id 9sm6607544ejv.73.2021.05.01.13.35.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 01 May 2021 13:35:31 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     cl@rock-chips.com, jay.xu@rock-chips.com, david.wu@rock-chips.com,
-        zhangqing@rock-chips.com, huangtao@rock-chips.com,
-        shawn.lin@rock-chips.com, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 2/2] ARM: dts: rockchip: add grf register compatible for rk3066/rk3188
-Date:   Sat,  1 May 2021 22:35:20 +0200
-Message-Id: <20210501203520.5465-2-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20210501203520.5465-1-jbx6244@gmail.com>
-References: <20210501203520.5465-1-jbx6244@gmail.com>
+        Sat, 1 May 2021 17:04:34 -0400
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C88DC06174A
+        for <linux-kernel@vger.kernel.org>; Sat,  1 May 2021 14:03:43 -0700 (PDT)
+Received: from localhost (unknown [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 8DC33A5DF54;
+        Sat,  1 May 2021 23:03:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1619903018;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AcbSLwuICr6Udix8ctgEOYjRfptG+tEIQT5YVV6bUi8=;
+        b=R+qKBo8+Odi+ppTFSIOpPGb8VaxfcVkkhTqC4TE0dsGVraIuFto8vUJM1p3s+WYkrA1JIQ
+        7I+tt3lWzHq7mfTV52Y+RB0MgE/jVJ8gZ4PAwDEKxqqFxLQB7xWu8GS1SdkOOEWwj8w1M9
+        52Rggvh2enI1e83tRL9WDcbTEGAikkg=
+Date:   Sat, 1 May 2021 23:03:37 +0200
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Vineet Gupta <Vineet.Gupta1@synopsys.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        arcml <linux-snps-arc@lists.infradead.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
+Subject: Re: Heads up: gcc miscompiling initramfs zlib decompression code at
+ -O3
+Message-ID: <20210501210337.66qxgomc643lbdyi@spock.localdomain>
+References: <75d07691-1e4f-741f-9852-38c0b4f520bc@synopsys.com>
+ <CAHk-=wjJEgjCYzHZFPxTs01p7FMEHKKqXyqwRVBk6KnvHB1qVA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjJEgjCYzHZFPxTs01p7FMEHKKqXyqwRVBk6KnvHB1qVA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the conversion of syscon.yaml minItems for compatibles
-was set to 2. Current Rockchip rk3xxx.dtsi file only uses "syscon"
-for the grf registers. Add "rockchip,rk3066-grf", "syscon"
-compatible for rk3066/rk3188 to reduce notifications produced with:
+Hello.
 
-make ARCH=arm dtbs_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/mfd/syscon.yaml
+On Fri, Apr 30, 2021 at 03:06:30PM -0700, Linus Torvalds wrote:
+> On Fri, Apr 30, 2021 at 1:46 PM Vineet Gupta <Vineet.Gupta1@synopsys.com> wrote:
+> >
+> > I've hit a mainline gcc 10.2 (also gcc 9.3) bug which triggers at -O3
+> > causing wrong codegen.
+> 
+> I'd be more than happy to just disable CC_OPTIMIZE_FOR_PERFORMANCE_O3 entirely.
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- arch/arm/boot/dts/rk3xxx.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+FWIW, we used to find real bugs using -O3 in the past [1].
 
-diff --git a/arch/arm/boot/dts/rk3xxx.dtsi b/arch/arm/boot/dts/rk3xxx.dtsi
-index 755c946f1..c34bc59c9 100644
---- a/arch/arm/boot/dts/rk3xxx.dtsi
-+++ b/arch/arm/boot/dts/rk3xxx.dtsi
-@@ -256,7 +256,7 @@
- 	};
- 
- 	grf: grf@20008000 {
--		compatible = "syscon";
-+		compatible = "rockchip,rk3066-grf", "syscon";
- 		reg = <0x20008000 0x200>;
- 	};
- 
+> The advantages are very questionable - with a lot of the optimizations
+> at O3 being about loops, something which the kernel to a close
+> approximation doesn't have.
+> 
+> Most kernel loops are "count on one hand" iterations, and loop
+> optimizations generally just make things worse.
+> 
+> And we've had problems with -O3 before, because not only are the
+> optimizations a bit esoteric, they are often relatively untested. If
+> you look around at various projects (outside the kernel), -O2 is
+> generally the "default".
+> 
+> And that's entirely ignoring the gcc history - where -O3 has often
+> been very buggy indeed. It's gotten much better, but I just don't see
+> the upside of using -O3.
+> 
+> In fact, it looks like we already have that
+> 
+>         depends on ARC
+> 
+> for -O3, exactly because nobody really wants to use this.
+> 
+> So this bug seems to be entirely ARC-specific, in that only ARC can
+> use -O3 for the kernel already.
+> 
+>              Linus
+
+[1] https://lore.kernel.org/lkml/673b885183fb64f1cbb3ed2387524077@natalenko.name/
+
 -- 
-2.11.0
-
+  Oleksandr Natalenko (post-factum)
