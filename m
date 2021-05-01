@@ -2,109 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F7037046E
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 02:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB1837046F
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 02:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231382AbhEAAbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Apr 2021 20:31:40 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:50257 "EHLO m43-7.mailgun.net"
+        id S231287AbhEAAcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Apr 2021 20:32:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230226AbhEAAbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Apr 2021 20:31:39 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1619829050; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=WvWz0gbRm48kAWe+L3LFpw5iHaX9Gmr44pfC0e7Kx8I=; b=rG6GSbta3mgVGF/1t/S0XZQHOdQo5qfMY4qUh+mWQQRf+GnP/ZQIqd+0s/7UhJvg97ZQpWPM
- OIbQ5HdxulpbZmTjgJfDuVX4G6j7f14eTwGlh4rQ5MwAx8H1PZQZvrTtMSgxQFJVEjhzwsNi
- zWoNosnPGCtDf9OS2+/V+CWnZ84=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 608ca12efebcffa80f391558 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 01 May 2021 00:30:38
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D8D0DC4338A; Sat,  1 May 2021 00:30:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1D8CBC433F1;
-        Sat,  1 May 2021 00:30:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1D8CBC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
-Subject: Re: [PATCH] bus: mhi: core: Improve debug messages for power on
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
-        linux-kernel@vger.kernel.org, loic.poulain@linaro.org
-References: <1619485258-35689-1-git-send-email-bbhatt@codeaurora.org>
-From:   Hemant Kumar <hemantk@codeaurora.org>
-Message-ID: <c26a8005-3bd6-eab0-185d-6341419dd59c@codeaurora.org>
-Date:   Fri, 30 Apr 2021 17:30:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230226AbhEAAcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Apr 2021 20:32:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B871A61409;
+        Sat,  1 May 2021 00:32:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619829124;
+        bh=7xDC2tPQYqv8y+HR9kueGyxrx78+uzWTPpB0xELv/zc=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=sEambGODQzrKeAdB1wdPC6mdJ9oS2+C/UVpcgIvU/WLrhfMP+qO99mRewkAH1csEa
+         qNqC5UBOGZ3r5pDQV7Es93pJGg92HFLRlxYdSBtBNX0jQFgVTWD9IUV5oFE2k2D7P0
+         v8vcgwK9Nv1iBHQn6tYZXWR+fV33zYwEI3m8tKruKa+4M5jUmAZxwx1aS7jcCDZAYc
+         wNoYw78k+5KDq1244b9/6GokNRHyKSUfIu3NCuto1ARIjXYm2/+HQbQFjckQvGq4bJ
+         JqnlKcjac1uow/0grsVFuVk0p3IeQCObKrk3NDFjkZYUJ5a+KErbvnN7JLjSJme0Kj
+         8+yL8Rs4+jDfA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 561AC5C0153; Fri, 30 Apr 2021 17:32:04 -0700 (PDT)
+Date:   Fri, 30 Apr 2021 17:32:04 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
+        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
+        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
+        ak@linux.intel.com, feng.tang@intel.com, zhengjun.xing@intel.com
+Subject: [PATCH v12 clocksource 0/5] Do not mark clocks unstable due to
+ delays for v5.13
+Message-ID: <20210501003204.GA2447938@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-In-Reply-To: <1619485258-35689-1-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello!
 
-Hi Bhaumik,
+If there is a sufficient delay between reading the watchdog clock and the
+clock under test, the clock under test will be marked unstable through no
+fault of its own.  This series checks for this, doing limited retries
+to get a good set of clock reads.  If the clock is marked unstable
+and is marked as being per-CPU, cross-CPU synchronization is checked.
+This series also provides a clocksource-watchdog-test kernel module that
+tests this new ability of distinguishing delay-induced clock skew from
+true clock skew.
 
-On 4/26/21 6:00 PM, Bhaumik Bhatt wrote:
-> Improve error message to be more descriptive if a failure occurs
-> with an invalid power on execution environment. Also add a debug
-> message to print the execution environment and MHI state before
-> a power on is attempted to get a better view of device states.
-Can we add a scenario where this dbg log can help ? That gives a good 
-justification for addition of new log.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> ---
->   drivers/bus/mhi/core/pm.c | 6 +++++-
->   1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-> index adf426c..f4a8b9a 100644
-> --- a/drivers/bus/mhi/core/pm.c
-> +++ b/drivers/bus/mhi/core/pm.c
-> @@ -1076,12 +1076,16 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
->   
->   	/* Confirm that the device is in valid exec env */
->   	if (!MHI_IN_PBL(current_ee) && current_ee != MHI_EE_AMSS) {
-> -		dev_err(dev, "Not a valid EE for power on\n");
-> +		dev_err(dev, "%s is not a valid EE for power on\n",
-> +			TO_MHI_EXEC_STR(current_ee));
->   		ret = -EIO;
->   		goto error_async_power_up;
->   	}
->   
->   	state = mhi_get_mhi_state(mhi_cntrl);
-> +	dev_dbg(dev, "Attempting power on with EE: %s, state: %s\n",
-> +		TO_MHI_EXEC_STR(current_ee), TO_MHI_STATE_STR(state));
-> +
->   	if (state == MHI_STATE_SYS_ERR) {
->   		mhi_set_mhi_state(mhi_cntrl, MHI_STATE_RESET);
->   		ret = wait_event_timeout(mhi_cntrl->state_event,
-> 
+Note that "sufficient delay" can be provided by SMIs, NMIs, and of course
+vCPU preemption.
 
-Thanks,
-Hemant
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+The patches in this series are as follows:
+
+1.	Retry clock read if long delays detected.
+
+2.	Check per-CPU clock synchronization when marked unstable.
+
+3.	Limit number of CPUs checked for clock synchronization.
+
+4.	Reduce clocksource-skew threshold for TSC.
+
+5.	Provide kernel module to test clocksource watchdog.
+
+Changes since v11, based on feedback from Thomas Gleixner:
+
+o	Remove the fault-injection code from clocksource.c.
+
+o	Create a kernel/time/clocksource-wdtest.c kernel module that
+	creates its own clocksource structures and injects delays
+	as part of their ->read() functions.
+
+o	Make this kernel module splat upon error, for example, when
+	a clocksource is not marked unstable but should have been.
+
+o	Apply a couple more "Link:" fields to all patches.
+
+Changes since v9:
+
+o	Forgive tsc_early drift, based on feedback from Feng Tang; Xing,
+	Zhengjun; and Thomas Gleixner.
+
+o	Improve CPU selection for clock-synchronization checking.
+
+Link: https://lore.kernel.org/lkml/20210419045155.GA596058@paulmck-ThinkPad-P17-Gen-1/
+
+Changes since v8, based on Thomas Gleixner feedback:
+
+o	Reduced clock-skew threshold to 200us and delay limit to 50us.
+
+o	Split out a cs_watchdog_read() function.
+
+o	Removed the pointless CLOCK_SOURCE_VERIFY_PERCPU from kvm_clock.
+
+o	Initialized cs_nsec_max and cs_nsec_min to avoid firsttime checks.
+
+Link: https://lore.kernel.org/lkml/20210414043435.GA2812539@paulmck-ThinkPad-P17-Gen-1/
+
+Changes since v7, based on Thomas Gleixner feedback:
+
+o	Fix embarrassing git-format-patch operator error.
+
+o	Merge pairwise clock-desynchronization checking into the checking
+	of per-CPU clock synchronization when marked unstable.
+
+o	Do selective per-CPU checking rather than blindly checking all
+	CPUs.  Provide a clocksource.verify_n_cpus kernel boot parameter
+	to control this behavior, with the value -1 choosing the old
+	check-all-CPUs behavior.  The default is to randomly check 8 CPUs.
+
+o	Fix the clock-desynchronization checking to avoid a potential
+	use-after-free error for dynamically allocated clocksource
+	structures.
+
+o	Remove redundance "wdagain_nsec < 0" from clocksource_watchdog()
+	clocksource skew checking.
+
+o	Update commit logs and do code-style updates.
+
+Link: https://lore.kernel.org/lkml/20210106004013.GA11179@paulmck-ThinkPad-P72/
+
+Changes since v5:
+
+o	Rebased to v5.12-rc5.
+
+Changes since v4:
+
+o	Rebased to v5.12-rc1.
+
+Changes since v3:
+
+o	Rebased to v5.11.
+
+o	Apply Randy Dunlap feedback.
+
+Changes since v2:
+
+o	Rebased to v5.11-rc6.
+
+o	Updated Cc: list.
+
+Changes since v1:
+
+o	Applied feedback from Rik van Riel.
+
+o	Rebased to v5.11-rc3.
+
+o	Stripped "RFC" from the subject lines.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ Documentation/admin-guide/kernel-parameters.txt   |   16 +
+ arch/x86/kernel/tsc.c                             |    1 
+ b/Documentation/admin-guide/kernel-parameters.txt |    6 
+ b/arch/x86/kernel/tsc.c                           |    3 
+ b/include/linux/clocksource.h                     |    2 
+ b/kernel/time/Makefile                            |    1 
+ b/kernel/time/clocksource-wdtest.c                |  202 ++++++++++++++++++++++
+ b/kernel/time/clocksource.c                       |   52 +++++
+ b/kernel/time/jiffies.c                           |   15 -
+ b/lib/Kconfig.debug                               |   12 +
+ include/linux/clocksource.h                       |    6 
+ kernel/time/clocksource.c                         |  193 +++++++++++++++++++--
+ 12 files changed, 477 insertions(+), 32 deletions(-)
