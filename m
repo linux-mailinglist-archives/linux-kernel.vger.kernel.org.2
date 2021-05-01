@@ -2,151 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E47370839
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 19:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B78337083A
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 19:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233163AbhEAR1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 13:27:08 -0400
-Received: from conuserg-08.nifty.com ([210.131.2.75]:47042 "EHLO
-        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231732AbhEAR1F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 13:27:05 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-08.nifty.com with ESMTP id 141HOcsb024068;
-        Sun, 2 May 2021 02:24:39 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 141HOcsb024068
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1619889880;
-        bh=DKpAtplaQKg143e+7vSq9Fg8LaAV0UcKHDXnRDpAwB8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rVe0kBlYfm5mf5koQK5x+ddei74+pKW5XvZOKTZeHAioqHrhu/gxXy4Wza0fypF4B
-         6A1jxXt017YrDWOVESl/9VuszooqpsI28jl6gV7TRLeGYGPsGLcQOgqE0Tq4OiXesC
-         L9sAqcSXi1L4D7sKx2RKh5qDREK2YFAIpJFLZDXWG836PKolgRSHLsP6nlFAlwV605
-         6um1B5NFGu24WHxuldifXj9iM5UOKPI9FNtnLn4H2XrPWaOI+XL2Bf4mUXHrtWBALg
-         w3csdIFGgvhJNmVMLs3YCk07ePvz8SG5G3Axq4pMvmomGu3dVX6N6g5EappzZG97xm
-         NZQtfKTdIhfYA==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Chris Zankel <chris@zankel.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Helge Deller <deller@gmx.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org
-Subject: [PATCH 2/2] arch: use cross_compiling to check whether it is a cross build or not
-Date:   Sun,  2 May 2021 02:24:36 +0900
-Message-Id: <20210501172437.156926-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210501172437.156926-1-masahiroy@kernel.org>
-References: <20210501172437.156926-1-masahiroy@kernel.org>
+        id S231770AbhEAR1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 13:27:19 -0400
+Received: from mga17.intel.com ([192.55.52.151]:16852 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233167AbhEAR1Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 May 2021 13:27:16 -0400
+IronPort-SDR: CQU/2EDHMeBveNgcP6qhdqJuG6HuVInJHkmbwPm1aygVFDoLyhJedpkkEzVWxrbMOw8Rax/GQD
+ C/nqHZt4mOow==
+X-IronPort-AV: E=McAfee;i="6200,9189,9971"; a="177660748"
+X-IronPort-AV: E=Sophos;i="5.82,266,1613462400"; 
+   d="scan'208";a="177660748"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2021 10:26:25 -0700
+IronPort-SDR: Rduq+UhwAFyrHiyeHofimcLOeZMEB1Q/3Zd18sYj0TCBCzPlU8h7M+pbTmrW0NcJrUiHjtFs1u
+ g2axzewuaSBQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,266,1613462400"; 
+   d="scan'208";a="449426686"
+Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 01 May 2021 10:26:24 -0700
+Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lctNn-0008fI-Hm; Sat, 01 May 2021 17:26:23 +0000
+Date:   Sun, 02 May 2021 01:25:52 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:rcu/next] BUILD SUCCESS
+ ad1f357157aa20466b590638f8a6d252d3cf33bc
+Message-ID: <608d8f20.hsAMh7OJyXU94kh+%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'cross_compiling' is defined by the top Makefile and available for
-arch Makefiles to check whether it is a cross build or not. A good
-thing is the variable name 'cross_compiling' is self-documenting.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
+branch HEAD: ad1f357157aa20466b590638f8a6d252d3cf33bc  Merge branch 'clocksource.2021.04.30b' into HEAD
 
-This is a simple replacement for m68k, mips, sh, for which $(ARCH)
-and $(SRCARCH) always match.
+elapsed time: 742m
 
-No functional change is intended for xtensa, either.
+configs tested: 103
+configs skipped: 2
 
-This is rather a fix for parisc because arch/parisc/Makefile defines
-UTS_MATCHINE depending on CONFIG_64BIT, therefore cc-cross-prefix
-is not working in Kconfig time.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+mips                     loongson1b_defconfig
+powerpc                     rainier_defconfig
+mips                       capcella_defconfig
+arm                  colibri_pxa270_defconfig
+sh                 kfr2r09-romimage_defconfig
+arm                            lart_defconfig
+microblaze                      mmu_defconfig
+arm                       spear13xx_defconfig
+arm                          gemini_defconfig
+powerpc                     pq2fads_defconfig
+ia64                                defconfig
+s390                             allyesconfig
+h8300                               defconfig
+ia64                          tiger_defconfig
+mips                        jmr3927_defconfig
+m68k                       bvme6000_defconfig
+ia64                         bigsur_defconfig
+mips                        vocore2_defconfig
+parisc                              defconfig
+s390                             alldefconfig
+mips                          ath79_defconfig
+m68k                        stmark2_defconfig
+h8300                       h8s-sim_defconfig
+mips                           ip27_defconfig
+m68k                        m5407c3_defconfig
+sh                        edosk7760_defconfig
+sh                   secureedge5410_defconfig
+arm                         mv78xx0_defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a003-20210430
+x86_64               randconfig-a004-20210430
+x86_64               randconfig-a002-20210430
+x86_64               randconfig-a006-20210430
+x86_64               randconfig-a001-20210430
+x86_64               randconfig-a005-20210430
+i386                 randconfig-a004-20210430
+i386                 randconfig-a001-20210430
+i386                 randconfig-a003-20210430
+i386                 randconfig-a002-20210430
+i386                 randconfig-a005-20210430
+i386                 randconfig-a006-20210430
+i386                 randconfig-a013-20210501
+i386                 randconfig-a015-20210501
+i386                 randconfig-a016-20210501
+i386                 randconfig-a014-20210501
+i386                 randconfig-a011-20210501
+i386                 randconfig-a012-20210501
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a011-20210430
+x86_64               randconfig-a016-20210430
+x86_64               randconfig-a013-20210430
+x86_64               randconfig-a014-20210430
+x86_64               randconfig-a012-20210430
+x86_64               randconfig-a015-20210430
+
 ---
-
- arch/m68k/Makefile   | 2 +-
- arch/mips/Makefile   | 2 +-
- arch/parisc/Makefile | 2 +-
- arch/sh/Makefile     | 2 +-
- arch/xtensa/Makefile | 6 +-----
- 5 files changed, 5 insertions(+), 9 deletions(-)
-
-diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
-index ea14f2046fb4..82620f14124d 100644
---- a/arch/m68k/Makefile
-+++ b/arch/m68k/Makefile
-@@ -16,7 +16,7 @@
- 
- KBUILD_DEFCONFIG := multi_defconfig
- 
--ifneq ($(SUBARCH),$(ARCH))
-+ifdef cross_compiling
- 	ifeq ($(CROSS_COMPILE),)
- 		CROSS_COMPILE := $(call cc-cross-prefix, \
- 			m68k-linux-gnu- m68k-linux- m68k-unknown-linux-gnu-)
-diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-index e71d587af49c..258234c35a09 100644
---- a/arch/mips/Makefile
-+++ b/arch/mips/Makefile
-@@ -50,7 +50,7 @@ tool-archpref		= $(64bit-tool-archpref)
- UTS_MACHINE		:= mips64
- endif
- 
--ifneq ($(SUBARCH),$(ARCH))
-+ifdef cross_compiling
-   ifeq ($(CROSS_COMPILE),)
-     CROSS_COMPILE := $(call cc-cross-prefix, $(tool-archpref)-linux-  $(tool-archpref)-linux-gnu-  $(tool-archpref)-unknown-linux-gnu-)
-   endif
-diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
-index 7d9f71aa829a..aed8ea29268b 100644
---- a/arch/parisc/Makefile
-+++ b/arch/parisc/Makefile
-@@ -41,7 +41,7 @@ endif
- 
- export LD_BFD
- 
--ifneq ($(SUBARCH),$(UTS_MACHINE))
-+ifdef cross_compiling
- 	ifeq ($(CROSS_COMPILE),)
- 		CC_SUFFIXES = linux linux-gnu unknown-linux-gnu
- 		CROSS_COMPILE := $(call cc-cross-prefix, \
-diff --git a/arch/sh/Makefile b/arch/sh/Makefile
-index 3bcbf52fb30e..44bcb80e791a 100644
---- a/arch/sh/Makefile
-+++ b/arch/sh/Makefile
-@@ -9,7 +9,7 @@
- # License.  See the file "COPYING" in the main directory of this archive
- # for more details.
- #
--ifneq ($(SUBARCH),$(ARCH))
-+ifdef cross_compiling
-   ifeq ($(CROSS_COMPILE),)
-     CROSS_COMPILE := $(call cc-cross-prefix, sh-linux- sh-linux-gnu- sh-unknown-linux-gnu-)
-   endif
-diff --git a/arch/xtensa/Makefile b/arch/xtensa/Makefile
-index ba9fee75e675..e9c8f064c44d 100644
---- a/arch/xtensa/Makefile
-+++ b/arch/xtensa/Makefile
-@@ -19,12 +19,8 @@ variant-y := $(patsubst "%",%,$(CONFIG_XTENSA_VARIANT_NAME))
- VARIANT = $(variant-y)
- export VARIANT
- 
--# Test for cross compiling
--
- ifneq ($(VARIANT),)
--  COMPILE_ARCH = $(shell uname -m)
--
--  ifneq ($(COMPILE_ARCH), xtensa)
-+  ifdef cross_compiling
-     ifndef CROSS_COMPILE
-       CROSS_COMPILE = xtensa_$(VARIANT)-
-     endif
--- 
-2.27.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
