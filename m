@@ -2,87 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EDC33707C7
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 17:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB7453707CB
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 18:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231415AbhEAPxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 11:53:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230051AbhEAPxX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 11:53:23 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6C4C06174A;
-        Sat,  1 May 2021 08:52:33 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id 130so1869681ybd.10;
-        Sat, 01 May 2021 08:52:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JjYGMVIHK5n7yoxDPMXd66Acol9hZKelHx5UT6nH47Y=;
-        b=blRUIoJdCmVMNiQDMHNaVJve98qPVFj9/24WjJdA429iQkxxVreNispe+BqiBA3d8W
-         Acr7BVauP7zkcs15L+68w5EqDvJuqgqAQiUpqTLpjFrGI4w60FlbBjkAovszT+DhAO2Y
-         tHmFz//OpI0cdY7Ho2lJ17ud/C/jzzNtemRy5ooBS5sildh6tdH/JXdOSWzcu0kUHuRk
-         sWuz3sEcBwnrjw3SmYkDYCFW6/LI+qbeU5bNDNEyCV8lhk15528w6zCTI7qv8GD3C2Qr
-         /6S1azORvcFztQ4nBtiPy2tzzOKKF9suofex4xX1vd9C6oVASMofpqqBqVOFa9w2DOS8
-         wBsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JjYGMVIHK5n7yoxDPMXd66Acol9hZKelHx5UT6nH47Y=;
-        b=Qj0cytMwHKa+C54soxDSPJ5wpqoLVQ1LfQJzoTvUYUrzzdUtdCgD5Aef9RswQZoMDr
-         A4gS5edmePtzHAK3/8XQEIqf+V5qwSzdcrFH2EKYMpg44W/Oyhrb+zfBhahWVKIxu+Gx
-         O2jfkt23hC35bI8LAhi1CrUU6Fdrk4r3Q8RJKDPTy2xl5EpfO4P6fdeo8ibwpW70NHgR
-         Sz35tIInhEYDc8UvA7KnXW1/kY+ozKVu2JcdVWd0xfBeaidN3QaHhYyCsw/0z/TQ/cHn
-         nrtAFhSpf5Rkp0RE+9SUcJ45srDpqd2TkEGEKe09r7at8DERI5C5dN6ggfoJKdhfKhC1
-         jNqA==
-X-Gm-Message-State: AOAM530ypY12b3kzT1eHOB5GQX++QSbkTDLHI1UIrenT2XtHMom/YH/3
-        kAM+6ADqOK4I+hPNo8UzFjV05meQtvpcpUtbma8=
-X-Google-Smtp-Source: ABdhPJwv4Dai1oxa4I+vtOog2Hw6tEyYe4CX42qPfvaPtHahj/3ak3VQm5m0KU7mUuftqlcL6+PQQToSr4CzLa32hoM=
-X-Received: by 2002:a25:c444:: with SMTP id u65mr14862039ybf.93.1619884352129;
- Sat, 01 May 2021 08:52:32 -0700 (PDT)
+        id S231488AbhEAQCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 12:02:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43082 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230250AbhEAQCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 May 2021 12:02:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B57A611CA;
+        Sat,  1 May 2021 16:01:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619884910;
+        bh=J/ZkFfidH9XPIkZ1CbyLP2+FP//ogTEi99ikADMt8Bg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ZCgVosKE94aGKfwRusAHcU2LP+9loviPL2zCD25qglsKHE4T4Zi34NvKDbW9itEHy
+         NqKwFnQKJtUKakNt3yPjyxNAnjMCCnpGGd6XFTb3zjMyfyyT5zOVBZNhcrVlxglcz9
+         O6yp+TXbDOL/KqBIOmiadHQlzxfPXT1mTa+/7K+Fu4r/oTNrII7mkSgqovi8AqrqaA
+         tdvPI5FlzynktncHwOXkXtUofpAZXJxTe+/0V3xEOX5RtwNph7dHUDyhMqeSwB+R4q
+         9vyIW1tw3ha47DL05+D4EwZkwSc9MUrbq7abslep/zl0d4J3Tw5RUPC5pmYhhEa0qe
+         Z7Mg469SkjIow==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 2083A5C0348; Sat,  1 May 2021 09:01:50 -0700 (PDT)
+Date:   Sat, 1 May 2021 09:01:50 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     tglx@linutronix.de, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, john.stultz@linaro.org,
+        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
+        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
+        ak@linux.intel.com
+Subject: Re: [PATCH v12 clocksource 5/5] clocksource: Provide kernel module
+ to test clocksource watchdog
+Message-ID: <20210501160150.GM975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210501003247.2448287-5-paulmck@kernel.org>
+ <202105011731.6c80nr0T-lkp@intel.com>
 MIME-Version: 1.0
-References: <20210501151538.145449-1-masahiroy@kernel.org>
-In-Reply-To: <20210501151538.145449-1-masahiroy@kernel.org>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Sat, 1 May 2021 17:52:21 +0200
-Message-ID: <CANiq72k1hB3X6+Nc_iu=f=BoB-F9JW2j_B4ZMcv8_UpW5QQ2Og@mail.gmail.com>
-Subject: Re: [PATCH] Raise the minimum GCC version to 5.2
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202105011731.6c80nr0T-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 1, 2021 at 5:17 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> More cleanups will be possible as follow-up patches, but this one must
-> be agreed and applied to the mainline first.
+On Sat, May 01, 2021 at 05:49:51PM +0800, kernel test robot wrote:
+> Hi "Paul,
+> 
+> I love your patch! Yet something to improve:
+> 
+> [auto build test ERROR on tip/timers/core]
+> [also build test ERROR on tip/x86/core linux/master linus/master v5.12]
+> [cannot apply to next-20210430]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Paul-E-McKenney/Do-not-mark-clocks-unstable-due-to-delays-for-v5-13/20210501-083404
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git 2d036dfa5f10df9782f5278fc591d79d283c1fad
+> config: mips-allmodconfig (attached as .config)
+> compiler: mips-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/0day-ci/linux/commit/95bd62102b4d0bedef8d834a09697cd6daa96f25
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Paul-E-McKenney/Do-not-mark-clocks-unstable-due-to-delays-for-v5-13/20210501-083404
+>         git checkout 95bd62102b4d0bedef8d834a09697cd6daa96f25
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross W=1 ARCH=mips 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>, old ones prefixed by <<):
+> 
+> >> ERROR: modpost: "clocksource_verify_percpu" [kernel/time/clocksource-wdtest.ko] undefined!
 
-+1 This will allow me to remove the __has_attribute hack in
-include/linux/compiler_attributes.h.
+Good show, you beat my test suite that includes allmodconfig.  ;-)
 
-Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
+Does the fixup patch below help?  (It works here.)
 
-Cheers,
-Miguel
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit 70e662d3cfe370490f310b81aaedf47d5d7cf55e
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Sat May 1 08:57:53 2021 -0700
+
+    squash! clocksource: Provide kernel module to test clocksource watchdog
+    
+    [ paulmck: Export clocksource_verify_percpu per kernel test robot. ]
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+index f9466dcd4bf3..9ac76fbe00fb 100644
+--- a/kernel/time/clocksource.c
++++ b/kernel/time/clocksource.c
+@@ -347,6 +347,7 @@ void clocksource_verify_percpu(struct clocksource *cs)
+ 		pr_warn("        CPU %d check durations %lldns - %lldns for clocksource %s.\n",
+ 			testcpu, cs_nsec_min, cs_nsec_max, cs->name);
+ }
++EXPORT_SYMBOL_GPL(clocksource_verify_percpu);
+ 
+ static void clocksource_watchdog(struct timer_list *unused)
+ {
