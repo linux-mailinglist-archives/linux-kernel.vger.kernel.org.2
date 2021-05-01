@@ -2,131 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 829F73707AB
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 17:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B42313707BD
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 17:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231500AbhEAPR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 11:17:56 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:51592 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229979AbhEAPRz (ORCPT
+        id S231488AbhEAPcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 11:32:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230051AbhEAPcw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 11:17:55 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lcrMc-00DX9j-SQ; Sat, 01 May 2021 09:17:03 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lcrMb-008qNO-TS; Sat, 01 May 2021 09:17:02 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Marco Elver <elver@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-References: <YIpkvGrBFGlB5vNj@elver.google.com>
-        <m11rat9f85.fsf@fess.ebiederm.org>
-        <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
-        <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
-        <m1zgxfs7zq.fsf_-_@fess.ebiederm.org>
-        <m1r1irpc5v.fsf@fess.ebiederm.org>
-        <CANpmjNNfiSgntiOzgMc5Y41KVAV_3VexdXCMADekbQEqSP3vqQ@mail.gmail.com>
-Date:   Sat, 01 May 2021 10:16:58 -0500
-In-Reply-To: <CANpmjNNfiSgntiOzgMc5Y41KVAV_3VexdXCMADekbQEqSP3vqQ@mail.gmail.com>
-        (Marco Elver's message of "Sat, 1 May 2021 02:37:22 +0200")
-Message-ID: <m1czuapjpx.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Sat, 1 May 2021 11:32:52 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7458DC06174A;
+        Sat,  1 May 2021 08:32:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=81fpXB51S0
+        gdXeEFhP62/B/NjYzMHee3NPblG1W9CdM=; b=eTlddhhxr7MmiwKYaojnfY/W+G
+        8ab56aiZQ2WLJoTVC6dYZ46NRFrmcZfwvsfyxuQ1qYDT9UlLl9ui9eFH8McjsDvE
+        evqjHN1/q6GGDIPLG2g0basdjGFVfNW26bMM3U1AWHfpEKrRnSxa3X2R668RkrVZ
+        9iZzUpJbR1IWE/xaY=
+Received: from ubuntu.localdomain (unknown [202.38.69.14])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBnbJhfdI1gX111AA--.448S4;
+        Sat, 01 May 2021 23:31:43 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     benve@cisco.com, _govind@gmx.com, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] ethernet:enic: Fix a use after free bug in enic_hard_start_xmit
+Date:   Sat,  1 May 2021 08:31:40 -0700
+Message-Id: <20210501153140.5885-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lcrMb-008qNO-TS;;;mid=<m1czuapjpx.fsf@fess.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18DzHMcLYDrGj+W7oEcRW3RY5bEckDfeoo=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
-X-Spam-Level: ***
-X-Spam-Status: No, score=3.2 required=8.0 tests=ALL_TRUSTED,BAYES_05,
-        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TM2_M_HEADER_IN_MSG,
-        T_TooManySym_01,T_XMDrugObfuBody_08,XMNoVowels,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.5 BAYES_05 BODY: Bayes spam probability is 1 to 5%
-        *      [score: 0.0454]
-        *  0.7 XMSubLong Long Subject
-        *  1.5 TR_Symld_Words too many words that have symbols inside
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  1.0 T_XMDrugObfuBody_08 obfuscated drug references
-X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ***;Marco Elver <elver@google.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 401 ms - load_scoreonly_sql: 0.11 (0.0%),
-        signal_user_changed: 13 (3.3%), b_tie_ro: 11 (2.8%), parse: 0.95
-        (0.2%), extract_message_metadata: 11 (2.7%), get_uri_detail_list: 1.29
-        (0.3%), tests_pri_-1000: 14 (3.4%), tests_pri_-950: 1.57 (0.4%),
-        tests_pri_-900: 1.23 (0.3%), tests_pri_-90: 102 (25.3%), check_bayes:
-        99 (24.8%), b_tokenize: 7 (1.7%), b_tok_get_all: 8 (2.1%),
-        b_comp_prob: 2.3 (0.6%), b_tok_touch_all: 77 (19.1%), b_finish: 1.49
-        (0.4%), tests_pri_0: 240 (59.7%), check_dkim_signature: 0.70 (0.2%),
-        check_dkim_adsp: 3.0 (0.8%), poll_dns_idle: 0.90 (0.2%), tests_pri_10:
-        4.0 (1.0%), tests_pri_500: 11 (2.8%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [RFC][PATCH 0/3] signal: Move si_trapno into the _si_fault union
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygBnbJhfdI1gX111AA--.448S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ww4xXr13tr43Jr1UZw13Jwb_yoW8Zw1Dpa
+        ykA3s5GF4rKw4DXayDA348Gw1av3W0kF9xKryxAwsYqFs8trWDXFykKw42kry5JrWrGa43
+        Jr10yrnxKwnxArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
+        YxC7MxkIecxEwVAFwVW5WwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
+        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
+        wI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
+        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2
+        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73Uj
+        IFyTuYvjfU0GQ6UUUUU
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Marco Elver <elver@google.com> writes:
+In enic_hard_start_xmit, it calls enic_queue_wq_skb(). Inside
+enic_queue_wq_skb, if some error happens, the skb will be freed
+by dev_kfree_skb(skb). But the freed skb is still used in
+skb_tx_timestamp(skb).
 
-> On Sat, 1 May 2021 at 01:48, Eric W. Biederman <ebiederm@xmission.com> wrote:
->>
->> Well with 7 patches instead of 3 that was a little more than I thought
->> I was going to send.
->>
->> However that does demonstrate what I am thinking, and I think most of
->> the changes are reasonable at this point.
->>
->> I am very curious how synchronous this all is, because if this code
->> is truly synchronous updating signalfd to handle this class of signal
->> doesn't really make sense.
->>
->> If the code is not synchronous using force_sig is questionable.
->>
->> Eric W. Biederman (7):
->>       siginfo: Move si_trapno inside the union inside _si_fault
->>       signal: Implement SIL_FAULT_TRAPNO
->>       signal: Use dedicated helpers to send signals with si_trapno set
->>       signal: Remove __ARCH_SI_TRAPNO
->>       signal: Rename SIL_PERF_EVENT SIL_FAULT_PERF_EVENT for consistency
->>       signal: Factor force_sig_perf out of perf_sigtrap
->>       signal: Deliver all of the perf_data in si_perf
->
-> Thank you for doing this so quickly -- it looks much cleaner. I'll
-> have a more detailed look next week and also run some tests myself.
->
-> At a first glance, you've broken our tests in
-> tools/testing/selftests/perf_events/ -- needs a
-> s/si_perf/si_perf.data/, s/si_errno/si_perf.type/
+My patch makes enic_queue_wq_skb() return error and goto spin_unlock()
+incase of error. The solution is provided by Govind.
+See https://lkml.org/lkml/2021/4/30/961.
 
-Yeah.  I figured I did, but I couldn't figure out where the tests were
-and I didn't have a lot of time.  I just wanted to get this out so we
-can do as much as reasonable before the ABI starts being actively used
-by userspace and we can't change it.
+Fixes: fb7516d42478e ("enic: add sw timestamp support")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/net/ethernet/cisco/enic/enic_main.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Eric
+diff --git a/drivers/net/ethernet/cisco/enic/enic_main.c b/drivers/net/ethernet/cisco/enic/enic_main.c
+index f04ec53544ae..40abc3fdeba6 100644
+--- a/drivers/net/ethernet/cisco/enic/enic_main.c
++++ b/drivers/net/ethernet/cisco/enic/enic_main.c
+@@ -768,7 +768,7 @@ static inline int enic_queue_wq_skb_encap(struct enic *enic, struct vnic_wq *wq,
+ 	return err;
+ }
+ 
+-static inline void enic_queue_wq_skb(struct enic *enic,
++static inline int enic_queue_wq_skb(struct enic *enic,
+ 	struct vnic_wq *wq, struct sk_buff *skb)
+ {
+ 	unsigned int mss = skb_shinfo(skb)->gso_size;
+@@ -813,7 +813,9 @@ static inline void enic_queue_wq_skb(struct enic *enic,
+ 		}
+ 		wq->to_use = buf->next;
+ 		dev_kfree_skb(skb);
++		return err;
+ 	}
++	return err;
+ }
+ 
+ /* netif_tx_lock held, process context with BHs disabled, or BH */
+@@ -857,7 +859,8 @@ static netdev_tx_t enic_hard_start_xmit(struct sk_buff *skb,
+ 		return NETDEV_TX_BUSY;
+ 	}
+ 
+-	enic_queue_wq_skb(enic, wq, skb);
++	if (enic_queue_wq_skb(enic, wq, skb) < 0)
++		goto error;
+ 
+ 	if (vnic_wq_desc_avail(wq) < MAX_SKB_FRAGS + ENIC_DESC_MAX_SPLITS)
+ 		netif_tx_stop_queue(txq);
+@@ -865,6 +868,7 @@ static netdev_tx_t enic_hard_start_xmit(struct sk_buff *skb,
+ 	if (!netdev_xmit_more() || netif_xmit_stopped(txq))
+ 		vnic_wq_doorbell(wq);
+ 
++error:
+ 	spin_unlock(&enic->wq_lock[txq_map]);
+ 
+ 	return NETDEV_TX_OK;
+-- 
+2.25.1
+
+
