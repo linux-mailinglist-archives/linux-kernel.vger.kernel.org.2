@@ -2,202 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9CE370738
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 14:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B7B37073A
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 14:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232118AbhEAMdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 08:33:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231979AbhEAMds (ORCPT
+        id S232033AbhEAMls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 08:41:48 -0400
+Received: from dd20004.kasserver.com ([85.13.150.92]:44932 "EHLO
+        dd20004.kasserver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231979AbhEAMlr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 08:33:48 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A87EC06174A;
-        Sat,  1 May 2021 05:32:58 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id 197so569376qkl.12;
-        Sat, 01 May 2021 05:32:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kPtNXjXvjkrqon+4H86GtiLH1axTObT0uyPlkm/H220=;
-        b=tLA24VRrlFrINRcCb6JlqNKPNqPq4XNfYV4R7Cu5bIWw6YCQNtHM/LZmejRf+Hyrcc
-         zNubA9mAH34e/RhVcuyHeUXWzSNi1bnFj/aOdp7TOGV4rzgxYH54A4PdqEmBm99/EnXC
-         BUbE0qpnJsrgaMF0IZjFVwBPYpdc9Rcg1jDEjrj4pYq7o/s5j3btKzr0gVdmmrtojqEx
-         8wbKkZpBByN0d/iMn3s3cFrJKWVSOuFJKuOPFnQY5o+tm346Rr0yv7mpVb9sWeT8x1U9
-         SPAttUFz8BqJ3E7NjYIkOylngZ0pqH4z8X7gtysbf6R2yZQ+9aISpIMTcRFqDKoM6dB0
-         pL/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kPtNXjXvjkrqon+4H86GtiLH1axTObT0uyPlkm/H220=;
-        b=lkqz5Q1BbHSbD9EQJRJW0qw4VLKQmnZBayXFUiX6ZKaZf9s/DeS0wfdr1x0NBb9r1Y
-         B6CxAszv6bZ8ETpx9+MIODOlm2XM4rwEFbcnRPlS4jdIRP5aIyClptuJ10gzIuxbPaLd
-         szfurlUfOfjj56Y1knr5GLSbghTfyeRpDpapIZENqreMUWw+18PynWws9okcoABJZsCV
-         Y0/mMxeWdUYwuP5QPHBwujWCbH6nosIMZsNVxmChW5DLyXMUzwkin4pjNCh/MvOfhPgc
-         UUEjzlPcSJNsfHsflyjmN1g7ZLjU/uhpO3SgWIssDkMN4PihLt7VPh9mNda1PJacX0zT
-         cgmw==
-X-Gm-Message-State: AOAM531B80OLcFQZzs1y4xFIhXBctvqfZ6Bs58oMNQCnyVyC2ts6sien
-        eFQaXh1cDTVbEB2MAlSvhQ5ZmYN83mQcdSKU
-X-Google-Smtp-Source: ABdhPJy6LjkvImlLa098W6SbeaZfLI6+Z3nKozTVLO/pDe82cTZtDLc0bqx7C0Y+JXWHbOIXERuGbw==
-X-Received: by 2002:a05:620a:389:: with SMTP id q9mr1279091qkm.16.1619872377484;
-        Sat, 01 May 2021 05:32:57 -0700 (PDT)
-Received: from smtp.gmail.com ([2804:14c:73:9a01::1001])
-        by smtp.gmail.com with ESMTPSA id f7sm4275201qtv.53.2021.05.01.05.32.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 May 2021 05:32:57 -0700 (PDT)
-Date:   Sat, 1 May 2021 09:32:53 -0300
-From:   Lucas Stankus <lucas.p.stankus@gmail.com>
-To:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
-        gregkh@linuxfoundation.org
-Cc:     linux-iio@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH v3 2/2] staging: iio: cdc: ad7746: use dt for capacitive
- channel setup.
-Message-ID: <3e7f2a0a8960cece185f518ff2b7ceb87891edcd.1619841953.git.lucas.p.stankus@gmail.com>
-References: <cover.1619841953.git.lucas.p.stankus@gmail.com>
+        Sat, 1 May 2021 08:41:47 -0400
+Received: from timo-desktop.lan.xusig.net (i59F4D773.versanet.de [89.244.215.115])
+        by dd20004.kasserver.com (Postfix) with ESMTPSA id D30D5544DC00;
+        Sat,  1 May 2021 14:40:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=silentcreek.de;
+        s=kas202012291009; t=1619872856;
+        bh=OHjbJOgZC9lH9A5epG61N9yp14naYRxyoht5m0VTHWI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=lIVpjwa8ThuKX8tZl5wayV9GigazbbnLffUUCuhtgTRFXrpUMvixVuHyRqy2XKXjj
+         TSpZyjDwjFzExrJjHHTofcF5ndn91CxYWYr5wMhMoBpTmaR8en4aFjZC8AGWUP4m3l
+         X8jSkpMneMEBXHtN5DTALbaDBY/k0LaWlm2NIMxPSRNGMXGspiyhl3VNR9v79D6frN
+         pV7rMIod0G6X2HS6N9FmzjtiPp+A7AozvrvJY4bNZ1ab/zbrSJgrjfERgquS6bgqny
+         LouM5+u5bP29CmTaWKCYxD0sOeCBvuUL0Gvd8ZYbwUVqYovfuNVqNs3no8BJT5UEg9
+         199OdQGW9aq7g==
+From:   Timo Sigurdsson <public_timo.s@silentcreek.de>
+To:     axboe@kernel.dk, mripard@kernel.org, wens@csie.org,
+        jernej.skrabec@siol.net, linux-ide@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     sergei.shtylyov@gmail.com, gregkh@linuxfoundation.org,
+        oliver@schinagl.nl, Timo Sigurdsson <public_timo.s@silentcreek.de>
+Subject: [PATCH v2] ata: ahci_sunxi: Disable DIPM
+Date:   Sat,  1 May 2021 14:40:26 +0200
+Message-Id: <20210501124026.8016-1-public_timo.s@silentcreek.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1619841953.git.lucas.p.stankus@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ditch platform_data fields in favor of device tree properties for
-configuring EXCA and EXCB output pins and setting the capacitive channel
-excitation level.
+DIPM is unsupported or broken on sunxi. Trying to enable the power
+management policy med_power_with_dipm on an Allwinner A20 SoC based board
+leads to immediate I/O errors and the attached SATA disk disappears from
+the /dev filesystem. A reset (power cycle) is required to make the SATA
+controller or disk work again. The A10 and A20 SoC data sheets and manuals
+don't mention DIPM at all [1], so it's fair to assume that it's simply not
+supported. But even if it was, it should be considered broken and best be
+disabled in the ahci_sunxi driver.
 
-As this covers all current use cases for the platform_data struct, remove
-ad7746.h header file since it's no longer needed.
+[1] https://github.com/allwinner-zh/documents/tree/master/
 
-Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
+Fixes: c5754b5220f0 ("ARM: sunxi: Add support for Allwinner SUNXi SoCs sata to ahci_platform")
+Cc: stable@vger.kernel.org
+Signed-off-by: Timo Sigurdsson <public_timo.s@silentcreek.de>
+Tested-by: Timo Sigurdsson <public_timo.s@silentcreek.de>
 ---
- drivers/staging/iio/cdc/ad7746.c | 54 +++++++++++++++++++-------------
- drivers/staging/iio/cdc/ad7746.h | 28 -----------------
- 2 files changed, 33 insertions(+), 49 deletions(-)
- delete mode 100644 drivers/staging/iio/cdc/ad7746.h
+Changes since v1:
 
-diff --git a/drivers/staging/iio/cdc/ad7746.c b/drivers/staging/iio/cdc/ad7746.c
-index dfd71e99e872..531f1b96dea2 100644
---- a/drivers/staging/iio/cdc/ad7746.c
-+++ b/drivers/staging/iio/cdc/ad7746.c
-@@ -18,8 +18,6 @@
- #include <linux/iio/iio.h>
- #include <linux/iio/sysfs.h>
+- Formal changes to the commit message as suggested by Greg Kroah-Hartman
+  and Sergei Shtylyov (Fixes and Cc lines). No changes to the patch
+  itself.
+---
+ drivers/ata/ahci_sunxi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/ata/ahci_sunxi.c b/drivers/ata/ahci_sunxi.c
+index cb69b737cb49..56b695136977 100644
+--- a/drivers/ata/ahci_sunxi.c
++++ b/drivers/ata/ahci_sunxi.c
+@@ -200,7 +200,7 @@ static void ahci_sunxi_start_engine(struct ata_port *ap)
+ }
  
--#include "ad7746.h"
--
- /*
-  * AD7746 Register Definition
-  */
-@@ -676,10 +674,11 @@ static const struct iio_info ad7746_info = {
- static int ad7746_probe(struct i2c_client *client,
- 			const struct i2c_device_id *id)
- {
--	struct ad7746_platform_data *pdata = client->dev.platform_data;
-+	struct device *dev = &client->dev;
- 	struct ad7746_chip_info *chip;
- 	struct iio_dev *indio_dev;
- 	unsigned char regval = 0;
-+	unsigned int vdd_permille;
- 	int ret = 0;
- 
- 	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*chip));
-@@ -703,26 +702,39 @@ static int ad7746_probe(struct i2c_client *client,
- 	indio_dev->num_channels = ARRAY_SIZE(ad7746_channels);
- 	indio_dev->modes = INDIO_DIRECT_MODE;
- 
--	if (pdata) {
--		if (pdata->exca_en) {
--			if (pdata->exca_inv_en)
--				regval |= AD7746_EXCSETUP_NEXCA;
--			else
--				regval |= AD7746_EXCSETUP_EXCA;
--		}
-+	if (device_property_read_bool(dev, "adi,exca-output-en")) {
-+		if (device_property_read_bool(dev, "adi,exca-output-invert"))
-+			regval |= AD7746_EXCSETUP_NEXCA;
-+		else
-+			regval |= AD7746_EXCSETUP_EXCA;
-+	}
- 
--		if (pdata->excb_en) {
--			if (pdata->excb_inv_en)
--				regval |= AD7746_EXCSETUP_NEXCB;
--			else
--				regval |= AD7746_EXCSETUP_EXCB;
--		}
-+	if (device_property_read_bool(dev, "adi,excb-output-en")) {
-+		if (device_property_read_bool(dev, "adi,excb-output-invert"))
-+			regval |= AD7746_EXCSETUP_NEXCB;
-+		else
-+			regval |= AD7746_EXCSETUP_EXCB;
-+	}
- 
--		regval |= AD7746_EXCSETUP_EXCLVL(pdata->exclvl);
--	} else {
--		dev_warn(&client->dev, "No platform data? using default\n");
--		regval = AD7746_EXCSETUP_EXCA | AD7746_EXCSETUP_EXCB |
--			AD7746_EXCSETUP_EXCLVL(3);
-+	ret = device_property_read_u32(dev, "adi,excitation-vdd-permille",
-+				       &vdd_permille);
-+	if (!ret) {
-+		switch (vdd_permille) {
-+		case 125:
-+			regval |= AD7746_EXCSETUP_EXCLVL(0);
-+			break;
-+		case 250:
-+			regval |= AD7746_EXCSETUP_EXCLVL(1);
-+			break;
-+		case 375:
-+			regval |= AD7746_EXCSETUP_EXCLVL(2);
-+			break;
-+		case 500:
-+			regval |= AD7746_EXCSETUP_EXCLVL(3);
-+			break;
-+		default:
-+			break;
-+		}
- 	}
- 
- 	ret = i2c_smbus_write_byte_data(chip->client,
-diff --git a/drivers/staging/iio/cdc/ad7746.h b/drivers/staging/iio/cdc/ad7746.h
-deleted file mode 100644
-index 8bdbd732dbbd..000000000000
---- a/drivers/staging/iio/cdc/ad7746.h
-+++ /dev/null
-@@ -1,28 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--/*
-- * AD7746 capacitive sensor driver supporting AD7745, AD7746 and AD7747
-- *
-- * Copyright 2011 Analog Devices Inc.
-- */
--
--#ifndef IIO_CDC_AD7746_H_
--#define IIO_CDC_AD7746_H_
--
--/*
-- * TODO: struct ad7746_platform_data needs to go into include/linux/iio
-- */
--
--#define AD7466_EXCLVL_0		0 /* +-VDD/8 */
--#define AD7466_EXCLVL_1		1 /* +-VDD/4 */
--#define AD7466_EXCLVL_2		2 /* +-VDD * 3/8 */
--#define AD7466_EXCLVL_3		3 /* +-VDD/2 */
--
--struct ad7746_platform_data {
--	unsigned char exclvl;	/*Excitation Voltage Level */
--	bool exca_en;		/* enables EXCA pin as the excitation output */
--	bool exca_inv_en;	/* enables /EXCA pin as the excitation output */
--	bool excb_en;		/* enables EXCB pin as the excitation output */
--	bool excb_inv_en;	/* enables /EXCB pin as the excitation output */
--};
--
--#endif /* IIO_CDC_AD7746_H_ */
+ static const struct ata_port_info ahci_sunxi_port_info = {
+-	.flags		= AHCI_FLAG_COMMON | ATA_FLAG_NCQ,
++	.flags		= AHCI_FLAG_COMMON | ATA_FLAG_NCQ | ATA_FLAG_NO_DIPM,
+ 	.pio_mask	= ATA_PIO4,
+ 	.udma_mask	= ATA_UDMA6,
+ 	.port_ops	= &ahci_platform_ops,
 -- 
-2.31.1
+2.26.2
 
