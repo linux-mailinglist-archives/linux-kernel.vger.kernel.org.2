@@ -2,99 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AAE337079A
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 16:44:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98924370796
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 16:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231655AbhEAOmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 10:42:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231624AbhEAOm2 (ORCPT
+        id S231392AbhEAOmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 10:42:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35288 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229979AbhEAOmH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 10:42:28 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A64C06138B
-        for <linux-kernel@vger.kernel.org>; Sat,  1 May 2021 07:41:37 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id q136so1074266qka.7
-        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 07:41:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ugedal.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+9JnfpgxvBiyhUpVXmBLUzz03NBbrZEjK+KMYKJ2t20=;
-        b=RnQunxucB260CYXVbm79inYUHgZ5kmjIdmnW3OLRGx5Q+i4uqZCiTmKRoKd0R0TXLV
-         P6L8xkfjAcIlpz2bAmkNzp+L9/JpLVObdX27DZEcg1F9p+BCVj364+5+rces1tNfa5U/
-         I8UPM+Ya3vSjP4F5N3Dqg4/XCVuoUSHmiQVqb8hXDcrR/amfimYOkdx3EefnQaOnVIxg
-         tLbrEAHfJZ5LvRMFZJWULKFp+nASHLjP64VqxjGylJvIXlAdfGkU3WXhYQfXAfP8u3IQ
-         Sezbjwgv+EJe6NEYmcNoE7zGIV6U/G2Hhz2dZ6geBBw85xFAQY5QdrVb4DWUSRrjsMrp
-         0t5g==
+        Sat, 1 May 2021 10:42:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619880077;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=YnWb2IPj59++E0ETRcLd7/SnBjta6bFGoaxLShBdHqM=;
+        b=es7+bN8wlWsss+DV6DdLNbQ3LdELz8r8WrF6PTyasvD/zGAb2Co/faQgY6PSWwM1LgStpu
+        lTCts/uIwJ/alStYBaRXyKMyKh92hEU9SapkxsqnWWioBV7K9oE8vYg4ctUOyq1w18Q+x4
+        UWhPnKufvcLHDOupmouHVNsLx0NFQ1E=
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
+ [209.85.166.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-394-kk3wWE0HPsCzf94gEYXoCg-1; Sat, 01 May 2021 10:41:15 -0400
+X-MC-Unique: kk3wWE0HPsCzf94gEYXoCg-1
+Received: by mail-io1-f69.google.com with SMTP id z25-20020a05660200d9b02903de90ff885fso574717ioe.11
+        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 07:41:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+9JnfpgxvBiyhUpVXmBLUzz03NBbrZEjK+KMYKJ2t20=;
-        b=avAyU8pgkThW/2xj8vsM9A3o0ZCMUIrqJ7n99E9A/gaBT4ZMkFJOYcZSDLPek0HgJI
-         JODUX+f9+7rHH/MyspdB0QTqTHLgOalmybk18l5QkRRr5n+MWMqcDGzrpg5pkrDWZwaf
-         1EWOc9qnbnf6HzjB4JxN1daqRQBUZGIjdzosTkyhbSUbT7bhSxNEY1fAFGZY1HDRTcEL
-         we1i9OpEmBBlX0ygwAcWIAYdnGf/CGLjW92wdyA5m4p8OzBw33su/QNEzNUujWU+jkoN
-         F/w0ZOFSO9IMM0BlFNee+yeBjeuu41PQ3JC8IOeuxnjnatJFNC6jWdBF97bAiPwYw268
-         RfsQ==
-X-Gm-Message-State: AOAM533yLFaYxWhncjMLKctxXP60qI2OnbBIeYCLnDbImYFTW68ECh/w
-        AM4JWtYbYyt+lslgr8OpT/XGwOYBua50XapSyxHl7Q==
-X-Google-Smtp-Source: ABdhPJyWgSHVKEXPER/7IfIcz98GlwMr0AgGhNvCqe19/dta7G7yZ+iD5nISVKSVlTChdgopDKP+A2OctJgI/Y5NmQc=
-X-Received: by 2002:a37:e10e:: with SMTP id c14mr10319909qkm.209.1619880096227;
- Sat, 01 May 2021 07:41:36 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YnWb2IPj59++E0ETRcLd7/SnBjta6bFGoaxLShBdHqM=;
+        b=bf/OBpyvx6mHxXy5Sz5vuB17O6q/GDCYuDBRfq9AF98iD0qS67NMHazeTrvMteFpYY
+         8+hw9RceFvio+AbwGTsr0qq5RqNBO/4lCQ96KOMxHzD5zRsLRxmdAf2GE3KRAznV2x6F
+         CO+4fLkJuiw9jeQ3+XNF1TopRCt6U9blCEfebKZEdC6zgrwW03qGw9fhybjLARpD2dQZ
+         qLG82NxKKQwRLgC4tQheVJQg/dNia6KwH2I2wxobApRmGtoZHqO776UtQ+B21AdOroxl
+         iEP5NW4/lWBm2zCXxaBJKaNx3f8UoWDcq7vn2OoJCHWl2a5zoLSr6N1wORG+GZdSsuz3
+         Sa1Q==
+X-Gm-Message-State: AOAM530R1aJRU1txeGMeBN2NbK88Cta78ze7NfeHd+7fVqZNPwm0xfbC
+        DdN1nyHTSdhMQdx5Pmzf69/IAIsJAE46nmqHyPp/+d60v/DNqaUe68rYbtQcQVZLLyYRgHYBcGE
+        xyTTWjbKscfM2PTLr5o25Sqv3
+X-Received: by 2002:a5d:80d5:: with SMTP id h21mr7790083ior.11.1619880075174;
+        Sat, 01 May 2021 07:41:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxk5BPbkl7SuSYEyonzwXYuuG8gmydSHTQr3+3evv96mDR8iybcSTj18drwijRs3fWsXT+7ig==
+X-Received: by 2002:a5d:80d5:: with SMTP id h21mr7790067ior.11.1619880074946;
+        Sat, 01 May 2021 07:41:14 -0700 (PDT)
+Received: from localhost.localdomain (bras-base-toroon474qw-grc-72-184-145-4-219.dsl.bell.ca. [184.145.4.219])
+        by smtp.gmail.com with ESMTPSA id k2sm2649343ilq.71.2021.05.01.07.41.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 01 May 2021 07:41:14 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>, peterx@redhat.com,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Axel Rasmussen <axelrasmussen@google.com>
+Subject: [PATCH 0/2] mm/hugetlb: Fix issues on file sealing and fork
+Date:   Sat,  1 May 2021 10:41:08 -0400
+Message-Id: <20210501144110.8784-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.31.1
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210425080902.11854-1-odin@uged.al> <20210425080902.11854-2-odin@uged.al>
- <20210427142611.GA22056@vingu-book> <CAFpoUr1KOvLSUoUac8MMTD+TREDWmDpeku950U=_p-oBDE4Avw@mail.gmail.com>
- <CAKfTPtCtt9V69AvkJTuMDRPJXGPboFsnSmwLM5RExnU2h5stSw@mail.gmail.com> <4ba77def-c7e9-326e-7b5c-cd491b063888@arm.com>
-In-Reply-To: <4ba77def-c7e9-326e-7b5c-cd491b063888@arm.com>
-From:   Odin Ugedal <odin@ugedal.com>
-Date:   Sat, 1 May 2021 16:41:03 +0200
-Message-ID: <CAFpoUr3vMQq8QYajXZsQ6zWQOncO5Q8-2gFWOJLFm-APUznuZA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] sched/fair: Fix unfairness caused by missing load decay
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hugh reported issue with F_SEAL_FUTURE_WRITE not applied correctly to=0D
+hugetlbfs, which I can easily verify using the memfd_test program, which se=
+ems=0D
+that the program is hardly run with hugetlbfs pages (as by default shmem).=
+=0D
+=0D
+Meanwhile I found another probably even more severe issue on that hugetlb f=
+ork=0D
+won't wr-protect child cow pages, so child can potentially write to parent=
+=0D
+private pages.  Patch 2 addresses that.=0D
+=0D
+After this series applied, "memfd_test hugetlbfs" should start to pass.=0D
+=0D
+Please review, thanks.=0D
+=0D
+Peter Xu (2):=0D
+  mm/hugetlb: Fix F_SEAL_FUTURE_WRITE=0D
+  mm/hugetlb: Fix cow where page writtable in child=0D
+=0D
+ fs/hugetlbfs/inode.c |  5 +++++=0D
+ include/linux/mm.h   | 32 ++++++++++++++++++++++++++++++++=0D
+ mm/hugetlb.c         |  2 ++=0D
+ mm/shmem.c           | 22 ++++------------------=0D
+ 4 files changed, 43 insertions(+), 18 deletions(-)=0D
+=0D
+-- =0D
+2.31.1=0D
+=0D
 
-> I think what I see on my Juno running the unfairness_missing_load_decay.sh script is
-> in sync which what you discussed here:
-
-Thanks for taking a look!
-
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 794c2cb945f8..7214e6e89820 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -10854,6 +10854,8 @@ static void propagate_entity_cfs_rq(struct sched_entity *se)
->                         break;
->
->                 update_load_avg(cfs_rq, se, UPDATE_TG);
-> +               if (!cfs_rq_is_decayed(cfs_rq))
-> +                       list_add_leaf_cfs_rq(cfs_rq);
->         }
-> }
-
-This might however lead to "loss" at /slice/cg-2/sub and
-slice/cg-1/sub in this particular case tho, since
-propagate_entity_cfs_rq skips one cfs_rq
-by taking the parent of the provided se. The loss in that case would
-however not be equally big, but will still often contribute to some
-unfairness.
-
-
-Thanks
-Odin
