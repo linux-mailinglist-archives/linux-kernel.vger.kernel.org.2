@@ -2,100 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E3F37067A
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 10:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C2D8370682
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 11:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231679AbhEAIsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 04:48:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230117AbhEAIsD (ORCPT
+        id S231825AbhEAJCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 05:02:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44966 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230117AbhEAJB6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 04:48:03 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A9E6C06174A;
-        Sat,  1 May 2021 01:47:14 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id k3-20020a17090ad083b0290155b934a295so2984005pju.2;
-        Sat, 01 May 2021 01:47:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=//OsLf8gU/9VWp4E/gtONldzoDSVWoyHb1O3vAf2hr4=;
-        b=kRHorvM/R3y9LiE2chDqQilUiSbOWfrP2vlHZwHptLk/jpM1OwRAqBHgwRh4KhjhyT
-         AH7PEtE3Hl12cJ9Oh11Z/6HIWQeb5vew+mroII6n2rxbnpkCqr/nOA3xmoUrNiWJNAEo
-         JM9ZkdKiIov8XrHlt7Wd5sM0m//M9zH9Qnq0Qo3Ftmeya64Uq52OdoCqOrGuAKcsxM10
-         gmXCKRAZmzSYrl7KqITCd7rRZJdHKHk12B3nT+W5aexNG5Gb1F4eD0N9sMAjJ0Ca/KKy
-         RvqyvlEgphlLOtu3S/VCyguWSUXI2JQ82aiQEVplLvUqR6ehp+485/1RwGjs/v5QA/zI
-         N0FQ==
+        Sat, 1 May 2021 05:01:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619859668;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TDG+TDZoewmymKPtgSjz1RxtoXK5cpceEnvgfqjHUWI=;
+        b=TnM/E+XwTowtwpxdnPL8csEbJJayygZU7MqSXEObJwEMNSlgKWXQy0xgEKSMHXzoLk2IMj
+        LkX4ujBnTj1BtMI57GH8+T+rjsdJGJhsttOFINIUpAKaipOWmepls8PZQivRBPtOJfvsH4
+        Q3GlAkTSgmaLYg7v7bkQgvG8IBEvuS8=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-294-f9PqqZ2OO1Gcp3yCRcGTOg-1; Sat, 01 May 2021 05:01:05 -0400
+X-MC-Unique: f9PqqZ2OO1Gcp3yCRcGTOg-1
+Received: by mail-ej1-f69.google.com with SMTP id r14-20020a1709062cceb0290373a80b4002so71178ejr.20
+        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 02:01:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=//OsLf8gU/9VWp4E/gtONldzoDSVWoyHb1O3vAf2hr4=;
-        b=sEA3fWAln6mq+jARSfL2m7Jg+vYSpG8kbIIcvxA0szSsw6h2Cnia7gF5YzhgTcYt9B
-         A6BFxP+OWYRtMdZ4HV4AX3w65m++hdZCCNNft1g3YQV6DW7IZ6jRs4k394GFdfuLHFcq
-         cQfueqOLpc3jvdoTDG9zXAXAvWt+yoXh6G7DSYjNTMBLN9M7VklL51ekv2ZRgRcLOznh
-         EK0ej2kD/lZbsbwL2ZM5WCJe7jbnLw1BNcHnA6/qL02pNjGhhF4uUbz6GVw7H3snGVv8
-         076rpTTLYRYJbQKfsFU7HldvLGh4/1mcgqJhBozcpAEEZl1p2B7VqbSV5TCHiVqdBrOn
-         fBiA==
-X-Gm-Message-State: AOAM531V/ibRRCYVW7wZgNhFNwxtNY5DBZmaJQBf0pogs1rMdRgOsEL/
-        ZyWx75ZJU3tEO3///gNOBjg=
-X-Google-Smtp-Source: ABdhPJxiRuPq98W1BLwhur1yTAAe2cpv3YkMCzOfdhyDSVOGzCe2PF6bDuaBpcPCaM2RmHI1mCCCeA==
-X-Received: by 2002:a17:90a:5885:: with SMTP id j5mr9815184pji.102.1619858833696;
-        Sat, 01 May 2021 01:47:13 -0700 (PDT)
-Received: from user ([2001:4490:4409:1012:5ea7:af4f:f2d7:caab])
-        by smtp.gmail.com with ESMTPSA id 3sm3915093pff.132.2021.05.01.01.47.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 May 2021 01:47:13 -0700 (PDT)
-Date:   Sat, 1 May 2021 14:17:03 +0530
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-To:     b-liu@ti.com, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-Subject: [PATCH] usb: musb: Remove unused function argument
-Message-ID: <20210501084703.GA57167@user>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TDG+TDZoewmymKPtgSjz1RxtoXK5cpceEnvgfqjHUWI=;
+        b=DTuRsLkWMdhcIKsGwwJXP6l/Z+FIq1HR5L5h31Eql5sDowkBUqb4xix4GZJkreTGEm
+         lAb9pUwy6F/2IpgDD3+uCD/D2QPeT2z/3TyE4x9XHOdBtboFHsZYz4NZ3hqQc3mB6JD2
+         u3wGWjFFMOmcMSKiALxghlGNNolhAAVRd9AaoKXKsCcl9inVA+nh4mIpwjpjp5C7DVNP
+         jY+s38FLk4jp61TeHAPPjBwykifupEwwHxvqSncibdqdqlFb2BX/gzmuWVhW9sEpQYlR
+         oveHNQQroFCIt1Qy6ntUr7hdKlR4AiDD+3MbfjrcvI5bRuJ1gwvR9TEevZfK8VWqUcjL
+         Q4LQ==
+X-Gm-Message-State: AOAM531vEnglF6X+QkA/K7V7hcG8nwKg4GqNDSsdZXXNYMuDsrJ3/xxo
+        YGceMUQZL+EuiV22xs+VZPV3+SnhiVO4mIaxbUM31XjVpUTnEQxuHVNmmD4KCSc/5WtHHjRH0tV
+        LIGxsPdKinKGoNfAW21Iy525t
+X-Received: by 2002:a05:6402:4242:: with SMTP id g2mr10269029edb.329.1619859663792;
+        Sat, 01 May 2021 02:01:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJytu+AWS652si3LL4P4HnFVQgjMk+Zb3p7DXAj3txdYvQo50PY7VVni+IJKb5XffL2eD5WGaA==
+X-Received: by 2002:a05:6402:4242:: with SMTP id g2mr10269003edb.329.1619859663500;
+        Sat, 01 May 2021 02:01:03 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id dj17sm1391672edb.7.2021.05.01.02.01.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 01 May 2021 02:01:02 -0700 (PDT)
+Subject: Re: [PATCH v3 2/2] KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS
+ hypercall
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        srutherford@google.com, joro@8bytes.org, brijesh.singh@amd.com,
+        thomas.lendacky@amd.com, ashish.kalra@amd.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org
+References: <20210429104707.203055-1-pbonzini@redhat.com>
+ <20210429104707.203055-3-pbonzini@redhat.com> <YIxkTZsblAzUzsf7@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c4bf8a05-ec0d-9723-bb64-444fe1f088b5@redhat.com>
+Date:   Sat, 1 May 2021 11:01:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <YIxkTZsblAzUzsf7@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused function argument struct dma_controller *dma,
-struct urb *urb and u32 offset from musb_tx_dma_set_mode_mentor
+On 30/04/21 22:10, Sean Christopherson wrote:
+> On Thu, Apr 29, 2021, Paolo Bonzini wrote:
+>> diff --git a/Documentation/virt/kvm/msr.rst b/Documentation/virt/kvm/msr.rst
+>> index 57fc4090031a..cf1b0b2099b0 100644
+>> --- a/Documentation/virt/kvm/msr.rst
+>> +++ b/Documentation/virt/kvm/msr.rst
+>> @@ -383,5 +383,10 @@ MSR_KVM_MIGRATION_CONTROL:
+>>   data:
+>>           This MSR is available if KVM_FEATURE_MIGRATION_CONTROL is present in
+>>           CPUID.  Bit 0 represents whether live migration of the guest is allowed.
+>> +
+>>           When a guest is started, bit 0 will be 1 if the guest has encrypted
+>> -        memory and 0 if the guest does not have encrypted memory.
+>> +        memory and 0 if the guest does not have encrypted memory.  If the
+>> +        guest is communicating page encryption status to the host using the
+>> +        ``KVM_HC_PAGE_ENC_STATUS`` hypercall, it can set bit 0 in this MSR to
+>> +        allow live migration of the guest.  The MSR is read-only if
+>> +        ``KVM_FEATURE_HC_PAGE_STATUS`` is not advertised to the guest.
+> 
+> I still don't get the desire to tie MSR_KVM_MIGRATION_CONTROL to PAGE_ENC_STATUS
+> in any way shape or form.  I can understand making it read-only or dropping
+> writes if it's not intercepted by userspace, but making it read-only for
+> non-encrypted guests makes it useful only for encrypted guests, which defeats
+> the purpose of genericizing the MSR.
 
-Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
----
- drivers/usb/musb/musb_host.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+Yeah, I see your point.  On the other hand by making it unconditionally 
+writable we must implement the writability in KVM, because a read-only 
+implementation would not comply with the spec.
 
-diff --git a/drivers/usb/musb/musb_host.c b/drivers/usb/musb/musb_host.c
-index 8b7d22a0c0fb..14d9b366e605 100644
---- a/drivers/usb/musb/musb_host.c
-+++ b/drivers/usb/musb/musb_host.c
-@@ -563,10 +563,9 @@ musb_rx_reinit(struct musb *musb, struct musb_qh *qh, u8 epnum)
- 	ep->rx_reinit = 0;
- }
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index e9c40be9235c..0c2524bbaa84 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -3279,6 +3279,12 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>>   		if (!guest_pv_has(vcpu, KVM_FEATURE_MIGRATION_CONTROL))
+>>   			return 1;
+>>   
+>> +		/*
+>> +		 * This implementation is only good if userspace has *not*
+>> +		 * enabled KVM_FEATURE_HC_PAGE_ENC_STATUS.  If userspace
+>> +		 * enables KVM_FEATURE_HC_PAGE_ENC_STATUS it must set up an
+>> +		 * MSR filter in order to accept writes that change bit 0.
+>> +		 */
+>>   		if (data != !static_call(kvm_x86_has_encrypted_memory)(vcpu->kvm))
+>>   			return 1;
+> 
+> This behavior doesn't match the documentation.
+> 
+>    a. The MSR is not read-only for legacy guests since they can write '0'.
+>    b. The MSR is not read-only if KVM_FEATURE_HC_PAGE_STATUS isn't advertised,
+>       a guest with encrypted memory can write '1' regardless of whether userspace
+>       has enabled KVM_FEATURE_HC_PAGE_STATUS.
 
--static void musb_tx_dma_set_mode_mentor(struct dma_controller *dma,
--		struct musb_hw_ep *hw_ep, struct musb_qh *qh,
--		struct urb *urb, u32 offset,
--		u32 *length, u8 *mode)
-+static void musb_tx_dma_set_mode_mentor(struct musb_hw_ep *hw_ep,
-+					struct musb_qh *qh,
-+					u32 *length, u8 *mode)
- {
- 	struct dma_channel	*channel = hw_ep->tx_channel;
- 	void __iomem		*epio = hw_ep->regs;
-@@ -630,7 +629,7 @@ static bool musb_tx_dma_program(struct dma_controller *dma,
- 	u8			mode;
+Right, I should have said "not changeable" rather than "read-only".
 
- 	if (musb_dma_inventra(hw_ep->musb) || musb_dma_ux500(hw_ep->musb))
--		musb_tx_dma_set_mode_mentor(dma, hw_ep, qh, urb, offset,
-+		musb_tx_dma_set_mode_mentor(hw_ep, qh,
- 					    &length, &mode);
- 	else if (is_cppi_enabled(hw_ep->musb) || tusb_dma_omap(hw_ep->musb))
- 		musb_tx_dma_set_mode_cppi_tusb(dma, hw_ep, qh, urb, offset,
---
-2.25.1
+>    c. The MSR is never fully writable, e.g. a guest with encrypted memory can set
+>       bit 0, but not clear it.  This doesn't seem intentional?
+
+It is intentional, clearing it would mean preserving the value in the 
+kernel so that userspace can read it.
+
+So... I don't know, all in all having both the separate CPUID and the 
+userspace implementation reeks of overengineering.  It should be either 
+of these:
+
+- separate CPUID bit, MSR unconditionally writable and implemented in 
+KVM.  Userspace is expected to ignore the MSR value for encrypted guests 
+unless KVM_FEATURE_HC_PAGE_STATUS is exposed.  Userspace should respect 
+it even for unencrypted guests (not a migration-DoS vector, because 
+userspace can just not expose the feature).
+
+- make it completely independent from migration, i.e. it's just a facet 
+of MSR_KVM_PAGE_ENC_STATUS saying whether the bitmap is up-to-date.  It 
+would use CPUID bit as the encryption status bitmap and have no code at 
+all in KVM (userspace needs to set up the filter and implement everything).
+
+At this point I very much prefer the latter, which is basically Ashish's 
+earlier patch.
+
+Paolo
+
+> Why not simply drop writes?  E.g.
+> 
+> 		if (data & ~KVM_MIGRATION_READY)
+> 			return 1;
+> 		break;
+> 
+> And then do "msr->data = 0;" in the read path.  That's just as effective as
+> making the MSR read-only to force userspace to intercept the MSR if it wants to
+> do anything useful with the information, and it's easy to document.
 
