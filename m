@@ -2,60 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FFA1370941
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 00:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 618A5370946
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 00:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231790AbhEAWut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 18:50:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231266AbhEAWus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 18:50:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 6C2D061409;
-        Sat,  1 May 2021 22:49:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619909397;
-        bh=82eWlceGI55fQ3Qub29OMBT2jOMBdnA4b9bliDQF4HE=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=bRE4n61QAh5IagtfwPfDMD3km3j1+oFzpw2GTdH+GW/KRuh5cAvg2+JBak/fX5eZm
-         uT/p1VnSqrFF4YFf3h/heOBBr1GdZpIv4aaX1VI+ycZaDEUvO0UPR0IOG0UIagGSuW
-         iOg68JAT2RkOIBklkSURcTvvQ0DTs43UKdTlk4ntw5jXCFE6uAIIvUlOgNvm3FQmVt
-         J5LZRxduAtq1Avu/ZeaVzMTwGDoKg53gK8pKK8TTGjvN6zty4QJWQLm/QA2At4DThH
-         GCPfuiUP05WMOZ/LKvB3KEl0g+TFVcrxZQUvHna3m10fcyoUMdYxvgFNkG6k3jOREL
-         s8OMiq5Ev1CKA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 55A0660A3A;
-        Sat,  1 May 2021 22:49:57 +0000 (UTC)
-Subject: Re: [GIT PULL] integrity subsystem updates for v5.13
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <33e5687f1e4c7becdc41136704fa239f81b82fec.camel@linux.ibm.com>
-References: <33e5687f1e4c7becdc41136704fa239f81b82fec.camel@linux.ibm.com>
-X-PR-Tracked-List-Id: <linux-integrity.vger.kernel.org>
-X-PR-Tracked-Message-Id: <33e5687f1e4c7becdc41136704fa239f81b82fec.camel@linux.ibm.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.13
-X-PR-Tracked-Commit-Id: 781a5739489949fd0f32432a9da17f7ddbccf1cc
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e6f0bf09f0669b3c2cd77fa906830123279a0a21
-Message-Id: <161990939728.12607.3075496329166566135.pr-tracker-bot@kernel.org>
-Date:   Sat, 01 May 2021 22:49:57 +0000
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        id S232045AbhEAWv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 18:51:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231739AbhEAWv5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 May 2021 18:51:57 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2271EC06174A;
+        Sat,  1 May 2021 15:51:06 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id s5-20020a7bc0c50000b0290147d0c21c51so1288710wmh.4;
+        Sat, 01 May 2021 15:51:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=PwSV7FUhyJ1mxH+xfT6PmlAiJ1kI3txZ1OhhYMJ+KoM=;
+        b=bNYTxQvFFKjVbSmFkmHmnAwxnykw2R7jrMyD8gjKefiQk700UnoZXsRZZNk0X1XdtV
+         1boXIS3JLX3+uzTrFwRCTaMuQ6wKcHJMPr4PGgvvbLfstIXZVsV6InLfEQFUhqQSU2/d
+         s0XphrdWof5VwAT9Xf+vyKViTmHeuKMkWoqRSlrsmGjUg496WxbTJodgoapM8ON2y/VG
+         FapDERrqnRsisWw7Nt1cwl0ab+2/im04sb3cSeQiJhfOuTYuyPJUhMrtYOD3MB724E9B
+         CfQjfjxiUqcN/plFO1tSyapsxUvFvWIT/AJemOheYuIxKBUzrDHnl2WE7akykKz4lhTv
+         GwQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=PwSV7FUhyJ1mxH+xfT6PmlAiJ1kI3txZ1OhhYMJ+KoM=;
+        b=eYuR7DDW/6UAMExE/QeE28FKj9p9tBq3+d9q6X2Vgp9csvSEcHr45RBPOAdJ63nwFx
+         ZnC0vZhed86Wc/m5EfDS/Ni+hIepLfvgPaFbzl3kL8QmVG2Ye/a8vJyEstgKRgtOWCl8
+         6IBNNRXItFx1+MS65yNZ7gnpfcmFDLO1HS85EjybvdUg4QSDWBBDKDgqbagXSIBfpkT8
+         VPgR8pxNF2UFhE8DGbWvgBSJ9DbgjnPpQLQkxb+1rp7BjuzFJ9Rd2feRxErW/7vDR3K2
+         qt5EySl5DMzKzdV6LlgKb3x/YZrZSn8qceYz/BTzJkDC9qYwIn4N96OfMyOt6PF5VUhi
+         XkVQ==
+X-Gm-Message-State: AOAM532DjoIRTeGiOApNTXRV9f5y43PvJv6sM00uLRujIwvOmHSyHYLx
+        BvJ3MaTy+ry85WQth5B+g4wOIdlL9KOD5bgG
+X-Google-Smtp-Source: ABdhPJw4heNvR+XcJW4rZ0mvVyn/rkIN69A1d9f4P8AgO5ne57CgcPSt73A8oWx0ai5jS7goZCnS7A==
+X-Received: by 2002:a1c:804a:: with SMTP id b71mr13678574wmd.82.1619909464863;
+        Sat, 01 May 2021 15:51:04 -0700 (PDT)
+Received: from localhost.localdomain ([102.156.189.222])
+        by smtp.gmail.com with ESMTPSA id t17sm2570172wrx.40.2021.05.01.15.51.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 01 May 2021 15:51:04 -0700 (PDT)
+From:   Khaled ROMDHANI <khaledromdhani216@gmail.com>
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     Khaled ROMDHANI <khaledromdhani216@gmail.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] fs/btrfs: Fix uninitialized variable
+Date:   Sat,  1 May 2021 23:50:46 +0100
+Message-Id: <20210501225046.9138-1-khaledromdhani216@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 28 Apr 2021 09:46:57 -0400:
+Fix the warning: variable 'zone' is used
+uninitialized whenever '?:' condition is true.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.13
+Fix that by preventing the code to reach
+the last assertion. If the variable 'mirror'
+is invalid, the assertion fails and we return
+immediately.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e6f0bf09f0669b3c2cd77fa906830123279a0a21
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
+---
+ fs/btrfs/zoned.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thank you!
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index 8250ab3f0868..23da9d8dc184 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -145,7 +145,7 @@ static inline u32 sb_zone_number(int shift, int mirror)
+ 	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
+ 	default:
+ 		ASSERT((u32)mirror < 3);
+-		break;
++		return 0;
+ 	}
+ 
+ 	ASSERT(zone <= U32_MAX);
 
+base-commit: b5c294aac8a6164ddf38bfbdd1776091b4a1eeba
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.17.1
+
