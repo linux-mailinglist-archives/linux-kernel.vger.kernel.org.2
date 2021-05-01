@@ -2,168 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF1937095B
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 01:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD52370967
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 02:20:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231877AbhEAX4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 19:56:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57548 "EHLO
+        id S232201AbhEBAV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 20:21:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231266AbhEAX4p (ORCPT
+        with ESMTP id S231877AbhEBAV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 19:56:45 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BF70C06174A
-        for <linux-kernel@vger.kernel.org>; Sat,  1 May 2021 16:55:54 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id gj14so1017330pjb.5
-        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 16:55:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cJtnQiMEQGHamwTnLSAL+yS7z+YYUkCJ8B6sDol3IVQ=;
-        b=Yp+7NBsWnFAflu4GCKuRQLlPd6v80Ui4mAXBIVo3gcON1HmI7BdeLLI6869cIhZ1vO
-         h2/M7Igv/g94ZPvy0WRqSMXC2+qP1R7QnMseB68G4cHFsDCLN4utoQC1MD8IDM89cvTh
-         49MIK34pZKThqKTe6RTaaFOHHCDxmyD0b5z1NCAtoR6/rn3Xa77vTMo6hiORGHF/gSmh
-         W3JIpeglGGGdKL3WxD0oGn2YHzisIcB9XgMW6SKRTxHj4gKXZQo9K/oFSSRno3F3GJ7n
-         vn8b7JkOf5UnxdnTI+I9kCdbpNriZHl2QdyYTxJDfsGuOpgfy4LbwVvC2GZWW1WBdja9
-         Txvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cJtnQiMEQGHamwTnLSAL+yS7z+YYUkCJ8B6sDol3IVQ=;
-        b=J+IH6aoym9PB49ZLPkDfbgQosPvH9lfwJy5etek6dFhwaKOqOp9+3YVyfV5bKxg8Gs
-         UkUSBBjt+9pDOP8KbeCve2stGZJJoTdmXY+w4XzMvAWF1qmrsplxESLFNWnoVLyZJqIQ
-         41YBNF0qvUT5MIxQCRbNxlWCRlLTyoJsE62FTudMjGi32lZomApkdqjNFYt6DV8tvOwP
-         XhZ2uDAYOdHCKL86A/xd9sah7N5YmKuWDijt96A52Hbo+d038nQmakHt6VumE+Aqvst9
-         04W6Q6Ojf+hw5/zYi+0n7X7H/pidBvo98lv3BpfMP/z3TPN172JHX9sHxPVPO8EN7qvC
-         26wQ==
-X-Gm-Message-State: AOAM532uHjuyg+sIYZjdUG4niQ3aKptTYsHLTmeep0rMuyRzNtSvLeJ+
-        kULl+WckJS6htzR9yMLOd2ddhA==
-X-Google-Smtp-Source: ABdhPJwfJxEas2N4XgwNj/nRzonN9S29zdQfr178lqsJlGUq0CZIWXI84UQO0SJNk/Tc9e9lzH73Zg==
-X-Received: by 2002:a17:903:1c2:b029:ec:a5b6:f840 with SMTP id e2-20020a17090301c2b02900eca5b6f840mr12676430plh.24.1619913353423;
-        Sat, 01 May 2021 16:55:53 -0700 (PDT)
-Received: from google.com ([2620:15c:2ce:200:bd70:101f:7bf7:d724])
-        by smtp.gmail.com with ESMTPSA id h6sm5383564pfb.157.2021.05.01.16.55.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 May 2021 16:55:52 -0700 (PDT)
-Date:   Sat, 1 May 2021 16:55:49 -0700
-From:   Fangrui Song <maskray@google.com>
-To:     Serge Guelton <sguelton@redhat.com>,
-        Tom Stellard <tstellar@redhat.com>
+        Sat, 1 May 2021 20:21:28 -0400
+X-Greylist: delayed 2549 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 01 May 2021 17:20:37 PDT
+Received: from vuizook.err.no (vuizook.err.no [IPv6:2a02:20c8:2640::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74BE1C06174A
+        for <linux-kernel@vger.kernel.org>; Sat,  1 May 2021 17:20:37 -0700 (PDT)
+Received: from [2400:4160:1877:2b00:fc5f:fa70:7483:1006] (helo=glandium.org)
+        by vuizook.err.no with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mh@glandium.org>)
+        id 1lczBQ-0005em-Kb; Sat, 01 May 2021 23:38:01 +0000
+Received: from glandium by goemon.lan with local (Exim 4.92)
+        (envelope-from <mh@glandium.org>)
+        id 1lczBK-0005aQ-5j; Sun, 02 May 2021 08:37:54 +0900
+Date:   Sun, 2 May 2021 08:37:54 +0900
+From:   Mike Hommey <mh@glandium.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Stellard <tstellar@redhat.com>,
         Masahiro Yamada <masahiroy@kernel.org>,
         Nathan Chancellor <nathan@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         clang-built-linux <clang-built-linux@googlegroups.com>,
-        Sylvestre Ledru <sylvestre@mozilla.com>,
-        Felix Yan <felixonmars@archlinux.org>
+        Fangrui Song <maskray@google.com>,
+        Serge Guelton <sguelton@redhat.com>,
+        Sylvestre Ledru <sylvestre@mozilla.com>
 Subject: Re: Very slow clang kernel config ..
-Message-ID: <20210501235549.vugtjeb7dmd5xell@google.com>
-References: <CAKwvOdk+V2dc31guafFM=N2ez4SrwCmah+mimUG3MzPMx_2efQ@mail.gmail.com>
+Message-ID: <20210501233754.4he27eoteqvplywu@glandium.org>
+References: <CAHk-=wjmNOoX8iPtYsM8PVa+7DE1=5bv-XVe_egP0ZOiuT=7CQ@mail.gmail.com>
+ <CAKwvOdmMF_v9TzBtFn2S1qSS_yCDO8D-u3WhBehUM7gzjcdjUQ@mail.gmail.com>
+ <CAKwvOdk+V2dc31guafFM=N2ez4SrwCmah+mimUG3MzPMx_2efQ@mail.gmail.com>
  <CAKwvOdn3uXniVedgtpD8QFAd-hdVuVjGPa4-n0h64PTxT4XhWg@mail.gmail.com>
  <CAKwvOdm3D=dqKw=kx46PLaiqfHOZJL3QFKGc8kxqJqpwdFFWqw@mail.gmail.com>
  <CAKwvOdkp_P8BCtFuKqDrtC_=A89ZfDf66Yr3FL2e=ojwv4KaMA@mail.gmail.com>
  <CAHk-=wi1yiBBr3b3RbCEte6-yzAApsZN5zRdr3xoW8Av9jOX=Q@mail.gmail.com>
  <CAKwvOdk0nxxUATg2jEKgx4HutXCMXcW92SX3DT+uCTgqBwQHBg@mail.gmail.com>
- <1c5e05fa-a246-9456-ff4e-287960acb18c@redhat.com>
- <CAHk-=whs8QZf3YnifdLv57+FhBi5_WeNTG1B-suOES=RcUSmQg@mail.gmail.com>
- <20210501195750.GA1480516@sguelton.remote.csb>
- <CAHk-=whPoHOa6_gA3-pk=nOzpefZmsSK1an_iByEyhLe+3m-AA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=whPoHOa6_gA3-pk=nOzpefZmsSK1an_iByEyhLe+3m-AA@mail.gmail.com>
+In-Reply-To: <CAKwvOdk0nxxUATg2jEKgx4HutXCMXcW92SX3DT+uCTgqBwQHBg@mail.gmail.com>
+X-GPG-Fingerprint: 182E 161D 1130 B9FC CD7D  B167 E42A A04F A6AA 8C72
+User-Agent: NeoMutt/20180716
+X-Spam-Status: (score 2.2): No, score=2.2 required=5.0 tests=RDNS_NONE,SPF_FAIL,SPF_HELO_FAIL autolearn=disabled version=3.4.2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-01, Linus Torvalds wrote:
->On Sat, May 1, 2021 at 12:58 PM Serge Guelton <sguelton@redhat.com> wrote:
->>
->> Different metrics lead to different choice, then comes the great pleasure of
->> making compromises :-)
->
->Even if that particular compromise might be the right one to do for
->clang and llvm, the point is that the Fedora rule is garbage, and it
->doesn't _allow_ for making any compromises at all.
->
->The Fedora policy is basically "you have to use shared libraries
->whether that makes any sense or not".
->
->As mentioned, I've seen a project bitten by that insane policy.  It's bogus.
->
->            Linus
+On Fri, Apr 30, 2021 at 06:48:11PM -0700, Nick Desaulniers wrote:
+> On Fri, Apr 30, 2021 at 6:22 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > On Fri, Apr 30, 2021 at 5:25 PM Nick Desaulniers
+> > <ndesaulniers@google.com> wrote:
+> > >
+> > > Ah, no, sorry, these are the runtime link editor/loader. So probably
+> > > spending quite some time resolving symbols in large binaries.
+> >
+> > Yeah. Appended is the profile I see when I profile that "make
+> > oldconfig", so about 45% of all time seems to be spent in just symbol
+> > lookup and relocation.
+> >
+> > And a fair amount of time just creating and tearing down that huge
+> > executable (with a lot of copy-on-write overhead too), with the kernel
+> > side of that being another 15%. The cost of that is likely also fairly
+> > directly linked to all the dynamic linking costs, which brings in all
+> > that data.
+> >
+> > Just to compare, btw, this is the symbol lookup overhead for the gcc case:
+> >
+> >    1.43%  ld-2.33.so             do_lookup_x
+> >    0.96%  ld-2.33.so             _dl_relocate_object
+> >    0.69%  ld-2.33.so             _dl_lookup_symbol_x
+> >
+> > so it really does seem to be something very odd going on with the clang binary.
+> >
+> > Maybe the Fedora binary is built some odd way, but it's likely just
+> > the default clang build.
+> >
+> >              Linus
+> >
+> > ----
+> >   23.59%  ld-2.33.so          _dl_lookup_symbol_x
+> >   11.41%  ld-2.33.so          _dl_relocate_object
+> >    9.95%  ld-2.33.so          do_lookup_x
+> >    4.00%  [kernel.vmlinux]    copy_page
+> >    3.98%  [kernel.vmlinux]    next_uptodate_page
+> >    3.05%  [kernel.vmlinux]    zap_pte_range
+> >    1.81%  [kernel.vmlinux]    clear_page_rep
+> >    1.68%  [kernel.vmlinux]    asm_exc_page_fault
+> >    1.33%  ld-2.33.so          strcmp
+> >    1.33%  ld-2.33.so          check_match
+> 
+> 47.61% spent in symbol table lookup. Nice. (Not counting probably a
+> fair amount of the libc calls below).
+> 
+> >    0.92%  libLLVM-12.so       llvm::StringMapImpl::LookupBucketFor
+> 
+> ^ wait a minute; notice how in your profile the `Shared Object` is
+> attributed to `libLLVM-12.so` while mine is `clang-13`?  Clang can be
+> built as either having libllvm statically linked or dynamically; see
+> the cmake variables
+> LLVM_BUILD_LLVM_DYLIB:BOOL
+> LLVM_LINK_LLVM_DYLIB:BOOL
+> BUILD_SHARED_LIBS:BOOL
+> https://llvm.org/docs/CMake.html
+> 
+> I think those are frowned upon; useful for cutting down on developers
+> iteration speed due to not having to relink llvm when developing
+> clang. But shipping that in production? I just checked and it doesn't
+> look like we do that for AOSP's build of LLVM.
+> 
+> Tom, is one of the above intentionally set for clang builds on Fedora?
+> I'm guessing it's intentional that there are packages for
+> libLLVM-12.so and libclang-cpp.so.12, perhaps they have other
+> dependents?
 
-As a very safe optimization, distributions can consider
--fno-semantic-interposition (only effectful on x86 in GCC and Clang,
-already used by some Python packages):
-avoid GOT/PLT generating relocation if the referenced symbol is defined
-in the same translation unit. See my benchmark below: it makes the built
--fPIC clang slightly faster.
+Have you tried building clang/llvm with -Bsymbolic-functions?
 
-As a slightly aggressive optimization, consider
--DCMAKE_EXE_LINKER_FLAGS=-Wl,-Bsymbolic-functions -DCMAKE_SHARED_LINKER_FLAGS=-Wl,-Bsymbolic-functions.
-The performance is comparable to a mostly statically linked PIE clang.  (-shared
--Bsymbolic is very similar to -pie.): function calls within libLLVM.so
-or libclang-cpp.so has no extra cost compared with a mostly statically linked PIE clang.
-
-Normally I don't recommend -Bsymbolic because
-
-* it can break C++ semantics about address uniqueness of inline functions,
-   type_info (exceptions) when there are multiple definitions in the
-   process. I believe LLVM+Clang are not subject to such issues.
-   We don't throw LLVM/Clang type exceptions.
-* it is not compatible with copy relocations[1]. This is not an issue for -Bsymbolic-functions.
-
--Bsymbolic-functions should be suitable for LLVM+Clang.
-
-
-
-LD=ld.lld -j 40 defconfig;  time 'make vmlinux'
-
-# the compile flags may be very different from the clang builds below.
-system gcc
-     1050.15s user 192.96s system 3015% cpu   41.219 total
-     1055.47s user 196.51s system 3022% cpu   41.424 total
-
-clang (libLLVM*.a libclang*.a); LLVM=1
-     1588.35s user 193.02s system 3223% cpu   55.259 total
-     1613.59s user 193.22s system 3234% cpu   55.861 total
-clang (libLLVM.so libclang-cpp.so); LLVM=1
-     1870.07s user 222.86s system 3256% cpu 1:04.26 total
-     1863.26s user 220.59s system 3219% cpu 1:04.73 total
-     1877.79s user 223.98s system 3233% cpu 1:05.00 total
-     1859.32s user 221.96s system 3241% cpu 1:04.20 total
-clang (libLLVM.so libclang-cpp.so -fno-semantic-interposition); LLVM=1
-     1810.47s user 222.98s system 3288% cpu 1:01.83 total
-     1790.46s user 219.65s system 3227% cpu 1:02.27 total
-     1796.46s user 220.88s system 3139% cpu 1:04.25 total
-     1796.55s user 221.28s system 3215% cpu 1:02.75 total
-clang (libLLVM.so libclang-cpp.so -fno-semantic-interposition -Wl,-Bsymbolic); LLVM=1
-     1608.75s user 221.39s system 3192% cpu   57.333 total
-     1607.85s user 220.60s system 3205% cpu   57.042 total
-     1598.64s user 191.21s system 3208% cpu   55.778 total
-clang (libLLVM.so libclang-cpp.so -fno-semantic-interposition -Wl,-Bsymbolic-functions); LLVM=1
-     1617.35s user 220.54s system 3217% cpu   57.115 total
-
-
-
-LLVM's reusable component design causes us some overhead here.  Almost
-every cross-TU callable function is moved to a public header and
-exported, libLLVM.so and libclang-cpp.so have huge dynamic symbol tables.
--Wl,--gc-sections cannot really eliminate much.
-
-
-(Last, I guess it is a conscious decision that distributions build all
-targets instead of just the host -DLLVM_TARGETS_TO_BUILD=host. This
-makes cross compilation easy: a single clang can replace various *-linux-gnu-gcc)
-
-
-[1]: Even if one design goal of -fPIE is to avoid copy relocations, and
-   normally there should be no issue on non-x86, there is an unfortunate
-   GCC 5 fallout for x86-64 ("x86-64: Optimize access to globals in PIE with copy reloc").
-   I'll omit words here as you can find details on https://maskray.me/blog/2021-01-09-copy-relocations-canonical-plt-entries-and-protected
-   -Bsymbolic-functions avoids such issues.
+Mike
