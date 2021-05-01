@@ -2,102 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 459653707C2
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 17:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EDC33707C7
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 17:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231826AbhEAPor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 11:44:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36718 "EHLO
+        id S231415AbhEAPxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 11:53:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230450AbhEAPoq (ORCPT
+        with ESMTP id S230051AbhEAPxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 11:44:46 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B79C06174A;
-        Sat,  1 May 2021 08:43:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ZZhukaabMwhJaioIS34CyIDiXMBC3VOAahF1TCfxWX4=; b=frrztHdbGuIO8+KQ2rDoaxbb5m
-        ryap20MO+uUGBEiNmbi7azgpwpDy8qWbH9fduTdK5/i8tjOm+ninaiSF0D263wB2sAgHWqnFTs+Tw
-        QSk3ZERiIE3yFOmhMXrIH2fCUG+knoC2Ef98iiuch3VhuFJfIAnNWbF2HzPXEWsYihau/+HSw0gRs
-        qG99pNbVSwWpVstV/nqEi9RhdNMDFLNZeqX+zq+f7gYlaJm1f1HnrqY6tl7NtdAzP6gawknsrWSu6
-        66lCud+6bZg7JAXRb76yh1RWFA0WrWTwXNscSKSuXZGJzeUgiiVOOnCdrVF1vWO60CAJsHalMCvJo
-        xRjMN9+w==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lcrmK-00CX5G-HU; Sat, 01 May 2021 15:43:42 +0000
-Date:   Sat, 1 May 2021 16:43:36 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     corbet@lwn.net, lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC v3] scripts: kernel-doc: reduce repeated regex expressions
- into variables
-Message-ID: <20210501154336.GS1847222@casper.infradead.org>
-References: <20210427165633.GA235567@casper.infradead.org>
- <20210429063729.8144-1-yashsri421@gmail.com>
+        Sat, 1 May 2021 11:53:23 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6C4C06174A;
+        Sat,  1 May 2021 08:52:33 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id 130so1869681ybd.10;
+        Sat, 01 May 2021 08:52:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JjYGMVIHK5n7yoxDPMXd66Acol9hZKelHx5UT6nH47Y=;
+        b=blRUIoJdCmVMNiQDMHNaVJve98qPVFj9/24WjJdA429iQkxxVreNispe+BqiBA3d8W
+         Acr7BVauP7zkcs15L+68w5EqDvJuqgqAQiUpqTLpjFrGI4w60FlbBjkAovszT+DhAO2Y
+         tHmFz//OpI0cdY7Ho2lJ17ud/C/jzzNtemRy5ooBS5sildh6tdH/JXdOSWzcu0kUHuRk
+         sWuz3sEcBwnrjw3SmYkDYCFW6/LI+qbeU5bNDNEyCV8lhk15528w6zCTI7qv8GD3C2Qr
+         /6S1azORvcFztQ4nBtiPy2tzzOKKF9suofex4xX1vd9C6oVASMofpqqBqVOFa9w2DOS8
+         wBsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JjYGMVIHK5n7yoxDPMXd66Acol9hZKelHx5UT6nH47Y=;
+        b=Qj0cytMwHKa+C54soxDSPJ5wpqoLVQ1LfQJzoTvUYUrzzdUtdCgD5Aef9RswQZoMDr
+         A4gS5edmePtzHAK3/8XQEIqf+V5qwSzdcrFH2EKYMpg44W/Oyhrb+zfBhahWVKIxu+Gx
+         O2jfkt23hC35bI8LAhi1CrUU6Fdrk4r3Q8RJKDPTy2xl5EpfO4P6fdeo8ibwpW70NHgR
+         Sz35tIInhEYDc8UvA7KnXW1/kY+ozKVu2JcdVWd0xfBeaidN3QaHhYyCsw/0z/TQ/cHn
+         nrtAFhSpf5Rkp0RE+9SUcJ45srDpqd2TkEGEKe09r7at8DERI5C5dN6ggfoJKdhfKhC1
+         jNqA==
+X-Gm-Message-State: AOAM530ypY12b3kzT1eHOB5GQX++QSbkTDLHI1UIrenT2XtHMom/YH/3
+        kAM+6ADqOK4I+hPNo8UzFjV05meQtvpcpUtbma8=
+X-Google-Smtp-Source: ABdhPJwv4Dai1oxa4I+vtOog2Hw6tEyYe4CX42qPfvaPtHahj/3ak3VQm5m0KU7mUuftqlcL6+PQQToSr4CzLa32hoM=
+X-Received: by 2002:a25:c444:: with SMTP id u65mr14862039ybf.93.1619884352129;
+ Sat, 01 May 2021 08:52:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429063729.8144-1-yashsri421@gmail.com>
+References: <20210501151538.145449-1-masahiroy@kernel.org>
+In-Reply-To: <20210501151538.145449-1-masahiroy@kernel.org>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Sat, 1 May 2021 17:52:21 +0200
+Message-ID: <CANiq72k1hB3X6+Nc_iu=f=BoB-F9JW2j_B4ZMcv8_UpW5QQ2Og@mail.gmail.com>
+Subject: Re: [PATCH] Raise the minimum GCC version to 5.2
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 12:07:29PM +0530, Aditya Srivastava wrote:
-> +    my $name = qr{[a-zA-Z0-9_~:]+};
-> +    my $prototype_end1 = qr{[^\(]*};
-> +    my $prototype_end2 = qr{[^\{]*};
-> +    my $prototype_end = qr{\(($prototype_end1|$prototype_end2)\)};
+On Sat, May 1, 2021 at 5:17 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> More cleanups will be possible as follow-up patches, but this one must
+> be agreed and applied to the mainline first.
 
-Would this be better written as:
++1 This will allow me to remove the __has_attribute hack in
+include/linux/compiler_attributes.h.
 
-	my $prototype_end = qr{\([^\(\{]*\)}
+Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
 
-And now that I look at the whole thing, doesn't this fail to parse
-a function declared as:
-
-int f(void (*g)(long));
-
-(that is, f takes a single argument, which is a pointer to a function
-which takes a long argument and returns void)
-
-Still, I don't think this was parsed correctly before, so it's not an
-argument against this patch, just something to take care of later.
-
-> +    my $type1 = qr{[\w\s]+};
-> +    my $type2 = qr{$type1\*+};
-> +
-> +    if ($define && $prototype =~ m/^()($name)\s+/) {
->          # This is an object-like macro, it has no return type and no parameter
->          # list.
->          # Function-like macros are not allowed to have spaces between
-> @@ -1817,23 +1828,9 @@ sub dump_function($$) {
->          $return_type = $1;
->          $declaration_name = $2;
->          $noret = 1;
-> -    } elsif ($prototype =~ m/^()([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
-> -	$prototype =~ m/^(\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s+\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s+\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
-> -	$prototype =~ m/^()([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
-> -	$prototype =~ m/^(\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s+\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s+\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s+\w+\s+\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s+\w+\s+\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s+\w+\s*\*+\s*\w+\s*\*+\s*)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/)  {
-> +    } elsif ($prototype =~ m/^()($name)\s*$prototype_end/ ||
-> +	$prototype =~ m/^($type1)\s+($name)\s*$prototype_end/ ||
-> +	$prototype =~ m/^($type2)+\s*($name)\s*$prototype_end/)  {
->  	$return_type = $1;
->  	$declaration_name = $2;
->  	my $args = $3;
+Cheers,
+Miguel
