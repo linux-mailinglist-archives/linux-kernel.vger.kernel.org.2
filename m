@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA01C370660
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 10:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77AB5370662
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 May 2021 10:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231868AbhEAIVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 04:21:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54424 "EHLO
+        id S231907AbhEAIVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 04:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231837AbhEAIVJ (ORCPT
+        with ESMTP id S231848AbhEAIVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 04:21:09 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E03B4C06138B
-        for <linux-kernel@vger.kernel.org>; Sat,  1 May 2021 01:20:17 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id n16so124365plf.7
-        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 01:20:17 -0700 (PDT)
+        Sat, 1 May 2021 04:21:10 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8168C06138C
+        for <linux-kernel@vger.kernel.org>; Sat,  1 May 2021 01:20:20 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id t21so220061plo.2
+        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 01:20:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=e+UREwMvCU0p3OyZGXcUE16i/Oh63EmiI8PH18y1vb4=;
-        b=ZK8+D/as8DjRIpotVFjLYMEBQQUy+dGI7Hy0EQJY7ZqBoeb+TK3Mdp5t8sQs+CvsrO
-         YkrOcf5HswROCirjmDM8PMIRRVVJfLM2NuCpJ2ZZ7YpJbLm/PyqnU0fjar0Wro8jN9Rb
-         Gb+P5SBAXCCvRjMpsXb1CkdPEHi6TYHeoApNc=
+        bh=kUuJOx/AeUiCPZH/3dKnOjX2Mw03lZQ+/w7qSbaYDnE=;
+        b=jgjF5nZS67LyXAmTIvUg1x2FotO+EmeSEhgPqJelFWtgBadFr+OOszqztQb5AKG1TJ
+         RR7sF8BfbF3y5iUJ4ZNW2pSwpV8YnA0z0vHMm/jTIAUGW0it4sTjsersGeKgRvqGxWZG
+         9ClMtXgePLXsSouR0HTeRfSUXHUrkqAAlsSK8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=e+UREwMvCU0p3OyZGXcUE16i/Oh63EmiI8PH18y1vb4=;
-        b=CPu2Q8kKZvizLNEveMpU4LR0Kb236D0OGqA4MlzYQegTloPqRlJDSH8+A6q0jokK20
-         dKdfk6jr3N9jR/QvJAswJqKzztZgvLnJ6/CWcv9oZyL332kySr7dtNHWZQJubdm2qE7E
-         c1n5XtRnkBlQV/uqetT/PsN0i52wWu+4rarkAOy8TWkaEnCoX0VEgqYnbRzyBFH2QGaD
-         jVb5iJz+A4/JQIUgKc0fQcwZQCftahsMFq0bL+ECqkJCbK2XqHh1tLe9YfHFcp0Vke9e
-         wWCvvLEkT0BAZhyw8LgZBqjvS1Jj6Dpec5FMVLblhNMbwdi22zsH/sxnx+UVDxG87Lvx
-         xJ3g==
-X-Gm-Message-State: AOAM5314a5SZPltEmKoCZOOWbU/Ur1Ihn0O7QilRbHWxlTzHKM4tcbWX
-        Y85jpQpCFmDjBiWXvDd82PrRuQ==
-X-Google-Smtp-Source: ABdhPJyy4DBtvRhqdgmbFu2rM+S4smwJszQFFUF0M0OjAAThphehEU+5PDPSPQSC8/9oVO/C2f4eIg==
-X-Received: by 2002:a17:90a:1657:: with SMTP id x23mr341811pje.120.1619857217306;
-        Sat, 01 May 2021 01:20:17 -0700 (PDT)
+        bh=kUuJOx/AeUiCPZH/3dKnOjX2Mw03lZQ+/w7qSbaYDnE=;
+        b=Zuzmmq2AYknSZwaab5Lj4OpGDZB9TTjOgAsx3nZVgSUScilFqc6cLEMyg3nS7fZuke
+         X5fnrmfq/loGhYB70L3VhtysESj0e9+FGvz8xb9Q2D7gPzLsNs6aA5HiK0ScoHO32Nyg
+         a0eFFrqrv3WN1xwyo7bcWBYSj8UaDyBLBaWq5I4/FFKq7bC97QAACHQ6YgaEJElBAWty
+         vnwkZSyTD18WT6GgN7aCyTGBSs/dO6brYPOWzETWu8OteZyOIL3TYjaS+XsGQeRtNKZR
+         kaVdhZXOLAIEQbdWmKHgTC4UMNtB6lvNrGHpMGyDZWLIqyuxjhBcHWKHhUwg06DUidQO
+         V42g==
+X-Gm-Message-State: AOAM533y2kB6Xe46z5uRwylOwJbr+Hb4/+rXTrzCTqmns5J8oWxI+8k9
+        fN3BGEK/NFFm8MjL+qdCJOOKWg==
+X-Google-Smtp-Source: ABdhPJzGz4RS0xDBo4lWip3mqE/woDu99ydFoDvoPCsQrG5fIaxbZASrdp1oPJ9RxsFOyppuMiZaFw==
+X-Received: by 2002:a17:90b:3591:: with SMTP id mm17mr9346961pjb.184.1619857220478;
+        Sat, 01 May 2021 01:20:20 -0700 (PDT)
 Received: from senozhatsky.flets-east.jp ([2409:10:2e40:5100:8be7:e987:d00a:1442])
-        by smtp.gmail.com with ESMTPSA id b7sm3763003pjq.36.2021.05.01.01.20.14
+        by smtp.gmail.com with ESMTPSA id b7sm3763003pjq.36.2021.05.01.01.20.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 May 2021 01:20:16 -0700 (PDT)
+        Sat, 01 May 2021 01:20:20 -0700 (PDT)
 From:   Sergey Senozhatsky <senozhatsky@chromium.org>
 To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Ricardo Ribalda <ribalda@chromium.org>
@@ -53,130 +53,71 @@ Cc:     Tomasz Figa <tfiga@chromium.org>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCHv5 3/5] media: uvcvideo: add ROI auto controls
-Date:   Sat,  1 May 2021 17:19:59 +0900
-Message-Id: <20210501082001.100533-4-senozhatsky@chromium.org>
+Subject: [PATCHv5 4/5] media: v4l UAPI: document ROI auto_controls
+Date:   Sat,  1 May 2021 17:20:00 +0900
+Message-Id: <20210501082001.100533-5-senozhatsky@chromium.org>
 X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
 In-Reply-To: <20210501082001.100533-1-senozhatsky@chromium.org>
 References: <20210501082001.100533-1-senozhatsky@chromium.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support for Region of Interest bmAutoControls.
+UVC 1.5 defines the following Region of Interest auto_controls
 
-ROI control is a compound data type:
-  Control Selector     CT_REGION_OF_INTEREST_CONTROL
-  Mandatory Requests   SET_CUR, GET_CUR, GET_MIN, GET_MAX, GET_DEF
-  wLength 10
-  Offset   Field            Size
-  0        wROI_Top         2
-  2        wROI_Left        2
-  4        wROI_Bottom      2
-  6        wROI_Right       2
-  8        bmAutoControls   2       (Bitmap)
-
-uvc_control_mapping, however, can handle only s32 data type at the
-moment: ->get() returns s32 value, ->set() accepts s32 value; while
-v4l2_ctrl maximum/minimum/default_value can hold only s64 values.
-
-Hence ROI control handling is split into two patches:
-a) bmAutoControls is handled via uvc_control_mapping as V4L2_CTRL_TYPE_BITMASK
-b) ROI rectangle (SET_CUR, GET_CUR, GET_DEF, etc.) handling is implemented
-   separately, by the means of selection API.
+|D0: Auto Exposure
+|D1: Auto Iris
+|D2: Auto White Balance
+|D3: Auto Focus
+|D4: Auto Face Detect
+|D5: Auto Detect and Track
+|D6: Image Stabilization
+|D7: Higher Quality
+|D8 – D15: Reserved, set to zero
 
 Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 ---
- drivers/media/usb/uvc/uvc_ctrl.c     | 19 +++++++++++++++++++
- drivers/media/v4l2-core/v4l2-ctrls.c |  1 +
- include/uapi/linux/usb/video.h       |  1 +
- include/uapi/linux/v4l2-controls.h   | 10 ++++++++++
- 4 files changed, 31 insertions(+)
+ .../media/v4l/ext-ctrls-camera.rst            | 23 +++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-index b3dde98499f4..5502fe540519 100644
---- a/drivers/media/usb/uvc/uvc_ctrl.c
-+++ b/drivers/media/usb/uvc/uvc_ctrl.c
-@@ -355,6 +355,15 @@ static const struct uvc_control_info uvc_ctrls[] = {
- 		.flags		= UVC_CTRL_FLAG_GET_CUR
- 				| UVC_CTRL_FLAG_AUTO_UPDATE,
- 	},
-+	{
-+		.entity		= UVC_GUID_UVC_CAMERA,
-+		.selector	= UVC_CT_REGION_OF_INTEREST_CONTROL,
-+		.index		= 21,
-+		.size		= 10,
-+		.flags		= UVC_CTRL_FLAG_SET_CUR | UVC_CTRL_FLAG_GET_CUR
-+				| UVC_CTRL_FLAG_GET_MIN | UVC_CTRL_FLAG_GET_MAX
-+				| UVC_CTRL_FLAG_GET_DEF
-+	},
- };
+diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-camera.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-camera.rst
+index 4c5061aa9cd4..f59cb4d06697 100644
+--- a/Documentation/userspace-api/media/v4l/ext-ctrls-camera.rst
++++ b/Documentation/userspace-api/media/v4l/ext-ctrls-camera.rst
+@@ -217,7 +217,30 @@ enum v4l2_auto_focus_range -
+     * - ``V4L2_AUTO_FOCUS_RANGE_INFINITY``
+       - The lens is set to focus on an object at infinite distance.
  
- static const struct uvc_menu_info power_line_frequency_controls[] = {
-@@ -753,6 +762,16 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
- 		.v4l2_type	= V4L2_CTRL_TYPE_BOOLEAN,
- 		.data_type	= UVC_CTRL_DATA_TYPE_BOOLEAN,
- 	},
-+	{
-+		.id		= V4L2_CID_REGION_OF_INTEREST_AUTO,
-+		.name		= "Region of Interest (auto)",
-+		.entity		= UVC_GUID_UVC_CAMERA,
-+		.selector	= UVC_CT_REGION_OF_INTEREST_CONTROL,
-+		.size		= 16,
-+		.offset		= 64,
-+		.v4l2_type	= V4L2_CTRL_TYPE_BITMASK,
-+		.data_type	= UVC_CTRL_DATA_TYPE_BITMASK,
-+	},
- };
++``V4L2_CID_REGION_OF_INTEREST_AUTO (bitmask)``
++    This determines which, if any, on board features should track to the
++    Region of Interest.
  
- /* ------------------------------------------------------------------------
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
-index 0d7fe1bd975a..8c5816f3f7d4 100644
---- a/drivers/media/v4l2-core/v4l2-ctrls.c
-+++ b/drivers/media/v4l2-core/v4l2-ctrls.c
-@@ -832,6 +832,7 @@ const char *v4l2_ctrl_get_name(u32 id)
- 	case V4L2_CID_MIN_BUFFERS_FOR_OUTPUT:	return "Min Number of Output Buffers";
- 	case V4L2_CID_ALPHA_COMPONENT:		return "Alpha Component";
- 	case V4L2_CID_COLORFX_CBCR:		return "Color Effects, CbCr";
-+	case V4L2_CID_REGION_OF_INTEREST_AUTO:	return "Region Of Interest Auto Controls";
- 
- 	/* Codec controls */
- 	/* The MPEG controls are applicable to all codec controls
-diff --git a/include/uapi/linux/usb/video.h b/include/uapi/linux/usb/video.h
-index bfdae12cdacf..9076a444758a 100644
---- a/include/uapi/linux/usb/video.h
-+++ b/include/uapi/linux/usb/video.h
-@@ -104,6 +104,7 @@
- #define UVC_CT_ROLL_ABSOLUTE_CONTROL			0x0f
- #define UVC_CT_ROLL_RELATIVE_CONTROL			0x10
- #define UVC_CT_PRIVACY_CONTROL				0x11
-+#define UVC_CT_REGION_OF_INTEREST_CONTROL		0x14
- 
- /* A.9.5. Processing Unit Control Selectors */
- #define UVC_PU_CONTROL_UNDEFINED			0x00
-diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-index d43bec5f1afd..97f11b7a3a7c 100644
---- a/include/uapi/linux/v4l2-controls.h
-+++ b/include/uapi/linux/v4l2-controls.h
-@@ -993,6 +993,16 @@ enum v4l2_auto_focus_range {
- 
- #define V4L2_CID_CAMERA_SENSOR_ROTATION		(V4L2_CID_CAMERA_CLASS_BASE+35)
- 
-+#define V4L2_CID_REGION_OF_INTEREST_AUTO	(V4L2_CID_CAMERA_CLASS_BASE+36)
-+#define V4L2_CID_REGION_OF_INTEREST_AUTO_EXPOSURE		(1 << 0)
-+#define V4L2_CID_REGION_OF_INTEREST_AUTO_IRIS			(1 << 1)
-+#define V4L2_CID_REGION_OF_INTEREST_AUTO_WHITE_BALANCE		(1 << 2)
-+#define V4L2_CID_REGION_OF_INTEREST_AUTO_FOCUS			(1 << 3)
-+#define V4L2_CID_REGION_OF_INTEREST_AUTO_FACE_DETECT		(1 << 4)
-+#define V4L2_CID_REGION_OF_INTEREST_AUTO_DETECT_AND_TRACK	(1 << 5)
-+#define V4L2_CID_REGION_OF_INTEREST_AUTO_IMAGE_STABILIZATION	(1 << 6)
-+#define V4L2_CID_REGION_OF_INTEREST_AUTO_HIGHER_QUALITY	(1 << 7)
++.. flat-table::
++    :header-rows:  0
++    :stub-columns: 0
 +
- /* FM Modulator class control IDs */
++    * - ``V4L2_CID_REGION_OF_INTEREST_AUTO_EXPOSURE``
++      - Auto Exposure.
++    * - ``V4L2_CID_REGION_OF_INTEREST_AUTO_IRIS``
++      - Auto Iris.
++    * - ``V4L2_CID_REGION_OF_INTEREST_AUTO_WHITE_BALANCE``
++      - Auto White Balance.
++    * - ``V4L2_CID_REGION_OF_INTEREST_AUTO_FOCUS``
++      - Auto Focus.
++    * - ``V4L2_CID_REGION_OF_INTEREST_AUTO_FACE_DETECT``
++      - Auto Face Detect.
++    * - ``V4L2_CID_REGION_OF_INTEREST_AUTO_DETECT_AND_TRACK``
++      - Auto Detect and Track.
++    * - ``V4L2_CID_REGION_OF_INTEREST_AUTO_IMAGE_STABILIZATION``
++      - Image Stabilization.
++    * - ``V4L2_CID_REGION_OF_INTEREST_AUTO_HIGHER_QUALITY``
++      - Higher Quality.
  
- #define V4L2_CID_FM_TX_CLASS_BASE		(V4L2_CTRL_CLASS_FM_TX | 0x900)
+ ``V4L2_CID_ZOOM_ABSOLUTE (integer)``
+     Specify the objective lens focal length as an absolute value. The
 -- 
 2.31.1.527.g47e6f16901-goog
 
