@@ -2,121 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F46B370A88
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 08:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCD67370A8A
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 08:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231909AbhEBGfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 02:35:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32784 "EHLO mail.kernel.org"
+        id S229754AbhEBGjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 02:39:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229526AbhEBGfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 02:35:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D49E61408;
-        Sun,  2 May 2021 06:34:15 +0000 (UTC)
+        id S229526AbhEBGjl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 May 2021 02:39:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C54B61466;
+        Sun,  2 May 2021 06:38:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619937263;
-        bh=cByN/RcKM8xbB6KsfcBCkuoO/9VHkzKGkqsC7qrvyPM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=s8Xy8pvyPi42yMVDvXg8Iv0BIywloo7o7xzc9wKr/4UrRbkY0CKZvRozbvzXENCa4
-         UUZaptLpgkRVVl3eR/YC8PbVKT6jw+SaSxYKecOHesP02+UCu+CWqXDCDmDfeK5Epg
-         TfWYkhVsqTcmoiSZqgqK4mCwfSmt5qEU0zNYzSrjKqR4WPmb2Uek8LX8JDwShqSbgd
-         Nhc5IGoeN86yH1RMJLQJtCfYHjdLHre9EZDOJ4QxJqjrVDKP400NkwXCMi9Q6Pvf4k
-         75xNE+1dK5Z9hV3/Yl+I8kGsk724zbVqOKaVmkB0ixJBwLZhxQFMsdk1UI8ZsRmifT
-         tlR+6/+IGZspg==
-Date:   Sun, 2 May 2021 09:34:11 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Steven Price <steven.price@arm.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Aili Yao <yaoaili@kingsoft.com>, Jiri Bohac <jbohac@suse.cz>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-hyperv@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v1 7/7] fs/proc/kcore: use page_offline_(freeze|unfreeze)
-Message-ID: <YI5H4yV/c6ReuIDt@kernel.org>
-References: <20210429122519.15183-1-david@redhat.com>
- <20210429122519.15183-8-david@redhat.com>
+        s=k20201202; t=1619937530;
+        bh=piKgrKmyiBaUXWlFDCoVe92nrUxy8uKDEoHPROdAKYs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Lv7XEAX/B9u8077r48/+QI5LUQWM9R8MmyJPB3ByqKMkb1JGmgJQAUddS+xvT8qte
+         K+D9UPJRKJgIxLxxW0hOaQ+6x6Y1XNISxC/gefhf9E4PkAiNpereDbLI8jwoAhxRpn
+         loPk1v14lYKKHOy/E4IXCIPAeohDiLboYwLGK6mJI+GOUpAMJyi4W2kNWoYm0EyWQD
+         Rxwygys0OUP2ApCHV566qkf9VyAaQYviy8UFyuB269SSbyS6y08yC6/Hs6xshFFLIe
+         Bc4+FGK/pyRSccTmPivsDEOAIlAaJJ7xVQcCwvlTk0oCiXFnZIT/BSprcEOzrqRI22
+         Y4DZCtUYq3TGA==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Guy Nisan <gnisan@habana.ai>
+Subject: [PATCH 1/4] habanalabs: modify progress status messages
+Date:   Sun,  2 May 2021 09:38:42 +0300
+Message-Id: <20210502063845.4615-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429122519.15183-8-david@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 02:25:19PM +0200, David Hildenbrand wrote:
-> Let's properly synchronize with drivers that set PageOffline(). Unfreeze
-> every now and then, so drivers that want to set PageOffline() can make
-> progress.
-> 
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  fs/proc/kcore.c | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
-> 
-> diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
-> index 92ff1e4436cb..3d7531f47389 100644
-> --- a/fs/proc/kcore.c
-> +++ b/fs/proc/kcore.c
-> @@ -311,6 +311,7 @@ static void append_kcore_note(char *notes, size_t *i, const char *name,
->  static ssize_t
->  read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
->  {
-> +	size_t page_offline_frozen = 0;
->  	char *buf = file->private_data;
->  	size_t phdrs_offset, notes_offset, data_offset;
->  	size_t phdrs_len, notes_len;
-> @@ -509,6 +510,18 @@ read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
->  			pfn = __pa(start) >> PAGE_SHIFT;
->  			page = pfn_to_online_page(pfn);
+From: Guy Nisan <gnisan@habana.ai>
 
-Can't this race with page offlining for the first time we get here?
- 
-> +			/*
-> +			 * Don't race against drivers that set PageOffline()
-> +			 * and expect no further page access.
-> +			 */
-> +			if (page_offline_frozen == MAX_ORDER_NR_PAGES) {
-> +				page_offline_unfreeze();
-> +				page_offline_frozen = 0;
-> +				cond_resched();
-> +			}
-> +			if (!page_offline_frozen++)
-> +				page_offline_freeze();
-> +
+Indicate "progress" instead of "error" when reporting progress status.
 
-Don't we need to freeze before doing pfn_to_online_page()?
+Change "u-boot stopped by user" to "Cannot boot" message as
+CPU_BOOT_STATUS_UBOOT_NOT_READY may indicate a fatal error that prevent
+u-boot from loading firmware.
 
->  			/*
->  			 * Don't read offline sections, logically offline pages
->  			 * (e.g., inflated in a balloon), hwpoisoned pages,
-> @@ -565,6 +578,8 @@ read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
->  	}
->  
->  out:
-> +	if (page_offline_frozen)
-> +		page_offline_unfreeze();
->  	up_read(&kclist_lock);
->  	if (ret)
->  		return ret;
-> -- 
-> 2.30.2
-> 
+Signed-off-by: Guy Nisan <gnisan@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ drivers/misc/habanalabs/common/firmware_if.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
+diff --git a/drivers/misc/habanalabs/common/firmware_if.c b/drivers/misc/habanalabs/common/firmware_if.c
+index 2a22ff9d4425..284563388710 100644
+--- a/drivers/misc/habanalabs/common/firmware_if.c
++++ b/drivers/misc/habanalabs/common/firmware_if.c
+@@ -792,43 +792,43 @@ static void detect_cpu_boot_status(struct hl_device *hdev, u32 status)
+ 	switch (status) {
+ 	case CPU_BOOT_STATUS_NA:
+ 		dev_err(hdev->dev,
+-			"Device boot error - BTL did NOT run\n");
++			"Device boot progress - BTL did NOT run\n");
+ 		break;
+ 	case CPU_BOOT_STATUS_IN_WFE:
+ 		dev_err(hdev->dev,
+-			"Device boot error - Stuck inside WFE loop\n");
++			"Device boot progress - Stuck inside WFE loop\n");
+ 		break;
+ 	case CPU_BOOT_STATUS_IN_BTL:
+ 		dev_err(hdev->dev,
+-			"Device boot error - Stuck in BTL\n");
++			"Device boot progress - Stuck in BTL\n");
+ 		break;
+ 	case CPU_BOOT_STATUS_IN_PREBOOT:
+ 		dev_err(hdev->dev,
+-			"Device boot error - Stuck in Preboot\n");
++			"Device boot progress - Stuck in Preboot\n");
+ 		break;
+ 	case CPU_BOOT_STATUS_IN_SPL:
+ 		dev_err(hdev->dev,
+-			"Device boot error - Stuck in SPL\n");
++			"Device boot progress - Stuck in SPL\n");
+ 		break;
+ 	case CPU_BOOT_STATUS_IN_UBOOT:
+ 		dev_err(hdev->dev,
+-			"Device boot error - Stuck in u-boot\n");
++			"Device boot progress - Stuck in u-boot\n");
+ 		break;
+ 	case CPU_BOOT_STATUS_DRAM_INIT_FAIL:
+ 		dev_err(hdev->dev,
+-			"Device boot error - DRAM initialization failed\n");
++			"Device boot progress - DRAM initialization failed\n");
+ 		break;
+ 	case CPU_BOOT_STATUS_UBOOT_NOT_READY:
+ 		dev_err(hdev->dev,
+-			"Device boot error - u-boot stopped by user\n");
++			"Device boot progress - Cannot boot\n");
+ 		break;
+ 	case CPU_BOOT_STATUS_TS_INIT_FAIL:
+ 		dev_err(hdev->dev,
+-			"Device boot error - Thermal Sensor initialization failed\n");
++			"Device boot progress - Thermal Sensor initialization failed\n");
+ 		break;
+ 	default:
+ 		dev_err(hdev->dev,
+-			"Device boot error - Invalid status code %d\n",
++			"Device boot progress - Invalid status code %d\n",
+ 			status);
+ 		break;
+ 	}
 -- 
-Sincerely yours,
-Mike.
+2.25.1
+
