@@ -2,108 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692EC370F2A
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 22:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB6E370F31
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 23:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232615AbhEBUyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 16:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45404 "EHLO
+        id S232526AbhEBVGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 17:06:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232492AbhEBUyn (ORCPT
+        with ESMTP id S232338AbhEBVGx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 16:54:43 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C65C06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 13:53:50 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id u16so3644247oiu.7
-        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 13:53:50 -0700 (PDT)
+        Sun, 2 May 2021 17:06:53 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5E9C06174A;
+        Sun,  2 May 2021 14:06:01 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id a36so4490078ljq.8;
+        Sun, 02 May 2021 14:06:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4x9K/RVZT8er1Orv37V20DH7ZsJDPJpXZVJ6DFDq/Q0=;
-        b=SocEfMh8uZKOpIp/V0sx2Hx9B1XVx3oe+XtcRGGbU0Ww/hHFXSercbkk/J7bTsSsxf
-         C7JjjCOVKnHIJTEfzaVux3peUZ1wcsknzXB7lkoCrMtblyvvkUXrXEpE6xM1ld+8e3le
-         /n/TXPQX/ocpWxO/zPO0/b1iLQ/zyptntvIzhkrd24qqcX7d1zyeDN+JvtUYv/Q54gFq
-         oOeDjtF6Suyj3/t5CdB5JoLDXS1n/Red9IGQ2Bof1Bj6fM2hDqJDSyUiSRtGjXVE62LM
-         rg0EhKTktXYYO5SNK/wRuJZpe8TDryWnyoh9NtVcq/Nd3c8xnRxiELv9Iigk8i6iEoyu
-         p+DA==
+        d=gmail.com; s=20161025;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=N7Yqh79l2fm2YthqZGJy/4v3jPHgVVehObKuu0oKfEI=;
+        b=JU9W/xnDmpy9qH74iotexdN48jCFjPv+eFhuUnAbFENynmfWePJbMoBnfQSm7XWs+l
+         o8h/uhfhqzWMJucn92gIG9Okv5/MyMdAFj2mj7nt+cf/PUl4ozBbnj4iRRnn2qRmPeYX
+         HW5qvgcm5HgATizwthp/ysQOaJv5NnA/Iw05Csrr8LTZwMyjVjZDWxZDXHR++SNsZ5dd
+         Bxv4xEfiFqpFfNOX/lOivJrw2OTWJAwvkJhZX+ybmEPFw2Ec4YLpmibqAWyfso69ukgu
+         t7nX2a9FsyxFJr7ckPwClPzE479B0NUPXkLM+QhMTGmzYY5d8bSaL2riGmpDnsolJLpU
+         H39g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4x9K/RVZT8er1Orv37V20DH7ZsJDPJpXZVJ6DFDq/Q0=;
-        b=J3S+c/Jum10P+zxzWVk/74G0i0qsEEghlvbRyJwWdz2DDQgrSMYGifc+lNYIqJtQav
-         wGT/O7P4ZWTuoIw0nsP7aIKZsMfs5N8miRLQuFpVSmlgblAhoP82CfbgDyh24fe06/Uq
-         gk/oX1qmPIcKMcXs4bGYW/oIfQYyKqco3BQvtJWgs1WaaPZucP9u/pQEwnm0SbAxqI2J
-         lB/mF0r+ZbBRuFF5r4PiNMPguDAZuDJgaKvyCNxW+0T4w08hvRRAg6J2TwwB09nRonaU
-         76QfqnJgDdL3CygoRDAZF96SZkPFLckZ//s/L868LEZZkQmjZjZBvNMSIu6vviMbavgv
-         7QGA==
-X-Gm-Message-State: AOAM531C6yawwycwbZgXHtkvyUUjUM0WbzqEcuaeHXSe2R+1hXH3bC30
-        aFzj7kFQyy75eILx21LuneyIAw==
-X-Google-Smtp-Source: ABdhPJz0vz+XSangB3TzFh5Wkn6/Wgz+OBLPU1dvG90f8G2sdidcNTTIm3nCtfEvP5hQ/mjGJ8eGaQ==
-X-Received: by 2002:aca:c7ce:: with SMTP id x197mr242663oif.93.1619988829858;
-        Sun, 02 May 2021 13:53:49 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id l4sm2325047oic.26.2021.05.02.13.53.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 May 2021 13:53:49 -0700 (PDT)
-Date:   Sun, 2 May 2021 15:53:46 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Pavel Machek <pavel@ucw.cz>, Andy Gross <agross@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>,
-        Lee Jones <lee.jones@linaro.org>, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-pwm@vger.kernel.org,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Yassine Oudjana <y.oudjana@protonmail.com>,
-        Luca Weiss <luca@z3ntu.xyz>,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>
-Subject: Re: [PATCH v7 1/6] dt-bindings: leds: Add Qualcomm Light Pulse
- Generator binding
-Message-ID: <20210502205346.GD2484@yoga>
-References: <20210429211517.312792-1-bjorn.andersson@linaro.org>
- <20210429211517.312792-2-bjorn.andersson@linaro.org>
- <20210430200542.GA3779966@robh.at.kernel.org>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=N7Yqh79l2fm2YthqZGJy/4v3jPHgVVehObKuu0oKfEI=;
+        b=rM2czNvKsRfZgrw+HEiIqRz9uyNTv1fcWHtC45E2rKawKNfl7JuzhPiPTl3Hn5Kukg
+         JXgOdfIl3CqGOLsjTtThd+hjIY2om5a6QxYsVkEo6LudfimjAENmTKawf4uYFk0kTYfr
+         q83rlpk9m3wwoSfnLNaCO9Tw+AqhaoPkNLGM+xqo9fqnxtH0EK2na50msZ973pbh1Kr+
+         LwlrvO4x7FCxzng59bWooD1RV136B1hZEJs5bSx4PYJqCEMmPm0yE2QjF+WSKo3w6eX8
+         EJ4faavi6nquNd8cDcQzz06qt7lEpfvvg/EguFdJAKX4cTsU7lYVe2/1yNdS6foD2+gk
+         mVaw==
+X-Gm-Message-State: AOAM530BsbzNQTlp0lMCvAByv80U/YYYqZ7ThEf4dpqhcIjCIOgq6RnF
+        MTkJ2Y20yeTDYr/08yQTgnY=
+X-Google-Smtp-Source: ABdhPJyFdolNvSlvoH3O9+/CNW7drmqIFS0V+aTPiSan0DUukLYT6G12bs4xGHCF2oOGcHObWcQ3mA==
+X-Received: by 2002:a2e:6e13:: with SMTP id j19mr6110327ljc.116.1619989559570;
+        Sun, 02 May 2021 14:05:59 -0700 (PDT)
+Received: from [192.168.1.218] (dsl-trebng21-58c191-211.dhcp.inet.fi. [88.193.145.211])
+        by smtp.gmail.com with UTF8SMTPSA id m17sm944171lfg.171.2021.05.02.14.05.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 02 May 2021 14:05:59 -0700 (PDT)
+Message-ID: <9198344a-f318-55b4-62b6-22354227ff2d@gmail.com>
+Date:   Mon, 3 May 2021 00:05:59 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210430200542.GA3779966@robh.at.kernel.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101
+ Thunderbird/89.0
+Subject: Re: [PATCH] Raise the minimum GCC version to 5.2
+Content-Language: en-US
+To:     Segher Boessenkool <segher@kernel.crashing.org>,
+        Joe Perches <joe@perches.com>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <20210501151538.145449-1-masahiroy@kernel.org>
+ <CANiq72k1hB3X6+Nc_iu=f=BoB-F9JW2j_B4ZMcv8_UpW5QQ2Og@mail.gmail.com>
+ <3943bc020f6227c8801907317fc113aa13ad4bad.camel@perches.com>
+ <20210502183030.GF10366@gate.crashing.org>
+ <81a926a3bdb70debe3ae2b13655ea8d249fb9991.camel@perches.com>
+ <20210502203253.GH10366@gate.crashing.org>
+From:   Ali Kaasinen <ali.kaasinen@gmail.com>
+In-Reply-To: <20210502203253.GH10366@gate.crashing.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 30 Apr 15:05 CDT 2021, Rob Herring wrote:
-> > diff --git a/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml b/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
-[..]
-> > +  qcom,power-source:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +    description:
-> > +      power-source used to drive the output, as defined in the datasheet.
-> > +      Should be specified if the TRILED block is present
-> 
-> constraints?
-> 
+On 02/05/2021 23.32, Segher Boessenkool wrote:
 
-Yes, we should be able to constrain this a little bit.
+> On Sun, May 02, 2021 at 01:00:28PM -0700, Joe Perches wrote:
+>> On Sun, 2021-05-02 at 13:30 -0500, Segher Boessenkool wrote:
+>>> On Sat, May 01, 2021 at 07:41:53PM -0700, Joe Perches wrote:
+>>>> Why not raise the minimum gcc compiler version even higher?
+>> On Sun, 2021-05-02 at 13:37 -0500, Segher Boessenkool wrote:
+>>> Everyone should always use an as new release as practical
+>> []
+>>
+>>> The latest GCC 5 release is only three and a half years old.
+>> You argue slightly against yourself here.
+> I don't?
+>
+>> Yes, it's mostly a question of practicality vs latest.
+>>
+>> clang requires a _very_ recent version.
+>> gcc _could_ require a later version.
+>> Perhaps 8 might be best as that has a __diag warning control mechanism.
+> I have no idea what you mean?
+>
+>> gcc 8.1 is now 3 years old today.
+> And there will be a new GCC 8 release very soon now!
+>
+> The point is, you inconvenience users if you require a compiler version
+> they do not already have.  Five years might be fine, but three years is
+> not.
+>
+>
+> Segher
 
-> > +
-> > +  qcom,dtest:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > +    description: >
-> > +      A list of integer pairs, where each pair represent the dtest line the
-> > +      particular channel should be connected to and the flags denoting how the
-> > +      value should be outputed, as defined in the datasheet. The number of
-> > +      pairs should be the same as the number of channels.
-> 
-> Sounds like a matrix rather than array. Constraints on the values?
-> 
+Users & especially devs should upgrade then. 3 years of not updating 
+your compiler - if you regularly build the kernel - seems nonsensical.
 
-I wasn't aware of uint32-matrix and that I can describe the constraints
-of the values in the matrix. I'll familiarize myself with it and see if
-I can tighten this up a little bit.
 
-Thanks,
-Bjorn
+Ali
