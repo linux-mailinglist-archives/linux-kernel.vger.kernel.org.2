@@ -2,81 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22587370BAC
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 15:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2FBE370BE3
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 16:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232002AbhEBNrT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 2 May 2021 09:47:19 -0400
-Received: from aposti.net ([89.234.176.197]:47286 "EHLO aposti.net"
+        id S232449AbhEBOEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 10:04:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231941AbhEBNrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 09:47:17 -0400
-Date:   Sun, 02 May 2021 14:45:43 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] ASoC: jz4740-i2s: fix function name
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-mips@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        letux-kernel@openphoenux.org
-Message-Id: <7KFHSQ.0D5Z90AZRGJV@crapouillou.net>
-In-Reply-To: <56f9c8518870263698b00d10de4821d2dc8932be.1619960935.git.hns@goldelico.com>
-References: <56f9c8518870263698b00d10de4821d2dc8932be.1619960935.git.hns@goldelico.com>
+        id S231964AbhEBOEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 May 2021 10:04:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54B176102A;
+        Sun,  2 May 2021 14:03:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619964199;
+        bh=9rBdmnqcNBYq4mulLLtVltQzh9zTOIB56p2i5oS17/I=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XVIXdqBVxIn8B0y0By1BryoBOwQl5GVper6y4RZlbtzKJaP3jcT758JRiyWANV892
+         JzC6AnV82f+qsWHoRXu2uIFkkgkWQgOWJdqopw9xRzRTCenPa3z/IBAYPUl41jqQ8X
+         XE9pd5+nJkak+BOo8z0bonBZbkuW0cbzgCRNXkQkYu86Wz8AQfBEjSTiNzjXRrNq/J
+         0EYld+vrxlT/kwCU5tBi21Mu6GKgC7BIKZj//ms41YPF4XipfJ3LeREV4hzvt0E+Lp
+         PBcBfgLvEcKDtPM4zjsuIxCJb+uY/XUeMbu/JYMGpKIPIRyx7JEwvf/P7bhdRjFVh/
+         lZNh4pgxi8j2w==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Tony Lindgren <tony@atomide.com>, Sasha Levin <sashal@kernel.org>,
+        linux-omap@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.12 01/79] bus: ti-sysc: Probe for l4_wkup and l4_cfg interconnect devices first
+Date:   Sun,  2 May 2021 10:01:58 -0400
+Message-Id: <20210502140316.2718705-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Tony Lindgren <tony@atomide.com>
 
+[ Upstream commit 4700a00755fb5a4bb5109128297d6fd2d1272ee6 ]
 
-Le dim., mai 2 2021 at 15:08:55 +0200, H. Nikolaus Schaller 
-<hns@goldelico.com> a écrit :
-> This driver is not related to I2C protocol.
-> 
-> s/_i2c_/_i2s_/
-> 
-> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+We want to probe l4_wkup and l4_cfg interconnect devices first to avoid
+issues with missing resources. Otherwise we attempt to probe l4_per
+devices first causing pointless deferred probe and also annoyingh
+renumbering of the MMC devices for example.
 
-Acked-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/bus/ti-sysc.c | 49 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
-Cheers,
--Paul
-
-> ---
->  sound/soc/jz4740/jz4740-i2s.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/jz4740/jz4740-i2s.c 
-> b/sound/soc/jz4740/jz4740-i2s.c
-> index 47d955c0bb6a1..fe5b3a2b239c6 100644
-> --- a/sound/soc/jz4740/jz4740-i2s.c
-> +++ b/sound/soc/jz4740/jz4740-i2s.c
-> @@ -372,7 +372,7 @@ static int jz4740_i2s_resume(struct 
-> snd_soc_component *component)
->  	return 0;
->  }
-> 
-> -static void jz4740_i2c_init_pcm_config(struct jz4740_i2s *i2s)
-> +static void jz4740_i2s_init_pcm_config(struct jz4740_i2s *i2s)
->  {
->  	struct snd_dmaengine_dai_dma_data *dma_data;
-> 
-> @@ -397,7 +397,7 @@ static int jz4740_i2s_dai_probe(struct 
-> snd_soc_dai *dai)
->  	if (ret)
->  		return ret;
-> 
-> -	jz4740_i2c_init_pcm_config(i2s);
-> +	jz4740_i2s_init_pcm_config(i2s);
->  	snd_soc_dai_init_dma_data(dai, &i2s->playback_dma_data,
->  		&i2s->capture_dma_data);
-> 
-> --
-> 2.26.2
-> 
-
+diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+index 3d74f237f005..9e535336689f 100644
+--- a/drivers/bus/ti-sysc.c
++++ b/drivers/bus/ti-sysc.c
+@@ -635,6 +635,51 @@ static int sysc_parse_and_check_child_range(struct sysc *ddata)
+ 	return 0;
+ }
+ 
++/* Interconnect instances to probe before l4_per instances */
++static struct resource early_bus_ranges[] = {
++	/* am3/4 l4_wkup */
++	{ .start = 0x44c00000, .end = 0x44c00000 + 0x300000, },
++	/* omap4/5 and dra7 l4_cfg */
++	{ .start = 0x4a000000, .end = 0x4a000000 + 0x300000, },
++	/* omap4 l4_wkup */
++	{ .start = 0x4a300000, .end = 0x4a300000 + 0x30000,  },
++	/* omap5 and dra7 l4_wkup without dra7 dcan segment */
++	{ .start = 0x4ae00000, .end = 0x4ae00000 + 0x30000,  },
++};
++
++static atomic_t sysc_defer = ATOMIC_INIT(10);
++
++/**
++ * sysc_defer_non_critical - defer non_critical interconnect probing
++ * @ddata: device driver data
++ *
++ * We want to probe l4_cfg and l4_wkup interconnect instances before any
++ * l4_per instances as l4_per instances depend on resources on l4_cfg and
++ * l4_wkup interconnects.
++ */
++static int sysc_defer_non_critical(struct sysc *ddata)
++{
++	struct resource *res;
++	int i;
++
++	if (!atomic_read(&sysc_defer))
++		return 0;
++
++	for (i = 0; i < ARRAY_SIZE(early_bus_ranges); i++) {
++		res = &early_bus_ranges[i];
++		if (ddata->module_pa >= res->start &&
++		    ddata->module_pa <= res->end) {
++			atomic_set(&sysc_defer, 0);
++
++			return 0;
++		}
++	}
++
++	atomic_dec_if_positive(&sysc_defer);
++
++	return -EPROBE_DEFER;
++}
++
+ static struct device_node *stdout_path;
+ 
+ static void sysc_init_stdout_path(struct sysc *ddata)
+@@ -863,6 +908,10 @@ static int sysc_map_and_check_registers(struct sysc *ddata)
+ 	if (error)
+ 		return error;
+ 
++	error = sysc_defer_non_critical(ddata);
++	if (error)
++		return error;
++
+ 	sysc_check_children(ddata);
+ 
+ 	error = sysc_parse_registers(ddata);
+-- 
+2.30.2
 
