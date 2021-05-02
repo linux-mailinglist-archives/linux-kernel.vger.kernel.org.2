@@ -2,73 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 260033709A3
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 03:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 481303709A6
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 04:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231846AbhEBByB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 21:54:01 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:43918 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231736AbhEBByB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 21:54:01 -0400
-Received: by mail-il1-f200.google.com with SMTP id l7-20020a9229070000b0290164314f61f5so1792741ilg.10
-        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 18:53:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=OaqvyMlXg8wGXZRGMIboAMoucZyr0AtXUbwHcvsJTxQ=;
-        b=ig4uJdSSx5f0nprC+wZF00W8Z6v/vc2EWGXsAU09VLGqt0R1izDuAfj9uyPCH6VtOS
-         yl+wcD4etRBtcz5bz1+/djbK10TwHBllc86Agok9MKLeVBADEp0jJLfJYR4zL9eVFRTz
-         VYaEF56J7dCLJnxYzdt08k4LwMAGRBZEPArzv2usaF3JTawlDJBDa8FRbYEi26ysuM7g
-         BWR5FXa5dmiiGhSvDzLbaxJ9ajZ8jm7Sk0rzYp968OQFoxfT54EM+IFA6bIO9Eg4mfu6
-         YgmrJss7dEYNih0sHxL4ZChaAiokKzP65GonTvk36yiNET1XXUlw9Z2qFy7ZL3/YMpBz
-         cONw==
-X-Gm-Message-State: AOAM533PURsRyLYnXMBrErzz60AqVrunlMDMlLt2r5oKxihxOrpmmMbD
-        1txFwifK8ywBcJTqSRZa8vDQHfb8vhfQ+9wqR00PQ6FFA5b8
-X-Google-Smtp-Source: ABdhPJzrDS4BZ0APncrMikVvdmVtL8AzN4r8IHRznwTpDU6fklt7kjPqWFHr3kUlkvmZAB5ysDk/ZrgPlZh+HISi5V3Ywm/O/0co
-MIME-Version: 1.0
-X-Received: by 2002:a6b:7413:: with SMTP id s19mr9056934iog.151.1619920390173;
- Sat, 01 May 2021 18:53:10 -0700 (PDT)
-Date:   Sat, 01 May 2021 18:53:10 -0700
-In-Reply-To: <00000000000086452c05a51da504@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006bbd0c05c14f1b09@google.com>
-Subject: Re: [syzbot] BUG: unable to handle kernel paging request in
- vga16fb_imageblit (2)
-From:   syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>
-To:     b.zolnierkie@samsung.com, colin.king@canonical.com,
-        daniel.vetter@ffwll.ch, dri-devel@lists.freedesktop.org,
-        gregkh@linuxfoundation.org, jani.nikula@intel.com,
-        jirislaby@kernel.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, penguin-kernel@i-love.sakura.ne.jp,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S231809AbhEBCDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 22:03:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35218 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231266AbhEBCDs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 May 2021 22:03:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6B0E1613CA;
+        Sun,  2 May 2021 02:02:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619920977;
+        bh=FTM5/bhIGPlSl7GVJA/Pko7LgpLiF+PNLgYJsrlgrpk=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=lJCYtJxHcW8cKX9IV5fuO52fjp3X+AQpjHdVhd6vaf6tbN24Y7fmO+5t6ED3dYVNj
+         ueZC3w7uAT7Ticwey/pYzP4HOv53gH77hKbrRkqjIvEu0O72HND3k3rYM0w7guiewk
+         Yf6DwjPkDFqyaH05JD0A5ORp6EPyfBPUyioFNrdR+T5hSpyyBU12PbZ1iV+sXL2lRv
+         dt/SCz33ykVh9k+DdIyeNSsAs+CjcBoQjsQ7p+k5vTGGFP7phwhuDmJCoawYFcoRas
+         0kzoE6PlQhF/v3DpPSx+aILnel8lpaeQNSbMRn57mpJ9gLVuaxkcUdZvru+tdkuopv
+         tb7vm0F8x4S5Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 58A1D60A3A;
+        Sun,  2 May 2021 02:02:57 +0000 (UTC)
+Subject: Re: [GIT PULL][Security] Add new Landlock LSM
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <11a1adfd-d2e8-2181-81a-529792e4b6e5@namei.org>
+References: <11a1adfd-d2e8-2181-81a-529792e4b6e5@namei.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <11a1adfd-d2e8-2181-81a-529792e4b6e5@namei.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jmorris/linux-security.git tags/landlock_v34
+X-PR-Tracked-Commit-Id: 3532b0b4352ce79400b0aa68414f1a0fc422b920
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 17ae69aba89dbfa2139b7f8024b757ab3cc42f59
+Message-Id: <161992097730.25025.14142306394400248363.pr-tracker-bot@kernel.org>
+Date:   Sun, 02 May 2021 02:02:57 +0000
+To:     James Morris <jmorris@namei.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?ISO-8859-15?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
+        Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+The pull request you sent on Wed, 28 Apr 2021 12:54:22 +1000 (AEST):
 
-commit 988d0763361bb65690d60e2bc53a6b72777040c3
-Author: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Date:   Sun Sep 27 11:46:30 2020 +0000
+> git://git.kernel.org/pub/scm/linux/kernel/git/jmorris/linux-security.git tags/landlock_v34
 
-    vt_ioctl: make VT_RESIZEX behave like VT_RESIZE
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/17ae69aba89dbfa2139b7f8024b757ab3cc42f59
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15633759d00000
-start commit:   d2b6f8a1 Merge tag 'xfs-5.13-merge-3' of git://git.kernel...
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=17633759d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=13633759d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=53fdf14defd48c56
-dashboard link: https://syzkaller.appspot.com/bug?extid=1f29e126cf461c4de3b3
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16d9ff43d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10981693d00000
+Thank you!
 
-Reported-by: syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com
-Fixes: 988d0763361b ("vt_ioctl: make VT_RESIZEX behave like VT_RESIZE")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
