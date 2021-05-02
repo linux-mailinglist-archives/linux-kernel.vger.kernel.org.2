@@ -2,165 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5FBF370E96
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 20:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6899370EC1
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 21:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232166AbhEBSn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 14:43:58 -0400
-Received: from mail-pg1-f172.google.com ([209.85.215.172]:43604 "EHLO
-        mail-pg1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbhEBSn5 (ORCPT
+        id S232372AbhEBTOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 15:14:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231818AbhEBTOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 14:43:57 -0400
-Received: by mail-pg1-f172.google.com with SMTP id p12so2166398pgj.10;
-        Sun, 02 May 2021 11:43:05 -0700 (PDT)
+        Sun, 2 May 2021 15:14:38 -0400
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B22F1C06138C
+        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 12:13:46 -0700 (PDT)
+Received: by mail-oo1-xc32.google.com with SMTP id v14-20020a4ae6ce0000b02901fe68cd377fso111617oot.13
+        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 12:13:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=emMfiYi99q3nX4v+CBQmuXsA/kqjvpixR7oLzYPLuiM=;
+        b=eRrh8/FTxx8mY93zg7f5u2PqJag/AV+2CsamonnCrPl50D5ybWNE9RjM9IHFNGK0Hp
+         tsQCQr9ZC0GehGcA6cOcwWjxeWjJU/S5VN/vJm45DBqcCLu0rlO90skMuIBy2K9DlLkg
+         ukIAGtF3hQFZqp6AexAJ9ojqZ6R6plqZsdvVHcD+Q3hnqs3zSlCcUxdIXr8zVrKT0b90
+         K9S1dNQqshSjqZqacgx4pkJCgXGhv7suX4I0XIqsmEW7olqA2qVrMj9ulfZezJAI479J
+         Sc35Ku4NkEnOxygYrD+m2aeiOpvlD9SRGRymQrSXXTsljf/pKMCvCCY++dEYJEDOAYfq
+         T+PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l/vwSrN0JaNGGibpJY8/O2zej4SM1m+juGfyVrtRwyQ=;
-        b=igMmRaKS+lMOVwDvq+/vJyktgvcUhdh8EutlGZpPGzMD1sOA9kLCgFLeccbWly/DYv
-         SlDwpROQToJRD6DWz8m0Nkb6kxd1LI7xVHJoEBkjGNSzNo3Hb0U7xtF0MltKZhdURWpc
-         Zdl1ZVilqhHC+grWW9BxXxoxf56oNFH5iFOfvFm8na3phFzmDu41aL1VPhFEgOI0ITJ9
-         Coo0rLwDUwf00ZE1SZ2TooN89txdwfUczi6fuhs7v2n2fy7j8DIbXklM4UBOVC5hYSiV
-         zTOGl6OsCb7ANeeTi0IpnfmfE9PVFZCqIePPYa3ZZYxgG1A0NZbMmLh6fBEnnGG2Rlcq
-         AM6Q==
-X-Gm-Message-State: AOAM5307MvdffxSUqcoKqReXr9eS/bXVyw7PVHYB1BTEqYy7qLqlgHLL
-        t5vRAm7AS6n8jlpWgLjUh/s=
-X-Google-Smtp-Source: ABdhPJzdSlQEQXfe5HqTUQ6Z9M22G6wvGkR8Ftrdfugpg/5JN0DRAU8YGMw/URksgME/VSi7mm306w==
-X-Received: by 2002:a05:6a00:228a:b029:264:1ec7:7c3 with SMTP id f10-20020a056a00228ab02902641ec707c3mr15616825pfe.2.1619980985552;
-        Sun, 02 May 2021 11:43:05 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id k7sm3911763pfc.16.2021.05.02.11.43.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 May 2021 11:43:04 -0700 (PDT)
-Date:   Sun, 2 May 2021 11:43:04 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Russ Weight <russell.h.weight@intel.com>
-Cc:     Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>,
-        "Gong, Richard" <richard.gong@intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "richard.gong@linux.intel.com" <richard.gong@linux.intel.com>
-Subject: Re: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
-Message-ID: <YI7yuD194KUOscLx@epycbox.lan>
-References: <1612909233-13867-1-git-send-email-richard.gong@linux.intel.com>
- <MWHPR11MB001577B17723C8A046398249879E9@MWHPR11MB0015.namprd11.prod.outlook.com>
- <YF90y3Di4RbuJvr0@epycbox.lan>
- <496aa871-cfb0-faf4-4b1c-b53e56b58030@redhat.com>
- <YGC619DmLM0AAQ5p@epycbox.lan>
- <6c741ab7-1ee6-cbf1-94fa-818dd7f4c5c5@intel.com>
- <YGT0t/7PEemH7iAI@epycbox.lan>
- <edb1507e-194e-e4b8-1136-3bdba64f3c4e@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=emMfiYi99q3nX4v+CBQmuXsA/kqjvpixR7oLzYPLuiM=;
+        b=g/n0vFnN46J5cZnm1FMNaVKOiW8DT34h4RYH9PBljvwa2NVmu/UFh1RI49IrE0XgpA
+         H0Lb8xCvyFqZbC8cPWkdei/tlYU8TSALR5h/BpTydFD1yJ/+tHMDdRg66r+/4XfflOQl
+         tDzvhLt79S0MDJy7Z05hbRTAUebVPrJSjKJ6+A3L69pD4vueuWOaC1dRzdzMWVj7J5JH
+         1B7uzxArRbQGxlJRWTAJVZrfOgLUydCtMF+hp1eAmEaKT0zuwky4c4ZJSqO6/9vStkQd
+         +OG6hrtzjg3Qm9tlWfaLQ6UWGUXjV0GAWWXUZ76DfCgtnYMW5LldxUf+fWWSA48VLD+V
+         V3Dw==
+X-Gm-Message-State: AOAM5328JL5no7wAGYqnJkwAhLQxvQD8crMlNI/mtpPtbroBB1eUkbCK
+        M5nQnfYhKfD2L5yRV2Fios2SeYpOJ3DuMVxbqofEwQ==
+X-Google-Smtp-Source: ABdhPJxwRjSJbo3C+Nwhf9lgspATPfUeP4Li99I0sKmagHuY+vIt3q37BWEwAiuogCr1O2KSyZDFBjA9IZlwBT6otMg=
+X-Received: by 2002:a4a:e715:: with SMTP id y21mr2293005oou.54.1619982825669;
+ Sun, 02 May 2021 12:13:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <edb1507e-194e-e4b8-1136-3bdba64f3c4e@intel.com>
+References: <YIpkvGrBFGlB5vNj@elver.google.com> <m11rat9f85.fsf@fess.ebiederm.org>
+ <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
+ <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
+ <m1zgxfs7zq.fsf_-_@fess.ebiederm.org> <m11rarqqx2.fsf_-_@fess.ebiederm.org>
+ <CANpmjNNJ_MnNyD4R2+9i24E=9xPHKnwTh6zwWtBYkuAq1Xo6-w@mail.gmail.com> <m1wnshm14b.fsf@fess.ebiederm.org>
+In-Reply-To: <m1wnshm14b.fsf@fess.ebiederm.org>
+From:   Marco Elver <elver@google.com>
+Date:   Sun, 2 May 2021 21:13:34 +0200
+Message-ID: <CANpmjNNpsdqCp51_P=NCM=fMREhN6HWQL7aiOdyfqu=aUmkR7A@mail.gmail.com>
+Subject: Re: [PATCH 7/3] signal: Deliver all of the perf_data in si_perf
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 04:27:03PM -0700, Russ Weight wrote:
-> Hi Moritz,
-> 
-> On 3/31/21 3:16 PM, Moritz Fischer wrote:
-> > Hi Russ,
-> > On Wed, Mar 31, 2021 at 11:47:26AM -0700, Russ Weight wrote:
-> >> Moritz,
+On Sun, 2 May 2021 at 20:39, Eric W. Biederman <ebiederm@xmission.com> wrote:
+>
+> Marco Elver <elver@google.com> writes:
+>
+> > On Sat, 1 May 2021 at 01:44, Eric W. Biederman <ebiederm@xmission.com> wrote:
 > >>
-> >> On 3/28/21 10:20 AM, Moritz Fischer wrote:
-> >>> Tom,
-> >>>
-> >>> On Sun, Mar 28, 2021 at 08:40:24AM -0700, Tom Rix wrote:
-> >>>> On 3/27/21 11:09 AM, Moritz Fischer wrote:
-> >>>>> Hi Richard, Russ,
-> >>>>>
-> >>>>> On Thu, Feb 25, 2021 at 01:07:14PM +0000, Gong, Richard wrote:
-> >>>>>> Hi Moritz,
-> >>>>>>
-> >>>>>> Sorry for asking.
-> >>>>>>
-> >>>>>> When you have chance, can you help review the version 5 patchset submitted on 02/09/21?
-> >>>>>>
-> >>>>>> Regards,
-> >>>>>> Richard
-> >>>>>>
-> >>>>>> -----Original Message-----
-> >>>>>> From: richard.gong@linux.intel.com <richard.gong@linux.intel.com> 
-> >>>>>> Sent: Tuesday, February 9, 2021 4:20 PM
-> >>>>>> To: mdf@kernel.org; trix@redhat.com; gregkh@linuxfoundation.org; linux-fpga@vger.kernel.org; linux-kernel@vger.kernel.org
-> >>>>>> Cc: Gong, Richard <richard.gong@intel.com>
-> >>>>>> Subject: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
-> >>>>>>
-> >>>>>> From: Richard Gong <richard.gong@intel.com>
-> >>>>>>
-> >>>>>> This is 5th submission of Intel service layer and FPGA patches, which includes the missing standalone patch in the 4th submission.
-> >>>>>>
-> >>>>>> This submission includes additional changes for Intel service layer driver to get the firmware version running at FPGA SoC device. Then FPGA manager driver, one of Intel service layer driver's client, can decide whether to handle the newly added bitstream authentication function based on the retrieved firmware version. So that we can maintain FPGA manager driver the back compatible.
-> >>>>>>
-> >>>>>> Bitstream authentication makes sure a signed bitstream has valid signatures.
-> >>>>>>
-> >>>>>> The customer sends the bitstream via FPGA framework and overlay, the firmware will authenticate the bitstream but not program the bitstream to device. If the authentication passes, the bitstream will be programmed into QSPI flash and will be expected to boot without issues.
-> >>>>>>
-> >>>>>> Extend Intel service layer, FPGA manager and region drivers to support the bitstream authentication feature. 
-> >>>>>>
-> >>>>>> Richard Gong (7):
-> >>>>>>   firmware: stratix10-svc: reset COMMAND_RECONFIG_FLAG_PARTIAL to 0
-> >>>>>>   firmware: stratix10-svc: add COMMAND_AUTHENTICATE_BITSTREAM flag
-> >>>>>>   firmware: stratix10-svc: extend SVC driver to get the firmware version
-> >>>>>>   fpga: fpga-mgr: add FPGA_MGR_BITSTREAM_AUTHENTICATE flag
-> >>>>>>   fpga: of-fpga-region: add authenticate-fpga-config property
-> >>>>>>   dt-bindings: fpga: add authenticate-fpga-config property
-> >>>>>>   fpga: stratix10-soc: extend driver for bitstream authentication
-> >>>>>>
-> >>>>>>  .../devicetree/bindings/fpga/fpga-region.txt       | 10 ++++
-> >>>>>>  drivers/firmware/stratix10-svc.c                   | 12 ++++-
-> >>>>>>  drivers/fpga/of-fpga-region.c                      | 24 ++++++---
-> >>>>>>  drivers/fpga/stratix10-soc.c                       | 62 +++++++++++++++++++---
-> >>>>>>  include/linux/firmware/intel/stratix10-smc.h       | 21 +++++++-
-> >>>>>>  .../linux/firmware/intel/stratix10-svc-client.h    | 11 +++-
-> >>>>>>  include/linux/fpga/fpga-mgr.h                      |  3 ++
-> >>>>>>  7 files changed, 125 insertions(+), 18 deletions(-)
-> >>>>>>
-> >>>>>> --
-> >>>>>> 2.7.4
-> >>>>>>
-> >>>>> Apologies for the epic delay in getting back to this, I took another
-> >>>>> look at this patchset and Russ' patchset.
-> >>>>>
-> >>>>> TL;DR I'm not really a fan of using device-tree overlays for this (and
-> >>>>> again, apologies, I should've voiced this earlier ...).
-> >>>>>
-> >>>>> Anyways, let's find a common API for this and Russ' work, they're trying
-> >>>>> to achieve the same / similar thing, they should use the same API.
-> >>>>>
-> >>>>> I'd like to re-invetigate the possiblity to extend FPGA Manager with
-> >>>>> 'secure update' ops that work for both these use-cases (and I susspect
-> >>>>> hte XRT patchset will follow with a similar requirement, right after).
-> >> Richard and I had an initial conversation today. I'll start looking at how secure operations can be integrated into the fpga manager.
+> >> Don't abuse si_errno and deliver all of the perf data in si_perf.
 > >>
-> >> More to come...
-> > Great, feel free to send RFCs ahead.
+> >> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> >> ---
 > >
-> > Cheers,
-> > Moritz
-> I have completed a comparison of the security manager and the FPGA manager
-> to see how the secure update functions can be integrated into the FPGA
-> manager. I'll send that out separately as an RFC document (it is about 150
-> lines).
-> 
-> FYI: In my conversations with Richard, we have learned that what we are
-> trying to accomplish is not as similar as it seemed. Richard is effectively
-> wanting to do a "dry-run" of an existing FPGA Manager function to verify
-> authentication of an image. Based on the results, higher-level code may
-> choose to write the image to flash.
+> > Thank you for the fix, this looks cleaner.
+> >
+> > Just note that this patch needs to include updates to
+> > tools/testing/selftests/perf_events. This should do it:
+> >>  sed -i 's/si_perf/si_perf.data/g; s/si_errno/si_perf.type/g' tools/testing/selftests/perf_events/*.c
+> >
+> > Subject: s/perf_data/perf data/ ?
+> >
+> > For uapi, need to switch to __u32, see below.
+>
+> Good point.
+>
+> The one thing that this doesn't do is give you a 64bit field
+> on 32bit architectures.
+>
+> On 32bit builds the layout is:
+>
+>         int si_signo;
+>         int si_errno;
+>         int si_code;
+>         void __user *_addr;
+>
+> So I believe if the first 3 fields were moved into the _sifields union
+> si_perf could define a 64bit field as it's first member and it would not
+> break anything else.
+>
+> Given that the data field is 64bit that seems desirable.
 
-Ok, as mentioned on the other thread. Let's replace the overlay code
-with a sysfs entry for dry-run or verify-image or something of that
-sort.
+Yes, it's quite unfortunate -- it was __u64 at first, but then we
+noticed it broke 32-bit architectures like arm:
+https://lore.kernel.org/linux-arch/20210422191823.79012-1-elver@google.com/
 
-I don't see what the overlay mechanism adds in this case since we're not
-trying to load drivers.
-
-- Moritz
+Thanks,
+-- Marco
