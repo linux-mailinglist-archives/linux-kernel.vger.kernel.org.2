@@ -2,96 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F73370E13
+	by mail.lfdr.de (Postfix) with ESMTP id D5D69370E14
 	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 18:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232198AbhEBQu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 12:50:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231788AbhEBQuz (ORCPT
+        id S232166AbhEBQ4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 12:56:10 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:50009 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229678AbhEBQ4J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 12:50:55 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCDDCC06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 09:50:03 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id j4so4656055lfp.0
-        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 09:50:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WrBBUUki0q/lD+33Iml9xa0KjdifXO2SpGhQjWkCsUo=;
-        b=GQ6bAO/iUjOWkhj/CDLBoW//nsQ2hMNU+ryalBV1hNVTYhcVR1Mncyw2TcTLyFg5qn
-         ppV57IK9F0MG2fcJxyuS5BZr0j3TGoY9c/474e0t5nXDmO78iwWZA9oTX4QuJQ6p2Dxo
-         q7cJhsJBUqNjZSY38KQFdjSqOVokbqr7LBGK4=
+        Sun, 2 May 2021 12:56:09 -0400
+Received: by mail-io1-f72.google.com with SMTP id i204-20020a6bb8d50000b02903f266b8e1c5so1689061iof.16
+        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 09:55:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WrBBUUki0q/lD+33Iml9xa0KjdifXO2SpGhQjWkCsUo=;
-        b=GKw83lz6vweelfeXxcj8yME2D0cMwFE6aKGdP+Hyn2BQZUl9S9QL6d8fDR185tr2Tk
-         vWjNbz/xlg+7leMFVCbFG/q2EgeAIWdQQXWgmT9+mJmJZ8PQvO68bHZWL+7wVZddI0SW
-         tFyA7c3hfTQr05t/jYG6hz/ZZ99GVSPBqdfoswArgVf3COSR5VdV0Lw7JpAC2s7FGwG9
-         6PT1Cq+D5OYwa7hBoCbqpt/s4IMnB6fbyxY+zamoU+zWjDDMwRUb/3F6ikr2JoqbMqhI
-         7onmYROzeiLnqUdyKbOp2K1qNPi5HuvYHljXxaDe25j8iiXwCX9TldFbis8kZnV+jbXJ
-         PNlQ==
-X-Gm-Message-State: AOAM532UnD1kI6WsIT74f/cG/UkluMxx6EYci2UxORzwfWlZy8al+DnU
-        MfkM+Fx6VjOkoEe3LdaVj+tEIx0em85llYme
-X-Google-Smtp-Source: ABdhPJyMgld49oZL3KVJro7cP3I7cho86UEtRehR+lvxrvHYwlHaNjgcE36NIzqsdisoyOkdMgRmvw==
-X-Received: by 2002:a05:6512:b26:: with SMTP id w38mr10481627lfu.152.1619974201585;
-        Sun, 02 May 2021 09:50:01 -0700 (PDT)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
-        by smtp.gmail.com with ESMTPSA id c17sm886869lfs.75.2021.05.02.09.50.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 02 May 2021 09:50:00 -0700 (PDT)
-Received: by mail-lj1-f179.google.com with SMTP id b7so272588ljr.4
-        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 09:50:00 -0700 (PDT)
-X-Received: by 2002:a2e:330f:: with SMTP id d15mr10619472ljc.251.1619974200472;
- Sun, 02 May 2021 09:50:00 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=eP4mQN7C2zr3b/3zqQgZ9cfbl/yTznWZNvkQ6osR27g=;
+        b=M72BOKPWrAWPhmYgtirCtdVJUKvhOPQc9pur3/FL2Gfz0AqXbPlnOnB2FxZHWnBxxc
+         rgOjVMgGgmvNCAPsxkGXKNTVZX96ZJE5U2P05Vs8RttLTr3oEDb8AAqL7hwOSjBd7QYs
+         2D+QrITG8dyCnCJ4wFwG2akpU51qbQmSpFAj8KdBOVvVDWxxWl+P4UuaSp0YxxczWgLd
+         9t2K6QaxjHAtxMcLJYZTuDOYSjFCdwrQG3Z1m4Fwaf862mYHNmYp6FeG/JYXWt31BxxN
+         WN+bfHx9I4b0zoxCUXAFEidUnJAn/j8Uv8ZDpfhPz/pvAu3bIoI369WuA1UzUJV1+Zma
+         zINg==
+X-Gm-Message-State: AOAM530llmjes3A+hXPwGEtlw3rxNj8ytm1vtvF/h7/IhtsYRCOfOCiY
+        sSH+hoVR5W4od9KyTNgjsyU3v3jLHz4iClWx4gVb+u1lfxN/
+X-Google-Smtp-Source: ABdhPJxBrNGUkDeYHa62khBXomhZqIUnBPjzWZ7xG2jJOLOMH5qryQQiguVNne0zB5KXxNOu50vnwiFl1sc4uJiZ9JzH7PX8iisn
 MIME-Version: 1.0
-References: <CAKwvOdk+V2dc31guafFM=N2ez4SrwCmah+mimUG3MzPMx_2efQ@mail.gmail.com>
- <CAKwvOdn3uXniVedgtpD8QFAd-hdVuVjGPa4-n0h64PTxT4XhWg@mail.gmail.com>
- <CAKwvOdm3D=dqKw=kx46PLaiqfHOZJL3QFKGc8kxqJqpwdFFWqw@mail.gmail.com>
- <CAKwvOdkp_P8BCtFuKqDrtC_=A89ZfDf66Yr3FL2e=ojwv4KaMA@mail.gmail.com>
- <CAHk-=wi1yiBBr3b3RbCEte6-yzAApsZN5zRdr3xoW8Av9jOX=Q@mail.gmail.com>
- <CAKwvOdk0nxxUATg2jEKgx4HutXCMXcW92SX3DT+uCTgqBwQHBg@mail.gmail.com>
- <1c5e05fa-a246-9456-ff4e-287960acb18c@redhat.com> <CAHk-=whs8QZf3YnifdLv57+FhBi5_WeNTG1B-suOES=RcUSmQg@mail.gmail.com>
- <20210502093123.GC12293@localhost> <CAHk-=wgdUMt_n84mq93LZKA6jOGqZpD+=KeVzA3YmvJ6=JPyhw@mail.gmail.com>
- <20210502164542.GA4522@localhost>
-In-Reply-To: <20210502164542.GA4522@localhost>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 2 May 2021 09:49:44 -0700
-X-Gmail-Original-Message-ID: <CAHk-=winSraiwc4gC5WFWSehFq+s7AqCJZoMqUuHLX0nYVG0nQ@mail.gmail.com>
-Message-ID: <CAHk-=winSraiwc4gC5WFWSehFq+s7AqCJZoMqUuHLX0nYVG0nQ@mail.gmail.com>
-Subject: Re: Very slow clang kernel config ..
-To:     Adrian Bunk <bunk@kernel.org>
-Cc:     Tom Stellard <tstellar@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>,
-        Serge Guelton <sguelton@redhat.com>,
-        Sylvestre Ledru <sylvestre@mozilla.com>
+X-Received: by 2002:a5d:9659:: with SMTP id d25mr11877096ios.146.1619974516550;
+ Sun, 02 May 2021 09:55:16 -0700 (PDT)
+Date:   Sun, 02 May 2021 09:55:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009aaf5905c15bb5f0@google.com>
+Subject: [syzbot] general protection fault in do_swap_page (2)
+From:   syzbot <syzbot+9bedf8ef6e51e0bb3401@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 2, 2021 at 9:45 AM Adrian Bunk <bunk@kernel.org> wrote:
->
-> Mesa and PostgreSQL are among the packages that do use libLLVM.so,
-> this is a popular library for implementing compilers and JITs.
+Hello,
 
-Yes, and it's entirely reasonable to update those packages if it turns
-out libLLVM has a bug in it.
+syzbot found the following issue on:
 
-Because we're talking about a small handful of packages, not some kind
-of "everything" model.
+HEAD commit:    e3d35712 Add linux-next specific files for 20210423
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=14b953f5d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e370221d7500b26a
+dashboard link: https://syzkaller.appspot.com/bug?extid=9bedf8ef6e51e0bb3401
 
-So again, what's your point?
+Unfortunately, I don't have any reproducer for this issue yet.
 
-             Linus
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9bedf8ef6e51e0bb3401@syzkaller.appspotmail.com
+
+get_swap_device: Bad swap file entry 3fffa5f80000a
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 1 PID: 8451 Comm: syz-fuzzer Not tainted 5.12.0-rc8-next-20210423-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:do_swap_page+0x9fa/0x2430 mm/memory.c:3349
+Code: e8 bb a2 6d 07 e9 cb fa ff ff e8 01 c1 cb ff 48 8b 7c 24 10 e8 97 b7 0a 00 48 ba 00 00 00 00 00 fc ff df 48 89 c1 48 c1 e9 03 <80> 3c 11 00 0f 85 60 17 00 00 48 8b 18 31 ff 81 e3 00 10 00 00 48
+RSP: 0000:ffffc900015ffc78 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff8880124035b0 RCX: 0000000000000000
+RDX: dffffc0000000000 RSI: ffffffff81b3f0de RDI: 0000000000000003
+RBP: ffffc900015ffd88 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff81b3f09f R11: 0000000000000000 R12: 0000000000000000
+R13: ffff888029ea0e00 R14: ffff888024424040 R15: 0000000000000000
+FS:  000000c00027c490(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000001000000 CR3: 0000000014778000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ handle_pte_fault mm/memory.c:4371 [inline]
+ __handle_mm_fault+0x1b8b/0x5150 mm/memory.c:4502
+ handle_mm_fault+0x1bc/0x7e0 mm/memory.c:4600
+ do_user_addr_fault+0x483/0x1210 arch/x86/mm/fault.c:1390
+ handle_page_fault arch/x86/mm/fault.c:1475 [inline]
+ exc_page_fault+0x9e/0x180 arch/x86/mm/fault.c:1531
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:577
+RIP: 0033:0x420a5d
+Code: 0c 48 ff c7 d1 eb 48 83 c6 08 0f 1f 00 48 83 ff 08 0f 8d f9 00 00 00 48 39 f1 0f 86 f0 00 00 00 0f ba e3 00 73 db 4c 8d 04 16 <4d> 8b 00 4d 85 c0 74 cf 48 89 7c 24 40 4c 89 44 24 38 48 89 74 24
+RSP: 002b:000000c0002bde18 EFLAGS: 00010203
+RAX: 00007fafa7949000 RBX: 0000000000000009 RCX: 0000000000040000
+RDX: 0000000000fcd820 RSI: 00000000000327e0 RDI: 0000000000000004
+RBP: 000000c0002bde68 R08: 0000000001000000 R09: 0000000000000045
+R10: 0000000001880e68 R11: 0000000000000053 R12: 0000000000000003
+R13: 000000c000082780 R14: 000000000000000f R15: 0000000000000c96
+Modules linked in:
+---[ end trace bfcda609218a3121 ]---
+RIP: 0010:do_swap_page+0x9fa/0x2430 mm/memory.c:3349
+Code: e8 bb a2 6d 07 e9 cb fa ff ff e8 01 c1 cb ff 48 8b 7c 24 10 e8 97 b7 0a 00 48 ba 00 00 00 00 00 fc ff df 48 89 c1 48 c1 e9 03 <80> 3c 11 00 0f 85 60 17 00 00 48 8b 18 31 ff 81 e3 00 10 00 00 48
+RSP: 0000:ffffc900015ffc78 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff8880124035b0 RCX: 0000000000000000
+RDX: dffffc0000000000 RSI: ffffffff81b3f0de RDI: 0000000000000003
+RBP: ffffc900015ffd88 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff81b3f09f R11: 0000000000000000 R12: 0000000000000000
+R13: ffff888029ea0e00 R14: ffff888024424040 R15: 0000000000000000
+FS:  000000c00027c490(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000c000c7c010 CR3: 0000000014778000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
