@@ -2,81 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD52B370BB8
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 15:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22587370BAC
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 15:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232301AbhEBNtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 09:49:49 -0400
-Received: from smtpout1.mo3004.mail-out.ovh.net ([79.137.123.219]:59287 "EHLO
-        smtpout1.mo3004.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232151AbhEBNtq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 09:49:46 -0400
-Received: from pro2.mail.ovh.net (unknown [10.109.138.51])
-        by mo3004.mail-out.ovh.net (Postfix) with ESMTPS id 7887423CFEA;
-        Sun,  2 May 2021 13:48:53 +0000 (UTC)
-Received: from arch.lan (89.70.221.198) by DAG2EX1.emp2.local (172.16.2.11)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Sun, 2 May 2021
- 15:48:52 +0200
-From:   Tomasz Duszynski <tomasz.duszynski@octakon.com>
-To:     <linux-iio@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <jic23@kernel.org>, <lars@metafoo.de>, <robh+dt@kernel.org>,
-        Tomasz Duszynski <tomasz.duszynski@octakon.com>
-Subject: [PATCH v2 3/3] dt-bindings: iio: chemical: sps30: update binding with serial example
-Date:   Sun, 2 May 2021 15:44:31 +0200
-Message-ID: <20210502134431.42647-4-tomasz.duszynski@octakon.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210502134431.42647-1-tomasz.duszynski@octakon.com>
-References: <20210502134431.42647-1-tomasz.duszynski@octakon.com>
+        id S232002AbhEBNrT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 2 May 2021 09:47:19 -0400
+Received: from aposti.net ([89.234.176.197]:47286 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231941AbhEBNrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 May 2021 09:47:17 -0400
+Date:   Sun, 02 May 2021 14:45:43 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] ASoC: jz4740-i2s: fix function name
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-mips@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org
+Message-Id: <7KFHSQ.0D5Z90AZRGJV@crapouillou.net>
+In-Reply-To: <56f9c8518870263698b00d10de4821d2dc8932be.1619960935.git.hns@goldelico.com>
+References: <56f9c8518870263698b00d10de4821d2dc8932be.1619960935.git.hns@goldelico.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [89.70.221.198]
-X-ClientProxiedBy: DAG4EX1.emp2.local (172.16.2.31) To DAG2EX1.emp2.local
- (172.16.2.11)
-X-Ovh-Tracer-Id: 12521414339802323991
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrvdefuddguddvtdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecunecujfgurhephffvufffkffojghfggfgtghisehtkeertdertddtnecuhfhrohhmpefvohhmrghsiicuffhushiihihnshhkihcuoehtohhmrghsiidrughushiihihnshhkihesohgtthgrkhhonhdrtghomheqnecuggftrfgrthhtvghrnhepveejvdekueeiheevgeegudduvdfhudfhhfehudefjeduheekuefhgfehudffuddunecukfhppedtrddtrddtrddtpdekledrjedtrddvvddurdduleeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhrohdvrdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepthhomhgrshiirdguuhhsiiihnhhskhhisehotghtrghkohhnrdgtohhmpdhrtghpthhtoheprhhosghhodgutheskhgvrhhnvghlrdhorhhg
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sps30 has gained support for serial communication so add example to the
-binding file. While at it remove reg property from list of required
-properties because it's no-op in case of serial communication.
 
-Signed-off-by: Tomasz Duszynski <tomasz.duszynski@octakon.com>
----
- .../devicetree/bindings/iio/chemical/sensirion,sps30.yaml  | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/iio/chemical/sensirion,sps30.yaml b/Documentation/devicetree/bindings/iio/chemical/sensirion,sps30.yaml
-index a93d1972a5c2..967500b7e773 100644
---- a/Documentation/devicetree/bindings/iio/chemical/sensirion,sps30.yaml
-+++ b/Documentation/devicetree/bindings/iio/chemical/sensirion,sps30.yaml
-@@ -22,7 +22,6 @@ properties:
- 
- required:
-   - compatible
--  - reg
- 
- additionalProperties: false
- 
-@@ -37,5 +36,11 @@ examples:
-         reg = <0x69>;
-       };
-     };
-+  - |
-+    serial {
-+      air-pollution-sensor {
-+        compatible = "sensirion,sps30";
-+      };
-+    };
- 
- ...
--- 
-2.31.1
+Le dim., mai 2 2021 at 15:08:55 +0200, H. Nikolaus Schaller 
+<hns@goldelico.com> a écrit :
+> This driver is not related to I2C protocol.
+> 
+> s/_i2c_/_i2s_/
+> 
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+
+Acked-by: Paul Cercueil <paul@crapouillou.net>
+
+Cheers,
+-Paul
+
+> ---
+>  sound/soc/jz4740/jz4740-i2s.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/jz4740/jz4740-i2s.c 
+> b/sound/soc/jz4740/jz4740-i2s.c
+> index 47d955c0bb6a1..fe5b3a2b239c6 100644
+> --- a/sound/soc/jz4740/jz4740-i2s.c
+> +++ b/sound/soc/jz4740/jz4740-i2s.c
+> @@ -372,7 +372,7 @@ static int jz4740_i2s_resume(struct 
+> snd_soc_component *component)
+>  	return 0;
+>  }
+> 
+> -static void jz4740_i2c_init_pcm_config(struct jz4740_i2s *i2s)
+> +static void jz4740_i2s_init_pcm_config(struct jz4740_i2s *i2s)
+>  {
+>  	struct snd_dmaengine_dai_dma_data *dma_data;
+> 
+> @@ -397,7 +397,7 @@ static int jz4740_i2s_dai_probe(struct 
+> snd_soc_dai *dai)
+>  	if (ret)
+>  		return ret;
+> 
+> -	jz4740_i2c_init_pcm_config(i2s);
+> +	jz4740_i2s_init_pcm_config(i2s);
+>  	snd_soc_dai_init_dma_data(dai, &i2s->playback_dma_data,
+>  		&i2s->capture_dma_data);
+> 
+> --
+> 2.26.2
+> 
+
 
