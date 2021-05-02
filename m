@@ -2,343 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C859370F3A
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 23:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60BA8370F48
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 23:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232531AbhEBVLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 17:11:51 -0400
-Received: from bmail1.ministro.hu ([5.249.150.236]:60494 "EHLO
-        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232338AbhEBVLu (ORCPT
+        id S232561AbhEBVQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 17:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232492AbhEBVQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 17:11:50 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTP id E80CB123F6F;
-        Sun,  2 May 2021 23:10:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1619989856;
-        bh=kKyz5e1CNkGIkLc7lJTV/XgrN2vgXfR3O0w+DXoMzkk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=8QdzN3u3l2xJWjbYmoCcaEwgqtx2nuPWAVQGKSL3BUvPTrnvqdfAoGK4AHgRDpe8e
-         IcX4XsHQFibIjnQVkHYzrOVMKYZDDHNHALDPIYrXxce03z1ORrthHnj/eDY0O/yBLp
-         wpTHrM/ubZu4cfrDbBvGFMfOsLmctx/uBH/FZVkEWInpK+OWj8izWF1huXLZpaGFqs
-         /rI224XJMH394TtXWe+8M2eyqVO80OzzQMNipClToMgwFekrlPCRnyNvjhZNrXixzK
-         3xSR1rJgk1QB9XqGfFfVn7rmvo7CSkFXGz/DW15hNSqoN8DZ0DA7VidcPxtvgXroiZ
-         u7EAhutpKQNqQ==
-X-Virus-Scanned: Debian amavisd-new at ministro.hu
-Received: from bmail1.ministro.hu ([127.0.0.1])
-        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id r15Hr8ypwtay; Sun,  2 May 2021 23:10:23 +0200 (CEST)
-Received: from dev (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTPSA id 4D2D7123F6B;
-        Sun,  2 May 2021 23:10:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1619989823;
-        bh=kKyz5e1CNkGIkLc7lJTV/XgrN2vgXfR3O0w+DXoMzkk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=emvvU/sOxUmnEUd9ieEl7EKLrT/XbXs4Z/Kcd+ATuiDRhtTcrNtlsjsU8g1sUiMoD
-         0YJGLmZXtkY7msuSnl9VtAvsFohhkl0kxHSoPRrg+d2JlA6+/6qRIYf6n4Fvq2jcEt
-         CwGtIk3F+Sv0Tj21QycLOqB9jZIgVxtZAK+5MZFG/k0LrFOIrVAEZ0+ri9tn0iIvhm
-         DFPxT5hC8Er66Kq93Dqb4tF10t4o45lStvZPrfK1+wfguaCwK//CDCtFxv4tINEAw0
-         r2IgQzBDEAiP56dsvfj73juLVFdpkIlKlkWAAy9nqemdOCktOAmrBA1BQeNu5Rg+MR
-         V0Ir0ZCLLP9zg==
-Date:   Sun, 2 May 2021 21:10:20 +0000
-From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Gene Chen <gene_chen@richtek.com>,
-        Saravanan Sekar <sravanhome@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] dt-bindings: iio: adc: devicetree bindings for texas
- instruments ads7142 iio driver
-Message-ID: <20210502211020.GB32610@dev>
-References: <bffbc2b24a869dc42307adf8e3fc71f08fcff6dd.1619892171.git.info@ministro.hu>
- <69205d4de46dd21c82b31ca1c35cbf12fbce629b.1619892171.git.info@ministro.hu>
- <20210502182255.6bed8afa@jic23-huawei>
+        Sun, 2 May 2021 17:16:38 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 272A8C06138D
+        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 14:15:46 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id t8so3724434oij.0
+        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 14:15:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Y8HQ+dXr/9DI00Tczt+t4bbUXXiIp9vh0T4ZqfMbYF4=;
+        b=qHd1m3qVp0GUXMefU/3LfcUVW3nC72mDUkQ3yRuTXmW+A9qrjV1XNKzdjgDRiybu99
+         +qYS1qm4Tk9U8czDKJjPbvysWv7TVQHOnGXqrQW28Y9SNbMzx9xxE7QL+fZdmqvshzLw
+         U185l6YtZurVPCCXQf2I6V0GU3xmvrgG+o7KYWkjVM+Z2v+s9nsWXkacOXsacWp5L4mw
+         FX1+CxCG4+vyrT77MN56FZZIe/mZO/6gumrUD2XF1Cx4BBODFl+oSFq4AYxY5+Ymmqw0
+         S+0K1srlon8f8QcUl1zSBv1CyOPLFGjhkUmfg5KAGnbC8oGINgNgQ2oQ/FbruBxNqMdV
+         LWYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Y8HQ+dXr/9DI00Tczt+t4bbUXXiIp9vh0T4ZqfMbYF4=;
+        b=ZJgV0xlprzypnW2LJCEEY5jjg43Lm6LUKc8Q9EsnUVem6v33e0u7fsfxVt32ABNsl6
+         uqe34+OwDT3+HSIAxmjYDR/oTI5Iqrg1qQhBx893XEcB9LaKIyUt14LcHJGwoZXu3WeS
+         R/TV2rPtSaJHD+ZaZfCr04rp2iFc3y1IkYNWDbpTztEjeLTrzvLbZwIJjLVDFxYy7YPv
+         tKC+bGhC7qAhqUYkNU6Tat8+YZYvKl98OypVvcaCIOEjwrbipfi2vKh9q+gceqdcbgiK
+         PnwDIWrauAVHJSPtz9TGpKAa9U6kdur/1G6LXRh5tHgSJKq8Xwe/qsxuQZFex6DBCTNB
+         Zicg==
+X-Gm-Message-State: AOAM5308QH+idwtf8OUgAF27nx+PW3B4PTz7uvInjBGdYKZXold9srXE
+        u+We7jZe4fzwyHewAArG43/h+g==
+X-Google-Smtp-Source: ABdhPJwPvB9uFbYuLo9g265jJQ86mmJEHSmsQ9Fsq9sFGvyj+mj9dstBybFqwUdnsX6GUSpKg75Q7A==
+X-Received: by 2002:a54:470c:: with SMTP id k12mr10143103oik.42.1619990145255;
+        Sun, 02 May 2021 14:15:45 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id o6sm2488747ote.14.2021.05.02.14.15.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 May 2021 14:15:44 -0700 (PDT)
+Date:   Sun, 2 May 2021 16:15:42 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Marijn Suijten <marijn.suijten@somainline.org>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>,
+        Lee Jones <lee.jones@linaro.org>, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-pwm@vger.kernel.org,
+        Yassine Oudjana <y.oudjana@protonmail.com>,
+        Luca Weiss <luca@z3ntu.xyz>,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>
+Subject: Re: [PATCH v7 2/6] leds: Add driver for Qualcomm LPG
+Message-ID: <20210502211542.GE2484@yoga>
+References: <20210429211517.312792-1-bjorn.andersson@linaro.org>
+ <20210429211517.312792-3-bjorn.andersson@linaro.org>
+ <55b56fd9-0ba5-58d9-2be8-98aa639e4496@somainline.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210502182255.6bed8afa@jic23-huawei>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <55b56fd9-0ba5-58d9-2be8-98aa639e4496@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 02, 2021 at 06:22:55PM +0100, Jonathan Cameron wrote:
-> On Sat, 1 May 2021 18:25:18 +0000
-> Jozsef Horvath <info@ministro.hu> wrote:
+On Sat 01 May 16:09 CDT 2021, Marijn Suijten wrote:
+
+> Hi Bjorn,
 > 
-> > This is a device tree schema for iio driver for
-> >  Texas Instruments ADS7142 dual-channel, programmable sensor monitor.
+> On 4/29/21 11:15 PM, Bjorn Andersson wrote:
+> > The Light Pulse Generator (LPG) is a PWM-block found in a wide range of
+> > PMICs from Qualcomm. It can operate on fixed parameters or based on a
+> > lookup-table, altering the duty cycle over time - which provides the
+> > means for e.g. hardware assisted transitions of LED brightness.
 > > 
-> > Datasheet: https://www.ti.com/lit/ds/symlink/ads7142.pdf
-> > 
-> > Signed-off-by: Jozsef Horvath <info@ministro.hu>
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > > ---
-> > ---
-> >  .../bindings/iio/adc/ti,ads7142.yaml          | 198 ++++++++++++++++++
-> >  1 file changed, 198 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,ads7142.yaml
 > > 
-> > diff --git a/Documentation/devicetree/bindings/iio/adc/ti,ads7142.yaml b/Documentation/devicetree/bindings/iio/adc/ti,ads7142.yaml
-> > new file mode 100644
-> > index 000000000000..b4e752160156
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/iio/adc/ti,ads7142.yaml
-> > @@ -0,0 +1,198 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: "http://devicetree.org/schemas/iio/adc/ti,ads7142.yaml#"
-> > +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> > +
-> > +title: Texas Instruments ADS7142 adc driver device tree bindings
-> > +
-> > +maintainers:
-> > +  - József Horváth <info@ministro.hu>
-> > +
-> > +description: |
-> > +  This document is for describing the required device tree parameters
-> > +   for ads7142 adc driver.
+> > Changes since v6:
+> > - Moved code into drivers/leds/rgb/
+> > - Reverted to earlier qcom,dtest handling to support routing pwm signals
+> >    through dtest lines.
+> > - Remember the duration of each step of the pattern, rather than adding up and
+> >    then dividing when the value is used.
+> > - Added missing error prints on DT parse errors.
+> > - Added sm8150[lb] and made led source and atc presence optional
+> > - Added missing parenthesis around (len + 1) / 2 in search for hi_pause in the
+> >    pattern.
+> > 
+> >   drivers/leds/Kconfig             |    3 +
+> >   drivers/leds/Makefile            |    3 +
+> >   drivers/leds/rgb/leds-qcom-lpg.c | 1286 ++++++++++++++++++++++++++++++
+> >   3 files changed, 1292 insertions(+)
+> >   create mode 100644 drivers/leds/rgb/leds-qcom-lpg.c
+> > 
+> > diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+> > index 49d99cb084db..8ab06b3f162d 100644
+> > --- a/drivers/leds/Kconfig
+> > +++ b/drivers/leds/Kconfig
+> > @@ -933,6 +933,9 @@ source "drivers/leds/blink/Kconfig"
+> >   comment "Flash and Torch LED drivers"
+> >   source "drivers/leds/flash/Kconfig"
+> > +comment "RGB LED drivers"
+> > +source "drivers/leds/rgb/Kconfig"
 > 
-> Document describes hardware, not a particular driver.  So just refer
-> to the device here.  There may well be other drives in future using
-> the same binding (e.g. in an RTOS).
 > 
-> > +  The required parameters for proper operation are described below.
-> > +
-> > +  Datasheet: https://www.ti.com/lit/ds/symlink/ads7142.pdf
-> > +
-> > +  Operation modes supportedby the driver:
-> > +    When the 'ti,monitoring-mode' property is not present
-> > +      in the devicetree node definition, the driver initiates a single
-> > +      conversion in the device for each read request
-> > +      (/sys/bus/iio/devices/iio:deviceX/in_voltageY_raw).
-> > +      This is a one-shot conversion, and it is called
-> > +      "Manual Mode" in the datasheet.
-> > +
-> > +    When the 'ti,monitoring-mode' property is present
-> > +      in the devicetree node definition, the driver configures
-> > +      the device's digital window comparator and sets the device's
-> > +      data buffer operation mode to pre alert data mode.
-> > +      The driver reads the conversion result when the BUSY/RDY interrupt
-> > +      fires, and keeps the value until the next BUSY/RDY interrupt
-> > +      or the first read request
-> > +      (/sys/bus/iio/devices/iio:deviceX/in_voltageY_raw).
-> > +      The digital window comparator and hysteresis parameters
-> > +      can be controlled by:
-> > +        - the devicetree definition of channel node
-> > +        - iio sysfs interfaces
-> > +      This is event driven conversion, and is called
-> > +      "Autonomous Mode with Pre Alert Data" in the datasheet.
-> > +      This mode can be used to wake up the system with the ALERT pin,
-> > +      in case when the monitored voltage level is out of the configured range.
-> 
-> I talked about these in the driver review so look there for comments.
-> Short summary is this is something userspace should have control off (assuming irq
-> is wired up) not dt.
-> 
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: ti,ads7142
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  interrupts:
-> > +    description: |
-> > +      The BUSY/PDY pin is used as interrupt line in autonomous monitoring mode.
-> > +    maxItems: 1
-> > +
-> > +  vref-supply:
-> > +    description: Regulator for the reference voltage
-> > +
-> > +  power-supply: true
-> 
-> These don't match the naming on the pin diagram.
-
-I'll cange it to dvdd, and vref to avdd.
-
-> 
-> > +
-> > +  "#address-cells":
-> > +    const: 1
-> > +
-> > +  "#size-cells":
-> > +    const: 0
-> > +
-> > +  "#io-channel-cells":
-> > +    const: 1
-> > +
-> > +  ti,osc-sel:
-> > +    description: |
-> > +      If present, the driver selects the high speed oscillator.
-> > +      See chapter 7.3.5 Oscillator and Timing Control in datasheet.
-> > +    type: boolean
-> 
-> This looks connected to the possible sampling frequencies when in various autonomous modes.
-> Should it be controlled by userspace?
-
-The sampling frequency is controlled with the osc-sel and n-clk.
-I'll remove n-clk from sysfs.
-
-> 
-> > +
-> > +  ti,n-clk:
-> > +    description: |
-> > +      nCLK is number of clocks in one conversion cycle.
-> > +      See chapter 7.3.5 Oscillator and Timing Control in datasheet.
-> 
-> Sounds like a policy decision for userspace.
-> 
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +    maximum: 255
-> > +    minimum: 0
-> > +
-> > +  ti,monitoring-mode:
-> > +    description: |
-> > +      If present, the driver selects the autonomous monitoring mode with pre alert data.
-> > +      See chapter 7.4 Device Functional Modes in datasheet.
-> 
-> As mentioned in the driver review, this looks like something we should control from userspace
-> not dt to me.
+> It looks like this file is not included in any of the patches.
 > 
 
-I would keep this here, but it will be an enum.
+Sorry about that, seems like I missed adding them to the commit :(
 
-> > +    type: boolean
 > > +
-> > +patternProperties:
-> > +  "^channel@[0-1]$":
-> > +    $ref: "adc.yaml"
-> > +    type: object
-> > +    description: |
-> > +      Represents the external channels which are connected to the ADC.
-> > +    properties:
-> > +      reg:
-> > +        description: |
-> > +          The channel number.
-> > +        items:
-> > +          minimum: 0
-> > +          maximum: 1
-> > +      "ti,threshold-falling":
-> > +        description: The low threshold for channel
+> >   comment "LED Triggers"
+> >   source "drivers/leds/trigger/Kconfig"
+> > diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+> > index 7e604d3028c8..8cad0465aae0 100644
+> > --- a/drivers/leds/Makefile
+> > +++ b/drivers/leds/Makefile
+> > @@ -106,6 +106,9 @@ obj-$(CONFIG_LEDS_USER)			+= uleds.o
+> >   # Flash and Torch LED Drivers
+> >   obj-$(CONFIG_LEDS_CLASS_FLASH)		+= flash/
+> > +# RGB LED Drivers
+> > +obj-$(CONFIG_LEDS_CLASS_MULTICOLOR)	+= rgb/
 > 
-> For these, we need a strong argument presented in this doc for why they are not
-> a question of policy (and hence why they should be in dt at all).
-
-I'll remove all threshold and hysteresys from dt.
-
 > 
-> > +        $ref: /schemas/types.yaml#/definitions/uint32
-> > +        maximum: 4095
-> > +        minimum: 0
-> > +      "ti,threshold-rising":
-> > +        description: The high threshold for channel
-> > +        $ref: /schemas/types.yaml#/definitions/uint32
-> > +        maximum: 4095
-> > +        minimum: 0
-> > +      "ti,hysteresis":
-> > +        description: The hysteresis for both comparators for channel
-> > +        $ref: /schemas/types.yaml#/definitions/uint32
-> > +        maximum: 63
-> > +        minimum: 0
-> > +
-> > +    required:
-> > +      - reg
-> > +
-> > +    additionalProperties: false
-> > +
-> > +allOf:
-> > +  - if:
-> > +      required:
-> > +        - ti,monitoring-mode
-> > +    then:
-> > +      required:
-> > +        - interrupts
-> > +
-> > +required:
-> > +  - compatible
-> > +  - "#io-channel-cells"
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    i2c {
-> > +      #address-cells = <1>;
-> > +      #size-cells = <0>;
-> > +      adc@18 {
-> 
-> I would not bother having two examples.  The second one covers more things afterall
-> and the binding makes it clear what is required.
+> This file appears to be missing from this patch(set), too.
 > 
 
-I do this because of the conditional requirement of interrupts.
+Right, missed both the new files.
 
-> > +        compatible = "ti,ads7142";
-> > +        reg = <0x18>;
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +        #io-channel-cells = <1>;
+> > +static int lpg_lut_store(struct lpg *lpg, struct led_pattern *pattern,
+> > +			 size_t len, unsigned int *lo_idx, unsigned int *hi_idx)
+> > +{
+> > +	unsigned int idx;
+> > +	u16 val;
+> > +	int i;
 > > +
-> > +        vref-supply = <&vdd_3v3_reg>;
-> > +        power-supply = <&vdd_1v8_reg>;
+> > +	/* Hardware does not behave when LO_IDX == HI_IDX */
+> > +	if (len == 1)
+> > +		return -EINVAL;
 > > +
-> > +        channel@0 {
-> > +          reg = <0>;
-> > +        };
+> > +	idx = bitmap_find_next_zero_area(lpg->lut_bitmap, lpg->lut_size,
+> > +					 0, len, 0);
+> > +	if (idx >= lpg->lut_size)
+> > +		return -ENOMEM;
 > > +
-> > +        channel@1 {
-> > +          reg = <1>;
-> > +        };
-> > +      };
-> > +    };
-> > +  - |
-> > +    i2c {
-> > +      #address-cells = <1>;
-> > +      #size-cells = <0>;
-> > +      adc@1f {
-> > +        compatible = "ti,ads7142";
-> > +        reg = <0x1f>;
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
+> > +	for (i = 0; i < len; i++) {
+> > +		val = pattern[i].brightness;
 > > +
-> > +        #io-channel-cells = <1>;
-> > +
-> > +        vref-supply = <&vdd_3v3_reg>;
-> > +        power-supply = <&vdd_1v8_reg>;
-> > +
-> > +        interrupt-parent = <&gpio>;
-> > +        interrupts = <7 2>;
-> > +
-> > +        ti,monitoring-mode;
-> > +
-> > +        channel@0 {
-> > +          reg = <0>;
-> > +          ti,threshold-falling = <1000>;
-> > +          ti,threshold-rising = <2000>;
-> > +          ti,hysteresis = <20>;
-> > +        };
-> > +
-> > +        channel@1 {
-> > +          reg = <1>;
-> > +          ti,threshold-falling = <100>;
-> > +          ti,threshold-rising = <2500>;
-> > +          ti,hysteresis = <0>;
-> > +        };
-> > +      };
-> > +    };
-> > +...
-> > +
+> > +		regmap_bulk_write(lpg->map, lpg->lut_base + LPG_LUT_REG(idx + i), &val, 1);
 > 
+> 
+> This and the other regmap_bulk_write in lpg_apply_pwm_value used sizeof(val)
+> before.  As far as I'm aware qcom-spmi-pmic specifies 16-bit addresses
+> (.reg_bits) but 8-bit register sizes (.val_bits).  Writing one register
+> means only 8 out of 16 bits in u16 val are written?
+> 
+
+You're right and I should have used test pattern that shown that I lost
+that 9th bit...
+
+I'll restore the sizeof()
+
+> > +static void lpg_apply_lut_control(struct lpg_channel *chan)
+> > +{
+> > +	struct lpg *lpg = chan->lpg;
+> > +	unsigned int hi_pause;
+> > +	unsigned int lo_pause;
+> > +	unsigned int step;
+> > +	unsigned int conf = 0;
+> > +	unsigned int lo_idx = chan->pattern_lo_idx;
+> > +	unsigned int hi_idx = chan->pattern_hi_idx;
+> > +	int pattern_len;
+> > +
+> > +	if (!chan->ramp_enabled || chan->pattern_lo_idx == chan->pattern_hi_idx)
+> > +		return;
+> > +
+> > +	pattern_len = hi_idx - lo_idx + 1 > +
+> > +	step = chan->ramp_tick_ms;
+> 
+> 
+> Since this is not dividing a full pattern duration by pattern_len anymore,
+> that variable is now never read and best removed.
+> 
+
+Ok
+
+> > +static int lpg_parse_channel(struct lpg *lpg, struct device_node *np,
+> > +			     struct lpg_channel **channel)
+> > +{
+> > +	struct lpg_channel *chan;
+> > +	u32 color = LED_COLOR_ID_GREEN;
+> > +	u32 reg;
+> > +	int ret;
+> > +
+> > +	ret = of_property_read_u32(np, "reg", &reg);
+> > +	if (ret || !reg || reg > lpg->num_channels) {
+> > +		dev_err(lpg->dev, "invalid reg of %pOFn\n", np);
+> 
+> 
+> Like \"color\" below, escape reg with \"reg\"?
+> 
+
+Sounds good.
+
+> > +static int lpg_add_led(struct lpg *lpg, struct device_node *np)
+> > +{
+> > +	struct led_classdev *cdev;
+> > +	struct device_node *child;
+> > +	struct mc_subled *info;
+> > +	struct lpg_led *led;
+> > +	const char *state;
+> > +	int num_channels;
+> > +	u32 color = 0;
+> > +	int ret;
+> > +	int i;
+> > +
+> > +	ret = of_property_read_u32(np, "color", &color);
+> > +	if (ret < 0 && ret != -EINVAL) {
+> > +		dev_err(lpg->dev, "failed to parse \"color\" of %pOF\n", np);
+> > +		return ret;
+> > +	}
+> > +
+> > +	if (color == LED_COLOR_ID_MULTI)
+> 
+> 
+> Since this driver now lives under rgb/, and is specifically for RGB leds
+> (afaik), should this and the rest of the code use LED_COLOR_ID_RGB instead?
+> There was a patch floating around on (if I remember correctly) ##linux-msm
+> by Luca Weiss that performs the conversion, with some related changes.
+> 
+
+I thought MULTICOLOR was the right color, but reading the comment on the
+defines it seems RGB is the color I actually want. Will check out
+z3ntu's changes as well.
+
+> > +static int lpg_init_lut(struct lpg *lpg)
+> > +{
+> > +	const struct lpg_data *data = lpg->data;
+> > +	size_t bitmap_size;
+> > +
+> > +	if (!data->lut_base)
+> > +		return 0;
+> > +
+> > +	lpg->lut_base = data->lut_base;
+> > +	lpg->lut_size = data->lut_size;
+> > +
+> > +	bitmap_size = BITS_TO_BYTES(lpg->lut_size);
+> > +	lpg->lut_bitmap = devm_kzalloc(lpg->dev, bitmap_size, GFP_KERNEL);
+> > +	if (!lpg->lut_bitmap)
+> > +		return -ENOMEM;
+> > +
+> > +	bitmap_clear(lpg->lut_bitmap, 0, lpg->lut_size);
+> 
+> 
+> devm_kzalloc already zeroes the bitmap.  Is it necessary to clear it again
+> (assuming a "cleared" bitmap is implementation-dependent and does not imply
+> zeroed memory) or could the memory be allocated with devm_kalloc instead?
+> 
+
+You're right, I can drop the explicit clear of the bitmap.
+
+Thanks,
+Bjorn
