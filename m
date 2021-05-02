@@ -2,116 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AC97370DB8
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 17:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0393370DBF
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 17:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232374AbhEBPwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 11:52:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42744 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232358AbhEBPwk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 11:52:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 553D6611CA;
-        Sun,  2 May 2021 15:51:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619970709;
-        bh=aFtXlZsRPiwVYYvNWx3HFKTutPP3K3zQCwO/Pso2xfI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S/zKSzCnhvlaDPEGDejFmNqGmwLnV6U3hwJVzAcQnV9Jeg47k379GiCzEaZM9CjW2
-         IBGPkurNKkgsA/LKfFggn4ZtTLuXgXIL86nH/ylsP0Ex/X/BomGjaDLn7Xq66oFdkM
-         ct1ed6dQRX1dps06IaQFpDEX/rFopvM2zryP3BjncVWkmbdoBygikQPgkm7CQn7OEI
-         R0KApVb/GK+kGxgg5DFdr/pe22NbgbpV0C4+WuEi2dVnlKl65NK5wGkZDPXyISPSav
-         TCEL4oBdC7/GcxH02C/tIkPpDe5DB8pa+PwrOnGfL/yDXV9FpvMQvj1PPn3LXOaNay
-         st16bkC+vpVSg==
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ohad Sharabi <osharabi@habana.ai>
-Subject: [PATCH 4/4] habanalabs: set dma mask from fw once fw done iatu config
-Date:   Sun,  2 May 2021 18:51:40 +0300
-Message-Id: <20210502155140.4359-4-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210502155140.4359-1-ogabbay@kernel.org>
-References: <20210502155140.4359-1-ogabbay@kernel.org>
+        id S232353AbhEBP4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 11:56:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230154AbhEBP4o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 May 2021 11:56:44 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5447AC06174A;
+        Sun,  2 May 2021 08:55:52 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id k128so1895465wmk.4;
+        Sun, 02 May 2021 08:55:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4qSNjpnYVIrWjdPYzqg5I/2wMnH8TyjLJXPRqrLpUXY=;
+        b=T/RsU0qUGKEeiTqc+DKhx+CgzqIe32Em9ieeJWEgxs+JgK1TiY6I/i4vptsQzh4uY6
+         x7YmnfC8HbYAx2qVTXEViF46/0tkJMwgQXAzKvMGJg8XE0HE1iAR8o3s1f4cXKLf4rKn
+         zCWtnhbUrltCXWk/cVu+StEjp42SQ/OCwYZrt655UkkAxlrCndvuJ5Mki9LWeR6AWaFG
+         u9/H2SQnv4EU5B+4sswKvmt/CZD9v7Sfb/FMteFt2d4UL4WKh62QPgMu1h5fIvv1wSKE
+         38q+GqsEotIoX/JqzYuX3HmmFeIDA9CsrrwDWaqKgv9/BAncWnj4PHAKcaQPReqZhwiJ
+         6gEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4qSNjpnYVIrWjdPYzqg5I/2wMnH8TyjLJXPRqrLpUXY=;
+        b=cPGmHnpfKtVfKyMPq5KiJg3pJ/iCTfONNSR5YZD4mr1PvqkGhVXTq7f+spWJtZhlOs
+         5C9U0y9Wm6Px77aIBQuquA2pF7vOU3Exexo84sVvjejOG9P5obH8Od5/K6WMm6GzOGM+
+         xaWDkCYT7V2UBsq1dhlgyLTU4lvr9tvVry1JZsO0eYmMRLAXb2DxAEQEpSjvHtUVNc/2
+         jWSLtenXMmy9P/QyECGeHOEvO5gf8/uWTJIfkuPXO/lPSvdu1J5hPQG03GmxvnDqPX5a
+         5gPxQUgku2/1y9FXq29fdcC+gEaXAtZgmgyuIZsq/z86dKV/2a3iFVeMWNBm89cIZQFZ
+         6PXQ==
+X-Gm-Message-State: AOAM5336NTSgMysllqYdLfew5i1oC9B9Yok0B5CHjaFbo4b1Ep7RH0tt
+        hQRh0yzetWxpVXj4UIFV/dioDIorsU8=
+X-Google-Smtp-Source: ABdhPJxhlEOgthBdZGeHO4K6jWKoQu1Vxem1SoNbkK7cpvD3FKpjYsbIdnmUsuU3OO7s+WiFMgv0Rw==
+X-Received: by 2002:a05:600c:4a19:: with SMTP id c25mr16780867wmp.94.1619970950806;
+        Sun, 02 May 2021 08:55:50 -0700 (PDT)
+Received: from [192.168.8.197] ([185.69.145.156])
+        by smtp.gmail.com with ESMTPSA id f8sm8163830wmg.43.2021.05.02.08.55.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 02 May 2021 08:55:50 -0700 (PDT)
+Subject: Re: KASAN: stack-out-of-bounds Read in iov_iter_revert
+To:     Palash Oswal <oswalpalash@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+References: <CAGyP=7exAVOC0Er5VzmwL=HLih-wpmyDijEPVjGzUEj3SCYENA@mail.gmail.com>
+ <4b2c435c-699b-b29f-6893-4beae6d004a9@gmail.com>
+ <CAGyP=7cGLwtw=14JSfOd40x08Xsj3T2GCeWTjDf2z2v0nb8e9Q@mail.gmail.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <e968c546-fbfd-2fec-0380-af81df7c791f@gmail.com>
+Date:   Sun, 2 May 2021 16:55:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAGyP=7cGLwtw=14JSfOd40x08Xsj3T2GCeWTjDf2z2v0nb8e9Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ohad Sharabi <osharabi@habana.ai>
+On 5/2/21 4:13 PM, Palash Oswal wrote:
+> On Sun, May 2, 2021 at 4:07 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>> May be related to
+>> http://mail.spinics.net/lists/io-uring/msg07874.html
+>>
+>> Was it raw bdev I/O, or a normal filesystem?
+> 
+> Normal filesystem.
 
-When setting "DMA mask from FW" we are reading PSOC_GLOBAL_CONF register
-which is allowed only once FW has done it's iATU configuration.
+To avoid delays when I get to it, can you tell what fs it was?
+Just it case it is an fs specific deviation
 
-Signed-off-by: Ohad Sharabi <osharabi@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
----
- drivers/misc/habanalabs/common/pci/pci.c | 10 ++++++----
- drivers/misc/habanalabs/gaudi/gaudi.c    |  4 +---
- drivers/misc/habanalabs/goya/goya.c      |  4 +---
- 3 files changed, 8 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/misc/habanalabs/common/pci/pci.c b/drivers/misc/habanalabs/common/pci/pci.c
-index 8e7982be6191..d5bedf5ba011 100644
---- a/drivers/misc/habanalabs/common/pci/pci.c
-+++ b/drivers/misc/habanalabs/common/pci/pci.c
-@@ -421,6 +421,12 @@ int hl_pci_init(struct hl_device *hdev)
- 		goto unmap_pci_bars;
- 	}
- 
-+	/* Driver must sleep in order for FW to finish the iATU configuration */
-+	if (hdev->asic_prop.iatu_done_by_fw) {
-+		usleep_range(2000, 3000);
-+		hdev->asic_funcs->set_dma_mask_from_fw(hdev);
-+	}
-+
- 	rc = dma_set_mask_and_coherent(&pdev->dev,
- 					DMA_BIT_MASK(hdev->dma_mask));
- 	if (rc) {
-@@ -430,10 +436,6 @@ int hl_pci_init(struct hl_device *hdev)
- 		goto unmap_pci_bars;
- 	}
- 
--	/* Driver must sleep in order for FW to finish the iATU configuration */
--	if (hdev->asic_prop.iatu_done_by_fw)
--		usleep_range(2000, 3000);
--
- 	return 0;
- 
- unmap_pci_bars:
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 683793c68e83..6c38009d6db7 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -600,10 +600,8 @@ static int gaudi_init_iatu(struct hl_device *hdev)
- 	struct hl_outbound_pci_region outbound_region;
- 	int rc;
- 
--	if (hdev->asic_prop.iatu_done_by_fw) {
--		hdev->asic_funcs->set_dma_mask_from_fw(hdev);
-+	if (hdev->asic_prop.iatu_done_by_fw)
- 		return 0;
--	}
- 
- 	/* Inbound Region 0 - Bar 0 - Point to SRAM + CFG */
- 	inbound_region.mode = PCI_BAR_MATCH_MODE;
-diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index ef0e3f7965cd..3b995e354c50 100644
---- a/drivers/misc/habanalabs/goya/goya.c
-+++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -532,10 +532,8 @@ static int goya_init_iatu(struct hl_device *hdev)
- 	struct hl_outbound_pci_region outbound_region;
- 	int rc;
- 
--	if (hdev->asic_prop.iatu_done_by_fw) {
--		hdev->asic_funcs->set_dma_mask_from_fw(hdev);
-+	if (hdev->asic_prop.iatu_done_by_fw)
- 		return 0;
--	}
- 
- 	/* Inbound Region 0 - Bar 0 - Point to SRAM and CFG */
- 	inbound_region.mode = PCI_BAR_MATCH_MODE;
 -- 
-2.25.1
-
+Pavel Begunkov
