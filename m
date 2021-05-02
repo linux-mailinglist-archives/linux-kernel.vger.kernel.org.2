@@ -2,253 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CA8E370E56
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 20:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD56370E5B
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 20:08:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232399AbhEBSA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 14:00:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49904 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230110AbhEBSA5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 14:00:57 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S232338AbhEBSJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 14:09:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36584 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231801AbhEBSJb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 May 2021 14:09:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619978919;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=vyxShKxSh89EB6np4IlWbUt6LchDd4K6ZPvcD0TSg7Y=;
+        b=aN1yKFAyFP15wzc5LL6+7ZcpiU2HkMUn8+O2PcWt6dtGLQkwq6Vc6e3O4QwoF/jcI4AIvP
+        m9CQuT54Hup1d/tcKbKH5bSFlyWkdJUEnkoRsCpeLpscGsfmbLnxfSs01tPCcLTPIe7wAg
+        nxLjUs8ZGr1vIw8pHFeeEERljNEwtV8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-232-6t6b3JrgNQK4dwAPINmdYw-1; Sun, 02 May 2021 14:08:38 -0400
+X-MC-Unique: 6t6b3JrgNQK4dwAPINmdYw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C02E610A1;
-        Sun,  2 May 2021 18:00:03 +0000 (UTC)
-Date:   Sun, 2 May 2021 19:00:54 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <linux-hwmon@vger.kernel.org>
-Subject: Re: [PATCH 1/4] iio: proximity: vcnl3020: add periodic mode
-Message-ID: <20210502190054.4bd99a38@jic23-huawei>
-In-Reply-To: <20210430152419.261757-2-i.mikhaylov@yadro.com>
-References: <20210430152419.261757-1-i.mikhaylov@yadro.com>
-        <20210430152419.261757-2-i.mikhaylov@yadro.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E8D6B801B12;
+        Sun,  2 May 2021 18:08:35 +0000 (UTC)
+Received: from llong.com (ovpn-112-236.rdu2.redhat.com [10.10.112.236])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B42CA19D7C;
+        Sun,  2 May 2021 18:08:29 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Waiman Long <longman@redhat.com>
+Subject: [PATCH 1/2] mm: memcg/slab: Prevent recursive kfree() loop
+Date:   Sun,  2 May 2021 14:07:54 -0400
+Message-Id: <20210502180755.445-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Apr 2021 18:24:16 +0300
-Ivan Mikhaylov <i.mikhaylov@yadro.com> wrote:
+Since the merging of the new slab memory controller in v5.9, the
+page structure stores a pointer to obj_cgroup pointer array for
+slab pages. When the slab has no used objects, it can be freed in
+free_slab() which will call kfree() to free the obj_cgroup pointer array
+in memcg_alloc_page_obj_cgroups(). If it happens that the obj_cgroup
+array is the last used object in its slab, that slab may then be freed
+which may caused kfree() to be called again.
 
-> Add the possibility to run proximity sensor in periodic measurement
-> mode.
+With the right workload, the slab cache may be set up in a way that
+allows the recursive kfree() calling loop to nest deep enough to
+cause a kernel stack overflow and panic the system. In fact, we have
+a reproducer that can cause kernel stack overflow on a s390 system
+involving kmalloc-rcl-256 and kmalloc-rcl-128 slabs with the following
+kfree() loop recursively called 74 times:
 
-Without an interrupt?  Unusual and perhaps best left to userspace.
+  [  285.520739]  [<000000000ec432fc>] kfree+0x4bc/0x560
+  [  285.520740]  [<000000000ec43466>] __free_slab+0xc6/0x228
+  [  285.520741]  [<000000000ec41fc2>] __slab_free+0x3c2/0x3e0
+  [  285.520742]  [<000000000ec432fc>] kfree+0x4bc/0x560
+					:
 
-> 
-> Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
-> ---
->  drivers/iio/proximity/vcnl3020.c | 138 +++++++++++++++++++++++++++++++
->  1 file changed, 138 insertions(+)
-> 
-> diff --git a/drivers/iio/proximity/vcnl3020.c b/drivers/iio/proximity/vcnl3020.c
-> index 43817f6b3086..25c6bdba3ede 100644
-> --- a/drivers/iio/proximity/vcnl3020.c
-> +++ b/drivers/iio/proximity/vcnl3020.c
-> @@ -36,6 +36,21 @@
->  #define VCNL_PS_OD		BIT(3) /* start on-demand proximity
->  					* measurement
->  					*/
-> +#define VCNL_PS_EN		BIT(1) /* Enables periodic proximity
-> +					* measurement
-> +					*/
-> +#define VCNL_PS_SELFTIMED_EN	BIT(0) /* Enables state machine and LP
-> +					* oscillator for self timed
-> +					* measurements
+One way to prevent this from happening is to defer the freeing of the
+obj_cgroup array to a later time like using kfree_rcu() even though we
+don't really need rcu protection in this case.
 
-This rather suggests that you should just put comments on their own lines
-as it will involve less wrapping and ultimately be more compact and readable!
+The size of rcu_head is just two pointers. The allocated obj_cgroup
+array should not be less than that. To be safe, however, additional
+code is added to make sure that this is really the case.
 
-> +					*/
-> +
-> +/* Bit masks for ICR */
-> +#define  VCNL_ICR_THRES_EN	BIT(1) /* Enable interrupts on low or high
-> +					* thresholds */
-> +
-> +/* Bit masks for ISR */
-> +#define VCNL_INT_TH_HI		BIT(0)	/* High threshold hit */
-> +#define VCNL_INT_TH_LOW		BIT(1)	/* Low threshold hit */
->  
->  #define VCNL_ON_DEMAND_TIMEOUT_US	100000
->  #define VCNL_POLL_US			20000
-> @@ -215,12 +230,124 @@ static int vcnl3020_write_proxy_samp_freq(struct vcnl3020_data *data, int val,
->  	return regmap_write(data->regmap, VCNL_PROXIMITY_RATE, index);
->  }
->  
-> +static bool vcnl3020_is_in_periodic_mode(struct vcnl3020_data *data)
-> +{
-> +	int rc;
-> +	unsigned int cmd;
-> +
-> +	rc = regmap_read(data->regmap, VCNL_COMMAND, &cmd);
-> +	if (rc)
-> +		return false;
-> +
-> +	return !!(cmd & VCNL_PS_SELFTIMED_EN);
-> +}
-> +
-> +static bool vcnl3020_is_thr_enabled(struct vcnl3020_data *data)
-> +{
-> +	int rc;
-> +	unsigned int icr;
-> +
-> +	rc = regmap_read(data->regmap, VCNL_PS_ICR, &icr);
-> +	if (rc)
-> +		return false;
-> +
-> +	return !!(icr & VCNL_ICR_THRES_EN);
-> +}
-> +
-> +static int vcnl3020_config_threshold(struct iio_dev *indio_dev, bool state)
-> +{
-> +	struct vcnl3020_data *data = iio_priv(indio_dev);
-> +	int rc;
-> +	int icr;
-> +	int cmd;
-> +	int isr;
-> +
-> +	if (state) {
-> +		rc = iio_device_claim_direct_mode(indio_dev);
+Fixes: 286e04b8ed7a ("mm: memcg/slab: allocate obj_cgroups for non-root slab pages")
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ mm/memcontrol.c |  9 ++++++++-
+ mm/slab.h       | 11 ++++++++++-
+ 2 files changed, 18 insertions(+), 2 deletions(-)
 
-Device doesn't support buffered mode, so this is a lock as in patch 3.
-Don't do that as that isn't the intended use
-
-> +		if (rc)
-> +			return rc;
-> +
-> +		/* Enable periodic measurement of proximity data. */
-> +		cmd = VCNL_PS_EN | VCNL_PS_SELFTIMED_EN;
-> +
-> +		/*
-> +		 * Enable interrupts on threshold, for proximity data by
-> +		 * default.
-> +		 */
-> +		icr = VCNL_ICR_THRES_EN;
-> +	} else {
-> +		if (!vcnl3020_is_thr_enabled(data))
-> +			return 0;
-> +
-> +		cmd = 0;
-> +		icr = 0;
-> +		isr = 0;
-> +	}
-> +
-> +	rc = regmap_write(data->regmap, VCNL_COMMAND, cmd);
-> +	if (rc)
-> +		goto end;
-> +
-> +	rc = regmap_write(data->regmap, VCNL_PS_ICR, icr);
-> +	if (rc)
-> +		goto end;
-> +
-> +	if (!state)
-> +		/* Clear interrupts */
-
-Given you don't seem to have an interrupt. I guess this is clearing
-a status flag?
-
-> +		rc = regmap_write(data->regmap, VCNL_ISR, isr);
-> +
-> +end:
-> +	if (state)
-> +		iio_device_release_direct_mode(indio_dev);
-
-I would just allow for the small amount of repeated code and do only
-one condition on if (state) in this function.
-
-> +
-> +	return rc;
-> +}
-> +
-> +static int vcnl3020_write_event_config(struct iio_dev *indio_dev,
-> +				       const struct iio_chan_spec *chan,
-> +				       enum iio_event_type type,
-> +				       enum iio_event_direction dir,
-> +				       int state)
-> +{
-> +	switch (chan->type) {
-> +	case IIO_PROXIMITY:
-> +		return vcnl3020_config_threshold(indio_dev, state);
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +static int vcnl3020_read_event_config(struct iio_dev *indio_dev,
-> +				      const struct iio_chan_spec *chan,
-> +				      enum iio_event_type type,
-> +				      enum iio_event_direction dir)
-> +{
-> +	struct vcnl3020_data *data = iio_priv(indio_dev);
-> +
-> +	switch (chan->type) {
-> +	case IIO_PROXIMITY:
-> +		return vcnl3020_is_thr_enabled(data);
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +static const struct iio_event_spec vcnl3020_event_spec[] = {
-> +	{
-> +		.type = IIO_EV_TYPE_THRESH,
-> +		.dir = IIO_EV_DIR_EITHER,
-> +		.mask_separate = BIT(IIO_EV_INFO_ENABLE),
-> +	},
-> +};
-> +
->  static const struct iio_chan_spec vcnl3020_channels[] = {
->  	{
->  		.type = IIO_PROXIMITY,
->  		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
->  				      BIT(IIO_CHAN_INFO_SAMP_FREQ),
->  		.info_mask_separate_available = BIT(IIO_CHAN_INFO_SAMP_FREQ),
-> +		.event_spec = vcnl3020_event_spec,
-> +		.num_event_specs = ARRAY_SIZE(vcnl3020_event_spec),
->  	},
->  };
->  
-> @@ -233,6 +360,11 @@ static int vcnl3020_read_raw(struct iio_dev *indio_dev,
->  
->  	switch (mask) {
->  	case IIO_CHAN_INFO_RAW:
-> +
-> +		/* Protect against event capture. */
-> +		if (vcnl3020_is_in_periodic_mode(data))
-> +			return -EBUSY;
-> +
->  		rc = vcnl3020_measure_proximity(data, val);
->  		if (rc)
->  			return rc;
-> @@ -254,6 +386,10 @@ static int vcnl3020_write_raw(struct iio_dev *indio_dev,
->  	int rc;
->  	struct vcnl3020_data *data = iio_priv(indio_dev);
->  
-> +	/* Protect against event capture. */
-> +	if (vcnl3020_is_in_periodic_mode(data))
-> +		return -EBUSY;
-> +
->  	switch (mask) {
->  	case IIO_CHAN_INFO_SAMP_FREQ:
->  		rc = iio_device_claim_direct_mode(indio_dev);
-> @@ -287,6 +423,8 @@ static const struct iio_info vcnl3020_info = {
->  	.read_raw = vcnl3020_read_raw,
->  	.write_raw = vcnl3020_write_raw,
->  	.read_avail = vcnl3020_read_avail,
-> +	.read_event_config = vcnl3020_read_event_config,
-> +	.write_event_config = vcnl3020_write_event_config,
->  };
->  
->  static const struct regmap_config vcnl3020_regmap_config = {
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index c100265dc393..b0695d3aa530 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2866,10 +2866,17 @@ static struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cgroup *objcg)
+ int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
+ 				 gfp_t gfp, bool new_page)
+ {
+-	unsigned int objects = objs_per_slab_page(s, page);
++	unsigned int objects;
+ 	unsigned long memcg_data;
+ 	void *vec;
+ 
++	/*
++	 * Since kfree_rcu() is used for freeing, we have to make
++	 * sure that the allocated buffer is big enough for rcu_head.
++	 */
++	objects = max(objs_per_slab_page(s, page),
++		      (int)(sizeof(struct rcu_head)/sizeof(void *)));
++
+ 	vec = kcalloc_node(objects, sizeof(struct obj_cgroup *), gfp,
+ 			   page_to_nid(page));
+ 	if (!vec)
+diff --git a/mm/slab.h b/mm/slab.h
+index 18c1927cd196..6244a00d30ce 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -242,8 +242,17 @@ int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
+ 
+ static inline void memcg_free_page_obj_cgroups(struct page *page)
+ {
+-	kfree(page_objcgs(page));
++	struct {
++		struct rcu_head rcu;
++	} *objcgs = (void *)page_objcgs(page);
++
++	/*
++	 * We don't actually need to use rcu to protect objcg pointers.
++	 * kfree_rcu() is used here just to defer the actual freeing to avoid
++	 * a recursive kfree() loop which may lead to kernel stack overflow.
++	 */
+ 	page->memcg_data = 0;
++	kfree_rcu(objcgs, rcu);
+ }
+ 
+ static inline size_t obj_full_size(struct kmem_cache *s)
+-- 
+2.18.1
 
