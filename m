@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59BB5370AA6
+	by mail.lfdr.de (Postfix) with ESMTP id A60C1370AA7
 	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 09:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231539AbhEBHGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 03:06:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36194 "EHLO
+        id S231759AbhEBHGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 03:06:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbhEBHGG (ORCPT
+        with ESMTP id S230282AbhEBHGH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 03:06:06 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B34BC06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 00:05:15 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id t4so393447plc.6
-        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 00:05:15 -0700 (PDT)
+        Sun, 2 May 2021 03:06:07 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B3B9C06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 00:05:16 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id j7so1533321pgi.3
+        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 00:05:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5X0JTQzlcxqdyb4573dS6/kX2Ui7vOskaKMybRf6Z5M=;
-        b=HZVuO6/Rey41sy8z0pQayPzweV8rnRftn35sAiSoX5e1Kkqh46ZUmwXTz5crnp5MDD
-         KqRPfVQo+19EYhm93km29tf3f3RkxPcBy5WTshI1nUf1OXz8DGqbuH3QughkiO5ww0YJ
-         09cV7VS/gPCuKq7997LUBtf830okwiYk8vfPczoCIMUlrdWD2uFwL2DP/Nsq+XYnAock
-         JbUm9G6T6w4Ml7jiMAwR9lcVCEg/QhxtK3UVycjLmRYqXSneZgmeTMsVUPlKHO8+N7Ur
-         JT3fRPicXILbS8zocKyhYL8XhodzQeXgF/cAWu9y00beZ3WM0g/bbbRrU3l08MT+vdeY
-         Zl+g==
+        bh=IHTsdU2vfU5Wpq72nptCBLFongQuhd4/qiJ01bkzxDc=;
+        b=aBDqkxDC0vcKuNSD5lKBp9yytX2lw8gij6ncyAJK8EZqXbfXJyxKa4HlR4UUGOZLEg
+         daX7I3oXZBk8JOC8q9fKBvuCtSRmwz4VqIdreVswAf0fRBU6XUx2sM4K66Y0BI3Rfl2T
+         I1YzWYWXzwBYvcdGsC7CWGc8c96zjEp1LuF7Ji8iEypvykWDA1aFLV9dCk0xTscTCQO4
+         f5u+ak2SzecGcLQK7q8duOo2c40jtQmdjiVXJngbYXVTls36Alwhk9ubXh07/r8TBO9N
+         0aIpxs1UgdSNTjZBZzTbwR6TxbG5j02gXn0m58Orxsfxi9fh8+Um+WlN7WiQvvfCTE+0
+         NxFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5X0JTQzlcxqdyb4573dS6/kX2Ui7vOskaKMybRf6Z5M=;
-        b=Th8EBZMJ0+ddBvcSKwYsanX9VrXFNO/dr92QiV6YEh/O/PWoZcDOYS+O3osleHjm0h
-         J6ZZkLY/l8L6MV+iQHgA0Qi6MPF5sAoEjorSkJzPnAobpFo0JyqSSXtr90UJL5gQtFEE
-         39Ozil23x2nUmLiP3l2xm68nQBM2mF+seRCaiawu5jTofvD3c4MyldBBAeJec+DHFy3E
-         0P3DF84dsr4KPZdDbbCes0FogqWn+iqHtlQhj548AERSPAw9w3sLOSabNxfqEi942TVr
-         ozrpBLJJUNlmC7lXA7D4X1cprXBka5Yiz6pRy4+wS39R2EH9PC8hYmb2K5vEc+6gN6AQ
-         wBLg==
-X-Gm-Message-State: AOAM531u5qyQE2ffSZp5Vfo8dFRe7odIuNiykmaa8enM3hzQ4ZbMoYtC
-        j06uGuETgaI3ViDJPN87ZGQ=
-X-Google-Smtp-Source: ABdhPJzn2WBeI+9e6UMooihx3lJshAQ6hxiV/ubr3YTZswhh59uGo5pknPlopUPOlZpRpWoJI2avfQ==
-X-Received: by 2002:a17:90a:a611:: with SMTP id c17mr10388845pjq.53.1619939114598;
-        Sun, 02 May 2021 00:05:14 -0700 (PDT)
+        bh=IHTsdU2vfU5Wpq72nptCBLFongQuhd4/qiJ01bkzxDc=;
+        b=WCSHfIQ4DP4YnEqJA/i2QuWwvoBEAMzQNSmeoA1L6GDjU258xmseWm/+nF+yix7M/V
+         L5mo+dNULhKE8Pyo4dpdNwZndjUhUwNwx1m2hGWwLgbRDSjVAVQgCB/gdaNNnYjotAni
+         1beu2pE40hCcES4dW80dnL1pe+p0IIZvGxP7xJLpJ4mdXRPqH5z8NWxd7z5Yj1isMlSo
+         Lv/lStUBK9z0/ylwuSaJ4j/e0aa+Y2x0QbVyniYqrWXOziNRQmOkcVnW7RGKYuNU6fXH
+         MM7RfFRdepyAXFFCOdqH5d3lMR3RxxbwmTW5L0KlI0kHF7NIJis4HFq/VHiwO8yHIAiH
+         5cng==
+X-Gm-Message-State: AOAM531rs3rfNhdXkyAn4rNKSbevamrqmdQ+eWg5fXfBTd49T6EAcDnX
+        vTnM+9vt6fX64CjS6PB8Wys=
+X-Google-Smtp-Source: ABdhPJyXpX1JGNTK5UlbEjpgZqyaBFGalwAGyRgOkA5CWK1tYgbtXN9KoSapMP+nUITKESJanl6B7g==
+X-Received: by 2002:a63:1b10:: with SMTP id b16mr12476471pgb.308.1619939115817;
+        Sun, 02 May 2021 00:05:15 -0700 (PDT)
 Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
-        by smtp.gmail.com with ESMTPSA id r18sm14345713pjo.30.2021.05.02.00.05.13
+        by smtp.gmail.com with ESMTPSA id r18sm14345713pjo.30.2021.05.02.00.05.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 May 2021 00:05:14 -0700 (PDT)
+        Sun, 02 May 2021 00:05:15 -0700 (PDT)
 From:   Nadav Amit <nadav.amit@gmail.com>
 X-Google-Original-From: Nadav Amit
 To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
 Cc:     Nadav Amit <namit@vmware.com>, Jiajun Cao <caojiajun@vmware.com>,
         iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/4] iommu/amd: Do not sync on page size changes
-Date:   Sat,  1 May 2021 23:59:59 -0700
-Message-Id: <20210502070001.1559127-5-namit@vmware.com>
+Subject: [PATCH 3/4] iommu/amd: Selective flush on unmap
+Date:   Sun,  2 May 2021 00:00:00 -0700
+Message-Id: <20210502070001.1559127-6-namit@vmware.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210502070001.1559127-1-namit@vmware.com>
 References: <20210502070001.1559127-1-namit@vmware.com>
@@ -67,13 +67,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nadav Amit <namit@vmware.com>
 
-Some IOMMU architectures perform invalidations regardless of the page
-size. In such architectures there is no need to sync when the page size
-changes or to regard pgsize when making interim flush in
-iommu_iotlb_gather_add_page().
+Recent patch attempted to enable selective page flushes on AMD IOMMU but
+neglected to adapt amd_iommu_iotlb_sync() to use the selective flushes.
 
-Add a "ignore_gather_pgsize" property for each IOMMU-ops to decide
-whether gather's pgsize is tracked and triggers a flush.
+Adapt amd_iommu_iotlb_sync() to use selective flushes and change
+amd_iommu_unmap() to collect the flushes. As a defensive measure, to
+avoid potential issues as those that the Intel IOMMU driver encountered
+recently, flush the page-walk caches by always setting the "pde"
+parameter. This can be removed later.
 
 Cc: Joerg Roedel <joro@8bytes.org>
 Cc: Will Deacon <will@kernel.org>
@@ -82,43 +83,47 @@ Cc: iommu@lists.linux-foundation.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Nadav Amit <namit@vmware.com>
 ---
- drivers/iommu/amd/iommu.c | 1 +
- include/linux/iommu.h     | 3 ++-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ drivers/iommu/amd/iommu.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index b8cabbbeed71..1849b53f2149 100644
+index 8a71ad477c34..1849b53f2149 100644
 --- a/drivers/iommu/amd/iommu.c
 +++ b/drivers/iommu/amd/iommu.c
-@@ -2215,6 +2215,7 @@ const struct iommu_ops amd_iommu_ops = {
- 	.put_resv_regions = generic_iommu_put_resv_regions,
- 	.is_attach_deferred = amd_iommu_is_attach_deferred,
- 	.pgsize_bitmap	= AMD_IOMMU_PGSIZES,
-+	.ignore_gather_pgsize = true,
- 	.flush_iotlb_all = amd_iommu_flush_iotlb_all,
- 	.iotlb_sync = amd_iommu_iotlb_sync,
- 	.def_domain_type = amd_iommu_def_domain_type,
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index 32d448050bf7..1fb2695418e9 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -284,6 +284,7 @@ struct iommu_ops {
- 	int (*def_domain_type)(struct device *dev);
+@@ -2057,12 +2057,17 @@ static size_t amd_iommu_unmap(struct iommu_domain *dom, unsigned long iova,
+ {
+ 	struct protection_domain *domain = to_pdomain(dom);
+ 	struct io_pgtable_ops *ops = &domain->iop.iop.ops;
++	size_t r;
  
- 	unsigned long pgsize_bitmap;
-+	bool ignore_gather_pgsize;
- 	struct module *owner;
- };
+ 	if ((amd_iommu_pgtable == AMD_IOMMU_V1) &&
+ 	    (domain->iop.mode == PAGE_MODE_NONE))
+ 		return 0;
  
-@@ -508,7 +509,7 @@ static inline void iommu_iotlb_gather_add_page(struct iommu_domain *domain,
- 	 * a different granularity, then sync the TLB so that the gather
- 	 * structure can be rewritten.
- 	 */
--	if (gather->pgsize != size ||
-+	if ((gather->pgsize != size && !domain->ops->ignore_gather_pgsize) ||
- 	    end + 1 < gather->start || start > gather->end + 1) {
- 		if (gather->pgsize)
- 			iommu_iotlb_sync(domain, gather);
+-	return (ops->unmap) ? ops->unmap(ops, iova, page_size, gather) : 0;
++	r = (ops->unmap) ? ops->unmap(ops, iova, page_size, gather) : 0;
++
++	iommu_iotlb_gather_add_page(dom, gather, iova, page_size);
++
++	return r;
+ }
+ 
+ static phys_addr_t amd_iommu_iova_to_phys(struct iommu_domain *dom,
+@@ -2165,7 +2170,13 @@ static void amd_iommu_flush_iotlb_all(struct iommu_domain *domain)
+ static void amd_iommu_iotlb_sync(struct iommu_domain *domain,
+ 				 struct iommu_iotlb_gather *gather)
+ {
+-	amd_iommu_flush_iotlb_all(domain);
++	struct protection_domain *dom = to_pdomain(domain);
++	unsigned long flags;
++
++	spin_lock_irqsave(&dom->lock, flags);
++	__domain_flush_pages(dom, gather->start, gather->end - gather->start, 1);
++	amd_iommu_domain_flush_complete(dom);
++	spin_unlock_irqrestore(&dom->lock, flags);
+ }
+ 
+ static int amd_iommu_def_domain_type(struct device *dev)
 -- 
 2.25.1
 
