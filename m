@@ -2,163 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3726370E29
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 19:18:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35207370E2F
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 19:22:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232301AbhEBRTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 13:19:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36190 "EHLO mail.kernel.org"
+        id S232336AbhEBRXC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 2 May 2021 13:23:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230110AbhEBRTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 13:19:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B62F6120E;
-        Sun,  2 May 2021 17:18:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619975907;
-        bh=2YpVyX32Fc3yV4W8zRMMq7kdSQrfkuyNbn0zF+bZkHo=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=IJ48vvy+LZCwopLTbYmPCGypKRshZE3uANCqqiRDF30Elnrmmu7fARcgRqutJhH0A
-         3RTRFEYYRWhdBsjVXfHwcdtpfENh2shKiXmV2o4pbFqwnr4dP+myVKXIluuSjij4GQ
-         ym5JdvWvNWkLtPDcYuOZ363QnIeJ7B97svOY+LJOmpz2Nus411LgtAC7o8kYsoYpv7
-         YxXUrUIzvRwzF7V92O/PCEOZEMdB4dBVobL4v8TkFmNoA5akJ5SW2Pc1xVGxsAGjvP
-         0UHIQfi/snNsA4WXBbCk4TSTHyQvfxUVKJlByAevJ0AsN7SoQNkH+XPHPMVPr2fpkO
-         uo2wPUuJoIPsA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0CAD55C015B; Sun,  2 May 2021 10:18:27 -0700 (PDT)
-Date:   Sun, 2 May 2021 10:18:27 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     vbabka@suse.cz
-Cc:     linux-kernel@vger.kernel.org
-Subject: Deadlock between CPU offline and kmem_cache_create
-Message-ID: <20210502171827.GA3670492@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        id S230110AbhEBRXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 May 2021 13:23:01 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D17746120E;
+        Sun,  2 May 2021 17:22:05 +0000 (UTC)
+Date:   Sun, 2 May 2021 18:22:55 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Jozsef Horvath <info@ministro.hu>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Gene Chen <gene_chen@richtek.com>,
+        Saravanan Sekar <sravanhome@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] dt-bindings: iio: adc: devicetree bindings for
+ texas instruments ads7142 iio driver
+Message-ID: <20210502182255.6bed8afa@jic23-huawei>
+In-Reply-To: <69205d4de46dd21c82b31ca1c35cbf12fbce629b.1619892171.git.info@ministro.hu>
+References: <bffbc2b24a869dc42307adf8e3fc71f08fcff6dd.1619892171.git.info@ministro.hu>
+        <69205d4de46dd21c82b31ca1c35cbf12fbce629b.1619892171.git.info@ministro.hu>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Sat, 1 May 2021 18:25:18 +0000
+Jozsef Horvath <info@ministro.hu> wrote:
 
-Commit 1f0723a4c0df ("mm, slub: enable slub_debug static key when creating
-cache with explicit debug flags") results in the lockdep complaint (see
-below) in the presence of CPU-hotplug offline operations.  I triggered
-and bisected this using the following command:
+> This is a device tree schema for iio driver for
+>  Texas Instruments ADS7142 dual-channel, programmable sensor monitor.
+> 
+> Datasheet: https://www.ti.com/lit/ds/symlink/ads7142.pdf
+> 
+> Signed-off-by: Jozsef Horvath <info@ministro.hu>
+> ---
+> ---
+>  .../bindings/iio/adc/ti,ads7142.yaml          | 198 ++++++++++++++++++
+>  1 file changed, 198 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,ads7142.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/adc/ti,ads7142.yaml b/Documentation/devicetree/bindings/iio/adc/ti,ads7142.yaml
+> new file mode 100644
+> index 000000000000..b4e752160156
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/adc/ti,ads7142.yaml
+> @@ -0,0 +1,198 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/iio/adc/ti,ads7142.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Texas Instruments ADS7142 adc driver device tree bindings
+> +
+> +maintainers:
+> +  - József Horváth <info@ministro.hu>
+> +
+> +description: |
+> +  This document is for describing the required device tree parameters
+> +   for ads7142 adc driver.
 
-tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 10 --configs TREE05 --trust-make
+Document describes hardware, not a particular driver.  So just refer
+to the device here.  There may well be other drives in future using
+the same binding (e.g. in an RTOS).
 
-This triggers when rcutorture's kmem_cache_create() for its testing of
-mem_dump_obj().  When I reverted commit 1f0723a4c0df, the splat went away.
+> +  The required parameters for proper operation are described below.
+> +
+> +  Datasheet: https://www.ti.com/lit/ds/symlink/ads7142.pdf
+> +
+> +  Operation modes supportedby the driver:
+> +    When the 'ti,monitoring-mode' property is not present
+> +      in the devicetree node definition, the driver initiates a single
+> +      conversion in the device for each read request
+> +      (/sys/bus/iio/devices/iio:deviceX/in_voltageY_raw).
+> +      This is a one-shot conversion, and it is called
+> +      "Manual Mode" in the datasheet.
+> +
+> +    When the 'ti,monitoring-mode' property is present
+> +      in the devicetree node definition, the driver configures
+> +      the device's digital window comparator and sets the device's
+> +      data buffer operation mode to pre alert data mode.
+> +      The driver reads the conversion result when the BUSY/RDY interrupt
+> +      fires, and keeps the value until the next BUSY/RDY interrupt
+> +      or the first read request
+> +      (/sys/bus/iio/devices/iio:deviceX/in_voltageY_raw).
+> +      The digital window comparator and hysteresis parameters
+> +      can be controlled by:
+> +        - the devicetree definition of channel node
+> +        - iio sysfs interfaces
+> +      This is event driven conversion, and is called
+> +      "Autonomous Mode with Pre Alert Data" in the datasheet.
+> +      This mode can be used to wake up the system with the ALERT pin,
+> +      in case when the monitored voltage level is out of the configured range.
 
-I tried moving rcutorture's mem_dump_obj() testing to rcutorture's
-module-init function, but that did not help.  In retrospect, this is no
-surprise because the deadlock is caused by the call to kmem_cache_create()
-and the slab CPU-hotplug notifiers.  There is no lock in this deadlock
-cycle that is under rcutorture's control.
+I talked about these in the driver review so look there for comments.
+Short summary is this is something userspace should have control off (assuming irq
+is wired up) not dt.
 
-I could imagine moving the static_branch_enable() out into a clean
-environment, but this would of course require some mechanism to make
-sure that the slab was still in existence at that time.  One way to do
-this would be to have a timer that is set at the site of the current
-static_branch_enable() and deleted at slab-deletion time.  Plus there
-would be a short period of time when debugging would not yet be enabled
-for this slab (would that be a problem?).
+> +
+> +properties:
+> +  compatible:
+> +    const: ti,ads7142
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description: |
+> +      The BUSY/PDY pin is used as interrupt line in autonomous monitoring mode.
+> +    maxItems: 1
+> +
+> +  vref-supply:
+> +    description: Regulator for the reference voltage
+> +
+> +  power-supply: true
 
-This time could be minimized using (say) an hrtimer timeout of 1
-microsecond or some such.  It could be eliminated by having the timer
-handler do a wakeup that kmem_cache_create() waits for at some point
-after it releases slab_mutex.
+These don't match the naming on the pin diagram.
 
-Alternatively, maybe some way can be found to avoid acquiring slab_mutex
-in slab's CPU-hotplug notifiers.
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +  "#io-channel-cells":
+> +    const: 1
+> +
+> +  ti,osc-sel:
+> +    description: |
+> +      If present, the driver selects the high speed oscillator.
+> +      See chapter 7.3.5 Oscillator and Timing Control in datasheet.
+> +    type: boolean
 
-Thoughts?
+This looks connected to the possible sampling frequencies when in various autonomous modes.
+Should it be controlled by userspace?
 
-							Thanx, Paul
+> +
+> +  ti,n-clk:
+> +    description: |
+> +      nCLK is number of clocks in one conversion cycle.
+> +      See chapter 7.3.5 Oscillator and Timing Control in datasheet.
 
-------------------------------------------------------------------------
+Sounds like a policy decision for userspace.
 
-[  602.429399] ======================================================
-[  602.429777] WARNING: possible circular locking dependency detected
-[  602.430156] 5.12.0+ #15 Not tainted
-[  602.430374] ------------------------------------------------------
-[  602.430759] rcu_torture_sta/109 is trying to acquire lock:
-[  602.431099] ffffffff96063cd0 (cpu_hotplug_lock){++++}-{0:0}, at: static_key_enable+0x9/0x20
-[  602.431630] 
-[  602.431630] but task is already holding lock:
-[  602.431992] ffffffff96173c28 (slab_mutex){+.+.}-{3:3}, at: kmem_cache_create_usercopy+0x2d/0x250
-[  602.432541] 
-[  602.432541] which lock already depends on the new lock.
-[  602.432541] 
-[  602.433039] 
-[  602.433039] the existing dependency chain (in reverse order) is:
-[  602.433494] 
-[  602.433494] -> #1 (slab_mutex){+.+.}-{3:3}:
-[  602.433842]        lock_acquire+0xb9/0x3a0
-[  602.434107]        __mutex_lock+0x8d/0x920
-[  602.434366]        slub_cpu_dead+0x15/0xf0
-[  602.434625]        cpuhp_invoke_callback+0x17a/0x7c0
-[  602.434938]        cpuhp_invoke_callback_range+0x3b/0x80
-[  602.435266]        _cpu_down+0xdf/0x2a0
-[  602.435504]        cpu_down+0x2c/0x50
-[  602.435734]        device_offline+0x82/0xb0
-[  602.436005]        remove_cpu+0x1a/0x30
-[  602.436243]        torture_offline+0x80/0x140
-[  602.436514]        torture_onoff+0x147/0x260
-[  602.436778]        kthread+0x10a/0x140
-[  602.437013]        ret_from_fork+0x22/0x30
-[  602.437274] 
-[  602.437274] -> #0 (cpu_hotplug_lock){++++}-{0:0}:
-[  602.437654]        check_prev_add+0x8f/0xbf0
-[  602.437919]        __lock_acquire+0x13f0/0x1d80
-[  602.438198]        lock_acquire+0xb9/0x3a0
-[  602.438452]        cpus_read_lock+0x21/0xa0
-[  602.438713]        static_key_enable+0x9/0x20
-[  602.438985]        __kmem_cache_create+0x38d/0x430
-[  602.439284]        kmem_cache_create_usercopy+0x146/0x250
-[  602.439619]        kmem_cache_create+0xd/0x10
-[  602.439895]        rcu_torture_stats+0x79/0x280
-[  602.440179]        kthread+0x10a/0x140
-[  602.440413]        ret_from_fork+0x22/0x30
-[  602.440669] 
-[  602.440669] other info that might help us debug this:
-[  602.440669] 
-[  602.441154]  Possible unsafe locking scenario:
-[  602.441154] 
-[  602.441523]        CPU0                    CPU1
-[  602.441803]        ----                    ----
-[  602.442085]   lock(slab_mutex);
-[  602.442281]                                lock(cpu_hotplug_lock);
-[  602.442662]                                lock(slab_mutex);
-[  602.443009]   lock(cpu_hotplug_lock);
-[  602.443239] 
-[  602.443239]  *** DEADLOCK ***
-[  602.443239] 
-[  602.443606] 1 lock held by rcu_torture_sta/109:
-[  602.443892]  #0: ffffffff96173c28 (slab_mutex){+.+.}-{3:3}, at: kmem_cache_create_usercopy+0x2d/0x250
-[  602.444472] 
-[  602.444472] stack backtrace:
-[  602.444743] CPU: 3 PID: 109 Comm: rcu_torture_sta Not tainted 5.12.0+ #15
-[  602.445176] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-[  602.445728] Call Trace:
-[  602.445891]  dump_stack+0x6d/0x89
-[  602.446116]  check_noncircular+0xfe/0x110
-[  602.446401]  ? lock_is_held_type+0x98/0x110
-[  602.446664]  check_prev_add+0x8f/0xbf0
-[  602.446908]  __lock_acquire+0x13f0/0x1d80
-[  602.447162]  lock_acquire+0xb9/0x3a0
-[  602.447385]  ? static_key_enable+0x9/0x20
-[  602.447640]  ? mark_held_locks+0x49/0x70
-[  602.447894]  cpus_read_lock+0x21/0xa0
-[  602.448124]  ? static_key_enable+0x9/0x20
-[  602.448373]  static_key_enable+0x9/0x20
-[  602.448614]  __kmem_cache_create+0x38d/0x430
-[  602.448882]  kmem_cache_create_usercopy+0x146/0x250
-[  602.449184]  ? rcu_torture_stats_print+0xd0/0xd0
-[  602.449469]  kmem_cache_create+0xd/0x10
-[  602.449708]  rcu_torture_stats+0x79/0x280
-[  602.449964]  ? rcu_torture_stats_print+0xd0/0xd0
-[  602.450251]  kthread+0x10a/0x140
-[  602.450452]  ? kthread_park+0x80/0x80
-[  602.450682]  ret_from_fork+0x22/0x30
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    maximum: 255
+> +    minimum: 0
+> +
+> +  ti,monitoring-mode:
+> +    description: |
+> +      If present, the driver selects the autonomous monitoring mode with pre alert data.
+> +      See chapter 7.4 Device Functional Modes in datasheet.
+
+As mentioned in the driver review, this looks like something we should control from userspace
+not dt to me.
+
+> +    type: boolean
+> +
+> +patternProperties:
+> +  "^channel@[0-1]$":
+> +    $ref: "adc.yaml"
+> +    type: object
+> +    description: |
+> +      Represents the external channels which are connected to the ADC.
+> +    properties:
+> +      reg:
+> +        description: |
+> +          The channel number.
+> +        items:
+> +          minimum: 0
+> +          maximum: 1
+> +      "ti,threshold-falling":
+> +        description: The low threshold for channel
+
+For these, we need a strong argument presented in this doc for why they are not
+a question of policy (and hence why they should be in dt at all).
+
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        maximum: 4095
+> +        minimum: 0
+> +      "ti,threshold-rising":
+> +        description: The high threshold for channel
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        maximum: 4095
+> +        minimum: 0
+> +      "ti,hysteresis":
+> +        description: The hysteresis for both comparators for channel
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        maximum: 63
+> +        minimum: 0
+> +
+> +    required:
+> +      - reg
+> +
+> +    additionalProperties: false
+> +
+> +allOf:
+> +  - if:
+> +      required:
+> +        - ti,monitoring-mode
+> +    then:
+> +      required:
+> +        - interrupts
+> +
+> +required:
+> +  - compatible
+> +  - "#io-channel-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      adc@18 {
+
+I would not bother having two examples.  The second one covers more things afterall
+and the binding makes it clear what is required.
+
+> +        compatible = "ti,ads7142";
+> +        reg = <0x18>;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        #io-channel-cells = <1>;
+> +
+> +        vref-supply = <&vdd_3v3_reg>;
+> +        power-supply = <&vdd_1v8_reg>;
+> +
+> +        channel@0 {
+> +          reg = <0>;
+> +        };
+> +
+> +        channel@1 {
+> +          reg = <1>;
+> +        };
+> +      };
+> +    };
+> +  - |
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      adc@1f {
+> +        compatible = "ti,ads7142";
+> +        reg = <0x1f>;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        #io-channel-cells = <1>;
+> +
+> +        vref-supply = <&vdd_3v3_reg>;
+> +        power-supply = <&vdd_1v8_reg>;
+> +
+> +        interrupt-parent = <&gpio>;
+> +        interrupts = <7 2>;
+> +
+> +        ti,monitoring-mode;
+> +
+> +        channel@0 {
+> +          reg = <0>;
+> +          ti,threshold-falling = <1000>;
+> +          ti,threshold-rising = <2000>;
+> +          ti,hysteresis = <20>;
+> +        };
+> +
+> +        channel@1 {
+> +          reg = <1>;
+> +          ti,threshold-falling = <100>;
+> +          ti,threshold-rising = <2500>;
+> +          ti,hysteresis = <0>;
+> +        };
+> +      };
+> +    };
+> +...
+> +
+
