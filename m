@@ -2,192 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13929370B65
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 13:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB33370B68
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 13:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232221AbhEBLyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 07:54:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41592 "EHLO
+        id S232045AbhEBL7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 07:59:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232166AbhEBLyj (ORCPT
+        with ESMTP id S230221AbhEBL7b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 07:54:39 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CE5DC06138B
-        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 04:53:47 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id gx5so3731768ejb.11
-        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 04:53:46 -0700 (PDT)
+        Sun, 2 May 2021 07:59:31 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EBA33C06174A;
+        Sun,  2 May 2021 04:58:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=snejp.pl; s=gmail;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kLZRS6xLdXCHFPyFw/CKeSsIUfpwtnMkQJdLEnE9b74=;
-        b=cCyPSrS9YnMEUL5SKK3suBuQidAfeHspCw+UGMMogzqbbxbZVJowe/mO2A5dRGf9Xb
-         wDnGaRmiJPXdrcKsjdDEe4vUXnWOs/mgaZ7x5zVMRBUBZ7lXcOilADhJSMFg5kmdwVfI
-         yiDJXeTQ8ZT3y/YNvxaTBWa8PnsXd/menZop84OnEGKwVKkWq9sr6P9UufAVvrYlKLq+
-         ARBTNx79YKTpMBYkPhU/xW6t5SFX4ONHnT+NQbaToAW50ok7bwkRzaXThWD6qSDlBBsb
-         YRXvVe2AW83T7psGLp0YXxfZAITZzW2GJ49uyFcE8AqbzRzkNPPZ+qoyhUcIL1IV7lq+
-         eg/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kLZRS6xLdXCHFPyFw/CKeSsIUfpwtnMkQJdLEnE9b74=;
-        b=eBaW2zc7WTzvsRPGEIh3jhLeldOPniWeS0tTgl8cQrMSUSSYfNxQx3/hWE1pbEnkd3
-         kO83qpZu8YEmTmAWnzOtyYirBAcy3v7lqeS9brdbdGVZzAD3Abj2PM5/44rlfckXN1jU
-         e8mausVlyN3VLJM9z5SFctp6AEi50slqUsRe5d6Reo90heJp4FI3CHLzsERMkXAJbuOk
-         G0KgOWhnNkI/BX7gq9NZbRuxtteKVXXuBLbD0sECrHrclRMGDZ4+NNlh4392u2az7a/J
-         hxXSfws7GnX7FrIt62y5yzuv4L3dm9L1NziX16HCWxmMsSfn2K8IPhCvxaYBFQqiFo2c
-         4JUQ==
-X-Gm-Message-State: AOAM533PEXqzm6D9ShAaovBtFHgI7Say1R/DihaZLvCIbXT7OP0Q2e80
-        qLHPaBDQjMxDIRRS35cadoX9JA==
-X-Google-Smtp-Source: ABdhPJwz8WwZw7eR5odne/FFBMzwoYovGBHTroekuaaDosdJwq5gNXsLi9WJ2+ETKVyNockpDdqTIA==
-X-Received: by 2002:a17:907:6289:: with SMTP id nd9mr12128307ejc.384.1619956425759;
-        Sun, 02 May 2021 04:53:45 -0700 (PDT)
-Received: from PackardBell (192038133011.mbb.telenor.dk. [192.38.133.11])
-        by smtp.googlemail.com with ESMTPSA id mp36sm8598075ejc.48.2021.05.02.04.53.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 May 2021 04:53:45 -0700 (PDT)
-Received: from localhost (PackardBell [local])
-        by PackardBell (OpenSMTPD) with ESMTPA id 0c0b6556;
-        Sun, 2 May 2021 11:53:35 +0000 (UTC)
-From:   Bartosz Dudziak <bartosz.dudziak@snejp.pl>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kathiravan T <kathirav@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     Bartosz Dudziak <bartosz.dudziak@snejp.pl>
-Subject: [PATCH 2/2] regulator: qcom_smd: Add PM8226 regulator support
-Date:   Sun,  2 May 2021 13:53:04 +0200
-Message-Id: <20210502115304.8570-2-bartosz.dudziak@snejp.pl>
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=snBJRysX3M
+        mLzmqklIbfCiRZFlbfC0Fw/BEnTA/FIAk=; b=tUIJezId9vPlc8tG4KUD8XsMmj
+        VHY51SF1s9Eyqn8AfcKzaev+yDZi2VUAZXAVeF80u4AfCRsr+wdwL4DFff9mHlfp
+        hQ6Ng1NASZDAqr84w5n80p/SBhzSesbsVxkiVwfzAYtSb4sp1R3e7Ut0bJaoV5fB
+        a00wjTSWF0GW+GmYc=
+Received: from ubuntu.localdomain (unknown [202.38.69.14])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygAHDZngk45ggHR5AA--.2713S4;
+        Sun, 02 May 2021 19:58:25 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     benve@cisco.com, _govind@gmx.com, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH v2] ethernet:enic: Fix a use after free bug in enic_hard_start_xmit
+Date:   Sun,  2 May 2021 04:58:18 -0700
+Message-Id: <20210502115818.3523-1-lyl2019@mail.ustc.edu.cn>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210502115304.8570-1-bartosz.dudziak@snejp.pl>
-References: <20210502115304.8570-1-bartosz.dudziak@snejp.pl>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygAHDZngk45ggHR5AA--.2713S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ww4xXr13tr43Jr1Uur13CFg_yoW8ZFWrpa
+        ykC345Gw4rtw4DXayDA348Gw1Yv3W0kF9Ikr1xAwsYqFs8tr98XFykKw42krW5JrWrGa43
+        Jr10yrn8twnxArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
+        YxC7MxkIecxEwVAFwVW8KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
+        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
+        wI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
+        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2
+        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73Uj
+        IFyTuYvjfU5UDJDUUUU
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for PM8226 regulator which is commonly used with MSM8226 SoCs.
+In enic_hard_start_xmit, it calls enic_queue_wq_skb(). Inside
+enic_queue_wq_skb, if some error happens, the skb will be freed
+by dev_kfree_skb(skb). But the freed skb is still used in
+skb_tx_timestamp(skb).
 
-Signed-off-by: Bartosz Dudziak <bartosz.dudziak@snejp.pl>
+My patch makes enic_queue_wq_skb() return error and goto spin_unlock()
+incase of error. The solution is provided by Govind.
+See https://lkml.org/lkml/2021/4/30/961.
+
+Fixes: fb7516d42478e ("enic: add sw timestamp support")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 ---
- drivers/regulator/qcom_smd-regulator.c | 83 ++++++++++++++++++++++++++
- 1 file changed, 83 insertions(+)
+ drivers/net/ethernet/cisco/enic/enic_main.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/regulator/qcom_smd-regulator.c b/drivers/regulator/qcom_smd-regulator.c
-index bb944ee5fe..05df7b00e3 100644
---- a/drivers/regulator/qcom_smd-regulator.c
-+++ b/drivers/regulator/qcom_smd-regulator.c
-@@ -251,6 +251,50 @@ static const struct regulator_desc pma8084_switch = {
- 	.ops = &rpm_switch_ops,
- };
+diff --git a/drivers/net/ethernet/cisco/enic/enic_main.c b/drivers/net/ethernet/cisco/enic/enic_main.c
+index f04ec53544ae..b1443ff439de 100644
+--- a/drivers/net/ethernet/cisco/enic/enic_main.c
++++ b/drivers/net/ethernet/cisco/enic/enic_main.c
+@@ -768,7 +768,7 @@ static inline int enic_queue_wq_skb_encap(struct enic *enic, struct vnic_wq *wq,
+ 	return err;
+ }
  
-+static const struct regulator_desc pm8226_hfsmps = {
-+	.linear_ranges = (struct linear_range[]) {
-+		REGULATOR_LINEAR_RANGE(375000,   0,  95, 12500),
-+		REGULATOR_LINEAR_RANGE(1575000, 96, 158, 25000),
-+	},
-+	.n_linear_ranges = 2,
-+	.n_voltages = 159,
-+	.ops = &rpm_smps_ldo_ops,
-+};
-+
-+static const struct regulator_desc pm8226_ftsmps = {
-+	.linear_ranges = (struct linear_range[]) {
-+		REGULATOR_LINEAR_RANGE(350000,    0, 184,  5000),
-+		REGULATOR_LINEAR_RANGE(1280000, 185, 261, 10000),
-+	},
-+	.n_linear_ranges = 2,
-+	.n_voltages = 262,
-+	.ops = &rpm_smps_ldo_ops,
-+};
-+
-+static const struct regulator_desc pm8226_pldo = {
-+	.linear_ranges = (struct linear_range[]) {
-+		REGULATOR_LINEAR_RANGE(750000,    0,  63, 12500),
-+		REGULATOR_LINEAR_RANGE(1550000,  64, 126, 25000),
-+		REGULATOR_LINEAR_RANGE(3100000, 127, 163, 50000),
-+	},
-+	.n_linear_ranges = 3,
-+	.n_voltages = 164,
-+	.ops = &rpm_smps_ldo_ops,
-+};
-+
-+static const struct regulator_desc pm8226_nldo = {
-+	.linear_ranges = (struct linear_range[]) {
-+		REGULATOR_LINEAR_RANGE(750000, 0, 63, 12500),
-+	},
-+	.n_linear_ranges = 1,
-+	.n_voltages = 64,
-+	.ops = &rpm_smps_ldo_ops,
-+};
-+
-+static const struct regulator_desc pm8226_switch = {
-+	.ops = &rpm_switch_ops,
-+};
-+
- static const struct regulator_desc pm8x41_hfsmps = {
- 	.linear_ranges = (struct linear_range[]) {
- 		REGULATOR_LINEAR_RANGE( 375000,  0,  95, 12500),
-@@ -746,6 +790,44 @@ static const struct rpm_regulator_data rpm_pm8916_regulators[] = {
- 	{}
- };
+-static inline void enic_queue_wq_skb(struct enic *enic,
++static inline int enic_queue_wq_skb(struct enic *enic,
+ 	struct vnic_wq *wq, struct sk_buff *skb)
+ {
+ 	unsigned int mss = skb_shinfo(skb)->gso_size;
+@@ -814,6 +814,7 @@ static inline void enic_queue_wq_skb(struct enic *enic,
+ 		wq->to_use = buf->next;
+ 		dev_kfree_skb(skb);
+ 	}
++	return err;
+ }
  
-+static const struct rpm_regulator_data rpm_pm8226_regulators[] = {
-+	{ "s1", QCOM_SMD_RPM_SMPA, 1, &pm8226_hfsmps, "vdd_s1" },
-+	{ "s2", QCOM_SMD_RPM_SMPA, 2, &pm8226_ftsmps, "vdd_s2" },
-+	{ "s3", QCOM_SMD_RPM_SMPA, 3, &pm8226_hfsmps, "vdd_s3" },
-+	{ "s4", QCOM_SMD_RPM_SMPA, 4, &pm8226_hfsmps, "vdd_s4" },
-+	{ "s5", QCOM_SMD_RPM_SMPA, 5, &pm8226_hfsmps, "vdd_s5" },
-+	{ "l1", QCOM_SMD_RPM_LDOA, 1, &pm8226_nldo, "vdd_l1_l2_l4_l5" },
-+	{ "l2", QCOM_SMD_RPM_LDOA, 2, &pm8226_nldo, "vdd_l1_l2_l4_l5" },
-+	{ "l3", QCOM_SMD_RPM_LDOA, 3, &pm8226_nldo, "vdd_l3_l24_l26" },
-+	{ "l4", QCOM_SMD_RPM_LDOA, 4, &pm8226_nldo, "vdd_l1_l2_l4_l5" },
-+	{ "l5", QCOM_SMD_RPM_LDOA, 5, &pm8226_nldo, "vdd_l1_l2_l4_l5" },
-+	{ "l6", QCOM_SMD_RPM_LDOA, 6, &pm8226_pldo, "vdd_l6_l7_l8_l9_l27" },
-+	{ "l7", QCOM_SMD_RPM_LDOA, 7, &pm8226_pldo, "vdd_l6_l7_l8_l9_l27" },
-+	{ "l8", QCOM_SMD_RPM_LDOA, 8, &pm8226_pldo, "vdd_l6_l7_l8_l9_l27" },
-+	{ "l9", QCOM_SMD_RPM_LDOA, 9, &pm8226_pldo, "vdd_l6_l7_l8_l9_l27" },
-+	{ "l10", QCOM_SMD_RPM_LDOA, 10, &pm8226_pldo, "vdd_l10_l11_l13" },
-+	{ "l11", QCOM_SMD_RPM_LDOA, 11, &pm8226_pldo, "vdd_l10_l11_l13" },
-+	{ "l12", QCOM_SMD_RPM_LDOA, 12, &pm8226_pldo, "vdd_l12_l14" },
-+	{ "l13", QCOM_SMD_RPM_LDOA, 13, &pm8226_pldo, "vdd_l10_l11_l13" },
-+	{ "l14", QCOM_SMD_RPM_LDOA, 14, &pm8226_pldo, "vdd_l12_l14" },
-+	{ "l15", QCOM_SMD_RPM_LDOA, 15, &pm8226_pldo, "vdd_l15_l16_l17_l18" },
-+	{ "l16", QCOM_SMD_RPM_LDOA, 16, &pm8226_pldo, "vdd_l15_l16_l17_l18" },
-+	{ "l17", QCOM_SMD_RPM_LDOA, 17, &pm8226_pldo, "vdd_l15_l16_l17_l18" },
-+	{ "l18", QCOM_SMD_RPM_LDOA, 18, &pm8226_pldo, "vdd_l15_l16_l17_l18" },
-+	{ "l19", QCOM_SMD_RPM_LDOA, 19, &pm8226_pldo, "vdd_l19_l20_l21_l22_l23_l28" },
-+	{ "l20", QCOM_SMD_RPM_LDOA, 20, &pm8226_pldo, "vdd_l19_l20_l21_l22_l23_l28" },
-+	{ "l21", QCOM_SMD_RPM_LDOA, 21, &pm8226_pldo, "vdd_l19_l20_l21_l22_l23_l28" },
-+	{ "l22", QCOM_SMD_RPM_LDOA, 22, &pm8226_pldo, "vdd_l19_l20_l21_l22_l23_l28" },
-+	{ "l23", QCOM_SMD_RPM_LDOA, 23, &pm8226_pldo, "vdd_l19_l20_l21_l22_l23_l28" },
-+	{ "l24", QCOM_SMD_RPM_LDOA, 24, &pm8226_nldo, "vdd_l3_l24_l26" },
-+	{ "l25", QCOM_SMD_RPM_LDOA, 25, &pm8226_pldo, "vdd_l25" },
-+	{ "l26", QCOM_SMD_RPM_LDOA, 26, &pm8226_nldo, "vdd_l3_l24_l26" },
-+	{ "l27", QCOM_SMD_RPM_LDOA, 27, &pm8226_pldo, "vdd_l6_l7_l8_l9_l27" },
-+	{ "l28", QCOM_SMD_RPM_LDOA, 28, &pm8226_pldo, "vdd_l19_l20_l21_l22_l23_l28" },
-+	{ "lvs1", QCOM_SMD_RPM_VSA, 1, &pm8226_switch, "vdd_lvs1" },
-+	{}
-+};
-+
- static const struct rpm_regulator_data rpm_pm8941_regulators[] = {
- 	{ "s1", QCOM_SMD_RPM_SMPA, 1, &pm8x41_hfsmps, "vdd_s1" },
- 	{ "s2", QCOM_SMD_RPM_SMPA, 2, &pm8x41_hfsmps, "vdd_s2" },
-@@ -1092,6 +1174,7 @@ static const struct of_device_id rpm_of_match[] = {
- 	{ .compatible = "qcom,rpm-mp5496-regulators", .data = &rpm_mp5496_regulators },
- 	{ .compatible = "qcom,rpm-pm8841-regulators", .data = &rpm_pm8841_regulators },
- 	{ .compatible = "qcom,rpm-pm8916-regulators", .data = &rpm_pm8916_regulators },
-+	{ .compatible = "qcom,rpm-pm8226-regulators", .data = &rpm_pm8226_regulators },
- 	{ .compatible = "qcom,rpm-pm8941-regulators", .data = &rpm_pm8941_regulators },
- 	{ .compatible = "qcom,rpm-pm8950-regulators", .data = &rpm_pm8950_regulators },
- 	{ .compatible = "qcom,rpm-pm8953-regulators", .data = &rpm_pm8953_regulators },
+ /* netif_tx_lock held, process context with BHs disabled, or BH */
+@@ -857,7 +858,8 @@ static netdev_tx_t enic_hard_start_xmit(struct sk_buff *skb,
+ 		return NETDEV_TX_BUSY;
+ 	}
+ 
+-	enic_queue_wq_skb(enic, wq, skb);
++	if (enic_queue_wq_skb(enic, wq, skb))
++		goto error;
+ 
+ 	if (vnic_wq_desc_avail(wq) < MAX_SKB_FRAGS + ENIC_DESC_MAX_SPLITS)
+ 		netif_tx_stop_queue(txq);
+@@ -865,6 +867,7 @@ static netdev_tx_t enic_hard_start_xmit(struct sk_buff *skb,
+ 	if (!netdev_xmit_more() || netif_xmit_stopped(txq))
+ 		vnic_wq_doorbell(wq);
+ 
++error:
+ 	spin_unlock(&enic->wq_lock[txq_map]);
+ 
+ 	return NETDEV_TX_OK;
 -- 
 2.25.1
+
 
