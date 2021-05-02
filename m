@@ -2,143 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F20DF370FDC
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 01:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8ED7370FF0
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 01:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232459AbhEBXdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 19:33:46 -0400
-Received: from mail-co1nam11on2078.outbound.protection.outlook.com ([40.107.220.78]:24065
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232166AbhEBXdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 19:33:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B36hyR8YzFAnS9eeRK/hQMlEukXxjhAhT/fGfsQ/BZBEBB5WwtDf34WwXumw51ZAEbrvEMt0OKvTuGiGr65VLFjXRbGe1tt2RrI5bPPDlJb62AwZsZ4dGG0sUN6qaP+x5KsWFHG4MSHU1d0WWxvbXx8o+ffqgGuzJBip+2dYhdfzDPEjHP1Ob8NbE3YyiTaEeQ1zaL+BRQBpkrfV//fI+x5sniHfDnnkDevC5WBE4qPp775x5pSpXAW6hCxMwS7F9ZRfDTc3a7qntHpkLrTUWQQeFO6YcAOxW5b8VT7TnzlfT3P7a9yNUkIgBGXe8eA3IpMqRXvKQIJp9rjsx72aYQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xcoB9rLGkprvKPLH+bPA/60/uq/DD31cxgWYpuQaEP0=;
- b=Mtfruyn3VdNf+q0uNVf598At+bo/m1vxcYRgvsZmYfA5TAKP4MYNt4XIKK7P0DXgfnW+ObiIGjCYxxV5Z1Muvt4DG6MzmW2ZA+oBEGXHSDpYT/RSaYnsvv4ZGzcu28R2QG+AQrdYSRt171j68ob0dUcelTxRJ/hoMQUoeOXooCL3haTxS7ek8wX+c614DjDC6Safp4lAzG3xV4sANFX5XA5oYrZsWCJ7uamVdBQrNSIdtMMtZOZ4LkXX4xoJAx14DMCm9lpn78je6UWG5yXOkHIJ3QkE54wTpyDOKJfiVPr6txXSB9NiEod7I9YTRGeF+qJ35meY9QJQJSlk1/t/Ow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=raithlin.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xcoB9rLGkprvKPLH+bPA/60/uq/DD31cxgWYpuQaEP0=;
- b=MO49TZfxcwz4GnwbvoWMD9EDBonrifyetwJ/FLyO6IaYLe/k9nq0+UQQ1Hc+UponK6YQn53KvznFwjaa1w/MB7BnVAPMsvmhswVZ8O7dRCSNvGDF+EZaLf4OeEDyRV5lgiLOMU4I+3/iudNgl/uktyqmkCBZemTpeYZ3MtWLgHMedRpJ+47VkTNGkKGPxvmsFIQLzjgue9poAem4OuqHYUKtnfVipZo5kHYK6+Gp/zH+94eFnM9R796elY15tZL1LMn44N/F2ts86XP0Y59MfOm3octFgXORx4Yx81PwKS1eWStAhI7JwBhSuS5WbNoA4No8lDCZfnzRxlnLBVQI6w==
-Received: from MWHPR22CA0045.namprd22.prod.outlook.com (2603:10b6:300:69::31)
- by MW2PR12MB2425.namprd12.prod.outlook.com (2603:10b6:907:f::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.38; Sun, 2 May
- 2021 23:32:51 +0000
-Received: from CO1NAM11FT042.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:69:cafe::13) by MWHPR22CA0045.outlook.office365.com
- (2603:10b6:300:69::31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.25 via Frontend
- Transport; Sun, 2 May 2021 23:32:51 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; raithlin.com; dkim=none (message not signed)
- header.d=none;raithlin.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT042.mail.protection.outlook.com (10.13.174.250) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4087.27 via Frontend Transport; Sun, 2 May 2021 23:32:50 +0000
-Received: from [10.2.50.162] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 2 May
- 2021 23:32:50 +0000
-Subject: Re: [PATCH 09/16] dma-direct: Support PCI P2PDMA pages in dma-direct
- map_sg
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Logan Gunthorpe <logang@deltatee.com>,
-        <linux-kernel@vger.kernel.org>, <linux-nvme@lists.infradead.org>,
-        <linux-block@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-mm@kvack.org>, <iommu@lists.linux-foundation.org>
-CC:     Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>
-References: <20210408170123.8788-1-logang@deltatee.com>
- <20210408170123.8788-10-logang@deltatee.com>
- <37fa46c7-2c24-1808-16e9-e543f4601279@nvidia.com>
-Message-ID: <f2ac9584-6133-cd3d-e9a0-bff20adfb23e@nvidia.com>
-Date:   Sun, 2 May 2021 16:32:50 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S232638AbhEBX7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 19:59:43 -0400
+Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:51896 "EHLO
+        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232619AbhEBX7l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 May 2021 19:59:41 -0400
+Received: from dread.disaster.area (pa49-179-143-157.pa.nsw.optusnet.com.au [49.179.143.157])
+        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 15E8E80BF85;
+        Mon,  3 May 2021 09:58:45 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1ldLz1-000fG8-Ou; Mon, 03 May 2021 09:58:43 +1000
+Date:   Mon, 3 May 2021 09:58:43 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Roman Gushchin <guro@fb.com>, Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <shy828301@gmail.com>, alexs@kernel.org,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [External] Re: [PATCH 0/9] Shrink the list lru size on memory
+ cgroup removal
+Message-ID: <20210502235843.GJ1872259@dread.disaster.area>
+References: <20210428094949.43579-1-songmuchun@bytedance.com>
+ <20210430004903.GF1872259@dread.disaster.area>
+ <YItf3GIUs2skeuyi@carbon.dhcp.thefacebook.com>
+ <20210430032739.GG1872259@dread.disaster.area>
+ <CAMZfGtXawtMT4JfBtDLZ+hES4iEHFboe2UgJee_s-NhZR5faAw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <37fa46c7-2c24-1808-16e9-e543f4601279@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ccf9cb84-36f7-42fc-2b50-08d90dc29a1f
-X-MS-TrafficTypeDiagnostic: MW2PR12MB2425:
-X-Microsoft-Antispam-PRVS: <MW2PR12MB24257AE763276687633D91BCA85C9@MW2PR12MB2425.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JE84jnW6G0vqJjT7yu4KVMnQyR3Fss9I7iTg5tFhdTUcYDwQZ/DgNNTL8ZvKQyP7a/FOe3OVGfWhMSFyHtig6uHa5P+k3bE0PyAfqBdltC7KaT338ZYBp/dBlHWAnG0Yym29oLv6XzteTXNhXpXX8eiM7qRYJFu0fwLcVZ30cVtew0xF/CPfIcCBnX8U6YEutzZQjch4RqdEJwSSgsdNEsBBHiru577OLIXjdr1KylHTFnWZ3cITF5NRy8ryEIaWgWLpXD2ojwJ3k9sducOXfU348cGJ3Xoe7CVCaxEPN2ZoCtaw10uq214a9MUh6mNAbdp3GVuq4Oz7pASwca5p7YNY+5XsC5ICF7RwEjPVD/2lLcCmEg+RVD56j6+NBfAXGsUqCir36WdZ8TDyZ/XSi/hCK2N7Jaa59tGPpAEBaXnE5ZosiNGa1IutHXuY87NbmDCj3pSCtoi+BQ/7D6in62XgdgpfgR7V86gg366TeWazHZr6eiOIUntKjXxTxMxwv7r8KFQTGSBtw71779qkqBcjJGrMXs+W2OojeFbFzFyzF6QOA45Tnt/GtcScf3S15J2ST0lICokPl5xsLRrEZw6KZfTGAdXUvAGznTJDKC7X1EFFaBT00qUfw/wTN60eBxn4CM8MCIKq8NAPz7QcrnBLpHsOEr7EOCSi+XRK0ZAFuwcmRCgiE1VfKPLLJKlWuyGf6PXU7yp2AlzMqxr/Nw==
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(376002)(136003)(39860400002)(346002)(46966006)(36840700001)(8676002)(186003)(36860700001)(4744005)(47076005)(82310400003)(336012)(426003)(110136005)(53546011)(478600001)(26005)(31696002)(31686004)(4326008)(70206006)(36906005)(54906003)(82740400003)(2616005)(7416002)(356005)(86362001)(316002)(7636003)(8936002)(36756003)(2906002)(70586007)(16526019)(83380400001)(5660300002)(16576012)(2101003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 May 2021 23:32:50.9216
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ccf9cb84-36f7-42fc-2b50-08d90dc29a1f
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT042.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR12MB2425
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtXawtMT4JfBtDLZ+hES4iEHFboe2UgJee_s-NhZR5faAw@mail.gmail.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0
+        a=I9rzhn+0hBG9LkCzAun3+g==:117 a=I9rzhn+0hBG9LkCzAun3+g==:17
+        a=kj9zAlcOel0A:10 a=5FLXtPjwQuUA:10 a=7-415B0cAAAA:8
+        a=HzlZ7A7n1z-OYlPo8Y0A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/2/21 4:28 PM, John Hubbard wrote:
-> On 4/8/21 10:01 AM, Logan Gunthorpe wrote:
-...
->> @@ -387,19 +388,37 @@ void dma_direct_unmap_sg(struct device *dev, struct scatterlist *sgl,
+On Fri, Apr 30, 2021 at 04:32:39PM +0800, Muchun Song wrote:
+> On Fri, Apr 30, 2021 at 11:27 AM Dave Chinner <david@fromorbit.com> wrote:
+> >
+> > On Thu, Apr 29, 2021 at 06:39:40PM -0700, Roman Gushchin wrote:
+> > > On Fri, Apr 30, 2021 at 10:49:03AM +1000, Dave Chinner wrote:
+> > > > On Wed, Apr 28, 2021 at 05:49:40PM +0800, Muchun Song wrote:
+> > > > > In our server, we found a suspected memory leak problem. The kmalloc-32
+> > > > > consumes more than 6GB of memory. Other kmem_caches consume less than 2GB
+> > > > > memory.
+> > > > >
+> > > > > After our in-depth analysis, the memory consumption of kmalloc-32 slab
+> > > > > cache is the cause of list_lru_one allocation.
+> > > > >
+> > > > >   crash> p memcg_nr_cache_ids
+> > > > >   memcg_nr_cache_ids = $2 = 24574
+> > > > >
+> > > > > memcg_nr_cache_ids is very large and memory consumption of each list_lru
+> > > > > can be calculated with the following formula.
+> > > > >
+> > > > >   num_numa_node * memcg_nr_cache_ids * 32 (kmalloc-32)
+> > > > >
+> > > > > There are 4 numa nodes in our system, so each list_lru consumes ~3MB.
+> > > > >
+> > > > >   crash> list super_blocks | wc -l
+> > > > >   952
+> > > >
+> > > > The more I see people trying to work around this, the more I think
+> > > > that the way memcgs have been grafted into the list_lru is back to
+> > > > front.
+> > > >
+> > > > We currently allocate scope for every memcg to be able to tracked on
+> > > > every not on every superblock instantiated in the system, regardless
+> > > > of whether that superblock is even accessible to that memcg.
+> > > >
+> > > > These huge memcg counts come from container hosts where memcgs are
+> > > > confined to just a small subset of the total number of superblocks
+> > > > that instantiated at any given point in time.
+> > > >
+> > > > IOWs, for these systems with huge container counts, list_lru does
+> > > > not need the capability of tracking every memcg on every superblock.
+> > > >
+> > > > What it comes down to is that the list_lru is only needed for a
+> > > > given memcg if that memcg is instatiating and freeing objects on a
+> > > > given list_lru.
+> > > >
+> > > > Which makes me think we should be moving more towards "add the memcg
+> > > > to the list_lru at the first insert" model rather than "instantiate
+> > > > all at memcg init time just in case". The model we originally came
+> > > > up with for supprting memcgs is really starting to show it's limits,
+> > > > and we should address those limitations rahter than hack more
+> > > > complexity into the system that does nothing to remove the
+> > > > limitations that are causing the problems in the first place.
+> > >
+> > > I totally agree.
+> > >
+> > > It looks like the initial implementation of the whole kernel memory accounting
+> > > and memcg-aware shrinkers was based on the idea that the number of memory
+> > > cgroups is relatively small and stable.
+> >
+> > Yes, that was one of the original assumptions - tens to maybe low
+> > hundreds of memcgs at most. The other was that memcgs weren't NUMA
+> > aware, and so would only need a single LRU list per memcg. Hence the
+> > total overhead even with "lots" of memcgsi and superblocks the
+> > overhead wasn't that great.
+> >
+> > Then came "memcgs need to be NUMA aware" because of the size of the
+> > machines they were being use for resrouce management in, and that
+> > greatly increased the per-memcg, per LRU overhead. Now we're talking
+> > about needing to support a couple of orders of magnitude more memcgs
+> > and superblocks than were originally designed for.
+> >
+> > So, really, we're way beyond the original design scope of this
+> > subsystem now.
 > 
-> This routine now deserves a little bit of commenting, now that it is
-> doing less obvious things. How about something like this:
+> Got it. So it is better to allocate the structure of the list_lru_node
+> dynamically. We should only allocate it when it is really demanded.
+> But allocating memory by using GFP_ATOMIC in list_lru_add() is
+> not a good idea. So we should allocate the memory out of
+> list_lru_add(). I can propose an approach that may work.
 > 
-> /*
-> * Unmaps pages, except for PCI_P2PDMA pages, which were never mapped in the
-> * first place. Instead of unmapping PCI_P2PDMA entries, simply remove the
-> * SG_PCI_P2PDMA mark
-> */
+> Before start, we should know about the following rules of list lrus.
+> 
+> - Only objects allocated with __GFP_ACCOUNT need to allocate
+>   the struct list_lru_node.
 
-I got that kind of wrong. They *were* mapped, but need to be left mostly
-alone...maybe you can word it better. Here's my second draft:
+This seems .... misguided. inode and dentry caches are already
+marked as accounted, so individual calls to allocate from these
+slabs do not need this annotation.
 
-/*
-  * Unmaps pages, except for PCI_P2PDMA pages, which should not be unmapped at
-  * this point. Instead of unmapping PCI_P2PDMA entries, simply remove the
-  * SG_PCI_P2PDMA mark.
-  */
+> - The caller of allocating memory must know which list_lru the
+>   object will insert.
+> 
+> So we can allocate struct list_lru_node when allocating the
+> object instead of allocating it when list_lru_add().  It is easy, because
+> we already know the list_lru and memcg which the object belongs
+> to. So we can introduce a new helper to allocate the object and
+> list_lru_node. Like below.
+> 
+> void *list_lru_kmem_cache_alloc(struct list_lru *lru, struct kmem_cache *s,
+>                                 gfp_t gfpflags)
+> {
+>         void *ret = kmem_cache_alloc(s, gfpflags);
+> 
+>         if (ret && (gfpflags & __GFP_ACCOUNT)) {
+>                 struct mem_cgroup *memcg = mem_cgroup_from_obj(ret);
+> 
+>                 if (mem_cgroup_is_root(memcg))
+>                         return ret;
+> 
+>                 /* Allocate per-memcg list_lru_node, if it already
+> allocated, do nothing. */
+>                 memcg_list_lru_node_alloc(lru, memcg,
+> page_to_nid(virt_to_page(ret)), gfpflags);
 
-...am I getting close? :)
+If we are allowing kmem_cache_alloc() to fail, then we can allow
+memcg_list_lru_node_alloc() to fail, too.
 
-thanks,
+Also, why put this outside kmem_cache_alloc()? Node id and memcg is
+already known internally to kmem_cache_alloc() when allocating from
+a slab, so why not associate the slab allocation with the LRU
+directly when doing the memcg accounting and so avoid doing costly
+duplicate work on every allocation?
+
+i.e. the list-lru was moved inside the mm/ dir because "it's a mm
+specific construct only", so why not actually make use of that
+designation to internalise this entire memcg management issue into
+the slab allocation routines? i.e.  an API like
+kmem_cache_alloc_lru(cache, lru, gfpflags) allows this to be
+completely internalised and efficiently implemented with minimal
+change to callers. It also means that memory allocation callers
+don't need to know anything about memcg management, which is always
+a win....
+
+>         }
+> 
+>         return ret;
+> }
+> 
+> If the user wants to insert the allocated object to its lru list in
+> the feature. The
+> user should use list_lru_kmem_cache_alloc() instead of kmem_cache_alloc().
+> I have looked at the code closely. There are 3 different kmem_caches that
+> need to use this new API to allocate memory. They are inode_cachep,
+> dentry_cache and radix_tree_node_cachep. I think that it is easy to migrate.
+
+It might work, but I think you may have overlooked the complexity
+of inode allocation for filesystems. i.e.  alloc_inode() calls out
+to filesystem allocation functions more often than it allocates
+directly from the inode_cachep.  i.e.  Most filesystems provide
+their own ->alloc_inode superblock operation, and they allocate
+inodes out of their own specific slab caches, not the inode_cachep.
+
+And then you have filesystems like XFS, where alloc_inode() will
+never be called, and implement ->alloc_inode as:
+
+/* Catch misguided souls that try to use this interface on XFS */
+STATIC struct inode *
+xfs_fs_alloc_inode(
+        struct super_block      *sb)
+{
+	BUG();
+	return NULL;
+}
+
+Because all the inode caching and allocation is internal to XFS and
+VFS inode management interfaces are not used.
+
+So I suspect that an external wrapper function is not the way to go
+here - either internalising the LRU management into the slab
+allocation or adding the memcg code to alloc_inode() and filesystem
+specific routines would make a lot more sense to me.
+
+Cheers,
+
+Dave.
 -- 
-John Hubbard
-NVIDIA
+Dave Chinner
+david@fromorbit.com
