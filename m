@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC080370E9A
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 20:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6307370E7E
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 20:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232358AbhEBSpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 14:45:09 -0400
-Received: from gate.crashing.org ([63.228.1.57]:49656 "EHLO gate.crashing.org"
+        id S232455AbhEBSds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 14:33:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229686AbhEBSpI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 14:45:08 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 142IUXWH028181;
-        Sun, 2 May 2021 13:30:33 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 142IUUr9028168;
-        Sun, 2 May 2021 13:30:30 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Sun, 2 May 2021 13:30:30 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] Raise the minimum GCC version to 5.2
-Message-ID: <20210502183030.GF10366@gate.crashing.org>
-References: <20210501151538.145449-1-masahiroy@kernel.org> <CANiq72k1hB3X6+Nc_iu=f=BoB-F9JW2j_B4ZMcv8_UpW5QQ2Og@mail.gmail.com> <3943bc020f6227c8801907317fc113aa13ad4bad.camel@perches.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3943bc020f6227c8801907317fc113aa13ad4bad.camel@perches.com>
-User-Agent: Mutt/1.4.2.3i
+        id S229686AbhEBSdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 May 2021 14:33:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7B09B61353;
+        Sun,  2 May 2021 18:32:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619980374;
+        bh=0P0RyWrCv71rR32uaRQMAvsFgD8ZSfDL9tI7eNq2etg=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=FwSA6fq9TQg81pUpeJY/fUKXe9aUYvJOV3gL0Bt7AZ7Ve8PMLBs1xaM9XTDhBvhJ0
+         JmBrlbNDQpVvirFty79EBJtmRRpN0MpkVeFAUNTVPDJVKzQC4oKg730lRN9KuW+Jk6
+         jcvyX0kn1Ve0mXF6+YRgZUmLqopx9uP23RNkmkBTAt8knpWlMvRyc5sQG6fJCfiGXv
+         oTj5OLg+MtFL3lgMgg/2ae2kz6YIFcsKBrGdsLaj/rXrXUq0ano95rl9Lx6SIsDgSe
+         AfooNozq+2fk7Oy8qQJ6qHrATphqc3sT2aEOjI3WanLzi9CpH2wLC+nc0Iqr6kl5rK
+         gF1DXruVixZhA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6780760A21;
+        Sun,  2 May 2021 18:32:54 +0000 (UTC)
+Subject: Re: [git pull] ecryptfs series
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YI3+6jfW+mEMgx3x@zeniv-ca.linux.org.uk>
+References: <YI3+6jfW+mEMgx3x@zeniv-ca.linux.org.uk>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YI3+6jfW+mEMgx3x@zeniv-ca.linux.org.uk>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.ecryptfs
+X-PR-Tracked-Commit-Id: 9d786beb6fe5cf8fcc1ce5336a89401eaa444fb6
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b28866f4bb77095c262dfd5783197b691c624fa6
+Message-Id: <161998037435.19587.14394782923269771454.pr-tracker-bot@kernel.org>
+Date:   Sun, 02 May 2021 18:32:54 +0000
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Tyler Hicks <code@tyhicks.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 01, 2021 at 07:41:53PM -0700, Joe Perches wrote:
-> Why not raise the minimum gcc compiler version even higher?
+The pull request you sent on Sun, 2 May 2021 01:22:50 +0000:
 
-The latest GCC 5 release is only three and a half years old.  Do you
-really want to require bleeding edge tools?
+> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.ecryptfs
 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b28866f4bb77095c262dfd5783197b691c624fa6
 
-Segher
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
