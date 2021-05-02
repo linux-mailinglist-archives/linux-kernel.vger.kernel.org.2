@@ -2,158 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE451370DCD
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 18:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13374370DD1
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 18:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232123AbhEBQKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 12:10:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40240 "EHLO
+        id S232225AbhEBQNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 12:13:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230110AbhEBQKR (ORCPT
+        with ESMTP id S230110AbhEBQNr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 12:10:17 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68405C06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 09:09:25 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id p17so1504691plf.12
-        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 09:09:25 -0700 (PDT)
+        Sun, 2 May 2021 12:13:47 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C7F1C06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 09:12:56 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id j10so4491159lfb.12
+        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 09:12:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WnKnLYa6L3aqa5GoFfmd9JLUCyztCoRGIMqS2sYZeyY=;
-        b=u7c8qEk8tGKTWLrmMEMgQ3Q1hkXZTQJt9XHTHOyE7w31SpVXBevFFhXc7w/CXbaiNq
-         QYX58lUpUeuYSl5Q+TWgfRl4S+cjfv1PL52iD1SOXnA1iIcNoFg3Ay846pbwAYg1LgEk
-         VLm1hwH/Cz8n3D9qAIw8M0WmMRAgFURkZQhzYPfTOrv1e6OedggM/afSn+ylyN9AOI/4
-         MO1jEAXu4aK6o8lSV+CK4AFEZi0vPgcGDfnbM4/q22AL2jrlxk9Quu2wI+rBD3ILP3HD
-         os9WD1S9kT7cTGERsAI3uPXA/HI7mvd2RreBTbARRqRvzDk5XOs7mN8LVCaxRR7US8h/
-         YOFA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Usk7p7YCU1vBMeOPVgazNjVtg7VUSQWrYhqaeUMFI/U=;
+        b=Sg6Ao2UfrJlAg6hPnVATIxkfOlsNYq4zZfGmb1qdEzJHOFGh+hL1EqkB0kNDDA1PnW
+         DZGFpZz4rZNIZaGP4eRpXrSY+/dDyJzTMH343BpjQX3JpTtphge+3M+5O+0FttPalZ6g
+         0Q42EFjZ2aX2dtb41VLLrUzR5qzXSUmYaIe9Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WnKnLYa6L3aqa5GoFfmd9JLUCyztCoRGIMqS2sYZeyY=;
-        b=Cf3aRiP6h2B3AbayqJyiMoS6k5NmUhbty38eU4ONU60YrU4Uk/wTPPXzYsypwl7htM
-         An7gamIn2p9/vrCw/ZaRJ6RdsPhN5jIMCQHOgwJP4JNyDFjjzJtJAjfYtuwna3pVgPA+
-         0OzGiDGpPRrE/98BoRD3bhQBjYOIhXl0ijK8CvM3tVQG0TaS821aDeGLE3Xvg2bhC2J7
-         l31qsDREhsckehsuXmi4gavk7cVgyUmAYKg6MMoY4JsYwjtEdIrN573rwfa2xpwoZR93
-         X1s5KwNdjTxPIWfEt8Mwfb5AOmVaoqbqA4N/8VmF/D/hR0+6/8ACSSjL8XFUok1dgY8P
-         nnbw==
-X-Gm-Message-State: AOAM533nfCLmd3ZMcBAWpELkas+BFPCYXd8CK4MOBUsf6gpRVsMYclK5
-        s3gFKfp8feFpclOGK3qww7I=
-X-Google-Smtp-Source: ABdhPJzp4FejfUBTZwBwD3Qt/uF7weVbThxKacLkzLher0piU4Z+y3LPMNbQN0iObdO/2fHq+QAavQ==
-X-Received: by 2002:a17:90a:8c03:: with SMTP id a3mr16150298pjo.187.1619971764767;
-        Sun, 02 May 2021 09:09:24 -0700 (PDT)
-Received: from user ([2001:4490:4409:14d1:d6e9:983f:6cb8:c051])
-        by smtp.gmail.com with ESMTPSA id y14sm5860880pjr.51.2021.05.02.09.09.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 May 2021 09:09:23 -0700 (PDT)
-Date:   Sun, 2 May 2021 21:39:15 +0530
-From:   SAURAV GIREPUNJE <saurav.girepunje@gmail.com>
-To:     Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     gregkh@linuxfoundation.org, marcocesati@gmail.com,
-        fabioaiuto83@gmail.com, dan.carpenter@oracle.com,
-        john.oldman@polehill.co.uk, ross.schm.dev@gmail.com,
-        insafonov@gmail.com, hdegoede@redhat.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        saurav.girepunje@hotmail.com
-Subject: Re: [PATCH] staging: rtl8723bs: Change the return type
-Message-ID: <20210502160915.GA5757@user>
-References: <20210428175520.GA8921@user>
- <20210429222721.rudewp22t55fkmgf@bryanbrattlof.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Usk7p7YCU1vBMeOPVgazNjVtg7VUSQWrYhqaeUMFI/U=;
+        b=AyzcBU8lGG2n66/kKeZokougjdOGfpnmDCNSm8BDD5L/rlnPxkKeWWXUHVvJsCcU+J
+         OqJ+W5Y+r04cSPhMijAqpq11JRY2pU/0PdUYl5tBqpk3X+YNLnZpKuAKuLcnIjKmaus3
+         SHa3PjlaEc+vioila+9rJE3cOOdW4+m/HkDsWN9xlry634g0kt6O5hXJXCi6nrfhla8t
+         NqwwIToqP7odsfzmKmgDP5e78h9wPCuh+c1BLQQGT1vqNEJDCA7njtJIjJE8pbHZZkGu
+         yAySke1SRzwumCpOb5EEA+XnTJW9Ucqj4qLylcmiiup9JPVUDmRVyT/KHQpBiirbnZRS
+         3Kvw==
+X-Gm-Message-State: AOAM530v8CfsSllJZaYQNVlEZyms7Kew/UBUiipfKcmT+tbD/g+PBQCS
+        5QwGyDaBFz/JH7QZnJV+yxRU3J/D3SdBUv4+
+X-Google-Smtp-Source: ABdhPJw3ZdiFiZjZQdjL+Bpb/ezlfp8MX0p5w79OCuDZgam15M05jKGa3YnnDEhtJAPonOnLJF/apA==
+X-Received: by 2002:ac2:5979:: with SMTP id h25mr10382829lfp.297.1619971974426;
+        Sun, 02 May 2021 09:12:54 -0700 (PDT)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id c13sm873061lfv.267.2021.05.02.09.12.53
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 02 May 2021 09:12:53 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id u20so3962807lja.13
+        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 09:12:53 -0700 (PDT)
+X-Received: by 2002:a2e:989a:: with SMTP id b26mr10420562ljj.465.1619971973167;
+ Sun, 02 May 2021 09:12:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429222721.rudewp22t55fkmgf@bryanbrattlof.com>
+References: <CAHk-=wjmNOoX8iPtYsM8PVa+7DE1=5bv-XVe_egP0ZOiuT=7CQ@mail.gmail.com>
+ <CAKwvOdmMF_v9TzBtFn2S1qSS_yCDO8D-u3WhBehUM7gzjcdjUQ@mail.gmail.com>
+ <CAKwvOdk+V2dc31guafFM=N2ez4SrwCmah+mimUG3MzPMx_2efQ@mail.gmail.com>
+ <CAKwvOdn3uXniVedgtpD8QFAd-hdVuVjGPa4-n0h64PTxT4XhWg@mail.gmail.com>
+ <CAKwvOdm3D=dqKw=kx46PLaiqfHOZJL3QFKGc8kxqJqpwdFFWqw@mail.gmail.com>
+ <CAKwvOdkp_P8BCtFuKqDrtC_=A89ZfDf66Yr3FL2e=ojwv4KaMA@mail.gmail.com>
+ <CAHk-=wi1yiBBr3b3RbCEte6-yzAApsZN5zRdr3xoW8Av9jOX=Q@mail.gmail.com>
+ <CAKwvOdk0nxxUATg2jEKgx4HutXCMXcW92SX3DT+uCTgqBwQHBg@mail.gmail.com>
+ <1c5e05fa-a246-9456-ff4e-287960acb18c@redhat.com> <CAHk-=whs8QZf3YnifdLv57+FhBi5_WeNTG1B-suOES=RcUSmQg@mail.gmail.com>
+ <20210502093123.GC12293@localhost>
+In-Reply-To: <20210502093123.GC12293@localhost>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 2 May 2021 09:12:37 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgdUMt_n84mq93LZKA6jOGqZpD+=KeVzA3YmvJ6=JPyhw@mail.gmail.com>
+Message-ID: <CAHk-=wgdUMt_n84mq93LZKA6jOGqZpD+=KeVzA3YmvJ6=JPyhw@mail.gmail.com>
+Subject: Re: Very slow clang kernel config ..
+To:     Adrian Bunk <bunk@kernel.org>
+Cc:     Tom Stellard <tstellar@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Fangrui Song <maskray@google.com>,
+        Serge Guelton <sguelton@redhat.com>,
+        Sylvestre Ledru <sylvestre@mozilla.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 10:27:33PM +0000, Bryan Brattlof wrote:
-> On Wed, Apr 28, 2021 at 11:25:20PM +0530, Saurav Girepunje wrote:
-> >Remove the ret variable in rtw_suspend_common() and change
-> >the return type from int to void as rtw_suspend_common()
-> >always return zero unconditionally.
-> >
-> >Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
-> >---
-> > drivers/staging/rtl8723bs/include/osdep_intf.h | 2 +-
-> > drivers/staging/rtl8723bs/os_dep/os_intfs.c    | 5 ++---
-> > drivers/staging/rtl8723bs/os_dep/sdio_intf.c   | 4 +++-
-> > 3 files changed, 6 insertions(+), 5 deletions(-)
-> >
-> >diff --git a/drivers/staging/rtl8723bs/include/osdep_intf.h b/drivers/staging/rtl8723bs/include/osdep_intf.h
-> >index 48c90f00cc2e..111e0179712a 100644
-> >--- a/drivers/staging/rtl8723bs/include/osdep_intf.h
-> >+++ b/drivers/staging/rtl8723bs/include/osdep_intf.h
-> >@@ -66,7 +66,7 @@ void rtw_ips_pwr_down(struct adapter *padapter);
-> > int rtw_drv_register_netdev(struct adapter *padapter);
-> > void rtw_ndev_destructor(struct net_device *ndev);
-> >
-> >-int rtw_suspend_common(struct adapter *padapter);
-> >+void rtw_suspend_common(struct adapter *padapter);
-> > int rtw_resume_common(struct adapter *padapter);
-> >
-> > int netdev_open(struct net_device *pnetdev);
-> >diff --git a/drivers/staging/rtl8723bs/os_dep/os_intfs.c b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-> >index 1f34cb2e367c..724909078d80 100644
-> >--- a/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-> >+++ b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-> >@@ -1146,14 +1146,13 @@ static void rtw_suspend_normal(struct adapter *padapter)
-> > 		padapter->intf_deinit(adapter_to_dvobj(padapter));
-> > }
-> >
-> >-int rtw_suspend_common(struct adapter *padapter)
-> >+void rtw_suspend_common(struct adapter *padapter)
-> > {
-> > 	struct dvobj_priv *psdpriv = padapter->dvobj;
-> > 	struct debug_priv *pdbgpriv = &psdpriv->drv_dbg;
-> > 	struct pwrctrl_priv *pwrpriv = dvobj_to_pwrctl(psdpriv);
-> > 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
-> >
-> >-	int ret = 0;
-> > 	unsigned long start_time = jiffies;
-> >
-> > 	DBG_871X_LEVEL(_drv_always_, " suspend start\n");
-> >@@ -1196,7 +1195,7 @@ int rtw_suspend_common(struct adapter *padapter)
-> >
-> > exit:
-> >
-> >-	return ret;
-> >+	return;
-> > }
-> >
+On Sun, May 2, 2021 at 2:31 AM Adrian Bunk <bunk@kernel.org> wrote:
 >
-> Hi Saurav
->
-> Now that this function doesn't return anything, we can also remove the
-> `exit:` jump by replacing the `goto exit` on line 1175 with this
-> return.
->
-> --
-> ~Bryan
-> >
-> > static int rtw_resume_process_normal(struct adapter *padapter)
-> >diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-> >index a9a9631dd23c..84c16925c4f5 100644
-> >--- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-> >+++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-> >@@ -452,7 +452,9 @@ static int rtw_sdio_suspend(struct device *dev)
-> > 		return 0;
-> > 	}
-> >
-> >-	return rtw_suspend_common(padapter);
-> >+	rtw_suspend_common(padapter);
-> >+
-> >+	return 0;
-> > }
-> >
-> > static int rtw_resume_process(struct adapter *padapter)
-> >--
-> >2.25.1
-> >
->
-I think you are pointing to rtw_suspend_common function's goto statement.
-Yes, We can remove now. I will send a separate patch for removing goto statement.
+> The biggest advantage of shared libraries is that they enable
+> distributions to provide security fixes.
 
-~Saurav
+Adrian - you're ignoring the real argument, to the point that the
+above is basically a lie.
+
+The argument was never that things like libc or the core GUI libraries
+shouldn't be shared.
+
+The argument was that the "one-off" libraries shouldn't be shared.
+
+Things very much like libLLVM.so.
+
+Or things like "libdivecomputer.so". You probably have never ever
+heard of that library, have you? It's used by one single project, that
+project isn't even in Fedora, but when we tried to make an rpm for it,
+people complained because the Fedora rules said it needed to use
+shared libraries.
+
+So the whole notion that "shared libraries are good and required by
+default" is pure and utter garbage. It's simply not true.
+
+And no, it really didn't become any more true due to "security fixes".
+Your argument is a red herring.
+
+            Linus
