@@ -2,113 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B60B3370D08
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 16:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 691CF370D30
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 16:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231818AbhEBOIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 10:08:25 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:60095 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233239AbhEBOGC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 10:06:02 -0400
-X-Originating-IP: 2.7.49.219
-Received: from [192.168.1.100] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id BCFFF1C0003;
-        Sun,  2 May 2021 14:05:05 +0000 (UTC)
-Subject: Re: [PATCH v2] riscv: Only extend kernel reservation if mapped
- read-only
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     Damien Le Moal <damien.lemoal@wdc.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <02e05df076da23fc0f52c944bbf0a5cb99e95bd6.1619708542.git.geert+renesas@glider.be>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <b346f33d-a5aa-85c5-327d-626e03f2f5de@ghiti.fr>
-Date:   Sun, 2 May 2021 10:05:05 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S232699AbhEBOJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 10:09:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51698 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233116AbhEBOG0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 May 2021 10:06:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 49737613C5;
+        Sun,  2 May 2021 14:05:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619964331;
+        bh=jjYT6PyU7yG8aquzb9tT0Ra7w/2baInNjO74QmhVsss=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=g8vEmINJQxfOEQ5RvKZZ4iKvAb3B5/bJCJ+Jwpeq4HUlIbnCge42XQ3pVX/WVXjGr
+         0z0su99f6PUXQxZ688Yeirdu7kwYSgrIoMMVN7sOXovjo/WInr8uhnXS1bpqpqcpSE
+         j8G9p62CXrsFbMqGauSThCRPkhHrqcmLI56gcMUpwqVqzrHBfZMEki46xo6NKlQSu5
+         YmqzlxVfz6dfzom2XCcA9WU63m+WcfKu0oO3AhT8xvj+I8gbPQ67+6dhJHn/DW5QVe
+         MwWs6TJZrV1g+TJY7W78blbO/havOUb0mOJqV03JqmxwGE9+2i1/G80MZHDZrWjR3H
+         QCeG1xZ61sFEQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Jerome Forissier <jerome@forissier.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Sasha Levin <sashal@kernel.org>,
+        op-tee@lists.trustedfirmware.org
+Subject: [PATCH AUTOSEL 4.19 10/21] tee: optee: do not check memref size on return from Secure World
+Date:   Sun,  2 May 2021 10:05:06 -0400
+Message-Id: <20210502140517.2719912-10-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210502140517.2719912-1-sashal@kernel.org>
+References: <20210502140517.2719912-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <02e05df076da23fc0f52c944bbf0a5cb99e95bd6.1619708542.git.geert+renesas@glider.be>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 4/29/21 à 11:05 AM, Geert Uytterhoeven a écrit :
-> When the kernel mapping was moved outside of the linear mapping, the
-> kernel memory reservation was increased, to take into account mapping
-> granularity.  However, this is done unconditionally, regardless of
-> whether the kernel memory is mapped read-only or not.
-> 
-> If this extension is not needed, up to 2 MiB may be lost, which has a
-> big impact on e.g. Canaan K210 (64-bit nommu) platforms with only 8 MiB
-> of RAM.
-> 
-> Reclaim the lost memory by only extending the reserved region when
-> needed, i.e. depending on a simplified version of the conditional logic
-> around the call to protect_kernel_linear_mapping_text_rodata().
-> 
-> Fixes: 2bfc6cd81bd17e43 ("riscv: Move kernel mapping outside of linear mapping")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> v2:
->    - Simplify the conditional, as STRICT_KERNEL_RWX depends on
->      MMU && !XIP_KERNEL.
-> 
-> Only tested on K210 (SiPeed MAIX BiT):
-> 
->      -Memory: 5852K/8192K available (1344K kernel code, 147K rwdata, 272K rodata, 106K init, 72K bss, 2340K reserved, 0K cma-reserved)
->      +Memory: 5948K/8192K available (1344K kernel code, 147K rwdata, 272K rodata, 106K init, 72K bss, 2244K reserved, 0K cma-reserved)
-> 
-> Yes, I was lucky, as only 96 KiB was lost ;-)
-> ---
->   arch/riscv/mm/init.c | 9 +++++++--
->   1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index 788eb222deacf994..3ebc0f5d2b73b42b 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -136,11 +136,16 @@ void __init setup_bootmem(void)
->   
->   	/*
->   	 * Reserve from the start of the kernel to the end of the kernel
-> -	 * and make sure we align the reservation on PMD_SIZE since we will
-> +	 */
-> +#if defined(CONFIG_64BIT) && defined(CONFIG_STRICT_KERNEL_RWX)
-> +	/*
-> +	 * Make sure we align the reservation on PMD_SIZE since we will
->   	 * map the kernel in the linear mapping as read-only: we do not want
->   	 * any allocation to happen between _end and the next pmd aligned page.
->   	 */
-> -	memblock_reserve(vmlinux_start, (vmlinux_end - vmlinux_start + PMD_SIZE - 1) & PMD_MASK);
-> +	vmlinux_end = (vmlinux_end + PMD_SIZE - 1) & PMD_MASK;
-> +#endif
-> +	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
->   
->   	/*
->   	 * memblock allocator is not aware of the fact that last 4K bytes of
-> 
+From: Jerome Forissier <jerome@forissier.org>
 
-I tested this on the following configs:
+[ Upstream commit c650b8dc7a7910eb25af0aac1720f778b29e679d ]
 
-- rv32_defconfig (build and valid on qemu)
-- defconfig (with and without CONFIG_STRICT_KERNEL_RWX) (build and valid 
-on qemu)
-- xip kernel (build and valid on qemu)
-- nommu_k210_defconfig (build only)
+When Secure World returns, it may have changed the size attribute of the
+memory references passed as [in/out] parameters. The GlobalPlatform TEE
+Internal Core API specification does not restrict the values that this
+size can take. In particular, Secure World may increase the value to be
+larger than the size of the input buffer to indicate that it needs more.
 
-so you can add:
+Therefore, the size check in optee_from_msg_param() is incorrect and
+needs to be removed. This fixes a number of failed test cases in the
+GlobalPlatform TEE Initial Configuratiom Test Suite v2_0_0_0-2017_06_09
+when OP-TEE is compiled without dynamic shared memory support
+(CFG_CORE_DYN_SHM=n).
 
-Tested-by: Alexandre Ghiti <alex@ghiti.fr>
+Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+Suggested-by: Jens Wiklander <jens.wiklander@linaro.org>
+Signed-off-by: Jerome Forissier <jerome@forissier.org>
+Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/tee/optee/core.c | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-Thank you again for that,
+diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
+index 2f254f957b0a..1d71fcb13dba 100644
+--- a/drivers/tee/optee/core.c
++++ b/drivers/tee/optee/core.c
+@@ -87,16 +87,6 @@ int optee_from_msg_param(struct tee_param *params, size_t num_params,
+ 				return rc;
+ 			p->u.memref.shm_offs = mp->u.tmem.buf_ptr - pa;
+ 			p->u.memref.shm = shm;
+-
+-			/* Check that the memref is covered by the shm object */
+-			if (p->u.memref.size) {
+-				size_t o = p->u.memref.shm_offs +
+-					   p->u.memref.size - 1;
+-
+-				rc = tee_shm_get_pa(shm, o, NULL);
+-				if (rc)
+-					return rc;
+-			}
+ 			break;
+ 		case OPTEE_MSG_ATTR_TYPE_RMEM_INPUT:
+ 		case OPTEE_MSG_ATTR_TYPE_RMEM_OUTPUT:
+-- 
+2.30.2
 
-Alex
