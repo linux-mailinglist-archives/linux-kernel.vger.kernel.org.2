@@ -2,299 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35207370E2F
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 19:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B34EC370E31
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 19:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232336AbhEBRXC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 2 May 2021 13:23:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39536 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230110AbhEBRXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 13:23:01 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D17746120E;
-        Sun,  2 May 2021 17:22:05 +0000 (UTC)
-Date:   Sun, 2 May 2021 18:22:55 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Jozsef Horvath <info@ministro.hu>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Gene Chen <gene_chen@richtek.com>,
-        Saravanan Sekar <sravanhome@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] dt-bindings: iio: adc: devicetree bindings for
- texas instruments ads7142 iio driver
-Message-ID: <20210502182255.6bed8afa@jic23-huawei>
-In-Reply-To: <69205d4de46dd21c82b31ca1c35cbf12fbce629b.1619892171.git.info@ministro.hu>
-References: <bffbc2b24a869dc42307adf8e3fc71f08fcff6dd.1619892171.git.info@ministro.hu>
-        <69205d4de46dd21c82b31ca1c35cbf12fbce629b.1619892171.git.info@ministro.hu>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S232241AbhEBRY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 13:24:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230110AbhEBRY2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 May 2021 13:24:28 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CDE6C06138B
+        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 10:23:36 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id md17so1746924pjb.0
+        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 10:23:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GXTjGTOlTTY9sdxkzSR6emINpwnzr9PglCQwV2S6Ekc=;
+        b=QhgvJS00fKUbeIpw5a18d7n5cD8P3AutRHRozqhyJavbukgTGcA//k5ASTywlswM6l
+         PzhxTQfSYthv/HiWd1FtqtdwZxaN29cdGLx22iT1pxob+QlyoWeVGIzcZW25grx7OhEY
+         03BvhqeOETO/20VQ94efc5HStWeKQYBrDJza4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GXTjGTOlTTY9sdxkzSR6emINpwnzr9PglCQwV2S6Ekc=;
+        b=dJgTUZDCzp2HXwm7mVWwGx9cVJ3L5OwSKLci6XHTOFOmtHKW9WaElmn6LODcp+dooT
+         xuvX8QrhzGpZ1CEEODogwnYWahEyGCMVdNFaakZmIaU/XL+M08SroH7g82pKwfOpVWfQ
+         aqTpic1KpkUiqIIbkByHJy6UYkgFtcGPs94USojCdgVbjxyvBvOdys7umSttJjLp8Waw
+         CE5QK0PMBCoEfUVtN8UYxzNBVCGUAU3FZuN9XLM2+z3lWlbFT2H2oZiu0NajrDGmXiP/
+         e1PCvT84qnPDwQ3xUQwhHZPlbJwxjYTe7mLDeW9NbN0taKMAJTgTus+ELNRehoJ7WfNe
+         yq+g==
+X-Gm-Message-State: AOAM531cXP9WCzREnRbugmW90OxduIznXBMh6XpQmBvwL0yo6cPCjujo
+        Cb/W4vzd101FnD/a0JDhJXR9OQ==
+X-Google-Smtp-Source: ABdhPJxgpxHrWH1Z1a42UhZH8ooTPM0N+5pppYaK/MBCvnrvyHIGwBctabZ+DdUs4Ow8vICkur1gFg==
+X-Received: by 2002:a17:902:e892:b029:ec:d257:b8a2 with SMTP id w18-20020a170902e892b02900ecd257b8a2mr16321769plg.15.1619976216172;
+        Sun, 02 May 2021 10:23:36 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id x23sm6851493pfc.170.2021.05.02.10.23.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 May 2021 10:23:35 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Kees Cook <keescook@chromium.org>, Wenwen Wang <wenwen@cs.uga.edu>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: [PATCH] Revert "ACPI: custom_method: fix memory leaks"
+Date:   Sun,  2 May 2021 10:23:26 -0700
+Message-Id: <20210502172326.2060025-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+X-Patch-Hashes: v=1; h=sha256; g=27f4a3882208c0c7ab311bccbc7938a98215ce1b; i=4pHPPkCLiO0B5jX/lC0oWvEOjAppjon3wDcV95JIlCY=; m=B7t9QWkqpLbwV/hn+i+5AcQpHIFvut5e6PdfyOfbBvo=; p=dnBvSkSfZUmrGRocFe6rzb+j1MQ4jwUfNvP+Dje0+G8=
+X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmCO4A0ACgkQiXL039xtwCbSqBAAlxq 1U9qI6T30iKOG2xGDH6nuqZSQKjgVrY89a0xtu6Cf+Dl0Tw3HvrLsLmIKppF2y8P02kh8Qgb/0wXK napAXAiwy1VvVuSICbEqtK9UGrbO3PDUPo8hLoOOsGckRVlHNjwk4af++Hri0QWu40SIGBo+AuRTT 8d08tNrswsng7ixEzO13C/rJ6iyFVwp4dF2HTc+VnyHyVKtuhtrZ12jwUuAZ5vOi//HeOGJbQ7HUT tA3IucfVq7xuyVpkREICcQuzzb+pUBwJMCm+4v384J4C0LjQk01f7FSWjpLRHot3UaredQDChe8rk 21Nw3fRd41kFMIzNXDqJyDm2Pd6+jS2r3tkj/493qHHPJGbXdE5L8V8Y6bas1LAuAUNPCtTDCfTW8 MBPkzb1Yrv6atCaG9wU4hD0Q/NrsmMtN/SViur7A/sw0sg161+DWGelyxWjxZHZ+0WnlSMeN848Gb 938HJXrAEI9vfk7ROWV5YbKNDT8onhvS413+uJBGx/I74S3WHG4bUNpYZPObNhETd2F3b9q4YHt0r TCh6wZ7jgpqXwNPQMsPhpoA2z0rKjOgP6zBj2Nyhza1Bw5Hgo8E7lSZ1XfuTsHAynEVf/hiHYMTn1 IMg9Otsq7NFqi7XNusFlVHbR4MbeBlFe2mAT+dB9/IEwm1/fg8mrNa1nQSmDGDEs=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 1 May 2021 18:25:18 +0000
-Jozsef Horvath <info@ministro.hu> wrote:
+This reverts commit 03d1571d9513369c17e6848476763ebbd10ec2cb.
 
-> This is a device tree schema for iio driver for
->  Texas Instruments ADS7142 dual-channel, programmable sensor monitor.
-> 
-> Datasheet: https://www.ti.com/lit/ds/symlink/ads7142.pdf
-> 
-> Signed-off-by: Jozsef Horvath <info@ministro.hu>
-> ---
-> ---
->  .../bindings/iio/adc/ti,ads7142.yaml          | 198 ++++++++++++++++++
->  1 file changed, 198 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,ads7142.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/adc/ti,ads7142.yaml b/Documentation/devicetree/bindings/iio/adc/ti,ads7142.yaml
-> new file mode 100644
-> index 000000000000..b4e752160156
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/adc/ti,ads7142.yaml
-> @@ -0,0 +1,198 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/iio/adc/ti,ads7142.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Texas Instruments ADS7142 adc driver device tree bindings
-> +
-> +maintainers:
-> +  - József Horváth <info@ministro.hu>
-> +
-> +description: |
-> +  This document is for describing the required device tree parameters
-> +   for ads7142 adc driver.
+While /sys/kernel/debug/acpi/custom_method is already a privileged-only
+API providing proxied arbitrary write access to kernel memory[1][2],
+with existing race conditions[3] in buffer allocation and use that could
+lead to memory leaks and use-after-free conditions, the above commit
+appears to accidentally make the use-after-free conditions even easier
+to accomplish. ("buf" is a global variable and prior kfree()s would set
+buf back to NULL.)
 
-Document describes hardware, not a particular driver.  So just refer
-to the device here.  There may well be other drives in future using
-the same binding (e.g. in an RTOS).
+This entire interface needs to be reworked (if not entirely removed).
 
-> +  The required parameters for proper operation are described below.
-> +
-> +  Datasheet: https://www.ti.com/lit/ds/symlink/ads7142.pdf
-> +
-> +  Operation modes supportedby the driver:
-> +    When the 'ti,monitoring-mode' property is not present
-> +      in the devicetree node definition, the driver initiates a single
-> +      conversion in the device for each read request
-> +      (/sys/bus/iio/devices/iio:deviceX/in_voltageY_raw).
-> +      This is a one-shot conversion, and it is called
-> +      "Manual Mode" in the datasheet.
-> +
-> +    When the 'ti,monitoring-mode' property is present
-> +      in the devicetree node definition, the driver configures
-> +      the device's digital window comparator and sets the device's
-> +      data buffer operation mode to pre alert data mode.
-> +      The driver reads the conversion result when the BUSY/RDY interrupt
-> +      fires, and keeps the value until the next BUSY/RDY interrupt
-> +      or the first read request
-> +      (/sys/bus/iio/devices/iio:deviceX/in_voltageY_raw).
-> +      The digital window comparator and hysteresis parameters
-> +      can be controlled by:
-> +        - the devicetree definition of channel node
-> +        - iio sysfs interfaces
-> +      This is event driven conversion, and is called
-> +      "Autonomous Mode with Pre Alert Data" in the datasheet.
-> +      This mode can be used to wake up the system with the ALERT pin,
-> +      in case when the monitored voltage level is out of the configured range.
+[1] https://lore.kernel.org/lkml/20110222193250.GA23913@outflux.net/
+[2] https://lore.kernel.org/lkml/201906221659.B618D83@keescook/
+[3] https://lore.kernel.org/lkml/20170109231323.GA89642@beast/
 
-I talked about these in the driver review so look there for comments.
-Short summary is this is something userspace should have control off (assuming irq
-is wired up) not dt.
+Cc: Wenwen Wang <wenwen@cs.uga.edu>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/acpi/custom_method.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-> +
-> +properties:
-> +  compatible:
-> +    const: ti,ads7142
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    description: |
-> +      The BUSY/PDY pin is used as interrupt line in autonomous monitoring mode.
-> +    maxItems: 1
-> +
-> +  vref-supply:
-> +    description: Regulator for the reference voltage
-> +
-> +  power-supply: true
-
-These don't match the naming on the pin diagram.
-
-> +
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 0
-> +
-> +  "#io-channel-cells":
-> +    const: 1
-> +
-> +  ti,osc-sel:
-> +    description: |
-> +      If present, the driver selects the high speed oscillator.
-> +      See chapter 7.3.5 Oscillator and Timing Control in datasheet.
-> +    type: boolean
-
-This looks connected to the possible sampling frequencies when in various autonomous modes.
-Should it be controlled by userspace?
-
-> +
-> +  ti,n-clk:
-> +    description: |
-> +      nCLK is number of clocks in one conversion cycle.
-> +      See chapter 7.3.5 Oscillator and Timing Control in datasheet.
-
-Sounds like a policy decision for userspace.
-
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    maximum: 255
-> +    minimum: 0
-> +
-> +  ti,monitoring-mode:
-> +    description: |
-> +      If present, the driver selects the autonomous monitoring mode with pre alert data.
-> +      See chapter 7.4 Device Functional Modes in datasheet.
-
-As mentioned in the driver review, this looks like something we should control from userspace
-not dt to me.
-
-> +    type: boolean
-> +
-> +patternProperties:
-> +  "^channel@[0-1]$":
-> +    $ref: "adc.yaml"
-> +    type: object
-> +    description: |
-> +      Represents the external channels which are connected to the ADC.
-> +    properties:
-> +      reg:
-> +        description: |
-> +          The channel number.
-> +        items:
-> +          minimum: 0
-> +          maximum: 1
-> +      "ti,threshold-falling":
-> +        description: The low threshold for channel
-
-For these, we need a strong argument presented in this doc for why they are not
-a question of policy (and hence why they should be in dt at all).
-
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        maximum: 4095
-> +        minimum: 0
-> +      "ti,threshold-rising":
-> +        description: The high threshold for channel
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        maximum: 4095
-> +        minimum: 0
-> +      "ti,hysteresis":
-> +        description: The hysteresis for both comparators for channel
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        maximum: 63
-> +        minimum: 0
-> +
-> +    required:
-> +      - reg
-> +
-> +    additionalProperties: false
-> +
-> +allOf:
-> +  - if:
-> +      required:
-> +        - ti,monitoring-mode
-> +    then:
-> +      required:
-> +        - interrupts
-> +
-> +required:
-> +  - compatible
-> +  - "#io-channel-cells"
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +      adc@18 {
-
-I would not bother having two examples.  The second one covers more things afterall
-and the binding makes it clear what is required.
-
-> +        compatible = "ti,ads7142";
-> +        reg = <0x18>;
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +        #io-channel-cells = <1>;
-> +
-> +        vref-supply = <&vdd_3v3_reg>;
-> +        power-supply = <&vdd_1v8_reg>;
-> +
-> +        channel@0 {
-> +          reg = <0>;
-> +        };
-> +
-> +        channel@1 {
-> +          reg = <1>;
-> +        };
-> +      };
-> +    };
-> +  - |
-> +    i2c {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +      adc@1f {
-> +        compatible = "ti,ads7142";
-> +        reg = <0x1f>;
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        #io-channel-cells = <1>;
-> +
-> +        vref-supply = <&vdd_3v3_reg>;
-> +        power-supply = <&vdd_1v8_reg>;
-> +
-> +        interrupt-parent = <&gpio>;
-> +        interrupts = <7 2>;
-> +
-> +        ti,monitoring-mode;
-> +
-> +        channel@0 {
-> +          reg = <0>;
-> +          ti,threshold-falling = <1000>;
-> +          ti,threshold-rising = <2000>;
-> +          ti,hysteresis = <20>;
-> +        };
-> +
-> +        channel@1 {
-> +          reg = <1>;
-> +          ti,threshold-falling = <100>;
-> +          ti,threshold-rising = <2500>;
-> +          ti,hysteresis = <0>;
-> +        };
-> +      };
-> +    };
-> +...
-> +
+diff --git a/drivers/acpi/custom_method.c b/drivers/acpi/custom_method.c
+index 7b54dc95d36b..36d95a02cd30 100644
+--- a/drivers/acpi/custom_method.c
++++ b/drivers/acpi/custom_method.c
+@@ -53,10 +53,8 @@ static ssize_t cm_write(struct file *file, const char __user * user_buf,
+ 	if ((*ppos > max_size) ||
+ 	    (*ppos + count > max_size) ||
+ 	    (*ppos + count < count) ||
+-	    (count > uncopied_bytes)) {
+-		kfree(buf);
++	    (count > uncopied_bytes))
+ 		return -EINVAL;
+-	}
+ 
+ 	if (copy_from_user(buf + (*ppos), user_buf, count)) {
+ 		kfree(buf);
+@@ -76,7 +74,6 @@ static ssize_t cm_write(struct file *file, const char __user * user_buf,
+ 		add_taint(TAINT_OVERRIDDEN_ACPI_TABLE, LOCKDEP_NOW_UNRELIABLE);
+ 	}
+ 
+-	kfree(buf);
+ 	return count;
+ }
+ 
+-- 
+2.25.1
 
