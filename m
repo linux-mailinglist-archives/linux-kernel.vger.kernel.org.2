@@ -2,85 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0393370DBF
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 17:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8415D370DC0
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 17:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232353AbhEBP4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 11:56:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbhEBP4o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 11:56:44 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5447AC06174A;
-        Sun,  2 May 2021 08:55:52 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id k128so1895465wmk.4;
-        Sun, 02 May 2021 08:55:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4qSNjpnYVIrWjdPYzqg5I/2wMnH8TyjLJXPRqrLpUXY=;
-        b=T/RsU0qUGKEeiTqc+DKhx+CgzqIe32Em9ieeJWEgxs+JgK1TiY6I/i4vptsQzh4uY6
-         x7YmnfC8HbYAx2qVTXEViF46/0tkJMwgQXAzKvMGJg8XE0HE1iAR8o3s1f4cXKLf4rKn
-         zCWtnhbUrltCXWk/cVu+StEjp42SQ/OCwYZrt655UkkAxlrCndvuJ5Mki9LWeR6AWaFG
-         u9/H2SQnv4EU5B+4sswKvmt/CZD9v7Sfb/FMteFt2d4UL4WKh62QPgMu1h5fIvv1wSKE
-         38q+GqsEotIoX/JqzYuX3HmmFeIDA9CsrrwDWaqKgv9/BAncWnj4PHAKcaQPReqZhwiJ
-         6gEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4qSNjpnYVIrWjdPYzqg5I/2wMnH8TyjLJXPRqrLpUXY=;
-        b=cPGmHnpfKtVfKyMPq5KiJg3pJ/iCTfONNSR5YZD4mr1PvqkGhVXTq7f+spWJtZhlOs
-         5C9U0y9Wm6Px77aIBQuquA2pF7vOU3Exexo84sVvjejOG9P5obH8Od5/K6WMm6GzOGM+
-         xaWDkCYT7V2UBsq1dhlgyLTU4lvr9tvVry1JZsO0eYmMRLAXb2DxAEQEpSjvHtUVNc/2
-         jWSLtenXMmy9P/QyECGeHOEvO5gf8/uWTJIfkuPXO/lPSvdu1J5hPQG03GmxvnDqPX5a
-         5gPxQUgku2/1y9FXq29fdcC+gEaXAtZgmgyuIZsq/z86dKV/2a3iFVeMWNBm89cIZQFZ
-         6PXQ==
-X-Gm-Message-State: AOAM5336NTSgMysllqYdLfew5i1oC9B9Yok0B5CHjaFbo4b1Ep7RH0tt
-        hQRh0yzetWxpVXj4UIFV/dioDIorsU8=
-X-Google-Smtp-Source: ABdhPJxhlEOgthBdZGeHO4K6jWKoQu1Vxem1SoNbkK7cpvD3FKpjYsbIdnmUsuU3OO7s+WiFMgv0Rw==
-X-Received: by 2002:a05:600c:4a19:: with SMTP id c25mr16780867wmp.94.1619970950806;
-        Sun, 02 May 2021 08:55:50 -0700 (PDT)
-Received: from [192.168.8.197] ([185.69.145.156])
-        by smtp.gmail.com with ESMTPSA id f8sm8163830wmg.43.2021.05.02.08.55.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 02 May 2021 08:55:50 -0700 (PDT)
-Subject: Re: KASAN: stack-out-of-bounds Read in iov_iter_revert
-To:     Palash Oswal <oswalpalash@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-References: <CAGyP=7exAVOC0Er5VzmwL=HLih-wpmyDijEPVjGzUEj3SCYENA@mail.gmail.com>
- <4b2c435c-699b-b29f-6893-4beae6d004a9@gmail.com>
- <CAGyP=7cGLwtw=14JSfOd40x08Xsj3T2GCeWTjDf2z2v0nb8e9Q@mail.gmail.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <e968c546-fbfd-2fec-0380-af81df7c791f@gmail.com>
-Date:   Sun, 2 May 2021 16:55:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S232391AbhEBP5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 11:57:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53258 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230154AbhEBP47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 May 2021 11:56:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FBF5611F1;
+        Sun,  2 May 2021 15:56:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619970967;
+        bh=FfwBTdMsJob++dR3yEGaSzVovkhtbO+t+qb20kLdr0k=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fD/cvrjegc49TM7CUugP83G+yq9qZ7WLvnL4ldJyYFSyazXuaR1HNzHaDwEo3fLRP
+         mzpIt5GPaOoTjCymD/NmTJ0vv47CsiPvPhPpvnwyGk8DgNdEJGgWhBvcCEKBlCEGqh
+         pWe5+clch6XX5UbVovPjRDsXVgdZ4Yherx5yoQklNBpK/lyfWxcCirXgE+CPlR/Qqe
+         2oBw9BHwPmXJBfYVc0UCk4QXWdmSITZfrBfxykw5RK+nhYG2l/n4CEMxwSdpDnFaIo
+         LsB6rPcpT0v1meEWN+Tb1E3wKDtroG8HziM1WhcwIv1n3Dxj1STQ9+KUFUGE/Kgq4E
+         OmpzzzwtCy9+g==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ofir Bitton <obitton@habana.ai>
+Subject: [PATCH] habanalabs: wait for interrupt wrong timeout calculation
+Date:   Sun,  2 May 2021 18:56:02 +0300
+Message-Id: <20210502155602.13277-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAGyP=7cGLwtw=14JSfOd40x08Xsj3T2GCeWTjDf2z2v0nb8e9Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/2/21 4:13 PM, Palash Oswal wrote:
-> On Sun, May 2, 2021 at 4:07 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
->> May be related to
->> http://mail.spinics.net/lists/io-uring/msg07874.html
->>
->> Was it raw bdev I/O, or a normal filesystem?
-> 
-> Normal filesystem.
+From: Ofir Bitton <obitton@habana.ai>
 
-To avoid delays when I get to it, can you tell what fs it was?
-Just it case it is an fs specific deviation
+Wait for interrupt timeout calculation is wrong, hence timeout occurs
+when user waits on an interrupt with certain timeout values.
 
+Signed-off-by: Ofir Bitton <obitton@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ drivers/misc/habanalabs/common/command_submission.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
+index ff8791a651fd..af3c497defb1 100644
+--- a/drivers/misc/habanalabs/common/command_submission.c
++++ b/drivers/misc/habanalabs/common/command_submission.c
+@@ -2017,7 +2017,7 @@ static int _hl_interrupt_wait_ioctl(struct hl_device *hdev, struct hl_ctx *ctx,
+ 		if (completion_value >= target_value) {
+ 			*status = CS_WAIT_STATUS_COMPLETED;
+ 		} else {
+-			timeout -= jiffies_to_usecs(completion_rc);
++			timeout = completion_rc;
+ 			goto wait_again;
+ 		}
+ 	} else {
 -- 
-Pavel Begunkov
+2.25.1
+
