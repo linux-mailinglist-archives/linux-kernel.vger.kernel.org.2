@@ -2,59 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 518BA370E7F
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 20:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC03F370E9F
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 20:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232488AbhEBSdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 14:33:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56240 "EHLO mail.kernel.org"
+        id S232360AbhEBSuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 14:50:39 -0400
+Received: from gate.crashing.org ([63.228.1.57]:45049 "EHLO gate.crashing.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230036AbhEBSdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 14:33:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id B5C62611EE;
-        Sun,  2 May 2021 18:32:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619980374;
-        bh=Igv8BOoOO/BvJBRt7nYSXWvbc/80Y54j4E6130yYTnA=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=PUDFSaRA47De3P7d20TzkZEGgGqnYWNFseqDsRleR0e+6U1tp2QpNgNzZkJl8cChM
-         +MgsmaCs51vHFrP1zVrDW7bJnOakRZx42El6fAuhafeRiJfm/HkzeOkey2RSt7ayd1
-         RGwykMeYUI7dm79ptQEQHYHfjrvBZlCKh52HhjrmZfIZ2jHrPy+lSxNqLIqXhAj9AB
-         Sxosi6ePg5gEUCRXggQjuG0O9q/RIR7atIAVZKJZ/3zziCfeROfV35s2uJyBZp8/1o
-         lMcDN+ud+03M7hnSIpHVFGkv/FZkyepUaBxkVk7EG5C/GdJR11h+an3kGV1quIflo5
-         5oQ/1QgYOcL4A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AFE33609CF;
-        Sun,  2 May 2021 18:32:54 +0000 (UTC)
-Subject: Re: [git pull] work.misc
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YI4AwgZaFSGsTDR9@zeniv-ca.linux.org.uk>
-References: <YI4AwgZaFSGsTDR9@zeniv-ca.linux.org.uk>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YI4AwgZaFSGsTDR9@zeniv-ca.linux.org.uk>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.misc
-X-PR-Tracked-Commit-Id: 80e5d1ff5d5f1ed5167a69b7c2fe86071b615f6b
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 27787ba3fa4904422b3928b898d1bd3d74d98bea
-Message-Id: <161998037471.19587.8857455333728326962.pr-tracker-bot@kernel.org>
-Date:   Sun, 02 May 2021 18:32:54 +0000
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+        id S230036AbhEBSui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 May 2021 14:50:38 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 142IbL6B028576;
+        Sun, 2 May 2021 13:37:21 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 142IbKUo028575;
+        Sun, 2 May 2021 13:37:20 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Sun, 2 May 2021 13:37:19 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kbuild@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-riscv@lists.infradead.org, Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] Raise the minimum GCC version to 5.2
+Message-ID: <20210502183719.GG10366@gate.crashing.org>
+References: <20210501151538.145449-1-masahiroy@kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210501151538.145449-1-masahiroy@kernel.org>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 2 May 2021 01:30:42 +0000:
+On Sun, May 02, 2021 at 12:15:38AM +0900, Masahiro Yamada wrote:
+> The current minimum GCC version is 4.9 except ARCH=arm64 requiring
+> GCC 5.1.
+> 
+> When we discussed last time, we agreed to raise the minimum GCC version
+> to 5.1 globally. [1]
+> 
+> I'd like to propose GCC 5.2 to clean up arch/powerpc/Kconfig as well.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.misc
+Both of these are GCC version 5.  GCC 5.1 is the first release of that,
+GCC 5.2 the second, etc.  Everyone should always use an as new release
+as practical, since many bugs will be fixed, and nothing else changed.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/27787ba3fa4904422b3928b898d1bd3d74d98bea
+See <https://gcc.gnu.org/develop.html#num_scheme>.
 
-Thank you!
+So, this means everyone using GCC 5 should be using the GCC 5.5 release!
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+If there is something about 5.1 that makes it produce bad kernels on
+some arch, make that arch's Makefile complain?  Same with binutils etc.
+
+
+Segher
