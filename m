@@ -2,91 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7CB7370B24
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 12:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3A7370B26
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 12:49:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231657AbhEBKtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 06:49:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55830 "EHLO
+        id S231736AbhEBKuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 06:50:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbhEBKtl (ORCPT
+        with ESMTP id S229988AbhEBKuJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 06:49:41 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B507C06174A;
-        Sun,  2 May 2021 03:48:50 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id a11so1314904plh.3;
-        Sun, 02 May 2021 03:48:50 -0700 (PDT)
+        Sun, 2 May 2021 06:50:09 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10947C06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 03:49:18 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id x7so2570123wrw.10
+        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 03:49:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=44Pbc9rBUHoVe5YAupOa4qwfHvmyc/iguPZLYW6hLQQ=;
-        b=GvdJ0PzuNdzwIjhvRu5r82xntxXhjrTrpnIkEjV3mHU//BIdgF/GO9SPMQmnWJ2gHt
-         aZzOlJVkdrD35+qv4XhxvxYyhTVipXq3vKD7XtYx2QkfNJtofgaLYGxOPpz3ElV5pnHP
-         C27IrBwTj7vWM5qeLCnAq4R06O4zVLKIBifC4x7z2p0OM53DQxIBHLxFYF5+vNQDXRXV
-         NILnM25brxDoTOMYV0OgUYIrA+6suKef/2WZO+aB8qkqMDSOKVoa/3NDhOEobmabG9kF
-         VwSdxIgBMK6Rh8tgM5qxL1LHF4ohcYEopB6xlHDfhYnsZ5GvZjW1MW1lxHqzQhDHaHx3
-         ZvCQ==
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=14wL5KFM14T10cjzVY0XnZGJYXazi8PBUlOpJwjNunc=;
+        b=nREaEzA6QKZzz1Gjy+2HaUaxSMyyAeroRIvvS5l+Vyh4GJ0CZwHosf9kz3Pp4fN9PR
+         n/g8qZb2eWAfQzOrfjgahGJG3vNkhD2jd8+nfALQc0RclwfFWl0lFaQOIPIX/rHml6Ce
+         2KVBAKeQP8XJtBigbYE552+kES8uMWeelykqlErFtU1m+81vP9j4bG6b51cJ90+bTcFp
+         9l13XRUoKenYJeKvszGfTP+Lq3J5QLqX2zdFXxMY2zKMUMbrpw0TjqFAyn6OdV7YPcJQ
+         JTgqiReHEbVtTGwHlS7k8hHk1BNWDjcQTSP/ifQm96Uw7jhFE7zoXgUq1dbv4E14U66r
+         hV8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=44Pbc9rBUHoVe5YAupOa4qwfHvmyc/iguPZLYW6hLQQ=;
-        b=ckeDz1KdszeU7kll7SdtJrM8uvbNjD4MZWOeUuyVYPzUk6n/OTDRWJrBGpwrAZx5yJ
-         fvzdCRAKfeEGnTPPgIdLqXO6yBlMZcA3dQoQ6dOQ/HHOISbtN95+tPYjv9hgAT6HuHro
-         Cvwij4wlhr9tInV9P5TWaYsOBo2q2TgrXf0KG8ecs4Y8Ds+Ql5ipCdgDAbZgYiN7Qn3c
-         CShB0LcQQdJ3d4R0rJzf1uTZ6s37yXasjq9W8DcPFOxytSGh4000PcKZZU6N2m3V+5kl
-         Wq+4xThm3wwSqhVA8Xa2FEUkmkYsL6AnRNhNjCJ9ceFO+UeGoLflt5E8Z2wb6YtT+gYo
-         jLpw==
-X-Gm-Message-State: AOAM530sMwZmo4ysJ9vjo7ktdDRl1S70spNVze4rqnebgwIA+PpnjkuM
-        3iqcvgzvz46icTmr9p6OxzKJ7MtOPBIGi5+WM+U=
-X-Google-Smtp-Source: ABdhPJzqOh2dljV5BEmRaB+D95O9Y1KMnYkfzfUT8/Gutsn3Hp/qury/FqduxgFzrOuSWRr7lGggC0LjVYS+ZH9xfUQ=
-X-Received: by 2002:a17:902:264:b029:eb:3d3a:a09c with SMTP id
- 91-20020a1709020264b02900eb3d3aa09cmr14867233plc.0.1619952529427; Sun, 02 May
- 2021 03:48:49 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=14wL5KFM14T10cjzVY0XnZGJYXazi8PBUlOpJwjNunc=;
+        b=jJMJY9GesoOm+A8vIzdcj+ZO6qEVq1g3cT08uWYKkWNoeiaX2EbRwVQOnJGf32+AV5
+         M3Ozyql0qYo8GVMDePz6lJTurMwniwx5XZkEo2Z2L5srRJlBzr8thckV82dyBYzM1xBj
+         sn5K/mjwijMNZTIrA9G66QhOneXk3QpgstLrSMIfIq4/0OQAzz5IU9T03SO9Z/9WBz5L
+         ETeq+e/Tf27RKHFuyLJSMSqGVyGHomEnu5ED1WCJa8r7MPk5EEpY7Lpa0obp/38Bw2TD
+         ByoKQAmAUnBfVPtbJQcicEtAckvvRyCW7yJWcWRU6L8FaJqK2Tb/MGRyqkfDgB5XKBh6
+         UO+w==
+X-Gm-Message-State: AOAM5324QssRpxICUigcJ26idVp+zL3k6Ii7nGfiJmp949BrAvhsQmCR
+        TmbxVw3v1HBaOuf5Y5aYSBF5Xw==
+X-Google-Smtp-Source: ABdhPJyeUWOY/jViBQn/YcsM7Lll/IVddreD7pv1XbiXTOICY018jhYlwZInmluWQ6jughN5QbfI2w==
+X-Received: by 2002:a5d:6d48:: with SMTP id k8mr18279220wri.93.1619952556746;
+        Sun, 02 May 2021 03:49:16 -0700 (PDT)
+Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
+        by smtp.gmail.com with ESMTPSA id y21sm18744909wmc.46.2021.05.02.03.49.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 May 2021 03:49:16 -0700 (PDT)
+Date:   Sun, 2 May 2021 11:49:14 +0100
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tytso@mit.edu
+Subject: Re: [PATCH] fs: ext4: mballoc: amend goto to cleanup groupinfo
+ memory correctly
+Message-ID: <YI6DqtMHj9dx26Kw@equinox>
+References: <YI0czH0auvWlU8bA@equinox>
+ <6E6AEEB4-1FBA-40F1-8328-8E304E68A7C6@dilger.ca>
 MIME-Version: 1.0
-References: <tencent_17A7BBC4D15D331C1A25B4075294E5D67706@qq.com> <cb03b75a018e4bec83eac6898eb1d2af@ACNMB2.ACN.ADVANTECH.CORP>
-In-Reply-To: <cb03b75a018e4bec83eac6898eb1d2af@ACNMB2.ACN.ADVANTECH.CORP>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 2 May 2021 13:48:33 +0300
-Message-ID: <CAHp75Vc_dA_VKMNsUo9jkpuGYX6Mzddy+=P3H+25ZuKiOE5icQ@mail.gmail.com>
-Subject: Re: [v2,1/1] adv_mix955x is a scheme that multiplexes PCA9554/PCA9555
- into LED and GPIO
-To:     =?UTF-8?B?eXVlY2hhby56aGFvKOi1tei2iui2hSk=?= 
-        <yuechao.zhao@advantech.com.cn>
-Cc:     "345351830@qq.com" <345351830@qq.com>,
-        =?UTF-8?B?UmFpbmJvdy5aaGFuZyjlvLXnjokp?= 
-        <Rainbow.Zhang@advantech.com.cn>,
-        =?UTF-8?B?eXVueGlhLmxpKOadjuS6kemcnik=?= 
-        <yunxia.li@advantech.com.cn>,
-        =?UTF-8?B?SmlhLlN1aSjotL7nnaIp?= <Jia.Sui@advantech.com.cn>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6E6AEEB4-1FBA-40F1-8328-8E304E68A7C6@dilger.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 11:33 AM yuechao.zhao(=E8=B5=B5=E8=B6=8A=E8=B6=85)
-<yuechao.zhao@advantech.com.cn> wrote:
->
-> From: Yuechao Zhao <yuechao.zhao@advantech.com.cn>
->
-> With this driver, we can multiplex PCA9554/PCA9555 into LED and GPIO base=
-d on the ACPI data of BIOS.
+On Sat, May 01, 2021 at 10:43:57AM -0700, Andreas Dilger wrote:
+> On May 1, 2021, at 02:18, Phillip Potter <phil@philpotter.co.uk> wrote:
+> > 
+> > ﻿Hi All,
+> > 
+> > Sorry to be pushy (I know everyone is busy) but I've had no feedback on
+> > this patch yet:
+> > https://lore.kernel.org/linux-ext4/20210412073837.1686-1-phil@philpotter.co.uk/T/#u
+> > 
+> > Could I please ask for it to be reviewed? Many thanks.
+> 
+> Hi Phil,
+> I've looked at the patch and it looks good. You can add my:
+> 
+> Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+> 
+> Note in the future that it is a bit easier to review (IMHO) if you include the
+> original patch in your ping email, but not a big deal. 
+> 
+> Cheers, Andreas
 
-I really did no get the purpose of this rather enormous pile of code.
-Why you can't simply use PCA9555 with correctly described leds-gpio.
-What the problem this driver solves that can't be solved by existing
-code?
+Dear Andreas,
 
-NAK till it will gain a very good justification.
+Thank you for your review, really appreciate it :-) I will make sure I
+include the original patch in future ping e-mails - wasn't sure as I
+didn't want to annoy anyone. Have a great day.
 
---=20
-With Best Regards,
-Andy Shevchenko
+Regards,
+Phil
