@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0845370965
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 02:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D116370966
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 02:20:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232107AbhEBAUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 20:20:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34232 "EHLO
+        id S231996AbhEBAUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 20:20:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231266AbhEBATz (ORCPT
+        with ESMTP id S231906AbhEBAT6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 20:19:55 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB50C06174A
-        for <linux-kernel@vger.kernel.org>; Sat,  1 May 2021 17:19:03 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id i17so1903857qki.3
-        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 17:19:03 -0700 (PDT)
+        Sat, 1 May 2021 20:19:58 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BDFEC06174A
+        for <linux-kernel@vger.kernel.org>; Sat,  1 May 2021 17:19:08 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id r13so939172qvm.7
+        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 17:19:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sargun.me; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=YFrHuiCgVxuk3VucJdjHQohm6Nqxsi7Fn/b9oyEwGz0=;
-        b=FoAUu8AC6MTunvQ8yarUmTFUe5rHqCGRgvUD0UYyeUlF4ZAbQmfZZQHt2WGb3+sX+Z
-         DACsq6VP9hE39GEHjzoljku5KgxAxA1pzP24nNCoJnvHUXBZW5VjA7bse7e9935VczCP
-         SY4Vl6fldwrS0Fbp4kCSOlZ4xUOAQn51kJoys=
+        bh=vfAsECn/fzRz8G1nJMm0ods0ajgpdWjB1GxnEL0hfI8=;
+        b=fpbZq7C8+zvIV2lES2K6x9lsB7pyHmvs4Yxy9DkSMbsmefAzZD0E/RgPvUXyJdb6Q+
+         TKiP2DEq/Pxqu7/7b055o0hEv0TFebGCinfp9yJUuVm05BmUcNSiL/BkcfH9VT/J9oaq
+         JotWx2+KQ5biyK6x3pTn80D1Wzv4ta3gS2qzs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=YFrHuiCgVxuk3VucJdjHQohm6Nqxsi7Fn/b9oyEwGz0=;
-        b=ig9J7bbQDZC4+1j0nOIJq72Z14iC4zEWj26sik9tizFNnHcQgAynqLibIixRw9jGq8
-         sMLykCzUJR9x1xC2yBzGU1M9ytDjIxb/CfvQaPry5QWDmlks/XbyYqvQk9c9XpYcLLyh
-         mDjOGm04chaJ8psEVW6DIjQvxA7ELCiPWjgpkn41sQ1rFTzi75ZgAtMIX0IprYlirKXt
-         cf6G7Oi+jevefuUbPfTC53B4cCoTMcngJYcT6s12l4Jdw0dg78h8brOmxNa2W1xuO64G
-         go0a/ZolLBEelcn2ilFqy5UBu+EwGTOmS5AnL9F6kQ50+uoAgP2cE9kxXUwd3XoJMTFS
-         Bqjw==
-X-Gm-Message-State: AOAM533EroKRemH9Lvt/fpgnuBAVXDdfkbV+i5x9cjdli3RlbKWR9Im3
-        gs48khaZrDqiBjD7bWEOp3q+Iw==
-X-Google-Smtp-Source: ABdhPJypwSf8TS50lZmHuge623bTNQIf81qG1QW2YfGdO+acApuR7mmBjkWsugo3NrXpKYyzCSiObg==
-X-Received: by 2002:a37:7782:: with SMTP id s124mr12425117qkc.305.1619914742997;
-        Sat, 01 May 2021 17:19:02 -0700 (PDT)
+        bh=vfAsECn/fzRz8G1nJMm0ods0ajgpdWjB1GxnEL0hfI8=;
+        b=ClAFq2KHAZHEQEIkJ+mMasrse9bymcQaTd5zA1lkLA26iTtlF36wH1ibQUD4+xIeqh
+         3CJqfiasfCQswliTmWxuRrdO1ijeBdJYNSpJm42tiOddTIvev57OmzOTcboHlSfwIX3z
+         ZeAS7cEswPENsU130Q2SCBwJMPuftMfVrEtqMxwinDfN4g9fqWjheIpxgWLfUuhx4NlT
+         xZJVe+1AzuZVBREXD/5GvGjvFN2XtE5xII81Ey9XCP3gXAQDzbWrTtSeIPRuBZw76k7a
+         Id2R1w5DfiBDV7tP2zhowMVh+TLMFSE5AInkTfj1HYCxF9y8W9+x2cWQeNKjQM4vBinX
+         v6UQ==
+X-Gm-Message-State: AOAM531qRpjQRnDFOn27/GehMx0VXOP+QOnjAV5OzwM2SNqFbxka+lqZ
+        T37frFhpAM79B3YTKNePjEpTPw==
+X-Google-Smtp-Source: ABdhPJwNAfn4+E6CCzyl/D25KYz95m1jhCAOsy1DssEolXqjzMVufdUNRmGSHjVvoBu+pvuBtTZmrA==
+X-Received: by 2002:a05:6214:2503:: with SMTP id gf3mr12604871qvb.61.1619914747252;
+        Sat, 01 May 2021 17:19:07 -0700 (PDT)
 Received: from ubuntu.netflix.com (136-25-20-203.cab.webpass.net. [136.25.20.203])
-        by smtp.gmail.com with ESMTPSA id p5sm5146067qkh.135.2021.05.01.17.19.00
+        by smtp.gmail.com with ESMTPSA id p5sm5146067qkh.135.2021.05.01.17.19.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 May 2021 17:19:02 -0700 (PDT)
+        Sat, 01 May 2021 17:19:06 -0700 (PDT)
 From:   Sargun Dhillon <sargun@sargun.me>
 To:     Kees Cook <keescook@chromium.org>,
         LKML <linux-kernel@vger.kernel.org>,
@@ -57,9 +57,9 @@ Cc:     Sargun Dhillon <sargun@sargun.me>,
         Giuseppe Scrivano <gscrivan@redhat.com>,
         Christian Brauner <christian.brauner@ubuntu.com>,
         =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>
-Subject: [PATCH 1/4] Documentation: seccomp: Fix user notification documentation
-Date:   Sat,  1 May 2021 17:18:48 -0700
-Message-Id: <20210502001851.3346-2-sargun@sargun.me>
+Subject: [PATCH 2/4] seccomp: Refactor notification handler to prepare for new semantics
+Date:   Sat,  1 May 2021 17:18:49 -0700
+Message-Id: <20210502001851.3346-3-sargun@sargun.me>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210502001851.3346-1-sargun@sargun.me>
 References: <20210502001851.3346-1-sargun@sargun.me>
@@ -69,42 +69,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The documentation had some previously incorrect information about how
-userspace notifications (and responses) were handled due to a change
-from a previously proposed patchset.
+This refactors the user notification code to have a do / while loop around
+the completion condition. This has a small change in semantic, in that
+previously we ignored addfd calls upon wakeup if the notification had been
+responded to, but instead with the new change we check for an outstanding
+addfd calls prior to returning to userspace.
 
+Rodrigo Campos also identified a bug that can result in addfd causing
+an early return, when the supervisor didn't actually handle the syscall [1].
+
+[1]: https://lore.kernel.org/lkml/20210413160151.3301-1-rodrigo@kinvolk.io/
+
+Fixes: 7cf97b125455 ("seccomp: Introduce addfd ioctl to seccomp user notifier")
 Signed-off-by: Sargun Dhillon <sargun@sargun.me>
 ---
- Documentation/userspace-api/seccomp_filter.rst | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ kernel/seccomp.c | 30 ++++++++++++++++--------------
+ 1 file changed, 16 insertions(+), 14 deletions(-)
 
-diff --git a/Documentation/userspace-api/seccomp_filter.rst b/Documentation/userspace-api/seccomp_filter.rst
-index bd9165241b6c..6efb41cc8072 100644
---- a/Documentation/userspace-api/seccomp_filter.rst
-+++ b/Documentation/userspace-api/seccomp_filter.rst
-@@ -250,14 +250,14 @@ Users can read via ``ioctl(SECCOMP_IOCTL_NOTIF_RECV)``  (or ``poll()``) on a
- seccomp notification fd to receive a ``struct seccomp_notif``, which contains
- five members: the input length of the structure, a unique-per-filter ``id``,
- the ``pid`` of the task which triggered this request (which may be 0 if the
--task is in a pid ns not visible from the listener's pid namespace), a ``flags``
--member which for now only has ``SECCOMP_NOTIF_FLAG_SIGNALED``, representing
--whether or not the notification is a result of a non-fatal signal, and the
--``data`` passed to seccomp. Userspace can then make a decision based on this
--information about what to do, and ``ioctl(SECCOMP_IOCTL_NOTIF_SEND)`` a
--response, indicating what should be returned to userspace. The ``id`` member of
--``struct seccomp_notif_resp`` should be the same ``id`` as in ``struct
--seccomp_notif``.
-+task is in a pid ns not visible from the listener's pid namespace). The
-+notification also contains the ``data`` passed to seccomp, and a filters flag.
-+The structure should be zeroed out prior to calling the ioctl.
-+
-+Userspace can then make a decision based on this information about what to do,
-+and ``ioctl(SECCOMP_IOCTL_NOTIF_SEND)`` a response, indicating what should be
-+returned to userspace. The ``id`` member of ``struct seccomp_notif_resp`` should
-+be the same ``id`` as in ``struct seccomp_notif``.
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index 1d60fc2c9987..93684cc63285 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -1098,28 +1098,30 @@ static int seccomp_do_user_notification(int this_syscall,
  
- It is worth noting that ``struct seccomp_data`` contains the values of register
- arguments to the syscall, but does not contain pointers to memory. The task's
+ 	up(&match->notif->request);
+ 	wake_up_poll(&match->wqh, EPOLLIN | EPOLLRDNORM);
+-	mutex_unlock(&match->notify_lock);
+ 
+ 	/*
+ 	 * This is where we wait for a reply from userspace.
+ 	 */
+-wait:
+-	err = wait_for_completion_interruptible(&n.ready);
+-	mutex_lock(&match->notify_lock);
+-	if (err == 0) {
+-		/* Check if we were woken up by a addfd message */
++	do {
++		mutex_unlock(&match->notify_lock);
++		err = wait_for_completion_interruptible(&n.ready);
++		mutex_lock(&match->notify_lock);
++		if (err != 0)
++			goto interrupted;
++
+ 		addfd = list_first_entry_or_null(&n.addfd,
+ 						 struct seccomp_kaddfd, list);
+-		if (addfd && n.state != SECCOMP_NOTIFY_REPLIED) {
++		/* Check if we were woken up by a addfd message */
++		if (addfd)
+ 			seccomp_handle_addfd(addfd);
+-			mutex_unlock(&match->notify_lock);
+-			goto wait;
+-		}
+-		ret = n.val;
+-		err = n.error;
+-		flags = n.flags;
+-	}
+ 
++	}  while (n.state != SECCOMP_NOTIFY_REPLIED);
++
++	ret = n.val;
++	err = n.error;
++	flags = n.flags;
++
++interrupted:
+ 	/* If there were any pending addfd calls, clear them out */
+ 	list_for_each_entry_safe(addfd, tmp, &n.addfd, list) {
+ 		/* The process went away before we got a chance to handle it */
 -- 
 2.25.1
 
