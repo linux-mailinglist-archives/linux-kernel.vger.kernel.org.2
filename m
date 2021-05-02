@@ -2,117 +2,1563 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D69370E14
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 18:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD09B370E24
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 19:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232166AbhEBQ4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 12:56:10 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:50009 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229678AbhEBQ4J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 12:56:09 -0400
-Received: by mail-io1-f72.google.com with SMTP id i204-20020a6bb8d50000b02903f266b8e1c5so1689061iof.16
-        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 09:55:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=eP4mQN7C2zr3b/3zqQgZ9cfbl/yTznWZNvkQ6osR27g=;
-        b=M72BOKPWrAWPhmYgtirCtdVJUKvhOPQc9pur3/FL2Gfz0AqXbPlnOnB2FxZHWnBxxc
-         rgOjVMgGgmvNCAPsxkGXKNTVZX96ZJE5U2P05Vs8RttLTr3oEDb8AAqL7hwOSjBd7QYs
-         2D+QrITG8dyCnCJ4wFwG2akpU51qbQmSpFAj8KdBOVvVDWxxWl+P4UuaSp0YxxczWgLd
-         9t2K6QaxjHAtxMcLJYZTuDOYSjFCdwrQG3Z1m4Fwaf862mYHNmYp6FeG/JYXWt31BxxN
-         WN+bfHx9I4b0zoxCUXAFEidUnJAn/j8Uv8ZDpfhPz/pvAu3bIoI369WuA1UzUJV1+Zma
-         zINg==
-X-Gm-Message-State: AOAM530llmjes3A+hXPwGEtlw3rxNj8ytm1vtvF/h7/IhtsYRCOfOCiY
-        sSH+hoVR5W4od9KyTNgjsyU3v3jLHz4iClWx4gVb+u1lfxN/
-X-Google-Smtp-Source: ABdhPJxBrNGUkDeYHa62khBXomhZqIUnBPjzWZ7xG2jJOLOMH5qryQQiguVNne0zB5KXxNOu50vnwiFl1sc4uJiZ9JzH7PX8iisn
+        id S232201AbhEBRO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 13:14:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60242 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230110AbhEBRO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 May 2021 13:14:28 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 80273611EE;
+        Sun,  2 May 2021 17:13:32 +0000 (UTC)
+Date:   Sun, 2 May 2021 18:14:23 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Jozsef Horvath <info@ministro.hu>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Gene Chen <gene_chen@richtek.com>,
+        Saravanan Sekar <sravanhome@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] iio: adc: driver for texas instruments ads7142
+Message-ID: <20210502181423.1712130b@jic23-huawei>
+In-Reply-To: <bffbc2b24a869dc42307adf8e3fc71f08fcff6dd.1619892171.git.info@ministro.hu>
+References: <bffbc2b24a869dc42307adf8e3fc71f08fcff6dd.1619892171.git.info@ministro.hu>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9659:: with SMTP id d25mr11877096ios.146.1619974516550;
- Sun, 02 May 2021 09:55:16 -0700 (PDT)
-Date:   Sun, 02 May 2021 09:55:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009aaf5905c15bb5f0@google.com>
-Subject: [syzbot] general protection fault in do_swap_page (2)
-From:   syzbot <syzbot+9bedf8ef6e51e0bb3401@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, 1 May 2021 18:24:28 +0000
+Jozsef Horvath <info@ministro.hu> wrote:
 
-syzbot found the following issue on:
+> This is an iio driver for
+>  Texas Instruments ADS7142 dual-channel, programmable sensor monitor.
+> 
+> Operation modes supportedby the driver:
+>   When the 'ti,monitoring-mode' property is not present
+>     in the devicetree node definition, the driver initiates a single
+>     conversion in the device for each read request
+>     (/sys/bus/iio/devices/iio:deviceX/in_voltageY_raw).
+>     This is a one-shot conversion, and it is called
+>     "Manual Mode" in the datasheet.
+> 
+>   When the 'ti,monitoring-mode' property is present
+>     in the devicetree node definition, the driver configures
+>     the device's digital window comparator and sets the device's
+>     data buffer operation mode to pre alert data mode.
+>     The driver reads the conversion result when the BUSY/RDY interrupt
+>     fires, and keeps the value until the next BUSY/RDY interrupt
+>     or the first read request
+>     (/sys/bus/iio/devices/iio:deviceX/in_voltageY_raw).
 
-HEAD commit:    e3d35712 Add linux-next specific files for 20210423
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=14b953f5d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e370221d7500b26a
-dashboard link: https://syzkaller.appspot.com/bug?extid=9bedf8ef6e51e0bb3401
+Hi Jozsef.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Interesting device - somewhat like an impact sensor, but on a general
+purpose ADC.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9bedf8ef6e51e0bb3401@syzkaller.appspotmail.com
+Hmm. This sounds rather unintuitive and also very much like a policy
+decision rather than anything to do with the hardware.  Hence it
+should almost certainly be in control of userspace and no via
+dt parameters.
 
-get_swap_device: Bad swap file entry 3fffa5f80000a
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 1 PID: 8451 Comm: syz-fuzzer Not tainted 5.12.0-rc8-next-20210423-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:do_swap_page+0x9fa/0x2430 mm/memory.c:3349
-Code: e8 bb a2 6d 07 e9 cb fa ff ff e8 01 c1 cb ff 48 8b 7c 24 10 e8 97 b7 0a 00 48 ba 00 00 00 00 00 fc ff df 48 89 c1 48 c1 e9 03 <80> 3c 11 00 0f 85 60 17 00 00 48 8b 18 31 ff 81 e3 00 10 00 00 48
-RSP: 0000:ffffc900015ffc78 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffff8880124035b0 RCX: 0000000000000000
-RDX: dffffc0000000000 RSI: ffffffff81b3f0de RDI: 0000000000000003
-RBP: ffffc900015ffd88 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff81b3f09f R11: 0000000000000000 R12: 0000000000000000
-R13: ffff888029ea0e00 R14: ffff888024424040 R15: 0000000000000000
-FS:  000000c00027c490(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000001000000 CR3: 0000000014778000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- handle_pte_fault mm/memory.c:4371 [inline]
- __handle_mm_fault+0x1b8b/0x5150 mm/memory.c:4502
- handle_mm_fault+0x1bc/0x7e0 mm/memory.c:4600
- do_user_addr_fault+0x483/0x1210 arch/x86/mm/fault.c:1390
- handle_page_fault arch/x86/mm/fault.c:1475 [inline]
- exc_page_fault+0x9e/0x180 arch/x86/mm/fault.c:1531
- asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:577
-RIP: 0033:0x420a5d
-Code: 0c 48 ff c7 d1 eb 48 83 c6 08 0f 1f 00 48 83 ff 08 0f 8d f9 00 00 00 48 39 f1 0f 86 f0 00 00 00 0f ba e3 00 73 db 4c 8d 04 16 <4d> 8b 00 4d 85 c0 74 cf 48 89 7c 24 40 4c 89 44 24 38 48 89 74 24
-RSP: 002b:000000c0002bde18 EFLAGS: 00010203
-RAX: 00007fafa7949000 RBX: 0000000000000009 RCX: 0000000000040000
-RDX: 0000000000fcd820 RSI: 00000000000327e0 RDI: 0000000000000004
-RBP: 000000c0002bde68 R08: 0000000001000000 R09: 0000000000000045
-R10: 0000000001880e68 R11: 0000000000000053 R12: 0000000000000003
-R13: 000000c000082780 R14: 000000000000000f R15: 0000000000000c96
-Modules linked in:
----[ end trace bfcda609218a3121 ]---
-RIP: 0010:do_swap_page+0x9fa/0x2430 mm/memory.c:3349
-Code: e8 bb a2 6d 07 e9 cb fa ff ff e8 01 c1 cb ff 48 8b 7c 24 10 e8 97 b7 0a 00 48 ba 00 00 00 00 00 fc ff df 48 89 c1 48 c1 e9 03 <80> 3c 11 00 0f 85 60 17 00 00 48 8b 18 31 ff 81 e3 00 10 00 00 48
-RSP: 0000:ffffc900015ffc78 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffff8880124035b0 RCX: 0000000000000000
-RDX: dffffc0000000000 RSI: ffffffff81b3f0de RDI: 0000000000000003
-RBP: ffffc900015ffd88 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff81b3f09f R11: 0000000000000000 R12: 0000000000000000
-R13: ffff888029ea0e00 R14: ffff888024424040 R15: 0000000000000000
-FS:  000000c00027c490(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000c000c7c010 CR3: 0000000014778000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+The interrupt driven nature of the device implies that a polled interface
+such as sysfs is not appropriate to support this mode.
+
+Based on the description you have given here and a quick look
+at the flow charts in the datasheet I would suggest.
+1) Enable sysfs reads as manual mode only.
+2) Implement the buffered part of an IIO driver.  This is what we use
+   for data where autonomous clocking is going on.
+3) Add triggers to represent the different autonomous modes.  In some
+   sense all the modes present can be considered be a series of
+   'capture now' signals that are being generated by the hardware in
+   response to some event'.
+
+So you'd have a pre_alert_tigger, post_alert_trigger
+Stop_burst and start_burst are more interesting to handle because you
+will need something to actually start/stop them.  These could be done
+via a sysfs attribute for the trigger, or more complex schemes exist
+such as triggering them off another trigger... one or two of the SoC
+ADCs do that sort of thing.
+
+ 
+>     The digital window comparator and hysteresis parameters
+>     can be controlled by:
+>       - the devicetree definition of channel node
+>       - iio sysfs interfaces
+>     This is event driven conversion, and is called
+>     "Autonomous Mode with Pre Alert Data" in the datasheet.
+>     This mode can be used to wake up the system with the ALERT pin,
+>     in case when the monitored voltage level is out of the configured range.
+
+Whilst it's fine to only enable the modes you want, we should think about how
+to ensure other modes can be supported.
+
+> 
+> Datasheet: https://www.ti.com/lit/ds/symlink/ads7142.pdf
+> 
+> Signed-off-by: Jozsef Horvath <info@ministro.hu>
+> ---
+Should only be one ---
+
+comments inline.
+> ---
+>  MAINTAINERS                  |    6 +
+>  drivers/iio/adc/Kconfig      |   10 +
+>  drivers/iio/adc/Makefile     |    1 +
+>  drivers/iio/adc/ti-ads7142.c | 1215 ++++++++++++++++++++++++++++++++++
+>  4 files changed, 1232 insertions(+)
+>  create mode 100644 drivers/iio/adc/ti-ads7142.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 9450e052f1b1..954cbabde801 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -17694,6 +17694,12 @@ T:	git git://github.com/czankel/xtensa-linux.git
+>  F:	arch/xtensa/
+>  F:	drivers/irqchip/irq-xtensa-*
+>  
+> +TEXAS INSTRUMENTS ADS7142 ADC DRIVER
+> +M:	Jozsef Horvath <info@ministro.hu>
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/iio/adc/ti,ads7142.yaml
+> +F:	drivers/iio/adc/ti-ads7142.c
+> +
+>  TEXAS INSTRUMENTS ASoC DRIVERS
+>  M:	Peter Ujfalusi <peter.ujfalusi@gmail.com>
+>  L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+> diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+> index e0667c4b3c08..69d672298719 100644
+> --- a/drivers/iio/adc/Kconfig
+> +++ b/drivers/iio/adc/Kconfig
+> @@ -1111,6 +1111,16 @@ config TI_ADS1015
+>  	  This driver can also be built as a module. If so, the module will be
+>  	  called ti-ads1015.
+>  
+> +config TI_ADS7142
+> +	tristate "Texas Instruments ADS7142 ADC driver"
+> +	depends on I2C
+> +	help
+> +	  This driver is for Texas Instruments ADS7142 Nanopower, Dual-Channel, Programmable Sensor Monitor.
+
+Please keep to shorter lines in Kconfig files  < 80 chars preferred.
+
+> +	  Say 'Y' here if you wish to use it.
+> +
+> +	  To compile this driver as a module, choose M here: the
+> +	  module will be called ti-ads7142.
+> +
+>  config TI_ADS7950
+>  	tristate "Texas Instruments ADS7950 ADC driver"
+>  	depends on SPI && GPIOLIB
+> diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile
+> index 5fca90ada0ec..83d2a72ab758 100644
+> --- a/drivers/iio/adc/Makefile
+> +++ b/drivers/iio/adc/Makefile
+> @@ -99,6 +99,7 @@ obj-$(CONFIG_TI_ADC108S102) += ti-adc108s102.o
+>  obj-$(CONFIG_TI_ADC128S052) += ti-adc128s052.o
+>  obj-$(CONFIG_TI_ADC161S626) += ti-adc161s626.o
+>  obj-$(CONFIG_TI_ADS1015) += ti-ads1015.o
+> +obj-$(CONFIG_TI_ADS7142) += ti-ads7142.o
+>  obj-$(CONFIG_TI_ADS7950) += ti-ads7950.o
+>  obj-$(CONFIG_TI_ADS8344) += ti-ads8344.o
+>  obj-$(CONFIG_TI_ADS8688) += ti-ads8688.o
+> diff --git a/drivers/iio/adc/ti-ads7142.c b/drivers/iio/adc/ti-ads7142.c
+> new file mode 100644
+> index 000000000000..6e42efe5f1e8
+> --- /dev/null
+> +++ b/drivers/iio/adc/ti-ads7142.c
+> @@ -0,0 +1,1215 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2020 Jozsef Horvath <info@ministro.hu>
+> + *
+blank line not needed, plus maybe 2021 given when you are posting it?
+
+> + */
+> +#include <linux/i2c.h>
+> +#include <linux/device.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/err.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/regulator/consumer.h>
+> +#include <linux/iio/iio.h>
+> +#include <linux/iio/events.h>
+> +
+> +#define TI_ADS7142_NAME					"ads7142"
+> +
+> +#define TI_ADS7142_DATA_VALID_TIMEOUT			100
+> +
+> +/* Opcodes for commands */
+> +/* General */
+> +#define TI_ADS7142_OC_GENERAL				0x00
+> +/* Single Register Read */
+> +#define TI_ADS7142_OC_SINGLE_REG_READ			0x10
+> +/* Single Register Write */
+> +#define TI_ADS7142_OC_SINGLE_REG_WRITE			0x08
+> +/* Single Bit Set */
+> +#define TI_ADS7142_OC_SET_BIT				0x18
+> +/* Single Bit Clear */
+> +#define TI_ADS7142_OC_CLEAR_BIT				0x20
+> +/* Block Register Read */
+> +#define TI_ADS7142_OC_BLOCK_READ			0x30
+> +/* Block Register Write */
+> +#define TI_ADS7142_OC_BLOCK_WRITE			0x28
+> +
+> +/* Registers */
+> +/* Reset registers */
+> +#define TI_ADS7142_WKEY					0x17
+> +#define TI_ADS7142_DEVICE_RESET				0x14
+> +/* Functional mode select registers */
+> +#define TI_ADS7142_OFFSET_CAL				0x15
+> +#define TI_ADS7142_OPMODE_SEL				0x1C
+> +#define TI_ADS7142_OPMODE_SEL_MANUALCH0			(0)
+> +#define TI_ADS7142_OPMODE_SEL_MANUALSEQ			(4)
+> +#define TI_ADS7142_OPMODE_SEL_MONITORING		(6)
+> +#define TI_ADS7142_OPMODE_SEL_HIGHPREC			(7)
+> +#define TI_ADS7142_OPMODE_STATUS			0x00
+> +#define TI_ADS7142_OPMODE_STATUS_OPMODE_MSK		(3)
+> +#define TI_ADS7142_OPMODE_STATUS_OPMODE_MANUAL		(0)
+> +#define TI_ADS7142_OPMODE_STATUS_OPMODE_AUTO		(2)
+> +#define TI_ADS7142_OPMODE_STATUS_OPMODE_HIGHPREC	(3)
+> +#define TI_ADS7142_OPMODE_STATUS_HS_MODE		BIT(2)
+> +
+> +/* Input config register */
+> +#define TI_ADS7142_CH_INPUT_CFG				0x24
+> +#define TI_ADS7142_CH_INPUT_CFG_TCSE			(0)
+> +#define TI_ADS7142_CH_INPUT_CFG_SCSE			(1)
+> +#define TI_ADS7142_CH_INPUT_CFG_SCPD			(2)
+> +/* Analog mux and sequencer registers */
+> +#define TI_ADS7142_AUTO_SEQ_CHEN			0x20
+> +#define TI_ADS7142_AUTO_SEQ_CHEN_CH0			BIT(0)
+> +#define TI_ADS7142_AUTO_SEQ_CHEN_CH1			BIT(1)
+> +#define TI_ADS7142_START_SEQUENCE			0x1E
+> +#define TI_ADS7142_START_SEQUENCE_SEQ_START		BIT(0)
+> +#define TI_ADS7142_ABORT_SEQUENCE			0x1F
+> +#define TI_ADS7142_ABORT_SEQUENCE_SEQ_ABORT		BIT(0)
+> +#define TI_ADS7142_SEQUENCE_STATUS			0x04
+> +#define TI_ADS7142_SEQUENCE_STATUS_SEQ_ERR_ST_MSK	(0x06)
+> +#define TI_ADS7142_SEQUENCE_STATUS_SEQ_DISABLED		(0x00)
+> +#define TI_ADS7142_SEQUENCE_STATUS_SEQ_ENABLED		(0x02)
+> +#define TI_ADS7142_SEQUENCE_STATUS_SEQ_ERROR		(0x06)
+> +/* Oscillator and timing control registers */
+> +#define TI_ADS7142_OSC_SEL				0x18
+> +#define TI_ADS7142_OSC_SEL_HSZ_LP			BIT(0)
+> +#define TI_ADS7142_NCLK_SEL				0x19
+> +/* Data buffer control register */
+> +#define TI_ADS7142_DATA_BUFFER_OPMODE			0x2C
+> +#define TI_ADS7142_DATA_BUFFER_OPMODE_STOP_BURST	(0)
+> +#define TI_ADS7142_DATA_BUFFER_OPMODE_START_BURST	(1)
+> +#define TI_ADS7142_DATA_BUFFER_OPMODE_PRE_ALERT		(4)
+> +#define TI_ADS7142_DATA_BUFFER_OPMODE_POST_ALERT	(6)
+> +#define TI_ADS7142_DOUT_FORMAT_CFG			0x28
+> +#define TI_ADS7142_DOUT_FORMAT_CFG_12B			(0)
+> +#define TI_ADS7142_DOUT_FORMAT_CFG_12BCH		(1)
+> +#define TI_ADS7142_DOUT_FORMAT_CFG_12BCHDV		(2)
+> +#define TI_ADS7142_DATA_BUFFER_STATUS			0x01
+> +/* Accumulator control register */
+> +#define TI_ADS7142_ACC_EN				0x30
+> +#define TI_ADS7142_ACC_CH0_LSB				0x08
+> +#define TI_ADS7142_ACC_CH0_MSB				0x09
+> +#define TI_ADS7142_ACC_CH1_LSB				0x0A
+> +#define TI_ADS7142_ACC_CH1_MSB				0x0B
+> +#define TI_ADS7142_ACC_STATUS				0x02
+> +/* Digital window comparator registers */
+> +#define TI_ADS7142_ALERT_DWC_EN				0x37
+> +#define TI_ADS7142_ALERT_DWC_EN_BLOCK_EN		BIT(0)
+> +#define TI_ADS7142_ALERT_CHEN				0x34
+> +#define TI_ADS7142_DWC_HTH_CH0_LSB			0x38
+> +#define TI_ADS7142_DWC_HTH_CH0_MSB			0x39
+> +#define TI_ADS7142_DWC_LTH_CH0_LSB			0x3A
+> +#define TI_ADS7142_DWC_LTH_CH0_MSB			0x3B
+> +#define TI_ADS7142_DWC_HYS_CH0				0x40
+> +#define TI_ADS7142_DWC_HTH_CH1_LSB			0x3C
+> +#define TI_ADS7142_DWC_HTH_CH1_MSB			0x3D
+> +#define TI_ADS7142_DWC_LTH_CH1_LSB			0x3E
+> +#define TI_ADS7142_DWC_LTH_CH1_MSB			0x3F
+> +#define TI_ADS7142_DWC_HYS_CH1				0x41
+> +#define TI_ADS7142_PRE_ALT_EVT_CNT			0x36
+> +#define TI_ADS7142_ALT_TRIG_CHID			0x03
+> +#define TI_ADS7142_ALT_LOW_FLAGS			0x0C
+> +#define TI_ADS7142_ALT_LOW_FLAGS_CH0			BIT(0)
+> +#define TI_ADS7142_ALT_LOW_FLAGS_CH1			BIT(1)
+> +#define TI_ADS7142_ALT_HIGH_FLAGS			0x0E
+> +#define TI_ADS7142_ALT_HIGH_FLAGS_CH0			BIT(0)
+> +#define TI_ADS7142_ALT_HIGH_FLAGS_CH1			BIT(1)
+> +
+> +#define TI_ADS7142_THRESHOLD_MSK			0xFFF
+> +#define TI_ADS7142_HYSTERESIS_MSK			0x3F
+> +
+> +struct ti_ads7142_channel_data {
+> +	int status;
+> +	int value;
+> +};
+> +
+> +struct ti_ads7142_channel_config {
+> +	bool alert_low;
+> +	bool alert_high;
+> +	int high_threshold;
+> +	int low_threshold;
+> +	int hysteresis;
+> +};
+> +
+> +struct ti_ads7142_channel {
+> +	struct ti_ads7142_channel_config config;
+> +	struct ti_ads7142_channel_data data;
+> +	u32 channel;
+> +};
+> +
+> +struct ti_ads7142_config {
+> +	bool osc_sel;
+> +	u32 n_clk;
+> +	bool monitoring_mode;
+> +};
+> +
+> +struct ti_ads7142_priv {
+> +	struct mutex lock; /* For syncing access to device */
+> +	struct regulator *vref;
+> +	struct regulator *power;
+> +	struct ti_ads7142_config config;
+> +	int channel_count;
+> +	struct ti_ads7142_channel *channels;
+> +	bool monitor_pending;
+> +};
+> +
+> +static const struct iio_event_spec ti_ads7142_events[] = {
+> +	{
+> +		.type = IIO_EV_TYPE_THRESH,
+> +		.dir = IIO_EV_DIR_RISING,
+> +		.mask_separate = BIT(IIO_EV_INFO_VALUE)
+> +				| BIT(IIO_EV_INFO_ENABLE),
+> +	}, {
+> +		.type = IIO_EV_TYPE_THRESH,
+> +		.dir = IIO_EV_DIR_FALLING,
+> +		.mask_separate = BIT(IIO_EV_INFO_VALUE)
+> +				| BIT(IIO_EV_INFO_ENABLE),
+> +	}, {
+> +		.type = IIO_EV_TYPE_THRESH,
+> +		.dir = IIO_EV_DIR_EITHER,
+> +		.mask_separate = BIT(IIO_EV_INFO_HYSTERESIS),
+> +	},
+> +};
+> +
+> +static int ti_ads7142_reg_write(const struct i2c_client *client, u8 reg,
+> +				u8 data)
+> +{
+> +	struct i2c_msg msg;
+> +	u8 buf[3];
+> +	int ret;
+> +
+> +	buf[0] = TI_ADS7142_OC_SINGLE_REG_WRITE;
+> +	buf[1] = reg;
+> +	buf[2] = data;
+> +
+> +	msg.addr = client->addr;
+> +	msg.flags = 0;
+> +	msg.len = 3;
+> +	msg.buf = buf;
+> +
+> +	ret = i2c_transfer(client->adapter, &msg, 1);
+> +
+> +	return ret >= 0 ? 0 : ret;
+> +}
+> +
+> +static int ti_ads7142_reg_read(const struct i2c_client *client, u8 reg,
+> +			       u8 *data)
+> +{
+> +	struct i2c_msg msg[2];
+Use c99 assignment to do this as something like.
+
+	struct i2c_msg msg[2] = {
+		{
+			.addr = client->addr,
+			.len = 2,
+			.buf = buf,
+		}, {
+			.addr = client->addr,
+			.flags = I2C_M_RD,
+			.len = 1,
+			.buf = data,
+		}
+}	;
+> +	u8 buf[2];
+
+	u8 buf[2] = { TI_..., reg };
+
+> +	int ret;
+> +
+> +	buf[0] = TI_ADS7142_OC_SINGLE_REG_READ;
+> +	buf[1] = reg;
+> +
+> +	msg[0].addr = client->addr;
+> +	msg[0].flags = 0;
+> +	msg[0].len = 2;
+> +	msg[0].buf = buf;
+> +
+> +	msg[1].addr = client->addr;
+> +	msg[1].flags = I2C_M_RD;
+> +	msg[1].len = 1;
+> +	msg[1].buf = data;
+> +
+> +	ret = i2c_transfer(client->adapter, msg, 2);
+> +
+> +	return ret >= 0 ? 0 : ret;
+> +}
+> +
+> +static int ti_ads7142_data_buffer_read(const struct i2c_client *client,
+> +				       int length, void *data)
+> +{
+> +	struct i2c_msg msg;
+> +	int ret;
+> +
+> +	msg.addr = client->addr;
+> +	msg.flags = I2C_M_RD;
+> +	msg.len = length;
+> +	msg.buf = data;
+> +
+> +	ret = i2c_transfer(client->adapter, &msg, 1);
+
+Looks very similar to an i2c_smbus_read_block_data call though I suppose it
+is a little odd to use mixture of smbus and non in one driver.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> +
+> +	return ret >= 0 ? 0 : ret;
+> +}
+> +
+> +static int ti_ads7142_soft_reset(const struct i2c_client *client)
+> +{
+> +	struct i2c_msg msg;
+> +	u8 buf[2];
+u8 buf[2] = { TI_ADS7142_OC_GENERAL, 0x06 }; is more compact for no loss
+of readability.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> +	int ret;
+> +
+> +	buf[0] = TI_ADS7142_OC_GENERAL;
+> +	buf[1] = 0x06;
+> +
+> +	msg.addr = client->addr;
+> +	msg.flags = 0;
+> +	msg.len = 2;
+> +	msg.buf = buf;
+> +
+> +	ret = i2c_transfer(client->adapter, &msg, 1);
+
+i2c_master_send() or even better isn't this just an open coded
+i2c_smbus_write_byte_data()
+
+
+> +
+> +	return ret >= 0 ? 0 : ret;
+
+if ret == 0 then something went wrong and we should report that.
+
+
+> +}
+> +
+> +static int ti_ads7142_address2channel(struct iio_dev *indio_dev,
+> +				      int address,
+> +				      struct ti_ads7142_channel **channel)
+> +{
+> +	struct ti_ads7142_priv *priv = iio_priv(indio_dev);
+> +	int i;
+> +
+> +	for (i = 0; i < priv->channel_count; i++) {
+> +		if (address == priv->channels[i].channel) {
+> +			*channel = &priv->channels[i];
+> +			return 0;
+> +		}
+> +	}
+> +	return -ENODEV;
+> +}
+> +
+> +static int ti_ads7142_sequence_start(struct iio_dev *indio_dev)
+> +{
+> +	struct i2c_client *client = to_i2c_client(indio_dev->dev.parent);
+> +
+> +	return ti_ads7142_reg_write(client, TI_ADS7142_START_SEQUENCE,
+> +				    TI_ADS7142_START_SEQUENCE_SEQ_START);
+> +}
+> +
+> +static int ti_ads7142_sequence_abort(struct iio_dev *indio_dev)
+> +{
+> +	struct i2c_client *client = to_i2c_client(indio_dev->dev.parent);
+> +
+> +	return ti_ads7142_reg_write(client, TI_ADS7142_ABORT_SEQUENCE,
+> +				    TI_ADS7142_ABORT_SEQUENCE_SEQ_ABORT);
+> +}
+> +
+> +static int ti_ads7142_osc_set(struct iio_dev *indio_dev)
+> +{
+> +	struct ti_ads7142_priv *priv = iio_priv(indio_dev);
+> +	struct i2c_client *client = to_i2c_client(indio_dev->dev.parent);
+> +	int ret;
+> +
+> +	ret = ti_ads7142_reg_write(client, TI_ADS7142_OSC_SEL,
+> +				   priv->config.osc_sel ? TI_ADS7142_OSC_SEL_HSZ_LP : 0);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return ti_ads7142_reg_write(client, TI_ADS7142_NCLK_SEL,
+> +				    priv->config.n_clk);
+> +}
+> +
+> +static int ti_ads7142_input_cfg_set(struct iio_dev *indio_dev)
+> +{
+> +	struct i2c_client *client = to_i2c_client(indio_dev->dev.parent);
+> +
+> +	return ti_ads7142_reg_write(client, TI_ADS7142_CH_INPUT_CFG,
+> +				    TI_ADS7142_CH_INPUT_CFG_TCSE);
+> +}
+> +
+> +static int ti_ads7142_dout_format_set(struct iio_dev *indio_dev)
+> +{
+> +	struct i2c_client *client = to_i2c_client(indio_dev->dev.parent);
+> +
+> +	return ti_ads7142_reg_write(client, TI_ADS7142_DOUT_FORMAT_CFG,
+> +				    TI_ADS7142_DOUT_FORMAT_CFG_12BCHDV);
+> +}
+> +
+> +static int ti_ads7142_hth_set(struct iio_dev *indio_dev, int channel,
+> +			      int threshold)
+> +{
+> +	struct i2c_client *client = to_i2c_client(indio_dev->dev.parent);
+> +	int ret;
+> +
+> +	if (threshold < 0 || threshold > TI_ADS7142_THRESHOLD_MSK)
+> +		return -EINVAL;
+> +
+> +	ret = ti_ads7142_reg_write(client,
+> +				   TI_ADS7142_DWC_HTH_CH0_LSB + channel * 4,
+> +				   threshold & 0xFF);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = ti_ads7142_reg_write(client,
+> +				   TI_ADS7142_DWC_HTH_CH0_MSB + channel * 4,
+> +				   (threshold >> 8) & 0xF);
+> +	return ret;
+> +}
+> +
+> +static int ti_ads7142_lth_set(struct iio_dev *indio_dev, int channel,
+> +			      int threshold)
+> +{
+> +	struct i2c_client *client = to_i2c_client(indio_dev->dev.parent);
+> +	int ret;
+> +
+> +	if (threshold < 0 || threshold > TI_ADS7142_THRESHOLD_MSK)
+> +		return -EINVAL;
+> +
+> +	ret = ti_ads7142_reg_write(client,
+> +				   TI_ADS7142_DWC_LTH_CH0_LSB + channel * 4,
+> +				   threshold & 0xFF);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = ti_ads7142_reg_write(client,
+> +				   TI_ADS7142_DWC_LTH_CH0_MSB + channel * 4,
+> +				   (threshold >> 8) & 0xF);
+> +	return ret;
+> +}
+> +
+> +static int ti_ads7142_hys_set(struct iio_dev *indio_dev, int channel,
+> +			      int hysteresis)
+> +{
+> +	struct i2c_client *client = to_i2c_client(indio_dev->dev.parent);
+> +	int ret;
+> +
+> +	if (hysteresis < 0 || hysteresis > TI_ADS7142_HYSTERESIS_MSK)
+> +		return -EINVAL;
+> +
+> +	ret = ti_ads7142_reg_write(client, TI_ADS7142_DWC_HYS_CH0 + channel,
+> +				   hysteresis & TI_ADS7142_HYSTERESIS_MSK);
+> +	return ret;
+> +}
+> +
+> +static int ti_ads7142_collect_channel_data(struct iio_dev *indio_dev,
+> +					   int *channel_collected)
+> +{
+> +	struct i2c_client *client = to_i2c_client(indio_dev->dev.parent);
+> +	struct ti_ads7142_channel *channel;
+> +	u16 data_buffer;
+> +	u8 data_buffer_status;
+> +	int data_valid;
+> +	int channel_address;
+> +	int value;
+> +	int ret;
+> +
+> +	ret = ti_ads7142_reg_read(client, TI_ADS7142_DATA_BUFFER_STATUS,
+> +				  &data_buffer_status);
+> +	if (ret)
+> +		return ret;
+> +
+> +	data_buffer_status &= 0x1F;
+> +
+> +	do {
+> +		ret = ti_ads7142_data_buffer_read(client, sizeof(data_buffer),
+> +						  &data_buffer);
+> +		if (ret)
+> +			break;
+> +		data_buffer = be16_to_cpu(data_buffer);
+> +		data_valid = data_buffer & 1;
+> +		if (data_valid) {
+> +			channel_address = (data_buffer >> 1) & 0x7;
+> +			value = data_buffer >> 4;
+> +			ret = ti_ads7142_address2channel(indio_dev,
+> +							 channel_address,
+> +							 &channel);
+> +			if (!ret) {
+> +				channel->data.status = data_valid;
+> +				channel->data.value = value;
+> +				*channel_collected |= 1 << channel_address;
+> +			}
+> +		}
+> +	} while (--data_buffer_status);
+> +
+> +	return ret;
+> +}
+> +
+> +static int ti_ads7142_do_work(struct iio_dev *indio_dev)
+
+As mentioned below, these function needs a more informative name.
+
+> +{
+> +	struct ti_ads7142_priv *priv = iio_priv(indio_dev);
+> +	struct i2c_client *client = to_i2c_client(indio_dev->dev.parent);
+> +	int i;
+> +	int alert_ch = 0;
+> +	int ret;
+> +
+> +	if (!priv->config.monitoring_mode)
+> +		return 0;
+> +
+> +	mutex_lock(&priv->lock);
+> +	priv->monitor_pending = false;
+> +
+> +	ret = ti_ads7142_sequence_abort(indio_dev);
+> +	if (ret)
+> +		goto final;
+> +
+> +	ret = ti_ads7142_osc_set(indio_dev);
+> +	if (ret)
+> +		goto final;
+> +
+> +	ret = ti_ads7142_input_cfg_set(indio_dev);
+> +	if (ret)
+> +		goto final;
+> +
+> +	ret = ti_ads7142_dout_format_set(indio_dev);
+> +	if (ret)
+> +		goto final;
+> +
+> +	ret = ti_ads7142_reg_write(client, TI_ADS7142_DATA_BUFFER_OPMODE,
+> +				   TI_ADS7142_DATA_BUFFER_OPMODE_PRE_ALERT);
+> +	if (ret)
+> +		goto final;
+> +
+> +	ret = ti_ads7142_reg_write(client, TI_ADS7142_OPMODE_SEL,
+> +				   TI_ADS7142_OPMODE_SEL_MONITORING);
+> +	if (ret)
+> +		goto final;
+> +
+> +	ret = ti_ads7142_reg_write(client, TI_ADS7142_AUTO_SEQ_CHEN,
+> +				   TI_ADS7142_AUTO_SEQ_CHEN_CH0
+> +				   | TI_ADS7142_AUTO_SEQ_CHEN_CH1);
+> +	if (ret)
+> +		goto final;
+> +
+> +	ret = ti_ads7142_reg_write(client, TI_ADS7142_PRE_ALT_EVT_CNT, 0);
+> +	if (ret)
+> +		goto final;
+> +
+> +	ret = ti_ads7142_reg_write(client, TI_ADS7142_ALT_LOW_FLAGS,
+> +				   TI_ADS7142_ALT_LOW_FLAGS_CH0
+> +				   | TI_ADS7142_ALT_LOW_FLAGS_CH1);
+> +	if (ret)
+> +		goto final;
+> +
+> +	ret = ti_ads7142_reg_write(client, TI_ADS7142_ALT_HIGH_FLAGS,
+> +				   TI_ADS7142_ALT_HIGH_FLAGS_CH0
+> +				   | TI_ADS7142_ALT_HIGH_FLAGS_CH1);
+> +	if (ret)
+> +		goto final;
+> +
+> +	for (i = 0; i < priv->channel_count; i++) {
+> +		ret = ti_ads7142_hth_set(indio_dev, priv->channels[i].channel,
+> +					 priv->channels[i].config.high_threshold);
+> +		if (ret)
+> +			goto final;
+> +
+> +		ret = ti_ads7142_lth_set(indio_dev, priv->channels[i].channel,
+> +					 priv->channels[i].config.low_threshold);
+> +		if (ret)
+> +			goto final;
+> +
+> +		ret = ti_ads7142_hys_set(indio_dev, priv->channels[i].channel,
+> +					 priv->channels[i].config.hysteresis);
+> +		if (ret)
+> +			goto final;
+> +
+> +		if (priv->channels[i].config.alert_low ||
+> +		    priv->channels[i].config.alert_high) {
+> +			alert_ch |= 1 << priv->channels[i].channel;
+> +		}
+> +	}
+> +
+> +	ret = ti_ads7142_reg_write(client, TI_ADS7142_ALERT_DWC_EN,
+> +				   alert_ch ? TI_ADS7142_ALERT_DWC_EN_BLOCK_EN : 0);
+> +	if (ret)
+> +		goto final;
+> +
+> +	ret = ti_ads7142_reg_write(client, TI_ADS7142_ALERT_CHEN,
+> +				   alert_ch);
+> +	if (ret)
+> +		goto final;
+> +
+> +	if (alert_ch) {
+> +		ret = ti_ads7142_sequence_start(indio_dev);
+> +		priv->monitor_pending = !ret;
+> +	}
+> +final:
+> +	mutex_unlock(&priv->lock);
+> +	return ret;
+> +}
+> +
+> +static int ti_ads7142_read_channel_manual(struct iio_dev *indio_dev,
+> +					  int address, int *val)
+> +{
+> +	struct ti_ads7142_priv *priv = iio_priv(indio_dev);
+> +	struct i2c_client *client = to_i2c_client(indio_dev->dev.parent);
+> +	u16 data_buffer;
+> +	int ret;
+> +
+> +	if (address < 0 || address > 1)
+
+I'm assuming there is no way we could get here with this not being true?
+If so drop it.  If it is possible, then add a comment as it seems like
+an odd thing to need to check.
+
+> +		return -EINVAL;
+> +
+> +	mutex_lock(&priv->lock);
+> +	ret = ti_ads7142_sequence_abort(indio_dev);
+> +	if (ret)
+> +		goto final;
+> +
+> +	ret = ti_ads7142_osc_set(indio_dev);
+> +	if (ret)
+> +		goto final;
+> +
+> +	ret = ti_ads7142_input_cfg_set(indio_dev);
+> +	if (ret)
+> +		goto final;
+> +
+> +	ret = ti_ads7142_dout_format_set(indio_dev);
+> +	if (ret)
+> +		goto final;
+> +
+> +	ret = ti_ads7142_reg_write(client, TI_ADS7142_OPMODE_SEL,
+> +				   TI_ADS7142_OPMODE_SEL_MANUALSEQ);
+> +	if (ret)
+> +		goto final;
+> +
+> +	ret = ti_ads7142_reg_write(client, TI_ADS7142_AUTO_SEQ_CHEN,
+> +				   1 << address);
+> +	if (ret)
+> +		goto final;
+> +
+> +	ret = ti_ads7142_sequence_start(indio_dev);
+> +	if (ret)
+> +		goto final;
+> +
+> +	ret = ti_ads7142_data_buffer_read(client, sizeof(data_buffer),
+> +					  &data_buffer);
+> +	if (ret)
+> +		goto abort;
+> +
+> +	*val = (be16_to_cpu(data_buffer) >> 4);
+> +
+> +abort:
+> +	ret = ti_ads7142_sequence_abort(indio_dev);
+> +final:
+> +	mutex_unlock(&priv->lock);
+> +	return ret;
+> +}
+> +
+> +static int ti_ads7142_read_channel_monitor(struct iio_dev *indio_dev,
+> +					   int address, int *val)
+> +{
+> +	struct ti_ads7142_priv *priv = iio_priv(indio_dev);
+> +	struct ti_ads7142_channel *channel;
+> +	int ret;
+> +
+> +	if (address < 0 || address > 1)
+> +		return -EINVAL;
+> +
+> +	ret = ti_ads7142_address2channel(indio_dev, address, &channel);
+> +	if (ret)
+> +		return ret;
+> +
+> +	mutex_lock(&priv->lock);
+> +	if (!channel->data.status) {
+> +		ret = -EAGAIN;
+> +	} else {
+> +		*val = channel->data.value;
+> +		channel->data.status = 0;
+> +		ret = 0;
+
+ret already is 0 so no need to set it.
+
+> +	}
+> +	mutex_unlock(&priv->lock);
+> +	return ret;
+> +}
+> +
+> +static int ti_ads7142_read_channel(struct iio_dev *indio_dev,
+> +				   int address, int *val)
+> +{
+> +	struct ti_ads7142_priv *priv = iio_priv(indio_dev);
+> +
+> +	if (priv->config.monitoring_mode)
+> +		return ti_ads7142_read_channel_monitor(indio_dev, address,
+> +						       val);
+> +	return ti_ads7142_read_channel_manual(indio_dev, address, val);
+> +}
+> +
+> +static irqreturn_t ti_ads7142_ist(int irq, void *dev_id)
+> +{
+> +	struct iio_dev *indio_dev = dev_id;
+> +	struct i2c_client *client = to_i2c_client(indio_dev->dev.parent);
+> +	struct ti_ads7142_priv *priv = iio_priv(indio_dev);
+> +	struct ti_ads7142_channel *channel;
+> +	u8 low_flags;
+> +	u8 high_flags;
+> +	u8 seq_st;
+> +	int i;
+> +	int ret;
+> +	int channel_collected;
+> +	s64 timestamp = iio_get_time_ns(indio_dev);
+> +
+> +	mutex_lock(&priv->lock);
+> +	if (!priv->config.monitoring_mode || !priv->monitor_pending) {
+> +		mutex_unlock(&priv->lock);
+> +		return IRQ_NONE;
+> +	}
+> +
+> +	ret = ti_ads7142_reg_read(client, TI_ADS7142_SEQUENCE_STATUS, &seq_st);
+> +	if (ret) {
+> +		dev_err(indio_dev->dev.parent,
+> +			"%s: SEQUENCE_STATUS reg read error(%i)",
+> +			__func__, ret);
+> +		goto final;
+> +	}
+> +
+> +	if ((seq_st & TI_ADS7142_SEQUENCE_STATUS_SEQ_ERR_ST_MSK)
+> +	    != TI_ADS7142_SEQUENCE_STATUS_SEQ_ENABLED) {
+> +		dev_err(indio_dev->dev.parent,
+> +			"%s: SEQUENCE_STATUS error(%i)",
+> +			__func__, seq_st);
+> +		goto final;
+> +	}
+> +
+> +	ret = ti_ads7142_reg_read(client, TI_ADS7142_ALT_LOW_FLAGS,
+> +				  &low_flags);
+> +	if (ret) {
+> +		dev_err(indio_dev->dev.parent,
+> +			"%s: ALT_LOW_FLAGS reg read error(%i)",
+> +			__func__, ret);
+> +		goto final;
+> +	}
+> +
+> +	ret = ti_ads7142_reg_read(client, TI_ADS7142_ALT_HIGH_FLAGS,
+> +				  &high_flags);
+> +	if (ret) {
+> +		dev_err(indio_dev->dev.parent,
+> +			"%s: ALT_HIGH_FLAGS reg read error(%i)",
+> +			__func__, ret);
+> +		goto final;
+> +	}
+> +
+> +	channel_collected = 0;
+> +	ret = ti_ads7142_collect_channel_data(indio_dev, &channel_collected);
+> +	if (ret)
+> +		goto final;
+> +
+> +	if (!channel_collected)
+> +		goto final;
+> +
+> +	for (i = 0; i < priv->channel_count; i++) {
+> +		channel = &priv->channels[i];
+> +		if (!(channel_collected & (1 << channel->channel)))
+> +			continue;
+
+Perhaps use a for_each_bit_set(i, channel_collected) to simplify this.
+
+> +		if (channel->config.alert_low &&
+> +		    (low_flags & (1 << channel->channel))) {
+> +			iio_push_event(indio_dev,
+> +				       IIO_UNMOD_EVENT_CODE(IIO_VOLTAGE,
+> +							    channel->channel,
+> +							    IIO_EV_TYPE_THRESH,
+> +							    IIO_EV_DIR_FALLING),
+> +				       timestamp);
+> +		}
+> +
+> +		if (channel->config.alert_high &&
+> +		    (high_flags & (1 << channel->channel))) {
+> +			iio_push_event(indio_dev,
+> +				       IIO_UNMOD_EVENT_CODE(IIO_VOLTAGE,
+> +							    channel->channel,
+> +							    IIO_EV_TYPE_THRESH,
+> +							    IIO_EV_DIR_RISING),
+> +				       timestamp);
+> +		}
+> +	}
+> +
+> +final:
+> +	mutex_unlock(&priv->lock);
+> +
+> +	ret = ti_ads7142_do_work(indio_dev);
+> +	if (ret) {
+> +		dev_err(indio_dev->dev.parent,
+> +			"%s: start monitoring error(%i)",
+> +			__func__, ret);
+> +		return IRQ_NONE;
+> +	}
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static int ti_ads7142_read_raw(struct iio_dev *indio_dev,
+> +			       struct iio_chan_spec const *chan,
+> +			       int *val, int *val2, long info)
+> +{
+> +	struct ti_ads7142_priv *priv = iio_priv(indio_dev);
+> +	int ret;
+> +
+> +	switch (info) {
+> +	case IIO_CHAN_INFO_RAW:
+> +		ret = ti_ads7142_read_channel(indio_dev, chan->address, val);
+> +		if (!ret)
+
+		if (ret)
+			return ret;
+
+		return IIO_VAL_INT;
+
+Always have error cases out of line.  That consistency makes
+it easier to review.
+
+
+> +			ret = IIO_VAL_INT;
+> +		break;
+> +	case IIO_CHAN_INFO_SAMP_FREQ:
+> +		*val = priv->config.n_clk;
+> +		ret = IIO_VAL_INT;
+> +		break;
+> +	case IIO_CHAN_INFO_SCALE:
+> +		if (IS_ERR(priv->vref)) {
+> +			ret = -EINVAL;
+> +		} else {
+> +			*val = regulator_get_voltage(priv->vref) / 1000;
+> +			*val2 = chan->scan_type.realbits;
+> +			ret = IIO_VAL_FRACTIONAL_LOG2;
+> +		}
+> +		break;
+> +	default:
+> +		ret = -EINVAL;
+> +	}
+> +	return ret;
+> +}
+> +
+> +static int ti_ads7142_write_raw(struct iio_dev *indio_dev,
+> +				struct iio_chan_spec const *chan,
+> +				int val, int val2, long mask)
+> +{
+> +	struct ti_ads7142_priv *priv = iio_priv(indio_dev);
+> +	int ret;
+> +
+> +	switch (mask) {
+> +	case IIO_CHAN_INFO_SAMP_FREQ:
+> +		priv->config.n_clk = val;
+> +		if (priv->config.monitoring_mode)
+> +			ret = ti_ads7142_do_work(indio_dev);
+return ti_...
+
+Early returns almost always easier to read.
+Note applies to lots of stuff above.
+
+
+> +		else
+> +			ret = 0;
+> +		break;
+> +	default:
+> +		ret = -EINVAL;
+> +		break;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int ti_ads7142_read_event_value(struct iio_dev *indio_dev,
+> +				       const struct iio_chan_spec *chan,
+> +				       enum iio_event_type type,
+> +				       enum iio_event_direction dir,
+> +				       enum iio_event_info info,
+> +				       int *val, int *val2)
+> +{
+> +	struct ti_ads7142_priv *priv = iio_priv(indio_dev);
+> +	struct ti_ads7142_channel *channel;
+> +	int ret;
+> +
+> +	if (!priv->config.monitoring_mode)
+> +		return -EINVAL;
+> +
+> +	ret = ti_ads7142_address2channel(indio_dev, chan->address,
+> +					 &channel);
+> +	if (ret)
+> +		return ret;
+> +
+> +	switch (info) {
+> +	case IIO_EV_INFO_VALUE:
+> +		if (dir == IIO_EV_DIR_RISING)
+> +			*val = channel->config.high_threshold;
+> +		else
+> +			*val = channel->config.low_threshold;
+> +		ret = IIO_VAL_INT;
+> +	break;
+> +	case IIO_EV_INFO_HYSTERESIS:
+> +		*val = channel->config.hysteresis;
+> +		ret = IIO_VAL_INT;
+
+return IIO_VAL_INT; etc
+
+> +	break;
+> +	default:
+> +		ret = -EINVAL;
+
+return -EINVAL;
+
+> +	break;
+> +	}
+> +	return ret;
+> +}
+> +
+> +static int ti_ads7142_write_event_value(struct iio_dev *indio_dev,
+> +					const struct iio_chan_spec *chan,
+> +					enum iio_event_type type,
+> +					enum iio_event_direction dir,
+> +					enum iio_event_info info,
+> +					int val, int val2)
+> +{
+> +	struct ti_ads7142_priv *priv = iio_priv(indio_dev);
+> +	struct ti_ads7142_channel *channel;
+> +	bool have_to_do = false;
+> +	int ret;
+> +
+> +	if (!priv->config.monitoring_mode)
+> +		return -EINVAL;
+> +
+> +	ret = ti_ads7142_address2channel(indio_dev, chan->address,
+> +					 &channel);
+> +	if (ret)
+> +		return ret;
+> +
+> +	mutex_lock(&priv->lock);
+> +	switch (info) {
+> +	case IIO_EV_INFO_VALUE:
+> +		if (val < 0 || val > TI_ADS7142_THRESHOLD_MSK) {
+> +			ret = -EINVAL;
+> +		} else {
+> +			if (dir == IIO_EV_DIR_RISING) {
+> +				if (val != channel->config.high_threshold) {
+> +					channel->config.high_threshold = val;
+> +					have_to_do = true;
+> +				}
+> +			} else {
+> +				if (val != channel->config.low_threshold) {
+> +					channel->config.low_threshold = val;
+> +					have_to_do = true;
+> +				}
+> +			}
+> +		}
+> +	break;
+> +	case IIO_EV_INFO_HYSTERESIS:
+> +		if (val < 0 || val > TI_ADS7142_HYSTERESIS_MSK) {
+> +			ret = -EINVAL;
+> +		} else {
+> +			if (val != channel->config.hysteresis) {
+> +				channel->config.hysteresis = val;
+> +				have_to_do = true;
+> +			}
+> +		}
+> +	break;
+> +	default:
+> +		ret = -EINVAL;
+> +	break;
+> +	}
+> +	mutex_unlock(&priv->lock);
+> +	if (!ret && have_to_do)
+> +		ret = ti_ads7142_do_work(indio_dev);
+> +	return ret;
+> +}
+> +
+> +static int ti_ads7142_read_event_config(struct iio_dev *indio_dev,
+> +					const struct iio_chan_spec *chan,
+> +					enum iio_event_type type,
+> +					enum iio_event_direction dir)
+> +{
+> +	struct ti_ads7142_priv *priv = iio_priv(indio_dev);
+> +	struct ti_ads7142_channel *channel;
+> +	int ret;
+> +
+> +	if (!priv->config.monitoring_mode)
+> +		return -EINVAL;
+> +
+> +	if (type != IIO_EV_TYPE_THRESH)
+> +		return -EINVAL;
+> +
+> +	ret = ti_ads7142_address2channel(indio_dev, chan->address,
+> +					 &channel);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (dir == IIO_EV_DIR_RISING)
+> +		ret = channel->config.alert_high ? 1 : 0;
+
+Not fine using ret = channel->config.alert_high; directly?
+
+> +	else
+> +		ret = channel->config.alert_low ? 1 : 0;
+> +
+> +	return ret;
+> +}
+> +
+> +static int ti_ads7142_write_event_config(struct iio_dev *indio_dev,
+> +					 const struct iio_chan_spec *chan,
+> +					 enum iio_event_type type,
+> +					 enum iio_event_direction dir,
+> +					 int state)
+> +{
+> +	struct ti_ads7142_priv *priv = iio_priv(indio_dev);
+> +	struct ti_ads7142_channel *channel;
+> +	bool have_to_do = false;
+> +	int ret;
+> +
+> +	if (!priv->config.monitoring_mode)
+> +		return -EINVAL;
+> +
+> +	if (type != IIO_EV_TYPE_THRESH)
+> +		return -EINVAL;
+> +
+> +	ret = ti_ads7142_address2channel(indio_dev, chan->address,
+> +					 &channel);
+> +	if (ret)
+> +		return ret;
+> +
+> +	mutex_lock(&priv->lock);
+> +	if (dir == IIO_EV_DIR_RISING) {
+> +		if (channel->config.alert_high != state) {
+> +			channel->config.alert_high = state;
+> +			have_to_do = true;
+> +		}
+> +	} else {
+> +		if (channel->config.alert_low != state) {
+> +			channel->config.alert_low = state;
+> +			have_to_do = true;
+> +		}
+> +	}
+> +	mutex_unlock(&priv->lock);
+> +
+> +	if (have_to_do)
+> +		ret = ti_ads7142_do_work(indio_dev);
+that's going to need a better name as I have no idea what _do_work implies.
+
+> +
+> +	return ret;
+> +}
+> +
+> +static const struct iio_info ti_ads7142_iio_info = {
+
+If interrupt is going to be optional, pick between two versions of struct iio_info
+so that we don't provide callbacks for the case where we have no interrupts.
+
+> +	.read_raw		= ti_ads7142_read_raw,
+> +	.write_raw		= ti_ads7142_write_raw,
+> +	.read_event_value	= ti_ads7142_read_event_value,
+> +	.write_event_value	= ti_ads7142_write_event_value,
+> +	.read_event_config	= ti_ads7142_read_event_config,
+> +	.write_event_config	= ti_ads7142_write_event_config,
+> +};
+> +
+> +static int ti_ads7142_parse_channel_config_of(struct device *dev,
+> +					      struct iio_dev *indio_dev)
+> +{
+> +	struct ti_ads7142_priv *priv = iio_priv(indio_dev);
+> +	struct device_node *channel_node;
+> +	struct iio_chan_spec *iio_channels;
+> +	struct iio_chan_spec *iio_channel;
+> +	struct ti_ads7142_channel *ads_channel;
+> +	int channel_index = 0;
+> +	int ret;
+> +
+> +	priv->channel_count = of_get_available_child_count(dev->of_node);
+> +	if (!priv->channel_count) {
+> +		dev_err(dev, "dt: there is no channel definition");
+> +		return -ENODEV;
+> +	}
+> +
+> +	priv->channels = devm_kcalloc(dev, priv->channel_count,
+> +				      sizeof(*priv->channels),
+> +				      GFP_KERNEL);
+> +	if (!priv->channels)
+> +		return -ENOMEM;
+> +
+> +	indio_dev->num_channels = priv->channel_count;
+
+Why do you need that in two places?
+
+> +	iio_channels = devm_kcalloc(dev, priv->channel_count,
+> +				    sizeof(*iio_channels),
+> +				    GFP_KERNEL);
+> +	if (!iio_channels)
+> +		return -ENOMEM;
+> +
+> +	indio_dev->channels = iio_channels;
+> +
+> +	for_each_available_child_of_node(dev->of_node, channel_node) {
+> +		ads_channel = &priv->channels[channel_index];
+> +
+> +		ret = of_property_read_u32(channel_node, "reg",
+> +					   &ads_channel->channel);
+> +		if (ret)
+> +			goto err;
+> +
+> +		iio_channel = &iio_channels[channel_index];
+> +		iio_channel->type = IIO_VOLTAGE;
+> +		iio_channel->indexed = 1;
+> +		iio_channel->info_mask_separate = BIT(IIO_CHAN_INFO_RAW)
+> +						  | BIT(IIO_CHAN_INFO_SAMP_FREQ);
+> +		if (!IS_ERR(priv->vref))
+Ah.  This somewhat explains the optional regulator.
+We have done this in a few old drivers because they initially were missing vref support
+and we couldn't break existing device tree bindings.  I'm not keen to see it
+done for a new driver.  Just make the vref-supply required.
+If it's a fixed voltage that is always on, then the device tree additions are
+trivial anyway.
+
+> +			iio_channel->info_mask_separate |= BIT(IIO_CHAN_INFO_SCALE);
+> +		iio_channel->scan_type.sign = 'u';
+> +		iio_channel->scan_type.realbits = 12;
+> +		iio_channel->scan_type.storagebits = 16;
+> +		iio_channel->scan_type.shift = 0;
+
+No need to specify obvious default shift of 0.  Rely on the zeroed allocation.
+
+> +		iio_channel->scan_type.endianness = IIO_CPU;
+> +		iio_channel->address = ads_channel->channel;
+> +		iio_channel->scan_index = ads_channel->channel;
+> +		iio_channel->channel = ads_channel->channel;
+> +		if (priv->config.monitoring_mode) {
+> +			iio_channel->event_spec = ti_ads7142_events;
+> +			iio_channel->num_event_specs = ARRAY_SIZE(ti_ads7142_events);
+> +		}
+> +
+> +		ads_channel->config.high_threshold = TI_ADS7142_THRESHOLD_MSK;
+> +		ret = of_property_read_u32(channel_node, "ti,threshold-rising",
+
+These are usually considered a matter of userspace policy only.   Will need a strong
+argument for them to be in DT.
+
+> +					   &ads_channel->config.high_threshold);
+> +		ads_channel->config.alert_high = !ret;
+> +		ret = of_property_read_u32(channel_node, "ti,threshold-falling",
+> +					   &ads_channel->config.low_threshold);
+> +		ads_channel->config.alert_low = !ret;
+> +		ret = of_property_read_u32(channel_node, "ti,hysteresis",
+> +					   &ads_channel->config.hysteresis);
+> +		channel_index++;
+> +	}
+> +
+> +	return 0;
+> +err:
+> +	of_node_put(channel_node);
+> +	return ret;
+> +}
+> +
+> +static int ti_ads7142_parse_config_of(struct device *dev,
+> +				      struct iio_dev *indio_dev)
+> +{
+> +	struct ti_ads7142_priv *priv = iio_priv(indio_dev);
+> +
+> +	priv->config.osc_sel = of_property_read_bool(dev->of_node,
+> +						     "ti,osc-sel");
+
+Please use generic device property access functions where possible.
+That basically gives us support on non OF based platforms for free.
+
+> +	of_property_read_u32(dev->of_node, "ti,n-clk", &priv->config.n_clk);
+> +	priv->config.monitoring_mode = of_property_read_bool(dev->of_node,
+> +							     "ti,monitoring-mode");
+> +
+> +	return ti_ads7142_parse_channel_config_of(dev, indio_dev);
+> +}
+> +
+> +static int ti_ads7142_probe(struct i2c_client *client,
+> +			    const struct i2c_device_id *id)
+> +{
+> +	struct iio_dev *indio_dev;
+> +	struct ti_ads7142_priv *priv;
+> +	int ret;
+> +
+> +	ret = ti_ads7142_soft_reset(client);
+> +	if (ret)
+> +		return ret;
+> +
+> +	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*priv));
+> +	if (!indio_dev)
+> +		return -ENOMEM;
+> +
+> +	priv = iio_priv(indio_dev);
+> +	i2c_set_clientdata(client, indio_dev);
+> +
+> +	indio_dev->dev.parent = &client->dev;
+> +	indio_dev->dev.of_node = client->dev.of_node;
+
+Both of the above are set by the iio core, so no need to set her.
+ 
+> +	indio_dev->name = TI_ADS7142_NAME;
+> +	indio_dev->modes = INDIO_DIRECT_MODE;
+> +	indio_dev->info = &ti_ads7142_iio_info;
+> +
+> +	mutex_init(&priv->lock);
+> +
+> +	priv->vref = devm_regulator_get_optional(&client->dev, "vref");
+
+There isn't a vref pin on the device.  Vref is used in the datasheet
+but the pinout makes it clear it is actually avdd which is definitely
+not optional.
+
+> +	if (!IS_ERR(priv->vref)) {
+> +		ret = regulator_enable(priv->vref);
+> +		if (ret)
+> +			goto err;
+As you have simple handling of power in here, I would definitely look
+to use managed calls to disable the regulators.
+
+	devm_add_action_or_reset() is usual way of doing this.
+
+If nothing else it will ensure that the unwind on removal is the mirror
+image of the setup on probe() and hence it is much easier to avoid any
+subtle race conditions.
+
+> +	}
+> +
+> +	priv->power = devm_regulator_get_optional(&client->dev, "power");
+
+dvdd?  Not sure what else power could be.  Note that you should only
+use _get_optional() for regulators that really optional and may not be
+connected.  For cases where you simply can't control them and they aren't
+specified in the dts then devm_regulator_get() will supply a stub regulator
+that is always on.
+
+
+> +	if (!IS_ERR(priv->power)) {
+> +		ret = regulator_enable(priv->power);
+> +		if (ret)
+> +			goto err_regulator;
+> +	}
+> +
+> +	ret = ti_ads7142_parse_config_of(&client->dev, indio_dev);
+> +	if (ret)
+> +		goto err_regulator;
+> +
+> +	if (!client->irq && priv->config.monitoring_mode) {
+
+Given you can check this before you have to do any unwinding, move it
+earlier.
+
+> +		ret = -EINVAL;
+> +		dev_err(&client->dev, "Interrupt not specified\n");
+> +		goto err_regulator;
+> +	}
+> +	if (client->irq && priv->config.monitoring_mode) {
+> +		ret = devm_request_threaded_irq(&client->dev, client->irq,
+> +						NULL, ti_ads7142_ist,
+> +						IRQF_ONESHOT | IRQF_SHARED,
+> +						dev_name(&client->dev),
+> +						indio_dev);
+> +		if (ret) {
+> +			dev_err(&client->dev, "Unable to request IRQ %i",
+> +				client->irq);
+> +			goto err_regulator;
+> +		}
+> +	}
+> +
+> +	ret = iio_device_register(indio_dev);
+> +	if (ret) {
+> +		dev_err(&client->dev, "Failed to register iio device");
+> +		goto err_regulator;
+> +	}
+> +
+> +	ret = ti_ads7142_do_work(indio_dev);
+
+As iio_device_register() is responsible for exposing userspace interfaces it
+is very rarely a good idea to do anything after it in probe()
+(some exceptions for runtime pm autosuspend setup as that can kick in later)
+
+> +	if (!ret) {
+> +		dev_info(&client->dev, "%s is a %s device at address 0x%X",
+> +			 dev_name(&indio_dev->dev), indio_dev->name,
+> +			 client->addr);
+> +		return ret;
+Always have the error path out of line as it is much more consistent
+with what reviewers are expecting
+
+	if (ret)
+		goto error_unregister()
+
+	return 0;
+
+> +	}
+> +
+> +	iio_device_unregister(indio_dev);
+
+
+
+> +
+> +err_regulator:
+> +	if (!IS_ERR(priv->vref))
+> +		regulator_disable(priv->vref);
+> +	if (!IS_ERR(priv->power))
+> +		regulator_disable(priv->power);
+> +err:
+> +	mutex_destroy(&priv->lock);
+We rarely bother with mutex_destroy() in paths where the driver is being
+removed as it is only useful for debugging use of mutexes after they have
+been removed.  That doesn't happen in these paths so it tends to just be
+noise to have a mutex_destroy().  This function is useful if you have a
+mutex inside something with a different lifespan from the device and
+like to enable mutex debugging.
+
+> +
+> +	return ret;
+> +}
+> +
+> +static int ti_ads7142_remove(struct i2c_client *client)
+> +{
+> +	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+> +	struct ti_ads7142_priv *priv = iio_priv(indio_dev);
+> +
+> +	if (!IS_ERR(priv->vref))
+> +		regulator_disable(priv->vref);
+If you'd not used _optional() above you could do these without worrying
+about whether the regulator was  there or not.
+
+> +	if (!IS_ERR(priv->power))
+> +		regulator_disable(priv->power);
+> +	mutex_destroy(&priv->lock);
+> +	iio_device_unregister(indio_dev);
+
+_remove should always look like the unwinding of probe - so
+I should be able to match items in reverse order.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused ti_ads7142_suspend(struct device *dev)
+> +{
+> +	struct iio_dev *indio_dev = i2c_get_clientdata(to_i2c_client(dev));
+> +	struct ti_ads7142_priv *priv = iio_priv(indio_dev);
+> +
+> +	/**
+> +	 * Keep all regulators on when the device in autonomous
+> +	 *  monitoring mode.
+> +	 * The device can wake up the system with ALERT pin
+> +	 **/
+> +	if (priv->config.monitoring_mode && priv->monitor_pending)
+> +		return 0;
+> +
+> +	if (!IS_ERR(priv->vref))
+> +		regulator_disable(priv->vref);
+> +	if (!IS_ERR(priv->power))
+> +		regulator_disable(priv->power);
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused ti_ads7142_resume(struct device *dev)
+> +{
+> +	struct iio_dev *indio_dev = i2c_get_clientdata(to_i2c_client(dev));
+> +	struct ti_ads7142_priv *priv = iio_priv(indio_dev);
+> +	int ret;
+> +
+> +	/**
+> +	 * Nothing to do when the device in autonomous monitoring mode.
+> +	 **/
+> +	if (priv->config.monitoring_mode && priv->monitor_pending)
+> +		return 0;
+> +
+> +	if (!IS_ERR(priv->vref)) {
+> +		ret = regulator_enable(priv->vref);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +	if (!IS_ERR(priv->power)) {
+> +		ret = regulator_enable(priv->power);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static SIMPLE_DEV_PM_OPS(ti_ads7142_pm_ops, ti_ads7142_suspend,
+> +			 ti_ads7142_resume);
+> +
+> +static const struct i2c_device_id ti_ads7142_id[] = {
+> +	{ TI_ADS7142_NAME, 0 },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(i2c, ti_ads7142_id);
+> +
+> +static const struct of_device_id ti_ads7142_of_match[] = {
+> +	{ .compatible = "ti,ads7142" },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(of, ti_ads7142_of_match);
+> +
+> +static struct i2c_driver ti_ads7142_driver = {
+> +	.driver = {
+> +		.name = TI_ADS7142_NAME,
+> +		.of_match_table = ti_ads7142_of_match,
+> +		.pm = &ti_ads7142_pm_ops,
+> +	},
+> +	.probe		= ti_ads7142_probe,
+> +	.remove		= ti_ads7142_remove,
+> +	.id_table	= ti_ads7142_id,
+> +};
+> +
+> +module_i2c_driver(ti_ads7142_driver);
+> +
+> +MODULE_LICENSE("GPL");
+> +MODULE_AUTHOR("Jozsef Horvath <info@ministro.hu>");
+> +MODULE_DESCRIPTION("Texas Instruments TI_ADS7142 ADC driver");
+
