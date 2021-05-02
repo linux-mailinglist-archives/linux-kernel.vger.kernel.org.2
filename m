@@ -2,279 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C81370ECA
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 21:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41C07370ECD
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 21:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232377AbhEBTaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 15:30:46 -0400
-Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:50051 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231801AbhEBTap (ORCPT
+        id S232418AbhEBTdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 15:33:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231801AbhEBTdQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 15:30:45 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d60 with ME
-        id zvVp2400521Fzsu03vVpt8; Sun, 02 May 2021 21:29:51 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 02 May 2021 21:29:51 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [RFC PATCH] crypto: arc4: Implement a version optimized for memory usage
-Date:   Sun,  2 May 2021 21:29:46 +0200
-Message-Id: <c52bd8972c9763c3fac685d7c6af3c46a23a1477.1619983555.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sun, 2 May 2021 15:33:16 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14297C06138B
+        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 12:32:24 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id l14so3396265wrx.5
+        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 12:32:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Er8/zvVZZcQ5ioo9PA1WDtngetyRVBToQdDjDe6uhN8=;
+        b=vUxs63oHZSY/XJzqcvitR4xiYZMWdN3VFgkC18wT41XNqRuQF49k6cPxrJpShgLWdp
+         eXaE+TnCJbYNVQL3RHD+9dhFVf1uH6Vv/5gmmzXEfHfeyyW0Pes3NgJ20S4y9dOLx5tu
+         kVbYbf5XrlVd0xM58xFebRJau0P42G9hHM4CmhcJCQW5QhGFMDCVCO8u/Bfqx5qwMHt3
+         l4bxIJ3nxL+jKjG4aYYoj7SgA1E98FxV9y4WiPnu8qLvbDtpNDY7JF5NEq+FTwypLfq+
+         mk1s/E12bwHHq0AyWJY/8rHrNg9GnZRoLhcrH114k3HgcyH/nVrwIqqdMH8ZFh1Q7Yyy
+         waBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Er8/zvVZZcQ5ioo9PA1WDtngetyRVBToQdDjDe6uhN8=;
+        b=hkr/LJTdrEa/0XPKYAK4GSzrnd9Svr7K3P7oejA1gouuzl3x7/tfzU5cG2LFSMC265
+         CM761uiXut6FqRvfGalNpzhuiEjx2R09E4MYfBAaQVqa/GoxTV3RUKdGEtiXQwqq3MHW
+         +L54MVEtqwOU7M8uM586ikGYN9V2GM14eV1ig9GYJOfxBZO78s0feyAIWfEwKK3gG6m7
+         WF2ZZwzlzQayf4D9TVn3v3AJCE5KxSbYtQRN/jiRECqaoyHxP3yjoYBvBWM0OlvFnF3t
+         HtbdvmT8rUJddIuEsF6raDsjBfApQRzWdNeOFAWsMNKFXvbfpGmLHOUQD/e2OIg+niRC
+         hYVg==
+X-Gm-Message-State: AOAM530BUqTM5Sa3ADlQPNOPrxxqwR3v79UabccMLjz7jOAUR2aF8hNf
+        c7UMH1WU1oGcQzfu0WC0M3QOPA==
+X-Google-Smtp-Source: ABdhPJzTz1GxTLSMw30502mTRav4G75Dfm3vw3ZBpRjFCgFBN7RjHbIJb4IWj5XXScPc6l1LT6A+9w==
+X-Received: by 2002:a05:6000:154e:: with SMTP id 14mr20821086wry.24.1619983941605;
+        Sun, 02 May 2021 12:32:21 -0700 (PDT)
+Received: from debian-brgl.home (lfbn-nic-1-149-6.w2-15.abo.wanadoo.fr. [2.15.231.6])
+        by smtp.gmail.com with ESMTPSA id l14sm8556555wmq.4.2021.05.02.12.32.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 May 2021 12:32:21 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [GIT PULL] gpio: updates for v5.13
+Date:   Sun,  2 May 2021 21:32:16 +0200
+Message-Id: <20210502193216.24872-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The S array does not need to be u32, u8 is enough
-On machine which have efficient unaligned access, use u8 to save some
-memory.
+Hi Linus,
 
-So, provide a version optimized for memory usage in such a case.
+This is the big GPIO pull-request for this merge window. We've got two new
+drivers, new features for existing ones (like edge detection support in
+gpio-ich) and a lot of minor tweaks and improvements all over the place (but
+not in the core gpiolib code this time). We also have much appreciated
+documentation fixes and extensions. The details are in the signed tag.
 
-Based on my testing, the size of arc4_ctx is:
-	u8  version:  264
-	u32 version: 1032
+You'll notice that we have a bunch of configfs commits in our tree not acked by
+the configfs maintainers. These commits implement the concept of committable
+items in configfs - something that was well defined in the documentation for
+years but has remained unimplemented. Despite the first submission of these
+patches back in November 2020[1] and repeated pings & resending, configfs
+maintainers have remained unresponsive. After reviewing these on the GPIO
+mailing list, we decided to pick them up ourselves and send them your way
+together with the first user: the new GPIO simulator.
 
-On my machine, the u8 version is about 5% faster.
-It save ~800 bytes of memory or stack depending on how arc4_ctx is stored.
-It is likely to be more cache friendly.
+Which brings us to one of the new drivers which is a new testing module based
+on configfs & sysfs (as opposed to the old one using module parameters and
+debugfs) which allows to dynamically create simulated chips from user-space.
+It's meant to eventually completely replace gpio-mockup.
 
-It has been tested an Core i7-3770 with the following test program:
+The other new driver is the one supporting the Otto GPIO controller from
+Realtek.
 
- #include <stdlib.h>
- #include <stdio.h>
- #include <string.h>
+Other than configfs changes, there's nothing really controversial in there.
 
- #define u8      unsigned char
- #define u32     unsigned int
- #define true    1
+Please pull!
+Bartosz
 
-struct arc4_ctx_8 {
-	u8 S[256];
-	u32 x, y;
-};
-struct arc4_ctx_32 {
-	u32 S[256];
-	u32 x, y;
-};
+[1] https://www.lkml.org/lkml/2020/11/25/514
 
- #define S_type	u8
-int arc4_setkey_8(struct arc4_ctx_8 *ctx, const u8 *in_key, unsigned int key_len)
-{
-	int i, j = 0, k = 0;
+The following changes since commit 0d02ec6b3136c73c09e7859f0d0e4e2c4c07b49b:
 
-	ctx->x = 1;
-	ctx->y = 0;
+  Linux 5.12-rc4 (2021-03-21 14:56:43 -0700)
 
-	for (i = 0; i < 256; i++)
-		ctx->S[i] = i;
+are available in the Git repository at:
 
-	for (i = 0; i < 256; i++) {
-		S_type a = ctx->S[i];
+  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-updates-for-v5.13
 
-		j = (j + in_key[k] + a) & 0xff;
-		ctx->S[i] = ctx->S[j];
-		ctx->S[j] = a;
-		if (++k >= key_len)
-			k = 0;
-	}
+for you to fetch changes up to edc510855d963b5687b05a5b39a72bd35fc4c4ba:
 
-	return 0;
-}
+  gpio: sim: Fix dereference of free'd pointer config (2021-04-27 14:59:05 +0200)
 
-void arc4_crypt_8(struct arc4_ctx_8 *ctx, u8 *out, const u8 *in, unsigned int len)
-{
-	S_type *const S = ctx->S;
-	S_type a, b, ta, tb;
-	u32 x, y, ty;
+----------------------------------------------------------------
+gpio updates for v5.13
 
-	if (len == 0)
-		return;
+- new driver for the Realtek Otto GPIO controller
+- ACPI support for gpio-mpc8xxx
+- edge event support for gpio-sch (+ Kconfig fixes)
+- Kconfig improvements in gpio-ich
+- fixes to older issues in gpio-mockup
+- ACPI quirk for ignoring EC wakeups on Dell Venue 10 Pro 5055
+- improve the GPIO aggregator code by using more generic interfaces instead of
+  reimplementing them in the driver
+- implement configfs committable items
+- implement a new GPIO testing module based on configfs & sysfs together with
+  its test-suite with the intention of eventually removing the old gpio-mockup
+- convert the DT bindings for gpio-74x164 to yaml
+- documentation improvements
+- a slew of other minor fixes and improvements to GPIO drivers
 
-	x = ctx->x;
-	y = ctx->y;
+----------------------------------------------------------------
+Alexander Dahl (2):
+      docs: kernel-parameters: Move gpio-mockup for alphabetic order
+      docs: kernel-parameters: Add gpio_mockup_named_lines
 
-	a = S[x];
-	y = (y + a) & 0xff;
-	b = S[y];
+Andy Shevchenko (14):
+      lib/cmdline: Export next_arg() for being used in modules
+      gpio: aggregator: Replace custom get_arg() with a generic next_arg()
+      irqdomain: Introduce irq_domain_create_simple() API
+      gpiolib: Unify the checks on fwnode type
+      gpiolib: Move of_node operations to gpiolib-of and correct fwnode use
+      gpiolib: Introduce acpi_gpio_dev_init() and call it from core
+      gpiolib: Reuse device's fwnode to create IRQ domain
+      gpiolib: Fold conditionals into a simple ternary operator
+      gpio: mockup: Drop duplicate NULL check in gpio_mockup_unregister_pdevs()
+      gpio: mockup: Adjust documentation to the code
+      gpio: sch: Hook into ACPI GPE handler to catch GPIO edge events
+      gpio: sch: Drop MFD_CORE selection
+      gpio: ich: Switch to be dependent on LPC_ICH
+      gpio: sim: Initialize attribute allocated on the heap
 
-	do {
-		S[y] = a;
-		a = (a + b) & 0xff;
-		S[x] = b;
-		x = (x + 1) & 0xff;
-		ta = S[x];
-		ty = (y + ta) & 0xff;
-		tb = S[ty];
-		*out++ = *in++ ^ S[a];
-		if (--len == 0)
-			break;
-		y = ty;
-		a = ta;
-		b = tb;
-	} while (true);
+Barney Goette (1):
+      gpio: 104-dio-48e: Fix coding style issues
 
-	ctx->x = x;
-	ctx->y = y;
-}
+Bartosz Golaszewski (15):
+      configfs: increase the item name length
+      configfs: use (1UL << bit) for internal flags
+      configfs: implement committable items
+      samples: configfs: add a committable group
+      lib: bitmap: remove the 'extern' keyword from function declarations
+      lib: bitmap: order includes alphabetically
+      lib: bitmap: provide devm_bitmap_alloc() and devm_bitmap_zalloc()
+      gpio: sim: new testing module
+      selftests: gpio: provide a helper for reading chip info
+      selftests: gpio: add a helper for reading GPIO line names
+      selftests: gpio: add test cases for gpio-sim
+      gpio: sim: actually use the OF module table
+      Merge tag 'intel-gpio-v5.13-1' of gitolite.kernel.org:pub/scm/linux/kernel/git/andy/linux-gpio-intel into gpio/for-next
+      Merge tag 'intel-gpio-v5.13-2' of gitolite.kernel.org:pub/scm/linux/kernel/git/andy/linux-gpio-intel into gpio/for-next
+      gpio: sim: allocate IDA numbers earlier
 
- #undef S_type
- #define S_type	u32
-int arc4_setkey_32(struct arc4_ctx_32 *ctx, const u8 *in_key, unsigned int key_len)
-{
-	int i, j = 0, k = 0;
+Colin Ian King (1):
+      gpio: sim: Fix dereference of free'd pointer config
 
-	ctx->x = 1;
-	ctx->y = 0;
+Geert Uytterhoeven (1):
+      dt-bindings: gpio: fairchild,74hc595: Convert to json-schema
 
-	for (i = 0; i < 256; i++)
-		ctx->S[i] = i;
+Hans de Goede (1):
+      gpiolib: acpi: Add quirk to ignore EC wakeups on Dell Venue 10 Pro 5055
 
-	for (i = 0; i < 256; i++) {
-		S_type a = ctx->S[i];
+Jan Kiszka (1):
+      gpio: sch: Add edge event support
 
-		j = (j + in_key[k] + a) & 0xff;
-		ctx->S[i] = ctx->S[j];
-		ctx->S[j] = a;
-		if (++k >= key_len)
-			k = 0;
-	}
+Jiapeng Chong (2):
+      gpio: it87: remove unused code
+      gpio: mxs: remove useless function
 
-	return 0;
-}
+Johan Jonker (1):
+      dt-bindings: gpio: add YAML description for rockchip,gpio-bank
 
-void arc4_crypt_32(struct arc4_ctx_32 *ctx, u8 *out, const u8 *in, unsigned int len)
-{
-	S_type *const S = ctx->S;
-	S_type a, b, ta, tb;
-	u32 x, y, ty;
+Jonathan Neuschäfer (1):
+      docs: driver-api: gpio: consumer: Mark another line of code as such
 
-	if (len == 0)
-		return;
+Linus Walleij (1):
+      gpio: Mention GPIO MUX in docs
 
-	x = ctx->x;
-	y = ctx->y;
+Ran Wang (1):
+      gpio: mpc8xxx: Add ACPI support
 
-	a = S[x];
-	y = (y + a) & 0xff;
-	b = S[y];
+Randy Dunlap (3):
+      tools: gpio-utils: fix various kernel-doc warnings
+      gpiolib: some edits of kernel docs for clarity
+      gpio: sch: depends on LPC_SCH
 
-	do {
-		S[y] = a;
-		a = (a + b) & 0xff;
-		S[x] = b;
-		x = (x + 1) & 0xff;
-		ta = S[x];
-		ty = (y + ta) & 0xff;
-		tb = S[ty];
-		*out++ = *in++ ^ S[a];
-		if (--len == 0)
-			break;
-		y = ty;
-		a = ta;
-		b = tb;
-	} while (true);
+Sander Vanheule (2):
+      dt-bindings: gpio: Binding for Realtek Otto GPIO
+      gpio: Add Realtek Otto GPIO support
 
-	ctx->x = x;
-	ctx->y = y;
-}
+Tian Tao (1):
+      gpio: omap: Use device_get_match_data() helper
 
- #define KEY     "AZERTY"
- #define in      "AZERTYUIOP_QSDFGHJKLM_WXCVBN"
-
-int main() {
-        long i;
-        struct arc4_ctx_8 ctx_8;
-        u8 out8[1024] = { };
-        struct arc4_ctx_32 ctx_32;
-        u8 out32[1024] = { };
-
-        arc4_setkey_8(&ctx_8, KEY, strlen(KEY));
-        arc4_crypt_8(&ctx_8, out8, in, strlen(in));
-
-        arc4_setkey_32(&ctx_32, KEY, strlen(KEY));
-        arc4_crypt_32(&ctx_32, out32, in, strlen(in));
-
-        printf("%ld vs %ld\n", sizeof(ctx_8), sizeof(ctx_32));
-        if (memcmp(out8, out32, 1024) == 0)
-                printf("Ok\n");
-        else
-                printf("Broken\n");
-
-        return 0;
-}
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-The idea came from code found in staging/rtl8712/
-See at the top of:
-   https://elixir.bootlin.com/linux/v5.12/source/drivers/staging/rtl8712/rtl871x_security.c
-
-More precisely, in an attempt to clean staging/rtl8712/, I triggered the
-kernel test robot about some increasing stack usage:
-   https://lore.kernel.org/kernel-janitors/YHQUH+Nqc%2FzS14Tb@kroah.com/T/#m832a01a9d1517e7efc4f671ed46deae9993d6ae9
-
-The above patch works for me, but should be taken as a RFC.
----
- include/crypto/arc4.h | 8 +++++++-
- lib/crypto/arc4.c     | 8 ++++----
- 2 files changed, 11 insertions(+), 5 deletions(-)
-
-diff --git a/include/crypto/arc4.h b/include/crypto/arc4.h
-index f3c22fe01704..39545ed486e2 100644
---- a/include/crypto/arc4.h
-+++ b/include/crypto/arc4.h
-@@ -12,8 +12,14 @@
- #define ARC4_MAX_KEY_SIZE	256
- #define ARC4_BLOCK_SIZE		1
- 
-+#if defined(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS)
-+#define S_type	u8
-+#else
-+#define S_type	u32
-+#endif
-+
- struct arc4_ctx {
--	u32 S[256];
-+	S_type S[256];
- 	u32 x, y;
- };
- 
-diff --git a/lib/crypto/arc4.c b/lib/crypto/arc4.c
-index c2020f19c652..e0be0c2a08d9 100644
---- a/lib/crypto/arc4.c
-+++ b/lib/crypto/arc4.c
-@@ -21,7 +21,7 @@ int arc4_setkey(struct arc4_ctx *ctx, const u8 *in_key, unsigned int key_len)
- 		ctx->S[i] = i;
- 
- 	for (i = 0; i < 256; i++) {
--		u32 a = ctx->S[i];
-+		S_type a = ctx->S[i];
- 
- 		j = (j + in_key[k] + a) & 0xff;
- 		ctx->S[i] = ctx->S[j];
-@@ -36,9 +36,9 @@ EXPORT_SYMBOL(arc4_setkey);
- 
- void arc4_crypt(struct arc4_ctx *ctx, u8 *out, const u8 *in, unsigned int len)
- {
--	u32 *const S = ctx->S;
--	u32 x, y, a, b;
--	u32 ty, ta, tb;
-+	S_type *const S = ctx->S;
-+	S_type a, b, ta, tb;
-+	u32 x, y, ty;
- 
- 	if (len == 0)
- 		return;
--- 
-2.30.2
-
+ Documentation/admin-guide/gpio/gpio-mockup.rst     |  11 +-
+ Documentation/admin-guide/gpio/gpio-sim.rst        |  72 ++
+ Documentation/admin-guide/kernel-parameters.txt    |  10 +-
+ Documentation/core-api/irq/irq-domain.rst          |  22 +-
+ .../bindings/gpio/fairchild,74hc595.yaml           |  77 ++
+ .../devicetree/bindings/gpio/gpio-74x164.txt       |  27 -
+ .../bindings/gpio/realtek,otto-gpio.yaml           |  78 ++
+ .../bindings/gpio/rockchip,gpio-bank.yaml          |  82 ++
+ .../bindings/pinctrl/rockchip,pinctrl.txt          |  58 +-
+ Documentation/driver-api/gpio/consumer.rst         |   2 +-
+ Documentation/driver-api/gpio/drivers-on-gpio.rst  |   6 +
+ Documentation/filesystems/configfs.rst             |   6 +-
+ drivers/gpio/Kconfig                               |  32 +-
+ drivers/gpio/Makefile                              |   2 +
+ drivers/gpio/gpio-104-dio-48e.c                    |  50 +-
+ drivers/gpio/gpio-aggregator.c                     |  39 +-
+ drivers/gpio/gpio-ich.c                            |   2 -
+ drivers/gpio/gpio-it87.c                           |   8 -
+ drivers/gpio/gpio-mockup.c                         |   9 +-
+ drivers/gpio/gpio-mpc8xxx.c                        |  47 +-
+ drivers/gpio/gpio-mxs.c                            |   5 -
+ drivers/gpio/gpio-omap.c                           |   5 +-
+ drivers/gpio/gpio-realtek-otto.c                   | 325 ++++++++
+ drivers/gpio/gpio-sch.c                            | 198 ++++-
+ drivers/gpio/gpio-sim.c                            | 877 +++++++++++++++++++++
+ drivers/gpio/gpiolib-acpi.c                        |  21 +
+ drivers/gpio/gpiolib-acpi.h                        |   4 +
+ drivers/gpio/gpiolib-of.c                          |   6 +-
+ drivers/gpio/gpiolib.c                             |  62 +-
+ fs/configfs/configfs_internal.h                    |  22 +-
+ fs/configfs/dir.c                                  | 245 +++++-
+ include/linux/bitmap.h                             | 127 +--
+ include/linux/configfs.h                           |   3 +-
+ include/linux/gpio/driver.h                        |  12 +-
+ include/linux/irqdomain.h                          |  19 +-
+ kernel/irq/irqdomain.c                             |  20 +-
+ lib/bitmap.c                                       |  42 +-
+ lib/cmdline.c                                      |   1 +
+ samples/configfs/configfs_sample.c                 | 153 ++++
+ tools/gpio/gpio-utils.c                            |  18 +-
+ tools/testing/selftests/gpio/.gitignore            |   2 +
+ tools/testing/selftests/gpio/Makefile              |   4 +-
+ tools/testing/selftests/gpio/config                |   1 +
+ tools/testing/selftests/gpio/gpio-chip-info.c      |  57 ++
+ tools/testing/selftests/gpio/gpio-line-name.c      |  55 ++
+ tools/testing/selftests/gpio/gpio-sim.sh           | 229 ++++++
+ 46 files changed, 2781 insertions(+), 372 deletions(-)
+ create mode 100644 Documentation/admin-guide/gpio/gpio-sim.rst
+ create mode 100644 Documentation/devicetree/bindings/gpio/fairchild,74hc595.yaml
+ delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-74x164.txt
+ create mode 100644 Documentation/devicetree/bindings/gpio/realtek,otto-gpio.yaml
+ create mode 100644 Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml
+ create mode 100644 drivers/gpio/gpio-realtek-otto.c
+ create mode 100644 drivers/gpio/gpio-sim.c
+ create mode 100644 tools/testing/selftests/gpio/gpio-chip-info.c
+ create mode 100644 tools/testing/selftests/gpio/gpio-line-name.c
+ create mode 100755 tools/testing/selftests/gpio/gpio-sim.sh
