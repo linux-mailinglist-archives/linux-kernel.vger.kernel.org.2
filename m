@@ -2,115 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59FDC370E5D
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 20:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27CBE370E64
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 20:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232392AbhEBSJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 14:09:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41283 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232363AbhEBSJe (ORCPT
+        id S232457AbhEBSLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 14:11:22 -0400
+Received: from conuserg-12.nifty.com ([210.131.2.79]:37452 "EHLO
+        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232363AbhEBSLT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 14:09:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619978921;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=kEFyh88t8RjL4Ya/tUcmCMYYCtAJ4jkovquK5V2cmso=;
-        b=ZerIt5R+MVsZ06BNy13VlnPNW9HpjJqVswSmBbFdlqJcNDucTrfNSgOl8bHCTszi8HIvnr
-        APYdJDDDwyazFyXMeivVIHqYAHG9WZgG71PSVFLVTpwEFxnRfq/iMlYmlsrbjkr2TYchuh
-        sm7jkr2RU/KoqaKvIxc0/27tNnm644c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-435-TArhv3WIP_WJue1uC6L8Ug-1; Sun, 02 May 2021 14:08:40 -0400
-X-MC-Unique: TArhv3WIP_WJue1uC6L8Ug-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E89E2107ACC7;
-        Sun,  2 May 2021 18:08:37 +0000 (UTC)
-Received: from llong.com (ovpn-112-236.rdu2.redhat.com [10.10.112.236])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 40BDE19D7D;
-        Sun,  2 May 2021 18:08:36 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Waiman Long <longman@redhat.com>
-Subject: [PATCH 2/2] mm: memcg/slab: Don't create unfreeable slab
-Date:   Sun,  2 May 2021 14:07:55 -0400
-Message-Id: <20210502180755.445-2-longman@redhat.com>
-In-Reply-To: <20210502180755.445-1-longman@redhat.com>
-References: <20210502180755.445-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        Sun, 2 May 2021 14:11:19 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-12.nifty.com with ESMTP id 142I9wPj004068;
+        Mon, 3 May 2021 03:09:58 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 142I9wPj004068
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1619978999;
+        bh=Tpd8otkWti2fb4EYKsLJTORWJfsQTHA3eXq5RcGzaPQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Uvv5k3XSD/pDhCAkaB29eLuVCOYTbsSaG+qngvWNf5EUw0CLkbf993o1rjx3N/zHR
+         HmhpC2qqTU7ou6MguvfFJSsY+yb0jutIlIf/+5MQ7Rk9p84znptunYwGW3IgtXE2oq
+         gSbhVbO+MzV2hJ8AEvtwvZLp5BkBu/DUswhS4q84vethln3W4EyvWhGLMaxqq8e3yM
+         K3ctQ2/Gzpm59UjWiFqkUuxU+FyA1II3tg/hm3gsh7MzR0zYqZRBy5bPgGwmBes4an
+         3AKMPv2ayqfoXslI2zGXU7FokUlyM6TiFMzD5t5rXjokxCxr9hdh1/yy9f7VWEv8uO
+         K1edETBVp3MSg==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] kbuild: parameterize the .o part of suffix-search
+Date:   Mon,  3 May 2021 03:09:55 +0900
+Message-Id: <20210502180957.3419490-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The obj_cgroup array (memcg_data) embedded in the page structure is
-allocated at the first instance an accounted memory allocation happens.
-With the right size object, it is possible that the allocated obj_cgroup
-array comes from the same slab that requires memory accounting. If this
-happens, the slab will never become empty again as there is at least one
-object left (the obj_cgroup array) in the slab.
+The suffix-search macro hard-codes the suffix, '.o'.
 
-With instructmentation code added to detect this situation, I got 76
-hits on the kmalloc-192 slab when booting up a test kernel on a VM.
-So this can really happen.
+Make it a parameter so that the multi-search and real-search macros
+can be reused for foo-dtbs syntax introduced by commit 15d16d6dadf6
+("kbuild: Add generic rule to apply fdtoverlay").
 
-To avoid the creation of these unfreeable slabs, a check is added to
-memcg_alloc_page_obj_cgroups() to detect that and double the size
-of the array in case it happens to make sure that it comes from a
-different kmemcache.
-
-This change, however, does not completely eliminate the presence
-of unfreeable slabs which can still happen if a circular obj_cgroup
-array dependency is formed.
-
-Fixes: 286e04b8ed7a ("mm: memcg/slab: allocate obj_cgroups for non-root slab pages")
-Signed-off-by: Waiman Long <longman@redhat.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- mm/memcontrol.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index b0695d3aa530..44852ac048c3 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2876,12 +2876,24 @@ int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
- 	 */
- 	objects = max(objs_per_slab_page(s, page),
- 		      (int)(sizeof(struct rcu_head)/sizeof(void *)));
--
-+retry:
- 	vec = kcalloc_node(objects, sizeof(struct obj_cgroup *), gfp,
- 			   page_to_nid(page));
- 	if (!vec)
- 		return -ENOMEM;
+ scripts/Makefile.lib | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
+
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 64daf37e874b..88b446ed6532 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -44,19 +44,22 @@ else
+ obj-y		:= $(filter-out %/, $(obj-y))
+ endif
  
-+	/*
-+	 * The allocated vector should not come from the same slab.
-+	 * Otherwise, this slab will never become empty. Double the size
-+	 * in this case to make sure that the vector comes from a different
-+	 * kmemcache.
-+	 */
-+	if (unlikely(virt_to_head_page(vec) == page)) {
-+		kfree(vec);
-+		objects *= 2;
-+		goto retry;
-+	}
+-# Expand $(foo-objs) $(foo-y) by calling $(call suffix-search,foo.o,-objs -y)
+-suffix-search = $(strip $(foreach s, $2, $($(1:.o=$s))))
++# Expand $(foo-objs) $(foo-y) etc. by replacing their individuals
++suffix-search = $(strip $(foreach s, $3, $($(1:%$(strip $2)=%$s))))
++# List composite targets that are constructed by combining other targets
++multi-search = $(sort $(foreach m, $1, $(if $(call suffix-search, $m, $2, $3 -), $m)))
++# List primitive targets that are compiled from source files
++real-search = $(foreach m, $1, $(if $(call suffix-search, $m, $2, $3 -), $(call suffix-search, $m, $2, $3), $m))
 +
- 	memcg_data = (unsigned long) vec | MEMCG_DATA_OBJCGS;
- 	if (new_page) {
- 		/*
+ # If $(foo-objs), $(foo-y), $(foo-m), or $(foo-) exists, foo.o is a composite object
+-multi-search = $(sort $(foreach m, $1, $(if $(call suffix-search, $m, $2 -), $m)))
+-multi-obj-y := $(call multi-search,$(obj-y),-objs -y)
+-multi-obj-m := $(call multi-search,$(obj-m),-objs -y -m)
++multi-obj-y := $(call multi-search, $(obj-y), .o, -objs -y)
++multi-obj-m := $(call multi-search, $(obj-m), .o, -objs -y -m)
+ multi-obj-ym := $(multi-obj-y) $(multi-obj-m)
+ 
+ # Replace multi-part objects by their individual parts,
+ # including built-in.a from subdirectories
+-real-search = $(foreach m, $1, $(if $(call suffix-search, $m, $2 -), $(call suffix-search, $m, $2), $m))
+-real-obj-y := $(call real-search, $(obj-y),-objs -y)
+-real-obj-m := $(call real-search, $(obj-m),-objs -y -m)
++real-obj-y := $(call real-search, $(obj-y), .o, -objs -y)
++real-obj-m := $(call real-search, $(obj-m), .o, -objs -y -m)
+ 
+ always-y += $(always-m)
+ 
 -- 
-2.18.1
+2.27.0
 
