@@ -2,62 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 481303709A6
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 04:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 134713709AB
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 04:29:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231809AbhEBCDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 22:03:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35218 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231266AbhEBCDs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 22:03:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 6B0E1613CA;
-        Sun,  2 May 2021 02:02:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619920977;
-        bh=FTM5/bhIGPlSl7GVJA/Pko7LgpLiF+PNLgYJsrlgrpk=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=lJCYtJxHcW8cKX9IV5fuO52fjp3X+AQpjHdVhd6vaf6tbN24Y7fmO+5t6ED3dYVNj
-         ueZC3w7uAT7Ticwey/pYzP4HOv53gH77hKbrRkqjIvEu0O72HND3k3rYM0w7guiewk
-         Yf6DwjPkDFqyaH05JD0A5ORp6EPyfBPUyioFNrdR+T5hSpyyBU12PbZ1iV+sXL2lRv
-         dt/SCz33ykVh9k+DdIyeNSsAs+CjcBoQjsQ7p+k5vTGGFP7phwhuDmJCoawYFcoRas
-         0kzoE6PlQhF/v3DpPSx+aILnel8lpaeQNSbMRn57mpJ9gLVuaxkcUdZvru+tdkuopv
-         tb7vm0F8x4S5Q==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 58A1D60A3A;
-        Sun,  2 May 2021 02:02:57 +0000 (UTC)
-Subject: Re: [GIT PULL][Security] Add new Landlock LSM
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <11a1adfd-d2e8-2181-81a-529792e4b6e5@namei.org>
-References: <11a1adfd-d2e8-2181-81a-529792e4b6e5@namei.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <11a1adfd-d2e8-2181-81a-529792e4b6e5@namei.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jmorris/linux-security.git tags/landlock_v34
-X-PR-Tracked-Commit-Id: 3532b0b4352ce79400b0aa68414f1a0fc422b920
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 17ae69aba89dbfa2139b7f8024b757ab3cc42f59
-Message-Id: <161992097730.25025.14142306394400248363.pr-tracker-bot@kernel.org>
-Date:   Sun, 02 May 2021 02:02:57 +0000
-To:     James Morris <jmorris@namei.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?ISO-8859-15?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
-        Al Viro <viro@ftp.linux.org.uk>
+        id S231846AbhEBCSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 22:18:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230409AbhEBCSR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 May 2021 22:18:17 -0400
+Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56571C06174A
+        for <linux-kernel@vger.kernel.org>; Sat,  1 May 2021 19:17:26 -0700 (PDT)
+Received: by mail-vk1-xa2f.google.com with SMTP id u200so542727vku.3
+        for <linux-kernel@vger.kernel.org>; Sat, 01 May 2021 19:17:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dqaSxBqnpQQ5yJej8q3aImwEDK5i+RDSkktLqxVmfqQ=;
+        b=vQK0rlGW8Dsa3qh1UIbGmJUu9RXzrm+isAmobNkeoTLYQI0QoPq2N8k7r9DyLI16TO
+         BoRx9z6OpVHyirOZPr2aBrR0xB/L7+yTE0ZfMaLfjgqtSFoBe2ioMHLWpGH3fq9d503a
+         OhYIoECfiHLIp6aK8TK9bFD6EWAxTncmA/ReZCz4JuBHipRwo9KMtUfc6+OG1hPiRHDD
+         +Rvvkb7xZxVkc9QdbtazAuFTXbNvqBaZcX8lBecMbgNJOA9lCpN/7GdiUePgoJoPPo5F
+         JwclkBpW78rlNgpSH+T59BmH1qaAmghr/EY+771j4uQw+80mhctanvGlJ0cZLCICXEMw
+         WQ2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dqaSxBqnpQQ5yJej8q3aImwEDK5i+RDSkktLqxVmfqQ=;
+        b=fi23c/YELOp/LKx/r7r9WgzPfDZ6jnV0xqrthSBeTUQmd/Om21o8amCYUpIgwuz5jI
+         jeNo0P8Tw/k8xjV7RfHiQQo2F98UCC7lNTidjzn9XOg8nzKRABa2leI0BKyA77G7VudD
+         HmMEmq9pyo5WI7VRW6Xk+X4q5fcVddoIKKhfPsViamO3L3rewLgXq7T28uhi4+dheipX
+         ZINHXJouIRXgDr4S2/8T8XbTziQR5soLJQU5OuQzvM6btAg5wgRoMLV2Je46bjQilb1+
+         d4wsEF1yPE6ztIpIQHm+0Yti4zUvILXdokp1InN4nWQX9QLub5Pev/ow1LLZMT4pKGQ5
+         5pIw==
+X-Gm-Message-State: AOAM5305wm6O6QToQfCfjQan1jWmryHmjT/PospbQqrYAkN/xGENloXa
+        V+BQzWkYsqRLct52PfcOitmQYjidH06LRX913NA=
+X-Google-Smtp-Source: ABdhPJxSGePAnv2xy3eQ/CJbjnnH1c4ygiWRTdae2BV6Co60nQK9xvXsMHaeOjMPQfMKOfpLOhhLf+KYZMTrAY9m1uw=
+X-Received: by 2002:a1f:3a56:: with SMTP id h83mr11579567vka.10.1619921845348;
+ Sat, 01 May 2021 19:17:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210316050801.2446401-1-jim.cromie@gmail.com> <87ft0rvl1r.fsf@linux.intel.com>
+In-Reply-To: <87ft0rvl1r.fsf@linux.intel.com>
+From:   jim.cromie@gmail.com
+Date:   Sat, 1 May 2021 20:16:59 -0600
+Message-ID: <CAJfuBxyJHu3JdZ++0RU3DEDUS-i-4iT990P+zihFG_nKfyjVFA@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 00/18] dynamic debug diet plan
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Jason Baron <jbaron@akamai.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 28 Apr 2021 12:54:22 +1000 (AEST):
+On Thu, Mar 18, 2021 at 10:12 PM Andi Kleen <ak@linux.intel.com> wrote:
+>
+> Jim Cromie <jim.cromie@gmail.com> writes:
+>
+> > CONFIG_DYNAMIC_DEBUG creates a struct _ddebug (56 bytes) for each
+> > callsite, which includes 3 pointers to: module, filename, function.
+> > These are repetetive, and compressible, this patch series goes about
+> > doing that, it:
+>
+> So how much memory does it actually save?
+> -Andi
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jmorris/linux-security.git tags/landlock_v34
+sorry for late reply, html mode got switched on and I didnt see kickback
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/17ae69aba89dbfa2139b7f8024b757ab3cc42f59
+on my laptop/build, master has 165kb, about 70k is the compressible data,
+RLE column-wize could get close to 60% on my data. so ~40kb ?
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+3 things to do to get the savings:
+figure the compression,
+figure the hash holding enabled/used/expanded pr_debug decorations
+(maybe optional, depending on indexed/seek decompress time)
+drop the site pointer, with some anonymous union struct combo to blend
+header with callsites cleanly
