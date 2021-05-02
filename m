@@ -2,92 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B113709B8
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 05:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 977D63709BF
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 05:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231846AbhEBDQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 May 2021 23:16:20 -0400
-Received: from mout.gmx.net ([212.227.15.15]:45289 "EHLO mout.gmx.net"
+        id S231934AbhEBD12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 May 2021 23:27:28 -0400
+Received: from mout.gmx.net ([212.227.15.19]:47633 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230409AbhEBDQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 May 2021 23:16:19 -0400
+        id S230409AbhEBD1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 May 2021 23:27:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1619925314;
-        bh=lp1DUMxwIxuXBmtBlzRd7HCviresfWbtWy97/TcI23w=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=gOfEZfKEZSB4zHTgimN/uZmgBvtsaAEVdQg0Y53aYKJ1JOVO0mS8Yma6loiszcAa9
-         J1aEJsk5Xxa84YcFzar/x/qhdm7upgKWv20NgBu9SGPEuGNOTu9FtJIVABUFOymsrJ
-         cIPgdvVEqD7bK+xHdANBB3I5PcZRY7HTFD+TgRrs=
+        s=badeba3b8450; t=1619925937;
+        bh=2N9IcHZFQtoPTdk//339A4s/KH/fyDjSlR40GygCdgs=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=F9HhQnROq9lb7hO4N3fbikRju1DQ74c8of6ozU/Vvg/jI/ZHrGo7qC5RpOHj/Bqat
+         +wsRwN71bU350gKhLUU/UtbHPkrS4YGdJ08Xj19UPUgqG280oTy3Myo1a9+uP2NpQq
+         uu4EhOA5QPcpQP7jAZ+pU7a+5uZFJ4mcLb98Twwo=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.51] ([78.42.220.31]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N2mFi-1lRB6M2s0a-0132le; Sun, 02
- May 2021 05:15:14 +0200
-Subject: Re: [PATCH v3 4/4] tpm: Only enable supported irqs
-To:     Stefan Berger <stefanb@linux.ibm.com>, peterhuewe@gmx.de,
-        jarkko@kernel.org, jgg@ziepe.ca
-Cc:     stefanb@linux.vnet.ibm.com, James.Bottomley@hansenpartnership.com,
-        keescook@chromium.org, jsnitsel@redhat.com, ml.linux@elloe.vision,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210501135727.17747-1-LinoSanfilippo@gmx.de>
- <20210501135727.17747-5-LinoSanfilippo@gmx.de>
- <d9da4946-c380-d56d-6d42-1ec6f9bd3d8b@linux.ibm.com>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Message-ID: <2a11e90e-d012-141a-5977-74935d175f5b@gmx.de>
-Date:   Sun, 2 May 2021 05:15:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Received: from homer.fritz.box ([185.146.51.49]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mjj8D-1lAKU60nal-00lEsn; Sun, 02
+ May 2021 05:25:37 +0200
+Message-ID: <a46f9b6c719666357e568eadd1d615c05c4171ac.camel@gmx.de>
+Subject: Re: [PATCH v2 0/3] newidle_balance() PREEMPT_RT latency mitigations
+From:   Mike Galbraith <efault@gmx.de>
+To:     Scott Wood <swood@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+Date:   Sun, 02 May 2021 05:25:35 +0200
+In-Reply-To: <7b796a085b0bc638c9df70d3a20718f8d1d776c8.camel@redhat.com>
+References: <20210428232821.2506201-1-swood@redhat.com>
+         <CAKfTPtBrJNBg3847R_b8A-1c5rb9Fb5FFNMX+z11QGAiO0ofkw@mail.gmail.com>
+         <7b796a085b0bc638c9df70d3a20718f8d1d776c8.camel@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-In-Reply-To: <d9da4946-c380-d56d-6d42-1ec6f9bd3d8b@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:AqUbjHZm+mttLvCAVvgb4wkybsFfI9HRmoPRMS3IqCBBbeRIs6D
- j2Z4sbQSI5b+qE2aTlrsvIQdAOEo4duIyUwjySzzZpaYzgvYD4QFSfugH1LJN3Ly7rx3hDN
- s9jc9CxId1q2+dtLtfxpmZWSjzjyD2l4xH8QJtA0ndBWVBM6C7uS2X01F9jvnlcym7iGvjZ
- RsCrzjya7JKCUMiOiIMOw==
+X-Provags-ID: V03:K1:VEVNQPCsUrHT38mp2SxP6v0WAoW4DvawsjmXK65jqDr2eSkOTyF
+ WAdf9cUjsu09bTqWu0V5samCXKjKshzqo5bYXjdrWfYWPGEwmID379BTw79aeh5fgwlA/Hi
+ M5KKV5mx5MhJ1BZuUJbb1geg5GSEkZxgCFTvSzmXa7EhpQ44Orv8y0X347921jpKhmoGMbP
+ gWeDyGb6+EA926whOoacA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:csYJNsVV8NY=:vKsVhGYOQl5ejgN8q5hMrY
- qKykD5EY1hMcKz9rDBGqRmdwMjeJ/SmnBBebwvd9vBsYaTi4Jw+sDaazWnc96NqOurbzJImjM
- cQ96y2FVdOnsM8tztoBMWmzlo8t/vwoJm08LlL4ailKGe4WFM6oTDqMxCRv4wZKUR4+n3ik8C
- gsErfq7wtn+DJjooKk66TcuXtlm5ZB5OmQJ+SoqnakVJ5CZN3gkF0P1roQKj+cXF5zhHNEFas
- dd3fQwSYhGUz0pRe3vrB6iF3zVMzEdcGLeF6DUchwGXAMnJJ42neW4vzsFlLVoPSFrzwb8FIZ
- /pVOH7U8iQCjK3r5A4Igohcvm8KmYPBeQuQLNMA9FH9ijn6x1MeF88EKZ85xczMmR9Mw3i4/+
- FS35evoB0iSmO1tM9kT+0KGKSeVordSUw9PPpGz4LZKxkT10mPbPlDahmJ/XP1Q4yi5M6PF16
- ObiX9oKXPq9Nusc8vCwXAzieY9w0zbtX4wiZTV2MGMa7CqZR/2qrj+DFdYZXS4yAe2qdS4YXj
- oXMjI40FAGb7S/2WZhibhQzxt42jeqRBKWzT5RByKiSIEI3gqFsrCbCTD9JmlvNXi88v3ctKU
- gsjZElLKb2sU5GOJ/HqduubvkMTu9XDaoN5hWU3dTc2oLyhHTI5nM2o8gNPKtrEEuuwdMfy8E
- Ya2Bzdfz8P0oUzYKPx/YZnFM0R5Zwth6vuclYuyDJO9CKJOq/gtFJqATU8iR0P/QAU8rFhHI2
- wy+NqKoJOMMW9kYZX8j564fT1ddnyRz/2j3ZJ9cZK1FAalIvs+yZGZG0fntA5A9JZO6C8YovO
- 37RtzHIdSAa5qMIgb3WvjgdbRQ1oxo65BU2JVL6VtdIo3a40AhCIdOgGE/HbA0XZASVf2EBkk
- TZziXnRLJjAwEgTSls2Rv8bCtq0OUfi3Ao+7+oIWDtbqmnrbouh3eHfTSUaPVXxIkhKS2QYeg
- nY+M4BPlrRR6ZbnCi3XUqw4gH4+5s2bX46wf1MnjycFEmIasfo6z27nLP4zRniBQmxYhXKHnY
- cq/lFpzapOEsX1KMInzjzHCjB90qtnuUPAIMj/30OxY9CkycmqDbaKCnYB8TRo/W8sJj8AmZZ
- XK337qY4MNH6HN1tp+UPfLKBH7szV3BEGGuoAefo8aQcW69hefOAbZ9/1QW2woPc4/8rlUoQ8
- PGYZbc5obH/eCEdSzl0d3O/1cQxws61VJlDj0BGJxILKtTSs1tuJilDABr9Cbs28YQWmt+57Z
- XhzUOW2XXsDHcKf9U
+X-UI-Out-Filterresults: notjunk:1;V03:K0:K9Wdx0HjpFw=:VLQ86+kYT2pLlPGak2FY7u
+ Qz2JWRtqpxR1nvIw3WF6RzDZBZ08Kpd950rTrlyN+ZpP8+1Q6GSnLoDDk7Yzps0mtxz167zeS
+ TEFaW7oKrzWEhx2vv98VIEwKODJPUk3o4hezLjMnGaGelSOyjXhtQTbFbuDsZeaP90XDlV1XE
+ cSDAmWvjh4iSmip2q9FA1h0GlvWQQUvKzKOiwDE7IYuHXxsEGaIEJ15gRMdSUDVLxUwccLLBl
+ xMgj3fKDlz1AuXuM209Jc3nb8aJ0y3SnSEeSQbqikTClO4ovULTRx+jBONOFYQIgarcUjqfvs
+ f5ekeI7pC2b32skkvFWPjyDw9RTBWhfZzMhPif2teNC5X76Wi1Ys6MF6lh5j7RRWPCaM0RKii
+ ebeiUFlnCVh3jL00orrhueeK4con/Lw6Rnq2vOabVK83X7nyN6839GZD/mzPiVWzgEGryuNSH
+ MsI4Jg4cHaLV/1tuYe3PRN/JQJEWJzDOn6btCSWY8VJmuXhgRXGpoJ0j8MtnKZ53WHjMRZ590
+ IPYSJp25ACv54X6CnQKZwdXFTiAn0EwXlIXd7LvIcowQt2MBGZcZy2SQ4DGH/Hg0xV7YnmHs5
+ 0oXKwnMZhMI8lLvg3UXsbqn0wswkxDGOmxtOkncFAVodS/T665aBfo91WEnbgxh6JGoK1U2+t
+ 1cSvdn0jfsqE8C1T2lexSAY1SuZ1qinrsp0nhABq/9OizX8zVAVHnKAJKEOq1cpRDU/xZk7Fp
+ WvyWQ/y9f9zSyu0qb4Bm2hfb4MTwk8P/mD2nfDTSO+xrXJDReZZVGouulI0DUsvemR2qrMKoP
+ OhOLOhJSnYKK9ckwxWwdNrGiF7s5r3QSp8BaH9IMXVv4VOC1Y++9/pzu7O1RAZj/TWljQCsBX
+ YnEe6Ho3Q51okOyo/IWVaUZDCoebZsoqGmujgD95WaI7mED1EfEkNX8qCjczaqojtGWrm5wzR
+ D+jLkbqv4j4DoEUKT9+piqzX4FfM8sh8cTskiPTLRkYKzfLBpocpRuS+joSrshW3xhIUzMhMr
+ oqH7bl5ZTwVHxoNvhzmQxW28oCJK7Euy6KMCcHDUaPtcv5JFjBVmqFWIu2r22jcGKQ76lU8JM
+ pukl8wCx52SBWsJqu+tcP/FMmWp/NMOyYbe+9sr6o9pV7HLjkkStgYdqp6iCqu0PM3eIj67u/
+ GyAWjsw0oIMgZcKkguDlHNYLa3L1t2XW+kPN2a0e5p0SDF7wDnbsRNY+3stOFDp5GUDqY=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.05.21 at 21:09, Stefan Berger wrote:
+On Sat, 2021-05-01 at 17:03 -0500, Scott Wood wrote:
+> On Thu, 2021-04-29 at 09:12 +0200, Vincent Guittot wrote:
+> > Hi Scott,
+> >
+> > On Thu, 29 Apr 2021 at 01:28, Scott Wood <swood@redhat.com> wrote:
+> > > These patches mitigate latency caused by newidle_balance() on large
+> > > systems when PREEMPT_RT is enabled, by enabling interrupts when the =
+lock
+> > > is dropped, and exiting early at various points if an RT task is
+> > > runnable
+> > > on the current CPU.
+> > >
+> > > On a system with 128 CPUs, these patches dropped latency (as measure=
+d by
+> > > a 12 hour rteval run) from 1045us to 317us (when applied to
+> > > 5.12.0-rc3-rt3).
+> >
+> > The patch below has been queued for v5.13 and removed the update of
+> > blocked load what seemed to be the major reason for long preempt/irq
+> > off during newly idle balance:
+> > https://lore.kernel.org/lkml/20210224133007.28644-1-vincent.guittot@li=
+naro.org/
+> >
+> > I would be curious to see how it impacts your cases
 >
-> On 5/1/21 9:57 AM, Lino Sanfilippo wrote:
->> Do not set interrupts which are not supported by the hardware. Instead =
-use
->> the information from the capability query and activate only the reporte=
-d
->> interrupts.
->>
->> Signed-off-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
->
->
-> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
->
->
+> I still get 1000+ ms latencies with those patches applied.
 
-Ah sorry, I forgot to add your Reviewed-By for this patch. Will do so in t=
-he
-next version.
+If NEWIDLE balancing migrates one task, how does that manage to consume
+a full *millisecond*, and why would that only be a problem for RT?
 
-Thx,
-Lino
+	-Mike
+
+(rt tasks don't play !rt balancer here, if CPU goes idle, tough titty)
+
