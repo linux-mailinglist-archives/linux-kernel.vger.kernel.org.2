@@ -2,120 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6899370EC1
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 21:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C81370ECA
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 21:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232372AbhEBTOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 15:14:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231818AbhEBTOi (ORCPT
+        id S232377AbhEBTaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 15:30:46 -0400
+Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:50051 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231801AbhEBTap (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 15:14:38 -0400
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B22F1C06138C
-        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 12:13:46 -0700 (PDT)
-Received: by mail-oo1-xc32.google.com with SMTP id v14-20020a4ae6ce0000b02901fe68cd377fso111617oot.13
-        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 12:13:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=emMfiYi99q3nX4v+CBQmuXsA/kqjvpixR7oLzYPLuiM=;
-        b=eRrh8/FTxx8mY93zg7f5u2PqJag/AV+2CsamonnCrPl50D5ybWNE9RjM9IHFNGK0Hp
-         tsQCQr9ZC0GehGcA6cOcwWjxeWjJU/S5VN/vJm45DBqcCLu0rlO90skMuIBy2K9DlLkg
-         ukIAGtF3hQFZqp6AexAJ9ojqZ6R6plqZsdvVHcD+Q3hnqs3zSlCcUxdIXr8zVrKT0b90
-         K9S1dNQqshSjqZqacgx4pkJCgXGhv7suX4I0XIqsmEW7olqA2qVrMj9ulfZezJAI479J
-         Sc35Ku4NkEnOxygYrD+m2aeiOpvlD9SRGRymQrSXXTsljf/pKMCvCCY++dEYJEDOAYfq
-         T+PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=emMfiYi99q3nX4v+CBQmuXsA/kqjvpixR7oLzYPLuiM=;
-        b=g/n0vFnN46J5cZnm1FMNaVKOiW8DT34h4RYH9PBljvwa2NVmu/UFh1RI49IrE0XgpA
-         H0Lb8xCvyFqZbC8cPWkdei/tlYU8TSALR5h/BpTydFD1yJ/+tHMDdRg66r+/4XfflOQl
-         tDzvhLt79S0MDJy7Z05hbRTAUebVPrJSjKJ6+A3L69pD4vueuWOaC1dRzdzMWVj7J5JH
-         1B7uzxArRbQGxlJRWTAJVZrfOgLUydCtMF+hp1eAmEaKT0zuwky4c4ZJSqO6/9vStkQd
-         +OG6hrtzjg3Qm9tlWfaLQ6UWGUXjV0GAWWXUZ76DfCgtnYMW5LldxUf+fWWSA48VLD+V
-         V3Dw==
-X-Gm-Message-State: AOAM5328JL5no7wAGYqnJkwAhLQxvQD8crMlNI/mtpPtbroBB1eUkbCK
-        M5nQnfYhKfD2L5yRV2Fios2SeYpOJ3DuMVxbqofEwQ==
-X-Google-Smtp-Source: ABdhPJxwRjSJbo3C+Nwhf9lgspATPfUeP4Li99I0sKmagHuY+vIt3q37BWEwAiuogCr1O2KSyZDFBjA9IZlwBT6otMg=
-X-Received: by 2002:a4a:e715:: with SMTP id y21mr2293005oou.54.1619982825669;
- Sun, 02 May 2021 12:13:45 -0700 (PDT)
+        Sun, 2 May 2021 15:30:45 -0400
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d60 with ME
+        id zvVp2400521Fzsu03vVpt8; Sun, 02 May 2021 21:29:51 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 02 May 2021 21:29:51 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [RFC PATCH] crypto: arc4: Implement a version optimized for memory usage
+Date:   Sun,  2 May 2021 21:29:46 +0200
+Message-Id: <c52bd8972c9763c3fac685d7c6af3c46a23a1477.1619983555.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <YIpkvGrBFGlB5vNj@elver.google.com> <m11rat9f85.fsf@fess.ebiederm.org>
- <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
- <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
- <m1zgxfs7zq.fsf_-_@fess.ebiederm.org> <m11rarqqx2.fsf_-_@fess.ebiederm.org>
- <CANpmjNNJ_MnNyD4R2+9i24E=9xPHKnwTh6zwWtBYkuAq1Xo6-w@mail.gmail.com> <m1wnshm14b.fsf@fess.ebiederm.org>
-In-Reply-To: <m1wnshm14b.fsf@fess.ebiederm.org>
-From:   Marco Elver <elver@google.com>
-Date:   Sun, 2 May 2021 21:13:34 +0200
-Message-ID: <CANpmjNNpsdqCp51_P=NCM=fMREhN6HWQL7aiOdyfqu=aUmkR7A@mail.gmail.com>
-Subject: Re: [PATCH 7/3] signal: Deliver all of the perf_data in si_perf
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2 May 2021 at 20:39, Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> Marco Elver <elver@google.com> writes:
->
-> > On Sat, 1 May 2021 at 01:44, Eric W. Biederman <ebiederm@xmission.com> wrote:
-> >>
-> >> Don't abuse si_errno and deliver all of the perf data in si_perf.
-> >>
-> >> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> >> ---
-> >
-> > Thank you for the fix, this looks cleaner.
-> >
-> > Just note that this patch needs to include updates to
-> > tools/testing/selftests/perf_events. This should do it:
-> >>  sed -i 's/si_perf/si_perf.data/g; s/si_errno/si_perf.type/g' tools/testing/selftests/perf_events/*.c
-> >
-> > Subject: s/perf_data/perf data/ ?
-> >
-> > For uapi, need to switch to __u32, see below.
->
-> Good point.
->
-> The one thing that this doesn't do is give you a 64bit field
-> on 32bit architectures.
->
-> On 32bit builds the layout is:
->
->         int si_signo;
->         int si_errno;
->         int si_code;
->         void __user *_addr;
->
-> So I believe if the first 3 fields were moved into the _sifields union
-> si_perf could define a 64bit field as it's first member and it would not
-> break anything else.
->
-> Given that the data field is 64bit that seems desirable.
+The S array does not need to be u32, u8 is enough
+On machine which have efficient unaligned access, use u8 to save some
+memory.
 
-Yes, it's quite unfortunate -- it was __u64 at first, but then we
-noticed it broke 32-bit architectures like arm:
-https://lore.kernel.org/linux-arch/20210422191823.79012-1-elver@google.com/
+So, provide a version optimized for memory usage in such a case.
 
-Thanks,
--- Marco
+Based on my testing, the size of arc4_ctx is:
+	u8  version:  264
+	u32 version: 1032
+
+On my machine, the u8 version is about 5% faster.
+It save ~800 bytes of memory or stack depending on how arc4_ctx is stored.
+It is likely to be more cache friendly.
+
+It has been tested an Core i7-3770 with the following test program:
+
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include <string.h>
+
+ #define u8      unsigned char
+ #define u32     unsigned int
+ #define true    1
+
+struct arc4_ctx_8 {
+	u8 S[256];
+	u32 x, y;
+};
+struct arc4_ctx_32 {
+	u32 S[256];
+	u32 x, y;
+};
+
+ #define S_type	u8
+int arc4_setkey_8(struct arc4_ctx_8 *ctx, const u8 *in_key, unsigned int key_len)
+{
+	int i, j = 0, k = 0;
+
+	ctx->x = 1;
+	ctx->y = 0;
+
+	for (i = 0; i < 256; i++)
+		ctx->S[i] = i;
+
+	for (i = 0; i < 256; i++) {
+		S_type a = ctx->S[i];
+
+		j = (j + in_key[k] + a) & 0xff;
+		ctx->S[i] = ctx->S[j];
+		ctx->S[j] = a;
+		if (++k >= key_len)
+			k = 0;
+	}
+
+	return 0;
+}
+
+void arc4_crypt_8(struct arc4_ctx_8 *ctx, u8 *out, const u8 *in, unsigned int len)
+{
+	S_type *const S = ctx->S;
+	S_type a, b, ta, tb;
+	u32 x, y, ty;
+
+	if (len == 0)
+		return;
+
+	x = ctx->x;
+	y = ctx->y;
+
+	a = S[x];
+	y = (y + a) & 0xff;
+	b = S[y];
+
+	do {
+		S[y] = a;
+		a = (a + b) & 0xff;
+		S[x] = b;
+		x = (x + 1) & 0xff;
+		ta = S[x];
+		ty = (y + ta) & 0xff;
+		tb = S[ty];
+		*out++ = *in++ ^ S[a];
+		if (--len == 0)
+			break;
+		y = ty;
+		a = ta;
+		b = tb;
+	} while (true);
+
+	ctx->x = x;
+	ctx->y = y;
+}
+
+ #undef S_type
+ #define S_type	u32
+int arc4_setkey_32(struct arc4_ctx_32 *ctx, const u8 *in_key, unsigned int key_len)
+{
+	int i, j = 0, k = 0;
+
+	ctx->x = 1;
+	ctx->y = 0;
+
+	for (i = 0; i < 256; i++)
+		ctx->S[i] = i;
+
+	for (i = 0; i < 256; i++) {
+		S_type a = ctx->S[i];
+
+		j = (j + in_key[k] + a) & 0xff;
+		ctx->S[i] = ctx->S[j];
+		ctx->S[j] = a;
+		if (++k >= key_len)
+			k = 0;
+	}
+
+	return 0;
+}
+
+void arc4_crypt_32(struct arc4_ctx_32 *ctx, u8 *out, const u8 *in, unsigned int len)
+{
+	S_type *const S = ctx->S;
+	S_type a, b, ta, tb;
+	u32 x, y, ty;
+
+	if (len == 0)
+		return;
+
+	x = ctx->x;
+	y = ctx->y;
+
+	a = S[x];
+	y = (y + a) & 0xff;
+	b = S[y];
+
+	do {
+		S[y] = a;
+		a = (a + b) & 0xff;
+		S[x] = b;
+		x = (x + 1) & 0xff;
+		ta = S[x];
+		ty = (y + ta) & 0xff;
+		tb = S[ty];
+		*out++ = *in++ ^ S[a];
+		if (--len == 0)
+			break;
+		y = ty;
+		a = ta;
+		b = tb;
+	} while (true);
+
+	ctx->x = x;
+	ctx->y = y;
+}
+
+ #define KEY     "AZERTY"
+ #define in      "AZERTYUIOP_QSDFGHJKLM_WXCVBN"
+
+int main() {
+        long i;
+        struct arc4_ctx_8 ctx_8;
+        u8 out8[1024] = { };
+        struct arc4_ctx_32 ctx_32;
+        u8 out32[1024] = { };
+
+        arc4_setkey_8(&ctx_8, KEY, strlen(KEY));
+        arc4_crypt_8(&ctx_8, out8, in, strlen(in));
+
+        arc4_setkey_32(&ctx_32, KEY, strlen(KEY));
+        arc4_crypt_32(&ctx_32, out32, in, strlen(in));
+
+        printf("%ld vs %ld\n", sizeof(ctx_8), sizeof(ctx_32));
+        if (memcmp(out8, out32, 1024) == 0)
+                printf("Ok\n");
+        else
+                printf("Broken\n");
+
+        return 0;
+}
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+The idea came from code found in staging/rtl8712/
+See at the top of:
+   https://elixir.bootlin.com/linux/v5.12/source/drivers/staging/rtl8712/rtl871x_security.c
+
+More precisely, in an attempt to clean staging/rtl8712/, I triggered the
+kernel test robot about some increasing stack usage:
+   https://lore.kernel.org/kernel-janitors/YHQUH+Nqc%2FzS14Tb@kroah.com/T/#m832a01a9d1517e7efc4f671ed46deae9993d6ae9
+
+The above patch works for me, but should be taken as a RFC.
+---
+ include/crypto/arc4.h | 8 +++++++-
+ lib/crypto/arc4.c     | 8 ++++----
+ 2 files changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/include/crypto/arc4.h b/include/crypto/arc4.h
+index f3c22fe01704..39545ed486e2 100644
+--- a/include/crypto/arc4.h
++++ b/include/crypto/arc4.h
+@@ -12,8 +12,14 @@
+ #define ARC4_MAX_KEY_SIZE	256
+ #define ARC4_BLOCK_SIZE		1
+ 
++#if defined(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS)
++#define S_type	u8
++#else
++#define S_type	u32
++#endif
++
+ struct arc4_ctx {
+-	u32 S[256];
++	S_type S[256];
+ 	u32 x, y;
+ };
+ 
+diff --git a/lib/crypto/arc4.c b/lib/crypto/arc4.c
+index c2020f19c652..e0be0c2a08d9 100644
+--- a/lib/crypto/arc4.c
++++ b/lib/crypto/arc4.c
+@@ -21,7 +21,7 @@ int arc4_setkey(struct arc4_ctx *ctx, const u8 *in_key, unsigned int key_len)
+ 		ctx->S[i] = i;
+ 
+ 	for (i = 0; i < 256; i++) {
+-		u32 a = ctx->S[i];
++		S_type a = ctx->S[i];
+ 
+ 		j = (j + in_key[k] + a) & 0xff;
+ 		ctx->S[i] = ctx->S[j];
+@@ -36,9 +36,9 @@ EXPORT_SYMBOL(arc4_setkey);
+ 
+ void arc4_crypt(struct arc4_ctx *ctx, u8 *out, const u8 *in, unsigned int len)
+ {
+-	u32 *const S = ctx->S;
+-	u32 x, y, a, b;
+-	u32 ty, ta, tb;
++	S_type *const S = ctx->S;
++	S_type a, b, ta, tb;
++	u32 x, y, ty;
+ 
+ 	if (len == 0)
+ 		return;
+-- 
+2.30.2
+
