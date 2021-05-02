@@ -2,83 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3030370EF4
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 22:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B57D370EFF
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 22:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232517AbhEBUB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 16:01:28 -0400
-Received: from smtprelay0141.hostedemail.com ([216.40.44.141]:45368 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232427AbhEBUB1 (ORCPT
+        id S232463AbhEBU0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 16:26:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232338AbhEBU0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 16:01:27 -0400
-Received: from omf06.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id E5F31837F27B;
-        Sun,  2 May 2021 20:00:34 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf06.hostedemail.com (Postfix) with ESMTPA id 7C6732448B6;
-        Sun,  2 May 2021 20:00:30 +0000 (UTC)
-Message-ID: <81a926a3bdb70debe3ae2b13655ea8d249fb9991.camel@perches.com>
-Subject: Re: [PATCH] Raise the minimum GCC version to 5.2
-From:   Joe Perches <joe@perches.com>
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Date:   Sun, 02 May 2021 13:00:28 -0700
-In-Reply-To: <20210502183030.GF10366@gate.crashing.org>
-References: <20210501151538.145449-1-masahiroy@kernel.org>
-         <CANiq72k1hB3X6+Nc_iu=f=BoB-F9JW2j_B4ZMcv8_UpW5QQ2Og@mail.gmail.com>
-         <3943bc020f6227c8801907317fc113aa13ad4bad.camel@perches.com>
-         <20210502183030.GF10366@gate.crashing.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sun, 2 May 2021 16:26:42 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A78C06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 13:25:50 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id m9so3477634wrx.3
+        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 13:25:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/eu7kgNtJZe/1oOgUEnuMm1GqJELkQ9s+3GmmlSYH+0=;
+        b=tbSES2wRqLuavw6TWwOyV7YmdMPndtIRlYALMCDtKnrEPhCMBx9omsg3ErYwiujQDC
+         5CPTM/vQ1bbZYXwC76EGb0AHkNk9zHLEnl+vGFRk2gG2HczE1hsV3SKSNFOmOlbr5oHv
+         uGtUXATgCEgdTZZIbZ19MjTv8jfhbivfqKw/meTmLuiQwxsh/EyapG2kKrwh91ZJWv3V
+         pKUfS+64CqaITVNp3dLCzoXD5grZOBIw+0MZcgrj2Cg6/EbMpSvZm4ElfkSH90cl+A2s
+         xtSO5tP/LsasZy7En3D1uozL7a3aXjl9zFNmSxWOCkrrTHkqjpIt2DK4/Dvorl0X6mPt
+         3ICg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/eu7kgNtJZe/1oOgUEnuMm1GqJELkQ9s+3GmmlSYH+0=;
+        b=H/HC6wjJrUpSugPI8E1PtmHu73pnuvVe4iAwMWExxxc0+gDZ9AxwWHHXcG1KkMdb03
+         zG0ZFW46NbSWx+0MBtyLU21F/K5dnM8POuqY0JThn3Gxi7IUg3t1K6oLCuvXY/Xb/YHS
+         vd1i8XO3IqS+BFR0HSH4KPWXn2ZtlpwRoyTi0ii1EpHr9Y7kpEKgoGEFFm//3hQRuK4m
+         FFVXYAy7xI4W/xcpMxErprwNH0KIXx0BkTBxjoP2gRdGYZ9nq3iqguxfEOy7yJzxNR68
+         CHODd890JZHY1bDLt4ris4XuWsaaTTOsggDmd4G4faTnXflNn1lMrSrWa2dvVnip11Xi
+         hn9Q==
+X-Gm-Message-State: AOAM533WO38tU07+JcKYQdwRU4o3qA3rI1vkY6+hC8SxEBc4gY3gZrdp
+        37d7P1/30iJ3s2oWRwBNofU9gw==
+X-Google-Smtp-Source: ABdhPJzXrgxWuq+BZ8rpJinVP45pWN/Y5dpFdZkyEjP3UWtzqfbRFQDxdSqPp2cv21L+DEChpQGUaA==
+X-Received: by 2002:a5d:59ab:: with SMTP id p11mr19820976wrr.54.1619987149085;
+        Sun, 02 May 2021 13:25:49 -0700 (PDT)
+Received: from localhost.localdomain (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
+        by smtp.gmail.com with ESMTPSA id z6sm9402343wmf.9.2021.05.02.13.25.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 May 2021 13:25:48 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     kvalo@codeaurora.org
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ath9k-devel@qca.qualcomm.com
+Subject: [PATCH] ath9k: ath9k_htc_rx_msg: return when sk_buff is too small
+Date:   Sun,  2 May 2021 21:25:45 +0100
+Message-Id: <20210502202545.1405-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.40
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 7C6732448B6
-X-Stat-Signature: 71ockug33zmqd9a3epysnu3hfs3ubiyr
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19QpxupLlF/RmMAnwgGtoo8JZ2oBi/jlKM=
-X-HE-Tag: 1619985630-933791
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-05-02 at 13:30 -0500, Segher Boessenkool wrote:
-> On Sat, May 01, 2021 at 07:41:53PM -0700, Joe Perches wrote:
-> > Why not raise the minimum gcc compiler version even higher?
+At the start of ath9k_htc_rx_msg, we check to see if the skb pointer is
+valid, but what we don't do is check if it is large enough to contain a
+valid struct htc_frame_hdr. We should check for this and return, as the
+buffer is invalid in this case. Fixes a KMSAN-found uninit-value bug
+reported by syzbot at:
+https://syzkaller.appspot.com/bug?id=7dccb7d9ad4251df1c49f370607a49e1f09644ee
 
-On Sun, 2021-05-02 at 13:37 -0500, Segher Boessenkool wrote:
-> Everyone should always use an as new release as practical
+Reported-by: syzbot+e4534e8c1c382508312c@syzkaller.appspotmail.com
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+---
+ drivers/net/wireless/ath/ath9k/htc_hst.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[]
-
-> The latest GCC 5 release is only three and a half years old.
-
-You argue slightly against yourself here.
-
-Yes, it's mostly a question of practicality vs latest.
-
-clang requires a _very_ recent version.
-gcc _could_ require a later version.
-Perhaps 8 might be best as that has a __diag warning control mechanism.
-
-gcc 8.1 is now 3 years old today.
-
+diff --git a/drivers/net/wireless/ath/ath9k/htc_hst.c b/drivers/net/wireless/ath/ath9k/htc_hst.c
+index 510e61e97dbc..9dbfff7a388e 100644
+--- a/drivers/net/wireless/ath/ath9k/htc_hst.c
++++ b/drivers/net/wireless/ath/ath9k/htc_hst.c
+@@ -403,7 +403,7 @@ void ath9k_htc_rx_msg(struct htc_target *htc_handle,
+ 	struct htc_endpoint *endpoint;
+ 	__be16 *msg_id;
+ 
+-	if (!htc_handle || !skb)
++	if (!htc_handle || !skb || !pskb_may_pull(skb, sizeof(struct htc_frame_hdr)))
+ 		return;
+ 
+ 	htc_hdr = (struct htc_frame_hdr *) skb->data;
+-- 
+2.30.2
 
