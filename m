@@ -2,142 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB171370B1A
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 12:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E56370B1B
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 12:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230354AbhEBKe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 06:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52662 "EHLO
+        id S231468AbhEBKhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 06:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbhEBKe6 (ORCPT
+        with ESMTP id S229676AbhEBKhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 06:34:58 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4058C06174A;
-        Sun,  2 May 2021 03:34:06 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id f15-20020a05600c4e8fb029013f5599b8a9so4108163wmq.1;
-        Sun, 02 May 2021 03:34:06 -0700 (PDT)
+        Sun, 2 May 2021 06:37:12 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8526FC06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 03:36:20 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id q2so2146063pfh.13
+        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 03:36:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vX3Dh54TACjc7hpqnVwn0ERaoUoL5d3ElTKH1eHs/Dc=;
-        b=VKJ/JT96xR7eU6Rz0lsQ/7osA6Y2Vc5J29ekRhi/CQg0Hgan1VbqKiKazy95OAGXyh
-         fJ4pOesq88yy02CQboO1Nrn84k/ZqxkJGgTaQNKkgHaUB6HS6Z8GbTvg0PNyTVXzOeyk
-         acfnynFT4lInoS9wfwY20YHLpsSiiTLkU0Vo0bpDzIFHtEmSQRpNbNXiK/jXEq1zf/pK
-         Q5Ov5IHM4W6rSvWijmdgRbtM/sH1yJTYiW4edDTWMlt0DU3iYidDp+8St4HB06TuXJsD
-         JiEfa5o8jBqQTECIdPDcbhqQSPIoRJG6JzqQRst7AGEIn9agVVTgsbk8N+ryPFMg93/l
-         YjAQ==
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=nBVktWzWQs0ycy4eKYb+aWc95BFCqBy6EYnYKyLnjK8=;
+        b=AJntAANakgvRSf7hmmuM/lzpDKoiWoXaj+vVMLF+fZsCQTOKl74DFP8kMuWnqVYbaM
+         oFqz/6kbPE1oeOq11iQTSkeqVBbpHRimaWwnm42/3G2XuKaamx//oYbBQFURpohZGWoi
+         edQ24k06DS0Sr/98QWi7wO9TxOeeGxC8PjCWlohkyosJsNjZ/M9OLQ4uYDwJ2GXuJ4Qy
+         uOuhJ5fzug600sLCvHWz6e8xTLweHpQ/G5FD5rNJGzFWHxwTO+tSrbXHmvorA8DHTCs0
+         zwhkTLbZF2IErEfGE8cOQgOE5cGcNISZskXW/yzHOHT46myueE513k6TY/3YTXnNbqWa
+         eyqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vX3Dh54TACjc7hpqnVwn0ERaoUoL5d3ElTKH1eHs/Dc=;
-        b=gjuL2++THz9HI7Y+SpWHQ9Mdr0jNM8yWhBVx8RPsnHWhlh9M41yaiqXZAHryqG3AjP
-         LS7kUyBpKL6yLUkNeI8jot6itjivnSKfljRzI0PDLq9VrZfRo+RnGnh8nEMna1y/61Of
-         xhCLgZiiwbrrxUz9dslqzafEATyiHY03HPce1nY3TaV4VbdYVZojln4yIYvt0p5LDXmN
-         PoiYpgm6BB0UoN//IJZNTLzk0RIwkLzOxsaqUrsP/VPV/seCR9GLXwtTYdS7UWeUCa+r
-         Wf8hBChYJdP3fnMfoY336GNbbWiwh3aAicjLeYb9zeq5VcyLPtyaz/zuXPZ9HaHO5bHo
-         vhnw==
-X-Gm-Message-State: AOAM5327RwwBRXayxNX8QQsvrQat3o2R5hX9onhFOmFefPYP0nx2fhJt
-        afmndU+HOqyBR2R8TGT4Eyw=
-X-Google-Smtp-Source: ABdhPJyphmJ5Sr9jTcUgZU5/20y7iif5g3lknxy6ce1sSt3xC4t6VcjeqwgZdYRY2CSGL7otD1ViuA==
-X-Received: by 2002:a05:600c:4fd0:: with SMTP id o16mr4265974wmq.107.1619951645433;
-        Sun, 02 May 2021 03:34:05 -0700 (PDT)
-Received: from [192.168.8.197] ([185.69.145.156])
-        by smtp.gmail.com with ESMTPSA id q12sm8420515wrx.17.2021.05.02.03.34.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 02 May 2021 03:34:04 -0700 (PDT)
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: INFO: task hung in io_uring_cancel_sqpoll
-To:     Palash Oswal <oswalpalash@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzbot+11bf59db879676f59e52@syzkaller.appspotmail.com
-References: <0000000000000c97e505bdd1d60e@google.com>
- <cfa0f9b8-91ec-4772-a6c2-c5206f32373fn@googlegroups.com>
- <53a22ab4-7a2d-4ebd-802d-9d1b4ce4e087n@googlegroups.com>
- <CAGyP=7fpNBhbmczjDq-vpzbSDyqwCw2jS7xQo4XO=bxwsy2ddQ@mail.gmail.com>
- <a6ce21f4-04e7-f34c-8cfc-f8158f7fe163@gmail.com>
- <CAGyP=7czG1nmzpM5T784iBdApVL14hGoAfw-nhS=tNH5t9C79g@mail.gmail.com>
-Message-ID: <12e84e19-a803-25e3-7d15-d105b56d15b6@gmail.com>
-Date:   Sun, 2 May 2021 11:33:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=nBVktWzWQs0ycy4eKYb+aWc95BFCqBy6EYnYKyLnjK8=;
+        b=RNNt0XM6T2kQUCXdh3sui6owWu21SBxeQG/1XqYq7sCYMh1raFunPUhGlPhW07f4aM
+         pu130WeNJfvcenYi8W87F1lIJfX68TcNorPwmaoskvHEDf2/yZ29BGAwckNQv825QqNx
+         VUuH1GR7ND+KCbmF+aLLXU9MLJoUogvTw5WfeILOWQOwAJm2NW6bvw80cwagXcgeoKqD
+         Y3qVGW8KYy+02ioqFbt3Ka64eVCL/ZswhDTt/hKRfat5L721khelDLiAp2ipkQ1AoI2V
+         l025j3aJPAVeushMtZjT0p4/KYhez/7qzTGfnebNxz69g05mYzawgSBijF2uFQUnFP5N
+         LMKg==
+X-Gm-Message-State: AOAM533qr7+AnOzZp9oOjBDLG2U3OpAVGvjmAKsrQuYzC0HcJ0WoECS2
+        z6e2WakNpunsavlMbd0JE7Y=
+X-Google-Smtp-Source: ABdhPJzCjOdkQJYJB+L/1YPQM1uheCztA9Q5CyQcFjCdn7f88RCIQ+IbD+4aI/fe71w/2u5yg4bCJg==
+X-Received: by 2002:a62:2d6:0:b029:204:9b3b:dced with SMTP id 205-20020a6202d60000b02902049b3bdcedmr13687340pfc.36.1619951780422;
+        Sun, 02 May 2021 03:36:20 -0700 (PDT)
+Received: from localhost ([61.68.127.20])
+        by smtp.gmail.com with ESMTPSA id k12sm6937414pgh.16.2021.05.02.03.36.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 May 2021 03:36:20 -0700 (PDT)
+Date:   Sun, 02 May 2021 20:36:14 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH] mm/ioremap: Fix iomap_max_page_shift
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <0d615a242c4470462da547dc332e4ec5f00479dd.1619855673.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <0d615a242c4470462da547dc332e4ec5f00479dd.1619855673.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-In-Reply-To: <CAGyP=7czG1nmzpM5T784iBdApVL14hGoAfw-nhS=tNH5t9C79g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Message-Id: <1619951627.yczq2mwbu6.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/30/21 4:02 PM, Palash Oswal wrote:
-> On Fri, Apr 30, 2021 at 8:03 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
->>
->> On 4/30/21 3:21 PM, Palash Oswal wrote:
->>> On Thursday, March 18, 2021 at 9:40:21 PM UTC+5:30 syzbot wrote:
->>>>
->>>> Hello,
->>>>
->>>> syzbot found the following issue on:
->>>>
->>>> HEAD commit: 0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
->>>> git tree: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
->>>> console output: https://syzkaller.appspot.com/x/log.txt?x=12dde5aed00000
->>>> kernel config: https://syzkaller.appspot.com/x/.config?x=81c0b708b31626cc
->>>> dashboard link: https://syzkaller.appspot.com/bug?extid=11bf59db879676f59e52
->>>> userspace arch: riscv64
->>>> CC: [asml.s...@gmail.com ax...@kernel.dk io-u...@vger.kernel.org linux-...@vger.kernel.org]
->>>>
->>>> Unfortunately, I don't have any reproducer for this issue yet.
->>
->> There was so many fixes in 5.12 after this revision, including sqpoll
->> cancellation related... Can you try something more up-to-date? Like
->> released 5.12 or for-next
->>
-> 
-> The reproducer works for 5.12.
+Excerpts from Christophe Leroy's message of May 1, 2021 5:58 pm:
+> iomap_max_page_shift is expected to contain a page shift,
+> so it can't be a 'bool', has to be an 'unsigned int'
+>=20
+> And fix the default values: P4D_SHIFT is when huge iomap is allowed.
 
-Tried 5.12, 
+Ugh, thanks that's obviously right.
 
-[  245.467397] INFO: task iou-sqp-2018:2019 blocked for more than 122 seconds.
-[  245.467424] Call Trace:
-[  245.467432]  __schedule+0x365/0x960
-[  245.467444]  schedule+0x68/0xe0
-[  245.467450]  io_uring_cancel_sqpoll+0xdb/0x110
-[  245.467461]  ? wait_woken+0x80/0x80
-[  245.467472]  io_sq_thread+0x1c6/0x6c0
-[  245.467482]  ? wait_woken+0x80/0x80
-[  245.467491]  ? finish_task_switch.isra.0+0xca/0x2e0
-[  245.467497]  ? io_wq_submit_work+0x140/0x140
-[  245.467506]  ret_from_fork+0x22/0x30
-[  245.467520] INFO: task iou-sqp-2052:2053 blocked for more than 122 seconds.
-[  245.467536] Call Trace:
-[  245.467539]  __schedule+0x365/0x960
-[  245.467545]  schedule+0x68/0xe0
-[  245.467550]  io_uring_cancel_sqpoll+0xdb/0x110
-[  245.467559]  ? wait_woken+0x80/0x80
-[  245.467568]  io_sq_thread+0x1c6/0x6c0
-[  245.467577]  ? wait_woken+0x80/0x80
-[  245.467586]  ? finish_task_switch.isra.0+0xca/0x2e0
-[  245.467591]  ? io_wq_submit_work+0x140/0x140
+Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
 
-> 
-> I tested against the HEAD b1ef997bec4d5cf251bfb5e47f7b04afa49bcdfe
-
-However, there is a bunch patches fixing sqpoll cancellations in
-5.13, all are waiting for backporting. and for-next doesn't trigger
-the issue for me.
-
-Are you absolutely sure b1ef997bec4d5cf251bfb5e47f7b04afa49bcdfe
-does hit it?
-
-> commit on for-next tree
-> https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/?h=for-next
-> and the reproducer fails.
-
--- 
-Pavel Begunkov
+>=20
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Fixes: bbc180a5adb0 ("mm: HUGE_VMAP arch support cleanup")
+> ---
+>  mm/ioremap.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/mm/ioremap.c b/mm/ioremap.c
+> index d1dcc7e744ac..2f7193c6a99e 100644
+> --- a/mm/ioremap.c
+> +++ b/mm/ioremap.c
+> @@ -16,16 +16,16 @@
+>  #include "pgalloc-track.h"
+> =20
+>  #ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+> -static bool __ro_after_init iomap_max_page_shift =3D PAGE_SHIFT;
+> +static unsigned int __ro_after_init iomap_max_page_shift =3D P4D_SHIFT;
+> =20
+>  static int __init set_nohugeiomap(char *str)
+>  {
+> -	iomap_max_page_shift =3D P4D_SHIFT;
+> +	iomap_max_page_shift =3D PAGE_SHIFT;
+>  	return 0;
+>  }
+>  early_param("nohugeiomap", set_nohugeiomap);
+>  #else /* CONFIG_HAVE_ARCH_HUGE_VMAP */
+> -static const bool iomap_max_page_shift =3D PAGE_SHIFT;
+> +static const unsigned int iomap_max_page_shift =3D PAGE_SHIFT;
+>  #endif	/* CONFIG_HAVE_ARCH_HUGE_VMAP */
+> =20
+>  int ioremap_page_range(unsigned long addr,
+> --=20
+> 2.25.0
+>=20
+>=20
