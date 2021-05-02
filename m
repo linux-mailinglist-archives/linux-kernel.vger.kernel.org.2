@@ -2,114 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BFA0370F66
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 23:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56909370F6B
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 00:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232587AbhEBVtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 17:49:02 -0400
-Received: from mail.stusta.mhn.de ([141.84.69.5]:55764 "EHLO
-        mail.stusta.mhn.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232338AbhEBVtB (ORCPT
+        id S232341AbhEBWDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 18:03:48 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:59509 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230036AbhEBWDn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 17:49:01 -0400
-X-Greylist: delayed 44201 seconds by postgrey-1.27 at vger.kernel.org; Sun, 02 May 2021 17:49:00 EDT
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        by mail.stusta.mhn.de (Postfix) with ESMTPSA id 4FYKTy0CH6z1n;
-        Sun,  2 May 2021 23:48:05 +0200 (CEST)
-Date:   Mon, 3 May 2021 00:48:04 +0300
-From:   Adrian Bunk <bunk@kernel.org>
+        Sun, 2 May 2021 18:03:43 -0400
+Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 01A8A240002;
+        Sun,  2 May 2021 22:02:49 +0000 (UTC)
+Date:   Mon, 3 May 2021 00:02:49 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Tom Stellard <tstellar@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>,
-        Serge Guelton <sguelton@redhat.com>,
-        Sylvestre Ledru <sylvestre@mozilla.com>
-Subject: Re: Very slow clang kernel config ..
-Message-ID: <20210502214803.GA7951@localhost>
-References: <CAHk-=wi1yiBBr3b3RbCEte6-yzAApsZN5zRdr3xoW8Av9jOX=Q@mail.gmail.com>
- <CAKwvOdk0nxxUATg2jEKgx4HutXCMXcW92SX3DT+uCTgqBwQHBg@mail.gmail.com>
- <1c5e05fa-a246-9456-ff4e-287960acb18c@redhat.com>
- <CAHk-=whs8QZf3YnifdLv57+FhBi5_WeNTG1B-suOES=RcUSmQg@mail.gmail.com>
- <20210502093123.GC12293@localhost>
- <CAHk-=wgdUMt_n84mq93LZKA6jOGqZpD+=KeVzA3YmvJ6=JPyhw@mail.gmail.com>
- <20210502164542.GA4522@localhost>
- <CAHk-=winSraiwc4gC5WFWSehFq+s7AqCJZoMqUuHLX0nYVG0nQ@mail.gmail.com>
- <20210502175510.GB4522@localhost>
- <CAHk-=whTjJwCt2E0_JM2dDq=+UybvJN7QK+6K6e80A9Zd8duYg@mail.gmail.com>
+Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] RTC for 5.13
+Message-ID: <YI8hiepfYO8Pwhlu@piout.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=whTjJwCt2E0_JM2dDq=+UybvJN7QK+6K6e80A9Zd8duYg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 02, 2021 at 10:59:10AM -0700, Linus Torvalds wrote:
-> On Sun, May 2, 2021 at 10:55 AM Adrian Bunk <bunk@kernel.org> wrote:
-> >
-> > Are you happy about libclang.so being a shared library?
-> 
-> Honestly, considering how I don't have any other package that I care
-> about than clang itself, and how this seems to be a *huge* performance
-> problem, then no.
-> 
-> But you are still entirely avoiding the real issue: the Fedora rule
-> that everything should be a shared library is simply bogus.
+Hello Linus,
 
-It is not a Fedora-specific rule, we have something similar in Debian.
+Here is the RTC subsystem pull request for v5.13. Mostly small fixes and
+two drivers gaining alarm support.
 
-And in general, static libraries in the C/C++ ecosystem often feel like 
-a rarely used remnant from the last millenium (except for convenience
-libraries during the build).
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
 
-> Even if the llvm/clang maintainers decide that that is what they want,
-> I know for a fact that that rule is completely the wrong thing in
-> other situations where people did *not* want that.
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
 
-libdivecomputer is now a submodule of subsurface.
+are available in the Git repository at:
 
-If this is the only copy of libdivecomputer in a distribution,
-then linking subsurface statically with it and not shipping it
-as a separate library at all is fine for distributions.
+  git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git tags/rtc-5.13
 
-The Fedora policy that was linked to also states that this is OK.
+for you to fetch changes up to 4d0185e67806a233c423c1668e87e137fbda192c:
 
-The important part for a distribution is to ship only one copy of the 
-code and having to rebuild only the one package containing it when 
-fixing a bug.
+  rtc: sysfs: check features instead of ops (2021-04-29 23:51:18 +0200)
 
-> Can you please stop dancing around that issue, and just admit that the
-> whole "you should always use shared libraries" is simply WRONG.
-> 
-> Shared libraries really can have huge downsides, and the blind "shared
-> libraries are good" standpoint is just wrong.
+----------------------------------------------------------------
+RTC for 5.13
 
-Good for distributions or good for performance?
+Subsystem:
+ - UIE emulation has been reworked to avoid calling drivers callbacks when it is
+   known it will not work
 
-These two are quite distinct here, and distribution rules care about 
-what is good for distributions.
+Drivers:
+ - ab-eoz9: add alarm support
+ - pcf8523: add alarm support
 
-Library packages in ecosystems like Go or Rust are copies of the source 
-code, and when an application package is built with these "libraries" 
-(might even be using LTO) this is expected to be faster than using 
-shared libraries.
+----------------------------------------------------------------
+Alexandre Belloni (9):
+      rtc: m48t59: use platform_get_irq_optional
+      rtc: imx-sc: remove .read_alarm
+      rtc: ds1307: replace HAS_ALARM by RTC_FEATURE_ALARM
+      rtc: ds1307: remove flags
+      rtc: rtc_update_irq_enable: rework UIE emulation
+      rtc: pcf8523: remove useless define
+      rtc: pcf8523: add alarm support
+      rtc: pcf8523: report oscillator failures
+      rtc: sysfs: check features instead of ops
 
-But for distributions not using shared libraries can be a huge pain.
+Arnd Bergmann (1):
+      rtc: tps65910: include linux/property.h
 
-Compared to LTO compilation of all code used in an application, static 
-linking gives the same pain to distributions with smaller benefits.
+Dario Binacchi (1):
+      rtc: omap: use rtc_write to access OMAP_RTC_OSC_REG
 
-I agree that on the performance side you have a valid point regarding 
-the disadvantages of shared libraries, but not using them is bad for 
-distributions since it makes maintaining and supporting the software 
-much harder and security support often impossible.
+Fabio Estevam (2):
+      rtc: imxdi: Convert to a DT-only driver
+      rtc: mxc: Remove unneeded of_match_ptr()
 
->           Linus
+Francois Gervais (1):
+      rtc: pcf85063: fallback to parent of_node
 
-cu
-Adrian
+Heiko Schocher (1):
+      rtc: rv3028: correct weekday register usage
+
+Jiapeng Chong (1):
+      rtc: ds1511: remove unused function
+
+Johannes Hahn (1):
+      rtc: rx6110: add ACPI bindings to I2C
+
+Krzysztof Kozlowski (1):
+      rtc: s5m: Remove reference to parent's device pdata
+
+Laurent Vivier (1):
+      rtc: goldfish: remove dependency to OF
+
+Liam Beguin (3):
+      rtc: ab-eoz9: set regmap max_register
+      rtc: ab-eoz9: add alarm support
+      rtc: ab-eoz9: make use of RTC_FEATURE_ALARM
+
+Michael Walle (1):
+      rtc: fsl-ftm-alarm: add MODULE_TABLE()
+
+Nobuhiro Iwamatsu (1):
+      rtc: ds1307: Fix wday settings for rx8130
+
+Tian Tao (1):
+      rtc: rtc-spear: replace spin_lock_irqsave by spin_lock in hard IRQ
+
+satya priya (2):
+      rtc: pm8xxx: Add RTC support for PMIC PMK8350
+      dt-bindings: rtc: qcom-pm8xxx-rtc: Add qcom pm8xxx rtc bindings
+
+ .../devicetree/bindings/rtc/qcom-pm8xxx-rtc.yaml   |  62 +++++++
+ drivers/rtc/Kconfig                                |   3 +-
+ drivers/rtc/interface.c                            |  34 ++--
+ drivers/rtc/rtc-ab-eoz9.c                          | 135 +++++++++++++-
+ drivers/rtc/rtc-ds1307.c                           |  56 ++----
+ drivers/rtc/rtc-ds1511.c                           |   6 -
+ drivers/rtc/rtc-fsl-ftm-alarm.c                    |   1 +
+ drivers/rtc/rtc-imx-sc.c                           |  11 --
+ drivers/rtc/rtc-imxdi.c                            |   4 +-
+ drivers/rtc/rtc-m48t59.c                           |   2 +-
+ drivers/rtc/rtc-mxc.c                              |   2 +-
+ drivers/rtc/rtc-omap.c                             |   5 +-
+ drivers/rtc/rtc-pcf85063.c                         |   7 +-
+ drivers/rtc/rtc-pcf8523.c                          | 196 ++++++++++++++++++++-
+ drivers/rtc/rtc-pm8xxx.c                           |  11 ++
+ drivers/rtc/rtc-rv3028.c                           |   4 +-
+ drivers/rtc/rtc-rx6110.c                           |   7 +
+ drivers/rtc/rtc-s5m.c                              |   6 -
+ drivers/rtc/rtc-spear.c                            |   6 +-
+ drivers/rtc/rtc-tps65910.c                         |   1 +
+ drivers/rtc/sysfs.c                                |   2 +-
+ 21 files changed, 450 insertions(+), 111 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/rtc/qcom-pm8xxx-rtc.yaml
+
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
