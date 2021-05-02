@@ -2,146 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E68A370AC4
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 10:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41455370AC9
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 10:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229987AbhEBIPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 04:15:25 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:54459 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhEBIPY (ORCPT
+        id S230255AbhEBIgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 04:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229988AbhEBIgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 04:15:24 -0400
-X-Originating-IP: 2.7.49.219
-Received: from [192.168.1.12] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 0771E1C0003;
-        Sun,  2 May 2021 08:14:27 +0000 (UTC)
-Subject: Re: [PATCH] RISC-V: Always define XIP_FIXUP
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, akpm@linux-foundation.org,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Anup Patel <Anup.Patel@wdc.com>, wangkefeng.wang@huawei.com,
-        rppt@kernel.org, vitaly.wool@konsulko.com, greentime.hu@sifive.com,
-        0x7f454c46@gmail.com, chenhuang5@huawei.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        linux@roeck-us.net
-References: <mhng-2e1a7543-84bc-4954-843a-b577fc132157@palmerdabbelt-glaptop>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <436e619a-de98-9948-9ccf-62a2f943142e@ghiti.fr>
-Date:   Sun, 2 May 2021 04:14:27 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Sun, 2 May 2021 04:36:21 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 052BCC06174A;
+        Sun,  2 May 2021 01:35:29 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id u48-20020a4a97330000b02901fa060b8066so590656ooi.8;
+        Sun, 02 May 2021 01:35:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WLNkx73hcHcrQZ3KilQZwxG3DTJfVww0RQQLOCneQHc=;
+        b=u96t6QK91NThmWMffJGUKZbNrihPegTeh5QQ3TN5DqkJT8bvNDNFbtvhN2sc5YeZk3
+         L2VPrmUlMkBVrwDBAGdaMSrZpBV1cIIGFgxZPrevLUQSHi9ujzb1iDRX09+/4T+HCCkh
+         IMG2EDYU9koiOUt0kU9Z1VsEkLternAja9B6RFKdDqSkm+ALtXYpfQNDzyXDe2hX9heI
+         ILIlpY1Wxq8RM2KKPyDCKdIRHsYPZf0lUCAwE6A91LbWLVXCt1TFXfJz5JPiQEaX/uW8
+         w9bcaLM0M7KwEWk6LAu3BIzX+Tt0yHS1s61JElqMhZ0ZXcTgFbx3sXDtop7S15mtyH2o
+         jd3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WLNkx73hcHcrQZ3KilQZwxG3DTJfVww0RQQLOCneQHc=;
+        b=XjY/AoXukXTluPCuou/Hze2WeiWlnsN7OgHHZGHBh0Cmx9hLqR/x5c8on60AbqCsYg
+         lF//kK4eAmUo4X9FMw5gsy86a6UUAD84DBhVuL7dhGUPwY1ZKL1unOV7CW8lw1oSyrDp
+         f0zPnCtv2WtaYbSEVa5yfHJL9+vmYVqEjALfpzTGr4MmS4sm+qwGJOHeuuXrbumpwPh+
+         YsTzskoY3UEYB7H96KxRSNuSRh8Or2IHMtLq5KvB+mJCVO8v1HVQ9Q8ep2qAkVxuJ8rV
+         1vMQX1x6e1D924apVkDt4f85OwsgU7G5UBylUhCcLqceOHNGQMRSjEzf2jQe92fGZHPm
+         gEsQ==
+X-Gm-Message-State: AOAM531NkQSK53y+0zR9RLe6FEA0HYcoeJpLgxx7D7H3bDj3q/18PhRC
+        x35+9psfGFwI5QylUfUtPvQyUElXwPABAnzL55mfnej9cGfDbQ==
+X-Google-Smtp-Source: ABdhPJzbg180RQ3aXNIhT0V2QAp6y9NeYHqTD9HXlyR1IEYkEWythQz+WAQfqoJ6vomF90EBTeDBUGaw7cxzO0xLbTU=
+X-Received: by 2002:a4a:e934:: with SMTP id a20mr4356990ooe.27.1619944528389;
+ Sun, 02 May 2021 01:35:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <mhng-2e1a7543-84bc-4954-843a-b577fc132157@palmerdabbelt-glaptop>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <20210430062632.21304-1-heiko.thiery@gmail.com>
+ <YIxVWXqBkkS6l5lB@pevik> <YIxaf3hu2mRUbBGn@pevik>
+In-Reply-To: <YIxaf3hu2mRUbBGn@pevik>
+From:   Heiko Thiery <heiko.thiery@gmail.com>
+Date:   Sun, 2 May 2021 10:35:17 +0200
+Message-ID: <CAEyMn7Z4cr1=WYde4uxwu2tjEgX2Lwwx3S+vmFP8EZVVMaWRjg@mail.gmail.com>
+Subject: Re: [PATCH iproute2-next v2] lib/fs: fix issue when
+ {name,open}_to_handle_at() is not implemented
+To:     Petr Vorel <petr.vorel@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephen Hemminger <stephen@networkplumber.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Palmer,
+Hi Petr,
 
-Le 4/29/21 à 12:43 AM, Palmer Dabbelt a écrit :
-> On Wed, 28 Apr 2021 01:25:55 PDT (-0700), alex@ghiti.fr wrote:
->> Le 4/27/21 à 11:34 PM, Palmer Dabbelt a écrit :
->>> From: Palmer Dabbelt <palmerdabbelt@google.com>
->>>
->>> XIP depends on MMU, but XIP_FIXUP is defined throughout the kernel in
->>> order to avoid excessive ifdefs.  This just makes sure to always define
->>> XIP_FIXIP, which will fix MMU=n builds.
->>
->> A small typo here.
-> 
-> Actually two: "defined" should have been "used".  Both are fixed.
-> 
->>
->>>
->>> Fixes: 44c922572952 ("RISC-V: enable XIP")
->>> Reported-by: Guenter Roeck <linux@roeck-us.net>
->>> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
->>> ---
->>>   arch/riscv/include/asm/pgtable.h | 24 ++++++++++++------------
->>>   1 file changed, 12 insertions(+), 12 deletions(-)
->>>
->>> diff --git a/arch/riscv/include/asm/pgtable.h 
->>> b/arch/riscv/include/asm/pgtable.h
->>> index 2f1384e14e31..fd749351f432 100644
->>> --- a/arch/riscv/include/asm/pgtable.h
->>> +++ b/arch/riscv/include/asm/pgtable.h
->>> @@ -73,18 +73,6 @@
->>>   #endif
->>>   #define FIXADDR_START    (FIXADDR_TOP - FIXADDR_SIZE)
->>>
->>> -#ifdef CONFIG_XIP_KERNEL
->>> -#define XIP_OFFSET        SZ_8M
->>> -#define XIP_FIXUP(addr) ({                            \
->>> -    uintptr_t __a = (uintptr_t)(addr);                    \
->>> -    (__a >= CONFIG_XIP_PHYS_ADDR && __a < CONFIG_XIP_PHYS_ADDR + 
->>> SZ_16M) ?    \
->>> -        __a - CONFIG_XIP_PHYS_ADDR + CONFIG_PHYS_RAM_BASE - 
->>> XIP_OFFSET :\
->>> -        __a;                                \
->>> -    })
->>> -#else
->>> -#define XIP_FIXUP(addr)        (addr)
->>> -#endif /* CONFIG_XIP_KERNEL */
->>> -
->>>   #endif
->>>
->>>   #ifndef __ASSEMBLY__
->>> @@ -101,6 +89,18 @@
->>>   #include <asm/pgtable-32.h>
->>>   #endif /* CONFIG_64BIT */
->>>
->>> +#ifdef CONFIG_XIP_KERNEL
->>> +#define XIP_OFFSET        SZ_8M
->>
->>
->> XIP_OFFSET is used in head.S and then this breaks XIP_KERNEL. XIP_OFFSET
->> must live outside the ifndef __ASSEMBLY__.
-> 
-> Thanks, I hadn't even seen XIP_OFFSET.  This is fixed in the v2.
-> 
-> Do you have an XIP config that will run on QEMU, and a way to run it? If 
-> so, can you post a defconfig and some instructions?  That'll make it 
-> easier to test on my end.
+Am Fr., 30. Apr. 2021 um 21:29 Uhr schrieb Petr Vorel <petr.vorel@gmail.com>:
+>
+> Hi,
+>
+> > > +++ b/lib/fs.c
+> > > @@ -30,6 +30,27 @@
+> > >  /* if not already mounted cgroup2 is mounted here for iproute2's use */
+> > >  #define MNT_CGRP2_PATH  "/var/run/cgroup2"
+>
+> > > +
+> > > +#ifndef defined HAVE_HANDLE_AT
+> > This is also wrong, it must be:
+> > #ifndef HAVE_HANDLE_AT
+>
+> > > +struct file_handle {
+> > > +   unsigned handle_bytes;
+> > > +   int handle_type;
+> > > +   unsigned char f_handle[];
+> > > +};
+> > > +
+> > > +int name_to_handle_at(int dirfd, const char *pathname,
+> > > +   struct file_handle *handle, int *mount_id, int flags)
+> > > +{
+> > > +   return syscall(name_to_handle_at, 5, dirfd, pathname, handle,
+> > > +                  mount_id, flags);
+> > Also I overlooked bogus 5 parameter, why is here? Correct is:
+>
+> >       return syscall(__NR_name_to_handle_at, dfd, pathname, handle,
+> >                          mount_id, flags);
+> Uh, one more typo on my side, sorry (dfd => dirfd):
+>         return syscall(__NR_name_to_handle_at, dirfd, pathname, handle,
+>                            mount_id, flags);
+>
 
+Thanks for the review and finding the sloppiness. I really should test
+the changes before. Nevertheless, I will prepare a new version and
+test it this time.
 
-I posted a tutorial here on how I test XIP kernel:
-
-https://alexghiti.github.io/xip/XIP.html
-
-If something does not work for you, please tell me.
-
-Alex
-
-> 
->>> +#define XIP_FIXUP(addr) ({                            \
->>> +    uintptr_t __a = (uintptr_t)(addr);                    \
->>> +    (__a >= CONFIG_XIP_PHYS_ADDR && __a < CONFIG_XIP_PHYS_ADDR + 
->>> SZ_16M) ?    \
->>> +        __a - CONFIG_XIP_PHYS_ADDR + CONFIG_PHYS_RAM_BASE - 
->>> XIP_OFFSET :\
->>> +        __a;                                \
->>> +    })
->>> +#else
->>> +#define XIP_FIXUP(addr)        (addr)
->>> +#endif /* CONFIG_XIP_KERNEL */
->>> +
->>>   #ifdef CONFIG_MMU
->>>   /* Number of entries in the page global directory */
->>>   #define PTRS_PER_PGD    (PAGE_SIZE / sizeof(pgd_t))
->>>
->>
->> Thank you for doing that!
->>
->> Alex
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+BR,
+-- 
+Heiko
