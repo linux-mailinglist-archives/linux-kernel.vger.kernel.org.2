@@ -2,67 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E9C6370D82
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 17:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5839D370D87
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 17:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232166AbhEBO5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 10:57:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46112 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230110AbhEBO5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 10:57:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D0EE600D1;
-        Sun,  2 May 2021 14:56:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619967373;
-        bh=i+GNc/hZ8lPa7KbkQ305SjPnkwd3pho1sduIJrmnOa0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KvWQTvX2wAQGums8bmADZVRytG7IzM5wghvGfObjAlQGHi3MfsVciwpjpF2aLQK8b
-         8UbYxXVoef92KS4f9UuvVxj84esAAKlVm5Y43X+cT2Se9nYnM+b9p1BwykB0AcunJI
-         5ia6wiL24nweUVj0qxm6cLxSFm4QPc1hWtEQZgGk=
-Date:   Sun, 2 May 2021 16:56:11 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.12 16/79] usb: dwc3: gadget: Remove invalid
- low-speed setting
-Message-ID: <YI69i5JE3NdIx4Sb@kroah.com>
-References: <20210502140316.2718705-1-sashal@kernel.org>
- <20210502140316.2718705-16-sashal@kernel.org>
+        id S232271AbhEBPCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 11:02:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230110AbhEBPCI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 May 2021 11:02:08 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F951C06174A;
+        Sun,  2 May 2021 08:01:16 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 12so4319298lfq.13;
+        Sun, 02 May 2021 08:01:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2KrJJUJkSjKMGeIgnhlr8UaRUqJR8X3RnPrqNiC5mho=;
+        b=gFpp31vhRno67oZ4qs1YYGLJCCTVCfnOGHW6AeZAcHDLKNdY2RPaiYUL+qww7iBvdp
+         jLPJZR2ir6RBZxAn9IkxscTG0x5PLLdeUGFU0HaTrKJU6NhaLzuzR8GtJih0Zay0yUqK
+         xlwEp3NymZVwlXmFq3Coum9BqZvX1nSqEGdlLXoSZhdNnrDIb7YgRChwl1H48Kw950wk
+         EpEH01jDYl936uMPkDNvbpLitjN0p7WXPr792CCe/I8CF79JBbzoGC/C9gNJGLPDxft5
+         8ZL7ONYqAUmnaGlqg7hkVIlavpJLa1djBsTt3+MfTfvUDpNARk8viamqzjW5nYPzY0eM
+         Qjow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2KrJJUJkSjKMGeIgnhlr8UaRUqJR8X3RnPrqNiC5mho=;
+        b=sWukIZNp/iiBD64pMAgWuHu7tGtGMee3RJfBp7M4E0lYw2PXEGyJKTQ6Jl/Cb4UZzk
+         rqS/SSjg+Ok83aznA9ioT0vErg0896KmeJ9Se0dSlDbvme2aMZlvpZPBkiX1uid7CykR
+         cq+4eFgu/G1r5I/hepSxeZqlvW+lHk79mkCmR1TlYZILYDl+hHMZDUJP+RQHvEAxndSI
+         DED84wSV4bKjPLYmIMoUdwCHpXaPVNNVyJ0psyDi3tSxVTyl214x898jXt1D0wKpf5Ua
+         ikdCXJm8U3IcunUrS367gkRdGw5tNvI5Xy9otLKgGcAtB3B19/pNcLWc+W/qFGvDYY57
+         90pg==
+X-Gm-Message-State: AOAM532CU/AmN5ZqRWM01MsvjRAMkeJjydWuozYIg3X8BLi6prZuECba
+        3nlwIOrl85G2SNtSWPgh0SN7O3qkJLqxT7Ylx74=
+X-Google-Smtp-Source: ABdhPJydayfR18ybm6VTswWed5R8D/ew2zWIfn3GUoTqFZCZo9BBctr6FNlV6QNW1n9QjAIov6GEFwsqj4msg1qmLTA=
+X-Received: by 2002:a05:6512:3b07:: with SMTP id f7mr10498383lfv.470.1619967674845;
+ Sun, 02 May 2021 08:01:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210502140316.2718705-16-sashal@kernel.org>
+References: <0000000000000c97e505bdd1d60e@google.com> <cfa0f9b8-91ec-4772-a6c2-c5206f32373fn@googlegroups.com>
+ <53a22ab4-7a2d-4ebd-802d-9d1b4ce4e087n@googlegroups.com> <CAGyP=7fpNBhbmczjDq-vpzbSDyqwCw2jS7xQo4XO=bxwsy2ddQ@mail.gmail.com>
+ <a6ce21f4-04e7-f34c-8cfc-f8158f7fe163@gmail.com> <CAGyP=7czG1nmzpM5T784iBdApVL14hGoAfw-nhS=tNH5t9C79g@mail.gmail.com>
+ <12e84e19-a803-25e3-7d15-d105b56d15b6@gmail.com>
+In-Reply-To: <12e84e19-a803-25e3-7d15-d105b56d15b6@gmail.com>
+From:   Palash Oswal <oswalpalash@gmail.com>
+Date:   Sun, 2 May 2021 20:31:03 +0530
+Message-ID: <CAGyP=7fAsgXjaK9MHOCLAWLY9ay6Z03KtxaFQVcNtk25KQ5poQ@mail.gmail.com>
+Subject: Re: INFO: task hung in io_uring_cancel_sqpoll
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        Hillf Danton <hdanton@sina.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzbot+11bf59db879676f59e52@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 02, 2021 at 10:02:13AM -0400, Sasha Levin wrote:
-> From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-> 
-> [ Upstream commit 0c59f678fcfc6dd53ba493915794636a230bc4cc ]
-> 
-> None of the DWC_usb3x IPs (and all their versions) supports low-speed
-> setting in device mode. In the early days, our "Early Adopter Edition"
-> DWC_usb3 databook shows that the controller may be configured to operate
-> in low-speed, but it was revised on release. Let's remove this invalid
-> speed setting to avoid any confusion.
-> 
-> Signed-off-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-> Link: https://lore.kernel.org/r/258b1c7fbb966454f4c4c2c1367508998498fc30.1615509438.git.Thinh.Nguyen@synopsys.com
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  drivers/usb/dwc3/core.c   | 1 -
->  drivers/usb/dwc3/core.h   | 2 --
->  drivers/usb/dwc3/gadget.c | 8 --------
->  3 files changed, 11 deletions(-)
+On Sun, May 2, 2021 at 4:04 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
 
-This is a "cleanup only" and does not fix or solve anything, so it can
-be dropped from all of the kernels it has been "autoselected" for.
+> > I tested against the HEAD b1ef997bec4d5cf251bfb5e47f7b04afa49bcdfe
+>
+> However, there is a bunch patches fixing sqpoll cancellations in
+> 5.13, all are waiting for backporting. and for-next doesn't trigger
+> the issue for me.
+>
+> Are you absolutely sure b1ef997bec4d5cf251bfb5e47f7b04afa49bcdfe
+> does hit it?
+>
+> > commit on for-next tree
+> > https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/?h=for-next
+> > and the reproducer fails.
 
-thanks,
+Hi Pavel and Hillf,
 
-greg k-h
+I believe there's a little misunderstanding, apologies. The reproducer
+does not trigger the bug on the for-next tree which has patches for
+5.13. The reproducer process exits correctly. Likely one of those
+commits that will be back-ported to 5.12 will address this issue.
+When I wrote `the reproducer fails`, I meant to indicate that the bug
+is not triggered on for-next. I will word it better next time!
+
+Palash
