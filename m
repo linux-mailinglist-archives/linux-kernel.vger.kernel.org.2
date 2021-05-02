@@ -2,105 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3457370D2E
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 16:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B60B3370D08
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 16:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234045AbhEBOJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 10:09:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50872 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233127AbhEBOG0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 10:06:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DADE861423;
-        Sun,  2 May 2021 14:05:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619964329;
-        bh=DTWH8NVoZWx4rVhmqGlYuLjfmdZbDkg5InMe1IXTpgU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pixoANdd9/K2rA7y/anQvKUD2oSCsAxu28I0Hp1YSrT3HNRSQOtFlHmgaVdj6dxjC
-         yWwQ8f0nUb3a/QFW/SuPS11vw/x67CAo40rLlC7PALW/dONEvph95B7VVgGCgZYpTi
-         UjZFeQ3Gkc/9nkZKjnMYRipFedSHyMHQnJuCr7lcDrEo57LmP45IKQQdNRqWfKBXA7
-         SVLm9w4YbvtBDNlHpqNTaPojInBSXlS+7yOdHO7fDLUIc698eFj4ioZ8c3mYc4yndb
-         AfuGVLxT811KEIRU3pZ4Fn72aOKk4CtXTRAFGArhjpqaoCgJBW53SdmqFG7ENmauXG
-         0SWWb04GrSgYg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     John Millikin <john@john-millikin.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Borislav Petkov <bp@suse.de>, Ard Biesheuvel <ardb@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Sasha Levin <sashal@kernel.org>,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 4.19 09/21] x86/build: Propagate $(CLANG_FLAGS) to $(REALMODE_FLAGS)
-Date:   Sun,  2 May 2021 10:05:05 -0400
-Message-Id: <20210502140517.2719912-9-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210502140517.2719912-1-sashal@kernel.org>
-References: <20210502140517.2719912-1-sashal@kernel.org>
+        id S231818AbhEBOIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 10:08:25 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:60095 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233239AbhEBOGC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 May 2021 10:06:02 -0400
+X-Originating-IP: 2.7.49.219
+Received: from [192.168.1.100] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id BCFFF1C0003;
+        Sun,  2 May 2021 14:05:05 +0000 (UTC)
+Subject: Re: [PATCH v2] riscv: Only extend kernel reservation if mapped
+ read-only
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     Damien Le Moal <damien.lemoal@wdc.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <02e05df076da23fc0f52c944bbf0a5cb99e95bd6.1619708542.git.geert+renesas@glider.be>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <b346f33d-a5aa-85c5-327d-626e03f2f5de@ghiti.fr>
+Date:   Sun, 2 May 2021 10:05:05 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-stable: review
-X-Patchwork-Hint: Ignore
+In-Reply-To: <02e05df076da23fc0f52c944bbf0a5cb99e95bd6.1619708542.git.geert+renesas@glider.be>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Millikin <john@john-millikin.com>
+Le 4/29/21 � 11:05 AM, Geert Uytterhoeven a �crit�:
+> When the kernel mapping was moved outside of the linear mapping, the
+> kernel memory reservation was increased, to take into account mapping
+> granularity.  However, this is done unconditionally, regardless of
+> whether the kernel memory is mapped read-only or not.
+> 
+> If this extension is not needed, up to 2 MiB may be lost, which has a
+> big impact on e.g. Canaan K210 (64-bit nommu) platforms with only 8 MiB
+> of RAM.
+> 
+> Reclaim the lost memory by only extending the reserved region when
+> needed, i.e. depending on a simplified version of the conditional logic
+> around the call to protect_kernel_linear_mapping_text_rodata().
+> 
+> Fixes: 2bfc6cd81bd17e43 ("riscv: Move kernel mapping outside of linear mapping")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+> v2:
+>    - Simplify the conditional, as STRICT_KERNEL_RWX depends on
+>      MMU && !XIP_KERNEL.
+> 
+> Only tested on K210 (SiPeed MAIX BiT):
+> 
+>      -Memory: 5852K/8192K available (1344K kernel code, 147K rwdata, 272K rodata, 106K init, 72K bss, 2340K reserved, 0K cma-reserved)
+>      +Memory: 5948K/8192K available (1344K kernel code, 147K rwdata, 272K rodata, 106K init, 72K bss, 2244K reserved, 0K cma-reserved)
+> 
+> Yes, I was lucky, as only 96 KiB was lost ;-)
+> ---
+>   arch/riscv/mm/init.c | 9 +++++++--
+>   1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index 788eb222deacf994..3ebc0f5d2b73b42b 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -136,11 +136,16 @@ void __init setup_bootmem(void)
+>   
+>   	/*
+>   	 * Reserve from the start of the kernel to the end of the kernel
+> -	 * and make sure we align the reservation on PMD_SIZE since we will
+> +	 */
+> +#if defined(CONFIG_64BIT) && defined(CONFIG_STRICT_KERNEL_RWX)
+> +	/*
+> +	 * Make sure we align the reservation on PMD_SIZE since we will
+>   	 * map the kernel in the linear mapping as read-only: we do not want
+>   	 * any allocation to happen between _end and the next pmd aligned page.
+>   	 */
+> -	memblock_reserve(vmlinux_start, (vmlinux_end - vmlinux_start + PMD_SIZE - 1) & PMD_MASK);
+> +	vmlinux_end = (vmlinux_end + PMD_SIZE - 1) & PMD_MASK;
+> +#endif
+> +	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
+>   
+>   	/*
+>   	 * memblock allocator is not aware of the fact that last 4K bytes of
+> 
 
-[ Upstream commit 8abe7fc26ad8f28bfdf78adbed56acd1fa93f82d ]
+I tested this on the following configs:
 
-When cross-compiling with Clang, the `$(CLANG_FLAGS)' variable
-contains additional flags needed to build C and assembly sources
-for the target platform. Normally this variable is automatically
-included in `$(KBUILD_CFLAGS)' via the top-level Makefile.
+- rv32_defconfig (build and valid on qemu)
+- defconfig (with and without CONFIG_STRICT_KERNEL_RWX) (build and valid 
+on qemu)
+- xip kernel (build and valid on qemu)
+- nommu_k210_defconfig (build only)
 
-The x86 real-mode makefile builds `$(REALMODE_CFLAGS)' from a
-plain assignment and therefore drops the Clang flags. This causes
-Clang to not recognize x86-specific assembler directives:
+so you can add:
 
-  arch/x86/realmode/rm/header.S:36:1: error: unknown directive
-  .type real_mode_header STT_OBJECT ; .size real_mode_header, .-real_mode_header
-  ^
+Tested-by: Alexandre Ghiti <alex@ghiti.fr>
 
-Explicit propagation of `$(CLANG_FLAGS)' to `$(REALMODE_CFLAGS)',
-which is inherited by real-mode make rules, fixes cross-compilation
-with Clang for x86 targets.
+Thank you again for that,
 
-Relevant flags:
-
-* `--target' sets the target architecture when cross-compiling. This
-  flag must be set for both compilation and assembly (`KBUILD_AFLAGS')
-  to support architecture-specific assembler directives.
-
-* `-no-integrated-as' tells clang to assemble with GNU Assembler
-  instead of its built-in LLVM assembler. This flag is set by default
-  unless `LLVM_IAS=1' is set, because the LLVM assembler can't yet
-  parse certain GNU extensions.
-
-Signed-off-by: John Millikin <john@john-millikin.com>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-Link: https://lkml.kernel.org/r/20210326000435.4785-2-nathan@kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/x86/Makefile | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index 6ebdbad21fb2..65a8722e784c 100644
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -40,6 +40,7 @@ REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), -ffreestanding
- REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), -fno-stack-protector)
- REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), -Wno-address-of-packed-member)
- REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), $(cc_stack_align4))
-+REALMODE_CFLAGS += $(CLANG_FLAGS)
- export REALMODE_CFLAGS
- 
- # BITS is used as extension for files which are available in a 32 bit
--- 
-2.30.2
-
+Alex
