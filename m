@@ -2,334 +2,482 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1043370B02
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 12:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B93370B10
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 12:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbhEBKKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 06:10:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47398 "EHLO
+        id S230509AbhEBKOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 06:14:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229651AbhEBKKd (ORCPT
+        with ESMTP id S229651AbhEBKOK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 06:10:33 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60376C06174A;
-        Sun,  2 May 2021 03:09:41 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id x20so3784807lfu.6;
-        Sun, 02 May 2021 03:09:41 -0700 (PDT)
+        Sun, 2 May 2021 06:14:10 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2129C06174A;
+        Sun,  2 May 2021 03:13:17 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id d14so2981860edc.12;
+        Sun, 02 May 2021 03:13:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=Zv9agYNxpm9JqoWIGBOo9QxSBmNLe22ZMocD2B/pyoA=;
-        b=G12lDkXZnOyUBIQd/O3m8uKZT0hWX/sgKJCwW5q967oEhTLlgJRKJ4tIQTCA6UqXxp
-         AQWizR3g5+xHf1AAT2tzi9d+yowz3RnfRs/y3N6US9an8+1U43axQNBSTJFlxtFzWn4d
-         cYtpGTU5RuUH4zRNLjmQ+DIwbXoCClxrWmNraUQEE1BedosdjAt3W3+ZsSWPK5MHHMAj
-         TPQy3K7iToFqtOkGUfJAsdqNpjvVsY5PRvlsTTakwzLL5HPR9QN8d0zNYcQ4agIb+9N/
-         z4w84tFJ1/XKedw06NVmnc+bLKuwKIVctb9iEbdiU/mYIH53uUyyxPD/3Fyb8CWt19z2
-         etMA==
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=48GWeQ4QniJrKGm3JwxR/c0DzkhIGl/Ne+clIxhm6Dg=;
+        b=my+r8MxxzYbb/P81J6yrJAfEmAMa2g/6PAdLn740O+zs0wytR9sLdv0L8/11nDEAB4
+         G4pT1ZxtAcDxjf3tM1pAi9/AKr230muFcpDfK+ukekpaueb4W4YszxnjDDGXk9CDdmwg
+         k10nByvVzJQmifJV5IhpV4rlm4Gb+GncFL6bJzxb4rD7SFLcLwPlIfPVKjMSMdSImNkQ
+         HOyGwEq/8qB82wRi/osLKLPQhv1YvwLR43b9dokEdGLafwnP7zTrykk1x+Dt3a30k4Cg
+         HF4TbwtwQ9xW2mf9HGzsWhc81C14+X9pKk4YVECTqycCKU73/t6gZ0wMAlaJzfNctGLB
+         ElwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=Zv9agYNxpm9JqoWIGBOo9QxSBmNLe22ZMocD2B/pyoA=;
-        b=Ovxr+nRLH9HjJwZZgQBuWA2yrdxEnlHpqPAqHeIqGPppuzp3qNGUY+VKWJm+uUjnNA
-         v0VN1f+jMVdrSiyDv3vAQJrS7vL3QHYu9qPIFC1z96Nt4LRPt3VCA9VpwlCMFPg76fxs
-         zpXPNXF4S+A9JzLmQ1y6V229MAxZ0nPckote2b4fq5xuJEFs/sRQVMTa3GXJ859f7mUJ
-         RtP6/6C0C1CTNesmQabRYAL94NjfBdXFLrVxwDEF3GGXoF99GBHf+ULSzo9Icm41mAyt
-         ZKiARo44xMnXvySA/FFMU5zPt3nmDNzUUubugV5zba2/DIdYLguKu7y5BItZ4UwdwQoa
-         MoFA==
-X-Gm-Message-State: AOAM530HxRrrQH7XHd7pOimssbfUvhLo1KM+uSAgDOn+TfOpG/iItTGv
-        EcLzefNfST/MR2NZyt6hM9GbPJ3MJT4dcFMAaX3Ajq+pGzQkkw==
-X-Google-Smtp-Source: ABdhPJyOYNfPBwz0XHjZ+8FbEcWf98ioXJqfWMF73geWu3AJl080YRfpkvGM+FUVXkL/JQfSjI9aUf3NgY0MncpSIwo=
-X-Received: by 2002:ac2:5a08:: with SMTP id q8mr9670809lfn.12.1619950179574;
- Sun, 02 May 2021 03:09:39 -0700 (PDT)
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=48GWeQ4QniJrKGm3JwxR/c0DzkhIGl/Ne+clIxhm6Dg=;
+        b=MyueubzGKA75XKo3k0a2iU9D/CyJwoUbTQ+UYwQyAXYto2Qkofk0y/JAZLvDHljZwG
+         pKsBmNTDQfFSVIW1raHNaHbeM4nGbNWJvZRxV5Zc7LJtxZ+ClyNlMoZx8ZYWFVLgUrgZ
+         459UFIKho9WL/OcQjsPnhwRHDq3Qkwx4R9/buMU26q7wlM4hxsL+tUNY9r8GLu2ld8yb
+         wVRlCUi6tJZDn+ni7i6MRBABYTySETuaP200dFsFmahKGOb+EmkY+RTdK+tmkm725rGf
+         xXm9JFGY0q2+6/OiyAY1tFBrbw0FsW/+VmeuQaT47pjH130ujnO4UgvCGWYeIRnFRiLx
+         5HkA==
+X-Gm-Message-State: AOAM531zbwSiP99w2P7C2GrlQHAKGa9jsEfe3F5D8Vh4T64ObyAImsZM
+        LrDhc2aCFTtVYwoSy66GNfFDUj6mtVcs8w==
+X-Google-Smtp-Source: ABdhPJyJtO+ytghu7OOFqvWoOVxFdwTT0KLDg12T5kUCTszYqKaButm/KODD0mahWCw/90+sUErPZw==
+X-Received: by 2002:aa7:d594:: with SMTP id r20mr14578107edq.242.1619950396343;
+        Sun, 02 May 2021 03:13:16 -0700 (PDT)
+Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id u6sm8158590ejn.14.2021.05.02.03.13.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 02 May 2021 03:13:16 -0700 (PDT)
+Subject: Re: [PATCH v1 1/2] dt-bindings: soc: rockchip: convert grf.txt to
+ YAML
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     cl@rock-chips.com, jay.xu@rock-chips.com, david.wu@rock-chips.com,
+        zhangqing@rock-chips.com, huangtao@rock-chips.com,
+        shawn.lin@rock-chips.com, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210501203520.5465-1-jbx6244@gmail.com>
+Message-ID: <45d7aa00-1879-cc6e-df9b-fe1ed83a4531@gmail.com>
+Date:   Sun, 2 May 2021 12:13:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-From:   Palash Oswal <oswalpalash@gmail.com>
-Date:   Sun, 2 May 2021 15:39:28 +0530
-Message-ID: <CAGyP=7exAVOC0Er5VzmwL=HLih-wpmyDijEPVjGzUEj3SCYENA@mail.gmail.com>
-Subject: KASAN: stack-out-of-bounds Read in iov_iter_revert
-To:     Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210501203520.5465-1-jbx6244@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Rob, Heiko,
 
-My syzkaller instance discovered 'KASAN: stack-out-of-bounds Read in
-iov_iter_revert' bug on the v5.12 kernel (head
-9f4ad9e425a1d3b6a34617b8ea226d56a119a717)
+This patch relies on rockchip,power-controller.yaml, but a look in
+MAINTAINERS show that no one seems responsible.
+Who should apply?
 
-==================================================================
-Kernel Crash Console Logs:
-BUG: KASAN: stack-out-of-bounds in iov_iter_revert+0x158/0x510
-lib/iov_iter.c:1144
-Read of size 8 at addr ffffc90000d7fa08 by task syz-executor871/333
+===
 
-CPU: 0 PID: 333 Comm: syz-executor871 Not tainted 5.12.0 #16
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-1.13.0-1ubuntu1.1 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0xe9/0x15b lib/dump_stack.c:120
- print_address_description+0x81/0x3d0 mm/kasan/report.c:232
- __kasan_report+0x170/0x1c0 mm/kasan/report.c:399
- kasan_report+0x4f/0x70 mm/kasan/report.c:416
- check_region_inline mm/kasan/generic.c:177 [inline]
- __asan_load8+0x94/0xb0 mm/kasan/generic.c:253
- iov_iter_revert+0x158/0x510 lib/iov_iter.c:1144
- io_write fs/io_uring.c:3457 [inline]
- io_issue_sqe+0x3ce8/0x6050 fs/io_uring.c:6061
- __io_queue_sqe+0xcd/0x3a0 fs/io_uring.c:6322
- io_queue_sqe+0x7a/0x180 fs/io_uring.c:6375
- io_submit_sqe+0x813/0xa10 fs/io_uring.c:6546
- io_submit_sqes+0x61c/0xad0 fs/io_uring.c:6660
- __do_sys_io_uring_enter fs/io_uring.c:9240 [inline]
- __se_sys_io_uring_enter+0x28f/0xce0 fs/io_uring.c:9182
- __x64_sys_io_uring_enter+0x82/0xa0 fs/io_uring.c:9182
- do_syscall_64+0x37/0x80 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x44a2ed
-Code: 28 c3 e8 06 2a 00 00 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffcc8342468 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000044a2ed
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000003
-RBP: 00007ffcc8342480 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffcc8342490
-R13: 0000000000000000 R14: 00000000004c1018 R15: 0000000000000000
+This patch makes use of phy-rockchip-inno-usb2.yaml
 
+Given response in:
 
-addr ffffc90000d7fa08 is located in stack of task syz-executor871/333
-at offset 1672 in frame:
- io_issue_sqe+0x0/0x6050 include/linux/refcount.h:283
+dt-bindings: phy: convert phy-rockchip-inno-usb2 bindings to yaml
+https://lore.kernel.org/linux-rockchip/20200319171305.GA19150@bogus/
 
-this frame has 17 objects:
- [32, 48) 'up.i'
- [64, 72) 'file.i667'
- [96, 112) 'data.i6.i'
- [128, 144) 'data.i.i'
- [160, 288) '__io.i'
- [320, 416) 'msg.i424'
- [448, 464) 'iov.i425'
- [480, 848) 'iomsg.i370'
- [912, 1008) 'msg.i'
- [1040, 1056) 'iov.i'
- [1072, 1440) 'iomsg.i'
- [1504, 1536) 'ipt.i'
- [1568, 1576) 'iovec.i182'
- [1600, 1640) '__iter.i183'
- [1680, 1808) 'inline_vecs.i'
- [1840, 1848) 'iovec.i'
- [1872, 1912) '__iter.i'
+'#phy-cells' was added to the example.
 
-Memory state around the buggy address:
- ffffc90000d7f900: 00 00 00 00 f2 f2 f2 f2 f2 f2 f2 f2 00 00 00 00
- ffffc90000d7f980: f2 f2 f2 f2 00 f2 f2 f2 00 00 00 00 00 f2 f2 f2
->ffffc90000d7fa00: f2 f2 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-                      ^
- ffffc90000d7fa80: 00 00 f2 f2 f2 f2 00 f2 f2 f2 00 00 00 00 00 f3
- ffffc90000d7fb00: f3 f3 f3 f3 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
+A proposal to add that to usb2-phy nodes was never accepted,
+so dtbs_check continuous to generate notifications.
 
-Syzkaller reproducer:
-# {Threaded:false Collide:false Repeat:false RepeatTimes:0 Procs:1
-Slowdown:1 Sandbox:none Fault:false FaultCall:-1 FaultNth:0 Leak:false
-NetInjection:false NetDevices:false NetReset:false Cgroups:false
-BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false USB:false
-VhciInjection:false Wifi:false IEEE802154:false Sysctl:false
-UseTmpDir:false HandleSegv:false Repro:false Trace:false}
-r0 = syz_io_uring_setup(0x2, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x0,
-0x0, 0x0, 0x0}, &(0x7f00000a0000)=nil, &(0x7f00000b0000)=nil,
-&(0x7f0000000100)=<r1=>0x0, &(0x7f0000000240)=<r2=>0x0)
-r3 = openat(0xffffffffffffff9c, &(0x7f0000000040)='./file0\x00', 0x4541, 0x0)
-syz_io_uring_submit(r1, r2, &(0x7f0000000000)=@IORING_OP_WRITE={0x17,
-0x0, 0x0, @fd=r3, 0x0, 0x0, 0xfffffffffffffff4}, 0x20)
-io_uring_enter(r0, 0x1, 0x0, 0x0, 0x0, 0x0)
+ARM: dts: rockchip: add #phy-cells to all usb2-phy nodes
+https://lore.kernel.org/linux-rockchip/20200401073725.6063-1-jbx6244@gmail.com/
 
-C reproducer:
-#define _GNU_SOURCE
+===
 
-#include <errno.h>
-#include <fcntl.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/mman.h>
-#include <sys/prctl.h>
-#include <sys/resource.h>
-#include <sys/syscall.h>
-#include <sys/wait.h>
-#include <unistd.h>
+A issue was filed, but nothing fixed.
 
+phys with subnodes and #phy-cells requirement #22
+https://github.com/devicetree-org/dt-schema/issues/22
 
-#define SIZEOF_IO_URING_SQE 64
-#define SIZEOF_IO_URING_CQE 16
-#define SQ_TAIL_OFFSET 64
-#define SQ_RING_MASK_OFFSET 256
-#define SQ_RING_ENTRIES_OFFSET 264
-#define CQ_RING_ENTRIES_OFFSET 268
-#define CQ_CQES_OFFSET 320
+===
 
-struct io_sqring_offsets {
-    uint32_t head;
-    uint32_t tail;
-    uint32_t ring_mask;
-    uint32_t ring_entries;
-    uint32_t flags;
-    uint32_t dropped;
-    uint32_t array;
-    uint32_t resv1;
-    uint64_t resv2;
-};
+Please advise.
 
-struct io_cqring_offsets {
-    uint32_t head;
-    uint32_t tail;
-    uint32_t ring_mask;
-    uint32_t ring_entries;
-    uint32_t overflow;
-    uint32_t cqes;
-    uint64_t resv[2];
-};
+Johan
 
-struct io_uring_params {
-    uint32_t sq_entries;
-    uint32_t cq_entries;
-    uint32_t flags;
-    uint32_t sq_thread_cpu;
-    uint32_t sq_thread_idle;
-    uint32_t features;
-    uint32_t resv[4];
-    struct io_sqring_offsets sq_off;
-    struct io_cqring_offsets cq_off;
-};
-
-#define IORING_OFF_SQ_RING 0
-#define IORING_OFF_SQES 0x10000000ULL
-
-#define sys_io_uring_setup 425
-static long syz_io_uring_setup(volatile long a0, volatile long a1,
-                               volatile long a2, volatile long a3,
-                               volatile long a4, volatile long a5)
-{
-    uint32_t entries = (uint32_t)a0;
-    struct io_uring_params* setup_params = (struct io_uring_params*)a1;
-    void* vma1 = (void*)a2;
-    void* vma2 = (void*)a3;
-    void** ring_ptr_out = (void**)a4;
-    void** sqes_ptr_out = (void**)a5;
-    uint32_t fd_io_uring = syscall(sys_io_uring_setup, entries, setup_params);
-    uint32_t sq_ring_sz =
-            setup_params->sq_off.array + setup_params->sq_entries *
-sizeof(uint32_t);
-    uint32_t cq_ring_sz = setup_params->cq_off.cqes +
-                          setup_params->cq_entries * SIZEOF_IO_URING_CQE;
-    uint32_t ring_sz = sq_ring_sz > cq_ring_sz ? sq_ring_sz : cq_ring_sz;
-    *ring_ptr_out = mmap(vma1, ring_sz, PROT_READ | PROT_WRITE,
-                         MAP_SHARED | MAP_POPULATE | MAP_FIXED, fd_io_uring,
-                         IORING_OFF_SQ_RING);
-    uint32_t sqes_sz = setup_params->sq_entries * SIZEOF_IO_URING_SQE;
-    *sqes_ptr_out =
-            mmap(vma2, sqes_sz, PROT_READ | PROT_WRITE,
-                 MAP_SHARED | MAP_POPULATE | MAP_FIXED, fd_io_uring,
-IORING_OFF_SQES);
-    return fd_io_uring;
-}
-
-static long syz_io_uring_submit(volatile long a0, volatile long a1,
-                                volatile long a2, volatile long a3)
-{
-    char* ring_ptr = (char*)a0;
-    char* sqes_ptr = (char*)a1;
-    char* sqe = (char*)a2;
-    uint32_t sqes_index = (uint32_t)a3;
-    uint32_t sq_ring_entries = *(uint32_t*)(ring_ptr + SQ_RING_ENTRIES_OFFSET);
-    uint32_t cq_ring_entries = *(uint32_t*)(ring_ptr + CQ_RING_ENTRIES_OFFSET);
-    uint32_t sq_array_off =
-            (CQ_CQES_OFFSET + cq_ring_entries * SIZEOF_IO_URING_CQE + 63) & ~63;
-    if (sq_ring_entries)
-        sqes_index %= sq_ring_entries;
-    char* sqe_dest = sqes_ptr + sqes_index * SIZEOF_IO_URING_SQE;
-    memcpy(sqe_dest, sqe, SIZEOF_IO_URING_SQE);
-    uint32_t sq_ring_mask = *(uint32_t*)(ring_ptr + SQ_RING_MASK_OFFSET);
-    uint32_t* sq_tail_ptr = (uint32_t*)(ring_ptr + SQ_TAIL_OFFSET);
-    uint32_t sq_tail = *sq_tail_ptr & sq_ring_mask;
-    uint32_t sq_tail_next = *sq_tail_ptr + 1;
-    uint32_t* sq_array = (uint32_t*)(ring_ptr + sq_array_off);
-    *(sq_array + sq_tail) = sqes_index;
-    __atomic_store_n(sq_tail_ptr, sq_tail_next, __ATOMIC_RELEASE);
-    return 0;
-}
-
-#ifndef __NR_io_uring_enter
-#define __NR_io_uring_enter 426
-#endif
-
-uint64_t r[4] = {0xffffffffffffffff, 0x0, 0x0, 0xffffffffffffffff};
-
-void trigger_bug(void)
-{
-    intptr_t res = 0;
-    *(uint32_t*)0x20000084 = 0;
-    *(uint32_t*)0x20000088 = 0;
-    *(uint32_t*)0x2000008c = 0;
-    *(uint32_t*)0x20000090 = 0;
-    *(uint32_t*)0x20000098 = 0;
-    memset((void*)0x2000009c, 0, 12);
-    res = -1;
-    res = syz_io_uring_setup(2, 0x20000080, 0x200a0000, 0x200b0000, 0x20000100,
-                             0x20000240);
-    // res = 3
-    if (res != -1) {
-        r[0] = res; //3
-        r[1] = *(uint64_t*)0x20000100; // 0x0
-        r[2] = *(uint64_t*)0x20000240; // ./file
-    }
-    memcpy((void*)0x20000040, "./file0\000", 8);
-    res = syscall(__NR_openat, 0xffffff9c, 0x20000040ul, 0x4541ul, 0ul);
-    if (res != -1)
-        r[3] = res;
-    *(uint8_t*)0x20000000 = 0x17;
-    *(uint8_t*)0x20000001 = 0;
-    *(uint16_t*)0x20000002 = 0;
-    *(uint32_t*)0x20000004 = r[3];
-    *(uint64_t*)0x20000008 = 0;
-    *(uint64_t*)0x20000010 = 0;
-    *(uint32_t*)0x20000018 = 0xfffffff4;
-    *(uint32_t*)0x2000001c = 0;
-    *(uint64_t*)0x20000020 = 0;
-    *(uint16_t*)0x20000028 = 0;
-    *(uint16_t*)0x2000002a = 0;
-    syz_io_uring_submit(r[1], r[2], 0x20000000, 0x20);
-    syscall(__NR_io_uring_enter, r[0], 1, 0, 0ul, 0ul, 0ul);
-}
-int main(void)
-{
-    // Preparatory steps
-    struct rlimit rlim;
-    rlim.rlim_cur = rlim.rlim_max = 136 << 20;
-    setrlimit(RLIMIT_FSIZE, &rlim);
-    syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 7ul, 0x32ul, -1, 0ul);
-    trigger_bug();
-    return 0;
-
-}
-
-Kernel build config :
-https://gist.github.com/oswalpalash/18e847d6e24e3452bc811526fd6f76bb
-
-This issue has not yet been discovered by syzbot.
-When rlimit is not set, unroll is set to 0. But when rlimit is set,
-iov_iter_revert gets the input unroll = 2147479542 ( = MAX_RW_COUNT -
-i->count ) and the only warning check implemented in that function is
-if (WARN_ON(unroll > MAX_RW_COUNT))
-        return;
-
-I'm still trying to understand this code better, but initially suspect
-the warning check needs to be re-done.
+On 5/1/21 10:35 PM, Johan Jonker wrote:
+> Current dts files with 'grf' nodes are manually verified.
+> In order to automate this process grf.txt has to be
+> converted to YAML.
+> 
+> Most compatibility strings are in use with "simple-mfd" added.
+> 
+> Add description already in use:
+> "rockchip,rv1108-pmugrf", "syscon"
+> 
+> Add new descriptions for:
+> "rockchip,rk3568-grf", "syscon", "simple-mfd"
+> "rockchip,rk3568-pmugrf", "syscon", "simple-mfd"
+> 
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> ---
+>  .../devicetree/bindings/soc/rockchip/grf.txt       |  61 -----
+>  .../devicetree/bindings/soc/rockchip/grf.yaml      | 277 +++++++++++++++++++++
+>  2 files changed, 277 insertions(+), 61 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/grf.txt
+>  create mode 100644 Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/soc/rockchip/grf.txt b/Documentation/devicetree/bindings/soc/rockchip/grf.txt
+> deleted file mode 100644
+> index f96511aa3..000000000
+> --- a/Documentation/devicetree/bindings/soc/rockchip/grf.txt
+> +++ /dev/null
+> @@ -1,61 +0,0 @@
+> -* Rockchip General Register Files (GRF)
+> -
+> -The general register file will be used to do static set by software, which
+> -is composed of many registers for system control.
+> -
+> -From RK3368 SoCs, the GRF is divided into two sections,
+> -- GRF, used for general non-secure system,
+> -- SGRF, used for general secure system,
+> -- PMUGRF, used for always on system
+> -
+> -On RK3328 SoCs, the GRF adds a section for USB2PHYGRF,
+> -
+> -ON RK3308 SoC, the GRF is divided into four sections:
+> -- GRF, used for general non-secure system,
+> -- SGRF, used for general secure system,
+> -- DETECTGRF, used for audio codec system,
+> -- COREGRF, used for pvtm,
+> -
+> -Required Properties:
+> -
+> -- compatible: GRF should be one of the following:
+> -   - "rockchip,px30-grf", "syscon": for px30
+> -   - "rockchip,rk3036-grf", "syscon": for rk3036
+> -   - "rockchip,rk3066-grf", "syscon": for rk3066
+> -   - "rockchip,rk3188-grf", "syscon": for rk3188
+> -   - "rockchip,rk3228-grf", "syscon": for rk3228
+> -   - "rockchip,rk3288-grf", "syscon": for rk3288
+> -   - "rockchip,rk3308-grf", "syscon": for rk3308
+> -   - "rockchip,rk3328-grf", "syscon": for rk3328
+> -   - "rockchip,rk3368-grf", "syscon": for rk3368
+> -   - "rockchip,rk3399-grf", "syscon": for rk3399
+> -   - "rockchip,rv1108-grf", "syscon": for rv1108
+> -- compatible: DETECTGRF should be one of the following:
+> -   - "rockchip,rk3308-detect-grf", "syscon": for rk3308
+> -- compatilbe: COREGRF should be one of the following:
+> -   - "rockchip,rk3308-core-grf", "syscon": for rk3308
+> -- compatible: PMUGRF should be one of the following:
+> -   - "rockchip,px30-pmugrf", "syscon": for px30
+> -   - "rockchip,rk3368-pmugrf", "syscon": for rk3368
+> -   - "rockchip,rk3399-pmugrf", "syscon": for rk3399
+> -- compatible: SGRF should be one of the following:
+> -   - "rockchip,rk3288-sgrf", "syscon": for rk3288
+> -- compatible: USB2PHYGRF should be one of the following:
+> -   - "rockchip,px30-usb2phy-grf", "syscon": for px30
+> -   - "rockchip,rk3328-usb2phy-grf", "syscon": for rk3328
+> -- compatible: USBGRF should be one of the following:
+> -   - "rockchip,rv1108-usbgrf", "syscon": for rv1108
+> -- reg: physical base address of the controller and length of memory mapped
+> -  region.
+> -
+> -Example: GRF and PMUGRF of RK3399 SoCs
+> -
+> -	pmugrf: syscon@ff320000 {
+> -		compatible = "rockchip,rk3399-pmugrf", "syscon";
+> -		reg = <0x0 0xff320000 0x0 0x1000>;
+> -	};
+> -
+> -	grf: syscon@ff770000 {
+> -		compatible = "rockchip,rk3399-grf", "syscon";
+> -		reg = <0x0 0xff770000 0x0 0x10000>;
+> -	};
+> diff --git a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+> new file mode 100644
+> index 000000000..3f66328a3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+> @@ -0,0 +1,277 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/soc/rockchip/grf.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Rockchip General Register Files (GRF)
+> +
+> +maintainers:
+> +  - Heiko Stuebner <heiko@sntech.de>
+> +
+> +select:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        enum:
+> +          - rockchip,px30-grf
+> +          - rockchip,px30-pmugrf
+> +          - rockchip,px30-usb2phy-grf
+> +          - rockchip,rk3036-grf
+> +          - rockchip,rk3066-grf
+> +          - rockchip,rk3188-grf
+> +          - rockchip,rk3228-grf
+> +          - rockchip,rk3288-grf
+> +          - rockchip,rk3288-sgrf
+> +          - rockchip,rk3308-core-grf
+> +          - rockchip,rk3308-detect-grf
+> +          - rockchip,rk3308-grf
+> +          - rockchip,rk3328-grf
+> +          - rockchip,rk3328-usb2phy-grf
+> +          - rockchip,rk3368-grf
+> +          - rockchip,rk3368-pmugrf
+> +          - rockchip,rk3399-grf
+> +          - rockchip,rk3399-pmugrf
+> +          - rockchip,rk3568-grf
+> +          - rockchip,rk3568-pmugrf
+> +          - rockchip,rv1108-grf
+> +          - rockchip,rv1108-pmugrf
+> +          - rockchip,rv1108-usbgrf
+> +
+> +  required:
+> +    - compatible
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - rockchip,rk3066-grf
+> +              - rockchip,rk3188-grf
+> +              - rockchip,rk3288-sgrf
+> +              - rockchip,rv1108-pmugrf
+> +              - rockchip,rv1108-usbgrf
+> +          - const: syscon
+> +      - items:
+> +          - enum:
+> +              - rockchip,px30-grf
+> +              - rockchip,px30-pmugrf
+> +              - rockchip,px30-usb2phy-grf
+> +              - rockchip,rk3036-grf
+> +              - rockchip,rk3228-grf
+> +              - rockchip,rk3288-grf
+> +              - rockchip,rk3308-core-grf
+> +              - rockchip,rk3308-detect-grf
+> +              - rockchip,rk3308-grf
+> +              - rockchip,rk3328-grf
+> +              - rockchip,rk3328-usb2phy-grf
+> +              - rockchip,rk3368-grf
+> +              - rockchip,rk3368-pmugrf
+> +              - rockchip,rk3399-grf
+> +              - rockchip,rk3399-pmugrf
+> +              - rockchip,rk3568-grf
+> +              - rockchip,rk3568-pmugrf
+> +              - rockchip,rv1108-grf
+> +          - const: syscon
+> +          - const: simple-mfd
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: true
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: rockchip,px30-grf
+> +
+> +    then:
+> +      properties:
+> +        lvds:
+> +          description:
+> +            Documentation/devicetree/bindings/display/rockchip/rockchip-lvds.txt
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: rockchip,rk3288-grf
+> +
+> +    then:
+> +      properties:
+> +        edp-phy:
+> +          description:
+> +            Documentation/devicetree/bindings/phy/rockchip-dp-phy.txt
+> +
+> +        usbphy:
+> +          description:
+> +            Documentation/devicetree/bindings/phy/rockchip-usb-phy.txt
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: rockchip,rk3328-grf
+> +
+> +    then:
+> +      properties:
+> +        grf-gpio:
+> +          description:
+> +            Documentation/devicetree/bindings/gpio/rockchip,rk3328-grf-gpio.txt
+> +
+> +        power-controller:
+> +          type: object
+> +
+> +          $ref: "/schemas/power/rockchip,power-controller.yaml#"
+> +
+> +          unevaluatedProperties: false
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: rockchip,rk3399-grf
+> +
+> +    then:
+> +      properties:
+> +        mipi-dphy-rx0:
+> +          type: object
+> +
+> +          $ref: "/schemas/phy/rockchip-mipi-dphy-rx0.yaml#"
+> +
+> +          unevaluatedProperties: false
+> +
+> +        pcie-phy:
+> +          description:
+> +            Documentation/devicetree/bindings/phy/rockchip-pcie-phy.txt
+> +
+> +      patternProperties:
+> +        "phy@[0-9a-f]+$":
+> +          description:
+> +            Documentation/devicetree/bindings/phy/rockchip-emmc-phy.txt
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - rockchip,px30-pmugrf
+> +              - rockchip,rk3036-grf
+> +              - rockchip,rk3308-grf
+> +              - rockchip,rk3368-pmugrf
+> +
+> +    then:
+> +      properties:
+> +        reboot-mode:
+> +          type: object
+> +
+> +          $ref: "/schemas/power/reset/syscon-reboot-mode.yaml#"
+> +
+> +          unevaluatedProperties: false
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - rockchip,px30-usb2phy-grf
+> +              - rockchip,rk3228-grf
+> +              - rockchip,rk3328-usb2phy-grf
+> +              - rockchip,rk3399-grf
+> +              - rockchip,rv1108-grf
+> +
+> +    then:
+> +      properties:
+> +        "#address-cells":
+> +          const: 1
+> +
+> +        "#size-cells":
+> +          const: 1
+> +
+> +      required:
+> +        - "#address-cells"
+> +        - "#size-cells"
+> +
+> +      patternProperties:
+> +        "usb2-phy@[0-9a-f]+$":
+> +          type: object
+> +
+> +          $ref: "/schemas/phy/phy-rockchip-inno-usb2.yaml#"
+> +
+> +          unevaluatedProperties: false
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - rockchip,px30-pmugrf
+> +              - rockchip,px30-grf
+> +              - rockchip,rk3228-grf
+> +              - rockchip,rk3288-grf
+> +              - rockchip,rk3328-grf
+> +              - rockchip,rk3368-pmugrf
+> +              - rockchip,rk3368-grf
+> +              - rockchip,rk3399-pmugrf
+> +              - rockchip,rk3399-grf
+> +
+> +    then:
+> +      properties:
+> +        io-domains:
+> +          description:
+> +            Documentation/devicetree/bindings/power/rockchip-io-domain.txt
+> +
+> +          unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/rk3399-cru.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/power/rk3399-power.h>
+> +    grf: syscon@ff770000 {
+> +      compatible = "rockchip,rk3399-grf", "syscon", "simple-mfd";
+> +      reg = <0xff770000 0x10000>;
+> +      #address-cells = <1>;
+> +      #size-cells = <1>;
+> +
+> +      mipi_dphy_rx0: mipi-dphy-rx0 {
+> +        compatible = "rockchip,rk3399-mipi-dphy-rx0";
+> +        clocks = <&cru SCLK_MIPIDPHY_REF>,
+> +                 <&cru SCLK_DPHY_RX0_CFG>,
+> +                 <&cru PCLK_VIO_GRF>;
+> +        clock-names = "dphy-ref", "dphy-cfg", "grf";
+> +        power-domains = <&power RK3399_PD_VIO>;
+> +        #phy-cells = <0>;
+> +      };
+> +
+> +      u2phy0: usb2-phy@e450 {
+> +        compatible = "rockchip,rk3399-usb2phy";
+> +        reg = <0xe450 0x10>;
+> +        clocks = <&cru SCLK_USB2PHY0_REF>;
+> +        clock-names = "phyclk";
+> +        #clock-cells = <0>;
+> +        clock-output-names = "clk_usbphy0_480m";
+> +        #phy-cells = <0>;
+> +
+> +        u2phy0_host: host-port {
+> +          #phy-cells = <0>;
+> +          interrupts = <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH 0>;
+> +          interrupt-names = "linestate";
+> +         };
+> +
+> +        u2phy0_otg: otg-port {
+> +          #phy-cells = <0>;
+> +          interrupts = <GIC_SPI 103 IRQ_TYPE_LEVEL_HIGH 0>,
+> +                       <GIC_SPI 104 IRQ_TYPE_LEVEL_HIGH 0>,
+> +                       <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH 0>;
+> +          interrupt-names = "otg-bvalid", "otg-id",
+> +                            "linestate";
+> +        };
+> +      };
+> +    };
+> 
