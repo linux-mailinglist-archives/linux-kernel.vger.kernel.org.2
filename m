@@ -2,266 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41C07370ECD
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 21:32:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47287370ED2
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 21:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232418AbhEBTdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 15:33:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55946 "EHLO
+        id S232367AbhEBTr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 15:47:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231801AbhEBTdQ (ORCPT
+        with ESMTP id S230036AbhEBTr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 15:33:16 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14297C06138B
-        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 12:32:24 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id l14so3396265wrx.5
-        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 12:32:24 -0700 (PDT)
+        Sun, 2 May 2021 15:47:56 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48515C06138B
+        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 12:47:04 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id n10so123910ion.8
+        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 12:47:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Er8/zvVZZcQ5ioo9PA1WDtngetyRVBToQdDjDe6uhN8=;
-        b=vUxs63oHZSY/XJzqcvitR4xiYZMWdN3VFgkC18wT41XNqRuQF49k6cPxrJpShgLWdp
-         eXaE+TnCJbYNVQL3RHD+9dhFVf1uH6Vv/5gmmzXEfHfeyyW0Pes3NgJ20S4y9dOLx5tu
-         kVbYbf5XrlVd0xM58xFebRJau0P42G9hHM4CmhcJCQW5QhGFMDCVCO8u/Bfqx5qwMHt3
-         l4bxIJ3nxL+jKjG4aYYoj7SgA1E98FxV9y4WiPnu8qLvbDtpNDY7JF5NEq+FTwypLfq+
-         mk1s/E12bwHHq0AyWJY/8rHrNg9GnZRoLhcrH114k3HgcyH/nVrwIqqdMH8ZFh1Q7Yyy
-         waBA==
+        d=cosmicpenguin-net.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LJl1rWi+H/YWnHh7uuzQa/Bps0BJvOfQAeiB4qm7bUE=;
+        b=DwSDCQo3ZRKnYl3dEjBzvLVuy8s2Jdv9ranzBfHg0+tyyYLvONlP0r122FyurmPW4f
+         caSD6pUJM1AIU2qhi2x2dF0+RO5jsVHA0FiF6JDljwvwBjyAbYjyHrirz0ymiwyvSvJD
+         SMwOqzmvwN04RaO5atGz/xHmtVjygrMFaknqZD96mNF09kgNRJWYWMHEUrjE9IFEgUjr
+         tn+68xsAM5El2dNIr6G8cDnT1oggiJCxRMe/BaofOZ2ZwPWpxJGnI2kpBIQxrnlf4lZy
+         oM+3Ke873KeEJHOAzduc2Qor84mlAk+JzL5r1T1cBNmAjSbrdR7l8+Bzlv21vDrGogrr
+         Undg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Er8/zvVZZcQ5ioo9PA1WDtngetyRVBToQdDjDe6uhN8=;
-        b=hkr/LJTdrEa/0XPKYAK4GSzrnd9Svr7K3P7oejA1gouuzl3x7/tfzU5cG2LFSMC265
-         CM761uiXut6FqRvfGalNpzhuiEjx2R09E4MYfBAaQVqa/GoxTV3RUKdGEtiXQwqq3MHW
-         +L54MVEtqwOU7M8uM586ikGYN9V2GM14eV1ig9GYJOfxBZO78s0feyAIWfEwKK3gG6m7
-         WF2ZZwzlzQayf4D9TVn3v3AJCE5KxSbYtQRN/jiRECqaoyHxP3yjoYBvBWM0OlvFnF3t
-         HtbdvmT8rUJddIuEsF6raDsjBfApQRzWdNeOFAWsMNKFXvbfpGmLHOUQD/e2OIg+niRC
-         hYVg==
-X-Gm-Message-State: AOAM530BUqTM5Sa3ADlQPNOPrxxqwR3v79UabccMLjz7jOAUR2aF8hNf
-        c7UMH1WU1oGcQzfu0WC0M3QOPA==
-X-Google-Smtp-Source: ABdhPJzTz1GxTLSMw30502mTRav4G75Dfm3vw3ZBpRjFCgFBN7RjHbIJb4IWj5XXScPc6l1LT6A+9w==
-X-Received: by 2002:a05:6000:154e:: with SMTP id 14mr20821086wry.24.1619983941605;
-        Sun, 02 May 2021 12:32:21 -0700 (PDT)
-Received: from debian-brgl.home (lfbn-nic-1-149-6.w2-15.abo.wanadoo.fr. [2.15.231.6])
-        by smtp.gmail.com with ESMTPSA id l14sm8556555wmq.4.2021.05.02.12.32.21
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=LJl1rWi+H/YWnHh7uuzQa/Bps0BJvOfQAeiB4qm7bUE=;
+        b=aHlNN0LzJvs/5oGXTGft2X5MfPKMAlLMU99MRhkR8KsbGcqBs/BQQqyXalxwP38w9D
+         13RY9sOdyt63QxPbfjReQJ4AuaV+GiA9xuSZPiSeBcBkehGUobWTQIAVG3NhccAcjjO9
+         NkcRPCkSe2vET2Yfzsxz23ITUTJPealVHyZcCKh2sSfwsShypJ8oKw1A0caZibdMVXb7
+         mZ1Gr4DwQCaeGBwEanbuFBqQSblQBc9QQR9L7/XDP6QWp1yFrF5I/teJR7Yzkj0FtcHk
+         iMqv2ZR2eav+JcmuXbph//I1gj+7XlZVlxs9wXM0CNDMtWxK6v7GE4LWFAS2NJHv8cLJ
+         Z9Iw==
+X-Gm-Message-State: AOAM533DrtP/KqULNKSSJGhL1KcC67wXSgYO41BqLU97dtP8nFCJXgKf
+        /FyYFo6ef/tILeOLzQ20LbQPQQ==
+X-Google-Smtp-Source: ABdhPJyAsYK/AQSJOv+LyIbdJVqwImnVon/lyG+r3uT2Mp+gIzcnuBWh/WN9wNijHQ/crP1mVurLtw==
+X-Received: by 2002:a02:a512:: with SMTP id e18mr8229261jam.130.1619984823577;
+        Sun, 02 May 2021 12:47:03 -0700 (PDT)
+Received: from cosmicpenguin.net (c-71-237-100-236.hsd1.co.comcast.net. [71.237.100.236])
+        by smtp.gmail.com with ESMTPSA id g26sm4433791iom.14.2021.05.02.12.47.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 May 2021 12:32:21 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [GIT PULL] gpio: updates for v5.13
-Date:   Sun,  2 May 2021 21:32:16 +0200
-Message-Id: <20210502193216.24872-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.30.1
+        Sun, 02 May 2021 12:47:02 -0700 (PDT)
+Date:   Sun, 2 May 2021 13:47:00 -0600
+From:   Jordan Crouse <jordan@cosmicpenguin.net>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        "Kristian H. Kristensen" <hoegsberg@google.com>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Eric Anholt <eric@anholt.net>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] drm/msm: Periodically update RPTR shadow
+Message-ID: <20210502194700.si5jysge2gftjdpw@cosmicpenguin.net>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        dri-devel@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        "Kristian H. Kristensen" <hoegsberg@google.com>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Eric Anholt <eric@anholt.net>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210428193654.1498482-1-robdclark@gmail.com>
+ <20210428193654.1498482-3-robdclark@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210428193654.1498482-3-robdclark@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, Apr 28, 2021 at 12:36:49PM -0700, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
+> 
+> On a5xx and a6xx devices that are using CP_WHERE_AM_I to update a
+> ringbuffer read-ptr shadow value, periodically emit a CP_WHERE_AM_I
+> every 32 commands, so that a later submit waiting for ringbuffer
+> space to become available sees partial progress, rather than not
+> seeing rptr advance at all until the GPU gets to the end of the
+> submit that it is currently chewing on.
 
-This is the big GPIO pull-request for this merge window. We've got two new
-drivers, new features for existing ones (like edge detection support in
-gpio-ich) and a lot of minor tweaks and improvements all over the place (but
-not in the core gpiolib code this time). We also have much appreciated
-documentation fixes and extensions. The details are in the signed tag.
+Acked-by: Jordan Crouse <jordan@cosmicpenguin.net>
 
-You'll notice that we have a bunch of configfs commits in our tree not acked by
-the configfs maintainers. These commits implement the concept of committable
-items in configfs - something that was well defined in the documentation for
-years but has remained unimplemented. Despite the first submission of these
-patches back in November 2020[1] and repeated pings & resending, configfs
-maintainers have remained unresponsive. After reviewing these on the GPIO
-mailing list, we decided to pick them up ourselves and send them your way
-together with the first user: the new GPIO simulator.
-
-Which brings us to one of the new drivers which is a new testing module based
-on configfs & sysfs (as opposed to the old one using module parameters and
-debugfs) which allows to dynamically create simulated chips from user-space.
-It's meant to eventually completely replace gpio-mockup.
-
-The other new driver is the one supporting the Otto GPIO controller from
-Realtek.
-
-Other than configfs changes, there's nothing really controversial in there.
-
-Please pull!
-Bartosz
-
-[1] https://www.lkml.org/lkml/2020/11/25/514
-
-The following changes since commit 0d02ec6b3136c73c09e7859f0d0e4e2c4c07b49b:
-
-  Linux 5.12-rc4 (2021-03-21 14:56:43 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-updates-for-v5.13
-
-for you to fetch changes up to edc510855d963b5687b05a5b39a72bd35fc4c4ba:
-
-  gpio: sim: Fix dereference of free'd pointer config (2021-04-27 14:59:05 +0200)
-
-----------------------------------------------------------------
-gpio updates for v5.13
-
-- new driver for the Realtek Otto GPIO controller
-- ACPI support for gpio-mpc8xxx
-- edge event support for gpio-sch (+ Kconfig fixes)
-- Kconfig improvements in gpio-ich
-- fixes to older issues in gpio-mockup
-- ACPI quirk for ignoring EC wakeups on Dell Venue 10 Pro 5055
-- improve the GPIO aggregator code by using more generic interfaces instead of
-  reimplementing them in the driver
-- implement configfs committable items
-- implement a new GPIO testing module based on configfs & sysfs together with
-  its test-suite with the intention of eventually removing the old gpio-mockup
-- convert the DT bindings for gpio-74x164 to yaml
-- documentation improvements
-- a slew of other minor fixes and improvements to GPIO drivers
-
-----------------------------------------------------------------
-Alexander Dahl (2):
-      docs: kernel-parameters: Move gpio-mockup for alphabetic order
-      docs: kernel-parameters: Add gpio_mockup_named_lines
-
-Andy Shevchenko (14):
-      lib/cmdline: Export next_arg() for being used in modules
-      gpio: aggregator: Replace custom get_arg() with a generic next_arg()
-      irqdomain: Introduce irq_domain_create_simple() API
-      gpiolib: Unify the checks on fwnode type
-      gpiolib: Move of_node operations to gpiolib-of and correct fwnode use
-      gpiolib: Introduce acpi_gpio_dev_init() and call it from core
-      gpiolib: Reuse device's fwnode to create IRQ domain
-      gpiolib: Fold conditionals into a simple ternary operator
-      gpio: mockup: Drop duplicate NULL check in gpio_mockup_unregister_pdevs()
-      gpio: mockup: Adjust documentation to the code
-      gpio: sch: Hook into ACPI GPE handler to catch GPIO edge events
-      gpio: sch: Drop MFD_CORE selection
-      gpio: ich: Switch to be dependent on LPC_ICH
-      gpio: sim: Initialize attribute allocated on the heap
-
-Barney Goette (1):
-      gpio: 104-dio-48e: Fix coding style issues
-
-Bartosz Golaszewski (15):
-      configfs: increase the item name length
-      configfs: use (1UL << bit) for internal flags
-      configfs: implement committable items
-      samples: configfs: add a committable group
-      lib: bitmap: remove the 'extern' keyword from function declarations
-      lib: bitmap: order includes alphabetically
-      lib: bitmap: provide devm_bitmap_alloc() and devm_bitmap_zalloc()
-      gpio: sim: new testing module
-      selftests: gpio: provide a helper for reading chip info
-      selftests: gpio: add a helper for reading GPIO line names
-      selftests: gpio: add test cases for gpio-sim
-      gpio: sim: actually use the OF module table
-      Merge tag 'intel-gpio-v5.13-1' of gitolite.kernel.org:pub/scm/linux/kernel/git/andy/linux-gpio-intel into gpio/for-next
-      Merge tag 'intel-gpio-v5.13-2' of gitolite.kernel.org:pub/scm/linux/kernel/git/andy/linux-gpio-intel into gpio/for-next
-      gpio: sim: allocate IDA numbers earlier
-
-Colin Ian King (1):
-      gpio: sim: Fix dereference of free'd pointer config
-
-Geert Uytterhoeven (1):
-      dt-bindings: gpio: fairchild,74hc595: Convert to json-schema
-
-Hans de Goede (1):
-      gpiolib: acpi: Add quirk to ignore EC wakeups on Dell Venue 10 Pro 5055
-
-Jan Kiszka (1):
-      gpio: sch: Add edge event support
-
-Jiapeng Chong (2):
-      gpio: it87: remove unused code
-      gpio: mxs: remove useless function
-
-Johan Jonker (1):
-      dt-bindings: gpio: add YAML description for rockchip,gpio-bank
-
-Jonathan Neuschäfer (1):
-      docs: driver-api: gpio: consumer: Mark another line of code as such
-
-Linus Walleij (1):
-      gpio: Mention GPIO MUX in docs
-
-Ran Wang (1):
-      gpio: mpc8xxx: Add ACPI support
-
-Randy Dunlap (3):
-      tools: gpio-utils: fix various kernel-doc warnings
-      gpiolib: some edits of kernel docs for clarity
-      gpio: sch: depends on LPC_SCH
-
-Sander Vanheule (2):
-      dt-bindings: gpio: Binding for Realtek Otto GPIO
-      gpio: Add Realtek Otto GPIO support
-
-Tian Tao (1):
-      gpio: omap: Use device_get_match_data() helper
-
- Documentation/admin-guide/gpio/gpio-mockup.rst     |  11 +-
- Documentation/admin-guide/gpio/gpio-sim.rst        |  72 ++
- Documentation/admin-guide/kernel-parameters.txt    |  10 +-
- Documentation/core-api/irq/irq-domain.rst          |  22 +-
- .../bindings/gpio/fairchild,74hc595.yaml           |  77 ++
- .../devicetree/bindings/gpio/gpio-74x164.txt       |  27 -
- .../bindings/gpio/realtek,otto-gpio.yaml           |  78 ++
- .../bindings/gpio/rockchip,gpio-bank.yaml          |  82 ++
- .../bindings/pinctrl/rockchip,pinctrl.txt          |  58 +-
- Documentation/driver-api/gpio/consumer.rst         |   2 +-
- Documentation/driver-api/gpio/drivers-on-gpio.rst  |   6 +
- Documentation/filesystems/configfs.rst             |   6 +-
- drivers/gpio/Kconfig                               |  32 +-
- drivers/gpio/Makefile                              |   2 +
- drivers/gpio/gpio-104-dio-48e.c                    |  50 +-
- drivers/gpio/gpio-aggregator.c                     |  39 +-
- drivers/gpio/gpio-ich.c                            |   2 -
- drivers/gpio/gpio-it87.c                           |   8 -
- drivers/gpio/gpio-mockup.c                         |   9 +-
- drivers/gpio/gpio-mpc8xxx.c                        |  47 +-
- drivers/gpio/gpio-mxs.c                            |   5 -
- drivers/gpio/gpio-omap.c                           |   5 +-
- drivers/gpio/gpio-realtek-otto.c                   | 325 ++++++++
- drivers/gpio/gpio-sch.c                            | 198 ++++-
- drivers/gpio/gpio-sim.c                            | 877 +++++++++++++++++++++
- drivers/gpio/gpiolib-acpi.c                        |  21 +
- drivers/gpio/gpiolib-acpi.h                        |   4 +
- drivers/gpio/gpiolib-of.c                          |   6 +-
- drivers/gpio/gpiolib.c                             |  62 +-
- fs/configfs/configfs_internal.h                    |  22 +-
- fs/configfs/dir.c                                  | 245 +++++-
- include/linux/bitmap.h                             | 127 +--
- include/linux/configfs.h                           |   3 +-
- include/linux/gpio/driver.h                        |  12 +-
- include/linux/irqdomain.h                          |  19 +-
- kernel/irq/irqdomain.c                             |  20 +-
- lib/bitmap.c                                       |  42 +-
- lib/cmdline.c                                      |   1 +
- samples/configfs/configfs_sample.c                 | 153 ++++
- tools/gpio/gpio-utils.c                            |  18 +-
- tools/testing/selftests/gpio/.gitignore            |   2 +
- tools/testing/selftests/gpio/Makefile              |   4 +-
- tools/testing/selftests/gpio/config                |   1 +
- tools/testing/selftests/gpio/gpio-chip-info.c      |  57 ++
- tools/testing/selftests/gpio/gpio-line-name.c      |  55 ++
- tools/testing/selftests/gpio/gpio-sim.sh           | 229 ++++++
- 46 files changed, 2781 insertions(+), 372 deletions(-)
- create mode 100644 Documentation/admin-guide/gpio/gpio-sim.rst
- create mode 100644 Documentation/devicetree/bindings/gpio/fairchild,74hc595.yaml
- delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-74x164.txt
- create mode 100644 Documentation/devicetree/bindings/gpio/realtek,otto-gpio.yaml
- create mode 100644 Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml
- create mode 100644 drivers/gpio/gpio-realtek-otto.c
- create mode 100644 drivers/gpio/gpio-sim.c
- create mode 100644 tools/testing/selftests/gpio/gpio-chip-info.c
- create mode 100644 tools/testing/selftests/gpio/gpio-line-name.c
- create mode 100755 tools/testing/selftests/gpio/gpio-sim.sh
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+>  drivers/gpu/drm/msm/adreno/a5xx_gpu.c | 29 ++++++++++++++++++++++-----
+>  drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 27 +++++++++++++++++++------
+>  2 files changed, 45 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> index 0c8faad3b328..5202f1498a48 100644
+> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> @@ -18,6 +18,18 @@ static void a5xx_dump(struct msm_gpu *gpu);
+>  
+>  #define GPU_PAS_ID 13
+>  
+> +static void update_shadow_rptr(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
+> +{
+> +	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
+> +	struct a5xx_gpu *a5xx_gpu = to_a5xx_gpu(adreno_gpu);
+> +
+> +	if (a5xx_gpu->has_whereami) {
+> +		OUT_PKT7(ring, CP_WHERE_AM_I, 2);
+> +		OUT_RING(ring, lower_32_bits(shadowptr(a5xx_gpu, ring)));
+> +		OUT_RING(ring, upper_32_bits(shadowptr(a5xx_gpu, ring)));
+> +	}
+> +}
+> +
+>  void a5xx_flush(struct msm_gpu *gpu, struct msm_ringbuffer *ring,
+>  		bool sync)
+>  {
+> @@ -30,11 +42,8 @@ void a5xx_flush(struct msm_gpu *gpu, struct msm_ringbuffer *ring,
+>  	 * Most flush operations need to issue a WHERE_AM_I opcode to sync up
+>  	 * the rptr shadow
+>  	 */
+> -	if (a5xx_gpu->has_whereami && sync) {
+> -		OUT_PKT7(ring, CP_WHERE_AM_I, 2);
+> -		OUT_RING(ring, lower_32_bits(shadowptr(a5xx_gpu, ring)));
+> -		OUT_RING(ring, upper_32_bits(shadowptr(a5xx_gpu, ring)));
+> -	}
+> +	if (sync)
+> +		update_shadow_rptr(gpu, ring);
+>  
+>  	if (unlikely(ring->overflow))
+>  		return;
+> @@ -171,6 +180,16 @@ static void a5xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>  			ibs++;
+>  			break;
+>  		}
+> +
+> +		/*
+> +		 * Periodically update shadow-wptr if needed, so that we
+> +		 * can see partial progress of submits with large # of
+> +		 * cmds.. otherwise we could needlessly stall waiting for
+> +		 * ringbuffer state, simply due to looking at a shadow
+> +		 * rptr value that has not been updated
+> +		 */
+> +		if ((ibs % 32) == 0)
+> +			update_shadow_rptr(gpu, ring);
+>  	}
+>  
+>  	/*
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> index 4a4728a774c0..2986e36ffd8d 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> @@ -52,21 +52,25 @@ static bool a6xx_idle(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
+>  	return true;
+>  }
+>  
+> -static void a6xx_flush(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
+> +static void update_shadow_rptr(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
+>  {
+>  	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
+>  	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
+> -	uint32_t wptr;
+> -	unsigned long flags;
+>  
+>  	/* Expanded APRIV doesn't need to issue the WHERE_AM_I opcode */
+>  	if (a6xx_gpu->has_whereami && !adreno_gpu->base.hw_apriv) {
+> -		struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
+> -
+>  		OUT_PKT7(ring, CP_WHERE_AM_I, 2);
+>  		OUT_RING(ring, lower_32_bits(shadowptr(a6xx_gpu, ring)));
+>  		OUT_RING(ring, upper_32_bits(shadowptr(a6xx_gpu, ring)));
+>  	}
+> +}
+> +
+> +static void a6xx_flush(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
+> +{
+> +	uint32_t wptr;
+> +	unsigned long flags;
+> +
+> +	update_shadow_rptr(gpu, ring);
+>  
+>  	if (unlikely(ring->overflow))
+>  		return;
+> @@ -148,7 +152,7 @@ static void a6xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>  	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
+>  	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
+>  	struct msm_ringbuffer *ring = submit->ring;
+> -	unsigned int i;
+> +	unsigned int i, ibs = 0;
+>  
+>  	a6xx_set_pagetable(a6xx_gpu, ring, submit->queue->ctx);
+>  
+> @@ -184,8 +188,19 @@ static void a6xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>  			OUT_RING(ring, lower_32_bits(submit->cmd[i].iova));
+>  			OUT_RING(ring, upper_32_bits(submit->cmd[i].iova));
+>  			OUT_RING(ring, submit->cmd[i].size);
+> +			ibs++;
+>  			break;
+>  		}
+> +
+> +		/*
+> +		 * Periodically update shadow-wptr if needed, so that we
+> +		 * can see partial progress of submits with large # of
+> +		 * cmds.. otherwise we could needlessly stall waiting for
+> +		 * ringbuffer state, simply due to looking at a shadow
+> +		 * rptr value that has not been updated
+> +		 */
+> +		if ((ibs % 32) == 0)
+> +			update_shadow_rptr(gpu, ring);
+>  	}
+>  
+>  	get_stats_counter(ring, REG_A6XX_RBBM_PERFCTR_CP_0_LO,
+> -- 
+> 2.30.2
+> 
