@@ -2,251 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D04E8370E8F
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 20:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5FBF370E96
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 20:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232315AbhEBSkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 14:40:18 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:44752 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbhEBSkQ (ORCPT
+        id S232166AbhEBSn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 14:43:58 -0400
+Received: from mail-pg1-f172.google.com ([209.85.215.172]:43604 "EHLO
+        mail-pg1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229686AbhEBSn5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 14:40:16 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1ldGzy-00FCZQ-V6; Sun, 02 May 2021 12:39:23 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1ldGzx-0006hK-2a; Sun, 02 May 2021 12:39:22 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Marco Elver <elver@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-References: <YIpkvGrBFGlB5vNj@elver.google.com>
-        <m11rat9f85.fsf@fess.ebiederm.org>
-        <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
-        <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
-        <m1zgxfs7zq.fsf_-_@fess.ebiederm.org>
-        <m11rarqqx2.fsf_-_@fess.ebiederm.org>
-        <CANpmjNNJ_MnNyD4R2+9i24E=9xPHKnwTh6zwWtBYkuAq1Xo6-w@mail.gmail.com>
-Date:   Sun, 02 May 2021 13:39:16 -0500
-In-Reply-To: <CANpmjNNJ_MnNyD4R2+9i24E=9xPHKnwTh6zwWtBYkuAq1Xo6-w@mail.gmail.com>
-        (Marco Elver's message of "Sat, 1 May 2021 12:47:21 +0200")
-Message-ID: <m1wnshm14b.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Sun, 2 May 2021 14:43:57 -0400
+Received: by mail-pg1-f172.google.com with SMTP id p12so2166398pgj.10;
+        Sun, 02 May 2021 11:43:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=l/vwSrN0JaNGGibpJY8/O2zej4SM1m+juGfyVrtRwyQ=;
+        b=igMmRaKS+lMOVwDvq+/vJyktgvcUhdh8EutlGZpPGzMD1sOA9kLCgFLeccbWly/DYv
+         SlDwpROQToJRD6DWz8m0Nkb6kxd1LI7xVHJoEBkjGNSzNo3Hb0U7xtF0MltKZhdURWpc
+         Zdl1ZVilqhHC+grWW9BxXxoxf56oNFH5iFOfvFm8na3phFzmDu41aL1VPhFEgOI0ITJ9
+         Coo0rLwDUwf00ZE1SZ2TooN89txdwfUczi6fuhs7v2n2fy7j8DIbXklM4UBOVC5hYSiV
+         zTOGl6OsCb7ANeeTi0IpnfmfE9PVFZCqIePPYa3ZZYxgG1A0NZbMmLh6fBEnnGG2Rlcq
+         AM6Q==
+X-Gm-Message-State: AOAM5307MvdffxSUqcoKqReXr9eS/bXVyw7PVHYB1BTEqYy7qLqlgHLL
+        t5vRAm7AS6n8jlpWgLjUh/s=
+X-Google-Smtp-Source: ABdhPJzdSlQEQXfe5HqTUQ6Z9M22G6wvGkR8Ftrdfugpg/5JN0DRAU8YGMw/URksgME/VSi7mm306w==
+X-Received: by 2002:a05:6a00:228a:b029:264:1ec7:7c3 with SMTP id f10-20020a056a00228ab02902641ec707c3mr15616825pfe.2.1619980985552;
+        Sun, 02 May 2021 11:43:05 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id k7sm3911763pfc.16.2021.05.02.11.43.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 May 2021 11:43:04 -0700 (PDT)
+Date:   Sun, 2 May 2021 11:43:04 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Russ Weight <russell.h.weight@intel.com>
+Cc:     Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>,
+        "Gong, Richard" <richard.gong@intel.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "richard.gong@linux.intel.com" <richard.gong@linux.intel.com>
+Subject: Re: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
+Message-ID: <YI7yuD194KUOscLx@epycbox.lan>
+References: <1612909233-13867-1-git-send-email-richard.gong@linux.intel.com>
+ <MWHPR11MB001577B17723C8A046398249879E9@MWHPR11MB0015.namprd11.prod.outlook.com>
+ <YF90y3Di4RbuJvr0@epycbox.lan>
+ <496aa871-cfb0-faf4-4b1c-b53e56b58030@redhat.com>
+ <YGC619DmLM0AAQ5p@epycbox.lan>
+ <6c741ab7-1ee6-cbf1-94fa-818dd7f4c5c5@intel.com>
+ <YGT0t/7PEemH7iAI@epycbox.lan>
+ <edb1507e-194e-e4b8-1136-3bdba64f3c4e@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1ldGzx-0006hK-2a;;;mid=<m1wnshm14b.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/61Mdwb7TuChJAy6IEn9kCmxkmOP4SzJw=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: ****
-X-Spam-Status: No, score=4.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,LotsOfNums_01,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_XMDrugObfuBody_08,XMNoVowels,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4960]
-        *  0.7 XMSubLong Long Subject
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  1.0 T_XMDrugObfuBody_08 obfuscated drug references
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ****;Marco Elver <elver@google.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 591 ms - load_scoreonly_sql: 0.09 (0.0%),
-        signal_user_changed: 13 (2.1%), b_tie_ro: 11 (1.8%), parse: 1.61
-        (0.3%), extract_message_metadata: 16 (2.7%), get_uri_detail_list: 3.7
-        (0.6%), tests_pri_-1000: 14 (2.3%), tests_pri_-950: 1.44 (0.2%),
-        tests_pri_-900: 1.21 (0.2%), tests_pri_-90: 69 (11.7%), check_bayes:
-        68 (11.5%), b_tokenize: 13 (2.2%), b_tok_get_all: 11 (1.8%),
-        b_comp_prob: 2.8 (0.5%), b_tok_touch_all: 38 (6.4%), b_finish: 0.89
-        (0.1%), tests_pri_0: 448 (75.7%), check_dkim_signature: 0.71 (0.1%),
-        check_dkim_adsp: 2.5 (0.4%), poll_dns_idle: 0.70 (0.1%), tests_pri_10:
-        3.4 (0.6%), tests_pri_500: 20 (3.4%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 7/3] signal: Deliver all of the perf_data in si_perf
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <edb1507e-194e-e4b8-1136-3bdba64f3c4e@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Marco Elver <elver@google.com> writes:
+On Wed, Apr 07, 2021 at 04:27:03PM -0700, Russ Weight wrote:
+> Hi Moritz,
+> 
+> On 3/31/21 3:16 PM, Moritz Fischer wrote:
+> > Hi Russ,
+> > On Wed, Mar 31, 2021 at 11:47:26AM -0700, Russ Weight wrote:
+> >> Moritz,
+> >>
+> >> On 3/28/21 10:20 AM, Moritz Fischer wrote:
+> >>> Tom,
+> >>>
+> >>> On Sun, Mar 28, 2021 at 08:40:24AM -0700, Tom Rix wrote:
+> >>>> On 3/27/21 11:09 AM, Moritz Fischer wrote:
+> >>>>> Hi Richard, Russ,
+> >>>>>
+> >>>>> On Thu, Feb 25, 2021 at 01:07:14PM +0000, Gong, Richard wrote:
+> >>>>>> Hi Moritz,
+> >>>>>>
+> >>>>>> Sorry for asking.
+> >>>>>>
+> >>>>>> When you have chance, can you help review the version 5 patchset submitted on 02/09/21?
+> >>>>>>
+> >>>>>> Regards,
+> >>>>>> Richard
+> >>>>>>
+> >>>>>> -----Original Message-----
+> >>>>>> From: richard.gong@linux.intel.com <richard.gong@linux.intel.com> 
+> >>>>>> Sent: Tuesday, February 9, 2021 4:20 PM
+> >>>>>> To: mdf@kernel.org; trix@redhat.com; gregkh@linuxfoundation.org; linux-fpga@vger.kernel.org; linux-kernel@vger.kernel.org
+> >>>>>> Cc: Gong, Richard <richard.gong@intel.com>
+> >>>>>> Subject: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
+> >>>>>>
+> >>>>>> From: Richard Gong <richard.gong@intel.com>
+> >>>>>>
+> >>>>>> This is 5th submission of Intel service layer and FPGA patches, which includes the missing standalone patch in the 4th submission.
+> >>>>>>
+> >>>>>> This submission includes additional changes for Intel service layer driver to get the firmware version running at FPGA SoC device. Then FPGA manager driver, one of Intel service layer driver's client, can decide whether to handle the newly added bitstream authentication function based on the retrieved firmware version. So that we can maintain FPGA manager driver the back compatible.
+> >>>>>>
+> >>>>>> Bitstream authentication makes sure a signed bitstream has valid signatures.
+> >>>>>>
+> >>>>>> The customer sends the bitstream via FPGA framework and overlay, the firmware will authenticate the bitstream but not program the bitstream to device. If the authentication passes, the bitstream will be programmed into QSPI flash and will be expected to boot without issues.
+> >>>>>>
+> >>>>>> Extend Intel service layer, FPGA manager and region drivers to support the bitstream authentication feature. 
+> >>>>>>
+> >>>>>> Richard Gong (7):
+> >>>>>>   firmware: stratix10-svc: reset COMMAND_RECONFIG_FLAG_PARTIAL to 0
+> >>>>>>   firmware: stratix10-svc: add COMMAND_AUTHENTICATE_BITSTREAM flag
+> >>>>>>   firmware: stratix10-svc: extend SVC driver to get the firmware version
+> >>>>>>   fpga: fpga-mgr: add FPGA_MGR_BITSTREAM_AUTHENTICATE flag
+> >>>>>>   fpga: of-fpga-region: add authenticate-fpga-config property
+> >>>>>>   dt-bindings: fpga: add authenticate-fpga-config property
+> >>>>>>   fpga: stratix10-soc: extend driver for bitstream authentication
+> >>>>>>
+> >>>>>>  .../devicetree/bindings/fpga/fpga-region.txt       | 10 ++++
+> >>>>>>  drivers/firmware/stratix10-svc.c                   | 12 ++++-
+> >>>>>>  drivers/fpga/of-fpga-region.c                      | 24 ++++++---
+> >>>>>>  drivers/fpga/stratix10-soc.c                       | 62 +++++++++++++++++++---
+> >>>>>>  include/linux/firmware/intel/stratix10-smc.h       | 21 +++++++-
+> >>>>>>  .../linux/firmware/intel/stratix10-svc-client.h    | 11 +++-
+> >>>>>>  include/linux/fpga/fpga-mgr.h                      |  3 ++
+> >>>>>>  7 files changed, 125 insertions(+), 18 deletions(-)
+> >>>>>>
+> >>>>>> --
+> >>>>>> 2.7.4
+> >>>>>>
+> >>>>> Apologies for the epic delay in getting back to this, I took another
+> >>>>> look at this patchset and Russ' patchset.
+> >>>>>
+> >>>>> TL;DR I'm not really a fan of using device-tree overlays for this (and
+> >>>>> again, apologies, I should've voiced this earlier ...).
+> >>>>>
+> >>>>> Anyways, let's find a common API for this and Russ' work, they're trying
+> >>>>> to achieve the same / similar thing, they should use the same API.
+> >>>>>
+> >>>>> I'd like to re-invetigate the possiblity to extend FPGA Manager with
+> >>>>> 'secure update' ops that work for both these use-cases (and I susspect
+> >>>>> hte XRT patchset will follow with a similar requirement, right after).
+> >> Richard and I had an initial conversation today. I'll start looking at how secure operations can be integrated into the fpga manager.
+> >>
+> >> More to come...
+> > Great, feel free to send RFCs ahead.
+> >
+> > Cheers,
+> > Moritz
+> I have completed a comparison of the security manager and the FPGA manager
+> to see how the secure update functions can be integrated into the FPGA
+> manager. I'll send that out separately as an RFC document (it is about 150
+> lines).
+> 
+> FYI: In my conversations with Richard, we have learned that what we are
+> trying to accomplish is not as similar as it seemed. Richard is effectively
+> wanting to do a "dry-run" of an existing FPGA Manager function to verify
+> authentication of an image. Based on the results, higher-level code may
+> choose to write the image to flash.
 
-> On Sat, 1 May 2021 at 01:44, Eric W. Biederman <ebiederm@xmission.com> wrote:
->>
->> Don't abuse si_errno and deliver all of the perf data in si_perf.
->>
->> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
->> ---
->
-> Thank you for the fix, this looks cleaner.
->
-> Just note that this patch needs to include updates to
-> tools/testing/selftests/perf_events. This should do it:
->>  sed -i 's/si_perf/si_perf.data/g; s/si_errno/si_perf.type/g' tools/testing/selftests/perf_events/*.c
->
-> Subject: s/perf_data/perf data/ ?
->
-> For uapi, need to switch to __u32, see below.
+Ok, as mentioned on the other thread. Let's replace the overlay code
+with a sysfs entry for dry-run or verify-image or something of that
+sort.
 
-Good point.
+I don't see what the overlay mechanism adds in this case since we're not
+trying to load drivers.
 
-The one thing that this doesn't do is give you a 64bit field
-on 32bit architectures.
-
-On 32bit builds the layout is:
-
-	int si_signo;
-	int si_errno;
-	int si_code;
-	void __user *_addr;
-        
-So I believe if the first 3 fields were moved into the _sifields union
-si_perf could define a 64bit field as it's first member and it would not
-break anything else.
-
-Given that the data field is 64bit that seems desirable.
-
-Eric
-
-
->>  fs/signalfd.c                      |  3 ++-
->>  include/linux/compat.h             |  5 ++++-
->>  include/uapi/asm-generic/siginfo.h |  5 ++++-
->>  include/uapi/linux/signalfd.h      |  4 ++--
->>  kernel/signal.c                    | 18 +++++++++++-------
->>  5 files changed, 23 insertions(+), 12 deletions(-)
->>
->> diff --git a/fs/signalfd.c b/fs/signalfd.c
->> index 83130244f653..9686af56f073 100644
->> --- a/fs/signalfd.c
->> +++ b/fs/signalfd.c
->> @@ -134,7 +134,8 @@ static int signalfd_copyinfo(struct signalfd_siginfo __user *uinfo,
->>                 break;
->>         case SIL_FAULT_PERF_EVENT:
->>                 new.ssi_addr = (long) kinfo->si_addr;
->> -               new.ssi_perf = kinfo->si_perf;
->> +               new.ssi_perf_type = kinfo->si_perf.type;
->> +               new.ssi_perf_data = kinfo->si_perf.data;
->>                 break;
->>         case SIL_CHLD:
->>                 new.ssi_pid    = kinfo->si_pid;
->> diff --git a/include/linux/compat.h b/include/linux/compat.h
->> index 24462ed63af4..0726f9b3a57c 100644
->> --- a/include/linux/compat.h
->> +++ b/include/linux/compat.h
->> @@ -235,7 +235,10 @@ typedef struct compat_siginfo {
->>                                         u32 _pkey;
->>                                 } _addr_pkey;
->>                                 /* used when si_code=TRAP_PERF */
->> -                               compat_ulong_t _perf;
->> +                               struct {
->> +                                       compat_ulong_t data;
->> +                                       u32 type;
->> +                               } _perf;
->>                         };
->>                 } _sigfault;
->>
->> diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
->> index 2abdf1d19aad..19b6310021a3 100644
->> --- a/include/uapi/asm-generic/siginfo.h
->> +++ b/include/uapi/asm-generic/siginfo.h
->> @@ -90,7 +90,10 @@ union __sifields {
->>                                 __u32 _pkey;
->>                         } _addr_pkey;
->>                         /* used when si_code=TRAP_PERF */
->> -                       unsigned long _perf;
->> +                       struct {
->> +                               unsigned long data;
->> +                               u32 type;
->
-> This needs to be __u32.
->
->
->> +                       } _perf;
->>                 };
->>         } _sigfault;
->>
->> diff --git a/include/uapi/linux/signalfd.h b/include/uapi/linux/signalfd.h
->> index 7e333042c7e3..e78dddf433fc 100644
->> --- a/include/uapi/linux/signalfd.h
->> +++ b/include/uapi/linux/signalfd.h
->> @@ -39,8 +39,8 @@ struct signalfd_siginfo {
->>         __s32 ssi_syscall;
->>         __u64 ssi_call_addr;
->>         __u32 ssi_arch;
->> -       __u32 __pad3;
->> -       __u64 ssi_perf;
->> +       __u32 ssi_perf_type;
->> +       __u64 ssi_perf_data;
->>
->>         /*
->>          * Pad strcture to 128 bytes. Remember to update the
->> diff --git a/kernel/signal.c b/kernel/signal.c
->> index 5b1ad7f080ab..cb3574b7319c 100644
->> --- a/kernel/signal.c
->> +++ b/kernel/signal.c
->> @@ -1758,11 +1758,13 @@ int force_sig_perf(void __user *pending_addr, u32 type, u64 sig_data)
->>         struct kernel_siginfo info;
->>
->>         clear_siginfo(&info);
->> -       info.si_signo = SIGTRAP;
->> -       info.si_errno = type;
->> -       info.si_code  = TRAP_PERF;
->> -       info.si_addr  = pending_addr;
->> -       info.si_perf  = sig_data;
->> +       info.si_signo     = SIGTRAP;
->> +       info.si_errno     = 0;
->> +       info.si_code      = TRAP_PERF;
->> +       info.si_addr      = pending_addr;
->> +       info.si_perf.data = sig_data;
->> +       info.si_perf.type = type;
->> +
->>         return force_sig_info(&info);
->>  }
->>
->> @@ -3379,7 +3381,8 @@ void copy_siginfo_to_external32(struct compat_siginfo *to,
->>                 break;
->>         case SIL_FAULT_PERF_EVENT:
->>                 to->si_addr = ptr_to_compat(from->si_addr);
->> -               to->si_perf = from->si_perf;
->> +               to->si_perf.data = from->si_perf.data;
->> +               to->si_perf.type = from->si_perf.type;
->>                 break;
->>         case SIL_CHLD:
->>                 to->si_pid = from->si_pid;
->> @@ -3455,7 +3458,8 @@ static int post_copy_siginfo_from_user32(kernel_siginfo_t *to,
->>                 break;
->>         case SIL_FAULT_PERF_EVENT:
->>                 to->si_addr = compat_ptr(from->si_addr);
->> -               to->si_perf = from->si_perf;
->> +               to->si_perf.data = from->si_perf.data;
->> +               to->si_perf.type = from->si_perf.type;
->>                 break;
->>         case SIL_CHLD:
->>                 to->si_pid    = from->si_pid;
->> --
->> 2.30.1
+- Moritz
