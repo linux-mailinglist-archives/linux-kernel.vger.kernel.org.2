@@ -2,274 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60BA8370F48
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 23:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AC0D370F50
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 23:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232561AbhEBVQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 17:16:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232492AbhEBVQi (ORCPT
+        id S232562AbhEBVYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 17:24:00 -0400
+Received: from smtprelay0138.hostedemail.com ([216.40.44.138]:50750 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232338AbhEBVX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 17:16:38 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 272A8C06138D
-        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 14:15:46 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id t8so3724434oij.0
-        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 14:15:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Y8HQ+dXr/9DI00Tczt+t4bbUXXiIp9vh0T4ZqfMbYF4=;
-        b=qHd1m3qVp0GUXMefU/3LfcUVW3nC72mDUkQ3yRuTXmW+A9qrjV1XNKzdjgDRiybu99
-         +qYS1qm4Tk9U8czDKJjPbvysWv7TVQHOnGXqrQW28Y9SNbMzx9xxE7QL+fZdmqvshzLw
-         U185l6YtZurVPCCXQf2I6V0GU3xmvrgG+o7KYWkjVM+Z2v+s9nsWXkacOXsacWp5L4mw
-         FX1+CxCG4+vyrT77MN56FZZIe/mZO/6gumrUD2XF1Cx4BBODFl+oSFq4AYxY5+Ymmqw0
-         S+0K1srlon8f8QcUl1zSBv1CyOPLFGjhkUmfg5KAGnbC8oGINgNgQ2oQ/FbruBxNqMdV
-         LWYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Y8HQ+dXr/9DI00Tczt+t4bbUXXiIp9vh0T4ZqfMbYF4=;
-        b=ZJgV0xlprzypnW2LJCEEY5jjg43Lm6LUKc8Q9EsnUVem6v33e0u7fsfxVt32ABNsl6
-         uqe34+OwDT3+HSIAxmjYDR/oTI5Iqrg1qQhBx893XEcB9LaKIyUt14LcHJGwoZXu3WeS
-         R/TV2rPtSaJHD+ZaZfCr04rp2iFc3y1IkYNWDbpTztEjeLTrzvLbZwIJjLVDFxYy7YPv
-         tKC+bGhC7qAhqUYkNU6Tat8+YZYvKl98OypVvcaCIOEjwrbipfi2vKh9q+gceqdcbgiK
-         PnwDIWrauAVHJSPtz9TGpKAa9U6kdur/1G6LXRh5tHgSJKq8Xwe/qsxuQZFex6DBCTNB
-         Zicg==
-X-Gm-Message-State: AOAM5308QH+idwtf8OUgAF27nx+PW3B4PTz7uvInjBGdYKZXold9srXE
-        u+We7jZe4fzwyHewAArG43/h+g==
-X-Google-Smtp-Source: ABdhPJwPvB9uFbYuLo9g265jJQ86mmJEHSmsQ9Fsq9sFGvyj+mj9dstBybFqwUdnsX6GUSpKg75Q7A==
-X-Received: by 2002:a54:470c:: with SMTP id k12mr10143103oik.42.1619990145255;
-        Sun, 02 May 2021 14:15:45 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id o6sm2488747ote.14.2021.05.02.14.15.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 May 2021 14:15:44 -0700 (PDT)
-Date:   Sun, 2 May 2021 16:15:42 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Marijn Suijten <marijn.suijten@somainline.org>
-Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>,
-        Lee Jones <lee.jones@linaro.org>, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-pwm@vger.kernel.org,
-        Yassine Oudjana <y.oudjana@protonmail.com>,
-        Luca Weiss <luca@z3ntu.xyz>,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>
-Subject: Re: [PATCH v7 2/6] leds: Add driver for Qualcomm LPG
-Message-ID: <20210502211542.GE2484@yoga>
-References: <20210429211517.312792-1-bjorn.andersson@linaro.org>
- <20210429211517.312792-3-bjorn.andersson@linaro.org>
- <55b56fd9-0ba5-58d9-2be8-98aa639e4496@somainline.org>
+        Sun, 2 May 2021 17:23:59 -0400
+Received: from omf19.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id BE0F518027FCE;
+        Sun,  2 May 2021 21:23:06 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf19.hostedemail.com (Postfix) with ESMTPA id 4FDC120D75C;
+        Sun,  2 May 2021 21:23:02 +0000 (UTC)
+Message-ID: <fcffe807353391339a03106f175ffa71377752b1.camel@perches.com>
+Subject: Re: [PATCH] Raise the minimum GCC version to 5.2
+From:   Joe Perches <joe@perches.com>
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Date:   Sun, 02 May 2021 14:23:01 -0700
+In-Reply-To: <20210502203253.GH10366@gate.crashing.org>
+References: <20210501151538.145449-1-masahiroy@kernel.org>
+         <CANiq72k1hB3X6+Nc_iu=f=BoB-F9JW2j_B4ZMcv8_UpW5QQ2Og@mail.gmail.com>
+         <3943bc020f6227c8801907317fc113aa13ad4bad.camel@perches.com>
+         <20210502183030.GF10366@gate.crashing.org>
+         <81a926a3bdb70debe3ae2b13655ea8d249fb9991.camel@perches.com>
+         <20210502203253.GH10366@gate.crashing.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <55b56fd9-0ba5-58d9-2be8-98aa639e4496@somainline.org>
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 4FDC120D75C
+X-Spam-Status: No, score=-0.73
+X-Stat-Signature: 8s7n7kr6yugf5k5opoqworaztxej967t
+X-Rspamd-Server: rspamout01
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+fP+x9C6cIbIbx7qR6GaqDgZa7dwY1Pfw=
+X-HE-Tag: 1619990582-993883
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 01 May 16:09 CDT 2021, Marijn Suijten wrote:
+On Sun, 2021-05-02 at 15:32 -0500, Segher Boessenkool wrote:
+> On Sun, May 02, 2021 at 01:00:28PM -0700, Joe Perches wrote:
+[]
+> > Perhaps 8 might be best as that has a __diag warning control mechanism.
+> 
+> I have no idea what you mean?
 
-> Hi Bjorn,
-> 
-> On 4/29/21 11:15 PM, Bjorn Andersson wrote:
-> > The Light Pulse Generator (LPG) is a PWM-block found in a wide range of
-> > PMICs from Qualcomm. It can operate on fixed parameters or based on a
-> > lookup-table, altering the duty cycle over time - which provides the
-> > means for e.g. hardware assisted transitions of LED brightness.
-> > 
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> > 
-> > Changes since v6:
-> > - Moved code into drivers/leds/rgb/
-> > - Reverted to earlier qcom,dtest handling to support routing pwm signals
-> >    through dtest lines.
-> > - Remember the duration of each step of the pattern, rather than adding up and
-> >    then dividing when the value is used.
-> > - Added missing error prints on DT parse errors.
-> > - Added sm8150[lb] and made led source and atc presence optional
-> > - Added missing parenthesis around (len + 1) / 2 in search for hi_pause in the
-> >    pattern.
-> > 
-> >   drivers/leds/Kconfig             |    3 +
-> >   drivers/leds/Makefile            |    3 +
-> >   drivers/leds/rgb/leds-qcom-lpg.c | 1286 ++++++++++++++++++++++++++++++
-> >   3 files changed, 1292 insertions(+)
-> >   create mode 100644 drivers/leds/rgb/leds-qcom-lpg.c
-> > 
-> > diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-> > index 49d99cb084db..8ab06b3f162d 100644
-> > --- a/drivers/leds/Kconfig
-> > +++ b/drivers/leds/Kconfig
-> > @@ -933,6 +933,9 @@ source "drivers/leds/blink/Kconfig"
-> >   comment "Flash and Torch LED drivers"
-> >   source "drivers/leds/flash/Kconfig"
-> > +comment "RGB LED drivers"
-> > +source "drivers/leds/rgb/Kconfig"
-> 
-> 
-> It looks like this file is not included in any of the patches.
-> 
+? read the last bit of compiler-gcc.h
 
-Sorry about that, seems like I missed adding them to the commit :(
 
-> > +
-> >   comment "LED Triggers"
-> >   source "drivers/leds/trigger/Kconfig"
-> > diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
-> > index 7e604d3028c8..8cad0465aae0 100644
-> > --- a/drivers/leds/Makefile
-> > +++ b/drivers/leds/Makefile
-> > @@ -106,6 +106,9 @@ obj-$(CONFIG_LEDS_USER)			+= uleds.o
-> >   # Flash and Torch LED Drivers
-> >   obj-$(CONFIG_LEDS_CLASS_FLASH)		+= flash/
-> > +# RGB LED Drivers
-> > +obj-$(CONFIG_LEDS_CLASS_MULTICOLOR)	+= rgb/
-> 
-> 
-> This file appears to be missing from this patch(set), too.
-> 
 
-Right, missed both the new files.
-
-> > +static int lpg_lut_store(struct lpg *lpg, struct led_pattern *pattern,
-> > +			 size_t len, unsigned int *lo_idx, unsigned int *hi_idx)
-> > +{
-> > +	unsigned int idx;
-> > +	u16 val;
-> > +	int i;
-> > +
-> > +	/* Hardware does not behave when LO_IDX == HI_IDX */
-> > +	if (len == 1)
-> > +		return -EINVAL;
-> > +
-> > +	idx = bitmap_find_next_zero_area(lpg->lut_bitmap, lpg->lut_size,
-> > +					 0, len, 0);
-> > +	if (idx >= lpg->lut_size)
-> > +		return -ENOMEM;
-> > +
-> > +	for (i = 0; i < len; i++) {
-> > +		val = pattern[i].brightness;
-> > +
-> > +		regmap_bulk_write(lpg->map, lpg->lut_base + LPG_LUT_REG(idx + i), &val, 1);
-> 
-> 
-> This and the other regmap_bulk_write in lpg_apply_pwm_value used sizeof(val)
-> before.  As far as I'm aware qcom-spmi-pmic specifies 16-bit addresses
-> (.reg_bits) but 8-bit register sizes (.val_bits).  Writing one register
-> means only 8 out of 16 bits in u16 val are written?
-> 
-
-You're right and I should have used test pattern that shown that I lost
-that 9th bit...
-
-I'll restore the sizeof()
-
-> > +static void lpg_apply_lut_control(struct lpg_channel *chan)
-> > +{
-> > +	struct lpg *lpg = chan->lpg;
-> > +	unsigned int hi_pause;
-> > +	unsigned int lo_pause;
-> > +	unsigned int step;
-> > +	unsigned int conf = 0;
-> > +	unsigned int lo_idx = chan->pattern_lo_idx;
-> > +	unsigned int hi_idx = chan->pattern_hi_idx;
-> > +	int pattern_len;
-> > +
-> > +	if (!chan->ramp_enabled || chan->pattern_lo_idx == chan->pattern_hi_idx)
-> > +		return;
-> > +
-> > +	pattern_len = hi_idx - lo_idx + 1 > +
-> > +	step = chan->ramp_tick_ms;
-> 
-> 
-> Since this is not dividing a full pattern duration by pattern_len anymore,
-> that variable is now never read and best removed.
-> 
-
-Ok
-
-> > +static int lpg_parse_channel(struct lpg *lpg, struct device_node *np,
-> > +			     struct lpg_channel **channel)
-> > +{
-> > +	struct lpg_channel *chan;
-> > +	u32 color = LED_COLOR_ID_GREEN;
-> > +	u32 reg;
-> > +	int ret;
-> > +
-> > +	ret = of_property_read_u32(np, "reg", &reg);
-> > +	if (ret || !reg || reg > lpg->num_channels) {
-> > +		dev_err(lpg->dev, "invalid reg of %pOFn\n", np);
-> 
-> 
-> Like \"color\" below, escape reg with \"reg\"?
-> 
-
-Sounds good.
-
-> > +static int lpg_add_led(struct lpg *lpg, struct device_node *np)
-> > +{
-> > +	struct led_classdev *cdev;
-> > +	struct device_node *child;
-> > +	struct mc_subled *info;
-> > +	struct lpg_led *led;
-> > +	const char *state;
-> > +	int num_channels;
-> > +	u32 color = 0;
-> > +	int ret;
-> > +	int i;
-> > +
-> > +	ret = of_property_read_u32(np, "color", &color);
-> > +	if (ret < 0 && ret != -EINVAL) {
-> > +		dev_err(lpg->dev, "failed to parse \"color\" of %pOF\n", np);
-> > +		return ret;
-> > +	}
-> > +
-> > +	if (color == LED_COLOR_ID_MULTI)
-> 
-> 
-> Since this driver now lives under rgb/, and is specifically for RGB leds
-> (afaik), should this and the rest of the code use LED_COLOR_ID_RGB instead?
-> There was a patch floating around on (if I remember correctly) ##linux-msm
-> by Luca Weiss that performs the conversion, with some related changes.
-> 
-
-I thought MULTICOLOR was the right color, but reading the comment on the
-defines it seems RGB is the color I actually want. Will check out
-z3ntu's changes as well.
-
-> > +static int lpg_init_lut(struct lpg *lpg)
-> > +{
-> > +	const struct lpg_data *data = lpg->data;
-> > +	size_t bitmap_size;
-> > +
-> > +	if (!data->lut_base)
-> > +		return 0;
-> > +
-> > +	lpg->lut_base = data->lut_base;
-> > +	lpg->lut_size = data->lut_size;
-> > +
-> > +	bitmap_size = BITS_TO_BYTES(lpg->lut_size);
-> > +	lpg->lut_bitmap = devm_kzalloc(lpg->dev, bitmap_size, GFP_KERNEL);
-> > +	if (!lpg->lut_bitmap)
-> > +		return -ENOMEM;
-> > +
-> > +	bitmap_clear(lpg->lut_bitmap, 0, lpg->lut_size);
-> 
-> 
-> devm_kzalloc already zeroes the bitmap.  Is it necessary to clear it again
-> (assuming a "cleared" bitmap is implementation-dependent and does not imply
-> zeroed memory) or could the memory be allocated with devm_kalloc instead?
-> 
-
-You're right, I can drop the explicit clear of the bitmap.
-
-Thanks,
-Bjorn
