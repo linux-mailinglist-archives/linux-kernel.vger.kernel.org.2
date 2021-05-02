@@ -2,111 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13374370DD1
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 18:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9FFC370DD8
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 May 2021 18:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232225AbhEBQNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 12:13:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230110AbhEBQNr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 12:13:47 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C7F1C06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 09:12:56 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id j10so4491159lfb.12
-        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 09:12:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Usk7p7YCU1vBMeOPVgazNjVtg7VUSQWrYhqaeUMFI/U=;
-        b=Sg6Ao2UfrJlAg6hPnVATIxkfOlsNYq4zZfGmb1qdEzJHOFGh+hL1EqkB0kNDDA1PnW
-         DZGFpZz4rZNIZaGP4eRpXrSY+/dDyJzTMH343BpjQX3JpTtphge+3M+5O+0FttPalZ6g
-         0Q42EFjZ2aX2dtb41VLLrUzR5qzXSUmYaIe9Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Usk7p7YCU1vBMeOPVgazNjVtg7VUSQWrYhqaeUMFI/U=;
-        b=AyzcBU8lGG2n66/kKeZokougjdOGfpnmDCNSm8BDD5L/rlnPxkKeWWXUHVvJsCcU+J
-         OqJ+W5Y+r04cSPhMijAqpq11JRY2pU/0PdUYl5tBqpk3X+YNLnZpKuAKuLcnIjKmaus3
-         SHa3PjlaEc+vioila+9rJE3cOOdW4+m/HkDsWN9xlry634g0kt6O5hXJXCi6nrfhla8t
-         NqwwIToqP7odsfzmKmgDP5e78h9wPCuh+c1BLQQGT1vqNEJDCA7njtJIjJE8pbHZZkGu
-         yAySke1SRzwumCpOb5EEA+XnTJW9Ucqj4qLylcmiiup9JPVUDmRVyT/KHQpBiirbnZRS
-         3Kvw==
-X-Gm-Message-State: AOAM530v8CfsSllJZaYQNVlEZyms7Kew/UBUiipfKcmT+tbD/g+PBQCS
-        5QwGyDaBFz/JH7QZnJV+yxRU3J/D3SdBUv4+
-X-Google-Smtp-Source: ABdhPJw3ZdiFiZjZQdjL+Bpb/ezlfp8MX0p5w79OCuDZgam15M05jKGa3YnnDEhtJAPonOnLJF/apA==
-X-Received: by 2002:ac2:5979:: with SMTP id h25mr10382829lfp.297.1619971974426;
-        Sun, 02 May 2021 09:12:54 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id c13sm873061lfv.267.2021.05.02.09.12.53
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 02 May 2021 09:12:53 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id u20so3962807lja.13
-        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 09:12:53 -0700 (PDT)
-X-Received: by 2002:a2e:989a:: with SMTP id b26mr10420562ljj.465.1619971973167;
- Sun, 02 May 2021 09:12:53 -0700 (PDT)
+        id S232315AbhEBQRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 12:17:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42446 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230110AbhEBQRg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 May 2021 12:17:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C51A61186;
+        Sun,  2 May 2021 16:16:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619972204;
+        bh=pIDWk6FyAtEOLQrgZAggBNgXLjZd4wjRiQSPTrBfdh0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RBCGyk3h03N2jSLziY9s89TStOiEKP/Qlz5bnqZoTqHBukCsJsbFCAaFPZIBvly6H
+         CDHzGt6cNO0IVmN80MLjW4Q4Do0+GT5w8N9EGO+6EkFN0/XGUhY6RjCaspQlPlM0E/
+         eqGz/aHeF5O9/All9W2P3R6VQdfrmG1FeJ+3oQuDZCV/Q5HOvHNPbTNz24hXY/3Suu
+         NQxfcba45JWrTRKr7xzoAvRrfqDpaSZJfkTM/Ng82AC+996wvt8pHeW9cQnZ/fCqgb
+         M4oseX6DPZdLH91WNOLli6bnWKcSLd8fiBS7Jg658ajuq4PHRWQ4dWTB8+nHe8305J
+         Ex/B2FPj7unVA==
+Date:   Sun, 2 May 2021 19:16:40 +0300
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [git pull] habanalabs fixes for 5.13-rc2
+Message-ID: <20210502161640.GA14011@CORE.localdomain>
 MIME-Version: 1.0
-References: <CAHk-=wjmNOoX8iPtYsM8PVa+7DE1=5bv-XVe_egP0ZOiuT=7CQ@mail.gmail.com>
- <CAKwvOdmMF_v9TzBtFn2S1qSS_yCDO8D-u3WhBehUM7gzjcdjUQ@mail.gmail.com>
- <CAKwvOdk+V2dc31guafFM=N2ez4SrwCmah+mimUG3MzPMx_2efQ@mail.gmail.com>
- <CAKwvOdn3uXniVedgtpD8QFAd-hdVuVjGPa4-n0h64PTxT4XhWg@mail.gmail.com>
- <CAKwvOdm3D=dqKw=kx46PLaiqfHOZJL3QFKGc8kxqJqpwdFFWqw@mail.gmail.com>
- <CAKwvOdkp_P8BCtFuKqDrtC_=A89ZfDf66Yr3FL2e=ojwv4KaMA@mail.gmail.com>
- <CAHk-=wi1yiBBr3b3RbCEte6-yzAApsZN5zRdr3xoW8Av9jOX=Q@mail.gmail.com>
- <CAKwvOdk0nxxUATg2jEKgx4HutXCMXcW92SX3DT+uCTgqBwQHBg@mail.gmail.com>
- <1c5e05fa-a246-9456-ff4e-287960acb18c@redhat.com> <CAHk-=whs8QZf3YnifdLv57+FhBi5_WeNTG1B-suOES=RcUSmQg@mail.gmail.com>
- <20210502093123.GC12293@localhost>
-In-Reply-To: <20210502093123.GC12293@localhost>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 2 May 2021 09:12:37 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgdUMt_n84mq93LZKA6jOGqZpD+=KeVzA3YmvJ6=JPyhw@mail.gmail.com>
-Message-ID: <CAHk-=wgdUMt_n84mq93LZKA6jOGqZpD+=KeVzA3YmvJ6=JPyhw@mail.gmail.com>
-Subject: Re: Very slow clang kernel config ..
-To:     Adrian Bunk <bunk@kernel.org>
-Cc:     Tom Stellard <tstellar@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>,
-        Serge Guelton <sguelton@redhat.com>,
-        Sylvestre Ledru <sylvestre@mozilla.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 2, 2021 at 2:31 AM Adrian Bunk <bunk@kernel.org> wrote:
->
-> The biggest advantage of shared libraries is that they enable
-> distributions to provide security fixes.
+Hi Greg,
 
-Adrian - you're ignoring the real argument, to the point that the
-above is basically a lie.
+This pull request contains a number of important fixes for 5.13-rc2.
+Mainly fixes to support our new F/W with enhanced security features,
+but also additional bugs.
+See details in the tag message below.
 
-The argument was never that things like libc or the core GUI libraries
-shouldn't be shared.
+Thanks,
+Oded
 
-The argument was that the "one-off" libraries shouldn't be shared.
+The following changes since commit 7b1ae248279bea33af9e797a93c35f49601cb8a0:
 
-Things very much like libLLVM.so.
+  dyndbg: fix parsing file query without a line-range suffix (2021-04-30 07:43:20 +0200)
 
-Or things like "libdivecomputer.so". You probably have never ever
-heard of that library, have you? It's used by one single project, that
-project isn't even in Fedora, but when we tried to make an rpm for it,
-people complained because the Fedora rules said it needed to use
-shared libraries.
+are available in the Git repository at:
 
-So the whole notion that "shared libraries are good and required by
-default" is pure and utter garbage. It's simply not true.
+  https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux.git tags/misc-habanalabs-fixes-2021-05-02
 
-And no, it really didn't become any more true due to "security fixes".
-Your argument is a red herring.
+for you to fetch changes up to 0552cea3a2e8af3e099d2b8c05aa290ffe680d92:
 
-            Linus
+  habanalabs: wait for interrupt wrong timeout calculation (2021-05-02 18:54:54 +0300)
+
+----------------------------------------------------------------
+This tag contains the following fixes for 5.12-rc2:
+
+- Expose PLL information per ASIC. This also fixes some casting warnings.
+- Skip reading further firmware errors in case PCI link is down.
+- Security firmware error should be handled as error and not warning.
+- Allow user to ignore firmware errors.
+- Fix bug in timeout calculation when waiting for interrupt of CS.
+
+----------------------------------------------------------------
+Bharat Jauhari (1):
+      habanalabs: expose ASIC specific PLL index
+
+Oded Gabbay (3):
+      habanalabs: skip reading f/w errors on bad status
+      habanalabs: change error level of security not ready
+      habanalabs: ignore f/w status error
+
+Ofir Bitton (1):
+      habanalabs: wait for interrupt wrong timeout calculation
+
+ .../misc/habanalabs/common/command_submission.c    |  2 +-
+ drivers/misc/habanalabs/common/firmware_if.c       | 53 ++++++++++++---------
+ drivers/misc/habanalabs/common/habanalabs.h        | 23 +++++----
+ drivers/misc/habanalabs/common/habanalabs_drv.c    |  7 +++
+ drivers/misc/habanalabs/common/sysfs.c             |  4 +-
+ drivers/misc/habanalabs/gaudi/gaudi.c              | 55 ++++++++--------------
+ drivers/misc/habanalabs/gaudi/gaudi_hwmgr.c        | 12 ++---
+ drivers/misc/habanalabs/goya/goya.c                | 47 +++++++-----------
+ drivers/misc/habanalabs/goya/goya_hwmgr.c          | 40 ++++++++--------
+ include/uapi/misc/habanalabs.h                     | 33 +++++++++++++
+ 10 files changed, 153 insertions(+), 123 deletions(-)
