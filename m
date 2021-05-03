@@ -2,158 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BDB371E0B
+	by mail.lfdr.de (Postfix) with ESMTP id C51DF371E0C
 	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232505AbhECRIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 13:08:36 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:37421 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232549AbhECRB2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 13:01:28 -0400
-Received: by mail-ot1-f47.google.com with SMTP id c8-20020a9d78480000b0290289e9d1b7bcso5700093otm.4;
-        Mon, 03 May 2021 10:00:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MpWS97nnXbRs49r1fForFBwiCI3FlCAOFGO2IucCbgI=;
-        b=jKXIcz2msfofi3MX/6abqXQg7sXsaHLO/ycEbBYga/2/Odtv1sltaZlGi8kO5tdCto
-         LtAUkU7cJkjm/PHxpInb60pU8NVT5GnpAnhutVjR/FLgw/khNtPFyJZg+IiLEy27HuI7
-         kdM5breokilINsN0PzKOthGlxF9vgDTGsR2Ie67JPMJvimxdE9Fsl/ng4N9zfpVV6vnV
-         YSdJpBFoWVKneu32IahclfUnM61YAPYkJ4aVdJ/miq//gPfY5nuF0Lwy3kq1FwN18nbU
-         xIMA0vZmB2vkZ41wt07Z325ReCz/AiYU4Fxe9JEqQ4XyW8Yq1v6wTUZ8ZtO3pm15K1up
-         mgyA==
-X-Gm-Message-State: AOAM533lsExUoUJtSPlHxtpnQEiazPNJkaeyy36OqOjYco6SOFeYQNNT
-        pX69mHD4zKMBSeu/9mA+uw==
-X-Google-Smtp-Source: ABdhPJz3axdorHwGCwuPSEqF9Bw80gZAqMDgQOmNpRuGn93hjcvSZSCtx5vibHriB9CdGrpMOJJZig==
-X-Received: by 2002:a9d:7085:: with SMTP id l5mr15416541otj.345.1620061233291;
-        Mon, 03 May 2021 10:00:33 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t25sm71651oic.23.2021.05.03.10.00.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 10:00:32 -0700 (PDT)
-Received: (nullmailer pid 2008247 invoked by uid 1000);
-        Mon, 03 May 2021 17:00:30 -0000
-Date:   Mon, 3 May 2021 12:00:30 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, timur@kernel.org, nicoleotsuka@gmail.com,
-        Xiubo.Lee@gmail.com, festevam@gmail.com, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 2/2] ASoC: dt-bindings: imx-akcodec: Add binding doc for
- akcodec machine driver
-Message-ID: <20210503170030.GA1987906@robh.at.kernel.org>
-References: <1619157107-3734-1-git-send-email-shengjiu.wang@nxp.com>
- <1619157107-3734-2-git-send-email-shengjiu.wang@nxp.com>
+        id S233024AbhECRIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 13:08:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50406 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235161AbhECRD7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 13:03:59 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 66064AF0F;
+        Mon,  3 May 2021 17:03:04 +0000 (UTC)
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>, Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH v2] nvme-multipath: Reset bdev to ns head when failover
+Date:   Mon,  3 May 2021 19:03:03 +0200
+Message-Id: <20210503170303.10443-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1619157107-3734-2-git-send-email-shengjiu.wang@nxp.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 01:51:47PM +0800, Shengjiu Wang wrote:
-> Imx-akcodec is a new added machine driver for supporting
-> ak4458/ak5558/ak5552/ak4497 codec on i.MX platforms.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  .../bindings/sound/imx-audio-akcodec.yaml     | 60 +++++++++++++++++++
->  1 file changed, 60 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml b/Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml
-> new file mode 100644
-> index 000000000000..7419bf7224e9
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml
-> @@ -0,0 +1,60 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/imx-audio-akcodec.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NXP i.MX audio complex with AK4458/AK5558/AK5552/AK4497 codec
+When a request finally completes in end_io() after it has failed over,
+the bdev pointer can be stale and thus the system can crash. Set the
+bdev back to ns head, so the request is map to an active path when
+resubmitted.
 
-Looks like the existing fsl-asoc-card.txt? You should convert to schema 
-and use that. Otherwise, my comments are based on this all being 'new'.
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+---
+v2:
+ - commit header fix s/bi_disk/bdev/
+ - new commit message (hopefully it's better English this time.)
+ - dropped bdget_disk, use >disk->part0 directly as
+   suggested by hch
 
-> +
-> +maintainers:
-> +  - Shengjiu Wang <shengjiu.wang@nxp.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - fsl,imx8mq-audio-ak4458
-> +      - fsl,imx8mq-audio-ak4497
-> +      - fsl,imx8mq-audio-ak5558
-> +      - fsl,imx-audio-ak4497
-> +      - fsl,imx-audio-ak4458
-> +      - fsl,imx-audio-ak5558
-> +      - fsl,imx-audio-ak5552
+The patch is against nvme-5.13.
 
-I continue to not understand why audio bindings need the codec(s) in the 
-compatible strings. Can't you look up the codec thru the audio-codec 
-property?
+[ 6552.155244] Call Trace:
+[ 6552.155251]  bio_endio+0x74/0x120
+[ 6552.155260]  nvme_ns_head_submit_bio+0x36f/0x3e0 [nvme_core]
+[ 6552.155266]  ? __switch_to_asm+0x34/0x70
+[ 6552.155269]  ? __switch_to_asm+0x40/0x70
+[ 6552.155271]  submit_bio_noacct+0x175/0x490
+[ 6552.155274]  ? __switch_to_asm+0x34/0x70
+[ 6552.155277]  ? __switch_to_asm+0x34/0x70
+[ 6552.155284]  ? nvme_requeue_work+0x5a/0x70 [nvme_core]
+[ 6552.155290]  nvme_requeue_work+0x5a/0x70 [nvme_core]
+[ 6552.155296]  process_one_work+0x1f4/0x3e0
+[ 6552.155299]  worker_thread+0x2d/0x3e0
+[ 6552.155302]  ? process_one_work+0x3e0/0x3e0
+[ 6552.155305]  kthread+0x10d/0x130
+[ 6552.155307]  ? kthread_park+0xa0/0xa0
+[ 6552.155311]  ret_from_fork+0x35/0x40
 
-> +
-> +  model:
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    description: User specified audio sound card name
-> +
-> +  audio-cpu:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: The phandle of a CPU DAI controller
-> +
-> +  audio-codec:
-> +    description: The phandle of Codec DAI controllers, there are two
-> +                 controllers maximum.
 
-We have the common 'sound-dai' property. See the simple-card.yaml 
-binding. 
+ drivers/nvme/host/multipath.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> +
-> +  audio-asrc:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: The phandle of ASRC. It can be absent if there's no
-> +                 need to add ASRC support via DPCM.
+diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
+index 0d0de3433f37..0551796517e6 100644
+--- a/drivers/nvme/host/multipath.c
++++ b/drivers/nvme/host/multipath.c
+@@ -70,6 +70,7 @@ void nvme_failover_req(struct request *req)
+ 	struct nvme_ns *ns = req->q->queuedata;
+ 	u16 status = nvme_req(req)->status & 0x7ff;
+ 	unsigned long flags;
++	struct bio *bio;
+ 
+ 	nvme_mpath_clear_current_path(ns);
+ 
+@@ -84,6 +85,8 @@ void nvme_failover_req(struct request *req)
+ 	}
+ 
+ 	spin_lock_irqsave(&ns->head->requeue_lock, flags);
++	for (bio = req->bio; bio; bio = bio->bi_next)
++		bio_set_dev(bio, ns->head->disk->part0);
+ 	blk_steal_bios(&ns->head->requeue_list, req);
+ 	spin_unlock_irqrestore(&ns->head->requeue_lock, flags);
+ 
+-- 
+2.29.2
 
-Needs a vendor prefix.
-
-> +
-> +  fsl,tdm:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: |
-> +      This is a boolean property. If present, the TDM mode is enabled.
-
-But this one seems like something that could or should be common.
-
-> +
-> +required:
-> +  - compatible
-> +  - model
-> +  - audio-cpu
-> +  - audio-codec
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    sound-ak4458 {
-> +        compatible = "fsl,imx-audio-ak4458";
-> +        model = "ak4458-audio";
-> +        audio-cpu = <&sai1>;
-> +        audio-codec = <&ak4458_1>, <&ak4458_2>;
-> +    };
-> -- 
-> 2.17.1
-> 
