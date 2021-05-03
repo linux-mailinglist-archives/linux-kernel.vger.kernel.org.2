@@ -2,72 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBA22371E04
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:10:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDDF371E09
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237024AbhECRHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 13:07:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43348 "EHLO mail.kernel.org"
+        id S233917AbhECRIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 13:08:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44850 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234279AbhECQ53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 12:57:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D20561155;
-        Mon,  3 May 2021 16:55:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620060956;
-        bh=48R4guCtmFRYjBJPQlc+uVeGjKcxBvE1ijucVcv5Mso=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZJWIviI8Raf+3VzPkOnr7Ubjv7AiKKwq4R5T7VZnLZC57HrDbJ+slhyXVDI4Aa62E
-         kvIyk8qkekKlWebMUsymZKi8imwk9bHBABaSZMnw5gMdMMtbEffltyRIz4aKxG5NW/
-         JUcFi2MTIxMPJI3yDGzT2KADu80ayAuI0CH6NW5c=
-Date:   Mon, 3 May 2021 18:55:54 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Kurt Manucredo <fuzzybritches0@gmail.com>
-Subject: Re: [PATCH 33/69] ALSA: gus: properly handle snd_ctl_add() error
-Message-ID: <YJArGpmTYXvqlkMd@kroah.com>
-References: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
- <20210503115736.2104747-34-gregkh@linuxfoundation.org>
- <s5h7dkgrogm.wl-tiwai@suse.de>
+        id S234000AbhECQ5O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 12:57:14 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A80B6AF0F;
+        Mon,  3 May 2021 16:56:18 +0000 (UTC)
+Date:   Mon, 3 May 2021 13:56:15 -0300
+From:   Enzo Matsumiya <ematsumiya@suse.de>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Hannes Reinecke <hare@suse.de>, linux-leds@vger.kernel.org,
+        linux-block@vger.kernel.org, u.kleine-koenig@pengutronix.de,
+        Jens Axboe <axboe@kernel.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/2] leds: trigger: implement block trigger
+Message-ID: <20210503165615.maqgm5e2gq554hcm@hyori>
+References: <20210430183216.27458-1-ematsumiya@suse.de>
+ <20210430183216.27458-3-ematsumiya@suse.de>
+ <7e8da9ec-b3e3-0329-d54c-bb44c4064f0d@suse.de>
+ <20210503101134.GB6621@amd>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <s5h7dkgrogm.wl-tiwai@suse.de>
+In-Reply-To: <20210503101134.GB6621@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 02:28:25PM +0200, Takashi Iwai wrote:
-> On Mon, 03 May 2021 13:57:00 +0200,
-> Greg Kroah-Hartman wrote:
-> > 
-> > From: Kurt Manucredo <fuzzybritches0@gmail.com>
-> > 
-> > snd_gus_init_control() does not properly return any possible error that
-> > might have happened in a call to snd_ctl_add() so resolve this by
-> > propagating the error back up the call change correctly.
-> > 
-> > Cc: Takashi Iwai <tiwai@suse.de>
-> > Signed-off-by: Kurt Manucredo <fuzzybritches0@gmail.com>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> This change doesn't look good, either.
-> It results in the bogus error message "version check failed".
-> 
-> If we really want to fix this, it's better to call
-> snd_gus_init_control() from snd_gus_initialize() itself while changing
-> snd_gus_init_control() to return an error code.
-> 
-> However, this error is really not what we should be bothered too
-> much.  Even if a creation of control element failed, it's no fatal
-> error and nothing really wrong would happen by itself.  And, under
-> such a situation, the system memory is already too tight and the OS
-> would hang up sooner or later (or OOM killer starts genocide).
+On 05/03, Pavel Machek wrote:
+>> As already commented on, this for_each_blk() construct is not a good idea.
+>> Infact, I guess it would be better if you could invert the logic:
+>> Not having the block trigger enumerating all devices, but rather let the
+>> devices register with the block trigger.
+>> That would have the benefit that one could choose which block device should
+>> be handled by the LED trigger subsystem, _and_ you would avoid the need for
+>> a for_each_blk() construct.
+>> Thing is, I don't think that all block devices should be handled by the LED
+>> trigger; eg for things like 'loop' or 'ramdisk' it is very
+>> >questionable.
+>
+>> Downside is that you would need to modify the drivers, but realistically
+>> there are only very few drivers which should be modified; I would go for
+>> nvme-pci and the sd driver for starters. Maybe floppy, but arguably that can
+>> omitted as one has a very good audio indicator for floppy accesses
+>> :-)
+>
+>And we already have disk activity trigger. Maybe NVMe and SD needs to
+>be modified to use it?
+>
+>Best regards,
+>								Pavel
 
-Thanks for the review, I'll just drop this change as it's not worth it
-for this type of "impossible to hit" issue.
+TBH I haven't thought of that. My initial idea was to actually offer
+maximum flexibility to the user, so exposing all block devices on the
+system [*], being able to set any LED available as an indicator for each
+of those.
 
-thanks,
+But, indeed, just using ledtrig-disk in NVMe and SD might just be
+simpler.
 
-greg k-h
+
+[*] - again, I see now this was a bad idea and will be changed in a
+possible next version
