@@ -2,99 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B9537164C
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08AFF37164F
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234490AbhECNzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 09:55:47 -0400
-Received: from mga07.intel.com ([134.134.136.100]:17751 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231771AbhECNzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 09:55:45 -0400
-IronPort-SDR: lFEPihZuv0E5JqPTvVoD9BZvn5SFLFw2tP+gzWeurHlsflpGKNR4XCD0RxVONW7cfvoJF4EYaD
- sqnghZf4b09A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9973"; a="261694824"
-X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
-   d="scan'208";a="261694824"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 06:54:51 -0700
-IronPort-SDR: eeXV4PYnWo5SszbN3Oim3P/1YkyeuVr02vkhC2x9B0jLnsXYgWf59XE5C7KIXMdiQkaqz+JEqQ
- Z+nk1wkMRLLA==
-X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
-   d="scan'208";a="388399893"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 06:54:42 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1ldZ1z-009HMS-DJ; Mon, 03 May 2021 16:54:39 +0300
-Date:   Mon, 3 May 2021 16:54:39 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Frieder Schrempf <frieder.schrempf@kontron.de>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Timo =?iso-8859-1?B?U2NobPzfbGVy?= <schluessler@krause.de>,
-        Tim Harvey <tharvey@gateworks.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Null pointer dereference in mcp251x driver when resuming from
- sleep
-Message-ID: <YJAAn+H9nQl425QN@smile.fi.intel.com>
-References: <d031629f-4a28-70cd-4f27-e1866c7e1b3f@kontron.de>
- <YI/+OP4z787Tmd05@smile.fi.intel.com>
- <YI//GqCv0nkvtQ54@smile.fi.intel.com>
+        id S234496AbhECN5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 09:57:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233269AbhECN5J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 09:57:09 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 292B5C061761
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 06:56:14 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id s25so6910215lji.0
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 06:56:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7Q+7uJXapdV8m314egEDhU1V6QX5TMcQtPenPurNvJI=;
+        b=mB9ivoZ5UNR6sRV3Ovqt7vd7xn9D15y2o3MzdcFjXGmgf4bPp/mvmDOdDDjhhM1Cy9
+         ltvH9p9ujkHd/tUWQXTkc4sweaeYUbImuQE/c/WVZAV/yM2XUStBEa9RzyZ0JpAgS435
+         aBHieP5DMWq4tA3dk5SvEXu2jJHqg+L+7y3WVAeTCFKKJaEqFBo0HjruFvzsS4HjvhmK
+         BnXZZDQIHrspQyrgfXHZ438/TNBQC0BHxB8BxuUIkaDE67InzMulYvSl9GQBITdGAn3I
+         9uUCkcX38acfp3EbBLihE7dPm55cemEEcGJiobDc07w05sa9IHaY/v4onAt8B/CrBVpv
+         A9Zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7Q+7uJXapdV8m314egEDhU1V6QX5TMcQtPenPurNvJI=;
+        b=pmb3clNOLOdDA4vMF6cFzDcY5fpJnOivr2metin7DJCs5MCjs2VTymiZrBVzG3fsnS
+         deNWgBgvtLC6NnkgUdxV7iFFVEeeevsAswgDuasWQIdNHBAiQPCNtEqxxcmeKLC683lR
+         fV+77Gb4BWreJ0+DoUvrAdYTxS8EWPkXTCqkm1zkl0wOboKHjlwhsADF0XBjh/s4Cl/o
+         34V7DT2WvbFtgNLaXQlKGzEntXGDYHTcq1gJVbVO+cbJJrYRDWK4Lhdi1Jz8Cdt3KrBq
+         b6LJhpmM4FD5Zl+ikr3f/Q9SM1Qh09z9KaCRgJ8FFSygM4ckYc6EZUMmFmxbFVFjio5p
+         znwA==
+X-Gm-Message-State: AOAM532KzYgSRnH+lb8ZJNbzjqBZpKypMPZWoKkmmQ8JwcHhvSMDP1/M
+        NbfWl1j9M7nlZYIVcquFGGWt9IwAmiAFPSG4IYocxQ==
+X-Google-Smtp-Source: ABdhPJwlWQnXCrmKiTAOa3jhSluTazGyhbsHW0pzxJ09qCbZcja+66TPxZcJ3B8UKkjTi+69c/QyGQTJFa42WvhxDrE=
+X-Received: by 2002:a2e:889a:: with SMTP id k26mr4801339lji.438.1620050172462;
+ Mon, 03 May 2021 06:56:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YI//GqCv0nkvtQ54@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210428150815.136150-1-paul@crapouillou.net> <CY4PR03MB3112198E9789BF3D95959E6F99409@CY4PR03MB3112.namprd03.prod.outlook.com>
+ <CY4PR03MB311245DA10E715A44DDC10C099409@CY4PR03MB3112.namprd03.prod.outlook.com>
+ <20210503120615.64b396bd@jic23-huawei>
+In-Reply-To: <20210503120615.64b396bd@jic23-huawei>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 3 May 2021 15:56:01 +0200
+Message-ID: <CACRpkdaA5dgG3f8fEqkSny_uUYC_1nFu3=GAPtwS=aoy7qYsJg@mail.gmail.com>
+Subject: Re: [PATCH] tools/iio: iio_event_monitor: Fix ioctl error check
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     "Sa, Nuno" <Nuno.Sa@analog.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 04:48:10PM +0300, Andy Shevchenko wrote:
-> On Mon, May 03, 2021 at 04:44:24PM +0300, Andy Shevchenko wrote:
-> > On Mon, May 03, 2021 at 03:11:40PM +0200, Frieder Schrempf wrote:
-> > > Hi,
-> > > 
-> > > with kernel 5.10.x and 5.12.x I'm getting a null pointer dereference
-> > > exception from the mcp251x driver when I resume from sleep (see trace
-> > > below).
-> > > 
-> > > As far as I can tell this was working fine with 5.4. As I currently don't
-> > > have the time to do further debugging/bisecting, for now I want to at least
-> > > report this here.
-> > > 
-> > > Maybe there is someone around who could already give a wild guess for what
-> > > might cause this just by looking at the trace/code!?
-> > 
-> > Does revert of c7299fea6769 ("spi: Fix spi device unregister flow") help?
-> 
-> Other than that, bisecting will take not more than 3-4 iterations only:
-> % git log --oneline v5.4..v5.10.34 -- drivers/net/can/spi/mcp251x.c
-> 3292c4fc9ce2 can: mcp251x: fix support for half duplex SPI host controllers
-> e0e25001d088 can: mcp251x: add support for half duplex controllers
-> 74fa565b63dc can: mcp251x: Use readx_poll_timeout() helper
-> 2d52dabbef60 can: mcp251x: add GPIO support
-> cfc24a0aa7a1 can: mcp251x: sort include files alphabetically
-> df561f6688fe treewide: Use fallthrough pseudo-keyword
+On Mon, May 3, 2021 at 1:05 PM Jonathan Cameron <jic23@kernel.org> wrote:
 
-> 8ce8c0abcba3 can: mcp251x: only reset hardware as required
+> So, I did a bit of detective work on this one.  Seems this change in error
+> code was actually introduced as a side effect of Alex's recent rework of
+> the IOCTLs.  Prior to that we returned -ENODEV for this case and now
+> we do indeed return EINVAL.
+>
+> So we may need to figure out how to fix that, or decide that such is life
+> and modify this code to give the right error message as done in this patch...
+>
+> Linus / Alex, thoughts?  It's always been a bit messy because we also
+> return -ENODEV in the path where the ioctl hits a driver that is going away
+> so it hasn't uniquely identified a lack of support for a long time, even
+> if that is by far the most likely reason for this return code.
 
-And only smoking gun by analyzing the code is the above. So, for the first I
-would simply check before that commit and immediately after (15-30 minutes of
-work). (I would do it myself if I had a hardware at hand...)
+Normally this would be ABI if any existing userspace can break because
+of the wrong error code being returned. Linus (the other one) has
+clearly stated that the ABI is a contract that cannot be broken.
 
-> 877a902103fd can: mcp251x: add mcp251x_write_2regs() and make use of it
-> 50ec88120ea1 can: mcp251x: get rid of legacy platform data
-> 14684b93019a Merge git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net
+So I would just try to fix the errorpath to go back to returning -ENODEV.
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Yours,
+Linus Walleij
