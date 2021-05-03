@@ -2,171 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE243718D4
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9AF3718D6
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbhECQGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 12:06:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230236AbhECQGN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 12:06:13 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF1EAC061761
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 09:05:18 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id m6-20020a17090a8586b02901507e1acf0fso3637244pjn.3
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 09:05:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=uLnt91tc2pnUIyT7YI8X96lYU8WCxDw6ZB6QLt1X+W4=;
-        b=Ue92zNTA0q1aHeR5Ncr/UOW9zdBS1jD+IYbVdMndT7N+rdhSAfmJDMkGZw8dyop9Fg
-         j7MWa5HE6oo8yuqfl9LWBFeHC+5FW12nQcdEpPxbx3UkQCZ2RXoXWnpIqZTLu4XwtmDx
-         3S41jyYW6SLz3P9Kln1mvAF8PCOHKnU3qOVslOq8pz5lQD3fu4BDXW2GFWAdzDKTZSYB
-         F9tAhy2RAa+PuO8+iTGgkvNCWsK1/oxSp3G+G3fVOCQEwXwrcyiS2UKaqtsN82rsz+8t
-         WBkwDrj6M/B/EQYXQcYbGPEes22h0xUOgbiHbFP+K/kUqQqH81mZb6zQhEImG1MfmgX9
-         gkCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=uLnt91tc2pnUIyT7YI8X96lYU8WCxDw6ZB6QLt1X+W4=;
-        b=ImZJ8uuo/QtxrTvNV7qdjNzlHdiu76wu4UrEDq6l/5mbvaA7DYE4kyWA8G0+qApDPL
-         JeR0PUz4heHGqXpFI5f9pkJVHiZqAhwSrvWUPNfYuAqXrYsCrXji9e89OHntLSr9DaEp
-         QeK6WP+sAimNSEOAMk1Cs3fU98BGAq/DtAK5HmzHHZVPNVzpA2IAUhHIOJuBFcZzWWBy
-         MdFnyopaQ4ZBmVhYmRmVnn8aeNFyqr7v90KEYTEQnc8eWhmXZm0En6KT45a7hBalY2w1
-         ydWpuHc6C6g+jAINsRcD+w74Ljb6dAZLw/0Yo7TZ5IkmtGjW0PmpSM2s/16XZOdQRd83
-         71qA==
-X-Gm-Message-State: AOAM531xFcC3GdrygwEo2wMoMYoHpbuxgfhuBTSp+X7o3MUvqJgNXZwS
-        2iRon8PrOuFUNGXrIgDxKbR2PA==
-X-Google-Smtp-Source: ABdhPJwtDAaXX4mlafMNdmEkobxScO2VjZ8KFmDQuNM9DPTdtvPtlCUHfvVD6cFGnY1U/Dj83hZ6Cg==
-X-Received: by 2002:a17:90a:ae10:: with SMTP id t16mr22736759pjq.86.1620057918132;
-        Mon, 03 May 2021 09:05:18 -0700 (PDT)
-Received: from smtpclient.apple ([2601:646:c200:1ef2:1960:85f5:fe97:e8ac])
-        by smtp.gmail.com with ESMTPSA id f135sm9268244pfa.102.2021.05.03.09.05.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 09:05:17 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es' registers for io_threads
-Date:   Mon, 3 May 2021 09:05:16 -0700
-Message-Id: <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
-References: <8735v3ex3h.ffs@nanos.tec.linutronix.de>
-Cc:     Stefan Metzmacher <metze@samba.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org, x86@kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-In-Reply-To: <8735v3ex3h.ffs@nanos.tec.linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-X-Mailer: iPhone Mail (18E199)
+        id S231182AbhECQG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 12:06:29 -0400
+Received: from mail-bn8nam12on2059.outbound.protection.outlook.com ([40.107.237.59]:15712
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231133AbhECQG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 12:06:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K4ZVQJYuFxTNKhYHeKYi6G7d3PPAQLd9cK756ACgjNbq819PDVvzdVMqEAfd/tfzunyB73bJSTwrD/ehxdcRY7NHVUiz+hAmZMFzp2mDmihPH7DE1rtFq1P5I3xVEn5h5YPFZ7WlswPMHdeYCELrZIJP6IFb1dcv4juKzYgFJygk4DSej3TH8xJOP5e7Bp6ZWTkW4bX1YeQA2uejxx/0Ew/bfQF0KPObn3+qB0KHOoEybTGGRTRvrAzV4CJ5YY09Fop5wi4OxQfnSbkhDZIPzCTzCH2EAw5w7jGa+kwNcs/kuzOdKtBrjjvUIbSXV/Xhq+2+2aAP14ywRbeSkl6dsg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5L2XLVuc7VtR24tCqFEn2YxELbEwg75eNiDbvo22F0M=;
+ b=GhQHgH82TdZ2PFDTCR1flkJ+6QZVrcKlFKP48AL52K9zCF10trOCIEL8j6sGfe3KjkkFkwRFHoEkzYuVx5+9/aHL2MBBLak+Cje4pksax4r4TcEkrpajp2TD2AndjCbmV/UQKpvt//PJbpJLJgiCSrxXOwoZ/EuH6frFjFgI0vRMMAgoDi0Ck2wOd9X7+KppVXknOb0co+TV20mil1mlbF7266V7sS9m7TbiAKYWjj6NssErLRrBo4l2yidCapW3wJOnFlvVY3pZNz12KiFst//VNYiOERWHIM1LHex894VHh96zqrWkvcFXq1O/F55+5zszlXu6Fc0O2AXeqwo3MA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5L2XLVuc7VtR24tCqFEn2YxELbEwg75eNiDbvo22F0M=;
+ b=Wi7jP3Ea0sNIfYfuQeaSDrlS34K4gqZS5x4Pg+QEIud3Z02mZAWx5HZgjpuYWrkT7eJ3LdvBnAV5QuU0IQKDneOoiC4TYCpPHb2JT1YNbZBvHbeYBnbe0OxpWwEb8gNmFNrwenOz7vNtSiGqx6J4/mSyD21SINIpiTSKb3r3/sQmE/0BxURvtgEpHb/NEVmfRDJTdL+rP12eB+buOokStKYziHuBQ5Oi9fERdUTBZ76LbucCDPLn2wb/1dBL0K76QR5l5+ERx0INnJddj5Rj9oKPceVv3udORU0mQ2/zHvdxU35y1uFGS/bRXtvZoLWyMDzNYDLcGP0S4BlvpJH+Uw==
+Authentication-Results: gibson.dropbear.id.au; dkim=none (message not signed)
+ header.d=none;gibson.dropbear.id.au; dmarc=none action=none
+ header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3212.namprd12.prod.outlook.com (2603:10b6:5:186::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.43; Mon, 3 May
+ 2021 16:05:33 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4087.043; Mon, 3 May 2021
+ 16:05:33 +0000
+Date:   Mon, 3 May 2021 13:05:30 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     David Gibson <david@gibson.dropbear.id.au>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210503160530.GL1370958@nvidia.com>
+References: <20210421105451.56d3670a@redhat.com>
+ <20210421175203.GN1370958@nvidia.com>
+ <20210421133312.15307c44@redhat.com>
+ <20210421230301.GP1370958@nvidia.com>
+ <20210422111337.6ac3624d@redhat.com>
+ <YIeYJZOdgMN/orl0@yekko.fritz.box>
+ <20210427172432.GE1370958@nvidia.com>
+ <YIi5G4Wg/hpFqNdX@yekko.fritz.box>
+ <20210429002149.GZ1370958@nvidia.com>
+ <YIol9p3z8BTWFRh8@yekko>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YIol9p3z8BTWFRh8@yekko>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: YT2PR01CA0002.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:38::7) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by YT2PR01CA0002.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:38::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.39 via Frontend Transport; Mon, 3 May 2021 16:05:32 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ldb4c-00GNw4-A5; Mon, 03 May 2021 13:05:30 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a8afecc6-dd9b-470e-2422-08d90e4d47a3
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3212:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB321267B8E6823D61FD815BF8C25B9@DM6PR12MB3212.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Jz0ZBLQ+DBqavnStXwHKVIwE8+mqp4QGXSsWa6j1gRKbOOHmF88EL3em1cddXI1Q7w91HOxtzHcyLetU5ZoReI8V25QWC/n6QxZae33KZoCx/2Cw95g+Hl7SvwpAFAefCqAl6CHq1Mo0qwv87bYbVTV966hcaBGnO4Ho/fXJLADi/oppuWKbwaj1DHnjAPEIEkLGiBf1kGxlBu+MkKTsY3MS9LXrm7nGk7agb0bXub8gssmAPzNcYqyijm2Ie4g+F8qQXwQY8y3LYZK9hBlzSXULDtMSJE6JQeLFcu2kmKPwdbXljx3kt8bfD559ppvriYVku+UyH2cR1g21bUc+eI0RnP5TRQZkeb+mNTOG19k7DKsYN20frO478qm+tE8Nh/pTDB3cwIUlf2wiwxIVvMbLrxqouoFltqcLaJjQxe/P7I+K7pwmOK/88O5JwTKPotK5vvlYQSFQoZqVElB4aQKBfLwht6G9lFdUPlXRT5Dtx+Q8E+JAG9Hu58dTvd/oOlE3j97qOFYgNS62G6xu0y3zGQjRFCcpAuaG5LlTrgo+kep5+EZBXPOtkz3iV1OT8jEAswcm//wDxzoYfRvvdVu1DkSFSjVbG7r4BAZccNg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(366004)(136003)(39860400002)(8676002)(186003)(33656002)(478600001)(8936002)(38100700002)(66556008)(1076003)(426003)(2616005)(6916009)(36756003)(26005)(2906002)(66476007)(86362001)(66946007)(316002)(7416002)(9786002)(9746002)(5660300002)(4744005)(4326008)(54906003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?cJkb6uk4OhwcMBnNmeJblzK7mFZZd/ezDOw60xiwGPKX2b3CjCmrpu4gqFJi?=
+ =?us-ascii?Q?DZIZ0Mz8WEornubgoca77jG4Gz4UEJj4Fa4hvpHhmZA8hyCd8ogrKXX9DdvE?=
+ =?us-ascii?Q?yCWqYhDO+8MVZymhKY3Wltm8wObXYABZaIQ2wxzU7NpqFiy293rkUPPyFWGp?=
+ =?us-ascii?Q?hJ9iU/IAmJMkunE6LDtdPDnx7bdLGzkEsCEKRx1sZr1XPSPX4PFoVI9gimrl?=
+ =?us-ascii?Q?EVZwNajDqKxTopCkKS17myjZ1t8LwamqRf2bJnUlXZcXQCE75Ij8NIKmMCRj?=
+ =?us-ascii?Q?NNi8b7+YnakEnCBV2Lf11LCrE5FfR2qeX3cVcMtfLXhqYk7ZRXdetjfhIrxi?=
+ =?us-ascii?Q?wJ67T0CV6unJlNwSpYTMe4ZdFzFQX+3PZcaHFjKeXhG4NWAmoHLd+n9vZeus?=
+ =?us-ascii?Q?gnWoE04hIdF3z3BbC9QbsH5N422rTBYKcPgcyy0L8jExfO4LSXS5w4pXWdjr?=
+ =?us-ascii?Q?O6z0JQvdosq4s80ETthmpvY/8JInLGM4fLZjOaTjfkuXfmtqmkh4IRRK2t+Y?=
+ =?us-ascii?Q?VFiqET2g06PQo0XDRrA8WANRpNYa2cIAzHjYA2NHWN7CFKMTGjsnjb3rs98Z?=
+ =?us-ascii?Q?Um6Ygx4ZkLswO4B+gIFPdoBas3JExiW4IwAlyUV+Tn53Br2SVNxzjKA4OWDm?=
+ =?us-ascii?Q?cAMjGmA9ahSI8Ds564JhjdQMCJhCyoQYfevshMLVJQwA5quFqcJBRNWORsae?=
+ =?us-ascii?Q?G5fCHGkE/hndIneuZ1qFFchKPvp87Ft+qNhsRPadnmpYMdbKJEJ++lBKf7fi?=
+ =?us-ascii?Q?7d2agQ2M9bCVUEAnNEbteIzTrJc3c5YSszZTUBJXWbDjipjNWSOT5BoATJiI?=
+ =?us-ascii?Q?DqFKA/HF2w1I3xUNYd/vzuUPfUd6t+7LmSV4fwXdFGZnjOUF5Ah7RUZZSiTz?=
+ =?us-ascii?Q?tTRLBzDxj+AB6Ouucg82otfDyBd+gsu3I3vZV6f0A0vk3yoHXb0uEyzMsyVO?=
+ =?us-ascii?Q?+8iluTKgf+FWgQXaDNYLoPibNH0z4iV4VGBvD/B+hR/SCbjolGaEsJWtkcRt?=
+ =?us-ascii?Q?RRGThdjI4sg4OeX8Ky/8/qTQCgUFLrudtLl3U6u7aSF8p8mkgIpP8a+cVyl7?=
+ =?us-ascii?Q?BHTxVwl5Vaz3CNnZhxzZsle/SqrbFHhq0wsoXpfrYCuhyJ7bFIAJ2MwrPqE5?=
+ =?us-ascii?Q?qzbkHO2JQyZjIyuET79eaHwmkx2hTBZtofjmodqDC6MqFnyGZDNVyBwCRCyc?=
+ =?us-ascii?Q?Jje8m9XSeQW4m7w7aXXQRFnbYyXl8Y0BRfOr7Sh6KYIk/QrX95BsVsLPp3Wb?=
+ =?us-ascii?Q?ttJ0saqPZQ2wKwCNsGtYZBRLSCVPCLdPIEmBdK+3VBlHcAME7oAa+tZiCdQH?=
+ =?us-ascii?Q?pOhTBW9lXDeH+nOPM6QYGPuH?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a8afecc6-dd9b-470e-2422-08d90e4d47a3
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2021 16:05:33.0448
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7xsuIVxNjE+atuaSiQeBCCLNGPIzvmGcc5DjK+5h8qsA3c37lolYFMMd2ZqyWyHS
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3212
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 29, 2021 at 01:20:22PM +1000, David Gibson wrote:
+> > There is a certain appeal to having some
+> > 'PPC_TCE_CREATE_SPECIAL_IOASID' entry point that has a wack of extra
+> > information like windows that can be optionally called by the viommu
+> > driver and it remains well defined and described.
+> 
+> Windows really aren't ppc specific.  They're absolutely there on x86
+> and everything else as well - it's just that people are used to having
+> a window at 0..<something largish> that you can often get away with
+> treating it sloppily.
 
-> On May 3, 2021, at 7:00 AM, Thomas Gleixner <tglx@linutronix.de> wrote:
->=20
-> =EF=BB=BFStefan,
->=20
-> On Sun, Apr 11 2021 at 17:27, Stefan Metzmacher wrote:
->=20
-> Can you please CC x86 people on patches which are x86 related?
->=20
->> This allows gdb attach to userspace processes using io-uring,
->> which means that they have io_threads (PF_IO_WORKER), which appear
->> just like normal as userspace threads.
->=20
-> That's not a changelog, really. Please describe what the problem is and
-> why the chosen solution is correct.
->=20
->> See the code comment for more details.
->=20
-> The changelog should be self contained.
->=20
->> Fixes: 4727dc20e04 ("arch: setup PF_IO_WORKER threads like PF_KTHREAD")
->> Signed-off-by: Stefan Metzmacher <metze@samba.org>
->> cc: Linus Torvalds <torvalds@linux-foundation.org>
->> cc: Jens Axboe <axboe@kernel.dk>
->> cc: linux-kernel@vger.kernel.org
->> cc: io-uring@vger.kernel.org
->> ---
->> arch/x86/kernel/process.c | 49 +++++++++++++++++++++++++++++++++++++++
->> 1 file changed, 49 insertions(+)
->>=20
->> diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
->> index 9c214d7085a4..72120c4b7618 100644
->> --- a/arch/x86/kernel/process.c
->> +++ b/arch/x86/kernel/process.c
->> @@ -163,6 +163,55 @@ int copy_thread(unsigned long clone_flags, unsigned l=
-ong sp, unsigned long arg,
->>    /* Kernel thread ? */
->>    if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
->>        memset(childregs, 0, sizeof(struct pt_regs));
->> +        /*
->> +         * gdb sees all userspace threads,
->> +         * including io threads (PF_IO_WORKER)!
->> +         *
->> +         * gdb uses:
->> +         * PTRACE_PEEKUSR, offsetof (struct user_regs_struct, cs)
->> +         *  returning with 0x33 (51) to detect 64 bit
->> +         * and:
->> +         * PTRACE_PEEKUSR, offsetof (struct user_regs_struct, ds)
->> +         *  returning 0x2b (43) to detect 32 bit.
->> +         *
->> +         * GDB relies on that the kernel returns the
->> +         * same values for all threads, which means
->> +         * we don't zero these out.
->> +         *
->> +         * Note that CONFIG_X86_64 handles 'es' and 'ds'
->> +         * differently, see the following above:
->> +         *   savesegment(es, p->thread.es);
->> +         *   savesegment(ds, p->thread.ds);
->> +         * and the CONFIG_X86_64 version of get_segment_reg().
->> +         *
->> +         * Linus proposed something like this:
->> +         * (https://lore.kernel.org/io-uring/CAHk-=3DwhEObPkZBe4766DmR46=
--=3D5QTUiatWbSOaD468eTgYc1tg@mail.gmail.com/)
->> +         *
->> +         *   childregs->cs =3D __USER_CS;
->> +         *   childregs->ss =3D __USER_DS;
->> +         *   childregs->ds =3D __USER_DS;
->> +         *   childregs->es =3D __USER_DS;
->> +         *
->> +         * might make sense (just do it unconditionally, rather than mak=
-ing it
->> +         * special to PF_IO_WORKER).
->> +         *
->> +         * But that doesn't make gdb happy in all cases.
->> +         *
->> +         * While 32bit userspace on a 64bit kernel is legacy,
->> +         * it's still useful to allow 32bit libraries or nss modules
->> +         * use the same code as the 64bit version of that library, which=
+My point is this detailed control seems to go on to more than just
+windows. As you say the vIOMMU is emulating specific HW that needs to
+have kernel interfaces to match it exactly.
 
->> +         * can use io-uring just fine.
+I'm remarking that trying to unify every HW IOMMU implementation that
+ever has/will exist into a generic API complete enough to allow the
+vIOMMU to be created is likely to result in an API too complicated to
+understand..
 
-Whoa there!  Can we take a big step back?
-
-I saw all the hubbub about making io threads visible to gdb.  Fine, but why d=
-o we allow gdb to read and write their register files at all?  They *don=E2=80=
-=99t have user state* because they *are not user threads*.  Beyond that, Lin=
-ux does not really have a concept of a 32-bit thread and a 64-bit thread. I r=
-ealize that gdb does have this concept, but gdb is *wrong*, and it regularly=
- causes problems when debugging mixed-mode programs or VMs.
-
-Linus, what is the actual effect of allowing gdb to attach these threads?  C=
-an we instead make all the regset ops do:
-
-if (not actually a user thread) return -EINVAL;
-
-Any other solution results in all kinds of nasty questions. For example, ker=
-nel threads don=E2=80=99t have FPU state =E2=80=94 what happens if gdb tries=
- to access FPU state?  What happens if gdb tries to *allocate* AMX state for=
- an io_uring thread? What happens if the various remote arch_prctl accessors=
- are used?
-
-=E2=80=94Andy=
+Jason
