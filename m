@@ -2,166 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9327A372112
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 22:02:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13E47372116
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 22:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229634AbhECUDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 16:03:41 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49378 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhECUDl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 16:03:41 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620072166;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XgZpXyzMSt2ZuSYziPI65CE3gq9cUvnBGAFcSg9BFNk=;
-        b=0i59kTSGkQNolbf+b00nTId26MVXzcV5mMXdgH+7pm5p9eZTQxLdS5ke1KZ1fcn0Sted+p
-        SVhLjMIy8xe2gdBAI9KELdGngxDTAGEEOdKNHagihHIfQdW1VIFyVDPVUErdnrZBshowNe
-        iRX8KFp3zcwl9eMIaNfj56CED/9F8Nb2eFDuVNB+rMgdfphdSZFuyj2Xm8uxdUKnf6r2Bo
-        bwxK++/NdjUiTXupD3kWuFL8Y9F1Lx5MmWAGGsVDscaaNyPdanXtH7W+kJzQnEQUkUq7EM
-        WhKmzVfOoZg3xWiIO8SPCU0KJGBtW8V8U5vQ2KyoTdhEbJI743slY1chrXC2Wg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620072166;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XgZpXyzMSt2ZuSYziPI65CE3gq9cUvnBGAFcSg9BFNk=;
-        b=RQOjtFI0ZhFjpV5vlGvNQ+NvXBfAy77dvWKiYp6tyVG5UhVtN0a221OcYkCYj7rFCuiK2W
-        0ma3zEvtPU+pV8Dg==
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 3/4] KVM/VMX: Invoke NMI non-IST entry instead of IST entry
-In-Reply-To: <20210426230949.3561-4-jiangshanlai@gmail.com>
-References: <20210426230949.3561-1-jiangshanlai@gmail.com> <20210426230949.3561-4-jiangshanlai@gmail.com>
-Date:   Mon, 03 May 2021 22:02:46 +0200
-Message-ID: <87eeenk2l5.ffs@nanos.tec.linutronix.de>
+        id S229637AbhECUEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 16:04:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42650 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229497AbhECUEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 16:04:31 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9E28F6115B;
+        Mon,  3 May 2021 20:03:36 +0000 (UTC)
+Date:   Mon, 3 May 2021 16:03:35 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Cao jin <jojing64@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Qiujun Huang <hqjagain@gmail.com>,
+        Wan Jiabing <wanjiabing@vivo.com>, Xu Wang <vulab@iscas.ac.cn>,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: Re: [ GIT PULL] tracing: Updates for 5.13
+Message-ID: <20210503160335.3f3be2f2@gandalf.local.home>
+In-Reply-To: <CAHk-=wgo40oeh3huHvb64KfeNEYXw_hQXLXqujbhYz18TMZ6ZA@mail.gmail.com>
+References: <20210503091713.1aa7a7b7@gandalf.local.home>
+        <CAHk-=wgo40oeh3huHvb64KfeNEYXw_hQXLXqujbhYz18TMZ6ZA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27 2021 at 07:09, Lai Jiangshan wrote:
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index bcbf0d2139e9..96e59d912637 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -36,6 +36,7 @@
->  #include <asm/debugreg.h>
->  #include <asm/desc.h>
->  #include <asm/fpu/internal.h>
-> +#include <asm/idtentry.h>
->  #include <asm/io.h>
->  #include <asm/irq_remapping.h>
->  #include <asm/kexec.h>
-> @@ -6416,8 +6417,11 @@ static void handle_exception_nmi_irqoff(struct vcpu_vmx *vmx)
->  	else if (is_machine_check(intr_info))
->  		kvm_machine_check();
->  	/* We need to handle NMIs before interrupts are enabled */
-> -	else if (is_nmi(intr_info))
-> -		handle_interrupt_nmi_irqoff(&vmx->vcpu, intr_info);
-> +	else if (is_nmi(intr_info)) {
+On Mon, 3 May 2021 11:27:02 -0700
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-Lacks curly braces for all of the above conditions according to coding style.
+> > This is the first time I'm sending a pull request with a merge
+> > in it. I'm hoping my scripts did everything correctly. Might want
+> > to check it a bit more than usual.  
+> 
+> The merge looks fine. It causes the diffstat to show incorrectly,
+> which is normal (and generally avoided by you doing a test merge so
+> that you get the diffstat from the merged state - but don't send the
+> merge itself to me, just use it to (a) look at what conflicts there
+> will be and (b) get that correct diffstat for the end result).
 
-> +		kvm_before_interrupt(&vmx->vcpu);
-> +		vmx_do_interrupt_nmi_irqoff((unsigned long)asm_noist_exc_nmi);
-> +		kvm_after_interrupt(&vmx->vcpu);
-> +	}
+OK, makes sense.
 
-but this and the next patch are not really needed. The below avoids the
-extra kvm_before/after() dance in both places. Hmm?
+> 
+> That said, if the only reason for the merge was one single trivial
+> commit, you could just have cherry-picked it instead, avoiding the
+> things like "oh, now it has two merge bases so 'diff' no longer has an
+> unambiguous result" etc.
+
+I was thinking of doing the simple cherry-pick, but I wanted to test if
+merges would work too, as I'm hoping that I can start pulling from others
+someday, and not just take patches. I figured I'd try on a trivial merge
+to see what breaks.
+
+> 
+> But this is fine. If you start doing a lot of merges, I may really ask
+> you to then also do that test-merge for the pull request, but if it's
+
+Good to know. If I start pulling more complex merges, I'll do the test
+merge for the diffstat then.
 
 Thanks,
 
-        tglx
----
---- a/arch/x86/kernel/nmi.c
-+++ b/arch/x86/kernel/nmi.c
-@@ -526,6 +526,10 @@ DEFINE_IDTENTRY_RAW(exc_nmi)
- 
- DEFINE_IDTENTRY_RAW_ALIAS(exc_nmi, exc_nmi_noist);
- 
-+#if IS_MODULE(CONFIG_KVM_INTEL)
-+EXPORT_SYMBOL_GPL(asm_exc_nmi_noist);
-+#endif
-+
- void stop_nmi(void)
- {
- 	ignore_nmis++;
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -36,6 +36,7 @@
- #include <asm/debugreg.h>
- #include <asm/desc.h>
- #include <asm/fpu/internal.h>
-+#include <asm/idtentry.h>
- #include <asm/io.h>
- #include <asm/irq_remapping.h>
- #include <asm/kexec.h>
-@@ -6395,18 +6396,17 @@ static void vmx_apicv_post_state_restore
- 
- void vmx_do_interrupt_nmi_irqoff(unsigned long entry);
- 
--static void handle_interrupt_nmi_irqoff(struct kvm_vcpu *vcpu, u32 intr_info)
-+static void handle_interrupt_nmi_irqoff(struct kvm_vcpu *vcpu,
-+					unsigned long entry)
- {
--	unsigned int vector = intr_info & INTR_INFO_VECTOR_MASK;
--	gate_desc *desc = (gate_desc *)host_idt_base + vector;
--
- 	kvm_before_interrupt(vcpu);
--	vmx_do_interrupt_nmi_irqoff(gate_offset(desc));
-+	vmx_do_interrupt_nmi_irqoff(entry);
- 	kvm_after_interrupt(vcpu);
- }
- 
- static void handle_exception_nmi_irqoff(struct vcpu_vmx *vmx)
- {
-+	const unsigned long nmi_entry = (unsigned long)asm_exc_nmi_noist;
- 	u32 intr_info = vmx_get_intr_info(&vmx->vcpu);
- 
- 	/* if exit due to PF check for async PF */
-@@ -6417,18 +6417,20 @@ static void handle_exception_nmi_irqoff(
- 		kvm_machine_check();
- 	/* We need to handle NMIs before interrupts are enabled */
- 	else if (is_nmi(intr_info))
--		handle_interrupt_nmi_irqoff(&vmx->vcpu, intr_info);
-+		handle_interrupt_nmi_irqoff(&vmx->vcpu, nmi_entry);
- }
- 
- static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu)
- {
- 	u32 intr_info = vmx_get_intr_info(vcpu);
-+	unsigned int vector = intr_info & INTR_INFO_VECTOR_MASK;
-+	gate_desc *desc = (gate_desc *)host_idt_base + vector;
- 
- 	if (WARN_ONCE(!is_external_intr(intr_info),
- 	    "KVM: unexpected VM-Exit interrupt info: 0x%x", intr_info))
- 		return;
- 
--	handle_interrupt_nmi_irqoff(vcpu, intr_info);
-+	handle_interrupt_nmi_irqoff(vcpu, gate_offset(desc));
- }
- 
- static void vmx_handle_exit_irqoff(struct kvm_vcpu *vcpu)
+-- Steve
