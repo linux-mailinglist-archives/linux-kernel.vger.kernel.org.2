@@ -2,122 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E98A3372082
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 21:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E9A37208B
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 21:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229633AbhECTfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 15:35:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbhECTfO (ORCPT
+        id S229665AbhECTgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 15:36:43 -0400
+Received: from mail-oo1-f50.google.com ([209.85.161.50]:34710 "EHLO
+        mail-oo1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229570AbhECTgk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 15:35:14 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF8B3C06174A;
-        Mon,  3 May 2021 12:34:18 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id t11so8252478lfl.11;
-        Mon, 03 May 2021 12:34:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=BSY9bKk9NolcYFOXi42/siSm3AMFD53uLmcVvnybB2M=;
-        b=kt1YgzPGtGyBFfAgA4gqJS0lPcCmP+Q+6c7QNzQE9bCYamsEzjue4GsyVhif3OQD/p
-         /rgYY11MNuk9355CAv1iSR6JxWcGJsOEtEnNkeUZ2vc+Ewy6SeNlpe7Ts3SavB5Jiz56
-         nu74jsOiZLfiATCrNhWP7mWFUWFvmDyb/bA9vLzrCz6cy5qJkOvJLYE2SbfHin966MiE
-         EVABlRLi32j4mrEI4PrzAwBj4lk3DeOAv0RtewQS0Rf8AMbVGL4nUWYM1yBAXTfDMCj0
-         yJ9MikAziks3Wrdv/ofnYMY1gkKfdy7hVU9MWJ2OvGUmSgMPMdrQOICFH2SQHkeVvnSR
-         +kPQ==
+        Mon, 3 May 2021 15:36:40 -0400
+Received: by mail-oo1-f50.google.com with SMTP id m25-20020a4abc990000b02901ed4500e31dso1501212oop.1;
+        Mon, 03 May 2021 12:35:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=BSY9bKk9NolcYFOXi42/siSm3AMFD53uLmcVvnybB2M=;
-        b=KW0hzodM96fwep5VivCLixR4PqfAk7zFJq0A1zH+QRvjNz9zEOrK35EKpR95Yiz612
-         4kaVkv7ub1J7WA99Dy1NMMWMawdZ+GwF8NLHjhPzsYD0X6p5kbsuf2YUPjX8SM3etnxc
-         TRdc5ybsL8ZRHtanL7jzIsBSJJTjJaUb+STyopp4Adk+HEIIiatBaHzhaL6GzdFICd41
-         48LAu/ope5WFcgQeD33e+2r+EUt6APDHCb6vFsG8u9Nu2H9G2jYGD8EmVmi0pbf9kjgl
-         pPlQXVGifJbFEivyx8BWjhkUFUcfhqX8gYRlzGg2D+X/iRJ2JP7Cp8kiq1lXXEZQAMh1
-         LG5w==
-X-Gm-Message-State: AOAM530hwTYC1dr4+UjBXY7ukNUsnDewJkHpn7EY4V0CbZ5mKUyTuWfg
-        0ApAag1h54KgaL+MY5Y4/SA=
-X-Google-Smtp-Source: ABdhPJz9aQZJTMeMgNQfz8NUOpL3hdRNfL7XtXE+z/f0C/ZaJe9J2C4/3KPOnrMMB1NlixBmIiOGJg==
-X-Received: by 2002:a19:674d:: with SMTP id e13mr14834711lfj.652.1620070456304;
-        Mon, 03 May 2021 12:34:16 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id t21sm1402941ljh.84.2021.05.03.12.34.15
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JBWBNxVimdXrI5+KU0cFX5vZU2z6L9qx8BxSHFKVFus=;
+        b=X0aIwVXz4bxVRcHQqvDQZ1YkkBrJ9XY3UsVOcKbi7D8i+YdoEEv6W2z1XbOcolDuAT
+         AbBUWFa+g7usYXIeFxPRnTll8sjN6fUUbaCGXuSYjuHwhhX4kOVoNLugwsNTnLQbRZdh
+         /I2qlrv+TLD5lMA9DofMVtwCGHiOnGAQoGhsZKy8LKlTwOZANzvpGsdhxfVMrhKR0FD8
+         PDXvshFQ3Gs0Rz0CZKA6rHNJOFgmv8kpQbvXdJzvVw9njvZ7dzc506HWQQZRKAComAb8
+         co722AWVqR1XiZ3b+Ij1qmDom89UOQHVYv++hFIw2K/GIyR8Ur0rRSHKXoPpkHtCe86b
+         slTQ==
+X-Gm-Message-State: AOAM532eyjzP79DiMVl2uO09dY0UGP3iQKVyQHOU072IVeBmEqEevSv9
+        S+0O70qPM7l25NBQGI6o0w==
+X-Google-Smtp-Source: ABdhPJy/V6F3DccyF7xGWdj8eRMoURIuuJIGusacpBLZ1d5VgTJTuNBh1PnHECTqQEI5m6aTgsVEzA==
+X-Received: by 2002:a4a:aa41:: with SMTP id y1mr15483387oom.52.1620070544325;
+        Mon, 03 May 2021 12:35:44 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id a4sm188470oib.17.2021.05.03.12.35.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 12:34:15 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Mon, 3 May 2021 21:34:13 +0200
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Mon, 03 May 2021 12:35:43 -0700 (PDT)
+Received: (nullmailer pid 2253889 invoked by uid 1000);
+        Mon, 03 May 2021 19:35:41 -0000
+Date:   Mon, 3 May 2021 14:35:41 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, devicetree@vger.kernel.org,
+        Chuanhong Guo <gch981213@gmail.com>,
+        linux-staging@lists.linux.dev, Sean Wang <sean.wang@mediatek.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH v1 5/5] kvfree_rcu: Fix comments according to current code
-Message-ID: <20210503193413.GA2421@pc638.lan>
-References: <20210428134422.1894-1-urezki@gmail.com>
- <20210428134422.1894-5-urezki@gmail.com>
- <20210503164723.GX975577@paulmck-ThinkPad-P17-Gen-1>
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org, Frank Wunderlich <frank-w@public-files.de>,
+        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
+        Weijie Gao <weijie.gao@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next 3/4] dt-bindings: net: dsa: add MT7530 interrupt
+ controller binding
+Message-ID: <20210503193541.GA2253835@robh.at.kernel.org>
+References: <20210429062130.29403-1-dqfext@gmail.com>
+ <20210429062130.29403-4-dqfext@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210503164723.GX975577@paulmck-ThinkPad-P17-Gen-1>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210429062130.29403-4-dqfext@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Wed, Apr 28, 2021 at 03:44:22PM +0200, Uladzislau Rezki (Sony) wrote:
-> > We used to have an "emergency path" and comments related
-> > to it. According to current kvfree_rcu() design that path
-> > is not considered as emergency anymore.
-> > 
-> > This patch rephrases and updates comments regarding this.
-> > 
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+On Thu, 29 Apr 2021 14:21:29 +0800, DENG Qingfang wrote:
+> Add device tree binding to support MT7530 interrupt controller.
 > 
-> Queued as follows, thank you!  Please check my usual wordsmithing to
-> make sure that I did not mess anything up.
+> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+> ---
+> RFC v4 -> PATCH v1:
+> - No changes.
 > 
-> 							Thanx, Paul
+>  Documentation/devicetree/bindings/net/dsa/mt7530.txt | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> ------------------------------------------------------------------------
-> 
-> commit 06c2113c4b1ce9ded69cd0ac4da9a00ed6be8834
-> Author: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> Date:   Wed Apr 28 15:44:22 2021 +0200
-> 
->     kvfree_rcu: Fix comments according to current code
->     
->     The kvfree_rcu() function now defers allocations in the common
->     case due to the fact that there is no lockless access to the
->     memory-allocator caches/pools.  In addition, in CONFIG_PREEMPT_NONE=y
->     and in CONFIG_PREEMPT_VOLUNTARY=y kernels, there is no reliable way to
->     determine if spinlocks are held.  As a result, allocation is deferred in
->     the common case, and the two-argument form of kvfree_rcu() thus uses the
->     "channel 3" queue through all the rcu_head structures.  This channel
->     is called referred to as the emergency case in comments, and these
->     comments are now obsolete.
->     
->     This commit therefore updates these comments to reflect the new
->     common-case nature of such emergencies.
->     
->     Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-Looks good to me.
 
---
-Vlad Rezki
+Acked-by: Rob Herring <robh@kernel.org>
