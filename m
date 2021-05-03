@@ -2,195 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308503712FB
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 11:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA3223712FF
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 11:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233103AbhECJ3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 05:29:25 -0400
-Received: from gofer.mess.org ([88.97.38.141]:37753 "EHLO gofer.mess.org"
+        id S233111AbhECJaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 05:30:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231523AbhECJ3K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 05:29:10 -0400
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id BEB21C63DD; Mon,  3 May 2021 10:28:03 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
-        t=1620034083; bh=3Lqh525HUZgW/IOmgNPErIBSMpq4pjo2qRROx5FNK/w=;
+        id S231523AbhECJaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 05:30:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4885D6134F;
+        Mon,  3 May 2021 09:29:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620034150;
+        bh=I1Va2M1In7/8Va4ug37hQWcWQ6HmBWYcOh51DEY5fuc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hH06HIWxHE1Q4YAmW3DFjF5VOK/M3Si3dtxwuu5EdtK1mOEHJ4aKvyCuMG9wD6PVj
-         2Cc6Gac8IZ/F0ZcOnlixAl8TAjBN1teAe3iA37LCks+5pGT7S4HJ3pMt2r2PAeZw7H
-         n8O2UcBn/O1riavUyz3g7K5+x+e12OeGPDDGUVg00UfT7l2x9ksojmSu7AYG54eyF3
-         ScLFewD6WaCHOGW7KypkoNF2B5vm99sZC+EM1ieNq9mRrpsG6jlyFmVvyxsou6zfT4
-         mEYpwlZodWcqpLwWmxUizdy4jWjiLHOpegB8cFVPutl/B7m2tAZnhh8RLwSh1qpGuO
-         aOyJanVDI19Bw==
-Date:   Mon, 3 May 2021 10:28:03 +0100
-From:   Sean Young <sean@mess.org>
-To:     =?utf-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>, jr@memlen.com,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-media@vger.kernel.org, mchehab@kernel.org,
-        anant.thazhemadam@gmail.com,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: "UBSAN: shift-out-of-bounds in mceusb_dev_recv" should share the
- same root cause with "UBSAN: shift-out-of-bounds in mceusb_dev_printdata"
-Message-ID: <20210503092803.GA15275@gofer.mess.org>
-References: <CAD-N9QW-zm37f9PW-iF-NaAH5LLePWFba3aG5LkXD2a07YBZpg@mail.gmail.com>
- <X/6mhQfPRt0QoorO@kroah.com>
- <CAD-N9QUuvxa3CCqru08O2x9p-AJp54qo-e-9O49YGQwQEWKLdA@mail.gmail.com>
- <CAD-N9QVAaVozZuPSG9YKjEYreRX3PEoW0UM3Dwhko_-tVTpK0Q@mail.gmail.com>
+        b=fLr3Rw/5KuN7AdI4iGvmjflgDT8KEAvkqmIqRzugSLFvrln6yXh9vAxVmpsqNrv8P
+         xE8FJtRESmSwQ23TKy/T3vyrWKBskbsUVkrPu6To8pNXIzZd357jqo8Ing/JyFo1Fv
+         sfk18desrvvWKI0pwl08PsRN9PsEDuXQPrbpYEcEDGzT/yMujqy5wjx43yj0pCqUes
+         Mi4zu361NOtsbBmJtNHWL/osjPbubXqhT7IPrbCNdZL1R8YsW0B09t8iiT2z+UrlPh
+         snHK6IUaDGY6J7jvjGoq5CfDF7LW1DcMlUfI43honVFe5Ih3mQboTTYy4BqvihlVFI
+         mVLzE8bWl2SMQ==
+Date:   Mon, 3 May 2021 12:28:58 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Steven Price <steven.price@arm.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Aili Yao <yaoaili@kingsoft.com>, Jiri Bohac <jbohac@suse.cz>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-hyperv@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 7/7] fs/proc/kcore: use page_offline_(freeze|unfreeze)
+Message-ID: <YI/CWg6PrMxcCT2D@kernel.org>
+References: <20210429122519.15183-1-david@redhat.com>
+ <20210429122519.15183-8-david@redhat.com>
+ <YI5H4yV/c6ReuIDt@kernel.org>
+ <5a5a7552-4f0a-75bc-582f-73d24afcf57b@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD-N9QVAaVozZuPSG9YKjEYreRX3PEoW0UM3Dwhko_-tVTpK0Q@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <5a5a7552-4f0a-75bc-582f-73d24afcf57b@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI,
+On Mon, May 03, 2021 at 10:28:36AM +0200, David Hildenbrand wrote:
+> On 02.05.21 08:34, Mike Rapoport wrote:
+> > On Thu, Apr 29, 2021 at 02:25:19PM +0200, David Hildenbrand wrote:
+> > > Let's properly synchronize with drivers that set PageOffline(). Unfreeze
+> > > every now and then, so drivers that want to set PageOffline() can make
+> > > progress.
+> > > 
+> > > Signed-off-by: David Hildenbrand <david@redhat.com>
+> > > ---
+> > >   fs/proc/kcore.c | 15 +++++++++++++++
+> > >   1 file changed, 15 insertions(+)
+> > > 
+> > > diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
+> > > index 92ff1e4436cb..3d7531f47389 100644
+> > > --- a/fs/proc/kcore.c
+> > > +++ b/fs/proc/kcore.c
+> > > @@ -311,6 +311,7 @@ static void append_kcore_note(char *notes, size_t *i, const char *name,
+> > >   static ssize_t
+> > >   read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
+> > >   {
+> > > +	size_t page_offline_frozen = 0;
+> > >   	char *buf = file->private_data;
+> > >   	size_t phdrs_offset, notes_offset, data_offset;
+> > >   	size_t phdrs_len, notes_len;
+> > > @@ -509,6 +510,18 @@ read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
+> > >   			pfn = __pa(start) >> PAGE_SHIFT;
+> > >   			page = pfn_to_online_page(pfn);
+> > 
+> > Can't this race with page offlining for the first time we get here?
+> 
+> 
+> To clarify, we have three types of offline pages in the kernel ...
+> 
+> a) Pages part of an offline memory section; the memap is stale and not
+> trustworthy. pfn_to_online_page() checks that. We *can* protect against
+> memory offlining using get_online_mems()/put_online_mems(), but usually
+> avoid doing so as the race window is very small (and a problem all over the
+> kernel we basically never hit) and locking is rather expensive. In the
+> future, we might switch to rcu to handle that more efficiently and avoiding
+> these possible races.
+> 
+> b) PageOffline(): logically offline pages contained in an online memory
+> section with a sane memmap. virtio-mem calls these pages "fake offline";
+> something like a "temporary" memory hole. The new mechanism I propose will
+> be used to handle synchronization as races can be more severe, e.g., when
+> reading actual page content here.
+> 
+> c) Soft offline pages: hwpoisoned pages that are not actually harmful yet,
+> but could become harmful in the future. So we better try to remove the page
+> from the page allcoator and try to migrate away existing users.
+> 
+> 
+> So page_offline_* handle "b) PageOffline()" only. There is a tiny race
+> between pfn_to_online_page(pfn) and looking at the memmap as we have in many
+> cases already throughout the kernel, to be tackled in the future.
 
-On Sun, May 02, 2021 at 10:29:25PM +0800, 慕冬亮 wrote:
-> Hi kernel developers,
+Right, but here you anyway add locking, so why exclude the first iteration?
+ 
+> (A better name for PageOffline() might make sense; PageSoftOffline() would
+> be catchy but interferes with c). PageLogicallyOffline() is ugly;
+> PageFakeOffline() might do)
 > 
-> I found one interesting follow-up for these two crash reports. In the
-> syzbot dashboard, they are fixed with different patches. Each patch
-> fixes at the failure point - mceusb_handle_command  and
-> mceusb_dev_printdata. For patch details, please have a look at the
-> crash reports [1] and [2].
-> 
-> Recall the vulnerability below, and kernel crashes both at the case
-> SUBCMD with incorrect value in ir_buf_in[i+2]. I still think they
-> share the same root cause and fixing this bug needs two patches at the
-> same time.
-> 
-> --------------------------------------------------------------------------------------------------------------------------
-> for (; i < buf_len; i++) {
->      switch (ir->parser_state) {
->      case SUBCMD:
->              ir->rem = mceusb_cmd_datasize(ir->cmd, ir->buf_in[i]);
->              mceusb_dev_printdata(ir, ir->buf_in, buf_len, i - 1,
->                                                    ir->rem + 2, false);
->              if (i + ir->rem < buf_len)
->              mceusb_handle_command(ir, &ir->buf_in[i - 1]);
-> --------------------------------------------------------------------------------------------------------------------------
-> 
-> I wonder if developers can see two crash reports in the very
-> beginning, they may craft different patches which fix this bug in the
-> root cause. Meanwhile, if developers can see those crash reports in
-> advance, this may save some time for developers since only one takes
-> time to analyze this bug. If you have any issues about this statement,
-> please let me know.
+> > > +			/*
+> > > +			 * Don't race against drivers that set PageOffline()
+> > > +			 * and expect no further page access.
+> > > +			 */
+> > > +			if (page_offline_frozen == MAX_ORDER_NR_PAGES) {
+> > > +				page_offline_unfreeze();
+> > > +				page_offline_frozen = 0;
+> > > +				cond_resched();
+> > > +			}
+> > > +			if (!page_offline_frozen++)
+> > > +				page_offline_freeze();
+> > > +
 
-I am sorry, I have a hard time following. As far as I am aware, the issue
-with mceusb_dev_printdata() have been resolved. If you think there is still
-is an issue, please do send a patch and then we can discuss it. As far as I
-know there is noone else working on this.
+BTW, did you consider something like
 
-This mceusb_dev_printdata() function has been very troublesome, maybe it
-could be written in a different way.
+	if (page_offline_frozen++ % MAX_ORDER_NR_PAGES == 0) {
+		page_offline_unfreeze();
+		cond_resched();
+		page_offline_freeze();
+	}
 
-Thanks,
+We don't seem to care about page_offline_frozen overflows here, do we?
 
-Sean
-
-> 
-> 
-> [1] UBSAN: shift-out-of-bounds in mceusb_dev_printdata
-> https://syzkaller.appspot.com/bug?id=df1efbbf75149f5853ecff1938ffd3134f269119
-> [2] UBSAN: shift-out-of-bounds in mceusb_dev_recv
-> https://syzkaller.appspot.com/bug?id=50d4123e6132c9563297ecad0479eaad7480c172
-> 
-> On Wed, Jan 13, 2021 at 7:20 PM 慕冬亮 <mudongliangabcd@gmail.com> wrote:
-> >
-> > On Wed, Jan 13, 2021 at 3:51 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Wed, Jan 13, 2021 at 01:04:44PM +0800, 慕冬亮 wrote:
-> > > > Hi developers,
-> > > >
-> > > > I found that "UBSAN: shift-out-of-bounds in mceusb_dev_recv" and
-> > > > "UBSAN: shift-out-of-bounds in mceusb_dev_printdata" should share the
-> > > > same root cause.
-> > > > The reason is that the PoCs after minimization has a high similarity
-> > > > with the other. And their stack trace only diverges at the last
-> > > > function call. The following is some analysis for this bug.
-> > > >
-> > > > The following code in the mceusb_process_ir_data is the vulnerable
-> > > > --------------------------------------------------------------------------------------------------------------------------
-> > > > for (; i < buf_len; i++) {
-> > > >      switch (ir->parser_state) {
-> > > >      case SUBCMD:
-> > > >              ir->rem = mceusb_cmd_datasize(ir->cmd, ir->buf_in[i]);
-> > > >              mceusb_dev_printdata(ir, ir->buf_in, buf_len, i - 1,
-> > > >                                                    ir->rem + 2, false);
-> > > >              if (i + ir->rem < buf_len)
-> > > >              mceusb_handle_command(ir, &ir->buf_in[i - 1]);
-> > > > --------------------------------------------------------------------------------------------------------------------------
-> > > >
-> > > > The first report crashes at a shift operation(1<<*hi) in mceusb_handle_command.
-> > > > --------------------------------------------------------------------------------------------------------------------------
-> > > > static void mceusb_handle_command(struct mceusb_dev *ir, u8 *buf_in)
-> > > > {
-> > > > u8 *hi = &buf_in[2]; /* read only when required */
-> > > > if (cmd == MCE_CMD_PORT_SYS) {
-> > > >       switch (subcmd) {
-> > > >       case MCE_RSP_GETPORTSTATUS:
-> > > >               if (buf_in[5] == 0)
-> > > >                      ir->txports_cabled |= 1 << *hi;
-> > > > --------------------------------------------------------------------------------------------------------------------------
-> > > >
-> > > > The second report crashes at another shift operation (1U << data[0])
-> > > > in mceusb_dev_printdata.
-> > > > --------------------------------------------------------------------------------------------------------------------------
-> > > > static void mceusb_dev_printdata(struct mceusb_dev *ir, u8 *buf, int buf_len,
-> > > > int offset, int len, bool out)
-> > > > {
-> > > > data   = &buf[offset] + 2;
-> > > >
-> > > >           period = DIV_ROUND_CLOSEST((1U << data[0] * 2) *
-> > > >                         (data[1] + 1), 10);
-> > > > --------------------------------------------------------------------------------------------------------------------------
-> > > >
-> > > > >From the analysis, we can know the data[0] and *hi access the same
-> > > > memory cell - ``ir->buf_in[i+1]``. So the root cause should be that it
-> > > > misses the check of ir->buf_in[i+1].
-> > > >
-> > > > For the patch of this bug, there is one from anant.thazhemadam@gmail.com:
-> > > > --------------------------------------------------------------------------------------------------------------------------
-> > > > diff --git a/drivers/media/rc/mceusb.c b/drivers/media/rc/mceusb.c
-> > > > index f1dbd059ed08..79de721b1c4a 100644
-> > > > --- a/drivers/media/rc/mceusb.c
-> > > > +++ b/drivers/media/rc/mceusb.c
-> > > > @@ -1169,7 +1169,7 @@ static void mceusb_handle_command(struct
-> > > > mceusb_dev *ir, u8 *buf_in)
-> > > >   switch (subcmd) {
-> > > >   /* the one and only 5-byte return value command */
-> > > >   case MCE_RSP_GETPORTSTATUS:
-> > > > - if (buf_in[5] == 0)
-> > > > + if ((buf_in[5] == 0) && (*hi <= 32))
-> > > >   ir->txports_cabled |= 1 << *hi;
-> > > >   break;
-> > > > --------------------------------------------------------------------------------------------------------------------------
-> > > > I tried this patch in the second crash report and found it does not
-> > > > work. I think we should add another filter for the value in
-> > > > ``ir->buf_in[i+1]``.
-> > > >
-> > > > With this grouping, I think developers can take into consideration the
-> > > > issue in mceusb_dev_printdata and generate a complete patch for this
-> > > > bug.
-> > >
-> > > Why not create a patch yourself and submit it?  That way you get the
-> > > correct credit for solving the problem.
-> > >
-> >
-> > I have sent a simple but working patch to the corresponding
-> > developers. We can take it as a base to discuss.
-> >
-> > And this email is to provide some information about bug duplication
-> > for developers as I am doing some research on crash deduplication. I
-> > want to get some credits if our grouping information is useful for
-> > some kernel developers.
-> >
-> > > thanks,
-> > >
-> > > greg k-h
+-- 
+Sincerely yours,
+Mike.
