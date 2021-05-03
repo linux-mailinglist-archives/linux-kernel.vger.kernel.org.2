@@ -2,124 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 377B2372296
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 23:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 328D7372298
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 23:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229909AbhECVlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 17:41:51 -0400
-Received: from mga11.intel.com ([192.55.52.93]:49664 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229742AbhECVlm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 17:41:42 -0400
-IronPort-SDR: mIscvnMa11oWX/BxbnUFJ4cXu44doN3bM+TnIQFmhVu/k3C/DFBLjEu5NC/LUblRDe1oW9LYjE
- OU7cI3nhoaVA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9973"; a="194699865"
-X-IronPort-AV: E=Sophos;i="5.82,271,1613462400"; 
-   d="scan'208";a="194699865"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 14:40:47 -0700
-IronPort-SDR: DQy5a5gvHp+h5LqMG8/xEtWav4end5s8cQm6oDBf8ijROvwoGyOmvruhWFsAZ1fM0AihFc2xWD
- x2LvPl8FoKZw==
-X-IronPort-AV: E=Sophos;i="5.82,271,1613462400"; 
-   d="scan'208";a="538933123"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.212.218.202])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 14:40:47 -0700
-From:   Russ Weight <russell.h.weight@intel.com>
-To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com,
-        richard.gong@intel.com, Russ Weight <russell.h.weight@intel.com>
-Subject: [PATCH v12 5/5] fpga: m10bmc-sec: add max10 get_hw_errinfo callback func
-Date:   Mon,  3 May 2021 14:40:42 -0700
-Message-Id: <20210503214042.316836-6-russell.h.weight@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210503214042.316836-1-russell.h.weight@intel.com>
-References: <20210503214042.316836-1-russell.h.weight@intel.com>
+        id S229918AbhECVmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 17:42:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25433 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229894AbhECVmO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 17:42:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620078079;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kMuIpJEdiBjBQ12iiG/AQDfkJBD+hRImjx6hu1Pa3Cs=;
+        b=dkH1Xngpsh7F3K8qhq869AyTtZU1L6A1KfhxxUPHoNXutZnzdzRebe6lJrwU4FYSRoryiO
+        YN7OMnhp5cwh42g9uYsmFkeLS9SNo2SwkcURrp+fnP2uNLezBd6Uzb7xYzlbMCxKXDnTJE
+        iz/guJLRf4YUU40lMMtbekdbHzRo5tI=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-267--cPfwXH7OBKUnDzo1dJ8JA-1; Mon, 03 May 2021 17:41:18 -0400
+X-MC-Unique: -cPfwXH7OBKUnDzo1dJ8JA-1
+Received: by mail-qk1-f200.google.com with SMTP id s10-20020a05620a030ab02902e061a1661fso6169217qkm.12
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 14:41:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kMuIpJEdiBjBQ12iiG/AQDfkJBD+hRImjx6hu1Pa3Cs=;
+        b=OU+IBagUu+0wed5ot9N6PKkiCPZOdeMDpER1n4xHm/HcGZNnWkajoP6SXH0IGnQtXD
+         Qz4C4Weriau1SbGerOU+3Xozn51Rj34rWK992x20HurKbe5gRNnI12iU1X3VfRoHSlLB
+         3QI0SR3XkUsoelaFLddC24BnuyfTQcK0ZKQJfsmYm2MOxBHotKgHWDpD5tW/lyG0EEIf
+         8rsibjNDXuXwjUjTiWoeadVreu3B8HFcQag6NZ2Nwl3ouAfPRBM5pGiMt6+IFNMufLkZ
+         vAMvUqlwhNpf98lDRn96A5EWTrOI49PmHxrtKy9SLmzSAXcSvEvmxPG7mX0YSP+QI8Sq
+         XMbg==
+X-Gm-Message-State: AOAM533weob2oC40Z0D9UFaAjnG60xrGMKaaw3SrnefUS1UV8psEfvvN
+        CYiQcFUaKFAKVpgpeNOfVbsWd3woFf/QPQrgXLPiRvWFuXkKzuUfjpGPUG2kPqSrFlkkW8MmyTG
+        csP/PmIU2N1XWYaqMz8N/IAAw
+X-Received: by 2002:a05:6214:a8b:: with SMTP id ev11mr14875763qvb.42.1620078077734;
+        Mon, 03 May 2021 14:41:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwPK3fT4Ub0m/HBBvdYVkwXeOOIcz2fSJruHuTp9A5QoYF+XqL1ZeJdFlwiIxW/fNL1icAEow==
+X-Received: by 2002:a05:6214:a8b:: with SMTP id ev11mr14875754qvb.42.1620078077569;
+        Mon, 03 May 2021 14:41:17 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-72-184-145-4-219.dsl.bell.ca. [184.145.4.219])
+        by smtp.gmail.com with ESMTPSA id 4sm908389qtc.40.2021.05.03.14.41.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 May 2021 14:41:17 -0700 (PDT)
+Date:   Mon, 3 May 2021 17:41:15 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>
+Subject: Re: [PATCH 2/2] mm/hugetlb: Fix cow where page writtable in child
+Message-ID: <YJBt+61zIh9wOCaq@t490s>
+References: <20210501144110.8784-1-peterx@redhat.com>
+ <20210501144110.8784-3-peterx@redhat.com>
+ <c69c12d6-1615-e528-37a7-4776abfc7200@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <c69c12d6-1615-e528-37a7-4776abfc7200@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend the MAX10 BMC Secure Update driver to include
-a function that returns 64 bits of additional HW specific
-data for errors that require additional information.
-This callback function enables the hw_errinfo sysfs
-node in the Intel Security Manager class driver.
+On Mon, May 03, 2021 at 01:53:03PM -0700, Mike Kravetz wrote:
+> On 5/1/21 7:41 AM, Peter Xu wrote:
+> > When fork() and copy hugetlb page range, we'll remember to wrprotect src pte if
+> > needed, however we forget about the child!  Without it, the child will be able
+> > to write to parent's pages when mapped as PROT_READ|PROT_WRITE and MAP_PRIVATE,
+> > which will cause data corruption in the parent process.
+> > 
+> > This issue can also be exposed by "memfd_test hugetlbfs" kselftest (if it can
+> > pass the F_SEAL_FUTURE_WRITE test first, though).
+> > 
+> > Signed-off-by: Peter Xu <peterx@redhat.com>
+> > ---
+> >  mm/hugetlb.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> 
+> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-Signed-off-by: Russ Weight <russell.h.weight@intel.com>
----
-v12:
-  - No change
-v11:
-  - No change
-v10:
-  - No change
-v9:
-  - No change
-v8:
-  - Previously patch 6/6, otherwise no change
-v7:
-  - No change
-v6:
-  - Initialized auth_result and doorbell to HW_ERRINFO_POISON
-    in m10bmc_sec_hw_errinfo() and removed unnecessary if statements.
-v5:
-  - No change
-v4:
-  - No change
-v3:
-  - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
-  - Changed "MAX10 BMC Secure Engine driver" to "MAX10 BMC Secure Update
-    driver"
-v2:
-  - Implemented HW_ERRINFO_POISON for m10bmc_sec_hw_errinfo() to
-    ensure that corresponding bits are set to 1 if we are unable
-    to read the doorbell or auth_result registers.
-  - Added m10bmc_ prefix to functions in m10bmc_iops structure
----
- drivers/fpga/intel-m10-bmc-secure.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+Thanks!
 
-diff --git a/drivers/fpga/intel-m10-bmc-secure.c b/drivers/fpga/intel-m10-bmc-secure.c
-index 9d45312001a3..bdf87ec125fe 100644
---- a/drivers/fpga/intel-m10-bmc-secure.c
-+++ b/drivers/fpga/intel-m10-bmc-secure.c
-@@ -483,11 +483,33 @@ static enum fpga_sec_err m10bmc_sec_cancel(struct fpga_sec_mgr *smgr)
- 	return ret ? FPGA_SEC_ERR_RW_ERROR : FPGA_SEC_ERR_NONE;
- }
- 
-+#define HW_ERRINFO_POISON	GENMASK(31, 0)
-+static u64 m10bmc_sec_hw_errinfo(struct fpga_sec_mgr *smgr)
-+{
-+	struct m10bmc_sec *sec = smgr->priv;
-+	u32 auth_result = HW_ERRINFO_POISON;
-+	u32 doorbell = HW_ERRINFO_POISON;
-+
-+	switch (smgr->err_code) {
-+	case FPGA_SEC_ERR_HW_ERROR:
-+	case FPGA_SEC_ERR_TIMEOUT:
-+	case FPGA_SEC_ERR_BUSY:
-+	case FPGA_SEC_ERR_WEAROUT:
-+		m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell);
-+		m10bmc_sys_read(sec->m10bmc, M10BMC_AUTH_RESULT, &auth_result);
-+
-+		return (u64)doorbell << 32 | (u64)auth_result;
-+	default:
-+		return 0;
-+	}
-+}
-+
- static const struct fpga_sec_mgr_ops m10bmc_sops = {
- 	.prepare = m10bmc_sec_prepare,
- 	.write_blk = m10bmc_sec_write_blk,
- 	.poll_complete = m10bmc_sec_poll_complete,
- 	.cancel = m10bmc_sec_cancel,
-+	.get_hw_errinfo = m10bmc_sec_hw_errinfo,
- };
- 
- static int m10bmc_secure_probe(struct platform_device *pdev)
+> 
+> I think we need to add, "Fixes: 4eae4efa2c29" as this is now in v5.12
+
+I could be mistaken, but my understanding is it's broken from the most initial
+cow support of hugetlbfs in 2006...  So if we want a fixes tag, maybe this?
+
+Fixes: 1e8f889b10d8d ("[PATCH] Hugetlb: Copy on Write support")
+
 -- 
-2.25.1
+Peter Xu
 
