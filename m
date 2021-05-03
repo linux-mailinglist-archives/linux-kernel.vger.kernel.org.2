@@ -2,199 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 285293718EA
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA5233718EC
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231261AbhECQJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 12:09:50 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:56724 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231234AbhECQJk (ORCPT
+        id S231213AbhECQKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 12:10:09 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:51406 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231192AbhECQKG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 12:09:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=5jxJ8b/HSUR/7BT5D5WyPEoFYv66JE4BKEKp4HTWf+Y=; b=XWOWwDZ6ZwrouJikaVp8dHiCsr
-        I115w+HLBGME9bYlcrjafcglo1GZw06C+Elx221Hmed7QE1HotLNe7+fjXntv4waAOS13LuqEUEIn
-        IW2dFINknX+ObrcY9YFIltZb/ozZzUEhKZ702sW1RXa0CfCJuy3VwVNPCow1cpShl+xJ8oX8jXLua
-        CqCj1z1wi2T5bZLWF7vRp+RhStCsdQ/r35mSNu80y/H+7gL/KgizhTJPZjwewDohxqwmmbcgGrZd9
-        r5urtV1BmH8V5hE2g/eDXD4Qmot0I0KTcAyTeTvQ6Z//Z9oet0bd7OsXbNybLVQ8NF0d8AtcoRbgL
-        tLRcrxtw==;
-Received: from guinness.priv.deltatee.com ([172.16.1.162])
-        by ale.deltatee.com with esmtp (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1ldb7b-0003hs-5l; Mon, 03 May 2021 10:08:36 -0600
-To:     John Hubbard <jhubbard@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-mm@kvack.org,
-        iommu@lists.linux-foundation.org
-Cc:     Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Don Dutile <ddutile@redhat.com>,
+        Mon, 3 May 2021 12:10:06 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 143FxTlQ002334;
+        Mon, 3 May 2021 16:08:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=xCXJJ2NQYghVX2ubzM81cH5DczKalPS93sEYJMTqFvI=;
+ b=Q61E+Q59GviyYO+xawldIOP3EVCbkpaOfHOdB5HXeCQ3hmlTDW/BnY6f78Cuw8LK9VtP
+ rjfdOWsbZmkQ8eTQayjPbkMWxM26WXVdT0ku/ZZfZhl9fvFl9Fyfp7InB+I3NRtzSoIP
+ czpAGSKA6iKV5YxqIqemT/D2+lsdHTClHXSLvSDLnG9SUKozmGzPzwgKG38gGlpPjbA2
+ 3HLyvTa1G+3q7jzGDy5ebmEoVOa9r8z/O7bvBmMUEvQeTiiETyMmjpzcv1K7VTKc0Y4h
+ OC8JJB9K74DbkTgdt0uuAyDYqnqnlgjzAydp32jNtc92WooXpaTqbLXjscKmW3IQrsC/ oA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 388vgbm7y7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 03 May 2021 16:08:51 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 143G0G8Z145496;
+        Mon, 3 May 2021 16:08:50 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2169.outbound.protection.outlook.com [104.47.57.169])
+        by aserp3020.oracle.com with ESMTP id 388xt2mckb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 03 May 2021 16:08:50 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SkE/zlzTyNCTGjyprsfahznbCEcEGpo68evb583cOBplWn5d9s3Hx9DTOPt4x6Gn/mm6dm0tmtwaGKQPrT53SdTRy0i8dk4g922OWNj5yEqOJDYY2EwGiHJ99hwvboEn1qXb7YQ9DQOJeg68+QoLw0nsGJEjBsLBmJx6myb2pgAYwAp4kglR6B7BM1iT+R6t539UVSTCPmHQJ1dLZrbrsM7Yo5HryZi7H7zlsYeboOo8Gp9MZokHQo7XYqyPaRV5jjiHqgGaXsUnewSvsBLvRIyy2mMKoxQiG4t6qO3S94PCda0aXd1CACxU0LcagZtr3e75VNrgiD7KQIF8sHg/qg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xCXJJ2NQYghVX2ubzM81cH5DczKalPS93sEYJMTqFvI=;
+ b=X4FmfWFyF7aJy3VyN8MP6C8jP1zwKMkelZzf4W8rwSdKlGvhqbVNOrLeVai29bJ8nIJn2KZOjTqYTQjPIl1h7PNjyvsBrIhRSmNdN08ZxfSbWTzPpRRqJzs8zgB8VoFFEV3riHaP9A/VfEhKLKw7ecLxbOe4wSRLiGaEvOsDO+pN4V34ZtvYneSa6tOrMMIqgFnOcoPRiYvh2dtAvW8QfYFVtYmIRwDOyPUFV8GS/oztJlvZ6LDt8frFeFT4lx1WZWzbnPKlVuR3BhqrtLeq0iwSYeArtPkCUkwdhH7uNVtwR8Sxyg7Uuu2yGi6arhGvVgx/M51t/sz1kkkWLvAgUA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xCXJJ2NQYghVX2ubzM81cH5DczKalPS93sEYJMTqFvI=;
+ b=VVxIqPg9b/YXJd3+6QxEo+LpUpHnxHEe4ZL87m8rovTZIui3qkAhMijMysrRPIj8cwGKf5P9kIc78yCvE9xaMXzFZfcdP51lgbKdPdlZj4WweBWXni0K0guSqUvtWwLz3+ZqmC1TyhlhvZSfEq78SnJ1rR4ogPSxEUKp5i59o3o=
+Received: from MWHPR10MB1582.namprd10.prod.outlook.com (2603:10b6:300:22::8)
+ by CO1PR10MB4481.namprd10.prod.outlook.com (2603:10b6:303:9e::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.35; Mon, 3 May
+ 2021 16:08:48 +0000
+Received: from MWHPR10MB1582.namprd10.prod.outlook.com
+ ([fe80::353a:1802:6e91:1811]) by MWHPR10MB1582.namprd10.prod.outlook.com
+ ([fe80::353a:1802:6e91:1811%8]) with mapi id 15.20.4087.044; Mon, 3 May 2021
+ 16:08:47 +0000
+From:   Liam Howlett <liam.howlett@oracle.com>
+To:     Michel Lespinasse <michel@lespinasse.org>
+CC:     "maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Song Liu <songliubraving@fb.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
         Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>
-References: <20210408170123.8788-1-logang@deltatee.com>
- <20210408170123.8788-3-logang@deltatee.com>
- <d6220bff-83fc-6c03-76f7-32e9e00e40fd@nvidia.com>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <d4091d87-7d9e-8cde-4e1c-01b877b6785f@deltatee.com>
-Date:   Mon, 3 May 2021 10:08:34 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        David Rientjes <rientjes@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Rik van Riel <riel@surriel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michel Lespinasse <walken.cr@gmail.com>
+Subject: Re: [PATCH 01/94] mm: Add vma_lookup()
+Thread-Topic: [PATCH 01/94] mm: Add vma_lookup()
+Thread-Index: AQHXPEQmA9/hNjlhF0O1j8k1xuPy8qrOFnOAgAPeL4A=
+Date:   Mon, 3 May 2021 16:08:47 +0000
+Message-ID: <20210503160841.2juynuimujnaajad@revolver>
+References: <20210428153542.2814175-1-Liam.Howlett@Oracle.com>
+ <20210428153542.2814175-2-Liam.Howlett@Oracle.com>
+ <20210501050441.GB5188@lespinasse.org>
+In-Reply-To: <20210501050441.GB5188@lespinasse.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: lespinasse.org; dkim=none (message not signed)
+ header.d=none;lespinasse.org; dmarc=none action=none header.from=oracle.com;
+x-originating-ip: [23.233.25.87]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 927b1c9d-a469-4b78-b9e9-08d90e4dbbc5
+x-ms-traffictypediagnostic: CO1PR10MB4481:
+x-microsoft-antispam-prvs: <CO1PR10MB4481449D3968EE2190DD3010FD5B9@CO1PR10MB4481.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qjFRthH9MbMuqmZFtss49ZtCWJhBls0CevSIeXQRNIlfMeB5ZgmEMJdAEqHadi1XJpeDWJfq7+/EajAgvJa10rJkGkZ9oMbwezuNBZXYQoLyVRIdjs0aiXp+3/TS3krqQGbpcKj35YrqQIR0+vyrLXpF035gq02WmcczK6ou9JDKYDeLKk3xDEAdNKhO1gGgHXegnOY/QjoHrSz2gxCoOD02zi07gxGNPZYt6BCGtm2RFS7SJKddC46zeGyn11NTkQb7Tf6UegyTNjs8yyk8H63PxyC4kwiVR3w3J9a+8fGrsvk1P9w1hdskI+sqVS4Njhj17d8OS0TQ2TtyqEl3hOiTa9ctV/vCJApfpgAHym/x8jqtyuwjWmVFL4aoRTjeDe4p3sxQgq1wJgyhkmkLc5IVupV6HjZawEACrRl4M+0h7oPi4XDkCoGGzGrVd6dLn9AZWp39w2GY1hK7Yxp++uk1Qk4nZGhBeBBtTu+eGBCuuVEQCoCJLMdHKfSta5z60qODeGoURrFjwhlanbwDpL4LRmF0uyak3O1/sbZazdxsHji4bc0pK+WSEVVYbuiHzvRgjf0PGYU2Y3nqeiFK7HDLGKgAx8yLWoA7YcwTC9Q=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1582.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(376002)(396003)(366004)(39860400002)(346002)(136003)(1076003)(44832011)(83380400001)(9686003)(33716001)(2906002)(6512007)(6486002)(8936002)(6916009)(8676002)(64756008)(66446008)(66476007)(66556008)(4326008)(66946007)(91956017)(76116006)(7416002)(38100700002)(5660300002)(6506007)(186003)(122000001)(71200400001)(86362001)(54906003)(478600001)(26005)(316002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?sV8kud5iVKcVV4K7eDCE0UIVFErcCu+EOg1QhUZhHOpE6i5R9u5pqVCo1lT2?=
+ =?us-ascii?Q?Th/LB7ApDr6q5SZJAXo6yoZNIicnzbwer5kKW0iyqD3fg79KHD/bVerXVAFa?=
+ =?us-ascii?Q?rtkTMnvSoFhJIqypVQpHb00kMKA7rRymkEgOqCDPx0CmKTIcKEKIX8dx/ceY?=
+ =?us-ascii?Q?Tj6xtQGU0l3BFZ0lDw3swPIGyB9iWJHslePFBIUduqA7hNMR2t7AaPkc3r22?=
+ =?us-ascii?Q?Xg9u02KxF4VhufKHzDUNC0Anz0wNXe6Z1fDb5vYJTFhhkktIYgYNbEM+uakG?=
+ =?us-ascii?Q?1ZsBArtenOD8aK4GmmKc4cs+0saK1TIbOLx+0ocNGBz2stITjMOislFH3Yau?=
+ =?us-ascii?Q?8blYADol67B6aobEdvre4hwBvhndC4lnviggMtqJfkuVceHTjzuIG2tm9GDt?=
+ =?us-ascii?Q?xct+FGVbdN7D4AtwsnBE9Tx5cjKd/gxyKpWvPtOTCApLrJROF0NXgFInIXU7?=
+ =?us-ascii?Q?b6/JY5K3cub/sQDzZep4d4DIP7niWPNgt6SF2a8H7x56n7CRpxL2lVz4JC5c?=
+ =?us-ascii?Q?0ELQ/8lUNLW9TWCWvvHgrEN66dSCBQov1eWQ6l8ZA005l1BZa5zk/6yUOE99?=
+ =?us-ascii?Q?yLZYSke1HLXxOTHLl+FEsJOMy2a8mU1EfGapHVjfzt/4Xhx2k3nw4NYmPjLl?=
+ =?us-ascii?Q?uBkMUSCgu4h3Xk/M+RlaMRdT9xR5Hiv+3fvunKGHf4tFeHqABhId5RGKYjJ/?=
+ =?us-ascii?Q?bAcEWCxeFaaQ5cljana3BxlhYu3xSw4G5c2+zwlu/oh+2hxSac4UPdQLRvnN?=
+ =?us-ascii?Q?LIQjCLEDybpP/7CthHKAe/phme+aWnORahnAu+3qyoMO7oSeh8Eu4esTud6H?=
+ =?us-ascii?Q?GwqVzhOzrwcBpfwFFN4ehVGTjn/mn2vybulTZj3wQ22PMGS+q/ki6y3cmvwZ?=
+ =?us-ascii?Q?+tYdMMj5/4WSeIIMmJZo21eaBkME1WasHnXGdWLGKl/P+INnTT6SrHvizqTy?=
+ =?us-ascii?Q?STZLryBBEXC/LdhQTJ7Fv1ZbpoH3S/UxXBLSCXyDERSZlu1Xy0nPmpcZOQT/?=
+ =?us-ascii?Q?Qe3kVMcD2MzGSoeZOgV59uESMjKKB7i7D6ptQz0OqV3YFN3N1ssen6aVmmxd?=
+ =?us-ascii?Q?G9Kr7iNCQnIxmeB4bsJavlO5SZ5H+IjZXj58AY5BZm9zCPNRRexaBs3BN5mV?=
+ =?us-ascii?Q?aE326QtEQ1m60H52ihd/b8mX6hFWtR/YQhVT+32dv5d+mq3SB0A9r5DLtte9?=
+ =?us-ascii?Q?1vNCbGNKpUqWZN5iUZEUS8sGfoft4hF87MbuERZod7Fr7XsEVOn7RCMQnr0E?=
+ =?us-ascii?Q?uJLUbEMoBFlVabKy31p4XuRl997ANx1PyuY8lZ4nIP54gdNaFT7MrqBMS7YE?=
+ =?us-ascii?Q?F5+shyHXk+Wst7YitCuCTYk5?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <C31D3A8CAA64674685EA987E3E09C4B7@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <d6220bff-83fc-6c03-76f7-32e9e00e40fd@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 172.16.1.162
-X-SA-Exim-Rcpt-To: robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, christian.koenig@amd.com, jgg@ziepe.ca, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jhubbard@nvidia.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: Re: [PATCH 02/16] PCI/P2PDMA: Avoid pci_get_slot() which sleeps
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1582.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 927b1c9d-a469-4b78-b9e9-08d90e4dbbc5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 May 2021 16:08:47.3824
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rH6BcUNTTgzZHXwcZvOqOcCkxAYg9akR/LO9GgtzwJ87Xjds4nrwm+RlY7a7wzORypctefxM2k4JoTgSFaW5Pg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4481
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9973 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2105030107
+X-Proofpoint-GUID: _q0Afz_laPpgdnUgt6wikDrE3Oznmd45
+X-Proofpoint-ORIG-GUID: _q0Afz_laPpgdnUgt6wikDrE3Oznmd45
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9973 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 mlxlogscore=999
+ suspectscore=0 priorityscore=1501 phishscore=0 malwarescore=0
+ impostorscore=0 clxscore=1015 bulkscore=0 spamscore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2105030107
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+* Michel Lespinasse <michel@lespinasse.org> [210501 01:04]:
+> On Wed, Apr 28, 2021 at 03:35:43PM +0000, Liam Howlett wrote:
+> > Many places in the kernel use find_vma() to get a vma and then check th=
+e
+> > start address of the vma to ensure the next vma was not returned.
+> >=20
+> > Other places use the find_vma_intersection() call with add, addr + 1 as
+> > the range; looking for just the vma at a specific address.
+> >=20
+> > The third use of find_vma() is by developers who do not know that the
+> > function starts searching at the provided address upwards for the next
+> > vma.  This results in a bug that is often overlooked for a long time.
+> >=20
+> > Adding the new vma_lookup() function will allow for cleaner code by
+> > removing the find_vma() calls which check limits, making
+> > find_vma_intersection() calls of a single address to be shorter, and
+> > potentially reduce the incorrect uses of find_vma().
+> >=20
+> > Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+>=20
+> This seems like a good API to have, and I agree it's less error prone tha=
+n
+> having every caller check the vma->vm_start address.
+>=20
+> Minor nitpick, I would prefer if the implementation used find_vma()
+> and then checked the vma->vm_start address - I don't like using [i, i+1)
+> intervals to implement stabbing queries.
 
+Okay, I will make that change.
 
-On 2021-05-01 11:35 p.m., John Hubbard wrote:
-> On 4/8/21 10:01 AM, Logan Gunthorpe wrote:
->> In order to use upstream_bridge_distance_warn() from a dma_map function,
->> it must not sleep. However, pci_get_slot() takes the pci_bus_sem so it
->> might sleep.
->>
->> In order to avoid this, try to get the host bridge's device from
->> bus->self, and if that is not set, just get the first element in the
->> device list. It should be impossible for the host bridge's device to
->> go away while references are held on child devices, so the first element
->> should not be able to change and, thus, this should be safe.
->>
->> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
->> ---
->>   drivers/pci/p2pdma.c | 14 ++++++++++++--
->>   1 file changed, 12 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
->> index bd89437faf06..473a08940fbc 100644
->> --- a/drivers/pci/p2pdma.c
->> +++ b/drivers/pci/p2pdma.c
->> @@ -311,16 +311,26 @@ static const struct pci_p2pdma_whitelist_entry {
->>   static bool __host_bridge_whitelist(struct pci_host_bridge *host,
->>   				    bool same_host_bridge)
->>   {
->> -	struct pci_dev *root = pci_get_slot(host->bus, PCI_DEVFN(0, 0));
->>   	const struct pci_p2pdma_whitelist_entry *entry;
->> +	struct pci_dev *root = host->bus->self;
->>   	unsigned short vendor, device;
->>   
->> +	/*
->> +	 * This makes the assumption that the first device on the bus is the
->> +	 * bridge itself and it has the devfn of 00.0. This assumption should
->> +	 * hold for the devices in the white list above, and if there are cases
->> +	 * where this isn't true they will have to be dealt with when such a
->> +	 * case is added to the whitelist.
-> 
-> Actually, it makes the assumption that the first device *in the list*
-> (the host->bus-devices list) is 00.0.  The previous code made the
-> assumption that you wrote.
+>=20
+> But other than that, I think this (and the other patches adding
+> corresponding call sites) is safe for merging.
+>=20
 
-The comment notes two assumptions (although the grammar is poor, which I
-will fix). Yes, the previous code made the second assumption, the new
-code makes both assumptions.
-
-> By the way, pre-existing code comment: pci_p2pdma_whitelist[] seems
-> really short. From a naive point of view, I'd expect that there must be
-> a lot more CPUs/chipsets that can do pci p2p, what do you think? I
-> wonder if we have to be so super strict, anyway. It just seems extremely
-> limited, and I suspect there will be some additions to the list as soon
-> as we start to use this.
-
-Yes, well unfortunately we have no other way to determine what host
-bridges can communicate with P2P. We settled on a whitelist when the
-series was first patch. Nobody likes that situation, but nobody has
-found anything better. We've been hoping standards bodies would give us
-a flag but I haven't heard anything about that. At least AMD has been
-able to guarantee us that all CPUs newer than Zen will support so that
-covers a large swath. It would be nice if we could say something similar
-for Intel.
-
-> OK, yes this avoids taking the pci_bus_sem, but it's kind of cheating.
-> Why is it OK to avoid taking any locks in order to retrieve the
-> first entry from the list, but in order to retrieve any other entry, you
-> have to aquire the pci_bus_sem, and get a reference as well? Something
-> is inconsistent there.
-> 
-> The new version here also no longer takes a reference on the device,
-> which is also cheating. But I'm guessing that the unstated assumption
-> here is that there is always at least one entry in the list. But if
-> that's true, then it's better to show clearly that assumption, instead
-> of hiding it in an implicit call that skips both locking and reference
-> counting.
-
-Because we hold a reference to a child device of the bus. So the host
-bus device can't go away until the child device has been released. An
-earlier version of the P2PDMA patchset had a lot more extraneous get
-device calls until someone else pointed this out.
-
-> You could add a new function, which is a cut-down version of pci_get_slot(),
-> like this, and call this from __host_bridge_whitelist():
-> 
-> /*
->   * A special purpose variant of pci_get_slot() that doesn't take the pci_bus_sem
->   * lock, and only looks for the 00.0 bus-device-function. Once the PCI bus is
->   * up, it is safe to call this, because there will always be a top-level PCI
->   * root device.
->   *
->   * Other assumptions: the root device is the first device in the list, and the
->   * root device is numbered 00.0.
->   */
-> struct pci_dev *pci_get_root_slot(struct pci_bus *bus)
-> {
-> 	struct pci_dev *root;
-> 	unsigned devfn = PCI_DEVFN(0, 0);
-> 
-> 	root = list_first_entry_or_null(&bus->devices, struct pci_dev,
-> 					bus_list);
-> 	if (root->devfn == devfn)
-> 		goto out;
-> 
-> 	root = NULL;
->   out:
-> 	pci_dev_get(root);
-> 	return root;
-> }
-> EXPORT_SYMBOL(pci_get_root_slot);
-> 
-> ...I think that's a lot clearer to the reader, about what's going on here.
-
-Per above, I think the reference count is unnecessary. But I could wrap
-it in a static function for clarity. (There's no reason to export this
-function).
-
-> Note that I'm not really sure if it *is* safe, I would need to ask other
-> PCIe subsystem developers with more experience. But I don't think anyone
-> is trying to make p2pdma calls so early that PCIe buses are uninitialized.
-
-Yeah, it's impossible to make a p2pdma call before the PCIe bus is
-initialized. They have to have access to at least one PCI device before
-they can even attempt it.
-
-Logan
+Thanks,
+Liam=
