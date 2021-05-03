@@ -2,89 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADE473720A8
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 21:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBA8A3720AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 21:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229695AbhECTmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 15:42:40 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49260 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhECTmi (ORCPT
+        id S229646AbhECToW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 15:44:22 -0400
+Received: from bmail1.ministro.hu ([5.249.150.236]:44926 "EHLO
+        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229499AbhECToT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 15:42:38 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620070904;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=R89mha3W7dggNcHio8mKK09HcaBedKHLYwCG8+sIhQk=;
-        b=baebpRmFzGasqi47KSv9CzosBnOiLYNu8TAQWs4HYL8bMXuO3WHl9PW+6B2wB2AHbx27rY
-        oOoUfxBV37pDJYArt3WLnjTje5ja5x3UuYgZe+3XejjGC6KButNajyEr+v07Edoyiy3kHY
-        c48uBhmkG0bWfoGuoCo8YiNsgbQDzNgJBfBp97ly7hDxC0o2vlwN5eDjufS0Kj2655+N9I
-        1sRye9evLpVS4KWl2tnj1rrHO1TOMwMmvmTZSo/oiNE52v5yb9gRdFgMRILpKdoV9cp4oz
-        YN6n4Am8JaNeey9jU2D5lUWhA6o6aTZm1mb5xm32PwtUdtQPjc9kG8iGX5ILXQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620070904;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=R89mha3W7dggNcHio8mKK09HcaBedKHLYwCG8+sIhQk=;
-        b=VsoMRqDg8qyFRWUYjcU0Jkt5wjqQb3YctqCuac4VSxwB6NvvlM+s+7EveLibUxsYy8sW9y
-        F+QEywnUKLPnq5CQ==
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Joerg Roedel <jroedel@suse.de>, Jian Cai <caij2003@gmail.com>,
-        xen-devel@lists.xenproject.org
-Subject: Re: [PATCH 1/4] x86/xen/entry: Rename xenpv_exc_nmi to noist_exc_nmi
-In-Reply-To: <87r1ind4ee.ffs@nanos.tec.linutronix.de>
-References: <20210426230949.3561-1-jiangshanlai@gmail.com> <20210426230949.3561-2-jiangshanlai@gmail.com> <87r1ind4ee.ffs@nanos.tec.linutronix.de>
-Date:   Mon, 03 May 2021 21:41:44 +0200
-Message-ID: <87h7jjk3k7.ffs@nanos.tec.linutronix.de>
+        Mon, 3 May 2021 15:44:19 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bmail1.ministro.hu (Postfix) with ESMTP id 70AA7123F7A;
+        Mon,  3 May 2021 21:43:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
+        s=201804; t=1620071004;
+        bh=W4pSnJmrTdMmaZVCxMuLWZblyVXvDee6tR3+LqjgMf8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WzkscEMuE59PYkZ+ozqndYTFkAWRWNzZmA5nSScJn/gCYZx8CqfP/kkeExz4/Qbn9
+         HYcjCYAUc25tqFeGhEYML8RcsA5DZNEIH8UOLVllUK2yS6B3I+P0MYDn4sCJcdPM5s
+         eVT0QovnisMDQkVvwn9qXEn/Vg5e7MV0Hku2ARIz/XNbxpy36eA1MnpjrvBoqw1a3V
+         6Ahmw5tId7PCwpDzXJdUKJRw6daWgEanNfVmXrL9K3vboJ1qVjeTJiccmGGZdz+66j
+         uRc2R2DJHa+2mWskzTIlsjAKiMhjMpy/PlQ0bPgksPhrWz+c1sePGtd4Fb99nKI12m
+         eJCXG2xfTdq0A==
+X-Virus-Scanned: Debian amavisd-new at ministro.hu
+Received: from bmail1.ministro.hu ([127.0.0.1])
+        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id fzefVMeEZzt0; Mon,  3 May 2021 21:42:44 +0200 (CEST)
+Received: from dev (localhost [127.0.0.1])
+        by bmail1.ministro.hu (Postfix) with ESMTPSA id E63DB123F6B;
+        Mon,  3 May 2021 21:42:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
+        s=201804; t=1620070963;
+        bh=W4pSnJmrTdMmaZVCxMuLWZblyVXvDee6tR3+LqjgMf8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TAg8BrIIES3iZ5XC17vKL0OrVUvG9iwSrFF/uz/O71ZEappqGCDrNd8JCyKQ1/FMF
+         LOcoaJz2ieGN0S4pnxpZh9sdut45LgIf7jkN22t06kmvXXwCGARyhjFH5SPcL8KeIA
+         be7+HqMEle+IbhEm1UoDapLxdkUZoPbV5N63AUu1lXaDIpsw9IAE2d8johVrg37lwP
+         qPse/fcJAyPzPgpSLaA4CUZQCCTGYB5dYz7Dq7sFLw8bzqt/gfDsAfCwpExzXgVHgu
+         fOSfm1Asr6unpLgT/jEUJWD0vJvR0EbyoEl9LLDmnS2iu2qz1/fZmnTvwesWwy7iC2
+         z4J6Z/M0GfrwA==
+Date:   Mon, 3 May 2021 19:42:41 +0000
+From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Gene Chen <gene_chen@richtek.com>,
+        Saravanan Sekar <sravanhome@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] dt-bindings: iio: adc: devicetree bindings for texas
+ instruments ads7142 iio driver
+Message-ID: <20210503194241.GB1714@dev>
+References: <bffbc2b24a869dc42307adf8e3fc71f08fcff6dd.1619892171.git.info@ministro.hu>
+ <69205d4de46dd21c82b31ca1c35cbf12fbce629b.1619892171.git.info@ministro.hu>
+ <20210502182255.6bed8afa@jic23-huawei>
+ <20210502211020.GB32610@dev>
+ <20210503113008.751560b1@jic23-huawei>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210503113008.751560b1@jic23-huawei>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03 2021 at 21:05, Thomas Gleixner wrote:
+On Mon, May 03, 2021 at 11:30:08AM +0100, Jonathan Cameron wrote:
 
-> On Tue, Apr 27 2021 at 07:09, Lai Jiangshan wrote:
->> From: Lai Jiangshan <laijs@linux.alibaba.com>
->>
->> There is no any functionality change intended.  Just rename it and
->> move it to arch/x86/kernel/nmi.c so that we can resue it later in
->> next patch for early NMI and kvm.
->
-> 'Reuse it later' is not really a proper explanation why this change it
-> necessary.
->
-> Also this can be simplified by using aliasing which keeps the name
-> spaces intact.
+Hi Jonathan,
 
-Aside of that this is not required to be part of a fixes series which
-needs to be backported.
+> On Sun, 2 May 2021 21:10:20 +0000
+> József Horváth <info@ministro.hu> wrote:
+> 
+> Hi József,
+> 
+> > >   
+> > > > +
+> > > > +  "#address-cells":
+> > > > +    const: 1
+> > > > +
+> > > > +  "#size-cells":
+> > > > +    const: 0
+> > > > +
+> > > > +  "#io-channel-cells":
+> > > > +    const: 1
+> > > > +
+> > > > +  ti,osc-sel:
+> > > > +    description: |
+> > > > +      If present, the driver selects the high speed oscillator.
+> > > > +      See chapter 7.3.5 Oscillator and Timing Control in datasheet.
+> > > > +    type: boolean  
+> > > 
+> > > This looks connected to the possible sampling frequencies when in various autonomous modes.
+> > > Should it be controlled by userspace?  
+> > 
+> > The sampling frequency is controlled with the osc-sel and n-clk.
+> > I'll remove n-clk from sysfs.
+> 
+> Not sure I follow that.  I think we should only have these controlled via
+> sysfs.  It will be a bit complex as two related controls, but that is a common situation
+> and there is usually a sensible combination of options that makes sense.
+> 
+> For example, if we can meet the sampling frequency requested with the lower
+> power oscillator we go for that.
+> 
 
-Thanks,
+Ok, I'll do that.
 
-        tglx
+> > 
+> > >   
+> > > > +
+> > > > +  ti,n-clk:
+> > > > +    description: |
+> > > > +      nCLK is number of clocks in one conversion cycle.
+> > > > +      See chapter 7.3.5 Oscillator and Timing Control in datasheet.  
+> > > 
+> > > Sounds like a policy decision for userspace.
+> > >   
+> > > > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > > > +    maximum: 255
+> > > > +    minimum: 0
+> > > > +
+> > > > +  ti,monitoring-mode:
+> > > > +    description: |
+> > > > +      If present, the driver selects the autonomous monitoring mode with pre alert data.
+> > > > +      See chapter 7.4 Device Functional Modes in datasheet.  
+> > > 
+> > > As mentioned in the driver review, this looks like something we should control from userspace
+> > > not dt to me.
+> > >   
+> > 
+> > I would keep this here, but it will be an enum.
+> 
+> Sorry, but no.  As mentioned in the driver thread, this doesn't sound like
+> a characteristic of the hardware (board etc) so it doesn't belong in DT.
+> It may be challenging to implement an interface that makes sense, but
+> that doesn't mean we can avoid doing it.
+
+Ok, I'll bring it to sysfs.
+
+> 
+> > 
+> > > > +    type: boolean
+> > > > +
+> > > > +patternProperties:
+> > > > +  "^channel@[0-1]$":
+> > > > +    $ref: "adc.yaml"
+> > > > +    type: object
+> > > > +    description: |
+> > > > +      Represents the external channels which are connected to the ADC.
+> > > > +    properties:
+> > > > +      reg:
+> > > > +        description: |
+> > > > +          The channel number.
+> > > > +        items:
+> > > > +          minimum: 0
+> > > > +          maximum: 1
+> > > > +      "ti,threshold-falling":
+> > > > +        description: The low threshold for channel  
+> > > 
+> > > For these, we need a strong argument presented in this doc for why they are not
+> > > a question of policy (and hence why they should be in dt at all).  
+> > 
+> > I'll remove all threshold and hysteresys from dt.
+> > 
+> > >   
+> > > > +        $ref: /schemas/types.yaml#/definitions/uint32
+> > > > +        maximum: 4095
+> > > > +        minimum: 0
+> > > > +      "ti,threshold-rising":
+> > > > +        description: The high threshold for channel
+> > > > +        $ref: /schemas/types.yaml#/definitions/uint32
+> > > > +        maximum: 4095
+> > > > +        minimum: 0
+> > > > +      "ti,hysteresis":
+> > > > +        description: The hysteresis for both comparators for channel
+> > > > +        $ref: /schemas/types.yaml#/definitions/uint32
+> > > > +        maximum: 63
+> > > > +        minimum: 0
+> > > > +
+> > > > +    required:
+> > > > +      - reg
+> > > > +
+> > > > +    additionalProperties: false
+> > > > +
+> > > > +allOf:
+> > > > +  - if:
+> > > > +      required:
+> > > > +        - ti,monitoring-mode
+> > > > +    then:
+> > > > +      required:
+> > > > +        - interrupts
+> > > > +
+> > > > +required:
+> > > > +  - compatible
+> > > > +  - "#io-channel-cells"
+> > > > +
+> > > > +additionalProperties: false
+> > > > +
+> > > > +examples:
+> > > > +  - |
+> > > > +    i2c {
+> > > > +      #address-cells = <1>;
+> > > > +      #size-cells = <0>;
+> > > > +      adc@18 {  
+> > > 
+> > > I would not bother having two examples.  The second one covers more things afterall
+> > > and the binding makes it clear what is required.
+> > >   
+> > 
+> > I do this because of the conditional requirement of interrupts.
+> 
+> Understood, but that is clearly expressed by the 'required' above.
+> It's easy enough to understand how to not have parts that aren't
+> required without an example.
+
+I'll bring the monitoring mode to sysfs, and in that case, the conditional requirement
+ will be pointless, and interrupt property will be optional, so you are right, one example
+ will be enough.
+
+> 
+> > 
+> > > > +        compatible = "ti,ads7142";
+> > > > +        reg = <0x18>;
+> > > > +        #address-cells = <1>;
+> > > > +        #size-cells = <0>;
+> > > > +        #io-channel-cells = <1>;
+> > > > +
+> > > > +        vref-supply = <&vdd_3v3_reg>;
+> > > > +        power-supply = <&vdd_1v8_reg>;
+> > > > +
+> > > > +        channel@0 {
+> > > > +          reg = <0>;
+> > > > +        };
+> > > > +
+> > > > +        channel@1 {
+> > > > +          reg = <1>;
+> > > > +        };
+> > > > +      };
+> > > > +    };
+> > > > +  - |
+> > > > +    i2c {
+> > > > +      #address-cells = <1>;
+> > > > +      #size-cells = <0>;
+> > > > +      adc@1f {
+> > > > +        compatible = "ti,ads7142";
+> > > > +        reg = <0x1f>;
+> > > > +        #address-cells = <1>;
+> > > > +        #size-cells = <0>;
+> > > > +
+> > > > +        #io-channel-cells = <1>;
+> > > > +
+> > > > +        vref-supply = <&vdd_3v3_reg>;
+> > > > +        power-supply = <&vdd_1v8_reg>;
+> > > > +
+> > > > +        interrupt-parent = <&gpio>;
+> > > > +        interrupts = <7 2>;
+> > > > +
+> > > > +        ti,monitoring-mode;
+> > > > +
+> > > > +        channel@0 {
+> > > > +          reg = <0>;
+> > > > +          ti,threshold-falling = <1000>;
+> > > > +          ti,threshold-rising = <2000>;
+> > > > +          ti,hysteresis = <20>;
+> > > > +        };
+> > > > +
+> > > > +        channel@1 {
+> > > > +          reg = <1>;
+> > > > +          ti,threshold-falling = <100>;
+> > > > +          ti,threshold-rising = <2500>;
+> > > > +          ti,hysteresis = <0>;
+> > > > +        };
+> > > > +      };
+> > > > +    };
+> > > > +...
+> > > > +  
+> > >   
+> 
+
+Best regards
+Jozsef
