@@ -2,32 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71038371509
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 14:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDF93714DC
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 14:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232936AbhECMEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 08:04:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36862 "EHLO mail.kernel.org"
+        id S233892AbhECMBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 08:01:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234014AbhECMC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 08:02:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CAA961077;
-        Mon,  3 May 2021 12:01:34 +0000 (UTC)
+        id S233853AbhECMBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 08:01:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D74F361221;
+        Mon,  3 May 2021 12:00:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620043294;
-        bh=UwR8hxuOP2LjMNeNYjtnGsV7B+45DJNQUCAyp8dcpXg=;
+        s=korg; t=1620043215;
+        bh=uAZZo7cSdLjSCDJ2h/Cmf2iZAPT4lTtDenzdsC4Goiw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MoA0NMxGSD0gDa5YaisF+ipivuUk2Dr6G3gZ2550dpeyEQzxTewtZ5JtScqzgCZh6
-         1XQZWZ/NQ4gZASwM+i058RngjEZzB10BxugERid5kWt/9YiP8ZoquaLbJD7DEt9oOo
-         RWv+OVz/5Pl4qtId/53ywLj0VWrOS7oIVfeMGD60=
+        b=L30B7P3xcaKZ9MWQsBgYe1ov1yM0EDzAJ5nBtkUucxGTTebo/0vMu2Gpd8ZhVQI+q
+         USpE9vn1/USqOmflwjcnvYmJ7GIHzLnY9YbeSsV4Rtqo/gZb73hO0Lc0xzZ48Q5pW0
+         g0m1KZdpfHqaHpCg3YwDHsr9G+q+8nCBshNoab0c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Anirudh Rayabharam <mail@anirudhrb.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 43/69] ath6kl: return error code in ath6kl_wmi_set_roam_lrssi_cmd()
-Date:   Mon,  3 May 2021 13:57:10 +0200
-Message-Id: <20210503115736.2104747-44-gregkh@linuxfoundation.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kangjie Lu <kjlu@umn.edu>,
+        Alexandre Bounine <alex.bou9@gmail.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable <stable@vger.kernel.org>
+Subject: [PATCH 44/69] Revert "rapidio: fix a NULL pointer dereference when create_workqueue() fails"
+Date:   Mon,  3 May 2021 13:57:11 +0200
+Message-Id: <20210503115736.2104747-45-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
 References: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
@@ -37,58 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Rayabharam <mail@anirudhrb.com>
+This reverts commit 23015b22e47c5409620b1726a677d69e5cd032ba.
 
-Propagate error code from failure of ath6kl_wmi_cmd_send() to the
-caller.
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-Cc: Kalle Valo <kvalo@codeaurora.org>
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+The original commit has a memory leak on the error path here, it does
+not clean up everything properly.
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Alexandre Bounine <alex.bou9@gmail.com>
+Cc: Matt Porter <mporter@kernel.crashing.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 23015b22e47c ("rapidio: fix a NULL pointer dereference when create_workqueue() fails")
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/ath/ath6kl/debug.c | 5 ++++-
- drivers/net/wireless/ath/ath6kl/wmi.c   | 4 +---
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ drivers/rapidio/rio_cm.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath6kl/debug.c b/drivers/net/wireless/ath/ath6kl/debug.c
-index 7506cea46f58..433a047f3747 100644
---- a/drivers/net/wireless/ath/ath6kl/debug.c
-+++ b/drivers/net/wireless/ath/ath6kl/debug.c
-@@ -1027,14 +1027,17 @@ static ssize_t ath6kl_lrssi_roam_write(struct file *file,
- {
- 	struct ath6kl *ar = file->private_data;
- 	unsigned long lrssi_roam_threshold;
-+	int ret;
- 
- 	if (kstrtoul_from_user(user_buf, count, 0, &lrssi_roam_threshold))
- 		return -EINVAL;
- 
- 	ar->lrssi_roam_threshold = lrssi_roam_threshold;
- 
--	ath6kl_wmi_set_roam_lrssi_cmd(ar->wmi, ar->lrssi_roam_threshold);
-+	ret = ath6kl_wmi_set_roam_lrssi_cmd(ar->wmi, ar->lrssi_roam_threshold);
- 
-+	if (ret)
-+		return ret;
- 	return count;
- }
- 
-diff --git a/drivers/net/wireless/ath/ath6kl/wmi.c b/drivers/net/wireless/ath/ath6kl/wmi.c
-index aca9732ec1ee..b137e7f34397 100644
---- a/drivers/net/wireless/ath/ath6kl/wmi.c
-+++ b/drivers/net/wireless/ath/ath6kl/wmi.c
-@@ -776,10 +776,8 @@ int ath6kl_wmi_set_roam_lrssi_cmd(struct wmi *wmi, u8 lrssi)
- 	cmd->info.params.roam_rssi_floor = DEF_LRSSI_ROAM_FLOOR;
- 	cmd->roam_ctrl = WMI_SET_LRSSI_SCAN_PARAMS;
- 
--	ath6kl_wmi_cmd_send(wmi, 0, skb, WMI_SET_ROAM_CTRL_CMDID,
-+	return ath6kl_wmi_cmd_send(wmi, 0, skb, WMI_SET_ROAM_CTRL_CMDID,
- 			    NO_SYNC_WMIFLAG);
+diff --git a/drivers/rapidio/rio_cm.c b/drivers/rapidio/rio_cm.c
+index 50ec53d67a4c..e6c16f04f2b4 100644
+--- a/drivers/rapidio/rio_cm.c
++++ b/drivers/rapidio/rio_cm.c
+@@ -2138,14 +2138,6 @@ static int riocm_add_mport(struct device *dev,
+ 	mutex_init(&cm->rx_lock);
+ 	riocm_rx_fill(cm, RIOCM_RX_RING_SIZE);
+ 	cm->rx_wq = create_workqueue(DRV_NAME "/rxq");
+-	if (!cm->rx_wq) {
+-		riocm_error("failed to allocate IBMBOX_%d on %s",
+-			    cmbox, mport->name);
+-		rio_release_outb_mbox(mport, cmbox);
+-		kfree(cm);
+-		return -ENOMEM;
+-	}
 -
--	return 0;
- }
+ 	INIT_WORK(&cm->rx_work, rio_ibmsg_handler);
  
- int ath6kl_wmi_force_roam_cmd(struct wmi *wmi, const u8 *bssid)
+ 	cm->tx_slot = 0;
 -- 
 2.31.1
 
