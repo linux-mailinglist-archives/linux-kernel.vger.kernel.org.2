@@ -2,164 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87D3372005
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 20:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0710E371FFB
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 20:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229700AbhECS6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 14:58:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbhECS6D (ORCPT
+        id S229595AbhECS5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 14:57:09 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:40457 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S229472AbhECS5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 14:58:03 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2073DC061761
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 11:57:10 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id q2so4862500pfh.13
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 11:57:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/pily0HpN1x5+Ozbgf6AOQkMDZLIvNBV5p8HbBJ96dI=;
-        b=d5N4+y207tw1B9Ars4YNORHt0h3gnQOoXM3ES9WAA/lO79LZGqIwCTSvSH5JZu2c/Q
-         TAu09194W735k/O/vCx+1RXBEml/OzMJQyJAD8hqf88zVvc2A+WNQdNi3rG4VcaD7bvm
-         1KAd6aZjWC8PcDSHk933ba4TmOGp2OPCPTp0/rqI4fOSdKcPqLgk8fyK1Ds7hyyKS15K
-         Fcp0rhJkSH7yIzch4TRqg+SmSBApiLXbblODsn9P/bkfpnnP25pCIAF/BzvjWKU6SPkk
-         cmTC6+5lC7VZg0m4WYCazPOUDTaSUQmgR5tMS/RmwIri8mmGuxi2g2lAUP8JKY4iOcgp
-         P+7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/pily0HpN1x5+Ozbgf6AOQkMDZLIvNBV5p8HbBJ96dI=;
-        b=eguNWyHJYdpPWdKV8BoEvFrQpg7LSxji4TIObDwZGqXepVqLtRKUbML7sVbwkrEQuj
-         E6Ww4O8M0cj6YyhYhyqF3irKCDQRwJFA+B73Bh4qNka+GGUMdrsPg/6u6wUeiD4GcmiW
-         XqviYht07GPI0N14+GrGg4nJK/hIB+ZKJmYOA3g+jLkTPK0OaCi2p+Q9MC06l6b9yg4R
-         ld1bP+AGodvY4PTEIcxpvrl01kSSXEYCG9X/9Dpo4GjsYON6n3ahIr05/1QJfZTytqZx
-         dBGX0LFtKTSM+OkHK5h5bQc7d7WvziVelxo5xwMteSoshOdIRD3t62TPVmir3FS7IX9L
-         wiSw==
-X-Gm-Message-State: AOAM531PITBNpw0bnzZ04Iv9oCSDVBVyTTaHVDjAS9d1vi9XsAiaLkjk
-        Vr+5v3GtrJnO0SJ/uK5BuF1GV/RAze4=
-X-Google-Smtp-Source: ABdhPJzddpsfgU33C8kH/bNzZwBZP2s0UkO2OAcZoSBCAaFMwMsP4EMCpJ+2vpLi1IZedOBJrvxuaw==
-X-Received: by 2002:a17:90b:370a:: with SMTP id mg10mr22685147pjb.219.1620068229597;
-        Mon, 03 May 2021 11:57:09 -0700 (PDT)
-Received: from [192.168.2.112] ([50.38.35.18])
-        by smtp.googlemail.com with ESMTPSA id z12sm203307pjt.29.2021.05.03.11.57.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 11:57:09 -0700 (PDT)
-Subject: Re: [PATCH 1/2] mm/hugetlb: Fix F_SEAL_FUTURE_WRITE
-To:     Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Axel Rasmussen <axelrasmussen@google.com>
-References: <20210501144110.8784-1-peterx@redhat.com>
- <20210501144110.8784-2-peterx@redhat.com>
-From:   Mike Kravetz <mjk.linux@gmail.com>
-Message-ID: <be33c24e-cf2d-3894-a450-7432fd976802@gmail.com>
-Date:   Mon, 3 May 2021 11:55:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        Mon, 3 May 2021 14:57:08 -0400
+Received: (qmail 628860 invoked by uid 1000); 3 May 2021 14:56:14 -0400
+Date:   Mon, 3 May 2021 14:56:14 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     syzbot <syzbot+882a85c0c8ec4a3e2281@syzkaller.appspotmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        syzkaller-bugs@googlegroups.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org
+Subject: Re: [syzbot] WARNING in do_proc_bulk
+Message-ID: <20210503185614.GA628313@rowland.harvard.edu>
+References: <000000000000b47bc805c15e4b11@google.com>
+ <00000000000000186405c16a6156@google.com>
+ <20210503105351.0966275d0d9e001ed794de2c@linux-foundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20210501144110.8784-2-peterx@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210503105351.0966275d0d9e001ed794de2c@linux-foundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/1/21 7:41 AM, Peter Xu wrote:
-> F_SEAL_FUTURE_WRITE is missing for hugetlb starting from the first day.
-> There is a test program for that and it fails constantly.
+On Mon, May 03, 2021 at 10:53:51AM -0700, Andrew Morton wrote:
+> (cc usb peeps)
 > 
-> $ ./memfd_test hugetlbfs
-> memfd-hugetlb: CREATE
-> memfd-hugetlb: BASIC
-> memfd-hugetlb: SEAL-WRITE
-> memfd-hugetlb: SEAL-FUTURE-WRITE
-> mmap() didn't fail as expected
-> Aborted (core dumped)
+> On Mon, 03 May 2021 03:25:21 -0700 syzbot <syzbot+882a85c0c8ec4a3e2281@syzkaller.appspotmail.com> wrote:
 > 
-> I think it's probably because no one is really running the hugetlbfs test.
+> > syzbot has found a reproducer for the following issue on:
 > 
-> Fix it by checking FUTURE_WRITE also in hugetlbfs_file_mmap() as what we do in
-> shmem_mmap().  Generalize a helper for that.
+> Thanks.
 > 
-> Reported-by: Hugh Dickins <hughd@google.com>
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-> ---
->  fs/hugetlbfs/inode.c |  5 +++++
->  include/linux/mm.h   | 32 ++++++++++++++++++++++++++++++++
->  mm/shmem.c           | 22 ++++------------------
->  3 files changed, 41 insertions(+), 18 deletions(-)
-
-Thanks Peter and Hugh!
-
-One question below,
-
+> > HEAD commit:    d2b6f8a1 Merge tag 'xfs-5.13-merge-3' of git://git.kernel...
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=1746d3e1d00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=65c207250bba4efe
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=882a85c0c8ec4a3e2281
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=107f7893d00000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ae7ca5d00000
+> > 
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+882a85c0c8ec4a3e2281@syzkaller.appspotmail.com
+> > 
+> > usb usb9: usbfs: process 8586 (syz-executor862) did not claim interface 0 before use
+> > ------------[ cut here ]------------
+> > WARNING: CPU: 1 PID: 8586 at mm/page_alloc.c:4985 __alloc_pages_nodemask+0x5fd/0x730 mm/page_alloc.c:5020
+> > Modules linked in:
+> > CPU: 0 PID: 8586 Comm: syz-executor862 Not tainted 5.12.0-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > RIP: 0010:__alloc_pages_nodemask+0x5fd/0x730 mm/page_alloc.c:4985
+> > Code: 00 00 0c 00 0f 85 a7 00 00 00 8b 3c 24 4c 89 f2 44 89 e6 c6 44 24 70 00 48 89 6c 24 58 e8 9b d7 ff ff 49 89 c5 e9 e5 fc ff ff <0f> 0b e9 b0 fd ff ff 89 74 24 14 4c 89 4c 24 08 4c 89 74 24 18 e8
+> > RSP: 0018:ffffc90001f57a30 EFLAGS: 00010246
+> > RAX: 0000000000000000 RBX: 1ffff920003eaf4a RCX: 0000000000000000
+> > RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000040cc0
+> > RBP: 0000000000040cc0 R08: 0000000000000000 R09: 0000000000000000
+> > R10: ffffffff81b51b41 R11: 0000000000000000 R12: 000000000000000b
+> > R13: 000000000000000b R14: 0000000000000000 R15: 0000000000554e47
+> > FS:  0000000002293300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 00007fd2526f7008 CR3: 000000001d80b000 CR4: 00000000001506f0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > Call Trace:
+> >  alloc_pages_current+0x18c/0x2a0 mm/mempolicy.c:2277
+> >  alloc_pages include/linux/gfp.h:561 [inline]
+> >  kmalloc_order+0x34/0xf0 mm/slab_common.c:906
+> >  kmalloc_order_trace+0x14/0x130 mm/slab_common.c:922
+> >  kmalloc include/linux/slab.h:561 [inline]
+> >  do_proc_bulk+0x2d4/0x750 drivers/usb/core/devio.c:1221
+> >  proc_bulk drivers/usb/core/devio.c:1268 [inline]
+> >  usbdev_do_ioctl drivers/usb/core/devio.c:2542 [inline]
+> >  usbdev_ioctl+0x586/0x36c0 drivers/usb/core/devio.c:2708
+> >  vfs_ioctl fs/ioctl.c:51 [inline]
+> >  __do_sys_ioctl fs/ioctl.c:1069 [inline]
+> >  __se_sys_ioctl fs/ioctl.c:1055 [inline]
+> >  __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
+> >  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
 > 
-> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-> index a2a42335e8fd2..39922c0f2fc8c 100644
-> --- a/fs/hugetlbfs/inode.c
-> +++ b/fs/hugetlbfs/inode.c
-> @@ -131,10 +131,15 @@ static void huge_pagevec_release(struct pagevec *pvec)
->  static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
->  {
->  	struct inode *inode = file_inode(file);
-> +	struct hugetlbfs_inode_info *info = HUGETLBFS_I(inode);
->  	loff_t len, vma_len;
->  	int ret;
->  	struct hstate *h = hstate_file(file);
->  
-> +	ret = seal_check_future_write(info->seals, vma);
-> +	if (ret)
-> +		return ret;
-> +
->  	/*
->  	 * vma address alignment (but not the pgoff alignment) has
->  	 * already been checked by prepare_hugepage_range.  If you add
+> do_proc_bulk() is asking kmalloc for more than MAX_ORDER bytes, in
+> 
+> 	tbuf = kmalloc(len1, GFP_KERNEL);
 
-The full comment below the code you added is:
+This doesn't seem to be a bug.  do_proc_bulk is simply trying to 
+allocate a kernel buffer for data passed to/from userspace.  If a user 
+wants too much space all at once, that's their problem.
 
-	/*
-	 * vma address alignment (but not the pgoff alignment) has
-	 * already been checked by prepare_hugepage_range.  If you add
-	 * any error returns here, do so after setting VM_HUGETLB, so
-	 * is_vm_hugetlb_page tests below unmap_region go the right
-	 * way when do_mmap unwinds (may be important on powerpc
-	 * and ia64).
-	 */
+As far as I know, the kmalloc API doesn't require the caller to filter 
+out requests for more the MAX_ORDER bytes.  Only to be prepared to 
+handle failures -- which do_proc_bulk is all set for.
 
-This comment was added in commit 68589bc35303 by Hugh, although it
-appears David Gibson added the reason for the comment in the commit
-message:
+Am I wrong about this?  Should we add __GFP_NOWARN to the gfp flags?
 
-"If hugetlbfs_file_mmap() returns a failure to do_mmap_pgoff() - for example,
-because the given file offset is not hugepage aligned - then do_mmap_pgoff
-will go to the unmap_and_free_vma backout path.
-
-But at this stage the vma hasn't been marked as hugepage, and the backout path
-will call unmap_region() on it.  That will eventually call down to the
-non-hugepage version of unmap_page_range().  On ppc64, at least, that will
-cause serious problems if there are any existing hugepage pagetable entries in
-the vicinity - for example if there are any other hugepage mappings under the
-same PUD.  unmap_page_range() will trigger a bad_pud() on the hugepage pud
-entries.  I suspect this will also cause bad problems on ia64, though I don't
-have a machine to test it on."
-
-There are still comments in the unmap code about special handling of
-ppc64 PUDs.  So, this may still be an issue.
-
-I am trying to dig into the code to determine if this is still and
-issue.  Just curious if you looked into this?  Might be simpler and
-safer to just put the seal check after setting the VM_HUGETLB flag?
-
---
-Mike Kravetz
-
-
+Alan Stern
