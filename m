@@ -2,171 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F77637186E
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A0F371872
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbhECPuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 11:50:37 -0400
-Received: from mail-bn8nam11on2083.outbound.protection.outlook.com ([40.107.236.83]:58048
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230236AbhECPue (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 11:50:34 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f6TBYYf0Gv9HjVfSX4ByayLIzgekrV3ZhBSBCEZj6gkxQpmNUXArFu1siUnsfYGXgnWuMAl7GNbUpQ2YMbM4ADMebJ5CpmW2544rdTVNyP8kTozKbqDQ++O9953QlDEX8qrTDHXM3u3NMudaYZxC3vVsJKzu8VnX0Ogi8QTka8BlhVMElD/PVlu0Xu32jliGeN4XrXrOStvseZK//oc5SlfarJDUorCT5Ed7dHGvrplLw0vLwptazAXxNL+Oj6+QDGv8AJU72+YEDc2z/eALEKv7oDvkYSmVN0z2NuXleJiH1kKhgMY/O0zE44tMd0Xc2r0jqAwiuo4KJ/uir/cGrw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ypfhZ+9UCPFWtJuhWc1IhuUdlzVd3yActK96Pdg+H3w=;
- b=hXOrlKTYfKI4VdWpXXdUm/SnXY5oRnYFhqac/Qat+kuGUksSn+yHoDPLbS/6HdSyiMlKzLOn0cLzgPOuK7R0GMIBlKE/z+tw5PZRaiCAonDDGvzAj/D/HqcdRMCvVQG2CXU3LAoD7RbGJo76zCG38hf6AByrd9YQiY+erxtooCldAVleDfLWDgYOmv5tVFYimrTE4NVZY2iAwZ3J0urxApdPW0Mtn9R/Cg3TmzHIRf53D7X/di0zhdf2klwMBPhgBorjkSD3izNlZ+iqq+B7lG76MdMSUdvgFLt3+0/3+mA0404vYp3xgP9TuFSPIZUPEIjeub/z3yeIw333Zy9hng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ypfhZ+9UCPFWtJuhWc1IhuUdlzVd3yActK96Pdg+H3w=;
- b=xUcmdDINIvubJyjw8aEzWj8+YM35Lxu+zI98BK2ilT1DwrM8Ef1cn2iUVJcKbSBe056aroZefsdF0gZggfz9BjyQ/394Ion0I98FjVofFJhoMIiwnc7SRGL6RzUYZ9lYVe5XBrtXHc8mXTzeKWRu2FtjW8nbNynLbV/GV7oLLAQ=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
- by SN1PR12MB2511.namprd12.prod.outlook.com (2603:10b6:802:23::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.38; Mon, 3 May
- 2021 15:49:39 +0000
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::9898:5b48:a062:db94]) by SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::9898:5b48:a062:db94%6]) with mapi id 15.20.4087.044; Mon, 3 May 2021
- 15:49:39 +0000
-Cc:     brijesh.singh@amd.com, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>
-Subject: Re: [PATCH Part2 RFC v2 10/37] x86/fault: Add support to handle the
- RMP fault for kernel address
-To:     Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>
-References: <20210430123822.13825-1-brijesh.singh@amd.com>
- <20210430123822.13825-11-brijesh.singh@amd.com>
- <c3950468-af35-a46d-2d50-238245ed37b3@intel.com>
- <CALCETrVEyBaG41gS4ntu6ikJqeiWs2gMuqfo_Yk0cdgpHyN9Dg@mail.gmail.com>
-From:   Brijesh Singh <brijesh.singh@amd.com>
-Message-ID: <4abe9ed9-a296-7b27-6b81-288185394ff6@amd.com>
-Date:   Mon, 3 May 2021 10:49:37 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.0
-In-Reply-To: <CALCETrVEyBaG41gS4ntu6ikJqeiWs2gMuqfo_Yk0cdgpHyN9Dg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [70.112.153.56]
-X-ClientProxiedBy: SN6PR2101CA0001.namprd21.prod.outlook.com
- (2603:10b6:805:106::11) To SN6PR12MB2718.namprd12.prod.outlook.com
- (2603:10b6:805:6f::22)
+        id S230496AbhECPvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 11:51:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36202 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230481AbhECPvb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 11:51:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53D01600CC;
+        Mon,  3 May 2021 15:50:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620057037;
+        bh=WJg+e9uBFOI93oL5MTA6JZSTiBnC8uXPaGlLA3niCpE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GN8ux1ImbVmtojX71P0cXJthD1zmsOw7NloB7bQQS5m18DOmyZJk+PHRBhWoL2S64
+         c92/o4h5rsgtTUOswB+2Duuc4dioYloVj0Kudadx5AWV4WMPeRWFeCwxefgI26HcRg
+         xxk9rj9DTeurIEDMVhyea6v/LQNXws5Hb0KoVPIWuAUMnhYDveOC0RVyJJp4fzisWn
+         G3x4LE0Y7GJps2qJL+ILvAsGbWFehlmY/sEaAkhLhdyRAEo+VuOMrTPPym7q/8g7mh
+         ko/zzDSn7H3dYLtjgULgrjwichR46N1x5Z3dOyvJgpi+EtLJk/D7iTxrjUUjT23Wl6
+         77J0mb9SBARag==
+Date:   Mon, 3 May 2021 18:50:35 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
+        James.Bottomley@hansenpartnership.com, keescook@chromium.org,
+        jsnitsel@redhat.com, ml.linux@elloe.vision,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/4] tpm: Simplify locality handling
+Message-ID: <YJAby8mmiJ74qWAh@kernel.org>
+References: <20210501135727.17747-1-LinoSanfilippo@gmx.de>
+ <20210501135727.17747-3-LinoSanfilippo@gmx.de>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Brijeshs-MacBook-Pro.local (70.112.153.56) by SN6PR2101CA0001.namprd21.prod.outlook.com (2603:10b6:805:106::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.1 via Frontend Transport; Mon, 3 May 2021 15:49:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cfdc3f74-e633-4e4f-39ac-08d90e4b0f46
-X-MS-TrafficTypeDiagnostic: SN1PR12MB2511:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN1PR12MB25110A21E6480CD2AE73189AE55B9@SN1PR12MB2511.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TEp7Jd7lNmpOv71vge4IwJhZRs2L7++FkUzDjnex9pwVs4+gltz9uxXh0cc4zwtzAErmxz9Dnv5QBJ/kTTvuyKqWw3AWeylYOrNsIMI5i3pgGxW1DE4kTVsYF0dRTbsNvgcBW17uXkzEyptHz1q/RM7a7YhLVFBpvddUk6DZg/8Yd+q0wIs1McoH3I4dkT4XIilG3MiaMwMUfR4b4D4/vC++dPeaQZoTCd5amprB2GSEicvmM6ntb1wWEhXtcD1sWqg1A74lxGlmK8G5Oz2lRweJVadG4MNJQEeJBWBpgbRfwRIRIdAI73Xcb5XjGFsnFagf+guST4CeeKtAuQiMnjFTBUxmnSbi6wUdT8dXvhGymeTWP/QF5X9mrZ3QVd1bmBJvSZ0qZL2h4feKOg9kTCzaQYbzyMHrcUaxOF8D0w8jpeFtbmsV0e2pccwhrQrnp09zbWeVWExQdAeSF4IRBiSSSk67dWGxf05Vzqlx+b7lnS2NIW46xvsHm6E+mi45CyF7Ej949sclEAWAO/wzEkeO9RXNzPZevfH69YrTYq1w1m0wlVsgiw0Zpqnb75CkFulCdV8d4Zro/YmtGOXDCf3BJNsf2qd2U12G8MhRv2iAW44Jot8yC+boIqMzV7anKBe1TKnniKjHHauoL6qsoZKpzTg/Pe2zuqsTxw+P7S1+60ciFMh301SqX0Uh3KOMDPs6BEI83QcdB+qlaVUCbx0CnoK+l8pqAlKpmN/vt+o=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39850400004)(136003)(396003)(346002)(376002)(4326008)(83380400001)(110136005)(31696002)(6486002)(66946007)(54906003)(16526019)(52116002)(66556008)(2906002)(7416002)(66476007)(186003)(478600001)(8676002)(5660300002)(956004)(316002)(26005)(53546011)(31686004)(6512007)(6506007)(36756003)(38100700002)(38350700002)(2616005)(8936002)(86362001)(44832011)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cXJ2cjhBQXJBVk94d3grU2hydk5xWG1mSWJkbkwxakJ5MkZncE1QTVh6dGQ2?=
- =?utf-8?B?VFN6TUN3VmZ1THRpNW1NcVdrZ3ZpcDdhbU1xZHEwbnJ2bGUzOEhJU1VtQ1h6?=
- =?utf-8?B?MDZuNlYvemRKZEg4TmFEZWxKdlBFS3JpSTNnSnpNWTdCTGlWbFQ2WkZXYnBo?=
- =?utf-8?B?RG1xektWUUxpd0lmNnVOaDQ5b0xCYzRtMlFOcEdibFI4NGYvUGxILzd5Y0N1?=
- =?utf-8?B?NXZHd1ZRYzNsdEtrNTlLUE5zU1RmT0syckVkOVg5TjRKckUvNVV2OWZIeGVB?=
- =?utf-8?B?MkQ3dkhLMVNlMVF4a3JRbjZLbG9TRmNvZkFMSkhvNEs0M1UyUUcyNnREWm5Z?=
- =?utf-8?B?QTJSd2hlU2QwTHdoSldYcktHdnRCelA3NXpEUlNRTmd2eXdKSlAwWU1yN0hF?=
- =?utf-8?B?Ri9PeHNWdnRsVXZMZHlhblRwR3Y3WWFUdURsMTR4RmpuLzNEekxlUEhoTXpF?=
- =?utf-8?B?blFhZlhCNU55NHIyUk00YmdNbmlBeFUwMUF5M2JBNm9aUlJJM1B3M0lqYjlP?=
- =?utf-8?B?VnhvYTUzU3hzZnVUK2ZjaVArQkM0ZkR3aVBzT1U4SkpZOG5td2pVQXNWN2o0?=
- =?utf-8?B?b3ozMVBkZ2tEemk0TVBIYXdqak94NnpVQ1FZbFd2Z1N0c3Ywb3hqdG9DRHUx?=
- =?utf-8?B?ZXZiOTlwRElrR0IzU2t0MnVtSVNUR0xNT2hEcy9TNGVTVnU4M0w3dDVad1Uv?=
- =?utf-8?B?Ri9XTlpsTkZVRG5CaFlTWExnaHFLNUliZEY3STg4bERoRmxJYW9Hb1VFbWpp?=
- =?utf-8?B?djZRMUdocnY2NXg2TzNsT1RLTVZmeHd3T1Q5dzlVZkxPZkJ3TGIrVzdOVWp3?=
- =?utf-8?B?TnhTWjVXdTgvdnR4V0RQdjRFbFgyQzJFd1NKV2wzd1JSb3RiMnBNQmZyVGFs?=
- =?utf-8?B?YnRod01uUE9sR0JDQXQrM1prQnoxemtGMU8yd29TTEdJNld3dnFDVXhRaFg3?=
- =?utf-8?B?TW90OHF1WThWSTFSaVNvN3BDOGVmVHhPNXNOcjR6VERYUXhZSy90YUFYYkdw?=
- =?utf-8?B?WmZTQmpNVG4wcHBxNkZHZitnNVJHcG5LYnJPenFEWkYzUnYyTWZESDQrZjk0?=
- =?utf-8?B?NkpXYmxCOXIwYTRUT1A4cmNtM1VCOXBwT09JYzlYRi8wVGJUWEl3VUZUTHJw?=
- =?utf-8?B?N3pjdGUralYrRk85VlNrZ2NuV3pqTTRXNHhZeTNhK2VqNmtpSXJndTdoWWFZ?=
- =?utf-8?B?eWkydU5RWmppeUxYMFJPa0lCdS9jeU1iazBsc3B4dmp2RVRORGtOeXFCcmpU?=
- =?utf-8?B?T2VScERMTlhSUU02RG1nQnZUK0RvK3BrdGVtZlNwdTIvdEdmVnlNT0VoVWtQ?=
- =?utf-8?B?UHBZRG5ZK3N5NDRSSWJIRjdWREtRQVA1bU1vcDZZOW1iNlZCV3hvQnF6dU95?=
- =?utf-8?B?UlI0MWhHR2Z6ZXZzUUNnOGloNGFWUkcwTlFlVmp5Q0tRTWpMT01UZ0FLRXZ6?=
- =?utf-8?B?LzRpa3dCTlZ0citHNzQ0WkR2UnZpR3Z1Wkt6ZzJHQUVEaUk1a3QwdTFCamhx?=
- =?utf-8?B?QmQ2RkJPV2NzR3VJQ0tBeUhqSklKenR0aENheG9WL01TRXhKWTJiajBpZk9W?=
- =?utf-8?B?dW5SdGlJVlEwckZqWHN5cERnYTdLMEJxc20wRzdHcUMvaTh3RHJOUmo3ZmRU?=
- =?utf-8?B?dDZRWTVPTGQ1R29XY2g0Z2UrWG9tMWxzaE9VQXYxYTJXMUxRN0VVOFg0TWJK?=
- =?utf-8?B?bk9Jd3N1Vy9pZG0xMzhwcXBseUc2dWNzSllkbzdFWm93VXlWUVVIQ2k4SnVR?=
- =?utf-8?Q?aDE38kr4+SXMkY/xpf+b53agufi/dJJkBg/6Mkq?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cfdc3f74-e633-4e4f-39ac-08d90e4b0f46
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2021 15:49:39.2101
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: R1B3o+c5MOk2Xzh1n/RAYbq1rId6L9Onhfd4ereaF71mB61OTNYaZnmILIlc4vRZ3Mn2eJIFrdLDyQlnVuu1Iw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2511
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210501135727.17747-3-LinoSanfilippo@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+What the heck is "simplification" and what that has to do with fixing
+anything? I don't understand your terminology. 
 
-On 5/3/21 10:03 AM, Andy Lutomirski wrote:
-> On Mon, May 3, 2021 at 7:44 AM Dave Hansen <dave.hansen@intel.com> wrote:
->> On 4/30/21 5:37 AM, Brijesh Singh wrote:
->>> When SEV-SNP is enabled globally, a write from the host goes through the
->>> RMP check. When the host writes to pages, hardware checks the following
->>> conditions at the end of page walk:
->>>
->>> 1. Assigned bit in the RMP table is zero (i.e page is shared).
->>> 2. If the page table entry that gives the sPA indicates that the target
->>>    page size is a large page, then all RMP entries for the 4KB
->>>    constituting pages of the target must have the assigned bit 0.
->>> 3. Immutable bit in the RMP table is not zero.
->>>
->>> The hardware will raise page fault if one of the above conditions is not
->>> met. A host should not encounter the RMP fault in normal execution, but
->>> a malicious guest could trick the hypervisor into it. e.g., a guest does
->>> not make the GHCB page shared, on #VMGEXIT, the hypervisor will attempt
->>> to write to GHCB page.
->> Is that the only case which is left?  If so, why don't you simply split
->> the direct map for GHCB pages before giving them to the guest?  Or, map
->> them with vmap() so that the mapping is always 4k?
-> If I read Brijesh's message right, this isn't about 4k.  It's about
-> the guest violating host expectations about the page type.
->
-> I need to go and do a full read of all the relevant specs, but I think
-> there's an analogous situation in TDX: if the host touches guest
-> private memory, the TDX hardware will get extremely angry (more so
-> than AMD hardware).  And, if I have understood this patch correctly,
-> it's fudging around the underlying bug by intentionally screwing up
-> the RMP contents to avoid a page fault.  Assuming I've understood
-> everything correctly (a big if!), then I think this is backwards.  The
-> host kernel should not ever access guest memory without a plan in
-> place to handle failure.  We need real accessors, along the lines of
-> copy_from_guest() and copy_to_guest().
+On Sat, May 01, 2021 at 03:57:25PM +0200, Lino Sanfilippo wrote:
+> Currently the TPM (default) locality is claimed and released for each
+> access to the TPM registers which require a claimed locality. This results
+> in locality claim/release combos at various code places. For interrupt
+> handling we also need such a combo in the interrupt handler (for clearing
+> the interrupts) which makes the locality handling even more complicated
+> since now we also have to synchronize concurrent accesses in process and in
+> interrupt context.
+> 
+> Since currently the driver uses only one locality anyway, avoid the
+> increasing complexity by claiming it once at driver startup and only
+> releasing it at driver shutdown.
+> 
+> Due to the simplifications the functions tpm_request_locality() and
+> tpm_relinquish_locality() are not needed any more an can be removed.
+> 
+> As a side-effect these modifications fix a bug which results in the
+> following warning when using TPM 2:
+> 
+> TPM returned invalid status
+> WARNING: CPU: 0 PID: 874 at drivers/char/tpm/tpm_tis_core.c:249 tpm_tis_status+0xbc/0xc8 [tpm_tis_core]
+> Modules linked in: tpm_tis_spi tpm_tis_core tpm sha256_generic cfg80211 rfkill 8021q garp stp llc spidev v3d gpu_sched vc4 bcm2835_codec(C) cec raspberrypi_hwmon drm_kms_helper drm bcm2835_isp(C) v4l2_mem2mem bcm2835_v4l2(C) bcm2835_mmal_vchiq(C) videobuf2_vmalloc videobuf2_dma_contig snd_bcm2835(C) videobuf2_memops drm_panel_orientation_quirks videobuf2_v4l2 videobuf2_common snd_soc_core snd_compress videodev snd_pcm_dmaengine spi_bcm2835 snd_pcm mc vc_sm_cma(C) snd_timer snd syscopyarea rpivid_mem sysfillrect sysimgblt fb_sys_fops backlight uio_pdrv_genirq uio ip_tables x_tables ipv6 [last unloaded: tpm]
+> CPU: 0 PID: 874 Comm: kworker/u8:1 Tainted: G        WC        5.11.0-rc2-LS-HOME+ #1
+> Hardware name: Raspberry Pi Compute Module 4 Rev 1.0 (DT)
+> Workqueue: events_unbound async_run_entry_fn
+> pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
+> pc : tpm_tis_status+0xbc/0xc8 [tpm_tis_core]
+> lr : tpm_tis_status+0xbc/0xc8 [tpm_tis_core]
+> sp : ffffffc0127e38f0
+> x29: ffffffc0127e38f0 x28: ffffffc011238000
+> x27: 0000000000000016 x26: 000000000000017a
+> x25: 0000000000000014 x24: ffffff8047f60000
+> x23: 0000000000000000 x22: 0000000000000016
+> x21: ffffff8044e8a480 x20: 0000000000000000
+> x19: ffffffc011238000 x18: ffffffc011238948
+> x17: 0000000000000000 x16: 0000000000000000
+> x15: ffffffc01141be81 x14: ffffffffffffffff
+> x13: ffffffc01141be7e x12: ffffffffffffffff
+> x11: ffffff807fb797f0 x10: 00000000000019b0
+> x9 : ffffffc0127e38f0 x8 : 766e692064656e72
+> x7 : 0000000000000000 x6 : ffffffc011239000
+> x5 : ffffff807fb628b8 x4 : 0000000000000000
+> x3 : 0000000000000027 x2 : 0000000000000000
+> x1 : 6818b6f22fdef800 x0 : 0000000000000000
+> Call trace:
+> tpm_tis_status+0xbc/0xc8 [tpm_tis_core]
+> tpm_tis_send_data+0x58/0x250 [tpm_tis_core]
+> tpm_tis_send_main+0x50/0x128 [tpm_tis_core]
+> tpm_tis_send+0x4c/0xe0 [tpm_tis_core]
+> tpm_transmit+0xd0/0x350 [tpm]
+> tpm_transmit_cmd+0x3c/0xc0 [tpm]
+> tpm2_get_tpm_pt+0x124/0x1e8 [tpm]
+> tpm_tis_probe_irq_single+0x198/0x364 [tpm_tis_core]
+> tpm_tis_core_init+0x304/0x520 [tpm_tis_core]
+> tpm_tis_spi_init+0x5c/0x78 [tpm_tis_spi]
+> tpm_tis_spi_probe+0x80/0x98 [tpm_tis_spi]
+> tpm_tis_spi_driver_probe+0x4c/0x60 [tpm_tis_spi]
+> spi_probe+0x84/0xf0
+> really_probe+0x118/0x420
+> driver_probe_device+0x5c/0xc0
+> __driver_attach_async_helper+0x64/0x68
+> async_run_entry_fn+0x48/0x150
+> process_one_work+0x15c/0x4d0
+> worker_thread+0x50/0x490
+> kthread+0x118/0x150
+> ret_from_fork+0x10/0x1c
+> 
+> The reason for this issue is that in case of TPM 2 function
+> tpm2_get_timeouts() which executes a TPM command is called without a
+> claimed locality. Since with this patch the locality is taken once at
+> driver startup and never released before shutdown the issue does not occur
+> any more.
 
-You understood it correctly. Its an underlying bug either in host or
-guest which may cause the host accessing the guest private pages. If it
-happen avoiding the host crash is much preferred (especially when its a
-guest kernel bug).
+Please rather create fix that fixes the issue exactly in the code path.
+I don't want to worry what other things this might do "as a side-effect".
 
+Also, lacks the explanation why this patch fixes the issue.
 
+> Fixes: a3fbfae82b4c ("tpm: take TPM chip power gating out of tpm_transmit()")
+> Signed-off-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
+> ---
+>  drivers/char/tpm/tpm-chip.c     | 40 ---------------------------------
+>  drivers/char/tpm/tpm_tis_core.c | 35 +++++++++--------------------
+>  include/linux/tpm.h             |  3 ---
+>  3 files changed, 10 insertions(+), 68 deletions(-)
+> 
+> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+> index ddaeceb7e109..a09b6523261e 100644
+> --- a/drivers/char/tpm/tpm-chip.c
+> +++ b/drivers/char/tpm/tpm-chip.c
+> @@ -32,35 +32,6 @@ struct class *tpm_class;
+>  struct class *tpmrm_class;
+>  dev_t tpm_devt;
+>  
+> -static int tpm_request_locality(struct tpm_chip *chip)
+> -{
+> -	int rc;
+> -
+> -	if (!chip->ops->request_locality)
+> -		return 0;
+> -
+> -	rc = chip->ops->request_locality(chip, 0);
+> -	if (rc < 0)
+> -		return rc;
+> -
+> -	chip->locality = rc;
+> -	return 0;
+> -}
+> -
+> -static void tpm_relinquish_locality(struct tpm_chip *chip)
+> -{
+> -	int rc;
+> -
+> -	if (!chip->ops->relinquish_locality)
+> -		return;
+> -
+> -	rc = chip->ops->relinquish_locality(chip, chip->locality);
+> -	if (rc)
+> -		dev_err(&chip->dev, "%s: : error %d\n", __func__, rc);
+> -
+> -	chip->locality = -1;
+> -}
+> -
+>  static int tpm_cmd_ready(struct tpm_chip *chip)
+>  {
+>  	if (!chip->ops->cmd_ready)
+> @@ -103,17 +74,8 @@ int tpm_chip_start(struct tpm_chip *chip)
+>  
+>  	tpm_clk_enable(chip);
+>  
+> -	if (chip->locality == -1) {
+> -		ret = tpm_request_locality(chip);
+> -		if (ret) {
+> -			tpm_clk_disable(chip);
+> -			return ret;
+> -		}
+> -	}
+> -
+>  	ret = tpm_cmd_ready(chip);
+>  	if (ret) {
+> -		tpm_relinquish_locality(chip);
+>  		tpm_clk_disable(chip);
+>  		return ret;
+>  	}
+> @@ -133,7 +95,6 @@ EXPORT_SYMBOL_GPL(tpm_chip_start);
+>  void tpm_chip_stop(struct tpm_chip *chip)
+>  {
+>  	tpm_go_idle(chip);
+> -	tpm_relinquish_locality(chip);
+>  	tpm_clk_disable(chip);
+>  }
+>  EXPORT_SYMBOL_GPL(tpm_chip_stop);
+> @@ -392,7 +353,6 @@ struct tpm_chip *tpm_chip_alloc(struct device *pdev,
+>  		goto out;
+>  	}
+>  
+> -	chip->locality = -1;
+>  	return chip;
+>  
+>  out:
+> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
+> index a12992ae2a3e..f892b1ae46f2 100644
+> --- a/drivers/char/tpm/tpm_tis_core.c
+> +++ b/drivers/char/tpm/tpm_tis_core.c
+> @@ -626,9 +626,6 @@ static int probe_itpm(struct tpm_chip *chip)
+>  	if (vendor != TPM_VID_INTEL)
+>  		return 0;
+>  
+> -	if (request_locality(chip, 0) != 0)
+> -		return -EBUSY;
+> -
+>  	rc = tpm_tis_send_data(chip, cmd_getticks, len);
+>  	if (rc == 0)
+>  		goto out;
+> @@ -647,7 +644,6 @@ static int probe_itpm(struct tpm_chip *chip)
+>  
+>  out:
+>  	tpm_tis_ready(chip);
+> -	release_locality(chip, priv->locality);
+>  
+>  	return rc;
+>  }
+> @@ -707,22 +703,13 @@ static int tpm_tis_gen_interrupt(struct tpm_chip *chip)
+>  	const char *desc = "attempting to generate an interrupt";
+>  	u32 cap2;
+>  	cap_t cap;
+> -	int ret;
+>  
+>  	/* TPM 2.0 */
+>  	if (chip->flags & TPM_CHIP_FLAG_TPM2)
+>  		return tpm2_get_tpm_pt(chip, 0x100, &cap2, desc);
+>  
+>  	/* TPM 1.2 */
+> -	ret = request_locality(chip, 0);
+> -	if (ret < 0)
+> -		return ret;
+> -
+> -	ret = tpm1_getcap(chip, TPM_CAP_PROP_TIS_TIMEOUT, &cap, desc, 0);
+> -
+> -	release_locality(chip, 0);
+> -
+> -	return ret;
+> +	return tpm1_getcap(chip, TPM_CAP_PROP_TIS_TIMEOUT, &cap, desc, 0);
+>  }
+>  
+>  /* Register the IRQ and issue a command that will cause an interrupt. If an
+> @@ -836,6 +823,7 @@ void tpm_tis_remove(struct tpm_chip *chip)
+>  
+>  	tpm_tis_write32(priv, reg, ~TPM_GLOBAL_INT_ENABLE & interrupt);
+>  
+> +	release_locality(chip, 0);
+>  	tpm_tis_clkrun_enable(chip, false);
+>  
+>  	if (priv->ilb_base_addr)
+> @@ -963,6 +951,14 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+>  		goto out_err;
+>  	}
+>  
+> +	rc = request_locality(chip, 0);
+> +	if (rc)
+> +		goto out_err;
+> +
+> +	rc = tpm_chip_start(chip);
+> +	if (rc)
+> +		goto out_err;
+> +
+>  	/* Take control of the TPM's interrupt hardware and shut it off */
+>  	rc = tpm_tis_read32(priv, TPM_INT_ENABLE(priv->locality), &intmask);
+>  	if (rc < 0)
+> @@ -973,9 +969,6 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+>  	intmask &= ~TPM_GLOBAL_INT_ENABLE;
+>  	tpm_tis_write32(priv, TPM_INT_ENABLE(priv->locality), intmask);
+>  
+> -	rc = tpm_chip_start(chip);
+> -	if (rc)
+> -		goto out_err;
+>  	rc = tpm2_probe(chip);
+>  	tpm_chip_stop(chip);
+>  	if (rc)
+> @@ -1036,15 +1029,7 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+>  		 * to make sure it works. May as well use that command to set the
+>  		 * proper timeouts for the driver.
+>  		 */
+> -
+> -		rc = request_locality(chip, 0);
+> -		if (rc < 0)
+> -			goto out_err;
+> -
+>  		rc = tpm_get_timeouts(chip);
+> -
+> -		release_locality(chip, 0);
+> -
+>  		if (rc) {
+>  			dev_err(dev, "Could not get TPM timeouts and durations\n");
+>  			rc = -ENODEV;
+> diff --git a/include/linux/tpm.h b/include/linux/tpm.h
+> index aa11fe323c56..7a68832b14bb 100644
+> --- a/include/linux/tpm.h
+> +++ b/include/linux/tpm.h
+> @@ -167,9 +167,6 @@ struct tpm_chip {
+>  	u32 last_cc;
+>  	u32 nr_commands;
+>  	u32 *cc_attrs_tbl;
+> -
+> -	/* active locality */
+> -	int locality;
+>  };
+>  
+>  #define TPM_HEADER_SIZE		10
+> -- 
+> 2.31.1
+> 
+
+/Jarkko
