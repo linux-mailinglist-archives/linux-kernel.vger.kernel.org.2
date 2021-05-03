@@ -2,127 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A47983716D3
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 880283716D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229595AbhECOoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 10:44:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47266 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229553AbhECOoE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 10:44:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 467766109E;
-        Mon,  3 May 2021 14:43:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620052991;
-        bh=QqpdAM9cyovRRjEPytf1AWzRpegSeHbXe6+ekzdkZJU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=STgw8ExIEIdfplPWQyUKr3HQqR1xOwEXK87YvCmevPdXuiMYOK/9L7ZYj66Ouj0ew
-         aKbZqDbpwizVnlNWkp2XZnqNo6GahOVoKdsPjWA7WhbCCsNpxRxG8M6VRqL9cZWh6y
-         sCvYT0yHbYo8CkrtO27rGYvbgBbysyn0bir1e16JS05hvCWl+fyPAI5HL0T4nAu/8a
-         BGpu+nKDWixABkXwy+9zX01QTvqXHCi4mguBvSywfXsvT8PSMkk9Jn7BA2nkc4H/Kd
-         516Bx98PWVjOrurYs9ne2XYY0rNnZmVji9hV6X/qQJtAxbHqjZXBukkKbAdToa1z1p
-         VWqzs28NVpvPg==
-Date:   Mon, 3 May 2021 16:43:05 +0200
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Oliver Sang <oliver.sang@intel.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Harish Sriram <harish@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [mm/vunmap] e47110e905: WARNING:at_mm/vmalloc.c:#__vunmap
-Message-ID: <YJAL+cxa3p2q5zOu@gunter>
-References: <20210423063227.GA17429@xsang-OptiPlex-9020>
- <CAHk-=wg8iAG6bBB+zdoZvZx1XYmyAXrWL0gPs_eTrTt+tXN0Tw@mail.gmail.com>
- <20210425014816.GB5251@xsang-OptiPlex-9020>
- <CAHk-=wiW7xdHZTBgVOpVFM_7bek0HGvioQvCCyDXCbRa2fWdXQ@mail.gmail.com>
- <20210429075300.GA31265@xsang-OptiPlex-9020>
- <CAHk-=wh62h6XXgKqhHnb=LTrmbMcVsV8GhXJvEoceTyHKtdBJA@mail.gmail.com>
+        id S229658AbhECOow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 10:44:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229553AbhECOou (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 10:44:50 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157FEC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 07:43:57 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id zg3so8234919ejb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 07:43:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K+sSoI8mYAtclTc9ch+HKJwJxzZIGx+EMq0xg4jwGJY=;
+        b=lcMg1GRQK96CSLu9muYJ/38tJfNVTje46sVXV9uLDLW+WcllEPA0D1aj/1UEnTPqgt
+         KGRWoSR4BisAYbjYErXdN2bIuPbIia5aCZd8hjcURs32Nj/WqjA4bu/oZo4PY0n+trn/
+         yusgEeJqq3BKieXfp/qHxFoA1MmTiRRo3dij9wudixzpfghDJHhiI7gEkR2aYn4gspLC
+         Ho0+eKxdqoUXlpMRQbGR6e8jMUyOsecJWsgeHYLGGaDggzDCiEjT2z4atmpfdJilboJP
+         MA9DHMtRfyOnf96sskvuMcdkeBE9LX+YavPYfBVTWQRIs/HpFOH0dj3S06wvS0FMY6Fz
+         2yYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K+sSoI8mYAtclTc9ch+HKJwJxzZIGx+EMq0xg4jwGJY=;
+        b=ONwKEXPa6nOSw4B/lwur0u2DMUxzJe/Bi0oZWFvnQcPHYasr1d8UlDAh3YxXET6MTg
+         qiHev711Rgw2yrLeA9TYqJbkTx6nli3BktnYW03xkA7Ip777qtCy73ddKC/Nnf0ageBH
+         /ELWZuLUzWe7xDozUnsR5jBEEKA+UjwieVxYtjjfcTtJXJKvaC5OrabowiNH4gXO8RAz
+         9yLbvhcBilBHU+2Dt6ZiugRHFFO/a4d0DaRTnfpKeUaagZWEfAa5OJvxsS5tYOUx9J+T
+         iRAI6NSlO4UDSUwAZcMyQuRaWnY5Z+YNB2PdU7kNMu3MibdboOVXlrzhVeDHc/w4byFp
+         kjvQ==
+X-Gm-Message-State: AOAM533wPIkDSu+ZA+cnvjK4sCfYL98dtfNx1q4s/n6vWcD0Q8yb8U42
+        wQNfZqzCLS/sYNo+u5yo49+VL9VwfzpXKw==
+X-Google-Smtp-Source: ABdhPJzz8YSG1ci1mdLP9jB4YLfscuJhMz3kr/0Wr1oKGOdWmN24W8jyr6/Hcqis9MIkLZIU6GdSDw==
+X-Received: by 2002:a17:906:a10e:: with SMTP id t14mr16892149ejy.103.1620053035841;
+        Mon, 03 May 2021 07:43:55 -0700 (PDT)
+Received: from neptune.. ([188.27.131.122])
+        by smtp.gmail.com with ESMTPSA id e19sm2005867edv.10.2021.05.03.07.43.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 May 2021 07:43:55 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jic23@kernel.org, lars@metafoo.de,
+        Alexandru Ardelean <aardelean@deviqon.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Nuno Sa <nuno.sa@analog.com>
+Subject: [PATCH] iio: core: return ENODEV if ioctl is unknown
+Date:   Mon,  3 May 2021 17:43:50 +0300
+Message-Id: <20210503144350.7496-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wh62h6XXgKqhHnb=LTrmbMcVsV8GhXJvEoceTyHKtdBJA@mail.gmail.com>
-X-OS:   Linux gunter 5.11.16-1-default x86_64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Linus Torvalds [29/04/21 10:31 -0700]:
->[ Backgroudn for Jessica:
->
->    https://lore.kernel.org/lkml/20210423063227.GA17429@xsang-OptiPlex-9020/
->
->  with some more emails in this thread ]
->
->On Thu, Apr 29, 2021 at 12:36 AM Oliver Sang <oliver.sang@intel.com> wrote:
->> >
->> > Oh, that's interesting. So only 12 out of 74 runs saw that __vunmap
->> > warning, but if I understand your table correctly, there were some
->> > _other_ issues in there?
->>
->> yes, there are.
->
->Yeah, so it really does look like the commit you bisected to changes
->timing - and thus just exposes an existing problem.
->
->And it's likely a race condition, and it exposes the existing problem
->not just in a new place, but much *MORE*.
->
->The fact that you see something like
->
->    Trying to vfree() bad address (0000000070935066)
->
->means that clearly something has corrupted the the module data in
->'struct module *'. Because that should have been a core_layout.base
->pointer that was allocated with moodule_alloc(), which is just a
->vmalloc wrapper on x86-64.
->
->The allocations in the module handling are somewhat odd (putting it
->mildly), with that 'struct module *' actually being a pointer *into*
->the module allocation itself, so I suspect there's some race with
->del_module() or something, and the reason you bisect to that commit
->e47110e90584a22e9980510b00d0dfad3a83354e is that the added
->cond_schedule() in the vfree path now exposes exactly that race of two
->things trying to free the same module at the same time.
->
->This all *should* be serialized by various subtle things
->
-> - MODULE_STATE_UNFORMED means that modules are bypassed
->
-> - the actual allocation/freeing functions use module_mutex to serialize
->
-> - some lookup functions use RCU to look up a module but should then
->only look at things like the symbol arrays etc.
->
->but if somehow del_module() can race with do_init_module() creating a
->module halfway and then doing free_module() (or perhaps multiple
->module loads of the same module racing and aborting), then I can see
->one freeing the underlying module data, and the other one seeing
->corrupt 'struct module *' as a result.
+When the ioctl() mechanism was introduced in IIO core to centralize the
+registration of all ioctls in one place via commit 8dedcc3eee3ac ("iio:
+core: centralize ioctl() calls to the main chardev"), the return code was
+changed from ENODEV to EINVAL, when the ioctl code isn't known.
 
-The situation is bizarre to me. From the call trace:
+This was done by accident.
 
-[  198.744933] Call Trace:
-[  198.745229] free_module (kbuild/src/consumer/kernel/module.c:2251)
-[  198.745629] do_init_module (kbuild/src/consumer/kernel/module.c:3705)
-[  198.746054] ? rcu_read_lock_bh_held (kbuild/src/consumer/kernel/rcu/update.c:131)
-[  198.746576] load_module (kbuild/src/consumer/kernel/module.c:3968)
+This change reverts back to the old behavior, where if the ioctl() code
+isn't known, ENODEV is returned (vs EINVAL).
 
-This tells me that we were in the middle of loading a module and hit one of the
-error conditions in do_init_module() - either the kmalloc() call failed or the
-module init function returned an error and now we've landed in the error path
-of do_init_module(), hence the call to free_module().
+This was brought into perspective by this patch:
+  https://lore.kernel.org/linux-iio/20210428150815.136150-1-paul@crapouillou.net/
 
-But if we failed here, this also means the module never made it to the LIVE
-state - it was COMING, then immediately GOING. There is a liveness check in
-delete_module(), so any calls to delete_module() on this module should have
-returned -EBUSY. So module removal operations should not even be touching this
-module. Multiple module loads of the same name should have blocked while
-waiting for this module to finish loading or fail loading.
+Fixes: 8dedcc3eee3ac ("iio: core: centralize ioctl() calls to the main chardev")
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Paul Cercueil <paul@crapouillou.net>
+Cc: Nuno Sa <nuno.sa@analog.com>
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+---
+ drivers/iio/industrialio-core.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Sorry I could not be more immediately helpful here, I will have to
-stare at the error report a bit more and chew through some possible
-race scenarios and get back to you on this..
+diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+index efb4cf91c9e4..9a3a83211a90 100644
+--- a/drivers/iio/industrialio-core.c
++++ b/drivers/iio/industrialio-core.c
+@@ -1803,7 +1803,6 @@ static long iio_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 	if (!indio_dev->info)
+ 		goto out_unlock;
+ 
+-	ret = -EINVAL;
+ 	list_for_each_entry(h, &iio_dev_opaque->ioctl_handlers, entry) {
+ 		ret = h->ioctl(indio_dev, filp, cmd, arg);
+ 		if (ret != IIO_IOCTL_UNHANDLED)
+@@ -1811,7 +1810,7 @@ static long iio_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 	}
+ 
+ 	if (ret == IIO_IOCTL_UNHANDLED)
+-		ret = -EINVAL;
++		ret = -ENODEV;
+ 
+ out_unlock:
+ 	mutex_unlock(&iio_dev_opaque->info_exist_lock);
+-- 
+2.31.1
 
