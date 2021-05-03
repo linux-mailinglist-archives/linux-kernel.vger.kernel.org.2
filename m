@@ -2,119 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99BC0371249
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 10:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C29337124D
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 10:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232972AbhECIMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 04:12:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24073 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232911AbhECIM3 (ORCPT
+        id S232887AbhECIOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 04:14:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229817AbhECIOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 04:12:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620029496;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vwlHSyZzbGf/1hjjeGeNUgRrxHpiQEqHNLs9/p1ggRw=;
-        b=SpnB4wOZYRjWRsZw6CbE6Mx+Vg7HJD6WzRgcfwSky3w5fpAeccqaq2UILjxONahJt3dIqY
-        I3rJqAEAihRNarxzQCsVmFZyrKXO6ks++dnv4T+m+Yfo8J5VdHUDu5L17xvNn3pQ/B/4i0
-        Xn0AOH9P/eW6AdoYxo/KBkyxXtjPimA=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-387-PPxMIbRrNE2EB8Xrxmxnbg-1; Mon, 03 May 2021 04:11:32 -0400
-X-MC-Unique: PPxMIbRrNE2EB8Xrxmxnbg-1
-Received: by mail-ed1-f71.google.com with SMTP id h13-20020a05640250cdb02903790a9c55acso4086577edb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 01:11:31 -0700 (PDT)
+        Mon, 3 May 2021 04:14:37 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9632CC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 01:13:43 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id b14-20020a17090a6e0eb0290155c7f6a356so8307226pjk.0
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 01:13:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=6l3WZj3YpLSLYBE9dlRHMNdaDR40xxIBOfhqWp69mbg=;
+        b=PxTG76pbMhf9gDZV9ObsYKFQOAHw3xCIumGo/a5UrFjqweBEA3ARHUIr3/9jLyUlfM
+         ihk2yhBP3z0vCBj6hSOhGNqqHBbn0s7WEbmJ1w0ajHwEpeXL7ByX6+k0TtOC7VPI0urq
+         Qt7+bOBU+/qfGiyjdsO2aQ8H95K/ylJBj7g9tds5xvAe+yALmRNCMxv3JJqsw5VtG1bu
+         cvUTA1i5jsX9J5Xsv5230RGN4hifxksYC/1/ZTwQjIHK2zmfXPFuoZpYK6f1zNADs4Gv
+         ok4+5PbbceFwsfUrz9Fdbivp86VXarUJTNUGO8Y7CXU/oDn7ckFCIEkuqpUZABDrwmsu
+         Qygw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=vwlHSyZzbGf/1hjjeGeNUgRrxHpiQEqHNLs9/p1ggRw=;
-        b=nCSBnT0+3gBRO/5uyNvYRDvv5+95ZMPyjWvhllwsjmTuIbuc4sNu1MGkji125JFqbP
-         S4D3xleENnv2liJ89mSr+nlxknzv9s3sjmq0DKc1nF3+JYHtqbFr2Lkuv+p4HMKQ/G6P
-         v6xL/sWlw84ZJtxMZ5o9tDt74XFNp/KTJUDsWJtDO3mrevNJUKcicYAF0xlPAhSC8Xew
-         Ar0lsBxgKBfAXrlSNCOG8JwEsm841i3tyMlXN5No3Dghuc1EOKormIXoAYp2dv+Lkv7W
-         UJ9JT8ga/+OSwjt3Y0yHTKgBTjIVkAPsQs736sw4Lg4e4L1e1R4ag66tb8E+XHjVBb6B
-         nhew==
-X-Gm-Message-State: AOAM532KWa6v1O943Xew7Zy+Pw/YZ4cUPZo8KTcHW6R9e7Qrrw3eAKIX
-        J7pXAzNa7dVCLilUw3hkDLUWWaHoTbdaej79cJRjHyEHKUNNAJM/fwUDbuyyv38WKuCar8hJWxE
-        Gbqy264RP6eWTREAwWeTgkrCu
-X-Received: by 2002:a50:eb47:: with SMTP id z7mr16986497edp.68.1620029491052;
-        Mon, 03 May 2021 01:11:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxgC+bCNFZ6IjQ+hZxVb6PiUEspf4Kwd7KdWnjG2fBIRF7s94xAa5mK0csiH8ddS3w5cQDqaA==
-X-Received: by 2002:a50:eb47:: with SMTP id z7mr16986454edp.68.1620029490784;
-        Mon, 03 May 2021 01:11:30 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c649f.dip0.t-ipconnect.de. [91.12.100.159])
-        by smtp.gmail.com with ESMTPSA id d15sm12268494edu.86.2021.05.03.01.11.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 01:11:30 -0700 (PDT)
-Subject: Re: [PATCH v1 5/7] mm: introduce
- page_offline_(begin|end|freeze|unfreeze) to synchronize setting PageOffline()
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Steven Price <steven.price@arm.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Aili Yao <yaoaili@kingsoft.com>, Jiri Bohac <jbohac@suse.cz>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-hyperv@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-References: <20210429122519.15183-1-david@redhat.com>
- <20210429122519.15183-6-david@redhat.com> <YI5Hp49AmWgfTzNy@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <4aa55978-c224-7ead-f00d-df1a6c3dfda4@redhat.com>
-Date:   Mon, 3 May 2021 10:11:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <YI5Hp49AmWgfTzNy@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=6l3WZj3YpLSLYBE9dlRHMNdaDR40xxIBOfhqWp69mbg=;
+        b=hXSoLN97Pfy8+TJtdK9hJI84xQEp4Sd4+ocAzQQFnXnUKix6IxSsnmtVDyJDEJyLpA
+         vx0DRbK1wt19JGD2VF3H/FCMsndJb3FplVGm33r0cKsnuOark/zT+pn4nn1sM/sGtRod
+         0PWTv+zSdxLT9OJbOyd0RMCPZ39Q5fwyxfqMx6l7gz9vhh0ThX8W/RzjiQxndesbgDFg
+         D10QGWQqDDYNJB3JaHCqjac9DpJZ9cOXB97Fx/SKtanISsWAsSgCgFjzVR1JqRwRU2dF
+         Yreqcom6b5QQPLGOpAwso+fxFrr4jqggaaU82JXr5by2cCS/auuLC+KUjOXjvYgfQDkD
+         QxnA==
+X-Gm-Message-State: AOAM531t+5189fYqMA/dhIhVfgwWPc9zPD8nm1TJZDUwFs0zfFJ8W/wm
+        4BwlgAx8VXcyC24s4omsXdL8G7oxGQrEAw==
+X-Google-Smtp-Source: ABdhPJyYPZ8CccDF4nlBAWOKglRbYMUGeH0Fb356HueluTIFPNGSI1/AsIO6EDgbSlp3Son4BOcPTQ==
+X-Received: by 2002:a17:902:b28b:b029:ed:19aa:5dec with SMTP id u11-20020a170902b28bb02900ed19aa5decmr19812693plr.78.1620029623187;
+        Mon, 03 May 2021 01:13:43 -0700 (PDT)
+Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id fa17sm12031939pjb.17.2021.05.03.01.13.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 May 2021 01:13:42 -0700 (PDT)
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Jassi Brar <jassisinghbrar@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sivaprakash Murugesan <sivaprak@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Benjamin Li <benl@squareup.com>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shawn Guo <shawn.guo@linaro.org>
+Subject: [PATCH v2 0/2] Add MSM8939 APCS support
+Date:   Mon,  3 May 2021 16:13:32 +0800
+Message-Id: <20210503081334.17143-1-shawn.guo@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.05.21 08:33, Mike Rapoport wrote:
-> On Thu, Apr 29, 2021 at 02:25:17PM +0200, David Hildenbrand wrote:
->> A driver might set a page logically offline -- PageOffline() -- and
->> turn the page inaccessible in the hypervisor; after that, access to page
->> content can be fatal. One example is virtio-mem; while unplugged memory
->> -- marked as PageOffline() can currently be read in the hypervisor, this
->> will no longer be the case in the future; for example, when having
->> a virtio-mem device backed by huge pages in the hypervisor.
->>
->> Some special PFN walkers -- i.e., /proc/kcore -- read content of random
->> pages after checking PageOffline(); however, these PFN walkers can race
->> with drivers that set PageOffline().
->>
->> Let's introduce page_offline_(begin|end|freeze|unfreeze) for
-> 
-> Bikeshed: freeze|thaw?
->
+It's a series to add MSM8939 APCS support into qcom mailbox driver.
 
-Sure :)
+Changes for v2:
+ - Add MSM8939 APCS compatible.
+ - Reword commit log.
+ - Add Bjorn's Reviewed-by tag.
 
+v1: https://lkml.org/lkml/2020/10/12/1770
+
+Shawn Guo (2):
+  dt-bindings: mailbox: qcom: Add MSM8939 APCS compatible
+  mailbox: qcom: Add MSM8939 APCS support
+
+ .../devicetree/bindings/mailbox/qcom,apcs-kpss-global.yaml     | 1 +
+ drivers/mailbox/qcom-apcs-ipc-mailbox.c                        | 3 ++-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
 -- 
-Thanks,
-
-David / dhildenb
+2.17.1
 
