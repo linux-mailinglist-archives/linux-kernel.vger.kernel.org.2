@@ -2,229 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F5B3716A7
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 312233716C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229739AbhECOe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 10:34:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbhECOe1 (ORCPT
+        id S229883AbhECOkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 10:40:33 -0400
+Received: from mail-m17638.qiye.163.com ([59.111.176.38]:19990 "EHLO
+        mail-m17638.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229867AbhECOkc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 10:34:27 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D749C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 07:33:34 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id z24so2153069ioj.7
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 07:33:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ELcNibbwxopbe4wnzShPTb7xRMLVvYpqQ8un28QQp9U=;
-        b=nOyrfh2thpmQagEkzKEHJkMTgRy+3FJJdT9Oo6MZndwooAl8msGQ2IZHFMeS6aJ6Md
-         +OeRGM111zl+0t7XmNgYC8WpP2ka9OwZM9VN//prTwlXpUXb+Muztthx/dt4YfUeTqwD
-         ene0+k2RSvchnHpwNfAnGfkLV6l7GmkYIbRvE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ELcNibbwxopbe4wnzShPTb7xRMLVvYpqQ8un28QQp9U=;
-        b=pE5FtWCejJ+Kz8tLgLSIZPg6JEULyrG4LnHQkKG4m+NhZhjhyQhAdowf3I2uh/sm2n
-         CXlZ1NFUiEVJFyzh9HKYmUdvtJEIMu5UPW2HzVNm0o9TeJenDJnLGwXtuQoFzRiwz7al
-         WssJY+yLWKLa7CbwyJKUBytnvv9inK4ya7mXMRH7OJ6yR8CREXhgQ/vepGnWN+r02sTJ
-         a8ZotWqNCqNWccnHzUcEFNXI0V9nz1Bosj+K5BDB7Mfyr28UoZxCiQHi9NEQKiAKKqKO
-         IYv+atD0rBsZSJ1WoW4loIvNIR7lhtR4If4M3rUkLlJ7h/+FXNtRt8LTVTpLRgxt4Eoi
-         j2+Q==
-X-Gm-Message-State: AOAM53134FztRDkSLYB3XjpnDuPbRbtSGvVWS6kIzUndFy41FWBYgsu8
-        N3+t60DbiooPrUplQN9tgBpwqrihHISBbQ==
-X-Google-Smtp-Source: ABdhPJyaOz1NC8J17Si6J5rHmw3R8Zzf/rOkG2Joy7tsqSHkgN3oNsHIekd0HLRPQ7tHFVwkcDBpCA==
-X-Received: by 2002:a5d:87c4:: with SMTP id q4mr3816993ios.141.1620052413555;
-        Mon, 03 May 2021 07:33:33 -0700 (PDT)
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com. [209.85.166.173])
-        by smtp.gmail.com with ESMTPSA id 11sm5667186ilt.7.2021.05.03.07.33.33
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 07:33:33 -0700 (PDT)
-Received: by mail-il1-f173.google.com with SMTP id e14so3796928ils.12
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 07:33:33 -0700 (PDT)
-X-Received: by 2002:a05:6e02:f4e:: with SMTP id y14mr3397094ilj.18.1620051971892;
- Mon, 03 May 2021 07:26:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210422081508.3942748-1-tientzu@chromium.org>
- <20210422081508.3942748-15-tientzu@chromium.org> <70b895c2-4a39-bbbd-a719-5c8b6b922026@arm.com>
-In-Reply-To: <70b895c2-4a39-bbbd-a719-5c8b6b922026@arm.com>
-From:   Claire Chang <tientzu@chromium.org>
-Date:   Mon, 3 May 2021 22:26:00 +0800
-X-Gmail-Original-Message-ID: <CALiNf28cc5T-cMZxNPZnrTQvqu2Ge_MmZj-teN4mE_-E-6_6XQ@mail.gmail.com>
-Message-ID: <CALiNf28cc5T-cMZxNPZnrTQvqu2Ge_MmZj-teN4mE_-E-6_6XQ@mail.gmail.com>
-Subject: Re: [PATCH v5 14/16] dma-direct: Allocate memory from restricted DMA
- pool if available
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Tomasz Figa <tfiga@chromium.org>, bskeggs@redhat.com,
-        Bjorn Helgaas <bhelgaas@google.com>, chris@chris-wilson.co.uk,
-        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        jani.nikula@linux.intel.com, Jianxiong Gao <jxgao@google.com>,
-        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
-        nouveau@lists.freedesktop.org, rodrigo.vivi@intel.com,
-        thomas.hellstrom@linux.intel.com
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 3 May 2021 10:40:32 -0400
+X-Greylist: delayed 600 seconds by postgrey-1.27 at vger.kernel.org; Mon, 03 May 2021 10:40:32 EDT
+Received: from amadeus-VLT-WX0.lan (unknown [120.37.186.143])
+        by mail-m17638.qiye.163.com (Hmail) with ESMTPA id 3C4471C014B;
+        Mon,  3 May 2021 22:29:37 +0800 (CST)
+From:   Chukun Pan <amadeus@jmu.edu.cn>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Chukun Pan <amadeus@jmu.edu.cn>
+Subject: [PATCH 1/2] arm64: dts: allwinner: h5: Add NanoPi R1S H5 support
+Date:   Mon,  3 May 2021 22:29:05 +0800
+Message-Id: <20210503142905.21468-1-amadeus@jmu.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGhgfSFYeSU1NSkxNSE4aTEhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PDI6Egw*GD8JAk0qSRwrSElM
+        OjcaChxVSlVKTUlLS05JSkxMQ09CVTMWGhIXVRoWGh8eDgg7ERYOVR4fDlUYFUVZV1kSC1lBWUpJ
+        S1VITFVKQ01VSk9IWVdZCAFZQU1DS0g3Bg++
+X-HM-Tid: 0a7932a2721bd993kuws3c4471c014b
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 9:46 PM Robin Murphy <robin.murphy@arm.com> wrote:
->
-> On 2021-04-22 09:15, Claire Chang wrote:
-> > The restricted DMA pool is preferred if available.
-> >
-> > The restricted DMA pools provide a basic level of protection against the
-> > DMA overwriting buffer contents at unexpected times. However, to protect
-> > against general data leakage and system memory corruption, the system
-> > needs to provide a way to lock down the memory access, e.g., MPU.
-> >
-> > Signed-off-by: Claire Chang <tientzu@chromium.org>
-> > ---
-> >   kernel/dma/direct.c | 35 ++++++++++++++++++++++++++---------
-> >   1 file changed, 26 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-> > index 7a27f0510fcc..29523d2a9845 100644
-> > --- a/kernel/dma/direct.c
-> > +++ b/kernel/dma/direct.c
-> > @@ -78,6 +78,10 @@ static bool dma_coherent_ok(struct device *dev, phys_addr_t phys, size_t size)
-> >   static void __dma_direct_free_pages(struct device *dev, struct page *page,
-> >                                   size_t size)
-> >   {
-> > +#ifdef CONFIG_DMA_RESTRICTED_POOL
-> > +     if (swiotlb_free(dev, page, size))
-> > +             return;
-> > +#endif
-> >       dma_free_contiguous(dev, page, size);
-> >   }
-> >
-> > @@ -92,7 +96,17 @@ static struct page *__dma_direct_alloc_pages(struct device *dev, size_t size,
-> >
-> >       gfp |= dma_direct_optimal_gfp_mask(dev, dev->coherent_dma_mask,
-> >                                          &phys_limit);
-> > -     page = dma_alloc_contiguous(dev, size, gfp);
-> > +
-> > +#ifdef CONFIG_DMA_RESTRICTED_POOL
-> > +     page = swiotlb_alloc(dev, size);
-> > +     if (page && !dma_coherent_ok(dev, page_to_phys(page), size)) {
-> > +             __dma_direct_free_pages(dev, page, size);
-> > +             page = NULL;
-> > +     }
-> > +#endif
-> > +
-> > +     if (!page)
-> > +             page = dma_alloc_contiguous(dev, size, gfp);
-> >       if (page && !dma_coherent_ok(dev, page_to_phys(page), size)) {
-> >               dma_free_contiguous(dev, page, size);
-> >               page = NULL;
-> > @@ -148,7 +162,7 @@ void *dma_direct_alloc(struct device *dev, size_t size,
-> >               gfp |= __GFP_NOWARN;
-> >
-> >       if ((attrs & DMA_ATTR_NO_KERNEL_MAPPING) &&
-> > -         !force_dma_unencrypted(dev)) {
-> > +         !force_dma_unencrypted(dev) && !is_dev_swiotlb_force(dev)) {
-> >               page = __dma_direct_alloc_pages(dev, size, gfp & ~__GFP_ZERO);
-> >               if (!page)
-> >                       return NULL;
-> > @@ -161,8 +175,8 @@ void *dma_direct_alloc(struct device *dev, size_t size,
-> >       }
-> >
-> >       if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED) &&
-> > -         !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
-> > -         !dev_is_dma_coherent(dev))
-> > +         !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) && !dev_is_dma_coherent(dev) &&
-> > +         !is_dev_swiotlb_force(dev))
-> >               return arch_dma_alloc(dev, size, dma_handle, gfp, attrs);
-> >
-> >       /*
-> > @@ -172,7 +186,9 @@ void *dma_direct_alloc(struct device *dev, size_t size,
-> >       if (IS_ENABLED(CONFIG_DMA_COHERENT_POOL) &&
-> >           !gfpflags_allow_blocking(gfp) &&
-> >           (force_dma_unencrypted(dev) ||
-> > -          (IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) && !dev_is_dma_coherent(dev))))
-> > +          (IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
-> > +           !dev_is_dma_coherent(dev))) &&
-> > +         !is_dev_swiotlb_force(dev))
-> >               return dma_direct_alloc_from_pool(dev, size, dma_handle, gfp);
-> >
-> >       /* we always manually zero the memory once we are done */
-> > @@ -253,15 +269,15 @@ void dma_direct_free(struct device *dev, size_t size,
-> >       unsigned int page_order = get_order(size);
-> >
-> >       if ((attrs & DMA_ATTR_NO_KERNEL_MAPPING) &&
-> > -         !force_dma_unencrypted(dev)) {
-> > +         !force_dma_unencrypted(dev) && !is_dev_swiotlb_force(dev)) {
-> >               /* cpu_addr is a struct page cookie, not a kernel address */
-> >               dma_free_contiguous(dev, cpu_addr, size);
-> >               return;
-> >       }
-> >
-> >       if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED) &&
-> > -         !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
-> > -         !dev_is_dma_coherent(dev)) {
-> > +         !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) && !dev_is_dma_coherent(dev) &&
-> > +         !is_dev_swiotlb_force(dev)) {
-> >               arch_dma_free(dev, size, cpu_addr, dma_addr, attrs);
-> >               return;
-> >       }
-> > @@ -289,7 +305,8 @@ struct page *dma_direct_alloc_pages(struct device *dev, size_t size,
-> >       void *ret;
-> >
-> >       if (IS_ENABLED(CONFIG_DMA_COHERENT_POOL) &&
-> > -         force_dma_unencrypted(dev) && !gfpflags_allow_blocking(gfp))
-> > +         force_dma_unencrypted(dev) && !gfpflags_allow_blocking(gfp) &&
-> > +         !is_dev_swiotlb_force(dev))
-> >               return dma_direct_alloc_from_pool(dev, size, dma_handle, gfp);
->
-> Wait, this seems broken for non-coherent devices - in that case we need
-> to return a non-cacheable address, but we can't simply fall through into
-> the remapping path below in GFP_ATOMIC context. That's why we need the
-> atomic pool concept in the first place :/
+The NanoPi R1S H5 is a open source board made by FriendlyElec.
+It has the following features:
 
-Sorry for the late reply. I'm not very familiar with this. I wonder if
-the memory returned here must be coherent. If yes, could we say for
-this case, one must set up another device coherent pool
-(shared-dma-pool) and go with dma_alloc_from_dev_coherent()[1]?
+- Allwinner H5, Quad-core Cortex-A53
+- 512MB DDR3 RAM
+- 10/100/1000M Ethernet x 2
+- RTL8189ETV WiFi 802.11b/g/n
+- USB 2.0 host port (A)
+- MicroSD Slot
+- Serial Debug Port
+- 5V 2A DC power-supply
 
-[1] https://elixir.bootlin.com/linux/v5.12/source/kernel/dma/mapping.c#L435
+Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
+---
+ arch/arm64/boot/dts/allwinner/Makefile        |   1 +
+ .../dts/allwinner/sun50i-h5-nanopi-r1s-h5.dts | 194 ++++++++++++++++++
+ 2 files changed, 195 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-r1s-h5.dts
 
->
-> Unless I've overlooked something, we're still using the regular
-> cacheable linear map address of the dma_io_tlb_mem buffer, no?
->
-> Robin.
->
-> >
-> >       page = __dma_direct_alloc_pages(dev, size, gfp);
-> >
+diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
+index 41ce680e5f8d..a96d9d2d8dd8 100644
+--- a/arch/arm64/boot/dts/allwinner/Makefile
++++ b/arch/arm64/boot/dts/allwinner/Makefile
+@@ -25,6 +25,7 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h5-libretech-all-h3-it.dtb
+ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h5-libretech-all-h5-cc.dtb
+ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h5-nanopi-neo2.dtb
+ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h5-nanopi-neo-plus2.dtb
++dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h5-nanopi-r1s-h5.dtb
+ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h5-orangepi-pc2.dtb
+ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h5-orangepi-prime.dtb
+ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h5-orangepi-zero-plus.dtb
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-r1s-h5.dts b/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-r1s-h5.dts
+new file mode 100644
+index 000000000000..1fe517db9d85
+--- /dev/null
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-r1s-h5.dts
+@@ -0,0 +1,194 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (C) 2021 Chukun Pan <amadeus@jmu.edu.cn>
++ *
++ * Based on sun50i-h5-nanopi-neo-plus2.dts, which is:
++ *   Copyright (C) 2017 Antony Antony <antony@phenome.org>
++ *   Copyright (C) 2016 ARM Ltd.
++ */
++
++/dts-v1/;
++#include "sun50i-h5.dtsi"
++#include "sun50i-h5-cpu-opp.dtsi"
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/input/input.h>
++
++/ {
++	model = "FriendlyARM NanoPi R1S H5";
++	compatible = "friendlyarm,nanopi-r1s-h5", "allwinner,sun50i-h5";
++
++	aliases {
++		ethernet0 = &emac;
++		ethernet1 = &rtl8189etv;
++		serial0 = &uart0;
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
++	};
++
++	leds {
++		compatible = "gpio-leds";
++
++		led-0 {
++			function = LED_FUNCTION_LAN;
++			color = <LED_COLOR_ID_GREEN>;
++			gpios = <&pio 0 9 GPIO_ACTIVE_HIGH>;
++		};
++
++		led-1 {
++			function = LED_FUNCTION_STATUS;
++			color = <LED_COLOR_ID_RED>;
++			gpios = <&pio 0 10 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "heartbeat";
++		};
++
++		led-2 {
++			function = LED_FUNCTION_WAN;
++			color = <LED_COLOR_ID_GREEN>;
++			gpios = <&pio 6 11 GPIO_ACTIVE_HIGH>;
++		};
++	};
++
++	r-gpio-keys {
++		compatible = "gpio-keys";
++
++		reset {
++			label = "reset";
++			linux,code = <KEY_RESTART>;
++			gpios = <&r_pio 0 3 GPIO_ACTIVE_LOW>;
++		};
++	};
++
++	reg_gmac_3v3: gmac-3v3 {
++		compatible = "regulator-fixed";
++		regulator-name = "gmac-3v3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		startup-delay-us = <100000>;
++		enable-active-high;
++		gpio = <&pio 3 6 GPIO_ACTIVE_HIGH>;
++	};
++
++	reg_vcc3v3: vcc3v3 {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc3v3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++	};
++
++	reg_usb0_vbus: usb0-vbus {
++		compatible = "regulator-fixed";
++		regulator-name = "usb0-vbus";
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		enable-active-high;
++		gpio = <&r_pio 0 2 GPIO_ACTIVE_HIGH>; /* PL2 */
++		status = "okay";
++	};
++
++	vdd_cpux: gpio-regulator {
++		compatible = "regulator-gpio";
++		regulator-name = "vdd-cpux";
++		regulator-type = "voltage";
++		regulator-boot-on;
++		regulator-always-on;
++		regulator-min-microvolt = <1100000>;
++		regulator-max-microvolt = <1300000>;
++		regulator-ramp-delay = <50>; /* 4ms */
++		gpios = <&r_pio 0 6 GPIO_ACTIVE_HIGH>;
++		gpios-states = <0x1>;
++		states = <1100000 0x0>, <1300000 0x1>;
++	};
++
++	wifi_pwrseq: wifi_pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		reset-gpios = <&r_pio 0 7 GPIO_ACTIVE_LOW>; /* PL7 */
++		post-power-on-delay-ms = <200>;
++	};
++};
++
++&cpu0 {
++	cpu-supply = <&vdd_cpux>;
++};
++
++&ehci1 {
++	status = "okay";
++};
++
++&ehci2 {
++	status = "okay";
++};
++
++&emac {
++	pinctrl-names = "default";
++	pinctrl-0 = <&emac_rgmii_pins>;
++	phy-supply = <&reg_gmac_3v3>;
++	phy-handle = <&ext_rgmii_phy>;
++	phy-mode = "rgmii-id";
++	status = "okay";
++};
++
++&external_mdio {
++	ext_rgmii_phy: ethernet-phy@7 {
++		compatible = "ethernet-phy-ieee802.3-c22";
++		reg = <7>;
++	};
++};
++
++&i2c0 {
++	status = "okay";
++
++	eeprom@51 {
++		compatible = "microchip,24c02";
++		reg = <0x51>;
++		pagesize = <16>;
++	};
++};
++
++&mmc0 {
++	vmmc-supply = <&reg_vcc3v3>;
++	bus-width = <4>;
++	cd-gpios = <&pio 5 6 GPIO_ACTIVE_LOW>; /* PF6 */
++	status = "okay";
++};
++
++&mmc1 {
++	vmmc-supply = <&reg_vcc3v3>;
++	vqmmc-supply = <&reg_vcc3v3>;
++	mmc-pwrseq = <&wifi_pwrseq>;
++	bus-width = <4>;
++	non-removable;
++	status = "okay";
++
++	rtl8189etv: sdio_wifi@1 {
++		reg = <1>;
++	};
++};
++
++&ohci1 {
++	status = "okay";
++};
++
++&ohci2 {
++	status = "okay";
++};
++
++&uart0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart0_pa_pins>;
++	status = "okay";
++};
++
++&usb_otg {
++	dr_mode = "peripheral";
++	status = "okay";
++};
++
++&usbphy {
++	/* USB Type-A port's VBUS is always on */
++	usb0_id_det-gpios = <&pio 6 12 GPIO_ACTIVE_HIGH>; /* PG12 */
++	usb0_vbus-supply = <&reg_usb0_vbus>;
++	status = "okay";
++};
+-- 
+2.17.1
+
