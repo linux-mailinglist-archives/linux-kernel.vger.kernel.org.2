@@ -2,58 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCEC0371084
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 04:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F89337108C
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 04:37:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232902AbhECCXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 22:23:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35368 "EHLO mail.kernel.org"
+        id S232660AbhECCic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 22:38:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47558 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232891AbhECCXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 22:23:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A321C61249;
-        Mon,  3 May 2021 02:22:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620008542;
-        bh=4wgS89+bSXEGi43PTIOuO6A5Ip3bXg0fPFRXRVxDd8Y=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=EmREiLOQwZTCcWOZgnghe9+CG/ANUqLg84w+iITE8jXyqX5gC200xVqF0mVfkVsE+
-         eKiQ+yepmo0VGzkIk4wufSwqjL8BcJUSQmu0pP2EfxPMHOhuVQcXFOdbb/8ZTjH+fY
-         FWpVTJ+nqaOT0War2hTFJLMwvF99QdJ9OE/3WSJ+dXeRd9a81CJRCzMArTUM+m57Xf
-         5sBiDZW4vbr6lDeRtFj9AY2wJh1Nbpg/46NAEhFupydvnIbzQslG08FmPpPbYNfM73
-         HAlBrSKOjqTAQfo0JwzTRkHWghi0sK39BNMpxIzT4ktmkp4NVITUTp1HTx7H2ltMwx
-         +vyDi8WSEgOQg==
-Subject: Re: [PATCH v5 2/2] PCI: Enable NO_BUS_RESET quirk for Nvidia GPUs
-To:     Shanker Donthineni <sdonthineni@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vikram Sethi <vsethi@nvidia.com>,
-        Amey Narkhede <ameynarkhede03@gmail.com>
-References: <20210430232624.25153-1-sdonthineni@nvidia.com>
- <20210430232624.25153-2-sdonthineni@nvidia.com>
-From:   Sinan Kaya <okaya@kernel.org>
-Message-ID: <cab1cbaf-1e20-bb0b-3709-94474d5ab06f@kernel.org>
-Date:   Sun, 2 May 2021 22:22:20 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S230368AbhECCib (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 May 2021 22:38:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 32D87AD09;
+        Mon,  3 May 2021 02:37:38 +0000 (UTC)
+Date:   Sun, 2 May 2021 23:37:35 -0300
+From:   Enzo Matsumiya <ematsumiya@suse.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-leds@vger.kernel.org, linux-block@vger.kernel.org,
+        u.kleine-koenig@pengutronix.de, Jens Axboe <axboe@kernel.dk>,
+        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/2] block: export block_class and disk_type symbols
+Message-ID: <20210503023649.a437epxpd7tkgkwx@hyori>
+References: <20210430183216.27458-1-ematsumiya@suse.de>
+ <20210430183216.27458-2-ematsumiya@suse.de>
+ <YIz0EBqKTHhB+n8N@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20210430232624.25153-2-sdonthineni@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YIz0EBqKTHhB+n8N@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/30/2021 7:26 PM, Shanker Donthineni wrote:
-> On select platforms, some Nvidia GPU devices do not work with SBR.
-> Triggering SBR would leave the device inoperable for the current
-> system boot. It requires a system hard-reboot to get the GPU device
-> back to normal operating condition post-SBR. For the affected
-> devices, enable NO_BUS_RESET quirk to fix the issue.
-> 
-> This issue will be fixed in the next generation of hardware.
-> 
-> Signed-off-by: Shanker Donthineni <sdonthineni@nvidia.com>
+On 05/01, Greg Kroah-Hartman wrote:
+>On Fri, Apr 30, 2021 at 03:32:10PM -0300, Enzo Matsumiya wrote:
+>> Export symbols to be used by _for_each_blk() helper in LED block
+>> trigger.
+>>
+>> Signed-off-by: Enzo Matsumiya <ematsumiya@suse.de>
+>> ---
+>>  block/genhd.c | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/block/genhd.c b/block/genhd.c
+>> index 8c8f543572e6..516495179230 100644
+>> --- a/block/genhd.c
+>> +++ b/block/genhd.c
+>> @@ -1218,6 +1218,7 @@ static void disk_release(struct device *dev)
+>>  struct class block_class = {
+>>  	.name		= "block",
+>>  };
+>> +EXPORT_SYMBOL(block_class);
+>>
+>>  static char *block_devnode(struct device *dev, umode_t *mode,
+>>  			   kuid_t *uid, kgid_t *gid)
+>> @@ -1235,6 +1236,7 @@ const struct device_type disk_type = {
+>>  	.release	= disk_release,
+>>  	.devnode	= block_devnode,
+>>  };
+>> +EXPORT_SYMBOL(disk_type);
+>>
+>>  #ifdef CONFIG_PROC_FS
+>>  /*
+>
+>Please please no.  These should not be needed by anything.
+>
+>And if they really do, they must be EXPORT_SYMBOL_GPL().
+>
+>thanks,
+>
+>greg k-h
 
-Reviewed-by: Sinan Kaya <okaya@kernel.org>
+Thanks. I was indeed skeptical about submitting this particular change.
+
+Do you think it's more acceptable if I implement a for_each_blk() helper
+(cf. patch 2 on this series) on block code?
+
+I couldn't find any other way to do this (get all block devices on the
+system), so please let me know if I missed something.
+
+
+Cheers,
+
+Enzo
