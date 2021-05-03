@@ -2,102 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94909371264
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 10:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0344E371268
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 10:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232988AbhECIVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 04:21:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44774 "EHLO
+        id S232960AbhECIYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 04:24:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39475 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229817AbhECIU7 (ORCPT
+        by vger.kernel.org with ESMTP id S229817AbhECIYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 04:20:59 -0400
+        Mon, 3 May 2021 04:24:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620030006;
+        s=mimecast20190719; t=1620030233;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Y1iQg39S7/yQcUAfdd2josWY92R4FYw1/luzJ6UFBUE=;
-        b=ibHbSmRaAq+XPv1liziHCEBf+UJmrN7Q7577y7usOQ+0xzvWxUODGIkguVuF87cgwQnRWU
-        S73SAyFYQJzXm+Hh8f0+pslDOmHtq7WGtHJQPOCMEBSCfd/5KuaBY7sd+kS7a2OiO4cdOU
-        zCpemh7i46lvi9F0ihzbfvqiwc2Pm7Q=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-362-9C13PJZ1Px-GGVjYSt4Big-1; Mon, 03 May 2021 04:20:04 -0400
-X-MC-Unique: 9C13PJZ1Px-GGVjYSt4Big-1
-Received: by mail-wr1-f71.google.com with SMTP id t18-20020adfdc120000b02900ffe4432d8bso3490917wri.6
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 01:20:04 -0700 (PDT)
+        bh=bPRJDN7+PYmkwRc18YCW4pqF1oNECdl7EEdKg52HHCc=;
+        b=Fqv1CKmpzWBTP+UKgI2KLnpypJ7YI1FGaAC5ceOYbBqRLt+KLhVY7PpDTytrFhbB+LDS0G
+        zNIJBmYurkTJL/Nu6SnsSK9vsPwM6sqI+wtMY4kM0hN6zQyoQhuZSO8eglHCsrdUkHtr+R
+        h/995ta/61e6INyW6UcY4lJ8PLv5+pQ=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-315-nYUWEmpzNfWDXjpey9tuqQ-1; Mon, 03 May 2021 04:23:52 -0400
+X-MC-Unique: nYUWEmpzNfWDXjpey9tuqQ-1
+Received: by mail-wr1-f72.google.com with SMTP id r12-20020adfc10c0000b029010d83323601so3446816wre.22
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 01:23:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Y1iQg39S7/yQcUAfdd2josWY92R4FYw1/luzJ6UFBUE=;
-        b=qzOMLH0MJW/UT56f3EiKIm0hq26a550EiWLnIw68QRZFXlEs6Gpe3bjPr1pf1W5TyN
-         VMdtJNZfghdZgm1y4j/1Trc+Vu8rD2IGYhfPsMNf32cNr7SuDVFe17I8dIY7ovtwYlm4
-         eCRTzQw/XQlSipZz4+uMthyMLdEMKgzj5DCxwlxkxQZeWK33C7g9TSMOEMjOhypzL1a1
-         LvxsmsLTLu0GwL/OadlvNgKcnXZ2WDueKg4KdLKCjSSWCvjXyRXHPHBLEdiCzSU1B3/K
-         crTWGIZAaD8M/KpxZWhGWd3fOM3KTWyI4ow04xpPBGRghPEVf54tE9z80qb8R+tagbCb
-         o1hg==
-X-Gm-Message-State: AOAM532PmFnvQ2BTr97dJhKzUAcRZ7D07aWze+32Bl0h1w0yE8HhrEMR
-        58ZAHxGB/znIhAVxsjKSTnW0xStHE6lAe/+4ia4wqhyzCH3KaVhwY13ZiESdh5Jhc5jTREOh/fq
-        an1ghYHG0/saRIA+B+GOlwalC
-X-Received: by 2002:a05:600c:249:: with SMTP id 9mr20341799wmj.175.1620030003796;
-        Mon, 03 May 2021 01:20:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxqXbKqLMVYj7jCfahNg53ORbH8cpXtpuR0Wp8+7ALOqrnsRfqpqjRjjxsQkluF9/EwSQpkcg==
-X-Received: by 2002:a05:600c:249:: with SMTP id 9mr20341784wmj.175.1620030003623;
-        Mon, 03 May 2021 01:20:03 -0700 (PDT)
-Received: from redhat.com (bzq-79-178-133-9.red.bezeqint.net. [79.178.133.9])
-        by smtp.gmail.com with ESMTPSA id b7sm3449828wri.83.2021.05.03.01.20.02
+        bh=bPRJDN7+PYmkwRc18YCW4pqF1oNECdl7EEdKg52HHCc=;
+        b=SmpS4B1gZsQEfR7WjYaJslQJMcWrJxvco0iRLZJpZQf4+O7aZv4OeN045sxtqE0EYS
+         0EOo0j3dIrwGRO2u9lGvchAkqjHVh6Obm3m/ARH5ZB/VyCUvJgnoOS1TTt50wIH09GDB
+         Ak0d/ROZ/YQIM3IP7787Tpw8YSX8NjtJRq+fsvoV1a/Mw3RUuw1DgAMD2HrjbFLRah99
+         0dG7pvEy2BBhT9IpU9TKHKhs6ZQtNxVX82f98w2HL/Qekf/VIqwWZDZY4jEuTkEtEElo
+         XE1EOQgLjj/yWkJt1dndTsXj36KAqEhH8A3NPVdC+7CwrPFTUMh3utYxllGA/eNKnaay
+         ZaHw==
+X-Gm-Message-State: AOAM532XrESJgmk6n/0knQNB9Gzcu9KlGCsIaN/0/riDCvYbSba5OYdI
+        y1+OYLoMw4okchcWwyGtojWG4if173IXRIJNNYeTD1UZs7zAJtmLYKP2lbLzUCjgeOgG3T4b7Y+
+        UmOuG/MVMTtImibv5etWN3q70
+X-Received: by 2002:a05:6000:184a:: with SMTP id c10mr23619879wri.237.1620030231114;
+        Mon, 03 May 2021 01:23:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJziGxRW4ZxIY4FY2qg1KRAZv5We9hL1OQjj2LLIG4bdcedtb0gAbjIZDrDWQnD40SLdnCFbag==
+X-Received: by 2002:a05:6000:184a:: with SMTP id c10mr23619863wri.237.1620030230987;
+        Mon, 03 May 2021 01:23:50 -0700 (PDT)
+Received: from redhat.com ([2a10:800a:cdef:0:114d:2085:61e4:7b41])
+        by smtp.gmail.com with ESMTPSA id n22sm8177060wmo.12.2021.05.03.01.23.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 01:20:03 -0700 (PDT)
-Date:   Mon, 3 May 2021 04:20:00 -0400
+        Mon, 03 May 2021 01:23:50 -0700 (PDT)
+Date:   Mon, 3 May 2021 04:23:47 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
+To:     David Hildenbrand <david@redhat.com>
 Cc:     linux-kernel@vger.kernel.org,
-        Anton Yakovlev <anton.yakovlev@opensynergy.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Steven Price <steven.price@arm.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Aili Yao <yaoaili@kingsoft.com>, Jiri Bohac <jbohac@suse.cz>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-hyperv@vger.kernel.org,
         virtualization@lists.linux-foundation.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH] sound: virtio: correct the function name in kernel-doc
- comment
-Message-ID: <20210503041943-mutt-send-email-mst@kernel.org>
-References: <20210415052645.14465-1-rdunlap@infradead.org>
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 6/7] virtio-mem: use page_offline_(start|end) when
+ setting PageOffline()
+Message-ID: <20210503042220-mutt-send-email-mst@kernel.org>
+References: <20210429122519.15183-1-david@redhat.com>
+ <20210429122519.15183-7-david@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210415052645.14465-1-rdunlap@infradead.org>
+In-Reply-To: <20210429122519.15183-7-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 10:26:45PM -0700, Randy Dunlap wrote:
-> Fix kernel-doc warning that the wrong function name is used in a
-> kernel-doc comment:
+On Thu, Apr 29, 2021 at 02:25:18PM +0200, David Hildenbrand wrote:
+> Let's properly use page_offline_(start|end) to synchronize setting
+> PageOffline(), so we won't have valid page access to unplugged memory
+> regions from /proc/kcore.
 > 
-> ../sound/virtio/virtio_ctl_msg.c:70: warning: expecting prototype for virtsnd_ctl_msg_request(). Prototype was for virtsnd_ctl_msg_response() instead
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Anton Yakovlev <anton.yakovlev@opensynergy.com>
-> Cc: "Michael S. Tsirkin" <mst@redhat.com>
-> Cc: virtualization@lists.linux-foundation.org
-> Cc: alsa-devel@alsa-project.org
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+
+
+the patch looks good to me as such
 
 Acked-by: Michael S. Tsirkin <mst@redhat.com>
 
-Pls feel free to apply to the correct tree.
+Feel free to merge with rest of patcgset - it seems to mostly
+live in the fs/mm space.
+
+IF you respin, maybe add the explanation you sent in response to Mike's comments
+in the commit log.
+
 
 > ---
->  sound/virtio/virtio_ctl_msg.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/virtio/virtio_mem.c | 2 ++
+>  mm/util.c                   | 2 ++
+>  2 files changed, 4 insertions(+)
 > 
-> --- linux-next-20210414.orig/sound/virtio/virtio_ctl_msg.c
-> +++ linux-next-20210414/sound/virtio/virtio_ctl_msg.c
-> @@ -61,7 +61,7 @@ void *virtsnd_ctl_msg_request(struct vir
+> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+> index 10ec60d81e84..dc2a2e2b2ff8 100644
+> --- a/drivers/virtio/virtio_mem.c
+> +++ b/drivers/virtio/virtio_mem.c
+> @@ -1065,6 +1065,7 @@ static int virtio_mem_memory_notifier_cb(struct notifier_block *nb,
+>  static void virtio_mem_set_fake_offline(unsigned long pfn,
+>  					unsigned long nr_pages, bool onlined)
+>  {
+> +	page_offline_begin();
+>  	for (; nr_pages--; pfn++) {
+>  		struct page *page = pfn_to_page(pfn);
+>  
+> @@ -1075,6 +1076,7 @@ static void virtio_mem_set_fake_offline(unsigned long pfn,
+>  			ClearPageReserved(page);
+>  		}
+>  	}
+> +	page_offline_end();
 >  }
 >  
->  /**
-> - * virtsnd_ctl_msg_request() - Get a pointer to the response header.
-> + * virtsnd_ctl_msg_response() - Get a pointer to the response header.
->   * @msg: Control message.
->   *
->   * Context: Any context.
+>  /*
+> diff --git a/mm/util.c b/mm/util.c
+> index 95395d4e4209..d0e357bd65e6 100644
+> --- a/mm/util.c
+> +++ b/mm/util.c
+> @@ -1046,8 +1046,10 @@ void page_offline_begin(void)
+>  {
+>  	down_write(&page_offline_rwsem);
+>  }
+> +EXPORT_SYMBOL(page_offline_begin);
+>  
+>  void page_offline_end(void)
+>  {
+>  	up_write(&page_offline_rwsem);
+>  }
+> +EXPORT_SYMBOL(page_offline_end);
+> -- 
+> 2.30.2
 
