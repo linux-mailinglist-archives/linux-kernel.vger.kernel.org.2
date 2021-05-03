@@ -2,185 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9521D3712DB
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 11:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E3D3712F0
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 11:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233036AbhECJMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 05:12:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35580 "EHLO
+        id S233003AbhECJZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 05:25:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbhECJMR (ORCPT
+        with ESMTP id S231531AbhECJZV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 05:12:17 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A475C06174A;
-        Mon,  3 May 2021 02:11:24 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id ED90F1F42208;
-        Mon,  3 May 2021 10:11:21 +0100 (BST)
-Date:   Mon, 3 May 2021 11:11:14 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     <patrice.chotard@foss.st.com>, Mark Brown <broonie@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
-Subject: Re: [PATCH 1/3] spi: spi-mem: add automatic poll status functions
-Message-ID: <20210503111114.26b64e25@collabora.com>
-In-Reply-To: <20210503084742.7cp77snyohkdwwvv@ti.com>
-References: <20210426143934.25275-1-patrice.chotard@foss.st.com>
-        <20210426143934.25275-2-patrice.chotard@foss.st.com>
-        <20210430185104.377d1bc6@collabora.com>
-        <20210503084742.7cp77snyohkdwwvv@ti.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Mon, 3 May 2021 05:25:21 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E069FC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 02:24:27 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso4475626otb.13
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 02:24:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+VJfKXp1p14Sm+gs5vQpJcBKQ4WQjXJ9DGqpFSWyuG0=;
+        b=e56sClF+y8SAgaeuU0FLQNRkS7BEazbXNVFGQ4/xSlpwa689710GjcZwOQyeUPuxBi
+         a+9uOTT9opTBsS+fmzTp0H3GTCEKwIjsBv1QCb/NQhBSDNO5WVTuaLwUaDkevmKQ3CmN
+         26V2RlqlPy7TuJZhH6wdhpsLEvDj1E/QyHtR+JQgnHIPwJ6bC7mavVEe6HzbAvtnD7mC
+         73PThoJm7XU7ylJXpcqZTVyhiMkZCpEzfMcmCuNuzpj+1fjGpqYR48soMadi9JyEFHIw
+         hQuush82VlnWKAS6Ypt7bicm8BtwyNfArp0Xdo/R89rockOK1SqcKdkYVUD9CenFcaK5
+         M2CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+VJfKXp1p14Sm+gs5vQpJcBKQ4WQjXJ9DGqpFSWyuG0=;
+        b=egzG2Osv0S8V2iSx1KZ+wYHZ1N7Dm/Pe9fJQF5GOXSue0NeE9oIz42NaZMTCQz7ccc
+         9WBZAAwTZ2Qcb7Hj22eDLsXzYJYIT7+Uzcg+Zq761+eNz7sntNOn+vQ7nzoLN4ARPJrM
+         bOGXYeuTyqLN9tS9DxBem9RpXsdDHezwYQaJba3QnOB0CRPhDoKubKTfyIiLJsvJvALM
+         8uTIG4WNNFgSviwLzgWSBhi4cSwZhqmFLRT11+T48MkXpYC//beEUL9H6QCVBlZTPotK
+         9cfFXudzUtFADfB8uGKsBSG9F/YVVsEG0UW9CXqBdIbzM4HlLp1pUfAi2RPgFkEpm/QI
+         3LYQ==
+X-Gm-Message-State: AOAM532TOBb/aeZjaupH1FamIibe/fV1ceLupaJl1E6EWX9KDWgolGIJ
+        lfV+1dokpuRm6sfiJqEsVI3XLUkmrybHkGWYDFaJjOKkWwzAPw==
+X-Google-Smtp-Source: ABdhPJwLE3DnCKCS1byVx211ccfNqe7C4yZwYzqYsFfx0gAP/nqhYeXllz6Im0QtUHriG2U8rf/IP0AZcZCQcwi6q7o=
+X-Received: by 2002:a9d:4e9a:: with SMTP id v26mr13892957otk.74.1620033867265;
+ Mon, 03 May 2021 02:24:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <cover.1619794331.git.fabioaiuto83@gmail.com> <20210503075201.GN1981@kadam>
+ <20210503081717.GA8953@agape.jhs>
+In-Reply-To: <20210503081717.GA8953@agape.jhs>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Mon, 3 May 2021 11:24:16 +0200
+Message-ID: <CAMhs-H9zgiP+u0jg8M4uJ6QPCs-BZ0SKaGzp85DoqnS_KkcFuQ@mail.gmail.com>
+Subject: Re: [PATCH v3 00/43] staging: rtl8723bs: clean up driver from private
+ debug facilities
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 3 May 2021 14:17:44 +0530
-Pratyush Yadav <p.yadav@ti.com> wrote:
+Hi Fabio,
 
-> On 30/04/21 06:51PM, Boris Brezillon wrote:
-> > On Mon, 26 Apr 2021 16:39:32 +0200
-> > <patrice.chotard@foss.st.com> wrote:
-> >   
-> > > From: Christophe Kerello <christophe.kerello@foss.st.com>
-> > > 
-> > > With STM32 QSPI, it is possible to poll the status register of the device.
-> > > This could be done to offload the CPU during an operation (erase or
-> > > program a SPI NAND for example).
-> > > 
-> > > spi_mem_poll_status API has been added to handle this feature.
-> > > 
-> > > Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
-> > > Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
-> > > ---
-> > >  drivers/spi/spi-mem.c       | 34 ++++++++++++++++++++++++++++++++++
-> > >  include/linux/spi/spi-mem.h |  8 ++++++++
-> > >  2 files changed, 42 insertions(+)
-> > > 
-> > > diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-> > > index 1513553e4080..43dce4b0efa4 100644
-> > > --- a/drivers/spi/spi-mem.c
-> > > +++ b/drivers/spi/spi-mem.c
-> > > @@ -743,6 +743,40 @@ static inline struct spi_mem_driver *to_spi_mem_drv(struct device_driver *drv)
-> > >  	return container_of(drv, struct spi_mem_driver, spidrv.driver);
-> > >  }
-> > >  
-> > > +/**
-> > > + * spi_mem_poll_status() - Poll memory device status
-> > > + * @mem: SPI memory device
-> > > + * @op: the memory operation to execute
-> > > + * @mask: status bitmask to ckeck
-> > > + * @match: status expected value
-> > > + * @timeout: timeout
-> > > + *
-> > > + * This function send a polling status request to the controller driver
-> > > + *
-> > > + * Return: 0 in case of success, -ETIMEDOUT in case of error,
-> > > + *         -EOPNOTSUPP if not supported.
-> > > + */
-> > > +int spi_mem_poll_status(struct spi_mem *mem,
-> > > +			const struct spi_mem_op *op,
-> > > +			u8 mask, u8 match, u16 timeout)
-> > > +{
-> > > +	struct spi_controller *ctlr = mem->spi->controller;
-> > > +	int ret = -EOPNOTSUPP;
-> > > +
-> > > +	if (ctlr->mem_ops && ctlr->mem_ops->poll_status) {
-> > > +		ret = spi_mem_access_start(mem);  
-> > 
-> > You should probably check that op is a single byte read before
-> > accepting the command.  
-> 
-> Please do not discriminate against 8D-8D-8D flashes ;-).
+On Mon, May 3, 2021 at 10:17 AM Fabio Aiuto <fabioaiuto83@gmail.com> wrote:
+>
+> On Mon, May 03, 2021 at 10:52:01AM +0300, Dan Carpenter wrote:
+> > Looks good.
+> >
+> > Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+> >
+> > regards,
+> > dan carpenter
+> >
+>
+> thanks Dan,
+>
+> when a tag is offered this way, am I supposed to resend the patchset with
+> the offered tag added on or it's just a tag which Greg is going to add when
+> accept all in his tree?
 
-Then mask and match should probably be u16 :P. And the check as it is
-seems a bit lax to me. Drivers will of course be able to reject the op
-when there's more than one byte (or 16bit word in case of 8D) to read,
-but it feels like the core could automate that a bit.
+Greg will take care of adding this tag when he adds all of these
+patches to his tree.
 
-> 
-> >   
-> > > +		if (ret)
-> > > +			return ret;
-> > > +
-> > > +		ret = ctlr->mem_ops->poll_status(mem, op, mask, match, timeout);  
-> > 
-> > You also need some sort of ->poll_status_is_supported() to validate
-> > that the controller supports the status polling for this specific op (I  
-> 
-> I don't think a separate function is needed for checking if the poll 
-> status op is supported. Return value of -EOPNOTSUPP should be able to 
-> signal that. This can also be used to check if Octal DDR capable 
-> controllers are able to poll using 2-byte reads.
+>
+> thank you in advance,
+>
+> fabio
+>
 
-Yeah, I had something more complex in mind to avoid doing this 'try
-native mode and fall back on sw-based more if not supported' dance
-every time a status poll is requested (something similar to what we do
-for dirmaps, with a status poll desc), but I guess that's a bit
-premature (and probably uneeded).
-
-> 
-> > can imagine some controllers having a limit on the number of dummy
-> > cycles/address bytes). I guess you could just fall back on SW-based
-> > status polling if ctlr->mem_ops->poll_status() returns -ENOTSUPP.
-> >   
-> > > +
-> > > +		spi_mem_access_end(mem);
-> > > +	}
-> > > +
-> > > +	return ret;
-> > > +}
-> > > +EXPORT_SYMBOL_GPL(spi_mem_poll_status);
-> > > +
-> > >  static int spi_mem_probe(struct spi_device *spi)
-> > >  {
-> > >  	struct spi_mem_driver *memdrv = to_spi_mem_drv(spi->dev.driver);
-> > > diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
-> > > index 2b65c9edc34e..5f78917c0f68 100644
-> > > --- a/include/linux/spi/spi-mem.h
-> > > +++ b/include/linux/spi/spi-mem.h
-> > > @@ -250,6 +250,7 @@ static inline void *spi_mem_get_drvdata(struct spi_mem *mem)
-> > >   *		  the currently mapped area), and the caller of
-> > >   *		  spi_mem_dirmap_write() is responsible for calling it again in
-> > >   *		  this case.
-> > > + * @poll_status: poll memory device status
-> > >   *
-> > >   * This interface should be implemented by SPI controllers providing an
-> > >   * high-level interface to execute SPI memory operation, which is usually the
-> > > @@ -274,6 +275,9 @@ struct spi_controller_mem_ops {
-> > >  			       u64 offs, size_t len, void *buf);
-> > >  	ssize_t (*dirmap_write)(struct spi_mem_dirmap_desc *desc,
-> > >  				u64 offs, size_t len, const void *buf);
-> > > +	int (*poll_status)(struct spi_mem *mem,
-> > > +			   const struct spi_mem_op *op,
-> > > +			   u8 mask, u8 match, u16 timeout);
-> > >  };
-> > >  
-> > >  /**
-> > > @@ -369,6 +373,10 @@ devm_spi_mem_dirmap_create(struct device *dev, struct spi_mem *mem,
-> > >  void devm_spi_mem_dirmap_destroy(struct device *dev,
-> > >  				 struct spi_mem_dirmap_desc *desc);
-> > >  
-> > > +int spi_mem_poll_status(struct spi_mem *mem,
-> > > +			const struct spi_mem_op *op,
-> > > +			u8 mask, u8 match, u16 timeout);
-> > > +
-> > >  int spi_mem_driver_register_with_owner(struct spi_mem_driver *drv,
-> > >  				       struct module *owner);
-> > >    
-> 
-
+Best regards,
+    Sergio Paracuellos
