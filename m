@@ -2,90 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7257C3710A2
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 05:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C67463710A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 05:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232817AbhECDHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 23:07:30 -0400
-Received: from mga03.intel.com ([134.134.136.65]:56767 "EHLO mga03.intel.com"
+        id S232660AbhECDOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 23:14:08 -0400
+Received: from mga12.intel.com ([192.55.52.136]:32498 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232392AbhECDH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 23:07:26 -0400
-IronPort-SDR: kCjX26s8fheaQYA5n5KSAp0eHscybzxRnB+loy3F2QTcnis31majjMBSrgGndBcJnxNM4VKWJm
- 5UocdSdKQ8/g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9972"; a="197708916"
+        id S232377AbhECDOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 May 2021 23:14:05 -0400
+IronPort-SDR: aRFKyM+uLGO7XrRuSstfc01ekQ+C2HoQgJsB2kY1KOJPR/YVg6TsFAsLb+0CGLUTv5UAgFGczV
+ BY0oGo8mlnSw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9972"; a="177182983"
 X-IronPort-AV: E=Sophos;i="5.82,268,1613462400"; 
-   d="scan'208";a="197708916"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2021 20:06:34 -0700
-IronPort-SDR: HHVWRGq5bZuAXY29a6hCV4j1XzWO7JuSFxlqcKcEXJAHeQS+MyF1NqHR05hYoCVII25I/w0+FF
- EEbzpKVTipYw==
+   d="scan'208";a="177182983"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2021 20:13:12 -0700
+IronPort-SDR: DlWEuVc0GsZ3l2+sap/HNaJbO6bnemkBr3ic7xwnaYf3UstWJiIJgYMNDV7JDDnl61Yd449exs
+ SRFm40MiPnQQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,268,1613462400"; 
-   d="scan'208";a="457034607"
+   d="scan'208";a="389370171"
 Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
-  by FMSMGA003.fm.intel.com with SMTP; 02 May 2021 20:06:30 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Mon, 03 May 2021 06:06:30 +0300
-Date:   Mon, 3 May 2021 06:06:29 +0300
+  by orsmga006.jf.intel.com with SMTP; 02 May 2021 20:13:08 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Mon, 03 May 2021 06:13:08 +0300
+Date:   Mon, 3 May 2021 06:13:08 +0300
 From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
 To:     Lyude Paul <lyude@redhat.com>
 Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
+        =?iso-8859-1?B?Suly9G1l?= de Bretagne 
+        <jerome.debretagne@gmail.com>, David Airlie <airlied@linux.ie>,
         open list <linux-kernel@vger.kernel.org>,
-        Maxime Ripard <mripard@kernel.org>
-Subject: Re: [Intel-gfx] [PATCH 2/2] drm/dp: Drop open-coded
- drm_dp_is_branch() in drm_dp_read_downstream_info()
-Message-ID: <YI9otSh/ftvLqMxb@intel.com>
+        Jani Nikula <jani.nikula@intel.com>, stable@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Sean Paul <sean@poorly.run>
+Subject: Re: [PATCH 1/2] drm/dp: Handle zeroed port counts in
+ drm_dp_read_downstream_info()
+Message-ID: <YI9qRPkSDGrLAaFg@intel.com>
 References: <20210430223428.10514-1-lyude@redhat.com>
- <20210430223428.10514-2-lyude@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210430223428.10514-2-lyude@redhat.com>
+In-Reply-To: <20210430223428.10514-1-lyude@redhat.com>
 X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 06:34:28PM -0400, Lyude Paul wrote:
-> Noticed this while fixing another issue in drm_dp_read_downstream_info(),
-> the open coded DP_DOWNSTREAMPORT_PRESENT check here just duplicates what we
-> already do in drm_dp_is_branch(), so just get rid of it.
+On Fri, Apr 30, 2021 at 06:34:27PM -0400, Lyude Paul wrote:
+> While the DP specification isn't entirely clear on if this should be
+> allowed or not, some branch devices report having downstream ports present
+> while also reporting a downstream port count of 0. So to avoid breaking
+> those devices, we need to handle this in drm_dp_read_downstream_info().
+> 
+> So, to do this we assume there's no downstream port info when the
+> downstream port count is 0.
 > 
 > Signed-off-by: Lyude Paul <lyude@redhat.com>
+> Tested-by: Jérôme de Bretagne <jerome.debretagne@gmail.com>
+> Bugzilla: https://gitlab.freedesktop.org/drm/intel/-/issues/3416
+> Fixes: 3d3721ccb18a ("drm/i915/dp: Extract drm_dp_read_downstream_info()")
+> Cc: <stable@vger.kernel.org> # v5.10+
 > ---
->  drivers/gpu/drm/drm_dp_helper.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+>  drivers/gpu/drm/drm_dp_helper.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
 > diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
-> index 27c8c5bdf7d9..0f84df8798ab 100644
+> index cb56d74e9d38..27c8c5bdf7d9 100644
 > --- a/drivers/gpu/drm/drm_dp_helper.c
 > +++ b/drivers/gpu/drm/drm_dp_helper.c
-> @@ -677,9 +677,7 @@ int drm_dp_read_downstream_info(struct drm_dp_aux *aux,
->  	memset(downstream_ports, 0, DP_MAX_DOWNSTREAM_PORTS);
+> @@ -682,7 +682,14 @@ int drm_dp_read_downstream_info(struct drm_dp_aux *aux,
+>  	    !(dpcd[DP_DOWNSTREAMPORT_PRESENT] & DP_DWN_STRM_PORT_PRESENT))
+>  		return 0;
 >  
->  	/* No downstream info to read */
-> -	if (!drm_dp_is_branch(dpcd) ||
-> -	    dpcd[DP_DPCD_REV] < DP_DPCD_REV_10 ||
-> -	    !(dpcd[DP_DOWNSTREAMPORT_PRESENT] & DP_DWN_STRM_PORT_PRESENT))
-> +	if (!drm_dp_is_branch(dpcd) || dpcd[DP_DPCD_REV] < DP_DPCD_REV_10)
+> +	/* Some branches advertise having 0 downstream ports, despite also advertising they have a
+> +	 * downstream port present. The DP spec isn't clear on if this is allowed or not, but since
+> +	 * some branches do it we need to handle it regardless.
+> +	 */
+>  	len = drm_dp_downstream_port_count(dpcd);
+> +	if (!len)
+> +		return 0;
+> +
 
-BTW that DPCD_REV check looks rather wrong.
+Seems sane enough.
 
 Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
 
->  		return 0;
+>  	if (dpcd[DP_DOWNSTREAMPORT_PRESENT] & DP_DETAILED_CAP_INFO_AVAILABLE)
+>  		len *= 4;
 >  
->  	/* Some branches advertise having 0 downstream ports, despite also advertising they have a
 > -- 
 > 2.30.2
 > 
 > _______________________________________________
-> Intel-gfx mailing list
-> Intel-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
 -- 
 Ville Syrjälä
