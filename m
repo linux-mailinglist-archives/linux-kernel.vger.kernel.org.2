@@ -2,171 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAC6637174B
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:58:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5C237172D
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230123AbhECO7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 10:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230087AbhECO7G (ORCPT
+        id S229992AbhECOzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 10:55:42 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57092 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229596AbhECOzl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 10:59:06 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E71CC06174A;
-        Mon,  3 May 2021 07:58:13 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id h7so2976471plt.1;
-        Mon, 03 May 2021 07:58:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vRW0z6o62j2Rv6stuOnNguxxqbJxgi3ojoBSOT6id5I=;
-        b=E1l7I2OZq0m5k+wR5en1GXGQ2k//0/zMXkQLeNcSvDD9aHIxK7wFsBnKW8S/GqOthq
-         kpwPW1LjF2lRY3MCn+YFKZwlvr5sxz+njK7hftSHv8imbbdPLa9hqPr8TvoubIDHP8uD
-         3Edela3tN5gualI+5lLw/MoU1XdzNb1U36/7mmwkN+1Cr8dFlsLvEqrv8ITtTQP+sCeV
-         O71OFTc91ECUatQkrfnli8Er2/0KmzgVjThRNg+j4wAnbFqY1ipDVZAmEjolhEV9LKkE
-         qLZ4t91A0Ix5GCBgXNKa47rfq7AKeU9EwCkYwQKAssi7CfcSAv+gptmMsm2AsO1zyRfg
-         814g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vRW0z6o62j2Rv6stuOnNguxxqbJxgi3ojoBSOT6id5I=;
-        b=Zp9Mjbr6zhy6EUc9Hz3Yg3tU6heww9nBuNL6Ex5sGzHKanaaF4izXpomndhGNn6wiQ
-         sasS4ordjdW4ovKKufu4wUgTOO5Ux2ScEMxgcyObUh/YIKWmCtW2Djau3Fyg3yjc7Ps7
-         P1Vz0Hj9OWuKp04QJ9GhAvISd1V7MvoLwedzUkiVDJS7KhzrJh3ZNCdfGCdQCPOxfJzi
-         9H3EPuK8lCnyBUsMecfP/hoeyTgMWSjyxynTGaqERgAjIQs/sepXSNu15mkl0+KsNa8+
-         RMlzqQ/y1SGJCeFFsDsRkwsccwlXDmWkAXVd9QLoGpPKIRm/8a54ONxjRevurTkItXhQ
-         T9lQ==
-X-Gm-Message-State: AOAM530tdRhmGdoT/SHljto6KCKCMpcKQMg4XaunDKioe3EpOiccottj
-        fH0fdN7O7bq7plCuDUmQ2B6IW4sfWUQ=
-X-Google-Smtp-Source: ABdhPJxdH8shFvNDWBfe4hBmSWExpR/lT3D5XRXibkmmvQaUQvlFlgIk4vF6l7dDVeQwG2M+l87IrQ==
-X-Received: by 2002:a17:90a:e005:: with SMTP id u5mr22338268pjy.127.1620053892697;
-        Mon, 03 May 2021 07:58:12 -0700 (PDT)
-Received: from archl-on2.. ([103.51.75.154])
-        by smtp.gmail.com with ESMTPSA id k38sm3593983pgi.73.2021.05.03.07.58.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 07:58:11 -0700 (PDT)
-From:   Anand Moon <linux.amoon@gmail.com>
-To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Anand Moon <linux.amoon@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCHv1 2/9] arm64: dts: amlogic: Add audio power domain for g12a and g12b
-Date:   Mon,  3 May 2021 14:54:35 +0000
-Message-Id: <20210503145503.1477-3-linux.amoon@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210503145503.1477-1-linux.amoon@gmail.com>
-References: <20210503145503.1477-1-linux.amoon@gmail.com>
+        Mon, 3 May 2021 10:55:41 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 143EsaBc017067
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 3 May 2021 10:54:36 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id D763515C39C4; Mon,  3 May 2021 10:54:35 -0400 (EDT)
+Date:   Mon, 3 May 2021 10:54:35 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Tom Stellard <tstellar@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Fangrui Song <maskray@google.com>,
+        Serge Guelton <sguelton@redhat.com>,
+        Sylvestre Ledru <sylvestre@mozilla.com>
+Subject: Re: Very slow clang kernel config ..
+Message-ID: <YJAOq9CD72EWaF8P@mit.edu>
+References: <CAKwvOdk+V2dc31guafFM=N2ez4SrwCmah+mimUG3MzPMx_2efQ@mail.gmail.com>
+ <CAKwvOdn3uXniVedgtpD8QFAd-hdVuVjGPa4-n0h64PTxT4XhWg@mail.gmail.com>
+ <CAKwvOdm3D=dqKw=kx46PLaiqfHOZJL3QFKGc8kxqJqpwdFFWqw@mail.gmail.com>
+ <CAKwvOdkp_P8BCtFuKqDrtC_=A89ZfDf66Yr3FL2e=ojwv4KaMA@mail.gmail.com>
+ <CAHk-=wi1yiBBr3b3RbCEte6-yzAApsZN5zRdr3xoW8Av9jOX=Q@mail.gmail.com>
+ <CAKwvOdk0nxxUATg2jEKgx4HutXCMXcW92SX3DT+uCTgqBwQHBg@mail.gmail.com>
+ <1c5e05fa-a246-9456-ff4e-287960acb18c@redhat.com>
+ <CAHk-=whs8QZf3YnifdLv57+FhBi5_WeNTG1B-suOES=RcUSmQg@mail.gmail.com>
+ <alpine.DEB.2.21.2105020346520.2587@angie.orcam.me.uk>
+ <YJAK1C1uLknYGYrH@mit.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJAK1C1uLknYGYrH@mit.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add audio power domain id for sound on g12a and g12b sbc
-to enable audio power domain via "pwrc" controller.
+On Mon, May 03, 2021 at 10:38:12AM -0400, Theodore Ts'o wrote:
+> On Mon, May 03, 2021 at 03:03:31AM +0200, Maciej W. Rozycki wrote:
+> > 
+> > People went through great efforts to support shared libraries, sacrificed
+> > performance for it even back then when the computing power was much lower
+> > than nowadays.
+> 
+> That was because memory was *incredibly* restrictive in those days.
+> My first Linux server had one gig of memory, and so shared libraries
+> provided a huge performance boost --- because otherwise systems would
+> be swapping or paging their brains out.
 
-Signed-off-by: Anand Moon <linux.amoon@gmail.com>
----
- arch/arm64/boot/dts/amlogic/meson-g12a-sei510.dts     | 1 +
- arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts    | 1 +
- arch/arm64/boot/dts/amlogic/meson-g12b-gsking-x.dts   | 1 +
- arch/arm64/boot/dts/amlogic/meson-g12b-gtking-pro.dts | 1 +
- arch/arm64/boot/dts/amlogic/meson-g12b-gtking.dts     | 1 +
- arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi | 1 +
- arch/arm64/boot/dts/amlogic/meson-g12b-ugoos-am6.dts  | 1 +
- 7 files changed, 7 insertions(+)
+Correction.  My bad, my first Linux machine had 16 megs of memory....
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12a-sei510.dts b/arch/arm64/boot/dts/amlogic/meson-g12a-sei510.dts
-index 81269ccc2496..24599f448564 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12a-sei510.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12a-sei510.dts
-@@ -217,6 +217,7 @@ sound {
- 		assigned-clock-rates = <294912000>,
- 				       <270950400>,
- 				       <393216000>;
-+		power-domains = <&pwrc PWRC_G12A_AUDIO_ID>;
- 		status = "okay";
- 
- 		dai-link-0 {
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts b/arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts
-index 579f3d02d613..1c821800514a 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts
-@@ -167,6 +167,7 @@ sound {
- 		assigned-clock-rates = <294912000>,
- 				       <270950400>,
- 				       <393216000>;
-+		power-domains = <&pwrc PWRC_G12A_AUDIO_ID>;
- 		status = "okay";
- 
- 		dai-link-0 {
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-gsking-x.dts b/arch/arm64/boot/dts/amlogic/meson-g12b-gsking-x.dts
-index 6c7bfacbad78..99ed165a41c9 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12b-gsking-x.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12b-gsking-x.dts
-@@ -49,6 +49,7 @@ sound {
- 		assigned-clock-rates = <294912000>,
- 				       <270950400>,
- 				       <393216000>;
-+		power-domains = <&pwrc PWRC_G12A_AUDIO_ID>;
- 		status = "okay";
- 
- 		dai-link-0 {
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-gtking-pro.dts b/arch/arm64/boot/dts/amlogic/meson-g12b-gtking-pro.dts
-index 707daf92787b..6bcc4685e65b 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12b-gtking-pro.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12b-gtking-pro.dts
-@@ -58,6 +58,7 @@ sound {
- 		assigned-clock-rates = <294912000>,
- 				       <270950400>,
- 				       <393216000>;
-+		power-domains = <&pwrc PWRC_G12A_AUDIO_ID>;
- 		status = "okay";
- 
- 		dai-link-0 {
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-gtking.dts b/arch/arm64/boot/dts/amlogic/meson-g12b-gtking.dts
-index 5d96c1449050..555524cd50f2 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12b-gtking.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12b-gtking.dts
-@@ -45,6 +45,7 @@ sound {
- 		assigned-clock-rates = <294912000>,
- 				       <270950400>,
- 				       <393216000>;
-+		power-domains = <&pwrc PWRC_G12A_AUDIO_ID>;
- 		status = "okay";
- 
- 		dai-link-0 {
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
-index 344573e157a7..e99533dd64c2 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
-@@ -258,6 +258,7 @@ sound {
- 		assigned-clock-rates = <294912000>,
- 				       <270950400>,
- 				       <393216000>;
-+		power-domains = <&pwrc PWRC_G12A_AUDIO_ID>;
- 		status = "okay";
- 
- 		dai-link-0 {
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-ugoos-am6.dts b/arch/arm64/boot/dts/amlogic/meson-g12b-ugoos-am6.dts
-index 0c7892600d56..4b12685af1ad 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12b-ugoos-am6.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12b-ugoos-am6.dts
-@@ -40,6 +40,7 @@ sound {
- 		assigned-clock-rates = <294912000>,
- 				       <270950400>,
- 				       <393216000>;
-+		power-domains = <&pwrc PWRC_G12A_AUDIO_ID>;
- 		status = "okay";
- 
- 		dai-link-0 {
--- 
-2.31.1
+	     	      	    	    	   - Ted
 
+> 
+> However, these days, many if not most developers aren't capable of the
+> discpline needed to maintained the ABI stability needed for shared
+> libraries to work well.  I can think several packages where if you
+> used shared libraries, the major version number would need to be
+> bumped at every releases, because people don't know how to spell ABI,
+> never mind be able to *preserve* ABI.  Heck, it's the same reason that
+> we don't promise kernel ABI compatibility for kernel modules!
+> 
+> https://www.kernel.org/doc/Documentation/process/stable-api-nonsense.rst
+> 
+> And in the case of Debian, use of shared libraries means that every
+> time you release a new version of, say, f2fs-tools, things can get
+> stalled for months or in one case, over a year, due to the new package
+> review process (a shared library version bump means a new binary
+> package, and that in turn requires a full review of the entire source
+> package for GPL compliance from scratch, and f2fs-tools has bumped
+> their shared library major version *every* *single* *release*) ---
+> during which time, security bug fixes were being held up due to the
+> new package review tarpit.
+> 
+> If people could actually guarantee stable ABI's, then shared libraries
+> might make sense.  E2fsprogs hasn't had a major version bump in shared
+> libraries for over a decade (although some developers whine and
+> complain about how I reject function signature changes in the
+> libext2fs library to provide that ABI stability).  But how many
+> userspace packages can make that claim?
+> 
+> 	  	       	    	 - Ted
