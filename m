@@ -2,210 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A23D3371676
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC56371678
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234284AbhECOOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 10:14:17 -0400
-Received: from mail-db8eur05on2100.outbound.protection.outlook.com ([40.107.20.100]:61760
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233908AbhECOOQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 10:14:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WfSF4IL+c4/B/NEvSDC2Z1n8h9aMHZE9ZWoMfUO6eJMgnciYrkRvn+rThlrL4tUlNlrXURIr3iVGqfKVEekLkTL0mXev/JH3QC1wYl+SewiTa5JjtwZSkTDvpHj1m0N3kXweaP+sDYegBqkZSBFBRtnXS+fLC+e4dBTczOA9PYNIWEZIGRoBiOVI+w53OH0Ac7OSngYvWh9cdWbVLsGXQEVHUAdG/if6zy8z0GTV52+4H8X+sspLccZDmnFovAAi0+fla8rCOsul384alUR6zcOr1NSRDfoilOKASKIgPbFZd8S+JLbHu0NDhnOu75FvMNfYnJ1+2oPvpW8NHChwwg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=shZ/szXJW9fFCvckgeL3I+AbvYFaKRnPaRSbI7Ltsx4=;
- b=S55JVGgKsaNO5tGp+w2b395xzxQX5MD4kXgpM8o7ATYJEbraawiiNGHKboXse+QQkRQFedF1FKjK3o56a7oJZW5IgZMQoKigUxYlEc3lLJvDgdN17fS0ZVT1eWWvqdWMhjWljYr86jNhjz5DwERdxMnPKCZk81FKdqcW6yrxBxH0bOmZ6NPfFTWZB+i3+C/oh+saOJskEbneUZkA3MMRR2r/QP8GopLWIGqgoGPuvzwyuBkbjwCMllqTYLdGBREItLRX5nMzsmT34ab58pXAqlMe4pxg6DQNGob0AGYNyYQ7IyKd2BTBZyXpLyy4Pr6qtGpPWCA/XaLderpvDLA0pg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
- dkim=pass header.d=axentia.se; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=shZ/szXJW9fFCvckgeL3I+AbvYFaKRnPaRSbI7Ltsx4=;
- b=JYW2NkhfkhhCckJhP8dpRWzQSAhXsvkzokF3tfDYCTZvSUSuAHNV95BZKiyQUfvs90doocUh4DO9Pj1ObtM/OiQtk6W3mwrAiZuo3Ism8PXCrsCSvamCez37/pf8Him2wzizLtjdhEfA39pKfxJJ/6jz3w5LhJGc25Yn7B3Z8YQ=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=axentia.se;
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
- by DB8PR02MB5611.eurprd02.prod.outlook.com (2603:10a6:10:eb::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.35; Mon, 3 May
- 2021 14:13:20 +0000
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::d47d:ca8c:4fe6:3908]) by DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::d47d:ca8c:4fe6:3908%3]) with mapi id 15.20.4087.043; Mon, 3 May 2021
- 14:13:20 +0000
-Subject: Re: [PATCH 27/69] cdrom: gdrom: deallocate struct gdrom_unit fields
- in remove_gdrom
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Atul Gopinathan <atulgopinathan@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, stable <stable@vger.kernel.org>
-References: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
- <20210503115736.2104747-28-gregkh@linuxfoundation.org>
-From:   Peter Rosin <peda@axentia.se>
-Organization: Axentia Technologies AB
-Message-ID: <223d5bda-bf02-a4a8-ab1d-de25e32b8d47@axentia.se>
-Date:   Mon, 3 May 2021 16:13:18 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
-In-Reply-To: <20210503115736.2104747-28-gregkh@linuxfoundation.org>
+        id S234119AbhECOPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 10:15:42 -0400
+Received: from mga17.intel.com ([192.55.52.151]:4286 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230059AbhECOPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 10:15:39 -0400
+IronPort-SDR: 4cuDzputxxEpkmPyXLmtoH+aG8E1Z7lWzS6vi6ch+w/ElcSOUgFs+A+F9CEE6VcGWQP3S59CEW
+ /zk1WO0MtUhQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9973"; a="177957092"
+X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
+   d="scan'208";a="177957092"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 07:14:45 -0700
+IronPort-SDR: O8x2wyUKctrb08OQp/Inzii33MIdgl+kixL5T6Duiiz9HdRu5tQD1U3xWnNYV3RwHjZNZLLIN+
+ y/OJ8Y1gn8vg==
+X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
+   d="scan'208";a="432762886"
+Received: from tbroiles-mobl.amr.corp.intel.com (HELO [10.209.47.222]) ([10.209.47.222])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 07:14:45 -0700
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
+ features
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Len Brown <lenb@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Willy Tarreau <w@1wt.eu>, Andy Lutomirski <luto@kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-abi@vger.kernel.org,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>
+References: <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu>
+ <20210415054713.GB6318@zn.tnic>
+ <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
+ <20210419141454.GE9093@zn.tnic>
+ <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com>
+ <20210419191539.GH9093@zn.tnic>
+ <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com>
+ <20210419215809.GJ9093@zn.tnic>
+ <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
+ <YIMmwhEr46VPAZa4@zn.tnic>
+ <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
+ <87bl9s8kfb.fsf@oldenburg.str.redhat.com>
+ <5d3d513b-77d6-e2e2-779e-ff3ea33deba3@intel.com>
+ <87zgxc53pl.fsf@oldenburg.str.redhat.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <b3c16707-c2d3-15fe-cac7-027ef022cfb7@intel.com>
+Date:   Mon, 3 May 2021 07:14:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <87zgxc53pl.fsf@oldenburg.str.redhat.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [85.229.94.233]
-X-ClientProxiedBy: AM5PR0301CA0032.eurprd03.prod.outlook.com
- (2603:10a6:206:14::45) To DB8PR02MB5482.eurprd02.prod.outlook.com
- (2603:10a6:10:eb::29)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.13.3] (85.229.94.233) by AM5PR0301CA0032.eurprd03.prod.outlook.com (2603:10a6:206:14::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.27 via Frontend Transport; Mon, 3 May 2021 14:13:19 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 337449e8-5dc8-4b7b-9fee-08d90e3d9ac7
-X-MS-TrafficTypeDiagnostic: DB8PR02MB5611:
-X-Microsoft-Antispam-PRVS: <DB8PR02MB56116412E1B824D33247A652BC5B9@DB8PR02MB5611.eurprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +PIa0zhqjMM0/6as8H9XNttk0b414AktkVEZG4dqNVR1eBoEJoGZfG0Pr7mvZTIblNvG62GMmsK8e5KJ0p70vyKblmlQN9VVn14cgp4450okICb6KByi28sXrAPw96wbDoFe+Q1Fl0IaovMDid2ccAWP1UkRMuNQTiyXUFO45a3RJf1MzUTHIrS8mcbECqIq2911IvHt1Aex4hzZNP9uUmVCkPpMURP94KtVwM4cl+tLDNi3ZDWyEsp/gH4kdKTCtR4B+cRh81eo67YX4lQ8BSpWYGB2B0zjC9834zkYcBnO4/U/DZw9vlwvimkmDe2VTj+fyGDqxTKfzE+JACbuCEuqVxTw8GPa5FvpAIaWascbg6bVRGskwoYXSD7LEJPvrhXMiJ3fw5VYanwTyuZHNEY1w1PxaslrVdYnz4fd97yBp4Rq81kA3WwyVU1wRbysPRvQRRauKNpFWxRWmIUgAjXj2VdWNu49hOh4N/GW2rYwFHr8Eqo47uW05UvPrnaYF7fQqODrJGb6ABjXbdpXcwlhlIg919N5TQwvPN4SGjRnLccA2WR52mqHKXDNIVSo+HKIWzhZo+61rcXtv+tx7bulHpoG2RE91PmSdg5xfyYIWqQ1BTmVIJeQ9A/5q4gx8ECwnafzObDcD1DBVSuhrTnipGxeOZFDV3iDn0fL8se0ggsQdUHZWS1A7r798fjg
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5482.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(376002)(346002)(39830400003)(396003)(83380400001)(8676002)(478600001)(8936002)(16526019)(53546011)(2906002)(956004)(186003)(4326008)(31686004)(5660300002)(36916002)(6486002)(316002)(26005)(86362001)(54906003)(66556008)(66476007)(2616005)(66946007)(31696002)(36756003)(38100700002)(16576012)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TXB0bmVqQ1dFeTMzQTdiMmVXSUZUZUZtTjNSamVoeWNFSHhtZjB6LzVIRFhO?=
- =?utf-8?B?NzY0UGowY2ZVaWRyZWt2N3NoMitDSzQ2YzI1QUk4eFlBWFVRelpQQmFmMDBX?=
- =?utf-8?B?a0QwWGJpaVIzQ0dkSEFCUFJmcFJpeWlsUGdBdjMzcGNlOVBJVkhKdkZMeGNB?=
- =?utf-8?B?UWVFYS9TbTEzWEFWN2FOMWRreXpoOGpOSTVmYkh2SUFiZkpPTm5tL05GZzRR?=
- =?utf-8?B?SWJka01nSlluOWV0RncybGZ5UmFhbFJvTTRQRjdHZ2gyM0NONWcxdUZGNlNz?=
- =?utf-8?B?a3FxUGhZRjdaNEdpZUxwVEJQbzBPdFp4TjUzVlRYT0lBcDk0d1JzVVNScjNK?=
- =?utf-8?B?VWlydW5ORUZOS3A4eFdnLzBaZmdtTnE4aFQvNzNXRGh1WjdnMk1ZWlRiSVY4?=
- =?utf-8?B?ZEc1MHIrUjliUGpXbkFOLy9FQm1MMVVMempoUlpEQmVnOVRmLzUvdCt6VHA3?=
- =?utf-8?B?aDJCQmxmNWFXWkUweGcyNE04WDFLeTlIRC93cEx4M0d0TCt1TXBCRVgvbGZM?=
- =?utf-8?B?T3pkSGYzL2JoUFZ3ZnFPUDJVNDY5bzhoWGg5V281QjJGUTVXWTBsa3lxRmt2?=
- =?utf-8?B?MUc4Zm1UeFZPZDlNRzZlS2hkY01SS1NsRTRPTU96Z1pNTkJDYXFPQ0JpVVU0?=
- =?utf-8?B?eXdtWS9tWUYyUEJyTDUyWnZTT3BIeG9XZWNFNHBaQmpBeUVCTkpzbGN2Vk9q?=
- =?utf-8?B?cXhaUlFndnlveGs1RFZlS2s4a0NkMDhTQTB0Zzg2bWZOWCtQOXQweXlmc1Zr?=
- =?utf-8?B?eS9NTHpKWVNTZUQ2bi9MNXNWc3Z2VnBGanRVMEN5VHRLUXdNM0RIUXJndzMv?=
- =?utf-8?B?S29aSlFuYUFrUXZoc2Q0Z3RFZ29QTXJabEh2NzVaeUY3YlF4YXl1clhUVU04?=
- =?utf-8?B?ZmwzMXVLeTNBaDdObVlONFJyRXNKVkRpKzJGSGZGMEFqbEpDY09jYTdwMFdp?=
- =?utf-8?B?U21QRGJsMUU5dmF1NTBlRHlRNERKVm80UU5Fc1NPWkVRMGFFTFQ2eVFJN2ps?=
- =?utf-8?B?Sk9WTmdIYUxmSHBUUnVCbFdjajlUVzVKUlNvVnVhVmUyb3pSSG0zeGJSdDJz?=
- =?utf-8?B?d2dyeUxBQTF2cEIxbENYSVlJVlJxalVIdExJK3ZGOFY2bDlyU3JlRlczM0Zv?=
- =?utf-8?B?ZHArK2RSVFVrY3M3TW9FYmVIdVcvaDVZenQwOFIwcVVtVy9tRzBuejczZ3g4?=
- =?utf-8?B?cEZ6QXZqU1VBenZpc3o2YWJLeUVTZXk5dm5jMnV5bnBFVER0dUNJa2hmK3Vk?=
- =?utf-8?B?QUQrczRjVnRMU2pUSUM3V0JvS0x0YUFBblVqSndheGZRZVQvdVZOeDQwbmRl?=
- =?utf-8?B?cENZV0I5QUNoNkg5OGxGZXlEbWZEL0JjZEtjQVBvMmxUUkZCcmlMZ0NJcnEy?=
- =?utf-8?B?MjNSdHFJTGNZNG43UWh0dEZETlpBeDkwRUE5WmpKY3o4NXlHWDFJaUNBdGx1?=
- =?utf-8?B?cE80KzhCU3VwVkM3Y1MzeWlPRVBneGkvVG5KelBzYjlRLzdsSzltSW9PVGJ2?=
- =?utf-8?B?M2h1bVlFdFh6ZG10MEZXUSttZ290YTRaMG1RQjhERldSUWJHbWx6ZHBQSmla?=
- =?utf-8?B?cGJYdTlsSkg0cHlJQ0ZkU1VXaG0rQjQ4d3JyQTNJZUpvV09SOHZacmZyQlgv?=
- =?utf-8?B?NERKTkVKdnFEdllnNHRib0JKTzVJWlJLY1g5N2hLeW1Tc21WeHhFZjRvUTZE?=
- =?utf-8?B?d21UeUluRTdaQzZNVUludys1TGFTTjhWZVhERHpmRTNXSlRGdzE2cHQyN2Vz?=
- =?utf-8?Q?RD8RN2eUiqtNsNwe2VJ61bB0vlN/FPAzhTpm9tr?=
-X-OriginatorOrg: axentia.se
-X-MS-Exchange-CrossTenant-Network-Message-Id: 337449e8-5dc8-4b7b-9fee-08d90e3d9ac7
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5482.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2021 14:13:20.3742
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: h/Uh1eS5qK5vHk4POGZNF4IUJytdF88qBpYpIASBKZXdfRYvXqvsQ2PpyAiCB5Vb
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR02MB5611
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-
-On 2021-05-03 13:56, Greg Kroah-Hartman wrote:
-> From: Atul Gopinathan <atulgopinathan@gmail.com>
+On 5/3/21 6:47 AM, Florian Weimer wrote:
+> * Dave Hansen:
 > 
-> The fields, "toc" and "cd_info", of "struct gdrom_unit gd" are allocated
-> in "probe_gdrom()". Prevent a memory leak by making sure "gd.cd_info" is
-> deallocated in the "remove_gdrom()" function.
+>> On 5/2/21 10:18 PM, Florian Weimer wrote:
+>>>> 5. If the feature is enabled in XCR0, the user happily uses it.
+>>>>
+>>>>     For AMX, Linux implements "transparent first use"
+>>>>     so that it doesn't have to allocate 8KB context switch
+>>>>     buffers for tasks that don't actually use AMX.
+>>>>     It does this by arming XFD for all tasks, and taking a #NM
+>>>>     to allocate a context switch buffer only for those tasks
+>>>>     that actually execute AMX instructions.
+>>> What happens if the kernel cannot allocate that additional context
+>>> switch buffer?
+>> Well, it's vmalloc()'d and currently smaller that the kernel stack,
+>> which is also vmalloc()'d.  While it can theoretically fail, if it
+>> happens you have bigger problems on your hands.
+> Not sure if I understand.
 > 
-> Also prevent double free of the field "gd.toc" by moving it from the
-> module's exit function to "remove_gdrom()". This is because, in
-> "probe_gdrom()", the function makes sure to deallocate "gd.toc" in case
-> of any errors, so the exit function invoked later would again free
-> "gd.toc".
-> 
-> The patch also maintains consistency by deallocating the above mentioned
-> fields in "remove_gdrom()" along with another memory allocated field
-> "gd.disk".
-> 
-> Suggested-by: Jens Axboe <axboe@kernel.dk>
-> Cc: Peter Rosin <peda@axentia.se>
-> Cc: stable <stable@vger.kernel.org>
-> Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  drivers/cdrom/gdrom.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/cdrom/gdrom.c b/drivers/cdrom/gdrom.c
-> index 7f681320c7d3..6c4f6139f853 100644
-> --- a/drivers/cdrom/gdrom.c
-> +++ b/drivers/cdrom/gdrom.c
-> @@ -830,6 +830,8 @@ static int remove_gdrom(struct platform_device *devptr)
->  	if (gdrom_major)
->  		unregister_blkdev(gdrom_major, GDROM_DEV_NAME);
->  	unregister_cdrom(gd.cd_info);
-> +	kfree(gd.cd_info);
-> +	kfree(gd.toc);
->  
->  	return 0;
->  }
-> @@ -861,7 +863,6 @@ static void __exit exit_gdrom(void)
->  {
->  	platform_device_unregister(pd);
->  	platform_driver_unregister(&gdrom_driver);
-> -	kfree(gd.toc);
->  }
->  
->  module_init(init_gdrom);
-> 
+> Is your position that the kernel should terminate processes if it runs
+> out of memory instead reporting proper errors, even if memory overcommit
+> is disabled?
 
-I worry about the gd.toc = NULL; statement in init_gdrom(). It sets off
-all kinds of warnings with me. It looks completely bogus, but the fact
-that it's there at all makes me go hmmmm.
+I assume you mean sysctl vm.overcommit=2 by "overcommit is disabled"?
 
-probe_gdrom_setupcd() will arrange for gdrom_ops to be used, including
-.get_last_session pointing to gdrom_get_last_session() 
+> When this flag is 2, the kernel uses a "never overcommit"
+> policy that attempts to prevent any overcommit of memory.
+> Note that user_reserve_kbytes affects this policy.
 
-gdrom_get_last_session() will use gd.toc, if it is non-NULL.
+Note the "attempts".
 
-The above will all be registered externally to the driver with the call
-to register_cdrom() in probe_gdrom(), before a possible stale gd.toc is
-overwritten with a new one at the end of probe_gdrom().
+So, no, the kernel should not be terminating processes when it runs out
+of memory.  It *attempts* not to do that.  What you are seeing here with
+a demand-based XSAVE buffer allocation driven by a #NM fault is the
+*addition* of a case where those attempts can fail, not the creation of
+the first one.
 
-Side note, .get_last_session is an interesting name in this context, but
-I have no idea if it might be called in the "bad" window (but relying on
-that to not be the case would be ... subtle).
+The addition of this case doesn't bother me because I don't think it
+will ultimately be visible to end users.
 
-So, by simply freeing gd.toc in remove_gdrom() without also setting
-it to NULL, it looks like a potential use after free of gd.toc is
-introduced, replacing a potential leak. Not good.
+If I'm wrong, and our HPC friends who are so enamored with
+"vm.overcommit=2" end up seeing lots of SIGSEGV's where where would
+rather see syscall failures, there's an easy solution: disable first-use
+detection.  Stop dynamically allocating XSAVE buffers on faults.
 
-The same is not true for gd.cd_info as far as I can tell, but it's a bit
-subtle. gdrom_probe() calls gdrom_execute_diagnostics() before the stale
-gd.cd_info is overwritten, and gdrom_execute_diagnostic() passes the
-stale pointer to gdrom_hardreset(), which luckily doesn't use it. But
-this is - as hinted - a bit too subtle for me. I would prefer to have
-remove_gdrom() also clear out the gd.cd_info pointer.
-
-In addition to adding these clears of gd.toc and gd.cd_info to
-remove_gdrom(), they also need to be cleared in case probe fails.
-
-Or instead, maybe add a big fat
-	memset(&gd, 0, sizeof(gd));
-at the top of probe?
-Or maybe the struct gdrom_unit should simply be kzalloc:ed? But that
-triggers some . to -> churn...
-
-Anyway, the patch as proposed gets a NACK from me.
-
-Cheers,
-Peter
+Actually, if we don't have a tunable or boot parameter for that now, we
+should add one.
