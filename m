@@ -2,126 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08E03371232
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 09:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE7237123B
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 10:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232972AbhECIAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 04:00:36 -0400
-Received: from mail-ej1-f46.google.com ([209.85.218.46]:34519 "EHLO
-        mail-ej1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbhECIAc (ORCPT
+        id S233006AbhECIB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 04:01:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232988AbhECIBY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 04:00:32 -0400
-Received: by mail-ej1-f46.google.com with SMTP id a4so6542638ejk.1;
-        Mon, 03 May 2021 00:59:39 -0700 (PDT)
+        Mon, 3 May 2021 04:01:24 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3645DC061760
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 01:00:31 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id lp4so1172082pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 01:00:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pPkRu271k1VtMsrvFMhOCOHk+uYbcduLdSOYa4USJOw=;
+        b=XI1fRVVOtkTSM5Q3ixXkJd/EDI81jweGn5k3LY3cFI3Mwk8UgpO6JnS1yQSwPe45H3
+         XsJRNt5WVF5su65j9PgtvdZJa60/9tK6TUpWH7BIg0EqCXJP+Uw2B768+izLHPhmc+AI
+         rhoDFAhYHkQUl0rkUQE1ecv7nclOD3OlqtUNCvj8O76Koles1kydtZo244S7kVL97IsS
+         zZ8MOGLnA9pP1UE0nLb9n3sPjvZm2zGofwTs0RwKdU1LkZtnRjewkASvRmZT4kuTn5bu
+         Ks5lv3cU4IhQw/1RkqnynGspMZPqlgCfx8VRFTmeOGwA9nUNqH8OZwRRpxqsdzxE26m3
+         /JdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5wQ58QmE9rd2XQ2cySSLGBm/LraaVfP/exkFVcgYCBo=;
-        b=czHH6Y9Yv16rQcpHt/8cv7o1GALW6ggM/m7sqI7fvovTQaS3ajLvIiC7pr4rI0h7IY
-         oQrbE+ZNl4SOMjDWo8Oi7upRb6fikb5ECbLwXybYlYHeOturg/UEH63erQ+ZsBvtoQ9L
-         IdgWNeIYpeS8880NN/ogI5P1g+gx8wKizd9aPmK9vQH8jjuzWKflc8HsnoA5GGI2gg0h
-         tWCZpRinNlZzXyB2cRKhpAE4Oz1m9r+5TatXCEsfERiw94GJdrWlwpvL9ku4NccQhZ1E
-         rhjrQa8vvrsXEMDJiYSBZLWrb064edShb8ywRQJ5j677dwxJSNBeXLEYsy2qBPn3yxkb
-         rR6Q==
-X-Gm-Message-State: AOAM533b8fys9zA+k/QhnvC73+UrbVahH+QExFEYTJ9K1/tGodJqxOGy
-        3aPEWJoRUH4jXv4fzp8X8zCDfjc+kM6ufg==
-X-Google-Smtp-Source: ABdhPJzZn5P+RvRABpxkhWuS8v8YFl2b/lIXQbQ+OWi7dMXF7ZzEpJw0BrP/34q8QDEp358leOt85Q==
-X-Received: by 2002:a17:906:5855:: with SMTP id h21mr15685833ejs.522.1620028778847;
-        Mon, 03 May 2021 00:59:38 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id a22sm11793899edu.14.2021.05.03.00.59.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 00:59:38 -0700 (PDT)
-Subject: Re: linux-next failing build due to missing cubictcp_state symbol
-From:   Jiri Slaby <jirislaby@kernel.org>
-To:     =?UTF-8?Q?Michal_Such=c3=a1nek?= <msuchanek@suse.de>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Yonghong Song <yhs@fb.com>, linux-kernel@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-References: <316e86f9-35cc-36b0-1594-00a09631c736@fb.com>
- <20210423175528.GF6564@kitsune.suse.cz>
- <20210425111545.GL15381@kitsune.suse.cz>
- <20210426113215.GM15381@kitsune.suse.cz>
- <20210426121220.GN15381@kitsune.suse.cz>
- <20210426121401.GO15381@kitsune.suse.cz>
- <49f84147-bf32-dc59-48e0-f89241cf6264@fb.com> <YIbkR6z6mxdNSzGO@krava>
- <YIcRlHQWWKbOlcXr@krava> <20210427121237.GK6564@kitsune.suse.cz>
- <20210430174723.GP15381@kitsune.suse.cz>
- <3d148516-0472-8f0a-085b-94d68c5cc0d5@suse.com>
- <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org>
-Message-ID: <4e051459-8532-7b61-c815-f3435767f8a0@kernel.org>
-Date:   Mon, 3 May 2021 09:59:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pPkRu271k1VtMsrvFMhOCOHk+uYbcduLdSOYa4USJOw=;
+        b=kgub3y7dnuURAFBdH5WvUiVT/YG0lNlBMu2tkzrYcN/7NBN8V83WFPfkgQMONQS+UP
+         UbZBKL3KJLkJUl6xCPsnab2Toyv3xSO0ACn8vQ9qmNL33+/FuuF+FO9fLS5Mmhf6R1Mc
+         Na2kJ1nQ+hohl02cWHT0sqNMrvPoLArL+IXMgCA+8t77sO5W1DF5ocv9S4mYhLIr4FdE
+         z5rZpLiZuSUznsOrdzazTOBqwWIZweTa6GJe5A7uzOxOWeOXqPG5eWml+X/3FWc/UEou
+         ux1fKx9IkxT0AWR0W4RH2IwWGFJjGWE9w1lP5pvLeK+tDfcWgyIwfV80gbOIgQVNpLSS
+         mJkw==
+X-Gm-Message-State: AOAM532/85FqZS+RSedNA+duTiODV3OaMRlLhSxY/9q1WtgqrCoRWoLa
+        xiInbx2ucAYXgCrp2J7+66B/qCyRv/2uXA1Fq6mS5Q==
+X-Google-Smtp-Source: ABdhPJy9HgB+o3DYnLKHRZ8iEYUd8eT/EQLuFJQPCoFJd8ejfH9TWyg7+/nw5FLvaSIOa8fPHM/P7vs9ZRPclqNiBoA=
+X-Received: by 2002:a17:902:b20e:b029:eb:47e3:5977 with SMTP id
+ t14-20020a170902b20eb02900eb47e35977mr18837749plr.67.1620028830573; Mon, 03
+ May 2021 01:00:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210429014226.21017-1-jarvis.w.jiang@gmail.com>
+In-Reply-To: <20210429014226.21017-1-jarvis.w.jiang@gmail.com>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Mon, 3 May 2021 10:09:06 +0200
+Message-ID: <CAMZdPi_d5_LvyATp3P3qy7cns7-2kcU4YCTdm2Gnx0-3indKnQ@mail.gmail.com>
+Subject: Re: [PATCH v2] bus: mhi: pci_generic: T99W175: update channel name
+ from AT to DUN
+To:     Hemant Kumar <hemantk@codeaurora.org>,
+        Manivannan Sadhasivam <mani@kernel.org>
+Cc:     Jarvis Jiang <jarvis.w.jiang@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Chi-Wei Chen50 <cchen50@lenovo.com>,
+        Mark Pearson <mpearson@lenovo.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03. 05. 21, 8:11, Jiri Slaby wrote:
->>>>>> looks like vfs_truncate did not get into BTF data,
->>>>>> I'll try to reproduce
->>
->> _None_ of the functions are generated by pahole -J from debuginfo on 
->> ppc64. debuginfo appears to be correct. Neither pahole -J fs/open.o 
->> works correctly. collect_functions in dwarves seems to be defunct on 
->> ppc64... "functions" array is bogus (so find_function -- the bsearch 
->> -- fails).
-> 
-> It's not that bogus. I forgot an asterisk:
->> #0  find_function (btfe=0x100269f80, name=0x10024631c "stream_open") 
->> at /usr/src/debug/dwarves-1.21-1.1.ppc64/btf_encoder.c:350
->> (gdb) p (*functions)@84
->> $5 = {{name = 0x7ffff68e0922 ".__se_compat_sys_ftruncate", addr = 
->> 75232, size = 72, sh_addr = 65536, generated = false}, {
->>     name = 0x7ffff68e019e ".__se_compat_sys_open", addr = 80592, size 
->> = 216, sh_addr = 65536, generated = false}, {
->>     name = 0x7ffff68e0076 ".__se_compat_sys_openat", addr = 80816, 
->> size = 232, sh_addr = 65536, generated = false}, {
->>     name = 0x7ffff68e0908 ".__se_compat_sys_truncate", addr = 74304, 
->> size = 100, sh_addr = 65536, generated = false}, {
-> ...
->>     name = 0x7ffff68e0808 ".stream_open", addr = 65824, size = 72, 
->> sh_addr = 65536, generated = false}, {
-> ...
->>     name = 0x7ffff68e0751 ".vfs_truncate", addr = 73392, size = 544, 
->> sh_addr = 65536, generated = false}}
-> 
-> The dot makes the difference, of course. The question is why is it 
-> there? I keep looking into it. Only if someone has an immediate idea...
+Hi Mani, Hemant,
 
-Well, .vfs_truncate is in .text (and contains an ._mcount call). And 
-vfs_truncate is in .opd (w/o an ._mcount call). Since setup_functions 
-excludes all functions without the ._mcount call, is_ftrace_func later 
-returns false for such functions and they are filtered before the BTF 
-processing.
+On Thu, 29 Apr 2021 at 03:44, Jarvis Jiang <jarvis.w.jiang@gmail.com> wrote:
+>
+> According to MHI v1.1 specification, change the channel name of T99W175
+> from "AT" to "DUN" (Dial-up networking) for both channel 32 and 33,
+> so that the channels can be bound to the Qcom WWAN control driver, and
+> device node such as /dev/wwan0p3AT will be generated, which is very useful
+> for debugging modem
+>
+> Fixes: aac426562f56 ("bus: mhi: pci_generic: Introduce Foxconn T99W175 support")
+> Signed-off-by: Jarvis Jiang <jarvis.w.jiang@gmail.com>
 
-Technically, get_vmlinux_addrs looks at a list of functions between 
-__start_mcount_loc and __stop_mcount_loc and considers only the listed.
+Should be considered for 5.13-rc* since to properly fix the issue.
 
-I don't know what the correct fix is (exclude .opd functions from the 
-filter?). Neither why cross compiler doesn't fail, nor why ebi v2 avoids 
-this too.
+Thanks,
+Loic
 
-regards,
--- 
-js
+> ---
+>
+> v2: Add: Fixes: aac426562f56
+>
+>  drivers/bus/mhi/pci_generic.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
+> index 7c810f02a2ef..8c7f6576e421 100644
+> --- a/drivers/bus/mhi/pci_generic.c
+> +++ b/drivers/bus/mhi/pci_generic.c
+> @@ -311,8 +311,8 @@ static const struct mhi_channel_config mhi_foxconn_sdx55_channels[] = {
+>         MHI_CHANNEL_CONFIG_DL(5, "DIAG", 32, 1),
+>         MHI_CHANNEL_CONFIG_UL(12, "MBIM", 32, 0),
+>         MHI_CHANNEL_CONFIG_DL(13, "MBIM", 32, 0),
+> -       MHI_CHANNEL_CONFIG_UL(32, "AT", 32, 0),
+> -       MHI_CHANNEL_CONFIG_DL(33, "AT", 32, 0),
+> +       MHI_CHANNEL_CONFIG_UL(32, "DUN", 32, 0),
+> +       MHI_CHANNEL_CONFIG_DL(33, "DUN", 32, 0),
+>         MHI_CHANNEL_CONFIG_HW_UL(100, "IP_HW0_MBIM", 128, 2),
+>         MHI_CHANNEL_CONFIG_HW_DL(101, "IP_HW0_MBIM", 128, 3),
+>  };
+> --
+> 2.25.1
+>
