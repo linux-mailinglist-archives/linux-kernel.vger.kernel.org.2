@@ -2,59 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB373711CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 09:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 702033711CF
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 09:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232885AbhECHDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 03:03:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35524 "EHLO
+        id S232902AbhECHDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 03:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbhECHC7 (ORCPT
+        with ESMTP id S230364AbhECHDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 03:02:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA487C06174A;
-        Mon,  3 May 2021 00:02:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EvzK/tNTFu6j7RpqReg+UsePxfTlwWDpS1m4nxob5S8=; b=d+fupqW0bciG3xsylg36LLTQ15
-        +QOOLEWa0exqDSIyE2RFjDoTQS5TD06FY0/1FfQh1XNyXHeFTsG9tyenVBVIqgjCBGawuG14FPPQb
-        nlgJ4eujI3lzEMR10byAqYaaw88/xqIRqygJ5YIZ9PGkOsxhy0ki3ZQtW3ya69QlCjplaZenO46s3
-        CkePR34QF23Hm6BAF/3bUu0VKRE3N5IjTHEqDqDYFI3jHmEo9AfrGQSPCIGrZ0Y8/bi+X18cTDSU5
-        0b538F8+voZe0aZQuAYNWKR2ipPh29rG5HgUm/aggYZDfxdDlS/AZf2JS+8jK3UFDn0+WK/YHAl6N
-        vR5rCHXw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1ldSaF-00Elgh-Vf; Mon, 03 May 2021 07:01:37 +0000
-Date:   Mon, 3 May 2021 08:01:35 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Shanker Donthineni <sdonthineni@nvidia.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoffer Dall <christoffer.dall@arm.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Vikram Sethi <vsethi@nvidia.com>,
-        Jason Sequeira <jsequeira@nvidia.com>
-Subject: Re: [RFC 0/2] [RFC] Honor PCI prefetchable attributes for a virtual
- machine on ARM64
-Message-ID: <20210503070135.GA3515187@infradead.org>
-References: <20210429162906.32742-1-sdonthineni@nvidia.com>
+        Mon, 3 May 2021 03:03:22 -0400
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A22CC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 00:02:29 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:1ca1:e52f:3ec5:3ac5])
+        by baptiste.telenet-ops.be with bizsmtp
+        id 072P2500N3aEpPb0172PRJ; Mon, 03 May 2021 09:02:25 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1ldSb1-002SiY-5h; Mon, 03 May 2021 09:02:23 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1ldSb0-0006El-Ef; Mon, 03 May 2021 09:02:22 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Max Staudt <max@enpas.org>, Wolfram Sang <wsa@kernel.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] i2c: icy: Remove unused variable new_fwnode in icy_probe()
+Date:   Mon,  3 May 2021 09:02:20 +0200
+Message-Id: <20210503070220.23932-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429162906.32742-1-sdonthineni@nvidia.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 11:29:04AM -0500, Shanker Donthineni wrote:
-> Problem statement: Virtual machine crashes when NVIDIA GPU driver access a prefetchable BAR space due to the unaligned reads/writes for pass-through devices. The same binary works fine as expected in the host kernel. Only one BAR has control & status registers (CSR) and other PCI BARs are marked as prefetchable. NVIDIA GPU driver uses the write-combine feature for mapping the prefetchable BARs to improve performance. This problem applies to all other drivers which want to enable WC.
+The last user of new_fwnode was removed, leading to:
 
-Unless you mean the noveau drivers this simply does not matter.  Please
-don't spam the kernel lists with issues with your broken and license
-violating drivers.
+    drivers/i2c/busses/i2c-icy.c: In function ‘icy_probe’:
+    drivers/i2c/busses/i2c-icy.c:126:24: warning: unused variable ‘new_fwnode’ [-Wunused-variable]
+      126 |  struct fwnode_handle *new_fwnode;
+	  |                        ^~~~~~~~~~
+
+Fixes: dd7a37102b79ae55 ("i2c: icy: Constify the software node")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/i2c/busses/i2c-icy.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/i2c/busses/i2c-icy.c b/drivers/i2c/busses/i2c-icy.c
+index c8c422e9dda43393..5dae7cab72605592 100644
+--- a/drivers/i2c/busses/i2c-icy.c
++++ b/drivers/i2c/busses/i2c-icy.c
+@@ -123,7 +123,6 @@ static int icy_probe(struct zorro_dev *z,
+ {
+ 	struct icy_i2c *i2c;
+ 	struct i2c_algo_pcf_data *algo_data;
+-	struct fwnode_handle *new_fwnode;
+ 	struct i2c_board_info ltc2990_info = {
+ 		.type		= "ltc2990",
+ 		.swnode		= &icy_ltc2990_node,
+-- 
+2.25.1
+
