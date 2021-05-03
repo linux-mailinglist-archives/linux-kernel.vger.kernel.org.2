@@ -2,143 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3B6371949
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2AFD37194D
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231303AbhECQb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 12:31:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231281AbhECQb0 (ORCPT
+        id S231280AbhECQcJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 3 May 2021 12:32:09 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:51504 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231305AbhECQcG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 12:31:26 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A4EFC061763
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 09:30:32 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id p17so3098007plf.12
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 09:30:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EapMqo/OLl+j3jdXKjeGdsgmzEj1HQe1hRFKca8q+6A=;
-        b=C/diLqTofNdL2L3UQNySHFSMf8kta5H6GQIuxwE8d/AjN1svTd8wmbDYkG1MJQCp8+
-         h1yr2vX/WkZTs3xRjxIWXh5UQ6mXrsgBmkEU5cf6GmCtJGDaNmfzmcx7jp8qgPjFGpRW
-         z3PiQbRFhvl4rVXj6tKUsS2lwehUHtQJoCDB68Y0k2v0798717r7pZvlhyQLKGNg4CO+
-         mdE2+jWpFBHfapJQo+7t+kQaRoI2dUVd6Z2JH883DBOQW/Er756wanxgGwuFAfqgA0pI
-         26qMXp/EC4tW/c4D60e//8JiuMaoDlkpK58i42GxvOTD7nMyeJYbyROmDly1UdTNoG0K
-         M2gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EapMqo/OLl+j3jdXKjeGdsgmzEj1HQe1hRFKca8q+6A=;
-        b=aa8HZr3/XgdNaHkOEjTjCEGcFdXMl1F60PSv+RkYCSJd3saQqEjKk8zfPdTtq5mLNt
-         ZVLR06Yzf/7XCJD7F3WdCPMnrbOBG0f49VK584xYcpdAJiKKCaEUCBrPRXaZiNeHtZKw
-         Lk5bhuztAak1LRdVACsNStJ883TgBmftfOnIlijnzPb+hGcvHhKdWsZ1naoOXvUm49N5
-         uB1FuaMgAPwKktEPAYym7rhLzS1AfelJs/I0n3AfdXdVzNlIov6yJelyrJBcfYn1rQSA
-         DIVUhu3Q/xkyPjH/Dc1dI0QJfYf9RUX1b6njjF4AtyX8ph0h+0/c/7ak3LhW+FGv+tod
-         SXsw==
-X-Gm-Message-State: AOAM533TlEmy5rgumVwrvE0hwjgE+vKctwESG7eC8HwpQ/1BCXzpUgHP
-        AOaQkSR4jznSj4PcEI81JwSqzg==
-X-Google-Smtp-Source: ABdhPJzwtq7mjX3hYAL/TNFTiJfK7icexqpayF9WmFmrYT0VVvx2PUn3rCuFqBYFWvFGyOKnT30lJA==
-X-Received: by 2002:a17:902:d645:b029:ed:5c25:9ac0 with SMTP id y5-20020a170902d645b02900ed5c259ac0mr21439416plh.23.1620059431667;
-        Mon, 03 May 2021 09:30:31 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id i123sm9788207pfc.53.2021.05.03.09.30.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 09:30:31 -0700 (PDT)
-Date:   Mon, 3 May 2021 10:30:28 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     peng.fan@oss.nxp.com
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        o.rempel@pengutronix.de, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH V5 5/8] remoteproc: imx_rproc: initial support for
- mutilple start/stop method
-Message-ID: <20210503163028.GC1699665@xps15>
-References: <1618971622-30539-1-git-send-email-peng.fan@oss.nxp.com>
- <1618971622-30539-6-git-send-email-peng.fan@oss.nxp.com>
+        Mon, 3 May 2021 12:32:06 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1ldbTI-00Guxb-V2; Mon, 03 May 2021 10:31:01 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1ldbTH-00DUxX-C4; Mon, 03 May 2021 10:31:00 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     <Peter.Enderborg@sony.com>
+Cc:     <mathieu.desnoyers@efficios.com>, <rostedt@goodmis.org>,
+        <linux-kernel@vger.kernel.org>, <mingo@redhat.com>,
+        <akpm@linux-foundation.org>, <peterz@infradead.org>,
+        <ast@kernel.org>, <christian.brauner@ubuntu.com>,
+        <dave@stgolabs.net>, <walken@google.com>, <jannh@google.com>,
+        <christophe.leroy@c-s.fr>, <minchan@kernel.org>
+References: <20210430142223.25500-1-peter.enderborg@sony.com>
+        <20210430142223.25500-2-peter.enderborg@sony.com>
+        <m14kfnzmsp.fsf@fess.ebiederm.org>
+        <4bb24db4-f720-f5e7-9054-36bdeaee1d79@sony.com>
+        <20210501091104.418765bd@oasis.local.home>
+        <1214833117.22933.1620049830326.JavaMail.zimbra@efficios.com>
+        <769a00d2-a76d-62d2-aa56-5a107dfdc53d@sony.com>
+Date:   Mon, 03 May 2021 11:30:55 -0500
+In-Reply-To: <769a00d2-a76d-62d2-aa56-5a107dfdc53d@sony.com> (Peter
+        Enderborg's message of "Mon, 3 May 2021 14:48:33 +0000")
+Message-ID: <m1sg33lqyo.fsf@fess.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1618971622-30539-6-git-send-email-peng.fan@oss.nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-XM-SPF: eid=1ldbTH-00DUxX-C4;;;mid=<m1sg33lqyo.fsf@fess.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/cM5lP+LtEYh/PUB7WEiMxI5uS5CjEhCQ=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
+        XM_B_Unicode autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4999]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        *  0.0 XM_B_Unicode BODY: Testing for specific types of unicode
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;<Peter.Enderborg@sony.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 637 ms - load_scoreonly_sql: 0.06 (0.0%),
+        signal_user_changed: 12 (1.8%), b_tie_ro: 10 (1.6%), parse: 1.21
+        (0.2%), extract_message_metadata: 18 (2.8%), get_uri_detail_list: 2.4
+        (0.4%), tests_pri_-1000: 6 (1.0%), tests_pri_-950: 1.29 (0.2%),
+        tests_pri_-900: 1.18 (0.2%), tests_pri_-90: 87 (13.6%), check_bayes:
+        85 (13.3%), b_tokenize: 12 (1.9%), b_tok_get_all: 25 (3.9%),
+        b_comp_prob: 3.1 (0.5%), b_tok_touch_all: 40 (6.4%), b_finish: 1.01
+        (0.2%), tests_pri_0: 493 (77.5%), check_dkim_signature: 0.68 (0.1%),
+        check_dkim_adsp: 2.2 (0.4%), poll_dns_idle: 0.69 (0.1%), tests_pri_10:
+        2.5 (0.4%), tests_pri_500: 11 (1.7%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 1/2] tracing: Add a trace for task_exit
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 10:20:19AM +0800, peng.fan@oss.nxp.com wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> Add three methods IMX_RPROC_NONE(no need start/stop), IMX_RPROC_MMIO
-> (start/stop through mmio) and IMX_RPROC_SMC(start/stop through ARM SMCCC).
-> 
-> The current SoCs supported are all using IMX_RPROC_MMIO.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  drivers/remoteproc/imx_rproc.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
+<Peter.Enderborg@sony.com> writes:
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> On 5/3/21 3:50 PM, Mathieu Desnoyers wrote:
+>> ----- On May 1, 2021, at 9:11 AM, rostedt rostedt@goodmis.org wrote:
+>>
+>>> On Sat, 1 May 2021 09:29:41 +0000
+>>> <Peter.Enderborg@sony.com> wrote:
+>>>
+>>>> On 4/30/21 7:48 PM, Eric W. Biederman wrote:
+>>>>> Peter Enderborg <peter.enderborg@sony.com> writes:
+>>>>>  
+>>>>>> This is the peer functions to task_rename and task_newtask.
+>>>>>> With this we get hole "life-cycle" of task and can easily
+>>>>>> see short livied task and their exit status.
+>>>>> This patch is incorrect.  The location you are dealing with is not part
+>>>>> of task exit.  The location you have instrumented is part of reaping a
+>>>>> task which can come arbitrarily long after the task exits.
+>>>> That is what it aiming. When using this as tool for userspace you
+>>>> would like to know when the task is done. When it no longer
+>>>> holds any thing that might have any impact. If you think the
+>>>> exit imply something more specific I can change the name.
+>>>>
+>>>> I thought exit was a good name, it is in in exit.c.
+>>>>
+>>>> Will the name task_done, task_finished or task_reaped work for you?
+>>> I think "task_reaped" is probably the best name, and the most
+>>> descriptive of what happened.
+>> What would it provide that is not already available through the "sched_process_free"
+>> tracepoint in delayed_put_task_struct ?
+>
+> For task_exit (or task_reaped)
+>
+>         field:pid_t pid;        offset:8;       size:4; signed:1;
+>         field:short oom_score_adj;      offset:12;      size:2; signed:1;
+>         field:int exit_signal;  offset:16;      size:4; signed:1;
+>         field:int exit_code;    offset:20;      size:4; signed:1;
+>         field:int exit_state;   offset:24;      size:4; signed:1;
+>         field:__data_loc char[] comm;   offset:28;      size:4; signed:1;
+>
+> sched_process_free
+>         field:char comm[16];    offset:8;       size:16;        signed:1;
+>         field:pid_t pid;        offset:24;      size:4; signed:1;
+>         field:int prio; offset:28;      size:4; signed:1;
+>
+> So information about oom_score_adj, and it's exit parameters.
 
-> 
-> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
-> index 06dac92e98e6..6289aeae95b6 100644
-> --- a/drivers/remoteproc/imx_rproc.c
-> +++ b/drivers/remoteproc/imx_rproc.c
-> @@ -74,6 +74,15 @@ struct imx_rproc_att {
->  	int flags;
->  };
->  
-> +/* Remote core start/stop method */
-> +enum imx_rproc_method {
-> +	IMX_RPROC_NONE,
-> +	/* Through syscon regmap */
-> +	IMX_RPROC_MMIO,
-> +	/* Through ARM SMCCC */
-> +	IMX_RPROC_SMC,
-> +};
-> +
->  struct imx_rproc_dcfg {
->  	u32				src_reg;
->  	u32				src_mask;
-> @@ -81,6 +90,7 @@ struct imx_rproc_dcfg {
->  	u32				src_stop;
->  	const struct imx_rproc_att	*att;
->  	size_t				att_size;
-> +	enum imx_rproc_method		method;
->  };
->  
->  struct imx_rproc {
-> @@ -183,6 +193,7 @@ static const struct imx_rproc_dcfg imx_rproc_cfg_imx8mq = {
->  	.src_stop	= IMX7D_M4_STOP,
->  	.att		= imx_rproc_att_imx8mq,
->  	.att_size	= ARRAY_SIZE(imx_rproc_att_imx8mq),
-> +	.method		= IMX_RPROC_MMIO,
->  };
->  
->  static const struct imx_rproc_dcfg imx_rproc_cfg_imx7d = {
-> @@ -192,6 +203,7 @@ static const struct imx_rproc_dcfg imx_rproc_cfg_imx7d = {
->  	.src_stop	= IMX7D_M4_STOP,
->  	.att		= imx_rproc_att_imx7d,
->  	.att_size	= ARRAY_SIZE(imx_rproc_att_imx7d),
-> +	.method		= IMX_RPROC_MMIO,
->  };
->  
->  static const struct imx_rproc_dcfg imx_rproc_cfg_imx6sx = {
-> @@ -201,6 +213,7 @@ static const struct imx_rproc_dcfg imx_rproc_cfg_imx6sx = {
->  	.src_stop	= IMX6SX_M4_STOP,
->  	.att		= imx_rproc_att_imx6sx,
->  	.att_size	= ARRAY_SIZE(imx_rproc_att_imx6sx),
-> +	.method		= IMX_RPROC_MMIO,
->  };
->  
->  static int imx_rproc_start(struct rproc *rproc)
-> -- 
-> 2.30.0
-> 
+
+For the record returning oom_score_adj that late is not appropriate for
+any kernel/user API.  It is perfectly valid for the kernel to optimize
+out anything that wait(2) does not return.
+
+If you want oom_score_adj you probably need to sample it in
+sched_process_exit.
+
+I periodically move things from the point a process is reaped to the
+point where a task stops running, for both correctness and for simpler
+maintenance.  When threads were added a bunch of cleanup was added
+to the wrong place.  I certainly would not hesitate to mess with
+oom_score_adj if changing something would make the code simpler.
+
+With both sched_process_free and sched_process_exit it looks like we
+already have tracepoints everywhere they could be needed.
+task exit.
+
+Eric
