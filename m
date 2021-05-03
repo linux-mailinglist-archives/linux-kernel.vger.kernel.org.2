@@ -2,110 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81024371178
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 08:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 097D1371181
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 08:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232752AbhECGHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 02:07:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51760 "EHLO
+        id S232565AbhECGMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 02:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232377AbhECGHU (ORCPT
+        with ESMTP id S229560AbhECGMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 02:07:20 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 275A4C06174A;
-        Sun,  2 May 2021 23:06:27 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id p12so2909840pgj.10;
-        Sun, 02 May 2021 23:06:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=aCcrSErNxvBoj5fyC3epLiepwpZec0GDdGp71BbCQDU=;
-        b=JMwswjCpATlYPl3tgBiU0u/60TfAgIVf1syaut2heTY7hLys0TT6KPVHYf8oN/7eLA
-         MCLp/dObeKrjPKXwO7E01UIvFlnwAr5tEKcznnsgFuWvGk3IJL/OHf4aFFu4tsulg3xf
-         qEVhFPRing0dfG6HvPV8fYYAKnY3PpBu6RRi7OvYKhvQm7kYueNpeUealabeAzJPsg25
-         StKlyryEcWAS3Q4j+YglOIaI6S2H5JVVEmFmk0Q9bwzsjxobLd0M/QymP7WB38Cvb53f
-         0ttlS174YP7eLngTKZnIQprp6xIAtjwzQjwMntaRjPchFaJE8IOyEmMAHiEL0QOc1d88
-         AMXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=aCcrSErNxvBoj5fyC3epLiepwpZec0GDdGp71BbCQDU=;
-        b=YPDHZq3rOsYjGj3LuQy//+CBXsYS9cdA45tzD7WFSeAjr6zq9F/pqWuabU/0uhLrwi
-         mmUul9Y4z4qXSS9MlVh5FXLiC5xuB2GFAhpDtZwGrF6SmgGTiswfo0l9k8KDwA3K68NQ
-         41jQXDbU1gBQOD+GYtW2bhRe21dhSfDr2uUyclsJFcJTpJDGga58M6D0LNyjRPOEMGBn
-         mX55yWdsulcDCDzRLFgeniyXPqTr3tV3dA6pfxn72hmLjFswgizpQ2rMMFtyg6dEDFdQ
-         MDPKBZa17OnG+CzNFtFn8i+jeY0rK9/zGPqHmkZ3DEx1z86h9sICkuhBWS2P5o0yal30
-         HQTg==
-X-Gm-Message-State: AOAM533meTXOvUdHpBFOAOdBm3tbBYTWkK3C0jqL7DZYtNPD2l4v6aF8
-        T6vAgfHG44roxIt55+KCUX4=
-X-Google-Smtp-Source: ABdhPJy2fmKjRUuk5NXb+58MfObWujx244oddslIcOGT1eiE0nsVxg1Id53Umk4Luq0duWzwxX2NCA==
-X-Received: by 2002:a63:570e:: with SMTP id l14mr16714531pgb.159.1620021986721;
-        Sun, 02 May 2021 23:06:26 -0700 (PDT)
-Received: from shane-XPS-13-9380.attlocal.net ([2600:1700:4ca1:ade0:3a:4810:e38c:9b3])
-        by smtp.gmail.com with ESMTPSA id md21sm16757731pjb.3.2021.05.02.23.06.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 May 2021 23:06:26 -0700 (PDT)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Cc:     khc@pm.waw.pl, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers/net/wan/hdlc_fr: Fix a double free in pvc_xmit
-Date:   Sun,  2 May 2021 23:06:22 -0700
-Message-Id: <20210503060622.27128-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210328075008.4770-1-lyl2019@mail.ustc.edu.cn>
-References: <20210328075008.4770-1-lyl2019@mail.ustc.edu.cn>
+        Mon, 3 May 2021 02:12:07 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1641AC06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 23:11:15 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1ldRnM-0005hJ-Cw; Mon, 03 May 2021 08:11:04 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1ldRnI-0004Ec-38; Mon, 03 May 2021 08:11:00 +0200
+Date:   Mon, 3 May 2021 08:10:59 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        BMC-SW <BMC-SW@aspeedtech.com>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [v2 2/2] pwm: Add Aspeed ast2600 PWM support
+Message-ID: <20210503061059.xrcpuyouga4z5nno@pengutronix.de>
+References: <20210414104939.1093-1-billy_tsai@aspeedtech.com>
+ <20210414104939.1093-3-billy_tsai@aspeedtech.com>
+ <20210426204333.gzqke6td33dtugnh@pengutronix.de>
+ <A89B45FD-FD3D-43F2-A850-8A7FBB1AF165@aspeedtech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5iy7kxz67qvpu36y"
+Content-Disposition: inline
+In-Reply-To: <A89B45FD-FD3D-43F2-A850-8A7FBB1AF165@aspeedtech.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> In pvc_xmit, if __skb_pad(skb, pad, false) failed, it will free
-> the skb in the first time and goto drop. But the same skb is freed
-> by kfree_skb(skb) in the second time in drop.
-> 
-> Maintaining the original function unchanged, my patch adds a new
-> label out to avoid the double free if __skb_pad() failed.
-> 
-> Fixes: f5083d0cee08a ("drivers/net/wan/hdlc_fr: Improvements to the code of pvc_xmit")
-> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-> ---
->  drivers/net/wan/hdlc_fr.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/wan/hdlc_fr.c b/drivers/net/wan/hdlc_fr.c
-> index 0720f5f92caa..4d9dc7d15908 100644
-> --- a/drivers/net/wan/hdlc_fr.c
-> +++ b/drivers/net/wan/hdlc_fr.c
-> @@ -415,7 +415,7 @@ static netdev_tx_t pvc_xmit(struct sk_buff *skb, struct net_device *dev)
->  
->  		if (pad > 0) { /* Pad the frame with zeros */
->  			if (__skb_pad(skb, pad, false))
-> -				goto drop;
-> +				goto out;
->  			skb_put(skb, pad);
->  		}
->  	}
-> @@ -448,8 +448,9 @@ static netdev_tx_t pvc_xmit(struct sk_buff *skb, struct net_device *dev)
->  	return NETDEV_TX_OK;
->  
->  drop:
-> -	dev->stats.tx_dropped++;
->  	kfree_skb(skb);
-> +out:
-> +	dev->stats.tx_dropped++;
->  	return NETDEV_TX_OK;
->  }
-> 
 
-1. This patch is incorrect. "__skb_pad" will NOT free the skb on failure
-when its "free_on_error" parameter is "false".
+--5iy7kxz67qvpu36y
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-2. If you think you fix my commit, please CC me so that I can review
-your patch.
+Hello,
 
-I have sent another patch to revert this.
+On Mon, May 03, 2021 at 04:42:59AM +0000, Billy Tsai wrote:
+> On 2021/4/27, 4:44 AM,Uwe Kleine-K=F6nigwrote:
+>     >> +/* PWM fixed value */
+>     >> +#define PWM_FIXED_PERIOD 0xff
+>     >> +
+>     >> +struct aspeed_pwm_data {
+>     >> +	struct pwm_chip chip;
+>     >> +	struct clk *clk;
+>     >> +	struct regmap *regmap;
+>     >> +	struct reset_control *reset;
+>     >> +};
+>     >> +
+>     >> +static void aspeed_set_pwm_channel_enable(struct regmap *regmap, =
+u8 pwm_channel,
+>     >> +					  bool enable)
+>     >> +{
+>     >> +	regmap_update_bits(regmap, PWM_ASPEED_CTRL_CH(pwm_channel),
+>     >> +			   (PWM_CLK_ENABLE | PWM_PIN_ENABLE),
+>     >> +			   enable ? (PWM_CLK_ENABLE | PWM_PIN_ENABLE) : 0);
+>=20
+>     > What is the semantic difference between CLK_ENABLE and PIN_ENABLE? =
+Does
+>     > the pin stay at it's inactive level if PIN_ENABLE is unset? Does the
+>     > output just freeze at it's current level if CLK_ENABLE is unset?
+>=20
+> Yes.=20
+> When PIN_ENABLE is unset the pwm controller will always output low to the=
+ extern.
+> When CLK_ENABLE is unset the pwm controller will freeze at it's current l=
+evel.
+
+These two are relevant to mention at the top of the driver.
+
+>     > The intended goal is to provide the biggest possible period not big=
+ger
+>     > than the requested value.
+>    =20
+> So, did you mean that if the request period is 100ns and our divide can r=
+each 100.1ns or 95ns
+> the user prefer 95ns to 100.1ns?
+
+Yes. It's unclear if the user really prefers 95ns, but to get a
+consistent behaviour among the different drivers, that's what I ask you
+to implement.
+
+Currently there is no way that allows a consumer to specify which
+setting they prefer, I have an idea for a fix though. For that it is
+also important that .apply() doesn't yield 100.1 ns.
+
+>     >> +	dev_dbg(dev, "freq: %d, duty_pt: %d", freq, duty_pt);
+>     >> +	if (state->enabled) {
+>     >> +		aspeed_set_pwm_freq(priv, pwm, freq);
+>     >> +		aspeed_set_pwm_duty(priv, pwm, duty_pt);
+>     >> +		aspeed_set_pwm_polarity(priv, pwm, state->polarity);
+>=20
+>     > How does the hardware behave in between these calls? If for example=
+ the
+>     > polarity is changed, does this affect the output immediately? Does =
+this
+>     > start a new period?
+>=20
+> The pwm output will inverse immediately. The period will not change.
+
+Please mention that at the top of the driver.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--5iy7kxz67qvpu36y
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCPk/EACgkQwfwUeK3K
+7Anp8Af/Z+uYW/3/GCvR2oftIQAZuwphFiTi35Xsodu+DFT3+XSHD43eTtMlcicY
+hImlVwznE+vf/Jvv8L6uIhxf9AZqPGs37mxCgPKi6bNrYd7KVBLnT1PFepDNVec+
+RbI3RX16fdsXIuv1UMubsbG98NrlUDEmCNxXwDx6oHbobk7FBnvw/5Mg0xiDT1ci
+XnSkgFe2HhKYGwfmAEIREQr2JsaNiOwBDFqOZhiVxUKyAn6cPB0+UUIm0ZCXblCR
+SWtzhJ6LC26jdoqUWtL+h3+LhsxKJkGW6YMoFI1Vj2pO75woHGq+DAKB5KuPwwQ4
+tqP5L4yGmD/CIZEHg9o3L5cgMm9AXw==
+=XsrH
+-----END PGP SIGNATURE-----
+
+--5iy7kxz67qvpu36y--
