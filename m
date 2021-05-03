@@ -2,185 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA1B371819
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2117537181A
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230405AbhECPii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 11:38:38 -0400
-Received: from mail-dm6nam12on2052.outbound.protection.outlook.com ([40.107.243.52]:6496
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230122AbhECPih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 11:38:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GD+e1c7To+qJ0U/IfLiCosftZPGiaK+20rYDlM6GpvIzuiKd2JOTUAMcL4SXwPUVgQcAjiUyfMiJpLfhQPAR0CnmbHa5EcMKeSrnIm920XvT/5C8JJrVbMDOai5G0Ua4iYr4Nddrhs9xshW7vZ83QMz2/gkcRTTbBVlJONE74fFuU0Zm3HPWiEn20eu9wFekqsYWS9tV7ErSYBH/nTCtiSieXwFrkAE4IyXGXbRryrTz2XkT/04zIAT7/pgQ325AwgXsgfunhjWiablBBdsRS027ox57iCdyEJ9Yhqq7zaI8A8YhRnjQRygfv0H2McROLHhC4UFDJkLqG3gUmdsnrw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nK1H+cBBvb0i3r3Z521wN32UIXwvRUurwbbmGiEaXts=;
- b=hTl/AdRqjDTgCtvmHJFbdL7cuVSWMXzdxHmoSw06hisCQ+EDnjSZnPcediVxKF7OLoMOXTfsWTkY0jMdOMxDOSRI5R7DnpNzbnVnGTNZWF/eIMyUYoG99vIxtcFUahdsj0GxjXGH+PU2njay4+zixRLPuLCXfmSINbX1MPSxrgQ7TZBcwauClg656Ln4UhQ43gyh5aETz8cOAVuZgvEdbb8t7z01hrrZJuOBNgZfMpzMSQQdayil/jOMM17LVRrPwoPJg1E/GRRGjcIQbOXy/HNrDIIadPP2eXA2s+V2nlGNFc6oLMg1/Hha49jGLrgdwycDSw4+WjV4tf5xjoXvdQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nK1H+cBBvb0i3r3Z521wN32UIXwvRUurwbbmGiEaXts=;
- b=SMJvzgwFEVBgKa/BNzP+qZ//4+2JjqRvzKuzfSUVuShBvfQfT8+o3zaHHTg47fPnNbPfCZ29I5vIDvLxFXpISVUXcQq95RKvgWdKLdVX9ogdm1QHq/U26Mv12n4qCrkRfL4CRwMA/2K2aC+6NPtTsxjhXQbBNBbUby0P6RxPM70=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
- by SN1PR12MB2541.namprd12.prod.outlook.com (2603:10b6:802:24::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.43; Mon, 3 May
- 2021 15:37:41 +0000
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::9898:5b48:a062:db94]) by SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::9898:5b48:a062:db94%6]) with mapi id 15.20.4087.044; Mon, 3 May 2021
- 15:37:41 +0000
-Cc:     brijesh.singh@amd.com, tglx@linutronix.de, bp@alien8.de,
-        jroedel@suse.de, thomas.lendacky@amd.com, pbonzini@redhat.com,
-        mingo@redhat.com, rientjes@google.com, seanjc@google.com,
-        peterz@infradead.org, hpa@zytor.com, tony.luck@intel.com
-Subject: Re: [PATCH Part2 RFC v2 10/37] x86/fault: Add support to handle the
- RMP fault for kernel address
-To:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20210430123822.13825-1-brijesh.singh@amd.com>
- <20210430123822.13825-11-brijesh.singh@amd.com>
- <c3950468-af35-a46d-2d50-238245ed37b3@intel.com>
-From:   Brijesh Singh <brijesh.singh@amd.com>
-Message-ID: <d25db3c9-86ba-b72f-dab7-1dde49bc1229@amd.com>
-Date:   Mon, 3 May 2021 10:37:39 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.0
-In-Reply-To: <c3950468-af35-a46d-2d50-238245ed37b3@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [70.112.153.56]
-X-ClientProxiedBy: SN4PR0501CA0014.namprd05.prod.outlook.com
- (2603:10b6:803:40::27) To SN6PR12MB2718.namprd12.prod.outlook.com
- (2603:10b6:805:6f::22)
+        id S230417AbhECPi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 11:38:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54726 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230122AbhECPi6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 11:38:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E75061159;
+        Mon,  3 May 2021 15:38:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620056285;
+        bh=seyJcZ0y8juW3VHQ49wSvy1Vldxa9pf92aoMWMD358c=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ZkAoHKhUpuywuZloRBz6yjwh6mmkjhSA+OMTppj+uBUhAploJA/MwxB5Cdk8924UI
+         yvsMMrfnga9GVPjYaL+UswzY1uM7zdV7bOUFH8K6aVnYkNlRUGxukEpDxAgXfLGeVX
+         BO828STTL3rHmOPFSjhYyRLpKuBtfpMe0pZXrMaRVQH2cDfTR6sf1cOJhp1ytvPf0G
+         /lQkqg7fShrWYAofE3YAqHq+cUq/uppCO9OX8lPu1MjXkmhp/ok+GZL7IGzObRRwGt
+         ktES5LfKtyQXOrMqJa98U33eGlZD7n9ixpwykKbtyXlNQX37nyKd6mmxzWATqgun7G
+         jE2RsYTVzjmdQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D4C8B5C034B; Mon,  3 May 2021 08:38:04 -0700 (PDT)
+Date:   Mon, 3 May 2021 08:38:04 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     David Rientjes <rientjes@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: Re: Deadlock between CPU offline and kmem_cache_create
+Message-ID: <20210503153804.GS975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210502171827.GA3670492@paulmck-ThinkPad-P17-Gen-1>
+ <043b4901-e242-acb3-42e4-9c32ffd1a75b@suse.cz>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Brijeshs-MacBook-Pro.local (70.112.153.56) by SN4PR0501CA0014.namprd05.prod.outlook.com (2603:10b6:803:40::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.8 via Frontend Transport; Mon, 3 May 2021 15:37:40 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9d3ab570-bc1d-4aa4-8ea7-08d90e496385
-X-MS-TrafficTypeDiagnostic: SN1PR12MB2541:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN1PR12MB2541F6FA085A6F59BD5EDADAE55B9@SN1PR12MB2541.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YA0c0IgN7whwCIVTkVC5XsOtWGZe73WD015o3K347b6FB2P/kF3tm5jc1oN9M0XlTbJchuqAfdu9KUXjICTKX7BdKgIbcNrGW3oiXM1bJbxMHAPEQ4brHn6uvTI9NfG6pF036RLYxuPkTRPwfdat1cIDHrTxbkgRI3jqloHXrk+XrDt0g1wAGUzVttPnG3dmpTpELlWIB/kxUlwCx+inHI5wvcBfEMll7X2lipZ5KAw+3Rj3l39HwRlGosr6o91282A5bI+heSHgWNXpWr/HHuxXwnxh5m+LjpllwCTNLHeJL4Yiqhg28Xi1cHVOZIxdCTy+I6XUCkbqYc/4mzaetNLZuB1Fxeqk8wHbKMCtDs3QKbC4WCMxfjd+EDZhYBWulp2lcamo4QIMmcLefZDnRoX5WcGjJiY+yu5Lxft/kpOvP0XZVTbd+rtAjhTcbAWeL61hSW65jthnBRkDdY1PXlCejoWrvGXeDpnLOgsEwUs7HlEPXyNI7kAQ78jhBxLc310hYJu4roVujYfwt1KOe/RQtamfJnuV5XTayOLP7ebO/3LChW4X/Nb3/wXp7+iXqFUf5DbzKRRayA4Gsu3DxNOSIqF9D+kFfwD8Y8/WsUBkXe7iwFliBya2wvQVMAZ20al01psl3KDuSQQ1I1XAuL+Pnbe+PgX3FQjKXeYCY5nlxDGxxC3OVD55/sf8xO2jlB48OWDmAcIQN+r43eau2DYhwrTeVixQqTjZMWODCEw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(39860400002)(396003)(346002)(136003)(316002)(16526019)(186003)(7416002)(4326008)(2906002)(26005)(53546011)(6506007)(86362001)(31686004)(52116002)(5660300002)(83380400001)(8676002)(8936002)(36756003)(478600001)(6512007)(2616005)(66946007)(66556008)(66476007)(38100700002)(44832011)(6486002)(38350700002)(31696002)(956004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?NHR0amNjLzBmY1ZZQlZiaWlzRXk3MlF6Mm5uMm5qK3BQYzQxMC8xd2tlWkRG?=
- =?utf-8?B?QmhEYkkvbks0VnJkckV6UjNyeFNWTGptektWcHpIZ2FVVmdDZERzWVVqR1Bm?=
- =?utf-8?B?WXBvNndKZG85d3Z6dUpJNHd0azVSanFoelIxblJLajlFNkcyaEFzaTIrYjdP?=
- =?utf-8?B?Ym1SSmx1c3ZIcE1WZ2ZPMGhBT1NBbGRJa1Uyc3NPTlBhTFlBRW53QmkyaTF3?=
- =?utf-8?B?TEtuT3ZFc0M2WCswalpXc0M5QnFQcTJuYVo5VHFoQ2srZENjaGtBekV3Y0M5?=
- =?utf-8?B?eTVpbGFLUVNLV3RBSUZGOURpSUJEVzhiM1dobGZ6c2U0WEJYQW5BdENJUlM0?=
- =?utf-8?B?ck12MGZYNHJwdVgxbjZDbE03QlNNajhwbzczdHdidy9FZStEQmJZTENuWDJm?=
- =?utf-8?B?aUNCNkxJZGdyM0IrSHE2a3htZ3RsNS9nVTdOYUhNZ2V6R3RZSmNHeG5DSUph?=
- =?utf-8?B?UmtJY3FOV0FGai9MM2h3NXlRSDd4MXJxL3JCblB0OW9YOGdiNEEzT3pOQVpa?=
- =?utf-8?B?b2U5WU1RS29vRmJOLzFpRThLR24rSWE0cVdvRWxlZFdXMEpqTXhPYmU4M1lE?=
- =?utf-8?B?czJacEdNTFF5RGJoT3h3b3lnZjkyZWxaT3pwL3RaV3lQazhxNWJ2WDlUSDBW?=
- =?utf-8?B?blNwUUtXQk0zalBYNkxPUnpxVENEZXJSRXdpSVlzNWNhaEtobGhPWmU0VE1N?=
- =?utf-8?B?TE4vdWU0QXh1cDQ0Yllaam1FUm5PMmxLM1YzNEkxajhLdWpKaDRnY3hjSW9C?=
- =?utf-8?B?NFo0V1IrMnkzbWJWMkU5aDRuY2REMW9XU3M4bjQxUnBBM1M1MnJQOTRxRzZl?=
- =?utf-8?B?TEZURWkvTnBBK2d6S3VGZG13NU1YUmN4bWRMYVhsbytUNTZ6bVNnazRKdTdG?=
- =?utf-8?B?Q1Ztb3J5aTNqUnhWemEwTUVYQlNqbnhiNjBTTXl6Y0t0UWZWNE5ZTXRDMmtk?=
- =?utf-8?B?anF4aTh4ZVZWRVFpQytBYWhObHJlQ2tTRW9DaVE1L0dwMVoxeFJXOEtDcDd5?=
- =?utf-8?B?clpkR2RPR1pWSGIvZ2k3bWlJM3JISmZ2T0d1Y1R2V25HZTY5MVNVekt3dldk?=
- =?utf-8?B?dlY0SHc0VXNTbXl2dzNZSG1HZzVRS21ZNWVudjVWTVg5M2EwbDIzZjdkTk5r?=
- =?utf-8?B?ZFB1UWUzMnJrL2pkTlNMU1hNTDNYWjZRL1FWMXdJdFA2UTRmbUc0TndzQWlK?=
- =?utf-8?B?ZFNmK0JEV1AvcDhGdmZyM3hqTy9iS0FmazhhalF5RU1FdWI3SWJYQWxjZEJj?=
- =?utf-8?B?NU9rTVlTZ2ErWklXdGs2dkNwZUNzN2dUTlZkS2w3eUdadldVVzlKQlpRVjA3?=
- =?utf-8?B?MmFHelBrWWF3YjlWMXl1bEgyeW5MUE05bHA4YUdvZ1FaUDVXeGMvRjl4enNP?=
- =?utf-8?B?NThzWUthRGxtd3FmZEVQVHdOWTk0VWcxWjdJNFRZV3BuallOZzVyenFJTWhj?=
- =?utf-8?B?T3d3emgvTGJjb0ZvL0FyeVlIcW03ck5uN25mWnk2ZWR6OXR6Z2N3T3FQY2ZG?=
- =?utf-8?B?c1F5WXpEK3ZzL2pwakVVZktRaUxBRGVkS1JLbGVGWStha0VzQXhwaC9mZFcv?=
- =?utf-8?B?NjhFWGxUVHQ1MmhZVFNITmFITjg0QUR2bXhSR2RNUXRNM0FuRzY0QXdDRzYy?=
- =?utf-8?B?ZWs2NXhTcWRKK2s1ajdnYzM0RUpTQ0t4UGFQVlh6cG9tbzFzZER2OGdZdkli?=
- =?utf-8?B?VzNuZGQzWUkwQ2ZVbHZXc1U4MWtMdGZ3UkhEaklORFBhNDZnVkMxU2MzMnpu?=
- =?utf-8?Q?U/keHgbCvbWzkQtAMYoQU+keuOWodR/TlH40sKO?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9d3ab570-bc1d-4aa4-8ea7-08d90e496385
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2021 15:37:41.6073
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TwM1FOojzq5yBKEXOy/iZpRKBjJkpvOIPqkFrl3niq354EQ3CIuNS2cCF+vqUhr2ACk3RC9HXzAlY8XnZoGn5w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2541
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <043b4901-e242-acb3-42e4-9c32ffd1a75b@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
+On Mon, May 03, 2021 at 12:58:19PM +0200, Vlastimil Babka wrote:
+> 
+> +CC's
+> 
+> On 5/2/21 7:18 PM, Paul E. McKenney wrote:
+> > Hello!
+> 
+> Hi!
+> 
+> > Commit 1f0723a4c0df ("mm, slub: enable slub_debug static key when creating
+> > cache with explicit debug flags") results in the lockdep complaint (see
+> > below) in the presence of CPU-hotplug offline operations.  I triggered
+> > and bisected this using the following command:
+> > 
+> > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 10 --configs TREE05 --trust-make
+> > 
+> > This triggers when rcutorture's kmem_cache_create() for its testing of
+> > mem_dump_obj().  When I reverted commit 1f0723a4c0df, the splat went away.
+> > 
+> > I tried moving rcutorture's mem_dump_obj() testing to rcutorture's
+> > module-init function, but that did not help.  In retrospect, this is no
+> > surprise because the deadlock is caused by the call to kmem_cache_create()
+> > and the slab CPU-hotplug notifiers.  There is no lock in this deadlock
+> > cycle that is under rcutorture's control.
+> 
+> So if I understand correctly it's because there's one sequence of
+> locks from the hotplug callbacks:
+> 
+> lock(cpu_hotplug_lock); // from hotplug machinery itself
+> lock(slab_mutex); // in e.g. slab_mem_going_offline_callback()
+> 
+> And my commit made the reverse sequence possible:
+> lock(slab_mutex); // in kmem_cache_create_usercopy()
+> lock(cpu_hotplug_lock); // kmem_cache_open() -> static_key_enable()
 
-On 5/3/21 9:44 AM, Dave Hansen wrote:
-> On 4/30/21 5:37 AM, Brijesh Singh wrote:
->> When SEV-SNP is enabled globally, a write from the host goes through the
->> RMP check. When the host writes to pages, hardware checks the following
->> conditions at the end of page walk:
->>
->> 1. Assigned bit in the RMP table is zero (i.e page is shared).
->> 2. If the page table entry that gives the sPA indicates that the target
->>    page size is a large page, then all RMP entries for the 4KB
->>    constituting pages of the target must have the assigned bit 0.
->> 3. Immutable bit in the RMP table is not zero.
->>
->> The hardware will raise page fault if one of the above conditions is not
->> met. A host should not encounter the RMP fault in normal execution, but
->> a malicious guest could trick the hypervisor into it. e.g., a guest does
->> not make the GHCB page shared, on #VMGEXIT, the hypervisor will attempt
->> to write to GHCB page.
-> Is that the only case which is left?  If so, why don't you simply split
-> the direct map for GHCB pages before giving them to the guest?  Or, map
-> them with vmap() so that the mapping is always 4k?
+That does indeed match what I am seeing.
 
-GHCB was just an example. Another example is a vfio driver accessing the
-shared page. If those pages are not marked shared then kernel access
-will cause an RMP fault. Ideally we should not be running into this
-situation, but if we do, then I am trying to see how best we can avoid
-the host crashes.
+> > I could imagine moving the static_branch_enable() out into a clean
+> > environment, but this would of course require some mechanism to make
+> > sure that the slab was still in existence at that time.  One way to do
+> > this would be to have a timer that is set at the site of the current
+> > static_branch_enable() and deleted at slab-deletion time.  Plus there
+> > would be a short period of time when debugging would not yet be enabled
+> > for this slab (would that be a problem?).
+> 
+> Perhaps the cleanest solution would simply be to move the whole hunk of commit
+> 1f0723a4c0df to kmem_cache_create_usercopy() before the slab_mutex is taken?
+> See the end of my e-mail. Would that fix your testcase?
 
-Another reason for having this is to catch  the hypervisor bug, during
-the SNP guest create, the KVM allocates few backing pages and sets the
-assigned bit for it (the examples are VMSA, and firmware context page).
-If hypervisor accidentally free's these pages without clearing the
-assigned bit in the RMP table then it will result in RMP fault and thus
-a kernel crash.
+It does on a quick test, thank you!
 
+Tested-by: Paul E. McKenney <paulmck@kernel.org>
 
->
-> Or, worst case, you could use exception tables and something like
-> copy_to_user() to write to the GHCB.  That way, the thread doing the
-> write can safely recover from the fault without the instruction actually
-> ever finishing execution.
->
-> BTW, I went looking through the spec.  I didn't see anything about the
-> guest being able to write the "Assigned" RMP bit.  Did I miss that?
-> Which of the above three conditions is triggered by the guest failing to
-> make the GHCB page shared?
+> > This time could be minimized using (say) an hrtimer timeout of 1
+> > microsecond or some such.  It could be eliminated by having the timer
+> > handler do a wakeup that kmem_cache_create() waits for at some point
+> > after it releases slab_mutex.
+> > 
+> > Alternatively, maybe some way can be found to avoid acquiring slab_mutex
+> > in slab's CPU-hotplug notifiers.
+> 
+> Hm that would be much harder to get right and verify all is OK, I'm afraid.
+> Actually the cpu hotplug locking was also changed recently by me in 59450bbc12be
+> ("mm, slab, slub: stop taking cpu hotplug lock") which mentions how some
+> operations are protected by slab_mutex. I was happy to get rid of the cpu
+> hotplug lock, but ironically if that didn't happen, then 1f0723a4c0df would have
+> been now fine (using static_key_enable_cpuslocked()) as it would be using the
+> same lock order as hotplug :)
 
-The GHCB spec section "Page State Change" provides an interface for the
-guest to request the page state change. During bootup, the guest uses
-the Page State Change VMGEXIT to request hypervisor to make the page
-shared. The hypervisor uses the RMPUPDATE instruction to write to
-"assigned" bit in the RMP table.
+Agreed, your patch below looks way simpler!  ;-)
 
-On VMGEXIT, the very first thing which vmgexit handler does is to map
-the GHCB page for the access and then later using the copy_to_user() to
-sync the GHCB updates from hypervisor to guest. The copy_to_user() will
-cause a RMP fault if the GHCB is not mapped shared. As I explained
-above, GHCB page was just an example, vfio or other may also get into
-this situation.
+							Thanx, Paul
 
-
--Brijesh
-
-
+> Thanks, Vlastimil
+> 
+> > Thoughts?
+> > 
+> > 							Thanx, Paul
+> > 
+> > ------------------------------------------------------------------------
+> > 
+> > [  602.429399] ======================================================
+> > [  602.429777] WARNING: possible circular locking dependency detected
+> > [  602.430156] 5.12.0+ #15 Not tainted
+> > [  602.430374] ------------------------------------------------------
+> > [  602.430759] rcu_torture_sta/109 is trying to acquire lock:
+> > [  602.431099] ffffffff96063cd0 (cpu_hotplug_lock){++++}-{0:0}, at: static_key_enable+0x9/0x20
+> > [  602.431630] 
+> > [  602.431630] but task is already holding lock:
+> > [  602.431992] ffffffff96173c28 (slab_mutex){+.+.}-{3:3}, at: kmem_cache_create_usercopy+0x2d/0x250
+> > [  602.432541] 
+> > [  602.432541] which lock already depends on the new lock.
+> > [  602.432541] 
+> > [  602.433039] 
+> > [  602.433039] the existing dependency chain (in reverse order) is:
+> > [  602.433494] 
+> > [  602.433494] -> #1 (slab_mutex){+.+.}-{3:3}:
+> > [  602.433842]        lock_acquire+0xb9/0x3a0
+> > [  602.434107]        __mutex_lock+0x8d/0x920
+> > [  602.434366]        slub_cpu_dead+0x15/0xf0
+> > [  602.434625]        cpuhp_invoke_callback+0x17a/0x7c0
+> > [  602.434938]        cpuhp_invoke_callback_range+0x3b/0x80
+> > [  602.435266]        _cpu_down+0xdf/0x2a0
+> > [  602.435504]        cpu_down+0x2c/0x50
+> > [  602.435734]        device_offline+0x82/0xb0
+> > [  602.436005]        remove_cpu+0x1a/0x30
+> > [  602.436243]        torture_offline+0x80/0x140
+> > [  602.436514]        torture_onoff+0x147/0x260
+> > [  602.436778]        kthread+0x10a/0x140
+> > [  602.437013]        ret_from_fork+0x22/0x30
+> > [  602.437274] 
+> > [  602.437274] -> #0 (cpu_hotplug_lock){++++}-{0:0}:
+> > [  602.437654]        check_prev_add+0x8f/0xbf0
+> > [  602.437919]        __lock_acquire+0x13f0/0x1d80
+> > [  602.438198]        lock_acquire+0xb9/0x3a0
+> > [  602.438452]        cpus_read_lock+0x21/0xa0
+> > [  602.438713]        static_key_enable+0x9/0x20
+> > [  602.438985]        __kmem_cache_create+0x38d/0x430
+> > [  602.439284]        kmem_cache_create_usercopy+0x146/0x250
+> > [  602.439619]        kmem_cache_create+0xd/0x10
+> > [  602.439895]        rcu_torture_stats+0x79/0x280
+> > [  602.440179]        kthread+0x10a/0x140
+> > [  602.440413]        ret_from_fork+0x22/0x30
+> > [  602.440669] 
+> > [  602.440669] other info that might help us debug this:
+> > [  602.440669] 
+> > [  602.441154]  Possible unsafe locking scenario:
+> > [  602.441154] 
+> > [  602.441523]        CPU0                    CPU1
+> > [  602.441803]        ----                    ----
+> > [  602.442085]   lock(slab_mutex);
+> > [  602.442281]                                lock(cpu_hotplug_lock);
+> > [  602.442662]                                lock(slab_mutex);
+> > [  602.443009]   lock(cpu_hotplug_lock);
+> > [  602.443239] 
+> > [  602.443239]  *** DEADLOCK ***
+> > [  602.443239] 
+> > [  602.443606] 1 lock held by rcu_torture_sta/109:
+> > [  602.443892]  #0: ffffffff96173c28 (slab_mutex){+.+.}-{3:3}, at: kmem_cache_create_usercopy+0x2d/0x250
+> > [  602.444472] 
+> > [  602.444472] stack backtrace:
+> > [  602.444743] CPU: 3 PID: 109 Comm: rcu_torture_sta Not tainted 5.12.0+ #15
+> > [  602.445176] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+> > [  602.445728] Call Trace:
+> > [  602.445891]  dump_stack+0x6d/0x89
+> > [  602.446116]  check_noncircular+0xfe/0x110
+> > [  602.446401]  ? lock_is_held_type+0x98/0x110
+> > [  602.446664]  check_prev_add+0x8f/0xbf0
+> > [  602.446908]  __lock_acquire+0x13f0/0x1d80
+> > [  602.447162]  lock_acquire+0xb9/0x3a0
+> > [  602.447385]  ? static_key_enable+0x9/0x20
+> > [  602.447640]  ? mark_held_locks+0x49/0x70
+> > [  602.447894]  cpus_read_lock+0x21/0xa0
+> > [  602.448124]  ? static_key_enable+0x9/0x20
+> > [  602.448373]  static_key_enable+0x9/0x20
+> > [  602.448614]  __kmem_cache_create+0x38d/0x430
+> > [  602.448882]  kmem_cache_create_usercopy+0x146/0x250
+> > [  602.449184]  ? rcu_torture_stats_print+0xd0/0xd0
+> > [  602.449469]  kmem_cache_create+0xd/0x10
+> > [  602.449708]  rcu_torture_stats+0x79/0x280
+> > [  602.449964]  ? rcu_torture_stats_print+0xd0/0xd0
+> > [  602.450251]  kthread+0x10a/0x140
+> > [  602.450452]  ? kthread_park+0x80/0x80
+> > [  602.450682]  ret_from_fork+0x22/0x30
+> > 
+> 
+> ----8<----
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index f8833d3e5d47..a4a571428c51 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -318,6 +318,16 @@ kmem_cache_create_usercopy(const char *name,
+>  	const char *cache_name;
+>  	int err;
+>  
+> +#ifdef CONFIG_SLUB_DEBUG
+> +	/*
+> +	 * If no slub_debug was enabled globally, the static key is not yet
+> +	 * enabled by setup_slub_debug(). Enable it if the cache is being
+> +	 * created with any of the debugging flags passed explicitly.
+> +	 */
+> +	if (flags & SLAB_DEBUG_FLAGS)
+> +		static_branch_enable(&slub_debug_enabled);
+> +#endif
+> +
+>  	mutex_lock(&slab_mutex);
+>  
+>  	err = kmem_cache_sanity_check(name, size);
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 68123b21e65f..ec87ae218d45 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -3828,15 +3828,6 @@ static int calculate_sizes(struct kmem_cache *s, int forced_order)
+>  
+>  static int kmem_cache_open(struct kmem_cache *s, slab_flags_t flags)
+>  {
+> -#ifdef CONFIG_SLUB_DEBUG
+> -	/*
+> -	 * If no slub_debug was enabled globally, the static key is not yet
+> -	 * enabled by setup_slub_debug(). Enable it if the cache is being
+> -	 * created with any of the debugging flags passed explicitly.
+> -	 */
+> -	if (flags & SLAB_DEBUG_FLAGS)
+> -		static_branch_enable(&slub_debug_enabled);
+> -#endif
+>  	s->flags = kmem_cache_flags(s->size, flags, s->name);
+>  #ifdef CONFIG_SLAB_FREELIST_HARDENED
+>  	s->random = get_random_long();
