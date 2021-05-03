@@ -2,107 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7AEF3717ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CFBA3717F9
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230416AbhECP1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 11:27:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25321 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230406AbhECP07 (ORCPT
+        id S230430AbhECP1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 11:27:47 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:29354 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230484AbhECP1m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 11:26:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620055565;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dNAN0Sy84V91r8TIcd0SMOVKRWb8qpjeLtBN5c2xdHU=;
-        b=ITRIxJVvpzRrBEj/xoir9ksdYYzR7WLIQawBLYOcy9Yv/h8MmEJmre+SMjTC1prILxOANv
-        7/lfBc5m7TFLdNKQTVUYwIJr/xDK4V/nYoA941yNvN1PIwDLvJIFS69++wIcQVATDKzv7Y
-        PhGeykWBOKpvRMhR/Gyl1ZduGfRdkjo=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-175-DZrVDgIVOj2kCNxO8mArDQ-1; Mon, 03 May 2021 11:26:04 -0400
-X-MC-Unique: DZrVDgIVOj2kCNxO8mArDQ-1
-Received: by mail-ed1-f72.google.com with SMTP id d18-20020aa7d6920000b0290388b4c7ee24so2028088edr.12
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 08:26:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dNAN0Sy84V91r8TIcd0SMOVKRWb8qpjeLtBN5c2xdHU=;
-        b=gfa0EtHF6b8wVIAUAFwJ4lz6GohwZtpbGZS6bPsxNwGL45GrtzWWtZT8KE6uZt1y4/
-         eDGcniUX/aPlmRcqG60uEZHTF71i+04JdCaH9as3MbGh1evYzi1Nb/P1/XMZ68OuW3Px
-         3Y/3fdnrnDHIyjDuTZw5FUpgoEXK8JxOkHm8kyByl1E6vyIv8LzFo50HquqptbriJOpp
-         GcWMGmunVR/wLfJ7j7LTe2csbt4e6Zb8nni68+qMts0/rvJP3b7VZ7icLNWrXwdx+DUo
-         +Hb1jv73/QNJOaNYK6ynOc0pNHzNDki48Ge60IA7R66V51N7wFJ1HMs0gH4wqdYSAPN0
-         HVSw==
-X-Gm-Message-State: AOAM533uFdChvxzDfxzJO15W4Lvfe6z5mf44eWzcXXrjA66QVoJ3ID7t
-        CkrBoCoA2DHNmDErmFNQyV3DOErH8z0Vyf+j82ddo68JUDYxpNi5ty9mGBZ0MtO+CUyflB2PAp3
-        Os1q1t3D4garcSqxeMHeg9p0CH/5AmX9XftMMZzD4rz3jqmSURStN15MC+96iS29n4gJuUZE94y
-        Vi
-X-Received: by 2002:a17:906:2616:: with SMTP id h22mr17684816ejc.126.1620055562912;
-        Mon, 03 May 2021 08:26:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz2AWMVkxk9uopT3QTgTPSyNzTAgr3WMD7QdCwySYsZDlZysqavhUHY8k5d/fPnCqHgzkClMg==
-X-Received: by 2002:a17:906:2616:: with SMTP id h22mr17684792ejc.126.1620055562674;
-        Mon, 03 May 2021 08:26:02 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id me3sm17378ejb.49.2021.05.03.08.26.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 08:26:02 -0700 (PDT)
-Subject: Re: [PATCH 0/5] x86/kvm: Refactor KVM PV features teardown and fix
- restore from hibernation
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, x86@kernel.org,
-        Lenny Szubowicz <lszubowi@redhat.com>,
-        Mohamed Aboubakr <mabouba@amazon.com>,
-        Xiaoyi Chen <cxiaoyi@amazon.com>, linux-kernel@vger.kernel.org
-References: <20210414123544.1060604-1-vkuznets@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <1134cd5c-29f4-c149-4380-1f6bff193398@redhat.com>
-Date:   Mon, 3 May 2021 17:26:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210414123544.1060604-1-vkuznets@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        Mon, 3 May 2021 11:27:42 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 143F3xDo166381;
+        Mon, 3 May 2021 11:26:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=uSWnVxT/L88NctnVRLA+CAYwlolKVdmnpGyQBzBdW5g=;
+ b=SEc0sdhEMtmCm/MN+xcx9Xlo+VrdENuJx9l8u2mX5dPQTTKhZeJjGtKJ1cS6Fy5+YGyt
+ pxitc4q7XbvUrShJlt4qMQBDKk9JqEhI9V2MmlRwNurDvsQ4vuh5QAPr4s74rx2DRS4N
+ 3e1VC+v2TCeaZnUQSa5gsEGYWInA0Dkws/RH8MUMeey5OKlbcmMiam/ZDU1cdr0dYSMb
+ lUu8NjDP1Qhg/UxIzPJtFs2j6s9xJmFjjmlvtJjgLu/707B85tMOvFTq2U9T5IgpDZS9
+ ReDOjl3G92pMd8PFt8v9FnkVvrMnByrMk/SdNy5/KU2jCZ5AvtKYBcYBLpUxuZFKrvM/ tQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38ajaqtyej-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 May 2021 11:26:43 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 143F4QRW169743;
+        Mon, 3 May 2021 11:26:43 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38ajaqtydt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 May 2021 11:26:43 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 143FLgQ5024871;
+        Mon, 3 May 2021 15:26:41 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03fra.de.ibm.com with ESMTP id 388xm88e7p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 May 2021 15:26:41 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 143FQcFU17236448
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 3 May 2021 15:26:38 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AC8DBAE04D;
+        Mon,  3 May 2021 15:26:38 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CC997AE045;
+        Mon,  3 May 2021 15:26:35 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.45.89])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  3 May 2021 15:26:35 +0000 (GMT)
+Message-ID: <cf12878833c82710ad4356e7d023cf51241f3cc8.camel@linux.ibm.com>
+Subject: Re: [PATCH v5 09/12] evm: Allow setxattr() and setattr() for
+ unmodified metadata
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>,
+        "mjg59@google.com" <mjg59@google.com>
+Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Mon, 03 May 2021 11:26:24 -0400
+In-Reply-To: <fcd2932bc2a841c2aa7fcbdaee94e0a5@huawei.com>
+References: <20210407105252.30721-1-roberto.sassu@huawei.com>
+         <20210407105252.30721-10-roberto.sassu@huawei.com>
+         <8493d7e2b0fefa4cd3861bd6b7ee6f2340aa7434.camel@linux.ibm.com>
+         <fcd2932bc2a841c2aa7fcbdaee94e0a5@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: CJKpKBCc5dQXzHiLp-Zy9QG0A4TfuLl-
+X-Proofpoint-GUID: OSj9jIQZ-xsdgT5sgo0KaAa6-ERQhQ7H
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-03_10:2021-05-03,2021-05-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 mlxscore=0 lowpriorityscore=0 mlxlogscore=999
+ suspectscore=0 adultscore=0 phishscore=0 spamscore=0 impostorscore=0
+ clxscore=1015 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2105030104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/04/21 14:35, Vitaly Kuznetsov wrote:
-> This series is a successor of Lenny's "[PATCH] x86/kvmclock: Stop kvmclocks
-> for hibernate restore". While reviewing his patch I realized that PV
-> features teardown we have is a bit messy: it is scattered across kvm.c
-> and kvmclock.c and not all features are being shutdown an all paths.
-> This series unifies all teardown paths in kvm.c and makes sure all
-> features are disabled when needed.
+On Mon, 2021-05-03 at 15:11 +0000, Roberto Sassu wrote:
+> > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> > Sent: Monday, May 3, 2021 3:00 PM
+> > On Wed, 2021-04-07 at 12:52 +0200, Roberto Sassu wrote:
+> > 
+> > > diff --git a/security/integrity/evm/evm_main.c
+> > b/security/integrity/evm/evm_main.c
+> > > @@ -389,6 +473,11 @@ static int evm_protect_xattr(struct
+> > user_namespace *mnt_userns,
+> > >  	if (evm_status == INTEGRITY_FAIL_IMMUTABLE)
+> > >  		return 0;
+> > >
+> > > +	if (evm_status == INTEGRITY_PASS_IMMUTABLE &&
+> > > +	    !evm_xattr_change(mnt_userns, dentry, xattr_name, xattr_value,
+> > > +			      xattr_value_len))
+> > > +		return 0;
+> > > +
+> > 
+> > If the purpose of evm_protect_xattr() is to prevent allowing an invalid
+> > security.evm xattr from being re-calculated and updated, making it
+> > valid, INTEGRITY_PASS_IMMUTABLE shouldn't need to be conditional.  Any
+> > time there is an attr or xattr change, including setting it to the
+> > existing value, the status flag should be reset.
+> > 
+> > I'm wondering if making INTEGRITY_PASS_IMMUTABLE conditional would
+> > prevent the file from being resigned.
+> > 
+> > >  	if (evm_status != INTEGRITY_PASS)
+> > >  		integrity_audit_msg(AUDIT_INTEGRITY_METADATA,
+> > d_backing_inode(dentry),
+> > >  				    dentry->d_name.name,
+> > "appraise_metadata",
+> > 
+> > This would then be updated to if not INTEGRITY_PASS or
+> > INTEGRITY_PASS_IMMUTABLE.  The subsequent "return" would need to be
+> > updated as well.
 > 
-> Vitaly Kuznetsov (5):
->    x86/kvm: Fix pr_info() for async PF setup/teardown
->    x86/kvm: Teardown PV features on boot CPU as well
->    x86/kvm: Disable kvmclock on all CPUs on shutdown
->    x86/kvm: Disable all PV features on crash
->    x86/kvm: Unify kvm_pv_guest_cpu_reboot() with kvm_guest_cpu_offline()
-> 
->   arch/x86/include/asm/kvm_para.h |  10 +--
->   arch/x86/kernel/kvm.c           | 113 +++++++++++++++++++++-----------
->   arch/x86/kernel/kvmclock.c      |  26 +-------
->   3 files changed, 78 insertions(+), 71 deletions(-)
-> 
+> I agree on the first suggestion, to reduce the number of log messages.
+> For the second, if you meant that we should return 0 if the status is
+> INTEGRITY_PASS_IMMUTABLE, I thought we wanted to deny xattr
+> changes when there is an EVM portable signature.
 
-Queuing this patch, thanks.
+Why?  I must be missing something.  As long as we're not relying on the
+cached status, allowing the file metadata to be updated shouldn't be an
+issue.
 
-If the Amazon folks want to provide their Tested-by (since they looked 
-at it before and tested Lenny's first attempt at using syscore_ops), 
-they're still in time!
-
-Paolo
+Mimi
 
