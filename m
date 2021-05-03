@@ -2,81 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D34372061
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 21:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD9E372065
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 21:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229602AbhECT2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 15:28:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbhECT2N (ORCPT
+        id S229628AbhECT3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 15:29:01 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:39574 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229514AbhECT3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 15:28:13 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CCAEC061761
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 12:27:19 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id l22so8188420ljc.9
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 12:27:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v5+rXtfYwt5hA3eVlBgy6ypO0la6kLZqFvjAuXbEY2Q=;
-        b=hvAa0s4YtClyTcUl4el7UKtwkSYEgd2BPYWxTetXd5cwBHCoJzJPMy/BfwQZ/dWe0D
-         b7l1Tb6pE6j39sbeSBwyIMRbNetK1cZonLR/5obZ+66wSodsu93ph915v4YpbICZJzFg
-         UGL3LjGbVaym+KekpEp35y5qPOkOddCwIBhJ0=
+        Mon, 3 May 2021 15:29:00 -0400
+Received: by mail-ot1-f49.google.com with SMTP id 65-20020a9d03470000b02902808b4aec6dso6121041otv.6;
+        Mon, 03 May 2021 12:28:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v5+rXtfYwt5hA3eVlBgy6ypO0la6kLZqFvjAuXbEY2Q=;
-        b=GvCa2Ja1Uk6O0CoD8SH8YArose1q4YTtNv6TwTsHyrXLn+BWEB6nqOOnl4kbeS7YnH
-         gHkmh5UR3rt2W7S+hLXVMzhjNx2ApDn7fwwlX8SA3pRScQu7KBU+htnqDZQsf+2G0WCh
-         DRN40Zugn7tRComqrQJjM6fEyMadu0ubxjwXxNUDamLrXxOGu6eLeq39QqRII0e1coMy
-         tew+2+kDsAj38tnEtsqyr84Vt/t1QvKD1A2eBZcVa6elDFojCrQa7VSX6RgPouSdoewb
-         gTehGNIC70h4LAAeibUwfsYY/oVh8TkkTxapimpqs6liIl8IGjtY6cOGtmtWXP2CtwsW
-         G6tQ==
-X-Gm-Message-State: AOAM531zCrIpyihJBuNW4nMNmZzYxY+D9Ffn1SLHaoGpiYmjWLz7j7v0
-        Eg59MTpBFlZyHD/4E6vloH2PkHDzZYDKPfCmvPw=
-X-Google-Smtp-Source: ABdhPJwsM1OFAH1yMfCsAPzCZB8RpLrPgMsmGo7IB7/fkeoBl6q8DzVbCrsgDYezTHUYZliY9/hYmQ==
-X-Received: by 2002:a2e:8449:: with SMTP id u9mr14594018ljh.370.1620070037427;
-        Mon, 03 May 2021 12:27:17 -0700 (PDT)
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
-        by smtp.gmail.com with ESMTPSA id g15sm46724lfj.197.2021.05.03.12.27.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 12:27:16 -0700 (PDT)
-Received: by mail-lf1-f48.google.com with SMTP id t11so8224324lfl.11
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 12:27:16 -0700 (PDT)
-X-Received: by 2002:a05:6512:374b:: with SMTP id a11mr4581761lfs.377.1620070036091;
- Mon, 03 May 2021 12:27:16 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iR5lJyB1TrAOZNykGlZNXsLYDNaojWhhq9zflyVwyeA=;
+        b=h4Naft0HbsyJAwobHUjLSNk+ZuGseENr+TDPHMQE66vbBpJL+IpURhoMLTejtRcSop
+         MF6ftAE4mFH0Za2GnWDIxnZBy4ILIYYQmvrhENys3lfqLSaN7fjgpxfdQtcp1LWgQpzy
+         d6r25Y0+CExg0TSrw+l3pCgq6ZPVNFkfq/VTFalrC/Qm4AA7mVhHLHtsuuLRFf/O1Dho
+         hHh2EuuRBtb5MZGK7ewTR0mjaBADppQ2si8c1nop285bXazTZDvmo4u37ep/vhY1A8Kr
+         1KZVsAzS0gqgyTA2v3/ESWVk398q+a7AdIG00p5mFMmorCQv7Hp6Nc8i3eGemLQxkAnq
+         6yvw==
+X-Gm-Message-State: AOAM533flArqGnJY2yjsECrVG2dsb/5CCttcujPpoaKiSD+q+iKzxVPG
+        8Zvc9eprCsmSooSUifscFiuAcLYVXg==
+X-Google-Smtp-Source: ABdhPJxptf+ZNEp6y1FZypR9E5s+MySSo7XCPWzSr+PZ1Hs8Tt2g78JhAant7OXnbL2OUi8qm4hIVg==
+X-Received: by 2002:a9d:5f0c:: with SMTP id f12mr15844361oti.258.1620070086953;
+        Mon, 03 May 2021 12:28:06 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id j5sm178967otq.10.2021.05.03.12.28.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 May 2021 12:28:06 -0700 (PDT)
+Received: (nullmailer pid 2241244 invoked by uid 1000);
+        Mon, 03 May 2021 19:28:05 -0000
+Date:   Mon, 3 May 2021 14:28:05 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] dt-bindings: ata: Add device tree binding fir
+ Mikrotik RB532 PATA controller
+Message-ID: <20210503192805.GA2232229@robh.at.kernel.org>
+References: <20210428163336.73125-1-tsbogend@alpha.franken.de>
+ <20210428163336.73125-3-tsbogend@alpha.franken.de>
 MIME-Version: 1.0
-References: <20210502220519.GA24775@duo.ucw.cz>
-In-Reply-To: <20210502220519.GA24775@duo.ucw.cz>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 3 May 2021 12:27:00 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg0Cvmxk58f0waakTKo8G5wPWarVw5b2=11f35vBAOYUw@mail.gmail.com>
-Message-ID: <CAHk-=wg0Cvmxk58f0waakTKo8G5wPWarVw5b2=11f35vBAOYUw@mail.gmail.com>
-Subject: Re: [GIT PULL] LEDs changes for v5.13-rc1
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     kernel list <linux-kernel@vger.kernel.org>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210428163336.73125-3-tsbogend@alpha.franken.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 2, 2021 at 3:05 PM Pavel Machek <pavel@ucw.cz> wrote:
->
-> This modifies MAINTAINER's file to remove Dan Murphy's email that is
-> bouncing (and does it globally). I hope that does not conflict too badly.
+On Wed, Apr 28, 2021 at 06:33:36PM +0200, Thomas Bogendoerfer wrote:
+> Add YAML devicetree binding for Mikrotik RB532 PATA controller.
+> 
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> ---
+>  .../bindings/ata/mikrotek,rb532-pata.yaml     | 43 +++++++++++++++++++
+>  1 file changed, 43 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/ata/mikrotek,rb532-pata.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/ata/mikrotek,rb532-pata.yaml b/Documentation/devicetree/bindings/ata/mikrotek,rb532-pata.yaml
+> new file mode 100644
+> index 000000000000..f74880c4fd82
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/ata/mikrotek,rb532-pata.yaml
+> @@ -0,0 +1,43 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/ata/mikrotek,rb532-pata.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Mikrotek RB532 PATA Controller bindings
 
-Well, it caused conflicts, but it's not like they were hard to resolve.
+We have a common binding for this (ata/pata-common.yaml). Really, all 
+you'd gain is how to support 2 devices is defined. Should you use that? 
+Is CompactFlash only a single device, I don't remember. If so, is that a 
+limitation for the board or could 2 devices be supported?
 
-In fact, the resolution was to ignore your changes, because those
-email addresses had been removed by the other branches I already
-merged, so they were gone even before your merge (and the conflicts
-were just due to other changes around it)
+> +
+> +maintainers:
+> +  - Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> +
+> +properties:
+> +  compatible:
+> +    const: mikrotik,rb532-pata
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  gpio:
 
-                 Linus
+'<name>-gpios' is the preferred form (even for singular).
+
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - gpio
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    cf@18a10000 {
+> +        compatible = "mikrotik,rb532-pata";
+> +        reg = <0x18a10000 0xc04>;
+> +
+> +        gpio = <&gpio0 13 0>;
+> +
+> +        interrupt-parent = <&gpio0>;
+> +        interrupts = <13 0>;
+> +    };
+> -- 
+> 2.29.2
+> 
