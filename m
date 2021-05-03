@@ -2,340 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E716372081
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 21:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E98A3372082
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 21:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbhECTep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 15:34:45 -0400
-Received: from bmail1.ministro.hu ([5.249.150.236]:42762 "EHLO
-        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhECTen (ORCPT
+        id S229633AbhECTfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 15:35:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229582AbhECTfO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 15:34:43 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTP id 6EEBF123F7A;
-        Mon,  3 May 2021 21:33:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1620070427;
-        bh=zJ3TTZ5d5dm5GAXhkfMZnzMd4yvhHXI8f3VJrda5gLY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L8TCGUfaNrDQ3qGfar96xwm/EISqpHC9aU170sve0b+VinDWAuQvbFqS0yErSRB1n
-         pw7jyrOyYAbFALkyoZ2zB238SK0uTqjNmPucQ3uAKwnVGw1LYR08d8xrZ5mAHz33sK
-         ZyE1GtWISQV9ywrPUsAT8cbUR6wjmUp+BQHWeXdF6lDHKVkfeVpGdN9Uc2xv8JAnav
-         qMwLGRSgttreh7HKIMmDiJSOkQse/mSXPs+cjDVQjzuOd5LMVXAsLGYhKYvyGaZgvE
-         DLDRZSbA1ANMOQHR6gBCZJrRZN+FTHk+MNBYBgmJx02nRdINAbvrJm0ygaKoKxWCzP
-         dFungFB0d5OPw==
-X-Virus-Scanned: Debian amavisd-new at ministro.hu
-Received: from bmail1.ministro.hu ([127.0.0.1])
-        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id B9PGb0-2Lmg4; Mon,  3 May 2021 21:33:14 +0200 (CEST)
-Received: from dev (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTPSA id 0279C123F6B;
-        Mon,  3 May 2021 21:33:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1620070394;
-        bh=zJ3TTZ5d5dm5GAXhkfMZnzMd4yvhHXI8f3VJrda5gLY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tIyuYlPxRZU91v6Vu5pKKW6IpUIOr91jVkQkx8HnVuHf8d+rTwPMVWrYCWz0cLPhG
-         Jei19SQFy1dUWqr1zTins95Li74J5yusgXiGx/PR9FnVCZJ8oCfRzQkbc//lDAkMq7
-         AT2/C1VHJrl7aLYSgXfVngHb8YCrSGIdnKS0y5sffeM94wUNB1KV7LtuxS+QjO4rg0
-         439FFeNpEWBSpKK1wwmWqdLMnH1r+oYbi+5p6aTf42RkqXx48LkTcIYegif+cdZD3j
-         3cGuEJVzGTjgis/yNBCJbJ2NueVRNdlFrWvCXgvMs4LUQYDFtXMDKAySdWSTrBXhbE
-         YHQ4CYNJBbrhg==
-Date:   Mon, 3 May 2021 19:33:10 +0000
-From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Gene Chen <gene_chen@richtek.com>,
-        Saravanan Sekar <sravanhome@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] iio: adc: driver for texas instruments ads7142
-Message-ID: <20210503193310.GA1714@dev>
-References: <bffbc2b24a869dc42307adf8e3fc71f08fcff6dd.1619892171.git.info@ministro.hu>
- <20210502181423.1712130b@jic23-huawei>
- <20210502204846.GA32610@dev>
- <20210503112600.35c4016e@jic23-huawei>
+        Mon, 3 May 2021 15:35:14 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF8B3C06174A;
+        Mon,  3 May 2021 12:34:18 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id t11so8252478lfl.11;
+        Mon, 03 May 2021 12:34:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=BSY9bKk9NolcYFOXi42/siSm3AMFD53uLmcVvnybB2M=;
+        b=kt1YgzPGtGyBFfAgA4gqJS0lPcCmP+Q+6c7QNzQE9bCYamsEzjue4GsyVhif3OQD/p
+         /rgYY11MNuk9355CAv1iSR6JxWcGJsOEtEnNkeUZ2vc+Ewy6SeNlpe7Ts3SavB5Jiz56
+         nu74jsOiZLfiATCrNhWP7mWFUWFvmDyb/bA9vLzrCz6cy5qJkOvJLYE2SbfHin966MiE
+         EVABlRLi32j4mrEI4PrzAwBj4lk3DeOAv0RtewQS0Rf8AMbVGL4nUWYM1yBAXTfDMCj0
+         yJ9MikAziks3Wrdv/ofnYMY1gkKfdy7hVU9MWJ2OvGUmSgMPMdrQOICFH2SQHkeVvnSR
+         +kPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=BSY9bKk9NolcYFOXi42/siSm3AMFD53uLmcVvnybB2M=;
+        b=KW0hzodM96fwep5VivCLixR4PqfAk7zFJq0A1zH+QRvjNz9zEOrK35EKpR95Yiz612
+         4kaVkv7ub1J7WA99Dy1NMMWMawdZ+GwF8NLHjhPzsYD0X6p5kbsuf2YUPjX8SM3etnxc
+         TRdc5ybsL8ZRHtanL7jzIsBSJJTjJaUb+STyopp4Adk+HEIIiatBaHzhaL6GzdFICd41
+         48LAu/ope5WFcgQeD33e+2r+EUt6APDHCb6vFsG8u9Nu2H9G2jYGD8EmVmi0pbf9kjgl
+         pPlQXVGifJbFEivyx8BWjhkUFUcfhqX8gYRlzGg2D+X/iRJ2JP7Cp8kiq1lXXEZQAMh1
+         LG5w==
+X-Gm-Message-State: AOAM530hwTYC1dr4+UjBXY7ukNUsnDewJkHpn7EY4V0CbZ5mKUyTuWfg
+        0ApAag1h54KgaL+MY5Y4/SA=
+X-Google-Smtp-Source: ABdhPJz9aQZJTMeMgNQfz8NUOpL3hdRNfL7XtXE+z/f0C/ZaJe9J2C4/3KPOnrMMB1NlixBmIiOGJg==
+X-Received: by 2002:a19:674d:: with SMTP id e13mr14834711lfj.652.1620070456304;
+        Mon, 03 May 2021 12:34:16 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id t21sm1402941ljh.84.2021.05.03.12.34.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 May 2021 12:34:15 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Mon, 3 May 2021 21:34:13 +0200
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH v1 5/5] kvfree_rcu: Fix comments according to current code
+Message-ID: <20210503193413.GA2421@pc638.lan>
+References: <20210428134422.1894-1-urezki@gmail.com>
+ <20210428134422.1894-5-urezki@gmail.com>
+ <20210503164723.GX975577@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210503112600.35c4016e@jic23-huawei>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210503164723.GX975577@paulmck-ThinkPad-P17-Gen-1>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 11:26:00AM +0100, Jonathan Cameron wrote:
-> On Sun, 2 May 2021 20:48:47 +0000
-> József Horváth <info@ministro.hu> wrote:
+> On Wed, Apr 28, 2021 at 03:44:22PM +0200, Uladzislau Rezki (Sony) wrote:
+> > We used to have an "emergency path" and comments related
+> > to it. According to current kvfree_rcu() design that path
+> > is not considered as emergency anymore.
+> > 
+> > This patch rephrases and updates comments regarding this.
+> > 
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 > 
-> > On Sun, May 02, 2021 at 06:14:23PM +0100, Jonathan Cameron wrote:
-> > > On Sat, 1 May 2021 18:24:28 +0000
-> > > Jozsef Horvath <info@ministro.hu> wrote:
-> > >   
-> > > > This is an iio driver for
-> > > >  Texas Instruments ADS7142 dual-channel, programmable sensor monitor.
-> > > > 
-> > > > Operation modes supportedby the driver:
-> > > >   When the 'ti,monitoring-mode' property is not present
-> > > >     in the devicetree node definition, the driver initiates a single
-> > > >     conversion in the device for each read request
-> > > >     (/sys/bus/iio/devices/iio:deviceX/in_voltageY_raw).
-> > > >     This is a one-shot conversion, and it is called
-> > > >     "Manual Mode" in the datasheet.
-> > > > 
-> > > >   When the 'ti,monitoring-mode' property is present
-> > > >     in the devicetree node definition, the driver configures
-> > > >     the device's digital window comparator and sets the device's
-> > > >     data buffer operation mode to pre alert data mode.
-> > > >     The driver reads the conversion result when the BUSY/RDY interrupt
-> > > >     fires, and keeps the value until the next BUSY/RDY interrupt
-> > > >     or the first read request
-> > > >     (/sys/bus/iio/devices/iio:deviceX/in_voltageY_raw).  
-> > > 
-> > > Hi Jozsef.
-> > > 
-> > > Interesting device - somewhat like an impact sensor, but on a general
-> > > purpose ADC.  
-> > 
-> > Yes, but now I'm using as an ADC in my project.
-> > In my point of view this is a general purpose ADC with monitoring features.
-> > 
-> > > 
-> > > Hmm. This sounds rather unintuitive and also very much like a policy
-> > > decision rather than anything to do with the hardware.  Hence it
-> > > should almost certainly be in control of userspace and no via
-> > > dt parameters.
-> > >   
-> > 
-> > I think that, this operation modes are not generic enough to bring it to sysfs.
+> Queued as follows, thank you!  Please check my usual wordsmithing to
+> make sure that I did not mess anything up.
 > 
-> That just means you need to figure out how to do it, not make it a
-> boot time, or board flash time based control.
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> commit 06c2113c4b1ce9ded69cd0ac4da9a00ed6be8834
+> Author: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> Date:   Wed Apr 28 15:44:22 2021 +0200
+> 
+>     kvfree_rcu: Fix comments according to current code
+>     
+>     The kvfree_rcu() function now defers allocations in the common
+>     case due to the fact that there is no lockless access to the
+>     memory-allocator caches/pools.  In addition, in CONFIG_PREEMPT_NONE=y
+>     and in CONFIG_PREEMPT_VOLUNTARY=y kernels, there is no reliable way to
+>     determine if spinlocks are held.  As a result, allocation is deferred in
+>     the common case, and the two-argument form of kvfree_rcu() thus uses the
+>     "channel 3" queue through all the rcu_head structures.  This channel
+>     is called referred to as the emergency case in comments, and these
+>     comments are now obsolete.
+>     
+>     This commit therefore updates these comments to reflect the new
+>     common-case nature of such emergencies.
+>     
+>     Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+Looks good to me.
 
-I will try to bring it into sysfs.
-
-> 
-> > 
-> > > The interrupt driven nature of the device implies that a polled interface
-> > > such as sysfs is not appropriate to support this mode.
-> > > 
-> > > Based on the description you have given here and a quick look
-> > > at the flow charts in the datasheet I would suggest.
-> > > 1) Enable sysfs reads as manual mode only.
-> > > 2) Implement the buffered part of an IIO driver.  This is what we use
-> > >    for data where autonomous clocking is going on.  
-> > 
-> > I'll check the buffered api.
-> > 
-> > > 3) Add triggers to represent the different autonomous modes.  In some
-> > >    sense all the modes present can be considered be a series of
-> > >    'capture now' signals that are being generated by the hardware in
-> > >    response to some event'.
-> > > 
-> > > So you'd have a pre_alert_tigger, post_alert_trigger
-> > > Stop_burst and start_burst are more interesting to handle because you
-> > > will need something to actually start/stop them.  These could be done
-> > > via a sysfs attribute for the trigger, or more complex schemes exist
-> > > such as triggering them off another trigger... one or two of the SoC
-> > > ADCs do that sort of thing.
-> > > 
-> > >    
-> > > >     The digital window comparator and hysteresis parameters
-> > > >     can be controlled by:
-> > > >       - the devicetree definition of channel node
-> > > >       - iio sysfs interfaces
-> > > >     This is event driven conversion, and is called
-> > > >     "Autonomous Mode with Pre Alert Data" in the datasheet.
-> > > >     This mode can be used to wake up the system with the ALERT pin,
-> > > >     in case when the monitored voltage level is out of the configured range.  
-> > > 
-> > > Whilst it's fine to only enable the modes you want, we should think about how
-> > > to ensure other modes can be supported.
-> > >   
-> > 
-> > As I described above, I would keep the operation modes in dt, and
-> >  'ti,monitoring-mode' can be an enum.
-> 
-> Sorry but no.  Unless you can make a 'very' strong argument of the
-> fact that this a characteristic of the hardware setup (wiring etc) then
-> it needs to be userspace controlled.
-> 
-
-Ok, I'll come back a possible solution soon.
-
-> > 
-> > > > 
-> > > > Datasheet: https://www.ti.com/lit/ds/symlink/ads7142.pdf
-> > > > 
-> > > > Signed-off-by: Jozsef Horvath <info@ministro.hu>
-> > > > ---  
-> 
-> ...
-> 
-> > 
-> > > 
-> > >   
-> > > > +
-> > > > +	return ret >= 0 ? 0 : ret;  
-> > > 
-> > > if ret == 0 then something went wrong and we should report that.  
-> > 
-> > You are right
-> > 
-> > > > +				channel->data.value = value;
-> > > > +				*channel_collected |= 1 << channel_address;
-> > > > +			}
-> > > > +		}
-> > > > +	} while (--data_buffer_status);
-> > > > +
-> > > > +	return ret;
-> > > > +}
-> > > > +
-> > > > +static int ti_ads7142_do_work(struct iio_dev *indio_dev)  
-> > > 
-> > > As mentioned below, these function needs a more informative name.  
-> > 
-> > I'll change it to ..._do_monitoring_work, and create something like
-> >  start_pre_alert_monitoring, start_post_alert_monitoring, etc
-> 
-> Maybe, but I'd expect 'work' to imply it was the function called on
-> each cycle of monitoring.  This is more monitoring_setup()
-> 
-
-'..._setup' is ok for me.
-
-> 
-> ...
-> 
-> >  
-> > > > +static int ti_ads7142_read_event_config(struct iio_dev *indio_dev,
-> > > > +					const struct iio_chan_spec *chan,
-> > > > +					enum iio_event_type type,
-> > > > +					enum iio_event_direction dir)
-> > > > +{
-> > > > +	struct ti_ads7142_priv *priv = iio_priv(indio_dev);
-> > > > +	struct ti_ads7142_channel *channel;
-> > > > +	int ret;
-> > > > +
-> > > > +	if (!priv->config.monitoring_mode)
-> > > > +		return -EINVAL;
-> > > > +
-> > > > +	if (type != IIO_EV_TYPE_THRESH)
-> > > > +		return -EINVAL;
-> > > > +
-> > > > +	ret = ti_ads7142_address2channel(indio_dev, chan->address,
-> > > > +					 &channel);
-> > > > +	if (ret)
-> > > > +		return ret;
-> > > > +
-> > > > +	if (dir == IIO_EV_DIR_RISING)
-> > > > +		ret = channel->config.alert_high ? 1 : 0;  
-> > > 
-> > > Not fine using ret = channel->config.alert_high; directly?
-> > >   
-> > 
-> > alert_high is bool, ret is int.
-> >  I know, the 'true' value is 1, and its autmatically casted,
-> >  but who knows the future...I would keep this, if possible.
-> 
-> Ok.  Assuming the c spec will change to make this invalid is a bit implausible,
-> but it's not too bad I guess.
-> 
-> > 
-> ...
-> 
-> > 
-> > >   
-> > > > +					   &ads_channel->config.high_threshold);
-> > > > +		ads_channel->config.alert_high = !ret;
-> > > > +		ret = of_property_read_u32(channel_node, "ti,threshold-falling",
-> > > > +					   &ads_channel->config.low_threshold);
-> > > > +		ads_channel->config.alert_low = !ret;
-> > > > +		ret = of_property_read_u32(channel_node, "ti,hysteresis",
-> > > > +					   &ads_channel->config.hysteresis);
-> > > > +		channel_index++;
-> > > > +	}
-> > > > +
-> > > > +	return 0;
-> > > > +err:
-> > > > +	of_node_put(channel_node);
-> > > > +	return ret;
-> > > > +}
-> > > > +
-> > > > +static int ti_ads7142_parse_config_of(struct device *dev,
-> > > > +				      struct iio_dev *indio_dev)
-> > > > +{
-> > > > +	struct ti_ads7142_priv *priv = iio_priv(indio_dev);
-> > > > +
-> > > > +	priv->config.osc_sel = of_property_read_bool(dev->of_node,
-> > > > +						     "ti,osc-sel");  
-> > > 
-> > > Please use generic device property access functions where possible.
-> > > That basically gives us support on non OF based platforms for free.  
-> > 
-> > Could you please explain this, I dont understand.
-> 
-> See include/linux/property.h
-> 
-> That provides firmware type agnostic property accessors - so they will work
-> whether the property is provided via ACPI or via DT (or a number of other
-> options though those are less common).
-> 
-> ACPI DSDT tables can use a special device type PRP0001 which basically is a
-> wrapper for device tree properties.  So the properties are all the same
-> (including compatible) but you need to use the generic accessors to be able to
-> read them. 
-> 
-
-I'ts clear now, include/linux/property.h was a good starting point. Thank you.
-
-> 
-> > 
-> > >   
-> > > > +	of_property_read_u32(dev->of_node, "ti,n-clk", &priv->config.n_clk);
-> > > > +	priv->config.monitoring_mode = of_property_read_bool(dev->of_node,
-> > > > +							     "ti,monitoring-mode");
-> > > > +
-> > > > +	return ti_ads7142_parse_channel_config_of(dev, indio_dev);
-> > > > +}
-> >
-> ...
-> > Thank you for the review and suggestions.
-> 
-> You are welcome.
-> 
-> Thanks,
-> 
-> Jonathan
-> 
-> > 
-> > Best regards
-> > Jozsef
-> 
-> > 
-> > >   
-> > > > +
-> > > > +	return 0;
-> > > > +}
-> > > > +
-> > > > +module_i2c_driver(ti_ads7142_driver);
-> > > > +
-> > > > +MODULE_LICENSE("GPL");
-> > > > +MODULE_AUTHOR("Jozsef Horvath <info@ministro.hu>");
-> > > > +MODULE_DESCRIPTION("Texas Instruments TI_ADS7142 ADC driver");  
-> > > 
-> > >   
-> > 
-> 
-
-Best regards
-Jozsef
+--
+Vlad Rezki
