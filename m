@@ -2,164 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2545937238F
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 01:23:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4847F372391
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 01:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbhECXYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 19:24:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229950AbhECXYG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 19:24:06 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F13C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 16:23:12 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id a9so4928284ilh.9
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 16:23:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sATyLz2AUjh/NEl61N+58SEsQ85RImR+kWn9Q6lYFwQ=;
-        b=vProBvITgZKqrAHCml0iNoYIiE62Yp13NhB/JmOG04iqdKAyZA2xYLUWfpaj51UHV0
-         WB88Be5RuzNvmMGjUMsQMU1sqGHXcrdsfnMPemghFFr+uJ6wznro8yedBnVtJ1oEg3QO
-         wG9vjPgOljuLbfhCaTe/h63BbHHHTrjxe+fpSOWY84RrUeQVZnHCee4ffSwA+Gccj56o
-         PBDd36Lglqn+rYHRiM7uHjdhf2tLr40hkDL1kE2JYfCh6EnrYkqGJ59fWJDk3iq+sqsy
-         Vmn9W37qmvh0R2OEfAOHpVqtUMrFVF5ep5ICBJ26wJ5TYOnkB1huiHbGFwpOyE6c+1Xr
-         oVoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sATyLz2AUjh/NEl61N+58SEsQ85RImR+kWn9Q6lYFwQ=;
-        b=D9ytSlCwLv7S31Gfn05bab2oVsd/6fFSqnfivEwQnM/PSvce4HdCAMyd9ZQJEllETZ
-         vOw6kYA4QbPO/glZmS3+314QXavQ9umnOB+MHMKiQa3sJ9g9D5GIMCTIJnRZAo2EFTQS
-         ohOMegkl1ixEpWZngcF9/E38mu92n2wUa11xjTCsydHKt6BzVLNQzDBSSJ8U8rUnq+p6
-         7n7FMYKxu3ZbDUME8NIbXA9Ujms+8c42cfXdVDv7pxdZ6QNCh5u9sjW4530Nm+XfSd91
-         6Q7bm502caz+ainqTY0Mx9F3Z3wCZcdE/As17WB5Jm0pTkLTHHtApizvSi2bkBahmeol
-         Sbkg==
-X-Gm-Message-State: AOAM531bykbw3/WJ6bFDei8pc3eYiwP2YxQwfQA42kJH8THn49A8TjuC
-        Gs7vXmnOm48mARtPfN78JeSAHdRsKPhR+LuNojkkhQ==
-X-Google-Smtp-Source: ABdhPJw7R3cTssC3VVNMo1hhlVY5+vIryOqVdAt+nXcn4qu/GnFlyWhV8b40ASXqnwlimiHNUSEQamxHExgxojk7ZJk=
-X-Received: by 2002:a05:6e02:969:: with SMTP id q9mr7460898ilt.285.1620084191701;
- Mon, 03 May 2021 16:23:11 -0700 (PDT)
+        id S229965AbhECXZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 19:25:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40154 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229822AbhECXZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 19:25:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B0543610A2;
+        Mon,  3 May 2021 23:24:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620084298;
+        bh=N5zOlncN9R5ag0CV77uw5WYaavEVXPWnViy/gewguUc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=LIvfhx2OV9Ct22PRwwteGn8nMaODzqYVnXQ1R4n08WEghw4bM66kKs2VCABd5Zqq5
+         fa9qYX7JaJvaI0LmBKJGf7F7nkhP8MCaSav0DdrYuIm3mz5KkTYRO9fPKp84ov3kf/
+         qvBnrIKSwPlDcKmrCGxHp9Y3T/tGUd7pJ00GENBA6HYQtcBReqnmvMMU+CvIRZC+xU
+         n5y+6hXQiF2gEz9rb+SKcgh+fiCcjtFp8vjtJlO5UlGOeeLPnb9SjdcjHwgFsbS/mW
+         olnAo0JCu10hpcVLZzXF3A/rTgIOsc1FnMUM+lJVx0OToZNt99SIcJZmvYRv6omJZP
+         2h1YXrHl0lmgw==
+Date:   Mon, 3 May 2021 16:24:57 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux F2FS Dev Mailing List 
+        <linux-f2fs-devel@lists.sourceforge.net>
+Subject: [GIT PULL] f2fs update for 5.13-rc1
+Message-ID: <YJCGSeyA7XoNcyZT@google.com>
 MIME-Version: 1.0
-References: <20210429104707.203055-1-pbonzini@redhat.com> <20210429104707.203055-3-pbonzini@redhat.com>
- <YIxkTZsblAzUzsf7@google.com> <c4bf8a05-ec0d-9723-bb64-444fe1f088b5@redhat.com>
-In-Reply-To: <c4bf8a05-ec0d-9723-bb64-444fe1f088b5@redhat.com>
-From:   Steve Rutherford <srutherford@google.com>
-Date:   Mon, 3 May 2021 16:22:35 -0700
-Message-ID: <CABayD+f41GQwCL1818S7iogNHO+MLesLJ-hCX5Bbf_0vFfDMrw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS hypercall
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Ashish Kalra <ashish.kalra@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@suse.de>,
-        X86 ML <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 1, 2021 at 2:01 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 30/04/21 22:10, Sean Christopherson wrote:
-> > On Thu, Apr 29, 2021, Paolo Bonzini wrote:
-> >> diff --git a/Documentation/virt/kvm/msr.rst b/Documentation/virt/kvm/msr.rst
-> >> index 57fc4090031a..cf1b0b2099b0 100644
-> >> --- a/Documentation/virt/kvm/msr.rst
-> >> +++ b/Documentation/virt/kvm/msr.rst
-> >> @@ -383,5 +383,10 @@ MSR_KVM_MIGRATION_CONTROL:
-> >>   data:
-> >>           This MSR is available if KVM_FEATURE_MIGRATION_CONTROL is present in
-> >>           CPUID.  Bit 0 represents whether live migration of the guest is allowed.
-> >> +
-> >>           When a guest is started, bit 0 will be 1 if the guest has encrypted
-> >> -        memory and 0 if the guest does not have encrypted memory.
-> >> +        memory and 0 if the guest does not have encrypted memory.  If the
-> >> +        guest is communicating page encryption status to the host using the
-> >> +        ``KVM_HC_PAGE_ENC_STATUS`` hypercall, it can set bit 0 in this MSR to
-> >> +        allow live migration of the guest.  The MSR is read-only if
-> >> +        ``KVM_FEATURE_HC_PAGE_STATUS`` is not advertised to the guest.
-> >
-> > I still don't get the desire to tie MSR_KVM_MIGRATION_CONTROL to PAGE_ENC_STATUS
-> > in any way shape or form.  I can understand making it read-only or dropping
-> > writes if it's not intercepted by userspace, but making it read-only for
-> > non-encrypted guests makes it useful only for encrypted guests, which defeats
-> > the purpose of genericizing the MSR.
->
-> Yeah, I see your point.  On the other hand by making it unconditionally
-> writable we must implement the writability in KVM, because a read-only
-> implementation would not comply with the spec.
->
-> >> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> >> index e9c40be9235c..0c2524bbaa84 100644
-> >> --- a/arch/x86/kvm/x86.c
-> >> +++ b/arch/x86/kvm/x86.c
-> >> @@ -3279,6 +3279,12 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
-> >>              if (!guest_pv_has(vcpu, KVM_FEATURE_MIGRATION_CONTROL))
-> >>                      return 1;
-> >>
-> >> +            /*
-> >> +             * This implementation is only good if userspace has *not*
-> >> +             * enabled KVM_FEATURE_HC_PAGE_ENC_STATUS.  If userspace
-> >> +             * enables KVM_FEATURE_HC_PAGE_ENC_STATUS it must set up an
-> >> +             * MSR filter in order to accept writes that change bit 0.
-> >> +             */
-> >>              if (data != !static_call(kvm_x86_has_encrypted_memory)(vcpu->kvm))
-> >>                      return 1;
-> >
-> > This behavior doesn't match the documentation.
-> >
-> >    a. The MSR is not read-only for legacy guests since they can write '0'.
-> >    b. The MSR is not read-only if KVM_FEATURE_HC_PAGE_STATUS isn't advertised,
-> >       a guest with encrypted memory can write '1' regardless of whether userspace
-> >       has enabled KVM_FEATURE_HC_PAGE_STATUS.
->
-> Right, I should have said "not changeable" rather than "read-only".
->
-> >    c. The MSR is never fully writable, e.g. a guest with encrypted memory can set
-> >       bit 0, but not clear it.  This doesn't seem intentional?
->
-> It is intentional, clearing it would mean preserving the value in the
-> kernel so that userspace can read it.
->
-> So... I don't know, all in all having both the separate CPUID and the
-> userspace implementation reeks of overengineering.  It should be either
-> of these:
->
-> - separate CPUID bit, MSR unconditionally writable and implemented in
-> KVM.  Userspace is expected to ignore the MSR value for encrypted guests
-> unless KVM_FEATURE_HC_PAGE_STATUS is exposed.  Userspace should respect
-> it even for unencrypted guests (not a migration-DoS vector, because
-> userspace can just not expose the feature).
->
-> - make it completely independent from migration, i.e. it's just a facet
-> of MSR_KVM_PAGE_ENC_STATUS saying whether the bitmap is up-to-date.  It
-> would use CPUID bit as the encryption status bitmap and have no code at
-> all in KVM (userspace needs to set up the filter and implement everything).
-As far as I know, because of MSR filtering, the only "code" that needs
-to be in KVM for MSR handling is a #define reserving the PV feature
-number and a #define for the MSR number.
+Hi Linus,
 
-Arguably, you don't even need to add the new PV bits to the supported
-cpuid, since MSR filtering is really what determines if kernel support
-is present.
+Could you please consider this pull request?
 
->
-> At this point I very much prefer the latter, which is basically Ashish's
-> earlier patch.
-The minor distinction would be that if you expose the cpuid bit to the
-guest you plan on intercepting the MSR with filters, and would not
-need any handler code in the kernel.
+Thanks,
 
-Steve
->
-> Paolo
+The following changes since commit 344178334b0971a1ad5f36b76d7b739400e46ec6:
+
+  Merge tag 'sound-5.12-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound (2021-03-12 12:01:26 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git tags/f2fs-for-5.13-rc1
+
+for you to fetch changes up to 9557727876674893d35940fddbd03d3b505e7ed8:
+
+  f2fs: drop inplace IO if fs status is abnormal (2021-04-26 09:50:39 -0700)
+
+----------------------------------------------------------------
+f2fs-for-5.13-rc1
+
+In this round, we added a new mount option, "checkpoint_merge", which introduces
+a kernel thread dealing with the f2fs checkpoints. Once we start to manage the
+IO priority along with blk-cgroup, the checkpoint operation can be processed in
+a lower priority under the process context. Since the checkpoint holds all the
+filesystem operations, we give a higher priority to the checkpoint thread all
+the time.
+
+Enhancement:
+- introduce gc_merge mount option to introduce a checkpoint thread
+- improve to run discard thread efficiently
+- allow modular compression algorithms
+- expose # of overprivision segments to sysfs
+- expose runtime compression stat to sysfs
+
+Bug fix:
+- fix OOB memory access by the node id lookup
+- avoid touching checkpointed data in the checkpoint-disabled mode
+- fix the resizing flow to avoid kernel panic and race conditions
+- fix block allocation issues on pinned files
+- address some swapfile issues
+- fix hugtask problem and kernel panic during atomic write operations
+- don't start checkpoint thread in RO
+
+And, we've cleaned up some kernel coding style and build warnings. In addition,
+we fixed some minor race conditions and error handling routines.
+
+----------------------------------------------------------------
+Chao Yu (25):
+      f2fs: fix to allow migrating fully valid segment
+      f2fs: fix panic during f2fs_resize_fs()
+      f2fs: avoid unused f2fs_show_compress_options()
+      f2fs: remove unused FORCE_FG_GC macro
+      f2fs: update comments for explicit memory barrier
+      f2fs: check discard command number before traversing discard pending list
+      f2fs: remove unused file_clear_encrypt()
+      f2fs: fix to align to section for fallocate() on pinned file
+      f2fs: don't start checkpoint thread in readonly mountpoint
+      f2fs: fix to avoid out-of-bounds memory access
+      f2fs: fix error path of f2fs_remount()
+      f2fs: fix to update last i_size if fallocate partially succeeds
+      f2fs: fix to avoid touching checkpointed data in get_victim()
+      f2fs: delete empty compress.h
+      f2fs: fix to cover __allocate_new_section() with curseg_lock
+      f2fs: introduce gc_merge mount option
+      f2fs: fix to restrict mount condition on readonly block device
+      f2fs: fix to avoid GC/mmap race with f2fs_truncate()
+      f2fs: fix to avoid accessing invalid fio in f2fs_allocate_data_block()
+      f2fs: document: add description about compressed space handling
+      f2fs: avoid duplicated codes for cleanup
+      f2fs: avoid using native allocate_segment_by_default()
+      f2fs: clean up left deprecated IO trace codes
+      f2fs: compress: remove unneed check condition
+      f2fs: drop inplace IO if fs status is abnormal
+
+Chengguang Xu (1):
+      f2fs: fix to use per-inode maxbytes in f2fs_fiemap
+
+Colin Ian King (1):
+      f2fs: fix a redundant call to f2fs_balance_fs if an error occurs
+
+Daeho Jeong (1):
+      f2fs: add sysfs nodes to get runtime compression stat
+
+Eric Biggers (1):
+      f2fs: fix error handling in f2fs_end_enable_verity()
+
+Geert Uytterhoeven (1):
+      f2fs: compress: Allow modular (de)compression algorithms
+
+Gustavo A. R. Silva (1):
+      f2fs: Replace one-element array with flexible-array member
+
+Jaegeuk Kim (2):
+      f2fs: expose # of overprivision segments
+      f2fs: set checkpoint_merge by default
+
+Ruiqi Gong (1):
+      f2fs: fix a typo in inode.c
+
+Sahitya Tummala (2):
+      f2fs: allow to change discard policy based on cached discard cmds
+      f2fs: fix the periodic wakeups of discard thread
+
+Wan Jiabing (1):
+      f2fs: remove unnecessary struct declaration
+
+Wang Xiaojun (1):
+      f2fs: fix wrong alloc_type in f2fs_do_replace_block
+
+Weichao Guo (1):
+      f2fs: do not use AT_SSR mode in FG_GC & high urgent BG_GC
+
+Yi Chen (1):
+      f2fs: fix to avoid NULL pointer dereference
+
+Yi Zhuang (2):
+      f2fs: Fix a hungtask problem in atomic write
+      f2fs: clean up build warnings
+
+huangjianan@oppo.com (3):
+      f2fs: remove unnecessary IS_SWAPFILE check
+      f2fs: fix last_lblock check in check_swap_activate_fast
+      f2fs: check if swapfile is section-alligned
+
+jiahao (1):
+      f2fs: fix a spacing coding style
+
+qiulaibin (1):
+      f2fs: fix wrong comment of nat_tree_lock
+
+xuyehan (1):
+      f2fs: fix a spelling error
+
+ Documentation/ABI/testing/sysfs-fs-f2fs |  31 +++++-
+ Documentation/filesystems/f2fs.rst      |  14 +++
+ fs/f2fs/Kconfig                         |  16 ++-
+ fs/f2fs/acl.c                           |   1 +
+ fs/f2fs/checkpoint.c                    |   9 +-
+ fs/f2fs/compress.c                      |  15 +--
+ fs/f2fs/compress.h                      |   0
+ fs/f2fs/data.c                          | 125 ++++++++++++++++++----
+ fs/f2fs/debug.c                         |   3 +
+ fs/f2fs/dir.c                           |   1 +
+ fs/f2fs/f2fs.h                          |  55 ++++++----
+ fs/f2fs/file.c                          |  51 +++++----
+ fs/f2fs/gc.c                            |  95 +++++++++++++----
+ fs/f2fs/gc.h                            |   6 ++
+ fs/f2fs/inline.c                        |   3 +-
+ fs/f2fs/inode.c                         |   3 +-
+ fs/f2fs/namei.c                         |   3 +
+ fs/f2fs/node.c                          |  19 +++-
+ fs/f2fs/node.h                          |   1 +
+ fs/f2fs/recovery.c                      |   3 +-
+ fs/f2fs/segment.c                       | 184 +++++++++++++++++++++++---------
+ fs/f2fs/segment.h                       |  16 ++-
+ fs/f2fs/super.c                         | 102 +++++++++++++-----
+ fs/f2fs/sysfs.c                         |  47 ++++++++
+ fs/f2fs/verity.c                        |  75 +++++++++----
+ fs/f2fs/xattr.c                         |   1 +
+ include/linux/f2fs_fs.h                 |   2 +-
+ 27 files changed, 660 insertions(+), 221 deletions(-)
+ delete mode 100644 fs/f2fs/compress.h
