@@ -2,224 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35EBE371DF7
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F64371E10
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236600AbhECRHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 13:07:05 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:57990 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235329AbhECQ4M (ORCPT
+        id S233826AbhECRIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 13:08:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236706AbhECRHX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 12:56:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=h9d5zovbtXKtO9TZYvlu4xL+neDJxYxd4FL4V4x+RQk=; b=XA3VMJFHu22LiuYRgV7sx4Rs8c
-        3591aoMHNv/NjUeysIvMIemFNGQvvxhSeVFLCIfBFEcN01AnLU0454DR7x9i5+KbkpS9wQvmvTDlB
-        wmDUyJnbQ8AY0II0FjrcE9U2lfVByEIa3k4pk83kSjB2pgdejDq3f35QdxYnU45zXwOvnAdMTmYRD
-        sEhVGLAwVXWpBZYAFJ1g4iWMaNWdT8a2zstO8bergFsL7t06RcmqF22XWsu1q8nTiQZBV3QbpBlvX
-        aEpoRPohuyyWFgct68cZTIlU40n9PYIaNeseQ9Io2WJOjCS7wWDIUSo6hGwSJE0qOa2JxxSZtGHpi
-        RmunKpRw==;
-Received: from guinness.priv.deltatee.com ([172.16.1.162])
-        by ale.deltatee.com with esmtp (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1ldbqc-0004SZ-Bi; Mon, 03 May 2021 10:55:07 -0600
-To:     John Hubbard <jhubbard@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-mm@kvack.org,
-        iommu@lists.linux-foundation.org
-Cc:     Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>
-References: <20210408170123.8788-1-logang@deltatee.com>
- <20210408170123.8788-10-logang@deltatee.com>
- <37fa46c7-2c24-1808-16e9-e543f4601279@nvidia.com>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <aa0698ba-abad-8c07-2962-d66b6a7affd9@deltatee.com>
-Date:   Mon, 3 May 2021 10:55:02 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Mon, 3 May 2021 13:07:23 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B375C061763
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 09:55:45 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso5639606otb.13
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 09:55:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WTaPZJJAb+agZFdITzeXOjZnWTBVRqn0ZvSBSvsqyj8=;
+        b=KPPMi8esPiixHTvAdzjM1N0qW/guYzs1KzH9fDZI4345Xh0a+0njo5pRHf/sVYbNfp
+         PabktArLEDIdcVFhAkDgyadtRbNJDn4dafcTG2RtZl+LsjdNdxrriJeg5Ss619IEeUSn
+         rzhLOppLZScRfHHm9uhyiGH4PoNuoziso7orE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WTaPZJJAb+agZFdITzeXOjZnWTBVRqn0ZvSBSvsqyj8=;
+        b=RHcU6+v4NVniDk6d7T43HZm20pycv4/jOeHrt1lr6gg+OWZzscyQcHYwIisLuwJzRd
+         ZAks2o2z4/w/gEjD3J5V7UNv8ZcViZUGXkyJ3AM1Wiy5IChVevaMbNIsOulh8UPuwYRw
+         5eK4sAbME03irie0EVE3cSyDk0uRABsXFZA9+lomRVFl1e+fcuhi8eJ+9skt/ZQjQSXe
+         xgBixMUlaV2W+su/BBSd6ewAKWf3klfK62JdzxuVxi4mZ05QNK3R5sK5ReoUqGZI5UXL
+         WE5gFgUhC+Fq1p7/MwUD1GGG1Ad5ar3hphO6jDy8/HIYM8vGyDDfBCx5l0Yd5HmOSlNt
+         4w0g==
+X-Gm-Message-State: AOAM533BrWzdiEi6QIF3M6pzjI9mU9EfpG0fTTKPwNdKSJjxYxCjYtZ6
+        MhthZsj6ANus5Uvu2F1/KQ6t6mTJYStyvg==
+X-Google-Smtp-Source: ABdhPJwhYhd04c3ibVW1areY7p1mhE+WFKOLLkUoz12mwU2Z5w+CvdOGHdiIOva1/O5MN+iIEEviSQ==
+X-Received: by 2002:a9d:7e91:: with SMTP id m17mr15481404otp.192.1620060944406;
+        Mon, 03 May 2021 09:55:44 -0700 (PDT)
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com. [209.85.210.48])
+        by smtp.gmail.com with ESMTPSA id w85sm77754oif.42.2021.05.03.09.55.44
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 09:55:44 -0700 (PDT)
+Received: by mail-ot1-f48.google.com with SMTP id 65-20020a9d03470000b02902808b4aec6dso5674063otv.6
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 09:55:44 -0700 (PDT)
+X-Received: by 2002:a25:d9ce:: with SMTP id q197mr15755336ybg.276.1620060932851;
+ Mon, 03 May 2021 09:55:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <37fa46c7-2c24-1808-16e9-e543f4601279@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 172.16.1.162
-X-SA-Exim-Rcpt-To: robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, christian.koenig@amd.com, jgg@ziepe.ca, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jhubbard@nvidia.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: Re: [PATCH 09/16] dma-direct: Support PCI P2PDMA pages in dma-direct
- map_sg
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+References: <20210423165906.2504169-1-dianders@chromium.org>
+ <20210423095743.v5.9.I3e68fa38c4ccbdbdf145cad2b01e83a1e5eac302@changeid> <CACRpkdbZxauBFLvR_MMx4WD+K6DftK19Fivt_mkE=+Xr2EPUvQ@mail.gmail.com>
+In-Reply-To: <CACRpkdbZxauBFLvR_MMx4WD+K6DftK19Fivt_mkE=+Xr2EPUvQ@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 3 May 2021 09:55:20 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XGYHNasnqaFopUnuZNaBn+Nbf4+ak7vUoERaA8pRBTsw@mail.gmail.com>
+Message-ID: <CAD=FV=XGYHNasnqaFopUnuZNaBn+Nbf4+ak7vUoERaA8pRBTsw@mail.gmail.com>
+Subject: Re: [PATCH v5 09/20] drm/bridge: ti-sn65dsi86: Break GPIO and
+ MIPI-to-eDP bridge into sub-drivers
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Robert Foss <robert.foss@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
+
+On Sat, May 1, 2021 at 4:59 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Fri, Apr 23, 2021 at 6:59 PM Douglas Anderson <dianders@chromium.org> wrote:
+>
+> > Let's use the newly minted aux bus to break up the driver into sub
+> > drivers. We're not doing a full breakup here: all the code is still in
+> > the same file and remains largely untouched. The big goal here of
+> > using sub-drivers is to allow part of our code to finish probing even
+> > if some other code needs to defer. This can solve some chicken-and-egg
+> > problems. Specifically:
+> > - In commit 48834e6084f1 ("drm/panel-simple: Support hpd-gpios for
+> >   delaying prepare()") we had to add a bit of a hack to simpel-panel
+> >   to support HPD showing up late. We can get rid of that hack now
+> >   since the GPIO part of our driver can finish probing early.
+> > - We have a desire to expose our DDC bus to simple-panel (and perhaps
+> >   to a backlight driver?). That will end up with the same
+> >   chicken-and-egg problem. A future patch to move this to a sub-driver
+> >   will fix it.
+> > - If/when we support the PWM functionality present in the bridge chip
+> >   for a backlight we'll end up with another chicken-and-egg
+> >   problem. If we allow the PWM to be a sub-driver too then it solves
+> >   this problem.
+> >
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > ---
+> >
+> > Changes in v5:
+> > - Fix module compile problems (Bjorn + kbuild bot)
+> > - Remove useless MODULE_DEVICE_TABLE (Bjorn).
+>
+> This is generally a good idea. I have no idea when to use
+> auxbus or MFD
+
+It was a bit hard for me to figure out too. I think historically this
+could have been implemented by MFD but I believe that the point of
+introducing the AUX bus was that MFD wasn't a great fit for things
+like this. It's talked about a bit in
+"Documentation/driver-api/auxiliary_bus.rst". For me the important
+thing here is that we think of the bridge chip as one device, not a
+collection of IP blocks glued together in one package. As some
+evidence, the DT bindings don't have sub-nodes for this. There's a
+single DT node that says that this one device is the bridge, is a GPIO
+controller, and can provide a PWM.
 
 
-On 2021-05-02 5:28 p.m., John Hubbard wrote:
->> @@ -387,19 +388,37 @@ void dma_direct_unmap_sg(struct device *dev, struct scatterlist *sgl,
-> 
-> This routine now deserves a little bit of commenting, now that it is
-> doing less obvious things. How about something like this:
-> 
-> /*
->   * Unmaps pages, except for PCI_P2PDMA pages, which were never mapped in the
->   * first place. Instead of unmapping PCI_P2PDMA entries, simply remove the
->   * SG_PCI_P2PDMA mark
->   */
-> void dma_direct_unmap_sg(struct device *dev, struct scatterlist *sgl,
-> 		int nents, enum dma_data_direction dir, unsigned long attrs)
-> {
-> 
+> but I trust that you researched that so:
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-Ok.
+Thanks! I'll land it then to whittle the patch stack down to just the
+controversial EDID one.
 
->>   	struct scatterlist *sg;
->>   	int i;
->>   
->> -	for_each_sg(sgl, sg, nents, i)
->> +	for_each_sg(sgl, sg, nents, i) {
->> +		if (sg_is_pci_p2pdma(sg)) {
->> +			sg_unmark_pci_p2pdma(sg);
->> +			continue;
->> +		}
->> +
->>   		dma_direct_unmap_page(dev, sg->dma_address, sg_dma_len(sg), dir,
->>   			     attrs);
->> +	}
-> 
-> The same thing can be achieved with fewer lines and a bit more clarity.
-> Can we please do it like this instead:
-> 
-> 	for_each_sg(sgl, sg, nents, i) {
-> 		if (sg_is_pci_p2pdma(sg))
-> 			sg_unmark_pci_p2pdma(sg);
-> 		else
-> 			dma_direct_unmap_page(dev, sg->dma_address,
-> 					      sg_dma_len(sg), dir, attrs);
-> 	}
-> 
-> 
-
-That's debatable (the way I did it emphasizes the common case). But I'll
-consider changing it.
-
-> 
-> Also here, a block comment for the function would be nice. How about
-> approximately this:
-> 
-> /*
->   * Maps each SG segment. Returns the number of entries mapped, or 0 upon
->   * failure. If any entry could not be mapped, then no entries are mapped.
->   */
-> 
-> I'll stop complaining about the pre-existing return code conventions,
-> since by now you know what I was thinking of saying. :)
-
-Not really part of this patchset... Seems like if you think there should
-be a comment like that here, you should send a patch. But this patch
-starts returning a negative value here.
-
->>   int dma_direct_map_sg(struct device *dev, struct scatterlist *sgl, int nents,
->>   		enum dma_data_direction dir, unsigned long attrs)
->>   {
->> -	int i;
->> +	struct pci_p2pdma_map_state p2pdma_state = {};
-> 
-> Is it worth putting this stuff on the stack--is there a noticeable
-> performance improvement from caching the state? Because if it's
-> invisible, then simplicity is better. I suspect you're right, and that
-> it *is* worth it, but it's good to know for real.
-> 
->>   	struct scatterlist *sg;
->> +	int i, ret = 0;
->>   
->>   	for_each_sg(sgl, sg, nents, i) {
->> +		if (is_pci_p2pdma_page(sg_page(sg))) {
->> +			ret = pci_p2pdma_map_segment(&p2pdma_state, dev, sg,
->> +						     attrs);
->> +			if (ret < 0) {
->> +				goto out_unmap;
->> +			} else if (ret) {
->> +				ret = 0;
->> +				continue;
-> 
-> Is this a bug? If neither of those "if" branches fires (ret == 0), then
-> the code (probably unintentionally) falls through and continues on to
-> attempt to call dma_direct_map_page()--despite being a PCI_P2PDMA page!
-
-No, it's not a bug. Per the documentation of pci_p2pdma_map_segment(),
-if it returns zero the segment should be mapped normally. P2PDMA pages
-must be mapped with physical addresses (or IOVA addresses) if the TLPS
-for the transaction will go through the host bridge.
-
-> See below for suggestions:
-> 
->> +			}
->> +		}
->> +
->>   		sg->dma_address = dma_direct_map_page(dev, sg_page(sg),
->>   				sg->offset, sg->length, dir, attrs);
->>   		if (sg->dma_address == DMA_MAPPING_ERROR)
-> 
-> This is another case in which "continue" is misleading and not as good
-> as "else". Because unless I'm wrong above, you really only want to take
-> one path *or* the other.
-
-No, per above, it's not one path or the other. If it's a P2PDMA page it
-may still need to be mapped normally.
-
-> Also, the "else if (ret)" can be simplified to just setting ret = 0
-> unconditionally.
-
-I don't follow. If ret is set, we need to unset it before the end of the
-loop.
-
-> Given all that, here's a suggested alternative, which is both shorter
-> and clearer, IMHO:
-> 
-> 	for_each_sg(sgl, sg, nents, i) {
-> 		if (is_pci_p2pdma_page(sg_page(sg))) {
-> 			ret = pci_p2pdma_map_segment(&p2pdma_state, dev, sg,
-> 						     attrs);
-> 			if (ret < 0)
-> 				goto out_unmap;
-> 			else
-> 				ret = 0;
-> 		} else {
-> 			sg->dma_address = dma_direct_map_page(dev, sg_page(sg),
-> 					sg->offset, sg->length, dir, attrs);
-> 			if (sg->dma_address == DMA_MAPPING_ERROR)
-> 				goto out_unmap;
-> 			sg_dma_len(sg) = sg->length;
-> 		}
-> 	}
-
-No, per the comments above, this does not accomplish the same thing and
-is not correct.
-
-I'll try to add a comment to the code to make it more clearer. But the
-kernel doc on pci_p2pdma_map_segment() does mention what must be done
-for different return values explicitly.
-
-Logan
+-Doug
