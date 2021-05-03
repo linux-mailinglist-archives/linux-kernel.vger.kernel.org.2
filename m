@@ -2,146 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B26A371E7B
+	by mail.lfdr.de (Postfix) with ESMTP id D75E9371E7C
 	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233109AbhECRWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 13:22:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41350 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232445AbhECRWR (ORCPT
+        id S233250AbhECRWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 13:22:47 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:45744 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232738AbhECRWT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 13:22:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620062483;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YZDSpOdU8hPfHGPNyL2Z2ZCh2W/0XFNgs6Mty9l/A+c=;
-        b=OuysUCLJWTKBAuryv+zkbTO8VG98FKxASjrlGQPERNUdADSKUSQ0U6t4iwtdXePllsLm3b
-        jREYgtErgm80jm237D4hrlDFEbpZoSfAgjFuJZsK0FmRz7jgh93dYhvee7yNetLQ4dpC/G
-        BWOqmEJgiR/Z3p8IC7MpQqwr3DnAMRw=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-332-7F2zffU0Mm-fJFgKkrSEWw-1; Mon, 03 May 2021 13:21:22 -0400
-X-MC-Unique: 7F2zffU0Mm-fJFgKkrSEWw-1
-Received: by mail-qt1-f197.google.com with SMTP id b5-20020ac867850000b02901be2b671973so1855180qtp.13
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 10:21:21 -0700 (PDT)
+        Mon, 3 May 2021 13:22:19 -0400
+Received: by mail-il1-f199.google.com with SMTP id i27-20020a056e021d1bb02901699edaa0aaso5042065ila.12
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 10:21:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=YZDSpOdU8hPfHGPNyL2Z2ZCh2W/0XFNgs6Mty9l/A+c=;
-        b=lH2K5QSbLNhN7SIXHxtEjSghn9wm5B0d9YJUrA7J6ocUGhhYiX4N/oVDpvsnm2BN3u
-         evy89O3AWVAhQ3M/8XjrXS6Ihbt4WrGx/zaAKghQUxGeypvAPogHTqPGWA/IAVW9ou0t
-         Pnmn6FdjMk2jhn20IEFCzesWOcNj905lWS4ITKDpZsvMznLF67rLlggMA3fPDsRVIrvX
-         pGkrVqpBCHAYBQnVLWLwXGpQq7VJ6+TPTz4do57C8Hl7ao7mmdlwzvD1wmIU16Q0OC7S
-         3Txisd2JwWvKYLirlx2sdPgYH0akE7Id/T4WkIwa+ozuPbc2bgFNkhPUiyhmRCM/FeeV
-         Bp2A==
-X-Gm-Message-State: AOAM533yYphw73A2s4E91MYgDYyXv0SrQNFHFa1R3svTzbMDJDYWGFQF
-        ReBWFpiR8GEE6CRuNLz/2H2HnNEszysGR14chr10mTfjU32tzg2SRRLSVCxScGcGIPw96ynKp1F
-        9pfhUR/mqAxQuNQaKDgqJ2LxK
-X-Received: by 2002:a37:63d2:: with SMTP id x201mr7074649qkb.202.1620062481536;
-        Mon, 03 May 2021 10:21:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxmunf7UZomjEHDhfWMtb2NRGFIT1wgqlRurUitZcql23n+8CfCkV+WD6dRYv77MurlRjHEbw==
-X-Received: by 2002:a37:63d2:: with SMTP id x201mr7074617qkb.202.1620062481295;
-        Mon, 03 May 2021 10:21:21 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id t3sm9023329qke.72.2021.05.03.10.21.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 10:21:20 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH 2/2] mm: memcg/slab: Don't create unfreeable slab
-To:     Shakeel Butt <shakeelb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Cc:     Waiman Long <llong@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <guro@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
-References: <20210502180755.445-1-longman@redhat.com>
- <20210502180755.445-2-longman@redhat.com>
- <699e5ac8-9044-d664-f73f-778fe72fd09b@suse.cz>
- <4c90cf79-9c61-8964-a6fd-2da087893339@redhat.com>
- <d767ff72-711d-976c-d897-9cea0375c827@suse.cz>
- <CALvZod4aW0P2a5ZG4JO4YH2oQ8a1kM9_Tsjz-tAGP_-9hLyOpw@mail.gmail.com>
-Message-ID: <fc59cce6-71af-890e-030c-46357e0f0343@redhat.com>
-Date:   Mon, 3 May 2021 13:21:19 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=qxFHdf1JyUHuKTV5N7flUIAC+ZyvCmlhk8Q5OCqaAEg=;
+        b=QmC31XbFtNFzQKAbswPst+gVoQ3MRqdmWbhZjXTagrjIm5mw+wc5H/3dWyjJE1UQr+
+         GSOdF08H4kE3+e+uJbqv5nQZRY+6yNBdtupTKHi1N9MgyKQswopYMYcB8zQ6uokrfJod
+         TT6A2U4SSO34+hqIx/Gdhn+HCD+izcXKhaQNz9mz+96jYepyM2edrrwN8ZQlxYRVSh0o
+         Hj9oi0KcWPhaqjInNMnGX9/lLoDetdAqO4/29zXPhGCvdK/mS0Y/ie1uhP6iA+7Yfikw
+         AyT8703Oj2F/bRVbqNdhC6uDSQeCoBNEtpp3Vr09UNg2I9HYdRl2AA2vESYlgohAkCji
+         BPIg==
+X-Gm-Message-State: AOAM533CGpmMmL+8BmEFVIIyQqlAEz5TMpSJy+DMLktBnKz1VGDQY9hr
+        aFnP64nUSD53cl6osQ2S2UDMtVDIICP3/IE/B1iJ+CJIkWLe
+X-Google-Smtp-Source: ABdhPJwOLPQv3RamVzSEtvjFDe2UbeRHMXHhlq9OqdtKVPh833BUUtSmprOeelnjLpPlNqaSPbFl9gOggNKDEt3j0vr7lXhuBzNK
 MIME-Version: 1.0
-In-Reply-To: <CALvZod4aW0P2a5ZG4JO4YH2oQ8a1kM9_Tsjz-tAGP_-9hLyOpw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Received: by 2002:a05:6e02:1051:: with SMTP id p17mr1757122ilj.96.1620062486145;
+ Mon, 03 May 2021 10:21:26 -0700 (PDT)
+Date:   Mon, 03 May 2021 10:21:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000032b105c170317c@google.com>
+Subject: [syzbot] net test error: WARNING in __nf_unregister_net_hook
+From:   syzbot <syzbot+33d023f240aa788eb7fe@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
+        kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/3/21 12:24 PM, Shakeel Butt wrote:
-> On Mon, May 3, 2021 at 8:32 AM Vlastimil Babka <vbabka@suse.cz> wrote:
->> On 5/3/21 4:20 PM, Waiman Long wrote:
->>> On 5/3/21 8:22 AM, Vlastimil Babka wrote:
->>>> On 5/2/21 8:07 PM, Waiman Long wrote:
->>>>> The obj_cgroup array (memcg_data) embedded in the page structure is
->>>>> allocated at the first instance an accounted memory allocation happens.
->>>>> With the right size object, it is possible that the allocated obj_cgroup
->>>>> array comes from the same slab that requires memory accounting. If this
->>>>> happens, the slab will never become empty again as there is at least one
->>>>> object left (the obj_cgroup array) in the slab.
->>>>>
->>>>> With instructmentation code added to detect this situation, I got 76
->>>>> hits on the kmalloc-192 slab when booting up a test kernel on a VM.
->>>>> So this can really happen.
->>>>>
->>>>> To avoid the creation of these unfreeable slabs, a check is added to
->>>>> memcg_alloc_page_obj_cgroups() to detect that and double the size
->>>>> of the array in case it happens to make sure that it comes from a
->>>>> different kmemcache.
->>>>>
->>>>> This change, however, does not completely eliminate the presence
->>>>> of unfreeable slabs which can still happen if a circular obj_cgroup
->>>>> array dependency is formed.
->>>> Hm this looks like only a half fix then.
->>>> I'm afraid the proper fix is for kmemcg to create own set of caches for the
->>>> arrays. It would also solve the recursive kfree() issue.
->>> Right, this is a possible solution. However, the objcg pointers array should
->>> need that much memory. Creating its own set of kmemcaches may seem like an
->>> overkill.
->> Well if we go that way, there might be additional benefits:
->>
->> depending of gfp flags, kmalloc() would allocate from:
->>
->> kmalloc-* caches that never have kmemcg objects, thus can be used for the objcg
->> pointer arrays
->> kmalloc-cg-* caches that have only kmemcg unreclaimable objects
->> kmalloc-rcl-* and dma-kmalloc-* can stay with on-demand
->> memcg_alloc_page_obj_cgroups()
->>
->> This way we fully solve the issues that this patchset solves. In addition we get
->> better separation between kmemcg and !kmemcg thus save memory - no allocation of
->> the array as soon as a single object appears in slab. For "kmalloc-8" we now
->> have 8 bytes for the useful data and 8 bytes for the obj_cgroup  pointer.
->>
-> Yes this seems like a better approach.
->
-OK, I will try to go this route then if there is no objection from others.
+Hello,
 
- From slabinfo, the objs/slab numbers range from 4-512. That means we 
-need kmalloc-cg-{32,64,128,256,512,1k,2k,4k}. A init function to set up 
-the new kmemcaches and an allocation function that use the proper 
-kmemcaches to allocate from.
+syzbot found the following issue on:
 
-Cheers,
-Longman
+HEAD commit:    f18c51b6 net: stmmac: Remove duplicate declaration of stmm..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=160a1da5d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=57b4b78935781045
+dashboard link: https://syzkaller.appspot.com/bug?extid=33d023f240aa788eb7fe
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+33d023f240aa788eb7fe@syzkaller.appspotmail.com
+
+wlan1: Created IBSS using preconfigured BSSID 50:50:50:50:50:50
+wlan1: Creating new IBSS network, BSSID 50:50:50:50:50:50
+------------[ cut here ]------------
+hook not found, pf 3 num 0
+WARNING: CPU: 1 PID: 224 at net/netfilter/core.c:480 __nf_unregister_net_hook+0x1eb/0x610 net/netfilter/core.c:480
+Modules linked in:
+CPU: 1 PID: 224 Comm: kworker/u4:5 Not tainted 5.12.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: netns cleanup_net
+RIP: 0010:__nf_unregister_net_hook+0x1eb/0x610 net/netfilter/core.c:480
+Code: 0f b6 14 02 48 89 c8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 11 04 00 00 8b 53 1c 89 ee 48 c7 c7 c0 78 6d 8a e8 40 4c 8a 01 <0f> 0b e9 e5 00 00 00 e8 59 48 30 fa 44 8b 3c 24 4c 89 f8 48 c1 e0
+RSP: 0018:ffffc9000178fbc0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffff888021b56400 RCX: 0000000000000000
+RDX: ffff8880128354c0 RSI: ffffffff815c8ba5 RDI: fffff520002f1f6a
+RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815c2a0e R11: 0000000000000000 R12: ffff88802db68f20
+R13: 0000000000000000 R14: ffff88801ec20900 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000563c6b380160 CR3: 000000001d865000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ nf_unregister_net_hook net/netfilter/core.c:502 [inline]
+ nf_unregister_net_hooks+0x117/0x160 net/netfilter/core.c:576
+ arpt_unregister_table_pre_exit+0x67/0x80 net/ipv4/netfilter/arp_tables.c:1565
+ ops_pre_exit_list net/core/net_namespace.c:165 [inline]
+ cleanup_net+0x451/0xb10 net/core/net_namespace.c:583
+ process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:313
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
