@@ -2,194 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F22EA371EBF
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EFAA371EC0
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231970AbhECRhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 13:37:31 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:54548 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231618AbhECRhV (ORCPT
+        id S231835AbhECRiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 13:38:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231305AbhECRiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 13:37:21 -0400
-Received: from x64host.home (unknown [47.187.223.33])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 0CEFF20B8016;
-        Mon,  3 May 2021 10:36:26 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0CEFF20B8016
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1620063387;
-        bh=bYCJMeYNqN5Rl7cucEEXyAKwSqecSENtHSd9RFOfCiw=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=n6j/xBMhadoUBM8BC5SAejnw2WorVnwcXyM8I9FLKnihE+3sp1AzlpoKaNnOspqUJ
-         StwncmZF/PXyvbXi0ZHShyESiDMjPTSHsmW7r9aD5340M4yFz6AiYf6DQPegeBU9a5
-         g/w6xnSg0NPRwqikcnZoeokiAmcNA1n44Dn6vup0=
-From:   madvenka@linux.microsoft.com
-To:     broonie@kernel.org, jpoimboe@redhat.com, mark.rutland@arm.com,
-        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-        jmorris@namei.org, pasha.tatashin@soleen.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        madvenka@linux.microsoft.com
-Subject: [RFC PATCH v3 4/4] arm64: Handle funtion graph tracer better in the unwinder
-Date:   Mon,  3 May 2021 12:36:15 -0500
-Message-Id: <20210503173615.21576-5-madvenka@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210503173615.21576-1-madvenka@linux.microsoft.com>
-References: <65cf4dfbc439b010b50a0c46ec500432acde86d6>
- <20210503173615.21576-1-madvenka@linux.microsoft.com>
+        Mon, 3 May 2021 13:38:06 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1EBC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 10:37:12 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id i26so6146538oii.3
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 10:37:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1t1KFawxYQnhUD83BXZON5c+I9V+6Zm5vY5OwXhyWio=;
+        b=kA5Kuz7NATBEr8XwwT8JD+RGGvAQ5TGvjuTr9YOBmGqJasqgukewX0AhaQKXLGgjMg
+         /iMEC4zweiCWDjmfCuseq+UeugkRUSN05I3DxnVNoIfh6CXWTBC5de8EiUnE1oBtCSKR
+         kkGJYkVZ++HOnlOJhtyQF1wez4smdPHk7ZvSUun0+AOyb74yA6XdY7g/x3NcV2qHw4sA
+         xIypnPvH5L9Fsr0bk/xPkwWwG6VOeTZiq/3sMiLuYLoeSsvx8BHRi9lMRlrXJrMIpjNM
+         qFfIHxUJi7SxypwqmEh9DAgWgIANiRcFoldj3lA5FM/Rm+n/mzALumHmkINw8mnY6d02
+         WGjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1t1KFawxYQnhUD83BXZON5c+I9V+6Zm5vY5OwXhyWio=;
+        b=kzbQYzbbmQIJ04mKqPvQ6LPF/b87zj53rSb2zzK1AL3+gZAc26m9msXYMQwPGoKM9F
+         tA1e52DZm/e3aQZKr2z5ltF/ZzHKDl5k6titn8k4EC4tLfeJYLJnQ6FKkryZ7sI4YWem
+         oaXnYzgwc4OcnWCU4I6dxh3qziO8fASi2h0IyCIgCofUnxSVbY1Aw6M6vXLK108waWMi
+         Dx1AP1BDQuJhAKrsbOZleabwm/7lyIuli9CE8WXhYUbgNUMWaXWSQL7CjHEFMH7jmAoM
+         aB0gQVwFvL1OFg7mUCvTsNcSx878k8kWW/DQOrbhrkC/o7HCfI2VZ0/Uh39xSuP1MNvT
+         Bxmg==
+X-Gm-Message-State: AOAM531S0l+Qlfc1i+IHSB9QBFZ4YKplyxrkBP0Ljc2TQpOz1CO+aig8
+        h4ttFKrfoqNPfAtm2v3tRuezpCLpvRc=
+X-Google-Smtp-Source: ABdhPJyp3wlyDlW4UUKIwWYd8l9YfM1NC1KgaDjlaiLDTq3BB4YMrQJd35a/4q2fRpFNW0JftaLy8w==
+X-Received: by 2002:aca:4c58:: with SMTP id z85mr2894675oia.46.1620063431457;
+        Mon, 03 May 2021 10:37:11 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p189sm95372oif.31.2021.05.03.10.37.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 10:37:11 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] staging: rtl8723bs: Use list iterators and helpers
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210428173301.149619-1-linux@roeck-us.net>
+ <YJApQTRSEWUuR4qd@kroah.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <c317df15-1414-3765-1040-4938a9a48776@roeck-us.net>
+Date:   Mon, 3 May 2021 10:37:09 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YJApQTRSEWUuR4qd@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+On 5/3/21 9:48 AM, Greg Kroah-Hartman wrote:
+> On Wed, Apr 28, 2021 at 10:33:01AM -0700, Guenter Roeck wrote:  
+>> diff --git a/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c b/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
+>> index 85663182b388..9cb2c7a112d2 100644
+>> --- a/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
+>> +++ b/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
+>> @@ -124,11 +124,8 @@ void kfree_all_stainfo(struct sta_priv *pstapriv)
+>>  	spin_lock_bh(&pstapriv->sta_hash_lock);
+>>  
+>>  	phead = get_list_head(&pstapriv->free_sta_queue);
+>> -	plist = get_next(phead);
+>> -
+>> -	while (phead != plist) {
+>> -		psta = container_of(plist, struct sta_info, list);
+>> -		plist = get_next(plist);
+>> +	list_for_each(plist, phead) {
+>> +		psta = list_entry(plist, struct sta_info, list);
+>>  	}
+>>  
+>>  	spin_unlock_bh(&pstapriv->sta_hash_lock);
+> 
+> 
+> This chunk didn't apply to my tree as someone else cleaned something in
+> this function.
+> 
+> But that doesn't even really matter as this function does nothing at
+> all!
+> 
 
-The Function Graph Tracer modifies the return address of a traced function
-to a return trampoline (return_to_handler()) to gather tracing data on
-function return. When the unwinder encounters return_to_handler(), it calls
-ftrace_graph_get_ret_stack() to lookup the original return address in the
-return address stack.
+You are correct. Weird.
 
-This lookup will succeed as long as the unwinder is invoked when the traced
-function is executing. However, when the traced function returns and control
-goes to return_to_handler(), this lookup will not succeed because:
-
-- the return address on the stack would not be return_to_handler. It would
-  be return_to_handler+someoffset. To solve this, get the address range for
-  return_to_handler() by looking up its symbol table entry and check if
-  frame->pc falls in the range. This is also required for the unwinder to
-  maintain the index into the return address stack correctly as it unwinds
-  through Function Graph trace return trampolines.
-
-- the original return address will be popped off the return address stack
-  at some point. From this point till the end of return_to_handler(),
-  the lookup will not succeed. The stack trace is unreliable in that
-  window.
-
-On arm64, each return address stack entry also stores the FP of the
-caller of the traced function. Compare the FP in the current frame
-with the entry that is looked up. If the FP matches, then, all is
-well. Else, it is in the window. mark the stack trace unreliable.
-
-Although it is possible to close the window mentioned above, it is
-not worth it. It is a tiny window.
-
-Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
----
- arch/arm64/include/asm/stacktrace.h |  3 ++
- arch/arm64/kernel/stacktrace.c      | 60 ++++++++++++++++++++++++-----
- 2 files changed, 53 insertions(+), 10 deletions(-)
-
-diff --git a/arch/arm64/include/asm/stacktrace.h b/arch/arm64/include/asm/stacktrace.h
-index f1eab6b029f7..e70a2a6451db 100644
---- a/arch/arm64/include/asm/stacktrace.h
-+++ b/arch/arm64/include/asm/stacktrace.h
-@@ -69,6 +69,7 @@ extern void walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
- 			    bool (*fn)(void *, unsigned long), void *data);
- extern void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk,
- 			   const char *loglvl);
-+extern void init_ranges(void);
- 
- DECLARE_PER_CPU(unsigned long *, irq_stack_ptr);
- 
-@@ -154,6 +155,8 @@ static inline bool on_accessible_stack(const struct task_struct *tsk,
- static inline void start_backtrace(struct stackframe *frame,
- 				   unsigned long fp, unsigned long pc)
- {
-+	init_ranges();
-+
- 	frame->fp = fp;
- 	frame->pc = pc;
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
-diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-index 33e174160f9b..7504aec79faa 100644
---- a/arch/arm64/kernel/stacktrace.c
-+++ b/arch/arm64/kernel/stacktrace.c
-@@ -26,6 +26,9 @@ struct code_range {
- 
- struct code_range	sym_code_ranges[] =
- {
-+	/* unwindable ranges */
-+	{ (unsigned long)return_to_handler, 0 },
-+
- 	/* non-unwindable ranges */
- 	{ (unsigned long)__entry_text_start,
- 	  (unsigned long)__entry_text_end },
-@@ -48,6 +51,33 @@ struct code_range	sym_code_ranges[] =
- 	{ /* sentinel */ }
- };
- 
-+void init_ranges(void)
-+{
-+	static char sym[KSYM_NAME_LEN];
-+	static bool inited = false;
-+	struct code_range *range;
-+	unsigned long pc, size, offset;
-+
-+	if (inited)
-+		return;
-+
-+	for (range = sym_code_ranges; range->start; range++) {
-+		if (range->end)
-+			continue;
-+
-+		pc = (unsigned long)range->start;
-+		if (kallsyms_lookup(pc, &size, &offset, NULL, sym)) {
-+			range->start = pc - offset;
-+			range->end = range->start + size;
-+		} else {
-+			/* Range will only include one instruction */
-+			range->start = pc;
-+			range->end = pc + 4;
-+		}
-+	}
-+	inited = true;
-+}
-+
- static struct code_range *lookup_range(unsigned long pc)
- {
- 	struct code_range *range;
-@@ -149,19 +179,29 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
- 
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
- 	if (tsk->ret_stack &&
--		frame->pc == (unsigned long)return_to_handler) {
-+		range->start == (unsigned long)return_to_handler) {
- 		struct ftrace_ret_stack *ret_stack;
- 		/*
--		 * This is a case where function graph tracer has
--		 * modified a return address (LR) in a stack frame
--		 * to hook a function return.
--		 * So replace it to an original value.
-+		 * Either the function graph tracer has modified a return
-+		 * address (LR) in a stack frame to the return trampoline.
-+		 * Or, the return trampoline itself is executing upon the
-+		 * return of a traced function. Lookup the original return
-+		 * address and replace frame->pc with it.
-+		 *
-+		 * However, the return trampoline pops the original return
-+		 * address off the return address stack at some point. So,
-+		 * there is a small window towards the end of the return
-+		 * trampoline where the lookup will fail. In that case,
-+		 * mark the stack trace as unreliable and proceed.
- 		 */
--		ret_stack = ftrace_graph_get_ret_stack(tsk, frame->graph++);
--		if (WARN_ON_ONCE(!ret_stack))
--			return -EINVAL;
--		frame->pc = ret_stack->ret;
--		frame->pc = ptrauth_strip_insn_pac(frame->pc);
-+		ret_stack = ftrace_graph_get_ret_stack(tsk, frame->graph);
-+		if (!ret_stack || frame->fp != ret_stack->fp) {
-+			frame->reliable = false;
-+		} else {
-+			frame->pc = ret_stack->ret;
-+			frame->pc = ptrauth_strip_insn_pac(frame->pc);
-+			frame->graph++;
-+		}
- 		return 0;
- 	}
- #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
--- 
-2.25.1
-
+Guenter
