@@ -2,99 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF899372009
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 20:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3689037200B
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 20:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbhECS6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 14:58:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229522AbhECS6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 14:58:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D812461153;
-        Mon,  3 May 2021 18:57:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620068278;
-        bh=cQ75rdudKQ/QAGQKDKaMh2yRb48TX9KsOBfAfYu9N7E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=sJZy4fWaeT/ZWrSgcd57XTlmRT2guB3g7nFyaLh3Kpz/Ky20f9h7KZbGwMNf46S7u
-         GKObapn7TwMpwbqXKm+dtXFzVY2ECL0edaxcq2qo3/3Gd7vkje81KU2TxcvDx+jI5H
-         IsCxTuGcrTHt3zwHGDDFLKxwPjthmth0bcNVQj1NmudaJ2UbCfepGpU80AK4dEfoig
-         vo8U6LS18a7PQIOHk/rngm8juav6OHXhibxHheW64HAo4uQJT++O4S5Nr1JECdsiay
-         meD5lbXc+UkqeGFP85RrsRetmZ2UkUbbc6fPWIgNn3cvIHe94PUq5tVHAKECle03i1
-         r5E8EQS2+F3oA==
-Date:   Mon, 3 May 2021 13:57:56 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jim Quinlan <jim2101024@gmail.com>
-Cc:     Amjad Ouled-Ameur <aouledameur@baylibre.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Jim Quinlan <jquinlan@broadcom.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
-        <linux-ide@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v6 0/3] ata: ahci_brcm: Fix use of BCM7216 reset
- controller
-Message-ID: <20210503185756.GA993240@bjorn-Precision-5520>
+        id S229721AbhECS64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 14:58:56 -0400
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:42883 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229522AbhECS6y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 14:58:54 -0400
+Received: by mail-oi1-f178.google.com with SMTP id v24so6368020oiv.9;
+        Mon, 03 May 2021 11:58:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LKIBq+EuRXvOGhymbU5xpmDcLOErCQK9vT+5hztdLcs=;
+        b=ByBy2vnks+nrT8RvBzuIbo44etuxFxNzlipgS5ZZRLqrl/8/aQb33OZ1afgjsAT6Jm
+         jJQtyfsqaoH4rB0+J+vvlysDRcmgfKqTWYfpKNc3OLP8ND/H+E83zy5LXAnRUr22dK03
+         Z87dwuNdEZLaap32rFLz+pmXKb/aLZaRYnJJGQxpqOlj3cmKQLHSyQ3e+tuiPUbtF5cT
+         1TlDEZ4TXcCtQgI6Y9JNCYe1zvVNnNhXXuVpPr/HPCbuaNnaF6h2NFsRAfIiprvgukAm
+         AJejlgFEjkZG5a0yqlbfHDxabPAob+76DcBVEKYlJ8o9Vyd8TxmC1EVOUjz2sWUPizVM
+         JhKA==
+X-Gm-Message-State: AOAM5323orsIZfvnJ+FzvA7s5WUBWDS4NnYI20oX9zpEk69lMZZaOC1k
+        3XV6tV17Cfso7JjNBAgxtxX26AsuaA==
+X-Google-Smtp-Source: ABdhPJw/k0barMDJb4NTC9PDoj5BmRX+6Xc3euPhePDc+cCOlt5n2ycwZQHQCjPtsmeJQ4XA1NeZeA==
+X-Received: by 2002:aca:f156:: with SMTP id p83mr14855164oih.91.1620068280037;
+        Mon, 03 May 2021 11:58:00 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id d25sm149125otp.72.2021.05.03.11.57.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 May 2021 11:57:59 -0700 (PDT)
+Received: (nullmailer pid 2192163 invoked by uid 1000);
+        Mon, 03 May 2021 18:57:58 -0000
+Date:   Mon, 3 May 2021 13:57:58 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     frowand.list@gmail.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Subject: Re: [PATCH] of: overlay: Remove redundant assignment to ret
+Message-ID: <20210503185758.GA2192105@robh.at.kernel.org>
+References: <1619347258-55002-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210430152156.21162-1-jim2101024@gmail.com>
+In-Reply-To: <1619347258-55002-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 11:21:53AM -0400, Jim Quinlan wrote:
-> v6 -- Added new commit which adds a missing function to the reset API.
->       This fixes 557acb3d2cd9 and should be destined for linux stable.
+On Sun, 25 Apr 2021 18:40:58 +0800, Jiapeng Chong wrote:
+> Variable ret is set to zero but this value is never read as it is
+> overwritten with a new value later on, hence it is a redundant
+> assignment and can be removed.
 > 
-> v5 -- Improved (I hope) commit description (Bjorn).
->    -- Rnamed error labels (Krzyszt).
->    -- Fixed typos.
+> Cleans up the following clang-analyzer warning:
 > 
-> v4 -- does not rely on a pending commit, unlike v3.
+> drivers/of/overlay.c:1197:2: warning: Value stored to 'ret' is never
+> read [clang-analyzer-deadcode.DeadStores].
 > 
-> v3 -- discard commit from v2; instead rely on the new function
->       reset_control_rearm provided in a recent commit [1] applied
->       to reset/next.
->    -- New commit to correct pcie-brcmstb.c usage of a reset controller
->       to use reset/rearm verses deassert/assert.
+> drivers/of/overlay.c:1026:2: warning: Value stored to 'ret' is never
+> read [clang-analyzer-deadcode.DeadStores].
 > 
-> v2 -- refactor rescal-reset driver to implement assert/deassert rather than
->       reset because the reset call only fires once per lifetime and we need
->       to reset after every resume from S2 or S3.
->    -- Split the use of "ahci" and "rescal" controllers in separate fields
->       to keep things simple.
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  drivers/of/overlay.c | 3 ---
+>  1 file changed, 3 deletions(-)
 > 
-> v1 -- original
-> 
-> Jim Quinlan (3):
->   reset: add missing empty function reset_control_rearm()
->   ata: ahci_brcm: Fix use of BCM7216 reset controller
->   PCI: brcmstb: Use reset/rearm instead of deassert/assert
-> 
->  drivers/ata/ahci_brcm.c               | 46 +++++++++++++--------------
->  drivers/pci/controller/pcie-brcmstb.c | 19 +++++++----
->  include/linux/reset.h                 |  5 +++
->  3 files changed, 41 insertions(+), 29 deletions(-)
 
-I provisionally applied these to my pci/brcmstb branch for v5.13.
-
-I carried forward Jens' ack on "ata: ahci_brcm: Fix use of BCM7216
-reset controller" since the patch is identical to the v5 version that
-he acked.
-
-I'm hoping to get an ack from Philipp for the reset.h change.
-
-Bjorn
+Applied, thanks!
