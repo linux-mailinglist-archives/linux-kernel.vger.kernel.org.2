@@ -2,185 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0A1E371901
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9250371904
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231182AbhECQQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 12:16:16 -0400
-Received: from mail-mw2nam12on2042.outbound.protection.outlook.com ([40.107.244.42]:27969
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230518AbhECQQP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 12:16:15 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OdIZzBeuvF0g7hK2h2M2WvH+V0VgQokXPTDx84Wcjt298/eGUzg34j1YF07ptaGgYKpNyfxfJavRYf+TNWV7YSkZqzkD12CMCDkPoPQglWxqCXaWsRKMWyl3qbtTNBV5uiGYL9EThOkMcv2xR5Qidu9qZ+iMQt7eusyEvSYhM4eg+j7LbpvLVMsWAsa5R+RHdZNnuwWS8Iu87oV4ghWnu+doKuri4arwMMmvFTFk/s7QkmW4jOo6p+7kswq1b+v+PWKswN+ulbolhYrs5bxjO6TvXHuk3i+aWSvQE6vwKgS4vbYF4BZrMURSpI7tGXYW+wrz/LKcMNLlFyqMzc4lKw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KsrcXyE5y/ppPoLuMeJMZjpz7sz6aBREBdV0KXEjuBU=;
- b=hbv4g7UhiaGB/zHm3VU+7AX4rITVzoyczr3DzbRld5ACBHMXGUWTdOETzW4IsIUUlhDF14hoBqWy+gyuA1KdKCN8eSeSN3qeZyF5UxykL3MtT/4KZ18+qdEopQft/JlHKavYubPOQgUl6urORCfS2syRniTfEoLaV0zqRZvHiHeTcTUX4svXqSnPoUz/6a/siL/pALZRv5WqzbRxUZGMDVGxsRTzQf6mH+GlGhi3UwqUatmoEAH7XYoSrEOI/ud3iBK0IxakzsoHUanBcv2ab5gXE2e1A3+Z4kdz0bh8oh2yfEN5yYZyIksiGxImQfBy6h/Xic8EzfzqmSU9AzgHxA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KsrcXyE5y/ppPoLuMeJMZjpz7sz6aBREBdV0KXEjuBU=;
- b=fhriCLjytOTxefQIyrhGbxw7ejvgWd6ZiYWgmDDMtZmMV+6Eg1P1xNKxzjQjFlePEh+GiE9mBTQcq9+FODgn2LFTkGJC9Xs7TnlOQMV6l6oa+zoNY91QrQUW/BU9clqqtSjtcAMG6LMbaTgJWtsL8UMbkWPdNeEjN2q85vGCgqPcHUkvxWHbhbKk1wWNa5kVqYryQj5IvWMG7zrkBxUXmeBphrY97cAu2M2JPvsDTHqAiynJ98SKRdJxHuJTT+7hEfwQcD4We1tdsYjfwpp9Fc0TG0N3aEE28TW6T7gg37HAL9kpVHvCQoI8CEfgo50XOrMjiCqAG8/csCkNHDhhRQ==
-Authentication-Results: gibson.dropbear.id.au; dkim=none (message not signed)
- header.d=none;gibson.dropbear.id.au; dmarc=none action=none
- header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4250.namprd12.prod.outlook.com (2603:10b6:5:21a::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.26; Mon, 3 May
- 2021 16:15:21 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4087.043; Mon, 3 May 2021
- 16:15:20 +0000
-Date:   Mon, 3 May 2021 13:15:18 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     David Gibson <david@gibson.dropbear.id.au>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210503161518.GM1370958@nvidia.com>
-References: <20210422175715.GA1370958@nvidia.com>
- <20210422133747.23322269@redhat.com>
- <20210422200024.GC1370958@nvidia.com>
- <20210422163808.2d173225@redhat.com>
- <20210422233950.GD1370958@nvidia.com>
- <YIecXkaEGNgICePO@yekko.fritz.box>
- <20210427171212.GD1370958@nvidia.com>
- <YIizNdbA0+LYwQbI@yekko.fritz.box>
- <20210428145622.GU1370958@nvidia.com>
- <YIoiJRY3FM7xH2bH@yekko>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YIoiJRY3FM7xH2bH@yekko>
-X-Originating-IP: [206.223.160.26]
-X-ClientProxiedBy: CH0PR03CA0191.namprd03.prod.outlook.com
- (2603:10b6:610:e4::16) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S231201AbhECQQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 12:16:33 -0400
+Received: from mga07.intel.com ([134.134.136.100]:31300 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230518AbhECQQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 12:16:30 -0400
+IronPort-SDR: hp9WlzW06AqiaJusbrtqXc4m1e7xHUNTXBiIyawqAPYSRiXLzMqpqkOWORFIKmtZNV1OOq+sng
+ sdWYU4hGHItQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9973"; a="261727945"
+X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
+   d="scan'208";a="261727945"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 09:15:36 -0700
+IronPort-SDR: StB7GiTTNzFCYycrJg+0OT5VWV47QPiU2cytvBz883/6hsMebQHSImV5vXrugMvRN35TYvzZ1R
+ L+wuVJCC6M5A==
+X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
+   d="scan'208";a="432815036"
+Received: from tbroiles-mobl.amr.corp.intel.com (HELO [10.209.47.222]) ([10.209.47.222])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 09:15:36 -0700
+Subject: Re: [PATCH Part2 RFC v2 10/37] x86/fault: Add support to handle the
+ RMP fault for kernel address
+To:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     tglx@linutronix.de, bp@alien8.de, jroedel@suse.de,
+        thomas.lendacky@amd.com, pbonzini@redhat.com, mingo@redhat.com,
+        rientjes@google.com, seanjc@google.com, peterz@infradead.org,
+        hpa@zytor.com, tony.luck@intel.com
+References: <20210430123822.13825-1-brijesh.singh@amd.com>
+ <20210430123822.13825-11-brijesh.singh@amd.com>
+ <c3950468-af35-a46d-2d50-238245ed37b3@intel.com>
+ <d25db3c9-86ba-b72f-dab7-1dde49bc1229@amd.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <8764e6f0-4a2e-4eea-af69-62ff3ddfe84b@intel.com>
+Date:   Mon, 3 May 2021 09:15:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by CH0PR03CA0191.namprd03.prod.outlook.com (2603:10b6:610:e4::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.39 via Frontend Transport; Mon, 3 May 2021 16:15:20 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ldbE6-00GO53-Vy; Mon, 03 May 2021 13:15:19 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 35d92f31-36f5-44a1-e285-08d90e4ea5dd
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4250:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4250EA34963AB196A100A579C25B9@DM6PR12MB4250.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TNMkxlz3Km0BgpGBZRVE7mVgvV73+p4jwTEctTJvlS8RzpJUB4a9Bc0BZRbsx++Dz/bxcdp9G/exJXsbFIUB8hvQGYGTjvTkvTmP2OkidManKQQLLNRJzR7AbI5GtYj4qVj1SJeKpyTxyJEbYe/3Ux/csUpF2Sw0Zz0sAITSoBp5xs/X8D+qXg6td0IUdzQhO0t0PwmFNurNW8P1jb2mn53osJ898+H5zMkzXq3pc30kvodf9pkJCdv1AecqTwpX72PPvgvXLl7/dY/NaKYda/tBpSN0fb9w/uDQTlML3FOqPO22h1dvcFaUZDaKKQpiqI8v8glF5lhH1lxNdDGSBnPG+dii9wG+DaMhHXPPsXGRT1YY00Bnws+vHhQuK10XonUt157NlyQJtThy77yOGzOiP1JyNPMi56nusGBrIJ46ao8oyWK0ibdVFcHnSYom1aSXInFjnda2tjgGG6bykI3KPqIMzwTqE7UmO0WmGLk+KLhVdEl8OlxPGqwkWayBgBBjkJKT+xetanObmPeefOwx+L5bpdDFORlxXlr7SWG+MsaH98RKTShk4O0W2xI8vb1lDg8+ieLf0rt7eezbiyledGx2h0GOSmmu8jWUfP0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(396003)(366004)(346002)(316002)(8936002)(2906002)(83380400001)(36756003)(38100700002)(86362001)(1076003)(478600001)(4326008)(9786002)(54906003)(8676002)(33656002)(66556008)(5660300002)(2616005)(66476007)(426003)(186003)(26005)(6916009)(66946007)(7416002)(9746002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?lIgkwEH6PEuyKHnAcH6I3GHJIjaMYQ1VPzX1Ba1EgmH44MucOQiwr2NpocRD?=
- =?us-ascii?Q?zyIewNhKLsJODR/hDiM2PC6d7pAabsP6aWYCmZYDgygYuN6kAfQjT9vSXBRq?=
- =?us-ascii?Q?zfMtK68kugF+fauovX4Rfq/U03RsVv+iXKwcJZlKHQ6TvBuIKlKjtmKlTN73?=
- =?us-ascii?Q?KkcW7Lqts25eiiTl0VhWtfC/VZyvKl+RZD2F+6wpezVU20crH0xG1uH3AKyb?=
- =?us-ascii?Q?5IhqYmkc7iAW1M+3In1mhKV1TjRnE+C4EC5+ET3tjcOzbArMpfoYdEN/vWCO?=
- =?us-ascii?Q?tXJvfzSO16uShIu76riA6hnySrnkseDuTrBOV4agO78szktAC/HCTClMSJCi?=
- =?us-ascii?Q?3EDrhAsUsbZehm+bytNT106KNw//4GC34sKiYq+0RV3s16/aS7nuoyZ+Ouga?=
- =?us-ascii?Q?Ss9WLkRiHXbsq3Yr83imhBjVbizndCb8V1ebwu71DPhRDpV7pfAWApjSmaHJ?=
- =?us-ascii?Q?AGJn+PmXJhJtYOGl5qwp0cIsYydAsyk5X1iOWXBX8tlgg+C36p5OTS0CM3nW?=
- =?us-ascii?Q?8/VM6CPV7SJ+EtaJ8dLa1GduqFhXUT/bv7RdRl7JdTvIXgXDtbtZRcvpxe0Q?=
- =?us-ascii?Q?/6ulB0JezIJooUcht9GM8jNbfH6IyUQeJZRkh/bHxDQ8Cve85zzeoA/Gx1c2?=
- =?us-ascii?Q?0kfKL4wdEA08V78DOLOgTpJqLaoqrB2lSpEoLBjEp1ma2r+HcwsxVLPRhutR?=
- =?us-ascii?Q?PMsTrkbZTAKBCIEXU2okwCo+3gRpJGW6bxQj+hdSKVb+KhuqkkDnyfltFeMU?=
- =?us-ascii?Q?jXDCw/oKRIcqVPmg1QevCqY4s99SKul7ef/jc0QW4zVUoKdLt6xDNSk+GYDw?=
- =?us-ascii?Q?iprhxTkatA5cdvUB4N35WZRQ7qfYWF1ZmcDw2lVip1Rx5LCoudH5NtFVpu/v?=
- =?us-ascii?Q?DYHzbzLwmUQiA2bvhhBaGKskuiQHyr4pk2bEmSBd7hapZ3bvwUn0woZKETtn?=
- =?us-ascii?Q?byDZvnjZ4BLta/D4Nxbt89uGZTL67ivLAZSiMVqpehdRJE1bRikdzUp7aPvo?=
- =?us-ascii?Q?02FZhxN7zEKxTaA5X91cU30Cc364jKjg6jqxrjE1HvcyEIBLuA0bTntM6Wgj?=
- =?us-ascii?Q?+p6QIrZPVRODyDFYW6NCbgl/W9ZO0nvcWMM/5B6Gi30iU4QZyL49GCfJeoVV?=
- =?us-ascii?Q?c/v2rUDueXLIshxGnKTUdUye77uy58h7wskOjbpJaQv9Z9B5EA8lmibPN6Bh?=
- =?us-ascii?Q?zgXzRFasafsiGPasfS2FK8UisybTXbMVry+IXStpuq0XMTDJWi6RpG6gWBu3?=
- =?us-ascii?Q?3YpXZgc4585EyHxnQlzHxFoAX4Jm1RsOeWNtK5dfNyaWF+rIK8aZRee42Tgs?=
- =?us-ascii?Q?eKAWF9qJtCj+6xvE4ngy8wTA?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 35d92f31-36f5-44a1-e285-08d90e4ea5dd
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2021 16:15:20.7283
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1XWANPMcBaquO9MDwkEKFw3o8qO/4gq88R2quI7GHIdLdQ0v/W85QXttinpxYzZ8
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4250
+In-Reply-To: <d25db3c9-86ba-b72f-dab7-1dde49bc1229@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 01:04:05PM +1000, David Gibson wrote:
-> Again, I don't know enough about VDPA to make sense of that.  Are we
-> essentially talking non-PCI virtual devices here?  In which case you
-> could define the VDPA "bus" to always have one-device groups.
+On 5/3/21 8:37 AM, Brijesh Singh wrote:
+> GHCB was just an example. Another example is a vfio driver accessing the
+> shared page. If those pages are not marked shared then kernel access
+> will cause an RMP fault. Ideally we should not be running into this
+> situation, but if we do, then I am trying to see how best we can avoid
+> the host crashes.
 
-It is much worse than that.
+I'm confused.  Are you suggesting that the VFIO driver could be passed
+an address such that the host kernel would blindly try to write private
+guest memory?
 
-What these non-PCI devices need is for the kernel driver to be part of
-the IOMMU group of the underlying PCI device but tell VFIO land that
-"groups don't matter"
+The host kernel *knows* which memory is guest private and what is
+shared.  It had to set it up in the first place.  It can also consult
+the RMP at any time if it somehow forgot.
 
-Today mdev tries to fake this by using singleton iommu groups, but it
-is really horrible and direcly hacks up the VFIO IOMMU code to
-understand these special cases. Intel was proposing more special
-hacking in the VFIO IOMMU code to extend this to PASID.
+So, this scenario seems to be that the host got a guest physical address
+(gpa) from the guest, it did a gpa->hpa->hva conversion and then wrote
+the page all without bothering to consult the RMP.  Shouldn't the the
+gpa->hpa conversion point offer a perfect place to determine if the page
+is shared or private?
 
-When we get to a /dev/ioasid this is all nonsense. The kernel device
-driver is going to have to tell drivers/iommu exactly what kind of
-ioasid it can accept, be it a PASID inside a kernel owned group, a SW
-emulated 'mdev' ioasid, or whatever.
+> Another reason for having this is to catch  the hypervisor bug, during
+> the SNP guest create, the KVM allocates few backing pages and sets the
+> assigned bit for it (the examples are VMSA, and firmware context page).
+> If hypervisor accidentally free's these pages without clearing the
+> assigned bit in the RMP table then it will result in RMP fault and thus
+> a kernel crash.
 
-In these cases the "group" idea has become a fiction that just creates
-a pain. "Just reorganize VDPA to do something insane with the driver
-core so we can create a dummy group to satisfy an unnecessary uAPI
-restriction" is not a very compelling argument.
+I think I'd be just fine with a BUG_ON() in those cases instead of an
+attempt to paper over the issue.  Kernel crashes are fine in the case of
+kernel bugs.
 
-So if the nonsensical groups goes away for PASID/mdev, where does it
-leave the uAPI in other cases?
+>> Or, worst case, you could use exception tables and something like
+>> copy_to_user() to write to the GHCB.  That way, the thread doing the
+>> write can safely recover from the fault without the instruction actually
+>> ever finishing execution.
+>>
+>> BTW, I went looking through the spec.  I didn't see anything about the
+>> guest being able to write the "Assigned" RMP bit.  Did I miss that?
+>> Which of the above three conditions is triggered by the guest failing to
+>> make the GHCB page shared?
+> 
+> The GHCB spec section "Page State Change" provides an interface for the
+> guest to request the page state change. During bootup, the guest uses
+> the Page State Change VMGEXIT to request hypervisor to make the page
+> shared. The hypervisor uses the RMPUPDATE instruction to write to
+> "assigned" bit in the RMP table.
 
-> I don't think simplified-but-wrong is a good goal.  The thing about
-> groups is that if they're there, you can't just "not care" about them,
-> they affect you whether you like it or not.
+Right...  So the *HOST* is in control.  Why should the host ever be
+surprised by a page transitioning from shared to private?
 
-You really can. If one thing claims the group then all the other group
-devices become locked out.
+> On VMGEXIT, the very first thing which vmgexit handler does is to map
+> the GHCB page for the access and then later using the copy_to_user() to
+> sync the GHCB updates from hypervisor to guest. The copy_to_user() will
+> cause a RMP fault if the GHCB is not mapped shared. As I explained
+> above, GHCB page was just an example, vfio or other may also get into
+> this situation.
 
-The main point to understand is that groups are NOT an application
-restriction! It is a whole system restriction that the operator needs
-to understand and deal with. This is why things like dpdk don't care
-about the group at all - there is nothing they can do with the
-information.
-
-If the operator says to run dpdk on a specific device then the
-operator is the one that has to deal with all the other devices in the
-group getting locked out.
-
-At best the application can make it more obvious that the operator is
-doing something dangerous, but the current kernel API doesn't seem to
-really support that either.
-
-Jason
-
+Causing an RMP fault is fine.  The problem is shoving a whole bunch of
+*recovery* code in the kernel when recovery isn't necessary.  Just look
+for the -EFAULT from copy_to_user() and move on with life.
