@@ -2,110 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F8E3710EB
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 06:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 902F93710EE
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 06:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbhECEbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 00:31:17 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:44988 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbhECEbR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 00:31:17 -0400
-Received: by mail-io1-f70.google.com with SMTP id z25-20020a05660200d9b02903de90ff885fso2440500ioe.11
-        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 21:30:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=qhTWpfL3z8v6czLxO0LScU6mbAkDF8Up/p/3HeH4yxU=;
-        b=Cm9ggz+m/Hhgn3pvRcdNVSO+0+yAeCqP0DNK+6LLRijhXWJVQXhCqVaiXp3Lm2+P43
-         JyE5JmJWPxVPFksr2eUAQXhqOTnzD7J7Qbpw55TCtg50my0Pt+Cy9iFCVcW57rGQ9FLi
-         uVN8E/abb6ag/xf34P0R0O+dP9hyMCG4xv1xh4klOWlctF0k/e8dhe9PJsb4/6LfQWub
-         xBv0p3YQzC2BmCA2x3bLQE6IiYUQbNahgWPWqokGdAnpzvcDNHFq2tHr1A/fX0Kryjxn
-         GgHHWfkvJ3xVeutYo0ym/F+PkDf63I6fIaxoahYQ1Jhqz+L+/i8ms8K7+J7jBY7c8xcY
-         fb3g==
-X-Gm-Message-State: AOAM531zDmzCIfrvXRbBbRh+halGZCkvbofDV8sfLT04PSwlLKZ+Rje3
-        dEO+XcF5euTCEUUUAm3xpwAucamFOecw4uPtCYyeWtg7HvBK
-X-Google-Smtp-Source: ABdhPJz2Wk/CR0fTMSMBITvQD/taL+mLWYWdz2jKRBiXvAeek73fyphg+aB87ZX1FbEu8GOmiY0ow58obrQBlvJlSfztZAbsRRhx
+        id S229457AbhECEeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 00:34:44 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:10744 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229462AbhECEei (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 00:34:38 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620016425; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=8fqgfcxpLNEW6FbHlX0bNagmykdQF7/5MSAweBJIB9g=; b=Xtopzr++FMNGe4b+JvLhePpNo86Z2IrvoO64hAlAlYF2oLWOfpzsRYSxIAQeJRHn0CvXqaaB
+ 9MfExW4kKSRAmrhohTbg6r0+gZOdpqnEwahbGwUtQ2nxLsutKmWTmBcVr5Rux6Ss4egPxMyi
+ 7DsOW7UB1F3DAw/E8FiO8xNyl7c=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 608f7d27215b831afb991e3e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 03 May 2021 04:33:43
+ GMT
+Sender: sanm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BDBEBC4323A; Mon,  3 May 2021 04:33:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.104] (unknown [124.123.183.153])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sanm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 192DFC433F1;
+        Mon,  3 May 2021 04:33:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 192DFC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sanm@codeaurora.org
+Subject: Re: [PATCH v7 2/5] usb: dwc3: core: Host wake up support from system
+ suspend
+To:     Felipe Balbi <balbi@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>
+References: <1619586716-8687-1-git-send-email-sanm@codeaurora.org>
+ <1619586716-8687-3-git-send-email-sanm@codeaurora.org>
+ <87r1iuk9vs.fsf@kernel.org>
+From:   Sandeep Maheswaram <sanm@codeaurora.org>
+Message-ID: <184ddea9-643f-91ea-6d1f-5bdd26373e53@codeaurora.org>
+Date:   Mon, 3 May 2021 10:03:36 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-X-Received: by 2002:a5e:a604:: with SMTP id q4mr2134727ioi.178.1620016224423;
- Sun, 02 May 2021 21:30:24 -0700 (PDT)
-Date:   Sun, 02 May 2021 21:30:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009653db05c1656b9b@google.com>
-Subject: [syzbot] WARNING: suspicious RCU usage in kernfs_iop_getattr
-From:   syzbot <syzbot+c26b2cb5301be7de9efc@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tj@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87r1iuk9vs.fsf@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+On 4/28/2021 3:29 PM, Felipe Balbi wrote:
+> Hi,
+>
+> Sandeep Maheswaram <sanm@codeaurora.org> writes:
+>> Avoiding phy powerdown when wakeup capable devices are connected
+>> by checking phy_power_off flag.
+>> Phy should be on to wake up the device from suspend using wakeup capable
+>> devices such as keyboard and mouse.
+>>
+>> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+>> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+>> ---
+>>   drivers/usb/dwc3/core.c | 7 +++++--
+>>   1 file changed, 5 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+>> index b6e53d8..bb414c3 100644
+>> --- a/drivers/usb/dwc3/core.c
+>> +++ b/drivers/usb/dwc3/core.c
+>> @@ -1738,7 +1738,7 @@ static int dwc3_suspend_common(struct dwc3 *dwc, pm_message_t msg)
+>>   		dwc3_core_exit(dwc);
+>>   		break;
+>>   	case DWC3_GCTL_PRTCAP_HOST:
+>> -		if (!PMSG_IS_AUTO(msg)) {
+>> +		if (!PMSG_IS_AUTO(msg) && dwc->phy_power_off) {
+> should be able to detect this generically, no? Shouldn't
+> device_may_wakeup() be valid here and give you the answer you want?
 
-HEAD commit:    d72cd4ad Merge tag 'scsi-misc' of git://git.kernel.org/pub..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=123fbb85d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=53fdf14defd48c56
-dashboard link: https://syzkaller.appspot.com/bug?extid=c26b2cb5301be7de9efc
-compiler:       Debian clang version 11.0.1-2
+I think  device_may_wakeup() gives whether the controller is wake up 
+capable or not.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+But we want to keep phy powered on only when some wakeup capable devices 
+(eg:keyboard ,mouse ) are connected to controller.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c26b2cb5301be7de9efc@syzkaller.appspotmail.com
-
-=============================
-WARNING: suspicious RCU usage
-5.12.0-syzkaller #0 Not tainted
------------------------------
-kernel/sched/core.c:8304 Illegal context switch in RCU-sched read-side critical section!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 2, debug_locks = 0
-no locks held by systemd-udevd/4826.
-
-stack backtrace:
-CPU: 1 PID: 4826 Comm: systemd-udevd Not tainted 5.12.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x202/0x31e lib/dump_stack.c:120
- ___might_sleep+0x114/0x6b0 kernel/sched/core.c:8304
- __mutex_lock_common+0xce/0x2e50 kernel/locking/mutex.c:928
- __mutex_lock kernel/locking/mutex.c:1096 [inline]
- mutex_lock_nested+0x1a/0x20 kernel/locking/mutex.c:1111
- kernfs_iop_getattr+0x89/0x310 fs/kernfs/inode.c:194
- vfs_getattr fs/stat.c:134 [inline]
- vfs_statx+0x1ba/0x3d0 fs/stat.c:199
- vfs_fstatat fs/stat.c:217 [inline]
- vfs_lstat include/linux/fs.h:3384 [inline]
- __do_sys_newlstat fs/stat.c:372 [inline]
- __se_sys_newlstat fs/stat.c:366 [inline]
- __x64_sys_newlstat+0xd3/0x150 fs/stat.c:366
- do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f41b6750335
-Code: 69 db 2b 00 64 c7 00 16 00 00 00 b8 ff ff ff ff c3 0f 1f 40 00 83 ff 01 48 89 f0 77 30 48 89 c7 48 89 d6 b8 06 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 03 f3 c3 90 48 8b 15 31 db 2b 00 f7 d8 64 89
-RSP: 002b:00007ffe4d8d3b08 EFLAGS: 00000246
- ORIG_RAX: 0000000000000006
-RAX: ffffffffffffffda RBX: 00005601243f1120 RCX: 00007f41b6750335
-RDX: 00007ffe4d8d3b40 RSI: 00007ffe4d8d3b40 RDI: 00005601243f0120
-RBP: 00007ffe4d8d3c00 R08: 00007f41b6a0f228 R09: 0000000000001010
-R10: 00007f41b6a0eb58 R11: 0000000000000246 R12: 00005601243f0120
-R13: 00005601243f0134 R14: 000056012440253d R15: 0000560124402544
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
