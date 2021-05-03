@@ -2,206 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB63371943
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFBAB37194C
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231248AbhECQae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 12:30:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231189AbhECQab (ORCPT
+        id S231315AbhECQbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 12:31:33 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:57246 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231305AbhECQba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 12:30:31 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A537C061763
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 09:29:38 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id p4so4559174pfo.3
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 09:29:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IMPuX2GLAUntzsthEcxUQ2FwjzaX9JjI2MyBDDngoGU=;
-        b=JorQnrKo8j2/VqI6YR8OhY7Wb7CbydQ52xnJPb3cnX6PA2k8nnkeXX1YrGinVWZ7c7
-         FpaBa7gUbrQV1JajbCantUw/qNb6h4F8WKU56vIqxmln1OsCxA6vbQuIY7/66vL2qZIv
-         oWZc4GRtMGLyw3Mey8biOE/lKJ5SgI0UdC2CqomaQEwmrfNaQZYhM5Xhk3OxdxHDLoYM
-         O+uSUyRB6uyXAufl+8TKoTp0eYR2HJLtecloxkI39cxf29pLVxbwndLOjNRvj0V3/ksS
-         iz1Hfzm295cxJCg7OsFahNA1b9W2iRNhd6PwwMVoZusvbU6wrpaN4CkKJLJX4ouzhfcT
-         qyFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IMPuX2GLAUntzsthEcxUQ2FwjzaX9JjI2MyBDDngoGU=;
-        b=ANEZVuzVBSVZ99DN6uznSHPZwaI+pKEB3HP+fYAe7X3KoHH8QyYie0KrJJWzN/mVIr
-         2skuhZWlecoYB0BI2LR7JGjcr32QzKrGHB5zxKTm9WAndCmU51auEOgWlyc9HCd59TVQ
-         MMc0JpJv+8CTtFp9G/ootxw3X7gnUd3L21ArMykSAbNJ4FY7yeTAOmO8o/GWD/I6sziw
-         IomEjv8qyoU+pAZBSozLkkYf2z76KulmtfBQqvV9MNF1TTe30QJFeQ+gZR5LyJc3HxBd
-         EBjs5uCP0Y2FlmetH60hFoLyF/eG2eGlToqA+YcElBIQ9j3T7RmdeT/aZ8uEseaAO2Vc
-         jyrw==
-X-Gm-Message-State: AOAM532L94EzDHTauHziPsKPdnNCisR83HN29G1Hbw+2YBF9uXzB74V3
-        l73t/UXp7w6uQqWKUzFuiROilVPJKI/Svg==
-X-Google-Smtp-Source: ABdhPJzxRU8ZmyDvjokB5vrWbVBoK1ogFVXxUFGJ84g+JNsdCf7XZvBmktUx7kU3aDLt7PsPcAi+iA==
-X-Received: by 2002:a63:cf55:: with SMTP id b21mr19789896pgj.126.1620059377918;
-        Mon, 03 May 2021 09:29:37 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id t19sm9606010pfg.100.2021.05.03.09.29.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 09:29:37 -0700 (PDT)
-Date:   Mon, 3 May 2021 10:29:35 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     peng.fan@oss.nxp.com
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        o.rempel@pengutronix.de, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH V5 7/8] remoteproc: imx_rproc: support i.MX7ULP
-Message-ID: <20210503162935.GB1699665@xps15>
-References: <1618971622-30539-1-git-send-email-peng.fan@oss.nxp.com>
- <1618971622-30539-8-git-send-email-peng.fan@oss.nxp.com>
+        Mon, 3 May 2021 12:31:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=6WT0OUR3hjtTcavzEdie6Lc7Z9dy98V7OmbCellGUKQ=; b=iSoi3m2KmtK1HP7gIRg1noBzhL
+        NtSADOj0t1i5+64Ao6MTgqBy53Oi5hySB1oaSupB48LrYAe6WSHgX3sRePeOmRSBeOalLwq3PjLPe
+        o7VWjNhWg9bzTER3go24x5rY4NvcXrNHSG27dPCq8FaviCpfTy6oAmfGHttkYx1zLPVHclNk+ZT3v
+        hOI/J3t/5Sqbz+qntMkChEOhBBbxyjMtkPXUOkK/z1Y3q/JFHcnBDRIwMPc/9kvijxshC5QTCuOyS
+        SxxEAdJQLddlRqnk0FBt+k4stxyPW+VkbiUafpJFRXjJC94bHUQiCofxZEm+6s4anxL6tsme1AtkS
+        LKE4otqA==;
+Received: from guinness.priv.deltatee.com ([172.16.1.162])
+        by ale.deltatee.com with esmtp (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1ldbSh-00043Q-48; Mon, 03 May 2021 10:30:24 -0600
+To:     John Hubbard <jhubbard@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-mm@kvack.org,
+        iommu@lists.linux-foundation.org
+Cc:     Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>
+References: <20210408170123.8788-1-logang@deltatee.com>
+ <20210408170123.8788-5-logang@deltatee.com>
+ <ce04d398-e4a1-b3aa-2a4e-b1b868470144@nvidia.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <f719ba91-07ba-c703-2dc9-32cb1214e9c0@deltatee.com>
+Date:   Mon, 3 May 2021 10:30:21 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1618971622-30539-8-git-send-email-peng.fan@oss.nxp.com>
+In-Reply-To: <ce04d398-e4a1-b3aa-2a4e-b1b868470144@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 172.16.1.162
+X-SA-Exim-Rcpt-To: robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, christian.koenig@amd.com, jgg@ziepe.ca, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jhubbard@nvidia.com
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: Re: [PATCH 04/16] PCI/P2PDMA: Refactor pci_p2pdma_map_type() to take
+ pagmap and device
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 10:20:21AM +0800, peng.fan@oss.nxp.com wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+
+
+On 2021-05-02 2:41 p.m., John Hubbard wrote:
+> On 4/8/21 10:01 AM, Logan Gunthorpe wrote:
+>> All callers of pci_p2pdma_map_type() have a struct dev_pgmap and a
+>> struct device (of the client doing the DMA transfer). Thus move the
+>> conversion to struct pci_devs for the provider and client into this
+>> function.
 > 
-> i.MX7ULP A7 core runs under control of M4 core, M4 core starts by ROM
-> and powers most serivces used by A7 core, so A7 core has no power to
-
-s/serivces/services
-
-I pointed that out on V4 - why do I have to do so again?
-
-With that:
-
-Reviwed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-
-> start and stop M4 core. And the M4 core's state is default RPROC_DETACHED
-> and remoteproc framework not able to stop the M4 core.
+> Actually, this is the wrong direction to go! All of these pre-existing
+> pci_*() functions have a small problem already: they are dealing with
+> struct device, instead of struct pci_dev. And so refactoring should be
+> pushing the conversion to pci_dev *up* the calling stack, not lower as
+> the patch here proposes.
 > 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  drivers/remoteproc/imx_rproc.c | 49 ++++++++++++++++++++++++++--------
->  1 file changed, 38 insertions(+), 11 deletions(-)
+> Also, there is no improvement in clarity by passing in (pgmap, dev)
+> instead of the previous (provider, client). Now you have to do more type
+> checking in the leaf function, which is another indication of a problem.
 > 
-> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
-> index e9d9860e4fce..d26254609a52 100644
-> --- a/drivers/remoteproc/imx_rproc.c
-> +++ b/drivers/remoteproc/imx_rproc.c
-> @@ -136,6 +136,14 @@ static const struct imx_rproc_att imx_rproc_att_imx8mq[] = {
->  	{ 0x40000000, 0x40000000, 0x80000000, 0 },
->  };
->  
-> +static const struct imx_rproc_att imx_rproc_att_imx7ulp[] = {
-> +	{0x1FFD0000, 0x1FFD0000, 0x30000, ATT_OWN},
-> +	{0x20000000, 0x20000000, 0x10000, ATT_OWN},
-> +	{0x2F000000, 0x2F000000, 0x20000, ATT_OWN},
-> +	{0x2F020000, 0x2F020000, 0x20000, ATT_OWN},
-> +	{0x60000000, 0x60000000, 0x40000000, 0}
-> +};
-> +
->  static const struct imx_rproc_att imx_rproc_att_imx7d[] = {
->  	/* dev addr , sys addr  , size	    , flags */
->  	/* OCRAM_S (M4 Boot code) - alias */
-> @@ -196,6 +204,12 @@ static const struct imx_rproc_dcfg imx_rproc_cfg_imx8mq = {
->  	.method		= IMX_RPROC_MMIO,
->  };
->  
-> +static const struct imx_rproc_dcfg imx_rproc_cfg_imx7ulp = {
-> +	.att		= imx_rproc_att_imx7ulp,
-> +	.att_size	= ARRAY_SIZE(imx_rproc_att_imx7ulp),
-> +	.method		= IMX_RPROC_NONE,
-> +};
-> +
->  static const struct imx_rproc_dcfg imx_rproc_cfg_imx7d = {
->  	.src_reg	= IMX7D_SRC_SCR,
->  	.src_mask	= IMX7D_M4_RST_MASK,
-> @@ -238,6 +252,9 @@ static int imx_rproc_stop(struct rproc *rproc)
->  	struct device *dev = priv->dev;
->  	int ret;
->  
-> +	if (dcfg->method == IMX_RPROC_NONE)
-> +		return -EOPNOTSUPP;
-> +
->  	ret = regmap_update_bits(priv->regmap, dcfg->src_reg,
->  				 dcfg->src_mask, dcfg->src_stop);
->  	if (ret)
-> @@ -573,12 +590,31 @@ static void imx_rproc_free_mbox(struct rproc *rproc)
->  
->  static int imx_rproc_detect_mode(struct imx_rproc *priv)
->  {
-> +	struct regmap_config config = { .name = "imx-rproc" };
->  	const struct imx_rproc_dcfg *dcfg = priv->dcfg;
->  	struct device *dev = priv->dev;
-> +	struct regmap *regmap;
->  	int ret;
->  	u32 val;
->  
-> -	ret = regmap_read(priv->regmap, dcfg->src_reg, &val);
-> +	switch (dcfg->method) {
-> +	case IMX_RPROC_NONE:
-> +		priv->rproc->state = RPROC_DETACHED;
-> +		return 0;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	regmap = syscon_regmap_lookup_by_phandle(dev->of_node, "syscon");
-> +	if (IS_ERR(regmap)) {
-> +		dev_err(dev, "failed to find syscon\n");
-> +		return PTR_ERR(regmap);
-> +	}
-> +
-> +	priv->regmap = regmap;
-> +	regmap_attach_dev(dev, regmap, &config);
-> +
-> +	ret = regmap_read(regmap, dcfg->src_reg, &val);
->  	if (ret) {
->  		dev_err(dev, "Failed to read src\n");
->  		return ret;
-> @@ -625,18 +661,9 @@ static int imx_rproc_probe(struct platform_device *pdev)
->  	struct device_node *np = dev->of_node;
->  	struct imx_rproc *priv;
->  	struct rproc *rproc;
-> -	struct regmap_config config = { .name = "imx-rproc" };
->  	const struct imx_rproc_dcfg *dcfg;
-> -	struct regmap *regmap;
->  	int ret;
->  
-> -	regmap = syscon_regmap_lookup_by_phandle(np, "syscon");
-> -	if (IS_ERR(regmap)) {
-> -		dev_err(dev, "failed to find syscon\n");
-> -		return PTR_ERR(regmap);
-> -	}
-> -	regmap_attach_dev(dev, regmap, &config);
-> -
->  	/* set some other name then imx */
->  	rproc = rproc_alloc(dev, "imx-rproc", &imx_rproc_ops,
->  			    NULL, sizeof(*priv));
-> @@ -651,7 +678,6 @@ static int imx_rproc_probe(struct platform_device *pdev)
->  
->  	priv = rproc->priv;
->  	priv->rproc = rproc;
-> -	priv->regmap = regmap;
->  	priv->dcfg = dcfg;
->  	priv->dev = dev;
->  
-> @@ -720,6 +746,7 @@ static int imx_rproc_remove(struct platform_device *pdev)
->  }
->  
->  static const struct of_device_id imx_rproc_of_match[] = {
-> +	{ .compatible = "fsl,imx7ulp-cm4", .data = &imx_rproc_cfg_imx7ulp },
->  	{ .compatible = "fsl,imx7d-cm4", .data = &imx_rproc_cfg_imx7d },
->  	{ .compatible = "fsl,imx6sx-cm4", .data = &imx_rproc_cfg_imx6sx },
->  	{ .compatible = "fsl,imx8mq-cm4", .data = &imx_rproc_cfg_imx8mq },
-> -- 
-> 2.30.0
-> 
+> Let's go that direction, please? Just convert to pci_dev much higher in
+> the calling stack, and you'll find that everything fits together better.
+> And it's OK to pass in extra params if that turns out to be necessary,
+> after all.
+
+No, I disagree with this and it seems a bit confused. This change is
+allowing callers to call the function with what they have and doing more
+checks inside the called function. This allows for *less* checks in the
+leaf function, not more checks. (I mean, look at the patch itself, it
+puts a bunch of checks in both call sites into the callee and makes the
+code a lot cleaner -- it's removing more lines than it adds).
+
+Similar argument can be made with the pci_p2pdma_distance_many() (which
+I assume you are referring to). If the function took struct pci_dev
+instead of struct device, every caller would need to do all checks and
+conversions to struct pci_dev. That is not an improvement.
+
+Logan
