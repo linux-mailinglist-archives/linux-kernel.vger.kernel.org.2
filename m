@@ -2,78 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF090371EB2
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC0B371EB9
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231856AbhECReI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 13:34:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231305AbhECReG (ORCPT
+        id S231503AbhECRhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 13:37:19 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:54474 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231329AbhECRhR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 13:34:06 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00198C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 10:33:11 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id z34so307884pgl.13
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 10:33:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=goLJCN+tVpRnsloCO4BzWri3mHAjhnXDbA+9rFX7OwQ=;
-        b=LDExJFl7/vTDsnpyNdQuz7mXKjdjYpD2g4DWhdZgPDn6/GhxU66KamRhPkrQVigLYW
-         CBbR7CSB/cwuAoh/Rfe1nCP/FNElAz/vfArcKB6MPks7xHMCejplBS/xH5+pO523qcP+
-         Hc6RPXMQVGK8IjlVGImwO291ZV0a37OzZntAw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=goLJCN+tVpRnsloCO4BzWri3mHAjhnXDbA+9rFX7OwQ=;
-        b=qbqpGerWBv/eMGhP2D1Lni0e51JfYe56xSKtvVBhy9gh43pJK6mbowOFMPP7/sO1Ae
-         3lGr0KtoG/i7M9b/k3KabwBBA6Zilq5sL47MHj/eHvgYsSW9bBFobBFR2FmG1m3DPG+T
-         ZOeU5clPPt3UaB7bYLwliuUeugcNqvsIcJVZHRh7A6JY0RkrdGBN6mF0aAsB+ess054J
-         d9Bxc+BvyHP9SVG8+jv99hZamEfzXjhJqNFd3t5s/kZ5QFCn+QFyyfTEkJHybsM0eXDy
-         GfRzpRXICYvzum4pkheF+6Qhzsun+P2K+2CVOVlyq8e4zJHAR8QpK8bcavYThDW00ZH8
-         KUyA==
-X-Gm-Message-State: AOAM532xjfXljev1bfNho78u33ALmrIm4WEluWU0dU48S/HMvOazUzuy
-        Fee7hd0jE/GU6w4oEFGMpYc6nb83Yiuz7A==
-X-Google-Smtp-Source: ABdhPJyT8qZQOSGWp1wZ94G/D8SGFvDBPGXndxli48bCW0OZ03jcC+Nb+AT0ZqLAKzbtV75ZNVhIJQ==
-X-Received: by 2002:a63:7503:: with SMTP id q3mr19659576pgc.435.1620063191652;
-        Mon, 03 May 2021 10:33:11 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:8584:3fd:2adf:a655])
-        by smtp.gmail.com with UTF8SMTPSA id u17sm9306041pfm.113.2021.05.03.10.33.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 10:33:11 -0700 (PDT)
-Date:   Mon, 3 May 2021 10:33:10 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Rajeshwari <rkambl@codeaurora.org>
-Cc:     amitk@kernel.org, thara.gopinath@linaro.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, robh+dt@kernel.org,
-        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sanm@codeaurora.org, manafm@codeaurora.org
-Subject: Re: [PATCH V3 2/3] arm64: dts: qcom: SC7280:  Add device node
- support for TSENS
-Message-ID: <YJAz1iDM+cNAAcCX@google.com>
-References: <1619778592-8112-1-git-send-email-rkambl@codeaurora.org>
- <1619778592-8112-3-git-send-email-rkambl@codeaurora.org>
+        Mon, 3 May 2021 13:37:17 -0400
+Received: from x64host.home (unknown [47.187.223.33])
+        by linux.microsoft.com (Postfix) with ESMTPSA id E963820B7188;
+        Mon,  3 May 2021 10:36:22 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E963820B7188
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1620063383;
+        bh=0/vmHnPLNqPmJknfoYFWm+pkRMsOY2Mr/ejvD0gplj4=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=KKF4/oezPVgF5xwfWvxm9F3MGvNAK3x16YG9SpftshGmEfFfdvHcx02la5wVRJGl7
+         DKicMikQcOAXTLRFujlOnWQGrPQhjCSa31LjXcIEf2AkxupqW+4/vXC2eGedthan94
+         5eDM+Eknw+VKRxl0zRbkdOSvRn9//O0o/2lTkutk=
+From:   madvenka@linux.microsoft.com
+To:     broonie@kernel.org, jpoimboe@redhat.com, mark.rutland@arm.com,
+        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+        jmorris@namei.org, pasha.tatashin@soleen.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        madvenka@linux.microsoft.com
+Subject: [RFC PATCH v3 0/4] arm64: Stack trace reliability checks in the unwinder
+Date:   Mon,  3 May 2021 12:36:11 -0500
+Message-Id: <20210503173615.21576-1-madvenka@linux.microsoft.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <65cf4dfbc439b010b50a0c46ec500432acde86d6>
+References: <65cf4dfbc439b010b50a0c46ec500432acde86d6>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1619778592-8112-3-git-send-email-rkambl@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 03:59:51PM +0530, Rajeshwari wrote:
-> Adding device node for TSENS controller and critical interrupt support in SC7280.
-> 
-> Signed-off-by: Rajeshwari <rkambl@codeaurora.org>
+From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
 
-Please add tags from previous versions, like my 'Reviewed-by' from v2,
-unless a patch underwent major changes.
+There are a number of places in kernel code where the stack trace is not
+reliable. Enhance the unwinder to check for those cases and mark the
+stack trace as unreliable. Once all of the checks are in place, the unwinder
+can provide a reliable stack trace. But before this can be used for livepatch,
+some other entity needs to guarantee that the frame pointers are all set up
+correctly in kernel functions. objtool is currently being worked on to
+address that need.
 
-Please also add a change log for v > 1, even if it just says 'no changes'
-for some patches in the series.
+Return address check
+====================
+
+Check the return PC of every stack frame to make sure that it is a valid
+kernel text address (and not some generated code, for example). If it is
+not a valid kernel text address, mark the stack trace as unreliable.
+
+Assembly functions
+==================
+
+There are a number of assembly functions in arm64. Except for a couple of
+them, these functions do not have a frame pointer prolog or epilog. Also,
+many of them manipulate low-level state such as registers. These functions
+are, by definition, unreliable from a stack unwinding perspective. That is,
+when these functions occur in a stack trace, the unwinder would not be able
+to unwind through them reliably.
+
+Assembly functions are defined as SYM_FUNC_*() functions or SYM_CODE_*()
+functions. objtool peforms static analysis of SYM_FUNC functions. It ignores
+SYM_CODE functions because they have low level code that is difficult to
+analyze. When objtool becomes ready eventually, SYM_FUNC functions will
+be analyzed and "fixed" as necessary. So, they are not "interesting" for
+the reliable unwinder.
+
+That leaves SYM_CODE functions. It is for the unwinder to deal with these
+for reliable stack trace. The unwinder needs to do the following:
+
+	- Recognize SYM_CODE functions in a stack trace.
+
+	- If a particular SYM_CODE function can be unwinded through using
+	  some special logic, then do it. E.g., the return trampoline for
+	  Function Graph Tracing.
+
+	- Otherwise, mark the stack trace unreliable.
+
+Using text sections to recognize SYM_CODE functions
+===================================================
+
+SYM_CODE functions are present in the following text sections:
+
+	(1) .entry.text
+	(2) .idmap.text
+	(3) .hyp.idmap.text
+	(4) .hyp.text
+	(5) .hibernate_exit.text
+	(6) .entry.tramp.text
+	(7) .text
+	(8) .init.text
+
+For each of these sections, there are global variables that contain the
+starting and ending addresses generated by the linker. So, they can be
+recognized easily. Create an array called sym_code_ranges[] to contain
+the ranges for sections (1) thru (6).
+
+Check if the return PC falls in any of these sections. If it does, mark
+the stack trace unreliable.
+
+Sections (7) and (8)
+====================
+
+Sections (7) and (8) are generic sections which also contain tons of other
+functions which are actually reliable. The SYM_CODE functions in these
+sections must be dealt with differently.
+
+Some of these are "don't care" functions so they can be left in their
+current sections. E.g.,
+
+	efi_enter_kernel().
+	arm64_relocate_new_kernel()
+
+		These functions enter the kernel. So, they will not occur
+		in a stack trace examined by livepatch.
+
+	__kernel_rt_sigreturn()
+
+		This only gets invoked in user context.
+
+	hypervisor vectors
+
+		I don't believe these are interesting to livepatch.
+
+Others need to be moved to a special section. I have created a "catch-all"
+section called ".code.text" for this purpose. Add this section to
+vmlinux.lds.S and sym_code_ranges[].
+
+Reliable SYM_CODE functions
+===========================
+
+The unwinder currently has logic to recognize the return trampoline of the
+Function Graph Tracer (return_to_handler()), retrieve the original return
+address and use that in the stack trace. So, this is a SYM_CODE function
+that the unwinder can actually unwind through.
+
+However, the current logic only addreses stack traces taken while still in
+the traced function. When the traced function returns, control is transferred
+to return_to_handler(). Any stack trace taken while in the return trampoline
+is not handled. This messes up the stack trace as the unwinder has to keep
+track of the current index within the return address stack.
+
+There are two options:
+
+	- Either remove this logic altogether. This would work since the
+	  unwinder would recognize the section of the trampoline and
+	  treat the stack trace as unreliable. So, from a live patch
+	  perspective, this is sufficient.
+
+	- Or, fix the logic. I have taken this approach. See the patch
+	  for more details. That said, I am open to option 1.
+
+Other cases like kretprobe_trampoline() and ftrace entry code can be
+addressed in a similar fashion. But this is outside the scope of this
+work. The only reason I fixed the logic for return_to_handler() in the
+unwinder is because the logic is already there.
+
+Last stack frame
+================
+
+If a SYM_CODE function occurs in the very last frame in the stack trace,
+then the stack trace is not considered unreliable. This is because there
+is no more unwinding to do. Examples:
+
+	- EL0 exception stack traces end in the top level EL0 exception
+	  handlers.
+
+	- All kernel thread stack traces end in ret_from_fork().
+
+Special cases
+=============
+
+Some special cases need to be mentioned.
+
+EL1 interrupt and exception handlers are present in .entry.text. So, all
+EL1 interrupt and exception stack traces will be considered unreliable.
+This the correct behavior as interrupts and exceptions can happen on any
+instruction including ones in the frame pointer prolog and epilog. Unless
+objtool generates metadata so the unwinder can unwind through these
+special cases, such stack traces will be considered unreliable.
+
+A task can get preempted at the end of an interrupt. Stack traces of
+preempted tasks will show the interrupt frame in the stack trace and
+will be considered unreliable.
+
+Breakpoints are exceptions. So, all stack traces in the break point
+handler (including probes) will be considered unreliable.
+
+All of the ftrace trampoline code that gets executed at the beginning
+of a traced function falls in ".code.text". All stack traces taken from
+tracer functions will be considered unreliable.
+
+The same is true for kretprobe trampolines.
+
+---
+Changelog:
+
+v3:
+	- Implemented a sym_code_ranges[] array to contains sections bounds
+	  for text sections that contain SYM_CODE_*() functions. The unwinder
+	  checks each return PC against the sections. If it falls in any of
+	  the sections, the stack trace is marked unreliable.
+
+	- Moved SYM_CODE functions from .text and .init.text into a new
+	  text section called ".code.text". Added this section to
+	  vmlinux.lds.S and sym_code_ranges[].
+
+	- Fixed the logic in the unwinder that handles Function Graph
+	  Tracer return trampoline.
+
+	- Removed all the previous code that handles:
+		- ftrace entry code for traced function
+		- special_functions[] array that lists individual functions
+		- kretprobe_trampoline() special case
+
+	- Synced with mainline v5.12-rc8.
+
+v2
+	- Removed the terminating entry { 0, 0 } in special_functions[]
+	  and replaced it with the idiom { /* sentinel */ }.
+
+	- Change the ftrace trampoline entry ftrace_graph_call in
+	  special_functions[] to ftrace_call + 4 and added explanatory
+	  comments.
+
+	- Unnested #ifdefs in special_functions[] for FTRACE.
+
+v1
+	- Define a bool field in struct stackframe. This will indicate if
+	  a stack trace is reliable.
+
+	- Implement a special_functions[] array that will be populated
+	  with special functions in which the stack trace is considered
+	  unreliable.
+	
+	- Using kallsyms_lookup(), get the address ranges for the special
+	  functions and record them.
+
+	- Implement an is_reliable_function(pc). This function will check
+	  if a given return PC falls in any of the special functions. If
+	  it does, the stack trace is unreliable.
+
+	- Implement check_reliability() function that will check if a
+	  stack frame is reliable. Call is_reliable_function() from
+	  check_reliability().
+
+	- Before a return PC is checked against special_funtions[], it
+	  must be validates as a proper kernel text address. Call
+	  __kernel_text_address() from check_reliability().
+
+	- Finally, call check_reliability() from unwind_frame() for
+	  each stack frame.
+
+	- Add EL1 exception handlers to special_functions[].
+
+		el1_sync();
+		el1_irq();
+		el1_error();
+		el1_sync_invalid();
+		el1_irq_invalid();
+		el1_fiq_invalid();
+		el1_error_invalid();
+
+	- The above functions are currently defined as LOCAL symbols.
+	  Make them global so that they can be referenced from the
+	  unwinder code.
+
+	- Add FTRACE trampolines to special_functions[]:
+
+		ftrace_graph_call()
+		ftrace_graph_caller()
+		return_to_handler()
+
+	- Add the kretprobe trampoline to special functions[]:
+
+		kretprobe_trampoline()
+
+Previous versions and discussion
+================================
+
+v2: https://lore.kernel.org/linux-arm-kernel/20210405204313.21346-1-madvenka@linux.microsoft.com/
+v1: https://lore.kernel.org/linux-arm-kernel/20210330190955.13707-1-madvenka@linux.microsoft.com/
+
+Madhavan T. Venkataraman (4):
+  arm64: Introduce stack trace reliability checks in the unwinder
+  arm64: Check the return PC against unreliable code sections
+  arm64: Handle miscellaneous functions in .text and .init.text
+  arm64: Handle funtion graph tracer better in the unwinder
+
+ arch/arm64/include/asm/sections.h             |   1 +
+ arch/arm64/include/asm/stacktrace.h           |   7 +
+ arch/arm64/kernel/entry-ftrace.S              |   5 +
+ arch/arm64/kernel/entry.S                     |   6 +
+ arch/arm64/kernel/head.S                      |   3 +-
+ arch/arm64/kernel/probes/kprobes_trampoline.S |   2 +
+ arch/arm64/kernel/stacktrace.c                | 129 ++++++++++++++++--
+ arch/arm64/kernel/vmlinux.lds.S               |   7 +
+ 8 files changed, 149 insertions(+), 11 deletions(-)
+
+
+base-commit: bf05bf16c76bb44ab5156223e1e58e26dfe30a88
+-- 
+2.25.1
+
