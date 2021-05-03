@@ -2,130 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C96D637142D
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 13:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4228A37142E
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 13:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233236AbhECLV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 07:21:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43812 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230137AbhECLV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 07:21:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3EE261221;
-        Mon,  3 May 2021 11:20:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620040834;
-        bh=ZUgVwxzi7a3MtB6NcAHEykBjZMzggIkMTLCY+qPK52g=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=uKxt34HmYmBfq5vBMhBmz3d/CTySSKuJYU1S0hznPEUkhjS1YP/wt+dsyxrl+QgBd
-         0Eowgk6D67u8gbziE5e40OMnDCKhkS6GL6sm047ezS5+y5m/QiIYw5wam0C3jzL/xV
-         MTRgJgZ7EIIRb74BNEiBqvRvlIgJBNzSIDQA3yh1YPUrcEDFJGGB6yTgyEKbkMQa3a
-         xiAgLmJ89+z6f3TB7XUlMkXMDpIlbUC5A6fmM8QugVrxGUuVbRMzwihu5TMZhuFZ/O
-         upJe1zWfc2Xo54st/24h3oloPZFmniV6TD+cgO80wcNYilR0+EZK7pgIjxRris425t
-         sMZu9UW8Lmq7g==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Sandeep Maheswaram <sanm@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>
-Subject: Re: [PATCH v7 2/5] usb: dwc3: core: Host wake up support from
- system suspend
-In-Reply-To: <184ddea9-643f-91ea-6d1f-5bdd26373e53@codeaurora.org>
-References: <1619586716-8687-1-git-send-email-sanm@codeaurora.org>
- <1619586716-8687-3-git-send-email-sanm@codeaurora.org>
- <87r1iuk9vs.fsf@kernel.org>
- <184ddea9-643f-91ea-6d1f-5bdd26373e53@codeaurora.org>
-Date:   Mon, 03 May 2021 14:20:23 +0300
-Message-ID: <87h7jkhxmw.fsf@kernel.org>
+        id S233353AbhECLVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 07:21:45 -0400
+Received: from mail-41103.protonmail.ch ([185.70.41.103]:20869 "EHLO
+        mail-41103.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230137AbhECLVo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 07:21:44 -0400
+Received: from mail-03.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        by mail-41103.protonmail.ch (Postfix) with ESMTPS id 4FYgWk1zM1z4xd5g
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 11:20:50 +0000 (UTC)
+Authentication-Results: mail-41103.protonmail.ch;
+        dkim=pass (1024-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="O869RQ1Y"
+Date:   Mon, 03 May 2021 11:20:40 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1620040846;
+        bh=rrcJr6SHky9qwolfSD/uvxO1zmBQLEYyXaaRXq0xJMM=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=O869RQ1Y8p0efGFoCzzyAoZ7P3+j0wCaD8Uaete2hUpvlnLyghIuy/scmvCBdSPiy
+         ZeIYYOItlr/v/ptlhrN5OOF0g0fhzaA8aES8YvjvRcsmuKkj9jrzwLN7oFVY9nbJw/
+         K6Byhq4U2OlivPeZytmge4N+gIH1xeDSFlTRlx0c=
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From:   Jari Ruusu <jariruusu@protonmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Kalle Valo <kvalo@codeaurora.org>
+Reply-To: Jari Ruusu <jariruusu@protonmail.com>
+Subject: Re: [PATCH 5.10 1/2] iwlwifi: Fix softirq/hardirq disabling in iwl_pcie_gen2_enqueue_hcmd()
+Message-ID: <d-jJSpscDSj6GA3x0-9RE6fw-WaW7STDw46NzOgJ684IokIkyXNoZsR5xqNHZA7cpS81_MFvhvBzIoI_QGTbT5Im-CKI_AAp6fNzVfc8LX8=@protonmail.com>
+In-Reply-To: <YI6HFNNvzuHnv5VU@kroah.com>
+References: <20210430141910.473289618@linuxfoundation.org> <20210430141910.521897363@linuxfoundation.org> <608CFF6A.4BC054A3@users.sourceforge.net> <YI6HFNNvzuHnv5VU@kroah.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+On Sunday, May 2, 2021 2:03 PM, Greg Kroah-Hartman <gregkh@linuxfoundation.=
+org> wrote:
+> If you could provide backported patches to those kernels you think this
+> is needed to, I can take them directly. Otherwise running sed isn't
+> always the easiest thing to do on my end :)
 
+iwlwifi: Fix softirq/hardirq disabling in iwl_pcie_enqueue_hcmd()
+upstream commit 2800aadc18a64c96b051bcb7da8a7df7d505db3f,
+backport for linux-5.4.y and linux-4.19.y (booted and ping tested)
+Signed-off-by: Jari Ruusu <jariruusu@protonmail.com>
 
-Hi,
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/tx.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/tx.c
+@@ -1544,6 +1544,7 @@ static int iwl_pcie_enqueue_hcmd(struct iwl_trans *tr=
+ans,
+ =09u32 cmd_pos;
+ =09const u8 *cmddata[IWL_MAX_CMD_TBS_PER_TFD];
+ =09u16 cmdlen[IWL_MAX_CMD_TBS_PER_TFD];
++=09unsigned long flags2;
 
-Sandeep Maheswaram <sanm@codeaurora.org> writes:
->> Sandeep Maheswaram <sanm@codeaurora.org> writes:
->>> Avoiding phy powerdown when wakeup capable devices are connected
->>> by checking phy_power_off flag.
->>> Phy should be on to wake up the device from suspend using wakeup capable
->>> devices such as keyboard and mouse.
->>>
->>> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
->>> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
->>> ---
->>>   drivers/usb/dwc3/core.c | 7 +++++--
->>>   1 file changed, 5 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
->>> index b6e53d8..bb414c3 100644
->>> --- a/drivers/usb/dwc3/core.c
->>> +++ b/drivers/usb/dwc3/core.c
->>> @@ -1738,7 +1738,7 @@ static int dwc3_suspend_common(struct dwc3 *dwc, =
-pm_message_t msg)
->>>   		dwc3_core_exit(dwc);
->>>   		break;
->>>   	case DWC3_GCTL_PRTCAP_HOST:
->>> -		if (!PMSG_IS_AUTO(msg)) {
->>> +		if (!PMSG_IS_AUTO(msg) && dwc->phy_power_off) {
->> should be able to detect this generically, no? Shouldn't
->> device_may_wakeup() be valid here and give you the answer you want?
->
-> I think=C2=A0 device_may_wakeup() gives whether the controller is wake up=
-=20
-> capable or not.
+ =09if (WARN(!trans->wide_cmd_header &&
+ =09=09 group_id > IWL_ALWAYS_LONG_GROUP,
+@@ -1627,10 +1628,10 @@ static int iwl_pcie_enqueue_hcmd(struct iwl_trans *=
+trans,
+ =09=09goto free_dup_buf;
+ =09}
 
-Yes, but it's a bit more than that. Looking at devices.rst we read:
+-=09spin_lock_bh(&txq->lock);
++=09spin_lock_irqsave(&txq->lock, flags2);
 
-If :c:func:`device_may_wakeup(dev)` returns ``true``, the device should be
-prepared for generating hardware wakeup signals to trigger a system wakeup =
-event
-when the system is in the sleep state.  For example, :c:func:`enable_irq_wa=
-ke()`
-might identify GPIO signals hooked up to a switch or other external hardwar=
-e,
-and :c:func:`pci_enable_wake()` does something similar for the PCI PME sign=
-al.
+ =09if (iwl_queue_space(trans, txq) < ((cmd->flags & CMD_ASYNC) ? 2 : 1)) {
+-=09=09spin_unlock_bh(&txq->lock);
++=09=09spin_unlock_irqrestore(&txq->lock, flags2);
 
-So, if there is a condition where $this device has to, somehow, deal
-with wakeup, it should be configured accordingly. This ->phy_power_off
-flag is telling us the same thing.
+ =09=09IWL_ERR(trans, "No space in command queue\n");
+ =09=09iwl_op_mode_cmd_queue_full(trans->op_mode);
+@@ -1791,7 +1792,7 @@ static int iwl_pcie_enqueue_hcmd(struct iwl_trans *tr=
+ans,
+ =09spin_unlock_irqrestore(&trans_pcie->reg_lock, flags);
 
-> But we want to keep phy powered on only when some wakeup capable devices=
-=20
-> (eg:keyboard ,mouse ) are connected to controller.
+  out:
+-=09spin_unlock_bh(&txq->lock);
++=09spin_unlock_irqrestore(&txq->lock, flags2);
+  free_dup_buf:
+ =09if (idx < 0)
+ =09=09kfree(dup_buf);
 
-Understood, it could be that we're missing some method for propagating
-that state (i.e. keyboard with PM support) up to the parent device, but
-that's no excuse to bypass driver boundaries. Wouldn't you agree?
+--
+Jari Ruusu=C2=A0 4096R/8132F189 12D6 4C3A DCDA 0AA4 27BD=C2=A0 ACDF F073 3C=
+80 8132 F189
 
-=2D-=20
-balbi
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmCP3HcRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzlfNM9wDzUjGOQf+KlT69IuS8HqBmJV2X3nhuK2dRhbHPymW
-K3GcWSvNnMq0ayGT9JmHUzvAOU/WxWqhLb+WLC4F3q2Tyn1bsfM89lu1GNmUFM+w
-kybGYLlNU1c/91LbJfmSyENKgTGSqYNJobi+mu6ggaIu5Q2Vf5bbu+hT4dMPckQU
-yxBuY7zrIdXp44EGWz6CImE1Jz8aVSeL98fBbflbgkwFo23zDoXO7Te28CAHg9Hr
-c0WeaK+z2b4GxOI8SQeBq2o7T4ZLUPtyk0nL36VDZH00Q5uM/ClsmnoreT/xz4In
-IuEKIJOVjvgyLYD9VcQXIt3Vb22EjhkwEGa7Zv8BD4EA1PIg3qLx9g==
-=ihYt
------END PGP SIGNATURE-----
---=-=-=--
