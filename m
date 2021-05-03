@@ -2,154 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC56371678
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 788DE37167D
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234119AbhECOPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 10:15:42 -0400
-Received: from mga17.intel.com ([192.55.52.151]:4286 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230059AbhECOPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 10:15:39 -0400
-IronPort-SDR: 4cuDzputxxEpkmPyXLmtoH+aG8E1Z7lWzS6vi6ch+w/ElcSOUgFs+A+F9CEE6VcGWQP3S59CEW
- /zk1WO0MtUhQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9973"; a="177957092"
-X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
-   d="scan'208";a="177957092"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 07:14:45 -0700
-IronPort-SDR: O8x2wyUKctrb08OQp/Inzii33MIdgl+kixL5T6Duiiz9HdRu5tQD1U3xWnNYV3RwHjZNZLLIN+
- y/OJ8Y1gn8vg==
-X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
-   d="scan'208";a="432762886"
-Received: from tbroiles-mobl.amr.corp.intel.com (HELO [10.209.47.222]) ([10.209.47.222])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 07:14:45 -0700
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
- features
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Len Brown <lenb@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Willy Tarreau <w@1wt.eu>, Andy Lutomirski <luto@kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        linux-abi@vger.kernel.org,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>
-References: <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu>
- <20210415054713.GB6318@zn.tnic>
- <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
- <20210419141454.GE9093@zn.tnic>
- <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com>
- <20210419191539.GH9093@zn.tnic>
- <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com>
- <20210419215809.GJ9093@zn.tnic>
- <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
- <YIMmwhEr46VPAZa4@zn.tnic>
- <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
- <87bl9s8kfb.fsf@oldenburg.str.redhat.com>
- <5d3d513b-77d6-e2e2-779e-ff3ea33deba3@intel.com>
- <87zgxc53pl.fsf@oldenburg.str.redhat.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <b3c16707-c2d3-15fe-cac7-027ef022cfb7@intel.com>
-Date:   Mon, 3 May 2021 07:14:43 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <87zgxc53pl.fsf@oldenburg.str.redhat.com>
-Content-Type: text/plain; charset=utf-8
+        id S231281AbhECOQY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 3 May 2021 10:16:24 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2986 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230059AbhECOQT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 10:16:19 -0400
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FYlGT3HVTz6wm1m;
+        Mon,  3 May 2021 22:09:37 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 3 May 2021 16:15:22 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
+ Mon, 3 May 2021 16:15:22 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        "mjg59@google.com" <mjg59@google.com>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v5 06/12] evm: Ignore INTEGRITY_NOLABEL/INTEGRITY_NOXATTRS
+ if conditions are safe
+Thread-Topic: [PATCH v5 06/12] evm: Ignore
+ INTEGRITY_NOLABEL/INTEGRITY_NOXATTRS if conditions are safe
+Thread-Index: AQHXK5xdbQY13c/E0Ea5lrgi3mZG3arQ6VCAgAChtnCAAGkoMA==
+Date:   Mon, 3 May 2021 14:15:22 +0000
+Message-ID: <33cad84d2f894ed5a05a3bd6854f73a0@huawei.com>
+References: <20210407105252.30721-1-roberto.sassu@huawei.com>
+         <20210407105252.30721-7-roberto.sassu@huawei.com>
+ <b8790b57e289980d4fe1133d15203ce016d2319d.camel@linux.ibm.com>
+ <c12f18094cc0479faa3f0f152b4964de@huawei.com>
+In-Reply-To: <c12f18094cc0479faa3f0f152b4964de@huawei.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.221.98.153]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/3/21 6:47 AM, Florian Weimer wrote:
-> * Dave Hansen:
+> From: Roberto Sassu [mailto:roberto.sassu@huawei.com]
+> Sent: Monday, May 3, 2021 9:55 AM
+> > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> > Sent: Monday, May 3, 2021 2:13 AM
+> > Hi Roberto,
+> >
+> > On Wed, 2021-04-07 at 12:52 +0200, Roberto Sassu wrote:
+> > > When a file is being created, LSMs can set the initial label with the
+> > > inode_init_security hook. If no HMAC key is loaded, the new file will have
+> > > LSM xattrs but not the HMAC. It is also possible that the file remains
+> > > without protected xattrs after creation if no active LSM provided it.
+> > >
+> > > Unfortunately, EVM will deny any further metadata operation on new
+> files,
+> > > as evm_protect_xattr() will always return the INTEGRITY_NOLABEL error,
+> or
+> > > INTEGRITY_NOXATTRS if no protected xattrs exist. This would limit the
+> > > usability of EVM when only a public key is loaded, as commands such as
+> cp
+> > > or tar with the option to preserve xattrs won't work.
+> > >
+> > > This patch ignores these errors when they won't be an issue, if no HMAC
+> > key
+> > > is loaded and cannot be loaded in the future (which can be enforced by
+> > > setting the EVM_SETUP_COMPLETE initialization flag).
+> > >
+> > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > > ---
+> > >  security/integrity/evm/evm_main.c | 23 ++++++++++++++++++++++-
+> > >  1 file changed, 22 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/security/integrity/evm/evm_main.c
+> > b/security/integrity/evm/evm_main.c
+> > > index 998818283fda..6556e8c22da9 100644
+> > > --- a/security/integrity/evm/evm_main.c
+> > > +++ b/security/integrity/evm/evm_main.c
+> > > @@ -90,6 +90,24 @@ static bool evm_key_loaded(void)
+> > >  	return (bool)(evm_initialized & EVM_KEY_MASK);
+> > >  }
+> > >
+> > > +/*
+> > > + * Ignoring INTEGRITY_NOLABEL/INTEGRITY_NOXATTRS is safe if no
+> HMAC
+> > key
+> > > + * is loaded and the EVM_SETUP_COMPLETE initialization flag is set.
+> > > + */
+> > > +static bool evm_ignore_error_safe(enum integrity_status evm_status)
+> > > +{
+> > > +	if (evm_initialized & EVM_INIT_HMAC)
+> > > +		return false;
+> > > +
+> > > +	if (!(evm_initialized & EVM_SETUP_COMPLETE))
+> > > +		return false;
+> > > +
+> > > +	if (evm_status != INTEGRITY_NOLABEL && evm_status !=
+> > INTEGRITY_NOXATTRS)
+> > > +		return false;
+> > > +
+> > > +	return true;
+> > > +}
+> > > +
+> > >  static int evm_find_protected_xattrs(struct dentry *dentry)
+> > >  {
+> > >  	struct inode *inode = d_backing_inode(dentry);
+> > > @@ -354,6 +372,8 @@ static int evm_protect_xattr(struct dentry
+> *dentry,
+> > const char *xattr_name,
+> > >  				    -EPERM, 0);
+> > >  	}
+> > >  out:
+> > > +	if (evm_ignore_error_safe(evm_status))
+> > > +		return 0;
+> >
+> > I agree with the concept, but the function name doesn't provide enough
+> > context.  Perhaps defining a function more along the lines of
+> > "evm_hmac_disabled()" would be more appropriate and at the same time
+> > self documenting.
 > 
->> On 5/2/21 10:18 PM, Florian Weimer wrote:
->>>> 5. If the feature is enabled in XCR0, the user happily uses it.
->>>>
->>>>     For AMX, Linux implements "transparent first use"
->>>>     so that it doesn't have to allocate 8KB context switch
->>>>     buffers for tasks that don't actually use AMX.
->>>>     It does this by arming XFD for all tasks, and taking a #NM
->>>>     to allocate a context switch buffer only for those tasks
->>>>     that actually execute AMX instructions.
->>> What happens if the kernel cannot allocate that additional context
->>> switch buffer?
->> Well, it's vmalloc()'d and currently smaller that the kernel stack,
->> which is also vmalloc()'d.  While it can theoretically fail, if it
->> happens you have bigger problems on your hands.
-> Not sure if I understand.
+> Since the function checks if the passed error can be ignored,
+> would evm_ignore_error_hmac_disabled() also be ok?
 > 
-> Is your position that the kernel should terminate processes if it runs
-> out of memory instead reporting proper errors, even if memory overcommit
-> is disabled?
+> > >  	if (evm_status != INTEGRITY_PASS)
+> > >  		integrity_audit_msg(AUDIT_INTEGRITY_METADATA,
+> > d_backing_inode(dentry),
+> > >  				    dentry->d_name.name,
+> > "appraise_metadata",
+> > > @@ -515,7 +535,8 @@ int evm_inode_setattr(struct dentry *dentry,
+> struct
+> > iattr *attr)
+> > >  		return 0;
+> > >  	evm_status = evm_verify_current_integrity(dentry);
+> > >  	if ((evm_status == INTEGRITY_PASS) ||
+> > > -	    (evm_status == INTEGRITY_NOXATTRS))
+> > > +	    (evm_status == INTEGRITY_NOXATTRS) ||
+> > > +	    (evm_ignore_error_safe(evm_status)))
+> >
+> > It would also remove the INTEGRITY_NOXATTRS test duplication here.
+> 
+> Ok.
 
-I assume you mean sysctl vm.overcommit=2 by "overcommit is disabled"?
+Actually, it does not seem a duplication. Currently, INTEGRITY_NOXATTRS
+is ignored also when the HMAC key is loaded.
 
-> When this flag is 2, the kernel uses a "never overcommit"
-> policy that attempts to prevent any overcommit of memory.
-> Note that user_reserve_kbytes affects this policy.
+Roberto
 
-Note the "attempts".
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Li Jian, Shi Yanli
 
-So, no, the kernel should not be terminating processes when it runs out
-of memory.  It *attempts* not to do that.  What you are seeing here with
-a demand-based XSAVE buffer allocation driven by a #NM fault is the
-*addition* of a case where those attempts can fail, not the creation of
-the first one.
+> Thanks
+> 
+> Roberto
+> 
+> HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+> Managing Director: Li Peng, Li Jian, Shi Yanli
+> 
+> > thanks,
+> >
+> > Mimi
+> >
+> > >  		return 0;
+> > >  	integrity_audit_msg(AUDIT_INTEGRITY_METADATA,
+> > d_backing_inode(dentry),
+> > >  			    dentry->d_name.name, "appraise_metadata",
 
-The addition of this case doesn't bother me because I don't think it
-will ultimately be visible to end users.
-
-If I'm wrong, and our HPC friends who are so enamored with
-"vm.overcommit=2" end up seeing lots of SIGSEGV's where where would
-rather see syscall failures, there's an easy solution: disable first-use
-detection.  Stop dynamically allocating XSAVE buffers on faults.
-
-Actually, if we don't have a tunable or boot parameter for that now, we
-should add one.
