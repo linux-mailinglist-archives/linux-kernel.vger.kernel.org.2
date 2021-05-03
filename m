@@ -2,78 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7702372022
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 21:08:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF4737204C
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 21:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbhECTJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 15:09:22 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:40669 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhECTJV (ORCPT
+        id S229712AbhECTT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 15:19:59 -0400
+Received: from attaques.jabatus.fr ([109.234.163.27]:54583 "EHLO
+        attaques.jabatus.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229695AbhECTT4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 15:09:21 -0400
-Received: by mail-oi1-f177.google.com with SMTP id u16so6402232oiu.7;
-        Mon, 03 May 2021 12:08:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sJuQ2VLmX3/y05QCOllxuuVr7EUaJPmvVZttcxgWa84=;
-        b=Lvaj2WnweV5CNy3IUl3i170QbDWZDkOmYxq1i+UspnGwVWH2JvLS8LpOjnBAH+55gq
-         t8JjxNApBDDbiLfZLgBWbUX5/dqdZx3IQZCzwwm648ld2gUwdN/rLzl7ev+JTnfUDzqn
-         aO+UnngLjnS1z2V2JsH3qGEPq3VFQylBK5RGzelqE3t/P90w9mYfbuGdlqh75mJv3J2q
-         /QsdAQ62qN07V16YROS0Mr1p/QCdNq5c/fJegwWjSgvunxJtIyZDcz3+vGEfEXKLvVmh
-         EzPowV23/8rqOA+mzIXBncPKxpSvuhowEUD7TZ7FLu+41bhgDN7Eyuup4AgD+7MEJpWE
-         zVDA==
-X-Gm-Message-State: AOAM531HhH+Gv8LSNf3KP9uHG4d6MsDdaTnNbJZn0GqG+JtcN3boNuVz
-        YhhxmvBIhKOBmy8YYDfbHg==
-X-Google-Smtp-Source: ABdhPJzE3Ta4pAuvGL96i+8mR402OCRrxAwg5WBg5i2n/L5T3x1GrnZL+kgHNXG5r2MgiNXRVgX94A==
-X-Received: by 2002:aca:59c6:: with SMTP id n189mr43205oib.172.1620068906551;
-        Mon, 03 May 2021 12:08:26 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i2sm189642ota.61.2021.05.03.12.08.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 12:08:25 -0700 (PDT)
-Received: (nullmailer pid 2209176 invoked by uid 1000);
-        Mon, 03 May 2021 19:08:24 -0000
-Date:   Mon, 3 May 2021 14:08:24 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH V2 0/4] dt-bindings: soc/arm: Convert pending ti, sci*
- bindings to json format
-Message-ID: <20210503190824.GA2192378@robh.at.kernel.org>
-References: <20210426155457.21221-1-nm@ti.com>
- <161957028464.177949.14790878722521589025@swboyd.mtv.corp.google.com>
+        Mon, 3 May 2021 15:19:56 -0400
+X-Greylist: delayed 342 seconds by postgrey-1.27 at vger.kernel.org; Mon, 03 May 2021 15:19:56 EDT
+X-Spam-Status: No
+X-MailPropre-MailScanner-From: hello@haciendadreal.com
+X-MailPropre-MailScanner-SpamCheck: not spam, SpamAssassin (cached,
+        score=-2.499, required 5, autolearn=disabled, BAYES_50 2.50,
+        FREEMAIL_FORGED_REPLYTO 0.10, RCVD_IN_DNSWL_HI -5.00,
+        SPF_HELO_PASS -0.10, SPF_NONE 0.00)
+X-MailPropre-MailScanner: Not scanned: please contact your Internet E-Mail Service Provider for details
+X-MailPropre-MailScanner-ID: 9CAC01001D7.ACDD4
+X-MailPropre-MailScanner-Information: Please contact the ISP for more information
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=taurusmedia.fr; s=default; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID:Date:Subject:To:From:Reply-To:Sender:Cc:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=HrqC/uBm2ezGl4EmtNFX6Fjgyr1xe4i7PKudIs8IuOM=; b=OsvO+Yxj8bizc67n0ko91oYaS/
+        9KNbBGndy+jy2/g3Bsfs2Cbe0g3GlN6EZIw+U0Rja0upb91GopUZLDMNMPt0Gd0g84BvdMhtFInWW
+        FWDSw7p21jZzj4rd352BGG01mhYZAR+vVNz0IUDbvps074I+/45Vb+lDFHNjh0h810kOK1FJTUUI4
+        2XXwtYOpn8Gs7xRawThj7ecH0fi2bQ6zrDIKd7coEgt6ekD5XXrjnXGqJJRt1xCV7YRNqJXaQfZid
+        JWh89r0xVFEe7Fm1WgVlWmvtMyuDr2HMfUXA9FRriXig1WGXK32PUfpT6abRRP2J+/A95VXQYmQeA
+        7CTxskrg==;
+Reply-To: Yaser Moustafa <yasermoustafa.private@gmail.com>
+From:   Yaser Moustafa <hello@haciendadreal.com>
+To:     linux-kernel@vger.kernel.org
+Subject: Important
+Date:   3 May 2021 12:13:09 -0700
+Message-ID: <20210503121309.D0A62540B1B88E47@haciendadreal.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161957028464.177949.14790878722521589025@swboyd.mtv.corp.google.com>
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - moustique.o2switch.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - haciendadreal.com
+X-Get-Message-Sender-Via: moustique.o2switch.net: authenticated_id: 2@taurusmedia.fr
+X-Authenticated-Sender: moustique.o2switch.net: 2@taurusmedia.fr
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 05:38:04PM -0700, Stephen Boyd wrote:
-> Quoting Nishanth Menon (2021-04-26 08:54:53)
-> > Hi,
-> > 
-> > V2 of the series posted in [1] to convert the remaining ti,sci bindings
-> > to json schema format. V2 is mostly review comments being incorporated -
-> > details in each of the patches and in applicable patches, I have picked
-> > up Rob's and Tero's reviewed bys.
-> > 
-> > There are also dts fixups that this series exposes, which is good, but
-> > I chose to hold them back for now pending binding review at least. The
-> > complete series is available in [2] if folks are curious - to be posted
-> > once v5.13-rc1 is available for fixes.
-> 
-> Is Rob going to pick this up? If so
+Did you get my last email? Please let me know.
 
-Okay, done.
-> 
-> Acked-by: Stephen Boyd <sboyd@kernel.org>
+Best Regards,
+Yaser Moustafa,
+Senior Managing Director of NBK Capital Partners.
