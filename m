@@ -2,115 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 575B83713FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 13:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D83D9371409
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 13:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232994AbhECLJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 07:09:11 -0400
-Received: from mx.mylinuxtime.de ([195.201.174.144]:49178 "EHLO
-        mx.mylinuxtime.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232981AbhECLJI (ORCPT
+        id S233236AbhECLLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 07:11:08 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:56269 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232981AbhECLLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 07:09:08 -0400
-Received: from leda (unknown [193.159.163.171])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mx.mylinuxtime.de (Postfix) with ESMTPSA id 568FC12D2EE;
-        Mon,  3 May 2021 13:08:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=eworm.de; s=mail;
-        t=1620040091;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BIyy8WFqZaNsO4CjisDKSgKN7z8QxT2e2+nZebrK8gk=;
-        b=Tv8aBb5ClF1MNwDQM2tPw/Rx1MVvI7AbuBqHOVds511aIw1XS/RjYuIB6NirvWuW9IoiHt
-        Y+7eZdm2TvtTIPPGIzzYWrc/dDuJq9oaJmJ0GHEWII1pr6rfp+PAnlmf9+mBjF2bc1UpEs
-        xbZDTED8qEOwTJm9G6cPUkVaH94uW+w=
-Date:   Mon, 3 May 2021 13:08:03 +0200
-From:   Christian Hesse <list@eworm.de>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: general protection fault in css_release_work_fn()
-Message-ID: <20210503130803.715a4477@leda>
-In-Reply-To: <20210419125508.647ce682@leda>
-References: <20210302093415.7b463ddc@leda>
-        <20210315141038.1cc59f54@leda>
-        <20210412080546.2098-1-hdanton@sina.com>
-        <20210419125508.647ce682@leda>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-X-Face: %O:rCSk<c"<MpJ:yn<>HSKf7^4uF|FD$9$I0}g$nbnS1{DYPvs#:,~e`).mzj\$P9]V!WCveE/XdbL,L!{)6v%x4<jA|JaB-SKm74~Wa1m;|\QFlOg>\Bt!b#{;dS&h"7l=ow'^({02!2%XOugod|u*mYBVm-OS:VpZ"ZrRA4[Q&zye,^j;ftj!Hxx\1@;LM)Pz)|B%1#sfF;s;,N?*K*^)
-Face:   iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAGFBMVEUZFRFENy6KVTKEd23CiGHeqofJvrX4+vdHgItOAAAACXBIWXMAAA3XAAAN1wFCKJt4AAACUklEQVQ4y2VUTZeqMAxNxXG2Io5uGd64L35unbF9ax0b3OLxgFs4PcLff0lBHeb1QIq5uelNCEJNq/TIFGyeC+iugH0WJr+B1MvzWASpuP4CYHOB0VfoDdddwA7OIFQIEHjXDiCtV5e9QX0WMu8AG0mB7g7WP4GqeqVdsi4vv/5kFBvaF/zD7zDquL4DxbrDGDyAsgNYOsJOYzth4Q9ZF6iLV+6TLAT1pi2kuvgAtZxSjoG8cL+8vIn251uoe1OOEWwbIPU04gHsmMsoxyyhYsD2FdIigF1yxaVbBuSOCAlCoX324I7wNMhrO1bhOLsRoA6DC6wQ5eQiSG5BiWQfM4gN+uItQTRDMaJUhVbGyKWCuaaUGSVFVKpl4PdoDn3yY8J+YxQxyhlHfoYOyPgyDcO+cSQK6Bvabjcy2nwRo3pxgA8jslnCuYw23ESOzHAPYwo4ITNQMaOO+RGPEGhSlPEZBh2jmBEjQ5cKbxmr0ruAe/WCriUxW76I8T3h7vqY5VR5wXLdERodg2rHEzdxxk5KpXTL4FwnarvndKM5/MWDY5CuBBdQ+3/0ivsUJHicuHd+Xh3jOdBL+FjSGq4SPCwco+orpWlERRTNo7BHCvbNXFVSIQMp+P5QsIL9upmr8kMTUOfxEHoanwzKRcNAe76WbjBwex/RkdHu48xT5YqP70DaMOhBcTHmAVDxLaBdle93oJy1QKFUh2GXT4am+YH/GGel1CeI98GdMXsytjCKIq/9cMrlgxFCROv+3/BU1fijNpcVD6DxE8VfLBaxUGr1D5usgDYdjwiPAAAAAElFTkSuQmCC
+        Mon, 3 May 2021 07:11:06 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 143AvKGk037658;
+        Mon, 3 May 2021 18:57:20 +0800 (GMT-8)
+        (envelope-from steven_lee@aspeedtech.com)
+Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 3 May
+ 2021 19:08:58 +0800
+Date:   Mon, 3 May 2021 19:08:50 +0800
+From:   Steven Lee <steven_lee@aspeedtech.com>
+To:     Andrew Jeffery <andrew@aj.id.au>
+CC:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Ryan Chen <ryanchen.aspeed@gmail.com>,
+        "moderated list:ASPEED SD/MMC DRIVER" <linux-aspeed@lists.ozlabs.org>,
+        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Hongwei Zhang <Hongweiz@ami.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: mmc: sdhci-of-aspeed: Add
+ description for AST2600 EVB.
+Message-ID: <20210503110850.GA2111@aspeedtech.com>
+References: <20210503014336.20256-1-steven_lee@aspeedtech.com>
+ <20210503014336.20256-2-steven_lee@aspeedtech.com>
+ <75226402-503c-4e9b-96dc-e4bd74cf20ac@www.fastmail.com>
+ <20210503094054.GA12520@aspeedtech.com>
+ <6678be60-d078-4eaa-8fef-37a60473f1cc@www.fastmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/E6wfKIAJvZtkCg4pfPC6oSQ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Authentication-Results: mx.mylinuxtime.de;
-        auth=pass smtp.auth=mail@eworm.de smtp.mailfrom=list@eworm.de
-X-Rspamd-Server: mx
-X-Spam-Status: No, score=-6.87
-X-Stat-Signature: ma8q5rtzxrtwzffbhgcbis4eif9zizq5
-X-Rspamd-Queue-Id: 568FC12D2EE
-X-Spamd-Result: default: False [-6.87 / 15.00];
-         ARC_NA(0.00)[];
-         URIBL_BLOCKED(0.00)[eworm.de:email,sina.com:email];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[sina.com];
-         MIME_GOOD(-0.20)[multipart/signed,text/plain];
-         NEURAL_HAM_LONG(-3.03)[-1.009];
-         DKIM_SIGNED(0.00)[];
-         NEURAL_HAM_SHORT(-1.14)[-1.144];
-         RCPT_COUNT_TWO(0.00)[2];
-         FREEMAIL_TO(0.00)[sina.com];
-         RCVD_COUNT_ZERO(0.00)[0];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+,1:+,2:~];
-         MID_RHS_NOT_FQDN(0.50)[];
-         ASN(0.00)[asn:3320, ipnet:193.158.0.0/15, country:DE];
-         BAYES_HAM(-3.00)[99.99%]
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <6678be60-d078-4eaa-8fef-37a60473f1cc@www.fastmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 143AvKGk037658
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/E6wfKIAJvZtkCg4pfPC6oSQ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The 05/03/2021 18:32, Andrew Jeffery wrote:
+> On Mon, 3 May 2021, at 19:10, Steven Lee wrote:
+> > The 05/03/2021 12:19, Andrew Jeffery wrote:
+> > > Hi Steven,
+> > > 
+> > > On Mon, 3 May 2021, at 11:13, Steven Lee wrote:
+> > > > Add the description for describing the AST 2600 EVB reference design of
+> > > > GPIO regulators and provide the example in the document.
+> > > > 
+> > > > AST2600-A2 EVB has the reference design for enabling SD bus
+> > > > power and toggling SD bus signal voltage by GPIO pins.
+> > > > 
+> > > > In the reference design, GPIOV0 of AST2600-A2 EVB is connected to
+> > > > power load switch that providing 3.3v to SD1 bus vdd. GPIOV1 is
+> > > > connected to a 1.8v and a 3.3v power load switch that providing
+> > > > signal voltage to
+> > > > SD1 bus.
+> > > > 
+> > > > If GPIOV0 is active high, SD1 bus is enabled. Otherwise, SD1 bus is
+> > > > disabled.
+> > > > If GPIOV1 is active high, 3.3v power load switch is enabled, SD1
+> > > > signal voltage is 3.3v. Otherwise, 1.8v power load switch will be
+> > > > enabled, SD1 signal voltage becomes 1.8v.
+> > > > 
+> > > > AST2600-A2 EVB also support toggling signal voltage for SD2 bus.
+> > > > The design is the same as SD1 bus. It uses GPIOV2 as power-gpio and
+> > > > GPIOV3 as power-switch-gpio.
+> > > > 
+> > > > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+> > > > ---
+> > > >  .../devicetree/bindings/mmc/aspeed,sdhci.yaml | 99 +++++++++++++++++++
+> > > >  1 file changed, 99 insertions(+)
+> > > > 
+> > > > diff --git a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml 
+> > > > b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
+> > > > index 987b287f3bff..dd894aba0bb7 100644
+> > > > --- a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
+> > > > +++ b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
+> > > > @@ -20,6 +20,19 @@ description: |+
+> > > >    the slots are dependent on the common configuration area, they are 
+> > > > described
+> > > >    as child nodes.
+> > > >  
+> > > > +  The signal voltage of SDHCIs on AST2600-A2 EVB is able to be toggled 
+> > > > by GPIO
+> > > > +  pins. In the reference design, GPIOV0 of AST2600-A2 EVB is connected 
+> > > > to the
+> > > > +  power load switch that providing 3.3v to SD1 bus vdd, GPIOV1 is 
+> > > > connected to
+> > > > +  a 1.8v and a 3.3v power load switch that providing signal voltage to
+> > > > +  SD1 bus.
+> > > > +  If GPIOV0 is active high, SD1 bus is enabled. Otherwise, SD1 bus is
+> > > > +  disabled. If GPIOV1 is active high, 3.3v power load switch is 
+> > > > enabled, SD1
+> > > > +  signal voltage is 3.3v. Otherwise, 1.8v power load switch will be 
+> > > > enabled, SD1
+> > > > +  signal voltage becomes 1.8v.
+> > > > +  AST2600-A2 EVB also support toggling signal voltage for SD2 bus.
+> > > > +  The design is the same as SD1 bus. It uses GPIOV2 as power-gpio and 
+> > > > GPIOV3
+> > > > +  as power-switch-gpio.
+> > > 
+> > > I don't think we should be describing design-specific details in the 
+> > > binding document. However, I think this would be a great comment in the 
+> > > AST2600 EVB devicetree. Can you please move it there?
+> > > 
+> > 
+> > Ok, I will move it to the device tree.
+> > 
+> > I was wondering if the following place is a good place to put the
+> > comment
+> > 
+> > at line 534 of aspeed-g6.dtsi
+> 
+> What you're describing is specific to the AST2600 EVB, so I suggest you 
+> put it in the EVB dts, e.g. at:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/aspeed-ast2600-evb.dts#n103
+> 
 
-Christian Hesse <list@eworm.de> on Mon, 2021/04/19 12:55:
-> Hillf Danton <hdanton@sina.com> on Mo, 2021/04/12 16:05:
-> > Looks like double free or use after free based on 0xdead.
-> > If possible, would you try the mainline with KASAN enabled, given the f=
-ear
-> > that few guys can find time for 5.10 this week? =20
->=20
-> Currently running 5.11.13 with KASAN enabled for about a week. Either this
-> has been fixed lately or I am suffering a race that does not happen with
-> KASAN enabled.
+Got it!
+Thanks for the prompt reply.
 
-Currently running  5.11.16 for about a week, looks stable now.
-Still saw a crash with recent 5.10.x though... Looks like I have to build
-that with KASAN.
---=20
-main(a){char*c=3D/*    Schoene Gruesse                         */"B?IJj;MEH"
-"CX:;",b;for(a/*    Best regards             my address:    */=3D0;b=3Dc[a+=
-+];)
-putchar(b-1/(/*    Chris            cc -ox -xc - && ./x    */b/42*2-3)*42);}
+> > sdc: sdc@1e740000 {
+> > 	// Comment here...
+> > 
+> > 	compatible = "aspeed,ast2600-sd-controller";
+> > 	reg = <0x1e740000 0x100>;
+> > 
+> > 	sdhci0: sdhci@1e740100 {
+> > 		compatible = "aspeed,ast2600-sdhci", "sdhci";
+> > 		reg = <0x100 0x100>;
+> > 		interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
+> > ...
+> > }
+> > 
+> > > > +
+> > > >  properties:
+> > > >    compatible:
+> > > >      enum:
+> > > > @@ -78,6 +91,7 @@ required:
+> > > >    - clocks
+> > > >  
+> > > >  examples:
+> > > > +  //Example 1
+> > > >    - |
+> > > >      #include <dt-bindings/clock/aspeed-clock.h>
+> > > >      sdc@1e740000 {
+> > > > @@ -104,3 +118,88 @@ examples:
+> > > >                      clocks = <&syscon ASPEED_CLK_SDIO>;
+> > > >              };
+> > > >      };
+> > > > +
+> > > > +  //Example 2 (AST2600EVB with GPIO regulator)
+> > > 
+> > > I feel you didn't test this with `make dt_binding_check` as `//` isn't
+> > > a valid YAML comment token. You need to use `#` for comments (
+> > > https://yaml.org/spec/1.2/spec.html#id2780069 ).
+> > > 
+> > 
+> > Sorry, I don't know that there is a binding check command for valiating
+> > YAML document.
+> 
+> No worries! There's also `make dtbs_check` to validate the devicetree files
+> against the bindings. It's useful to run both, as usually when you're adding to
+> the binding you're modifying a devicetree as well.
+> 
 
---Sig_/E6wfKIAJvZtkCg4pfPC6oSQ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Thanks, I will to these checks.
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEXHmveYAHrRp+prOviUUh18yA9HYFAmCP2ZMACgkQiUUh18yA
-9Hbu6QgAkYWp4SpglWH5TA5o85B6wmauDnXwZFH9FrHk15bfx+MkopSKAQ9roZm8
-4XQ+GN52Q5TTrZ3eaLT6qjRNjbe+00WXDpPyzLKZmQp84Tq0LXPnYEDvk3+duSVi
-/GD36jQYjvPecidGyAqmR2ASqrowh6Xgi6EHA/oHUEkUHJT/gbJ8ipaZ5R7uduF3
-My+DkGUkNeiSgmeZogCt2Z7Fk5u6BZIX4BsytqiaWf84uZ3wfG9gpXo/I/X/OH2b
-Jf4j7vNo3PlrqEchk3QZFaGzTnLTI4T3Ho+xy1JwG8OIIJP0mv5po6DtixsoQgDs
-IzqGGBEK0/fMbhypIZFY7WW3FUWDog==
-=uynm
------END PGP SIGNATURE-----
-
---Sig_/E6wfKIAJvZtkCg4pfPC6oSQ--
+> Unfortunately we need to do a bit of a cleanup of the Aspeed dts files, they
+> generate a number of warnings right now.
+> 
+> > Regardless, thanks for the reference link.
+> > I will test with dt_binding_check.
+> > 
+> > > > +  - |
+> > > > +    #include <dt-bindings/clock/aspeed-clock.h>
+> > > > +    #include <dt-bindings/gpio/aspeed-gpio.h>
+> > > > +    vcc_sdhci0: regulator-vcc-sdhci0 {
+> > > > +            compatible = "regulator-fixed";
+> > > > +
+> > > > +            regulator-name = "SDHCI0 Vcc";
+> > > > +            regulator-min-microvolt = <3300000>;
+> > > > +            regulator-max-microvolt = <3300000>;
+> > > > +            gpios = <&gpio0 ASPEED_GPIO(V, 0)
+> > > > +                            GPIO_ACTIVE_HIGH>;
+> > > > +            enable-active-high;
+> > > > +    };
+> > > > +
+> > > > +    vccq_sdhci0: regulator-vccq-sdhci0 {
+> > > > +            compatible = "regulator-gpio";
+> > > > +
+> > > > +            regulator-name = "SDHCI0 VccQ";
+> > > > +            regulator-min-microvolt = <1800000>;
+> > > > +            regulator-max-microvolt = <3300000>;
+> > > > +            gpios = <&gpio0 ASPEED_GPIO(V, 1)
+> > > > +                            GPIO_ACTIVE_HIGH>;
+> > > > +            gpios-states = <1>;
+> > > > +            states = <3300000 1
+> > > > +                      1800000 0>;
+> > > > +    };
+> > > > +
+> > > > +    vcc_sdhci1: regulator-vcc-sdhci1 {
+> > > > +            compatible = "regulator-fixed";
+> > > > +
+> > > > +            regulator-name = "SDHCI1 Vcc";
+> > > > +            regulator-min-microvolt = <3300000>;
+> > > > +            regulator-max-microvolt = <3300000>;
+> > > > +            gpios = <&gpio0 ASPEED_GPIO(V, 2)
+> > > > +                            GPIO_ACTIVE_HIGH>;
+> > > > +            enable-active-high;
+> > > > +    };
+> > > > +
+> > > > +    vccq_sdhci1: regulator-vccq-sdhci1 {
+> > > > +            compatible = "regulator-gpio";
+> > > > +
+> > > > +            regulator-name = "SDHCI1 VccQ";
+> > > > +            regulator-min-microvolt = <1800000>;
+> > > > +            regulator-max-microvolt = <3300000>;
+> > > > +            gpios = <&gpio0 ASPEED_GPIO(V, 3)
+> > > > +                            GPIO_ACTIVE_HIGH>;
+> > > > +            gpios-states = <1>;
+> > > > +            states = <3300000 1
+> > > > +                      1800000 0>;
+> > > > +    };
+> > > > +
+> > > > +    sdc@1e740000 {
+> > > > +            compatible = "aspeed,ast2600-sd-controller";
+> > > > +            reg = <0x1e740000 0x100>;
+> > > > +            #address-cells = <1>;
+> > > > +            #size-cells = <1>;
+> > > > +            ranges = <0 0x1e740000 0x20000>;
+> > > > +            clocks = <&syscon ASPEED_CLK_GATE_SDCLK>;
+> > > > +
+> > > > +            sdhci0: sdhci@100 {
+> > > > +                    compatible = "aspeed,ast2600-sdhci", "sdhci";
+> > > > +                    reg = <0x100 0x100>;
+> > > > +                    interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
+> > > > +                    sdhci,auto-cmd12;
+> > > > +                    clocks = <&syscon ASPEED_CLK_SDIO>;
+> > > > +                    vmmc-supply = <&vcc_sdhci0>;
+> > > > +                    vqmmc-supply = <&vccq_sdhci0>;
+> > > > +                    sd-uhs-sdr104;
+> > > > +                    clk-phase-uhs-sdr104 = <180>, <180>;
+> > > > +            };
+> > > > +
+> > > > +            sdhci1: sdhci@200 {
+> > > > +                    compatible = "aspeed,ast2600-sdhci", "sdhci";
+> > > > +                    reg = <0x200 0x100>;
+> > > > +                    interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
+> > > > +                    sdhci,auto-cmd12;
+> > > > +                    clocks = <&syscon ASPEED_CLK_SDIO>;
+> > > > +                    vmmc-supply = <&vcc_sdhci1>;
+> > > > +                    vqmmc-supply = <&vccq_sdhci1>;
+> > > > +                    sd-uhs-sdr104;
+> > > > +                    clk-phase-uhs-sdr104 = <0>, <0>;
+> > > > +            };
+> > > > +    };
+> > > 
+> > > This is a good example, so can we keep this and just drop the comment 
+> > > from the binding document?
+> > 
+> > Ok, I will remove the comment.
+> 
+> Thanks.
+> 
+> Andrew
