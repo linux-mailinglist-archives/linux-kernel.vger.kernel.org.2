@@ -2,91 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F382371FDF
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 20:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC026371FE2
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 20:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbhECSrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 14:47:18 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:32800 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbhECSrR (ORCPT
+        id S229709AbhECSr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 14:47:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229546AbhECSrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 14:47:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=FQlZSc22rDFnyD/b3PGREqWaL5WzGsfMM4i2vFu2da4=; b=IjY1prSgciJlO7qETHoHcDfvVo
-        474Xui/7jwzyvAcWaBDmxoOFd8uUVi4aWV7PQwD6cV/vy5cZzNo0VGRA9oBXLxQpeKYJmpYH4jFyb
-        4wFa1eShvwuPp+3pmYC4qq4DvJ9Z2+ZznJ5szAfZyCxaIRohe3bxb+xs950S+H/+mvsScLGbX8B45
-        NzXRP57YewUyLmWEB0dkwAeAOpDzXaLnaMXhIujZcHeNydo4HTpR+9b6Qg4uIif2wRfBJ8qvAgoiG
-        zwo0WfN8QxtRRhA24zXz3sRBsHqPStF4rnlp5K7yiV9Rf9KQdWrbwuBKRWO+YajAWnmHIvq365iJz
-        t2H/5Otg==;
-Received: from guinness.priv.deltatee.com ([172.16.1.162])
-        by ale.deltatee.com with esmtp (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1ldda9-000141-N8; Mon, 03 May 2021 12:46:14 -0600
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     John Hubbard <jhubbard@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-mm@kvack.org,
-        iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>
-References: <20210408170123.8788-1-logang@deltatee.com>
- <20210408170123.8788-4-logang@deltatee.com>
- <3834be62-3d1b-fc98-d793-e7dcb0a74624@nvidia.com>
- <a1b6ffa9-7a9c-753f-6350-5ea26506cdc3@deltatee.com>
- <20210503183509.GA17971@lst.de>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <d563acfa-f7d5-2f11-4c1b-b5e2f341a2cb@deltatee.com>
-Date:   Mon, 3 May 2021 12:46:11 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Mon, 3 May 2021 14:47:24 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7359C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 11:46:30 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id l2so6642612wrm.9
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 11:46:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Amr9TVs27FxtVOmr0nrzqRE5o3ox/iYMhBzcq+PDVKg=;
+        b=chDFELazuzknpzzSIq1xhX/vzpRxEm/RAvX47Oo0wCj9JarLRRD1FV2TruIT+nvuG6
+         Cu74aqhTT9XT9tMKkJG69n7m5ffLMUZPhZRBC/rBynO2KUj4LDt3nt5C0yelD3hONOp3
+         yRDK3i7iLRoeAYgmpa+GwpEtXs4KYQfmal+u6HzPFTgORD738GBnZNDmXiqqFfSgDVxE
+         T4VLU6nbeOh2LGgBECpwXaoG4xnCNDImueMXDEzfDjzPMd8cqEP2Gx2JFv/fDfADPtK+
+         inBn9unXsmIcFOLj9z6VuI+o7qwyMiBV/MhBNAghoUP7AmWYWnogF11aq9jZPHXJeOZU
+         WfgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Amr9TVs27FxtVOmr0nrzqRE5o3ox/iYMhBzcq+PDVKg=;
+        b=LVXubL2Fd3WKiExZrIiMdBRUN2w1RuhBrtsV1+ZL/RaVr+ED2ItES6aO5YwrQKRdNT
+         dr4UQhN2F+FRRO6IRjueKNzWfoeMvpk3/jI/gr28eu4Nupo0NWmGHS1sjvgcsPFrcz2r
+         0POnOhA4CYLsHFwL2e/3bXqc4e/fqavJmBBGZP7fW30fqbcreE5RkCBBj6R6sIJRubao
+         tEHcARRNEh3qs4WdZSZiK6A8Zdx5TL3hXbwPF1V18/pqf7T8kiGOn1pbu5CYTjtMJws+
+         L3gmoQiVgHVMAwXoIhQdXQMQax7gil9DpwePQmx98+7vTMLiiGhmJ9W9P+YqdW8qnBMK
+         ajpA==
+X-Gm-Message-State: AOAM532CsBJJTA5gnGsaZUHMDuHuuV4p+fp7pENlDrAwFpgkn9EUBi0d
+        XBnbCvvS2hwkc4r2ALUTLmFrew==
+X-Google-Smtp-Source: ABdhPJyfxW0swHJoR911kqP/dzWnxsFI7AOGcDFTEvRuVYBRFCIANcgwlpjWLmjnuRxMTpkLV18m6Q==
+X-Received: by 2002:a5d:5310:: with SMTP id e16mr3631274wrv.321.1620067589456;
+        Mon, 03 May 2021 11:46:29 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:15:13:aa2:5da4:ba57:b7e7])
+        by smtp.gmail.com with ESMTPSA id i3sm14573640wrb.46.2021.05.03.11.46.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 May 2021 11:46:28 -0700 (PDT)
+Date:   Mon, 3 May 2021 20:46:23 +0200
+From:   Marco Elver <elver@google.com>
+To:     Baptiste Lepers <baptiste.lepers@gmail.com>
+Cc:     trivial@kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miklos Szeredi <mszeredi@suse.cz>,
+        Tejun Heo <htejun@gmail.com>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, paulmck@kernel.org
+Subject: Re: [PATCH] poll: Ignore benign race on pwd->triggered
+Message-ID: <YJBE/3nzZV3pazGx@elver.google.com>
+References: <20210429034411.6379-1-baptiste.lepers@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210503183509.GA17971@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 172.16.1.162
-X-SA-Exim-Rcpt-To: robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, christian.koenig@amd.com, jgg@ziepe.ca, dan.j.williams@intel.com, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jhubbard@nvidia.com, hch@lst.de
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: Re: [PATCH 03/16] PCI/P2PDMA: Attempt to set map_type if it has not
- been set
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210429034411.6379-1-baptiste.lepers@gmail.com>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks for the patch -- any progress on this front is much appreciated.
 
+However, the subject is not really doing this patch justice. We're not
+ignoring the race -- and if by "ignore" you mean let KCSAN ignore the
+race, then it's more like saying "we'll make the sanitizer not report
+this problem anymore... by fixing the problem".
 
-On 2021-05-03 12:35 p.m., Christoph Hellwig wrote:
-> On Mon, May 03, 2021 at 10:17:59AM -0600, Logan Gunthorpe wrote:
->> I agree that some of this has evolved in a way that some of the names
->> are a bit odd now. Could definitely use a cleanup, but that's not really
->> part of this series. When I have some time I can look at doing a cleanup
->> series to help with some of this.
+I'd suggest, similar to wording below:
+
+	"poll: mark racy accesses on pwq->triggered"
+
+Data races are real, and even though at a high-level (where we pretend
+all accesses are atomic) these races are safe and intentional, it it not
+at all clear to the reader why the data race would be "benign" -- that
+is if the compiler optimized or miscompiled the code in such a way that
+we end up with cases unintended by the programmer.
+
+In this case, we can probably argue that the data race would be safe
+(benign), given there's a simple 0->1 transition on triggered, and the
+reader only doing a compare-against-0.
+
+Nevertheless, a READ_ONCE()/WRITE_ONCE() pair is preferred if there are
+no objections, and generated code almost always is the same, and it
+saves us reasoning about another use of data_race().
+
+Paul recently summarized some of these strategies:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/memory-model/Documentation/access-marking.txt
+
+On Thu, Apr 29, 2021 at 01:44PM +1000, Baptiste Lepers wrote:
+> Mark data races to pwd->triggered as benign using READ_ONCE and
+> WRITE_ONCE. These accesses are expected to be racy per comment.
+
+This sounds fine, given there's already a comment.
+
+> This patch is part of a series of patches aiming at reducing the number
+> of benign races reported by KCSAN in order to focus future debugging
+> effort on harmful races.
+
+Looking forward to the rest.
+
+> Reported-by: syzbot+9b3fb64bcc8c1d807595@syzkaller.appspotmail.com
+> Fixes: 5f820f648c92a ("poll: allow f_op->poll to sleep")
+> Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
+
+Acked-by: Marco Elver <elver@google.com>
+
+> ---
+>  fs/select.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> I think adding it to the series would be very helpful.
-
-Ok, I'll prepend a handful of cleanup patches.
-
-Logan
+> diff --git a/fs/select.c b/fs/select.c
+> index 945896d0ac9e..e71b4d1a2606 100644
+> --- a/fs/select.c
+> +++ b/fs/select.c
+> @@ -194,7 +194,7 @@ static int __pollwake(wait_queue_entry_t *wait, unsigned mode, int sync, void *k
+>  	 * and is paired with smp_store_mb() in poll_schedule_timeout.
+>  	 */
+>  	smp_wmb();
+> -	pwq->triggered = 1;
+> +	WRITE_ONCE(pwq->triggered, 1);
+>  
+>  	/*
+>  	 * Perform the default wake up operation using a dummy
+> @@ -239,7 +239,7 @@ static int poll_schedule_timeout(struct poll_wqueues *pwq, int state,
+>  	int rc = -EINTR;
+>  
+>  	set_current_state(state);
+> -	if (!pwq->triggered)
+> +	if (!READ_ONCE(pwq->triggered))
+>  		rc = schedule_hrtimeout_range(expires, slack, HRTIMER_MODE_ABS);
+>  	__set_current_state(TASK_RUNNING);
+>  
+> -- 
+> 2.17.1
