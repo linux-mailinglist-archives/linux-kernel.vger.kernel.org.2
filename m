@@ -2,121 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E713E37143F
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 13:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A50F837144E
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 13:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233478AbhECL20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 07:28:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48404 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233460AbhECL2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 07:28:24 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S233492AbhECLdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 07:33:50 -0400
+Received: from mail-41104.protonmail.ch ([185.70.41.104]:15472 "EHLO
+        mail-41104.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233311AbhECLds (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 07:33:48 -0400
+Received: from mail-03.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A22B3610E6;
-        Mon,  3 May 2021 11:27:27 +0000 (UTC)
-Date:   Mon, 3 May 2021 12:28:18 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Robin van der Gracht <robin@protonic.nl>,
-        linux-iio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH v6 0/3] mainline ti tsc2046 adc driver
-Message-ID: <20210503122818.59f50e45@jic23-huawei>
-In-Reply-To: <20210428073208.19570-1-o.rempel@pengutronix.de>
-References: <20210428073208.19570-1-o.rempel@pengutronix.de>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by mail-41104.protonmail.ch (Postfix) with ESMTPS id 4FYgZk52knz4x77J;
+        Mon,  3 May 2021 11:23:26 +0000 (UTC)
+Authentication-Results: mail-41104.protonmail.ch;
+        dkim=pass (1024-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="ClLkrkRT"
+Date:   Mon, 03 May 2021 11:23:20 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1620041003;
+        bh=qLuvC0LzmZ+0dYDOs8hYBhZK/a8ikuoC9+gfQ35LlKo=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=ClLkrkRTT9et3NQ7jgiTRwxF0CDKlN2Wm+CaultCibyFWO0c+hKP3AvIsly+GtTK/
+         cXyygCJZyJLX6X+4BYNFhw9XpTVcJHI5g7DYCDPtfOkVreoBAgYyaMlNWZgX7Ci0OJ
+         7nj38ES0tezQHKB5n8cWlBU0QRhKNz5Dj8Qxs3Ek=
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From:   Jari Ruusu <jariruusu@protonmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Kalle Valo <kvalo@codeaurora.org>
+Reply-To: Jari Ruusu <jariruusu@protonmail.com>
+Subject: Re: [PATCH 5.10 1/2] iwlwifi: Fix softirq/hardirq disabling in iwl_pcie_gen2_enqueue_hcmd()
+Message-ID: <Hig2EMhMlLkgVm8GsOtjPNaG0CIsMhzr2xut7H3zy7xwbsnbKXh9ka8t6dOUarQ6ZMKxTeYzZLlZWqH8echjcvuYsN8xYCfS2VDlwB0pgKo=@protonmail.com>
+In-Reply-To: <YI6HFNNvzuHnv5VU@kroah.com>
+References: <20210430141910.473289618@linuxfoundation.org> <20210430141910.521897363@linuxfoundation.org> <608CFF6A.4BC054A3@users.sourceforge.net> <YI6HFNNvzuHnv5VU@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Apr 2021 09:32:05 +0200
-Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+On Sunday, May 2, 2021 2:03 PM, Greg Kroah-Hartman <gregkh@linuxfoundation.=
+org> wrote:
+> If you could provide backported patches to those kernels you think this
+> is needed to, I can take them directly. Otherwise running sed isn't
+> always the easiest thing to do on my end :)
 
-Hi Oleksij,
+iwlwifi: Fix softirq/hardirq disabling in iwl_pcie_enqueue_hcmd()
+upstream commit 2800aadc18a64c96b051bcb7da8a7df7d505db3f,
+backport for linux-4.14.y (booted and ping tested)
+Signed-off-by: Jari Ruusu <jariruusu@protonmail.com>
 
-Series applied with the tweaks as per review to patch 3.  Please
-check I didn't mess those up though.
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/tx.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/tx.c
+@@ -1473,6 +1473,7 @@ static int iwl_pcie_enqueue_hcmd(struct iwl_trans *tr=
+ans,
+ =09u32 cmd_pos;
+ =09const u8 *cmddata[IWL_MAX_CMD_TBS_PER_TFD];
+ =09u16 cmdlen[IWL_MAX_CMD_TBS_PER_TFD];
++=09unsigned long flags2;
 
-Applied to the togreg branch of iio.git and pushed out as testing for
-the autobuilders to poke at it.
+ =09if (WARN(!trans->wide_cmd_header &&
+ =09=09 group_id > IWL_ALWAYS_LONG_GROUP,
+@@ -1556,10 +1557,10 @@ static int iwl_pcie_enqueue_hcmd(struct iwl_trans *=
+trans,
+ =09=09goto free_dup_buf;
+ =09}
 
-Thanks,
+-=09spin_lock_bh(&txq->lock);
++=09spin_lock_irqsave(&txq->lock, flags2);
 
-Jonathan
+ =09if (iwl_queue_space(txq) < ((cmd->flags & CMD_ASYNC) ? 2 : 1)) {
+-=09=09spin_unlock_bh(&txq->lock);
++=09=09spin_unlock_irqrestore(&txq->lock, flags2);
 
-> changes v6:
-> - get blessing from Dmitry Torokhov
-> - rebase against latest iio/testing
-> - use simple name for iio_dev->name
-> - use Jonathan's version for oversampling-ratio description 
-> 
-> changes v5:
-> - remove type for the settling-time-us property
-> 
-> changes v4:
-> - spell fixes
-> - add more comments
-> - make code more readable
-> - move scan_buf to the priv
-> - use FIELD_GET to extract ADC data
-> - make some multi line code as one line
-> - do not use atomic API for trig_more_count
-> - fix build warning on 64bit system
-> - add NULL check for the devm_kasprintf()
-> - use return devm_iio_device_register(), without additional error
->   printing.
-> 
-> changes v3:
-> - different spell fixes
-> - add some notes about driver structure
-> - rename the trigger to point on the touchscreen nature of it
-> - rename DT binding to oversampling-ratio
-> - make sure we have some defaults in case no DT property is set
-> 
-> changes v2:
-> - rework and extend DT binding properties
-> - remove touchscreen related code from the IIO ADC driver
-> - make trigger be active longer then IRQ is requesting. This is needed
->   to get "inactive" samples
-> - make oversampling and settle time configurable
-> 
-> TI TSC2046 is a touchscreen controller based on 8 channel ADC. Since most of
-> this ADC based touchscreen controller share same set of challenges, it
-> is better keep then as simple IIO ADC devices attached to a generic
-> resistive-adc-touch driver.
-> 
-> This driver can replace drivers/input/touchscreen/ads7846.c and has
-> following advantages over it:
-> - less code to maintain
-> - shared code paths (resistive-adc-touch, iio-hwmon, etc)
-> - can be used as plain IIO ADC to investigate signaling issues or test
->   real capacity of the plates and attached low-pass filters
->   (or use the touchscreen as a microphone if you like ;) )
-> 
-> Oleksij Rempel (3):
->   dt-bindings:iio:adc: add generic settling-time-us and
->     oversampling-ratio channel properties
->   dt-bindings:iio:adc: add documentation for TI TSC2046 controller
->   iio: adc: add ADC driver for the TI TSC2046 controller
-> 
->  .../devicetree/bindings/iio/adc/adc.yaml      |  12 +
->  .../bindings/iio/adc/ti,tsc2046.yaml          | 115 +++
->  MAINTAINERS                                   |   8 +
->  drivers/iio/adc/Kconfig                       |  12 +
->  drivers/iio/adc/Makefile                      |   1 +
->  drivers/iio/adc/ti-tsc2046.c                  | 720 ++++++++++++++++++
->  6 files changed, 868 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,tsc2046.yaml
->  create mode 100644 drivers/iio/adc/ti-tsc2046.c
-> 
+ =09=09IWL_ERR(trans, "No space in command queue\n");
+ =09=09iwl_op_mode_cmd_queue_full(trans->op_mode);
+@@ -1720,7 +1721,7 @@ static int iwl_pcie_enqueue_hcmd(struct iwl_trans *tr=
+ans,
+ =09spin_unlock_irqrestore(&trans_pcie->reg_lock, flags);
+
+  out:
+-=09spin_unlock_bh(&txq->lock);
++=09spin_unlock_irqrestore(&txq->lock, flags2);
+  free_dup_buf:
+ =09if (idx < 0)
+ =09=09kfree(dup_buf);
+
+--
+Jari Ruusu=C2=A0 4096R/8132F189 12D6 4C3A DCDA 0AA4 27BD=C2=A0 ACDF F073 3C=
+80 8132 F189
 
