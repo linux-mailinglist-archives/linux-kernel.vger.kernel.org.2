@@ -2,70 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEDF1371E61
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B26A371E7B
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232291AbhECRWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 13:22:12 -0400
-Received: from mga06.intel.com ([134.134.136.31]:7412 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231299AbhECRWE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 13:22:04 -0400
-IronPort-SDR: RGlBeDZXWglezH/HjeR/cRqIBjnXxao28zNUnZ+0q4/3W8e5hm6DyoV39ZIO/eJa903S2GVwbz
- 9wlwyq6DAFeg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9973"; a="259080140"
-X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
-   d="scan'208";a="259080140"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 10:21:05 -0700
-IronPort-SDR: QFj6XrTZZjjDNCdv/d0EwzzJ5NTva9iC54/5d99ziVuUUgvD9NKjBQ0WKD4PO6ZyQXZceOlnDY
- tntO1a87N82A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
-   d="scan'208";a="606706383"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga005.jf.intel.com with ESMTP; 03 May 2021 10:21:03 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 00C9129A; Mon,  3 May 2021 20:21:19 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Phil Reid <preid@electromag.com.au>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH v4 5/5] staging: fbtft: Update TODO
-Date:   Mon,  3 May 2021 20:21:14 +0300
-Message-Id: <20210503172114.27891-6-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210503172114.27891-1-andriy.shevchenko@linux.intel.com>
-References: <20210503172114.27891-1-andriy.shevchenko@linux.intel.com>
+        id S233109AbhECRWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 13:22:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41350 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232445AbhECRWR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 13:22:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620062483;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YZDSpOdU8hPfHGPNyL2Z2ZCh2W/0XFNgs6Mty9l/A+c=;
+        b=OuysUCLJWTKBAuryv+zkbTO8VG98FKxASjrlGQPERNUdADSKUSQ0U6t4iwtdXePllsLm3b
+        jREYgtErgm80jm237D4hrlDFEbpZoSfAgjFuJZsK0FmRz7jgh93dYhvee7yNetLQ4dpC/G
+        BWOqmEJgiR/Z3p8IC7MpQqwr3DnAMRw=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-332-7F2zffU0Mm-fJFgKkrSEWw-1; Mon, 03 May 2021 13:21:22 -0400
+X-MC-Unique: 7F2zffU0Mm-fJFgKkrSEWw-1
+Received: by mail-qt1-f197.google.com with SMTP id b5-20020ac867850000b02901be2b671973so1855180qtp.13
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 10:21:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=YZDSpOdU8hPfHGPNyL2Z2ZCh2W/0XFNgs6Mty9l/A+c=;
+        b=lH2K5QSbLNhN7SIXHxtEjSghn9wm5B0d9YJUrA7J6ocUGhhYiX4N/oVDpvsnm2BN3u
+         evy89O3AWVAhQ3M/8XjrXS6Ihbt4WrGx/zaAKghQUxGeypvAPogHTqPGWA/IAVW9ou0t
+         Pnmn6FdjMk2jhn20IEFCzesWOcNj905lWS4ITKDpZsvMznLF67rLlggMA3fPDsRVIrvX
+         pGkrVqpBCHAYBQnVLWLwXGpQq7VJ6+TPTz4do57C8Hl7ao7mmdlwzvD1wmIU16Q0OC7S
+         3Txisd2JwWvKYLirlx2sdPgYH0akE7Id/T4WkIwa+ozuPbc2bgFNkhPUiyhmRCM/FeeV
+         Bp2A==
+X-Gm-Message-State: AOAM533yYphw73A2s4E91MYgDYyXv0SrQNFHFa1R3svTzbMDJDYWGFQF
+        ReBWFpiR8GEE6CRuNLz/2H2HnNEszysGR14chr10mTfjU32tzg2SRRLSVCxScGcGIPw96ynKp1F
+        9pfhUR/mqAxQuNQaKDgqJ2LxK
+X-Received: by 2002:a37:63d2:: with SMTP id x201mr7074649qkb.202.1620062481536;
+        Mon, 03 May 2021 10:21:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxmunf7UZomjEHDhfWMtb2NRGFIT1wgqlRurUitZcql23n+8CfCkV+WD6dRYv77MurlRjHEbw==
+X-Received: by 2002:a37:63d2:: with SMTP id x201mr7074617qkb.202.1620062481295;
+        Mon, 03 May 2021 10:21:21 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id t3sm9023329qke.72.2021.05.03.10.21.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 10:21:20 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH 2/2] mm: memcg/slab: Don't create unfreeable slab
+To:     Shakeel Butt <shakeelb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Cc:     Waiman Long <llong@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Roman Gushchin <guro@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
+References: <20210502180755.445-1-longman@redhat.com>
+ <20210502180755.445-2-longman@redhat.com>
+ <699e5ac8-9044-d664-f73f-778fe72fd09b@suse.cz>
+ <4c90cf79-9c61-8964-a6fd-2da087893339@redhat.com>
+ <d767ff72-711d-976c-d897-9cea0375c827@suse.cz>
+ <CALvZod4aW0P2a5ZG4JO4YH2oQ8a1kM9_Tsjz-tAGP_-9hLyOpw@mail.gmail.com>
+Message-ID: <fc59cce6-71af-890e-030c-46357e0f0343@redhat.com>
+Date:   Mon, 3 May 2021 13:21:19 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALvZod4aW0P2a5ZG4JO4YH2oQ8a1kM9_Tsjz-tAGP_-9hLyOpw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now, after a few fixes we may consider the conversion to
-the GPIO descriptor API is done.
+On 5/3/21 12:24 PM, Shakeel Butt wrote:
+> On Mon, May 3, 2021 at 8:32 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>> On 5/3/21 4:20 PM, Waiman Long wrote:
+>>> On 5/3/21 8:22 AM, Vlastimil Babka wrote:
+>>>> On 5/2/21 8:07 PM, Waiman Long wrote:
+>>>>> The obj_cgroup array (memcg_data) embedded in the page structure is
+>>>>> allocated at the first instance an accounted memory allocation happens.
+>>>>> With the right size object, it is possible that the allocated obj_cgroup
+>>>>> array comes from the same slab that requires memory accounting. If this
+>>>>> happens, the slab will never become empty again as there is at least one
+>>>>> object left (the obj_cgroup array) in the slab.
+>>>>>
+>>>>> With instructmentation code added to detect this situation, I got 76
+>>>>> hits on the kmalloc-192 slab when booting up a test kernel on a VM.
+>>>>> So this can really happen.
+>>>>>
+>>>>> To avoid the creation of these unfreeable slabs, a check is added to
+>>>>> memcg_alloc_page_obj_cgroups() to detect that and double the size
+>>>>> of the array in case it happens to make sure that it comes from a
+>>>>> different kmemcache.
+>>>>>
+>>>>> This change, however, does not completely eliminate the presence
+>>>>> of unfreeable slabs which can still happen if a circular obj_cgroup
+>>>>> array dependency is formed.
+>>>> Hm this looks like only a half fix then.
+>>>> I'm afraid the proper fix is for kmemcg to create own set of caches for the
+>>>> arrays. It would also solve the recursive kfree() issue.
+>>> Right, this is a possible solution. However, the objcg pointers array should
+>>> need that much memory. Creating its own set of kmemcaches may seem like an
+>>> overkill.
+>> Well if we go that way, there might be additional benefits:
+>>
+>> depending of gfp flags, kmalloc() would allocate from:
+>>
+>> kmalloc-* caches that never have kmemcg objects, thus can be used for the objcg
+>> pointer arrays
+>> kmalloc-cg-* caches that have only kmemcg unreclaimable objects
+>> kmalloc-rcl-* and dma-kmalloc-* can stay with on-demand
+>> memcg_alloc_page_obj_cgroups()
+>>
+>> This way we fully solve the issues that this patchset solves. In addition we get
+>> better separation between kmemcg and !kmemcg thus save memory - no allocation of
+>> the array as soon as a single object appears in slab. For "kmalloc-8" we now
+>> have 8 bytes for the useful data and 8 bytes for the obj_cgroup  pointer.
+>>
+> Yes this seems like a better approach.
+>
+OK, I will try to go this route then if there is no objection from others.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/staging/fbtft/TODO | 5 -----
- 1 file changed, 5 deletions(-)
+ From slabinfo, the objs/slab numbers range from 4-512. That means we 
+need kmalloc-cg-{32,64,128,256,512,1k,2k,4k}. A init function to set up 
+the new kmemcaches and an allocation function that use the proper 
+kmemcaches to allocate from.
 
-diff --git a/drivers/staging/fbtft/TODO b/drivers/staging/fbtft/TODO
-index a9f4802bb6be..e72a08bf221c 100644
---- a/drivers/staging/fbtft/TODO
-+++ b/drivers/staging/fbtft/TODO
-@@ -1,8 +1,3 @@
--* convert all uses of the old GPIO API from <linux/gpio.h> to the
--  GPIO descriptor API in <linux/gpio/consumer.h> and look up GPIO
--  lines from device tree, ACPI or board files, board files should
--  use <linux/gpio/machine.h>
--
- * convert all these over to drm_simple_display_pipe and submit for inclusion
-   into the DRM subsystem under drivers/gpu/drm - fbdev doesn't take any new
-   drivers anymore.
--- 
-2.30.2
+Cheers,
+Longman
 
