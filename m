@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2840B371501
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC5F371502
 	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 14:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234095AbhECMDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 08:03:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37160 "EHLO mail.kernel.org"
+        id S233062AbhECMEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 08:04:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233836AbhECMCL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 08:02:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BC23613C1;
-        Mon,  3 May 2021 12:01:17 +0000 (UTC)
+        id S233543AbhECMCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 08:02:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3898613B3;
+        Mon,  3 May 2021 12:01:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620043278;
-        bh=D87Rl+DfAnAQam7hOJOIuqU3dVxihweRU2T+Bpt49hc=;
+        s=korg; t=1620043280;
+        bh=GVHMIPP+mR1qZkeEdKlQJl9WtqBVRsPa7ijve8H5tAw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fhUTAqX1eWbKq5OuyzyvipnqA+4wVfNvDKmGpkTCGtBta9V1EVNy93NW2h8NeHcXd
-         3xClQzREJVHi/DqhbLWWW/GvnkIy9d4l+uwIh9a/7RwEPg/BLgK+imZJBGMPO+bENM
-         8+ZBUXtffdJcJ0439ODBdJtCluIapStiZnQG0k0g=
+        b=DlyQy0acpqBTBZAKyoE3f/4ZWejYSpu7ztEmrBnew0SC/dpKDME1Ai0lumhzM19Mz
+         TCUFleV4zw7wuLYH2hQxYs+IxYvlqX8K9TyXDkM4zLqX1CbeUq46Qy3JCDLvlp2XD0
+         9yKMWpM5+p2eLRDK3lhAEW9iV7FSHsVrdShcCJaw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kangjie Lu <kjlu@umn.edu>, Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 68/69] Revert "brcmfmac: add a check for the status of usb_register"
-Date:   Mon,  3 May 2021 13:57:35 +0200
-Message-Id: <20210503115736.2104747-69-gregkh@linuxfoundation.org>
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 69/69] brcmfmac: properly check for bus register errors
+Date:   Mon,  3 May 2021 13:57:36 +0200
+Message-Id: <20210503115736.2104747-70-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
 References: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
@@ -36,42 +36,188 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 42daad3343be4a4e1ee03e30a5f5cc731dadfef5.
+The brcmfmac driver ignores any errors on initialization with the
+different busses by deferring the initialization to a workqueue and
+ignoring all possible errors that might happen.  Fix up all of this by
+only allowing the module to load if all bus registering worked properly.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
-
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-The original commit here did nothing to actually help if usb_register()
-failed, so it gives a "false sense of security" when there is none.  The
-correct solution is to correctly unwind from this error.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
 Cc: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ .../broadcom/brcm80211/brcmfmac/bcmsdh.c      |  8 +---
+ .../broadcom/brcm80211/brcmfmac/bus.h         | 19 ++++++++-
+ .../broadcom/brcm80211/brcmfmac/core.c        | 42 ++++++++-----------
+ .../broadcom/brcm80211/brcmfmac/pcie.c        |  9 +---
+ .../broadcom/brcm80211/brcmfmac/pcie.h        |  5 ---
+ .../broadcom/brcm80211/brcmfmac/usb.c         |  4 +-
+ 6 files changed, 41 insertions(+), 46 deletions(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
-index 586f4dfc638b..d2a803fc8ac6 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
-@@ -1586,10 +1586,6 @@ void brcmf_usb_exit(void)
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
+index ce8c102df7b3..633d0ab19031 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
+@@ -1217,13 +1217,9 @@ static struct sdio_driver brcmf_sdmmc_driver = {
+ 	},
+ };
  
- void brcmf_usb_register(void)
+-void brcmf_sdio_register(void)
++int brcmf_sdio_register(void)
  {
 -	int ret;
 -
- 	brcmf_dbg(USB, "Enter\n");
--	ret = usb_register(&brcmf_usbdrvr);
+-	ret = sdio_register_driver(&brcmf_sdmmc_driver);
 -	if (ret)
--		brcmf_err("usb_register failed %d\n", ret);
-+	usb_register(&brcmf_usbdrvr);
+-		brcmf_err("sdio_register_driver failed: %d\n", ret);
++	return sdio_register_driver(&brcmf_sdmmc_driver);
+ }
+ 
+ void brcmf_sdio_exit(void)
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bus.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bus.h
+index 08f9d47f2e5c..3f5da3bb6aa5 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bus.h
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bus.h
+@@ -275,11 +275,26 @@ void brcmf_bus_add_txhdrlen(struct device *dev, uint len);
+ 
+ #ifdef CONFIG_BRCMFMAC_SDIO
+ void brcmf_sdio_exit(void);
+-void brcmf_sdio_register(void);
++int brcmf_sdio_register(void);
++#else
++static inline void brcmf_sdio_exit(void) { }
++static inline int brcmf_sdio_register(void) { return 0; }
+ #endif
++
+ #ifdef CONFIG_BRCMFMAC_USB
+ void brcmf_usb_exit(void);
+-void brcmf_usb_register(void);
++int brcmf_usb_register(void);
++#else
++static inline void brcmf_usb_exit(void) { }
++static inline int brcmf_usb_register(void) { return 0; }
++#endif
++
++#ifdef CONFIG_BRCMFMAC_PCIE
++void brcmf_pcie_exit(void);
++int brcmf_pcie_register(void);
++#else
++static inline void brcmf_pcie_exit(void) { }
++static inline int brcmf_pcie_register(void) { return 0; }
+ #endif
+ 
+ #endif /* BRCMFMAC_BUS_H */
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
+index 838b09b23abf..cee1682d2333 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
+@@ -1518,40 +1518,34 @@ void brcmf_bus_change_state(struct brcmf_bus *bus, enum brcmf_bus_state state)
+ 	}
+ }
+ 
+-static void brcmf_driver_register(struct work_struct *work)
+-{
+-#ifdef CONFIG_BRCMFMAC_SDIO
+-	brcmf_sdio_register();
+-#endif
+-#ifdef CONFIG_BRCMFMAC_USB
+-	brcmf_usb_register();
+-#endif
+-#ifdef CONFIG_BRCMFMAC_PCIE
+-	brcmf_pcie_register();
+-#endif
+-}
+-static DECLARE_WORK(brcmf_driver_work, brcmf_driver_register);
+-
+ int __init brcmf_core_init(void)
+ {
+-	if (!schedule_work(&brcmf_driver_work))
+-		return -EBUSY;
++	int err;
+ 
++	err = brcmf_sdio_register();
++	if (err)
++		return err;
++
++	err = brcmf_usb_register();
++	if (err)
++		goto error_usb_register;
++
++	err = brcmf_pcie_register();
++	if (err)
++		goto error_pcie_register;
+ 	return 0;
++
++error_pcie_register:
++	brcmf_usb_exit();
++error_usb_register:
++	brcmf_sdio_exit();
++	return err;
+ }
+ 
+ void __exit brcmf_core_exit(void)
+ {
+-	cancel_work_sync(&brcmf_driver_work);
+-
+-#ifdef CONFIG_BRCMFMAC_SDIO
+ 	brcmf_sdio_exit();
+-#endif
+-#ifdef CONFIG_BRCMFMAC_USB
+ 	brcmf_usb_exit();
+-#endif
+-#ifdef CONFIG_BRCMFMAC_PCIE
+ 	brcmf_pcie_exit();
+-#endif
+ }
+ 
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+index ad79e3b7e74a..143a705b5cb3 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+@@ -2140,15 +2140,10 @@ static struct pci_driver brcmf_pciedrvr = {
+ };
+ 
+ 
+-void brcmf_pcie_register(void)
++int brcmf_pcie_register(void)
+ {
+-	int err;
+-
+ 	brcmf_dbg(PCIE, "Enter\n");
+-	err = pci_register_driver(&brcmf_pciedrvr);
+-	if (err)
+-		brcmf_err(NULL, "PCIE driver registration failed, err=%d\n",
+-			  err);
++	return pci_register_driver(&brcmf_pciedrvr);
+ }
+ 
+ 
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.h
+index d026401d2001..8e6c227e8315 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.h
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.h
+@@ -11,9 +11,4 @@ struct brcmf_pciedev {
+ 	struct brcmf_pciedev_info *devinfo;
+ };
+ 
+-
+-void brcmf_pcie_exit(void);
+-void brcmf_pcie_register(void);
+-
+-
+ #endif /* BRCMFMAC_PCIE_H */
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
+index d2a803fc8ac6..9fb68c2dc7e3 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
+@@ -1584,8 +1584,8 @@ void brcmf_usb_exit(void)
+ 	usb_deregister(&brcmf_usbdrvr);
+ }
+ 
+-void brcmf_usb_register(void)
++int brcmf_usb_register(void)
+ {
+ 	brcmf_dbg(USB, "Enter\n");
+-	usb_register(&brcmf_usbdrvr);
++	return usb_register(&brcmf_usbdrvr);
  }
 -- 
 2.31.1
