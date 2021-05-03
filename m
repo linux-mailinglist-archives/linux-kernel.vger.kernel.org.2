@@ -2,163 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DEF0372145
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 22:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59EFD37214C
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 22:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbhECU0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 16:26:47 -0400
-Received: from mga18.intel.com ([134.134.136.126]:1357 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229472AbhECU0n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 16:26:43 -0400
-IronPort-SDR: zmVTVZ7wQHoUYASfMcjgug3YRPRUOQoSaIHy1AbJSi5ngJvWfhmVQAMPPnchAyaf8l2lCJPqVF
- edkyx36mslIA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9973"; a="185300685"
-X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
-   d="scan'208";a="185300685"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 13:25:49 -0700
-IronPort-SDR: j6W8Y+3CGbViGBD7u64rbmmAj2twhGDrTkWyR+4rqnaSG5yKCy1h1YedTyCLcYvHDTNJRSwYGH
- TRcfe9UbLFwQ==
-X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
-   d="scan'208";a="468203041"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.251.140.183]) ([10.251.140.183])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 13:25:46 -0700
-Subject: Re: extending ucontext (Re: [PATCH v26 25/30] x86/cet/shstk: Handle
- signals for shadow stack)
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-References: <782ffe96-b830-d13b-db80-5b60f41ccdbf@intel.com>
- <2D8926E4-F1B6-433A-96EA-995A66F3F42D@amacapital.net>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <c6abe0fd-3d2b-05bc-3835-848969b540c6@intel.com>
-Date:   Mon, 3 May 2021 13:25:45 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S229620AbhECU2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 16:28:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229472AbhECU2e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 16:28:34 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346AFC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 13:27:40 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id g13so3455477qts.4
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 13:27:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sXfHyvXsdLPfK14t8jsIufOFAbNJOVYacQ8xJhXokuY=;
+        b=GGhbF2KWKOjxUeuXFE0kuMeilBQgs774Rzy7nnZReRnuxKT8AayCNx6+DK55HUB8Ts
+         yKzYzXXL02g3TV4K0xSOcNKd1+QSTk0wSFCKz5mtTzKXgBamo1n5nCv6zNGqIe0gN+0a
+         ikyd6ZrkIasFnou00Q+VV63mjxKda/k2K+HZo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sXfHyvXsdLPfK14t8jsIufOFAbNJOVYacQ8xJhXokuY=;
+        b=f6VTWnl9voc5GAbWLSXGL22hPOyPQ/pqesZEUPd5nT6oJ/yrPqE5i9yxDScPdcpE69
+         QU/aSwIdpKsyoxNPHNLBU+09ox8SWoki+u0OUN3ua1OpxlU+gOe3I7mibVeTx/HwS8ZM
+         gOhb81K4e/P2czHpibHqFGqd5RxG6yhi1FS1hpxxoydXzNfnXLmcuxgH3JVUGevAaZeZ
+         DktlGFYXt3PGZnZirX8eRhdZ/HJlOUEuoNGF50cCh9j2CFzaY39q/A7ZBIA4SJSrICqL
+         5DnLPCPSrxPQAQA6Q80m5cvADVF2F4TEfKP0AqZXUK97VsUwBqo6skdGrRunZOG+/Atg
+         yVrQ==
+X-Gm-Message-State: AOAM532TCDyeg5M2o9q577XU/8J5HY4PiAaVLeIs0UlNsrzXW8u/qCy1
+        foA6+o0ysmecUDQWv93PtHCqzWJM6ZxIyw==
+X-Google-Smtp-Source: ABdhPJxtRyjU4Sz7Tf0I1EgLgzRRct23OIlifK0RLUtCq0xMGM2kpmrFSWJa4FIgp1lhDWQZdBIseg==
+X-Received: by 2002:ac8:4d43:: with SMTP id x3mr19613815qtv.326.1620073658380;
+        Mon, 03 May 2021 13:27:38 -0700 (PDT)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id b8sm9216509qka.117.2021.05.03.13.27.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 13:27:38 -0700 (PDT)
+Received: by mail-yb1-f169.google.com with SMTP id h202so237745ybg.11
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 13:27:38 -0700 (PDT)
+X-Received: by 2002:a25:9c86:: with SMTP id y6mr29614256ybo.405.1620073646749;
+ Mon, 03 May 2021 13:27:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <2D8926E4-F1B6-433A-96EA-995A66F3F42D@amacapital.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210423165906.2504169-1-dianders@chromium.org> <20210423095743.v5.14.Ie9daa320d907fff73f893f74b898197e399cce59@changeid>
+In-Reply-To: <20210423095743.v5.14.Ie9daa320d907fff73f893f74b898197e399cce59@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 3 May 2021 13:27:15 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UTmOP8LDaf-Tyx17OORQK6pJH6O_w3cP0Bu-KRYaHkYw@mail.gmail.com>
+Message-ID: <CAD=FV=UTmOP8LDaf-Tyx17OORQK6pJH6O_w3cP0Bu-KRYaHkYw@mail.gmail.com>
+Subject: Re: [PATCH v5 14/20] drm/bridge: ti-sn65dsi86: Promote the AUX
+ channel to its own sub-dev
+To:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>, Lyude Paul <lyude@redhat.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Linus W <linus.walleij@linaro.org>
+Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Robert Foss <robert.foss@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Wolfram Sang <wsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/3/2021 8:29 AM, Andy Lutomirski wrote:
-> 
->> On May 3, 2021, at 8:14 AM, Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
->>
->> ﻿On 5/2/2021 4:23 PM, Andy Lutomirski wrote:
->>>> On Fri, Apr 30, 2021 at 10:47 AM Andy Lutomirski <luto@kernel.org> wrote:
->>>>
->>>> On Fri, Apr 30, 2021 at 10:00 AM Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
->>>>>
->>>>> On 4/28/2021 4:03 PM, Andy Lutomirski wrote:
->>>>>> On Tue, Apr 27, 2021 at 1:44 PM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
->>>>>>>
->>>>>>> When shadow stack is enabled, a task's shadow stack states must be saved
->>>>>>> along with the signal context and later restored in sigreturn.  However,
->>>>>>> currently there is no systematic facility for extending a signal context.
->>>>>>> There is some space left in the ucontext, but changing ucontext is likely
->>>>>>> to create compatibility issues and there is not enough space for further
->>>>>>> extensions.
->>>>>>>
->>>>>>> Introduce a signal context extension struct 'sc_ext', which is used to save
->>>>>>> shadow stack restore token address.  The extension is located above the fpu
->>>>>>> states, plus alignment.  The struct can be extended (such as the ibt's
->>>>>>> wait_endbr status to be introduced later), and sc_ext.total_size field
->>>>>>> keeps track of total size.
->>>>>>
->>>>>> I still don't like this.
->>>>>>
->>>>>> Here's how the signal layout works, for better or for worse:
->>>>>>
->>
->> [...]
->>
->>>>>>
->>>>>> That's where we are right now upstream.  The kernel has a parser for
->>>>>> the FPU state that is bugs piled upon bugs and is going to have to be
->>>>>> rewritten sometime soon.  On top of all this, we have two upcoming
->>>>>> features, both of which require different kinds of extensions:
->>>>>>
->>>>>> 1. AVX-512.  (Yeah, you thought this story was over a few years ago,
->>>>>> but no.  And AMX makes it worse.)  To make a long story short, we
->>>>>> promised user code many years ago that a signal frame fit in 2048
->>>>>> bytes with some room to spare.  With AVX-512 this is false.  With AMX
->>>>>> it's so wrong it's not even funny.  The only way out of the mess
->>>>>> anyone has come up with involves making the length of the FPU state
->>>>>> vary depending on which features are INIT, i.e. making it more compact
->>>>>> than "compact" mode is.  This has a side effect: it's no longer
->>>>>> possible to modify the state in place, because enabling a feature with
->>>>>> no space allocated will make the structure bigger, and the stack won't
->>>>>> have room.  Fortunately, one can relocate the entire FPU state, update
->>>>>> the pointer in mcontext, and the kernel will happily follow the
->>>>>> pointer.  So new code on a new kernel using a super-compact state
->>>>>> could expand the state by allocating new memory (on the heap? very
->>>>>> awkwardly on the stack?) and changing the pointer.  For all we know,
->>>>>> some code already fiddles with the pointer.  This is great, except
->>>>>> that your patch sticks more data at the end of the FPU block that no
->>>>>> one is expecting, and your sigreturn code follows that pointer, and
->>>>>> will read off into lala land.
->>>>>>
->>>>>
->>>>> Then, what about we don't do that at all.  Is it possible from now on we
->>>>> don't stick more data at the end, and take the relocating-fpu approach?
->>>>>
->>>>>> 2. CET.  CET wants us to find a few more bytes somewhere, and those
->>>>>> bytes logically belong in ucontext, and here we are.
->>>>>>
->>>>>
->>>>> Fortunately, we can spare CET the need of ucontext extension.  When the
->>>>> kernel handles sigreturn, the user-mode shadow stack pointer is right at
->>>>> the restore token.  There is no need to put that in ucontext.
->>>>
->>>> That seems entirely reasonable.  This might also avoid needing to
->>>> teach CRIU about CET at all.
->>> Wait, what's the actual shadow stack token format?  And is the token
->>> on the new stack or the old stack when sigaltstack is in use?  For
->>> that matter, is there any support for an alternate shadow stack for
->>> signals?
->>
->> The restore token is a pointer pointing directly above itself and bit[0] indicates 64-bit mode.
->>
->> Because the shadow stack stores only return addresses, there is no alternate shadow stack.  However, the application can allocate and switch to a new shadow stack.
-> 
-> I think we should make the ABI support an alternate shadow stack even if we don’t implement it initially. After all, some day someone might want to register a handler for shadow stack overflow.
-> 
+Hi,
 
-Agree.  We can probably add something in parallel of sigaltstack(), and 
-let the user choose separately alternate normal/shadow stacks.
+On Fri, Apr 23, 2021 at 10:00 AM Douglas Anderson <dianders@chromium.org> wrote:
+>
+> We'd like to be able to expose the DDC-over-AUX channel bus to our
+> panel. This gets into a chicken-and-egg problem because:
+> - The panel wants to get its DDC at probe time.
+> - The ti-sn65dsi86 MIPI-to-eDP bridge code, which provides the DDC
+>   bus, wants to get the panel at probe time.
+>
+> By using a sub device we can fully create the AUX channel bits so that
+> the panel can get them. Then the panel can finish probing and the
+> bridge can probe.
+>
+> To accomplish this, we also move registering the AUX channel out of
+> the bridge's attach code and do it right at probe time. We use devm to
+> manage cleanup.
+>
+> NOTE: there's a little bit of a trick here. Though the AUX channel can
+> run without the MIPI-to-eDP bits of the code, the MIPI-to-eDP bits
+> can't run without the AUX channel. We could come up a complicated
+> signaling scheme (have the MIPI-to-eDP bits return EPROBE_DEFER for a
+> while or wait on some sort of completion), but it seems simple enough
+> to just not even bother creating the bridge device until the AUX
+> channel probes. That's what we'll do.
+>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+>
+> Changes in v5:
+> - Fix module compile problems (Bjorn + kbuild bot)
+> - Remove useless MODULE_DEVICE_TABLE (Bjorn).
+>
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 87 +++++++++++++++++++++------
+>  1 file changed, 67 insertions(+), 20 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> index 9dc3cd8e17df..3539ddf9d109 100644
+> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> @@ -116,6 +116,7 @@
+>   * struct ti_sn65dsi86 - Platform data for ti-sn65dsi86 driver.
+>   * @bridge_aux:   AUX-bus sub device for MIPI-to-eDP bridge functionality.
+>   * @gpio_aux:     AUX-bus sub device for GPIO controller functionality.
+> + * @aux_aux:      AUX-bus sub device for eDP AUX channel functionality.
+>   *
+>   * @dev:          Pointer to the top level (i2c) device.
+>   * @regmap:       Regmap for accessing i2c.
+> @@ -148,6 +149,7 @@
+>  struct ti_sn65dsi86 {
+>         struct auxiliary_device         bridge_aux;
+>         struct auxiliary_device         gpio_aux;
+> +       struct auxiliary_device         aux_aux;
+>
+>         struct device                   *dev;
+>         struct regmap                   *regmap;
+> @@ -484,18 +486,12 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
+>                 return -EINVAL;
+>         }
+>
+> -       ret = drm_dp_aux_register(&pdata->aux);
+> -       if (ret < 0) {
+> -               drm_err(bridge->dev, "Failed to register DP AUX channel: %d\n", ret);
+> -               return ret;
+> -       }
+> -
+>         ret = drm_connector_init(bridge->dev, &pdata->connector,
+>                                  &ti_sn_bridge_connector_funcs,
+>                                  DRM_MODE_CONNECTOR_eDP);
+>         if (ret) {
+>                 DRM_ERROR("Failed to initialize connector with drm\n");
+> -               goto err_conn_init;
+> +               return ret;
+>         }
+>
+>         drm_connector_helper_add(&pdata->connector,
+> @@ -552,8 +548,6 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
+>         mipi_dsi_device_unregister(dsi);
+>  err_dsi_host:
+>         drm_connector_cleanup(&pdata->connector);
+> -err_conn_init:
+> -       drm_dp_aux_unregister(&pdata->aux);
+>         return ret;
+>  }
+>
+> @@ -1330,11 +1324,6 @@ static int ti_sn_bridge_probe(struct auxiliary_device *adev,
+>         if (ret)
+>                 return ret;
+>
+> -       pdata->aux.name = "ti-sn65dsi86-aux";
+> -       pdata->aux.dev = pdata->dev;
+> -       pdata->aux.transfer = ti_sn_aux_transfer;
+> -       drm_dp_aux_init(&pdata->aux);
+> -
+>         pdata->bridge.funcs = &ti_sn_bridge_funcs;
+>         pdata->bridge.of_node = np;
+>
+> @@ -1429,6 +1418,50 @@ static int ti_sn65dsi86_add_aux_device(struct ti_sn65dsi86 *pdata,
+>         return ret;
+>  }
+>
+> +static void ti_sn65dsi86_unregister_dp_aux(void *data)
+> +{
+> +       drm_dp_aux_unregister(data);
+> +}
+> +
+> +static int ti_sn_aux_probe(struct auxiliary_device *adev,
+> +                          const struct auxiliary_device_id *id)
+> +{
+> +       struct ti_sn65dsi86 *pdata = dev_get_drvdata(adev->dev.parent);
+> +       int ret;
+> +
+> +       pdata->aux.name = "ti-sn65dsi86-aux";
+> +       pdata->aux.dev = pdata->dev;
+> +       pdata->aux.transfer = ti_sn_aux_transfer;
+> +       drm_dp_aux_init(&pdata->aux);
+> +
+> +       ret = drm_dp_aux_register(&pdata->aux);
+> +       if (ret < 0) {
+> +               drm_err(pdata, "Failed to register DP AUX channel: %d\n", ret);
+> +               return ret;
+> +       }
+> +       ret = devm_add_action_or_reset(&adev->dev,
+> +                                      ti_sn65dsi86_unregister_dp_aux, &pdata->aux);
+> +       if (ret)
+> +               return ret;
+> +
+> +       /*
+> +        * The eDP to MIPI bridge parts don't work until the AUX channel is
+> +        * setup so we don't add it in the main driver probe, we add it now.
+> +        */
+> +       return ti_sn65dsi86_add_aux_device(pdata, &pdata->bridge_aux, "bridge");
+> +}
+> +
+> +static const struct auxiliary_device_id ti_sn_aux_id_table[] = {
+> +       { .name = "ti_sn65dsi86.aux", },
+> +       {},
+> +};
+> +
+> +static struct auxiliary_driver ti_sn_aux_driver = {
+> +       .name = "aux",
+> +       .probe = ti_sn_aux_probe,
+> +       .id_table = ti_sn_aux_id_table,
+> +};
+> +
+>  static int ti_sn65dsi86_probe(struct i2c_client *client,
+>                               const struct i2c_device_id *id)
+>  {
+> @@ -1487,10 +1520,11 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
+>          * motiviation here is to solve the chicken-and-egg problem of probe
+>          * ordering. The bridge wants the panel to be there when it probes.
+>          * The panel wants its HPD GPIO (provided by sn65dsi86 on some boards)
+> -        * when it probes. There will soon be other devices (DDC I2C bus, PWM)
+> -        * that have the same problem. Having sub-devices allows the some sub
+> -        * devices to finish probing even if others return -EPROBE_DEFER and
+> -        * gets us around the problems.
+> +        * when it probes. The panel and maybe backlight might want the DDC
+> +        * bus. Soon the PWM provided by the bridge chip will have the same
+> +        * problem. Having sub-devices allows the some sub devices to finish
+> +        * probing even if others return -EPROBE_DEFER and gets us around the
+> +        * problems.
+>          */
+>
+>         if (IS_ENABLED(CONFIG_OF_GPIO)) {
+> @@ -1499,7 +1533,13 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
+>                         return ret;
+>         }
+>
+> -       return ti_sn65dsi86_add_aux_device(pdata, &pdata->bridge_aux, "bridge");
+> +       /*
+> +        * NOTE: At the end of the AUX channel probe we'll add the aux device
+> +        * for the bridge. This is because the bridge can't be used until the
+> +        * AUX channel is there and this is a very simple solution to the
+> +        * dependency problem.
+> +        */
+> +       return ti_sn65dsi86_add_aux_device(pdata, &pdata->aux_aux, "aux");
+>  }
+>
+>  static struct i2c_device_id ti_sn65dsi86_id[] = {
+> @@ -1536,12 +1576,18 @@ static int __init ti_sn65dsi86_init(void)
+>         if (ret)
+>                 goto err_main_was_registered;
+>
+> -       ret = auxiliary_driver_register(&ti_sn_bridge_driver);
+> +       ret = auxiliary_driver_register(&ti_sn_aux_driver);
+>         if (ret)
+>                 goto err_gpio_was_registered;
+>
+> +       ret = auxiliary_driver_register(&ti_sn_bridge_driver);
+> +       if (ret)
+> +               goto err_aux_was_registered;
+> +
+>         return 0;
+>
+> +err_aux_was_registered:
+> +       auxiliary_driver_unregister(&ti_sn_aux_driver);
+>  err_gpio_was_registered:
+>         ti_sn_gpio_unregister();
+>  err_main_was_registered:
+> @@ -1554,6 +1600,7 @@ module_init(ti_sn65dsi86_init);
+>  static void __exit ti_sn65dsi86_exit(void)
+>  {
+>         auxiliary_driver_unregister(&ti_sn_bridge_driver);
+> +       auxiliary_driver_unregister(&ti_sn_aux_driver);
+>         ti_sn_gpio_unregister();
+>         i2c_del_driver(&ti_sn65dsi86_driver);
+>  }
 
-Thanks,
-Yu-cheng
+Ugh, more fun! :(
+
+I tried rebasing this to the latest drm-misc-next and I found commit
+6cba3fe43341 ("drm/dp: Add backpointer to drm_device in drm_dp_aux").
+That commit makes it pretty explicit that we shouldn't call
+drm_dp_aux_register() until we actually have a "drm_dev" for the
+bridge.
+
+I'm applying several of the other patches in this series but I won't
+apply this one or anything based on it. I'll do some digging and send
+out a proposed fix shortly.
+
+-Doug
