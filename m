@@ -2,106 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04BA137175E
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79FAB371730
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230099AbhECPBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 11:01:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbhECPBj (ORCPT
+        id S230016AbhECO4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 10:56:09 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:39834 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229965AbhECO4F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 11:01:39 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12A5C06174A;
-        Mon,  3 May 2021 08:00:44 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id y1so2962196plg.11;
-        Mon, 03 May 2021 08:00:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Me0/8wMFfbBiWllaQC8QNsKSdHVtD76NnW7CR+YniVo=;
-        b=VGdvX2Weop7QRB/TM9J7p48OMZbgZdlrwDC27bf+srOMUSE4I/Rt1DMgj1wuVHFKnM
-         u0PkGoxIuFs/NpnF7IPGniu5QD5nLbPe/mdLy1f4Skr4I82gy7jcM89/SkCCNCL3Ocxt
-         DfUowqM0RfFlc2D0U0YE6HgViejRPoyLSGg0A95zgCWhHqENUAcfnb32F/1yqSH6tzKQ
-         1kN8YsornF4InndpeZ2VL6w0sKz0miu2pS6AkQ9HcQ3VaktrqodvQTJi30vxF44roGle
-         IFtVBTX8t1nYw2+RlxgeNI7DVRCV+khsMFmYGpB/FXeTJAzgobny4dfrgrYYeTog5Gpp
-         pO6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Me0/8wMFfbBiWllaQC8QNsKSdHVtD76NnW7CR+YniVo=;
-        b=D4Ef6vGNkQxGQ/AtjwxWHjd/5X+V8IEtkgkDh0K0JWe2ZAzAHttUDnPtErfrHktQx5
-         4TfUnP1Hsv0lc+yVgaiJskqAenCP0JcBfxBXCrpFHsnuzMINmakQVJV36i3XitZUMzN+
-         A47pUgZKiQtkYoDhrlGlZ9OX5kdsxG7dIob0EeWQEHzAQM3y0v+0YsC1SS+hTTyfmKK5
-         UXt0E62BqpRIwnP4ddLJ59vMWQq47XGUkG4vi1xzRU04/FaWJ2Y61YQ79yW4kJBYt9Qf
-         4qOg6o5xkI3GncgPuHfid41/JyN3XUbDunV2QOpiwc/t/Xa6bCAEaMQumiFEfGgCHemN
-         OitQ==
-X-Gm-Message-State: AOAM5304mIwGenN/taZuSh6NDZzqtRY3FZEpeJMpK98er/7rEpKCA8YB
-        N8LCdcvS5Ni+00XwyzmtddN/Qe6LV7A=
-X-Google-Smtp-Source: ABdhPJwyjIoeQq8BCEUBxiuksyZ7uSber5kmEZBqOvk8KpjIdFU6rrjD5629sb9k++p1tUZigcwv+w==
-X-Received: by 2002:a17:902:7444:b029:ed:5334:40b6 with SMTP id e4-20020a1709027444b02900ed533440b6mr20583031plt.35.1620054044230;
-        Mon, 03 May 2021 08:00:44 -0700 (PDT)
-Received: from archl-on2.. ([103.51.75.154])
-        by smtp.gmail.com with ESMTPSA id k38sm3593983pgi.73.2021.05.03.08.00.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 08:00:43 -0700 (PDT)
-From:   Anand Moon <linux.amoon@gmail.com>
-To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Anand Moon <linux.amoon@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCHv1 8/9] soc: amlogic: meson-ee-pwrc: Add hdmi power domain Meson gxbb and gxl SoCs
-Date:   Mon,  3 May 2021 14:54:41 +0000
-Message-Id: <20210503145503.1477-9-linux.amoon@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210503145503.1477-1-linux.amoon@gmail.com>
-References: <20210503145503.1477-1-linux.amoon@gmail.com>
+        Mon, 3 May 2021 10:56:05 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620053712; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=3Fk+kDMYxkaBQhIOQ4tkY93cPnBbUwngSdDbYFdBEWY=;
+ b=jgYm7Lx+Zxmo3LeP8bHtvSuKXjJ9BdJEkkoeD2LEa9rIPHnoW2VYbInmxHyDH63CdfrFBhI7
+ VofxBrcpvPFgojGUw0B+kRQ4+5THFyuXxrHovxeZkOjBwPK+QQoFM0CoiQH4UUzzG01WBvtY
+ MorP0K7S4BVAUuLW6b6KjF6Tn2A=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60900ec19a9ff96d95353c77 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 03 May 2021 14:54:57
+ GMT
+Sender: mdalam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 854F4C433D3; Mon,  3 May 2021 14:54:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: mdalam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7D322C433F1;
+        Mon,  3 May 2021 14:54:54 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 03 May 2021 20:24:54 +0530
+From:   mdalam@codeaurora.org
+To:     miquel.raynal@bootlin.com, mani@kernel.org,
+        boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     sricharan@codeaurora.org
+Subject: Re: [PATCH] mtd: rawnand: qcom: avoid write to obsolete register
+In-Reply-To: <1619205694-25645-1-git-send-email-mdalam@codeaurora.org>
+References: <1619205694-25645-1-git-send-email-mdalam@codeaurora.org>
+Message-ID: <2667b47434a8f2892ea3d5f304380960@codeaurora.org>
+X-Sender: mdalam@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per the S905X datasheet add hdmi power domain
-controller for Meson gxbb and gxl SoCs.
+On 2021-04-24 00:51, Md Sadre Alam wrote:
+> QPIC_EBI2_ECC_BUF_CFG register got obsolete from QPIC V2.0 onwards.
+> Avoid writing this register if QPIC version is V2.0 or newer.
+> 
+> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+> ---
+>  drivers/mtd/nand/raw/qcom_nandc.c | 17 +++++++++++------
+>  1 file changed, 11 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c
+> b/drivers/mtd/nand/raw/qcom_nandc.c
+> index fd4c318..8c5205c 100644
+> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> @@ -714,7 +714,8 @@ static void update_rw_regs(struct qcom_nand_host
+> *host, int num_cw, bool read)
+>  	nandc_set_reg(nandc, NAND_DEV0_CFG0, cfg0);
+>  	nandc_set_reg(nandc, NAND_DEV0_CFG1, cfg1);
+>  	nandc_set_reg(nandc, NAND_DEV0_ECC_CFG, ecc_bch_cfg);
+> -	nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, host->ecc_buf_cfg);
+> +	if (!nandc->props->qpic_v2)
+> +		nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, host->ecc_buf_cfg);
+>  	nandc_set_reg(nandc, NAND_FLASH_STATUS, host->clrflashstatus);
+>  	nandc_set_reg(nandc, NAND_READ_STATUS, host->clrreadstatus);
+>  	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
+> @@ -1083,7 +1084,8 @@ static void config_nand_page_read(struct
+> qcom_nand_controller *nandc)
+>  {
+>  	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
+>  	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
+> -	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
+> +	if (!nandc->props->qpic_v2)
+> +		write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
+>  	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1, 0);
+>  	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1,
+>  		      NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
+> @@ -1132,8 +1134,9 @@ static void config_nand_page_write(struct
+> qcom_nand_controller *nandc)
+>  {
+>  	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
+>  	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
+> -	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1,
+> -		      NAND_BAM_NEXT_SGL);
+> +	if (!nandc->props->qpic_v2)
+> +		write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1,
+> +			      NAND_BAM_NEXT_SGL);
+>  }
+> 
+>  /*
+> @@ -1187,7 +1190,8 @@ static int nandc_param(struct qcom_nand_host 
+> *host)
+>  					| 2 << WR_RD_BSY_GAP
+>  					| 0 << WIDE_FLASH
+>  					| 1 << DEV0_CFG1_ECC_DISABLE);
+> -	nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, 1 << 
+> ECC_CFG_ECC_DISABLE);
+> +	if (!nandc->props->qpic_v2)
+> +		nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, 1 << 
+> ECC_CFG_ECC_DISABLE);
+> 
+>  	/* configure CMD1 and VLD for ONFI param probing in QPIC v1 */
+>  	if (!nandc->props->qpic_v2) {
+> @@ -2628,7 +2632,8 @@ static int qcom_nand_attach_chip(struct nand_chip 
+> *chip)
+>  				| ecc_mode << ECC_MODE
+>  				| host->ecc_bytes_hw << ECC_PARITY_SIZE_BYTES_BCH;
+> 
+> -	host->ecc_buf_cfg = 0x203 << NUM_STEPS;
+> +	if (!nandc->props->qpic_v2)
+> +		host->ecc_buf_cfg = 0x203 << NUM_STEPS;
+> 
+>  	host->clrflashstatus = FS_READY_BSY_N;
+>  	host->clrreadstatus = 0xc0;
 
-Cc: Neil Armstrong <narmstrong@baylibre.com>
-Signed-off-by: Anand Moon <linux.amoon@gmail.com>
----
- drivers/soc/amlogic/meson-ee-pwrc.c          | 1 +
- include/dt-bindings/power/meson-gxbb-power.h | 1 +
- 2 files changed, 2 insertions(+)
 
-diff --git a/drivers/soc/amlogic/meson-ee-pwrc.c b/drivers/soc/amlogic/meson-ee-pwrc.c
-index 062b2488f932..23a748ee9e68 100644
---- a/drivers/soc/amlogic/meson-ee-pwrc.c
-+++ b/drivers/soc/amlogic/meson-ee-pwrc.c
-@@ -268,6 +268,7 @@ static struct meson_ee_pwrc_domain_desc g12a_pwrc_domains[] = {
- static struct meson_ee_pwrc_domain_desc gxbb_pwrc_domains[] = {
- 	[PWRC_GXBB_VPU_ID]  = VPU_PD("VPU", &gx_pwrc_vpu, gxbb_pwrc_mem_vpu,
- 				     pwrc_ee_get_power, 12, 2),
-+	[PWRC_GXBB_HDMI_ID] = MEM_PD("HDMI", meson_pwrc_mem_hdmi),
- 	[PWRC_GXBB_ETHERNET_MEM_ID] = MEM_PD("ETH", meson_pwrc_mem_eth),
- };
- 
-diff --git a/include/dt-bindings/power/meson-gxbb-power.h b/include/dt-bindings/power/meson-gxbb-power.h
-index 1262dac696c0..eafa92eb836e 100644
---- a/include/dt-bindings/power/meson-gxbb-power.h
-+++ b/include/dt-bindings/power/meson-gxbb-power.h
-@@ -9,5 +9,6 @@
- 
- #define PWRC_GXBB_VPU_ID		0
- #define PWRC_GXBB_ETHERNET_MEM_ID	1
-+#define PWRC_GXBB_HDMI_ID		2
- 
- #endif
--- 
-2.31.1
-
+ping! Hi Miquel could you review this change and let me know if more 
+info needed.
