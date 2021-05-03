@@ -2,151 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DAC4371466
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 13:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F67F37146A
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 13:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233545AbhECLig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 07:38:36 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:11345 "EHLO m43-7.mailgun.net"
+        id S233400AbhECLkC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 3 May 2021 07:40:02 -0400
+Received: from srv6.fidu.org ([159.69.62.71]:37158 "EHLO srv6.fidu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233112AbhECLid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 07:38:33 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620041860; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: References: To: From:
- Subject: Sender; bh=qRiJgWE8iTipoiVkZWHB29yywQT7wG9h8TB+552EpCw=; b=NY4XsU7RF+kXwKypSbtjRqUR6aw8Bpy8GaDGAdp+OS9XqzxDbebhbMeT1LZWQMOAatq2Uw1E
- aEyb8X+YHLD3ukeF2UfPEZVfCP0dKNEFS8Bo1L+ON9clXwBmXIUmb3xyYlsJWfjj7gmFEmNK
- uyTFnRadjc8jF/MiTv7pCjCfwc0=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 608fe07e8166b7eff7dffef5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 03 May 2021 11:37:34
- GMT
-Sender: charante=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 09D63C43149; Mon,  3 May 2021 11:37:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.29.110] (unknown [49.37.159.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S233019AbhECLkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 07:40:01 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id A3260C800BC;
+        Mon,  3 May 2021 13:39:06 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id ZxvWVMT4vCPl; Mon,  3 May 2021 13:39:06 +0200 (CEST)
+Received: from [IPv6:2003:e3:7f39:8600:1a8b:79e0:b24c:b29d] (p200300e37f3986001a8B79E0b24cB29d.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:8600:1a8b:79e0:b24c:b29d])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2A1E9C433D3;
-        Mon,  3 May 2021 11:37:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2A1E9C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
-Subject: Re: [PATCH] mm: compaction: improve /proc trigger for full node
- memory compaction
-From:   Charan Teja Kalla <charante@codeaurora.org>
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        akpm@linux-foundation.org, vbabka@suse.cz, bhe@redhat.com,
-        nigupta@nvidia.com, khalid.aziz@oracle.com,
-        mateusznosek0@gmail.com, sh_def@163.com, iamjoonsoo.kim@lge.com,
-        mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
-        mhocko@suse.com, rientjes@google.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        vinmenon@codeaurora.org
-References: <1619098678-8501-1-git-send-email-charante@codeaurora.org>
- <20210427080921.GG4239@techsingularity.net>
- <9afd1ae1-bee8-a4cc-1cd6-df92090abeb4@codeaurora.org>
-Message-ID: <2b448167-7139-dea9-ef49-340dcfff8858@codeaurora.org>
-Date:   Mon, 3 May 2021 17:07:23 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPSA id C5EAFC800BB;
+        Mon,  3 May 2021 13:39:05 +0200 (CEST)
+To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc:     airlied@linux.ie, daniel@ffwll.ch, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20210429120553.7823-1-wse@tuxedocomputers.com>
+ <YIw2q/aibOplo7b+@intel.com>
+From:   Werner Sembach <wse@tuxedocomputers.com>
+Subject: Re: [PATCH] drm/i915/display Try YCbCr420 color when RGB fails
+Message-ID: <c68865ea-a968-a0b2-e534-a97c51a42d16@tuxedocomputers.com>
+Date:   Mon, 3 May 2021 13:39:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <9afd1ae1-bee8-a4cc-1cd6-df92090abeb4@codeaurora.org>
-Content-Type: text/plain; charset=iso-8859-15
+In-Reply-To: <YIw2q/aibOplo7b+@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-A gentle ping to get your review comments. They will be of great help to me.
-
-Explained below that though the compact_memory node is intended for
-debug purpose, it got other applications too. This patch just aims to
-improve that by taking help of proactive compaction.
-
-Also triggering proactive compaction for every 500msec is not always
-required (say that I mostly need higher order pages in the systems only
-at while launching a set of apps, then the work done by the proactive
-compaction for every 500msec is not going to be useful in other times).
-Thus users will disable the proactive
-compaction(sysctl.compaction_proactiveness = 0) and when required can do
-the out-of-band compaction using the provided interface.
-
-If a separate /proc node shouldn't be present just for this, then the
-other solution I am thinking of is:
-1) Trigger the proactive compaction on every write to
-sysctl.compaction_proactiveness, instead of waiting for 500msec wakeup,
-thus users can immediately turn on/off the proactive compaction when
-required.
-
---Thanks
-
-On 4/28/2021 9:02 PM, Charan Teja Kalla wrote:
-> Thanks Mel for your comments!!
-> 
-> On 4/27/2021 1:39 PM, Mel Gorman wrote:
->>> The existing /proc/sys/vm/compact_memory interface do the full node
->>> compaction when user writes an arbitrary value to it and is targeted for
->>> the usecases like an app launcher prepares the system before the target
->>> application runs.
->> The intent behind compact_memory was a debugging interface to tell
->> the difference between an application failing to allocate a huge page
->> prematurely and the inability of compaction to find a free page.
+Thanks for the feedback. I got some questions below.
+> On Thu, Apr 29, 2021 at 02:05:53PM +0200, Werner Sembach wrote:
+>> When encoder validation of a display mode fails, retry with less bandwidth
+>> heavy YCbCr420 color mode, if available. This enables some HDMI 1.4 setups
+>> to support 4k60Hz output, which previously failed silently.
 >>
-> 
-> Thanks for clarifying this.
-> 
->>> This patch adds a new /proc interface,
->>> /proc/sys/vm/proactive_compact_memory, and on write of an arbitrary
->>> value triggers the full node compaction but can be stopped in the middle
->>> if sufficient higher order(COMPACTION_HPAGE_ORDER) pages available in
->>> the system. The availability of pages that a user looking for can be
->>> given as input through /proc/sys/vm/compaction_proactiveness.
->>>
->>> [1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=facdaa917c4d5a376d09d25865f5a863f906234a
->>>
->>> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
->> Hence, while I do not object to the patch as-such, I'm wary of the trend
->> towards improving explicit out-of-band compaction via proc interfaces. I
-> 
-> I think people relying on this /proc/../compact_memory for reasons of on
-> demand compaction effects the performance and the kcompactd returns when
->  even a single page of the order we are looking for is available. Say
-> that If an app launching completion is relied on the memory
-> fragmentation, meaning that lesser the system fragmented, lesser it
-> needs to spend time on allocation as it gets more higher order pages.
-> With the current compaction methods we may get just one higher order
-> page at a time (as compaction stops run after that) thus can effect its
-> launch completion time. The compact_memory node can help in these
-> situation where the system administrator can defragment system whenever
-> is required by writing to the compact_node. This is just a theoretical
-> example.
-> 
-> Although it is intended for debugging interface, it got a lot of other
-> applications too.
-> 
-> This patch aims to improve this interface by taking help from tunables
-> provided by the proactive compaction.
-> 
->> would have preferred if the focus was on reducing the cost of compaction
->> so that direct allocation requests succeed quickly or improving background
->> compaction via kcompactd when there has been recent failures.
-> 
+>> AMDGPU had nearly the exact same issue. This problem description is
+>> therefore copied from my commit message of the AMDGPU patch.
+>>
+>> On some setups, while the monitor and the gpu support display modes with
+>> pixel clocks of up to 600MHz, the link encoder might not. This prevents
+>> YCbCr444 and RGB encoding for 4k60Hz, but YCbCr420 encoding might still be
+>> possible. However, which color mode is used is decided before the link
+>> encoder capabilities are checked. This patch fixes the problem by retrying
+>> to find a display mode with YCbCr420 enforced and using it, if it is
+>> valid.
+>>
+>> I'm not entierly sure if the second
+>> "if (HAS_PCH_SPLIT(dev_priv) && !HAS_DDI(dev_priv))" check in
+>> intel_hdmi_compute_config(...) after forcing ycbcr420 is necessary. I
+>> included it to better be safe then sorry.
+>>
+>> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+>> Cc: <stable@vger.kernel.org>
+>> ---
+>> Rebased from 5.12 to drm-tip and resend to resolve merge conflict.
+>>
+>> >From 876c1c8d970ff2a411ee8d08651bd4edbe9ecb3d Mon Sep 17 00:00:00 2001
+>> From: Werner Sembach <wse@tuxedocomputers.com>
+>> Date: Thu, 29 Apr 2021 13:59:30 +0200
+>> Subject: [PATCH] Retry using YCbCr420 encoding if clock setup for RGB fails
+>>
+>> ---
+>>  drivers/gpu/drm/i915/display/intel_hdmi.c | 80 +++++++++++++++++------
+>>  1 file changed, 60 insertions(+), 20 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
+>> index 46de56af33db..c9b5a7d7f9c6 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_hdmi.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
+>> @@ -1861,6 +1861,30 @@ static int intel_hdmi_port_clock(int clock, int bpc)
+>>  	return clock * bpc / 8;
+>>  }
+>>  
+>> +static enum drm_mode_status
+>> +intel_hdmi_check_bpc(struct intel_hdmi *hdmi, int clock, bool has_hdmi_sink, struct drm_i915_private *dev_priv)
+> Don't pass dev_priv. It can be extracted from the intel_hdmi.
+>
+> The name of the function isn't really sitting super well with me.
+> I guess I'd just call it something like intel_hdmi_mode_clock_valid().
+>
+> We should also split this big patch up into smaller parts. Just this
+> mechanical extraction of this function without any functional changes
+> could be a nice first patch in the series.
+>
+>> +{
+>> +	enum drm_mode_status status;
+>> +
+>> +	/* check if we can do 8bpc */
+>> +	status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 8),
+>> +				       true, has_hdmi_sink);
+>> +
+>> +	if (has_hdmi_sink) {
+>> +		/* if we can't do 8bpc we may still be able to do 12bpc */
+>> +		if (status != MODE_OK && !HAS_GMCH(dev_priv))
+>> +			status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 12),
+>> +						       true, has_hdmi_sink);
+>> +
+>> +		/* if we can't do 8,12bpc we may still be able to do 10bpc */
+>> +		if (status != MODE_OK && DISPLAY_VER(dev_priv) >= 11)
+>> +			status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 10),
+>> +						       true, has_hdmi_sink);
+>> +	}
+>> +
+>> +	return status;
+>> +}
+>> +
+>>  static enum drm_mode_status
+>>  intel_hdmi_mode_valid(struct drm_connector *connector,
+>>  		      struct drm_display_mode *mode)
+>> @@ -1891,23 +1915,18 @@ intel_hdmi_mode_valid(struct drm_connector *connector,
+>>  	if (drm_mode_is_420_only(&connector->display_info, mode))
+>>  		clock /= 2;
+>>  
+>> -	/* check if we can do 8bpc */
+>> -	status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 8),
+>> -				       true, has_hdmi_sink);
+>> +	status = intel_hdmi_check_bpc(hdmi, clock, has_hdmi_sink, dev_priv);
+>>  
+>> -	if (has_hdmi_sink) {
+>> -		/* if we can't do 8bpc we may still be able to do 12bpc */
+>> -		if (status != MODE_OK && !HAS_GMCH(dev_priv))
+>> -			status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 12),
+>> -						       true, has_hdmi_sink);
+>> +	if (status != MODE_OK) {
+>> +		if (drm_mode_is_420_also(&connector->display_info, mode)) {
+> We also need a connector->ycbcr_420_allowed check here.
+>
+>> +			/* if we can't do full color resolution we may still be able to do reduced color resolution */
+>> +			clock /= 2;
+>>  
+>> -		/* if we can't do 8,12bpc we may still be able to do 10bpc */
+>> -		if (status != MODE_OK && DISPLAY_VER(dev_priv) >= 11)
+>> -			status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 10),
+>> -						       true, has_hdmi_sink);
+>> +			status = intel_hdmi_check_bpc(hdmi, clock, has_hdmi_sink, dev_priv);
+>> +		}
+>> +		if (status != MODE_OK)
+>> +			return status;
+>>  	}
+>> -	if (status != MODE_OK)
+>> -		return status;
+>>  
+>>  	return intel_mode_valid_max_plane_size(dev_priv, mode, false);
+>>  }
+>> @@ -1990,14 +2009,17 @@ static bool hdmi_deep_color_possible(const struct intel_crtc_state *crtc_state,
+>>  
+>>  static int
+>>  intel_hdmi_ycbcr420_config(struct intel_crtc_state *crtc_state,
+>> -			   const struct drm_connector_state *conn_state)
+>> +			   const struct drm_connector_state *conn_state,
+>> +			   const bool force_ycbcr420)
+>>  {
+>>  	struct drm_connector *connector = conn_state->connector;
+>>  	struct drm_i915_private *i915 = to_i915(connector->dev);
+>>  	const struct drm_display_mode *adjusted_mode =
+>>  		&crtc_state->hw.adjusted_mode;
+>>  
+>> -	if (!drm_mode_is_420_only(&connector->display_info, adjusted_mode))
+>> +	if (!(drm_mode_is_420_only(&connector->display_info, adjusted_mode) ||
+>> +			(force_ycbcr420 &&
+>> +			drm_mode_is_420_also(&connector->display_info, adjusted_mode))))
+>>  		return 0;
+>>  
+> This function I think we just want to throw out and roll something
+> a bit better.
+>
+> Something like this I believe should work nicely:
+>
+> intel_hdmi_compute_output_format()
+> {
+> 	if (drm_mode_is_420_only())
+> 		crtc_state->output_format = INTEL_OUTPUT_FORMAT_YCBCR420;
+> 	else
+> 		crtc_state->output_format = INTEL_OUTPUT_FORMAT_RGB;
+>
+> 	ret = intel_hdmi_compute_clock();
+> 	if (ret) {
+> 		if (crtc_state->output_format == INTEL_OUTPUT_FORMAT_YCBCR420)
+> 			return ret;
+>
+> 		crtc_state->output_format = INTEL_OUTPUT_FORMAT_YCBCR420;
+>
+> 		ret = intel_hdmi_compute_clock()
+> 		if (ret)
+> 			return ret;
+> 	}
+>
+> 	return 0;
+> }
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
-Forum, a Linux Foundation Collaborative Project
+Can you give clarification on the 3 checks coming in between intel_hdmi_ycbcr420_config and intel_hdmi_compute_clock?
+
+I guess this can be done before:
+
+pipe_config->has_audio =
+        intel_hdmi_has_audio(encoder, pipe_config, conn_state);
+
+This one behaves differently whether or not RGB or YCbCr is used, but I guess does not change the required clock speed? I'm unsure about this however. If it has no effect on the clock I would call it after intel_hdmi_compute_clock:
+
+pipe_config->limited_color_range =
+        intel_hdmi_limited_color_range(pipe_config, conn_state);
+
+I don't know what this actually does, but it doesn't seem to have to do something with color encoding so, like the has_audio check, it can be done before deciding on RGB or YCbCr420? Correct me if I'm wrong:
+
+if (HAS_PCH_SPLIT(dev_priv) && !HAS_DDI(dev_priv))
+        pipe_config->has_pch_encoder = true;
+
+> assuming we make intel_hdmi_compute_clock() check whether 420 output
+> is actually supported.
+
+Currently it's check ycbcr420 then set. This would turn this around. Check first is more logical for my brain however.
+
+what about something like this?
+
+intel_hdmi_compute_output_format()
+{
+    if (drm_mode_is_420_only())
+        crtc_state->output_format = INTEL_OUTPUT_FORMAT_YCBCR420;
+    else
+        crtc_state->output_format = INTEL_OUTPUT_FORMAT_RGB;
+
+    ret = intel_hdmi_compute_clock();
+    if (ret) {
+        if (crtc_state->output_format == INTEL_OUTPUT_FORMAT_YCBCR420 ||
+                !drm_mode_is_420_also() ||
+                !connector->ycbcr_420_allowed)
+            return ret;
+
+        crtc_state->output_format = INTEL_OUTPUT_FORMAT_YCBCR420;
+
+        ret = intel_hdmi_compute_clock()
+        if (ret)
+            return ret;
+    }
+
+    return 0;
+}
+
+> Could roll a small helper for that. Something along these lines perhaps:
+> static bool intel_hdmi_ycbcr_420_supported()
+> {
+> 	return connector->ycbcr_420_allowed &&
+> 	       (drm_mode_is_420_only() || drm_mode_is_420_also());
+> }
+>
+> The intel_pch_panel_fitting() call should probably just be hoisted
+> into intel_hdmi_compute_config() after we've called the new
+> intel_hdmi_compute_output_format().
+>
+> I think a three patch series is probably what we want for this:
+> patch 1: extract intel_hdmi_mode_clock_valid() without 420_also handling
+> patch 2: introduce intel_hdmi_compute_output_format() without 420_also handling
+> patch 3: drop in the 420_also handling everywhere
+>
+> That way if there's any regression due to the 420_also stuff at least
+> we won't have to revert the whole thing, and can then more easily work
+> on fixing whatever needs fixing.
+>
+>>  	if (!connector->ycbcr_420_allowed) {
+>> @@ -2126,7 +2148,7 @@ int intel_hdmi_compute_config(struct intel_encoder *encoder,
+>>  	struct drm_display_mode *adjusted_mode = &pipe_config->hw.adjusted_mode;
+>>  	struct drm_connector *connector = conn_state->connector;
+>>  	struct drm_scdc *scdc = &connector->display_info.hdmi.scdc;
+>> -	int ret;
+>> +	int ret, ret_saved;
+>>  
+>>  	if (adjusted_mode->flags & DRM_MODE_FLAG_DBLSCAN)
+>>  		return -EINVAL;
+>> @@ -2141,7 +2163,7 @@ int intel_hdmi_compute_config(struct intel_encoder *encoder,
+>>  	if (adjusted_mode->flags & DRM_MODE_FLAG_DBLCLK)
+>>  		pipe_config->pixel_multiplier = 2;
+>>  
+>> -	ret = intel_hdmi_ycbcr420_config(pipe_config, conn_state);
+>> +	ret = intel_hdmi_ycbcr420_config(pipe_config, conn_state, false);
+>>  	if (ret)
+>>  		return ret;
+>>  
+>> @@ -2155,8 +2177,26 @@ int intel_hdmi_compute_config(struct intel_encoder *encoder,
+>>  		intel_hdmi_has_audio(encoder, pipe_config, conn_state);
+>>  
+>>  	ret = intel_hdmi_compute_clock(encoder, pipe_config);
+>> -	if (ret)
+>> -		return ret;
+>> +	if (ret) {
+>> +		ret_saved = ret;
+>> +
+>> +		ret = intel_hdmi_ycbcr420_config(pipe_config, conn_state, true);
+>> +		if (ret)
+>> +			return ret;
+>> +
+>> +		if (pipe_config->output_format != INTEL_OUTPUT_FORMAT_YCBCR420)
+>> +			return ret_saved;
+>> +
+>> +		pipe_config->limited_color_range =
+>> +			intel_hdmi_limited_color_range(pipe_config, conn_state);
+>> +
+>> +		if (HAS_PCH_SPLIT(dev_priv) && !HAS_DDI(dev_priv))
+>> +			pipe_config->has_pch_encoder = true;
+>> +
+>> +		ret = intel_hdmi_compute_clock(encoder, pipe_config);
+>> +		if (ret)
+>> +			return ret;
+>> +	}
+>>  
+>>  	if (conn_state->picture_aspect_ratio)
+>>  		adjusted_mode->picture_aspect_ratio =
+>> -- 
+>> 2.25.1
+>>
+>> _______________________________________________
+>> dri-devel mailing list
+>> dri-devel@lists.freedesktop.org
+>> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
