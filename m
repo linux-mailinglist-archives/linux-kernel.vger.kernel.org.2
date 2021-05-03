@@ -2,85 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A32EC372305
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 00:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC47B37230B
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 00:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbhECWe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 18:34:27 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:55162 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhECWeZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 18:34:25 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620081211; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=+gx5nCRq1ufNukjTCr4Ok7jQXo6ZQRFsOOOLDGhTnpc=; b=qiZVm/DAJ8NCxNn/ZuX/LiupbYwa7UdGb2FmJBm4CBR/CLrpc8HP5CK3DvFHw3uPmPzCsTR8
- ql8mOHlqpRhpn2iOZBsQ3T3ShKW+aauqtZmhGDYMP9muKVieVydV43lmAnRTl9lH1I2csf+1
- 7Kq4ZiQxU5RZfqiQ6VEiKvTFUok=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 60907a3b9a9ff96d95a3c59a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 03 May 2021 22:33:30
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9B92FC4338A; Mon,  3 May 2021 22:33:30 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DC4D9C433D3;
-        Mon,  3 May 2021 22:33:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DC4D9C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
-Subject: Re: [PATCH v2] bus: mhi: core: Improve debug messages for power up
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
-        linux-kernel@vger.kernel.org, loic.poulain@linaro.org
-References: <1620072038-36160-1-git-send-email-bbhatt@codeaurora.org>
-From:   Hemant Kumar <hemantk@codeaurora.org>
-Message-ID: <a5f06852-55c5-f7ef-bcac-4e15fdfb3f65@codeaurora.org>
-Date:   Mon, 3 May 2021 15:33:29 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229847AbhECWh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 18:37:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38126 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229497AbhECWh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 18:37:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA3DE61208;
+        Mon,  3 May 2021 22:37:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620081424;
+        bh=VmWSfADQetC3TgPVzlYh/EnoLCaaymJ111Jp5fZ0ZE4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TXISMs4t/u0VAJHE11vmDsML8XIBsyHzbUA6YQOzjpOO+EMEs9VV6lsjm32ke+tV1
+         QiO9yWXal56C0yBZk42Ynfr8h9xeb1up2oJz6NLfB5I5w+5meiqmmVN1Slfw+d1Dfp
+         odTR3OmtSCNvUNUL8IkQtzPn//dgPRDQms+2lCS6gc+4wCP++Xrn6z+2CcM7cwvp0T
+         9bsbS+vvuyy59TLg08zdY5pQVrG0OnyAMNlh0D3ypbCbArnkvWjjI/1Cxy/QqiLTWm
+         xF9RZyPnhKtOV/CuBvfb1M1+UyLQNX2haAfA/QRyGOe64x/9TpCfSTh/yVpSkb7psX
+         AMANAmdFvqF/A==
+Date:   Tue, 4 May 2021 01:37:01 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Tim Gardner <tim.gardner@canonical.com>,
+        dave.hansen@linux.intel.com, shuah@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Subject: [PATCH 0/1] SGX self test fails
+Message-ID: <YJB7DZHDeNujIY+F@kernel.org>
+References: <20210429183952.22797-1-tim.gardner@canonical.com>
+ <c0725600-0a00-31dd-2ec3-20d4a86b33c5@intel.com>
+ <YJAZjP2k6Aff7wgk@kernel.org>
+ <6645d579-57f9-7adf-8a3d-f4fb2316b324@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1620072038-36160-1-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6645d579-57f9-7adf-8a3d-f4fb2316b324@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 5/3/21 1:00 PM, Bhaumik Bhatt wrote:
-> Improve error message to be more descriptive if a failure occurs
-> with an invalid power up execution environment. Additionally, add
-> a debug log to print the execution environment and MHI state
-> before a power up is attempted to confirm if the device is in an
-> expected state. This helps clarify reasons for power up failures
-> such as the device being found in a PBL or Emergency Download
-> Mode execution environment and the host expected a full power up
-> with Pass-Through and no image loading involved.
+On Mon, May 03, 2021 at 09:39:05AM -0700, Dave Hansen wrote:
+> On 5/3/21 8:41 AM, Jarkko Sakkinen wrote:
+> >> $ ls -l /dev/sgx_enclave
+> >> crw------- 1 dave dave 10, 125 Apr 28 11:32 /dev/sgx_enclave
+> >> $ ./test_sgx
+> >> 0x0000000000000000 0x0000000000002000 0x03
+> >> 0x0000000000002000 0x0000000000001000 0x05
+> >> 0x0000000000003000 0x0000000000003000 0x03
+> >> SUCCESS
+> >>
+> >> *But*, is that OK?  Should we be happily creating a PROT_EXEC mapping on
+> >> a ugo-x file?  Why were we respecting noexec on the filesystem but not
+> >> ugo-x on the file?
+> > Yeah, this supports my earlier response:
+> > 
+> > "EPERM  The prot argument asks for PROT_EXEC but the mapped area
+> >  belongs to a file on a filesystem that was mounted no-exec."
+> > https://man7.org/linux/man-pages/man2/mmap.2.html
+> > 
+> > I guess the right model is to think just as "anonymous memory"
+> > with equivalent access control semantics after succesfully
+> > opened for read and write.
 > 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> I guess I'll answer my own question: The "x" bit on file permissions
+> really only controls the ability for the file to be execve()'d, but has
+> no bearing on the ability for an executable *mapping* to be created.
+> This is existing VFS behavior and is not specific to SGX.
 
-Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+Yeah, that's nicely put it into one sentence :-)
 
+> I think I'll just send a patch to pull that warning out.
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+/Jarkko
