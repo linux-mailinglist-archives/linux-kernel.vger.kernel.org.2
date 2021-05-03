@@ -2,97 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76988371839
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:43:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA8A37186B
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbhECPod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 11:44:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27602 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230346AbhECPoa (ORCPT
+        id S230494AbhECPtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 11:49:16 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32540 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230236AbhECPtO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 11:44:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620056617;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mLWn2Bm+ged3fuObrNXQRHmGzUAtT7+v1ZR4Rf0VlH0=;
-        b=Ei5iKt1jOLp0ASngAHaXU3WMEIaKwBzCqHSExJXRUU2zc0IWSnusdJJXrkCaSsg5SvYtFh
-        Vl/Wu8HF8kI0ZSUx+d0CjNgNQSi+gJ13war1LSrYjoNJ1AvpQA4zauBBabVE3wcLMhUmaN
-        fYLgVi/SJOnl7/xkhJB9HEICp5PpmuE=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-180-usaZspqMNNOFzhy-jb3-qQ-1; Mon, 03 May 2021 11:43:36 -0400
-X-MC-Unique: usaZspqMNNOFzhy-jb3-qQ-1
-Received: by mail-ej1-f69.google.com with SMTP id ne22-20020a1709077b96b02903803a047edeso2219949ejc.3
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 08:43:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mLWn2Bm+ged3fuObrNXQRHmGzUAtT7+v1ZR4Rf0VlH0=;
-        b=WIFNvjhVA/u6AXxtE0ng1kdS2WanBtaORJ2RxEF/qmE6xjxuqm65+VtL3CCfD1fCzy
-         o6HejHb6Lgm96VLNUT6Frz6Sdls8Yx6u6FD1etiibmYCdSzkkyk/ell7w3nnECsXNvR+
-         53OXmXIcbHYyRfDyDmuLtqYyqpD8AyRyzYHPrHYZF98zoG+kDrWMtbIZDVbFezcR5Xuw
-         8Jrb5qiWNPWGKWGmZEY4TZOH7RZSsH3GA8zjs3hdXv+aaWBZC1rJ7Sif7f2Fx2Lni/vA
-         XYuwPAFZTYqH829BtEzlHcV4N2oNfaBPOBA/SdlJB3A3A/6oTQocedLafVxZVRUqplUm
-         f5Ew==
-X-Gm-Message-State: AOAM531sRJqREo5BNjDY2whf7Pk8dFdzzHHmn1exvrU6d9ZAMF3BbUIk
-        0TSiu3zfjBJbVnqZlriJX8Y15t9ys+E4iRMDx2iUI3rR2MI84+wJ/FW/cBwJVezj4J2lYKjg2yw
-        bimTgpAazfqNAFlbfyaekjWxY9dTz29uREh+sJ1L28MRt+/CitmSb0nSu1Vs4lbTioat9WABsbg
-        vD
-X-Received: by 2002:a17:906:5495:: with SMTP id r21mr17457094ejo.471.1620056614115;
-        Mon, 03 May 2021 08:43:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyQ3e7UJClc0peO858Bwd60/xCVdE4PgXLIlXr7biXcndz1LngDtvWJv+JjpA6WpPzcFJBLsw==
-X-Received: by 2002:a17:906:5495:: with SMTP id r21mr17457065ejo.471.1620056613892;
-        Mon, 03 May 2021 08:43:33 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id f7sm30061ejz.95.2021.05.03.08.43.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 08:43:33 -0700 (PDT)
-Subject: Re: [PATCH 0/4] KVM: nVMX: Fix migration of nested guests when eVMCS
- is in use
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel@vger.kernel.org
-References: <20210503150854.1144255-1-vkuznets@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f2f7020d-9293-d9bb-093f-b9c857a962d8@redhat.com>
-Date:   Mon, 3 May 2021 17:43:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210503150854.1144255-1-vkuznets@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        Mon, 3 May 2021 11:49:14 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 143FXFOj083905;
+        Mon, 3 May 2021 11:48:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=QY8Fwva9jUAcObQQsHazOSmDv+lc05cpJZ4JdnaU6Pg=;
+ b=q+nusEJGIyennrSNy+sGRwLw5a8qtR7A1j1sQLfkjk87VK7v1sFs4HuJRnFxcmfcfGAP
+ hATpUZljHbXTUp3s9tHFZcZxXdPSq8zhiRyNjBwjB0C1rXQqCt8udPTO1f+JPhJBXDB9
+ RmVFJlGWZAvH6sE+vMVCyIY/xqT9Yb+K267vMT2aRP8vTb7f/NqLMo0GVAHUwVN0wI/V
+ KPRYfzLo72X1gMyNKAYLVwjlQp7JWpWD1POddMkr/brakcyostxctnd2aFqNXL2CHXEl
+ KbKiyHY4XTrDg1k3Olmh5eQM7DreLvlKLEJHPc0eWydlKBWjMhqRUZG9Blts2MSoZEtH ZA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38akutgfh9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 May 2021 11:48:15 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 143FXGfi084082;
+        Mon, 3 May 2021 11:48:13 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38akutgfgb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 May 2021 11:48:12 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 143Fb20N028891;
+        Mon, 3 May 2021 15:48:10 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 388xm8rsma-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 May 2021 15:48:10 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 143FlhJK33358216
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 3 May 2021 15:47:43 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3A14F11C04A;
+        Mon,  3 May 2021 15:48:08 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 14C3C11C04C;
+        Mon,  3 May 2021 15:48:06 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.45.89])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  3 May 2021 15:48:05 +0000 (GMT)
+Message-ID: <d48e3595d0a39cc0ac82519c1c444eeacc8b8c58.camel@linux.ibm.com>
+Subject: Re: [PATCH v5 09/12] evm: Allow setxattr() and setattr() for
+ unmodified metadata
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>,
+        "mjg59@google.com" <mjg59@google.com>
+Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Mon, 03 May 2021 11:48:04 -0400
+In-Reply-To: <b0bfaf2352b045dfaf443ae3af73b60e@huawei.com>
+References: <20210407105252.30721-1-roberto.sassu@huawei.com>
+         <20210407105252.30721-10-roberto.sassu@huawei.com>
+         <8493d7e2b0fefa4cd3861bd6b7ee6f2340aa7434.camel@linux.ibm.com>
+         <fcd2932bc2a841c2aa7fcbdaee94e0a5@huawei.com>
+         <cf12878833c82710ad4356e7d023cf51241f3cc8.camel@linux.ibm.com>
+         <b0bfaf2352b045dfaf443ae3af73b60e@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: v-k7iafBdxqr1f3U7Ucp7k5fB8Guv1JS
+X-Proofpoint-ORIG-GUID: DruteI17ux7fFn6dLtJ1yRwr2BsQX5dX
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-03_10:2021-05-03,2021-05-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 mlxscore=0 phishscore=0 spamscore=0 impostorscore=0
+ bulkscore=0 adultscore=0 priorityscore=1501 clxscore=1015 suspectscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2105030105
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/05/21 17:08, Vitaly Kuznetsov wrote:
-> Win10 guests with WSL2 enabled sometimes crash on migration when
-> enlightened VMCS was used. The condition seems to be induced by the
-> situation when L2->L1 exit is caused immediately after migration and
-> before L2 gets a chance to run (e.g. when there's an interrupt pending).
+On Mon, 2021-05-03 at 15:32 +0000, Roberto Sassu wrote:
+> > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> > Sent: Monday, May 3, 2021 5:26 PM
+> > On Mon, 2021-05-03 at 15:11 +0000, Roberto Sassu wrote:
+> > > > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> > > > Sent: Monday, May 3, 2021 3:00 PM
+> > > > On Wed, 2021-04-07 at 12:52 +0200, Roberto Sassu wrote:
+> > > >
+> > > > > diff --git a/security/integrity/evm/evm_main.c
+> > > > b/security/integrity/evm/evm_main.c
+> > > > > @@ -389,6 +473,11 @@ static int evm_protect_xattr(struct
+> > > > user_namespace *mnt_userns,
+> > > > >  	if (evm_status == INTEGRITY_FAIL_IMMUTABLE)
+> > > > >  		return 0;
+> > > > >
+> > > > > +	if (evm_status == INTEGRITY_PASS_IMMUTABLE &&
+> > > > > +	    !evm_xattr_change(mnt_userns, dentry, xattr_name, xattr_value,
+> > > > > +			      xattr_value_len))
+> > > > > +		return 0;
+> > > > > +
+> > > >
+> > > > If the purpose of evm_protect_xattr() is to prevent allowing an invalid
+> > > > security.evm xattr from being re-calculated and updated, making it
+> > > > valid, INTEGRITY_PASS_IMMUTABLE shouldn't need to be conditional.
+> > Any
+> > > > time there is an attr or xattr change, including setting it to the
+> > > > existing value, the status flag should be reset.
+> > > >
+> > > > I'm wondering if making INTEGRITY_PASS_IMMUTABLE conditional would
+> > > > prevent the file from being resigned.
+> > > >
+> > > > >  	if (evm_status != INTEGRITY_PASS)
+> > > > >  		integrity_audit_msg(AUDIT_INTEGRITY_METADATA,
+> > > > d_backing_inode(dentry),
+> > > > >  				    dentry->d_name.name,
+> > > > "appraise_metadata",
+> > > >
+> > > > This would then be updated to if not INTEGRITY_PASS or
+> > > > INTEGRITY_PASS_IMMUTABLE.  The subsequent "return" would need to
+> > be
+> > > > updated as well.
+> > >
+> > > I agree on the first suggestion, to reduce the number of log messages.
+> > > For the second, if you meant that we should return 0 if the status is
+> > > INTEGRITY_PASS_IMMUTABLE, I thought we wanted to deny xattr
+> > > changes when there is an EVM portable signature.
+> > 
+> > Why?  I must be missing something.  As long as we're not relying on the
+> > cached status, allowing the file metadata to be updated shouldn't be an
+> > issue.
+> 
+> We may want to prevent accidental changes, for example.
 
-Interesting, I think it gets to nested_vmx_vmexit before
+Let's keep it simple, getting the basics working properly first.  Then
+we can decide if this is something that we really want/need to defend
+against.
 
-                 if (kvm_check_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu)) {
-                         if (unlikely(!kvm_x86_ops.nested_ops->get_nested_state_pages(vcpu))) {
-                                 r = 0;
-                                 goto out;
-                         }
-                 }
+thanks,
 
-due to the infamous calls to check_nested_events that are scattered
-through KVM?
-
-Paolo
+Mimi
 
