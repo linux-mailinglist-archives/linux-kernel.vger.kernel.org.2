@@ -2,102 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75195372351
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 00:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F12372354
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 00:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbhECW6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 18:58:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229876AbhECW6B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 18:58:01 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 856E2C061761
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 15:57:07 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id q136so6845586qka.7
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 15:57:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xZZm+3MFuedFCkj1MfVgDeM954nHR/3fXds6exXmQfs=;
-        b=ouRSQEEjT38vBUuV862SeUlllVCT6eH9A/DLELLKUUCUzA1ShVzuWVXQ1MBHwfUp52
-         o2iY2zmGF5v6LzhQq+GBDBerKVAePtFNVbGHvM38jkoESd9bfzmAI5TW5EmfL78E08Qn
-         KIGOFGei7/yO8yCpBYVzXmS09DZEEm+pTY6CGCqEpqr9/YKTEYQHHgmnMtxfiJhxhwEM
-         PI6Kaqk2dLQBbp3lySC34PVTv8PJZyC4fg+IILviuxHg1B8L5kSFMxjKrsIeWCcV13AT
-         K2K+mR+5wr9SajVl5e5SOe9bFPiH9IuQFOm4a7VNUrSG+YlFkkc7yhkY+MYykwPRCxJe
-         dU1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xZZm+3MFuedFCkj1MfVgDeM954nHR/3fXds6exXmQfs=;
-        b=asDwcFE2YU8vcb1DESqoKIJUWd9xXScfsKZd4Le/b1LxJmyug3gKx+6h5n7kTpyNM9
-         rPi9aVWO2d4UOkU9pxrMcXffzxjkbnNr8N/pwC9MXacvCLT9YQfLQqTr1qFxqISjsJSt
-         M2e5XsDtWJ6ZEdV8N2UReadaaOrrKZ7CTaIQlN7NI/fPvWt/m0vrnUeDCDewihODnX7o
-         eWksArNbURceJdfA+KL6e1gwvnkjb1yW/c6Lw4F5/oPyCSFCWtvqMHLN4A9dEJnIFMmX
-         v/xCX6GHuddVIy7vxy1M1YQx5FXvqWXg9tMeNETKOP1SKhzD6B3RZwb67ehq19dFj4B5
-         4ngw==
-X-Gm-Message-State: AOAM53246qDEdziA8ohGEIsYQooKoiT0UAeWp1q1oSozbb2adt2n07ll
-        GdyqGpM9DbLwfuZIA6eHpuzeaCiPfZhYgAsH
-X-Google-Smtp-Source: ABdhPJwB6nytiC0oDMbKJRBwSIes/jqgsePpJ+MXFQRNiesNGamVx4ATl+XqEZHAz4GA6Yzrb48bvQ==
-X-Received: by 2002:a37:a9c8:: with SMTP id s191mr6160737qke.430.1620082626750;
-        Mon, 03 May 2021 15:57:06 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id c17sm897865qtd.71.2021.05.03.15.57.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 15:57:06 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1ldhUv-00H3QZ-2z; Mon, 03 May 2021 19:57:05 -0300
-Date:   Mon, 3 May 2021 19:57:05 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Logan Gunthorpe <logang@deltatee.com>,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [PATCH 04/16] PCI/P2PDMA: Refactor pci_p2pdma_map_type() to take
- pagmap and device
-Message-ID: <20210503225705.GA2047089@ziepe.ca>
-References: <20210408170123.8788-1-logang@deltatee.com>
- <20210408170123.8788-5-logang@deltatee.com>
- <ce04d398-e4a1-b3aa-2a4e-b1b868470144@nvidia.com>
- <f719ba91-07ba-c703-2dc9-32cb1214e9c0@deltatee.com>
- <f07f0ca7-9772-5b3b-4cea-9defcefaaf8b@nvidia.com>
- <ab0e4256-79c9-c181-5aec-f6869a92a80c@deltatee.com>
- <d4f19947-d4c1-451b-311f-9e31a4ded6fc@nvidia.com>
+        id S229881AbhECW7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 18:59:16 -0400
+Received: from ms.lwn.net ([45.79.88.28]:43168 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229680AbhECW7P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 18:59:15 -0400
+Received: from localhost (unknown [IPv6:2601:281:8300:104d:444a:d152:279d:1dbb])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id BE1A72ED;
+        Mon,  3 May 2021 22:58:21 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net BE1A72ED
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1620082701; bh=/wxRzKKm9ILisw0zqzRx2o+KzRBSeU3HsFY9OdFVbZQ=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=AXgzGPJu34DrVSXQIh5XWU8SX2PKRRewKVqhrJNZ5Xy+Baywga9wFddCUIjJYPuu7
+         znW0wa3fhMnXlb5/pFbvtxogR8lC95NPErcPEln3Yuo6HwDlso+6o6jrEF5MymPbpA
+         ALVGfefnhZIhb4fmA8LBWrAaU6uZqeneOzgjVQlMZDHyXD5ZhO3t0W8JpcYcXeTy2H
+         eLibrB1dhSwYpcmqsWXfp/eOLCRP9anBpaz1QxzmWqeDp11Z4LcZLZ697OdTQh0Y7f
+         TTvdhddQz3FkqTN2gkWQ9xnqgGQZQKShSjTet75MQKM6Nw3dk5sYoPqYan3q4s7/MO
+         U+89504DVS/hQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Thorsten Leemhuis <linux@leemhuis.info>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] docs: reporting-issues.rst: CC subsystem and
+ maintainers on regressions
+In-Reply-To: <e1d2e16a-60b8-0a55-20d4-53db11e6821c@leemhuis.info>
+References: <dd13f10c30e79e550215e53a8103406daec4e593.1618482489.git.linux@leemhuis.info>
+ <e1d2e16a-60b8-0a55-20d4-53db11e6821c@leemhuis.info>
+Date:   Mon, 03 May 2021 16:58:21 -0600
+Message-ID: <875yzzh1bm.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d4f19947-d4c1-451b-311f-9e31a4ded6fc@nvidia.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 02:54:26PM -0700, John Hubbard wrote:
+Thorsten Leemhuis <linux@leemhuis.info> writes:
 
-> I guess my main concern here is that there are these pci*() functions
-> that somehow want to pass around struct device.
+> Hi Jonathan. Wondering if this slipped through the cracks, as I haven't
+> heart anything (or did I miss it?). Would IMHO have been nice to have in
+> 5.13 as well, but it's not crucial.
 
-Well, this is the main issue - helpers being used inside IOMMU code
-should not be called pci* functions. This is some generic device p2p
-interface that happens to only support PCI to PCI transfers today.
+Hmm...I was sure I'd applied this one, guess not.  Sorry.  Applied now,
+I'll push it Linusward shortly.
 
-Jason
+Thanks,
+
+jon
