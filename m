@@ -2,148 +2,356 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A43D637225A
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 23:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 864B2372261
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 23:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbhECVSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 17:18:37 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:33927 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbhECVSg (ORCPT
+        id S229628AbhECVUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 17:20:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhECVUo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 17:18:36 -0400
+        Mon, 3 May 2021 17:20:44 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA655C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 14:19:50 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id t22so4734076pgu.0
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 14:19:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1620076663; x=1651612663;
-  h=date:from:to:cc:message-id:references:mime-version:
-   in-reply-to:subject;
-  bh=04TqWL9x3kySh2dDc818s2E7ADPYmdphIO/5JHsPMSc=;
-  b=rH+QVhBhwaJS+0U5EPixs8azYWre4dvVBrbNTeKgDbbbyyHKUrDza3vx
-   Zmk2hehkk94dkLHt0QLneMQS3vJ4f4QPVJSuD+6oazt92nc+L+SvogcXR
-   4B0lxhPRa9V1iy13uiAkGLYeGeDlzw49PbG9R9KlWgrq6oK1SdifRWuTe
-   Q=;
-X-IronPort-AV: E=Sophos;i="5.82,271,1613433600"; 
-   d="scan'208";a="105449271"
-Subject: Re: [PATCH] KVM: x86: Hoist input checks in kvm_add_msr_filter()
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-8cc5d68b.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-4101.iad4.amazon.com with ESMTP; 03 May 2021 21:17:35 +0000
-Received: from EX13D28EUC003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2b-8cc5d68b.us-west-2.amazon.com (Postfix) with ESMTPS id 02C54A059E;
-        Mon,  3 May 2021 21:17:32 +0000 (UTC)
-Received: from uc8bbc9586ea454.ant.amazon.com (10.43.162.28) by
- EX13D28EUC003.ant.amazon.com (10.43.164.43) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 3 May 2021 21:17:27 +0000
-Date:   Mon, 3 May 2021 23:17:23 +0200
-From:   Siddharth Chandrasekaran <sidcha@amazon.de>
-To:     Sean Christopherson <seanjc@google.com>
-CC:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Message-ID: <20210503211722.GA8688@uc8bbc9586ea454.ant.amazon.com>
-References: <20210503122111.13775-1-sidcha@amazon.de>
- <YJBitcip8/WIsaB9@google.com>
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yceMbfuMe0LpHdlMjCg9uNAqiz9PqXs7W+bbHB3dVNg=;
+        b=lhfwPfdhxJtHhPnI4ckbIAgRtIJperDk2qcljZzzfZlr/B6mUmWQ/TR6zAsWCU8wPN
+         26bQ4z9wssZ8Hi8+eMgcP6fqUeAnn0yDgY5Vu19m44uFX8t467mphV7zZNIsMVPyRa+y
+         o7LbRGJnvzyzcMepXG8z5OlxL1yDMIGf53rBIYdXKMl6F5Q1s45zxQ2Ue+bl0lBjek1y
+         vgI1RjBpNzzsn6UWJqsqMMUaSfnPM9KUGsAVmoOnMa6gOVJ7zEHMHqs0NnjvXlJoGn9z
+         hT27bfWXhcf18Ijj/XhMUGBYj9riU55IMg/Q7TE9+fvUHm7KZhJl67jsKeS0cNRPEXHd
+         Jd9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yceMbfuMe0LpHdlMjCg9uNAqiz9PqXs7W+bbHB3dVNg=;
+        b=eQ6FgJdqyQKb9PSyT4lEaPvH3KZVkjkbWKAngX2tDqAuZgAEdtVK/wb7NI5t2vMtwO
+         uY4nRGXCiPDwQnSPnSBnvTWkch+v2C96o6hxffEZiw3R0pZVKKLGs6ZpAG/Br2X0xboX
+         r5fgiw/nQ3nFrZ8/vAYD2ZiRWMQVU5cjrdE5P01NpFQAu53oujUsKqHiPPdQT9R2Jy/H
+         ZoMlvkjrIkP5wuLTXHd+sNgaNj6NZ8H64W+EmIq1GhOXEs24JPAcOsN+HITEZ/HiXJGB
+         yGItYFewSJMrgn0zkCQWeU1KLiTRyGNaAmwos1OKkGtOlZwLrqyxodT6GSYN+OVhhfdw
+         YVBQ==
+X-Gm-Message-State: AOAM530Wwmv6B1c316FDYMH0cG/F/EZFaRUnX7m4d1b18JNRyBtGCo1F
+        3IxgF/ExffnQ+PzjdkC7VD83ow==
+X-Google-Smtp-Source: ABdhPJwgA1rV8UoR/D3oERz/rQz3RqU1+4C5dbctqKkTD+dr5PkRo/I9dfZMmNeRHJwCToUTg0zK2g==
+X-Received: by 2002:a17:90a:9511:: with SMTP id t17mr707351pjo.235.1620076790030;
+        Mon, 03 May 2021 14:19:50 -0700 (PDT)
+Received: from google.com ([2620:15c:2cb:201:aabe:5118:32ad:74bd])
+        by smtp.gmail.com with ESMTPSA id x23sm9783186pfc.170.2021.05.03.14.19.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 May 2021 14:19:49 -0700 (PDT)
+Date:   Mon, 3 May 2021 14:19:43 -0700
+From:   Brendan Higgins <brendanhiggins@google.com>
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     shuah <shuah@kernel.org>, David Gow <davidgow@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Subject: Re: [RFC v2 3/4] kunit: tool: add support for QEMU
+Message-ID: <YJBo797fPy0DDQjS@google.com>
+References: <20210429205109.2847831-1-brendanhiggins@google.com>
+ <20210429205109.2847831-4-brendanhiggins@google.com>
+ <CAGS_qxo3NA6o8R73q5NdfsC3nx6i4WJgXnHxH6-v=ybnvDTj6Q@mail.gmail.com>
+ <CAFd5g44OL0BQ74ZGEnYzsLYVXEbOB-hBiNAf1+VLO=DoZwKOvA@mail.gmail.com>
+ <CAGS_qxp0++OzvZTuLAFdBqe0gY+P0bQdKsTLiqHycLb9kvz81g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YJBitcip8/WIsaB9@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [10.43.162.28]
-X-ClientProxiedBy: EX13D18UWA003.ant.amazon.com (10.43.160.238) To
- EX13D28EUC003.ant.amazon.com (10.43.164.43)
+In-Reply-To: <CAGS_qxp0++OzvZTuLAFdBqe0gY+P0bQdKsTLiqHycLb9kvz81g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 08:53:09PM +0000, Sean Christopherson wrote:
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
-> 
-> 
-> 
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
-> 
-> On Mon, May 03, 2021, Siddharth Chandrasekaran wrote:
-> > In ioctl KVM_X86_SET_MSR_FILTER, input from user space is validated
-> > after a memdup_user(). For invalid inputs we'd memdup and then call
-> > kfree unnecessarily. Hoist input validation to avoid kfree altogether.
+On Fri, Apr 30, 2021 at 01:14:29PM -0700, Daniel Latypov wrote:
+> On Fri, Apr 30, 2021 at 1:01 PM 'Brendan Higgins' via KUnit
+> Development <kunit-dev@googlegroups.com> wrote:
 > >
-> > Signed-off-by: Siddharth Chandrasekaran <sidcha@amazon.de>
-> > ---
-> >  arch/x86/kvm/x86.c | 21 ++++++---------------
-> >  1 file changed, 6 insertions(+), 15 deletions(-)
+> > On Thu, Apr 29, 2021 at 4:40 PM Daniel Latypov <dlatypov@google.com> wrote:
+> > >
+> > > On Thu, Apr 29, 2021 at 1:51 PM Brendan Higgins
+> > > <brendanhiggins@google.com> wrote:
+> > > >
+> > > > Add basic support to run QEMU via kunit_tool. Add support for i386,
+> > > > x86_64, arm, arm64, and a bunch more.
+> > >
+> > > Hmmm, I'm wondering if I'm seeing unrelated breakages.
+> > > Applied these patches on top of 55ba0fe059a5 ("Merge tag
+> > > 'for-5.13-tag' of
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux")
+> > >
+> > > $ make mrproper
+> > > $ rm -rf .kunit/*   # just in case
+> > > $ ./tools/testing/kunit/kunit.py run --arch=arm64
+> > > ...
 > >
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index ee0dc58ac3a5..15c20b31cc91 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -5393,11 +5393,16 @@ static int kvm_add_msr_filter(struct kvm_x86_msr_filter *msr_filter,
-> >       struct msr_bitmap_range range;
-> >       unsigned long *bitmap = NULL;
-> >       size_t bitmap_size;
-> > -     int r;
+> > Huh, did you use a arm64 cross compiler? Maybe that's your issue.
+> 
+> I didn't (and realized that like 2 minutes after I sent the email).
+> Please disregard.
+
+As I mention below, I had a conversation offline with David regarding
+the problem of figuring out the best way to specify qemu_configs, and I
+wanted to post the fruits of that discussion to get some early feedback
+on it. I am still working on addressing your other comments, but I think
+most of those are pretty straightforward and probably won't require much
+discussion.
+
+[...]
+> > > > +
+> > > > +QemuArchParams = namedtuple('QemuArchParams', ['linux_arch',
+> > > > +                                              'qemuconfig',
+> > > > +                                              'qemu_arch',
+> > > > +                                              'kernel_path',
+> > > > +                                              'kernel_command_line',
+> > > > +                                              'extra_qemu_params'])
+> > > > +
+> > > > +
+> > > > +QEMU_ARCHS = {
+> > > > +       'i386'          : QemuArchParams(linux_arch='i386',
+> > > > +                               qemuconfig='CONFIG_SERIAL_8250=y\nCONFIG_SERIAL_8250_CONSOLE=y',
+> > > > +                               qemu_arch='x86_64',
+> > > > +                               kernel_path='arch/x86/boot/bzImage',
+> > > > +                               kernel_command_line='console=ttyS0',
+> > > > +                               extra_qemu_params=['']),
+> > > > +       'x86_64'        : QemuArchParams(linux_arch='x86_64',
+> > > > +                               qemuconfig='CONFIG_SERIAL_8250=y\nCONFIG_SERIAL_8250_CONSOLE=y',
+> > > > +                               qemu_arch='x86_64',
+> > > > +                               kernel_path='arch/x86/boot/bzImage',
+> > > > +                               kernel_command_line='console=ttyS0',
+> > > > +                               extra_qemu_params=['']),
+> > > > +       'arm'           : QemuArchParams(linux_arch='arm',
+> > > > +                               qemuconfig='''CONFIG_ARCH_VIRT=y
+> > > > +CONFIG_SERIAL_AMBA_PL010=y
+> > > > +CONFIG_SERIAL_AMBA_PL010_CONSOLE=y
+> > > > +CONFIG_SERIAL_AMBA_PL011=y
+> > > > +CONFIG_SERIAL_AMBA_PL011_CONSOLE=y''',
+> > > > +                               qemu_arch='arm',
+> > > > +                               kernel_path='arch/arm/boot/zImage',
+> > > > +                               kernel_command_line='console=ttyAMA0',
+> > > > +                               extra_qemu_params=['-machine virt']),
+> > > > +       'arm64'         : QemuArchParams(linux_arch='arm64',
+> > > > +                               qemuconfig='''CONFIG_SERIAL_AMBA_PL010=y
+> > > > +CONFIG_SERIAL_AMBA_PL010_CONSOLE=y
+> > > > +CONFIG_SERIAL_AMBA_PL011=y
+> > > > +CONFIG_SERIAL_AMBA_PL011_CONSOLE=y''',
+> > > > +                               qemu_arch='aarch64',
+> > > > +                               kernel_path='arch/arm64/boot/Image.gz',
+> > > > +                               kernel_command_line='console=ttyAMA0',
+> > > > +                               extra_qemu_params=['-machine virt', '-cpu cortex-a57']),
+> > > > +       'alpha'         : QemuArchParams(linux_arch='alpha',
+> > > > +                               qemuconfig='CONFIG_SERIAL_8250=y\nCONFIG_SERIAL_8250_CONSOLE=y',
+> > > > +                               qemu_arch='alpha',
+> > > > +                               kernel_path='arch/alpha/boot/vmlinux',
+> > > > +                               kernel_command_line='console=ttyS0',
+> > > > +                               extra_qemu_params=['']),
+> > > > +       'powerpc'       : QemuArchParams(linux_arch='powerpc',
+> > > > +                               qemuconfig='CONFIG_PPC64=y\nCONFIG_SERIAL_8250=y\nCONFIG_SERIAL_8250_CONSOLE=y\nCONFIG_HVC_CONSOLE=y',
+> > > > +                               qemu_arch='ppc64',
+> > > > +                               kernel_path='vmlinux',
+> > > > +                               kernel_command_line='console=ttyS0',
+> > > > +                               extra_qemu_params=['-M pseries', '-cpu power8']),
+> > > > +       'riscv'         : QemuArchParams(linux_arch='riscv',
+> > > > +                               qemuconfig='CONFIG_SOC_VIRT=y\nCONFIG_SERIAL_8250=y\nCONFIG_SERIAL_8250_CONSOLE=y\nCONFIG_SERIAL_OF_PLATFORM=y\nCONFIG_SERIAL_EARLYCON_RISCV_SBI=y',
+> > > > +                               qemu_arch='riscv64',
+> > > > +                               kernel_path='arch/riscv/boot/Image',
+> > > > +                               kernel_command_line='console=ttyS0',
+> > > > +                               extra_qemu_params=['-machine virt', '-cpu rv64', '-bios opensbi-riscv64-generic-fw_dynamic.bin']),
+> > > > +       's390'          : QemuArchParams(linux_arch='s390',
+> > > > +                               qemuconfig='CONFIG_EXPERT=y\nCONFIG_TUNE_ZEC12=y\nCONFIG_NUMA=y\nCONFIG_MODULES=y',
+> > > > +                               qemu_arch='s390x',
+> > > > +                               kernel_path='arch/s390/boot/bzImage',
+> > > > +                               kernel_command_line='console=ttyS0',
+> > > > +                               extra_qemu_params=[
+> > > > +                                               '-machine s390-ccw-virtio',
+> > > > +                                               '-cpu qemu',]),
+> > > > +       'sparc'         : QemuArchParams(linux_arch='sparc',
+> > > > +                               qemuconfig='CONFIG_SERIAL_8250=y\nCONFIG_SERIAL_8250_CONSOLE=y',
+> > > > +                               qemu_arch='sparc',
+> > > > +                               kernel_path='arch/sparc/boot/zImage',
+> > > > +                               kernel_command_line='console=ttyS0 mem=256M',
+> > > > +                               extra_qemu_params=['-m 256']),
+> > > > +}
+> > >
+> > > Oh my.
+> > > I don't know enough to say if there's a better way of doing this.
 > >
-> >       if (!user_range->nmsrs)
-> >               return 0;
+> > Yeah, I know it's gross, but I did not want to put too much effort
+> > into until I got some feedback on it.
 > >
-> > +     if (user_range->flags & ~(KVM_MSR_FILTER_READ | KVM_MSR_FILTER_WRITE))
-> > +             return -EINVAL;
-> > +
-> > +     if (!user_range->flags)
-> > +             return -EINVAL;
-> > +
-> >       bitmap_size = BITS_TO_LONGS(user_range->nmsrs) * sizeof(long);
-> >       if (!bitmap_size || bitmap_size > KVM_MSR_FILTER_MAX_BITMAP_SIZE)
-> >               return -EINVAL;
-> > @@ -5413,24 +5418,10 @@ static int kvm_add_msr_filter(struct kvm_x86_msr_filter *msr_filter,
-> >               .bitmap = bitmap,
-> >       };
+> > > But I think we should probably split this out into a separate python
+> > > file, if this mapping remains necessary.
+> > > E.g. in a qemu_configs.py file or the like.
 > >
-> > -     if (range.flags & ~(KVM_MSR_FILTER_READ | KVM_MSR_FILTER_WRITE)) {
-> > -             r = -EINVAL;
-> > -             goto err;
-> > -     }
-> > -
-> > -     if (!range.flags) {
-> > -             r = -EINVAL;
-> > -             goto err;
-> > -     }
-> > -
-> > -     /* Everything ok, add this range identifier. */
-> >       msr_filter->ranges[msr_filter->count] = range;
+> > Definitely an improvement. Any other thoughts on how to make this look
+> > less gross?
 > 
-> Might be worth elminating the intermediate "range", too.  Doesn't affect output,
-> but it would make it a little more obvious that the new range is mostly coming
-> straight from userspace input.  E.g.
+> Unfortunately not. Like you, I'm hoping someone else might have some
+> better ideas how we can maybe push this config out of python.
 > 
->         msr_filter->ranges[msr_filter->count] = (struct msr_bitmap_range) {
->                 .flags = user_range->flags,
->                 .base = user_range->base,
->                 .nmsrs = user_range->nmsrs,
->                 .bitmap = bitmap,
->         };
-> 
-> Either way:
-> 
-> Reviewed-by: Sean Christopherson <seanjc@google.com>
+> But if we don't find anything else, I think having the hard-coding
+> isolated into its own package is fine, tbh.
 
-Thanks for the review. Changed as suggested.
+So I chatted offline with David and one idea that came up was to keep
+the configs in Python, but make the configs dynamically loaded somehow
+with some kind of predefined format so that they are simple to add,
+*and* more importantly that adding new ones that don't go upstream won't
+be a burden to maintain. Basically a developer could have a QEMU config
+that is customized for her usecase, and is no way dependent on any kinds
+of changes to any upstream kunit_tool files.
 
-~ Sid.
+So here is what I came up with: We have these qemu_config files which
+can be specified anywhere within (subdirectories included) the
+kunit_tool root directory. The qemu_config is a Python file that imports
+the `QemuArchParams` object (above) defined by kunit_tool. It specifies
+one variable: `QEMU_ARCH` which is of type `QemuArchParams` which is
+then used as the arch listed above.
 
+Below I have a proof-of-concept diff, you can see view the proposed
+change on Gerrit here:
 
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
+https://kunit-review.googlesource.com/c/linux/+/4489
 
 
+diff --git a/tools/testing/kunit/__init__.py b/tools/testing/kunit/__init__.py
+new file mode 100644
+index 0000000000000..e69de29bb2d1d
+diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+index f89def9e14dcd..eb9daf6896194 100755
+--- a/tools/testing/kunit/kunit.py
++++ b/tools/testing/kunit/kunit.py
+@@ -198,6 +198,11 @@ def add_common_opts(parser) -> None:
+ 			    help='Sets make\'s CROSS_COMPILE variable.',
+ 			    metavar='cross_compile')
+ 
++	parser.add_argument('--qemu_config',
++			    help=('Takes a path to a path to a file containing '
++				  'a QemuArchParams object.'),
++			    type=str, metavar='qemu_config')
++
+ def add_build_opts(parser) -> None:
+ 	parser.add_argument('--jobs',
+ 			    help='As in the make command, "Specifies  the number of '
+@@ -282,7 +287,8 @@ def main(argv, linux=None):
+ 			linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir,
+ 					kunitconfig_path=cli_args.kunitconfig,
+ 					arch=cli_args.arch,
+-					cross_compile=cli_args.cross_compile)
++					cross_compile=cli_args.cross_compile,
++					qemu_config_path=cli_args.qemu_config)
+ 
+ 		request = KunitRequest(cli_args.raw_output,
+ 				       cli_args.timeout,
+diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+index 64d0fffc5b86e..bc9b847bda658 100644
+--- a/tools/testing/kunit/kunit_kernel.py
++++ b/tools/testing/kunit/kunit_kernel.py
+@@ -6,6 +6,7 @@
+ # Author: Felix Guo <felixguoxiuping@gmail.com>
+ # Author: Brendan Higgins <brendanhiggins@google.com>
+ 
++import importlib.util
+ import logging
+ import subprocess
+ import os
+@@ -20,7 +21,7 @@ from collections import namedtuple
+ 
+ import kunit_config
+ import kunit_parser
+-import qemu_configs
++import qemu_config
+ 
+ KCONFIG_PATH = '.config'
+ KUNITCONFIG_PATH = '.kunitconfig'
+@@ -107,7 +108,7 @@ class LinuxSourceTreeOperations(object):
+ 
+ class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
+ 
+-	def __init__(self, qemu_arch_params: qemu_configs.QemuArchParams, cross_compile: Optional[str]):
++	def __init__(self, qemu_arch_params: qemu_config.QemuArchParams, cross_compile: Optional[str]):
+ 		super().__init__(linux_arch=qemu_arch_params.linux_arch,
+ 				 cross_compile=cross_compile)
+ 		self._qemuconfig = qemu_arch_params.qemuconfig
+@@ -197,19 +198,34 @@ def get_outfile_path(build_dir) -> str:
+ def get_source_tree_ops(arch: str, cross_compile: Optional[str]) -> LinuxSourceTreeOperations:
+ 	if arch == 'um':
+ 		return LinuxSourceTreeOperationsUml()
+-	elif arch in qemu_configs.QEMU_ARCHS:
+-		return LinuxSourceTreeOperationsQemu(qemu_configs.QEMU_ARCHS[arch],
++	elif arch in qemu_config.QEMU_ARCHS:
++		return LinuxSourceTreeOperationsQemu(qemu_config.QEMU_ARCHS[arch],
+ 						     cross_compile=cross_compile)
+ 	else:
+ 		raise ConfigError(arch + ' is not a valid arch')
+ 
++def get_source_tree_ops_from_qemu_config(config_path: str, cross_compile: Optional[str]) -> qemu_config.QemuArchParams:
++	abs_tool_path = os.path.abspath(os.path.dirname(__file__))
++	abs_config_path = os.path.abspath(config_path)
++	if os.path.commonpath([abs_tool_path, abs_config_path]) != abs_tool_path:
++		raise ConfigError('Given QEMU config file is not in a child directory of KUnit tool.')
++	relative_config_path = os.path.relpath(abs_config_path, abs_tool_path)
++	spec = importlib.util.spec_from_file_location('.' + relative_config_path, config_path)
++	config = importlib.util.module_from_spec(spec)
++	spec.loader.exec_module(config)
++	return config.QEMU_ARCH.linux_arch, LinuxSourceTreeOperationsQemu(
++			config.QEMU_ARCH, cross_compile=cross_compile)
++
+ class LinuxSourceTree(object):
+ 	"""Represents a Linux kernel source tree with KUnit tests."""
+ 
+-	def __init__(self, build_dir: str, load_config=True, kunitconfig_path='', arch=None, cross_compile=None) -> None:
++	def __init__(self, build_dir: str, load_config=True, kunitconfig_path='', arch=None, cross_compile=None, qemu_config_path=None) -> None:
+ 		signal.signal(signal.SIGINT, self.signal_handler)
+-		self._arch = 'um' if arch is None else arch
+-		self._ops = get_source_tree_ops(self._arch, cross_compile)
++		if qemu_config_path:
++			self._arch, self._ops = get_source_tree_ops_from_qemu_config(qemu_config_path, cross_compile)
++		else:
++			self._arch = 'um' if arch is None else arch
++			self._ops = get_source_tree_ops(self._arch, cross_compile)
+ 
+ 		if not load_config:
+ 			return
+diff --git a/tools/testing/kunit/qemu_configs.py b/tools/testing/kunit/qemu_config.py
+similarity index 100%
+rename from tools/testing/kunit/qemu_configs.py
+rename to tools/testing/kunit/qemu_config.py
+diff --git a/tools/testing/kunit/qemu_configs/__init__.py b/tools/testing/kunit/qemu_configs/__init__.py
+new file mode 100644
+index 0000000000000..e69de29bb2d1d
+diff --git a/tools/testing/kunit/qemu_configs/i386.py b/tools/testing/kunit/qemu_configs/i386.py
+new file mode 100644
+index 0000000000000..7f079db044cc7
+--- /dev/null
++++ b/tools/testing/kunit/qemu_configs/i386.py
+@@ -0,0 +1,8 @@
++from ..qemu_config import QemuArchParams
++
++QEMU_ARCH = QemuArchParams(linux_arch='i386',
++			   qemuconfig='CONFIG_SERIAL_8250=y\nCONFIG_SERIAL_8250_CONSOLE=y',
++			   qemu_arch='x86_64',
++			   kernel_path='arch/x86/boot/bzImage',
++			   kernel_command_line='console=ttyS0',
++			   extra_qemu_params=[''])
 
+An example of how kunit_tool with the above change could be invoked is
+as follows:
+
+tools/testing/kunit/kunit.py run --timeout=60 --jobs=12 --qemu_config=./tools/testing/kunit/qemu_configs/i386.py
+
+Let me know wha'cha think!
+
+[...]
