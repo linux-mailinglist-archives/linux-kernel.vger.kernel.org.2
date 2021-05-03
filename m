@@ -2,126 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A48F9371318
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 11:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E5D37131F
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 11:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233049AbhECJkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 05:40:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30786 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231523AbhECJkl (ORCPT
+        id S233112AbhECJnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 05:43:07 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:43004 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231523AbhECJnC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 05:40:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620034787;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ed4Fg0jmvz5izTHQmdOnBOoJKIPHVPN61DnFBqKQxak=;
-        b=YA6cFzWKScK+zvX9Ydu7n3L5nVlmnj/L03fdw5I5akJWUffXN5ZbRK168+Wqkpd2+SEy8I
-        OA/Kul5MA/mvkWSegy9u4Zz7aQweQxNL2Sp7zEHnmruPUCpHOJkBAoFBuDo0Xo6TyAKKrx
-        rgdifwtIT47At+KsXfneMkZAj74JV3U=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-382-wRNyXwzeM_CPH56PnALn2A-1; Mon, 03 May 2021 05:39:46 -0400
-X-MC-Unique: wRNyXwzeM_CPH56PnALn2A-1
-Received: by mail-pl1-f200.google.com with SMTP id x10-20020a1709029a4ab02900e71f0256beso1316461plv.8
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 02:39:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Ed4Fg0jmvz5izTHQmdOnBOoJKIPHVPN61DnFBqKQxak=;
-        b=S9fbE69PHnfyeiO8qjj5icV7P+wcCLAx5lAu0D/Ip0iOXOesj+YbZ2FlD958p678tS
-         fEVpYbT4WrZJL50i0WDCagWz/1uSEcuTond6eLhup6UpFXWfSL+B/o7bgfT6lknqtUTr
-         ynNVfkg1GAYw1dFd/3CdUXt+6uXN/P9jSshjhIoipsf9wVZijt7oCyw+QgwcarCoBTdT
-         KzHmBXS2fgIKQUKa0C34JoYWqBfL9cvvqhe/OPhOwtu3xeIPvl1S4QzHweYNLCeb5rxd
-         N1ZMKRk5nSzToWPfssKgGx/v0kDtW6Wkyw+JaaDBHaituVyZBPQ1F9QwE1589PalH4j/
-         crYw==
-X-Gm-Message-State: AOAM530boD4bKibu64iUryeogC3vEqpBBquBPjnWQ+KWBrgiJeSgq8I0
-        eq9BzLS0Hm8Bp5SOSBAGQBbDQ6mB9w/+Aj0Ffabqlb7xkeeqgCzPQGyIsMnnX61thIIjS9BMLlr
-        fFI5dHy6CMvlzkYBF0TSWPw53TbsLDA8JHMjx+ekX
-X-Received: by 2002:a17:902:f686:b029:ee:d211:5a1b with SMTP id l6-20020a170902f686b02900eed2115a1bmr5621469plg.41.1620034785194;
-        Mon, 03 May 2021 02:39:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwVwcIIS+AzZDYRB2WFTm3qhlqHXnG6TXvo9ghWdIZfp2zf4V5g5e/VU5R60f6Ou/pYXvEqxrLZ+JvlRsSB070=
-X-Received: by 2002:a17:902:f686:b029:ee:d211:5a1b with SMTP id
- l6-20020a170902f686b02900eed2115a1bmr5621447plg.41.1620034784949; Mon, 03 May
- 2021 02:39:44 -0700 (PDT)
+        Mon, 3 May 2021 05:43:02 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 1439TKIo029925;
+        Mon, 3 May 2021 17:29:20 +0800 (GMT-8)
+        (envelope-from steven_lee@aspeedtech.com)
+Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 3 May
+ 2021 17:40:58 +0800
+Date:   Mon, 3 May 2021 17:40:55 +0800
+From:   Steven Lee <steven_lee@aspeedtech.com>
+To:     Andrew Jeffery <andrew@aj.id.au>
+CC:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Ryan Chen <ryanchen.aspeed@gmail.com>,
+        "moderated list:ASPEED SD/MMC DRIVER" <linux-aspeed@lists.ozlabs.org>,
+        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Hongwei Zhang <Hongweiz@ami.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: mmc: sdhci-of-aspeed: Add
+ description for AST2600 EVB.
+Message-ID: <20210503094054.GA12520@aspeedtech.com>
+References: <20210503014336.20256-1-steven_lee@aspeedtech.com>
+ <20210503014336.20256-2-steven_lee@aspeedtech.com>
+ <75226402-503c-4e9b-96dc-e4bd74cf20ac@www.fastmail.com>
 MIME-Version: 1.0
-References: <cover.1615224800.git.nabijaczleweli@nabijaczleweli.xyz>
- <20210420131741.kdgxquhwqureih7c@tarta.nabijaczleweli.xyz> <nycvar.YFH.7.76.2105031110480.28378@cbobk.fhfr.pm>
-In-Reply-To: <nycvar.YFH.7.76.2105031110480.28378@cbobk.fhfr.pm>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Mon, 3 May 2021 11:39:34 +0200
-Message-ID: <CAO-hwJ+HhKU7EzPZGOtPePT_h7OUaJ=QfWi7eAcxsfRaDtQuvg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] Stylus-on-touchscreen device support
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     =?UTF-8?B?0L3QsNCx?= <nabijaczleweli@nabijaczleweli.xyz>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <75226402-503c-4e9b-96dc-e4bd74cf20ac@www.fastmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 1439TKIo029925
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 3, 2021 at 11:11 AM Jiri Kosina <jikos@kernel.org> wrote:
->
-> On Tue, 20 Apr 2021, =D0=BD=D0=B0=D0=B1 wrote:
->
-> > > This patchset adds support for stylus-on-touchscreen devices as found=
- on
-> > > the OneMix 3 Pro and Dell Inspiron 15 7000 2-in-1 (7591), among other=
-s;
-> > > with it, they properly behave like a drawing tablet.
-> > >
-> > > Patches 2 and 4 funxionally depend on patch 1.
-> > > Patch 4 needs patch 3 to apply.
-> > >
-> > > The output of this patchset and the need for a kernel, rather than
-> > > userspace, patch was previously discussed here:
-> > >   https://gitlab.freedesktop.org/libinput/libinput/-/merge_requests/5=
-58#note_792834
-> > >
-> > > Changes in v2:
-> > > Patch 4 now ANDs the secondary button with the tip switch,
-> > > since it's otherwise borderline useless to the user.
-> > >
-> > > Ahelenia Ziemia=C5=84ska (4):
-> > >   HID: multitouch: require Finger field to mark Win8 reports as MT
-> > >   HID: multitouch: set Stylus suffix for Stylus-application devices, =
-too
-> > >   HID: input: replace outdated HID numbers+comments with macros
-> > >   HID: input: work around Win8 stylus-on-touchscreen reporting
-> > >
-> > >  drivers/hid/hid-input.c      | 54 ++++++++++++++++++++++++++++++++++=
---
-> > >  drivers/hid/hid-multitouch.c | 18 +++++++-----
-> > >  2 files changed, 62 insertions(+), 10 deletions(-)
-> > >
-> > > --
-> > > 2.20.1
-> >
-> > Bumping this after a monthish =E2=80=92 is it missing something? Am I?
->
-> Benjamin had concerns about regressions and wanted to run a full battery
-> of testing on it.
->
-> Benjamin, is there any outcome of that, please?
->
+The 05/03/2021 12:19, Andrew Jeffery wrote:
+> Hi Steven,
+> 
+> On Mon, 3 May 2021, at 11:13, Steven Lee wrote:
+> > Add the description for describing the AST 2600 EVB reference design of
+> > GPIO regulators and provide the example in the document.
+> > 
+> > AST2600-A2 EVB has the reference design for enabling SD bus
+> > power and toggling SD bus signal voltage by GPIO pins.
+> > 
+> > In the reference design, GPIOV0 of AST2600-A2 EVB is connected to
+> > power load switch that providing 3.3v to SD1 bus vdd. GPIOV1 is
+> > connected to a 1.8v and a 3.3v power load switch that providing
+> > signal voltage to
+> > SD1 bus.
+> > 
+> > If GPIOV0 is active high, SD1 bus is enabled. Otherwise, SD1 bus is
+> > disabled.
+> > If GPIOV1 is active high, 3.3v power load switch is enabled, SD1
+> > signal voltage is 3.3v. Otherwise, 1.8v power load switch will be
+> > enabled, SD1 signal voltage becomes 1.8v.
+> > 
+> > AST2600-A2 EVB also support toggling signal voltage for SD2 bus.
+> > The design is the same as SD1 bus. It uses GPIOV2 as power-gpio and
+> > GPIOV3 as power-switch-gpio.
+> > 
+> > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+> > ---
+> >  .../devicetree/bindings/mmc/aspeed,sdhci.yaml | 99 +++++++++++++++++++
+> >  1 file changed, 99 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml 
+> > b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
+> > index 987b287f3bff..dd894aba0bb7 100644
+> > --- a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
+> > +++ b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
+> > @@ -20,6 +20,19 @@ description: |+
+> >    the slots are dependent on the common configuration area, they are 
+> > described
+> >    as child nodes.
+> >  
+> > +  The signal voltage of SDHCIs on AST2600-A2 EVB is able to be toggled 
+> > by GPIO
+> > +  pins. In the reference design, GPIOV0 of AST2600-A2 EVB is connected 
+> > to the
+> > +  power load switch that providing 3.3v to SD1 bus vdd, GPIOV1 is 
+> > connected to
+> > +  a 1.8v and a 3.3v power load switch that providing signal voltage to
+> > +  SD1 bus.
+> > +  If GPIOV0 is active high, SD1 bus is enabled. Otherwise, SD1 bus is
+> > +  disabled. If GPIOV1 is active high, 3.3v power load switch is 
+> > enabled, SD1
+> > +  signal voltage is 3.3v. Otherwise, 1.8v power load switch will be 
+> > enabled, SD1
+> > +  signal voltage becomes 1.8v.
+> > +  AST2600-A2 EVB also support toggling signal voltage for SD2 bus.
+> > +  The design is the same as SD1 bus. It uses GPIOV2 as power-gpio and 
+> > GPIOV3
+> > +  as power-switch-gpio.
+> 
+> I don't think we should be describing design-specific details in the 
+> binding document. However, I think this would be a great comment in the 
+> AST2600 EVB devicetree. Can you please move it there?
+> 
 
-Sorry, no real outcome here.
+Ok, I will move it to the device tree.
 
-I ran the test suite, and there were no errors, until I realized that
-there are no tests regarding tablets, so it can't detect any
-regressions here.
-And then, the usual happens, no time to actually work on the test suite... =
-:(
+I was wondering if the following place is a good place to put the
+comment
 
-I'll do a "normal" review soon (i.e. today)
+at line 534 of aspeed-g6.dtsi
+sdc: sdc@1e740000 {
+	// Comment here...
 
-Cheers,
-Benjamin
+	compatible = "aspeed,ast2600-sd-controller";
+	reg = <0x1e740000 0x100>;
 
+	sdhci0: sdhci@1e740100 {
+		compatible = "aspeed,ast2600-sdhci", "sdhci";
+		reg = <0x100 0x100>;
+		interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
+...
+}
+
+> > +
+> >  properties:
+> >    compatible:
+> >      enum:
+> > @@ -78,6 +91,7 @@ required:
+> >    - clocks
+> >  
+> >  examples:
+> > +  //Example 1
+> >    - |
+> >      #include <dt-bindings/clock/aspeed-clock.h>
+> >      sdc@1e740000 {
+> > @@ -104,3 +118,88 @@ examples:
+> >                      clocks = <&syscon ASPEED_CLK_SDIO>;
+> >              };
+> >      };
+> > +
+> > +  //Example 2 (AST2600EVB with GPIO regulator)
+> 
+> I feel you didn't test this with `make dt_binding_check` as `//` isn't
+> a valid YAML comment token. You need to use `#` for comments (
+> https://yaml.org/spec/1.2/spec.html#id2780069 ).
+> 
+
+Sorry, I don't know that there is a binding check command for valiating
+YAML document.
+Regardless, thanks for the reference link.
+I will test with dt_binding_check.
+
+> > +  - |
+> > +    #include <dt-bindings/clock/aspeed-clock.h>
+> > +    #include <dt-bindings/gpio/aspeed-gpio.h>
+> > +    vcc_sdhci0: regulator-vcc-sdhci0 {
+> > +            compatible = "regulator-fixed";
+> > +
+> > +            regulator-name = "SDHCI0 Vcc";
+> > +            regulator-min-microvolt = <3300000>;
+> > +            regulator-max-microvolt = <3300000>;
+> > +            gpios = <&gpio0 ASPEED_GPIO(V, 0)
+> > +                            GPIO_ACTIVE_HIGH>;
+> > +            enable-active-high;
+> > +    };
+> > +
+> > +    vccq_sdhci0: regulator-vccq-sdhci0 {
+> > +            compatible = "regulator-gpio";
+> > +
+> > +            regulator-name = "SDHCI0 VccQ";
+> > +            regulator-min-microvolt = <1800000>;
+> > +            regulator-max-microvolt = <3300000>;
+> > +            gpios = <&gpio0 ASPEED_GPIO(V, 1)
+> > +                            GPIO_ACTIVE_HIGH>;
+> > +            gpios-states = <1>;
+> > +            states = <3300000 1
+> > +                      1800000 0>;
+> > +    };
+> > +
+> > +    vcc_sdhci1: regulator-vcc-sdhci1 {
+> > +            compatible = "regulator-fixed";
+> > +
+> > +            regulator-name = "SDHCI1 Vcc";
+> > +            regulator-min-microvolt = <3300000>;
+> > +            regulator-max-microvolt = <3300000>;
+> > +            gpios = <&gpio0 ASPEED_GPIO(V, 2)
+> > +                            GPIO_ACTIVE_HIGH>;
+> > +            enable-active-high;
+> > +    };
+> > +
+> > +    vccq_sdhci1: regulator-vccq-sdhci1 {
+> > +            compatible = "regulator-gpio";
+> > +
+> > +            regulator-name = "SDHCI1 VccQ";
+> > +            regulator-min-microvolt = <1800000>;
+> > +            regulator-max-microvolt = <3300000>;
+> > +            gpios = <&gpio0 ASPEED_GPIO(V, 3)
+> > +                            GPIO_ACTIVE_HIGH>;
+> > +            gpios-states = <1>;
+> > +            states = <3300000 1
+> > +                      1800000 0>;
+> > +    };
+> > +
+> > +    sdc@1e740000 {
+> > +            compatible = "aspeed,ast2600-sd-controller";
+> > +            reg = <0x1e740000 0x100>;
+> > +            #address-cells = <1>;
+> > +            #size-cells = <1>;
+> > +            ranges = <0 0x1e740000 0x20000>;
+> > +            clocks = <&syscon ASPEED_CLK_GATE_SDCLK>;
+> > +
+> > +            sdhci0: sdhci@100 {
+> > +                    compatible = "aspeed,ast2600-sdhci", "sdhci";
+> > +                    reg = <0x100 0x100>;
+> > +                    interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
+> > +                    sdhci,auto-cmd12;
+> > +                    clocks = <&syscon ASPEED_CLK_SDIO>;
+> > +                    vmmc-supply = <&vcc_sdhci0>;
+> > +                    vqmmc-supply = <&vccq_sdhci0>;
+> > +                    sd-uhs-sdr104;
+> > +                    clk-phase-uhs-sdr104 = <180>, <180>;
+> > +            };
+> > +
+> > +            sdhci1: sdhci@200 {
+> > +                    compatible = "aspeed,ast2600-sdhci", "sdhci";
+> > +                    reg = <0x200 0x100>;
+> > +                    interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
+> > +                    sdhci,auto-cmd12;
+> > +                    clocks = <&syscon ASPEED_CLK_SDIO>;
+> > +                    vmmc-supply = <&vcc_sdhci1>;
+> > +                    vqmmc-supply = <&vccq_sdhci1>;
+> > +                    sd-uhs-sdr104;
+> > +                    clk-phase-uhs-sdr104 = <0>, <0>;
+> > +            };
+> > +    };
+> 
+> This is a good example, so can we keep this and just drop the comment 
+> from the binding document?
+
+Ok, I will remove the comment.
+
+> 
+> Cheers,
+> 
+> Andrew
