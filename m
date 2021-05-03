@@ -2,103 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5758237144D
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 13:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C55371454
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 13:34:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233460AbhECLdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 07:33:49 -0400
-Received: from mail-41104.protonmail.ch ([185.70.41.104]:29010 "EHLO
-        mail-41104.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233269AbhECLdr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 07:33:47 -0400
-Received: from mail-02.mail-europe.com (mail-0201.mail-europe.com [51.77.79.158])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        by mail-41104.protonmail.ch (Postfix) with ESMTPS id 4FYgg447ZRz4x77Z
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 11:27:12 +0000 (UTC)
-Authentication-Results: mail-41104.protonmail.ch;
-        dkim=pass (1024-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="BVuu59Gw"
-Date:   Mon, 03 May 2021 11:27:07 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1620041228;
-        bh=wUfkSjCJnewhMEv3u15zjzGQMHZ9P3CYFHvLSQMnJkw=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=BVuu59GwtJgSSJzN+XMCWUq0CxCwFnMgPFzhT9K6UtvFh2nzgZlfbyYI48Q9YQfDM
-         iz42itRXoq/QyubyA+9NDW59wP7wAFSF3ZKN06G2EcxRLCbt/bT5lF43+rrb5B1oSi
-         u+Exg1D/bwZQj0kfA1ldPcOBKAdINncwNXA03hUY=
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-From:   Jari Ruusu <jariruusu@protonmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Kalle Valo <kvalo@codeaurora.org>
-Reply-To: Jari Ruusu <jariruusu@protonmail.com>
-Subject: Re: [PATCH 5.10 1/2] iwlwifi: Fix softirq/hardirq disabling in iwl_pcie_gen2_enqueue_hcmd()
-Message-ID: <bO2GF-6sC-I4NbFif7JoGUpuRpAV-rHEMwtLsKfN9SCsA0lwB1NgEV4OC7Xd5fdoq3UPcZ6-uh2VDSe1Xtovy8ti3k5vmOsiMVTdfTgl0Yw=@protonmail.com>
-In-Reply-To: <YI6HFNNvzuHnv5VU@kroah.com>
-References: <20210430141910.473289618@linuxfoundation.org> <20210430141910.521897363@linuxfoundation.org> <608CFF6A.4BC054A3@users.sourceforge.net> <YI6HFNNvzuHnv5VU@kroah.com>
+        id S233505AbhECLet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 07:34:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52310 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233235AbhECLes (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 07:34:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 826BB610E6;
+        Mon,  3 May 2021 11:33:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620041635;
+        bh=3kEzeSfbSHohcEIhFRR1rGeCpc1QY6vR9EG2U0DxTWA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jmBdJi6x/MIR/9Em/yqUq5rtdm3uttsTZdp7+3sY2gUlc0Rq9SCfK41u1Tq8JMxrN
+         CwOzUwXWLjfb0FSLNrCL3LF2jvrV18QsXNR40aMSU7AUJTf+g3A+BTe+cWm12JeBSZ
+         UfgbNugzGtH5qxrdRin35bb7OxoTtcuckR7mfGd7kIeW/xnRkaNSkZkqQBy8/0Qukd
+         zcGe7rlRN05fXskj5iuw4aQrGDaixha1BGZL12tfUMFvOBGRcEYE5OYkqYqKTLq+ji
+         qiDPvrMoHXdUtgp5VoDw3W2rCf6CkYSXKNFXRgpyESwvZ+3mNFKjfmVsPfs/wWZ4iA
+         Yp56al/1GlD4A==
+Date:   Mon, 3 May 2021 14:33:43 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Steven Price <steven.price@arm.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Aili Yao <yaoaili@kingsoft.com>, Jiri Bohac <jbohac@suse.cz>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-hyperv@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 7/7] fs/proc/kcore: use page_offline_(freeze|unfreeze)
+Message-ID: <YI/fl9VHvjYJdwKF@kernel.org>
+References: <20210429122519.15183-1-david@redhat.com>
+ <20210429122519.15183-8-david@redhat.com>
+ <YI5H4yV/c6ReuIDt@kernel.org>
+ <5a5a7552-4f0a-75bc-582f-73d24afcf57b@redhat.com>
+ <YI/CWg6PrMxcCT2D@kernel.org>
+ <2f66cbfc-aa29-b3ef-4c6a-0da8b29b56f6@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2f66cbfc-aa29-b3ef-4c6a-0da8b29b56f6@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sunday, May 2, 2021 2:03 PM, Greg Kroah-Hartman <gregkh@linuxfoundation.=
-org> wrote:
-> If you could provide backported patches to those kernels you think this
-> is needed to, I can take them directly. Otherwise running sed isn't
-> always the easiest thing to do on my end :)
+On Mon, May 03, 2021 at 12:13:45PM +0200, David Hildenbrand wrote:
+> On 03.05.21 11:28, Mike Rapoport wrote:
+> > On Mon, May 03, 2021 at 10:28:36AM +0200, David Hildenbrand wrote:
+> > > On 02.05.21 08:34, Mike Rapoport wrote:
+> > > > On Thu, Apr 29, 2021 at 02:25:19PM +0200, David Hildenbrand wrote:
+> > > > > Let's properly synchronize with drivers that set PageOffline(). Unfreeze
+> > > > > every now and then, so drivers that want to set PageOffline() can make
+> > > > > progress.
+> > > > > 
+> > > > > Signed-off-by: David Hildenbrand <david@redhat.com>
+> > > > > ---
+> > > > >    fs/proc/kcore.c | 15 +++++++++++++++
+> > > > >    1 file changed, 15 insertions(+)
+> > > > > 
+> > > > > diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
+> > > > > index 92ff1e4436cb..3d7531f47389 100644
+> > > > > --- a/fs/proc/kcore.c
+> > > > > +++ b/fs/proc/kcore.c
+> > > > > @@ -311,6 +311,7 @@ static void append_kcore_note(char *notes, size_t *i, const char *name,
+> > > > >    static ssize_t
+> > > > >    read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
+> > > > >    {
+> > > > > +	size_t page_offline_frozen = 0;
+> > > > >    	char *buf = file->private_data;
+> > > > >    	size_t phdrs_offset, notes_offset, data_offset;
+> > > > >    	size_t phdrs_len, notes_len;
+> > > > > @@ -509,6 +510,18 @@ read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
+> > > > >    			pfn = __pa(start) >> PAGE_SHIFT;
+> > > > >    			page = pfn_to_online_page(pfn);
+> > > > 
+> > > > Can't this race with page offlining for the first time we get here?
+> > > 
+> > > 
+> > > To clarify, we have three types of offline pages in the kernel ...
+> > > 
+> > > a) Pages part of an offline memory section; the memap is stale and not
+> > > trustworthy. pfn_to_online_page() checks that. We *can* protect against
+> > > memory offlining using get_online_mems()/put_online_mems(), but usually
+> > > avoid doing so as the race window is very small (and a problem all over the
+> > > kernel we basically never hit) and locking is rather expensive. In the
+> > > future, we might switch to rcu to handle that more efficiently and avoiding
+> > > these possible races.
+> > > 
+> > > b) PageOffline(): logically offline pages contained in an online memory
+> > > section with a sane memmap. virtio-mem calls these pages "fake offline";
+> > > something like a "temporary" memory hole. The new mechanism I propose will
+> > > be used to handle synchronization as races can be more severe, e.g., when
+> > > reading actual page content here.
+> > > 
+> > > c) Soft offline pages: hwpoisoned pages that are not actually harmful yet,
+> > > but could become harmful in the future. So we better try to remove the page
+> > > from the page allcoator and try to migrate away existing users.
+> > > 
+> > > 
+> > > So page_offline_* handle "b) PageOffline()" only. There is a tiny race
+> > > between pfn_to_online_page(pfn) and looking at the memmap as we have in many
+> > > cases already throughout the kernel, to be tackled in the future.
+> > 
+> > Right, but here you anyway add locking, so why exclude the first iteration?
+> 
+> What we're protecting is PageOffline() below. If I didn't mess up, we should
+> always be calling page_offline_freeze() before calling PageOffline(). Or am
+> I missing something?
+ 
+Somehow I was under impression we are protecting both pfn_to_online_page()
+and PageOffline().
+ 
+> > BTW, did you consider something like
+> 
+> Yes, I played with something like that. We'd have to handle the first
+> page_offline_freeze() freeze differently, though, and that's where things
+> got a bit ugly in my attempts.
+> 
+> > 
+> > 	if (page_offline_frozen++ % MAX_ORDER_NR_PAGES == 0) {
+> > 		page_offline_unfreeze();
+> > 		cond_resched();
+> > 		page_offline_freeze();
+> > 	}
+> > 
+> > We don't seem to care about page_offline_frozen overflows here, do we?
+> 
+> No, the buffer size is also size_t and gets incremented on a per-byte basis.
+> The variant I have right now looked the cleanest to me. Happy to hear
+> simpler alternatives.
 
-iwlwifi: Fix softirq/hardirq disabling in iwl_pcie_enqueue_hcmd()
-upstream commit 2800aadc18a64c96b051bcb7da8a7df7d505db3f,
-backport for linux-4.4.y (compile tested only)
-Signed-off-by: Jari Ruusu <jariruusu@protonmail.com>
+Well, locking for the first time before the while() loop and doing
+resched-relock outside switch() would be definitely nicer, and it makes the
+last unlock unconditional.
 
---- a/drivers/net/wireless/iwlwifi/pcie/tx.c
-+++ b/drivers/net/wireless/iwlwifi/pcie/tx.c
-@@ -1341,6 +1341,7 @@ static int iwl_pcie_enqueue_hcmd(struct iwl_trans *tr=
-ans,
- =09u32 cmd_pos;
- =09const u8 *cmddata[IWL_MAX_CMD_TBS_PER_TFD];
- =09u16 cmdlen[IWL_MAX_CMD_TBS_PER_TFD];
-+=09unsigned long flags2;
+The cost of prevention of memory offline during reads of !KCORE_RAM parts
+does not seem that significant to me, but I may be missing something.
 
- =09if (WARN(!trans_pcie->wide_cmd_header &&
- =09=09 group_id > IWL_ALWAYS_LONG_GROUP,
-@@ -1423,10 +1424,10 @@ static int iwl_pcie_enqueue_hcmd(struct iwl_trans *=
-trans,
- =09=09goto free_dup_buf;
- =09}
-
--=09spin_lock_bh(&txq->lock);
-+=09spin_lock_irqsave(&txq->lock, flags2);
-
- =09if (iwl_queue_space(q) < ((cmd->flags & CMD_ASYNC) ? 2 : 1)) {
--=09=09spin_unlock_bh(&txq->lock);
-+=09=09spin_unlock_irqrestore(&txq->lock, flags2);
-
- =09=09IWL_ERR(trans, "No space in command queue\n");
- =09=09iwl_op_mode_cmd_queue_full(trans->op_mode);
-@@ -1588,7 +1589,7 @@ static int iwl_pcie_enqueue_hcmd(struct iwl_trans *tr=
-ans,
- =09spin_unlock_irqrestore(&trans_pcie->reg_lock, flags);
-
-  out:
--=09spin_unlock_bh(&txq->lock);
-+=09spin_unlock_irqrestore(&txq->lock, flags2);
-  free_dup_buf:
- =09if (idx < 0)
- =09=09kfree(dup_buf);
-
---
-Jari Ruusu=C2=A0 4096R/8132F189 12D6 4C3A DCDA 0AA4 27BD=C2=A0 ACDF F073 3C=
-80 8132 F189
-
+-- 
+Sincerely yours,
+Mike.
