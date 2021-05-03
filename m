@@ -2,118 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91FEC37194F
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D86371956
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231299AbhECQdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 12:33:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34656 "EHLO mail.kernel.org"
+        id S231322AbhECQgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 12:36:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231182AbhECQdn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 12:33:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1860E611AE;
-        Mon,  3 May 2021 16:32:50 +0000 (UTC)
+        id S231250AbhECQgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 12:36:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1315460D07;
+        Mon,  3 May 2021 16:35:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620059570;
-        bh=QTzchORJulSOFGHbgrOpsW5Aa1pjTXf6cVwUx0HhGCc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=cycEVgaTuT5m9GKQhAXj9weAF+yCZArQ+fKu7Lxpj2J3h5H5P33oFomgUpVkec73A
-         JsS9Jp8ipgvdxzDoaK/nr+OxPEWxdIzZoxSyQC2Oy2xOZhmYLyAjP35VdsBbx+XUEj
-         z2WEcj6AIS7g23Ch2dQwuQTXjxuWdyr4+axfE5SU4IuNTt9Enl8Ebw7Bc/WXPX4KYu
-         ZXjNQwBuZDVfatcr7TcAx0YeoMuhTF5L4594TUvK6RReIbxqgS+1y0YP4186VK2NzG
-         KrBrYP7qYeAsiW7bVkaGUme6ltb62OvrMRMd4lIVvC90KmW/aposID3vHouVdo3Rh1
-         /1a4BdDxzLTuQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A8B185C034B; Mon,  3 May 2021 09:32:49 -0700 (PDT)
-Date:   Mon, 3 May 2021 09:32:49 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Michel Lespinasse <michel@lespinasse.org>
-Cc:     Andy Lutomirski <luto@kernel.org>, Linux-MM <linux-mm@kvack.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Rik van Riel <riel@surriel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Rom Lemarchand <romlem@google.com>,
-        Linux-Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 13/37] mm: implement speculative handling in
- __handle_mm_fault().
-Message-ID: <20210503163249.GW975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <eee7431c-3dc8-ca3c-02fb-9e059d30e951@kernel.org>
- <20210428145823.GA856@lespinasse.org>
- <CALCETrVRGtVqv9cMSryfg5q3iZ9s3jBey20cY4K23YLRhQRzbQ@mail.gmail.com>
- <20210428161108.GP975577@paulmck-ThinkPad-P17-Gen-1>
- <20210429000225.GC10973@lespinasse.org>
- <20210429155250.GV975577@paulmck-ThinkPad-P17-Gen-1>
- <20210429183412.GA278623@paulmck-ThinkPad-P17-Gen-1>
- <20210429211758.GE10973@lespinasse.org>
- <20210503034049.GQ975577@paulmck-ThinkPad-P17-Gen-1>
- <20210503043430.GA16059@lespinasse.org>
+        s=k20201202; t=1620059715;
+        bh=GECd6ZWGOLxXk6I6RpW1NsCGUbeOBhdBjmOBiu+231s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=j3HH7rCXdNfJZc0UqsTLD8wc6PsH4zGSpG7ve+/6DfFFJgDDIGz4fC8NVGH1ja1UU
+         sSMJwXmiHG1I8UCGUoC/Or/i818WaDb02bjVm3zJuwTW6pG4K1wBLs5RW9btPHlZWw
+         aGFvN9r6cKVPznvrflH9aVTemHodt90ia94ClcTNiaz2qh1TRmEE+41B6NgbY/Hbkk
+         vFSTcacog0LGbjlU8R85voqqAQv76siEMZ4KCuTly8Q58YJnblGuPt0RbxADnSQQFU
+         Rk0bckGWQxMgZzIOGqJEuAvD/bU9C29shOyg/oXu8ZX9CBJ+zwtDetJJ6Q2MmBjciK
+         iuYpzyL+isdSw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Jared Baldridge <jrb@expunge.us>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.12 001/134] drm: Added orientation quirk for OneGX1 Pro
+Date:   Mon,  3 May 2021 12:33:00 -0400
+Message-Id: <20210503163513.2851510-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210503043430.GA16059@lespinasse.org>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 02, 2021 at 09:34:30PM -0700, Michel Lespinasse wrote:
-> On Sun, May 02, 2021 at 08:40:49PM -0700, Paul E. McKenney wrote:
-> > @@ -634,6 +644,12 @@ do {									      \
-> >   * sections, invocation of the corresponding RCU callback is deferred
-> >   * until after the all the other CPUs exit their critical sections.
-> >   *
-> > + * In recent kernels, synchronize_rcu() and call_rcu() also wait for
-> > + * regions of code with preemption disabled, including regions of code
-> > + * with interrupts or softirqs disabled.  If your kernel is old enough
-> > + * for synchronize_sched() to be defined, only code enclosed within
-> > + * rcu_read_lock() and rcu_read_unlock() are guaranteed to be waited for.
-> > + *
-> >   * Note, however, that RCU callbacks are permitted to run concurrently
-> >   * with new RCU read-side critical sections.  One way that this can happen
-> >   * is via the following sequence of events: (1) CPU 0 enters an RCU
-> 
-> You still have "old enough" / "recent kernels" here. But maybe it's OK
-> given that you added relevant version numbers elsewhere.
-> 
-> Everything else looks great to me.
+From: Jared Baldridge <jrb@expunge.us>
 
-Good point!  Like this?
+[ Upstream commit 81ad7f9f78e4ff80e95be8282423f511b84f1166 ]
 
-							Thanx, Paul
+The OneGX1 Pro has a fairly unique combination of generic strings,
+but we additionally match on the BIOS date just to be safe.
 
-------------------------------------------------------------------------
+Signed-off-by: Jared Baldridge <jrb@expunge.us>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/41288ccb-1012-486b-81c1-a24c31850c91@www.fastmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/gpu/drm/drm_panel_orientation_quirks.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-commit fd8393a2a8a5ffd25d0766abb262137c36bda9f3
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Mon May 3 09:32:14 2021 -0700
+diff --git a/drivers/gpu/drm/drm_panel_orientation_quirks.c b/drivers/gpu/drm/drm_panel_orientation_quirks.c
+index 58f5dc2f6dd5..f6bdec7fa925 100644
+--- a/drivers/gpu/drm/drm_panel_orientation_quirks.c
++++ b/drivers/gpu/drm/drm_panel_orientation_quirks.c
+@@ -84,6 +84,13 @@ static const struct drm_dmi_panel_orientation_data itworks_tw891 = {
+ 	.orientation = DRM_MODE_PANEL_ORIENTATION_RIGHT_UP,
+ };
+ 
++static const struct drm_dmi_panel_orientation_data onegx1_pro = {
++	.width = 1200,
++	.height = 1920,
++	.bios_dates = (const char * const []){ "12/17/2020", NULL },
++	.orientation = DRM_MODE_PANEL_ORIENTATION_RIGHT_UP,
++};
++
+ static const struct drm_dmi_panel_orientation_data lcd720x1280_rightside_up = {
+ 	.width = 720,
+ 	.height = 1280,
+@@ -211,6 +218,13 @@ static const struct dmi_system_id orientation_data[] = {
+ 		  DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "Lenovo ideapad D330-10IGM"),
+ 		},
+ 		.driver_data = (void *)&lcd1200x1920_rightside_up,
++	}, {	/* OneGX1 Pro */
++		.matches = {
++		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "SYSTEM_MANUFACTURER"),
++		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "SYSTEM_PRODUCT_NAME"),
++		  DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "Default string"),
++		},
++		.driver_data = (void *)&onegx1_pro,
+ 	}, {	/* VIOS LTH17 */
+ 		.matches = {
+ 		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "VIOS"),
+-- 
+2.30.2
 
-    fixup! rcu: Improve comments describing RCU read-side critical sections
-    
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 901ab6fa252b..323954363389 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -644,11 +644,11 @@ do {									      \
-  * sections, invocation of the corresponding RCU callback is deferred
-  * until after the all the other CPUs exit their critical sections.
-  *
-- * In recent kernels, synchronize_rcu() and call_rcu() also wait for
-- * regions of code with preemption disabled, including regions of code
-- * with interrupts or softirqs disabled.  If your kernel is old enough
-- * for synchronize_sched() to be defined, only code enclosed within
-- * rcu_read_lock() and rcu_read_unlock() are guaranteed to be waited for.
-+ * In v5.0 and later kernels, synchronize_rcu() and call_rcu() also
-+ * wait for regions of code with preemption disabled, including regions of
-+ * code with interrupts or softirqs disabled.  In pre-v5.0 kernels, which
-+ * define synchronize_sched(), only code enclosed within rcu_read_lock()
-+ * and rcu_read_unlock() are guaranteed to be waited for.
-  *
-  * Note, however, that RCU callbacks are permitted to run concurrently
-  * with new RCU read-side critical sections.  One way that this can happen
