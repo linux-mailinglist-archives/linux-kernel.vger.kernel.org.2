@@ -2,164 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E1F372129
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 22:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5640B37212D
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 22:15:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229602AbhECUQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 16:16:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22441 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229497AbhECUQK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 16:16:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620072915;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nqgS52YwzVDVjfWlq3e547UMU0Zz7FIEHtvfbJqFZ2w=;
-        b=WTbIqySH2Rk2Il6xqti2JkZKxvQhSwdDKyRIYiAXLPaPRvZoFaSnYVeXFQONnw11JUs+a0
-        qcr67AEUwrUwGJmcKK97woxFLJUqJaYiOJtNpLMPrPgQ7Q/djL9sWJyNxxzDX0lAFNk41E
-        6ypCUlOwfNBAwsQxCxTG2UKNZDMKZMw=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-462-2WxHX_9cM_y4sE8nSnmnew-1; Mon, 03 May 2021 16:15:14 -0400
-X-MC-Unique: 2WxHX_9cM_y4sE8nSnmnew-1
-Received: by mail-qv1-f72.google.com with SMTP id p20-20020a0ce1940000b02901be3272e620so5860546qvl.10
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 13:15:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=nqgS52YwzVDVjfWlq3e547UMU0Zz7FIEHtvfbJqFZ2w=;
-        b=pwBSmRYJEy+gSu60WvetyUtorC1B44tWjQmNKSCiCiPIKUUb8ncAAvZhyZ5xpA6DlQ
-         6wY1Z6qSYZO6WSGsGFRZQG/SQfdo+ang/7gJiEoG1PvdvghArRx1bvqSz4Q+X44ASdiz
-         OnKcBKj90Ox19JvtODHgdEaFJRhau9WVNyRhbiYw7t1Sgfyeb8DfRtIKULx+ZOEtAxOh
-         jbn6F2Zks6wN5L5SfSHFgtI+bpCJxGhhufFJN46XGP/Gr8Ti1GN1FqIj+R5uAL/pcOq1
-         Uy48v0BMHOJGPmLkj3K56VbOV9UwEgK4JwbTW9pEDU23X6+ArlBi9Mt3kA4VoQH6uRa7
-         ttPA==
-X-Gm-Message-State: AOAM5321Yk6OlkpJ63ymYw9989FVNV9B0DiUiaAjJzwIZlP1oABL9Bqi
-        7mmj8LkKg3fF7lWDuL4mG8BEs8EQrKE9RsW/VFFruttIhoplUr5zJvzGK8a7LKHckS4R33aw92H
-        mcn9FcHYCRYHtsJWpgEOjL75z
-X-Received: by 2002:a0c:fec8:: with SMTP id z8mr22048362qvs.58.1620072914063;
-        Mon, 03 May 2021 13:15:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwAkI+kIi2aTR1+TiicexVGxSlGuAs9crPbcBlMV9//3cmTaLpe4A/7vMgqgyaYArxfQOS0uQ==
-X-Received: by 2002:a0c:fec8:: with SMTP id z8mr22048327qvs.58.1620072913834;
-        Mon, 03 May 2021 13:15:13 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id g5sm1010653qtm.2.2021.05.03.13.15.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 13:15:12 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH 2/2] mm: memcg/slab: Don't create unfreeable slab
-To:     Shakeel Butt <shakeelb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Cc:     Waiman Long <llong@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <guro@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
-References: <20210502180755.445-1-longman@redhat.com>
- <20210502180755.445-2-longman@redhat.com>
- <699e5ac8-9044-d664-f73f-778fe72fd09b@suse.cz>
- <4c90cf79-9c61-8964-a6fd-2da087893339@redhat.com>
- <d767ff72-711d-976c-d897-9cea0375c827@suse.cz>
- <CALvZod4aW0P2a5ZG4JO4YH2oQ8a1kM9_Tsjz-tAGP_-9hLyOpw@mail.gmail.com>
- <fc59cce6-71af-890e-030c-46357e0f0343@redhat.com>
-Message-ID: <59afa489-3db5-3881-92a4-59b5ee82fc1b@redhat.com>
-Date:   Mon, 3 May 2021 16:15:11 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S229645AbhECUQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 16:16:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51282 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229609AbhECUQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 16:16:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB49B613B4
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 20:15:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620072934;
+        bh=mP8Y7U43gy2c5RTnca0Wv9xuHE58Zvi51r0OQS2/7/0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=avmp6FZKS+si9oRkKl/vvk04008WSnuDrPtqS7fFY/Hp8cT8mscn2JfnY3/rouno9
+         L2kFyCLcQBNKS1kh9nd21PFuC/kXyZ1uge1wbqyA+kjEUEZgnJx0npPm2zmndMdEBV
+         thrzn0YPQN230jDVfJO5a/dCWaX6hNfFBZtBWTFT2jwuNRuE/cR0jY4ejH8o8+8v+q
+         ryi9dmvInZ8ApsJPlGyRpQkRupK9Tout99v327RXZdc9wDmOMmUdWT47KuG/SCbVf3
+         bFJ++wBbJBodw5HLVoHRk76GrcBd1c9/fTUH4dAbFkRXdVO7H/Ygus1agH1tQ1GJYU
+         4MWYFbtvYBCbg==
+Received: by mail-ej1-f42.google.com with SMTP id t4so9815784ejo.0
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 13:15:34 -0700 (PDT)
+X-Gm-Message-State: AOAM533B+bL5TODKlSYPBLdzyCAXAk1dVqqio1sUYVcWAfMkBfjnq1dM
+        C73RJUaWWRLmf/8QmGciGxOotUMPQrZkSUNzvxD2uA==
+X-Google-Smtp-Source: ABdhPJwTbJtDY0RHqWqeld85iOGmfh83pTkW4GCjicAzfALmyEJlLm4Qk+00oeYg5eGOVDJ7ECshMvfzpVC1wxFikww=
+X-Received: by 2002:a17:906:ccc9:: with SMTP id ot9mr5555145ejb.253.1620072933403;
+ Mon, 03 May 2021 13:15:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <fc59cce6-71af-890e-030c-46357e0f0343@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <8735v3ex3h.ffs@nanos.tec.linutronix.de> <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
+ <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
+In-Reply-To: <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 3 May 2021 13:15:21 -0700
+X-Gmail-Original-Message-ID: <CALCETrV9bCenqzzaW6Ra18tCvNP-my09decTjmLDVZZAQxR6VA@mail.gmail.com>
+Message-ID: <CALCETrV9bCenqzzaW6Ra18tCvNP-my09decTjmLDVZZAQxR6VA@mail.gmail.com>
+Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
+ registers for io_threads
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Stefan Metzmacher <metze@samba.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/3/21 1:21 PM, Waiman Long wrote:
-> On 5/3/21 12:24 PM, Shakeel Butt wrote:
->> On Mon, May 3, 2021 at 8:32 AM Vlastimil Babka <vbabka@suse.cz> wrote:
->>> On 5/3/21 4:20 PM, Waiman Long wrote:
->>>> On 5/3/21 8:22 AM, Vlastimil Babka wrote:
->>>>> On 5/2/21 8:07 PM, Waiman Long wrote:
->>>>>> The obj_cgroup array (memcg_data) embedded in the page structure is
->>>>>> allocated at the first instance an accounted memory allocation 
->>>>>> happens.
->>>>>> With the right size object, it is possible that the allocated 
->>>>>> obj_cgroup
->>>>>> array comes from the same slab that requires memory accounting. 
->>>>>> If this
->>>>>> happens, the slab will never become empty again as there is at 
->>>>>> least one
->>>>>> object left (the obj_cgroup array) in the slab.
->>>>>>
->>>>>> With instructmentation code added to detect this situation, I got 76
->>>>>> hits on the kmalloc-192 slab when booting up a test kernel on a VM.
->>>>>> So this can really happen.
->>>>>>
->>>>>> To avoid the creation of these unfreeable slabs, a check is added to
->>>>>> memcg_alloc_page_obj_cgroups() to detect that and double the size
->>>>>> of the array in case it happens to make sure that it comes from a
->>>>>> different kmemcache.
->>>>>>
->>>>>> This change, however, does not completely eliminate the presence
->>>>>> of unfreeable slabs which can still happen if a circular obj_cgroup
->>>>>> array dependency is formed.
->>>>> Hm this looks like only a half fix then.
->>>>> I'm afraid the proper fix is for kmemcg to create own set of 
->>>>> caches for the
->>>>> arrays. It would also solve the recursive kfree() issue.
->>>> Right, this is a possible solution. However, the objcg pointers 
->>>> array should
->>>> need that much memory. Creating its own set of kmemcaches may seem 
->>>> like an
->>>> overkill.
->>> Well if we go that way, there might be additional benefits:
->>>
->>> depending of gfp flags, kmalloc() would allocate from:
->>>
->>> kmalloc-* caches that never have kmemcg objects, thus can be used 
->>> for the objcg
->>> pointer arrays
->>> kmalloc-cg-* caches that have only kmemcg unreclaimable objects
->>> kmalloc-rcl-* and dma-kmalloc-* can stay with on-demand
->>> memcg_alloc_page_obj_cgroups()
->>>
->>> This way we fully solve the issues that this patchset solves. In 
->>> addition we get
->>> better separation between kmemcg and !kmemcg thus save memory - no 
->>> allocation of
->>> the array as soon as a single object appears in slab. For 
->>> "kmalloc-8" we now
->>> have 8 bytes for the useful data and 8 bytes for the obj_cgroup  
->>> pointer.
->>>
->> Yes this seems like a better approach.
->>
-> OK, I will try to go this route then if there is no objection from 
-> others.
+On Mon, May 3, 2021 at 12:15 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> So generally, the IO threads are now 100% normal threads - it's
+> literally just that they never return to user space because they are
+> always just doing the IO offload on the kernel side.
 >
-> From slabinfo, the objs/slab numbers range from 4-512. That means we 
-> need kmalloc-cg-{32,64,128,256,512,1k,2k,4k}. A init function to set 
-> up the new kmemcaches and an allocation function that use the proper 
-> kmemcaches to allocate from. 
+> That part is lovely, but part of the "100% IO threads" really is that
+> they share the signal struct too, which in turn means that they very
+> much show up as normal threads. Again, not a problem: they really
+> _are_ normal threads for all intents and purposes.
 
-I think I had misinterpreted the kmalloc-* setup. In this case, the 
-kmalloc-cg-* should have the same set of sizes as kmalloc-*.
+I'm a bit confused, though.  All the ptrace register access (AFAICS)
+goes through ptrace_check_attach(), which should wait until the tracee
+is stopped.  Does the io_uring thread now stop in response to ptrace
+stop requests?
 
-Cheers,
-Longman
+>
+> But then that (b) issue means that gdb gets confused by them. I
+> personally think that's just a pure gdb mis-feature, but I also think
+> that "hey, if we just make the register state look like the main
+> thread, and unconfuse gdb that way, problem solved".
+>
+> So I'd actually rather not make these non-special threads any more
+> special at all. And I strongly suspect that making ptrace() not work
+> on them will just confuse gdb even more - so it would make them just
+> unnecessarily special in the kernel, for no actual gain.
+>
+> Is the right thing to do to fix gdb to not look at irrelevant thread B
+> when deciding whether thread A is 64-bit or not? Yeah, that seems like
+> obviously the RightThing(tm) to me.
+>
+> But at the same time, this is arguably about "regression", although at
+> the same time it's "gdb doesn't understand new user programs that use
+> new features, film at 11", so I think that argument is partly bogus
+> too.
+>
 
+Fair enough.  But I would really, really rather that gdb starts fixing
+its amazingly broken assumptions about bitness.
+
+> So my personal preference would be:
+>
+>  - make those threads look even more like user threads, even if that
+> means giving them pointless user segment data that the threads
+> themselves will never use
+>
+>    So I think Stefan's patch is reasonable, if not pretty. Literally
+> becasue of that "make these threads look even more normal"
+
+I think it's reasonable except for the bit about copying the segment
+regs.  Can we hardcode __USER_CS, etc, and, when gdb crashes or
+otherwise malfunctions for compat programs, we can say that gdb needs
+to stop sucking.  In general, I think that piling a bitness hack in
+here is a mess, and we're going to have to carry it forward forever
+once we do it.
+
+Meanwhile, I am going to put my foot down about one thing: NAK to this
+patch until it comes with a selftest.  That selftest needs to test the
+cs behavior, but it also needs to read the FPU state from an io_uring
+thread, write some FPU state to that thread, and read it back.  And it
+needs to not OOPS.  Not breaking ABI is nice and all, but even more
+important is not breaking the kernel.
+
+--Andy
