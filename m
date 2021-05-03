@@ -2,54 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 585C63711D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 09:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F3E3711E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 09:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232911AbhECHFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 03:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbhECHFt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 03:05:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4801CC06174A;
-        Mon,  3 May 2021 00:04:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wRCjCKxHpNInqPMfFUoxJStHDaHWfqQnS0cpIhupj4o=; b=LXItw8fbBGQw3nwnSjP6NaQbRD
-        2qonOhNEDdrs1ALLgc9YK1sVx9LvXe5DQtcO6W+njkmcYKY4LJP7AVNGpJVTP1Hxgagvr6GDlctVf
-        Jh4RUPWwcPEqlvQJ4HHf2bHRxTLHkvN8JB0hu+seWnSsn22/mtI1XCC3CZSKHWwYcgU2aGmAp85Pj
-        WDLK2INZtuxrB/c76uGFTJzLY12Z5p7euJQ+fc8bB2MEKI+IYoukJuDzdj1RH2Eft8R+5K4ugxpR5
-        NYdzLAmjRHn157pV+CpnoL9jOmXotJAZXyHfgJXn3OsvCSN+jbQEPZqv0cCw1ZdMMzd9gfbziATAL
-        hVUkmeHw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1ldSd5-00Elo6-AC; Mon, 03 May 2021 07:04:36 +0000
-Date:   Mon, 3 May 2021 08:04:31 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Enzo Matsumiya <ematsumiya@suse.de>
-Cc:     linux-leds@vger.kernel.org, linux-block@vger.kernel.org,
-        u.kleine-koenig@pengutronix.de, Jens Axboe <axboe@kernel.dk>,
-        Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/2] block: export block_class and disk_type symbols
-Message-ID: <20210503070431.GA3520077@infradead.org>
-References: <20210430183216.27458-1-ematsumiya@suse.de>
- <20210430183216.27458-2-ematsumiya@suse.de>
+        id S232752AbhECHNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 03:13:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54950 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229817AbhECHNG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 03:13:06 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6DF41AFF0;
+        Mon,  3 May 2021 07:12:12 +0000 (UTC)
+Date:   Mon, 3 May 2021 09:12:04 +0200
+From:   Mian Yousaf Kaukab <ykaukab@suse.de>
+To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com
+Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        biwen.li@nxp.com
+Subject: Re: [PATCH v2] rtc: pcf2127: handle timestamp interrupts
+Message-ID: <20210503071204.GA31309@suse.de>
+References: <20210430091852.16444-1-ykaukab@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210430183216.27458-2-ematsumiya@suse.de>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210430091852.16444-1-ykaukab@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 03:32:10PM -0300, Enzo Matsumiya wrote:
-> Export symbols to be used by _for_each_blk() helper in LED block
-> trigger.
+On Fri, Apr 30, 2021 at 11:18:52AM +0200, Mian Yousaf Kaukab wrote:
+> commit 03623b4b041c ("rtc: pcf2127: add tamper detection support")
+> added support for timestamp interrupts. However they are not being
+> handled in the irq handler. If a timestamp interrupt occurs it
+> results in kernel disabling the interrupt and displaying the call
+> trace:
+> 
+> [  121.145580] irq 78: nobody cared (try booting with the "irqpoll" option)
+> ...
+> [  121.238087] [<00000000c4d69393>] irq_default_primary_handler threaded [<000000000a90d25b>] pcf2127_rtc_irq [rtc_pcf2127]
+> [  121.248971] Disabling IRQ #78
+> 
+> Handle timestamp interrupts in pcf2127_rtc_irq(). Set a flag to mark
+> the timestamp as valid and only report to sysfs if the flag is set.
+> 
+> Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
+> ---
+> history:
+> v2: -Add a flag to mark the occurrence of timestamp interrupt
+>     -Add Biwen Li in Cc
+> 
+>  drivers/rtc/rtc-pcf2127.c | 53 +++++++++++++++++++++------------------
+>  1 file changed, 28 insertions(+), 25 deletions(-)
+> 
+> diff --git a/drivers/rtc/rtc-pcf2127.c b/drivers/rtc/rtc-pcf2127.c
+> index d13c20a2adf7..0e2333ea1243 100644
+> --- a/drivers/rtc/rtc-pcf2127.c
+> +++ b/drivers/rtc/rtc-pcf2127.c
+> @@ -94,10 +94,18 @@
+>  #define PCF2127_WD_VAL_MAX		255
+>  #define PCF2127_WD_VAL_DEFAULT		60
+>  
+> +/* Mask for currently enabled interrupts */
+> +#define PCF2127_CTRL1_IRQ_MASK (PCF2127_BIT_CTRL1_TSF1)
+> +#define PCF2127_CTRL2_IRQ_MASK ( \
+> +		PCF2127_BIT_CTRL2_AF | \
+> +		PCF2127_BIT_CTRL2_WDTF | \
+> +		PCF2127_BIT_CTRL2_TSF2)
+> +
+>  struct pcf2127 {
+>  	struct rtc_device *rtc;
+>  	struct watchdog_device wdd;
+>  	struct regmap *regmap;
+> +	bool timestamp_valid;
+>  };
+>  
+>  /*
+> @@ -437,20 +445,33 @@ static int pcf2127_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alrm)
+>  static irqreturn_t pcf2127_rtc_irq(int irq, void *dev)
+>  {
+>  	struct pcf2127 *pcf2127 = dev_get_drvdata(dev);
+> -	unsigned int ctrl2 = 0;
+> +	unsigned int ctrl1, ctrl2;
+>  	int ret = 0;
+>  
+> +	ret = regmap_read(pcf2127->regmap, PCF2127_REG_CTRL1, &ctrl1);
+> +	if (ret)
+> +		return IRQ_NONE;
+> +
+>  	ret = regmap_read(pcf2127->regmap, PCF2127_REG_CTRL2, &ctrl2);
+>  	if (ret)
+>  		return IRQ_NONE;
+>  
+> -	if (!(ctrl2 & PCF2127_BIT_CTRL2_AF))
+> +	if (!(ctrl1 & PCF2127_CTRL1_IRQ_MASK || ctrl2 & PCF2127_CTRL2_IRQ_MASK))
+>  		return IRQ_NONE;
+>  
+> -	regmap_write(pcf2127->regmap, PCF2127_REG_CTRL2,
+> -		     ctrl2 & ~(PCF2127_BIT_CTRL2_AF | PCF2127_BIT_CTRL2_WDTF));
+> +	if (ctrl1 & PCF2127_CTRL1_IRQ_MASK)
+> +		regmap_write(pcf2127->regmap, PCF2127_REG_CTRL1,
+> +			ctrl1 & ~PCF2127_CTRL1_IRQ_MASK);
+> +
+> +	if (ctrl2 & PCF2127_CTRL2_IRQ_MASK)
+> +		regmap_write(pcf2127->regmap, PCF2127_REG_CTRL2,
+> +			ctrl2 & ~PCF2127_CTRL2_IRQ_MASK);
+>  
+> -	rtc_update_irq(pcf2127->rtc, 1, RTC_IRQF | RTC_AF);
+> +	if (ctrl1 & PCF2127_BIT_CTRL1_TSF1 || ctrl2 & PCF2127_BIT_CTRL2_TSF2)
+> +		pcf2127->timestamp_valid = true;
+> +
+> +	if (ctrl2 & PCF2127_BIT_CTRL2_AF)
+> +		rtc_update_irq(pcf2127->rtc, 1, RTC_IRQF | RTC_AF);
+>  
+>  	pcf2127_wdt_active_ping(&pcf2127->wdd);
+>  
+> @@ -473,25 +494,8 @@ static ssize_t timestamp0_store(struct device *dev,
+>  				const char *buf, size_t count)
+>  {
+>  	struct pcf2127 *pcf2127 = dev_get_drvdata(dev->parent);
+> -	int ret;
+>  
+> -	ret = regmap_update_bits(pcf2127->regmap, PCF2127_REG_CTRL1,
+> -				 PCF2127_BIT_CTRL1_TSF1, 0);
+> -	if (ret) {
+> -		dev_err(dev, "%s: update ctrl1 ret=%d\n", __func__, ret);
+> -		return ret;
+> -	}
+> -
+> -	ret = regmap_update_bits(pcf2127->regmap, PCF2127_REG_CTRL2,
+> -				 PCF2127_BIT_CTRL2_TSF2, 0);
+> -	if (ret) {
+> -		dev_err(dev, "%s: update ctrl2 ret=%d\n", __func__, ret);
+> -		return ret;
+> -	}
+> -
+> -	ret = pcf2127_wdt_active_ping(&pcf2127->wdd);
+This call was removed by mistake. v3 already sent to restore it.
 
-No way.
+> -	if (ret)
+> -		return ret;
+> +	pcf2127->timestamp_valid = false;
+>  
+>  	return count;
+>  };
+> @@ -524,8 +528,7 @@ static ssize_t timestamp0_show(struct device *dev,
+>  	if (ret)
+>  		return ret;
+>  
+> -	if (!(data[PCF2127_REG_CTRL1] & PCF2127_BIT_CTRL1_TSF1) &&
+> -	    !(data[PCF2127_REG_CTRL2] & PCF2127_BIT_CTRL2_TSF2))
+> +	if (!pcf2127->timestamp_valid)
+>  		return 0;
+>  
+>  	tm.tm_sec = bcd2bin(data[PCF2127_REG_TS_SC] & 0x7F);
+> -- 
+> 2.26.2
+
+BR,
+Yousaf
