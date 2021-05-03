@@ -2,119 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 684E537166B
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB8237166D
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234013AbhECOKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 10:10:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45424 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229900AbhECOKs (ORCPT
+        id S234119AbhECOMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 10:12:37 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46742 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229900AbhECOMd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 10:10:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620050994;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lTUcMzd5Nf+frprwDIaCDinkx4BHLgItG4wFaCZjUcM=;
-        b=RqyWgy5WF271jFkrOiPvM5aI44mdEV/glq4ks6q6evPSSNg27A97ej1M7K6DRIq3kSQIOL
-        otsjfCDDcAsn4AoR7qZpm0J55fzoYQ9F/nIgnIiuYlch4/ZUJTqqdlgPul8A4k9ZZIU4Qy
-        F+1ipXzKvVCsH80i0n1OHcmIp1pmI7Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-510-z_XFjwjLOBSjOkl3aheTGg-1; Mon, 03 May 2021 10:09:51 -0400
-X-MC-Unique: z_XFjwjLOBSjOkl3aheTGg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8C8868042C7;
-        Mon,  3 May 2021 14:09:49 +0000 (UTC)
-Received: from krava (unknown [10.40.195.47])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 3E9092BFE2;
-        Mon,  3 May 2021 14:09:46 +0000 (UTC)
-Date:   Mon, 3 May 2021 16:09:45 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Song Liu <song@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "acme@redhat.com" <acme@redhat.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "jolsa@kernel.org" <jolsa@kernel.org>
-Subject: Re: [PATCH v5 5/5] perf-stat: introduce bpf_counter_ops->disable()
-Message-ID: <YJAEKfvUXFPCik5+@krava>
-References: <20210425214333.1090950-1-song@kernel.org>
- <20210425214333.1090950-6-song@kernel.org>
- <YIcwRj4WtsZln4SR@krava>
- <CDBE5630-F7F0-494D-BFA8-33742D831C2D@fb.com>
- <YIgElir6KJCoygX5@krava>
- <5257A59A-CC47-4CA7-9C15-CD6E20DC4BD0@fb.com>
- <7DBDECAE-D100-44C0-B5D3-DE48631430B5@fb.com>
+        Mon, 3 May 2021 10:12:33 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 143E3Kdi112610;
+        Mon, 3 May 2021 10:11:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=DP0YgCUTXkMqVV2M1X/pE4NoH8W4dTxUalNBePTvvOo=;
+ b=F3gwhz67vAPwgP2mUfOERv+DJdhTW1ogO80H3YpwaULxLuGWEfYPLNUT8prW8laNkHXq
+ PrIeZVR6fjBxyVAuM/sjiw5ioXb8EXgQe5HLg47OrBGavcxoVH1D38GU6ajLZwe5WXFF
+ a3b5JNkK/bPYciBcOFE/UAZIwizso9D5GKqoekNLMYZeADa2d39jeI54Ju8H9kCuvaTO
+ PXZMG/rXfx7pbJBru3LoWkZ7lZ+iCGeW+znnq5gesXxSzbIAiQZJrMYGJUq0xxcaRA3t
+ n5VxML9TdH1ffVShMwP5A6MNZSbJnLQEvjVwK2gC02sHwLqDYgMIoUEN1JDVqtRO/7tE Kw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38ah42k480-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 May 2021 10:11:40 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 143E4IgM122677;
+        Mon, 3 May 2021 10:11:40 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38ah42k46x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 May 2021 10:11:40 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 143E92Lc004339;
+        Mon, 3 May 2021 14:11:37 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma05fra.de.ibm.com with ESMTP id 388xm8gdp7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 May 2021 14:11:37 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 143EBYvs17301954
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 3 May 2021 14:11:34 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B99BDA404D;
+        Mon,  3 May 2021 14:11:34 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4483AA4055;
+        Mon,  3 May 2021 14:11:34 +0000 (GMT)
+Received: from linux.fritz.box (unknown [9.145.164.58])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  3 May 2021 14:11:34 +0000 (GMT)
+Subject: Re: [PATCH] s390: fix detection of vector enhancements facility 1 vs.
+ vector packed decimal facility
+To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Alexander Egorenkov <egorenar@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        linux-s390@vger.kernel.org
+References: <20210503121244.25232-1-david@redhat.com>
+From:   Janosch Frank <frankja@linux.ibm.com>
+Message-ID: <a9329b60-e912-7600-af00-1ce16d018f92@linux.ibm.com>
+Date:   Mon, 3 May 2021 16:11:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7DBDECAE-D100-44C0-B5D3-DE48631430B5@fb.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20210503121244.25232-1-david@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: y7FU50Z_5Kb0SPYvsIF9jEmU3OOwOqh6
+X-Proofpoint-ORIG-GUID: o-dmBm2XUShU1qMYE1TqFsMaXuZnhvzR
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-03_10:2021-05-03,2021-05-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 adultscore=0 lowpriorityscore=0 mlxscore=0 bulkscore=0
+ malwarescore=0 clxscore=1015 mlxlogscore=999 suspectscore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2105030096
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 10:40:01PM +0000, Song Liu wrote:
-
-SNIP
-
-> >>>>> #include "../perf.h"
-> >>>>> @@ -421,6 +422,9 @@ static void __evlist__disable(struct evlist *evlist, char *evsel_name)
-> >>>>> 	if (affinity__setup(&affinity) < 0)
-> >>>>> 		return;
-> >>>>> 
-> >>>>> +	evlist__for_each_entry(evlist, pos)
-> >>>>> +		bpf_counter__disable(pos);
-> >>>> 
-> >>>> I was wondering why you don't check evsel__is_bpf like
-> >>>> for the enable case.. and realized that we don't skip
-> >>>> bpf evsels in __evlist__enable and __evlist__disable
-> >>>> like we do in read_affinity_counters
-> >>>> 
-> >>>> so I guess there's extra affinity setup and bunch of
-> >>>> wrong ioctls being called?
-> >>> 
-> >>> We actually didn't do wrong ioctls because the following check:
-> >>> 
-> >>>      if (... || !pos->core.fd)
-> >>>               continue;
-> >>> 
-> >>> in __evlist__enable and __evlist__disable. That we don't allocate 
-> >>> core.fd for is_bpf events. 
-> >>> 
-> >>> It is probably good to be more safe with an extra check of 
-> >>> evsel__is_bpf(). But it is not required with current code. 
-> >> 
-> >> hum, but it will do all the affinity setup no? for no reason,
-> >> if there's no non-bpb event
-> > 
-> > Yes, it will do the affinity setup. Let me see how to get something
-> > like all_counters_use_bpf here (or within builtin-stat.c).
-> > 
+On 5/3/21 2:12 PM, David Hildenbrand wrote:
+> The PoP documents:
+> 	134: The vector packed decimal facility is installed in the
+> 	     z/Architecture architectural mode. When bit 134 is
+> 	     one, bit 129 is also one.
+> 	135: The vector enhancements facility 1 is installed in
+> 	     the z/Architecture architectural mode. When bit 135
+> 	     is one, bit 129 is also one.
 > 
-> Would something like the following work? It is not clean (skipping some 
-> useful logic in __evlist__[enable|disable]). But it seems to work in the
-> tests.
+> Looks like we confuse the vector enhancements facility 1 ("EXT") with the
+> Vector packed decimal facility ("BCD"). Let's fix the facility checks.
+> 
+> Detected while working on QEMU/tcg z14 support and only unlocking
+> the vector enhancements facility 1, but not the vector packed decimal
+> facility.
 
-sorry for late reply, but I can't no longer apply this:
+Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
 
-	patching file tools/perf/builtin-stat.c
-	Hunk #1 FAILED at 572.
-	Hunk #2 FAILED at 581.
-	2 out of 2 hunks FAILED -- saving rejects to file tools/perf/builtin-stat.c.rej
-	patching file tools/perf/util/evlist.c
-	Hunk #1 FAILED at 425.
-	1 out of 1 hunk FAILED -- saving rejects to file tools/perf/util/evlist.c.rej
-
-ah, I see the patchset got already merged.. not sure why I'm doing review then ;-)
-
-thanks,
-jirka
+> 
+> Fixes: 2583b848cad0 ("s390: report new vector facilities")
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> Cc: Sven Schnelle <svens@linux.ibm.com>
+> Cc: Alexander Egorenkov <egorenar@linux.ibm.com>
+> Cc: Niklas Schnelle <schnelle@linux.ibm.com>
+> Cc: Janosch Frank <frankja@linux.ibm.com>
+> Cc: linux-s390@vger.kernel.org
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  arch/s390/kernel/setup.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
+> index 72134f9f6ff5..5aab59ad5688 100644
+> --- a/arch/s390/kernel/setup.c
+> +++ b/arch/s390/kernel/setup.c
+> @@ -937,9 +937,9 @@ static int __init setup_hwcaps(void)
+>  	if (MACHINE_HAS_VX) {
+>  		elf_hwcap |= HWCAP_S390_VXRS;
+>  		if (test_facility(134))
+> -			elf_hwcap |= HWCAP_S390_VXRS_EXT;
+> -		if (test_facility(135))
+>  			elf_hwcap |= HWCAP_S390_VXRS_BCD;
+> +		if (test_facility(135))
+> +			elf_hwcap |= HWCAP_S390_VXRS_EXT;
+>  		if (test_facility(148))
+>  			elf_hwcap |= HWCAP_S390_VXRS_EXT2;
+>  		if (test_facility(152))
+> 
 
