@@ -2,125 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B359371F78
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 20:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B1F371F88
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 20:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbhECSWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 14:22:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbhECSWJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 14:22:09 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74DC0C061761;
-        Mon,  3 May 2021 11:21:13 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id d11so6577099wrw.8;
-        Mon, 03 May 2021 11:21:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JH9uEbFZLY261RSwVYxFlsQtuJncx5cqZ11oI51lAM0=;
-        b=RsH1aj2SWOf7/OWs6Lj6sH6NuMbg63P1+KsTqkyzR1WEWHEMpxniHYsHrBMf4mwO0S
-         aB0cEatMVEkWzFNyCiWSQGetrUetLHNO6RR/K3+JVfZYObmqUE0BBEYnsvCpzUbcHEDP
-         eje01Z1hETfrHhLD/G8M3eclFKeJ5rQ5tULTYcAV309yYrdZRlj99WNZEmWETTs3J1oz
-         yAKOGjFaRC+9HE9Avcs2txy1M7xdI2mNzzMFLNIYEZ9LjTbqasnlV4pfSTQd+s60nq3W
-         HWoQV78p5AsqZ/dQ1L5u313GH94nBiWYZhIAAFX47FDAYShixu6AP6Jvxk9De89/SdY8
-         NkEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JH9uEbFZLY261RSwVYxFlsQtuJncx5cqZ11oI51lAM0=;
-        b=DLsL7qb6kvG04ldRAyzsjQ9AQQDvEmTGeyHkOMKENCfed2PPzk7BJfiEd/sED8LWJS
-         GBBTWUYREZJ93R0V4qzyo16JkT8O245+1j7TPvUeKUHDJB6zLCHPnqzDJ/GdM+cMH2+R
-         FbFFmP65fFH423YkQxye2Gf5B7TVdLWy126GJ+lvcD3zEJuvnaOLRVwpXgWDoMP+zbix
-         y0lGRD/jPWn5ewhcckj0ckdkP6R9Z9b8TwUTB+DszoiuRL5KFbw855HhyQd47gLTJZQX
-         DUlxpzzKVDqktNb4z1uIhUqZTUJ3obqvqq7rdJAbtmbwzUPhHdrF0K/FcWWkxDZQxg9C
-         WVHA==
-X-Gm-Message-State: AOAM533O+V+MQ/ehaiWIPqy9xxqF0AYLHDrETACGg1u6I1laK+c0XXap
-        aRvu6K0mfe6fp2SeH98CLWnL4HNM2TiKz82H39Q=
-X-Google-Smtp-Source: ABdhPJz1nRQ6kJzh7PewOUUDY4/llzeUg1g/85JQFPFE81/cAxRnMCa9uKpEY5nUNYP8vftC4K6q38CMskJBbjTfX2U=
-X-Received: by 2002:adf:dc4f:: with SMTP id m15mr26720403wrj.420.1620066072241;
- Mon, 03 May 2021 11:21:12 -0700 (PDT)
+        id S229831AbhECSXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 14:23:01 -0400
+Received: from srv6.fidu.org ([159.69.62.71]:56432 "EHLO srv6.fidu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229712AbhECSW5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 14:22:57 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id 9A563C800D2;
+        Mon,  3 May 2021 20:21:53 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id 2roVKCChHMH2; Mon,  3 May 2021 20:21:53 +0200 (CEST)
+Received: from wsembach-tuxedo.fritz.box (p200300E37f3986001A8B79e0b24CB29D.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:8600:1a8b:79e0:b24c:b29d])
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPA id E2A21C800CE;
+        Mon,  3 May 2021 20:21:52 +0200 (CEST)
+From:   Werner Sembach <wse@tuxedocomputers.com>
+To:     wse@tuxedocomputers.com, ville.syrjala@linux.intel.com,
+        airlied@linux.ie, daniel@ffwll.ch, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] drm/i915/display Try YCbCr420 color when RGB fails
+Date:   Mon,  3 May 2021 20:21:44 +0200
+Message-Id: <20210503182148.851790-1-wse@tuxedocomputers.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210503102323.17804-1-msuchanek@suse.de>
-In-Reply-To: <20210503102323.17804-1-msuchanek@suse.de>
-From:   Lijun Pan <lijunp213@gmail.com>
-Date:   Mon, 3 May 2021 13:21:00 -0500
-Message-ID: <CAOhMmr701LecfuNM+EozqbiTxFvDiXjFdY2aYeKJYaXq9kqVDg@mail.gmail.com>
-Subject: Re: [PATCH] ibmvnic: remove default label from to_string switch
-To:     Michal Suchanek <msuchanek@suse.de>
-Cc:     netdev@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Dany Madden <drt@linux.ibm.com>,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        Thomas Falcon <tlfalcon@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 3, 2021 at 5:54 AM Michal Suchanek <msuchanek@suse.de> wrote:
->
-> This way the compiler warns when a new value is added to the enum but
-> not the string transation like:
+When encoder validation of a display mode fails, retry with less bandwidth
+heavy YCbCr420 color mode, if available. This enables some HDMI 1.4 setups
+to support 4k60Hz output, which previously failed silently.
 
-s/transation/translation/
+AMDGPU had nearly the exact same issue. This problem description is
+therefore copied from my commit message of the AMDGPU patch.
 
-This trick works.
-Since the original code does not generate gcc warnings/errors, should
-this patch be sent to net-next as an improvement?
+On some setups, while the monitor and the gpu support display modes with
+pixel clocks of up to 600MHz, the link encoder might not. This prevents
+YCbCr444 and RGB encoding for 4k60Hz, but YCbCr420 encoding might still be
+possible. However, which color mode is used is decided before the link
+encoder capabilities are checked. This patch fixes the problem by retrying
+to find a display mode with YCbCr420 enforced and using it, if it is
+valid.
 
->
-> drivers/net/ethernet/ibm/ibmvnic.c: In function 'adapter_state_to_string':
-> drivers/net/ethernet/ibm/ibmvnic.c:832:2: warning: enumeration value 'VNIC_FOOBAR' not handled in switch [-Wswitch]
->   switch (state) {
->   ^~~~~~
-> drivers/net/ethernet/ibm/ibmvnic.c: In function 'reset_reason_to_string':
-> drivers/net/ethernet/ibm/ibmvnic.c:1935:2: warning: enumeration value 'VNIC_RESET_FOOBAR' not handled in switch [-Wswitch]
->   switch (reason) {
->   ^~~~~~
->
-> Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> ---
+This patchset is revision 2, now split up in multiple parts with some
+minor restructuring added für a cleaner implementation.
 
-Acked-by: Lijun Pan <lijunp213@gmail.com>
 
->  drivers/net/ethernet/ibm/ibmvnic.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-> index 5788bb956d73..4d439413f6d9 100644
-> --- a/drivers/net/ethernet/ibm/ibmvnic.c
-> +++ b/drivers/net/ethernet/ibm/ibmvnic.c
-> @@ -846,9 +846,8 @@ static const char *adapter_state_to_string(enum vnic_state state)
->                 return "REMOVING";
->         case VNIC_REMOVED:
->                 return "REMOVED";
-> -       default:
-> -               return "UNKNOWN";
->         }
-> +       return "UNKNOWN";
->  }
->
->  static int ibmvnic_login(struct net_device *netdev)
-> @@ -1946,9 +1945,8 @@ static const char *reset_reason_to_string(enum ibmvnic_reset_reason reason)
->                 return "TIMEOUT";
->         case VNIC_RESET_CHANGE_PARAM:
->                 return "CHANGE_PARAM";
-> -       default:
-> -               return "UNKNOWN";
->         }
-> +       return "UNKNOWN";
->  }
->
->  /*
-> --
-> 2.26.2
->
