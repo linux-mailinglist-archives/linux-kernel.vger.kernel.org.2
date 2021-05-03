@@ -2,172 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79352371110
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 06:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E4337111C
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 07:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232735AbhECE6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 00:58:03 -0400
-Received: from mail-dm6nam12on2060.outbound.protection.outlook.com ([40.107.243.60]:8925
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229489AbhECE5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 00:57:55 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TP5J+xU2wMicXfC3h0I+4+RPkkP3Oy0M9I7UsPQ/trsk2D+kkLlRRh9dyhXHEibGkF50lZL+dWlxEo7x9V82Xha8ZO9HlDO91HjdMxTlvhIV/jv2Z1pm+C+Qx4ahJyq31/08jqBaee+J2HTWzI4wzaU3n6wny4ulAB8S8AHjg0HkdfJzvXXzqrcjVy3UdxHIBLPyedYK7HEd011vI1LIb3uwgNlTVLj5CGz+/NyqgNvYSHLio4lbm+k8EHSDcoRc1+zYKa3dZAu2SkPJNQ961q9Jwp7YGwig0whxu6fEYJSZ0UdmR4yURBQxG2jBkX8Q7mW4eBpjsjCFk4hj6buwVg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y1vVmL11QL+b29NL1iFjJS9Jp8yuHqKsX75eDjunB2A=;
- b=PRrT3x5aWRLXjRz9KrZdqnoJj90yz5q8pMgKOznmlRDS3sd7Vqa7W3l6X/m5zY5j1V01NCrmpLrKpc5dxVZFdOYzkVeZBc4jLSNr4qYljbUrF6RiJODxn5kW919+JsFQuZjNhdO1yffF1rl3cageAyRg5DyeWG70knfT6avQ/qRIeOSMqUR7TAX+1kwBtOSsb852qqQMyJ6YA05xirvJ5xAOwsqZcaaG3Z2Pb5suYxaxxBLXyt/dlTTiJiNmZ54ZP6pN9yfMTkra7mcKxd72RshT1A486AwsZEGrxjHbJhK7MRaV1fnuFbFriLuUPBfFmpss7uhg8YxK4O11jrogtw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
- dkim=pass header.d=xilinx.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y1vVmL11QL+b29NL1iFjJS9Jp8yuHqKsX75eDjunB2A=;
- b=powq8NbYIZAH8te6EpXObYgF4MpnMOh4wIGyxOhEj+14B5l0AiXOhzA6J15qrOBMoSOOy0h4RWzRiEYSLLpGhf6vziOJf7gpLOE0JT1FiTwy75wUEGZd7IoKvJXos5Y11ch64tWOFVRZCPJtsAqVKYgudAsqQKDfZJNxtZ+D2KY=
-Received: from BYAPR02MB3941.namprd02.prod.outlook.com (2603:10b6:a02:f8::18)
- by SJ0PR02MB7600.namprd02.prod.outlook.com (2603:10b6:a03:320::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.40; Mon, 3 May
- 2021 04:56:44 +0000
-Received: from BYAPR02MB3941.namprd02.prod.outlook.com
- ([fe80::f9c6:6c2f:3084:89b8]) by BYAPR02MB3941.namprd02.prod.outlook.com
- ([fe80::f9c6:6c2f:3084:89b8%3]) with mapi id 15.20.4065.036; Mon, 3 May 2021
- 04:56:44 +0000
-From:   Rajan Vaja <RAJANV@xilinx.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "mturquette@baylibre.com" <mturquette@baylibre.com>,
-        "sboyd@kernel.org" <sboyd@kernel.org>,
-        Michal Simek <michals@xilinx.com>,
-        "quanyang.wang@windriver.com" <quanyang.wang@windriver.com>,
-        Jolly Shah <JOLLYS@xilinx.com>,
-        Tejas Patel <tejasp@xlnx.xilinx.com>,
-        Shubhrajyoti Datta <shubhraj@xilinx.com>
-CC:     "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
+        id S230364AbhECFGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 01:06:15 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:33361 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229462AbhECFGD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 01:06:03 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id C8347580965;
+        Mon,  3 May 2021 01:05:10 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Mon, 03 May 2021 01:05:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=wZbGrNNB8IKzZFmeNM9BGTHd9BMaGLO
+        Y6F6xSuyaF18=; b=an2TWdeMwdv8G1iuCS7DLTs+lkXvq+3tfPdMyDwI8dKWrwb
+        nqewtPcOrnJcnUQVKnwvR25JJSISoytO/AM9I10ERmpOFh3YFchv8o/zgb2pUhkN
+        3rFGTOPy0wf9w1b92SHb/feEig5yygfJ8YHJ0H+A3zucZYwZ7q/fyRGPPKnpIsHH
+        Q1/Oko9+7NSc/136v6C1+UD/KWP3m4HTymdJ/tug0hZVVH86PpjUbleRUIqX4Bmw
+        uotf4YaCUQVHfh0pQIbCihGEIVvAVeTrdcgs34TcDN49yj48dBP0/3Yu86neanW5
+        IX18wDddBFZTiQuHMcQvRmfo+1IHUKQNvRG+CbQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=wZbGrN
+        NB8IKzZFmeNM9BGTHd9BMaGLOY6F6xSuyaF18=; b=YkbzeqPr/dG3JUY06vDlmK
+        VJk70rwWuEiFMHNiufwjudRM4UPee9bLpphSHInHvz48X/pr8wm1QIIDdyEMeAH9
+        9L8K26/XQ4A3U/oJmErTK2TabpGw9ixtKXIAigvT2xLOZT57b7tenZsZT804NOZ7
+        YmZPaxphcpPvwvIxeErT0E4ZQDHx8ybIN3se1m8+D9z2ofm+wcLvDUK53lbKwFiM
+        iUk2vKKAju/JwGtrKrHBHe6zWzLKA2qs1MfK8RcxmJHLFU+lAA9xEDXl52XqnJOp
+        /DgiEGxQTL0fU5IBhwdtl28uM7WDSiBrA+ACnzPfgITw5EsI+lGAx8/yjaDIGvRQ
+        ==
+X-ME-Sender: <xms:hYSPYOQ9i-YmIaf2oz8_l3gnTSGkDhB40MtrBw3M1iAe_WQDEsfVug>
+    <xme:hYSPYDxOClEVmVpc9F2c4u8tWvqBBRNnk01eWhXmcO27r8jREP03Q9SGpDiWzkaie
+    4maE1qL2S95aaSzYg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeffedguddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepudehtddtleektedvfeeitdeljeekveelkeegvdfhtdejhefgfedtfedv
+    jeejledtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:hYSPYL2PXeI_2hOapbM_66Bgz4GwPLsvlkAlB1ibk3HDt-DKSxX1lQ>
+    <xmx:hYSPYKBtGR7LzIS7XveVVluZoP05OGw7jB7K_EXTWWoJkpKOku-UIA>
+    <xmx:hYSPYHgxFbWVSRXaZn1HR5SGxmcMaXv_TKAmT426JpXIfwZNWLEq2A>
+    <xmx:hoSPYGM25aBK1ISbcPP1Igz7dR0rp18Gu8wf0_CrLi_j7WllcTxiXg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 4BBB0A00079; Mon,  3 May 2021 01:05:09 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-403-gbc3c488b23-fm-20210419.005-gbc3c488b
+Mime-Version: 1.0
+Message-Id: <f1e86e81-d385-429a-ab8a-475240925f21@www.fastmail.com>
+In-Reply-To: <20210503014336.20256-4-steven_lee@aspeedtech.com>
+References: <20210503014336.20256-1-steven_lee@aspeedtech.com>
+ <20210503014336.20256-4-steven_lee@aspeedtech.com>
+Date:   Mon, 03 May 2021 14:34:06 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Steven Lee" <steven_lee@aspeedtech.com>,
+        "Adrian Hunter" <adrian.hunter@intel.com>,
+        "Ulf Hansson" <ulf.hansson@linaro.org>,
+        "Joel Stanley" <joel@jms.id.au>,
+        "Philipp Zabel" <p.zabel@pengutronix.de>,
+        "moderated list:ASPEED SD/MMC DRIVER" <linux-aspeed@lists.ozlabs.org>,
+        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
         <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-Subject: RE: [PATCH] clk: zynqmp: pll: Remove some dead code
-Thread-Topic: [PATCH] clk: zynqmp: pll: Remove some dead code
-Thread-Index: AQHXPn2fNc4/u5hEg0mmySXeuab37arRM+wQ
-Date:   Mon, 3 May 2021 04:56:43 +0000
-Message-ID: <BYAPR02MB394182A55D073BC6061F6D76B75B9@BYAPR02MB3941.namprd02.prod.outlook.com>
-References: <71a9fed5f762a71248b8ac73c0a15af82f3ce1e2.1619867987.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <71a9fed5f762a71248b8ac73c0a15af82f3ce1e2.1619867987.git.christophe.jaillet@wanadoo.fr>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-authentication-results: wanadoo.fr; dkim=none (message not signed)
- header.d=none;wanadoo.fr; dmarc=none action=none header.from=xilinx.com;
-x-originating-ip: [149.199.62.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1536ac42-0e5d-4ce3-2b09-08d90defd929
-x-ms-traffictypediagnostic: SJ0PR02MB7600:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SJ0PR02MB7600C6FD0D330E8F9C022DCFB75B9@SJ0PR02MB7600.namprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5FT3W8cgFdqjZcMpdrKFaqMws1/KIbQFtePn6nsTI16AY0m2Oq4aewNuefBpUilzNmjXNTlNVa9k5isMOEAFjA4HMc0tHieBqGOB/1ptHbG2O+Q2MygaeWmO7nUcHLQH/aCjladWN2qPc7LFFdkBdMBpka6SXLultIXcpFoqNJQt2XVpj1SDdNfWOEJ62m2/9APIvM7Aly5Yw32Cdkl/hJxHI1VzdKzMOjq+099qkRXXgnLWdfvPU0N/M8TmGBLaE9cGkkjJf/4B6Uz8joELDvuDLArYu5DdndP0ZOjM3xgg9r/XhKgX36nlZSLOfH9DbD//ebtZ+Ct88TBv2CsxbT/z6fAbq7W1g02y2bZoPnNI9bgj+pzyT4P2Ez25SeV3TbkE9zQus646vRyIE6v1bo2vVgsMz3JJycyjLZeiRuaqEeHlU5DxbFPu2OXMv8oo4J/9UMZFKaRemz6yCTRXe6mPSNPacxLj40gOuVqgy/t79a3keew5xRi9g0JVjm9zrU0r7ZS+/V6oS2CCNR+11GODyFmzU5PpdQJtTqAguKSw0zoky0FXdVzSdDXSuYgTHR2uS/e8BecNuWcw+Bvg0zMxveY3PwdJ5a6GZuPhxzYyD4FhLFX2AZBMqjXkXBR5eUYLNv+JshFwMa6WTso0FA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR02MB3941.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39850400004)(396003)(376002)(346002)(366004)(66946007)(53546011)(64756008)(5660300002)(66446008)(66556008)(66476007)(6506007)(86362001)(54906003)(76116006)(110136005)(83380400001)(33656002)(52536014)(38100700002)(7696005)(478600001)(186003)(26005)(8936002)(316002)(2906002)(9686003)(71200400001)(4326008)(8676002)(55016002)(6636002)(122000001)(21314003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?0Hgxv9LAKWbp67HxMVLSqGtCLsw+bG1UEFV306F3ARTHv4vFxfmRsZfTIVox?=
- =?us-ascii?Q?PM6lr3PgWlchmTygbp/utWE61Rf9afeW2C7FscXtIoL+6tuMg+4xRqLzPeyE?=
- =?us-ascii?Q?2+I9ZDxuvO2gPS/cAx0zWIeggF4PFomlEMzYHTRr/sE5e/DE2wAsaSzdQmH/?=
- =?us-ascii?Q?fU6LHcNNvTHGJRkalha1kHXDNacLKoSHssByKSB5l2jPQkFtRHcwxgKAp5b0?=
- =?us-ascii?Q?RuyQNNB/WUDXGtgtL3H88cqKzzN9R/gN5lIx2Nris7WzvRV1RW7qjfd8SJMY?=
- =?us-ascii?Q?MAtnWQOp5JIy7C+/0+etNs+yyMGZUgSeQdpbMIPpjhF6hC7fzMTICtsb6YiZ?=
- =?us-ascii?Q?SOGbbwFmd4uBWaJDcpjb9b2FFb9TA29RUkMORf0P8cYwBI684wZOT7GlijJ/?=
- =?us-ascii?Q?td+9lW95dEWr4IfiKo77uUNrCIecqftNihPAAbj0L9FJTtKnaIEMKDg4VIy1?=
- =?us-ascii?Q?dd5oOOplf/LN/1HKwn0/SHuK5Fl7gyNLeajIxUXrmEw+rKKnOnEfmBcAG9Fc?=
- =?us-ascii?Q?QLTJ5lGk6l6XkTZSUdjqmYMs+zqoTDd7whDLl95KYUX+tDdH8cABV13eRUiD?=
- =?us-ascii?Q?TgBJhI/s/qzDf9rpa1HeOr668AbM/F9odyiljQYl7CFvRb2yb8Wbyu8E6Ig+?=
- =?us-ascii?Q?AXO8Z3JmoSj0IyCwfxaOR5XWIQIo/vR3JCFRsTY2gCeSZcDzi/1rMBeAkZ/s?=
- =?us-ascii?Q?rsLaa0ZGoHVIU8E9wjYF2I2EvdsTGeOYFthfymJmcMbd7XammOYAl84SK/YZ?=
- =?us-ascii?Q?SBz4lH94ZSbyclR0WIhk0KOGnXvtpfgKNc7PNouXu+40cROqvlaEspThq67z?=
- =?us-ascii?Q?V+EVNko+iDsz27ju/FRiawTlgOAGZIKltJMEPk3hTyscJLSBB5aokG6rk6WA?=
- =?us-ascii?Q?L8HUHXEi1gs9tqTkd0p+OKVCU12EkGfWIe/xguLUZkdcSaSr1dbZAgXFyBlK?=
- =?us-ascii?Q?nA+wAZWCeG6Zf5HrLNk7P/o7r3LjMTawp4wvjBWXZSRv9Ob78QywX0aVPkIQ?=
- =?us-ascii?Q?uFusaotb+dNN9COdO8MxH7BnHRPzUe0tKdm2xmd51rr1V6IrCdfdOXqijONX?=
- =?us-ascii?Q?71yMNysqd1oyQVrM7+rxk2/qz7RIWuNvfmHS+VuG9aH1INtQVscryckdtuMY?=
- =?us-ascii?Q?y6izkFZUXbe1LtaWqHbwdMIp2D0moVvOXTykraG16hwRhOOLn9Z/HNYeMDqX?=
- =?us-ascii?Q?ZJhqTCjkTRNMZIMvY93MKCYo6tY1ywlvLPz4n7I0ZCw0MSPKFvDEsrVAnaLv?=
- =?us-ascii?Q?JbFfWONLk7rfdKfKturVP/BMMUB/fIfeuDUB+AVcc4zPVmpkg2ceoCLfOtTO?=
- =?us-ascii?Q?UY5zqn2uwBSMhX66jhybMZt0?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR02MB3941.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1536ac42-0e5d-4ce3-2b09-08d90defd929
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 May 2021 04:56:44.0005
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +Jyttt/DWOgZQvVwLcpUpp7m6jfNvuL+G7cA3ruSFceJedEDTUfZMlquDv+QWUlCv1VODP8lqb8DYSCc0H37pQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR02MB7600
+        "open list" <linux-kernel@vger.kernel.org>
+Cc:     "Chin-Ting Kuo" <chin-ting_kuo@aspeedtech.com>,
+        "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        "Hongwei Zhang" <Hongweiz@ami.com>
+Subject: =?UTF-8?Q?Re:_[PATCH_v2_3/3]_mmc:_sdhci-of-aspeed:_Sync_capabilities_fro?=
+ =?UTF-8?Q?m_device_tree_to_ast2600_SoC_registers?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Steven,
 
-Thanks for the patch.
+On Mon, 3 May 2021, at 11:13, Steven Lee wrote:
+> Sync Capbility Registers(SDIO140, SDIO144, SDIO240, SDIO244) of ast2600
+> SoC from the device tree.
+> The bit 26(Voltage Support 1.8v) of SDIO140/SDIO240 is set to 1 if
+> "mmc-hs200-1_8v" or "sd-uhs-sdr104" is added in the device tree.
+> The bit 1(SDR104 Supported) of SDR144/SDR244 is set to 1 if "sd-uhs-sdr104"
+> is added in the device tree.
+> "timing-phase" is synced to SDIO0F4(Colock Phase Control)
+> 
+> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+> ---
+>  drivers/mmc/host/sdhci-of-aspeed.c | 107 ++++++++++++++++++++++++++---
+>  1 file changed, 98 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci-of-aspeed.c 
+> b/drivers/mmc/host/sdhci-of-aspeed.c
+> index 7d8692e90996..2d755bac777a 100644
+> --- a/drivers/mmc/host/sdhci-of-aspeed.c
+> +++ b/drivers/mmc/host/sdhci-of-aspeed.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/of.h>
+>  #include <linux/of_platform.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/reset.h>
+>  #include <linux/spinlock.h>
+>  
+>  #include "sdhci-pltfm.h"
+> @@ -30,10 +31,18 @@
+>  #define   ASPEED_SDC_S0_PHASE_IN_EN	BIT(2)
+>  #define   ASPEED_SDC_S0_PHASE_OUT_EN	GENMASK(1, 0)
+>  #define   ASPEED_SDC_PHASE_MAX		31
+> +#define ASPEED_SDC_CAP1_1_8V           BIT(26)
+> +#define ASPEED_SDC_CAP2_SDR104         BIT(1)
+> +#define PROBE_AFTER_ASSET_DEASSERT     0x1
+> +
+> +struct aspeed_sdc_info {
+> +	u32 flag;
+> +};
+>  
+>  struct aspeed_sdc {
+>  	struct clk *clk;
+>  	struct resource *res;
+> +	struct reset_control *rst;
+>  
+>  	spinlock_t lock;
+>  	void __iomem *regs;
+> @@ -72,6 +81,44 @@ struct aspeed_sdhci {
+>  	const struct aspeed_sdhci_phase_desc *phase_desc;
+>  };
+>  
+> +struct aspeed_sdc_info ast2600_sdc_info = {
+> +	.flag = PROBE_AFTER_ASSET_DEASSERT
+> +};
+> +
+> +/*
+> + * The function sets the mirror register for updating
+> + * capbilities of the current slot.
+> + *
+> + *   slot | cap_idx | caps_reg | mirror_reg
+> + *   -----|---------|----------|------------
+> + *     0  |    0    | SDIO140  |   SDIO10
+> + *     0  |    1    | SDIO144  |   SDIO14
+> + *     1  |    0    | SDIO240  |   SDIO20
+> + *     1  |    1    | SDIO244  |   SDIO24
+> + */
+> +static void aspeed_sdc_set_slot_capability(struct sdhci_host *host,
+> +					   struct aspeed_sdc *sdc,
+> +					   u32 reg_val,
+> +					   u8 slot,
+> +					   u8 cap_idx)
 
-> -----Original Message-----
-> From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> Sent: 01 May 2021 04:55 PM
-> To: mturquette@baylibre.com; sboyd@kernel.org; Michal Simek
-> <michals@xilinx.com>; quanyang.wang@windriver.com; Rajan Vaja
-> <RAJANV@xilinx.com>; Jolly Shah <JOLLYS@xilinx.com>; Tejas Patel
-> <tejasp@xlnx.xilinx.com>; Shubhrajyoti Datta <shubhraj@xilinx.com>
-> Cc: linux-clk@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linu=
-x-
-> kernel@vger.kernel.org; kernel-janitors@vger.kernel.org; Christophe JAILL=
-ET
-> <christophe.jaillet@wanadoo.fr>
-> Subject: [PATCH] clk: zynqmp: pll: Remove some dead code
->=20
-> 'clk_hw_set_rate_range()' does not return any error code and 'ret' is
-> known to be 0 at this point, so this message can never be displayed.
->=20
-> Remove it.
->=20
-> Fixes: 3fde0e16d016 ("drivers: clk: Add ZynqMP clock driver")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> HOWEVER, the message is about 'clk_set_rate_range()', not
-> 'clk_hw_set_rate_range()'. So the message is maybe correct and the
-> 'xxx_rate_range()' function incorrect.
-> ---
->  drivers/clk/zynqmp/pll.c | 2 --
->  1 file changed, 2 deletions(-)
->=20
-> diff --git a/drivers/clk/zynqmp/pll.c b/drivers/clk/zynqmp/pll.c
-> index abe6afbf3407..af11e9400058 100644
-> --- a/drivers/clk/zynqmp/pll.c
-> +++ b/drivers/clk/zynqmp/pll.c
-> @@ -331,8 +331,6 @@ struct clk_hw *zynqmp_clk_register_pll(const char *na=
-me,
-> u32 clk_id,
+Having thought about this some more now we have code, I wonder if we can get
+rid of `cap_idx` as a parameter. Something like:
+
+static void aspeed_sdc_set_slot_capability(struct sdhci_host *host,
+    struct aspeed_sdc *sdc, int capability, bool enable, u8 slot);
+
+From there, instead of
+
+#define ASPEED_SDC_CAP1_1_8V           BIT(26)
+#define ASPEED_SDC_CAP2_SDR104         BIT(1)
+
+We do
+
+/* SDIO{10,20} */
+#define ASPEED_SDC_CAP1_1_8V           (0 * 32 + 26)
+/* SDIO{14,24} */
+#define ASPEED_SDC_CAP2_SDR104         (1 * 32 + 1)
+
+Then in the implementation of aspeed_sdc_set_slot_capability() we 
+derive cap_idx and reg_val:
+
+u8 reg_val = enable * BIT(capability % 32);
+u8 cap_reg = capability / 32;
+
+That way we get rid of the 0 and 1 magic values for cap_idx when 
+invoking aspeed_sdc_set_slot_capability() and the caller can't
+accidentally pass the wrong value.
+
+> +{
+> +	u8 caps_reg_offset;
+> +	u32 caps_reg;
+> +	u32 mirror_reg_offset;
+> +	u32 caps_val;
+> +
+> +	if (cap_idx > 1 || slot > 1)
+> +		return;
+> +
+> +	caps_reg_offset = (cap_idx == 0) ? 0 : 4;
+> +	caps_reg = 0x40 + caps_reg_offset;
+> +	caps_val = sdhci_readl(host, caps_reg);
+
+Hmm, I think you used sdhci_readl() because I commented on that last 
+time. If the global-area registers are truly mirrored we could read 
+from them as well right? In which case we could just use 
+readl(sdc->regs + mirror_reg_offset)? If so we can drop the host 
+parameter and (incorporating my suggestion above) just have:
+
+static void aspeed_sdc_set_slot_capability(struct aspeed_sdc *sdc,
+    int capability, bool enable, u8 slot);
+
+Sorry if I've sort of flip-flopped on that, but I think originally you 
+were still reading from the SDHCI (read-only) address?
+
+> +	caps_val |= reg_val;
+> +	mirror_reg_offset = (slot == 0) ? 0x10 : 0x20;
+> +	mirror_reg_offset += caps_reg_offset;
+> +	writel(caps_val, sdc->regs + mirror_reg_offset);
+> +}
+> +
+>  static void aspeed_sdc_configure_8bit_mode(struct aspeed_sdc *sdc,
+>  					   struct aspeed_sdhci *sdhci,
+>  					   bool bus8)
+> @@ -329,9 +376,11 @@ static int aspeed_sdhci_probe(struct platform_device *pdev)
+>  {
+>  	const struct aspeed_sdhci_pdata *aspeed_pdata;
+>  	struct sdhci_pltfm_host *pltfm_host;
+> +	struct device_node *np = pdev->dev.of_node;
+>  	struct aspeed_sdhci *dev;
+>  	struct sdhci_host *host;
+>  	struct resource *res;
+> +	u32 reg_val;
+>  	int slot;
+>  	int ret;
+>  
+> @@ -372,6 +421,21 @@ static int aspeed_sdhci_probe(struct platform_device *pdev)
+>  
+>  	sdhci_get_of_property(pdev);
+>  
+> +	if (of_property_read_bool(np, "mmc-hs200-1_8v") ||
+> +	    of_property_read_bool(np, "sd-uhs-sdr104"))
+> +		aspeed_sdc_set_slot_capability(host,
+> +					       dev->parent,
+> +					       ASPEED_SDC_CAP1_1_8V,
+> +					       slot,
+> +					       0);
+
+See the discussion above about reworking aspeed_sdc_set_slot_capability.
+
+> +
+> +	if (of_property_read_bool(np, "sd-uhs-sdr104"))
+> +		aspeed_sdc_set_slot_capability(host,
+> +					       dev->parent,
+> +					       ASPEED_SDC_CAP2_SDR104,
+> +					       slot,
+> +					       1);
+
+Again here.
+
+> +
+>  	pltfm_host->clk = devm_clk_get(&pdev->dev, NULL);
+>  	if (IS_ERR(pltfm_host->clk))
+>  		return PTR_ERR(pltfm_host->clk);
+> @@ -476,12 +540,25 @@ static struct platform_driver aspeed_sdhci_driver = {
+>  	.remove		= aspeed_sdhci_remove,
+>  };
+>  
+> +static const struct of_device_id aspeed_sdc_of_match[] = {
+> +	{ .compatible = "aspeed,ast2400-sd-controller", },
+> +	{ .compatible = "aspeed,ast2500-sd-controller", },
+> +	{ .compatible = "aspeed,ast2600-sd-controller", .data = &ast2600_sdc_info},
+> +	{ }
+> +};
+> +
+> +MODULE_DEVICE_TABLE(of, aspeed_sdc_of_match);
+> +
+>  static int aspeed_sdc_probe(struct platform_device *pdev)
+>  
+>  {
+>  	struct device_node *parent, *child;
+>  	struct aspeed_sdc *sdc;
+> +	const struct of_device_id *match = NULL;
+> +	const struct aspeed_sdc_info *info = NULL;
+> +
+>  	int ret;
+> +	u32 timing_phase;
+>  
+>  	sdc = devm_kzalloc(&pdev->dev, sizeof(*sdc), GFP_KERNEL);
+>  	if (!sdc)
+> @@ -489,6 +566,23 @@ static int aspeed_sdc_probe(struct platform_device *pdev)
+>  
+>  	spin_lock_init(&sdc->lock);
+>  
+> +	match = of_match_device(aspeed_sdc_of_match, &pdev->dev);
+> +	if (!match)
+> +		return -ENODEV;
+> +
+> +	if (match->data)
+> +		info = match->data;
+> +
+> +	if (info) {
+> +		if (info->flag & PROBE_AFTER_ASSET_DEASSERT) {
+> +			sdc->rst = devm_reset_control_get(&pdev->dev, NULL);
+> +			if (!IS_ERR(sdc->rst)) {
+> +				reset_control_assert(sdc->rst);
+> +				reset_control_deassert(sdc->rst);
+> +			}
+> +		}
+> +	}
+
+I think this should be a separate patch.
+
+From the code it seems that this is necessary for just the 2600? Where 
+is this documented?
+
+> +
+>  	sdc->clk = devm_clk_get(&pdev->dev, NULL);
+>  	if (IS_ERR(sdc->clk))
+>  		return PTR_ERR(sdc->clk);
+> @@ -506,6 +600,10 @@ static int aspeed_sdc_probe(struct platform_device *pdev)
+>  		goto err_clk;
 >  	}
->=20
->  	clk_hw_set_rate_range(hw, PS_PLL_VCO_MIN, PS_PLL_VCO_MAX);
-> -	if (ret < 0)
-> -		pr_err("%s:ERROR clk_set_rate_range failed %d\n", name, ret);
-[Rajan] Instead of removing, can we get return value of clk_hw_set_rate_ran=
-ge() and
-print in case of an error.
+>  
+> +	if (!of_property_read_u32(pdev->dev.of_node,
+> +				  "timing-phase", &timing_phase))
+> +		writel(timing_phase, sdc->regs + ASPEED_SDC_PHASE);
 
->=20
->  	return hw;
->  }
-> --
-> 2.30.2
+I asked on v1 that you use the phase support already in the bindings 
+and in the driver. The example you added in the binding document[1] 
+used the existing devicetree properties but it seems you haven't fixed 
+the code.
 
+Please drop your phase implementation from the patch.
+
+[1] https://lore.kernel.org/lkml/20210503014336.20256-2-steven_lee@aspeedtech.com/
+
+Cheers,
+
+Andrew
