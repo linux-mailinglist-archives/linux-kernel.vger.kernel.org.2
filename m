@@ -2,184 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C9237133D
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 11:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3638F371342
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 11:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233171AbhECJxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 05:53:50 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:48106 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233153AbhECJxt (ORCPT
+        id S233200AbhECJze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 05:55:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232964AbhECJzd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 05:53:49 -0400
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id AC7471F4215B;
-        Mon,  3 May 2021 10:52:55 +0100 (BST)
-Date:   Mon, 3 May 2021 11:52:52 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     <patrice.chotard@foss.st.com>, Mark Brown <broonie@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
-Subject: Re: [PATCH 1/3] spi: spi-mem: add automatic poll status functions
-Message-ID: <20210503115252.08af412c@collabora.com>
-In-Reply-To: <20210503092935.vjitc7mc47wttn77@ti.com>
-References: <20210426143934.25275-1-patrice.chotard@foss.st.com>
-        <20210426143934.25275-2-patrice.chotard@foss.st.com>
-        <20210430185104.377d1bc6@collabora.com>
-        <20210503084742.7cp77snyohkdwwvv@ti.com>
-        <20210503111114.26b64e25@collabora.com>
-        <20210503092935.vjitc7mc47wttn77@ti.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Mon, 3 May 2021 05:55:33 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32265C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 02:54:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tTd9eo00Ue3wFKj+8UCV8oHUSbnAPYsBUziBG+5QfHY=; b=p6/fXoHfBsno7l+5+4dQMtHRF4
+        cCTUOAqI7cf7sCGY1DkqE4KsC58d1OWn9e3g2J9SmWiAGfVkCv188brbWho5lWuygWY7zSnf/Inhe
+        MbZDuxLRQEUCPLtxGEKKh55z6eG1A1ZN9WyL2PwovEd0/ENqbpMHFtHtctSG17J/tJmlZZCFMgr/y
+        lkfeVMBgaQNYJ+NfUV8hsxvtQ5CbVAHZwbssRTpeMz6i5fH4Ch2/FidTXkiQThKv0zIglkto7DuhC
+        bRt5VFpi5mGIp4jLWKw/T+zsnNO4MmsTdQKWepUdXMvn+NREMCOx0uKCV1sLA+38JYsuotqdMLXtI
+        OcY0lDeQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1ldVHH-00Daqu-MN; Mon, 03 May 2021 09:54:12 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4CE71300036;
+        Mon,  3 May 2021 11:54:11 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 270C42BC22563; Mon,  3 May 2021 11:54:11 +0200 (CEST)
+Date:   Mon, 3 May 2021 11:54:11 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Cc:     Ingo Molnar <mingo@kernel.org>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.comi>, Mel Gorman <mgorman@suse.de>,
+        Len Brown <len.brown@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        Quentin Perret <qperret@google.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org, Aubrey Li <aubrey.li@intel.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH v2 3/4] sched/fair: Consider SMT in ASYM_PACKING load
+ balance
+Message-ID: <YI/IQ+LRD/YhgZoN@hirez.programming.kicks-ass.net>
+References: <20210414020436.12980-1-ricardo.neri-calderon@linux.intel.com>
+ <20210414020436.12980-4-ricardo.neri-calderon@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414020436.12980-4-ricardo.neri-calderon@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 3 May 2021 14:59:37 +0530
-Pratyush Yadav <p.yadav@ti.com> wrote:
+On Tue, Apr 13, 2021 at 07:04:35PM -0700, Ricardo Neri wrote:
+> +/**
+> + * asym_can_pull_tasks - Check whether the load balancing CPU can pull tasks
+> + * @dst_cpu:	CPU doing the load balancing
 
-> On 03/05/21 11:11AM, Boris Brezillon wrote:
-> > On Mon, 3 May 2021 14:17:44 +0530
-> > Pratyush Yadav <p.yadav@ti.com> wrote:
-> >   
-> > > On 30/04/21 06:51PM, Boris Brezillon wrote:  
-> > > > On Mon, 26 Apr 2021 16:39:32 +0200
-> > > > <patrice.chotard@foss.st.com> wrote:
-> > > >     
-> > > > > From: Christophe Kerello <christophe.kerello@foss.st.com>
-> > > > > 
-> > > > > With STM32 QSPI, it is possible to poll the status register of the device.
-> > > > > This could be done to offload the CPU during an operation (erase or
-> > > > > program a SPI NAND for example).
-> > > > > 
-> > > > > spi_mem_poll_status API has been added to handle this feature.
-> > > > > 
-> > > > > Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
-> > > > > Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
-> > > > > ---
-> > > > >  drivers/spi/spi-mem.c       | 34 ++++++++++++++++++++++++++++++++++
-> > > > >  include/linux/spi/spi-mem.h |  8 ++++++++
-> > > > >  2 files changed, 42 insertions(+)
-> > > > > 
-> > > > > diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-> > > > > index 1513553e4080..43dce4b0efa4 100644
-> > > > > --- a/drivers/spi/spi-mem.c
-> > > > > +++ b/drivers/spi/spi-mem.c
-> > > > > @@ -743,6 +743,40 @@ static inline struct spi_mem_driver *to_spi_mem_drv(struct device_driver *drv)
-> > > > >  	return container_of(drv, struct spi_mem_driver, spidrv.driver);
-> > > > >  }
-> > > > >  
-> > > > > +/**
-> > > > > + * spi_mem_poll_status() - Poll memory device status
-> > > > > + * @mem: SPI memory device
-> > > > > + * @op: the memory operation to execute
-> > > > > + * @mask: status bitmask to ckeck
-> > > > > + * @match: status expected value
-> > > > > + * @timeout: timeout
-> > > > > + *
-> > > > > + * This function send a polling status request to the controller driver
-> > > > > + *
-> > > > > + * Return: 0 in case of success, -ETIMEDOUT in case of error,
-> > > > > + *         -EOPNOTSUPP if not supported.
-> > > > > + */
-> > > > > +int spi_mem_poll_status(struct spi_mem *mem,
-> > > > > +			const struct spi_mem_op *op,
-> > > > > +			u8 mask, u8 match, u16 timeout)
-> > > > > +{
-> > > > > +	struct spi_controller *ctlr = mem->spi->controller;
-> > > > > +	int ret = -EOPNOTSUPP;
-> > > > > +
-> > > > > +	if (ctlr->mem_ops && ctlr->mem_ops->poll_status) {
-> > > > > +		ret = spi_mem_access_start(mem);    
-> > > > 
-> > > > You should probably check that op is a single byte read before
-> > > > accepting the command.    
-> > > 
-> > > Please do not discriminate against 8D-8D-8D flashes ;-).  
-> > 
-> > Then mask and match should probably be u16 :P. And the check as it is
-> > seems a bit lax to me. Drivers will of course be able to reject the op
-> > when there's more than one byte (or 16bit word in case of 8D) to read,
-> > but it feels like the core could automate that a bit.  
-> 
-> The two 8D flashes that are currently supported in SPI NOR both have a 
-> 1-byte status register. But to read it, the read op should be 2-byte 
-> long to avoid partial cycles at the end. The second byte is simply 
-> discarded.
-> 
-> 2-byte wide registers might show up in the future, but for now at least 
-> we don't have to worry about them.
+FWIW, that description isn't correct. dst_cpu does not need to be the
+CPU doing the actual balancing. It mostly is, but no guarantees.
 
-Well, I guess it doesn't hurt to take it into account now. I mean,
-what's happening on the bus in that case is a 2byte transfer, with the
-second byte being ignored, which you can describe with a 16bit mask
-of 0xMM00 (assuming big endian transfers here, as done for other ops).
-
-> 
-> >   
-> > >   
-> > > >     
-> > > > > +		if (ret)
-> > > > > +			return ret;
-> > > > > +
-> > > > > +		ret = ctlr->mem_ops->poll_status(mem, op, mask, match, timeout);    
-> > > > 
-> > > > You also need some sort of ->poll_status_is_supported() to validate
-> > > > that the controller supports the status polling for this specific op (I    
-> > > 
-> > > I don't think a separate function is needed for checking if the poll 
-> > > status op is supported. Return value of -EOPNOTSUPP should be able to 
-> > > signal that. This can also be used to check if Octal DDR capable 
-> > > controllers are able to poll using 2-byte reads.  
-> > 
-> > Yeah, I had something more complex in mind to avoid doing this 'try
-> > native mode and fall back on sw-based more if not supported' dance
-> > every time a status poll is requested (something similar to what we do
-> > for dirmaps, with a status poll desc), but I guess that's a bit
-> > premature (and probably uneeded).  
-> 
-> I think Mark also suggested something similar. Make the CPU/non-CPU case 
-> transparent to the caller. I agree with with this direction. Makes the 
-> caller simpler.
-
-It's kind of orthogonal to what I was suggesting, but yes, that's
-definitely a good idea. We certainly don't want the spi-nor layer to
-open code the same logic if the spi-mem layer can do it for us.
-
-> 
-> I also mentioned in a reply to this patch that supports_op() should be 
-> called before the op is executed. That should take care of "base" 
-> support for the op. The poll-specific checks can go in the poll_status() 
-> function itself. If either of those say the op is not supported, it 
-> should fall back to CPU based polling. That's the design that makes the 
-> most sense to me.
-
-What I had in mind was more:
-
-1/ create a poll desc with spi_mem_create_poll_status_desc(). The
-   "operation supported" check is done here. The controller can store
-   all its HW-specific state in there. If the operation is not natively
-   supported, a SW-based poll descriptor (similar to the SW-based
-   dirmap) is created
-2/ poll the status with spi_mem_poll_status(). This function is passed
-   a poll descriptor which helps select the path that should be taken
-   without having to check every time whether the hardware supports a
-   specific status polling op. I can also imagine some preparation
-   being done during the desc creation if that makes sense (preparing
-   reg values to be written when a status poll request is issued for
-   instance)
-
-Anyway, as I said, this sort of optimization might be a bit premature.
