@@ -2,104 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCCC03718F0
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:10:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A54A3718F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:10:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231187AbhECQKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 12:10:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231224AbhECQKb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 12:10:31 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E83C06138B;
-        Mon,  3 May 2021 09:09:37 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id m11so4475740pfc.11;
-        Mon, 03 May 2021 09:09:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WUYBn+OTNN4XwS0aZ2myRI9DCSukHpwMPNNUN+38vZA=;
-        b=GWFUGV0gR/b6H5JEnNxwqyOS4/i3m+9yZFMp8uPxS9vPrYl9at930xWWr4KxGqPm1b
-         H+hssjNnyXZljkxFe+BuBtQSO6WqjIE50KXdG4sX7rgEeSaRP7zn1dE56vYvOudxEmM1
-         Ry7oFhsn8jjd7+YVcf9fQiDjYIW+UQnSk7xU7WAhADjmDX5hPIeEFYrPPaoJlc0hV9Gl
-         xTGrF36XzUmZn12l2/IqpHzYsIXWirx9sRfanaap+N3F4Rit1vdSuxmfewZSMgDImNeI
-         EExroDMd9nYAi9bdH1hBYfDlp/+MIrad9u7YGJVg0D7pFctolUH4I2oWiXDgNAuzQSii
-         e5aA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WUYBn+OTNN4XwS0aZ2myRI9DCSukHpwMPNNUN+38vZA=;
-        b=YJ4gleW/Oudz15EGtHqtKefSFZVjt1x3gg9DqYJHTCqZDC3AB1dhb3i2v/Ud+xz4bo
-         Zz8KksMAvTGNHXWKSJVCP6DaJTVNTI8HW4aNGjmycaICpyeM47k7pLXEQMpVluTGSArv
-         ljwiS+Gkfp4upx9xd/DOg50X93wn9pGdTAkl4P3Kx8HgI5hYit6dNgcQyfUCvzwpt3YQ
-         jUnUI+fFwo6r/7aBWxzkOE4pYIpif7qcUKhRXCS8fDwGniZGRsadcriRaINfbjCHPse1
-         1P8OOAxVOoKdW4ObVLxmp6EgfXp2hDla66TB77lbOJ1ih/vHeWWOK565NIUKMhs1kv3C
-         F7/g==
-X-Gm-Message-State: AOAM532nkrTig+yKzOQnLkm5yN1nWtuS3Dx2VToJfY6dxV8clfbRrpzW
-        RTFmLKEXKK17KUjxHNlpx535CXhndcjNpgmn
-X-Google-Smtp-Source: ABdhPJwwQ4SEfJncS3DjFky0jrtAzabFr/NwGRIk+x6cUIS0pKjHWg2e9HNk4xF83fmQn3htuPaNUg==
-X-Received: by 2002:aa7:8198:0:b029:274:8a92:51b5 with SMTP id g24-20020aa781980000b02902748a9251b5mr19595593pfi.5.1620058176881;
-        Mon, 03 May 2021 09:09:36 -0700 (PDT)
-Received: from localhost.localdomain (host-219-71-67-82.dynamic.kbtelecom.net. [219.71.67.82])
-        by smtp.gmail.com with ESMTPSA id i14sm41758pgk.77.2021.05.03.09.09.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 09:09:36 -0700 (PDT)
-From:   Wei Ming Chen <jj251510319013@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     balbi@kernel.org, linux-usb@vger.kernel.org,
-        Wei Ming Chen <jj251510319013@gmail.com>
-Subject: [PATCH] usb: gadget: function: Fix inconsistent indent
-Date:   Tue,  4 May 2021 00:09:27 +0800
-Message-Id: <20210503160927.6482-1-jj251510319013@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S231262AbhECQL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 12:11:27 -0400
+Received: from mga11.intel.com ([192.55.52.93]:53858 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231219AbhECQLY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 12:11:24 -0400
+IronPort-SDR: eNy0nRYiFK35XvxwxaxNtGDwYVqoyDSU0MxZnvrJnap6HHBUJCjj0MdyZf63s5hK9lC1Z+UcnR
+ 5dU+bstA3UmA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9973"; a="194633520"
+X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
+   d="scan'208";a="194633520"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 09:10:30 -0700
+IronPort-SDR: 99oSt393+cu6Pj5tJ8FFNtfhBJsDQWeoY05r9eWQ84ecMun30NzwSQLqzns5tmIguro9eDuUyI
+ GMpr5abvXppg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
+   d="scan'208";a="432812163"
+Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 03 May 2021 09:10:28 -0700
+Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1ldb9Q-0009HS-5g; Mon, 03 May 2021 16:10:28 +0000
+Date:   Tue, 04 May 2021 00:09:37 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2021.04.30b] BUILD SUCCESS
+ 0567e4c5c89daa50062599b0d8e91c4df4af734e
+Message-ID: <60902041.9zwm1UozovT+Q/Ka%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove whitespace before variable
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.04.30b
+branch HEAD: 0567e4c5c89daa50062599b0d8e91c4df4af734e  squash! rcu: Improve comments describing RCU read-side critical sections
 
-Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
+elapsed time: 721m
+
+configs tested: 103
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arc                        vdk_hs38_defconfig
+mips                         db1xxx_defconfig
+arm                           spitz_defconfig
+mips                        vocore2_defconfig
+powerpc                 mpc832x_mds_defconfig
+ia64                      gensparse_defconfig
+m68k                                defconfig
+m68k                          amiga_defconfig
+powerpc                    mvme5100_defconfig
+arm                      pxa255-idp_defconfig
+sparc64                          alldefconfig
+powerpc                mpc7448_hpc2_defconfig
+powerpc                      pasemi_defconfig
+sh                               j2_defconfig
+mips                           ip32_defconfig
+powerpc                 mpc85xx_cds_defconfig
+arm                         nhk8815_defconfig
+sh                          r7785rp_defconfig
+powerpc                         wii_defconfig
+powerpc                 canyonlands_defconfig
+powerpc                 mpc836x_mds_defconfig
+arm                       aspeed_g4_defconfig
+s390                          debug_defconfig
+powerpc                 mpc832x_rdb_defconfig
+powerpc                     asp8347_defconfig
+powerpc                     ksi8560_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20210503
+i386                 randconfig-a006-20210503
+i386                 randconfig-a001-20210503
+i386                 randconfig-a005-20210503
+i386                 randconfig-a004-20210503
+i386                 randconfig-a002-20210503
+x86_64               randconfig-a001-20210503
+x86_64               randconfig-a005-20210503
+x86_64               randconfig-a003-20210503
+x86_64               randconfig-a002-20210503
+x86_64               randconfig-a006-20210503
+x86_64               randconfig-a004-20210503
+i386                 randconfig-a013-20210503
+i386                 randconfig-a015-20210503
+i386                 randconfig-a016-20210503
+i386                 randconfig-a014-20210503
+i386                 randconfig-a011-20210503
+i386                 randconfig-a012-20210503
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a014-20210503
+x86_64               randconfig-a015-20210503
+x86_64               randconfig-a012-20210503
+x86_64               randconfig-a011-20210503
+x86_64               randconfig-a013-20210503
+x86_64               randconfig-a016-20210503
+
 ---
- drivers/usb/gadget/function/u_hid.h  | 4 ++--
- drivers/usb/gadget/function/u_midi.h | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/usb/gadget/function/u_hid.h b/drivers/usb/gadget/function/u_hid.h
-index 84e6da302499..98d6af558c03 100644
---- a/drivers/usb/gadget/function/u_hid.h
-+++ b/drivers/usb/gadget/function/u_hid.h
-@@ -29,8 +29,8 @@ struct f_hid_opts {
- 	 * Protect the data form concurrent access by read/write
- 	 * and create symlink/remove symlink.
- 	 */
--	 struct mutex			lock;
--	 int				refcnt;
-+	struct mutex			lock;
-+	int				refcnt;
- };
- 
- int ghid_setup(struct usb_gadget *g, int count);
-diff --git a/drivers/usb/gadget/function/u_midi.h b/drivers/usb/gadget/function/u_midi.h
-index f6e14af7f566..2e400b495cb8 100644
---- a/drivers/usb/gadget/function/u_midi.h
-+++ b/drivers/usb/gadget/function/u_midi.h
-@@ -29,8 +29,8 @@ struct f_midi_opts {
- 	 * Protect the data form concurrent access by read/write
- 	 * and create symlink/remove symlink.
- 	 */
--	 struct mutex			lock;
--	 int				refcnt;
-+	struct mutex			lock;
-+	int				refcnt;
- };
- 
- #endif /* U_MIDI_H */
--- 
-2.25.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
