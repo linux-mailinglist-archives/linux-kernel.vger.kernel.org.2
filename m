@@ -2,115 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2650371AB9
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE3B371954
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbhECQkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 12:40:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39904 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231375AbhECQif (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 12:38:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CB50613C4;
-        Mon,  3 May 2021 16:36:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620059817;
-        bh=2NP5te+jZbVJI9Ngj88cWMuWA5RVvd7pvJ2s2BY2Bss=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KJSLq+QPsHit/bVeVgD85ySraOfVvqmMQBMC1CJNnVQQbd08Un7WtIbfDBMrvSuwO
-         50imBWz/b7xKqYjf3WawMD71aTRwzoKXomwTzSv/ysX+1x5i5p6aurTwGt4mai2KQ4
-         pFCJGhyt0vlcPpopUhYPACODMVDYs49NPajmv0v9+aEDI4+Z3cM8ihQCwSLYiNp7TZ
-         zlAmd0ZO6GxpPiVqRFkfrXAdQplbpFHPtKGiP96xgFm7+BAbUyLS25PcXSyFVkobmw
-         DH8l05n8th8pUHO8XTn4uf3Jxgo4+gUvX3/518H++sMJc0HJUYJh8kMBNANoUTf4ro
-         IAbKhxTm45Dlg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Xingui Yang <yangxingui@huawei.com>,
-        Luo Jiaxing <luojiaxing@huawei.com>,
-        John Garry <john.garry@huawei.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        linux-ide@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.12 066/134] ata: ahci: Disable SXS for Hisilicon Kunpeng920
-Date:   Mon,  3 May 2021 12:34:05 -0400
-Message-Id: <20210503163513.2851510-66-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210503163513.2851510-1-sashal@kernel.org>
-References: <20210503163513.2851510-1-sashal@kernel.org>
+        id S231338AbhECQfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 12:35:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231280AbhECQfg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 12:35:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BFF7C06174A;
+        Mon,  3 May 2021 09:34:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=N8b6AHrFH7G1Q2NJd1TCUNskzAIwu+2bvkyfZZCq+Gs=; b=G2mEL9a+ZTIvLPPa3TW+AU9HOJ
+        J/FEk1Sj5zSFQ+Dsf8tYFEEd13wcGpYUQiG6FRjP4Ngr/KCwoI+AvBhzDul8lUMRn3JhO39jK5rtq
+        hxgq70ALF9YdND6HQro2T6+2ILrsDBhrR/R5UUq7FxU+TyRi7Sf4PKeQ0PpX9nuDM59KP3+zz039h
+        lxuRCwzmNf2OkFypm/I0i82HJ84uVCsUSUzXh1+14J4Wk7HBLf/lupgjJ0zB9OvRNS6SBV4EEiH/i
+        V7bNhv2FNV7X9+vM4C1qaLF7//h4dlNlrHsjJidjPnxEiAZ5H29tMJ4Hf2pp7OY+31u1F6EJhiCuO
+        HTIQ445w==;
+Received: from [2601:1c0:6280:3f0::df68] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1ldbWR-00FJuO-1p; Mon, 03 May 2021 16:34:27 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Troy Lee <troy_lee@aspeedtech.com>,
+        Stefan Schaeckeler <sschaeck@cisco.com>,
+        linux-edac@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Borislav Petkov <bp@suse.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>, linux-aspeed@lists.ozlabs.org
+Subject: [PATCH] EDAC: aspeed: print resource_size_t using %pa
+Date:   Mon,  3 May 2021 09:34:09 -0700
+Message-Id: <20210503163409.31944-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xingui Yang <yangxingui@huawei.com>
+Fix build warnings for using "%x" to print resource_size_t in 2 places.
+resource_size_t can be either of u32 or u64. We have a special format
+"%pa" for printing a resource_size_t, which is the same as a phys_addr_t.
+See Documentation/core-api/printk-formats.rst.
 
-[ Upstream commit 234e6d2c18f5b080cde874483c4c361f3ae7cffe ]
+  CC      drivers/edac/aspeed_edac.o
+../drivers/edac/aspeed_edac.c: In function 'init_csrows':
+../drivers/edac/aspeed_edac.c:257:21: warning: format '%x' expects argument of type 'unsigned int', but argument 4 has type 'resource_size_t' {aka 'long long unsigned int'} [-Wformat=]
+  257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+  257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+  257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+../drivers/edac/aspeed_edac.c:257:21: warning: format '%x' expects argument of type 'unsigned int', but argument 5 has type 'resource_size_t' {aka 'long long unsigned int'} [-Wformat=]
+  257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+  257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+  257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
 
-On Hisilicon Kunpeng920, ESP is set to 1 by default for all ports of
-SATA controller. In some scenarios, some ports are not external SATA ports,
-and it cause disks connected to these ports to be identified as removable
-disks. So disable the SXS capability on the software side to prevent users
-from mistakenly considering non-removable disks as removable disks and
-performing related operations.
-
-Signed-off-by: Xingui Yang <yangxingui@huawei.com>
-Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
-Reviewed-by: John Garry <john.garry@huawei.com>
-Link: https://lore.kernel.org/r/1615544676-61926-1-git-send-email-luojiaxing@huawei.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 9b7e6242ee4e ("EDAC, aspeed: Add an Aspeed AST2500 EDAC driver")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Troy Lee <troy_lee@aspeedtech.com>
+Cc: Stefan Schaeckeler <sschaeck@cisco.com>
+Cc: linux-edac@vger.kernel.org
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Borislav Petkov <bp@suse.de>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: linux-aspeed@lists.ozlabs.org
 ---
- drivers/ata/ahci.c    | 5 +++++
- drivers/ata/ahci.h    | 1 +
- drivers/ata/libahci.c | 5 +++++
- 3 files changed, 11 insertions(+)
+Found in linux-next but applies to mainline.
 
-diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
-index 00ba8e5a1ccc..33192a8f687d 100644
---- a/drivers/ata/ahci.c
-+++ b/drivers/ata/ahci.c
-@@ -1772,6 +1772,11 @@ static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		hpriv->flags |= AHCI_HFLAG_NO_DEVSLP;
- 
- #ifdef CONFIG_ARM64
-+	if (pdev->vendor == PCI_VENDOR_ID_HUAWEI &&
-+	    pdev->device == 0xa235 &&
-+	    pdev->revision < 0x30)
-+		hpriv->flags |= AHCI_HFLAG_NO_SXS;
-+
- 	if (pdev->vendor == 0x177d && pdev->device == 0xa01c)
- 		hpriv->irq_handler = ahci_thunderx_irq_handler;
- #endif
-diff --git a/drivers/ata/ahci.h b/drivers/ata/ahci.h
-index 98b8baa47dc5..d1f284f0c83d 100644
---- a/drivers/ata/ahci.h
-+++ b/drivers/ata/ahci.h
-@@ -242,6 +242,7 @@ enum {
- 							suspend/resume */
- 	AHCI_HFLAG_IGN_NOTSUPP_POWER_ON	= (1 << 27), /* ignore -EOPNOTSUPP
- 							from phy_power_on() */
-+	AHCI_HFLAG_NO_SXS		= (1 << 28), /* SXS not supported */
- 
- 	/* ap->flags bits */
- 
-diff --git a/drivers/ata/libahci.c b/drivers/ata/libahci.c
-index ea5bf5f4cbed..fec2e9754aed 100644
---- a/drivers/ata/libahci.c
-+++ b/drivers/ata/libahci.c
-@@ -493,6 +493,11 @@ void ahci_save_initial_config(struct device *dev, struct ahci_host_priv *hpriv)
- 		cap |= HOST_CAP_ALPM;
+ drivers/edac/aspeed_edac.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+--- linux-next-20210503.orig/drivers/edac/aspeed_edac.c
++++ linux-next-20210503/drivers/edac/aspeed_edac.c
+@@ -234,6 +234,7 @@ static int init_csrows(struct mem_ctl_in
+ 	u32 nr_pages, dram_type;
+ 	struct dimm_info *dimm;
+ 	struct device_node *np;
++	resource_size_t rsize;
+ 	struct resource r;
+ 	u32 reg04;
+ 	int rc;
+@@ -254,11 +255,12 @@ static int init_csrows(struct mem_ctl_in
+ 		return rc;
  	}
  
-+	if ((cap & HOST_CAP_SXS) && (hpriv->flags & AHCI_HFLAG_NO_SXS)) {
-+		dev_info(dev, "controller does not support SXS, disabling CAP_SXS\n");
-+		cap &= ~HOST_CAP_SXS;
-+	}
-+
- 	if (hpriv->force_port_map && port_map != hpriv->force_port_map) {
- 		dev_info(dev, "forcing port_map 0x%x -> 0x%x\n",
- 			 port_map, hpriv->force_port_map);
--- 
-2.30.2
-
+-	dev_dbg(mci->pdev, "dt: /memory node resources: first page r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+-		r.start, resource_size(&r), PAGE_SHIFT);
++	rsize = resource_size(&r);
++	dev_dbg(mci->pdev, "dt: /memory node resources: first page r.start=0x%pa, resource_size=0x%pa, PAGE_SHIFT macro=0x%x\n",
++		&r.start, &rsize, PAGE_SHIFT);
+ 
+ 	csrow->first_page = r.start >> PAGE_SHIFT;
+-	nr_pages = resource_size(&r) >> PAGE_SHIFT;
++	nr_pages = rsize >> PAGE_SHIFT;
+ 	csrow->last_page = csrow->first_page + nr_pages - 1;
+ 
+ 	regmap_read(aspeed_regmap, ASPEED_MCR_CONF, &reg04);
