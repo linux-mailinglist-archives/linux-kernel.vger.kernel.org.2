@@ -2,137 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DEED3717BE
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA1B13717C3
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhECPVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 11:21:49 -0400
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:39885 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbhECPVl (ORCPT
+        id S230346AbhECPWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 11:22:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230369AbhECPVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 11:21:41 -0400
-Received: by mail-ot1-f52.google.com with SMTP id 65-20020a9d03470000b02902808b4aec6dso5376957otv.6;
-        Mon, 03 May 2021 08:20:47 -0700 (PDT)
+        Mon, 3 May 2021 11:21:55 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0351AC06138D;
+        Mon,  3 May 2021 08:21:01 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id h10so6673198edt.13;
+        Mon, 03 May 2021 08:21:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Kkqs94+/ybUyNI5rZrs90tbn8fLyNhu7W2OnlMi0z3o=;
+        b=Ievrd4IVcRxqnwuDMPx71rpYDu8wesN7ueRNWJMJRO8Mwy2kIFknWE4kJ/z+u46c7l
+         gtLyLdWQ1vLk0T3mfWdwhXvbYO1EexlN/T4rHbyy1juHx8x2wiSSS3veV6EECzJR1Cb4
+         8L41CD3RP5bGy/Xf1b0QugmWNqjbzc2WA1LagllCFeljI1WOLNQoRospk6UlhcFjtvFJ
+         D55jY3dbkIgUIDiuym2tFDyu8t1eRjKOcYK06o/6urSsXVARBjGd/eKUUIq7y8MbuFMb
+         LA6IphnWdZ1Yk+i3xeAI1mriu0g8XWuxS+VPqjpjfxulIvGOv5p9sGks06492UFdfWm8
+         zWjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=GdRfS0NHErZVUqqjMY2tvcA6NmXLytui8eUHJOfx6FM=;
-        b=PiFNPOjwt7FumqSiTYHzGh3JpR+Pmu+X7o/5oRdOhDfydSruReApvh0RSUKSuaInZN
-         fyaUkU3b0QM34W1z4bWnhBbISD0ZmLAZQWCGPTtUFvbFYTKMRAUb3WFXUVLeYuJmVXay
-         Ku65gpGa+mxJqmNrYtnC3fiqGVKNDa5NsCifRRWbmDNMME7q5YBbHuGjb/mg6orXjdfQ
-         wgPF7Oh4zEzyFPBIQ6x49GNsbwJjnuh6+CuEAYZLqd521T1H3gpdD4YalNA7annbWSo/
-         vWVOVSRnQEG3qcghb+V1x3RW5bRH2mj/SprcWlQ9JJlgkDuE+IxMWoR1ljQVIc7Fymxh
-         FSwQ==
-X-Gm-Message-State: AOAM531hIH9Q2oHF33zD2bxxAnAwpKSSkQ8JzSPDqe6PIUHNkIR7KP88
-        66LE+CMokHBmoQiY6Ko6nw==
-X-Google-Smtp-Source: ABdhPJw/6Y4/5RNWt0aDLiFM9Q40lQB7DmrNe23N623XZAxpH+zo50yvHPFA1QJ/fbU0MbLiUUK6Qg==
-X-Received: by 2002:a05:6830:205a:: with SMTP id f26mr15125496otp.118.1620055247487;
-        Mon, 03 May 2021 08:20:47 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id a19sm24101otk.31.2021.05.03.08.20.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 08:20:46 -0700 (PDT)
-Received: (nullmailer pid 1846828 invoked by uid 1000);
-        Mon, 03 May 2021 15:20:45 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Steven Lee <steven_lee@aspeedtech.com>
-Cc:     "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
-        Ryan Chen <ryanchen.aspeed@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, ryan_chen@aspeedtech.com,
-        "moderated list:ASPEED SD/MMC DRIVER" <linux-aspeed@lists.ozlabs.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ASPEED SD/MMC DRIVER" <linux-mmc@vger.kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Rob Herring <robh+dt@kernel.org>, chin-ting_kuo@aspeedtech.com,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Joel Stanley <joel@jms.id.au>, Hongweiz@ami.com
-In-Reply-To: <20210503014336.20256-2-steven_lee@aspeedtech.com>
-References: <20210503014336.20256-1-steven_lee@aspeedtech.com> <20210503014336.20256-2-steven_lee@aspeedtech.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: mmc: sdhci-of-aspeed: Add description for AST2600 EVB.
-Date:   Mon, 03 May 2021 10:20:45 -0500
-Message-Id: <1620055245.319540.1846827.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Kkqs94+/ybUyNI5rZrs90tbn8fLyNhu7W2OnlMi0z3o=;
+        b=ll7NXZoQklnYd1uK+qIhxd0IGqZqlxTZk4UnynaQXaK0wPz/hWy7//RflXBkDQPQBi
+         b1FTXohKqZMoeO3Tut7fRPpGxihQfmJqB7lBt1mcgcdbJSuyfcKEmYxKhQM4s/96E0Fx
+         IOYZub+ok4A5iXWSVOpYv+AJI4WBwS3vrZd0ybg3NFprXlICIBbOt09fIVmRlLk8NL4p
+         wEuG4ATl6wzth2+jNkF4V9asz7MEu4mZmPUZFbfvfTHsZW/xX4L+tcMNDitvDKXz9MZN
+         2z/XbIiqY0zjuo6CDAnmPxq4I61QQ0YFzIyarpSamDYAk15oXc3+rtCs8OBFW86DOp/4
+         NDcQ==
+X-Gm-Message-State: AOAM533zajRzx9z2PeUKrOYm8lI+sEDOc922tuZDAK2GCSlCBVdKmE9L
+        QStBUWUjKOQPrWkYXaZG8IhGue+w4253coZMb9g=
+X-Google-Smtp-Source: ABdhPJwAOleGZd/Eez3lx4AEwk1OJQ6JhUvQv+HUuG6q0XvBq/99VHpqLBzZfJZqJpT2VJB7vIvPWyO4LHlM9wVgDEY=
+X-Received: by 2002:a05:6402:2548:: with SMTP id l8mr1029117edb.208.1620055258882;
+ Mon, 03 May 2021 08:20:58 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210503145503.1477-1-linux.amoon@gmail.com> <1jsg336eoo.fsf@starbuckisacylon.baylibre.com>
+In-Reply-To: <1jsg336eoo.fsf@starbuckisacylon.baylibre.com>
+From:   Anand Moon <linux.amoon@gmail.com>
+Date:   Mon, 3 May 2021 20:50:47 +0530
+Message-ID: <CANAwSgTiWhb5+iO0Ro4WO6uH4n_VoihZPsqaNMVx-hQ7kVwagA@mail.gmail.com>
+Subject: Re: [PATCHv1 0/9] Added Audio and HDMI power domain for Amlogic SoC
+To:     Jerome Brunet <jbrunet@baylibre.com>
+Cc:     devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-amlogic@lists.infradead.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 03 May 2021 09:43:34 +0800, Steven Lee wrote:
-> Add the description for describing the AST 2600 EVB reference design of
-> GPIO regulators and provide the example in the document.
-> 
-> AST2600-A2 EVB has the reference design for enabling SD bus
-> power and toggling SD bus signal voltage by GPIO pins.
-> 
-> In the reference design, GPIOV0 of AST2600-A2 EVB is connected to
-> power load switch that providing 3.3v to SD1 bus vdd. GPIOV1 is
-> connected to a 1.8v and a 3.3v power load switch that providing
-> signal voltage to
-> SD1 bus.
-> 
-> If GPIOV0 is active high, SD1 bus is enabled. Otherwise, SD1 bus is
-> disabled.
-> If GPIOV1 is active high, 3.3v power load switch is enabled, SD1
-> signal voltage is 3.3v. Otherwise, 1.8v power load switch will be
-> enabled, SD1 signal voltage becomes 1.8v.
-> 
-> AST2600-A2 EVB also support toggling signal voltage for SD2 bus.
-> The design is the same as SD1 bus. It uses GPIOV2 as power-gpio and
-> GPIOV3 as power-switch-gpio.
-> 
-> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> ---
->  .../devicetree/bindings/mmc/aspeed,sdhci.yaml | 99 +++++++++++++++++++
->  1 file changed, 99 insertions(+)
-> 
+Hi Jerome,
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+On Mon, 3 May 2021 at 20:35, Jerome Brunet <jbrunet@baylibre.com> wrote:
+>
+>
+> On Mon 03 May 2021 at 16:54, Anand Moon <linux.amoon@gmail.com> wrote:
+>
+> > Patch series add Audio and Hdmi power domain for Amlogic SoC.
+> >
+> > Tested on GXBB - Odroid C2
+> >           SM1  - Odroid C4
+> >           G12B - Odroid N2
+> > -Anand
+> >
+>
+> AFAIK, the audio power domain is a no-op on the g12/sm1. At least this
+> is what we've been told by AML. Unless this solves something, I don't
+> think it should be done at all.
+>
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml:97:5: [error] syntax error: expected <block end>, but found '<scalar>' (syntax)
+Opps, I unitedly make some assumption,.I will drop these changes.
 
-dtschema/dtc warnings/errors:
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/mmc/aspeed,sdhci.example.dts'
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-extract-example", line 45, in <module>
-    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 421, in load
-    return constructor.get_single_data()
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 109, in get_single_data
-    node = self.composer.get_single_node()
-  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
-  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 891, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
-ruamel.yaml.parser.ParserError: while parsing a block mapping
-  in "<unicode string>", line 5, column 1
-did not find expected key
-  in "<unicode string>", line 97, column 5
-make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/mmc/aspeed,sdhci.example.dts] Error 1
-make[1]: *** Waiting for unfinished jobs....
-./Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml:  while parsing a block mapping
-  in "<unicode string>", line 5, column 1
-did not find expected key
-  in "<unicode string>", line 97, column 5
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml: ignoring, error parsing file
-warning: no schema found in file: ./Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
-make: *** [Makefile:1414: dt_binding_check] Error 2
-
-See https://patchwork.ozlabs.org/patch/1472993
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+Thanks
+-Anand
