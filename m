@@ -2,518 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2C6B371639
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A378737163A
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233400AbhECNuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 09:50:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54722 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234436AbhECNuo (ORCPT
+        id S234465AbhECNvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 09:51:32 -0400
+Received: from mail.efficios.com ([167.114.26.124]:51614 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233308AbhECNvb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 09:50:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620049790;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RCbTSzLUqmCqugcSpAO4fziY8cPtByisFZyD1cS6KlY=;
-        b=Z3bXe9nQxujydz+uGT7BYZRm961OuV0PaBcvgSZFCEIoudt/9c6uPbeqRsOGflLdW+e5xf
-        /NePWLgwgWI9cYharsgpZ/hnUW6G9SRNU1/w1GDwW+Vl3Ox2xUS+7gSfaS2wnKYqrQGtRY
-        mMYQvuHEq/3bbP6H2ht6O1ELknzy3lU=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-251-xB6Ja-FYOia1qmWAsVBkCQ-1; Mon, 03 May 2021 09:49:49 -0400
-X-MC-Unique: xB6Ja-FYOia1qmWAsVBkCQ-1
-Received: by mail-qk1-f199.google.com with SMTP id n2-20020a37a4020000b02902e9aef597f7so3249415qke.21
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 06:49:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=RCbTSzLUqmCqugcSpAO4fziY8cPtByisFZyD1cS6KlY=;
-        b=tlSg9vM9kOrEBMmlixpLjZb7a1kZLyrsPUUPL0JT6BFMJ3Xn0PDRvzO+mmChSVCHlB
-         uV5DAFb6sRdtRyltdGT3ezOBp5Ox8OybQKqEJhQfVlcCCyeBjjaSt7UyEHzT2XJPSkDV
-         iHYymsVYSqkH92WzNCt9L129ZgwvZfy5HFd/c3Eepx3CZkivwrelfjq/YjgkcvPTQPb7
-         ApXqn0kroSmF1oQjCL42LOa+9T0j+guzXqzeEKB9MZRWAigZGI3YzuDdMxd5lNbadLKC
-         K+ZI88n/zRyzatvhghRdKHB+4wL5h0U0JaIAAEGt6D0LBaUgz7hYJo6EvhUjV55EIIXi
-         ivTw==
-X-Gm-Message-State: AOAM533Jj8vXWgrVllcKdwWGBTAJb4LPHVKodX9vAkejwLMzF03aF0Xv
-        j3Cdcdppsqg9RfZjktYh6iFEU+PYaqu2Aor291rXnXPcdNTnNzQo17J9Uvka2Y8H9kW5M+36GEs
-        Fx0l4YkQaWZgRoOb9CqZFDPF7
-X-Received: by 2002:a37:58c5:: with SMTP id m188mr19036832qkb.327.1620049788138;
-        Mon, 03 May 2021 06:49:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwJr0UJl3KfNEB16zj+TqokKcat7+cGqeb1AMarEnQ/Ni+iLRZHR7y+RxPQyDZl2E0rJavQVw==
-X-Received: by 2002:a37:58c5:: with SMTP id m188mr19036811qkb.327.1620049787880;
-        Mon, 03 May 2021 06:49:47 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id r1sm9112197qtt.3.2021.05.03.06.49.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 06:49:47 -0700 (PDT)
-Subject: Re: [PATCH V5 XRT Alveo 09/20] fpga: xrt: management physical
- function driver (root)
-To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
-Cc:     linux-fpga@vger.kernel.org, maxz@xilinx.com,
-        sonal.santan@xilinx.com, yliu@xilinx.com, michal.simek@xilinx.com,
-        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
-        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
-References: <20210427205431.23896-1-lizhi.hou@xilinx.com>
- <20210427205431.23896-10-lizhi.hou@xilinx.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <ecef300b-89b7-4d9c-a598-dfd159897386@redhat.com>
-Date:   Mon, 3 May 2021 06:49:44 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 3 May 2021 09:51:31 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 01368241226;
+        Mon,  3 May 2021 09:50:31 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id Lhs7HQXiEDSs; Mon,  3 May 2021 09:50:30 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 7E4F224129C;
+        Mon,  3 May 2021 09:50:30 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 7E4F224129C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1620049830;
+        bh=eUdc0ORANnqMPD7ukmSadEOiM93pqNDHZ9zconEvXSg=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=d+OTnJ6CtaokRpIb6Gsn3GLe9daSzfn7xw/Zx7jLnfggYTXxmjGL4R4svrnV2CxYa
+         rn7Z9ZOX+arXjgk3yykcAPAizDOG/dysQFwQfCk1LBjNy2aQqtAtscrXzRxNTBtr+U
+         hx9cg/GIn9MSvh6i4j8sJc+2fAr9Q7GP14DmWISpUjA+0FB1CcdFzrXzZhkBp/4SKU
+         x3KmDd4LESxHDoSZINBuF8vTBQZqTsgYuEATcQPa2sWR/sSnJ7j4lT1hycn+sPNdZq
+         aG1FIKa+csdx3n0qE+xlAFQKqIvzMvWqeEhFftUhuJFO8JQfPTZLxOhdAcVR2UrTLg
+         WfUmLa7gHMK6g==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id q3LbvlmhcHGc; Mon,  3 May 2021 09:50:30 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 69B12241299;
+        Mon,  3 May 2021 09:50:30 -0400 (EDT)
+Date:   Mon, 3 May 2021 09:50:30 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     rostedt <rostedt@goodmis.org>
+Cc:     peter enderborg <Peter.Enderborg@sony.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Michel Lespinasse <walken@google.com>,
+        Jann Horn <jannh@google.com>,
+        christophe leroy <christophe.leroy@c-s.fr>,
+        Minchan Kim <minchan@kernel.org>
+Message-ID: <1214833117.22933.1620049830326.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210501091104.418765bd@oasis.local.home>
+References: <20210430142223.25500-1-peter.enderborg@sony.com> <20210430142223.25500-2-peter.enderborg@sony.com> <m14kfnzmsp.fsf@fess.ebiederm.org> <4bb24db4-f720-f5e7-9054-36bdeaee1d79@sony.com> <20210501091104.418765bd@oasis.local.home>
+Subject: Re: [PATCH 1/2] tracing: Add a trace for task_exit
 MIME-Version: 1.0
-In-Reply-To: <20210427205431.23896-10-lizhi.hou@xilinx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - FF88 (Linux)/8.8.15_GA_4007)
+Thread-Topic: tracing: Add a trace for task_exit
+Thread-Index: wfnMoF8QnBjqFe75TFoqmMOQw19oNQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+----- On May 1, 2021, at 9:11 AM, rostedt rostedt@goodmis.org wrote:
 
-On 4/27/21 1:54 PM, Lizhi Hou wrote:
-> The PCIE device driver which attaches to management function on Alveo
-> devices. It instantiates one or more group drivers which, in turn,
-> instantiate xrt drivers. The instantiation of group and xrt drivers is
-> completely dtb driven.
->
-> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
-> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
-> Signed-off-by: Lizhi Hou <lizhi.hou@xilinx.com>
-Reviewed-by: Tom Rix <trix@redhat.com>
-> ---
->   drivers/fpga/xrt/mgnt/root.c | 419 +++++++++++++++++++++++++++++++++++
->   1 file changed, 419 insertions(+)
->   create mode 100644 drivers/fpga/xrt/mgnt/root.c
->
-> diff --git a/drivers/fpga/xrt/mgnt/root.c b/drivers/fpga/xrt/mgnt/root.c
-> new file mode 100644
-> index 000000000000..6e362e9d4b59
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/mgnt/root.c
-> @@ -0,0 +1,419 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Xilinx Alveo Management Function Driver
-> + *
-> + * Copyright (C) 2020-2021 Xilinx, Inc.
-> + *
-> + * Authors:
-> + *	Cheng Zhen <maxz@xilinx.com>
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/pci.h>
-> +#include <linux/aer.h>
-> +#include <linux/vmalloc.h>
-> +#include <linux/delay.h>
-> +
-> +#include "xroot.h"
-> +#include "xmgnt.h"
-> +#include "metadata.h"
-> +
-> +#define XMGNT_MODULE_NAME	"xrt-mgnt"
-> +#define XMGNT_DRIVER_VERSION	"4.0.0"
-> +
-> +#define XMGNT_PDEV(xm)		((xm)->pdev)
-> +#define XMGNT_DEV(xm)		(&(XMGNT_PDEV(xm)->dev))
-> +#define xmgnt_err(xm, fmt, args...)	\
-> +	dev_err(XMGNT_DEV(xm), "%s: " fmt, __func__, ##args)
-> +#define xmgnt_warn(xm, fmt, args...)	\
-> +	dev_warn(XMGNT_DEV(xm), "%s: " fmt, __func__, ##args)
-> +#define xmgnt_info(xm, fmt, args...)	\
-> +	dev_info(XMGNT_DEV(xm), "%s: " fmt, __func__, ##args)
-> +#define xmgnt_dbg(xm, fmt, args...)	\
-> +	dev_dbg(XMGNT_DEV(xm), "%s: " fmt, __func__, ##args)
-> +#define XMGNT_DEV_ID(_pcidev)			\
-> +	({ typeof(_pcidev) (pcidev) = (_pcidev);	\
-> +	((pci_domain_nr((pcidev)->bus) << 16) |	\
-> +	PCI_DEVID((pcidev)->bus->number, 0)); })
-> +#define XRT_VSEC_ID		0x20
-> +#define XRT_MAX_READRQ		512
-> +
-> +static struct class *xmgnt_class;
-> +
-> +/* PCI Device IDs */
-> +/*
-> + * Golden image is preloaded on the device when it is shipped to customer.
-> + * Then, customer can load other shells (from Xilinx or some other vendor).
-> + * If something goes wrong with the shell, customer can always go back to
-> + * golden and start over again.
-> + */
-> +#define PCI_DEVICE_ID_U50_GOLDEN	0xD020
-> +#define PCI_DEVICE_ID_U50		0x5020
-> +static const struct pci_device_id xmgnt_pci_ids[] = {
-> +	{ PCI_DEVICE(PCI_VENDOR_ID_XILINX, PCI_DEVICE_ID_U50_GOLDEN), }, /* Alveo U50 (golden) */
-> +	{ PCI_DEVICE(PCI_VENDOR_ID_XILINX, PCI_DEVICE_ID_U50), }, /* Alveo U50 */
-> +	{ 0, }
-> +};
-> +
-> +struct xmgnt {
-> +	struct pci_dev *pdev;
-> +	void *root;
-> +
-> +	bool ready;
-> +};
-> +
-> +static int xmgnt_config_pci(struct xmgnt *xm)
-> +{
-> +	struct pci_dev *pdev = XMGNT_PDEV(xm);
-> +	int rc;
-> +
-> +	rc = pcim_enable_device(pdev);
-> +	if (rc < 0) {
-> +		xmgnt_err(xm, "failed to enable device: %d", rc);
-> +		return rc;
-> +	}
-> +
-> +	rc = pci_enable_pcie_error_reporting(pdev);
-> +	if (rc)
-> +		xmgnt_warn(xm, "failed to enable AER: %d", rc);
-> +
-> +	pci_set_master(pdev);
-> +
-> +	rc = pcie_get_readrq(pdev);
-> +	if (rc > XRT_MAX_READRQ)
-> +		pcie_set_readrq(pdev, XRT_MAX_READRQ);
-> +	return 0;
-> +}
-> +
-> +static int xmgnt_match_slot_and_save(struct device *dev, void *data)
-> +{
-> +	struct xmgnt *xm = data;
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +
-> +	if (XMGNT_DEV_ID(pdev) == XMGNT_DEV_ID(xm->pdev)) {
-> +		pci_cfg_access_lock(pdev);
-> +		pci_save_state(pdev);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void xmgnt_pci_save_config_all(struct xmgnt *xm)
-> +{
-> +	bus_for_each_dev(&pci_bus_type, NULL, xm, xmgnt_match_slot_and_save);
-> +}
-> +
-> +static int xmgnt_match_slot_and_restore(struct device *dev, void *data)
-> +{
-> +	struct xmgnt *xm = data;
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +
-> +	if (XMGNT_DEV_ID(pdev) == XMGNT_DEV_ID(xm->pdev)) {
-> +		pci_restore_state(pdev);
-> +		pci_cfg_access_unlock(pdev);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void xmgnt_pci_restore_config_all(struct xmgnt *xm)
-> +{
-> +	bus_for_each_dev(&pci_bus_type, NULL, xm, xmgnt_match_slot_and_restore);
-> +}
-> +
-> +static void xmgnt_root_hot_reset(struct device *dev)
-> +{
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +	struct pci_bus *bus;
-> +	u16 pci_cmd, devctl;
-> +	struct xmgnt *xm;
-> +	u8 pci_bctl;
-> +	int i, ret;
-> +
-> +	xm = pci_get_drvdata(pdev);
-> +	xmgnt_info(xm, "hot reset start");
-> +	xmgnt_pci_save_config_all(xm);
-> +	pci_disable_device(pdev);
-> +	bus = pdev->bus;
-> +
-> +	/*
-> +	 * When flipping the SBR bit, device can fall off the bus. This is
-> +	 * usually no problem at all so long as drivers are working properly
-> +	 * after SBR. However, some systems complain bitterly when the device
-> +	 * falls off the bus.
-> +	 * The quick solution is to temporarily disable the SERR reporting of
-> +	 * switch port during SBR.
-> +	 */
-> +
-> +	pci_read_config_word(bus->self, PCI_COMMAND, &pci_cmd);
-> +	pci_write_config_word(bus->self, PCI_COMMAND, (pci_cmd & ~PCI_COMMAND_SERR));
-> +	pcie_capability_read_word(bus->self, PCI_EXP_DEVCTL, &devctl);
-> +	pcie_capability_write_word(bus->self, PCI_EXP_DEVCTL, (devctl & ~PCI_EXP_DEVCTL_FERE));
-> +	pci_read_config_byte(bus->self, PCI_BRIDGE_CONTROL, &pci_bctl);
-> +	pci_write_config_byte(bus->self, PCI_BRIDGE_CONTROL, pci_bctl | PCI_BRIDGE_CTL_BUS_RESET);
-> +	msleep(100);
-> +	pci_write_config_byte(bus->self, PCI_BRIDGE_CONTROL, pci_bctl);
-> +	ssleep(1);
-> +
-> +	pcie_capability_write_word(bus->self, PCI_EXP_DEVCTL, devctl);
-> +	pci_write_config_word(bus->self, PCI_COMMAND, pci_cmd);
-> +
-> +	ret = pci_enable_device(pdev);
-> +	if (ret)
-> +		xmgnt_err(xm, "failed to enable device, ret %d", ret);
-> +
-> +	for (i = 0; i < 300; i++) {
-> +		pci_read_config_word(pdev, PCI_COMMAND, &pci_cmd);
-> +		if (pci_cmd != 0xffff)
-> +			break;
-> +		msleep(20);
-> +	}
-> +	if (i == 300)
-> +		xmgnt_err(xm, "timed out waiting for device to be online after reset");
-> +
-> +	xmgnt_info(xm, "waiting for %d ms", i * 20);
-> +	xmgnt_pci_restore_config_all(xm);
-> +	xmgnt_config_pci(xm);
-> +}
-> +
-> +static int xmgnt_add_vsec_node(struct xmgnt *xm, char *dtb)
-> +{
-> +	u32 off_low, off_high, vsec_bar, header;
-> +	struct pci_dev *pdev = XMGNT_PDEV(xm);
-> +	struct xrt_md_endpoint ep = { 0 };
-> +	struct device *dev = DEV(pdev);
-> +	int cap = 0, ret = 0;
-> +	u64 vsec_off;
-> +
-> +	while ((cap = pci_find_next_ext_capability(pdev, cap, PCI_EXT_CAP_ID_VNDR))) {
-> +		pci_read_config_dword(pdev, cap + PCI_VNDR_HEADER, &header);
-> +		if (PCI_VNDR_HEADER_ID(header) == XRT_VSEC_ID)
-> +			break;
-> +	}
-> +	if (!cap) {
-> +		xmgnt_info(xm, "No Vendor Specific Capability.");
-> +		return -ENOENT;
-> +	}
-> +
-> +	if (pci_read_config_dword(pdev, cap + 8, &off_low) ||
-> +	    pci_read_config_dword(pdev, cap + 12, &off_high)) {
-> +		xmgnt_err(xm, "pci_read vendor specific failed.");
-> +		return -EINVAL;
-> +	}
-> +
-> +	ep.ep_name = XRT_MD_NODE_VSEC;
-> +	ret = xrt_md_add_endpoint(dev, dtb, &ep);
-> +	if (ret) {
-> +		xmgnt_err(xm, "add vsec metadata failed, ret %d", ret);
-> +		goto failed;
-> +	}
-> +
-> +	vsec_bar = cpu_to_be32(off_low & 0xf);
-> +	ret = xrt_md_set_prop(dev, dtb, XRT_MD_NODE_VSEC, NULL,
-> +			      XRT_MD_PROP_BAR_IDX, &vsec_bar, sizeof(vsec_bar));
-> +	if (ret) {
-> +		xmgnt_err(xm, "add vsec bar idx failed, ret %d", ret);
-> +		goto failed;
-> +	}
-> +
-> +	vsec_off = cpu_to_be64(((u64)off_high << 32) | (off_low & ~0xfU));
-> +	ret = xrt_md_set_prop(dev, dtb, XRT_MD_NODE_VSEC, NULL,
-> +			      XRT_MD_PROP_OFFSET, &vsec_off, sizeof(vsec_off));
-> +	if (ret) {
-> +		xmgnt_err(xm, "add vsec offset failed, ret %d", ret);
-> +		goto failed;
-> +	}
-> +
-> +failed:
-> +	return ret;
-> +}
-> +
-> +static int xmgnt_create_root_metadata(struct xmgnt *xm, char **root_dtb)
-> +{
-> +	char *dtb = NULL;
-> +	int ret;
-> +
-> +	ret = xrt_md_create(XMGNT_DEV(xm), &dtb);
-> +	if (ret) {
-> +		xmgnt_err(xm, "create metadata failed, ret %d", ret);
-> +		goto failed;
-> +	}
-> +
-> +	ret = xmgnt_add_vsec_node(xm, dtb);
-> +	if (ret == -ENOENT) {
-> +		/*
-> +		 * We may be dealing with a MFG board.
-> +		 * Try vsec-golden which will bring up all hard-coded leaves
-> +		 * at hard-coded offsets.
-> +		 */
-> +		ret = xroot_add_simple_node(xm->root, dtb, XRT_MD_NODE_VSEC_GOLDEN);
-> +	} else if (ret == 0) {
-> +		ret = xroot_add_simple_node(xm->root, dtb, XRT_MD_NODE_MGNT_MAIN);
-> +	}
-> +	if (ret)
-> +		goto failed;
-> +
-> +	*root_dtb = dtb;
-> +	return 0;
-> +
-> +failed:
-> +	vfree(dtb);
-> +	return ret;
-> +}
-> +
-> +static ssize_t ready_show(struct device *dev,
-> +			  struct device_attribute *da,
-> +			  char *buf)
-> +{
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +	struct xmgnt *xm = pci_get_drvdata(pdev);
-> +
-> +	return sprintf(buf, "%d\n", xm->ready);
-> +}
-> +static DEVICE_ATTR_RO(ready);
-> +
-> +static struct attribute *xmgnt_root_attrs[] = {
-> +	&dev_attr_ready.attr,
-> +	NULL
-> +};
-> +
-> +static struct attribute_group xmgnt_root_attr_group = {
-> +	.attrs = xmgnt_root_attrs,
-> +};
-> +
-> +static void xmgnt_root_get_id(struct device *dev, struct xrt_root_get_id *rid)
-> +{
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +
-> +	rid->xpigi_vendor_id = pdev->vendor;
-> +	rid->xpigi_device_id = pdev->device;
-> +	rid->xpigi_sub_vendor_id = pdev->subsystem_vendor;
-> +	rid->xpigi_sub_device_id = pdev->subsystem_device;
-> +}
-> +
-> +static int xmgnt_root_get_resource(struct device *dev, struct xrt_root_get_res *res)
-> +{
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +	struct xmgnt *xm;
-> +
-> +	xm = pci_get_drvdata(pdev);
-> +	if (res->xpigr_region_id > PCI_STD_RESOURCE_END) {
-> +		xmgnt_err(xm, "Invalid bar idx %d", res->xpigr_region_id);
-> +		return -EINVAL;
-> +	}
-> +
-> +	res->xpigr_res = &pdev->resource[res->xpigr_region_id];
-> +	return 0;
-> +}
-> +
-> +static struct xroot_physical_function_callback xmgnt_xroot_pf_cb = {
-> +	.xpc_get_id = xmgnt_root_get_id,
-> +	.xpc_get_resource = xmgnt_root_get_resource,
-> +	.xpc_hot_reset = xmgnt_root_hot_reset,
-> +};
-> +
-> +static int xmgnt_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-> +{
-> +	int ret;
-> +	struct device *dev = &pdev->dev;
-> +	struct xmgnt *xm = devm_kzalloc(dev, sizeof(*xm), GFP_KERNEL);
-> +	char *dtb = NULL;
-> +
-> +	if (!xm)
-> +		return -ENOMEM;
-> +	xm->pdev = pdev;
-> +	pci_set_drvdata(pdev, xm);
-> +
-> +	ret = xmgnt_config_pci(xm);
-> +	if (ret)
-> +		goto failed;
-> +
-> +	ret = xroot_probe(&pdev->dev, &xmgnt_xroot_pf_cb, &xm->root);
-> +	if (ret)
-> +		goto failed;
-> +
-> +	ret = xmgnt_create_root_metadata(xm, &dtb);
-> +	if (ret)
-> +		goto failed_metadata;
-> +
-> +	ret = xroot_create_group(xm->root, dtb);
-> +	vfree(dtb);
-> +	if (ret)
-> +		xmgnt_err(xm, "failed to create root group: %d", ret);
-> +
-> +	if (!xroot_wait_for_bringup(xm->root))
-> +		xmgnt_err(xm, "failed to bringup all groups");
-> +	else
-> +		xm->ready = true;
-> +
-> +	ret = sysfs_create_group(&pdev->dev.kobj, &xmgnt_root_attr_group);
-> +	if (ret) {
-> +		/* Warning instead of failing the probe. */
-> +		xmgnt_warn(xm, "create xmgnt root attrs failed: %d", ret);
-> +	}
-> +
-> +	xroot_broadcast(xm->root, XRT_EVENT_POST_CREATION);
-> +	xmgnt_info(xm, "%s started successfully", XMGNT_MODULE_NAME);
-> +	return 0;
-> +
-> +failed_metadata:
-> +	xroot_remove(xm->root);
-> +failed:
-> +	pci_set_drvdata(pdev, NULL);
-> +	return ret;
-> +}
-> +
-> +static void xmgnt_remove(struct pci_dev *pdev)
-> +{
-> +	struct xmgnt *xm = pci_get_drvdata(pdev);
-> +
-> +	xroot_broadcast(xm->root, XRT_EVENT_PRE_REMOVAL);
-> +	sysfs_remove_group(&pdev->dev.kobj, &xmgnt_root_attr_group);
-> +	xroot_remove(xm->root);
-> +	pci_disable_pcie_error_reporting(xm->pdev);
-> +	xmgnt_info(xm, "%s cleaned up successfully", XMGNT_MODULE_NAME);
-> +}
-> +
-> +static struct pci_driver xmgnt_driver = {
-> +	.name = XMGNT_MODULE_NAME,
-> +	.id_table = xmgnt_pci_ids,
-> +	.probe = xmgnt_probe,
-> +	.remove = xmgnt_remove,
-> +};
-> +
-> +static int __init xmgnt_init(void)
-> +{
-> +	int res = 0;
-> +
-> +	res = xmgnt_register_leaf();
-> +	if (res)
-> +		return res;
-> +
-> +	xmgnt_class = class_create(THIS_MODULE, XMGNT_MODULE_NAME);
-> +	if (IS_ERR(xmgnt_class))
-> +		return PTR_ERR(xmgnt_class);
-> +
-> +	res = pci_register_driver(&xmgnt_driver);
-> +	if (res) {
-> +		class_destroy(xmgnt_class);
-> +		return res;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static __exit void xmgnt_exit(void)
-> +{
-> +	pci_unregister_driver(&xmgnt_driver);
-> +	class_destroy(xmgnt_class);
-> +	xmgnt_unregister_leaf();
-> +}
-> +
-> +module_init(xmgnt_init);
-> +module_exit(xmgnt_exit);
-> +
-> +MODULE_DEVICE_TABLE(pci, xmgnt_pci_ids);
-> +MODULE_VERSION(XMGNT_DRIVER_VERSION);
-> +MODULE_AUTHOR("XRT Team <runtime@xilinx.com>");
-> +MODULE_DESCRIPTION("Xilinx Alveo management function driver");
-> +MODULE_LICENSE("GPL v2");
+> On Sat, 1 May 2021 09:29:41 +0000
+> <Peter.Enderborg@sony.com> wrote:
+> 
+>> On 4/30/21 7:48 PM, Eric W. Biederman wrote:
+>> > Peter Enderborg <peter.enderborg@sony.com> writes:
+>> >  
+>> >> This is the peer functions to task_rename and task_newtask.
+>> >> With this we get hole "life-cycle" of task and can easily
+>> >> see short livied task and their exit status.
+>> > This patch is incorrect.  The location you are dealing with is not part
+>> > of task exit.  The location you have instrumented is part of reaping a
+>> > task which can come arbitrarily long after the task exits.
+>> 
+>> That is what it aiming. When using this as tool for userspace you
+>> would like to know when the task is done. When it no longer
+>> holds any thing that might have any impact. If you think the
+>> exit imply something more specific I can change the name.
+>> 
+>> I thought exit was a good name, it is in in exit.c.
+>> 
+>> Will the name task_done, task_finished or task_reaped work for you?
+> 
+> I think "task_reaped" is probably the best name, and the most
+> descriptive of what happened.
 
+What would it provide that is not already available through the "sched_process_free"
+tracepoint in delayed_put_task_struct ?
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
