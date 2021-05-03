@@ -2,60 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 953BE3721CA
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 22:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8448C3721CF
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 22:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbhECUqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 16:46:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51596 "EHLO mail.kernel.org"
+        id S229722AbhECUrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 16:47:25 -0400
+Received: from mout.gmx.net ([212.227.15.19]:37389 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229766AbhECUp7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 16:45:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9414A610C8;
-        Mon,  3 May 2021 20:45:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620074705;
-        bh=1F6+JdYLwP5EEoYq0ZoUt/GniSDWi8wSsSObVn3JkiE=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=KGZ8krZ1HgWGyMiwk3DZ6oUeY57w7Ayx7ESQ2Gv51Czn4RjZ4mwVEMsmaGfnxGiTo
-         J1MHvX3CGNq5XJYEcgb1ecqPaEtbtQlvwMNIhBC72P0Kl+u6ESZtOi0OJLlUojg2zJ
-         0qcky4Cn+h6VcIKVsNSqD6shmSOJZksJnCliMtgmWOCBZoY1S2W0lyA0pbeP+4PjwS
-         z/F+1MZoZIFoz6ythY3vEG3OmPwu106cxoroITIdeirBrm3kc36QlOAf4tnDT1crb9
-         wcVxgzMiyzygDyjzcDByzziLF2cgu3/GqrVlekRVQEx97/dlMp9F2KJD9t0fWZju9d
-         6xOjs01vBPHCQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 81FFC609E9;
-        Mon,  3 May 2021 20:45:05 +0000 (UTC)
-Subject: Re: [GIT PULL] csky changes for v5.13-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210503164518.33972-1-guoren@kernel.org>
-References: <20210503164518.33972-1-guoren@kernel.org>
-X-PR-Tracked-List-Id: <linux-csky.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210503164518.33972-1-guoren@kernel.org>
-X-PR-Tracked-Remote: https://github.com/c-sky/csky-linux.git tags/csky-for-linus-5.13-rc1
-X-PR-Tracked-Commit-Id: e58a41c2226847fb1446f3942dc1b55af8acfe02
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: cda689f8708b6bef0b921c3a17fcdecbe959a079
-Message-Id: <162007470547.4403.10162729492427609078.pr-tracker-bot@kernel.org>
-Date:   Mon, 03 May 2021 20:45:05 +0000
-To:     guoren@kernel.org
-Cc:     torvalds@linux-foundation.org, arnd@arndb.de,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-csky@vger.kernel.org
+        id S229596AbhECUrV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 16:47:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1620074778;
+        bh=T08OXliPRYO+Cz8TMMdWHTcGdT2Pxw6qW6PdI0815MI=;
+        h=X-UI-Sender-Class:Date:From:To:Subject;
+        b=L7VY5PqSLR90L3QKLwVwOPxMfGB0Z2TAKN2w9n5LJT+DEi/P4RSDd0tXaE93u3Jv/
+         7cJzxIaO22awex6iyUqEB7jbpv//hcnjU0ENPeuC/xZR7g/1rjc79g3PIJxghlky9d
+         YzdHtTmYjkbHEf/+NjHcSExGNG6I1uXtA5YGGyqU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530 ([92.116.187.2]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MYvY2-1lza3u1F56-00UudO; Mon, 03
+ May 2021 22:46:18 +0200
+Date:   Mon, 3 May 2021 22:45:33 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [GIT PULL] parisc architecture updates for kernel v5.13-rc1
+Message-ID: <YJBg7V02gxIRPrDx@ls3530>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Provags-ID: V03:K1:WUtIV0npfJjVDVDaeOXz6htvPbC4d7F4HH1TgTBpagfSHEAdkFx
+ GxmR42l2/A1rlfROqwmN9wDO6Vod651dPdZPgl5hdnqbIAY7+kMyYj5CE/8GKOqOsogeu9a
+ qRNS+dDU/hv9RwH/l1BKYrCGNoXr2+asaADPfhhtbRQ2/32Y7Yf2m7zf67tC46JTwE8g77J
+ nBni5SlhamR48knjO8LhQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:7QjwhshCmIc=:9Vz48RX8x/4fDkOPuvdBYw
+ 2f7rTNPqwfWSNprjAj1eQyf97r0ZADyrshkcRBDDivHlboQT6fdCTkY3Tx2Y25RjGInmJilc6
+ 6azbDRQd70cHAlP1fuSNJxIV4qi0oLkqKvReaTuRGu2+8FxWKL3sA58ZIHsjCwTkpyh76JsT3
+ ImrSHvr9/lcMmFY7aA+1xJScmjdpQCqKAMKLq2320YKZX02uMNcdqaAwmCUoiks3JvQ7BXywJ
+ GOr1EvlwgM8GwT1efWjxc8xB+ayWpOKxBxKgYdfXPvqC/rJ2QzKwb3Ju25OJ8sygOukyimlsc
+ McFDkVN673wv/rWNaLPn+y2B8/7g/k+1T1zQNVSyRUXPvCvNTJlR7jkJv+yK7vhljN6Zb/If9
+ 1TVkWEt3JWNj0KF7ck2eEyaT74e3P1p5Vcvo04a4Vv93ZP5j3N+wG4ziv1WDzl4thrHFETpvu
+ gTEJn6g5quCnrRWcfXD535Ep5MWyI6cHtVa7Zfva6NHyonBuJ4s6r+EAvQd9BhXyBi1zWywXc
+ F2DdzqZHnKdQrtHVD5ai8V8MK93TpgF+oSRVt3sSC+BoNoaYw92d0o5iLL5ojE0INZXqNmU6L
+ ewN/X0a0Pf3GMbOqYauv/ssdKDa+i7oSpb7bDy5ovWR2tFotUbRoGa5VnA8P5InzxWLJIWDvo
+ O27hWSWwwuIevivq9MtBPzpz+8qOmnZE7AsU7wVPbX91kljf5Z29ZPqNsDRO6bQL9IneJkLBO
+ GFRmXiPQ4pa1qk1TSQ33GOyaI2hI3JaEpcdRAMNrTqahEdMAZnhOERv+ZMO79AzJvLIK/2jgJ
+ 7K3LCyeKBCKUaTAkzRwMtCJhkdMHK4uWoWFVb1dgW1cBYM9xmGOAJTcCS29MbSKToJHkVMFSE
+ cw4U2fopVe6t/9YAEeP1qrLpuaeTqcmy2tef76/RH2jTDHrLPqygXmtd8sTfJLCA1pCAVWmBQ
+ Dx8GgC+uFNdfnpX+tVGQpkJdxvdpXWlbHbfF08FQmrLb2RNFC0EQRLD5XYwzbUDs6zKbKswAe
+ QaDEjb4Q1rHUhQt8MuRWGv/WNaZ2k9gKEi+ue3twLnsgUcJwTxyZAFTO+Mtr7ezsmPMHywt4D
+ DckMhlz/Kc2YWQSkjk497vrtgjUMNxzT4MpBuUxim0Dn9ShSZz70MFLmnRpDjJqoifSpWR22d
+ 6/l7ANOsEe04sTfoAizASYlhTQXoO0dbXWpz36eGB+oeEKgVSQfklxJIgrrUOXYrVHDMU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue,  4 May 2021 00:45:18 +0800:
+Hi Linus,
 
-> https://github.com/c-sky/csky-linux.git tags/csky-for-linus-5.13-rc1
+please pull the parisc architecture updates for kernel 5.13-rc1 from:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/cda689f8708b6bef0b921c3a17fcdecbe959a079
+  http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/for-5.13/parisc
 
-Thank you!
+Thanks,
+Helge
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+----------------------------------------------------------------
+parisc architecture updates for kernel 5.13:
+
+- switch to generic syscall header scripts
+
+- minor typo fix in setup.c
+
+----------------------------------------------------------------
+Helge Deller (1):
+      parisc: Fix typo in setup.c
+
+Masahiro Yamada (2):
+      parisc: syscalls: switch to generic syscalltbl.sh
+      parisc: syscalls: switch to generic syscallhdr.sh
+
+ arch/parisc/include/asm/Kbuild            |  1 -
+ arch/parisc/kernel/setup.c                |  2 +-
+ arch/parisc/kernel/syscall.S              | 16 ++++++--------
+ arch/parisc/kernel/syscalls/Makefile      | 30 ++++++++------------------
+ arch/parisc/kernel/syscalls/syscallhdr.sh | 36 -------------------------------
+ arch/parisc/kernel/syscalls/syscalltbl.sh | 36 -------------------------------
+ 6 files changed, 17 insertions(+), 104 deletions(-)
+ delete mode 100644 arch/parisc/kernel/syscalls/syscallhdr.sh
+ delete mode 100644 arch/parisc/kernel/syscalls/syscalltbl.sh
