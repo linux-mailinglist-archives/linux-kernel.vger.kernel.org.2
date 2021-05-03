@@ -2,160 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 694EC371F57
+	by mail.lfdr.de (Postfix) with ESMTP id B55FD371F58
 	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 20:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231951AbhECSJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 14:09:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231836AbhECSJE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 14:09:04 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76BE2C06135B
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 11:08:02 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id i141-20020a379f930000b02902e94f6d938dso5776507qke.5
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 11:08:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=ntouV34m2zzK96oVKUjz7Unp11YYIFITerKCQ/PICUo=;
-        b=AabA9pNdVHR8wrAzCpx2+upbcMZBKVFarGpOoH4Xk/pMoNwzxHSVAVZbMSVw5xg+fw
-         7/C+w4V3s83Qq2uRdOkxN3vqlsdzIJTWPCiLHlFYuFvXL216RqNGqAqQT0xJOz6rlGuu
-         7jTjsObZhjLM6eIlBM9C+dl5P5tu+bZ7yF8CPjYkJgsyLmyOmSZt/dZwNN0GTnF+0lic
-         isndnsawZBzxPFoBuMwYiCgrcK6McGt9MZZMQXBNufkSumKB5sbDo4c4tOQ7kxe0SLSh
-         HO79/mVXzjgFKOxf0OVFfenBh5T/OvVrNJZfk777uxUhclay/uqQCEHduvlyoPcts/yn
-         /ktA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=ntouV34m2zzK96oVKUjz7Unp11YYIFITerKCQ/PICUo=;
-        b=hXVxOXtuYIBSVLvo1fieoOUDa64zB+iJeLuKuHusUsNZmwBFQRI38/vqqi13IddkIL
-         WptrhEWjSf3in6FSy8rcCA/FTzwU+QyDMWRF5Hj8Z0bgllSRUwT1J0lDNC7cShU07eSI
-         Bz35bkcbohlAniFly4R4tBteOhMzSjT4x2z16Iz3LQR7gDVWsYdSc/AkIv6Y3nBQhFnJ
-         nwMcO1V8MQECETnWbdHJoZj5eCCxX8D0oeoYYFIIVvQFchY507CjnqctKyj8B+vxg8MK
-         b93m/cXQiX9nnUlpFP2RvygH3E6HT4E2PavATyDR4XzFY1IVZVVdCJy1g3GyKjAhENcF
-         9YfQ==
-X-Gm-Message-State: AOAM533G/znUGf39k8W2uZBehrTWGWL5okEZcq/jYO1RGgOLeW5DGgoW
-        wwDuDe2TmuaxXj7f85XdITy95OVdfPJYd2+/7yr2
-X-Google-Smtp-Source: ABdhPJwrhkcA07r1npaWCK9fxUqJ2Xw1p2+5ZZDXTYqOYqIOwOPfPfCd9E+z83gXUpu5S4gSaGrtBt+b+HU5WgQxVGvi
-X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:3d79:e69a:a4f9:ef0])
- (user=axelrasmussen job=sendgmr) by 2002:ad4:4f82:: with SMTP id
- em2mr20912806qvb.55.1620065281620; Mon, 03 May 2021 11:08:01 -0700 (PDT)
-Date:   Mon,  3 May 2021 11:07:37 -0700
-In-Reply-To: <20210503180737.2487560-1-axelrasmussen@google.com>
-Message-Id: <20210503180737.2487560-11-axelrasmussen@google.com>
-Mime-Version: 1.0
-References: <20210503180737.2487560-1-axelrasmussen@google.com>
-X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
-Subject: [PATCH v6 10/10] userfaultfd/selftests: exercise minor fault handling
- shmem support
-From:   Axel Rasmussen <axelrasmussen@google.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>
-Cc:     linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, Axel Rasmussen <axelrasmussen@google.com>,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S231955AbhECSJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 14:09:44 -0400
+Received: from srv6.fidu.org ([159.69.62.71]:56098 "EHLO srv6.fidu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232064AbhECSJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 14:09:25 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id 3E51CC800D0;
+        Mon,  3 May 2021 20:08:29 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id lYnKtLw43Eeq; Mon,  3 May 2021 20:08:29 +0200 (CEST)
+Received: from wsembach-tuxedo.fritz.box (p200300e37F3986001a8b79e0b24Cb29D.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:8600:1a8b:79e0:b24c:b29d])
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPA id C8427C800CE;
+        Mon,  3 May 2021 20:08:28 +0200 (CEST)
+From:   Werner Sembach <wse@tuxedocomputers.com>
+To:     wse@tuxedocomputers.com, ville.syrjala@linux.intel.com,
+        airlied@linux.ie, daniel@ffwll.ch, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] drm/i915/display Try YCbCr420 color when RGB fails
+Date:   Mon,  3 May 2021 20:08:07 +0200
+Message-Id: <20210503180810.851302-1-wse@tuxedocomputers.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable test_uffdio_minor for test_type == TEST_SHMEM, and modify the
-test slightly to pass in / check for the right feature flags.
+When encoder validation of a display mode fails, retry with less bandwidth
+heavy YCbCr420 color mode, if available. This enables some HDMI 1.4 setups
+to support 4k60Hz output, which previously failed silently.
 
-Reviewed-by: Peter Xu <peterx@redhat.com>
-Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
----
- tools/testing/selftests/vm/userfaultfd.c | 29 ++++++++++++++++++++----
- 1 file changed, 25 insertions(+), 4 deletions(-)
+AMDGPU had nearly the exact same issue. This problem description is
+therefore copied from my commit message of the AMDGPU patch.
 
-diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
-index 3fbc69f513dc..a7ecc9993439 100644
---- a/tools/testing/selftests/vm/userfaultfd.c
-+++ b/tools/testing/selftests/vm/userfaultfd.c
-@@ -474,6 +474,7 @@ static void wp_range(int ufd, __u64 start, __u64 len, bool wp)
- static void continue_range(int ufd, __u64 start, __u64 len)
- {
- 	struct uffdio_continue req;
-+	int ret;
- 
- 	req.range.start = start;
- 	req.range.len = len;
-@@ -482,6 +483,17 @@ static void continue_range(int ufd, __u64 start, __u64 len)
- 	if (ioctl(ufd, UFFDIO_CONTINUE, &req))
- 		err("UFFDIO_CONTINUE failed for address 0x%" PRIx64,
- 		    (uint64_t)start);
-+
-+	/*
-+	 * Error handling within the kernel for continue is subtly different
-+	 * from copy or zeropage, so it may be a source of bugs. Trigger an
-+	 * error (-EEXIST) on purpose, to verify doing so doesn't cause a BUG.
-+	 */
-+	req.mapped = 0;
-+	ret = ioctl(ufd, UFFDIO_CONTINUE, &req);
-+	if (ret >= 0 || req.mapped != -EEXIST)
-+		err("failed to exercise UFFDIO_CONTINUE error handling, ret=%d, mapped=%" PRId64,
-+		    ret, (int64_t) req.mapped);
- }
- 
- static void *locking_thread(void *arg)
-@@ -1182,7 +1194,7 @@ static int userfaultfd_minor_test(void)
- 	void *expected_page;
- 	char c;
- 	struct uffd_stats stats = { 0 };
--	uint64_t features = UFFD_FEATURE_MINOR_HUGETLBFS;
-+	uint64_t req_features, features_out;
- 
- 	if (!test_uffdio_minor)
- 		return 0;
-@@ -1190,9 +1202,17 @@ static int userfaultfd_minor_test(void)
- 	printf("testing minor faults: ");
- 	fflush(stdout);
- 
--	uffd_test_ctx_init_ext(&features);
--	/* If kernel reports the feature isn't supported, skip the test. */
--	if (!(features & UFFD_FEATURE_MINOR_HUGETLBFS)) {
-+	if (test_type == TEST_HUGETLB)
-+		req_features = UFFD_FEATURE_MINOR_HUGETLBFS;
-+	else if (test_type == TEST_SHMEM)
-+		req_features = UFFD_FEATURE_MINOR_SHMEM;
-+	else
-+		return 1;
-+
-+	features_out = req_features;
-+	uffd_test_ctx_init_ext(&features_out);
-+	/* If kernel reports required features aren't supported, skip test. */
-+	if ((features_out & req_features) != req_features) {
- 		printf("skipping test due to lack of feature support\n");
- 		fflush(stdout);
- 		return 0;
-@@ -1426,6 +1446,7 @@ static void set_test_type(const char *type)
- 		map_shared = true;
- 		test_type = TEST_SHMEM;
- 		uffd_test_ops = &shmem_uffd_test_ops;
-+		test_uffdio_minor = true;
- 	} else {
- 		err("Unknown test type: %s", type);
- 	}
--- 
-2.31.1.527.g47e6f16901-goog
+On some setups, while the monitor and the gpu support display modes with
+pixel clocks of up to 600MHz, the link encoder might not. This prevents
+YCbCr444 and RGB encoding for 4k60Hz, but YCbCr420 encoding might still be
+possible. However, which color mode is used is decided before the link
+encoder capabilities are checked. This patch fixes the problem by retrying
+to find a display mode with YCbCr420 enforced and using it, if it is
+valid.
+
+This patchset is revision 2, now split up in multiple parts with some
+minor restructuring added für a cleaner implementation.
+
 
