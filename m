@@ -2,202 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4847F372391
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 01:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1094372398
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 01:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbhECXZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 19:25:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40154 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229822AbhECXZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 19:25:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0543610A2;
-        Mon,  3 May 2021 23:24:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620084298;
-        bh=N5zOlncN9R5ag0CV77uw5WYaavEVXPWnViy/gewguUc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LIvfhx2OV9Ct22PRwwteGn8nMaODzqYVnXQ1R4n08WEghw4bM66kKs2VCABd5Zqq5
-         fa9qYX7JaJvaI0LmBKJGf7F7nkhP8MCaSav0DdrYuIm3mz5KkTYRO9fPKp84ov3kf/
-         qvBnrIKSwPlDcKmrCGxHp9Y3T/tGUd7pJ00GENBA6HYQtcBReqnmvMMU+CvIRZC+xU
-         n5y+6hXQiF2gEz9rb+SKcgh+fiCcjtFp8vjtJlO5UlGOeeLPnb9SjdcjHwgFsbS/mW
-         olnAo0JCu10hpcVLZzXF3A/rTgIOsc1FnMUM+lJVx0OToZNt99SIcJZmvYRv6omJZP
-         2h1YXrHl0lmgw==
-Date:   Mon, 3 May 2021 16:24:57 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux F2FS Dev Mailing List 
-        <linux-f2fs-devel@lists.sourceforge.net>
-Subject: [GIT PULL] f2fs update for 5.13-rc1
-Message-ID: <YJCGSeyA7XoNcyZT@google.com>
+        id S229954AbhECX2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 19:28:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229595AbhECX2y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 19:28:54 -0400
+Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE5CC061574;
+        Mon,  3 May 2021 16:27:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+         s=42; h=Date:Message-ID:From:Cc:To;
+        bh=LwU0+eb1IWwlpCdF/tlgc+NJ3NGOv3+O9SeM3Vf4AGU=; b=i/z3IVaPYmpcs+1pn7CYrE0DIE
+        95R4Jhrui1UJPySWj+n0hNdsN88Lh8gJToqNeIUBqRy4olP8bAw9BwfrWaMWidYkJqRGOLpQS24Xe
+        tpN22uJDK7iJouVMzuqQylxT/EzuYZcbeWcOTJp9oA1CFwv6Wo8InMM/gfukKMdMiqADfrOGHOLSY
+        Kd87uvHnxWHkO6gFKS/NNgmwG61x6n66jG9rfM6pimfxtM4iwJdhqlVbc2VrIxaD1oAoaPdz5ut5k
+        vLLGG0cNp4dtLyVtir1xBJInqxrVdhGmcUrUktOIl5kISyzDOGxkCWelXRKvZp3QkII7Gw9v0s+P3
+        uLxnaTkHq2K+b+0XW5/Knti5WcqJH8lnLcqBFZlcmSMtykIHUQoNs6PHq4Eh5An/QVsTTfNwd5Jvx
+        3SxU658yXdqBRlPzXgXUs62nStxJHXS71Lm1e5SrajQNZICxsOROzc1s8TDwMUmgcXVL8rs2K25RN
+        zLEhjbuT9/sQ5CXHJiUe+j+S;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
+        (Exim)
+        id 1ldhym-0007SW-LQ; Mon, 03 May 2021 23:27:56 +0000
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Andy Lutomirski <luto@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+References: <8735v3ex3h.ffs@nanos.tec.linutronix.de>
+ <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
+ <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
+ <CALCETrV9bCenqzzaW6Ra18tCvNP-my09decTjmLDVZZAQxR6VA@mail.gmail.com>
+ <CAHk-=wgo6XEz3VQ9ntqzWLR3-hm1YXrXUz4_heDs4wcLe9NYvA@mail.gmail.com>
+ <d26e3a82-8a2c-7354-d36b-cac945c208c7@kernel.dk>
+ <CALCETrWmhquicE2C=G2Hmwfj4VNypXVxY-K3CWOkyMe9Edv88A@mail.gmail.com>
+ <CAHk-=wgqK0qUskrzeWXmChErEm32UiOaUmynWdyrjAwNzkDKaw@mail.gmail.com>
+ <8735v3jujv.ffs@nanos.tec.linutronix.de>
+ <CAHk-=wi4Dyg_Z70J_hJbtFLPQDG+Zx3dP2jB5QrOdZC6W6j4Gw@mail.gmail.com>
+From:   Stefan Metzmacher <metze@samba.org>
+Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
+ registers for io_threads
+Message-ID: <12710fda-1732-ee55-9ac1-0df9882aa71b@samba.org>
+Date:   Tue, 4 May 2021 01:27:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <CAHk-=wi4Dyg_Z70J_hJbtFLPQDG+Zx3dP2jB5QrOdZC6W6j4Gw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Am 04.05.21 um 01:16 schrieb Linus Torvalds:
+> On Mon, May 3, 2021 at 3:56 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>>
+>> It's all fine that we have lots of blurb about GDB, but there is no
+>> reasoning why this does not affect regular kernel threads which take the
+>> same code path.
+> 
+> Actual kernel threads don't get attached to by ptrace.
+> 
+>> This is a half setup user space thread which is assumed to behave like a
+>> regular kernel thread, but is this assumption actually true?
+> 
+> No, no.
+> 
+> It's a *fully set up USER thread*.
+> 
+> Those IO threads used to be kernel threads. That didn't work out for
+> the reasons already mentioned earlier.
+> 
+> These days they really are fully regular user threads, they just don't
+> return to user space because they continue to do the IO work that they
+> were created for.
+> 
+> Maybe instead of Stefan's patch, we could do something like this:
+> 
+>    diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+>    index 43cbfc84153a..890f3992e781 100644
+>    --- a/arch/x86/kernel/process.c
+>    +++ b/arch/x86/kernel/process.c
+>    @@ -156,7 +156,7 @@ int copy_thread(unsigned long clone_flags,
+> unsigned long sp, unsigned long arg,
+>     #endif
+> 
+>         /* Kernel thread ? */
+>    -    if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
+>    +    if (unlikely(p->flags & PF_KTHREAD)) {
+>                 memset(childregs, 0, sizeof(struct pt_regs));
+>                 kthread_frame_init(frame, sp, arg);
+>                 return 0;
+>    @@ -168,6 +168,17 @@ int copy_thread(unsigned long clone_flags,
+> unsigned long sp, unsigned long arg,
+>         if (sp)
+>                 childregs->sp = sp;
+> 
+>    +    /*
+>    +     * An IO thread is a user space thread, but it doesn't
+>    +     * return to ret_after_fork(), it does the same kernel
+>    +     * frame setup to return to a kernel function that
+>    +     * a kernel thread does.
+>    +     */
+>    +    if (unlikely(p->flags & PF_IO_WORKER)) {
+>    +            kthread_frame_init(frame, sp, arg);
+>    +            return 0;
+>    +    }
+>    +
+>     #ifdef CONFIG_X86_32
+>         task_user_gs(p) = get_user_gs(current_pt_regs());
+>     #endif
+> 
+> does that clarify things and make people happier?
+> 
+> Maybe the compiler might even notice that the
+> 
+>                 kthread_frame_init(frame, sp, arg);
+>                 return 0;
+> 
+> part is common code and then it will result in less generated code too.
+> 
+> NOTE! The above is - as usual - COMPLETELY UNTESTED. It looks obvious
+> enough, and it builds cleanly. But that's all I'm going to guarantee.
 
-Could you please consider this pull request?
+I think I also tested something similar, see:
 
-Thanks,
+https://git.samba.org/?p=metze/linux/wip.git;a=commitdiff;h=82fcee2774add04fbc0e4755c405e6c0b7467e3a
 
-The following changes since commit 344178334b0971a1ad5f36b76d7b739400e46ec6:
+If I remember correctly gdb showed bogus addresses for the backtraces of the io_threads,
+as some regs where not cleared.
 
-  Merge tag 'sound-5.12-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound (2021-03-12 12:01:26 -0800)
+The patch I posted shows this instead:
 
-are available in the Git repository at:
+  Thread 2 (LWP 8744):
+  #0  0x0000000000000000 in ?? ()
+  Backtrace stopped: Cannot access memory at address 0x0
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git tags/f2fs-for-5.13-rc1
+I think that's a saner behavior.
 
-for you to fetch changes up to 9557727876674893d35940fddbd03d3b505e7ed8:
+However splitting the if statements might be a good idea to make things
+more clear.
 
-  f2fs: drop inplace IO if fs status is abnormal (2021-04-26 09:50:39 -0700)
-
-----------------------------------------------------------------
-f2fs-for-5.13-rc1
-
-In this round, we added a new mount option, "checkpoint_merge", which introduces
-a kernel thread dealing with the f2fs checkpoints. Once we start to manage the
-IO priority along with blk-cgroup, the checkpoint operation can be processed in
-a lower priority under the process context. Since the checkpoint holds all the
-filesystem operations, we give a higher priority to the checkpoint thread all
-the time.
-
-Enhancement:
-- introduce gc_merge mount option to introduce a checkpoint thread
-- improve to run discard thread efficiently
-- allow modular compression algorithms
-- expose # of overprivision segments to sysfs
-- expose runtime compression stat to sysfs
-
-Bug fix:
-- fix OOB memory access by the node id lookup
-- avoid touching checkpointed data in the checkpoint-disabled mode
-- fix the resizing flow to avoid kernel panic and race conditions
-- fix block allocation issues on pinned files
-- address some swapfile issues
-- fix hugtask problem and kernel panic during atomic write operations
-- don't start checkpoint thread in RO
-
-And, we've cleaned up some kernel coding style and build warnings. In addition,
-we fixed some minor race conditions and error handling routines.
-
-----------------------------------------------------------------
-Chao Yu (25):
-      f2fs: fix to allow migrating fully valid segment
-      f2fs: fix panic during f2fs_resize_fs()
-      f2fs: avoid unused f2fs_show_compress_options()
-      f2fs: remove unused FORCE_FG_GC macro
-      f2fs: update comments for explicit memory barrier
-      f2fs: check discard command number before traversing discard pending list
-      f2fs: remove unused file_clear_encrypt()
-      f2fs: fix to align to section for fallocate() on pinned file
-      f2fs: don't start checkpoint thread in readonly mountpoint
-      f2fs: fix to avoid out-of-bounds memory access
-      f2fs: fix error path of f2fs_remount()
-      f2fs: fix to update last i_size if fallocate partially succeeds
-      f2fs: fix to avoid touching checkpointed data in get_victim()
-      f2fs: delete empty compress.h
-      f2fs: fix to cover __allocate_new_section() with curseg_lock
-      f2fs: introduce gc_merge mount option
-      f2fs: fix to restrict mount condition on readonly block device
-      f2fs: fix to avoid GC/mmap race with f2fs_truncate()
-      f2fs: fix to avoid accessing invalid fio in f2fs_allocate_data_block()
-      f2fs: document: add description about compressed space handling
-      f2fs: avoid duplicated codes for cleanup
-      f2fs: avoid using native allocate_segment_by_default()
-      f2fs: clean up left deprecated IO trace codes
-      f2fs: compress: remove unneed check condition
-      f2fs: drop inplace IO if fs status is abnormal
-
-Chengguang Xu (1):
-      f2fs: fix to use per-inode maxbytes in f2fs_fiemap
-
-Colin Ian King (1):
-      f2fs: fix a redundant call to f2fs_balance_fs if an error occurs
-
-Daeho Jeong (1):
-      f2fs: add sysfs nodes to get runtime compression stat
-
-Eric Biggers (1):
-      f2fs: fix error handling in f2fs_end_enable_verity()
-
-Geert Uytterhoeven (1):
-      f2fs: compress: Allow modular (de)compression algorithms
-
-Gustavo A. R. Silva (1):
-      f2fs: Replace one-element array with flexible-array member
-
-Jaegeuk Kim (2):
-      f2fs: expose # of overprivision segments
-      f2fs: set checkpoint_merge by default
-
-Ruiqi Gong (1):
-      f2fs: fix a typo in inode.c
-
-Sahitya Tummala (2):
-      f2fs: allow to change discard policy based on cached discard cmds
-      f2fs: fix the periodic wakeups of discard thread
-
-Wan Jiabing (1):
-      f2fs: remove unnecessary struct declaration
-
-Wang Xiaojun (1):
-      f2fs: fix wrong alloc_type in f2fs_do_replace_block
-
-Weichao Guo (1):
-      f2fs: do not use AT_SSR mode in FG_GC & high urgent BG_GC
-
-Yi Chen (1):
-      f2fs: fix to avoid NULL pointer dereference
-
-Yi Zhuang (2):
-      f2fs: Fix a hungtask problem in atomic write
-      f2fs: clean up build warnings
-
-huangjianan@oppo.com (3):
-      f2fs: remove unnecessary IS_SWAPFILE check
-      f2fs: fix last_lblock check in check_swap_activate_fast
-      f2fs: check if swapfile is section-alligned
-
-jiahao (1):
-      f2fs: fix a spacing coding style
-
-qiulaibin (1):
-      f2fs: fix wrong comment of nat_tree_lock
-
-xuyehan (1):
-      f2fs: fix a spelling error
-
- Documentation/ABI/testing/sysfs-fs-f2fs |  31 +++++-
- Documentation/filesystems/f2fs.rst      |  14 +++
- fs/f2fs/Kconfig                         |  16 ++-
- fs/f2fs/acl.c                           |   1 +
- fs/f2fs/checkpoint.c                    |   9 +-
- fs/f2fs/compress.c                      |  15 +--
- fs/f2fs/compress.h                      |   0
- fs/f2fs/data.c                          | 125 ++++++++++++++++++----
- fs/f2fs/debug.c                         |   3 +
- fs/f2fs/dir.c                           |   1 +
- fs/f2fs/f2fs.h                          |  55 ++++++----
- fs/f2fs/file.c                          |  51 +++++----
- fs/f2fs/gc.c                            |  95 +++++++++++++----
- fs/f2fs/gc.h                            |   6 ++
- fs/f2fs/inline.c                        |   3 +-
- fs/f2fs/inode.c                         |   3 +-
- fs/f2fs/namei.c                         |   3 +
- fs/f2fs/node.c                          |  19 +++-
- fs/f2fs/node.h                          |   1 +
- fs/f2fs/recovery.c                      |   3 +-
- fs/f2fs/segment.c                       | 184 +++++++++++++++++++++++---------
- fs/f2fs/segment.h                       |  16 ++-
- fs/f2fs/super.c                         | 102 +++++++++++++-----
- fs/f2fs/sysfs.c                         |  47 ++++++++
- fs/f2fs/verity.c                        |  75 +++++++++----
- fs/f2fs/xattr.c                         |   1 +
- include/linux/f2fs_fs.h                 |   2 +-
- 27 files changed, 660 insertions(+), 221 deletions(-)
- delete mode 100644 fs/f2fs/compress.h
+Thanks discussing this again!
+metze
