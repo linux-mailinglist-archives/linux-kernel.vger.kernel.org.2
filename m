@@ -2,60 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26BC4372069
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 21:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53DAE372070
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 21:28:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229687AbhECT3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 15:29:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229680AbhECT3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 15:29:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 6EE5D6115C;
-        Mon,  3 May 2021 19:28:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620070093;
-        bh=LJdkrc/ZTi/J5NU7EuVGuxr+lALb6uTKnI45n5FFt0c=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=qswspq4lTt7/WQAZSPaX3zxNHKQvutqGhR0b02c8QPRoZd2+6mk/OhetHkqlniHvR
-         8KR+loy1uDqD0zywsHwcMhI0wY14e5pDZrbQgmxVPQVdMSfxKiUDgGqGq9EVh5RLWZ
-         /suKRSX9Xtf1LZ2hG99kzMatZ6OyCMhhrRg5blAe91C7yEH5vgtYNWF7X+wujo9uXf
-         HQX+FWuizzkoTbyhl7QZkBN+pK2VF8w8fCVIr9c0oXlmjKV1QgXYajoNFkmgyPglDf
-         JfR58hA4iW7n4G/MoGfRnbNVuCxc5PaMEZ4g3hvF7UVkm6yR26QPknM8/EGggaDgpi
-         uKRvozi0eUi5A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 67ED9609E9;
-        Mon,  3 May 2021 19:28:13 +0000 (UTC)
-Subject: Re: [GIT PULL] LEDs changes for v5.13-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210502220519.GA24775@duo.ucw.cz>
-References: <20210502220519.GA24775@duo.ucw.cz>
-X-PR-Tracked-List-Id: <linux-leds.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210502220519.GA24775@duo.ucw.cz>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/ tags/leds-5.13-rc1
-X-PR-Tracked-Commit-Id: 23a700455a1bc55f3ea20675e574181b8c129306
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d835ff6c96ae6fa1ea474b0290a46e514ab6742b
-Message-Id: <162007009341.496.16490295768351177617.pr-tracker-bot@kernel.org>
-Date:   Mon, 03 May 2021 19:28:13 +0000
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        jacek.anaszewski@gmail.com, linux-leds@vger.kernel.org
+        id S229760AbhECT3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 15:29:40 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:45030 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229472AbhECT3j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 15:29:39 -0400
+Received: by mail-ot1-f49.google.com with SMTP id r26-20020a056830121ab02902a5ff1c9b81so2131093otp.11;
+        Mon, 03 May 2021 12:28:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Jhhpn9NYBV5aYOb5xCU71puhRz+23sT/8/8mM+p2NaU=;
+        b=opyr9IKbgf2gixRyr+ChnrtLYrFVxiD4f9Jxja/XkLMP29srI/eCLk2T9OXzab0Ir7
+         7x6NmLsO+fUGpbYn5Mt786NTgZfca2B2LeUXABuKfTHT7bdn3Tv9fudoDW1KAri/YzzO
+         1MBUqDUmoKIoXAS7msztF4oPAzFbahuDjSQUE4TLXGTgNg4jmZQm1BRoV8KCl78L7VkC
+         MquwA/aBDHb3rxqeHoe4BfFsdC+7F+xKEqjSFq31hzgADUNfmjYEpl6doKIq80OgZZm8
+         RzE9S5EKn8BzV2UO92AsvjaugzCi6XanYeea/x/FmyEx6TI4cchMTg+301vVZae/RJ6Y
+         DK/w==
+X-Gm-Message-State: AOAM532hXouWWULV917zapJJqZyfFuaUC1yE6KV3ZTLqMVlUaX5WJI/9
+        uEQrulbM6kPDXtMaPpvxbQ==
+X-Google-Smtp-Source: ABdhPJygRYjzKbasu80k7e5nA2cdJ4GM54d+Z/a/gZynHxWgtO0WH5vsHQtLcp7+z0aWiRVcNEwk/g==
+X-Received: by 2002:a9d:10a:: with SMTP id 10mr16199332otu.188.1620070125193;
+        Mon, 03 May 2021 12:28:45 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id z9sm165458oog.25.2021.05.03.12.28.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 May 2021 12:28:44 -0700 (PDT)
+Received: (nullmailer pid 2242383 invoked by uid 1000);
+        Mon, 03 May 2021 19:28:43 -0000
+Date:   Mon, 3 May 2021 14:28:43 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Mattijs Korpershoek <mkorpershoek@baylibre.com>
+Cc:     fparent@baylibre.com, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-input@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [PATCH 4/7] dt-bindings: input: mtk-pmic-keys: add MT6358
+ binding definition
+Message-ID: <20210503192843.GA2242334@robh.at.kernel.org>
+References: <20210428164219.1115537-1-mkorpershoek@baylibre.com>
+ <20210428164219.1115537-5-mkorpershoek@baylibre.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210428164219.1115537-5-mkorpershoek@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 3 May 2021 00:05:19 +0200:
+On Wed, 28 Apr 2021 18:42:16 +0200, Mattijs Korpershoek wrote:
+> Add the binding documentation of the mtk-pmic-keys for the MT6358 PMICs.
+> 
+> MT6358 is a little different since it used separate IRQs for the
+> release key (_r) event
+> 
+> Signed-off-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
+> ---
+>  Documentation/devicetree/bindings/input/mtk-pmic-keys.txt | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/ tags/leds-5.13-rc1
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d835ff6c96ae6fa1ea474b0290a46e514ab6742b
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Acked-by: Rob Herring <robh@kernel.org>
