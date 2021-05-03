@@ -2,119 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBB7371E3F
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE5C371E3E
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:15:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232075AbhECRRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 13:17:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231613AbhECRRU (ORCPT
+        id S231867AbhECRQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 13:16:38 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:58468 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231321AbhECRQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 13:17:20 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 940DCC06138C
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 10:14:27 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id CFF9792009C; Mon,  3 May 2021 19:14:25 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id C372A92009B;
-        Mon,  3 May 2021 19:14:25 +0200 (CEST)
-Date:   Mon, 3 May 2021 19:14:25 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Theodore Ts'o <tytso@mit.edu>
-cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Tom Stellard <tstellar@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>,
-        Serge Guelton <sguelton@redhat.com>,
-        Sylvestre Ledru <sylvestre@mozilla.com>
-Subject: Re: Very slow clang kernel config ..
-In-Reply-To: <YJAOq9CD72EWaF8P@mit.edu>
-Message-ID: <alpine.DEB.2.21.2105031838150.2587@angie.orcam.me.uk>
-References: <CAKwvOdk+V2dc31guafFM=N2ez4SrwCmah+mimUG3MzPMx_2efQ@mail.gmail.com> <CAKwvOdn3uXniVedgtpD8QFAd-hdVuVjGPa4-n0h64PTxT4XhWg@mail.gmail.com> <CAKwvOdm3D=dqKw=kx46PLaiqfHOZJL3QFKGc8kxqJqpwdFFWqw@mail.gmail.com> <CAKwvOdkp_P8BCtFuKqDrtC_=A89ZfDf66Yr3FL2e=ojwv4KaMA@mail.gmail.com>
- <CAHk-=wi1yiBBr3b3RbCEte6-yzAApsZN5zRdr3xoW8Av9jOX=Q@mail.gmail.com> <CAKwvOdk0nxxUATg2jEKgx4HutXCMXcW92SX3DT+uCTgqBwQHBg@mail.gmail.com> <1c5e05fa-a246-9456-ff4e-287960acb18c@redhat.com> <CAHk-=whs8QZf3YnifdLv57+FhBi5_WeNTG1B-suOES=RcUSmQg@mail.gmail.com>
- <alpine.DEB.2.21.2105020346520.2587@angie.orcam.me.uk> <YJAK1C1uLknYGYrH@mit.edu> <YJAOq9CD72EWaF8P@mit.edu>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Mon, 3 May 2021 13:16:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=/Q5g8C9jkIWWM3OWLSzMquUiscL+RFj92ybUcevP8nc=; b=BgMW37LpVUA/Vb1Ae2ZH6DSYZA
+        RZN3oDLotj/Ofj6VlRt6iImh3Q8FFxK+Qz2P6Cz+eplJrws8aa7BtbTce8Axj7WFg+ZPShNb6e7fG
+        bQFW8at/t5Aq2KPt6hT0kl8aBtkKUBNm3bZHtqXZP3iMkgMApZwVI/d7kBNL0yAXAuW+8ASnyw4ZB
+        kMW9jSvrz8lE1XTCe6dramBWTLYY4MUbmKwFI2FuLAypD1uMxhiTmKUYEGwPRtWOY1+xqdgCn3Sux
+        RKlFyaZm+IWzzyVyjy0lA1KvG50ZnVfJg4I4/aI0gYm3e2MM/+dJ7avE0O1mB/alREvUpN2a/g0lo
+        vz3npu1g==;
+Received: from guinness.priv.deltatee.com ([172.16.1.162])
+        by ale.deltatee.com with esmtp (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1ldcA2-00053o-JL; Mon, 03 May 2021 11:15:11 -0600
+To:     John Hubbard <jhubbard@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-mm@kvack.org,
+        iommu@lists.linux-foundation.org
+Cc:     Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>
+References: <20210408170123.8788-1-logang@deltatee.com>
+ <20210408170123.8788-9-logang@deltatee.com>
+ <e27d35f8-5c3a-39e3-9845-6d2bf15cc8b3@nvidia.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <07f4c059-f4d6-0657-c31f-bb9187381889@deltatee.com>
+Date:   Mon, 3 May 2021 11:15:07 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <e27d35f8-5c3a-39e3-9845-6d2bf15cc8b3@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 172.16.1.162
+X-SA-Exim-Rcpt-To: robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, christian.koenig@amd.com, jgg@ziepe.ca, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jhubbard@nvidia.com
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: Re: [PATCH 08/16] PCI/P2PDMA: Introduce helpers for dma_map_sg
+ implementations
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 3 May 2021, Theodore Ts'o wrote:
 
-> On Mon, May 03, 2021 at 10:38:12AM -0400, Theodore Ts'o wrote:
-> > On Mon, May 03, 2021 at 03:03:31AM +0200, Maciej W. Rozycki wrote:
-> > > 
-> > > People went through great efforts to support shared libraries, sacrificed
-> > > performance for it even back then when the computing power was much lower
-> > > than nowadays.
-> > 
-> > That was because memory was *incredibly* restrictive in those days.
-> > My first Linux server had one gig of memory, and so shared libraries
-> > provided a huge performance boost --- because otherwise systems would
-> > be swapping or paging their brains out.
+
+On 2021-05-02 6:50 p.m., John Hubbard wrote:
+> On 4/8/21 10:01 AM, Logan Gunthorpe wrote:
+>> Add pci_p2pdma_map_segment() as a helper for simple dma_map_sg()
+>> implementations. It takes an scatterlist segment that must point to a
+>> pci_p2pdma struct page and will map it if the mapping requires a bus
+>> address.
+>>
+>> The return value indicates whether the mapping required a bus address
+>> or whether the caller still needs to map the segment normally. If the
+>> segment should not be mapped, -EREMOTEIO is returned.
+>>
+>> This helper uses a state structure to track the changes to the
+>> pgmap across calls and avoid needing to lookup into the xarray for
+>> every page.
+>>
 > 
-> Correction.  My bad, my first Linux machine had 16 megs of memory....
+> OK, coming back to this patch, after seeing how it is used later in
+> the series...
+> 
+>> Also add pci_p2pdma_map_bus_segment() which is useful for IOMMU
+>> dma_map_sg() implementations where the sg segment containing the page
+>> differs from the sg segment containing the DMA address.
+>>
+>> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+>> ---
+>>   drivers/pci/p2pdma.c       | 65 ++++++++++++++++++++++++++++++++++++++
+>>   include/linux/pci-p2pdma.h | 21 ++++++++++++
+>>   2 files changed, 86 insertions(+)
+>>
+>> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
+>> index 38c93f57a941..44ad7664e875 100644
+>> --- a/drivers/pci/p2pdma.c
+>> +++ b/drivers/pci/p2pdma.c
+>> @@ -923,6 +923,71 @@ void pci_p2pdma_unmap_sg_attrs(struct device *dev, struct scatterlist *sg,
+>>   }
+>>   EXPORT_SYMBOL_GPL(pci_p2pdma_unmap_sg_attrs);
+>>   
+>> +/**
+>> + * pci_p2pdma_map_segment - map an sg segment determining the mapping type
+>> + * @state: State structure that should be declared on the stack outside of
+>> + *	the for_each_sg() loop and initialized to zero.
+> 
+> Silly fine point for the docs here: it doesn't actually have to be on
+> the stack, so I don't think you need to write that constraint in the
+> documentation. It just has be be somehow allocated and zeroed.
 
- There was memory and there was storage.  Back in 1990s I maintained Linux 
-machines with as little as 4MiB of RAM or 2MiB even with some 80386SX box, 
-and as little as 40MB HDD or 64MB SSD (which was pretty damn expensive and 
-occupied the whole 3.5" drive space in the PATA form factor).  Yes, 2MiB 
-used to be the minimum for x86 around 2.0.x, and you could actually boot a 
-system multiuser with as little RAM.  And obviously dynamic executables 
-took less storage space than static ones, so if you had more than just a 
-couple, the saving balanced the overhead of the shared library files used.
+Yeah, that's true, but there's really no reason it would ever not be
+allocated on the stack.
 
- But I agree this is only relevant nowadays in certain specific use cases 
-(which will often anyway choose to run things like BusyBox plus maybe just 
-a bunch of tools, and won't see any benefit from memory sharing or storage 
-saving).
+> 
+>> + * @dev: DMA device that's doing the mapping operation
+>> + * @sg: scatterlist segment to map
+>> + * @attrs: dma mapping attributes
+>> + *
+>> + * This is a helper to be used by non-iommu dma_map_sg() implementations where
+>> + * the sg segment is the same for the page_link and the dma_address.
+>> + *
+>> + * Attempt to map a single segment in an SGL with the PCI bus address.
+>> + * The segment must point to a PCI P2PDMA page and thus must be
+>> + * wrapped in a is_pci_p2pdma_page(sg_page(sg)) check.
+> 
+> Should this be backed up with actual checks in the function, that
+> the prerequisites are met?
 
-> > However, these days, many if not most developers aren't capable of the
-> > discpline needed to maintained the ABI stability needed for shared
-> > libraries to work well.  I can think several packages where if you
-> > used shared libraries, the major version number would need to be
-> > bumped at every releases, because people don't know how to spell ABI,
-> > never mind be able to *preserve* ABI.  Heck, it's the same reason that
-> > we don't promise kernel ABI compatibility for kernel modules!
-> > 
-> > https://www.kernel.org/doc/Documentation/process/stable-api-nonsense.rst
-> > 
-> > And in the case of Debian, use of shared libraries means that every
-> > time you release a new version of, say, f2fs-tools, things can get
-> > stalled for months or in one case, over a year, due to the new package
-> > review process (a shared library version bump means a new binary
-> > package, and that in turn requires a full review of the entire source
-> > package for GPL compliance from scratch, and f2fs-tools has bumped
-> > their shared library major version *every* *single* *release*) ---
-> > during which time, security bug fixes were being held up due to the
-> > new package review tarpit.
+I think that would be unnecessary. All callers are going to call this
+inside an is_pci_p2pdma_page() check, otherwise it would slow down the
+fast path.
 
- Well, SONAME maintenance is indeed a hassle, but to solve this problem 
-we've had symbol versioning for decades now, ever since we've switched 
-from libc 5 to glibc 2.0.  And glibc hasn't bumped the SONAMEs of the 
-individual libraries ever since, while maintaining all the old ABIs (not 
-necessarily available to link against) and adding new ones as required.
+>> + *
+>> + * Returns 1 if the segment was mapped, 0 if the segment should be mapped
+>> + * directly (or through the IOMMU) and -EREMOTEIO if the segment should not
+>> + * be mapped at all.
+>> + */
+>> +int pci_p2pdma_map_segment(struct pci_p2pdma_map_state *state,
+>> +			   struct device *dev, struct scatterlist *sg,
+>> +			   unsigned long dma_attrs)
+>> +{
+>> +	if (state->pgmap != sg_page(sg)->pgmap) {
+>> +		state->pgmap = sg_page(sg)->pgmap;
+>> +		state->map = pci_p2pdma_map_type(state->pgmap, dev, dma_attrs);
+>> +		state->bus_off = to_p2p_pgmap(state->pgmap)->bus_offset;
+>> +	}
+> 
+> I'll quote myself from patch 9, because I had a comment there that actually
+> was meant for this patch:
+> 
+> Is it worth putting this stuff on the caller's stack? I mean, is there a
+> noticeable performance improvement from caching the state? Because if
+> it's invisible, then simplicity is better. I suspect you're right, and
+> that it *is* worth it, but it's good to know for real.
 
- So it has been pretty easy to maintain ABI compatibility nowadays without 
-the need to carry multiple library versions along, as long as you actually 
-care to do so.
+Yeah, I responded to this in another email.
 
-> > If people could actually guarantee stable ABI's, then shared libraries
-> > might make sense.  E2fsprogs hasn't had a major version bump in shared
-> > libraries for over a decade (although some developers whine and
-> > complain about how I reject function signature changes in the
-> > libext2fs library to provide that ABI stability).  But how many
-> > userspace packages can make that claim?
+> 
+>> +
+>> +	switch (state->map) {
+>> +	case PCI_P2PDMA_MAP_BUS_ADDR:
+>> +		sg->dma_address = sg_phys(sg) + state->bus_off;
+>> +		sg_dma_len(sg) = sg->length;
+>> +		sg_mark_pci_p2pdma(sg);
+>> +		return 1;
+>> +	case PCI_P2PDMA_MAP_THRU_HOST_BRIDGE:
+>> +		return 0;
+>> +	default:
+>> +		return -EREMOTEIO;
+>> +	}
+>> +}
+>> +
+>> +/**
+>> + * pci_p2pdma_map_bus_segment - map an sg segment pre determined to
+>> + *	be mapped with PCI_P2PDMA_MAP_BUS_ADDR
+> 
+> Or:
+> 
+>   * pci_p2pdma_map_bus_segment - map an SG segment that is already known
+>   * to be mapped with PCI_P2PDMA_MAP_BUS_ADDR
+> 
+> Also, should that prerequisite be backed up with checks in the function?
 
- That's actually the matter of general software quality and the competence 
-of software developers.  I have no good answer except for a suggestion to 
-see this talk: <https://lca2020.linux.org.au/schedule/presentation/105/>.
+No, this function only really exists for the needs of iommu_dma_map_sg().
 
-  Maciej
+>> + * @pg_sg: scatterlist segment with the page to map
+>> + * @dma_sg: scatterlist segment to assign a dma address to
+>> + *
+>> + * This is a helper for iommu dma_map_sg() implementations when the
+>> + * segment for the dma address differs from the segment containing the
+>> + * source page.
+>> + *
+>> + * pci_p2pdma_map_type() must have already been called on the pg_sg and
+>> + * returned PCI_P2PDMA_MAP_BUS_ADDR.
+> 
+> Another prerequisite, so same question: do you think that the code should
+> also check that this prerequisite is met?
+
+Again, no, simply because it's this way because of what's required by
+iommu_dma.
+
+Logan
