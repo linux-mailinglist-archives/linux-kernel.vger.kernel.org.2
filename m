@@ -2,117 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CC603720FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 21:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA819372107
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 22:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229620AbhECTyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 15:54:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbhECTyp (ORCPT
+        id S229602AbhECUBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 16:01:49 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:33148 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229499AbhECUBr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 15:54:45 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD675C061761
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 12:53:51 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id k25so6555658oic.4
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 12:53:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sL1cfgAwusROayggatCngmy+CDfZipZ8K0S97Q3yq6Q=;
-        b=CRqyGcRJzr2t7Pmj7oHIyJjjFWQLWJae/kCMd4aaJk17BYeX/DnQGhh392/1rXNiCq
-         3+jnOVqKRj2FR+odqa11vu4G+JXB5kSnuoZBhV7IBiWr0MfVSCa9PeXqfPYsewvLvZ6G
-         hSOTPzHmojo+8IKA9lYSVlvLKLijZk64DYfy+EjSjuL7laMXS2e2DCbw8j4ZOWq4V/Po
-         scljdkDPvwGCxWGA53xZTE2JNExwx17RQiuIJZ18Ul/Vjc3NODdA26x7hYe5rY0GGZsq
-         Lur3c5i20XfFU1Y82iznEq14q1DPrpnU/is5Sptlk2NDIxe5jFuPZkwSn8SY7z2JnNLN
-         TDKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sL1cfgAwusROayggatCngmy+CDfZipZ8K0S97Q3yq6Q=;
-        b=Iz5RsIUjkASyvF9FJiSc6/iEB/hE2mq7JyMD2A+IdCFpBT9iSfoCipC7c3FhQw5rEX
-         mOWqzZqfOUdA6X9P1SXqmULbY942ypVBqdXeuoABD7n+DaYEhvjPqzgXeYvz0Mp0VB+o
-         P2SWYJWJlzLxCNgdqa+J8FuJLWbYg0xvGvNA0nNKAoWBYYqRLujpJIcSscbcoDGltWVJ
-         LI1jHsFew8rsvkCkCydZShdu5d1CxhXdEeDCTR6sq7CpZHRvLUuFRF8jDNU0Ky7/owvN
-         DLmmuWL8FKSANg77B8NHDEZi/KjNrVsZzXlK9lBzexPscYc8L3/TvfcAUuyAiemiaVD5
-         3/Ew==
-X-Gm-Message-State: AOAM531qQoDcRonXpC7HAzAM5EFeB9zyXcB1jm2PFK4VJsmL1rtjUsT6
-        77eNRd5/9LfduXb8SPRs4njDPEJBCSJbzvNz1rS50Q==
-X-Google-Smtp-Source: ABdhPJxWqJOXiH/95U6rrLRMIPGQFk6oJv1bO9Wxu4NNmUUeQHEBRT3D3+oQLsWrAa5qP9iF+z00FCubwSjXwRKUQxQ=
-X-Received: by 2002:aca:bb06:: with SMTP id l6mr14657198oif.121.1620071630990;
- Mon, 03 May 2021 12:53:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <YIpkvGrBFGlB5vNj@elver.google.com> <m11rat9f85.fsf@fess.ebiederm.org>
- <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
- <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
- <m1zgxfs7zq.fsf_-_@fess.ebiederm.org> <m11rarqqx2.fsf_-_@fess.ebiederm.org>
- <CANpmjNNJ_MnNyD4R2+9i24E=9xPHKnwTh6zwWtBYkuAq1Xo6-w@mail.gmail.com>
- <m1wnshm14b.fsf@fess.ebiederm.org> <YI/wJSwQitisM8Xf@hirez.programming.kicks-ass.net>
- <m1sg33ip4w.fsf@fess.ebiederm.org>
-In-Reply-To: <m1sg33ip4w.fsf@fess.ebiederm.org>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 3 May 2021 21:53:39 +0200
-Message-ID: <CANpmjNNyvOFyEDLPKuGn-pjFTMfLCOBHOQrMocLVpdEG47Ge3A@mail.gmail.com>
-Subject: Re: [PATCH 7/3] signal: Deliver all of the perf_data in si_perf
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 3 May 2021 16:01:47 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620072054; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=Wuobg4eBDGvYUWgobsliNOV3/u1xddo8tZNEDxUkFTQ=; b=UYHNQ0YmeaG2Ws7CbnA996h4bO9YTnoGzlyUF5ZGW3yWgbvDGfO/zls5tDIxloew6XWjE9SX
+ Q6cmhuAKvSkcghogrXGzmLAKjV4gtYBwJU2aC/qtntD9jdXq/Jlz2vDn+sHTIXkNOQJWQzzQ
+ m3NlA10WLelMktsEk34engxXlLs=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 609056708166b7eff7a4902f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 03 May 2021 20:00:48
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 872CEC433D3; Mon,  3 May 2021 20:00:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A887AC433F1;
+        Mon,  3 May 2021 20:00:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A887AC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v2] bus: mhi: core: Improve debug messages for power up
+Date:   Mon,  3 May 2021 13:00:38 -0700
+Message-Id: <1620072038-36160-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 3 May 2021 at 21:38, Eric W. Biederman <ebiederm@xmission.com> wrote:
-> Peter Zijlstra <peterz@infradead.org> writes:
->
-> > On Sun, May 02, 2021 at 01:39:16PM -0500, Eric W. Biederman wrote:
-> >
-> >> The one thing that this doesn't do is give you a 64bit field
-> >> on 32bit architectures.
-> >>
-> >> On 32bit builds the layout is:
-> >>
-> >>      int si_signo;
-> >>      int si_errno;
-> >>      int si_code;
-> >>      void __user *_addr;
-> >>
-> >> So I believe if the first 3 fields were moved into the _sifields union
-> >> si_perf could define a 64bit field as it's first member and it would not
-> >> break anything else.
-> >>
-> >> Given that the data field is 64bit that seems desirable.
-> >
-> > The data field is fundamentally an address, it is internally a u64
-> > because the perf ring buffer has u64 alignment and it saves on compat
-> > crap etc.
-> >
-> > So for the 32bit/compat case the high bits will always be 0 and
-> > truncating into an unsigned long is fine.
->
-> I see why it is fine to truncate the data field into an unsigned long.
->
-> Other than technical difficulties in extending siginfo_t is there any
-> reason not to define data as a __u64?
+Improve error message to be more descriptive if a failure occurs
+with an invalid power up execution environment. Additionally, add
+a debug log to print the execution environment and MHI state
+before a power up is attempted to confirm if the device is in an
+expected state. This helps clarify reasons for power up failures
+such as the device being found in a PBL or Emergency Download
+Mode execution environment and the host expected a full power up
+with Pass-Through and no image loading involved.
 
-No -- like I pointed at earlier, si_perf used to be __u64, but we
-can't because of the siginfo_t limitation. What we have now is fine,
-and not worth dwelling over given siginfo limitations.
+Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+---
+v2: Use power up instead of power on and update commit text with an example.
 
-Thanks,
--- Marco
+ drivers/bus/mhi/core/pm.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+index adf426c..f4a8b9a 100644
+--- a/drivers/bus/mhi/core/pm.c
++++ b/drivers/bus/mhi/core/pm.c
+@@ -1076,12 +1076,16 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
+ 
+ 	/* Confirm that the device is in valid exec env */
+ 	if (!MHI_IN_PBL(current_ee) && current_ee != MHI_EE_AMSS) {
+-		dev_err(dev, "Not a valid EE for power on\n");
++		dev_err(dev, "%s is not a valid EE for power on\n",
++			TO_MHI_EXEC_STR(current_ee));
+ 		ret = -EIO;
+ 		goto error_async_power_up;
+ 	}
+ 
+ 	state = mhi_get_mhi_state(mhi_cntrl);
++	dev_dbg(dev, "Attempting power on with EE: %s, state: %s\n",
++		TO_MHI_EXEC_STR(current_ee), TO_MHI_STATE_STR(state));
++
+ 	if (state == MHI_STATE_SYS_ERR) {
+ 		mhi_set_mhi_state(mhi_cntrl, MHI_STATE_RESET);
+ 		ret = wait_event_timeout(mhi_cntrl->state_event,
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
