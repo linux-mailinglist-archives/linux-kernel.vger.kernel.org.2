@@ -2,69 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD23B3717AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA0E3717AD
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbhECPPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 11:15:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55118 "EHLO mail.kernel.org"
+        id S230326AbhECPQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 11:16:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230334AbhECPPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 11:15:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78C4661244;
-        Mon,  3 May 2021 15:14:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620054855;
-        bh=l/oW44h3R465Lu0dfjfqdreggvzt5yyu9gr3b7Ukl8g=;
+        id S230138AbhECPQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 11:16:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 620D4611CE;
+        Mon,  3 May 2021 15:15:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620054914;
+        bh=/LSUSuRjEGi45BoQ+xzSvQtQrLu1m2Cvb93dm1J1F74=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VYjgs/I+MALOqkwkZ61dV5jreY1ObtB9q1kjCfSVVVV2f2o5uHhYt+vbmJkw35Ibd
-         NVttw/rz4YoZ0fbwQcJstY2st9UMIkXL1pTtB10MTPm//eY6R8hZcoIXR3SuW3gXTY
-         5hoLtIkNrJ7nvjDXbcws5Ni5KdFAlW8HRCNL66az+Afek4M/tajVJ857tMXPmtKlXJ
-         JkiLbmtc9TAZ8n6LxMneOB1xaK050PO89WkYShdU0u04y8sXfZl8NBCRjFrJPn+CpB
-         pMKNM13HVyRsqJBFQpQaPFztaKZQ3r8E44EgFIk2i3L/tnJRyqnldBeOCyiNhJgy1a
-         CX9gzyz+ddzkA==
-Date:   Mon, 3 May 2021 18:14:12 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
-        James.Bottomley@hansenpartnership.com, keescook@chromium.org,
-        jsnitsel@redhat.com, ml.linux@elloe.vision,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>
-Subject: Re: [PATCH v3 1/4] tpm: Use a threaded interrupt handler
-Message-ID: <YJATRNMqzyAprCbL@kernel.org>
-References: <20210501135727.17747-1-LinoSanfilippo@gmx.de>
- <20210501135727.17747-2-LinoSanfilippo@gmx.de>
+        b=yzLIXfm3e+8rTSXcbgOLKvDqrgbDDEacnTJYMJ2hUBZUJjDrxoOHLGMhl80BVAkRt
+         wt4stiWbFumTnCKWnsobsr0MBsUEj07AQS0Fk9aPLq1RZZw3TSDfG/vhyRLCAUnCqF
+         PHbWLJRfJPKlub3jNLNCKgkCXUgbOlnguyZRLIEc=
+Date:   Mon, 3 May 2021 17:15:12 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Mark Langsdorf <mlangsdo@redhat.com>
+Cc:     Kees Cook <keescook@chromium.org>, Wenwen Wang <wenwen@cs.uga.edu>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: Re: [PATCH] Revert "ACPI: custom_method: fix memory leaks"
+Message-ID: <YJATgPrq2uzZlRQQ@kroah.com>
+References: <20210502172326.2060025-1-keescook@chromium.org>
+ <0fefece0-f8a1-6ee1-114f-0a2bb412b986@redhat.com>
+ <YJAN/nwldJKwTV/V@kroah.com>
+ <99653e1a-97a3-b532-1775-31d8115bfc62@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210501135727.17747-2-LinoSanfilippo@gmx.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <99653e1a-97a3-b532-1775-31d8115bfc62@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 01, 2021 at 03:57:24PM +0200, Lino Sanfilippo wrote:
-> The interrupt handler uses tpm_tis_read32() and tpm_tis_write32() to access
-> the interrupt status register. In case of SPI those accesses are done with
-> the spi_bus_lock mutex held. This means that the status register cannot
-> be read or written in interrupt context.
+On Mon, May 03, 2021 at 09:58:17AM -0500, Mark Langsdorf wrote:
+> On 5/3/21 9:51 AM, Greg Kroah-Hartman wrote:
+> > On Mon, May 03, 2021 at 08:17:14AM -0500, Mark Langsdorf wrote:
+> > > In 5/2/21 12:23 PM, Kees Cook wrote:
+> > > > This reverts commit 03d1571d9513369c17e6848476763ebbd10ec2cb.
+> > > > 
+> > > > While /sys/kernel/debug/acpi/custom_method is already a privileged-only
+> > > > API providing proxied arbitrary write access to kernel memory[1][2],
+> > > > with existing race conditions[3] in buffer allocation and use that could
+> > > > lead to memory leaks and use-after-free conditions, the above commit
+> > > > appears to accidentally make the use-after-free conditions even easier
+> > > > to accomplish. ("buf" is a global variable and prior kfree()s would set
+> > > > buf back to NULL.)
+> > > > 
+> > > > This entire interface needs to be reworked (if not entirely removed).
+> > > > 
+> > > > [1] https://lore.kernel.org/lkml/20110222193250.GA23913@outflux.net/
+> > > > [2] https://lore.kernel.org/lkml/201906221659.B618D83@keescook/
+> > > > [3] https://lore.kernel.org/lkml/20170109231323.GA89642@beast/
+> > > > 
+> > > > Cc: Wenwen Wang <wenwen@cs.uga.edu>
+> > > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > > ---
+> > > I have two patches submitted to linux-acpi to fix the most obvious bugs in
+> > > the current driver.  I don't think that just reverting this patch in its
+> > > entirety is a good solution: it still leaves the buf allocated in -EINVAL,
+> > > as well as the weird case where a not fully consumed buffer can be
+> > > reallocated without being freed on a subsequent call.
+> > > 
+> > > https://lore.kernel.org/linux-acpi/20210427185434.34885-1-mlangsdo@redhat.com/
+> > > 
+> > > https://lore.kernel.org/linux-acpi/20210423152818.97077-1-mlangsdo@redhat.com/
+> > > 
+> > > I support rewriting this driver in its entirety, but reverting one bad patch
+> > > to leave it in a different buggy state is less than ideal.
+> > It's buggy now, and root-only, so it's a low bar at the moment :)
+> > 
+> > Do those commits really fix the issues?  Is this debugfs code even
+> > needed at all or can it just be dropped?
 > 
-> For this reason request a threaded interrupt handler so that the required
-> accesses can be done in process context.
+> One of my commits removes the kfree(buf) at the end of the function, which
+> is the code that causes the use after free for short writes.  The other adds
+> a kfree(buf) before allocating the buffer, to make sure that the buffer is
+> free before allocating it.
 > 
-> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-> Signed-off-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
+> There are other bugs in the code that neither my patches nor the revert
+> address, like the total lack of protection against concurrent writes.
 
-No fixes tag.
+Why would anyone care about concurrent writes for this debugfs file?
+Is that a requirement here?
 
-The short summary scopes now the whole TPM subsystem ("tpm:"), but the fix
-is targetted *only* for tpm_tis_spi. How about "tpm, tpm_tis_spi: Allow to
-sleep in the interrupt handler"?
+thanks,
 
-This also changes the semantics tpm_tis_*, not just tpm_tis_spi, which is
-not acceptable. We cannot backport a fix like this.
-
-Probably you should just add a parameter to tpm_tis_core_init() to hint
-that threaded IRQ is required, and then only conditionally do so.
-
-/Jarkko
+greg k-h
