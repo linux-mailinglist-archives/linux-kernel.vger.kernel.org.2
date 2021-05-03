@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA784371120
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 07:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68965371121
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 07:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232853AbhECFG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 01:06:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38598 "EHLO
+        id S232882AbhECFGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 01:06:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232463AbhECFGW (ORCPT
+        with ESMTP id S232377AbhECFGX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 01:06:22 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B529C061756
-        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 22:05:28 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id t22so2869951pgu.0
-        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 22:05:28 -0700 (PDT)
+        Mon, 3 May 2021 01:06:23 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8EFBC061761
+        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 22:05:29 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id gj14so2384984pjb.5
+        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 22:05:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=g3OaSiVF5MtL/VroYDmXFrkkWbMJTL0iUxMjRnNHvBY=;
-        b=nKzE6s5knmvNp/Hcd0vBxdVoIJLOGEBAopHSc/8Lo1xuaFCkOeckBx31XO1SdCzYqr
-         c3Lp+RYIf1YodVE9jGMYF7pKrcMH4QdKWUljPofNhlCd62P2uTzbyPryq3vDcN4kleYm
-         TQD11xqkA88SZXJ/v70iuhVXZQaFFO9rnwBgc=
+        bh=Gd+q5isoBTEaO167JYZlFPuozG7kopSgX/B2WmZT4CU=;
+        b=lSkSIsRdhK8drnieHGaWU5Z3g0S5yMaBlkNsgsDMY3lvBXhgUlv0SUc4MJ1Xqe5GAB
+         evI5zV66b80zQU0tftjWz08/TIs9qYdfswLM3vDfLBeGrNDwfJJbppalGGEYeTMGsdsP
+         40SVzfFobjxQAC/vuSSP1ApIuSeidLvTdWZpE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g3OaSiVF5MtL/VroYDmXFrkkWbMJTL0iUxMjRnNHvBY=;
-        b=BTz3YhWDbzKAoB6rdW8pXIRzm7cGAH4iW+y3ZP8PbkjqqOia/zbuHvUsdLp/4nZ7Px
-         ZfpveNY4+9wRTDGZLWf6dXNRfKtj9J9am/NtQv65mM2L24moJSn84b4twTDadAApAk9R
-         FZ+2z4U+iASlD0jD8CxnYGmvJNdOPLj9KWLXpMbePwUD34nwTkHCV38YsQtVrIeQW8Fw
-         R4eFE1UbZECs/hzayZ6cS2Xgv1ofublVv8TJ1vrR+MGD9MMZGVtl1zl2t7JyGA11EsJA
-         Fhz6XB5XixLYPHYXMuTUSTkWGEIO5ofeyD5N+i0QRk0ig8lACj76W6iJYufbFQeLKKMu
-         7vHQ==
-X-Gm-Message-State: AOAM530CXbIw2LeqBbHJC6zT9Rt4Ceq493N+cFDNwLfaMC/HNqAQmFtd
-        rfMYFEZxJ477kznreEU9Nbt1OQ==
-X-Google-Smtp-Source: ABdhPJzzaCXBMXMoEGL5WtdSc8NmhA2rO2kQhgEa8DyTFoirOLa/q/qV8pUGOT20LBAYUdQMVgk+iQ==
-X-Received: by 2002:a62:6142:0:b029:28e:b072:6b7 with SMTP id v63-20020a6261420000b029028eb07206b7mr710806pfb.65.1620018327485;
-        Sun, 02 May 2021 22:05:27 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Gd+q5isoBTEaO167JYZlFPuozG7kopSgX/B2WmZT4CU=;
+        b=cBMN5J5V1zrDmPd3G/u/YvMrSJyyjgq/WdC9CilBJYMy2BugNiCCScxW1yUxuNOuWr
+         Yj/OvpQVeYIqUN7+VeLapv0ccpStSxlbTqkShq3aCu1zArsVtk2iaYVPbWVh/Zsdo0ws
+         OYBQE/PH4Pxz3Cwi00gPJUFe7ZCSjiBYGSiO/myT6kJqoNMmaZMM+/GbVwBz3Jd4gzSU
+         2A+tw8eadleTsHaDy8ZsC7bmkgJy/+C9ENwbCOtS2lB8NAQGIvQzBir3yUZrABHa1AiT
+         CVPV99QUmvR66hyxCUG9F7+HmZwrb+E08JB5+W8USrUEGlMk8SDe35TRfhhSH4s3/rig
+         BY4w==
+X-Gm-Message-State: AOAM531zPpYANYgMK245LISwub0HdUxsRGx70faQlu4bzmKrHfM4P7aS
+        c5Hl5iRnmLPd3WyrB68ip9sktg==
+X-Google-Smtp-Source: ABdhPJzr0YgdF6zJDMGKSd8q835/nBnu4xKXG1psfhQlDWIKQuWD9DbhfQLmkZ2QLfxMzWvV/OJmcg==
+X-Received: by 2002:a17:902:d204:b029:ed:19aa:c364 with SMTP id t4-20020a170902d204b02900ed19aac364mr18594442ply.34.1620018329259;
+        Sun, 02 May 2021 22:05:29 -0700 (PDT)
 Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:63a0:c726:475a:ace5])
-        by smtp.gmail.com with ESMTPSA id 14sm7854600pfi.145.2021.05.02.22.05.25
+        by smtp.gmail.com with ESMTPSA id 14sm7854600pfi.145.2021.05.02.22.05.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 May 2021 22:05:27 -0700 (PDT)
+        Sun, 02 May 2021 22:05:28 -0700 (PDT)
 From:   Hsin-Yi Wang <hsinyi@chromium.org>
 To:     Matthias Brugger <matthias.bgg@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
@@ -53,37 +53,49 @@ To:     Matthias Brugger <matthias.bgg@gmail.com>,
         Enric Balletbo i Serra <enric.balletbo@collabora.com>,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/2] arm64: dts: mt8183: add mediatek,gce-events in mutex
-Date:   Mon,  3 May 2021 13:05:22 +0800
-Message-Id: <20210503050523.2571758-1-hsinyi@chromium.org>
+Subject: [PATCH v2 2/2] dt-bindings: mediatek: Add optional mediatek,gce-events property
+Date:   Mon,  3 May 2021 13:05:23 +0800
+Message-Id: <20210503050523.2571758-2-hsinyi@chromium.org>
 X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
+In-Reply-To: <20210503050523.2571758-1-hsinyi@chromium.org>
+References: <20210503050523.2571758-1-hsinyi@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mediatek,gce-events is read by mutex node.
+mediatek,gce-events property is used by gce clients.
 
 Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 ---
- arch/arm64/boot/dts/mediatek/mt8183.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+ .../devicetree/bindings/display/mediatek/mediatek,disp.txt  | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-index c5e822b6b77a..cf22d71161e5 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-@@ -1250,6 +1250,8 @@ mutex: mutex@14016000 {
- 			reg = <0 0x14016000 0 0x1000>;
- 			interrupts = <GIC_SPI 217 IRQ_TYPE_LEVEL_LOW>;
- 			power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
-+			mediatek,gce-events = <CMDQ_EVENT_MUTEX_STREAM_DONE0>,
-+					      <CMDQ_EVENT_MUTEX_STREAM_DONE1>;
- 		};
+diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
+index fbb59c9ddda6..939b2da3bdc5 100644
+--- a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
++++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
+@@ -75,6 +75,10 @@ Optional properties (RDMA function blocks):
+   mediatek,rdma-fifo-size of mt8183-rdma0 is 5K
+   mediatek,rdma-fifo-size of mt8183-rdma1 is 2K
  
- 		larb0: larb@14017000 {
++Optional properties for display mutex:
++- mediatek,gce-events: GCE events used by clients. The event numbers are
++  defined in 'dt-bindings/gce/<chip>-gce.h'.
++
+ Examples:
+ 
+ mmsys: clock-controller@14000000 {
+@@ -209,6 +213,8 @@ mutex: mutex@14020000 {
+ 	interrupts = <GIC_SPI 169 IRQ_TYPE_LEVEL_LOW>;
+ 	power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+ 	clocks = <&mmsys CLK_MM_MUTEX_32K>;
++	mediatek,gce-events = <CMDQ_EVENT_MUTEX0_STREAM_EOF>,
++			      <CMDQ_EVENT_MUTEX1_STREAM_EOF>;
+ };
+ 
+ od@14023000 {
 -- 
 2.31.1.527.g47e6f16901-goog
 
