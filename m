@@ -2,72 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53DAE372070
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 21:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C06A3720C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 21:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229760AbhECT3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 15:29:40 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:45030 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhECT3j (ORCPT
+        id S229616AbhECTrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 15:47:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:61000 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229472AbhECTrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 15:29:39 -0400
-Received: by mail-ot1-f49.google.com with SMTP id r26-20020a056830121ab02902a5ff1c9b81so2131093otp.11;
-        Mon, 03 May 2021 12:28:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Jhhpn9NYBV5aYOb5xCU71puhRz+23sT/8/8mM+p2NaU=;
-        b=opyr9IKbgf2gixRyr+ChnrtLYrFVxiD4f9Jxja/XkLMP29srI/eCLk2T9OXzab0Ir7
-         7x6NmLsO+fUGpbYn5Mt786NTgZfca2B2LeUXABuKfTHT7bdn3Tv9fudoDW1KAri/YzzO
-         1MBUqDUmoKIoXAS7msztF4oPAzFbahuDjSQUE4TLXGTgNg4jmZQm1BRoV8KCl78L7VkC
-         MquwA/aBDHb3rxqeHoe4BfFsdC+7F+xKEqjSFq31hzgADUNfmjYEpl6doKIq80OgZZm8
-         RzE9S5EKn8BzV2UO92AsvjaugzCi6XanYeea/x/FmyEx6TI4cchMTg+301vVZae/RJ6Y
-         DK/w==
-X-Gm-Message-State: AOAM532hXouWWULV917zapJJqZyfFuaUC1yE6KV3ZTLqMVlUaX5WJI/9
-        uEQrulbM6kPDXtMaPpvxbQ==
-X-Google-Smtp-Source: ABdhPJygRYjzKbasu80k7e5nA2cdJ4GM54d+Z/a/gZynHxWgtO0WH5vsHQtLcp7+z0aWiRVcNEwk/g==
-X-Received: by 2002:a9d:10a:: with SMTP id 10mr16199332otu.188.1620070125193;
-        Mon, 03 May 2021 12:28:45 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id z9sm165458oog.25.2021.05.03.12.28.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 12:28:44 -0700 (PDT)
-Received: (nullmailer pid 2242383 invoked by uid 1000);
-        Mon, 03 May 2021 19:28:43 -0000
-Date:   Mon, 3 May 2021 14:28:43 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Mattijs Korpershoek <mkorpershoek@baylibre.com>
-Cc:     fparent@baylibre.com, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-input@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH 4/7] dt-bindings: input: mtk-pmic-keys: add MT6358
- binding definition
-Message-ID: <20210503192843.GA2242334@robh.at.kernel.org>
-References: <20210428164219.1115537-1-mkorpershoek@baylibre.com>
- <20210428164219.1115537-5-mkorpershoek@baylibre.com>
+        Mon, 3 May 2021 15:47:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620071198;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=eHo0/dbu5krWRcuyHJQMSjd6F7AXefWg+8SLFMMDFkI=;
+        b=ggrgcJ8wW5Vb2N4rg3XFobsKXgE46x5C/ZPwrqkMfVxK0q6qAEYVrEVYK3ERz0yYPdILWj
+        Q7rp9btoS94hNLYQ7uvmziGOHwvarWQAuLG2YPLx3coSl46hwXUf+3yExAzxu0+mv76vwN
+        ATQEXtNuJqHoucEenkx+GI4M0daR+3s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-149-5Ce4T9HpOn2dSpl4ADT5IQ-1; Mon, 03 May 2021 15:46:36 -0400
+X-MC-Unique: 5Ce4T9HpOn2dSpl4ADT5IQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3DC3A801106;
+        Mon,  3 May 2021 19:46:35 +0000 (UTC)
+Received: from quaco.ghostprotocols.net (unknown [10.3.128.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E5A6110190AA;
+        Mon,  3 May 2021 19:46:34 +0000 (UTC)
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id B91BA4034C; Mon,  3 May 2021 12:00:01 -0300 (-03)
+Date:   Mon, 3 May 2021 12:00:01 -0300
+From:   Arnaldo Carvalho de Melo <acme@redhat.com>
+To:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>
+Cc:     Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [FYI][PATCH 1/1] tools arch x86: Sync the msr-index.h copy with the
+ kernel sources
+Message-ID: <YJAP8UiisqpJlQZa@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210428164219.1115537-5-mkorpershoek@baylibre.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Apr 2021 18:42:16 +0200, Mattijs Korpershoek wrote:
-> Add the binding documentation of the mtk-pmic-keys for the MT6358 PMICs.
-> 
-> MT6358 is a little different since it used separate IRQs for the
-> release key (_r) event
-> 
-> Signed-off-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
-> ---
->  Documentation/devicetree/bindings/input/mtk-pmic-keys.txt | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
+To pick up the changes from these csets:
 
-Acked-by: Rob Herring <robh@kernel.org>
+  d0946a882e622022 ("perf/x86/intel: Hybrid PMU support for perf capabilities")
+
+That cause no changes to tooling as it isn't adding any new MSR, just
+some capabilities for a pre-existing one:
+
+  $ tools/perf/trace/beauty/tracepoints/x86_msr.sh > before
+  $ cp arch/x86/include/asm/msr-index.h tools/arch/x86/include/asm/msr-index.h
+  $ tools/perf/trace/beauty/tracepoints/x86_msr.sh > after
+  $ diff -u before after
+  $
+
+Just silences this perf build warning:
+
+  Warning: Kernel ABI header at 'tools/arch/x86/include/asm/msr-index.h' differs from latest version at 'arch/x86/include/asm/msr-index.h'
+  diff -u tools/arch/x86/include/asm/msr-index.h arch/x86/include/asm/msr-index.h
+
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/arch/x86/include/asm/msr-index.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/tools/arch/x86/include/asm/msr-index.h b/tools/arch/x86/include/asm/msr-index.h
+index 45029354e0a8b42f..742d89a00721dce1 100644
+--- a/tools/arch/x86/include/asm/msr-index.h
++++ b/tools/arch/x86/include/asm/msr-index.h
+@@ -185,6 +185,9 @@
+ #define MSR_PEBS_DATA_CFG		0x000003f2
+ #define MSR_IA32_DS_AREA		0x00000600
+ #define MSR_IA32_PERF_CAPABILITIES	0x00000345
++#define PERF_CAP_METRICS_IDX		15
++#define PERF_CAP_PT_IDX			16
++
+ #define MSR_PEBS_LD_LAT_THRESHOLD	0x000003f6
+ 
+ #define MSR_IA32_RTIT_CTL		0x00000570
+@@ -265,6 +268,7 @@
+ #define DEBUGCTLMSR_LBR			(1UL <<  0) /* last branch recording */
+ #define DEBUGCTLMSR_BTF_SHIFT		1
+ #define DEBUGCTLMSR_BTF			(1UL <<  1) /* single-step on branches */
++#define DEBUGCTLMSR_BUS_LOCK_DETECT	(1UL <<  2)
+ #define DEBUGCTLMSR_TR			(1UL <<  6)
+ #define DEBUGCTLMSR_BTS			(1UL <<  7)
+ #define DEBUGCTLMSR_BTINT		(1UL <<  8)
+-- 
+2.26.3
+
