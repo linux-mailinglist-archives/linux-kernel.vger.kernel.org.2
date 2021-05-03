@@ -2,52 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A95423721DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 22:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A973721F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 22:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbhECUsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 16:48:18 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:46164 "EHLO
-        mail.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229748AbhECUsQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 16:48:16 -0400
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id E816A4D25963D;
-        Mon,  3 May 2021 13:47:21 -0700 (PDT)
-Date:   Mon, 03 May 2021 13:47:21 -0700 (PDT)
-Message-Id: <20210503.134721.2149322673805635760.davem@davemloft.net>
-To:     lijunp213@gmail.com
-Cc:     msuchanek@suse.de, netdev@vger.kernel.org, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org, drt@linux.ibm.com,
-        sukadev@linux.ibm.com, tlfalcon@linux.ibm.com, kuba@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ibmvnic: remove default label from to_string switch
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <CAOhMmr701LecfuNM+EozqbiTxFvDiXjFdY2aYeKJYaXq9kqVDg@mail.gmail.com>
-References: <20210503102323.17804-1-msuchanek@suse.de>
-        <CAOhMmr701LecfuNM+EozqbiTxFvDiXjFdY2aYeKJYaXq9kqVDg@mail.gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Mon, 03 May 2021 13:47:22 -0700 (PDT)
+        id S229836AbhECUt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 16:49:57 -0400
+Received: from mga03.intel.com ([134.134.136.65]:53596 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229576AbhECUtt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 16:49:49 -0400
+IronPort-SDR: YcVajbMePFOVsBM3LbJOX44iaEGchYCjcD+gu3pI3krHu5RCYxHG9/EfmbicnA38fnjoj5xYmz
+ VE/tUU36AJSg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9973"; a="197888950"
+X-IronPort-AV: E=Sophos;i="5.82,271,1613462400"; 
+   d="scan'208";a="197888950"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 13:48:54 -0700
+IronPort-SDR: tnjWwfmLZU67Se0Tsk1xCFkgIUHlD9fFCrc1V2r3gWWcsYz/AFZwcSuyTvXVq7fg62CpkRNpjA
+ I7xb/lFDL9FA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,271,1613462400"; 
+   d="scan'208";a="388536668"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga003.jf.intel.com with ESMTP; 03 May 2021 13:48:51 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 1295AD9; Mon,  3 May 2021 23:49:10 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "J. Bruce Fields" <bfields@redhat.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Shevchenko <andy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH v1 00/12] lib/string_helpers: get rid of ugly *_escape_mem_ascii() API
+Date:   Mon,  3 May 2021 23:48:55 +0300
+Message-Id: <20210503204907.34013-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lijun Pan <lijunp213@gmail.com>
-Date: Mon, 3 May 2021 13:21:00 -0500
+Get rid of ugly *_escape_mem_ascii() API since it's not flexible and
+has the only single user. Provide better approach based on usage of the
+string_escape_mem() with appropriate flags.
 
-> On Mon, May 3, 2021 at 5:54 AM Michal Suchanek <msuchanek@suse.de> wrote:
->>
->> This way the compiler warns when a new value is added to the enum but
->> not the string transation like:
-> 
-> s/transation/translation/
-> 
-> This trick works.
-> Since the original code does not generate gcc warnings/errors, should
-> this patch be sent to net-next as an improvement?
+Test cases has been expanded accordingly to cover new functionality.
 
-Yes.
+Andy Shevchenko (12):
+  lib/string_helpers: Switch to use BIT() macro
+  lib/string_helpers: Move ESCAPE_NP check inside 'else' branch in a
+    loop
+  lib/string_helpers: Introduce ESCAPE_NA for escaping non-ASCII
+  lib/string_helpers: Introduce ESCAPE_NAP to escape non-ASCII and
+    non-printable
+  lib/string_helpers: Drop indentation level in string_escape_mem()
+  lib/string_helpers: Allow to append additional characters to be
+    escaped
+  lib/test-string_helpers: Print flags in hexadecimal format
+  lib/test-string_helpers: Get rid of trailing comma in terminators
+  lib/test-string_helpers: Add test cases for new features
+  nfsd: Avoid non-flexible API in seq_quote_mem()
+  lib/string_helpers: Drop unused *_escape_mem_ascii()
+  MAINTAINERS: Add myself as designated reviewer for generic string
+    library
+
+ MAINTAINERS                    |   8 ++
+ fs/nfsd/nfs4state.c            |   8 +-
+ fs/seq_file.c                  |  11 ---
+ include/linux/seq_file.h       |   1 -
+ include/linux/string_helpers.h |  31 ++++---
+ lib/string_helpers.c           | 102 ++++++++++++---------
+ lib/test-string_helpers.c      | 157 +++++++++++++++++++++++++++++----
+ 7 files changed, 235 insertions(+), 83 deletions(-)
+
+-- 
+2.30.2
+
