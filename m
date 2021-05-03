@@ -2,148 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD322371EE5
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F691371EE8
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231492AbhECRxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 13:53:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231285AbhECRxT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 13:53:19 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14299C06174A;
-        Mon,  3 May 2021 10:52:26 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id y26so7317719eds.4;
-        Mon, 03 May 2021 10:52:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VlqRIueTk0F5zfM99p/8Ijk8GV72FYyMIcRNpH9/8mM=;
-        b=eooZ7Dwqywhke7IsxQry6Qnd3r8Tl+sm5eALs9IGsiN1IxnQMTtnOoewuAZiiELP0A
-         Oq1do3ed0/7ljCCNrAa9mhIhhb8AZe+XNd87um07rYhnpkzZPC6XDLVceejTtmMIoPbg
-         10RLe8tfnaeruO4rT7qt8do6SmiomXLuSDJjndPoOIpP5eOR3N4HTNiUUCGdNLQZfNaM
-         dTLGitz3PDkvou7ykOSbNP4UWLoAYURkQUizwamQHUonxL3blbly2TmB1gEZgk5B6q79
-         o0BkQtjxm4Lm4zzEQRv0Ye2Fp3tYu6OAfGs21slmgpOfE19npY9BWZzQrQYmIDQm7Qr8
-         8DbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VlqRIueTk0F5zfM99p/8Ijk8GV72FYyMIcRNpH9/8mM=;
-        b=pEAKTDP2Sfyu67OWlukNbteOV1BT+LzICmIYNz2paL4hAjCdCMXKn2grEVemmm/eZM
-         /vZ+VO9+p6fwMNc5ja7fkpLqRefYGc7QQXAuR2pon61Ex2sCYqs62I+TIpLCb0xcoTj6
-         njXIPK873jJ2cE1wOpSNuP5bBXyrYl8AKLPLfNN6Kctj65BwGgdfYNmwY4O2oENlG4KR
-         QcQXiyme2+lnxXMrM0oCB7E6V78UXAKWR33GZua+rCbNIEadzKNPzDWudSe0bcb7DUpx
-         yB8QcckjNRE5UsrTBdx0E+udK45X7I8oOHoI/3NLXKrSjnSOyt33dc8ir+uycwv5bQlR
-         Gncg==
-X-Gm-Message-State: AOAM530ptyFq2ia3A6LQjqfd4XvxvKV148YyRt5iGlIcXhlzK2n6+kz+
-        4BDE5CSwioNbguX+9qM7/x09ogpi5HVXZbu57ZI=
-X-Google-Smtp-Source: ABdhPJyrEQbpkN6DYy/v2aTjZOD4g2MB0cEeRUPbrKzX7JTf9OUhJYCBJs+HCk0MHU6eo1Zly1UAUzUOCR5e8eChZdQ=
-X-Received: by 2002:a05:6402:12d3:: with SMTP id k19mr21251334edx.52.1620064344776;
- Mon, 03 May 2021 10:52:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210503145503.1477-1-linux.amoon@gmail.com> <20210503145503.1477-4-linux.amoon@gmail.com>
- <CAFBinCCxMvomKt9E0jT_XXpyL1_-qXH4=zVDMNdbDCnZCsnT=A@mail.gmail.com>
- <CANAwSgTdFHwtKd-sgQq0Jp8WP55fZG3wsn7feCGo257yqiFkpw@mail.gmail.com>
- <CAFBinCDUc7VG7T9c8snP4ujMMViS0GRdztP6QGJvF9LNESHHCw@mail.gmail.com> <CANAwSgSrQnBs06+DG6x+GMvyjvu-hPFX0J5MQ0yKPBvNaNu98w@mail.gmail.com>
-In-Reply-To: <CANAwSgSrQnBs06+DG6x+GMvyjvu-hPFX0J5MQ0yKPBvNaNu98w@mail.gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Mon, 3 May 2021 19:52:13 +0200
-Message-ID: <CAFBinCDMTmZ5ifii8rW=6qSdNngx3Gz1tZPd7aubDkmqNYD_og@mail.gmail.com>
-Subject: Re: [PATCHv1 3/9] soc: amlogic: meson-ee-pwrc: Add hdmi power domain
- Meson g12a SoCs
-To:     Anand Moon <linux.amoon@gmail.com>
-Cc:     devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-amlogic@lists.infradead.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S231545AbhECRyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 13:54:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43592 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231285AbhECRyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 13:54:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED87D61244;
+        Mon,  3 May 2021 17:53:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1620064432;
+        bh=WCD9ljWpCaCSXxxPCipeE4bfikSypFP5Od1Bb5asHxI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=g2qRS7MLAyut5TZCDPt37qijlo6ZlbyOwIhHCOiybXOl0bAA1m+HS1P38m3YYMIjM
+         LsFAVWyKgusOI06RiFekT1G4siui/+IMdO4McwXnGrWUAIuhJof5iJrEmjM/5JtbsM
+         yEm/4rpdATKzIDrAHzIBpQ+g2E3lf4r0EJzFzav8=
+Date:   Mon, 3 May 2021 10:53:51 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     syzbot <syzbot+882a85c0c8ec4a3e2281@syzkaller.appspotmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        syzkaller-bugs@googlegroups.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org
+Subject: Re: [syzbot] WARNING in do_proc_bulk
+Message-Id: <20210503105351.0966275d0d9e001ed794de2c@linux-foundation.org>
+In-Reply-To: <00000000000000186405c16a6156@google.com>
+References: <000000000000b47bc805c15e4b11@google.com>
+        <00000000000000186405c16a6156@google.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anand,
+(cc usb peeps)
 
-On Mon, May 3, 2021 at 6:37 PM Anand Moon <linux.amoon@gmail.com> wrote:
-[...]
-> > > whenever I try something new it fails. Please ignore this series.
-> > if the VPU and HDMI power domains were separate (from hardware
-> > perspective, not from driver perspective) then your change is a good
-> > step forward.
-> > in that case VPU_HHI_MEMPD would need to be removed from wherever it's
-> > currently used -> that means we need to also decide if we want to
-> > break compatibility with older (before this series) .dtbs
-> >
-> >
->
-> As per the datasheet S922X Datasheet, HDMI and VPU are different
-> reg controller and they are independent of each other.
-[...]
-> Note: HDMI and AUDIO and Ethernet are also independent of each other.
-let me say it this way: I've seen cases where the information from the
-datasheet is not correct
+On Mon, 03 May 2021 03:25:21 -0700 syzbot <syzbot+882a85c0c8ec4a3e2281@syzkaller.appspotmail.com> wrote:
 
-Also to me it doesn't explicitly state that the bits are independent
-of each other (at the same time it also doesn't state that they belong
-together).
+> syzbot has found a reproducer for the following issue on:
 
-In the same datasheet you also find the HHI_HDMI_PLL_CNTL0 register
-hdmi_dpll_M, hdmi_dpll_N and hdmi_dpll_od are listed in there.
-The PLL output depends on hdmi_dpll_M and hdmi_dpll_N while
-hdmi_dpll_od is taking the output of the two and dividing it.
-This relation is nowhere described in the datasheet either so you
-"just have to know it".
+Thanks.
 
-Unfortunately I don't know of any good way to check the relationship
-of the power domain registers other than someone from Amlogic
-explaining to us how it works internally.
+> HEAD commit:    d2b6f8a1 Merge tag 'xfs-5.13-merge-3' of git://git.kernel...
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1746d3e1d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=65c207250bba4efe
+> dashboard link: https://syzkaller.appspot.com/bug?extid=882a85c0c8ec4a3e2281
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=107f7893d00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ae7ca5d00000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+882a85c0c8ec4a3e2281@syzkaller.appspotmail.com
+> 
+> usb usb9: usbfs: process 8586 (syz-executor862) did not claim interface 0 before use
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 8586 at mm/page_alloc.c:4985 __alloc_pages_nodemask+0x5fd/0x730 mm/page_alloc.c:5020
+> Modules linked in:
+> CPU: 0 PID: 8586 Comm: syz-executor862 Not tainted 5.12.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:__alloc_pages_nodemask+0x5fd/0x730 mm/page_alloc.c:4985
+> Code: 00 00 0c 00 0f 85 a7 00 00 00 8b 3c 24 4c 89 f2 44 89 e6 c6 44 24 70 00 48 89 6c 24 58 e8 9b d7 ff ff 49 89 c5 e9 e5 fc ff ff <0f> 0b e9 b0 fd ff ff 89 74 24 14 4c 89 4c 24 08 4c 89 74 24 18 e8
+> RSP: 0018:ffffc90001f57a30 EFLAGS: 00010246
+> RAX: 0000000000000000 RBX: 1ffff920003eaf4a RCX: 0000000000000000
+> RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000040cc0
+> RBP: 0000000000040cc0 R08: 0000000000000000 R09: 0000000000000000
+> R10: ffffffff81b51b41 R11: 0000000000000000 R12: 000000000000000b
+> R13: 000000000000000b R14: 0000000000000000 R15: 0000000000554e47
+> FS:  0000000002293300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007fd2526f7008 CR3: 000000001d80b000 CR4: 00000000001506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  alloc_pages_current+0x18c/0x2a0 mm/mempolicy.c:2277
+>  alloc_pages include/linux/gfp.h:561 [inline]
+>  kmalloc_order+0x34/0xf0 mm/slab_common.c:906
+>  kmalloc_order_trace+0x14/0x130 mm/slab_common.c:922
+>  kmalloc include/linux/slab.h:561 [inline]
+>  do_proc_bulk+0x2d4/0x750 drivers/usb/core/devio.c:1221
+>  proc_bulk drivers/usb/core/devio.c:1268 [inline]
+>  usbdev_do_ioctl drivers/usb/core/devio.c:2542 [inline]
+>  usbdev_ioctl+0x586/0x36c0 drivers/usb/core/devio.c:2708
+>  vfs_ioctl fs/ioctl.c:51 [inline]
+>  __do_sys_ioctl fs/ioctl.c:1069 [inline]
+>  __se_sys_ioctl fs/ioctl.c:1055 [inline]
+>  __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
+>  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-[...]
-> Below is the output on Odroid N2.
->
-> [alarm@archl-on2 ~]$ sudo cat /sys/kernel/debug/pm_genpd/pm_genpd_summary
-> domain                          status          children
->             performance
->     /device                                             runtime status
-> ----------------------------------------------------------------------------------------------
-> HDMI                            on
->             0
->     /devices/platform/soc/ff600000.bus/ff600000.hdmi-tx  unsupported
->              0
-> AUDIO                           on
->             0
->     /devices/platform/sound                             unsupported
->             0
-> ETH                             on
->             0
->     /devices/platform/soc/ff3f0000.ethernet             active
->             0
-> VPU                             on
->             0
->     /devices/platform/soc/ff900000.vpu                  unsupported
->             0
-This describes what Linux sees (based on how you configured the device-tree).
-The output confirms what you are expecting to see (I think), but based
-on that we can't tell what's right or wrong in terms of the actual
-hardware.
+do_proc_bulk() is asking kmalloc for more than MAX_ORDER bytes, in
 
-To make another example: I could edit meson-g12b-odroid-n2.dtsi and
-change the vin-supply of "VDDAO_3V3" to &usb_pwr_en
-Then /sys/kernel/debug/regulator/regulator_summary would show that
-VDDAO_3V3 is taking the voltage from USB_PWR_EN as input.
-But from a hardware (schematics) perspective this is not correct.
-Since the schematics describe the relation (input, output) between the
-regulators we know how they are connected to each other.
-If this relation was not described in the schematics then we'd be in
-the same situation as with the power domains.
+	tbuf = kmalloc(len1, GFP_KERNEL);
 
 
-Best regards,
-Martin
+> RIP: 0033:0x4450c9
+> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 a1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00000000005cfd98 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000004450c9
+> RDX: 0000000020000240 RSI: 00000000c0185502 RDI: 0000000000000004
+> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000005 R11: 0000000000000246 R12: 00000000005cfdcc
+> R13: 00000000005cfe00 R14: 00000000005cfde0 R15: 0000000000000005
