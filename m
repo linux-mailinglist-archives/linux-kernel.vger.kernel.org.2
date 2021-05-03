@@ -2,207 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF173715D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B94C3715D6
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234210AbhECNSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 09:18:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234170AbhECNSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 09:18:10 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD9A56121D;
-        Mon,  3 May 2021 13:17:15 +0000 (UTC)
-Date:   Mon, 3 May 2021 09:17:13 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Cao jin <jojing64@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Qiujun Huang <hqjagain@gmail.com>,
-        Wan Jiabing <wanjiabing@vivo.com>, Xu Wang <vulab@iscas.ac.cn>,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [ GIT PULL] tracing: Updates for 5.13
-Message-ID: <20210503091713.1aa7a7b7@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S234245AbhECNS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 09:18:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22391 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234186AbhECNSO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 09:18:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620047841;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lZ3P44Yfnu49NpfXUggovdI/GLNt/AAmmjz1I1EQb1c=;
+        b=XGEmrvx5ZL3hUmnJb/yr0w4vXa8XNUB3+/Pv8c1K8LjCSHYIIefcm5amK2NaSwGMntbHuk
+        L6LdrwePlUXMO7NRyUXbNM6Bz6fTBNYFZi8tLqCeqVap3zpl/RvDqGc7yDOPD2OAlM0PTc
+        OeYjAo00t2f2tAD4+Xw2urLywFSgAFM=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-34-9avEkPjAOVim4BVnpt09Iw-1; Mon, 03 May 2021 09:17:17 -0400
+X-MC-Unique: 9avEkPjAOVim4BVnpt09Iw-1
+Received: by mail-qk1-f198.google.com with SMTP id b19-20020a05620a0893b02902e956b29f5dso5058662qka.16
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 06:17:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=lZ3P44Yfnu49NpfXUggovdI/GLNt/AAmmjz1I1EQb1c=;
+        b=s+SeIH2sQqecmklhs1RTidrpdn+zQPz/tyMV6xu3MMQgsJ+oMs0HO7i9CexLKWp8Ik
+         khM/JJHzXQzAfM35vV5AHe4lZWA1N0z4+WX/mp/C3tdiueDMyy2Zx0bb9Bgpwq+iieV8
+         5l6dPgjmcqflcWNVMfuaVD+Jjqr+Q6D7XNy9bc9dLGnSrRtR7iVM5sTcIShZqbJa0ZDJ
+         QYtvx8qS5HaRzaWe2mYcs8qba0FG3tE3aJrfN3/NTkbSL7SN0fgm7o5aIGvO3RPFuicd
+         oqgRU4X2uJnBZCG/Mqhx6T2pHPa7tRQ7bkfoO24xoh+mZjX7JEqeMS49I7bmEHndB8BY
+         YGIw==
+X-Gm-Message-State: AOAM531ndLwDFTJs4bTLPCrluz2YvkMv9MiqyA7WXiLOgo5TuDB8CTPA
+        /4N88O9+3pxGzxEVtAjX32J3Nwew178d5tSDtQGIVxbiz5TZVYZ4wQdG5Q9uZnVJIM6p2krQOEh
+        JFJi06PnChxuc7dLUrNWHH9Uv
+X-Received: by 2002:a37:9a16:: with SMTP id c22mr16145761qke.0.1620047837078;
+        Mon, 03 May 2021 06:17:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyQxOHgnDvzivrvWF+f41wjCfS0nWr2QjOGWOHxpLgLWxPJr4p5uQ3N9F4ixkJD2cJUfJ+RTQ==
+X-Received: by 2002:a37:9a16:: with SMTP id c22mr16145743qke.0.1620047836859;
+        Mon, 03 May 2021 06:17:16 -0700 (PDT)
+Received: from redhatnow.users.ipa.redhat.com ([2605:a601:ab5e:300:20c:bff:fe44:d76d])
+        by smtp.gmail.com with ESMTPSA id g1sm8460932qth.69.2021.05.03.06.17.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 06:17:15 -0700 (PDT)
+Subject: Re: [PATCH] Revert "ACPI: custom_method: fix memory leaks"
+To:     Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Wenwen Wang <wenwen@cs.uga.edu>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+References: <20210502172326.2060025-1-keescook@chromium.org>
+From:   Mark Langsdorf <mlangsdo@redhat.com>
+Message-ID: <0fefece0-f8a1-6ee1-114f-0a2bb412b986@redhat.com>
+Date:   Mon, 3 May 2021 08:17:14 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210502172326.2060025-1-keescook@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In 5/2/21 12:23 PM, Kees Cook wrote:
+> This reverts commit 03d1571d9513369c17e6848476763ebbd10ec2cb.
+>
+> While /sys/kernel/debug/acpi/custom_method is already a privileged-only
+> API providing proxied arbitrary write access to kernel memory[1][2],
+> with existing race conditions[3] in buffer allocation and use that could
+> lead to memory leaks and use-after-free conditions, the above commit
+> appears to accidentally make the use-after-free conditions even easier
+> to accomplish. ("buf" is a global variable and prior kfree()s would set
+> buf back to NULL.)
+>
+> This entire interface needs to be reworked (if not entirely removed).
+>
+> [1] https://lore.kernel.org/lkml/20110222193250.GA23913@outflux.net/
+> [2] https://lore.kernel.org/lkml/201906221659.B618D83@keescook/
+> [3] https://lore.kernel.org/lkml/20170109231323.GA89642@beast/
+>
+> Cc: Wenwen Wang <wenwen@cs.uga.edu>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
 
-Linus,
+I have two patches submitted to linux-acpi to fix the most obvious bugs 
+in the current driver.  I don't think that just reverting this patch in 
+its entirety is a good solution: it still leaves the buf allocated in 
+-EINVAL, as well as the weird case where a not fully consumed buffer can 
+be reallocated without being freed on a subsequent call.
 
-tracing updates for 5.13
+https://lore.kernel.org/linux-acpi/20210427185434.34885-1-mlangsdo@redhat.com/
 
-[
-  Note, this has one merge of my trace/ftrace/urgent branch to pull
-  in the changes to the ftrace_page allocation fix, in order to
-  apply your changes on top of it (commit db42523b4f3e83).
+https://lore.kernel.org/linux-acpi/20210423152818.97077-1-mlangsdo@redhat.com/
 
-  This is the first time I'm sending a pull request with a merge
-  in it. I'm hoping my scripts did everything correctly. Might want
-  to check it a bit more than usual.
+I support rewriting this driver in its entirety, but reverting one bad 
+patch to leave it in a different buggy state is less than ideal.
 
-  The "Fixes" section below contains two last minute bugs that were
-  reported, which is why I'm late on my pull request.
-]
+--Mark Langsdorf
 
-New feature:
-
- The "func-no-repeats" option in tracefs/options directory. When set
- the function tracer will detect if the current function being traced
- is the same as the previous one, and instead of recording it, it will
- keep track of the number of times that the function is repeated in a row.
- And when another function is recorded, it will write a new event that
- shows the function that repeated, the number of times it repeated and
- the time stamp of when the last repeated function occurred.
-
-Enhancements:
-
- In order to implement the above "func-no-repeats" option, the ring
- buffer timestamp can now give the accurate timestamp of the event
- as it is being recorded, instead of having to record an absolute
- timestamp for all events. This helps the histogram code which no longer
- needs to waste ring buffer space.
-
- New validation logic to make sure all trace events that access
- dereferenced pointers do so in a safe way, and will warn otherwise.
-
-Fixes:
-
- No longer limit the PIDs of tasks that are recorded for "saved_cmdlines"
- to PID_MAX_DEFAULT (32768), as systemd now allows for a much larger
- range. This caused the mapping of PIDs to the task names to be dropped
- for all tasks with a PID greater than 32768.
-
- Change trace_clock_global() to never block. This caused a deadlock.
-
-Clean ups:
-
- Typos, prototype fixes, and removing of duplicate or unused code.
-
- Better management of ftrace_page allocations.
-
-
-Please pull the latest trace-v5.13 tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-trace-v5.13
-
-Tag SHA1: fc7dae88ef9304be9df419919a36a90362207ba0
-Head SHA1: aafe104aa9096827a429bc1358f8260ee565b7cc
-
-
-Bhaskar Chowdhury (1):
-      kernel: trace: Mundane typo fixes in the file trace_events_filter.c
-
-Cao jin (1):
-      bootconfig: Update prototype of setup_boot_config()
-
-Colin Ian King (1):
-      ftrace: Fix spelling mistake "disabed" -> "disabled"
-
-Ingo Molnar (1):
-      tracing: Fix various typos in comments
-
-Linus Torvalds (1):
-      ftrace: Store the order of pages allocated in ftrace_page
-
-Qiujun Huang (2):
-      tracing: A minor cleanup for create_system_filter()
-      tracing: Update create_system_filter() kernel-doc comment
-
-Steven Rostedt (VMware) (17):
-      ring-buffer: Separate out internal use of ring_buffer_event_time_stamp()
-      ring-buffer: Add a event_stamp to cpu_buffer for each level of nesting
-      tracing: Pass buffer of event to trigger operations
-      ring-buffer: Allow ring_buffer_event_time_stamp() to return time stamp of all events
-      tracing: Use a no_filter_buffering_ref to stop using the filter buffer
-      ring-buffer: Add verifier for using ring_buffer_event_time_stamp()
-      tracing: Add tracing_event_time_stamp() API
-      tracing: Add check of trace event print fmts for dereferencing pointers
-      seq_buf: Add seq_buf_terminate() API
-      tracing: Add a verifier to check string pointers for trace events
-      scripts/recordmcount.pl: Make indent spacing consistent
-      scripts/recordmcount.pl: Make vim and emacs indent the same
-      Merge branch 'trace/ftrace/urgent' into HEAD
-      ftrace: Simplify the calculation of page number for ftrace_page->records some more
-      ftrace: Reuse the output of the function tracer for func_repeats
-      tracing: Map all PIDs to command lines
-      tracing: Restructure trace_clock_global() to never block
-
-Wan Jiabing (1):
-      tracing: Remove duplicate struct declaration in trace_events.h
-
-Xu Wang (1):
-      tools/latency-collector: Remove unneeded semicolon
-
-Yordan Karadzhov (VMware) (7):
-      tracing: Remove unused argument from "ring_buffer_time_stamp()
-      tracing: Define static void trace_print_time()
-      tracing: Define new ftrace event "func_repeats"
-      tracing: Add "last_func_repeats" to struct trace_array
-      tracing: Add method for recording "func_repeats" events
-      tracing: Unify the logic for function tracing options
-      tracing: Add "func_no_repeats" option for function tracing
-
-----
- arch/csky/kernel/probes/ftrace.c          |   2 +-
- arch/microblaze/include/asm/ftrace.h      |   2 +-
- arch/nds32/kernel/ftrace.c                |   2 +-
- arch/powerpc/include/asm/ftrace.h         |   4 +-
- arch/riscv/kernel/probes/ftrace.c         |   2 +-
- arch/sh/kernel/ftrace.c                   |   2 +-
- arch/sparc/include/asm/ftrace.h           |   2 +-
- arch/x86/kernel/kprobes/ftrace.c          |   2 +-
- fs/tracefs/inode.c                        |   2 +-
- include/linux/ftrace.h                    |   4 +-
- include/linux/ring_buffer.h               |   5 +-
- include/linux/seq_buf.h                   |  25 +++
- include/linux/trace_events.h              |   8 +-
- include/linux/tracepoint.h                |   2 +-
- include/trace/events/io_uring.h           |   2 +-
- include/trace/events/rcu.h                |   2 +-
- include/trace/events/sched.h              |   2 +-
- include/trace/events/timer.h              |   2 +-
- init/main.c                               |   6 +-
- kernel/trace/bpf_trace.c                  |   5 +-
- kernel/trace/fgraph.c                     |   4 +-
- kernel/trace/ftrace.c                     |  53 ++---
- kernel/trace/ring_buffer.c                | 142 +++++++++---
- kernel/trace/synth_event_gen_test.c       |   2 +-
- kernel/trace/trace.c                      | 348 ++++++++++++++++++++++++------
- kernel/trace/trace.h                      |  35 ++-
- kernel/trace/trace_clock.c                |  44 ++--
- kernel/trace/trace_dynevent.c             |   6 +-
- kernel/trace/trace_entries.h              |  22 ++
- kernel/trace/trace_event_perf.c           |   2 +-
- kernel/trace/trace_events.c               | 214 +++++++++++++++++-
- kernel/trace/trace_events_filter.c        |  18 +-
- kernel/trace/trace_events_hist.c          | 100 ++++++---
- kernel/trace/trace_events_synth.c         |   2 +-
- kernel/trace/trace_events_trigger.c       |  45 ++--
- kernel/trace/trace_functions.c            | 223 ++++++++++++++++---
- kernel/trace/trace_functions_graph.c      |   2 +-
- kernel/trace/trace_hwlat.c                |   4 +-
- kernel/trace/trace_kprobe.c               |   2 +-
- kernel/trace/trace_output.c               |  93 ++++++--
- kernel/trace/trace_printk.c               |  11 +
- kernel/trace/trace_probe.c                |   6 +-
- kernel/trace/trace_probe.h                |   2 +-
- kernel/trace/trace_probe_tmpl.h           |   2 +-
- kernel/trace/trace_selftest.c             |   4 +-
- kernel/trace/trace_seq.c                  |  12 +-
- scripts/recordmcount.pl                   |  26 +--
- tools/tracing/latency/latency-collector.c |   4 +-
- 48 files changed, 1198 insertions(+), 313 deletions(-)
----------------------------
