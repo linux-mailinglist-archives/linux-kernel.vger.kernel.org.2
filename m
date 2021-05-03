@@ -2,191 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D833371340
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 11:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8EE37133F
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 11:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233195AbhECJye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 05:54:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232964AbhECJyd (ORCPT
+        id S233188AbhECJxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 05:53:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54619 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233153AbhECJxv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 05:54:33 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47983C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 02:53:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hLPu0wpdmQKELX3cOXNLgsdlL7XHs8HLylrnei9aMfI=; b=bovjrGykvABavLuvniI2mznMyi
-        RK//qQ5heBgB0/OX0vBLQaQLUmhbEX890z5CoOoUh9mGb2/UAhY1d3y1OC9B6XVNXYaO8elpQRmPj
-        M2zTypFx7Zf8/9wQNdYTZlsrXjmmAvfujnehghvqsQGVp4VTi1YFxaqjkgcIgavGhVu8B2667Rje3
-        ul5DGsdU5iA2vSvx/nAjjIo+EcpE+fiGhr1cZ88lndmNdUbERP8EcSUJo00SYbneoQMvVJvKlDfAN
-        zv+42oRbxA0TVwiUE33A1bKVxgCmYebqpszvvRMPNv6VvybXNMQk480y2bizZP386LQl37rG0GVNL
-        VyzS1SLg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1ldVFb-00Euvl-QY; Mon, 03 May 2021 09:52:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 356D8300036;
-        Mon,  3 May 2021 11:52:26 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E05522BC22561; Mon,  3 May 2021 11:52:25 +0200 (CEST)
-Date:   Mon, 3 May 2021 11:52:25 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Cc:     Ingo Molnar <mingo@kernel.org>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.comi>, Mel Gorman <mgorman@suse.de>,
-        Len Brown <len.brown@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        Quentin Perret <qperret@google.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        linux-kernel@vger.kernel.org, Aubrey Li <aubrey.li@intel.com>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH v2 3/4] sched/fair: Consider SMT in ASYM_PACKING load
- balance
-Message-ID: <YI/H2dBB5M5da6ba@hirez.programming.kicks-ass.net>
-References: <20210414020436.12980-1-ricardo.neri-calderon@linux.intel.com>
- <20210414020436.12980-4-ricardo.neri-calderon@linux.intel.com>
+        Mon, 3 May 2021 05:53:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620035578;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KDs3pOIle+cRA8UpT3sOe31Wu1oBEmfY+Iy8YXU7Ks4=;
+        b=ZHYXf/6clo3uV0zAZm49j1h66/HH75rH2RcXLST/GZozI1lSC2/0hDL0TuWIjm2r+ft6hL
+        kei6Zfb3e4oiaPdU65OjbrtZWmuYN6ZfJadV09KjadIfKJgIiegQsq6UAVN2hblmfRpN5Z
+        CiOHm/X/00KH+bNz+XdPQ7eRpT39Qug=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-458-nawkftaUNca0AZt6tJjveA-1; Mon, 03 May 2021 05:52:55 -0400
+X-MC-Unique: nawkftaUNca0AZt6tJjveA-1
+Received: by mail-pj1-f70.google.com with SMTP id u13-20020a17090a3fcdb0290155c6507e67so4511153pjm.6
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 02:52:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KDs3pOIle+cRA8UpT3sOe31Wu1oBEmfY+Iy8YXU7Ks4=;
+        b=jk9N9CYzXZAV9NmPbWgG7e3cl3zqSupFW7TUMINw4PB0WHOVKgfgsoIZFnx4wMwSEW
+         LBX+VH0IEhs1ZR9GYvncOaLsCd6XgvM1/7Fs+mQjiEXR5Elgqcemu5fDkY3YH8JxCH1K
+         NlZrFytngRn4Gx6quo8plX+Zz1wKjn6YX16VRu3vZvOJOw7I16muIeOb3u2D6HtKpSjg
+         RbbCkA8a/+fJ7EDlE3o8GHw/t0hWGzGtR59+E1AefDrzrA0T7s/oWvP8OQnQbbtEqPji
+         fLtbnRsnSZrRSAN72Zk8EMNosv1ACG54VX2E8l7ur0TnbuaMkR4YVYraiFWvz/kRsLti
+         OnKQ==
+X-Gm-Message-State: AOAM5334ZAMcjriN2QmCZDiOFcYLGBNVt6pp6VpPMUG1W4aoOE/Knj+N
+        73rDSi6c8MPSGv0+0O8P5m7QEz9TxWhucdQD4bpSHks9FZjhCJht3RHzflRipcOJZVtvmrfHzuc
+        PAtPHffVFJq896lK9pAvp0I7dFONgXg1x7UsbZddF
+X-Received: by 2002:a17:90a:c28e:: with SMTP id f14mr20715022pjt.56.1620035574078;
+        Mon, 03 May 2021 02:52:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyR4iYp4dmuiAx5BnZBb8yV00vItIMRv8+Q1ihodUitpk8KCos4tRw1D/9aXSFpUI3bJ5wUsGxU26oSwwioyIQ=
+X-Received: by 2002:a17:90a:c28e:: with SMTP id f14mr20715005pjt.56.1620035573837;
+ Mon, 03 May 2021 02:52:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210414020436.12980-4-ricardo.neri-calderon@linux.intel.com>
+References: <cover.1615224800.git.nabijaczleweli@nabijaczleweli.xyz>
+ <20210420131741.kdgxquhwqureih7c@tarta.nabijaczleweli.xyz>
+ <nycvar.YFH.7.76.2105031110480.28378@cbobk.fhfr.pm> <CAO-hwJ+HhKU7EzPZGOtPePT_h7OUaJ=QfWi7eAcxsfRaDtQuvg@mail.gmail.com>
+In-Reply-To: <CAO-hwJ+HhKU7EzPZGOtPePT_h7OUaJ=QfWi7eAcxsfRaDtQuvg@mail.gmail.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Mon, 3 May 2021 11:52:43 +0200
+Message-ID: <CAO-hwJKLYTqQ9qZ8LZGabze_NjNfwAq2_V-28LFewjOC=EK8rw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] Stylus-on-touchscreen device support
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     =?UTF-8?B?0L3QsNCx?= <nabijaczleweli@nabijaczleweli.xyz>,
+        Peter Hutterer <peter.hutterer@who-t.net>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 07:04:35PM -0700, Ricardo Neri wrote:
-> +static bool cpu_group_is_smt(int cpu, struct sched_group *sg)
-> +{
-> +#ifdef CONFIG_SCHED_SMT
-> +	if (!static_branch_likely(&sched_smt_present))
-> +		return false;
-> +
-> +	if (sg->group_weight == 1)
-> +		return false;
-> +
-> +	return cpumask_equal(sched_group_span(sg), cpu_smt_mask(cpu));
-> +#else
-> +	return false;
-> +#endif
-> +}
-> +
-> +/**
-> + * asym_can_pull_tasks - Check whether the load balancing CPU can pull tasks
-> + * @dst_cpu:	CPU doing the load balancing
-> + * @sds:	Load-balancing data with statistics of the local group
-> + * @sgs:	Load-balancing statistics of the candidate busiest group
-> + * @sg:		The candidate busiet group
-> + *
-> + * Check the state of the SMT siblings of both @sds::local and @sg and decide
-> + * if @dst_cpu can pull tasks. If @dst_cpu does not have SMT siblings, it can
-> + * pull tasks if two or more of the SMT siblings of @sg are busy. If only one
-> + * CPU in @sg is busy, pull tasks only if @dst_cpu has higher priority.
-> + *
-> + * If both @dst_cpu and @sg have SMT siblings. Even the number of idle CPUs
-> + * between @sds::local and @sg. Thus, pull tasks from @sg if the difference
-> + * between the number of busy CPUs is 2 or more. If the difference is of 1,
-> + * only pull if @dst_cpu has higher priority. If @sg does not have SMT siblings
-> + * only pull tasks if all of the SMT siblings of @dst_cpu are idle and @sg
-> + * has lower priority.
-> + */
-> +static bool asym_can_pull_tasks(int dst_cpu, struct sd_lb_stats *sds,
-> +				struct sg_lb_stats *sgs, struct sched_group *sg)
-> +{
-> +#ifdef CONFIG_SCHED_SMT
-> +	int cpu, local_busy_cpus, sg_busy_cpus;
-> +	bool local_is_smt, sg_is_smt;
-> +
-> +	if (!arch_asym_check_smt_siblings())
-> +		return true;
-> +
-> +	cpu = group_first_cpu(sg);
-> +	local_is_smt = cpu_group_is_smt(dst_cpu, sds->local);
-> +	sg_is_smt = cpu_group_is_smt(cpu, sg);
+On Mon, May 3, 2021 at 11:39 AM Benjamin Tissoires
+<benjamin.tissoires@redhat.com> wrote:
+>
+> On Mon, May 3, 2021 at 11:11 AM Jiri Kosina <jikos@kernel.org> wrote:
+> >
+> > On Tue, 20 Apr 2021, =D0=BD=D0=B0=D0=B1 wrote:
+> >
+> > > > This patchset adds support for stylus-on-touchscreen devices as fou=
+nd on
+> > > > the OneMix 3 Pro and Dell Inspiron 15 7000 2-in-1 (7591), among oth=
+ers;
+> > > > with it, they properly behave like a drawing tablet.
+> > > >
+> > > > Patches 2 and 4 funxionally depend on patch 1.
+> > > > Patch 4 needs patch 3 to apply.
+> > > >
+> > > > The output of this patchset and the need for a kernel, rather than
+> > > > userspace, patch was previously discussed here:
+> > > >   https://gitlab.freedesktop.org/libinput/libinput/-/merge_requests=
+/558#note_792834
+> > > >
+> > > > Changes in v2:
+> > > > Patch 4 now ANDs the secondary button with the tip switch,
+> > > > since it's otherwise borderline useless to the user.
+> > > >
+> > > > Ahelenia Ziemia=C5=84ska (4):
+> > > >   HID: multitouch: require Finger field to mark Win8 reports as MT
+> > > >   HID: multitouch: set Stylus suffix for Stylus-application devices=
+, too
+> > > >   HID: input: replace outdated HID numbers+comments with macros
+> > > >   HID: input: work around Win8 stylus-on-touchscreen reporting
+> > > >
+> > > >  drivers/hid/hid-input.c      | 54 ++++++++++++++++++++++++++++++++=
+++--
+> > > >  drivers/hid/hid-multitouch.c | 18 +++++++-----
+> > > >  2 files changed, 62 insertions(+), 10 deletions(-)
+> > > >
+> > > > --
+> > > > 2.20.1
+> > >
+> > > Bumping this after a monthish =E2=80=92 is it missing something? Am I=
+?
+> >
+> > Benjamin had concerns about regressions and wanted to run a full batter=
+y
+> > of testing on it.
+> >
+> > Benjamin, is there any outcome of that, please?
+> >
+>
+> Sorry, no real outcome here.
+>
+> I ran the test suite, and there were no errors, until I realized that
+> there are no tests regarding tablets, so it can't detect any
+> regressions here.
+> And then, the usual happens, no time to actually work on the test suite..=
+. :(
+>
+> I'll do a "normal" review soon (i.e. today)
+>
 
-Would something like this make sense?
+So I did a quick pass at the patches:
+- 1/4 -> I think this one is safe and could go as it is, maybe with
+CC: stable on it. Any regressions should have been caught by the
+testsuite, so that's a good one.
+- 2/4 and 3/4 -> Ack on those 2 too, note stable material, but not
+necessary v5.13 material
+- 4/4 -> I honestly have no idea if the patch is correct or not. I
+would hold on this one until we have proper tests for those.
 
----
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -8533,21 +8533,6 @@ static inline void update_sg_lb_stats(st
- 				sgs->group_capacity;
- }
- 
--static bool cpu_group_is_smt(int cpu, struct sched_group *sg)
--{
--#ifdef CONFIG_SCHED_SMT
--	if (!static_branch_likely(&sched_smt_present))
--		return false;
--
--	if (sg->group_weight == 1)
--		return false;
--
--	return cpumask_equal(sched_group_span(sg), cpu_smt_mask(cpu));
--#else
--	return false;
--#endif
--}
--
- /**
-  * asym_can_pull_tasks - Check whether the load balancing CPU can pull tasks
-  * @dst_cpu:	CPU doing the load balancing
-@@ -8578,8 +8563,8 @@ static bool asym_can_pull_tasks(int dst_
- 		return true;
- 
- 	cpu = group_first_cpu(sg);
--	local_is_smt = cpu_group_is_smt(dst_cpu, sds->local);
--	sg_is_smt = cpu_group_is_smt(cpu, sg);
-+	local_is_smt = sds->local->flags & SD_SHARE_CPUCAPACITY;
-+	sg_is_smt = sg->flags & SD_SHARE_CPUCAPACITY;
- 
- 	sg_busy_cpus = sgs->group_weight - sgs->idle_cpus;
- 
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1795,6 +1795,7 @@ struct sched_group {
- 	unsigned int		group_weight;
- 	struct sched_group_capacity *sgc;
- 	int			asym_prefer_cpu;	/* CPU of highest priority in group */
-+	int			flags;
- 
- 	/*
- 	 * The CPUs this group covers.
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -916,10 +916,12 @@ build_group_from_child_sched_domain(stru
- 		return NULL;
- 
- 	sg_span = sched_group_span(sg);
--	if (sd->child)
-+	if (sd->child) {
- 		cpumask_copy(sg_span, sched_domain_span(sd->child));
--	else
-+		sg->flags = sd->child->flags;
-+	} else {
- 		cpumask_copy(sg_span, sched_domain_span(sd));
-+	}
- 
- 	atomic_inc(&sg->ref);
- 	return sg;
-@@ -1169,6 +1171,7 @@ static struct sched_group *get_group(int
- 	if (child) {
- 		cpumask_copy(sched_group_span(sg), sched_domain_span(child));
- 		cpumask_copy(group_balance_mask(sg), sched_group_span(sg));
-+		sg->flags = child->flags;
- 	} else {
- 		cpumask_set_cpu(cpu, sched_group_span(sg));
- 		cpumask_set_cpu(cpu, group_balance_mask(sg));
+Jiri, would you be ok to split the series as this?
+
+=D0=BD=D0=B0=D0=B1, would you be OK to work on the test suite at
+https://gitlab.freedesktop.org/libevdev/hid-tools so we can move
+forward for your last patch?
+
+The problem I see on the last patch is that it is touching a generic
+path and is not trivial. So adding tests would have 3 benefits:
+- we ensure we are doing the correct thing
+- we ensure we are not breaking existing devices (to some extent,
+given that the tests are non written for the tablets)
+- we ensure we are not breaking that in the future.
+
+Cheers,
+Benjamin
+
