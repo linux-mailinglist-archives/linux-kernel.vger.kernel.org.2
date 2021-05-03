@@ -2,102 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD84371A54
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E27E6371952
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231827AbhECQj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 12:39:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38260 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231755AbhECQhm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 12:37:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63477613C3;
-        Mon,  3 May 2021 16:36:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620059785;
-        bh=vb6VDooaNHkVvhir+UqLWaY9ZvgfOpWnyHLq/XDcXTs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ezwAGW03FkhsSejAAqhtsA6GN4bk6vKLyi34l9cDkpK4bBLArgzauObyTahzkqEsz
-         Y9pShfNGC1fqQ2+nhsLM6c0QfYp7WlbU1ktVuO2fFUWvzP4nd3N0nxrh1gGFfpRewP
-         a2mJsI5CiLVt0syBP4Pz+YEZDLtsWe19eowhGNQIfIyXN5UvO5bwnhUm+tx6f9ojON
-         o6d1L0VsAl9BFTPDa86t2Z1IsQLeC/84yYS+TsZ1NE7Ld+z4BcycNXG1lN029gDsm8
-         u61fS4CBYtskFldvvDXj3+0uXOntZM/h7pbdG6vGhOM0NZIo8PQMOdnWg1mUNJY+27
-         PhQqWZZXlVzQQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Lyude Paul <lyude@redhat.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Sasha Levin <sashal@kernel.org>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.12 046/134] drm/bridge/analogix/anx78xx: Cleanup on error in anx78xx_bridge_attach()
-Date:   Mon,  3 May 2021 12:33:45 -0400
-Message-Id: <20210503163513.2851510-46-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210503163513.2851510-1-sashal@kernel.org>
-References: <20210503163513.2851510-1-sashal@kernel.org>
+        id S231328AbhECQeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 12:34:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29812 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231280AbhECQer (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 12:34:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620059633;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pKdrkErQbSlpc/TwyrvHu/SsKrpqO8FziWOa2CO3Rko=;
+        b=EFt8ycwL6AtkIevGAB1Krws61yDztAFSlaCeCWuwuXhJz7/Wm1lZG3S+Ll6kZSwRHrx63a
+        B2n2dnCBJQ1hPA7097nbrGJrKkH1sKB4dDWPZ6h8cI6Q6EuiUS7ci5gZ/0AOIvD286MOw/
+        C1Xwk8USNG33kxHxDOk9qqOb5spPrHo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-373-Ui7m3bmJPWKLzWOh3qqqGg-1; Mon, 03 May 2021 12:33:49 -0400
+X-MC-Unique: Ui7m3bmJPWKLzWOh3qqqGg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B8F8F107ACF4;
+        Mon,  3 May 2021 16:33:47 +0000 (UTC)
+Received: from ovpn-112-143.rdu2.redhat.com (ovpn-112-143.rdu2.redhat.com [10.10.112.143])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C33476061F;
+        Mon,  3 May 2021 16:33:45 +0000 (UTC)
+Message-ID: <4170501b7c4f19ba66d870b671dc90ffbf4623d6.camel@redhat.com>
+Subject: Re: [PATCH v2 0/3] newidle_balance() PREEMPT_RT latency mitigations
+From:   Scott Wood <swood@redhat.com>
+To:     Mike Galbraith <efault@gmx.de>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+Date:   Mon, 03 May 2021 11:33:45 -0500
+In-Reply-To: <a46f9b6c719666357e568eadd1d615c05c4171ac.camel@gmx.de>
+References: <20210428232821.2506201-1-swood@redhat.com>
+         <CAKfTPtBrJNBg3847R_b8A-1c5rb9Fb5FFNMX+z11QGAiO0ofkw@mail.gmail.com>
+         <7b796a085b0bc638c9df70d3a20718f8d1d776c8.camel@redhat.com>
+         <a46f9b6c719666357e568eadd1d615c05c4171ac.camel@gmx.de>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lyude Paul <lyude@redhat.com>
+On Sun, 2021-05-02 at 05:25 +0200, Mike Galbraith wrote:
+> On Sat, 2021-05-01 at 17:03 -0500, Scott Wood wrote:
+> > On Thu, 2021-04-29 at 09:12 +0200, Vincent Guittot wrote:
+> > > Hi Scott,
+> > > 
+> > > On Thu, 29 Apr 2021 at 01:28, Scott Wood <swood@redhat.com> wrote:
+> > > > These patches mitigate latency caused by newidle_balance() on large
+> > > > systems when PREEMPT_RT is enabled, by enabling interrupts when the
+> > > > lock
+> > > > is dropped, and exiting early at various points if an RT task is
+> > > > runnable
+> > > > on the current CPU.
+> > > > 
+> > > > On a system with 128 CPUs, these patches dropped latency (as
+> > > > measured by
+> > > > a 12 hour rteval run) from 1045us to 317us (when applied to
+> > > > 5.12.0-rc3-rt3).
+> > > 
+> > > The patch below has been queued for v5.13 and removed the update of
+> > > blocked load what seemed to be the major reason for long preempt/irq
+> > > off during newly idle balance:
+> > > https://lore.kernel.org/lkml/20210224133007.28644-1-vincent.guittot@linaro.org/
+> > > 
+> > > I would be curious to see how it impacts your cases
+> > 
+> > I still get 1000+ ms latencies with those patches applied.
+> 
+> If NEWIDLE balancing migrates one task, how does that manage to consume
+> a full *millisecond*, and why would that only be a problem for RT?
+> 
+> 	-Mike
+> 
+> (rt tasks don't play !rt balancer here, if CPU goes idle, tough titty)
 
-[ Upstream commit 212ee8db84600f7b279b8645c62a112bff310995 ]
+Determining which task to pull is apparently taking that long (again, this
+is on a 128-cpu system).  RT is singled out because that is the config that
+makes significant tradeoffs to keep latencies down (I expect this would be
+far from the only possible 1ms+ latency on a non-RT kernel), and there was
+concern about the overhead of a double context switch when pulling a task to
+a newidle cpu.
 
-Just another issue I noticed while correcting usages of
-drm_dp_aux_init()/drm_dp_aux_register() around the tree. If any of the
-steps in anx78xx_bridge_attach() fail, we end up leaking resources. So,
-let's fix that (and fix leaking a DP AUX adapter in the process) by
-unrolling on errors.
+-Scott
 
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210219215326.2227596-10-lyude@redhat.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c b/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
-index fbfe0cc89ba4..bcc778f680a8 100644
---- a/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
-+++ b/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
-@@ -918,7 +918,7 @@ static int anx78xx_bridge_attach(struct drm_bridge *bridge,
- 				 DRM_MODE_CONNECTOR_DisplayPort);
- 	if (err) {
- 		DRM_ERROR("Failed to initialize connector: %d\n", err);
--		return err;
-+		goto aux_unregister;
- 	}
- 
- 	drm_connector_helper_add(&anx78xx->connector,
-@@ -930,16 +930,21 @@ static int anx78xx_bridge_attach(struct drm_bridge *bridge,
- 					   bridge->encoder);
- 	if (err) {
- 		DRM_ERROR("Failed to link up connector to encoder: %d\n", err);
--		return err;
-+		goto connector_cleanup;
- 	}
- 
- 	err = drm_connector_register(&anx78xx->connector);
- 	if (err) {
- 		DRM_ERROR("Failed to register connector: %d\n", err);
--		return err;
-+		goto connector_cleanup;
- 	}
- 
- 	return 0;
-+connector_cleanup:
-+	drm_connector_cleanup(&anx78xx->connector);
-+aux_unregister:
-+	drm_dp_aux_unregister(&anx78xx->aux);
-+	return err;
- }
- 
- static enum drm_mode_status
--- 
-2.30.2
 
