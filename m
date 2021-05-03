@@ -2,157 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA8A37186B
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F77637186E
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbhECPtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 11:49:16 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32540 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230236AbhECPtO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 11:49:14 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 143FXFOj083905;
-        Mon, 3 May 2021 11:48:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=QY8Fwva9jUAcObQQsHazOSmDv+lc05cpJZ4JdnaU6Pg=;
- b=q+nusEJGIyennrSNy+sGRwLw5a8qtR7A1j1sQLfkjk87VK7v1sFs4HuJRnFxcmfcfGAP
- hATpUZljHbXTUp3s9tHFZcZxXdPSq8zhiRyNjBwjB0C1rXQqCt8udPTO1f+JPhJBXDB9
- RmVFJlGWZAvH6sE+vMVCyIY/xqT9Yb+K267vMT2aRP8vTb7f/NqLMo0GVAHUwVN0wI/V
- KPRYfzLo72X1gMyNKAYLVwjlQp7JWpWD1POddMkr/brakcyostxctnd2aFqNXL2CHXEl
- KbKiyHY4XTrDg1k3Olmh5eQM7DreLvlKLEJHPc0eWydlKBWjMhqRUZG9Blts2MSoZEtH ZA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38akutgfh9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 03 May 2021 11:48:15 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 143FXGfi084082;
-        Mon, 3 May 2021 11:48:13 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38akutgfgb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 03 May 2021 11:48:12 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 143Fb20N028891;
-        Mon, 3 May 2021 15:48:10 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 388xm8rsma-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 03 May 2021 15:48:10 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 143FlhJK33358216
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 3 May 2021 15:47:43 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3A14F11C04A;
-        Mon,  3 May 2021 15:48:08 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 14C3C11C04C;
-        Mon,  3 May 2021 15:48:06 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.45.89])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  3 May 2021 15:48:05 +0000 (GMT)
-Message-ID: <d48e3595d0a39cc0ac82519c1c444eeacc8b8c58.camel@linux.ibm.com>
-Subject: Re: [PATCH v5 09/12] evm: Allow setxattr() and setattr() for
- unmodified metadata
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>,
-        "mjg59@google.com" <mjg59@google.com>
-Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Mon, 03 May 2021 11:48:04 -0400
-In-Reply-To: <b0bfaf2352b045dfaf443ae3af73b60e@huawei.com>
-References: <20210407105252.30721-1-roberto.sassu@huawei.com>
-         <20210407105252.30721-10-roberto.sassu@huawei.com>
-         <8493d7e2b0fefa4cd3861bd6b7ee6f2340aa7434.camel@linux.ibm.com>
-         <fcd2932bc2a841c2aa7fcbdaee94e0a5@huawei.com>
-         <cf12878833c82710ad4356e7d023cf51241f3cc8.camel@linux.ibm.com>
-         <b0bfaf2352b045dfaf443ae3af73b60e@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: v-k7iafBdxqr1f3U7Ucp7k5fB8Guv1JS
-X-Proofpoint-ORIG-GUID: DruteI17ux7fFn6dLtJ1yRwr2BsQX5dX
+        id S230484AbhECPuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 11:50:37 -0400
+Received: from mail-bn8nam11on2083.outbound.protection.outlook.com ([40.107.236.83]:58048
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230236AbhECPue (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 11:50:34 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=f6TBYYf0Gv9HjVfSX4ByayLIzgekrV3ZhBSBCEZj6gkxQpmNUXArFu1siUnsfYGXgnWuMAl7GNbUpQ2YMbM4ADMebJ5CpmW2544rdTVNyP8kTozKbqDQ++O9953QlDEX8qrTDHXM3u3NMudaYZxC3vVsJKzu8VnX0Ogi8QTka8BlhVMElD/PVlu0Xu32jliGeN4XrXrOStvseZK//oc5SlfarJDUorCT5Ed7dHGvrplLw0vLwptazAXxNL+Oj6+QDGv8AJU72+YEDc2z/eALEKv7oDvkYSmVN0z2NuXleJiH1kKhgMY/O0zE44tMd0Xc2r0jqAwiuo4KJ/uir/cGrw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ypfhZ+9UCPFWtJuhWc1IhuUdlzVd3yActK96Pdg+H3w=;
+ b=hXOrlKTYfKI4VdWpXXdUm/SnXY5oRnYFhqac/Qat+kuGUksSn+yHoDPLbS/6HdSyiMlKzLOn0cLzgPOuK7R0GMIBlKE/z+tw5PZRaiCAonDDGvzAj/D/HqcdRMCvVQG2CXU3LAoD7RbGJo76zCG38hf6AByrd9YQiY+erxtooCldAVleDfLWDgYOmv5tVFYimrTE4NVZY2iAwZ3J0urxApdPW0Mtn9R/Cg3TmzHIRf53D7X/di0zhdf2klwMBPhgBorjkSD3izNlZ+iqq+B7lG76MdMSUdvgFLt3+0/3+mA0404vYp3xgP9TuFSPIZUPEIjeub/z3yeIw333Zy9hng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ypfhZ+9UCPFWtJuhWc1IhuUdlzVd3yActK96Pdg+H3w=;
+ b=xUcmdDINIvubJyjw8aEzWj8+YM35Lxu+zI98BK2ilT1DwrM8Ef1cn2iUVJcKbSBe056aroZefsdF0gZggfz9BjyQ/394Ion0I98FjVofFJhoMIiwnc7SRGL6RzUYZ9lYVe5XBrtXHc8mXTzeKWRu2FtjW8nbNynLbV/GV7oLLAQ=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SN1PR12MB2511.namprd12.prod.outlook.com (2603:10b6:802:23::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.38; Mon, 3 May
+ 2021 15:49:39 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::9898:5b48:a062:db94]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::9898:5b48:a062:db94%6]) with mapi id 15.20.4087.044; Mon, 3 May 2021
+ 15:49:39 +0000
+Cc:     brijesh.singh@amd.com, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>
+Subject: Re: [PATCH Part2 RFC v2 10/37] x86/fault: Add support to handle the
+ RMP fault for kernel address
+To:     Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>
+References: <20210430123822.13825-1-brijesh.singh@amd.com>
+ <20210430123822.13825-11-brijesh.singh@amd.com>
+ <c3950468-af35-a46d-2d50-238245ed37b3@intel.com>
+ <CALCETrVEyBaG41gS4ntu6ikJqeiWs2gMuqfo_Yk0cdgpHyN9Dg@mail.gmail.com>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <4abe9ed9-a296-7b27-6b81-288185394ff6@amd.com>
+Date:   Mon, 3 May 2021 10:49:37 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.0
+In-Reply-To: <CALCETrVEyBaG41gS4ntu6ikJqeiWs2gMuqfo_Yk0cdgpHyN9Dg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+Content-Language: en-US
+X-Originating-IP: [70.112.153.56]
+X-ClientProxiedBy: SN6PR2101CA0001.namprd21.prod.outlook.com
+ (2603:10b6:805:106::11) To SN6PR12MB2718.namprd12.prod.outlook.com
+ (2603:10b6:805:6f::22)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-03_10:2021-05-03,2021-05-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 mlxscore=0 phishscore=0 spamscore=0 impostorscore=0
- bulkscore=0 adultscore=0 priorityscore=1501 clxscore=1015 suspectscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2105030105
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Brijeshs-MacBook-Pro.local (70.112.153.56) by SN6PR2101CA0001.namprd21.prod.outlook.com (2603:10b6:805:106::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.1 via Frontend Transport; Mon, 3 May 2021 15:49:38 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cfdc3f74-e633-4e4f-39ac-08d90e4b0f46
+X-MS-TrafficTypeDiagnostic: SN1PR12MB2511:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN1PR12MB25110A21E6480CD2AE73189AE55B9@SN1PR12MB2511.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TEp7Jd7lNmpOv71vge4IwJhZRs2L7++FkUzDjnex9pwVs4+gltz9uxXh0cc4zwtzAErmxz9Dnv5QBJ/kTTvuyKqWw3AWeylYOrNsIMI5i3pgGxW1DE4kTVsYF0dRTbsNvgcBW17uXkzEyptHz1q/RM7a7YhLVFBpvddUk6DZg/8Yd+q0wIs1McoH3I4dkT4XIilG3MiaMwMUfR4b4D4/vC++dPeaQZoTCd5amprB2GSEicvmM6ntb1wWEhXtcD1sWqg1A74lxGlmK8G5Oz2lRweJVadG4MNJQEeJBWBpgbRfwRIRIdAI73Xcb5XjGFsnFagf+guST4CeeKtAuQiMnjFTBUxmnSbi6wUdT8dXvhGymeTWP/QF5X9mrZ3QVd1bmBJvSZ0qZL2h4feKOg9kTCzaQYbzyMHrcUaxOF8D0w8jpeFtbmsV0e2pccwhrQrnp09zbWeVWExQdAeSF4IRBiSSSk67dWGxf05Vzqlx+b7lnS2NIW46xvsHm6E+mi45CyF7Ej949sclEAWAO/wzEkeO9RXNzPZevfH69YrTYq1w1m0wlVsgiw0Zpqnb75CkFulCdV8d4Zro/YmtGOXDCf3BJNsf2qd2U12G8MhRv2iAW44Jot8yC+boIqMzV7anKBe1TKnniKjHHauoL6qsoZKpzTg/Pe2zuqsTxw+P7S1+60ciFMh301SqX0Uh3KOMDPs6BEI83QcdB+qlaVUCbx0CnoK+l8pqAlKpmN/vt+o=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39850400004)(136003)(396003)(346002)(376002)(4326008)(83380400001)(110136005)(31696002)(6486002)(66946007)(54906003)(16526019)(52116002)(66556008)(2906002)(7416002)(66476007)(186003)(478600001)(8676002)(5660300002)(956004)(316002)(26005)(53546011)(31686004)(6512007)(6506007)(36756003)(38100700002)(38350700002)(2616005)(8936002)(86362001)(44832011)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cXJ2cjhBQXJBVk94d3grU2hydk5xWG1mSWJkbkwxakJ5MkZncE1QTVh6dGQ2?=
+ =?utf-8?B?VFN6TUN3VmZ1THRpNW1NcVdrZ3ZpcDdhbU1xZHEwbnJ2bGUzOEhJU1VtQ1h6?=
+ =?utf-8?B?MDZuNlYvemRKZEg4TmFEZWxKdlBFS3JpSTNnSnpNWTdCTGlWbFQ2WkZXYnBo?=
+ =?utf-8?B?RG1xektWUUxpd0lmNnVOaDQ5b0xCYzRtMlFOcEdibFI4NGYvUGxILzd5Y0N1?=
+ =?utf-8?B?NXZHd1ZRYzNsdEtrNTlLUE5zU1RmT0syckVkOVg5TjRKckUvNVV2OWZIeGVB?=
+ =?utf-8?B?MkQ3dkhLMVNlMVF4a3JRbjZLbG9TRmNvZkFMSkhvNEs0M1UyUUcyNnREWm5Z?=
+ =?utf-8?B?QTJSd2hlU2QwTHdoSldYcktHdnRCelA3NXpEUlNRTmd2eXdKSlAwWU1yN0hF?=
+ =?utf-8?B?Ri9PeHNWdnRsVXZMZHlhblRwR3Y3WWFUdURsMTR4RmpuLzNEekxlUEhoTXpF?=
+ =?utf-8?B?blFhZlhCNU55NHIyUk00YmdNbmlBeFUwMUF5M2JBNm9aUlJJM1B3M0lqYjlP?=
+ =?utf-8?B?VnhvYTUzU3hzZnVUK2ZjaVArQkM0ZkR3aVBzT1U4SkpZOG5td2pVQXNWN2o0?=
+ =?utf-8?B?b3ozMVBkZ2tEemk0TVBIYXdqak94NnpVQ1FZbFd2Z1N0c3Ywb3hqdG9DRHUx?=
+ =?utf-8?B?ZXZiOTlwRElrR0IzU2t0MnVtSVNUR0xNT2hEcy9TNGVTVnU4M0w3dDVad1Uv?=
+ =?utf-8?B?Ri9XTlpsTkZVRG5CaFlTWExnaHFLNUliZEY3STg4bERoRmxJYW9Hb1VFbWpp?=
+ =?utf-8?B?djZRMUdocnY2NXg2TzNsT1RLTVZmeHd3T1Q5dzlVZkxPZkJ3TGIrVzdOVWp3?=
+ =?utf-8?B?TnhTWjVXdTgvdnR4V0RQdjRFbFgyQzJFd1NKV2wzd1JSb3RiMnBNQmZyVGFs?=
+ =?utf-8?B?YnRod01uUE9sR0JDQXQrM1prQnoxemtGMU8yd29TTEdJNld3dnFDVXhRaFg3?=
+ =?utf-8?B?TW90OHF1WThWSTFSaVNvN3BDOGVmVHhPNXNOcjR6VERYUXhZSy90YUFYYkdw?=
+ =?utf-8?B?WmZTQmpNVG4wcHBxNkZHZitnNVJHcG5LYnJPenFEWkYzUnYyTWZESDQrZjk0?=
+ =?utf-8?B?NkpXYmxCOXIwYTRUT1A4cmNtM1VCOXBwT09JYzlYRi8wVGJUWEl3VUZUTHJw?=
+ =?utf-8?B?N3pjdGUralYrRk85VlNrZ2NuV3pqTTRXNHhZeTNhK2VqNmtpSXJndTdoWWFZ?=
+ =?utf-8?B?eWkydU5RWmppeUxYMFJPa0lCdS9jeU1iazBsc3B4dmp2RVRORGtOeXFCcmpU?=
+ =?utf-8?B?T2VScERMTlhSUU02RG1nQnZUK0RvK3BrdGVtZlNwdTIvdEdmVnlNT0VoVWtQ?=
+ =?utf-8?B?UHBZRG5ZK3N5NDRSSWJIRjdWREtRQVA1bU1vcDZZOW1iNlZCV3hvQnF6dU95?=
+ =?utf-8?B?UlI0MWhHR2Z6ZXZzUUNnOGloNGFWUkcwTlFlVmp5Q0tRTWpMT01UZ0FLRXZ6?=
+ =?utf-8?B?LzRpa3dCTlZ0citHNzQ0WkR2UnZpR3Z1Wkt6ZzJHQUVEaUk1a3QwdTFCamhx?=
+ =?utf-8?B?QmQ2RkJPV2NzR3VJQ0tBeUhqSklKenR0aENheG9WL01TRXhKWTJiajBpZk9W?=
+ =?utf-8?B?dW5SdGlJVlEwckZqWHN5cERnYTdLMEJxc20wRzdHcUMvaTh3RHJOUmo3ZmRU?=
+ =?utf-8?B?dDZRWTVPTGQ1R29XY2g0Z2UrWG9tMWxzaE9VQXYxYTJXMUxRN0VVOFg0TWJK?=
+ =?utf-8?B?bk9Jd3N1Vy9pZG0xMzhwcXBseUc2dWNzSllkbzdFWm93VXlWUVVIQ2k4SnVR?=
+ =?utf-8?Q?aDE38kr4+SXMkY/xpf+b53agufi/dJJkBg/6Mkq?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cfdc3f74-e633-4e4f-39ac-08d90e4b0f46
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2021 15:49:39.2101
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: R1B3o+c5MOk2Xzh1n/RAYbq1rId6L9Onhfd4ereaF71mB61OTNYaZnmILIlc4vRZ3Mn2eJIFrdLDyQlnVuu1Iw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2511
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-03 at 15:32 +0000, Roberto Sassu wrote:
-> > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> > Sent: Monday, May 3, 2021 5:26 PM
-> > On Mon, 2021-05-03 at 15:11 +0000, Roberto Sassu wrote:
-> > > > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> > > > Sent: Monday, May 3, 2021 3:00 PM
-> > > > On Wed, 2021-04-07 at 12:52 +0200, Roberto Sassu wrote:
-> > > >
-> > > > > diff --git a/security/integrity/evm/evm_main.c
-> > > > b/security/integrity/evm/evm_main.c
-> > > > > @@ -389,6 +473,11 @@ static int evm_protect_xattr(struct
-> > > > user_namespace *mnt_userns,
-> > > > >  	if (evm_status == INTEGRITY_FAIL_IMMUTABLE)
-> > > > >  		return 0;
-> > > > >
-> > > > > +	if (evm_status == INTEGRITY_PASS_IMMUTABLE &&
-> > > > > +	    !evm_xattr_change(mnt_userns, dentry, xattr_name, xattr_value,
-> > > > > +			      xattr_value_len))
-> > > > > +		return 0;
-> > > > > +
-> > > >
-> > > > If the purpose of evm_protect_xattr() is to prevent allowing an invalid
-> > > > security.evm xattr from being re-calculated and updated, making it
-> > > > valid, INTEGRITY_PASS_IMMUTABLE shouldn't need to be conditional.
-> > Any
-> > > > time there is an attr or xattr change, including setting it to the
-> > > > existing value, the status flag should be reset.
-> > > >
-> > > > I'm wondering if making INTEGRITY_PASS_IMMUTABLE conditional would
-> > > > prevent the file from being resigned.
-> > > >
-> > > > >  	if (evm_status != INTEGRITY_PASS)
-> > > > >  		integrity_audit_msg(AUDIT_INTEGRITY_METADATA,
-> > > > d_backing_inode(dentry),
-> > > > >  				    dentry->d_name.name,
-> > > > "appraise_metadata",
-> > > >
-> > > > This would then be updated to if not INTEGRITY_PASS or
-> > > > INTEGRITY_PASS_IMMUTABLE.  The subsequent "return" would need to
-> > be
-> > > > updated as well.
-> > >
-> > > I agree on the first suggestion, to reduce the number of log messages.
-> > > For the second, if you meant that we should return 0 if the status is
-> > > INTEGRITY_PASS_IMMUTABLE, I thought we wanted to deny xattr
-> > > changes when there is an EVM portable signature.
-> > 
-> > Why?  I must be missing something.  As long as we're not relying on the
-> > cached status, allowing the file metadata to be updated shouldn't be an
-> > issue.
-> 
-> We may want to prevent accidental changes, for example.
 
-Let's keep it simple, getting the basics working properly first.  Then
-we can decide if this is something that we really want/need to defend
-against.
+On 5/3/21 10:03 AM, Andy Lutomirski wrote:
+> On Mon, May 3, 2021 at 7:44 AM Dave Hansen <dave.hansen@intel.com> wrote:
+>> On 4/30/21 5:37 AM, Brijesh Singh wrote:
+>>> When SEV-SNP is enabled globally, a write from the host goes through the
+>>> RMP check. When the host writes to pages, hardware checks the following
+>>> conditions at the end of page walk:
+>>>
+>>> 1. Assigned bit in the RMP table is zero (i.e page is shared).
+>>> 2. If the page table entry that gives the sPA indicates that the target
+>>>    page size is a large page, then all RMP entries for the 4KB
+>>>    constituting pages of the target must have the assigned bit 0.
+>>> 3. Immutable bit in the RMP table is not zero.
+>>>
+>>> The hardware will raise page fault if one of the above conditions is not
+>>> met. A host should not encounter the RMP fault in normal execution, but
+>>> a malicious guest could trick the hypervisor into it. e.g., a guest does
+>>> not make the GHCB page shared, on #VMGEXIT, the hypervisor will attempt
+>>> to write to GHCB page.
+>> Is that the only case which is left?  If so, why don't you simply split
+>> the direct map for GHCB pages before giving them to the guest?  Or, map
+>> them with vmap() so that the mapping is always 4k?
+> If I read Brijesh's message right, this isn't about 4k.  It's about
+> the guest violating host expectations about the page type.
+>
+> I need to go and do a full read of all the relevant specs, but I think
+> there's an analogous situation in TDX: if the host touches guest
+> private memory, the TDX hardware will get extremely angry (more so
+> than AMD hardware).  And, if I have understood this patch correctly,
+> it's fudging around the underlying bug by intentionally screwing up
+> the RMP contents to avoid a page fault.  Assuming I've understood
+> everything correctly (a big if!), then I think this is backwards.  The
+> host kernel should not ever access guest memory without a plan in
+> place to handle failure.  We need real accessors, along the lines of
+> copy_from_guest() and copy_to_guest().
 
-thanks,
+You understood it correctly. Its an underlying bug either in host or
+guest which may cause the host accessing the guest private pages. If it
+happen avoiding the host crash is much preferred (especially when its a
+guest kernel bug).
 
-Mimi
 
