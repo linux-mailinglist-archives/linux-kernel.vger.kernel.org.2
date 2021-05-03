@@ -2,276 +2,426 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 423B43711AC
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 08:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E5E3711B3
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 08:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232752AbhECGe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 02:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57746 "EHLO
+        id S232882AbhECGnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 02:43:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbhECGe5 (ORCPT
+        with ESMTP id S229817AbhECGnU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 02:34:57 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F84C06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 23:33:58 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id p17so2488989pjz.3
-        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 23:33:58 -0700 (PDT)
+        Mon, 3 May 2021 02:43:20 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65B2DC06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 23:42:27 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id j4so6590678lfp.0
+        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 23:42:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YAfjaggDazXvQtYp2FS5y03jgZVhcBFsjn4+g9RTkfc=;
-        b=xVJ7R69O2ECyU0IHuW1rDWvr0VqTU50aIrgzPU9MNFjG8trH7bMeywNS5jLq2b1IWp
-         X2yPhy6OQINzdEYHRqLd9uCiHVslCu4qd5YrwV4j7EdBS094XPIhUQpku9O7nzPMuWXc
-         ZvAHnnFNRwElWf8eCLM0VcMOr9hg5CCU0sC9mWBnTw91VcdpjRU7v+v5qe2TioP5oYxD
-         xn+Yix1jrTA7hER1/DGHC8zmKoU1PfLv+2XuyW5xjTXUU9LP93uSz8AS/kz7Pcg5AVAi
-         lyJfj18aUtanwex7L2CWXn3M1gpeWEM/VtFmEijMqRLUzUIBcDH7fquyDzainBL0VlLA
-         sjAg==
+        bh=50tzV6/44j0eBTOhl81nHs1oy+v+DFkPFiSwkc1A+c4=;
+        b=Kf3ua/xxB8cYfhFxw6ua20pX4hMRhXlR9yXJL9ptXTeBLrcrwYGtfF8lL3pDX6VMJc
+         +hu8XDWixDQR3MZeaKnrBmWqgVKio3mWafX+/HCclzG9Xp01NxBG1bD/gBApfh/5k6C6
+         hBCySaa2RPpcaXoW1OVHIH1ChEIq7f3JByeudTqcvPX91h9yVegweVeDowNk4RVRHCSJ
+         FhmSsfRarFJg78VXARNRIDqIS7Jn/KZPnYMna6PYP2/JAuEM+ffAxdnHvTC4FZcjQrq5
+         wsnWSaT6sq6yAaM6BzEABuymgI/I0NQAxNA26YM8PEkVx2L2Wb2b4kZoiBibRjWJpph8
+         JupQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YAfjaggDazXvQtYp2FS5y03jgZVhcBFsjn4+g9RTkfc=;
-        b=qvldpcXAW/aDKCVwJmZ65I1FmEDGijuDQWGrpV0/0q+biIj4j1k4eoQaMbqVj+cbVS
-         +5V9LtLWgqSKH+8hOxpYpZw1m4jMPsXqTIrgM9A426l01UJPPRHKd4+ysFnHbTJcew0L
-         u4PgsKK7eQhq9LyfGIstKcSrJnQJSD05FnLaQMBC5F4vntg2BHp4IXCfQLlIhfuXozLf
-         FAm6AwUsvCZW7YAz9xX1G0IZ/9hGuk/gJemGBbkj3vShZwJbU/8X4n7f9CyPn3dr6aPk
-         QCenm1ATZcM2rdYORgNpR67BX9U2LPCtb+LAh/vMTMA2hbULeQTsZCBcbZIgsEcV4che
-         Jebw==
-X-Gm-Message-State: AOAM5308cnBWr94WeKro6M0jfwhahkK6jrVIzfK1ZMvuUjVDgp2qj19s
-        W8R/DNlCjSEjttTO2lvCBvnm6c6VPVnA4BurNblvNg==
-X-Google-Smtp-Source: ABdhPJxGflL8gqcfGI3qnihVxhFS3o1OhYuGJJNiad6v/bHj/QMwqly1oymqd0EqExsT0FHNjife4SK934iFvznUWNo=
-X-Received: by 2002:a17:90a:644b:: with SMTP id y11mr19284123pjm.229.1620023638171;
- Sun, 02 May 2021 23:33:58 -0700 (PDT)
+        bh=50tzV6/44j0eBTOhl81nHs1oy+v+DFkPFiSwkc1A+c4=;
+        b=idPNeT0t47Hnv/Px8XTF6CliCXBJmbsR/pgmNK9yjLVPLS8w5OIaOrNfsTyRBAsDS3
+         u/FlTEKgcCJuq7JYEd/zkfE4JWg5yTGsBG3eBIBXKheP/AnPRy0OhZCtgNGhut20bhm+
+         Exc2gQJepb2qzLPk8a3fqRhgBdZLtbvNgZ4wE5zUMfsoPXtMhuId6xn4u+lyuIf1jXO1
+         a7GzM6eCRVGx0Zi89QOkJkaYIG8EgI+X3wHnK+VdKCugl+BGMCm/TlJhnxmNRMDLNz5I
+         Fs/4lLymHZo6XtzdzQysdIJyjvZi6zXor0tPXYlYiDlFuMviEkUe1kNybaMx00AQzEwZ
+         RDrA==
+X-Gm-Message-State: AOAM532rOl3usuoLf2NRuzZhdjqzEppvG2tt1GQ9VE6b6iQikjPMjSc2
+        LLRgJpucaZ0t38NqzLY8/CebhBH0Fm09y78ToCAVEg==
+X-Google-Smtp-Source: ABdhPJzoZNti7FvYqwZimISC7OBoePXjcEaNts04BuXNL4OzmPCKmohafZodsfvgKD3HxvFhlmmpuncaC0qXN1E9HIE=
+X-Received: by 2002:a05:6512:3d8f:: with SMTP id k15mr6611586lfv.227.1620024145521;
+ Sun, 02 May 2021 23:42:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210428094949.43579-1-songmuchun@bytedance.com>
- <20210430004903.GF1872259@dread.disaster.area> <YItf3GIUs2skeuyi@carbon.dhcp.thefacebook.com>
- <20210430032739.GG1872259@dread.disaster.area> <CAMZfGtXawtMT4JfBtDLZ+hES4iEHFboe2UgJee_s-NhZR5faAw@mail.gmail.com>
- <20210502235843.GJ1872259@dread.disaster.area>
-In-Reply-To: <20210502235843.GJ1872259@dread.disaster.area>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 3 May 2021 14:33:21 +0800
-Message-ID: <CAMZfGtVK2Sracf=ongpNJqacafmC2ZsNy-KxEL67fVCAGXz3xA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 0/9] Shrink the list lru size on memory
- cgroup removal
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Roman Gushchin <guro@fb.com>, Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yang Shi <shy828301@gmail.com>, alexs@kernel.org,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
+References: <20210423055842.2490679-1-eizan@chromium.org> <20210423155824.v1.4.I558dcbaa17bf00243951a8ceb6d0e98758aacfa4@changeid>
+ <ecf9ab25-779d-01c7-97e3-76aa09b69415@collabora.com>
+In-Reply-To: <ecf9ab25-779d-01c7-97e3-76aa09b69415@collabora.com>
+From:   Eizan Miyamoto <eizan@google.com>
+Date:   Mon, 3 May 2021 16:42:14 +1000
+Message-ID: <CAOak1e82j+j_1pWACS5j5cZ2ZZhN+C-6kJYCg5q_bCarTPqHww@mail.gmail.com>
+Subject: Re: [PATCH v1 4/4] mtk-mdp: soc: mediatek: register mdp from mmsys
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     Eizan Miyamoto <eizan@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>, chunkuang.hu@kernel.org,
+        yong.wu@mediatek.com, Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Houlong Wei <houlong.wei@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-media@vger.kernel.org,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 3, 2021 at 7:58 AM Dave Chinner <david@fromorbit.com> wrote:
+On Fri, Apr 30, 2021 at 1:46 AM Enric Balletbo i Serra
+<enric.balletbo@collabora.com> wrote:
 >
-> On Fri, Apr 30, 2021 at 04:32:39PM +0800, Muchun Song wrote:
-> > On Fri, Apr 30, 2021 at 11:27 AM Dave Chinner <david@fromorbit.com> wrote:
-> > >
-> > > On Thu, Apr 29, 2021 at 06:39:40PM -0700, Roman Gushchin wrote:
-> > > > On Fri, Apr 30, 2021 at 10:49:03AM +1000, Dave Chinner wrote:
-> > > > > On Wed, Apr 28, 2021 at 05:49:40PM +0800, Muchun Song wrote:
-> > > > > > In our server, we found a suspected memory leak problem. The kmalloc-32
-> > > > > > consumes more than 6GB of memory. Other kmem_caches consume less than 2GB
-> > > > > > memory.
-> > > > > >
-> > > > > > After our in-depth analysis, the memory consumption of kmalloc-32 slab
-> > > > > > cache is the cause of list_lru_one allocation.
-> > > > > >
-> > > > > >   crash> p memcg_nr_cache_ids
-> > > > > >   memcg_nr_cache_ids = $2 = 24574
-> > > > > >
-> > > > > > memcg_nr_cache_ids is very large and memory consumption of each list_lru
-> > > > > > can be calculated with the following formula.
-> > > > > >
-> > > > > >   num_numa_node * memcg_nr_cache_ids * 32 (kmalloc-32)
-> > > > > >
-> > > > > > There are 4 numa nodes in our system, so each list_lru consumes ~3MB.
-> > > > > >
-> > > > > >   crash> list super_blocks | wc -l
-> > > > > >   952
-> > > > >
-> > > > > The more I see people trying to work around this, the more I think
-> > > > > that the way memcgs have been grafted into the list_lru is back to
-> > > > > front.
-> > > > >
-> > > > > We currently allocate scope for every memcg to be able to tracked on
-> > > > > every not on every superblock instantiated in the system, regardless
-> > > > > of whether that superblock is even accessible to that memcg.
-> > > > >
-> > > > > These huge memcg counts come from container hosts where memcgs are
-> > > > > confined to just a small subset of the total number of superblocks
-> > > > > that instantiated at any given point in time.
-> > > > >
-> > > > > IOWs, for these systems with huge container counts, list_lru does
-> > > > > not need the capability of tracking every memcg on every superblock.
-> > > > >
-> > > > > What it comes down to is that the list_lru is only needed for a
-> > > > > given memcg if that memcg is instatiating and freeing objects on a
-> > > > > given list_lru.
-> > > > >
-> > > > > Which makes me think we should be moving more towards "add the memcg
-> > > > > to the list_lru at the first insert" model rather than "instantiate
-> > > > > all at memcg init time just in case". The model we originally came
-> > > > > up with for supprting memcgs is really starting to show it's limits,
-> > > > > and we should address those limitations rahter than hack more
-> > > > > complexity into the system that does nothing to remove the
-> > > > > limitations that are causing the problems in the first place.
-> > > >
-> > > > I totally agree.
-> > > >
-> > > > It looks like the initial implementation of the whole kernel memory accounting
-> > > > and memcg-aware shrinkers was based on the idea that the number of memory
-> > > > cgroups is relatively small and stable.
-> > >
-> > > Yes, that was one of the original assumptions - tens to maybe low
-> > > hundreds of memcgs at most. The other was that memcgs weren't NUMA
-> > > aware, and so would only need a single LRU list per memcg. Hence the
-> > > total overhead even with "lots" of memcgsi and superblocks the
-> > > overhead wasn't that great.
-> > >
-> > > Then came "memcgs need to be NUMA aware" because of the size of the
-> > > machines they were being use for resrouce management in, and that
-> > > greatly increased the per-memcg, per LRU overhead. Now we're talking
-> > > about needing to support a couple of orders of magnitude more memcgs
-> > > and superblocks than were originally designed for.
-> > >
-> > > So, really, we're way beyond the original design scope of this
-> > > subsystem now.
+> Hi Eizan,
+>
+> Thank you for your patch.
+>
+> On 23/4/21 7:58, Eizan Miyamoto wrote:
+> > Rather than hanging the MDP master component driver off of the rdma0
+> > device, create a "virtual" device by the mmsys driver instead which is
+> > probed by the mtk_mdp_core driver.
 > >
-> > Got it. So it is better to allocate the structure of the list_lru_node
-> > dynamically. We should only allocate it when it is really demanded.
-> > But allocating memory by using GFP_ATOMIC in list_lru_add() is
-> > not a good idea. So we should allocate the memory out of
-> > list_lru_add(). I can propose an approach that may work.
+> > Broadly, four interdependent things are done by this change:
+> > - A virtual device that is probed by the mtk_mdp_core driver is
+> >   instantiated by the mtk_mmsys driver.
+> > - Presence of a mediatek,vpu property in a child node to the mmsys
+> >   device node is used to determine what device to use when dispatching
+> >   dma ops from the relevant ioctl.
+> > - v4l-related setup is moved into from the mtk_mdp_core driver to the
+> >   mtk_mdp_comp driver.
 > >
-> > Before start, we should know about the following rules of list lrus.
+> > Signed-off-by: Eizan Miyamoto <eizan@chromium.org>
+> > ---
 > >
-> > - Only objects allocated with __GFP_ACCOUNT need to allocate
-> >   the struct list_lru_node.
->
-> This seems .... misguided. inode and dentry caches are already
-> marked as accounted, so individual calls to allocate from these
-> slabs do not need this annotation.
-
-Sorry for the confusion. You are right.
-
->
-> > - The caller of allocating memory must know which list_lru the
-> >   object will insert.
+> >  drivers/media/platform/mtk-mdp/mtk_mdp_comp.c | 47 +++++++++-----
+> >  drivers/media/platform/mtk-mdp/mtk_mdp_core.c | 62 ++++++-------------
+> >  drivers/media/platform/mtk-mdp/mtk_mdp_core.h |  2 +
+> >  drivers/media/platform/mtk-mdp/mtk_mdp_m2m.c  |  4 +-
+> >  drivers/soc/mediatek/mtk-mmsys.c              | 20 +++++-
+> >  5 files changed, 75 insertions(+), 60 deletions(-)
 > >
-> > So we can allocate struct list_lru_node when allocating the
-> > object instead of allocating it when list_lru_add().  It is easy, because
-> > we already know the list_lru and memcg which the object belongs
-> > to. So we can introduce a new helper to allocate the object and
-> > list_lru_node. Like below.
+> > diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
+> > index d447bfaadef4..dc5231a1fcfd 100644
+> > --- a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
+> > +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
+> > @@ -106,8 +106,41 @@ static int mtk_mdp_comp_bind(struct device *dev, struct device *master,
+> >  {
+> >       struct mtk_mdp_comp *comp = dev_get_drvdata(dev);
+> >       struct mtk_mdp_dev *mdp = data;
+> > +     struct device_node *vpu_node;
 > >
-> > void *list_lru_kmem_cache_alloc(struct list_lru *lru, struct kmem_cache *s,
-> >                                 gfp_t gfpflags)
-> > {
-> >         void *ret = kmem_cache_alloc(s, gfpflags);
+> >       mtk_mdp_register_component(mdp, comp);
+> > +
+> > +     // If this component has a "mediatek-vpu" property, it is responsible for
+> > +     // notifying the mdp master driver about it so it can be further initialized
+> > +     // later.
+>
+> Please use c-style comments here.
+
+Thank you for the reminder, I'll update these in the next version of
+this patch series.
+
+>
+> > +     vpu_node = of_parse_phandle(dev->of_node, "mediatek,vpu", 0);
+>
+> That's a bit confusing to me, please correct me if I am wrong, so, the
+> mediatek,vpu property is used to tell the code that this component should be the
+> 'vpu master', not to point a vpu node in the DT? I understood correctly?
+
+Is what you mean by 'vpu master' is that it is the device whose driver
+implements the wdt reset function? In that case, the mtk_mdp_core
+driver is still the 'vpu master' because mtk_mdp_reset_handler
+(contained in mtk_mdp_core) is passed to vpu_wdt_reg_handler(). The
+presence of the property in any MDP component device node can do the
+job of passing the vpu device (obtained from the node being pointed
+to) back mtk_mdp_core's mtk_mdp_master_bind() function.
+
+*However*, I'm using the presence of that property to indicate another
+thing: this is the device that the mdp filesystem device node in /dev
+should be registered against for v4l2. We will need to save this
+device for later (in mdp->rdma_dev) to be used to find the DMA
+callbacks when a call to mtk_mdp_m2m_queue_init is made from the file
+open() callback (mtk_mdp_m2m_open) attached to the filesystem device
+node.
+
+Before this change, the mtk_mdp_core driver was serving triple duty as
+the driver for the device that provided DMA op callbacks, the vpu
+master, and the MDP component master. Now it is the vpu master and the
+MDP component master, but not the driver for the device that provides
+DMA op callbacks.
+
+>
+>
+> > +     if (vpu_node) {
+> > +             int ret;
+> > +
+> > +             mdp->vpu_dev = of_find_device_by_node(vpu_node);
+> > +             if (WARN_ON(!mdp->vpu_dev)) {
+> > +                     dev_err(dev, "vpu pdev failed\n");
+> > +                     of_node_put(vpu_node);
+> > +             }
+> > +
+> > +             ret = v4l2_device_register(dev, &mdp->v4l2_dev);
+> > +             if (ret) {
+> > +                     dev_err(dev, "Failed to register v4l2 device\n");
+> > +                     return -EINVAL;
+> > +             }
+> > +
+> > +             ret = vb2_dma_contig_set_max_seg_size(dev, DMA_BIT_MASK(32));
+> > +             if (ret) {
+> > +                     dev_err(dev, "Failed to set vb2 dma mag seg size\n");
+> > +                     return -EINVAL;
+> > +             }
+> > +
+> > +             // presence of the "mediatek,vpu" property in a device node
+> > +             // indicates that it is the primary MDP rdma device and MDP DMA
+> > +             // ops should be handled by its DMA callbacks.
+>
+> Isn't rdma0 always the primary MDP device? or there are SoCs or configurations
+> where this is different? At least I think it is for MT8173 and MT8183.
+
+I suppose you're right, though now it seems to be called mdp_rdma0 in
+the device tree?
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/boot/dts/mediatek/mt8173.dtsi?id=9ccce092fc64d19504fa54de4fd659e279cc92e7#n1004
+
+Maybe somebody from MediaTek can confirm this?
+
+>
+> > +             mdp->rdma_dev = dev;
+> > +     }
+> > +
+> >       pm_runtime_enable(dev);
 > >
-> >         if (ret && (gfpflags & __GFP_ACCOUNT)) {
-> >                 struct mem_cgroup *memcg = mem_cgroup_from_obj(ret);
+> >       return 0;
+> > @@ -164,23 +197,9 @@ int mtk_mdp_comp_init(struct mtk_mdp_comp *comp, struct device *dev)
+> >  static int mtk_mdp_comp_probe(struct platform_device *pdev)
+> >  {
+> >       struct device *dev = &pdev->dev;
+> > -     struct device_node *vpu_node;
+> >       int status;
+> >       struct mtk_mdp_comp *comp;
 > >
-> >                 if (mem_cgroup_is_root(memcg))
-> >                         return ret;
+> > -     vpu_node = of_parse_phandle(dev->of_node, "mediatek,vpu", 0);
+> > -     if (vpu_node) {
+> > -             of_node_put(vpu_node);
+> > -             /*
+> > -              * The device tree node with a mediatek,vpu property is deemed
+> > -              * the MDP "master" device, we don't want to add a component
+> > -              * for it in this function because the initialization for the
+> > -              * master is done elsewhere.
+> > -              */
+> > -             dev_info(dev, "vpu node found, not probing\n");
+> > -             return -ENODEV;
+> > -     }
+> > -
+> >       comp = devm_kzalloc(dev, sizeof(*comp), GFP_KERNEL);
+> >       if (!comp)
+> >               return -ENOMEM;
+> > diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
+> > index 5e71496e2517..4d7aa4e26be6 100644
+> > --- a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
+> > +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
+> > @@ -121,6 +121,17 @@ static int mtk_mdp_master_bind(struct device *dev)
+> >               goto err_component_bind_all;
+> >       }
 > >
-> >                 /* Allocate per-memcg list_lru_node, if it already
-> > allocated, do nothing. */
-> >                 memcg_list_lru_node_alloc(lru, memcg,
-> > page_to_nid(virt_to_page(ret)), gfpflags);
->
-> If we are allowing kmem_cache_alloc() to fail, then we can allow
-> memcg_list_lru_node_alloc() to fail, too.
->
-> Also, why put this outside kmem_cache_alloc()? Node id and memcg is
-> already known internally to kmem_cache_alloc() when allocating from
-> a slab, so why not associate the slab allocation with the LRU
-> directly when doing the memcg accounting and so avoid doing costly
-> duplicate work on every allocation?
->
-> i.e. the list-lru was moved inside the mm/ dir because "it's a mm
-> specific construct only", so why not actually make use of that
-> designation to internalise this entire memcg management issue into
-> the slab allocation routines? i.e.  an API like
-
-Yeah, we can.
-
-> kmem_cache_alloc_lru(cache, lru, gfpflags) allows this to be
-> completely internalised and efficiently implemented with minimal
-> change to callers. It also means that memory allocation callers
-> don't need to know anything about memcg management, which is always
-> a win....
-
-Great idea. It's efficient. I'd give it a try.
-
->
-> >         }
+> > +     if (mdp->vpu_dev) {
+> > +             int ret = vpu_wdt_reg_handler(mdp->vpu_dev, mtk_mdp_reset_handler, mdp,
+> > +                                       VPU_RST_MDP);
+> > +             if (ret) {
+> > +                     dev_err(dev, "Failed to register reset handler\n");
+> > +                     goto err_wdt_reg;
+> > +             }
+> > +     } else {
+> > +             dev_err(dev, "no vpu_dev found\n");
+> > +     }
+> > +
+> >       status = mtk_mdp_register_m2m_device(mdp);
+> >       if (status) {
+> >               dev_err(dev, "Failed to register m2m device: %d\n", status);
+> > @@ -133,6 +144,8 @@ static int mtk_mdp_master_bind(struct device *dev)
+> >       return 0;
 > >
-> >         return ret;
-> > }
+> >  err_mtk_mdp_register_m2m_device:
+> > +
+> > +err_wdt_reg:
+> >       component_unbind_all(dev, mdp);
 > >
-> > If the user wants to insert the allocated object to its lru list in
-> > the feature. The
-> > user should use list_lru_kmem_cache_alloc() instead of kmem_cache_alloc().
-> > I have looked at the code closely. There are 3 different kmem_caches that
-> > need to use this new API to allocate memory. They are inode_cachep,
-> > dentry_cache and radix_tree_node_cachep. I think that it is easy to migrate.
->
-> It might work, but I think you may have overlooked the complexity
-> of inode allocation for filesystems. i.e.  alloc_inode() calls out
-> to filesystem allocation functions more often than it allocates
-> directly from the inode_cachep.  i.e.  Most filesystems provide
-> their own ->alloc_inode superblock operation, and they allocate
-> inodes out of their own specific slab caches, not the inode_cachep.
-
-I didn't realize this before. You are right. Most filesystems
-have their own kmem_cache instead of inode_cachep.
-We need a lot of filesystems special to be changed.
-Thanks for your reminder.
-
->
-> And then you have filesystems like XFS, where alloc_inode() will
-> never be called, and implement ->alloc_inode as:
->
-> /* Catch misguided souls that try to use this interface on XFS */
-> STATIC struct inode *
-> xfs_fs_alloc_inode(
->         struct super_block      *sb)
-> {
->         BUG();
->         return NULL;
-> }
->
-> Because all the inode caching and allocation is internal to XFS and
-> VFS inode management interfaces are not used.
->
-> So I suspect that an external wrapper function is not the way to go
-> here - either internalising the LRU management into the slab
-> allocation or adding the memcg code to alloc_inode() and filesystem
-> specific routines would make a lot more sense to me.
-
-Sure. If we introduce kmem_cache_alloc_lru, all filesystems
-need to migrate to kmem_cache_alloc_lru. I cannot figure out
-an approach that does not need to change filesystems code.
-
-Thanks.
-
->
-> Cheers,
->
-> Dave.
-> --
-> Dave Chinner
-> david@fromorbit.com
+> >  err_component_bind_all:
+> > @@ -191,8 +204,13 @@ static int mtk_mdp_probe(struct platform_device *pdev)
+> >               of_node_put(node);
+> >               parent = dev->of_node;
+> >               dev_warn(dev, "device tree is out of date\n");
+> > -     } else {
+> > +     } else if (dev->of_node) {
+> >               parent = dev->of_node->parent;
+> > +     } else if (dev->parent) {
+> > +             // maybe we were created from a call to platform_device_register_data()
+> > +             parent = dev->parent->parent->of_node;
+> > +     } else {
+> > +             return -ENODEV;
+> >       }
+> >
+> >       /* Iterate over sibling MDP function blocks */
+> > @@ -225,16 +243,6 @@ static int mtk_mdp_probe(struct platform_device *pdev)
+> >               }
+> >       }
+> >
+> > -     /*
+> > -      * Create a component for myself so that clocks can be toggled in
+> > -      * clock_on().
+> > -      */
+> > -     ret = mtk_mdp_comp_init(&mdp->comp_self, dev);
+> > -     if (ret) {
+> > -             dev_err(dev, "Failed to initialize component\n");
+> > -             goto err_comp;
+> > -     }
+> > -
+> >       mdp->job_wq = create_singlethread_workqueue(MTK_MDP_MODULE_NAME);
+> >       if (!mdp->job_wq) {
+> >               dev_err(&pdev->dev, "unable to alloc job workqueue\n");
+> > @@ -250,29 +258,8 @@ static int mtk_mdp_probe(struct platform_device *pdev)
+> >       }
+> >       INIT_WORK(&mdp->wdt_work, mtk_mdp_wdt_worker);
+> >
+> > -     ret = v4l2_device_register(dev, &mdp->v4l2_dev);
+> > -     if (ret) {
+> > -             dev_err(&pdev->dev, "Failed to register v4l2 device\n");
+> > -             ret = -EINVAL;
+> > -             goto err_dev_register;
+> > -     }
+> > -
+> > -     mdp->vpu_dev = vpu_get_plat_device(pdev);
+> > -     ret = vpu_wdt_reg_handler(mdp->vpu_dev, mtk_mdp_reset_handler, mdp,
+> > -                               VPU_RST_MDP);
+> > -     if (ret) {
+> > -             dev_err(&pdev->dev, "Failed to register reset handler\n");
+> > -             goto err_wdt_reg;
+> > -     }
+> > -
+> >       platform_set_drvdata(pdev, mdp);
+> >
+> > -     ret = vb2_dma_contig_set_max_seg_size(&pdev->dev, DMA_BIT_MASK(32));
+> > -     if (ret) {
+> > -             dev_err(&pdev->dev, "Failed to set vb2 dma mag seg size\n");
+> > -             goto err_set_max_seg_size;
+> > -     }
+> > -
+> >       ret = component_master_add_with_match(dev, &mtk_mdp_com_ops, match);
+> >       if (ret) {
+> >               dev_err(dev, "Component master add failed\n");
+> > @@ -284,22 +271,12 @@ static int mtk_mdp_probe(struct platform_device *pdev)
+> >       return 0;
+> >
+> >  err_component_master_add:
+> > -     vb2_dma_contig_clear_max_seg_size(&pdev->dev);
+> > -
+> > -err_set_max_seg_size:
+> > -
+> > -err_wdt_reg:
+> > -     v4l2_device_unregister(&mdp->v4l2_dev);
+> > -
+> > -err_dev_register:
+> >       destroy_workqueue(mdp->wdt_wq);
+> >
+> >  err_alloc_wdt_wq:
+> >       destroy_workqueue(mdp->job_wq);
+> >
+> >  err_alloc_job_wq:
+> > -
+> > -err_comp:
+> >       dev_dbg(dev, "err %d\n", ret);
+> >       return ret;
+> >  }
+> > @@ -371,7 +348,6 @@ static struct platform_driver mtk_mdp_driver = {
+> >       .driver = {
+> >               .name   = MTK_MDP_MODULE_NAME,
+> >               .pm     = &mtk_mdp_pm_ops,
+> > -             .of_match_table = mtk_mdp_of_ids,
+> >       }
+> >  };
+> >
+> > diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_core.h b/drivers/media/platform/mtk-mdp/mtk_mdp_core.h
+> > index 230f531400ca..78c3c77cd226 100644
+> > --- a/drivers/media/platform/mtk-mdp/mtk_mdp_core.h
+> > +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_core.h
+> > @@ -133,6 +133,7 @@ struct mtk_mdp_variant {
+> >   * struct mtk_mdp_dev - abstraction for image processor entity
+> >   * @lock:    the mutex protecting this data structure
+> >   * @vpulock: the mutex protecting the communication with VPU
+> > + * @rdma_dev:  device pointer to rdma device for MDP
+> >   * @pdev:    pointer to the image processor platform device
+> >   * @variant: the IP variant information
+> >   * @id:              image processor device index (0..MTK_MDP_MAX_DEVS)
+> > @@ -151,6 +152,7 @@ struct mtk_mdp_variant {
+> >  struct mtk_mdp_dev {
+> >       struct mutex                    lock;
+> >       struct mutex                    vpulock;
+> > +     struct device                   *rdma_dev;
+> >       struct platform_device          *pdev;
+> >       struct mtk_mdp_variant          *variant;
+> >       u16                             id;
+> > diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_m2m.c b/drivers/media/platform/mtk-mdp/mtk_mdp_m2m.c
+> > index d351e5a44768..c80ad8299c5e 100644
+> > --- a/drivers/media/platform/mtk-mdp/mtk_mdp_m2m.c
+> > +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_m2m.c
+> > @@ -932,7 +932,7 @@ static int mtk_mdp_m2m_queue_init(void *priv, struct vb2_queue *src_vq,
+> >       src_vq->mem_ops = &vb2_dma_contig_memops;
+> >       src_vq->buf_struct_size = sizeof(struct v4l2_m2m_buffer);
+> >       src_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
+> > -     src_vq->dev = &ctx->mdp_dev->pdev->dev;
+> > +     src_vq->dev = ctx->mdp_dev->rdma_dev;
+> >       src_vq->lock = &ctx->mdp_dev->lock;
+> >
+> >       ret = vb2_queue_init(src_vq);
+> > @@ -947,7 +947,7 @@ static int mtk_mdp_m2m_queue_init(void *priv, struct vb2_queue *src_vq,
+> >       dst_vq->mem_ops = &vb2_dma_contig_memops;
+> >       dst_vq->buf_struct_size = sizeof(struct v4l2_m2m_buffer);
+> >       dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
+> > -     dst_vq->dev = &ctx->mdp_dev->pdev->dev;
+> > +     dst_vq->dev = ctx->mdp_dev->rdma_dev;
+> >       dst_vq->lock = &ctx->mdp_dev->lock;
+> >
+> >       return vb2_queue_init(dst_vq);
+> > diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
+> > index 18f93979e14a..6f9cf7725529 100644
+> > --- a/drivers/soc/mediatek/mtk-mmsys.c
+> > +++ b/drivers/soc/mediatek/mtk-mmsys.c
+> > @@ -305,6 +305,7 @@ static int mtk_mmsys_probe(struct platform_device *pdev)
+> >       struct device *dev = &pdev->dev;
+> >       struct platform_device *clks;
+> >       struct platform_device *drm;
+> > +     struct platform_device *mdp;
+> >       void __iomem *config_regs;
+> >       int ret;
+> >
+> > @@ -328,10 +329,27 @@ static int mtk_mmsys_probe(struct platform_device *pdev)
+> >                                           PLATFORM_DEVID_AUTO, NULL, 0);
+> >       if (IS_ERR(drm)) {
+> >               platform_device_unregister(clks);
+> > -             return PTR_ERR(drm);
+> > +             ret = PTR_ERR(drm);
+> > +             goto err_drm;
+> > +     }
+> > +
+> > +     mdp = platform_device_register_data(&pdev->dev, "mtk-mdp",
+> > +                                         PLATFORM_DEVID_AUTO, NULL, 0);
+> > +     if (IS_ERR(mdp)) {
+> > +             ret = PTR_ERR(mdp);
+> > +             dev_err(dev, "Failed to register mdp: %d\n", ret);
+> > +             goto err_mdp;
+> >       }
+> >
+> >       return 0;
+> > +
+> > +err_mdp:
+> > +     platform_device_unregister(drm);
+> > +
+> > +err_drm:
+> > +     platform_device_unregister(clks);
+> > +
+> > +     return ret;
+> >  }
+> >
+> >  static const struct of_device_id of_match_mtk_mmsys[] = {
+> >
