@@ -2,93 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56F763721BC
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 22:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B27D13721B9
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 22:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229966AbhECUlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 16:41:44 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:53198 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbhECUlQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 16:41:16 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 143KdKTO105859;
-        Mon, 3 May 2021 15:39:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1620074360;
-        bh=zJSsoRPc7uVygqGOIiFotkTDm64hgrdzUC903fh8uSk=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=w5bgHp/G724ddu/NRQ4+/67LvBtWbb0z++4F9UqiQVvul/U1+vTLQoQPet7Hy+Mad
-         iO7LrKkAZ9rPgJWo34bltZblQFD9ZuCvby3Zj6+cRJ7KXjJWR+XBTOuFbsNcUOXYu1
-         zthsAAnrhjFmXq0IL6/Tf14jb/RuN3IuPzsdWZRU=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 143KdKj8012891
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 3 May 2021 15:39:20 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 3 May
- 2021 15:39:20 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 3 May 2021 15:39:20 -0500
-Received: from [10.247.25.23] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 143KdJNE062416;
-        Mon, 3 May 2021 15:39:20 -0500
-Subject: Re: [ANNOUNCE] 5.10.30-rt37
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <wagi@monom.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-References: <20210419184731.246fa474@gandalf.local.home>
-From:   "Bajjuri, Praneeth" <praneeth@ti.com>
-Message-ID: <c3b8a530-2ade-5876-5c93-7f83286796b8@ti.com>
-Date:   Mon, 3 May 2021 15:39:19 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S230002AbhECUlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 16:41:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46940 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229928AbhECUlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 16:41:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6B853613C3;
+        Mon,  3 May 2021 20:40:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620074410;
+        bh=gq4Sk4xGeDQacCjcHMfgI4xdKJiAF3rvZgt0PNCGEsg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=VE0BKSxylv3TsTCSSN8l8+7wjKDKHJOqvtN+isev0a0UOLQrtMor2npEs+7ncB5CT
+         w+9Lx1fjTB7RlGKFJlhVwB+b0a4hwRb64ZdNF1shK2/X4QSXnMaZ/QOO9D+eY1CDh6
+         zPDdGGNV636PhetimJ2lZ7NPYqshNrLnaTXk7JX6LrQpGR6Ne9la1B1h7CJSJREb0n
+         fJAwEkKhzeJVXFFGXedNpgByQ5GkUySOkjVUCZITziikQTUWH8ifCQTgHSHeyR4eH7
+         jH9m7viXBx9n4WaE0u/fFqxFlBmjGQ52cT8v+bSTvD7vWZyM+2sEq1YuCvEPlNrij/
+         cmoVxP3XMZU7g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5FDC1609D9;
+        Mon,  3 May 2021 20:40:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210419184731.246fa474@gandalf.local.home>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: hsr: check skb can contain struct hsr_ethhdr in
+ fill_frame_info
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162007441038.32677.12112313977751851037.git-patchwork-notify@kernel.org>
+Date:   Mon, 03 May 2021 20:40:10 +0000
+References: <20210502213442.2139-1-phil@philpotter.co.uk>
+In-Reply-To: <20210502213442.2139-1-phil@philpotter.co.uk>
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     davem@davemloft.net, kuba@kernel.org, m-karicheri2@ti.com,
+        olteanv@gmail.com, george.mccollister@gmail.com,
+        ap420073@gmail.com, wanghai38@huawei.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
 
+This patch was applied to netdev/net.git (refs/heads/master):
 
-On 4/19/2021 5:47 PM, Steven Rostedt wrote:
-> On Tue, Apr 20, 2021,ycollette.nospam@free.fr  wrote:
->> net/xfrm/xfrm_state.c: In function 'xfrm_state_init':
->> ./include/linux/seqlock.h:178:36: error: initialization of 'seqcount_spinlock_t *' {aka 'struct seqcount_spinlock *'} from incompatible pointer type 'seqcount_t *' {aka 'struct seqcount *'} [-Werror=incompatible-pointer-types]
->>    178 |   seqcount_##lockname##_t *____s = (s);   \
->>        |                                    ^
-> ...
->> net/xfrm/xfrm_state.c:2666:2: note: in expansion of macro 'seqcount_spinlock_init'
->>   2666 |  seqcount_spinlock_init(&net->xfrm.xfrm_state_hash_generation,
->>        |  ^~~~~~~~~~~~~~~~~~~~~~
-> There is a rebase error at:
+On Sun,  2 May 2021 22:34:42 +0100 you wrote:
+> Check at start of fill_frame_info that the MAC header in the supplied
+> skb is large enough to fit a struct hsr_ethhdr, as otherwise this is
+> not a valid HSR frame. If it is too small, return an error which will
+> then cause the callers to clean up the skb. Fixes a KMSAN-found
+> uninit-value bug reported by syzbot at:
+> https://syzkaller.appspot.com/bug?id=f7e9b601f1414f814f7602a82b6619a8d80bce3f
 > 
->    247560698349 ("Merge tag 'v5.10.30' into v5.10-rt")
-> 
-> Cherry-pick mainline's commit:
-> 
->    bc8e0adff343 ("net: xfrm: Use sequence counter with associated spinlock")
+> [...]
 
-Thanks for this fix, Cherry-pick resolved rt stable integration issue 
-that i was seeing.
+Here is the summary with links:
+  - net: hsr: check skb can contain struct hsr_ethhdr in fill_frame_info
+    https://git.kernel.org/netdev/net/c/2e9f60932a2c
 
-Is this fix going to be posted for v5.10-rt too ?
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-> 
-> and your compilation issue will be fixed.
 
