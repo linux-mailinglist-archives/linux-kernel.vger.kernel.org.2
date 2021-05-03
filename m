@@ -2,95 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A98393713C7
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 12:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D3B3713CE
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 12:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233431AbhECKud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 06:50:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47054 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230246AbhECKua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 06:50:30 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A4153610A5;
-        Mon,  3 May 2021 10:49:35 +0000 (UTC)
-Date:   Mon, 3 May 2021 11:50:26 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Tomasz Duszynski <tomasz.duszynski@octakon.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <lars@metafoo.de>,
-        <robh+dt@kernel.org>
-Subject: Re: [PATCH v3 0/3] iio: sps30: add support for serial interface
-Message-ID: <20210503115026.06ee3d04@jic23-huawei>
-In-Reply-To: <20210503060014.7632-1-tomasz.duszynski@octakon.com>
-References: <20210503060014.7632-1-tomasz.duszynski@octakon.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233455AbhECKvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 06:51:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230246AbhECKvf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 06:51:35 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E867C06174A;
+        Mon,  3 May 2021 03:50:42 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1ldW9p-0004tt-DN; Mon, 03 May 2021 12:50:33 +0200
+Date:   Mon, 3 May 2021 12:50:33 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     syzbot <syzbot+dcccba8a1e41a38cb9df@syzkaller.appspotmail.com>
+Cc:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
+        kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, sfr@canb.auug.org.au,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] linux-next test error: WARNING in
+ __nf_unregister_net_hook
+Message-ID: <20210503105033.GH975@breakpoint.cc>
+References: <0000000000003a5d4c05c140175f@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0000000000003a5d4c05c140175f@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 3 May 2021 08:00:11 +0200
-Tomasz Duszynski <tomasz.duszynski@octakon.com> wrote:
-
-> One can communicate with sensor either over i2c or serial interface.
-> This series add support for the latter. And in order to do that existing
-> codebase needs to be separated into core and interface specific
-> components.
-
-I've taken the view the dt binding change is trivial enough I don't 'need'
-to wait for Rob to take a look (though of course any comments are welcome!)
-
-As such, I've applied the series to the togreg branch of iio.git and pushed
-it out as testing for the autobuilders to see if we missed anything.
-
-Thanks,
-
-Jonathan
-
+syzbot <syzbot+dcccba8a1e41a38cb9df@syzkaller.appspotmail.com> wrote:
+> Hello,
 > 
-> v3:
-> - add i2c device matching based on id table
-> - constify structure
-> - rephrase comment regarding reading serial number
-> - check serial number length
+> syzbot found the following issue on:
 > 
-> v2:
-> - simplify Kconfig by hiding core component selection
-> - export symbols as GPL compatible
-> - drop excessive ops wrappers
-> - rework ops to use __be32
-> - rework polling for measurements, sensor produces measurements within
->   1s so instead of polling just wait 1s
-> - simplify frame ready condition (serial)
-> - don't mix char with unsigned version
-> - calculate checksum during frame validation (serial)
-> - uncomment return status in frame validation (serial)
-> - pass part name to probe instead of KBUILD_MODNAME
+> HEAD commit:    74f961f4 Add linux-next specific files for 20210430
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=156e6f15d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=acf3aa1c9f3e62f8
+> dashboard link: https://syzkaller.appspot.com/bug?extid=dcccba8a1e41a38cb9df
 > 
-> Tomasz Duszynski (3):
->   iio: sps30: separate core and interface specific code
->   iio: sps30: add support for serial interface
->   dt-bindings: iio: chemical: sps30: update binding with serial example
-> 
->  .../iio/chemical/sensirion,sps30.yaml         |   7 +-
->  MAINTAINERS                                   |   2 +
->  drivers/iio/chemical/Kconfig                  |  27 +-
->  drivers/iio/chemical/Makefile                 |   2 +
->  drivers/iio/chemical/sps30.c                  | 269 ++---------
->  drivers/iio/chemical/sps30.h                  |  35 ++
->  drivers/iio/chemical/sps30_i2c.c              | 258 +++++++++++
->  drivers/iio/chemical/sps30_serial.c           | 431 ++++++++++++++++++
->  8 files changed, 804 insertions(+), 227 deletions(-)
->  create mode 100644 drivers/iio/chemical/sps30.h
->  create mode 100644 drivers/iio/chemical/sps30_i2c.c
->  create mode 100644 drivers/iio/chemical/sps30_serial.c
-> 
-> --
-> 2.31.1
-> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+dcccba8a1e41a38cb9df@syzkaller.appspotmail.com
 
+Can reproduce this & will look at it later today.
