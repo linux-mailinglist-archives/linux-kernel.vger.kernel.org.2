@@ -2,132 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 988AC371E01
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D02371E0A
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236908AbhECRHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 13:07:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43310 "EHLO mail.kernel.org"
+        id S231292AbhECRI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 13:08:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43314 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233386AbhECQ5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 12:57:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AD886117A;
-        Mon,  3 May 2021 16:47:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620060444;
-        bh=rqiShYz2NDHqM5EtsoLoM7q+/D2LQEFZDElDZCdsSlQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=qeAZKVivkiGyI0gCis7qBTBQlLQdTnTEA+ilBPTnExDRAe4JK9QbLs59Br8bYd+o+
-         ikZ+qfuI6P99gMW2KD33VpvYux1jXQvC+9ubCS4R5xEFGKcCXSJsJjKzDDvUiIeIcC
-         oqxKaJVgOnzDW6Dow+Yw3plPOadXyZth8QI+pg26BGrg0b1knnZRuKoUQ7Lsd179Qe
-         AZPykKbG2eww+0WJ44osFqZlArL+e08GPDaPIG0PJnvNP6U41mAVORltlGeBu6AQKr
-         07mnXNxPMohkR/lvtCkWxMDBOhcI/hZT/y1xHSgOS5Ea3z7dIcelchKGE39JRUVHo5
-         f0nQrgulggpmA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E04905C0546; Mon,  3 May 2021 09:47:23 -0700 (PDT)
-Date:   Mon, 3 May 2021 09:47:23 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH v1 5/5] kvfree_rcu: Fix comments according to current code
-Message-ID: <20210503164723.GX975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210428134422.1894-1-urezki@gmail.com>
- <20210428134422.1894-5-urezki@gmail.com>
+        id S234113AbhECQ5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 12:57:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C91F611CE;
+        Mon,  3 May 2021 16:48:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620060483;
+        bh=pqQt+ufivPLeHfDzgYO6blIaZRqsbQC3VMEA9EWcKbM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HA3aXBnB3YjQaRuuC/hNpBOfQg7bHvFYdroZGq16La6nfkXDpDT6ewCPdFY2c5k/p
+         RvLM5w1IDKInW5dbmiKtBAE+/rhbRDvf2SyMeKK73r8uPc3VI9aps74d8U7fbnmtle
+         B6tvGcFvuKtWyJ8FoPDtAu2ZNpZwsIAzxZFeCpE0=
+Date:   Mon, 3 May 2021 18:48:01 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8723bs: Use list iterators and helpers
+Message-ID: <YJApQTRSEWUuR4qd@kroah.com>
+References: <20210428173301.149619-1-linux@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210428134422.1894-5-urezki@gmail.com>
+In-Reply-To: <20210428173301.149619-1-linux@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 03:44:22PM +0200, Uladzislau Rezki (Sony) wrote:
-> We used to have an "emergency path" and comments related
-> to it. According to current kvfree_rcu() design that path
-> is not considered as emergency anymore.
-> 
-> This patch rephrases and updates comments regarding this.
-> 
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+On Wed, Apr 28, 2021 at 10:33:01AM -0700, Guenter Roeck wrote:  
+> diff --git a/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c b/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
+> index 85663182b388..9cb2c7a112d2 100644
+> --- a/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
+> +++ b/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
+> @@ -124,11 +124,8 @@ void kfree_all_stainfo(struct sta_priv *pstapriv)
+>  	spin_lock_bh(&pstapriv->sta_hash_lock);
+>  
+>  	phead = get_list_head(&pstapriv->free_sta_queue);
+> -	plist = get_next(phead);
+> -
+> -	while (phead != plist) {
+> -		psta = container_of(plist, struct sta_info, list);
+> -		plist = get_next(plist);
+> +	list_for_each(plist, phead) {
+> +		psta = list_entry(plist, struct sta_info, list);
+>  	}
+>  
+>  	spin_unlock_bh(&pstapriv->sta_hash_lock);
 
-Queued as follows, thank you!  Please check my usual wordsmithing to
-make sure that I did not mess anything up.
 
-							Thanx, Paul
+This chunk didn't apply to my tree as someone else cleaned something in
+this function.
 
-------------------------------------------------------------------------
+But that doesn't even really matter as this function does nothing at
+all!
 
-commit 06c2113c4b1ce9ded69cd0ac4da9a00ed6be8834
-Author: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Date:   Wed Apr 28 15:44:22 2021 +0200
+So I'll just leave it alone, and apply the patch without this chunk.
 
-    kvfree_rcu: Fix comments according to current code
-    
-    The kvfree_rcu() function now defers allocations in the common
-    case due to the fact that there is no lockless access to the
-    memory-allocator caches/pools.  In addition, in CONFIG_PREEMPT_NONE=y
-    and in CONFIG_PREEMPT_VOLUNTARY=y kernels, there is no reliable way to
-    determine if spinlocks are held.  As a result, allocation is deferred in
-    the common case, and the two-argument form of kvfree_rcu() thus uses the
-    "channel 3" queue through all the rcu_head structures.  This channel
-    is called referred to as the emergency case in comments, and these
-    comments are now obsolete.
-    
-    This commit therefore updates these comments to reflect the new
-    common-case nature of such emergencies.
-    
-    Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+crazy code...
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 9089c23e80dc..4d93c6985d3f 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3338,9 +3338,11 @@ static void kfree_rcu_work(struct work_struct *work)
- 	}
- 
- 	/*
--	 * Emergency case only. It can happen under low memory
--	 * condition when an allocation gets failed, so the "bulk"
--	 * path can not be temporary maintained.
-+	 * This is used when the "bulk" path can not be used for the
-+	 * double-argument of kvfree_rcu().  This happens when the
-+	 * page-cache is empty, which means that objects are instead
-+	 * queued on a linked list through their rcu_head structures.
-+	 * This list is named "Channel 3".
- 	 */
- 	for (; head; head = next) {
- 		unsigned long offset = (unsigned long)head->func;
-@@ -3386,8 +3388,8 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
- 		if ((krcp->bkvhead[0] && !krwp->bkvhead_free[0]) ||
- 			(krcp->bkvhead[1] && !krwp->bkvhead_free[1]) ||
- 				(krcp->head && !krwp->head_free)) {
--			// Channel 1 corresponds to SLAB ptrs.
--			// Channel 2 corresponds to vmalloc ptrs.
-+			// Channel 1 corresponds to the SLAB-pointer bulk path.
-+			// Channel 2 corresponds to vmalloc-pointer bulk path.
- 			for (j = 0; j < FREE_N_CHANNELS; j++) {
- 				if (!krwp->bkvhead_free[j]) {
- 					krwp->bkvhead_free[j] = krcp->bkvhead[j];
-@@ -3395,7 +3397,8 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
- 				}
- 			}
- 
--			// Channel 3 corresponds to emergency path.
-+			// Channel 3 corresponds to both SLAB and vmalloc
-+			// objects queued on the linked list.
- 			if (!krwp->head_free) {
- 				krwp->head_free = krcp->head;
- 				krcp->head = NULL;
+greg k-h
