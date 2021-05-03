@@ -2,103 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E52371518
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 14:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66FC037151C
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 14:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233520AbhECMNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 08:13:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28321 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229594AbhECMNx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 08:13:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620043979;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=K5m+889p2sr3WAK7eV6x9Hap4sz6HqlhwTOj7+igDZ4=;
-        b=hCAf6DlGQ/3q+GBZXcdv2vmaoyApAhLkpLshrqmGeUUY9LXe+GwA41ADq33vT4aSTQ+ak+
-        f3GS0sYIqDOxyhaSPS4Xpgduz/gxm8VUzGYDjX0HK6gKLn9krHeN/mmtO6xEJ1i73d1Cgd
-        D1/fQOaXl7m1RVbaL7oSftYW5SrF4OM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-458-DrS35qCnPX2TsdkQ7A7h4w-1; Mon, 03 May 2021 08:12:56 -0400
-X-MC-Unique: DrS35qCnPX2TsdkQ7A7h4w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4A7C210060C7;
-        Mon,  3 May 2021 12:12:55 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-113-244.ams2.redhat.com [10.36.113.244])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4EE0C19C45;
-        Mon,  3 May 2021 12:12:48 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     David Hildenbrand <david@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        linux-s390@vger.kernel.org
-Subject: [PATCH] s390: fix detection of vector enhancements facility 1 vs. vector packed decimal facility
-Date:   Mon,  3 May 2021 14:12:44 +0200
-Message-Id: <20210503121244.25232-1-david@redhat.com>
+        id S233557AbhECMPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 08:15:23 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:50796 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229594AbhECMPW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 08:15:22 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1ldXSt-002Hrd-A5; Mon, 03 May 2021 14:14:19 +0200
+Date:   Mon, 3 May 2021 14:14:19 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     LABBE Corentin <clabbe@baylibre.com>
+Cc:     Rob Herring <robh@kernel.org>, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v3] dt-bindings: net: Convert mdio-gpio to yaml
+Message-ID: <YI/pG3GSIpse+OEo@lunn.ch>
+References: <20210430182941.915101-1-clabbe@baylibre.com>
+ <20210430215325.GA3957879@robh.at.kernel.org>
+ <YI+WPRAAbtmP9LC0@Red>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YI+WPRAAbtmP9LC0@Red>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PoP documents:
-	134: The vector packed decimal facility is installed in the
-	     z/Architecture architectural mode. When bit 134 is
-	     one, bit 129 is also one.
-	135: The vector enhancements facility 1 is installed in
-	     the z/Architecture architectural mode. When bit 135
-	     is one, bit 129 is also one.
+> > What's the order with 3 lines? In any case, define the order with 
+> > schema:
+> > 
+> > minItems:
+> > items:
+> >   - description: MDC signal
+> >   - description: MDIO or ?? signal
+> >   - description: ?? signal
+> > 
+> 
+> I dont know what to write in the third line, I added the "maxItems: 3" by request of Andrew Lunn.
+> But I have no example at hand.
+> 
+> Andrew could you give me an example of:	"You often find with x86 machines you don't have GPIOs, just GPI
+> and GPO, and you need to combine two to form the MDIO line of the MDIO bus."
+> Or could I drop the "maxItems: 3" until a board need it.
 
-Looks like we confuse the vector enhancements facility 1 ("EXT") with the
-Vector packed decimal facility ("BCD"). Let's fix the facility checks.
+The code gets the GPIOs via index. The index are defined in
+include/linux/gpio-mdio.h as:
 
-Detected while working on QEMU/tcg z14 support and only unlocking
-the vector enhancements facility 1, but not the vector packed decimal
-facility.
+#define MDIO_GPIO_MDC	0
+#define MDIO_GPIO_MDIO	1
+#define MDIO_GPIO_MDO	2
 
-Fixes: 2583b848cad0 ("s390: report new vector facilities")
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-Cc: Sven Schnelle <svens@linux.ibm.com>
-Cc: Alexander Egorenkov <egorenar@linux.ibm.com>
-Cc: Niklas Schnelle <schnelle@linux.ibm.com>
-Cc: Janosch Frank <frankja@linux.ibm.com>
-Cc: linux-s390@vger.kernel.org
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- arch/s390/kernel/setup.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+So you can describe them MDC, MDIO, MDO.
 
-diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
-index 72134f9f6ff5..5aab59ad5688 100644
---- a/arch/s390/kernel/setup.c
-+++ b/arch/s390/kernel/setup.c
-@@ -937,9 +937,9 @@ static int __init setup_hwcaps(void)
- 	if (MACHINE_HAS_VX) {
- 		elf_hwcap |= HWCAP_S390_VXRS;
- 		if (test_facility(134))
--			elf_hwcap |= HWCAP_S390_VXRS_EXT;
--		if (test_facility(135))
- 			elf_hwcap |= HWCAP_S390_VXRS_BCD;
-+		if (test_facility(135))
-+			elf_hwcap |= HWCAP_S390_VXRS_EXT;
- 		if (test_facility(148))
- 			elf_hwcap |= HWCAP_S390_VXRS_EXT2;
- 		if (test_facility(152))
--- 
-2.30.2
-
+   Andrew
