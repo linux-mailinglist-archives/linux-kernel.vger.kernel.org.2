@@ -2,99 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F6A4371E7D
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45FD8371E80
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231623AbhECRWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 13:22:53 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:40696 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232756AbhECRWU (ORCPT
+        id S231484AbhECRXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 13:23:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231393AbhECRXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 13:22:20 -0400
-Received: by mail-il1-f199.google.com with SMTP id d3-20020a056e021c43b029016bec7d6e48so5061044ilg.7
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 10:21:26 -0700 (PDT)
+        Mon, 3 May 2021 13:23:31 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB859C061763
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 10:22:36 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id b131so8525151ybg.5
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 10:22:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NjBwCGka9h3apbjVqlgSifQtNSglR1AQA2/HzLhtPUM=;
+        b=bR8o9peF1RKQ0Dlx/F/sLjc3Goo+1BHC9xLpaukIy4ag9B1cGFQ4TI5dqkHJiGZB3r
+         3lQ0PgtRwtM3n8ZuFpK61sKagi2TYNsuczok8b8CGPF5X05aJMJ2XwkRWvPX1g4MQbvd
+         3oEJ21rsSBVu1V12X3kTYKWTrz+py8RgHdNsQvCpXYdSj23cv0pNJ0pm9iI7G/I2kX/G
+         bFWj2Oe8n/a1M8XAJZOw6hrtlcKyMCpQffpfl0ODqg+J1Q9+Y06nYThLjUEnnerZfidq
+         d2YObPja7pMBEiE4aW1FJAByqpbrf17S9OwLZdYRe3Dm58Ii7je7wUvhWFfh8mAIIVxV
+         RSSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=PmToXBImkI7KxfCI+FowXrQSxpirCmDD8jPohkDzvPA=;
-        b=cvTL8JNtxY4+2H/O+gqtjiGW0aN62zIeUCY0BjgATRRFo4uXHW8SJUbScR7Aq9hjtW
-         5NdV91+a/GaPzW5tVU5rvE4y2KeurM6BViP7ql0c89Cw/ln7mHnKnt7IscEoDinKseBV
-         0AWj0XikzqFSpGR2YTKBpxJ/GbfPYkWoGXkeAPrNepsDRNrAVaMfMFswHR/nrjiYVK/D
-         zQ+3m3/DtCth1e3InNCiDkJndtvvVKvyV6rV2P7jOs98DawBezdkcDIKavz44OshnOyH
-         lDNEtjQ2N7U4UryP7+OiXsJuqJe16rZp6W+XqoQY5MRXTMcLLTI37FCMiAhaQIMr5FMK
-         qMCQ==
-X-Gm-Message-State: AOAM5332PNB8TNk4A9r26OOrl4dJlicYD0nQXISZerpuh4v3qwxiv+mT
-        MMDTo+M/UYJHMgs08EpvxsvDfTOFQi00uEgOnqloSk8Ec0Xq
-X-Google-Smtp-Source: ABdhPJzBdcLciDhmBdRBkgDQi4x+AqgpCqFyNzSauL8Nx0gPbD+rJVhAFXy7De2cTBWgubGJ7Sti4UHJJzxbOmvqTgkrF+p8qS2+
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NjBwCGka9h3apbjVqlgSifQtNSglR1AQA2/HzLhtPUM=;
+        b=ua/DBnODW0nJ615LQgMoozqesNWAndLaKdrlkMPE+7eVKv6mgcfUe2lNhptfpVl0cc
+         Lx2nmn97n9JQk3aM4htcXd61UVa/OM5h4FU68Es/DFtHz+SF5d9viLj1OkNljqsosRFQ
+         O9ptR2AAZCyzAcz5mU9foY6Wlj+psaNvNF6FkpjXqMLPd24ZnPERAUbSZtBJw2yBBcz+
+         dz1qfxyzo2CryTJMrQwP8pfj9//lZanXRbgoF5TqqDh4OYsKd1fOUFparZUCHQc+eCqS
+         DxB5VZUUPJZwuARuG+nTcH/XP+Z/z/WzL3p/ntQF5sYK79ibnb2JIvgU30Lma2Oiu+sf
+         tHmw==
+X-Gm-Message-State: AOAM533uukOboS7CSZuMJpcOaLpmqxSG/eQ9op6ETl1z+JLgzlgcpyS8
+        yAydFfoiyyVGMtJyyn8xODAaFPkKn35dhcI6a3zIEDgRatw7cA==
+X-Google-Smtp-Source: ABdhPJzIrNCXGtuI2f36all1AEtZR951Sw8Cm9eOxHD9qPYSjsZeb+ovKkGr0cYdmlX19Mh9YLr7A9cukRVRZZ22UpY=
+X-Received: by 2002:a25:6003:: with SMTP id u3mr29692446ybb.96.1620062555877;
+ Mon, 03 May 2021 10:22:35 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a92:d682:: with SMTP id p2mr16658854iln.75.1620062486429;
- Mon, 03 May 2021 10:21:26 -0700 (PDT)
-Date:   Mon, 03 May 2021 10:21:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000485d705c17031fd@google.com>
-Subject: [syzbot] bpf test error: WARNING in __nf_unregister_net_hook
-From:   syzbot <syzbot+854457fa0d41f836cd0e@syzkaller.appspotmail.com>
-To:     ast@kernel.org, coreteam@netfilter.org, daniel@iogearbox.net,
-        davem@davemloft.net, fw@strlen.de, kadlec@netfilter.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com
+References: <20210426235638.1285530-1-saravanak@google.com> <20210503100733.GA8114@wunner.de>
+In-Reply-To: <20210503100733.GA8114@wunner.de>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 3 May 2021 10:21:59 -0700
+Message-ID: <CAGETcx8qPg9NUS6BJLEJCZ-2La32_NPeaMf1GDArcWT6tsf_AQ@mail.gmail.com>
+Subject: Re: [PATCH] spi: Fix spi device unregister flow
+To:     Lukas Wunner <lukas@wunner.de>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, May 3, 2021 at 3:07 AM Lukas Wunner <lukas@wunner.de> wrote:
+>
+> On Mon, Apr 26, 2021 at 04:56:38PM -0700, Saravana Kannan wrote:
+> > When an SPI device is unregistered, the spi->controller->cleanup() is
+> > called in the device's release callback. That's wrong for a couple of
+> > reasons:
+> >
+> > 1. spi_dev_put() can be called before spi_add_device() is called. And
+> >    it's spi_add_device() that calls spi_setup(). This will cause clean()
+> >    to get called without the spi device ever being setup.
+>
+> Well, yes, but it's not a big problem in practice so far:
+>
+> I've checked all drivers and there are only four which are affected
+> by this: spi-mpc512x-psc.c spi-pic32.c spi-s3c64xx.c spi-st-ssc4.c
+>
+> They all fiddle with the chipselect GPIO in their ->cleanup hook
+> and the GPIO may not have been requested yet because that happens
+> during ->setup.
+>
+> All the other drivers merely invoke kzalloc() on ->setup and kfree()
+> on ->cleanup.  The order doesn't matter in this case because
+> kfree(NULL) is a no-op.
 
-syzbot found the following issue on:
+That's making a lot of assumptions about drivers not doing certain
+things in the future or making assumptions about the hardware (chip
+select or whatever other configuration that might happen). Totally
+unnecessary and error prone.
 
-HEAD commit:    f80f88f0 selftests/bpf: Fix the snprintf test
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=16fd921ed00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=57b4b78935781045
-dashboard link: https://syzkaller.appspot.com/bug?extid=854457fa0d41f836cd0e
+>
+>
+> > 2. There's no guarantee that the controller's driver would be present by
+> >    the time the spi device's release function gets called.
+>
+> How so?  spi_devices are instantiated on ->probe of the controller
+> via spi_register_controller() and destroyed on ->remove via
+> spi_unregister_controller().  I don't see how the controller driver
+> could ever be unavailable, so this point seems moot.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+854457fa0d41f836cd0e@syzkaller.appspotmail.com
+Just because put_device() is called on a struct device doesn't mean
+it's getting destroyed immediately. The refcount needs to reach zero
+for ->cleanup() to be called eventually. And there's no guarantee that
+by the time the ref count hits zero that your controller driver is
+still around. So, it's not a moot point.
 
-------------[ cut here ]------------
-hook not found, pf 3 num 0
-WARNING: CPU: 1 PID: 9 at net/netfilter/core.c:480 __nf_unregister_net_hook+0x1eb/0x610 net/netfilter/core.c:480
-Modules linked in:
-CPU: 1 PID: 9 Comm: kworker/u4:0 Not tainted 5.12.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: netns cleanup_net
-RIP: 0010:__nf_unregister_net_hook+0x1eb/0x610 net/netfilter/core.c:480
-Code: 0f b6 14 02 48 89 c8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 11 04 00 00 8b 53 1c 89 ee 48 c7 c7 c0 78 6d 8a e8 40 4c 8a 01 <0f> 0b e9 e5 00 00 00 e8 59 48 30 fa 44 8b 3c 24 4c 89 f8 48 c1 e0
-RSP: 0018:ffffc90000ce7bc0 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffff8881474f6900 RCX: 0000000000000000
-RDX: ffff888011d50000 RSI: ffffffff815c8ba5 RDI: fffff5200019cf6a
-RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815c2a0e R11: 0000000000000000 R12: ffff888028a68f20
-R13: 0000000000000000 R14: ffff8880144d9100 R15: 0000000000000001
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f41d41cb000 CR3: 0000000021c10000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- nf_unregister_net_hook net/netfilter/core.c:502 [inline]
- nf_unregister_net_hooks+0x117/0x160 net/netfilter/core.c:576
- arpt_unregister_table_pre_exit+0x67/0x80 net/ipv4/netfilter/arp_tables.c:1565
- ops_pre_exit_list net/core/net_namespace.c:165 [inline]
- cleanup_net+0x451/0xb10 net/core/net_namespace.c:583
- process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> > Fix these issues by simply moving the cleanup from the device release
+> > callback to the actual spi_unregister_device() function.
+>
+> Unfortunately the fix is wrong, it introduces a new problem:
+>
+> > @@ -713,6 +717,8 @@ void spi_unregister_device(struct spi_device *spi)
+> >       if (!spi)
+> >               return;
+> >
+> > +     spi_cleanup(spi);
+> > +
+> >       if (spi->dev.of_node) {
+> >               of_node_clear_flag(spi->dev.of_node, OF_POPULATED);
+> >               of_node_put(spi->dev.of_node);
+>
+> Now you're running ->cleanup before the SPI slave's driver is unbound.
 
+By "slave" device, you mean struct spi_device, right?
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Sorry if I'm mistaken about my understanding of the SPI framework.
+Please explain how that's happening here. The main place
+spi_unregister_device() is getting called from is
+spi_controller_unregister(). If the controller's child/slave
+spi_device's aren't unbound by then, you've got bigger problems even
+without my patch?
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> That's bad, the driver may need to access the physical device on unbound,
+> e.g. to quiesce interrupts.  That may not work now because the
+> slave's controller_state is gone.
+>
+> NAK, this needs to be reverted.
+
+Please help me understand how this is broken. It's not clear to me.
+
+-Saravana
