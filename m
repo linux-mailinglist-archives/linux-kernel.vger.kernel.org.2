@@ -2,201 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB51D371367
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 12:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 482A437136E
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 12:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233286AbhECKJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 06:09:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40060 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233296AbhECKJK (ORCPT
+        id S233191AbhECKMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 06:12:31 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:37388 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232960AbhECKM3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 06:09:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620036496;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QM7LX30zixFvAJA+LWpBmSBCqZL3DHOeqR3gSdt7mUE=;
-        b=YGTcRvwsi8LSqWLfVmLIrHtHL8KbhSTwfWavCoJTBXiZSJanvFxU80IxY1n2lnEbkV/v2q
-        nP5GAgA5aAxkwnjqD29DXS1SbV9tb45fdiwzO8UhFt979l+JvFStxqMRaip2oreGmIgJlV
-        LeuO8wnepuKZPP23bam8p9oqxKBqhLY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-272-MOHmxVoAPHOVkocEE9n3hg-1; Mon, 03 May 2021 06:08:13 -0400
-X-MC-Unique: MOHmxVoAPHOVkocEE9n3hg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 66FCD107ACC7;
-        Mon,  3 May 2021 10:08:11 +0000 (UTC)
-Received: from krava (unknown [10.40.195.47])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 48D291001B2C;
-        Mon,  3 May 2021 10:08:03 +0000 (UTC)
-Date:   Mon, 3 May 2021 12:08:02 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>,
-        Yonghong Song <yhs@fb.com>, linux-kernel@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        dwarves@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: linux-next failing build due to missing cubictcp_state symbol
-Message-ID: <YI/LgjLxo9VCN/d+@krava>
-References: <20210426121401.GO15381@kitsune.suse.cz>
- <49f84147-bf32-dc59-48e0-f89241cf6264@fb.com>
- <YIbkR6z6mxdNSzGO@krava>
- <YIcRlHQWWKbOlcXr@krava>
- <20210427121237.GK6564@kitsune.suse.cz>
- <20210430174723.GP15381@kitsune.suse.cz>
- <3d148516-0472-8f0a-085b-94d68c5cc0d5@suse.com>
- <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org>
- <4e051459-8532-7b61-c815-f3435767f8a0@kernel.org>
- <cbaf50c3-c85d-9239-0b37-c88e8cbed8c8@kernel.org>
+        Mon, 3 May 2021 06:12:29 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 8CE631C0B79; Mon,  3 May 2021 12:11:35 +0200 (CEST)
+Date:   Mon, 3 May 2021 12:11:34 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Hannes Reinecke <hare@suse.de>
+Cc:     Enzo Matsumiya <ematsumiya@suse.de>, linux-leds@vger.kernel.org,
+        linux-block@vger.kernel.org, u.kleine-koenig@pengutronix.de,
+        Jens Axboe <axboe@kernel.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/2] leds: trigger: implement block trigger
+Message-ID: <20210503101134.GB6621@amd>
+References: <20210430183216.27458-1-ematsumiya@suse.de>
+ <20210430183216.27458-3-ematsumiya@suse.de>
+ <7e8da9ec-b3e3-0329-d54c-bb44c4064f0d@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="aM3YZ0Iwxop3KEKx"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cbaf50c3-c85d-9239-0b37-c88e8cbed8c8@kernel.org>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <7e8da9ec-b3e3-0329-d54c-bb44c4064f0d@suse.de>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 10:59:44AM +0200, Jiri Slaby wrote:
-> CCing pahole people.
-> 
-> On 03. 05. 21, 9:59, Jiri Slaby wrote:
-> > On 03. 05. 21, 8:11, Jiri Slaby wrote:
-> > > > > > > > looks like vfs_truncate did not get into BTF data,
-> > > > > > > > I'll try to reproduce
-> > > > 
-> > > > _None_ of the functions are generated by pahole -J from
-> > > > debuginfo on ppc64. debuginfo appears to be correct. Neither
-> > > > pahole -J fs/open.o works correctly. collect_functions in
-> > > > dwarves seems to be defunct on ppc64... "functions" array is
-> > > > bogus (so find_function -- the bsearch -- fails).
-> > > 
-> > > It's not that bogus. I forgot an asterisk:
-> > > > #0  find_function (btfe=0x100269f80, name=0x10024631c
-> > > > "stream_open") at
-> > > > /usr/src/debug/dwarves-1.21-1.1.ppc64/btf_encoder.c:350
-> > > > (gdb) p (*functions)@84
-> > > > $5 = {{name = 0x7ffff68e0922 ".__se_compat_sys_ftruncate", addr
-> > > > = 75232, size = 72, sh_addr = 65536, generated = false}, {
-> > > >     name = 0x7ffff68e019e ".__se_compat_sys_open", addr = 80592,
-> > > > size = 216, sh_addr = 65536, generated = false}, {
-> > > >     name = 0x7ffff68e0076 ".__se_compat_sys_openat", addr =
-> > > > 80816, size = 232, sh_addr = 65536, generated = false}, {
-> > > >     name = 0x7ffff68e0908 ".__se_compat_sys_truncate", addr =
-> > > > 74304, size = 100, sh_addr = 65536, generated = false}, {
-> > > ...
-> > > >     name = 0x7ffff68e0808 ".stream_open", addr = 65824, size =
-> > > > 72, sh_addr = 65536, generated = false}, {
-> > > ...
-> > > >     name = 0x7ffff68e0751 ".vfs_truncate", addr = 73392, size =
-> > > > 544, sh_addr = 65536, generated = false}}
-> > > 
-> > > The dot makes the difference, of course. The question is why is it
-> > > there? I keep looking into it. Only if someone has an immediate
-> > > idea...
-> > 
-> > Well, .vfs_truncate is in .text (and contains an ._mcount call). And
-> > vfs_truncate is in .opd (w/o an ._mcount call). Since setup_functions
-> > excludes all functions without the ._mcount call, is_ftrace_func later
-> > returns false for such functions and they are filtered before the BTF
-> > processing.
-> > 
-> > Technically, get_vmlinux_addrs looks at a list of functions between
-> > __start_mcount_loc and __stop_mcount_loc and considers only the listed.
-> > 
-> > I don't know what the correct fix is (exclude .opd functions from the
-> > filter?). Neither why cross compiler doesn't fail, nor why ebi v2 avoids
-> > this too.
-> 
-> Attaching a patch for pahole which fixes the issue, but I have no idea
-> whether it is the right fix at all.
 
-hi,
-we're considering to disable ftrace filter completely,
-I guess that would solve this issue for ppc as well
+--aM3YZ0Iwxop3KEKx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-  https://lore.kernel.org/bpf/20210501001653.x3b4rk4vk4iqv3n7@kafai-mbp.dhcp.thefacebook.com/
+Hi!
 
-jirka
+Please trim the emails you are responding to.
 
-> 
-> > regards,--
-> js
-> suse labs
+> >+MODULE_AUTHOR("Enzo Matsumiya <ematsumiya@suse.de>");
+> >+MODULE_DESCRIPTION("LED block trigger");
+> >+MODULE_LICENSE("GPL v2");
+> >+
+> >
+> As already commented on, this for_each_blk() construct is not a good idea.
+> Infact, I guess it would be better if you could invert the logic:
+> Not having the block trigger enumerating all devices, but rather let the
+> devices register with the block trigger.
+> That would have the benefit that one could choose which block device shou=
+ld
+> be handled by the LED trigger subsystem, _and_ you would avoid the need f=
+or
+> a for_each_blk() construct.
+> Thing is, I don't think that all block devices should be handled by the L=
+ED
+> trigger; eg for things like 'loop' or 'ramdisk' it is very
+> >questionable.
 
-> From: Jiri Slaby <jslaby@suse.cz>
-> Subject: ppc64: .opd section fix
-> Patch-mainline: submitted 2021/05/03
-> 
-> Functions in the .opd section should be considered valid too. Otherwise,
-> pahole cannot produce a .BTF section from vmlinux and kernel build
-> fails on ppc64.
-> ---
->  btf_encoder.c |   18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
-> 
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -31,6 +31,8 @@ struct funcs_layout {
->  	unsigned long mcount_start;
->  	unsigned long mcount_stop;
->  	unsigned long mcount_sec_idx;
-> +	unsigned long opd_start;
-> +	unsigned long opd_stop;
->  };
->  
->  struct elf_function {
-> @@ -271,11 +273,24 @@ static int is_ftrace_func(struct elf_fun
->  	return start <= addrs[r] && addrs[r] < end;
->  }
->  
-> +static int is_opd_func(struct elf_function *func, struct funcs_layout *fl)
-> +{
-> +	return fl->opd_start <= func->addr && func->addr < fl->opd_stop;
-> +}
-> +
->  static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
->  {
->  	__u64 *addrs, count, i;
->  	int functions_valid = 0;
->  	bool kmod = false;
-> +	GElf_Shdr shdr;
-> +	Elf_Scn *sec;
-> +
-> +	sec = elf_section_by_name(btfe->elf, &btfe->ehdr, &shdr, ".opd", NULL);
-> +	if (sec) {
-> +		fl->opd_start = shdr.sh_addr;
-> +		fl->opd_stop = shdr.sh_addr + shdr.sh_size;
-> +	}
->  
->  	/*
->  	 * Check if we are processing vmlinux image and
-> @@ -322,7 +337,8 @@ static int setup_functions(struct btf_el
->  			func->addr += func->sh_addr;
->  
->  		/* Make sure function is within ftrace addresses. */
-> -		if (is_ftrace_func(func, addrs, count)) {
-> +		if (is_opd_func(func, fl) ||
-> +				is_ftrace_func(func, addrs, count)) {
->  			/*
->  			 * We iterate over sorted array, so we can easily skip
->  			 * not valid item and move following valid field into
+> Downside is that you would need to modify the drivers, but realistically
+> there are only very few drivers which should be modified; I would go for
+> nvme-pci and the sd driver for starters. Maybe floppy, but arguably that =
+can
+> omitted as one has a very good audio indicator for floppy accesses
+> :-)
 
+And we already have disk activity trigger. Maybe NVMe and SD needs to
+be modified to use it?
+
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--aM3YZ0Iwxop3KEKx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmCPzFYACgkQMOfwapXb+vKPawCfdpv2CRk6cfP28YKt4NNUlih1
+NR0An0FymyfhKdJOnOcBYoWFhbxfIiFw
+=3zg8
+-----END PGP SIGNATURE-----
+
+--aM3YZ0Iwxop3KEKx--
