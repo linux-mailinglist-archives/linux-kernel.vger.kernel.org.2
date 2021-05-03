@@ -2,99 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A319A371810
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 989BE371814
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbhECPdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 11:33:22 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41454 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229588AbhECPdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 11:33:19 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 59593B01F;
-        Mon,  3 May 2021 15:32:25 +0000 (UTC)
-To:     Waiman Long <llong@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20210502180755.445-1-longman@redhat.com>
- <20210502180755.445-2-longman@redhat.com>
- <699e5ac8-9044-d664-f73f-778fe72fd09b@suse.cz>
- <4c90cf79-9c61-8964-a6fd-2da087893339@redhat.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH 2/2] mm: memcg/slab: Don't create unfreeable slab
-Message-ID: <d767ff72-711d-976c-d897-9cea0375c827@suse.cz>
-Date:   Mon, 3 May 2021 17:32:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <4c90cf79-9c61-8964-a6fd-2da087893339@redhat.com>
-Content-Type: text/plain; charset=utf-8
+        id S230419AbhECPdv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 3 May 2021 11:33:51 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2990 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230396AbhECPdr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 11:33:47 -0400
+Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FYmxL2qmLz6snwd;
+        Mon,  3 May 2021 23:24:54 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 3 May 2021 17:32:52 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
+ Mon, 3 May 2021 17:32:52 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        "mjg59@google.com" <mjg59@google.com>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: RE: [PATCH v5 09/12] evm: Allow setxattr() and setattr() for
+ unmodified metadata
+Thread-Topic: [PATCH v5 09/12] evm: Allow setxattr() and setattr() for
+ unmodified metadata
+Thread-Index: AQHXK5xeSg6sM/30eEKbqlkQ5rVFkKrRv8yAgABEE/D//+S7AIAAIuSw
+Date:   Mon, 3 May 2021 15:32:52 +0000
+Message-ID: <b0bfaf2352b045dfaf443ae3af73b60e@huawei.com>
+References: <20210407105252.30721-1-roberto.sassu@huawei.com>
+         <20210407105252.30721-10-roberto.sassu@huawei.com>
+         <8493d7e2b0fefa4cd3861bd6b7ee6f2340aa7434.camel@linux.ibm.com>
+         <fcd2932bc2a841c2aa7fcbdaee94e0a5@huawei.com>
+ <cf12878833c82710ad4356e7d023cf51241f3cc8.camel@linux.ibm.com>
+In-Reply-To: <cf12878833c82710ad4356e7d023cf51241f3cc8.camel@linux.ibm.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.221.98.153]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/3/21 4:20 PM, Waiman Long wrote:
-> On 5/3/21 8:22 AM, Vlastimil Babka wrote:
->> On 5/2/21 8:07 PM, Waiman Long wrote:
->>> The obj_cgroup array (memcg_data) embedded in the page structure is
->>> allocated at the first instance an accounted memory allocation happens.
->>> With the right size object, it is possible that the allocated obj_cgroup
->>> array comes from the same slab that requires memory accounting. If this
->>> happens, the slab will never become empty again as there is at least one
->>> object left (the obj_cgroup array) in the slab.
->>>
->>> With instructmentation code added to detect this situation, I got 76
->>> hits on the kmalloc-192 slab when booting up a test kernel on a VM.
->>> So this can really happen.
->>>
->>> To avoid the creation of these unfreeable slabs, a check is added to
->>> memcg_alloc_page_obj_cgroups() to detect that and double the size
->>> of the array in case it happens to make sure that it comes from a
->>> different kmemcache.
->>>
->>> This change, however, does not completely eliminate the presence
->>> of unfreeable slabs which can still happen if a circular obj_cgroup
->>> array dependency is formed.
->> Hm this looks like only a half fix then.
->> I'm afraid the proper fix is for kmemcg to create own set of caches for the
->> arrays. It would also solve the recursive kfree() issue.
+> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> Sent: Monday, May 3, 2021 5:26 PM
+> On Mon, 2021-05-03 at 15:11 +0000, Roberto Sassu wrote:
+> > > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> > > Sent: Monday, May 3, 2021 3:00 PM
+> > > On Wed, 2021-04-07 at 12:52 +0200, Roberto Sassu wrote:
+> > >
+> > > > diff --git a/security/integrity/evm/evm_main.c
+> > > b/security/integrity/evm/evm_main.c
+> > > > @@ -389,6 +473,11 @@ static int evm_protect_xattr(struct
+> > > user_namespace *mnt_userns,
+> > > >  	if (evm_status == INTEGRITY_FAIL_IMMUTABLE)
+> > > >  		return 0;
+> > > >
+> > > > +	if (evm_status == INTEGRITY_PASS_IMMUTABLE &&
+> > > > +	    !evm_xattr_change(mnt_userns, dentry, xattr_name, xattr_value,
+> > > > +			      xattr_value_len))
+> > > > +		return 0;
+> > > > +
+> > >
+> > > If the purpose of evm_protect_xattr() is to prevent allowing an invalid
+> > > security.evm xattr from being re-calculated and updated, making it
+> > > valid, INTEGRITY_PASS_IMMUTABLE shouldn't need to be conditional.
+> Any
+> > > time there is an attr or xattr change, including setting it to the
+> > > existing value, the status flag should be reset.
+> > >
+> > > I'm wondering if making INTEGRITY_PASS_IMMUTABLE conditional would
+> > > prevent the file from being resigned.
+> > >
+> > > >  	if (evm_status != INTEGRITY_PASS)
+> > > >  		integrity_audit_msg(AUDIT_INTEGRITY_METADATA,
+> > > d_backing_inode(dentry),
+> > > >  				    dentry->d_name.name,
+> > > "appraise_metadata",
+> > >
+> > > This would then be updated to if not INTEGRITY_PASS or
+> > > INTEGRITY_PASS_IMMUTABLE.  The subsequent "return" would need to
+> be
+> > > updated as well.
+> >
+> > I agree on the first suggestion, to reduce the number of log messages.
+> > For the second, if you meant that we should return 0 if the status is
+> > INTEGRITY_PASS_IMMUTABLE, I thought we wanted to deny xattr
+> > changes when there is an EVM portable signature.
 > 
-> Right, this is a possible solution. However, the objcg pointers array should
-> need that much memory. Creating its own set of kmemcaches may seem like an
-> overkill.
+> Why?  I must be missing something.  As long as we're not relying on the
+> cached status, allowing the file metadata to be updated shouldn't be an
+> issue.
 
-Well if we go that way, there might be additional benefits:
+We may want to prevent accidental changes, for example.
 
-depending of gfp flags, kmalloc() would allocate from:
+Roberto
 
-kmalloc-* caches that never have kmemcg objects, thus can be used for the objcg
-pointer arrays
-kmalloc-cg-* caches that have only kmemcg unreclaimable objects
-kmalloc-rcl-* and dma-kmalloc-* can stay with on-demand
-memcg_alloc_page_obj_cgroups()
-
-This way we fully solve the issues that this patchset solves. In addition we get
-better separation between kmemcg and !kmemcg thus save memory - no allocation of
-the array as soon as a single object appears in slab. For "kmalloc-8" we now
-have 8 bytes for the useful data and 8 bytes for the obj_cgroup  pointer.
-
-Vlastimil
-
-> Cheers,
-> Longman
-> 
-
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Li Jian, Shi Yanli
