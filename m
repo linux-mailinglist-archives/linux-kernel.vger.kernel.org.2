@@ -2,121 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB2F371E48
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B5D0371E4D
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231613AbhECRTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 13:19:02 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:58914 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231388AbhECRS7 (ORCPT
+        id S231840AbhECRUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 13:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231388AbhECRUN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 13:18:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=SAQ4S+jSIpU03o924OYwfD9SEbxJ72ZyqTFfTksfdhA=; b=aHvkXNhJC0Th2xBJKUmBj+YFHL
-        UzUUk1ISTbtYsp83553YSXXGRA++kbSiJtSN05jEXVqt9VEX+wniOJS1RplCEqtuDD5dEX6odZ4Kq
-        cu222eZYaQudBjSH8A2rSJDXWW+51r3qeRWafwKoGAm6AVx0/RQ21Pp4Domc5hgQYrYZGJC3acctI
-        oDyhQ6cbTWTz+4TBfHuPIS5Ncok4vJKWmc5qIIjxy5BONLC07sANEe9vDy3pqahAl0m4DRp8PkoaL
-        1+iVIZ7RcwI7jzxYjW8Dkp9JZw0qq1u+WTSwK8ErzNEhrqQw5/H+bDo+O6nCitRx5LdA8d9D7PVCk
-        nOiYSZ1A==;
-Received: from guinness.priv.deltatee.com ([172.16.1.162])
-        by ale.deltatee.com with esmtp (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1ldcCd-0005A2-F7; Mon, 03 May 2021 11:17:52 -0600
-To:     John Hubbard <jhubbard@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-mm@kvack.org,
-        iommu@lists.linux-foundation.org
-Cc:     Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>
-References: <20210408170123.8788-1-logang@deltatee.com>
- <20210408170123.8788-13-logang@deltatee.com>
- <f8bdf85c-2302-890e-7f77-e11fe6f29d6e@nvidia.com>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <f33a9cff-82d0-7a05-070a-8c6018fbaba9@deltatee.com>
-Date:   Mon, 3 May 2021 11:17:50 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <f8bdf85c-2302-890e-7f77-e11fe6f29d6e@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 172.16.1.162
-X-SA-Exim-Rcpt-To: robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, christian.koenig@amd.com, jgg@ziepe.ca, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jhubbard@nvidia.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: Re: [PATCH 12/16] nvme-pci: Check DMA ops when indicating support for
- PCI P2PDMA
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+        Mon, 3 May 2021 13:20:13 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199F4C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 10:19:20 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id u3-20020a2509430000b02904e7f1a30cffso8519831ybm.8
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 10:19:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=kRTl6/sXAc8KmXy+W6gst+5/cWsH2BSF7FQfc4l1psA=;
+        b=m2KLbMxep4kkPHVGIQ5oukf6jcbNwITbQGZzOKSVEhd8hJc1DFOEcMkuFJA51Deqqf
+         UCRvOcRF2JE4hfsQoZDyHjyaQ1mnwTo5ujmYt0dgrDqXqi7n5ZPGw72mJJvH0RgANX4A
+         Cd0az3rN5tk3x1pVsZP/jx+CaIp3w/7ubw+Ly4Fmwi+0kapJ3tCLowLy7cDafhTzrD2K
+         UcDKvE0YmxMwRaoRuv10fuwGb4uzMUyq8WHHDTfqQ5nvYllr6BEkSI0otfFw+o2a+D+S
+         +hIASOWCkIon7/CgvIVk5dNUWzNKTFLFTMLKS3PN+SykECIiUuZb6aCw3b3xMqCB0AlF
+         +CvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=kRTl6/sXAc8KmXy+W6gst+5/cWsH2BSF7FQfc4l1psA=;
+        b=lYnvCfB+LIOOQ+7VoLZE4vIbbkTVgx3sSLg9wKupW3Ggwwl3Ucz9SrWUzrZXFbVSKR
+         axfZ9ZMh8L4buFzzJERxpe2ZI2S67aODatYRqwMxjut/HYS2TmUFO2+mAuYVw3ZmVvRH
+         TtRiRvXYbdoepeHeJpxRHFxb4F3HV6H1vRf7Yz7bWLgeLkHJ/UBvr1fQi/QfMyRxHjyX
+         gosF3TGsnaoWlPP80KCORpyh8JVQTs/PXzLlomh+iniQiuMihrXcZaNOfIzP5rNH8Qbr
+         tmFM3Qm4wSIX6lsKr3Tw09Zqu1QkwPAyZ1mcseTqgQrDESxv1gvtCMLYqJARGMeELum5
+         4g7A==
+X-Gm-Message-State: AOAM533twHaxBhcZgQV5O81krOrLzcbLWAzqBuvYVHvfo0hglXGbYw61
+        uzdPAti5viRYoEZdqU8JQDRfj4Rmg3bS
+X-Google-Smtp-Source: ABdhPJzH0kwfJ8i7nTNUjn4IAvfrLK/3atJih6tzV9pw/3Yb4yFdo/q9o3upacsDzji3qn7xVu3I2XZNXGj4
+X-Received: from kyletso.ntc.corp.google.com ([2401:fa00:fc:202:7bdb:2b58:f6b1:a854])
+ (user=kyletso job=sendgmr) by 2002:a25:76ce:: with SMTP id
+ r197mr13677287ybc.23.1620062348857; Mon, 03 May 2021 10:19:08 -0700 (PDT)
+Date:   Tue,  4 May 2021 01:18:49 +0800
+Message-Id: <20210503171849.2605302-1-kyletso@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
+Subject: [PATCH] usb: typec: tcpm: Fix wrong handling in GET_SINK_CAP
+From:   Kyle Tso <kyletso@google.com>
+To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org
+Cc:     badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kyle Tso <kyletso@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+After receiving Sink Capabilities Message in GET_SINK_CAP AMS, it is
+incorrect to call tcpm_pd_handle_state because the Message is expected
+and the current state is not Ready states. The result of this incorrect
+operation ends in Soft Reset which is definitely wrong. Simply
+forwarding to Ready States is enough to finish the AMS.
 
+Fixes: 8dea75e11380 ("usb: typec: tcpm: Protocol Error handling")
+Signed-off-by: Kyle Tso <kyletso@google.com>
+---
+ drivers/usb/typec/tcpm/tcpm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 2021-05-02 7:29 p.m., John Hubbard wrote:
-> On 4/8/21 10:01 AM, Logan Gunthorpe wrote:
->> Introduce a supports_pci_p2pdma() operation in nvme_ctrl_ops to
->> replace the fixed NVME_F_PCI_P2PDMA flag such that the dma_map_ops
->> flags can be checked for PCI P2PDMA support.
->>
->> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
->> ---
->>   drivers/nvme/host/core.c |  3 ++-
->>   drivers/nvme/host/nvme.h |  2 +-
->>   drivers/nvme/host/pci.c  | 11 +++++++++--
->>   3 files changed, 12 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
->> index 0896e21642be..223419454516 100644
->> --- a/drivers/nvme/host/core.c
->> +++ b/drivers/nvme/host/core.c
->> @@ -3907,7 +3907,8 @@ static void nvme_alloc_ns(struct nvme_ctrl *ctrl, unsigned nsid,
->>   		blk_queue_flag_set(QUEUE_FLAG_STABLE_WRITES, ns->queue);
->>   
->>   	blk_queue_flag_set(QUEUE_FLAG_NONROT, ns->queue);
->> -	if (ctrl->ops->flags & NVME_F_PCI_P2PDMA)
->> +	if (ctrl->ops->supports_pci_p2pdma &&
->> +	    ctrl->ops->supports_pci_p2pdma(ctrl))
-> 
-> This is a little excessive, as I suspected. How about providing a
-> default .supports_pci_p2pdma routine that returns false, so that
-> the op is always available (non-null)? By "default", maybe that
-> means either requiring an init_the_ops_struct() routine to be
-> used, and/or checking all the users of struct nvme_ctrl_ops.
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index c4fdc00a3bc8..68e04e397e92 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -2390,7 +2390,7 @@ static void tcpm_pd_data_request(struct tcpm_port *port,
+ 		port->nr_sink_caps = cnt;
+ 		port->sink_cap_done = true;
+ 		if (port->ams == GET_SINK_CAPABILITIES)
+-			tcpm_pd_handle_state(port, ready_state(port), NONE_AMS, 0);
++			tcpm_set_state(port, ready_state(port), 0);
+ 		/* Unexpected Sink Capabilities */
+ 		else
+ 			tcpm_pd_handle_msg(port,
+-- 
+2.31.1.527.g47e6f16901-goog
 
-Honestly that sounds much more messy to me than simply checking if it's
-NULL before using it (which is a common, accepted pattern for ops).
-
-> Another idea: maybe you don't really need a bool .supports_pci_p2pdma()
-> routine at all, because the existing .flags really is about right.
-> You just need the flags to be filled in dynamically. So, do that
-> during nvme_pci setup/init time: that's when this module would call
-> dma_pci_p2pdma_supported().
-
-If the flag is filled in dynamically, then the ops struct would have to
-be non-constant. Ops structs should be constant for security reasons.
-
-Logan
