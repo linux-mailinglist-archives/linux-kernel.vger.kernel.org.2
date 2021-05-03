@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA96D371507
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 14:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 261F6371508
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 14:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234334AbhECMEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 08:04:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37516 "EHLO mail.kernel.org"
+        id S234199AbhECMEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 08:04:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234145AbhECMCX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 08:02:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C4DC6127A;
-        Mon,  3 May 2021 12:01:29 +0000 (UTC)
+        id S233475AbhECMC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 08:02:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC33C6137D;
+        Mon,  3 May 2021 12:01:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620043290;
-        bh=B0qE38QJYC4ujeFcl48cz4uglrUrlb1tnFwKN3arwhE=;
+        s=korg; t=1620043292;
+        bh=mQAn/d+T9CdkIkUGZLwRh58/2LvPC5iU2UtBb/2oOR8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QbXFN1V7uWlYJOqwrhz/jSQhiEZrVpRu8OMJdmK58klUH/4eJjx1OvZeK7CMuiAFB
-         Q0p/hoCoquNenc2OV5boTv329agRbpIPSVwl3ML5ODqHiStVjrKXBs7HK7L+p9/FG6
-         o0eTOW455LEw9JB3jIQc/fMTeV0enop69UXCG5Nc=
+        b=cu1AzX6FMMuK3Xu94m/cj0YzbGNsJwDntWzfFvYRqShxWDQnsSkAYW4Pc5DzmcTQy
+         omadXoFPhZyH5iFb+Crwxsmu8eXApeJQ4jGyLLox1eQJ5aQWhuBPP4wj0EUFWET+hP
+         w7AS7zXsNFECe0rc/Od3ZmQLhS9eQQCLnGMJd5Nw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Phillip Potter <phil@philpotter.co.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 41/69] isdn: mISDNinfineon: check/cleanup ioremap failure correctly in setup_io
-Date:   Mon,  3 May 2021 13:57:08 +0200
-Message-Id: <20210503115736.2104747-42-gregkh@linuxfoundation.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kangjie Lu <kjlu@umn.edu>, Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 42/69] Revert "ath6kl: return error code in ath6kl_wmi_set_roam_lrssi_cmd()"
+Date:   Mon,  3 May 2021 13:57:09 +0200
+Message-Id: <20210503115736.2104747-43-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
 References: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
@@ -37,92 +36,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phillip Potter <phil@philpotter.co.uk>
+This reverts commit fc6a6521556c8250e356ddc6a3f2391aa62dc976.
 
-Move hw->cfg.mode and hw->addr.mode assignments from hw->ci->cfg_mode
-and hw->ci->addr_mode respectively, to be before the subsequent checks
-for memory IO mode (and possible ioremap calls in this case).
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-Also introduce ioremap error checks at both locations. This allows
-resources to be properly freed on ioremap failure, as when the caller
-of setup_io then subsequently calls release_io via its error path,
-release_io can now correctly determine the mode as it has been set
-before the ioremap call.
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
 
-Finally, refactor release_io function so that it will call
-release_mem_region in the memory IO case, regardless of whether or not
-hw->cfg.p/hw->addr.p are NULL. This means resources are then properly
-released on failure.
+The change being reverted does NOTHING as the caller to this function
+does not even look at the return value of the call.  So the "claim" that
+this fixed an an issue is not true.  It will be fixed up properly in a
+future patch by propagating the error up the stack correctly.
 
-This properly implements the original reverted commit (d721fe99f6ad)
-from the University of Minnesota, whilst also implementing the ioremap
-check for the hw->ci->cfg_mode if block as well.
-
-Cc: David S. Miller <davem@davemloft.net>
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/isdn/hardware/mISDN/mISDNinfineon.c | 24 ++++++++++++++-------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+ drivers/net/wireless/ath/ath6kl/wmi.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/isdn/hardware/mISDN/mISDNinfineon.c b/drivers/isdn/hardware/mISDN/mISDNinfineon.c
-index fa9c491f9c38..88d592bafdb0 100644
---- a/drivers/isdn/hardware/mISDN/mISDNinfineon.c
-+++ b/drivers/isdn/hardware/mISDN/mISDNinfineon.c
-@@ -630,17 +630,19 @@ static void
- release_io(struct inf_hw *hw)
- {
- 	if (hw->cfg.mode) {
--		if (hw->cfg.p) {
-+		if (hw->cfg.mode == AM_MEMIO) {
- 			release_mem_region(hw->cfg.start, hw->cfg.size);
--			iounmap(hw->cfg.p);
-+			if (hw->cfg.p)
-+				iounmap(hw->cfg.p);
- 		} else
- 			release_region(hw->cfg.start, hw->cfg.size);
- 		hw->cfg.mode = AM_NONE;
- 	}
- 	if (hw->addr.mode) {
--		if (hw->addr.p) {
-+		if (hw->addr.mode == AM_MEMIO) {
- 			release_mem_region(hw->addr.start, hw->addr.size);
--			iounmap(hw->addr.p);
-+			if (hw->addr.p)
-+				iounmap(hw->addr.p);
- 		} else
- 			release_region(hw->addr.start, hw->addr.size);
- 		hw->addr.mode = AM_NONE;
-@@ -670,9 +672,12 @@ setup_io(struct inf_hw *hw)
- 				(ulong)hw->cfg.start, (ulong)hw->cfg.size);
- 			return err;
- 		}
--		if (hw->ci->cfg_mode == AM_MEMIO)
--			hw->cfg.p = ioremap(hw->cfg.start, hw->cfg.size);
- 		hw->cfg.mode = hw->ci->cfg_mode;
-+		if (hw->ci->cfg_mode == AM_MEMIO) {
-+			hw->cfg.p = ioremap(hw->cfg.start, hw->cfg.size);
-+			if (!hw->cfg.p)
-+				return -ENOMEM;
-+		}
- 		if (debug & DEBUG_HW)
- 			pr_notice("%s: IO cfg %lx (%lu bytes) mode%d\n",
- 				  hw->name, (ulong)hw->cfg.start,
-@@ -697,9 +702,12 @@ setup_io(struct inf_hw *hw)
- 				(ulong)hw->addr.start, (ulong)hw->addr.size);
- 			return err;
- 		}
--		if (hw->ci->addr_mode == AM_MEMIO)
--			hw->addr.p = ioremap(hw->addr.start, hw->addr.size);
- 		hw->addr.mode = hw->ci->addr_mode;
-+		if (hw->ci->addr_mode == AM_MEMIO) {
-+			hw->addr.p = ioremap(hw->addr.start, hw->addr.size);
-+			if (!hw->addr.p)
-+				return -ENOMEM;
-+		}
- 		if (debug & DEBUG_HW)
- 			pr_notice("%s: IO addr %lx (%lu bytes) mode%d\n",
- 				  hw->name, (ulong)hw->addr.start,
+diff --git a/drivers/net/wireless/ath/ath6kl/wmi.c b/drivers/net/wireless/ath/ath6kl/wmi.c
+index b137e7f34397..aca9732ec1ee 100644
+--- a/drivers/net/wireless/ath/ath6kl/wmi.c
++++ b/drivers/net/wireless/ath/ath6kl/wmi.c
+@@ -776,8 +776,10 @@ int ath6kl_wmi_set_roam_lrssi_cmd(struct wmi *wmi, u8 lrssi)
+ 	cmd->info.params.roam_rssi_floor = DEF_LRSSI_ROAM_FLOOR;
+ 	cmd->roam_ctrl = WMI_SET_LRSSI_SCAN_PARAMS;
+ 
+-	return ath6kl_wmi_cmd_send(wmi, 0, skb, WMI_SET_ROAM_CTRL_CMDID,
++	ath6kl_wmi_cmd_send(wmi, 0, skb, WMI_SET_ROAM_CTRL_CMDID,
+ 			    NO_SYNC_WMIFLAG);
++
++	return 0;
+ }
+ 
+ int ath6kl_wmi_force_roam_cmd(struct wmi *wmi, const u8 *bssid)
 -- 
 2.31.1
 
