@@ -2,125 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3AE337174E
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E49371756
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230129AbhECO7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 10:59:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47226 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230072AbhECO7Q (ORCPT
+        id S230138AbhECPAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 11:00:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229687AbhECPAg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 10:59:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620053902;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+1NKjm/wRa1ASFx+bl+rP9pP0wqehVAt5BNtGXbyfdI=;
-        b=PICP9di+qvXw+R9xheUBso/K8Dc0lq79K6xjolQUAubcZdDmrna9Q2RmP0e6NpqWSXs3eV
-        fzC4ur4k8+5TKZ+Q2IF4WydkNDfYpPf417Z0BHfielcZAMWK/l2nqky/CVIKszMCPf1jWO
-        I6bbB4x7vxPT5fAe8/hiL0wNoHeEdJU=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-367-8eKQe2YCMp-2p4ppFzUPMw-1; Mon, 03 May 2021 10:58:20 -0400
-X-MC-Unique: 8eKQe2YCMp-2p4ppFzUPMw-1
-Received: by mail-qv1-f71.google.com with SMTP id y18-20020a0cd9920000b02901c32e3e18f7so5075848qvj.15
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 07:58:20 -0700 (PDT)
+        Mon, 3 May 2021 11:00:36 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72FACC061761
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 07:59:42 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id a11so4336211ioo.0
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 07:59:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=6egtxTN5q4QLPOJLRd3y+Z0fKzalIDR3UohhkwtOCM8=;
+        b=rMzOccYnjQjJTQplZd4m5b4GYay4fmSvBEXQ0cyrH9TWKEEaxSW7ofFPCXRs6iV6ZV
+         gn73VPb/MX5vg1btYyq2Gj38MRIouiIJ+j4GMlahaOcMMPBIAXqGfHAvFgbZPraXTR1Y
+         +WcV4bAqr2poTCc3OMyAQpdso+VA272r2vwbSwj368IFnfgMBk7pUWjQ4YYZfWRO/7Xs
+         H1rDmVrdkjETcygVtzVSBfcngngQLovheZLeGdIPvPJWR0sR+z2l52KuNSmNoMVppLNR
+         AvjKs1NTEeLXCGjD0BIUOLk7xVt68zMFFQACW9XAzHC4MNaclyET0PVR8awjabSMexKU
+         vVSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=+1NKjm/wRa1ASFx+bl+rP9pP0wqehVAt5BNtGXbyfdI=;
-        b=rrmipz0aX8q+w+EzsF33OefvEhKo1xDf4xsJ3FIxOrY0nWT+jNbfC2LDd7XoURVcEb
-         e8pTAC5XRQ2u+oMdfgrj1dkQCGz9BFG8u1FrRTNCQ7eHd9xZywnNbSrx4EZKEPlOpoba
-         YozAFAKJJCgzo/JF1hYMFtuOOvn2kZz4T3Whi9y0bDDUTtPoRMHIrfAa3E5dSjQo9MyR
-         9IPqWLiJXYx/EqYDuOf87xwxd9d6PLRip2imy8kDrIRFLOOTjkNmeF/VjZLLpCLr55/s
-         ymG1XI0rH54I1n75N6Zb7LCEimS3J/0Tq7U/pWwQzjEiHTsGWYpFYaJPM4p5wWxAEFdi
-         tpsQ==
-X-Gm-Message-State: AOAM530bQLgQKNzZcPtqBq8EAgVY5/kWYbzU0gdkIZJkihBMNbZSgQRu
-        hjcP7Yi6RsqkbvxsENqB1DO6+nTjCjK1mb5yxICa9kgMPZVzm0lscr0fiz3rZDdEB8Xdm3ryZLf
-        gu6HrizkruocIJyC0tI8HEG1L
-X-Received: by 2002:a0c:9e0f:: with SMTP id p15mr19860553qve.27.1620053899421;
-        Mon, 03 May 2021 07:58:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxptnzVpU0NBKcMVYpyFa3BHI12ZMtykeAfpqgRtfih1ZQzTuR99a0As0jGFWcC0M56hnJqSQ==
-X-Received: by 2002:a0c:9e0f:: with SMTP id p15mr19860524qve.27.1620053899192;
-        Mon, 03 May 2021 07:58:19 -0700 (PDT)
-Received: from redhatnow.users.ipa.redhat.com ([2605:a601:ab5e:300:20c:bff:fe44:d76d])
-        by smtp.gmail.com with ESMTPSA id a195sm17437qkg.101.2021.05.03.07.58.18
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6egtxTN5q4QLPOJLRd3y+Z0fKzalIDR3UohhkwtOCM8=;
+        b=mF4Tn3Hxfev7EUm8Vt0fJLYzUzMjL6xAFxyxJyiy/a7jv9Gz8ntMK65wGmogPUDkjB
+         eBZ/zQ4CkmNKOOCFBeK/h9ZfTTHVh/oVBWSuwqHeKctiMaQB6Plb+bD3T0Bg6Ww3exR0
+         JFSgetO2z9WFj7b0vNGZT+ksCfHpZtn+ECWKcJFPWQ3VW/Z9m+yKGJQiBEtVTSDwNAvQ
+         2nt5cpac2RG6kix7lm/nf+tErE6goz7Ux6pk1Jv4kxo98gQxDEYs2aM5sPL/tW9C5Wz0
+         NoI2xJ6SOkgMhRhNtxtS3v0kF36Yqjy5NGMak0aOnPFdDYthEvdqWxCUQ1W5hKg3tmpq
+         dmAQ==
+X-Gm-Message-State: AOAM533o2kPNrKFRSRwuy7/8CpQ+x780yoqvCS6bd5GCo+0zXJ0iKhLj
+        VOay+9uNtnvElArpkPhxTuuxzw==
+X-Google-Smtp-Source: ABdhPJwI1R2aI/WV1VcSccFj48I+dXgpwOXLiCW3REwd2nVuBgcj93isKO595yRlv6MPq97L7l7nBw==
+X-Received: by 2002:a05:6602:81e:: with SMTP id z30mr15264730iow.90.1620053981968;
+        Mon, 03 May 2021 07:59:41 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id q26sm273508ioh.42.2021.05.03.07.59.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 07:58:18 -0700 (PDT)
-Subject: Re: [PATCH] Revert "ACPI: custom_method: fix memory leaks"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Kees Cook <keescook@chromium.org>, Wenwen Wang <wenwen@cs.uga.edu>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-References: <20210502172326.2060025-1-keescook@chromium.org>
- <0fefece0-f8a1-6ee1-114f-0a2bb412b986@redhat.com>
- <YJAN/nwldJKwTV/V@kroah.com>
-From:   Mark Langsdorf <mlangsdo@redhat.com>
-Message-ID: <99653e1a-97a3-b532-1775-31d8115bfc62@redhat.com>
-Date:   Mon, 3 May 2021 09:58:17 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 03 May 2021 07:59:41 -0700 (PDT)
+Subject: Re: [PATCH v9] bio: limit bio max size
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Changheun Lee <nanich.lee@samsung.com>, yi.zhang@redhat.com,
+        ming.lei@redhat.com, bgoncalv@redhat.com, hch@lst.de,
+        jaegeuk@kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, patchwork-bot@kernel.org
+References: <CGME20210503101008epcas1p25d6b727dafcf9ff24db6aa41a3f611fa@epcas1p2.samsung.com>
+ <20210503095203.29076-1-nanich.lee@samsung.com>
+ <72a0b4e7-a374-97fb-ae73-ed24f719da98@acm.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <c48d45cc-9c4f-0b6c-51d0-3044e7cdf7f5@kernel.dk>
+Date:   Mon, 3 May 2021 08:59:41 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YJAN/nwldJKwTV/V@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <72a0b4e7-a374-97fb-ae73-ed24f719da98@acm.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/3/21 9:51 AM, Greg Kroah-Hartman wrote:
-> On Mon, May 03, 2021 at 08:17:14AM -0500, Mark Langsdorf wrote:
->> In 5/2/21 12:23 PM, Kees Cook wrote:
->>> This reverts commit 03d1571d9513369c17e6848476763ebbd10ec2cb.
->>>
->>> While /sys/kernel/debug/acpi/custom_method is already a privileged-only
->>> API providing proxied arbitrary write access to kernel memory[1][2],
->>> with existing race conditions[3] in buffer allocation and use that could
->>> lead to memory leaks and use-after-free conditions, the above commit
->>> appears to accidentally make the use-after-free conditions even easier
->>> to accomplish. ("buf" is a global variable and prior kfree()s would set
->>> buf back to NULL.)
->>>
->>> This entire interface needs to be reworked (if not entirely removed).
->>>
->>> [1] https://lore.kernel.org/lkml/20110222193250.GA23913@outflux.net/
->>> [2] https://lore.kernel.org/lkml/201906221659.B618D83@keescook/
->>> [3] https://lore.kernel.org/lkml/20170109231323.GA89642@beast/
->>>
->>> Cc: Wenwen Wang <wenwen@cs.uga.edu>
->>> Signed-off-by: Kees Cook <keescook@chromium.org>
->>> ---
->> I have two patches submitted to linux-acpi to fix the most obvious bugs in
->> the current driver.  I don't think that just reverting this patch in its
->> entirety is a good solution: it still leaves the buf allocated in -EINVAL,
->> as well as the weird case where a not fully consumed buffer can be
->> reallocated without being freed on a subsequent call.
->>
->> https://lore.kernel.org/linux-acpi/20210427185434.34885-1-mlangsdo@redhat.com/
->>
->> https://lore.kernel.org/linux-acpi/20210423152818.97077-1-mlangsdo@redhat.com/
->>
->> I support rewriting this driver in its entirety, but reverting one bad patch
->> to leave it in a different buggy state is less than ideal.
-> It's buggy now, and root-only, so it's a low bar at the moment :)
->
-> Do those commits really fix the issues?  Is this debugfs code even
-> needed at all or can it just be dropped?
+On 5/3/21 8:54 AM, Bart Van Assche wrote:
+> On 5/3/21 2:52 AM, Changheun Lee wrote:
+>>  struct queue_limits {
+>> +	unsigned int		bio_max_bytes;
+>> +
+>>  	enum blk_bounce		bounce;
+>>  	unsigned long		seg_boundary_mask;
+>>  	unsigned long		virt_boundary_mask;
+> 
+> On April 23 Damien Le Moal posted the following comment about the
+> bio_max_bytes member: "Please move this below in the structure together
+> with all other fields that are unsigned int too." Making that change
+> sounds like a good idea to me.
 
-One of my commits removes the kfree(buf) at the end of the function, 
-which is the code that causes the use after free for short writes.  The 
-other adds a kfree(buf) before allocating the buffer, to make sure that 
-the buffer is free before allocating it.
+Why? It's next to an enum, so the patch (as it stands) actually fills a
+hole in the struct. Moving it would be a mistake and waste more space.
 
-There are other bugs in the code that neither my patches nor the revert 
-address, like the total lack of protection against concurrent writes.
+If anything, we should move the bounce member below virt_boundary_mask,
+but since this one fills a hole, that's better left as a separate patch.
 
---Mark Langsdorf
+-- 
+Jens Axboe
 
