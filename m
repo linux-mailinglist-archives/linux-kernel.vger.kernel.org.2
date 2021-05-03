@@ -2,78 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC47B37230B
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 00:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E06D37231C
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 00:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229847AbhECWh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 18:37:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38126 "EHLO mail.kernel.org"
+        id S229781AbhECWl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 18:41:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhECWh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 18:37:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA3DE61208;
-        Mon,  3 May 2021 22:37:03 +0000 (UTC)
+        id S229497AbhECWlz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 18:41:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61CC461177;
+        Mon,  3 May 2021 22:41:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620081424;
-        bh=VmWSfADQetC3TgPVzlYh/EnoLCaaymJ111Jp5fZ0ZE4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TXISMs4t/u0VAJHE11vmDsML8XIBsyHzbUA6YQOzjpOO+EMEs9VV6lsjm32ke+tV1
-         QiO9yWXal56C0yBZk42Ynfr8h9xeb1up2oJz6NLfB5I5w+5meiqmmVN1Slfw+d1Dfp
-         odTR3OmtSCNvUNUL8IkQtzPn//dgPRDQms+2lCS6gc+4wCP++Xrn6z+2CcM7cwvp0T
-         9bsbS+vvuyy59TLg08zdY5pQVrG0OnyAMNlh0D3ypbCbArnkvWjjI/1Cxy/QqiLTWm
-         xF9RZyPnhKtOV/CuBvfb1M1+UyLQNX2haAfA/QRyGOe64x/9TpCfSTh/yVpSkb7psX
-         AMANAmdFvqF/A==
-Date:   Tue, 4 May 2021 01:37:01 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Tim Gardner <tim.gardner@canonical.com>,
-        dave.hansen@linux.intel.com, shuah@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Subject: [PATCH 0/1] SGX self test fails
-Message-ID: <YJB7DZHDeNujIY+F@kernel.org>
-References: <20210429183952.22797-1-tim.gardner@canonical.com>
- <c0725600-0a00-31dd-2ec3-20d4a86b33c5@intel.com>
- <YJAZjP2k6Aff7wgk@kernel.org>
- <6645d579-57f9-7adf-8a3d-f4fb2316b324@intel.com>
+        s=k20201202; t=1620081661;
+        bh=LdKcAT7K/DkFCaR8C88qu25r0RUNHy4L1uLPd9vMTLI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fMOxt4XTJq8QaONd21MjjLpWV5DQlfdSxxAV2eXl8FbyHRkeJvO56XumU3XpRXF52
+         HCr7aVusik/ed/f22iZeKCNMOge1hSJ1T575aWlK43zXUfWcXxieF6EMwaANifIFF3
+         MOy8nRIh7V0YNi14Q6o2QnJUMnt1qCU2l9fIn0mL6oxaxjJ0V82WvAgqlsCVnBsW4t
+         Vtph0NE+/Hh/ZgQn+qMteKZA8RpusiMn8Ad8w4s/qMvZkjfbO5m4pUCP9CdniQNJHG
+         9DkBQCdF9DwlrcLoI/1K3nJKh6vF+PrPB8h77x8YBQhwPRYTHm0vaGhc7jTslAyzWo
+         BxzDfLtMt4A5w==
+Received: by mail-ed1-f53.google.com with SMTP id g14so8226030edy.6;
+        Mon, 03 May 2021 15:41:01 -0700 (PDT)
+X-Gm-Message-State: AOAM532dxrh92hkkNBPj1NdRQ3Ryk08EEHatzWOSYbZ1CARXlkKzTWuf
+        ATeVNU/wNdnO4RtpjfoHjyFtsdIX3/sds5wuKg==
+X-Google-Smtp-Source: ABdhPJyjJlgMbAtLNrpOWXXUCdw8kmlr4Vuzf1SyEuSlHgUsi/v06FB7HcrfsvgPMlZb6Hd+aFb75+cVfhZiRbfIRi8=
+X-Received: by 2002:a05:6402:234b:: with SMTP id r11mr22579121eda.137.1620081659993;
+ Mon, 03 May 2021 15:40:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6645d579-57f9-7adf-8a3d-f4fb2316b324@intel.com>
+References: <20210430072138.6537-1-jbx6244@gmail.com>
+In-Reply-To: <20210430072138.6537-1-jbx6244@gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 3 May 2021 17:40:48 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKnD1t7oRDY5sTi3TjJ0vbFK0tQcVj1qCw_jiOfOQh=mA@mail.gmail.com>
+Message-ID: <CAL_JsqKnD1t7oRDY5sTi3TjJ0vbFK0tQcVj1qCw_jiOfOQh=mA@mail.gmail.com>
+Subject: Re: [RFC PATCH v1] dt-bindings: mmc: snps,dwcmshc-sdhci: fix rockchip,txclk-tapnum
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     heiko@sntech.de, shawn.lin@rock-chips.com, ulf.hansson@linaro.org,
+        Jisheng.Zhang@synaptics.com, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 09:39:05AM -0700, Dave Hansen wrote:
-> On 5/3/21 8:41 AM, Jarkko Sakkinen wrote:
-> >> $ ls -l /dev/sgx_enclave
-> >> crw------- 1 dave dave 10, 125 Apr 28 11:32 /dev/sgx_enclave
-> >> $ ./test_sgx
-> >> 0x0000000000000000 0x0000000000002000 0x03
-> >> 0x0000000000002000 0x0000000000001000 0x05
-> >> 0x0000000000003000 0x0000000000003000 0x03
-> >> SUCCESS
-> >>
-> >> *But*, is that OK?  Should we be happily creating a PROT_EXEC mapping on
-> >> a ugo-x file?  Why were we respecting noexec on the filesystem but not
-> >> ugo-x on the file?
-> > Yeah, this supports my earlier response:
-> > 
-> > "EPERM  The prot argument asks for PROT_EXEC but the mapped area
-> >  belongs to a file on a filesystem that was mounted no-exec."
-> > https://man7.org/linux/man-pages/man2/mmap.2.html
-> > 
-> > I guess the right model is to think just as "anonymous memory"
-> > with equivalent access control semantics after succesfully
-> > opened for read and write.
-> 
-> I guess I'll answer my own question: The "x" bit on file permissions
-> really only controls the ability for the file to be execve()'d, but has
-> no bearing on the ability for an executable *mapping* to be created.
-> This is existing VFS behavior and is not specific to SGX.
+On Fri, Apr 30, 2021 at 2:21 AM Johan Jonker <jbx6244@gmail.com> wrote:
+>
+> A test with the command below gives this error:
+> mmc@fe310000: rockchip,txclk-tapnum: missing size tag in [[8]]
+>
+> With this added to a dts file:
+> rockchip,txclk-tapnum = <0x8>;
+>
+> A look at the driver shows that:
+> DLL_TXCLK_TAPNUM_DEFAULT        0x8
+>
+> Adding the default value to the dts files is not needed.
+> Every clock is divided into 32 taps equally and
+> the max value is 31.
+>
+> Fix rockchip,txclk-tapnum property in snps,dwcmshc-sdhci.yaml by
+> adding a minimum, maximum and default.
+>
+> In the driver the function of_property_read_u8() is used,
+> but with dtbs_check the notifications only disappear in YAML
+> by changing uint8 to uint32.
 
-Yeah, that's nicely put it into one sentence :-)
+Did you check what value the driver sees when you put 8 in the dts. I
+expect it will be 0 because you are reading the 1st byte in big
+endian.
 
-> I think I'll just send a patch to pull that warning out.
-
-/Jarkko
+> The driver has no limit check for rockchip,txclk-tapnum.
+>
+> make ARCH=arm64 dtbs_check
+>
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml b/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
+> index e6c9a2f77..f43d8d829 100644
+> --- a/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
+> @@ -48,7 +48,10 @@ properties:
+>
+>    rockchip,txclk-tapnum:
+>      description: Specify the number of delay for tx sampling.
+> -    $ref: /schemas/types.yaml#/definitions/uint8
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0
+> +    maximum: 31
+> +    default: 8
+>
+>
+>  required:
+> --
+> 2.11.0
+>
