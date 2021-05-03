@@ -2,87 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 159C537168B
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C9D8371689
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229663AbhECOZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 10:25:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbhECOZl (ORCPT
+        id S229645AbhECOZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 10:25:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38807 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229607AbhECOZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 10:25:41 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 462C5C06174A;
-        Mon,  3 May 2021 07:24:47 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id w3so8162721ejc.4;
-        Mon, 03 May 2021 07:24:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xbzdo0xQrv+Gso8bLCGszfVBnbWoOh5vAueEY2DluCw=;
-        b=VK/8GNWAIF37AudSMpo30lHFvwxiVVMM5Sm5KLTiqznrxNT5sY/fBOst11uCo9SR0m
-         n16X8CSuM4m0WWJT/JNaHN/4KzbYZe2qEODTouO1NFoXfaXj40R7rft7GeioIU+ixByf
-         BV3+Rz+BDtWU/If8xsnt9ztLfMtNIfz2sSYDq2kYi17nF8eojFHoD85gqeZpkg/fuw3+
-         qrNHwBGhYvuNxzh+AsSPGUiDlH858L8RqMKXxNgpo8x0hachoQuZLhzL4NCgZntzGwjq
-         GzyrIHWqFaQ4TOkrrcbV9JflpzRwZS5QMOSSpGkgDNn43t8muYBk6wXRfRXhOiGBjfqF
-         hFgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xbzdo0xQrv+Gso8bLCGszfVBnbWoOh5vAueEY2DluCw=;
-        b=eOVsQfPDRUZL2Ng3kTnLUrWIpXamscnikKXBTOYKWA75AUeEz6Mr8pRfE8Uec0QvMC
-         qdOTn57UUnTONn9q4sx1JXekEbm92xbE8EAbucs5FbKIQXBe/mMFaUxx+5QjUwr7BU6J
-         FOWLiCXqUFN/NGvArwZ9WmKr5Ic1JTgwp/BRihscgmLrp/Q2VqACM++5OG5W2W1cfXg9
-         bhEyC3C9BWrMrESnSss8CFatpw5o/1evIe16IOslWHRK93iBr9NOICZm3VZtCS2DA+ep
-         4wUEJYEZ823NMR6k0aONQ8RvY7jD1ovQa8goqMoaNCB1nKO0bk9dQVlRvJfTfQA9HBMt
-         7gew==
-X-Gm-Message-State: AOAM530GWOQEGrc/lorIx8x3zwVnbTIB90snNYpNwXpoWNuque9t3IW3
-        RuMvKFLKFBz7AAOIArcJCoQ=
-X-Google-Smtp-Source: ABdhPJzRtdede5z2G71iOU16CUdLqNb5dAIMb2erJdj45aQAMZWL0pT/pvQ1tAH8TNOBLOVgGAybxA==
-X-Received: by 2002:a17:906:abcc:: with SMTP id kq12mr369950ejb.97.1620051885866;
-        Mon, 03 May 2021 07:24:45 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
-        by smtp.gmail.com with ESMTPSA id pw11sm10867114ejb.88.2021.05.03.07.24.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 07:24:45 -0700 (PDT)
-Date:   Mon, 3 May 2021 16:24:15 +0200
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net-next v2 02/17] net: mdio: ipq8064: switch to
- write/readl function
-Message-ID: <YJAHj/IWZLEZeDmL@Ansuel-xps.localdomain>
-References: <20210502230710.30676-1-ansuelsmth@gmail.com>
- <20210502230710.30676-2-ansuelsmth@gmail.com>
- <YI/xXuWbq7npocCS@lunn.ch>
+        Mon, 3 May 2021 10:25:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620051870;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=98YMn44MI3AF28P/LGOwR7TI74pmmlNtJhmCw9kvmpc=;
+        b=Kze0Pq4nNoAmjAZXr/uYaMUr8PT6n16Upw2ymXBCvzYgD8ex9Od2hP+seAMReqJk59B+2l
+        Vy8/1JPhgWWVmQqglCG0i/W/XyTFOa6cD6v7L5fUr0BNb1CE4HcGJTmEcY8AorGNRyyBAS
+        GubUaWMlV1lxE30ixxL8KQtF+Ms/DF8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-503-ymysQEVmPJaQCMMW76RL2g-1; Mon, 03 May 2021 10:24:27 -0400
+X-MC-Unique: ymysQEVmPJaQCMMW76RL2g-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 95225107ACFC;
+        Mon,  3 May 2021 14:24:25 +0000 (UTC)
+Received: from starship (unknown [10.40.193.27])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8B46661156;
+        Mon,  3 May 2021 14:24:21 +0000 (UTC)
+Message-ID: <21c774b2c1a4f5f90f615ac55b3eac22043854f2.camel@redhat.com>
+Subject: Re: [PATCH 4/5] KVM: nSVM: force L1's GIF to 1 when setting the
+ nested state
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, Jim Mattson <jmattson@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Cathy Avery <cavery@redhat.com>
+Date:   Mon, 03 May 2021 17:24:20 +0300
+In-Reply-To: <7d2fe4a1-9603-8bea-e7f1-fb3c24198941@redhat.com>
+References: <20210503125446.1353307-1-mlevitsk@redhat.com>
+         <20210503125446.1353307-5-mlevitsk@redhat.com>
+         <7d2fe4a1-9603-8bea-e7f1-fb3c24198941@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YI/xXuWbq7npocCS@lunn.ch>
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 02:49:34PM +0200, Andrew Lunn wrote:
-> On Mon, May 03, 2021 at 01:06:54AM +0200, Ansuel Smith wrote:
-> > Use readl/writel function instead of regmap function to make sure no
-> > value is cached and align to other similar mdio driver.
+On Mon, 2021-05-03 at 16:00 +0200, Paolo Bonzini wrote:
+> On 03/05/21 14:54, Maxim Levitsky wrote:
+> > While after a reset the GIF value is already 1,
+> > it doesn't have to have this value if the nested state
+> > is loaded later.
+> > 
+> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > ---
+> >   arch/x86/kvm/svm/nested.c | 3 +++
+> >   1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> > index 32400cba608d..12a12ae940fa 100644
+> > --- a/arch/x86/kvm/svm/nested.c
+> > +++ b/arch/x86/kvm/svm/nested.c
+> > @@ -1314,6 +1314,9 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+> >   	else
+> >   		svm->nested.vmcb02.ptr->save = svm->vmcb01.ptr->save;
+> >   
+> > +	/* Force L1's GIF to true */
+> > +	svm_set_gif(svm, true);
+> > +
+> >   	svm->nested.nested_run_pending =
+> >   		!!(kvm_state->flags & KVM_STATE_NESTED_RUN_PENDING);
+> >   
+> > 
 > 
-> regmap is O.K. to use, so long as you tell it not to cache. Look at
-> how to use volatile in regmap.
-> 
-> You might be able to follow what lan9303_mdio.c is doing.
-> 
->     Andrew
+> Hmm, not sure about this one.  It is possible in principle to do CLGI in 
+> L2 with the intercept disabled.
 
-Was thinking more about the overhead of using regmap instead of plain
-writel. Or is it minimal?
+I need to think about this a bit more. 
+In theory we have L0 GIF, the L1 GIF and the L2 GIF.
+L0 GIF is always KVM's, so no problem.
+L1 GIF can be toggled with L1 executing clgi/stgi, and it will be either stored in 
+vmcb.int_ctl (vmcb01 or vmcb02) or in hflags depending if vGIF is enabled.
+(the L1 owned bits are copied in nested_vmcb02_prepare_control)
+
+For L2 we never advertise virtual gif and we don't let it set V_GIF_ENABLE_MASK
+in int_ctl, so it either intercepts clgi/stgi and does its own businesses with it
+or it doesn't intercept it in which case L2 indeed just modifies L1 GIF.
+
+
+> 
+> You need to use
+> 
+> svm_set_gif(svm, !!(kvm_state->flags & KVM_STATE_NESTED_GIF_SET));
+
+
+Assuming that the above is correct, then indeed, this should be done,
+so I'll send a patch for this.
+Thanks a lot!!
+
+Best regards,
+	Maxim Levitsky
+
+
+
+> 
+> instead.
+> 
+> Paolo
+> 
+
 
