@@ -2,76 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6F7371379
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 12:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CAE037137E
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 12:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233282AbhECKOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 06:14:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233159AbhECKOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 06:14:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9093611F0;
-        Mon,  3 May 2021 10:13:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620036818;
-        bh=VH21PufZUwDIyYfTud1amFvN2W+xniGX/jhz9rO7xmI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gYxuIT2anto6IHJA0jnTYsxUtzipm0TjAFYvthLhpLqX804tTBBS952Er6bgHOqRl
-         U95PgvVzsq6TeUGLV9+0lROGeOqztAyQyE+xdxLjNsbOo1yD5rLKnfCJcn/OxVMjrA
-         EcpkRACl3KZm3pZxxD4Z0EOPjvccELFZREM51cC4S6hnTjQlPYeowuqgGGD5tKIXgL
-         XVPKa3qhhxHvm5aiAmdf5DeNEfbYZ6b5mwVP1b1hUE+8XEsKEv79R6jGF3054BE3Bx
-         IB4m1cC+Tgxp0Ib9uv5KHki1ZCXMSxB5hA7yMae80GT/Q4sXTE69d8vksk7z2fotxT
-         1pBbFsK6ja1sQ==
-Date:   Mon, 3 May 2021 12:13:34 +0200
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] Modules updates for v5.13
-Message-ID: <YI/MzgHgDW6ka7B0@gunter>
-References: <YIlcBHhuR9LvKZ7q@gunter>
- <CAHk-=wgoC=9tJZg391exBryFYK04e_BSpKwCmJLMwDntar4x_w@mail.gmail.com>
+        id S233299AbhECKOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 06:14:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49779 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233062AbhECKOn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 06:14:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620036830;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TfH/Rim8ttUy4kF1walnlnjFDNfkSM8H2CqszcJCsT8=;
+        b=BevCE+COvDOK3u4GHQHdjBYuqAK8ilirf44Aztim5XQN3tcBHlVdXkc215Jgj/0RflPCnV
+        SKfhT2w2SIIyZuvcjJ+UeN0tQr8oAEWh6lgjEmOlurXHo3xT/Mza0oegDUmtYR8OUGvQ7K
+        U7kY1hwNJsr24irOxV418wMyPtfVHDs=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-297-MH6fwSf2MKyaFnSS1tzcqQ-1; Mon, 03 May 2021 06:13:48 -0400
+X-MC-Unique: MH6fwSf2MKyaFnSS1tzcqQ-1
+Received: by mail-wr1-f69.google.com with SMTP id a7-20020adfc4470000b029010d875c66edso3623194wrg.23
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 03:13:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=TfH/Rim8ttUy4kF1walnlnjFDNfkSM8H2CqszcJCsT8=;
+        b=ojXS8lmJ4UWNWD3/mxE3IhlZaoXWZCJ9R90YfUWNNxN/n49FbNxEqqTS3smkVaSbe/
+         edP1Reb9tM18BX2Rxp9DJjzSaVskOEIFunKS3lc+MpTCq9PzIxsvB/UR9/xVZ6eAkl3X
+         bcwO/hYNdTBAwm8efJVl0Rfu+9FBG6M7wPCYHrh443Qaipv3nwN78bNWOB70BxiKfLrk
+         um8wIV+85CXClGw2eHijgE1grwXAi24Mrkxpc/Dionkbm98Y2DiagiiHFlgbiE5iz2/s
+         udOMhodlqIBFXh916w2zgksUI8dWWSYOuurJ+WC64RvlfI070KLX5hI4QoWEzWjVP7Et
+         bcHA==
+X-Gm-Message-State: AOAM533Qww9bZKGJ2tLkemrwGHD/5HzYKU1RU/BThYAOPqvm8F5u/EYF
+        HA8Q9GS8LKeXvEMQXEXoHIwbQCq/SaMCcwl9aOmYcR2r5BKkStt4PkiDtPtfUabKwKFTssUhHqD
+        QlHhjq6COK2XrMsHQOoFv/xNz
+X-Received: by 2002:adf:e40f:: with SMTP id g15mr23980426wrm.392.1620036827528;
+        Mon, 03 May 2021 03:13:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzitx86hh7/AAfqMzT0jIWlPfTNKdYBUPj79ED4tgUYCy6GM6viNYbB0BIqh1/tiBOZIdssSA==
+X-Received: by 2002:adf:e40f:: with SMTP id g15mr23980386wrm.392.1620036827214;
+        Mon, 03 May 2021 03:13:47 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c649f.dip0.t-ipconnect.de. [91.12.100.159])
+        by smtp.gmail.com with ESMTPSA id d2sm11770212wrs.10.2021.05.03.03.13.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 03:13:46 -0700 (PDT)
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Steven Price <steven.price@arm.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Aili Yao <yaoaili@kingsoft.com>, Jiri Bohac <jbohac@suse.cz>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-hyperv@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+References: <20210429122519.15183-1-david@redhat.com>
+ <20210429122519.15183-8-david@redhat.com> <YI5H4yV/c6ReuIDt@kernel.org>
+ <5a5a7552-4f0a-75bc-582f-73d24afcf57b@redhat.com>
+ <YI/CWg6PrMxcCT2D@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v1 7/7] fs/proc/kcore: use page_offline_(freeze|unfreeze)
+Message-ID: <2f66cbfc-aa29-b3ef-4c6a-0da8b29b56f6@redhat.com>
+Date:   Mon, 3 May 2021 12:13:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgoC=9tJZg391exBryFYK04e_BSpKwCmJLMwDntar4x_w@mail.gmail.com>
-X-OS:   Linux gunter 5.11.16-1-default x86_64
+In-Reply-To: <YI/CWg6PrMxcCT2D@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Linus Torvalds [30/04/21 12:37 -0700]:
->On Wed, Apr 28, 2021 at 5:58 AM Jessica Yu <jeyu@kernel.org> wrote:
+On 03.05.21 11:28, Mike Rapoport wrote:
+> On Mon, May 03, 2021 at 10:28:36AM +0200, David Hildenbrand wrote:
+>> On 02.05.21 08:34, Mike Rapoport wrote:
+>>> On Thu, Apr 29, 2021 at 02:25:19PM +0200, David Hildenbrand wrote:
+>>>> Let's properly synchronize with drivers that set PageOffline(). Unfreeze
+>>>> every now and then, so drivers that want to set PageOffline() can make
+>>>> progress.
+>>>>
+>>>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>>>> ---
+>>>>    fs/proc/kcore.c | 15 +++++++++++++++
+>>>>    1 file changed, 15 insertions(+)
+>>>>
+>>>> diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
+>>>> index 92ff1e4436cb..3d7531f47389 100644
+>>>> --- a/fs/proc/kcore.c
+>>>> +++ b/fs/proc/kcore.c
+>>>> @@ -311,6 +311,7 @@ static void append_kcore_note(char *notes, size_t *i, const char *name,
+>>>>    static ssize_t
+>>>>    read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
+>>>>    {
+>>>> +	size_t page_offline_frozen = 0;
+>>>>    	char *buf = file->private_data;
+>>>>    	size_t phdrs_offset, notes_offset, data_offset;
+>>>>    	size_t phdrs_len, notes_len;
+>>>> @@ -509,6 +510,18 @@ read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
+>>>>    			pfn = __pa(start) >> PAGE_SHIFT;
+>>>>    			page = pfn_to_online_page(pfn);
+>>>
+>>> Can't this race with page offlining for the first time we get here?
 >>
->>    Therefore, load the __exit sections even when
->>    CONFIG_MODULE_UNLOAD=n, and discard them after init.
+>>
+>> To clarify, we have three types of offline pages in the kernel ...
+>>
+>> a) Pages part of an offline memory section; the memap is stale and not
+>> trustworthy. pfn_to_online_page() checks that. We *can* protect against
+>> memory offlining using get_online_mems()/put_online_mems(), but usually
+>> avoid doing so as the race window is very small (and a problem all over the
+>> kernel we basically never hit) and locking is rather expensive. In the
+>> future, we might switch to rcu to handle that more efficiently and avoiding
+>> these possible races.
+>>
+>> b) PageOffline(): logically offline pages contained in an online memory
+>> section with a sane memmap. virtio-mem calls these pages "fake offline";
+>> something like a "temporary" memory hole. The new mechanism I propose will
+>> be used to handle synchronization as races can be more severe, e.g., when
+>> reading actual page content here.
+>>
+>> c) Soft offline pages: hwpoisoned pages that are not actually harmful yet,
+>> but could become harmful in the future. So we better try to remove the page
+>> from the page allcoator and try to migrate away existing users.
+>>
+>>
+>> So page_offline_* handle "b) PageOffline()" only. There is a tiny race
+>> between pfn_to_online_page(pfn) and looking at the memmap as we have in many
+>> cases already throughout the kernel, to be tackled in the future.
+> 
+> Right, but here you anyway add locking, so why exclude the first iteration?
 
-Hi Linus,
+What we're protecting is PageOffline() below. If I didn't mess up, we 
+should always be calling page_offline_freeze() before calling 
+PageOffline(). Or am I missing something?
 
->So I've pulled this, but I have two questions based on reading the patch..
->
-> (a) Where's that "discard them after init" logic?
+> 
+> BTW, did you consider something like
 
-So the idea is for the exit sections to additionally identify as init
-sections via module_init_section() when CONFIG_MODULE_UNLOAD=n, so
-that the existing logic in layout_sections() picks this up and puts
-the exit sections into the init area of the module (mod->init_layout.base).
+Yes, I played with something like that. We'd have to handle the first 
+page_offline_freeze() freeze differently, though, and that's where 
+things got a bit ugly in my attempts.
 
-Then, since we've placed the exit sections in the init region of the
-module, they will automatically get freed at the end of
-do_init_module() with the rest of the init sections. Peter has also
-mentioned that jump_label and static_call want the exit sections to
-also identify as init via within_module_init(), so this change should
-satisfy their requirement as well. I should have explained this more
-in the changelog and apologize that it wasn't clear.
+> 
+> 	if (page_offline_frozen++ % MAX_ORDER_NR_PAGES == 0) {
+> 		page_offline_unfreeze();
+> 		cond_resched();
+> 		page_offline_freeze();
+> 	}
+> 
+> We don't seem to care about page_offline_frozen overflows here, do we?
 
-> (b) ARM has its own module_init/exit_section() functions, and now
->seems to have different logic than everybody else as a result..
-
-No, you are right, I had forgotten that ARM is a special case :-( I
-will add a similar hunk for ARM and submit that for the next -rc so
-that all arches are on the same page here.
+No, the buffer size is also size_t and gets incremented on a per-byte 
+basis. The variant I have right now looked the cleanest to me. Happy to 
+hear simpler alternatives.
 
 
-Jessica
+-- 
+Thanks,
+
+David / dhildenb
+
