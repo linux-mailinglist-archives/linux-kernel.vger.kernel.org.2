@@ -2,102 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5ED13723B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 01:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F483723B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 01:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbhECXo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 19:44:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27456 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229928AbhECXo6 (ORCPT
+        id S229633AbhECXtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 19:49:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229499AbhECXtV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 19:44:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620085444;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ABt25pzgCO1gaqcFMnixhdZW8Kc2SCW/u3hnQ6DkL1o=;
-        b=Ldu6//WPEoJdrO7Ox4DTsFy6xCFhqB7vgCAthUGtiKPIAAEE5ZuNkEqBXUmxwMnjC9b+Jj
-        74FNyIWS7/70YqaBELKRMJjcJAkK2PhBj2Wczw78okOWewCbmciMLaCrpTPkLeQFBZCdg/
-        CpNT1gHITiOZXGBaFiO4Y50xzhkoog4=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-58-0wbBq4tWMUSg6DetY5TbEQ-1; Mon, 03 May 2021 19:44:03 -0400
-X-MC-Unique: 0wbBq4tWMUSg6DetY5TbEQ-1
-Received: by mail-qv1-f70.google.com with SMTP id v3-20020a0ca3830000b02901c56555f64bso2048196qvv.1
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 16:44:03 -0700 (PDT)
+        Mon, 3 May 2021 19:49:21 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEFF6C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 16:48:26 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id v6so8964227ljj.5
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 16:48:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8cxTD+RC9r0CXS9dr55V7a29XytNEKtivWFE6svy/UU=;
+        b=KrSrP6H1kg0Ou7qIlA2hC/fEOBjjQfOdxSm1qFRBv7hG/LVf94xY1oTR/3v8qlxSNU
+         Y5cJkh+yGLgafUhxEeFCJZpZ0CpYr0JoegHkOpGzvdxEaFsNlt8k0Dih/m8mzHTSjesG
+         XgRhnzhg3g7Qy7Lf0CH85Q//wk+LxtHK1uwqw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ABt25pzgCO1gaqcFMnixhdZW8Kc2SCW/u3hnQ6DkL1o=;
-        b=UvlZib3cXskV23umpSQ2Po4pq5x8Ve5BkCiDe7+QZKWD8k5S7t37EvzKZKtAXGzAvC
-         DdImQY0fK3ZAgNLuXqSysqQQfh78fdaa9gh102gboo19lTSVZsORFAqAK1M/hxAs4KbH
-         8/TvDy7T5W3OyIC66MQ8jJl3X0nhjkNldBpsV/WoNMc0WyLPe/Wm+mF3BonWGmUXe1NX
-         IqcAd8RLC+ov90sYiBNIOzwS7JGJ2atwNujc4fl9ka+Ynp6zEP0jxJmte5OZIEB+lmg2
-         a8oj986w+Be7n0m4NrRcndcZUPyikV0+15l96/tx9zqx2EiuMVYVDB85Uv4mtjaAWu0W
-         oPdA==
-X-Gm-Message-State: AOAM531JcJPykfAi95HC6JOxU9IG4T2LFYTwY9EP9055ScOMX6UQDG+j
-        ++2aY8+qs4baXd4jQC07+eE4XQ1El/FrGu1Di3E7HNArmWuJwY3D1zc30GNV6KUJq39+UYTj6Wi
-        S2BiKEGv8f+Po1B2InazzuUWE
-X-Received: by 2002:a05:620a:799:: with SMTP id 25mr12553401qka.188.1620085442710;
-        Mon, 03 May 2021 16:44:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyvHpI4ndR9mV1KvzNSVtc1wN86uhUFbQX4EF4jyJbcv4dd7JFS0AMYcw+HYYlme5jwSVS1Rg==
-X-Received: by 2002:a05:620a:799:: with SMTP id 25mr12553383qka.188.1620085442514;
-        Mon, 03 May 2021 16:44:02 -0700 (PDT)
-Received: from t490s.redhat.com (bras-base-toroon474qw-grc-72-184-145-4-219.dsl.bell.ca. [184.145.4.219])
-        by smtp.gmail.com with ESMTPSA id 189sm7126903qkh.99.2021.05.03.16.44.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 16:44:01 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Hugh Dickins <hughd@google.com>, stable@vger.kernel.org
-Subject: [PATCH v2 2/2] mm/hugetlb: Fix cow where page writtable in child
-Date:   Mon,  3 May 2021 19:43:56 -0400
-Message-Id: <20210503234356.9097-3-peterx@redhat.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210503234356.9097-1-peterx@redhat.com>
-References: <20210503234356.9097-1-peterx@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8cxTD+RC9r0CXS9dr55V7a29XytNEKtivWFE6svy/UU=;
+        b=Vj/G2qgXrxQer2jhDN0As4fQYzZ4HT8QaUTKULDPyEWlk+r78pniz/U95Bu6p6tJTq
+         2FsPl/bfqh35wvY5hgE5t+jC/KnAU/HVDksNlq11e03HgpA4/jVAqcSw+uOn7os+QF3F
+         y81zs4VzavTmwAYHdCbYVGepEQCwv3aUyZ0Gs+o2kO7yHkH/FDOtnSHx7dnJ1kGkoasa
+         DZInRQo59HEOB5HveSv4ifvRz3RM5TrNI9q1Mkp5DoWdlaYcw/M27Hv3QGNSnT3V3HpR
+         YkiULvcdJkWBUIYNIldvpeLgZ5eF05fHr6qPkh8eHomex/JrNLA9JOkvEDnb8GoaL0dP
+         GyoQ==
+X-Gm-Message-State: AOAM530gEU+D4NMj+FxbW87I+7oq+V9Y6Yo6zafjv/c4dirstSiDC+23
+        mFqe30IrCu0u8gr7YvQKwdYbDpl19Qb9VCG6
+X-Google-Smtp-Source: ABdhPJxYNoR3rReqQRGb5nRliCu1Jhud5lExcZyEV8O/G7OwbBvy7g5JXje2iEGXJYs/51/nHxQADw==
+X-Received: by 2002:a2e:93c4:: with SMTP id p4mr14810863ljh.367.1620085704983;
+        Mon, 03 May 2021 16:48:24 -0700 (PDT)
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
+        by smtp.gmail.com with ESMTPSA id a4sm96567lfs.130.2021.05.03.16.48.23
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 16:48:23 -0700 (PDT)
+Received: by mail-lj1-f172.google.com with SMTP id u20so8916561lja.13
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 16:48:23 -0700 (PDT)
+X-Received: by 2002:a05:651c:3de:: with SMTP id f30mr344166ljp.251.1620085703543;
+ Mon, 03 May 2021 16:48:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <8735v3ex3h.ffs@nanos.tec.linutronix.de> <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
+ <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
+ <CALCETrV9bCenqzzaW6Ra18tCvNP-my09decTjmLDVZZAQxR6VA@mail.gmail.com>
+ <CAHk-=wgo6XEz3VQ9ntqzWLR3-hm1YXrXUz4_heDs4wcLe9NYvA@mail.gmail.com>
+ <d26e3a82-8a2c-7354-d36b-cac945c208c7@kernel.dk> <CALCETrWmhquicE2C=G2Hmwfj4VNypXVxY-K3CWOkyMe9Edv88A@mail.gmail.com>
+ <CAHk-=wgqK0qUskrzeWXmChErEm32UiOaUmynWdyrjAwNzkDKaw@mail.gmail.com>
+ <8735v3jujv.ffs@nanos.tec.linutronix.de> <CAHk-=wi4Dyg_Z70J_hJbtFLPQDG+Zx3dP2jB5QrOdZC6W6j4Gw@mail.gmail.com>
+ <12710fda-1732-ee55-9ac1-0df9882aa71b@samba.org>
+In-Reply-To: <12710fda-1732-ee55-9ac1-0df9882aa71b@samba.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 3 May 2021 16:48:07 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiR7c-UHh_3Rj-EU8=AbURKchnMFJWW7=5EH=qEUDT8wg@mail.gmail.com>
+Message-ID: <CAHk-=wiR7c-UHh_3Rj-EU8=AbURKchnMFJWW7=5EH=qEUDT8wg@mail.gmail.com>
+Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
+ registers for io_threads
+To:     Stefan Metzmacher <metze@samba.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When rework early cow of pinned hugetlb pages, we moved huge_ptep_get() upper
-but overlooked a side effect that the huge_ptep_get() will fetch the pte after
-wr-protection.  After moving it upwards, we need explicit wr-protect of child
-pte or we will keep the write bit set in the child process, which could cause
-data corrution where the child can write to the original page directly.
+On Mon, May 3, 2021 at 4:27 PM Stefan Metzmacher <metze@samba.org> wrote:
+>
+> If I remember correctly gdb showed bogus addresses for the backtraces of the io_threads,
+> as some regs where not cleared.
 
-This issue can also be exposed by "memfd_test hugetlbfs" kselftest.
+Yeah, so that patch will make the IO thread have the user stack
+pointer point to the original user stack, but that stack will
+obviously be used by the original thread which means that it will
+contain random stuff on it.
 
-Cc: stable@vger.kernel.org
-Fixes: 4eae4efa2c299 ("hugetlb: do early cow when page pinned on src mm")
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- mm/hugetlb.c | 1 +
- 1 file changed, 1 insertion(+)
+Doing a
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index aab3a33214d10..72544ebb24f0e 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -4076,6 +4076,7 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
- 				 * See Documentation/vm/mmu_notifier.rst
- 				 */
- 				huge_ptep_set_wrprotect(src, addr, src_pte);
-+				entry = huge_pte_wrprotect(entry);
- 			}
- 
- 			page_dup_rmap(ptepage, true);
--- 
-2.31.1
+        childregs->sp = 0;
 
+is probably a good idea for that PF_IO_WORKER case, since it really
+doesn't have - or need - a user stack.
+
+Of course, it doesn't really have - or need - any of the other user
+registers either, but once you fill in the segment stuff to make gdb
+happy, you might as well fill it all in using the same code that the
+regular case does.
+
+          Linus
