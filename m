@@ -2,194 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEF9F371270
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 10:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60462371273
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 10:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232831AbhECI22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 04:28:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbhECI20 (ORCPT
+        id S232959AbhECI3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 04:29:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53495 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229817AbhECI3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 04:28:26 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F95C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 01:27:33 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id x8so4304561qkl.2
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 01:27:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gvW+fIFuwRmL3iI4aswueq3yVS6l6eXCxLvWIVs7usg=;
-        b=geXVZQ2icewnd6bmAXx5gSRqScPVUewy3/pA56ufZTk23EaIMjMK+4mLwMZfZzioId
-         rS/lsblzKqVcMH9pwa0ZnByZZc0QJs8+X4bKJoztYJYre+IpQR1s+s5L3ewBHJbGzlxr
-         BN41cgPi4ID74uDmXlT2gf2ls7ajSq+dEDNE3I36JHeoXlX+XGsxe5Ff2qLGb4AyXYCt
-         IaYQXv4A9UYQfeutRqijTUwnX75OXxCdXGLhjRoIA0j05LyuQ08L/RJ0sTOYAFpvUO7n
-         4JdCw3zmi06NxhmdhPNiYkavkBaxLrDHiEz9IlSPVWmG7z5lRoFQOLS8p8FLN3l3idnb
-         kAlw==
+        Mon, 3 May 2021 04:29:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620030522;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oeOHRYo4V+sjXuBsEphc00viyXFIqMXEH0Oj0f+S1EU=;
+        b=DIdLEnbZhoalaXITgWBkPli5FHjIdETclQL74/x9iNkG8ouWMDlyCACgTUUwPP/aYEVgnP
+        L997FxEg424e5JqsAzqF1+UaMO24DklMIk+BTPnNoAvfhbFp/tbzAlD/8orlFt8GLb4kvr
+        BjcADtsXGQRWmqaePruaq6Pie0RqgHQ=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-54-AcSN9Bm4NjS2wclxzuhKFg-1; Mon, 03 May 2021 04:28:38 -0400
+X-MC-Unique: AcSN9Bm4NjS2wclxzuhKFg-1
+Received: by mail-wr1-f70.google.com with SMTP id 67-20020adf81490000b029010756d109e6so3463920wrm.13
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 01:28:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gvW+fIFuwRmL3iI4aswueq3yVS6l6eXCxLvWIVs7usg=;
-        b=G+8Wlc14oOrFhA08kr2iPIM1/7Pc310cpf4XgnXiZDSuiSV7Tv+vI4DMHBKt2UfYSa
-         CxLz5YQDUEDJCRH8SR3nT7jMhGiHS/QEYS42STtsp1FCfISBaMA//1kJcDUsDfflvcTE
-         4viD6hhL/bc7cdXzr68ae6s0JvAzzDBqdK1OiTzQeWY5MyALY+Lc9I+VjpmCgO6oKbTL
-         On4THim9+lDNrsiNHM5jKnQMhr/JZtQ19nbhoPbnUtiMtw5NzHEjypq20P91kIrj9sXL
-         cX/Xa+5Fh3HTCoElNN4r0Yscq4OecOJzNsz02RXCxhoPCA+SQd+1ZOvLBb5/1qaPKkxG
-         3ATA==
-X-Gm-Message-State: AOAM533WhhspPycrU2HRJwST+arLNP0av76g080X6dH5EdyJPuNOmhIF
-        3jHynon8FJCgZv05HI2y9fqsYhayYZgf4QiaE+mJHDIt5xLsmw==
-X-Google-Smtp-Source: ABdhPJzABcCe9MTFn8MqxE4trlLAzKhCt0lIRLq4eZgwsW8pk7EfBsW+hzQVjWAfbC1af9WHXd8muCHkik9DbbKXsC8=
-X-Received: by 2002:a37:4042:: with SMTP id n63mr17708797qka.501.1620030452655;
- Mon, 03 May 2021 01:27:32 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=oeOHRYo4V+sjXuBsEphc00viyXFIqMXEH0Oj0f+S1EU=;
+        b=MsZH3Y4uIw12NrlAb/RrfjlRIWvzQh63B/PYlyaomUFRFaUxjYFsb/FW8v2fT36qeD
+         DiPaGn5+HQ1A1awB4/Ed7kA83Nat/rVnALvK5JjD6IDsn6K5od3yo2762jsNpl25CLad
+         ooejSlLbm2c/er3IxuXZ7C7OBCEsBqtGjaWpLCHk0Vuk02nfZgQfRCUl3JWjORfH6RS+
+         Pd7LS7FJjfzYpumhauZyzgvEwdSqqWkG+7NMzTHdT+gjSodmAYE7DfaTWTlxs6C5C+Hm
+         JLR03H62H2RN58n07U61pM53TCtrLzKrgr7VsiW0uGelsXaOcuWmhhHEtkGddV1WdFri
+         QWAg==
+X-Gm-Message-State: AOAM533Tqnsf7MpLY7BAs26tQjT57iOVTmxpGvVliZCatfB2wbp/5qTC
+        zohHdTtzrnALPo+3eGoEwzT1KanJqUBJA8m6qOxJfcMLG2hbQOwKU/uAErq3k1CUHupQ/T5Thbg
+        iOhweOke4Zh55SgDlbaMCzIfo
+X-Received: by 2002:a5d:6d85:: with SMTP id l5mr22979397wrs.22.1620030517791;
+        Mon, 03 May 2021 01:28:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzaIYYprmCHdbWEQG0UKlOnfr25C8JpbLNd+9kN/fx46K8mzScJzZQz2ZSZd2ki6w32eeO6Cw==
+X-Received: by 2002:a5d:6d85:: with SMTP id l5mr22979345wrs.22.1620030517468;
+        Mon, 03 May 2021 01:28:37 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c649f.dip0.t-ipconnect.de. [91.12.100.159])
+        by smtp.gmail.com with ESMTPSA id r5sm12059190wmh.23.2021.05.03.01.28.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 01:28:37 -0700 (PDT)
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Steven Price <steven.price@arm.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Aili Yao <yaoaili@kingsoft.com>, Jiri Bohac <jbohac@suse.cz>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-hyperv@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+References: <20210429122519.15183-1-david@redhat.com>
+ <20210429122519.15183-8-david@redhat.com> <YI5H4yV/c6ReuIDt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v1 7/7] fs/proc/kcore: use page_offline_(freeze|unfreeze)
+Message-ID: <5a5a7552-4f0a-75bc-582f-73d24afcf57b@redhat.com>
+Date:   Mon, 3 May 2021 10:28:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <0000000000003f654905c168b09d@google.com>
-In-Reply-To: <0000000000003f654905c168b09d@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 3 May 2021 10:27:21 +0200
-Message-ID: <CACT4Y+Zi_femntmu0qtUz1q1gbxs-0VNrLUULzY1bd+hrBngHA@mail.gmail.com>
-Subject: Re: [syzbot] KFENCE: use-after-free in kmem_cache_destroy
-To:     syzbot <syzbot+9d90dad32dd9727ed084@syzkaller.appspotmail.com>
-Cc:     chao@kernel.org, jaegeuk@kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YI5H4yV/c6ReuIDt@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 3, 2021 at 10:24 AM syzbot
-<syzbot+9d90dad32dd9727ed084@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    d2b6f8a1 Merge tag 'xfs-5.13-merge-3' of git://git.kernel...
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15f19ca5d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=53fdf14defd48c56
-> dashboard link: https://syzkaller.appspot.com/bug?extid=9d90dad32dd9727ed084
-> compiler:       Debian clang version 11.0.1-2
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+9d90dad32dd9727ed084@syzkaller.appspotmail.com
+On 02.05.21 08:34, Mike Rapoport wrote:
+> On Thu, Apr 29, 2021 at 02:25:19PM +0200, David Hildenbrand wrote:
+>> Let's properly synchronize with drivers that set PageOffline(). Unfreeze
+>> every now and then, so drivers that want to set PageOffline() can make
+>> progress.
+>>
+>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>> ---
+>>   fs/proc/kcore.c | 15 +++++++++++++++
+>>   1 file changed, 15 insertions(+)
+>>
+>> diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
+>> index 92ff1e4436cb..3d7531f47389 100644
+>> --- a/fs/proc/kcore.c
+>> +++ b/fs/proc/kcore.c
+>> @@ -311,6 +311,7 @@ static void append_kcore_note(char *notes, size_t *i, const char *name,
+>>   static ssize_t
+>>   read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
+>>   {
+>> +	size_t page_offline_frozen = 0;
+>>   	char *buf = file->private_data;
+>>   	size_t phdrs_offset, notes_offset, data_offset;
+>>   	size_t phdrs_len, notes_len;
+>> @@ -509,6 +510,18 @@ read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
+>>   			pfn = __pa(start) >> PAGE_SHIFT;
+>>   			page = pfn_to_online_page(pfn);
+> 
+> Can't this race with page offlining for the first time we get here?
 
-This looks like a bug in F2FS.
-Interestingly this was detected by ARM MTE before but was
-mis-root-caused I think:
-https://lore.kernel.org/lkml/0000000000008d396205b9e4adee@google.com/
-This can't be detected by KASAN directly because it doesn't instrument
-mm/slab*. This can only be detected by MTE/KFENCE.
+
+To clarify, we have three types of offline pages in the kernel ...
+
+a) Pages part of an offline memory section; the memap is stale and not 
+trustworthy. pfn_to_online_page() checks that. We *can* protect against 
+memory offlining using get_online_mems()/put_online_mems(), but usually 
+avoid doing so as the race window is very small (and a problem all over 
+the kernel we basically never hit) and locking is rather expensive. In 
+the future, we might switch to rcu to handle that more efficiently and 
+avoiding these possible races.
+
+b) PageOffline(): logically offline pages contained in an online memory 
+section with a sane memmap. virtio-mem calls these pages "fake offline"; 
+something like a "temporary" memory hole. The new mechanism I propose 
+will be used to handle synchronization as races can be more severe, 
+e.g., when reading actual page content here.
+
+c) Soft offline pages: hwpoisoned pages that are not actually harmful 
+yet, but could become harmful in the future. So we better try to remove 
+the page from the page allcoator and try to migrate away existing users.
 
 
-> ==================================================================
-> BUG: KFENCE: use-after-free write in kmem_cache_destroy+0x1f/0x120 mm/slab_common.c:486
->
-> Use-after-free write at 0xffff88823bc16040 (in kfence-#10):
->  kmem_cache_destroy+0x1f/0x120 mm/slab_common.c:486
->  f2fs_recover_fsync_data+0x75b0/0x8380 fs/f2fs/recovery.c:869
->  f2fs_fill_super+0x9393/0xa420 fs/f2fs/super.c:3945
->  mount_bdev+0x26c/0x3a0 fs/super.c:1367
->  legacy_get_tree+0xea/0x180 fs/fs_context.c:592
->  vfs_get_tree+0x86/0x270 fs/super.c:1497
->  do_new_mount fs/namespace.c:2905 [inline]
->  path_mount+0x196f/0x2be0 fs/namespace.c:3235
->  do_mount fs/namespace.c:3248 [inline]
->  __do_sys_mount fs/namespace.c:3456 [inline]
->  __se_sys_mount+0x2f9/0x3b0 fs/namespace.c:3433
->  do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> kfence-#10 [0xffff88823bc16000-0xffff88823bc160df, size=224, cache=kmem_cache] allocated by task 15453:
->  kmem_cache_zalloc include/linux/slab.h:676 [inline]
->  create_cache mm/slab_common.c:247 [inline]
->  kmem_cache_create_usercopy+0x12a/0x2f0 mm/slab_common.c:350
->  kmem_cache_create+0xf/0x20 mm/slab_common.c:405
->  f2fs_kmem_cache_create fs/f2fs/f2fs.h:2463 [inline]
->  f2fs_recover_fsync_data+0x1f0/0x8380 fs/f2fs/recovery.c:790
->  f2fs_fill_super+0x9393/0xa420 fs/f2fs/super.c:3945
->  mount_bdev+0x26c/0x3a0 fs/super.c:1367
->  legacy_get_tree+0xea/0x180 fs/fs_context.c:592
->  vfs_get_tree+0x86/0x270 fs/super.c:1497
->  do_new_mount fs/namespace.c:2905 [inline]
->  path_mount+0x196f/0x2be0 fs/namespace.c:3235
->  do_mount fs/namespace.c:3248 [inline]
->  __do_sys_mount fs/namespace.c:3456 [inline]
->  __se_sys_mount+0x2f9/0x3b0 fs/namespace.c:3433
->  do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> freed by task 15448:
->  kobject_cleanup+0x1c9/0x280 lib/kobject.c:705
->  shutdown_cache mm/slab_common.c:463 [inline]
->  kmem_cache_destroy+0x93/0x120 mm/slab_common.c:492
->  f2fs_recover_fsync_data+0x75b0/0x8380 fs/f2fs/recovery.c:869
->  f2fs_fill_super+0x9393/0xa420 fs/f2fs/super.c:3945
->  mount_bdev+0x26c/0x3a0 fs/super.c:1367
->  legacy_get_tree+0xea/0x180 fs/fs_context.c:592
->  vfs_get_tree+0x86/0x270 fs/super.c:1497
->  do_new_mount fs/namespace.c:2905 [inline]
->  path_mount+0x196f/0x2be0 fs/namespace.c:3235
->  do_mount fs/namespace.c:3248 [inline]
->  __do_sys_mount fs/namespace.c:3456 [inline]
->  __se_sys_mount+0x2f9/0x3b0 fs/namespace.c:3433
->  do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> CPU: 0 PID: 15453 Comm: syz-executor.0 Not tainted 5.12.0-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:kmem_cache_destroy+0x1f/0x120 mm/slab_common.c:488
-> Code: 0f 1f 84 00 00 00 00 00 0f 1f 00 48 85 ff 0f 84 09 01 00 00 41 57 41 56 53 48 89 fb 48 c7 c7 b8 07 dc 8c 31 f6 e8 b1 c3 00 08 <ff> 4b 40 0f 85 c0 00 00 00 48 89 df e8 20 a2 14 00 48 89 df e8 18
-> RSP: 0018:ffffc900030af320 EFLAGS: 00010286
-> RAX: 0000000000000000 RBX: ffff88823bc16000 RCX: 0000000000000001
-> RDX: 0000000000000001 RSI: 0000000000000008 RDI: 0000000000000001
-> RBP: ffffc900030af870 R08: dffffc0000000000 R09: fffffbfff19b80f8
-> R10: fffffbfff19b80f8 R11: 0000000000000000 R12: ffff88808c3a4000
-> R13: dffffc0000000000 R14: 0000000000000000 R15: 1ffff92000615eb0
-> FS:  00007f60a5228700(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: ffff88823bc16040 CR3: 000000001ccd8000 CR4: 00000000001526f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  f2fs_recover_fsync_data+0x75b0/0x8380 fs/f2fs/recovery.c:869
->  f2fs_fill_super+0x9393/0xa420 fs/f2fs/super.c:3945
->  mount_bdev+0x26c/0x3a0 fs/super.c:1367
->  legacy_get_tree+0xea/0x180 fs/fs_context.c:592
->  vfs_get_tree+0x86/0x270 fs/super.c:1497
->  do_new_mount fs/namespace.c:2905 [inline]
->  path_mount+0x196f/0x2be0 fs/namespace.c:3235
->  do_mount fs/namespace.c:3248 [inline]
->  __do_sys_mount fs/namespace.c:3456 [inline]
->  __se_sys_mount+0x2f9/0x3b0 fs/namespace.c:3433
->  do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x467b1a
-> Code: 48 c7 c2 bc ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d2 e8 b8 04 00 00 0f 1f 84 00 00 00 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f60a5227fa8 EFLAGS: 00000206 ORIG_RAX: 00000000000000a5
-> RAX: ffffffffffffffda RBX: 0000000020000200 RCX: 0000000000467b1a
-> RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007f60a5228000
-> RBP: 00007f60a5228040 R08: 00007f60a5228040 R09: 0000000020000000
-> R10: 0000000000000000 R11: 0000000000000206 R12: 0000000020000000
-> R13: 0000000020000100 R14: 00007f60a5228000 R15: 0000000020014b00
-> ==================================================================
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/0000000000003f654905c168b09d%40google.com.
+So page_offline_* handle "b) PageOffline()" only. There is a tiny race 
+between pfn_to_online_page(pfn) and looking at the memmap as we have in 
+many cases already throughout the kernel, to be tackled in the future.
+
+
+(A better name for PageOffline() might make sense; PageSoftOffline() 
+would be catchy but interferes with c). PageLogicallyOffline() is ugly; 
+PageFakeOffline() might do)
+
+>   
+>> +			/*
+>> +			 * Don't race against drivers that set PageOffline()
+>> +			 * and expect no further page access.
+>> +			 */
+>> +			if (page_offline_frozen == MAX_ORDER_NR_PAGES) {
+>> +				page_offline_unfreeze();
+>> +				page_offline_frozen = 0;
+>> +				cond_resched();
+>> +			}
+>> +			if (!page_offline_frozen++)
+>> +				page_offline_freeze();
+>> +
+> 
+> Don't we need to freeze before doing pfn_to_online_page()?
+
+See my explanation above. Thanks!
+
+-- 
+Thanks,
+
+David / dhildenb
+
