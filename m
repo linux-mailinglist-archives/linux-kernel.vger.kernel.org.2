@@ -2,101 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C33C4371629
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D97C37162E
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234422AbhECNsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 09:48:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60850 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232195AbhECNsX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 09:48:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620049650;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ffFCAR2cXSWF5mqx4pWMJSVc5PKfjZLjCWyRA8EWt54=;
-        b=IYqsmSj1v4jQKS43jp/N07gcwrws6l/joPcFrDN3z/Yjdh0Wdfg1TbPzA5JQCWxCat4Rm6
-        3qlRIy6M5IKIxp6Ier1aB9O5nZ5amkF4rkM+GEAh7IoviH6nOjPFLVd4NKQK0XknKbhcck
-        V4eFJUoE+1wQaEERIrEYozDIXYHcQps=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-417-ZyAwS0FwNY6r27RJmlOW4w-1; Mon, 03 May 2021 09:47:26 -0400
-X-MC-Unique: ZyAwS0FwNY6r27RJmlOW4w-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CA111801817;
-        Mon,  3 May 2021 13:47:24 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (ovpn-112-137.ams2.redhat.com [10.36.112.137])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 812925C22A;
-        Mon,  3 May 2021 13:47:21 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Len Brown <lenb@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Willy Tarreau <w@1wt.eu>, Andy Lutomirski <luto@kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        linux-abi@vger.kernel.org,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
- features
-References: <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu>
-        <20210415054713.GB6318@zn.tnic>
-        <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
-        <20210419141454.GE9093@zn.tnic>
-        <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com>
-        <20210419191539.GH9093@zn.tnic>
-        <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com>
-        <20210419215809.GJ9093@zn.tnic>
-        <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
-        <YIMmwhEr46VPAZa4@zn.tnic>
-        <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
-        <87bl9s8kfb.fsf@oldenburg.str.redhat.com>
-        <5d3d513b-77d6-e2e2-779e-ff3ea33deba3@intel.com>
-Date:   Mon, 03 May 2021 15:47:34 +0200
-In-Reply-To: <5d3d513b-77d6-e2e2-779e-ff3ea33deba3@intel.com> (Dave Hansen's
-        message of "Mon, 3 May 2021 06:43:54 -0700")
-Message-ID: <87zgxc53pl.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        id S234378AbhECNtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 09:49:20 -0400
+Received: from mga04.intel.com ([192.55.52.120]:64831 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232195AbhECNtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 09:49:11 -0400
+IronPort-SDR: +FYjd2KjCYWOxdIUG1E2LD2LhxV5vUkD7e1sbjRyRDVM8EsRYT++rsVCyTCtiFyagxjp4QE+ma
+ Rpj3f+KMGtbw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9973"; a="195687448"
+X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
+   d="scan'208";a="195687448"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 06:48:17 -0700
+IronPort-SDR: +xSVnXJbRHsNB+axtW3WmD08iqybp6Qsy2ImH6A/U3h1BkB6kRCmgkqZUW27E1G89RylIp9lXf
+ oC5uYYkfK2mw==
+X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
+   d="scan'208";a="530517064"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 06:48:13 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1ldYvi-009HHh-Ku; Mon, 03 May 2021 16:48:10 +0300
+Date:   Mon, 3 May 2021 16:48:10 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Frieder Schrempf <frieder.schrempf@kontron.de>
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Timo =?iso-8859-1?B?U2NobPzfbGVy?= <schluessler@krause.de>,
+        Tim Harvey <tharvey@gateworks.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Null pointer dereference in mcp251x driver when resuming from
+ sleep
+Message-ID: <YI//GqCv0nkvtQ54@smile.fi.intel.com>
+References: <d031629f-4a28-70cd-4f27-e1866c7e1b3f@kontron.de>
+ <YI/+OP4z787Tmd05@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YI/+OP4z787Tmd05@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Dave Hansen:
+On Mon, May 03, 2021 at 04:44:24PM +0300, Andy Shevchenko wrote:
+> On Mon, May 03, 2021 at 03:11:40PM +0200, Frieder Schrempf wrote:
+> > Hi,
+> > 
+> > with kernel 5.10.x and 5.12.x I'm getting a null pointer dereference
+> > exception from the mcp251x driver when I resume from sleep (see trace
+> > below).
+> > 
+> > As far as I can tell this was working fine with 5.4. As I currently don't
+> > have the time to do further debugging/bisecting, for now I want to at least
+> > report this here.
+> > 
+> > Maybe there is someone around who could already give a wild guess for what
+> > might cause this just by looking at the trace/code!?
+> 
+> Does revert of c7299fea6769 ("spi: Fix spi device unregister flow") help?
 
-> On 5/2/21 10:18 PM, Florian Weimer wrote:
->>> 5. If the feature is enabled in XCR0, the user happily uses it.
->>>
->>>     For AMX, Linux implements "transparent first use"
->>>     so that it doesn't have to allocate 8KB context switch
->>>     buffers for tasks that don't actually use AMX.
->>>     It does this by arming XFD for all tasks, and taking a #NM
->>>     to allocate a context switch buffer only for those tasks
->>>     that actually execute AMX instructions.
->> What happens if the kernel cannot allocate that additional context
->> switch buffer?
->
-> Well, it's vmalloc()'d and currently smaller that the kernel stack,
-> which is also vmalloc()'d.  While it can theoretically fail, if it
-> happens you have bigger problems on your hands.
+Other than that, bisecting will take not more than 3-4 iterations only:
+% git log --oneline v5.4..v5.10.34 -- drivers/net/can/spi/mcp251x.c
+3292c4fc9ce2 can: mcp251x: fix support for half duplex SPI host controllers
+e0e25001d088 can: mcp251x: add support for half duplex controllers
+74fa565b63dc can: mcp251x: Use readx_poll_timeout() helper
+2d52dabbef60 can: mcp251x: add GPIO support
+cfc24a0aa7a1 can: mcp251x: sort include files alphabetically
+df561f6688fe treewide: Use fallthrough pseudo-keyword
+8ce8c0abcba3 can: mcp251x: only reset hardware as required
+877a902103fd can: mcp251x: add mcp251x_write_2regs() and make use of it
+50ec88120ea1 can: mcp251x: get rid of legacy platform data
+14684b93019a Merge git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net
 
-Not sure if I understand.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Is your position that the kernel should terminate processes if it runs
-out of memory instead reporting proper errors, even if memory overcommit
-is disabled?
-
-Kernel stack allocation is different because it happens at system call,
-so errors can be properly reported.
-
-Thanks,
-Florian
 
