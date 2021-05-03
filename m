@@ -2,87 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B5D0371E4D
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B360371E53
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbhECRUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 13:20:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231388AbhECRUN (ORCPT
+        id S232053AbhECRUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 13:20:39 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:58958 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231562AbhECRUg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 13:20:13 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199F4C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 10:19:20 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id u3-20020a2509430000b02904e7f1a30cffso8519831ybm.8
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 10:19:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=kRTl6/sXAc8KmXy+W6gst+5/cWsH2BSF7FQfc4l1psA=;
-        b=m2KLbMxep4kkPHVGIQ5oukf6jcbNwITbQGZzOKSVEhd8hJc1DFOEcMkuFJA51Deqqf
-         UCRvOcRF2JE4hfsQoZDyHjyaQ1mnwTo5ujmYt0dgrDqXqi7n5ZPGw72mJJvH0RgANX4A
-         Cd0az3rN5tk3x1pVsZP/jx+CaIp3w/7ubw+Ly4Fmwi+0kapJ3tCLowLy7cDafhTzrD2K
-         UcDKvE0YmxMwRaoRuv10fuwGb4uzMUyq8WHHDTfqQ5nvYllr6BEkSI0otfFw+o2a+D+S
-         +hIASOWCkIon7/CgvIVk5dNUWzNKTFLFTMLKS3PN+SykECIiUuZb6aCw3b3xMqCB0AlF
-         +CvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=kRTl6/sXAc8KmXy+W6gst+5/cWsH2BSF7FQfc4l1psA=;
-        b=lYnvCfB+LIOOQ+7VoLZE4vIbbkTVgx3sSLg9wKupW3Ggwwl3Ucz9SrWUzrZXFbVSKR
-         axfZ9ZMh8L4buFzzJERxpe2ZI2S67aODatYRqwMxjut/HYS2TmUFO2+mAuYVw3ZmVvRH
-         TtRiRvXYbdoepeHeJpxRHFxb4F3HV6H1vRf7Yz7bWLgeLkHJ/UBvr1fQi/QfMyRxHjyX
-         gosF3TGsnaoWlPP80KCORpyh8JVQTs/PXzLlomh+iniQiuMihrXcZaNOfIzP5rNH8Qbr
-         tmFM3Qm4wSIX6lsKr3Tw09Zqu1QkwPAyZ1mcseTqgQrDESxv1gvtCMLYqJARGMeELum5
-         4g7A==
-X-Gm-Message-State: AOAM533twHaxBhcZgQV5O81krOrLzcbLWAzqBuvYVHvfo0hglXGbYw61
-        uzdPAti5viRYoEZdqU8JQDRfj4Rmg3bS
-X-Google-Smtp-Source: ABdhPJzH0kwfJ8i7nTNUjn4IAvfrLK/3atJih6tzV9pw/3Yb4yFdo/q9o3upacsDzji3qn7xVu3I2XZNXGj4
-X-Received: from kyletso.ntc.corp.google.com ([2401:fa00:fc:202:7bdb:2b58:f6b1:a854])
- (user=kyletso job=sendgmr) by 2002:a25:76ce:: with SMTP id
- r197mr13677287ybc.23.1620062348857; Mon, 03 May 2021 10:19:08 -0700 (PDT)
-Date:   Tue,  4 May 2021 01:18:49 +0800
-Message-Id: <20210503171849.2605302-1-kyletso@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
-Subject: [PATCH] usb: typec: tcpm: Fix wrong handling in GET_SINK_CAP
-From:   Kyle Tso <kyletso@google.com>
-To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org
-Cc:     badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kyle Tso <kyletso@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 3 May 2021 13:20:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=Xgskyepw/lHRcKmwXdhV8lu3qVd1TfZZh6M74Jlngas=; b=QqAwmeJngpzHhZ/sdMQj3UlLTL
+        rC/1Y3ph6DV1kkJjARvToJ6QRKEfJDGAt2iQpPoawvtTM+fMCs6n5bVz+292DJzzv2C+T87D91M2V
+        4wQ42/crm5YKsUUkp1hzvaTN17qEVQ+9oQ5Geo3ecq6vpk8odJrImqmZK5cpK3vHJJj9E+WmPg9Vq
+        PNjtWNXdgJrO7pQU42Bzcn/2z9aPF7saV5+TkwUTbLKY2ssS41V1zdma+gltt/IQ92sPJS4wSu9fA
+        qs7uDvdjdZjyuEC+dg4iSsxKIllszekl4Ujify/+NQ8fbP/N5UrU3OAn3vie0yC4GaRvbbT11kmeF
+        NOTlVoCw==;
+Received: from guinness.priv.deltatee.com ([172.16.1.162])
+        by ale.deltatee.com with esmtp (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1ldcEG-0005Bx-Lz; Mon, 03 May 2021 11:19:33 -0600
+To:     John Hubbard <jhubbard@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-mm@kvack.org,
+        iommu@lists.linux-foundation.org
+Cc:     Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>
+References: <20210408170123.8788-1-logang@deltatee.com>
+ <20210408170123.8788-14-logang@deltatee.com>
+ <78a165e1-657b-c284-d31a-adc8c9ded55d@nvidia.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <4ad9c1d9-ec2a-1fe1-c5d9-19d2053da912@deltatee.com>
+Date:   Mon, 3 May 2021 11:19:32 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+MIME-Version: 1.0
+In-Reply-To: <78a165e1-657b-c284-d31a-adc8c9ded55d@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 172.16.1.162
+X-SA-Exim-Rcpt-To: robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, christian.koenig@amd.com, jgg@ziepe.ca, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jhubbard@nvidia.com
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,MYRULES_FREE,NICE_REPLY_A autolearn=ham
+        autolearn_force=no version=3.4.2
+Subject: Re: [PATCH 13/16] nvme-pci: Convert to using dma_map_sg_p2pdma for
+ p2pdma pages
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After receiving Sink Capabilities Message in GET_SINK_CAP AMS, it is
-incorrect to call tcpm_pd_handle_state because the Message is expected
-and the current state is not Ready states. The result of this incorrect
-operation ends in Soft Reset which is definitely wrong. Simply
-forwarding to Ready States is enough to finish the AMS.
 
-Fixes: 8dea75e11380 ("usb: typec: tcpm: Protocol Error handling")
-Signed-off-by: Kyle Tso <kyletso@google.com>
----
- drivers/usb/typec/tcpm/tcpm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index c4fdc00a3bc8..68e04e397e92 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -2390,7 +2390,7 @@ static void tcpm_pd_data_request(struct tcpm_port *port,
- 		port->nr_sink_caps = cnt;
- 		port->sink_cap_done = true;
- 		if (port->ams == GET_SINK_CAPABILITIES)
--			tcpm_pd_handle_state(port, ready_state(port), NONE_AMS, 0);
-+			tcpm_set_state(port, ready_state(port), 0);
- 		/* Unexpected Sink Capabilities */
- 		else
- 			tcpm_pd_handle_msg(port,
--- 
-2.31.1.527.g47e6f16901-goog
+On 2021-05-02 7:34 p.m., John Hubbard wrote:
+>>   	if (iod->npages == 0)
+>>   		dma_pool_free(dev->prp_small_pool, nvme_pci_iod_list(req)[0],
+>>   			      iod->first_dma);
+>> @@ -868,14 +857,13 @@ static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,
+>>   	if (!iod->nents)
+>>   		goto out_free_sg;
+>>   
+>> -	if (is_pci_p2pdma_page(sg_page(iod->sg)))
+>> -		nr_mapped = pci_p2pdma_map_sg_attrs(dev->dev, iod->sg,
+>> -				iod->nents, rq_dma_dir(req), DMA_ATTR_NO_WARN);
+>> -	else
+>> -		nr_mapped = dma_map_sg_attrs(dev->dev, iod->sg, iod->nents,
+>> -					     rq_dma_dir(req), DMA_ATTR_NO_WARN);
+>> -	if (!nr_mapped)
+>> +	nr_mapped = dma_map_sg_p2pdma_attrs(dev->dev, iod->sg, iod->nents,
+>> +				     rq_dma_dir(req), DMA_ATTR_NO_WARN);
+>> +	if (nr_mapped < 0) {
+>> +		if (nr_mapped != -ENOMEM)
+>> +			ret = BLK_STS_TARGET;
+>>   		goto out_free_sg;
+>> +	}
+> 
+> But now the "nr_mapped == 0" case is no longer doing an early out_free_sg.
+> Is that OK?
 
+dma_map_sg_p2pdma_attrs() never returns zero. It will return -ENOMEM in
+the same situation and results in the same goto out_free_sg.
+
+Logan
