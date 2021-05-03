@@ -2,101 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A911C371505
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 14:09:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9E83714FD
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 14:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233891AbhECMEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 08:04:22 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:33992 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234127AbhECMCU (ORCPT
+        id S234055AbhECMDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 08:03:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233977AbhECMCJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 08:02:20 -0400
+        Mon, 3 May 2021 08:02:09 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1F5C061348
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 05:01:14 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a4so7466655ejk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 05:01:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1620043287; x=1651579287;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=9GGmmooWNh5b/DhW7CcR7eCoOpA7l9skAR5JujeFSO8=;
-  b=i9DBpAm+FjYrw4Qd3ZTP1rhQKGjGuPkpMzDy0QlNZnDIHf3PiB6zniEf
-   SCuxEik7ZRFhS20BPhRDYuUHBE9Kg6MUL7j0kXPvDN+4rgpsIo1cOr0UW
-   Mjj8g8mtf27S8/9HWCQ7U6qWheD/+MEZ9yIbVDu+26OtpOfHzXFXdypAA
-   Y=;
-X-IronPort-AV: E=Sophos;i="5.82,270,1613433600"; 
-   d="scan'208";a="111192371"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-2225282c.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-6001.iad6.amazon.com with ESMTP; 03 May 2021 12:01:20 +0000
-Received: from EX13D28EUC003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2c-2225282c.us-west-2.amazon.com (Postfix) with ESMTPS id 70AECA1CF5;
-        Mon,  3 May 2021 12:01:19 +0000 (UTC)
-Received: from uc8bbc9586ea454.ant.amazon.com (10.43.160.119) by
- EX13D28EUC003.ant.amazon.com (10.43.164.43) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 3 May 2021 12:01:15 +0000
-From:   Siddharth Chandrasekaran <sidcha@amazon.de>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Graf <graf@amazon.com>
-CC:     Siddharth Chandrasekaran <sidcha@amazon.de>,
-        Alexander Graf <graf@amazon.de>, <kvm@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] doc/kvm: Fix wrong entry for KVM_CAP_X86_MSR_FILTER
-Date:   Mon, 3 May 2021 14:00:58 +0200
-Message-ID: <20210503120059.9283-1-sidcha@amazon.de>
-X-Mailer: git-send-email 2.17.1
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s+RwNQE6LklMpMlC7/iRT4MHt+ceTv7XUchB/czKmcE=;
+        b=VUYtUdRS35j5f7KzTo1RJ4Uj7c+3dSMRjwbG0AyH7ZkM50sTSaPdvp2+bzZiOyPSWl
+         rhRxFlXD4HoWhP4hwvWgIcpNl9fkZtcIZKNxp1p0N1tj5/rNScaPUGLYE0SYHIyyxUQu
+         pUv3QTuK8u7vm+sK5lByW77ACS8NFZMorBtWJs/EfMybCyAbSkxHpQmdpvm0jSXf/I/t
+         zINpVQp9Zj5ObKftx7UObzdLfobOt11rhBp/0EZN0mhnEJVYKF9EskaKFmDtdkyvPO1+
+         +YSMiISVQ78aZsas9vVSaf95PUK8nB+7md4miDj/doZhveTda3AZZTDCgkCI7zn78DQl
+         OAOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s+RwNQE6LklMpMlC7/iRT4MHt+ceTv7XUchB/czKmcE=;
+        b=KU22BRrAZfZC9JybaU+97r6IgY5bRCGeqAMuhW+54J4MapcllgYCgLu+8c8imC+AGf
+         4/ZcRV11/kYbpQ/XyBTs+q8HsTmyA5hq0Lokl9P5asXtnlv+utD+kpURObJ26OSAlktU
+         vw7/lwPJTb25HEXml7DeLrSVG7R+Y+30iXh9OQrSJm5aMQK+ccst69q0p40f4zvmQR7p
+         ijP+rtjkHvC23xntuJmOtvs6uso93O65x0+8tKaWvYK0EnW/CsQuzSX3lJ0xYcK5AVav
+         MFABR+99VTBlY9cnjeaFZ9pb3qJIj/GuTvtXOPQ5B/zARe/q2VZeU/RNPKubSEFnpPct
+         qDvg==
+X-Gm-Message-State: AOAM53140bSCsml87X7OTKIUNKOrqicJ2+09Rhz2bwrGpefkWZOR2T3c
+        QIyZWntvMpt+rFQeIbddNt1yX8WUN8yeegSXSwB8rg==
+X-Google-Smtp-Source: ABdhPJyfsrx1lO1Gmcy3xzc4ZJCS3yemIFD7d45fFN/YI+6TzJm6tvqq28FAOl1vfN35ZesI1bNKxs/D1Ifc2evZ7/Y=
+X-Received: by 2002:a17:906:168d:: with SMTP id s13mr15971516ejd.81.1620043272065;
+ Mon, 03 May 2021 05:01:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.119]
-X-ClientProxiedBy: EX13D22UWC002.ant.amazon.com (10.43.162.29) To
- EX13D28EUC003.ant.amazon.com (10.43.164.43)
+References: <20210429130510.1621665-1-jackmanb@google.com> <CAEf4BzY7sx0gW=o5rM8WDzW1J0U_Yep3MMuJScoMg-hBAeBPCg@mail.gmail.com>
+In-Reply-To: <CAEf4BzY7sx0gW=o5rM8WDzW1J0U_Yep3MMuJScoMg-hBAeBPCg@mail.gmail.com>
+From:   Brendan Jackman <jackmanb@google.com>
+Date:   Mon, 3 May 2021 14:01:00 +0200
+Message-ID: <CA+i-1C2+Lt7kmwsZOEw6D8B_Lc+aJdZoUmPDh08+7y_uMNW+kA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] libbpf: Fix signed overflow in ringbuf_process_ring
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Florent Revest <revest@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The capability that exposes new ioctl KVM_X86_SET_MSR_FILTER to
-userspace is specified incorrectly as the ioctl itself (instead of
-KVM_CAP_X86_MSR_FILTER). This patch fixes it.
+On Fri, 30 Apr 2021 at 18:31, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Apr 29, 2021 at 6:05 AM Brendan Jackman <jackmanb@google.com> wrote:
 
-Fixes: 1a155254ff93 ("KVM: x86: Introduce MSR filtering")
-Cc: Alexander Graf <graf@amazon.de>
-Signed-off-by: Siddharth Chandrasekaran <sidcha@amazon.de>
----
- Documentation/virt/kvm/api.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> > Note: I feel a bit guilty about the fact that this makes the reader
+> > think about implicit conversions. Nobody likes thinking about that.
+> >
+> > But explicit casts don't really help with clarity:
+> >
+> >   return (int)min(cnt, (int64_t)INT_MAX); // ugh
+> >
+>
+> I'd go with
+>
+> if (cnt > INT_MAX)
+>     return INT_MAX;
+>
+> return cnt;
 
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index 307f2fcf1b02..e778f4aa08f4 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -4713,7 +4713,7 @@ KVM_PV_VM_VERIFY
- 4.126 KVM_X86_SET_MSR_FILTER
- ----------------------------
- 
--:Capability: KVM_X86_SET_MSR_FILTER
-+:Capability: KVM_CAP_X86_MSR_FILTER
- :Architectures: x86
- :Type: vm ioctl
- :Parameters: struct kvm_msr_filter
-@@ -6586,7 +6586,7 @@ accesses that would usually trigger a #GP by KVM into the guest will
- instead get bounced to user space through the KVM_EXIT_X86_RDMSR and
- KVM_EXIT_X86_WRMSR exit notifications.
- 
--8.27 KVM_X86_SET_MSR_FILTER
-+8.27 KVM_CAP_X86_MSR_FILTER
- ---------------------------
- 
- :Architectures: x86
--- 
-2.17.1
+Sure, it has all the same implicit casts/promotions but I guess it's
+clearer anyway.
 
+> If you don't mind, I can patch it up while applying?
 
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
-
+Yes please do, thanks!
