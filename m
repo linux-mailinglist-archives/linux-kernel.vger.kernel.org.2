@@ -2,149 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 948B9372273
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 23:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E0E37227A
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 23:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbhECVgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 17:36:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43547 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229497AbhECVgb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 17:36:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620077737;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=46446gCvXI349wK5e/1GSr6sFMdA673+zPNAeBlqfRI=;
-        b=PErLj1VqSmSSMA8TpvUy9QM8W3PlngvsrvSxzoXjO7ANkjb12ez+3NJmU+8ljb5/soG1oz
-        69NsxISHjAVxATJ5HU7W4pPPkM3VQzqJVTYT9qfC3znt8c1CFNFDDvkXbz5GYkiB0FlYpW
-        qV9VGagxfSy3ec16nwjkU/7qOQdKhts=
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
- [209.85.166.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-552-lEwJZGBHO-2BxM6zJ2WB3Q-1; Mon, 03 May 2021 17:35:34 -0400
-X-MC-Unique: lEwJZGBHO-2BxM6zJ2WB3Q-1
-Received: by mail-io1-f71.google.com with SMTP id z25-20020a05660200d9b02903de90ff885fso4304012ioe.11
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 14:35:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=46446gCvXI349wK5e/1GSr6sFMdA673+zPNAeBlqfRI=;
-        b=JOA6f2YYY9EKHDla2946HrtKjQNmDenH6KTxS+hQg/4JhBhpz9cDGNdvWCtb1pdrRk
-         ee0C4tmyztQINIpqhU1x2X/Db6fdRPuUEEzej6abEwYjLh0x386Jy1TE1ENXprDM+b/G
-         ZR4gR+yFySAhgZw7Xb89XfTObUQWzjulUuFV9/b+g3/oxPnKrPC4JW98uFrMThKOk9lH
-         bleNFZ5QfU6e51Fxfl7cJENLONdaXcdLq1ikcLUJ1E2zhWYcM4Vqq+7Ch+nbBro0wIHG
-         Ne+nx1xVo7r2uMkdzCYgk7YAki0tqWic49kUhRlPb3Q/dec4ZOUkCxDv+PisggPdGDIN
-         En+w==
-X-Gm-Message-State: AOAM530mWd+3mJJ/e6ZSj9YUxxotYU+SzFPzO44uktpR0HakMEB1nrUk
-        +ZG5EywgAFJ6GpyfU6tvxrgNutjyj3ziFx2vUYl0Lvd6WhIqZIAg6LZJTQ/ykzDbzW4Wsw+U8Yl
-        FX6cTZrQjE7bPcyi7wfgTU8Ty
-X-Received: by 2002:a6b:f311:: with SMTP id m17mr13178202ioh.162.1620077733903;
-        Mon, 03 May 2021 14:35:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxFt+8zG9Bfyzq8qPo2QzfIb05clK5EcquIQfvOXMV7nLFnF+yJzMpkeaxhvmo1WKa6KCee9w==
-X-Received: by 2002:a6b:f311:: with SMTP id m17mr13178192ioh.162.1620077733709;
-        Mon, 03 May 2021 14:35:33 -0700 (PDT)
-Received: from halaneylaptop.redhat.com (068-184-200-203.res.spectrum.com. [68.184.200.203])
-        by smtp.gmail.com with ESMTPSA id y25sm352977ioj.39.2021.05.03.14.35.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 14:35:33 -0700 (PDT)
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, Andrew Halaney <ahalaney@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH] init: Print out unknown kernel parameters
-Date:   Mon,  3 May 2021 16:34:01 -0500
-Message-Id: <20210503213400.27360-1-ahalaney@redhat.com>
-X-Mailer: git-send-email 2.30.2
+        id S229801AbhECVgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 17:36:53 -0400
+Received: from mga18.intel.com ([134.134.136.126]:6730 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229497AbhECVgv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 17:36:51 -0400
+IronPort-SDR: Rig1Eo6WccoVLJta+viaF8LgkdBGPDygC5BAbvCnvw5e/e5dCXFGi8XVCkVZeqRHXA0gIyrVQA
+ rsHIpWEz3FaQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9973"; a="185312142"
+X-IronPort-AV: E=Sophos;i="5.82,271,1613462400"; 
+   d="scan'208";a="185312142"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 14:35:55 -0700
+IronPort-SDR: /I1gyT0i6VaZAK0YTHqZYXHrR6eazkSK4EyTaKagYoOFvZgHRJqf9C9QAj6s32tt/4fdio/M/t
+ t6Q0kKs0UGLg==
+X-IronPort-AV: E=Sophos;i="5.82,271,1613462400"; 
+   d="scan'208";a="428548791"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.212.218.202])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 14:35:54 -0700
+From:   Russ Weight <russell.h.weight@intel.com>
+To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com,
+        richard.gong@intel.com, Russ Weight <russell.h.weight@intel.com>
+Subject: [PATCH v12 0/7] FPGA Security Manager Class Driver
+Date:   Mon,  3 May 2021 14:35:39 -0700
+Message-Id: <20210503213546.316439-1-russell.h.weight@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is easy to foobar setting a kernel parameter on the command line
-without realizing it, there's not much output that you can use to
-assess what the kernel did with that parameter by default.
+The FPGA Security Manager class driver provides a common
+API for user-space tools to manage updates for secure FPGA
+devices. Device drivers that instantiate the FPGA Security
+Manager class driver will interact with a HW secure update
+engine in order to transfer new FPGA and BMC images to FLASH so
+that they will be automatically loaded when the FPGA card reboots.
 
-Make it a little more explicit which parameters on the command line
-_looked_ like a valid parameter for the kernel, but did not match
-anything and ultimately got tossed to init. This is very similar to the
-unknown parameter message received when loading a module.
+A significant difference between the FPGA Manager and the FPGA 
+Security Manager is that the FPGA Manager does a live update (Partial
+Reconfiguration) to a device whereas the FPGA Security Manager
+updates the FLASH images for the Static Region and the BMC so that
+they will be loaded the next time the FPGA card boots. Security is
+enforced by hardware and firmware. The security manager interacts
+with the firmware to initiate an update, pass in the necessary data,
+and collect status on the update.
 
-This assumes the parameters are processed in a normal fashion, some
-parameters (dyndbg= for example) don't register their
-parameter with the rest of the kernel's parameters, and therefore
-always show up in this list (and are also given to init - like the
-rest of this list).
+The n3000bmc-secure driver is the first driver to use the FPGA
+Security Manager. This driver was previously submitted in the same
+patch set, but has been split out into a separate patch set starting
+with V2. Future devices will also make use of this common API for
+secure updates.
 
-Another example is BOOT_IMAGE= is highlighted as an offender, which it
-technically is, but is passed by LILO and GRUB so most systems will see
-that complaint.
+In addition to managing secure updates of the FPGA and BMC images,
+the FPGA Security Manager update process may also be used to
+program root entry hashes and cancellation keys for the FPGA static
+region, the FPGA partial reconfiguration region, and the BMC.
+The image files are self-describing, and contain a header describing
+the image type.
 
-Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-Suggested-by: Borislav Petkov <bp@suse.de>
-Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
----
+Secure updates make use of the request_firmware framework, which
+requires that image files are accessible under /lib/firmware. A request
+for a secure update returns immediately, while the update itself
+proceeds in the context of a kernel worker thread. Sysfs files provide
+a means for monitoring the progress of a secure update and for
+retrieving error information in the event of a failure.
 
-Hello,
+The API includes a "name" sysfs file to export the name of the parent
+driver. It also includes an "update" sub-directory containing files that
+that can be used to instantiate and monitor a secure update.
 
-This idea was suggested by rostedt and bpetkov, not sure what they'll
-think of the implementation :P Please let me know if you've got
-suggestions (or hate the idea in general).
+Changelog v11 -> v12:
+  - Updated Date and KernelVersion fields in ABI documentation
+  - Removed size parameter from write_blk() op - it is now up to
+    the lower-level driver to determine the appropriate size and
+    to update smgr->remaining_size accordingly.
+  - Changed syntax of sec_mgr_prog_str[] and sec_mgr_err_str array definitions
+    from:
+	"idle",			/* FPGA_SEC_PROG_IDLE */
+    to:
+	[FPGA_SEC_PROG_IDLE]	    = "idle",
 
-Piggybacking on unknown_bootoption()'s assessment of the
-parameters made this pretty straight forward, but I'm a bit unhappy with
-dyndbg and BOOT_IMAGE showing up. I didn't want to make an exception for
-them, so I left it as is and decided that their oddities ought to be
-shown in the output still. The format of the output is borrowed from the
-dynamic debug statements for printing init's env/argv lines.
+Changelog v10 -> v11:
+  - Fixed a spelling error in a comment
+  - Initialize smgr->err_code and smgr->progress explicitly in
+    fpga_sec_mgr_create() instead of accepting the default 0 value.
 
-Due to the BOOT_IMAGE bit I didn't actually ever get to exercise the
-early return (limited on my test systems right now) but I think I got
-that statement correct.
+Changelog v9 -> v10:
+  - Rebased to 5.12-rc2 next
+  - Updated Date and KernelVersion in ABI documentation
 
-Thanks,
-Andrew
+Changelog v8 -> v9:
+  - Rebased patches for 5.11-rc2
+  - Updated Date and KernelVersion in ABI documentation
 
- init/main.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+Changelog v7 -> v8:
+  - Fixed grammatical error in Documentation/fpga/fpga-sec-mgr.rst
 
-diff --git a/init/main.c b/init/main.c
-index dd11bfd10ead..cd313f1bc7b0 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -872,6 +872,20 @@ void __init __weak arch_call_rest_init(void)
- 	rest_init();
- }
- 
-+void print_unknown_bootoptions(void)
-+{
-+	const char *const *p;
-+
-+	if (panic_later || (!argv_init[1] && !envp_init[2]))
-+		return;
-+
-+	pr_notice("Unknown command line parameters:\n");
-+	for (p = &argv_init[1]; *p; p++)
-+		pr_notice("    %s\n", *p);
-+	for (p = &envp_init[2]; *p; p++)
-+		pr_notice("    %s\n", *p);
-+}
-+
- asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
- {
- 	char *command_line;
-@@ -913,6 +927,7 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
- 				  static_command_line, __start___param,
- 				  __stop___param - __start___param,
- 				  -1, -1, NULL, &unknown_bootoption);
-+	print_unknown_bootoptions();
- 	if (!IS_ERR_OR_NULL(after_dashes))
- 		parse_args("Setting init args", after_dashes, NULL, 0, -1, -1,
- 			   NULL, set_init_arg);
+Changelog v6 -> v7:
+  - Changed dates in documentation file to December 2020
+  - Changed filename_store() to use kmemdup_nul() instead of
+    kstrndup() and changed the count to not assume a line-return.
+
+Changelog v5 -> v6:
+  - Removed sysfs support and documentation for the display of the
+    flash count, root entry hashes, and code-signing-key cancelation
+    vectors from the class driver. This information can vary by device
+    and will instead be displayed by the device-specific parent driver.
+
+Changelog v4 -> v5:
+  - Added the devm_fpga_sec_mgr_unregister() function, following recent
+    changes to the fpga_manager() implementation.
+  - Changed most of the *_show() functions to use sysfs_emit()
+    instead of sprintf(
+  - When checking the return values for functions of type enum
+    fpga_sec_err err_code, test for FPGA_SEC_ERR_NONE instead of 0
+
+Changelog v3 -> v4:
+  - This driver is generic enough that it could be used for non Intel
+    FPGA devices. Changed from "Intel FPGA Security Manager" to FPGA
+    Security Manager" and removed unnecessary references to "Intel".
+  - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
+    Note that this also affects some filenames.
+
+Changelog v2 -> v3:
+  - Use dev_err() to report invalid progress in sec_progress()
+  - Use dev_err() to report invalid error code in sec_error()
+  - Modified sysfs handler check in check_sysfs_handler() to make
+    it more readable.
+  - Removed unnecessary "goto done"
+  - Added a comment to explain imgr->driver_unload in
+    ifpga_sec_mgr_unregister()
+
+Changelog v1 -> v2:
+  - Separated out the MAX10 BMC Security Engine to be submitted in
+    a separate patch-set.
+  - Bumped documentation dates and versions
+  - Split ifpga_sec_mgr_register() into create() and register() functions
+  - Added devm_ifpga_sec_mgr_create()
+  - Added Documentation/fpga/ifpga-sec-mgr.rst 
+  - Changed progress state "read_file" to "reading"
+  - Added sec_error() function (similar to sec_progress())
+  - Removed references to bmc_flash_count & smbus_flash_count (not supported)
+  - Removed typedefs for imgr ops
+  - Removed explicit value assignments in enums
+  - Other minor code cleanup per review comments 
+
+Russ Weight (7):
+  fpga: sec-mgr: fpga security manager class driver
+  fpga: sec-mgr: enable secure updates
+  fpga: sec-mgr: expose sec-mgr update status
+  fpga: sec-mgr: expose sec-mgr update errors
+  fpga: sec-mgr: expose sec-mgr update size
+  fpga: sec-mgr: enable cancel of secure update
+  fpga: sec-mgr: expose hardware error info
+
+ .../ABI/testing/sysfs-class-fpga-sec-mgr      |  81 +++
+ Documentation/fpga/fpga-sec-mgr.rst           |  44 ++
+ Documentation/fpga/index.rst                  |   1 +
+ MAINTAINERS                                   |   9 +
+ drivers/fpga/Kconfig                          |   9 +
+ drivers/fpga/Makefile                         |   3 +
+ drivers/fpga/fpga-sec-mgr.c                   | 648 ++++++++++++++++++
+ include/linux/fpga/fpga-sec-mgr.h             |  99 +++
+ 8 files changed, 894 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
+ create mode 100644 Documentation/fpga/fpga-sec-mgr.rst
+ create mode 100644 drivers/fpga/fpga-sec-mgr.c
+ create mode 100644 include/linux/fpga/fpga-sec-mgr.h
+
 -- 
-2.30.2
+2.25.1
 
