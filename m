@@ -2,173 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B971C37187D
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4CAA371880
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbhECPx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 11:53:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39946 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230236AbhECPxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 11:53:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23E4561139;
-        Mon,  3 May 2021 15:53:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620057181;
-        bh=dtRR4Uq9hYnY1Bes1pVKnOXHCLy2I6C1OgZlDq4I7sY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qLmjWDMkHNhCEYNU+12Fni72j/oBpg/+JoPpJRy/BuzDtTasQuxpEqDl0p4461F73
-         7HExOZrUzV/m0ppzFjowFPyXvWxplDhmfFmnEgEaUHt18mKx5eRJLn4IrifmyWmCxH
-         2t+KCwhjr5NOpS7ykK3T8wa0AgmHwbUfPF+0aXYtqQtEubpDoUlOiQ2gqP+eZEzEuU
-         uAgeBsXmNe1JT1A2MOhSTEMNlnRhPnSBKrE886u6HAqhvcoNmq5HpJKb1zcYsf5Tw4
-         +yOPUneoUCUfGgBIsXMiZ7Zi1CnR9e2vdwvDPA84jBkiAzkff6wjquwth546LwskOq
-         sQ05w3DHOZIYQ==
-Date:   Mon, 3 May 2021 18:52:59 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
-        James.Bottomley@hansenpartnership.com, keescook@chromium.org,
-        jsnitsel@redhat.com, ml.linux@elloe.vision,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/4] tpm: Only enable supported irqs
-Message-ID: <YJAcWyTs2T3xHnFx@kernel.org>
-References: <20210501135727.17747-1-LinoSanfilippo@gmx.de>
- <20210501135727.17747-5-LinoSanfilippo@gmx.de>
+        id S230518AbhECPy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 11:54:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42622 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230501AbhECPyY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 11:54:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620057210;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eW25/UgqutiKmZjUcom0hJywBiqaVfV77ax9Dtfjk2k=;
+        b=WEhR6z4+nBKJzmGkLvAv96w7LDhOAy8ckCwf7klYC/yAo+y2Jjjtk/EVYI+BnavHwiBnZr
+        LTtlhjX4AwIrj7DkcE2E59ubCNeKsPqgl8CJPJBB+tdFW/6HrXbW1FyrE8kjWmd183sQbs
+        vUArFeQuUfUoG3W2wGMbyAcBnIFXGd4=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-420-uNmD2rklMjGlspy_6ca7BA-1; Mon, 03 May 2021 11:53:29 -0400
+X-MC-Unique: uNmD2rklMjGlspy_6ca7BA-1
+Received: by mail-ej1-f70.google.com with SMTP id 16-20020a1709063010b029037417ca2d43so2239959ejz.5
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 08:53:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eW25/UgqutiKmZjUcom0hJywBiqaVfV77ax9Dtfjk2k=;
+        b=iXqnJHhfxsDii96cuPvwxaF6Zs0FYD1Vu2y4o466IJnhpSY6B5/rgV5dH/H+vl7No+
+         S2aNE7hk1t2knE49uwilEwcFLUlwZWf1gM724SqOAnuhygpqAj3U1hV/9geKsBF9pJC0
+         Icvt/4EaQXTO4EZl4UmESrlk7ScRe10R9QbOXXVM12zt9pe32gH7UjHiCJ6NF4wOwIDA
+         6k4iqbrk11jSovKksouadibQoUV/hl/lft9dqdN+IabODAamXFoEtwzXLPbtaDOq/yvs
+         3VV4wyjP21Uw83lHV7KjWi62w4CvtkoDZnh67jUr8+Qs5MDO6y+r1ZqxJtYhk+AYm050
+         8oLA==
+X-Gm-Message-State: AOAM5308hDJfqiOcjnVsNZuq1m8U5+x/kcOX5eqoAOnZSk0lkvhU5UJt
+        TIwXYK/KunDO7hlQl0kBFYhWh9Xay6e46od46PceKsl+IRNzy5H5azWhThRjcgbq1itvdZWgVjm
+        ntmiVcbYav4i3BAcUMnBkac3n0IxQEIl2nYjSO/dpy7oY5j0E0/4jnVSneMMl9G2WeGPY2vR2Gk
+        R7
+X-Received: by 2002:a05:6402:28f:: with SMTP id l15mr21084550edv.246.1620057207929;
+        Mon, 03 May 2021 08:53:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz50Cax+zYd3Jv3mVDf0fptucEmzbPpYjuq5457t1eJPNJ43lNuaInbKE4D2kwtHP+ZLSjmkg==
+X-Received: by 2002:a05:6402:28f:: with SMTP id l15mr21084518edv.246.1620057207677;
+        Mon, 03 May 2021 08:53:27 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id aj8sm45366ejc.64.2021.05.03.08.53.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 08:53:27 -0700 (PDT)
+Subject: Re: [PATCH 4/4] KVM: nVMX: Map enlightened VMCS upon restore when
+ possible
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel@vger.kernel.org
+References: <20210503150854.1144255-1-vkuznets@redhat.com>
+ <20210503150854.1144255-5-vkuznets@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <87de6570-750c-5ce1-17a2-36abe99813ac@redhat.com>
+Date:   Mon, 3 May 2021 17:53:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210501135727.17747-5-LinoSanfilippo@gmx.de>
+In-Reply-To: <20210503150854.1144255-5-vkuznets@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 01, 2021 at 03:57:27PM +0200, Lino Sanfilippo wrote:
-> Do not set interrupts which are not supported by the hardware. Instead use
-> the information from the capability query and activate only the reported
-> interrupts.
+On 03/05/21 17:08, Vitaly Kuznetsov wrote:
+> It now looks like a bad idea to not restore eVMCS mapping directly from
+> vmx_set_nested_state(). The restoration path now depends on whether KVM
+> will continue executing L2 (vmx_get_nested_state_pages()) or will have to
+> exit to L1 (nested_vmx_vmexit()), this complicates error propagation and
+> diverges too much from the 'native' path when 'nested.current_vmptr' is
+> set directly from vmx_get_nested_state_pages().
 > 
-> Signed-off-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
-
-Zero reasoning again, why.
-
-
-> ---
->  drivers/char/tpm/tpm_tis_core.c | 68 ++++++++++++++++++---------------
->  drivers/char/tpm/tpm_tis_core.h |  1 +
->  2 files changed, 38 insertions(+), 31 deletions(-)
+> The existing solution postponing eVMCS mapping also seems to be fragile.
+> In multiple places the code checks whether 'vmx->nested.hv_evmcs' is not
+> NULL to distinguish between eVMCS and non-eVMCS cases. All these checks
+> are 'incomplete' as we have a weird 'eVMCS is in use but not yet mapped'
+> state.
 > 
-> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
-> index 9615234054aa..757498a63f57 100644
-> --- a/drivers/char/tpm/tpm_tis_core.c
-> +++ b/drivers/char/tpm/tpm_tis_core.c
-> @@ -936,13 +936,47 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
->  	if (rc)
->  		goto out_err;
->  
-> +	/* Figure out the capabilities */
-> +	rc = tpm_tis_read32(priv, TPM_INTF_CAPS(priv->locality), &intfcaps);
-> +	if (rc < 0)
-> +		goto out_err;
-> +
-> +	dev_dbg(dev, "TPM interface capabilities (0x%x):\n",
-> +		intfcaps);
-> +	if (intfcaps & TPM_INTF_BURST_COUNT_STATIC)
-> +		dev_dbg(dev, "\tBurst Count Static\n");
-> +	if (intfcaps & TPM_INTF_CMD_READY_INT) {
-> +		priv->supported_irqs |= TPM_INTF_CMD_READY_INT;
-> +		dev_dbg(dev, "\tCommand Ready Int Support\n");
-> +	}
-> +	if (intfcaps & TPM_INTF_INT_EDGE_FALLING)
-> +		dev_dbg(dev, "\tInterrupt Edge Falling\n");
-> +	if (intfcaps & TPM_INTF_INT_EDGE_RISING)
-> +		dev_dbg(dev, "\tInterrupt Edge Rising\n");
-> +	if (intfcaps & TPM_INTF_INT_LEVEL_LOW)
-> +		dev_dbg(dev, "\tInterrupt Level Low\n");
-> +	if (intfcaps & TPM_INTF_INT_LEVEL_HIGH)
-> +		dev_dbg(dev, "\tInterrupt Level High\n");
-> +	if (intfcaps & TPM_INTF_LOCALITY_CHANGE_INT) {
-> +		priv->supported_irqs |= TPM_INTF_LOCALITY_CHANGE_INT;
-> +		dev_dbg(dev, "\tLocality Change Int Support\n");
-> +	}
-> +	if (intfcaps & TPM_INTF_STS_VALID_INT) {
-> +		priv->supported_irqs |= TPM_INTF_STS_VALID_INT;
-> +		dev_dbg(dev, "\tSts Valid Int Support\n");
-> +	}
-> +	if (intfcaps & TPM_INTF_DATA_AVAIL_INT) {
-> +		priv->supported_irqs |= TPM_INTF_DATA_AVAIL_INT;
-> +		dev_dbg(dev, "\tData Avail Int Support\n");
-> +	}
-> +
->  	/* Take control of the TPM's interrupt hardware and shut it off */
->  	rc = tpm_tis_read32(priv, TPM_INT_ENABLE(priv->locality), &intmask);
->  	if (rc < 0)
->  		goto out_err;
->  
-> -	intmask |= TPM_INTF_CMD_READY_INT | TPM_INTF_LOCALITY_CHANGE_INT |
-> -		   TPM_INTF_DATA_AVAIL_INT | TPM_INTF_STS_VALID_INT;
-> +	intmask |= priv->supported_irqs;
-> +
->  	intmask &= ~TPM_GLOBAL_INT_ENABLE;
->  	tpm_tis_write32(priv, TPM_INT_ENABLE(priv->locality), intmask);
->  
-> @@ -971,32 +1005,6 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
->  		goto out_err;
->  	}
->  
-> -	/* Figure out the capabilities */
-> -	rc = tpm_tis_read32(priv, TPM_INTF_CAPS(priv->locality), &intfcaps);
-> -	if (rc < 0)
-> -		goto out_err;
-> -
-> -	dev_dbg(dev, "TPM interface capabilities (0x%x):\n",
-> -		intfcaps);
-> -	if (intfcaps & TPM_INTF_BURST_COUNT_STATIC)
-> -		dev_dbg(dev, "\tBurst Count Static\n");
-> -	if (intfcaps & TPM_INTF_CMD_READY_INT)
-> -		dev_dbg(dev, "\tCommand Ready Int Support\n");
-> -	if (intfcaps & TPM_INTF_INT_EDGE_FALLING)
-> -		dev_dbg(dev, "\tInterrupt Edge Falling\n");
-> -	if (intfcaps & TPM_INTF_INT_EDGE_RISING)
-> -		dev_dbg(dev, "\tInterrupt Edge Rising\n");
-> -	if (intfcaps & TPM_INTF_INT_LEVEL_LOW)
-> -		dev_dbg(dev, "\tInterrupt Level Low\n");
-> -	if (intfcaps & TPM_INTF_INT_LEVEL_HIGH)
-> -		dev_dbg(dev, "\tInterrupt Level High\n");
-> -	if (intfcaps & TPM_INTF_LOCALITY_CHANGE_INT)
-> -		dev_dbg(dev, "\tLocality Change Int Support\n");
-> -	if (intfcaps & TPM_INTF_STS_VALID_INT)
-> -		dev_dbg(dev, "\tSts Valid Int Support\n");
-> -	if (intfcaps & TPM_INTF_DATA_AVAIL_INT)
-> -		dev_dbg(dev, "\tData Avail Int Support\n");
-> -
->  	/* INTERRUPT Setup */
->  	init_waitqueue_head(&priv->read_queue);
->  	init_waitqueue_head(&priv->int_queue);
-> @@ -1066,9 +1074,7 @@ static void tpm_tis_reenable_interrupts(struct tpm_chip *chip)
->  	if (rc < 0)
->  		goto out;
->  
-> -	intmask |= TPM_INTF_CMD_READY_INT
-> -	    | TPM_INTF_LOCALITY_CHANGE_INT | TPM_INTF_DATA_AVAIL_INT
-> -	    | TPM_INTF_STS_VALID_INT | TPM_GLOBAL_INT_ENABLE;
-> +	intmask |= priv->supported_irqs | TPM_GLOBAL_INT_ENABLE;
->  
->  	tpm_tis_write32(priv, TPM_INT_ENABLE(priv->locality), intmask);
->  
-> diff --git a/drivers/char/tpm/tpm_tis_core.h b/drivers/char/tpm/tpm_tis_core.h
-> index dc5f92b18dca..8ff62213d8fc 100644
-> --- a/drivers/char/tpm/tpm_tis_core.h
-> +++ b/drivers/char/tpm/tpm_tis_core.h
-> @@ -89,6 +89,7 @@ struct tpm_tis_data {
->  	u16 manufacturer_id;
->  	int locality;
->  	int irq;
-> +	unsigned int supported_irqs;
->  	unsigned int flags;
->  	void __iomem *ilb_base_addr;
->  	u16 clkrun_enabled;
-> -- 
-> 2.31.1
-
-/Jarkko
+> Also, in case vmx_get_nested_state() is called right after
+> vmx_set_nested_state() without executing the guest first, the resulting
+> state is going to be incorrect as 'KVM_STATE_NESTED_EVMCS' flag will be
+> missing.
 > 
+> Fix all these issues by making eVMCS restoration path closer to its
+> 'native' sibling by putting eVMCS GPA to 'struct kvm_vmx_nested_state_hdr'.
+> To avoid ABI incompatibility, do not introduce a new flag and keep the
+
+I'm not sure what is the disadvantage of not having a new flag.
+
+Having two different paths with subtly different side effects however 
+seems really worse for maintenance.  We are already discussing in 
+another thread how to get rid of the check_nested_events side effects; 
+that might possibly even remove the need for patch 1, so it's at least 
+worth pursuing more than adding this second path.
+
+I have queued patch 1, but I'd rather have a kvm selftest for it.  It 
+doesn't seem impossible to have one...
+
+Paolo
+
+> original eVMCS mapping path through KVM_REQ_GET_NESTED_STATE_PAGES in
+> place. To distinguish between 'new' and 'old' formats consider eVMCS
+> GPA == 0 as an unset GPA (thus forcing KVM_REQ_GET_NESTED_STATE_PAGES
+> path). While technically possible, it seems to be an extremely unlikely
+> case.
+
+
+> Signed-off-by: Vitaly Kuznetsov<vkuznets@redhat.com>
+
