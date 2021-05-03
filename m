@@ -2,64 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF4737204C
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 21:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA5AB37202C
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 21:13:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbhECTT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 15:19:59 -0400
-Received: from attaques.jabatus.fr ([109.234.163.27]:54583 "EHLO
-        attaques.jabatus.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbhECTT4 (ORCPT
+        id S229602AbhECTOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 15:14:24 -0400
+Received: from mail-oo1-f51.google.com ([209.85.161.51]:35787 "EHLO
+        mail-oo1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhECTOY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 15:19:56 -0400
-X-Greylist: delayed 342 seconds by postgrey-1.27 at vger.kernel.org; Mon, 03 May 2021 15:19:56 EDT
-X-Spam-Status: No
-X-MailPropre-MailScanner-From: hello@haciendadreal.com
-X-MailPropre-MailScanner-SpamCheck: not spam, SpamAssassin (cached,
-        score=-2.499, required 5, autolearn=disabled, BAYES_50 2.50,
-        FREEMAIL_FORGED_REPLYTO 0.10, RCVD_IN_DNSWL_HI -5.00,
-        SPF_HELO_PASS -0.10, SPF_NONE 0.00)
-X-MailPropre-MailScanner: Not scanned: please contact your Internet E-Mail Service Provider for details
-X-MailPropre-MailScanner-ID: 9CAC01001D7.ACDD4
-X-MailPropre-MailScanner-Information: Please contact the ISP for more information
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=taurusmedia.fr; s=default; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-ID:Date:Subject:To:From:Reply-To:Sender:Cc:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=HrqC/uBm2ezGl4EmtNFX6Fjgyr1xe4i7PKudIs8IuOM=; b=OsvO+Yxj8bizc67n0ko91oYaS/
-        9KNbBGndy+jy2/g3Bsfs2Cbe0g3GlN6EZIw+U0Rja0upb91GopUZLDMNMPt0Gd0g84BvdMhtFInWW
-        FWDSw7p21jZzj4rd352BGG01mhYZAR+vVNz0IUDbvps074I+/45Vb+lDFHNjh0h810kOK1FJTUUI4
-        2XXwtYOpn8Gs7xRawThj7ecH0fi2bQ6zrDIKd7coEgt6ekD5XXrjnXGqJJRt1xCV7YRNqJXaQfZid
-        JWh89r0xVFEe7Fm1WgVlWmvtMyuDr2HMfUXA9FRriXig1WGXK32PUfpT6abRRP2J+/A95VXQYmQeA
-        7CTxskrg==;
-Reply-To: Yaser Moustafa <yasermoustafa.private@gmail.com>
-From:   Yaser Moustafa <hello@haciendadreal.com>
-To:     linux-kernel@vger.kernel.org
-Subject: Important
-Date:   3 May 2021 12:13:09 -0700
-Message-ID: <20210503121309.D0A62540B1B88E47@haciendadreal.com>
+        Mon, 3 May 2021 15:14:24 -0400
+Received: by mail-oo1-f51.google.com with SMTP id i20-20020a4a8d940000b02901bc71746525so1481274ook.2;
+        Mon, 03 May 2021 12:13:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7s2s3tZyx18X3VDJlxOD0a+TrV9NROQWA6AkJr999dQ=;
+        b=XuDvh5yGDOfBffqm6T7l6dE3q+6VIarXb6z1uLgESkCwrKoFVIQdtbHxYygq1Fan8E
+         jO4E84av1kB5VPk8qPQZsMinAoMRZaGTuqYmFzZqLojx2ATTYHRV/S1ATm54wyDJJjpe
+         naxsSx+m4pP9O0STOATSvkJ9fqk3MZ39Mjdnfx++8Bxc1jedw+pv9Y8JnhcTbAVsydBT
+         bIkzGkga/zMmfbw6VNE0cNPMk8Zk7MyChhEJfFh+0Kk1ykCxQZs9a5H2w69PcNKAMabC
+         cFPDKjpjeM6cglNMhxWb+boxmyMvr8gbHvwemkHfbUJRBcb8TbevwlHCvUb3h7VMH+o5
+         U73A==
+X-Gm-Message-State: AOAM532f5g4mFK0C7yukywrU9M/KmTJBbtkIunhDnXTfoVel7FTGub8H
+        TYHUZuoQNWn6xEcqVDhgTg==
+X-Google-Smtp-Source: ABdhPJx9zckXB40q2eEyzx/Iii8u8yS0K5EmIsdw4+W9UMZwzyxXxwkseWanm1WmkCA3MIFaTCgx/w==
+X-Received: by 2002:a4a:250e:: with SMTP id g14mr16614016ooa.31.1620069209180;
+        Mon, 03 May 2021 12:13:29 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id z9sm146478oos.16.2021.05.03.12.13.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 May 2021 12:13:28 -0700 (PDT)
+Received: (nullmailer pid 2217569 invoked by uid 1000);
+        Mon, 03 May 2021 19:13:27 -0000
+Date:   Mon, 3 May 2021 14:13:27 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Nishanth Menon <nm@ti.com>
+Cc:     devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jens Wiklander <jens.wiklander@linaro.org>
+Subject: Re: [PATCH V2] dt-bindings: arm: firmware: Convert linaro, optee-tz
+ to json schema
+Message-ID: <20210503191327.GA2217487@robh.at.kernel.org>
+References: <20210426164008.20000-1-nm@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - moustique.o2switch.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - haciendadreal.com
-X-Get-Message-Sender-Via: moustique.o2switch.net: authenticated_id: 2@taurusmedia.fr
-X-Authenticated-Sender: moustique.o2switch.net: 2@taurusmedia.fr
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210426164008.20000-1-nm@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Did you get my last email? Please let me know.
+On Mon, 26 Apr 2021 11:40:08 -0500, Nishanth Menon wrote:
+> Convert linaro,optee-tz to json schema format for better documentation
+> and error checks.
+> 
+> NOTE: This change does introduce a stricter naming convention for
+> optee nodes.
+> 
+> Signed-off-by: Nishanth Menon <nm@ti.com>
+> ---
+> 
+> Changes since v1:
+> * Dropped un-necessary quotes around compatible
+> * Converted the method to enum, updated description as well
+> * Updated commit message to drop the 'checkpatch warning'
+> 
+> V1: https://lore.kernel.org/linux-arm-kernel/20210416222518.15801-1-nm@ti.com/
+> 
+>  .../bindings/arm/firmware/linaro,optee-tz.txt | 31 ----------
+>  .../arm/firmware/linaro,optee-tz.yaml         | 58 +++++++++++++++++++
+>  2 files changed, 58 insertions(+), 31 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.yaml
+> 
 
-Best Regards,
-Yaser Moustafa,
-Senior Managing Director of NBK Capital Partners.
+Applied, thanks!
