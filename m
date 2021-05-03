@@ -2,183 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABEC03722DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 00:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F4533722E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 00:08:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbhECWHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 18:07:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39554 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhECWHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 18:07:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A3B4610FC;
-        Mon,  3 May 2021 22:06:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620079597;
-        bh=6b/U8Seq5uofAuhoy2eEbBzUlcdWBAkxOW6Z/HujxnU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=J6/TxQDzklxOuba6XTDFeoj8ulloUfn4K1aTn3IW2+FLy/oPa58LESNqOH9oYxeX7
-         eFxIw8tkCMjAybbPPaDOKl0rIl7NqSkJggLUZ2NuWa0UsbjZ6AQobDlsOPYox8bcmH
-         jTMv0wr0lUAXSz0r1B63FiUp17r5t6/4yG5PQodYcPdBu14c2RcfeYbakoNEy/RbSr
-         sG8gLw7+E4R0bs1ko8PWhws8mTQJLjx7M4I7E8OYEeiWDUNRNt3Lnt/BeCFv2Egm2M
-         R+9QeZ+IxVeRNIU8ABxZDrQWurIYbIHFoGJQyDNxL4DrzHz34UEaFF/SlXb/i8ZXyc
-         kl+FVIjEuk8pw==
-Received: by mail-ed1-f43.google.com with SMTP id e7so8132636edu.10;
-        Mon, 03 May 2021 15:06:37 -0700 (PDT)
-X-Gm-Message-State: AOAM532cwYXuKpunaNfJIOoD8GiOZL7sUsiwk53LVHVCCMgOPgArAMNx
-        8opbbAweUzdwcGlFN9v2AEOcTTGs3rBMoSMWPg==
-X-Google-Smtp-Source: ABdhPJw+i4aK04IeE/ccNTgCMAXtyvNb57tOJTCXaITCldFzEumSKUvT2WxfUUabDek/J0g022bwANQtx03q0z4KFg0=
-X-Received: by 2002:a05:6402:84b:: with SMTP id b11mr22728486edz.289.1620079595815;
- Mon, 03 May 2021 15:06:35 -0700 (PDT)
+        id S229700AbhECWJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 18:09:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhECWJU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 18:09:20 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE46C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 15:08:26 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id b21so8690295ljf.11
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 15:08:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7iHBd8+drdOghBy/DbtPuVvH8pwlCcE8s9OIRRC6qmI=;
+        b=W54cMamUz2HN8pD7jq73F3NLwwnJiSjwtZgXapdq2dzVUgmh+rxdcWsUDjWO63XjxN
+         L5UuMkA8bSHH3GdHGXY5kK6HI1JABIDXvF72ZWQo3kQloS0IekvXuFTXSqYDb2D+mqGi
+         EPCZ/mcFme8B8gyPmkMiBzBs+YvXM9ykavVh0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7iHBd8+drdOghBy/DbtPuVvH8pwlCcE8s9OIRRC6qmI=;
+        b=Y1Zpg+i0sT6adV+CGcO0Z50/Vr9LUflqWqtURt0UAKDL2gLq28P7Hl5hqbLf1NMl00
+         F36DAXmzsrzH5S4L1OdkDU11NNfiIhyojhFvCoGvgFIR50U/lDiC3C2PpkyLe+oxVu2u
+         vWfHd25NA+wH2+C/D0DdChroe2MZndc+hJcGIaFdS9IUCViOwvoFm6gMWFmmz8x5DIua
+         PR8XrsexfK39U4OAVRykVW3th6BxgjyrNLJXfU/RCT+17zeXNFzheIKViNEXpKgYZF8V
+         TmcKCTR2ovgxyuumoF7CO/RJiQVWoyG6IlUzzuS5Z0Vk2Q+P8dPOI23uB6dBLXgvKURT
+         kNiA==
+X-Gm-Message-State: AOAM532ruMRfmAyqMH12gNpPp+Vp9Ui3n23T6IMj2n7UM/NGXRmbwgwR
+        PallriL+AKp+Y29LYBABI6JN7y+nosfE7xD2
+X-Google-Smtp-Source: ABdhPJykImhKknndmVnA479xrQ4KAX63rlgutBUIBMDxm/Lyz/mJaPOwNPOPumxINbHTEtocfGJioA==
+X-Received: by 2002:a05:651c:307:: with SMTP id a7mr15141363ljp.166.1620079704257;
+        Mon, 03 May 2021 15:08:24 -0700 (PDT)
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
+        by smtp.gmail.com with ESMTPSA id k8sm76797lfo.123.2021.05.03.15.08.23
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 15:08:23 -0700 (PDT)
+Received: by mail-lj1-f171.google.com with SMTP id b21so8690244ljf.11
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 15:08:23 -0700 (PDT)
+X-Received: by 2002:a2e:22c4:: with SMTP id i187mr2790137lji.465.1620079703516;
+ Mon, 03 May 2021 15:08:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <YIq/qObuYw+8ikxg@orolia.com>
-In-Reply-To: <YIq/qObuYw+8ikxg@orolia.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 3 May 2021 17:06:23 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJc=EDhXNcb4QZbmD1Ukh94hqLhk4YvN4SoCdt32TGMSg@mail.gmail.com>
-Message-ID: <CAL_JsqJc=EDhXNcb4QZbmD1Ukh94hqLhk4YvN4SoCdt32TGMSg@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: dma: add schema for altr,msgdma
-To:     Olivier Dautricourt <olivier.dautricourt@orolia.com>
-Cc:     Vinod Koul <vkoul@kernel.org>, Stefan Roese <sr@denx.de>,
-        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <8735v3ex3h.ffs@nanos.tec.linutronix.de> <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
+ <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
+ <CALCETrV9bCenqzzaW6Ra18tCvNP-my09decTjmLDVZZAQxR6VA@mail.gmail.com>
+ <CAHk-=wgo6XEz3VQ9ntqzWLR3-hm1YXrXUz4_heDs4wcLe9NYvA@mail.gmail.com>
+ <d26e3a82-8a2c-7354-d36b-cac945c208c7@kernel.dk> <CALCETrWmhquicE2C=G2Hmwfj4VNypXVxY-K3CWOkyMe9Edv88A@mail.gmail.com>
+In-Reply-To: <CALCETrWmhquicE2C=G2Hmwfj4VNypXVxY-K3CWOkyMe9Edv88A@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 3 May 2021 15:08:07 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgqK0qUskrzeWXmChErEm32UiOaUmynWdyrjAwNzkDKaw@mail.gmail.com>
+Message-ID: <CAHk-=wgqK0qUskrzeWXmChErEm32UiOaUmynWdyrjAwNzkDKaw@mail.gmail.com>
+Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
+ registers for io_threads
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, Thomas Gleixner <tglx@linutronix.de>,
+        Stefan Metzmacher <metze@samba.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 9:16 AM Olivier Dautricourt
-<olivier.dautricourt@orolia.com> wrote:
+On Mon, May 3, 2021 at 2:49 PM Andy Lutomirski <luto@kernel.org> wrote:
 >
-> - add schema for Altera mSGDMA bindings in devicetree.
-> - add myself as 'Odd fixes' maintainer for this driver
+> To be clear, I'm suggesting that we -EINVAL the PTRACE_GETREGS calls
+> and such, not the ATTACH.  I have no idea what gdb will do if this
+> happens, though.
 
-While I guess valid, the tools (b4) don't like the '/' in your
-message-id. Lore will escape it fine, but then you have to escape the
-url. Would be nice to avoid all that, but maybe this is Exchange's
-doing?
+I feel like the likelihood that it will make gdb work any better is
+basically zero.
 
-> Signed-off-by: Olivier Dautricourt <olivier.dautricourt@orolia.com>
-> ---
->
-> Notes:
->     Changes in v2:
->      - fix reg size in dt example
->      - fix dt_binding check warning
->      - add list in MAINTAINERS entry
->
->     Changes from v2 to v3:
->      none
->
->     Changes from v3 to v4:
->      none
->
->  .../devicetree/bindings/dma/altr,msgdma.yaml  | 62 +++++++++++++++++++
->  MAINTAINERS                                   |  7 +++
->  2 files changed, 69 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/dma/altr,msgdma.yaml
->
-> diff --git a/Documentation/devicetree/bindings/dma/altr,msgdma.yaml b/Documentation/devicetree/bindings/dma/altr,msgdma.yaml
-> new file mode 100644
-> index 000000000000..295e46c84bf9
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/dma/altr,msgdma.yaml
-> @@ -0,0 +1,62 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/dma/altr,msgdma.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Altera mSGDMA IP core
-> +
-> +maintainers:
-> +  - Olivier Dautricourt <olivier.dautricourt@orolia.com>
-> +
-> +description: |
-> +  Altera / Intel modular Scatter-Gather Direct Memory Access (mSGDMA)
-> +  intellectual property (IP)
-> +
-> +allOf:
-> +  - $ref: "dma-controller.yaml#"
-> +
-> +properties:
-> +  compatible:
-> +    const: altr,msgdma
+I think we should just do Stefan's patch - I assume it generates
+something like four instructions (two loads, two stores) on x86-64,
+and it "just works".
 
-Needs an SoC specific compatible.
+Yeah, yeah, it presumably generates 8 instructions on 32-bit x86, and
+we could fix that by just using the constant __USER_CS/DS instead (no
+loads necessary) since 32-bit doesn't have any compat issues.
 
-> +
-> +  reg:
-> +    description:
-> +      csr, desc, resp resgisters
+But is it worth complicating the patch for a couple of instructions in
+a non-critical path?
 
-Expand what each region is:
+And I don't see anybody stepping up to say "yes, I will do the patch
+for gdb", so I really think the least pain is to just take the very
+straightforward and tested kernel patch.
 
-reg:
-  items:
-    - description: ...
-    - description: ...
-    - description: ...
+Yes, yes, that also means admitting to ourselves that the gdb
+situation isn't likely going to improve, but hey, if nobody in this
+thread is willing to work on the gdb side to fix the known issues
+there, isn't that the honest thing to do anyway?
 
-> +    maxItems: 3
-> +    minItems: 3
-
-And then drop this.
-
-> +
-> +  reg-names:
-> +    items:
-> +      - const: csr
-> +      - const: desc
-> +      - const: resp
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  "#dma-cells":
-> +    description: |
-> +      The dma controller discards the argument but one must be specified
-> +      to keep compatibility with dma-controller schema.
-> +    const: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - interrupts
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +
-> +    msgdma_controller: dma-controller@ff200b00 {
-> +        compatible = "altr,msgdma";
-> +        reg = <0xff200b00 0x100>, <0xff200c00 0x100>, <0xff200d00 0x100>;
-> +        reg-names = "csr", "desc", "resp";
-> +        interrupts = <0 67 IRQ_TYPE_LEVEL_HIGH>;
-> +        #dma-cells = <1>;
-> +    };
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 5c90148f0369..359ab4877024 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -782,6 +782,13 @@ M: Ley Foon Tan <ley.foon.tan@intel.com>
->  S:     Maintained
->  F:     drivers/mailbox/mailbox-altera.c
->
-> +ALTERA MSGDMA IP CORE DRIVER
-> +M:     Olivier Dautricourt <olivier.dautricourt@orolia.com>
-> +L:     dmaengine@vger.kernel.org
-> +S:     Odd Fixes
-> +F:     Documentation/devicetree/bindings/dma/altr,msgdma.yaml
-> +F:     drivers/dma/altera-msgdma.c
-> +
->  ALTERA PIO DRIVER
->  M:     Joyce Ooi <joyce.ooi@intel.com>
->  L:     linux-gpio@vger.kernel.org
-> --
-> 2.31.0.rc2
->
+            Linus
