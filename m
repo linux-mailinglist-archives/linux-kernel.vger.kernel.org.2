@@ -2,165 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C00923718F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13DFB3718F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbhECQLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 12:11:33 -0400
-Received: from mga09.intel.com ([134.134.136.24]:11191 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231182AbhECQLZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 12:11:25 -0400
-IronPort-SDR: NUCEjoxQBzHHaZ1mMzTplkN7xHAw8ScSb1ExNDAJdmnT8D8sW+50tjVNKKALZ2sKzeg9YRAs/K
- QDqxvbtIiydg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9973"; a="197870582"
-X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
-   d="scan'208";a="197870582"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 09:10:31 -0700
-IronPort-SDR: VhTGD/Tj/tVQj2k4tCSlopJWdcx5+AWSzEOwhu5Ld/zt073Hv+crI0/0ZdXS9fkCN9Vh/1f6jG
- NYA91u4hPasg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
-   d="scan'208";a="405740655"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 03 May 2021 09:10:30 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1ldb9Q-0009HV-EE; Mon, 03 May 2021 16:10:28 +0000
-Date:   Tue, 04 May 2021 00:09:39 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:clocksource] BUILD SUCCESS
- 8e614d5b58992e722f07de7c2426f2c44668092b
-Message-ID: <60902043.5KS4sDI1PJCLlfhY%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231272AbhECQKn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 3 May 2021 12:10:43 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:22108 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231182AbhECQKm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 12:10:42 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-255-kFw4Vq1gOwC5lu5CIeuZOg-1; Mon, 03 May 2021 17:09:46 +0100
+X-MC-Unique: kFw4Vq1gOwC5lu5CIeuZOg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Mon, 3 May 2021 17:09:45 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Mon, 3 May 2021 17:09:45 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Theodore Ts'o' <tytso@mit.edu>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>
+CC:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Tom Stellard <tstellar@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Masahiro Yamada" <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Fangrui Song <maskray@google.com>,
+        Serge Guelton <sguelton@redhat.com>,
+        Sylvestre Ledru <sylvestre@mozilla.com>
+Subject: RE: Very slow clang kernel config ..
+Thread-Topic: Very slow clang kernel config ..
+Thread-Index: AQHXQCnxH46G91tEpEmd7WaoBDaEqarR6NJg
+Date:   Mon, 3 May 2021 16:09:45 +0000
+Message-ID: <71e42d2a3c9d415188984f34f602425c@AcuMS.aculab.com>
+References: <CAKwvOdmMF_v9TzBtFn2S1qSS_yCDO8D-u3WhBehUM7gzjcdjUQ@mail.gmail.com>
+ <CAKwvOdk+V2dc31guafFM=N2ez4SrwCmah+mimUG3MzPMx_2efQ@mail.gmail.com>
+ <CAKwvOdn3uXniVedgtpD8QFAd-hdVuVjGPa4-n0h64PTxT4XhWg@mail.gmail.com>
+ <CAKwvOdm3D=dqKw=kx46PLaiqfHOZJL3QFKGc8kxqJqpwdFFWqw@mail.gmail.com>
+ <CAKwvOdkp_P8BCtFuKqDrtC_=A89ZfDf66Yr3FL2e=ojwv4KaMA@mail.gmail.com>
+ <CAHk-=wi1yiBBr3b3RbCEte6-yzAApsZN5zRdr3xoW8Av9jOX=Q@mail.gmail.com>
+ <CAKwvOdk0nxxUATg2jEKgx4HutXCMXcW92SX3DT+uCTgqBwQHBg@mail.gmail.com>
+ <1c5e05fa-a246-9456-ff4e-287960acb18c@redhat.com>
+ <CAHk-=whs8QZf3YnifdLv57+FhBi5_WeNTG1B-suOES=RcUSmQg@mail.gmail.com>
+ <alpine.DEB.2.21.2105020346520.2587@angie.orcam.me.uk>
+ <YJAK1C1uLknYGYrH@mit.edu>
+In-Reply-To: <YJAK1C1uLknYGYrH@mit.edu>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git clocksource
-branch HEAD: 8e614d5b58992e722f07de7c2426f2c44668092b  clocksource: Provide kernel module to test clocksource watchdog
+From: Theodore Ts'o <tytso@mit.edu>
+> Sent: 03 May 2021 15:38
+...
+> If people could actually guarantee stable ABI's, then shared libraries
+> might make sense.  E2fsprogs hasn't had a major version bump in shared
+> libraries for over a decade (although some developers whine and
+> complain about how I reject function signature changes in the
+> libext2fs library to provide that ABI stability).  But how many
+> userspace packages can make that claim?
 
-elapsed time: 721m
+Indeed. Stable ABIs are really mandatory for anything released as
+a shared library.
+You can add new functions, and (if careful) new features to
+existing functions (if you remembered to check all those unused
+fields and flags), but the function signatures must not change.
+You also can't change the exported data area.
 
-configs tested: 103
-configs skipped: 2
+We've got some simple drivers, they don't do anything complex.
+Just hardware interrupts and PCIe accesses.
+It wouldn't require many structure to be fixed, and a few
+non-inlined versions of some access functions to make these
+reasonably binary compatible.
+At least to the point that they don't need rebuilding when
+a distribution releases a new minor kernel version.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Solaris had stable kernel ABIs.
+The windows version of our drivers installs on everything
+from Windows 7 (maybe even Vista) through to the latest
+Windows 10 (apart from the 'driver signing' fiasco).
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arc                        vdk_hs38_defconfig
-mips                         db1xxx_defconfig
-arm                           spitz_defconfig
-mips                        vocore2_defconfig
-powerpc                 mpc832x_mds_defconfig
-ia64                      gensparse_defconfig
-m68k                                defconfig
-m68k                          amiga_defconfig
-powerpc                    mvme5100_defconfig
-arm                      pxa255-idp_defconfig
-sparc64                          alldefconfig
-powerpc                mpc7448_hpc2_defconfig
-powerpc                      pasemi_defconfig
-sh                               j2_defconfig
-mips                           ip32_defconfig
-powerpc                 mpc85xx_cds_defconfig
-arm                         nhk8815_defconfig
-sh                          r7785rp_defconfig
-powerpc                         wii_defconfig
-powerpc                 canyonlands_defconfig
-powerpc                 mpc836x_mds_defconfig
-arm                       aspeed_g4_defconfig
-s390                          debug_defconfig
-powerpc                 mpc832x_rdb_defconfig
-powerpc                     asp8347_defconfig
-powerpc                     ksi8560_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210503
-i386                 randconfig-a006-20210503
-i386                 randconfig-a001-20210503
-i386                 randconfig-a005-20210503
-i386                 randconfig-a004-20210503
-i386                 randconfig-a002-20210503
-x86_64               randconfig-a001-20210503
-x86_64               randconfig-a005-20210503
-x86_64               randconfig-a003-20210503
-x86_64               randconfig-a002-20210503
-x86_64               randconfig-a006-20210503
-x86_64               randconfig-a004-20210503
-i386                 randconfig-a013-20210503
-i386                 randconfig-a015-20210503
-i386                 randconfig-a016-20210503
-i386                 randconfig-a014-20210503
-i386                 randconfig-a011-20210503
-i386                 randconfig-a012-20210503
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+With multiple symbol namespaces it ought to be possible
+to keep them separately stable - so that drivers that only
+use some symbols are portable.
 
-clang tested configs:
-x86_64               randconfig-a014-20210503
-x86_64               randconfig-a015-20210503
-x86_64               randconfig-a012-20210503
-x86_64               randconfig-a011-20210503
-x86_64               randconfig-a013-20210503
-x86_64               randconfig-a016-20210503
+Of course, there are the people who only want to support
+in-tree source drivers.
+They clearly exist outside the commercial world.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
