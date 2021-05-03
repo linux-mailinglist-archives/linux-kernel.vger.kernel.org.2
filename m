@@ -2,163 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16FFC371298
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 10:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E3137129C
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 10:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231531AbhECIs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 04:48:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29456 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230490AbhECIs1 (ORCPT
+        id S233016AbhECIs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 04:48:57 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:33812 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230490AbhECIsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 04:48:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620031654;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oNh3VIIaagnprujVXdPtNBa4jPKLHbvzqtglqUzkcjA=;
-        b=e8RC2eL+gnIHgBWKOfx+Hl9RYkeKrrYo7MUxRfcsI1bb2zm01SWe7udILlPhPmH+L6IE1h
-        TCg0jyyWlhPi24bWNYZIweJXrCFs4a9ofidjuvD9PJc0aYFwrZSqY6fDGQd1905vSDLIYG
-        LS2GmVgq0j6RcEMYA96HrKjQYpkBKzQ=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-309-MNjSWEppO9yUZHMM3tGezg-1; Mon, 03 May 2021 04:47:32 -0400
-X-MC-Unique: MNjSWEppO9yUZHMM3tGezg-1
-Received: by mail-wr1-f72.google.com with SMTP id 63-20020adf84450000b029010dd0171a96so2940191wrf.21
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 01:47:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oNh3VIIaagnprujVXdPtNBa4jPKLHbvzqtglqUzkcjA=;
-        b=iz0EYbgkBnfymMfklMOpnFD55y8S8JIY0gxhtQNcEM7hLhtemx4zd2IoCylH2wDJPK
-         mPUiA/mNiFWSX/zAWpJSJI9BeOW5U1/iXfdIrBeQ8jr/Fo5YsiE3ULb7LJFOzvrE6gAt
-         /ZhRn0tK/k9fiD8HTQ4gvegU5UVDg8UxBQsSjVLycc27j2J/IXGBn4Qc1yeUF4rBf8cC
-         n1lMSVUjjhAPPzQiCBmO/IRemlPkdjP1GYVYbQ8T7IpaYRGhXHzbj700r4CPcrhKh2iO
-         Pxx5RRfoMKiK4XZS46Ob233AHhgxentR+uLgdv0XeaSFtE31pbmXCwNg7ZVA5X0VEqat
-         jMgw==
-X-Gm-Message-State: AOAM532W+EkDMGkm8aF1ljHdiyoXk7Th/vMF7UOgyG2cRtT8Uwd1QN9X
-        CIQPtasyQwioGcQUKInKq4RdlwEHpoOMn0eC1F+1MsRETwzNdMUxJXPypUT+VK5N6V5hOspsgRD
-        LpsQ9GWcaX/XSggBA2a6GQ0do
-X-Received: by 2002:adf:f00a:: with SMTP id j10mr23036892wro.231.1620031651547;
-        Mon, 03 May 2021 01:47:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxvQn7ZILmdzPLig2hPkrpiOMpynXsLhaYHpmRxuCUep9NSoCwjLciJspeYLkl3+SmLIr8RrA==
-X-Received: by 2002:adf:f00a:: with SMTP id j10mr23036877wro.231.1620031651405;
-        Mon, 03 May 2021 01:47:31 -0700 (PDT)
-Received: from redhat.com ([2a10:800a:cdef:0:114d:2085:61e4:7b41])
-        by smtp.gmail.com with ESMTPSA id i20sm20091020wmq.29.2021.05.03.01.47.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 01:47:30 -0700 (PDT)
-Date:   Mon, 3 May 2021 04:47:28 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Zhu Lingshan <lingshan.zhu@intel.com>
-Cc:     jasowang@redhat.com, lulu@redhat.com, sgarzare@redhat.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V4 2/3] vDPA/ifcvf: enable Intel C5000X-PL virtio-block
- for vDPA
-Message-ID: <20210503043801-mutt-send-email-mst@kernel.org>
-References: <20210419063326.3748-1-lingshan.zhu@intel.com>
- <20210419063326.3748-3-lingshan.zhu@intel.com>
+        Mon, 3 May 2021 04:48:54 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1438lkB7080174;
+        Mon, 3 May 2021 03:47:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1620031666;
+        bh=2sQqkvqoWSu0Be+0DA0CekeNUeEG5WtHbZ2Q/6J+kok=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=mtv9TTR2a99Y7DBPpY1HKNAovtatOO4GfUm9uSfGr0CUQmK9XXvFGINuBTv9H/hoi
+         q8A/vZbSmmJn9STxT8rXMinG7/rxVeB6cXMHMe1lmHc+oK/xB8Xy907m8FFgM7JhGM
+         +eCRkeFDRsgrtyc81GakB9rM8ns/g/Gywv+3PkfI=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1438lkMl101911
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 3 May 2021 03:47:46 -0500
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 3 May
+ 2021 03:47:45 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 3 May 2021 03:47:45 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1438ljMP045012;
+        Mon, 3 May 2021 03:47:45 -0500
+Date:   Mon, 3 May 2021 14:17:44 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+CC:     <patrice.chotard@foss.st.com>, Mark Brown <broonie@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
+Subject: Re: [PATCH 1/3] spi: spi-mem: add automatic poll status functions
+Message-ID: <20210503084742.7cp77snyohkdwwvv@ti.com>
+References: <20210426143934.25275-1-patrice.chotard@foss.st.com>
+ <20210426143934.25275-2-patrice.chotard@foss.st.com>
+ <20210430185104.377d1bc6@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210419063326.3748-3-lingshan.zhu@intel.com>
+In-Reply-To: <20210430185104.377d1bc6@collabora.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 02:33:25PM +0800, Zhu Lingshan wrote:
-> This commit enabled Intel FPGA SmartNIC C5000X-PL virtio-block
-> for vDPA.
+On 30/04/21 06:51PM, Boris Brezillon wrote:
+> On Mon, 26 Apr 2021 16:39:32 +0200
+> <patrice.chotard@foss.st.com> wrote:
 > 
-> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
-> Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
-> Acked-by: Jason Wang <jasowang@redhat.com>
-> ---
->  drivers/vdpa/ifcvf/ifcvf_base.h |  8 +++++++-
->  drivers/vdpa/ifcvf/ifcvf_main.c | 19 ++++++++++++++++++-
->  2 files changed, 25 insertions(+), 2 deletions(-)
+> > From: Christophe Kerello <christophe.kerello@foss.st.com>
+> > 
+> > With STM32 QSPI, it is possible to poll the status register of the device.
+> > This could be done to offload the CPU during an operation (erase or
+> > program a SPI NAND for example).
+> > 
+> > spi_mem_poll_status API has been added to handle this feature.
+> > 
+> > Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+> > Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+> > ---
+> >  drivers/spi/spi-mem.c       | 34 ++++++++++++++++++++++++++++++++++
+> >  include/linux/spi/spi-mem.h |  8 ++++++++
+> >  2 files changed, 42 insertions(+)
+> > 
+> > diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+> > index 1513553e4080..43dce4b0efa4 100644
+> > --- a/drivers/spi/spi-mem.c
+> > +++ b/drivers/spi/spi-mem.c
+> > @@ -743,6 +743,40 @@ static inline struct spi_mem_driver *to_spi_mem_drv(struct device_driver *drv)
+> >  	return container_of(drv, struct spi_mem_driver, spidrv.driver);
+> >  }
+> >  
+> > +/**
+> > + * spi_mem_poll_status() - Poll memory device status
+> > + * @mem: SPI memory device
+> > + * @op: the memory operation to execute
+> > + * @mask: status bitmask to ckeck
+> > + * @match: status expected value
+> > + * @timeout: timeout
+> > + *
+> > + * This function send a polling status request to the controller driver
+> > + *
+> > + * Return: 0 in case of success, -ETIMEDOUT in case of error,
+> > + *         -EOPNOTSUPP if not supported.
+> > + */
+> > +int spi_mem_poll_status(struct spi_mem *mem,
+> > +			const struct spi_mem_op *op,
+> > +			u8 mask, u8 match, u16 timeout)
+> > +{
+> > +	struct spi_controller *ctlr = mem->spi->controller;
+> > +	int ret = -EOPNOTSUPP;
+> > +
+> > +	if (ctlr->mem_ops && ctlr->mem_ops->poll_status) {
+> > +		ret = spi_mem_access_start(mem);
 > 
-> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h b/drivers/vdpa/ifcvf/ifcvf_base.h
-> index 1c04cd256fa7..0111bfdeb342 100644
-> --- a/drivers/vdpa/ifcvf/ifcvf_base.h
-> +++ b/drivers/vdpa/ifcvf/ifcvf_base.h
-> @@ -15,6 +15,7 @@
->  #include <linux/pci_regs.h>
->  #include <linux/vdpa.h>
->  #include <uapi/linux/virtio_net.h>
-> +#include <uapi/linux/virtio_blk.h>
->  #include <uapi/linux/virtio_config.h>
->  #include <uapi/linux/virtio_pci.h>
->  
-> @@ -28,7 +29,12 @@
->  #define C5000X_PL_SUBSYS_VENDOR_ID	0x8086
->  #define C5000X_PL_SUBSYS_DEVICE_ID	0x0001
->  
-> -#define IFCVF_SUPPORTED_FEATURES \
-> +#define C5000X_PL_BLK_VENDOR_ID		0x1AF4
+> You should probably check that op is a single byte read before
+> accepting the command.
 
+Please do not discriminate against 8D-8D-8D flashes ;-)
 
-Come on this is just PCI_VENDOR_ID_REDHAT_QUMRANET right?
+> 
+> > +		if (ret)
+> > +			return ret;
+> > +
+> > +		ret = ctlr->mem_ops->poll_status(mem, op, mask, match, timeout);
+> 
+> You also need some sort of ->poll_status_is_supported() to validate
+> that the controller supports the status polling for this specific op (I
 
+I don't think a separate function is needed for checking if the poll 
+status op is supported. Return value of -EOPNOTSUPP should be able to 
+signal that. This can also be used to check if Octal DDR capable 
+controllers are able to poll using 2-byte reads.
 
+> can imagine some controllers having a limit on the number of dummy
+> cycles/address bytes). I guess you could just fall back on SW-based
+> status polling if ctlr->mem_ops->poll_status() returns -ENOTSUPP.
+> 
+> > +
+> > +		spi_mem_access_end(mem);
+> > +	}
+> > +
+> > +	return ret;
+> > +}
+> > +EXPORT_SYMBOL_GPL(spi_mem_poll_status);
+> > +
+> >  static int spi_mem_probe(struct spi_device *spi)
+> >  {
+> >  	struct spi_mem_driver *memdrv = to_spi_mem_drv(spi->dev.driver);
+> > diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+> > index 2b65c9edc34e..5f78917c0f68 100644
+> > --- a/include/linux/spi/spi-mem.h
+> > +++ b/include/linux/spi/spi-mem.h
+> > @@ -250,6 +250,7 @@ static inline void *spi_mem_get_drvdata(struct spi_mem *mem)
+> >   *		  the currently mapped area), and the caller of
+> >   *		  spi_mem_dirmap_write() is responsible for calling it again in
+> >   *		  this case.
+> > + * @poll_status: poll memory device status
+> >   *
+> >   * This interface should be implemented by SPI controllers providing an
+> >   * high-level interface to execute SPI memory operation, which is usually the
+> > @@ -274,6 +275,9 @@ struct spi_controller_mem_ops {
+> >  			       u64 offs, size_t len, void *buf);
+> >  	ssize_t (*dirmap_write)(struct spi_mem_dirmap_desc *desc,
+> >  				u64 offs, size_t len, const void *buf);
+> > +	int (*poll_status)(struct spi_mem *mem,
+> > +			   const struct spi_mem_op *op,
+> > +			   u8 mask, u8 match, u16 timeout);
+> >  };
+> >  
+> >  /**
+> > @@ -369,6 +373,10 @@ devm_spi_mem_dirmap_create(struct device *dev, struct spi_mem *mem,
+> >  void devm_spi_mem_dirmap_destroy(struct device *dev,
+> >  				 struct spi_mem_dirmap_desc *desc);
+> >  
+> > +int spi_mem_poll_status(struct spi_mem *mem,
+> > +			const struct spi_mem_op *op,
+> > +			u8 mask, u8 match, u16 timeout);
+> > +
+> >  int spi_mem_driver_register_with_owner(struct spi_mem_driver *drv,
+> >  				       struct module *owner);
+> >  
 
-> +#define C5000X_PL_BLK_DEVICE_ID		0x1001
-
-0x1001 is a transitional blk device from virtio spec too right? Let's add these to virtio_ids.h?
-
-> +#define C5000X_PL_BLK_SUBSYS_VENDOR_ID	0x8086
-> +#define C5000X_PL_BLK_SUBSYS_DEVICE_ID	0x0002
-
-VIRTIO_ID_BLOCK?
-
-> +
-> +#define IFCVF_NET_SUPPORTED_FEATURES \
->  		((1ULL << VIRTIO_NET_F_MAC)			| \
->  		 (1ULL << VIRTIO_F_ANY_LAYOUT)			| \
->  		 (1ULL << VIRTIO_F_VERSION_1)			| \
-> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
-> index 66927ec81fa5..9a4a6df91f08 100644
-> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
-> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
-> @@ -168,10 +168,23 @@ static struct ifcvf_hw *vdpa_to_vf(struct vdpa_device *vdpa_dev)
->  
->  static u64 ifcvf_vdpa_get_features(struct vdpa_device *vdpa_dev)
->  {
-> +	struct ifcvf_adapter *adapter = vdpa_to_adapter(vdpa_dev);
->  	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
-> +	struct pci_dev *pdev = adapter->pdev;
-> +
->  	u64 features;
->  
-> -	features = ifcvf_get_features(vf) & IFCVF_SUPPORTED_FEATURES;
-> +	switch (vf->dev_type) {
-> +	case VIRTIO_ID_NET:
-> +		features = ifcvf_get_features(vf) & IFCVF_NET_SUPPORTED_FEATURES;
-> +		break;
-> +	case VIRTIO_ID_BLOCK:
-> +		features = ifcvf_get_features(vf);
-> +		break;
-> +	default:
-> +		features = 0;
-> +		IFCVF_ERR(pdev, "VIRTIO ID %u not supported\n", vf->dev_type);
-> +	}
->  
->  	return features;
->  }
-> @@ -514,6 +527,10 @@ static struct pci_device_id ifcvf_pci_ids[] = {
->  			 C5000X_PL_DEVICE_ID,
->  			 C5000X_PL_SUBSYS_VENDOR_ID,
->  			 C5000X_PL_SUBSYS_DEVICE_ID) },
-> +	{ PCI_DEVICE_SUB(C5000X_PL_BLK_VENDOR_ID,
-> +			 C5000X_PL_BLK_DEVICE_ID,
-> +			 C5000X_PL_BLK_SUBSYS_VENDOR_ID,
-> +			 C5000X_PL_BLK_SUBSYS_DEVICE_ID) },
->  
->  	{ 0 },
->  };
-> -- 
-> 2.27.0
-
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
