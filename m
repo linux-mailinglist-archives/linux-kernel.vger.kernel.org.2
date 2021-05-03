@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A15371792
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C07C371793
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbhECPKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 11:10:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34806 "EHLO
+        id S230316AbhECPKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 11:10:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25942 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230132AbhECPKB (ORCPT
+        by vger.kernel.org with ESMTP id S230094AbhECPKC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 11:10:01 -0400
+        Mon, 3 May 2021 11:10:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620054547;
+        s=mimecast20190719; t=1620054548;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/uQsxGUHYKaif29C+o0XpobAqQVTryVzBnnTIXwgX7E=;
-        b=QcD7WT/3mBQtOO0g46cgCbhyRP5sAgRVYCNnaCHOx1A1CeUMrW4RwJ0ZrCgXxQx6TY8L4y
-        liLo5CGJQSFxiTKjLqGVXPp8bbC9yVVAIqlfMYK0ALHnlTPH8NYJuoBCliQx7NaVPj1wri
-        yV34chQ3bdjdPv55CLHkjCiixrJ+kCk=
+        bh=SBgP2q+jMXRjW+m5Dci4J74cvlT/I0xwnXsUOeHMQjA=;
+        b=IpeIaA7+JOmKimIynNNrEOywMoWHLWvYBe9V5taCp4au/yZ2QtD8DNbx+fuW3Rus/A48XJ
+        i63X5h4sEdmc0ECam35vFvBtmf50saHj2wV12A/jndCkRvFsZiwdS7rm6nFMKuemj4wFAg
+        jSp4pqCClOHkWW0dbMVz54Ev/8Vjglc=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-262-t7yd9-mLM5yubPlxvwghCw-1; Mon, 03 May 2021 11:09:04 -0400
-X-MC-Unique: t7yd9-mLM5yubPlxvwghCw-1
+ us-mta-384-Z_JRf-feNcCjMWrnSnpyIA-1; Mon, 03 May 2021 11:09:06 -0400
+X-MC-Unique: Z_JRf-feNcCjMWrnSnpyIA-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0A3B91966325;
-        Mon,  3 May 2021 15:09:03 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AC6621006708;
+        Mon,  3 May 2021 15:09:05 +0000 (UTC)
 Received: from vitty.brq.redhat.com (unknown [10.40.194.168])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EB86519C45;
-        Mon,  3 May 2021 15:09:00 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7B57F19C45;
+        Mon,  3 May 2021 15:09:03 +0000 (UTC)
 From:   Vitaly Kuznetsov <vkuznets@redhat.com>
 To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -41,9 +41,9 @@ Cc:     Sean Christopherson <seanjc@google.com>,
         Jim Mattson <jmattson@google.com>,
         Maxim Levitsky <mlevitsk@redhat.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 2/4] KVM: nVMX: Properly pad 'struct kvm_vmx_nested_state_hdr'
-Date:   Mon,  3 May 2021 17:08:52 +0200
-Message-Id: <20210503150854.1144255-3-vkuznets@redhat.com>
+Subject: [PATCH 3/4] KVM: nVMX: Introduce __nested_vmx_handle_enlightened_vmptrld()
+Date:   Mon,  3 May 2021 17:08:53 +0200
+Message-Id: <20210503150854.1144255-4-vkuznets@redhat.com>
 In-Reply-To: <20210503150854.1144255-1-vkuznets@redhat.com>
 References: <20210503150854.1144255-1-vkuznets@redhat.com>
 MIME-Version: 1.0
@@ -53,52 +53,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eliminate the probably unwanted hole in 'struct kvm_vmx_nested_state_hdr':
+As a preparation to mapping eVMCS from vmx_set_nested_state() split
+the actual eVMCS mappign from aquiring eVMCS GPA.
 
-Pre-patch:
-struct kvm_vmx_nested_state_hdr {
-        __u64                      vmxon_pa;             /*     0     8 */
-        __u64                      vmcs12_pa;            /*     8     8 */
-        struct {
-                __u16              flags;                /*    16     2 */
-        } smm;                                           /*    16     2 */
-
-        /* XXX 2 bytes hole, try to pack */
-
-        __u32                      flags;                /*    20     4 */
-        __u64                      preemption_timer_deadline; /*    24     8 */
-};
-
-Post-patch:
-struct kvm_vmx_nested_state_hdr {
-        __u64                      vmxon_pa;             /*     0     8 */
-        __u64                      vmcs12_pa;            /*     8     8 */
-        struct {
-                __u16              flags;                /*    16     2 */
-        } smm;                                           /*    16     2 */
-        __u16                      pad;                  /*    18     2 */
-        __u32                      flags;                /*    20     4 */
-        __u64                      preemption_timer_deadline; /*    24     8 */
-};
+No functional change intended.
 
 Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 ---
- arch/x86/include/uapi/asm/kvm.h | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/kvm/vmx/nested.c | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
 
-diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
-index 5a3022c8af82..0662f644aad9 100644
---- a/arch/x86/include/uapi/asm/kvm.h
-+++ b/arch/x86/include/uapi/asm/kvm.h
-@@ -437,6 +437,8 @@ struct kvm_vmx_nested_state_hdr {
- 		__u16 flags;
- 	} smm;
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index 2febb1dd68e8..37fdc34f7afc 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -1972,18 +1972,11 @@ static int copy_vmcs12_to_enlightened(struct vcpu_vmx *vmx)
+  * This is an equivalent of the nested hypervisor executing the vmptrld
+  * instruction.
+  */
+-static enum nested_evmptrld_status nested_vmx_handle_enlightened_vmptrld(
+-	struct kvm_vcpu *vcpu, bool from_launch)
++static enum nested_evmptrld_status __nested_vmx_handle_enlightened_vmptrld(
++	struct kvm_vcpu *vcpu, u64 evmcs_gpa, bool from_launch)
+ {
+ 	struct vcpu_vmx *vmx = to_vmx(vcpu);
+ 	bool evmcs_gpa_changed = false;
+-	u64 evmcs_gpa;
+-
+-	if (likely(!vmx->nested.enlightened_vmcs_enabled))
+-		return EVMPTRLD_DISABLED;
+-
+-	if (!nested_enlightened_vmentry(vcpu, &evmcs_gpa))
+-		return EVMPTRLD_DISABLED;
  
-+	__u16 pad;
+ 	if (unlikely(!vmx->nested.hv_evmcs ||
+ 		     evmcs_gpa != vmx->nested.hv_evmcs_vmptr)) {
+@@ -2055,6 +2048,21 @@ static enum nested_evmptrld_status nested_vmx_handle_enlightened_vmptrld(
+ 	return EVMPTRLD_SUCCEEDED;
+ }
+ 
++static enum nested_evmptrld_status nested_vmx_handle_enlightened_vmptrld(
++	struct kvm_vcpu *vcpu, bool from_launch)
++{
++	struct vcpu_vmx *vmx = to_vmx(vcpu);
++	u64 evmcs_gpa;
 +
- 	__u32 flags;
- 	__u64 preemption_timer_deadline;
- };
++	if (likely(!vmx->nested.enlightened_vmcs_enabled))
++		return EVMPTRLD_DISABLED;
++
++	if (!nested_enlightened_vmentry(vcpu, &evmcs_gpa))
++		return EVMPTRLD_DISABLED;
++
++	return __nested_vmx_handle_enlightened_vmptrld(vcpu, evmcs_gpa, from_launch);
++}
++
+ void nested_sync_vmcs12_to_shadow(struct kvm_vcpu *vcpu)
+ {
+ 	struct vcpu_vmx *vmx = to_vmx(vcpu);
 -- 
 2.30.2
 
