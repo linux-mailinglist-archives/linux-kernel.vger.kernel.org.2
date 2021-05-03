@@ -2,142 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07795371FF5
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 20:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A87D3372005
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 20:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229646AbhECSyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 14:54:35 -0400
-Received: from mout.gmx.net ([212.227.17.22]:45123 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhECSyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 14:54:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1620067967;
-        bh=A/TMQuiuLC0Rhe8BIv4n8MfCqBTIsiRGtqT7aR8Go+c=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=Bt8LcCaWzXzngxXIo/78yKF3ejeuqziaBI0HxUJWn20pc/cG0fEjL9JmK6jf6XfoN
-         ZJyDbbZnzluHeVe2lzaiJQg2RGIGug3m8cG8QOXcLtJcvZY9tjwTmYRjcphEiRDYRc
-         f4OpsdrICM+1DVa28YcmDJP0LoTPfdUWtuu5z5hc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.149.135]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M1Ygt-1lgfgb3KaR-0039e8; Mon, 03
- May 2021 20:52:46 +0200
-Message-ID: <3773421d06bed0beed9971d03e8fa2050a14cc13.camel@gmx.de>
-Subject: Re: [PATCH v2 0/3] newidle_balance() PREEMPT_RT latency mitigations
-From:   Mike Galbraith <efault@gmx.de>
-To:     Scott Wood <swood@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Date:   Mon, 03 May 2021 20:52:45 +0200
-In-Reply-To: <4170501b7c4f19ba66d870b671dc90ffbf4623d6.camel@redhat.com>
-References: <20210428232821.2506201-1-swood@redhat.com>
-         <CAKfTPtBrJNBg3847R_b8A-1c5rb9Fb5FFNMX+z11QGAiO0ofkw@mail.gmail.com>
-         <7b796a085b0bc638c9df70d3a20718f8d1d776c8.camel@redhat.com>
-         <a46f9b6c719666357e568eadd1d615c05c4171ac.camel@gmx.de>
-         <4170501b7c4f19ba66d870b671dc90ffbf4623d6.camel@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S229700AbhECS6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 14:58:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229650AbhECS6D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 14:58:03 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2073DC061761
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 11:57:10 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id q2so4862500pfh.13
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 11:57:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/pily0HpN1x5+Ozbgf6AOQkMDZLIvNBV5p8HbBJ96dI=;
+        b=d5N4+y207tw1B9Ars4YNORHt0h3gnQOoXM3ES9WAA/lO79LZGqIwCTSvSH5JZu2c/Q
+         TAu09194W735k/O/vCx+1RXBEml/OzMJQyJAD8hqf88zVvc2A+WNQdNi3rG4VcaD7bvm
+         1KAd6aZjWC8PcDSHk933ba4TmOGp2OPCPTp0/rqI4fOSdKcPqLgk8fyK1Ds7hyyKS15K
+         Fcp0rhJkSH7yIzch4TRqg+SmSBApiLXbblODsn9P/bkfpnnP25pCIAF/BzvjWKU6SPkk
+         cmTC6+5lC7VZg0m4WYCazPOUDTaSUQmgR5tMS/RmwIri8mmGuxi2g2lAUP8JKY4iOcgp
+         P+7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/pily0HpN1x5+Ozbgf6AOQkMDZLIvNBV5p8HbBJ96dI=;
+        b=eguNWyHJYdpPWdKV8BoEvFrQpg7LSxji4TIObDwZGqXepVqLtRKUbML7sVbwkrEQuj
+         E6Ww4O8M0cj6YyhYhyqF3irKCDQRwJFA+B73Bh4qNka+GGUMdrsPg/6u6wUeiD4GcmiW
+         XqviYht07GPI0N14+GrGg4nJK/hIB+ZKJmYOA3g+jLkTPK0OaCi2p+Q9MC06l6b9yg4R
+         ld1bP+AGodvY4PTEIcxpvrl01kSSXEYCG9X/9Dpo4GjsYON6n3ahIr05/1QJfZTytqZx
+         dBGX0LFtKTSM+OkHK5h5bQc7d7WvziVelxo5xwMteSoshOdIRD3t62TPVmir3FS7IX9L
+         wiSw==
+X-Gm-Message-State: AOAM531PITBNpw0bnzZ04Iv9oCSDVBVyTTaHVDjAS9d1vi9XsAiaLkjk
+        Vr+5v3GtrJnO0SJ/uK5BuF1GV/RAze4=
+X-Google-Smtp-Source: ABdhPJzddpsfgU33C8kH/bNzZwBZP2s0UkO2OAcZoSBCAaFMwMsP4EMCpJ+2vpLi1IZedOBJrvxuaw==
+X-Received: by 2002:a17:90b:370a:: with SMTP id mg10mr22685147pjb.219.1620068229597;
+        Mon, 03 May 2021 11:57:09 -0700 (PDT)
+Received: from [192.168.2.112] ([50.38.35.18])
+        by smtp.googlemail.com with ESMTPSA id z12sm203307pjt.29.2021.05.03.11.57.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 11:57:09 -0700 (PDT)
+Subject: Re: [PATCH 1/2] mm/hugetlb: Fix F_SEAL_FUTURE_WRITE
+To:     Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Axel Rasmussen <axelrasmussen@google.com>
+References: <20210501144110.8784-1-peterx@redhat.com>
+ <20210501144110.8784-2-peterx@redhat.com>
+From:   Mike Kravetz <mjk.linux@gmail.com>
+Message-ID: <be33c24e-cf2d-3894-a450-7432fd976802@gmail.com>
+Date:   Mon, 3 May 2021 11:55:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:8I6k35QKpm5b64+O31dj4ji8yjXkdtha+BrTy2xVijV8+VkWomv
- Me0Nj/S8RvSf/UagzWJzEPC+eReBwbojYTD/Yy8pKtXOIBNtPTqDeclq4H2xCJV54ArB+Vc
- tcezZx3xv/gUPatLloEWn3R8qGnbg+PF6B1WRtf3up057DDtmqn5NvjI0FPjPtZq+Wk2RHD
- uB7yte0vf/Dmh22yxrfEw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Tos9M+1xUEY=:1vA/k0uxL40hk+lHdttlXR
- 7a59s/dq9EIDkRWbKSbhEuhyZHt9Snfx093H5u3ck/IeTQEyMI98Cw1qw3Y0evWBuqGp/visP
- 8tPkKSpeV8ObeiAvrWnGBF74S21RNYV8R5u3xeoVX8k3K5omv8B/DVMNeHiHjlUdP1m/6GVHI
- 4NGRptgGBtVeXq26cTc2+ov1vQs/7lG33exrvy77ERmfp2OkuB8VsIy38WNr/rv3ooOIHI4rX
- oGRa4vhYAygFHBMpdFFU3ZlXhx11Nt02GqFM5kip35usa7iNTNfIRRCGjPYjhHH1p4oqTDt7I
- LM+30XQGZoKGfoYNRISt2XeQY6wI6yWWB8ZufEGOEBt/sWXWQacERxV5gqqZPN5iogrPqBarU
- IKjEbRknMSqwlrfTAqy8+WkLt9cjT4NIiaGV2R+XRWXJ57PxXshofUWHfJeMb+99dB7JcovWa
- uO3Kk+OGi1dVlnOdrKesq4GZU3i12wst3OzsS6icfXSVKOGJLSvojS7nJwmSLHMn2UUf1yjQI
- 4npDO8AneMDDlIIYnoXEXUMa6MKUui9uMiVRoItrF7/0zM1NxAMT9lDPQU67j15DjH0bqUrl8
- jGCy1WdbL7/85ZxA2OBv2lEMKTHWzAA15953eQdtKKG1Q5Gexw1bdJ8MVugKtw8yMQtLV+I73
- xjawWUeTt/SMlLyMQ4cwJ64+hpi3STQ2n1GIgU8LSsCFJjj81s+Al7stAfTfOlclsAggnQbEq
- boZhPcYmllhWTKaCn0avwZ8UbwTilGRih0OqK6D8Y9MLwEZ8N465Cadb7S+edl7lH5joopMAo
- HrE6BxkC8f2cD5XYk2Z3grUmaOjmmQJydxF14Fd1YPQfoG6emrULUrkYZ4pkp8ZYgAVTxV2ug
- L+HjohJdjQdC6Rc9XxMMpcudeFdxbWTKmsn8/HqAQwF0fBpsTLi/cHGm5QgG7FQm1/NiJHXvm
- kEfizEls1Vgj+UxjLoeAnoqvF1Ec0CjXOm+cYrd9hYpGittDadhXNGydcCzhTNLNW76ofhGZl
- QAA8UBJqVFgTEjTLdHZ1AxG0tIDar378DpKA521Ldo5JMmC6Q5Ulw0fv3HdK/YOFTc19hKJVv
- mcytuaFtwcQ670lQBFPYlZFZ9bm0H/R4SmqPTl7FvOX/7ZlB3fpQfmlhdPBj+P5IJvwQ1RszV
- nixAyivthEXQWf55hsbugMkODwey5cXuYru3fDYhgpvyqqooSbeF0HqEqeOgSQJO3yHwY=
+In-Reply-To: <20210501144110.8784-2-peterx@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-03 at 11:33 -0500, Scott Wood wrote:
-> On Sun, 2021-05-02 at 05:25 +0200, Mike Galbraith wrote:
-> > On Sat, 2021-05-01 at 17:03 -0500, Scott Wood wrote:
-> > > On Thu, 2021-04-29 at 09:12 +0200, Vincent Guittot wrote:
-> > > > Hi Scott,
-> > > >
-> > > > On Thu, 29 Apr 2021 at 01:28, Scott Wood <swood@redhat.com> wrote:
-> > > > > These patches mitigate latency caused by newidle_balance() on la=
-rge
-> > > > > systems when PREEMPT_RT is enabled, by enabling interrupts when =
-the
-> > > > > lock
-> > > > > is dropped, and exiting early at various points if an RT task is
-> > > > > runnable
-> > > > > on the current CPU.
-> > > > >
-> > > > > On a system with 128 CPUs, these patches dropped latency (as
-> > > > > measured by
-> > > > > a 12 hour rteval run) from 1045us to 317us (when applied to
-> > > > > 5.12.0-rc3-rt3).
-> > > >
-> > > > The patch below has been queued for v5.13 and removed the update o=
-f
-> > > > blocked load what seemed to be the major reason for long preempt/i=
-rq
-> > > > off during newly idle balance:
-> > > > https://lore.kernel.org/lkml/20210224133007.28644-1-vincent.guitto=
-t@linaro.org/
-> > > >
-> > > > I would be curious to see how it impacts your cases
-> > >
-> > > I still get 1000+ ms latencies with those patches applied.
-> >
-> > If NEWIDLE balancing migrates one task, how does that manage to consum=
-e
-> > a full *millisecond*, and why would that only be a problem for RT?
-> >
-> > 	-Mike
-> >
-> > (rt tasks don't play !rt balancer here, if CPU goes idle, tough titty)
->
-> Determining which task to pull is apparently taking that long (again, th=
-is
-> is on a 128-cpu system).  RT is singled out because that is the config t=
-hat
-> makes significant tradeoffs to keep latencies down (I expect this would =
-be
-> far from the only possible 1ms+ latency on a non-RT kernel), and there w=
-as
-> concern about the overhead of a double context switch when pulling a tas=
-k to
-> a newidle cpu.
+On 5/1/21 7:41 AM, Peter Xu wrote:
+> F_SEAL_FUTURE_WRITE is missing for hugetlb starting from the first day.
+> There is a test program for that and it fails constantly.
+> 
+> $ ./memfd_test hugetlbfs
+> memfd-hugetlb: CREATE
+> memfd-hugetlb: BASIC
+> memfd-hugetlb: SEAL-WRITE
+> memfd-hugetlb: SEAL-FUTURE-WRITE
+> mmap() didn't fail as expected
+> Aborted (core dumped)
+> 
+> I think it's probably because no one is really running the hugetlbfs test.
+> 
+> Fix it by checking FUTURE_WRITE also in hugetlbfs_file_mmap() as what we do in
+> shmem_mmap().  Generalize a helper for that.
+> 
+> Reported-by: Hugh Dickins <hughd@google.com>
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+>  fs/hugetlbfs/inode.c |  5 +++++
+>  include/linux/mm.h   | 32 ++++++++++++++++++++++++++++++++
+>  mm/shmem.c           | 22 ++++------------------
+>  3 files changed, 41 insertions(+), 18 deletions(-)
 
-What I think has be going on is that you're running a synchronized RT
-load, many CPUs go idle as a thundering herd, and meet at focal point
-busiest.  What I was alluding to was that preventing such size scale
-pile-ups would be way better than poking holes in it for RT to try to
-sneak through.  If pile-up it is, while not particularly likely, the
-same should happen with normal tasks, wasting cycles generating heat.
+Thanks Peter and Hugh!
 
-The main issue I see with these patches is that the resulting number is
-still so gawd awful as to mean "nope, not rt ready", making the whole
-exercise look a bit like a noop.
+One question below,
 
-	-Mike
+> 
+> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+> index a2a42335e8fd2..39922c0f2fc8c 100644
+> --- a/fs/hugetlbfs/inode.c
+> +++ b/fs/hugetlbfs/inode.c
+> @@ -131,10 +131,15 @@ static void huge_pagevec_release(struct pagevec *pvec)
+>  static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
+>  {
+>  	struct inode *inode = file_inode(file);
+> +	struct hugetlbfs_inode_info *info = HUGETLBFS_I(inode);
+>  	loff_t len, vma_len;
+>  	int ret;
+>  	struct hstate *h = hstate_file(file);
+>  
+> +	ret = seal_check_future_write(info->seals, vma);
+> +	if (ret)
+> +		return ret;
+> +
+>  	/*
+>  	 * vma address alignment (but not the pgoff alignment) has
+>  	 * already been checked by prepare_hugepage_range.  If you add
+
+The full comment below the code you added is:
+
+	/*
+	 * vma address alignment (but not the pgoff alignment) has
+	 * already been checked by prepare_hugepage_range.  If you add
+	 * any error returns here, do so after setting VM_HUGETLB, so
+	 * is_vm_hugetlb_page tests below unmap_region go the right
+	 * way when do_mmap unwinds (may be important on powerpc
+	 * and ia64).
+	 */
+
+This comment was added in commit 68589bc35303 by Hugh, although it
+appears David Gibson added the reason for the comment in the commit
+message:
+
+"If hugetlbfs_file_mmap() returns a failure to do_mmap_pgoff() - for example,
+because the given file offset is not hugepage aligned - then do_mmap_pgoff
+will go to the unmap_and_free_vma backout path.
+
+But at this stage the vma hasn't been marked as hugepage, and the backout path
+will call unmap_region() on it.  That will eventually call down to the
+non-hugepage version of unmap_page_range().  On ppc64, at least, that will
+cause serious problems if there are any existing hugepage pagetable entries in
+the vicinity - for example if there are any other hugepage mappings under the
+same PUD.  unmap_page_range() will trigger a bad_pud() on the hugepage pud
+entries.  I suspect this will also cause bad problems on ia64, though I don't
+have a machine to test it on."
+
+There are still comments in the unmap code about special handling of
+ppc64 PUDs.  So, this may still be an issue.
+
+I am trying to dig into the code to determine if this is still and
+issue.  Just curious if you looked into this?  Might be simpler and
+safer to just put the seal check after setting the VM_HUGETLB flag?
+
+--
+Mike Kravetz
+
 
