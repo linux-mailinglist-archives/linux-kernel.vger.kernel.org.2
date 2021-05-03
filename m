@@ -2,140 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E6B371728
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E410371742
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229964AbhECOz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 10:55:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40063 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229924AbhECOzZ (ORCPT
+        id S230059AbhECO6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 10:58:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229953AbhECO6Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 10:55:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620053672;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3b540+x5tTROkhNIivHz2jfrf6p5DdmXEjkUmZeSpJM=;
-        b=KcG/boF7aAEIrUAWGBPZx8j3vkBIRRWofcQ6AWeCeVWYlcEGn1TPmWLFXZO7cNx3wln3jH
-        qcbTyDIoPsBtkA5UgPG/1IU+gxRdMdVoLgYY0Nf5ThandzXlNOjtnJ3/uJkyJx27TyYoXs
-        mGqSfflmaSaY0D/w00xzeHJ5dWEKv6Y=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-55-3wikUtxgNmOeUYRpMsG-0Q-1; Mon, 03 May 2021 10:54:30 -0400
-X-MC-Unique: 3wikUtxgNmOeUYRpMsG-0Q-1
-Received: by mail-ed1-f71.google.com with SMTP id h13-20020a05640250cdb02903790a9c55acso4679882edb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 07:54:30 -0700 (PDT)
+        Mon, 3 May 2021 10:58:16 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D297C06174A;
+        Mon,  3 May 2021 07:57:22 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id k3-20020a17090ad083b0290155b934a295so5906147pju.2;
+        Mon, 03 May 2021 07:57:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ik3wrzpwnYSSTSQFdegvdMidUhrImlyxHbi+NVAFZeQ=;
+        b=ns82hHHVmswbQv/3kS/nuzUsBa5rE6zd8LmLEbZifQd9bSi3KrQ3kjSCjhierzMpzl
+         otGRj+tNg6qFybAWjewmxAIJD7r0DZfjIUyFjG1byU34s9E4XMt2baDRJJbi1bb+jlnY
+         fH/U9QiQ0mFK3D8XziD6FA6SefOhO5hGWZ5IlT+YMlGLgKQix9CsWlOHCDf7tVkAu7dh
+         PO4wqHzHKyJUNa/UrKZc0nOIFIFjeD5jD43TIiJ4VMnkGc7idCf0EXo2u6oai72Y2Jrk
+         h3CYHQ2DuMER1EqZfICCLBDURQuKxbMYgvJIT4GIN/lGITXCRbXZYoY0NcDH2jxRacrd
+         U9tA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=3b540+x5tTROkhNIivHz2jfrf6p5DdmXEjkUmZeSpJM=;
-        b=Zl654+gtWjgGwXupLE4w61LmdTHwSl63awMaevIoirVIjtTXctGbUIfpCjnjBgJEjV
-         lp3R5uHbR1rrIYh/+sSR6/cIvVm7Jd7FxHYrtdgeHD2ZKa0RiYQ6jgz8axJ3cgbJmx7M
-         W7ymTCXeNCF6nXU1a0LJ41TRD9W6HZzGyLfk0PTJgSPTnQdVLo+uyk+bwYENgOwH2eZZ
-         hXRyxkSSc0ThYhN9GNTxEwJxkHS1MMRN7CUe6kuxUa/qoBotL7ZyJXuerPDJ5V+dHIlA
-         4++Z3cpFBhvziUgiasLTPErOzXoW0BzEB3ZudP6E294vt8Uir7MagFoIPRyk6+MNusp8
-         OQ2A==
-X-Gm-Message-State: AOAM532CgS8bEUkbePkzsOs+aa4ttSgaOhpqzpBIcf9W4USDHcmXkVi7
-        chdjAIOYOKkA5wmB7Lw7hX5yA2KhrYW4rh54eOgIu5vVHeuen7kXgkzgA5wVY9lzSe2VPOj41F8
-        e2e3oFef5HYSHglAxEqTF0sDF
-X-Received: by 2002:a17:906:3884:: with SMTP id q4mr3800242ejd.492.1620053669155;
-        Mon, 03 May 2021 07:54:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxoR23CFOSjH9ccO37wfLz2PUmLdvsRxh6LTPVmadaUWrtpbDf7jx//gWJ/S64YXlz2inuaaw==
-X-Received: by 2002:a17:906:3884:: with SMTP id q4mr3800225ejd.492.1620053668986;
-        Mon, 03 May 2021 07:54:28 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id go38sm11070888ejc.40.2021.05.03.07.54.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 07:54:28 -0700 (PDT)
-Subject: Re: [PATCH v4] KVM: x86: Fix KVM_GET_CPUID2 ioctl to return cpuid
- entries count
-To:     Sean Christopherson <seanjc@google.com>,
-        Valeriy Vdovin <valeriy.vdovin@virtuozzo.com>
-Cc:     linux-kernel@vger.kernel.org, Denis Lunev <den@openvz.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Alexander Graf <graf@amazon.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        Like Xu <like.xu@linux.intel.com>, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20210428172729.3551-1-valeriy.vdovin@virtuozzo.com>
- <YIoFFl72VSeuhCRt@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <0d68dbc3-8462-7763-fbad-f3b895fcf6e6@redhat.com>
-Date:   Mon, 3 May 2021 16:54:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        bh=Ik3wrzpwnYSSTSQFdegvdMidUhrImlyxHbi+NVAFZeQ=;
+        b=SRyd0Swy/7Ad/9W2EEZiQZRpmPlUUaoOMrwOlk/dPeM4KxwGYvsUMoSruubFCcBHct
+         xfimmTeaGGNKT8gMw5HDTNCVx9PHgSkMNglcGE+7ioGwZWdxyZpjUCHSfTX1EVAOpf1h
+         CdoithIzhqt9FvXAC8sdJX+OzbZIv185gYFC0+kU+71qV+PAsyu75ihvMu2jDg/Q/7l0
+         6cEkhqIeQbE7F116IF2nTqotuj6B1ZczAIdHB7BJWM6RyoXhI71O2t/heP4U2MaG91xc
+         mzrinMTzFaFzaYS2nQBYVc8epbI1HDBy5aaahua5t2kZKuNEcHAsy8uoRRUF6JJ3PlGu
+         jSdA==
+X-Gm-Message-State: AOAM5321ST6cUHHLSFkZ+Dqtx7RylU/vc0AelPhf5iH0yQv8EjOjAFwU
+        sPRVckGgzg0BgvbQkoEAow6fhLVnMvc=
+X-Google-Smtp-Source: ABdhPJxx8FIdxq1RnQpNlYcMei/6iy1SFOPobT/FRMctCUBqtt8agD26AIUyd8SxUiJ/z05VmIdMBA==
+X-Received: by 2002:a17:90a:6e45:: with SMTP id s5mr31851971pjm.125.1620053841612;
+        Mon, 03 May 2021 07:57:21 -0700 (PDT)
+Received: from archl-on2.. ([103.51.75.154])
+        by smtp.gmail.com with ESMTPSA id k38sm3593983pgi.73.2021.05.03.07.57.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 May 2021 07:57:21 -0700 (PDT)
+From:   Anand Moon <linux.amoon@gmail.com>
+To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Anand Moon <linux.amoon@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCHv1 0/9] Added Audio and HDMI power domain for Amlogic SoC
+Date:   Mon,  3 May 2021 14:54:33 +0000
+Message-Id: <20210503145503.1477-1-linux.amoon@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <YIoFFl72VSeuhCRt@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/04/21 03:00, Sean Christopherson wrote:
-> On Wed, Apr 28, 2021, Valeriy Vdovin wrote:
->> It's very explicit by the code that it was designed to receive some
->> small number of entries to return E2BIG along with the corrected number.
-> 
-> LOL, saying KVM_GET_CPUID2 was "designed" is definitely giving the KVM
-> forefathers the benefit of the doubt.
+Patch series add Audio and Hdmi power domain for Amlogic SoC.
 
-I was going to make a different joke, i.e. that KVM_GET_CPUID2 was 
-indeed designed the way Valeriy described, but that design was forgotten 
-soon after.
+Tested on GXBB - Odroid C2
+          SM1  - Odroid C4
+          G12B - Odroid N2
+-Anand
 
-Really, this ioctl has been such a trainwreck that I think the only good 
-solution here is to drop it.
+Anand Moon (9):
+  soc: amlogic: meson-ee-pwrc: Add audio power domain Meson g12a and
+    g12b SoCs
+  arm64: dts: amlogic: Add audio power domain for g12a and g12b
+  soc: amlogic: meson-ee-pwrc: Add hdmi power domain Meson g12a SoCs
+  arm64: dts: amlogic: Add hdmi power domain for g12a and g12b
+  soc: amlogic: meson-ee-pwrc: Add hdmi power domain Meson sm1 SoCs
+  arm64: dts: amlogic: Add audio power domain for sm1 SoC
+  arm64: dts: amlogic: Add hdmi power domain for sm1 sbc
+  soc: amlogic: meson-ee-pwrc: Add hdmi power domain Meson gxbb and gxl
+    SoCs
+  arm64: dts: amlogic: Add hdmi power domain for gxbb and gxl
 
-Paolo
+ arch/arm64/boot/dts/amlogic/meson-g12a-sei510.dts    |  2 ++
+ arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts      |  1 +
+ arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts   |  2 ++
+ arch/arm64/boot/dts/amlogic/meson-g12b-gsking-x.dts  |  1 +
+ .../arm64/boot/dts/amlogic/meson-g12b-gtking-pro.dts |  1 +
+ arch/arm64/boot/dts/amlogic/meson-g12b-gtking.dts    |  1 +
+ .../arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi |  2 ++
+ arch/arm64/boot/dts/amlogic/meson-g12b-ugoos-am6.dts |  1 +
+ arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi     |  1 +
+ .../boot/dts/amlogic/meson-gx-libretech-pc.dtsi      |  1 +
+ arch/arm64/boot/dts/amlogic/meson-gx-p23x-q20x.dtsi  |  1 +
+ arch/arm64/boot/dts/amlogic/meson-gxbb-nanopi-k2.dts |  1 +
+ .../boot/dts/amlogic/meson-gxbb-nexbox-a95x.dts      |  1 +
+ arch/arm64/boot/dts/amlogic/meson-gxbb-odroidc2.dts  |  1 +
+ arch/arm64/boot/dts/amlogic/meson-gxbb-p20x.dtsi     |  1 +
+ arch/arm64/boot/dts/amlogic/meson-gxbb-vega-s95.dtsi |  1 +
+ arch/arm64/boot/dts/amlogic/meson-gxbb-wetek.dtsi    |  1 +
+ .../dts/amlogic/meson-gxl-s805x-libretech-ac.dts     |  1 +
+ arch/arm64/boot/dts/amlogic/meson-gxl-s805x-p241.dts |  1 +
+ arch/arm64/boot/dts/amlogic/meson-gxl-s905d-p230.dts |  1 +
+ .../boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts  |  1 +
+ .../dts/amlogic/meson-gxl-s905x-libretech-cc-v2.dts  |  1 +
+ .../dts/amlogic/meson-gxl-s905x-libretech-cc.dts     |  1 +
+ .../boot/dts/amlogic/meson-gxl-s905x-nexbox-a95x.dts |  1 +
+ arch/arm64/boot/dts/amlogic/meson-gxl-s905x-p212.dts |  1 +
+ .../arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts |  1 +
+ arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts  |  1 +
+ arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi    |  2 ++
+ arch/arm64/boot/dts/amlogic/meson-sm1-sei610.dts     |  2 ++
+ drivers/soc/amlogic/meson-ee-pwrc.c                  | 12 ++++++++++++
+ include/dt-bindings/power/meson-g12a-power.h         |  2 ++
+ include/dt-bindings/power/meson-gxbb-power.h         |  1 +
+ include/dt-bindings/power/meson-sm1-power.h          |  1 +
+ 33 files changed, 50 insertions(+)
 
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index efc7a82ab140..3f941b1f4e78 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -4773,14 +4773,17 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
->>   		r = -EFAULT;
->>   		if (copy_from_user(&cpuid, cpuid_arg, sizeof(cpuid)))
->>   			goto out;
->> +
->>   		r = kvm_vcpu_ioctl_get_cpuid2(vcpu, &cpuid,
->>   					      cpuid_arg->entries);
->> -		if (r)
->> +
->> +		if (r && r != -E2BIG)
->>   			goto out;
->> -		r = -EFAULT;
->> -		if (copy_to_user(cpuid_arg, &cpuid, sizeof(cpuid)))
->> +
->> +		if (copy_to_user(cpuid_arg, &cpuid, sizeof(cpuid))) {
->> +			r = -EFAULT;
->>   			goto out;
-> 
-> As I pointed out[*], copying the number of entries but not the entries themselves
-> is wrong.  All of my feedback on v1 still stands.
-> 
-> [*] https://lkml.kernel.org/r/YIl4M/GgaYvwNuXv@google.com
-> 
->> -		r = 0;
->> +		}
->>   		break;
->>   	}
->>   	case KVM_GET_MSRS: {
-> 
+-- 
+2.31.1
 
