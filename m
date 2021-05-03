@@ -2,249 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7733722BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 23:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E5983722C1
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 23:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbhECV7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 17:59:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37888 "EHLO
+        id S229823AbhECWAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 18:00:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhECV7P (ORCPT
+        with ESMTP id S229603AbhECWAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 17:59:15 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1D2DC061573;
-        Mon,  3 May 2021 14:58:20 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id n25so8139664edr.5;
-        Mon, 03 May 2021 14:58:20 -0700 (PDT)
+        Mon, 3 May 2021 18:00:10 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F42C061761
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 14:59:15 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id z16so4820577pga.1
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 14:59:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LLMKm/ZQSm5fL9y/P+Fadbw94OoQzyxeONFs/WIU4Ug=;
-        b=kyYD8cE5UO2LmEpD13MO9Bhs//1GxGUvwlPGPIMSNNPbV8vzgnoVCpb03Ns+9UOKJc
-         P07WaocCOk4SWFIVIw16+N35lQqcDB+0+D/FPZy72/vomdP0KfoLxixVgAh/UohamQe8
-         HCrNJWar/bkwxyTC4cT+NGT7G37zL5FnYL+WjZK/m9jPTuo9PjGH6hxth8BFM5SDPK3j
-         MJZI6tS/uSbOPv6wwPalfZFqDd4+qHQiBQNxSWGkQEDdKVBJ64s8+FZhxGuz2RMwOUzh
-         +3pqNc1GDQOXkiKdOCRYLAitTmIB6t8Xsq9VXDIGG8WMKgU/rG9iakNefsfnU8iBCDJe
-         JiGw==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7XeQvyBWVKf0skvGUDMoW46+5itY3Fyc7Jw/oYmvtIY=;
+        b=H2ea2bGlnrHk4qW8bhoexRGleeKJrdwsxjY0tTeNoasXxX+IKlVRsmEalrXV+m7p8+
+         aVHEygDDJi7N4xXnLTikV6Hw9H9SiJhyCTvm8v8ZSj03PJbvAiEp1vXbawBNW7ImJSFA
+         be03HIV39CqugEOR2d6Eqgbsfb7QFX5OLns2g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LLMKm/ZQSm5fL9y/P+Fadbw94OoQzyxeONFs/WIU4Ug=;
-        b=F+cvpdDA0FT9S+U3aIxbOFGf8xVRTF5Acgzd2FV+W1li02yjBS/oGMSL/4mgUvF53f
-         AHPBtKpBtcizJuR5FmEzClLKH14hcxm6eE1pDulkQN/V9m/Sa5MZmJHtgfa62mhARf55
-         PJL+UqQTl8b975urt13u35c8dPAtc58R6cJxaLaGr/Ko/9XrCBndPw7ehWZUsS2W/3dr
-         R7DWkcDW+nZHH+/69Xi5czaEAM6G/5KTIcVQiBH3SrosQ3gm9S1YVR6q5Y2iwJpff9D0
-         zSrCF0S4vP/uFbPUCdw3IGBQpXMPTUSqTtN4ngdeWER0ICy/pABZVt0mN0OS/Macqpkb
-         8PLA==
-X-Gm-Message-State: AOAM5321E/WvCF+tynU73Z++AD/QpvFoT9IH+J+4d1vI8mnOudXM/aYN
-        xbBbepIxjLQZ+I8RZ1CT20Dp0NgOgTGBKZ1R5vc=
-X-Google-Smtp-Source: ABdhPJy+5zCvRdE1afqItdM+szbgQoyqG8qSWXEah2nDsB+2CYd56f2ZtI1UoT3/5WRR2zdGcykKPiiVCI6dVCXUu+o=
-X-Received: by 2002:aa7:cc03:: with SMTP id q3mr22960892edt.366.1620079099524;
- Mon, 03 May 2021 14:58:19 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7XeQvyBWVKf0skvGUDMoW46+5itY3Fyc7Jw/oYmvtIY=;
+        b=jvBbTttz2da+kNCD4VKC/0pixOiK+oO6pX5yl0d66YszWJ0nHuWKKrOGI+xZBgLOu9
+         v5c3oU7W/tECoZdzsZRPXM2Mqvu6AT1wzsP6+yfL8ZLkkr1z5GclAq6syykmfJEd483u
+         w4yt8Ax+vLMJRXNqlVCmxWRnrAB8M2aI+GnmRmiW+F7Tq9k+GClyjdZSpHjPbQtvvu5G
+         /lopuh4ppcWwj8jKgBsGXv0ohQwuQ3S6RsG8tdVaFp1sncXp9HkFTeinSrebiRg6AEJH
+         THzXEnR16aUXtnVitOLcdRcFCK0pPhUgU5q4fL+HJfx0KHC20BGMy97YVcCTSUR2i9Ok
+         q2WA==
+X-Gm-Message-State: AOAM530pbZz9WtQ4Cl1gA3Ia700xaxmZopcqo0eE0pKW14++MUKWIS4s
+        H70B+li/BA43lAsFBD0IYfJRGw==
+X-Google-Smtp-Source: ABdhPJwalh66tJUrM/p0Z5iQ0SbnYg85Q29PsA9CRlkQ2sJN+bz79V9/rdyANt1QbA7FDn4F6uZDqg==
+X-Received: by 2002:a63:a62:: with SMTP id z34mr19857861pgk.189.1620079155125;
+        Mon, 03 May 2021 14:59:15 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:a592:ac50:b17b:5c43])
+        by smtp.gmail.com with ESMTPSA id w1sm639186pgp.31.2021.05.03.14.59.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 May 2021 14:59:14 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>
+Cc:     Lyude Paul <lyude@redhat.com>, Steev Klimaszewski <steev@kali.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Linus W <linus.walleij@linaro.org>, robdclark@chromium.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thierry Reding <treding@nvidia.com>, linux-i2c@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maxime Ripard <mripard@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Robert Foss <robert.foss@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v6 0/5] drm: Fix EDID reading on ti-sn65dsi86; solve some chicken-and-egg problems
+Date:   Mon,  3 May 2021 14:58:39 -0700
+Message-Id: <20210503215844.2996320-1-dianders@chromium.org>
+X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
 MIME-Version: 1.0
-References: <20210413212416.3273-1-shy828301@gmail.com>
-In-Reply-To: <20210413212416.3273-1-shy828301@gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Mon, 3 May 2021 14:58:07 -0700
-Message-ID: <CAHbLzkoARSnVpi4Ty7zj6znyqpS2YdvZ6VY2CXUDuGt7-iBY+g@mail.gmail.com>
-Subject: Re: [v2 RFC PATCH 0/7] mm: thp: use generic THP migration for NUMA
- hinting fault
-To:     Mel Gorman <mgorman@suse.de>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Zi Yan <ziy@nvidia.com>, Michal Hocko <mhocko@suse.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@de.ibm.com,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux MM <linux-mm@kvack.org>, linux-s390@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gently ping.
+The primary goal of this series is to try to properly fix EDID reading
+for eDP panels using the ti-sn65dsi86 bridge.
 
-I also did some tests to measure the latency of do_huge_pmd_numa_page.
-The test VM has 80 vcpus and 64G memory. The test would create 2
-processes to consume 128G memory together which would incur memory
-pressure to cause THP splits. And it also creates 80 processes to hog
-cpu, and the memory consumer processes are bound to different nodes
-periodically in order to increase NUMA faults.
+Previously we had a patch that added EDID reading but it turned out
+not to work at bootup. This caused some extra churn at bootup as we
+tried (and failed) to read the EDID several times and also ended up
+forcing us to use the hardcoded mode at boot. With this patch series I
+believe EDID reading is reliable at boot now and we never use the
+hardcoded mode.
 
-The below test script is used:
+This series is the logical successor to the 3-part series containing
+the patch ("drm/bridge: ti-sn65dsi86: Properly get the EDID, but only
+if refclk") [1].
 
-echo 3 > /proc/sys/vm/drop_caches
+At v6 now, this patch series is smaller as I have landed most of the
+cleanup patches. I've previously sent out a summary [2]. Now it just
+has the i2c fix and some of the more controversial parts.
 
-# Run stress-ng for 24 hours
-./stress-ng/stress-ng --vm 2 --vm-bytes 64G --timeout 24h &
-PID=$!
+This patch was developed agains linuxnext (next-20210416) with
+drm-misc-next (as of 20210503) merged in on a sc7180-trogdor-lazor
+device. To get things booting for me, I had to use Stephen's patch [3]
+to keep from crashing but otherwise all the patches I needed were
+here.
 
-./stress-ng/stress-ng --cpu $NR_CPUS --timeout 24h &
+Primary change between v2 and v3 is to stop doing the EDID caching in
+the core. I also added Andrzej's review tags.
 
-# Wait for vm stressors forked
-sleep 5
+Between v3 and v4 this series grew a whole lot. I changed it so that
+the EDID reading is actually driven by the panel driver now as was
+suggested by Andrzej. While I still believe that the old approach
+wasn't too bad I'm still switching. Why?
 
-PID_1=`pgrep -P $PID | awk 'NR == 1'`
-PID_2=`pgrep -P $PID | awk 'NR == 2'`
+The main reason is that I think it's useful in general for the panel
+code to have access to the DDC bus and to be able to read the
+EDID. This may allow us to more easily have the panel code support
+multiple sources of panels--it can read the EDID and possibly adjust
+timings based on the model ID. It also allows the panel code (or
+perhaps backlight code?) to send DDC commands if they are need for a
+particular panel.
 
-JOB1=`pgrep -P $PID_1`
-JOB2=`pgrep -P $PID_2`
+At the moment, once the panel is provided the DDC bus then existing
+code will assume that it should be in charge of reading the
+EDID. While it doesn't have to work that way, it seems sane to build
+on what's already there.
 
-# Bind load jobs to different nodes periodically to force generate
-# cross node memory access
-while [ -d "/proc/$PID" ]
-do
-        taskset -apc 8 $JOB1
-        taskset -apc 8 $JOB2
-        sleep 300
-        taskset -apc 58 $JOB1
-        taskset -apc 58 $JOB2
-        sleep 300
-done
+In order to expose the DDC bus to the panel, I had to solve a bunch of
+chicken-and-egg problems in terms of probe ordering between the bridge
+and the panel. I've broken the bridge driver into several sub drivers
+to make this happen. At the moment the sub-drivers are just there to
+solve the probe problem, but conceivably someone could use them to
+break the driver up in the future if need be.
 
-With the above test the histogram of latency of do_huge_pmd_numa_page
-is as shown below. Since the number of do_huge_pmd_numa_page varies
-drastically for each run (should be due to scheduler), so I converted
-the raw number to percentage.
+Between v4 and v5, high-level view of changes.
+- Some of the early patches landed, so dropped from series.
+- New pm_runtime_disable() fix (fixed a patch that already landed).
+- Added Bjorn's tags to most patches
+- Fixed problems when building as a module.
+- Reordered debugfs patch and fixed error handling there.
+- Dropped last patch. I'm not convinced it's safe w/out more work.
 
-                                     patched                        base
-@us[stress-ng]:
-[0]                                  3.57%                         0.16%
-[1]                                  55.68%                       18.36%
-[2, 4)                             10.46%                        40.44%
-[4, 8)                              7.26%                         17.82%
-[8, 16)                            21.12%                       13.41%
-[16, 32)                         1.06%                           4.27%
-[32, 64)                         0.56%                           4.07%
-[64, 128)                       0.16%                            0.35%
-[128, 256)                     < 0.1%                          < 0.1%
-[256, 512)                     < 0.1%                          < 0.1%
-[512, 1K)                       < 0.1%                          < 0.1%
-[1K, 2K)                         < 0.1%                          < 0.1%
-[2K, 4K)                         < 0.1%                          < 0.1%
-[4K, 8K)                         < 0.1%                          < 0.1%
-[8K, 16K)                       < 0.1%                          < 0.1%
-[16K, 32K)                     < 0.1%                          < 0.1%
-[32K, 64K)                     < 0.1%                          < 0.1%
+Between v5 and v6 this patch added the patch ("drm/dp: Allow an early
+call to register DDC i2c bus") and only includes the patches that
+haven't already landed.
 
-Per the result, patched kernel is even slightly better than the base
-kernel. I think this is because the lock contention against THP split
-is less than base kernel due to the refactor.
+[1] https://lore.kernel.org/r/20210304155144.3.I60a7fb23ce4589006bc95c64ab8d15c74b876e68@changeid/
+[2] https://lore.kernel.org/dri-devel/CAD=FV=Vzn0ih_RqR_ySJzFtq0B0x_4a-Uwjk56GeLyUZtTEXrQ@mail.gmail.com/
+[3] https://lore.kernel.org/r/161706912161.3012082.17313817257247946143@swboyd.mtv.corp.google.com/
 
+Changes in v6:
+- ("drm/dp: Allow an early call to register DDC i2c bus") new for v6.
+- Use new drm_dp_aux_register_ddc() calls.
 
-To exclude the affect from THP split, I also did test w/o memory
-pressure. No obvious regression is spotted. The below is the test
-result *w/o* memory pressure.
-                                       patched
-          base
-@us[stress-ng]:
-[0]                                      7.97%
-        18.4%
-[1]                                      69.63%
-        58.24%
-[2, 4)                                  4.18%
-        2.63%
-[4, 8)                                  0.22%
-        0.17%
-[8, 16)                                1.03%
-       0.92%
-[16, 32)                              0.14%
-      < 0.1%
-[32, 64)                              < 0.1%
-      < 0.1%
-[64, 128)                            < 0.1%
-     < 0.1%
-[128, 256)                          < 0.1%
-     < 0.1%
-[256, 512)                           0.45%
-     1.19%
-[512, 1K)                            15.45%
-     17.27%
-[1K, 2K)                               < 0.1%
-       < 0.1%
-[2K, 4K)                              < 0.1%
-       < 0.1%
-[4K, 8K)                              < 0.1%
-       < 0.1%
-[8K, 16K)                             0.86%
-      0.88%
-[16K, 32K)                           < 0.1%
-     0.15%
-[32K, 64K)                           < 0.1%
-     < 0.1%
-[64K, 128K)                         < 0.1%
-    < 0.1%
-[128K, 256K)                       < 0.1%                                 < 0.1%
+Douglas Anderson (5):
+  i2c: i2c-core-of: Fix corner case of finding adapter by node
+  drm/dp: Allow an early call to register DDC i2c bus
+  drm/bridge: ti-sn65dsi86: Promote the AUX channel to its own sub-dev
+  drm/bridge: ti-sn65dsi86: Don't read EDID blob over DDC
+  arm64: dts: qcom: Link the panel to the bridge's DDC bus
 
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi |  1 +
+ drivers/gpu/drm/bridge/ti-sn65dsi86.c        | 99 +++++++++++++-------
+ drivers/gpu/drm/drm_dp_helper.c              | 67 ++++++++++---
+ drivers/i2c/i2c-core-of.c                    | 17 ++--
+ include/drm/drm_dp_helper.h                  |  2 +
+ 5 files changed, 134 insertions(+), 52 deletions(-)
 
-On Tue, Apr 13, 2021 at 2:24 PM Yang Shi <shy828301@gmail.com> wrote:
->
->
-> Changelog:
-> v1 --> v2:
->     * Adopted the suggestion from Gerald Schaefer to skip huge PMD for S390
->       for now.
->     * Used PageTransHuge to distinguish base page or THP instead of a new
->       parameter for migrate_misplaced_page() per Huang Ying.
->     * Restored PMD lazily to avoid unnecessary TLB shootdown per Huang Ying.
->     * Skipped shared THP.
->     * Updated counters correctly.
->     * Rebased to linux-next (next-20210412).
->
-> When the THP NUMA fault support was added THP migration was not supported yet.
-> So the ad hoc THP migration was implemented in NUMA fault handling.  Since v4.14
-> THP migration has been supported so it doesn't make too much sense to still keep
-> another THP migration implementation rather than using the generic migration
-> code.  It is definitely a maintenance burden to keep two THP migration
-> implementation for different code paths and it is more error prone.  Using the
-> generic THP migration implementation allows us remove the duplicate code and
-> some hacks needed by the old ad hoc implementation.
->
-> A quick grep shows x86_64, PowerPC (book3s), ARM64 ans S390 support both THP
-> and NUMA balancing.  The most of them support THP migration except for S390.
-> Zi Yan tried to add THP migration support for S390 before but it was not
-> accepted due to the design of S390 PMD.  For the discussion, please see:
-> https://lkml.org/lkml/2018/4/27/953.
->
-> Per the discussion with Gerald Schaefer in v1 it is acceptible to skip huge
-> PMD for S390 for now.
->
-> I saw there were some hacks about gup from git history, but I didn't figure out
-> if they have been removed or not since I just found FOLL_NUMA code in the current
-> gup implementation and they seems useful.
->
-> I'm trying to keep the behavior as consistent as possible between before and after.
-> But there is still some minor disparity.  For example, file THP won't
-> get migrated at all in old implementation due to the anon_vma check, but
-> the new implementation doesn't need acquire anon_vma lock anymore, so
-> file THP might get migrated.  Not sure if this behavior needs to be
-> kept.
->
-> Patch #1 ~ #2 are preparation patches.
-> Patch #3 is the real meat.
-> Patch #4 ~ #6 keep consistent counters and behaviors with before.
-> Patch #7 skips change huge PMD to prot_none if thp migration is not supported.
->
-> Yang Shi (7):
->       mm: memory: add orig_pmd to struct vm_fault
->       mm: memory: make numa_migrate_prep() non-static
->       mm: thp: refactor NUMA fault handling
->       mm: migrate: account THP NUMA migration counters correctly
->       mm: migrate: don't split THP for misplaced NUMA page
->       mm: migrate: check mapcount for THP instead of ref count
->       mm: thp: skip make PMD PROT_NONE if THP migration is not supported
->
->  include/linux/huge_mm.h |   9 ++---
->  include/linux/migrate.h |  23 -----------
->  include/linux/mm.h      |   3 ++
->  mm/huge_memory.c        | 156 +++++++++++++++++++++++++-----------------------------------------------
->  mm/internal.h           |  21 ++--------
->  mm/memory.c             |  31 +++++++--------
->  mm/migrate.c            | 204 +++++++++++++++++++++--------------------------------------------------------------------------
->  7 files changed, 123 insertions(+), 324 deletions(-)
->
+-- 
+2.31.1.527.g47e6f16901-goog
+
