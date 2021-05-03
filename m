@@ -2,168 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 068FE371261
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 10:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94909371264
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 10:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232929AbhECIU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 04:20:57 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:50213 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229817AbhECIU4 (ORCPT
+        id S232988AbhECIVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 04:21:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44774 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229817AbhECIU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 04:20:56 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id B6EB0580BBD;
-        Mon,  3 May 2021 04:20:02 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Mon, 03 May 2021 04:20:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=ZZbw4zaMizJrDrM1TjO6/6x5vgu
-        yIVzvER1Undjdu/I=; b=Bcsr3W3Gqk0ypd8Zdc6LIqxdAWqQOLoyBNDbhzPyPFT
-        ivyPg0TCCln1kmTpGoENRBweah8m8UXclRPTCbznej572MsSINCFpqWXQExHntvg
-        z3rptIh7re/fAPEUOKOwnjI9sHflXVrtegVx7hsdSdh3aMJlHgtDBOOrQbSlqEpa
-        VUASdwwGySbA/lGmV/4PpBNGWDrmEtHGt+zHXAfW9fC+PpvT6+N/DDVjv8IsSzhu
-        EHqd3j5KG0ZlbvWzWcedMZwlkMqdLmiPuU6W9P2s4VwzyEvEZMliWjyNyEhjjUWk
-        UXrcUdsGIjPlgIw/Pikh9O4sFfc1LAWNSkQqLEfY+Iw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=ZZbw4z
-        aMizJrDrM1TjO6/6x5vguyIVzvER1Undjdu/I=; b=e0zX+A4VgmfixaP+9SwceH
-        8dWHq/maRcArZax5k5Mu7N4copJnf/CGXeu3DFZHRBtcXd6RnLgxIdbzGmE33/HI
-        a/sjlcm07J2oapmvhp6yjbSEyARNUHfVpAN8oaTVKD9BuW9t3ENZGaWJp/287vC3
-        HYWWU5X8lyqkhIU8Gb8lkganCI+Qn8vDvCkrB7M7LJ3iXo6UiLaV61dcI47s6ubQ
-        nEh9+k1JtU4wUEniqOUUsY66WAOqjNotLHxRZ0IaiNINjHVVKGN9C6bzeprl/Yoc
-        4v04r3mRV3ml8VFwZOwpFCIp7Yx31LcgJioKeIdvOpP28Qa+AYDvQqAqZp3lVxOQ
-        ==
-X-ME-Sender: <xms:MLKPYOBVzmY1SV1QLZroe0AUdjwebPxv5VGN0FThQfbGgx5_09aISA>
-    <xme:MLKPYIjsd9keR74cb3dzO0CUjnhiPexLLJKb1RwgxyqS7td0UXBHB3eZO-Zo0B1bp
-    U180Do29T0Ni9JWlP0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdefgedgtdefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:MLKPYBk-Uku8MnewArZF-5vCOoIIuHYeRZ124Zkq_GhZm7a6I1_ECA>
-    <xmx:MLKPYMxSviduytGs5zKnNdieSu66vVjUjtPbSWkPWDUWDO0uwa2dQQ>
-    <xmx:MLKPYDRNwGJnpWcTnLesrE6tHMyRIb3I2dNKbPZ-xQ7kJnX9pdkl_w>
-    <xmx:MrKPYEDkFe29yEP2v37YHxsY7jHufsiPt4mR8AR5m74xGSYrvMG3mA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Mon,  3 May 2021 04:20:00 -0400 (EDT)
-Date:   Mon, 3 May 2021 10:19:57 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Hongbo Yao <yaohongbo@huawei.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/msm/dpu: Delete bonkers code
-Message-ID: <20210503081957.qj5kdbrk7y4dnhid@gilmour>
-References: <20210430171744.1721408-1-robdclark@gmail.com>
- <CAE-0n513cwqs1c89PZpn0ojuDQ44nwxbRfaYssKHcGwKxK8JdA@mail.gmail.com>
+        Mon, 3 May 2021 04:20:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620030006;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y1iQg39S7/yQcUAfdd2josWY92R4FYw1/luzJ6UFBUE=;
+        b=ibHbSmRaAq+XPv1liziHCEBf+UJmrN7Q7577y7usOQ+0xzvWxUODGIkguVuF87cgwQnRWU
+        S73SAyFYQJzXm+Hh8f0+pslDOmHtq7WGtHJQPOCMEBSCfd/5KuaBY7sd+kS7a2OiO4cdOU
+        zCpemh7i46lvi9F0ihzbfvqiwc2Pm7Q=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-362-9C13PJZ1Px-GGVjYSt4Big-1; Mon, 03 May 2021 04:20:04 -0400
+X-MC-Unique: 9C13PJZ1Px-GGVjYSt4Big-1
+Received: by mail-wr1-f71.google.com with SMTP id t18-20020adfdc120000b02900ffe4432d8bso3490917wri.6
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 01:20:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Y1iQg39S7/yQcUAfdd2josWY92R4FYw1/luzJ6UFBUE=;
+        b=qzOMLH0MJW/UT56f3EiKIm0hq26a550EiWLnIw68QRZFXlEs6Gpe3bjPr1pf1W5TyN
+         VMdtJNZfghdZgm1y4j/1Trc+Vu8rD2IGYhfPsMNf32cNr7SuDVFe17I8dIY7ovtwYlm4
+         eCRTzQw/XQlSipZz4+uMthyMLdEMKgzj5DCxwlxkxQZeWK33C7g9TSMOEMjOhypzL1a1
+         LvxsmsLTLu0GwL/OadlvNgKcnXZ2WDueKg4KdLKCjSSWCvjXyRXHPHBLEdiCzSU1B3/K
+         crTWGIZAaD8M/KpxZWhGWd3fOM3KTWyI4ow04xpPBGRghPEVf54tE9z80qb8R+tagbCb
+         o1hg==
+X-Gm-Message-State: AOAM532PmFnvQ2BTr97dJhKzUAcRZ7D07aWze+32Bl0h1w0yE8HhrEMR
+        58ZAHxGB/znIhAVxsjKSTnW0xStHE6lAe/+4ia4wqhyzCH3KaVhwY13ZiESdh5Jhc5jTREOh/fq
+        an1ghYHG0/saRIA+B+GOlwalC
+X-Received: by 2002:a05:600c:249:: with SMTP id 9mr20341799wmj.175.1620030003796;
+        Mon, 03 May 2021 01:20:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxqXbKqLMVYj7jCfahNg53ORbH8cpXtpuR0Wp8+7ALOqrnsRfqpqjRjjxsQkluF9/EwSQpkcg==
+X-Received: by 2002:a05:600c:249:: with SMTP id 9mr20341784wmj.175.1620030003623;
+        Mon, 03 May 2021 01:20:03 -0700 (PDT)
+Received: from redhat.com (bzq-79-178-133-9.red.bezeqint.net. [79.178.133.9])
+        by smtp.gmail.com with ESMTPSA id b7sm3449828wri.83.2021.05.03.01.20.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 May 2021 01:20:03 -0700 (PDT)
+Date:   Mon, 3 May 2021 04:20:00 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Anton Yakovlev <anton.yakovlev@opensynergy.com>,
+        virtualization@lists.linux-foundation.org,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH] sound: virtio: correct the function name in kernel-doc
+ comment
+Message-ID: <20210503041943-mutt-send-email-mst@kernel.org>
+References: <20210415052645.14465-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="33yimouztyqtinrp"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAE-0n513cwqs1c89PZpn0ojuDQ44nwxbRfaYssKHcGwKxK8JdA@mail.gmail.com>
+In-Reply-To: <20210415052645.14465-1-rdunlap@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 14, 2021 at 10:26:45PM -0700, Randy Dunlap wrote:
+> Fix kernel-doc warning that the wrong function name is used in a
+> kernel-doc comment:
+> 
+> ../sound/virtio/virtio_ctl_msg.c:70: warning: expecting prototype for virtsnd_ctl_msg_request(). Prototype was for virtsnd_ctl_msg_response() instead
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> Cc: virtualization@lists.linux-foundation.org
+> Cc: alsa-devel@alsa-project.org
 
---33yimouztyqtinrp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
 
-Hi,
+Pls feel free to apply to the correct tree.
 
-On Fri, Apr 30, 2021 at 10:44:53AM -0700, Stephen Boyd wrote:
-> Quoting Rob Clark (2021-04-30 10:17:39)
-> > From: Rob Clark <robdclark@chromium.org>
-> >
-> > dpu_crtc_atomic_flush() was directly poking it's attached planes in a
-> > code path that ended up in dpu_plane_atomic_update(), even if the plane
-> > was not involved in the current atomic update.  While a bit dubious,
-> > this worked before because plane->state would always point to something
-> > valid.  But now using drm_atomic_get_new_plane_state() we could get a
-> > NULL state pointer instead, leading to:
-> >
-> >    [   20.873273] Call trace:
-> >    [   20.875740]  dpu_plane_atomic_update+0x5c/0xed0
-> >    [   20.880311]  dpu_plane_restore+0x40/0x88
-> >    [   20.884266]  dpu_crtc_atomic_flush+0xf4/0x208
-> >    [   20.888660]  drm_atomic_helper_commit_planes+0x150/0x238
-> >    [   20.894014]  msm_atomic_commit_tail+0x1d4/0x7a0
-> >    [   20.898579]  commit_tail+0xa4/0x168
-> >    [   20.902102]  drm_atomic_helper_commit+0x164/0x178
-> >    [   20.906841]  drm_atomic_commit+0x54/0x60
-> >    [   20.910798]  drm_atomic_connector_commit_dpms+0x10c/0x118
-> >    [   20.916236]  drm_mode_obj_set_property_ioctl+0x1e4/0x440
-> >    [   20.921588]  drm_connector_property_set_ioctl+0x60/0x88
-> >    [   20.926852]  drm_ioctl_kernel+0xd0/0x120
-> >    [   20.930807]  drm_ioctl+0x21c/0x478
-> >    [   20.934235]  __arm64_sys_ioctl+0xa8/0xe0
-> >    [   20.938193]  invoke_syscall+0x64/0x130
-> >    [   20.941977]  el0_svc_common.constprop.3+0x5c/0xe0
-> >    [   20.946716]  do_el0_svc+0x80/0xa0
-> >    [   20.950058]  el0_svc+0x20/0x30
-> >    [   20.953145]  el0_sync_handler+0x88/0xb0
-> >    [   20.957014]  el0_sync+0x13c/0x140
-> >
-> > The reason for the codepath seems dubious, the atomic suspend/resume
-> > heplers should handle the power-collapse case.  If not, the CRTC's
-> > atomic_check() should be adding the planes to the atomic update.
-> >
-> > Reported-by: Stephen Boyd <sboyd@kernel.org>
->=20
-> Maybe better to use swboyd@chromium.org for this one.
->=20
-> > Reported-by: John Stultz <john.stultz@linaro.org>
-> > Fixes: 37418bf14c13 drm: Use state helper instead of the plane state po=
-inter
->=20
-> Should be
->=20
-> Fixes: 37418bf14c13 ("drm: Use state helper instead of the plane state po=
-inter")
->=20
-> to match the preferred format.
->=20
-> > Signed-off-by: Rob Clark <robdclark@chromium.org>
->=20
-> Otherwise looks good, thanks.
+> ---
+>  sound/virtio/virtio_ctl_msg.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> --- linux-next-20210414.orig/sound/virtio/virtio_ctl_msg.c
+> +++ linux-next-20210414/sound/virtio/virtio_ctl_msg.c
+> @@ -61,7 +61,7 @@ void *virtsnd_ctl_msg_request(struct vir
+>  }
+>  
+>  /**
+> - * virtsnd_ctl_msg_request() - Get a pointer to the response header.
+> + * virtsnd_ctl_msg_response() - Get a pointer to the response header.
+>   * @msg: Control message.
+>   *
+>   * Context: Any context.
 
-Thanks for figuring this out, I've applied it with your chromium address
-and the proper fixes format.
-
-Maxime
-
---33yimouztyqtinrp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYI+yLQAKCRDj7w1vZxhR
-xZRaAQDTPjjiUQFAFWgbNS7oRz3zrty/Iml8Ny6hby1mPZ/NFAEA3T3YH0IJPL4s
-Nx3/uC0n+0PWb2Dr5NHA3d2sPNWRwQU=
-=D+EX
------END PGP SIGNATURE-----
-
---33yimouztyqtinrp--
