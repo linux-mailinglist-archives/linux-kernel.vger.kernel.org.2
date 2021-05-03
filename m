@@ -2,84 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A426371785
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4279371787
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:07:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhECPIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 11:08:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58040 "EHLO
+        id S230301AbhECPIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 11:08:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230123AbhECPI3 (ORCPT
+        with ESMTP id S230292AbhECPIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 11:08:29 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39E1C06174A;
-        Mon,  3 May 2021 08:07:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kMx7dObqmiMRLKvCPPx5dZSO2/TSonq0GivO88n9Dnw=; b=RTzFX22TzavsuLNPyHWsd2y00w
-        cF7Q/aaqJCVid9CI0gOoHuVkJsFTBbZj+lTPkVmRBQuzkNZYpJG9sXa/4C5amfoRCfYEaoMelXezF
-        C0YeOyS2NPjqv9FtF+HlWKZgFNAC6y4cUT4Dth+3fQbFuNHOkJu3qze9TWiODLDmQVdOmH+q7Fnwe
-        4VInMB/ACCoVu9GXHTNkiuuMBbcoDG8s/XN1fO8sY15E1lODTIA3YXke6rzgpeM5r3GSOHg4dLvuK
-        Me1nm5M0fRzPZ9A2SFF0T9D0zvnBPeANCBMBIQX4m+RiZFxcbxM7QZpJnXNrmLIlNuqCtNrLMG0LX
-        k3rHcIew==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1ldaAH-00EBCq-9l; Mon, 03 May 2021 15:07:21 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DFF893001D0;
-        Mon,  3 May 2021 17:07:15 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 61FAF2C1AAE0C; Mon,  3 May 2021 17:07:15 +0200 (CEST)
-Date:   Mon, 3 May 2021 17:07:15 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        tglx@linutronix.de, bp@alien8.de, jroedel@suse.de,
-        thomas.lendacky@amd.com, pbonzini@redhat.com, mingo@redhat.com,
-        dave.hansen@intel.com, rientjes@google.com, seanjc@google.com,
-        hpa@zytor.com, tony.luck@intel.com
-Subject: Re: [PATCH Part2 RFC v2 08/37] x86/sev: Split the physmap when
- adding the page in RMP table
-Message-ID: <YJARo9vpAgb6VmLI@hirez.programming.kicks-ass.net>
-References: <20210430123822.13825-1-brijesh.singh@amd.com>
- <20210430123822.13825-9-brijesh.singh@amd.com>
+        Mon, 3 May 2021 11:08:36 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DCF6C06174A;
+        Mon,  3 May 2021 08:07:42 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id c22so6665028edn.7;
+        Mon, 03 May 2021 08:07:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6PeKiC6VK6oLLbn2cnMl1YHOLyRIgp6HOXyzm858/Jc=;
+        b=oqa4C1F4z7emqDWN76F8bOb8wWgz9LKcoWLQp5PhjOKBtEbe8cLd+ops1lGKoVgNzp
+         gGdpC6HkkUTTlE4/2ZnwVtRC2kgKVaYR+f/lxZ1hqUQKadePdiHxKeZ2mEplsQibxdq9
+         pgYxnmNyUqMP3JeUUI3LJ0PfgxH11O7dYFxIuO0nlVlGI2mZtyPvLMqqfIxoEcq5HDEZ
+         A2a6HlbpIcvwJPGuN1u5O5x7YLUw3Q8qIaYvAl3nYTeZGEKPpEye4C/rXhOcaAm0rPeH
+         DLw3Q+BS3ddwk3N41iGdr3wj6hFDwf1QU3ZtryNMSHyN0+wNy+vmJ0cI/o9zKK5/9THf
+         Hv9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6PeKiC6VK6oLLbn2cnMl1YHOLyRIgp6HOXyzm858/Jc=;
+        b=DmTjS9RNoeXAIaQjaNBFVB5y9ogOpbOeyjSX35TbBJl6r2iWpJ56XxwsQKqSSA0Yz+
+         r1t9sD/J8XRtU79jXu9Rf2rZzQVNjVvvSH7eNtKewTg4It8lFTdqtgMPCXjIYmr0N1p7
+         izex20JmxXGJpb/BpbkUgJ5qhLr+llCiShMgRdigTTVDqceOZZOFDLVD13ORhHKxommN
+         PXn8bZ8JESV8AI06CFUP9xnG6KE6OP8QjsdYkcUmW6EF2IXON6AeRstVI4tZVapqUIw7
+         2PTE0k9LWtpO5w2Tevlg7upCj+oOXTuOd8Sz/hhwdb2NZecCgNJ2TSdeNZKDZBDmBQoR
+         H/uQ==
+X-Gm-Message-State: AOAM53191JgqXEJOvnE7uC2dviwn+PjP94yiLDJLv8Ofr8b04iy+CK3L
+        FR1FgCq8Wchy+nk3X8TIXAwow2XMVwdinZX4Pzu03WQbOE0=
+X-Google-Smtp-Source: ABdhPJzgzq9cLDMHr7lN6DCxUbCsnFeyWmsYaigFQVj8/gCeiG6BqYvBX+GWt81IYnAJp8Wlw3VIkmKBQgMxKEiBATg=
+X-Received: by 2002:a05:6402:3109:: with SMTP id dc9mr20519018edb.13.1620054461345;
+ Mon, 03 May 2021 08:07:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210430123822.13825-9-brijesh.singh@amd.com>
+References: <20210503145503.1477-1-linux.amoon@gmail.com> <20210503145503.1477-4-linux.amoon@gmail.com>
+In-Reply-To: <20210503145503.1477-4-linux.amoon@gmail.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Mon, 3 May 2021 17:07:30 +0200
+Message-ID: <CAFBinCCxMvomKt9E0jT_XXpyL1_-qXH4=zVDMNdbDCnZCsnT=A@mail.gmail.com>
+Subject: Re: [PATCHv1 3/9] soc: amlogic: meson-ee-pwrc: Add hdmi power domain
+ Meson g12a SoCs
+To:     Anand Moon <linux.amoon@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 07:37:53AM -0500, Brijesh Singh wrote:
+Hi Anand,
 
-> This poses a challenge in the Linux memory model. The Linux kernel
-> creates a direct mapping of all the physical memory -- referred to as
-> the physmap. The physmap may contain a valid mapping of guest owned pages.
-> During the page table walk, the host access may get into the situation where
-> one of the pages within the large page is owned by the guest (i.e assigned
-> bit is set in RMP). A write to a non-guest within the large page will
-> raise an RMP violation. To workaround it, call set_memory_4k() to split
-> the physmap before adding the page in the RMP table. This ensures that the
-> pages added in the RMP table are used as 4K in the physmap.
+On Mon, May 3, 2021 at 4:58 PM Anand Moon <linux.amoon@gmail.com> wrote:
+>
+> As per the S922X datasheet add hdmi power domain
+> controller for Meson g12a and g12b SoCs.
+>
+> Cc: Neil Armstrong <narmstrong@baylibre.com>
+> Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+> ---
+>  drivers/soc/amlogic/meson-ee-pwrc.c          | 5 +++++
+>  include/dt-bindings/power/meson-g12a-power.h | 1 +
+>  2 files changed, 6 insertions(+)
+>
+> diff --git a/drivers/soc/amlogic/meson-ee-pwrc.c b/drivers/soc/amlogic/meson-ee-pwrc.c
+> index 2e07ddf2d6a6..ec402c4ab931 100644
+> --- a/drivers/soc/amlogic/meson-ee-pwrc.c
+> +++ b/drivers/soc/amlogic/meson-ee-pwrc.c
+> @@ -154,6 +154,10 @@ static struct meson_ee_pwrc_mem_domain gxbb_pwrc_mem_vpu[] = {
+>         VPU_HHI_MEMPD(HHI_MEM_PD_REG0),
+>  };
+>
+> +static struct meson_ee_pwrc_mem_domain meson_pwrc_mem_hdmi[] = {
+> +       { HHI_MEM_PD_REG0, GENMASK(15, 8) },
+> +};
+> +
+the VPU power domain already includes:
+  VPU_HHI_MEMPD(HHI_MEM_PD_REG0),
+whereas VPU_HHI_MEMPD is bits[15:8]
 
-What's an RMP violation and why are they a problem?
+Having two power domains which are managing the same registers sounds
+like it'll be causing some trouble
+So for now this is (as I am not even sure what the goal here is):
+NACKed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-> The spliting of the physmap is a temporary solution until the kernel page
-> fault handler is improved to split the kernel address on demand.
 
-How is that an improvement? Fracturing the physmap sucks whichever way
-around.
-
-> One of the
-> disadvtange of splitting is that eventually, it will end up breaking down
-> the entire physmap unless its coalesce back to a large page. I am open to
-> the suggestation on various approaches we could take to address this problem.
-
-Have the hardware fracture the TLB entry internally?
+Best regards,
+Martin
