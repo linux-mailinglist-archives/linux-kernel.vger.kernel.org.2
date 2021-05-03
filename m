@@ -2,155 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 926E4372268
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 23:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B79D337226A
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 23:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229648AbhECV1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 17:27:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbhECV1G (ORCPT
+        id S229665AbhECV2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 17:28:43 -0400
+Received: from mail-lj1-f169.google.com ([209.85.208.169]:37542 "EHLO
+        mail-lj1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229499AbhECV2m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 17:27:06 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FBAEC061574
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 14:26:12 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id q10so4740343pgj.2
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 14:26:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XPeMU1gbb2Ouz0+R/qJWXXU61XPTpHJzJYNFXNLpGRA=;
-        b=yCaR+DVH5sT8hRYk5O8m8/4/+XRDtTPPQt8QYb8IvpHwl98R7KbLM8Y56nM7f+6uMo
-         z8WELQYH2AbDlTTqt0hhkF7HiQmSzX4+BLRBgC5cBMOH7V4M0CxuVwaqlCMq+E3bRn6F
-         KmBEtor4deIjLvWflIHRUgumBkdhCBEFxrXaoG2B3SIfGLbadzIZnmsqp8jpdnEUlpcn
-         gT0fiQt5N52MerEHJLg50MZXNb13s7lyzN6wAgy9EoVR72VnqnfC8T2j5+QM2nxNr9vL
-         AkUMQb/i6CLpkXy38a9KK6Y1rcsns8jvckje1FrotQKTbgDHvm8QZdX9ICDaBu6BwbpQ
-         CW1w==
+        Mon, 3 May 2021 17:28:42 -0400
+Received: by mail-lj1-f169.google.com with SMTP id b7so4814081ljr.4
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 14:27:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XPeMU1gbb2Ouz0+R/qJWXXU61XPTpHJzJYNFXNLpGRA=;
-        b=pTi/qKRhEl4BdgDESaIEPtwHxkyte1ALWW8LkqjeEBAH2Uw/GqvyrDznQVwTO3rxhA
-         UoOTb/J97g1N5pcMR+fvuxC2p5cx52Fy/e+FHMaiq9GB0iNOZOr7HIkY3a+4iOeZBEyx
-         uqIitDMKhfC6M1KPq0CbzeAy9bR1ljJzKKcxrMFyapQmVo504KWCcX0OnNWSYA2XsN9c
-         D0JAyzBDAzP3c/AotygmESXHZB3RCr1qrBylNFwWqHv0ypI7nG+3Y1nfA+AUYO0A1cqV
-         a7ONxQU/fYq8MpZCnGJ+r8VuikwDF2KW/dopEzUHMKp9rbYxx9Xla8To4oVYrlFS8aw+
-         CEeQ==
-X-Gm-Message-State: AOAM532YubWSviTQSqQbuA0fUq0dpgJCiTWqLArLGl2VuasH5DRpHqlX
-        nZf9VaJJYNR14lx7hOrSPRXJuw==
-X-Google-Smtp-Source: ABdhPJxhw2twyML4nlZAwd5NBONNy16EoM5fy51V7FRjw0k3rqxKk1dhMjSM/3g4ycrtbDi/wsAaCA==
-X-Received: by 2002:a17:90a:73c4:: with SMTP id n4mr703803pjk.201.1620077171737;
-        Mon, 03 May 2021 14:26:11 -0700 (PDT)
-Received: from ?IPv6:2600:380:4b2f:4dc3:5b46:253c:6ea5:c4fe? ([2600:380:4b2f:4dc3:5b46:253c:6ea5:c4fe])
-        by smtp.gmail.com with ESMTPSA id 123sm10083664pfx.180.2021.05.03.14.26.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 14:26:11 -0700 (PDT)
-Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
- registers for io_threads
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Stefan Metzmacher <metze@samba.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-References: <8735v3ex3h.ffs@nanos.tec.linutronix.de>
- <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
- <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
- <CALCETrV9bCenqzzaW6Ra18tCvNP-my09decTjmLDVZZAQxR6VA@mail.gmail.com>
- <CAHk-=wgo6XEz3VQ9ntqzWLR3-hm1YXrXUz4_heDs4wcLe9NYvA@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <d26e3a82-8a2c-7354-d36b-cac945c208c7@kernel.dk>
-Date:   Mon, 3 May 2021 15:26:10 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cFUf0b2x1L4iAYh3lFnkYgcpxKjwkZYWQZTwCl+dp6E=;
+        b=fnDy52xGwanh6XC3P7xdJVqSCy3rWtAHGBH+3uWL3JQAEGyS9YKmP1lhvDCtEe7kLj
+         V6uUecSAs00CHRxYcWNempbdbins9WE7Y8tG21nM6ARlB3biT5vPUm3DVAPNiVbRX7SQ
+         A1DhlPG86q71/1VsEM2sd2OiIh8Tu5Jfb6WyDFhtCHNK6blfkjYF0PotOWOE4vvwjtNe
+         EkcyW6Xdmwo50CMPERmrx6IGr75PQt3kz1f7ST6wfPqv6KZBRbNC9S+Fe4eP/J4Z8Lj0
+         H5Lhfpb5WjtFWb0jxj0iow7lF4FpOQE187GX9WVYTO8EuNyGtBzdsfO7CqDSDmsNjSvI
+         4T+w==
+X-Gm-Message-State: AOAM53332KPrqiFxKNdppxTg3FHCoaa+9hFNNJWzUvkkA1fAz+BUppDP
+        7v5xjM5FNVsf053jtt9ddW6nq+okS0I00kjFuqQ=
+X-Google-Smtp-Source: ABdhPJyAEDqSZctXIXrjvPOCFWnKT4MqUsWV9MHm3WmRnJi2MOmHaW+vfFzKHuDdzbV/96r6ghWKNffhlzgalxW4xHU=
+X-Received: by 2002:a2e:b746:: with SMTP id k6mr13913911ljo.275.1620077267973;
+ Mon, 03 May 2021 14:27:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wgo6XEz3VQ9ntqzWLR3-hm1YXrXUz4_heDs4wcLe9NYvA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210423023833.1430520-1-namhyung@kernel.org> <YIWPr5LFOAmQ0fg7@krava>
+ <CAM9d7ciCoPk2tu9=grhdKO=Jo1iq4PvOfEBgW3mmgcn0ju36nA@mail.gmail.com>
+In-Reply-To: <CAM9d7ciCoPk2tu9=grhdKO=Jo1iq4PvOfEBgW3mmgcn0ju36nA@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 3 May 2021 14:27:36 -0700
+Message-ID: <CAM9d7ciMfPqY+eJsFG36V82wOiNR-2g1Siytc=vRjaZsCdfDWQ@mail.gmail.com>
+Subject: Re: [PATCH] perf stat: Use aggregated counts directly
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Jin Yao <yao.jin@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/3/21 2:37 PM, Linus Torvalds wrote:
-> On Mon, May 3, 2021 at 1:15 PM Andy Lutomirski <luto@kernel.org> wrote:
->>
->> On Mon, May 3, 2021 at 12:15 PM Linus Torvalds
->> <torvalds@linux-foundation.org> wrote:
->>> So generally, the IO threads are now 100% normal threads - it's
->>> literally just that they never return to user space because they are
->>> always just doing the IO offload on the kernel side.
->>>
->>> That part is lovely, but part of the "100% IO threads" really is that
->>> they share the signal struct too, which in turn means that they very
->>> much show up as normal threads. Again, not a problem: they really
->>> _are_ normal threads for all intents and purposes.
->>
->> I'm a bit confused, though.  All the ptrace register access (AFAICS)
->> goes through ptrace_check_attach(), which should wait until the tracee
->> is stopped.  Does the io_uring thread now stop in response to ptrace
->> stop requests?
-> 
-> Yup. They really are 100% regular threads. Things like ^Z and friends
-> also stop them now, and the freezer freezes them etc.
-> 
-> And making PTRACE_ATTACH fail just causes gdb to fail.
-> 
->> Fair enough.  But I would really, really rather that gdb starts fixing
->> its amazingly broken assumptions about bitness.
-> 
-> "Preach it, Brother"
+Hi Arnaldo,
 
-That's actually what the original code did, and the "only" problem with
-it was that gdb shits itself and just go into an infinite loop trying to
-attach. And yes, that's most certainly a gdb bug, and we entertained a
-few options for making that work. One was hiding the threads, but nobody
-(myself included) liked that, because then we're special casing
-something again, and for no other reason than gdb is buggy.
+I'm not sure it's in your tree, can you please take a look and merge it?
 
-On principle, I think it's arguably the right change to just -EINVAL the
-attach. However, a part of me also finds it very annoying that anyone
-attempting to debug any program that uses io_uring will not be able to
-do so with a buggy gdb. That's regardless of whether or not you want to
-look at the io threads or not, or even if you don't care about debugging
-the io_uring side of things. And I'm assuming this will take a while to
-get fixed, and then even longer to make its way back to distros.
+Thanks,
+Namhyung
 
-So... You should just make the call. At least then I can just tell
-people that Linus made that decision :-)
-
->>>    So I think Stefan's patch is reasonable, if not pretty. Literally
->>> becasue of that "make these threads look even more normal"
->>
->> I think it's reasonable except for the bit about copying the segment
->> regs.  Can we hardcode __USER_CS, etc, and, when gdb crashes or
->> otherwise malfunctions for compat programs, we can say that gdb needs
->> to stop sucking.
-> 
-> So that was actually my initial suggestion. Stefan really does seem to
-> care about compat programs.
-> 
-> Any "gdb breaks" would be good to motivate people to fix gdb, but the
-> thing is, presumably nobody actually wants to touch gdb with a ten
-> foot pole.
-> 
-> And a "let's break gdb to encourage people to fix it" only works if
-> people actually _do_ fit it. Which doesn't seem to be happening.
-> 
-> Two lines of kernel code seems to be the better option than hoping for
-> gdb to be fixed.
-
-As far as I'm concerned, gdb works "well enough" with io threads as it
-stands. Yes, it'll complain a bit, but nothing that prevents you from
-attaching to a progrem. If we -EINVAL, then gdb will become useless for
-debugging a program that uses io_uring. And I'm not holding my breath
-while someone fixes that.
-
--- 
-Jens Axboe
-
+On Sun, Apr 25, 2021 at 11:00 AM Namhyung Kim <namhyung@kernel.org> wrote:
+>
+> On Mon, Apr 26, 2021 at 12:50 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Thu, Apr 22, 2021 at 07:38:33PM -0700, Namhyung Kim wrote:
+> > > The ps->res_stats is for repeated runs, so the interval code should
+> > > not touch it.  Actually the aggregated counts are available in the
+> > > counter->counts->aggr, so we can (and should) use it directly IMHO.
+> > >
+> > > No functional change intended.
+> >
+> > it looks ok, but it should fix the noise output then, right?
+>
+> Yeah, but only if -r and -I options are used at the same time.
+>
+> >
+> > Acked-by: Jiri Olsa <jolsa@redhat.com>
+>
+> Thanks,
+> Namhyung
+>
+> >
+> > >
+> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > > ---
+> > >  tools/perf/util/stat-display.c |  8 ++++----
+> > >  tools/perf/util/stat.c         | 12 ------------
+> > >  2 files changed, 4 insertions(+), 16 deletions(-)
+> > >
+> > > diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
+> > > index d3137bc17065..a38fa6527586 100644
+> > > --- a/tools/perf/util/stat-display.c
+> > > +++ b/tools/perf/util/stat-display.c
+> > > @@ -807,11 +807,11 @@ static void counter_aggr_cb(struct perf_stat_config *config __maybe_unused,
+> > >                           bool first __maybe_unused)
+> > >  {
+> > >       struct caggr_data *cd = data;
+> > > -     struct perf_stat_evsel *ps = counter->stats;
+> > > +     struct perf_counts_values *aggr = &counter->counts->aggr;
+> > >
+> > > -     cd->avg += avg_stats(&ps->res_stats[0]);
+> > > -     cd->avg_enabled += avg_stats(&ps->res_stats[1]);
+> > > -     cd->avg_running += avg_stats(&ps->res_stats[2]);
+> > > +     cd->avg += aggr->val;
+> > > +     cd->avg_enabled += aggr->ena;
+> > > +     cd->avg_running += aggr->run;
+> > >  }
+> > >
+> > >  /*
+> > > diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
+> > > index 2db46b9bebd0..d3ec2624e036 100644
+> > > --- a/tools/perf/util/stat.c
+> > > +++ b/tools/perf/util/stat.c
+> > > @@ -437,18 +437,6 @@ int perf_stat_process_counter(struct perf_stat_config *config,
+> > >
+> > >       aggr->val = aggr->ena = aggr->run = 0;
+> > >
+> > > -     /*
+> > > -      * We calculate counter's data every interval,
+> > > -      * and the display code shows ps->res_stats
+> > > -      * avg value. We need to zero the stats for
+> > > -      * interval mode, otherwise overall avg running
+> > > -      * averages will be shown for each interval.
+> > > -      */
+> > > -     if (config->interval || config->summary) {
+> > > -             for (i = 0; i < 3; i++)
+> > > -                     init_stats(&ps->res_stats[i]);
+> > > -     }
+> > > -
+> > >       if (counter->per_pkg)
+> > >               evsel__zero_per_pkg(counter);
+> > >
+> > > --
+> > > 2.31.1.498.g6c1eba8ee3d-goog
+> > >
+> >
