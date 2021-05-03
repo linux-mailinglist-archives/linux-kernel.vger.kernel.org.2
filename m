@@ -2,84 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0025E3712BA
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 10:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86DCD3712BB
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 10:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233003AbhECIz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 04:55:58 -0400
-Received: from smtprelay0005.hostedemail.com ([216.40.44.5]:33842 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230490AbhECIz5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 04:55:57 -0400
-Received: from omf03.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 659F0180C2CD0;
-        Mon,  3 May 2021 08:55:03 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf03.hostedemail.com (Postfix) with ESMTPA id 7813213D93;
-        Mon,  3 May 2021 08:54:58 +0000 (UTC)
-Message-ID: <de86b54eb783204ef174a05c60b0d190de7cd85c.camel@perches.com>
-Subject: Re: [PATCH] Raise the minimum GCC version to 5.2
-From:   Joe Perches <joe@perches.com>
-To:     Alexander Dahl <ada@thorsis.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-riscv@lists.infradead.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Date:   Mon, 03 May 2021 01:54:57 -0700
-In-Reply-To: <YI+nhMcPSTs/5Ydp@ada-deb-carambola.ifak-system.com>
-References: <20210501151538.145449-1-masahiroy@kernel.org>
-         <CANiq72k1hB3X6+Nc_iu=f=BoB-F9JW2j_B4ZMcv8_UpW5QQ2Og@mail.gmail.com>
-         <3943bc020f6227c8801907317fc113aa13ad4bad.camel@perches.com>
-         <20210502183030.GF10366@gate.crashing.org>
-         <81a926a3bdb70debe3ae2b13655ea8d249fb9991.camel@perches.com>
-         <20210502203253.GH10366@gate.crashing.org>
-         <CAHk-=wjGJskk5EwnDCccs6DcLytE2yx76+P_W-n1-B5zq0M3KA@mail.gmail.com>
-         <20210502223007.GZ1847222@casper.infradead.org>
-         <YI+nhMcPSTs/5Ydp@ada-deb-carambola.ifak-system.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S233036AbhECI4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 04:56:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60608 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233035AbhECI4D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 04:56:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A6375B01F;
+        Mon,  3 May 2021 08:55:09 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 4B8BE1F2B6B; Mon,  3 May 2021 10:55:11 +0200 (CEST)
+Date:   Mon, 3 May 2021 10:55:11 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     syzbot <syzbot+7fbfe5fed73ebb675748@syzkaller.appspotmail.com>,
+        jack@suse.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [syzbot] UBSAN: array-index-out-of-bounds in udf_statfs
+Message-ID: <20210503085511.GB2994@quack2.suse.cz>
+References: <000000000000683df205c1359d10@google.com>
+ <272c7c70-9ea0-b7d0-5fa7-01f0c5650bd8@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 7813213D93
-X-Spam-Status: No, score=1.44
-X-Stat-Signature: kzayu4orffhmqaa8ff8iq8d4a8ipzp46
-X-Rspamd-Server: rspamout01
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1952/ks3MY8TXp5Ug6xsGLjA9GLFC3+spA=
-X-HE-Tag: 1620032098-353050
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <272c7c70-9ea0-b7d0-5fa7-01f0c5650bd8@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-03 at 09:34 +0200, Alexander Dahl wrote:
-> Desktops and servers are all nice, however I just want to make you
-> aware, there are embedded users forced to stick to older cross
-> toolchains for different reasons as well, e.g. in industrial
-> environment. :-)
+On Sun 02-05-21 20:03:46, Randy Dunlap wrote:
+> Hi all--
+> 
+> On 4/30/21 12:28 PM, syzbot wrote:
+> > Hello,
+> > 
+> > syzbot found the following issue on:
+> > 
+> > HEAD commit:    e77a830c Merge branch 'akpm' (patches from Andrew)
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=14c63e6dd00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=c0a6882014fd3d45
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=7fbfe5fed73ebb675748
+> > compiler:       Debian clang version 11.0.1-2
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17612825d00000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=132cb56dd00000
+> > 
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+7fbfe5fed73ebb675748@syzkaller.appspotmail.com
+> > 
+> > loop0: detected capacity change from 0 to 3974
+> > UDF-fs: INFO Mounting volume 'LinuxUDF', timestamp 2020/09/19 18:44 (1000)
+> > ================================================================================
+> > UBSAN: array-index-out-of-bounds in fs/udf/super.c:2524:12
+> > index 0 is out of range for type '__le32 [0]'
+> 
+> 
+> Is this just due to (from fs/udf/ecma_167.h) the "[0]" struct items?
+> Do they need to be "[]" instead?  Will that satisfy USBAN?
+> 
+> 
+> /* Logical Volume Integrity Descriptor (ECMA 167r3 3/10.10) */
+> struct logicalVolIntegrityDesc {
+> 	struct tag		descTag;
+> 	struct timestamp	recordingDateAndTime;
+> 	__le32			integrityType;
+> 	struct extent_ad	nextIntegrityExt;
+> 	uint8_t			logicalVolContentsUse[32];
+> 	__le32			numOfPartitions;
+> 	__le32			lengthOfImpUse;
+> 	__le32			freeSpaceTable[0]; // <<<<<<<<<<<<<<<<
+> 	__le32			sizeTable[0]; // <<<<<<<<<<<<<<<<<<<
+> 	uint8_t			impUse[0]; // <<<<<<<<<<<<<<<<<<<<<<<
+> } __packed;
+> 
+> 
+> (I ask because I cannot reproduce the problem -- maybe a bad GCC
+> version?)
 
-In your embedded case, what kernel version do you use?
+Well, checks for numOfPartitions and lengthOfImpUse are certainly missing
+as well so maliciously corrupted filesystem (we have checksums for random
+corruptions) could certainly cause bad access. I'll fix that. You have a
+valid point that [0] arrays could confuse the compiler as well and
+certainly are not the suggested way of doing stuff like this these days.
+I'll get rid of those as well.
 
-For older toolchains, unless it's kernel version 5.13+,
-it wouldn't matter.
-
-And all the supported architectures have gcc 10.3 available at
-http://cdn.kernel.org/pub/tools/crosstool/
-
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
