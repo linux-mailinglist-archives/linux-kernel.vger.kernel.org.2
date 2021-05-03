@@ -2,97 +2,412 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 864EF3715BA
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D99003715BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233839AbhECNKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 09:10:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233317AbhECNKq (ORCPT
+        id S234119AbhECNLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 09:11:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40302 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233317AbhECNLE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 09:10:46 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25793C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 06:09:53 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1ldYKd-0001Sp-1K; Mon, 03 May 2021 15:09:51 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:1b0:e062:be12:b9c6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 72B8161B1C0;
-        Mon,  3 May 2021 13:09:49 +0000 (UTC)
-Date:   Mon, 3 May 2021 15:09:48 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: Re: [RESEND PATCH v3 0/3] watchdog: f71808e_wdt: migrate to new
- kernel API
-Message-ID: <20210503130948.y7w6a2wbonr6zxzu@pengutronix.de>
-References: <cover.dc9133eee56aa67653455928e4de2162e344ce4d.1618310618.git-series.a.fatoum@pengutronix.de>
+        Mon, 3 May 2021 09:11:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620047411;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VAP/ETS+jHrt/PTMFAJUTwy5IukB5/ESSQkZ50OVY7g=;
+        b=ZvgZTz3FOnVq6VO8G1bFZJ9fyg7MGfqkRBuKZNr1Pi6faoaTeQ5h5xi4M4x3t3coe7Y8fH
+        htaMAKo0ifqJFq0Uw1wGLi/iK8ybdEz4/Zs5/annpRRMakEClLrhVtnCyw9+J0ilybADbp
+        p2F0hcfLvBHO/9xCxHpwa8XnFffG3Pw=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-479-kU-oRIaQMNKdGkT7AzMa7Q-1; Mon, 03 May 2021 09:10:09 -0400
+X-MC-Unique: kU-oRIaQMNKdGkT7AzMa7Q-1
+Received: by mail-qk1-f200.google.com with SMTP id b19-20020a05620a0893b02902e956b29f5dso5041247qka.16
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 06:10:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=VAP/ETS+jHrt/PTMFAJUTwy5IukB5/ESSQkZ50OVY7g=;
+        b=N7bG/PSZ+eOMgStg6HoHx2FyIhHf8cU5kLKiFxvlvYkH38iOmLDr2K4q0yERd1/24a
+         WfMRiSTt+9LNnngwsI9XgJedLf37y02cHc9S3F1NcP1n+zBF3Oy+tuz5gbWAGF72XTUd
+         xUkEMokQyho2yJX/cmN7MAfVRSsrVTtIaqRqQ6lUiTVyumEy8IOv5GyGqUpd7BTlnSEI
+         rKR7MbvY5GIq4Iik2DdSQSDoFYfvrwXsKe4aS/m//E72ZHtuWn74ziDlhEU7HtvLcsfy
+         oxmIGUPuFwm0bp+FqfSjRAJGq1OFv9tNbW7alVHjDGPjymMDnNaqd3aQMDXnRV40qSN1
+         iW8g==
+X-Gm-Message-State: AOAM532VPjzizqnCbJfBl8kvrQ5cK+fTsxAJNcB64fDDZ5LMAGms4nc5
+        CbvcvU2iJs2VzRS8c0xYLIF/QkoF4N6A0Cl5oxqJldDVU2HIKREE9EwUBnEnt1Pk+a5h2uRnMy1
+        EyQ6ojEHhDkKFpMYTKQvhxlqu
+X-Received: by 2002:a05:622a:253:: with SMTP id c19mr17266168qtx.53.1620047409186;
+        Mon, 03 May 2021 06:10:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz2ytiiTKcC6r1Fv+xrymYnJ0tXIhsA4HHhZ8ypa81ar8SbjLm8OlQokC+IcdyTUZM3RYAR9Q==
+X-Received: by 2002:a05:622a:253:: with SMTP id c19mr17266133qtx.53.1620047408846;
+        Mon, 03 May 2021 06:10:08 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id w7sm1834762qtn.91.2021.05.03.06.10.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 06:10:08 -0700 (PDT)
+Subject: Re: [PATCH V5 XRT Alveo 05/20] fpga: xrt: group driver
+To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
+Cc:     linux-fpga@vger.kernel.org, maxz@xilinx.com,
+        sonal.santan@xilinx.com, yliu@xilinx.com, michal.simek@xilinx.com,
+        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
+        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
+References: <20210427205431.23896-1-lizhi.hou@xilinx.com>
+ <20210427205431.23896-6-lizhi.hou@xilinx.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <0af9a4ad-5216-05a3-2db5-60f879296baa@redhat.com>
+Date:   Mon, 3 May 2021 06:10:05 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="m5s4si2wk44k7sv6"
-Content-Disposition: inline
-In-Reply-To: <cover.dc9133eee56aa67653455928e4de2162e344ce4d.1618310618.git-series.a.fatoum@pengutronix.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210427205431.23896-6-lizhi.hou@xilinx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---m5s4si2wk44k7sv6
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 4/27/21 1:54 PM, Lizhi Hou wrote:
+> group driver that manages life cycle of a bunch of leaf driver instances
+> and bridges them with root.
+>
+> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
+> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
+> Signed-off-by: Lizhi Hou <lizhi.hou@xilinx.com>
+> ---
+>   drivers/fpga/xrt/include/group.h |  25 +++
+>   drivers/fpga/xrt/lib/group.c     | 278 +++++++++++++++++++++++++++++++
+>   2 files changed, 303 insertions(+)
+>   create mode 100644 drivers/fpga/xrt/include/group.h
+>   create mode 100644 drivers/fpga/xrt/lib/group.c
+>
+> diff --git a/drivers/fpga/xrt/include/group.h b/drivers/fpga/xrt/include/group.h
+> new file mode 100644
+> index 000000000000..09e9d03f53fe
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/include/group.h
+> @@ -0,0 +1,25 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2020-2021 Xilinx, Inc.
+> + *
+> + * Authors:
+> + *	Cheng Zhen <maxz@xilinx.com>
+> + */
+> +
+> +#ifndef _XRT_GROUP_H_
+> +#define _XRT_GROUP_H_
+> +
+> +#include "xleaf.h"
+> +
+> +/*
+> + * Group driver leaf calls.
+> + */
+> +enum xrt_group_leaf_cmd {
+> +	XRT_GROUP_GET_LEAF = XRT_XLEAF_CUSTOM_BASE, /* See comments in xleaf.h */
+> +	XRT_GROUP_PUT_LEAF,
+> +	XRT_GROUP_INIT_CHILDREN,
+> +	XRT_GROUP_FINI_CHILDREN,
+> +	XRT_GROUP_TRIGGER_EVENT,
+> +};
+> +
+> +#endif	/* _XRT_GROUP_H_ */
+> diff --git a/drivers/fpga/xrt/lib/group.c b/drivers/fpga/xrt/lib/group.c
+> new file mode 100644
+> index 000000000000..b45f05449e0b
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/lib/group.c
+> @@ -0,0 +1,278 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Xilinx Alveo FPGA Group Driver
+> + *
+> + * Copyright (C) 2020-2021 Xilinx, Inc.
+> + *
+> + * Authors:
+> + *	Cheng Zhen <maxz@xilinx.com>
+> + */
+> +
+> +#include <linux/mod_devicetable.h>
+> +#include "xleaf.h"
+> +#include "subdev_pool.h"
+> +#include "group.h"
+> +#include "metadata.h"
+> +#include "lib-drv.h"
+> +
+> +#define XRT_GRP "xrt_group"
+> +
+> +struct xrt_group {
+> +	struct xrt_device *xdev;
+> +	struct xrt_subdev_pool leaves;
+> +	bool leaves_created;
+> +	struct mutex lock; /* lock for group */
+> +};
+> +
+> +static int xrt_grp_root_cb(struct device *dev, void *parg,
+> +			   enum xrt_root_cmd cmd, void *arg)
+> +{
+> +	int rc;
+> +	struct xrt_device *xdev =
+> +		container_of(dev, struct xrt_device, dev);
+> +	struct xrt_group *xg = (struct xrt_group *)parg;
+> +
+> +	switch (cmd) {
+> +	case XRT_ROOT_GET_LEAF_HOLDERS: {
+> +		struct xrt_root_get_holders *holders =
+> +			(struct xrt_root_get_holders *)arg;
+> +		rc = xrt_subdev_pool_get_holders(&xg->leaves,
+> +						 holders->xpigh_xdev,
+> +						 holders->xpigh_holder_buf,
+> +						 holders->xpigh_holder_buf_len);
+> +		break;
+> +	}
+> +	default:
+> +		/* Forward parent call to root. */
+> +		rc = xrt_subdev_root_request(xdev, cmd, arg);
+> +		break;
+> +	}
+> +
+> +	return rc;
+> +}
+> +
+> +/*
+> + * Cut subdev's dtb from group's dtb based on passed-in endpoint descriptor.
+> + * Return the subdev's dtb through dtbp, if found.
+> + */
+> +static int xrt_grp_cut_subdev_dtb(struct xrt_group *xg, struct xrt_dev_endpoints *eps,
+> +				  char *grp_dtb, char **dtbp)
+> +{
+> +	int ret, i, ep_count = 0;
+> +	char *dtb = NULL;
+> +
+> +	ret = xrt_md_create(DEV(xg->xdev), &dtb);
+> +	if (ret)
+> +		return ret;
+> +
+> +	for (i = 0; eps->xse_names[i].ep_name || eps->xse_names[i].compat; i++) {
+> +		const char *ep_name = eps->xse_names[i].ep_name;
+> +		const char *compat = eps->xse_names[i].compat;
+> +
+> +		if (!ep_name)
+> +			xrt_md_get_compatible_endpoint(DEV(xg->xdev), grp_dtb, compat, &ep_name);
+> +		if (!ep_name)
+> +			continue;
+> +
+> +		ret = xrt_md_copy_endpoint(DEV(xg->xdev), dtb, grp_dtb, ep_name, compat, NULL);
+> +		if (ret)
+> +			continue;
+> +		xrt_md_del_endpoint(DEV(xg->xdev), grp_dtb, ep_name, compat);
+> +		ep_count++;
+> +	}
+> +	/* Found enough endpoints, return the subdev's dtb. */
+> +	if (ep_count >= eps->xse_min_ep) {
+> +		*dtbp = dtb;
+> +		return 0;
+> +	}
+> +
+> +	/* Cleanup - Restore all endpoints that has been deleted, if any. */
+> +	if (ep_count > 0) {
+> +		xrt_md_copy_endpoint(DEV(xg->xdev), grp_dtb, dtb,
+> +				     XRT_MD_NODE_ENDPOINTS, NULL, NULL);
+> +	}
+> +	vfree(dtb);
+> +	*dtbp = NULL;
+> +	return 0;
+> +}
+> +
+> +static int xrt_grp_create_leaves(struct xrt_group *xg)
+> +{
+> +	struct xrt_subdev_platdata *pdata = DEV_PDATA(xg->xdev);
+> +	struct xrt_dev_endpoints *eps = NULL;
+> +	int ret = 0, failed = 0;
+> +	enum xrt_subdev_id did;
+> +	char *grp_dtb = NULL;
+> +	unsigned long mlen;
+> +
+> +	if (!pdata)
+> +		return -EINVAL;
+> +
+> +	mlen = xrt_md_size(DEV(xg->xdev), pdata->xsp_dtb);
+> +	if (mlen == XRT_MD_INVALID_LENGTH) {
+> +		xrt_err(xg->xdev, "invalid dtb, len %ld", mlen);
+> +		return -EINVAL;
+> +	}
+> +
+> +	mutex_lock(&xg->lock);
+> +
+> +	if (xg->leaves_created) {
+> +		/*
+> +		 * This is expected since caller does not keep track of the state of the group
+> +		 * and may, in some cases, still try to create leaves after it has already been
+> +		 * created. This special error code will let the caller know what is going on.
+> +		 */
 
-On 13.04.2021 12:46:43, Ahmad Fatoum wrote:
-> This series migrates the driver to the new kernel watchdog API and
-> then to the driver model.
->=20
-> Main feedback from Guenther on v2 was that I need to split it up to
-> enable review. I have done so by removing the extra refactoring for
-> now and focused on the functional changes described above. The diff
-> is now much better readable.
->=20
-> I tested it on a f81866.
+ok
 
-Is there a chance to get this series applied and mainline? Is there
-anything that's blocking it?
+Reviewed-by: Tom Rix <trix@redhat.com>
 
-regards,
-Marc
+> +		mutex_unlock(&xg->lock);
+> +		return -EEXIST;
+> +	}
+> +
+> +	grp_dtb = vmalloc(mlen);
+> +	if (!grp_dtb) {
+> +		mutex_unlock(&xg->lock);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	/* Create all leaves based on dtb. */
+> +	xrt_info(xg->xdev, "bringing up leaves...");
+> +	memcpy(grp_dtb, pdata->xsp_dtb, mlen);
+> +	for (did = 0; did < XRT_SUBDEV_NUM; did++) {
+> +		eps = xrt_drv_get_endpoints(did);
+> +		while (eps && eps->xse_names) {
+> +			char *dtb = NULL;
+> +
+> +			ret = xrt_grp_cut_subdev_dtb(xg, eps, grp_dtb, &dtb);
+> +			if (ret) {
+> +				failed++;
+> +				xrt_err(xg->xdev, "failed to cut subdev dtb for drv %s: %d",
+> +					xrt_drv_name(did), ret);
+> +			}
+> +			if (!dtb) {
+> +				/*
+> +				 * No more dtb to cut or bad things happened for this instance,
+> +				 * switch to the next one.
+> +				 */
+> +				eps++;
+> +				continue;
+> +			}
+> +
+> +			/* Found a dtb for this instance, let's add it. */
+> +			ret = xrt_subdev_pool_add(&xg->leaves, did, xrt_grp_root_cb, xg, dtb);
+> +			if (ret < 0) {
+> +				/*
+> +				 * It is not a fatal error here. Some functionality is not usable
+> +				 * due to this missing device, but the error can be handled
+> +				 * when the functionality is used.
+ok
+> +				 */
+> +				failed++;
+> +				xrt_err(xg->xdev, "failed to add %s: %d", xrt_drv_name(did), ret);
+> +			}
+> +			vfree(dtb);
+> +			/* Continue searching for the same instance from grp_dtb. */
+> +		}
+> +	}
+> +
+> +	xg->leaves_created = true;
+> +	vfree(grp_dtb);
+> +	mutex_unlock(&xg->lock);
+> +	return failed == 0 ? 0 : -ECHILD;
+> +}
+> +
+> +static void xrt_grp_remove_leaves(struct xrt_group *xg)
+> +{
+> +	mutex_lock(&xg->lock);
+> +
+> +	if (!xg->leaves_created) {
+> +		mutex_unlock(&xg->lock);
+> +		return;
+> +	}
+> +
+> +	xrt_info(xg->xdev, "tearing down leaves...");
+> +	xrt_subdev_pool_fini(&xg->leaves);
+> +	xg->leaves_created = false;
+> +
+> +	mutex_unlock(&xg->lock);
+> +}
+> +
+> +static int xrt_grp_probe(struct xrt_device *xdev)
+> +{
+> +	struct xrt_group *xg;
+> +
+> +	xrt_info(xdev, "probing...");
+> +
+> +	xg = devm_kzalloc(&xdev->dev, sizeof(*xg), GFP_KERNEL);
+> +	if (!xg)
+> +		return -ENOMEM;
+> +
+> +	xg->xdev = xdev;
+> +	mutex_init(&xg->lock);
+> +	xrt_subdev_pool_init(DEV(xdev), &xg->leaves);
+> +	xrt_set_drvdata(xdev, xg);
+> +
+> +	return 0;
+> +}
+> +
+> +static void xrt_grp_remove(struct xrt_device *xdev)
+> +{
+> +	struct xrt_group *xg = xrt_get_drvdata(xdev);
+> +
+> +	xrt_info(xdev, "leaving...");
+> +	xrt_grp_remove_leaves(xg);
+> +}
+> +
+> +static int xrt_grp_leaf_call(struct xrt_device *xdev, u32 cmd, void *arg)
+> +{
+> +	int rc = 0;
+> +	struct xrt_group *xg = xrt_get_drvdata(xdev);
+> +
+> +	switch (cmd) {
+> +	case XRT_XLEAF_EVENT:
+> +		/* Simply forward to every child. */
+> +		xrt_subdev_pool_handle_event(&xg->leaves,
+> +					     (struct xrt_event *)arg);
+> +		break;
+> +	case XRT_GROUP_GET_LEAF: {
+> +		struct xrt_root_get_leaf *get_leaf =
+> +			(struct xrt_root_get_leaf *)arg;
+> +
+> +		rc = xrt_subdev_pool_get(&xg->leaves, get_leaf->xpigl_match_cb,
+> +					 get_leaf->xpigl_match_arg,
+> +					 DEV(get_leaf->xpigl_caller_xdev),
+> +					 &get_leaf->xpigl_tgt_xdev);
+> +		break;
+> +	}
+> +	case XRT_GROUP_PUT_LEAF: {
+> +		struct xrt_root_put_leaf *put_leaf =
+> +			(struct xrt_root_put_leaf *)arg;
+> +
+> +		rc = xrt_subdev_pool_put(&xg->leaves, put_leaf->xpipl_tgt_xdev,
+> +					 DEV(put_leaf->xpipl_caller_xdev));
+> +		break;
+> +	}
+> +	case XRT_GROUP_INIT_CHILDREN:
+> +		rc = xrt_grp_create_leaves(xg);
+> +		break;
+> +	case XRT_GROUP_FINI_CHILDREN:
+> +		xrt_grp_remove_leaves(xg);
+> +		break;
+> +	case XRT_GROUP_TRIGGER_EVENT:
+> +		xrt_subdev_pool_trigger_event(&xg->leaves, (enum xrt_events)(uintptr_t)arg);
+> +		break;
+> +	default:
+> +		xrt_err(xdev, "unknown IOCTL cmd %d", cmd);
+> +		rc = -EINVAL;
+> +		break;
+> +	}
+> +	return rc;
+> +}
+> +
+> +static struct xrt_driver xrt_group_driver = {
+> +	.driver	= {
+> +		.name    = XRT_GRP,
+> +	},
+> +	.subdev_id = XRT_SUBDEV_GRP,
+> +	.probe = xrt_grp_probe,
+> +	.remove = xrt_grp_remove,
+> +	.leaf_call = xrt_grp_leaf_call,
+> +};
+> +
+> +XRT_LEAF_INIT_FINI_FUNC(group);
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---m5s4si2wk44k7sv6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmCP9hkACgkQqclaivrt
-76mFPQf/dyETqSrsY3TNgxovhg5po9jW/0ufUVSxsio8zvSBjZ1MzOoiiFgd09Lu
-LKSmzBnM3V7rQnFeDRx+pZKHrfLKrW+3Wfy58pHx30l1ZU3av16QvOPrdR3Z6JyB
-xw4kmbQNhhTJvk9R7sBqkJXht/BHSLjRiGt6GoWTp2fsWFbh00f1CJHXw1L6C/zr
-z3nKTmU5QlhjUvLTDr46vxC4vnp0iTYPgnruc2r39F1QLSG2gvaiQlrbb4PSo6a+
-eA4W5h+588HECa83G7F7rIHiVVLPrgy8cGp5akXPv4VDvsvV1g1Hiq8r1uNX75yb
-X8hAaUE1jcP9GB4qq7jO5sIB0EbRSg==
-=q0FO
------END PGP SIGNATURE-----
-
---m5s4si2wk44k7sv6--
