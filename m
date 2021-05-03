@@ -2,97 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA0E3717AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E4AA3717B0
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbhECPQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 11:16:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230138AbhECPQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 11:16:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 620D4611CE;
-        Mon,  3 May 2021 15:15:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620054914;
-        bh=/LSUSuRjEGi45BoQ+xzSvQtQrLu1m2Cvb93dm1J1F74=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yzLIXfm3e+8rTSXcbgOLKvDqrgbDDEacnTJYMJ2hUBZUJjDrxoOHLGMhl80BVAkRt
-         wt4stiWbFumTnCKWnsobsr0MBsUEj07AQS0Fk9aPLq1RZZw3TSDfG/vhyRLCAUnCqF
-         PHbWLJRfJPKlub3jNLNCKgkCXUgbOlnguyZRLIEc=
-Date:   Mon, 3 May 2021 17:15:12 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mark Langsdorf <mlangsdo@redhat.com>
-Cc:     Kees Cook <keescook@chromium.org>, Wenwen Wang <wenwen@cs.uga.edu>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH] Revert "ACPI: custom_method: fix memory leaks"
-Message-ID: <YJATgPrq2uzZlRQQ@kroah.com>
-References: <20210502172326.2060025-1-keescook@chromium.org>
- <0fefece0-f8a1-6ee1-114f-0a2bb412b986@redhat.com>
- <YJAN/nwldJKwTV/V@kroah.com>
- <99653e1a-97a3-b532-1775-31d8115bfc62@redhat.com>
+        id S230362AbhECPQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 11:16:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230261AbhECPQ4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 11:16:56 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D9FEC061761
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 08:16:02 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id n25so6705730edr.5
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 08:16:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7l/LQ7XahwkZsKB4ahSZ6Zz5k0dtmltYbxNaS4zuBFo=;
+        b=OjP4Ha4tmYLsEphRrrum5sDZ8uIC0TGPJQ1wKN1StWM/VnURp7+zG7+W8OVC0jQgtg
+         YvSzGzGtwSAlALl/o7jHb4w4qHjkD4XkgLAsRW1cMVqW+9e3vKlAD7fNvKoKgmlzX3ei
+         LU803YZOhiAMm7K1v4HWN9zbhfVMbuNPyCiwl89DPFh7vQPGtiU+dQFA5mRn1yhuMBlp
+         mxsDBo7qb6mTmXRwwKrFr32B5xESzjApOxsoPNpwUHu6U8qjJ/Fh3fthTTHXs+coEbuc
+         7NhsQU/MmXLxyL2+FzgRPGuwF1R9nU2hV+R5fG4BU8gRx4QOkrY0w7qCZ6AKAxXx09wR
+         ceRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7l/LQ7XahwkZsKB4ahSZ6Zz5k0dtmltYbxNaS4zuBFo=;
+        b=jtTqC6F69wmSJK4F7YDAJ7HsgleIG/SdlJFMYoFPPjasar+jreEmlmwytMDki+PVXj
+         pMulP9OY7ncX4pP7L5Dg7c2ulMF1lfTJem8rgiXFypFj/GU7hox18qi23eiJZOopoXlt
+         PEhb894E4jmJwNzf/ngzLhEZq96cVvIXY9+BSoFASI/Y7w+73l7D2JmsnJ6cJJszmevF
+         rZqurh/RGsxi3MNxoAhTSWgX/IgmMaihD0l+L62OAiw9vsXWZ3rT1ByJDHzeiZUPIa4n
+         4tW+ghwKMgMcJwJ7/QZArYd/FFr5TQ3t6nZg6MEYjeuXSSEyJ1N6wBkOg/SLgo6zyA+X
+         Imww==
+X-Gm-Message-State: AOAM532yFLfS/mrXOkCaAI/HOK5FOKGdKdzswX+X2Fmi4jtC/e1RJQ/8
+        uPM15pTFn7dSPimOsjdCZYRdlMaScGOeWv/07EXYaA==
+X-Google-Smtp-Source: ABdhPJyy5EHT8aqHafp4q0/YB60ZPgtuU1OTdyGOTpMdM0pmxtWmLQ5k6UCNNfsqf/gQG4LMfnvRrXBOW52J+QbW764=
+X-Received: by 2002:a05:6402:3063:: with SMTP id bs3mr20835674edb.84.1620054960447;
+ Mon, 03 May 2021 08:16:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <99653e1a-97a3-b532-1775-31d8115bfc62@redhat.com>
+References: <20210430123822.13825-1-brijesh.singh@amd.com> <20210430123822.13825-9-brijesh.singh@amd.com>
+In-Reply-To: <20210430123822.13825-9-brijesh.singh@amd.com>
+From:   Andy Lutomirski <luto@amacapital.net>
+Date:   Mon, 3 May 2021 08:15:49 -0700
+Message-ID: <CALCETrXsUW3S_9ZUPXT5HEv_ki2VxEUQMe-uzerG1xnbcgYNtw@mail.gmail.com>
+Subject: Re: [PATCH Part2 RFC v2 08/37] x86/sev: Split the physmap when adding
+ the page in RMP table
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 09:58:17AM -0500, Mark Langsdorf wrote:
-> On 5/3/21 9:51 AM, Greg Kroah-Hartman wrote:
-> > On Mon, May 03, 2021 at 08:17:14AM -0500, Mark Langsdorf wrote:
-> > > In 5/2/21 12:23 PM, Kees Cook wrote:
-> > > > This reverts commit 03d1571d9513369c17e6848476763ebbd10ec2cb.
-> > > > 
-> > > > While /sys/kernel/debug/acpi/custom_method is already a privileged-only
-> > > > API providing proxied arbitrary write access to kernel memory[1][2],
-> > > > with existing race conditions[3] in buffer allocation and use that could
-> > > > lead to memory leaks and use-after-free conditions, the above commit
-> > > > appears to accidentally make the use-after-free conditions even easier
-> > > > to accomplish. ("buf" is a global variable and prior kfree()s would set
-> > > > buf back to NULL.)
-> > > > 
-> > > > This entire interface needs to be reworked (if not entirely removed).
-> > > > 
-> > > > [1] https://lore.kernel.org/lkml/20110222193250.GA23913@outflux.net/
-> > > > [2] https://lore.kernel.org/lkml/201906221659.B618D83@keescook/
-> > > > [3] https://lore.kernel.org/lkml/20170109231323.GA89642@beast/
-> > > > 
-> > > > Cc: Wenwen Wang <wenwen@cs.uga.edu>
-> > > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > > ---
-> > > I have two patches submitted to linux-acpi to fix the most obvious bugs in
-> > > the current driver.  I don't think that just reverting this patch in its
-> > > entirety is a good solution: it still leaves the buf allocated in -EINVAL,
-> > > as well as the weird case where a not fully consumed buffer can be
-> > > reallocated without being freed on a subsequent call.
-> > > 
-> > > https://lore.kernel.org/linux-acpi/20210427185434.34885-1-mlangsdo@redhat.com/
-> > > 
-> > > https://lore.kernel.org/linux-acpi/20210423152818.97077-1-mlangsdo@redhat.com/
-> > > 
-> > > I support rewriting this driver in its entirety, but reverting one bad patch
-> > > to leave it in a different buggy state is less than ideal.
-> > It's buggy now, and root-only, so it's a low bar at the moment :)
-> > 
-> > Do those commits really fix the issues?  Is this debugfs code even
-> > needed at all or can it just be dropped?
-> 
-> One of my commits removes the kfree(buf) at the end of the function, which
-> is the code that causes the use after free for short writes.  The other adds
-> a kfree(buf) before allocating the buffer, to make sure that the buffer is
-> free before allocating it.
-> 
-> There are other bugs in the code that neither my patches nor the revert
-> address, like the total lack of protection against concurrent writes.
+On Fri, Apr 30, 2021 at 5:39 AM Brijesh Singh <brijesh.singh@amd.com> wrote:
+>
+> The integrity guarantee of SEV-SNP is enforced through the RMP table.
+> The RMP is used in conjuntion with standard x86 and IOMMU page
+> tables to enforce memory restrictions and page access rights. The
+> RMP is indexed by system physical address, and is checked at the end
+> of CPU and IOMMU table walks. The RMP check is enforced as soon as
+> SEV-SNP is enabled globally in the system. Not every memory access
+> requires an RMP check. In particular, the read accesses from the
+> hypervisor do not require RMP checks because the data confidentiality
+> is already protected via memory encryption. When hardware encounters
+> an RMP checks failure, it raise a page-fault exception. The RMP bit in
+> fault error code can be used to determine if the fault was due to an
+> RMP checks failure.
+>
+> A write from the hypervisor goes through the RMP checks. When the
+> hypervisor writes to pages, hardware checks to ensures that the assigned
+> bit in the RMP is zero (i.e page is shared). If the page table entry that
+> gives the sPA indicates that the target page size is a large page, then
+> all RMP entries for the 4KB constituting pages of the target must have the
+> assigned bit 0. If one of entry does not have assigned bit 0 then hardware
+> will raise an RMP violation. To resolve it, split the page table entry
+> leading to target page into 4K.
+>
+> This poses a challenge in the Linux memory model. The Linux kernel
+> creates a direct mapping of all the physical memory -- referred to as
+> the physmap. The physmap may contain a valid mapping of guest owned pages.
+> During the page table walk, the host access may get into the situation where
+> one of the pages within the large page is owned by the guest (i.e assigned
+> bit is set in RMP). A write to a non-guest within the large page will
+> raise an RMP violation. To workaround it, call set_memory_4k() to split
+> the physmap before adding the page in the RMP table. This ensures that the
+> pages added in the RMP table are used as 4K in the physmap.
+>
+> The spliting of the physmap is a temporary solution until the kernel page
+> fault handler is improved to split the kernel address on demand.
 
-Why would anyone care about concurrent writes for this debugfs file?
-Is that a requirement here?
+Not happening.  The pages to be split might be critical to fault
+handling, e.g. stack, GDT, IDT, etc.
 
-thanks,
-
-greg k-h
+How much performance do we get back if we add a requirement that only
+2M pages (hugetlbfs, etc) may be used for private guest memory?
