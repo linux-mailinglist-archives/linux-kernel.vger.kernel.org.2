@@ -2,100 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D14A7371877
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E10CE37187B
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbhECPxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 11:53:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31696 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230184AbhECPxC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 11:53:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620057128;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AgYx5TvUhkEhNhkber8yC1nc2KvBXPUk7IuRSfPajIg=;
-        b=ECgPWiTw9C34RfUo7UGwEJrMyN8GYTFvvznMwaMPQ9vE8Id4l8ILKtr5rTYdwPLuFCF5s3
-        NSs8Q7x3gmRZDXnbWrgqzyoXPYCL7plhC0Tc+f45U2OHlBvIZP7S+QAV0zbPoU8l2SpieV
-        rjGCavGCAgpuy0tgElhLPpX+0Iyc6AY=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-283-xhh-1_eVNNS95ZCuhXgQZQ-1; Mon, 03 May 2021 11:52:07 -0400
-X-MC-Unique: xhh-1_eVNNS95ZCuhXgQZQ-1
-Received: by mail-ej1-f72.google.com with SMTP id z6-20020a17090665c6b02903700252d1ccso2219769ejn.10
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 08:52:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=AgYx5TvUhkEhNhkber8yC1nc2KvBXPUk7IuRSfPajIg=;
-        b=MKkKYvlsIYBJdv2YQcf5fRToXysqzeqyXRUZ1QsuNMk6fsNgofpNUQqvBf4x/It/0r
-         7szQCPjiUpE6pPjYZ63wU2HPWWJ/1kHG2wfVSnHD+uB8HkbhUXJ1qIXTD4oXBQUAnF6/
-         3BVbnovNKZd9x9V1LF+4UchOuKAS5SSamApHv6yWRw9RkkV82EOw4hK4YRO30dMaaW+p
-         NTdtQd0BHQTG45QShcWjotfzxeVXOtdBfcx6vFI/qMLsExcRfwV09GGM5J2+D5PyNoK2
-         zJYX4i/P1nXTbrcluxryE6LgjiHttXIKpjZP/vsMb6KkE/aamPfyRRWXHpREf+1rnajA
-         LcSw==
-X-Gm-Message-State: AOAM530OTJI+R4qipJTXCy1WMQ6d5b19n++zfdnQJFSmQuhnHPy4/ePO
-        /i270eeN2HzNQeZpklTczGtGp69BvXHDfAvrcd1jKN4u7hHz0jExGWROWdxIYU73MJpfblcQJ80
-        oqaWUFMY50EzUgHCHADw1sLTb87cXkcEY8nHp05VbvCLKjSHJgfnxa9phvs3/rxAboqAVUuFMwc
-        xz
-X-Received: by 2002:a17:906:6b96:: with SMTP id l22mr17170293ejr.364.1620057126308;
-        Mon, 03 May 2021 08:52:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyCUo5Gkq+n05BuEimfpfMnbNcyojuAtgJrwufNe0jzK2qdxJaPLeyw1nkoONnfSe84qDPC4A==
-X-Received: by 2002:a17:906:6b96:: with SMTP id l22mr17170271ejr.364.1620057126046;
-        Mon, 03 May 2021 08:52:06 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id hp29sm45178ejc.47.2021.05.03.08.52.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 08:52:05 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] KVM: nVMX: Fix migration of nested guests when
- eVMCS is in use
-In-Reply-To: <f2f7020d-9293-d9bb-093f-b9c857a962d8@redhat.com>
-References: <20210503150854.1144255-1-vkuznets@redhat.com>
- <f2f7020d-9293-d9bb-093f-b9c857a962d8@redhat.com>
-Date:   Mon, 03 May 2021 17:52:05 +0200
-Message-ID: <87pmy7yfve.fsf@vitty.brq.redhat.com>
+        id S230507AbhECPxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 11:53:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38876 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230515AbhECPxZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 11:53:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 772DB611AB;
+        Mon,  3 May 2021 15:52:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620057151;
+        bh=0FOzX6F3EPFvxCwzzbqt+hOdd4POhkQYcLJcCvjSKDw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u9H1ZIOS/kZyHN71BivA/Kf5l7LO+jE3AEST5ToIppiajzC7Qa3KRJ4bJbX3SKcLR
+         WJp5yXz+w5M6TGBEYSiXA0SNrhn8awdEMV/KnPn5qai5jRAL34cVMNAyi34qUxohdC
+         vKTiEMwOn0v3V8hXv5uN5a9yLJz6rW5IhM9u2RtsfbWORqXYSV4h6stmTBi+6pMkxr
+         3L3/QzopaM2/x8HxV3aZQ9k6/+msWdn3/fMv3pGMjnryUHGQLHLkDVmmGcE4+Ro938
+         2U9DoADFhw/isHpawSIiJ7gsrDGEgYQRtJTkCLSgq03Kdf+C/CPt9YghwRmijRZJNY
+         u2OudXgIwTFzA==
+Date:   Mon, 3 May 2021 18:52:28 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
+        James.Bottomley@hansenpartnership.com, keescook@chromium.org,
+        jsnitsel@redhat.com, ml.linux@elloe.vision,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/4] tpm: Fix test for interrupts
+Message-ID: <YJAcPAbFopeW7PYs@kernel.org>
+References: <20210501135727.17747-1-LinoSanfilippo@gmx.de>
+ <20210501135727.17747-4-LinoSanfilippo@gmx.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210501135727.17747-4-LinoSanfilippo@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paolo Bonzini <pbonzini@redhat.com> writes:
+On Sat, May 01, 2021 at 03:57:26PM +0200, Lino Sanfilippo wrote:
+> The current test for functional interrupts is broken in multiple ways:
+> 1. The needed flag TPM_CHIP_FLAG_IRQ is never set, so the test is never
+> executed.
+> 2. The test includes the check for two variables and the check is done for
+> each transmission which is unnecessarily complicated.
 
-> On 03/05/21 17:08, Vitaly Kuznetsov wrote:
->> Win10 guests with WSL2 enabled sometimes crash on migration when
->> enlightened VMCS was used. The condition seems to be induced by the
->> situation when L2->L1 exit is caused immediately after migration and
->> before L2 gets a chance to run (e.g. when there's an interrupt pending).
->
-> Interesting, I think it gets to nested_vmx_vmexit before
->
->                  if (kvm_check_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu)) {
->                          if (unlikely(!kvm_x86_ops.nested_ops->get_nested_state_pages(vcpu))) {
->                                  r = 0;
->                                  goto out;
->                          }
->                  }
->
-> due to the infamous calls to check_nested_events that are scattered
-> through KVM?
+Unnecessary complicated is again terminolgy that I don't decipher,
+unfortunately. I get "something that works" or "has a regression".
+We don't polish things for nothing.
 
-Yea,
+> 3. Part of the test is setting a bool variable in an interrupt handler and
+> then check the value in the main thread. However there is nothing that
+> guarantees the visibility of the value set in the interrupt handler for
+> any other thread. Some kind of synchronization primitive is required for this purpose.
+> 
+> Fix all these issues by a reimplementation:
+> Instead of doing the test in tpm_tis_send() which is called for each
+> transmission do it only once in tpm_tis_probe_irq_single(). Furthermore
+> use proper accessor functions like get_bit()/set_bit() which include the
+> required synchronization primitives to guarantee visibility between the
+> interrupt handler and threads.
+> Finally remove one function which is no longer needed.
+> 
+> Signed-off-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
 
-vcpu_run() -> kvm_vcpu_running() -> vmx_check_nested_events() if I
-remember it correctly.
+Not sure why to take this patch.
 
--- 
-Vitaly
+> ---
+>  drivers/char/tpm/tpm_tis_core.c | 61 ++++++++++-----------------------
+>  drivers/char/tpm/tpm_tis_core.h |  1 -
+>  include/linux/tpm.h             |  2 +-
+>  3 files changed, 20 insertions(+), 44 deletions(-)
+> 
+> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
+> index f892b1ae46f2..9615234054aa 100644
+> --- a/drivers/char/tpm/tpm_tis_core.c
+> +++ b/drivers/char/tpm/tpm_tis_core.c
+> @@ -420,7 +420,7 @@ static void disable_interrupts(struct tpm_chip *chip)
+>   * tpm.c can skip polling for the data to be available as the interrupt is
+>   * waited for here
+>   */
+> -static int tpm_tis_send_main(struct tpm_chip *chip, const u8 *buf, size_t len)
+> +static int tpm_tis_send(struct tpm_chip *chip, u8 *buf, size_t len)
+>  {
+>  	struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
+>  	int rc;
+> @@ -453,29 +453,6 @@ static int tpm_tis_send_main(struct tpm_chip *chip, const u8 *buf, size_t len)
+>  	return rc;
+>  }
+>  
+> -static int tpm_tis_send(struct tpm_chip *chip, u8 *buf, size_t len)
+> -{
+> -	int rc, irq;
+> -	struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
+> -
+> -	if (!(chip->flags & TPM_CHIP_FLAG_IRQ) || priv->irq_tested)
+> -		return tpm_tis_send_main(chip, buf, len);
+> -
+> -	/* Verify receipt of the expected IRQ */
+> -	irq = priv->irq;
+> -	priv->irq = 0;
+> -	chip->flags &= ~TPM_CHIP_FLAG_IRQ;
+> -	rc = tpm_tis_send_main(chip, buf, len);
+> -	priv->irq = irq;
+> -	chip->flags |= TPM_CHIP_FLAG_IRQ;
+> -	if (!priv->irq_tested)
+> -		tpm_msleep(1);
+> -	if (!priv->irq_tested)
+> -		disable_interrupts(chip);
+> -	priv->irq_tested = true;
+> -	return rc;
+> -}
+> -
+>  struct tis_vendor_durations_override {
+>  	u32 did_vid;
+>  	struct tpm1_version version;
+> @@ -677,7 +654,8 @@ static irqreturn_t tis_int_handler(int dummy, void *dev_id)
+>  	if (interrupt == 0)
+>  		return IRQ_NONE;
+>  
+> -	priv->irq_tested = true;
+> +	set_bit(TPM_CHIP_FLAG_IRQ, &chip->flags);
+> +
+>  	if (interrupt & TPM_INTF_DATA_AVAIL_INT)
+>  		wake_up_interruptible(&priv->read_queue);
+>  	if (interrupt & TPM_INTF_LOCALITY_CHANGE_INT)
+> @@ -734,45 +712,44 @@ static int tpm_tis_probe_irq_single(struct tpm_chip *chip, u32 intmask,
+>  	}
+>  	priv->irq = irq;
+>  
+> +	clear_bit(TPM_CHIP_FLAG_IRQ, &chip->flags);
+> +
+>  	rc = tpm_tis_read8(priv, TPM_INT_VECTOR(priv->locality),
+>  			   &original_int_vec);
+>  	if (rc < 0)
+> -		return rc;
+> +		goto out;
+>  
+>  	rc = tpm_tis_write8(priv, TPM_INT_VECTOR(priv->locality), irq);
+>  	if (rc < 0)
+> -		return rc;
+> +		goto out;
+>  
+>  	rc = tpm_tis_read32(priv, TPM_INT_STATUS(priv->locality), &int_status);
+>  	if (rc < 0)
+> -		return rc;
+> +		goto out;
+>  
+>  	/* Clear all existing */
+>  	rc = tpm_tis_write32(priv, TPM_INT_STATUS(priv->locality), int_status);
+>  	if (rc < 0)
+> -		return rc;
+> +		goto out;
+>  
+>  	/* Turn on */
+>  	rc = tpm_tis_write32(priv, TPM_INT_ENABLE(priv->locality),
+>  			     intmask | TPM_GLOBAL_INT_ENABLE);
+>  	if (rc < 0)
+> -		return rc;
+> -
+> -	priv->irq_tested = false;
+> +		goto out;
+>  
+> -	/* Generate an interrupt by having the core call through to
+> -	 * tpm_tis_send
+> -	 */
+> +	/* Generate an interrupt by transmitting a command to the chip */
+>  	rc = tpm_tis_gen_interrupt(chip);
+>  	if (rc < 0)
+> -		return rc;
+> +		goto out;
+> +
+> +	tpm_msleep(1);
+> +out:
+> +	if (!test_bit(TPM_CHIP_FLAG_IRQ, &chip->flags)) {
+> +		disable_interrupts(chip);
+>  
+> -	/* tpm_tis_send will either confirm the interrupt is working or it
+> -	 * will call disable_irq which undoes all of the above.
+> -	 */
+> -	if (!(chip->flags & TPM_CHIP_FLAG_IRQ)) {
+>  		rc = tpm_tis_write8(priv, original_int_vec,
+> -				TPM_INT_VECTOR(priv->locality));
+> +				    TPM_INT_VECTOR(priv->locality));
+>  		if (rc < 0)
+>  			return rc;
+>  
+> @@ -1039,7 +1016,7 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+>  		if (irq) {
+>  			tpm_tis_probe_irq_single(chip, intmask, IRQF_SHARED,
+>  						 irq);
+> -			if (!(chip->flags & TPM_CHIP_FLAG_IRQ)) {
+> +			if (!test_bit(TPM_CHIP_FLAG_IRQ, &chip->flags)) {
+>  				dev_err(&chip->dev, FW_BUG
+>  					"TPM interrupt not working, polling instead\n");
+>  
+> diff --git a/drivers/char/tpm/tpm_tis_core.h b/drivers/char/tpm/tpm_tis_core.h
+> index 9b2d32a59f67..dc5f92b18dca 100644
+> --- a/drivers/char/tpm/tpm_tis_core.h
+> +++ b/drivers/char/tpm/tpm_tis_core.h
+> @@ -89,7 +89,6 @@ struct tpm_tis_data {
+>  	u16 manufacturer_id;
+>  	int locality;
+>  	int irq;
+> -	bool irq_tested;
+>  	unsigned int flags;
+>  	void __iomem *ilb_base_addr;
+>  	u16 clkrun_enabled;
+> diff --git a/include/linux/tpm.h b/include/linux/tpm.h
+> index 7a68832b14bb..c57d0f0395f0 100644
+> --- a/include/linux/tpm.h
+> +++ b/include/linux/tpm.h
+> @@ -133,7 +133,7 @@ struct tpm_chip {
+>  	struct tpm_chip_seqops bin_log_seqops;
+>  	struct tpm_chip_seqops ascii_log_seqops;
+>  
+> -	unsigned int flags;
+> +	unsigned long flags;
+>  
+>  	int dev_num;		/* /dev/tpm# */
+>  	unsigned long is_open;	/* only one allowed */
+> -- 
+> 2.31.1
+> 
 
+/Jarkko
