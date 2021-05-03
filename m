@@ -2,154 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB8EE37133F
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 11:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8C9237133D
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 11:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233188AbhECJxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 05:53:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54619 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233153AbhECJxv (ORCPT
+        id S233171AbhECJxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 05:53:50 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:48106 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233153AbhECJxt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 05:53:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620035578;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KDs3pOIle+cRA8UpT3sOe31Wu1oBEmfY+Iy8YXU7Ks4=;
-        b=ZHYXf/6clo3uV0zAZm49j1h66/HH75rH2RcXLST/GZozI1lSC2/0hDL0TuWIjm2r+ft6hL
-        kei6Zfb3e4oiaPdU65OjbrtZWmuYN6ZfJadV09KjadIfKJgIiegQsq6UAVN2hblmfRpN5Z
-        CiOHm/X/00KH+bNz+XdPQ7eRpT39Qug=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-458-nawkftaUNca0AZt6tJjveA-1; Mon, 03 May 2021 05:52:55 -0400
-X-MC-Unique: nawkftaUNca0AZt6tJjveA-1
-Received: by mail-pj1-f70.google.com with SMTP id u13-20020a17090a3fcdb0290155c6507e67so4511153pjm.6
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 02:52:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=KDs3pOIle+cRA8UpT3sOe31Wu1oBEmfY+Iy8YXU7Ks4=;
-        b=jk9N9CYzXZAV9NmPbWgG7e3cl3zqSupFW7TUMINw4PB0WHOVKgfgsoIZFnx4wMwSEW
-         LBX+VH0IEhs1ZR9GYvncOaLsCd6XgvM1/7Fs+mQjiEXR5Elgqcemu5fDkY3YH8JxCH1K
-         NlZrFytngRn4Gx6quo8plX+Zz1wKjn6YX16VRu3vZvOJOw7I16muIeOb3u2D6HtKpSjg
-         RbbCkA8a/+fJ7EDlE3o8GHw/t0hWGzGtR59+E1AefDrzrA0T7s/oWvP8OQnQbbtEqPji
-         fLtbnRsnSZrRSAN72Zk8EMNosv1ACG54VX2E8l7ur0TnbuaMkR4YVYraiFWvz/kRsLti
-         OnKQ==
-X-Gm-Message-State: AOAM5334ZAMcjriN2QmCZDiOFcYLGBNVt6pp6VpPMUG1W4aoOE/Knj+N
-        73rDSi6c8MPSGv0+0O8P5m7QEz9TxWhucdQD4bpSHks9FZjhCJht3RHzflRipcOJZVtvmrfHzuc
-        PAtPHffVFJq896lK9pAvp0I7dFONgXg1x7UsbZddF
-X-Received: by 2002:a17:90a:c28e:: with SMTP id f14mr20715022pjt.56.1620035574078;
-        Mon, 03 May 2021 02:52:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyR4iYp4dmuiAx5BnZBb8yV00vItIMRv8+Q1ihodUitpk8KCos4tRw1D/9aXSFpUI3bJ5wUsGxU26oSwwioyIQ=
-X-Received: by 2002:a17:90a:c28e:: with SMTP id f14mr20715005pjt.56.1620035573837;
- Mon, 03 May 2021 02:52:53 -0700 (PDT)
+        Mon, 3 May 2021 05:53:49 -0400
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id AC7471F4215B;
+        Mon,  3 May 2021 10:52:55 +0100 (BST)
+Date:   Mon, 3 May 2021 11:52:52 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     <patrice.chotard@foss.st.com>, Mark Brown <broonie@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
+Subject: Re: [PATCH 1/3] spi: spi-mem: add automatic poll status functions
+Message-ID: <20210503115252.08af412c@collabora.com>
+In-Reply-To: <20210503092935.vjitc7mc47wttn77@ti.com>
+References: <20210426143934.25275-1-patrice.chotard@foss.st.com>
+        <20210426143934.25275-2-patrice.chotard@foss.st.com>
+        <20210430185104.377d1bc6@collabora.com>
+        <20210503084742.7cp77snyohkdwwvv@ti.com>
+        <20210503111114.26b64e25@collabora.com>
+        <20210503092935.vjitc7mc47wttn77@ti.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <cover.1615224800.git.nabijaczleweli@nabijaczleweli.xyz>
- <20210420131741.kdgxquhwqureih7c@tarta.nabijaczleweli.xyz>
- <nycvar.YFH.7.76.2105031110480.28378@cbobk.fhfr.pm> <CAO-hwJ+HhKU7EzPZGOtPePT_h7OUaJ=QfWi7eAcxsfRaDtQuvg@mail.gmail.com>
-In-Reply-To: <CAO-hwJ+HhKU7EzPZGOtPePT_h7OUaJ=QfWi7eAcxsfRaDtQuvg@mail.gmail.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Mon, 3 May 2021 11:52:43 +0200
-Message-ID: <CAO-hwJKLYTqQ9qZ8LZGabze_NjNfwAq2_V-28LFewjOC=EK8rw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] Stylus-on-touchscreen device support
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     =?UTF-8?B?0L3QsNCx?= <nabijaczleweli@nabijaczleweli.xyz>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 3, 2021 at 11:39 AM Benjamin Tissoires
-<benjamin.tissoires@redhat.com> wrote:
->
-> On Mon, May 3, 2021 at 11:11 AM Jiri Kosina <jikos@kernel.org> wrote:
-> >
-> > On Tue, 20 Apr 2021, =D0=BD=D0=B0=D0=B1 wrote:
-> >
-> > > > This patchset adds support for stylus-on-touchscreen devices as fou=
-nd on
-> > > > the OneMix 3 Pro and Dell Inspiron 15 7000 2-in-1 (7591), among oth=
-ers;
-> > > > with it, they properly behave like a drawing tablet.
-> > > >
-> > > > Patches 2 and 4 funxionally depend on patch 1.
-> > > > Patch 4 needs patch 3 to apply.
-> > > >
-> > > > The output of this patchset and the need for a kernel, rather than
-> > > > userspace, patch was previously discussed here:
-> > > >   https://gitlab.freedesktop.org/libinput/libinput/-/merge_requests=
-/558#note_792834
-> > > >
-> > > > Changes in v2:
-> > > > Patch 4 now ANDs the secondary button with the tip switch,
-> > > > since it's otherwise borderline useless to the user.
-> > > >
-> > > > Ahelenia Ziemia=C5=84ska (4):
-> > > >   HID: multitouch: require Finger field to mark Win8 reports as MT
-> > > >   HID: multitouch: set Stylus suffix for Stylus-application devices=
-, too
-> > > >   HID: input: replace outdated HID numbers+comments with macros
-> > > >   HID: input: work around Win8 stylus-on-touchscreen reporting
-> > > >
-> > > >  drivers/hid/hid-input.c      | 54 ++++++++++++++++++++++++++++++++=
-++--
-> > > >  drivers/hid/hid-multitouch.c | 18 +++++++-----
-> > > >  2 files changed, 62 insertions(+), 10 deletions(-)
-> > > >
-> > > > --
-> > > > 2.20.1
-> > >
-> > > Bumping this after a monthish =E2=80=92 is it missing something? Am I=
-?
-> >
-> > Benjamin had concerns about regressions and wanted to run a full batter=
-y
-> > of testing on it.
-> >
-> > Benjamin, is there any outcome of that, please?
-> >
->
-> Sorry, no real outcome here.
->
-> I ran the test suite, and there were no errors, until I realized that
-> there are no tests regarding tablets, so it can't detect any
-> regressions here.
-> And then, the usual happens, no time to actually work on the test suite..=
-. :(
->
-> I'll do a "normal" review soon (i.e. today)
->
+On Mon, 3 May 2021 14:59:37 +0530
+Pratyush Yadav <p.yadav@ti.com> wrote:
 
-So I did a quick pass at the patches:
-- 1/4 -> I think this one is safe and could go as it is, maybe with
-CC: stable on it. Any regressions should have been caught by the
-testsuite, so that's a good one.
-- 2/4 and 3/4 -> Ack on those 2 too, note stable material, but not
-necessary v5.13 material
-- 4/4 -> I honestly have no idea if the patch is correct or not. I
-would hold on this one until we have proper tests for those.
+> On 03/05/21 11:11AM, Boris Brezillon wrote:
+> > On Mon, 3 May 2021 14:17:44 +0530
+> > Pratyush Yadav <p.yadav@ti.com> wrote:
+> >   
+> > > On 30/04/21 06:51PM, Boris Brezillon wrote:  
+> > > > On Mon, 26 Apr 2021 16:39:32 +0200
+> > > > <patrice.chotard@foss.st.com> wrote:
+> > > >     
+> > > > > From: Christophe Kerello <christophe.kerello@foss.st.com>
+> > > > > 
+> > > > > With STM32 QSPI, it is possible to poll the status register of the device.
+> > > > > This could be done to offload the CPU during an operation (erase or
+> > > > > program a SPI NAND for example).
+> > > > > 
+> > > > > spi_mem_poll_status API has been added to handle this feature.
+> > > > > 
+> > > > > Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+> > > > > Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+> > > > > ---
+> > > > >  drivers/spi/spi-mem.c       | 34 ++++++++++++++++++++++++++++++++++
+> > > > >  include/linux/spi/spi-mem.h |  8 ++++++++
+> > > > >  2 files changed, 42 insertions(+)
+> > > > > 
+> > > > > diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+> > > > > index 1513553e4080..43dce4b0efa4 100644
+> > > > > --- a/drivers/spi/spi-mem.c
+> > > > > +++ b/drivers/spi/spi-mem.c
+> > > > > @@ -743,6 +743,40 @@ static inline struct spi_mem_driver *to_spi_mem_drv(struct device_driver *drv)
+> > > > >  	return container_of(drv, struct spi_mem_driver, spidrv.driver);
+> > > > >  }
+> > > > >  
+> > > > > +/**
+> > > > > + * spi_mem_poll_status() - Poll memory device status
+> > > > > + * @mem: SPI memory device
+> > > > > + * @op: the memory operation to execute
+> > > > > + * @mask: status bitmask to ckeck
+> > > > > + * @match: status expected value
+> > > > > + * @timeout: timeout
+> > > > > + *
+> > > > > + * This function send a polling status request to the controller driver
+> > > > > + *
+> > > > > + * Return: 0 in case of success, -ETIMEDOUT in case of error,
+> > > > > + *         -EOPNOTSUPP if not supported.
+> > > > > + */
+> > > > > +int spi_mem_poll_status(struct spi_mem *mem,
+> > > > > +			const struct spi_mem_op *op,
+> > > > > +			u8 mask, u8 match, u16 timeout)
+> > > > > +{
+> > > > > +	struct spi_controller *ctlr = mem->spi->controller;
+> > > > > +	int ret = -EOPNOTSUPP;
+> > > > > +
+> > > > > +	if (ctlr->mem_ops && ctlr->mem_ops->poll_status) {
+> > > > > +		ret = spi_mem_access_start(mem);    
+> > > > 
+> > > > You should probably check that op is a single byte read before
+> > > > accepting the command.    
+> > > 
+> > > Please do not discriminate against 8D-8D-8D flashes ;-).  
+> > 
+> > Then mask and match should probably be u16 :P. And the check as it is
+> > seems a bit lax to me. Drivers will of course be able to reject the op
+> > when there's more than one byte (or 16bit word in case of 8D) to read,
+> > but it feels like the core could automate that a bit.  
+> 
+> The two 8D flashes that are currently supported in SPI NOR both have a 
+> 1-byte status register. But to read it, the read op should be 2-byte 
+> long to avoid partial cycles at the end. The second byte is simply 
+> discarded.
+> 
+> 2-byte wide registers might show up in the future, but for now at least 
+> we don't have to worry about them.
 
-Jiri, would you be ok to split the series as this?
+Well, I guess it doesn't hurt to take it into account now. I mean,
+what's happening on the bus in that case is a 2byte transfer, with the
+second byte being ignored, which you can describe with a 16bit mask
+of 0xMM00 (assuming big endian transfers here, as done for other ops).
 
-=D0=BD=D0=B0=D0=B1, would you be OK to work on the test suite at
-https://gitlab.freedesktop.org/libevdev/hid-tools so we can move
-forward for your last patch?
+> 
+> >   
+> > >   
+> > > >     
+> > > > > +		if (ret)
+> > > > > +			return ret;
+> > > > > +
+> > > > > +		ret = ctlr->mem_ops->poll_status(mem, op, mask, match, timeout);    
+> > > > 
+> > > > You also need some sort of ->poll_status_is_supported() to validate
+> > > > that the controller supports the status polling for this specific op (I    
+> > > 
+> > > I don't think a separate function is needed for checking if the poll 
+> > > status op is supported. Return value of -EOPNOTSUPP should be able to 
+> > > signal that. This can also be used to check if Octal DDR capable 
+> > > controllers are able to poll using 2-byte reads.  
+> > 
+> > Yeah, I had something more complex in mind to avoid doing this 'try
+> > native mode and fall back on sw-based more if not supported' dance
+> > every time a status poll is requested (something similar to what we do
+> > for dirmaps, with a status poll desc), but I guess that's a bit
+> > premature (and probably uneeded).  
+> 
+> I think Mark also suggested something similar. Make the CPU/non-CPU case 
+> transparent to the caller. I agree with with this direction. Makes the 
+> caller simpler.
 
-The problem I see on the last patch is that it is touching a generic
-path and is not trivial. So adding tests would have 3 benefits:
-- we ensure we are doing the correct thing
-- we ensure we are not breaking existing devices (to some extent,
-given that the tests are non written for the tablets)
-- we ensure we are not breaking that in the future.
+It's kind of orthogonal to what I was suggesting, but yes, that's
+definitely a good idea. We certainly don't want the spi-nor layer to
+open code the same logic if the spi-mem layer can do it for us.
 
-Cheers,
-Benjamin
+> 
+> I also mentioned in a reply to this patch that supports_op() should be 
+> called before the op is executed. That should take care of "base" 
+> support for the op. The poll-specific checks can go in the poll_status() 
+> function itself. If either of those say the op is not supported, it 
+> should fall back to CPU based polling. That's the design that makes the 
+> most sense to me.
 
+What I had in mind was more:
+
+1/ create a poll desc with spi_mem_create_poll_status_desc(). The
+   "operation supported" check is done here. The controller can store
+   all its HW-specific state in there. If the operation is not natively
+   supported, a SW-based poll descriptor (similar to the SW-based
+   dirmap) is created
+2/ poll the status with spi_mem_poll_status(). This function is passed
+   a poll descriptor which helps select the path that should be taken
+   without having to check every time whether the hardware supports a
+   specific status polling op. I can also imagine some preparation
+   being done during the desc creation if that makes sense (preparing
+   reg values to be written when a status poll request is issued for
+   instance)
+
+Anyway, as I said, this sort of optimization might be a bit premature.
