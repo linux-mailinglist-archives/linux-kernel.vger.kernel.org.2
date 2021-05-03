@@ -2,84 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21055371618
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2253337161B
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234362AbhECNmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 09:42:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60112 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234193AbhECNmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 09:42:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 417E261208;
-        Mon,  3 May 2021 13:41:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620049302;
-        bh=HC2d4sryXYEKw/mdCuZdVqcRyJ24TNA7pyXrQpSWiRQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Jhu7vIb7y4JVgGjvd3KXpTEMQ2NH5/7QBn7A1K4I8JRTuwF6gLoDdvbwmdaua+hAk
-         hNZJhZLTvQXEaukRhPCrFQ6qYtYsVQIJok95D0N3xrO2+6en7w4e12x9zd8YjRnnn+
-         ROmZXBliIlJG2oT1Uyt8T74gkPo9lnU+dV2f9EHRSL0/1C8awvPavIKlGTUtYsFjwR
-         +cJmCSrt9Q+aPxmZCU9+49as+bQ1M+wecNTiDJ01GI0zmDI386hwLoC2KaYViDbf0M
-         LNdMiySN3jDKAjyKPQO4ZzYBNfuqeAr5n7XWJJMPts49TEDOD4MOxrhC5E8b4WEVMW
-         Rk5FaCB2vVEWg==
-Received: by mail-ej1-f43.google.com with SMTP id l4so7888058ejc.10;
-        Mon, 03 May 2021 06:41:42 -0700 (PDT)
-X-Gm-Message-State: AOAM533llV/ZvLK8dMYHR29n78G15bq68C/ldaBWs0N2/aWyVcoVbTEz
-        mx22wc9vkqqy/IE88D0Jn/KNU+O40wZ3dkoGdQ==
-X-Google-Smtp-Source: ABdhPJyNu3uA4Iu/SjUcKvYm7Jyu7ouxKOKGrhC1U58NoSGkwGIU4s3nhfpxPL62pbbvrVXSGZJznxMVuZVT4lri8fc=
-X-Received: by 2002:a17:906:18e1:: with SMTP id e1mr16505077ejf.341.1620049300677;
- Mon, 03 May 2021 06:41:40 -0700 (PDT)
+        id S234369AbhECNnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 09:43:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29830 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234373AbhECNnV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 09:43:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620049348;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IOqsilqvn+aRNNXngzMn1OYzuH7ToC3yrg+kEaYj+1g=;
+        b=DfSyFZzkjK6crwUZDl72B4zuy/n9jpuppsOeFpwDJuLFZEwwunNfnOVRAipva6ld2iTuP7
+        CfLxHZh6IxCft/aaiR+3ymbcZsdo/sZPSUlHtj8XzvYGq4QZvz4UMQNG8WP9MIlQCzhOdn
+        q72TcE4+S6g2t3x3aXlwvMNpN2++4iM=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-494--n9EI8DLNFyibqFap02nFA-1; Mon, 03 May 2021 09:42:24 -0400
+X-MC-Unique: -n9EI8DLNFyibqFap02nFA-1
+Received: by mail-ed1-f69.google.com with SMTP id d8-20020a0564020008b0290387d38e3ce0so4564999edu.1
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 06:42:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IOqsilqvn+aRNNXngzMn1OYzuH7ToC3yrg+kEaYj+1g=;
+        b=tidFwUtJdtj1998RpkSMzWWVclX/gjFu+ClbkurBGYFBVjds3vYX1vwroQzk41aS0b
+         0f0c45r5wtKxxNkk6WRyZFHSGWUqb5Ms1hX6f4KynQVA60q6lGE0bp8EVxK5Y1iIybD+
+         EJKKp5xCcTnup2xUkOmm/rOiS2jM2t3sRHil4gG5R+09OcDeQfMrcLQDrVt805HjuK5z
+         3/1pwjG17HqSfc4iEuW8zcXsKNIgOwTP9phz6y/lVObWdHh8yk2ayP7ExztiybNLnOVv
+         0bvDm0O/kLFlHaqWvhOZQOeVZfcC7y7JMXXnQoiV1lPL48EDRhV7oaF3amFJrkY7uCHj
+         swVA==
+X-Gm-Message-State: AOAM5329KOA3Xms3QlWJEs/hJFmhkZogsV8PBtXLplrU9coyNvGAa43L
+        eh/IesiJDyUGQfxSd3G+5ZMVdwGqTjSAqk/bMKOFBRkPdC5Ia+M706pwPxOdeJaGHsPCiNxPoU9
+        pgDliuJlbdbGX5SlwebXvNj16
+X-Received: by 2002:a50:82e2:: with SMTP id 89mr19872363edg.0.1620049343335;
+        Mon, 03 May 2021 06:42:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzk3YnveQIawNQR3cb7zFFkOhqqtODvwbejBqHjpAgxGkRH2eHVwNnMVOHCGoASejb2epmncQ==
+X-Received: by 2002:a50:82e2:: with SMTP id 89mr19872346edg.0.1620049343181;
+        Mon, 03 May 2021 06:42:23 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id c25sm12614554edt.43.2021.05.03.06.42.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 06:42:22 -0700 (PDT)
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20210429211833.3361994-1-bgardon@google.com>
+ <20210429211833.3361994-2-bgardon@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v2 1/7] KVM: x86/mmu: Track if shadow MMU active
+Message-ID: <e9090079-2255-5a70-f909-89f6f65c12ed@redhat.com>
+Date:   Mon, 3 May 2021 15:42:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210503115736.2104747-1-gregkh@linuxfoundation.org> <20210503115736.2104747-67-gregkh@linuxfoundation.org>
-In-Reply-To: <20210503115736.2104747-67-gregkh@linuxfoundation.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 3 May 2021 08:41:28 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKmx_yihD_627jHHyuH+xpi3_iJ=ekXcoV5FT6NDRWJRg@mail.gmail.com>
-Message-ID: <CAL_JsqKmx_yihD_627jHHyuH+xpi3_iJ=ekXcoV5FT6NDRWJRg@mail.gmail.com>
-Subject: Re: [PATCH 66/69] Revert "video: imsttfb: fix potential NULL pointer dereferences"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kangjie Lu <kjlu@umn.edu>, Aditya Pakki <pakki001@umn.edu>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210429211833.3361994-2-bgardon@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 3, 2021 at 7:01 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This reverts commit 1d84353d205a953e2381044953b7fa31c8c9702d.
->
-> Because of recent interactions with developers from @umn.edu, all
-> commits from them have been recently re-reviewed to ensure if they were
-> correct or not.
->
-> Upon review, this commit was found to be incorrect for the reasons
-> below, so it must be reverted.  It will be fixed up "correctly" in a
-> later kernel change.
->
-> The original commit here, while technically correct, did not fully
-> handle all of the reported issues that the commit stated it was fixing,
-> so revert it until it can be "fixed" fully.
->
-> Note, ioremap() probably will never fail for old hardware like this, and
-> if anyone actually used this hardware (a PowerMac era PCI display card),
-> they would not be using fbdev anymore.
->
-> Cc: Kangjie Lu <kjlu@umn.edu>
-> Cc: Aditya Pakki <pakki001@umn.edu>
-> Cc: Finn Thain <fthain@telegraphics.com.au>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-> Fixes: 1d84353d205a ("video: imsttfb: fix potential NULL pointer dereferences")
-> Cc: stable <stable@vger.kernel.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  drivers/video/fbdev/imsttfb.c | 5 -----
->  1 file changed, 5 deletions(-)
+On 29/04/21 23:18, Ben Gardon wrote:
+> +void activate_shadow_mmu(struct kvm *kvm)
+> +{
+> +	kvm->arch.shadow_mmu_active = true;
+> +}
+> +
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+I think there's no lock protecting both the write and the read side.
+Therefore this should be an smp_store_release, and all checks in
+patch 2 should be an smp_load_acquire.
+
+Also, the assignments to slot->arch.rmap in patch 4 (alloc_memslot_rmap)
+should be an rcu_assign_pointer, while __gfn_to_rmap must be changed like so:
+
++	struct kvm_rmap_head *head;
+...
+-	return &slot->arch.rmap[level - PG_LEVEL_4K][idx];
++	head = srcu_dereference(slot->arch.rmap[level - PG_LEVEL_4K], &kvm->srcu,
++				 lockdep_is_held(&kvm->slots_arch_lock));
++       return &head[idx];
+
+Paolo
+
