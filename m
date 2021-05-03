@@ -2,130 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E81EB3712B2
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 10:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0025E3712BA
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 10:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233052AbhECIx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 04:53:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58732 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230490AbhECIx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 04:53:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D898DB1B5;
-        Mon,  3 May 2021 08:52:32 +0000 (UTC)
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id 0af4dc88;
-        Mon, 3 May 2021 08:54:02 +0000 (UTC)
-From:   Luis Henriques <lhenriques@suse.de>
-To:     Nicolas Boichat <drinkcat@chromium.org>
-Cc:     Amir Goldstein <amir73il@gmail.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Olga Kornievskaia <aglo@umich.edu>,
-        Jeff Layton <jlayton@kernel.org>,
-        Steve French <sfrench@samba.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dave Chinner <dchinner@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Ian Lance Taylor <iant@google.com>,
-        Luis Lozano <llozano@chromium.org>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Christoph Hellwig <hch@infradead.org>,
-        ceph-devel <ceph-devel@vger.kernel.org>,
+        id S233003AbhECIz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 04:55:58 -0400
+Received: from smtprelay0005.hostedemail.com ([216.40.44.5]:33842 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230490AbhECIz5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 04:55:57 -0400
+Received: from omf03.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 659F0180C2CD0;
+        Mon,  3 May 2021 08:55:03 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf03.hostedemail.com (Postfix) with ESMTPA id 7813213D93;
+        Mon,  3 May 2021 08:54:58 +0000 (UTC)
+Message-ID: <de86b54eb783204ef174a05c60b0d190de7cd85c.camel@perches.com>
+Subject: Re: [PATCH] Raise the minimum GCC version to 5.2
+From:   Joe Perches <joe@perches.com>
+To:     Alexander Dahl <ada@thorsis.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-nfs <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH v8] vfs: fix copy_file_range regression in cross-fs copies
-References: <20210221195833.23828-1-lhenriques@suse.de>
-        <20210222102456.6692-1-lhenriques@suse.de>
-        <CAN-5tyELMY7b7CKO-+an47ydq8r_4+SOyhuvdH0qE0-JmdZ44Q@mail.gmail.com>
-        <YDYpHccgM7agpdTQ@suse.de>
-        <CANMq1KBgwEXFh8AxpPW2t1SA0NVsyR45m0paLEU4D4w80dc_fA@mail.gmail.com>
-        <CANMq1KDTgnGtNxWj2XxAT3mdsNjc551uUCg6EWnh=Hd0KcVQKQ@mail.gmail.com>
-        <8735vzfugn.fsf@suse.de>
-        <CAOQ4uxjdVZywBi6=D1eRfBhRk+nobTz4N87jcejDtvzBMMMKXQ@mail.gmail.com>
-        <CANMq1KAOwj9dJenwF2NadQ73ytfccuPuahBJE7ak6S7XP6nCjg@mail.gmail.com>
-Date:   Mon, 03 May 2021 09:54:01 +0100
-In-Reply-To: <CANMq1KAOwj9dJenwF2NadQ73ytfccuPuahBJE7ak6S7XP6nCjg@mail.gmail.com>
-        (Nicolas Boichat's message of "Fri, 23 Apr 2021 12:40:44 +0800")
-Message-ID: <8735v4tcye.fsf@suse.de>
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-riscv@lists.infradead.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Date:   Mon, 03 May 2021 01:54:57 -0700
+In-Reply-To: <YI+nhMcPSTs/5Ydp@ada-deb-carambola.ifak-system.com>
+References: <20210501151538.145449-1-masahiroy@kernel.org>
+         <CANiq72k1hB3X6+Nc_iu=f=BoB-F9JW2j_B4ZMcv8_UpW5QQ2Og@mail.gmail.com>
+         <3943bc020f6227c8801907317fc113aa13ad4bad.camel@perches.com>
+         <20210502183030.GF10366@gate.crashing.org>
+         <81a926a3bdb70debe3ae2b13655ea8d249fb9991.camel@perches.com>
+         <20210502203253.GH10366@gate.crashing.org>
+         <CAHk-=wjGJskk5EwnDCccs6DcLytE2yx76+P_W-n1-B5zq0M3KA@mail.gmail.com>
+         <20210502223007.GZ1847222@casper.infradead.org>
+         <YI+nhMcPSTs/5Ydp@ada-deb-carambola.ifak-system.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 7813213D93
+X-Spam-Status: No, score=1.44
+X-Stat-Signature: kzayu4orffhmqaa8ff8iq8d4a8ipzp46
+X-Rspamd-Server: rspamout01
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1952/ks3MY8TXp5Ug6xsGLjA9GLFC3+spA=
+X-HE-Tag: 1620032098-353050
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nicolas Boichat <drinkcat@chromium.org> writes:
+On Mon, 2021-05-03 at 09:34 +0200, Alexander Dahl wrote:
+> Desktops and servers are all nice, however I just want to make you
+> aware, there are embedded users forced to stick to older cross
+> toolchains for different reasons as well, e.g. in industrial
+> environment. :-)
 
-> On Fri, Apr 9, 2021 at 9:50 PM Amir Goldstein <amir73il@gmail.com> wrote:
->>
->> On Fri, Apr 9, 2021 at 4:39 PM Luis Henriques <lhenriques@suse.de> wrote:
->> >
->> > Nicolas Boichat <drinkcat@chromium.org> writes:
->> >
->> > > On Wed, Feb 24, 2021 at 6:44 PM Nicolas Boichat <drinkcat@chromium.org> wrote:
->> > >>
->> > >> On Wed, Feb 24, 2021 at 6:22 PM Luis Henriques <lhenriques@suse.de> wrote:
->> > >> >
->> > >> > On Tue, Feb 23, 2021 at 08:00:54PM -0500, Olga Kornievskaia wrote:
->> > >> > > On Mon, Feb 22, 2021 at 5:25 AM Luis Henriques <lhenriques@suse.de> wrote:
->> > >> > > >
->> > >> > > > A regression has been reported by Nicolas Boichat, found while using the
->> > >> > > > copy_file_range syscall to copy a tracefs file.  Before commit
->> > >> > > > 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
->> > >> > > > kernel would return -EXDEV to userspace when trying to copy a file across
->> > >> > > > different filesystems.  After this commit, the syscall doesn't fail anymore
->> > >> > > > and instead returns zero (zero bytes copied), as this file's content is
->> > >> > > > generated on-the-fly and thus reports a size of zero.
->> > >> > > >
->> > >> > > > This patch restores some cross-filesystem copy restrictions that existed
->> > >> > > > prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
->> > >> > > > devices").  Filesystems are still allowed to fall-back to the VFS
->> > >> > > > generic_copy_file_range() implementation, but that has now to be done
->> > >> > > > explicitly.
->> > >> > > >
->> > >> > > > nfsd is also modified to fall-back into generic_copy_file_range() in case
->> > >> > > > vfs_copy_file_range() fails with -EOPNOTSUPP or -EXDEV.
->> > >> > > >
->> > >> > > > Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
->> > >> > > > Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
->> > >> > > > Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
->> > >> > > > Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid/
->> > >> > > > Reported-by: Nicolas Boichat <drinkcat@chromium.org>
->> > >> > > > Signed-off-by: Luis Henriques <lhenriques@suse.de>
->> > >> > >
->> > >> > > I tested v8 and I believe it works for NFS.
->> > >> >
->> > >> > Thanks a lot for the testing.  And to everyone else for reviews,
->> > >> > feedback,... and patience.
->> > >>
->> > >> Thanks so much to you!!!
->> > >>
->> > >> Works here, you can add my
->> > >> Tested-by: Nicolas Boichat <drinkcat@chromium.org>
->> > >
->> > > What happened to this patch? It does not seem to have been picked up
->> > > yet? Any reason why?
->> >
->> > Hmm... good question.  I'm not actually sure who would be picking it.  Al,
->> > maybe...?
->> >
->>
->> Darrick,
->>
->> Would you mind taking this through your tree in case Al doesn't pick it up?
->
-> Err, sorry for yet another ping... but it would be good to move
-> forward with those patches ,-P
+In your embedded case, what kernel version do you use?
 
-Yeah, I'm not sure what else to do, or who else to bug regarding this :-/
+For older toolchains, unless it's kernel version 5.13+,
+it wouldn't matter.
 
-Cheers,
--- 
-Luis
+And all the supported architectures have gcc 10.3 available at
+http://cdn.kernel.org/pub/tools/crosstool/
+
+
