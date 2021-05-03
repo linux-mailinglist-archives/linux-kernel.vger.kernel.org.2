@@ -2,102 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 328D7372298
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 23:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7414D37229B
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 23:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbhECVmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 17:42:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25433 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229894AbhECVmO (ORCPT
+        id S229806AbhECVnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 17:43:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhECVnV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 17:42:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620078079;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kMuIpJEdiBjBQ12iiG/AQDfkJBD+hRImjx6hu1Pa3Cs=;
-        b=dkH1Xngpsh7F3K8qhq869AyTtZU1L6A1KfhxxUPHoNXutZnzdzRebe6lJrwU4FYSRoryiO
-        YN7OMnhp5cwh42g9uYsmFkeLS9SNo2SwkcURrp+fnP2uNLezBd6Uzb7xYzlbMCxKXDnTJE
-        iz/guJLRf4YUU40lMMtbekdbHzRo5tI=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-267--cPfwXH7OBKUnDzo1dJ8JA-1; Mon, 03 May 2021 17:41:18 -0400
-X-MC-Unique: -cPfwXH7OBKUnDzo1dJ8JA-1
-Received: by mail-qk1-f200.google.com with SMTP id s10-20020a05620a030ab02902e061a1661fso6169217qkm.12
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 14:41:18 -0700 (PDT)
+        Mon, 3 May 2021 17:43:21 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30607C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 14:42:26 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id d14so8063632edc.12
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 14:42:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=T+XjJ3dALnd0wG0aJMGSCh1rng0ubFs/IjGWlTrspJM=;
+        b=Ybd9vvSWTOAC080D7jgCAv7+YqxcwtOyKIBQn8P36iYgh5OsJbjamKtIFBMxKP6A0n
+         E+JYycOY4SIFpNC1Uq2HVYATPhDy8mEk9QD9cCTRyWnJIqzj8yJLsJqHKv96rz3Hrp1H
+         JYlnFcu3VGzWBqNAN7T+Ban4hA1BFWlkGncr8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kMuIpJEdiBjBQ12iiG/AQDfkJBD+hRImjx6hu1Pa3Cs=;
-        b=OU+IBagUu+0wed5ot9N6PKkiCPZOdeMDpER1n4xHm/HcGZNnWkajoP6SXH0IGnQtXD
-         Qz4C4Weriau1SbGerOU+3Xozn51Rj34rWK992x20HurKbe5gRNnI12iU1X3VfRoHSlLB
-         3QI0SR3XkUsoelaFLddC24BnuyfTQcK0ZKQJfsmYm2MOxBHotKgHWDpD5tW/lyG0EEIf
-         8rsibjNDXuXwjUjTiWoeadVreu3B8HFcQag6NZ2Nwl3ouAfPRBM5pGiMt6+IFNMufLkZ
-         vAMvUqlwhNpf98lDRn96A5EWTrOI49PmHxrtKy9SLmzSAXcSvEvmxPG7mX0YSP+QI8Sq
-         XMbg==
-X-Gm-Message-State: AOAM533weob2oC40Z0D9UFaAjnG60xrGMKaaw3SrnefUS1UV8psEfvvN
-        CYiQcFUaKFAKVpgpeNOfVbsWd3woFf/QPQrgXLPiRvWFuXkKzuUfjpGPUG2kPqSrFlkkW8MmyTG
-        csP/PmIU2N1XWYaqMz8N/IAAw
-X-Received: by 2002:a05:6214:a8b:: with SMTP id ev11mr14875763qvb.42.1620078077734;
-        Mon, 03 May 2021 14:41:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwPK3fT4Ub0m/HBBvdYVkwXeOOIcz2fSJruHuTp9A5QoYF+XqL1ZeJdFlwiIxW/fNL1icAEow==
-X-Received: by 2002:a05:6214:a8b:: with SMTP id ev11mr14875754qvb.42.1620078077569;
-        Mon, 03 May 2021 14:41:17 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-72-184-145-4-219.dsl.bell.ca. [184.145.4.219])
-        by smtp.gmail.com with ESMTPSA id 4sm908389qtc.40.2021.05.03.14.41.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 14:41:17 -0700 (PDT)
-Date:   Mon, 3 May 2021 17:41:15 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>
-Subject: Re: [PATCH 2/2] mm/hugetlb: Fix cow where page writtable in child
-Message-ID: <YJBt+61zIh9wOCaq@t490s>
-References: <20210501144110.8784-1-peterx@redhat.com>
- <20210501144110.8784-3-peterx@redhat.com>
- <c69c12d6-1615-e528-37a7-4776abfc7200@oracle.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=T+XjJ3dALnd0wG0aJMGSCh1rng0ubFs/IjGWlTrspJM=;
+        b=jjple+03WzChyGeuXhMtMzsNDEEy2f7qPzjJWKDKsEP6aHiLKFHREPo3nL7U+Udyvo
+         bjd9osGbK6JxbHsGVUgR94sewvE+wyo4qqIYEOPb3YjFBZHQSE/uULBv4RPgruKGBr/X
+         4vzgEgKecrmSvn/obVgmb5WQ2igjVdKxFFmIGR7VvrR2DFsBDjZbvqsql7p1EtrGWMaf
+         5YG2prMvxQoLjvzjRJOPmiRGMMQcNMD8fY5pydyKporCfOGdtDoLggNxMsR2PCTPXM2U
+         UysebQ5I9NqdxJY0u7cccemr6BfTIrKN3Br7/zG3k4aqLdHBGVTyh8YEFdVGw0e/crUP
+         eS2w==
+X-Gm-Message-State: AOAM530eT0pEwaNE91K0PotcD8MNwjijA59J6lZgjr70GMd+ASS00WWS
+        9a9tg+TFsutcv6AgBMfRqWw+gsOn9SnG2gEwaxOCNw==
+X-Google-Smtp-Source: ABdhPJyveRS3brIE3ehtHcriSX7MMFHgnM2+onNaMlB5JadrRCdNkKRzvACmNxg2rvC7wz9F4XEGv3gRsAYEnvlZq3s=
+X-Received: by 2002:aa7:c150:: with SMTP id r16mr22009605edp.82.1620078144962;
+ Mon, 03 May 2021 14:42:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <c69c12d6-1615-e528-37a7-4776abfc7200@oracle.com>
+From:   Micah Morton <mortonm@chromium.org>
+Date:   Mon, 3 May 2021 11:42:13 -1000
+Message-ID: <CAJ-EccOdLW1+8xx8=PRHzSjy4kVaVOUave0pAXF5b=cD4w3=pg@mail.gmail.com>
+Subject: [GIT PULL] SafeSetID changes for v5.13
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 01:53:03PM -0700, Mike Kravetz wrote:
-> On 5/1/21 7:41 AM, Peter Xu wrote:
-> > When fork() and copy hugetlb page range, we'll remember to wrprotect src pte if
-> > needed, however we forget about the child!  Without it, the child will be able
-> > to write to parent's pages when mapped as PROT_READ|PROT_WRITE and MAP_PRIVATE,
-> > which will cause data corruption in the parent process.
-> > 
-> > This issue can also be exposed by "memfd_test hugetlbfs" kselftest (if it can
-> > pass the F_SEAL_FUTURE_WRITE test first, though).
-> > 
-> > Signed-off-by: Peter Xu <peterx@redhat.com>
-> > ---
-> >  mm/hugetlb.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> 
-> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+The following changes since commit 9f4ad9e425a1d3b6a34617b8ea226d56a119a717:
 
-Thanks!
+  Linux 5.12 (2021-04-25 13:49:08 -0700)
 
-> 
-> I think we need to add, "Fixes: 4eae4efa2c29" as this is now in v5.12
+are available in the Git repository at:
 
-I could be mistaken, but my understanding is it's broken from the most initial
-cow support of hugetlbfs in 2006...  So if we want a fixes tag, maybe this?
+  https://github.com/micah-morton/linux.git tags/safesetid-5.13
 
-Fixes: 1e8f889b10d8d ("[PATCH] Hugetlb: Copy on Write support")
+for you to fetch changes up to 1ca86ac1ec8d201478e9616565d4df5d51595cfc:
 
--- 
-Peter Xu
+  LSM: SafeSetID: Fix code specification by scripts/checkpatch.pl
+(2021-04-26 16:36:50 -0700)
 
+----------------------------------------------------------------
+Simple code cleanup
+
+This pull request just has a single 3-line code cleanup commit to eliminate
+some unreachable 'break' statements that come after 'return's. No
+other work was done on SafeSetID for the 5.13 merge window.
+
+The commit has been in linux-next since 4-26-2021. I forgot to add the commit
+to linux-next until after the 5.13 merge window started, which is why the commit
+is on top of the 5.12 release. I'm not really sure which
+release/commit the patch author based the commit on, but doesn't seem
+to matter in this case since the commit is obviously correct from
+looking at the code and the commit applied cleanly on top of 5.12 --
+so I don't see applying this on top of 5.12 as a case of losing any of
+the testing/development history of the commit.
+
+----------------------------------------------------------------
+Yanwei Gao (1):
+      LSM: SafeSetID: Fix code specification by scripts/checkpatch.pl
+
+ security/safesetid/lsm.c | 3 ---
+ 1 file changed, 3 deletions(-)
