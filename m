@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15DB6371D74
+	by mail.lfdr.de (Postfix) with ESMTP id 6FD3F371D75
 	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234874AbhECQ7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 12:59:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34748 "EHLO mail.kernel.org"
+        id S234897AbhECQ7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 12:59:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234625AbhECQuh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 12:50:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BEFE61933;
-        Mon,  3 May 2021 16:41:07 +0000 (UTC)
+        id S234678AbhECQun (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 12:50:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 303686192A;
+        Mon,  3 May 2021 16:41:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620060068;
-        bh=zdyythD21HvJgoFCj/9ADYkiuDf0zulSgc++zqebsM8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZKuThHXxp2hCsd3CNaCss2V08JFRvOoGYqLXpfpfvTDC8yj0pNIxGA2C72NFI3CWg
-         h58s1yFOld4dSo+l5bhK9Qgfs7lyU/kL2EGiIcuknEuHiehL1EsljDP3Fm+F2G9Rya
-         Qw/lCuuZBq7xOEfsbKvxdLlrqkB60KSABW6bKZbovPw/yHGNILhZC8S6DMRgHEy4A6
-         XZx20hC2PM7GCTMFxZ3KnfOpsfOMuBwxuUOKWDaDqSFcefFFGtC0W9IsZ3324WoQmr
-         P8Pd2vaaPnGGnMM9/70WOxXSi7gHtOotcHfFm4zr94cxnWwsxM/7uRwoKUZCim8W9w
-         hv8RRDBMzVupA==
+        s=k20201202; t=1620060072;
+        bh=VpicjMrC7wIbSeScJ//MRPXRuxWp5cOb6PXgVW05iAw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=dvyoaKLZAugbZs0E8mC14tbLB7DrFkZDSCExQkiwVvR4nckDhufzQjfZ0wjloL0By
+         BVh9jNuYU8bg2PvqvByR8+z+tsd8WiLnkPqzLtMmKu7ixKADmhYsFNxNRy98J8g1dS
+         LnE4hFaVT9q/atGYSkwbw0YN4+4hzvJxXg1LJcCt6fHyGgRd0IR5kYDzhASRUuQEhz
+         SP9bSj9ljmat2so+PLDHFVdggviMUao16k6cfv6bGmqwDxkxHoCoXSHqqE/BQUAT42
+         L7gT8I4xwxVGG1NbTqNkSkDsufY7VVsQ2XBR8umknGj74nJc94eLzPjPqtwkooOexJ
+         0Nyd/Tq4KcGCQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Harald Freudenberger <freude@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org,
-        linux-s390@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 57/57] s390/archrandom: add parameter check for s390_arch_random_generate
-Date:   Mon,  3 May 2021 12:39:41 -0400
-Message-Id: <20210503163941.2853291-57-sashal@kernel.org>
+Cc:     James Smart <jsmart2021@gmail.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 01/35] scsi: lpfc: Fix incorrect dbde assignment when building target abts wqe
+Date:   Mon,  3 May 2021 12:40:35 -0400
+Message-Id: <20210503164109.2853838-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210503163941.2853291-1-sashal@kernel.org>
-References: <20210503163941.2853291-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,43 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Harald Freudenberger <freude@linux.ibm.com>
+From: James Smart <jsmart2021@gmail.com>
 
-[ Upstream commit 28096067686c5a5cbd4c35b079749bd805df5010 ]
+[ Upstream commit 9302154c07bff4e7f7f43c506a1ac84540303d06 ]
 
-A review of the code showed, that this function which is exposed
-within the whole kernel should do a parameter check for the
-amount of bytes requested. If this requested bytes is too high
-an unsigned int overflow could happen causing this function to
-try to memcpy a really big memory chunk.
+The wqe_dbde field indicates whether a Data BDE is present in Words 0:2 and
+should therefore should be clear in the abts request wqe. By setting the
+bit we can be misleading fw into error cases.
 
-This is not a security issue as there are only two invocations
-of this function from arch/s390/include/asm/archrandom.h and both
-are not exposed to userland.
+Clear the wqe_dbde field.
 
-Reported-by: Sven Schnelle <svens@linux.ibm.com>
-Signed-off-by: Harald Freudenberger <freude@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Link: https://lore.kernel.org/r/20210301171821.3427-2-jsmart2021@gmail.com
+Co-developed-by: Dick Kennedy <dick.kennedy@broadcom.com>
+Signed-off-by: Dick Kennedy <dick.kennedy@broadcom.com>
+Signed-off-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/crypto/arch_random.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/scsi/lpfc/lpfc_nvmet.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/s390/crypto/arch_random.c b/arch/s390/crypto/arch_random.c
-index dd95cdbd22ce..4cbb4b6d85a8 100644
---- a/arch/s390/crypto/arch_random.c
-+++ b/arch/s390/crypto/arch_random.c
-@@ -53,6 +53,10 @@ static DECLARE_DELAYED_WORK(arch_rng_work, arch_rng_refill_buffer);
+diff --git a/drivers/scsi/lpfc/lpfc_nvmet.c b/drivers/scsi/lpfc/lpfc_nvmet.c
+index 5bc33817568e..23ead17e60fe 100644
+--- a/drivers/scsi/lpfc/lpfc_nvmet.c
++++ b/drivers/scsi/lpfc/lpfc_nvmet.c
+@@ -2912,7 +2912,6 @@ lpfc_nvmet_unsol_issue_abort(struct lpfc_hba *phba,
+ 	bf_set(wqe_rcvoxid, &wqe_abts->xmit_sequence.wqe_com, xri);
  
- bool s390_arch_random_generate(u8 *buf, unsigned int nbytes)
- {
-+	/* max hunk is ARCH_RNG_BUF_SIZE */
-+	if (nbytes > ARCH_RNG_BUF_SIZE)
-+		return false;
-+
- 	/* lock rng buffer */
- 	if (!spin_trylock(&arch_rng_lock))
- 		return false;
+ 	/* Word 10 */
+-	bf_set(wqe_dbde, &wqe_abts->xmit_sequence.wqe_com, 1);
+ 	bf_set(wqe_iod, &wqe_abts->xmit_sequence.wqe_com, LPFC_WQE_IOD_WRITE);
+ 	bf_set(wqe_lenloc, &wqe_abts->xmit_sequence.wqe_com,
+ 	       LPFC_WQE_LENLOC_WORD12);
 -- 
 2.30.2
 
