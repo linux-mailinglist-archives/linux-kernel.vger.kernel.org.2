@@ -2,205 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A733712CB
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 10:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90A2C3712CF
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 11:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233035AbhECJAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 05:00:42 -0400
-Received: from mail-ed1-f42.google.com ([209.85.208.42]:45718 "EHLO
-        mail-ed1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231531AbhECJAl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 05:00:41 -0400
-Received: by mail-ed1-f42.google.com with SMTP id d14so5383803edc.12;
-        Mon, 03 May 2021 01:59:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language;
-        bh=ylNixxPElN4FOLfZxMBmuRN5VwI+oDqntB6I0UOtU8A=;
-        b=k7SLplqDezicLt8YgTF6HXDf5V7Y6CIk8I7NNVKUQ3XtVYBl1CCECEG+0QV7Cl+oNT
-         Ex9yLwkwqv1kJTbBNH29pbKg6nzqGg0CyFfPv088aIsEvIpzdhElKnkE0lF+Y2d4qmJ/
-         7hkun4r8Llw6CmMWPoUK5alfTlv79nKujM725jlOINU8dIgKSmKginzaRhU9mx2Bg6+a
-         f39Sa3uKMy3N0DJAgeCJ16Yul8gFgyreHctBgVTwE9NBiNAQCDpKNrkQ/3SdM4wJ+lqb
-         wVbad8eAWMwCzbIo1VR6kxB9qB8tOaT5mUhfs5FJ74dGsxyK+44iOMoJFvOLxTaXoCQX
-         EClA==
-X-Gm-Message-State: AOAM533T0v24xPFXL0vFGLeIEsJwELygdMXRSrX9MIiH8UDZgQVC4QmB
-        ebDMlhcPNMqOHiVH3NYO7nzVEpR7l9o4FQ==
-X-Google-Smtp-Source: ABdhPJx/VVHKuVSufgVvuNjBbHQVncDD1fuAh+kpFIXqB7Q71x1EYP/w33M7SvD6vcFqXHWyN9TA+g==
-X-Received: by 2002:a05:6402:b88:: with SMTP id cf8mr18803891edb.227.1620032386776;
-        Mon, 03 May 2021 01:59:46 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id c12sm13207764edx.54.2021.05.03.01.59.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 01:59:46 -0700 (PDT)
-Subject: Re: linux-next failing build due to missing cubictcp_state symbol
-From:   Jiri Slaby <jirislaby@kernel.org>
-To:     =?UTF-8?Q?Michal_Such=c3=a1nek?= <msuchanek@suse.de>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Yonghong Song <yhs@fb.com>, linux-kernel@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        dwarves@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>
-References: <316e86f9-35cc-36b0-1594-00a09631c736@fb.com>
- <20210423175528.GF6564@kitsune.suse.cz>
- <20210425111545.GL15381@kitsune.suse.cz>
- <20210426113215.GM15381@kitsune.suse.cz>
- <20210426121220.GN15381@kitsune.suse.cz>
- <20210426121401.GO15381@kitsune.suse.cz>
- <49f84147-bf32-dc59-48e0-f89241cf6264@fb.com> <YIbkR6z6mxdNSzGO@krava>
- <YIcRlHQWWKbOlcXr@krava> <20210427121237.GK6564@kitsune.suse.cz>
- <20210430174723.GP15381@kitsune.suse.cz>
- <3d148516-0472-8f0a-085b-94d68c5cc0d5@suse.com>
- <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org>
- <4e051459-8532-7b61-c815-f3435767f8a0@kernel.org>
-Message-ID: <cbaf50c3-c85d-9239-0b37-c88e8cbed8c8@kernel.org>
-Date:   Mon, 3 May 2021 10:59:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S233049AbhECJB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 05:01:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42052 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231531AbhECJBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 05:01:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D9E860FEB;
+        Mon,  3 May 2021 09:00:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620032431;
+        bh=NM7OrmlALeZ32h6rHMv+l8Rr/iKbNjIkdTl15+pN+3s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KrMg7rZDAvuF8TSPaz3tHXjheVZ8VWJcWtxGSauCj+5vW2KabqwOdyeTgtGbqlfGF
+         8unLL3Kt+lb+2P0TATB03NT5m66Xgz6HD3tncDgwXLUKrdrUJ8QhTLmDK+yM8MLAMp
+         uv4KZQeiLzZyYpsnaevhEy2QLxVYPzYb5sNLoc6/FU034FCT0mDmPyKkICU4p4EGSK
+         gJNajfcvnz635r/XYPr7DQved2cUsTrhpgZIFhPKYKgo6dMDlt/BKcsw6AohW8LZTu
+         bLKgxm6rpBtgtkhXS/kkW9ChsK8hVxJ+L02Btp+3BITtue4jjDQPHDTVtoQR7L7xBG
+         rQoCFDRJSkkwQ==
+Date:   Mon, 3 May 2021 11:00:22 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "Hans Verkuil" <hans.verkuil@cisco.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-media@vger.kernel.org>
+Subject: Re: [PATCH v4 01/79] media: venus: fix PM runtime logic at
+ venus_sys_error_handler()
+Message-ID: <20210503110022.22503bfd@coco.lan>
+In-Reply-To: <20210430162110.000058e0@Huawei.com>
+References: <cover.1619621413.git.mchehab+huawei@kernel.org>
+        <6d463d21f0dd55c3d84db0458c7a5c4e0d7c5bc1.1619621413.git.mchehab+huawei@kernel.org>
+        <20210430162110.000058e0@Huawei.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <4e051459-8532-7b61-c815-f3435767f8a0@kernel.org>
-Content-Type: multipart/mixed;
- boundary="------------730411CEEE03A22CBB5BD79E"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------730411CEEE03A22CBB5BD79E
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Transfer-Encoding: 8bit
+Em Fri, 30 Apr 2021 16:21:10 +0100
+Jonathan Cameron <Jonathan.Cameron@Huawei.com> escreveu:
 
-CCing pahole people.
-
-On 03. 05. 21, 9:59, Jiri Slaby wrote:
-> On 03. 05. 21, 8:11, Jiri Slaby wrote:
->>>>>>> looks like vfs_truncate did not get into BTF data,
->>>>>>> I'll try to reproduce
->>>
->>> _None_ of the functions are generated by pahole -J from debuginfo on 
->>> ppc64. debuginfo appears to be correct. Neither pahole -J fs/open.o 
->>> works correctly. collect_functions in dwarves seems to be defunct on 
->>> ppc64... "functions" array is bogus (so find_function -- the bsearch 
->>> -- fails).
->>
->> It's not that bogus. I forgot an asterisk:
->>> #0  find_function (btfe=0x100269f80, name=0x10024631c "stream_open") 
->>> at /usr/src/debug/dwarves-1.21-1.1.ppc64/btf_encoder.c:350
->>> (gdb) p (*functions)@84
->>> $5 = {{name = 0x7ffff68e0922 ".__se_compat_sys_ftruncate", addr = 
->>> 75232, size = 72, sh_addr = 65536, generated = false}, {
->>>     name = 0x7ffff68e019e ".__se_compat_sys_open", addr = 80592, size 
->>> = 216, sh_addr = 65536, generated = false}, {
->>>     name = 0x7ffff68e0076 ".__se_compat_sys_openat", addr = 80816, 
->>> size = 232, sh_addr = 65536, generated = false}, {
->>>     name = 0x7ffff68e0908 ".__se_compat_sys_truncate", addr = 74304, 
->>> size = 100, sh_addr = 65536, generated = false}, {
->> ...
->>>     name = 0x7ffff68e0808 ".stream_open", addr = 65824, size = 72, 
->>> sh_addr = 65536, generated = false}, {
->> ...
->>>     name = 0x7ffff68e0751 ".vfs_truncate", addr = 73392, size = 544, 
->>> sh_addr = 65536, generated = false}}
->>
->> The dot makes the difference, of course. The question is why is it 
->> there? I keep looking into it. Only if someone has an immediate idea...
+> On Wed, 28 Apr 2021 16:51:22 +0200
+> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 > 
-> Well, .vfs_truncate is in .text (and contains an ._mcount call). And 
-> vfs_truncate is in .opd (w/o an ._mcount call). Since setup_functions 
-> excludes all functions without the ._mcount call, is_ftrace_func later 
-> returns false for such functions and they are filtered before the BTF 
-> processing.
-> 
-> Technically, get_vmlinux_addrs looks at a list of functions between 
-> __start_mcount_loc and __stop_mcount_loc and considers only the listed.
-> 
-> I don't know what the correct fix is (exclude .opd functions from the 
-> filter?). Neither why cross compiler doesn't fail, nor why ebi v2 avoids 
-> this too.
+> > The venus_sys_error_handler() assumes that pm_runtime was
+> > able to resume, as it does things like:
+> > 
+> > 	while (pm_runtime_active(core->dev_dec) || pm_runtime_active(core->dev_enc))
+> > 		msleep(10);
+> > 
+> > Well, if, for whatever reason, this won't happen, the routine
+> > won't do what's expected. So, check for the returned error
+> > condition, warning if it returns an error.
+> > 
+> > Fixes: af2c3834c8ca ("[media] media: venus: adding core part and helper functions")
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  drivers/media/platform/qcom/venus/core.c | 14 +++++++++++---
+> >  1 file changed, 11 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+> > index 54bac7ec14c5..c80c27c87ccc 100644
+> > --- a/drivers/media/platform/qcom/venus/core.c
+> > +++ b/drivers/media/platform/qcom/venus/core.c
+> > @@ -84,7 +84,11 @@ static void venus_sys_error_handler(struct work_struct *work)
+> >  			container_of(work, struct venus_core, work.work);
+> >  	int ret = 0;
+> >  
+> > -	pm_runtime_get_sync(core->dev);
+> > +	ret = pm_runtime_get_sync(core->dev);
+> > +	if (WARN_ON(ret < 0)) {
+> > +		pm_runtime_put_noidle(core->dev);
+> > +		return;
+> > +	}
+> >  
+> >  	hfi_core_deinit(core, true);
+> >  
+> > @@ -106,9 +110,13 @@ static void venus_sys_error_handler(struct work_struct *work)
+> >  
+> >  	hfi_reinit(core);
+> >  
+> > -	pm_runtime_get_sync(core->dev);
+> > +	ret = pm_runtime_get_sync(core->dev);
+> > +	if (WARN_ON(ret < 0)) {
+> > +		pm_runtime_put_noidle(core->dev);  
 
-Attaching a patch for pahole which fixes the issue, but I have no idea 
-whether it is the right fix at all.
+Thanks for review!
 
-> regards,-- 
-js
-suse labs
+> mutex_unlock(&core->lock);
+> (the unlock is currently just below the enable_irq() in 5.12)
 
---------------730411CEEE03A22CBB5BD79E
-Content-Type: text/x-patch; charset=UTF-8;
- name="ppc64-opd-fix.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="ppc64-opd-fix.patch"
+Basically, this function assumes that the core->lock is not locked
+and that IRQs are disabled, as can be seen at the function which
+starts such work:
 
-From: Jiri Slaby <jslaby@suse.cz>
-Subject: ppc64: .opd section fix
-Patch-mainline: submitted 2021/05/03
+    static void venus_event_notify(struct venus_core *core, u32 event)
+    {
+	struct venus_inst *inst;
 
-Functions in the .opd section should be considered valid too. Otherwise,
-pahole cannot produce a .BTF section from vmlinux and kernel build
-fails on ppc64.
----
- btf_encoder.c |   18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+	switch (event) {
+	case EVT_SYS_WATCHDOG_TIMEOUT:
+	case EVT_SYS_ERROR:
+		break;
+	default:
+		return;
+	}
 
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -31,6 +31,8 @@ struct funcs_layout {
- 	unsigned long mcount_start;
- 	unsigned long mcount_stop;
- 	unsigned long mcount_sec_idx;
-+	unsigned long opd_start;
-+	unsigned long opd_stop;
- };
- 
- struct elf_function {
-@@ -271,11 +273,24 @@ static int is_ftrace_func(struct elf_fun
- 	return start <= addrs[r] && addrs[r] < end;
- }
- 
-+static int is_opd_func(struct elf_function *func, struct funcs_layout *fl)
-+{
-+	return fl->opd_start <= func->addr && func->addr < fl->opd_stop;
-+}
-+
- static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
- {
- 	__u64 *addrs, count, i;
- 	int functions_valid = 0;
- 	bool kmod = false;
-+	GElf_Shdr shdr;
-+	Elf_Scn *sec;
-+
-+	sec = elf_section_by_name(btfe->elf, &btfe->ehdr, &shdr, ".opd", NULL);
-+	if (sec) {
-+		fl->opd_start = shdr.sh_addr;
-+		fl->opd_stop = shdr.sh_addr + shdr.sh_size;
-+	}
- 
- 	/*
- 	 * Check if we are processing vmlinux image and
-@@ -322,7 +337,8 @@ static int setup_functions(struct btf_el
- 			func->addr += func->sh_addr;
- 
- 		/* Make sure function is within ftrace addresses. */
--		if (is_ftrace_func(func, addrs, count)) {
-+		if (is_opd_func(func, fl) ||
-+				is_ftrace_func(func, addrs, count)) {
- 			/*
- 			 * We iterate over sorted array, so we can easily skip
- 			 * not valid item and move following valid field into
+	mutex_lock(&core->lock);
+	core->sys_error = true;
+	list_for_each_entry(inst, &core->instances, list)
+		inst->ops->event_notify(inst, EVT_SESSION_ERROR, NULL);
+	mutex_unlock(&core->lock);
 
---------------730411CEEE03A22CBB5BD79E--
+	disable_irq_nosync(core->irq);
+	schedule_delayed_work(&core->work, msecs_to_jiffies(10));
+    }
+
+The code inside it actually locks/unlocks two times the core->lock. 
+See, this is the original code:
+
+    static void venus_sys_error_handler(struct work_struct *work)
+    {
+	<not locked>
+
+        pm_runtime_get_sync(core->dev);
+
+        hfi_core_deinit(core, true);
+
+        dev_warn(core->dev, "system error has occurred, starting recovery!\n");
+
+        mutex_lock(&core->lock);
+	while (pm_runtime_active(core->dev_dec) || pm_runtime_active(core->dev_enc))
+                msleep(10);
+...
+        enable_irq(core->irq);
+        mutex_unlock(&core->lock);
+...
+	if (ret) {
+                disable_irq_nosync(core->irq);
+                dev_warn(core->dev, "recovery failed (%d)\n", ret);
+                schedule_delayed_work(&core->work, msecs_to_jiffies(10));
+                return;
+        }
+
+	mutex_lock(&core->lock);
+        core->sys_error = false;
+        mutex_unlock(&core->lock);
+    }
+
+It should be noticed that, once started, this delayed work re-starts
+itself, with IRQs disabled, trying to reboot the Venus IP hardware,
+until it stops failing [1].
+
+[1] IMHO, it seems a very bad idea to keep running the work forever,
+flooding syslog with error messages on every 10ms or so.
+
+That's said, my patch doesn't seem to fix all potential issues that
+could happen there.
+
+I'll propose a separate fix, outside this patch series, as the issues
+here are not only due to RPM, but the main issue is that both
+while loops inside this code can run forever with the core->lock
+hold.
+
+Thanks,
+Mauro
