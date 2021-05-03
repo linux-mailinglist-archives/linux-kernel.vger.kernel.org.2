@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41FBA3714F2
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 14:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E7BA3714F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 14:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233541AbhECMDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 08:03:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36736 "EHLO mail.kernel.org"
+        id S234189AbhECMDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 08:03:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233998AbhECMBw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 08:01:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8520961278;
-        Mon,  3 May 2021 12:00:58 +0000 (UTC)
+        id S234009AbhECMBz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 08:01:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDA2861283;
+        Mon,  3 May 2021 12:01:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620043259;
-        bh=2XLnbKYGw70eB6socMJH1tAOUlUrIj0bitV95Pn6iR0=;
+        s=korg; t=1620043261;
+        bh=1CUogshfkN7s0Bq/qnRpzsKxJQ1oJ0HN/0i3rTm6hY4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TsMgVTtq/kXQWLCAE7cbA4jcTnsCCf1B8/GPp7ewKWeqFQgT33ZFCJEFeAnW9jOab
-         7vd4hccv+QaqDLvPoe0OQWx0Dp3+oKEy4x8/TWqgZRBL1LfetvLfz8blFyFcOH6fTE
-         ULm8FLXfnQ/Qup3CcubsjEHfNjf4lze//SnjNYok=
+        b=uHMWkurROknYeGoyCCGH4QYwGUYqc41hrHj9kofk2rCMiYnkEBqEn9FTzXtIL44ji
+         xteBN2OEVYoIcDgtvHiUMnG3DQ2vG7SgN7G8m0Yt1W4BRyDVeI4EcwdXvIUBveRyZn
+         60WpVbEqs4FEq+eJkI0UsoJdKYeiQhWVSme5kdiU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Alaa Emad <alaaemadhossney.ae@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 61/69] media: gspca: mt9m111: Check write_bridge for timeout
-Date:   Mon,  3 May 2021 13:57:28 +0200
-Message-Id: <20210503115736.2104747-62-gregkh@linuxfoundation.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Aditya Pakki <pakki001@umn.edu>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Subject: [PATCH 62/69] Revert "media: gspca: Check the return value of write_bridge for timeout"
+Date:   Mon,  3 May 2021 13:57:29 +0200
+Message-Id: <20210503115736.2104747-63-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
 References: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
@@ -37,55 +37,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alaa Emad <alaaemadhossney.ae@gmail.com>
+This reverts commit a21a0eb56b4e8fe4a330243af8030f890cde2283.
 
-If m5602_write_bridge times out, it will return a negative error value.
-So properly check for this and handle the error correctly instead of
-just ignoring it.
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+Different error values should never be "OR" together and expect anything
+sane to come out of the result.
+
+Cc: Aditya Pakki <pakki001@umn.edu>
 Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Signed-off-by: Alaa Emad <alaaemadhossney.ae@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/gspca/m5602/m5602_mt9m111.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ drivers/media/usb/gspca/m5602/m5602_po1030.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/media/usb/gspca/m5602/m5602_mt9m111.c b/drivers/media/usb/gspca/m5602/m5602_mt9m111.c
-index 50481dc928d0..bf1af6ed9131 100644
---- a/drivers/media/usb/gspca/m5602/m5602_mt9m111.c
-+++ b/drivers/media/usb/gspca/m5602/m5602_mt9m111.c
-@@ -195,7 +195,7 @@ static const struct v4l2_ctrl_config mt9m111_greenbal_cfg = {
- int mt9m111_probe(struct sd *sd)
+diff --git a/drivers/media/usb/gspca/m5602/m5602_po1030.c b/drivers/media/usb/gspca/m5602/m5602_po1030.c
+index d680b777f097..7bdbb8065146 100644
+--- a/drivers/media/usb/gspca/m5602/m5602_po1030.c
++++ b/drivers/media/usb/gspca/m5602/m5602_po1030.c
+@@ -154,7 +154,6 @@ static const struct v4l2_ctrl_config po1030_greenbal_cfg = {
+ 
+ int po1030_probe(struct sd *sd)
  {
- 	u8 data[2] = {0x00, 0x00};
--	int i;
-+	int i, err;
+-	int rc = 0;
+ 	u8 dev_id_h = 0, i;
  	struct gspca_dev *gspca_dev = (struct gspca_dev *)sd;
  
- 	if (force_sensor) {
-@@ -213,15 +213,17 @@ int mt9m111_probe(struct sd *sd)
- 	/* Do the preinit */
- 	for (i = 0; i < ARRAY_SIZE(preinit_mt9m111); i++) {
- 		if (preinit_mt9m111[i][0] == BRIDGE) {
--			m5602_write_bridge(sd,
--				preinit_mt9m111[i][1],
--				preinit_mt9m111[i][2]);
-+			err = m5602_write_bridge(sd,
-+					preinit_mt9m111[i][1],
-+					preinit_mt9m111[i][2]);
- 		} else {
- 			data[0] = preinit_mt9m111[i][2];
- 			data[1] = preinit_mt9m111[i][3];
--			m5602_write_sensor(sd,
--				preinit_mt9m111[i][1], data, 2);
-+			err = m5602_write_sensor(sd,
-+					preinit_mt9m111[i][1], data, 2);
- 		}
-+		if (err < 0)
-+			return err;
+@@ -174,14 +173,11 @@ int po1030_probe(struct sd *sd)
+ 	for (i = 0; i < ARRAY_SIZE(preinit_po1030); i++) {
+ 		u8 data = preinit_po1030[i][2];
+ 		if (preinit_po1030[i][0] == SENSOR)
+-			rc |= m5602_write_sensor(sd,
++			m5602_write_sensor(sd,
+ 				preinit_po1030[i][1], &data, 1);
+ 		else
+-			rc |= m5602_write_bridge(sd, preinit_po1030[i][1],
+-						data);
++			m5602_write_bridge(sd, preinit_po1030[i][1], data);
  	}
+-	if (rc < 0)
+-		return rc;
  
- 	if (m5602_read_sensor(sd, MT9M111_SC_CHIPVER, data, 2))
+ 	if (m5602_read_sensor(sd, PO1030_DEVID_H, &dev_id_h, 1))
+ 		return -ENODEV;
 -- 
 2.31.1
 
