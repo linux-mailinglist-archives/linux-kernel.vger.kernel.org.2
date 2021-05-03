@@ -2,119 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EEE2371421
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 13:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C96D637142D
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 13:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233269AbhECLSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 07:18:01 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:48030 "EHLO mail.skyhub.de"
+        id S233236AbhECLV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 07:21:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232868AbhECLR7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 07:17:59 -0400
-Received: from zn.tnic (p200300ec2f268e00596557e7a2777a9d.dip0.t-ipconnect.de [IPv6:2003:ec:2f26:8e00:5965:57e7:a277:7a9d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 38F741EC0419;
-        Mon,  3 May 2021 13:17:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1620040624;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=MU1V7MQihEu+KJpscrtBmUqeHfxQ/TteggSascxCRdE=;
-        b=YmlOlel2zQcfWUwcZjhQbd9PplzvrIA4gD0JDrWGUW1EtGky1JiWzVgj4aHSrlmaZdWT+t
-        ZS/HTE3TvYw+RvljJhB+bT0M+WSH117CRt0Pb2v7ixGh6sBoziG6bWrbM2j0aJIgkJZ4Th
-        Ir9iDO951GSCDzHWx2FAc7MdoimdObA=
-Date:   Mon, 3 May 2021 13:17:02 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Cooper, Andrew" <andrew.cooper3@citrix.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        "Gross, Jurgen" <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "H. J. Lu" <hjl.tools@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Jann Horn <jannh@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Carlos O'Donell <carlos@redhat.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        libc-alpha <libc-alpha@sourceware.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 5/6] x86/signal: Detect and prevent an alternate
- signal stack overflow
-Message-ID: <YI/brhlCsKd4PTDP@zn.tnic>
-References: <20210316065215.23768-6-chang.seok.bae@intel.com>
- <CALCETrU_n+dP4GaUJRQoKcDSwaWL9Vc99Yy+N=QGVZ_tx_j3Zg@mail.gmail.com>
- <20210325185435.GB32296@zn.tnic>
- <CALCETrXQZuvJQrHDMst6PPgtJxaS_sPk2JhwMiMDNPunq45YFg@mail.gmail.com>
- <20210326103041.GB25229@zn.tnic>
- <DB68C825-25F9-48F9-AFAD-4F6C7DCA11F8@intel.com>
- <20210414101250.GD10709@zn.tnic>
- <87o8eh9k7w.fsf@oldenburg.str.redhat.com>
- <20210414120608.GE10709@zn.tnic>
- <877dkg8jv6.fsf@oldenburg.str.redhat.com>
+        id S230137AbhECLV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 07:21:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3EE261221;
+        Mon,  3 May 2021 11:20:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620040834;
+        bh=ZUgVwxzi7a3MtB6NcAHEykBjZMzggIkMTLCY+qPK52g=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=uKxt34HmYmBfq5vBMhBmz3d/CTySSKuJYU1S0hznPEUkhjS1YP/wt+dsyxrl+QgBd
+         0Eowgk6D67u8gbziE5e40OMnDCKhkS6GL6sm047ezS5+y5m/QiIYw5wam0C3jzL/xV
+         MTRgJgZ7EIIRb74BNEiBqvRvlIgJBNzSIDQA3yh1YPUrcEDFJGGB6yTgyEKbkMQa3a
+         xiAgLmJ89+z6f3TB7XUlMkXMDpIlbUC5A6fmM8QugVrxGUuVbRMzwihu5TMZhuFZ/O
+         upJe1zWfc2Xo54st/24h3oloPZFmniV6TD+cgO80wcNYilR0+EZK7pgIjxRris425t
+         sMZu9UW8Lmq7g==
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Sandeep Maheswaram <sanm@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>
+Subject: Re: [PATCH v7 2/5] usb: dwc3: core: Host wake up support from
+ system suspend
+In-Reply-To: <184ddea9-643f-91ea-6d1f-5bdd26373e53@codeaurora.org>
+References: <1619586716-8687-1-git-send-email-sanm@codeaurora.org>
+ <1619586716-8687-3-git-send-email-sanm@codeaurora.org>
+ <87r1iuk9vs.fsf@kernel.org>
+ <184ddea9-643f-91ea-6d1f-5bdd26373e53@codeaurora.org>
+Date:   Mon, 03 May 2021 14:20:23 +0300
+Message-ID: <87h7jkhxmw.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <877dkg8jv6.fsf@oldenburg.str.redhat.com>
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 07:30:21AM +0200, Florian Weimer wrote:
-> Just to be clear, I'm worried about the case where an application
-> installs a stack overflow handler, but stack overflow does not regularly
-> happen at run time.  GNU m4 is an example.  Today, for most m4 scripts,
-> it's totally fine to have an alternative signal stack which is too
-> small.  If the kernel returned an error for the sigaltstack call, m4
-> wouldn't start anymore, independently of the script.  Which is worse
-> than memory corruption with some scripts, I think.
+--=-=-=
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Oh lovely.
 
-> 
-> > Or is this use case obsolete and this is not what people do at all?
-> 
-> It's widely used in currently-maintained software.  It's the only way to
-> recover from stack overflows without boundary checks on every function
-> call.
-> 
-> Does the alternative signal stack actually have to contain the siginfo_t
-> data?  I don't think it has to be contiguous.  Maybe the kernel could
-> allocate and map something behind the processes back if the sigaltstack
-> region is too small?
+Hi,
 
-So there's an attempt floating around to address this:
+Sandeep Maheswaram <sanm@codeaurora.org> writes:
+>> Sandeep Maheswaram <sanm@codeaurora.org> writes:
+>>> Avoiding phy powerdown when wakeup capable devices are connected
+>>> by checking phy_power_off flag.
+>>> Phy should be on to wake up the device from suspend using wakeup capable
+>>> devices such as keyboard and mouse.
+>>>
+>>> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+>>> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+>>> ---
+>>>   drivers/usb/dwc3/core.c | 7 +++++--
+>>>   1 file changed, 5 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+>>> index b6e53d8..bb414c3 100644
+>>> --- a/drivers/usb/dwc3/core.c
+>>> +++ b/drivers/usb/dwc3/core.c
+>>> @@ -1738,7 +1738,7 @@ static int dwc3_suspend_common(struct dwc3 *dwc, =
+pm_message_t msg)
+>>>   		dwc3_core_exit(dwc);
+>>>   		break;
+>>>   	case DWC3_GCTL_PRTCAP_HOST:
+>>> -		if (!PMSG_IS_AUTO(msg)) {
+>>> +		if (!PMSG_IS_AUTO(msg) && dwc->phy_power_off) {
+>> should be able to detect this generically, no? Shouldn't
+>> device_may_wakeup() be valid here and give you the answer you want?
+>
+> I think=C2=A0 device_may_wakeup() gives whether the controller is wake up=
+=20
+> capable or not.
 
-https://lkml.kernel.org/r/20210422044856.27250-1-chang.seok.bae@intel.com
+Yes, but it's a bit more than that. Looking at devices.rst we read:
 
-esp patch 3.
+If :c:func:`device_may_wakeup(dev)` returns ``true``, the device should be
+prepared for generating hardware wakeup signals to trigger a system wakeup =
+event
+when the system is in the sleep state.  For example, :c:func:`enable_irq_wa=
+ke()`
+might identify GPIO signals hooked up to a switch or other external hardwar=
+e,
+and :c:func:`pci_enable_wake()` does something similar for the PCI PME sign=
+al.
 
-I'd appreciate having a look and sanity-checking this whether it makes
-sense and could be useful this way...
+So, if there is a condition where $this device has to, somehow, deal
+with wakeup, it should be configured accordingly. This ->phy_power_off
+flag is telling us the same thing.
 
-> And for the stack overflow handler, the kernel could treat SIGSEGV with
-> a sigaltstack region that is too small like the SIG_DFL handler.  This
-> would make m4 work again.
+> But we want to keep phy powered on only when some wakeup capable devices=
+=20
+> (eg:keyboard ,mouse ) are connected to controller.
 
-/me searches a bit about SIG_DFL...
+Understood, it could be that we're missing some method for propagating
+that state (i.e. keyboard with PM support) up to the parent device, but
+that's no excuse to bypass driver boundaries. Wouldn't you agree?
 
-Do you mean that the default action in this case should be what SIGSEGV
-does by default - to dump core?
+=2D-=20
+balbi
 
-Thx.
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
-Regards/Gruss,
-    Boris.
+-----BEGIN PGP SIGNATURE-----
 
-https://people.kernel.org/tglx/notes-about-netiquette
+iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmCP3HcRHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzlfNM9wDzUjGOQf+KlT69IuS8HqBmJV2X3nhuK2dRhbHPymW
+K3GcWSvNnMq0ayGT9JmHUzvAOU/WxWqhLb+WLC4F3q2Tyn1bsfM89lu1GNmUFM+w
+kybGYLlNU1c/91LbJfmSyENKgTGSqYNJobi+mu6ggaIu5Q2Vf5bbu+hT4dMPckQU
+yxBuY7zrIdXp44EGWz6CImE1Jz8aVSeL98fBbflbgkwFo23zDoXO7Te28CAHg9Hr
+c0WeaK+z2b4GxOI8SQeBq2o7T4ZLUPtyk0nL36VDZH00Q5uM/ClsmnoreT/xz4In
+IuEKIJOVjvgyLYD9VcQXIt3Vb22EjhkwEGa7Zv8BD4EA1PIg3qLx9g==
+=ihYt
+-----END PGP SIGNATURE-----
+--=-=-=--
