@@ -2,94 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8453371603
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5077B371604
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234301AbhECNeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 09:34:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232984AbhECNeT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 09:34:19 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2624AC06174A;
-        Mon,  3 May 2021 06:33:24 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id i81so5390340oif.6;
-        Mon, 03 May 2021 06:33:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rb1ViXbB4KGhWfbGPNO1lZZ3IC8up6Raq+JBW/S82Yk=;
-        b=saHXvIsK28Bn1TuJpD2CtCw5avEsl3eV0CbXVJWbDA6meB39n/hMYyj9RsQ2Y03RbF
-         gFDJgMcy0onMV0KHEw8j4fgSeIPzox2j87hyiufiOl+9yVsyVkdqNl93cvnVneZXF4r0
-         V7sau57wmt/qwML6YsQ/nh1YZmJXVgc1Qqes2S9v4sQqmz5uryWCfraY/c8LKib/V//K
-         v6Cy+DAFu9h5ZN/frmnpXlxx2NiDEnPSlf1vi20NLGpgIgJtyIzrRt0crYokI8HHEa+P
-         DhW/2kPhsqcLFeYfezjVOgY+VOdY/0YnSxg5ajfAOI7UVAe+HSDSp5TBz8EGksj8qCID
-         tS4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rb1ViXbB4KGhWfbGPNO1lZZ3IC8up6Raq+JBW/S82Yk=;
-        b=RBFCzlC+1D67FKQBcjs5aqCTlqEtO/xz+fWYKhFoPt1+r5PWHkGd0OGpeujGgFyzmJ
-         SxMTPlo+ueTmOppxGnq0whmjRpEed1MqzciRsv+h1QfqIPQvkcTvFiJ3iI5V+LC5w3Rf
-         FDXXYGMMr8Ov+02qdL4GHMgyEPA5TRojrM4m/ZjowmpnopRpmCkc++auUgxipzwu56RC
-         7vUMCJqKiVjRUTrNL1/Fnz/SdFLROOxM7UyaKZqcMGu611k8aaLS24hulTgt9ctgWF+x
-         9anRTcfbikaSHYbKkol++awE0FOeYAX8EQFOldF61SwGTFC6Cr5pGeRlym2eD8XhfmOi
-         g7dw==
-X-Gm-Message-State: AOAM532P5/UaqSE+I4FNdK3XU2iDdLmf57I8in5B8TqU5mzy/yPiR8ya
-        Bg4oAtXiMN5C9hpJT9vpIT5Qr99yj9c=
-X-Google-Smtp-Source: ABdhPJyhq4F3cmZItohjLjmwg++ntJ7GXt3tuqFGMn+vPPCij9EG+dgaQTGwYQkdAu8b/B3EcaTlew==
-X-Received: by 2002:a05:6808:358:: with SMTP id j24mr13398899oie.99.1620048803538;
-        Mon, 03 May 2021 06:33:23 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d3sm280282oic.48.2021.05.03.06.33.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 06:33:22 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [RESEND PATCH v3 0/3] watchdog: f71808e_wdt: migrate to new
- kernel API
-To:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de
-References: <cover.dc9133eee56aa67653455928e4de2162e344ce4d.1618310618.git-series.a.fatoum@pengutronix.de>
- <20210503130948.y7w6a2wbonr6zxzu@pengutronix.de>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <9b24f6de-c989-8055-25d7-518ff6cc3393@roeck-us.net>
-Date:   Mon, 3 May 2021 06:33:21 -0700
+        id S234325AbhECNed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 09:34:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35622 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232984AbhECNe1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 09:34:27 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E04A9B118;
+        Mon,  3 May 2021 13:33:32 +0000 (UTC)
+Subject: Re: [PATCH] nvme-multipath: Reset bi_disk to ns head when failover
+To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
+        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>
+References: <20210503125741.68117-1-dwagner@suse.de>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <7ab943e0-5ac4-d370-0a15-3108f689e478@suse.de>
+Date:   Mon, 3 May 2021 15:33:32 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210503130948.y7w6a2wbonr6zxzu@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210503125741.68117-1-dwagner@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/3/21 6:09 AM, Marc Kleine-Budde wrote:
-> On 13.04.2021 12:46:43, Ahmad Fatoum wrote:
->> This series migrates the driver to the new kernel watchdog API and
->> then to the driver model.
->>
->> Main feedback from Guenther on v2 was that I need to split it up to
->> enable review. I have done so by removing the extra refactoring for
->> now and focused on the functional changes described above. The diff
->> is now much better readable.
->>
->> I tested it on a f81866.
+On 5/3/21 2:57 PM, Daniel Wagner wrote:
+> The path can be stale when we failover. If we don't reset the bdev to
+> the ns head and the I/O finally completes in end_io() it will triggers
+> a crash. By resetting the to ns head disk so that the submit path can
+> map the request to an active path.
 > 
-> Is there a chance to get this series applied and mainline? Is there
-> anything that's blocking it?
+> Signed-off-by: Daniel Wagner <dwagner@suse.de>
+> ---
 > 
+> The patch is against nvme-5.13.
+> 
+> [ 6552.155244] Call Trace:
+> [ 6552.155251]  bio_endio+0x74/0x120
+> [ 6552.155260]  nvme_ns_head_submit_bio+0x36f/0x3e0 [nvme_core]
+> [ 6552.155266]  ? __switch_to_asm+0x34/0x70
+> [ 6552.155269]  ? __switch_to_asm+0x40/0x70
+> [ 6552.155271]  submit_bio_noacct+0x175/0x490
+> [ 6552.155274]  ? __switch_to_asm+0x34/0x70
+> [ 6552.155277]  ? __switch_to_asm+0x34/0x70
+> [ 6552.155284]  ? nvme_requeue_work+0x5a/0x70 [nvme_core]
+> [ 6552.155290]  nvme_requeue_work+0x5a/0x70 [nvme_core]
+> [ 6552.155296]  process_one_work+0x1f4/0x3e0
+> [ 6552.155299]  worker_thread+0x2d/0x3e0
+> [ 6552.155302]  ? process_one_work+0x3e0/0x3e0
+> [ 6552.155305]  kthread+0x10d/0x130
+> [ 6552.155307]  ? kthread_park+0xa0/0xa0
+> [ 6552.155311]  ret_from_fork+0x35/0x40
+> 
+>   drivers/nvme/host/multipath.c | 6 ++++++
+>   1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
+> index 0d0de3433f37..0faf267faa58 100644
+> --- a/drivers/nvme/host/multipath.c
+> +++ b/drivers/nvme/host/multipath.c
+> @@ -69,7 +69,9 @@ void nvme_failover_req(struct request *req)
+>   {
+>   	struct nvme_ns *ns = req->q->queuedata;
+>   	u16 status = nvme_req(req)->status & 0x7ff;
+> +	struct block_device *bdev;
+>   	unsigned long flags;
+> +	struct bio *bio;
+>   
+>   	nvme_mpath_clear_current_path(ns);
+>   
+> @@ -83,9 +85,13 @@ void nvme_failover_req(struct request *req)
+>   		queue_work(nvme_wq, &ns->ctrl->ana_work);
+>   	}
+>   
+> +	bdev = bdget_disk(ns->head->disk, 0);
+>   	spin_lock_irqsave(&ns->head->requeue_lock, flags);
+> +	for (bio = req->bio; bio; bio = bio->bi_next)
+> +		bio_set_dev(bio, bdev);
+>   	blk_steal_bios(&ns->head->requeue_list, req);
+>   	spin_unlock_irqrestore(&ns->head->requeue_lock, flags);
+> +	bdput(bdev);
+>   
+>   	blk_mq_end_request(req, 0);
+>   	kblockd_schedule_work(&ns->head->requeue_work);
+> 
+Maybe a WARN_ON(!bdev) after bdget_disk(), but otherwise:
 
-Yes, time to review. Sorry, I am way backlogged with code reviews.
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
-Guenter
+Cheers,
 
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
