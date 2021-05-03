@@ -2,169 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67BAE3721B0
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 22:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39422372173
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 22:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbhECUkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 16:40:41 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:51174 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229801AbhECUkU (ORCPT
+        id S229641AbhECUjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 16:39:44 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36016 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229499AbhECUjn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 16:40:20 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1ldfLi-008idl-2w; Mon, 03 May 2021 14:39:26 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.int.ebiederm.org)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1ldfLh-00E76Y-3k; Mon, 03 May 2021 14:39:25 -0600
-From:   "Eric W. Beiderman" <ebiederm@xmission.com>
-To:     Marco Elver <elver@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Date:   Mon,  3 May 2021 15:38:14 -0500
-Message-Id: <20210503203814.25487-12-ebiederm@xmission.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210503203814.25487-1-ebiederm@xmission.com>
-References: <m14kfjh8et.fsf_-_@fess.ebiederm.org>
- <20210503203814.25487-1-ebiederm@xmission.com>
+        Mon, 3 May 2021 16:39:43 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 143KXKHa111462;
+        Mon, 3 May 2021 16:38:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=hrwndlR1o2NbTPjOjHlcK6hFRrHnfogOe/wIFv8415Y=;
+ b=RyQRmAqEDu0B7B1ZTbQkwJUo8wbZV/DGMu4aMXN1Dh1W7LcoIhnY0/hBsALGd65FemKq
+ 35UyY6nDsyZLDMgs/YXpOdiEiic90VoViZ+26+jymY+fiRm12TLkrD/msAVzfc1gnXxv
+ qfy1fcjL1vbVODgAaNUfK8W4OuZlZTTsdoAStR3nzgcC1FSfK/Ay1l06hZNJUtEvI/Er
+ YknVRI/WjndkqSI6jBv5+r3ghhxa5kDCPcsyrMnf+LOEsxRSOQNEvD+O8n9Ny67rEU9S
+ ZJaRDZ8Ytv4Im9MTZYOK5/x4zCTOkIZo/Wos+qDXmRQDtOXjpurZJCQ2MIwqbSsJUu7I Tw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38apb6b9fq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 May 2021 16:38:49 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 143KXN4q111730;
+        Mon, 3 May 2021 16:38:49 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38apb6b9f5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 May 2021 16:38:49 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 143KYSEA005164;
+        Mon, 3 May 2021 20:38:47 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04ams.nl.ibm.com with ESMTP id 388xm8rv5r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 May 2021 20:38:47 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 143KcikJ45744436
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 3 May 2021 20:38:44 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F2E46A405B;
+        Mon,  3 May 2021 20:38:43 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 88DA6A405F;
+        Mon,  3 May 2021 20:38:43 +0000 (GMT)
+Received: from osiris.fritz.box (unknown [9.171.82.165])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon,  3 May 2021 20:38:43 +0000 (GMT)
+Date:   Mon, 3 May 2021 22:38:42 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Alexander Egorenkov <egorenar@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        linux-s390@vger.kernel.org
+Subject: Re: [PATCH] s390: fix detection of vector enhancements facility 1
+ vs. vector packed decimal facility
+Message-ID: <YJBfUn8ZXJw780ro@osiris.fritz.box>
+References: <20210503121244.25232-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-XM-SPF: eid=1ldfLh-00E76Y-3k;;;mid=<20210503203814.25487-12-ebiederm@xmission.com>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18ApcIKZTcHjAhTtt02Vp3dyDFJvqVtnoc=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        XMGappySubj_01,XMNoVowels,XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4756]
-        *  0.7 XMSubLong Long Subject
-        *  0.5 XMGappySubj_01 Very gappy subject
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Marco Elver <elver@google.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 368 ms - load_scoreonly_sql: 0.02 (0.0%),
-        signal_user_changed: 3.5 (1.0%), b_tie_ro: 2.5 (0.7%), parse: 0.67
-        (0.2%), extract_message_metadata: 8 (2.1%), get_uri_detail_list: 1.30
-        (0.4%), tests_pri_-1000: 10 (2.8%), tests_pri_-950: 0.93 (0.3%),
-        tests_pri_-900: 0.81 (0.2%), tests_pri_-90: 56 (15.2%), check_bayes:
-        55 (14.9%), b_tokenize: 6 (1.7%), b_tok_get_all: 7 (1.8%),
-        b_comp_prob: 1.37 (0.4%), b_tok_touch_all: 38 (10.3%), b_finish: 0.63
-        (0.2%), tests_pri_0: 278 (75.8%), check_dkim_signature: 0.38 (0.1%),
-        check_dkim_adsp: 2.1 (0.6%), poll_dns_idle: 0.78 (0.2%), tests_pri_10:
-        1.62 (0.4%), tests_pri_500: 5 (1.5%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH 12/12] signalfd: Remove SIL_FAULT_PERF_EVENT fields from signalfd_siginfo
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210503121244.25232-1-david@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: pl7DuD7WPbILdM0XVNxzmA4cMVvGJyqo
+X-Proofpoint-GUID: hgroUldZqC8jvXrSqJhDJbKgaD1iDpde
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-03_19:2021-05-03,2021-05-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 spamscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0
+ bulkscore=0 priorityscore=1501 clxscore=1015 mlxscore=0 impostorscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2105030141
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Eric W. Biederman" <ebiederm@xmission.com>
+On Mon, May 03, 2021 at 02:12:44PM +0200, David Hildenbrand wrote:
+> The PoP documents:
+> 	134: The vector packed decimal facility is installed in the
+> 	     z/Architecture architectural mode. When bit 134 is
+> 	     one, bit 129 is also one.
+> 	135: The vector enhancements facility 1 is installed in
+> 	     the z/Architecture architectural mode. When bit 135
+> 	     is one, bit 129 is also one.
+> 
+> Looks like we confuse the vector enhancements facility 1 ("EXT") with the
+> Vector packed decimal facility ("BCD"). Let's fix the facility checks.
+> 
+> Detected while working on QEMU/tcg z14 support and only unlocking
+> the vector enhancements facility 1, but not the vector packed decimal
+> facility.
+> 
+> Fixes: 2583b848cad0 ("s390: report new vector facilities")
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> Cc: Sven Schnelle <svens@linux.ibm.com>
+> Cc: Alexander Egorenkov <egorenar@linux.ibm.com>
+> Cc: Niklas Schnelle <schnelle@linux.ibm.com>
+> Cc: Janosch Frank <frankja@linux.ibm.com>
+> Cc: linux-s390@vger.kernel.org
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  arch/s390/kernel/setup.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-With the addition of ssi_perf_data and ssi_perf_type struct signalfd_siginfo
-is dangerously close to running out of space.  All that remains is just
-enough space for two additional 64bit fields.  A practice of adding all
-possible siginfo_t fields into struct singalfd_siginfo can not be supported
-as adding the missing fields ssi_lower, ssi_upper, and ssi_pkey would
-require two 64bit fields and one 32bit fields.  In practice the fields
-ssi_perf_data and ssi_perf_type can never be used by signalfd as the signal
-that generates them always delivers them synchronously to the thread that
-triggers them.
-
-Therefore until someone actually needs the fields ssi_perf_data and
-ssi_perf_type in signalfd_siginfo remove them.  This leaves a bit more room
-for future expansion.
-
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- fs/signalfd.c                 | 16 ++++++----------
- include/uapi/linux/signalfd.h |  4 +---
- 2 files changed, 7 insertions(+), 13 deletions(-)
-
-diff --git a/fs/signalfd.c b/fs/signalfd.c
-index 335ad39f3900..040e1cf90528 100644
---- a/fs/signalfd.c
-+++ b/fs/signalfd.c
-@@ -114,12 +114,13 @@ static int signalfd_copyinfo(struct signalfd_siginfo __user *uinfo,
- 		break;
- 	case SIL_FAULT_BNDERR:
- 	case SIL_FAULT_PKUERR:
-+	case SIL_FAULT_PERF_EVENT:
- 		/*
--		 * Fall through to the SIL_FAULT case.  Both SIL_FAULT_BNDERR
--		 * and SIL_FAULT_PKUERR are only generated by faults that
--		 * deliver them synchronously to userspace.  In case someone
--		 * injects one of these signals and signalfd catches it treat
--		 * it as SIL_FAULT.
-+		 * Fall through to the SIL_FAULT case.  SIL_FAULT_BNDERR,
-+		 * SIL_FAULT_PKUERR, and SIL_FAULT_PERF_EVENT are only
-+		 * generated by faults that deliver them synchronously to
-+		 * userspace.  In case someone injects one of these signals
-+		 * and signalfd catches it treat it as SIL_FAULT.
- 		 */
- 	case SIL_FAULT:
- 		new.ssi_addr = (long) kinfo->si_addr;
-@@ -132,11 +133,6 @@ static int signalfd_copyinfo(struct signalfd_siginfo __user *uinfo,
- 		new.ssi_addr = (long) kinfo->si_addr;
- 		new.ssi_addr_lsb = (short) kinfo->si_addr_lsb;
- 		break;
--	case SIL_FAULT_PERF_EVENT:
--		new.ssi_addr = (long) kinfo->si_addr;
--		new.ssi_perf_type = kinfo->si_perf_type;
--		new.ssi_perf_data = kinfo->si_perf_data;
--		break;
- 	case SIL_CHLD:
- 		new.ssi_pid    = kinfo->si_pid;
- 		new.ssi_uid    = kinfo->si_uid;
-diff --git a/include/uapi/linux/signalfd.h b/include/uapi/linux/signalfd.h
-index e78dddf433fc..83429a05b698 100644
---- a/include/uapi/linux/signalfd.h
-+++ b/include/uapi/linux/signalfd.h
-@@ -39,8 +39,6 @@ struct signalfd_siginfo {
- 	__s32 ssi_syscall;
- 	__u64 ssi_call_addr;
- 	__u32 ssi_arch;
--	__u32 ssi_perf_type;
--	__u64 ssi_perf_data;
- 
- 	/*
- 	 * Pad strcture to 128 bytes. Remember to update the
-@@ -51,7 +49,7 @@ struct signalfd_siginfo {
- 	 * comes out of a read(2) and we really don't want to have
- 	 * a compat on read(2).
- 	 */
--	__u8 __pad[16];
-+	__u8 __pad[28];
- };
- 
- 
--- 
-2.30.1
-
+Applied, thanks!
