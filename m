@@ -2,99 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9856C37109D
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 05:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A41953710A0
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 05:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232797AbhECDBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 23:01:19 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:40861 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbhECDBR (ORCPT
+        id S232770AbhECDFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 23:05:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230368AbhECDFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 23:01:17 -0400
-Received: by mail-io1-f71.google.com with SMTP id x19-20020a6b6a130000b029042c77adadc8so766637iog.7
-        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 20:00:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=QsmWOiuqBjacmw1ctaNCjChVXJoRgKeDEkz+C0oyblw=;
-        b=f+2FDhgHWZFx+ruTGjRdh4sdaUl2kcN4XRp+08QQt/WWpyo4fu22MZY74krSmtB28z
-         QWNx2FhCyaRPRfvD0+nKf9UDbd721iByh0b/WjSrxuVt8yVRZouQdM7ElgzraNpxQOP8
-         fU31n0eTdTiRk0daNm8vCjhVIhh/aQa7fzVkD0GGRWjdlHSPXFeIE6n4iAHsNiEcRL+L
-         1SXoqyjVfN/pO7O7knO+ZJJIhibN/wfXeR18X/jUzBtDV+qVrdGf+wo3ks2Ugwl5sFmx
-         edVxP0ImGyG1MkO/ByNGNrw6F/8nArtFsobHKCIDdGMWKiquDhrv5wBBdg5TrlY1jz1z
-         /cgw==
-X-Gm-Message-State: AOAM531GCCQa16RGeNcnFwNeTMrzBlC0n1KWQlPmOcLsxRcSrH4J/GxW
-        byCYgUo6sdgWyONrJxBGtLxRhcgxFIpFfxDgcjhrfHdLQLwS
-X-Google-Smtp-Source: ABdhPJxFHPJcx1dQ9Ta7mvY45fXl8ZWoc4sgViuiPUjYxPbvgejLvXSZs8CkXZJccsJ4g2qApaBs4cXs2gKZWKGDicWXsA0QY+QZ
+        Sun, 2 May 2021 23:05:18 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15783C06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 20:04:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=t69o0s6rTqY95QN4u9EFAKr5fAm3ffbxrmbQ9tZrGew=; b=s0W/VGlkGi0pKc2akLRmE06361
+        UOmDy5Jl6p2Jq4RRfK6/PfdkWF1GBa1jSwRSH8jHkpdqXhCkD1iHzXXRH2jLmC09TBIdXfjKse5AG
+        xTv7ViqdHbRhBL3yw7FiX6N3/7q5SIXekC0fjRdZV0feLHHhVJUlPpxAK4griiTTKXbZm+JJD7WXT
+        ATRbhUrlmkj9TVgUaHXc7e1Xc1LeJbX8uY9q7Txx+411a0vzzK6e7qiXdG8YcaxWMeoTpUR16RnjU
+        qP80sKToIcGV6nwId2/aRa42A/Zrp1ddMclsRkbSUIWQaVRGJbE30f2uUhzfhtL0B378zkxLBCRy0
+        IY7NslOw==;
+Received: from [2601:1c0:6280:3f0::df68]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1ldOsA-00EZWz-9K; Mon, 03 May 2021 03:03:57 +0000
+Subject: Re: [syzbot] UBSAN: array-index-out-of-bounds in udf_statfs
+To:     syzbot <syzbot+7fbfe5fed73ebb675748@syzkaller.appspotmail.com>,
+        jack@suse.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <000000000000683df205c1359d10@google.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <272c7c70-9ea0-b7d0-5fa7-01f0c5650bd8@infradead.org>
+Date:   Sun, 2 May 2021 20:03:46 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-X-Received: by 2002:a92:c7a1:: with SMTP id f1mr13598531ilk.33.1620010824063;
- Sun, 02 May 2021 20:00:24 -0700 (PDT)
-Date:   Sun, 02 May 2021 20:00:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b361bf05c16429a5@google.com>
-Subject: [syzbot] bpf-next test error: WARNING in __nf_unregister_net_hook
-From:   syzbot <syzbot+0d9ff6eeee8f4b6e2aed@syzkaller.appspotmail.com>
-To:     ast@kernel.org, coreteam@netfilter.org, daniel@iogearbox.net,
-        davem@davemloft.net, fw@strlen.de, kadlec@netfilter.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <000000000000683df205c1359d10@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi all--
 
-syzbot found the following issue on:
-
-HEAD commit:    9d31d233 Merge tag 'net-next-5.13' of git://git.kernel.org..
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=102b70d9d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=57b4b78935781045
-dashboard link: https://syzkaller.appspot.com/bug?extid=0d9ff6eeee8f4b6e2aed
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0d9ff6eeee8f4b6e2aed@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-hook not found, pf 3 num 0
-WARNING: CPU: 1 PID: 108 at net/netfilter/core.c:480 __nf_unregister_net_hook+0x1eb/0x610 net/netfilter/core.c:480
-Modules linked in:
-CPU: 1 PID: 108 Comm: kworker/u4:2 Not tainted 5.12.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: netns cleanup_net
-RIP: 0010:__nf_unregister_net_hook+0x1eb/0x610 net/netfilter/core.c:480
-Code: 0f b6 14 02 48 89 c8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 11 04 00 00 8b 53 1c 89 ee 48 c7 c7 c0 78 6d 8a e8 60 4c 8a 01 <0f> 0b e9 e5 00 00 00 e8 79 48 30 fa 44 8b 3c 24 4c 89 f8 48 c1 e0
-RSP: 0018:ffffc9000121fbc0 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffff888147896c00 RCX: 0000000000000000
-RDX: ffff888012371c40 RSI: ffffffff815c8ba5 RDI: fffff52000243f6a
-RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815c2a0e R11: 0000000000000000 R12: ffff88802f600f20
-R13: 0000000000000000 R14: ffff888021357800 R15: 0000000000000001
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000f43ef0 CR3: 0000000024afe000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- nf_unregister_net_hook net/netfilter/core.c:502 [inline]
- nf_unregister_net_hooks+0x117/0x160 net/netfilter/core.c:576
- arpt_unregister_table_pre_exit+0x67/0x80 net/ipv4/netfilter/arp_tables.c:1565
- ops_pre_exit_list net/core/net_namespace.c:165 [inline]
- cleanup_net+0x451/0xb10 net/core/net_namespace.c:583
- process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+On 4/30/21 12:28 PM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    e77a830c Merge branch 'akpm' (patches from Andrew)
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=14c63e6dd00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=c0a6882014fd3d45
+> dashboard link: https://syzkaller.appspot.com/bug?extid=7fbfe5fed73ebb675748
+> compiler:       Debian clang version 11.0.1-2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17612825d00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=132cb56dd00000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+7fbfe5fed73ebb675748@syzkaller.appspotmail.com
+> 
+> loop0: detected capacity change from 0 to 3974
+> UDF-fs: INFO Mounting volume 'LinuxUDF', timestamp 2020/09/19 18:44 (1000)
+> ================================================================================
+> UBSAN: array-index-out-of-bounds in fs/udf/super.c:2524:12
+> index 0 is out of range for type '__le32 [0]'
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Is this just due to (from fs/udf/ecma_167.h) the "[0]" struct items?
+Do they need to be "[]" instead?  Will that satisfy USBAN?
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+/* Logical Volume Integrity Descriptor (ECMA 167r3 3/10.10) */
+struct logicalVolIntegrityDesc {
+	struct tag		descTag;
+	struct timestamp	recordingDateAndTime;
+	__le32			integrityType;
+	struct extent_ad	nextIntegrityExt;
+	uint8_t			logicalVolContentsUse[32];
+	__le32			numOfPartitions;
+	__le32			lengthOfImpUse;
+	__le32			freeSpaceTable[0]; // <<<<<<<<<<<<<<<<
+	__le32			sizeTable[0]; // <<<<<<<<<<<<<<<<<<<
+	uint8_t			impUse[0]; // <<<<<<<<<<<<<<<<<<<<<<<
+} __packed;
+
+
+(I ask because I cannot reproduce the problem -- maybe a bad GCC
+version?)
+
+
+> CPU: 1 PID: 8363 Comm: syz-executor557 Not tainted 5.12.0-rc8-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x202/0x31e lib/dump_stack.c:120
+>  ubsan_epilogue lib/ubsan.c:148 [inline]
+>  __ubsan_handle_out_of_bounds+0xdb/0x130 lib/ubsan.c:288
+>  udf_count_free fs/udf/super.c:2524 [inline]
+>  udf_statfs+0x49f/0xd70 fs/udf/super.c:2408
+>  statfs_by_dentry fs/statfs.c:66 [inline]
+>  vfs_statfs+0x136/0x310 fs/statfs.c:90
+>  user_statfs fs/statfs.c:105 [inline]
+>  __do_sys_statfs fs/statfs.c:195 [inline]
+>  __se_sys_statfs+0xe5/0x210 fs/statfs.c:192
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x444579
+> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffc428d7b58 EFLAGS: 00000246 ORIG_RAX: 0000000000000089
+> RAX: ffffffffffffffda RBX: 0030656c69662f2e RCX: 0000000000444579
+> RDX: 0000000000402b43 RSI: 0000000000000000 RDI: 00000000200001c0
+> RBP: 0000000000403e10 R08: 0000000000000000 R09: 0000000000000000
+> R10: 00007ffc428d7a20 R11: 0000000000000246 R12: 0000000000403ea0
+> R13: 0000000000000000 R14: 00000000004b2018 R15: 00000000004004a0
+> ================================================================================
+> Kernel panic - not syncing: panic_on_warn set ...
+> CPU: 0 PID: 8363 Comm: syz-executor557 Not tainted 5.12.0-rc8-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x202/0x31e lib/dump_stack.c:120
+>  panic+0x2e1/0x850 kernel/panic.c:231
+>  ubsan_epilogue lib/ubsan.c:162 [inline]
+>  __ubsan_handle_out_of_bounds+0x12b/0x130 lib/ubsan.c:288
+>  udf_count_free fs/udf/super.c:2524 [inline]
+>  udf_statfs+0x49f/0xd70 fs/udf/super.c:2408
+>  statfs_by_dentry fs/statfs.c:66 [inline]
+>  vfs_statfs+0x136/0x310 fs/statfs.c:90
+>  user_statfs fs/statfs.c:105 [inline]
+>  __do_sys_statfs fs/statfs.c:195 [inline]
+>  __se_sys_statfs+0xe5/0x210 fs/statfs.c:192
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x444579
+> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffc428d7b58 EFLAGS: 00000246 ORIG_RAX: 0000000000000089
+> RAX: ffffffffffffffda RBX: 0030656c69662f2e RCX: 0000000000444579
+> RDX: 0000000000402b43 RSI: 0000000000000000 RDI: 00000000200001c0
+> RBP: 0000000000403e10 R08: 0000000000000000 R09: 0000000000000000
+> R10: 00007ffc428d7a20 R11: 0000000000000246 R12: 0000000000403ea0
+> R13: 0000000000000000 R14: 00000000004b2018 R15: 00000000004004a0
+> Kernel Offset: disabled
+> Rebooting in 86400 seconds..
+> ---
+
+thanks.
+-- 
+~Randy
+
