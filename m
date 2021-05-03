@@ -2,129 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42733371E05
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77BDB371E0B
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237064AbhECRHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 13:07:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46994 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234825AbhECQ72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 12:59:28 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7A1B4AEA3;
-        Mon,  3 May 2021 16:58:33 +0000 (UTC)
-Date:   Mon, 3 May 2021 18:58:31 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, Yonghong Song <yhs@fb.com>,
-        linux-kernel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        dwarves@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: linux-next failing build due to missing cubictcp_state symbol
-Message-ID: <20210503165831.GR15381@kitsune.suse.cz>
-References: <YIbkR6z6mxdNSzGO@krava>
- <YIcRlHQWWKbOlcXr@krava>
- <20210427121237.GK6564@kitsune.suse.cz>
- <20210430174723.GP15381@kitsune.suse.cz>
- <3d148516-0472-8f0a-085b-94d68c5cc0d5@suse.com>
- <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org>
- <4e051459-8532-7b61-c815-f3435767f8a0@kernel.org>
- <cbaf50c3-c85d-9239-0b37-c88e8cbed8c8@kernel.org>
- <YI/LgjLxo9VCN/d+@krava>
- <20210503164656.GO6564@kitsune.suse.cz>
+        id S232505AbhECRIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 13:08:36 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:37421 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232549AbhECRB2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 13:01:28 -0400
+Received: by mail-ot1-f47.google.com with SMTP id c8-20020a9d78480000b0290289e9d1b7bcso5700093otm.4;
+        Mon, 03 May 2021 10:00:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MpWS97nnXbRs49r1fForFBwiCI3FlCAOFGO2IucCbgI=;
+        b=jKXIcz2msfofi3MX/6abqXQg7sXsaHLO/ycEbBYga/2/Odtv1sltaZlGi8kO5tdCto
+         LtAUkU7cJkjm/PHxpInb60pU8NVT5GnpAnhutVjR/FLgw/khNtPFyJZg+IiLEy27HuI7
+         kdM5breokilINsN0PzKOthGlxF9vgDTGsR2Ie67JPMJvimxdE9Fsl/ng4N9zfpVV6vnV
+         YSdJpBFoWVKneu32IahclfUnM61YAPYkJ4aVdJ/miq//gPfY5nuF0Lwy3kq1FwN18nbU
+         xIMA0vZmB2vkZ41wt07Z325ReCz/AiYU4Fxe9JEqQ4XyW8Yq1v6wTUZ8ZtO3pm15K1up
+         mgyA==
+X-Gm-Message-State: AOAM533lsExUoUJtSPlHxtpnQEiazPNJkaeyy36OqOjYco6SOFeYQNNT
+        pX69mHD4zKMBSeu/9mA+uw==
+X-Google-Smtp-Source: ABdhPJz3axdorHwGCwuPSEqF9Bw80gZAqMDgQOmNpRuGn93hjcvSZSCtx5vibHriB9CdGrpMOJJZig==
+X-Received: by 2002:a9d:7085:: with SMTP id l5mr15416541otj.345.1620061233291;
+        Mon, 03 May 2021 10:00:33 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id t25sm71651oic.23.2021.05.03.10.00.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 May 2021 10:00:32 -0700 (PDT)
+Received: (nullmailer pid 2008247 invoked by uid 1000);
+        Mon, 03 May 2021 17:00:30 -0000
+Date:   Mon, 3 May 2021 12:00:30 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, timur@kernel.org, nicoleotsuka@gmail.com,
+        Xiubo.Lee@gmail.com, festevam@gmail.com, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 2/2] ASoC: dt-bindings: imx-akcodec: Add binding doc for
+ akcodec machine driver
+Message-ID: <20210503170030.GA1987906@robh.at.kernel.org>
+References: <1619157107-3734-1-git-send-email-shengjiu.wang@nxp.com>
+ <1619157107-3734-2-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210503164656.GO6564@kitsune.suse.cz>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+In-Reply-To: <1619157107-3734-2-git-send-email-shengjiu.wang@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 06:46:56PM +0200, Michal Suchánek wrote:
-> On Mon, May 03, 2021 at 12:08:02PM +0200, Jiri Olsa wrote:
-> > On Mon, May 03, 2021 at 10:59:44AM +0200, Jiri Slaby wrote:
-> > > CCing pahole people.
-> > > 
-> > > On 03. 05. 21, 9:59, Jiri Slaby wrote:
-> > > > On 03. 05. 21, 8:11, Jiri Slaby wrote:
-> > > > > > > > > > looks like vfs_truncate did not get into BTF data,
-> > > > > > > > > > I'll try to reproduce
-> > > > > > 
-> > > > > > _None_ of the functions are generated by pahole -J from
-> > > > > > debuginfo on ppc64. debuginfo appears to be correct. Neither
-> > > > > > pahole -J fs/open.o works correctly. collect_functions in
-> > > > > > dwarves seems to be defunct on ppc64... "functions" array is
-> > > > > > bogus (so find_function -- the bsearch -- fails).
-> > > > > 
-> > > > > It's not that bogus. I forgot an asterisk:
-> > > > > > #0  find_function (btfe=0x100269f80, name=0x10024631c
-> > > > > > "stream_open") at
-> > > > > > /usr/src/debug/dwarves-1.21-1.1.ppc64/btf_encoder.c:350
-> > > > > > (gdb) p (*functions)@84
-> > > > > > $5 = {{name = 0x7ffff68e0922 ".__se_compat_sys_ftruncate", addr
-> > > > > > = 75232, size = 72, sh_addr = 65536, generated = false}, {
-> > > > > >     name = 0x7ffff68e019e ".__se_compat_sys_open", addr = 80592,
-> > > > > > size = 216, sh_addr = 65536, generated = false}, {
-> > > > > >     name = 0x7ffff68e0076 ".__se_compat_sys_openat", addr =
-> > > > > > 80816, size = 232, sh_addr = 65536, generated = false}, {
-> > > > > >     name = 0x7ffff68e0908 ".__se_compat_sys_truncate", addr =
-> > > > > > 74304, size = 100, sh_addr = 65536, generated = false}, {
-> > > > > ...
-> > > > > >     name = 0x7ffff68e0808 ".stream_open", addr = 65824, size =
-> > > > > > 72, sh_addr = 65536, generated = false}, {
-> > > > > ...
-> > > > > >     name = 0x7ffff68e0751 ".vfs_truncate", addr = 73392, size =
-> > > > > > 544, sh_addr = 65536, generated = false}}
-> > > > > 
-> > > > > The dot makes the difference, of course. The question is why is it
-> > > > > there? I keep looking into it. Only if someone has an immediate
-> > > > > idea...
-> > > > 
-> > > > Well, .vfs_truncate is in .text (and contains an ._mcount call). And
-> > > > vfs_truncate is in .opd (w/o an ._mcount call). Since setup_functions
-> > > > excludes all functions without the ._mcount call, is_ftrace_func later
-> > > > returns false for such functions and they are filtered before the BTF
-> > > > processing.
-> > > > 
-> > > > Technically, get_vmlinux_addrs looks at a list of functions between
-> > > > __start_mcount_loc and __stop_mcount_loc and considers only the listed.
-> > > > 
-> > > > I don't know what the correct fix is (exclude .opd functions from the
-> > > > filter?). Neither why cross compiler doesn't fail, nor why ebi v2 avoids
-> > > > this too.
-> > > 
-> > > Attaching a patch for pahole which fixes the issue, but I have no idea
-> > > whether it is the right fix at all.
-> > 
-> > hi,
-> > we're considering to disable ftrace filter completely,
-> > I guess that would solve this issue for ppc as well
-> > 
-> >   https://lore.kernel.org/bpf/20210501001653.x3b4rk4vk4iqv3n7@kafai-mbp.dhcp.thefacebook.com/
-> > 
-> Just disabling the ftrace filter in pahole does not seem to fix it.
+On Fri, Apr 23, 2021 at 01:51:47PM +0800, Shengjiu Wang wrote:
+> Imx-akcodec is a new added machine driver for supporting
+> ak4458/ak5558/ak5552/ak4497 codec on i.MX platforms.
 > 
-> Is there some other place where it should be disabled?
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+>  .../bindings/sound/imx-audio-akcodec.yaml     | 60 +++++++++++++++++++
+>  1 file changed, 60 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml b/Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml
+> new file mode 100644
+> index 000000000000..7419bf7224e9
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml
+> @@ -0,0 +1,60 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/imx-audio-akcodec.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NXP i.MX audio complex with AK4458/AK5558/AK5552/AK4497 codec
 
-Nevermind, purging the system dwarves resolved the problem. Although
-kbuild detects pahole as /usr/local/bin/pahole the system binaries or
-libraries are still used for something.
+Looks like the existing fsl-asoc-card.txt? You should convert to schema 
+and use that. Otherwise, my comments are based on this all being 'new'.
 
-Thanks
+> +
+> +maintainers:
+> +  - Shengjiu Wang <shengjiu.wang@nxp.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - fsl,imx8mq-audio-ak4458
+> +      - fsl,imx8mq-audio-ak4497
+> +      - fsl,imx8mq-audio-ak5558
+> +      - fsl,imx-audio-ak4497
+> +      - fsl,imx-audio-ak4458
+> +      - fsl,imx-audio-ak5558
+> +      - fsl,imx-audio-ak5552
 
-Michal
+I continue to not understand why audio bindings need the codec(s) in the 
+compatible strings. Can't you look up the codec thru the audio-codec 
+property?
+
+> +
+> +  model:
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    description: User specified audio sound card name
+> +
+> +  audio-cpu:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: The phandle of a CPU DAI controller
+> +
+> +  audio-codec:
+> +    description: The phandle of Codec DAI controllers, there are two
+> +                 controllers maximum.
+
+We have the common 'sound-dai' property. See the simple-card.yaml 
+binding. 
+
+> +
+> +  audio-asrc:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: The phandle of ASRC. It can be absent if there's no
+> +                 need to add ASRC support via DPCM.
+
+Needs a vendor prefix.
+
+> +
+> +  fsl,tdm:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description: |
+> +      This is a boolean property. If present, the TDM mode is enabled.
+
+But this one seems like something that could or should be common.
+
+> +
+> +required:
+> +  - compatible
+> +  - model
+> +  - audio-cpu
+> +  - audio-codec
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    sound-ak4458 {
+> +        compatible = "fsl,imx-audio-ak4458";
+> +        model = "ak4458-audio";
+> +        audio-cpu = <&sai1>;
+> +        audio-codec = <&ak4458_1>, <&ak4458_2>;
+> +    };
+> -- 
+> 2.17.1
+> 
