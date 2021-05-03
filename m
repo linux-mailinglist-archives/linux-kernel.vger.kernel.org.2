@@ -2,65 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C59D37236D
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 01:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA4B372376
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 01:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbhECXIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 19:08:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58150 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229879AbhECXHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 19:07:53 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 20104613C0;
-        Mon,  3 May 2021 23:06:59 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1ldheU-009YBB-5C; Mon, 03 May 2021 19:06:58 -0400
-Message-ID: <20210503230658.040275516@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Mon, 03 May 2021 19:05:17 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "John Warthog9 Hawley" <warthog9@kernel.org>
-Subject: [for-next][PATCH 7/7] ktest: Add KTEST section to MAINTAINERS file
-References: <20210503230510.845068955@goodmis.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        id S229842AbhECXQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 19:16:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229823AbhECXQC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 19:16:02 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05839C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 16:15:08 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id i190so5507898pfc.12
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 16:15:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=xhf/1dJduLOJCNe2AU9V1VQzCeL9nYRZSP5wzFlpp5w=;
+        b=gkXsOsEw7q9iyrOGQiFwqXE8RR5WxPF+OSd8fvDbxNDWbodCc3YZWiaoa98oBbEH8I
+         Wk6Wje2UNgZhK5Yxw7mbLZb8tdi3Rp91YcOFAwutr2iujEWg7Q/xfcO2xmKTA0yUqKrz
+         XQdQUANWPUtzmzqmaQvA232aY1/mIETJiJrMGzm8b+67TG2IxBAnOp1vKjBw5I0/mNOd
+         5yUqocsuGzcQxfsT3wPvD8dRKpAjEGTv9bqPZuelLs3WitqsbEgqcQ+eC7IzyMYRlN4j
+         i/aVb0oF2BnRWK8Ib0xbCdtRRfM0q25ptJMMJLy3zuL7l1tJqV2ti+QRJzW/P+06YorG
+         4zjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=xhf/1dJduLOJCNe2AU9V1VQzCeL9nYRZSP5wzFlpp5w=;
+        b=M0Cm4nNxWbg0DLJp2vLfZQciBfzgnLN8SLlCNtJA/dnEsHjxnMTbaN2YxhX7JOAPQ3
+         ZPobM82GxJGgJrM8heJGpoWW/s9JVoM4arz9O4dQO0tCVjFa6R+uqYFk0YdX4e+LmRxe
+         TsGmFJkvBaV9HVicdE9958EMQdY7A7MEKt7HjVfaAIBY9w5ddYfS3xvvyXXgatmT7oP3
+         bHGKzwPC+Z40UTHU22ZwfmMCrGpnfrW/r+FbTmNQWazo9T2ym2nGfstBBUtbtp+AMTpq
+         HuEXags+/8bZJQiJo5tmoCEE1P5Ua05pudW+ERSaZZ54tGvqDWkBne3KVFlwNRpiCtcb
+         NC3A==
+X-Gm-Message-State: AOAM53101jRC1Hf8QyYNyBMgAY4ieL/KYLs3lAs1bH5hwRNDCpCiwRj/
+        XpN53wLj/jrh7FBoIRc07f2XYw==
+X-Google-Smtp-Source: ABdhPJzyUQSG+8dtdbtl1+SgXBnW9iHM1DAnA4CtPRI6rgbxtnXiFe8XJuyQTD38oFmBy3TAHHUdQg==
+X-Received: by 2002:a17:90a:e003:: with SMTP id u3mr1204009pjy.77.1620083708528;
+        Mon, 03 May 2021 16:15:08 -0700 (PDT)
+Received: from smtpclient.apple ([2601:646:c200:1ef2:e4d2:be75:9322:ee7])
+        by smtp.gmail.com with ESMTPSA id w2sm10301356pfb.174.2021.05.03.16.15.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 16:15:08 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es' registers for io_threads
+Date:   Mon, 3 May 2021 16:15:06 -0700
+Message-Id: <2D8933AD-A3A8-4965-9061-3929D84AAAA2@amacapital.net>
+References: <8735v3jujv.ffs@nanos.tec.linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Stefan Metzmacher <metze@samba.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+In-Reply-To: <8735v3jujv.ffs@nanos.tec.linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+X-Mailer: iPhone Mail (18E199)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-
-As I wanted to add John Hawley as a co-maintainer for ktest, I found that
-there never was a KTEST section in the MAINTAINERS file. Add one!
-
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- MAINTAINERS | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d92f85ca831d..3539d76232de 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9976,6 +9976,12 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/leds/backlight/kinetic,ktd253.yaml
- F:	drivers/video/backlight/ktd253-backlight.c
- 
-+KTEST
-+M:	Steven Rostedt <rostedt@goodmis.org>
-+M:	John Hawley <warthog9@eaglescrag.net>
-+S:	Maintained
-+F:	tools/testing/ktest
-+
- L3MDEV
- M:	David Ahern <dsahern@kernel.org>
- L:	netdev@vger.kernel.org
--- 
-2.30.1
 
 
+> On May 3, 2021, at 3:56 PM, Thomas Gleixner <tglx@linutronix.de> wrote:
+>=20
+> =EF=BB=BFOn Mon, May 03 2021 at 15:08, Linus Torvalds wrote:
+>>> On Mon, May 3, 2021 at 2:49 PM Andy Lutomirski <luto@kernel.org> wrote:
+>>>=20
+>>> To be clear, I'm suggesting that we -EINVAL the PTRACE_GETREGS calls
+>>> and such, not the ATTACH.  I have no idea what gdb will do if this
+>>> happens, though.
+>>=20
+>> I feel like the likelihood that it will make gdb work any better is
+>> basically zero.
+>>=20
+>> I think we should just do Stefan's patch - I assume it generates
+>> something like four instructions (two loads, two stores) on x86-64,
+>> and it "just works".
+>>=20
+>> Yeah, yeah, it presumably generates 8 instructions on 32-bit x86, and
+>> we could fix that by just using the constant __USER_CS/DS instead (no
+>> loads necessary) since 32-bit doesn't have any compat issues.
+>>=20
+>> But is it worth complicating the patch for a couple of instructions in
+>> a non-critical path?
+>>=20
+>> And I don't see anybody stepping up to say "yes, I will do the patch
+>> for gdb", so I really think the least pain is to just take the very
+>> straightforward and tested kernel patch.
+>>=20
+>> Yes, yes, that also means admitting to ourselves that the gdb
+>> situation isn't likely going to improve, but hey, if nobody in this
+>> thread is willing to work on the gdb side to fix the known issues
+>> there, isn't that the honest thing to do anyway?
+>=20
+> GDB is one thing. But is this setup actually correct under all
+> circumstances?
+>=20
+> It's all fine that we have lots of blurb about GDB, but there is no
+> reasoning why this does not affect regular kernel threads which take the
+> same code path.
+>=20
+> Neither is there an answer what happens in case of a signal delivered to
+> this thread and what any other GDB/ptraced induced poking might cause.
+>=20
+> This is a half setup user space thread which is assumed to behave like a
+> regular kernel thread, but is this assumption actually true?
+>=20
+>=20
+
+I=E2=80=99m personally concerned about FPU state. No one ever imagined when w=
+riting and reviewing the FPU state code that we were going to let ptrace pok=
+e the state on a kernel thread.
+
+Now admittedly kernel_execve() magically turns kernel threads into user thre=
+ads, but, again, I see no evidence that anyone has thought through all the i=
+mplications of letting ptrace go to town before doing so.
+
+(Is the io_uring thread a kthread style kernel thread?  kthread does horribl=
+e, horrible things with the thread stack.)=
