@@ -2,183 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CAE037137E
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 12:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7DD371381
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 12:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233299AbhECKOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 06:14:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49779 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233062AbhECKOn (ORCPT
+        id S233251AbhECKQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 06:16:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233025AbhECKQV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 06:14:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620036830;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TfH/Rim8ttUy4kF1walnlnjFDNfkSM8H2CqszcJCsT8=;
-        b=BevCE+COvDOK3u4GHQHdjBYuqAK8ilirf44Aztim5XQN3tcBHlVdXkc215Jgj/0RflPCnV
-        SKfhT2w2SIIyZuvcjJ+UeN0tQr8oAEWh6lgjEmOlurXHo3xT/Mza0oegDUmtYR8OUGvQ7K
-        U7kY1hwNJsr24irOxV418wMyPtfVHDs=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-297-MH6fwSf2MKyaFnSS1tzcqQ-1; Mon, 03 May 2021 06:13:48 -0400
-X-MC-Unique: MH6fwSf2MKyaFnSS1tzcqQ-1
-Received: by mail-wr1-f69.google.com with SMTP id a7-20020adfc4470000b029010d875c66edso3623194wrg.23
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 03:13:48 -0700 (PDT)
+        Mon, 3 May 2021 06:16:21 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B470CC06174A;
+        Mon,  3 May 2021 03:15:27 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id b14-20020a17090a6e0eb0290155c7f6a356so8443601pjk.0;
+        Mon, 03 May 2021 03:15:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=wzwTcAoDsk0QX/rqj4skJEpuI5KakKUFrzAoXVFoChY=;
+        b=CM9IwLyLULeABtzFH+NLmD5aBisGrjKNPdXzMaQrc6P+NB6xOkkOoooPyagCI8OvvF
+         mai+sJCtaagopGIliRbwTsLDFI4nFNqH2dNaMIGoHit32gKp1PjWl1gicFJjhkXjikgs
+         wrRh6jL25ZE9uz18HThj+ToP5Avhwn6C9uwgzaQ768LVsh1PfQ/uaGtrMMu0BivfPoXz
+         ZP45oqOOhO0yD3d0E/82li+l5KWT/qmTqZhaxw9ASzGN5WL7zv+s58l1aHpBP63ZYa4g
+         r97QBd6RW1160ZuCHW1ipkAvI0XCoKj3MuAI/35/sH8tentpv+eQ0EAVbM3UvzzQTN77
+         B/cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=TfH/Rim8ttUy4kF1walnlnjFDNfkSM8H2CqszcJCsT8=;
-        b=ojXS8lmJ4UWNWD3/mxE3IhlZaoXWZCJ9R90YfUWNNxN/n49FbNxEqqTS3smkVaSbe/
-         edP1Reb9tM18BX2Rxp9DJjzSaVskOEIFunKS3lc+MpTCq9PzIxsvB/UR9/xVZ6eAkl3X
-         bcwO/hYNdTBAwm8efJVl0Rfu+9FBG6M7wPCYHrh443Qaipv3nwN78bNWOB70BxiKfLrk
-         um8wIV+85CXClGw2eHijgE1grwXAi24Mrkxpc/Dionkbm98Y2DiagiiHFlgbiE5iz2/s
-         udOMhodlqIBFXh916w2zgksUI8dWWSYOuurJ+WC64RvlfI070KLX5hI4QoWEzWjVP7Et
-         bcHA==
-X-Gm-Message-State: AOAM533Qww9bZKGJ2tLkemrwGHD/5HzYKU1RU/BThYAOPqvm8F5u/EYF
-        HA8Q9GS8LKeXvEMQXEXoHIwbQCq/SaMCcwl9aOmYcR2r5BKkStt4PkiDtPtfUabKwKFTssUhHqD
-        QlHhjq6COK2XrMsHQOoFv/xNz
-X-Received: by 2002:adf:e40f:: with SMTP id g15mr23980426wrm.392.1620036827528;
-        Mon, 03 May 2021 03:13:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzitx86hh7/AAfqMzT0jIWlPfTNKdYBUPj79ED4tgUYCy6GM6viNYbB0BIqh1/tiBOZIdssSA==
-X-Received: by 2002:adf:e40f:: with SMTP id g15mr23980386wrm.392.1620036827214;
-        Mon, 03 May 2021 03:13:47 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c649f.dip0.t-ipconnect.de. [91.12.100.159])
-        by smtp.gmail.com with ESMTPSA id d2sm11770212wrs.10.2021.05.03.03.13.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 03:13:46 -0700 (PDT)
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Steven Price <steven.price@arm.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Aili Yao <yaoaili@kingsoft.com>, Jiri Bohac <jbohac@suse.cz>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-hyperv@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-References: <20210429122519.15183-1-david@redhat.com>
- <20210429122519.15183-8-david@redhat.com> <YI5H4yV/c6ReuIDt@kernel.org>
- <5a5a7552-4f0a-75bc-582f-73d24afcf57b@redhat.com>
- <YI/CWg6PrMxcCT2D@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v1 7/7] fs/proc/kcore: use page_offline_(freeze|unfreeze)
-Message-ID: <2f66cbfc-aa29-b3ef-4c6a-0da8b29b56f6@redhat.com>
-Date:   Mon, 3 May 2021 12:13:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <YI/CWg6PrMxcCT2D@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=wzwTcAoDsk0QX/rqj4skJEpuI5KakKUFrzAoXVFoChY=;
+        b=btTefX35pwQY0rex7zoDx7FW44O7n3asxkuFl3ByizLJRzv2i2NeQ2JQ5FU5wfnFoh
+         jz3MLnCQkFIFOgP7BfGfJid2C05hKMLU5VUS/tSOQVdLf9UX621Js04QiBKqGEjEvgNr
+         LWDKEFsALCyPpO3s92xjtGaw70ZSzejyfmQV3yuu0I9x8r3lEDlmY1NYOt8kCSCZC7NG
+         r+YyEnzi7mL05I8fXYT4kdU4mP/zyhKL0APuT9EtCGX3aLx5JahY+T4/pAAZGKbQhSsH
+         tDTYLILhjA3StDCOm5hKEei7ZwxpvzvZoTBEtlmMBEIstEOR421O10C0wV6Eg4JciGnt
+         3P2A==
+X-Gm-Message-State: AOAM532UD6AiZjA1rRXP+fd6ntIGxA071I04uUSb1qj3POlIGFyV5w2B
+        49R7lyqWi5wQFNr4qjlM+y4=
+X-Google-Smtp-Source: ABdhPJyePc69yjbC1SmKmOohiDA3KWHdMT+h2UUBF/jEhM8fq9HO2/KKWS5zhMe0tUljj3OAauMSNQ==
+X-Received: by 2002:a17:90a:6e45:: with SMTP id s5mr30604604pjm.125.1620036927128;
+        Mon, 03 May 2021 03:15:27 -0700 (PDT)
+Received: from localhost.localdomain ([2402:7500:477:481e:dda5:8dca:2bc5:e1a9])
+        by smtp.gmail.com with ESMTPSA id a1sm2840579pfi.22.2021.05.03.03.15.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 03 May 2021 03:15:26 -0700 (PDT)
+From:   cy_huang <u0084500@gmail.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, cy_huang@richtek.com,
+        devicetree@vger.kernel.org
+Subject: [PATCH v1 1/2] regulator: rt6160: Add DT binding documet for Richtek RT6160
+Date:   Mon,  3 May 2021 18:15:16 +0800
+Message-Id: <1620036917-19040-1-git-send-email-u0084500@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.05.21 11:28, Mike Rapoport wrote:
-> On Mon, May 03, 2021 at 10:28:36AM +0200, David Hildenbrand wrote:
->> On 02.05.21 08:34, Mike Rapoport wrote:
->>> On Thu, Apr 29, 2021 at 02:25:19PM +0200, David Hildenbrand wrote:
->>>> Let's properly synchronize with drivers that set PageOffline(). Unfreeze
->>>> every now and then, so drivers that want to set PageOffline() can make
->>>> progress.
->>>>
->>>> Signed-off-by: David Hildenbrand <david@redhat.com>
->>>> ---
->>>>    fs/proc/kcore.c | 15 +++++++++++++++
->>>>    1 file changed, 15 insertions(+)
->>>>
->>>> diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
->>>> index 92ff1e4436cb..3d7531f47389 100644
->>>> --- a/fs/proc/kcore.c
->>>> +++ b/fs/proc/kcore.c
->>>> @@ -311,6 +311,7 @@ static void append_kcore_note(char *notes, size_t *i, const char *name,
->>>>    static ssize_t
->>>>    read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
->>>>    {
->>>> +	size_t page_offline_frozen = 0;
->>>>    	char *buf = file->private_data;
->>>>    	size_t phdrs_offset, notes_offset, data_offset;
->>>>    	size_t phdrs_len, notes_len;
->>>> @@ -509,6 +510,18 @@ read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
->>>>    			pfn = __pa(start) >> PAGE_SHIFT;
->>>>    			page = pfn_to_online_page(pfn);
->>>
->>> Can't this race with page offlining for the first time we get here?
->>
->>
->> To clarify, we have three types of offline pages in the kernel ...
->>
->> a) Pages part of an offline memory section; the memap is stale and not
->> trustworthy. pfn_to_online_page() checks that. We *can* protect against
->> memory offlining using get_online_mems()/put_online_mems(), but usually
->> avoid doing so as the race window is very small (and a problem all over the
->> kernel we basically never hit) and locking is rather expensive. In the
->> future, we might switch to rcu to handle that more efficiently and avoiding
->> these possible races.
->>
->> b) PageOffline(): logically offline pages contained in an online memory
->> section with a sane memmap. virtio-mem calls these pages "fake offline";
->> something like a "temporary" memory hole. The new mechanism I propose will
->> be used to handle synchronization as races can be more severe, e.g., when
->> reading actual page content here.
->>
->> c) Soft offline pages: hwpoisoned pages that are not actually harmful yet,
->> but could become harmful in the future. So we better try to remove the page
->> from the page allcoator and try to migrate away existing users.
->>
->>
->> So page_offline_* handle "b) PageOffline()" only. There is a tiny race
->> between pfn_to_online_page(pfn) and looking at the memmap as we have in many
->> cases already throughout the kernel, to be tackled in the future.
-> 
-> Right, but here you anyway add locking, so why exclude the first iteration?
+From: ChiYuan Huang <cy_huang@richtek.com>
 
-What we're protecting is PageOffline() below. If I didn't mess up, we 
-should always be calling page_offline_freeze() before calling 
-PageOffline(). Or am I missing something?
+Add the DT binding document for Richtek RT6160 voltage regulator.
 
-> 
-> BTW, did you consider something like
+Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+---
+ .../regulator/richtek,rt6160-regulator.yaml        | 68 ++++++++++++++++++++++
+ 1 file changed, 68 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/regulator/richtek,rt6160-regulator.yaml
 
-Yes, I played with something like that. We'd have to handle the first 
-page_offline_freeze() freeze differently, though, and that's where 
-things got a bit ugly in my attempts.
-
-> 
-> 	if (page_offline_frozen++ % MAX_ORDER_NR_PAGES == 0) {
-> 		page_offline_unfreeze();
-> 		cond_resched();
-> 		page_offline_freeze();
-> 	}
-> 
-> We don't seem to care about page_offline_frozen overflows here, do we?
-
-No, the buffer size is also size_t and gets incremented on a per-byte 
-basis. The variant I have right now looked the cleanest to me. Happy to 
-hear simpler alternatives.
-
-
+diff --git a/Documentation/devicetree/bindings/regulator/richtek,rt6160-regulator.yaml b/Documentation/devicetree/bindings/regulator/richtek,rt6160-regulator.yaml
+new file mode 100644
+index 00000000..fe7b168
+--- /dev/null
++++ b/Documentation/devicetree/bindings/regulator/richtek,rt6160-regulator.yaml
+@@ -0,0 +1,68 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/regulator/richtek,rt6160-regulator.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Richtek RT6160 BuckBoost converter
++
++maintainers:
++  - ChiYuan Huang <cy_huang@richtek.com>
++
++description: |
++  The RT6160 is a high-efficiency buck-boost converter that can provide
++  up to 3A output current from 2025mV to 5200mV. And it support the wide
++  input voltage range from 2200mV to 5500mV.
++
++  Datasheet is available at
++  https://www.richtek.com/assets/product_file/RT6160A/DS6160A-00.pdf
++
++properties:
++  compatible:
++    enum:
++      - richtek,rt6160
++
++  reg:
++    maxItems: 1
++
++  enable-gpios:
++    description: A connection of the 'enable' gpio line.
++    maxItems: 1
++
++  richtek,vsel_active_low:
++    description: |
++      Used to indicate the 'vsel' pin active level. if not specified, use
++      high active level as the default.
++    type: boolean
++
++patternProperties:
++  buckboost:
++    description: BuckBoost converter regulator description.
++    type: object
++    $ref: regulator.yaml#
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      rt6160@75 {
++        compatible = "richtek,rt6160";
++        reg = <0x75>;
++        enable-gpios = <&gpio26 2 0>;
++
++        buckboost {
++          regulator-name = "rt6160-buckboost";
++          regulator-min-microvolt = <2025000>;
++          regulator-max-microvolt = <5200000>;
++          regulator-allowed-modes = <0 1>;
++        };
++      };
++    };
 -- 
-Thanks,
-
-David / dhildenb
+2.7.4
 
