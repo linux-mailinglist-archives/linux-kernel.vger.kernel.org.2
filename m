@@ -2,186 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD29371FD0
+	by mail.lfdr.de (Postfix) with ESMTP id F321F371FD2
 	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 20:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229838AbhECSmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 14:42:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50308 "EHLO
+        id S229904AbhECSmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 14:42:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhECSmB (ORCPT
+        with ESMTP id S229726AbhECSmC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 14:42:01 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8FF4C061763
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 11:41:07 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id x5so6610967wrv.13
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 11:41:07 -0700 (PDT)
+        Mon, 3 May 2021 14:42:02 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91567C061763
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 11:41:08 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id g14so7478637edy.6
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 11:41:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=n8/Px2QFYE/jiv5S56bnSLpfOUhvhXNDZdvfzZY71CM=;
-        b=w8YxWHm/DNz+izh8bKyu/dKy3r7hK6/lDO3huz8+7707XiMuyX5tRSv4YT9b+mYrks
-         t8T6RHCWlqEXT5bIZv1xKSHnjhXDEEA8WRR3g/ZSuO3VvnamtrvM23m58mY+Cg30YlZD
-         d5Ai46bGMTR2do/v2hfoh+sM6OOFGPl3W5CZzic8Ilx2G7pz++10Jv8a74ENZWiOlRN+
-         SaDAirERPcw0BvM434bvf3KjtO+GJBTsc259L/O99+c4RBIgGO4tlQrRRm3manK5VcA6
-         xPj8qjpakytXagK+GTH2yruaSdev0xUffZ7QZ16KoOt/86PLKvpwCg/pNB89flfQqHFS
-         V//A==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=I/n/q/aelXMf9mgaQMQLtrJKcudG4Wd5KNGsIllPB90=;
+        b=Gg9Y3N2Fdb9DyHwiymNwYxOiruKJLzHaTEC41rI3N1IC6KvUtL++MANcceqK2VR90S
+         XZs+XpbOIcz5v22bn8WiIRypSN/4WR2AK0HzNE305WZrTTU5j8h72SlE9vXSmtAgos4W
+         d1lgJ/G5UT2KvsDmDf05tDhMLWJiNfLOwwwq8IwqzUs2cZkbvIqoqMYPlpMYTZ2nwUqZ
+         dwjuOZKkg5JoJBhqf+ZhTpy5zGLDnGn4oc2OprEqiDZ/WaG9UAL+LzLFWcAgelJIl/fX
+         83GAWF0aYfTMnQMiqgWop9O4tnuai5PmWSfhFNrC90d2llUsXl3Jxh1RPdwmOIc2MPdp
+         1yPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=n8/Px2QFYE/jiv5S56bnSLpfOUhvhXNDZdvfzZY71CM=;
-        b=nwlwiT9VTV8Hi6mtjD5IJlQwEFh7xrxsvOfsFlRWh6WUufFKokTc80SujpDWCRROZ2
-         MGjUyX10bE3ZWjSUKu2rutMtf2xGSvYjjKJd1yum4Gj8c8DtJpHgQu+hgCMTeojOi+g0
-         g48l4cIcYIdOj33FT15Zibx3PTkTTPhmqqxY9yAeRORAdxqbcdvV1uqN4vZwoBOBXGNs
-         7ae2C6Ig80baNAmp229z7npDq6zCebvFdJum1kZ9GW1eDJeeHbxMrLd6iwGgHqKijix0
-         sZu7OWGzt4xHG0ExmXU7W4i38DffJbxmpnulyPLeBESgrK1njxmJQMYN4dkImcuegX1m
-         LnUg==
-X-Gm-Message-State: AOAM532VWJzLyJ0CEcI382oYN72Qx7iK0trAxVO/aRYJfiCdD0SLAqB3
-        /1lMpe+dTada/hlmYyHl4ud67Q==
-X-Google-Smtp-Source: ABdhPJxp0ZPitqCUNRt3lroqfpwL6dMh/fQvnk7GiUU091Jx0DOk5sMffsvcRsfeAAY5aumNBF2T9w==
-X-Received: by 2002:adf:fc42:: with SMTP id e2mr5034212wrs.302.1620067266290;
-        Mon, 03 May 2021 11:41:06 -0700 (PDT)
-Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id o62sm647647wmo.3.2021.05.03.11.41.05
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=I/n/q/aelXMf9mgaQMQLtrJKcudG4Wd5KNGsIllPB90=;
+        b=UzYIbVCerG7EL/LuA9fY2M0SHu7Idh8rTTvc4zzWcPIQmf083+GxcApeY8SH6SNmJn
+         xloOCz0yp+UNqJGULd2S6hclcUDDLPjkXIXTCTElHC3qbPy65Q6xUP9cqccYVZxUvzxz
+         H8V1m/kepP7vs1PnyfdrUMBtyK8r+tGpajm54R4dVF1jV3l8cm9a/NvfRsqTtJCOEVPO
+         ePTjUFdiK3Ejv6Jut4qw3Ei7Z9xln1mM03w78QpsbxNL1SWX43MFLelr8ZmRpxXPswb4
+         q2hmQd+g39lJBtTM79SAKSFiy+qfqbgTAdRAgvrDyL5Anhvzt5hUb3bba1kCm2NVZthl
+         sqKg==
+X-Gm-Message-State: AOAM532bQ9ekZvzgz+7YtIWRoFeCnkqhUwXFVdF2TAal33crtmjyn4AG
+        NX3ZsZDj0fHgMtGMSLzVqHY=
+X-Google-Smtp-Source: ABdhPJyBymSS+DOEhj25VtSpyczjlx/GZKWCAj3qYvY45dyrc3K6vl7VfIlPvi19ijH1G5MonBF3Uw==
+X-Received: by 2002:a50:d782:: with SMTP id w2mr21487090edi.346.1620067267238;
+        Mon, 03 May 2021 11:41:07 -0700 (PDT)
+Received: from linux.local (host-79-52-107-152.retail.telecomitalia.it. [79.52.107.152])
+        by smtp.gmail.com with ESMTPSA id rs8sm243938ejb.17.2021.05.03.11.41.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 11:41:05 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH v4] dt-bindings: net: Convert mdio-gpio to yaml
-Date:   Mon,  3 May 2021 18:41:00 +0000
-Message-Id: <20210503184100.1503307-1-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 03 May 2021 11:41:06 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     outreachy-kernel@googlegroups.com,
+        David Kershner <david.kershner@unisys.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [Outreachy kernel] [PATCH v5] staging: unisys: visorhba: Convert module from IDR to XArray
+Date:   Mon, 03 May 2021 20:41:05 +0200
+Message-ID: <2381635.6tjctmx4mM@linux.local>
+In-Reply-To: <YJAlWJXDnK9KLg2H@kroah.com>
+References: <20210427150719.30841-1-fmdefrancesco@gmail.com> <YJAlWJXDnK9KLg2H@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Converts net/mdio-gpio.txt to yaml
+On Monday, May 3, 2021 6:31:20 PM CEST Greg Kroah-Hartman wrote:
+> On Tue, Apr 27, 2021 at 05:07:19PM +0200, Fabio M. De Francesco wrote:
+> > Converted visorhba from IDR to XArray. The abstract data type XArray is
+> > more memory-efficient, parallelisable and cache friendly. It takes
+> > advantage of RCU to perform lookups without locking.
+> 
+> And does any of that affect the runtime of this driver?
+>
+Unfortunately, I cannot tell. I had cc'ed the maintainer at Unisys but no 
+response at all at now.
+> 
+> I would need this to be tested by the maintainer before I could do
+> anything, and a review from willy@ would be also appreciated as I'm
+> guessing he asked you to do this?
+>
+I've contacted willy on #kernel-outreachy and said that you would appreciate a 
+review from him. I hope he can find time to see that code.
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
-Changes since v1:
-- fixes yamllint warning about indent
-- added maxItems 3
+Thanks,
 
-Changes since v2:
-- fixed example (gpios need 2 entries)
+Fabio
+> 
+> thanks,
+> 
+> greg k-h
 
-Changes since v3:
-- fixed gpios description
-- added additionalProperties/type: object
 
- .../devicetree/bindings/net/mdio-gpio.txt     | 27 ---------
- .../devicetree/bindings/net/mdio-gpio.yaml    | 58 +++++++++++++++++++
- 2 files changed, 58 insertions(+), 27 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/net/mdio-gpio.txt
- create mode 100644 Documentation/devicetree/bindings/net/mdio-gpio.yaml
 
-diff --git a/Documentation/devicetree/bindings/net/mdio-gpio.txt b/Documentation/devicetree/bindings/net/mdio-gpio.txt
-deleted file mode 100644
-index 4d91a36c5cf5..000000000000
---- a/Documentation/devicetree/bindings/net/mdio-gpio.txt
-+++ /dev/null
-@@ -1,27 +0,0 @@
--MDIO on GPIOs
--
--Currently defined compatibles:
--- virtual,gpio-mdio
--- microchip,mdio-smi0
--
--MDC and MDIO lines connected to GPIO controllers are listed in the
--gpios property as described in section VIII.1 in the following order:
--
--MDC, MDIO.
--
--Note: Each gpio-mdio bus should have an alias correctly numbered in "aliases"
--node.
--
--Example:
--
--aliases {
--	mdio-gpio0 = &mdio0;
--};
--
--mdio0: mdio {
--	compatible = "virtual,mdio-gpio";
--	#address-cells = <1>;
--	#size-cells = <0>;
--	gpios = <&qe_pio_a 11
--		 &qe_pio_c 6>;
--};
-diff --git a/Documentation/devicetree/bindings/net/mdio-gpio.yaml b/Documentation/devicetree/bindings/net/mdio-gpio.yaml
-new file mode 100644
-index 000000000000..236a8c4768e2
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/mdio-gpio.yaml
-@@ -0,0 +1,58 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/mdio-gpio.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: MDIO on GPIOs
-+
-+maintainers:
-+  - Andrew Lunn <andrew@lunn.ch>
-+  - Florian Fainelli <f.fainelli@gmail.com>
-+  - Heiner Kallweit <hkallweit1@gmail.com>
-+
-+allOf:
-+  - $ref: "mdio.yaml#"
-+
-+properties:
-+  compatible:
-+    enum:
-+      - virtual,mdio-gpio
-+      - microchip,mdio-smi0
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 0
-+
-+  gpios:
-+    minItems: 2
-+    maxItems: 3
-+    items:
-+      - description: MDC
-+      - description: MDIO
-+      - description: MDO
-+
-+#Note: Each gpio-mdio bus should have an alias correctly numbered in "aliases"
-+#node.
-+additionalProperties:
-+  type: object
-+
-+examples:
-+  - |
-+    aliases {
-+        mdio-gpio0 = &mdio0;
-+    };
-+
-+    mdio0: mdio {
-+      compatible = "virtual,mdio-gpio";
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+      gpios = <&qe_pio_a 11>,
-+              <&qe_pio_c 6>;
-+      ethphy0: ethernet-phy@0 {
-+        reg = <0>;
-+      };
-+    };
-+...
--- 
-2.26.3
 
