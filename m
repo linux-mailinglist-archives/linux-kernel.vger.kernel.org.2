@@ -2,207 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF58371314
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 11:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A48F9371318
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 11:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233108AbhECJiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 05:38:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54916 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230358AbhECJiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 05:38:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52B0B611CD;
-        Mon,  3 May 2021 09:37:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620034631;
-        bh=M987MvGM1WxXqWZEfX5EOoKkXuQSVSi+BFpcAGqzjdE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=oZxvE1H64mH2mK95gnGcBCoOTtuNbB98PM74L49AcjsxiytRfPdDJ9ZG+tOOJgweg
-         iDPm/5fXr8yUf/ty5P/XPmGABlqWIcdGmUObktAR0bUCKwdM5ORTnvaLnObMsvOB2A
-         y+oAEzL83PcKB5nagxFBQa738OVpZp27X/HI16tHJbzAPxdcaoilk3zvtpfUapyrWn
-         xCzAADT4WWjbNAAeb102skAB3OCFtk0S8UeNm4WJ42xSmkBbrr+vN3+lBz03wjBVGa
-         6pUybv7oyabnLf5MktSFhmODOwUJu3k9u3o2oIkGm03eYzEjy1nPc6jZc2FEvq6Onc
-         K7UffcPEvoYEA==
-Received: by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1ldV0m-0093Lg-NW; Mon, 03 May 2021 11:37:08 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH] media: venus: Rework error fail recover logic
-Date:   Mon,  3 May 2021 11:37:05 +0200
-Message-Id: <a18137ad51435ff828748e30dcd139e6cacdc120.1620034356.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S233049AbhECJkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 05:40:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30786 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231523AbhECJkl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 05:40:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620034787;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ed4Fg0jmvz5izTHQmdOnBOoJKIPHVPN61DnFBqKQxak=;
+        b=YA6cFzWKScK+zvX9Ydu7n3L5nVlmnj/L03fdw5I5akJWUffXN5ZbRK168+Wqkpd2+SEy8I
+        OA/Kul5MA/mvkWSegy9u4Zz7aQweQxNL2Sp7zEHnmruPUCpHOJkBAoFBuDo0Xo6TyAKKrx
+        rgdifwtIT47At+KsXfneMkZAj74JV3U=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-382-wRNyXwzeM_CPH56PnALn2A-1; Mon, 03 May 2021 05:39:46 -0400
+X-MC-Unique: wRNyXwzeM_CPH56PnALn2A-1
+Received: by mail-pl1-f200.google.com with SMTP id x10-20020a1709029a4ab02900e71f0256beso1316461plv.8
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 02:39:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Ed4Fg0jmvz5izTHQmdOnBOoJKIPHVPN61DnFBqKQxak=;
+        b=S9fbE69PHnfyeiO8qjj5icV7P+wcCLAx5lAu0D/Ip0iOXOesj+YbZ2FlD958p678tS
+         fEVpYbT4WrZJL50i0WDCagWz/1uSEcuTond6eLhup6UpFXWfSL+B/o7bgfT6lknqtUTr
+         ynNVfkg1GAYw1dFd/3CdUXt+6uXN/P9jSshjhIoipsf9wVZijt7oCyw+QgwcarCoBTdT
+         KzHmBXS2fgIKQUKa0C34JoYWqBfL9cvvqhe/OPhOwtu3xeIPvl1S4QzHweYNLCeb5rxd
+         N1ZMKRk5nSzToWPfssKgGx/v0kDtW6Wkyw+JaaDBHaituVyZBPQ1F9QwE1589PalH4j/
+         crYw==
+X-Gm-Message-State: AOAM530boD4bKibu64iUryeogC3vEqpBBquBPjnWQ+KWBrgiJeSgq8I0
+        eq9BzLS0Hm8Bp5SOSBAGQBbDQ6mB9w/+Aj0Ffabqlb7xkeeqgCzPQGyIsMnnX61thIIjS9BMLlr
+        fFI5dHy6CMvlzkYBF0TSWPw53TbsLDA8JHMjx+ekX
+X-Received: by 2002:a17:902:f686:b029:ee:d211:5a1b with SMTP id l6-20020a170902f686b02900eed2115a1bmr5621469plg.41.1620034785194;
+        Mon, 03 May 2021 02:39:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwVwcIIS+AzZDYRB2WFTm3qhlqHXnG6TXvo9ghWdIZfp2zf4V5g5e/VU5R60f6Ou/pYXvEqxrLZ+JvlRsSB070=
+X-Received: by 2002:a17:902:f686:b029:ee:d211:5a1b with SMTP id
+ l6-20020a170902f686b02900eed2115a1bmr5621447plg.41.1620034784949; Mon, 03 May
+ 2021 02:39:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <cover.1615224800.git.nabijaczleweli@nabijaczleweli.xyz>
+ <20210420131741.kdgxquhwqureih7c@tarta.nabijaczleweli.xyz> <nycvar.YFH.7.76.2105031110480.28378@cbobk.fhfr.pm>
+In-Reply-To: <nycvar.YFH.7.76.2105031110480.28378@cbobk.fhfr.pm>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Mon, 3 May 2021 11:39:34 +0200
+Message-ID: <CAO-hwJ+HhKU7EzPZGOtPePT_h7OUaJ=QfWi7eAcxsfRaDtQuvg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] Stylus-on-touchscreen device support
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     =?UTF-8?B?0L3QsNCx?= <nabijaczleweli@nabijaczleweli.xyz>,
+        Peter Hutterer <peter.hutterer@who-t.net>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Venus code has a sort of watchdog that attempts to recover
-from IP errors, implemented as a delayed work job, which
-calls venus_sys_error_handler().
+On Mon, May 3, 2021 at 11:11 AM Jiri Kosina <jikos@kernel.org> wrote:
+>
+> On Tue, 20 Apr 2021, =D0=BD=D0=B0=D0=B1 wrote:
+>
+> > > This patchset adds support for stylus-on-touchscreen devices as found=
+ on
+> > > the OneMix 3 Pro and Dell Inspiron 15 7000 2-in-1 (7591), among other=
+s;
+> > > with it, they properly behave like a drawing tablet.
+> > >
+> > > Patches 2 and 4 funxionally depend on patch 1.
+> > > Patch 4 needs patch 3 to apply.
+> > >
+> > > The output of this patchset and the need for a kernel, rather than
+> > > userspace, patch was previously discussed here:
+> > >   https://gitlab.freedesktop.org/libinput/libinput/-/merge_requests/5=
+58#note_792834
+> > >
+> > > Changes in v2:
+> > > Patch 4 now ANDs the secondary button with the tip switch,
+> > > since it's otherwise borderline useless to the user.
+> > >
+> > > Ahelenia Ziemia=C5=84ska (4):
+> > >   HID: multitouch: require Finger field to mark Win8 reports as MT
+> > >   HID: multitouch: set Stylus suffix for Stylus-application devices, =
+too
+> > >   HID: input: replace outdated HID numbers+comments with macros
+> > >   HID: input: work around Win8 stylus-on-touchscreen reporting
+> > >
+> > >  drivers/hid/hid-input.c      | 54 ++++++++++++++++++++++++++++++++++=
+--
+> > >  drivers/hid/hid-multitouch.c | 18 +++++++-----
+> > >  2 files changed, 62 insertions(+), 10 deletions(-)
+> > >
+> > > --
+> > > 2.20.1
+> >
+> > Bumping this after a monthish =E2=80=92 is it missing something? Am I?
+>
+> Benjamin had concerns about regressions and wanted to run a full battery
+> of testing on it.
+>
+> Benjamin, is there any outcome of that, please?
+>
 
-Right now, it has several issues:
+Sorry, no real outcome here.
 
-1. It assumes that pm_runtime never fails to resume PM;
+I ran the test suite, and there were no errors, until I realized that
+there are no tests regarding tablets, so it can't detect any
+regressions here.
+And then, the usual happens, no time to actually work on the test suite... =
+:(
 
-2. It internally run two while() loops that also assumes that
-   PM runtime will never fail to go idle:
+I'll do a "normal" review soon (i.e. today)
 
-	while (pm_runtime_active(core->dev_dec) || pm_runtime_active(core->dev_enc))
-		msleep(10);
-
-...
-
-	while (core->pmdomains[0] && pm_runtime_active(core->pmdomains[0]))
-		usleep_range(1000, 1500);
-
-3. It uses an OR to merge all return codes and then report to the user.
-
-4. If the hardware never recovers, it keeps running on every 10ms,
-   flooding the syslog.
-
-Rework the code, in order to prevent that, by:
-
-1. check the return code from PM runtime resume;
-2. don't let the while() loops run forever;
-3. store the failed event;
-4. use warn ratelimited when it fails to recover.
-
-Fixes: af2c3834c8ca ("[media] media: venus: adding core part and helper functions")
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
-
-Hi Stanimir,
-
-While reviewing the occurrences of pm_runtime_get_sync(), I noticed that
-the logic under  pm_runtime_get_sync() could fail very badly, keep
-running endless loops with the dev->core locked and core->irq disabled
-or flooding the syslog with up to 100 messages per second.
-
-This patch should make the code more reliable.
-
-
- drivers/media/platform/qcom/venus/core.c | 59 +++++++++++++++++++-----
- 1 file changed, 47 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-index 54bac7ec14c5..4d0482743c0a 100644
---- a/drivers/media/platform/qcom/venus/core.c
-+++ b/drivers/media/platform/qcom/venus/core.c
-@@ -78,22 +78,32 @@ static const struct hfi_core_ops venus_core_ops = {
- 	.event_notify = venus_event_notify,
- };
- 
-+#define RPM_WAIT_FOR_IDLE_MAX_ATTEMPTS 10
-+
- static void venus_sys_error_handler(struct work_struct *work)
- {
- 	struct venus_core *core =
- 			container_of(work, struct venus_core, work.work);
--	int ret = 0;
-+	int ret, i, max_attempts = RPM_WAIT_FOR_IDLE_MAX_ATTEMPTS;
-+	bool failed = false;
-+	const char *err_msg = "";
- 
--	pm_runtime_get_sync(core->dev);
-+	ret = pm_runtime_get_sync(core->dev);
-+	if (ret < 0) {
-+		err_msg = "resume runtime PM\n";
-+		max_attempts = 0;
-+		failed = true;
-+	}
- 
- 	hfi_core_deinit(core, true);
- 
--	dev_warn(core->dev, "system error has occurred, starting recovery!\n");
--
- 	mutex_lock(&core->lock);
- 
--	while (pm_runtime_active(core->dev_dec) || pm_runtime_active(core->dev_enc))
-+	for (i = 0; i < max_attempts; i++) {
-+		if (!pm_runtime_active(core->dev_dec) && !pm_runtime_active(core->dev_enc))
-+			break;
- 		msleep(10);
-+	}
- 
- 	venus_shutdown(core);
- 
-@@ -101,31 +111,56 @@ static void venus_sys_error_handler(struct work_struct *work)
- 
- 	pm_runtime_put_sync(core->dev);
- 
--	while (core->pmdomains[0] && pm_runtime_active(core->pmdomains[0]))
-+	for (i = 0; i < max_attempts; i++) {
-+		if (!core->pmdomains[0] || !pm_runtime_active(core->pmdomains[0]))
-+			break;
- 		usleep_range(1000, 1500);
-+	}
- 
- 	hfi_reinit(core);
- 
--	pm_runtime_get_sync(core->dev);
-+	ret = pm_runtime_get_sync(core->dev);
-+	if (ret < 0) {
-+		err_msg = "resume runtime PM\n";
-+		max_attempts = 0;
-+		failed = true;
-+	}
- 
--	ret |= venus_boot(core);
--	ret |= hfi_core_resume(core, true);
-+	ret = venus_boot(core);
-+	if (ret && !failed) {
-+		err_msg = "boot Venus\n";
-+		failed = true;
-+	}
-+
-+	ret = hfi_core_resume(core, true);
-+	if (ret && !failed) {
-+		err_msg = "resume HFI\n";
-+		failed = true;
-+	}
- 
- 	enable_irq(core->irq);
- 
- 	mutex_unlock(&core->lock);
- 
--	ret |= hfi_core_init(core);
-+	ret = hfi_core_init(core);
-+	if (ret && !failed) {
-+		err_msg = "init HFI\n";
-+		failed = true;
-+	}
- 
- 	pm_runtime_put_sync(core->dev);
- 
--	if (ret) {
-+	if (failed) {
- 		disable_irq_nosync(core->irq);
--		dev_warn(core->dev, "recovery failed (%d)\n", ret);
-+		dev_warn_ratelimited(core->dev,
-+				     "System error has occurred, recovery failed to %s\n",
-+				     err_msg);
- 		schedule_delayed_work(&core->work, msecs_to_jiffies(10));
- 		return;
- 	}
- 
-+	dev_warn(core->dev, "system error has occurred (recovered)\n");
-+
- 	mutex_lock(&core->lock);
- 	core->sys_error = false;
- 	mutex_unlock(&core->lock);
--- 
-2.30.2
-
+Cheers,
+Benjamin
 
