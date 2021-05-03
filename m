@@ -2,123 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE61C371ED3
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F412371ED8
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231771AbhECRnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 13:43:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36754 "EHLO
+        id S231639AbhECRnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 13:43:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231347AbhECRnC (ORCPT
+        with ESMTP id S231513AbhECRnf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 13:43:02 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D5ADC061761
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 10:42:08 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id e14so4255424ils.12
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 10:42:08 -0700 (PDT)
+        Mon, 3 May 2021 13:43:35 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A087C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 10:42:41 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id ge1so3554790pjb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 10:42:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=B8c8UcKOabNygb4slUhxb1MpWvtXEu3qUQwNJzJoOaQ=;
-        b=0isSJrE2PQT8gl8Anglx6z1zpID0Zx4kRe2z/kwTKAnI+UPEEGGn7eLeehS4tVYjUP
-         njsQwPayHOSBCRBrKHE3PM8AuJod93XUGteWeDiDvzVVb2E9JxMWP5mAydQVDwXnh/lq
-         v0JcHY8QX1REhbMwR/y01Au8DVKcerGQjXs/ISLbjGBLkE4/nhCnRx3DJhNRHOESrT90
-         S76tD99zgcwZiMznshS4/GgOnGIYFDg+tk9cuypjZ/hdb54cW2w/M+fXyM3J6aROGx8F
-         ZAx9q6gSNYHmV7Ri3wpmYAQxdY+HArqawNd//tfnbIaYpRHdlNKHG//Q3HmNY6Q2sdSy
-         jrlg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YwS8hQU33H1/ZeBZdRBG9ZJ/sKIODEM23v4su4rhiCc=;
+        b=dIevIsu+BecbCDIM9vCBTdsPIaXduatZL5c7A0AoUn5fKQ0NyNS3wvgxnmo+3iz1OB
+         bv9uA4L1dDIlulUeRitvUnI+TG+9ndoRh1q3j5wywyfDcEg2EMWAZCsAkUZ0sktXgrMw
+         gLDSgKJDMfHs6Y8JvuewH3RIv/4xjjbFKC1o3m7Nf5gEc0Qx5+78Ah6pO26iiV1NN/J6
+         OwWCCVIFiE9wze5yMp5o769ro4M3+RI9gb9VTi/vesW1Ao2Dk/Qzd6cVttXI8yV1FpVu
+         rd3DqiPKVvl9S3tNnIB4SjimSDxqyksXs8kqfHXp9AcQnXzjzH4KTvAX0gFJyATFhjC0
+         yHQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=B8c8UcKOabNygb4slUhxb1MpWvtXEu3qUQwNJzJoOaQ=;
-        b=UQC+CIylEFo0bOHIaZzRFb4DbLYe7yP9y5cPA2FfsAIGFP/3KEFKsgk5XMOOr1g/li
-         zOj0D2cWxnyCAvYhj55VMtiZSwxV3xDmRuW6sQ8R4y4W8geH87RATnmc8E1qgaWncW26
-         SVQojNIIF0WSaMY5w2t4Thenie4DAnOL9yS+H4CA+2VkkVl6xrxd/t3E6VQ1pKVN8mPB
-         TMr+Yye/1pOO4UDQ6dRnbS8WdXxP5SG52NG0vZiSaamYWnc/0ixGPKZPGUs9PY7+CY/u
-         xojXYOBNfbiWIBaa9jIm4pzWEdsitcHTKTenhRCFHSyYE9uhNGbD7lnyxwEESoZsrcfM
-         hX0w==
-X-Gm-Message-State: AOAM530PkZNsMXhbTkp9awmYn8iOrcAuDB9dJM2xEBheGjf3naQpyPi4
-        CkreGW8NVfJrpmoHWnkdKm1x1A==
-X-Google-Smtp-Source: ABdhPJzNT5cwZpkJtm0q8ZvU8NX5NQwW4/WZfbEKBrzi+F7XlegU0PUEb28qIZxXi163Kc8lYpEvhw==
-X-Received: by 2002:a05:6e02:1a21:: with SMTP id g1mr17471600ile.108.1620063727706;
-        Mon, 03 May 2021 10:42:07 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id w6sm5824312ilq.64.2021.05.03.10.42.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 10:42:07 -0700 (PDT)
-Subject: Re: [PATCH v9] bio: limit bio max size
-To:     Changheun Lee <nanich.lee@samsung.com>, bvanassche@acm.org,
-        yi.zhang@redhat.com, ming.lei@redhat.com, bgoncalv@redhat.com,
-        hch@lst.de, jaegeuk@kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patchwork-bot@kernel.org
-References: <CGME20210503101008epcas1p25d6b727dafcf9ff24db6aa41a3f611fa@epcas1p2.samsung.com>
- <20210503095203.29076-1-nanich.lee@samsung.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <c2951dc5-18bc-6c99-7cdc-21e6a8a12f9c@kernel.dk>
-Date:   Mon, 3 May 2021 11:42:06 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YwS8hQU33H1/ZeBZdRBG9ZJ/sKIODEM23v4su4rhiCc=;
+        b=HxTaVgskulUSqDBGuvp+ST51gXwpfWLdN9aSh5QAYGTzenKiGSVORXOdRMTWj7G2GB
+         cVtuKliI67dmu8qtO+WExDtnWfoqDLyEndon6Fgmb+5KnSB2cesLusUYCJFAy+0BYNOi
+         l8dRr42wTbKjPYPvJq5RgbCfgeMM3+XmaVJl1SMERk/R4cQWL8yVVwkk9CVL93gUzgRu
+         mlD3beA4wyf79NiB47PEfoGZHS/tvvvgI1NsNWx7ByZc6Lle1Zxk0Gqf/5JuXsfCMndj
+         mkxxQ7tg41AMFcpxtN+9nGgtw8EPrMgr9PhE6Tf9xiKWJQQe4MijZU5YVX5refNq7v/j
+         o2uQ==
+X-Gm-Message-State: AOAM530TS98ZKCtky7KS1PJ4LDThY9PGKGv/QJhvexEPzYP0nGjbh9xU
+        2aUgtWiGKnkirOcYtw8ZY1c8zKFwMEGQ3Q==
+X-Google-Smtp-Source: ABdhPJzTQEVa1Em9j/IFmpfCNW+75vCOby+/gmN3VVIzRlRGpxwsE43eZzakv3nxEXUiOCvj5fYExg==
+X-Received: by 2002:a17:90a:9f02:: with SMTP id n2mr16264556pjp.190.1620063761016;
+        Mon, 03 May 2021 10:42:41 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id u20sm194311pgl.27.2021.05.03.10.42.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 May 2021 10:42:40 -0700 (PDT)
+Date:   Mon, 3 May 2021 11:42:38 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH] rpmsg: char: Remove useless includes
+Message-ID: <20210503174238.GD1699665@xps15>
+References: <20210429080639.6379-1-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
-In-Reply-To: <20210503095203.29076-1-nanich.lee@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210429080639.6379-1-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/3/21 3:52 AM, Changheun Lee wrote:
-> bio size can grow up to 4GB when muli-page bvec is enabled.
-> but sometimes it would lead to inefficient behaviors.
-> in case of large chunk direct I/O, - 32MB chunk read in user space -
-> all pages for 32MB would be merged to a bio structure if the pages
-> physical addresses are contiguous. it makes some delay to submit
-> until merge complete. bio max size should be limited to a proper size.
+On Thu, Apr 29, 2021 at 10:06:39AM +0200, Arnaud Pouliquen wrote:
+> Remove includes that are not requested to build the module.
 > 
-> When 32MB chunk read with direct I/O option is coming from userspace,
-> kernel behavior is below now in do_direct_IO() loop. it's timeline.
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> ---
+> applied without issue on Bjorn next branch (dc0e14fa833b)
+> ---
+>  drivers/rpmsg/rpmsg_char.c | 9 ---------
+>  1 file changed, 9 deletions(-)
 > 
->  | bio merge for 32MB. total 8,192 pages are merged.
->  | total elapsed time is over 2ms.
->  |------------------ ... ----------------------->|
->                                                  | 8,192 pages merged a bio.
->                                                  | at this time, first bio submit is done.
->                                                  | 1 bio is split to 32 read request and issue.
->                                                  |--------------->
->                                                   |--------------->
->                                                    |--------------->
->                                                               ......
->                                                                    |--------------->
->                                                                     |--------------->|
->                           total 19ms elapsed to complete 32MB read done from device. |
-> 
-> If bio max size is limited with 1MB, behavior is changed below.
-> 
->  | bio merge for 1MB. 256 pages are merged for each bio.
->  | total 32 bio will be made.
->  | total elapsed time is over 2ms. it's same.
->  | but, first bio submit timing is fast. about 100us.
->  |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
->       | 256 pages merged a bio.
->       | at this time, first bio submit is done.
->       | and 1 read request is issued for 1 bio.
->       |--------------->
->            |--------------->
->                 |--------------->
->                                       ......
->                                                  |--------------->
->                                                   |--------------->|
->         total 17ms elapsed to complete 32MB read done from device. |
-> 
-> As a result, read request issue timing is faster if bio max size is limited.
-> Current kernel behavior with multipage bvec, super large bio can be created.
-> And it lead to delay first I/O request issue.
+> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+> index 2bebc9b2d163..e4e54f515af6 100644
+> --- a/drivers/rpmsg/rpmsg_char.c
+> +++ b/drivers/rpmsg/rpmsg_char.c
+> @@ -10,19 +10,10 @@
+>   * was based on TI & Google OMX rpmsg driver.
+>   */
+>  #include <linux/cdev.h>
+> -#include <linux/device.h>
 
-Applied, thanks.
+This is where the declaration for struct device is along with other goodies like
+get/put_device().
 
--- 
-Jens Axboe
+> -#include <linux/fs.h>
 
+That is where struct file is declared.
+
+> -#include <linux/idr.h>
+
+This is where you get ida_simple_get() and ida_simple_remove() from.
+
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+> -#include <linux/poll.h>
+
+This is where struct poll_table and poll_wait() comes from.
+
+>  #include <linux/rpmsg.h>
+>  #include <linux/skbuff.h>
+> -#include <linux/slab.h>
+
+This gives you kzalloc() and kfree().
+
+> -#include <linux/uaccess.h>
+
+This gives you copy_from_user().
+
+> -#include <uapi/linux/rpmsg.h>
+
+This gives you RPMSG_CREATE_EPT_IOCTL and RPMSG_DESTROY_EPT_IOCTL.
+
+> -
+> -#include "rpmsg_internal.h"
+
+That one I agree with.
+
+Thanks,
+Mathieu
+
+>  
+>  #define RPMSG_DEV_MAX	(MINORMASK + 1)
+>  
+> -- 
+> 2.17.1
+> 
