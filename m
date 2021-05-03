@@ -2,281 +2,519 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD4C371E7E
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F37371E79
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232985AbhECRW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 13:22:57 -0400
-Received: from mail-bn7nam10on2064.outbound.protection.outlook.com ([40.107.92.64]:50080
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232993AbhECRWd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 13:22:33 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EUeFoY4rPpfd9X6rh1KAQAzU+ClOtpUBSLybGj0jd/yGzKQ9WKmWk1abDzAEjAV1olHMsQXix+Rudrn65lYUt6WJA1dyAbzDBf5+tQ//v0HFegfkOGvVpJ25Nk7p/2aLih7J3ZYMoN7KKaq+lNZlgTik1pB3mP9DUUcG53QnjOEZ/RXPXi8pJRwmTyW6rFQPPgnietkdkYq+o8QlCWNtAdRrNAWhBgHR6gC7/gMYGxbe4Qs3csg6+m9AWwMmwGMW4yMFpejTCutwLmDHhcCd+bZRd6UhgLX8y0rqWm4VMtpEwwY1HPTUqYeJFnefXyQhkIQA4guL+DboMqlht/wvEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JNFjYkSKS4gZ+J5giPa61NpDQ8wqqbRifQ3pk+vPeKI=;
- b=Q6FtrdEs8e7+CeJvl3Ce4BnD1jQay3eavug7kc2C8hxEeKrL3B+uaeLO5giw6Ra510eDbotq9stwvj6P0r/lXAAgQKaMrROFx3M8w1N2h/iTsfkiTYb2Lnalld/tN3//pjyxgW1zAlbP3/TIRHyJIPRI6OJT9745x8OMkLUGToPljtrqFSlxxz35TBWKcNTm+np1YGxebHajgg8Zr10pKK3U0d73FyIYdkgcEb0E2VraB86imyfGtNk6KKtZBDdFWZsVlR0Rojn3u4DOJ8jLqTqa/aBTH3uF7ulNomXYaUybb/KXjNqNIjFjiheuKF7viHN28MA61MqkD9EwilOEjA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JNFjYkSKS4gZ+J5giPa61NpDQ8wqqbRifQ3pk+vPeKI=;
- b=RVLVhbYqWBkAxqmW5TwHZyqEyFW9UNTsDo9i4JTG5LW54yKSRBQ8VP1al2Z72/DLSCJYW7y0gsmg1ppCR/eqp+QgQ/m547Evx4OxGQEpxC7h/mx6ixIlRovr9w3KcJm5/86vHPoEYf0BhpTl16H2RpO97uwb1cqo74y+AF1KZpY=
-Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
- header.d=none;lists.freedesktop.org; dmarc=none action=none
- header.from=amd.com;
-Received: from BL0PR12MB4676.namprd12.prod.outlook.com (2603:10b6:207:19::30)
- by BL0PR12MB5010.namprd12.prod.outlook.com (2603:10b6:208:17c::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.26; Mon, 3 May
- 2021 17:21:38 +0000
-Received: from BL0PR12MB4676.namprd12.prod.outlook.com
- ([fe80::50c7:783f:720a:239c]) by BL0PR12MB4676.namprd12.prod.outlook.com
- ([fe80::50c7:783f:720a:239c%5]) with mapi id 15.20.4087.040; Mon, 3 May 2021
- 17:21:38 +0000
-From:   Nikola Cornij <nikola.cornij@amd.com>
-To:     amd-gfx@lists.freedesktop.org
-Cc:     koba.ko@canonical.com, Nikola Cornij <nikola.cornij@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Mikita Lipski <mikita.lipski@amd.com>,
-        Eryk Brol <eryk.brol@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Wayne Lin <Wayne.Lin@amd.com>, Chris Park <Chris.Park@amd.com>,
-        Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>, Imre Deak <imre.deak@intel.com>,
-        Lyude Paul <lyude@redhat.com>,
-        Ramalingam C <ramalingam.c@intel.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Lee Shawn C <shawn.c.lee@intel.com>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        Dave Airlie <airlied@redhat.com>,
-        James Jones <jajones@nvidia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, nouveau@lists.freedesktop.org
-Subject: [PATCH v1 1/1] drm/dp_mst: Use kHz as link rate units when settig source max link caps at init
-Date:   Mon,  3 May 2021 13:21:09 -0400
-Message-Id: <20210503172109.22877-2-nikola.cornij@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210503172109.22877-1-nikola.cornij@amd.com>
-References: <20210503172109.22877-1-nikola.cornij@amd.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [165.204.55.250]
-X-ClientProxiedBy: YT1PR01CA0069.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2d::8) To BL0PR12MB4676.namprd12.prod.outlook.com
- (2603:10b6:207:19::30)
+        id S233042AbhECRWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 13:22:35 -0400
+Received: from mga01.intel.com ([192.55.52.88]:63291 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232462AbhECRWP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 13:22:15 -0400
+IronPort-SDR: 44tvDTPVnm1R/nKF0GFWhLMM4RveVfawpQs/LN1qbZERikTu8XKfwjYAx8/HK7vNW/yRY4ZYFD
+ SwPJksERoBwQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9973"; a="218587851"
+X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
+   d="scan'208";a="218587851"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 10:21:02 -0700
+IronPort-SDR: ZdDHWmNmi5KNZrnfKuWI133l7CE+bSPuo5YvL+JR/U9zG0RZeYegzugE3/hQ5Kay4vF1S2/tr2
+ ZYuJZ8hITkyA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
+   d="scan'208";a="450456782"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga004.fm.intel.com with ESMTP; 03 May 2021 10:21:00 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id BCEA0D9; Mon,  3 May 2021 20:21:19 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Phil Reid <preid@electromag.com.au>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?q?Jan=20Sebastian=20G=C3=B6tte?= <linux@jaseg.net>,
+        Nishad Kamdar <nishadkamdar@gmail.com>
+Subject: [PATCH v4 1/5] staging: fbtft: Rectify GPIO handling
+Date:   Mon,  3 May 2021 20:21:10 +0300
+Message-Id: <20210503172114.27891-2-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210503172114.27891-1-andriy.shevchenko@linux.intel.com>
+References: <20210503172114.27891-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ubuntu.localdomain (165.204.55.250) by YT1PR01CA0069.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2d::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.38 via Frontend Transport; Mon, 3 May 2021 17:21:36 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d66e91ab-5052-42e8-3ede-08d90e57e895
-X-MS-TrafficTypeDiagnostic: BL0PR12MB5010:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR12MB5010C7BEE3BD3499FCD8B2C4EE5B9@BL0PR12MB5010.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1751;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uRJc7sm8F+iI4VGzVUkzpmovEU7QZc5CVaJ+3LX3ExwcRoQRygOymeVGApUEZ4Q+9W//ur4QDwN1Lub3Q51HPTW6Yaz7A7E55sKDApoTD87l3dVTUilaJcJ7iBc8fr8huFmYwlqCxrwcOmVrp2qBiB02CmRQTtsWECqbIGFEs29CyiyfsbKwlEA3EGd+tnC/eu+LZjStjSxL5CKeT5KqnWiFWNV0dKDuA2XJtgXY5dAtZDw0h3rF+sC4c5ih97YXC5H22Nl7H3PtKMvJ878s+4tO7wJssTvfs21SnbI2g0mUlnRWlDlirrB4ZC2e2MYDLSj9/eqcxXh/IBn0kYtjPEm0sIRLwOE2mt1mKQFLuqHgnuALdqyTmsGrwYdSwoV/bweWrjlw3O7hoSzTf7vd6o0puV6Wp6AbPYR8mXXy7/wpthlizGD5QgVL9kFjew84QDb4Nf+a0SWmOKBAE1Rq2Po1kq+/mJqax/TtYiqtUue8mrgxMmPXFJt3H5YbA2FJzA+jzIosa4Mv/0II9Ei3yVapvRAVptO8Xswcz2xz0PDU5qnfXlsM3HWIEWVmjsQy+2eG2PVSiQwUKOrsibGqDK+hWzjoyFX4bce0iHYQ/+jQVhKHDLMnRrDl3ZQirt0L2Mtb5S4VGGoi0xpzW/dQA6/e98xillcHX6wPUJTd+3E=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB4676.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(396003)(366004)(346002)(316002)(2906002)(6506007)(44832011)(8936002)(83380400001)(6486002)(36756003)(38350700002)(38100700002)(6512007)(86362001)(1076003)(478600001)(4326008)(6666004)(54906003)(8676002)(66556008)(5660300002)(2616005)(66476007)(186003)(16526019)(26005)(6916009)(66946007)(7416002)(52116002)(956004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?zsP7fwcK/nUovNg42CsBhiqHWWkq3TP5E/voEiMkbmK+QbOKJo/TddSDlH2c?=
- =?us-ascii?Q?vsPGRyMXvqPIcuwEp+RRbe10d2JurVZgHaO2b5qsTTT3qQNFplVdJUKkStJs?=
- =?us-ascii?Q?ElW145N+9wuGBFiFomGWiUB+HhKC6EQU7Pf5ylSGA73xYFng3rl7xtfc1ptT?=
- =?us-ascii?Q?QLSeqk5H605z/d9nFGCYPgUJ6Vh9p4iDhYmotfbsiMnii2H+gheOsE3j69L5?=
- =?us-ascii?Q?PTmEZRbU3JreciMXIqolwEnqRP/oKxTAND3CkGoahTUE2Iweqkg69Jo30RxQ?=
- =?us-ascii?Q?S+RMAjI026qLElejcz3UbD/+67uySGoQ16rndWqDfDAgDXSSs/OX7J9sKkrg?=
- =?us-ascii?Q?JZSpwX96WTkyJ0ORsALSWkY80N1f8paengyJODHltsAt3tDBE4OLKVt25Iyg?=
- =?us-ascii?Q?7Qq9kkhf+XmWho5Q+bU0H91DbhdTMJCIT9nnRY/YUHMvHTxyyR4zrDRv8ZPx?=
- =?us-ascii?Q?MgDJGtNyd8gfR5+oJMbhA6+GeV+/TgSxDQADPHdO1JSsnjwzQjzeg/aYNamx?=
- =?us-ascii?Q?ZJNZcbj/9LXpd4yAr23eU+ZxKbCwGimvKlvB4PwSi3tFk6EK2lP5UQ/IX8AO?=
- =?us-ascii?Q?Rb9wFPP+2d+T2JaKYWckFV0MfnDUcLtqjP2h9N4LBKT2j9CX1eHdPkkLPpF1?=
- =?us-ascii?Q?hxWQPRJTUbOt8qW9mZoEJR/DkAcPYLI0ZtPdnq/V6d+yD41pm8y7dpnNySVB?=
- =?us-ascii?Q?ploVoHPyPvWH+mM0qHbadxeLis+gL/xdZusAWHbU6B/OsJ/H35rS47ekIqAI?=
- =?us-ascii?Q?3w/a9dbw2pKIWkPvQ7hlEpUuGVBbP2j40QRJxX/ZO9+5BDFoAkugswPVBiQd?=
- =?us-ascii?Q?HO2j36v6Q8cUfJp+GRLoNmD0pEm2TM2jU04bFLrk9PyBrNvvZalLXjTBY33R?=
- =?us-ascii?Q?QfjFZye5d9pJqPNBD2Tntsc7bA/ln9OvBrC757wxuJR1KcDfZNsEZmchD6HG?=
- =?us-ascii?Q?vjEUUcW3k4DJPDX0W8IpvXTNqDjlR2xAiAQB8Mk1B0TGfaBuh/OH7OAYvV76?=
- =?us-ascii?Q?YKBZmm2fkipYVFLwjJGEJ+ivqsjO5WWPyEtROf5M5PVsYaiSNqkjs5RoGStC?=
- =?us-ascii?Q?5pvQsMFTzyOw5gWfF7M+uRFylzvlZok/TKnLy3oplaH3d1HGC69TW0RRpLnx?=
- =?us-ascii?Q?/29MDq7nGCHXjBo1wTmWv/vJ7tsWxwk2eaudvFexfPJmwwMRYKHhV9zl9CoM?=
- =?us-ascii?Q?Mv6SE0nIZyWlbPiOp3K/n0cNnFICGe+noBL6yDwdLvd5IvAMMJgeiAk8hl+S?=
- =?us-ascii?Q?JPTV7hMgZMoGFekeInNRgEAouGhuRL8cNZ3BtH0lQOIuoXSJavBn3R0t3YKv?=
- =?us-ascii?Q?QVyTBYhg3eAU7rBWJDBZZvpT?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d66e91ab-5052-42e8-3ede-08d90e57e895
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB4676.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2021 17:21:37.8773
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zZR82G+R0gYchYz+IzJ2rOznDQLvRsFb1IBYp3z1YfCTCtkb6d/Bt7Q+2CUGz/X+Z+JZ/lsKFLjlpG7sFzsemA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5010
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[why]
-Link rate in kHz is what is eventually required to calculate the link
-bandwidth, which makes kHz a more generic unit. This should also make
-forward-compatibility with new DP standards easier.
+The infamous commit c440eee1a7a1 ("Staging: staging: fbtft: Switch to
+the GPIO descriptor interface") broke GPIO handling completely.
+It has already four commits to rectify and it seems not enough.
+In order to fix the mess here we:
 
-[how]
-- Replace 'link rate DPCD code' with 'link rate in kHz' when used with
-drm_dp_mst_topology_mgr_init()
-- Add/remove related DPCD code conversion from/to kHz where applicable
+  1) Set default to "inactive" for all requested pins
 
-Signed-off-by: Nikola Cornij <nikola.cornij@amd.com>
+  2) Fix CS#, RD#, and WR# pins polarity since it's active low
+     and GPIO descriptor interface takes it into consideration
+     from the Device Tree or ACPI
+
+  3) Consolidate chip activation (CS# assertion) under default
+     ->reset() callback
+
+To summarize the expectations about polarity for GPIOs:
+
+   RD#			Low
+   WR#			Low
+   CS#			Low
+   RESET#		Low
+   DC or RS		High
+   RW			High
+   Data	0 .. 15		High
+
+See also Adafruit learning course [1] for the example of the schematics.
+
+While at it, drop unneeded NULL checks, since GPIO API is tolerant to that.
+
+[1]: https://learn.adafruit.com/adafruit-2-8-and-3-2-color-tft-touchscreen-breakout-v2/downloads
+
+Fixes: 92e3e884887c ("Staging: fbtft: Fix GPIO handling")
+Fixes: b918d1c27066 ("Staging: fbtft: Fix reset assertion when using gpio descriptor")
+Fixes: dbc4f989c878 ("Staging: fbtft: Fix probing of gpio descriptor")
+Fixes: c440eee1a7a1 ("Staging: fbtft: Switch to the gpio descriptor interface")
+Cc: Jan Sebastian Götte <linux@jaseg.net>
+Cc: Nishad Kamdar <nishadkamdar@gmail.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Phil Reid <preid@electromag.com.au>
 ---
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c   | 4 ++--
- drivers/gpu/drm/drm_dp_mst_topology.c                     | 8 ++++----
- drivers/gpu/drm/i915/display/intel_dp_mst.c               | 4 ++--
- drivers/gpu/drm/nouveau/dispnv50/disp.c                   | 5 +++--
- drivers/gpu/drm/radeon/radeon_dp_mst.c                    | 2 +-
- include/drm/drm_dp_mst_helper.h                           | 8 ++++----
- 6 files changed, 16 insertions(+), 15 deletions(-)
+ drivers/staging/fbtft/fb_agm1264k-fl.c | 20 ++++++++++----------
+ drivers/staging/fbtft/fb_bd663474.c    |  4 ----
+ drivers/staging/fbtft/fb_ili9163.c     |  4 ----
+ drivers/staging/fbtft/fb_ili9320.c     |  1 -
+ drivers/staging/fbtft/fb_ili9325.c     |  4 ----
+ drivers/staging/fbtft/fb_ili9340.c     |  1 -
+ drivers/staging/fbtft/fb_s6d1121.c     |  4 ----
+ drivers/staging/fbtft/fb_sh1106.c      |  1 -
+ drivers/staging/fbtft/fb_ssd1289.c     |  4 ----
+ drivers/staging/fbtft/fb_ssd1325.c     |  2 --
+ drivers/staging/fbtft/fb_ssd1331.c     |  6 ++----
+ drivers/staging/fbtft/fb_ssd1351.c     |  1 -
+ drivers/staging/fbtft/fb_upd161704.c   |  4 ----
+ drivers/staging/fbtft/fb_watterott.c   |  1 -
+ drivers/staging/fbtft/fbtft-bus.c      |  3 +--
+ drivers/staging/fbtft/fbtft-core.c     | 13 ++++++-------
+ drivers/staging/fbtft/fbtft-io.c       | 12 ++++++------
+ 17 files changed, 25 insertions(+), 60 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
-index ef8d53e24c47..3f3ead83c21c 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
-@@ -453,8 +453,8 @@ void amdgpu_dm_initialize_dp_connector(struct amdgpu_display_manager *dm,
- 		&aconnector->dm_dp_aux.aux,
- 		16,
- 		4,
--		(u8)max_link_enc_cap.lane_count,
--		(u8)max_link_enc_cap.link_rate,
-+		max_link_enc_cap.lane_count,
-+		drm_dp_bw_code_to_link_rate(max_link_enc_cap.link_rate),
- 		aconnector->connector_id);
+diff --git a/drivers/staging/fbtft/fb_agm1264k-fl.c b/drivers/staging/fbtft/fb_agm1264k-fl.c
+index eeeeec97ad27..b545c2ca80a4 100644
+--- a/drivers/staging/fbtft/fb_agm1264k-fl.c
++++ b/drivers/staging/fbtft/fb_agm1264k-fl.c
+@@ -84,9 +84,9 @@ static void reset(struct fbtft_par *par)
  
- 	drm_connector_attach_dp_subconnector_property(&aconnector->base);
-diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
-index 54604633e65c..32b7f8983b94 100644
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -3722,9 +3722,9 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
- 		}
+ 	dev_dbg(par->info->device, "%s()\n", __func__);
  
- 		lane_count = min_t(int, mgr->dpcd[2] & DP_MAX_LANE_COUNT_MASK, mgr->max_lane_count);
--		link_rate = min_t(int, mgr->dpcd[1], mgr->max_link_rate);
-+		link_rate = min_t(int, drm_dp_bw_code_to_link_rate(mgr->dpcd[1]), mgr->max_link_rate);
- 		mgr->pbn_div = drm_dp_get_vc_payload_bw(mgr,
--							drm_dp_bw_code_to_link_rate(link_rate),
-+							link_rate,
- 							lane_count);
- 		if (mgr->pbn_div == 0) {
- 			ret = -EINVAL;
-@@ -5454,7 +5454,7 @@ EXPORT_SYMBOL(drm_atomic_get_mst_topology_state);
-  * @max_dpcd_transaction_bytes: hw specific DPCD transaction limit
-  * @max_payloads: maximum number of payloads this GPU can source
-  * @max_lane_count: maximum number of lanes this GPU supports
-- * @max_link_rate: maximum link rate this GPU supports, units as in DPCD
-+ * @max_link_rate: maximum link rate per lane this GPU supports in kHz
-  * @conn_base_id: the connector object ID the MST device is connected to.
-  *
-  * Return 0 for success, or negative error code on failure
-@@ -5462,7 +5462,7 @@ EXPORT_SYMBOL(drm_atomic_get_mst_topology_state);
- int drm_dp_mst_topology_mgr_init(struct drm_dp_mst_topology_mgr *mgr,
- 				 struct drm_device *dev, struct drm_dp_aux *aux,
- 				 int max_dpcd_transaction_bytes, int max_payloads,
--				 u8 max_lane_count, u8 max_link_rate,
-+				 int max_lane_count, int max_link_rate,
- 				 int conn_base_id)
- {
- 	struct drm_dp_mst_topology_state *mst_state;
-diff --git a/drivers/gpu/drm/i915/display/intel_dp_mst.c b/drivers/gpu/drm/i915/display/intel_dp_mst.c
-index f608c0cb98f4..26f65445bc8a 100644
---- a/drivers/gpu/drm/i915/display/intel_dp_mst.c
-+++ b/drivers/gpu/drm/i915/display/intel_dp_mst.c
-@@ -960,8 +960,8 @@ intel_dp_mst_encoder_init(struct intel_digital_port *dig_port, int conn_base_id)
- 	intel_dp_create_fake_mst_encoders(dig_port);
- 	ret = drm_dp_mst_topology_mgr_init(&intel_dp->mst_mgr, &i915->drm,
- 					   &intel_dp->aux, 16, 3,
--					   (u8)dig_port->max_lanes,
--					   drm_dp_link_rate_to_bw_code(max_source_rate),
-+					   dig_port->max_lanes,
-+					   max_source_rate,
- 					   conn_base_id);
- 	if (ret)
- 		return ret;
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-index c46d0374b6e6..f949767698fc 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-@@ -1617,8 +1617,9 @@ nv50_mstm_new(struct nouveau_encoder *outp, struct drm_dp_aux *aux, int aux_max,
- 	mstm->mgr.cbs = &nv50_mstm;
- 
- 	ret = drm_dp_mst_topology_mgr_init(&mstm->mgr, dev, aux, aux_max,
--					   (u8)max_payloads, outp->dcb->dpconf.link_nr,
--					   (u8)outp->dcb->dpconf.link_bw, conn_base_id);
-+					   max_payloads, outp->dcb->dpconf.link_nr,
-+					   drm_dp_bw_code_to_link_rate(outp->dcb->dpconf.link_bw),
-+					   conn_base_id);
- 	if (ret)
- 		return ret;
- 
-diff --git a/drivers/gpu/drm/radeon/radeon_dp_mst.c b/drivers/gpu/drm/radeon/radeon_dp_mst.c
-index 13072c2a6502..ec867fa880a4 100644
---- a/drivers/gpu/drm/radeon/radeon_dp_mst.c
-+++ b/drivers/gpu/drm/radeon/radeon_dp_mst.c
-@@ -642,7 +642,7 @@ radeon_dp_mst_init(struct radeon_connector *radeon_connector)
- 	radeon_connector->mst_mgr.cbs = &mst_cbs;
- 	return drm_dp_mst_topology_mgr_init(&radeon_connector->mst_mgr, dev,
- 					    &radeon_connector->ddc_bus->aux, 16, 6,
--					    4, (u8)max_link_rate,
-+					    4, drm_dp_bw_code_to_link_rate(max_link_rate),
- 					    radeon_connector->base.base.id);
+-	gpiod_set_value(par->gpio.reset, 0);
+-	udelay(20);
+ 	gpiod_set_value(par->gpio.reset, 1);
++	udelay(20);
++	gpiod_set_value(par->gpio.reset, 0);
+ 	mdelay(120);
  }
  
-diff --git a/include/drm/drm_dp_mst_helper.h b/include/drm/drm_dp_mst_helper.h
-index c87a829b6498..ddb9231d0309 100644
---- a/include/drm/drm_dp_mst_helper.h
-+++ b/include/drm/drm_dp_mst_helper.h
-@@ -596,11 +596,11 @@ struct drm_dp_mst_topology_mgr {
- 	/**
- 	 * @max_lane_count: maximum number of lanes the GPU can drive.
- 	 */
--	u8 max_lane_count;
-+	int max_lane_count;
- 	/**
--	 * @max_link_rate: maximum link rate per lane GPU can output.
-+	 * @max_link_rate: maximum link rate per lane GPU can output, in kHz.
- 	 */
--	u8 max_link_rate;
-+	int max_link_rate;
- 	/**
- 	 * @conn_base_id: DRM connector ID this mgr is connected to. Only used
- 	 * to build the MST connector path value.
-@@ -774,7 +774,7 @@ int drm_dp_mst_topology_mgr_init(struct drm_dp_mst_topology_mgr *mgr,
- 				 struct drm_device *dev, struct drm_dp_aux *aux,
- 				 int max_dpcd_transaction_bytes,
- 				 int max_payloads,
--				 u8 max_lane_count, u8 max_link_rate,
-+				 int max_lane_count, int max_link_rate,
- 				 int conn_base_id);
+@@ -194,12 +194,12 @@ static void write_reg8_bus8(struct fbtft_par *par, int len, ...)
+ 	/* select chip */
+ 	if (*buf) {
+ 		/* cs1 */
+-		gpiod_set_value(par->CS0, 1);
+-		gpiod_set_value(par->CS1, 0);
+-	} else {
+-		/* cs0 */
+ 		gpiod_set_value(par->CS0, 0);
+ 		gpiod_set_value(par->CS1, 1);
++	} else {
++		/* cs0 */
++		gpiod_set_value(par->CS0, 1);
++		gpiod_set_value(par->CS1, 0);
+ 	}
  
- void drm_dp_mst_topology_mgr_destroy(struct drm_dp_mst_topology_mgr *mgr);
+ 	gpiod_set_value(par->RS, 0); /* RS->0 (command mode) */
+@@ -397,8 +397,8 @@ static int write_vmem(struct fbtft_par *par, size_t offset, size_t len)
+ 	}
+ 	kfree(convert_buf);
+ 
+-	gpiod_set_value(par->CS0, 1);
+-	gpiod_set_value(par->CS1, 1);
++	gpiod_set_value(par->CS0, 0);
++	gpiod_set_value(par->CS1, 0);
+ 
+ 	return ret;
+ }
+@@ -419,10 +419,10 @@ static int write(struct fbtft_par *par, void *buf, size_t len)
+ 		for (i = 0; i < 8; ++i)
+ 			gpiod_set_value(par->gpio.db[i], data & (1 << i));
+ 		/* set E */
+-		gpiod_set_value(par->EPIN, 1);
++		gpiod_set_value(par->EPIN, 0);
+ 		udelay(5);
+ 		/* unset E - write */
+-		gpiod_set_value(par->EPIN, 0);
++		gpiod_set_value(par->EPIN, 1);
+ 		udelay(1);
+ 	}
+ 
+diff --git a/drivers/staging/fbtft/fb_bd663474.c b/drivers/staging/fbtft/fb_bd663474.c
+index e2c7646588f8..1629c2c440a9 100644
+--- a/drivers/staging/fbtft/fb_bd663474.c
++++ b/drivers/staging/fbtft/fb_bd663474.c
+@@ -12,7 +12,6 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+-#include <linux/gpio/consumer.h>
+ #include <linux/delay.h>
+ 
+ #include "fbtft.h"
+@@ -24,9 +23,6 @@
+ 
+ static int init_display(struct fbtft_par *par)
+ {
+-	if (par->gpio.cs)
+-		gpiod_set_value(par->gpio.cs, 0);  /* Activate chip */
+-
+ 	par->fbtftops.reset(par);
+ 
+ 	/* Initialization sequence from Lib_UTFT */
+diff --git a/drivers/staging/fbtft/fb_ili9163.c b/drivers/staging/fbtft/fb_ili9163.c
+index 05648c3ffe47..6582a2c90aaf 100644
+--- a/drivers/staging/fbtft/fb_ili9163.c
++++ b/drivers/staging/fbtft/fb_ili9163.c
+@@ -11,7 +11,6 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+-#include <linux/gpio/consumer.h>
+ #include <linux/delay.h>
+ #include <video/mipi_display.h>
+ 
+@@ -77,9 +76,6 @@ static int init_display(struct fbtft_par *par)
+ {
+ 	par->fbtftops.reset(par);
+ 
+-	if (par->gpio.cs)
+-		gpiod_set_value(par->gpio.cs, 0);  /* Activate chip */
+-
+ 	write_reg(par, MIPI_DCS_SOFT_RESET); /* software reset */
+ 	mdelay(500);
+ 	write_reg(par, MIPI_DCS_EXIT_SLEEP_MODE); /* exit sleep */
+diff --git a/drivers/staging/fbtft/fb_ili9320.c b/drivers/staging/fbtft/fb_ili9320.c
+index f2e72d14431d..a8f4c618b754 100644
+--- a/drivers/staging/fbtft/fb_ili9320.c
++++ b/drivers/staging/fbtft/fb_ili9320.c
+@@ -8,7 +8,6 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+-#include <linux/gpio/consumer.h>
+ #include <linux/spi/spi.h>
+ #include <linux/delay.h>
+ 
+diff --git a/drivers/staging/fbtft/fb_ili9325.c b/drivers/staging/fbtft/fb_ili9325.c
+index c9aa4cb43123..16d3b17ca279 100644
+--- a/drivers/staging/fbtft/fb_ili9325.c
++++ b/drivers/staging/fbtft/fb_ili9325.c
+@@ -10,7 +10,6 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+-#include <linux/gpio/consumer.h>
+ #include <linux/delay.h>
+ 
+ #include "fbtft.h"
+@@ -85,9 +84,6 @@ static int init_display(struct fbtft_par *par)
+ {
+ 	par->fbtftops.reset(par);
+ 
+-	if (par->gpio.cs)
+-		gpiod_set_value(par->gpio.cs, 0);  /* Activate chip */
+-
+ 	bt &= 0x07;
+ 	vc &= 0x07;
+ 	vrh &= 0x0f;
+diff --git a/drivers/staging/fbtft/fb_ili9340.c b/drivers/staging/fbtft/fb_ili9340.c
+index 415183c7054a..704236bcaf3f 100644
+--- a/drivers/staging/fbtft/fb_ili9340.c
++++ b/drivers/staging/fbtft/fb_ili9340.c
+@@ -8,7 +8,6 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+-#include <linux/gpio/consumer.h>
+ #include <linux/delay.h>
+ #include <video/mipi_display.h>
+ 
+diff --git a/drivers/staging/fbtft/fb_s6d1121.c b/drivers/staging/fbtft/fb_s6d1121.c
+index 8c7de3290343..62f27172f844 100644
+--- a/drivers/staging/fbtft/fb_s6d1121.c
++++ b/drivers/staging/fbtft/fb_s6d1121.c
+@@ -12,7 +12,6 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+-#include <linux/gpio/consumer.h>
+ #include <linux/delay.h>
+ 
+ #include "fbtft.h"
+@@ -29,9 +28,6 @@ static int init_display(struct fbtft_par *par)
+ {
+ 	par->fbtftops.reset(par);
+ 
+-	if (par->gpio.cs)
+-		gpiod_set_value(par->gpio.cs, 0);  /* Activate chip */
+-
+ 	/* Initialization sequence from Lib_UTFT */
+ 
+ 	write_reg(par, 0x0011, 0x2004);
+diff --git a/drivers/staging/fbtft/fb_sh1106.c b/drivers/staging/fbtft/fb_sh1106.c
+index 6f7249493ea3..7b9ab39e1c1a 100644
+--- a/drivers/staging/fbtft/fb_sh1106.c
++++ b/drivers/staging/fbtft/fb_sh1106.c
+@@ -9,7 +9,6 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+-#include <linux/gpio/consumer.h>
+ #include <linux/delay.h>
+ 
+ #include "fbtft.h"
+diff --git a/drivers/staging/fbtft/fb_ssd1289.c b/drivers/staging/fbtft/fb_ssd1289.c
+index 7a3fe022cc69..f27bab38b3ec 100644
+--- a/drivers/staging/fbtft/fb_ssd1289.c
++++ b/drivers/staging/fbtft/fb_ssd1289.c
+@@ -10,7 +10,6 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+-#include <linux/gpio/consumer.h>
+ 
+ #include "fbtft.h"
+ 
+@@ -28,9 +27,6 @@ static int init_display(struct fbtft_par *par)
+ {
+ 	par->fbtftops.reset(par);
+ 
+-	if (par->gpio.cs)
+-		gpiod_set_value(par->gpio.cs, 0);  /* Activate chip */
+-
+ 	write_reg(par, 0x00, 0x0001);
+ 	write_reg(par, 0x03, 0xA8A4);
+ 	write_reg(par, 0x0C, 0x0000);
+diff --git a/drivers/staging/fbtft/fb_ssd1325.c b/drivers/staging/fbtft/fb_ssd1325.c
+index 8a3140d41d8b..796a2ac3e194 100644
+--- a/drivers/staging/fbtft/fb_ssd1325.c
++++ b/drivers/staging/fbtft/fb_ssd1325.c
+@@ -35,8 +35,6 @@ static int init_display(struct fbtft_par *par)
+ {
+ 	par->fbtftops.reset(par);
+ 
+-	gpiod_set_value(par->gpio.cs, 0);
+-
+ 	write_reg(par, 0xb3);
+ 	write_reg(par, 0xf0);
+ 	write_reg(par, 0xae);
+diff --git a/drivers/staging/fbtft/fb_ssd1331.c b/drivers/staging/fbtft/fb_ssd1331.c
+index 37622c9462aa..ec5eced7f8cb 100644
+--- a/drivers/staging/fbtft/fb_ssd1331.c
++++ b/drivers/staging/fbtft/fb_ssd1331.c
+@@ -81,8 +81,7 @@ static void write_reg8_bus8(struct fbtft_par *par, int len, ...)
+ 	va_start(args, len);
+ 
+ 	*buf = (u8)va_arg(args, unsigned int);
+-	if (par->gpio.dc)
+-		gpiod_set_value(par->gpio.dc, 0);
++	gpiod_set_value(par->gpio.dc, 0);
+ 	ret = par->fbtftops.write(par, par->buf, sizeof(u8));
+ 	if (ret < 0) {
+ 		va_end(args);
+@@ -104,8 +103,7 @@ static void write_reg8_bus8(struct fbtft_par *par, int len, ...)
+ 			return;
+ 		}
+ 	}
+-	if (par->gpio.dc)
+-		gpiod_set_value(par->gpio.dc, 1);
++	gpiod_set_value(par->gpio.dc, 1);
+ 	va_end(args);
+ }
+ 
+diff --git a/drivers/staging/fbtft/fb_ssd1351.c b/drivers/staging/fbtft/fb_ssd1351.c
+index 900b28d826b2..cf263a58a148 100644
+--- a/drivers/staging/fbtft/fb_ssd1351.c
++++ b/drivers/staging/fbtft/fb_ssd1351.c
+@@ -2,7 +2,6 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+-#include <linux/gpio/consumer.h>
+ #include <linux/spi/spi.h>
+ #include <linux/delay.h>
+ 
+diff --git a/drivers/staging/fbtft/fb_upd161704.c b/drivers/staging/fbtft/fb_upd161704.c
+index c77832ae5e5b..c680160d6380 100644
+--- a/drivers/staging/fbtft/fb_upd161704.c
++++ b/drivers/staging/fbtft/fb_upd161704.c
+@@ -12,7 +12,6 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+-#include <linux/gpio/consumer.h>
+ #include <linux/delay.h>
+ 
+ #include "fbtft.h"
+@@ -26,9 +25,6 @@ static int init_display(struct fbtft_par *par)
+ {
+ 	par->fbtftops.reset(par);
+ 
+-	if (par->gpio.cs)
+-		gpiod_set_value(par->gpio.cs, 0);  /* Activate chip */
+-
+ 	/* Initialization sequence from Lib_UTFT */
+ 
+ 	/* register reset */
+diff --git a/drivers/staging/fbtft/fb_watterott.c b/drivers/staging/fbtft/fb_watterott.c
+index 76b25df376b8..a57e1f4feef3 100644
+--- a/drivers/staging/fbtft/fb_watterott.c
++++ b/drivers/staging/fbtft/fb_watterott.c
+@@ -8,7 +8,6 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+-#include <linux/gpio/consumer.h>
+ #include <linux/delay.h>
+ 
+ #include "fbtft.h"
+diff --git a/drivers/staging/fbtft/fbtft-bus.c b/drivers/staging/fbtft/fbtft-bus.c
+index 63c65dd67b17..3d422bc11641 100644
+--- a/drivers/staging/fbtft/fbtft-bus.c
++++ b/drivers/staging/fbtft/fbtft-bus.c
+@@ -135,8 +135,7 @@ int fbtft_write_vmem16_bus8(struct fbtft_par *par, size_t offset, size_t len)
+ 	remain = len / 2;
+ 	vmem16 = (u16 *)(par->info->screen_buffer + offset);
+ 
+-	if (par->gpio.dc)
+-		gpiod_set_value(par->gpio.dc, 1);
++	gpiod_set_value(par->gpio.dc, 1);
+ 
+ 	/* non buffered write */
+ 	if (!par->txbuf.buf)
+diff --git a/drivers/staging/fbtft/fbtft-core.c b/drivers/staging/fbtft/fbtft-core.c
+index 4f362dad4436..67c3b1975a4d 100644
+--- a/drivers/staging/fbtft/fbtft-core.c
++++ b/drivers/staging/fbtft/fbtft-core.c
+@@ -38,8 +38,7 @@ int fbtft_write_buf_dc(struct fbtft_par *par, void *buf, size_t len, int dc)
+ {
+ 	int ret;
+ 
+-	if (par->gpio.dc)
+-		gpiod_set_value(par->gpio.dc, dc);
++	gpiod_set_value(par->gpio.dc, dc);
+ 
+ 	ret = par->fbtftops.write(par, buf, len);
+ 	if (ret < 0)
+@@ -79,7 +78,7 @@ static int fbtft_request_one_gpio(struct fbtft_par *par,
+ 	int ret = 0;
+ 
+ 	*gpiop = devm_gpiod_get_index_optional(dev, name, index,
+-					       GPIOD_OUT_HIGH);
++					       GPIOD_OUT_LOW);
+ 	if (IS_ERR(*gpiop)) {
+ 		ret = PTR_ERR(*gpiop);
+ 		dev_err(dev,
+@@ -226,11 +225,15 @@ static void fbtft_reset(struct fbtft_par *par)
+ {
+ 	if (!par->gpio.reset)
+ 		return;
++
+ 	fbtft_par_dbg(DEBUG_RESET, par, "%s()\n", __func__);
++
+ 	gpiod_set_value_cansleep(par->gpio.reset, 1);
+ 	usleep_range(20, 40);
+ 	gpiod_set_value_cansleep(par->gpio.reset, 0);
+ 	msleep(120);
++
++	gpiod_set_value_cansleep(par->gpio.cs, 1);  /* Activate chip */
+ }
+ 
+ static void fbtft_update_display(struct fbtft_par *par, unsigned int start_line,
+@@ -922,8 +925,6 @@ static int fbtft_init_display_from_property(struct fbtft_par *par)
+ 		goto out_free;
+ 
+ 	par->fbtftops.reset(par);
+-	if (par->gpio.cs)
+-		gpiod_set_value(par->gpio.cs, 0);  /* Activate chip */
+ 
+ 	index = -1;
+ 	val = values[++index];
+@@ -1018,8 +1019,6 @@ int fbtft_init_display(struct fbtft_par *par)
+ 	}
+ 
+ 	par->fbtftops.reset(par);
+-	if (par->gpio.cs)
+-		gpiod_set_value(par->gpio.cs, 0);  /* Activate chip */
+ 
+ 	i = 0;
+ 	while (i < FBTFT_MAX_INIT_SEQUENCE) {
+diff --git a/drivers/staging/fbtft/fbtft-io.c b/drivers/staging/fbtft/fbtft-io.c
+index 0863d257d762..de1904a443c2 100644
+--- a/drivers/staging/fbtft/fbtft-io.c
++++ b/drivers/staging/fbtft/fbtft-io.c
+@@ -142,12 +142,12 @@ int fbtft_write_gpio8_wr(struct fbtft_par *par, void *buf, size_t len)
+ 		data = *(u8 *)buf;
+ 
+ 		/* Start writing by pulling down /WR */
+-		gpiod_set_value(par->gpio.wr, 0);
++		gpiod_set_value(par->gpio.wr, 1);
+ 
+ 		/* Set data */
+ #ifndef DO_NOT_OPTIMIZE_FBTFT_WRITE_GPIO
+ 		if (data == prev_data) {
+-			gpiod_set_value(par->gpio.wr, 0); /* used as delay */
++			gpiod_set_value(par->gpio.wr, 1); /* used as delay */
+ 		} else {
+ 			for (i = 0; i < 8; i++) {
+ 				if ((data & 1) != (prev_data & 1))
+@@ -165,7 +165,7 @@ int fbtft_write_gpio8_wr(struct fbtft_par *par, void *buf, size_t len)
+ #endif
+ 
+ 		/* Pullup /WR */
+-		gpiod_set_value(par->gpio.wr, 1);
++		gpiod_set_value(par->gpio.wr, 0);
+ 
+ #ifndef DO_NOT_OPTIMIZE_FBTFT_WRITE_GPIO
+ 		prev_data = *(u8 *)buf;
+@@ -192,12 +192,12 @@ int fbtft_write_gpio16_wr(struct fbtft_par *par, void *buf, size_t len)
+ 		data = *(u16 *)buf;
+ 
+ 		/* Start writing by pulling down /WR */
+-		gpiod_set_value(par->gpio.wr, 0);
++		gpiod_set_value(par->gpio.wr, 1);
+ 
+ 		/* Set data */
+ #ifndef DO_NOT_OPTIMIZE_FBTFT_WRITE_GPIO
+ 		if (data == prev_data) {
+-			gpiod_set_value(par->gpio.wr, 0); /* used as delay */
++			gpiod_set_value(par->gpio.wr, 1); /* used as delay */
+ 		} else {
+ 			for (i = 0; i < 16; i++) {
+ 				if ((data & 1) != (prev_data & 1))
+@@ -215,7 +215,7 @@ int fbtft_write_gpio16_wr(struct fbtft_par *par, void *buf, size_t len)
+ #endif
+ 
+ 		/* Pullup /WR */
+-		gpiod_set_value(par->gpio.wr, 1);
++		gpiod_set_value(par->gpio.wr, 0);
+ 
+ #ifndef DO_NOT_OPTIMIZE_FBTFT_WRITE_GPIO
+ 		prev_data = *(u16 *)buf;
 -- 
-2.25.1
+2.30.2
 
