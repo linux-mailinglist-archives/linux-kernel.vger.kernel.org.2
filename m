@@ -2,73 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADDDF371E09
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42733371E05
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233917AbhECRIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 13:08:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44850 "EHLO mx2.suse.de"
+        id S237064AbhECRHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 13:07:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46994 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234000AbhECQ5O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 12:57:14 -0400
+        id S234825AbhECQ72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 12:59:28 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A80B6AF0F;
-        Mon,  3 May 2021 16:56:18 +0000 (UTC)
-Date:   Mon, 3 May 2021 13:56:15 -0300
-From:   Enzo Matsumiya <ematsumiya@suse.de>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Hannes Reinecke <hare@suse.de>, linux-leds@vger.kernel.org,
-        linux-block@vger.kernel.org, u.kleine-koenig@pengutronix.de,
-        Jens Axboe <axboe@kernel.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/2] leds: trigger: implement block trigger
-Message-ID: <20210503165615.maqgm5e2gq554hcm@hyori>
-References: <20210430183216.27458-1-ematsumiya@suse.de>
- <20210430183216.27458-3-ematsumiya@suse.de>
- <7e8da9ec-b3e3-0329-d54c-bb44c4064f0d@suse.de>
- <20210503101134.GB6621@amd>
+        by mx2.suse.de (Postfix) with ESMTP id 7A1B4AEA3;
+        Mon,  3 May 2021 16:58:33 +0000 (UTC)
+Date:   Mon, 3 May 2021 18:58:31 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, Yonghong Song <yhs@fb.com>,
+        linux-kernel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        dwarves@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: linux-next failing build due to missing cubictcp_state symbol
+Message-ID: <20210503165831.GR15381@kitsune.suse.cz>
+References: <YIbkR6z6mxdNSzGO@krava>
+ <YIcRlHQWWKbOlcXr@krava>
+ <20210427121237.GK6564@kitsune.suse.cz>
+ <20210430174723.GP15381@kitsune.suse.cz>
+ <3d148516-0472-8f0a-085b-94d68c5cc0d5@suse.com>
+ <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org>
+ <4e051459-8532-7b61-c815-f3435767f8a0@kernel.org>
+ <cbaf50c3-c85d-9239-0b37-c88e8cbed8c8@kernel.org>
+ <YI/LgjLxo9VCN/d+@krava>
+ <20210503164656.GO6564@kitsune.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210503101134.GB6621@amd>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210503164656.GO6564@kitsune.suse.cz>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/03, Pavel Machek wrote:
->> As already commented on, this for_each_blk() construct is not a good idea.
->> Infact, I guess it would be better if you could invert the logic:
->> Not having the block trigger enumerating all devices, but rather let the
->> devices register with the block trigger.
->> That would have the benefit that one could choose which block device should
->> be handled by the LED trigger subsystem, _and_ you would avoid the need for
->> a for_each_blk() construct.
->> Thing is, I don't think that all block devices should be handled by the LED
->> trigger; eg for things like 'loop' or 'ramdisk' it is very
->> >questionable.
->
->> Downside is that you would need to modify the drivers, but realistically
->> there are only very few drivers which should be modified; I would go for
->> nvme-pci and the sd driver for starters. Maybe floppy, but arguably that can
->> omitted as one has a very good audio indicator for floppy accesses
->> :-)
->
->And we already have disk activity trigger. Maybe NVMe and SD needs to
->be modified to use it?
->
->Best regards,
->								Pavel
+On Mon, May 03, 2021 at 06:46:56PM +0200, Michal Suchánek wrote:
+> On Mon, May 03, 2021 at 12:08:02PM +0200, Jiri Olsa wrote:
+> > On Mon, May 03, 2021 at 10:59:44AM +0200, Jiri Slaby wrote:
+> > > CCing pahole people.
+> > > 
+> > > On 03. 05. 21, 9:59, Jiri Slaby wrote:
+> > > > On 03. 05. 21, 8:11, Jiri Slaby wrote:
+> > > > > > > > > > looks like vfs_truncate did not get into BTF data,
+> > > > > > > > > > I'll try to reproduce
+> > > > > > 
+> > > > > > _None_ of the functions are generated by pahole -J from
+> > > > > > debuginfo on ppc64. debuginfo appears to be correct. Neither
+> > > > > > pahole -J fs/open.o works correctly. collect_functions in
+> > > > > > dwarves seems to be defunct on ppc64... "functions" array is
+> > > > > > bogus (so find_function -- the bsearch -- fails).
+> > > > > 
+> > > > > It's not that bogus. I forgot an asterisk:
+> > > > > > #0  find_function (btfe=0x100269f80, name=0x10024631c
+> > > > > > "stream_open") at
+> > > > > > /usr/src/debug/dwarves-1.21-1.1.ppc64/btf_encoder.c:350
+> > > > > > (gdb) p (*functions)@84
+> > > > > > $5 = {{name = 0x7ffff68e0922 ".__se_compat_sys_ftruncate", addr
+> > > > > > = 75232, size = 72, sh_addr = 65536, generated = false}, {
+> > > > > >     name = 0x7ffff68e019e ".__se_compat_sys_open", addr = 80592,
+> > > > > > size = 216, sh_addr = 65536, generated = false}, {
+> > > > > >     name = 0x7ffff68e0076 ".__se_compat_sys_openat", addr =
+> > > > > > 80816, size = 232, sh_addr = 65536, generated = false}, {
+> > > > > >     name = 0x7ffff68e0908 ".__se_compat_sys_truncate", addr =
+> > > > > > 74304, size = 100, sh_addr = 65536, generated = false}, {
+> > > > > ...
+> > > > > >     name = 0x7ffff68e0808 ".stream_open", addr = 65824, size =
+> > > > > > 72, sh_addr = 65536, generated = false}, {
+> > > > > ...
+> > > > > >     name = 0x7ffff68e0751 ".vfs_truncate", addr = 73392, size =
+> > > > > > 544, sh_addr = 65536, generated = false}}
+> > > > > 
+> > > > > The dot makes the difference, of course. The question is why is it
+> > > > > there? I keep looking into it. Only if someone has an immediate
+> > > > > idea...
+> > > > 
+> > > > Well, .vfs_truncate is in .text (and contains an ._mcount call). And
+> > > > vfs_truncate is in .opd (w/o an ._mcount call). Since setup_functions
+> > > > excludes all functions without the ._mcount call, is_ftrace_func later
+> > > > returns false for such functions and they are filtered before the BTF
+> > > > processing.
+> > > > 
+> > > > Technically, get_vmlinux_addrs looks at a list of functions between
+> > > > __start_mcount_loc and __stop_mcount_loc and considers only the listed.
+> > > > 
+> > > > I don't know what the correct fix is (exclude .opd functions from the
+> > > > filter?). Neither why cross compiler doesn't fail, nor why ebi v2 avoids
+> > > > this too.
+> > > 
+> > > Attaching a patch for pahole which fixes the issue, but I have no idea
+> > > whether it is the right fix at all.
+> > 
+> > hi,
+> > we're considering to disable ftrace filter completely,
+> > I guess that would solve this issue for ppc as well
+> > 
+> >   https://lore.kernel.org/bpf/20210501001653.x3b4rk4vk4iqv3n7@kafai-mbp.dhcp.thefacebook.com/
+> > 
+> Just disabling the ftrace filter in pahole does not seem to fix it.
+> 
+> Is there some other place where it should be disabled?
 
-TBH I haven't thought of that. My initial idea was to actually offer
-maximum flexibility to the user, so exposing all block devices on the
-system [*], being able to set any LED available as an indicator for each
-of those.
+Nevermind, purging the system dwarves resolved the problem. Although
+kbuild detects pahole as /usr/local/bin/pahole the system binaries or
+libraries are still used for something.
 
-But, indeed, just using ledtrig-disk in NVMe and SD might just be
-simpler.
+Thanks
 
-
-[*] - again, I see now this was a bad idea and will be changed in a
-possible next version
+Michal
