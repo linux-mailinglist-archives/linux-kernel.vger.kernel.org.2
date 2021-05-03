@@ -2,142 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CFBA3717F9
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 027E33717F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230430AbhECP1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 11:27:47 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:29354 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230484AbhECP1m (ORCPT
+        id S230346AbhECP13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 11:27:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230427AbhECP1W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 11:27:42 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 143F3xDo166381;
-        Mon, 3 May 2021 11:26:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=uSWnVxT/L88NctnVRLA+CAYwlolKVdmnpGyQBzBdW5g=;
- b=SEc0sdhEMtmCm/MN+xcx9Xlo+VrdENuJx9l8u2mX5dPQTTKhZeJjGtKJ1cS6Fy5+YGyt
- pxitc4q7XbvUrShJlt4qMQBDKk9JqEhI9V2MmlRwNurDvsQ4vuh5QAPr4s74rx2DRS4N
- 3e1VC+v2TCeaZnUQSa5gsEGYWInA0Dkws/RH8MUMeey5OKlbcmMiam/ZDU1cdr0dYSMb
- lUu8NjDP1Qhg/UxIzPJtFs2j6s9xJmFjjmlvtJjgLu/707B85tMOvFTq2U9T5IgpDZS9
- ReDOjl3G92pMd8PFt8v9FnkVvrMnByrMk/SdNy5/KU2jCZ5AvtKYBcYBLpUxuZFKrvM/ tQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38ajaqtyej-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 03 May 2021 11:26:43 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 143F4QRW169743;
-        Mon, 3 May 2021 11:26:43 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38ajaqtydt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 03 May 2021 11:26:43 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 143FLgQ5024871;
-        Mon, 3 May 2021 15:26:41 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03fra.de.ibm.com with ESMTP id 388xm88e7p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 03 May 2021 15:26:41 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 143FQcFU17236448
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 3 May 2021 15:26:38 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AC8DBAE04D;
-        Mon,  3 May 2021 15:26:38 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CC997AE045;
-        Mon,  3 May 2021 15:26:35 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.45.89])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  3 May 2021 15:26:35 +0000 (GMT)
-Message-ID: <cf12878833c82710ad4356e7d023cf51241f3cc8.camel@linux.ibm.com>
-Subject: Re: [PATCH v5 09/12] evm: Allow setxattr() and setattr() for
- unmodified metadata
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>,
-        "mjg59@google.com" <mjg59@google.com>
-Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Mon, 03 May 2021 11:26:24 -0400
-In-Reply-To: <fcd2932bc2a841c2aa7fcbdaee94e0a5@huawei.com>
-References: <20210407105252.30721-1-roberto.sassu@huawei.com>
-         <20210407105252.30721-10-roberto.sassu@huawei.com>
-         <8493d7e2b0fefa4cd3861bd6b7ee6f2340aa7434.camel@linux.ibm.com>
-         <fcd2932bc2a841c2aa7fcbdaee94e0a5@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: CJKpKBCc5dQXzHiLp-Zy9QG0A4TfuLl-
-X-Proofpoint-GUID: OSj9jIQZ-xsdgT5sgo0KaAa6-ERQhQ7H
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Mon, 3 May 2021 11:27:22 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE7DC06138B
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 08:26:29 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 103-20020a9d0d700000b02902a5baf33f37so4926882oti.9
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 08:26:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:cc;
+        bh=DsCC9gqqI3YCW9ovP0n+UcVOJC+7xZwxFoiL/RkkmZQ=;
+        b=dTvWlgasNphbykbaGHMLyLlxm27D+XIBOlYNgL84vlKQzIt2kjc4Kpa53LEJlK56fH
+         CfhhR/nv/DMZ2I5AUGXMjc4GWmsxBfA0tdkAV2H3leyucCOxjQHnq7nh3uGC8MLPG01f
+         waYCxbw9lruqFE0t9nb6eIhAr0jK8vdtTLpyf8Smyux4w3GaYaegAA8OqvMev6QDvrsZ
+         4pRtlb4cXCcLWcnEVOL/Gr5Xf/XZM+GLQDWWPFsg6cKOSOdNiwgC8uV4kjIZeNNQIgJy
+         Q+awveaVeyz4b4ewr4Iy8AariywFauLqvXNBeUKB5aSNAn51R5lMo3k/com9ahoxXTWE
+         fm8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:cc;
+        bh=DsCC9gqqI3YCW9ovP0n+UcVOJC+7xZwxFoiL/RkkmZQ=;
+        b=LXO1AT3jGIn2+zZAi7GlVdd8MQOV1fzmqayFt7oTQxkJl/ZLx65jDCJW1e9b8fIrdn
+         s0r31XF0fef74UE2VRYP6jET57B1CRuamz2uYRKDZ1WryQEn6E9ntLxRflHb7mvAySeu
+         jugqDgce/rbs2dVZ3b5i/VDQxjWhcD9kmdGgcnvlRbLG03ZCMbmKZibYczl0j+jMVuFj
+         KJm79KKD0Zm0drQwVsD6hle+pIVOl6ijEhSedwwbZIe2rqmNoHYiJ6/B6hQ614oc1DWF
+         T5fBF9kjhjDd+QjbRfzIfKXkj0L7CqMu1Ws682DLBMwyXHXzOahLozu9dvgx2AefMKfp
+         jxhw==
+X-Gm-Message-State: AOAM530kh6+a6C5xiWLZKwRbmdJMo5JRNq18UvXa57cQjDIwAH+PkzUd
+        GZEoyCLC4xgP//tx5Bk172cKpV+rnVgLeITaxSt62g==
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-03_10:2021-05-03,2021-05-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 mlxscore=0 lowpriorityscore=0 mlxlogscore=999
- suspectscore=0 adultscore=0 phishscore=0 spamscore=0 impostorscore=0
- clxscore=1015 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2105030104
+X-Received: by 2002:a9d:2de3:: with SMTP id g90mt12928710otb.274.1620055588708;
+ Mon, 03 May 2021 08:26:28 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 3 May 2021 08:26:27 -0700
+From:   Guillaume Ranquet <granquet@baylibre.com>
+Date:   Mon, 3 May 2021 08:26:27 -0700
+Message-ID: <CABnWg9sHzqZ-fYpe3cc8iQDBYm9=5yXEYV2Qiaa0Eoqt8UOG6w@mail.gmail.com>
+Subject: [PATCH 1/4] dmaengine: mediatek: free the proper desc in desc_free handler
+Cc:     Sean Wang <sean.wang@mediatek.com>, Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-03 at 15:11 +0000, Roberto Sassu wrote:
-> > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> > Sent: Monday, May 3, 2021 3:00 PM
-> > On Wed, 2021-04-07 at 12:52 +0200, Roberto Sassu wrote:
-> > 
-> > > diff --git a/security/integrity/evm/evm_main.c
-> > b/security/integrity/evm/evm_main.c
-> > > @@ -389,6 +473,11 @@ static int evm_protect_xattr(struct
-> > user_namespace *mnt_userns,
-> > >  	if (evm_status == INTEGRITY_FAIL_IMMUTABLE)
-> > >  		return 0;
-> > >
-> > > +	if (evm_status == INTEGRITY_PASS_IMMUTABLE &&
-> > > +	    !evm_xattr_change(mnt_userns, dentry, xattr_name, xattr_value,
-> > > +			      xattr_value_len))
-> > > +		return 0;
-> > > +
-> > 
-> > If the purpose of evm_protect_xattr() is to prevent allowing an invalid
-> > security.evm xattr from being re-calculated and updated, making it
-> > valid, INTEGRITY_PASS_IMMUTABLE shouldn't need to be conditional.  Any
-> > time there is an attr or xattr change, including setting it to the
-> > existing value, the status flag should be reset.
-> > 
-> > I'm wondering if making INTEGRITY_PASS_IMMUTABLE conditional would
-> > prevent the file from being resigned.
-> > 
-> > >  	if (evm_status != INTEGRITY_PASS)
-> > >  		integrity_audit_msg(AUDIT_INTEGRITY_METADATA,
-> > d_backing_inode(dentry),
-> > >  				    dentry->d_name.name,
-> > "appraise_metadata",
-> > 
-> > This would then be updated to if not INTEGRITY_PASS or
-> > INTEGRITY_PASS_IMMUTABLE.  The subsequent "return" would need to be
-> > updated as well.
-> 
-> I agree on the first suggestion, to reduce the number of log messages.
-> For the second, if you meant that we should return 0 if the status is
-> INTEGRITY_PASS_IMMUTABLE, I thought we wanted to deny xattr
-> changes when there is an EVM portable signature.
+The desc_free handler assumed that the desc we want to free was always
+ the current one associated with the channel.
 
-Why?  I must be missing something.  As long as we're not relying on the
-cached status, allowing the file metadata to be updated shouldn't be an
-issue.
+This is seldom the case and this is causing use after free crashes in
+ multiple places (tx/rx/terminate...).
 
-Mimi
+  BUG: KASAN: use-after-free in mtk_uart_apdma_rx_handler+0x120/0x304
 
+  Hardware name: GEA MT8167 ManeFaces (DT)
+  Call trace:
+   dump_backtrace+0x0/0x1b0
+   show_stack+0x24/0x34
+   dump_stack+0xe0/0x150
+   print_address_description+0x8c/0x55c
+   __kasan_report+0x1b8/0x218
+   kasan_report+0x14/0x20
+   __asan_load4+0x98/0x9c
+   mtk_uart_apdma_rx_handler+0x120/0x304
+   mtk_uart_apdma_irq_handler+0x50/0x80
+   __handle_irq_event_percpu+0xe0/0x210
+   handle_irq_event+0x8c/0x184
+   handle_fasteoi_irq+0x1d8/0x3ac
+   __handle_domain_irq+0xb0/0x110
+   gic_handle_irq+0x50/0xb8
+   el0_irq_naked+0x60/0x6c
+
+  Allocated by task 3541:
+   __kasan_kmalloc+0xf0/0x1b0
+   kasan_kmalloc+0x10/0x1c
+   kmem_cache_alloc_trace+0x90/0x2dc
+   mtk_uart_apdma_prep_slave_sg+0x6c/0x1a0
+   mtk8250_dma_rx_complete+0x220/0x2e4
+   vchan_complete+0x290/0x340
+   tasklet_action_common+0x220/0x298
+   tasklet_action+0x28/0x34
+   __do_softirq+0x158/0x35c
+
+  Freed by task 3541:
+   __kasan_slab_free+0x154/0x224
+   kasan_slab_free+0x14/0x24
+   slab_free_freelist_hook+0xf8/0x15c
+   kfree+0xb4/0x278
+   mtk_uart_apdma_desc_free+0x34/0x44
+   vchan_complete+0x1bc/0x340
+   tasklet_action_common+0x220/0x298
+   tasklet_action+0x28/0x34
+   __do_softirq+0x158/0x35c
+
+  The buggy address belongs to the object at ffff000063606800
+   which belongs to the cache kmalloc-256 of size 256
+  The buggy address is located 176 bytes inside of
+   256-byte region [ffff000063606800, ffff000063606900)
+  The buggy address belongs to the page:
+  page:fffffe00016d8180 refcount:1 mapcount:0 mapping:ffff00000302f600
+index:0x0 compound_mapcount: 0
+  flags: 0xffff00000010200(slab|head)
+  raw: 0ffff00000010200 dead000000000100 dead000000000122 ffff00000302f600
+  raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+  page dumped because: kasan: bad access detected
+
+Signed-off-by: Guillaume Ranquet <granquet@baylibre.com>
+
+diff --git a/drivers/dma/mediatek/mtk-uart-apdma.c
+b/drivers/dma/mediatek/mtk-uart-apdma.c
+index 6bef40f0c9dc..4610dbdde75e 100644
+--- a/drivers/dma/mediatek/mtk-uart-apdma.c
++++ b/drivers/dma/mediatek/mtk-uart-apdma.c
+@@ -131,10 +131,7 @@ static unsigned int mtk_uart_apdma_read(struct
+mtk_chan *c, unsigned int reg)
+
+ static void mtk_uart_apdma_desc_free(struct virt_dma_desc *vd)
+ {
+-	struct dma_chan *chan = vd->tx.chan;
+-	struct mtk_chan *c = to_mtk_uart_apdma_chan(chan);
+-
+-	kfree(c->desc);
++	kfree(container_of(vd, struct mtk_uart_apdma_desc, vd));
+ }
+
+ static void mtk_uart_apdma_start_tx(struct mtk_chan *c)
+-- 
+2.26.3
