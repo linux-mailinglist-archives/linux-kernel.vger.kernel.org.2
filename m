@@ -2,94 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E792372387
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 01:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF0F137238C
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 01:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbhECXUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 19:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229767AbhECXUr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 19:20:47 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F37C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 16:19:53 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id x20so10554766lfu.6
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 16:19:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0FtWWY4fmD6WRB9NPPZH54mCyUXdEKHNKiJkPNTthSs=;
-        b=YTSJyNPsF4SuX8si33iysNtNVQ17vvy6CH1XN0+xVLJ4Am0L24sPQWs+u7O32+eW4b
-         KVy+tXKv0wu0UENmRhWTAUxvGV37YYlqLH2LJm6MeIC6OE4qJYMWgCFuZCaXe5EE0R8F
-         e90GPaqDfOXzM2vnc3ipJnsj/C4n713z4wWiM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0FtWWY4fmD6WRB9NPPZH54mCyUXdEKHNKiJkPNTthSs=;
-        b=CWf5vUD5ApfYkYMxFowu0XmXkSX0sOKNuWPMPedv+UUgFzVG6qkEb4Tjahnqt+xYjv
-         f3C6VdOxenfpfGCIbeKjCGF2a3+neZoET8YfDNJO1J5NEHPya+fBq5++g2dGiPVumkbL
-         hwcR8DUFUaCTzFQY+gQf8WEbxd1naPteDwkmvo2ja5s7k66lwmYG4nt6Eyt0Iy8RbhYh
-         MjEkrqMJfKH6xExLmiDfIkZjqPsFL6LKbfJo9ezkYzfNV9LO6Y4JhRstIfKMSRVDvl0b
-         ve7I9QZ5zh8o1Dg0vBByVvOdmOGILyo7yWBMZ1SFUbJCFiJW6HUWQaOWGsWjuhDlgxnT
-         oNMQ==
-X-Gm-Message-State: AOAM533mVtIAW7x9rLW9rOig4/7WSMEwU1kKivJ3mtGuw1PfVY1pbL8s
-        RA/ptlKYY8PLwo+5yz8yP5xf2YzstikzlPXT
-X-Google-Smtp-Source: ABdhPJzQnVrh87WJnzscn8M9ktA789+P+jcSR6civKJJZE4I5Wi7fcaXeOfvaGeD3Jikb28RK5Dq+Q==
-X-Received: by 2002:a19:c104:: with SMTP id r4mr5157854lff.555.1620083992219;
-        Mon, 03 May 2021 16:19:52 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id a20sm1404829ljd.105.2021.05.03.16.19.51
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 16:19:51 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id 124so10559756lff.5
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 16:19:51 -0700 (PDT)
-X-Received: by 2002:ac2:5f92:: with SMTP id r18mr15048326lfe.253.1620083991473;
- Mon, 03 May 2021 16:19:51 -0700 (PDT)
+        id S229926AbhECXWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 19:22:43 -0400
+Received: from mga14.intel.com ([192.55.52.115]:63344 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229825AbhECXWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 19:22:42 -0400
+IronPort-SDR: 9JupbJc6/H5khVBBm7jTj82YIb+5IfMmc0N5WBDewIjlaSLX28Cq9SasLUEEKlcjcrgttCrTh6
+ g4l+2Cxjimug==
+X-IronPort-AV: E=McAfee;i="6200,9189,9973"; a="197473303"
+X-IronPort-AV: E=Sophos;i="5.82,271,1613462400"; 
+   d="scan'208";a="197473303"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 16:21:48 -0700
+IronPort-SDR: bIGMyd8a5ohf9H/9KROE8zHDfB2OsxDs8yi4za/nTc57/T8zbwYpCenFScCF6kjwV6hmL4vSiw
+ GcxP4aWufveg==
+X-IronPort-AV: E=Sophos;i="5.82,271,1613462400"; 
+   d="scan'208";a="618261811"
+Received: from svanga-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.7.25])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 16:21:47 -0700
+Subject: Re: [RFC v2 00/32] Add TDX Guest Support
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <b3b3767b-e604-d773-b071-1a81437c8432@linux.intel.com>
+Date:   Mon, 3 May 2021 16:21:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <8735v3ex3h.ffs@nanos.tec.linutronix.de> <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
- <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
- <CALCETrV9bCenqzzaW6Ra18tCvNP-my09decTjmLDVZZAQxR6VA@mail.gmail.com>
- <CAHk-=wgo6XEz3VQ9ntqzWLR3-hm1YXrXUz4_heDs4wcLe9NYvA@mail.gmail.com>
- <d26e3a82-8a2c-7354-d36b-cac945c208c7@kernel.dk> <CALCETrWmhquicE2C=G2Hmwfj4VNypXVxY-K3CWOkyMe9Edv88A@mail.gmail.com>
- <CAHk-=wgqK0qUskrzeWXmChErEm32UiOaUmynWdyrjAwNzkDKaw@mail.gmail.com>
- <8735v3jujv.ffs@nanos.tec.linutronix.de> <CAHk-=wi4Dyg_Z70J_hJbtFLPQDG+Zx3dP2jB5QrOdZC6W6j4Gw@mail.gmail.com>
-In-Reply-To: <CAHk-=wi4Dyg_Z70J_hJbtFLPQDG+Zx3dP2jB5QrOdZC6W6j4Gw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 3 May 2021 16:19:35 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj+njBWpgFqueHMVk1U8-APxZsgRsrOvhybcBEjspzGSg@mail.gmail.com>
-Message-ID: <CAHk-=wj+njBWpgFqueHMVk1U8-APxZsgRsrOvhybcBEjspzGSg@mail.gmail.com>
-Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
- registers for io_threads
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Andy Lutomirski <luto@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Stefan Metzmacher <metze@samba.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 3, 2021 at 4:16 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> These days they really are fully regular user threads, they just don't
-> return to user space because they continue to do the IO work that they
-> were created for.
+Hi Peter/Andy,
 
-IOW, you should think of them as "io_uring does an interface clone()
-to generate an async thread, it does the work and then exits".
+On 4/26/21 11:01 AM, Kuppuswamy Sathyanarayanan wrote:
+> Hi All,
 
-Now, that's the conceptual thing - in reality one thread can do
-multiple async things - but it's the mental image you should have.
+Just a gentle ping. Please let me know your comments on this patch set.
+I hope it addressed concerns raised by you in RFC v1.
 
-Don't think of them as kernel threads. Yes, that's how it started, but
-that really ended up being very very painful indeed.
+> 
+> NOTE: This series is not ready for wide public review. It is being
+> specifically posted so that Peter Z and other experts on the entry
+> code can look for problems with the new exception handler (#VE).
+> That's also why x86@ is not being spammed.
+> 
+> Intel's Trust Domain Extensions (TDX) protect guest VMs from malicious
+> hosts and some physical attacks. This series adds the bare-minimum
+> support to run a TDX guest. The host-side support will be submitted
+> separately. Also support for advanced TD guest features like attestation
+> or debug-mode will be submitted separately. Also, at this point it is not
+> secure with some known holes in drivers, and also hasn’t been fully audited
+> and fuzzed yet.
+> 
+> TDX has a lot of similarities to SEV. It enhances confidentiality and
+> of guest memory and state (like registers) and includes a new exception
+> (#VE) for the same basic reasons as SEV-ES. Like SEV-SNP (not merged
+> yet), TDX limits the host's ability to effect changes in the guest
+> physical address space.
+> 
+> In contrast to the SEV code in the kernel, TDX guest memory is integrity
+> protected and isolated; the host is prevented from accessing guest
+> memory (even ciphertext).
+> 
+> The TDX architecture also includes a new CPU mode called
+> Secure-Arbitration Mode (SEAM). The software (TDX module) running in this
+> mode arbitrates interactions between host and guest and implements many of
+> the guarantees of the TDX architecture.
+> 
+> Some of the key differences between TD and regular VM is,
+> 
+> 1. Multi CPU bring-up is done using the ACPI MADT wake-up table.
+> 2. A new #VE exception handler is added. The TDX module injects #VE exception
+>     to the guest TD in cases of instructions that need to be emulated, disallowed
+>     MSR accesses, subset of CPUID leaves, etc.
+> 3. By default memory is marked as private, and TD will selectively share it with
+>     VMM based on need.
+> 4. Remote attestation is supported to enable a third party (either the owner of
+>     the workload or a user of the services provided by the workload) to establish
+>     that the workload is running on an Intel-TDX-enabled platform located within a
+>     TD prior to providing that workload data.
+> 
+> You can find TDX related documents in the following link.
+> 
+> https://software.intel.com/content/www/br/pt/develop/articles/intel-trust-domain-extensions.html
+> 
+> Changes since v1:
+>   * Implemented tdcall() and tdvmcall() helper functions in assembly and renamed
+>     them as __tdcall() and __tdvmcall().
+>   * Added do_general_protection() helper function to re-use protection
+>     code between #GP exception and TDX #VE exception handlers.
+>   * Addressed syscall gap issue in #VE handler support (for details check
+>     the commit log in "x86/traps: Add #VE support for TDX guest").
+>   * Modified patch titled "x86/tdx: Handle port I/O" to re-use common
+>     tdvmcall() helper function.
+>   * Added error handling support to MADT CPU wakeup code.
+>   * Introduced enum tdx_map_type to identify SHARED vs PRIVATE memory type.
+>   * Enabled shared memory in IOAPIC driver.
+>   * Added BINUTILS version info for TDCALL.
+>   * Changed the TDVMCALL vendor id from 0 to "TDX.KVM".
+>   * Replaced WARN() with pr_warn_ratelimited() in __tdvmcall() wrappers.
+>   * Fixed commit log and code comments related review comments.
+>   * Renamed patch titled # "x86/topology: Disable CPU hotplug support for TDX
+>     platforms" to "x86/topology: Disable CPU online/offline control for
+>     TDX guest"
+>   * Rebased on top of v5.12 kernel.
+> 
+> 
+> Erik Kaneda (1):
+>    ACPICA: ACPI 6.4: MADT: add Multiprocessor Wakeup Structure
+> 
+> Isaku Yamahata (1):
+>    x86/tdx: ioapic: Add shared bit for IOAPIC base address
+> 
+> Kirill A. Shutemov (16):
+>    x86/paravirt: Introduce CONFIG_PARAVIRT_XL
+>    x86/tdx: Get TD execution environment information via TDINFO
+>    x86/traps: Add #VE support for TDX guest
+>    x86/tdx: Add HLT support for TDX guest
+>    x86/tdx: Wire up KVM hypercalls
+>    x86/tdx: Add MSR support for TDX guest
+>    x86/tdx: Handle CPUID via #VE
+>    x86/io: Allow to override inX() and outX() implementation
+>    x86/tdx: Handle port I/O
+>    x86/tdx: Handle in-kernel MMIO
+>    x86/mm: Move force_dma_unencrypted() to common code
+>    x86/tdx: Exclude Shared bit from __PHYSICAL_MASK
+>    x86/tdx: Make pages shared in ioremap()
+>    x86/tdx: Add helper to do MapGPA TDVMALL
+>    x86/tdx: Make DMA pages shared
+>    x86/kvm: Use bounce buffers for TD guest
+> 
+> Kuppuswamy Sathyanarayanan (10):
+>    x86/tdx: Introduce INTEL_TDX_GUEST config option
+>    x86/cpufeatures: Add TDX Guest CPU feature
+>    x86/x86: Add is_tdx_guest() interface
+>    x86/tdx: Add __tdcall() and __tdvmcall() helper functions
+>    x86/traps: Add do_general_protection() helper function
+>    x86/tdx: Handle MWAIT, MONITOR and WBINVD
+>    ACPICA: ACPI 6.4: MADT: add Multiprocessor Wakeup Mailbox Structure
+>    ACPI/table: Print MADT Wake table information
+>    x86/acpi, x86/boot: Add multiprocessor wake-up support
+>    x86/topology: Disable CPU online/offline control for TDX guest
+> 
+> Sean Christopherson (4):
+>    x86/boot: Add a trampoline for APs booting in 64-bit mode
+>    x86/boot: Avoid #VE during compressed boot for TDX platforms
+>    x86/boot: Avoid unnecessary #VE during boot process
+>    x86/tdx: Forcefully disable legacy PIC for TDX guests
+> 
+>   arch/x86/Kconfig                         |  28 +-
+>   arch/x86/boot/compressed/Makefile        |   2 +
+>   arch/x86/boot/compressed/head_64.S       |  10 +-
+>   arch/x86/boot/compressed/misc.h          |   1 +
+>   arch/x86/boot/compressed/pgtable.h       |   2 +-
+>   arch/x86/boot/compressed/tdcall.S        |   9 +
+>   arch/x86/boot/compressed/tdx.c           |  32 ++
+>   arch/x86/include/asm/apic.h              |   3 +
+>   arch/x86/include/asm/cpufeatures.h       |   1 +
+>   arch/x86/include/asm/idtentry.h          |   4 +
+>   arch/x86/include/asm/io.h                |  24 +-
+>   arch/x86/include/asm/irqflags.h          |  38 +-
+>   arch/x86/include/asm/kvm_para.h          |  21 +
+>   arch/x86/include/asm/paravirt.h          |  22 +-
+>   arch/x86/include/asm/paravirt_types.h    |   3 +-
+>   arch/x86/include/asm/pgtable.h           |   3 +
+>   arch/x86/include/asm/realmode.h          |   1 +
+>   arch/x86/include/asm/tdx.h               | 176 +++++++++
+>   arch/x86/kernel/Makefile                 |   1 +
+>   arch/x86/kernel/acpi/boot.c              |  79 ++++
+>   arch/x86/kernel/apic/apic.c              |   8 +
+>   arch/x86/kernel/apic/io_apic.c           |  12 +-
+>   arch/x86/kernel/asm-offsets.c            |  22 ++
+>   arch/x86/kernel/head64.c                 |   3 +
+>   arch/x86/kernel/head_64.S                |  13 +-
+>   arch/x86/kernel/idt.c                    |   6 +
+>   arch/x86/kernel/paravirt.c               |   4 +-
+>   arch/x86/kernel/pci-swiotlb.c            |   2 +-
+>   arch/x86/kernel/smpboot.c                |   5 +
+>   arch/x86/kernel/tdcall.S                 | 361 +++++++++++++++++
+>   arch/x86/kernel/tdx-kvm.c                |  45 +++
+>   arch/x86/kernel/tdx.c                    | 480 +++++++++++++++++++++++
+>   arch/x86/kernel/topology.c               |   3 +-
+>   arch/x86/kernel/traps.c                  |  81 ++--
+>   arch/x86/mm/Makefile                     |   2 +
+>   arch/x86/mm/ioremap.c                    |   8 +-
+>   arch/x86/mm/mem_encrypt.c                |  75 ----
+>   arch/x86/mm/mem_encrypt_common.c         |  85 ++++
+>   arch/x86/mm/mem_encrypt_identity.c       |   1 +
+>   arch/x86/mm/pat/set_memory.c             |  48 ++-
+>   arch/x86/realmode/rm/header.S            |   1 +
+>   arch/x86/realmode/rm/trampoline_64.S     |  49 ++-
+>   arch/x86/realmode/rm/trampoline_common.S |   5 +-
+>   drivers/acpi/tables.c                    |  11 +
+>   include/acpi/actbl2.h                    |  26 +-
+>   45 files changed, 1654 insertions(+), 162 deletions(-)
+>   create mode 100644 arch/x86/boot/compressed/tdcall.S
+>   create mode 100644 arch/x86/boot/compressed/tdx.c
+>   create mode 100644 arch/x86/include/asm/tdx.h
+>   create mode 100644 arch/x86/kernel/tdcall.S
+>   create mode 100644 arch/x86/kernel/tdx-kvm.c
+>   create mode 100644 arch/x86/kernel/tdx.c
+>   create mode 100644 arch/x86/mm/mem_encrypt_common.c
+> 
 
-            Linus
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
