@@ -2,136 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1AA1371510
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 14:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38865371514
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 14:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233495AbhECMIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 08:08:47 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:63034 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229866AbhECMIo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 08:08:44 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 143C4Kko122984;
-        Mon, 3 May 2021 08:07:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=67Bb/a/rk0rGoLvbb54LTekVRlGTstOAnAiKjDvwdK4=;
- b=caXBLvw/7nAu67ZSKQk8AOv7hdU505FCKvSxtwWozt2Si1HowWtvN/MDEtnl1QaOqmVL
- I/sTtDqCESxXZQf+xq9r0PjmxGVHF9Bn6Z0PTKodtRNFj2VKDxxRReZa1auuHS+NGkpQ
- WatncmbKRgcJ3KbFGRUpnrgrXBvJwcTy1glJURygSDJpUE1NRiSkd8QwaUBEnA184Xzf
- JyTW/1sVBRNzANNRbgqETzXGVTl1Hrt7OSBFoWGv7G+bBHrSq6cPpSEYqSn76fayp/j9
- jddPh995uf9jG7RJbiqZaUKFFN1ysVxSstx+jciu9DjXQ6LC8qCFyanOZgxCNLU4C3/S Tw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38agju8hhh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 03 May 2021 08:07:46 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 143C4lE4124403;
-        Mon, 3 May 2021 08:07:46 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38agju8hgj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 03 May 2021 08:07:46 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 143C46op000613;
-        Mon, 3 May 2021 12:07:44 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03fra.de.ibm.com with ESMTP id 388xm88crt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 03 May 2021 12:07:44 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 143C7gCR28049756
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 3 May 2021 12:07:42 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 058EBA460F;
-        Mon,  3 May 2021 12:07:42 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BBE45A4611;
-        Mon,  3 May 2021 12:07:39 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.45.89])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  3 May 2021 12:07:39 +0000 (GMT)
-Message-ID: <3bcb6e633f91d096cd0821a658c01cdb2f745cf6.camel@linux.ibm.com>
-Subject: Re: [PATCH v5 06/12] evm: Ignore
- INTEGRITY_NOLABEL/INTEGRITY_NOXATTRS if conditions are safe
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>,
-        "mjg59@google.com" <mjg59@google.com>
-Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Mon, 03 May 2021 08:07:38 -0400
-In-Reply-To: <c12f18094cc0479faa3f0f152b4964de@huawei.com>
-References: <20210407105252.30721-1-roberto.sassu@huawei.com>
-         <20210407105252.30721-7-roberto.sassu@huawei.com>
-         <b8790b57e289980d4fe1133d15203ce016d2319d.camel@linux.ibm.com>
-         <c12f18094cc0479faa3f0f152b4964de@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
+        id S233204AbhECMKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 08:10:05 -0400
+Received: from mail-mw2nam12on2081.outbound.protection.outlook.com ([40.107.244.81]:8026
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233639AbhECMJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 08:09:13 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NfivL4a7ZjuKmNNJfAmGAXvVbryz/0NIuduouqFHcJx8qRmjIkhG9WkksmIomvw/TUJCq7SylG1nSN3tGIklmuR+PtvXMPco0hf/Tmy3Vz042F9OhbPD3ryx1odYbXlkdFWwuip1yAPnm8U2lkXrwf0rjFHUCdDTBM6Oi9LafiXa5Zhh5WH/2AJBdggTzqGPU5+19tzKSVJcvrgr9xtZRhPJYQta6kyKigHuXjivVTa3lAbX5E6Bpp7Ua+Jt+m2FbWI5Ksm3HOMvZ9ST+MKTSpnQjKmV0zBpgWQKGuXV3nzSWk1hrbWd967r6UmFx01M948vUltNQ0ee/PdnzEYCUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Okk0d8HxcNPcwhwIKMcT2nO57+6T0VR68IWu0Ahzh5Q=;
+ b=ODaYepuppYCImSntXTth/4AriJqOUU2bg3RhsaxXAWEM38SLuyNwjk7Enr1+PlVpCuex3G6iTcG1uLv4ce0fTIXhUEIzkHtRLIFWP+kUNSpxJ++COKiezM3frJA4N5OU9zLgRHE5OEbtfbHuI9NXZl1DtHq33qPeStnAGpH2BdORSeTlOvOpsbRRlHkwoQI23vFfXHtSVks3ffZhGEbriTdeFn9BJ2rZU8ORBxpSv91Tu5t4NmC3vhl9t+zwMglzWobMBhguHgWFBP+c+RSyMNWARcE6j03DgGHQI0CJkJ5fDsHcpTKNiQGXZ1MW/usSCpi+sv/UEeC7T8+xPZSWbw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Okk0d8HxcNPcwhwIKMcT2nO57+6T0VR68IWu0Ahzh5Q=;
+ b=fZpCAzRpklcMd9lIsuVHoJ+tEnO3ifDSZkOvGmdpG4FMKtJQdvcoPBRZM5zmQVny82TtiPvAPITuCcQulkdUa2k2z6ZYkf4X5cYQtDNqHzdmp6g6Zbo2l63mQpb6ZI8GgDX5YIEdDvBibpHgb61zhx3M19GvO6oISDDuZPSYjApgG4LOZuiWUayRDKTCV/2csvroTT2I3wBgJ4+J6z29YVza/XLYFfLPKhvWWsqX2yhwO+SEnDpvPvSyuinGCJjp+WKZlWjazwqtNAKV/Z6zg/MHuTM71D/Gbss8pB77yUZC5abcVw2PRl4mKRe+MNIEs8eRF2UnBoJMABnXrHuBdA==
+Received: from BN6PR22CA0040.namprd22.prod.outlook.com (2603:10b6:404:37::26)
+ by DM6PR12MB2828.namprd12.prod.outlook.com (2603:10b6:5:77::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.40; Mon, 3 May
+ 2021 12:08:18 +0000
+Received: from BN8NAM11FT064.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:404:37:cafe::24) by BN6PR22CA0040.outlook.office365.com
+ (2603:10b6:404:37::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.25 via Frontend
+ Transport; Mon, 3 May 2021 12:08:18 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT064.mail.protection.outlook.com (10.13.176.160) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4087.27 via Frontend Transport; Mon, 3 May 2021 12:08:18 +0000
+Received: from [10.20.22.163] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 3 May
+ 2021 12:08:17 +0000
+Subject: Re: [RFC 1/2] vfio/pci: keep the prefetchable attribute of a BAR
+ region in VMA
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Vikram Sethi <vsethi@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoffer Dall <christoffer.dall@arm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jason Sequeira <jsequeira@nvidia.com>
+References: <20210429162906.32742-1-sdonthineni@nvidia.com>
+ <20210429162906.32742-2-sdonthineni@nvidia.com>
+ <20210429122840.4f98f78e@redhat.com>
+ <470360a7-0242-9ae5-816f-13608f957bf6@nvidia.com>
+ <20210429134659.321a5c3c@redhat.com>
+ <e3d7fda8-5263-211c-3686-f699765ab715@nvidia.com>
+ <87czucngdc.wl-maz@kernel.org>
+ <1edb2c4e-23f0-5730-245b-fc6d289951e1@nvidia.com>
+ <878s4zokll.wl-maz@kernel.org>
+ <BL0PR12MB2532CC436EBF626966B15994BD5E9@BL0PR12MB2532.namprd12.prod.outlook.com>
+ <87eeeqvm1d.wl-maz@kernel.org>
+ <49e26646-9f05-ccb8-f5c1-73a92ab79972@nvidia.com>
+ <87czu8uowe.wl-maz@kernel.org>
+From:   Shanker R Donthineni <sdonthineni@nvidia.com>
+Message-ID: <22e592c5-58e5-5456-311d-3d23303a91ac@nvidia.com>
+Date:   Mon, 3 May 2021 07:08:15 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <87czu8uowe.wl-maz@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: peZrPvDM-tXm3jXr8zp1A0Qnp8E-VIrT
-X-Proofpoint-ORIG-GUID: jF42g-kS2lyBpv4J5skHCnXQL6afTgkN
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-03_07:2021-05-03,2021-05-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
- clxscore=1015 mlxscore=0 priorityscore=1501 lowpriorityscore=0
- adultscore=0 suspectscore=0 malwarescore=0 bulkscore=0 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2105030084
+Content-Language: en-US
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1ba67fa3-f649-435e-bb63-08d90e2c2381
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2828:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB282811F74097E33559311A95C75B9@DM6PR12MB2828.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yrGIY+u26JS0doy5wyCBq7WqD+rIMdrb1qw0A5Y+ZcMAn/rQp6gjY/OLEKTqBX7PkjQiOqeFoZRYkV0PQZ+2ju06NbhKAjmTapiVbDB2lOzOPY3sxkH7Tpu12GWPJ+KI+p57aFpDigvaFaqCwA6p7wBrLJnjUtUTmm6MDJ0NJ+j1E7VUQWa9jeAOu9+xkhC+HWDbVXKOE/TLdtd+uxm6RGCPHkAM1bm1vIM2d56n/HgjSGNQ0d6zZzGLEks57xQAzEWTFTCWmMRwXp+gcSDy+3nF4L24qLi54TwN8OSvGtXq3zZ23+LFbdxhRl7RK5XPWHe7AMSO3TYoRdP1T/BK3VQ6Mnjm3AkNVgaezldjQ1AWSfvumZUgZusGff0JGDS6E+0KMNt7fj6Nj3AfXMm9ARkbT/vcBharAErm/tayyjpqgl/v642XqqdtguDZyggRl1KVIEsGDbg5qjNt5sgurl4v4woGIR4saJ88koezS5NeS4WiNqpc6Q829iYM12Ai+/yiIPADdFS0OUF5/ioXAxXpFYdl3s7vzBO06vsaGnzFXOW9pIdQX5QezNKGyeB1aDxiAmcsbyZ1Y7iKyH5ez1cUgr+lBCWpYDIBmmjx8zE1yGYbnnBtjfq04llCcZQniI1wD7tvOz3kLkJM++H/LJ9xHGPq0wpbSOZ813VaQGM1I0IJoTW12JiYa5i6aqPw
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(136003)(396003)(36840700001)(46966006)(16526019)(186003)(31686004)(7636003)(2616005)(86362001)(2906002)(4326008)(356005)(53546011)(16576012)(316002)(82740400003)(36756003)(26005)(82310400003)(426003)(4744005)(8676002)(107886003)(54906003)(36906005)(336012)(6916009)(5660300002)(70206006)(36860700001)(478600001)(8936002)(31696002)(70586007)(47076005)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2021 12:08:18.4931
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ba67fa3-f649-435e-bb63-08d90e2c2381
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT064.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2828
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-03 at 07:55 +0000, Roberto Sassu wrote:
-> 
-> > > diff --git a/security/integrity/evm/evm_main.c
-> > b/security/integrity/evm/evm_main.c
+Hi Marc,
 
-> > > @@ -354,6 +372,8 @@ static int evm_protect_xattr(struct dentry *dentry,
-> > const char *xattr_name,
-> > >  				    -EPERM, 0);
-> > >  	}
-> > >  out:
-> > > +	if (evm_ignore_error_safe(evm_status))
-> > > +		return 0;
-> > 
-> > I agree with the concept, but the function name doesn't provide enough
-> > context.  Perhaps defining a function more along the lines of
-> > "evm_hmac_disabled()" would be more appropriate and at the same time
-> > self documenting.
-> 
-> Since the function checks if the passed error can be ignored,
-> would evm_ignore_error_hmac_disabled() also be ok?
-
-The purpose of evm_protect_xattr() is to prevent allowing an invalid
-security.evm xattr from being re-calculated and updated, making it
-valid.   Refer to the first line of the function description.  That
-hasn't changed.
-
-One of the reasons for defining a new function is to avoid code
-duplication, but it should not come at the expense of clear and easily
-understood code.   In this case, the reason for "ignoring" certain
-return codes needs to be highlighted, not hidden.  
-(is_)evm_hmac_disabled() makes this very clear.
-
-Please update the function description to include the reason why making
-an exception is safe.
-
-thanks,
-
-Mimi
-
-> > >  	if (evm_status != INTEGRITY_PASS)
-> > >  		integrity_audit_msg(AUDIT_INTEGRITY_METADATA,
-> > d_backing_inode(dentry),
-> > >  				    dentry->d_name.name,
-> > "appraise_metadata",
-
+On 5/3/21 4:50 AM, Marc Zyngier wrote:
+> You are mixing two things: what Linux/arm64 gives to kernel drivers,
+> and what KVM, as an implementation of the ARMv8 architecture, gives to
+> virtual machines. There is zero reason for the two to match if there
+> is no definition of what we need to provide.
+Suggestion here is memory-types PROT_NORMAL_NC and PROT_DEVICE_nGnRE
+are applicable to braemetal only and don't use for device memory inside VM.
