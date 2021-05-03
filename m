@@ -2,124 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F89371462
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 13:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E8F537145A
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 13:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233541AbhECLhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 07:37:11 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:55267 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233108AbhECLhJ (ORCPT
+        id S233460AbhECLgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 07:36:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23254 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233324AbhECLgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 07:37:09 -0400
-Received: from mail-wr1-f52.google.com ([209.85.221.52]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1Mgvan-1l53CN3ueb-00hON9; Mon, 03 May 2021 13:36:14 +0200
-Received: by mail-wr1-f52.google.com with SMTP id l13so3572321wru.11;
-        Mon, 03 May 2021 04:36:14 -0700 (PDT)
-X-Gm-Message-State: AOAM533+SVOPQRH66lK1NWnm96PcQhTvICbcmV5CdYKe9WZYIZhOjBj0
-        xtXEk/jbRMd+2/1cQ2A8Vs3QjJfeyYmvglYFIQ8=
-X-Google-Smtp-Source: ABdhPJwIvsv/yMchaa4sUSYzSCPmfiG5zkCBHBNNq2yUma7fb0HtVe+fV0tBIbTslxWLhW72fs4l8PW7OasotEimGEc=
-X-Received: by 2002:adf:d223:: with SMTP id k3mr24144176wrh.99.1620041774578;
- Mon, 03 May 2021 04:36:14 -0700 (PDT)
+        Mon, 3 May 2021 07:36:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620041754;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WqkM0iWGl6jrVU5KuvimVV9SZx4Jlvp1gEzxVMJa670=;
+        b=Znfu+wCqovV7p+O5sJ0a8DXfegTxLu31vLAzTj6nEBNCCeCWVhLThti5ujRrWZi7eQLqpG
+        wKkDShR8smZU6iPT1G7OVQhdnfLGELNDAJGUQEVk3NKcDyNqumaWIH+/GXP/5JDTFgPDAB
+        iyNZpwlrFe21d0CIGI6mDWJ4J3IAEIs=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-594-hjeKAlV2OFyXPCWs6jcDqQ-1; Mon, 03 May 2021 07:35:52 -0400
+X-MC-Unique: hjeKAlV2OFyXPCWs6jcDqQ-1
+Received: by mail-wr1-f71.google.com with SMTP id v2-20020a0560001622b0290106e28f8af8so3745432wrb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 04:35:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=WqkM0iWGl6jrVU5KuvimVV9SZx4Jlvp1gEzxVMJa670=;
+        b=JgHtia1143y2Tahlfz4EqfkuN4K2+nOhVNAScVmTdFxy/5CITBmVmMVMWmQ0FcjHHJ
+         UcNf1w8DEGNSZHYCZzAs+jXdBKnstqhYPsIFftetS0uzoBJPETEkQAIBVGzWoqbsccnX
+         EF39SPyABUrFDlJpM4McsBrmzYGqyW3mSPSMJMMgL1mK6BjRkC2ou+tg2o5RSSoLniFj
+         vfLF526CWeR4GnKxr6Y820ZPTOhJvEROzhYQd8421GKMH/GOAhrhnlz42NndHASUMFFv
+         yEbZprHu1JoE3bJJsd+9N+xwDntkY+fN7RYi0VdOPN6+83QubLPY9kQBiNVBi+GuuPXr
+         x/bw==
+X-Gm-Message-State: AOAM531hKkyZ3mTgWY0xyH7mlAK5QFwvp8+7PASVt4PCJTOLiqqkegVM
+        QpOr0GF1k74EGz1AzrBLH+51BMD28G6sjFjM2ziKpmffrcpsa5WO8x3JvLBk6FxHTFWUD/hom1+
+        Y1twjo0L1TSr8i6vGULNJFTsU
+X-Received: by 2002:a7b:c0c4:: with SMTP id s4mr31118912wmh.174.1620041751214;
+        Mon, 03 May 2021 04:35:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw3tS70mbovvf2isVdRqtaSYaIPZB8VFAoB+G6yadE6t3QI++fiJfnblhR/UYdS8ZB2jp2nag==
+X-Received: by 2002:a7b:c0c4:: with SMTP id s4mr31118895wmh.174.1620041750887;
+        Mon, 03 May 2021 04:35:50 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c649f.dip0.t-ipconnect.de. [91.12.100.159])
+        by smtp.gmail.com with ESMTPSA id l12sm11919551wrm.76.2021.05.03.04.35.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 04:35:50 -0700 (PDT)
+Subject: Re: [PATCH v1 7/7] fs/proc/kcore: use page_offline_(freeze|unfreeze)
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Steven Price <steven.price@arm.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Aili Yao <yaoaili@kingsoft.com>, Jiri Bohac <jbohac@suse.cz>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-hyperv@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+References: <20210429122519.15183-1-david@redhat.com>
+ <20210429122519.15183-8-david@redhat.com> <YI5H4yV/c6ReuIDt@kernel.org>
+ <5a5a7552-4f0a-75bc-582f-73d24afcf57b@redhat.com>
+ <YI/CWg6PrMxcCT2D@kernel.org>
+ <2f66cbfc-aa29-b3ef-4c6a-0da8b29b56f6@redhat.com>
+ <YI/fl9VHvjYJdwKF@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <e49556fb-d01b-87f5-f09f-539b7d78abbb@redhat.com>
+Date:   Mon, 3 May 2021 13:35:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210501151538.145449-1-masahiroy@kernel.org> <CANiq72k1hB3X6+Nc_iu=f=BoB-F9JW2j_B4ZMcv8_UpW5QQ2Og@mail.gmail.com>
- <3943bc020f6227c8801907317fc113aa13ad4bad.camel@perches.com>
- <20210502183030.GF10366@gate.crashing.org> <81a926a3bdb70debe3ae2b13655ea8d249fb9991.camel@perches.com>
- <20210502203253.GH10366@gate.crashing.org> <CAHk-=wjGJskk5EwnDCccs6DcLytE2yx76+P_W-n1-B5zq0M3KA@mail.gmail.com>
- <20210502223007.GZ1847222@casper.infradead.org>
-In-Reply-To: <20210502223007.GZ1847222@casper.infradead.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 3 May 2021 13:35:30 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1Vt17Yry_gTQ0dwr7_tEoFhuec+mQzzKzFvZGD5Hrnow@mail.gmail.com>
-Message-ID: <CAK8P3a1Vt17Yry_gTQ0dwr7_tEoFhuec+mQzzKzFvZGD5Hrnow@mail.gmail.com>
-Subject: Re: [PATCH] Raise the minimum GCC version to 5.2
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Joe Perches <joe@perches.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:1RT98D034H4bxxDqcqvK/MknfpiMAh8Lj4Uy75Z3t8nH3cflvjo
- H6yy2gNcNqK9Jg4nPt/RPIBgmwzm63L8Raf4Ic89saHYXIZLOtYjJEsErtRqbwvav+A6udE
- UK8gtI2rn/CrjlaUVh1AXel7fBzW/u7o5sbjcTYnP6Ew9jAFJxSIJYShpo8XhmWRKWktj4a
- y+mm+WmOsW9ZrxuOd5/jA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:V1gpe3VkJCY=:eJuu2sZvKATbOTT5MUVkAI
- HzCn1Funnm7je4+9ugbIwHj6Pz9oDbrvi4SV92+nnlercW0BSEfcMeDAyrD6fcw8ggEWSDbP5
- dzPF3Oj9t+s9iLeUckYECnrLQiQpcstFflleS1CM0xvjBMbxtGi5+ohcnL+oDPz1q6YjY7z0k
- KgZYWlm24aKyVQZnQDlOR4HnYx0DVNxI8ay0ZQdlOougDebe46/lR23qmyuMKU1AXf88PcGN4
- XcX1//kWryXT6+awD9JfUgVSqsQ2SuZbgDsVsndBe3/9c3vAikBXq6b46fUP9pQeUest3vkvn
- Bteb+oCWKhE0JfRt54CZU7D16MCX5ThAvQvb0+YevN5jD6lXeuuf/c+ptP96ZVFZksxmx8sV0
- PuHM/3TcEaQ9tt54+FpYStLIL68KVnm7tbWA2cXdJonCS++PFoySkPxI2WiXRmHrD5RyjfHnA
- o5lr5IaBjYkTcgt9r9It8jO3zSVcIGQmdQfkRUtmaGAAMd9PX2reVxOTwmBLqrFgGrs+3XcXX
- l8jBBKh/9rWHuE+vAlAq5D2msofQO1rQrXoWgLA2iEA79SOfnVKpYIfGi0HamxiJtGatlLQcX
- BKPcKHzVccGQs7WJ6lPhFPG+LsvPyC4/+WHhu4IFqQNEX53hDNBUtwnCKjNcXfL3YSP8BqyX3
- VPhM=
+In-Reply-To: <YI/fl9VHvjYJdwKF@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 3, 2021 at 12:32 AM Matthew Wilcox <willy@infradead.org> wrote:
-> On Sun, May 02, 2021 at 02:08:31PM -0700, Linus Torvalds wrote:
-> > What is relevant is what version of gcc various distributions actually
-> > have reasonably easily available, and how old and relevant the
-> > distributions are. We did decide that (just as an example) RHEL 7 was
-> > too old to worry about when we updated the gcc version requirement
-> > last time.
-> >
-> > Last year, Arnd and Kirill (maybe others were involved too) made a
-> > list of distros and older gcc versions. But I don't think anybody
-> > actually _maintains_ such a list. It would be perhaps interesting to
-> > have some way to check what compiler versions are being offered by
-> > different distros.
->
-> fwiw, Debian 9 aka Stretch released June 2017 had gcc 6.3
-> Debian 10 aka Buster released June 2019 had gcc 7.4 *and* 8.3.
-> Debian 8 aka Jessie had gcc-4.8.4 and gcc-4.9.2.
->
-> So do we care about people who haven't bothered to upgrade userspace
-> since 2017?  If so, we can't go past 4.9.
+On 03.05.21 13:33, Mike Rapoport wrote:
+> On Mon, May 03, 2021 at 12:13:45PM +0200, David Hildenbrand wrote:
+>> On 03.05.21 11:28, Mike Rapoport wrote:
+>>> On Mon, May 03, 2021 at 10:28:36AM +0200, David Hildenbrand wrote:
+>>>> On 02.05.21 08:34, Mike Rapoport wrote:
+>>>>> On Thu, Apr 29, 2021 at 02:25:19PM +0200, David Hildenbrand wrote:
+>>>>>> Let's properly synchronize with drivers that set PageOffline(). Unfreeze
+>>>>>> every now and then, so drivers that want to set PageOffline() can make
+>>>>>> progress.
+>>>>>>
+>>>>>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>>>>>> ---
+>>>>>>     fs/proc/kcore.c | 15 +++++++++++++++
+>>>>>>     1 file changed, 15 insertions(+)
+>>>>>>
+>>>>>> diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
+>>>>>> index 92ff1e4436cb..3d7531f47389 100644
+>>>>>> --- a/fs/proc/kcore.c
+>>>>>> +++ b/fs/proc/kcore.c
+>>>>>> @@ -311,6 +311,7 @@ static void append_kcore_note(char *notes, size_t *i, const char *name,
+>>>>>>     static ssize_t
+>>>>>>     read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
+>>>>>>     {
+>>>>>> +	size_t page_offline_frozen = 0;
+>>>>>>     	char *buf = file->private_data;
+>>>>>>     	size_t phdrs_offset, notes_offset, data_offset;
+>>>>>>     	size_t phdrs_len, notes_len;
+>>>>>> @@ -509,6 +510,18 @@ read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
+>>>>>>     			pfn = __pa(start) >> PAGE_SHIFT;
+>>>>>>     			page = pfn_to_online_page(pfn);
+>>>>>
+>>>>> Can't this race with page offlining for the first time we get here?
+>>>>
+>>>>
+>>>> To clarify, we have three types of offline pages in the kernel ...
+>>>>
+>>>> a) Pages part of an offline memory section; the memap is stale and not
+>>>> trustworthy. pfn_to_online_page() checks that. We *can* protect against
+>>>> memory offlining using get_online_mems()/put_online_mems(), but usually
+>>>> avoid doing so as the race window is very small (and a problem all over the
+>>>> kernel we basically never hit) and locking is rather expensive. In the
+>>>> future, we might switch to rcu to handle that more efficiently and avoiding
+>>>> these possible races.
+>>>>
+>>>> b) PageOffline(): logically offline pages contained in an online memory
+>>>> section with a sane memmap. virtio-mem calls these pages "fake offline";
+>>>> something like a "temporary" memory hole. The new mechanism I propose will
+>>>> be used to handle synchronization as races can be more severe, e.g., when
+>>>> reading actual page content here.
+>>>>
+>>>> c) Soft offline pages: hwpoisoned pages that are not actually harmful yet,
+>>>> but could become harmful in the future. So we better try to remove the page
+>>>> from the page allcoator and try to migrate away existing users.
+>>>>
+>>>>
+>>>> So page_offline_* handle "b) PageOffline()" only. There is a tiny race
+>>>> between pfn_to_online_page(pfn) and looking at the memmap as we have in many
+>>>> cases already throughout the kernel, to be tackled in the future.
+>>>
+>>> Right, but here you anyway add locking, so why exclude the first iteration?
+>>
+>> What we're protecting is PageOffline() below. If I didn't mess up, we should
+>> always be calling page_offline_freeze() before calling PageOffline(). Or am
+>> I missing something?
+>   
+> Somehow I was under impression we are protecting both pfn_to_online_page()
+> and PageOffline().
+>   
+>>> BTW, did you consider something like
+>>
+>> Yes, I played with something like that. We'd have to handle the first
+>> page_offline_freeze() freeze differently, though, and that's where things
+>> got a bit ugly in my attempts.
+>>
+>>>
+>>> 	if (page_offline_frozen++ % MAX_ORDER_NR_PAGES == 0) {
+>>> 		page_offline_unfreeze();
+>>> 		cond_resched();
+>>> 		page_offline_freeze();
+>>> 	}
+>>>
+>>> We don't seem to care about page_offline_frozen overflows here, do we?
+>>
+>> No, the buffer size is also size_t and gets incremented on a per-byte basis.
+>> The variant I have right now looked the cleanest to me. Happy to hear
+>> simpler alternatives.
+> 
+> Well, locking for the first time before the while() loop and doing
+> resched-relock outside switch() would be definitely nicer, and it makes the
+> last unlock unconditional.
+> 
+> The cost of prevention of memory offline during reads of !KCORE_RAM parts
+> does not seem that significant to me, but I may be missing something.
 
-I would argue that we shouldn't care about distros that are officially
-end-of-life. Jessie support ended last July according to the official
-Debian pages at https://wiki.debian.org/LTS.
+Also true, I'll have a look if I can just simplify that.
 
-It's a little harder for distros that are still officially supported, like the
-RHEL7 case that Linus mentioned, Debian Stretch (gcc-6.3),
-Slackware 14.2 (gcc-5.3), or Ubuntu 18.04 (gcc-7.3). For any of
-these you could make the argument one way or the other: either
-say we care as long as the distro cares, or the users that want
-to build their own kernels can be reasonably expected to either
-upgrade their distro or install a newer compiler manually.
+-- 
+Thanks,
 
-Looking at the Debian case specifically, I see these numbers
-from https://popcon.debian.org/:
+David / dhildenb
 
-testing/unstable: 16730
-buster/stable: 113881
-stretch/oldstable: 39147
-jessie/oldoldstable: 19286
-
-Assuming the numbers of users that installed popcon are
-proportional to the actual number of users, that's still a large
-chunk of people running stretch or older. Presumably,
-these users are actually less likely to build their own kernels.
-
-       Arnd
