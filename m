@@ -2,243 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 900A6372334
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 00:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2F137233D
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 00:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbhECWsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 18:48:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229836AbhECWsm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 18:48:42 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C51CC061763
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 15:47:48 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id e25so6979191oii.2
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 15:47:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=J3yLB+vbpq5Xc9JhKmZutr67bAiFvkUnDMtUXpplUGA=;
-        b=OveNxb30rHLgSAzaM0tOpGtIlHylKdXRMEUg4g++/qGr+akviNgcsl9ZS1R/rXYoyp
-         zwOveCIwXETnqsCO8OIfxkkHRQhhF4Fj9aHystlJxD1VsKnGjbWz24yFpXAsxp2rO5JY
-         eNg84L2UL6R+SBmBR+MX8Ht2EYS/d7upYu5y0cpodgFCtMtSp5ubo0IzWvQ8TMcKmNCq
-         CLalcxcOtduKKCdDuFAK3CiwV2RQJ1sWoUVjhloU3Nm5K2DEkk8M2XO+YN0biUXPDPGG
-         LtYXy29QGclKlNPbz9XTmvq7I4Gu55+eLr9r4M1aofY1IwvxUDvtCxU+lYJ1eAVPa5rC
-         aWpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=J3yLB+vbpq5Xc9JhKmZutr67bAiFvkUnDMtUXpplUGA=;
-        b=Ti4Jqh3hBoeJYvo76W6FT5J+h5qNLv/+z90sGTZyoZH56Rb17T6J5DV5HadoFc3/Cg
-         AS5An5gVyKMoWR1aL8ikU4DcagOtcpYiViCGgL7k0bRR44k23qXmAV+W0OVm8FKIDGWA
-         kl0FwNlZOi7awrfleQ4EErTn2t/2LQ1+bDaYl/aAXkU67pBzJltfpPz5mOdq4FBhpKPl
-         rQ+f17Oqsv0F2v3Ti22RQY+bQkBW+r+BrONzl6gXiwTDoeUheN3WTalD6ZR/8tZ3o5ve
-         zfNG7mtQu9mAPXsvUbrjpPKcM7NEoSDBnDF6yHAac2YyT/9Fcl7xaU2/hgEmTUZWirw3
-         Varg==
-X-Gm-Message-State: AOAM530n/pQQx0lDoaj07ZxktPP6tepLnw1uUbeZCvhNpX6QXXI7WwMD
-        IhLz8xPUcmI2xBBnLgNRqDpiawcHxFRFWf7Crphtbw==
-X-Google-Smtp-Source: ABdhPJxXjygNqNo+DUUJipEoWFZJ3Rjm/JQsG3j/6+Eb309MKSMe1ONNWrgQJbAjkUptHOIkbNRpxHmAJ/M/fQucoBI=
-X-Received: by 2002:aca:44d6:: with SMTP id r205mr15201349oia.172.1620082067206;
- Mon, 03 May 2021 15:47:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <m14kfjh8et.fsf_-_@fess.ebiederm.org> <20210503203814.25487-1-ebiederm@xmission.com>
- <20210503203814.25487-10-ebiederm@xmission.com> <m1o8drfs1m.fsf@fess.ebiederm.org>
-In-Reply-To: <m1o8drfs1m.fsf@fess.ebiederm.org>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 4 May 2021 00:47:35 +0200
-Message-ID: <CANpmjNNOK6Mkxkjx5nD-t-yPQ-oYtaW5Xui=hi3kpY_-Y0=2JA@mail.gmail.com>
-Subject: Re: [PATCH 10/12] signal: Redefine signinfo so 64bit fields are possible
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        id S229637AbhECWxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 18:53:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229497AbhECWxH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 18:53:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 804B1611AD;
+        Mon,  3 May 2021 22:52:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620082333;
+        bh=5VGVTUJIMUJhrTaq5GAH+lpnw//U4yocmybZf0eQ9mk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=GnYTKcS8sswIAW7ePAh/AGgSOkotql7sNG7DYO9CkF5/ACNrBS9HPyZNOEs5Lsvat
+         7hul/jw7pLnSP8t4szXEd5OZwoiP1/1PlX7sxz8+EHXqiP1JgFtsKYvBr3BnlH+147
+         cXG0yewXSRjJ5fIrznXAmuwPKrYh49HUY8fU3mpKpsvpFLS184WvsHTlRGeLAv0qnT
+         K+xN5xS4++LQyN2wSodyG7Odqe2UFArp6bFU3+Mv9c8oCW3gDh+f3WYWQUaK+ni5fH
+         nrJkO7FQyqIf38jHNtFkWHlmqmldSaRk98M+pINEo1cb3D67NVW5n7pMBltnyg6r7I
+         9VTYTy/a9nObg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 325275C0269; Mon,  3 May 2021 15:52:13 -0700 (PDT)
+Date:   Mon, 3 May 2021 15:52:13 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH v1 4/5] kvfree_rcu: Refactor kfree_rcu_monitor() function
+Message-ID: <20210503225213.GA975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210428134422.1894-1-urezki@gmail.com>
+ <20210428134422.1894-4-urezki@gmail.com>
+ <20210503181214.GA2270@pc638.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210503181214.GA2270@pc638.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 3 May 2021 at 23:04, Eric W. Biederman <ebiederm@xmission.com> wrote:
-> "Eric W. Beiderman" <ebiederm@xmission.com> writes:
-> > From: "Eric W. Biederman" <ebiederm@xmission.com>
-> >
-> > The si_perf code really wants to add a u64 field.  This change enables
-> > that by reorganizing the definition of siginfo_t, so that a 64bit
-> > field can be added without increasing the alignment of other fields.
-
-If you can, it'd be good to have an explanation for this, because it's
-not at all obvious -- some future archeologist will wonder how we ever
-came up with this definition of siginfo...
-
-(I see the trick here is that before the union would have changed
-alignment, introducing padding after the 3 ints -- but now because the
-3 ints are inside the union the union's padding no longer adds padding
-for these ints.  Perhaps you can explain it better than I can. Also
-see below.)
-
-> I decided to include this change because it is not that complicated,
-> and it allows si_perf_data to have the definition that was originally
-> desired.
-
-Neat, and long-term I think this seems to be worth having. Sooner or
-later something else might want __u64, too.
-
-But right now, due to the slight increase in complexity, we need to
-take extra care ensuring nothing broke -- at a high-level I see why
-this seems to be safe.
-
-> If this looks difficult to make in the userspace definitions,
-> or is otherwise a problem I don't mind dropping this change.  I just
-> figured since it was not too difficult and we are changing things
-> anyway I should try for everything.
-
-Languages that support inheritance might end up with the simpler
-definition here (and depending on which fields they want to access,
-they'd have to cast the base siginfo into the one they want). What
-will become annoying is trying to describe siginfo_t.
-
-I will run some tests in the morning.
-
-Thanks,
--- Marco
-
-[...]
-> > diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
-> > index e663bf117b46..1fcede623a73 100644
-> > --- a/include/uapi/asm-generic/siginfo.h
-> > +++ b/include/uapi/asm-generic/siginfo.h
-> > @@ -29,15 +29,33 @@ typedef union sigval {
-> >  #define __ARCH_SI_ATTRIBUTES
-> >  #endif
-> >
-> > +#ifndef __ARCH_HAS_SWAPPED_SIGINFO
-> > +#define ___SIGINFO_COMMON    \
-> > +     int     si_signo;       \
-> > +     int     si_errno;       \
-> > +     int     si_code
-> > +#else
-> > +#define ___SIGINFO_COMMON    \
-> > +     int     si_signo;       \
-> > +     int     si_code;        \
-> > +     int     si_errno
-> > +#endif /* __ARCH_HAS_SWAPPED_SIGINFO */
-> > +
-> > +#define __SIGINFO_COMMON     \
-> > +     ___SIGINFO_COMMON;      \
-> > +     int     _common_pad[__alignof__(void *) != __alignof(int)]
-
-Just to verify my understanding of _common_pad: this is again a legacy
-problem, right? I.e. if siginfo was designed from the start like this,
-we wouldn't need the _common_pad.
-
-
-While this looks quite daunting, this is effectively turning siginfo
-from a struct with a giant union, into lots of smaller structs, each
-of which share a common header a'la inheritance -- until now the
-distinction didn't matter, but it starts to matter as soon as
-alignment of one child-struct would affect the offsets of another
-child-struct (i.e. the old version). Right?
-
-I was wondering if it would make things look cleaner if the above was
-encapsulated in a struct, say __sicommon? Then the outermost union
-would use 'struct __sicommon _sicommon' and we need #defines for
-si_signo, si_code, and si_errno.
-
-Or would it break alignment somewhere?
-
-I leave it to your judgement -- just an idea.
-
-> >  union __sifields {
-> >       /* kill() */
-> >       struct {
-> > +             __SIGINFO_COMMON;
-> >               __kernel_pid_t _pid;    /* sender's pid */
-> >               __kernel_uid32_t _uid;  /* sender's uid */
-> >       } _kill;
-> >
-> >       /* POSIX.1b timers */
-> >       struct {
-> > +             __SIGINFO_COMMON;
-> >               __kernel_timer_t _tid;  /* timer id */
-> >               int _overrun;           /* overrun count */
-> >               sigval_t _sigval;       /* same as below */
-> > @@ -46,6 +64,7 @@ union __sifields {
-> >
-> >       /* POSIX.1b signals */
-> >       struct {
-> > +             __SIGINFO_COMMON;
-> >               __kernel_pid_t _pid;    /* sender's pid */
-> >               __kernel_uid32_t _uid;  /* sender's uid */
-> >               sigval_t _sigval;
-> > @@ -53,6 +72,7 @@ union __sifields {
-> >
-> >       /* SIGCHLD */
-> >       struct {
-> > +             __SIGINFO_COMMON;
-> >               __kernel_pid_t _pid;    /* which child */
-> >               __kernel_uid32_t _uid;  /* sender's uid */
-> >               int _status;            /* exit code */
-> > @@ -62,6 +82,7 @@ union __sifields {
-> >
-> >       /* SIGILL, SIGFPE, SIGSEGV, SIGBUS, SIGTRAP, SIGEMT */
-> >       struct {
-> > +             __SIGINFO_COMMON;
-> >               void __user *_addr; /* faulting insn/memory ref. */
-> >  #ifdef __ia64__
-> >               int _imm;               /* immediate value for "break" */
-> > @@ -97,35 +118,28 @@ union __sifields {
-> >
-> >       /* SIGPOLL */
-> >       struct {
-> > +             __SIGINFO_COMMON;
-> >               __ARCH_SI_BAND_T _band; /* POLL_IN, POLL_OUT, POLL_MSG */
-> >               int _fd;
-> >       } _sigpoll;
-> >
-> >       /* SIGSYS */
-> >       struct {
-> > +             __SIGINFO_COMMON;
-> >               void __user *_call_addr; /* calling user insn */
-> >               int _syscall;   /* triggering system call number */
-> >               unsigned int _arch;     /* AUDIT_ARCH_* of syscall */
-> >       } _sigsys;
-> >  };
-> >
-> > -#ifndef __ARCH_HAS_SWAPPED_SIGINFO
-> > -#define __SIGINFO                    \
-> > -struct {                             \
-> > -     int si_signo;                   \
-> > -     int si_errno;                   \
-> > -     int si_code;                    \
-> > -     union __sifields _sifields;     \
-> > -}
-> > -#else
-> > +
-> >  #define __SIGINFO                    \
-> > -struct {                             \
-> > -     int si_signo;                   \
-> > -     int si_code;                    \
-> > -     int si_errno;                   \
-> > +union {                                      \
-> > +     struct {                        \
-> > +             __SIGINFO_COMMON;       \
-> > +     };                              \
-> >       union __sifields _sifields;     \
+On Mon, May 03, 2021 at 08:12:14PM +0200, Uladzislau Rezki wrote:
+> Hello, Paul.
+> 
+> > Rearm the monitor work directly from its own function that
+> > is kfree_rcu_monitor(). So this patch puts the invocation
+> > timing control in one place.
+> > 
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > ---
+> >  kernel/rcu/tree.c | 35 +++++++++++++++++++++--------------
+> >  1 file changed, 21 insertions(+), 14 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index e44d6f8c56f0..229e909ad437 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3415,37 +3415,44 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
+> >  	return !repeat;
 > >  }
-> > -#endif /* __ARCH_HAS_SWAPPED_SIGINFO */
-> >
-> >  typedef struct siginfo {
-> >       union {
+> >  
+> > -static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
+> > -					  unsigned long flags)
+> > +/*
+> > + * This function queues a new batch. If success or nothing to
+> > + * drain it returns 1. Otherwise 0 is returned indicating that
+> > + * a reclaim kthread has not processed a previous batch.
+> > + */
+> > +static inline int kfree_rcu_drain(struct kfree_rcu_cpu *krcp)
+> >  {
+> > +	unsigned long flags;
+> > +	int ret;
+> > +
+> > +	raw_spin_lock_irqsave(&krcp->lock, flags);
+> > +
+> >  	// Attempt to start a new batch.
+> > -	if (queue_kfree_rcu_work(krcp)) {
+> > +	ret = queue_kfree_rcu_work(krcp);
+> > +	if (ret)
+> >  		// Success! Our job is done here.
+> >  		krcp->monitor_todo = false;
+> > -		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> > -		return;
+> > -	}
+> >  
+> >  	// Previous RCU batch still in progress, try again later.
+> > -	schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
+> >  	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> > +	return ret;
+> >  }
+> >  
+> >  /*
+> >   * This function is invoked after the KFREE_DRAIN_JIFFIES timeout.
+> > - * It invokes kfree_rcu_drain_unlock() to attempt to start another batch.
+> > + * It invokes kfree_rcu_drain() to attempt to start another batch.
+> >   */
+> >  static void kfree_rcu_monitor(struct work_struct *work)
+> >  {
+> > -	unsigned long flags;
+> >  	struct kfree_rcu_cpu *krcp = container_of(work, struct kfree_rcu_cpu,
+> >  						 monitor_work.work);
+> >  
+> > -	raw_spin_lock_irqsave(&krcp->lock, flags);
+> > -	if (krcp->monitor_todo)
+> > -		kfree_rcu_drain_unlock(krcp, flags);
+> > -	else
+> > -		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> > +	if (kfree_rcu_drain(krcp))
+> > +		return;
+> > +
+> > +	// Not success. A previous batch is still in progress.
+> > +	// Rearm a work to repeat an attempt of starting another batch.
+> > +	schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
+> >  }
+> >  
+> >  static enum hrtimer_restart
+> > -- 
+> > 2.20.1
+> > 
+> 
+> Please see below a v2 of this patch. The main difference between v1
+> is that, the monitor work now is open-coded, thus some extra inline
+> functions were eliminated:
+> 
+> >From 7d153a640a4f791cbfd9b546e32f90fb2c60c480 Mon Sep 17 00:00:00 2001
+> From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+> Date: Wed, 21 Apr 2021 13:22:52 +0200
+> Subject: [PATCH v2] kvfree_rcu: Refactor kfree_rcu_monitor()
+> 
+> Currently we have three functions which depend on each other.
+> Two of them are quite tiny and the last one where the most
+> work is done. All of them are related to queuing RCU batches
+> to reclaim objects after a GP.
+> 
+> 1. kfree_rcu_monitor(). It consist of few lines. It acquires
+>    the spin-lock and calls "drain" function.
+> 
+> 2. kfree_rcu_drain_unlock(). It also consists of few lines of
+>    code. It calls a func. to queue the batch. If not success
+>    rearm the monitor work to repeat an attempt one more time.
+> 
+> 3. queue_kfree_rcu_work(). Main core part is implemented here.
+>    In short, it attempts to start a new batch to free objects
+>    after a GP.
+> 
+> Since there are no external users of [2] and [3] functions we
+> can eliminate both by moving all logic directly into [1]. That
+> makes the kfree_rcu_monitor() to be open-coded what is easier
+> to follow thus becomes less complicated.
+> 
+> Apart of that, replace comments which start with "/*" to "//"
+> format to make it unified across the file.
+> 
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+
+Queued and pushed as shown below.  Nice diffstat!  ;-)
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ tree.c |   84 ++++++++++++++++++++---------------------------------------------
+ 1 file changed, 26 insertions(+), 58 deletions(-)
+
+commit c47687cb4cd09422c93a1a7dd7562e10439861b6
+Author: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Date:   Wed Apr 21 13:22:52 2021 +0200
+
+    kvfree_rcu: Refactor kfree_rcu_monitor()
+    
+    Currently we have three functions which depend on each other.
+    Two of them are quite tiny and the last one where the most
+    work is done. All of them are related to queuing RCU batches
+    to reclaim objects after a GP.
+    
+    1. kfree_rcu_monitor(). It consist of few lines. It acquires a spin-lock
+       and calls kfree_rcu_drain_unlock().
+    
+    2. kfree_rcu_drain_unlock(). It also consists of few lines of code. It
+       calls queue_kfree_rcu_work() to queue the batch.  If this fails,
+       it rearms the monitor work to try again later.
+    
+    3. queue_kfree_rcu_work(). This provides the bulk of the functionality,
+       attempting to start a new batch to free objects after a GP.
+    
+    Since there are no external users of functions [2] and [3], both
+    can eliminated by moving all logic directly into [1], which both
+    shrinks and simplifies the code.
+    
+    Also replace comments which start with "/*" to "//" format to make it
+    unified across the file.
+    
+    Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 4d93c6985d3f..3a5fef9fc934 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3362,29 +3362,26 @@ static void kfree_rcu_work(struct work_struct *work)
+ }
+ 
+ /*
+- * Schedule the kfree batch RCU work to run in workqueue context after a GP.
+- *
+- * This function is invoked by kfree_rcu_monitor() when the KFREE_DRAIN_JIFFIES
+- * timeout has been reached.
++ * This function is invoked after the KFREE_DRAIN_JIFFIES timeout.
+  */
+-static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
++static void kfree_rcu_monitor(struct work_struct *work)
+ {
+-	struct kfree_rcu_cpu_work *krwp;
+-	bool repeat = false;
++	struct kfree_rcu_cpu *krcp = container_of(work,
++		struct kfree_rcu_cpu, monitor_work.work);
++	unsigned long flags;
+ 	int i, j;
+ 
+-	lockdep_assert_held(&krcp->lock);
++	raw_spin_lock_irqsave(&krcp->lock, flags);
+ 
++	// Attempt to start a new batch.
+ 	for (i = 0; i < KFREE_N_BATCHES; i++) {
+-		krwp = &(krcp->krw_arr[i]);
++		struct kfree_rcu_cpu_work *krwp = &(krcp->krw_arr[i]);
+ 
+-		/*
+-		 * Try to detach bkvhead or head and attach it over any
+-		 * available corresponding free channel. It can be that
+-		 * a previous RCU batch is in progress, it means that
+-		 * immediately to queue another one is not possible so
+-		 * return false to tell caller to retry.
+-		 */
++		// Try to detach bkvhead or head and attach it over any
++		// available corresponding free channel. It can be that
++		// a previous RCU batch is in progress, it means that
++		// immediately to queue another one is not possible so
++		// in that case the monitor work is rearmed.
+ 		if ((krcp->bkvhead[0] && !krwp->bkvhead_free[0]) ||
+ 			(krcp->bkvhead[1] && !krwp->bkvhead_free[1]) ||
+ 				(krcp->head && !krwp->head_free)) {
+@@ -3406,57 +3403,28 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
+ 
+ 			WRITE_ONCE(krcp->count, 0);
+ 
+-			/*
+-			 * One work is per one batch, so there are three
+-			 * "free channels", the batch can handle. It can
+-			 * be that the work is in the pending state when
+-			 * channels have been detached following by each
+-			 * other.
+-			 */
++			// One work is per one batch, so there are three
++			// "free channels", the batch can handle. It can
++			// be that the work is in the pending state when
++			// channels have been detached following by each
++			// other.
+ 			queue_rcu_work(system_wq, &krwp->rcu_work);
+ 		}
+-
+-		// Repeat if any "free" corresponding channel is still busy.
+-		if (krcp->bkvhead[0] || krcp->bkvhead[1] || krcp->head)
+-			repeat = true;
+ 	}
+ 
+-	return !repeat;
+-}
+-
+-static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
+-					  unsigned long flags)
+-{
+-	// Attempt to start a new batch.
+-	if (queue_kfree_rcu_work(krcp)) {
+-		// Success! Our job is done here.
++	// If there is nothing to detach, it means that our job is
++	// successfully done here. In case of having at least one
++	// of the channels that is still busy we should rearm the
++	// work to repeat an attempt. Because previous batches are
++	// still in progress.
++	if (!krcp->bkvhead[0] && !krcp->bkvhead[1] && !krcp->head)
+ 		krcp->monitor_todo = false;
+-		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+-		return;
+-	}
++	else
++		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
+ 
+-	// Previous RCU batch still in progress, try again later.
+-	schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
+ 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+ }
+ 
+-/*
+- * This function is invoked after the KFREE_DRAIN_JIFFIES timeout.
+- * It invokes kfree_rcu_drain_unlock() to attempt to start another batch.
+- */
+-static void kfree_rcu_monitor(struct work_struct *work)
+-{
+-	unsigned long flags;
+-	struct kfree_rcu_cpu *krcp = container_of(work, struct kfree_rcu_cpu,
+-						 monitor_work.work);
+-
+-	raw_spin_lock_irqsave(&krcp->lock, flags);
+-	if (krcp->monitor_todo)
+-		kfree_rcu_drain_unlock(krcp, flags);
+-	else
+-		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+-}
+-
+ static enum hrtimer_restart
+ schedule_page_work_fn(struct hrtimer *t)
+ {
