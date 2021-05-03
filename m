@@ -2,263 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD983710BC
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 06:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67F8E3710EB
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 06:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbhECEU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 00:20:56 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:35775 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229457AbhECEUy (ORCPT
+        id S230137AbhECEbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 00:31:17 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:44988 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229462AbhECEbR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 00:20:54 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 8994D580915;
-        Mon,  3 May 2021 00:20:01 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Mon, 03 May 2021 00:20:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=Wp7XYzm4lyNSERoy1FmfOae3cQfvuVX
-        2QEotJK/yJJ8=; b=bDUARedUZgjPAzEnZC1bxDiwX+6f3UMtdIfPIEmZ19UArg1
-        gRjpcu0moAVl/68G1R09VyDMoXzDkBnynu9KIA8ywdVm3i2eOzt/MzAroKWV9HtE
-        EaawbiAPRpMmYsW/0JwECb8riPszF8U+EMMJC+kdujj2fYncAdRj+k6BxRDnJ9dp
-        ToAuRIK7LRPk1sfr5UA2jjwBqyQKI05UpBcw8H4RnRbgy23JGhDdupWTOSsYuXT4
-        S75haQONi0i28bLR6rLIBXwA8MdhPP8MZE5JVweg1W/FjVd3mkZBA8OPm+ue9DlE
-        xqIpvmxgy+714czPXLCUZoFLt5PIAnwGKqwjLBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=Wp7XYz
-        m4lyNSERoy1FmfOae3cQfvuVX2QEotJK/yJJ8=; b=B4jlIQXklSprl8L9WIInZ4
-        K6xyebrbKDzJHotVIMBNqWBMapb2OARcXQ7k8h4iksMYcs94Hd+8CLFN69ZjK5eW
-        YQ9cvbnCFhJqZIPc2ITnnaYYeQmXsP8ZXOhnBJygSNBSGcXTr2WPBkYidrhe0z6e
-        jnBdv46glIKPSf3XQuyPwmG+kkpcqUtj+89V1MSUXv9ykOTadg+a4C42+ZTUQH35
-        vHNfq9oQgUGz0teetMQp3Ot2eeJ7MQGHee2YX82S5shxOckmEanipyD+y6HZ6593
-        cgyvExNcwIAiwyLReo17hWhYEkJPgJZx3NRou185hS4ZiBqGUd7yWgTTq8AqcwcQ
-        ==
-X-ME-Sender: <xms:73mPYDojdWVtg9_LOr2USDZ2uIWZdoeakfedoXaEo3WVXB6ddTUcyQ>
-    <xme:73mPYNo39H0zBM3yTk6t_4UN60AA7U2SMbsOtW-eqPlBaK9h7RgxhrcmwXAuoJYfT
-    jm0TMNWKNYtWowNSw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeffedgtdefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhepheehfeegfeekjeegtdetuedvgeeljedvteffudeiffduvefhiefhleef
-    lefghfeknecuffhomhgrihhnpeihrghmlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:73mPYAP8gYu5MQvSTHL55s7uxh_jEnQPC03tZhcFNc0SMWElXhTg6A>
-    <xmx:73mPYG5ramDY4t-dl9upZ_28ky4tT0hOkfSQ0V28SRJ6nWg2xEk0xg>
-    <xmx:73mPYC5WgFP_J3uF-xMm3nl0TYsJjBsZMZD0jyNgcZPvF4BwDvOUEA>
-    <xmx:8XmPYKj-gqfwS9VvZuy_zC_Adc0d8IFIOFHX0PkGebpW3Eqc1Qb2VQ>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id CD029A00079; Mon,  3 May 2021 00:19:59 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-403-gbc3c488b23-fm-20210419.005-gbc3c488b
-Mime-Version: 1.0
-Message-Id: <75226402-503c-4e9b-96dc-e4bd74cf20ac@www.fastmail.com>
-In-Reply-To: <20210503014336.20256-2-steven_lee@aspeedtech.com>
-References: <20210503014336.20256-1-steven_lee@aspeedtech.com>
- <20210503014336.20256-2-steven_lee@aspeedtech.com>
-Date:   Mon, 03 May 2021 13:49:38 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Steven Lee" <steven_lee@aspeedtech.com>,
-        "Ulf Hansson" <ulf.hansson@linaro.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Joel Stanley" <joel@jms.id.au>,
-        "Ryan Chen" <ryanchen.aspeed@gmail.com>,
-        "moderated list:ASPEED SD/MMC DRIVER" <linux-aspeed@lists.ozlabs.org>,
-        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list" <linux-kernel@vger.kernel.org>
-Cc:     "Hongwei Zhang" <Hongweiz@ami.com>,
-        "Ryan Chen" <ryan_chen@aspeedtech.com>,
-        "Chin-Ting Kuo" <chin-ting_kuo@aspeedtech.com>
-Subject: =?UTF-8?Q?Re:_[PATCH_v2_1/3]_dt-bindings:_mmc:_sdhci-of-aspeed:_Add_desc?=
- =?UTF-8?Q?ription_for_AST2600_EVB.?=
-Content-Type: text/plain
+        Mon, 3 May 2021 00:31:17 -0400
+Received: by mail-io1-f70.google.com with SMTP id z25-20020a05660200d9b02903de90ff885fso2440500ioe.11
+        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 21:30:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=qhTWpfL3z8v6czLxO0LScU6mbAkDF8Up/p/3HeH4yxU=;
+        b=Cm9ggz+m/Hhgn3pvRcdNVSO+0+yAeCqP0DNK+6LLRijhXWJVQXhCqVaiXp3Lm2+P43
+         JyE5JmJWPxVPFksr2eUAQXhqOTnzD7J7Qbpw55TCtg50my0Pt+Cy9iFCVcW57rGQ9FLi
+         uVN8E/abb6ag/xf34P0R0O+dP9hyMCG4xv1xh4klOWlctF0k/e8dhe9PJsb4/6LfQWub
+         xBv0p3YQzC2BmCA2x3bLQE6IiYUQbNahgWPWqokGdAnpzvcDNHFq2tHr1A/fX0Kryjxn
+         GgHHWfkvJ3xVeutYo0ym/F+PkDf63I6fIaxoahYQ1Jhqz+L+/i8ms8K7+J7jBY7c8xcY
+         fb3g==
+X-Gm-Message-State: AOAM531zDmzCIfrvXRbBbRh+halGZCkvbofDV8sfLT04PSwlLKZ+Rje3
+        dEO+XcF5euTCEUUUAm3xpwAucamFOecw4uPtCYyeWtg7HvBK
+X-Google-Smtp-Source: ABdhPJz2Wk/CR0fTMSMBITvQD/taL+mLWYWdz2jKRBiXvAeek73fyphg+aB87ZX1FbEu8GOmiY0ow58obrQBlvJlSfztZAbsRRhx
+MIME-Version: 1.0
+X-Received: by 2002:a5e:a604:: with SMTP id q4mr2134727ioi.178.1620016224423;
+ Sun, 02 May 2021 21:30:24 -0700 (PDT)
+Date:   Sun, 02 May 2021 21:30:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009653db05c1656b9b@google.com>
+Subject: [syzbot] WARNING: suspicious RCU usage in kernfs_iop_getattr
+From:   syzbot <syzbot+c26b2cb5301be7de9efc@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steven,
+Hello,
 
-On Mon, 3 May 2021, at 11:13, Steven Lee wrote:
-> Add the description for describing the AST 2600 EVB reference design of
-> GPIO regulators and provide the example in the document.
-> 
-> AST2600-A2 EVB has the reference design for enabling SD bus
-> power and toggling SD bus signal voltage by GPIO pins.
-> 
-> In the reference design, GPIOV0 of AST2600-A2 EVB is connected to
-> power load switch that providing 3.3v to SD1 bus vdd. GPIOV1 is
-> connected to a 1.8v and a 3.3v power load switch that providing
-> signal voltage to
-> SD1 bus.
-> 
-> If GPIOV0 is active high, SD1 bus is enabled. Otherwise, SD1 bus is
-> disabled.
-> If GPIOV1 is active high, 3.3v power load switch is enabled, SD1
-> signal voltage is 3.3v. Otherwise, 1.8v power load switch will be
-> enabled, SD1 signal voltage becomes 1.8v.
-> 
-> AST2600-A2 EVB also support toggling signal voltage for SD2 bus.
-> The design is the same as SD1 bus. It uses GPIOV2 as power-gpio and
-> GPIOV3 as power-switch-gpio.
-> 
-> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> ---
->  .../devicetree/bindings/mmc/aspeed,sdhci.yaml | 99 +++++++++++++++++++
->  1 file changed, 99 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml 
-> b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
-> index 987b287f3bff..dd894aba0bb7 100644
-> --- a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
-> @@ -20,6 +20,19 @@ description: |+
->    the slots are dependent on the common configuration area, they are 
-> described
->    as child nodes.
->  
-> +  The signal voltage of SDHCIs on AST2600-A2 EVB is able to be toggled 
-> by GPIO
-> +  pins. In the reference design, GPIOV0 of AST2600-A2 EVB is connected 
-> to the
-> +  power load switch that providing 3.3v to SD1 bus vdd, GPIOV1 is 
-> connected to
-> +  a 1.8v and a 3.3v power load switch that providing signal voltage to
-> +  SD1 bus.
-> +  If GPIOV0 is active high, SD1 bus is enabled. Otherwise, SD1 bus is
-> +  disabled. If GPIOV1 is active high, 3.3v power load switch is 
-> enabled, SD1
-> +  signal voltage is 3.3v. Otherwise, 1.8v power load switch will be 
-> enabled, SD1
-> +  signal voltage becomes 1.8v.
-> +  AST2600-A2 EVB also support toggling signal voltage for SD2 bus.
-> +  The design is the same as SD1 bus. It uses GPIOV2 as power-gpio and 
-> GPIOV3
-> +  as power-switch-gpio.
+syzbot found the following issue on:
 
-I don't think we should be describing design-specific details in the 
-binding document. However, I think this would be a great comment in the 
-AST2600 EVB devicetree. Can you please move it there?
+HEAD commit:    d72cd4ad Merge tag 'scsi-misc' of git://git.kernel.org/pub..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=123fbb85d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=53fdf14defd48c56
+dashboard link: https://syzkaller.appspot.com/bug?extid=c26b2cb5301be7de9efc
+compiler:       Debian clang version 11.0.1-2
 
-> +
->  properties:
->    compatible:
->      enum:
-> @@ -78,6 +91,7 @@ required:
->    - clocks
->  
->  examples:
-> +  //Example 1
->    - |
->      #include <dt-bindings/clock/aspeed-clock.h>
->      sdc@1e740000 {
-> @@ -104,3 +118,88 @@ examples:
->                      clocks = <&syscon ASPEED_CLK_SDIO>;
->              };
->      };
-> +
-> +  //Example 2 (AST2600EVB with GPIO regulator)
+Unfortunately, I don't have any reproducer for this issue yet.
 
-I feel you didn't test this with `make dt_binding_check` as `//` isn't
-a valid YAML comment token. You need to use `#` for comments (
-https://yaml.org/spec/1.2/spec.html#id2780069 ).
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c26b2cb5301be7de9efc@syzkaller.appspotmail.com
 
-> +  - |
-> +    #include <dt-bindings/clock/aspeed-clock.h>
-> +    #include <dt-bindings/gpio/aspeed-gpio.h>
-> +    vcc_sdhci0: regulator-vcc-sdhci0 {
-> +            compatible = "regulator-fixed";
-> +
-> +            regulator-name = "SDHCI0 Vcc";
-> +            regulator-min-microvolt = <3300000>;
-> +            regulator-max-microvolt = <3300000>;
-> +            gpios = <&gpio0 ASPEED_GPIO(V, 0)
-> +                            GPIO_ACTIVE_HIGH>;
-> +            enable-active-high;
-> +    };
-> +
-> +    vccq_sdhci0: regulator-vccq-sdhci0 {
-> +            compatible = "regulator-gpio";
-> +
-> +            regulator-name = "SDHCI0 VccQ";
-> +            regulator-min-microvolt = <1800000>;
-> +            regulator-max-microvolt = <3300000>;
-> +            gpios = <&gpio0 ASPEED_GPIO(V, 1)
-> +                            GPIO_ACTIVE_HIGH>;
-> +            gpios-states = <1>;
-> +            states = <3300000 1
-> +                      1800000 0>;
-> +    };
-> +
-> +    vcc_sdhci1: regulator-vcc-sdhci1 {
-> +            compatible = "regulator-fixed";
-> +
-> +            regulator-name = "SDHCI1 Vcc";
-> +            regulator-min-microvolt = <3300000>;
-> +            regulator-max-microvolt = <3300000>;
-> +            gpios = <&gpio0 ASPEED_GPIO(V, 2)
-> +                            GPIO_ACTIVE_HIGH>;
-> +            enable-active-high;
-> +    };
-> +
-> +    vccq_sdhci1: regulator-vccq-sdhci1 {
-> +            compatible = "regulator-gpio";
-> +
-> +            regulator-name = "SDHCI1 VccQ";
-> +            regulator-min-microvolt = <1800000>;
-> +            regulator-max-microvolt = <3300000>;
-> +            gpios = <&gpio0 ASPEED_GPIO(V, 3)
-> +                            GPIO_ACTIVE_HIGH>;
-> +            gpios-states = <1>;
-> +            states = <3300000 1
-> +                      1800000 0>;
-> +    };
-> +
-> +    sdc@1e740000 {
-> +            compatible = "aspeed,ast2600-sd-controller";
-> +            reg = <0x1e740000 0x100>;
-> +            #address-cells = <1>;
-> +            #size-cells = <1>;
-> +            ranges = <0 0x1e740000 0x20000>;
-> +            clocks = <&syscon ASPEED_CLK_GATE_SDCLK>;
-> +
-> +            sdhci0: sdhci@100 {
-> +                    compatible = "aspeed,ast2600-sdhci", "sdhci";
-> +                    reg = <0x100 0x100>;
-> +                    interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
-> +                    sdhci,auto-cmd12;
-> +                    clocks = <&syscon ASPEED_CLK_SDIO>;
-> +                    vmmc-supply = <&vcc_sdhci0>;
-> +                    vqmmc-supply = <&vccq_sdhci0>;
-> +                    sd-uhs-sdr104;
-> +                    clk-phase-uhs-sdr104 = <180>, <180>;
-> +            };
-> +
-> +            sdhci1: sdhci@200 {
-> +                    compatible = "aspeed,ast2600-sdhci", "sdhci";
-> +                    reg = <0x200 0x100>;
-> +                    interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
-> +                    sdhci,auto-cmd12;
-> +                    clocks = <&syscon ASPEED_CLK_SDIO>;
-> +                    vmmc-supply = <&vcc_sdhci1>;
-> +                    vqmmc-supply = <&vccq_sdhci1>;
-> +                    sd-uhs-sdr104;
-> +                    clk-phase-uhs-sdr104 = <0>, <0>;
-> +            };
-> +    };
+=============================
+WARNING: suspicious RCU usage
+5.12.0-syzkaller #0 Not tainted
+-----------------------------
+kernel/sched/core.c:8304 Illegal context switch in RCU-sched read-side critical section!
 
-This is a good example, so can we keep this and just drop the comment 
-from the binding document?
+other info that might help us debug this:
 
-Cheers,
 
-Andrew
+rcu_scheduler_active = 2, debug_locks = 0
+no locks held by systemd-udevd/4826.
+
+stack backtrace:
+CPU: 1 PID: 4826 Comm: systemd-udevd Not tainted 5.12.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x202/0x31e lib/dump_stack.c:120
+ ___might_sleep+0x114/0x6b0 kernel/sched/core.c:8304
+ __mutex_lock_common+0xce/0x2e50 kernel/locking/mutex.c:928
+ __mutex_lock kernel/locking/mutex.c:1096 [inline]
+ mutex_lock_nested+0x1a/0x20 kernel/locking/mutex.c:1111
+ kernfs_iop_getattr+0x89/0x310 fs/kernfs/inode.c:194
+ vfs_getattr fs/stat.c:134 [inline]
+ vfs_statx+0x1ba/0x3d0 fs/stat.c:199
+ vfs_fstatat fs/stat.c:217 [inline]
+ vfs_lstat include/linux/fs.h:3384 [inline]
+ __do_sys_newlstat fs/stat.c:372 [inline]
+ __se_sys_newlstat fs/stat.c:366 [inline]
+ __x64_sys_newlstat+0xd3/0x150 fs/stat.c:366
+ do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f41b6750335
+Code: 69 db 2b 00 64 c7 00 16 00 00 00 b8 ff ff ff ff c3 0f 1f 40 00 83 ff 01 48 89 f0 77 30 48 89 c7 48 89 d6 b8 06 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 03 f3 c3 90 48 8b 15 31 db 2b 00 f7 d8 64 89
+RSP: 002b:00007ffe4d8d3b08 EFLAGS: 00000246
+ ORIG_RAX: 0000000000000006
+RAX: ffffffffffffffda RBX: 00005601243f1120 RCX: 00007f41b6750335
+RDX: 00007ffe4d8d3b40 RSI: 00007ffe4d8d3b40 RDI: 00005601243f0120
+RBP: 00007ffe4d8d3c00 R08: 00007f41b6a0f228 R09: 0000000000001010
+R10: 00007f41b6a0eb58 R11: 0000000000000246 R12: 00005601243f0120
+R13: 00005601243f0134 R14: 000056012440253d R15: 0000560124402544
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
