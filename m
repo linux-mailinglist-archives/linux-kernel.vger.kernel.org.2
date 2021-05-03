@@ -2,106 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 040AE371543
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 14:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE908371549
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 14:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233643AbhECMb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 08:31:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbhECMbX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 08:31:23 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC9BC06174A;
-        Mon,  3 May 2021 05:30:29 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id r8so7245434ybb.9;
-        Mon, 03 May 2021 05:30:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=an6evm4pvxilSxn0BHsmQe9q8Xi69XxZyMDxgmRiPNQ=;
-        b=Vf5CyRuiYCL3/Igc9K9MqyA7/cXFENaM3Rqr9kSplUPS+TPEUzXHXZxAlxS+uYXgQb
-         UEFpo3NKvHlyeZCINHjEvCLTmBIYUk9NgXTvbpTUjZZpUeZwgsabxK3IXi9hUPqnBo4g
-         llkBKUpoYUXFm3RPT3uRkce1XbGAANdjAYbor7hIHeaPlNT2xiCoRt4U1fUuiuBUl8V1
-         qe7N7qeVcUS5C1cfoB7ay+uecZtCYqM0KrTmEcMsgmECZjEfDbadcDbX440gM2q28y5r
-         MD7OzSOGx8FzaB5Edh1npSzK/KE//tTU0KTsCbUTVLHH1BzMgLL07MqJc0FOH/4JhhdY
-         gGYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=an6evm4pvxilSxn0BHsmQe9q8Xi69XxZyMDxgmRiPNQ=;
-        b=ZeRT7JRU7jozCoo6ebvABxXzhZZpdJyNLn1vAEGuqNzbuWhHpm1BrAhcPdaQg0HtAl
-         NlFtlI/l74G1taL1luXpFUp1Q3YVKfw+4F41qw8ltzgz3Jr5qn33t7grz7D0aMG8Fonp
-         RS//vD5yvGzfbX546ui2IAXqRGvMvycq/0yLVIiy6vxF3/sJsXoQNKKtYq3+Yfp8Cd5T
-         eYXsEGELwRllO3SklWFS4YW+9+K+npRuUNjhiBb2bziuZrL6lwLo35sfb7B0YrhEkMjF
-         PUUAQV/84IQ9FWt8ShROs0zIdyLXqRO9E6tdz3pY1gv5b2iFqH8sewSCz+DlKaYzWi01
-         hu2Q==
-X-Gm-Message-State: AOAM533726zy/7aFF8ovIxdD/UCBEb17eHRRevZ8t4V7QZvmaBvKiIuJ
-        +zhFMbIzaJJ8At/l28dEwKJL+3fM+P9gIHPppX4=
-X-Google-Smtp-Source: ABdhPJwqGuWE9LmZG2VDV5f5DcY1xIy0GIAeNwFOT9TLj/pjPkUkcxSw+qGyaYfLM9iaAq0I1ukqXczvkYYUrH6iVg4=
-X-Received: by 2002:a25:2702:: with SMTP id n2mr26635261ybn.179.1620045028921;
- Mon, 03 May 2021 05:30:28 -0700 (PDT)
+        id S233664AbhECMgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 08:36:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51488 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232213AbhECMgA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 08:36:00 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 183CAAE00;
+        Mon,  3 May 2021 12:35:06 +0000 (UTC)
+Subject: Re: [PATCH] mm: append __GFP_COMP flag for trace_malloc
+To:     Xiongwei Song <sxwjean@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Xiongwei Song <sxwjean@me.com>, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1619491400-1904-1-git-send-email-sxwjean@me.com>
+ <20210427025358.GV235567@casper.infradead.org>
+ <CAEVVKH_wZJvNAgFEF1OxThxN3AC4mopZ+Pu2GC0Hn_-2JOfC5Q@mail.gmail.com>
+ <20210427033632.GW235567@casper.infradead.org>
+ <CAEVVKH8ZOt3XSPy1VA1n+MKmqucgcnxjusfhoTbwkitOkErrrw@mail.gmail.com>
+ <CAEVVKH-7qRVRKsFmzc9NnhS8Lae5Yq=WhSparOmR3dZmD3PkAw@mail.gmail.com>
+ <20210427112527.GX235567@casper.infradead.org>
+ <CAEVVKH8AFMqwEcpp=7h7k-_BYqwU+gutoUMNM93pnGPiW=u+gg@mail.gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <c08e5e63-f66c-211c-5a9b-03ea12ee10bf@suse.cz>
+Date:   Mon, 3 May 2021 14:35:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <cover.1619621413.git.mchehab+huawei@kernel.org> <05a26c6f0f7798e9bc7a04845b3e3f32d9fcb659.1619621413.git.mchehab+huawei@kernel.org>
-In-Reply-To: <05a26c6f0f7798e9bc7a04845b3e3f32d9fcb659.1619621413.git.mchehab+huawei@kernel.org>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Mon, 3 May 2021 13:30:02 +0100
-Message-ID: <CA+V-a8t_ELh7zxXV8WJgg66uY7wawwPmNaxjGGquNPZkuwK99Q@mail.gmail.com>
-Subject: Re: [PATCH v4 43/79] media: i2c: ov2659: use pm_runtime_resume_and_get()
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-media <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAEVVKH8AFMqwEcpp=7h7k-_BYqwU+gutoUMNM93pnGPiW=u+gg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
+On 4/28/21 5:05 AM, Xiongwei Song wrote:
+> On Tue, Apr 27, 2021 at 7:26 PM Matthew Wilcox <willy@infradead.org> wrote:
+>>
+>> On Tue, Apr 27, 2021 at 01:30:48PM +0800, Xiongwei Song wrote:
+>> > Hi Mattew,
+>> >
+>> > One more thing I should explain, the kmalloc_order() appends the
+>> > __GFP_COMP flags,
+>> > not by the caller.
+>> >
+>> > void *kmalloc_order(size_t size, gfp_t flags, unsigned int order)
+>> > {
+>> > ...........................................................
+>> >
+>> > flags |= __GFP_COMP;
+>> > page = alloc_pages(flags, order);
+>> > ...........................................................
+>> > return ret;
+>> > }
+>> > EXPORT_SYMBOL(kmalloc_order);
+>> >
+>> > #ifdef CONFIG_TRACING
+>> > void *kmalloc_order_trace(size_t size, gfp_t flags, unsigned int order)
+>> > {
+>> > void *ret = kmalloc_order(size, flags, order);
+>> > trace_kmalloc(_RET_IP_, ret, size, PAGE_SIZE << order, flags);
+>> > return ret;
+>> > }
+>> > EXPORT_SYMBOL(kmalloc_order_trace);
+>> > #endif
+>>
+>> Yes, I understood that.  What I don't understand is why appending the
+>> __GFP_COMP to the trace would have been less confusing for you.
+>>
+>> Suppose I have some code which calls:
+>>
+>>         kmalloc(10 * 1024, GFP_ATOMIC|__GFP_NOWARN|__GFP_NOMEMALLOC);
+>>
+>> and I see in my logs
+>>
+>>      0.08%  call_site=ffffffff851d0cb0 ptr=0xffff8c04a4ca0000 bytes_req=10176 bytes_alloc=16384 gfp_flags=GFP_ATOMIC|__GFP_NOWARN|__GFP_NOMEMALLOC|__GFP_COMP
+>>
+>> That seems to me _more_ confusing because I would wonder "Where did that
+>> __GFP_COMP come from?"
+> 
+> Thank you for the comments. But I disagree.
 
-Thank you for the patch.
+FTR, I agree with Matthew. This is a tracepoint for kmalloc() so I would expect
+to see what flags were passed to kmalloc().
+If I wanted to see how the flags translated to page allocator's flags, I would
+have used a page allocator's tracepoint which would show me that.
 
-On Wed, Apr 28, 2021 at 3:52 PM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
->
-> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-> added pm_runtime_resume_and_get() in order to automatically handle
-> dev->power.usage_count decrement on errors.
->
-> Use the new API, in order to cleanup the error check logic.
->
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  drivers/media/i2c/ov2659.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
->
-Acked-by: Lad Prabhakar <prabhakar.csengg@gmail.com>
+> When I use trace, I hope I can get the precise data rather than something
+> changed that I don't know , then I can get the correct conclusion or
+> direction on my issue.
 
-Cheers,
-Prabhakar
+It's precise from the point of the caller.
 
-> diff --git a/drivers/media/i2c/ov2659.c b/drivers/media/i2c/ov2659.c
-> index 42f64175a6df..a3c8eae68486 100644
-> --- a/drivers/media/i2c/ov2659.c
-> +++ b/drivers/media/i2c/ov2659.c
-> @@ -1186,11 +1186,9 @@ static int ov2659_s_stream(struct v4l2_subdev *sd, int on)
->                 goto unlock;
->         }
->
-> -       ret = pm_runtime_get_sync(&client->dev);
-> -       if (ret < 0) {
-> -               pm_runtime_put_noidle(&client->dev);
-> +       ret = pm_runtime_resume_and_get(&client->dev);
-> +       if (ret < 0)
->                 goto unlock;
-> -       }
->
->         ret = ov2659_init(sd, 0);
->         if (!ret)
-> --
-> 2.30.2
->
+> Here my question is what the trace events are for if they don't provide the
+> real situation? I think that's not graceful and friendly.
+> 
+> From my perspective, it'd be better to know my flags changed before checking
+> code lines one by one. In other words, I need a warning to reminder me on this,
+> then I can know quickly my process might do some incorrect things.
+
+Your process should not care about __GFP_COMP if you use properly
+kmalloc()+kfree(). Once you start caring about __GFP_COMP, you should be using
+page allocator's API, not kmalloc().
+
+> Regards,
+> Xiongwei
+> 
+
