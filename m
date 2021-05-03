@@ -2,107 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5623721C5
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 22:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C0BF3721C7
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 22:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229695AbhECUpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 16:45:31 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48736 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229620AbhECUp3 (ORCPT
+        id S229703AbhECUpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 16:45:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhECUpw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 16:45:29 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 143KYMpo186529;
-        Mon, 3 May 2021 16:44:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ycEUNIdqN1E3V0EBHHLHNqsish6lO7fMt0rocjGPDpg=;
- b=K0gk3gA0ysJuiqqqI7B1EuyuwR3TaL80FW/AiMqvSWJWTI2MonKJm4uP5DZqaWlnFzBr
- SzgAxMp5Tv3UhtZpfmNp+XMKuaz6M8Ezk3D01qh/hJR1IDM0EzKS2OHHqmBN2OT+uxDG
- BL2J7uaDe1n0S5ZOvD7YBcjT9DSkdtNUR48Rq1ohVzyWS+OT5FWFSWiBj91Mg/Suj3kJ
- YaiwaU2U/u36ICYtN35prCnePzUkG7g9tbbs2F7HwPHQDZ27/JGMyEReq4uidSGydWu5
- nasryFFmPm1bTuIPbONJtvbo+88eq/hv5nYfe5uSAFwkbw/0Xj3XmHqv+rlWw5aX2NdO Ng== 
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38aqn9991v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 03 May 2021 16:44:12 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 143KhZkj003386;
-        Mon, 3 May 2021 20:44:11 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma03wdc.us.ibm.com with ESMTP id 388xma0qkf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 03 May 2021 20:44:11 +0000
-Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 143KiAng43778422
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 3 May 2021 20:44:10 GMT
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D950E124053;
-        Mon,  3 May 2021 20:44:10 +0000 (GMT)
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B5465124052;
-        Mon,  3 May 2021 20:44:09 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.160.113.121])
-        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon,  3 May 2021 20:44:09 +0000 (GMT)
-Subject: Re: [PATCH v3] pseries/drmem: update LMBs after LPM
-To:     Laurent Dufour <ldufour@linux.ibm.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org
-Cc:     nathanl@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-References: <20210428094758.28665-1-ldufour@linux.ibm.com>
- <87fsz95qso.fsf@linux.ibm.com>
- <9d29bf8c-9e97-c179-6897-8e25fa4eb516@linux.ibm.com>
- <271ef351-b89c-ba68-3b6d-baa24cc0021b@linux.ibm.com>
- <c87e17d3-8956-9eb0-6f8a-ae316ea75f7e@linux.ibm.com>
- <1eac9540-e8b4-53be-1f27-4c36f92c8a5e@linux.ibm.com>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <bdc510ff-f9f6-b032-0f0d-52a274fb9dab@linux.ibm.com>
-Date:   Mon, 3 May 2021 13:44:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Mon, 3 May 2021 16:45:52 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 736CBC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 13:44:57 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id z24so1826606ioi.3
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 13:44:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=9e0qXKB5PE22RCpsGB8p73Hd8zjjwnWOOMBViRQQLjg=;
+        b=fZerDj8t/rCvkaQR9+foBLLRBuKTPqyY+rbRVVZNQ3lOaXzMnOzfGOb47BMYsyG0Sr
+         r4+OvnqnUocEGoyI8uubVPY+S/6HVqMtRL/TqwqQ3FrmJXpO73vGhNCnz5mJqGMi9Lfz
+         gjgiaOQXCp8FYjC17DQLVO/zqxSJk/gk8vu7sUfznuQimNPk8PgRQnU2G+qkBcF4i8Mo
+         bWGGgDNJpKmEOte/2yyv0VGnISByy12f1I9NwZQkoCr3c49CXW/3eCzgjoKa1C8glwqe
+         I1xb59BuUzSC6bQIEYcoZnJGo+LBmWzY3X0FqPUcFqGiRo1eL4BjOQYZt/G1ec/bumA0
+         0yfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=9e0qXKB5PE22RCpsGB8p73Hd8zjjwnWOOMBViRQQLjg=;
+        b=rBWNyIpjl+v0j/IZjxdG8Ts2ERT5JVKVQRqGcdFFSAYILbpbXbl0FMYQwwXQmg4JFH
+         tDjx14VjjOrfY4ZYfj9gnEzd9ALwl03V2iWxdrlkLJ7hja3AS3WqdxmpiGiYwl2vhCul
+         jsX6UiYF37jdxSL+ZsP3t0LYjAL3v50Gj2+4YeJzy61xdE/rVR+q0VpB12eslKvY+mLw
+         lF5ZXfFSeXHoEqnFEh6IpsutilyqIRPCYLJ6noSkXTMxI85hSezrF1IIGjyW8CDrfQEa
+         S7jR5OjikP96SeKamKVPTKTwM0c5qBCzzcb+2SE4OeV37+C1IfS65CW4j6SK75+KbSd+
+         0Jpw==
+X-Gm-Message-State: AOAM533KHmB2fqujKdhvj+37/QrJ3c6SsmMtpp3lYxGaWYDtOxeX/SMe
+        Sq0sMboYsqYXhu/mHxbuRJtcJ5zV8Wh4mhrxkZs=
+X-Google-Smtp-Source: ABdhPJwK7on3roVTuoG5spknrcLDovE4DlNPrESwcxYcuKwyWzrS+gKY/6PQPFR649t2+CF/dXKiLm9fPpX9kAyZW68=
+X-Received: by 2002:a05:6602:1692:: with SMTP id s18mr16490455iow.167.1620074696844;
+ Mon, 03 May 2021 13:44:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1eac9540-e8b4-53be-1f27-4c36f92c8a5e@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: DzQv9rEISax9ilyIRMNpXJKXCV4p75Vn
-X-Proofpoint-GUID: DzQv9rEISax9ilyIRMNpXJKXCV4p75Vn
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-03_19:2021-05-03,2021-05-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- adultscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=999 mlxscore=0
- bulkscore=0 lowpriorityscore=0 spamscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2105030141
+Sender: annabelardelean@gmail.com
+Received: by 2002:a92:cd0d:0:0:0:0:0 with HTTP; Mon, 3 May 2021 13:44:56 -0700 (PDT)
+From:   Mrs Kim Hong Yeoh <mrs.kimhongyeoh55@gmail.com>
+Date:   Mon, 3 May 2021 20:44:56 +0000
+X-Google-Sender-Auth: FQi43_SkHmUswttFySe-cHbGjI0
+Message-ID: <CANe==rzHFE+myjuQMJjz=jnWQ-dCx_vX3b6rkSGhVz-KtMhLtw@mail.gmail.com>
+Subject: HELLO
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/3/21 10:28 AM, Laurent Dufour wrote:
-> Le 01/05/2021 à 01:58, Tyrel Datwyler a écrit :
->> On 4/30/21 9:13 AM, Laurent Dufour wrote:
->>> Le 29/04/2021 à 21:12, Tyrel Datwyler a écrit :
->>>> On 4/29/21 3:27 AM, Aneesh Kumar K.V wrote:
->>>>> Laurent Dufour <ldufour@linux.ibm.com> writes:
->>>>>
+May God Bless you,
 
-Snip
+I am contacting you through this means because I need your urgent
+assistance and also help me to carry a charity project in your
+country. I found your email address as a true child of God for past
+few days now that I have been praying to know if you are really the
+chosen one for this great charity project, according to God's
+direction, after all prayers I am convinced, and I have decided to
+contact you. Please, i want you use the funds for the Lord's work,
+with confidence, read and respond now.
 
->>
->> As of today I don't have a problem with your patch. This was more of me pointing
->> out things that I think are currently wrong with our memory hotplug
->> implementation, and that we need to take a long hard look at it down the road.
-> 
-> I do agree, there is a lot of odd things there to address in this area.
-> If you're ok with that patch, do you mind to add a reviewed-by?
-> 
 
-Can you send a v4 with the fix for the duplicate update included?
+My name is Ms. Mrs. Emaan Nadia Faroul, a widow, but currently based in West
+Africa since my life with my late husband, who was a businessman in
+this country before dying some years ago. We were married to many
+years without a child. He died after a brief illness that lasted only
+six days and I myself have been suffering from an ovarian cancer
+disease. At this moment I am about to finish the race in this way
+because the disease has reached a very bad stage, without any family
+member and without children. I hope you do not expose or betray this
+trust and I am sure that I am about to trust you for the mutual
+benefit of orphans and the less privileged. I have some funds that I
+inherited from my late husband, the total sum of ($ 12,500,000.00)
+deposited at a bank here in Burkina Faso. After knowing my current
+state of health, I decided to trust you with this fund, believing that
+you will use it in the way I will instruct here.
 
--Tyrel
+
+you will use this $12.5 Million for public benefit as follows;
+
+1. Establish An Orphanage Home To Help The Orphanages Children.
+2. Build A Hospital To Help The Poor.
+3. Build A Nursing Home For Elderly People Need Care & Meal.
+
+You will named them after my late husband.Therefore, I need you to
+help me and claim this money and use it for charities, for orphanages
+and provide justice and help to the poor, needy and to promote the
+words of God and the effort to maintain the house of God, according to
+the bible in the book of. Jeremiah 22: 15-16, without minding our
+different religions.
+
+It will be a pleasure to compensate with 40% percent of the total
+money for your effort in handling the transaction, while 60% of the
+money will go to charity project.
+
+All I need from you is sincerity and ability to complete the task of
+God without any failure. It will be my pleasure to see that the bank
+has finally released and transferred the fund to your bank account in
+the country, even before I die here in the hospital, due to my current
+state of health, everything must be processed as soon as possible.
+
+I am waiting for your immediate response, if you are only interested
+in obtaining more details about the transaction and execution of this
+humanitarian project for the glory and honor of God.
+
+Sorry if you received this letter in your spam, is due to recent
+connection/network error here in the country.
+
+Please I am waiting for your urgent reply now.
+
+May God Bless you,
+Mrs. Emaan Nadia Faroul.
