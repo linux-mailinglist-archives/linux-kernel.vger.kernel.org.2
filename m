@@ -2,115 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 989BE371814
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3D9D371815
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbhECPdv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 3 May 2021 11:33:51 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2990 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230396AbhECPdr (ORCPT
+        id S230363AbhECPfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 11:35:00 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:14047 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229588AbhECPe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 11:33:47 -0400
-Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FYmxL2qmLz6snwd;
-        Mon,  3 May 2021 23:24:54 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 3 May 2021 17:32:52 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
- Mon, 3 May 2021 17:32:52 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        "mjg59@google.com" <mjg59@google.com>
-CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: RE: [PATCH v5 09/12] evm: Allow setxattr() and setattr() for
- unmodified metadata
-Thread-Topic: [PATCH v5 09/12] evm: Allow setxattr() and setattr() for
- unmodified metadata
-Thread-Index: AQHXK5xeSg6sM/30eEKbqlkQ5rVFkKrRv8yAgABEE/D//+S7AIAAIuSw
-Date:   Mon, 3 May 2021 15:32:52 +0000
-Message-ID: <b0bfaf2352b045dfaf443ae3af73b60e@huawei.com>
-References: <20210407105252.30721-1-roberto.sassu@huawei.com>
-         <20210407105252.30721-10-roberto.sassu@huawei.com>
-         <8493d7e2b0fefa4cd3861bd6b7ee6f2340aa7434.camel@linux.ibm.com>
-         <fcd2932bc2a841c2aa7fcbdaee94e0a5@huawei.com>
- <cf12878833c82710ad4356e7d023cf51241f3cc8.camel@linux.ibm.com>
-In-Reply-To: <cf12878833c82710ad4356e7d023cf51241f3cc8.camel@linux.ibm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.221.98.153]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Mon, 3 May 2021 11:34:59 -0400
+X-Originating-IP: 90.65.108.55
+Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 04632240007;
+        Mon,  3 May 2021 15:34:03 +0000 (UTC)
+Date:   Mon, 3 May 2021 17:34:03 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] alarmtimer: check RTC features instead of ops
+Message-ID: <YJAX60DSp/imRstL@piout.net>
+References: <20210429214902.2612338-1-alexandre.belloni@bootlin.com>
+ <877dkkfdif.ffs@nanos.tec.linutronix.de>
+ <YIu7ZqowGScElHBr@piout.net>
+ <871rasf8qe.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <871rasf8qe.ffs@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> Sent: Monday, May 3, 2021 5:26 PM
-> On Mon, 2021-05-03 at 15:11 +0000, Roberto Sassu wrote:
-> > > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> > > Sent: Monday, May 3, 2021 3:00 PM
-> > > On Wed, 2021-04-07 at 12:52 +0200, Roberto Sassu wrote:
-> > >
-> > > > diff --git a/security/integrity/evm/evm_main.c
-> > > b/security/integrity/evm/evm_main.c
-> > > > @@ -389,6 +473,11 @@ static int evm_protect_xattr(struct
-> > > user_namespace *mnt_userns,
-> > > >  	if (evm_status == INTEGRITY_FAIL_IMMUTABLE)
-> > > >  		return 0;
-> > > >
-> > > > +	if (evm_status == INTEGRITY_PASS_IMMUTABLE &&
-> > > > +	    !evm_xattr_change(mnt_userns, dentry, xattr_name, xattr_value,
-> > > > +			      xattr_value_len))
-> > > > +		return 0;
-> > > > +
-> > >
-> > > If the purpose of evm_protect_xattr() is to prevent allowing an invalid
-> > > security.evm xattr from being re-calculated and updated, making it
-> > > valid, INTEGRITY_PASS_IMMUTABLE shouldn't need to be conditional.
-> Any
-> > > time there is an attr or xattr change, including setting it to the
-> > > existing value, the status flag should be reset.
-> > >
-> > > I'm wondering if making INTEGRITY_PASS_IMMUTABLE conditional would
-> > > prevent the file from being resigned.
-> > >
-> > > >  	if (evm_status != INTEGRITY_PASS)
-> > > >  		integrity_audit_msg(AUDIT_INTEGRITY_METADATA,
-> > > d_backing_inode(dentry),
-> > > >  				    dentry->d_name.name,
-> > > "appraise_metadata",
-> > >
-> > > This would then be updated to if not INTEGRITY_PASS or
-> > > INTEGRITY_PASS_IMMUTABLE.  The subsequent "return" would need to
-> be
-> > > updated as well.
+Hello,
+
+On 30/04/2021 10:59:53+0200, Thomas Gleixner wrote:
+> On Fri, Apr 30 2021 at 10:10, Alexandre Belloni wrote:
+> > On 30/04/2021 09:16:40+0200, Thomas Gleixner wrote:
+> >> On Thu, Apr 29 2021 at 23:49, Alexandre Belloni wrote:
+> >> > Test RTC_FEATURE_ALARM instead of relying on ops->set_alarm to know whether
+> >> > alarms are available.
+> >> >
+> >> > Fixes: 7ae41220ef58 ("rtc: introduce features bitfield")
+> >> > Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> >> > ---
+> >> > Hello,
+> >> >
+> >> > This doesn't seem much but this solve an issue where following a change in the
+> >> > RTC driver, this part of the code will think the RTC is alarm capable while it
+> >> > is not, then breaking the alarmtimer functionnality.
+> >> 
+> >> So a driver has the set_alarm() callback but does not advertise
+> >> RTC_FEATURE_ALARM for whatever reason and why ever this makes sense.
+> >> 
 > >
-> > I agree on the first suggestion, to reduce the number of log messages.
-> > For the second, if you meant that we should return 0 if the status is
-> > INTEGRITY_PASS_IMMUTABLE, I thought we wanted to deny xattr
-> > changes when there is an EVM portable signature.
+> > No, it would be the other way around. The issue happens when you have
+> > two RTCs, rtc0 is not alarm capable and rtc1 has alarms.
+> >
+> > The driver for rtc0 used to not have .set_alarm() to signal it didn't
+> > support alarms, it then switched to RTC_FEATURE_ALARM, making the
+> > alarmtimer code select that RTC instead of rtc1, breaking suspend/resume
+> > on the platform.
 > 
-> Why?  I must be missing something.  As long as we're not relying on the
-> cached status, allowing the file metadata to be updated shouldn't be an
-> issue.
+> I'm even more confused. So RTC0 does not have .set_alarm() but why does
+> it turn on RTC_FEATURE_ALARM? I'm obviously misinterpreting the above...
+> 
 
-We may want to prevent accidental changes, for example.
+I'm sorry for not being clear.
 
-Roberto
+With RTC0 not having alarms and RTC1 having alarms:
 
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Li Jian, Shi Yanli
+The previous situation was:
+
+The driver for RTC0 didn't have any .set_alarm() to signel it doesn't
+support alarms.
+On registration, alarmtimer_rtc_add_device finds out it doesn't have the
+.set_alarm() callback and doesn't select that RTC.
+On registration of RTC1, alarmtimer_rtc_add_device finds .set_alarm()
+and RTC1 is now the alarmtimer rtcdev.
+
+The new situation is:
+
+The driver for RTC0 always have .set_alarm() but clears
+RTC_FEATURE_ALARM to signal it doesn't support alarms.
+On registration, alarmtimer_rtc_add_device finds .set_alarm() and RTC0
+is now the alarmtimer rtcdev, leading to an error when rtc_timer_start()
+is called.
+
+I hope this is clearer.
+
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
