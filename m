@@ -2,110 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E27E6371952
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B5F371A62
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231328AbhECQeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 12:34:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29812 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231280AbhECQer (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 12:34:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620059633;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pKdrkErQbSlpc/TwyrvHu/SsKrpqO8FziWOa2CO3Rko=;
-        b=EFt8ycwL6AtkIevGAB1Krws61yDztAFSlaCeCWuwuXhJz7/Wm1lZG3S+Ll6kZSwRHrx63a
-        B2n2dnCBJQ1hPA7097nbrGJrKkH1sKB4dDWPZ6h8cI6Q6EuiUS7ci5gZ/0AOIvD286MOw/
-        C1Xwk8USNG33kxHxDOk9qqOb5spPrHo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-373-Ui7m3bmJPWKLzWOh3qqqGg-1; Mon, 03 May 2021 12:33:49 -0400
-X-MC-Unique: Ui7m3bmJPWKLzWOh3qqqGg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B8F8F107ACF4;
-        Mon,  3 May 2021 16:33:47 +0000 (UTC)
-Received: from ovpn-112-143.rdu2.redhat.com (ovpn-112-143.rdu2.redhat.com [10.10.112.143])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C33476061F;
-        Mon,  3 May 2021 16:33:45 +0000 (UTC)
-Message-ID: <4170501b7c4f19ba66d870b671dc90ffbf4623d6.camel@redhat.com>
-Subject: Re: [PATCH v2 0/3] newidle_balance() PREEMPT_RT latency mitigations
-From:   Scott Wood <swood@redhat.com>
-To:     Mike Galbraith <efault@gmx.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Date:   Mon, 03 May 2021 11:33:45 -0500
-In-Reply-To: <a46f9b6c719666357e568eadd1d615c05c4171ac.camel@gmx.de>
-References: <20210428232821.2506201-1-swood@redhat.com>
-         <CAKfTPtBrJNBg3847R_b8A-1c5rb9Fb5FFNMX+z11QGAiO0ofkw@mail.gmail.com>
-         <7b796a085b0bc638c9df70d3a20718f8d1d776c8.camel@redhat.com>
-         <a46f9b6c719666357e568eadd1d615c05c4171ac.camel@gmx.de>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        id S232168AbhECQje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 12:39:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37364 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231602AbhECQh4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 12:37:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFC30613D8;
+        Mon,  3 May 2021 16:36:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620059786;
+        bh=Vd1HgjghEDtwEry470TixI2MTVg9CAJYBAjQx2k8iOI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=h32bVU+4DG6RTFB87YOMZKF7Gvm0VzdQYVCcJmuj5fhGSPg6asyae5CHAhI3E99Vs
+         dzBjfzjyb+KEj7u8RjfsOjsVXU5PfqfB6KqSuII9Ryi0meSNTOl5mDyqecMm5hsbX2
+         HN0Neyp/7xAMaOQnFko6Vo6dhMYuCtfBen7t4N5dfICWH79ZcJyYl76qkd9pqvTNvv
+         PBrKDBzatBFXCIKewWWpZ4OMNpQUKpXes0M9GVx39IBjbrnVBWucgXTH2tJbUc0dcq
+         ves13YX2Sir0jP32WRbvFXVxBJmiISNnsCUT2Q59CzD6MZvDldTHtpv8FChur0Hz+0
+         RDbMy8dIC47Wg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Philip Yang <Philip.Yang@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.12 047/134] drm/amdgpu: enable retry fault wptr overflow
+Date:   Mon,  3 May 2021 12:33:46 -0400
+Message-Id: <20210503163513.2851510-47-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210503163513.2851510-1-sashal@kernel.org>
+References: <20210503163513.2851510-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-05-02 at 05:25 +0200, Mike Galbraith wrote:
-> On Sat, 2021-05-01 at 17:03 -0500, Scott Wood wrote:
-> > On Thu, 2021-04-29 at 09:12 +0200, Vincent Guittot wrote:
-> > > Hi Scott,
-> > > 
-> > > On Thu, 29 Apr 2021 at 01:28, Scott Wood <swood@redhat.com> wrote:
-> > > > These patches mitigate latency caused by newidle_balance() on large
-> > > > systems when PREEMPT_RT is enabled, by enabling interrupts when the
-> > > > lock
-> > > > is dropped, and exiting early at various points if an RT task is
-> > > > runnable
-> > > > on the current CPU.
-> > > > 
-> > > > On a system with 128 CPUs, these patches dropped latency (as
-> > > > measured by
-> > > > a 12 hour rteval run) from 1045us to 317us (when applied to
-> > > > 5.12.0-rc3-rt3).
-> > > 
-> > > The patch below has been queued for v5.13 and removed the update of
-> > > blocked load what seemed to be the major reason for long preempt/irq
-> > > off during newly idle balance:
-> > > https://lore.kernel.org/lkml/20210224133007.28644-1-vincent.guittot@linaro.org/
-> > > 
-> > > I would be curious to see how it impacts your cases
-> > 
-> > I still get 1000+ ms latencies with those patches applied.
-> 
-> If NEWIDLE balancing migrates one task, how does that manage to consume
-> a full *millisecond*, and why would that only be a problem for RT?
-> 
-> 	-Mike
-> 
-> (rt tasks don't play !rt balancer here, if CPU goes idle, tough titty)
+From: Philip Yang <Philip.Yang@amd.com>
 
-Determining which task to pull is apparently taking that long (again, this
-is on a 128-cpu system).  RT is singled out because that is the config that
-makes significant tradeoffs to keep latencies down (I expect this would be
-far from the only possible 1ms+ latency on a non-RT kernel), and there was
-concern about the overhead of a double context switch when pulling a task to
-a newidle cpu.
+[ Upstream commit b672cb1eee59efe6ca5bb2a2ce90060a22860558 ]
 
--Scott
+If xnack is on, VM retry fault interrupt send to IH ring1, and ring1
+will be full quickly. IH cannot receive other interrupts, this causes
+deadlock if migrating buffer using sdma and waiting for sdma done while
+handling retry fault.
 
+Remove VMC from IH storm client, enable ring1 write pointer overflow,
+then IH will drop retry fault interrupts and be able to receive other
+interrupts while driver is handling retry fault.
+
+IH ring1 write pointer doesn't writeback to memory by IH, and ring1
+write pointer recorded by self-irq is not updated, so always read
+the latest ring1 write pointer from register.
+
+Signed-off-by: Philip Yang <Philip.Yang@amd.com>
+Signed-off-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/gpu/drm/amd/amdgpu/vega10_ih.c | 32 +++++++++-----------------
+ drivers/gpu/drm/amd/amdgpu/vega20_ih.c | 32 +++++++++-----------------
+ 2 files changed, 22 insertions(+), 42 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/vega10_ih.c b/drivers/gpu/drm/amd/amdgpu/vega10_ih.c
+index 88626d83e07b..ca8efa5c6978 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vega10_ih.c
++++ b/drivers/gpu/drm/amd/amdgpu/vega10_ih.c
+@@ -220,10 +220,8 @@ static int vega10_ih_enable_ring(struct amdgpu_device *adev,
+ 	tmp = vega10_ih_rb_cntl(ih, tmp);
+ 	if (ih == &adev->irq.ih)
+ 		tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, RPTR_REARM, !!adev->irq.msi_enabled);
+-	if (ih == &adev->irq.ih1) {
+-		tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_ENABLE, 0);
++	if (ih == &adev->irq.ih1)
+ 		tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, RB_FULL_DRAIN_ENABLE, 1);
+-	}
+ 	if (amdgpu_sriov_vf(adev)) {
+ 		if (psp_reg_program(&adev->psp, ih_regs->psp_reg_id, tmp)) {
+ 			dev_err(adev->dev, "PSP program IH_RB_CNTL failed!\n");
+@@ -265,7 +263,6 @@ static int vega10_ih_irq_init(struct amdgpu_device *adev)
+ 	u32 ih_chicken;
+ 	int ret;
+ 	int i;
+-	u32 tmp;
+ 
+ 	/* disable irqs */
+ 	ret = vega10_ih_toggle_interrupts(adev, false);
+@@ -291,15 +288,6 @@ static int vega10_ih_irq_init(struct amdgpu_device *adev)
+ 		}
+ 	}
+ 
+-	tmp = RREG32_SOC15(OSSSYS, 0, mmIH_STORM_CLIENT_LIST_CNTL);
+-	tmp = REG_SET_FIELD(tmp, IH_STORM_CLIENT_LIST_CNTL,
+-			    CLIENT18_IS_STORM_CLIENT, 1);
+-	WREG32_SOC15(OSSSYS, 0, mmIH_STORM_CLIENT_LIST_CNTL, tmp);
+-
+-	tmp = RREG32_SOC15(OSSSYS, 0, mmIH_INT_FLOOD_CNTL);
+-	tmp = REG_SET_FIELD(tmp, IH_INT_FLOOD_CNTL, FLOOD_CNTL_ENABLE, 1);
+-	WREG32_SOC15(OSSSYS, 0, mmIH_INT_FLOOD_CNTL, tmp);
+-
+ 	pci_set_master(adev->pdev);
+ 
+ 	/* enable interrupts */
+@@ -345,11 +333,17 @@ static u32 vega10_ih_get_wptr(struct amdgpu_device *adev,
+ 	u32 wptr, tmp;
+ 	struct amdgpu_ih_regs *ih_regs;
+ 
+-	wptr = le32_to_cpu(*ih->wptr_cpu);
+-	ih_regs = &ih->ih_regs;
++	if (ih == &adev->irq.ih) {
++		/* Only ring0 supports writeback. On other rings fall back
++		 * to register-based code with overflow checking below.
++		 */
++		wptr = le32_to_cpu(*ih->wptr_cpu);
+ 
+-	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
+-		goto out;
++		if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
++			goto out;
++	}
++
++	ih_regs = &ih->ih_regs;
+ 
+ 	/* Double check that the overflow wasn't already cleared. */
+ 	wptr = RREG32_NO_KIQ(ih_regs->ih_rb_wptr);
+@@ -440,15 +434,11 @@ static int vega10_ih_self_irq(struct amdgpu_device *adev,
+ 			      struct amdgpu_irq_src *source,
+ 			      struct amdgpu_iv_entry *entry)
+ {
+-	uint32_t wptr = cpu_to_le32(entry->src_data[0]);
+-
+ 	switch (entry->ring_id) {
+ 	case 1:
+-		*adev->irq.ih1.wptr_cpu = wptr;
+ 		schedule_work(&adev->irq.ih1_work);
+ 		break;
+ 	case 2:
+-		*adev->irq.ih2.wptr_cpu = wptr;
+ 		schedule_work(&adev->irq.ih2_work);
+ 		break;
+ 	default: break;
+diff --git a/drivers/gpu/drm/amd/amdgpu/vega20_ih.c b/drivers/gpu/drm/amd/amdgpu/vega20_ih.c
+index 5a3c867d5881..75b06e1964ab 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vega20_ih.c
++++ b/drivers/gpu/drm/amd/amdgpu/vega20_ih.c
+@@ -220,10 +220,8 @@ static int vega20_ih_enable_ring(struct amdgpu_device *adev,
+ 	tmp = vega20_ih_rb_cntl(ih, tmp);
+ 	if (ih == &adev->irq.ih)
+ 		tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, RPTR_REARM, !!adev->irq.msi_enabled);
+-	if (ih == &adev->irq.ih1) {
+-		tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_ENABLE, 0);
++	if (ih == &adev->irq.ih1)
+ 		tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, RB_FULL_DRAIN_ENABLE, 1);
+-	}
+ 	if (amdgpu_sriov_vf(adev)) {
+ 		if (psp_reg_program(&adev->psp, ih_regs->psp_reg_id, tmp)) {
+ 			dev_err(adev->dev, "PSP program IH_RB_CNTL failed!\n");
+@@ -297,7 +295,6 @@ static int vega20_ih_irq_init(struct amdgpu_device *adev)
+ 	u32 ih_chicken;
+ 	int ret;
+ 	int i;
+-	u32 tmp;
+ 
+ 	/* disable irqs */
+ 	ret = vega20_ih_toggle_interrupts(adev, false);
+@@ -326,15 +323,6 @@ static int vega20_ih_irq_init(struct amdgpu_device *adev)
+ 		}
+ 	}
+ 
+-	tmp = RREG32_SOC15(OSSSYS, 0, mmIH_STORM_CLIENT_LIST_CNTL);
+-	tmp = REG_SET_FIELD(tmp, IH_STORM_CLIENT_LIST_CNTL,
+-			    CLIENT18_IS_STORM_CLIENT, 1);
+-	WREG32_SOC15(OSSSYS, 0, mmIH_STORM_CLIENT_LIST_CNTL, tmp);
+-
+-	tmp = RREG32_SOC15(OSSSYS, 0, mmIH_INT_FLOOD_CNTL);
+-	tmp = REG_SET_FIELD(tmp, IH_INT_FLOOD_CNTL, FLOOD_CNTL_ENABLE, 1);
+-	WREG32_SOC15(OSSSYS, 0, mmIH_INT_FLOOD_CNTL, tmp);
+-
+ 	pci_set_master(adev->pdev);
+ 
+ 	/* enable interrupts */
+@@ -380,11 +368,17 @@ static u32 vega20_ih_get_wptr(struct amdgpu_device *adev,
+ 	u32 wptr, tmp;
+ 	struct amdgpu_ih_regs *ih_regs;
+ 
+-	wptr = le32_to_cpu(*ih->wptr_cpu);
+-	ih_regs = &ih->ih_regs;
++	if (ih == &adev->irq.ih) {
++		/* Only ring0 supports writeback. On other rings fall back
++		 * to register-based code with overflow checking below.
++		 */
++		wptr = le32_to_cpu(*ih->wptr_cpu);
+ 
+-	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
+-		goto out;
++		if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
++			goto out;
++	}
++
++	ih_regs = &ih->ih_regs;
+ 
+ 	/* Double check that the overflow wasn't already cleared. */
+ 	wptr = RREG32_NO_KIQ(ih_regs->ih_rb_wptr);
+@@ -476,15 +470,11 @@ static int vega20_ih_self_irq(struct amdgpu_device *adev,
+ 			      struct amdgpu_irq_src *source,
+ 			      struct amdgpu_iv_entry *entry)
+ {
+-	uint32_t wptr = cpu_to_le32(entry->src_data[0]);
+-
+ 	switch (entry->ring_id) {
+ 	case 1:
+-		*adev->irq.ih1.wptr_cpu = wptr;
+ 		schedule_work(&adev->irq.ih1_work);
+ 		break;
+ 	case 2:
+-		*adev->irq.ih2.wptr_cpu = wptr;
+ 		schedule_work(&adev->irq.ih2_work);
+ 		break;
+ 	default: break;
+-- 
+2.30.2
 
