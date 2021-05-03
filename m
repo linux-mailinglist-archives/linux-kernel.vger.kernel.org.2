@@ -2,57 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B55FD371F58
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 20:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5611371F5B
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 20:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231955AbhECSJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 14:09:44 -0400
-Received: from srv6.fidu.org ([159.69.62.71]:56098 "EHLO srv6.fidu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232064AbhECSJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 14:09:25 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id 3E51CC800D0;
-        Mon,  3 May 2021 20:08:29 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
-        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
-        with LMTP id lYnKtLw43Eeq; Mon,  3 May 2021 20:08:29 +0200 (CEST)
-Received: from wsembach-tuxedo.fritz.box (p200300e37F3986001a8b79e0b24Cb29D.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:8600:1a8b:79e0:b24c:b29d])
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPA id C8427C800CE;
-        Mon,  3 May 2021 20:08:28 +0200 (CEST)
-From:   Werner Sembach <wse@tuxedocomputers.com>
-To:     wse@tuxedocomputers.com, ville.syrjala@linux.intel.com,
-        airlied@linux.ie, daniel@ffwll.ch, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/4] drm/i915/display Try YCbCr420 color when RGB fails
-Date:   Mon,  3 May 2021 20:08:07 +0200
-Message-Id: <20210503180810.851302-1-wse@tuxedocomputers.com>
-X-Mailer: git-send-email 2.25.1
+        id S229582AbhECSMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 14:12:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229472AbhECSMR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 14:12:17 -0400
+Received: from server.lespinasse.org (server.lespinasse.org [IPv6:2001:470:82ab::100:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D97C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 11:11:19 -0700 (PDT)
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+ d=lespinasse.org; i=@lespinasse.org; q=dns/txt; s=srv-14-ed;
+ t=1620065478; h=date : from : to : cc : subject : message-id :
+ references : mime-version : content-type : in-reply-to : from;
+ bh=8QAzgcLcfOhBS/UmKEur87fyiT1U9pVQU00I/q7tLbk=;
+ b=KmCtLmriwnj5Uv+bGnVT5elfkvv25CS/+N+m2NsTridlN1+DO1Nm35FesY/eQWlsskFKn
+ jdjldU9dZhwQEgpBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lespinasse.org;
+ i=@lespinasse.org; q=dns/txt; s=srv-14-rsa; t=1620065478; h=date :
+ from : to : cc : subject : message-id : references : mime-version :
+ content-type : in-reply-to : from;
+ bh=8QAzgcLcfOhBS/UmKEur87fyiT1U9pVQU00I/q7tLbk=;
+ b=fKWQKT2CguXliWQEIWigsVq4nkHC4u0vOyUxpXvX7Y5EmViDyrT+gyYXLZFfwGTM7mEgt
+ i3GaBrCSbbHrtMZm0FuhW1sAycQ83tQJ10cGlCKVP7TVsZbR+sTv7i7oKHvRrv6WRBTV/ML
+ 4FBmDPZzMIzxetQhRMhJbfFCqpInNN4xDAMWNH2QiUMkgxhByMC+05NotR7cZweBw4PvTxx
+ muJZm+idx9+V7cEy2KiDMujxVugsj4QaDzywoahBihoHppk4I7asnvjrbVXTqj/o2jW6SAl
+ wYtVj/EwPKXyvRAnhh96Z2Y4ovI3F3JltnQMoIE9kI+YGoNjusi5hkX+PKAA==
+Received: by server.lespinasse.org (Postfix, from userid 1000)
+        id 659A5160056; Mon,  3 May 2021 11:11:18 -0700 (PDT)
+Date:   Mon, 3 May 2021 11:11:18 -0700
+From:   Michel Lespinasse <michel@lespinasse.org>
+To:     Michel Lespinasse <michel@lespinasse.org>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Linux-Kernel <linux-kernel@vger.kernel.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCH 00/29] Speculative page faults (anon vmas only)
+Message-ID: <20210503181118.GA21048@lespinasse.org>
+References: <20210430195232.30491-1-michel@lespinasse.org>
+ <20210430224649.GA29203@lespinasse.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210430224649.GA29203@lespinasse.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When encoder validation of a display mode fails, retry with less bandwidth
-heavy YCbCr420 color mode, if available. This enables some HDMI 1.4 setups
-to support 4k60Hz output, which previously failed silently.
+On Fri, Apr 30, 2021 at 03:46:49PM -0700, Michel Lespinasse wrote:
+> I- Maple tree
+> 
+> I do not think there is any fundamental conflict between the maple
+> tree patches currently being considered, and this patchset.
+> I actually have a (very lightly tested) tree merging the two together,
+> which was a fairly easy merge. For those interested, I made this
+> available at my github, as the v5.12-maple-spf branch.
 
-AMDGPU had nearly the exact same issue. This problem description is
-therefore copied from my commit message of the AMDGPU patch.
+People were still confused about it, so the instructions to fetch this are:
+git fetch https://github.com/lespinasse/linux.git v5.12-maple-spf
 
-On some setups, while the monitor and the gpu support display modes with
-pixel clocks of up to 600MHz, the link encoder might not. This prevents
-YCbCr444 and RGB encoding for 4k60Hz, but YCbCr420 encoding might still be
-possible. However, which color mode is used is decided before the link
-encoder capabilities are checked. This patch fixes the problem by retrying
-to find a display mode with YCbCr420 enforced and using it, if it is
-valid.
-
-This patchset is revision 2, now split up in multiple parts with some
-minor restructuring added für a cleaner implementation.
-
-
+--
+Michel "walken" Lespinasse
