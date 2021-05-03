@@ -2,144 +2,518 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 922F8371636
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2C6B371639
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234431AbhECNub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 09:50:31 -0400
-Received: from mail-vi1eur05on2114.outbound.protection.outlook.com ([40.107.21.114]:19809
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233400AbhECNuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 09:50:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LICuNU3SfG21nmf/ewxAhSsul1NXwHvLv14TEaRGejGOARoRaz2BFC+6SbxUIKyHaWTbMToriyo+7bknTtvl1ByogxLzRpJBmXQBTeCSNjV3FRDRNDh8D+Y8tFzGXkEK1xojjGDIqeWIPh2oCVwK/ez8P0aRlpZ9Z9FtGVqo35wCpn3xPI1pSIq1zUz8r24Wlrt3yGqTelohe4YQ+dE3F+NfVs0OXzY2CMScbhz7481Z5x1egyiSxVz9nVBZsd1j4d4hj6NcSlgxlljG2/2UkV21vYEqrjfMgyieMVzE99wBrhtqVN9ASDmwsKWJI+RaCb8OudKqJezGxiIINZtJYA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KhzAU1rs+VfvzSRDKfv4sz6gbt/8jZCDw+wleWqAWoI=;
- b=LcJqzMsW6AcMO+nQ53gULY4hmT8NOqpGf9F+Ta/ERzfwmlWLVgR53hwGU8GVQFfY3LQ8bLTHzMiDeK34tb3K7vmMzAB4F1Aab7vE1UdR0eIXqV55aqWTiT0ikSMZuLACdnZAQT1BWzoYgi8/csfvDLq7b1aOX4rbiZujrfCSTHf18HWcbFJsXPy89UWrIH5UKdCDJp4IpOwyD8lhrCcqfxIBTN2/HHAN2KF9F3yvdRN7muA2F7Xx97yoIoQFGpWz+HFWyz26kYm1J37Zqdj0098n9GPtobFR9x6Vv7hklKskQnsZvz5YhiUM9xi86Hz0CK562OI+MXqzaE+x/CVK7w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
- dkim=pass header.d=kontron.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
- s=selector2-mysnt-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KhzAU1rs+VfvzSRDKfv4sz6gbt/8jZCDw+wleWqAWoI=;
- b=UdnYBdDiJq1VqtfOXAm4u+8sUG7VXRXC/bhz0pIqJDWNbC8cMZ3MfAeeGIveV89N3+wxZ/NGvUmeueh6xY3YjaqBIyebFWcfAgaqlKt1d0c8GrZg/eHEkeUH8kcDAH4EtjJljrlHlDY2S9G2LR6A935RIbzmFRKxJ4Y8xU6QC5E=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=kontron.de;
-Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::14)
- by AM0PR10MB2356.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:e4::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.38; Mon, 3 May
- 2021 13:49:24 +0000
-Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::3d8a:f56b:3a0c:8a87]) by AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::3d8a:f56b:3a0c:8a87%7]) with mapi id 15.20.4087.044; Mon, 3 May 2021
- 13:49:24 +0000
-Subject: Re: Null pointer dereference in mcp251x driver when resuming from
- sleep
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        =?UTF-8?Q?Timo_Schl=c3=bc=c3=9fler?= <schluessler@krause.de>,
-        Tim Harvey <tharvey@gateworks.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <d031629f-4a28-70cd-4f27-e1866c7e1b3f@kontron.de>
- <YI/+OP4z787Tmd05@smile.fi.intel.com>
-From:   Frieder Schrempf <frieder.schrempf@kontron.de>
-Message-ID: <8dcdeab9-80f1-5961-6d55-82b4904cbf14@kontron.de>
-Date:   Mon, 3 May 2021 15:49:22 +0200
+        id S233400AbhECNuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 09:50:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54722 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234436AbhECNuo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 09:50:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620049790;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RCbTSzLUqmCqugcSpAO4fziY8cPtByisFZyD1cS6KlY=;
+        b=Z3bXe9nQxujydz+uGT7BYZRm961OuV0PaBcvgSZFCEIoudt/9c6uPbeqRsOGflLdW+e5xf
+        /NePWLgwgWI9cYharsgpZ/hnUW6G9SRNU1/w1GDwW+Vl3Ox2xUS+7gSfaS2wnKYqrQGtRY
+        mMYQvuHEq/3bbP6H2ht6O1ELknzy3lU=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-251-xB6Ja-FYOia1qmWAsVBkCQ-1; Mon, 03 May 2021 09:49:49 -0400
+X-MC-Unique: xB6Ja-FYOia1qmWAsVBkCQ-1
+Received: by mail-qk1-f199.google.com with SMTP id n2-20020a37a4020000b02902e9aef597f7so3249415qke.21
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 06:49:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=RCbTSzLUqmCqugcSpAO4fziY8cPtByisFZyD1cS6KlY=;
+        b=tlSg9vM9kOrEBMmlixpLjZb7a1kZLyrsPUUPL0JT6BFMJ3Xn0PDRvzO+mmChSVCHlB
+         uV5DAFb6sRdtRyltdGT3ezOBp5Ox8OybQKqEJhQfVlcCCyeBjjaSt7UyEHzT2XJPSkDV
+         iHYymsVYSqkH92WzNCt9L129ZgwvZfy5HFd/c3Eepx3CZkivwrelfjq/YjgkcvPTQPb7
+         ApXqn0kroSmF1oQjCL42LOa+9T0j+guzXqzeEKB9MZRWAigZGI3YzuDdMxd5lNbadLKC
+         K+ZI88n/zRyzatvhghRdKHB+4wL5h0U0JaIAAEGt6D0LBaUgz7hYJo6EvhUjV55EIIXi
+         ivTw==
+X-Gm-Message-State: AOAM533Jj8vXWgrVllcKdwWGBTAJb4LPHVKodX9vAkejwLMzF03aF0Xv
+        j3Cdcdppsqg9RfZjktYh6iFEU+PYaqu2Aor291rXnXPcdNTnNzQo17J9Uvka2Y8H9kW5M+36GEs
+        Fx0l4YkQaWZgRoOb9CqZFDPF7
+X-Received: by 2002:a37:58c5:: with SMTP id m188mr19036832qkb.327.1620049788138;
+        Mon, 03 May 2021 06:49:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwJr0UJl3KfNEB16zj+TqokKcat7+cGqeb1AMarEnQ/Ni+iLRZHR7y+RxPQyDZl2E0rJavQVw==
+X-Received: by 2002:a37:58c5:: with SMTP id m188mr19036811qkb.327.1620049787880;
+        Mon, 03 May 2021 06:49:47 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id r1sm9112197qtt.3.2021.05.03.06.49.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 06:49:47 -0700 (PDT)
+Subject: Re: [PATCH V5 XRT Alveo 09/20] fpga: xrt: management physical
+ function driver (root)
+To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
+Cc:     linux-fpga@vger.kernel.org, maxz@xilinx.com,
+        sonal.santan@xilinx.com, yliu@xilinx.com, michal.simek@xilinx.com,
+        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
+        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
+References: <20210427205431.23896-1-lizhi.hou@xilinx.com>
+ <20210427205431.23896-10-lizhi.hou@xilinx.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <ecef300b-89b7-4d9c-a598-dfd159897386@redhat.com>
+Date:   Mon, 3 May 2021 06:49:44 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-In-Reply-To: <YI/+OP4z787Tmd05@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [109.250.134.29]
-X-ClientProxiedBy: AM7PR03CA0007.eurprd03.prod.outlook.com
- (2603:10a6:20b:130::17) To AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:157::14)
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.10.27] (109.250.134.29) by AM7PR03CA0007.eurprd03.prod.outlook.com (2603:10a6:20b:130::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.27 via Frontend Transport; Mon, 3 May 2021 13:49:24 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 88a1b94a-f2a1-404a-a50e-08d90e3a431f
-X-MS-TrafficTypeDiagnostic: AM0PR10MB2356:
-X-Microsoft-Antispam-PRVS: <AM0PR10MB23564153CD1B02DE4999C794E95B9@AM0PR10MB2356.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EGEBFegLI/rwmL4kj64e/Zh9Qhs5W7yyxfVUR+NFB6Y4S7Tf1Vt3LqdGqxczWKxnqkRZzz+y15MNlekeQJh+p04IxZhGTwQylFyrS3pGPZQ6sGg05rpIZJ7DIv9sj1D1YcrGGgJrdisQP7Bnn9zRWVLIyj9Q/BzVqxWPiZ2j1iP7YdJcDZymPNG0AMLbznLBWrHfhfavtx4Aa6LmSlnmi6LAsg8VH9/z+5Q3Imc1Oka7q+/3hxmX7vpNqlWPC+JedIDmhqLv7ZPSYaR0GR28cboZuCicQO1Q31yOChfpJfHbvieIdApCPdWw7cu1OhhzEN+eO97e2UMYCsvKdIZzew084w9yrsG+z67VBwWl79dg9eMoNn3SGw83Wzgk+wz13H497hon7d3HaT5sJpqmx6wNGz0rGknmCi5wS+uZmu5OxuzZ7luTga5g1YNmwC5bu5MzxkoGm+Q3lukBdoQrhjisjIWV+mK4WS/iA0rCA1zJqTNEB+pbJoPcKNXFZKvODm4lkmTp6S1AL8n3AvRpbKWjbYVm64SCW161diTd2xuC3e6EGYrW0z3IyrOx4osove/goAo8dxdnSj+BcWPyGHF1bVt8BmZHbxmk1xPOoYN5DWKx9d1hJZx6UIAsiimNkDPfCrrmLk9UJk/Cf45gIlA4DXONOLWXxz1Hrd2whwlW2JwwGNBndKFgg2XoxDKj
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(396003)(39850400004)(346002)(366004)(66946007)(66556008)(2906002)(53546011)(31686004)(4326008)(6916009)(66476007)(16526019)(38100700002)(2616005)(186003)(86362001)(31696002)(316002)(36756003)(8676002)(4744005)(7416002)(8936002)(54906003)(5660300002)(44832011)(6486002)(478600001)(16576012)(26005)(956004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TW1jUzdPYXdtVGlnZGhvNDFNcFg2YXp5Y1dUSzNGY0lIYTRFTktPQVdjYnJw?=
- =?utf-8?B?czg5Z3gvVEtEUDFyY0lyenEwdWdwYW5hRUROamZ3c0pKbTY5V2ZCZTA2TVFv?=
- =?utf-8?B?aDJ6L013VmwwQ1F0cUlhTC82TmtNTnpXWFpRNkk4UGlSdjZTS3N2NU5MMGtn?=
- =?utf-8?B?a08vWDdtQmFydG4zMG5TcUpiYTJLWnNOQWdwNVhOOVoyZy9aWWlWekpmQUxW?=
- =?utf-8?B?RURLWmpmU01NcUZlY3hRTVF0SWMva3BOTStWMFQxbjVVdTZLc3dSS05UVnB2?=
- =?utf-8?B?dXRpQlZvM1A3UWROOTQzUkp3UytZNElhUk9FbW1QWE45OVZUNjEyL0VCU3l3?=
- =?utf-8?B?MDJaK0xkSzQrUU1iaHhOa0hxMU5IQWJmSHFVN1RYVzFmbHIreWkvdlBJNDRz?=
- =?utf-8?B?ZENzcUltRUVpdGZrbS9ZYm5ncFhKa3NJK0FwQThiKzBTODFNT09SaCt3VWti?=
- =?utf-8?B?eWRxRGROcnorT3I0dGRUY2dNdURoVS9zOUJpRU1acXJCTHVSRGV4VVZqYjRX?=
- =?utf-8?B?RVp2YW1iUkQwWFFueEZTNjR3TEhPdmFPMHpHUFlqWURsZDJMSFJOZVFPanoy?=
- =?utf-8?B?VVZsU1E4VzQ4RUNrY0EyTGdpYmRSZDdQZXlqVUxWazBERTFBYVlXT2l2VGls?=
- =?utf-8?B?em9nTDFjdU9JekVQZnNOalZMcnJoelhzaVEvbnlLa2YyU3ZSOWIvUlhSdkNo?=
- =?utf-8?B?QS9tblFkdml1S0NuOThRYnpmZTIva2tmRzBYL0JFdVdmTnBPb1BEQmtvSURZ?=
- =?utf-8?B?VDgrbDJQai90M1pqZ201VStFRHo5aG1tbUVqVzduTnZMMnJWbFlMcmh0YndG?=
- =?utf-8?B?cFJ5UE0zU0VLSGhhY1ZUNm9oUEx6UHFuN1ZHSUd2UlNTUFBURUljc21qZCth?=
- =?utf-8?B?eGU1RHNING9YT29PblBvbnJLaW1xV29OYTl2TDMyNW9pbzlkRWVsT3lueHBS?=
- =?utf-8?B?NjE4WEkxZ09lelVPWnIrcWFiWmh3VHFCdGdKZ3FSajE0WWRScGdrcER4UExh?=
- =?utf-8?B?SHJmSXd3Y09zWldBNC8zb0xhcEVTelF1Ynh2TjJMN1FrNGhHWXErUUsyMHZL?=
- =?utf-8?B?eDVTYjhjM3RlNkg4bkNJanM4ci8xSE9DY2w0ZFQzdzk0Vmo4K2lnd0FCcmlJ?=
- =?utf-8?B?R2N6dDRobHZkSW5OdThqRXVnN2J6cnIzYzNQdHNjVmJqYnJHNTFFWTlHM3Js?=
- =?utf-8?B?MS9qZmpDUVBiNTdFVlZqM2VxcFZtbUtjWDZpZ3J6VHBKUTl5dVBiZVFUQjNP?=
- =?utf-8?B?djY1THVQTVM4UG5wZzNOczE1NFgwYUFyUExsTHpXYzlmdHd5UXhCNnFuQjBx?=
- =?utf-8?B?L0lyZjh2cTMwTWRwdjhuRDlMZEsrUmVtUWhHb0N6M1NiNWFVdHJRRFhsREFX?=
- =?utf-8?B?WFhQeHBockt0WWozeERhUFk4RHk3TTdUUVo3U0FUVkJoY0xBcktxcVQ1T1BX?=
- =?utf-8?B?K0J2SEpYa3lxVGFHaDlpUHN0SVZacVB2MWZaQTUxSzhnbXVhUEdpRzVhb2ZK?=
- =?utf-8?B?S1RZNmdoaFZsV0VJYTB6R1FYaTc3dk54RHdMZklBNlNlZnhjaTNHSDJlSVVj?=
- =?utf-8?B?SE1CY0NRcFpRZUt4TXpvUXB0enJsZ2ZEQWVNTjNyTnJrYnhRK0trNFRnbWx5?=
- =?utf-8?B?OEN4TTJuSkhpdHptRjZSRFo2a0ZnYUM4elNMdFlwSUZ1OHdHaUdaMitHTko2?=
- =?utf-8?B?Y1U4bmQ0a1dCazlpalZuR1RrdjRYOC9CejJzYkxBY1NvSTkxRUwyTTVIeTR6?=
- =?utf-8?Q?MA4fM/ijdnlnLKpHM5O66NbuI0+xRTDXe7WhpOm?=
-X-OriginatorOrg: kontron.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: 88a1b94a-f2a1-404a-a50e-08d90e3a431f
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2021 13:49:24.8004
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OQTY+O+gSaeX6WHgMPC+dtWztEMT+sIQgnNJL8p0YBAlXyD3JdCjYHgCaJNq65Bcqp77h6sLlIa9sIVyJLwuaDWSauk972jaknc2Y7weN2k=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB2356
+In-Reply-To: <20210427205431.23896-10-lizhi.hou@xilinx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.05.21 15:44, Andy Shevchenko wrote:
-> On Mon, May 03, 2021 at 03:11:40PM +0200, Frieder Schrempf wrote:
->> Hi,
->>
->> with kernel 5.10.x and 5.12.x I'm getting a null pointer dereference
->> exception from the mcp251x driver when I resume from sleep (see trace
->> below).
->>
->> As far as I can tell this was working fine with 5.4. As I currently don't
->> have the time to do further debugging/bisecting, for now I want to at least
->> report this here.
->>
->> Maybe there is someone around who could already give a wild guess for what
->> might cause this just by looking at the trace/code!?
-> 
-> Does revert of c7299fea6769 ("spi: Fix spi device unregister flow") help?
 
-This commit is so new, that it is neither in 5.10.x nor in 5.12.1. So it 
-can't be the reason.
+On 4/27/21 1:54 PM, Lizhi Hou wrote:
+> The PCIE device driver which attaches to management function on Alveo
+> devices. It instantiates one or more group drivers which, in turn,
+> instantiate xrt drivers. The instantiation of group and xrt drivers is
+> completely dtb driven.
+>
+> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
+> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
+> Signed-off-by: Lizhi Hou <lizhi.hou@xilinx.com>
+Reviewed-by: Tom Rix <trix@redhat.com>
+> ---
+>   drivers/fpga/xrt/mgnt/root.c | 419 +++++++++++++++++++++++++++++++++++
+>   1 file changed, 419 insertions(+)
+>   create mode 100644 drivers/fpga/xrt/mgnt/root.c
+>
+> diff --git a/drivers/fpga/xrt/mgnt/root.c b/drivers/fpga/xrt/mgnt/root.c
+> new file mode 100644
+> index 000000000000..6e362e9d4b59
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/mgnt/root.c
+> @@ -0,0 +1,419 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Xilinx Alveo Management Function Driver
+> + *
+> + * Copyright (C) 2020-2021 Xilinx, Inc.
+> + *
+> + * Authors:
+> + *	Cheng Zhen <maxz@xilinx.com>
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/pci.h>
+> +#include <linux/aer.h>
+> +#include <linux/vmalloc.h>
+> +#include <linux/delay.h>
+> +
+> +#include "xroot.h"
+> +#include "xmgnt.h"
+> +#include "metadata.h"
+> +
+> +#define XMGNT_MODULE_NAME	"xrt-mgnt"
+> +#define XMGNT_DRIVER_VERSION	"4.0.0"
+> +
+> +#define XMGNT_PDEV(xm)		((xm)->pdev)
+> +#define XMGNT_DEV(xm)		(&(XMGNT_PDEV(xm)->dev))
+> +#define xmgnt_err(xm, fmt, args...)	\
+> +	dev_err(XMGNT_DEV(xm), "%s: " fmt, __func__, ##args)
+> +#define xmgnt_warn(xm, fmt, args...)	\
+> +	dev_warn(XMGNT_DEV(xm), "%s: " fmt, __func__, ##args)
+> +#define xmgnt_info(xm, fmt, args...)	\
+> +	dev_info(XMGNT_DEV(xm), "%s: " fmt, __func__, ##args)
+> +#define xmgnt_dbg(xm, fmt, args...)	\
+> +	dev_dbg(XMGNT_DEV(xm), "%s: " fmt, __func__, ##args)
+> +#define XMGNT_DEV_ID(_pcidev)			\
+> +	({ typeof(_pcidev) (pcidev) = (_pcidev);	\
+> +	((pci_domain_nr((pcidev)->bus) << 16) |	\
+> +	PCI_DEVID((pcidev)->bus->number, 0)); })
+> +#define XRT_VSEC_ID		0x20
+> +#define XRT_MAX_READRQ		512
+> +
+> +static struct class *xmgnt_class;
+> +
+> +/* PCI Device IDs */
+> +/*
+> + * Golden image is preloaded on the device when it is shipped to customer.
+> + * Then, customer can load other shells (from Xilinx or some other vendor).
+> + * If something goes wrong with the shell, customer can always go back to
+> + * golden and start over again.
+> + */
+> +#define PCI_DEVICE_ID_U50_GOLDEN	0xD020
+> +#define PCI_DEVICE_ID_U50		0x5020
+> +static const struct pci_device_id xmgnt_pci_ids[] = {
+> +	{ PCI_DEVICE(PCI_VENDOR_ID_XILINX, PCI_DEVICE_ID_U50_GOLDEN), }, /* Alveo U50 (golden) */
+> +	{ PCI_DEVICE(PCI_VENDOR_ID_XILINX, PCI_DEVICE_ID_U50), }, /* Alveo U50 */
+> +	{ 0, }
+> +};
+> +
+> +struct xmgnt {
+> +	struct pci_dev *pdev;
+> +	void *root;
+> +
+> +	bool ready;
+> +};
+> +
+> +static int xmgnt_config_pci(struct xmgnt *xm)
+> +{
+> +	struct pci_dev *pdev = XMGNT_PDEV(xm);
+> +	int rc;
+> +
+> +	rc = pcim_enable_device(pdev);
+> +	if (rc < 0) {
+> +		xmgnt_err(xm, "failed to enable device: %d", rc);
+> +		return rc;
+> +	}
+> +
+> +	rc = pci_enable_pcie_error_reporting(pdev);
+> +	if (rc)
+> +		xmgnt_warn(xm, "failed to enable AER: %d", rc);
+> +
+> +	pci_set_master(pdev);
+> +
+> +	rc = pcie_get_readrq(pdev);
+> +	if (rc > XRT_MAX_READRQ)
+> +		pcie_set_readrq(pdev, XRT_MAX_READRQ);
+> +	return 0;
+> +}
+> +
+> +static int xmgnt_match_slot_and_save(struct device *dev, void *data)
+> +{
+> +	struct xmgnt *xm = data;
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +
+> +	if (XMGNT_DEV_ID(pdev) == XMGNT_DEV_ID(xm->pdev)) {
+> +		pci_cfg_access_lock(pdev);
+> +		pci_save_state(pdev);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void xmgnt_pci_save_config_all(struct xmgnt *xm)
+> +{
+> +	bus_for_each_dev(&pci_bus_type, NULL, xm, xmgnt_match_slot_and_save);
+> +}
+> +
+> +static int xmgnt_match_slot_and_restore(struct device *dev, void *data)
+> +{
+> +	struct xmgnt *xm = data;
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +
+> +	if (XMGNT_DEV_ID(pdev) == XMGNT_DEV_ID(xm->pdev)) {
+> +		pci_restore_state(pdev);
+> +		pci_cfg_access_unlock(pdev);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void xmgnt_pci_restore_config_all(struct xmgnt *xm)
+> +{
+> +	bus_for_each_dev(&pci_bus_type, NULL, xm, xmgnt_match_slot_and_restore);
+> +}
+> +
+> +static void xmgnt_root_hot_reset(struct device *dev)
+> +{
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +	struct pci_bus *bus;
+> +	u16 pci_cmd, devctl;
+> +	struct xmgnt *xm;
+> +	u8 pci_bctl;
+> +	int i, ret;
+> +
+> +	xm = pci_get_drvdata(pdev);
+> +	xmgnt_info(xm, "hot reset start");
+> +	xmgnt_pci_save_config_all(xm);
+> +	pci_disable_device(pdev);
+> +	bus = pdev->bus;
+> +
+> +	/*
+> +	 * When flipping the SBR bit, device can fall off the bus. This is
+> +	 * usually no problem at all so long as drivers are working properly
+> +	 * after SBR. However, some systems complain bitterly when the device
+> +	 * falls off the bus.
+> +	 * The quick solution is to temporarily disable the SERR reporting of
+> +	 * switch port during SBR.
+> +	 */
+> +
+> +	pci_read_config_word(bus->self, PCI_COMMAND, &pci_cmd);
+> +	pci_write_config_word(bus->self, PCI_COMMAND, (pci_cmd & ~PCI_COMMAND_SERR));
+> +	pcie_capability_read_word(bus->self, PCI_EXP_DEVCTL, &devctl);
+> +	pcie_capability_write_word(bus->self, PCI_EXP_DEVCTL, (devctl & ~PCI_EXP_DEVCTL_FERE));
+> +	pci_read_config_byte(bus->self, PCI_BRIDGE_CONTROL, &pci_bctl);
+> +	pci_write_config_byte(bus->self, PCI_BRIDGE_CONTROL, pci_bctl | PCI_BRIDGE_CTL_BUS_RESET);
+> +	msleep(100);
+> +	pci_write_config_byte(bus->self, PCI_BRIDGE_CONTROL, pci_bctl);
+> +	ssleep(1);
+> +
+> +	pcie_capability_write_word(bus->self, PCI_EXP_DEVCTL, devctl);
+> +	pci_write_config_word(bus->self, PCI_COMMAND, pci_cmd);
+> +
+> +	ret = pci_enable_device(pdev);
+> +	if (ret)
+> +		xmgnt_err(xm, "failed to enable device, ret %d", ret);
+> +
+> +	for (i = 0; i < 300; i++) {
+> +		pci_read_config_word(pdev, PCI_COMMAND, &pci_cmd);
+> +		if (pci_cmd != 0xffff)
+> +			break;
+> +		msleep(20);
+> +	}
+> +	if (i == 300)
+> +		xmgnt_err(xm, "timed out waiting for device to be online after reset");
+> +
+> +	xmgnt_info(xm, "waiting for %d ms", i * 20);
+> +	xmgnt_pci_restore_config_all(xm);
+> +	xmgnt_config_pci(xm);
+> +}
+> +
+> +static int xmgnt_add_vsec_node(struct xmgnt *xm, char *dtb)
+> +{
+> +	u32 off_low, off_high, vsec_bar, header;
+> +	struct pci_dev *pdev = XMGNT_PDEV(xm);
+> +	struct xrt_md_endpoint ep = { 0 };
+> +	struct device *dev = DEV(pdev);
+> +	int cap = 0, ret = 0;
+> +	u64 vsec_off;
+> +
+> +	while ((cap = pci_find_next_ext_capability(pdev, cap, PCI_EXT_CAP_ID_VNDR))) {
+> +		pci_read_config_dword(pdev, cap + PCI_VNDR_HEADER, &header);
+> +		if (PCI_VNDR_HEADER_ID(header) == XRT_VSEC_ID)
+> +			break;
+> +	}
+> +	if (!cap) {
+> +		xmgnt_info(xm, "No Vendor Specific Capability.");
+> +		return -ENOENT;
+> +	}
+> +
+> +	if (pci_read_config_dword(pdev, cap + 8, &off_low) ||
+> +	    pci_read_config_dword(pdev, cap + 12, &off_high)) {
+> +		xmgnt_err(xm, "pci_read vendor specific failed.");
+> +		return -EINVAL;
+> +	}
+> +
+> +	ep.ep_name = XRT_MD_NODE_VSEC;
+> +	ret = xrt_md_add_endpoint(dev, dtb, &ep);
+> +	if (ret) {
+> +		xmgnt_err(xm, "add vsec metadata failed, ret %d", ret);
+> +		goto failed;
+> +	}
+> +
+> +	vsec_bar = cpu_to_be32(off_low & 0xf);
+> +	ret = xrt_md_set_prop(dev, dtb, XRT_MD_NODE_VSEC, NULL,
+> +			      XRT_MD_PROP_BAR_IDX, &vsec_bar, sizeof(vsec_bar));
+> +	if (ret) {
+> +		xmgnt_err(xm, "add vsec bar idx failed, ret %d", ret);
+> +		goto failed;
+> +	}
+> +
+> +	vsec_off = cpu_to_be64(((u64)off_high << 32) | (off_low & ~0xfU));
+> +	ret = xrt_md_set_prop(dev, dtb, XRT_MD_NODE_VSEC, NULL,
+> +			      XRT_MD_PROP_OFFSET, &vsec_off, sizeof(vsec_off));
+> +	if (ret) {
+> +		xmgnt_err(xm, "add vsec offset failed, ret %d", ret);
+> +		goto failed;
+> +	}
+> +
+> +failed:
+> +	return ret;
+> +}
+> +
+> +static int xmgnt_create_root_metadata(struct xmgnt *xm, char **root_dtb)
+> +{
+> +	char *dtb = NULL;
+> +	int ret;
+> +
+> +	ret = xrt_md_create(XMGNT_DEV(xm), &dtb);
+> +	if (ret) {
+> +		xmgnt_err(xm, "create metadata failed, ret %d", ret);
+> +		goto failed;
+> +	}
+> +
+> +	ret = xmgnt_add_vsec_node(xm, dtb);
+> +	if (ret == -ENOENT) {
+> +		/*
+> +		 * We may be dealing with a MFG board.
+> +		 * Try vsec-golden which will bring up all hard-coded leaves
+> +		 * at hard-coded offsets.
+> +		 */
+> +		ret = xroot_add_simple_node(xm->root, dtb, XRT_MD_NODE_VSEC_GOLDEN);
+> +	} else if (ret == 0) {
+> +		ret = xroot_add_simple_node(xm->root, dtb, XRT_MD_NODE_MGNT_MAIN);
+> +	}
+> +	if (ret)
+> +		goto failed;
+> +
+> +	*root_dtb = dtb;
+> +	return 0;
+> +
+> +failed:
+> +	vfree(dtb);
+> +	return ret;
+> +}
+> +
+> +static ssize_t ready_show(struct device *dev,
+> +			  struct device_attribute *da,
+> +			  char *buf)
+> +{
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +	struct xmgnt *xm = pci_get_drvdata(pdev);
+> +
+> +	return sprintf(buf, "%d\n", xm->ready);
+> +}
+> +static DEVICE_ATTR_RO(ready);
+> +
+> +static struct attribute *xmgnt_root_attrs[] = {
+> +	&dev_attr_ready.attr,
+> +	NULL
+> +};
+> +
+> +static struct attribute_group xmgnt_root_attr_group = {
+> +	.attrs = xmgnt_root_attrs,
+> +};
+> +
+> +static void xmgnt_root_get_id(struct device *dev, struct xrt_root_get_id *rid)
+> +{
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +
+> +	rid->xpigi_vendor_id = pdev->vendor;
+> +	rid->xpigi_device_id = pdev->device;
+> +	rid->xpigi_sub_vendor_id = pdev->subsystem_vendor;
+> +	rid->xpigi_sub_device_id = pdev->subsystem_device;
+> +}
+> +
+> +static int xmgnt_root_get_resource(struct device *dev, struct xrt_root_get_res *res)
+> +{
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +	struct xmgnt *xm;
+> +
+> +	xm = pci_get_drvdata(pdev);
+> +	if (res->xpigr_region_id > PCI_STD_RESOURCE_END) {
+> +		xmgnt_err(xm, "Invalid bar idx %d", res->xpigr_region_id);
+> +		return -EINVAL;
+> +	}
+> +
+> +	res->xpigr_res = &pdev->resource[res->xpigr_region_id];
+> +	return 0;
+> +}
+> +
+> +static struct xroot_physical_function_callback xmgnt_xroot_pf_cb = {
+> +	.xpc_get_id = xmgnt_root_get_id,
+> +	.xpc_get_resource = xmgnt_root_get_resource,
+> +	.xpc_hot_reset = xmgnt_root_hot_reset,
+> +};
+> +
+> +static int xmgnt_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> +{
+> +	int ret;
+> +	struct device *dev = &pdev->dev;
+> +	struct xmgnt *xm = devm_kzalloc(dev, sizeof(*xm), GFP_KERNEL);
+> +	char *dtb = NULL;
+> +
+> +	if (!xm)
+> +		return -ENOMEM;
+> +	xm->pdev = pdev;
+> +	pci_set_drvdata(pdev, xm);
+> +
+> +	ret = xmgnt_config_pci(xm);
+> +	if (ret)
+> +		goto failed;
+> +
+> +	ret = xroot_probe(&pdev->dev, &xmgnt_xroot_pf_cb, &xm->root);
+> +	if (ret)
+> +		goto failed;
+> +
+> +	ret = xmgnt_create_root_metadata(xm, &dtb);
+> +	if (ret)
+> +		goto failed_metadata;
+> +
+> +	ret = xroot_create_group(xm->root, dtb);
+> +	vfree(dtb);
+> +	if (ret)
+> +		xmgnt_err(xm, "failed to create root group: %d", ret);
+> +
+> +	if (!xroot_wait_for_bringup(xm->root))
+> +		xmgnt_err(xm, "failed to bringup all groups");
+> +	else
+> +		xm->ready = true;
+> +
+> +	ret = sysfs_create_group(&pdev->dev.kobj, &xmgnt_root_attr_group);
+> +	if (ret) {
+> +		/* Warning instead of failing the probe. */
+> +		xmgnt_warn(xm, "create xmgnt root attrs failed: %d", ret);
+> +	}
+> +
+> +	xroot_broadcast(xm->root, XRT_EVENT_POST_CREATION);
+> +	xmgnt_info(xm, "%s started successfully", XMGNT_MODULE_NAME);
+> +	return 0;
+> +
+> +failed_metadata:
+> +	xroot_remove(xm->root);
+> +failed:
+> +	pci_set_drvdata(pdev, NULL);
+> +	return ret;
+> +}
+> +
+> +static void xmgnt_remove(struct pci_dev *pdev)
+> +{
+> +	struct xmgnt *xm = pci_get_drvdata(pdev);
+> +
+> +	xroot_broadcast(xm->root, XRT_EVENT_PRE_REMOVAL);
+> +	sysfs_remove_group(&pdev->dev.kobj, &xmgnt_root_attr_group);
+> +	xroot_remove(xm->root);
+> +	pci_disable_pcie_error_reporting(xm->pdev);
+> +	xmgnt_info(xm, "%s cleaned up successfully", XMGNT_MODULE_NAME);
+> +}
+> +
+> +static struct pci_driver xmgnt_driver = {
+> +	.name = XMGNT_MODULE_NAME,
+> +	.id_table = xmgnt_pci_ids,
+> +	.probe = xmgnt_probe,
+> +	.remove = xmgnt_remove,
+> +};
+> +
+> +static int __init xmgnt_init(void)
+> +{
+> +	int res = 0;
+> +
+> +	res = xmgnt_register_leaf();
+> +	if (res)
+> +		return res;
+> +
+> +	xmgnt_class = class_create(THIS_MODULE, XMGNT_MODULE_NAME);
+> +	if (IS_ERR(xmgnt_class))
+> +		return PTR_ERR(xmgnt_class);
+> +
+> +	res = pci_register_driver(&xmgnt_driver);
+> +	if (res) {
+> +		class_destroy(xmgnt_class);
+> +		return res;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static __exit void xmgnt_exit(void)
+> +{
+> +	pci_unregister_driver(&xmgnt_driver);
+> +	class_destroy(xmgnt_class);
+> +	xmgnt_unregister_leaf();
+> +}
+> +
+> +module_init(xmgnt_init);
+> +module_exit(xmgnt_exit);
+> +
+> +MODULE_DEVICE_TABLE(pci, xmgnt_pci_ids);
+> +MODULE_VERSION(XMGNT_DRIVER_VERSION);
+> +MODULE_AUTHOR("XRT Team <runtime@xilinx.com>");
+> +MODULE_DESCRIPTION("Xilinx Alveo management function driver");
+> +MODULE_LICENSE("GPL v2");
+
