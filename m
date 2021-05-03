@@ -2,182 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 607DA3715AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6B53715A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234115AbhECNHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 09:07:21 -0400
-Received: from 139-28-40-42.artus.net.pl ([139.28.40.42]:57122 "EHLO
-        tarta.nabijaczleweli.xyz" rhost-flags-OK-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S234105AbhECNHO (ORCPT
+        id S234023AbhECNGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 09:06:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233361AbhECNGj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 09:07:14 -0400
-X-Greylist: delayed 360 seconds by postgrey-1.27 at vger.kernel.org; Mon, 03 May 2021 09:07:13 EDT
-Received: from tarta.nabijaczleweli.xyz (unknown [192.168.1.250])
-        by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id 595C43601DB;
-        Mon,  3 May 2021 15:00:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=nabijaczleweli.xyz;
-        s=202006; t=1620046816;
-        bh=yfHnkBAT5kvVEmtv+/ipG8gTlyOXUXK7vf9ndpqYYYE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QU197d6Y/AV/u+EeffpYvX9dcCXp84MB8dtFjXFDa08LuVYGVkOmf3ANUz6K9LSbY
-         zmCdpvvELw0SamFSjGPC+5hjfyKFzakCJoYJZYhjv2spd3vx6YRO4/nU6czDDB21Sb
-         nl6SKmKg3aAZETeWT6QfXxeNFQUQJQCGx7CF8+TK+ku3d55SoMv+VIE3mk0JljfJD3
-         QMzsqtuxgQ+bxlXC4D+K2hGfdj9UCQUzQ9sbua6s3fJtoAR411fMFLxTwu8QMFEoj8
-         sZNRl5w4o1CnqufjuWjYaOigHoQakYL6ugRYYq3Hynkqvk667eEswswvtS2auIotVT
-         eMCPka8f8Nzyg==
-Date:   Mon, 3 May 2021 15:00:15 +0200
-From:   =?utf-8?B?0L3QsNCx?= <nabijaczleweli@nabijaczleweli.xyz>
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 0/4] Stylus-on-touchscreen device support
-Message-ID: <20210503130015.d2qnahrrfyv3odqj@tarta.nabijaczleweli.xyz>
-References: <cover.1615224800.git.nabijaczleweli@nabijaczleweli.xyz>
- <20210420131741.kdgxquhwqureih7c@tarta.nabijaczleweli.xyz>
- <nycvar.YFH.7.76.2105031110480.28378@cbobk.fhfr.pm>
- <CAO-hwJ+HhKU7EzPZGOtPePT_h7OUaJ=QfWi7eAcxsfRaDtQuvg@mail.gmail.com>
- <CAO-hwJKLYTqQ9qZ8LZGabze_NjNfwAq2_V-28LFewjOC=EK8rw@mail.gmail.com>
+        Mon, 3 May 2021 09:06:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCFDCC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 06:05:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=DQbTl//vIVjixreqgyC79VelysZYwDyEAMW8zdisDXw=; b=W4EEXWctgxJIuZ2hkxjABQERgY
+        bAcezO4cT0j24kIpC7d20rwb1uvodIKem1j8LDWuScJE6IFiWF96BvXym/xw4eawjD94DktjmBMuq
+        TIm9n9mY1sQXKq9AgeLwwt558ZyrkHBSZkcbrDLjdeBrwt0qT3WGdHF/9JRehkx7mBDhGWhgWWf3w
+        z2SQDWPXBZe7yt3snPlKvEoTTPZMwGy3eRi2U0mzQ/OJZ+GA9T91HJiuRo6PBiNQmKRXffPTl+jsh
+        P0P6f2hoexxoQbwS5vk3YJM/E1ZfiDBbPUHpdg6A4u2gEjDiDQmv1Hs+Wks0Gc+qYa7iG6V95jtoc
+        Ovh7Q9MQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1ldYGC-00F6IW-7H; Mon, 03 May 2021 13:05:21 +0000
+Date:   Mon, 3 May 2021 14:05:16 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Chen Li <chenli@uniontech.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nommu: remove __GFP_HIGHMEM in vmalloc/vzalloc
+Message-ID: <20210503130516.GB1847222@casper.infradead.org>
+References: <875z00rnp8.wl-chenli@uniontech.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4vmzebdqbdf53gga"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAO-hwJKLYTqQ9qZ8LZGabze_NjNfwAq2_V-28LFewjOC=EK8rw@mail.gmail.com>
-User-Agent: NeoMutt/20210205
+In-Reply-To: <875z00rnp8.wl-chenli@uniontech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, May 03, 2021 at 08:44:51PM +0800, Chen Li wrote:
+> 
+> From mm/nommu.c:
+> void *__vmalloc(unsigned long size, gfp_t gfp_mask)
+> {
+> 	/*
+> 	 *  You can't specify __GFP_HIGHMEM with kmalloc() since kmalloc()
+> 	 * returns only a logical address.
+> 	 */
+> 	return kmalloc(size, (gfp_mask | __GFP_COMP) & ~__GFP_HIGHMEM);
+> }
+> 
+> nommu's __vmalloc just uses kmalloc internally and elimitates __GFP_HIGHMEM,
+> so it makes no sense to add __GFP_HIGHMEM for nommu's vmalloc/vzalloc.
 
---4vmzebdqbdf53gga
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I think this was originally [1] a copy of vmalloc() from vmalloc.c,
+but of course the two have drifted apart over time.  At the time,
+vmalloc.c's vmalloc() looked like this:
 
-On Mon, May 03, 2021 at 11:52:43AM +0200, Benjamin Tissoires wrote:
-> On Mon, May 3, 2021 at 11:39 AM Benjamin Tissoires
-> <benjamin.tissoires@redhat.com> wrote:
-> >
-> > On Mon, May 3, 2021 at 11:11 AM Jiri Kosina <jikos@kernel.org> wrote:
-> > >
-> > > On Tue, 20 Apr 2021, =D0=BD=D0=B0=D0=B1 wrote:
-> > >
-> > > > > This patchset adds support for stylus-on-touchscreen devices as f=
-ound on
-> > > > > the OneMix 3 Pro and Dell Inspiron 15 7000 2-in-1 (7591), among o=
-thers;
-> > > > > with it, they properly behave like a drawing tablet.
-> > > > >
-> > > > > Patches 2 and 4 funxionally depend on patch 1.
-> > > > > Patch 4 needs patch 3 to apply.
-> > > > >
-> > > > > The output of this patchset and the need for a kernel, rather than
-> > > > > userspace, patch was previously discussed here:
-> > > > >   https://gitlab.freedesktop.org/libinput/libinput/-/merge_reques=
-ts/558#note_792834
-> > > > >
-> > > > > Changes in v2:
-> > > > > Patch 4 now ANDs the secondary button with the tip switch,
-> > > > > since it's otherwise borderline useless to the user.
-> > > > >
-> > > > > Ahelenia Ziemia=C5=84ska (4):
-> > > > >   HID: multitouch: require Finger field to mark Win8 reports as MT
-> > > > >   HID: multitouch: set Stylus suffix for Stylus-application devic=
-es, too
-> > > > >   HID: input: replace outdated HID numbers+comments with macros
-> > > > >   HID: input: work around Win8 stylus-on-touchscreen reporting
-> > > > >
-> > > > >  drivers/hid/hid-input.c      | 54 ++++++++++++++++++++++++++++++=
-++++--
-> > > > >  drivers/hid/hid-multitouch.c | 18 +++++++-----
-> > > > >  2 files changed, 62 insertions(+), 10 deletions(-)
-> > > > >
-> > > > > --
-> > > > > 2.20.1
-> > > >
-> > > > Bumping this after a monthish =E2=80=92 is it missing something? Am=
- I?
-> > >
-> > > Benjamin had concerns about regressions and wanted to run a full batt=
-ery
-> > > of testing on it.
-> > >
-> > > Benjamin, is there any outcome of that, please?
-> > >
-> >
-> > Sorry, no real outcome here.
-> >
-> > I ran the test suite, and there were no errors, until I realized that
-> > there are no tests regarding tablets, so it can't detect any
-> > regressions here.
-> > And then, the usual happens, no time to actually work on the test suite=
-=2E.. :(
-> >
-> > I'll do a "normal" review soon (i.e. today)
-> >
->=20
-> So I did a quick pass at the patches:
-> - 1/4 -> I think this one is safe and could go as it is, maybe with
-> CC: stable on it. Any regressions should have been caught by the
-> testsuite, so that's a good one.
-> - 2/4 and 3/4 -> Ack on those 2 too, note stable material, but not
-> necessary v5.13 material
-> - 4/4 -> I honestly have no idea if the patch is correct or not. I
-> would hold on this one until we have proper tests for those.
->=20
-> Jiri, would you be ok to split the series as this?
++void * vmalloc (unsigned long size)
++{
++       return __vmalloc(size, GFP_KERNEL | __GFP_HIGHMEM, PAGE_KERNEL);
++}
 
-Splitting 2/4 away from 1/4 presents a minor cosmetic problem:
-since 1/4 no longer tags the stylus-on-touchscreen device as MT,
-the device name turns from "GXTP7386:00 27C6:0113 Stylus"
-to "GXTP7386:00 27C6:0113", so the user is left with
-two identically-named devices, the first of which corresponds
-to the touchscreen, and the second to the stylus.
+[1] And I do mean originally; this was present in Alan Cox's original
+submission of mm/nommu.c in 2002.
 
-Granted, it might also append "Stylus" to names that could contain it,
-but I haven't managed to trace where hdev->name is born to determine if
-that's a concern.
+This patch makes sense to me, although I don't imagine it makes
+much difference.
 
-> =D0=BD=D0=B0=D0=B1, would you be OK to work on the test suite at
-> https://gitlab.freedesktop.org/libevdev/hid-tools so we can move
-> forward for your last patch?
->
-> The problem I see on the last patch is that it is touching a generic
-> path and is not trivial. So adding tests would have 3 benefits:
-> - we ensure we are doing the correct thing
-> - we ensure we are not breaking existing devices (to some extent,
-> given that the tests are non written for the tablets)
-> - we ensure we are not breaking that in the future.
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-I'd be more than happy to add tests of some sort, but reading the
-repository and tests/ under it has me positively stumped,
-not a clue where an entry-point would be, or how I'd instrument a
-reasonable test around my rdesc, so some sort of vague guidance
-to that end would be greatly appreciated.
-
-Best,
-=D0=BD=D0=B0=D0=B1
-
---4vmzebdqbdf53gga
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmCP89wACgkQvP0LAY0m
-WPErFxAAkZnn0lFmM1NslU8/pjnkXwnNh5ShZUOiFpzU4TRPgid+1Uew7gLmGSgP
-lpWeviEkSOUlyaE7zmksorCZTI/+mnzCSRuTruh8ArskVt/nDTlxwMKhQNV6IX2n
-ZpHFc1k3huquOKcLrmjuvhc0xPPNumeluoDMHvizCYvb8MPLeW7Dgva3amWdhOK0
-WOHeEgEWGZ19ryDks25HLTWs4OV+T0gG7C0fIKjFxEeaBF+cQfyfU7+nrEruRCOn
-JcXbZ9SqNnMxIYt/kDLod+3i6n4qX74OJdjZiedQUL/1h7KkcMCewVJn5O8JQER6
-O4BgzKNtPjc3PC2O9+zPcYUnuVXouxzyR2Y/FJO9FggsZCkEwiBVhd5KAaE2aJqv
-tyCUQ4BbUahVIkexo7upe273Tb1MYbNQD3L5NXKkmCs5nh5x2/rhXoh4fgGiTdmq
-xmPVGtMhPrNBBucK8rscY+EL7OFbiNWewUUxOfMkC0QxtyL2hzFGCQbfSTv8gbt9
-f0s+gsXDw9MB1Lov+9SVXdNlXdlTsD2sitDQ946kZ4yJOchikkuoa8U6S4QNn1Yc
-ef/7S1CRI+499ftPL8jDPAjA+9tfqrrTu9fgDN5xksrEbxTatpmeMgzJPoKbuq+9
-kKMEPWixaP4EqHvrPFWQQuIW+YnlKBlMYOisASvkHPdH/AAYmcc=
-=LazE
------END PGP SIGNATURE-----
-
---4vmzebdqbdf53gga--
+> Signed-off-by: Chen Li <chenli@uniontech.com>
+> ---
+>  mm/nommu.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/nommu.c b/mm/nommu.c
+> index 5c9ab799c0e6..339a2f2eb1aa 100644
+> --- a/mm/nommu.c
+> +++ b/mm/nommu.c
+> @@ -233,7 +233,7 @@ long vwrite(char *buf, char *addr, unsigned long count)
+>   */
+>  void *vmalloc(unsigned long size)
+>  {
+> -       return __vmalloc(size, GFP_KERNEL | __GFP_HIGHMEM);
+> +       return __vmalloc(size, GFP_KERNEL);
+>  }
+>  EXPORT_SYMBOL(vmalloc);
+>  
+> @@ -251,7 +251,7 @@ EXPORT_SYMBOL(vmalloc);
+>   */
+>  void *vzalloc(unsigned long size)
+>  {
+> -	return __vmalloc(size, GFP_KERNEL | __GFP_HIGHMEM | __GFP_ZERO);
+> +	return __vmalloc(size, GFP_KERNEL | __GFP_ZERO);
+>  }
+>  EXPORT_SYMBOL(vzalloc);
+>  
+> -- 
+> 2.31.1
+> 
+> 
+> 
+> 
