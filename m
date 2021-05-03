@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76F0F3714E2
+	by mail.lfdr.de (Postfix) with ESMTP id C523A3714E3
 	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 14:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233986AbhECMCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 08:02:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35224 "EHLO mail.kernel.org"
+        id S234108AbhECMCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 08:02:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233939AbhECMBV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 08:01:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0E3A61278;
-        Mon,  3 May 2021 12:00:26 +0000 (UTC)
+        id S233946AbhECMBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 08:01:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A4DE6127A;
+        Mon,  3 May 2021 12:00:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620043227;
-        bh=5DFi3yzKw+rniBZNk6JE9FjRKTgIIkyrqxIHDzQkPnE=;
+        s=korg; t=1620043229;
+        bh=dFYpuYjDUBXeJs7YluOgyYgaWUnawwVxM+hb/l4y7sc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sO8E4GPGNhP6iK6TThr4Uy2frzGNt23oB7UjkBEoBNT4yO3fmLxX2cd8f/Ggyy0bm
-         OhHpPaEwE2hUHNjKWpRXrWtO8SPIw2vOa0wj2fZTJubR3xY7ex384xeXF9CT6Jzwf4
-         QhyaacWAgFSibWb7J3Nzymb+ArN65s3U2qP9ees8=
+        b=MieU8ckEvQa8LbFnFq/E8h5MJuh/4cYauPWkimPhz0i6zIKUQSx7fuTKfOapMLDI0
+         ylUNo8OpptJ8YtM12hhiDDva5GVCzywon+qWZm6rMIRkCiR4SVY9Ty1Ga8CS6OuPsm
+         DxtPMOYSQs5xnnsnczoONIbvOwKtv6NECtAGS1jE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Phillip Potter <phil@philpotter.co.uk>,
-        Tyler Hicks <code@tyhicks.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 49/69] fs: ecryptfs: remove BUG_ON from crypt_scatterlist
-Date:   Mon,  3 May 2021 13:57:16 +0200
-Message-Id: <20210503115736.2104747-50-gregkh@linuxfoundation.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Aditya Pakki <pakki001@umn.edu>, Sinan Kaya <okaya@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH 50/69] Revert "dmaengine: qcom_hidma: Check for driver register failure"
+Date:   Mon,  3 May 2021 13:57:17 +0200
+Message-Id: <20210503115736.2104747-51-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
 References: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
@@ -37,41 +37,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phillip Potter <phil@philpotter.co.uk>
+This reverts commit a474b3f0428d6b02a538aa10b3c3b722751cb382.
 
-crypt_stat memory itself is allocated when inode is created, in
-ecryptfs_alloc_inode, which returns NULL on failure and is handled
-by callers, which would prevent us getting to this point. It then
-calls ecryptfs_init_crypt_stat which allocates crypt_stat->tfm
-checking for and likewise handling allocation failure. Finally,
-crypt_stat->flags has ECRYPTFS_STRUCT_INITIALIZED merged into it
-in ecryptfs_init_crypt_stat as well.
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-Simply put, the conditions that the BUG_ON checks for will never
-be triggered, as to even get to this function, the relevant conditions
-will have already been fulfilled (or the inode allocation would fail in
-the first place and thus no call to this function or those above it).
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
 
-Cc: Tyler Hicks <code@tyhicks.com>
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+The original change is NOT correct, as it does not correctly unwind from
+the resources that was allocated before the call to
+platform_driver_register().
+
+Cc: Aditya Pakki <pakki001@umn.edu>
+Cc: Sinan Kaya <okaya@kernel.org>
+Cc: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ecryptfs/crypto.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/dma/qcom/hidma_mgmt.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ecryptfs/crypto.c b/fs/ecryptfs/crypto.c
-index 3d8623139538..271064511c1b 100644
---- a/fs/ecryptfs/crypto.c
-+++ b/fs/ecryptfs/crypto.c
-@@ -296,8 +296,6 @@ static int crypt_scatterlist(struct ecryptfs_crypt_stat *crypt_stat,
- 	struct extent_crypt_result ecr;
- 	int rc = 0;
+diff --git a/drivers/dma/qcom/hidma_mgmt.c b/drivers/dma/qcom/hidma_mgmt.c
+index 806ca02c52d7..fe87b01f7a4e 100644
+--- a/drivers/dma/qcom/hidma_mgmt.c
++++ b/drivers/dma/qcom/hidma_mgmt.c
+@@ -418,8 +418,9 @@ static int __init hidma_mgmt_init(void)
+ 		hidma_mgmt_of_populate_channels(child);
+ 	}
+ #endif
+-	return platform_driver_register(&hidma_mgmt_driver);
++	platform_driver_register(&hidma_mgmt_driver);
  
--	BUG_ON(!crypt_stat || !crypt_stat->tfm
--	       || !(crypt_stat->flags & ECRYPTFS_STRUCT_INITIALIZED));
- 	if (unlikely(ecryptfs_verbosity > 0)) {
- 		ecryptfs_printk(KERN_DEBUG, "Key size [%zd]; key:\n",
- 				crypt_stat->key_size);
++	return 0;
+ }
+ module_init(hidma_mgmt_init);
+ MODULE_LICENSE("GPL v2");
 -- 
 2.31.1
 
