@@ -2,66 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01E043723AF
+	by mail.lfdr.de (Postfix) with ESMTP id C5ED13723B1
 	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 01:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbhECXo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 19:44:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38050 "EHLO
+        id S229992AbhECXo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 19:44:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27456 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229881AbhECXo5 (ORCPT
+        by vger.kernel.org with ESMTP id S229928AbhECXo6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 19:44:57 -0400
+        Mon, 3 May 2021 19:44:58 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620085443;
+        s=mimecast20190719; t=1620085444;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=SgqZKuzF10VtS2gxChk76nX04SENhfjxF8qh9wfVxX4=;
-        b=bD4ys/6l4+nuw6Uw/YgyDK08oBPedrbo2TBkj/PYSDmyj8CjlFxlM4whZ6CZQzPnhKK56c
-        9XUxG7/6dwQP4h2WFMC1GgWc7C/DTNNNRN4xdRZ/3q2BkaBRs/4/c8wpHqlSBj7daPnjhl
-        nKsumMP3ES+mzcksZx4f5Qc5PT6YvT4=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-373-1JZnDi6DPgiSKkK-dLMvSQ-1; Mon, 03 May 2021 19:44:01 -0400
-X-MC-Unique: 1JZnDi6DPgiSKkK-dLMvSQ-1
-Received: by mail-qt1-f200.google.com with SMTP id b6-20020ac85bc60000b02901c2752ed3d4so2487203qtb.15
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 16:44:01 -0700 (PDT)
+        bh=ABt25pzgCO1gaqcFMnixhdZW8Kc2SCW/u3hnQ6DkL1o=;
+        b=Ldu6//WPEoJdrO7Ox4DTsFy6xCFhqB7vgCAthUGtiKPIAAEE5ZuNkEqBXUmxwMnjC9b+Jj
+        74FNyIWS7/70YqaBELKRMJjcJAkK2PhBj2Wczw78okOWewCbmciMLaCrpTPkLeQFBZCdg/
+        CpNT1gHITiOZXGBaFiO4Y50xzhkoog4=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-58-0wbBq4tWMUSg6DetY5TbEQ-1; Mon, 03 May 2021 19:44:03 -0400
+X-MC-Unique: 0wbBq4tWMUSg6DetY5TbEQ-1
+Received: by mail-qv1-f70.google.com with SMTP id v3-20020a0ca3830000b02901c56555f64bso2048196qvv.1
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 16:44:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SgqZKuzF10VtS2gxChk76nX04SENhfjxF8qh9wfVxX4=;
-        b=CIVmT7N5CQ/WGailXLNuA6hvOL+9dghlpoQxXyqrZYEOty2jBpVPSs4FA+ee0YL8+v
-         DnPHpkX/qOq2B8GvkgmCGSlER1WjhvsJCsylWLiqn2L+FEtHT879Ldam7euEC52rExU4
-         rgE0D4oVKX23aNScsO8VNZEJ6Ea9delyMsBE9FnoJSDKE6xBuyd4eFWwe+KI7+ILccm1
-         /5QfKnzRH86tQnH/x4IDxpoqLfb6hQ1VzatMqkm3+iKhIaKlGC5+AhcIU0PzphyKGWG4
-         sV7R8wBk2QqG8jqFZBvnaNRZkIVqYRBwohwkY9DWNqcAeHyu//lCtqikqm0FsIf29UQ6
-         TfGA==
-X-Gm-Message-State: AOAM530YGw6Cuz5G1/QvE/bqVAX3BlJgJx0IEwduGXR/2Mg/2HBlucTx
-        rJYDPfs2GUPq5ca1sbJropJWhCLtV3JiNb2qn4g4CQWJkJ/KOaXHNIdfy96dX4n+xV42+BCflzf
-        9Gtr8gLz7gjemmr38LWlcnrNx
-X-Received: by 2002:ac8:7f04:: with SMTP id f4mr20100492qtk.88.1620085441269;
-        Mon, 03 May 2021 16:44:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz3/uFtTC37fwDHvfixViADg9ZV7qQj5qPTP5MX0Fsx6PvguTQXzqTCXbAffm0dw2XKzN9yPQ==
-X-Received: by 2002:ac8:7f04:: with SMTP id f4mr20100473qtk.88.1620085441017;
-        Mon, 03 May 2021 16:44:01 -0700 (PDT)
+        bh=ABt25pzgCO1gaqcFMnixhdZW8Kc2SCW/u3hnQ6DkL1o=;
+        b=UvlZib3cXskV23umpSQ2Po4pq5x8Ve5BkCiDe7+QZKWD8k5S7t37EvzKZKtAXGzAvC
+         DdImQY0fK3ZAgNLuXqSysqQQfh78fdaa9gh102gboo19lTSVZsORFAqAK1M/hxAs4KbH
+         8/TvDy7T5W3OyIC66MQ8jJl3X0nhjkNldBpsV/WoNMc0WyLPe/Wm+mF3BonWGmUXe1NX
+         IqcAd8RLC+ov90sYiBNIOzwS7JGJ2atwNujc4fl9ka+Ynp6zEP0jxJmte5OZIEB+lmg2
+         a8oj986w+Be7n0m4NrRcndcZUPyikV0+15l96/tx9zqx2EiuMVYVDB85Uv4mtjaAWu0W
+         oPdA==
+X-Gm-Message-State: AOAM531JcJPykfAi95HC6JOxU9IG4T2LFYTwY9EP9055ScOMX6UQDG+j
+        ++2aY8+qs4baXd4jQC07+eE4XQ1El/FrGu1Di3E7HNArmWuJwY3D1zc30GNV6KUJq39+UYTj6Wi
+        S2BiKEGv8f+Po1B2InazzuUWE
+X-Received: by 2002:a05:620a:799:: with SMTP id 25mr12553401qka.188.1620085442710;
+        Mon, 03 May 2021 16:44:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyvHpI4ndR9mV1KvzNSVtc1wN86uhUFbQX4EF4jyJbcv4dd7JFS0AMYcw+HYYlme5jwSVS1Rg==
+X-Received: by 2002:a05:620a:799:: with SMTP id 25mr12553383qka.188.1620085442514;
+        Mon, 03 May 2021 16:44:02 -0700 (PDT)
 Received: from t490s.redhat.com (bras-base-toroon474qw-grc-72-184-145-4-219.dsl.bell.ca. [184.145.4.219])
-        by smtp.gmail.com with ESMTPSA id 189sm7126903qkh.99.2021.05.03.16.43.59
+        by smtp.gmail.com with ESMTPSA id 189sm7126903qkh.99.2021.05.03.16.44.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 16:44:00 -0700 (PDT)
+        Mon, 03 May 2021 16:44:01 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Cc:     Axel Rasmussen <axelrasmussen@google.com>,
         Andrea Arcangeli <aarcange@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com,
         Mike Kravetz <mike.kravetz@oracle.com>,
-        Hugh Dickins <hughd@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>, stable@vger.kernel.org
-Subject: [PATCH v2 1/2] mm/hugetlb: Fix F_SEAL_FUTURE_WRITE
-Date:   Mon,  3 May 2021 19:43:55 -0400
-Message-Id: <20210503234356.9097-2-peterx@redhat.com>
+        Hugh Dickins <hughd@google.com>, stable@vger.kernel.org
+Subject: [PATCH v2 2/2] mm/hugetlb: Fix cow where page writtable in child
+Date:   Mon,  3 May 2021 19:43:56 -0400
+Message-Id: <20210503234356.9097-3-peterx@redhat.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210503234356.9097-1-peterx@redhat.com>
 References: <20210503234356.9097-1-peterx@redhat.com>
@@ -71,133 +70,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-F_SEAL_FUTURE_WRITE is missing for hugetlb starting from the first day.
-There is a test program for that and it fails constantly.
+When rework early cow of pinned hugetlb pages, we moved huge_ptep_get() upper
+but overlooked a side effect that the huge_ptep_get() will fetch the pte after
+wr-protection.  After moving it upwards, we need explicit wr-protect of child
+pte or we will keep the write bit set in the child process, which could cause
+data corrution where the child can write to the original page directly.
 
-$ ./memfd_test hugetlbfs
-memfd-hugetlb: CREATE
-memfd-hugetlb: BASIC
-memfd-hugetlb: SEAL-WRITE
-memfd-hugetlb: SEAL-FUTURE-WRITE
-mmap() didn't fail as expected
-Aborted (core dumped)
+This issue can also be exposed by "memfd_test hugetlbfs" kselftest.
 
-I think it's probably because no one is really running the hugetlbfs test.
-
-Fix it by checking FUTURE_WRITE also in hugetlbfs_file_mmap() as what we do in
-shmem_mmap().  Generalize a helper for that.
-
-Cc: Joel Fernandes (Google) <joel@joelfernandes.org>
 Cc: stable@vger.kernel.org
-Fixes: ab3948f58ff84 ("mm/memfd: add an F_SEAL_FUTURE_WRITE seal to memfd")
-Reported-by: Hugh Dickins <hughd@google.com>
+Fixes: 4eae4efa2c299 ("hugetlb: do early cow when page pinned on src mm")
 Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- fs/hugetlbfs/inode.c |  5 +++++
- include/linux/mm.h   | 32 ++++++++++++++++++++++++++++++++
- mm/shmem.c           | 22 ++++------------------
- 3 files changed, 41 insertions(+), 18 deletions(-)
+ mm/hugetlb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index 9b383c39756a5..6557cf2cb1879 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -131,6 +131,7 @@ static void huge_pagevec_release(struct pagevec *pvec)
- static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
- {
- 	struct inode *inode = file_inode(file);
-+	struct hugetlbfs_inode_info *info = HUGETLBFS_I(inode);
- 	loff_t len, vma_len;
- 	int ret;
- 	struct hstate *h = hstate_file(file);
-@@ -146,6 +147,10 @@ static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
- 	vma->vm_flags |= VM_HUGETLB | VM_DONTEXPAND;
- 	vma->vm_ops = &hugetlb_vm_ops;
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index aab3a33214d10..72544ebb24f0e 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -4076,6 +4076,7 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
+ 				 * See Documentation/vm/mmu_notifier.rst
+ 				 */
+ 				huge_ptep_set_wrprotect(src, addr, src_pte);
++				entry = huge_pte_wrprotect(entry);
+ 			}
  
-+	ret = seal_check_future_write(info->seals, vma);
-+	if (ret)
-+		return ret;
-+
- 	/*
- 	 * page based offset in vm_pgoff could be sufficiently large to
- 	 * overflow a loff_t when converted to byte offset.  This can
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index d6790ab0cf575..b9b2caf9302bc 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3238,5 +3238,37 @@ extern int sysctl_nr_trim_pages;
- 
- void mem_dump_obj(void *object);
- 
-+/**
-+ * seal_check_future_write - Check for F_SEAL_FUTURE_WRITE flag and handle it
-+ * @seals: the seals to check
-+ * @vma: the vma to operate on
-+ *
-+ * Check whether F_SEAL_FUTURE_WRITE is set; if so, do proper check/handling on
-+ * the vma flags.  Return 0 if check pass, or <0 for errors.
-+ */
-+static inline int seal_check_future_write(int seals, struct vm_area_struct *vma)
-+{
-+	if (seals & F_SEAL_FUTURE_WRITE) {
-+		/*
-+		 * New PROT_WRITE and MAP_SHARED mmaps are not allowed when
-+		 * "future write" seal active.
-+		 */
-+		if ((vma->vm_flags & VM_SHARED) && (vma->vm_flags & VM_WRITE))
-+			return -EPERM;
-+
-+		/*
-+		 * Since an F_SEAL_FUTURE_WRITE sealed memfd can be mapped as
-+		 * MAP_SHARED and read-only, take care to not allow mprotect to
-+		 * revert protections on such mappings. Do this only for shared
-+		 * mappings. For private mappings, don't need to mask
-+		 * VM_MAYWRITE as we still want them to be COW-writable.
-+		 */
-+		if (vma->vm_flags & VM_SHARED)
-+			vma->vm_flags &= ~(VM_MAYWRITE);
-+	}
-+
-+	return 0;
-+}
-+
- #endif /* __KERNEL__ */
- #endif /* _LINUX_MM_H */
-diff --git a/mm/shmem.c b/mm/shmem.c
-index a1f21736ad68e..250b52e682590 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -2258,25 +2258,11 @@ int shmem_lock(struct file *file, int lock, struct user_struct *user)
- static int shmem_mmap(struct file *file, struct vm_area_struct *vma)
- {
- 	struct shmem_inode_info *info = SHMEM_I(file_inode(file));
-+	int ret;
- 
--	if (info->seals & F_SEAL_FUTURE_WRITE) {
--		/*
--		 * New PROT_WRITE and MAP_SHARED mmaps are not allowed when
--		 * "future write" seal active.
--		 */
--		if ((vma->vm_flags & VM_SHARED) && (vma->vm_flags & VM_WRITE))
--			return -EPERM;
--
--		/*
--		 * Since an F_SEAL_FUTURE_WRITE sealed memfd can be mapped as
--		 * MAP_SHARED and read-only, take care to not allow mprotect to
--		 * revert protections on such mappings. Do this only for shared
--		 * mappings. For private mappings, don't need to mask
--		 * VM_MAYWRITE as we still want them to be COW-writable.
--		 */
--		if (vma->vm_flags & VM_SHARED)
--			vma->vm_flags &= ~(VM_MAYWRITE);
--	}
-+	ret = seal_check_future_write(info->seals, vma);
-+	if (ret)
-+		return ret;
- 
- 	/* arm64 - allow memory tagging on RAM-based files */
- 	vma->vm_flags |= VM_MTE_ALLOWED;
+ 			page_dup_rmap(ptepage, true);
 -- 
 2.31.1
 
