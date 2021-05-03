@@ -2,98 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA819372107
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 22:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9327A372112
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 22:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229602AbhECUBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 16:01:49 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:33148 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbhECUBr (ORCPT
+        id S229634AbhECUDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 16:03:41 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49378 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhECUDl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 16:01:47 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620072054; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=Wuobg4eBDGvYUWgobsliNOV3/u1xddo8tZNEDxUkFTQ=; b=UYHNQ0YmeaG2Ws7CbnA996h4bO9YTnoGzlyUF5ZGW3yWgbvDGfO/zls5tDIxloew6XWjE9SX
- Q6cmhuAKvSkcghogrXGzmLAKjV4gtYBwJU2aC/qtntD9jdXq/Jlz2vDn+sHTIXkNOQJWQzzQ
- m3NlA10WLelMktsEk34engxXlLs=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 609056708166b7eff7a4902f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 03 May 2021 20:00:48
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 872CEC433D3; Mon,  3 May 2021 20:00:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A887AC433F1;
-        Mon,  3 May 2021 20:00:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A887AC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH v2] bus: mhi: core: Improve debug messages for power up
-Date:   Mon,  3 May 2021 13:00:38 -0700
-Message-Id: <1620072038-36160-1-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Mon, 3 May 2021 16:03:41 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620072166;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XgZpXyzMSt2ZuSYziPI65CE3gq9cUvnBGAFcSg9BFNk=;
+        b=0i59kTSGkQNolbf+b00nTId26MVXzcV5mMXdgH+7pm5p9eZTQxLdS5ke1KZ1fcn0Sted+p
+        SVhLjMIy8xe2gdBAI9KELdGngxDTAGEEOdKNHagihHIfQdW1VIFyVDPVUErdnrZBshowNe
+        iRX8KFp3zcwl9eMIaNfj56CED/9F8Nb2eFDuVNB+rMgdfphdSZFuyj2Xm8uxdUKnf6r2Bo
+        bwxK++/NdjUiTXupD3kWuFL8Y9F1Lx5MmWAGGsVDscaaNyPdanXtH7W+kJzQnEQUkUq7EM
+        WhKmzVfOoZg3xWiIO8SPCU0KJGBtW8V8U5vQ2KyoTdhEbJI743slY1chrXC2Wg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620072166;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XgZpXyzMSt2ZuSYziPI65CE3gq9cUvnBGAFcSg9BFNk=;
+        b=RQOjtFI0ZhFjpV5vlGvNQ+NvXBfAy77dvWKiYp6tyVG5UhVtN0a221OcYkCYj7rFCuiK2W
+        0ma3zEvtPU+pV8Dg==
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 3/4] KVM/VMX: Invoke NMI non-IST entry instead of IST entry
+In-Reply-To: <20210426230949.3561-4-jiangshanlai@gmail.com>
+References: <20210426230949.3561-1-jiangshanlai@gmail.com> <20210426230949.3561-4-jiangshanlai@gmail.com>
+Date:   Mon, 03 May 2021 22:02:46 +0200
+Message-ID: <87eeenk2l5.ffs@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Improve error message to be more descriptive if a failure occurs
-with an invalid power up execution environment. Additionally, add
-a debug log to print the execution environment and MHI state
-before a power up is attempted to confirm if the device is in an
-expected state. This helps clarify reasons for power up failures
-such as the device being found in a PBL or Emergency Download
-Mode execution environment and the host expected a full power up
-with Pass-Through and no image loading involved.
+On Tue, Apr 27 2021 at 07:09, Lai Jiangshan wrote:
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index bcbf0d2139e9..96e59d912637 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -36,6 +36,7 @@
+>  #include <asm/debugreg.h>
+>  #include <asm/desc.h>
+>  #include <asm/fpu/internal.h>
+> +#include <asm/idtentry.h>
+>  #include <asm/io.h>
+>  #include <asm/irq_remapping.h>
+>  #include <asm/kexec.h>
+> @@ -6416,8 +6417,11 @@ static void handle_exception_nmi_irqoff(struct vcpu_vmx *vmx)
+>  	else if (is_machine_check(intr_info))
+>  		kvm_machine_check();
+>  	/* We need to handle NMIs before interrupts are enabled */
+> -	else if (is_nmi(intr_info))
+> -		handle_interrupt_nmi_irqoff(&vmx->vcpu, intr_info);
+> +	else if (is_nmi(intr_info)) {
 
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+Lacks curly braces for all of the above conditions according to coding style.
+
+> +		kvm_before_interrupt(&vmx->vcpu);
+> +		vmx_do_interrupt_nmi_irqoff((unsigned long)asm_noist_exc_nmi);
+> +		kvm_after_interrupt(&vmx->vcpu);
+> +	}
+
+but this and the next patch are not really needed. The below avoids the
+extra kvm_before/after() dance in both places. Hmm?
+
+Thanks,
+
+        tglx
 ---
-v2: Use power up instead of power on and update commit text with an example.
-
- drivers/bus/mhi/core/pm.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-index adf426c..f4a8b9a 100644
---- a/drivers/bus/mhi/core/pm.c
-+++ b/drivers/bus/mhi/core/pm.c
-@@ -1076,12 +1076,16 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
+--- a/arch/x86/kernel/nmi.c
++++ b/arch/x86/kernel/nmi.c
+@@ -526,6 +526,10 @@ DEFINE_IDTENTRY_RAW(exc_nmi)
  
- 	/* Confirm that the device is in valid exec env */
- 	if (!MHI_IN_PBL(current_ee) && current_ee != MHI_EE_AMSS) {
--		dev_err(dev, "Not a valid EE for power on\n");
-+		dev_err(dev, "%s is not a valid EE for power on\n",
-+			TO_MHI_EXEC_STR(current_ee));
- 		ret = -EIO;
- 		goto error_async_power_up;
- 	}
+ DEFINE_IDTENTRY_RAW_ALIAS(exc_nmi, exc_nmi_noist);
  
- 	state = mhi_get_mhi_state(mhi_cntrl);
-+	dev_dbg(dev, "Attempting power on with EE: %s, state: %s\n",
-+		TO_MHI_EXEC_STR(current_ee), TO_MHI_STATE_STR(state));
++#if IS_MODULE(CONFIG_KVM_INTEL)
++EXPORT_SYMBOL_GPL(asm_exc_nmi_noist);
++#endif
 +
- 	if (state == MHI_STATE_SYS_ERR) {
- 		mhi_set_mhi_state(mhi_cntrl, MHI_STATE_RESET);
- 		ret = wait_event_timeout(mhi_cntrl->state_event,
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+ void stop_nmi(void)
+ {
+ 	ignore_nmis++;
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -36,6 +36,7 @@
+ #include <asm/debugreg.h>
+ #include <asm/desc.h>
+ #include <asm/fpu/internal.h>
++#include <asm/idtentry.h>
+ #include <asm/io.h>
+ #include <asm/irq_remapping.h>
+ #include <asm/kexec.h>
+@@ -6395,18 +6396,17 @@ static void vmx_apicv_post_state_restore
+ 
+ void vmx_do_interrupt_nmi_irqoff(unsigned long entry);
+ 
+-static void handle_interrupt_nmi_irqoff(struct kvm_vcpu *vcpu, u32 intr_info)
++static void handle_interrupt_nmi_irqoff(struct kvm_vcpu *vcpu,
++					unsigned long entry)
+ {
+-	unsigned int vector = intr_info & INTR_INFO_VECTOR_MASK;
+-	gate_desc *desc = (gate_desc *)host_idt_base + vector;
+-
+ 	kvm_before_interrupt(vcpu);
+-	vmx_do_interrupt_nmi_irqoff(gate_offset(desc));
++	vmx_do_interrupt_nmi_irqoff(entry);
+ 	kvm_after_interrupt(vcpu);
+ }
+ 
+ static void handle_exception_nmi_irqoff(struct vcpu_vmx *vmx)
+ {
++	const unsigned long nmi_entry = (unsigned long)asm_exc_nmi_noist;
+ 	u32 intr_info = vmx_get_intr_info(&vmx->vcpu);
+ 
+ 	/* if exit due to PF check for async PF */
+@@ -6417,18 +6417,20 @@ static void handle_exception_nmi_irqoff(
+ 		kvm_machine_check();
+ 	/* We need to handle NMIs before interrupts are enabled */
+ 	else if (is_nmi(intr_info))
+-		handle_interrupt_nmi_irqoff(&vmx->vcpu, intr_info);
++		handle_interrupt_nmi_irqoff(&vmx->vcpu, nmi_entry);
+ }
+ 
+ static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu)
+ {
+ 	u32 intr_info = vmx_get_intr_info(vcpu);
++	unsigned int vector = intr_info & INTR_INFO_VECTOR_MASK;
++	gate_desc *desc = (gate_desc *)host_idt_base + vector;
+ 
+ 	if (WARN_ONCE(!is_external_intr(intr_info),
+ 	    "KVM: unexpected VM-Exit interrupt info: 0x%x", intr_info))
+ 		return;
+ 
+-	handle_interrupt_nmi_irqoff(vcpu, intr_info);
++	handle_interrupt_nmi_irqoff(vcpu, gate_offset(desc));
+ }
+ 
+ static void vmx_handle_exit_irqoff(struct kvm_vcpu *vcpu)
