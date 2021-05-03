@@ -2,142 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB8237166D
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D4D371671
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234119AbhECOMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 10:12:37 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46742 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229900AbhECOMd (ORCPT
+        id S234150AbhECONW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 10:13:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229900AbhECONR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 10:12:33 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 143E3Kdi112610;
-        Mon, 3 May 2021 10:11:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=DP0YgCUTXkMqVV2M1X/pE4NoH8W4dTxUalNBePTvvOo=;
- b=F3gwhz67vAPwgP2mUfOERv+DJdhTW1ogO80H3YpwaULxLuGWEfYPLNUT8prW8laNkHXq
- PrIeZVR6fjBxyVAuM/sjiw5ioXb8EXgQe5HLg47OrBGavcxoVH1D38GU6ajLZwe5WXFF
- a3b5JNkK/bPYciBcOFE/UAZIwizso9D5GKqoekNLMYZeADa2d39jeI54Ju8H9kCuvaTO
- PXZMG/rXfx7pbJBru3LoWkZ7lZ+iCGeW+znnq5gesXxSzbIAiQZJrMYGJUq0xxcaRA3t
- n5VxML9TdH1ffVShMwP5A6MNZSbJnLQEvjVwK2gC02sHwLqDYgMIoUEN1JDVqtRO/7tE Kw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38ah42k480-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 03 May 2021 10:11:40 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 143E4IgM122677;
-        Mon, 3 May 2021 10:11:40 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38ah42k46x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 03 May 2021 10:11:40 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 143E92Lc004339;
-        Mon, 3 May 2021 14:11:37 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma05fra.de.ibm.com with ESMTP id 388xm8gdp7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 03 May 2021 14:11:37 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 143EBYvs17301954
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 3 May 2021 14:11:34 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B99BDA404D;
-        Mon,  3 May 2021 14:11:34 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4483AA4055;
-        Mon,  3 May 2021 14:11:34 +0000 (GMT)
-Received: from linux.fritz.box (unknown [9.145.164.58])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  3 May 2021 14:11:34 +0000 (GMT)
-Subject: Re: [PATCH] s390: fix detection of vector enhancements facility 1 vs.
- vector packed decimal facility
-To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        linux-s390@vger.kernel.org
-References: <20210503121244.25232-1-david@redhat.com>
-From:   Janosch Frank <frankja@linux.ibm.com>
-Message-ID: <a9329b60-e912-7600-af00-1ce16d018f92@linux.ibm.com>
-Date:   Mon, 3 May 2021 16:11:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 3 May 2021 10:13:17 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7086C06174A;
+        Mon,  3 May 2021 07:12:23 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id p17so3160763pjz.3;
+        Mon, 03 May 2021 07:12:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Is7Jnp3BHxwMJZ3xqBnGr8z8FKTgA32vVnaoI/FxVRw=;
+        b=qP2nfbxnF0v/sj2jLAmEFSVPxwLhwlMF20PXnyLaA9PYe+C/txCz4VB4sw0vfwOQE0
+         rDBs99GmYLB1gp65xco9ZDUAgbD4sBqcqlrVWe40GS8+8IJPNl9c4oCMsV50AEXrEpOr
+         vjREqcKuBI//GhYbxhXnYH7TVaIqwW0sOXRe79+9xYSKJchowUEEO+MtXUy6kzvVJASh
+         fJP2n0rR6hld6Sz5gMN/DanLOO3w9stPMfCagZRE2pVoeOQd01WhiAZI0J4gtCaSRbRb
+         zbMb/kYUzkrNQcyfuWtwB1dOQFBZ17fc45AXmlpALVvovOKFc/Vph9lo7/Y0CfrY0aMW
+         Ruvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Is7Jnp3BHxwMJZ3xqBnGr8z8FKTgA32vVnaoI/FxVRw=;
+        b=jkfuc2XT055vADIxy03/topTVqt6ZX+roqunN7j76mgzKyIDLTx3zclrFuL64g0xeJ
+         2stGd72aGsj0RJpKTvtWKbMgSbxhfIIlNPGAEdnoNsRwP6ZMrxCUiAqQplUVgSQ2irNT
+         qvjHRG4F26vIYGadt3Z4rDuaNlZDcvOzzLLAdI0KKuxDzn01T3ime7QRFZzniLrbLp/P
+         pUfMJWjZadkVHgYLPvsArj85BsKrbUoEc2gRokij1ga1FBU96RhZnIhtRmOrf3RMPZpM
+         hxA8Ev2Z/xH7gsH+DrzTHYSQHPPj90hx+NVzXa9wqA9Pa6vpo2gv4bIHOUnZcn6XODo0
+         8YJw==
+X-Gm-Message-State: AOAM531BsRycVdnFHEXEzaX1W4cC5YHEx8PDGVh+TtYEnjJiD0p8dCv9
+        5PjkDnAs6xJDHfMtMEpTZeuVpDCtiAsRwAbki+o=
+X-Google-Smtp-Source: ABdhPJymHtG2UL8qr+SXl+0VKwKjjvxhxPOxDqG7ZGrefDQ+W0Bg/BeS140OYJWVnY4w2zxwZNKvFgq+a2cRhKu/H/A=
+X-Received: by 2002:a17:90a:dc81:: with SMTP id j1mr21840725pjv.115.1620051143214;
+ Mon, 03 May 2021 07:12:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210503121244.25232-1-david@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: y7FU50Z_5Kb0SPYvsIF9jEmU3OOwOqh6
-X-Proofpoint-ORIG-GUID: o-dmBm2XUShU1qMYE1TqFsMaXuZnhvzR
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-03_10:2021-05-03,2021-05-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 adultscore=0 lowpriorityscore=0 mlxscore=0 bulkscore=0
- malwarescore=0 clxscore=1015 mlxlogscore=999 suspectscore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2105030096
+References: <1618976938-20834-1-git-send-email-dillon.minfei@gmail.com>
+ <1618976938-20834-5-git-send-email-dillon.minfei@gmail.com> <CA+V-a8sBAW2k8zKk3ZLgAh02SxyEmLSt=a1Z5b1perBOgpmysQ@mail.gmail.com>
+In-Reply-To: <CA+V-a8sBAW2k8zKk3ZLgAh02SxyEmLSt=a1Z5b1perBOgpmysQ@mail.gmail.com>
+From:   dillon min <dillon.minfei@gmail.com>
+Date:   Mon, 3 May 2021 22:11:47 +0800
+Message-ID: <CAL9mu0LJ1txew9iL89YchmXyx78oecAUhcJ-U14NsWgehF2SQw@mail.gmail.com>
+Subject: Re: [PATCH v4 4/4] media: i2c: ov2659: Use clk_{prepare_enable,disable_unprepare}()
+ to set xvclk on/off
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc:     Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        leoyang.li@nxp.com, Arnd Bergmann <arnd@arndb.de>,
+        Olof Johansson <olof@lixom.net>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/3/21 2:12 PM, David Hildenbrand wrote:
-> The PoP documents:
-> 	134: The vector packed decimal facility is installed in the
-> 	     z/Architecture architectural mode. When bit 134 is
-> 	     one, bit 129 is also one.
-> 	135: The vector enhancements facility 1 is installed in
-> 	     the z/Architecture architectural mode. When bit 135
-> 	     is one, bit 129 is also one.
-> 
-> Looks like we confuse the vector enhancements facility 1 ("EXT") with the
-> Vector packed decimal facility ("BCD"). Let's fix the facility checks.
-> 
-> Detected while working on QEMU/tcg z14 support and only unlocking
-> the vector enhancements facility 1, but not the vector packed decimal
-> facility.
+Hi Prabhakar,
 
-Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
+Thanks for the reminder.
 
-> 
-> Fixes: 2583b848cad0 ("s390: report new vector facilities")
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> Cc: Sven Schnelle <svens@linux.ibm.com>
-> Cc: Alexander Egorenkov <egorenar@linux.ibm.com>
-> Cc: Niklas Schnelle <schnelle@linux.ibm.com>
-> Cc: Janosch Frank <frankja@linux.ibm.com>
-> Cc: linux-s390@vger.kernel.org
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  arch/s390/kernel/setup.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
-> index 72134f9f6ff5..5aab59ad5688 100644
-> --- a/arch/s390/kernel/setup.c
-> +++ b/arch/s390/kernel/setup.c
-> @@ -937,9 +937,9 @@ static int __init setup_hwcaps(void)
->  	if (MACHINE_HAS_VX) {
->  		elf_hwcap |= HWCAP_S390_VXRS;
->  		if (test_facility(134))
-> -			elf_hwcap |= HWCAP_S390_VXRS_EXT;
-> -		if (test_facility(135))
->  			elf_hwcap |= HWCAP_S390_VXRS_BCD;
-> +		if (test_facility(135))
-> +			elf_hwcap |= HWCAP_S390_VXRS_EXT;
->  		if (test_facility(148))
->  			elf_hwcap |= HWCAP_S390_VXRS_EXT2;
->  		if (test_facility(152))
-> 
+On Mon, May 3, 2021 at 8:24 PM Lad, Prabhakar
+<prabhakar.csengg@gmail.com> wrote:
+>
+> Hi Dillon,
+>
+> Thank you for the patch.
+>
+> On Wed, Apr 21, 2021 at 4:49 AM <dillon.minfei@gmail.com> wrote:
+> >
+> > From: dillon min <dillon.minfei@gmail.com>
+> >
+> > On some platform(imx6q), xvclk might not switch on in advance,
+> > also for power save purpose, xvclk should not be always on.
+> > so, add clk_prepare_enable(), clk_disable_unprepare() in driver
+> > side to set xvclk on/off at proper stage.
+> >
+> > Add following changes:
+> > - add 'struct clk *clk;' in 'struct ov2659 {}'
+> > - enable xvclk in ov2659_power_on()
+> > - disable xvclk in ov2659_power_off()
+> >
+> > Signed-off-by: dillon min <dillon.minfei@gmail.com>
+> s / dillon min /Dillon Min (unless you prefer in lower case) ?
 
+Thanks, I haven't noticed it yet, and will change to a higher case in
+the next submission.
+
+Best regards.
+Dillon
+>
+> > ---
+> > v4: no changes
+> >
+> >  drivers/media/i2c/ov2659.c | 24 ++++++++++++++++++------
+> >  1 file changed, 18 insertions(+), 6 deletions(-)
+> >
+> Acked-by: Lad Prabhakar <prabhakar.csengg@gmail.com>
+>
+> Cheers,
+> Prabhakar
+>
+> > diff --git a/drivers/media/i2c/ov2659.c b/drivers/media/i2c/ov2659.c
+> > index 42f64175a6df..fb78a1cedc03 100644
+> > --- a/drivers/media/i2c/ov2659.c
+> > +++ b/drivers/media/i2c/ov2659.c
+> > @@ -204,6 +204,7 @@ struct ov2659 {
+> >         struct i2c_client *client;
+> >         struct v4l2_ctrl_handler ctrls;
+> >         struct v4l2_ctrl *link_frequency;
+> > +       struct clk *clk;
+> >         const struct ov2659_framesize *frame_size;
+> >         struct sensor_register *format_ctrl_regs;
+> >         struct ov2659_pll_ctrl pll;
+> > @@ -1270,6 +1271,8 @@ static int ov2659_power_off(struct device *dev)
+> >
+> >         gpiod_set_value(ov2659->pwdn_gpio, 1);
+> >
+> > +       clk_disable_unprepare(ov2659->clk);
+> > +
+> >         return 0;
+> >  }
+> >
+> > @@ -1278,9 +1281,17 @@ static int ov2659_power_on(struct device *dev)
+> >         struct i2c_client *client = to_i2c_client(dev);
+> >         struct v4l2_subdev *sd = i2c_get_clientdata(client);
+> >         struct ov2659 *ov2659 = to_ov2659(sd);
+> > +       int ret;
+> >
+> >         dev_dbg(&client->dev, "%s:\n", __func__);
+> >
+> > +       ret = clk_prepare_enable(ov2659->clk);
+> > +       if (ret) {
+> > +               dev_err(&client->dev, "%s: failed to enable clock\n",
+> > +                       __func__);
+> > +               return ret;
+> > +       }
+> > +
+> >         gpiod_set_value(ov2659->pwdn_gpio, 0);
+> >
+> >         if (ov2659->resetb_gpio) {
+> > @@ -1425,7 +1436,6 @@ static int ov2659_probe(struct i2c_client *client)
+> >         const struct ov2659_platform_data *pdata = ov2659_get_pdata(client);
+> >         struct v4l2_subdev *sd;
+> >         struct ov2659 *ov2659;
+> > -       struct clk *clk;
+> >         int ret;
+> >
+> >         if (!pdata) {
+> > @@ -1440,11 +1450,11 @@ static int ov2659_probe(struct i2c_client *client)
+> >         ov2659->pdata = pdata;
+> >         ov2659->client = client;
+> >
+> > -       clk = devm_clk_get(&client->dev, "xvclk");
+> > -       if (IS_ERR(clk))
+> > -               return PTR_ERR(clk);
+> > +       ov2659->clk = devm_clk_get(&client->dev, "xvclk");
+> > +       if (IS_ERR(ov2659->clk))
+> > +               return PTR_ERR(ov2659->clk);
+> >
+> > -       ov2659->xvclk_frequency = clk_get_rate(clk);
+> > +       ov2659->xvclk_frequency = clk_get_rate(ov2659->clk);
+> >         if (ov2659->xvclk_frequency < 6000000 ||
+> >             ov2659->xvclk_frequency > 27000000)
+> >                 return -EINVAL;
+> > @@ -1506,7 +1516,9 @@ static int ov2659_probe(struct i2c_client *client)
+> >         ov2659->frame_size = &ov2659_framesizes[2];
+> >         ov2659->format_ctrl_regs = ov2659_formats[0].format_ctrl_regs;
+> >
+> > -       ov2659_power_on(&client->dev);
+> > +       ret = ov2659_power_on(&client->dev);
+> > +       if (ret < 0)
+> > +               goto error;
+> >
+> >         ret = ov2659_detect(sd);
+> >         if (ret < 0)
+> > --
+> > 2.7.4
+> >
