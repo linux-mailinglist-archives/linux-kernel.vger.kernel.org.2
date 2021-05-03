@@ -2,148 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 419EA3715F3
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8000E3715F2
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234273AbhECN2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 09:28:18 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:60420 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234257AbhECN2P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S234258AbhECN2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 3 May 2021 09:28:15 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 143DOAsx072599;
-        Mon, 3 May 2021 13:27:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=C2VRdJwUili4pA13Xs4Ry8oGKa7QsPKsv0FwRng9RZo=;
- b=y9Yqid3spiOL6KfuIwAdLKz+mRrmI/enwBalnNbnGzUeE2b7/beJKUcO6Yy8I7/E6pzq
- 8RV2A5DZqqpTpTk1Fi6HSZPdsjVJLIPG7bE51AsbdeWR8rIfQRWRSjHKTq049dh8p4+3
- Y+mc4aHlxCQXp/Zc3c3hKGJ6mCgomeln4wCJdzEb4Yv6afU1VE1ll9/FGJbT0S5GRilV
- nINSQyo4dgLWuGFh+qrFzy3IRnmKQVH+LVy/jg1Sxwgh+/xHXrFks92iH/5YaHtWsmqM
- YTD24hxxySv2KAVbfJ3UtZod1SzxERRKRyet/RiJ33DRpVJQcR/mzIt92azuzUjD2cLG 4g== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 388xxmuk46-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 May 2021 13:27:14 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 143DPc0h185238;
-        Mon, 3 May 2021 13:27:14 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 388w1cn2m1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 May 2021 13:27:14 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 143DRDdQ190495;
-        Mon, 3 May 2021 13:27:13 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 388w1cn2kf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 May 2021 13:27:13 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 143DRBN9022832;
-        Mon, 3 May 2021 13:27:12 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 03 May 2021 06:27:11 -0700
-Date:   Mon, 3 May 2021 16:27:03 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org, Vivek Goyal <vgoyal@redhat.com>
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Miklos Szeredi <mszeredi@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Liu Bo <bo.liu@linux.alibaba.com>,
-        Peng Tao <tao.peng@linux.alibaba.com>
-Subject: [kbuild] fs/fuse/dax.c:113 fuse_setup_one_mapping() warn: should
- 'start_idx << 21' be a 64 bit type?
-Message-ID: <202105032112.SJqOaXpO-lkp@intel.com>
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46332 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234115AbhECN2L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 09:28:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620048437;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QL45cC47deUfLwVC3MoPNpYWRQ8R9TGyabbyhDiCTsY=;
+        b=UXrzLpYvmYVtKlXApfvfpKiUdoXgU4hBeEf8AB9W0rwx0X4jv5B7ZkSoPNBsPiIlaw7IfS
+        B09n7+VrU7tNMCenDB0JRKBvzoES+A78SZG74U5XW6CRXKYAKd0/NAVPiUU4atN6MpSTzR
+        Xmb0/dj1rABBHgnthGpwnrS01Vb7GeE=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-187-M2fTFR6mPL2z9NmgDGJyMQ-1; Mon, 03 May 2021 09:27:15 -0400
+X-MC-Unique: M2fTFR6mPL2z9NmgDGJyMQ-1
+Received: by mail-qv1-f72.google.com with SMTP id h12-20020a0cf44c0000b02901c0e9c3e1d0so4876437qvm.4
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 06:27:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=QL45cC47deUfLwVC3MoPNpYWRQ8R9TGyabbyhDiCTsY=;
+        b=e/shuNW4rJXCMtsouURSZMjSDsz03tR59bK0rEoHBQ4dqmbDQ7DmuSz+HVl7+T8vnD
+         4OgsijYcJDfDbs3SfcrYdQmtzz8XqYzmv3GL+UzsXDSkDVF0h6PsPhHmBA3I4Y5mtbTL
+         UT/pwcn72Om/z0bvEpU2aEz56QwD5nbVirZixe9xYqtVXJjeX0gD4rL0o1s1fgvsKTkf
+         yUeyYI90JdDyXuMGDnMIgUmAXNoIYtku1zZNeXGs/liB6btaaZHvxVGrYKfFG5Yn4OCW
+         vvlS0RsEyfzYGLFlgpguM2fjYGEgRpbp9b8U3Nyat+0ttEyu3kfFYIjIYNc5W0RYzR/u
+         XBxQ==
+X-Gm-Message-State: AOAM532LKmSn9T+BBNe9QBE3w0IegmWTuB6CLdO7Lr7FStMWwzBvLM1V
+        i8rtutIauCmW8gCp2QBsIZTZn2FxiD0bq4vCyathOde5SwC3IkOTi6rKbRuoAlnekgIPWDV2BvG
+        MJtis8+yWANWDNXe09rqW3FuC
+X-Received: by 2002:a0c:c447:: with SMTP id t7mr15873532qvi.60.1620048434986;
+        Mon, 03 May 2021 06:27:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy4KiYJDCGMSDAPav4l7m/bk3CIkorzrCaBbKKKKEyBYHlpD41oGhfDoWhjs7+DRNnrwGT+tg==
+X-Received: by 2002:a0c:c447:: with SMTP id t7mr15873510qvi.60.1620048434764;
+        Mon, 03 May 2021 06:27:14 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id c23sm8715523qtm.46.2021.05.03.06.27.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 06:27:14 -0700 (PDT)
+Subject: Re: [PATCH V5 XRT Alveo 06/20] fpga: xrt: char dev node helper
+ functions
+To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
+Cc:     linux-fpga@vger.kernel.org, maxz@xilinx.com,
+        sonal.santan@xilinx.com, yliu@xilinx.com, michal.simek@xilinx.com,
+        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
+        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
+References: <20210427205431.23896-1-lizhi.hou@xilinx.com>
+ <20210427205431.23896-7-lizhi.hou@xilinx.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <5b4f95f0-9627-e584-13fb-338291d5c4e8@redhat.com>
+Date:   Mon, 3 May 2021 06:27:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Message-ID-Hash: FNR6ML4TBNUNAESIHAKIWUVT7MQWTO45
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: ng8Ktzev-Zmj76EXHZei_5slKJ0hIPzj
-X-Proofpoint-ORIG-GUID: ng8Ktzev-Zmj76EXHZei_5slKJ0hIPzj
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9973 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0
- suspectscore=0 phishscore=0 clxscore=1011 lowpriorityscore=0
- mlxlogscore=999 priorityscore=1501 impostorscore=0 mlxscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2105030091
+In-Reply-To: <20210427205431.23896-7-lizhi.hou@xilinx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
-head:   9ccce092fc64d19504fa54de4fd659e279cc92e7
-commit: c2d0ad00d948de73c78f05d2b3e5bdfa605035cc virtiofs: implement dax read/write operations
-config: i386-randconfig-m031-20210503 (attached as .config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+On 4/27/21 1:54 PM, Lizhi Hou wrote:
+> Helper functions for char device node creation / removal for xrt
+> drivers. This is part of xrt driver infrastructure.
+>
+> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
+> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
+> Signed-off-by: Lizhi Hou <lizhi.hou@xilinx.com>
+> ---
+>   drivers/fpga/xrt/lib/cdev.c | 210 ++++++++++++++++++++++++++++++++++++
+>   1 file changed, 210 insertions(+)
+>   create mode 100644 drivers/fpga/xrt/lib/cdev.c
+>
+> diff --git a/drivers/fpga/xrt/lib/cdev.c b/drivers/fpga/xrt/lib/cdev.c
+> new file mode 100644
+> index 000000000000..4edd2c1d459b
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/lib/cdev.c
+> @@ -0,0 +1,210 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Xilinx Alveo FPGA device node helper functions.
+> + *
+> + * Copyright (C) 2020-2021 Xilinx, Inc.
+> + *
+> + * Authors:
+> + *	Cheng Zhen <maxz@xilinx.com>
+> + */
+> +
+> +#include "xleaf.h"
+> +
+> +extern struct class *xrt_class;
+> +
+> +#define XRT_CDEV_DIR		"xrt"
+ok
+> +#define INODE2PDATA(inode)	\
+> +	container_of((inode)->i_cdev, struct xrt_subdev_platdata, xsp_cdev)
+> +#define INODE2PDEV(inode)	\
+> +	to_xrt_dev(kobj_to_dev((inode)->i_cdev->kobj.parent))
+> +#define CDEV_NAME(sysdev)	(strchr((sysdev)->kobj.name, '!') + 1)
+> +
+> +/* Allow it to be accessed from cdev. */
+> +static void xleaf_devnode_allowed(struct xrt_device *xdev)
+> +{
+> +	struct xrt_subdev_platdata *pdata = DEV_PDATA(xdev);
+> +
+> +	/* Allow new opens. */
+> +	mutex_lock(&pdata->xsp_devnode_lock);
+> +	pdata->xsp_devnode_online = true;
+> +	mutex_unlock(&pdata->xsp_devnode_lock);
+> +}
+> +
+> +/* Turn off access from cdev and wait for all existing user to go away. */
+> +static void xleaf_devnode_disallowed(struct xrt_device *xdev)
+> +{
+> +	struct xrt_subdev_platdata *pdata = DEV_PDATA(xdev);
+> +
+> +	mutex_lock(&pdata->xsp_devnode_lock);
+> +
+> +	/* Prevent new opens. */
+> +	pdata->xsp_devnode_online = false;
+> +	/* Wait for existing user to close. */
+> +	while (pdata->xsp_devnode_ref) {
+> +		mutex_unlock(&pdata->xsp_devnode_lock);
+> +		wait_for_completion(&pdata->xsp_devnode_comp);
+> +		mutex_lock(&pdata->xsp_devnode_lock);
+> +	}
+> +
+> +	mutex_unlock(&pdata->xsp_devnode_lock);
+> +}
+> +
+> +static struct xrt_device *
+> +__xleaf_devnode_open(struct inode *inode, bool excl)
+> +{
+> +	struct xrt_subdev_platdata *pdata = INODE2PDATA(inode);
+> +	struct xrt_device *xdev = INODE2PDEV(inode);
+> +	bool opened = false;
+> +
+> +	mutex_lock(&pdata->xsp_devnode_lock);
+> +
+> +	if (pdata->xsp_devnode_online) {
+> +		if (excl && pdata->xsp_devnode_ref) {
+> +			xrt_err(xdev, "%s has already been opened exclusively",
+> +				CDEV_NAME(pdata->xsp_sysdev));
+> +		} else if (!excl && pdata->xsp_devnode_excl) {
+> +			xrt_err(xdev, "%s has been opened exclusively",
+> +				CDEV_NAME(pdata->xsp_sysdev));
+> +		} else {
+> +			pdata->xsp_devnode_ref++;
+> +			pdata->xsp_devnode_excl = excl;
+> +			opened = true;
+> +			xrt_info(xdev, "opened %s, ref=%d",
+> +				 CDEV_NAME(pdata->xsp_sysdev),
+> +				 pdata->xsp_devnode_ref);
+> +		}
+> +	} else {
+> +		xrt_err(xdev, "%s is offline", CDEV_NAME(pdata->xsp_sysdev));
+> +	}
+> +
+> +	mutex_unlock(&pdata->xsp_devnode_lock);
+> +
+> +	xdev = opened ? xdev : NULL;
+> +	return xdev;
+> +}
+> +
+> +struct xrt_device *
+> +xleaf_devnode_open_excl(struct inode *inode)
+> +{
+> +	return __xleaf_devnode_open(inode, true);
+ok
+> +}
+> +
+> +struct xrt_device *
+> +xleaf_devnode_open(struct inode *inode)
+> +{
+> +	return __xleaf_devnode_open(inode, false);
+> +}
+> +EXPORT_SYMBOL_GPL(xleaf_devnode_open);
+ok
+> +
+> +void xleaf_devnode_close(struct inode *inode)
+> +{
+> +	struct xrt_subdev_platdata *pdata = INODE2PDATA(inode);
+> +	struct xrt_device *xdev = INODE2PDEV(inode);
+> +	bool notify = false;
+> +
+> +	mutex_lock(&pdata->xsp_devnode_lock);
+> +
+> +	WARN_ON(pdata->xsp_devnode_ref == 0);
+> +	pdata->xsp_devnode_ref--;
+> +	if (pdata->xsp_devnode_ref == 0) {
+> +		pdata->xsp_devnode_excl = false;
+> +		notify = true;
+> +	}
+> +	if (notify)
+> +		xrt_info(xdev, "closed %s", CDEV_NAME(pdata->xsp_sysdev));
+ok
+> +	else
+> +		xrt_info(xdev, "closed %s, notifying waiter", CDEV_NAME(pdata->xsp_sysdev));
+> +
+> +	mutex_unlock(&pdata->xsp_devnode_lock);
+> +
+> +	if (notify)
+> +		complete(&pdata->xsp_devnode_comp);
+> +}
+> +EXPORT_SYMBOL_GPL(xleaf_devnode_close);
+> +
+> +static inline enum xrt_dev_file_mode
+> +devnode_mode(struct xrt_device *xdev)
+> +{
+> +	return DEV_FILE_OPS(xdev)->xsf_mode;
+> +}
+> +
+> +int xleaf_devnode_create(struct xrt_device *xdev, const char *file_name,
+> +			 const char *inst_name)
+> +{
+> +	struct xrt_subdev_platdata *pdata = DEV_PDATA(xdev);
+> +	struct xrt_dev_file_ops *fops = DEV_FILE_OPS(xdev);
+> +	struct cdev *cdevp;
+> +	struct device *sysdev;
+> +	int ret = 0;
+> +	char fname[256];
+> +
+> +	mutex_init(&pdata->xsp_devnode_lock);
+> +	init_completion(&pdata->xsp_devnode_comp);
+> +
+> +	cdevp = &DEV_PDATA(xdev)->xsp_cdev;
+> +	cdev_init(cdevp, &fops->xsf_ops);
+> +	cdevp->owner = fops->xsf_ops.owner;
+> +	cdevp->dev = MKDEV(MAJOR(fops->xsf_dev_t), xdev->instance);
+> +
+> +	/*
+> +	 * Set xdev as parent of cdev so that when xdev (and its platform
+> +	 * data) will not be freed when cdev is not freed.
+> +	 */
+> +	cdev_set_parent(cdevp, &DEV(xdev)->kobj);
+> +
+> +	ret = cdev_add(cdevp, cdevp->dev, 1);
+> +	if (ret) {
+> +		xrt_err(xdev, "failed to add cdev: %d", ret);
+> +		goto failed;
+> +	}
+> +	if (!file_name)
+> +		file_name = xdev->name;
+> +	if (!inst_name) {
+> +		if (devnode_mode(xdev) == XRT_DEV_FILE_MULTI_INST) {
+> +			snprintf(fname, sizeof(fname), "%s/%s/%s.%u",
+> +				 XRT_CDEV_DIR, DEV_PDATA(xdev)->xsp_root_name,
+> +				 file_name, xdev->instance);
+> +		} else {
+> +			snprintf(fname, sizeof(fname), "%s/%s/%s",
+> +				 XRT_CDEV_DIR, DEV_PDATA(xdev)->xsp_root_name,
+> +				 file_name);
+> +		}
+> +	} else {
+> +		snprintf(fname, sizeof(fname), "%s/%s/%s.%s", XRT_CDEV_DIR,
+> +			 DEV_PDATA(xdev)->xsp_root_name, file_name, inst_name);
+> +	}
+> +	sysdev = device_create(xrt_class, NULL, cdevp->dev, NULL, "%s", fname);
+> +	if (IS_ERR(sysdev)) {
+> +		ret = PTR_ERR(sysdev);
+> +		xrt_err(xdev, "failed to create device node: %d", ret);
+> +		goto failed_cdev_add;
+> +	}
+> +	pdata->xsp_sysdev = sysdev;
+> +
+> +	xleaf_devnode_allowed(xdev);
+> +
+> +	xrt_info(xdev, "created (%d, %d): /dev/%s",
+> +		 MAJOR(cdevp->dev), xdev->instance, fname);
+> +	return 0;
+> +
+> +failed_cdev_add:
+> +	cdev_del(cdevp);
+> +failed:
+> +	cdevp->owner = NULL;
+> +	return ret;
+> +}
+> +
+> +void xleaf_devnode_destroy(struct xrt_device *xdev)
+> +{
+> +	struct xrt_subdev_platdata *pdata = DEV_PDATA(xdev);
+> +	struct cdev *cdevp = &pdata->xsp_cdev;
+> +	dev_t dev = cdevp->dev;
+> +
+> +	xleaf_devnode_disallowed(xdev);
 
-New smatch warnings:
-fs/fuse/dax.c:113 fuse_setup_one_mapping() warn: should 'start_idx << 21' be a 64 bit type?
+ok
 
-Old smatch warnings:
-fs/fuse/dax.c:197 dmap_removemapping_list() error: uninitialized symbol 'ret'.
+Reviewed-by: Tom Rix <trix@redhat.com>
 
-vim +113 fs/fuse/dax.c
-
-c2d0ad00d948de Vivek Goyal 2020-08-19  105  static int fuse_setup_one_mapping(struct inode *inode, unsigned long start_idx,
-c2d0ad00d948de Vivek Goyal 2020-08-19  106  				  struct fuse_dax_mapping *dmap, bool writable,
-c2d0ad00d948de Vivek Goyal 2020-08-19  107  				  bool upgrade)
-c2d0ad00d948de Vivek Goyal 2020-08-19  108  {
-c2d0ad00d948de Vivek Goyal 2020-08-19  109  	struct fuse_conn *fc = get_fuse_conn(inode);
-c2d0ad00d948de Vivek Goyal 2020-08-19  110  	struct fuse_conn_dax *fcd = fc->dax;
-c2d0ad00d948de Vivek Goyal 2020-08-19  111  	struct fuse_inode *fi = get_fuse_inode(inode);
-c2d0ad00d948de Vivek Goyal 2020-08-19  112  	struct fuse_setupmapping_in inarg;
-c2d0ad00d948de Vivek Goyal 2020-08-19 @113  	loff_t offset = start_idx << FUSE_DAX_SHIFT;
-
-This is only an issue on 32 bit systems but "offset" is a 64bit and
-"start_idx" is ulong.
-
-c2d0ad00d948de Vivek Goyal 2020-08-19  114  	FUSE_ARGS(args);
-c2d0ad00d948de Vivek Goyal 2020-08-19  115  	ssize_t err;
-c2d0ad00d948de Vivek Goyal 2020-08-19  116  
-c2d0ad00d948de Vivek Goyal 2020-08-19  117  	WARN_ON(fcd->nr_free_ranges < 0);
-c2d0ad00d948de Vivek Goyal 2020-08-19  118  
-c2d0ad00d948de Vivek Goyal 2020-08-19  119  	/* Ask fuse daemon to setup mapping */
-c2d0ad00d948de Vivek Goyal 2020-08-19  120  	memset(&inarg, 0, sizeof(inarg));
-c2d0ad00d948de Vivek Goyal 2020-08-19  121  	inarg.foffset = offset;
-c2d0ad00d948de Vivek Goyal 2020-08-19  122  	inarg.fh = -1;
-c2d0ad00d948de Vivek Goyal 2020-08-19  123  	inarg.moffset = dmap->window_offset;
-c2d0ad00d948de Vivek Goyal 2020-08-19  124  	inarg.len = FUSE_DAX_SZ;
-c2d0ad00d948de Vivek Goyal 2020-08-19  125  	inarg.flags |= FUSE_SETUPMAPPING_FLAG_READ;
-c2d0ad00d948de Vivek Goyal 2020-08-19  126  	if (writable)
-c2d0ad00d948de Vivek Goyal 2020-08-19  127  		inarg.flags |= FUSE_SETUPMAPPING_FLAG_WRITE;
-c2d0ad00d948de Vivek Goyal 2020-08-19  128  	args.opcode = FUSE_SETUPMAPPING;
-c2d0ad00d948de Vivek Goyal 2020-08-19  129  	args.nodeid = fi->nodeid;
-c2d0ad00d948de Vivek Goyal 2020-08-19  130  	args.in_numargs = 1;
-c2d0ad00d948de Vivek Goyal 2020-08-19  131  	args.in_args[0].size = sizeof(inarg);
-c2d0ad00d948de Vivek Goyal 2020-08-19  132  	args.in_args[0].value = &inarg;
-c2d0ad00d948de Vivek Goyal 2020-08-19  133  	err = fuse_simple_request(fc, &args);
-c2d0ad00d948de Vivek Goyal 2020-08-19  134  	if (err < 0)
-c2d0ad00d948de Vivek Goyal 2020-08-19  135  		return err;
-c2d0ad00d948de Vivek Goyal 2020-08-19  136  	dmap->writable = writable;
-c2d0ad00d948de Vivek Goyal 2020-08-19  137  	if (!upgrade) {
-c2d0ad00d948de Vivek Goyal 2020-08-19  138  		dmap->itn.start = dmap->itn.last = start_idx;
-c2d0ad00d948de Vivek Goyal 2020-08-19  139  		/* Protected by fi->dax->sem */
-c2d0ad00d948de Vivek Goyal 2020-08-19  140  		interval_tree_insert(&dmap->itn, &fi->dax->tree);
-c2d0ad00d948de Vivek Goyal 2020-08-19  141  		fi->dax->nr++;
-c2d0ad00d948de Vivek Goyal 2020-08-19  142  	}
-c2d0ad00d948de Vivek Goyal 2020-08-19  143  	return 0;
-c2d0ad00d948de Vivek Goyal 2020-08-19  144  }
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org 
-
-_______________________________________________
-kbuild mailing list -- kbuild@lists.01.org
-To unsubscribe send an email to kbuild-leave@lists.01.org
+> +
+> +	xrt_info(xdev, "removed (%d, %d): /dev/%s/%s", MAJOR(dev), MINOR(dev),
+> +		 XRT_CDEV_DIR, CDEV_NAME(pdata->xsp_sysdev));
+> +	device_destroy(xrt_class, cdevp->dev);
+> +	pdata->xsp_sysdev = NULL;
+> +	cdev_del(cdevp);
+> +}
 
