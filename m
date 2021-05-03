@@ -2,82 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC0C0371226
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 09:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87AA37122A
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 09:55:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232929AbhECHxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 03:53:06 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:38330 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbhECHxF (ORCPT
+        id S232959AbhECH4b convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 3 May 2021 03:56:31 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2984 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229817AbhECH4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 03:53:05 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1437jMNF018781;
-        Mon, 3 May 2021 07:52:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=zBKsoyvZW42pljgNs2qIOF6TztDTbsqax0iQzIQWQUA=;
- b=yUqgnws0j4V4SB8rzdQo3YX4/yDHcZkhc6lTKW2dLQiT4EwSZOrMucjwJXHlKzsyYOoA
- r8y5OvXgq6HcAlFidsg0oqkOO46l6gf1olWN7PakQKEuPq+mgMkZNyWGZxpovvUr6U+D
- amaxd2CdCm38i6Laj6UFJLcM2ZltBi0nexBgZBPDWXrqPfgjbbCBMeFL34hiP50jBpeN
- OBASlnDXRt4bErOqDCIMSiuw4QI3NgjRUtoooQVvYxdLo6iZ1Dqg2MQo5WTifCRRS3YN
- qWzlTCunspvqwASazpx3zrOjk5L7sl/m5uRpLU3zw9O+SOzT3/qNVIqCEEOA0qbjrjSG /w== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 388vgbjv5m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 May 2021 07:52:10 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1437kAQk177548;
-        Mon, 3 May 2021 07:52:09 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 388xt1yrb6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 May 2021 07:52:09 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1437q9BX001907;
-        Mon, 3 May 2021 07:52:09 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 388xt1yrar-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 May 2021 07:52:09 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 1437q7rc014521;
-        Mon, 3 May 2021 07:52:08 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 03 May 2021 00:52:07 -0700
-Date:   Mon, 3 May 2021 10:52:01 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 00/43] staging: rtl8723bs: clean up driver from
- private debug facilities
-Message-ID: <20210503075201.GN1981@kadam>
-References: <cover.1619794331.git.fabioaiuto83@gmail.com>
+        Mon, 3 May 2021 03:56:25 -0400
+Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FYZr86b8mz6wlK1;
+        Mon,  3 May 2021 15:49:44 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 3 May 2021 09:55:30 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
+ Mon, 3 May 2021 09:55:30 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        "mjg59@google.com" <mjg59@google.com>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v5 06/12] evm: Ignore INTEGRITY_NOLABEL/INTEGRITY_NOXATTRS
+ if conditions are safe
+Thread-Topic: [PATCH v5 06/12] evm: Ignore
+ INTEGRITY_NOLABEL/INTEGRITY_NOXATTRS if conditions are safe
+Thread-Index: AQHXK5xdbQY13c/E0Ea5lrgi3mZG3arQ6VCAgAChtnA=
+Date:   Mon, 3 May 2021 07:55:29 +0000
+Message-ID: <c12f18094cc0479faa3f0f152b4964de@huawei.com>
+References: <20210407105252.30721-1-roberto.sassu@huawei.com>
+         <20210407105252.30721-7-roberto.sassu@huawei.com>
+ <b8790b57e289980d4fe1133d15203ce016d2319d.camel@linux.ibm.com>
+In-Reply-To: <b8790b57e289980d4fe1133d15203ce016d2319d.camel@linux.ibm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.221.98.153]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1619794331.git.fabioaiuto83@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: 1cXt8HEsCmoFpCR9e9O7Y0XmoAVxWH-b
-X-Proofpoint-ORIG-GUID: 1cXt8HEsCmoFpCR9e9O7Y0XmoAVxWH-b
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9972 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 mlxlogscore=999
- suspectscore=0 priorityscore=1501 phishscore=0 malwarescore=0
- impostorscore=0 clxscore=1015 bulkscore=0 spamscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2105030051
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good.
+> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> Sent: Monday, May 3, 2021 2:13 AM
+> Hi Roberto,
+> 
+> On Wed, 2021-04-07 at 12:52 +0200, Roberto Sassu wrote:
+> > When a file is being created, LSMs can set the initial label with the
+> > inode_init_security hook. If no HMAC key is loaded, the new file will have
+> > LSM xattrs but not the HMAC. It is also possible that the file remains
+> > without protected xattrs after creation if no active LSM provided it.
+> >
+> > Unfortunately, EVM will deny any further metadata operation on new files,
+> > as evm_protect_xattr() will always return the INTEGRITY_NOLABEL error, or
+> > INTEGRITY_NOXATTRS if no protected xattrs exist. This would limit the
+> > usability of EVM when only a public key is loaded, as commands such as cp
+> > or tar with the option to preserve xattrs won't work.
+> >
+> > This patch ignores these errors when they won't be an issue, if no HMAC
+> key
+> > is loaded and cannot be loaded in the future (which can be enforced by
+> > setting the EVM_SETUP_COMPLETE initialization flag).
+> >
+> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > ---
+> >  security/integrity/evm/evm_main.c | 23 ++++++++++++++++++++++-
+> >  1 file changed, 22 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/security/integrity/evm/evm_main.c
+> b/security/integrity/evm/evm_main.c
+> > index 998818283fda..6556e8c22da9 100644
+> > --- a/security/integrity/evm/evm_main.c
+> > +++ b/security/integrity/evm/evm_main.c
+> > @@ -90,6 +90,24 @@ static bool evm_key_loaded(void)
+> >  	return (bool)(evm_initialized & EVM_KEY_MASK);
+> >  }
+> >
+> > +/*
+> > + * Ignoring INTEGRITY_NOLABEL/INTEGRITY_NOXATTRS is safe if no HMAC
+> key
+> > + * is loaded and the EVM_SETUP_COMPLETE initialization flag is set.
+> > + */
+> > +static bool evm_ignore_error_safe(enum integrity_status evm_status)
+> > +{
+> > +	if (evm_initialized & EVM_INIT_HMAC)
+> > +		return false;
+> > +
+> > +	if (!(evm_initialized & EVM_SETUP_COMPLETE))
+> > +		return false;
+> > +
+> > +	if (evm_status != INTEGRITY_NOLABEL && evm_status !=
+> INTEGRITY_NOXATTRS)
+> > +		return false;
+> > +
+> > +	return true;
+> > +}
+> > +
+> >  static int evm_find_protected_xattrs(struct dentry *dentry)
+> >  {
+> >  	struct inode *inode = d_backing_inode(dentry);
+> > @@ -354,6 +372,8 @@ static int evm_protect_xattr(struct dentry *dentry,
+> const char *xattr_name,
+> >  				    -EPERM, 0);
+> >  	}
+> >  out:
+> > +	if (evm_ignore_error_safe(evm_status))
+> > +		return 0;
+> 
+> I agree with the concept, but the function name doesn't provide enough
+> context.  Perhaps defining a function more along the lines of
+> "evm_hmac_disabled()" would be more appropriate and at the same time
+> self documenting.
 
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Since the function checks if the passed error can be ignored,
+would evm_ignore_error_hmac_disabled() also be ok?
 
-regards,
-dan carpenter
+> >  	if (evm_status != INTEGRITY_PASS)
+> >  		integrity_audit_msg(AUDIT_INTEGRITY_METADATA,
+> d_backing_inode(dentry),
+> >  				    dentry->d_name.name,
+> "appraise_metadata",
+> > @@ -515,7 +535,8 @@ int evm_inode_setattr(struct dentry *dentry, struct
+> iattr *attr)
+> >  		return 0;
+> >  	evm_status = evm_verify_current_integrity(dentry);
+> >  	if ((evm_status == INTEGRITY_PASS) ||
+> > -	    (evm_status == INTEGRITY_NOXATTRS))
+> > +	    (evm_status == INTEGRITY_NOXATTRS) ||
+> > +	    (evm_ignore_error_safe(evm_status)))
+> 
+> It would also remove the INTEGRITY_NOXATTRS test duplication here.
+
+Ok.
+
+Thanks
+
+Roberto
+
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Li Jian, Shi Yanli
+
+> thanks,
+> 
+> Mimi
+> 
+> >  		return 0;
+> >  	integrity_audit_msg(AUDIT_INTEGRITY_METADATA,
+> d_backing_inode(dentry),
+> >  			    dentry->d_name.name, "appraise_metadata",
 
