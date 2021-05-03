@@ -2,109 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 055C6371F17
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 20:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE284371F1B
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 20:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbhECSCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 14:02:39 -0400
-Received: from alln-iport-1.cisco.com ([173.37.142.88]:30479 "EHLO
-        alln-iport-1.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230113AbhECSCh (ORCPT
+        id S231476AbhECSEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 14:04:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229594AbhECSED (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 14:02:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=921; q=dns/txt; s=iport;
-  t=1620064904; x=1621274504;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=11OIbKeLQbrAmtYBHBv7IUPUzo44ctCWght7Qdc/mM4=;
-  b=MWs8TCqfqER+RKcP50HnhV3kmuFELomjw3RKZwij4KZ4S+QtL55F0c1B
-   QpOYwpy3+is8ZJ1myhiI5RreLcwKT2IlLkxJDYeKNBd2HAib9pz1fIUPF
-   X55yD3ODjMIrsolXyS5df1wrWBUYn2E4cyg4V7RwTwTFJOxRIPFPpvnRm
-   A=;
-X-IPAS-Result: =?us-ascii?q?A0ABAABeOZBgmIENJK1aGQEBAQEBAQEBAQEBAQEBAQEBA?=
- =?us-ascii?q?RIBAQEBAQEBAQEBAQFAgUMEAQEBAQELAYMhVgE5MYxoiVGQG4pkgXwLAQEBD?=
- =?us-ascii?q?QEBKAwEAQGBFgGCdT8DAgKBewIlNAkOAgQBAQEDAgMBAQEBAQUBAQECAQYEF?=
- =?us-ascii?q?AEBAQEBAQEBaIVQDYZEAQEBAwEyAUYFCwsYLjwbBoMEAYJmIQ+oEniBNIEBg?=
- =?us-ascii?q?1xBhA6BPgYUD4EXAY1fJxyBSUKENz6CYAECAYdWBIFlghoCgUySRI03nD6DG?=
- =?us-ascii?q?oEom3Y3EKUSLbhiAgQGBQIWgVQ4gVszGggbFYMkUBkOjjiIa4VpIQMvAjYCB?=
- =?us-ascii?q?goBAQMJjQ8BAQ?=
-IronPort-HdrOrdr: A9a23:yK4s+KrHpEuia7oOGiAk4nMaV5tRL9V00zAX/kB9WHVpW+aT/v
- rAoN0w0xjohDENHFwhg8mHIqmcQXXanKQFhLU5F7GkQQXgpS+UN4lk94Tv2HnNHCf5++5b28
- 5bAsxDIff3CkV3itu/3RmgH78bsbu62Y2hmOu29R1QZC5wbaUI1WpEIyadVnZ7XQxXQac+fa
- DsgfZvgxqFVTApYt+gBn8DNtKzxOHjsJ79exYJC1oGxWC17A+A07LxHxiG0hp2aVomqosKym
- TLnxf04a+uqZiAqiP07XPZ7JhdhbLapOdrOcrksKQoAwSpohq0YsBbV6eaujcurKWU9E8yi9
- XXuX4bTqJOwkKUWH2pqh3w3ASl9zAi5xbZuCelqEqmh9DlTzQnDMcEv6ZlS1/y7kotu8wU6t
- Mz416k
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="5.82,270,1613433600"; 
-   d="scan'208";a="686368801"
-Received: from alln-core-9.cisco.com ([173.36.13.129])
-  by alln-iport-1.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 03 May 2021 18:01:44 +0000
-Received: from zorba ([10.24.21.191])
-        by alln-core-9.cisco.com (8.15.2/8.15.2) with ESMTPS id 143I1fkQ017898
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Mon, 3 May 2021 18:01:43 GMT
-Date:   Mon, 3 May 2021 11:01:41 -0700
-From:   Daniel Walker <danielwa@cisco.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        xe-linux-external@cisco.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] lib: early_string: allow early usage of some string
- functions
-Message-ID: <20210503180141.GO3844417@zorba>
-References: <20210430042217.1198052-1-danielwa@cisco.com>
- <dc26a67e-dba0-1b8c-3718-3c75415c61f1@csgroup.eu>
- <1929b3a8-f882-c930-4b99-10c6a8f127c7@csgroup.eu>
- <e355ecc9-574a-dbcb-7864-5aa4974e1971@csgroup.eu>
+        Mon, 3 May 2021 14:04:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E33C06174A;
+        Mon,  3 May 2021 11:03:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+H0Hi3CVfZbTV4jOta7Vcr+f479yzjS5Q7k8m0i2cJI=; b=DlprNe8rI/W/NJfmwROlevasK5
+        kH33B6c49vJh6YAiPwSBiiK7NAWG9E+KP6iMmuQREZoxZ2WDX5kL44hFwNos0l5+v9Ori23xK9DFV
+        wnFcTUzojtoKj9wukLoGmTNCPXEJbARLXV4Yq+KcNEu2oxI+dsLR6vMtl8Vfzcz/t9dXPNbZK1f1c
+        dYSMqbADdMEccfHvvLE++YUw99CbxwJhZOFr77LE04E7GwwNG88U6CXdK6hT0twvrhSs73mj3lcqP
+        doPkW8NdO6HixUWEuJ+UrU5v4pzpjAjEPjhKoStfHz4GAMv5hCsEH1wTjzXkjSwU0ZXUoqtrF9rg5
+        4sC/g+fw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1ldctT-00FRdj-1X; Mon, 03 May 2021 18:02:18 +0000
+Date:   Mon, 3 May 2021 19:02:07 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     David Laight <David.Laight@aculab.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] eventfd: convert to using ->write_iter()
+Message-ID: <20210503180207.GD1847222@casper.infradead.org>
+References: <7b98e3c2-2d9f-002b-1da1-815d8522b594@kernel.dk>
+ <de316af8f88947fabd1422b04df8a66e@AcuMS.aculab.com>
+ <7caa3703-af14-2ff6-e409-77284da11e1f@kernel.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e355ecc9-574a-dbcb-7864-5aa4974e1971@csgroup.eu>
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 10.24.21.191, [10.24.21.191]
-X-Outbound-Node: alln-core-9.cisco.com
+In-Reply-To: <7caa3703-af14-2ff6-e409-77284da11e1f@kernel.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 01, 2021 at 09:31:47AM +0200, Christophe Leroy wrote:
-> 
-> > In fact, should be like in prom_init today:
+On Mon, May 03, 2021 at 11:57:08AM -0600, Jens Axboe wrote:
+> On 5/3/21 10:12 AM, David Laight wrote:
+> > From: Jens Axboe
+> >> Sent: 03 May 2021 15:58
+> >>
+> >> Had a report on writing to eventfd with io_uring is slower than it
+> >> should be, and it's the usual case of if a file type doesn't support
+> >> ->write_iter(), then io_uring cannot rely on IOCB_NOWAIT being honored
+> >> alongside O_NONBLOCK for whether or not this is a non-blocking write
+> >> attempt. That means io_uring will punt the operation to an io thread,
+> >> which will slow us down unnecessarily.
+> >>
+> >> Convert eventfd to using fops->write_iter() instead of fops->write().
 > > 
-> > #ifdef __EARLY_STRING_ENABLED
-> >      if (dsize >= count)
-> >          return count;
-> > #else
-> >      BUG_ON(dsize >= count);
-> > #endif
+> > Won't this have a measurable performance degradation on normal
+> > code that does write(event_fd, &one, 4);
 > 
-> Thinking about it once more, this BUG_ON() is overkill and should be
-> avoided, see https://www.kernel.org/doc/html/latest/process/deprecated.html
+> If ->write_iter() or ->read_iter() is much slower than the non-iov
+> versions, then I think we have generic issues that should be solved.
+
+We do!
+
+https://lore.kernel.org/linux-fsdevel/20210107151125.GB5270@casper.infradead.org/
+is one thread on it.  There have been others.
+
+> That should not be a consideration, since the non-iov ones are
+> legacy and should not be adopted in new code.
 > 
-> Therefore, something like the following would make it:
+> -- 
+> Jens Axboe
 > 
-> 	if (dsize >= count) {
-> 		WARN_ON(!__is_defined(__EARLY_STRING_ENABLED));
-> 
-> 		return count;
-> 	}
-
-I agree, it's overkill it stop the system for this condition.
-
-how about I do something more like this for my changes,
-
-
-> 	if (WARN_ON(dsize >= count && !__is_defined(__EARLY_STRING_ENABLED)))
-> 		return count;
-
-and for generic kernel,
-
-> 	if (WARN_ON(dsize >= count))
-> 		return count;
-
-
-
-Daniel
