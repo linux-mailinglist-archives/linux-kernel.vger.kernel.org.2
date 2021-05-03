@@ -2,112 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5B43716D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D2383716E1
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229701AbhECOoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 10:44:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbhECOow (ORCPT
+        id S229903AbhECOqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 10:46:05 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:43078 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229904AbhECOqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 10:44:52 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1691DC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 07:43:58 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id c21so3024532vso.11
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 07:43:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=wQ6urocz51UScmCHO8poeBgWuqhk1h+CLkFmUxG0yk4=;
-        b=jcRE2SIumPZqitI+RWYoCEFmFFhjHz8hMpASmibK7ZBukeSpvi/po/Z0lOi6lpBFZ6
-         am8nRlFW4dQCUYgGaZCbaL3rg7Zq6hZ7x8AY5Lqeu8mOG9uAp6EZpQYTUmdjIAvFA8IK
-         xSjQ/R96kd9Whuvy0MkGdccHw4lCb5m1vzUsJfLWZLBNj5g7n9Nqu5GQcRIT3bZ/+KVU
-         Kebu/VVlZWM6wXbtnHjU4CEKS+P2lALj76e5cR9e0G/B/0hfSz9/+MxefsbXIdPIFf4s
-         LaP1kmmJQNr19nzXHHk9BE+0EJLBWo2l4tpnLjxqthU6MxCdRg19sTnfmKA4ByN7vVaj
-         9QcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=wQ6urocz51UScmCHO8poeBgWuqhk1h+CLkFmUxG0yk4=;
-        b=iQK+Dw3/q3yubW9St8N5VUgAaEo3ja7BTDMbv/63R7QIeT/e9Lf1b25KWbmLbjO3Aj
-         oFrpQTO4w5iRBymEV1UySnQ8qVx3MPA7/KguGftYqEBHN0hZv4+cB47Dy4OHUPWKhuQZ
-         vffWdV2rAvF3xEA3MqTKx5B7M2Ut7xZoA+93T6BL05k9mHC8CPVeG2riULWA+cpKZ1QT
-         Dh9kiwkAYBB7IDIRB3q1qZ5NhOGZeGiMFob0dyIRFR3k8syKZg2EUtYb5ay+nlR59YdR
-         OxqBs86V2ITF/Oe+H1taxPZxf61w09OdvKx2Rzhlkx8yAsbgfzI7+PJ7ud9MRgRvep1u
-         iU3w==
-X-Gm-Message-State: AOAM533nflNfwr6IyKkBQ03Lubnw3IJY+tI0svnxii9SXvEh5XDaLj6T
-        0IHp42duC50oe+P+5gxdOqB0dzKuCNxb+n5b1JI=
-X-Google-Smtp-Source: ABdhPJy3MPG3HCCKVUtfMs6cnvKHRXY5eoK8yHcnOyeHsupvh68nF/eWz2R5S802f5QgM9O1wgLR7Dyudkof2C0lLCA=
-X-Received: by 2002:a05:6102:124d:: with SMTP id p13mr1105435vsg.21.1620053037208;
- Mon, 03 May 2021 07:43:57 -0700 (PDT)
+        Mon, 3 May 2021 10:46:00 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 143EiLvb002715;
+        Mon, 3 May 2021 14:44:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=F5Gq3RM9SXS/0D9/JJvhMbztWLCjlhpTmu0PVituFkg=;
+ b=n5SZwk9VPKMb6VRhgWH8tRyrPDOriKliiP9LQhMCHCIkXsRis+xK1qJ1G8Kxs18EXzql
+ 6HqqTyM+xVwhlxekyd4jxS6Z7WQGv1gjgYESfqz43qYutP/RzTCvMuejADVUmQCnUPRh
+ vnt5ocMiFR8SsWqnmQkoq1Rs7dZBFJzwY9rcvZovI9SxW1RjDweZjM8ijCA71FJO+bgG
+ txnLxLh4MBHpOwE/2G9/RSqqOu4U4uuSjIqVqwVgrRIioX8nFJK3Xs2Adni8qLdUNtes
+ fUTKMHXWZ6cKYnoxaT+Od5MpTq9MKWmvRvUbwBrobMrN78oGhvW5CRtTKOjhXavLqVre iQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 389h13tr6t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 03 May 2021 14:44:41 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 143EeBep028546;
+        Mon, 3 May 2021 14:44:40 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 388xt2gdb6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 03 May 2021 14:44:40 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 143EieId101156;
+        Mon, 3 May 2021 14:44:40 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 388xt2gdb1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 03 May 2021 14:44:40 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 143Eicdl031343;
+        Mon, 3 May 2021 14:44:38 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 03 May 2021 07:44:38 -0700
+Date:   Mon, 3 May 2021 17:44:29 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Lucas Stankus <lucas.p.stankus@gmail.com>
+Cc:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
+        gregkh@linuxfoundation.org, linux-iio@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] staging: iio: cdc: ad7746: use dt for capacitive
+ channel setup.
+Message-ID: <20210503144429.GN21598@kadam>
+References: <cover.1619841953.git.lucas.p.stankus@gmail.com>
+ <3e7f2a0a8960cece185f518ff2b7ceb87891edcd.1619841953.git.lucas.p.stankus@gmail.com>
+ <20210503100720.GP1981@kadam>
 MIME-Version: 1.0
-Received: by 2002:ab0:702:0:0:0:0:0 with HTTP; Mon, 3 May 2021 07:43:56 -0700 (PDT)
-Reply-To: rco.ben189@outlook.fr
-From:   "Mrs.Susan Dansuki" <lindaiohnson10@gmail.com>
-Date:   Mon, 3 May 2021 07:43:56 -0700
-Message-ID: <CAEowtvhFpi2y+-wag2jCJnzkfhE=5gqUMdwCGFeHe4yAEfiUbg@mail.gmail.com>
-Subject: Re:COVID-19 STIMULUS PACKAGE WORTH $1,500,000.00 USD
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210503100720.GP1981@kadam>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: j3GYA5SgvROSBYTLZ60Q1c1N67ftKOHO
+X-Proofpoint-GUID: j3GYA5SgvROSBYTLZ60Q1c1N67ftKOHO
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9973 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 spamscore=0 mlxscore=0
+ phishscore=0 adultscore=0 lowpriorityscore=0 suspectscore=0
+ priorityscore=1501 mlxlogscore=999 malwarescore=0 impostorscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2105030102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DEAR BENEFICIARY,
+On Mon, May 03, 2021 at 01:07:20PM +0300, Dan Carpenter wrote:
+> On Sat, May 01, 2021 at 09:32:53AM -0300, Lucas Stankus wrote:
+> > diff --git a/drivers/staging/iio/cdc/ad7746.c b/drivers/staging/iio/cdc/ad7746.c
+> > index dfd71e99e872..531f1b96dea2 100644
+> > --- a/drivers/staging/iio/cdc/ad7746.c
+> > +++ b/drivers/staging/iio/cdc/ad7746.c
+> > @@ -18,8 +18,6 @@
+> >  #include <linux/iio/iio.h>
+> >  #include <linux/iio/sysfs.h>
+> >  
+> > -#include "ad7746.h"
+> > -
+> >  /*
+> >   * AD7746 Register Definition
+> >   */
+> > @@ -676,10 +674,11 @@ static const struct iio_info ad7746_info = {
+> >  static int ad7746_probe(struct i2c_client *client,
+> >  			const struct i2c_device_id *id)
+> >  {
+> > -	struct ad7746_platform_data *pdata = client->dev.platform_data;
+> > +	struct device *dev = &client->dev;
+> >  	struct ad7746_chip_info *chip;
+> >  	struct iio_dev *indio_dev;
+> >  	unsigned char regval = 0;
+> > +	unsigned int vdd_permille;
+> >  	int ret = 0;
+> >  
+> >  	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*chip));
+> > @@ -703,26 +702,39 @@ static int ad7746_probe(struct i2c_client *client,
+> >  	indio_dev->num_channels = ARRAY_SIZE(ad7746_channels);
+> >  	indio_dev->modes = INDIO_DIRECT_MODE;
+> >  
+> > -	if (pdata) {
+> > -		if (pdata->exca_en) {
+> > -			if (pdata->exca_inv_en)
+> > -				regval |= AD7746_EXCSETUP_NEXCA;
+> > -			else
+> > -				regval |= AD7746_EXCSETUP_EXCA;
+> > -		}
+> > +	if (device_property_read_bool(dev, "adi,exca-output-en")) {
+> > +		if (device_property_read_bool(dev, "adi,exca-output-invert"))
+> > +			regval |= AD7746_EXCSETUP_NEXCA;
+> > +		else
+> > +			regval |= AD7746_EXCSETUP_EXCA;
+> > +	}
+> >  
+> > -		if (pdata->excb_en) {
+> > -			if (pdata->excb_inv_en)
+> > -				regval |= AD7746_EXCSETUP_NEXCB;
+> > -			else
+> > -				regval |= AD7746_EXCSETUP_EXCB;
+> > -		}
+> > +	if (device_property_read_bool(dev, "adi,excb-output-en")) {
+> > +		if (device_property_read_bool(dev, "adi,excb-output-invert"))
+> > +			regval |= AD7746_EXCSETUP_NEXCB;
+> > +		else
+> > +			regval |= AD7746_EXCSETUP_EXCB;
+> > +	}
+> >  
+> > -		regval |= AD7746_EXCSETUP_EXCLVL(pdata->exclvl);
+> > -	} else {
+> > -		dev_warn(&client->dev, "No platform data? using default\n");
+> > -		regval = AD7746_EXCSETUP_EXCA | AD7746_EXCSETUP_EXCB |
+> > -			AD7746_EXCSETUP_EXCLVL(3);
+> > +	ret = device_property_read_u32(dev, "adi,excitation-vdd-permille",
+> > +				       &vdd_permille);
+> > +	if (!ret) {
+> 
+> This test is reversed.  I wonder if the static checkers can catch the
+> uninitialized variable bug...  It's probably better to write it as:
+> 
+> 	if (device_property_read_u32(dev, "adi,excitation-vdd-permille",
+> 				     &vdd_permille) {
+> 
+> So it matches the others.
 
-I AM MRS. SUSAN DANSUKI, DIRECTOR OF THE CENTERS FOR DISEASE CONTROL
-AND PREVENTION. I WISH TO BRING YOU THE GOOD NEWS OF HOPE. BE
-OFFICIALLY INFORM YOU THAT YOU HAVE BEEN SELECTED TO RECEIVE THE UN
-COVID-19 STIMULUS PACKAGE WORTH $1,500,000.00 USD. THE SELECTION
-PROCESS WAS CARRIED OUT THROUGH THE UNITED NATIONS (UN) COMPUTERIZED
-EMAIL SELECTION SYSTEM, FROM A DATABASE OF OVER 79,980,000 EMAIL
-ADDRESSES OBTAINED FROM ALL CONTINENTS OF THE WORLD, WHICH YOUR EMAIL
-ADDRESS WAS SELECTED AMONG.
+Oops.  Sorry for the noise.  I was wrong on this.  I looked at the
+device_property_read_bool() code instead of the device_property_read_u32().
 
-THE UNITED NATIONS COVID-19 RESPONSE AND RECOVERY FUND IS A UN
-INTER-AGENCY FUND MECHANISM ESTABLISHED BY THE UN SECRETARY-GENERAL TO
-HELP SUPPORT LOW- AND MIDDLE-INCOME PEOPLE(S) TO RESPOND TO THE
-PANDEMIC AND ITS IMPACTS, INCLUDING AN UNPRECEDENTED SOCIO-ECONOMIC
-SHOCK. THE FUND=E2=80=99S ASSISTANCE TARGETS THOSE MOST VULNERABLE TO ECONO=
-MIC
-HARDSHIP AND SOCIAL DISRUPTION AROUND THE WORLD.
+It's disappointing that the returns are reversed.
 
-WE ARE DELIGHTED TO INFORM YOU THAT DUE TO MIXED UP OF NAMES AND
-NUMBERS, YOUR EMAIL ATTACHED TO APPROVED NUMBER UN6MM020/COVID-19,
-WHICH CONSEQUENTLY FALL ON OUR INTERNATIONAL CHAPTER, THEREFORE, YOU
-ARE ADVISED TO CONTACT THE UNITED NATIONS COVID-19 RESPONSE AND
-RECOVERY FUND COORDINATOR AND GRANTS MANAGER ( MR.ROBERT TAIWO ), TO
-CLAIM YOUR $1,500,000.00 USD WITHOUT ANY DELAY.
+regards,
+dan carpenter
 
-Name: Mr.Robert TAIWO
-Email: (   mr.roberttaiwo73@qq.com  )
-Telephone: (+229) 96548388 (WhatsApp)
-CONFIRM THE FOLLOWING INFORMATION AS SOON AS POSSIBLE.
-
-1. FULL NAME :
-2. ADDRESS :
-3. NATIONALITY :
-4. DIRECT TELEPHONE #:
-
-NOTE, IT'S IN YOUR HANDS TO STOP THE SPREAD OF COVID-19. UNITED
-NATION'S ADVISES TO FOLLOW THE GUIDELINES OF THE SCIENTIFIC COMMUNITY.
-(1) WASH YOUR HANDS FREQUENTLY AND THOROUGHLY WITH SOAP AND WATER, OR
-AN ALCOHOL-BASED SOLUTION. (2) AVOID TOUCHING YOUR EYES, NOSE AND
-MOUTH.(3) PRACTICE SOCIAL DISTANCING. REDUCE SOCIAL ACTIVITY AND, IF
-YOU REALLY NEED TO MEET SOMEONE, MAINTAIN A 2-METER (6-FOOT) DISTANCE
-BETWEEN THE TWO OF YOU.
-
-FINALLY, OUR GRANTS MANAGER IS RESPONSIBLE FOR THE SMOOTH AND
-EFFICIENT RELEASE OF YOUR UNITED NATIONS COVID-19 RESPONSE AND
-RECOVERY FUND OF $1,500,000.00 US DOLLARS, SO CONTACT HIM IMMEDIATELY
-WITH THESE INFORMATION'S AS REQUIRED ABOVE. CONGRATULATIONS ONCE
-AGAIN.
-
-YOURS SINCERELY
-MRS. SUSAN DANSUKI.
-DIRECTOR OF THE CENTERS FOR DISEASE CONTROL AND PREVENTION.
