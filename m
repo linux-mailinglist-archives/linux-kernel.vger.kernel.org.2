@@ -2,111 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 401C2371363
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 12:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0ACF371360
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 12:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233271AbhECKJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 06:09:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233062AbhECKJD (ORCPT
+        id S233258AbhECKIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 06:08:54 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:43082 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233245AbhECKIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 06:09:03 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92269C06174A;
-        Mon,  3 May 2021 03:08:10 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id n138so7274858lfa.3;
-        Mon, 03 May 2021 03:08:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qtxDGmxBhsi2IP7332PQH7tVPfSgkZrPmGm6BEOBEO4=;
-        b=X0vzCHQdFjsA7MpwFIDNpKpUMkiFwnAowhcDUr3BjPO9cON/kGIIDy9AyQ7uxsP8u9
-         8nHnowrVrsrOXXhyPqyhF0MW0n3dBQo2vUW29UCKJGzbRhylUgCdKBubqRQsZsR5nV4+
-         /muAXGWreS5Q8/nefwhh4DsuhoB9jMUJJ+waBlix4kKARlZF5MkKKzeyvVWWTkCajTbx
-         hJd65f/vWybEwPyozaLfKE0tNoNA23FtcYnT1zY5QZd7pkTjsgMZCSIRk38mDmuc9Iod
-         g+hXCKRcLPuKUGIkzKG4h3CZpb94Mfz+LL/Umrhd/gjcguiLRuoTrx9HXfEYErIPUJtL
-         YjTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qtxDGmxBhsi2IP7332PQH7tVPfSgkZrPmGm6BEOBEO4=;
-        b=aKg60S86MpRHu9L5+Rqosev0rcwkdkcHiy4LqSJ4GldU88jKxLNeQqnASka9cXGpFY
-         VnSOjOxsZhkkhN1ZYVKvMVDnsFkESBrnxXFr0dcL7PYBdFyW+xagrhbJgbZ5rgrG37Bx
-         RGjqhdDl8RNvDQfig5JZGagY5UGuIuVYd/c3iEGK5CLhkIhiwNZQ7usUAu1W8f2iFwf3
-         9QoG6VRTJ71yj+o1nLRj9Sd4wmgs/A7/hStgHSS5iRWQEudUQeLeGhIwMcNRmhY+YwUH
-         tMOZppwXp1gZ9z0y4RngeF9LscxALDryg0K6qeXfgBi7Zm/LmCZdDeN4zJqQBRXZ6R21
-         TRIQ==
-X-Gm-Message-State: AOAM531daV9U5elRleR/gS8eKjCrp/wBdxPVmwEN3klSPzu4HY3p+VSP
-        EV0kxvabZcHnxPz7KyE9Vp4=
-X-Google-Smtp-Source: ABdhPJy8mZlLiPCStCHJ9xLMBSBC/WR320Gn8cR/tQGSTj+gVzpluZxnH1c/MNCMDFd5KPR9GPdG8Q==
-X-Received: by 2002:a05:6512:2021:: with SMTP id s1mr12596618lfs.211.1620036489056;
-        Mon, 03 May 2021 03:08:09 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.226.84])
-        by smtp.gmail.com with ESMTPSA id f18sm1092372lft.98.2021.05.03.03.08.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 03:08:08 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com
-Cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>, stable@vger.kernel.org,
-        Rocky Liao <rjliao@codeaurora.org>
-Subject: [PATCH v2] bluetooth: hci_qca: fix potential GPF
-Date:   Mon,  3 May 2021 13:06:05 +0300
-Message-Id: <20210503100605.5223-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <YI+s2Hms/56Pvatu@hovoldconsulting.com>
-References: <YI+s2Hms/56Pvatu@hovoldconsulting.com>
+        Mon, 3 May 2021 06:08:49 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 143A3lX6097332;
+        Mon, 3 May 2021 10:07:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=0m6CZKMKH0CXm0dLQ0wuv9R6uvsrR8sLUyperFhMgWQ=;
+ b=XUMu9wd9V9A+Uoz4d0UJUDQ2Ww8J1dRk//bZ+A2Q4fvYe9lR+Po9sMG/MT6cN7eqmAy6
+ SetGbtUJdTaQ30DLGjPxfDGPAYRfq765WbFGFEEzdMZ9lDLOWYbf0WImEgjqEf9OVE6q
+ YGHwNdfQ4tRR8gilOqDN0Pha1onnllAxMrYgFOgVhT1gUuEvPbmfXnHFvRr/4IDEL2ZE
+ hDlsOFZFSMCko9TvnviEjkmyNM6EzaEW8dFyQq9Xmx3rGuoH/Rfir351BZVt2wUr8q8A
+ zaAi5KdNg8KQAq5L/47y+jOPk4tZJ7UtygfrlVeZfo98mK3GTTcLqQXHfVsJ8GbkBy4R Fg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 388xdru5yf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 03 May 2021 10:07:31 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 143A5EXH145104;
+        Mon, 3 May 2021 10:07:30 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 389grqgd7w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 03 May 2021 10:07:30 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 143A7Ulg151722;
+        Mon, 3 May 2021 10:07:30 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 389grqgd7n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 03 May 2021 10:07:30 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 143A7S4w017140;
+        Mon, 3 May 2021 10:07:28 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 03 May 2021 03:07:27 -0700
+Date:   Mon, 3 May 2021 13:07:20 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Lucas Stankus <lucas.p.stankus@gmail.com>
+Cc:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
+        gregkh@linuxfoundation.org, linux-iio@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] staging: iio: cdc: ad7746: use dt for capacitive
+ channel setup.
+Message-ID: <20210503100720.GP1981@kadam>
+References: <cover.1619841953.git.lucas.p.stankus@gmail.com>
+ <3e7f2a0a8960cece185f518ff2b7ceb87891edcd.1619841953.git.lucas.p.stankus@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3e7f2a0a8960cece185f518ff2b7ceb87891edcd.1619841953.git.lucas.p.stankus@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: hZadFzO0eJeomz8GQTOutIhakF-cZ0Dr
+X-Proofpoint-GUID: hZadFzO0eJeomz8GQTOutIhakF-cZ0Dr
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9972 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 clxscore=1011
+ lowpriorityscore=0 adultscore=0 spamscore=0 priorityscore=1501
+ mlxlogscore=999 bulkscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2105030066
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In qca_power_shutdown() qcadev local variable is
-initialized by hu->serdev.dev private data, but
-hu->serdev can be NULL and there is a check for it.
+On Sat, May 01, 2021 at 09:32:53AM -0300, Lucas Stankus wrote:
+> diff --git a/drivers/staging/iio/cdc/ad7746.c b/drivers/staging/iio/cdc/ad7746.c
+> index dfd71e99e872..531f1b96dea2 100644
+> --- a/drivers/staging/iio/cdc/ad7746.c
+> +++ b/drivers/staging/iio/cdc/ad7746.c
+> @@ -18,8 +18,6 @@
+>  #include <linux/iio/iio.h>
+>  #include <linux/iio/sysfs.h>
+>  
+> -#include "ad7746.h"
+> -
+>  /*
+>   * AD7746 Register Definition
+>   */
+> @@ -676,10 +674,11 @@ static const struct iio_info ad7746_info = {
+>  static int ad7746_probe(struct i2c_client *client,
+>  			const struct i2c_device_id *id)
+>  {
+> -	struct ad7746_platform_data *pdata = client->dev.platform_data;
+> +	struct device *dev = &client->dev;
+>  	struct ad7746_chip_info *chip;
+>  	struct iio_dev *indio_dev;
+>  	unsigned char regval = 0;
+> +	unsigned int vdd_permille;
+>  	int ret = 0;
+>  
+>  	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*chip));
+> @@ -703,26 +702,39 @@ static int ad7746_probe(struct i2c_client *client,
+>  	indio_dev->num_channels = ARRAY_SIZE(ad7746_channels);
+>  	indio_dev->modes = INDIO_DIRECT_MODE;
+>  
+> -	if (pdata) {
+> -		if (pdata->exca_en) {
+> -			if (pdata->exca_inv_en)
+> -				regval |= AD7746_EXCSETUP_NEXCA;
+> -			else
+> -				regval |= AD7746_EXCSETUP_EXCA;
+> -		}
+> +	if (device_property_read_bool(dev, "adi,exca-output-en")) {
+> +		if (device_property_read_bool(dev, "adi,exca-output-invert"))
+> +			regval |= AD7746_EXCSETUP_NEXCA;
+> +		else
+> +			regval |= AD7746_EXCSETUP_EXCA;
+> +	}
+>  
+> -		if (pdata->excb_en) {
+> -			if (pdata->excb_inv_en)
+> -				regval |= AD7746_EXCSETUP_NEXCB;
+> -			else
+> -				regval |= AD7746_EXCSETUP_EXCB;
+> -		}
+> +	if (device_property_read_bool(dev, "adi,excb-output-en")) {
+> +		if (device_property_read_bool(dev, "adi,excb-output-invert"))
+> +			regval |= AD7746_EXCSETUP_NEXCB;
+> +		else
+> +			regval |= AD7746_EXCSETUP_EXCB;
+> +	}
+>  
+> -		regval |= AD7746_EXCSETUP_EXCLVL(pdata->exclvl);
+> -	} else {
+> -		dev_warn(&client->dev, "No platform data? using default\n");
+> -		regval = AD7746_EXCSETUP_EXCA | AD7746_EXCSETUP_EXCB |
+> -			AD7746_EXCSETUP_EXCLVL(3);
+> +	ret = device_property_read_u32(dev, "adi,excitation-vdd-permille",
+> +				       &vdd_permille);
+> +	if (!ret) {
 
-Since, qcadev is not used before
+This test is reversed.  I wonder if the static checkers can catch the
+uninitialized variable bug...  It's probably better to write it as:
 
-	if (!hu->serdev)
-		return;
+	if (device_property_read_u32(dev, "adi,excitation-vdd-permille",
+				     &vdd_permille) {
 
-we can move its initialization after this "if" to
-prevent GPF.
+So it matches the others.
 
-Fixes: 5559904ccc08 ("Bluetooth: hci_qca: Add QCA Rome power off support to the qca_power_shutdown()")
-Cc: stable@vger.kernel.org # v5.6+
-Cc: Rocky Liao <rjliao@codeaurora.org>
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- drivers/bluetooth/hci_qca.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+regards,
+dan carpenter;
 
-diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-index de36af63e182..9589ef6c0c26 100644
---- a/drivers/bluetooth/hci_qca.c
-+++ b/drivers/bluetooth/hci_qca.c
-@@ -1820,8 +1820,6 @@ static void qca_power_shutdown(struct hci_uart *hu)
- 	unsigned long flags;
- 	enum qca_btsoc_type soc_type = qca_soc_type(hu);
- 
--	qcadev = serdev_device_get_drvdata(hu->serdev);
--
- 	/* From this point we go into power off state. But serial port is
- 	 * still open, stop queueing the IBS data and flush all the buffered
- 	 * data in skb's.
-@@ -1837,6 +1835,8 @@ static void qca_power_shutdown(struct hci_uart *hu)
- 	if (!hu->serdev)
- 		return;
- 
-+	qcadev = serdev_device_get_drvdata(hu->serdev);
-+
- 	if (qca_is_wcn399x(soc_type)) {
- 		host_set_baudrate(hu, 2400);
- 		qca_send_power_pulse(hu, false);
--- 
-2.31.1
+> +		switch (vdd_permille) {
+> +		case 125:
+> +			regval |= AD7746_EXCSETUP_EXCLVL(0);
+> +			break;
+> +		case 250:
+> +			regval |= AD7746_EXCSETUP_EXCLVL(1);
+> +			break;
+> +		case 375:
+> +			regval |= AD7746_EXCSETUP_EXCLVL(2);
+> +			break;
+> +		case 500:
+> +			regval |= AD7746_EXCSETUP_EXCLVL(3);
+> +			break;
+> +		default:
+> +			break;
+> +		}
+>  	}
+>  
+>  	ret = i2c_smbus_write_byte_data(chip->client,
+
+
 
