@@ -2,95 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E05371773
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9907D37177C
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230251AbhECPEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 11:04:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42622 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230184AbhECPEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 11:04:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5068D6127A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 15:03:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620054235;
-        bh=ln+8BofV7Gh4bD8EraABi30+kOtgmTS6KtlBAWP07u8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=p/pcCk1Owl9SAKIf4zZn16m79oUf5KJA8G6Tm/q0sT7O0rGMXwetz1Q8eQEI/CBfQ
-         DOHo2vsd6EMNYMK/jba+J2xzuHo5DrOIkkoBFp+DY2TUUvFRJcysALBk5b6hw/xvb0
-         7GXm/9gB737FdWTk7h6mP6l84J3Za7xx8ukbniXhVWGhdMJsGIlAv8Z+Lf4S0DORdQ
-         cGtN9osHnMAK6lHsSzZ+qkRr7YEYtkned3Cj5xIazsMB+dMnvqeaTzrU5Mv7EkJx27
-         9XgkVxiaxpvzSmwfIzdsBqdMfZKO0w+KZ4UQOMe0rSaWPJbGIwiK2gT2zrdLyrO4gX
-         jGITTz2nTmFZw==
-Received: by mail-ed1-f45.google.com with SMTP id b17so3628892ede.0
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 08:03:55 -0700 (PDT)
-X-Gm-Message-State: AOAM532PaRrlixaEkMA61zAbrL/Sso4SIx2JDa4LJAAYWmgTy5iyEcm7
-        gvQZ9B6IX6Dy2AOJ4ijcgkWSu2yt0lnonjOudTbkwQ==
-X-Google-Smtp-Source: ABdhPJx3QTOhuJGr019PmYgMDrSRVccEeRhDKz9yDKKZ/VSDJuBePqFTTIy/Xno/zToUViVjF4VIL/WxQ0HBM99xFro=
-X-Received: by 2002:a05:6402:17b0:: with SMTP id j16mr20168200edy.97.1620054233726;
- Mon, 03 May 2021 08:03:53 -0700 (PDT)
+        id S230237AbhECPGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 11:06:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230123AbhECPGH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 11:06:07 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF97C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 08:05:13 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id f24so8353863ejc.6
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 08:05:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
+         :date:mime-version;
+        bh=kkLHrS0ofkE+YRgADp77s8W+PKn0GKptcBr+B7OS3xA=;
+        b=dSvcMix4NZkdXHKFvMmFcsvN8T+XeE4OhpbGEP9vYPvXYf+Wp0r5/hj4/TbToYCGbC
+         JH4S19mCIJcLHiN9Wf++jtFjQW8B7LBqG3QVQDhH8VBDHpHoz6qWJwQZVxfHTR4vdwtO
+         CCWkCYV6I1e7B2BClyWRuLi0P0RL//c5+7SsdLHtXMmc0MyYE+2b+Yud9HgTEOfZtnyo
+         a5kf+mbUbaSr0Jd9mVLdWVKvIbj+wbhZOXCacSRAdwzUrlqOeMIduH0sXQJ82s+5oJ3T
+         mOMcA+XTmE1a1O5d/xuF+2nMrBcOsm4vLvTuAxj2IrSzO57ATvc5znWOisq5iFmV5v/u
+         pF5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=kkLHrS0ofkE+YRgADp77s8W+PKn0GKptcBr+B7OS3xA=;
+        b=Wpnz47wKcJEdeDaCSyjXnRXUnMX09pJb8c56uVpBmdVa/DnSSM4uMd59z4/82td3BL
+         x0P9406FN+pAr211jqJClLKV+LfWsdudstMNgM2FNV7zuLZM0WNfXVkiLBExwzyw39+a
+         VrW6RgR9zXE6Ni+6W4qqY6VPeTu0PQBNMNHYs38y4S7ELSFfBOJ1lYK4PjI6SLE5Ok1N
+         2X/67Y+Fho10T+EvnsFVz3fYfB5R3VQbku7mo1/Mi4mbDrdvSMK18FgccmI3BqeIlmKv
+         x6x76y9o435Y+9XoTBqxMqO8wMzssW3WEf07NtUrmVHIUQlDOMwyDlqEI1Lx6K2Fr3O/
+         MkcQ==
+X-Gm-Message-State: AOAM533te3/c+DfhiR3J8wdWXsG6hiK1WsYwo7U87oQO7huxLiT16G4t
+        WLMoRdoIxGbEIqCGm4MNR6jPjzVBeeaB/93q
+X-Google-Smtp-Source: ABdhPJwj8qmkT3Q16/vnKVoyTOiBJaX3gt9H3JD2BovwlpoOZV4hL7hxJcc2ZF6irUXO0VgADStxLQ==
+X-Received: by 2002:a17:907:a076:: with SMTP id ia22mr17033044ejc.233.1620054312349;
+        Mon, 03 May 2021 08:05:12 -0700 (PDT)
+Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.gmail.com with ESMTPSA id z7sm3534527edi.39.2021.05.03.08.05.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 May 2021 08:05:11 -0700 (PDT)
+References: <20210503145503.1477-1-linux.amoon@gmail.com>
+User-agent: mu4e 1.4.15; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Anand Moon <linux.amoon@gmail.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: Re: [PATCHv1 0/9] Added Audio and HDMI power domain for Amlogic SoC
+In-reply-to: <20210503145503.1477-1-linux.amoon@gmail.com>
+Message-ID: <1jsg336eoo.fsf@starbuckisacylon.baylibre.com>
+Date:   Mon, 03 May 2021 17:05:11 +0200
 MIME-Version: 1.0
-References: <20210430123822.13825-1-brijesh.singh@amd.com> <20210430123822.13825-11-brijesh.singh@amd.com>
- <c3950468-af35-a46d-2d50-238245ed37b3@intel.com>
-In-Reply-To: <c3950468-af35-a46d-2d50-238245ed37b3@intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 3 May 2021 08:03:42 -0700
-X-Gmail-Original-Message-ID: <CALCETrVEyBaG41gS4ntu6ikJqeiWs2gMuqfo_Yk0cdgpHyN9Dg@mail.gmail.com>
-Message-ID: <CALCETrVEyBaG41gS4ntu6ikJqeiWs2gMuqfo_Yk0cdgpHyN9Dg@mail.gmail.com>
-Subject: Re: [PATCH Part2 RFC v2 10/37] x86/fault: Add support to handle the
- RMP fault for kernel address
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 3, 2021 at 7:44 AM Dave Hansen <dave.hansen@intel.com> wrote:
->
-> On 4/30/21 5:37 AM, Brijesh Singh wrote:
-> > When SEV-SNP is enabled globally, a write from the host goes through the
-> > RMP check. When the host writes to pages, hardware checks the following
-> > conditions at the end of page walk:
-> >
-> > 1. Assigned bit in the RMP table is zero (i.e page is shared).
-> > 2. If the page table entry that gives the sPA indicates that the target
-> >    page size is a large page, then all RMP entries for the 4KB
-> >    constituting pages of the target must have the assigned bit 0.
-> > 3. Immutable bit in the RMP table is not zero.
-> >
-> > The hardware will raise page fault if one of the above conditions is not
-> > met. A host should not encounter the RMP fault in normal execution, but
-> > a malicious guest could trick the hypervisor into it. e.g., a guest does
-> > not make the GHCB page shared, on #VMGEXIT, the hypervisor will attempt
-> > to write to GHCB page.
->
-> Is that the only case which is left?  If so, why don't you simply split
-> the direct map for GHCB pages before giving them to the guest?  Or, map
-> them with vmap() so that the mapping is always 4k?
 
-If I read Brijesh's message right, this isn't about 4k.  It's about
-the guest violating host expectations about the page type.
+On Mon 03 May 2021 at 16:54, Anand Moon <linux.amoon@gmail.com> wrote:
 
-I need to go and do a full read of all the relevant specs, but I think
-there's an analogous situation in TDX: if the host touches guest
-private memory, the TDX hardware will get extremely angry (more so
-than AMD hardware).  And, if I have understood this patch correctly,
-it's fudging around the underlying bug by intentionally screwing up
-the RMP contents to avoid a page fault.  Assuming I've understood
-everything correctly (a big if!), then I think this is backwards.  The
-host kernel should not ever access guest memory without a plan in
-place to handle failure.  We need real accessors, along the lines of
-copy_from_guest() and copy_to_guest().
+> Patch series add Audio and Hdmi power domain for Amlogic SoC.
+>
+> Tested on GXBB - Odroid C2
+>           SM1  - Odroid C4
+>           G12B - Odroid N2
+> -Anand
+>
+
+AFAIK, the audio power domain is a no-op on the g12/sm1. At least this
+is what we've been told by AML. Unless this solves something, I don't
+think it should be done at all.
+
+> Anand Moon (9):
+>   soc: amlogic: meson-ee-pwrc: Add audio power domain Meson g12a and
+>     g12b SoCs
+>   arm64: dts: amlogic: Add audio power domain for g12a and g12b
+>   soc: amlogic: meson-ee-pwrc: Add hdmi power domain Meson g12a SoCs
+>   arm64: dts: amlogic: Add hdmi power domain for g12a and g12b
+>   soc: amlogic: meson-ee-pwrc: Add hdmi power domain Meson sm1 SoCs
+>   arm64: dts: amlogic: Add audio power domain for sm1 SoC
+>   arm64: dts: amlogic: Add hdmi power domain for sm1 sbc
+>   soc: amlogic: meson-ee-pwrc: Add hdmi power domain Meson gxbb and gxl
+>     SoCs
+>   arm64: dts: amlogic: Add hdmi power domain for gxbb and gxl
+>
+>  arch/arm64/boot/dts/amlogic/meson-g12a-sei510.dts    |  2 ++
+>  arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts      |  1 +
+>  arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts   |  2 ++
+>  arch/arm64/boot/dts/amlogic/meson-g12b-gsking-x.dts  |  1 +
+>  .../arm64/boot/dts/amlogic/meson-g12b-gtking-pro.dts |  1 +
+>  arch/arm64/boot/dts/amlogic/meson-g12b-gtking.dts    |  1 +
+>  .../arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi |  2 ++
+>  arch/arm64/boot/dts/amlogic/meson-g12b-ugoos-am6.dts |  1 +
+>  arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi     |  1 +
+>  .../boot/dts/amlogic/meson-gx-libretech-pc.dtsi      |  1 +
+>  arch/arm64/boot/dts/amlogic/meson-gx-p23x-q20x.dtsi  |  1 +
+>  arch/arm64/boot/dts/amlogic/meson-gxbb-nanopi-k2.dts |  1 +
+>  .../boot/dts/amlogic/meson-gxbb-nexbox-a95x.dts      |  1 +
+>  arch/arm64/boot/dts/amlogic/meson-gxbb-odroidc2.dts  |  1 +
+>  arch/arm64/boot/dts/amlogic/meson-gxbb-p20x.dtsi     |  1 +
+>  arch/arm64/boot/dts/amlogic/meson-gxbb-vega-s95.dtsi |  1 +
+>  arch/arm64/boot/dts/amlogic/meson-gxbb-wetek.dtsi    |  1 +
+>  .../dts/amlogic/meson-gxl-s805x-libretech-ac.dts     |  1 +
+>  arch/arm64/boot/dts/amlogic/meson-gxl-s805x-p241.dts |  1 +
+>  arch/arm64/boot/dts/amlogic/meson-gxl-s905d-p230.dts |  1 +
+>  .../boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts  |  1 +
+>  .../dts/amlogic/meson-gxl-s905x-libretech-cc-v2.dts  |  1 +
+>  .../dts/amlogic/meson-gxl-s905x-libretech-cc.dts     |  1 +
+>  .../boot/dts/amlogic/meson-gxl-s905x-nexbox-a95x.dts |  1 +
+>  arch/arm64/boot/dts/amlogic/meson-gxl-s905x-p212.dts |  1 +
+>  .../arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts |  1 +
+>  arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts  |  1 +
+>  arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi    |  2 ++
+>  arch/arm64/boot/dts/amlogic/meson-sm1-sei610.dts     |  2 ++
+>  drivers/soc/amlogic/meson-ee-pwrc.c                  | 12 ++++++++++++
+>  include/dt-bindings/power/meson-g12a-power.h         |  2 ++
+>  include/dt-bindings/power/meson-gxbb-power.h         |  1 +
+>  include/dt-bindings/power/meson-sm1-power.h          |  1 +
+>  33 files changed, 50 insertions(+)
+
