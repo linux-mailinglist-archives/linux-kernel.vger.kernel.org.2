@@ -2,285 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3247371E93
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F67371E91
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 19:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231732AbhECR31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 13:29:27 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:12222 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231329AbhECR30 (ORCPT
+        id S231535AbhECR3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 13:29:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55574 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231329AbhECR3N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 13:29:26 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 143H3o4U089217;
-        Mon, 3 May 2021 13:28:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=b0NehVtQhaH+DukhYFmAYJ8D3o74eNVNRpeALUeOjr8=;
- b=gIfotyQzmX7tN+ha2FIoaKJg0INT8BxvbLb6LZf1QNkktBm5et/9+9+VnbMEMzEZ5QlW
- u3dQAsMsJrsc6ha9mANHAhTwVDAUG4xjmLaoeP+pGewl4/T1BgxwaNv9FRIeXGrmra6T
- g266Jresu+9MO7027MHsRDUdoV1RVb/nAVCIlK198/iyVnRHo86Kd75b4iAwDAtgthcl
- x25XCYrZL7nXKGe0uqyA5pN+8VQxKTlpSNYyMHbSiQ/O2dlXRHm/B8zRwC66bRxuSKp3
- exhmAZZrqLD1l7RRMqYsdv6rmYIEaGaXGOFtomZ521qJqzIg/aQdKKuv7CSEUU2IID/F ZA== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38an8crj59-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 03 May 2021 13:28:10 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 143HOjTr000799;
-        Mon, 3 May 2021 17:28:08 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma02fra.de.ibm.com with ESMTP id 388xm88ers-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 03 May 2021 17:28:08 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 143HS5qp25297212
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 3 May 2021 17:28:05 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9D03FA4054;
-        Mon,  3 May 2021 17:28:05 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 562FEA405C;
-        Mon,  3 May 2021 17:28:05 +0000 (GMT)
-Received: from pomme.local (unknown [9.145.31.88])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  3 May 2021 17:28:05 +0000 (GMT)
-Subject: Re: [PATCH v3] pseries/drmem: update LMBs after LPM
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org
-Cc:     nathanl@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-References: <20210428094758.28665-1-ldufour@linux.ibm.com>
- <87fsz95qso.fsf@linux.ibm.com>
- <9d29bf8c-9e97-c179-6897-8e25fa4eb516@linux.ibm.com>
- <271ef351-b89c-ba68-3b6d-baa24cc0021b@linux.ibm.com>
- <c87e17d3-8956-9eb0-6f8a-ae316ea75f7e@linux.ibm.com>
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-Message-ID: <1eac9540-e8b4-53be-1f27-4c36f92c8a5e@linux.ibm.com>
-Date:   Mon, 3 May 2021 19:28:05 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.0
+        Mon, 3 May 2021 13:29:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620062899;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pRmPKljHOMCwd0tyaLod6YKOuTWkIHWORuPcdrXcO88=;
+        b=PEyigUY+BBo7ntcs54YcHRCD75rutMDMaiNkMqxSsylmBO1023VT3/dNB6XdH0jvLQzc0/
+        r31FogcEfjGZIEU6gCJ6Eu1Gc4YzXg9Mz7BQgMeFKq6m9sVM4RzFBhTBxA6hdQWmbJJGOM
+        hohfUfOnCyBC//5nTREA9XpcJCJjFok=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-406-OAr0HUYBOQ-xPqQO8qWd-A-1; Mon, 03 May 2021 13:28:17 -0400
+X-MC-Unique: OAr0HUYBOQ-xPqQO8qWd-A-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F274D107ACF2;
+        Mon,  3 May 2021 17:28:15 +0000 (UTC)
+Received: from treble (ovpn-115-93.rdu2.redhat.com [10.10.115.93])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4868C5C1D0;
+        Mon,  3 May 2021 17:28:15 +0000 (UTC)
+Date:   Mon, 3 May 2021 12:28:14 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Vanessa Hack <vanessa.hack@fau.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org,
+        Jonas Rabenstein <rabenstein@cs.fau.de>
+Subject: Re: [PATCH] objtool: include symbol value in check for contiguous
+ objects
+Message-ID: <20210503172814.suquyqr737ogn4ef@treble>
+References: <20210428210408.4546-1-vanessa.hack@fau.de>
 MIME-Version: 1.0
-In-Reply-To: <c87e17d3-8956-9eb0-6f8a-ae316ea75f7e@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 5-z6P4QuPuXF_u3ST_vw6FFemp0Nl2NQ
-X-Proofpoint-GUID: 5-z6P4QuPuXF_u3ST_vw6FFemp0Nl2NQ
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-03_13:2021-05-03,2021-05-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
- clxscore=1015 mlxscore=0 phishscore=0 mlxlogscore=999 suspectscore=0
- impostorscore=0 lowpriorityscore=0 priorityscore=1501 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2105030111
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210428210408.4546-1-vanessa.hack@fau.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 01/05/2021 à 01:58, Tyrel Datwyler a écrit :
-> On 4/30/21 9:13 AM, Laurent Dufour wrote:
->> Le 29/04/2021 à 21:12, Tyrel Datwyler a écrit :
->>> On 4/29/21 3:27 AM, Aneesh Kumar K.V wrote:
->>>> Laurent Dufour <ldufour@linux.ibm.com> writes:
->>>>
->>>>> After a LPM, the device tree node ibm,dynamic-reconfiguration-memory may be
->>>>> updated by the hypervisor in the case the NUMA topology of the LPAR's
->>>>> memory is updated.
->>>>>
->>>>> This is caught by the kernel, but the memory's node is updated because
->>>>> there is no way to move a memory block between nodes.
->>>>>
->>>>> If later a memory block is added or removed, drmem_update_dt() is called
->>>>> and it is overwriting the DT node to match the added or removed LMB. But
->>>>> the LMB's associativity node has not been updated after the DT node update
->>>>> and thus the node is overwritten by the Linux's topology instead of the
->>>>> hypervisor one.
->>>>>
->>>>> Introduce a hook called when the ibm,dynamic-reconfiguration-memory node is
->>>>> updated to force an update of the LMB's associativity.
->>>>>
->>>>> Cc: Tyrel Datwyler <tyreld@linux.ibm.com>
->>>>> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
->>>>> ---
->>>>>
->>>>> V3:
->>>>>    - Check rd->dn->name instead of rd->dn->full_name
->>>>> V2:
->>>>>    - Take Tyrel's idea to rely on OF_RECONFIG_UPDATE_PROPERTY instead of
->>>>>    introducing a new hook mechanism.
->>>>> ---
->>>>>    arch/powerpc/include/asm/drmem.h              |  1 +
->>>>>    arch/powerpc/mm/drmem.c                       | 35 +++++++++++++++++++
->>>>>    .../platforms/pseries/hotplug-memory.c        |  4 +++
->>>>>    3 files changed, 40 insertions(+)
->>>>>
->>>>> diff --git a/arch/powerpc/include/asm/drmem.h
->>>>> b/arch/powerpc/include/asm/drmem.h
->>>>> index bf2402fed3e0..4265d5e95c2c 100644
->>>>> --- a/arch/powerpc/include/asm/drmem.h
->>>>> +++ b/arch/powerpc/include/asm/drmem.h
->>>>> @@ -111,6 +111,7 @@ int drmem_update_dt(void);
->>>>>    int __init
->>>>>    walk_drmem_lmbs_early(unsigned long node, void *data,
->>>>>                  int (*func)(struct drmem_lmb *, const __be32 **, void *));
->>>>> +void drmem_update_lmbs(struct property *prop);
->>>>>    #endif
->>>>>      static inline void invalidate_lmb_associativity_index(struct drmem_lmb
->>>>> *lmb)
->>>>> diff --git a/arch/powerpc/mm/drmem.c b/arch/powerpc/mm/drmem.c
->>>>> index 9af3832c9d8d..f0a6633132af 100644
->>>>> --- a/arch/powerpc/mm/drmem.c
->>>>> +++ b/arch/powerpc/mm/drmem.c
->>>>> @@ -307,6 +307,41 @@ int __init walk_drmem_lmbs_early(unsigned long node,
->>>>> void *data,
->>>>>        return ret;
->>>>>    }
->>>>>    +/*
->>>>> + * Update the LMB associativity index.
->>>>> + */
->>>>> +static int update_lmb(struct drmem_lmb *updated_lmb,
->>>>> +              __maybe_unused const __be32 **usm,
->>>>> +              __maybe_unused void *data)
->>>>> +{
->>>>> +    struct drmem_lmb *lmb;
->>>>> +
->>>>> +    /*
->>>>> +     * Brut force there may be better way to fetch the LMB
->>>>> +     */
->>>>> +    for_each_drmem_lmb(lmb) {
->>>>> +        if (lmb->drc_index != updated_lmb->drc_index)
->>>>> +            continue;
->>>>> +
->>>>> +        lmb->aa_index = updated_lmb->aa_index;
->>>>> +        break;
->>>>> +    }
->>>>> +    return 0;
->>>>> +}
->>>>> +
->>>>> +/*
->>>>> + * Update the LMB associativity index.
->>>>> + *
->>>>> + * This needs to be called when the hypervisor is updating the
->>>>> + * dynamic-reconfiguration-memory node property.
->>>>> + */
->>>>> +void drmem_update_lmbs(struct property *prop)
->>>>> +{
->>>>> +    if (!strcmp(prop->name, "ibm,dynamic-memory"))
->>>>> +        __walk_drmem_v1_lmbs(prop->value, NULL, NULL, update_lmb);
->>>>> +    else if (!strcmp(prop->name, "ibm,dynamic-memory-v2"))
->>>>> +        __walk_drmem_v2_lmbs(prop->value, NULL, NULL, update_lmb);
->>>>> +}
->>>>>    #endif
->>>>>      static int init_drmem_lmb_size(struct device_node *dn)
->>>>> diff --git a/arch/powerpc/platforms/pseries/hotplug-memory.c
->>>>> b/arch/powerpc/platforms/pseries/hotplug-memory.c
->>>>> index 8377f1f7c78e..672ffbee2e78 100644
->>>>> --- a/arch/powerpc/platforms/pseries/hotplug-memory.c
->>>>> +++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
->>>>> @@ -949,6 +949,10 @@ static int pseries_memory_notifier(struct
->>>>> notifier_block *nb,
->>>>>        case OF_RECONFIG_DETACH_NODE:
->>>>>            err = pseries_remove_mem_node(rd->dn);
->>>>>            break;
->>>>> +    case OF_RECONFIG_UPDATE_PROPERTY:
->>>>> +        if (!strcmp(rd->dn->name,
->>>>> +                "ibm,dynamic-reconfiguration-memory"))
->>>>> +            drmem_update_lmbs(rd->prop);
->>>>>        }
->>>>>        return notifier_from_errno(err);
->>>>
->>>> How will this interact with DLPAR memory? When we dlpar memory,
->>>> ibm,configure-connector is used to fetch the new associativity details
->>>> and set drmem_lmb->aa_index correctly there. Once that is done kernel
->>>> then call drmem_update_dt() which will result in the above notifier
->>>> callback?
->>>>
->>>> IIUC, the call back then will update drmem_lmb->aa_index again?
->>>
->>> After digging through some of this code I'm a bit concerned about all the kernel
->>> device tree manipulation around memory DLPAR both with the assoc-lookup-array
->>> prop update and post dynamic-memory prop updating. We build a drmem_info array
->>> of the LMBs from the device-tree at boot. I don't really understand why we are
->>> manipulating the device tree property every time we add/remove an LMB. Not sure
->>> the reasoning was to write back in particular the aa_index and flags for each
->>> LMB into the device tree when we already have them in the drmem_info array. On
->>> the other hand the assoc-lookup-array I suppose would need to have an in kernel
->>> representation to avoid updating the device tree property every time.
->>
->> I think the reason is to keep the device tree in sync with the current set of LMBs.
+On Wed, Apr 28, 2021 at 11:04:08PM +0200, Vanessa Hack wrote:
+> While trying to adopt objtool's ability to generate ORC data for the use
+> in our research project, we came across a problem with the detection of
+> function pointers of contiguous objects introduced by commit fd35c88b7417
+> ("objtool: Support GCC 8 switch tables"). Only the section and the
+> addend/offset of the relocation/function are compared without the actual
+> value of the involved symbols - false positives might be reported if the
+> referenced symbols are different, but are in the same section. By adding
+> (the value of) the referenced symbol as part of the comparison, those
+> false positives are no longer reported.
 > 
-> I don't really think that is how the device tree is meant to be used. We have an
-> in memory representation of the LMBs separate from the device tree, and that is
-> were we should track OS specific state. The values in the device-tree property
-> can be updated via device node remove/add or update-properties RTAS call. These
-> are the means that the platform reports (OS discovers) underlying changes. The
-> new property is going to blow away any previous state that the OS wrote there.
-> This is likely, one of the culprits of memory DLPAR problems that have been
-> observed after LPM.
-
-One of the issue is that the kernel is overwritting the drmem property set by 
-the hypervisor once a LMB is added or removed after a LPM (PRRN). My patch 
-prevents this to happen after a LPM, I plan to check and fix PRRN later.
-
->>
->> My understanding is that the kernel is not really using the
->> 'ibm,dynamic-memory*' DT property once the boot is done. But user space tools
->> (like lsslot and drmgr) read it to built the LMB tree and get the DRC index for
->> each LMBs as it is not available in SYSFS.
+> Co-developed-by: Jonas Rabenstein <rabenstein@cs.fau.de>
+> Signed-off-by: Jonas Rabenstein <rabenstein@cs.fau.de>
+> Signed-off-by: Vanessa Hack <vanessa.hack@fau.de>
+> ---
+>  tools/objtool/check.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 > 
-> Yeah, but as I mentioned above the property can change as a result of an update
-> we process from the hypervisor in response to something like LPM (or PRRN if we
-> ever figure out how to make that work correctly). So, if there is some sort of
-> state drmgr needs to know we have to figure out a different way to expose that
-> information.
+> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+> index 1f4154f9b04b..4456f3278bb8 100644
+> --- a/tools/objtool/check.c
+> +++ b/tools/objtool/check.c
+> @@ -1320,6 +1320,8 @@ static int add_jump_table(struct objtool_file *file, struct instruction *insn,
+>  	 * instruction.
+>  	 */
+>  	list_for_each_entry_from(reloc, &table->sec->reloc_list, list) {
+> +		unsigned int pfunc_offset;
+> +		unsigned int reloc_offset;
+>  
+>  		/* Check for the end of the table: */
+>  		if (reloc != table && reloc->jump_table_start)
+> @@ -1330,8 +1332,10 @@ static int add_jump_table(struct objtool_file *file, struct instruction *insn,
+>  			break;
+>  
+>  		/* Detect function pointers from contiguous objects: */
+> +		pfunc_offset = pfunc->sym.st_value + pfunc->offset;
+> +		reloc_offset = reloc->sym->sym.st_value + reloc->addend;
+>  		if (reloc->sym->sec == pfunc->sec &&
+> -		    reloc->addend == pfunc->offset)
+> +		    pfunc_offset == reloc_offset)
+>  			break;
 
-Triggering drmgr at the end of the LPM (and after a PRRN) will be the next thing 
-to do, so userspace tools can be run to handle these changes.
+Hi Vanessa & Jonas,
 
->>
->>> Changes to the device tree should be things reported to the system from the
->>> hypervisor through the proper interfaces, and as a result any code that cares
->>> can register an of_reconfig_notifier to resepond to device tree updates. The
->>> memory dlpar code seems to be needlessly manipulating the device-tree which
->>> leads to the problem here where a notifier callback is now duplicating work.
->>
->> I don't think the hypervisor is expected to update the 'ibm,dynamic-memory' each
->> time a LMB is added, this is not design this way AFAIK.
-> 
-> It shouldn't need to for the most part. The only information that should change
-> in ibm,dynamic-memory in the first place is the aa_index as a result of an
-> underlying platform reassignment. The flags in ibm,dynamic-memory aren't
-> changing as a result of DLPAR add/remove. The aa_index could be out of date as I
-> mentioned above. The use of DRCONF_MEM_ASSIGNED in my opinion is actually a hack
-> to mark LMBs as present and owned by the partition. Its actual PAPR definition
-> is soley to identify LMBs that are present at boot.
-> 
-> As of today I don't have a problem with your patch. This was more of me pointing
-> out things that I think are currently wrong with our memory hotplug
-> implementation, and that we need to take a long hard look at it down the road.
+Thanks for the patch!
 
-I do agree, there is a lot of odd things there to address in this area.
-If you're ok with that patch, do you mind to add a reviewed-by?
+I'm a little confused about the issue -- do you have an example listing
+of .rodata relocations (e.g. from 'readelf -aW') which confused objtool?
 
-> -Tyrel
-> 
->>
->> Laurent.
->>
->>> Just my two cents FWIW.
->>>
->>> -Tyrel
->>>
->>>>
->>>> -aneesh
->>>>
->>>
->>
-> 
+I believe add_jump_table() -- in addition to all the other jump table
+code -- assumes that reloc->sym is a section symbol (STT_SECTION),
+rather than a function symbol (STT_FUNC).  Was it an STT_FUNC symbol
+which caused the problem?
+
+Also I'm not quite convinced this patch is the right fix.  For the
+'pfunc_offset' calculation, I believe 'pfunc->sym.st_value' is the same
+value as 'pfunc->offset' -- they both represent the function's section
+offset.  So it's basically adding pfunc->offset to itself, right?  Is
+that intentional?
+
+Any chance this patch fixes your issue?  If not, the above readelf would
+help me understand it more.
+
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 5e5388a38e2a..4f30a763a4e3 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -1344,6 +1344,10 @@ static int add_jump_table(struct objtool_file *file, struct instruction *insn,
+ 		if (prev_offset && reloc->offset != prev_offset + 8)
+ 			break;
+ 
++		/* Jump table relocs are always STT_SECTION: */
++		if (reloc->sym->type != STT_SECTION)
++			break;
++
+ 		/* Detect function pointers from contiguous objects: */
+ 		if (reloc->sym->sec == pfunc->sec &&
+ 		    reloc->addend == pfunc->offset)
 
