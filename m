@@ -2,111 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B94C3715D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 034B93715E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234245AbhECNS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 09:18:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22391 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234186AbhECNSO (ORCPT
+        id S234115AbhECNXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 09:23:05 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:10168 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233592AbhECNXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 09:18:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620047841;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lZ3P44Yfnu49NpfXUggovdI/GLNt/AAmmjz1I1EQb1c=;
-        b=XGEmrvx5ZL3hUmnJb/yr0w4vXa8XNUB3+/Pv8c1K8LjCSHYIIefcm5amK2NaSwGMntbHuk
-        L6LdrwePlUXMO7NRyUXbNM6Bz6fTBNYFZi8tLqCeqVap3zpl/RvDqGc7yDOPD2OAlM0PTc
-        OeYjAo00t2f2tAD4+Xw2urLywFSgAFM=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-34-9avEkPjAOVim4BVnpt09Iw-1; Mon, 03 May 2021 09:17:17 -0400
-X-MC-Unique: 9avEkPjAOVim4BVnpt09Iw-1
-Received: by mail-qk1-f198.google.com with SMTP id b19-20020a05620a0893b02902e956b29f5dso5058662qka.16
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 06:17:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=lZ3P44Yfnu49NpfXUggovdI/GLNt/AAmmjz1I1EQb1c=;
-        b=s+SeIH2sQqecmklhs1RTidrpdn+zQPz/tyMV6xu3MMQgsJ+oMs0HO7i9CexLKWp8Ik
-         khM/JJHzXQzAfM35vV5AHe4lZWA1N0z4+WX/mp/C3tdiueDMyy2Zx0bb9Bgpwq+iieV8
-         5l6dPgjmcqflcWNVMfuaVD+Jjqr+Q6D7XNy9bc9dLGnSrRtR7iVM5sTcIShZqbJa0ZDJ
-         QYtvx8qS5HaRzaWe2mYcs8qba0FG3tE3aJrfN3/NTkbSL7SN0fgm7o5aIGvO3RPFuicd
-         oqgRU4X2uJnBZCG/Mqhx6T2pHPa7tRQ7bkfoO24xoh+mZjX7JEqeMS49I7bmEHndB8BY
-         YGIw==
-X-Gm-Message-State: AOAM531ndLwDFTJs4bTLPCrluz2YvkMv9MiqyA7WXiLOgo5TuDB8CTPA
-        /4N88O9+3pxGzxEVtAjX32J3Nwew178d5tSDtQGIVxbiz5TZVYZ4wQdG5Q9uZnVJIM6p2krQOEh
-        JFJi06PnChxuc7dLUrNWHH9Uv
-X-Received: by 2002:a37:9a16:: with SMTP id c22mr16145761qke.0.1620047837078;
-        Mon, 03 May 2021 06:17:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyQxOHgnDvzivrvWF+f41wjCfS0nWr2QjOGWOHxpLgLWxPJr4p5uQ3N9F4ixkJD2cJUfJ+RTQ==
-X-Received: by 2002:a37:9a16:: with SMTP id c22mr16145743qke.0.1620047836859;
-        Mon, 03 May 2021 06:17:16 -0700 (PDT)
-Received: from redhatnow.users.ipa.redhat.com ([2605:a601:ab5e:300:20c:bff:fe44:d76d])
-        by smtp.gmail.com with ESMTPSA id g1sm8460932qth.69.2021.05.03.06.17.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 06:17:15 -0700 (PDT)
-Subject: Re: [PATCH] Revert "ACPI: custom_method: fix memory leaks"
-To:     Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Wenwen Wang <wenwen@cs.uga.edu>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-References: <20210502172326.2060025-1-keescook@chromium.org>
-From:   Mark Langsdorf <mlangsdo@redhat.com>
-Message-ID: <0fefece0-f8a1-6ee1-114f-0a2bb412b986@redhat.com>
-Date:   Mon, 3 May 2021 08:17:14 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <20210502172326.2060025-1-keescook@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        Mon, 3 May 2021 09:23:02 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 143D2rZS037410;
+        Mon, 3 May 2021 09:21:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=VZsz2X+39PaNXGepVYPsE32mXrMrJrd6fuqGVli/oZg=;
+ b=j4/uwNi+81R9bfV0E77qu7qxSa6EDqE0CawIBgRjcgjcVLqifro1A5wvckYqVo2r4X8X
+ ze+6qmfMW0zrf4xRVxH3BtyXDaPjYzqUCurJIn3CkoBAQL/5rNgNXdhbNHVsIqJbOHKo
+ BIb8FpjgK4BMQEItOSv5XgBc0NFnBpywcugteuA0TnagQN/f9bQeTwi21dTy1nMYDOhm
+ 2y6OU1LKE3hlbSMDb3uDrSVT4m497rMN51gaNMjKWUn6GhfbcI/VAVVxub/klAfL3XQD
+ KtUNOgH2EvYd+xitUIFYXYeNYZxOpyAUMlZf38KPJlOn9pH2qk/NzoajrczaNJFcKFir 6w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38ah0y1upr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 May 2021 09:21:50 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 143D2tkB037601;
+        Mon, 3 May 2021 09:21:50 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38ah0y1unu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 May 2021 09:21:50 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 143D9EQL006287;
+        Mon, 3 May 2021 13:21:48 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04fra.de.ibm.com with ESMTP id 388xm88da8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 May 2021 13:21:48 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 143DLjSH30081332
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 3 May 2021 13:21:45 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BDE7111C04A;
+        Mon,  3 May 2021 13:21:45 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B1FD111C050;
+        Mon,  3 May 2021 13:21:43 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.45.89])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  3 May 2021 13:21:43 +0000 (GMT)
+Message-ID: <bfc5e86e8bc0c04f028bd26e087828fc1a48e742.camel@linux.ibm.com>
+Subject: Re: [PATCH v4 04/11] ima: Move ima_reset_appraise_flags() call to
+ post hooks
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>,
+        "mjg59@google.com" <mjg59@google.com>
+Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+Date:   Mon, 03 May 2021 09:21:42 -0400
+In-Reply-To: <8c851eec3ae44d209c5b8e45dd67266e@huawei.com>
+References: <20210305151923.29039-1-roberto.sassu@huawei.com>
+         <20210305151923.29039-5-roberto.sassu@huawei.com>
+         <8e62ae3f8cf94c798fc1b7ffd69cbdc4@huawei.com>
+         <960b27ad2fa7e85a999f0ad600ba07546dc39f2b.camel@linux.ibm.com>
+         <8c851eec3ae44d209c5b8e45dd67266e@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: IN_gLspEvmKnJwqxQrOZeUF8eJ3I3snc
+X-Proofpoint-GUID: cBo7EJtqh5NwhtZS8h1-Vne6Cn9hwc5t
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-03_07:2021-05-03,2021-05-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
+ bulkscore=0 clxscore=1015 malwarescore=0 suspectscore=0 priorityscore=1501
+ phishscore=0 lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2105030089
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In 5/2/21 12:23 PM, Kees Cook wrote:
-> This reverts commit 03d1571d9513369c17e6848476763ebbd10ec2cb.
->
-> While /sys/kernel/debug/acpi/custom_method is already a privileged-only
-> API providing proxied arbitrary write access to kernel memory[1][2],
-> with existing race conditions[3] in buffer allocation and use that could
-> lead to memory leaks and use-after-free conditions, the above commit
-> appears to accidentally make the use-after-free conditions even easier
-> to accomplish. ("buf" is a global variable and prior kfree()s would set
-> buf back to NULL.)
->
-> This entire interface needs to be reworked (if not entirely removed).
->
-> [1] https://lore.kernel.org/lkml/20110222193250.GA23913@outflux.net/
-> [2] https://lore.kernel.org/lkml/201906221659.B618D83@keescook/
-> [3] https://lore.kernel.org/lkml/20170109231323.GA89642@beast/
->
-> Cc: Wenwen Wang <wenwen@cs.uga.edu>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
+On Mon, 2021-05-03 at 07:41 +0000, Roberto Sassu wrote:
+> 
+> > > > diff --git a/security/integrity/ima/ima_appraise.c
+> > > > b/security/integrity/ima/ima_appraise.c
+> > > > index 565e33ff19d0..1f029e4c8d7f 100644
+> > > > --- a/security/integrity/ima/ima_appraise.c
+> > > > +++ b/security/integrity/ima/ima_appraise.c
+> > > > @@ -577,21 +577,40 @@ int ima_inode_setxattr(struct dentry *dentry,
+> > const
+> > > > char *xattr_name,
+> > > >  	if (result == 1) {
+> > > >  		if (!xattr_value_len || (xvalue->type >= IMA_XATTR_LAST))
+> > > >  			return -EINVAL;
+> > > > -		ima_reset_appraise_flags(d_backing_inode(dentry),
+> > > > -			xvalue->type == EVM_IMA_XATTR_DIGSIG);
+> > > >  		result = 0;
+> > > >  	}
+> > > >  	return result;
+> > > >  }
+> > > >
+> > > > +void ima_inode_post_setxattr(struct dentry *dentry, const char
+> > > > *xattr_name,
+> > > > +			     const void *xattr_value, size_t xattr_value_len)
+> > > > +{
+> > > > +	const struct evm_ima_xattr_data *xvalue = xattr_value;
+> > > > +	int result;
+> > > > +
+> > > > +	result = ima_protect_xattr(dentry, xattr_name, xattr_value,
+> > > > +				   xattr_value_len);
+> > > > +	if (result == 1)
+> > > > +		ima_reset_appraise_flags(d_backing_inode(dentry),
+> > >
+> > > I found an issue in this patch.
+> > >
+> > > Moving ima_reset_appraise_flags() to the post hook causes this
+> > > function to be executed also when __vfs_setxattr_noperm() is
+> > > called.
+> > >
+> > > The problem is that at the end of a write IMA calls
+> > > ima_collect_measurement() to recalculate the file digest and
+> > > update security.ima. ima_collect_measurement() sets
+> > > IMA_COLLECTED.
+> > >
+> > > However, after that __vfs_setxattr_noperm() causes
+> > > IMA_COLLECTED to be reset, and to unnecessarily recalculate
+> > > the file digest. This wouldn't happen if ima_reset_appraise_flags()
+> > > is in the pre hook.
+> > >
+> > > I solved by replacing:
+> > > 	iint->flags &= ~IMA_DONE_MASK;
+> > > with:
+> > > 	iint->flags &= ~(IMA_DONE_MASK & ~IMA_COLLECTED);
+> > >
+> > > just when the IMA_CHANGE_XATTR bit is set. It should
+> > > not be a problem since setting an xattr does not influence
+> > > the file content.
+> > >
+> > > Mimi, what do you think?
+> > 
+> > Thank yor for noticing this.
+> > 
+> > Without seeing the actual change it is hard to tell.   The only place
+> > that "iint->flags &= ~IMA_DONE_MASK;" occurs is in neither of the above
+> > functions, but in process_measurement().  There it is a part of a
+> > compound "if" statement.  Perhaps it would be ok to change it for just
+> > the IMA_CHANGE_XATTR test, but definitely not for the other conditions,
+> > like untrusted mounts.
+> 
+> Ok. Should I include this change in this patch or in a separate patch?
+> 	
+> > Moving ima_reset_appraise_flags() to the post hooks is to minimize
+> > resetting the flags unnecessarily.  That is really a performance fix,
+> > not something necessary for making the EVM portable & immutable
+> > signatures more usable.  As much as possible, please minimize the
+> > changes to facilitate review and testing.
+> 
+> Ok.
 
-I have two patches submitted to linux-acpi to fix the most obvious bugs 
-in the current driver.  I don't think that just reverting this patch in 
-its entirety is a good solution: it still leaves the buf allocated in 
--EINVAL, as well as the weird case where a not fully consumed buffer can 
-be reallocated without being freed on a subsequent call.
+I'm really sorry, but the more I'm looking at the patch set, the more
+I'm realizing that a number of the changes are a result of this
+"performance improvement".   Without this change, reviewing the code
+would be simplified.  So yes, the patch set needs to be updated to
+reflect only what is needed to support making EVM portable & immutable
+signatures more usable.
 
-https://lore.kernel.org/linux-acpi/20210427185434.34885-1-mlangsdo@redhat.com/
+thanks,
 
-https://lore.kernel.org/linux-acpi/20210423152818.97077-1-mlangsdo@redhat.com/
-
-I support rewriting this driver in its entirety, but reverting one bad 
-patch to leave it in a different buggy state is less than ideal.
-
---Mark Langsdorf
+Mimi
 
