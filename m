@@ -2,73 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD52837216C
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 22:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C91C0372170
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 22:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbhECUiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 16:38:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229472AbhECUiI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 16:38:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0ABEC61165;
-        Mon,  3 May 2021 20:37:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620074235;
-        bh=e9qdCqIfx1vvezxv6qbUuo1yW/47SBtC40qZqqGOUKs=;
-        h=Subject:From:To:Date:From;
-        b=Rswqtrdo3Op2B/B5Lo8jnRiZxbRS69+GHewzExsZe1q9ip2gNRaAm4BRocMdIMWod
-         0sz2/a2R0go3aoLfpoIBcV74bWHK52LjTDbOvectPtyAtO22yZbknYW919/HLDDS6K
-         FDEp+OilaAymC/wBitoDeoO5ru24d86cwj9BOJK804eTLXuyJgqLCy/Q2CNkLrn9Gp
-         vrD5S6+avu+Z+wTf9S+pBLJYBrjk3r+xT2TvZ5x+VeGhpa0u/3WVZNO9KITpIMrX7c
-         uJJ1p6Dme58jmbkFYVzy8tYMLZJ5ysmsVlWe+LNa+oaCaasLntt3IiXWUasKrV1qzA
-         afgO71nNv7KYw==
-Message-ID: <aa931db0a2b0fd1e2b6bcabd54a031f8496c365b.camel@kernel.org>
-Subject: [ANNOUNCE] 5.4.115-rt57
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <wagi@monom.org>,
-        Clark Williams <williams@redhat.com>,
-        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>
-Date:   Mon, 03 May 2021 15:37:12 -0500
+        id S229648AbhECUjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 16:39:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229499AbhECUjE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 16:39:04 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F32A7C061761
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 13:38:10 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id s25so8505013lji.0
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 13:38:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ru07+XZDTxwzK4jUGyvNJ8nPyWHzD7JMhamPJRv956w=;
+        b=geyUfYKigOBv46IJHm5p8IRjI8P75fuuiW/8dFRm5UxxjsLXKnG0AdA6TEjgX07WUW
+         wx4tp76iM+hkxuhi+N3aipTpKG62Qw3bp0MG8Hd6UtnObxbVhLdBGa547sten8YOCRV3
+         icqs9/KRl6YDpzKXNaKZb0ZubRI/cyAyWZ6hs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ru07+XZDTxwzK4jUGyvNJ8nPyWHzD7JMhamPJRv956w=;
+        b=YnrnEs4ebxjEhLZV8J1oz/nvlaSTglCOZAHozxN/vpYcgb0bM8RQff/R/fJ4vq3YlD
+         HZTwVgOyTVgz1QD4APR1F5+pjnql9m+B9drEtxJmKLcI28lLyuoPBYxrMZ1yCjAeGzES
+         JzAidC0dobabDFmIDTkobR1S0bIiXIYX4jReyyh70ymmys/ZrYHs7avNVN4ZHVliV5hm
+         GUebib3E0rlMCkhc6bRIdGf9rsQka+k/bgrrawsdIduIYFVo6De+aMDjQrnb437YqrvI
+         WemVjX47xOCYdv7YoY1eQlfOq0bt1PwMYvTgGkGa3Nq8//pjp3pxN9QFoHDiUFPUa8oT
+         bZbA==
+X-Gm-Message-State: AOAM533X6PY7c0J9zjayjm4BzIkgBXMOQfgQSa9dlQKPwgLMg0jUFjFC
+        1bEvxrbRoV45RAdcfoh2O8qY3wFMIKVfFkCix0Q=
+X-Google-Smtp-Source: ABdhPJzr3AAg1YkzXEmAe6UtG2P2xbYOGZx4rTuRbf/YzOmYpTyOMmzSBPrxT8vVVXi65AGAEANt8Q==
+X-Received: by 2002:a2e:9116:: with SMTP id m22mr10198750ljg.176.1620074288704;
+        Mon, 03 May 2021 13:38:08 -0700 (PDT)
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
+        by smtp.gmail.com with ESMTPSA id a25sm1403583ljn.28.2021.05.03.13.38.07
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 13:38:08 -0700 (PDT)
+Received: by mail-lj1-f178.google.com with SMTP id d15so8437366ljo.12
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 13:38:07 -0700 (PDT)
+X-Received: by 2002:a05:651c:33a:: with SMTP id b26mr14791761ljp.220.1620074287361;
+ Mon, 03 May 2021 13:38:07 -0700 (PDT)
+MIME-Version: 1.0
+References: <8735v3ex3h.ffs@nanos.tec.linutronix.de> <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
+ <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com> <CALCETrV9bCenqzzaW6Ra18tCvNP-my09decTjmLDVZZAQxR6VA@mail.gmail.com>
+In-Reply-To: <CALCETrV9bCenqzzaW6Ra18tCvNP-my09decTjmLDVZZAQxR6VA@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 3 May 2021 13:37:51 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgo6XEz3VQ9ntqzWLR3-hm1YXrXUz4_heDs4wcLe9NYvA@mail.gmail.com>
+Message-ID: <CAHk-=wgo6XEz3VQ9ntqzWLR3-hm1YXrXUz4_heDs4wcLe9NYvA@mail.gmail.com>
+Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
+ registers for io_threads
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Stefan Metzmacher <metze@samba.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT Folks!
+On Mon, May 3, 2021 at 1:15 PM Andy Lutomirski <luto@kernel.org> wrote:
+>
+> On Mon, May 3, 2021 at 12:15 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> > So generally, the IO threads are now 100% normal threads - it's
+> > literally just that they never return to user space because they are
+> > always just doing the IO offload on the kernel side.
+> >
+> > That part is lovely, but part of the "100% IO threads" really is that
+> > they share the signal struct too, which in turn means that they very
+> > much show up as normal threads. Again, not a problem: they really
+> > _are_ normal threads for all intents and purposes.
+>
+> I'm a bit confused, though.  All the ptrace register access (AFAICS)
+> goes through ptrace_check_attach(), which should wait until the tracee
+> is stopped.  Does the io_uring thread now stop in response to ptrace
+> stop requests?
 
-I'm pleased to announce the 5.4.115-rt57 stable release.
+Yup. They really are 100% regular threads. Things like ^Z and friends
+also stop them now, and the freezer freezes them etc.
 
-This release is just an update to the new stable 5.4.115
-version and no RT specific changes have been made.
+And making PTRACE_ATTACH fail just causes gdb to fail.
 
-You can get this release via the git tree at:
+> Fair enough.  But I would really, really rather that gdb starts fixing
+> its amazingly broken assumptions about bitness.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+"Preach it, Brother"
 
-  branch: v5.4-rt
-  Head SHA1: 726d30934f4269f05ab15ddb3a6375ff000466ff
+> >    So I think Stefan's patch is reasonable, if not pretty. Literally
+> > becasue of that "make these threads look even more normal"
+>
+> I think it's reasonable except for the bit about copying the segment
+> regs.  Can we hardcode __USER_CS, etc, and, when gdb crashes or
+> otherwise malfunctions for compat programs, we can say that gdb needs
+> to stop sucking.
 
-Or to build 5.4.115-rt57 directly, the following patches should be applied:
+So that was actually my initial suggestion. Stefan really does seem to
+care about compat programs.
 
-  https://www.kernel.org/pub/linux/kernel/v5.x/linux-5.4.tar.xz
+Any "gdb breaks" would be good to motivate people to fix gdb, but the
+thing is, presumably nobody actually wants to touch gdb with a ten
+foot pole.
 
-  https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.4.115.xz
+And a "let's break gdb to encourage people to fix it" only works if
+people actually _do_ fit it. Which doesn't seem to be happening.
 
-  https://www.kernel.org/pub/linux/kernel/projects/rt/5.4/patch-5.4.115-rt57.patch.xz
+Two lines of kernel code seems to be the better option than hoping for
+gdb to be fixed.
 
-Enjoy!
-
-   Tom
-
+               Linus
