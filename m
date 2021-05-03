@@ -2,154 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD9AF3718D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D293718DD
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231182AbhECQG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 12:06:29 -0400
-Received: from mail-bn8nam12on2059.outbound.protection.outlook.com ([40.107.237.59]:15712
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231133AbhECQG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 12:06:28 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K4ZVQJYuFxTNKhYHeKYi6G7d3PPAQLd9cK756ACgjNbq819PDVvzdVMqEAfd/tfzunyB73bJSTwrD/ehxdcRY7NHVUiz+hAmZMFzp2mDmihPH7DE1rtFq1P5I3xVEn5h5YPFZ7WlswPMHdeYCELrZIJP6IFb1dcv4juKzYgFJygk4DSej3TH8xJOP5e7Bp6ZWTkW4bX1YeQA2uejxx/0Ew/bfQF0KPObn3+qB0KHOoEybTGGRTRvrAzV4CJ5YY09Fop5wi4OxQfnSbkhDZIPzCTzCH2EAw5w7jGa+kwNcs/kuzOdKtBrjjvUIbSXV/Xhq+2+2aAP14ywRbeSkl6dsg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5L2XLVuc7VtR24tCqFEn2YxELbEwg75eNiDbvo22F0M=;
- b=GhQHgH82TdZ2PFDTCR1flkJ+6QZVrcKlFKP48AL52K9zCF10trOCIEL8j6sGfe3KjkkFkwRFHoEkzYuVx5+9/aHL2MBBLak+Cje4pksax4r4TcEkrpajp2TD2AndjCbmV/UQKpvt//PJbpJLJgiCSrxXOwoZ/EuH6frFjFgI0vRMMAgoDi0Ck2wOd9X7+KppVXknOb0co+TV20mil1mlbF7266V7sS9m7TbiAKYWjj6NssErLRrBo4l2yidCapW3wJOnFlvVY3pZNz12KiFst//VNYiOERWHIM1LHex894VHh96zqrWkvcFXq1O/F55+5zszlXu6Fc0O2AXeqwo3MA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5L2XLVuc7VtR24tCqFEn2YxELbEwg75eNiDbvo22F0M=;
- b=Wi7jP3Ea0sNIfYfuQeaSDrlS34K4gqZS5x4Pg+QEIud3Z02mZAWx5HZgjpuYWrkT7eJ3LdvBnAV5QuU0IQKDneOoiC4TYCpPHb2JT1YNbZBvHbeYBnbe0OxpWwEb8gNmFNrwenOz7vNtSiGqx6J4/mSyD21SINIpiTSKb3r3/sQmE/0BxURvtgEpHb/NEVmfRDJTdL+rP12eB+buOokStKYziHuBQ5Oi9fERdUTBZ76LbucCDPLn2wb/1dBL0K76QR5l5+ERx0INnJddj5Rj9oKPceVv3udORU0mQ2/zHvdxU35y1uFGS/bRXtvZoLWyMDzNYDLcGP0S4BlvpJH+Uw==
-Authentication-Results: gibson.dropbear.id.au; dkim=none (message not signed)
- header.d=none;gibson.dropbear.id.au; dmarc=none action=none
- header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3212.namprd12.prod.outlook.com (2603:10b6:5:186::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.43; Mon, 3 May
- 2021 16:05:33 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4087.043; Mon, 3 May 2021
- 16:05:33 +0000
-Date:   Mon, 3 May 2021 13:05:30 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     David Gibson <david@gibson.dropbear.id.au>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210503160530.GL1370958@nvidia.com>
-References: <20210421105451.56d3670a@redhat.com>
- <20210421175203.GN1370958@nvidia.com>
- <20210421133312.15307c44@redhat.com>
- <20210421230301.GP1370958@nvidia.com>
- <20210422111337.6ac3624d@redhat.com>
- <YIeYJZOdgMN/orl0@yekko.fritz.box>
- <20210427172432.GE1370958@nvidia.com>
- <YIi5G4Wg/hpFqNdX@yekko.fritz.box>
- <20210429002149.GZ1370958@nvidia.com>
- <YIol9p3z8BTWFRh8@yekko>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YIol9p3z8BTWFRh8@yekko>
-X-Originating-IP: [206.223.160.26]
-X-ClientProxiedBy: YT2PR01CA0002.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:38::7) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S231166AbhECQJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 12:09:22 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:47955 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230210AbhECQJV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 12:09:21 -0400
+Received: from mail-wm1-f46.google.com ([209.85.128.46]) by
+ mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1N4h7p-1lWxI52Z1j-011nEf; Mon, 03 May 2021 18:08:26 +0200
+Received: by mail-wm1-f46.google.com with SMTP id k4-20020a7bc4040000b02901331d89fb83so3824109wmi.5;
+        Mon, 03 May 2021 09:08:26 -0700 (PDT)
+X-Gm-Message-State: AOAM531V/p+Kd8tUJwf5HIvQg1LXfkIK7Uns8T2Yi46cXrrlcPNWIQ/5
+        /0zto/t2nLrSYTS+Y3xgPMxpt5rJcNmG/TXsZjo=
+X-Google-Smtp-Source: ABdhPJxYMTQJVWw4WAAd9FKPLJo6XWwuPeyfNnK3keAI5ERAvz63WNcWg2FiOjsFOVj9CWG/OQW083WJQcY7aApQpDg=
+X-Received: by 2002:a7b:c846:: with SMTP id c6mr32166374wml.75.1620058106200;
+ Mon, 03 May 2021 09:08:26 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by YT2PR01CA0002.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:38::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.39 via Frontend Transport; Mon, 3 May 2021 16:05:32 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ldb4c-00GNw4-A5; Mon, 03 May 2021 13:05:30 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a8afecc6-dd9b-470e-2422-08d90e4d47a3
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3212:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB321267B8E6823D61FD815BF8C25B9@DM6PR12MB3212.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Jz0ZBLQ+DBqavnStXwHKVIwE8+mqp4QGXSsWa6j1gRKbOOHmF88EL3em1cddXI1Q7w91HOxtzHcyLetU5ZoReI8V25QWC/n6QxZae33KZoCx/2Cw95g+Hl7SvwpAFAefCqAl6CHq1Mo0qwv87bYbVTV966hcaBGnO4Ho/fXJLADi/oppuWKbwaj1DHnjAPEIEkLGiBf1kGxlBu+MkKTsY3MS9LXrm7nGk7agb0bXub8gssmAPzNcYqyijm2Ie4g+F8qQXwQY8y3LYZK9hBlzSXULDtMSJE6JQeLFcu2kmKPwdbXljx3kt8bfD559ppvriYVku+UyH2cR1g21bUc+eI0RnP5TRQZkeb+mNTOG19k7DKsYN20frO478qm+tE8Nh/pTDB3cwIUlf2wiwxIVvMbLrxqouoFltqcLaJjQxe/P7I+K7pwmOK/88O5JwTKPotK5vvlYQSFQoZqVElB4aQKBfLwht6G9lFdUPlXRT5Dtx+Q8E+JAG9Hu58dTvd/oOlE3j97qOFYgNS62G6xu0y3zGQjRFCcpAuaG5LlTrgo+kep5+EZBXPOtkz3iV1OT8jEAswcm//wDxzoYfRvvdVu1DkSFSjVbG7r4BAZccNg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(366004)(136003)(39860400002)(8676002)(186003)(33656002)(478600001)(8936002)(38100700002)(66556008)(1076003)(426003)(2616005)(6916009)(36756003)(26005)(2906002)(66476007)(86362001)(66946007)(316002)(7416002)(9786002)(9746002)(5660300002)(4744005)(4326008)(54906003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?cJkb6uk4OhwcMBnNmeJblzK7mFZZd/ezDOw60xiwGPKX2b3CjCmrpu4gqFJi?=
- =?us-ascii?Q?DZIZ0Mz8WEornubgoca77jG4Gz4UEJj4Fa4hvpHhmZA8hyCd8ogrKXX9DdvE?=
- =?us-ascii?Q?yCWqYhDO+8MVZymhKY3Wltm8wObXYABZaIQ2wxzU7NpqFiy293rkUPPyFWGp?=
- =?us-ascii?Q?hJ9iU/IAmJMkunE6LDtdPDnx7bdLGzkEsCEKRx1sZr1XPSPX4PFoVI9gimrl?=
- =?us-ascii?Q?EVZwNajDqKxTopCkKS17myjZ1t8LwamqRf2bJnUlXZcXQCE75Ij8NIKmMCRj?=
- =?us-ascii?Q?NNi8b7+YnakEnCBV2Lf11LCrE5FfR2qeX3cVcMtfLXhqYk7ZRXdetjfhIrxi?=
- =?us-ascii?Q?wJ67T0CV6unJlNwSpYTMe4ZdFzFQX+3PZcaHFjKeXhG4NWAmoHLd+n9vZeus?=
- =?us-ascii?Q?gnWoE04hIdF3z3BbC9QbsH5N422rTBYKcPgcyy0L8jExfO4LSXS5w4pXWdjr?=
- =?us-ascii?Q?O6z0JQvdosq4s80ETthmpvY/8JInLGM4fLZjOaTjfkuXfmtqmkh4IRRK2t+Y?=
- =?us-ascii?Q?VFiqET2g06PQo0XDRrA8WANRpNYa2cIAzHjYA2NHWN7CFKMTGjsnjb3rs98Z?=
- =?us-ascii?Q?Um6Ygx4ZkLswO4B+gIFPdoBas3JExiW4IwAlyUV+Tn53Br2SVNxzjKA4OWDm?=
- =?us-ascii?Q?cAMjGmA9ahSI8Ds564JhjdQMCJhCyoQYfevshMLVJQwA5quFqcJBRNWORsae?=
- =?us-ascii?Q?G5fCHGkE/hndIneuZ1qFFchKPvp87Ft+qNhsRPadnmpYMdbKJEJ++lBKf7fi?=
- =?us-ascii?Q?7d2agQ2M9bCVUEAnNEbteIzTrJc3c5YSszZTUBJXWbDjipjNWSOT5BoATJiI?=
- =?us-ascii?Q?DqFKA/HF2w1I3xUNYd/vzuUPfUd6t+7LmSV4fwXdFGZnjOUF5Ah7RUZZSiTz?=
- =?us-ascii?Q?tTRLBzDxj+AB6Ouucg82otfDyBd+gsu3I3vZV6f0A0vk3yoHXb0uEyzMsyVO?=
- =?us-ascii?Q?+8iluTKgf+FWgQXaDNYLoPibNH0z4iV4VGBvD/B+hR/SCbjolGaEsJWtkcRt?=
- =?us-ascii?Q?RRGThdjI4sg4OeX8Ky/8/qTQCgUFLrudtLl3U6u7aSF8p8mkgIpP8a+cVyl7?=
- =?us-ascii?Q?BHTxVwl5Vaz3CNnZhxzZsle/SqrbFHhq0wsoXpfrYCuhyJ7bFIAJ2MwrPqE5?=
- =?us-ascii?Q?qzbkHO2JQyZjIyuET79eaHwmkx2hTBZtofjmodqDC6MqFnyGZDNVyBwCRCyc?=
- =?us-ascii?Q?Jje8m9XSeQW4m7w7aXXQRFnbYyXl8Y0BRfOr7Sh6KYIk/QrX95BsVsLPp3Wb?=
- =?us-ascii?Q?ttJ0saqPZQ2wKwCNsGtYZBRLSCVPCLdPIEmBdK+3VBlHcAME7oAa+tZiCdQH?=
- =?us-ascii?Q?pOhTBW9lXDeH+nOPM6QYGPuH?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a8afecc6-dd9b-470e-2422-08d90e4d47a3
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2021 16:05:33.0448
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7xsuIVxNjE+atuaSiQeBCCLNGPIzvmGcc5DjK+5h8qsA3c37lolYFMMd2ZqyWyHS
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3212
+References: <20210430111641.1911207-1-schnelle@linux.ibm.com>
+In-Reply-To: <20210430111641.1911207-1-schnelle@linux.ibm.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 3 May 2021 18:07:41 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3mCujxC0=_cL6Z88Xh2cb=OY_Ct7DVpJNvRn1v9=FhkQ@mail.gmail.com>
+Message-ID: <CAK8P3a3mCujxC0=_cL6Z88Xh2cb=OY_Ct7DVpJNvRn1v9=FhkQ@mail.gmail.com>
+Subject: Re: [PATCH v4 0/3] asm-generic/io.h: Silence -Wnull-pointer-arithmetic
+ warning on PCI_IOBASE
+To:     Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     Vineet Gupta <vgupta@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        "open list:SYNOPSYS ARC ARCHITECTURE" 
+        <linux-snps-arc@lists.infradead.org>,
+        sparclinux <sparclinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:ttSkI0gIoMXApQ/NBgONSZBhlv+vaN7DOdJfzbslazuqcGkP+6H
+ zYKG9HAdkR7tAYwUPZNv8X6mYjOFVpYg1Lhxzah2tOWyriam/QFjvSLRZcobJN6S8vbwTFc
+ bepQ0B7o9Bs0sIEiZV5RHF9TzhIeVoroYF3/D7pUVCaWiXBSpeXIdCtCLdLr3otNnFjhJy7
+ /5x8cJck19z7A3E0ws28A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:MuVa7V+jiQg=:RIpZ9QCoWYxQBrCcu2dzUS
+ PIZ6R/5v5sSAxKQ+nuH/yVsu3Uox4mrrxgxRvsnKo1BNY2xYQgYoFyEwbNvBCZNjdtpjQQ5Op
+ bTvJ3JO29LSMldV9WF1DeTDKZMkPawd5ZI+H2stUxS6nKDZF2UjKrY61DF5gXWWGdGVkivAhS
+ Uckf0Ah3BCjv5b0quFY0QAEFz3f1PbqhcmlzEErbQFj1Yjt+8mvzSlepaXgVD+l67uWuanItU
+ dhQCA9AoKBTSkKOLbwrmMa8ItR3LYcAvH7I8XJ2MwJl+ouTgJ51T3akf9zkIatNqrJ/n7qNgP
+ K/LDindeju1wJ0m1nltOaJ2AoKPCGSzm4tAPS911fIRpr1SOTGz+/MP4Yhk7H3dzQ0BRWhSO/
+ AR+TXu5lqZQjrbYhDVsQfuijMU7zxjtz0mTKuk3CPnNM34h66JzXBfL7piWGN6tJoJFie8Drm
+ yCGKpko2IeFw5JzPpQHT0xsNoeqP4U0QixWWzJQ7GjMip38EN1taKYgtY4YFA6OnzuKfcv7ks
+ V9kecgcNEhQDk0FPfAlLpG/adqAIPMPmYM5t+2GBHQE1nQtAArN0pX8p27IKEpahwKaTZn77M
+ CsFxrcSUu9665NQiWW6EcGGzznpWwM2tT1AamvpJXlGs/7XQwHTNkf8wx63InB6eSJq7Gw1YC
+ hS5Y=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 01:20:22PM +1000, David Gibson wrote:
-> > There is a certain appeal to having some
-> > 'PPC_TCE_CREATE_SPECIAL_IOASID' entry point that has a wack of extra
-> > information like windows that can be optionally called by the viommu
-> > driver and it remains well defined and described.
-> 
-> Windows really aren't ppc specific.  They're absolutely there on x86
-> and everything else as well - it's just that people are used to having
-> a window at 0..<something largish> that you can often get away with
-> treating it sloppily.
+On Fri, Apr 30, 2021 at 1:16 PM Niklas Schnelle <schnelle@linux.ibm.com> wrote:
+>
+> From: Niklas Schnelle <niklas@komani.de>
+>
+> This is version 4 of my attempt to get rid of a clang
+> -Wnull-pointer-arithmetic warning for the use of PCI_IOBASE in
+> asm-generic/io.h. This was originally found on s390 but should apply to
+> all platforms leaving PCI_IOBASE undefined while making use of the inb()
+> and friends helpers from asm-generic/io.h.
+>
+> This applies cleanly and was compile tested on top of v5.12 for the
+> previously broken ARC, nds32, h8300 and risc-v architecture
+>
+> I did boot test this only on x86_64 and s390x the former implements
+> inb() itself while the latter would emit a WARN_ONCE() but no drivers
+> use inb().
 
-My point is this detailed control seems to go on to more than just
-windows. As you say the vIOMMU is emulating specific HW that needs to
-have kernel interfaces to match it exactly.
+This looks all fine to me, but with the merge window open right now, I
+can't add it into linux-next yet, and it wouldn't qualify as a bugfix for 5.13.
 
-I'm remarking that trying to unify every HW IOMMU implementation that
-ever has/will exist into a generic API complete enough to allow the
-vIOMMU to be created is likely to result in an API too complicated to
-understand..
+Please resend them to me after -rc1 is out so I can merge it for
+5.14 through the asm-generic tree.
 
-Jason
+Please add two small changes to the changelog texts:
+
+- for patch 3, please include a 'Link: tag' to the lore archive of the
+  previous discussion, that should cover any questions that people
+  may have
+
+- for the risc-v patch, I would suggest explaining that this fixes
+  an existing runtime bug, not just a compiler error:
+  | This is already broken, as accessing a fixed I/O port number of
+  | an ISA device on NOMMU RISC-V would turn into a NULL pointer
+  | dereference.
+  Feel free to either copy this, or use your own explanation.
+
+       Arnd
