@@ -2,220 +2,381 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6345837204A
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 21:18:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2972372058
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 21:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229700AbhECTTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 15:19:41 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:60694 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229677AbhECTTj (ORCPT
+        id S229595AbhECTYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 15:24:34 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:13607 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhECTYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 15:19:39 -0400
-Received: from mailhost.synopsys.com (sv1-mailhost2.synopsys.com [10.205.2.132])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        Mon, 3 May 2021 15:24:32 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620069819; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=zSbtczGrL5Klsa/uGQiQx/Y/vrfEEMLdvsxiLktthNg=;
+ b=pqTf+Lsyg5UxGTLPZXAD3FtksIV/DSXitNxFc3HGjbTSgyVw7HF0F1fYYFoYSHoAAA5LGCsN
+ Pt2QeanSEg6KkJTSNKCICoXrFrmBHsq8yPkrh2cSj/LZxrqdrD6lq+iTorPmrTWTfcL6vdgc
+ EzMwvk2C3aUpWjFDMT/qiDYtKJk=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60904db79a9ff96d95325f73 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 03 May 2021 19:23:35
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 37DD9C433F1; Mon,  3 May 2021 19:23:35 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 7966BC000E;
-        Mon,  3 May 2021 19:18:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1620069525; bh=RLFhFcct3sZyHHEEdlld+8h7UrRO1toxzcabCPMoraY=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-        b=gXNl6ueiNIpVNa+W87QeNOsaXVo+WliP0nGs7Ryky050wIUZaRx0KrDl79J+rmpkG
-         qzDo2smYuMhXMdZR55q22kdewCXKIziXq3/Q47QkprqMPlBgdtn6eBj+hRzPYQM1Xj
-         wWzOjpRmOoH27BAP7zjbDiIqDsRMiNOUHUHHqjNMZFPA2U/xf8RWNjoaKB6Xa9pOuf
-         s+2zxuFntBuJg/Znza/lnYM1ROorwtI8eW9ML8Ht5qvTLU/RPYdyL5Jw4mTLfYQ8xB
-         xWSRsZaNsjgtbXapr2NSiUS2JVdK/7te0rsdBRiXzitLhyuGEqz3AqKLK1TYmrptKA
-         NIkTs/qfHiAww==
-Received: from o365relay-in.synopsys.com (sv2-o365relay1.synopsys.com [10.202.1.137])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mailhost.synopsys.com (Postfix) with ESMTPS id DD93BA0070;
-        Mon,  3 May 2021 19:18:41 +0000 (UTC)
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam08lp2049.outbound.protection.outlook.com [104.47.74.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "mail.protection.outlook.com", Issuer "DigiCert Cloud Services CA-1" (verified OK))
-        by o365relay-in.synopsys.com (Postfix) with ESMTPS id 98FC64011C;
-        Mon,  3 May 2021 19:18:40 +0000 (UTC)
-Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
-Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=vgupta@synopsys.com
-Authentication-Results: o365relay-in.synopsys.com;
-        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="Qvyvb946";
-        dkim-atps=neutral
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IP5KGSeyNq8oLoM+otqpyJAeXL2C2nhIi8xb48Hoh5r+qR/gPFbUiNNzy/pMEkYw0YROZdfhHNBA29OhjO6mtad3zhJ0W4aeXNtYVKS48dO4qwH5eoevojIicgIPnFeH+nMFk5mB8t9jXmolrSOiE+ram731mHrGWPDFwK4x1wJZ5/QGFpAaoUCtE+tyOHA0vtOdnpPW47EzGJYNKJO0Ps4ofZuf8xAjIihVKDoQw24yT/eN9aKezQwIcliVZj8r1YNKoXe5ntYLzoXaYHrpMorEMVl6wEGKeDUi8TYocEt5kMbjdnZemH9lneeAHSiBcQQ9G5NswZbUf8NdAEIv+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RLFhFcct3sZyHHEEdlld+8h7UrRO1toxzcabCPMoraY=;
- b=YNPagun7IC2FQv97dWAH4yDMS3pOLGvLvfbr+5MF4fBVZkv9Hcb6U026FZVp5vRdnJPqmtvEyTyHFgqhWAhV8haWc0iQLvyk6dscXEomp06k9sruWXTlGMcluPg16sRR7WVp8Zo2b1+OA5m7tA00VxbpKpb8Ou5SJvsa+CSUFuCwv3S3qZDXllNf74TkEhH9MLqU8i6IuM/7xOabl9yRXopGZNXIabn4MBNZ3BXHXQnnlA+SFe0JH4JZCA1ae0Scs5BD+vS4yeR/1ICq+ho0RKXvSEuQyogGuY34Ct29qe4QW+2lY0SdK2GiGu+PIcpip2D9iPlgOymTUBCbaKd68g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
- dkim=pass header.d=synopsys.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RLFhFcct3sZyHHEEdlld+8h7UrRO1toxzcabCPMoraY=;
- b=Qvyvb946qGeedNVVwZCLeuGVr32bGcmDuPTTiG36SnSNhaZy4YlrPPuuwWOPiww5RQfoXwLQuFDXfSVhstL5jzbR+Yw9NPon5wcFUFm6crjVNRECJZ3gWYeercyXDM9fCjq638+YRLV53u/GGkAfgf4YjDuaGkzWuO6R4RLSX2Q=
-Received: from BYAPR12MB3479.namprd12.prod.outlook.com (2603:10b6:a03:dc::26)
- by BY5PR12MB3940.namprd12.prod.outlook.com (2603:10b6:a03:1a8::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.38; Mon, 3 May
- 2021 19:18:38 +0000
-Received: from BYAPR12MB3479.namprd12.prod.outlook.com
- ([fe80::d1a0:ed05:b9cc:e94d]) by BYAPR12MB3479.namprd12.prod.outlook.com
- ([fe80::d1a0:ed05:b9cc:e94d%7]) with mapi id 15.20.4087.043; Mon, 3 May 2021
- 19:18:38 +0000
-X-SNPS-Relay: synopsys.com
-From:   Vineet Gupta <Vineet.Gupta1@synopsys.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Vineet Gupta <Vineet.Gupta1@synopsys.com>
-CC:     Arnd Bergmann <arnd@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        arcml <linux-snps-arc@lists.infradead.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
-Subject: Re: Heads up: gcc miscompiling initramfs zlib decompression code at
- -O3
-Thread-Topic: Heads up: gcc miscompiling initramfs zlib decompression code at
- -O3
-Thread-Index: AQHXPgHd1RlrjZ3rIE6wtN03PsVzsqrSCyeAgAAbEYA=
-Date:   Mon, 3 May 2021 19:18:38 +0000
-Message-ID: <e37b5c4c-f22d-ca3d-2361-40e8ba95cb12@synopsys.com>
-References: <75d07691-1e4f-741f-9852-38c0b4f520bc@synopsys.com>
- <CAHk-=wi4Rgo7f17AwYduEPKr6SEVq-mxRJiZ5S5X0hQ9RWmkYA@mail.gmail.com>
-In-Reply-To: <CAHk-=wi4Rgo7f17AwYduEPKr6SEVq-mxRJiZ5S5X0hQ9RWmkYA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-authentication-results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=synopsys.com;
-x-originating-ip: [24.4.73.83]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 54fbc952-b321-402d-f1e0-08d90e68414b
-x-ms-traffictypediagnostic: BY5PR12MB3940:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR12MB3940CA9FF7EB4BBE58B88BC1B65B9@BY5PR12MB3940.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: aBRvpZxdtGXZHKzubzoGf3D7Uy6bwFYtwYmZZ9MO1zKjyClRdWOuSDede2DXtyXhX9NTNLA04iEjy6Mb8mq6L/aqSkgHLTt5RcSaw1ikAmsXLsYI3vYcyQ9/SvcB2UCUL3LBJe9sPW61H58OWKzqsKbBMuEqTCMXYlec8R3AW5VfmOYDYiN2WR9jGaJGBjGn9leCQtf0jUWCVXLDkyQvCRRckSPEVJABFGRN2jfgxtoeb48MNU4yLObrO+pgqYmA76nlvTb2lvR8BGJJOcaktxboKNiRsXGzOf6d5YEEM4nACAtioSWMEFx3AkNmPxGIf+VepBxcVuVf9wzPYb8MmG3N3pQ1l+RKA0+XaAjlHecaGv2x+bIYwqtSC7XAXwk6PrwKYGRd5XaUYzFPVjx8cm7noIxZm1OGgYNME4SL57iHHZjV4S8TdeWQ3M6u8wCDuOI3Gbf0evN1Ver9B74VDPGBRIvJ2NNQ04PSutw1hG1W1BvVqrHA5DB8HVZFoWCwRsEijSthJib7qThWsZ837LpWf+ucq6T7iNKUheSUi6RGO95Mq1EZj8OS7fPD3G7/yPkUFLxZDXfnU/nkFr/S0ebWxO94uoyEwwQyYnjW4/3PfaAVGlxJThkOONtvBoMOBbdSOsYwNvwN8MktgB6dF8pF+uD2wVnXt+s8bIk5C09uWNZyOtPCAzvZeMeWE/uf
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3479.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(346002)(366004)(376002)(39860400002)(478600001)(5660300002)(86362001)(66476007)(66556008)(31696002)(71200400001)(38100700002)(2906002)(66446008)(64756008)(122000001)(83380400001)(66946007)(31686004)(76116006)(186003)(2616005)(8676002)(6512007)(54906003)(6486002)(316002)(110136005)(26005)(8936002)(53546011)(6506007)(36756003)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?YWcwM0tINHVwTEU4Sjc1VUtSbmxmZGlsVFhDUm9lWC93NkwrUy8wSzQ4VTFS?=
- =?utf-8?B?elptUEpDaU5iWW83L0NxMldSQk9ySnRPV00vN2tVVktWNkhqZHgrZUNjdWdG?=
- =?utf-8?B?aTIvaEhzVXhEVVhBUUhZVnFpSEU2ZFlJZUJBUjZVZG4yek5QcGZHdFdXbmF6?=
- =?utf-8?B?MmcyVm1pdWlKaXh2T0JNTzA3ZkI3ZUlVdEZkVlJrMzd5VlQrT2lSL2ZsWWF3?=
- =?utf-8?B?WklrTlVXOFg5bnREeVU5UWVKa0FOYWRHZ1UzSk5Rd1NueTVCMVE0TzFiU1la?=
- =?utf-8?B?bEoxYlhJUitsM3ltaXNXcVFod3dHcXh5OENqZ3NoQms2Um5wSEdXZnk3WGFX?=
- =?utf-8?B?OFFaQnVqakRoUUZKeHpBa0d5MkcxQ2k4aWNsZEUya3hDQlBTVGdMV1hIVDZE?=
- =?utf-8?B?blVSWlYvaGFnM1V1eEVja2NXN0xYcEdsUHdNYlRjU0Mva3g5bnZoTGJCaXVZ?=
- =?utf-8?B?WWpTNlVLOU4vTFJNNGFjVUNJZzVlWVpseHRZWmRud3psMGloMm1NaGhNTDlp?=
- =?utf-8?B?UTlqUFhESHptbnV1UUdaMmhEM0hMNXRGOWV4TSttcTlZRXNRckkzeThJc2R3?=
- =?utf-8?B?WUF0MkpqWVVCSW5hMWhxZm5CTno1ZEEyeVp3ZmZxSUNBWFhEVGZDcnpQbytn?=
- =?utf-8?B?L3U5cHBpa2pKTWZYb3hlYVlnQVdEUmxFZ2RlViszdktSdnozd1VaMEpFdGlo?=
- =?utf-8?B?SVRjK2lyelpDQW1jR3BXTkVWUCtRT1pZVER3cCtvejF3elZCN1FheE9yY2dY?=
- =?utf-8?B?Q3JjejE2SjhSdzlFeVN6enhnYUI3MkhLaEd4OUIyVlMxVjBpSkxoUmFUNjhY?=
- =?utf-8?B?Vzh4NjlkeE9sbW5MUTV5Wm5wK2NxMnppN3lsSDJ1K2wxa2hyd2E3VUlmN3Bp?=
- =?utf-8?B?a1lMTnl2bFdhbUVycGFPeTZBZVN0elFRTTFYUkp1WXNzWVZ3SXhhZE9uaUpz?=
- =?utf-8?B?bVZJdzhwblM3VzVPVEQvcFNMbmFhSzZQUGFVQ21hU0kweThlV1dsWWMzY0lL?=
- =?utf-8?B?OUxKODVCMW9Nd1NzRFFtM0dYdmczTnVmL05BVzJ5ZHVnMGk2eUZXZFlGSkdu?=
- =?utf-8?B?NEhXM1M1aVZXdkRxR242WU53eDhxbER0WXo3OVUxSXF6VHZnUm9HQVJ0QjFW?=
- =?utf-8?B?ZlRKcmpMSFV0UU5OTEdXL0FsbTNTMVUvbDAvZGIyTStqZkFOaWcvdkpaRDNR?=
- =?utf-8?B?eGlWMzlkOVN4dCt1YVZKeXlFVHVaUStyKyt4TDJ4dHlaVklmMzd5dEFNMzBE?=
- =?utf-8?B?L1VyaWk0czEwL3ovbDh6SU15Ui9CYWRWejAzRy9RYnkxS3c3N24ybXBOK3VR?=
- =?utf-8?B?UzhkZEE5aUdaZjZDS2lwUnV6TzQyQnhoaUp3RmNPTW1mcC9ROEN4WGFSUTNS?=
- =?utf-8?B?MzNHWENGblFTcG10OVhQQ2tQUHJUN0U3WnBpWTJQL0tvZHJWaC9Pa1NLalVF?=
- =?utf-8?B?aWNlVjFyemhOTXNLZjhINUJkL0VHdDZyQnlWai96RjNiWmRWeGlFVXhnUTBH?=
- =?utf-8?B?K3hlZlhyQytmUm5rUkdCYVF6S0hwVWFiVkdpcDVrdGpFc3NXcUpJN09NQkdk?=
- =?utf-8?B?R2FFekhjSTIwdGIyK01PRFdtaVkyRHV2eTdHS3VIVVRSOXB2ZUJ2MUVsRUtt?=
- =?utf-8?B?MW51YUVHc0lsYXBwcDFRdDZkemZLMktZbjVlb1ZZNWpMaHQ0NmJ4WERCVmpr?=
- =?utf-8?B?MUVaWVV2RFJzZWpFc29KK3dXRlg4WHMrOHVxV1ZYYTFqRUJJaUNOMXVMQk1a?=
- =?utf-8?Q?3sUZJv4kqE2suDXB+w=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <8830F9400C82794DBD80B249E926FCD2@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B68B5C433D3;
+        Mon,  3 May 2021 19:23:31 +0000 (UTC)
 MIME-Version: 1.0
-X-OriginatorOrg: synopsys.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3479.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 54fbc952-b321-402d-f1e0-08d90e68414b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 May 2021 19:18:38.2590
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RYihg/uzg7DlpWI8Yi2xqBv+AX1MHmyzwghClh23SoOuEITBY6fCubLr27QAX0ouAlOeP4FOKcwQFNlZ+sVEVA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB3940
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 03 May 2021 12:23:31 -0700
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     aravindh@codeaurora.org, robdclark@gmail.com, sean@poorly.run,
+        abhinavk@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] drm/msm/dp: service only one irq_hpd if there are
+ multiple irq_hpd pending
+In-Reply-To: <CAE-0n50J1JkaBa5XQmHS8Fe2W5R2fXKpLoTWbH0RshRZivGZWw@mail.gmail.com>
+References: <1618604877-28297-1-git-send-email-khsieh@codeaurora.org>
+ <161895606268.46595.2841353121480638642@swboyd.mtv.corp.google.com>
+ <e3c3ef96ac507da6f138106f70c78ed2@codeaurora.org>
+ <ddc1e372c5f864cd62c4e056ef2e6404@codeaurora.org>
+ <CAE-0n53JNCc3JdONogGNArnsYLDr9E2fXZ2ODKBy7Jy3yVMr6g@mail.gmail.com>
+ <9ccdef6e1a1b47bd8d99594831f51094@codeaurora.org>
+ <CAE-0n533ZCaQkP7+XN+Ee9CG-r7vJD7LHG7_H8v7sVpimmQabg@mail.gmail.com>
+ <d88cd3e0af511ed60c12ce616ce22415@codeaurora.org>
+ <CAE-0n50J1JkaBa5XQmHS8Fe2W5R2fXKpLoTWbH0RshRZivGZWw@mail.gmail.com>
+Message-ID: <9564c684fb1c14a1df0068d42c749a8e@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gNS8zLzIxIDEwOjQxIEFNLCBMaW51cyBUb3J2YWxkcyB3cm90ZToNCj4gT24gRnJpLCBBcHIg
-MzAsIDIwMjEgYXQgMTo0NiBQTSBWaW5lZXQgR3VwdGEgPFZpbmVldC5HdXB0YTFAc3lub3BzeXMu
-Y29tPiB3cm90ZToNCj4+IEkndmUgaGl0IGEgbWFpbmxpbmUgZ2NjIDEwLjIgKGFsc28gZ2NjIDku
-MykgYnVnIHdoaWNoIHRyaWdnZXJzIGF0IC1PMw0KPj4gY2F1c2luZyB3cm9uZyBjb2RlZ2VuLg0K
-PiBTbyBpdCBkb2VzIHNlZW0gdG8gYmUgYSBnY2MgYnVnIG9yIGF0IGxlYXN0IG1pcy1mZWF0dXJl
-IHdoZXJlIGdjYyBnZXRzDQo+IHRoZSBhbGlhc2luZyBkZWNpc2lvbiB3cm9uZyB3aGVuIHZlY3Rv
-cml6aW5nIHRoZSBjb2RlLg0KPg0KPiBUaGF0IHNhaWQsIHRoZSBmYWN0IHRoYXQgZ2NjIGV2ZW4g
-dHJpZXMgdG8gdmVjdG9yaXplIHRoZSBjb2RlIHNob3dzDQo+IGhvdyBwb2ludGxlc3MgaXQgd2Fz
-IGZvciB1cyB0byAoeWVhcnMgYWdvKSB0cnkgdG8gbWFrZSBpdCB1c2UgMTYtYml0DQo+IGFjY2Vz
-c2VzIGluIHRoZSBmaXJzdCBwbGFjZS4NCj4NCj4gU28gY2FuIHlvdSB0cnkgdGhpcyBwYXRjaCB0
-aGF0IGJhc2ljYWxseSByZXZlcnRzIHNvbWUgb2YgdGhvc2UNCj4ga2VybmVsLXNwZWNpZmljIGNo
-YW5nZXMgdG8gemxpYidzIGluZmZhc3QuYyAtIGFuZCBkb2VzIHNvIGJ5IGp1c3QNCj4gdXBncmFk
-aW5nIGl0IHRvIGEgbmV3ZXIgdmVyc2lvbiBmcm9tIGEgbW9yZSBtb2Rlcm4gemxpYiAod2hpY2gg
-aW4gdGhpcw0KPiBjYXNlIHN0aWxsIG1lYW5zICJmcm9tIDIwMTciLCBidXQgdGhhdCdzIHRoZSBt
-b3N0IHJlY2VudCB2ZXJzaW9uIHRoZXJlDQo+IGlzKS4NCj4NCj4gVGhpcyBpcyBhIGZhaXJseSBx
-dWljayBoYWNrLCBhbmQgSSByZWFsbHkgdHJpZWQgdG8ga2VlcCBpdCB0byBqdXN0DQo+IGluZmZh
-c3QuYyBhbmQgaW5mdHJlZXMuYyB3aXRoIGEgZmV3IG1pbmltYWwgZml4dXBzIHRvIGluZmxhdGUu
-Yw0KPiBpdHNlbGYuDQo+DQo+IE1vc3Qgb2YgdGhlIGNoYW5nZXMgYXJlIGZvciBuYW1pbmcgKHdo
-aWNoIHNlZW1zIHRvIGJlIGF0IGxlYXN0IHBhcnRseQ0KPiBmb3IgQysrIG5hbWVzcGFjZSByZWFz
-b25zLCBpZSAidGhpcyIgLT4gImhlcmUiKSwgYnV0IHRoZXJlJ3Mgc29tZQ0KPiBjbGVhbnVwIHdy
-dCBtYXhpbXVtIHRhYmxlIHNpemVzIGV0YyB0b28uDQo+DQo+IE5PVEUhIEkgaGF2ZSBub3QgdGVz
-dGVkIHRoaXMgcGF0Y2ggaW4gYW55IG90aGVyIHdheSB0aGFuICJpdCBjb21waWxlcw0KPiB3aXRo
-IGFsbG1vZGNvbmZpZyIuIFRoZSBkaWZmIGxvb2tzIHJlYXNvbmFibGUgdG8gbWUsIGJ1dCB0aGF0
-J3MgYWxsDQo+IEknbSByZWFsbHkgZ29pbmcgdG8gc2F5Lg0KPg0KPiBEb2VzIHRoaXMgYXZvaWQg
-dGhlIGdjYyAtTzMgcHJvYmxlbSBmb3IgeW91Pw0KDQpZZXMgaXQgZG9lcy4gSSBidWlsdCB0aGUg
-Zm9sbG93aW5nOg0KDQoyMDIxLTA1LTAzIGI5M2JlZGNmOGZhNCBVcGRhdGUgemxpYiBpbmZmYXN0
-IGNvZGUgdG8gbW9yZSBtb2Rlcm4gemxpYg0KMjAyMS0wMi0yNiBlYTY4MDk4NTQ2OGYgQVJDOiBm
-aXggQ09ORklHX0hBUkRFTkVEX1VTRVJDT1BZDQoyMDIxLTA0LTIzIGY3MTE4ZjhhZGExYiBBUkM6
-IGVudHJ5OiBmaXggb2ZmLWJ5LW9uZSBlcnJvciBpbiBzeXNjYWxsIA0KbnVtYmVyIHZhbGlkYXRp
-b24NCjIwMjEtMDQtMjEgMWNiN2VlZmRhN2VkIEFSQzoga2dkYjogYWRkICdmYWxsdGhyb3VnaCcg
-dG8gcHJldmVudCBhIHdhcm5pbmcNCjIwMjEtMDMtMjIgMTYzNjMwYjJkOTViIGFyYzogRml4IHR5
-cG9zL3NwZWxsb3MNCjIwMjEtMDQtMTEgZDQzNDQwNWFhYWI3IExpbnV4IDUuMTItcmM3DQoNCkFu
-ZCBpdCBzZWVtcyB0byBiZSBEVFJUDQoNCnwgTGludXggdmVyc2lvbiA1LjEyLjAtcmM3LTAwMDA1
-LWdiOTNiZWRjZjhmYTQgDQoodmluZWV0Z0B2aW5lZXRnLUxhdGl0dWRlLTc0MDApIChhcmMtbGlu
-dXgtZ2NjLmJyX3JlYWwgKEJ1aWxkcm9vdCANCjIwMjEuMDItNi1nNWUyOWJhN2JmNzMyKSAxMC4y
-LjAsIEdOVSBsZCAoR05VIEJpbnV0aWxzKSAyLjM2LjEpICM2NzggDQpQUkVFTVBUIE1vbiBNYXkg
-MyAxMToyOTozMiBQRFQgMjAyMQ0KfCBNZW1vcnkgQCA4MDAwMDAwMCBbMTAyNE1dDQp8IC4uLg0K
-fCDCoCB3aXRoIGVudmlyb25tZW50Og0KfMKgIMKgwqAgSE9NRT0vDQp8wqAgwqDCoCBURVJNPWxp
-bnV4DQp8IFN0YXJ0aW5nIHN5c2xvZ2Q6IE9LDQp8IFN0YXJ0aW5nIGtsb2dkOiBPSw0KfCBSdW5u
-aW5nIHN5c2N0bDogT0sNCnwgJA0KfCAkIHpjYXQgL3Byb2MvY29uZmlnLmd6IHwgZWdyZXAgIihP
-UFRJTXxDT01QUkVTU0lPTl9HWklQKSINCnwgQ09ORklHX0lOSVRSQU1GU19DT01QUkVTU0lPTl9H
-WklQPXkNCnwgIyBDT05GSUdfQ0NfT1BUSU1JWkVfRk9SX1BFUkZPUk1BTkNFIGlzIG5vdCBzZXQN
-CnwgQ09ORklHX0NDX09QVElNSVpFX0ZPUl9QRVJGT1JNQU5DRV9PMz15DQp8DQp8ICQgZnJlZSAt
-bQ0KfMKgIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0b3RhbMKgwqDCoMKgwqDCoMKgIHVzZWTC
-oMKgwqDCoMKgwqDCoCBmcmVlwqDCoMKgwqDCoCBzaGFyZWQgYnVmZi9jYWNoZcKgwqAgDQphdmFp
-bGFibGUNCnwgTWVtOsKgwqDCoMKgwqDCoMKgwqDCoMKgIDEwMTLCoMKgwqDCoMKgwqDCoMKgwqDC
-oCAzwqDCoMKgwqDCoMKgwqDCoCA5NzjCoMKgwqDCoMKgwqDCoMKgwqAgMzEgMzHCoMKgwqDCoMKg
-wqDCoMKgIDk3Mg0KfCBTd2FwOg0KfA0KDQo+IEl0IHdvdWxkIGJlIGxvdmVseSBpZiBzb21lYm9k
-eSBhbHNvIHRvb2sgYSBsb29rIGF0IHNvbWUgb2YgdGhlIG90aGVyDQo+IHpsaWIgY29kZSwgbGlr
-ZSBpbmZsYXRlLmMgaXRzZWxmLiBCdXQgc29tZSBvZiB0aGF0IGNvZGUgaGFzIHJhdGhlcg0KPiBz
-dWJ0bGUgY2hhbmdlcyBmb3IgdGhpbmdzIGxpa2UgczM5MCBoYXJkd2FyZSBzdXBwb3J0LCBhbmQg
-d2UgaGF2ZQ0KPiB0aGlobmdzIGxpa2Ugb3VyIGZhbGx0aHJvdWdoIHJ1bGVzIGV0Yywgc28gaXQg
-Z2V0cyBhIGJpdCBoYWlyaWVyLg0KDQpJIHRvb2sgYSBxdWljayBsb29rLCBidXQgdGhlcmUgc29t
-ZSB0byBiZSBzdWJ0bGUgc3RhdGUgbWFjaGluZSBjaGFuZ2VzIA0KaW4gaW5mbGF0ZS5jIHdoaWNo
-IEknbSBub3QgY29tZm9ydGFibGUgbXVja2luZyBhcm91bmQgd2l0aC4NCg0KPiBXaGljaCBpcyB3
-aHkgSSBkaWQganVzdCB0aGlzIGZhaXJseSBtaW5pbWFsIHBhcnQuDQo+DQo+IE5vdGUgdGhhdCB0
-aGUgY29tbWl0IG1lc3NhZ2UgaGFzIGEgIk5vdC15ZXQtc2lnbmVkLW9mZi1ieToiIGZyb20gbWUu
-DQo+IFRoYXQncyBwdXJlbHkgYmVjYXVzZSBJIHdhbnRlZCBpdCB0byBiZSBvYnZpb3VzIHRoYXQg
-dGhpcyBuZWVkcyBhIGxvdA0KPiBtb3JlIHRlc3RpbmcgLSBJJ20gbm90IGNvbWZ5IHdpdGggdGhp
-cyBwYXRjaCB1bmxlc3Mgc29tZWJvZHkgdGFrZXMgaXQNCj4gdXBvbiB0aGVtc2VsdmVzIHRvIGFj
-dHVhbGx5IHRlc3QgaXQgdW5kZXIgZGlmZmVyZW50IGxvYWRzIChhbmQNCj4gZGlmZmVyZW50IGFy
-Y2hpdGVjdHVyZXMpLg0KDQpNYXliZSBnaXZlIGl0IHNvbWUgdGltZSB0byBiYWtlIGluIGxpbnV4
-LW5leHQgZm9yIGEgNS4xNCBpbmNsdXNpb24gPw0KVGh4IGFnYWluIGZvciBqdW1waW5nIGluIGFu
-ZCBzdGVlcmluZyBnY2MgZm9sa3MgdG8gcmlnaHQgY29uY2x1c2lvbnMuDQoNCi1WaW5lZXQNCg==
+On 2021-04-29 20:11, Stephen Boyd wrote:
+> Quoting khsieh@codeaurora.org (2021-04-29 10:23:31)
+>> On 2021-04-29 02:26, Stephen Boyd wrote:
+>> > Quoting khsieh@codeaurora.org (2021-04-28 10:38:11)
+>> >> On 2021-04-27 17:00, Stephen Boyd wrote:
+>> >> > Quoting aravindh@codeaurora.org (2021-04-21 11:55:21)
+>> >> >> On 2021-04-21 10:26, khsieh@codeaurora.org wrote:
+>> >> >> >>
+>> >> >> >>> +
+>> >> >> >>>         mutex_unlock(&dp->event_mutex);
+>> >> >> >>>
+>> >> >> >>>         return 0;
+>> >> >> >>> @@ -1496,6 +1502,9 @@ int msm_dp_display_disable(struct msm_dp *dp,
+>> >> >> >>> struct drm_encoder *encoder)
+>> >> >> >>>         /* stop sentinel checking */
+>> >> >> >>>         dp_del_event(dp_display, EV_DISCONNECT_PENDING_TIMEOUT);
+>> >> >> >>>
+>> >> >> >>> +       /* link is down, delete pending irq_hdps */
+>> >> >> >>> +       dp_del_event(dp_display, EV_IRQ_HPD_INT);
+>> >> >> >>> +
+>> >> >> >>
+>> >> >> >> I'm becoming convinced that the whole kthread design and event queue
+>> >> >> >> is
+>> >> >> >> broken. These sorts of patches are working around the larger problem
+>> >> >> >> that the kthread is running independently of the driver and irqs can
+>> >> >> >> come in at any time but the event queue is not checked from the irq
+>> >> >> >> handler to debounce the irq event. Is the event queue necessary at
+>> >> >> >> all?
+>> >> >> >> I wonder if it would be simpler to just use an irq thread and process
+>> >> >> >> the hpd signal from there. Then we're guaranteed to not get an irq
+>> >> >> >> again
+>> >> >> >> until the irq thread is done processing the event. This would
+>> >> >> >> naturally
+>> >> >> >> debounce the irq hpd event that way.
+>> >> >> > event q just like bottom half of irq handler. it turns irq into event
+>> >> >> > and handle them sequentially.
+>> >> >> > irq_hpd is asynchronous event from panel to bring up attention of hsot
+>> >> >> > during run time of operation.
+>> >> >> > Here, the dongle is unplugged and main link had teared down so that no
+>> >> >> > need to service pending irq_hpd if any.
+>> >> >> >
+>> >> >>
+>> >> >> As Kuogee mentioned, IRQ_HPD is a message received from the panel and
+>> >> >> is
+>> >> >> not like your typical HW generated IRQ. There is no guarantee that we
+>> >> >> will not receive an IRQ_HPD until we are finished with processing of
+>> >> >> an
+>> >> >> earlier HPD message or an IRQ_HPD message. For example - when you run
+>> >> >> the protocol compliance, when we get a HPD from the sink, we are
+>> >> >> expected to start reading DPCD, EDID and proceed with link training.
+>> >> >> As
+>> >> >> soon as link training is finished (which is marked by a specific DPCD
+>> >> >> register write), the sink is going to issue an IRQ_HPD. At this point,
+>> >> >> we may not done with processing the HPD high as after link training we
+>> >> >> would typically notify the user mode of the newly connected display,
+>> >> >> etc.
+> 
+> I re-read this. I think you're saying that IRQ_HPD can come in after 
+> HPD
+> goes high and we finish link training? That sounds like we should 
+> enable
+> IRQ_HPD in the hardware once we finish link training, instead of having
+> it enabled all the time. Then we can finish the threaded irq handler 
+> and
+> the irq should be pending again once IRQ_HPD is sent over. Is there 
+> ever
+> a need to be processing some IRQ_HPD and then get another IRQ_HPD while
+> processing the first one?
+yes, for example
+1) plug dongle only
+2) plug hdmi monitor into dongle (generated irq_hpd with sinc_count = 1)
+3) unplug hdmi monitor out of the dongle (generate irq_hpd with 
+sinc_count = 0)
+4) go back to 2) for n times
+5) unplug dongle
+
+This patch is not fix this problem either.
+The existing code has major issue which is handle irq_hpd with 
+sink_count = 0 same way as handle of dongle unplugged.
+I think this cause external dp display failed to work and cause crash at 
+suspend/resume test case.
+I will drop this patch.
+I am working on handle irq_hpd with sink_count = 0 as asymmetric as 
+opposite to  irq_hpd with sink_count = 1.
+This means irq_hdp sink_count = 0 handle only tear down the main link 
+but keep phy/aux intact.
+I will re submit patch for review.
+
+
+> 
+>> >> >
+>> >> > Given that the irq comes in and is then forked off to processing at a
+>> >> > later time implies that IRQ_HPD can come in at practically anytime.
+>> >> > Case
+>> >> > in point, this patch, which is trying to selectively search through the
+>> >> > "event queue" and then remove the event that is no longer relevant
+>> >> > because the display is being turned off either by userspace or because
+>> >> > HPD has gone away. If we got rid of the queue and kthread and processed
+>> >> > irqs in a threaded irq handler I suspect the code would be simpler and
+>> >> > not have to search through an event queue when we disable the display.
+>> >> > Instead while disabling the display we would make sure that the irq
+>> >> > thread isn't running anymore with synchronize_irq() or even disable the
+>> >> > irq entirely, but really it would be better to just disable the irq in
+>> >> > the hardware with a register write to some irq mask register.
+>> >> >
+>> >> > This pushes more of the logic for HPD and connect/disconnect into the
+>> >> > hardware and avoids reimplementing that in software: searching through
+>> >> > the queue, checking for duplicate events, etc.
+>> >>
+>> >> I wish we can implemented as you suggested. but it more complicate
+>> >> than
+>> >> that.
+>> >> Let me explain below,
+>> >> we have 3 transactions defined as below,
+>> >>
+>> >> plugin transaction: irq handle do host dp ctrl initialization and link
+>> >> training. If sink_count = 0 or link train failed, then transaction
+>> >> ended. otherwise send display up uevent to frame work and wait for
+>> >> frame
+>> >> work thread to do mode set, start pixel clock and start video to end
+>> >> transaction.
+>> >
+>> > Why do we need to wait for userspace to start video? HPD is indicating
+>> > that we have something connected, so shouldn't we merely signal to
+>> > userspace that something is ready to display and then enable the irq
+>> > for
+>> > IRQ_HPD?
+>> >
+>> yes, it is correct.
+>> The problem is unplug happen after signal user space.
+>> if unplug happen before user space start mode set and video, then it 
+>> can
+>> just do nothing and return.
+>> but if unplugged happen at the middle of user space doing mode set and
+>> start video?
+> 
+> I expect the link training to fail, maybe slowly, but userspace should
+> still be notified that the state has changed to disconnected when the
+> irq comes in, around the same time that the cable is physically
+> disconnected.
+> 
+>> 
+>> remember we had run into problem system show in connect state when
+>> dongle unplugged, vice versa.
+>> 
+> 
+> These problems are still happening as far as I can tell. I've heard
+> reports that external panels are showing up as connected when no dongle
+> is there, implying that HPD handling is broken.
+> 
+>> 
+>> 
+>> 
+>> >>
+>> >> unplugged transaction: irq handle send display off uevent to frame
+>> >> work and wait for frame work to disable pixel clock ,tear down main
+>> >> link and dp ctrl host de initialization.
+>> >
+>> > What do we do if userspace is slow and doesn't disable the display
+>> > before the cable is physically plugged in again?
+>> >
+>> plugin is not handle (re enter back into event q) until unplugged 
+>> handle
+>> completed.
+>> >>
+>> >> irq_hpd transaction: This only happen after plugin transaction and
+>> >> before unplug transaction. irq handle read panel dpcd register and
+>> >> perform requesting action. Action including perform dp compliant
+>> >> phy/link testing.
+>> >>
+>> >> since dongle can be plugged/unplugged at ant time, three conditions
+>> >> have
+>> >> to be met to avoid race condition,
+>> >> 1) no irq lost
+>> >> 2) irq happen timing order enforced at execution
+>> >> 3) no irq handle done in the middle transaction
+>> >>
+>> >> for example we do not want to see
+>> >> plugin --> unplug --> plugin --> unplug become plugin --> plugin-->
+>> >> unplug
+>> >>
+>> >> The purpose of this patch is to not handle pending irq_hpd after
+>> >> either
+>> >> dongle or monitor had been unplugged until next plug in.
+>> >>
+>> >
+>> > I'm not suggesting to block irq handling entirely for long running
+>> > actions. A plug irq due to HPD could still notify userspace that the
+>> > display is connected but when an IRQ_HPD comes in we process it in the
+>> > irq thread instead of trying to figure out what sort of action is
+>> > necessary to quickly fork it off to a kthread to process later.
+>> >
+>> > The problem seems to be that this quick forking off of the real IRQ_HPD
+>> > processing is letting the event come in, and then an unplug to come in
+>> > after that, and then a plug in to come in after that, leading to the
+>> > event queue getting full of events that are no longer relevant but
+>> > still
+>> > need to be processed. If this used a workqueue instead of an open-coded
+>> > one, I'd say we should cancel any work items on the queue if an unplug
+>> > irq came in. That way we would make sure that we're not trying to do
+>> > anything with the link when it isn't present anymore.
+>> >
+>> is this same as we delete irq_hpd from event q?
+>> What happen if the workqueue had been launched?
+> 
+> Yes workqueues are basically functions you run on a kthread with 
+> various
+> ways to either make sure that the work has finished processing or to 
+> try
+> to cancel it out so that it either doesn't run at all because the
+> kthread hasn't picked it up or that it runs to completion before
+> continuing. The event queue should be replaced with a workqueue design,
+> but even better would be to use a threaded irq if possible so that
+> hardware can't raise more irqs while one is being handled.
+> 
+>> 
+>> > But even then it doesn't make much sense. Userspace could be heavily
+>> > delayed after the plug in irq, when HPD is asserted, and not display
+>> > anything. The user could physically unplug and plug during that time so
+>> > we really need to not wait at all or do anything besides note the state
+>> > of the HPD when this happens. The IRQ_HPD irq is different. I don't
+>> > think we care to keep getting them if we're not done processing the
+>> > previous irq. I view it as basically an "edge" irq that we see,
+>> > process,
+>> > and then if another one comes in during the processing time we ignore
+>> > it. There's only so much we can do, hence the suggestion to use a
+>> > threaded irq.
+>> >
+>> I do not think you can ignore irq_hpd.
+>> for example, you connect hdmi monitor to dongle then plug in dongle 
+>> into
+>> DUT and unplug hdmi monitor immediatly.
+>> DP driver will see plugin irq with sink_count=1 followed by irq_hpd 
+>> with
+>> sink_count= 0.
+>> Then we may end up you think it is in connect state but actually it
+>> shold be in disconnect state.
+> 
+> Yes I'm saying that we should be able to use the hardware to coalesce
+> multiple IRQ_HPDs so that we don't unmask the IRQ_HPD until a connect
+> irq tells us a cable is connected, and then we mask IRQ_HPD when a
+> disconnect irq happens, and ignore extra IRQ_HPDs by processing the
+> IRQ_HPD in a threaded irq handler.
+> 
+> Maybe this can't work because the same hardware irq is used for the HPD
+> high/low and IRQ_HPD? If that's true, we should be able to keep the
+> IRQ_HPD masked until the event is processed by calling
+> dp_catalog_hpd_config_intr() to disable DP_DP_IRQ_HPD_INT_MASK when we
+> see it in the irq handler and only enable the irq again once we've
+> processed it, which I guess would be the end of dp_irq_hpd_handle()?
+> 
+>> I do not think we can ignore irq_hpd but combine multiple irq_hpd into
+>> one and handle it.
+>> 
+>> 
+>> > This is why IRQ_HPD is yanking the HPD line down to get the attention
+>> > of
+>> > the source, but HPD high and HPD low for an extended period of time
+>> > means the cable has been plugged or unplugged. We really do care if the
+>> > line goes low for a long time, but if it only temporarily goes low for
+>> > an IRQ_HPD then we either saw it or we didn't have time to process it
+>> > yet.
+>> >
+>> > It's like a person at your door ringing the doorbell. They're there
+>> > (HPD
+>> > high), and they're ringing the doorbell over and over (IRQ_HPD) and
+>> > eventually they go away when you don't answer (HPD low). We don't have
+>> > to keep track of every single doorbell/IRQ_HPD event because it's
+>> > mostly
+>> > a ping from the sink telling us we need to go do something, i.e. a
+>> > transitory event. The IRQ_HPD should always work once HPD is there, but
+>> > once HPD is gone we should mask it and ignore that irq until we see an
+>> > HPD high again.
+>> 
+>> if amazon deliver ring the door bell 3 times, then we answer the door 
+>> at
+>> the third time. this mean the first and second door bell ring can be
+>> ignored.
+>> Also if door bell ring 3 times and left an package at door then 
+>> deliver
+>> left, you saw deliver left form window then you still need to answer 
+>> to
+>> find out there is package left at door. If you ignore doorbell, then 
+>> you
+>> will missed the package.
+> 
+> There isn't a package being left at the door. When HPD goes away,
+> there's nothing to do anymore. Stop going to the door to look for
+> anything. Maybe a better analogy is that the entire door and doorbell 
+> is
+> gone when HPD goes away.
+> 
+>> 
+>> 
+>> I believe both thread_irq and event q works.
+>> But I think event q give us more finer controller.
+> 
+> What sort of finer control? Opinions need supporting facts or they're
+> just opinions.
+> 
+>> We are trying to fix an extreme case which generate un expected number
+>> of irq_hpd at an unexpected timing.
+>> I believe other dp driver (not Qcom) will also failed on this 
+>> particular
+>> case.
+>> 
+> 
+> I don't understand why that matters. This driver being just as bad as
+> other drivers isn't a good quality.
