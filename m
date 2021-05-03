@@ -2,306 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4AEE371354
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 12:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 401C2371363
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 12:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233235AbhECKGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 06:06:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47310 "EHLO
+        id S233271AbhECKJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 06:09:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233220AbhECKGJ (ORCPT
+        with ESMTP id S233062AbhECKJD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 06:06:09 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8562AC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 03:05:15 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id e2so3326091ilr.1
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 03:05:15 -0700 (PDT)
+        Mon, 3 May 2021 06:09:03 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92269C06174A;
+        Mon,  3 May 2021 03:08:10 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id n138so7274858lfa.3;
+        Mon, 03 May 2021 03:08:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LQ6NNzHj7Vc4za1WZ78i9zJ6ObWAdGDaPeb41LFoT6U=;
-        b=RAnFiTa7ozjql3NUcwO4cwTMp+yfw3qYe2+1pz5mfR482zkr//ZRSGg2NXRSEesQ6R
-         1z1hA314Ct5JDoyEoTZ6uFr65UQfpdkSuGHti40SdMCJt1lFYlivCL88kYLqPBRvYsK3
-         uXjETB3K1wtgrzziydGXbnN8nQBMCKQbwhOAg=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=qtxDGmxBhsi2IP7332PQH7tVPfSgkZrPmGm6BEOBEO4=;
+        b=X0vzCHQdFjsA7MpwFIDNpKpUMkiFwnAowhcDUr3BjPO9cON/kGIIDy9AyQ7uxsP8u9
+         8nHnowrVrsrOXXhyPqyhF0MW0n3dBQo2vUW29UCKJGzbRhylUgCdKBubqRQsZsR5nV4+
+         /muAXGWreS5Q8/nefwhh4DsuhoB9jMUJJ+waBlix4kKARlZF5MkKKzeyvVWWTkCajTbx
+         hJd65f/vWybEwPyozaLfKE0tNoNA23FtcYnT1zY5QZd7pkTjsgMZCSIRk38mDmuc9Iod
+         g+hXCKRcLPuKUGIkzKG4h3CZpb94Mfz+LL/Umrhd/gjcguiLRuoTrx9HXfEYErIPUJtL
+         YjTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LQ6NNzHj7Vc4za1WZ78i9zJ6ObWAdGDaPeb41LFoT6U=;
-        b=iA14cQ2wvHa6cFgM4Wu4Ici//g3icMx1UvKcw4KIQlhSDAgRaeYtlKgkFqI/bXkPtu
-         GYjTFv5SSzbHmvYVMrUyoR+yrTESmcgM7XT6ynpiL5Cqhs/zF0MFp3g0arCehzm9JRyX
-         5yp0FjTKQCJYq5pVzqmsHHPHcS9+snLP2S+gTOGE5WcgfOrjeuVMElZBC5lM7sW6FsJ1
-         z5hMpg5i0t2sZAkjGbXo4kCO2soFhGuR324KEl+3TjShnT9ptvUAzR29wKf5RpUxYarJ
-         5fe6AIf3P6PEyP1F/DpNiBBDlU988/H2s1uig1LKGEEbulB/ULEJSIe1NCu+FBp7odG8
-         fc5g==
-X-Gm-Message-State: AOAM533Pg0AjbIVmNudj+ermgxlCtHOfF5LH4Ya/AEPZsqcB0oiDNi7k
-        rW4bCieT6xjWDzl47WWMUl4YJXN0ln3PzsMWbsaKnBKZX5Q=
-X-Google-Smtp-Source: ABdhPJy0dvvDQT5HGwfHkvlscsJqa4mvkw49q4p+UsXXPdkkh4vPxvg/goOo7nH+7fXznivilpatkWYb531cVDQvdBw=
-X-Received: by 2002:a92:d684:: with SMTP id p4mr16000363iln.150.1620036314805;
- Mon, 03 May 2021 03:05:14 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=qtxDGmxBhsi2IP7332PQH7tVPfSgkZrPmGm6BEOBEO4=;
+        b=aKg60S86MpRHu9L5+Rqosev0rcwkdkcHiy4LqSJ4GldU88jKxLNeQqnASka9cXGpFY
+         VnSOjOxsZhkkhN1ZYVKvMVDnsFkESBrnxXFr0dcL7PYBdFyW+xagrhbJgbZ5rgrG37Bx
+         RGjqhdDl8RNvDQfig5JZGagY5UGuIuVYd/c3iEGK5CLhkIhiwNZQ7usUAu1W8f2iFwf3
+         9QoG6VRTJ71yj+o1nLRj9Sd4wmgs/A7/hStgHSS5iRWQEudUQeLeGhIwMcNRmhY+YwUH
+         tMOZppwXp1gZ9z0y4RngeF9LscxALDryg0K6qeXfgBi7Zm/LmCZdDeN4zJqQBRXZ6R21
+         TRIQ==
+X-Gm-Message-State: AOAM531daV9U5elRleR/gS8eKjCrp/wBdxPVmwEN3klSPzu4HY3p+VSP
+        EV0kxvabZcHnxPz7KyE9Vp4=
+X-Google-Smtp-Source: ABdhPJy8mZlLiPCStCHJ9xLMBSBC/WR320Gn8cR/tQGSTj+gVzpluZxnH1c/MNCMDFd5KPR9GPdG8Q==
+X-Received: by 2002:a05:6512:2021:: with SMTP id s1mr12596618lfs.211.1620036489056;
+        Mon, 03 May 2021 03:08:09 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.226.84])
+        by smtp.gmail.com with ESMTPSA id f18sm1092372lft.98.2021.05.03.03.08.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 May 2021 03:08:08 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com
+Cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>, stable@vger.kernel.org,
+        Rocky Liao <rjliao@codeaurora.org>
+Subject: [PATCH v2] bluetooth: hci_qca: fix potential GPF
+Date:   Mon,  3 May 2021 13:06:05 +0300
+Message-Id: <20210503100605.5223-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <YI+s2Hms/56Pvatu@hovoldconsulting.com>
+References: <YI+s2Hms/56Pvatu@hovoldconsulting.com>
 MIME-Version: 1.0
-References: <20210427093754.3000087-1-ikjn@chromium.org> <20210428040802.3266187-1-ikjn@chromium.org>
-In-Reply-To: <20210428040802.3266187-1-ikjn@chromium.org>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Mon, 3 May 2021 18:04:48 +0800
-Message-ID: <CAJMQK-gudmV9NWHKVccVMuAz1Nny5h686miRNVu4j7XowRr25Q@mail.gmail.com>
-Subject: Re: [PATCH v2] power: supply: sbs-battery: cache constant string properties
-To:     Ikjoon Jang <ikjn@chromium.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 12:08 PM Ikjoon Jang <ikjn@chromium.org> wrote:
->
-> Currently sbs-battery supports three string properties -
-> manufacturer, model_name, and chemistry. Buffers for those
-> properties are currently defined as global variables.
->
-> This patch moves those global variables into struct sbs_info
-> and cache/reuse them as they are all constant values.
->
-> Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
->
+In qca_power_shutdown() qcadev local variable is
+initialized by hu->serdev.dev private data, but
+hu->serdev can be NULL and there is a check for it.
 
-Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Since, qcadev is not used before
 
-Test on a mt8183 krane device which uses sbs battery.
+	if (!hu->serdev)
+		return;
 
-> ---
->
-> Changes in v2:
-> - change function name of sbs_get_battery_string_property()
->   to sbs_get_constant_string()
-> - use cached string properties
-> - use cached technology integer value in sbs_get_chemistry()
->
->  drivers/power/supply/sbs-battery.c | 140 +++++++++++++++++------------
->  1 file changed, 82 insertions(+), 58 deletions(-)
->
-> diff --git a/drivers/power/supply/sbs-battery.c b/drivers/power/supply/sbs-battery.c
-> index 4bf92831cb06..414de9bc47bf 100644
-> --- a/drivers/power/supply/sbs-battery.c
-> +++ b/drivers/power/supply/sbs-battery.c
-> @@ -188,6 +188,14 @@ static const enum power_supply_property sbs_properties[] = {
->  /* Supports special manufacturer commands from TI BQ20Z65 and BQ20Z75 IC. */
->  #define SBS_FLAGS_TI_BQ20ZX5           BIT(0)
->
-> +static const enum power_supply_property string_properties[] = {
-> +       POWER_SUPPLY_PROP_TECHNOLOGY,
-> +       POWER_SUPPLY_PROP_MANUFACTURER,
-> +       POWER_SUPPLY_PROP_MODEL_NAME,
-> +};
-> +
-> +#define NR_STRING_BUFFERS      ARRAY_SIZE(string_properties)
-> +
->  struct sbs_info {
->         struct i2c_client               *client;
->         struct power_supply             *power_supply;
-> @@ -201,11 +209,22 @@ struct sbs_info {
->         struct delayed_work             work;
->         struct mutex                    mode_lock;
->         u32                             flags;
-> +       int                             technology;
-> +       char                            strings[NR_STRING_BUFFERS][I2C_SMBUS_BLOCK_MAX + 1];
->  };
->
-> -static char model_name[I2C_SMBUS_BLOCK_MAX + 1];
-> -static char manufacturer[I2C_SMBUS_BLOCK_MAX + 1];
-> -static char chemistry[I2C_SMBUS_BLOCK_MAX + 1];
-> +static char *sbs_get_string_buf(struct sbs_info *chip,
-> +                               enum power_supply_property psp)
-> +{
-> +       int i = 0;
-> +
-> +       for (i = 0; i < NR_STRING_BUFFERS; i++)
-> +               if (string_properties[i] == psp)
-> +                       return chip->strings[i];
-> +
-> +       return ERR_PTR(-EINVAL);
-> +}
-> +
->  static bool force_load;
->
->  static int sbs_read_word_data(struct i2c_client *client, u8 address);
-> @@ -639,17 +658,45 @@ static int sbs_get_battery_property(struct i2c_client *client,
->         return 0;
->  }
->
-> -static int sbs_get_battery_string_property(struct i2c_client *client,
-> -       int reg_offset, enum power_supply_property psp, char *val)
-> +static int sbs_get_property_index(struct i2c_client *client,
-> +       enum power_supply_property psp)
->  {
-> -       s32 ret;
-> +       int count;
-> +
-> +       for (count = 0; count < ARRAY_SIZE(sbs_data); count++)
-> +               if (psp == sbs_data[count].psp)
-> +                       return count;
->
-> -       ret = sbs_read_string_data(client, sbs_data[reg_offset].addr, val);
-> +       dev_warn(&client->dev,
-> +               "%s: Invalid Property - %d\n", __func__, psp);
->
-> -       if (ret < 0)
-> -               return ret;
-> +       return -EINVAL;
-> +}
->
-> -       return 0;
-> +static const char *sbs_get_constant_string(struct sbs_info *chip,
-> +                       enum power_supply_property psp)
-> +{
-> +       int ret;
-> +       char *buf;
-> +       u8 addr;
-> +
-> +       buf = sbs_get_string_buf(chip, psp);
-> +       if (IS_ERR(buf))
-> +               return buf;
-> +
-> +       if (!buf[0]) {
-> +               ret = sbs_get_property_index(chip->client, psp);
-> +               if (ret < 0)
-> +                       return ERR_PTR(ret);
-> +
-> +               addr = sbs_data[ret].addr;
-> +
-> +               ret = sbs_read_string_data(chip->client, addr, buf);
-> +               if (ret < 0)
-> +                       return ERR_PTR(ret);
-> +       }
-> +
-> +       return buf;
->  }
->
->  static void  sbs_unit_adjustment(struct i2c_client *client,
-> @@ -772,48 +819,34 @@ static int sbs_get_battery_serial_number(struct i2c_client *client,
->         return 0;
->  }
->
-> -static int sbs_get_property_index(struct i2c_client *client,
-> -       enum power_supply_property psp)
-> -{
-> -       int count;
-> -       for (count = 0; count < ARRAY_SIZE(sbs_data); count++)
-> -               if (psp == sbs_data[count].psp)
-> -                       return count;
-> -
-> -       dev_warn(&client->dev,
-> -               "%s: Invalid Property - %d\n", __func__, psp);
-> -
-> -       return -EINVAL;
-> -}
-> -
-> -static int sbs_get_chemistry(struct i2c_client *client,
-> +static int sbs_get_chemistry(struct sbs_info *chip,
->                 union power_supply_propval *val)
->  {
-> -       enum power_supply_property psp = POWER_SUPPLY_PROP_TECHNOLOGY;
-> -       int ret;
-> +       const char *chemistry;
->
-> -       ret = sbs_get_property_index(client, psp);
-> -       if (ret < 0)
-> -               return ret;
-> +       if (chip->technology >= POWER_SUPPLY_TECHNOLOGY_UNKNOWN)
-> +               return chip->technology;
->
-> -       ret = sbs_get_battery_string_property(client, ret, psp,
-> -                                             chemistry);
-> -       if (ret < 0)
-> -               return ret;
-> +       chemistry = sbs_get_constant_string(chip, POWER_SUPPLY_PROP_TECHNOLOGY);
-> +
-> +       if (IS_ERR(chemistry))
-> +               return PTR_ERR(chemistry);
->
->         if (!strncasecmp(chemistry, "LION", 4))
-> -               val->intval = POWER_SUPPLY_TECHNOLOGY_LION;
-> +               chip->technology = POWER_SUPPLY_TECHNOLOGY_LION;
->         else if (!strncasecmp(chemistry, "LiP", 3))
-> -               val->intval = POWER_SUPPLY_TECHNOLOGY_LIPO;
-> +               chip->technology = POWER_SUPPLY_TECHNOLOGY_LIPO;
->         else if (!strncasecmp(chemistry, "NiCd", 4))
-> -               val->intval = POWER_SUPPLY_TECHNOLOGY_NiCd;
-> +               chip->technology = POWER_SUPPLY_TECHNOLOGY_NiCd;
->         else if (!strncasecmp(chemistry, "NiMH", 4))
-> -               val->intval = POWER_SUPPLY_TECHNOLOGY_NiMH;
-> +               chip->technology = POWER_SUPPLY_TECHNOLOGY_NiMH;
->         else
-> -               val->intval = POWER_SUPPLY_TECHNOLOGY_UNKNOWN;
-> +               chip->technology = POWER_SUPPLY_TECHNOLOGY_UNKNOWN;
->
-> -       if (val->intval == POWER_SUPPLY_TECHNOLOGY_UNKNOWN)
-> -               dev_warn(&client->dev, "Unknown chemistry: %s\n", chemistry);
-> +       if (chip->technology == POWER_SUPPLY_TECHNOLOGY_UNKNOWN)
-> +               dev_warn(&chip->client->dev, "Unknown chemistry: %s\n", chemistry);
-> +
-> +       val->intval = chip->technology;
->
->         return 0;
->  }
-> @@ -857,6 +890,7 @@ static int sbs_get_property(struct power_supply *psy,
->         int ret = 0;
->         struct sbs_info *chip = power_supply_get_drvdata(psy);
->         struct i2c_client *client = chip->client;
-> +       const char *str;
->
->         if (chip->gpio_detect) {
->                 ret = gpiod_get_value_cansleep(chip->gpio_detect);
-> @@ -882,7 +916,7 @@ static int sbs_get_property(struct power_supply *psy,
->                 break;
->
->         case POWER_SUPPLY_PROP_TECHNOLOGY:
-> -               ret = sbs_get_chemistry(client, val);
-> +               ret = sbs_get_chemistry(chip, val);
->                 if (ret < 0)
->                         break;
->
-> @@ -934,23 +968,12 @@ static int sbs_get_property(struct power_supply *psy,
->                 break;
->
->         case POWER_SUPPLY_PROP_MODEL_NAME:
-> -               ret = sbs_get_property_index(client, psp);
-> -               if (ret < 0)
-> -                       break;
-> -
-> -               ret = sbs_get_battery_string_property(client, ret, psp,
-> -                                                     model_name);
-> -               val->strval = model_name;
-> -               break;
-> -
->         case POWER_SUPPLY_PROP_MANUFACTURER:
-> -               ret = sbs_get_property_index(client, psp);
-> -               if (ret < 0)
-> -                       break;
-> -
-> -               ret = sbs_get_battery_string_property(client, ret, psp,
-> -                                                     manufacturer);
-> -               val->strval = manufacturer;
-> +               str = sbs_get_constant_string(chip, psp);
-> +               if (IS_ERR(str))
-> +                       ret = PTR_ERR(str);
-> +               else
-> +                       val->strval = str;
->                 break;
->
->         case POWER_SUPPLY_PROP_MANUFACTURE_YEAR:
-> @@ -1097,6 +1120,7 @@ static int sbs_probe(struct i2c_client *client)
->         psy_cfg.of_node = client->dev.of_node;
->         psy_cfg.drv_data = chip;
->         chip->last_state = POWER_SUPPLY_STATUS_UNKNOWN;
-> +       chip->technology = -1;
->         mutex_init(&chip->mode_lock);
->
->         /* use pdata if available, fall back to DT properties,
-> --
-> 2.31.1.498.g6c1eba8ee3d-goog
->
+we can move its initialization after this "if" to
+prevent GPF.
+
+Fixes: 5559904ccc08 ("Bluetooth: hci_qca: Add QCA Rome power off support to the qca_power_shutdown()")
+Cc: stable@vger.kernel.org # v5.6+
+Cc: Rocky Liao <rjliao@codeaurora.org>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ drivers/bluetooth/hci_qca.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+index de36af63e182..9589ef6c0c26 100644
+--- a/drivers/bluetooth/hci_qca.c
++++ b/drivers/bluetooth/hci_qca.c
+@@ -1820,8 +1820,6 @@ static void qca_power_shutdown(struct hci_uart *hu)
+ 	unsigned long flags;
+ 	enum qca_btsoc_type soc_type = qca_soc_type(hu);
+ 
+-	qcadev = serdev_device_get_drvdata(hu->serdev);
+-
+ 	/* From this point we go into power off state. But serial port is
+ 	 * still open, stop queueing the IBS data and flush all the buffered
+ 	 * data in skb's.
+@@ -1837,6 +1835,8 @@ static void qca_power_shutdown(struct hci_uart *hu)
+ 	if (!hu->serdev)
+ 		return;
+ 
++	qcadev = serdev_device_get_drvdata(hu->serdev);
++
+ 	if (qca_is_wcn399x(soc_type)) {
+ 		host_set_baudrate(hu, 2400);
+ 		qca_send_power_pulse(hu, false);
+-- 
+2.31.1
+
