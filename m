@@ -2,297 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25557371A5F
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC67371AC3
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 18:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232155AbhECQjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 12:39:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49948 "EHLO
+        id S231346AbhECQlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 12:41:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231600AbhECQh4 (ORCPT
+        with ESMTP id S232143AbhECQjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 12:37:56 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E6FDC061353
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 09:36:07 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id j7so4028969pgi.3
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 09:36:07 -0700 (PDT)
+        Mon, 3 May 2021 12:39:09 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E325DC06137A;
+        Mon,  3 May 2021 09:36:45 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id m37so4016093pgb.8;
+        Mon, 03 May 2021 09:36:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hoFXqCDljrfPhl8OhWKYJabFe89kk859lQwWFfRV5jk=;
-        b=J3mqNlu08uQn6JHtmGGJHnbH8eZlpqF1kBLHF5cwjptJynYRHpCNuVXFXQBX0QTf1j
-         5ylil1BnEQo8BGqUzCtCVzxq0A+wQ/xGaJ/+oz0FAyFi38mySvPu+3T1c/TeVLTwchcM
-         kSQdt0sznP4JQ3vzgKnBO9hwsXzt8xrUwzVrA=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=pOu7PdLtcf7SkIIMfjGdD4cGCPeaE8uB/RndMpSh6wE=;
+        b=R0WwnEy3HQBPTR5C/qPN7mjzOlx9ztBV04EwCY5B+4LysW0qqbWJKBJIf2MZ+JYxlj
+         FCIlvPjEKLVblnjvXyiSyiK4d2wlW4w7kz5A/FBHQHDaQGjbRyD5K14TuqD2m++3+LCj
+         wdTX3wAsfszfK63K6lcrpprznSM8z0DgLoD9XPQdOdsvF0XSpMOaEXtuhvZFef5DRJFe
+         b3DiQJ96qELZvv61bBXrMLPg4Y5I9MTaEv5vBwbQxxzL30nAgR9wQEPKs/eWdSOsDEds
+         rgdpphC/eoSgFRpzolcpLYbK9ee3gkxlxoV4Fxv8X/T8YUDMIuUCyDjW3zOMCmlOZt7R
+         uBog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hoFXqCDljrfPhl8OhWKYJabFe89kk859lQwWFfRV5jk=;
-        b=AibcON5kJnuLSrnH8+U6cKVEQJgFoQSqpDecVeorp8DskawRh5cpIAMj4orbIXdJ+/
-         NsvMRiNIbzAYqh9fSSJra3+9tOX81Z01fmtbXXPQRV/cE85UyIfg75aV3cSFYgM2HaNr
-         t/XUxBfQfiitf2iOZYEFdSDZMufV5sLq3bciimevkkHUIHineRfAC9/lqb6KNgtVtuv/
-         Uq+TBbPb9BmeC6FJ3zAvDyrKAA8sCQSgCIbMAmmApZQudVhkUVZJrOtl6Rci41aaX1U8
-         kzpw/eEC59k+/uE4ZbHwxvLkEXscCbNyxemqFKXrX5DGDrMs0SBByHTu71l8peLoJgFf
-         JtQw==
-X-Gm-Message-State: AOAM531vBpXSMPqOFT1D2nxvOeEL2AwZexdUHsB7oc+8F7gLoAFbNqMC
-        FQYTex63kbs64Vp+oN7qlEmWUQ==
-X-Google-Smtp-Source: ABdhPJz+6dpRIGYp+Fw0tZpohAELYLQRBoCCWBf3dIvf4VKQmprsU/2G9hHoAVG9ZDRHCcH9eNAwog==
-X-Received: by 2002:a65:6a08:: with SMTP id m8mr19082771pgu.146.1620059766601;
-        Mon, 03 May 2021 09:36:06 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:8584:3fd:2adf:a655])
-        by smtp.gmail.com with UTF8SMTPSA id n20sm10038260pjq.45.2021.05.03.09.36.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 09:36:06 -0700 (PDT)
-Date:   Mon, 3 May 2021 09:36:04 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     bjorn.andersson@linaro.org, viresh.kumar@linaro.org,
-        swboyd@chromium.org, agross@kernel.org, robh+dt@kernel.org,
-        rjw@rjwysocki.net, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, dianders@chromium.org
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: sc7280: Add cpu OPP tables
-Message-ID: <YJAmdIHYl0DKsKyq@google.com>
-References: <1619792901-32701-1-git-send-email-sibis@codeaurora.org>
- <1619792901-32701-3-git-send-email-sibis@codeaurora.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=pOu7PdLtcf7SkIIMfjGdD4cGCPeaE8uB/RndMpSh6wE=;
+        b=uXK1Rx00sv5/mcHMmNZiFvl3yv20KoKJfUgTeton7bAb5Qic4wN3gjbQnsQzCR4z35
+         q+FFZPTM7guIHommQ8D6v2oghH9XtQ9pjT00p+IlwlLw3qJUtjEHOUQS17pU0tu6tvLA
+         yFn8zJ1PPMbF7NauFsRK6QSL8Aa1rzzHz0Av5FBrn/vPZVJ1r4OVFrdikUJBYwdNktP+
+         YV5KGJH/ZoSiUNcpy3GLhV5EZ2XOLRP/r1cL3zyFBJjnRO4gRlQ07YpympoRSZpu4JI3
+         mGc9+hfY+Z9+Pq2C2B/XvxeAuG4Lyp5pIWdeO7QeAdjUhMvoHGkNdrJ1pEzaavJMUZ90
+         V5zw==
+X-Gm-Message-State: AOAM531o0wzLcGZl2Ma29xrQWv56JITYvGmj4NR6k0VxnFj/qUY6L5Hv
+        4QXx5ygl5kAMzPdeb3wCHaE=
+X-Google-Smtp-Source: ABdhPJzJNcuCOI+JcHs1QhFMQ7XGPv/xxkw3BGzuZUhaOeHRi0qoSxSWuj4tc5CR9j58GkDzbb6SgQ==
+X-Received: by 2002:aa7:80d6:0:b029:258:9404:13e with SMTP id a22-20020aa780d60000b02902589404013emr19375494pfn.37.1620059805390;
+        Mon, 03 May 2021 09:36:45 -0700 (PDT)
+Received: from localhost ([157.45.29.210])
+        by smtp.gmail.com with ESMTPSA id js6sm344960pjb.0.2021.05.03.09.36.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 03 May 2021 09:36:44 -0700 (PDT)
+Date:   Mon, 3 May 2021 22:06:36 +0530
+From:   Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+To:     johannes@sipsolutions.net
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] net: wireless: reg.c: Remove spaces at the start of line
+Message-ID: <20210503163636.hoy3odhmpmqh7fl7@kewl-virtual-machine>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1619792901-32701-3-git-send-email-sibis@codeaurora.org>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 07:58:21PM +0530, Sibi Sankar wrote:
-> Add OPP tables required to scale DDR/L3 per freq-domain on SC7280 SoCs.
-> 
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/sc7280.dtsi | 135 +++++++++++++++++++++++++++++++++++
->  1 file changed, 135 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index 0bb835aeae33..90220cecb368 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -7,6 +7,7 @@
->  
->  #include <dt-bindings/clock/qcom,gcc-sc7280.h>
->  #include <dt-bindings/clock/qcom,rpmh.h>
-> +#include <dt-bindings/interconnect/qcom,osm-l3.h>
->  #include <dt-bindings/interconnect/qcom,sc7280.h>
->  #include <dt-bindings/interrupt-controller/arm-gic.h>
->  #include <dt-bindings/mailbox/qcom-ipcc.h>
-> @@ -71,6 +72,9 @@
->  					   &LITTLE_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_0>;
-> +			operating-points-v2 = <&cpu0_opp_table>;
-> +			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-> +					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
+Spaces have been removed at the start of the line
+Tabs have been used in place of spaces
+New line added after declaration
+The closing */ has been shifted to new line
+This is done to maintain code uniformity
 
-This patch seems to depend on the 'Add SC7280 interconnect provider
-driver' series (https://patchwork.kernel.org/project/linux-arm-msm/list/?series=473747)
-and 'Add L3 provider support for SC7280' (https://patchwork.kernel.org/project/linux-arm-msm/list/?series=468285),
-none of them has landed yet. The dependencies should be mentioned in the
-commit notes (under '---').
+Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+---
+ net/wireless/reg.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
->  			qcom,freq-domain = <&cpufreq_hw 0>;
->  			L2_0: l2-cache {
->  				compatible = "cache";
-> @@ -90,6 +94,9 @@
->  					   &LITTLE_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_100>;
-> +			operating-points-v2 = <&cpu0_opp_table>;
-> +			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-> +					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
->  			qcom,freq-domain = <&cpufreq_hw 0>;
->  			L2_100: l2-cache {
->  				compatible = "cache";
-> @@ -106,6 +113,9 @@
->  					   &LITTLE_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_200>;
-> +			operating-points-v2 = <&cpu0_opp_table>;
-> +			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-> +					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
->  			qcom,freq-domain = <&cpufreq_hw 0>;
->  			L2_200: l2-cache {
->  				compatible = "cache";
-> @@ -122,6 +132,9 @@
->  					   &LITTLE_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_300>;
-> +			operating-points-v2 = <&cpu0_opp_table>;
-> +			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-> +					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
->  			qcom,freq-domain = <&cpufreq_hw 0>;
->  			L2_300: l2-cache {
->  				compatible = "cache";
-> @@ -138,6 +151,9 @@
->  					   &BIG_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_400>;
-> +			operating-points-v2 = <&cpu4_opp_table>;
-> +			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-> +					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
->  			qcom,freq-domain = <&cpufreq_hw 1>;
->  			L2_400: l2-cache {
->  				compatible = "cache";
-> @@ -154,6 +170,9 @@
->  					   &BIG_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_500>;
-> +			operating-points-v2 = <&cpu4_opp_table>;
-> +			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-> +					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
->  			qcom,freq-domain = <&cpufreq_hw 1>;
->  			L2_500: l2-cache {
->  				compatible = "cache";
-> @@ -170,6 +189,9 @@
->  					   &BIG_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_600>;
-> +			operating-points-v2 = <&cpu4_opp_table>;
-> +			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-> +					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
->  			qcom,freq-domain = <&cpufreq_hw 1>;
->  			L2_600: l2-cache {
->  				compatible = "cache";
-> @@ -186,6 +208,9 @@
->  					   &BIG_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_700>;
-> +			operating-points-v2 = <&cpu4_opp_table>;
-> +			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-> +					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
->  			qcom,freq-domain = <&cpufreq_hw 2>;
->  			L2_700: l2-cache {
->  				compatible = "cache";
-> @@ -248,6 +273,116 @@
->  		};
->  	};
->  
-> +	cpu0_opp_table: cpu0_opp_table {
+diff --git a/net/wireless/reg.c b/net/wireless/reg.c
+index 21536c48deec..52ec7d87bfe5 100644
+--- a/net/wireless/reg.c
++++ b/net/wireless/reg.c
+@@ -241,14 +241,15 @@ static const struct ieee80211_regdomain world_regdom = {
+ 		REG_RULE(2467-10, 2472+10, 20, 6, 20,
+ 			NL80211_RRF_NO_IR | NL80211_RRF_AUTO_BW),
+ 		/* IEEE 802.11 channel 14 - Only JP enables
+-		 * this and for 802.11b only */
++		 * this and for 802.11b only
++		 */
+ 		REG_RULE(2484-10, 2484+10, 20, 6, 20,
+ 			NL80211_RRF_NO_IR |
+ 			NL80211_RRF_NO_OFDM),
+ 		/* IEEE 802.11a, channel 36..48 */
+ 		REG_RULE(5180-10, 5240+10, 80, 6, 20,
+-                        NL80211_RRF_NO_IR |
+-                        NL80211_RRF_AUTO_BW),
++			NL80211_RRF_NO_IR |
++			NL80211_RRF_AUTO_BW),
+ 
+ 		/* IEEE 802.11a, channel 52..64 - DFS required */
+ 		REG_RULE(5260-10, 5320+10, 80, 6, 20,
+@@ -1563,6 +1564,7 @@ regdom_intersect(const struct ieee80211_regdomain *rd1,
+ static u32 map_regdom_flags(u32 rd_flags)
+ {
+ 	u32 channel_flags = 0;
++
+ 	if (rd_flags & NL80211_RRF_NO_IR_ALL)
+ 		channel_flags |= IEEE80211_CHAN_NO_IR;
+ 	if (rd_flags & NL80211_RRF_DFS)
+-- 
+2.17.1
 
-the node name should use dashes as separators instead of underscores, i.e.
-it should be 'cpu0-opp-table'.
-
-> +		compatible = "operating-points-v2";
-> +		opp-shared;
-> +
-> +		cpu0_opp1: opp-300000000 {
-> +			opp-hz = /bits/ 64 <300000000>;
-> +			opp-peak-kBps = <800000 9600000>;
-> +		};
-> +
-> +		cpu0_opp2: opp-691200000 {
-> +			opp-hz = /bits/ 64 <691200000>;
-> +			opp-peak-kBps = <800000 17817600>;
-> +		};
-> +
-> +		cpu0_opp3: opp-806400000 {
-> +			opp-hz = /bits/ 64 <806400000>;
-> +			opp-peak-kBps = <800000 20889600>;
-> +		};
-> +
-> +		cpu0_opp4: opp-940800000 {
-> +			opp-hz = /bits/ 64 <940800000>;
-> +			opp-peak-kBps = <1804000 24576000>;
-> +		};
-> +
-> +		cpu0_opp5: opp-1152000000 {
-> +			opp-hz = /bits/ 64 <1152000000>;
-> +			opp-peak-kBps = <2188000 27033600>;
-> +		};
-> +
-> +		cpu0_opp6: opp-1324800000 {
-> +			opp-hz = /bits/ 64 <1324800000>;
-> +			opp-peak-kBps = <2188000 33792000>;
-> +		};
-> +
-> +		cpu0_opp7: opp-1516800000 {
-> +			opp-hz = /bits/ 64 <1516800000>;
-> +			opp-peak-kBps = <3072000 38092800>;
-> +		};
-> +
-> +		cpu0_opp8: opp-1651200000 {
-> +			opp-hz = /bits/ 64 <1651200000>;
-> +			opp-peak-kBps = <3072000 41779200>;
-> +		};
-> +
-> +		cpu0_opp9: opp-1804800000 {
-> +			opp-hz = /bits/ 64 <1804800000>;
-> +			opp-peak-kBps = <4068000 48537600>;
-> +		};
-> +
-> +		cpu0_opp10: opp-1958400000 {
-> +			opp-hz = /bits/ 64 <1958400000>;
-> +			opp-peak-kBps = <4068000 48537600>;
-> +		};
-> +	};
-> +
-> +	cpu4_opp_table: cpu4_opp_table {
-
-node name should be 'cpu4-opp-table'
-
-> +		compatible = "operating-points-v2";
-> +		opp-shared;
-> +
-> +		cpu4_opp1: opp-691200000 {
-> +			opp-hz = /bits/ 64 <691200000>;
-> +			opp-peak-kBps = <1804000 9600000>;
-> +		};
-> +
-> +		cpu4_opp2: opp-940800000 {
-> +			opp-hz = /bits/ 64 <940800000>;
-> +			opp-peak-kBps = <2188000 17817600>;
-> +		};
-> +
-> +		cpu4_opp3: opp-1228800000 {
-> +			opp-hz = /bits/ 64 <1228800000>;
-> +			opp-peak-kBps = <4068000 24576000>;
-> +		};
-> +
-> +		cpu4_opp4: opp-1344000000 {
-> +			opp-hz = /bits/ 64 <1344000000>;
-> +			opp-peak-kBps = <4068000 24576000>;
-> +		};
-> +
-> +		cpu4_opp5: opp-1516800000 {
-> +			opp-hz = /bits/ 64 <1516800000>;
-> +			opp-peak-kBps = <4068000 24576000>;
-> +		};
-> +
-> +		cpu4_opp6: opp-1651200000 {
-> +			opp-hz = /bits/ 64 <1651200000>;
-> +			opp-peak-kBps = <6220000 38092800>;
-> +		};
-> +
-> +		cpu4_opp7: opp-1900800000 {
-> +			opp-hz = /bits/ 64 <1900800000>;
-> +			opp-peak-kBps = <6220000 44851200>;
-> +		};
-> +
-> +		cpu4_opp8: opp-2054400000 {
-> +			opp-hz = /bits/ 64 <2054400000>;
-> +			opp-peak-kBps = <6220000 44851200>;
-> +		};
-> +
-> +		cpu4_opp9: opp-2131200000 {
-> +			opp-hz = /bits/ 64 <2131200000>;
-> +			opp-peak-kBps = <6220000 44851200>;
-> +		};
-> +
-> +		cpu4_opp10: opp-2400000000 {
-> +			opp-hz = /bits/ 64 <2400000000>;
-> +			opp-peak-kBps = <6832000 48537600>;
-> +		};
-> +	};
-> +
->  	memory@80000000 {
->  		device_type = "memory";
->  		/* We expect the bootloader to fill in the size */
