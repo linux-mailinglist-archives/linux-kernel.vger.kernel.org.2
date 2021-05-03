@@ -2,122 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463D037120D
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 09:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8544E371213
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 09:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232964AbhECHfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 03:35:42 -0400
-Received: from mail.thorsis.com ([92.198.35.195]:36035 "EHLO mail.thorsis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230364AbhECHfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 03:35:41 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.thorsis.com (Postfix) with ESMTP id 2B1DD1A30;
-        Mon,  3 May 2021 09:34:47 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
-Received: from mail.thorsis.com ([127.0.0.1])
-        by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id PsKBvbCsqhIU; Mon,  3 May 2021 09:34:47 +0200 (CEST)
-Received: by mail.thorsis.com (Postfix, from userid 109)
-        id ABB93DF0; Mon,  3 May 2021 09:34:46 +0200 (CEST)
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NO_RECEIVED,
-        NO_RELAYS autolearn=unavailable autolearn_force=no version=3.4.2
-X-Spam-Report: * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
-        *      [score: 0.0000]
-        * -0.0 NO_RELAYS Informational: message was not relayed via SMTP
-        * -0.0 NO_RECEIVED Informational: message has no Received headers
-Date:   Mon, 3 May 2021 09:34:28 +0200
-From:   Alexander Dahl <ada@thorsis.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Joe Perches <joe@perches.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-riscv@lists.infradead.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] Raise the minimum GCC version to 5.2
-Message-ID: <YI+nhMcPSTs/5Ydp@ada-deb-carambola.ifak-system.com>
-Mail-Followup-To: Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Joe Perches <joe@perches.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>, Arnd Bergmann <arnd@arndb.de>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Paul Mackerras <paulus@samba.org>,
-        linux-riscv@lists.infradead.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-References: <20210501151538.145449-1-masahiroy@kernel.org>
- <CANiq72k1hB3X6+Nc_iu=f=BoB-F9JW2j_B4ZMcv8_UpW5QQ2Og@mail.gmail.com>
- <3943bc020f6227c8801907317fc113aa13ad4bad.camel@perches.com>
- <20210502183030.GF10366@gate.crashing.org>
- <81a926a3bdb70debe3ae2b13655ea8d249fb9991.camel@perches.com>
- <20210502203253.GH10366@gate.crashing.org>
- <CAHk-=wjGJskk5EwnDCccs6DcLytE2yx76+P_W-n1-B5zq0M3KA@mail.gmail.com>
- <20210502223007.GZ1847222@casper.infradead.org>
+        id S232929AbhECHhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 03:37:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230364AbhECHhQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 03:37:16 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E74C06174A;
+        Mon,  3 May 2021 00:36:22 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id t21so2358628plo.2;
+        Mon, 03 May 2021 00:36:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=9BigGFMAPEzpEN5kovmTljqu8CBdZtn8Br2Xtxah7dI=;
+        b=P6G0RWfnoNugQauj7Yzz66qk4wtVDI1A57eLjZ7sAQnvoveIF/2OkcsA8aVQhfQKWJ
+         klKI5QDMjr/ui9oNvLVYxunutO8ZT2Isu+WDxE9ZWoS6vE0n2tZSlVoCEapvaNxPBqy2
+         Wi/XHghrC3df+XFtL91bUtBkiyxYsbbbxUE5bX41N4q6H14vQm3ZPzvoZyHMdAEsaoRP
+         gt/EBIGT8eqcb2Gnc0qsCVRYmuRwioudwkEWFLHu8NBCy+lQC+0zlWmZdfgFlUlTP6uq
+         ayC701c6vmPVW2JO/U1QaqKqTrF5yeIEw/evzizQcwDBBIobZjcrBXGwYat7kAT6qCQW
+         wwXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=9BigGFMAPEzpEN5kovmTljqu8CBdZtn8Br2Xtxah7dI=;
+        b=tdZXzdTl1FTmwYP7OrEUTQnNljYfcm2xxw9RvEqOgevZSvghYHJCUE+BzzcWs6FC5H
+         CxFtnpkyUP0cvhc3DK8telRlIgfd03t6hSkO1SXKOW399CRDQrfcKkOvJBwO5VW7HkH/
+         lBG9RcFi0JxIm5lJLy25oPar47auzyocq2/N7jlr2qH4Rt4nOK32vO/D79Ka3Wm0jcbV
+         9AdPPIF6huDPu/CRzfdzW7Ml5oo06swWAEu5+c62ZN6XZmGmqy7vNEXKc02bjt6RNwWW
+         AHiun8ALPdOJu9+qJR6e3Ok5LmPJ7R+puRWTLGbgOT7fREBRWIj211FQP9QF2NACBnQP
+         69GQ==
+X-Gm-Message-State: AOAM532cc7cduU6520sA0C3xwYBJfvQHiZk5xowFsZETuutu3DWh+MNV
+        HKnFI3bASam/hWwe75UHMMergb4AekiSkQ==
+X-Google-Smtp-Source: ABdhPJyAn/PkIijE4YkTbx5LBi4vcwMScF22s09Fa8ZtbJ7tBJrry4WJOC0fbSUVNScG1SdSpc4P1Q==
+X-Received: by 2002:a17:902:d104:b029:ee:ac12:4b31 with SMTP id w4-20020a170902d104b02900eeac124b31mr14370036plw.56.1620027382293;
+        Mon, 03 May 2021 00:36:22 -0700 (PDT)
+Received: from localhost ([157.45.34.47])
+        by smtp.gmail.com with ESMTPSA id gw7sm2599503pjb.57.2021.05.03.00.36.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 03 May 2021 00:36:21 -0700 (PDT)
+Date:   Mon, 3 May 2021 13:06:13 +0530
+From:   Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+To:     jikos@kernel.org
+Cc:     benjamin.tissoires@redhat.com, rydberg@bitmath.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sanjanasrinidhi1810@gmail.com
+Subject: [PATCH] drivers: hid: hid-logitech-hidpp.c: Fix indentation errors
+Message-ID: <20210503073613.utl3xmlglboxv4qg@kewl-virtual-machine>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210502223007.GZ1847222@casper.infradead.org>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hei hei,
+case and switch have been indented one below the other.
+A * has been added for every  line in a multi line comment.
+The closing */ has been shifted to a new line
+This is done to maintain code uniformity.
+Incorrect repetiton of the word 'in' corrected.
 
-Am Sun, May 02, 2021 at 11:30:07PM +0100 schrieb Matthew Wilcox:
-> On Sun, May 02, 2021 at 02:08:31PM -0700, Linus Torvalds wrote:
-> > What is relevant is what version of gcc various distributions actually
-> > have reasonably easily available, and how old and relevant the
-> > distributions are. We did decide that (just as an example) RHEL 7 was
-> > too old to worry about when we updated the gcc version requirement
-> > last time.
-> > 
-> > Last year, Arnd and Kirill (maybe others were involved too) made a
-> > list of distros and older gcc versions. But I don't think anybody
-> > actually _maintains_ such a list. It would be perhaps interesting to
-> > have some way to check what compiler versions are being offered by
-> > different distros.
-> 
-> fwiw, Debian 9 aka Stretch released June 2017 had gcc 6.3
-> Debian 10 aka Buster released June 2019 had gcc 7.4 *and* 8.3.
-> Debian 8 aka Jessie had gcc-4.8.4 and gcc-4.9.2.
-> 
-> So do we care about people who haven't bothered to upgrade userspace
-> since 2017?  If so, we can't go past 4.9.
+Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+---
+ drivers/hid/hid-logitech-hidpp.c | 170 ++++++++++++++++---------------
+ 1 file changed, 87 insertions(+), 83 deletions(-)
 
-Desktops and servers are all nice, however I just want to make you
-aware, there are embedded users forced to stick to older cross
-toolchains for different reasons as well, e.g. in industrial
-environment. :-)
-
-This is no show stopper for us, I just wanted to let you be aware.
-
-Greets
-Alex
+diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
+index d459e2dbe647..1de187c9a0eb 100644
+--- a/drivers/hid/hid-logitech-hidpp.c
++++ b/drivers/hid/hid-logitech-hidpp.c
+@@ -1083,30 +1083,31 @@ static int hidpp20_batterylevel_map_status_capacity(u8 data[3], int *capacity,
+ 	 * For all other states the device reports 0 (unknown).
+ 	 */
+ 	switch (data[2]) {
+-		case 0: /* discharging (in use) */
+-			status = POWER_SUPPLY_STATUS_DISCHARGING;
+-			*level = hidpp_map_battery_level(*capacity);
+-			break;
+-		case 1: /* recharging */
+-			status = POWER_SUPPLY_STATUS_CHARGING;
+-			break;
+-		case 2: /* charge in final stage */
+-			status = POWER_SUPPLY_STATUS_CHARGING;
+-			break;
+-		case 3: /* charge complete */
+-			status = POWER_SUPPLY_STATUS_FULL;
+-			*level = POWER_SUPPLY_CAPACITY_LEVEL_FULL;
+-			*capacity = 100;
+-			break;
+-		case 4: /* recharging below optimal speed */
+-			status = POWER_SUPPLY_STATUS_CHARGING;
+-			break;
++	case 0: /* discharging (in use) */
++		status = POWER_SUPPLY_STATUS_DISCHARGING;
++		*level = hidpp_map_battery_level(*capacity);
++		break;
++	case 1: /* recharging */
++		status = POWER_SUPPLY_STATUS_CHARGING;
++		break;
++	case 2: /* charge in final stage */
++		status = POWER_SUPPLY_STATUS_CHARGING;
++		break;
++	case 3: /* charge complete */
++		status = POWER_SUPPLY_STATUS_FULL;
++		*level = POWER_SUPPLY_CAPACITY_LEVEL_FULL;
++		*capacity = 100;
++		break;
++	case 4: /* recharging below optimal speed */
++		status = POWER_SUPPLY_STATUS_CHARGING;
++		break;
+ 		/* 5 = invalid battery type
+-		   6 = thermal error
+-		   7 = other charging error */
+-		default:
+-			status = POWER_SUPPLY_STATUS_NOT_CHARGING;
+-			break;
++		 * 6 = thermal error
++		 * 7 = other charging error
++		 */
++	default:
++		status = POWER_SUPPLY_STATUS_NOT_CHARGING;
++		break;
+ 	}
+ 
+ 	return status;
+@@ -1454,24 +1455,24 @@ static int hidpp20_unifiedbattery_map_status(struct hidpp_device *hidpp,
+ 	int status;
+ 
+ 	switch (charging_status) {
+-		case 0: /* discharging */
+-			status = POWER_SUPPLY_STATUS_DISCHARGING;
+-			break;
+-		case 1: /* charging */
+-		case 2: /* charging slow */
+-			status = POWER_SUPPLY_STATUS_CHARGING;
+-			break;
+-		case 3: /* complete */
+-			status = POWER_SUPPLY_STATUS_FULL;
+-			break;
+-		case 4: /* error */
+-			status = POWER_SUPPLY_STATUS_NOT_CHARGING;
+-			hid_info(hidpp->hid_dev, "%s: charging error",
+-				 hidpp->name);
+-			break;
+-		default:
+-			status = POWER_SUPPLY_STATUS_NOT_CHARGING;
+-			break;
++	case 0: /* discharging */
++		status = POWER_SUPPLY_STATUS_DISCHARGING;
++		break;
++	case 1: /* charging */
++	case 2: /* charging slow */
++		status = POWER_SUPPLY_STATUS_CHARGING;
++		break;
++	case 3: /* complete */
++		status = POWER_SUPPLY_STATUS_FULL;
++		break;
++	case 4: /* error */
++		status = POWER_SUPPLY_STATUS_NOT_CHARGING;
++		hid_info(hidpp->hid_dev, "%s: charging error",
++			 hidpp->name);
++		break;
++	default:
++		status = POWER_SUPPLY_STATUS_NOT_CHARGING;
++		break;
+ 	}
+ 
+ 	return status;
+@@ -1620,44 +1621,44 @@ static int hidpp_battery_get_property(struct power_supply *psy,
+ 	struct hidpp_device *hidpp = power_supply_get_drvdata(psy);
+ 	int ret = 0;
+ 
+-	switch(psp) {
+-		case POWER_SUPPLY_PROP_STATUS:
+-			val->intval = hidpp->battery.status;
+-			break;
+-		case POWER_SUPPLY_PROP_CAPACITY:
+-			val->intval = hidpp->battery.capacity;
+-			break;
+-		case POWER_SUPPLY_PROP_CAPACITY_LEVEL:
+-			val->intval = hidpp->battery.level;
+-			break;
+-		case POWER_SUPPLY_PROP_SCOPE:
+-			val->intval = POWER_SUPPLY_SCOPE_DEVICE;
+-			break;
+-		case POWER_SUPPLY_PROP_ONLINE:
+-			val->intval = hidpp->battery.online;
+-			break;
+-		case POWER_SUPPLY_PROP_MODEL_NAME:
+-			if (!strncmp(hidpp->name, "Logitech ", 9))
+-				val->strval = hidpp->name + 9;
+-			else
+-				val->strval = hidpp->name;
+-			break;
+-		case POWER_SUPPLY_PROP_MANUFACTURER:
+-			val->strval = "Logitech";
+-			break;
+-		case POWER_SUPPLY_PROP_SERIAL_NUMBER:
+-			val->strval = hidpp->hid_dev->uniq;
+-			break;
+-		case POWER_SUPPLY_PROP_VOLTAGE_NOW:
+-			/* hardware reports voltage in in mV. sysfs expects uV */
+-			val->intval = hidpp->battery.voltage * 1000;
+-			break;
+-		case POWER_SUPPLY_PROP_CHARGE_TYPE:
+-			val->intval = hidpp->battery.charge_type;
+-			break;
+-		default:
+-			ret = -EINVAL;
+-			break;
++	switch (psp) {
++	case POWER_SUPPLY_PROP_STATUS:
++		val->intval = hidpp->battery.status;
++		break;
++	case POWER_SUPPLY_PROP_CAPACITY:
++		val->intval = hidpp->battery.capacity;
++		break;
++	case POWER_SUPPLY_PROP_CAPACITY_LEVEL:
++		val->intval = hidpp->battery.level;
++		break;
++	case POWER_SUPPLY_PROP_SCOPE:
++		val->intval = POWER_SUPPLY_SCOPE_DEVICE;
++		break;
++	case POWER_SUPPLY_PROP_ONLINE:
++		val->intval = hidpp->battery.online;
++		break;
++	case POWER_SUPPLY_PROP_MODEL_NAME:
++		if (!strncmp(hidpp->name, "Logitech ", 9))
++			val->strval = hidpp->name + 9;
++		else
++			val->strval = hidpp->name;
++		break;
++	case POWER_SUPPLY_PROP_MANUFACTURER:
++		val->strval = "Logitech";
++		break;
++	case POWER_SUPPLY_PROP_SERIAL_NUMBER:
++		val->strval = hidpp->hid_dev->uniq;
++		break;
++	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
++		/* hardware reports voltage in mV. sysfs expects uV */
++		val->intval = hidpp->battery.voltage * 1000;
++		break;
++	case POWER_SUPPLY_PROP_CHARGE_TYPE:
++		val->intval = hidpp->battery.charge_type;
++		break;
++	default:
++		ret = -EINVAL;
++		break;
+ 	}
+ 
+ 	return ret;
+@@ -3607,7 +3608,8 @@ static int hidpp_raw_event(struct hid_device *hdev, struct hid_report *report,
+ 	}
+ 
+ 	/* If no report is available for further processing, skip calling
+-	 * raw_event of subclasses. */
++	 * raw_event of subclasses.
++	 */
+ 	if (ret != 0)
+ 		return ret;
+ 
+@@ -3668,8 +3670,9 @@ static int hidpp_initialize_battery(struct hidpp_device *hidpp)
+ 			ret = hidpp_solar_request_battery_event(hidpp);
+ 		else {
+ 			/* we only support one battery feature right now, so let's
+-			   first check the ones that support battery level first
+-			   and leave voltage for last */
++			 * first check the ones that support battery level first
++			 * and leave voltage for last
++			 */
+ 			ret = hidpp20_query_battery_info_1000(hidpp);
+ 			if (ret)
+ 				ret = hidpp20_query_battery_info_1004(hidpp);
+@@ -3846,7 +3849,8 @@ static void hidpp_connect_event(struct hidpp_device *hidpp)
+ 	}
+ 
+ 	/* the device is already connected, we can ask for its name and
+-	 * protocol */
++	 * protocol
++	 */
+ 	if (!hidpp->protocol_major) {
+ 		ret = hidpp_root_get_protocol_version(hidpp);
+ 		if (ret) {
+-- 
+2.17.1
 
