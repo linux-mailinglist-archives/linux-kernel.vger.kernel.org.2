@@ -2,103 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40788371378
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 12:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB6F7371379
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 12:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233262AbhECKON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 06:14:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233159AbhECKOL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 06:14:11 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4092DC06174A;
-        Mon,  3 May 2021 03:13:17 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id n205so2114697wmf.1;
-        Mon, 03 May 2021 03:13:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ZIiigzczc2DpeF5+8WBfchZtQVOjuSNAlSlfWiT/G4k=;
-        b=AlutymW/j+Tc7Xu+7nbANQTfOfTahhAHdoRNLk7zt/APz2ydNtFK/f8OVe3smXk0rW
-         smEhFR+/xAfkGMWmAWN1IPztixOVXjvrzj8ynDaB0CNGH66HjeF3Ui8JkBGiZvvCqYBy
-         vRVK1OaDyf845ADQro0/ZmXarztafc6XVFV/eWCI3kEE2scvAU1WpoGpZVG8ENuIJ/b8
-         wZ183Ovs0NHI05Z1Z81R6mtDbWyz+LAkYqRqFk6CCSFOoOvel7EUn23QPa1VtxvX4dO0
-         O5ZAJdUIC26apYi9CeWJcPX+p+qmp1irc6qieReieCNaGGfg9Bm42HldZeKZ8/ncHp12
-         OW/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ZIiigzczc2DpeF5+8WBfchZtQVOjuSNAlSlfWiT/G4k=;
-        b=NQQq13m9aqtAZsVMGbQYXugD08c8/jJsbS3K46CgAWIikiYySErXF1JhQdGBWZ6vce
-         TPg1ZWhsbyMALWhnzRQY2FM5bCiqtrn+oZGdQg3jtuR3ybacFWhuUnbwPPMyfwCez9nQ
-         yp+n0Y489yiYwpFUVcLgsButssdeprEZT0ugLp71xa5BvNGrTwDcGb7Oya1LrdDQl493
-         yjlXFt2wEEXWHQPIHubhj9yD5hgYgRIwtrWuS12YmnzhSSbQGaux+QLopmY+8mibmV/N
-         Ojgn6IhiAh6FB4NSbLQ1vv3R8AtBCB7ShdriKLJ84nzpAHXOASTVcac2QBq3Nv6xx2Pz
-         d4tQ==
-X-Gm-Message-State: AOAM533TyMUe3v6YULVZpi0MT10PkOp7ot22Ro8nk0B1/QjUaVkCPT0Z
-        bdC31CMmP73bA0/MQXtrZlWbN2gGncCi7qPo
-X-Google-Smtp-Source: ABdhPJwBldsGw//teJhYUukFMq+NmABbXP9lBHI0ZZbtaikmZZuXhmpKSia/IU6cTw2JF9JwRZyQGA==
-X-Received: by 2002:a05:600c:2e42:: with SMTP id q2mr21044097wmf.64.1620036795973;
-        Mon, 03 May 2021 03:13:15 -0700 (PDT)
-Received: from ard0534 ([41.62.186.65])
-        by smtp.gmail.com with ESMTPSA id g13sm7484718wrd.41.2021.05.03.03.13.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 03 May 2021 03:13:14 -0700 (PDT)
-Date:   Mon, 3 May 2021 11:13:12 +0100
-From:   Khaled Romdhani <khaledromdhani216@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] fs/btrfs: Fix uninitialized variable
-Message-ID: <20210503101312.GA27593@ard0534>
-References: <20210501225046.9138-1-khaledromdhani216@gmail.com>
- <20210503072322.GK1981@kadam>
+        id S233282AbhECKOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 06:14:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43760 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233159AbhECKOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 06:14:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9093611F0;
+        Mon,  3 May 2021 10:13:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620036818;
+        bh=VH21PufZUwDIyYfTud1amFvN2W+xniGX/jhz9rO7xmI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gYxuIT2anto6IHJA0jnTYsxUtzipm0TjAFYvthLhpLqX804tTBBS952Er6bgHOqRl
+         U95PgvVzsq6TeUGLV9+0lROGeOqztAyQyE+xdxLjNsbOo1yD5rLKnfCJcn/OxVMjrA
+         EcpkRACl3KZm3pZxxD4Z0EOPjvccELFZREM51cC4S6hnTjQlPYeowuqgGGD5tKIXgL
+         XVPKa3qhhxHvm5aiAmdf5DeNEfbYZ6b5mwVP1b1hUE+8XEsKEv79R6jGF3054BE3Bx
+         IB4m1cC+Tgxp0Ib9uv5KHki1ZCXMSxB5hA7yMae80GT/Q4sXTE69d8vksk7z2fotxT
+         1pBbFsK6ja1sQ==
+Date:   Mon, 3 May 2021 12:13:34 +0200
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] Modules updates for v5.13
+Message-ID: <YI/MzgHgDW6ka7B0@gunter>
+References: <YIlcBHhuR9LvKZ7q@gunter>
+ <CAHk-=wgoC=9tJZg391exBryFYK04e_BSpKwCmJLMwDntar4x_w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20210503072322.GK1981@kadam>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAHk-=wgoC=9tJZg391exBryFYK04e_BSpKwCmJLMwDntar4x_w@mail.gmail.com>
+X-OS:   Linux gunter 5.11.16-1-default x86_64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 10:23:22AM +0300, Dan Carpenter wrote:
-> On Sat, May 01, 2021 at 11:50:46PM +0100, Khaled ROMDHANI wrote:
-> > Fix the warning: variable 'zone' is used
-> > uninitialized whenever '?:' condition is true.
-> > 
-> > Fix that by preventing the code to reach
-> > the last assertion. If the variable 'mirror'
-> > is invalid, the assertion fails and we return
-> > immediately.
-> > 
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
-> > ---
-> 
-> This is not how you send a v4 patch...  v2 patches have to apply to the
-> original code and not on top of the patched code.
-> 
-> I sort of think you should find a different thing to work on.  This code
-> works fine as-is.  Just leave it and try to find a real bug and fix that
-> instead.
-> 
-> regards,
-> dan carpenter
++++ Linus Torvalds [30/04/21 12:37 -0700]:
+>On Wed, Apr 28, 2021 at 5:58 AM Jessica Yu <jeyu@kernel.org> wrote:
+>>
+>>    Therefore, load the __exit sections even when
+>>    CONFIG_MODULE_UNLOAD=n, and discard them after init.
+
+Hi Linus,
+
+>So I've pulled this, but I have two questions based on reading the patch..
 >
+> (a) Where's that "discard them after init" logic?
 
-Sorry, I was wrong and I shall send a proper V4.
+So the idea is for the exit sections to additionally identify as init
+sections via module_init_section() when CONFIG_MODULE_UNLOAD=n, so
+that the existing logic in layout_sections() picks this up and puts
+the exit sections into the init area of the module (mod->init_layout.base).
 
-Yes, this code works fine just a warning caught by Coverity scan analysis. 
-So the idea behind the patch is to fix the warning. To do that and as suggested by 
-David Sterba, it would be rather to add a default case. So we fix the warning 
-through the enhancement of the switch statement (some sort of 2*1).
+Then, since we've placed the exit sections in the init region of the
+module, they will automatically get freed at the end of
+do_init_module() with the rest of the init sections. Peter has also
+mentioned that jump_label and static_call want the exit sections to
+also identify as init via within_module_init(), so this change should
+satisfy their requirement as well. I should have explained this more
+in the changelog and apologize that it wasn't clear.
 
-Yes, I will always try to find other bugs. It is a pleasure for me to do that.
+> (b) ARM has its own module_init/exit_section() functions, and now
+>seems to have different logic than everybody else as a result..
 
-Thanks.
+No, you are right, I had forgotten that ARM is a special case :-( I
+will add a similar hunk for ARM and submit that for the next -rc so
+that all arches are on the same page here.
+
+
+Jessica
