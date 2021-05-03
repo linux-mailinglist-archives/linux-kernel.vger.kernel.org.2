@@ -2,163 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D2383716E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28AF43716D8
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 16:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbhECOqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 10:46:05 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:43078 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbhECOqA (ORCPT
+        id S229721AbhECOpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 10:45:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31714 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229657AbhECOpa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 10:46:00 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 143EiLvb002715;
-        Mon, 3 May 2021 14:44:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=F5Gq3RM9SXS/0D9/JJvhMbztWLCjlhpTmu0PVituFkg=;
- b=n5SZwk9VPKMb6VRhgWH8tRyrPDOriKliiP9LQhMCHCIkXsRis+xK1qJ1G8Kxs18EXzql
- 6HqqTyM+xVwhlxekyd4jxS6Z7WQGv1gjgYESfqz43qYutP/RzTCvMuejADVUmQCnUPRh
- vnt5ocMiFR8SsWqnmQkoq1Rs7dZBFJzwY9rcvZovI9SxW1RjDweZjM8ijCA71FJO+bgG
- txnLxLh4MBHpOwE/2G9/RSqqOu4U4uuSjIqVqwVgrRIioX8nFJK3Xs2Adni8qLdUNtes
- fUTKMHXWZ6cKYnoxaT+Od5MpTq9MKWmvRvUbwBrobMrN78oGhvW5CRtTKOjhXavLqVre iQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 389h13tr6t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 May 2021 14:44:41 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 143EeBep028546;
-        Mon, 3 May 2021 14:44:40 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 388xt2gdb6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 May 2021 14:44:40 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 143EieId101156;
-        Mon, 3 May 2021 14:44:40 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 388xt2gdb1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 May 2021 14:44:40 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 143Eicdl031343;
-        Mon, 3 May 2021 14:44:38 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 03 May 2021 07:44:38 -0700
-Date:   Mon, 3 May 2021 17:44:29 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Lucas Stankus <lucas.p.stankus@gmail.com>
-Cc:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
-        gregkh@linuxfoundation.org, linux-iio@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] staging: iio: cdc: ad7746: use dt for capacitive
- channel setup.
-Message-ID: <20210503144429.GN21598@kadam>
-References: <cover.1619841953.git.lucas.p.stankus@gmail.com>
- <3e7f2a0a8960cece185f518ff2b7ceb87891edcd.1619841953.git.lucas.p.stankus@gmail.com>
- <20210503100720.GP1981@kadam>
+        Mon, 3 May 2021 10:45:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620053077;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bl56Zu7+zy9TZvZXab3dG9cf65Q5oyc9UzIYD23qD4o=;
+        b=Yq/BfbCFa9xuJI/U004JEtRRfyIExYz1Gj/aHZmLsememlTqY5OQAjiVUMZtu116MIg7Tv
+        IsL4c3+tkO9jbdGk3VxVWqNTP6cV2JRbG9CwRdjmuHuGjrnxsdZRD0Jhg6U7HgYKD4upWk
+        0yHp/8e5+DO9NpmamXbRhrHH8FntHYA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-316-5OtKC6mePom9ceq1518erg-1; Mon, 03 May 2021 10:44:35 -0400
+X-MC-Unique: 5OtKC6mePom9ceq1518erg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9A85E100A24D;
+        Mon,  3 May 2021 14:44:33 +0000 (UTC)
+Received: from x1.home.shazbot.org (ovpn-113-225.phx2.redhat.com [10.3.113.225])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C8BF95C1D0;
+        Mon,  3 May 2021 14:44:32 +0000 (UTC)
+Date:   Mon, 3 May 2021 08:44:32 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Vikram Sethi <vsethi@nvidia.com>
+Cc:     Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Marc Zyngier <maz@kernel.org>,
+        Shanker Donthineni <sdonthineni@nvidia.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "christoffer.dall@arm.com" <christoffer.dall@arm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jason Sequeira <jsequeira@nvidia.com>
+Subject: Re: [RFC 1/2] vfio/pci: keep the prefetchable attribute of a BAR
+ region in VMA
+Message-ID: <20210503084432.75e0126d@x1.home.shazbot.org>
+In-Reply-To: <BL0PR12MB253296086906C4A850EC68E6BD5B9@BL0PR12MB2532.namprd12.prod.outlook.com>
+References: <20210429162906.32742-1-sdonthineni@nvidia.com>
+        <20210429162906.32742-2-sdonthineni@nvidia.com>
+        <20210429122840.4f98f78e@redhat.com>
+        <470360a7-0242-9ae5-816f-13608f957bf6@nvidia.com>
+        <20210429134659.321a5c3c@redhat.com>
+        <e3d7fda8-5263-211c-3686-f699765ab715@nvidia.com>
+        <87czucngdc.wl-maz@kernel.org>
+        <1edb2c4e-23f0-5730-245b-fc6d289951e1@nvidia.com>
+        <878s4zokll.wl-maz@kernel.org>
+        <BL0PR12MB2532CC436EBF626966B15994BD5E9@BL0PR12MB2532.namprd12.prod.outlook.com>
+        <87eeeqvm1d.wl-maz@kernel.org>
+        <BL0PR12MB25329EF5DFA7BBAA732064A7BD5C9@BL0PR12MB2532.namprd12.prod.outlook.com>
+        <87bl9sunnw.wl-maz@kernel.org>
+        <c1bd514a531988c9@bloch.sibelius.xs4all.nl>
+        <BL0PR12MB253296086906C4A850EC68E6BD5B9@BL0PR12MB2532.namprd12.prod.outlook.com>
+Organization: Red Hat
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210503100720.GP1981@kadam>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: j3GYA5SgvROSBYTLZ60Q1c1N67ftKOHO
-X-Proofpoint-GUID: j3GYA5SgvROSBYTLZ60Q1c1N67ftKOHO
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9973 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 spamscore=0 mlxscore=0
- phishscore=0 adultscore=0 lowpriorityscore=0 suspectscore=0
- priorityscore=1501 mlxlogscore=999 malwarescore=0 impostorscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2105030102
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 01:07:20PM +0300, Dan Carpenter wrote:
-> On Sat, May 01, 2021 at 09:32:53AM -0300, Lucas Stankus wrote:
-> > diff --git a/drivers/staging/iio/cdc/ad7746.c b/drivers/staging/iio/cdc/ad7746.c
-> > index dfd71e99e872..531f1b96dea2 100644
-> > --- a/drivers/staging/iio/cdc/ad7746.c
-> > +++ b/drivers/staging/iio/cdc/ad7746.c
-> > @@ -18,8 +18,6 @@
-> >  #include <linux/iio/iio.h>
-> >  #include <linux/iio/sysfs.h>
-> >  
-> > -#include "ad7746.h"
-> > -
-> >  /*
-> >   * AD7746 Register Definition
-> >   */
-> > @@ -676,10 +674,11 @@ static const struct iio_info ad7746_info = {
-> >  static int ad7746_probe(struct i2c_client *client,
-> >  			const struct i2c_device_id *id)
-> >  {
-> > -	struct ad7746_platform_data *pdata = client->dev.platform_data;
-> > +	struct device *dev = &client->dev;
-> >  	struct ad7746_chip_info *chip;
-> >  	struct iio_dev *indio_dev;
-> >  	unsigned char regval = 0;
-> > +	unsigned int vdd_permille;
-> >  	int ret = 0;
-> >  
-> >  	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*chip));
-> > @@ -703,26 +702,39 @@ static int ad7746_probe(struct i2c_client *client,
-> >  	indio_dev->num_channels = ARRAY_SIZE(ad7746_channels);
-> >  	indio_dev->modes = INDIO_DIRECT_MODE;
-> >  
-> > -	if (pdata) {
-> > -		if (pdata->exca_en) {
-> > -			if (pdata->exca_inv_en)
-> > -				regval |= AD7746_EXCSETUP_NEXCA;
-> > -			else
-> > -				regval |= AD7746_EXCSETUP_EXCA;
-> > -		}
-> > +	if (device_property_read_bool(dev, "adi,exca-output-en")) {
-> > +		if (device_property_read_bool(dev, "adi,exca-output-invert"))
-> > +			regval |= AD7746_EXCSETUP_NEXCA;
-> > +		else
-> > +			regval |= AD7746_EXCSETUP_EXCA;
-> > +	}
-> >  
-> > -		if (pdata->excb_en) {
-> > -			if (pdata->excb_inv_en)
-> > -				regval |= AD7746_EXCSETUP_NEXCB;
-> > -			else
-> > -				regval |= AD7746_EXCSETUP_EXCB;
-> > -		}
-> > +	if (device_property_read_bool(dev, "adi,excb-output-en")) {
-> > +		if (device_property_read_bool(dev, "adi,excb-output-invert"))
-> > +			regval |= AD7746_EXCSETUP_NEXCB;
-> > +		else
-> > +			regval |= AD7746_EXCSETUP_EXCB;
-> > +	}
-> >  
-> > -		regval |= AD7746_EXCSETUP_EXCLVL(pdata->exclvl);
-> > -	} else {
-> > -		dev_warn(&client->dev, "No platform data? using default\n");
-> > -		regval = AD7746_EXCSETUP_EXCA | AD7746_EXCSETUP_EXCB |
-> > -			AD7746_EXCSETUP_EXCLVL(3);
-> > +	ret = device_property_read_u32(dev, "adi,excitation-vdd-permille",
-> > +				       &vdd_permille);
-> > +	if (!ret) {
-> 
-> This test is reversed.  I wonder if the static checkers can catch the
-> uninitialized variable bug...  It's probably better to write it as:
-> 
-> 	if (device_property_read_u32(dev, "adi,excitation-vdd-permille",
-> 				     &vdd_permille) {
-> 
-> So it matches the others.
+On Mon, 3 May 2021 13:59:43 +0000
+Vikram Sethi <vsethi@nvidia.com> wrote:
 
-Oops.  Sorry for the noise.  I was wrong on this.  I looked at the
-device_property_read_bool() code instead of the device_property_read_u32().
+> > From: Mark Kettenis <mark.kettenis@xs4all.nl> =20
+> > > From: Marc Zyngier <maz@kernel.org> =20
+>=20
+> snip
+> > > If, by enumerating the properties of Prefetchable, you can show that
+> > > they are a strict superset of Normal_NC, I'm on board. I haven't seen
+> > > such an enumeration so far.
+> > > =20
+> snip
+> > > Right, so we have made a small step in the direction of mapping
+> > > "prefetchable" onto "Normal_NC", thanks for that. What about all the
+> > > other properties (unaligned accesses, ordering, gathering)? =20
+> >  =20
+> Regarding gathering/write combining, that is also allowed to prefetchable=
+ per PCI spec
 
-It's disappointing that the returns are reversed.
+As others have stated, gather/write combining itself is not well
+defined.
 
-regards,
-dan carpenter
+> From 1.3.2.2 of 5/0 base spec:
+> A PCI Express Endpoint requesting memory resources through a BAR must set=
+ the BAR's Prefetchable bit unless
+> the range contains locations with read side-effects or locations in which=
+ the Function does not tolerate write
+> merging.
+
+"write merging"  This is a very specific thing, per PCI 3.0, 3.2.6:
+
+  Byte Merging =E2=80=93 occurs when a sequence of individual memory writes
+  (bytes or words) are merged into a single DWORD.
+
+The semantics suggest quadword support in addition to dword, but don't
+require it.  Writes to bytes within a dword can be merged, but
+duplicate writes cannot.
+
+It seems like an extremely liberal application to suggest that this one
+write semantic encompasses full write combining semantics, which itself
+is not clearly defined.
+
+> Further 7.5.1.2.1 says " A Function is permitted
+> to mark a range as prefetchable if there are no side effects on reads, th=
+e Function returns all bytes on reads regardless of
+> the byte enables, and host bridges can merge processor writes into this r=
+ange139 without causing errors"
+>=20
+> The "regardless of byte enables" suggests to me that unaligned is OK, as =
+only=20
+> certain byte enables may be set, what do you think?
+>=20
+> So to me prefetchable in PCIe spec allows for write combining, read witho=
+ut
+
+Ironically here, the above PCI spec section defining write merging has
+separate sections for "combining", "merging", and "collapsing".  Only
+merging is indicated as a requirement for prefetchable resources.
+
+> sideeffect (prefetch/speculative as long as uncached), and unaligned. Reg=
+arding
+> ordering I didn't find a statement one way or other in PCIe prefetchable =
+definition, but
+> I think that goes beyond what PCIe says or doesn't say anyway since reord=
+ering can=20
+> also happen in the CPU, and since driver must be aware of correctness iss=
+ues in its=20
+> producer/consumer models it will need the right barriers where they are r=
+equired=20
+> for correctness anyway (required for the driver/userspace to work on host=
+ w/ ioremap_wc).
+
+A lot of hand waving here, imo.  Thanks,
+
+Alex
 
