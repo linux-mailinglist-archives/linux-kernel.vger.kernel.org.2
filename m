@@ -2,95 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7DC371F1F
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 20:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2083371F21
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 20:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231512AbhECSFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 14:05:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41778 "EHLO
+        id S231560AbhECSFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 14:05:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229594AbhECSFK (ORCPT
+        with ESMTP id S231513AbhECSFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 14:05:10 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671FFC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 11:04:16 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id j10so9341518lfb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 11:04:16 -0700 (PDT)
+        Mon, 3 May 2021 14:05:12 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 645E8C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 11:04:18 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id bf4so7338170edb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 11:04:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CDT2iOj8qBpgLchbxVPMSU7pQe2V2hpsXxFE1HWPV7w=;
-        b=T+EfGWagrDg4BQkFQcBMU7cv5sNyMgxFY5hqjwYWPt4BW6C0beOZoXbfOlSlqBWHYE
-         Edekzs3yM/taz6lv4RQZp6zvSAeqWFG92JkovoozH5w0+uCNxmGgGxYWlxvHd7sJ0p5n
-         XNcyG+fkr27BwoQrks6h9TJmUux2I1wBa+Dh8=
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=irvAfDqJe1hQB3fJxlaJ3x9w9qp/XEy9b8ACpfP/PLU=;
+        b=mAYv5efYHOODRyc41ZzhzxK2HfCIkPhCZF+Vd7TkwdjCh2MR68bKl5ZYaYo9A/2QJi
+         wL5HMjxjYsEWFbT6weZm9chBOoX8mhvdfPVyror0iAvYDDUP1pP8UvKzNi8iXlTUTycS
+         eTE6xq+USvJjQmISVVr9ikZ9JaFTlvBIIkpvyqgTpUSkfkNwxYuAvfZjxJ7BoD9vkCo2
+         /yXGYKBE7hlkMYSrq3/6A2+fo2iofCCZKMfCvcoRGlcJcY8qaf6Xu6M/Q5F1g5Q1T4LF
+         XkbUAuD696EpZ5E/0z5hGRlf6zgk3c1aqW86lJhGZDW7uKyqo5aBuLTsaKvBPtRGYB5T
+         udVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CDT2iOj8qBpgLchbxVPMSU7pQe2V2hpsXxFE1HWPV7w=;
-        b=B2PDjBKu/FrwMQlgI8P/B37AFcpOPpAe94uHSLzm/eFV+vwiWehCmk9SPzBXW8jk98
-         AcMnIfKFpcMPIbQfvH1MRPOSuXTiYv6s3574HnjmkgiuV8IGyCFaPa9EGbolN77TjNCS
-         mV80lmUuBy6ZTFz3/y1yJz0ENbBDHVVo/cTF10dgULXmq0K0IQkC1Y72nbFThQ2q8fdD
-         gHO0nl48VeleMmo88oY1feOBSC1pf7fsNG0bGwzi2mIN47ic+nMMd2YbtaWv9hAMwc+t
-         cGulN2oSoA50PAR6VJYcziWp2j4jX5SKkK8HY4CQ46HS2mIN/AOZgSh6LnslBfs5u6Lb
-         a2Xw==
-X-Gm-Message-State: AOAM532AyEdMQXgTpRVNLV3Im4jFM2k3M3n6ijimE5V8HCpWLZDcspTD
-        sZPYfiKpzz6kuJOOKBfIZ9wKSUzDEvvMsfYPml4=
-X-Google-Smtp-Source: ABdhPJzlGnNcvfpDLlsLoJ6+h3NiG9yezayqTQPrfTQgF964gcQBeQINCpWZh6uWqV92FHQ1JW/gVw==
-X-Received: by 2002:ac2:563a:: with SMTP id b26mr5816745lff.324.1620065054707;
-        Mon, 03 May 2021 11:04:14 -0700 (PDT)
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
-        by smtp.gmail.com with ESMTPSA id d15sm29952lfa.137.2021.05.03.11.04.14
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 11:04:14 -0700 (PDT)
-Received: by mail-lf1-f54.google.com with SMTP id c3so5338189lfs.7
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 11:04:14 -0700 (PDT)
-X-Received: by 2002:ac2:5f92:: with SMTP id r18mr14272456lfe.253.1620065053975;
- Mon, 03 May 2021 11:04:13 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=irvAfDqJe1hQB3fJxlaJ3x9w9qp/XEy9b8ACpfP/PLU=;
+        b=L1R+Y++aQjkGNER2vvQ134BnI4fcHclD0Y+PxmLf223/AICb915IdGFLjypYUtIMMS
+         b803VdToUOVinK6yVQ7+CZoFkSF8641HdfXf7ap/t2vV2PgMjHlqRpeE1Bx5R9v6BHF2
+         GsPxoPRb11UKQbQrwSrc/n2MuDGbqpOsFDjsTqYMISKDRZ6JCxUilaDFXW+thWdYg+cT
+         Fbc5FTTszim/SvAwxPIwwaxzliKLRTwP+KrPMFZQ6MtkeJzZuZgsLUApS2zTiIWcS1PN
+         sExZkD/Ucn8iEU9QPIuP4BKfMlE571ww/FXXrp+DU5YecGfvsUgnIfsQXstiIHXzjThL
+         GVoQ==
+X-Gm-Message-State: AOAM530XT5/HkUCgDBfs+dcF4cb5AlDEvgAAZz66awRTiTbd3S/uwe7j
+        058N2I0kiMCP0mdJtPQa+EW24dUkhhTyGpOo43w=
+X-Google-Smtp-Source: ABdhPJyXYMIwLHUHtlqHMZM0wwbBCjoQd+ftD8YW6MNYTjES2Yec7ehii7k2S2AIW4NHboSyQQRdzOfvPMaT8LrcasA=
+X-Received: by 2002:aa7:d513:: with SMTP id y19mr20893524edq.9.1620065057132;
+ Mon, 03 May 2021 11:04:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210502193216.24872-1-brgl@bgdev.pl>
-In-Reply-To: <20210502193216.24872-1-brgl@bgdev.pl>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 3 May 2021 11:03:57 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whSWp3exv8tZ2th5im_P7HF=c6iuOOVb9iSrNrd6405WA@mail.gmail.com>
-Message-ID: <CAHk-=whSWp3exv8tZ2th5im_P7HF=c6iuOOVb9iSrNrd6405WA@mail.gmail.com>
-Subject: Re: [GIT PULL] gpio: updates for v5.13
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Received: by 2002:ab4:924a:0:0:0:0:0 with HTTP; Mon, 3 May 2021 11:04:16 -0700 (PDT)
+Reply-To: LishaHaman225@gmail.com
+From:   Miss Lisha Haman <jalomustafa555@gmail.com>
+Date:   Mon, 3 May 2021 11:04:16 -0700
+Message-ID: <CANDndz8oNdT96ofEG7JFZj29m=eL5rmSjKiGtx80UXmTLQ8x6A@mail.gmail.com>
+Subject: Hello Dear
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Al,
- would you mind taking a look at this part:
+My dear I am Miss Lisha Haman 23 years of age , I am the only daughter
+to Dr Abdul Haman from France-Paris who work with (SEMAFO) the biggest
+Canadian gold producer here in West Africa Burkina Faso,
 
-On Sun, May 2, 2021 at 12:32 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->
-> You'll notice that we have a bunch of configfs commits in our tree not acked by
-> the configfs maintainers. These commits implement the concept of committable
-> items in configfs - something that was well defined in the documentation for
-> years but has remained unimplemented. Despite the first submission of these
-> patches back in November 2020[1] and repeated pings & resending, configfs
-> maintainers have remained unresponsive. After reviewing these on the GPIO
-> mailing list, we decided to pick them up ourselves and send them your way
-> together with the first user: the new GPIO simulator.
+Unfortunately my father was a victim on the deadliest attack by the
+jihadist On the 6 November 2019 when gunmen ambushed a convoy
+transporting workers of the Canadian mining firm Semafo, it is my sad
+moment each time I think about this, but the reason why I contacted
+you is that I have my late father receipt of deposit he made with a
+bank in abroad with my name as next of kin, The total amount deposited
+was 3.7 million United Stated dollars,
 
-It doesn't look huge to me, and I don't care all that deeply about
-configfs, and honestly, I'm not seeing huge amounts of actual
-development there, with recent commits all being about cleanup of vfs
-changes (eg things like the new idmapping changes etc).
+Now I decided to travel for the money but embassy here deny me visa
+due to the Corona virus outbreak,
 
-That said, I really don't want to pull that with some core sanity checking.
+I talk to the bank regarding my visa problem and they advise me to
+look for my relative trusted bank account so that they will transfer
+the total fund in there, But I am the only daughter of my father and
+have no relative to present, that is why I want to present you to the
+bank as my relative who will receive the total fund on my behalf and
+also take care of me as well,
 
-So Al, do you see anything horrendous in how that configfs thing uses
-a rename to do kind of an "atomic swap" of configfs state?
+I attached my picture  with this mail please send me your complete
+full details such as, Your Full Name:
 
-                       Linus
+Home and Office Addresses:
+
+Telephone Number:
+
+Occupation:
+
+Country of Residence:
+
+Your Bank account number where the bank will remit the fund
+
+Once I received your details, I will give you the bank contact so that
+you can contact them directly to discuss how they can transfer the
+total fund in your bank account so that you can relocate me to join
+you over there in your country,
+
+Sincerely
+
+Lisha Haman
