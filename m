@@ -2,152 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E403720A2
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 21:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 883DD3720A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 21:41:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229667AbhECTlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 15:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbhECTlj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 15:41:39 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCBCC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 12:40:45 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id z6so6820341wrm.4
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 12:40:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=t1/jVKqUe82uM/b8ER0363WbTTrWds0L2r2AHxiXmAY=;
-        b=AK2zbdQErhrHNq5X9Qxpa2X8Wvzm8FL/o5nRoiyFDK6yAyC2TwLZ7v4vDjSEXZlGed
-         lID90ZweN9d3XiCe+PtOBBg4ZCsNHoXCN12hC8s++OFgiHRUCO/0Jy/EBwkRvYXwVwm3
-         uGYoqWlAW03GW2I53RWzkkKhRLIVjj6BXH75l8OwmuRMDXm8pCNIEnxMiabzzS2seRQ0
-         /ar3P2sewad0QPv7qURlBkfTsOtxXmVjOGlc0C/ZWEfzuEtk+dwGoRe105KO7wd56N8H
-         uz07A49C1OpLVF+RD1XKEGzVouYek9KnHLRYa0hfLihTRQCR2BEfJBE7TiXou7iFpsEs
-         P4LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=t1/jVKqUe82uM/b8ER0363WbTTrWds0L2r2AHxiXmAY=;
-        b=of5bSdfEzn+FgtbMYKn56tSEjelDVDDB9nqWMxNxEmIhhZLMuD985n3+xY7uO9QjSY
-         IfVEdfOZoa4rLFsJELdxLlOEx3Y/vpDzdNkFNtYtR/rQd3F1nS+shXcEM/nsw/0Mwhtq
-         Q+260TwXUzHu7anyLAa/2RE+7CgJCKpWhOweAAB3qu3sEcyNa3qcU2nG2dWRKEgrSCuq
-         kyfs2h1O2kbV7885y+Hkihs9xntH6em2dkPm29XdfyOgwqxh/baUh/T1ekUJlspDlR60
-         T8VKQ0L8LPAwtRFkill7cnlz8wZIjPLK9KBPIRdRF2nRebB7ez94N3UQmlPGB7P4vmDf
-         sQZw==
-X-Gm-Message-State: AOAM532wtUbwgQg+Lw5y0bQjYX0c++vrCeny2elxt6JuLN8m3dBIW5qi
-        E2ogn8cb/OsJjiNmjTrIAGkDYhZxg1H/TQ==
-X-Google-Smtp-Source: ABdhPJw1ojrvDSG+HQmOVpPZGqj1GKAoImg3XEcNQ5Lv4XcMhRsICFrTghPRMRVsiKwsvD/HwsIo0w==
-X-Received: by 2002:a5d:64e4:: with SMTP id g4mr26997779wri.366.1620070844038;
-        Mon, 03 May 2021 12:40:44 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f38:4600:915c:8fda:c2d8:722c? (p200300ea8f384600915c8fdac2d8722c.dip0.t-ipconnect.de. [2003:ea:8f38:4600:915c:8fda:c2d8:722c])
-        by smtp.googlemail.com with ESMTPSA id d127sm353689wmd.14.2021.05.03.12.40.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 12:40:43 -0700 (PDT)
-Subject: [PATCH 2/2] x86/e820: Use pr_debug to avoid spamming dmesg log with
- debug messages
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-To:     Jason Baron <jbaron@akamai.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <f527618e-54f2-c2fb-e267-8065ac34e462@gmail.com>
-Message-ID: <6d55670d-2f06-d768-699f-5a79cece6ce0@gmail.com>
-Date:   Mon, 3 May 2021 21:40:30 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <f527618e-54f2-c2fb-e267-8065ac34e462@gmail.com>
+        id S229649AbhECTmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 15:42:22 -0400
+Received: from mail-mw2nam10on2079.outbound.protection.outlook.com ([40.107.94.79]:60929
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229602AbhECTmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 15:42:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VkOmA4MKkScNjFSkkgTUrf1MUlU5AJHPsJuOQz1PotirlbO35sAyrlbgxUrSwQGY4pFZHaZhuRneZ3EcSkjOkeugcQxC11OFn/SxSEsMrywARaeHRQooEpRFmhh+NDE89kfIjsnggEE8G53w7/Ox3WeAztFxEWbm8/dPloyLUrXMlLkPUbEl2U7VnBFyqUAL/q716lQRQ5iM3Gia22uGfl7lrMPC+iG73lAXsTrh5yah/TUqsRp0Rh9ttZA9XH3uMnFS+/CDZH130KW3mYUTmwu7R3DiJzFdIINXUhmbAhd96VcfACDD0JoLXuPQU8YDPcgsZV6D2WWRtqNOKdGKig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EFZx+BrRc0oBEyfrOnTHPQYaqR8AVJZ9edQR3f7shss=;
+ b=GfjFW54DlTI/qVytUYBsrguWs5I6iEl/EVxpFn/kMZkVrhYQ4cKLvY33t/G3Xw3tbZCCEkxKkPY8MjvcwBrgJqnEAJhzOVMQs9gBwh40+VwuRWCiNYfDNdDBlhgoOfw8eI0aTMG4GVubHWYRwjmBW5rRhYlmuemhcSTkXBk7bFtzEfbv4yRQ5PG0oAnlb0xVIZ1D2kRn/E3WIUjRtDPb4IUWqvr540nMSddjC1vJOlXLfcdzu+P5YHQvK6jHdiigfkBoMs9vonUDOrSP5B1hqnRdAIHXfijREPOq8WdWmi/8mb2jRnFXLA70WpBUrHO1L5O3NDMPmmYiD9N8KmA1RQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EFZx+BrRc0oBEyfrOnTHPQYaqR8AVJZ9edQR3f7shss=;
+ b=u8auJOfRK2cTIVBWii//K4qg0Jx4NZIOKcvQhcHnFzjoAy0WBKzbE9+/Kth014b+CznFabaGlTdXE1lK0661sWOf3P++o6vzsKE0SbKh6ro4QfqcSemCErOZge1XPv1mqJ4viIB0HFRPXyhzUqIYNtKDw4Ucnzo6hrAXv+WdS+c=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SA0PR12MB4415.namprd12.prod.outlook.com (2603:10b6:806:70::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.39; Mon, 3 May
+ 2021 19:41:24 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::9898:5b48:a062:db94]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::9898:5b48:a062:db94%6]) with mapi id 15.20.4087.044; Mon, 3 May 2021
+ 19:41:24 +0000
+Cc:     brijesh.singh@amd.com, Dave Hansen <dave.hansen@intel.com>,
+        x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        tglx@linutronix.de, bp@alien8.de, jroedel@suse.de,
+        Thomas.Lendacky@amd.com, pbonzini@redhat.com, mingo@redhat.com,
+        rientjes@google.com, seanjc@google.com, peterz@infradead.org,
+        hpa@zytor.com, tony.luck@intel.com
+Subject: Re: [PATCH Part2 RFC v2 10/37] x86/fault: Add support to handle the
+ RMP fault for kernel address
+To:     Andy Lutomirski <luto@amacapital.net>
+References: <9e3e4331-2933-7ae6-31d9-5fb73fce4353@amd.com>
+ <40C2457E-C2A3-4DF7-BD16-829D927CC17C@amacapital.net>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <1c98a55a-d4d5-866e-dcad-81caa09a495d@amd.com>
+Date:   Mon, 3 May 2021 14:41:21 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.0
+In-Reply-To: <40C2457E-C2A3-4DF7-BD16-829D927CC17C@amacapital.net>
 Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Originating-IP: [70.112.153.56]
+X-ClientProxiedBy: SN4PR0201CA0061.namprd02.prod.outlook.com
+ (2603:10b6:803:20::23) To SN6PR12MB2718.namprd12.prod.outlook.com
+ (2603:10b6:805:6f::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Brijeshs-MacBook-Pro.local (70.112.153.56) by SN4PR0201CA0061.namprd02.prod.outlook.com (2603:10b6:803:20::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.25 via Frontend Transport; Mon, 3 May 2021 19:41:23 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fe58b1f1-80e3-4718-69f3-08d90e6b6f1b
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4415:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB4415065DDFA5F34602EE0114E55B9@SA0PR12MB4415.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5413KHLzgeSk39GdwlyzYexmoCuShaiiBuhPKS5e96aP3QV7baPvrVItuZaLcD3lHywq7qy06Tdrtv3OOB9jr9RYB6RBPP/2y97jAdVXgioE+Wv/ugXofYsz2YLquG05IrVsHvfEKR+g/HktD+mICJbdRgP8kbw+/8E1O0X1feDWKLe6/eV+dKTw9lc1FZKm/RNRceFYfIzo8PpQqm6mrJfKoIcReBKCO7vhJ+3kpte1usBYBMeQIN4SZVC+667pqogDMygdwcRhE4qfMzqTqeqcoDxMyBWEuue9sWgl2zAhj84Z5mtoQaUmZYGZs5rbxiQUPUpbNn0+Goc0XWjRBtIWfbPFYdQfZ9WQnS5CiOj2sIEboqwRN0C+CAYx5uUICSGhJXYXIm0Qe3/2NqT8uXJ6ATcLGKCsS6S3fR38cSO4O4pTCSRTHgSRDMKV/T1+CFTj35uqclerj0paov+6wlaRqP6kRKSVrE5lah6dWujtMnRxHTRpmagR7jzQ3MO7fI30mHgO+5zKTBo7JVBOELYDEsBoJ7l94TF+KuQW6+i2/t/KYEaPPEr8RRMnWbDkel4MeOR8Q5cPuJrXKq6PgDnjuQfCKxI66LOvGnZCEEkodnoEeXeSSolmtwsUCDwROqAKokEoymYCfsTCNZF7NNVTkgx+9YOi9I8JzMFq08rwdy7bVnTOZkNoSr4dOxN4TfnQu8m9WicU+KtMIz0u+mVEjF0QEZ/FZnm9+uSVyZo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(39860400002)(366004)(346002)(376002)(44832011)(316002)(478600001)(31696002)(8676002)(8936002)(6512007)(5660300002)(4326008)(7416002)(36756003)(52116002)(6486002)(2616005)(956004)(86362001)(16526019)(186003)(2906002)(66556008)(66476007)(38350700002)(38100700002)(66946007)(53546011)(26005)(6506007)(83380400001)(31686004)(6916009)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZUdHTVZPTVNiV0ozcW90c2pxZzZXV3pWSmlQL1hIUlNuTlQ0bUpOK3RSVUpq?=
+ =?utf-8?B?a3BzZVdFR3B2bG9ySjZYY3F3NGdodFRBUVFqUUlrdjR2TUwxdlkxTFRxNkVv?=
+ =?utf-8?B?bWIvakNveGNKUklzWXhZQU9TdURGcU1pcFozclJLYTQyT3FScktEbU9PWHBj?=
+ =?utf-8?B?M2ZCVTdzeG1XUXF1b1l1WHhXNHdQbGVJZ2ZTZUJkSzZwZ3VhQnhmVWptNk4w?=
+ =?utf-8?B?R3R3a1BQVXR5TXpXNTJXYkFaNzBpeFBiVG10NGl0aW43aFpKQlBJMThFc09O?=
+ =?utf-8?B?TGIwMnZGY3AwMWxmU0YrZFJkM2xUQlhuMndDdnRqa01RSVdkbUdUUm9CK010?=
+ =?utf-8?B?dnBBazQ0YmpSSHJhaUZ5N25WMUJKeFkzNzJ3eGpBaGhQbS80czY1V2JXU0Ny?=
+ =?utf-8?B?SHYrWUllMjl4TGtMaWtuZ25KcmxEZGZGVFErVnkwTDhGQ1puaUZlYThDbHdX?=
+ =?utf-8?B?dlVSNVBBczJXYkxDUlVpVlFJTDgvNHZPeWdKRHE4d0Z6cFZSbnZrdGZlR0Jr?=
+ =?utf-8?B?Z1dqb0FMN25mSHJ4VFFFNUEwOThjUXIvMHZmOWNWV0RLRjlpeElGbUtvcFVr?=
+ =?utf-8?B?MDZaYlllQ2VTVU82SU5HaEJTSFA5UkZpdnA5ZjRLd292MGI2U1ZxcjVDYmNi?=
+ =?utf-8?B?ck5xc2FibktPalBzZ1FDaGFTZmsrTjJ3ZS92VGdkUU9LN0RXNHgzVS9NaXVm?=
+ =?utf-8?B?K3JBOHArK2hBcjVMOEpBdUp0WDkzT3QvQit5cWRFREpnK3VWd2lCK2I4c0N2?=
+ =?utf-8?B?NzA2eVZhbGxvM3o4aVdHK2FrWUFvUEU0UDY5U3YyZEJpNWpmMGxXS2pybzZ0?=
+ =?utf-8?B?OEFmS0NMS3pNUC9xUWFsbW5aSE1icC9vMnEvbzk0Rk1LeS8xOXQ5UGh3M3l3?=
+ =?utf-8?B?QmJvK0NYN0d6dklocUM1VjlaQ0pZbjEyWkJQbjBTZldIUkNXU2R1eDVzUFVW?=
+ =?utf-8?B?M1N2S2dkdmpaVDBYVFBFNVdGWWpWSmIwV0VZQzVMcjhZNEdUYVhURERxTURj?=
+ =?utf-8?B?Y1BiUjgzampyeU5FZmE1WklSNWdUSDl5WHdhcTYxV0F4MElTWDVKQnRFRmFj?=
+ =?utf-8?B?VFhSQTMzN0djb1k0Tnd6ekpJVVNLOWR2RjRzcmtjSWpUMVBtOE0wWUhNYnEy?=
+ =?utf-8?B?THVKcmZ0MEhsazFOc0Y0dlQ2d0RDNk1RSHRwc3I2bFRaWDRiZzVXUTgyN0c1?=
+ =?utf-8?B?MEhxVlpUakw1TlMwcVBHaDY1czd2SlJ4UTRMZ0tpQXk1UlpvYUVpR3RuZjVa?=
+ =?utf-8?B?T2VIZEE0MmQvS1doNVNzOElIaEFHUVQrdEZLcUREbHpPTFJVR0w0UFFIa0VX?=
+ =?utf-8?B?QlRyZ3drdzhJOHZwcDMxY0FEUDhCemNVL2NrUUkyQkRlclBmc3ZUdkRIamNz?=
+ =?utf-8?B?TmVvSG5ETm96bEplN2VwNkt0QUNocC82UlBoenlWL3BDQTVVZDZQaHVCaGIv?=
+ =?utf-8?B?RWJMcmhFdGs0N1AzKzFJUk9Dc2R1Y21VaFVrckdPWXJpWGkxZWxhVGRwSkk4?=
+ =?utf-8?B?LzlBVWlsUWtWZ0ZiT1dZTW1mZEhGalJpOCtBODAwK2orSnArdXM2SE1BK3lj?=
+ =?utf-8?B?cXN6cVQxREZzanl0L3pkZXJGcE1oUjI0U0xWQjluS0xuQXNiMTlHVG1jUnJv?=
+ =?utf-8?B?KzVQN1VLbzg4dnplM2RvTG41Zk55bkY1K3liS2NlNmNZMlQwZ2xUOUlIWDNF?=
+ =?utf-8?B?VXFKQ0R3QUhsVHZQS2lROEYwOE0zUWVUUEJxM0VtNXRMWWtRemtuOW1vTmtk?=
+ =?utf-8?Q?jqOf6dOTKpKU6DbRNHMFqYW5yyoWr+9E8SGJ7jM?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fe58b1f1-80e3-4718-69f3-08d90e6b6f1b
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2021 19:41:23.9741
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WpN/X2kiGezPyqcNskUip3Q1AEluAeYd3xA2fYnejYTTX5FRmfFxvUbJ4oLJYNB85SJ/enSgrAgHupUFDtKVsA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4415
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-e820 emits quite some debug messages to the dmesg log. Let's restrict
-this to cases where the debug output is actually requested. Switch to
-pr_debug() for this purpose and make sure by checking the return code
-that pr_cont() is only called if applicable.
 
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
----
- arch/x86/kernel/e820.c | 27 ++++++++++++++++-----------
- 1 file changed, 16 insertions(+), 11 deletions(-)
+On 5/3/21 12:40 PM, Andy Lutomirski wrote:
+>
+>> On May 3, 2021, at 10:19 AM, Brijesh Singh <brijesh.singh@amd.com> wrote:
+>>
+>> ﻿
+>>> On 5/3/21 11:15 AM, Dave Hansen wrote:
+>>>> On 5/3/21 8:37 AM, Brijesh Singh wrote:
+>>>> GHCB was just an example. Another example is a vfio driver accessing the
+>>>> shared page. If those pages are not marked shared then kernel access
+>>>> will cause an RMP fault. Ideally we should not be running into this
+>>>> situation, but if we do, then I am trying to see how best we can avoid
+>>>> the host crashes.
+>>> I'm confused.  Are you suggesting that the VFIO driver could be passed
+>>> an address such that the host kernel would blindly try to write private
+>>> guest memory?
+>> Not blindly. But a guest could trick a VMM (qemu) to ask the host driver
+>> to access a GPA which is guest private page (Its a hypothetical case, so
+>> its possible that I may missing something). Let's see with an example:
+>>
+>> - A guest provides a GPA to VMM to write to (e.g DMA operation).
+>>
+>> - VMM translates the GPA->HVA and calls down to host kernel with the HVA.
+>>
+>> - The host kernel may pin the HVA to get the PFN for it and then kmap().
+>> Write to the mapped PFN will cause an RMP fault if the guest provided
+>> GPA was not a marked shared in the RMP table. In an ideal world, a guest
+>> should *never* do this but what if it does ?
+>>
+>>
+>>> The host kernel *knows* which memory is guest private and what is
+>>> shared.  It had to set it up in the first place.  It can also consult
+>>> the RMP at any time if it somehow forgot.
+>>>
+>>> So, this scenario seems to be that the host got a guest physical address
+>>> (gpa) from the guest, it did a gpa->hpa->hva conversion and then wrote
+>>> the page all without bothering to consult the RMP.  Shouldn't the the
+>>> gpa->hpa conversion point offer a perfect place to determine if the page
+>>> is shared or private?
+>> The GPA->HVA is typically done by the VMM, and HVA->HPA is done by the
+>> host drivers. So, only time we could verify is after the HVA->HPA. One
+>> of my patch provides a snp_lookup_page_in_rmptable() helper that can be
+>> used to query the page state in the RMP table. This means the all the
+>> host backend drivers need to enlightened to always read the RMP table
+>> before making a write access to guest provided GPA. A good guest should
+>> *never* be using a private page for the DMA operation and if it does
+>> then the fault handler introduced in this patch can avoid the host crash
+>> and eliminate the need to enlightened the drivers to check for the
+>> permission before the access.
+> Can we arrange for the page walk plus kmap process to fail?
 
-diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
-index bc0657f0d..67ad4d8f0 100644
---- a/arch/x86/kernel/e820.c
-+++ b/arch/x86/kernel/e820.c
-@@ -465,6 +465,7 @@ __e820__range_update(struct e820_table *table, u64 start, u64 size, enum e820_ty
- 	u64 end;
- 	unsigned int i;
- 	u64 real_updated_size = 0;
-+	int printed;
- 
- 	BUG_ON(old_type == new_type);
- 
-@@ -472,11 +473,13 @@ __e820__range_update(struct e820_table *table, u64 start, u64 size, enum e820_ty
- 		size = ULLONG_MAX - start;
- 
- 	end = start + size;
--	printk(KERN_DEBUG "e820: update [mem %#010Lx-%#010Lx] ", start, end - 1);
--	e820_print_type(old_type);
--	pr_cont(" ==> ");
--	e820_print_type(new_type);
--	pr_cont("\n");
-+	printed = pr_debug("e820: update [mem %#010Lx-%#010Lx] ", start, end - 1);
-+	if (printed > 0) {
-+		e820_print_type(old_type);
-+		pr_cont(" ==> ");
-+		e820_print_type(new_type);
-+		pr_cont("\n");
-+	}
- 
- 	for (i = 0; i < table->nr_entries; i++) {
- 		struct e820_entry *entry = &table->entries[i];
-@@ -540,7 +543,7 @@ static u64 __init e820__range_update_kexec(u64 start, u64 size, enum e820_type o
- /* Remove a range of memory from the E820 table: */
- u64 __init e820__range_remove(u64 start, u64 size, enum e820_type old_type, bool check_type)
- {
--	int i;
-+	int printed, i;
- 	u64 end;
- 	u64 real_removed_size = 0;
- 
-@@ -548,10 +551,12 @@ u64 __init e820__range_remove(u64 start, u64 size, enum e820_type old_type, bool
- 		size = ULLONG_MAX - start;
- 
- 	end = start + size;
--	printk(KERN_DEBUG "e820: remove [mem %#010Lx-%#010Lx] ", start, end - 1);
--	if (check_type)
--		e820_print_type(old_type);
--	pr_cont("\n");
-+	printed = pr_debug("e820: remove [mem %#010Lx-%#010Lx] ", start, end - 1);
-+	if (printed > 0) {
-+		if (check_type)
-+			e820_print_type(old_type);
-+		pr_cont("\n");
-+	}
- 
- 	for (i = 0; i < e820_table->nr_entries; i++) {
- 		struct e820_entry *entry = &e820_table->entries[i];
-@@ -1230,7 +1235,7 @@ void __init e820__reserve_resources_late(void)
- 		if (start >= end)
- 			continue;
- 
--		printk(KERN_DEBUG "e820: reserve RAM buffer [mem %#010llx-%#010llx]\n", start, end);
-+		pr_debug("e820: reserve RAM buffer [mem %#010llx-%#010llx]\n", start, end);
- 		reserve_region_with_split(&iomem_resource, start, end, "RAM buffer");
- 	}
- }
--- 
-2.31.1
+Sure, I will look into all the drivers which do a walk plus kmap to make
+sure that they fail instead of going into the fault path. Should I drop
+this patch or keep it just in the case we miss something?
+
 
 
