@@ -2,69 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD342371782
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A426371785
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 17:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbhECPHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 11:07:14 -0400
-Received: from mga04.intel.com ([192.55.52.120]:6839 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230110AbhECPHN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 11:07:13 -0400
-IronPort-SDR: kWmLQ+c+KEZZkPzEo2nddoIb3MuZwiT4sj9qhsMt7Mv0SHHfZsTbdPt6TzAypebvXcceVE/o2O
- oq0QhvojdIYw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9973"; a="195704633"
-X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
-   d="scan'208";a="195704633"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 08:06:18 -0700
-IronPort-SDR: GzTOb0mUd+p6Ew2KRAhXLthHMuyCbSrrt9bABwEZzM2zHoz7tG97Dj/vW9sdXEwsM+KQL8mFcj
- UeTNFL4r1mYw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
-   d="scan'208";a="468095843"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by orsmga001.jf.intel.com with ESMTP; 03 May 2021 08:06:16 -0700
-Subject: Re: [PATCH] perf record: Set timestamp boundary for AUX area events
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
-References: <20210503064222.5319-1-adrian.hunter@intel.com>
- <20210503145637.GN4032392@tassilo.jf.intel.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <fecadda6-b708-f7c8-ca9a-3521f168727e@intel.com>
-Date:   Mon, 3 May 2021 18:06:38 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S230286AbhECPIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 11:08:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230123AbhECPI3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 11:08:29 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39E1C06174A;
+        Mon,  3 May 2021 08:07:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=kMx7dObqmiMRLKvCPPx5dZSO2/TSonq0GivO88n9Dnw=; b=RTzFX22TzavsuLNPyHWsd2y00w
+        cF7Q/aaqJCVid9CI0gOoHuVkJsFTBbZj+lTPkVmRBQuzkNZYpJG9sXa/4C5amfoRCfYEaoMelXezF
+        C0YeOyS2NPjqv9FtF+HlWKZgFNAC6y4cUT4Dth+3fQbFuNHOkJu3qze9TWiODLDmQVdOmH+q7Fnwe
+        4VInMB/ACCoVu9GXHTNkiuuMBbcoDG8s/XN1fO8sY15E1lODTIA3YXke6rzgpeM5r3GSOHg4dLvuK
+        Me1nm5M0fRzPZ9A2SFF0T9D0zvnBPeANCBMBIQX4m+RiZFxcbxM7QZpJnXNrmLIlNuqCtNrLMG0LX
+        k3rHcIew==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1ldaAH-00EBCq-9l; Mon, 03 May 2021 15:07:21 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DFF893001D0;
+        Mon,  3 May 2021 17:07:15 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 61FAF2C1AAE0C; Mon,  3 May 2021 17:07:15 +0200 (CEST)
+Date:   Mon, 3 May 2021 17:07:15 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        tglx@linutronix.de, bp@alien8.de, jroedel@suse.de,
+        thomas.lendacky@amd.com, pbonzini@redhat.com, mingo@redhat.com,
+        dave.hansen@intel.com, rientjes@google.com, seanjc@google.com,
+        hpa@zytor.com, tony.luck@intel.com
+Subject: Re: [PATCH Part2 RFC v2 08/37] x86/sev: Split the physmap when
+ adding the page in RMP table
+Message-ID: <YJARo9vpAgb6VmLI@hirez.programming.kicks-ass.net>
+References: <20210430123822.13825-1-brijesh.singh@amd.com>
+ <20210430123822.13825-9-brijesh.singh@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20210503145637.GN4032392@tassilo.jf.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210430123822.13825-9-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/05/21 5:56 pm, Andi Kleen wrote:
-> On Mon, May 03, 2021 at 09:42:22AM +0300, Adrian Hunter wrote:
->> AUX area data is not processed by 'perf record' and consequently the
->>  --timestamp-boundary option may result in no values for "time of first
->> sample" and "time of last sample". However there are non-sample events
->> that can be used instead, namely 'itrace_start' and 'aux'.
+On Fri, Apr 30, 2021 at 07:37:53AM -0500, Brijesh Singh wrote:
 
-"instead" -> "as well"
+> This poses a challenge in the Linux memory model. The Linux kernel
+> creates a direct mapping of all the physical memory -- referred to as
+> the physmap. The physmap may contain a valid mapping of guest owned pages.
+> During the page table walk, the host access may get into the situation where
+> one of the pages within the large page is owned by the guest (i.e assigned
+> bit is set in RMP). A write to a non-guest within the large page will
+> raise an RMP violation. To workaround it, call set_memory_4k() to split
+> the physmap before adding the page in the RMP table. This ensures that the
+> pages added in the RMP table are used as 4K in the physmap.
 
->> 'itrace_start' is issued before tracing starts, and 'aux' is issued
->> every time data is ready.
-> 
-> Hmm, what happens when some other non PT events are in the same perf record?
+What's an RMP violation and why are they a problem?
 
-The sample timestamps are still processed, so the lowest sample timestamp or
-'itrace_start' timestamp or 'aux' timestamp is the start.  Similarly for the end.
+> The spliting of the physmap is a temporary solution until the kernel page
+> fault handler is improved to split the kernel address on demand.
 
-> And those maybe run at different times than PT (e.g. due to some PT specific
-> filter).  Does this all work correctly then?
+How is that an improvement? Fracturing the physmap sucks whichever way
+around.
 
-The broadest range is used
+> One of the
+> disadvtange of splitting is that eventually, it will end up breaking down
+> the entire physmap unless its coalesce back to a large page. I am open to
+> the suggestation on various approaches we could take to address this problem.
+
+Have the hardware fracture the TLB entry internally?
