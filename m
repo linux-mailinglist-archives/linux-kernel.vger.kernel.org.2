@@ -2,178 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0ACF371360
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 12:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB23737137F
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 12:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233258AbhECKIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 06:08:54 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:43082 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233245AbhECKIt (ORCPT
+        id S233283AbhECKPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 06:15:21 -0400
+Received: from bmailout1.hostsharing.net ([83.223.95.100]:44607 "EHLO
+        bmailout1.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233062AbhECKPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 06:08:49 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 143A3lX6097332;
-        Mon, 3 May 2021 10:07:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=0m6CZKMKH0CXm0dLQ0wuv9R6uvsrR8sLUyperFhMgWQ=;
- b=XUMu9wd9V9A+Uoz4d0UJUDQ2Ww8J1dRk//bZ+A2Q4fvYe9lR+Po9sMG/MT6cN7eqmAy6
- SetGbtUJdTaQ30DLGjPxfDGPAYRfq765WbFGFEEzdMZ9lDLOWYbf0WImEgjqEf9OVE6q
- YGHwNdfQ4tRR8gilOqDN0Pha1onnllAxMrYgFOgVhT1gUuEvPbmfXnHFvRr/4IDEL2ZE
- hDlsOFZFSMCko9TvnviEjkmyNM6EzaEW8dFyQq9Xmx3rGuoH/Rfir351BZVt2wUr8q8A
- zaAi5KdNg8KQAq5L/47y+jOPk4tZJ7UtygfrlVeZfo98mK3GTTcLqQXHfVsJ8GbkBy4R Fg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 388xdru5yf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 May 2021 10:07:31 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 143A5EXH145104;
-        Mon, 3 May 2021 10:07:30 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 389grqgd7w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 May 2021 10:07:30 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 143A7Ulg151722;
-        Mon, 3 May 2021 10:07:30 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 389grqgd7n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 May 2021 10:07:30 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 143A7S4w017140;
-        Mon, 3 May 2021 10:07:28 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 03 May 2021 03:07:27 -0700
-Date:   Mon, 3 May 2021 13:07:20 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Lucas Stankus <lucas.p.stankus@gmail.com>
-Cc:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
-        gregkh@linuxfoundation.org, linux-iio@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] staging: iio: cdc: ad7746: use dt for capacitive
- channel setup.
-Message-ID: <20210503100720.GP1981@kadam>
-References: <cover.1619841953.git.lucas.p.stankus@gmail.com>
- <3e7f2a0a8960cece185f518ff2b7ceb87891edcd.1619841953.git.lucas.p.stankus@gmail.com>
+        Mon, 3 May 2021 06:15:21 -0400
+X-Greylist: delayed 411 seconds by postgrey-1.27 at vger.kernel.org; Mon, 03 May 2021 06:15:21 EDT
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
+        by bmailout1.hostsharing.net (Postfix) with ESMTPS id E3FF030014809;
+        Mon,  3 May 2021 12:07:33 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id D5F1010C8F; Mon,  3 May 2021 12:07:33 +0200 (CEST)
+Date:   Mon, 3 May 2021 12:07:33 +0200
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        kernel-team@android.com, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: Fix spi device unregister flow
+Message-ID: <20210503100733.GA8114@wunner.de>
+References: <20210426235638.1285530-1-saravanak@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3e7f2a0a8960cece185f518ff2b7ceb87891edcd.1619841953.git.lucas.p.stankus@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: hZadFzO0eJeomz8GQTOutIhakF-cZ0Dr
-X-Proofpoint-GUID: hZadFzO0eJeomz8GQTOutIhakF-cZ0Dr
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9972 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 clxscore=1011
- lowpriorityscore=0 adultscore=0 spamscore=0 priorityscore=1501
- mlxlogscore=999 bulkscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2105030066
+In-Reply-To: <20210426235638.1285530-1-saravanak@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 01, 2021 at 09:32:53AM -0300, Lucas Stankus wrote:
-> diff --git a/drivers/staging/iio/cdc/ad7746.c b/drivers/staging/iio/cdc/ad7746.c
-> index dfd71e99e872..531f1b96dea2 100644
-> --- a/drivers/staging/iio/cdc/ad7746.c
-> +++ b/drivers/staging/iio/cdc/ad7746.c
-> @@ -18,8 +18,6 @@
->  #include <linux/iio/iio.h>
->  #include <linux/iio/sysfs.h>
+On Mon, Apr 26, 2021 at 04:56:38PM -0700, Saravana Kannan wrote:
+> When an SPI device is unregistered, the spi->controller->cleanup() is
+> called in the device's release callback. That's wrong for a couple of
+> reasons:
+> 
+> 1. spi_dev_put() can be called before spi_add_device() is called. And
+>    it's spi_add_device() that calls spi_setup(). This will cause clean()
+>    to get called without the spi device ever being setup.
+
+Well, yes, but it's not a big problem in practice so far:
+
+I've checked all drivers and there are only four which are affected
+by this: spi-mpc512x-psc.c spi-pic32.c spi-s3c64xx.c spi-st-ssc4.c
+
+They all fiddle with the chipselect GPIO in their ->cleanup hook
+and the GPIO may not have been requested yet because that happens
+during ->setup.
+
+All the other drivers merely invoke kzalloc() on ->setup and kfree()
+on ->cleanup.  The order doesn't matter in this case because
+kfree(NULL) is a no-op.
+
+
+> 2. There's no guarantee that the controller's driver would be present by
+>    the time the spi device's release function gets called.
+
+How so?  spi_devices are instantiated on ->probe of the controller
+via spi_register_controller() and destroyed on ->remove via
+spi_unregister_controller().  I don't see how the controller driver
+could ever be unavailable, so this point seems moot.
+
+
+> Fix these issues by simply moving the cleanup from the device release
+> callback to the actual spi_unregister_device() function.
+
+Unfortunately the fix is wrong, it introduces a new problem:
+
+> @@ -713,6 +717,8 @@ void spi_unregister_device(struct spi_device *spi)
+>  	if (!spi)
+>  		return;
 >  
-> -#include "ad7746.h"
-> -
->  /*
->   * AD7746 Register Definition
->   */
-> @@ -676,10 +674,11 @@ static const struct iio_info ad7746_info = {
->  static int ad7746_probe(struct i2c_client *client,
->  			const struct i2c_device_id *id)
->  {
-> -	struct ad7746_platform_data *pdata = client->dev.platform_data;
-> +	struct device *dev = &client->dev;
->  	struct ad7746_chip_info *chip;
->  	struct iio_dev *indio_dev;
->  	unsigned char regval = 0;
-> +	unsigned int vdd_permille;
->  	int ret = 0;
->  
->  	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*chip));
-> @@ -703,26 +702,39 @@ static int ad7746_probe(struct i2c_client *client,
->  	indio_dev->num_channels = ARRAY_SIZE(ad7746_channels);
->  	indio_dev->modes = INDIO_DIRECT_MODE;
->  
-> -	if (pdata) {
-> -		if (pdata->exca_en) {
-> -			if (pdata->exca_inv_en)
-> -				regval |= AD7746_EXCSETUP_NEXCA;
-> -			else
-> -				regval |= AD7746_EXCSETUP_EXCA;
-> -		}
-> +	if (device_property_read_bool(dev, "adi,exca-output-en")) {
-> +		if (device_property_read_bool(dev, "adi,exca-output-invert"))
-> +			regval |= AD7746_EXCSETUP_NEXCA;
-> +		else
-> +			regval |= AD7746_EXCSETUP_EXCA;
-> +	}
->  
-> -		if (pdata->excb_en) {
-> -			if (pdata->excb_inv_en)
-> -				regval |= AD7746_EXCSETUP_NEXCB;
-> -			else
-> -				regval |= AD7746_EXCSETUP_EXCB;
-> -		}
-> +	if (device_property_read_bool(dev, "adi,excb-output-en")) {
-> +		if (device_property_read_bool(dev, "adi,excb-output-invert"))
-> +			regval |= AD7746_EXCSETUP_NEXCB;
-> +		else
-> +			regval |= AD7746_EXCSETUP_EXCB;
-> +	}
->  
-> -		regval |= AD7746_EXCSETUP_EXCLVL(pdata->exclvl);
-> -	} else {
-> -		dev_warn(&client->dev, "No platform data? using default\n");
-> -		regval = AD7746_EXCSETUP_EXCA | AD7746_EXCSETUP_EXCB |
-> -			AD7746_EXCSETUP_EXCLVL(3);
-> +	ret = device_property_read_u32(dev, "adi,excitation-vdd-permille",
-> +				       &vdd_permille);
-> +	if (!ret) {
+> +	spi_cleanup(spi);
+> +
+>  	if (spi->dev.of_node) {
+>  		of_node_clear_flag(spi->dev.of_node, OF_POPULATED);
+>  		of_node_put(spi->dev.of_node);
 
-This test is reversed.  I wonder if the static checkers can catch the
-uninitialized variable bug...  It's probably better to write it as:
+Now you're running ->cleanup before the SPI slave's driver is unbound.
+That's bad, the driver may need to access the physical device on unbound,
+e.g. to quiesce interrupts.  That may not work now because the
+slave's controller_state is gone.
 
-	if (device_property_read_u32(dev, "adi,excitation-vdd-permille",
-				     &vdd_permille) {
+NAK, this needs to be reverted.
 
-So it matches the others.
+Thanks,
 
-regards,
-dan carpenter;
-
-> +		switch (vdd_permille) {
-> +		case 125:
-> +			regval |= AD7746_EXCSETUP_EXCLVL(0);
-> +			break;
-> +		case 250:
-> +			regval |= AD7746_EXCSETUP_EXCLVL(1);
-> +			break;
-> +		case 375:
-> +			regval |= AD7746_EXCSETUP_EXCLVL(2);
-> +			break;
-> +		case 500:
-> +			regval |= AD7746_EXCSETUP_EXCLVL(3);
-> +			break;
-> +		default:
-> +			break;
-> +		}
->  	}
->  
->  	ret = i2c_smbus_write_byte_data(chip->client,
-
-
-
+Lukas
