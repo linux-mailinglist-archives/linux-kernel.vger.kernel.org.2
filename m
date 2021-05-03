@@ -2,302 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D3B371026
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 02:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E60E137102F
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 02:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232778AbhECAwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 May 2021 20:52:10 -0400
-Received: from mail-dm6nam10on2072.outbound.protection.outlook.com ([40.107.93.72]:17281
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232758AbhECAwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 May 2021 20:52:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OMOKk5SUM09NRPCZqzt6Lla35JMG52B4+LfKJ4ntWW5Ut+RMPe2sqlqKdKPVmW4bPhWQLg1jQPUDs8CEdYzlKGaCu88xKu7oyD+1xpP9z0HAFqOKOGfOwtji9Yktxa+5t5cbScmOKyhISKqQMPXHoNrVw1jPhgYknsKMaTd4vi7uu+m1gsSO3xO+sjVEhDWLoQrwjqMB0ELyuxuitViYlGe6Bqdfe6FacBfP5m8xGOLU0wX2RPNIfgR0lkOWUpOiYpxj4fXHuKuwh8TB4U5w253d6S78oVFEl5aHr9pFIKtJ+A2tWTz1Xcmb268g9dmjUZM0FctqhQTWueLb0WCg+g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GQzfVm21ztBgz1Z7wAR9R3g0216UxznMewupZZK/NEQ=;
- b=j57uKI2mzaTCtTLRIZKBt7kLbblai1gy784zMRWXxqWFr8Dp1+n3JB098T9QgvQ+nVerc1dyNtBfVlZoLApvYbfzwHCCeWGw0bDYseGs+bgnEWxSyWsdN75nWj5ShB1B3cn3vCvog1+jarqoYu/GHk0kftu6A5a0eab5w5S7r5IhHExylsFd1RgdiY2C6ub7tBrZ7aA/gELCUy1AE6I5acIpljfaJU0S81xWh4nIQrWg9xF3BAwSCX1KqnhDAO2DIU0DJ2/KjoQhNBNLwNY4AXzpJZUNG5g1AtVIAEDnX0RDgeySFBsK5U23iMSjsnxLlEGqjFJyHiReHCn+lMyZwg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=raithlin.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GQzfVm21ztBgz1Z7wAR9R3g0216UxznMewupZZK/NEQ=;
- b=JUpTa6Xa0V138nlElKcN3RUfx0hcK0knAqEb+9yM0yanMXVHzeZ1OT0lxGfSu2qrtetpt9CxKRTJDaYE27bMar/pwzGdYv+aryQWIS2zUgd29u51dhm9IqF5E2CIWPTMTI9GHeiYAJYaHMg/cIUpJQIo+VGMSIK19tbUzJtc0BAmL4yBnIRTUBvHq/Fb2lvJ8EGObHkfA/qdsvH1FprOPUFO/z7Hd7nUX9C6eUMfWTo4BgjoDsjnNVyfhVtK7lF82L5HB2vmy5xKAGiGNJAi0AxW+tIwaXBzaJUC5q4N5hpXRnlUrdu2YcVkuEnurVgH8UkcmXQLYecwv/O188UB4A==
-Received: from MWHPR01CA0044.prod.exchangelabs.com (2603:10b6:300:101::30) by
- BY5PR12MB4003.namprd12.prod.outlook.com (2603:10b6:a03:196::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.25; Mon, 3 May
- 2021 00:51:15 +0000
-Received: from CO1NAM11FT064.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:101:cafe::40) by MWHPR01CA0044.outlook.office365.com
- (2603:10b6:300:101::30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.27 via Frontend
- Transport; Mon, 3 May 2021 00:51:15 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; raithlin.com; dkim=none (message not signed)
- header.d=none;raithlin.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT064.mail.protection.outlook.com (10.13.175.77) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4087.27 via Frontend Transport; Mon, 3 May 2021 00:51:15 +0000
-Received: from [10.2.50.162] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 3 May
- 2021 00:50:39 +0000
-Subject: Re: [PATCH 08/16] PCI/P2PDMA: Introduce helpers for dma_map_sg
- implementations
-To:     Logan Gunthorpe <logang@deltatee.com>,
-        <linux-kernel@vger.kernel.org>, <linux-nvme@lists.infradead.org>,
-        <linux-block@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-mm@kvack.org>, <iommu@lists.linux-foundation.org>
-CC:     Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Dan Williams" <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Xiong Jianxin" <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "Ira Weiny" <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>
-References: <20210408170123.8788-1-logang@deltatee.com>
- <20210408170123.8788-9-logang@deltatee.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <e27d35f8-5c3a-39e3-9845-6d2bf15cc8b3@nvidia.com>
-Date:   Sun, 2 May 2021 17:50:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S232814AbhECA40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 May 2021 20:56:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232758AbhECA4X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 May 2021 20:56:23 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C93D2C06174A;
+        Sun,  2 May 2021 17:55:30 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id l4so5378738ejc.10;
+        Sun, 02 May 2021 17:55:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/0wYV+KQRkgUT3x70I08SzMx0S7g+ViUaU9GbXRInDw=;
+        b=IbczB7VFtSBFa7r1QD6Iq4AyHLnfMLZQQJnWryWqhGJOMBeNJcJiM9IeloWMJ09myt
+         K+gmUvQQoxUi934k4z754PBvB2ezLKezGeAHfT7pkztKbMwoK629M4nK7JaPrwd29Vjy
+         o0SdivdhOD16xTNQn+Djh38NV54H0z430d8VGnfkAAz1hyE3uFu2W+MCebfkfRsr5Vq2
+         +yZNAHQ3DGf6L7iQU0gOvaVPR09glD1t5BXgdj2USHgf3oQ3GifisbrU/kqc6fli+kKL
+         urd2BbnFBjm/M1qWD8gZu0m4NPDiezceN+Bc1sFPWtg8MDeav1GXSrNq2/2Kr1lY7FeI
+         Am6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/0wYV+KQRkgUT3x70I08SzMx0S7g+ViUaU9GbXRInDw=;
+        b=rQ8FZrhjtFZq9LXGoMet6AvxqRzrhVbFRTisK3dB4WkfHg3ePwIiLa+WsJbExWK8qq
+         r6aB2ogyz8G4TSuQ5PR7r8Vcp8fEL8mX2cb0HYO3XeWJ2dJd06NiSzncb3fRMyH5vScV
+         0PC2k1mwjChrFg5tsySRn/QZ8/Oq6qxIyX6H1aMI4+6Cvnh8vGMxtIywke70UwEasjH1
+         vGf7TM0N5fniLGbHnjKK19pCstTSmpbKY+pegcSgAEgpRQK8Rp5zAJRiKTHs+NMnqccR
+         WG6ACs1oTJOndqYq5czg5ZXgMohpItZg2hXzz7rNGioLwG8D/ZV2/IHuv5TulUHVaDZG
+         1eSw==
+X-Gm-Message-State: AOAM531W7KWtIXr7yR+2Nx9Wp0E4Btjgv1bAaNaZbCSCro2+eMDxPCa/
+        dDve8dBC7Ig3wGqm+5Joqbo=
+X-Google-Smtp-Source: ABdhPJzDEZ0yimmyOg/I6uoW70xBlmonrOxaYY4Nmqe76ab9xHmEkibvYwrQepF4Qp9MHxm7opV5Rw==
+X-Received: by 2002:a17:906:5248:: with SMTP id y8mr13944251ejm.150.1620003329351;
+        Sun, 02 May 2021 17:55:29 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
+        by smtp.gmail.com with ESMTPSA id lg20sm10174716ejb.13.2021.05.02.17.55.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 May 2021 17:55:28 -0700 (PDT)
+Date:   Mon, 3 May 2021 02:54:01 +0200
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH net-next v2 10/17] net: dsa: qca8k: make rgmii delay
+ configurable
+Message-ID: <YI9Jqd6bF37MqrWx@Ansuel-xps.localdomain>
+References: <20210502230710.30676-1-ansuelsmth@gmail.com>
+ <20210502230710.30676-10-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210408170123.8788-9-logang@deltatee.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 69684f86-2418-4bb0-f0e1-08d90dcd8e0e
-X-MS-TrafficTypeDiagnostic: BY5PR12MB4003:
-X-Microsoft-Antispam-PRVS: <BY5PR12MB4003F67E10A73855C3B6B0A5A85B9@BY5PR12MB4003.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NZugO7sE0qA5o365KBwkiJZ1SaBZMZhpG9PZdsppghtNAeLCQYLoPJWmXjKPLGGRYaQU3Uba8d30nOi3tuwYruqk7z5G6ALQ9Vdl0Wczoaql1x3vedGSZKOCJRqd6cAwWl11DGWXbzCtOEBbWOXq1tITuHj63Zwmlg9vrXuDC4jO3q29hRaa1In1FjoV0693UITpR5f9SIOmCUBvsPnj705907PgMIJEzIM6UMKAefqJ0hal+qfMblHMsAMqHR4TtbRNdfe4MIYyx3w1VrgQSCEUG3SUc3MHaBJ71E/nRdXgDejxnIinSzB7zDY1i8Ym1VE2EdOFckqKU3qfd7A0RpkdJk77xZDQ65olwQNEviz44hAKnVopTLhzDIGnUMF0A/KulSLf4aDF9uUSncmsVt9D9H9+s3ARGGqhJjor+mvJw9pRbGv2AW227x67CrVEKPoi3ez2Vb02L5eRYcLWpXgsQPde7Nfu3kn7eGafBMF+a2MzubSx3/uq+Y7kNGLazCOUfpW81YooBvhhqiyqC7Mm5WAi8twWQtg9ynz0tzzLM+oX1f5eZe4lDUXo2cjz/8OKUliZn7DPspbxWVrLOxkBuKG2t3/Hg2O2s0xAHPdHK/UzOmgO6bUTqObpTZ/greQsx59h4gfaqWo/D/NoZZYqk4Y5gK8Ep/hRHfFaPma0D+oFNUo1gh2f8uteMVxqrbSzmfA0CyrQ25Q1VY9IVw==
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(396003)(376002)(39860400002)(136003)(36840700001)(46966006)(26005)(82740400003)(5660300002)(36860700001)(53546011)(186003)(86362001)(47076005)(83380400001)(16526019)(356005)(82310400003)(31696002)(16576012)(54906003)(8936002)(8676002)(70586007)(336012)(7636003)(316002)(36906005)(478600001)(7416002)(110136005)(4326008)(31686004)(2906002)(426003)(70206006)(2616005)(36756003)(2101003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2021 00:51:15.1417
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 69684f86-2418-4bb0-f0e1-08d90dcd8e0e
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT064.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4003
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210502230710.30676-10-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/8/21 10:01 AM, Logan Gunthorpe wrote:
-> Add pci_p2pdma_map_segment() as a helper for simple dma_map_sg()
-> implementations. It takes an scatterlist segment that must point to a
-> pci_p2pdma struct page and will map it if the mapping requires a bus
-> address.
+On Mon, May 03, 2021 at 01:07:02AM +0200, Ansuel Smith wrote:
+> The legacy qsdk code used a different delay instead of the max value.
+> Qsdk use 1 ps for rx and 2 ps for tx. Make these values configurable
+> using the standard rx/tx-internal-delay-ps ethernet binding and apply
+> qsdk values by default. The connected gmac doesn't add any delay so no
+> additional delay is added to tx/rx.
 > 
-> The return value indicates whether the mapping required a bus address
-> or whether the caller still needs to map the segment normally. If the
-> segment should not be mapped, -EREMOTEIO is returned.
-> 
-> This helper uses a state structure to track the changes to the
-> pgmap across calls and avoid needing to lookup into the xarray for
-> every page.
-> 
-
-OK, coming back to this patch, after seeing how it is used later in
-the series...
-
-> Also add pci_p2pdma_map_bus_segment() which is useful for IOMMU
-> dma_map_sg() implementations where the sg segment containing the page
-> differs from the sg segment containing the DMA address.
-> 
-> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
 > ---
->   drivers/pci/p2pdma.c       | 65 ++++++++++++++++++++++++++++++++++++++
->   include/linux/pci-p2pdma.h | 21 ++++++++++++
->   2 files changed, 86 insertions(+)
+>  drivers/net/dsa/qca8k.c | 51 +++++++++++++++++++++++++++++++++++++++--
+>  drivers/net/dsa/qca8k.h | 11 +++++----
+>  2 files changed, 55 insertions(+), 7 deletions(-)
 > 
-> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
-> index 38c93f57a941..44ad7664e875 100644
-> --- a/drivers/pci/p2pdma.c
-> +++ b/drivers/pci/p2pdma.c
-> @@ -923,6 +923,71 @@ void pci_p2pdma_unmap_sg_attrs(struct device *dev, struct scatterlist *sg,
->   }
->   EXPORT_SYMBOL_GPL(pci_p2pdma_unmap_sg_attrs);
->   
-> +/**
-> + * pci_p2pdma_map_segment - map an sg segment determining the mapping type
-> + * @state: State structure that should be declared on the stack outside of
-> + *	the for_each_sg() loop and initialized to zero.
-
-Silly fine point for the docs here: it doesn't actually have to be on
-the stack, so I don't think you need to write that constraint in the
-documentation. It just has be be somehow allocated and zeroed.
-
-
-> + * @dev: DMA device that's doing the mapping operation
-> + * @sg: scatterlist segment to map
-> + * @attrs: dma mapping attributes
-> + *
-> + * This is a helper to be used by non-iommu dma_map_sg() implementations where
-> + * the sg segment is the same for the page_link and the dma_address.
-> + *
-> + * Attempt to map a single segment in an SGL with the PCI bus address.
-> + * The segment must point to a PCI P2PDMA page and thus must be
-> + * wrapped in a is_pci_p2pdma_page(sg_page(sg)) check.
-
-Should this be backed up with actual checks in the function, that
-the prerequisites are met?
-
-> + *
-> + * Returns 1 if the segment was mapped, 0 if the segment should be mapped
-> + * directly (or through the IOMMU) and -EREMOTEIO if the segment should not
-> + * be mapped at all.
-> + */
-> +int pci_p2pdma_map_segment(struct pci_p2pdma_map_state *state,
-> +			   struct device *dev, struct scatterlist *sg,
-> +			   unsigned long dma_attrs)
+> diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
+> index 5478bee39c6e..d522398d504e 100644
+> --- a/drivers/net/dsa/qca8k.c
+> +++ b/drivers/net/dsa/qca8k.c
+> @@ -763,6 +763,47 @@ qca8k_setup_mdio_bus(struct qca8k_priv *priv)
+>  	return 0;
+>  }
+>  
+> +static int
+> +qca8k_setup_of_rgmii_delay(struct qca8k_priv *priv)
 > +{
-> +	if (state->pgmap != sg_page(sg)->pgmap) {
-> +		state->pgmap = sg_page(sg)->pgmap;
-> +		state->map = pci_p2pdma_map_type(state->pgmap, dev, dma_attrs);
-> +		state->bus_off = to_p2p_pgmap(state->pgmap)->bus_offset;
+> +	struct device_node *ports, *port;
+> +	u32 val;
+> +
+> +	ports = of_get_child_by_name(priv->dev->of_node, "ports");
+> +	if (!ports)
+> +		return -EINVAL;
+> +
+> +	/* Assume only one port with rgmii-id mode */
+> +	for_each_available_child_of_node(ports, port) {
+> +		if (!of_property_match_string(port, "phy-mode", "rgmii-id"))
+> +			continue;
+> +
+> +		if (of_property_read_u32(port, "rx-internal-delay-ps", &val))
+> +			val = 2;
+> +
+> +		if (val > QCA8K_MAX_DELAY) {
+> +			dev_err(priv->dev, "rgmii rx delay is limited to more than 3ps, setting to the max value");
+> +			priv->rgmii_rx_delay = 3;
+> +		} else {
+> +			priv->rgmii_rx_delay = val;
+> +		}
+> +
+> +		if (of_property_read_u32(port, "rx-internal-delay-ps", &val))
+> +			val = 1;
+> +
+
+Sorry some mistake here. Will be fixed in v3 for sure.
+
+> +		if (val > QCA8K_MAX_DELAY) {
+> +			dev_err(priv->dev, "rgmii tx delay is limited to more than 3ps, setting to the max value");
+> +			priv->rgmii_tx_delay = 3;
+> +		} else {
+> +			priv->rgmii_rx_delay = val;
+
+And here.
+
+> +		}
 > +	}
-
-I'll quote myself from patch 9, because I had a comment there that actually
-was meant for this patch:
-
-Is it worth putting this stuff on the caller's stack? I mean, is there a
-noticeable performance improvement from caching the state? Because if
-it's invisible, then simplicity is better. I suspect you're right, and
-that it *is* worth it, but it's good to know for real.
-
-
 > +
-> +	switch (state->map) {
-> +	case PCI_P2PDMA_MAP_BUS_ADDR:
-> +		sg->dma_address = sg_phys(sg) + state->bus_off;
-> +		sg_dma_len(sg) = sg->length;
-> +		sg_mark_pci_p2pdma(sg);
-> +		return 1;
-> +	case PCI_P2PDMA_MAP_THRU_HOST_BRIDGE:
-> +		return 0;
-> +	default:
-> +		return -EREMOTEIO;
-> +	}
-> +}
+> +	of_node_put(ports);
 > +
-> +/**
-> + * pci_p2pdma_map_bus_segment - map an sg segment pre determined to
-> + *	be mapped with PCI_P2PDMA_MAP_BUS_ADDR
-
-Or:
-
-  * pci_p2pdma_map_bus_segment - map an SG segment that is already known
-  * to be mapped with PCI_P2PDMA_MAP_BUS_ADDR
-
-Also, should that prerequisite be backed up with checks in the function?
-
-> + * @pg_sg: scatterlist segment with the page to map
-> + * @dma_sg: scatterlist segment to assign a dma address to
-> + *
-> + * This is a helper for iommu dma_map_sg() implementations when the
-> + * segment for the dma address differs from the segment containing the
-> + * source page.
-> + *
-> + * pci_p2pdma_map_type() must have already been called on the pg_sg and
-> + * returned PCI_P2PDMA_MAP_BUS_ADDR.
-
-Another prerequisite, so same question: do you think that the code should
-also check that this prerequisite is met?
-
-thanks,
--- 
-John Hubbard
-NVIDIA
-
-> + */
-> +void pci_p2pdma_map_bus_segment(struct scatterlist *pg_sg,
-> +				struct scatterlist *dma_sg)
-> +{
-> +	struct pci_p2pdma_pagemap *pgmap = to_p2p_pgmap(sg_page(pg_sg)->pgmap);
-> +
-> +	dma_sg->dma_address = sg_phys(pg_sg) + pgmap->bus_offset;
-> +	sg_dma_len(dma_sg) = pg_sg->length;
-> +	sg_mark_pci_p2pdma(dma_sg);
-> +}
-> +
->   /**
->    * pci_p2pdma_enable_store - parse a configfs/sysfs attribute store
->    *		to enable p2pdma
-> diff --git a/include/linux/pci-p2pdma.h b/include/linux/pci-p2pdma.h
-> index a06072ac3a52..49e7679403cf 100644
-> --- a/include/linux/pci-p2pdma.h
-> +++ b/include/linux/pci-p2pdma.h
-> @@ -13,6 +13,12 @@
->   
->   #include <linux/pci.h>
->   
-> +struct pci_p2pdma_map_state {
-> +	struct dev_pagemap *pgmap;
-> +	int map;
-> +	u64 bus_off;
-> +};
-> +
->   struct block_device;
->   struct scatterlist;
->   
-> @@ -43,6 +49,11 @@ int pci_p2pdma_map_sg_attrs(struct device *dev, struct scatterlist *sg,
->   		int nents, enum dma_data_direction dir, unsigned long attrs);
->   void pci_p2pdma_unmap_sg_attrs(struct device *dev, struct scatterlist *sg,
->   		int nents, enum dma_data_direction dir, unsigned long attrs);
-> +int pci_p2pdma_map_segment(struct pci_p2pdma_map_state *state,
-> +		struct device *dev, struct scatterlist *sg,
-> +		unsigned long dma_attrs);
-> +void pci_p2pdma_map_bus_segment(struct scatterlist *pg_sg,
-> +				struct scatterlist *dma_sg);
->   int pci_p2pdma_enable_store(const char *page, struct pci_dev **p2p_dev,
->   			    bool *use_p2pdma);
->   ssize_t pci_p2pdma_enable_show(char *page, struct pci_dev *p2p_dev,
-> @@ -109,6 +120,16 @@ static inline void pci_p2pdma_unmap_sg_attrs(struct device *dev,
->   		unsigned long attrs)
->   {
->   }
-> +static inline int pci_p2pdma_map_segment(struct pci_p2pdma_map_state *state,
-> +		struct device *dev, struct scatterlist *sg,
-> +		unsigned long dma_attrs)
-> +{
 > +	return 0;
 > +}
-> +static inline void pci_p2pdma_map_bus_segment(struct scatterlist *pg_sg,
-> +					      struct scatterlist *dma_sg)
-> +{
-> +}
->   static inline int pci_p2pdma_enable_store(const char *page,
->   		struct pci_dev **p2p_dev, bool *use_p2pdma)
->   {
+> +
+>  static int
+>  qca8k_setup(struct dsa_switch *ds)
+>  {
+> @@ -792,6 +833,10 @@ qca8k_setup(struct dsa_switch *ds)
+>  	if (ret)
+>  		return ret;
+>  
+> +	ret = qca8k_setup_of_rgmii_delay(priv);
+> +	if (ret)
+> +		return ret;
+> +
+>  	/* Enable CPU Port */
+>  	ret = qca8k_reg_set(priv, QCA8K_REG_GLOBAL_FW_CTRL0,
+>  			    QCA8K_GLOBAL_FW_CTRL0_CPU_PORT_EN);
+> @@ -1003,8 +1048,10 @@ qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
+>  		 */
+>  		qca8k_write(priv, reg,
+>  			    QCA8K_PORT_PAD_RGMII_EN |
+> -			    QCA8K_PORT_PAD_RGMII_TX_DELAY(QCA8K_MAX_DELAY) |
+> -			    QCA8K_PORT_PAD_RGMII_RX_DELAY(QCA8K_MAX_DELAY));
+> +			    QCA8K_PORT_PAD_RGMII_TX_DELAY(priv->rgmii_tx_delay) |
+> +			    QCA8K_PORT_PAD_RGMII_RX_DELAY(priv->rgmii_rx_delay) |
+> +			    QCA8K_PORT_PAD_RGMII_TX_DELAY_EN |
+> +			    QCA8K_PORT_PAD_RGMII_RX_DELAY_EN);
+>  		/* QCA8337 requires to set rgmii rx delay */
+>  		if (data->id == QCA8K_ID_QCA8337)
+>  			qca8k_write(priv, QCA8K_REG_PORT5_PAD_CTRL,
+> diff --git a/drivers/net/dsa/qca8k.h b/drivers/net/dsa/qca8k.h
+> index 0b503f78bf92..80830bb42736 100644
+> --- a/drivers/net/dsa/qca8k.h
+> +++ b/drivers/net/dsa/qca8k.h
+> @@ -36,12 +36,11 @@
+>  #define QCA8K_REG_PORT5_PAD_CTRL			0x008
+>  #define QCA8K_REG_PORT6_PAD_CTRL			0x00c
+>  #define   QCA8K_PORT_PAD_RGMII_EN			BIT(26)
+> -#define   QCA8K_PORT_PAD_RGMII_TX_DELAY(x)		\
+> -						((0x8 + (x & 0x3)) << 22)
+> -#define   QCA8K_PORT_PAD_RGMII_RX_DELAY(x)		\
+> -						((0x10 + (x & 0x3)) << 20)
+> -#define   QCA8K_MAX_DELAY				3
+> +#define   QCA8K_PORT_PAD_RGMII_TX_DELAY(x)		((x) << 22)
+> +#define   QCA8K_PORT_PAD_RGMII_RX_DELAY(x)		((x) << 20)
+> +#define	  QCA8K_PORT_PAD_RGMII_TX_DELAY_EN		BIT(25)
+>  #define   QCA8K_PORT_PAD_RGMII_RX_DELAY_EN		BIT(24)
+> +#define   QCA8K_MAX_DELAY				3
+>  #define   QCA8K_PORT_PAD_SGMII_EN			BIT(7)
+>  #define QCA8K_REG_PWS					0x010
+>  #define   QCA8K_PWS_SERDES_AEN_DIS			BIT(7)
+> @@ -251,6 +250,8 @@ struct qca8k_match_data {
+>  
+>  struct qca8k_priv {
+>  	u8 switch_revision;
+> +	u8 rgmii_tx_delay;
+> +	u8 rgmii_rx_delay;
+>  	struct regmap *regmap;
+>  	struct mii_bus *bus;
+>  	struct ar8xxx_port_status port_sts[QCA8K_NUM_PORTS];
+> -- 
+> 2.30.2
 > 
-
