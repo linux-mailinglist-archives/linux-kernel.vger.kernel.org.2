@@ -2,85 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2562F371572
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 14:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7E5371577
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 14:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233869AbhECMxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 08:53:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:40152 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233834AbhECMxe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 08:53:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D57481063;
-        Mon,  3 May 2021 05:52:39 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 460E73F70D;
-        Mon,  3 May 2021 05:52:37 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] sched/fair: Fix negative energy delta in
- find_energy_efficient_cpu()
-To:     Pierre.Gondois@arm.com, linux-kernel@vger.kernel.org,
-        xuewen.yan@unisoc.com, qperret@qperret.net
-Cc:     Lukasz.Luba@arm.com, Vincent.Donnefort@arm.com, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, rostedt@goodmis.org,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com
-References: <20210429101948.31224-1-Pierre.Gondois@arm.com>
- <20210429101948.31224-3-Pierre.Gondois@arm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <013382c7-bccf-9e49-4a6b-5542cdd4abba@arm.com>
-Date:   Mon, 3 May 2021 14:52:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S233910AbhECMyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 08:54:51 -0400
+Received: from mail-ua1-f43.google.com ([209.85.222.43]:46794 "EHLO
+        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230246AbhECMyt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 08:54:49 -0400
+Received: by mail-ua1-f43.google.com with SMTP id d30so283171uae.13;
+        Mon, 03 May 2021 05:53:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6sRTDx/pvT9oKMRoUjacP8gFXuJ+4JRD0jTuVOJOzkc=;
+        b=SkpUYlGCA04B6Ljct1NGDG3Py2gDKkl1BJqlsrdAS+t7rVOuLntIeubOPYEUSsvA/C
+         NlVVsKIPh0qbnaj49cIdr3ZNoiZHZtRhwVfwgwmrFITcDh/hgxE3q6+zzmm/9ooZqjSZ
+         2b2b/9219cesIp9W6nmEzmj0DegvSSVBlx1LXclJWBVv1SjuXZ73DV/bD7MMkyCygHHR
+         p4eFExKNBeArHiDZwFVXdOo4Pval7vrTymI5HBlmh71yygjZc3Fxh4gxK35Y+JI1oVft
+         LwO8uwYyHITRwFTUd8WUlokBpfiLsKY5R2YpoBfjre+sjq/Vn6e6jR07ueSUZjlx8MOo
+         aMKQ==
+X-Gm-Message-State: AOAM532k/Qw2rwU0QzBxMmYsr7/2L0FV+qxcC258+0RGPFaJfceQeb/k
+        Bs/H+8mozP89t4Vgo1/oS7bCyLjthdKSvmeiTyk=
+X-Google-Smtp-Source: ABdhPJyY6HmMK+W9rt69v5I2kwTL7IQIj/ouQs0jw6zSbbR1oc5JQ0kbR20w16rDCmSsQz7HN14LdrNs2RquXDAeA5o=
+X-Received: by 2002:ab0:5f8d:: with SMTP id b13mr14381698uaj.4.1620046435558;
+ Mon, 03 May 2021 05:53:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210429101948.31224-3-Pierre.Gondois@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210501172437.156926-1-masahiroy@kernel.org> <20210501172437.156926-2-masahiroy@kernel.org>
+In-Reply-To: <20210501172437.156926-2-masahiroy@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 3 May 2021 14:53:44 +0200
+Message-ID: <CAMuHMdUsXpvUeF4vUWTmAk-ADivHXoVYo-YOw7hB2OGT7qxqLw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arch: use cross_compiling to check whether it is a
+ cross build or not
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Chris Zankel <chris@zankel.net>,
+        Helge Deller <deller@gmx.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/04/2021 12:19, Pierre.Gondois@arm.com wrote:
-> From: Pierre Gondois <Pierre.Gondois@arm.com>
+Hi Yamada-san,
 
-[...]
+On Sat, May 1, 2021 at 7:26 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> 'cross_compiling' is defined by the top Makefile and available for
+> arch Makefiles to check whether it is a cross build or not. A good
+> thing is the variable name 'cross_compiling' is self-documenting.
+>
+> This is a simple replacement for m68k, mips, sh, for which $(ARCH)
+> and $(SRCARCH) always match.
+>
+> No functional change is intended for xtensa, either.
+>
+> This is rather a fix for parisc because arch/parisc/Makefile defines
+> UTS_MATCHINE depending on CONFIG_64BIT, therefore cc-cross-prefix
+> is not working in Kconfig time.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-> @@ -6680,25 +6686,23 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->  			}
->  		}
->  	}
-> -unlock:
-> +
+>  arch/m68k/Makefile   | 2 +-
 
-No need for empty line.
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
->  	rcu_read_unlock();
->  
->  	/*
->  	 * Pick the best CPU if prev_cpu cannot be used, or if it saves at
->  	 * least 6% of the energy used by prev_cpu.
->  	 */
-> -	if (prev_delta == ULONG_MAX)
-> -		return best_energy_cpu;
-> -
-> -	if ((prev_delta - best_delta) > ((prev_delta + base_energy) >> 4))
-> -		return best_energy_cpu;
-> +	if ((prev_delta == ULONG_MAX) ||
-> +		(prev_delta - best_delta) > ((prev_delta + base_energy) >> 4))
-> +		target = best_energy_cpu;
+Gr{oetje,eeting}s,
 
-       if ((prev_delta == ULONG_MAX) ||
--               (prev_delta - best_delta) > ((prev_delta + base_energy) >> 4))
-+           (prev_delta - best_delta) > ((prev_delta + base_energy) >> 4))
-                target = best_energy_cpu;
+                        Geert
 
-IMHO, using whitespaces to align both sub-conditions here makes it more
-readable. Especially since braces aren't required around single
-statements with a condition spanning over multiple lines.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-[...]
-
-With these minor things sorted:
-
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
