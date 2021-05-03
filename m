@@ -2,144 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9866B371FA0
+	by mail.lfdr.de (Postfix) with ESMTP id 28ACF371F9F
 	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 20:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbhECS2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 14:28:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47246 "EHLO
+        id S229738AbhECS2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 14:28:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbhECS2R (ORCPT
+        with ESMTP id S229499AbhECS2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 14:28:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77EE1C061761
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 11:27:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=glt/cPP/fwoiLZAKN8q4fKpIiWmgqcVElTx4ldgtY9I=; b=nSnAGfJwVU17YjZ0fYYRQa/Gwa
-        hiK5SHRQoaI0ffOzHpYS4poQMqa+fx9Gr6LCXrAIAfA8ue08iHfpBdI+bXN5R89EdGaoEbw/GIekP
-        f1JM0tpQloj3aMnJcQ+f+Bx0GNjHuCAt3WUU7NPuPzJl6lm3PiZzj9FkYH2xvFP6lE+82CvmOiqhu
-        QDsZdkNXtKwlAuvFjVfAmFE72ID85MYAkvsHnq80jYWPwbgnuF2IjCYZbEKRORoLaF+UqSHyE+q4w
-        OS536RsOWxnO212Aj3zkAZ1w+0kPwATKuTD/yX3p7HKtDrnNwACkGIO0QR+cBQS3uFUO17aAvro3L
-        BtczUkTg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lddH3-00FTZ2-Au; Mon, 03 May 2021 18:26:40 +0000
-Date:   Mon, 3 May 2021 19:26:29 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     outreachy-kernel@googlegroups.com,
-        David Kershner <david.kershner@unisys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [Outreachy kernel] [PATCH v5] staging: unisys: visorhba: Convert
- module from IDR to XArray
-Message-ID: <20210503182629.GE1847222@casper.infradead.org>
-References: <20210427150719.30841-1-fmdefrancesco@gmail.com>
+        Mon, 3 May 2021 14:28:16 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F046BC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 11:27:21 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id d15so7956732ljo.12
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 11:27:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lUJJM5d1RF9GGuiubhFMHdLaxkaUCrVU7Ef1itvGUYw=;
+        b=Iz1Jj88OWNjnZbyzHKPAERMOG0k13rFHVpLrBt2xfZaieVMH7nw+sNWGiRUiduGceu
+         Q/A99uUt/MemkwMysX38asDsD2yAdm1hM/Dnd1GK0ZrXXrdQGK3aL4QH99V77Y32/7dq
+         WwIp/LoQg2gfPkO2yaHCFrqLkGm5+TFR/oqec=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lUJJM5d1RF9GGuiubhFMHdLaxkaUCrVU7Ef1itvGUYw=;
+        b=XqnfNFqcKWxm01UYYOxsv9qLHvWp1tQ06iTX0g5NP5YlPGSidHwQUXe9IfOb52gUZk
+         gnY4Rjiz9a0fD1YcSYjD2gCy1G2gifGcg6r/cID0SCcv690GxF2jcVkjoT1eTdkFJk5i
+         kReosWo4/g3yz3hTufcvG/y3Y7tOOhk+OK9DggE7pDYxvGxXc9NCnsezIiRIJG2cUZ66
+         sK9pZhaotKqkOV3ygMIxc3hJvDrbfXcqdrKAkmDjCnrwQhfniH2pDUQFnSM8CcbVUNMt
+         w8oDlFEsRGpjQCS16sfGun24/ZMfUFmeIys8h9ggIZq0tAgyjUWvKQLIhS45xml4xnv6
+         YXXA==
+X-Gm-Message-State: AOAM530FVk7eQYuuB/FBJrN17rP4qmSkxYsk2Gb9314i/4AqpcmoY54r
+        4xT4OiwkFZTghD3oW3ba8dgrJA9Y2tsLzFyWHPg=
+X-Google-Smtp-Source: ABdhPJzvOemTGp/pJjG8ryqXmExYjmee2SFz3vuS2JCcxLaHFJr1jVrYMaAIhSgioq+B2X5VrbTV0Q==
+X-Received: by 2002:a2e:8559:: with SMTP id u25mr14542477ljj.460.1620066440299;
+        Mon, 03 May 2021 11:27:20 -0700 (PDT)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id b10sm34983lfb.183.2021.05.03.11.27.18
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 11:27:19 -0700 (PDT)
+Received: by mail-lf1-f51.google.com with SMTP id 124so9498919lff.5
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 11:27:18 -0700 (PDT)
+X-Received: by 2002:a19:7504:: with SMTP id y4mr13574252lfe.41.1620066438744;
+ Mon, 03 May 2021 11:27:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210427150719.30841-1-fmdefrancesco@gmail.com>
+References: <20210503091713.1aa7a7b7@gandalf.local.home>
+In-Reply-To: <20210503091713.1aa7a7b7@gandalf.local.home>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 3 May 2021 11:27:02 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgo40oeh3huHvb64KfeNEYXw_hQXLXqujbhYz18TMZ6ZA@mail.gmail.com>
+Message-ID: <CAHk-=wgo40oeh3huHvb64KfeNEYXw_hQXLXqujbhYz18TMZ6ZA@mail.gmail.com>
+Subject: Re: [ GIT PULL] tracing: Updates for 5.13
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Cao jin <jojing64@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Qiujun Huang <hqjagain@gmail.com>,
+        Wan Jiabing <wanjiabing@vivo.com>, Xu Wang <vulab@iscas.ac.cn>,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 05:07:19PM +0200, Fabio M. De Francesco wrote:
-> Converted visorhba from IDR to XArray. The abstract data type XArray is
-> more memory-efficient, parallelisable and cache friendly. It takes
-> advantage of RCU to perform lookups without locking.
+On Mon, May 3, 2021 at 6:17 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> Colin Ian King (1):
+>       ftrace: Fix spelling mistake "disabed" -> "disabled"
 
-I think the commit message could use a little more work.  The advantage
-of the XArray over the IDR is that it has a better API (and the IDR
-interface is deprecated).
+Well, that spelling fix didn't fix the other misspelled word right next to it.
 
-> -static void setup_scsitaskmgmt_handles(struct idr *idrtable, spinlock_t *lock,
-> -				       struct uiscmdrsp *cmdrsp,
-> +static void setup_scsitaskmgmt_handles(struct xarray *xa, struct uiscmdrsp *cmdrsp,
->  				       wait_queue_head_t *event, int *result)
->  {
-> -	/* specify the event that has to be triggered when this */
-> -	/* cmd is complete */
-> -	cmdrsp->scsitaskmgmt.notify_handle =
-> -		simple_idr_get(idrtable, event, lock);
-> -	cmdrsp->scsitaskmgmt.notifyresult_handle =
-> -		simple_idr_get(idrtable, result, lock);
-> +	int ret;
-> +	u32 id;
-> +
-> +	/* specify the event that has to be triggered when this cmd is complete */
-> +	ret = xa_alloc_irq(xa, &id, event, XA_LIMIT(1, INT_MAX), GFP_KERNEL);
-> +	if (ret == 0)
-> +		cmdrsp->scsitaskmgmt.notify_handle = id;
-> +	ret = xa_alloc_irq(xa, &id, result, XA_LIMIT(1, INT_MAX), GFP_KERNEL);
-> +	if (ret == 0)
-> +		cmdrsp->scsitaskmgmt.notifyresult_handle = id;
->  }
+> This is the first time I'm sending a pull request with a merge
+> in it. I'm hoping my scripts did everything correctly. Might want
+> to check it a bit more than usual.
 
-I think there's a preexisting bug here that you haven't fixed ;-)
+The merge looks fine. It causes the diffstat to show incorrectly,
+which is normal (and generally avoided by you doing a test merge so
+that you get the diffstat from the merged state - but don't send the
+merge itself to me, just use it to (a) look at what conflicts there
+will be and (b) get that correct diffstat for the end result).
 
-Think through the failure case -- if we fail to allocate an ID, then we
-can't send the command, because it won't be able to notify on completion.
-So I'd start out by making this function return an int (0 on success,
-errno on failure).  Then if the first one succeeds and the second fails,
-free the first one before returning an error.
+That said, if the only reason for the merge was one single trivial
+commit, you could just have cherry-picked it instead, avoiding the
+things like "oh, now it has two merge bases so 'diff' no longer has an
+unambiguous result" etc.
 
->  /*
->   * cleanup_scsitaskmgmt_handles - Forget handles created by
->   *				  setup_scsitaskmgmt_handles()
-> - * @idrtable: The data object maintaining the pointer<-->int mappings
-> + * @xa: The data object maintaining the pointer<-->int mappings
->   * @cmdrsp:   Response from the IOVM
->   */
-> -static void cleanup_scsitaskmgmt_handles(struct idr *idrtable,
-> +static void cleanup_scsitaskmgmt_handles(struct xarray *xa,
->  					 struct uiscmdrsp *cmdrsp)
->  {
->  	if (cmdrsp->scsitaskmgmt.notify_handle)
-> -		idr_remove(idrtable, cmdrsp->scsitaskmgmt.notify_handle);
-> +		xa_erase(xa, cmdrsp->scsitaskmgmt.notify_handle);
->  	if (cmdrsp->scsitaskmgmt.notifyresult_handle)
-> -		idr_remove(idrtable, cmdrsp->scsitaskmgmt.notifyresult_handle);
-> +		xa_erase(xa, cmdrsp->scsitaskmgmt.notifyresult_handle);
->  }
+But this is fine. If you start doing a lot of merges, I may really ask
+you to then also do that test-merge for the pull request, but if it's
+one of these "once in a blue moon" things then don't worry about it.
 
-These can then be unconditional, because cleanup_scsitaskmgmt_handles()
-won't get called unless we sent the command.
-
->  /*
-> @@ -284,8 +257,7 @@ static int forward_taskmgmt_command(enum task_mgmt_types tasktype,
->  
->  	/* issue TASK_MGMT_ABORT_TASK */
->  	cmdrsp->cmdtype = CMD_SCSITASKMGMT_TYPE;
-> -	setup_scsitaskmgmt_handles(&devdata->idr, &devdata->privlock, cmdrsp,
-> -				   &notifyevent, &notifyresult);
-> +	setup_scsitaskmgmt_handles(&devdata->xa, cmdrsp, &notifyevent, &notifyresult);
-
-This needs to check the result from setup() and decline to send the
-command if it fails.
-
->  	/* save destination */
->  	cmdrsp->scsitaskmgmt.tasktype = tasktype;
-> @@ -311,14 +283,14 @@ static int forward_taskmgmt_command(enum task_mgmt_types tasktype,
->  	dev_dbg(&scsidev->sdev_gendev,
->  		"visorhba: taskmgmt type=%d success; result=0x%x\n",
->  		 tasktype, notifyresult);
-> -	cleanup_scsitaskmgmt_handles(&devdata->idr, cmdrsp);
-> +	cleanup_scsitaskmgmt_handles(&devdata->xa, cmdrsp);
->  	return SUCCESS;
->  
->  err_del_scsipending_ent:
->  	dev_dbg(&scsidev->sdev_gendev,
->  		"visorhba: taskmgmt type=%d not executed\n", tasktype);
->  	del_scsipending_ent(devdata, scsicmd_id);
-> -	cleanup_scsitaskmgmt_handles(&devdata->idr, cmdrsp);
-> +	cleanup_scsitaskmgmt_handles(&devdata->xa, cmdrsp);
-
-... be sure not to call cleanup() on that path, though.
-
->  	return FAILED;
->  }
->  
+              Linus
