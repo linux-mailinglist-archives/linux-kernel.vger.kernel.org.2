@@ -2,121 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9B3A371127
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 07:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A210371129
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 07:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232910AbhECFHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 01:07:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38786 "EHLO
+        id S232911AbhECFHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 01:07:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232782AbhECFHG (ORCPT
+        with ESMTP id S229489AbhECFHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 01:07:06 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF2CC06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 22:06:12 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id t22so2870809pgu.0
-        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 22:06:12 -0700 (PDT)
+        Mon, 3 May 2021 01:07:32 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE34FC06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  2 May 2021 22:06:39 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id p11so3151463iob.9
+        for <linux-kernel@vger.kernel.org>; Sun, 02 May 2021 22:06:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vkwodlzPuswZX36UULvqpGAyXMlhiyqxqgMMR+wsn/g=;
-        b=eqOPXZ405QGSAfKdidGpykTin6aOgHrzeqTfYQ4nV3CJHfysaWQhp/2XJDWj+mcrCu
-         3MZw3qM5sLPRMaRUEgJAwgPCFTa29MHcr0vqwAg1QcbhffE+Ejzi2bIN9hyVVY3C0YxG
-         daeTW64oG6UhfoeyA4ejA/0PMIvicDM9Z4PAE=
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=siZxirsKcvAyDsxwYv2Y0WOcvC8VgXLaF+KpmP1I61A=;
+        b=mgS0glfnCT8eoMAEyZGezk85iJY7xyPQvKSfM5A9XtRTcW3dgMjOGbMHKPIE5fkok0
+         p1WK5h3vXYXscSt46dYI3bmRSNiP0coNcJlGlZtzv74usrebeO0DsXBHxQpuAYXsjWX2
+         81WuziISp7m7FqtuFssOmD0+g0Ih617T5D+Wk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vkwodlzPuswZX36UULvqpGAyXMlhiyqxqgMMR+wsn/g=;
-        b=sf9eESgCEA/EzpWXgv/0JV8mVp8c05aS2Zsk2u2BSGCQLRLK5PLaMrHTK3HnrA5f9g
-         c6mX3Av325gwbeBX9xHOEtCq1L3jLrHTAOKVRk3iQZzbx8hFsbLwdqFmAsjXyKsnvVa+
-         LRFMb5fzAVHY20wX/K1U+4wFc1X51pCsJF0n2wHSh5D+tQSqtXApMNzvxdhkO2m66lGa
-         zb2s5yAR4up0+XdeywKokOgyWp1c0lXcqaNkIku30JFlW3WUVJCa8Ua5kyH3VHtVHCAj
-         GB4it4+LQpQ/6g3ZNRgB+qjMFaELUdrUlTpO/88K7h2v8slj/QjYcvZFWrJuTxKJkG+L
-         3DRw==
-X-Gm-Message-State: AOAM531udshU/z1SPa7TJGaYyOyfzuZvlBm4Kcke3G/tT2v5nBA9I6QG
-        qVdVeXaonpXWWmwEnWTUK03xHQ==
-X-Google-Smtp-Source: ABdhPJwrNT9OoQVR40I3+lYvVv4+9nyLd7c3AniqwdJ+4Wlqg7gno9fSObobRVa/3hiZPBFuzewOcA==
-X-Received: by 2002:aa7:864b:0:b029:272:947e:85d7 with SMTP id a11-20020aa7864b0000b0290272947e85d7mr16806869pfo.45.1620018372448;
-        Sun, 02 May 2021 22:06:12 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id l10sm7722053pjy.42.2021.05.02.22.06.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 May 2021 22:06:11 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Alex Deucher <alexander.deucher@amd.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Erhard F." <erhard_f@mailbox.org>, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH 2/2] drm/radeon: Avoid power table parsing memory leaks
-Date:   Sun,  2 May 2021 22:06:08 -0700
-Message-Id: <20210503050608.2158996-3-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210503050608.2158996-1-keescook@chromium.org>
-References: <20210503050608.2158996-1-keescook@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=siZxirsKcvAyDsxwYv2Y0WOcvC8VgXLaF+KpmP1I61A=;
+        b=kpGosQ0ZmpJhS50GZp9qBilajUsECbVaReAO8RdkVBn+09q/Go+wSMQS0xVVXd0FiK
+         PYJnRoDSo6KvEA7XDB8FDcue+TkNHBXZMRVqu3Jtlkr1KG5wBSZFt9yqpzWkIJhX0cKT
+         45Abm7SUuzOLOaL4GGIeeaOEb/BzflIWdeVn/k3zqL4lT6MkL5SiGrsZdDqICAI1HBM0
+         fSjdR0mclqt1kW/C/PpOuDYMzKnJ7ksRy+/lozN5DJih9SI4AxiPk9WQqbg1pxi/pLTo
+         7eT3/5mxstG+oBFy6+ga4ZK8GWlyz72BvmTAS9hpKthWUVz9bXIGydwByt2F2/FGPc6Q
+         PO1g==
+X-Gm-Message-State: AOAM532XQeUX+lOzuWVJ3e3wxkxwAVkgLTDK1diqL9lGIZ/Vq2FZM/fs
+        GwHmLBzU1NgEo3eB0mYIfCwa3HHm2rSGd0z4au7Xjw==
+X-Google-Smtp-Source: ABdhPJzn7Y0sAseQkQfOM+fsmzHK9fRfrpX2TeHpHY9qrHf8bXHvuPgZryeTezCNykMdNGD+4wYQGXMrCwf6UBCLsoc=
+X-Received: by 2002:a05:6638:f11:: with SMTP id h17mr5692188jas.102.1620018399221;
+ Sun, 02 May 2021 22:06:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Patch-Hashes: v=1; h=sha256; g=5587411a193bf9edeee00e4cedc613b3ef4ab595; i=RLpnWS4N4EAN7vS2kSGJsC2/Z1bOXLnXB/5m+ZzGvSQ=; m=pxFMtRfS+5OYF3CVbar6V5LSKxDznZRhhtHzAGrKHyk=; p=Y3P6ZdBpqNetVNCsZST5lNppgqyKAxbk7rqUPN2j2Rg=
-X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmCPhL8ACgkQiXL039xtwCY2zRAAqlP BnaPQIK2UkL4N+J8Uhn6rf1DwF1TCalirs9jwqPngXwYss6neOBwTG0T//WVb9QMr3BjtjbB3El+Q kJLWL+uRdkGC5WGVTTxB1Rt7CBODIQeVjpm2B8sxORQusgnG88c8xZD4i3Jn90st/270iUG+TWd7o sclb7HBIRr8pwjmqUeWNq5RjdJ069jrLmTJsn6xJUd+q/Hb4APCe9u3NrltjK8dPgwgv2q951nhk2 jwP+1ToRJR5x4OISD9QGGGQsZ+AeJMOlQLzW0IDfONECA2/l6oiOz5PgaGJWIwzlrrxcmBIG6GfUr O8WfnoP147xN3CMVemI3aSR5Xxs2umK8vElvriITY2OGGE8WQ6ar/sE56bYQISGnWDfHT3MKhLDYU fnZO0AaZTvkXpP/iReTJfWb9yLsIXVz1QkbxQ8QfI00RLaU3rLpSAmNxgtWZbe09+sbgsifNbzKaN pa2FarA6u9sKQ+PeJi9LtsbVXQarDp4C97vxj+ZFDIo9FSrjEL1pzlQSo4amuKBvKbkRBfRKXCygd rafoxsTZjaFTlS1PycdtphI2NGWAndJKDOIw/dS3ixkPykFEJ+3mP/3Nf/qMOXyuu0KyKxs5MnrAc fzYxUrpYMH74s2EiOc/0ZSZBxFewKhTTy0F04ZfI3kF4GKndUDNE19uUpYJdiz6w=
-Content-Transfer-Encoding: 8bit
+References: <20210423065327.1596075-1-hsinyi@chromium.org> <846d2a7a-d9c2-7d9e-9d7e-843ff604be44@collabora.com>
+In-Reply-To: <846d2a7a-d9c2-7d9e-9d7e-843ff604be44@collabora.com>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Mon, 3 May 2021 13:06:13 +0800
+Message-ID: <CAJMQK-iUzarwbvY3R-ezZWmZaDK58JzhEtzG+uyuZAJbsKmE1g@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: mt8183: add mediatek,gce-events in mutex
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Avoid leaving a hanging pre-allocated clock_info if last mode is
-invalid, and avoid heap corruption if no valid modes are found.
+On Fri, Apr 23, 2021 at 9:00 PM Enric Balletbo i Serra
+<enric.balletbo@collabora.com> wrote:
+>
+> Hi Hsin-Yi,
+>
+> Thank you for your patch.
+>
+> On 23/4/21 8:53, Hsin-Yi Wang wrote:
+> > mediatek,gce-events is read by mutex node.
+> >
+> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+>
+> Although I know this property is used and needed I didn't find documentation
+> about it. It would be really nice document in the bindings this mediatek property.
+>
+> In any case this patch LGTM, so
+>
+> Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+>
 
-Fixes: 6991b8f2a319 ("drm/radeon/kms: fix segfault in pm rework")
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/gpu/drm/radeon/radeon_atombios.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+I added the bindings in v2, thanks.
 
-diff --git a/drivers/gpu/drm/radeon/radeon_atombios.c b/drivers/gpu/drm/radeon/radeon_atombios.c
-index f9f4efa1738c..28c4413f4dc8 100644
---- a/drivers/gpu/drm/radeon/radeon_atombios.c
-+++ b/drivers/gpu/drm/radeon/radeon_atombios.c
-@@ -2120,11 +2120,14 @@ static int radeon_atombios_parse_power_table_1_3(struct radeon_device *rdev)
- 		return state_index;
- 	/* last mode is usually default, array is low to high */
- 	for (i = 0; i < num_modes; i++) {
--		rdev->pm.power_state[state_index].clock_info =
--			kcalloc(1, sizeof(struct radeon_pm_clock_info),
--				GFP_KERNEL);
-+		/* avoid memory leaks from invalid modes or unknown frev. */
-+		if (!rdev->pm.power_state[state_index].clock_info) {
-+			rdev->pm.power_state[state_index].clock_info =
-+				kzalloc(sizeof(struct radeon_pm_clock_info),
-+					GFP_KERNEL);
-+		}
- 		if (!rdev->pm.power_state[state_index].clock_info)
--			return state_index;
-+			goto out;
- 		rdev->pm.power_state[state_index].num_clock_modes = 1;
- 		rdev->pm.power_state[state_index].clock_info[0].voltage.type = VOLTAGE_NONE;
- 		switch (frev) {
-@@ -2243,8 +2246,15 @@ static int radeon_atombios_parse_power_table_1_3(struct radeon_device *rdev)
- 			break;
- 		}
- 	}
-+out:
-+	/* free any unused clock_info allocation. */
-+	if (state_index && state_index < num_modes) {
-+		kfree(rdev->pm.power_state[state_index].clock_info);
-+		rdev->pm.power_state[state_index].clock_info = NULL;
-+	}
-+
- 	/* last mode is usually default */
--	if (rdev->pm.default_power_state_index == -1) {
-+	if (state_index && rdev->pm.default_power_state_index == -1) {
- 		rdev->pm.power_state[state_index - 1].type =
- 			POWER_STATE_TYPE_DEFAULT;
- 		rdev->pm.default_power_state_index = state_index - 1;
--- 
-2.25.1
-
+> > ---
+> >  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> > index c5e822b6b77a..cf22d71161e5 100644
+> > --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> > +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> > @@ -1250,6 +1250,8 @@ mutex: mutex@14016000 {
+> >                       reg = <0 0x14016000 0 0x1000>;
+> >                       interrupts = <GIC_SPI 217 IRQ_TYPE_LEVEL_LOW>;
+> >                       power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
+> > +                     mediatek,gce-events = <CMDQ_EVENT_MUTEX_STREAM_DONE0>,
+> > +                                           <CMDQ_EVENT_MUTEX_STREAM_DONE1>;
+> >               };
+> >
+> >               larb0: larb@14017000 {
+> >
