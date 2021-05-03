@@ -2,91 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D97C37162E
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8579371632
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234378AbhECNtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 09:49:20 -0400
-Received: from mga04.intel.com ([192.55.52.120]:64831 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232195AbhECNtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 09:49:11 -0400
-IronPort-SDR: +FYjd2KjCYWOxdIUG1E2LD2LhxV5vUkD7e1sbjRyRDVM8EsRYT++rsVCyTCtiFyagxjp4QE+ma
- Rpj3f+KMGtbw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9973"; a="195687448"
-X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
-   d="scan'208";a="195687448"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 06:48:17 -0700
-IronPort-SDR: +xSVnXJbRHsNB+axtW3WmD08iqybp6Qsy2ImH6A/U3h1BkB6kRCmgkqZUW27E1G89RylIp9lXf
- oC5uYYkfK2mw==
-X-IronPort-AV: E=Sophos;i="5.82,270,1613462400"; 
-   d="scan'208";a="530517064"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 06:48:13 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1ldYvi-009HHh-Ku; Mon, 03 May 2021 16:48:10 +0300
-Date:   Mon, 3 May 2021 16:48:10 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Frieder Schrempf <frieder.schrempf@kontron.de>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Timo =?iso-8859-1?B?U2NobPzfbGVy?= <schluessler@krause.de>,
-        Tim Harvey <tharvey@gateworks.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Null pointer dereference in mcp251x driver when resuming from
- sleep
-Message-ID: <YI//GqCv0nkvtQ54@smile.fi.intel.com>
-References: <d031629f-4a28-70cd-4f27-e1866c7e1b3f@kontron.de>
- <YI/+OP4z787Tmd05@smile.fi.intel.com>
+        id S234430AbhECNuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 09:50:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233400AbhECNuM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 09:50:12 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F042CC061761
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 06:49:17 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1ldYwl-00061R-U4; Mon, 03 May 2021 15:49:15 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:1b0:e062:be12:b9c6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id C345661B229;
+        Mon,  3 May 2021 13:49:14 +0000 (UTC)
+Date:   Mon, 3 May 2021 15:49:14 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: Re: [RESEND PATCH v3 0/3] watchdog: f71808e_wdt: migrate to new
+ kernel API
+Message-ID: <20210503134914.nwlw3sc7c3lq3sy4@pengutronix.de>
+References: <cover.dc9133eee56aa67653455928e4de2162e344ce4d.1618310618.git-series.a.fatoum@pengutronix.de>
+ <20210503130948.y7w6a2wbonr6zxzu@pengutronix.de>
+ <9b24f6de-c989-8055-25d7-518ff6cc3393@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cpg45mua3la2yfdx"
 Content-Disposition: inline
-In-Reply-To: <YI/+OP4z787Tmd05@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <9b24f6de-c989-8055-25d7-518ff6cc3393@roeck-us.net>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 04:44:24PM +0300, Andy Shevchenko wrote:
-> On Mon, May 03, 2021 at 03:11:40PM +0200, Frieder Schrempf wrote:
-> > Hi,
-> > 
-> > with kernel 5.10.x and 5.12.x I'm getting a null pointer dereference
-> > exception from the mcp251x driver when I resume from sleep (see trace
-> > below).
-> > 
-> > As far as I can tell this was working fine with 5.4. As I currently don't
-> > have the time to do further debugging/bisecting, for now I want to at least
-> > report this here.
-> > 
-> > Maybe there is someone around who could already give a wild guess for what
-> > might cause this just by looking at the trace/code!?
-> 
-> Does revert of c7299fea6769 ("spi: Fix spi device unregister flow") help?
 
-Other than that, bisecting will take not more than 3-4 iterations only:
-% git log --oneline v5.4..v5.10.34 -- drivers/net/can/spi/mcp251x.c
-3292c4fc9ce2 can: mcp251x: fix support for half duplex SPI host controllers
-e0e25001d088 can: mcp251x: add support for half duplex controllers
-74fa565b63dc can: mcp251x: Use readx_poll_timeout() helper
-2d52dabbef60 can: mcp251x: add GPIO support
-cfc24a0aa7a1 can: mcp251x: sort include files alphabetically
-df561f6688fe treewide: Use fallthrough pseudo-keyword
-8ce8c0abcba3 can: mcp251x: only reset hardware as required
-877a902103fd can: mcp251x: add mcp251x_write_2regs() and make use of it
-50ec88120ea1 can: mcp251x: get rid of legacy platform data
-14684b93019a Merge git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net
+--cpg45mua3la2yfdx
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-With Best Regards,
-Andy Shevchenko
+On 03.05.2021 06:33:21, Guenter Roeck wrote:
+> On 5/3/21 6:09 AM, Marc Kleine-Budde wrote:
+> > On 13.04.2021 12:46:43, Ahmad Fatoum wrote:
+> >> This series migrates the driver to the new kernel watchdog API and
+> >> then to the driver model.
+> >>
+> >> Main feedback from Guenther on v2 was that I need to split it up to
+> >> enable review. I have done so by removing the extra refactoring for
+> >> now and focused on the functional changes described above. The diff
+> >> is now much better readable.
+> >>
+> >> I tested it on a f81866.
+> >=20
+> > Is there a chance to get this series applied and mainline? Is there
+> > anything that's blocking it?
+> >=20
+>=20
+> Yes, time to review. Sorry, I am way backlogged with code reviews.
 
+That sounds familiar to me :/
 
+But on the other hand I have a co-worker that's interested in watchdogs
+:) He'll try to do some reviews.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--cpg45mua3la2yfdx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmCP/1cACgkQqclaivrt
+76kaewf+K6SGrz7WudPxFt90uyPaEQZHJzsjmJFBeEQHQ1kOm6Rvl0T9ik2y6jNN
+KIZcc0wvSlD3Pfnp4xbzaZ670IuZIReaJvmDHE/zO/fJk+GmmFmrbMnYhYCvD+fe
+4husKhqOI2jLcNu1Axzqu96eK5YFy1mUE8Tcic5MKiOoh1PNC1gbQvDe5jn1jf4u
+khosprwyGJ05nsesImrOVPQ83xn9lTmm0C/gqq9cZPCTbrAtdNXbFbM/SFIoWvJW
++jTZzMB+eBc73LbJciak0DMFUmlwLx+Ocosd8yjso2ibifCkkEBhgDtL/VJWyNTp
+38PgmQQsSbuySDcm9Lb6+mIviOy4dw==
+=3v58
+-----END PGP SIGNATURE-----
+
+--cpg45mua3la2yfdx--
