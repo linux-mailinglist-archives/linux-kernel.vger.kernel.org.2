@@ -2,92 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF4037158D
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 14:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3FF2371598
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 15:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233882AbhECM6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 08:58:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39174 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231180AbhECM6j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 08:58:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BBFD5AC38;
-        Mon,  3 May 2021 12:57:45 +0000 (UTC)
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>, Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH] nvme-multipath: Reset bi_disk to ns head when failover
-Date:   Mon,  3 May 2021 14:57:41 +0200
-Message-Id: <20210503125741.68117-1-dwagner@suse.de>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S234012AbhECNBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 09:01:31 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23966 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233986AbhECNB3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 09:01:29 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 143Ciuam074034;
+        Mon, 3 May 2021 09:00:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=VBYXCUgBG6tpCE1oAj8zm21J5gsUJSrdkssfdve2mUg=;
+ b=LkHSdUMOisuFb/2BIB59J+kakiD0aL3Tl+JLjPUDm6iYy/+brddSnswmSHkQfttmejzX
+ CfBTwiV682GfkoGiignGP0Jrr6GCgYzzO475csWrofSsiVazXPl0vNietaekQYA57jQ1
+ 64qbxkiSNO9Lzx0Z2R2SZUYWr78NCKzY2tT91RuYncMz0ArO+cc39lqlyWBICI2hitQD
+ AQKVft2Wce+u1JDrAoedjW6R1vfFuF9y/cvpbDEgUe1lzUFwdd49ZGF3Km2khUFto8jK
+ EZnJOn4GYDFdEixIx+G9Ju+kRwmeEfFmpOsR8DvLzIc6IMj1N9Ius9HnGKtyCubFnyH6 tA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38ahexrdqm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 May 2021 09:00:30 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 143CjH8A075075;
+        Mon, 3 May 2021 09:00:29 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38ahexrdp4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 May 2021 09:00:29 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 143CruP8006093;
+        Mon, 3 May 2021 13:00:28 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03fra.de.ibm.com with ESMTP id 388xm88d46-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 May 2021 13:00:27 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 143D0P1G23658850
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 3 May 2021 13:00:25 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0440542041;
+        Mon,  3 May 2021 13:00:25 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DD1DF4207A;
+        Mon,  3 May 2021 13:00:22 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.45.89])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  3 May 2021 13:00:22 +0000 (GMT)
+Message-ID: <8493d7e2b0fefa4cd3861bd6b7ee6f2340aa7434.camel@linux.ibm.com>
+Subject: Re: [PATCH v5 09/12] evm: Allow setxattr() and setattr() for
+ unmodified metadata
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>, mjg59@google.com
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Mon, 03 May 2021 09:00:21 -0400
+In-Reply-To: <20210407105252.30721-10-roberto.sassu@huawei.com>
+References: <20210407105252.30721-1-roberto.sassu@huawei.com>
+         <20210407105252.30721-10-roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: vGrctZS8HvxjKgZ809KL71I2AfjvSWwm
+X-Proofpoint-ORIG-GUID: 6ecU4B-a0jF7CXqDHMvUrDnxco7OPWtt
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-03_07:2021-05-03,2021-05-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ priorityscore=1501 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
+ adultscore=0 spamscore=0 clxscore=1015 suspectscore=0 lowpriorityscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2105030087
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The path can be stale when we failover. If we don't reset the bdev to
-the ns head and the I/O finally completes in end_io() it will triggers
-a crash. By resetting the to ns head disk so that the submit path can
-map the request to an active path.
+On Wed, 2021-04-07 at 12:52 +0200, Roberto Sassu wrote:
 
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
----
+> diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
+> @@ -389,6 +473,11 @@ static int evm_protect_xattr(struct user_namespace *mnt_userns,
+>  	if (evm_status == INTEGRITY_FAIL_IMMUTABLE)
+>  		return 0;
+>  
+> +	if (evm_status == INTEGRITY_PASS_IMMUTABLE &&
+> +	    !evm_xattr_change(mnt_userns, dentry, xattr_name, xattr_value,
+> +			      xattr_value_len))
+> +		return 0;
+> +
 
-The patch is against nvme-5.13.
+If the purpose of evm_protect_xattr() is to prevent allowing an invalid
+security.evm xattr from being re-calculated and updated, making it
+valid, INTEGRITY_PASS_IMMUTABLE shouldn't need to be conditional.  Any
+time there is an attr or xattr change, including setting it to the
+existing value, the status flag should be reset.
 
-[ 6552.155244] Call Trace:
-[ 6552.155251]  bio_endio+0x74/0x120
-[ 6552.155260]  nvme_ns_head_submit_bio+0x36f/0x3e0 [nvme_core]
-[ 6552.155266]  ? __switch_to_asm+0x34/0x70
-[ 6552.155269]  ? __switch_to_asm+0x40/0x70
-[ 6552.155271]  submit_bio_noacct+0x175/0x490
-[ 6552.155274]  ? __switch_to_asm+0x34/0x70
-[ 6552.155277]  ? __switch_to_asm+0x34/0x70
-[ 6552.155284]  ? nvme_requeue_work+0x5a/0x70 [nvme_core]
-[ 6552.155290]  nvme_requeue_work+0x5a/0x70 [nvme_core]
-[ 6552.155296]  process_one_work+0x1f4/0x3e0
-[ 6552.155299]  worker_thread+0x2d/0x3e0
-[ 6552.155302]  ? process_one_work+0x3e0/0x3e0
-[ 6552.155305]  kthread+0x10d/0x130
-[ 6552.155307]  ? kthread_park+0xa0/0xa0
-[ 6552.155311]  ret_from_fork+0x35/0x40
+I'm wondering if making INTEGRITY_PASS_IMMUTABLE conditional would
+prevent the file from being resigned.
 
- drivers/nvme/host/multipath.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+>  	if (evm_status != INTEGRITY_PASS)
+>  		integrity_audit_msg(AUDIT_INTEGRITY_METADATA, d_backing_inode(dentry),
+>  				    dentry->d_name.name, "appraise_metadata",
 
-diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
-index 0d0de3433f37..0faf267faa58 100644
---- a/drivers/nvme/host/multipath.c
-+++ b/drivers/nvme/host/multipath.c
-@@ -69,7 +69,9 @@ void nvme_failover_req(struct request *req)
- {
- 	struct nvme_ns *ns = req->q->queuedata;
- 	u16 status = nvme_req(req)->status & 0x7ff;
-+	struct block_device *bdev;
- 	unsigned long flags;
-+	struct bio *bio;
- 
- 	nvme_mpath_clear_current_path(ns);
- 
-@@ -83,9 +85,13 @@ void nvme_failover_req(struct request *req)
- 		queue_work(nvme_wq, &ns->ctrl->ana_work);
- 	}
- 
-+	bdev = bdget_disk(ns->head->disk, 0);
- 	spin_lock_irqsave(&ns->head->requeue_lock, flags);
-+	for (bio = req->bio; bio; bio = bio->bi_next)
-+		bio_set_dev(bio, bdev);
- 	blk_steal_bios(&ns->head->requeue_list, req);
- 	spin_unlock_irqrestore(&ns->head->requeue_lock, flags);
-+	bdput(bdev);
- 
- 	blk_mq_end_request(req, 0);
- 	kblockd_schedule_work(&ns->head->requeue_work);
--- 
-2.29.2
+This would then be updated to if not INTEGRITY_PASS or
+INTEGRITY_PASS_IMMUTABLE.  The subsequent "return" would need to be
+updated as well.
+
+thanks,
+
+Mimi
 
