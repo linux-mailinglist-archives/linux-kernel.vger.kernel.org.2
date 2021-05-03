@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AADD93714E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 14:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A2E33714E1
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 May 2021 14:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234078AbhECMCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 08:02:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35144 "EHLO mail.kernel.org"
+        id S233979AbhECMCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 08:02:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233918AbhECMBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 08:01:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01414613B4;
-        Mon,  3 May 2021 12:00:21 +0000 (UTC)
+        id S233923AbhECMBS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 08:01:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F04F611CB;
+        Mon,  3 May 2021 12:00:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620043222;
-        bh=dht7hj5yETD9puSVikZtzaLEx4rnyGrXDO/jtaxric4=;
+        s=korg; t=1620043224;
+        bh=MttyNQKIwc0lucJwVJav+gnoUjqzaL/FX+Ne9Af//ug=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qkFkWXmG0UBOLLc0rk09nw0fFZ2cPBEWDmLefanuheTsle/OtBejvjhcTrqsdQ670
-         pYCV8cWkS/BubTQ5JnEkDkBdtNu+SOGnRS9OBcjKUW0xEiIOdYSNeD6D/Rds1+kX+s
-         s0eHI7IekOGUcqeCgW1Jn0c3RibPksjhv6wWYPp8=
+        b=ecDCOlPHU1I0SfiSjz1JV+T/BZgbL2pSAA6UTMr47ZigrIKv3TpIrTE/51Rg6W8oi
+         YdOOcDY8Zkb1JN1wENYu6SwjU6aMta+R6qQ3KgmIgnVRYHGfEqGMLvb1MaKLYCUZNL
+         2E3bJS8TOPbtXUnEUXWk4S4KogG6mxTzEAODIXY4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Phillip Potter <phil@philpotter.co.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 47/69] isdn: mISDN: correctly handle ph_info allocation failure in hfcsusb_ph_info
-Date:   Mon,  3 May 2021 13:57:14 +0200
-Message-Id: <20210503115736.2104747-48-gregkh@linuxfoundation.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Aditya Pakki <pakki001@umn.edu>,
+        stable <stable@vger.kernel.org>, Tyler Hicks <code@tyhicks.com>
+Subject: [PATCH 48/69] Revert "ecryptfs: replace BUG_ON with error handling code"
+Date:   Mon,  3 May 2021 13:57:15 +0200
+Message-Id: <20210503115736.2104747-49-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
 References: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
@@ -37,97 +37,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phillip Potter <phil@philpotter.co.uk>
+This reverts commit 2c2a7552dd6465e8fde6bc9cccf8d66ed1c1eb72.
 
-Modify return type of hfcusb_ph_info to int, so that we can pass error
-value up the call stack when allocation of ph_info fails. Also change
-three of four call sites to actually account for the memory failure.
-The fourth, in ph_state_nt, is infeasible to change as it is in turn
-called by ph_state which is used as a function pointer argument to
-mISDN_initdchannel, which would necessitate changing its signature
-and updating all the places where it is used (too many).
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-Fixes original flawed commit (38d22659803a) from the University of
-Minnesota.
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
 
-Cc: David S. Miller <davem@davemloft.net>
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+The original commit log for this change was incorrect, no "error
+handling code" was added, things will blow up just as badly as before if
+any of these cases ever were true.  As this BUG_ON() never fired, and
+most of these checks are "obviously" never going to be true, let's just
+revert to the original code for now until this gets unwound to be done
+correctly in the future.
+
+Cc: Aditya Pakki <pakki001@umn.edu>
+Fixes: 2c2a7552dd64 ("ecryptfs: replace BUG_ON with error handling code")
+Cc: stable <stable@vger.kernel.org>
+Acked-by: Tyler Hicks <code@tyhicks.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/isdn/hardware/mISDN/hfcsusb.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ fs/ecryptfs/crypto.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/isdn/hardware/mISDN/hfcsusb.c b/drivers/isdn/hardware/mISDN/hfcsusb.c
-index 4bb470d3963d..cd5642cef01f 100644
---- a/drivers/isdn/hardware/mISDN/hfcsusb.c
-+++ b/drivers/isdn/hardware/mISDN/hfcsusb.c
-@@ -46,7 +46,7 @@ static void hfcsusb_start_endpoint(struct hfcsusb *hw, int channel);
- static void hfcsusb_stop_endpoint(struct hfcsusb *hw, int channel);
- static int  hfcsusb_setup_bch(struct bchannel *bch, int protocol);
- static void deactivate_bchannel(struct bchannel *bch);
--static void hfcsusb_ph_info(struct hfcsusb *hw);
-+static int  hfcsusb_ph_info(struct hfcsusb *hw);
+diff --git a/fs/ecryptfs/crypto.c b/fs/ecryptfs/crypto.c
+index 943e523f4c9d..3d8623139538 100644
+--- a/fs/ecryptfs/crypto.c
++++ b/fs/ecryptfs/crypto.c
+@@ -296,10 +296,8 @@ static int crypt_scatterlist(struct ecryptfs_crypt_stat *crypt_stat,
+ 	struct extent_crypt_result ecr;
+ 	int rc = 0;
  
- /* start next background transfer for control channel */
- static void
-@@ -241,7 +241,7 @@ hfcusb_l2l1B(struct mISDNchannel *ch, struct sk_buff *skb)
-  * send full D/B channel status information
-  * as MPH_INFORMATION_IND
-  */
--static void
-+static int
- hfcsusb_ph_info(struct hfcsusb *hw)
- {
- 	struct ph_info *phi;
-@@ -249,6 +249,9 @@ hfcsusb_ph_info(struct hfcsusb *hw)
- 	int i;
- 
- 	phi = kzalloc(struct_size(phi, bch, dch->dev.nrbchan), GFP_ATOMIC);
-+	if (!phi)
-+		return -ENOMEM;
-+
- 	phi->dch.ch.protocol = hw->protocol;
- 	phi->dch.ch.Flags = dch->Flags;
- 	phi->dch.state = dch->state;
-@@ -260,6 +263,8 @@ hfcsusb_ph_info(struct hfcsusb *hw)
- 	_queue_data(&dch->dev.D, MPH_INFORMATION_IND, MISDN_ID_ANY,
- 		    struct_size(phi, bch, dch->dev.nrbchan), phi, GFP_ATOMIC);
- 	kfree(phi);
-+
-+	return 0;
- }
- 
- /*
-@@ -344,8 +349,7 @@ hfcusb_l2l1D(struct mISDNchannel *ch, struct sk_buff *skb)
- 			ret = l1_event(dch->l1, hh->prim);
- 		break;
- 	case MPH_INFORMATION_REQ:
--		hfcsusb_ph_info(hw);
--		ret = 0;
-+		ret = hfcsusb_ph_info(hw);
- 		break;
- 	}
- 
-@@ -400,8 +404,7 @@ hfc_l1callback(struct dchannel *dch, u_int cmd)
- 			       hw->name, __func__, cmd);
- 		return -1;
- 	}
--	hfcsusb_ph_info(hw);
--	return 0;
-+	return hfcsusb_ph_info(hw);
- }
- 
- static int
-@@ -743,8 +746,7 @@ hfcsusb_setup_bch(struct bchannel *bch, int protocol)
- 			handle_led(hw, (bch->nr == 1) ? LED_B1_OFF :
- 				   LED_B2_OFF);
- 	}
--	hfcsusb_ph_info(hw);
--	return 0;
-+	return hfcsusb_ph_info(hw);
- }
- 
- static void
+-	if (!crypt_stat || !crypt_stat->tfm
+-	       || !(crypt_stat->flags & ECRYPTFS_STRUCT_INITIALIZED))
+-		return -EINVAL;
+-
++	BUG_ON(!crypt_stat || !crypt_stat->tfm
++	       || !(crypt_stat->flags & ECRYPTFS_STRUCT_INITIALIZED));
+ 	if (unlikely(ecryptfs_verbosity > 0)) {
+ 		ecryptfs_printk(KERN_DEBUG, "Key size [%zd]; key:\n",
+ 				crypt_stat->key_size);
 -- 
 2.31.1
 
