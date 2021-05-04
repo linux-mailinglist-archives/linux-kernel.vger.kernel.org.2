@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A96D2373143
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFEBA373144
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231825AbhEDURD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 16:17:03 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:37384 "EHLO
+        id S231866AbhEDURK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 16:17:10 -0400
+Received: from lithops.sigma-star.at ([195.201.40.130]:37414 "EHLO
         lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230328AbhEDURB (ORCPT
+        with ESMTP id S230328AbhEDURF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 16:17:01 -0400
+        Tue, 4 May 2021 16:17:05 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id E636E616B584;
-        Tue,  4 May 2021 22:16:02 +0200 (CEST)
+        by lithops.sigma-star.at (Postfix) with ESMTP id D50B2606BA24;
+        Tue,  4 May 2021 22:16:08 +0200 (CEST)
 Received: from lithops.sigma-star.at ([127.0.0.1])
         by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id nF_cEsHtKrhB; Tue,  4 May 2021 22:16:02 +0200 (CEST)
+        with ESMTP id eXkyKx33kwUy; Tue,  4 May 2021 22:16:08 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 7E19F616B581;
-        Tue,  4 May 2021 22:16:02 +0200 (CEST)
+        by lithops.sigma-star.at (Postfix) with ESMTP id 7E7A460A3580;
+        Tue,  4 May 2021 22:16:08 +0200 (CEST)
 Received: from lithops.sigma-star.at ([127.0.0.1])
         by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id h1XM32xtwEee; Tue,  4 May 2021 22:16:02 +0200 (CEST)
+        with ESMTP id 0aaXASAaCyeY; Tue,  4 May 2021 22:16:08 +0200 (CEST)
 Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 486B7608A38A;
-        Tue,  4 May 2021 22:16:02 +0200 (CEST)
-Date:   Tue, 4 May 2021 22:16:02 +0200 (CEST)
+        by lithops.sigma-star.at (Postfix) with ESMTP id 659F6616B581;
+        Tue,  4 May 2021 22:16:08 +0200 (CEST)
+Date:   Tue, 4 May 2021 22:16:08 +0200 (CEST)
 From:   Richard Weinberger <richard@nod.at>
 To:     torvalds <torvalds@linux-foundation.org>
 Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>
-Message-ID: <1258125270.55580.1620159361990.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] JFFS2, UBI and UBIFS changes for 5.13
+        linux-um <linux-um@lists.infradead.org>
+Message-ID: <1774500012.55581.1620159368372.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] UML changes for 5.13
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [195.201.40.130]
 X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Index: e8eii+QRwXewm5Jz3riefse6I71Cfg==
-Thread-Topic: JFFS2, UBI and UBIFS changes for 5.13
+Thread-Index: GMHW0go7JLrUncpTk0+XTclL3ZgoxA==
+Thread-Topic: UML changes for 5.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -53,62 +53,52 @@ The following changes since commit d434405aaab7d0ebc516b68a8fc4100922d7f5ef:
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.13-rc1
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.13-rc1
 
-for you to fetch changes up to 9a29f7f020e06f14eb126bcb84a7f0d166415824:
+for you to fetch changes up to ed102bf2afed226703eaf85a704755bdbea34583:
 
-  ubi: Remove unnecessary struct declaration (2021-04-15 22:01:25 +0200)
+  um: Fix W=1 missing-include-dirs warnings (2021-04-15 23:10:57 +0200)
 
 ----------------------------------------------------------------
-This pull request contains changes for JFFS2, UBI and UBIFS
+This pull request contains the following changes for UML:
 
-JFFS2:
-- Use splice_write()
-- Fix for a slab-out-of-bounds bug
-
-UBI:
-- Fix for clang related warnings
+- Disable CONFIG_GCOV when built with modules
+- Many fixes for W=1 related warnings
 - Code cleanup
 
-UBIFS:
-- Fix for inode rebirth at replay
-- Set s_uuid
-- Use zstd for default filesystem
+Due to lack of time I was unable to prepare a bigger pull request.
+PR for the next merge window will contain more interesting material, I promise. :-)
 
 ----------------------------------------------------------------
-Arnd Bergmann (1):
-      jffs2: avoid Wempty-body warnings
+Johannes Berg (3):
+      um: Fix tag order in stub_32.h
+      um: Mark all kernel symbols as local
+      um: Disable CONFIG_GCOV with MODULES
 
-Guochun Mao (1):
-      ubifs: Only check replay with inode type to judge if inode linked
+Randy Dunlap (4):
+      um: Add 2 missing libs to fix various build errors
+      um: pgtable.h: Fix W=1 warning for empty body in 'do' statement
+      um: elf.h: Fix W=1 warning for empty body in 'do' statement
+      um: Fix W=1 missing-include-dirs warnings
 
-Gustavo A. R. Silva (1):
-      ubi: Fix fall-through warnings for Clang
+Yang Li (3):
+      um: Remove unneeded variable 'ret'
+      um: Replace if (cond) BUG() with BUG_ON()
+      um: Remove unused including <linux/version.h>
 
-Joel Stanley (1):
-      jffs2: Hook up splice_write callback
-
-Martin Devera (1):
-      ubifs: Report max LEB count at mount time
-
-Rui Salvaterra (1):
-      ubifs: Default to zstd compression
-
-Steffen Trumtrar (1):
-      ubifs: Set s_uuid in super block to support ima/evm uuid options
-
-Wan Jiabing (1):
-      ubi: Remove unnecessary struct declaration
-
-lizhe (1):
-      jffs2: Fix kasan slab-out-of-bounds problem
-
- drivers/mtd/ubi/build.c |  1 +
- drivers/mtd/ubi/ubi.h   |  2 --
- fs/jffs2/file.c         |  1 +
- fs/jffs2/scan.c         |  2 +-
- fs/jffs2/summary.h      | 16 ++++++++--------
- fs/ubifs/replay.c       |  3 ++-
- fs/ubifs/sb.c           |  3 +++
- fs/ubifs/super.c        |  6 ++++--
- 8 files changed, 20 insertions(+), 14 deletions(-)
+ arch/um/Kconfig.debug               |  1 +
+ arch/um/drivers/hostaudio_kern.c    |  4 +---
+ arch/um/drivers/vector_kern.c       |  1 -
+ arch/um/include/asm/pgtable.h       |  2 +-
+ arch/um/include/uapi/asm/Kbuild     |  1 +
+ arch/um/kernel/Makefile             |  1 -
+ arch/um/kernel/dyn.lds.S            |  6 ++++++
+ arch/um/kernel/gmon_syms.c          | 16 ----------------
+ arch/um/kernel/mem.c                |  3 +--
+ arch/um/kernel/uml.lds.S            |  6 ++++++
+ arch/x86/um/Makefile                |  1 +
+ arch/x86/um/asm/elf.h               |  2 +-
+ arch/x86/um/shared/sysdep/stub_32.h |  2 +-
+ 13 files changed, 20 insertions(+), 26 deletions(-)
+ create mode 100644 arch/um/include/uapi/asm/Kbuild
+ delete mode 100644 arch/um/kernel/gmon_syms.c
