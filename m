@@ -2,90 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14023726D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 09:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB173726D8
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 09:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229927AbhEDH4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 03:56:12 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:52246 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbhEDH4M (ORCPT
+        id S229940AbhEDH7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 03:59:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229816AbhEDH7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 03:56:12 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620114916;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EG4tNJcjNsmsslrGSicquG7Fu1CihCNL07ZbolWDgHQ=;
-        b=jZspfJ0z46Gap2x0s9kMV9rquHr/aUkaPA48jfmnbiMuVy27yFZadthxxCgSib8tni/aud
-        PuiWBRV1kCBTGulXTZflzaKB//CqB8GafGZ4psxkCAfsY3dgZO5gumRoaWArNu5/NFeBTO
-        +dvh7aLsm9k2SXXHxOV5ba+f0ehfYlMzZNmqPidCoqhx/WsEgCeStDQ1zl+1L7KRRU7PDy
-        pqNa5/Z04OWe6NEX50JlrenWl9SHig29pvRMPUL8lw00XdfwzS7aFplV1/x7vFswr9Zlgf
-        jzakyrEmbLEzidBzxE+wW9kYDqIHHI4fsfgVaWopGEGBpjEO01DivZ7NHziozw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620114916;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EG4tNJcjNsmsslrGSicquG7Fu1CihCNL07ZbolWDgHQ=;
-        b=qgJIu8H/AsATE3brN7k4w2CxE+Uunir/O9znRbq13nLO/lnmNWLI6jmoi+PfikOYBFda8T
-        SRjhX4ChYmvMJTAQ==
-To:     "Anand K. Mistry" <amistry@google.com>
-Cc:     x86@kernel.org, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] x86: Add a prompt for HPET_EMULATE_RTC
-In-Reply-To: <CAATStaMkJ_xdkHutcgH2bmZiO3z6fKoLNrP5=Q3XUsNTpvHP5g@mail.gmail.com>
-References: <20210429155950.v2.1.I2392cf11fb353d10459958100b69d93346fa167c@changeid> <87bl9se07w.ffs@nanos.tec.linutronix.de> <CAATStaMkJ_xdkHutcgH2bmZiO3z6fKoLNrP5=Q3XUsNTpvHP5g@mail.gmail.com>
-Date:   Tue, 04 May 2021 09:55:16 +0200
-Message-ID: <87zgxbhr17.ffs@nanos.tec.linutronix.de>
+        Tue, 4 May 2021 03:59:30 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E350C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 00:58:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=sXgrmVuHfa4aFek6+BLNJ7tIPk2rJFVZ+IKiwBfq8WY=; b=L46wAmpOtecCf5PjUSrZ1TMpt6
+        mAgLFqGcJF9vkNLDepdEdZuI7fgvIO/10TZru/mnGyHPBGx96t/baKdM9UbvGwSMIJcqq0sjuAA+e
+        n9G1d1xOzFeOe+qswGS8MWIShIgxZnsqu6bS+qAcqyp1ynvnRSOuyaJgEnkKfe8I4ZnWl5S5ab9ic
+        H/ArbDzj2Cd86bpFrke12ZldcjdZONcJ0CZwRVIxt0nWI7r0yJ7iM7G7NwswqqZtZciOTpWf8S+DW
+        BBp7LmHLi8lKeYlrC+xO08g7iYD47os7sKmUmC4Y6N4B8VHkZ6A6wjQXU3YRKlUYP2jXEwVaE1eoi
+        uyF2fPrA==;
+Received: from [2001:4bb8:180:9479:4770:b9a9:306b:b991] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1ldpwn-003moi-Qp; Tue, 04 May 2021 07:58:26 +0000
+Date:   Tue, 4 May 2021 09:58:23 +0200
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+Subject: [GIT PULL] dma-mapping updates for Linux 5.13
+Message-ID: <YJD+n2zT+BOA7ar8@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04 2021 at 11:21, Anand K. Mistry wrote:
-> On Mon, 3 May 2021 at 17:38, Thomas Gleixner <tglx@linutronix.de> wrote:
->> On Thu, Apr 29 2021 at 16:00, Anand K. Mistry wrote:
->>
->> > This does two things:
->> > 1. Makes the option visible in menuconfig, allowing the user to easily
->> >    disable this option
->> > 2. Allows olddefconfig to respect the option if it is set in the old
->> >    .config file
->>
->> Well, it's pretty clear WHAT it does, but there is absolutely no
->> reasoning WHY this knob is needed in the first place.
->
-> Without this option, 'make oldolddefconfig' ignores the option in the
-> old .confg file and just sets it to the calculated default for the
-> platform. An easy way to test this is to do 'make defconfig' on
-> x86-64, set CONFIG_HPET_EMULATE_RTC=n in the generated .config, and
-> run 'make olddefconfig'. Without this patch, olddefconfig will ignore
-> the set option and overwrite it with CONFIG_HPET_EMULATE_RTC=y.
+The following changes since commit 1e28eed17697bcf343c6743f0028cc3b5dd88bf0:
 
-Rightfully so because it's a functional correctness issue. When HPET is
-enabled in legacy mode it takes over the RTC interrupt line, which makes
-RTC alarms disfunctional and therefore we have to emulate it. 
+  Linux 5.12-rc3 (2021-03-14 14:41:02 -0700)
 
-So, no.
+are available in the Git repository at:
 
-> So, part of the why is that this enables the use of olddefconfig with
-> the CONFIG_HPET_EMULATE_RTC option. The other part of why is that my
-> team uses 'make olddefconfig' by providing a base config and then
-> using olddefconfig to fill in the unset values with defaults to make a
-> complete config file for a kernel build. I'd like to disable RTC
-> emulation on a particular platform, but I can't use a config option to
-> do it without this patch because 'make olddefconfig' will just ignore
-> the option.
+  git://git.infradead.org/users/hch/dma-mapping.git tags/dma-mapping-5.13
 
-You can like to disable it, but that does not make it more correct. See
-above. If your platform does not have RTC_DRV_CMOS then you have to
-disable that which will also clear CONFIG_HPET_EMULATE_RTC.
+for you to fetch changes up to a7f3d3d3600c8ed119eb0d2483de0062ce2e3707:
 
-Thanks,
+  dma-mapping: add unlikely hint to error path in dma_mapping_error (2021-04-02 16:41:08 +0200)
 
-        tglx
+----------------------------------------------------------------
+dma-mapping updates for Linux 5.13:
+
+ - add a new dma_alloc_noncontiguous API (me, Ricardo Ribalda)
+ - fix a copyright noice (Hao Fang)
+ - add an unlikely annotation to dma_mapping_error (Heiner Kallweit)
+ - remove a pointless empty line (Wang Qing)
+ - add support for multi-pages map/unmap bencharking (Xiang Chen)
+
+----------------------------------------------------------------
+Christoph Hellwig (5):
+      dma-mapping: add a dma_mmap_pages helper
+      dma-mapping: refactor dma_{alloc,free}_pages
+      dma-mapping: add a dma_alloc_noncontiguous API
+      dma-iommu: refactor iommu_dma_alloc_remap
+      dma-iommu: implement ->alloc_noncontiguous
+
+Hao Fang (1):
+      dma-mapping: benchmark: use the correct HiSilicon copyright
+
+Heiner Kallweit (1):
+      dma-mapping: add unlikely hint to error path in dma_mapping_error
+
+Ricardo Ribalda (1):
+      media: uvcvideo: Use dma_alloc_noncontiguous API
+
+Wang Qing (1):
+      dma-mapping: remove a pointless empty line in dma_alloc_coherent
+
+Xiang Chen (1):
+      dma-mapping: benchmark: Add support for multi-pages map/unmap
+
+ Documentation/core-api/dma-api.rst              |  88 ++++++++++++++
+ drivers/iommu/dma-iommu.c                       | 103 ++++++++++++-----
+ drivers/media/usb/uvc/uvc_video.c               |  94 +++++++++++----
+ drivers/media/usb/uvc/uvcvideo.h                |   5 +-
+ include/linux/dma-map-ops.h                     |  19 +++
+ include/linux/dma-mapping.h                     |  37 +++++-
+ kernel/dma/map_benchmark.c                      |  23 ++--
+ kernel/dma/mapping.c                            | 148 ++++++++++++++++++++++--
+ tools/testing/selftests/dma/dma_map_benchmark.c |  22 +++-
+ 9 files changed, 456 insertions(+), 83 deletions(-)
