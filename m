@@ -2,162 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1867372F0E
+	by mail.lfdr.de (Postfix) with ESMTP id 86FC1372F0D
 	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231954AbhEDRlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:41:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231920AbhEDRlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231924AbhEDRlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 4 May 2021 13:41:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B4F6613CB;
-        Tue,  4 May 2021 17:40:21 +0000 (UTC)
-Date:   Tue, 4 May 2021 18:40:18 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: Re: [PATCH v11 2/6] arm64: kvm: Introduce MTE VM feature
-Message-ID: <YJGHApOCXl811VK3@arm.com>
-References: <20210416154309.22129-1-steven.price@arm.com>
- <20210416154309.22129-3-steven.price@arm.com>
- <20210428170705.GB4022@arm.com>
- <c3293d47-a5f2-ea4a-6730-f5cae26d8a7e@arm.com>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230425AbhEDRlS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 13:41:18 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A0EC061574;
+        Tue,  4 May 2021 10:40:22 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id g15-20020a9d128f0000b02902a7d7a7bb6eso2233251otg.9;
+        Tue, 04 May 2021 10:40:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W1bW+xGCGzGfjtmnEyUq9A7nbmJVHdQwdYySDEYgEZo=;
+        b=QqgITlMY4AjMzCQbisr7rpx9ZndoOL+wlIt0zvny62rW1OEFLVwTtF3ncmelZjuMGp
+         EXicrVw7l7F0LU9fLXM7RE69sp6whxaGkOGoc5pG+hU6IJxce3cv8Ypja109VVQWAYnn
+         Ry+Z3PLWworNuMwzSFu4L1FcvwB8aLOkT9w8dOC7beUv/HGwzoimYWCiWxoK95MvuQ6o
+         MsoFwGV7uIk3r1G3NzJqpXJfsw6nVl7v68d6M1yVmoTk9nt7Zl76Ps77qKhYVely9EBb
+         dUwuY5zwWnGgre97RDcADt873GlocSuKeukknYM4WFbMcipz34TZmlN5z37vsTRo3xSk
+         nlwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=W1bW+xGCGzGfjtmnEyUq9A7nbmJVHdQwdYySDEYgEZo=;
+        b=bmqDvmNcCOoj8AJu4oCG+Mxzf1pyFwlITrEVR2HkDsg7YcEwt9ofu9xU77wQxMf9jQ
+         hZ6i2GCBkbYmFQMyXWFZnmJDuIZM5TulZjZAdxoj2/KP0J7aq+Phb30/t6olZNA2jtIV
+         3doMhm7U7Avdm2/OwK7jatbBbG8NyK/P++smiksQErYgBFlQkbj2xaOULSlid8FEjxUw
+         X+oVC2FGOuH/JqdYXesX/wnbJTmu6qAjHWC4ku3SXKBioXPWwrfb5U6hNa+vi4wm1Y0f
+         JUm6a+EuX7DNG4DcSGtQl+BeMP6XLd6nVylNpPH36CPufN3QgoqV6HCxRQohMYVnuT4c
+         jjhw==
+X-Gm-Message-State: AOAM533UclaH90FaB9E6y5lHn6gWMJCKkzqRBofNe9T9/1fwAwMiOnQc
+        1/AvBW6pHfJj+IiEK8yVIE0=
+X-Google-Smtp-Source: ABdhPJwXFrUn1HOVKl93mjOqqWOWbuO+40FKOYW5TjLFoBfp47prkGbRJHEg5OcOzIXL4n1r+Fi6Mg==
+X-Received: by 2002:a9d:53c1:: with SMTP id i1mr20121152oth.245.1620150022361;
+        Tue, 04 May 2021 10:40:22 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d6sm852146oom.33.2021.05.04.10.40.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 10:40:21 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        kernel test robot <lkp@intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH] iio: bme680_i2c: Make bme680_acpi_match depend on CONFIG_ACPI
+Date:   Tue,  4 May 2021 10:40:19 -0700
+Message-Id: <20210504174019.2134652-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c3293d47-a5f2-ea4a-6730-f5cae26d8a7e@arm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 05:06:41PM +0100, Steven Price wrote:
-> On 28/04/2021 18:07, Catalin Marinas wrote:
-> > I probably asked already but is the only way to map a standard RAM page
-> > (not device) in stage 2 via the fault handler? One case I had in mind
-> > was something like get_user_pages() but it looks like that one doesn't
-> > call set_pte_at_notify(). There are a few other places where
-> > set_pte_at_notify() is called and these may happen before we got a
-> > chance to fault on stage 2, effectively populating the entry (IIUC). If
-> > that's an issue, we could move the above loop and check closer to the
-> > actual pte setting like kvm_pgtable_stage2_map().
-> 
-> The only call sites of kvm_pgtable_stage2_map() are in mmu.c:
-> 
->  * kvm_phys_addr_ioremap() - maps as device in stage 2
-> 
->  * user_mem_abort() - handled above
-> 
->  * kvm_set_spte_handler() - ultimately called from the .change_pte()
-> callback of the MMU notifier
-> 
-> So the last one is potentially a problem. It's called via the MMU notifiers
-> in the case of set_pte_at_notify(). The users of that are:
-> 
->  * uprobe_write_opcode(): Allocates a new page and performs a
-> copy_highpage() to copy the data to the new page (which with MTE includes
-> the tags and will copy across the PG_mte_tagged flag).
-> 
->  * write_protect_page() (KSM): Changes the permissions on the PTE but it's
-> still the same page, so nothing to do regarding MTE.
+With CONFIG_ACPI=n and -Werror, 0-day reports:
 
-My concern here is that the VMM had a stage 1 pte but we haven't yet
-faulted in at stage 2 via user_mem_abort(), so we don't have any stage 2
-pte set. write_protect_page() comes in and sets the new stage 2 pte via
-the callback. I couldn't find any check in kvm_pgtable_stage2_map() for
-the old pte, so it will set the new stage 2 pte regardless. A subsequent
-guest read would no longer fault at stage 2.
+drivers/iio/chemical/bme680_i2c.c:46:36: error:
+	'bme680_acpi_match' defined but not used
 
->  * replace_page() (KSM): If the page has MTE tags then the MTE version of
-> memcmp_pages() will return false, so the only caller
-> (try_to_merge_one_page()) will never call this on a page with tags.
-> 
->  * wp_page_copy(): This one is more interesting - if we go down the
-> cow_user_page() path with an old page then everything is safe (tags are
-> copied over). The is_zero_pfn() case worries me a bit - a new page is
-> allocated, but I can't instantly see anything to zero out the tags (and set
-> PG_mte_tagged).
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+Given the other patch, question of course is if this ACPI ID
+is real. A Google search suggests that this might not be the case.
+Should we remove it as well ? STK8312 has the same problem.
 
-True, I think tag zeroing happens only if we map it as PROT_MTE in the
-VMM.
+Jonathan, I think this needs your input before I send more patches.
 
->  * migrate_vma_insert_page(): I think migration should be safe as the tags
-> should be copied.
-> 
-> So wp_page_copy() looks suspicious.
-> 
-> kvm_pgtable_stage2_map() looks like it could be a good place for the checks,
-> it looks like it should work and is probably a more obvious place for the
-> checks.
+ drivers/iio/chemical/bme680_i2c.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-That would be my preference. It also matches the stage 1 set_pte_at().
-
-> > While the set_pte_at() race on the page flags is somewhat clearer, we
-> > may still have a race here with the VMM's set_pte_at() if the page is
-> > mapped as tagged. KVM has its own mmu_lock but it wouldn't be held when
-> > handling the VMM page tables (well, not always, see below).
-> > 
-> > gfn_to_pfn_prot() ends up calling get_user_pages*(). At least the slow
-> > path (hva_to_pfn_slow()) ends up with FOLL_TOUCH in gup and the VMM pte
-> > would be set, tags cleared (if PROT_MTE) before the stage 2 pte. I'm not
-> > sure whether get_user_page_fast_only() does the same.
-> > 
-> > The race with an mprotect(PROT_MTE) in the VMM is fine I think as the
-> > KVM mmu notifier is invoked before set_pte_at() and racing with another
-> > user_mem_abort() is serialised by the KVM mmu_lock. The subsequent
-> > set_pte_at() would see the PG_mte_tagged set either by the current CPU
-> > or by the one it was racing with.
-> 
-> Given the changes to set_pte_at() which means that tags are restored from
-> swap even if !PROT_MTE, the only race I can see remaining is the creation of
-> new PROT_MTE mappings. As you mention an attempt to change mappings in the
-> VMM memory space should involve a mmu notifier call which I think serialises
-> this. So the remaining issue is doing this in a separate address space.
-> 
-> So I guess the potential problem is:
-> 
->  * allocate memory MAP_SHARED but !PROT_MTE
->  * fork()
->  * VM causes a fault in parent address space
->  * child does a mprotect(PROT_MTE)
-> 
-> With the last two potentially racing. Sadly I can't see a good way of
-> handling that.
-
-Ah, the mmap lock doesn't help as they are different processes
-(mprotect() acquires it as a writer).
-
-I wonder whether this is racy even in the absence of KVM. If both parent
-and child do an mprotect(PROT_MTE), one of them may be reading stale
-tags for a brief period.
-
-Maybe we should revisit whether shared MTE pages are of any use, though
-it's an ABI change (not bad if no-one is relying on this). However...
-
-Thinking about this, we have a similar problem with the PG_dcache_clean
-and two processes doing mprotect(PROT_EXEC). One of them could see the
-flag set and skip the I-cache maintenance while the other executes
-stale instructions. change_pte_range() could acquire the page lock if
-the page is VM_SHARED (my preferred core mm fix). It doesn't immediately
-solve the MTE/KVM case but we could at least take the page lock via
-user_mem_abort().
-
-Or maybe we just document this behaviour as racy both for PROT_EXEC and
-PROT_MTE mappings and be done with this. The minor issue with PROT_MTE
-is the potential leaking of tags (it's harder to leak information
-through the I-cache).
-
+diff --git a/drivers/iio/chemical/bme680_i2c.c b/drivers/iio/chemical/bme680_i2c.c
+index 29c0dfa4702b..b5e75f145c19 100644
+--- a/drivers/iio/chemical/bme680_i2c.c
++++ b/drivers/iio/chemical/bme680_i2c.c
+@@ -42,11 +42,13 @@ static const struct i2c_device_id bme680_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, bme680_i2c_id);
+ 
++#ifdef CONFIG_ACPI
+ static const struct acpi_device_id bme680_acpi_match[] = {
+ 	{"BME0680", 0},
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(acpi, bme680_acpi_match);
++#endif
+ 
+ static const struct of_device_id bme680_of_i2c_match[] = {
+ 	{ .compatible = "bosch,bme680", },
 -- 
-Catalin
+2.25.1
+
