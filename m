@@ -2,111 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA283372AD2
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E085372ACF
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbhEDNTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 09:19:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230413AbhEDNTy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 09:19:54 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95619C061574;
-        Tue,  4 May 2021 06:18:58 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id e15so7367763pfv.10;
-        Tue, 04 May 2021 06:18:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=CblgwW7Ud4f+9B1bK3aZ/7Lhxg480Ys59O+QR93vR6A=;
-        b=HUCmFuhh8rWhVdsZN+H9ct9cpQQQ8X/8g5TSNpCqhizZ8EbPmq5SSLxpKk2jeUMdaX
-         Tj9yd9u0iJ0+fauwyryct8gHTiPFZj6s+oGlCBMXIEenq7xhQhcoDyUjJJnTvFcswe4G
-         kvI65Ho+kQrl2l3KFtE6JOsBNLDlKGMenC/VffsODCsr4+WtgNGh8Vdn/eHvTRdHQyrt
-         XMRsS43lgRgSqlQQPaedD7v9I5rEUNCo2b0cfLiNvnFweSGe0SD5mJrLPaklTOGdbo/x
-         q0TOBJBYgVHNa+tO2YzSKYk817yKK3IV1bzf14n9rSOL8mbUx4mXvj74RSVzQHw+2W9K
-         Tr8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=CblgwW7Ud4f+9B1bK3aZ/7Lhxg480Ys59O+QR93vR6A=;
-        b=hQIfQTaSFbQNsrqe+hbh5Hg47s3qiYcz/V6I+erAcpD9p+MNMw4Ek4+hSxWdnLWVZE
-         t/UdqhDdZKQ6NWCT0eyVHRTBeHBuu2M0jy04isvtxaAhqWm+auF5Z11J5n5G1IBo+gpg
-         HpGibnxucm2uUXzjRiX1NYF3e4hgCTMCn0DRt74M0138B+0lVxY0sjhGZrBA686zGpXH
-         4R5kJlmVS6khdOwhelpj47ehn3fy0fLnxooR1oxPGhWuJGKejrVfrMQxkobAGOFe3aeS
-         wIzx5P7xQ0GwdYf4lNCQBgMUlrsIw+7eLmvi9jEdZSdk80BJDJ2ufulcwdbTo27ofb4f
-         zjXQ==
-X-Gm-Message-State: AOAM531YFF/ycyV5QRPnnspY94SAZboJWsRv0Zkaok9n7TolHMdiROCE
-        kEvhakRf/sIotego9PW/CV8E4Lkvlkx/Zr6D3FM=
-X-Google-Smtp-Source: ABdhPJx5/8RQyp1LMuT4Dl9J/CS/IVFtFhu6zNbV+WzSdT3rLdKRijmds7H+X6buGhqrh+XMoJnP1gnFM230fMgVSDo=
-X-Received: by 2002:a17:90a:bd13:: with SMTP id y19mr5273402pjr.181.1620134338124;
- Tue, 04 May 2021 06:18:58 -0700 (PDT)
+        id S231159AbhEDNTr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 4 May 2021 09:19:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230413AbhEDNTq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 09:19:46 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EE57361008;
+        Tue,  4 May 2021 13:18:49 +0000 (UTC)
+Date:   Tue, 4 May 2021 09:18:48 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     <Peter.Enderborg@sony.com>
+Cc:     <ebiederm@xmission.com>, <mathieu.desnoyers@efficios.com>,
+        <linux-kernel@vger.kernel.org>, <mingo@redhat.com>,
+        <akpm@linux-foundation.org>, <peterz@infradead.org>,
+        <ast@kernel.org>, <christian.brauner@ubuntu.com>,
+        <dave@stgolabs.net>, <walken@google.com>, <jannh@google.com>,
+        <christophe.leroy@c-s.fr>, <minchan@kernel.org>
+Subject: Re: [PATCH 1/2] tracing: Add a trace for task_exit
+Message-ID: <20210504091848.14d0627b@gandalf.local.home>
+In-Reply-To: <51452139-801a-8b69-793a-946334bef434@sony.com>
+References: <20210430142223.25500-1-peter.enderborg@sony.com>
+        <20210430142223.25500-2-peter.enderborg@sony.com>
+        <m14kfnzmsp.fsf@fess.ebiederm.org>
+        <4bb24db4-f720-f5e7-9054-36bdeaee1d79@sony.com>
+        <20210501091104.418765bd@oasis.local.home>
+        <1214833117.22933.1620049830326.JavaMail.zimbra@efficios.com>
+        <769a00d2-a76d-62d2-aa56-5a107dfdc53d@sony.com>
+        <m1sg33lqyo.fsf@fess.ebiederm.org>
+        <663fc7fa-e7fc-7d63-9de8-91b5f6fe4f06@sony.com>
+        <m1a6pbk5d3.fsf@fess.ebiederm.org>
+        <20210503165522.6f1f2fc3@gandalf.local.home>
+        <51452139-801a-8b69-793a-946334bef434@sony.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210501151538.145449-1-masahiroy@kernel.org> <8b5f1d57-1357-affd-565f-f4826f3ecbdf@csgroup.eu>
-In-Reply-To: <8b5f1d57-1357-affd-565f-f4826f3ecbdf@csgroup.eu>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 4 May 2021 16:18:41 +0300
-Message-ID: <CAHp75VevBN1AKpZetMfY7tUU0ghjc7_g7Vw=+rPxTfdifqqhFw@mail.gmail.com>
-Subject: Re: [PATCH] Raise the minimum GCC version to 5.2
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Will Deacon <will@kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 3, 2021 at 9:17 AM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
-> Le 01/05/2021 =C3=A0 17:15, Masahiro Yamada a =C3=A9crit :
-> > The current minimum GCC version is 4.9 except ARCH=3Darm64 requiring
-> > GCC 5.1.
-> >
-> > When we discussed last time, we agreed to raise the minimum GCC version
-> > to 5.1 globally. [1]
-> >
-> > I'd like to propose GCC 5.2 to clean up arch/powerpc/Kconfig as well.
->
-> One point I missed when I saw your patch first time, but I realised durin=
-g the discussion:
->
-> Up to 4.9, GCC was numbered with 3 digits, we had 4.8.0, 4.8.1, ... 4.8.5=
-, 4.9.0, 4.9.1, .... 4.9.4
->
-> Then starting at 5, GCC switched to a 2 digits scheme, with 5.0, 5.1, 5.2=
-, ... 5.5
->
-> So, that is not GCC 5.1 or 5.2 that you should target, but only GCC 5.
-> Then it is up to the user to use the latest available version of GCC 5, w=
-hich is 5.5 at the time
-> begin, just like the user would have selected 4.9.4 when 4.9 was the mini=
-mum GCC version.
+On Tue, 4 May 2021 08:00:43 +0000
+<Peter.Enderborg@sony.com> wrote:
 
-And we may end up in the case when gcc 5.x will be more buggy than
-v4.9.y (as once proved by nice detective story where compiler bug
-produces a file system corruption).
+> On 5/3/21 10:55 PM, Steven Rostedt wrote:
+> > On Mon, 03 May 2021 14:02:48 -0500
+> > ebiederm@xmission.com (Eric W. Biederman) wrote:
+> >  
+> >>> However current traces is template based, and I assume it wont be
+> >>> popular to add new fields to the template, and exit reasons is not
+> >>> right for the other template use cases.  
+> > trace events can always add fields, it's removing them that can cause
+> > problems (but even then, it's not that bad). The new libtracefs and
+> > libtraceevent make it trivial for tools to get the fields from trace events
+> > when needed.
+> >  
+> >>> I still see a "new" task moving it to do_exit make trace name more
+> >>> correct?  Or is trace_task_do_exit better?    
+> > It is also trivial with the libraries to write a tool that can put together
+> > everything you want. We even are working on python bindings to connect to
+> > these libraries where you could write a python script to do this.  
+> 
+> The bpftrace package are 163 MB install size and that is on
 
---=20
-With Best Regards,
-Andy Shevchenko
+No idea, I never used bpftrace or even BPF for that matter.
+
+> a system that already have python. Linux is very much used
+> on embedded system, having a shell is luxurious.
+> 
+> 
+> Trivial?
+> 
+> Concept
+> 
+> A eBpf program hook in to a tracepoint A & B and collect data.
+> 
+> A happens before B and send the collected data when B happen.
+> 
+> 1 A is called:
+> 
+> 2 C is created, C is destroyed.
+> 
+> 3 B is called. How do I fetch C?
+
+In use space. I'm talking about writing a simple C program that uses
+libtracefs. We are also adding python bindings to do the same in python
+(which is what I meant by "python script").
+
+
+> 
+> However I can make a ebpf that hooks in sched_process_free and
+> sched_process_exit use  the uapi version of bpf_get_current_task to pick up
+
+No idea. As I said, I never used ebpf.
+
+> 
+> oom_score_adj and exit_code.  However task definition is dependent on 71 ifdef's
+> not including object that is pointers that also might have build dependency
+> and some are there more than once.
+> 
+> I think kprobe will cause the same problem. It wont be that big deal if it
+> was a for kernel debugging. But this is for userspace and should not
+> have dependency on kernel internals.
+
+But tracepoints *are* kernel internals and userspace should not have
+dependency on them.
+
+> 
+> 
+> > There is no need for a new tracepoint, especially if it makes it harder to
+> > improve the implementation of what is being traced.  
+> It does not introduce any complex functionality, and with a other
+> mechanism i still believe you would need to reap the task somewhere.
+> But I guess it will be needed to add a exist status flag that is new,
+> but that is with or without a new tracepoint.
+> 
+> The python libs that uses this fetch the first item in the task_struct
+> and assume that it is thread_info. What could possible go wrong?
+
+No idea what you mean by python fetching task_struct items.
+
+> 
+> Is there a runtime linker in ebpf that resolves this by magic?
+
+No idea. Never used ebpf.
+
+Have you tried extending the other trace events?
+
+Not sure this would be accepted though. But that's another discussion to be
+had.
+
+-- Steve
+
+diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+index 1eca2305ca42..83cc56174b75 100644
+--- a/include/trace/events/sched.h
++++ b/include/trace/events/sched.h
+@@ -307,16 +307,24 @@ DECLARE_EVENT_CLASS(sched_process_template,
+ 		__array(	char,	comm,	TASK_COMM_LEN	)
+ 		__field(	pid_t,	pid			)
+ 		__field(	int,	prio			)
++		__field(	short,	oom_score_adj		)
++		__field(	int,	exit_signal		)
++		__field(	int,	exit_state		)
+ 	),
+ 
+ 	TP_fast_assign(
+ 		memcpy(__entry->comm, p->comm, TASK_COMM_LEN);
+ 		__entry->pid		= p->pid;
+ 		__entry->prio		= p->prio; /* XXX SCHED_DEADLINE */
++		__entry->oom_score_adj	= p->signal ? p->signal->oom_score_adj : 0;
++		__entry->exit_signal	= p->exit_signal;
++		__entry->exit_state	= p->exit_state;
+ 	),
+ 
+-	TP_printk("comm=%s pid=%d prio=%d",
+-		  __entry->comm, __entry->pid, __entry->prio)
++	TP_printk("comm=%s pid=%d prio=%d oom=%d signal=%d state=0x%x",
++		  __entry->comm, __entry->pid, __entry->prio,
++		  __entry->oom_score_adj, __entry->exit_signal,
++		  __entry->exit_state)
+ );
+ 
+ /*
