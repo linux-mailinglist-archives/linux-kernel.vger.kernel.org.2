@@ -2,76 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28BAA372B27
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E085B372B2A
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231241AbhEDNhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 09:37:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60490 "EHLO mail.kernel.org"
+        id S231268AbhEDNh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 09:37:29 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:52394 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231159AbhEDNhL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 09:37:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E4BB610A7;
-        Tue,  4 May 2021 13:36:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620135376;
-        bh=6JVwzPg7Oh4/skKECJNiwc8FB23jmHUMJ1vrH05yaPQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SJC3NJ939nqRxSSESJC58P8aRkXCXThLstAde+3MjRtMdMFutORkdqmnGTS7buRIj
-         zS1//awCr3kLDkdZOeNPxY8G7kfLl2MKIafoMl7+tIQlmRRnDjVpptXNQXG7r9fo9t
-         bvSPNdNB2aHYPbEuXrvU0t074e6dkqOtgjmys3to=
-Date:   Tue, 4 May 2021 15:36:08 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jari Ruusu <jariruusu@protonmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 5.10 1/2] iwlwifi: Fix softirq/hardirq disabling in
- iwl_pcie_gen2_enqueue_hcmd()
-Message-ID: <YJFNyOGrF8RcTTlc@kroah.com>
-References: <20210430141910.473289618@linuxfoundation.org>
- <20210430141910.521897363@linuxfoundation.org>
- <608CFF6A.4BC054A3@users.sourceforge.net>
- <YI6HFNNvzuHnv5VU@kroah.com>
- <bO2GF-6sC-I4NbFif7JoGUpuRpAV-rHEMwtLsKfN9SCsA0lwB1NgEV4OC7Xd5fdoq3UPcZ6-uh2VDSe1Xtovy8ti3k5vmOsiMVTdfTgl0Yw=@protonmail.com>
- <YJD2uTdQonXymbn6@kroah.com>
- <npSsinT79DB6Ze8QTkmLcuOTyVwRcy2FbOf0tDjpEHbTxKdYmLar8Br66_ypLjzZ86sIJKnSbUHeehagPR6RqxsJsKdWW_vWnXOUEhMC14g=@protonmail.com>
+        id S231159AbhEDNh0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 09:37:26 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1ldvDl-002U6k-3Y; Tue, 04 May 2021 15:36:17 +0200
+Date:   Tue, 4 May 2021 15:36:17 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     Colin Foster <colin.foster@in-advantage.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "supporter:OCELOT ETHERNET SWITCH DRIVER" 
+        <UNGLinuxDriver@microchip.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:OCELOT ETHERNET SWITCH DRIVER" <netdev@vger.kernel.org>
+Subject: Re: [RFC PATCH vN net-next 2/2] net: mscc: ocelot: add support for
+ VSC75XX SPI control
+Message-ID: <YJFN0dbvQZxkLs88@lunn.ch>
+References: <20210504051130.1207550-1-colin.foster@in-advantage.com>
+ <20210504051130.1207550-2-colin.foster@in-advantage.com>
+ <YJE+prMCIMiQm26Z@lunn.ch>
+ <20210504125942.nx5b6j2cy34qyyhm@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <npSsinT79DB6Ze8QTkmLcuOTyVwRcy2FbOf0tDjpEHbTxKdYmLar8Br66_ypLjzZ86sIJKnSbUHeehagPR6RqxsJsKdWW_vWnXOUEhMC14g=@protonmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210504125942.nx5b6j2cy34qyyhm@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 01:05:56PM +0000, Jari Ruusu wrote:
-> On Tuesday, May 4, 2021 10:24 AM, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> > All now queued up, thanks.
+> > This function seems out of place. Why would SPI access change what the
+> > ports are capable of doing? Please split this up into more
+> > patches. Keep the focus of this patch as being adding SPI support.
 > 
-> For 5.4 and 4.19 and 4.14 kernels there were 2 patches,
-> first patch is upstream commit 2800aadc18a64c96b051bcb7da8a7df7d505db3f,
+> What is going on is that this is just the way in which the drivers are
+> structured. Colin is not really "adding SPI support" to any of the
+> existing DSA switches that are supported (VSC9953, VSC9959) as much as
+> "adding support for a new switch which happens to be controlled over
+> SPI" (VSC7512).
+> The layering is as follows:
+> - drivers/net/dsa/ocelot/felix_vsc7512_spi.c: deals with the most
+>   hardware specific SoC support. The regmap is defined here, so are the
+>   port capabilities.
+> - drivers/net/dsa/ocelot/felix.c: common integration with DSA
+> - drivers/net/ethernet/mscc/ocelot*.c: the SoC-independent hardware
+>   support.
 
-That one is queued up, thanks.
+Hi Vladimir
 
-> second patch is upstream commit e7020bb068d8be50a92f48e36b236a1a1ef9282e.
+I took a quick look at the data sheet. It says in section 2.1.5
+Management:
 
-This is not in any newer stable trees, and it was not obvious what you
-were doing here at all.
+  External access to registers through PCIe, SPI, MIIM, or through an
+  Ethernet port with inline Microsemi’s Versatile Register Access
+  Protocol (VRAP)
 
-> First patch modifies iwlwifi/pcie/tx.c  (older models use this)
-> Second patch modifies iwlwifi/pcie/tx-gen2.c  (for newer models)
-> 
-> I see you queued only the "tx.c" patches, not the "tx-gen2.c" ones.
+So maybe the basic 7512 support should be separate from how you access
+the registers, so that somebody can later add MMIO or MDIO support?
 
-That is because it is not in 5.12.y yet either, right?
+    Andrew
 
-If it needs to be there, please let us know.  Having a subject line that
-said "5.10" for all of these was impossible to determine...
+P.S.
 
-So, for e7020bb068d8 ("iwlwifi: Fix softirq/hardirq disabling in
-iwl_pcie_gen2_enqueue_hcmd()") what tree(s) do you need it in exactly?
-
-thanks,
-
-greg k-h
+I did not know about VRAP. Marvell has something similar. It would be
+nice to put together some shared generic code to support
+this. Statistics would really benefit from it.
