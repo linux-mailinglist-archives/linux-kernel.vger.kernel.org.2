@@ -2,86 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFDAA372C84
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41303372C85
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231613AbhEDOwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 10:52:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34992 "EHLO
+        id S231670AbhEDOwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 10:52:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231667AbhEDOwj (ORCPT
+        with ESMTP id S231668AbhEDOwk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 10:52:39 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16ACBC061347
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 07:51:44 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id d14so10744550edc.12
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 07:51:44 -0700 (PDT)
+        Tue, 4 May 2021 10:52:40 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B4DEC06138C
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 07:51:45 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id f24so13615163ejc.6
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 07:51:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S3N6g2UZbr5ImaLmOMaKuHosTydvdNGVUAq4Ih6ZjGg=;
-        b=Q+3Uut+DEXFu3aeJtAdIHi1TB0Z2UM+XTM6YX00MQ4hY0mYpdOcKqYVPRvd3a+/nf9
-         3RGradfSOzpRF/pwVnxLfmH4eXS5rIH/6jYkID4LLwE5yzJVsmLx5w/f5+9+apjqfino
-         Gj6I9Pu/AE0mW1pmPWfpW4KCujvT5uc1L5kduchyZXgbjyR/OcaAvQqKRrNYTkT1PuiG
-         +EWDz/Bnz0a92J72yBLlwkJKkHyrLxUVD4SC5KVPE24jrBpGk5D/geCiWDvlDHzFJAKB
-         3chniEoqSOnmfPMJk3R5obAkg1Ueh5m9S8dvdcRslTgbQXhImNKm+iuMc5ooXvDE21Ul
-         quKg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=pXRitWWRRFW0ojzwHJ4zpfVrafyqDHpLGDB/FMLEkjA=;
+        b=KPJ06GykRFITdlNEv2SiENZ1qS2NqNVmwqkaKf/QGA99iaVZKrMGifOeIwaTATX3pO
+         Di5SzTE6Gk/QUoHbPgsk74gGIrafT5BRRzyNcLhwMOMcRt3RSAZOa9+5dZnbUy7Ll9WU
+         w2hJdbq3gombr2fKfxErzj4+obEUIr9b13gBtYry5ghI6X4pjB2OV3nT+CPElcek7NjP
+         2ksMmZryQZD1YaqGYttYkiKtB9idzrwbAhvWZFUGGnC4M7QS8gqHFNibLjfiMvmqHpH6
+         DjZlVDILTl3NvIuhXZVTVRbQjULg9q6UGechcvxONdxuKnyfghCtQyEiGhgN5/kRcdCp
+         dQSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S3N6g2UZbr5ImaLmOMaKuHosTydvdNGVUAq4Ih6ZjGg=;
-        b=BVsekeYO/Lytmp7fikUzPDRGRbLB8gWFC9P0F40gA/CFGV8LwOcuRpNlXxt+CjCuYi
-         8qRAKjmrNT1iLjDofawMDNanuaNW9GHS1daSQm61/b7JyP0x7JOV8qR7XiY0GfO+8+zT
-         ZN0V/BIoDZl0AA5s9wcWkw1jdOqfHTsK3I49gK/UnPEjcmLMCB+sDlamsc5YHiB4haer
-         tYleiPSXLY/zqcJ1AyIV3vvswj3VJHKgRw0hZObICBuZPevnHqqdT8s+1K2apX673cEb
-         vb6ZKwzBbYT4NJRsXX8v56H+A1wylr5yiwA+HmNv005wRwaGqUj0Q+H3X2Yrn52gO9Cz
-         vRUA==
-X-Gm-Message-State: AOAM5302/OX+XEs0Dsoi9TDFP1dhJw+Hk8HbALeTpzhIJQ5ewK896nQf
-        Ii0pMQTvDUGbk43yA2Ghv9UV3WLm1mOmsQ==
-X-Google-Smtp-Source: ABdhPJwsEgQN9zyPIxU3vzTcGYP3pY3KxBCFZM2yvkApgd5OvH1PYiyNc1z7JT0JEZ8tFL6mUfVV1A==
-X-Received: by 2002:aa7:c2cc:: with SMTP id m12mr26296094edp.1.1620139902688;
-        Tue, 04 May 2021 07:51:42 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=pXRitWWRRFW0ojzwHJ4zpfVrafyqDHpLGDB/FMLEkjA=;
+        b=JrDWQzDxQ+NIpJZXCBUS/9jEIz6g4p+fdDz9aFY+5y5SqRQanBhur9H8gIqAo+jQVe
+         gNeKZt7ogzGNRDZw4+rVEL53H3ybfbEffgnTgs3wJXjmhOn+RILTOGQ2jRMU9yFrDDeZ
+         x+XvtRX3WqOx2fOC0rjMM9QzdFyvZ+2bS1qmaVlYmwu1VUqqpiTq6qGmiDGfqJuM57j7
+         +mPi6adO3soCKpFH00jAKZWmc9bMNnm7d5ChiP6Q8iwrUrEXOQUht1IESebyi8sgeKZA
+         lSExucmFwPvgB7+nyZ5sLurh0U8SJu0joaFT/6Cj8l940h4nvFDoVbit8JCADCdF+pBO
+         C0og==
+X-Gm-Message-State: AOAM532WioKwyhpAkoBmFphU13mWygdDNMTVsYCrf3Xtqmev7XxyE1wW
+        p6aKtCAqDtHqo4fww8uqFCrEnMvseY78vg==
+X-Google-Smtp-Source: ABdhPJwbeM1BHUhdBCa8Z9fGtMiQ2Zf9JgIOajJHeew+miB64OV87e7Am4ta9iBCuApKJQcvNe7hpQ==
+X-Received: by 2002:a17:906:17c8:: with SMTP id u8mr18317300eje.57.1620139904195;
+        Tue, 04 May 2021 07:51:44 -0700 (PDT)
 Received: from agape ([5.171.72.210])
-        by smtp.gmail.com with ESMTPSA id t7sm13644977eds.26.2021.05.04.07.51.42
+        by smtp.gmail.com with ESMTPSA id q25sm1523792ejd.9.2021.05.04.07.51.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 07:51:42 -0700 (PDT)
+        Tue, 04 May 2021 07:51:43 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/3] staging: rtl8723bs: use in-kernel aes encryption
-Date:   Tue,  4 May 2021 16:51:37 +0200
-Message-Id: <cover.1620139727.git.fabioaiuto83@gmail.com>
+Subject: [PATCH v3 1/3] staging: rtl8723bs: align argument position in a new line
+Date:   Tue,  4 May 2021 16:51:38 +0200
+Message-Id: <f195bc7d72c122e5e16b3857cf99ae1f84734915.1620139727.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <cover.1620139727.git.fabioaiuto83@gmail.com>
+References: <cover.1620139727.git.fabioaiuto83@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset replaces the private AES routines used to
-encrypt data with in-kernel ones.
+align function arguments position on a new line to
+open parentheses.
 
-NOT tested.
---------------------------------------
-Changes in v3:
-	- Added NOT tested advice in cover letter
+Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+---
+ drivers/staging/rtl8723bs/core/rtw_security.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Changes in v2:
-        - Move aes.h include file in .c
-          file, where it is needed
-
-
-Fabio Aiuto (3):
-  staging: rtl8723bs: align argument position in a new line
-  staging: rtl8723bs: use in-kernel aes encryption in OMAC1 routines
-  staging: rtl8723bs: use in-kernel aes encryption
-
- drivers/staging/rtl8723bs/core/rtw_security.c | 328 +-----------------
- 1 file changed, 15 insertions(+), 313 deletions(-)
-
+diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c b/drivers/staging/rtl8723bs/core/rtw_security.c
+index e4f3049ac351..0cb603aa4ee6 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_security.c
++++ b/drivers/staging/rtl8723bs/core/rtw_security.c
+@@ -2056,7 +2056,7 @@ static void aes_encrypt_deinit(void *ctx)
+  * (SP) 800-38B.
+  */
+ static int omac1_aes_128_vector(u8 *key, size_t num_elem,
+-							 u8 *addr[], size_t *len, u8 *mac)
++				u8 *addr[], size_t *len, u8 *mac)
+ {
+ 	void *ctx;
+ 	u8 cbc[AES_BLOCK_SIZE], pad[AES_BLOCK_SIZE];
 -- 
 2.20.1
 
