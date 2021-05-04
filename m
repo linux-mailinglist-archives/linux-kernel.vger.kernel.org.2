@@ -2,125 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 825A4372C4F
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30650372C55
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231646AbhEDOnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 10:43:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230086AbhEDOnU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 10:43:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF68C613B4;
-        Tue,  4 May 2021 14:42:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620139346;
-        bh=5/y4t4rgPYKWP8Sygi6NZZixNOOrVT9vxB45I1DKOMU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r505mmRs2qM2fN0TQebZUs0F9lhLXNGzDPzzcK34EqPsKKhdRAi0FS3JvWqr47OU+
-         EsDMpjOspSwU9ob0isexPQyGzAhRqY3pn9pqdhkOtRYNeWz6uUVvAEUtQx1lwhTa0j
-         rX7FpL3wjgAJyxzkmzkRe4RqXSCA5Gqi0x6aAd3lmMQ/JXXG65dSIyHbAT8rxtpcyx
-         SYyK78Dc5lsBTEX4N+TLJ4FkCQE9GOl8yPRUyL2rdbhcN7NMPeD2EUi+9aVcBw2PSe
-         EI5snYVosw/wqNLaaYrrww9mTrE829BXkPtcwcV9DO35PqNuGuAhrfwE2deEHhERr5
-         /gmc8+p4S7fGw==
-Date:   Tue, 4 May 2021 07:42:24 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, chao@kernel.org
-Subject: Re: [PATCH v2] f2fs: compress: remove unneed check condition
-Message-ID: <YJFdUEmYFba8sEKJ@google.com>
-References: <20210427030730.90331-1-yuchao0@huawei.com>
+        id S231163AbhEDOqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 10:46:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230213AbhEDOq3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 10:46:29 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C1FC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 07:45:34 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id r9so13595859ejj.3
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 07:45:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MrNRRP5SJ6baqKnknhBwCQY1Z26L7q2lhMbIH9OHrkU=;
+        b=iwMfWsESQAHEPLFYNV7ya22UK2nRMhI/L2LIJhVqE1Vu8cgg7M9nI4VzmTfUloSSIT
+         B5JIp8Eq33vPY1z2+Ax6M3oK0iYibC9q2ge+5KpEc7u7DVKPSEc02KUbE/QWS9Xc3rMP
+         7ghLp4Xt+BaA70PXu5tBuCmrdckCjXfxtGGtFzxP9kdV3+GeozZMFUyR/G8EOzGpUXuD
+         NEN42ivq59XnIJ4cq2J9aya4YkunbAoLv5PKpgp625WBHgU7nTDRIKFaiOIz9cFAHyAW
+         8YoBivl1Wdc5+fB+IuCUdL38nSqbU/w26wgZ0sf6JNyJKdmTzRTziChV8nXX6cNrxbBU
+         Gc2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MrNRRP5SJ6baqKnknhBwCQY1Z26L7q2lhMbIH9OHrkU=;
+        b=DIWD5Nkb9IGLB28VDubmDB8Fr4lY8mMA0FE7S+PsKi4eoeVIHbAmE031F6oB6tC9Wb
+         g9ALy4oppjkq+4yA1yQYM6gdZDboqJ0x/wwlosAZd4vVsGzIhhEkiuCE5VvVE6Nybzu8
+         AvkjYznUAaJYsm7crcj1hD58CQ51qkL8InmR7FbOMic25RVuoJZymJs4+24TdLwFDuu2
+         nJOVMayozsAJG+82dT39PzWb2rV71cMFHHe2wAnn6gEwQGg7FXbQzzU/4vt4KS1Xj2Tg
+         2SqS1gkRi06e4RYBOVjKdmTY4UuMD7LBHf72rknKajLP+GqYA37weaPLn/mXHXv0vbRD
+         5y0A==
+X-Gm-Message-State: AOAM531HOW76TGRbJcr3ac1J6Lw7F5M7j3UKrX9ub2JlePGZFxVxZWun
+        y0xWOUwB9pzGTwW9rubWq0pZVdtX788HZg==
+X-Google-Smtp-Source: ABdhPJw3mtfpiE5JPvkG9j5fK2Iy3mMEMe4PzbI0Q88UOzvFRKxZtDLeyZOGaAmhG1Em1f51H77yug==
+X-Received: by 2002:a17:906:8693:: with SMTP id g19mr19100701ejx.270.1620139532930;
+        Tue, 04 May 2021 07:45:32 -0700 (PDT)
+Received: from agape ([5.171.72.210])
+        by smtp.gmail.com with ESMTPSA id cf19sm1549686ejb.24.2021.05.04.07.45.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 07:45:32 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] staging: rtl8723bs: use in-kernel aes encryption
+Date:   Tue,  4 May 2021 16:45:28 +0200
+Message-Id: <cover.1620139318.git.fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210427030730.90331-1-yuchao0@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chao,
+This patchset replaces the private AES routines used to
+encrypt data with in-kernel ones.
 
-I split this into two patches along with upstreamed change.
+--------------------------------------
+Changes in v2:
+	- Move aes.h include file in .c
+	  file, where it is needed
+ 
+Fabio Aiuto (3):
+  staging: rtl8723bs: align argument position in a new line
+  staging: rtl8723bs: use in-kernel aes encryption in OMAC1 routines
+  staging: rtl8723bs: use in-kernel aes encryption
 
-https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/log/?h=dev-test
+ drivers/staging/rtl8723bs/core/rtw_security.c | 328 +-----------------
+ 1 file changed, 15 insertions(+), 313 deletions(-)
 
-Thanks,
+-- 
+2.20.1
 
-On 04/27, Chao Yu wrote:
-> This patch changes as below:
-> - remove unneeded check condition in __cluster_may_compress()
-> - rename __cluster_may_compress() to cluster_has_invalid_data() for
-> better readability
-> - add cp_error check in f2fs_write_compressed_pages() like we did
-> in f2fs_write_single_data_page()
-> 
-> Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> ---
-> v2:
-> - rename function for better readability
-> - add cp_error check in f2fs_write_compressed_pages()
->  fs/f2fs/compress.c | 22 +++++++++++-----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
-> 
-> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> index 6e46a00c1930..53f78befed8f 100644
-> --- a/fs/f2fs/compress.c
-> +++ b/fs/f2fs/compress.c
-> @@ -888,9 +888,8 @@ bool f2fs_cluster_can_merge_page(struct compress_ctx *cc, pgoff_t index)
->  	return is_page_in_cluster(cc, index);
->  }
->  
-> -static bool __cluster_may_compress(struct compress_ctx *cc)
-> +static bool cluster_has_invalid_data(struct compress_ctx *cc)
->  {
-> -	struct f2fs_sb_info *sbi = F2FS_I_SB(cc->inode);
->  	loff_t i_size = i_size_read(cc->inode);
->  	unsigned nr_pages = DIV_ROUND_UP(i_size, PAGE_SIZE);
->  	int i;
-> @@ -898,18 +897,13 @@ static bool __cluster_may_compress(struct compress_ctx *cc)
->  	for (i = 0; i < cc->cluster_size; i++) {
->  		struct page *page = cc->rpages[i];
->  
-> -		f2fs_bug_on(sbi, !page);
-> -
-> -		if (unlikely(f2fs_cp_error(sbi)))
-> -			return false;
-> -		if (unlikely(is_sbi_flag_set(sbi, SBI_POR_DOING)))
-> -			return false;
-> +		f2fs_bug_on(F2FS_I_SB(cc->inode), !page);
->  
->  		/* beyond EOF */
->  		if (page->index >= nr_pages)
-> -			return false;
-> +			return true;
->  	}
-> -	return true;
-> +	return false;
->  }
->  
->  static int __f2fs_cluster_blocks(struct compress_ctx *cc, bool compr)
-> @@ -985,7 +979,7 @@ static bool cluster_may_compress(struct compress_ctx *cc)
->  		return false;
->  	if (unlikely(f2fs_cp_error(F2FS_I_SB(cc->inode))))
->  		return false;
-> -	return __cluster_may_compress(cc);
-> +	return !cluster_has_invalid_data(cc);
->  }
->  
->  static void set_cluster_writeback(struct compress_ctx *cc)
-> @@ -1232,6 +1226,12 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
->  	loff_t psize;
->  	int i, err;
->  
-> +	/* we should bypass data pages to proceed the kworkder jobs */
-> +	if (unlikely(f2fs_cp_error(sbi))) {
-> +		mapping_set_error(cc->rpages[0]->mapping, -EIO);
-> +		goto out_free;
-> +	}
-> +
->  	if (IS_NOQUOTA(inode)) {
->  		/*
->  		 * We need to wait for node_write to avoid block allocation during
-> -- 
-> 2.29.2
