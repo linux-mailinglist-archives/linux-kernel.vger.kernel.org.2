@@ -2,120 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8812E372BC9
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9003F372BD6
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231499AbhEDOPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 10:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231411AbhEDOPf (ORCPT
+        id S231519AbhEDOSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 10:18:39 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:45557 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231435AbhEDOSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 10:15:35 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF08C061574;
-        Tue,  4 May 2021 07:14:40 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id o26-20020a1c4d1a0000b0290146e1feccdaso1311988wmh.0;
-        Tue, 04 May 2021 07:14:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ZmJ5I+1Rzh+1ETdshh+H96MHb0GU0TZshgd5tQa/Wfw=;
-        b=bEDZwFiutKnibseve94T0+UEHpmneNa7QhdP115DLEBWQ9tkL77SfMJtQbimFMiu6T
-         45yr2byj9jeXPSEFFJXZgoeoHodC+m/XBRD0O36p3xHknp0LzfcL2deMTfh/Xk4wC+ga
-         58zBJ/6t3EuszXvrvM3O/8CGJOwmlSNBJ99LL3HBExaq+Ub5HX7RLSC1uhwLvmLGHeYT
-         rbobHJCOg5bvfQ7ViAtAamiia7aLZaCjDFSjdciFhmXfTMXbUZCIjimw9SXxbzLE+4jj
-         CKQy3i1LuoK+9kknLhM/3F7e5WCjSSsSWv3seZwkZO8AgAcLWRiMxBDmofjzoaDRFQmf
-         Vq/Q==
+        Tue, 4 May 2021 10:18:38 -0400
+Received: from mail-qv1-f72.google.com ([209.85.219.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1ldvrq-0003qi-4A
+        for linux-kernel@vger.kernel.org; Tue, 04 May 2021 14:17:42 +0000
+Received: by mail-qv1-f72.google.com with SMTP id d11-20020a0cdb0b0000b02901c0da4391d5so7711519qvk.12
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 07:17:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ZmJ5I+1Rzh+1ETdshh+H96MHb0GU0TZshgd5tQa/Wfw=;
-        b=IV8dMJnS3v5Ve83jWwpIjSqz1kdn8544iLw2KHMa9H8jCDUxwEMhy3Tdzqe9+v/Ld2
-         3gNHrxacM5/+HJkTQrRIFlL5juKt125gaJctxvbnwzdlhJTwOFzCQgZCCtPFTn6Luz5u
-         1IZobv5tpnKf2BmonrqJs9zlHL7QlDEq00UfPVU9y8z4MGQX6FAVYN6QOxVaB7pXn6eS
-         T6O+zahZm5AzpdyEbuBKginOUyxBW5DlZqPckBbrDHJUejrwD9NfeGtkHvE2Ow2rlwzg
-         oBRkNgHmkv4TBnKWPSWYyyg+01biiC47wupZmKwESCTZBRQV1O0SVDSer/tt+u40ePQ4
-         oC5w==
-X-Gm-Message-State: AOAM533kyqSvDnPmwEmykmezRDUtjuO5hxH5GLhJgG/xgW2StPmjMNw0
-        orYMG+VmIcStirR6toNSmUuP9Txwgo6+hLiA
-X-Google-Smtp-Source: ABdhPJzzgZ7svv6P8SbOu4kzJFzL/JMdB14X1fYh2f6sZsS2R06Wrp7f/5po0KFRMPyz59p5I+coiA==
-X-Received: by 2002:a1c:b002:: with SMTP id z2mr27620989wme.26.1620137678989;
-        Tue, 04 May 2021 07:14:38 -0700 (PDT)
-Received: from ard0534 ([197.2.237.199])
-        by smtp.gmail.com with ESMTPSA id x8sm16428403wrs.25.2021.05.04.07.14.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 04 May 2021 07:14:38 -0700 (PDT)
-Date:   Tue, 4 May 2021 15:14:35 +0100
-From:   Khaled Romdhani <khaledromdhani216@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     sfrench@samba.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH-next] fs/cifs: Fix resource leak
-Message-ID: <20210504141435.GA24514@ard0534>
-References: <20210504124343.22611-1-khaledromdhani216@gmail.com>
- <20210504134244.GW1981@kadam>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8Mdj10uq8YyfvX11RWMMGRr3/VZzdY5+rc9TfTZ6UC8=;
+        b=bwBs02xfihFCyjpSvJNbDQ92l5cvrWZm4m7iSU43EOq6HEEOA+SxphJgH1VZ3c1KaW
+         NCCFWtdu4lsRMvlkj/cmYC9gwQLS0kFaoPc4SoWsjxVheqrBekvOManigvy98RA7GY/T
+         +M2wrSVoXTxHFOgzaAPoaWKk9FEjVDG8hPmgBQdmH9rYVuQ76gkGt3M8EldQD8NeZd1G
+         cmuSoqff3F0QHKuJhWRQ7b9GwWKT95IiEzh1YOt7tJ15EsS3iqeuEJQ15qyy7qW9MMaV
+         FFpLn4khF+hGfIpN/nBaH2Js5xfqE0Pce3HGAnzIjdkPfisZtS2XuVNSmWF/jLeEVx+e
+         PGjQ==
+X-Gm-Message-State: AOAM5336b0KRMz1JgHJMbHAfxoLRpLQStGhi+hviW2TKyU/g8Ytca4+g
+        qIkdtXUR3HTJQ/1N2texupUDew/KhSXF3PA2Sqofic9UDvS3I2qmJftFTVF8zqpt79ZV/IiKgvO
+        +muqzl8KiWcxbaPgv2JSEUDUpQbXyBPAbY5db97zN0g==
+X-Received: by 2002:ac8:60c8:: with SMTP id i8mr22133290qtm.63.1620137861282;
+        Tue, 04 May 2021 07:17:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwBXSkZplOQFMqdOcrYIdibKIXwCDSIkqvwhTWqybS/PTYVBzFw35eerGZalnS6j+Q4dZ10Fg==
+X-Received: by 2002:ac8:60c8:: with SMTP id i8mr22133258qtm.63.1620137861031;
+        Tue, 04 May 2021 07:17:41 -0700 (PDT)
+Received: from [192.168.1.4] ([45.237.49.3])
+        by smtp.gmail.com with ESMTPSA id y13sm1047947qkj.84.2021.05.04.07.17.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 May 2021 07:17:40 -0700 (PDT)
+Subject: Re: [PATCH v1 1/3] memory: Add support for MediaTek External Memory
+ Interface driver
+To:     EastL Lee <EastL.Lee@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>
+Cc:     vkoul@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com,
+        matthias.bgg@gmail.com, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        wsd_upstream@mediatek.com, cc.hwang@mediatek.com,
+        joane.wang@mediatek.com, adrian-cj.hung@mediatek.com
+References: <1611746924-12287-1-git-send-email-EastL.Lee@mediatek.com>
+ <1611746924-12287-2-git-send-email-EastL.Lee@mediatek.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <2cf92fc2-ccac-312f-f4a6-9a4dfd9aee9c@canonical.com>
+Date:   Tue, 4 May 2021 10:15:28 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210504134244.GW1981@kadam>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1611746924-12287-2-git-send-email-EastL.Lee@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 04:44:45PM +0300, Dan Carpenter wrote:
-> On Tue, May 04, 2021 at 01:43:43PM +0100, Khaled ROMDHANI wrote:
-> > The -EIO error return path is leaking memory allocated
-> > to page. Fix this by invoking the free_dentry_path before
-> > the return.
-> > 
-> > Addresses-Coverity: ("Resource leak")
-> > Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
+On 27/01/2021 07:28, EastL Lee wrote:
+> MediaTek External Memory Interface(emi) on MT6779 SoC controls all the
+> transitions from master to dram, there are emi-cen & emi-mpu drivers.
 > 
-> Add a Fixes tag.
+> emi-cen driver provides phy addr to dram rank, bank, column and other
+> information, as well as the currently used dram channel number, rank
+> number, rank size.
 > 
-> Fixes: 583248493f78 ("cifs: add shutdown support")
->
+> emi-mpu (memory protect unit) driver provides an interface to set emi
+> regions, need to enter the secure world setting and the violation irq
+> isr will collect mpu violation information, after all regions have
+> protected their respective regions, emi-mpu will set the ap region to
+> protect all the remaining dram.
+> 
+> Signed-off-by: EastL Lee <EastL.Lee@mediatek.com>
+> ---
+>  drivers/memory/Kconfig                   |    1 +
+>  drivers/memory/Makefile                  |    1 +
+>  drivers/memory/mediatek/Kconfig          |   23 +
+>  drivers/memory/mediatek/Makefile         |    4 +
+>  drivers/memory/mediatek/emi-cen.c        | 1305 ++++++++++++++++++++++++++++++
+>  drivers/memory/mediatek/emi-mpu.c        |  908 +++++++++++++++++++++
+>  include/linux/soc/mediatek/mtk_sip_svc.h |    3 +
+>  include/soc/mediatek/emi.h               |  101 +++
+>  8 files changed, 2346 insertions(+)
+>  create mode 100644 drivers/memory/mediatek/Kconfig
+>  create mode 100644 drivers/memory/mediatek/Makefile
+>  create mode 100644 drivers/memory/mediatek/emi-cen.c
+>  create mode 100644 drivers/memory/mediatek/emi-mpu.c
+>  create mode 100644 include/soc/mediatek/emi.h
+> 
 
-Yes, I will add a Fixes tag.
+Use scripts/get_maintainers.pl to get list of people you need to Cc.
 
-> > ---
-> >  fs/cifs/link.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/cifs/link.c b/fs/cifs/link.c
-> > index 1cbe7ec73728..1485c6095ba1 100644
-> > --- a/fs/cifs/link.c
-> > +++ b/fs/cifs/link.c
-> > @@ -686,8 +686,10 @@ cifs_symlink(struct user_namespace *mnt_userns, struct inode *inode,
-> >  	void *page = alloc_dentry_path();
-> >  	struct inode *newinode = NULL;
-> >  
-> > -	if (unlikely(cifs_forced_shutdown(cifs_sb)))
-> > +	if (unlikely(cifs_forced_shutdown(cifs_sb))) {
-> > +		free_dentry_path(page);
-> >  		return -EIO;
-> > +	}
-> 
-> Better to move the allocation here.  Avoid calling functions which can
-> fail in the declaration block.  Better to test for NULL directly instead
-> of hiding the test inside the build_path_from_dentry() function.
-> 
-> 	page = alloc_dentry_path();
-> 	if (!page)
-> 		return -ENOMEM;
-> 
-> The error handling in this function is slightly unweildy...
-> 
-> regards,
-> dan carpenter
->
+Run checkpatch, smatch, sparse and coccinelle on your new driver. I can
+easily see that some of these steps were missing (e.g. OWNER field...).
 
-Yes, it would be better to move the allocation...
-I will send a V2.
-
-Thanks.
+Best regards,
+Krzysztof
