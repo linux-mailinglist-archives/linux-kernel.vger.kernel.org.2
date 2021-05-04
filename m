@@ -2,97 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 993023727C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 11:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57C4F3727CB
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 11:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230155AbhEDJGC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 4 May 2021 05:06:02 -0400
-Received: from aposti.net ([89.234.176.197]:34686 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230130AbhEDJFy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 05:05:54 -0400
-Date:   Tue, 04 May 2021 10:04:24 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] iio: core: return ENODEV if ioctl is unknown
-To:     Alexandru Ardelean <aardelean@deviqon.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jic23@kernel.org, lars@metafoo.de,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nuno Sa <nuno.sa@analog.com>
-Message-Id: <CVRKSQ.S9TXIAZ9W6262@crapouillou.net>
-In-Reply-To: <20210503144350.7496-1-aardelean@deviqon.com>
-References: <20210503144350.7496-1-aardelean@deviqon.com>
+        id S230033AbhEDJH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 05:07:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230003AbhEDJHy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 05:07:54 -0400
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61BCBC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 02:06:36 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:1ca1:e52f:3ec5:3ac5])
+        by baptiste.telenet-ops.be with bizsmtp
+        id 0Z6a2500N3aEpPb01Z6arB; Tue, 04 May 2021 11:06:35 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1ldr0j-002j3B-Ov; Tue, 04 May 2021 11:06:33 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1ldr0j-00H702-CC; Tue, 04 May 2021 11:06:33 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Yicong Yang <yangyicong@hisilicon.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dmitry Osipenko <digetx@gmail.com>, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v2] i2c: I2C_HISI should depend on ACPI
+Date:   Tue,  4 May 2021 11:06:32 +0200
+Message-Id: <22d124a7f12f2c8b280a9cc7f3b766351c9a8d64.1620119167.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The HiSilicon Kunpeng I2C controller driver relies on ACPI to probe for
+its presence.  Hence add a dependency on ACPI, to prevent asking the
+user about this driver when configuring a kernel without ACPI firmware
+support.
 
+Fixes: d62fbdb99a85730a ("i2c: add support for HiSilicon I2C controller")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+v2:
+  - Drop dependency on ARCH_HISI, as this is a public IP which doesn't
+    specifically depend on ARCH_HISI.
+---
+ drivers/i2c/busses/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Le lun., mai 3 2021 at 17:43:50 +0300, Alexandru Ardelean 
-<aardelean@deviqon.com> a écrit :
-> When the ioctl() mechanism was introduced in IIO core to centralize 
-> the
-> registration of all ioctls in one place via commit 8dedcc3eee3ac 
-> ("iio:
-> core: centralize ioctl() calls to the main chardev"), the return code 
-> was
-> changed from ENODEV to EINVAL, when the ioctl code isn't known.
-> 
-> This was done by accident.
-> 
-> This change reverts back to the old behavior, where if the ioctl() 
-> code
-> isn't known, ENODEV is returned (vs EINVAL).
-> 
-> This was brought into perspective by this patch:
->   
-> https://lore.kernel.org/linux-iio/20210428150815.136150-1-paul@crapouillou.net/
-> 
-> Fixes: 8dedcc3eee3ac ("iio: core: centralize ioctl() calls to the 
-> main chardev")
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Paul Cercueil <paul@crapouillou.net>
-> Cc: Nuno Sa <nuno.sa@analog.com>
-> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
-
-Tested-by: Paul Cercueil <paul@crapouillou.net>
-
-Thanks!
--Paul
-
-> ---
->  drivers/iio/industrialio-core.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iio/industrialio-core.c 
-> b/drivers/iio/industrialio-core.c
-> index efb4cf91c9e4..9a3a83211a90 100644
-> --- a/drivers/iio/industrialio-core.c
-> +++ b/drivers/iio/industrialio-core.c
-> @@ -1803,7 +1803,6 @@ static long iio_ioctl(struct file *filp, 
-> unsigned int cmd, unsigned long arg)
->  	if (!indio_dev->info)
->  		goto out_unlock;
-> 
-> -	ret = -EINVAL;
->  	list_for_each_entry(h, &iio_dev_opaque->ioctl_handlers, entry) {
->  		ret = h->ioctl(indio_dev, filp, cmd, arg);
->  		if (ret != IIO_IOCTL_UNHANDLED)
-> @@ -1811,7 +1810,7 @@ static long iio_ioctl(struct file *filp, 
-> unsigned int cmd, unsigned long arg)
->  	}
-> 
->  	if (ret == IIO_IOCTL_UNHANDLED)
-> -		ret = -EINVAL;
-> +		ret = -ENODEV;
-> 
->  out_unlock:
->  	mutex_unlock(&iio_dev_opaque->info_exist_lock);
-> --
-> 2.31.1
-> 
-
+diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
+index b5b4e0d0ff4dd0bc..226c0b79eac030fa 100644
+--- a/drivers/i2c/busses/Kconfig
++++ b/drivers/i2c/busses/Kconfig
+@@ -647,7 +647,7 @@ config I2C_HIGHLANDER
+ 
+ config I2C_HISI
+ 	tristate "HiSilicon I2C controller"
+-	depends on ARM64 || COMPILE_TEST
++	depends on (ARM64 && ACPI) || COMPILE_TEST
+ 	help
+ 	  Say Y here if you want to have Hisilicon I2C controller support
+ 	  available on the Kunpeng Server.
+-- 
+2.25.1
 
