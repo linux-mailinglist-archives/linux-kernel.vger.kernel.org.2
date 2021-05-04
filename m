@@ -2,186 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28BD5372678
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 09:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE8A937267D
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 09:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230016AbhEDHVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 03:21:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbhEDHVH (ORCPT
+        id S230049AbhEDHWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 03:22:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31536 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229839AbhEDHWr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 03:21:07 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E825C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 00:20:13 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id x8so7651797qkl.2
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 00:20:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=JggnRH2z+C5c6q5fwkNF9u7IZivIlxcnTgChvJQFvSA=;
-        b=csBKU8aJUh6TfQKqWkRRJuwzqfCx/gxbV1DQ6d4id1eoGXBhg76xsbhY2fA34UDX22
-         sZhPa7vaekhSABqSq3q7znGNkTGTxRXlf8Kiac//bM/Z3oVYKoZXXB9zyWWTH7tsAue2
-         1B3yweWVmqGH2oSfzokpJ9flNMRRfs9Ch/TZUvIWlFbtChX6zJmSSKrgWOdoAyamxI4t
-         MWCSaYfX4b6HMUDdhbJ98JhjtDEInNQGjQWG3kd5N5U5xZzC2NZbKSwi8I2ED9rQfmrz
-         7UAGrCn8PAB1iTBuS+TzkQAplICSN9l3apNNyz3X/NdhP+azrqtYr3WMCOS/YtBXCUbQ
-         fB6g==
+        Tue, 4 May 2021 03:22:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620112913;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mzxyYk+E3TZaXdPs/5yJWZXWsj4+CrfW8cvS2xik3SI=;
+        b=VQHK+S/6d7M5ISInqK2bpSZ2n+yxtGJMEkC8uE74ihMhfKCZKutgWJ5LiR3hOEvU9kwf6g
+        kUNH8nrCo7TpiPHQczvJuCGG2gj/7V4eOUzhacnoDR9B3Fysp7nnlHh0ef2RHllGjgkmBd
+        FqwZL6SPP8g68CLA+e0yKeZ4EczIPi8=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-3-iWX3ajGTPMmX6wT55syhQw-1; Tue, 04 May 2021 03:21:51 -0400
+X-MC-Unique: iWX3ajGTPMmX6wT55syhQw-1
+Received: by mail-ej1-f72.google.com with SMTP id w2-20020a1709062f82b0290378745f26d5so2762572eji.6
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 00:21:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JggnRH2z+C5c6q5fwkNF9u7IZivIlxcnTgChvJQFvSA=;
-        b=Mz7pORKk9ucdLQGLzYV1w1wxKT1J81L6oB97MnZlwCxT7k2qbuQsnX9OifEFKA8Gbf
-         8MA0lp0q1qYpM99jTGJkOZI8s70iplYQrPfsmDiWT10WHIs9Yn6JzrCacq1T/K+CNrQU
-         V18w7pXJGftOBpkr0cOb8WjdNHCuXL01gXRzXCXQOZfB60fJuYYFiOf89YaLPY95o5N/
-         fccM3MlcgNQhoLizalL8RiTvUWGVnJz3HUKvLoVnC4SFzmKghouE2Ut50LGBgGm/DC9U
-         AGutrJFPhPFAbpr7B7CxoP3YVWT0h+mCq55mDt4Ku/BuT5v3F6YvBoRYZDuo4J5lXUqf
-         QMhw==
-X-Gm-Message-State: AOAM532r44N86eIPuJV4ppQa4k9dlwvgo7G1AzBxqNvjwJP/+UvLgdpA
-        GWhKWEI3FxTyxPgfzjLfH7769+KqXcfK9mNWe7I8+w==
-X-Google-Smtp-Source: ABdhPJwSV0cJLUMNNy0lL94PwJnsWKOoPmVIkjaGTOqFfwKqrXom5YgkvcZWXnSt5nztkk0zIFsVQOCkdjO4/mVSk1Q=
-X-Received: by 2002:a05:620a:29c4:: with SMTP id s4mr20672337qkp.401.1620112812489;
- Tue, 04 May 2021 00:20:12 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mzxyYk+E3TZaXdPs/5yJWZXWsj4+CrfW8cvS2xik3SI=;
+        b=GuNBBHumw3L3CUZPal8roHjmFDTkkhr+05soYukGXtF4uuQB+/mEtJr4G06bCng2WM
+         TmNgqSyHVzel695MmAVOgljjv1hyB+UBDZAbgROvtJe7YB+cADtsBsvs5M9KkDDjO6so
+         S41FVVSew59rTTga2Q676FkXC+HES/ah36eL8aDHx3p8HJJM50oveSjBZED/Bi8QjinC
+         Qiiqmo1A63IC+2RHI4LzivyvxiPyYF7SRSGzQwfBQGYz0KIGEutr9fHGs/XxTx5T5EHT
+         gD6Ip5iaOis51hDKPE0OCA3cPvmUaAHaq0nOQTy96yMIpdNpWrG2ygcOBphJwnBodP0Z
+         cAjQ==
+X-Gm-Message-State: AOAM530tG5lm5LDFvXqn4kRHLSDQHhrnm4f9vLWtAr4T2G83+6DKoQ+i
+        VCPZglQ/d9+v+0o1Uu/ZhvDBn95tgDe/GKyT/svnjCV3i3OvrNlmAUPvvuuEqvo6rSaSqObJuPQ
+        +OXgR7KlS1ZhPEJO6xA1B8Ez6
+X-Received: by 2002:a17:906:14c1:: with SMTP id y1mr21141614ejc.481.1620112910355;
+        Tue, 04 May 2021 00:21:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzRsBX3qH22ZDe7HFwQAGaSzb/h/VEshNKyP0gOzeupSDWjVGD20Y0KicFMLZe3yIEPXZZmug==
+X-Received: by 2002:a17:906:14c1:: with SMTP id y1mr21141601ejc.481.1620112910215;
+        Tue, 04 May 2021 00:21:50 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id dj17sm10446123edb.7.2021.05.04.00.21.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 May 2021 00:21:49 -0700 (PDT)
+Subject: Re: [PATCH v2 0/7] Lazily allocate memslot rmaps
+To:     Ben Gardon <bgardon@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20210429211833.3361994-1-bgardon@google.com>
+ <a3279647-fb30-4033-2a9d-75d473bd8f8e@redhat.com>
+ <CANgfPd-fD33hJkQP_MVb2a4CadKQbkpwwtP9r5rMrC_Mripeqg@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <4d27e9d6-42db-3aa1-053a-552e1643f46d@redhat.com>
+Date:   Tue, 4 May 2021 09:21:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210406092634.50465-1-greentime.hu@sifive.com> <20210503164023.GA919777@bjorn-Precision-5520>
-In-Reply-To: <20210503164023.GA919777@bjorn-Precision-5520>
-From:   Greentime Hu <greentime.hu@sifive.com>
-Date:   Tue, 4 May 2021 15:20:00 +0800
-Message-ID: <CAHCEeh+cMrEnHNG3W3ZNzdgT-m7BMorDawF6D8qkFYGg=RJMOw@mail.gmail.com>
-Subject: Re: [PATCH v5 0/6] Add SiFive FU740 PCIe host controller driver support
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>, hes@sifive.com,
-        Erik Danie <erik.danie@sifive.com>,
-        Zong Li <zong.li@sifive.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, robh+dt@kernel.org,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>, alex.dewar90@gmail.com,
-        khilman@baylibre.com, hayashi.kunihiko@socionext.com,
-        vidyas@nvidia.com, jh80.chung@samsung.com,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CANgfPd-fD33hJkQP_MVb2a4CadKQbkpwwtP9r5rMrC_Mripeqg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bjorn Helgaas <helgaas@kernel.org> =E6=96=BC 2021=E5=B9=B45=E6=9C=884=E6=97=
-=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=8812:40=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Tue, Apr 06, 2021 at 05:26:28PM +0800, Greentime Hu wrote:
-> > This patchset includes SiFive FU740 PCIe host controller driver. We als=
-o
-> > add pcie_aux clock and pcie_power_on_reset controller to prci driver fo=
-r
-> > PCIe driver to use it.
->
-> I dropped this series because of the build problem I mentioned [1].
-> It will not be included in v5.13 unless the build problem is fixed
-> ASAP.
->
-> [1] https://lore.kernel.org/r/20210428194713.GA314975@bjorn-Precision-552=
-0
->
+On 03/05/21 19:31, Ben Gardon wrote:
+> On Mon, May 3, 2021 at 6:45 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>>
+>> On 29/04/21 23:18, Ben Gardon wrote:
+>>> This series enables KVM to save memory when using the TDP MMU by waiting
+>>> to allocate memslot rmaps until they are needed. To do this, KVM tracks
+>>> whether or not a shadow root has been allocated. In order to get away
+>>> with not allocating the rmaps, KVM must also be sure to skip operations
+>>> which iterate over the rmaps. If the TDP MMU is in use and we have not
+>>> allocated a shadow root, these operations would essentially be op-ops
+>>> anyway. Skipping the rmap operations has a secondary benefit of avoiding
+>>> acquiring the MMU lock in write mode in many cases, substantially
+>>> reducing MMU lock contention.
+>>>
+>>> This series was tested on an Intel Skylake machine. With the TDP MMU off
+>>> and on, this introduced no new failures on kvm-unit-tests or KVM selftests.
+>>
+>> Thanks, I only reported some technicalities in the ordering of loads
+>> (which matter since the loads happen with SRCU protection only).  Apart
+>> from this, this looks fine!
+> 
+> Awesome to hear, thank you for the reviews. Should I send a v3
+> addressing those comments, or did you already make those changes when
+> applying to your tree?
 
-Hi all,
+No, I didn't (I wanted some oversight, and this is 5.14 stuff anyway).
 
-This build failed in x86_64 is because CONFIG_GPIOLIB is disabled in
-the testing config.
+Paolo
 
-diff --git a/drivers/pci/controller/dwc/Kconfig
-b/drivers/pci/controller/dwc/Kconfig
-index 0a37d21ed64e..56b66e1fed53 100644
---- a/drivers/pci/controller/dwc/Kconfig
-+++ b/drivers/pci/controller/dwc/Kconfig
-@@ -323,6 +323,7 @@ config PCIE_FU740
-        depends on PCI_MSI_IRQ_DOMAIN
-        depends on SOC_SIFIVE || COMPILE_TEST
-        select PCIE_DW_HOST
-+       select GPIOLIB
-        help
-          Say Y here if you want PCIe controller support for the SiFive
-          FU740.
-
-After applying this change, it can build pass.
-
-> > This is tested with e1000e: Intel(R) PRO/1000 Network Card, AMD Radeon =
-R5
-> > 230 graphics card and SP M.2 PCIe Gen 3 SSD in SiFive Unmatched based o=
-n
-> > v5.11 Linux kernel.
-> >
-> > Changes in v5:
-> >  - Fix typo in comments
-> >  - Keep comments style consistent
-> >  - Refine some error handling codes
-> >  - Remove unneeded header file including
-> >  - Merge fu740_pcie_ltssm_enable implementation to fu740_pcie_start_lin=
-k
-> >
-> > Changes in v4:
-> >  - Fix Wunused-but-set-variable warning in prci driver
-> >
-> > Changes in v3:
-> >  - Remove items that has been defined
-> >  - Refine format of sifive,fu740-pcie.yaml
-> >  - Replace perstn-gpios with the common one
-> >  - Change DBI mapping space to 2GB from 4GB
-> >  - Refine drivers/reset/Kconfig
-> >
-> > Changes in v2:
-> >  - Refine codes based on reviewers' feedback
-> >  - Remove define and use the common one
-> >  - Replace __raw_writel with writel_relaxed
-> >  - Split fu740_phyregreadwrite to write function
-> >  - Use readl_poll_timeout in stead of while loop checking
-> >  - Use dwc common codes
-> >  - Use gpio descriptors and the gpiod_* api.
-> >  - Replace devm_ioremap_resource with devm_platform_ioremap_resource_by=
-name
-> >  - Replace devm_reset_control_get with devm_reset_control_get_exclusive
-> >  - Add more comments for delay and sleep
-> >  - Remove "phy ? x : y" expressions
-> >  - Refine code logic to remove possible infinite loop
-> >  - Replace magic number with meaningful define
-> >  - Remove fu740_pcie_pm_ops
-> >  - Use builtin_platform_driver
-> >
-> > Greentime Hu (5):
-> >   clk: sifive: Add pcie_aux clock in prci driver for PCIe driver
-> >   clk: sifive: Use reset-simple in prci driver for PCIe driver
-> >   MAINTAINERS: Add maintainers for SiFive FU740 PCIe driver
-> >   dt-bindings: PCI: Add SiFive FU740 PCIe host controller
-> >   riscv: dts: Add PCIe support for the SiFive FU740-C000 SoC
-> >
-> > Paul Walmsley (1):
-> >   PCI: fu740: Add SiFive FU740 PCIe host controller driver
-> >
-> >  .../bindings/pci/sifive,fu740-pcie.yaml       | 113 +++++++
-> >  MAINTAINERS                                   |   8 +
-> >  arch/riscv/boot/dts/sifive/fu740-c000.dtsi    |  33 ++
-> >  drivers/clk/sifive/Kconfig                    |   2 +
-> >  drivers/clk/sifive/fu740-prci.c               |  11 +
-> >  drivers/clk/sifive/fu740-prci.h               |   2 +-
-> >  drivers/clk/sifive/sifive-prci.c              |  54 +++
-> >  drivers/clk/sifive/sifive-prci.h              |  13 +
-> >  drivers/pci/controller/dwc/Kconfig            |   9 +
-> >  drivers/pci/controller/dwc/Makefile           |   1 +
-> >  drivers/pci/controller/dwc/pcie-fu740.c       | 308 ++++++++++++++++++
-> >  drivers/reset/Kconfig                         |   1 +
-> >  include/dt-bindings/clock/sifive-fu740-prci.h |   1 +
-> >  13 files changed, 555 insertions(+), 1 deletion(-)
-> >  create mode 100644 Documentation/devicetree/bindings/pci/sifive,fu740-=
-pcie.yaml
-> >  create mode 100644 drivers/pci/controller/dwc/pcie-fu740.c
-> >
-> > --
-> > 2.30.2
-> >
