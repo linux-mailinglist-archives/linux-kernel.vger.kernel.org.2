@@ -2,81 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D62937323D
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 00:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B744F373238
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 00:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232919AbhEDWMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 18:12:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232424AbhEDWMo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 18:12:44 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 084B0C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 15:11:48 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id p12so213451pgj.10
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 15:11:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X24lUXlMEhpG08QpqR1PXTQYsmjAZVq0k2CHWE7HhVY=;
-        b=X61PxexQtJUyrYRZSK0xCUjkBWVWmqhbPHTL7U8gdl1OQpo3CTBNZnV/wez9UyhXDJ
-         1g4Lu29fx9+u7UNRTBfbuGMl8k+ogE1ofqlzgh0y+/qzYdLYOpSrDSUZ3N29aQAJct0x
-         eOoQAahlK7FUSxosC99+uipbZwlR1oIrZWKGontQ83L+1dHR6SBurmfpyUwNDgrDDlYg
-         nwr0jjoo3JSJ1lQRvLO8AfHplkHL+Gy2vz2gnkbA2ZbZUxFuggwdrKw8LHAW3ZvQUTkg
-         suhIP1eg15yp+4j25ZuBVsAjiZs2g7OURRvAO755z9kAfU3P1WlFGQY8IhFui61lyzUL
-         Nt4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X24lUXlMEhpG08QpqR1PXTQYsmjAZVq0k2CHWE7HhVY=;
-        b=JbI7c1tD0G8JvwYUeGFiAMHchq34PMbZaueOTPhwLb+zDlB7YiTI+7fS/1rdT/06QA
-         XH/SU2145z5k/mSo0TbXd2BO7rJNteJev0y6NhVgNpde3puVOTJh4dsHnGeVf3/dTbE+
-         UNAP9CIcIOjand3lT3iOFDdNeyOiWC3ys13wh0x6VZxyVgEthN9hyyHqr53uDIZq8g0z
-         XGS4CF8OcAUoG4u1kYXTyYUn3a/ASZlDHmiJ11Y7Zrg4nCVVXsubKM6rf/KGoOHk3QxD
-         UF/tgZZvXTF0yl/JaJYG7yqnP0bunwC22RXSHwmUHnJdMNGbSgOwzas/yRAnJkUVY/qY
-         1iaA==
-X-Gm-Message-State: AOAM531QHMYhT7lQadT336wtl+24FcHasr++nQyfpf6tu6D7CKnHrHk3
-        RehTskT4fTR2vCHWexBvwYGDrWAUxOT8FklG42SK0Q==
-X-Google-Smtp-Source: ABdhPJxBDaBz2DRw8kqPKeDKfQ4d46qBSNpg+xnZ9QTKG26vZ10umSbISFR3+PaN/BYlWh1v6oWwRWAfY8yFbDKC4qg=
-X-Received: by 2002:a65:63c5:: with SMTP id n5mr7588258pgv.271.1620166307446;
- Tue, 04 May 2021 15:11:47 -0700 (PDT)
+        id S232943AbhEDWKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 18:10:02 -0400
+Received: from mga01.intel.com ([192.55.52.88]:47393 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231733AbhEDWKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 18:10:00 -0400
+IronPort-SDR: pao5c3IY1dlRQQYM51UZQ+j5zh6ey7F6jWyCu5K2/ZRO8bHhqraFxurFxpXV5WgTLKLFcBz9RG
+ oRlPlSJnt5/w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9974"; a="218918606"
+X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
+   d="scan'208";a="218918606"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 15:09:04 -0700
+IronPort-SDR: SuLTDiqHXM8cd3yT7FXZf7uhVJgQJ2nTgf8+4zbG2ekswyEiVikeXRe1aAw3rFb3TKUSyGk+eU
+ uKLTEkKkso9g==
+X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
+   d="scan'208";a="433492852"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 15:09:04 -0700
+Date:   Tue, 4 May 2021 15:11:54 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210504151154.02908c63@jacob-builder>
+In-Reply-To: <20210504180050.GB1370958@nvidia.com>
+References: <20210421133312.15307c44@redhat.com>
+        <20210421230301.GP1370958@nvidia.com>
+        <MWHPR11MB1886188698A6E20338196F788C469@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210422121020.GT1370958@nvidia.com>
+        <MWHPR11MB1886E688D2128C98A1F240B18C459@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210423114944.GF1370958@nvidia.com>
+        <MWHPR11MB18861FE6982D73AFBF173E048C439@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210426123817.GQ1370958@nvidia.com>
+        <MWHPR11MB188625137D5B7423822396C88C409@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210504084148.4f61d0b5@jacob-builder>
+        <20210504180050.GB1370958@nvidia.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210430131733.192414-1-rsaripal@amd.com> <20210430131733.192414-2-rsaripal@amd.com>
- <CAAeT=Fw-nt5h3DhRCQr8Ma71NiP7dHB+WD2hie_55SpCHR=mDQ@mail.gmail.com>
- <e53887f8-c09d-28db-5041-bf8822370c46@amd.com> <CAAeT=FyAmSxKy5cpGLBH_kqDohXeQOdi4r02KjQO_vycq=4y=Q@mail.gmail.com>
- <d64b9e19-7124-640f-0ca1-7abc7816d642@amd.com>
-In-Reply-To: <d64b9e19-7124-640f-0ca1-7abc7816d642@amd.com>
-From:   Reiji Watanabe <reijiw@google.com>
-Date:   Tue, 4 May 2021 15:11:31 -0700
-Message-ID: <CAAeT=FwYNJfHUzQjSpJD8oexNfR9CLa2oPx4Umh6=97xpkA7fA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/1] x86/cpufeatures: Implement Predictive Store
- Forwarding control.
-To:     "Saripalli, RK" <rsaripal@amd.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, Borislav Petkov <bp@alien8.de>, hpa@zytor.com,
-        Jonathan Corbet <corbet@lwn.net>, bsd@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Boris / Reiji, I am wondering if I have answered all the questions on these latest patches.
-> Just checking to see if there are any more changes needed.
+Hi Jason,
 
-All the questions from me were answered and I don't have any
-other comment/question for the latest patch (assuming that
-the patch will be updated based on the comment from Tom).
+On Tue, 4 May 2021 15:00:50 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-FYI.
-I was going to ask you a question about x86_spec_ctrl_mask.
-But, since it is used only for KVM (although x86_spec_ctrl_mask
-is defined/used only in arch/x86/kernel/cpu/bugs.c),
-I plan to ask you about it once your KVM patch gets updated
-rather than this patch.
+> On Tue, May 04, 2021 at 08:41:48AM -0700, Jacob Pan wrote:
+> > > > 
+> > > > (also looking at ioasid.c, why do we need such a thin and odd
+> > > > wrapper around xarray?)
+> > > >     
+> > > 
+> > > I'll leave it to Jean and Jacob.  
+> 
+> > Could you elaborate?  
+> 
+> I mean stuff like this:
+> 
+> int ioasid_set_data(ioasid_t ioasid, void *data)
+> {
+>         struct ioasid_data *ioasid_data;
+>         int ret = 0;
+> 
+>         spin_lock(&ioasid_allocator_lock);
+>         ioasid_data = xa_load(&active_allocator->xa, ioasid);
+>         if (ioasid_data)
+>                 rcu_assign_pointer(ioasid_data->private, data);
+>         else
+>                 ret = -ENOENT;
+>         spin_unlock(&ioasid_allocator_lock);
+> 
+>         /*
+>          * Wait for readers to stop accessing the old private data, so the
+>          * caller can free it.
+>          */
+>         if (!ret)
+>                 synchronize_rcu();
+> 
+>         return ret;
+> }
+> EXPORT_SYMBOL_GPL(ioasid_set_data);
+> 
+> It is a weird way to use xarray to have a structure which
+> itself is just a wrapper around another RCU protected structure.
+> 
+> Make the caller supply the ioasid_data memory, embedded in its own
+> element, get rid of the void * and rely on XA_ZERO_ENTRY to hold
+> allocated but not active entries.
+> 
+Let me try to paraphrase to make sure I understand. Currently
+struct ioasid_data is private to the iasid core, its memory is allocated by
+the ioasid core.
+
+You are suggesting the following:
+1. make struct ioasid_data public
+2. caller allocates memory for ioasid_data, initialize it then pass it to
+ioasid_alloc to store in the xarray
+3. caller will be responsible for setting private data inside ioasid_data
+and do call_rcu after update if needed.
+
+Correct?
+
+> Make the synchronize_rcu() the caller responsiblity, and callers
+> should really be able to use call_rcu()
+> 
+> Jason
+
 
 Thanks,
-Reiji
+
+Jacob
