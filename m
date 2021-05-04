@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD72372EC4
+	by mail.lfdr.de (Postfix) with ESMTP id ED975372EC6
 	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232514AbhEDRTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:19:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39740 "EHLO
+        id S232518AbhEDRTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:19:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232307AbhEDRTK (ORCPT
+        with ESMTP id S232354AbhEDRTS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 13:19:10 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B64FC06138D
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:18:13 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id p138-20020a2542900000b02904f7975752e7so9021242yba.16
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:18:13 -0700 (PDT)
+        Tue, 4 May 2021 13:19:18 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D2FC061345
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:18:16 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id o12-20020a5b050c0000b02904f4a117bd74so12588811ybp.17
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:18:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=I0YgTTuADCddU7gmQFiimvdU+bEYx4FI76LT0CJf50k=;
-        b=WsX+UOIow9SVeSekUUUEP42Bla3aG09c7lCeheves/gmCrujgJGG87UyJ4m7cJeJN1
-         wnUUM1dANdZ8mQ8om84Y12/x6dn4Kft3RKNNuvRu33si3QODEkp3DOq2RNjlC5ovblVE
-         G3UryiQJrlaUDYIO2ZXr1SBeQmN8dYgc5KqNUlnwDLTCPk5tVsLbqC1Qa01MlU0fdwGs
-         pHDrf5VQX/feY0r67svoSFElzASM+ocj2nDrLeUZI7xnei7/Bb+xpVZNlIaQtHVfnpeH
-         QjTkjqkPW1dz07H+PZG/yukqHvMIVDzrJt8+7yc29RIAYgH47VA8e6FdEcE7ZSItBlv1
-         roqg==
+        bh=n3WdNBU3wLg2BveFZOVMyvP1egZ3CBjYg+W/tOrWu7w=;
+        b=P9lOY7moXKyYkZluKXbmMMkDQlfFbAkPP2wDNkED27PIj1b4i6FFISiWtL5WAVl5nY
+         6cfelvMxZHAGVOq9hsc3gCalvxujh70dTTF2l6iBQUQ7ParF5ztKn/aG/tdxpff2EnQK
+         8AMY7ns0OnqE/0AkxjclOd9+OQE4MorLT20iLimXbUJJP1Gyt4+CVRimOw5jtoqWjklg
+         KRWsyYxKk1/olUpTRHkmQAT67E0+wnieg288etP1YKMF+Jzu1umOBzN6MB5i5xbcqMkm
+         iPMYj2u5Kl5wgZN533a0sIk+OQHiHS3nnHcM8ydPOc+hCUsw7zg2xK9F0C3ODE6bQ8cJ
+         tXJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=I0YgTTuADCddU7gmQFiimvdU+bEYx4FI76LT0CJf50k=;
-        b=hVSnJQf/3SwQA7JRHu0wSVzN17oORHXdakk1y15UBDqt53AI5gzjH+oJR83zgEYICD
-         xt8fXtpzzOPcNX4kUmvO/3QT82NsPDNmpOSQ+7WyqbiaKet2Je+f/KoLvvl7kDSM0Jc8
-         sOr28Zy32YSqr+ZvoAtExqZoUUp9TgPk3DpH8gxkyvvk2tCu4T9JN9qBOkglELZO6ktG
-         CmI03HqgIdmlHg8kAxpWf14LknhJvMmBNxRYppgMT0/gwV8FSvh4FOxjHC7DM8rPnPSb
-         42Q8rRTd6OMTSRnN4/94Ao54TbaPzWWSDnUUxQ4gBOCcgn2VWwmIY6HtPny3I/+0m/wV
-         FhZg==
-X-Gm-Message-State: AOAM532DKS2zppeg5j5/xN10fOMC83tbMI1eNwKQAb/RgdPnd8+bKmeW
-        4gk5fztH0150L04R12lwc3wEHBZkzZM=
-X-Google-Smtp-Source: ABdhPJzteeOdR219s7VgR2XpDpavvwOQHfDWKk4e7CibhAkBQS4q/EgxJG4LPRotVa6mT3PVcXfHbqXxObs=
+        bh=n3WdNBU3wLg2BveFZOVMyvP1egZ3CBjYg+W/tOrWu7w=;
+        b=r9mEaG52Rcd9Q2tuudbimGWF4LLfccVp7AGWpX4rb91xNrp1oaQMUjry4JbJcqwNjZ
+         mo2xosy+VRR02uHEPxOhMHSIi7cMazns6UzHqcSSg6NMx7UO7rHI1KsdnckvBrnHq32K
+         IRq5ZiEoQZUwIK6cPQnAswMtPJc7nWtv+GRkjEq9DGlIplWkRmY7y8n1LBxRzjGW/xMj
+         0zve6u5fU/Y2O4wYtYZIexFwI4JJj/kuLUUCCq0QhdJEFCsvVjc+98QYLhjfIOqA+moe
+         mqi/yE5hF4Rs61J6SrNh52iTbz7VtWHrh7pobrxb2OwYuHmsuhiEnxir8C+/eEQOs0UB
+         W8TA==
+X-Gm-Message-State: AOAM533vthFbzSN2pcBD1icyjz3KvdL0lDcw1A5KaC1hz1Hrh/ou0jkv
+        E2xxwwLC03dbk0igmeSLpQJOdjWazWM=
+X-Google-Smtp-Source: ABdhPJwyh5X6WR35hSEdU0UOSUQJq4myiesLVifDWYcIH6ej+A+EgNY0bGrDFWfx929hgZ7bgpzF1NRuIGs=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:df57:48cb:ea33:a156])
- (user=seanjc job=sendgmr) by 2002:a25:b993:: with SMTP id r19mr37069140ybg.445.1620148692865;
- Tue, 04 May 2021 10:18:12 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:ef51:: with SMTP id w17mr35753680ybm.520.1620148695580;
+ Tue, 04 May 2021 10:18:15 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue,  4 May 2021 10:17:32 -0700
+Date:   Tue,  4 May 2021 10:17:33 -0700
 In-Reply-To: <20210504171734.1434054-1-seanjc@google.com>
-Message-Id: <20210504171734.1434054-14-seanjc@google.com>
+Message-Id: <20210504171734.1434054-15-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210504171734.1434054-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
-Subject: [PATCH 13/15] KVM: x86: Move uret MSR slot management to common x86
+Subject: [PATCH 14/15] KVM: x86: Tie Intel and AMD behavior for MSR_TSC_AUX to
+ guest CPU model
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -67,152 +68,170 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that SVM and VMX both probe MSRs before "defining" user return slots
-for them, consolidate the code for probe+define into common x86 and
-eliminate the odd behavior of having the vendor code define the slot for
-a given MSR.
+Squish the Intel and AMD emulation of MSR_TSC_AUX together and tie it to
+the guest CPU model instead of the host CPU behavior.  While not strictly
+necessary to avoid guest breakage, emulating cross-vendor "architecture"
+will provide consistent behavior for the guest, e.g. WRMSR fault behavior
+won't change if the vCPU is migrated to a host with divergent behavior.
+
+Note, the "new" kvm_is_supported_user_return_msr() checks do not add new
+functionality on either SVM or VMX.  On SVM, the equivalent was
+"tsc_aux_uret_slot < 0", and on VMX the check was buried in the
+vmx_find_uret_msr() call at the find_uret_msr label.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/include/asm/kvm_host.h |  3 +--
- arch/x86/kvm/svm/svm.c          |  5 +----
- arch/x86/kvm/vmx/vmx.c          | 19 ++++---------------
- arch/x86/kvm/x86.c              | 19 +++++++++++--------
- 4 files changed, 17 insertions(+), 29 deletions(-)
+ arch/x86/include/asm/kvm_host.h |  5 +++++
+ arch/x86/kvm/svm/svm.c          | 24 ----------------------
+ arch/x86/kvm/vmx/vmx.c          | 15 --------------
+ arch/x86/kvm/x86.c              | 36 +++++++++++++++++++++++++++++++++
+ 4 files changed, 41 insertions(+), 39 deletions(-)
 
 diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 10663610f105..a4b912f7e427 100644
+index a4b912f7e427..00fb9efb9984 100644
 --- a/arch/x86/include/asm/kvm_host.h
 +++ b/arch/x86/include/asm/kvm_host.h
-@@ -1778,9 +1778,8 @@ int kvm_pv_send_ipi(struct kvm *kvm, unsigned long ipi_bitmap_low,
- 		    unsigned long ipi_bitmap_high, u32 min,
- 		    unsigned long icr, int op_64_bit);
- 
--void kvm_define_user_return_msr(unsigned index, u32 msr);
-+int kvm_add_user_return_msr(u32 msr);
+@@ -1782,6 +1782,11 @@ int kvm_add_user_return_msr(u32 msr);
  int kvm_find_user_return_msr(u32 msr);
--int kvm_probe_user_return_msr(u32 msr);
  int kvm_set_user_return_msr(unsigned index, u64 val, u64 mask);
  
++static inline bool kvm_is_supported_user_return_msr(u32 msr)
++{
++	return kvm_find_user_return_msr(msr) >= 0;
++}
++
  u64 kvm_scale_tsc(struct kvm_vcpu *vcpu, u64 tsc);
+ u64 kvm_read_l1_tsc(struct kvm_vcpu *vcpu, u64 host_tsc);
+ 
 diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 231b9650d864..de921935e8de 100644
+index de921935e8de..6c7c6a303cc5 100644
 --- a/arch/x86/kvm/svm/svm.c
 +++ b/arch/x86/kvm/svm/svm.c
-@@ -959,10 +959,7 @@ static __init int svm_hardware_setup(void)
- 		kvm_tsc_scaling_ratio_frac_bits = 32;
- 	}
- 
--	if (!kvm_probe_user_return_msr(MSR_TSC_AUX)) {
--		tsc_aux_uret_slot = 0;
--		kvm_define_user_return_msr(tsc_aux_uret_slot, MSR_TSC_AUX);
--	}
-+	tsc_aux_uret_slot = kvm_add_user_return_msr(MSR_TSC_AUX);
- 
- 	/* Check for pause filtering support */
- 	if (!boot_cpu_has(X86_FEATURE_PAUSEFILTER)) {
+@@ -2663,12 +2663,6 @@ static int svm_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 			msr_info->data |= (u64)svm->sysenter_esp_hi << 32;
+ 		break;
+ 	case MSR_TSC_AUX:
+-		if (tsc_aux_uret_slot < 0)
+-			return 1;
+-		if (!msr_info->host_initiated &&
+-		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
+-		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
+-			return 1;
+ 		msr_info->data = svm->tsc_aux;
+ 		break;
+ 	/*
+@@ -2885,24 +2879,6 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
+ 		svm->sysenter_esp_hi = guest_cpuid_is_intel(vcpu) ? (data >> 32) : 0;
+ 		break;
+ 	case MSR_TSC_AUX:
+-		if (tsc_aux_uret_slot < 0)
+-			return 1;
+-
+-		if (!msr->host_initiated &&
+-		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
+-		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
+-			return 1;
+-
+-		/*
+-		 * Per Intel's SDM, bits 63:32 are reserved, but AMD's APM has
+-		 * incomplete and conflicting architectural behavior.  Current
+-		 * AMD CPUs completely ignore bits 63:32, i.e. they aren't
+-		 * reserved and always read as zeros.  Emulate AMD CPU behavior
+-		 * to avoid explosions if the vCPU is migrated from an AMD host
+-		 * to an Intel host.
+-		 */
+-		data = (u32)data;
+-
+ 		/*
+ 		 * TSC_AUX is usually changed only during boot and never read
+ 		 * directly.  Intercept TSC_AUX instead of exposing it to the
 diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 7a53568b34fc..26f82f302391 100644
+index 26f82f302391..d85ac5876982 100644
 --- a/arch/x86/kvm/vmx/vmx.c
 +++ b/arch/x86/kvm/vmx/vmx.c
-@@ -454,9 +454,6 @@ static inline void vmx_segment_cache_clear(struct vcpu_vmx *vmx)
- 
- static unsigned long host_idt_base;
- 
--/* Number of user return MSRs that are actually supported in hardware. */
--static int vmx_nr_uret_msrs;
--
- #if IS_ENABLED(CONFIG_HYPERV)
- static bool __read_mostly enlightened_vmcs = true;
- module_param(enlightened_vmcs, bool, 0444);
-@@ -1218,7 +1215,7 @@ void vmx_prepare_switch_to_guest(struct kvm_vcpu *vcpu)
- 	 */
- 	if (!vmx->guest_uret_msrs_loaded) {
- 		vmx->guest_uret_msrs_loaded = true;
--		for (i = 0; i < vmx_nr_uret_msrs; ++i) {
-+		for (i = 0; i < kvm_nr_uret_msrs; ++i) {
- 			if (!vmx->guest_uret_msrs[i].load_into_hardware)
- 				continue;
- 
-@@ -6921,7 +6918,7 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
- 			goto free_vpid;
- 	}
- 
--	for (i = 0; i < vmx_nr_uret_msrs; ++i) {
-+	for (i = 0; i < kvm_nr_uret_msrs; ++i) {
- 		vmx->guest_uret_msrs[i].data = 0;
- 		vmx->guest_uret_msrs[i].mask = -1ull;
- 	}
-@@ -7810,20 +7807,12 @@ static __init void vmx_setup_user_return_msrs(void)
- 		MSR_EFER, MSR_TSC_AUX, MSR_STAR,
- 		MSR_IA32_TSX_CTRL,
- 	};
--	u32 msr;
- 	int i;
- 
- 	BUILD_BUG_ON(ARRAY_SIZE(vmx_uret_msrs_list) != MAX_NR_USER_RETURN_MSRS);
- 
--	for (i = 0; i < ARRAY_SIZE(vmx_uret_msrs_list); ++i) {
--		msr = vmx_uret_msrs_list[i];
--
--		if (kvm_probe_user_return_msr(msr))
--			continue;
--
--		kvm_define_user_return_msr(vmx_nr_uret_msrs, msr);
--		vmx_nr_uret_msrs++;
--	}
-+	for (i = 0; i < ARRAY_SIZE(vmx_uret_msrs_list); ++i)
-+		kvm_add_user_return_msr(vmx_uret_msrs_list[i]);
- }
- 
- static __init int hardware_setup(void)
+@@ -1981,12 +1981,6 @@ static int vmx_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 		else
+ 			msr_info->data = vmx->pt_desc.guest.addr_a[index / 2];
+ 		break;
+-	case MSR_TSC_AUX:
+-		if (!msr_info->host_initiated &&
+-		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
+-		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
+-			return 1;
+-		goto find_uret_msr;
+ 	case MSR_IA32_DEBUGCTLMSR:
+ 		msr_info->data = vmcs_read64(GUEST_IA32_DEBUGCTL);
+ 		break;
+@@ -2302,15 +2296,6 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 		else
+ 			vmx->pt_desc.guest.addr_a[index / 2] = data;
+ 		break;
+-	case MSR_TSC_AUX:
+-		if (!msr_info->host_initiated &&
+-		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
+-		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
+-			return 1;
+-		/* Check reserved bit, higher 32 bits should be zero */
+-		if ((data >> 32) != 0)
+-			return 1;
+-		goto find_uret_msr;
+ 	case MSR_IA32_PERF_CAPABILITIES:
+ 		if (data && !vcpu_to_pmu(vcpu)->version)
+ 			return 1;
 diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 2fd46e917666..adca491d3b4b 100644
+index adca491d3b4b..896127ea4d4f 100644
 --- a/arch/x86/kvm/x86.c
 +++ b/arch/x86/kvm/x86.c
-@@ -336,7 +336,7 @@ static void kvm_on_user_return(struct user_return_notifier *urn)
- 	}
- }
- 
--int kvm_probe_user_return_msr(u32 msr)
-+static int kvm_probe_user_return_msr(u32 msr)
- {
- 	u64 val;
- 	int ret;
-@@ -350,16 +350,18 @@ int kvm_probe_user_return_msr(u32 msr)
- 	preempt_enable();
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(kvm_probe_user_return_msr);
- 
--void kvm_define_user_return_msr(unsigned slot, u32 msr)
-+int kvm_add_user_return_msr(u32 msr)
- {
--	BUG_ON(slot >= KVM_MAX_NR_USER_RETURN_MSRS);
--	kvm_uret_msrs_list[slot] = msr;
--	if (slot >= kvm_nr_uret_msrs)
--		kvm_nr_uret_msrs = slot + 1;
-+	BUG_ON(kvm_nr_uret_msrs >= KVM_MAX_NR_USER_RETURN_MSRS);
+@@ -1642,6 +1642,30 @@ static int __kvm_set_msr(struct kvm_vcpu *vcpu, u32 index, u64 data,
+ 		 * invokes 64-bit SYSENTER.
+ 		 */
+ 		data = get_canonical(data, vcpu_virt_addr_bits(vcpu));
++		break;
++	case MSR_TSC_AUX:
++		if (!kvm_is_supported_user_return_msr(MSR_TSC_AUX))
++			return 1;
 +
-+	if (kvm_probe_user_return_msr(msr))
-+		return -1;
++		if (!host_initiated &&
++		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
++		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
++			return 1;
 +
-+	kvm_uret_msrs_list[kvm_nr_uret_msrs] = msr;
-+	return kvm_nr_uret_msrs++;
- }
--EXPORT_SYMBOL_GPL(kvm_define_user_return_msr);
-+EXPORT_SYMBOL_GPL(kvm_add_user_return_msr);
- 
- int kvm_find_user_return_msr(u32 msr)
- {
-@@ -8169,6 +8171,7 @@ int kvm_arch_init(void *opaque)
- 		printk(KERN_ERR "kvm: failed to allocate percpu kvm_user_return_msrs\n");
- 		goto out_free_x86_emulator_cache;
++		/*
++		 * Per Intel's SDM, bits 63:32 are reserved, but AMD's APM has
++		 * incomplete and conflicting architectural behavior.  Current
++		 * AMD CPUs completely ignore bits 63:32, i.e. they aren't
++		 * reserved and always read as zeros.  Enforce Intel's reserved
++		 * bits check if and only if the guest CPU is Intel, and clear
++		 * the bits in all other cases.  This ensures cross-vendor
++		 * migration will provide consistent behavior for the guest.
++		 */
++		if (guest_cpuid_is_intel(vcpu) && (data >> 32) != 0)
++			return 1;
++
++		data = (u32)data;
++		break;
  	}
-+	kvm_nr_uret_msrs = 0;
  
- 	r = kvm_mmu_module_init();
- 	if (r)
+ 	msr.data = data;
+@@ -1678,6 +1702,18 @@ int __kvm_get_msr(struct kvm_vcpu *vcpu, u32 index, u64 *data,
+ 	if (!host_initiated && !kvm_msr_allowed(vcpu, index, KVM_MSR_FILTER_READ))
+ 		return KVM_MSR_RET_FILTERED;
+ 
++	switch (index) {
++	case MSR_TSC_AUX:
++		if (!kvm_is_supported_user_return_msr(MSR_TSC_AUX))
++			return 1;
++
++		if (!host_initiated &&
++		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
++		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
++			return 1;
++		break;
++	}
++
+ 	msr.index = index;
+ 	msr.host_initiated = host_initiated;
+ 
 -- 
 2.31.1.527.g47e6f16901-goog
 
