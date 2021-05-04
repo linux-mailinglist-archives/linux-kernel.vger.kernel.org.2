@@ -2,82 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EABB37277F
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 10:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37838372781
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 10:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230110AbhEDIrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 04:47:00 -0400
-Received: from mail-41103.protonmail.ch ([185.70.41.103]:11880 "EHLO
-        mail-41103.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbhEDIq6 (ORCPT
+        id S230130AbhEDIre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 04:47:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229920AbhEDIrd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 04:46:58 -0400
-Received: from mail-02.mail-europe.com (mail-0201.mail-europe.com [51.77.79.158])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        by mail-41103.protonmail.ch (Postfix) with ESMTPS id 4FZD2d58zfz4wxpV;
-        Tue,  4 May 2021 08:46:01 +0000 (UTC)
-Authentication-Results: mail-41103.protonmail.ch;
-        dkim=pass (1024-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="sEuC26GT"
-Date:   Tue, 04 May 2021 08:45:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1620117957;
-        bh=v1aoVMgbmZpYW/FjKNTAtyYXJi0XFRhH34LJ661TRZY=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=sEuC26GTVJrNMsITKrDwhsrC+hm1anoaEcctGoHCNCKWqmU+MgYbMjzF47fUAhNi7
-         3rqmIiRGbi4zgotNS6EOsMcP88O++ng2+4VvYIZjqG6W+HLUkCmf5Wp+Mf8pHutUTc
-         G7526WrxFVS03ycxTehN69h6/4l6qf4E5rMs8k6A=
-To:     "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-From:   Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "phone-devel@vger.kernel.org" <phone-devel@vger.kernel.org>,
-        "~postmarketos/upstreaming@lists.sr.ht" 
-        <~postmarketos/upstreaming@lists.sr.ht>
-Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
-Subject: [PATCH 0/2] Input: cypress-sf - add support for Cypress Streetfighter touchkeys
-Message-ID: <QwYaG_N9WhbyEiWPMqCX9XkW4fMxKGFkdJklaQnl2Wg4r3xlN7qNn6hU7Wp0LYClh5pB2xqpqsLY2mi0vcJVBNqUmzjEdNTuG2iGHGaFbo0=@protonmail.com>
+        Tue, 4 May 2021 04:47:33 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C441AC061574;
+        Tue,  4 May 2021 01:46:38 -0700 (PDT)
+Received: from ip4d14bd53.dynamic.kabel-deutschland.de ([77.20.189.83] helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1ldqhP-0008QM-7x; Tue, 04 May 2021 10:46:35 +0200
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <dd13f10c30e79e550215e53a8103406daec4e593.1618482489.git.linux@leemhuis.info>
+ <e1d2e16a-60b8-0a55-20d4-53db11e6821c@leemhuis.info>
+ <875yzzh1bm.fsf@meer.lwn.net>
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+Subject: Re: [PATCH v1] docs: reporting-issues.rst: CC subsystem and
+ maintainers on regressions
+Message-ID: <7f91a4bd-ca35-ff8e-cc99-4aff627e9aa8@leemhuis.info>
+Date:   Tue, 4 May 2021 10:46:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <875yzzh1bm.fsf@meer.lwn.net>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Language: en-BS
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1620117998;58375697;
+X-HE-SMSGID: 1ldqhP-0008QM-7x
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 04.05.21 00:58, Jonathan Corbet wrote:
+> Thorsten Leemhuis <linux@leemhuis.info> writes:
+> 
+>> Hi Jonathan. Wondering if this slipped through the cracks, as I haven't
+>> heart anything (or did I miss it?). Would IMHO have been nice to have in
+>> 5.13 as well, but it's not crucial.
+> 
+> Hmm...I was sure I'd applied this one, guess not.  Sorry.  Applied now,
+> I'll push it Linusward shortly.
 
-This patchset adds support for the Cypress StreetFighter touchkey device.
-This driver is based on the driver from the vendor kernel for the Xiaomi
-Mi Note 2[1][2], which is also the device where this was tested.
-
-Best Regards,
-Yassine
-
-[1] https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/scorpio-m-oss/d=
-rivers/input/touchscreen/cyttsp_button.c
-[2] https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/scorpio-m-oss/a=
-rch/arm/boot/dts/qcom/scorpio-msm8996-mtp.dtsi#L300-L322
-
-Yassine Oudjana (2):
-  Input: cypress-sf - Add Cypress StreetFighter touchkey driver
-  dt-bindings: input: Add binding for cypress-sf
-
- .../devicetree/bindings/input/cypress-sf.yaml |  55 +++++
- drivers/input/keyboard/Kconfig                |  10 +
- drivers/input/keyboard/Makefile               |   1 +
- drivers/input/keyboard/cypress-sf.c           | 220 ++++++++++++++++++
- 4 files changed, 286 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/input/cypress-sf.yaml
- create mode 100644 drivers/input/keyboard/cypress-sf.c
-
---
-2.31.1
+No worries & many thx! Ciao, Thorsten
