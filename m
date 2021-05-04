@@ -2,64 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C636E372A3B
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 14:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC1A372A3D
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 14:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230348AbhEDMlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 08:41:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33678 "EHLO
+        id S230362AbhEDMlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 08:41:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230187AbhEDMlP (ORCPT
+        with ESMTP id S230187AbhEDMlm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 08:41:15 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08CC6C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 05:40:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=aOgw8gTtqCvsf+ExW83Mx/p2YK3vJgX1iSoS+5mnhKg=; b=UiI422hFygyJPipELGY6C3oM/Y
-        +pKLGnNKutcok4zQRN3h0o9oonJEFJ/C0Jp9i5SUaq3Sc8lVm9G/r11GDZtZZFEJ/flPdW8aClyRB
-        LPqFSrZYWKJoL1nDDi50srdwTAqcyN5HfgYuaYaM/ofMvYytM4uQxbeY2IQlsnnV9gH8y3GXfn695
-        asPszBZFadMSO9SDgkVeaSQ9FYChJ/UaK+c6tFiaWJCQ/9CGD1jUhqOAG2ZUxzBVuD0pyBcUB4aGS
-        4SlIsL2GiniVM8UwNH3vrATVI8J+Ab2PDOZAG7bE+jv75gv6TDv+NvLRZvH4/+sXu38+AURCRa7fw
-        FFvtmQKA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lduLT-00GCSX-54; Tue, 04 May 2021 12:40:11 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 99E693001CD;
-        Tue,  4 May 2021 14:40:10 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7F4DD2026F4B8; Tue,  4 May 2021 14:40:10 +0200 (CEST)
-Date:   Tue, 4 May 2021 14:40:10 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Yunfeng Ye <yeyunfeng@huawei.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Subject: Re: [PATCH 3/8] tick/nohz: Remove superflous check for
- CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
-Message-ID: <YJFAqnnWndcvHTvi@hirez.programming.kicks-ass.net>
-References: <20210422120158.33629-1-frederic@kernel.org>
- <20210422120158.33629-4-frederic@kernel.org>
+        Tue, 4 May 2021 08:41:42 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 068ABC061574;
+        Tue,  4 May 2021 05:40:48 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id y32so6736980pga.11;
+        Tue, 04 May 2021 05:40:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=roKO29UVA0Lf0cubkW9RrYVCEIl05nvoubEygbvLBJI=;
+        b=Xjl0gjoQi8TzHarIZiOsP1a38IMDwFftTo0xYPGSp3lYiabxv572jd9Qw4BP2G5dkM
+         AnsQpv2aDf/PqhpTbaGQG3XnqEhHo/Ul6+YPWKUq9VbUR+Ga1sAwWlGqerFI3E3fT7Cv
+         I6CUW7HAIe+crFEJx/1zNIago2GqfwlmrrPfQBSHkphN0SEunPCKtoHcFLwKSmScl2lE
+         DuyPDF/bpfZ2Z3seWbAnzpXISQzi3ey/G0dE8LD5TBAqxtZm+f2xaxp1LP7MiajMstim
+         ItGTFB/OXfQN5sJFbAoajYQQvLd40g4QlONlq0FRnpy2NwrLvXNg+krQW1W/RtysRb5f
+         3MRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=roKO29UVA0Lf0cubkW9RrYVCEIl05nvoubEygbvLBJI=;
+        b=Z4StLv9RKEqjL5jD7/+0V2qjYUAsLoVOgfttwT6cBSEfZIdEU9Lo/S1F1julMT9R7s
+         R4ye9BVW+m7wd92DmkU79JunpC9YpiCTeKEJUzr1TFyKze6pT2zNUIAByVwfDSgYTkrD
+         SYyGr8kCoXjOkPa5QhhVmIL8ggbM9XajOCLCNYzTlDKwuEzUT+jtLqX4ajVfYbjRGH10
+         6XYrEzSlXC+jGSEbb+aHnJ3B9La+glB3jdsTFkOUOPLqde/q0LlEL7hYeO9RBY5zT3uw
+         +NRjch8F7jjto2mdjmoxw7prD03MX8lmLDLj23sSJR1zvinUwukMwscuihin84nXi7fq
+         gqmw==
+X-Gm-Message-State: AOAM532yiGE5fvzcO/T29M5QdUQSOatt2IBBgEBZR1POWxM3Cyv6dQvm
+        g150WS3vLUyh2G93vzLUa3m0kTxNJS3iir6Yxbw=
+X-Google-Smtp-Source: ABdhPJzPy7lVs0YfbAiMESPOX4xM5ymonACvKJmy8w18poKQ4d2IMuEF79PoncLf22hufUeP6np7EyQxYJQ+aurj/bU=
+X-Received: by 2002:a65:5a4d:: with SMTP id z13mr23132896pgs.4.1620132047585;
+ Tue, 04 May 2021 05:40:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422120158.33629-4-frederic@kernel.org>
+References: <20210504123139.45101-1-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20210504123139.45101-1-wsa+renesas@sang-engineering.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 4 May 2021 15:40:31 +0300
+Message-ID: <CAHp75VdqEa+mRDzwUVix7bY=2R=O0WOwXuLjv=mE4MGGOobYBw@mail.gmail.com>
+Subject: Re: [PATCH] platform/x86: samsung-laptop: set debugfs blobs to read only
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Corentin Chary <corentin.chary@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 02:01:53PM +0200, Frederic Weisbecker wrote:
-> The vtime_accounting_enabled_this_cpu() early check already makes what
-> follows as dead code in the case of CONFIG_VIRT_CPU_ACCOUNTING_NATIVE.
-> No need to keep the ifdeferry around.
+On Tue, May 4, 2021 at 3:32 PM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+>
+> Those blobs can only be read. So, don't confuse users with 'writable'
+> flags.
 
-Somewhat unrelated, but vtime_accounting_enabled_cpu() is missing a ' '...
+Wouldn't it make sense at the same time to convert ugly namings to
+octal permissions?
+
+-- 
+With Best Regards,
+Andy Shevchenko
