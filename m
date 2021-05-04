@@ -2,145 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D3E372BF3
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83858372BF7
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231592AbhEDOZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 10:25:02 -0400
-Received: from foss.arm.com ([217.140.110.172]:59244 "EHLO foss.arm.com"
+        id S231608AbhEDOZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 10:25:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231580AbhEDOZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 10:25:01 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EF76AED1;
-        Tue,  4 May 2021 07:24:05 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4EF513F718;
-        Tue,  4 May 2021 07:24:03 -0700 (PDT)
-Date:   Tue, 4 May 2021 15:23:58 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Greentime Hu <greentime.hu@sifive.com>, paul.walmsley@sifive.com,
-        hes@sifive.com, erik.danie@sifive.com, zong.li@sifive.com,
-        bhelgaas@google.com, robh+dt@kernel.org, aou@eecs.berkeley.edu,
-        mturquette@baylibre.com, sboyd@kernel.org, p.zabel@pengutronix.de,
-        alex.dewar90@gmail.com, khilman@baylibre.com,
-        hayashi.kunihiko@socionext.com, vidyas@nvidia.com,
-        jh80.chung@samsung.com, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [PATCH v6 5/6] PCI: fu740: Add SiFive FU740 PCIe host controller
- driver
-Message-ID: <20210504142358.GA25477@lpieralisi>
-References: <20210504105940.100004-6-greentime.hu@sifive.com>
- <20210504134632.GA1088165@bjorn-Precision-5520>
+        id S230213AbhEDOZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 10:25:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD51A61139;
+        Tue,  4 May 2021 14:24:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620138271;
+        bh=ycWmHLZjK6dBz/CdYVAAPEioACpMjp23uaaK/mz8nGo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cBDeDGOY6Rypqd5DRRCWrXFYPTAYIIst+QK6QDTL1xeA2S+E5erqgD0gsn6+dNkur
+         P1bSlDSSUZUzKPGHcfeoPAegcg7ftfbfb4qITPdceAO+fUIqxe6bauwmOPD2B2OX/g
+         pH3atu5DylpNJclmPEZUlXnsKngAxbgkUnrObGGU=
+Date:   Tue, 4 May 2021 16:24:29 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        glibc <libc-alpha@sourceware.org>, GCC <gcc-patches@gcc.gnu.org>,
+        bpf <bpf@vger.kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Zack Weinberg <zackw@panix.com>,
+        Joseph Myers <joseph@codesourcery.com>
+Subject: Re: [RFC v2] bpf.2: Use standard types and attributes
+Message-ID: <YJFZHW2afbAMVOmE@kroah.com>
+References: <20210423230609.13519-1-alx.manpages@gmail.com>
+ <20210504110519.16097-1-alx.manpages@gmail.com>
+ <CAADnVQLdW=jH1CUP02jokEu3Sh+=xKsCXvjA19kfz7KOn9mzkA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210504134632.GA1088165@bjorn-Precision-5520>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAADnVQLdW=jH1CUP02jokEu3Sh+=xKsCXvjA19kfz7KOn9mzkA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 08:46:32AM -0500, Bjorn Helgaas wrote:
-> On Tue, May 04, 2021 at 06:59:39PM +0800, Greentime Hu wrote:
-> > From: Paul Walmsley <paul.walmsley@sifive.com>
-> > 
-> > Add driver for the SiFive FU740 PCIe host controller.
-> > This controller is based on the DesignWare PCIe core.
-> > 
-> > Signed-off-by: Paul Walmsley <paul.walmsley@sifive.com>
-> > Co-developed-by: Henry Styles <hes@sifive.com>
-> > Signed-off-by: Henry Styles <hes@sifive.com>
-> > Co-developed-by: Erik Danie <erik.danie@sifive.com>
-> > Signed-off-by: Erik Danie <erik.danie@sifive.com>
-> > Co-developed-by: Greentime Hu <greentime.hu@sifive.com>
-> > Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
+On Tue, May 04, 2021 at 07:12:01AM -0700, Alexei Starovoitov wrote:
+> On Tue, May 4, 2021 at 4:05 AM Alejandro Colomar <alx.manpages@gmail.com> wrote:
+> >
+> > Some manual pages are already using C99 syntax for integral
+> > types 'uint32_t', but some aren't.  There are some using kernel
+> > syntax '__u32'.  Fix those.
+> >
+> > Some pages also document attributes, using GNU syntax
+> > '__attribute__((xxx))'.  Update those to use the shorter and more
+> > portable C11 keywords such as 'alignas()' when possible, and C2x
+> > syntax '[[gnu::xxx]]' elsewhere, which hasn't been standardized
+> > yet, but is already implemented in GCC, and available through
+> > either --std=c2x or any of the --std=gnu... options.
+> >
+> > The standard isn't very clear on how to use alignas() or
+> > [[]]-style attributes, so the following link is useful in the case
+> > of 'alignas()' and '[[gnu::aligned()]]':
+> > <https://stackoverflow.com/q/67271825/6872717>
+> >
+> > Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
+> > Cc: LKML <linux-kernel@vger.kernel.org>
+> > Cc: glibc <libc-alpha@sourceware.org>
+> > Cc: GCC <gcc-patches@gcc.gnu.org>
+> > Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> > Cc: bpf <bpf@vger.kernel.org>
+> > Cc: David Laight <David.Laight@ACULAB.COM>
+> > Cc: Zack Weinberg <zackw@panix.com>
+> > Cc: Joseph Myers <joseph@codesourcery.com>
 > > ---
-> >  drivers/pci/controller/dwc/Kconfig      |  10 +
-> >  drivers/pci/controller/dwc/Makefile     |   1 +
-> >  drivers/pci/controller/dwc/pcie-fu740.c | 309 ++++++++++++++++++++++++
-> >  3 files changed, 320 insertions(+)
-> >  create mode 100644 drivers/pci/controller/dwc/pcie-fu740.c
-> > 
-> > diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-> > index 22c5529e9a65..255d43b1661b 100644
-> > --- a/drivers/pci/controller/dwc/Kconfig
-> > +++ b/drivers/pci/controller/dwc/Kconfig
-> > @@ -318,4 +318,14 @@ config PCIE_AL
-> >  	  required only for DT-based platforms. ACPI platforms with the
-> >  	  Annapurna Labs PCIe controller don't need to enable this.
-> >  
-> > +config PCIE_FU740
-> > +	bool "SiFive FU740 PCIe host controller"
-> > +	depends on PCI_MSI_IRQ_DOMAIN
-> > +	depends on SOC_SIFIVE || COMPILE_TEST
-> > +	depends on GPIOLIB
+> >  man2/bpf.2 | 49 ++++++++++++++++++++++++-------------------------
+> >  1 file changed, 24 insertions(+), 25 deletions(-)
+> >
+> > diff --git a/man2/bpf.2 b/man2/bpf.2
+> > index 6e1ffa198..04b8fbcef 100644
+> > --- a/man2/bpf.2
+> > +++ b/man2/bpf.2
+> > @@ -186,41 +186,40 @@ commands:
+> >  .PP
+> >  .in +4n
+> >  .EX
+> > -union bpf_attr {
+> > +union [[gnu::aligned(8)]] bpf_attr {
+> >      struct {    /* Used by BPF_MAP_CREATE */
+> > -        __u32         map_type;
+> > -        __u32         key_size;    /* size of key in bytes */
+> > -        __u32         value_size;  /* size of value in bytes */
+> > -        __u32         max_entries; /* maximum number of entries
+> > -                                      in a map */
+> > +        uint32_t    map_type;
+> > +        uint32_t    key_size;    /* size of key in bytes */
+> > +        uint32_t    value_size;  /* size of value in bytes */
+> > +        uint32_t    max_entries; /* maximum number of entries
+> > +                                    in a map */
 > 
-> 1) I'm a little disappointed that I reported the build issue 6 days
->    ago when we were already in the merge window, and it's taken until
->    now to make some progress.
-> 
-> 2) I would prefer not to depend on GPIOLIB because it reduces
->    compile-test coverage.  For example, the x86_64 defconfig does not
->    enable GPIOLIB, so one must manually enable it to even be able to
->    enable PCIE_FU740.
-> 
->    Many other PCI controller drivers use GPIO, but no others depend on
->    GPIOLIB, so I infer that in the !GPIOLIB case, gpio/consumer.h
->    provides the stubs required for compile testing.
-> 
->    We could have a conversation about whether it's better to
->    explicitly depend on GPIOLIB here, or whether building a working
->    FU740 driver implicitly depends on GPIOLIB being selected
->    elsewhere.  That implicit dependency *is* a little obscure, but I
->    think that's what other drivers currently do, and I'd like to do
->    this consistently unless there's a good reason otherwise.
+> For the same reasons as explained earlier:
+> Nacked-by: Alexei Starovoitov <ast@kernel.org>
 
-I will drop the explicit GPIOLIB dependency and push it out. For (1) I
-agree with you - I merged when I received some input - it is reasonable
-to avoid adding it to v5.13 material for this reason, apologies.
+I agree, the two are not the same type at all, this change should not be
+accepted.
 
-Thanks,
-Lorenzo
+thanks,
 
->    Here are some examples of other drivers:
-> 
->    dwc/pci-dra7xx.c:
->      config PCI_DRA7XX_HOST
->        depends on SOC_DRA7XX || COMPILE_TEST
-> 
->      config SOC_DRA7XX
->        select ARCH_OMAP2PLUS
-> 
->      config ARCH_OMAP2PLUS
->        select GPIOLIB
-> 
->    dwc/pci-meson.c:
->      config PCI_MESON
->        # doesn't, but probably *should* depend on "ARCH_MESON || COMPILE_TEST"
-> 
->      menuconfig ARCH_MESON
->        select GPIOLIB
-> 
->    dwc/pcie-qcom.c:
->      config PCIE_QCOM
->        depends on OF && (ARCH_QCOM || COMPILE_TEST)
-> 
->      config ARCH_QCOM
->        select GPIOLIB
-> 
->    pcie-rockchip.c:
->      config PCIE_ROCKCHIP_HOST
->        depends on ARCH_ROCKCHIP || COMPILE_TEST
-> 
->      config ARCH_ROCKCHIP
->        select GPIOLIB
-> 
-> > +	select PCIE_DW_HOST
-> > +	help
-> > +	  Say Y here if you want PCIe controller support for the SiFive
-> > +	  FU740.
-> > +
-> >  endmenu
+greg k-h
