@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D72CC373247
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 00:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E43F373248
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 00:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233022AbhEDWXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 18:23:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51260 "EHLO
+        id S233036AbhEDWXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 18:23:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232456AbhEDWXh (ORCPT
+        with ESMTP id S232918AbhEDWXi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 18:23:37 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD4CC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 15:22:40 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id e2so130992ilr.1
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 15:22:40 -0700 (PDT)
+        Tue, 4 May 2021 18:23:38 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA749C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 15:22:41 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id p15so122523iln.3
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 15:22:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Z0dKzQPSJ4r2qtzCM9GT0MOdnbTquuJQ1RlBh9kMtzE=;
-        b=b2c0mJEE5+xyEQ1cGPmGzIYwSGq25Zk4Sf+3lhHVtRcrcdB4Zz9FbIo692JDe1u/Tp
-         Wvz8rC5LrkiSW5Fmyb++X0le0Ibzf9sl2YzcgiEI1405Ib6a3YES8clyUrhn0EAEWJ90
-         HOGe1ogXe00tAX7OPyvLIWJ6DD4RB1xHUKlnQhWCmZYpovuN9chMPR9kypBaqrRHLcw5
-         WmDKscwjRfnHugfXydV+pjGCBkPQwiLDiU5VQJuSwOOJpk4gEdZhTRX00h+DWklG9cUA
-         7e4/YG5U/F6A9uAN+ubh6YLlyYXmweIQYjNlzwinDjlR2UatIsqhpln0XHk0YGX9iDKy
-         DijQ==
+        bh=42RppknSRxsAJuvBLgB6qPkbHfT1VJYKsb4xtw0ymjQ=;
+        b=JQlfXZAi0zkL1+Hjx0Cspaml4VwnHpWdVmY1NaCjorqYAUMrDO4pZqI74tsjBbXbpH
+         /KfUgoncGhQB9T6MWoGQONE3V5hfomtYFzBXoQjCWRHYMgRrF72Dj+7s9yvKqCsZZES1
+         FRXTgUEqC4Rb04oJB6LtdyPM1BellAw2Z1ScYnxxMxLeNlAywpOJMAXgE+S0Jp10yBgX
+         zCDOpGVPYov6wjoxrnugy/2sKWPN387DfSO870RDs1HralQaRtGEwhqV6DbWXGZaNuhf
+         jZMxiDiCaWEHFkG5v8QG5vd61GNK+K+/e768FD4VJRG2h0uJ8I6rQgAcpC9A21lCSV93
+         4gjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Z0dKzQPSJ4r2qtzCM9GT0MOdnbTquuJQ1RlBh9kMtzE=;
-        b=fTItSXcAgOMvrE3QRXSy7O+3ByUE9PCMBDznjBrOu4hBhvLGUnYghe/lSxvMww3IdY
-         bfFXGHH1DuqOlwoGKaAT4v5QoFdHQ3I5fILinn+GF+qC22n6zCoibatr/q73SRgZYayP
-         fbJQuOVdKlBhaz5cGlC642h44fUbzkPxH95lwtjDHAyGYqDJVGP6C3jxzkvwPAsRut8N
-         nYRhWWMG+yW9+vkq2VZKNqUa+9nbieui2ZZqwQ2DJXeIA3urEY3+URHH5utvK/p2G1IC
-         Vf19x6REKqAQqQlrBsLk4V6bGi9geU7FgceEUFIMm5XW9lFOOn1wZBbMJmMzi83uvxxP
-         Icxg==
-X-Gm-Message-State: AOAM5334Ka6/eqmGA26s3VvNzNYX2VV3aWFTOQ8ivIbd2zIgnuto4uSu
-        SPF6320OsJkvW1KwGuakcqk=
-X-Google-Smtp-Source: ABdhPJy2N5aCg22txpxq8ZJ0KnHAOkoiZiCu/otWV+r+cKEuEsKlorq66JZmFrq+epxWsY8kd3OVeQ==
-X-Received: by 2002:a92:c56a:: with SMTP id b10mr23163575ilj.6.1620166960352;
-        Tue, 04 May 2021 15:22:40 -0700 (PDT)
+        bh=42RppknSRxsAJuvBLgB6qPkbHfT1VJYKsb4xtw0ymjQ=;
+        b=GRi5NVA26foRQYZSWSSZ0SWRCcBVlBP9XzU1G3v8eFxfRWthU98+OMxFqHLSx07waV
+         laOUYfAxA0fye5N59mYVAx4FGvIKvwTjNImoBtSz771wVNZUs0W/U/GGu7alLTghQX9e
+         xsJw2L56jrqZaLzXpn9Unak2J1eUfwLlxtRFlUfO53hKrZlBFvE0YoOEzHvlPK0vC84Z
+         bCtjttJ+7G8lRcxzPR2gekQ4NFLcyWU16SrYnWi91Yp99gmI1PilZC6J6bjkZnnksbpV
+         879I3qNKdz+IUsXllvlVcM100DrGqkQnvjcJLNFV7i5WqkEK98cpMPpiPR4xYSZ/JBNW
+         P6pA==
+X-Gm-Message-State: AOAM532Uw3/CgkmIOX2dmygH/VcIRr6v9lEuQLhTQAzvLxpTYyMrV4sC
+        Xb1LTzTf/3u1v96vYxoIjbo=
+X-Google-Smtp-Source: ABdhPJy4vXE3aOOfy/RFLXm2YBAVwo0/Sor+uSIFAAxj7fffdKxIIY8m+SoNCX1ALMWSr/Zfeh+vcw==
+X-Received: by 2002:a05:6e02:1348:: with SMTP id k8mr22559677ilr.124.1620166961162;
+        Tue, 04 May 2021 15:22:41 -0700 (PDT)
 Received: from frodo.mearth (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id j19sm1626337iok.51.2021.05.04.15.22.39
+        by smtp.googlemail.com with ESMTPSA id j19sm1626337iok.51.2021.05.04.15.22.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 15:22:39 -0700 (PDT)
+        Tue, 04 May 2021 15:22:40 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, gregkh@linuxfoundation.org,
         linux-kernel@vger.kernel.org
 Cc:     Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v2 1/2] dyndbg: avoid calling dyndbg_emit_prefix when it has no work
-Date:   Tue,  4 May 2021 16:22:34 -0600
-Message-Id: <20210504222235.1033685-2-jim.cromie@gmail.com>
+Subject: [PATCH v2 2/2] dyndbg: drop uninformative vpr_info
+Date:   Tue,  4 May 2021 16:22:35 -0600
+Message-Id: <20210504222235.1033685-3-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210504222235.1033685-1-jim.cromie@gmail.com>
 References: <20210504222235.1033685-1-jim.cromie@gmail.com>
@@ -64,101 +64,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wrap function in a static-inline one, which checks flags to avoid
-calling the function unnecessarily.
+Remove a vpr_info which I added in 2012, when I knew even less than now.
+In 2020, a simpler pr_fmt stripped it of context, and any remaining value.
 
-And hoist its output-buffer initialization to the grand-caller, which
-is already allocating the buffer on the stack, and can trivially
-initialize it too.
+no functional change.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- include/linux/dynamic_debug.h |  5 +++++
- lib/dynamic_debug.c           | 19 ++++++++++++-------
- 2 files changed, 17 insertions(+), 7 deletions(-)
+ lib/dynamic_debug.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
-index a57ee75342cf..dce631e678dd 100644
---- a/include/linux/dynamic_debug.h
-+++ b/include/linux/dynamic_debug.h
-@@ -32,6 +32,11 @@ struct _ddebug {
- #define _DPRINTK_FLAGS_INCL_FUNCNAME	(1<<2)
- #define _DPRINTK_FLAGS_INCL_LINENO	(1<<3)
- #define _DPRINTK_FLAGS_INCL_TID		(1<<4)
-+
-+#define _DPRINTK_FLAGS_INCL_ANY		\
-+	(_DPRINTK_FLAGS_INCL_MODNAME | _DPRINTK_FLAGS_INCL_FUNCNAME |\
-+	 _DPRINTK_FLAGS_INCL_LINENO  | _DPRINTK_FLAGS_INCL_TID)
-+
- #if defined DEBUG
- #define _DPRINTK_FLAGS_DEFAULT _DPRINTK_FLAGS_PRINT
- #else
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index c70d6347afa2..ede4a491ee87 100644
+index ede4a491ee87..3a7d1f9bcf4d 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -586,13 +586,11 @@ static int remaining(int wrote)
- 	return 0;
- }
+@@ -920,7 +920,6 @@ static const struct seq_operations ddebug_proc_seqops = {
  
--static char *dynamic_emit_prefix(const struct _ddebug *desc, char *buf)
-+static char *__dynamic_emit_prefix(const struct _ddebug *desc, char *buf)
+ static int ddebug_proc_open(struct inode *inode, struct file *file)
  {
- 	int pos_after_tid;
- 	int pos = 0;
- 
--	*buf = '\0';
--
- 	if (desc->flags & _DPRINTK_FLAGS_INCL_TID) {
- 		if (in_interrupt())
- 			pos += snprintf(buf + pos, remaining(pos), "<intr> ");
-@@ -618,11 +616,18 @@ static char *dynamic_emit_prefix(const struct _ddebug *desc, char *buf)
- 	return buf;
+-	vpr_info("called\n");
+ 	return seq_open_private(file, &ddebug_proc_seqops,
+ 				sizeof(struct ddebug_iter));
  }
- 
-+static inline char *dynamic_emit_prefix(struct _ddebug *desc, char *buf)
-+{
-+	if (unlikely(desc->flags & _DPRINTK_FLAGS_INCL_ANY))
-+		return __dynamic_emit_prefix(desc, buf);
-+	return buf;
-+}
-+
- void __dynamic_pr_debug(struct _ddebug *descriptor, const char *fmt, ...)
- {
- 	va_list args;
- 	struct va_format vaf;
--	char buf[PREFIX_SIZE];
-+	char buf[PREFIX_SIZE] = "";
- 
- 	BUG_ON(!descriptor);
- 	BUG_ON(!fmt);
-@@ -655,7 +660,7 @@ void __dynamic_dev_dbg(struct _ddebug *descriptor,
- 	if (!dev) {
- 		printk(KERN_DEBUG "(NULL device *): %pV", &vaf);
- 	} else {
--		char buf[PREFIX_SIZE];
-+		char buf[PREFIX_SIZE] = "";
- 
- 		dev_printk_emit(LOGLEVEL_DEBUG, dev, "%s%s %s: %pV",
- 				dynamic_emit_prefix(descriptor, buf),
-@@ -684,7 +689,7 @@ void __dynamic_netdev_dbg(struct _ddebug *descriptor,
- 	vaf.va = &args;
- 
- 	if (dev && dev->dev.parent) {
--		char buf[PREFIX_SIZE];
-+		char buf[PREFIX_SIZE] = "";
- 
- 		dev_printk_emit(LOGLEVEL_DEBUG, dev->dev.parent,
- 				"%s%s %s %s%s: %pV",
-@@ -720,7 +725,7 @@ void __dynamic_ibdev_dbg(struct _ddebug *descriptor,
- 	vaf.va = &args;
- 
- 	if (ibdev && ibdev->dev.parent) {
--		char buf[PREFIX_SIZE];
-+		char buf[PREFIX_SIZE] = "";
- 
- 		dev_printk_emit(LOGLEVEL_DEBUG, ibdev->dev.parent,
- 				"%s%s %s %s: %pV",
 -- 
 2.30.2
 
