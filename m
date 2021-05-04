@@ -2,148 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9EDB3724CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 06:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 422E83724D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 06:11:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229735AbhEDEJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 00:09:44 -0400
-Received: from mout.gmx.net ([212.227.17.20]:40087 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229499AbhEDEJl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 00:09:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1620101273;
-        bh=bsPODiDnk61cWDSdS7mJx99eO8YJm2WKRtfXTCd51KA=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=PkvCdTT+N31nHv2yCTKt2Arwe8CFICf3AgzrLiWiXTFWFgCt8tnbBAqjj7sCSxKf3
-         aEJ7RlFSlifmxdX9ZSwRDUdp/cKSE+WuHr18R1iObQkmiE0hTQJV5hHkPySNWsanGi
-         xmOxwaPAgNCDmKTCGtjRNogFw5K32BExuXFZwWwg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.146.51.85]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N2mBQ-1lY6RI36vU-0133gj; Tue, 04
- May 2021 06:07:52 +0200
-Message-ID: <ceac7107048b6620d4b120b8f775b85f7fbee92b.camel@gmx.de>
-Subject: Re: [PATCH v2 0/3] newidle_balance() PREEMPT_RT latency mitigations
-From:   Mike Galbraith <efault@gmx.de>
-To:     Scott Wood <swood@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Date:   Tue, 04 May 2021 06:07:50 +0200
-In-Reply-To: <32a536f5688105df515e6ad9fd12fbcdbd781afb.camel@redhat.com>
-References: <20210428232821.2506201-1-swood@redhat.com>
-         <CAKfTPtBrJNBg3847R_b8A-1c5rb9Fb5FFNMX+z11QGAiO0ofkw@mail.gmail.com>
-         <7b796a085b0bc638c9df70d3a20718f8d1d776c8.camel@redhat.com>
-         <a46f9b6c719666357e568eadd1d615c05c4171ac.camel@gmx.de>
-         <4170501b7c4f19ba66d870b671dc90ffbf4623d6.camel@redhat.com>
-         <3773421d06bed0beed9971d03e8fa2050a14cc13.camel@gmx.de>
-         <32a536f5688105df515e6ad9fd12fbcdbd781afb.camel@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S229751AbhEDEL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 00:11:59 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:41147 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229499AbhEDEL6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 00:11:58 -0400
+X-UUID: ba70794388d84390b8715bdd006084f9-20210504
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=/cbVo2HXM2EBR6+XgYLdg2qe+Xrids+DQpIfN0W+BU8=;
+        b=nW5JXRJR4HBHHZUE7Cd/pIt2oHMIw8AMNsx/SU2FuutBl6KpISLn3GkCfaxZCtDNBczMeTcsw4Pz77JEo0LAy5K72plc2ilItC8HZYo8ATxc7cYlULk5RpSB1qi3EYO/YvkbDO1PtDBT4Zy6G9/tH5rz4bGxJ+CEmhftMqQBjgw=;
+X-UUID: ba70794388d84390b8715bdd006084f9-20210504
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <ck.hu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 100049445; Tue, 04 May 2021 12:11:01 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 4 May 2021 12:10:59 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by mtkcas07.mediatek.inc
+ (172.21.101.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 4 May
+ 2021 12:10:59 +0800
+Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 4 May 2021 12:10:59 +0800
+Message-ID: <1620101459.15918.4.camel@mtksdaap41>
+Subject: Re: [PATCH v2 2/2] dt-bindings: mediatek: Add optional mediatek,
+ gce-events property
+From:   CK Hu <ck.hu@mediatek.com>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        <devicetree@vger.kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Date:   Tue, 4 May 2021 12:10:59 +0800
+In-Reply-To: <20210503050523.2571758-2-hsinyi@chromium.org>
+References: <20210503050523.2571758-1-hsinyi@chromium.org>
+         <20210503050523.2571758-2-hsinyi@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:G2a6nqlATNVbHXWopLbE4WMWqfI83qPD0dxtXwZ5CU4kg5byHkO
- S3EkrUsBg0uW5cf47Qwznz+FesQvt/Wge/F4Y/rR9fPWfxzkc4ueL0NHTkllktXgFTyjrgK
- xyqHTC2UbYgXLDh4TuzUzSBUQt15x4F4yB4D+tXpZHMI3OZjcUBO0OhbI7jJl4lDM6pfxm3
- 2BL1uhSXd0C7QT7wVMM8A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:U+7HGfLjwOk=:GV3ytNAM3yGb/w6PHN2CBf
- iiWPUF7kAqYqX+dLa9egsFrOgcmmO2QNXUko9zrcrPG/Sj7L1D2V197Adk16/Gc6Ky1nhjIwE
- XFp/rS7T+50x0eBGll92U5gx6x0DaDJGa4mTDUTkjU1ye1jXfcj5lVn2oeQI/NV5nel4amC6x
- HXI3nAJOvz8B8cvIw+lRUnZVN3jeKpmwr1p38ILr3oZBynlTcH0aixfe8Ha0T0nJyub2Gy3Zt
- bUhb1mt6Pi2WjoG4ZNgKQprgCAWmGdfRbcaYN7+EZVatgEfty4qWkkqHi1dINA+MACDzzBT0D
- CucY9K/SoG7fv40yUz9Eip149hATUvS2DzKPk1MzEZ2X3kd7slJiLHs5PBRmAp3lkgTXhscxc
- QmyNbnu0mnGDt0uKXgWL7heG5d3FZj/I7mctpzre8THDQZzN9qr29bLC1N1qQDPqO5CpsGK0x
- gdTiwBSVdSkQSDLKviFZvjdQuoGVwD3uluWZcsgFezbzfX09XX3iYa+l36PyiImvzxzfN8X4w
- UewXN/CF1osMfkAUXi59bmN9wRkmyH5r+kYxJiqRN+Tn43iYUcFlcDNs7ODNlTLay6K+k53pr
- 0N3U4rqit5rv9zoSUf6BhH8N3VsvN6pYSiBRRAUuLC3rq5g/N2kCw3etU8LMh+qkSiW9NyHTn
- 7cVlVxP/5Wc+1HVgFa2wo0jg8szLfrWz+SW/bnOXUG5vojiSvhyoEmjeBo9UKznEjimcWjfWS
- F7DDr+EXgizwRIz4hH26eA/WR+TxddIOtsP9qfoJIjPVCA5DKmyoaw/pyOgZ9C4XK+7LN1ryq
- 3y0ghA6gWp/xPkJOjpVq7sKnkWYMQYHrxAwWglU8crkX4uU5qfRJZHW/eh/RJK7gCiFmiTwSM
- 5kdSWIXHk5zCOiSOPhCGh5b764ctEHk/pmXeyNHvpF4XGi4c6SzlF7ROXAVhmn38a8CFdQfnv
- q37IAKDkmFlFq1Rokb5mj7sP93EwMCCgcDQWgd0OFbljBTf23EeCIt8dBGViaR5Ra8cxhnhGB
- H3OAI75eWRQ5dy4c0IiUnudFwZXXnlT5RXfYPypWLie0HyePdjDQItWnfwLmmwBLSE73oraHm
- NRkAvgovqVk5uFKCOt+fO3e5en4Yx459naJGOomJH2f/IfYiOAybxMrXsS1Tfqf7Ya9EjP3mB
- nuYpciY9YmnkZ2ZeR3nZM+mf6+jNlmvQ7kQHpQxIMqlaoIkv8NJ4u+4m/sP/ImrpNFInw=
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-03 at 16:57 -0500, Scott Wood wrote:
-> On Mon, 2021-05-03 at 20:52 +0200, Mike Galbraith wrote:
-> > On Mon, 2021-05-03 at 11:33 -0500, Scott Wood wrote:
-> > > On Sun, 2021-05-02 at 05:25 +0200, Mike Galbraith wrote:
-> > > > If NEWIDLE balancing migrates one task, how does that manage to
-> > > > consume
-> > > > a full *millisecond*, and why would that only be a problem for RT?
-> > > >
-> > > > 	-Mike
-> > > >
-> > > > (rt tasks don't play !rt balancer here, if CPU goes idle, tough ti=
-tty)
-> > >
-> > > Determining which task to pull is apparently taking that long (again=
-,
-> > > this is on a 128-cpu system).  RT is singled out because that is the
-> > > config that makes significant tradeoffs to keep latencies down (I
-> > > expect this would be far from the only possible 1ms+ latency on a
-> > > non-RT kernel), and there was concern about the overhead of a double
-> > > context switch when pulling a task to a newidle cpu.
-> >
-> > What I think has be going on is that you're running a synchronized RT
-> > load, many CPUs go idle as a thundering herd, and meet at focal point
-> > busiest.  What I was alluding to was that preventing such size scale
-> > pile-ups would be way better than poking holes in it for RT to try to
-> > sneak through.  If pile-up it is, while not particularly likely, the
-> > same should happen with normal tasks, wasting cycles generating heat.
-> >
-> > The main issue I see with these patches is that the resulting number i=
-s
-> > still so gawd awful as to mean "nope, not rt ready", making the whole
-> > exercise look a bit like a noop.
->
-> It doesn't look like rteval asks cyclictest to synchronize, but
-> regardless, how is this "poking holes"?
-
-Pulling a single task is taking _a full millisecond_, which I see as a
-mountain of cycles, directly through which you open a path for wakeups.
-That "poking holes" isn't meant to be some kind of crude derogatory
-remark, it's just the way I see what was done.  The mountain still
-stands, you didn't remove it.
-
->   Making sure interrupts are
-> enabled during potentially long-running activities is pretty fundamental
-> to PREEMPT_RT.  What specifically is your suggestion?
-
-Try to include fair class in any LB improvement if at all possible,
-because that's where most of the real world benefit is to be had.
-
-> And yes, 317 us is still not a very good number for PREEMPT_RT, but
-> progress is progress.  It's hard to address the moderate latency spikes
-> if they're obscured by large latency spikes.  One also needs to have
-> realistic expectations when it comes to RT on large systems, particularl=
-y
-> when not isolating the latency-sensitive CPUs.
-
-Agreed.  But.  Specifically because the result remains intolerable to
-anything remotely sensitive, users running such on their big boxen are
-not going to be doing mixed load, that flat does not work, which is why
-I said the patch set looks a bit like a noop: it excludes the audience
-that stands to gain.. nearly anything.  Big box HPC (acronym includes
-RT) gains absolutely nothing, as does big box general case with its not
-particularly prevalent, but definitely existent RT tasks.  Big box
-users who are NOT running anything they care deeply about do receive
-some love.. but don't care deeply, and certainly don't care more any
-more deeply than general case users do about these collision induced
-latency spikes.
-
-	-Mike
+SGksIEhzaW4teWk6DQoNCk9uIE1vbiwgMjAyMS0wNS0wMyBhdCAxMzowNSArMDgwMCwgSHNpbi1Z
+aSBXYW5nIHdyb3RlOg0KPiBtZWRpYXRlayxnY2UtZXZlbnRzIHByb3BlcnR5IGlzIHVzZWQgYnkg
+Z2NlIGNsaWVudHMuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBIc2luLVlpIFdhbmcgPGhzaW55aUBj
+aHJvbWl1bS5vcmc+DQo+IC0tLQ0KPiAgLi4uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9t
+ZWRpYXRlay9tZWRpYXRlayxkaXNwLnR4dCAgfCA2ICsrKysrKw0KPiAgMSBmaWxlIGNoYW5nZWQs
+IDYgaW5zZXJ0aW9ucygrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNl
+dHJlZS9iaW5kaW5ncy9kaXNwbGF5L21lZGlhdGVrL21lZGlhdGVrLGRpc3AudHh0IGIvRG9jdW1l
+bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rpc3BsYXkvbWVkaWF0ZWsvbWVkaWF0ZWssZGlz
+cC50eHQNCj4gaW5kZXggZmJiNTljOWRkZGE2Li45MzliMmRhM2JkYzUgMTAwNjQ0DQo+IC0tLSBh
+L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L21lZGlhdGVrL21lZGlh
+dGVrLGRpc3AudHh0DQo+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9k
+aXNwbGF5L21lZGlhdGVrL21lZGlhdGVrLGRpc3AudHh0DQo+IEBAIC03NSw2ICs3NSwxMCBAQCBP
+cHRpb25hbCBwcm9wZXJ0aWVzIChSRE1BIGZ1bmN0aW9uIGJsb2Nrcyk6DQo+ICAgIG1lZGlhdGVr
+LHJkbWEtZmlmby1zaXplIG9mIG10ODE4My1yZG1hMCBpcyA1Sw0KPiAgICBtZWRpYXRlayxyZG1h
+LWZpZm8tc2l6ZSBvZiBtdDgxODMtcmRtYTEgaXMgMksNCj4gIA0KPiArT3B0aW9uYWwgcHJvcGVy
+dGllcyBmb3IgZGlzcGxheSBtdXRleDoNCj4gKy0gbWVkaWF0ZWssZ2NlLWV2ZW50czogR0NFIGV2
+ZW50cyB1c2VkIGJ5IGNsaWVudHMuIFRoZSBldmVudCBudW1iZXJzIGFyZQ0KPiArICBkZWZpbmVk
+IGluICdkdC1iaW5kaW5ncy9nY2UvPGNoaXA+LWdjZS5oJy4NCg0KSSB0aGluayBtZWRpYXRlayxn
+Y2UtZXZlbnRzIHNob3VsZCBiZSBmaXJzdCBkZWZpbmVkIGluIFsxXSwgYW5kIGhlcmUNCnJlZmVy
+IHRvIFsxXS4NCg0KSW4gYWRkaXRpb24sIG10ay1tdXRleCBkcml2ZXIgaXMgbW92ZWQgaW50byBz
+b2MgZm9sZGVyLCBzbyBJIHdvdWxkIGxpa2UNCnRvIG1vdmUgbXRrLW11dGV4IGJpbmRpbmcgb3V0
+IG9mIGRpc3BsYXkgYmluZGluZy4gSXQncyB1cCB0byB5b3UuDQoNClsxXSBEb2N1bWVudGF0aW9u
+L2RldmljZXRyZWUvYmluZGluZ3MvbWFpbGJveC9tdGstZ2NlLnR4dA0KDQpSZWdhcmRzLA0KQ0sN
+Cg0KPiArDQo+ICBFeGFtcGxlczoNCj4gIA0KPiAgbW1zeXM6IGNsb2NrLWNvbnRyb2xsZXJAMTQw
+MDAwMDAgew0KPiBAQCAtMjA5LDYgKzIxMyw4IEBAIG11dGV4OiBtdXRleEAxNDAyMDAwMCB7DQo+
+ICAJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE2OSBJUlFfVFlQRV9MRVZFTF9MT1c+Ow0KPiAgCXBv
+d2VyLWRvbWFpbnMgPSA8JnNjcHN5cyBNVDgxNzNfUE9XRVJfRE9NQUlOX01NPjsNCj4gIAljbG9j
+a3MgPSA8Jm1tc3lzIENMS19NTV9NVVRFWF8zMks+Ow0KPiArCW1lZGlhdGVrLGdjZS1ldmVudHMg
+PSA8Q01EUV9FVkVOVF9NVVRFWDBfU1RSRUFNX0VPRj4sDQo+ICsJCQkgICAgICA8Q01EUV9FVkVO
+VF9NVVRFWDFfU1RSRUFNX0VPRj47DQo+ICB9Ow0KPiAgDQo+ICBvZEAxNDAyMzAwMCB7DQoNCg==
 
