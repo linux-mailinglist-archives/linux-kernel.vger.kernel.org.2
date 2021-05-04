@@ -2,105 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86FC1372F0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 512B0372F11
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231924AbhEDRlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:41:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230425AbhEDRlS (ORCPT
+        id S231845AbhEDRmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:42:32 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:22586 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230425AbhEDRmb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 13:41:18 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A0EC061574;
-        Tue,  4 May 2021 10:40:22 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id g15-20020a9d128f0000b02902a7d7a7bb6eso2233251otg.9;
-        Tue, 04 May 2021 10:40:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=W1bW+xGCGzGfjtmnEyUq9A7nbmJVHdQwdYySDEYgEZo=;
-        b=QqgITlMY4AjMzCQbisr7rpx9ZndoOL+wlIt0zvny62rW1OEFLVwTtF3ncmelZjuMGp
-         EXicrVw7l7F0LU9fLXM7RE69sp6whxaGkOGoc5pG+hU6IJxce3cv8Ypja109VVQWAYnn
-         Ry+Z3PLWworNuMwzSFu4L1FcvwB8aLOkT9w8dOC7beUv/HGwzoimYWCiWxoK95MvuQ6o
-         MsoFwGV7uIk3r1G3NzJqpXJfsw6nVl7v68d6M1yVmoTk9nt7Zl76Ps77qKhYVely9EBb
-         dUwuY5zwWnGgre97RDcADt873GlocSuKeukknYM4WFbMcipz34TZmlN5z37vsTRo3xSk
-         nlwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=W1bW+xGCGzGfjtmnEyUq9A7nbmJVHdQwdYySDEYgEZo=;
-        b=bmqDvmNcCOoj8AJu4oCG+Mxzf1pyFwlITrEVR2HkDsg7YcEwt9ofu9xU77wQxMf9jQ
-         hZ6i2GCBkbYmFQMyXWFZnmJDuIZM5TulZjZAdxoj2/KP0J7aq+Phb30/t6olZNA2jtIV
-         3doMhm7U7Avdm2/OwK7jatbBbG8NyK/P++smiksQErYgBFlQkbj2xaOULSlid8FEjxUw
-         X+oVC2FGOuH/JqdYXesX/wnbJTmu6qAjHWC4ku3SXKBioXPWwrfb5U6hNa+vi4wm1Y0f
-         JUm6a+EuX7DNG4DcSGtQl+BeMP6XLd6nVylNpPH36CPufN3QgoqV6HCxRQohMYVnuT4c
-         jjhw==
-X-Gm-Message-State: AOAM533UclaH90FaB9E6y5lHn6gWMJCKkzqRBofNe9T9/1fwAwMiOnQc
-        1/AvBW6pHfJj+IiEK8yVIE0=
-X-Google-Smtp-Source: ABdhPJwXFrUn1HOVKl93mjOqqWOWbuO+40FKOYW5TjLFoBfp47prkGbRJHEg5OcOzIXL4n1r+Fi6Mg==
-X-Received: by 2002:a9d:53c1:: with SMTP id i1mr20121152oth.245.1620150022361;
-        Tue, 04 May 2021 10:40:22 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d6sm852146oom.33.2021.05.04.10.40.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 10:40:21 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        kernel test robot <lkp@intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH] iio: bme680_i2c: Make bme680_acpi_match depend on CONFIG_ACPI
-Date:   Tue,  4 May 2021 10:40:19 -0700
-Message-Id: <20210504174019.2134652-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.25.1
+        Tue, 4 May 2021 13:42:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1620150096; x=1651686096;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=ek1NDbSmNE2dBVRUjlUYh6SnWrzq5ADKqO2/Os5bhv8=;
+  b=GdIhcYe3ymh+5OVVnwyCeB7QROg9u/MRGP2g/uBV9iSgjrNj65Z1gLF7
+   PHw6NfD0nx0XXsOUuTr6xN97oIgyNIr1O4Lw71aj0x8CdVBPWGVWpdVqC
+   Q+7MVe+KQ8EOmVQiw6PtYsBcnXyw1daCe+wgperPVnaS37G0B9/2U/XfF
+   c=;
+Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 04 May 2021 10:41:36 -0700
+X-QCInternal: smtphost
+Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
+  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/AES256-SHA; 04 May 2021 10:41:36 -0700
+Received: from [10.226.59.216] (10.80.80.8) by nasanexm03e.na.qualcomm.com
+ (10.85.0.48) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 4 May 2021
+ 10:41:35 -0700
+Subject: Re: [PATCH v8 2/9] bus: mhi: core: Clear context for stopped channels
+ from remove()
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        <manivannan.sadhasivam@linaro.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <hemantk@codeaurora.org>,
+        <linux-kernel@vger.kernel.org>, <carl.yin@quectel.com>,
+        <naveen.kumar@quectel.com>, <loic.poulain@linaro.org>
+References: <1617311778-1254-1-git-send-email-bbhatt@codeaurora.org>
+ <1617311778-1254-3-git-send-email-bbhatt@codeaurora.org>
+From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
+Message-ID: <2d540a2a-0152-1357-67c2-b6047e423dd9@quicinc.com>
+Date:   Tue, 4 May 2021 11:41:34 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1617311778-1254-3-git-send-email-bbhatt@codeaurora.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanexm03g.na.qualcomm.com (10.85.0.49) To
+ nasanexm03e.na.qualcomm.com (10.85.0.48)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With CONFIG_ACPI=n and -Werror, 0-day reports:
+On 4/1/2021 3:16 PM, Bhaumik Bhatt wrote:
+> If a channel was explicitly stopped but not reset and a driver
+> remove is issued, clean up the channel context such that it is
+> reflected on the device. This move is useful if a client driver
+> module is unloaded or a device crash occurs with the host having
+> placed the channel in a stopped state.
+> 
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-drivers/iio/chemical/bme680_i2c.c:46:36: error:
-	'bme680_acpi_match' defined but not used
-
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
-Given the other patch, question of course is if this ACPI ID
-is real. A Google search suggests that this might not be the case.
-Should we remove it as well ? STK8312 has the same problem.
-
-Jonathan, I think this needs your input before I send more patches.
-
- drivers/iio/chemical/bme680_i2c.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/iio/chemical/bme680_i2c.c b/drivers/iio/chemical/bme680_i2c.c
-index 29c0dfa4702b..b5e75f145c19 100644
---- a/drivers/iio/chemical/bme680_i2c.c
-+++ b/drivers/iio/chemical/bme680_i2c.c
-@@ -42,11 +42,13 @@ static const struct i2c_device_id bme680_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, bme680_i2c_id);
- 
-+#ifdef CONFIG_ACPI
- static const struct acpi_device_id bme680_acpi_match[] = {
- 	{"BME0680", 0},
- 	{},
- };
- MODULE_DEVICE_TABLE(acpi, bme680_acpi_match);
-+#endif
- 
- static const struct of_device_id bme680_of_i2c_match[] = {
- 	{ .compatible = "bosch,bme680", },
--- 
-2.25.1
-
+Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
