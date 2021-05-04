@@ -2,80 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E6737316F
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D69F373170
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232832AbhEDUee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 16:34:34 -0400
-Received: from mailbackend.panix.com ([166.84.1.89]:19167 "EHLO
-        mailbackend.panix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231796AbhEDUec (ORCPT
+        id S232839AbhEDUev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 16:34:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231786AbhEDUet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 16:34:32 -0400
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-        by mailbackend.panix.com (Postfix) with ESMTPSA id 4FZWl4551Wz2DPg;
-        Tue,  4 May 2021 16:33:36 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=panix.com; s=panix;
-        t=1620160416; bh=lTZ/lVLMWtbFhPZP+g/je+yhXr5csjuHDqGr9x80lZQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc;
-        b=TOYQrncra9Gnai/6or0hMCaDdLiTTZVrchRI7b7/0OP3QLRNckNBLOC3mqGk0yVh/
-         fpBjmeXlvO8qwocHeviveyO0X52e7YyDj5z9Saytbxb0iXUtSnIsglEKlHB/SfmvD2
-         Q0TDnF3fYi+GLQJWEYF2jfBuZacxObVTCVfb48T4=
-Received: by mail-yb1-f181.google.com with SMTP id l7so13911287ybf.8;
-        Tue, 04 May 2021 13:33:36 -0700 (PDT)
-X-Gm-Message-State: AOAM5314o5b7T4GIHMHAPqZt29cR/wAl+051MXHAcdVN27ElILw8C4cu
-        8C5ssabZeZ83ypErofFeIpj3oMDKdCqbFCPKXbQ=
-X-Google-Smtp-Source: ABdhPJzSu8AkpmhEIsw2NZgdeS4gQHrnZSlUQHP1cTKF3tAM8qwY6+MVc74w6j2O70No9S/0WKrHfYU44V3uQtTuV70=
-X-Received: by 2002:a25:348f:: with SMTP id b137mr37826198yba.248.1620160416247;
- Tue, 04 May 2021 13:33:36 -0700 (PDT)
+        Tue, 4 May 2021 16:34:49 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C52C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 13:33:54 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id h11so398611pfn.0
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 13:33:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=C/Cj5I1mlYbC1jzOSOOF25th5Igc+hh3GZ0g8FBcqEI=;
+        b=iJK5pVK/mFTAX9dUEyWr8HZrmhDgXZDtAgyBPKUHMH/tfsSqh7lV8WkaqvRkVAayYJ
+         dMIWinGEclPrkiRLO5JznMDfhYa4SPPNcgv3nwymb8py/lcXiUTUqh0JUiobhbBfyUBw
+         gQXwAeCxMotR5IXMRTtcTZF13yvlBcqS1IeFgBTDZ1Hf8zcInRNc7vx1LKBnU3OKgMUW
+         /D6CW0Xdhkg09ACm8LsbGTZHsDR28PW/8DPcEyqiShwOdjIsDZfkO9wSvvvrE3WOCS5N
+         D/XA11bS2yDyGl9Rum8ifYdKmgwhh6iHHSBHmSSeyTa2P8MCaVhgWFhAfPntNpUMwSP/
+         9k7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C/Cj5I1mlYbC1jzOSOOF25th5Igc+hh3GZ0g8FBcqEI=;
+        b=ogSYWujxHtiJUbKfy0tgPjzq3HLYS+ow+Rlml/n9Jj/7Fk5fzucXikFNmJRBXQEeLE
+         JCDOsaG8LIcLYjcw/5EFEqDRipOShKHnTJCaKRSa+bqKvfg3PZnluo5wLhSjvEhSD5Tc
+         Wbxd4QgaIyZQAXYxNbL7gPFMcVkfPUfRsvrzzigqLGYxRZ9UNSonfX32j92kly4H+2JM
+         OFxjAJxodAQSj3XBaHhxNlBbDwxEmz/jEyKtkCW+79EEoKQabw1ZwGoHcnmWDM1m7qs7
+         9oCu4hazPCDhHd8V1AO+GyPKMaceA4bqh2lPXuN+g2CDEAXYCtnKpzMcb3xofnWMOud6
+         z0yQ==
+X-Gm-Message-State: AOAM530n4wn6/aGVKKertCWWT7FdO/KZfEv7zGhbnrKeTRZ09Is1WYus
+        FXG+RPKJtWhLXgfn5CmojNO62A==
+X-Google-Smtp-Source: ABdhPJwCWZtzZv/BwmPQtdaiVrP1zcRE4DkGiKPJIPVLifXrJtC4yE4WMvk10tD+y6F4JF/C+shn6g==
+X-Received: by 2002:a17:90b:33c4:: with SMTP id lk4mr7487384pjb.225.1620160434179;
+        Tue, 04 May 2021 13:33:54 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id k14sm15371273pjg.0.2021.05.04.13.33.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 13:33:53 -0700 (PDT)
+Date:   Tue, 4 May 2021 20:33:49 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        srutherford@google.com, joro@8bytes.org, brijesh.singh@amd.com,
+        thomas.lendacky@amd.com, ashish.kalra@amd.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org
+Subject: Re: [PATCH v3 2/2] KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS
+ hypercall
+Message-ID: <YJGvrYWLQwiRSNLt@google.com>
+References: <20210429104707.203055-1-pbonzini@redhat.com>
+ <20210429104707.203055-3-pbonzini@redhat.com>
+ <YIxkTZsblAzUzsf7@google.com>
+ <c4bf8a05-ec0d-9723-bb64-444fe1f088b5@redhat.com>
+ <YJF/3d+VBfJKqXV4@google.com>
+ <f7300393-6527-005f-d824-eed5f7f2f8a8@redhat.com>
 MIME-Version: 1.0
-References: <20210423230609.13519-1-alx.manpages@gmail.com>
- <20210504110519.16097-1-alx.manpages@gmail.com> <CAADnVQLdW=jH1CUP02jokEu3Sh+=xKsCXvjA19kfz7KOn9mzkA@mail.gmail.com>
- <YJFZHW2afbAMVOmE@kroah.com> <69fb22e0-84bd-47fb-35b5-537a7d39c692@gmail.com>
- <YJFxArfp8wN3ILJb@kroah.com> <CAKCAbMg_eRCsD-HYmryL8XEuZcaM1Qdfp4XD85QKT6To+h3QcQ@mail.gmail.com>
- <6740a229-842e-b368-86eb-defc786b3658@gmail.com> <8a184afe-14b7-ed15-eb6a-960ea05251d1@iogearbox.net>
-In-Reply-To: <8a184afe-14b7-ed15-eb6a-960ea05251d1@iogearbox.net>
-From:   Zack Weinberg <zackw@panix.com>
-Date:   Tue, 4 May 2021 16:33:24 -0400
-X-Gmail-Original-Message-ID: <CAKCAbMidJ=UhsMumDcwiqvkGEG5SROPnv=OA379w_=0dZk5W5g@mail.gmail.com>
-Message-ID: <CAKCAbMidJ=UhsMumDcwiqvkGEG5SROPnv=OA379w_=0dZk5W5g@mail.gmail.com>
-Subject: Re: [RFC v2] bpf.2: Use standard types and attributes
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        linux-man <linux-man@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        glibc <libc-alpha@sourceware.org>, GCC <gcc-patches@gcc.gnu.org>,
-        bpf <bpf@vger.kernel.org>,
-        Joseph Myers <joseph@codesourcery.com>,
-        David Laight <David.Laight@aculab.com>,
-        David Miller <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f7300393-6527-005f-d824-eed5f7f2f8a8@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 4, 2021 at 4:06 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> > I'm trying to clarify the manual pages as much as possible, by using standard conventions and similar structure all around the pages.  Not everyone understands kernel conventions.  Basically, Zack said very much what I had in mind with this patch.
->
-> But then are you also converting, for example, __{le,be}{16,32,64} to plain
-> uint{16,32,64}_t in the man pages and thus removing contextual information
-> (or inventing new equivalent types)?
->
-> What about other types exposed to user space like __sum16, __wsum, or __poll_t
-> when they are part of a man page, etc?
+On Tue, May 04, 2021, Paolo Bonzini wrote:
+> On 04/05/21 19:09, Sean Christopherson wrote:
+> > On Sat, May 01, 2021, Paolo Bonzini wrote:
+> > > - make it completely independent from migration, i.e. it's just a facet of
+> > > MSR_KVM_PAGE_ENC_STATUS saying whether the bitmap is up-to-date.  It would
+> > > use CPUID bit as the encryption status bitmap and have no code at all in KVM
+> > > (userspace needs to set up the filter and implement everything).
+> > 
+> > If the bit is purely a "page encryption status is up-to-date", what about
+> > overloading KVM_HC_PAGE_ENC_STATUS to handle that status update as well?   That
+> > would eliminate my biggest complaint about having what is effectively a single
+> > paravirt feature split into two separate, but intertwined chunks of ABI.
+> 
+> It's true that they are intertwined, but I dislike not having a way to read
+> the current state.
 
-Fields that are specifically in some endianness that isn't
-(necessarily) the CPU's _should_ be documented as such in the manpage,
-but I dunno if __{le,be}{16,32,64} as a type name is the ideal way to
-do it.  There is no off-the-shelf notation for this as far as I know.
-
-I do not know what __sum16, __wsum, and __poll_t are used for, but I
-want to remind everyone again that the kernel's concerns are not
-necessarily user space's concerns and the information that should
-appear in the manpages is the information that is most relevant to
-user space programmers.
-
-zw
+From the guest?
