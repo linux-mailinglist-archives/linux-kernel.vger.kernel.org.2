@@ -2,111 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B89FC373169
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E6737316F
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232807AbhEDUd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 16:33:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232560AbhEDUd2 (ORCPT
+        id S232832AbhEDUee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 16:34:34 -0400
+Received: from mailbackend.panix.com ([166.84.1.89]:19167 "EHLO
+        mailbackend.panix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231796AbhEDUec (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 16:33:28 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59322C061574;
-        Tue,  4 May 2021 13:32:32 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id y7so15165330ejj.9;
-        Tue, 04 May 2021 13:32:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=s+WAhzdP859cnPeCIedjnSWgh7wM+d3lJE1B2lOJ2lo=;
-        b=fAWK10XbeBYU/CZ0BaOeCT3j6uYBMt0KmSpmDHgQidw3BXFZ/WFSuwTT88Mp/48Wbw
-         7eJsDuXTCNPl298XAikPJvylbL2Mf7EaHrpNsQ+LsugWbIyeQt9rwxS9xuUIil15TnQx
-         R5Fblfvkg9/xhdcO+t0IbZsOpT+ZHtEjCC2BDdW8TVFzD2BrnyeeUeCU5zcscY+GDZSt
-         5h1WOG9M+aJDT6pumDSg2cAZKIzsy8vUhOVw8ayVY71LkDLX9GcjRSf5aLB55d/gdFIy
-         dmJUmK6GC8aABTb7xnHI50u6YT9qv6ocJ09KvtqVOYbeTPgd/vBX2Zjlg7N5fvM45KBu
-         FgZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=s+WAhzdP859cnPeCIedjnSWgh7wM+d3lJE1B2lOJ2lo=;
-        b=kWbNKa5j08oVeaTnjTp/ttQaUhjlxlTXw88HFq/bkti+8AUTCOk9ylAdaaBBtu8iw3
-         e9xu0f4n4u/0RhwO10ekVe03qVFYZlSJAmSPD4pW4+fEtgAcbUPfbCCJVEA0voP9Rtf3
-         NUb5rRfr9cjceAUSrIjK0/H5NfpOo6KBxLrTpdPAkyGsZVdkBFfV5T4bYD8wxDtB69Tv
-         2DoJt4eTwf0MsmiC/6hpYYUiFZJFZIASqsNkslZeY9OKT0P6I6rhx5kYscGI31h92Gxs
-         OBe7PSXNLUjCwtykULKZtCIwbezr/hcvKCOV4DsiTK8zQ0yYaYBEOmrPL8MVqO8JSvTD
-         JQRw==
-X-Gm-Message-State: AOAM5335xFQ9O7+LIn0jjWxRWt8wEDOOU4L+fYriz3xuLZGcew5FkOyl
-        9+mIFnk9Nk3SRHCVqh6QLNc=
-X-Google-Smtp-Source: ABdhPJx9On1jC6rFO4wd0vFLnNAciS9RSj7Lc8RO1FGa8X7kp0YHt09XfZVspyjEYQjnH/lIY9TN6Q==
-X-Received: by 2002:a17:906:18e1:: with SMTP id e1mr23426834ejf.341.1620160351157;
-        Tue, 04 May 2021 13:32:31 -0700 (PDT)
-Received: from localhost.localdomain (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
-        by smtp.gmail.com with ESMTPSA id cw6sm1900613ejb.32.2021.05.04.13.32.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 13:32:30 -0700 (PDT)
-From:   Bean Huo <huobean@gmail.com>
-To:     ulf.hansson@linaro.org, adrian.hunter@intel.com
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bean Huo <beanhuo@micron.com>,
-        Michael Brunner <Michael.Brunner@kontron.com>
-Subject: [PATCH v1] mmc: block: Disable CMDQ on the ioctl path
-Date:   Tue,  4 May 2021 22:32:09 +0200
-Message-Id: <20210504203209.361597-1-huobean@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 4 May 2021 16:34:32 -0400
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+        by mailbackend.panix.com (Postfix) with ESMTPSA id 4FZWl4551Wz2DPg;
+        Tue,  4 May 2021 16:33:36 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=panix.com; s=panix;
+        t=1620160416; bh=lTZ/lVLMWtbFhPZP+g/je+yhXr5csjuHDqGr9x80lZQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc;
+        b=TOYQrncra9Gnai/6or0hMCaDdLiTTZVrchRI7b7/0OP3QLRNckNBLOC3mqGk0yVh/
+         fpBjmeXlvO8qwocHeviveyO0X52e7YyDj5z9Saytbxb0iXUtSnIsglEKlHB/SfmvD2
+         Q0TDnF3fYi+GLQJWEYF2jfBuZacxObVTCVfb48T4=
+Received: by mail-yb1-f181.google.com with SMTP id l7so13911287ybf.8;
+        Tue, 04 May 2021 13:33:36 -0700 (PDT)
+X-Gm-Message-State: AOAM5314o5b7T4GIHMHAPqZt29cR/wAl+051MXHAcdVN27ElILw8C4cu
+        8C5ssabZeZ83ypErofFeIpj3oMDKdCqbFCPKXbQ=
+X-Google-Smtp-Source: ABdhPJzSu8AkpmhEIsw2NZgdeS4gQHrnZSlUQHP1cTKF3tAM8qwY6+MVc74w6j2O70No9S/0WKrHfYU44V3uQtTuV70=
+X-Received: by 2002:a25:348f:: with SMTP id b137mr37826198yba.248.1620160416247;
+ Tue, 04 May 2021 13:33:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210423230609.13519-1-alx.manpages@gmail.com>
+ <20210504110519.16097-1-alx.manpages@gmail.com> <CAADnVQLdW=jH1CUP02jokEu3Sh+=xKsCXvjA19kfz7KOn9mzkA@mail.gmail.com>
+ <YJFZHW2afbAMVOmE@kroah.com> <69fb22e0-84bd-47fb-35b5-537a7d39c692@gmail.com>
+ <YJFxArfp8wN3ILJb@kroah.com> <CAKCAbMg_eRCsD-HYmryL8XEuZcaM1Qdfp4XD85QKT6To+h3QcQ@mail.gmail.com>
+ <6740a229-842e-b368-86eb-defc786b3658@gmail.com> <8a184afe-14b7-ed15-eb6a-960ea05251d1@iogearbox.net>
+In-Reply-To: <8a184afe-14b7-ed15-eb6a-960ea05251d1@iogearbox.net>
+From:   Zack Weinberg <zackw@panix.com>
+Date:   Tue, 4 May 2021 16:33:24 -0400
+X-Gmail-Original-Message-ID: <CAKCAbMidJ=UhsMumDcwiqvkGEG5SROPnv=OA379w_=0dZk5W5g@mail.gmail.com>
+Message-ID: <CAKCAbMidJ=UhsMumDcwiqvkGEG5SROPnv=OA379w_=0dZk5W5g@mail.gmail.com>
+Subject: Re: [RFC v2] bpf.2: Use standard types and attributes
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        glibc <libc-alpha@sourceware.org>, GCC <gcc-patches@gcc.gnu.org>,
+        bpf <bpf@vger.kernel.org>,
+        Joseph Myers <joseph@codesourcery.com>,
+        David Laight <David.Laight@aculab.com>,
+        David Miller <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+On Tue, May 4, 2021 at 4:06 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> > I'm trying to clarify the manual pages as much as possible, by using standard conventions and similar structure all around the pages.  Not everyone understands kernel conventions.  Basically, Zack said very much what I had in mind with this patch.
+>
+> But then are you also converting, for example, __{le,be}{16,32,64} to plain
+> uint{16,32,64}_t in the man pages and thus removing contextual information
+> (or inventing new equivalent types)?
+>
+> What about other types exposed to user space like __sum16, __wsum, or __poll_t
+> when they are part of a man page, etc?
 
-According to the eMMC Spec:
-"When command queuing is enabled (CMDQ Mode En bit in CMDQ_MODE_EN
-field is set to ‘1’) class 11 commands are the only method through
-which data transfer tasks can be issued. Existing data transfer
-commands, namely CMD18/CMD17 and CMD25/CMD24, are not supported when
-command queuing is enabled."
-which means if CMDQ is enabled, the FFU commands will not be supported.
-To fix this issue, just simply disable CMDQ on the ioctl path, and
-re-enable CMDQ once ioctl request is completed.
+Fields that are specifically in some endianness that isn't
+(necessarily) the CPU's _should_ be documented as such in the manpage,
+but I dunno if __{le,be}{16,32,64} as a type name is the ideal way to
+do it.  There is no off-the-shelf notation for this as far as I know.
 
-Tested-by: Michael Brunner <Michael.Brunner@kontron.com>
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
- drivers/mmc/core/block.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+I do not know what __sum16, __wsum, and __poll_t are used for, but I
+want to remind everyone again that the kernel's concerns are not
+necessarily user space's concerns and the information that should
+appear in the manpages is the information that is most relevant to
+user space programmers.
 
-diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-index 689eb9afeeed..21fb99883b1e 100644
---- a/drivers/mmc/core/block.c
-+++ b/drivers/mmc/core/block.c
-@@ -1004,6 +1004,11 @@ static void mmc_blk_issue_drv_op(struct mmc_queue *mq, struct request *req)
- 
- 	switch (mq_rq->drv_op) {
- 	case MMC_DRV_OP_IOCTL:
-+		if (card->ext_csd.cmdq_en) {
-+			ret = mmc_cmdq_disable(card);
-+			if (ret)
-+				break;
-+		}
- 	case MMC_DRV_OP_IOCTL_RPMB:
- 		idata = mq_rq->drv_op_data;
- 		for (i = 0, ret = 0; i < mq_rq->ioc_count; i++) {
-@@ -1014,6 +1019,8 @@ static void mmc_blk_issue_drv_op(struct mmc_queue *mq, struct request *req)
- 		/* Always switch back to main area after RPMB access */
- 		if (rpmb_ioctl)
- 			mmc_blk_part_switch(card, 0);
-+		else if (card->reenable_cmdq && !card->ext_csd.cmdq_en)
-+			mmc_cmdq_enable(card);
- 		break;
- 	case MMC_DRV_OP_BOOT_WP:
- 		ret = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL, EXT_CSD_BOOT_WP,
--- 
-2.25.1
-
+zw
