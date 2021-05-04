@@ -2,93 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF73837280C
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 11:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E62372813
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 11:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230115AbhEDJX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 05:23:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38890 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229703AbhEDJXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 05:23:23 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4CA8CAC1A;
-        Tue,  4 May 2021 09:22:27 +0000 (UTC)
-Date:   Tue, 4 May 2021 11:22:25 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Ben Dooks <ben.dooks@codethink.co.uk>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>, Will Deacon <will@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Joe Perches <joe@perches.com>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] Raise the minimum GCC version to 5.2
-Message-ID: <20210504092225.GS6564@kitsune.suse.cz>
-References: <20210501151538.145449-1-masahiroy@kernel.org>
- <CANiq72k1hB3X6+Nc_iu=f=BoB-F9JW2j_B4ZMcv8_UpW5QQ2Og@mail.gmail.com>
- <3943bc020f6227c8801907317fc113aa13ad4bad.camel@perches.com>
- <65cda2bb-1b02-6ebc-0ea2-c48927524aa0@codethink.co.uk>
- <CANiq72mk84uay--BWOLT4zF12-rat9erohKazB8SpTPoVCTX1A@mail.gmail.com>
+        id S230100AbhEDJ2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 05:28:03 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:38055 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229903AbhEDJ1v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 05:27:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1620120417; x=1651656417;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=VQ/a1Lg4gGku2HtYE9KiPPHcFeBRAiUZ7AcJxQWzW+Q=;
+  b=JO32lqMePlVa4DhCvqXnr4OhifXuULHGBi/rB7jNO4ZC0IPer68pi06t
+   3VyazDc6pwYQkoIhjT3emNIdEDWS1ENC5TErj3qeC3wuKq0BPUqBb4Kg3
+   CKf+ftRDNdNuxZXv7I396I/JrvSJnrDKxln+mGNbzmY1ZiFZrSPdxjh2C
+   M=;
+X-IronPort-AV: E=Sophos;i="5.82,272,1613433600"; 
+   d="scan'208";a="132879461"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-1a-821c648d.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 04 May 2021 09:26:34 +0000
+Received: from EX13MTAUWC002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1a-821c648d.us-east-1.amazon.com (Postfix) with ESMTPS id 0A329A04E5;
+        Tue,  4 May 2021 09:26:26 +0000 (UTC)
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 4 May 2021 09:26:26 +0000
+Received: from [10.85.99.170] (10.43.162.28) by EX13D20UWC001.ant.amazon.com
+ (10.43.162.244) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 4 May
+ 2021 09:26:21 +0000
+Message-ID: <b4434730-9cd1-1d41-d012-f7beff7e351b@amazon.com>
+Date:   Tue, 4 May 2021 11:26:20 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANiq72mk84uay--BWOLT4zF12-rat9erohKazB8SpTPoVCTX1A@mail.gmail.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:89.0)
+ Gecko/20100101 Thunderbird/89.0
+Subject: Re: [PATCH v4] KVM: x86: Fix KVM_GET_CPUID2 ioctl to return cpuid
+ entries count
+Content-Language: en-US
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        "Denis V. Lunev" <den@openvz.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Valeriy Vdovin <valeriy.vdovin@virtuozzo.com>
+CC:     <linux-kernel@vger.kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        "Vitaly Kuznetsov" <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "Jim Mattson" <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Borislav Petkov" <bp@alien8.de>, <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
+        Aaron Lewis <aaronlewis@google.com>,
+        "Andrew Jones" <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        Like Xu <like.xu@linux.intel.com>, <kvm@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-kselftest@vger.kernel.org>
+References: <20210428172729.3551-1-valeriy.vdovin@virtuozzo.com>
+ <YIoFFl72VSeuhCRt@google.com>
+ <0d68dbc3-8462-7763-fbad-f3b895fcf6e6@redhat.com>
+ <be7eedf7-03a2-f998-079d-b18101b8b187@openvz.org>
+ <63e54361-0018-ad3b-fb2b-e5dba6a0f221@redhat.com>
+ <048b3f3a-379d-cff3-20b6-fc74dd12a98f@openvz.org>
+ <514b5373-c07b-ad34-5fba-f8850faf6d68@redhat.com>
+From:   Alexander Graf <graf@amazon.com>
+In-Reply-To: <514b5373-c07b-ad34-5fba-f8850faf6d68@redhat.com>
+X-Originating-IP: [10.43.162.28]
+X-ClientProxiedBy: EX13D16UWC004.ant.amazon.com (10.43.162.72) To
+ EX13D20UWC001.ant.amazon.com (10.43.162.244)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 10:38:32AM +0200, Miguel Ojeda wrote:
-> On Tue, May 4, 2021 at 9:57 AM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
-> >
-> > Some of us are a bit stuck as either customer refuses to upgrade
-> > their build infrastructure or has paid for some old but safety
-> > blessed version of gcc. These often lag years behind the recent
-> > gcc releases :(
-> 
-> In those scenarios, why do you need to build mainline? Aren't your
-> customers using longterm or frozen kernels? If they are paying for
-> certified GCC images, aren't they already paying for supported kernel
-> images from some vendor too?
-> 
-> I understand where you are coming from -- I have also dealt with
-> projects/machines running ancient, unsupported software/toolchains for
-> various reasons; but nobody expected upstream (and in particular the
-> mainline kernel source) to support them. In the cases I experienced,
-> those use cases require not touching anything at all, and when the
-> time came of doing so, everything would be updated at once,
-> re-certified/validated as needed and frozen again.
+CgpPbiAwNC4wNS4yMSAxMDoyMSwgUGFvbG8gQm9uemluaSB3cm90ZToKPiAKPiBPbiAwNC8wNS8y
+MSAxMDoxNSwgRGVuaXMgVi4gTHVuZXYgd3JvdGU6Cj4+IEFzIGZhciBhcyBJIHVuZGVyc3RhbmQg
+b25seSBzb21lIHRlc3Rpbmcgd2l0aGluIGtlcm5lbCBub3cuCj4+IFRob3VnaCB3ZSBoYXZlIHBs
+YW5zIHRvIGV4cG9zZSBpdCBmb3IgUUFQSSBhcyB0aGUgc2VyaWVzCj4+IGluIFFFTVUKPj4gwqDC
+oCBbUEFUQ0ggMS8yXSBxYXBpOiBmaXggZXJyb3IgaGFuZGxpbmcgZm9yIHgtdnotcXVlcnktY3B1
+LW1vZGVsLWNwdWlkCj4+IMKgwqAgW1BBVENIIDIvMl0gcWFwaTogYmxhY2tsaXN0ZWQgeC12ei1x
+dWVyeS1jcHUtbW9kZWwtY3B1aWQgaW4gdGVzdHMKPj4gaXMgbm90IGNvbWluZyBpbiBhIGdvb2Qg
+d2F5Lgo+PiBUaGUgaWRlYSB3YXMgdG8gYXZvaWQgbWFudWFsIGNvZGUgcmV3b3JrIGluIFFFTVUg
+YW5kCj4+IGV4cG9zZSBjb2xsZWN0ZWQgbW9kZWwgYXQgbGVhc3QgZm9yIGRlYnVnLgo+IAo+IEtW
+TV9HRVRfQ1BVSUQyIGFzIGEgVk0gaW9jdGwgY2Fubm90IGV4cG9zZSB0aGUgd2hvbGUgdHJ1dGgg
+YWJvdXQgQ1BVSUQKPiBlaXRoZXIsIHNpbmNlIGl0IGRvZXNuJ3QgaGFuZGxlIHRoZSBUU1hfQ1RS
+TF9DUFVJRF9DTEVBUiBiaXQuwqAgR2l2ZW4KPiB0aGF0IFFFTVUgZG9lc24ndCBuZWVkIEtWTV9H
+RVRfQ1BVSUQyOyBpdCBvbmx5IG5lZWRzIHRvIHNhdmUgd2hhdGV2ZXIgaXQKPiBwYXNzZWQgdG8g
+S1ZNX1NFVF9DUFVJRDIuCgpXaGF0IGlmIHdlIGluc3RlYWQgZGVmbGVjdCBDUFVJRCBpbnRvIHVz
+ZXIgc3BhY2Ugc28gaXQgY2FuIGVtdWxhdGUgaXQgaW4gCndoYXRldmVyIHdheSBpdCBsaWtlcz8g
+SXMgdGhlIHBlcmZvcm1hbmNlIGRpZmZlcmVuY2UgZ29pbmcgdG8gYmUgCnJlbGV2YW50PyBBcmUg
+cGVvcGxlIHN0aWxsIHVzaW5nIGNwdWlkIGFzIGJhcnJpZXIgdGhlc2UgZGF5cz8KCgpBbGV4CgoK
+CkFtYXpvbiBEZXZlbG9wbWVudCBDZW50ZXIgR2VybWFueSBHbWJICktyYXVzZW5zdHIuIDM4CjEw
+MTE3IEJlcmxpbgpHZXNjaGFlZnRzZnVlaHJ1bmc6IENocmlzdGlhbiBTY2hsYWVnZXIsIEpvbmF0
+aGFuIFdlaXNzCkVpbmdldHJhZ2VuIGFtIEFtdHNnZXJpY2h0IENoYXJsb3R0ZW5idXJnIHVudGVy
+IEhSQiAxNDkxNzMgQgpTaXR6OiBCZXJsaW4KVXN0LUlEOiBERSAyODkgMjM3IDg3OQoKCg==
 
-Except it makes answering the question "Is this bug we see on this
-ancient system still present in upstream?" needlessly more difficult to
-answer.
-
-Sure, throwing out old compiler versions that are known to cause
-problems makes sense. Updating to latest just because much less so.
-
-One of the selling point of C in general and gcc in particular is
-stability. If we need the latest compiler we can as well rewrite the
-kernel in Rust which has a required update cycle of a few months.
-
-Because some mainline kernel features rely on bleeding edge tools I end
-up building mainline with current tools anyway but if you do not need
-BTF or whatever other latest gimmick older toolchains should do.
-
-Thanks
-
-Michal
