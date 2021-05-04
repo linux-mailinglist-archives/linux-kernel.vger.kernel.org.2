@@ -2,149 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19C83726DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 10:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D5E73726E6
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 10:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbhEDIDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 04:03:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26557 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229816AbhEDIDO (ORCPT
+        id S229996AbhEDIHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 04:07:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229816AbhEDIG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 04:03:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620115339;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RazSrOHQRIEZi4NpTNvRDMTS0CNW0QsK+1YnSeSLHGA=;
-        b=Sv+Mg7uZvHa/4JzgbI4hyW61ZFxm8KLHdyyW9AysvBLO89AKiwP0rYdvugyzUj3xK5M0S+
-        9uGmNkfrIRGs2ahW2+ssOB56QJh3RntFz6SGaYjAuK7ZPv6AxNn4L7otUgens0UFIKhgzD
-        OICMV9oIVgDPU1pIy0hFCFyD3D6ysPw=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-578-uVzV3YByMWe9OXWC-yyDMA-1; Tue, 04 May 2021 04:02:16 -0400
-X-MC-Unique: uVzV3YByMWe9OXWC-yyDMA-1
-Received: by mail-ej1-f71.google.com with SMTP id yh1-20020a17090706e1b029038d0f848c7aso2826217ejb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 01:02:16 -0700 (PDT)
+        Tue, 4 May 2021 04:06:58 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0718CC061574;
+        Tue,  4 May 2021 01:06:03 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id x19so12058347lfa.2;
+        Tue, 04 May 2021 01:06:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=A5ABF2UKQe/gesNGBqzyoumN3x63DuLndBy+FMhwdt4=;
+        b=DSGxPJBiTETehS36ZOFREEkCKVQk2+edBF7y5dTQpD5Ky+kvMCnEgsFG+RB4blm2st
+         5cezGiZblFbsyxbQIxlFUY+jgaPLyY/E41Lywteo5vXgJIZDk4oBBAAptyLk/vek8fNA
+         03/sLNCwmc6wvAfuFLet1/4d4SpnEnA6cgSnoRrdXAPjcvrsIZUjuMMYGG7jEFBIRj7r
+         n5khpxTmL5WAZrnAfuh2C9nJ+/ScYZzrK18j8xg6Vu19BeuO2gTIY3hLc7Ha1wo65LPp
+         dom7KpKjaUt1fsuG3x+xVGmGA5SbusNHBeTMcyhl4t7H9XINthd2jrrCVC8HpIXALhMu
+         ntUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=RazSrOHQRIEZi4NpTNvRDMTS0CNW0QsK+1YnSeSLHGA=;
-        b=tfHylICzvTgLx/S0SmucEiC8djgccKeo2nxXtUW4M4ipymlXf8EydajRk8Wd1BPX84
-         DdijurcfexhvFdLkK64nh3iwzGdF5uP5CGdK6iI6ptXHwEETxN2tlzUuoy7YXfapl8wf
-         CrURkIgKucdLwHf+FDguVhr44JgzIJn2csvLg9Ag9KCKega6c5E821ggGjJUEOLOP+0o
-         VaXjIe6W85cwyd5VSZBsJlvVbBALBHkQYBwGI9ptwbA6oS2/4sV3RzkpnU6XECBzfjXy
-         ESCiEFw5DLWjjekecpb+WPDWBU9L8bgsBvNB83eM9R+iPVku6eahC3vK6Up8SalGvUYx
-         NWSQ==
-X-Gm-Message-State: AOAM532714bKTrw+zSXs6pn7LOI3Mw3Svkx6/I5WmH9M4g3hFT5zUz/4
-        XQatEUkscOhjJ7M/dvemoMJWp1WFnNjXeoa7qmE/5ZkwqJRhBU/ORCkDXhi63H9vWCMauIMZQya
-        65RKPRnQQ2w89rII3lfz2Id53s8K1bBeNu3kWxWktdp5DdtJPAXjSULteMICXaZHraBPsOXB1Lo
-        ZD
-X-Received: by 2002:a17:906:a2d1:: with SMTP id by17mr21419104ejb.426.1620115335535;
-        Tue, 04 May 2021 01:02:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJweCmFPwqcdiMBHVArj6oWwQABJweFkYeuR6CqR2SYSBGFK8M7OAXR4kpyt3tKr6KHslmCVZg==
-X-Received: by 2002:a17:906:a2d1:: with SMTP id by17mr21419082ejb.426.1620115335335;
-        Tue, 04 May 2021 01:02:15 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id x18sm983963eju.45.2021.05.04.01.02.14
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=A5ABF2UKQe/gesNGBqzyoumN3x63DuLndBy+FMhwdt4=;
+        b=k2/zl4p1foCzIvs/WexaEy79OUXPIOyyRqGzGpPAOVUTLWxJ7AEFw78HXKDgtfy+7P
+         1Q9YgJBhLcegmIkuHcoOa0cEZNdUU/F+It8ZJ4/wCrwD9prqRkazUISZqd+mY0OnmR7E
+         3h56U/8jsPPIhtpZ9FkJ1c2xvJ81BbFy4NixtqBEWcslgBUyrwKpLiRro7Vd7SfGnQHE
+         U5PCoTXjFYHu7aZOe8U13VfDEpxlM+iQw+B2vObKFhF7g1fXA68MIrSFHHktxDEYEKh1
+         UpwMYDPxSoxiyXBMSlpwUFtQjQrF20Y+Q8at239TY+c8LS6djgVEj2hNTQU7xdPfIaKz
+         nlGQ==
+X-Gm-Message-State: AOAM533Shh4l2swKOF1gh6FKQFyUlafyrl1Pg8MRpy0AqmWcIZVID0H9
+        /5EtFJc7bY5VlKODcFRW+4IqOciCdLaY19X7
+X-Google-Smtp-Source: ABdhPJzWK//xopu+TXHxWLIJw+amC/iHDxkQzqKxSEIrgzne5f7dPGsW5V6GEyThEaXZwugwCbuzsQ==
+X-Received: by 2002:ac2:511a:: with SMTP id q26mr15706526lfb.399.1620115561491;
+        Tue, 04 May 2021 01:06:01 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.226.84])
+        by smtp.gmail.com with ESMTPSA id e11sm1570648ljk.128.2021.05.04.01.06.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 01:02:14 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] KVM: nVMX: Map enlightened VMCS upon restore when
- possible
-In-Reply-To: <87de6570-750c-5ce1-17a2-36abe99813ac@redhat.com>
-References: <20210503150854.1144255-1-vkuznets@redhat.com>
- <20210503150854.1144255-5-vkuznets@redhat.com>
- <87de6570-750c-5ce1-17a2-36abe99813ac@redhat.com>
-Date:   Tue, 04 May 2021 10:02:14 +0200
-Message-ID: <87h7jjx6yh.fsf@vitty.brq.redhat.com>
+        Tue, 04 May 2021 01:06:01 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     phillip@squashfs.org.uk
+Cc:     linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>, stable@vger.kernel.org,
+        syzbot+e8f781243ce16ac2f962@syzkaller.appspotmail.com
+Subject: [PATCH] squashfs: fix divide error
+Date:   Tue,  4 May 2021 11:05:52 +0300
+Message-Id: <20210504080552.21473-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paolo Bonzini <pbonzini@redhat.com> writes:
+The problem was in calculate_skip() function.
 
-> On 03/05/21 17:08, Vitaly Kuznetsov wrote:
->> It now looks like a bad idea to not restore eVMCS mapping directly from
->> vmx_set_nested_state(). The restoration path now depends on whether KVM
->> will continue executing L2 (vmx_get_nested_state_pages()) or will have to
->> exit to L1 (nested_vmx_vmexit()), this complicates error propagation and
->> diverges too much from the 'native' path when 'nested.current_vmptr' is
->> set directly from vmx_get_nested_state_pages().
->> 
->> The existing solution postponing eVMCS mapping also seems to be fragile.
->> In multiple places the code checks whether 'vmx->nested.hv_evmcs' is not
->> NULL to distinguish between eVMCS and non-eVMCS cases. All these checks
->> are 'incomplete' as we have a weird 'eVMCS is in use but not yet mapped'
->> state.
->> 
->> Also, in case vmx_get_nested_state() is called right after
->> vmx_set_nested_state() without executing the guest first, the resulting
->> state is going to be incorrect as 'KVM_STATE_NESTED_EVMCS' flag will be
->> missing.
->> 
->> Fix all these issues by making eVMCS restoration path closer to its
->> 'native' sibling by putting eVMCS GPA to 'struct kvm_vmx_nested_state_hdr'.
->> To avoid ABI incompatibility, do not introduce a new flag and keep the
->
-> I'm not sure what is the disadvantage of not having a new flag.
->
+	int skip = calculate_skip(i_size_read(inode) >> msblk->block_log);
 
-Adding a new flag would make us backwards-incompatible both ways:
+i_size_read(inode) and msblk->block_log are unsigned integers,
+but calculate_skip had a signed int as argument. This cast led
+to wrong skip value and then to divide by zero bug.
 
-1) Migrating 'new' state to an older KVM will fail the
+Fixes: 1701aecb6849 ("Squashfs: regular file operations")
+Cc: stable@vger.kernel.org
+Reported-by: syzbot+e8f781243ce16ac2f962@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ fs/squashfs/file.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-	if (kvm_state->hdr.vmx.flags & ~KVM_STATE_VMX_PREEMPTION_TIMER_DEADLINE)
-	        return -EINVAL;
-
-check.
-
-2) Migrating 'old' state to 'new' KVM would make us support the old path
-('KVM_REQ_GET_NESTED_STATE_PAGES') so the flag will still be 'optional'.
-
-> Having two different paths with subtly different side effects however 
-> seems really worse for maintenance.  We are already discussing in 
-> another thread how to get rid of the check_nested_events side effects; 
-> that might possibly even remove the need for patch 1, so it's at least 
-> worth pursuing more than adding this second path.
-
-I have to admit I don't fully like this solution either :-( In case we
-make sure KVM_REQ_GET_NESTED_STATE_PAGES always gets handled the fix can
-be omitted indeed, however, I still dislike the divergence and the fact
-that 'if (vmx->nested.hv_evmcs)' checks scattered across the code are
-not fully valid. E.g. how do we fix immediate KVM_GET_NESTED_STATE after
-KVM_SET_NESTED_STATE without executing the vCPU problem?
-
->
-> I have queued patch 1, but I'd rather have a kvm selftest for it.  It 
-> doesn't seem impossible to have one...
-
-Thank you, the band-aid solves a real problem. Let me try to come up
-with a selftest for it.
-
->
-> Paolo
->
->> original eVMCS mapping path through KVM_REQ_GET_NESTED_STATE_PAGES in
->> place. To distinguish between 'new' and 'old' formats consider eVMCS
->> GPA == 0 as an unset GPA (thus forcing KVM_REQ_GET_NESTED_STATE_PAGES
->> path). While technically possible, it seems to be an extremely unlikely
->> case.
->
->
->> Signed-off-by: Vitaly Kuznetsov<vkuznets@redhat.com>
->
-
+diff --git a/fs/squashfs/file.c b/fs/squashfs/file.c
+index 7b1128398976..2ebcbd4f84cc 100644
+--- a/fs/squashfs/file.c
++++ b/fs/squashfs/file.c
+@@ -44,8 +44,8 @@
+  * Locate cache slot in range [offset, index] for specified inode.  If
+  * there's more than one return the slot closest to index.
+  */
+-static struct meta_index *locate_meta_index(struct inode *inode, int offset,
+-				int index)
++static struct meta_index *locate_meta_index(struct inode *inode, unsigned int offset,
++				unsigned int index)
+ {
+ 	struct meta_index *meta = NULL;
+ 	struct squashfs_sb_info *msblk = inode->i_sb->s_fs_info;
+@@ -83,8 +83,8 @@ static struct meta_index *locate_meta_index(struct inode *inode, int offset,
+ /*
+  * Find and initialise an empty cache slot for index offset.
+  */
+-static struct meta_index *empty_meta_index(struct inode *inode, int offset,
+-				int skip)
++static struct meta_index *empty_meta_index(struct inode *inode, unsigned int offset,
++				unsigned int skip)
+ {
+ 	struct squashfs_sb_info *msblk = inode->i_sb->s_fs_info;
+ 	struct meta_index *meta = NULL;
+@@ -211,11 +211,11 @@ static long long read_indexes(struct super_block *sb, int n,
+  * If the skip factor is limited in this way then the file will use multiple
+  * slots.
+  */
+-static inline int calculate_skip(int blocks)
++static inline unsigned int calculate_skip(unsigned int blocks)
+ {
+-	int skip = blocks / ((SQUASHFS_META_ENTRIES + 1)
++	unsigned int skip = blocks / ((SQUASHFS_META_ENTRIES + 1)
+ 		 * SQUASHFS_META_INDEXES);
+-	return min(SQUASHFS_CACHED_BLKS - 1, skip + 1);
++	return min((unsigned int) SQUASHFS_CACHED_BLKS - 1, skip + 1);
+ }
+ 
+ 
+@@ -224,12 +224,12 @@ static inline int calculate_skip(int blocks)
+  * on-disk locations of the datablock and block list metadata block
+  * <index_block, index_offset> for index (scaled to nearest cache index).
+  */
+-static int fill_meta_index(struct inode *inode, int index,
++static int fill_meta_index(struct inode *inode, unsigned int index,
+ 		u64 *index_block, int *index_offset, u64 *data_block)
+ {
+ 	struct squashfs_sb_info *msblk = inode->i_sb->s_fs_info;
+-	int skip = calculate_skip(i_size_read(inode) >> msblk->block_log);
+-	int offset = 0;
++	unsigned int skip = calculate_skip(i_size_read(inode) >> msblk->block_log);
++	unsigned int offset = 0;
+ 	struct meta_index *meta;
+ 	struct meta_entry *meta_entry;
+ 	u64 cur_index_block = squashfs_i(inode)->block_list_start;
+@@ -323,7 +323,7 @@ static int fill_meta_index(struct inode *inode, int index,
+  * Get the on-disk location and compressed size of the datablock
+  * specified by index.  Fill_meta_index() does most of the work.
+  */
+-static int read_blocklist(struct inode *inode, int index, u64 *block)
++static int read_blocklist(struct inode *inode, unsigned int index, u64 *block)
+ {
+ 	u64 start;
+ 	long long blks;
+@@ -448,7 +448,7 @@ static int squashfs_readpage(struct file *file, struct page *page)
+ {
+ 	struct inode *inode = page->mapping->host;
+ 	struct squashfs_sb_info *msblk = inode->i_sb->s_fs_info;
+-	int index = page->index >> (msblk->block_log - PAGE_SHIFT);
++	unsigned int index = page->index >> (msblk->block_log - PAGE_SHIFT);
+ 	int file_end = i_size_read(inode) >> msblk->block_log;
+ 	int expected = index == file_end ?
+ 			(i_size_read(inode) & (msblk->block_size - 1)) :
 -- 
-Vitaly
+2.31.1
 
