@@ -2,83 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 060E33732E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 01:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C8D3732E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 01:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230520AbhEDXmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 19:42:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40210 "EHLO
+        id S230517AbhEDXuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 19:50:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbhEDXmG (ORCPT
+        with ESMTP id S229617AbhEDXuM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 19:42:06 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF2DC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 16:41:09 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id g13so6489730qts.4
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 16:41:09 -0700 (PDT)
+        Tue, 4 May 2021 19:50:12 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB54CC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 16:49:15 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id t10-20020a25780a0000b02904f62bfcc4ccso278708ybc.23
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 16:49:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=t2PuuUA12ZEnJWsd6YLi9cc3wxXcwVJFuOyD1wnS6OM=;
-        b=lfUuBISTNjMU2nNcTHdIF+xZuIElaVTvaO6wuKTjajiX3PNM84R738EXu7NLKBmOfW
-         7r/j0y/A2l57gG8bJApOh3nmpYz4mGWkbbse04MF6Cg3BkboWK0oM8sVt+YTfFuhDL7o
-         MedoTV4MYGWJFbYhLF2H+vW4dZkRvSDWZcu/y4WEeGnIgKbXThENvOERjTuMmigeR5mP
-         OR+QOVeFNE/z8qCJrAS6ih3a/BHvJTS2UlvpLkejXOGkRx7NR5iabA8FR6RitKvBXjxR
-         oUxWEGADdvlT/rBo2kdTTaRA9iazfDl220pHURV7M7nOtTLovb3UXD8DWc7nkWnKnjY6
-         eWdg==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ZdSRGJLzb4KjpNs25266npb7NX9+fIrv6tE6wKvXYkQ=;
+        b=TbcwiLSGdUbbez0BgZKkedibJSJsyIkWQCaGjpCvgPzp1faOhRee83iTV3WJ1tkt0P
+         1NtcurmNCHILH6lbYDiAUMltldG88Al9R+PiAixGpalQSiYQIi8zHHeVVbb6H/h+XthT
+         fOqHea9tWE3GfNXtmJhLP/Z6xzK8AfvRefkcihq34e5gxYWRODFANVtlEaWL+20nCXMw
+         f4jJbQMjX569oq4jYirvY5sKDN/CuQcWPFK1G2Q5qUNDSPSngoRvGqdycVb03MlblhZD
+         /tZJLUdbpbiQvBIdMjgkfZqv0XF4g11pCPetHasOOyie0YssKHVdN6Btkzl9fUSPTsK7
+         tvIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=t2PuuUA12ZEnJWsd6YLi9cc3wxXcwVJFuOyD1wnS6OM=;
-        b=CeQ9UWJo5fg9ZplCwjC/Wmk9Grw1B2bbSu7gUSHI5aEaTN+N9INbPeILSrOoKfMjGS
-         cXpgbaqeC957AgYK/u2WjLXmtmSc+I+CptkFwVEAtdoGbdn8YGwqMAVdcpSl/IVDqkoM
-         xyv4AE4/TYsJmzZNOMTT5crAwaFM/2+/tOgxHN0LfF2hHWd71urU6h0sXuUdhOCzOIbd
-         KZHcyrNddQQUTIe+HoL5UOLUAfXz1Qp3CuykNa9s/2iVWXGM5CE+B0MkmFL2C1/tRdsy
-         DCWfRDUVkAXcsG5JCIoY2x62dzmG55loW9dAERgPPENJIcTRO9qtiRw1zWBbq3+B6YGm
-         swTg==
-X-Gm-Message-State: AOAM530whbKWetU6AFwG4k27uDjI+kktAmgpaz33i+wQX0nTbgSqhdXF
-        0Q1os11I3aQOdkJFtldjWgbagZ5+TCL0/mqXTpU=
-X-Google-Smtp-Source: ABdhPJzIVG394i7YFja0PQAdH0lIoZJJoet3XGWrFEJKjKQ2BUl0XjTgnsyYT+TArS+0tqFFtVetnnWkNy4t7NinJEQ=
-X-Received: by 2002:ac8:58c3:: with SMTP id u3mr24701148qta.311.1620171668693;
- Tue, 04 May 2021 16:41:08 -0700 (PDT)
-MIME-Version: 1.0
-Sender: drjohndon2004@gmail.com
-Received: by 2002:a0c:a2a6:0:0:0:0:0 with HTTP; Tue, 4 May 2021 16:41:08 -0700 (PDT)
-From:   "Mr. Dabire Basole" <mrdabirebsole@gmail.com>
-Date:   Tue, 4 May 2021 16:41:08 -0700
-X-Google-Sender-Auth: rYEKh-txO0fA80N18LotVgYvhho
-Message-ID: <CA+9mUkwexno+toov9Rz3=ZLhPQgabCQKSq2K-MOWOyw-SVW=tg@mail.gmail.com>
-Subject: PERSONAL TREAT AS URGENT.
-To:     undisclosed-recipients:;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ZdSRGJLzb4KjpNs25266npb7NX9+fIrv6tE6wKvXYkQ=;
+        b=jrw6L+41rNGK+MllDYnAM3TIOdv1JiQBppROIEYLqTcuTUbm7YP2L8aJiOWkLoQ1+I
+         czzhr6SEgoXP/B1MrA3Av4/zJFPdN2jZ0+8k7yFyoOeZX/4m2VMSAEFgqNjzgyTUjr8F
+         ZuOGHRAtFMRT4i0RkhMPlxjhiaxSg/1SRl8kYDiq8kZBnvKX7FSv8vuNRYwRxptcElpW
+         7XwvyIvTUFZhLK1BKMudED8Cy97fuScsf3Y6odSoJRK3Wze11dNt/9XuwKdSzQlsccCU
+         rAsdMJwK2Cn0YfvceEK9n/5u6UXiSst7wQZyPRhHYTJvNXOnLqMhvmlTPMe94h7JKFJb
+         uTgQ==
+X-Gm-Message-State: AOAM531rAlGJyJ+BVOamh/zTyEqqUWHG0K8SdkI+IERMPyMS90sLGG9/
+        9gVNYOJN7gsjlbBXeLCyv11uAs0Nqq5N
+X-Google-Smtp-Source: ABdhPJyUv29soiibo57/StwdT9oVQMlRMvGiEoQ0bn2rIkk4rM06sZg1XXWYdzwYlLtQ7azM31DxhCn5528F
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:6f05:c90a:7892:8680])
+ (user=irogers job=sendgmr) by 2002:a25:6c8a:: with SMTP id
+ h132mr38310085ybc.454.1620172154818; Tue, 04 May 2021 16:49:14 -0700 (PDT)
+Date:   Tue,  4 May 2021 16:49:10 -0700
+Message-Id: <20210504234910.976501-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
+Subject: [PATCH] libbpf: Add NULL check to add_dummy_ksym_var
+From:   Ian Rogers <irogers@google.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ian Rogers <irogers@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Petar Penkov <ppenkov@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+Avoids a segv if btf isn't present. Seen on the call path
+__bpf_object__open calling bpf_object__collect_externs.
 
-Greetings!
+Fixes: 5bd022ec01f0 (libbpf: Support extern kernel function)
+Suggested-by: Stanislav Fomichev <sdf@google.com>
+Suggested-by: Petar Penkov <ppenkov@google.com>
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/lib/bpf/libbpf.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-How are you with your family today? I hope both of you are in good
-health decently, I know that this message might meet you in utmost
-surprise as we never know each other before. I am Mr. Dabire Basole a
-banker by profession, I need your urgent assist in transferring the
-sum of USD$18.6 ( Eighteen Million Six Hundred Thousand United State Dollars)
-into your account. It is 100% risk free and under this achievement you are
-entitled to receive 50% of the total cash and 50% will be for me.
-More details will be sent to you on confirmation of your interest.
-Please if you are real interest on my proposer, just providing me your
-following information details such as:
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index de9a5b0118fe..97d9a1c2d680 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -3216,6 +3216,9 @@ static int add_dummy_ksym_var(struct btf *btf)
+ 	const struct btf_var_secinfo *vs;
+ 	const struct btf_type *sec;
+ 
++	if (!btf)
++		return 0;
++
+ 	sec_btf_id = btf__find_by_name_kind(btf, KSYMS_SEC,
+ 					    BTF_KIND_DATASEC);
+ 	if (sec_btf_id < 0)
+-- 
+2.31.1.607.g51e8a6a459-goog
 
-(1)NAME..............
-(2)AGE:................
-(3)SEX:.....................
-(4)PHONE NUMBER:.................
-(5)OCCUPATION:................ .....
-(6)YOUR COUNTRY:.....................
-
-Yours sincerely,
-
-Mr.  Dabire Basole.
