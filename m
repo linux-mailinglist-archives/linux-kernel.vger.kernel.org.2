@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89700372DA3
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 18:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E34E372DA7
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 18:12:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231716AbhEDQNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 12:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53038 "EHLO
+        id S231739AbhEDQNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 12:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231700AbhEDQN3 (ORCPT
+        with ESMTP id S231700AbhEDQNb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 12:13:29 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 372E6C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 09:12:33 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id n138so14139539lfa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 09:12:33 -0700 (PDT)
+        Tue, 4 May 2021 12:13:31 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B522C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 09:12:36 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 124so14128383lff.5
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 09:12:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7lkJK3ZMQxyrUYaqzq8/RCOAe7M9iq9dnCm7X+7Tk6w=;
-        b=Tct+1MB0IFW/9oXqyLhJenJz+W3OxAZ87NhH7cnhGgVMgNaYUzAvGLFV5TamrGpII3
-         RWUeihnmK/zl5oRlUjqrx8IWtoNhLBWtXnwMtkJBdYXEwPd0YmwBk2rFGPSEOKf5gj4z
-         zM96lEiFyGoiqXzHwz8XD+goa17A3MQ0L1dek03mlWH1VFHsJp8CD7jMf1AheKzR859i
-         bLXgyjsidOSLeqV38gHLR7r44tUixeTmGosF+CdqA8EL6b9XeVAGGfEW05KBUa4Ta60G
-         tRCHjh8QlGZlA8xa3yzu+laXXqqcNdgh3BPpJSr45VFaW+wTVMnKsUpSvLTEowQm/Drq
-         iIUQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=3a82EmNZunJK3ZJbNP0JbGj7NLetG3uE0s2MHagCq3U=;
+        b=wxyfiIk9ZRKFFMu7Qtt5D/PUwNqqFhRB8Wcgj+YyHPHc5cUKgZgwxGiMfRwQCKCNM8
+         EgWBJpOWPBZhW+XZQhEd32rkfi5DSS9AD3cI21p5SQcsSpTZAhlcmllGAhet3/MF/J3p
+         s33FUkYxOw0T+Z5SMErf9E6yFlscuq5QRNlfX9bnJsKOZ4FjvE6BYu+6TLz4IiAnoSeR
+         bz2shSeX3nc3ijfLvYIiNwG89kPrzMh7qZzQNtb4eX/tiLyb7DpOV6oJHln6oWaOvv3D
+         yN6TRqQNfZfq+1iiZUayBPeByWBNMGnWz10iGW9p55E/ULKjQL6XKyZptpm0iXpKmcva
+         116Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7lkJK3ZMQxyrUYaqzq8/RCOAe7M9iq9dnCm7X+7Tk6w=;
-        b=Oyu8fiHtuWH3SqEhTmon0Z9EX20vb2yZH0aAV6hH0PpAEyQ1EnGBKzQbs6WNI1SW9v
-         0yuGfDgA+B/IbUpE4vRJ5qTqA37Omk41PlA17HGtfxF0vZ0aywd7Sr1LhROZL2/JUqVp
-         b0IOC/j/wRq/MluiSc1jZ0dZ8a8yNOwdvsSf6Cm/pWHKCzF16z8FzXDp2cVC2lCqde6e
-         v2FPsTqPirmLCEB0lJExaNqaig+QxQb4UXwmOExmpenf5pP8DRc1E37m6JY5jutvxAJG
-         kVuzCVxg+vpYiywNNE04r97G4NfqriN/cjek0gVU4BvLJqM47Mw1Xyhi+r+SrrpyFThs
-         Y0Qg==
-X-Gm-Message-State: AOAM530OwfR9N4m4y5pG7ISmvrTCWkLiofLCGHzIM6scUIeBYTj9ux5z
-        aKVBo/euFfnrloBLhjNdmsWeycwGnRHaRNjz
-X-Google-Smtp-Source: ABdhPJysYt8OkmHwrobuZn1T35XlaRK5aGAipkn4MC0S4T0NJEqylzAwDppNwaSwpmVNWjJJByPTQw==
-X-Received: by 2002:ac2:44da:: with SMTP id d26mr16518818lfm.522.1620144751714;
-        Tue, 04 May 2021 09:12:31 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=3a82EmNZunJK3ZJbNP0JbGj7NLetG3uE0s2MHagCq3U=;
+        b=nJzuQZAec3GNVq7wOgKhnf+8Sa1xSnbo9pgnkfnGdfEzAB7coXTFztABVDgB1snMNT
+         TTx0J8IlfjrOXm33L+lMRbeIPuhSBK1Zpc7AuTXt3oZuVHPjtp55Hd5kslnoHybgB4+t
+         MdXeVZQK0JI5pyPbOR+AxC1016h1DVVVYpr5iCKDRP+5uFxBjKZ2bdUpRlc94DMFbMRh
+         OgP3WJGW187FDGRY5etsbHLQlv1Vvohq7jgbdDe+z9ldNlbWcTmkUiTrbXD9l88N1L9U
+         crLAbrn/CVZRl/YnNgFbJAh2UO9GXSEcDdYRhPDScRjKCal/ZjoM+Zjc1dDPdyIdrt/4
+         qsuQ==
+X-Gm-Message-State: AOAM530fIBoAna6KxKLPZcVf7DcxiaX7iNxAsbYjW3s3HRBcxVujIM+4
+        vkHaF7BAN5Ig0CQdB80MjpoZTQ==
+X-Google-Smtp-Source: ABdhPJy5ytaKbLf4TX6lQSUesKQr3QHIJFShNZOFpX3OXVXBNCo7ueewQGWviNbTDs02xbIDL2YzkQ==
+X-Received: by 2002:a19:c510:: with SMTP id w16mr17895584lfe.433.1620144754632;
+        Tue, 04 May 2021 09:12:34 -0700 (PDT)
 Received: from localhost.localdomain (h-98-128-180-197.NA.cust.bahnhof.se. [98.128.180.197])
-        by smtp.gmail.com with ESMTPSA id s20sm164193ljs.116.2021.05.04.09.12.29
+        by smtp.gmail.com with ESMTPSA id s20sm164193ljs.116.2021.05.04.09.12.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 09:12:30 -0700 (PDT)
+        Tue, 04 May 2021 09:12:33 -0700 (PDT)
 From:   Ulf Hansson <ulf.hansson@linaro.org>
 To:     linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
         Adrian Hunter <adrian.hunter@intel.com>
@@ -57,67 +57,206 @@ Cc:     Linus Walleij <linus.walleij@linaro.org>,
         Avri Altman <avri.altman@wdc.com>,
         Masami Hiramatsu <masami.hiramatsu@linaro.org>,
         linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 00/11] Initital support for new power/perf features for SD cards
-Date:   Tue,  4 May 2021 18:12:11 +0200
-Message-Id: <20210504161222.101536-1-ulf.hansson@linaro.org>
+Subject: [PATCH 01/11] mmc: core: Drop open coding when preparing commands with busy signaling
+Date:   Tue,  4 May 2021 18:12:12 +0200
+Message-Id: <20210504161222.101536-2-ulf.hansson@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210504161222.101536-1-ulf.hansson@linaro.org>
+References: <20210504161222.101536-1-ulf.hansson@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the SD spec v4.x the SD function extension registers were introduced,
-together with a new set of commands (CMD48/49 and CMD58/59) to read and write
-to them.
+Similar code for validating the host->max_busy_timeout towards the current
+command's busy timeout, exists in mmc_do_erase(), mmc_sleep() and
+__mmc_switch(). Let's move the common code into a helper function.
 
-Moreover, in v4.x a new standard function for power management features were
-added, while in v6.x a new standard function for performance enhancements
-features were added.
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+---
+ drivers/mmc/core/core.c    | 20 ++----------------
+ drivers/mmc/core/mmc.c     | 20 +++---------------
+ drivers/mmc/core/mmc_ops.c | 42 +++++++++++++++++++++-----------------
+ drivers/mmc/core/mmc_ops.h |  3 +++
+ 4 files changed, 31 insertions(+), 54 deletions(-)
 
-This series implement the basics to add support for these new features (and
-includes some additional preparations in patch 1->7), by adding support for
-reading and parsing these new SD registers. In the final patch we add support
-for the SD poweroff notification feature, which also add a function to write to
-these registers.
-
-Note that, there are no HW updates need for the host to support reading/parsing
-of the these new SD registers. This has been tested with a 64GB Sandisk Extreme
-PRO UHS-I A2 card.
-
-Tests and reviews are of course greatly appreciated!
-
-Kind regards
-Ulf Hansson
-
-Ulf Hansson (11):
-  mmc: core: Drop open coding when preparing commands with busy
-    signaling
-  mmc: core: Take into account MMC_CAP_NEED_RSP_BUSY for eMMC HPI
-    commands
-  mmc: core: Re-structure some code in __mmc_poll_for_busy()
-  mmc: core: Extend re-use of __mmc_poll_for_busy()
-  mmc: core: Enable eMMC sleep commands to use HW busy polling
-  mmc: core: Prepare mmc_send_cxd_data() to be re-used for additional
-    cmds
-  mmc: core: Drop open coding in mmc_sd_switch()
-  mmc: core: Parse the SD SCR register for support of CMD48/49 and
-    CMD58/59
-  mmc: core: Read the SD function extension registers for power
-    management
-  mmc: core: Read performance enhancements registers for SD cards
-  mmc: core: Add support for Power Off Notification for SD cards
-
- drivers/mmc/core/core.c    |  22 +--
- drivers/mmc/core/mmc.c     |  43 ++---
- drivers/mmc/core/mmc_ops.c | 137 +++++++-------
- drivers/mmc/core/mmc_ops.h |  10 +-
- drivers/mmc/core/sd.c      | 371 ++++++++++++++++++++++++++++++++++++-
- drivers/mmc/core/sd_ops.c  |  38 +---
- include/linux/mmc/card.h   |  22 +++
- include/linux/mmc/sd.h     |   4 +
- 8 files changed, 504 insertions(+), 143 deletions(-)
-
+diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
+index f194940c5974..b00c84ea8441 100644
+--- a/drivers/mmc/core/core.c
++++ b/drivers/mmc/core/core.c
+@@ -1582,7 +1582,7 @@ static int mmc_do_erase(struct mmc_card *card, unsigned int from,
+ {
+ 	struct mmc_command cmd = {};
+ 	unsigned int qty = 0, busy_timeout = 0;
+-	bool use_r1b_resp = false;
++	bool use_r1b_resp;
+ 	int err;
+ 
+ 	mmc_retune_hold(card->host);
+@@ -1650,23 +1650,7 @@ static int mmc_do_erase(struct mmc_card *card, unsigned int from,
+ 	cmd.opcode = MMC_ERASE;
+ 	cmd.arg = arg;
+ 	busy_timeout = mmc_erase_timeout(card, arg, qty);
+-	/*
+-	 * If the host controller supports busy signalling and the timeout for
+-	 * the erase operation does not exceed the max_busy_timeout, we should
+-	 * use R1B response. Or we need to prevent the host from doing hw busy
+-	 * detection, which is done by converting to a R1 response instead.
+-	 * Note, some hosts requires R1B, which also means they are on their own
+-	 * when it comes to deal with the busy timeout.
+-	 */
+-	if (!(card->host->caps & MMC_CAP_NEED_RSP_BUSY) &&
+-	    card->host->max_busy_timeout &&
+-	    busy_timeout > card->host->max_busy_timeout) {
+-		cmd.flags = MMC_RSP_SPI_R1 | MMC_RSP_R1 | MMC_CMD_AC;
+-	} else {
+-		cmd.flags = MMC_RSP_SPI_R1B | MMC_RSP_R1B | MMC_CMD_AC;
+-		cmd.busy_timeout = busy_timeout;
+-		use_r1b_resp = true;
+-	}
++	use_r1b_resp = mmc_prepare_busy_cmd(card->host, &cmd, busy_timeout);
+ 
+ 	err = mmc_wait_for_cmd(card->host, &cmd, 0);
+ 	if (err) {
+diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+index 8674c3e0c02c..63a7bd0b239c 100644
+--- a/drivers/mmc/core/mmc.c
++++ b/drivers/mmc/core/mmc.c
+@@ -1910,6 +1910,7 @@ static int mmc_sleep(struct mmc_host *host)
+ 	struct mmc_command cmd = {};
+ 	struct mmc_card *card = host->card;
+ 	unsigned int timeout_ms = DIV_ROUND_UP(card->ext_csd.sa_timeout, 10000);
++	bool use_r1b_resp;
+ 	int err;
+ 
+ 	/* Re-tuning can't be done once the card is deselected */
+@@ -1922,22 +1923,7 @@ static int mmc_sleep(struct mmc_host *host)
+ 	cmd.opcode = MMC_SLEEP_AWAKE;
+ 	cmd.arg = card->rca << 16;
+ 	cmd.arg |= 1 << 15;
+-
+-	/*
+-	 * If the max_busy_timeout of the host is specified, validate it against
+-	 * the sleep cmd timeout. A failure means we need to prevent the host
+-	 * from doing hw busy detection, which is done by converting to a R1
+-	 * response instead of a R1B. Note, some hosts requires R1B, which also
+-	 * means they are on their own when it comes to deal with the busy
+-	 * timeout.
+-	 */
+-	if (!(host->caps & MMC_CAP_NEED_RSP_BUSY) && host->max_busy_timeout &&
+-	    (timeout_ms > host->max_busy_timeout)) {
+-		cmd.flags = MMC_RSP_R1 | MMC_CMD_AC;
+-	} else {
+-		cmd.flags = MMC_RSP_R1B | MMC_CMD_AC;
+-		cmd.busy_timeout = timeout_ms;
+-	}
++	use_r1b_resp = mmc_prepare_busy_cmd(host, &cmd, timeout_ms);
+ 
+ 	err = mmc_wait_for_cmd(host, &cmd, 0);
+ 	if (err)
+@@ -1949,7 +1935,7 @@ static int mmc_sleep(struct mmc_host *host)
+ 	 * SEND_STATUS command to poll the status because that command (and most
+ 	 * others) is invalid while the card sleeps.
+ 	 */
+-	if (!cmd.busy_timeout || !(host->caps & MMC_CAP_WAIT_WHILE_BUSY))
++	if (!use_r1b_resp || !(host->caps & MMC_CAP_WAIT_WHILE_BUSY))
+ 		mmc_delay(timeout_ms);
+ 
+ out_release:
+diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
+index 5756781fef37..025a4134d5c7 100644
+--- a/drivers/mmc/core/mmc_ops.c
++++ b/drivers/mmc/core/mmc_ops.c
+@@ -521,6 +521,27 @@ int mmc_poll_for_busy(struct mmc_card *card, unsigned int timeout_ms,
+ 	return __mmc_poll_for_busy(card, timeout_ms, true, false, busy_cmd);
+ }
+ 
++bool mmc_prepare_busy_cmd(struct mmc_host *host, struct mmc_command *cmd,
++			  unsigned int timeout_ms)
++{
++	/*
++	 * If the max_busy_timeout of the host is specified, make sure it's
++	 * enough to fit the used timeout_ms. In case it's not, let's instruct
++	 * the host to avoid HW busy detection, by converting to a R1 response
++	 * instead of a R1B. Note, some hosts requires R1B, which also means
++	 * they are on their own when it comes to deal with the busy timeout.
++	 */
++	if (!(host->caps & MMC_CAP_NEED_RSP_BUSY) && host->max_busy_timeout &&
++	    (timeout_ms > host->max_busy_timeout)) {
++		cmd->flags = MMC_CMD_AC | MMC_RSP_SPI_R1 | MMC_RSP_R1;
++		return false;
++	}
++
++	cmd->flags = MMC_CMD_AC | MMC_RSP_SPI_R1B | MMC_RSP_R1B;
++	cmd->busy_timeout = timeout_ms;
++	return true;
++}
++
+ /**
+  *	__mmc_switch - modify EXT_CSD register
+  *	@card: the MMC card associated with the data transfer
+@@ -543,7 +564,7 @@ int __mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
+ 	struct mmc_host *host = card->host;
+ 	int err;
+ 	struct mmc_command cmd = {};
+-	bool use_r1b_resp = true;
++	bool use_r1b_resp;
+ 	unsigned char old_timing = host->ios.timing;
+ 
+ 	mmc_retune_hold(host);
+@@ -554,29 +575,12 @@ int __mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
+ 		timeout_ms = card->ext_csd.generic_cmd6_time;
+ 	}
+ 
+-	/*
+-	 * If the max_busy_timeout of the host is specified, make sure it's
+-	 * enough to fit the used timeout_ms. In case it's not, let's instruct
+-	 * the host to avoid HW busy detection, by converting to a R1 response
+-	 * instead of a R1B. Note, some hosts requires R1B, which also means
+-	 * they are on their own when it comes to deal with the busy timeout.
+-	 */
+-	if (!(host->caps & MMC_CAP_NEED_RSP_BUSY) && host->max_busy_timeout &&
+-	    (timeout_ms > host->max_busy_timeout))
+-		use_r1b_resp = false;
+-
+ 	cmd.opcode = MMC_SWITCH;
+ 	cmd.arg = (MMC_SWITCH_MODE_WRITE_BYTE << 24) |
+ 		  (index << 16) |
+ 		  (value << 8) |
+ 		  set;
+-	cmd.flags = MMC_CMD_AC;
+-	if (use_r1b_resp) {
+-		cmd.flags |= MMC_RSP_SPI_R1B | MMC_RSP_R1B;
+-		cmd.busy_timeout = timeout_ms;
+-	} else {
+-		cmd.flags |= MMC_RSP_SPI_R1 | MMC_RSP_R1;
+-	}
++	use_r1b_resp = mmc_prepare_busy_cmd(host, &cmd, timeout_ms);
+ 
+ 	err = mmc_wait_for_cmd(host, &cmd, retries);
+ 	if (err)
+diff --git a/drivers/mmc/core/mmc_ops.h b/drivers/mmc/core/mmc_ops.h
+index 7bc1cfb0654c..ba898c435658 100644
+--- a/drivers/mmc/core/mmc_ops.h
++++ b/drivers/mmc/core/mmc_ops.h
+@@ -18,6 +18,7 @@ enum mmc_busy_cmd {
+ 
+ struct mmc_host;
+ struct mmc_card;
++struct mmc_command;
+ 
+ int mmc_select_card(struct mmc_card *card);
+ int mmc_deselect_cards(struct mmc_host *host);
+@@ -35,6 +36,8 @@ int mmc_bus_test(struct mmc_card *card, u8 bus_width);
+ int mmc_can_ext_csd(struct mmc_card *card);
+ int mmc_get_ext_csd(struct mmc_card *card, u8 **new_ext_csd);
+ int mmc_switch_status(struct mmc_card *card, bool crc_err_fatal);
++bool mmc_prepare_busy_cmd(struct mmc_host *host, struct mmc_command *cmd,
++			  unsigned int timeout_ms);
+ int mmc_poll_for_busy(struct mmc_card *card, unsigned int timeout_ms,
+ 		      enum mmc_busy_cmd busy_cmd);
+ int __mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
 -- 
 2.25.1
 
