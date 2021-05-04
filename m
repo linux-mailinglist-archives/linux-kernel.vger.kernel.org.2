@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FBBD37305F
+	by mail.lfdr.de (Postfix) with ESMTP id EBC1C373060
 	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:08:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232523AbhEDTJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 15:09:10 -0400
-Received: from mga17.intel.com ([192.55.52.151]:38652 "EHLO mga17.intel.com"
+        id S232591AbhEDTJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 15:09:13 -0400
+Received: from mga17.intel.com ([192.55.52.151]:38656 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232127AbhEDTIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232130AbhEDTIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 4 May 2021 15:08:24 -0400
-IronPort-SDR: IOAm1ohfZjBh4bDhiVPxSIlQz+qrlqwuCOLrE+RqAtFwyW9ZhOdfHsM18Rhgxz7x3yR4SIAKJQ
- pHeVhen/C6uQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9974"; a="178269911"
+IronPort-SDR: ovmwOvNNWDlzX3nVRpNbl3Xz1A31qL+k/YqtgLxb9H4LfjS9FCE0W6yN/AMLav6elAEo/vD/7h
+ VIHlLVpcxiFw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9974"; a="178269912"
 X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
-   d="scan'208";a="178269911"
+   d="scan'208";a="178269912"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
   by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 12:07:18 -0700
-IronPort-SDR: cJnJdpoXxZmQeYZrs5vAIuUOLx2rcAzj8OBg7hUeVGrunBg1OS1q33+GO2cNUQ42nrGFZ9cYIA
- LCf/FwVv3YpA==
+IronPort-SDR: JV0AMvwR2no6YNpPZBxyDIxDMlicGNSCxzgpFPC4XoVhGsaaIpF68b8FB1xRNB9lHepPTrkMx1
+ qr8SwjbcZpqQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
-   d="scan'208";a="618591756"
+   d="scan'208";a="618591759"
 Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by fmsmga006.fm.intel.com with ESMTP; 04 May 2021 12:07:17 -0700
+  by fmsmga006.fm.intel.com with ESMTP; 04 May 2021 12:07:18 -0700
 From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>
@@ -41,9 +41,9 @@ Cc:     "H. Peter Anvin" <hpa@zytor.com>, Ashok Raj <ashok.raj@intel.com>,
         linux-kernel@vger.kernel.org,
         Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
         Andi Kleen <andi.kleen@intel.com>
-Subject: [RFC PATCH v5 13/16] watchdog/hardlockup/hpet: Only enable the HPET watchdog via a boot parameter
-Date:   Tue,  4 May 2021 12:05:23 -0700
-Message-Id: <20210504190526.22347-14-ricardo.neri-calderon@linux.intel.com>
+Subject: [RFC PATCH v5 14/16] x86/watchdog: Add a shim hardlockup detector
+Date:   Tue,  4 May 2021 12:05:24 -0700
+Message-Id: <20210504190526.22347-15-ricardo.neri-calderon@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210504190526.22347-1-ricardo.neri-calderon@linux.intel.com>
 References: <20210504190526.22347-1-ricardo.neri-calderon@linux.intel.com>
@@ -51,13 +51,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Keep the HPET-based hardlockup detector disabled unless explicitly enabled
-via a command-line argument. If such parameter is not given, the
-initialization of the hpet-based hardlockup detector fails and the NMI
-watchdog will fall back to use the perf-based implementation.
+The generic hardlockup detector is based on perf. It also provides a set
+of weak stubs that CPU architectures can override. Add a shim hardlockup
+detector for x86 that selects between perf and hpet implementations.
 
-Implement the command-line parsing using an early_param, as
-__setup("nmi_watchdog=") only parses generic options.
+Specifically, this shim implementation is needed for the HPET-based
+hardlockup detector; it can also be used for future implementations.
 
 Cc: "H. Peter Anvin" <hpa@zytor.com>
 Cc: Ashok Raj <ashok.raj@intel.com>
@@ -67,85 +66,146 @@ Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Stephane Eranian <eranian@google.com>
 Cc: "Ravi V. Shankar" <ravi.v.shankar@intel.com>
 Cc: x86@kernel.org
+Suggested-by: Nicholas Piggin <npiggin@gmail.com>
 Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
---
+---
 Changes since v4:
- * None
+ * Use a switch to enable and disable the various available detectors.
+   (Andi)
 
 Changes since v3:
- * None
+ * Fixed style in multi-line comment. (Randy Dunlap)
 
 Changes since v2:
- * Do not imply that using nmi_watchdog=hpet means the detector is
-   enabled. Instead, print a warning in such case.
+ * Pass cpu number as argument to hardlockup_detector_[enable|disable].
+   (Thomas Gleixner)
 
 Changes since v1:
- * Added documentation to the function handing the nmi_watchdog
-   kernel command-line argument.
+ * Introduced this patch: Added an x86-specific shim hardlockup
+   detector. (Nicholas Piggin)
 ---
- .../admin-guide/kernel-parameters.txt         |  8 ++++++-
- arch/x86/kernel/watchdog_hld_hpet.c           | 22 +++++++++++++++++++
- 2 files changed, 29 insertions(+), 1 deletion(-)
+ arch/x86/Kconfig.debug         |  4 ++
+ arch/x86/kernel/Makefile       |  1 +
+ arch/x86/kernel/watchdog_hld.c | 80 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 85 insertions(+)
+ create mode 100644 arch/x86/kernel/watchdog_hld.c
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 74db44ce4d9a..eafa38867270 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3136,7 +3136,7 @@
- 			Format: [state][,regs][,debounce][,die]
+diff --git a/arch/x86/Kconfig.debug b/arch/x86/Kconfig.debug
+index 0731da557a6d..4cdac3f80e80 100644
+--- a/arch/x86/Kconfig.debug
++++ b/arch/x86/Kconfig.debug
+@@ -117,9 +117,13 @@ config IOMMU_LEAK
+ config HAVE_MMIOTRACE_SUPPORT
+ 	def_bool y
  
- 	nmi_watchdog=	[KNL,BUGS=X86] Debugging features for SMP kernels
--			Format: [panic,][nopanic,][num]
-+			Format: [panic,][nopanic,][num,][hpet]
- 			Valid num: 0 or 1
- 			0 - turn hardlockup detector in nmi_watchdog off
- 			1 - turn hardlockup detector in nmi_watchdog on
-@@ -3147,6 +3147,12 @@
- 			please see 'nowatchdog'.
- 			This is useful when you use a panic=... timeout and
- 			need the box quickly up again.
-+			When hpet is specified, the NMI watchdog will be driven
-+			by an HPET timer, if available in the system. Otherwise,
-+			it falls back to the default implementation (perf or
-+			architecture-specific). Specifying hpet has no effect
-+			if the NMI watchdog is not enabled (either at build time
-+			or via the command line).
++config X86_HARDLOCKUP_DETECTOR
++	bool
++
+ config X86_HARDLOCKUP_DETECTOR_HPET
+ 	bool "HPET Timer for Hard Lockup Detection"
+ 	select HARDLOCKUP_DETECTOR_CORE
++	select X86_HARDLOCKUP_DETECTOR
+ 	depends on HARDLOCKUP_DETECTOR && HPET_TIMER && HPET && (X86_64 || X86_32)
+ 	help
+ 	  The hardlockup detector is driven by one counter of the Performance
+diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
+index 5d1a90b23577..3303f10b3d0a 100644
+--- a/arch/x86/kernel/Makefile
++++ b/arch/x86/kernel/Makefile
+@@ -115,6 +115,7 @@ obj-$(CONFIG_VM86)		+= vm86_32.o
+ obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
  
- 			These settings can be accessed at runtime via
- 			the nmi_watchdog and hardlockup_panic sysctls.
-diff --git a/arch/x86/kernel/watchdog_hld_hpet.c b/arch/x86/kernel/watchdog_hld_hpet.c
-index cd5f59b7c01b..3fd2405b31fa 100644
---- a/arch/x86/kernel/watchdog_hld_hpet.c
-+++ b/arch/x86/kernel/watchdog_hld_hpet.c
-@@ -548,6 +548,28 @@ void hardlockup_detector_hpet_stop(void)
- 	disable_timer(hld_data);
- }
+ obj-$(CONFIG_HPET_TIMER) 	+= hpet.o
++obj-$(CONFIG_X86_HARDLOCKUP_DETECTOR) += watchdog_hld.o
+ obj-$(CONFIG_X86_HARDLOCKUP_DETECTOR_HPET) += watchdog_hld_hpet.o
  
-+/**
-+ * hardlockup_detector_hpet_setup() - Parse command-line parameters
-+ * @str:	A string containing the kernel command line
+ obj-$(CONFIG_AMD_NB)		+= amd_nb.o
+diff --git a/arch/x86/kernel/watchdog_hld.c b/arch/x86/kernel/watchdog_hld.c
+new file mode 100644
+index 000000000000..8947a7644421
+--- /dev/null
++++ b/arch/x86/kernel/watchdog_hld.c
+@@ -0,0 +1,80 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * A shim hardlockup detector. It overrides the weak stubs of the generic
++ * implementation to select between the perf- or the hpet-based implementation.
 + *
-+ * Parse the nmi_watchdog parameter from the kernel command line. If
-+ * selected by the user, use this implementation to detect hardlockups.
++ * Copyright (C) Intel Corporation 2021
 + */
-+static int __init hardlockup_detector_hpet_setup(char *str)
++
++#include <linux/nmi.h>
++#include <asm/hpet.h>
++
++enum x86_hardlockup_detector {
++	X86_HARDLOCKUP_DETECTOR_PERF,
++	X86_HARDLOCKUP_DETECTOR_HPET,
++};
++
++static enum __read_mostly x86_hardlockup_detector detector_type;
++
++int watchdog_nmi_enable(unsigned int cpu)
 +{
-+	if (!str)
-+		return -EINVAL;
++	int ret = 0;
 +
-+	if (parse_option_str(str, "hpet"))
-+		hardlockup_use_hpet = true;
++	switch (detector_type) {
++	case X86_HARDLOCKUP_DETECTOR_PERF:
++		hardlockup_detector_perf_enable();
++		break;
++	case X86_HARDLOCKUP_DETECTOR_HPET:
++		hardlockup_detector_hpet_enable(cpu);
++		break;
++	default:
++		ret = -ENODEV;
++	}
 +
-+	if (!nmi_watchdog_user_enabled && hardlockup_use_hpet)
-+		pr_err("Selecting HPET NMI watchdog has no effect with NMI watchdog disabled\n");
-+
-+	return 0;
++	return ret;
 +}
-+early_param("nmi_watchdog", hardlockup_detector_hpet_setup);
 +
- /**
-  * hardlockup_detector_hpet_init() - Initialize the hardlockup detector
-  *
++void watchdog_nmi_disable(unsigned int cpu)
++{
++	switch (detector_type) {
++	case X86_HARDLOCKUP_DETECTOR_PERF:
++		hardlockup_detector_perf_disable();
++		break;
++	case X86_HARDLOCKUP_DETECTOR_HPET:
++		hardlockup_detector_hpet_disable(cpu);
++		break;
++	}
++}
++
++int __init watchdog_nmi_probe(void)
++{
++	int ret;
++
++	/*
++	 * Try first with the HPET hardlockup detector. It will only
++	 * succeed if selected at build time and the nmi_watchdog
++	 * command-line parameter is configured. This ensure that the
++	 * perf-based detector is used by default, if selected at
++	 * build time.
++	 */
++	ret = hardlockup_detector_hpet_init();
++	if (!ret) {
++		detector_type = X86_HARDLOCKUP_DETECTOR_HPET;
++		return ret;
++	}
++
++	ret = hardlockup_detector_perf_init();
++	if (!ret) {
++		detector_type = X86_HARDLOCKUP_DETECTOR_PERF;
++		return ret;
++	}
++
++	return ret;
++}
++
++void watchdog_nmi_stop(void)
++{
++	/* Only the HPET lockup detector defines a stop function. */
++	if (detector_type == X86_HARDLOCKUP_DETECTOR_HPET)
++		hardlockup_detector_hpet_stop();
++}
 -- 
 2.17.1
 
