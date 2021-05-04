@@ -2,211 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A972372856
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 11:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 093AC37285A
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 11:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbhEDJx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 05:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230058AbhEDJx5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 05:53:57 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D564C061763
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 02:53:02 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 82-20020a1c01550000b0290142562ff7c9so941323wmb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 02:53:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=nbYaFoj0a2opBaBQYBBRmlSUUXl+1Qvyp4TrOePSvwA=;
-        b=FjfNrm6cBuQLC8ebM/acC4hk9v0oVNU2o6rWkuc+sJZLDLTs7x4PT//VvQtKpn/FOq
-         X5Wy2ItNsi0HtqESBcwjhSwcXcYMq+tqc6ZrrfyOWNjDbl96fImjItFgN8SDmhkHIzaB
-         xT+Rleheq46YqepDFQf8mcLeRWw1MBFjWoGWbVUv3S1Jp4rF5x5UEpUmyz6ZV9xIkY56
-         zWoKDjirBukg5J/pedaovoAypOtNxOaTDEEjvVK7ndLaz34z9kUkUyvoM+dYgvHiX5J9
-         7O2E98e2YnI5CoZwj5FAaypcOYtdw4+mXwjHbPCUX1MFM13H+I+0TMKKNhOZIADlE0/s
-         eYRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=nbYaFoj0a2opBaBQYBBRmlSUUXl+1Qvyp4TrOePSvwA=;
-        b=FuOAlctfIbw5dRaBXw2SPk5N+MFFjU88mASdWG4m8cMdEBDviRSqTC5f2FJ+bOnwQM
-         oaMa9nBIGb+ez3lKJITk6LKoDhscfubNvZAfB95a3CNpjUtDpxFsoX9rmxfndPl38Srm
-         hyz0ipGdFGrfzWwBn5FuDAWg1MElWIRWgLtQEElJl5S2vfaLOEDL9vTwniK+WzVsa4zy
-         10jldOZjNtdnal77FQyNfG/gAVTtEd8lRPhwzusyMkBWfHm5EEfQZrKsVFjnnNm7ClwH
-         w8L/w6edzl9ZZIRNkwwaFrWOv2gT2+D9KtX4ktilFfP+5Sm43KlOjK62T0GVcj+Nobie
-         kvbA==
-X-Gm-Message-State: AOAM5327AbyrIR7mm8D3olWMfCqZL64RA/LCw5iEIHSJZoz3NFUZr3R+
-        f1YogVvJpWKJQMrkyqLgIrWIoQ==
-X-Google-Smtp-Source: ABdhPJycgtmF3JWdk/ehC+TSGB+dVEK7HZAn53WQ3OLAn4ZVdnwicCKBkdMmP1aFdKThHI/rg8Tc+A==
-X-Received: by 2002:a1c:b087:: with SMTP id z129mr2922551wme.67.1620121980472;
-        Tue, 04 May 2021 02:53:00 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:15:13:fd3e:f300:5aa9:4169])
-        by smtp.gmail.com with ESMTPSA id p5sm2107257wma.45.2021.05.04.02.52.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 02:52:59 -0700 (PDT)
-Date:   Tue, 4 May 2021 11:52:54 +0200
-From:   Marco Elver <elver@google.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Peter Collingbourne <pcc@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Subject: Re: [PATCH 10/12] signal: Redefine signinfo so 64bit fields are
- possible
-Message-ID: <YJEZdhe6JGFNYlum@elver.google.com>
-References: <m14kfjh8et.fsf_-_@fess.ebiederm.org>
- <20210503203814.25487-1-ebiederm@xmission.com>
- <20210503203814.25487-10-ebiederm@xmission.com>
- <m1o8drfs1m.fsf@fess.ebiederm.org>
- <CANpmjNNOK6Mkxkjx5nD-t-yPQ-oYtaW5Xui=hi3kpY_-Y0=2JA@mail.gmail.com>
- <m1lf8vb1w8.fsf@fess.ebiederm.org>
- <CAMn1gO7+wMzHoGtp2t3=jJxRmPAGEbhnUDFLQQ0vFXZ2NP8stg@mail.gmail.com>
+        id S230112AbhEDJzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 05:55:22 -0400
+Received: from mga01.intel.com ([192.55.52.88]:50681 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229955AbhEDJzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 05:55:20 -0400
+IronPort-SDR: D/GLM75nih2F26qWPHaoDu/QFJzewRgZNlxssrX349sqRPByz1OYdPvOdxqsbHIrD0BafVuYCI
+ HAA/RTWh/U8g==
+X-IronPort-AV: E=McAfee;i="6200,9189,9973"; a="218747499"
+X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
+   d="scan'208";a="218747499"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 02:54:26 -0700
+IronPort-SDR: KwK79X15gOcdKq9tofz6DCFmiDDHp7RmoDm/kw4+LhHhaqcC3aL+sXQRmFTw2Fxjn/H8+qHo65
+ NNKJJDGapQaQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
+   d="scan'208";a="396071354"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by fmsmga007.fm.intel.com with SMTP; 04 May 2021 02:54:23 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Tue, 04 May 2021 12:54:22 +0300
+Date:   Tue, 4 May 2021 12:54:22 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Werner Sembach <wse@tuxedocomputers.com>
+Cc:     airlied@linux.ie, daniel@ffwll.ch, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] Restructure output format computation for better
+ expandability
+Message-ID: <YJEZzhhQzmYxi8Gp@intel.com>
+References: <20210503182148.851790-1-wse@tuxedocomputers.com>
+ <20210503182148.851790-4-wse@tuxedocomputers.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAMn1gO7+wMzHoGtp2t3=jJxRmPAGEbhnUDFLQQ0vFXZ2NP8stg@mail.gmail.com>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210503182148.851790-4-wse@tuxedocomputers.com>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 09:03PM -0700, Peter Collingbourne wrote:
-> On Mon, May 3, 2021 at 8:42 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> > Marco Elver <elver@google.com> writes:
-> > > On Mon, 3 May 2021 at 23:04, Eric W. Biederman <ebiederm@xmission.com> wrote:
-> > >> "Eric W. Beiderman" <ebiederm@xmission.com> writes:
-> > >> > From: "Eric W. Biederman" <ebiederm@xmission.com>
-> > >> >
-> > >> > The si_perf code really wants to add a u64 field.  This change enables
-> > >> > that by reorganizing the definition of siginfo_t, so that a 64bit
-> > >> > field can be added without increasing the alignment of other fields.
-> > >
-> > > If you can, it'd be good to have an explanation for this, because it's
-> > > not at all obvious -- some future archeologist will wonder how we ever
-> > > came up with this definition of siginfo...
-> > >
-> > > (I see the trick here is that before the union would have changed
-> > > alignment, introducing padding after the 3 ints -- but now because the
-> > > 3 ints are inside the union the union's padding no longer adds padding
-> > > for these ints.  Perhaps you can explain it better than I can. Also
-> > > see below.)
-> >
-> > Yes.  The big idea is adding a 64bit field into the second union
-> > in the _sigfault case will increase the alignment of that second
-> > union to 64bit.
-> >
-> > In the 64bit case the alignment is already 64bit so it is not an
-> > issue.
-> >
-> > In the 32bit case there are 3 ints followed by a pointer.  When the
-> > 64bit member is added the alignment of _segfault becomes 64bit.  That
-> > 64bit alignment after 3 ints changes the location of the 32bit pointer.
-> >
-> > By moving the 3 preceding ints into _segfault that does not happen.
-> >
-> >
-> >
-> > There remains one very subtle issue that I think isn't a problem
-> > but I would appreciate someone else double checking me.
-> >
-> >
-> > The old definition of siginfo_t on 32bit almost certainly had 32bit
-> > alignment.  With the addition of a 64bit member siginfo_t gains 64bit
-> > alignment.  This difference only matters if the 64bit field is accessed.
-> > Accessing a 64bit field with 32bit alignment will cause unaligned access
-> > exceptions on some (most?) architectures.
-> >
-> > For the 64bit field to be accessed the code needs to be recompiled with
-> > the new headers.  Which implies that when everything is recompiled
-> > siginfo_t will become 64bit aligned.
-> >
-> >
-> > So the change should be safe unless someone is casting something with
-> > 32bit alignment into siginfo_t.
+On Mon, May 03, 2021 at 08:21:47PM +0200, Werner Sembach wrote:
+> Couples the decission between RGB and YCbCr420 mode and the check if the port
+> clock can archive the required frequency. Other checks and configuration steps
+> that where previously done in between can also be done before or after.
 > 
-> How about if someone has a field of type siginfo_t as an element of a
-> struct? For example:
+> This allows for are cleaner implementation of retrying different color
+> encodings.
 > 
-> struct foo {
->   int x;
->   siginfo_t y;
-> };
+> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> ---
 > 
-> With this change wouldn't the y field move from offset 4 to offset 8?
+> >From 57e42ec6e34ac32da29eb7bc3c691cbeb2534396 Mon Sep 17 00:00:00 2001
+> From: Werner Sembach <wse@tuxedocomputers.com>
+> Date: Mon, 3 May 2021 15:30:40 +0200
+> Subject: [PATCH 3/4] Restructure output format computation for better
+>  expandability
+> 
+> ---
+>  drivers/gpu/drm/i915/display/intel_hdmi.c | 57 +++++++++++------------
+>  1 file changed, 26 insertions(+), 31 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
+> index ce165ef28e88..e2553ac6fd13 100644
+> --- a/drivers/gpu/drm/i915/display/intel_hdmi.c
+> +++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
+> @@ -1999,29 +1999,6 @@ static bool hdmi_deep_color_possible(const struct intel_crtc_state *crtc_state,
+>  					      INTEL_OUTPUT_FORMAT_YCBCR420);
+>  }
+>  
+> -static int
+> -intel_hdmi_ycbcr420_config(struct intel_crtc_state *crtc_state,
+> -			   const struct drm_connector_state *conn_state)
+> -{
+> -	struct drm_connector *connector = conn_state->connector;
+> -	struct drm_i915_private *i915 = to_i915(connector->dev);
+> -	const struct drm_display_mode *adjusted_mode =
+> -		&crtc_state->hw.adjusted_mode;
+> -
+> -	if (!drm_mode_is_420_only(&connector->display_info, adjusted_mode))
+> -		return 0;
+> -
+> -	if (!connector->ycbcr_420_allowed) {
+> -		drm_err(&i915->drm,
+> -			"Platform doesn't support YCBCR420 output\n");
+> -		return -EINVAL;
+> -	}
+> -
+> -	crtc_state->output_format = INTEL_OUTPUT_FORMAT_YCBCR420;
+> -
+> -	return intel_pch_panel_fitting(crtc_state, conn_state);
+> -}
+> -
+>  static int intel_hdmi_compute_bpc(struct intel_encoder *encoder,
+>  				  struct intel_crtc_state *crtc_state,
+>  				  int clock)
+> @@ -2128,6 +2105,24 @@ static bool intel_hdmi_has_audio(struct intel_encoder *encoder,
+>  		return intel_conn_state->force_audio == HDMI_AUDIO_ON;
+>  }
+>  
+> +int intel_hdmi_compute_output_format(struct intel_encoder *encoder,
+> +				     struct intel_crtc_state *crtc_state,
+> +				     const struct drm_connector_state *conn_state)
+> +{
+> +	const struct drm_connector *connector = conn_state->connector;
+> +	const struct drm_display_mode *adjusted_mode = &crtc_state->hw.adjusted_mode;
+> +	int ret;
+> +
+> +	if (connector->ycbcr_420_allowed && drm_mode_is_420_only(&connector->display_info, adjusted_mode))
+> +		crtc_state->output_format = INTEL_OUTPUT_FORMAT_YCBCR420;
+> +	else
+> +		crtc_state->output_format = INTEL_OUTPUT_FORMAT_RGB;
 
-This is a problem if such a struct is part of the ABI -- in the kernel I
-found these that might be problematic:
+Slight change in behaviour here since we used to reject 420_only modes
+if ycbcr_420_allowed wasn't set. But I think this should be OK, and in
+fact I believe the DP counterpart code always used an RGB fallback
+rather than failing. So this lines up better with that.
 
-| arch/csky/kernel/signal.c:struct rt_sigframe {
-| arch/csky/kernel/signal.c-	/*
-| arch/csky/kernel/signal.c-	 * pad[3] is compatible with the same struct defined in
-| arch/csky/kernel/signal.c-	 * gcc/libgcc/config/csky/linux-unwind.h
-| arch/csky/kernel/signal.c-	 */
-| arch/csky/kernel/signal.c-	int pad[3];
-| arch/csky/kernel/signal.c-	struct siginfo info;
-| arch/csky/kernel/signal.c-	struct ucontext uc;
-| arch/csky/kernel/signal.c-};
-| [...]
-| arch/parisc/include/asm/rt_sigframe.h-#define SIGRETURN_TRAMP 4
-| arch/parisc/include/asm/rt_sigframe.h-#define SIGRESTARTBLOCK_TRAMP 5 
-| arch/parisc/include/asm/rt_sigframe.h-#define TRAMP_SIZE (SIGRETURN_TRAMP + SIGRESTARTBLOCK_TRAMP)
-| arch/parisc/include/asm/rt_sigframe.h-
-| arch/parisc/include/asm/rt_sigframe.h:struct rt_sigframe {
-| arch/parisc/include/asm/rt_sigframe.h-	/* XXX: Must match trampoline size in arch/parisc/kernel/signal.c 
-| arch/parisc/include/asm/rt_sigframe.h-	        Secondary to that it must protect the ERESTART_RESTARTBLOCK
-| arch/parisc/include/asm/rt_sigframe.h-		trampoline we left on the stack (we were bad and didn't 
-| arch/parisc/include/asm/rt_sigframe.h-		change sp so we could run really fast.) */
-| arch/parisc/include/asm/rt_sigframe.h-	unsigned int tramp[TRAMP_SIZE];
-| arch/parisc/include/asm/rt_sigframe.h-	struct siginfo info;
-| [..]
-| arch/parisc/kernel/signal32.h-#define COMPAT_SIGRETURN_TRAMP 4
-| arch/parisc/kernel/signal32.h-#define COMPAT_SIGRESTARTBLOCK_TRAMP 5
-| arch/parisc/kernel/signal32.h-#define COMPAT_TRAMP_SIZE (COMPAT_SIGRETURN_TRAMP + \
-| arch/parisc/kernel/signal32.h-				COMPAT_SIGRESTARTBLOCK_TRAMP)
-| arch/parisc/kernel/signal32.h-
-| arch/parisc/kernel/signal32.h:struct compat_rt_sigframe {
-| arch/parisc/kernel/signal32.h-        /* XXX: Must match trampoline size in arch/parisc/kernel/signal.c
-| arch/parisc/kernel/signal32.h-                Secondary to that it must protect the ERESTART_RESTARTBLOCK
-| arch/parisc/kernel/signal32.h-                trampoline we left on the stack (we were bad and didn't
-| arch/parisc/kernel/signal32.h-                change sp so we could run really fast.) */
-| arch/parisc/kernel/signal32.h-        compat_uint_t tramp[COMPAT_TRAMP_SIZE];
-| arch/parisc/kernel/signal32.h-        compat_siginfo_t info;
+Needs at least a note in the commit message to indicate that
+there is a functional change buried within. Though it would be
+better to split this functional change into a separate prep patch.
 
-Adding these static asserts to parisc shows the problem:
+> +
+> +	ret = intel_hdmi_compute_clock(encoder, crtc_state);
+> +
+> +	return ret;
+> +}
+> +
+>  int intel_hdmi_compute_config(struct intel_encoder *encoder,
+>  			      struct intel_crtc_state *pipe_config,
+>  			      struct drm_connector_state *conn_state)
+> @@ -2152,23 +2147,23 @@ int intel_hdmi_compute_config(struct intel_encoder *encoder,
+>  	if (adjusted_mode->flags & DRM_MODE_FLAG_DBLCLK)
+>  		pipe_config->pixel_multiplier = 2;
+>  
+> -	ret = intel_hdmi_ycbcr420_config(pipe_config, conn_state);
+> -	if (ret)
+> -		return ret;
+> -
+> -	pipe_config->limited_color_range =
+> -		intel_hdmi_limited_color_range(pipe_config, conn_state);
+> -
+>  	if (HAS_PCH_SPLIT(dev_priv) && !HAS_DDI(dev_priv))
+>  		pipe_config->has_pch_encoder = true;
+>  
+>  	pipe_config->has_audio =
+>  		intel_hdmi_has_audio(encoder, pipe_config, conn_state);
+>  
+> -	ret = intel_hdmi_compute_clock(encoder, pipe_config);
+> +	ret = intel_hdmi_compute_output_format(encoder, pipe_config, conn_state);
+>  	if (ret)
+>  		return ret;
+>  
+> +	ret = intel_pch_panel_fitting(pipe_config, conn_state);
+> +	if (ret)
+> +		return ret;
 
-| diff --git a/arch/parisc/kernel/signal.c b/arch/parisc/kernel/signal.c
-| index fb1e94a3982b..0be582fb81be 100644
-| --- a/arch/parisc/kernel/signal.c
-| +++ b/arch/parisc/kernel/signal.c
-| @@ -610,3 +610,6 @@ void do_notify_resume(struct pt_regs *regs, long in_syscall)
-|  	if (test_thread_flag(TIF_NOTIFY_RESUME))
-|  		tracehook_notify_resume(regs);
-|  }
-| +
-| +static_assert(sizeof(unsigned long) == 4); // 32 bit build
-| +static_assert(offsetof(struct rt_sigframe, info) == 9 * 4);
+We probably want to still wrap this call in a
+if (crtc_state->output_format == INTEL_OUTPUT_FORMAT_YCBCR420) {...}
 
-This passes without the siginfo rework in this patch. With it:
+In theory calling intel_pch_panel_fitting() should be a nop for
+the !420 case, but I think we have some issues there at least when
+it comes to bigjoiner. So the 420 check is probably needed to avoid
+mistakenly turning on the panel fitter when not needed.
 
-| ./include/linux/build_bug.h:78:41: error: static assertion failed: "offsetof(struct rt_sigframe, info) == 9 * 4"
 
-As sad as it is, I don't think we can have our cake and eat it, too. :-(
+> +
+> +	pipe_config->limited_color_range =
+> +		intel_hdmi_limited_color_range(pipe_config, conn_state);
+> +
+>  	if (conn_state->picture_aspect_ratio)
+>  		adjusted_mode->picture_aspect_ratio =
+>  			conn_state->picture_aspect_ratio;
+> -- 
+> 2.25.1
 
-Unless you see why this is fine, I think we need to drop this patch and
-go back to the simpler version you had.
-
-Thanks,
--- Marco
+-- 
+Ville Syrjälä
+Intel
