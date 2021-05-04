@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FAEC373081
+	by mail.lfdr.de (Postfix) with ESMTP id CADF5373082
 	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232403AbhEDTMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 15:12:46 -0400
-Received: from mga03.intel.com ([134.134.136.65]:9835 "EHLO mga03.intel.com"
+        id S232439AbhEDTMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 15:12:48 -0400
+Received: from mga03.intel.com ([134.134.136.65]:9838 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232208AbhEDTMh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232217AbhEDTMh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 4 May 2021 15:12:37 -0400
-IronPort-SDR: +cxvddP6+QdssEN3Aa3nrEiVng0iUMhdniolVo8rjOMYRMzFjo4NfysdChBp2onHNCr3AJxQNr
- eIgkKZDNwEzA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9974"; a="198115957"
+IronPort-SDR: 6KPnCrwo8KfO/7LhEzSHuShKSdBlQeOTOf9Wl41Fa1kHZxjaWOwMHrGHBecoaSRJvL740/bk7X
+ QLjbAj2mD8kw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9974"; a="198115959"
 X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
-   d="scan'208";a="198115957"
+   d="scan'208";a="198115959"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
   by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 12:11:41 -0700
-IronPort-SDR: zQFJBhcgEZHf9/cLASl+w3pxDwLapeYUVWAYAzxAEdsolXppVm2zQle2n+OvvjriN/I1K1zzry
- WtNkOTjab2+A==
+IronPort-SDR: ON/7mKFclHv7AHjEufCeahAaGdMo1RgkaVFRXsmFLysjx6qxLHMKcPdSQPWJT7/7nN4caafIsw
+ 3/HW+NzHYWKQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
-   d="scan'208";a="396245297"
+   d="scan'208";a="396245302"
 Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
   by fmsmga007.fm.intel.com with ESMTP; 04 May 2021 12:11:41 -0700
 From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
@@ -37,11 +37,12 @@ Cc:     woodhouse@vger.kernel.org, Jacob Pan <jacob.jun.pan@intel.com>,
         "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
         Ricardo Neri <ricardo.neri@intel.com>,
         Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
         Andi Kleen <andi.kleen@intel.com>,
         David Woodhouse <dwmw2@infradead.org>
-Subject: [RFC PATCH v5 5/7] iommu/vt-d: Fixup delivery mode of the HPET hardlockup interrupt
-Date:   Tue,  4 May 2021 12:10:47 -0700
-Message-Id: <20210504191049.22661-6-ricardo.neri-calderon@linux.intel.com>
+Subject: [RFC PATCH v5 6/7] iommu/amd: Fixup delivery mode of the HPET hardlockup interrupt
+Date:   Tue,  4 May 2021 12:10:48 -0700
+Message-Id: <20210504191049.22661-7-ricardo.neri-calderon@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210504191049.22661-1-ricardo.neri-calderon@linux.intel.com>
 References: <20210504191049.22661-1-ricardo.neri-calderon@linux.intel.com>
@@ -63,6 +64,7 @@ the delivery mode.
 Hence, when allocating an interrupt, check if such interrupt belongs to
 the HPET hardlockup detector and fixup the delivery mode accordingly.
 
+Cc: Ashok Raj <ashok.raj@intel.com>
 Cc: Andi Kleen <andi.kleen@intel.com>
 Cc: Borislav Petkov <bp@suse.de>
 Cc: David Woodhouse <dwmw2@infradead.org> (supporter:INTEL IOMMU (VT-d))
@@ -74,7 +76,6 @@ Cc: Stephane Eranian <eranian@google.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: iommu@lists.linux-foundation.org (open list:INTEL IOMMU (VT-d))
 Cc: x86@kernel.org
-Reviewed-by: Ashok Raj <ashok.raj@intel.com>
 Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
 ---
 Changes since v4:
@@ -89,34 +90,34 @@ Changes since v2:
 Changes since v1:
  * N/A
 ---
- drivers/iommu/intel/irq_remapping.c | 9 +++++++++
+ drivers/iommu/amd/iommu.c | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/drivers/iommu/intel/irq_remapping.c b/drivers/iommu/intel/irq_remapping.c
-index daa5df53db59..b07c68ecac01 100644
---- a/drivers/iommu/intel/irq_remapping.c
-+++ b/drivers/iommu/intel/irq_remapping.c
-@@ -18,6 +18,7 @@
- #include <asm/apic.h>
- #include <asm/smp.h>
- #include <asm/cpu.h>
-+#include <asm/hpet.h>
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index e8d9fae0c766..758e08ba42e6 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -35,6 +35,7 @@
  #include <asm/irq_remapping.h>
- #include <asm/pci-direct.h>
- 
-@@ -1376,6 +1377,14 @@ static int intel_irq_remapping_alloc(struct irq_domain *domain,
- 		irq_data->hwirq = (index << 16) + i;
- 		irq_data->chip_data = ird;
- 		irq_data->chip = &intel_ir_chip;
+ #include <asm/io_apic.h>
+ #include <asm/apic.h>
++#include <asm/hpet.h>
+ #include <asm/hw_irq.h>
+ #include <asm/proto.h>
+ #include <asm/iommu.h>
+@@ -3254,6 +3255,14 @@ static int irq_remapping_alloc(struct irq_domain *domain, unsigned int virq,
+ 		irq_data->hwirq = (devid << 16) + i;
+ 		irq_data->chip_data = data;
+ 		irq_data->chip = &amd_ir_chip;
 +
 +		/*
 +		 * If we find the HPET hardlockup detector irq, fixup the
 +		 * delivery mode.
 +		 */
 +		if (is_hpet_irq_hardlockup_detector(info))
-+			irq_cfg->delivery_mode = APIC_DELIVERY_MODE_NMI;
++			cfg->delivery_mode = APIC_DELIVERY_MODE_NMI;
 +
- 		intel_irq_remapping_prepare_irte(ird, irq_cfg, info, index, i);
+ 		irq_remapping_prepare_irte(data, cfg, info, devid, index, i);
  		irq_set_status_flags(virq + i, IRQ_MOVE_PCNTXT);
  	}
 -- 
