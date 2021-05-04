@@ -2,119 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED954372B91
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:02:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4461372B8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231368AbhEDODk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 10:03:40 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:44897 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231216AbhEDODi (ORCPT
+        id S231347AbhEDOCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 10:02:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231241AbhEDOCi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 10:03:38 -0400
-Received: from mail-qk1-f197.google.com ([209.85.222.197])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1ldvdK-0002Y7-Fu
-        for linux-kernel@vger.kernel.org; Tue, 04 May 2021 14:02:42 +0000
-Received: by mail-qk1-f197.google.com with SMTP id u9-20020a05620a4549b02902e956c2a3c8so7554532qkp.20
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 07:02:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dNDWyjCrI63gNu7CAOFoq1OwHM7ZaGvjz+swFF+XPc0=;
-        b=hqiARRiErYY58YUjAR27IO8w/8oPgSqm2HFrlur0koyQ8ayQemg2A5lbPwgZaU5kQ+
-         /5v19AyqqCtwv5Hxfnc8Li4PEgegbvHNeBWBArXyBSVqCZh+yhAUjyz/e44Zu2outGoS
-         XscvFvN65YFmjNWqVhuWRuorOes08i0l9R6E+pvq/cAdFzKOpZBMaxYqv+QR3cg5nEjO
-         nN3OmD+AyMFnv8viD1NPv+V+uHDrc2dVt5o9k/XGYzm+qF3BHfv1knBtAxHHmLZMOhqU
-         olM4oVb8ja4sIrYk6U/wveMMUArI724FTsNv70MnwRSAR2HQyiG/Fz5w7YMgZTfJ5Rbp
-         qXyg==
-X-Gm-Message-State: AOAM531r87aWI8yyey5ohzehjwUoQ/1S+r8XzpXLFe2Q1fprF6H76Au3
-        PSR+jl85ycu8oQPDrkv9cbO3gxdIBoNmutMoI7Py/B4XgyIQy6BOkNjvmrGkPY9mxKeVkcUrGJI
-        NHHNI1osWcwiWILG3yKxByiPH1NSfvj44OC+Jt4mbZA==
-X-Received: by 2002:a37:71c3:: with SMTP id m186mr24351392qkc.453.1620136961666;
-        Tue, 04 May 2021 07:02:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy9BzIFfPiOwW7tb/ixZQudtejnztxJhuZARX74hAwV9Soc7Zdnc/GftsPh97w+WCF20UWFSw==
-X-Received: by 2002:a37:71c3:: with SMTP id m186mr24351373qkc.453.1620136961454;
-        Tue, 04 May 2021 07:02:41 -0700 (PDT)
-Received: from [192.168.1.4] ([45.237.49.3])
-        by smtp.gmail.com with ESMTPSA id n16sm2471133qtl.48.2021.05.04.07.02.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 May 2021 07:02:40 -0700 (PDT)
-Subject: Re: [PATCH v2 1/4] dt-bindings: memory: Add binding for MediaTek DRAM
- Controller
-To:     Po-Kai Chi <pk.chi@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        devicetree@vger.kernel.org, wsd_upstream@mediatek.com,
-        CC Hwang <cc.hwang@mediatek.com>
-References: <1618565538-6972-1-git-send-email-pk.chi@mediatek.com>
- <1618565538-6972-2-git-send-email-pk.chi@mediatek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <8a4c97e4-0281-9aca-76e0-522c72cae7a4@canonical.com>
-Date:   Tue, 4 May 2021 10:00:29 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 4 May 2021 10:02:38 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C967C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 07:01:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=V4U9OF/5A5A7+ex1Qlqu0+oFqFyil+2DW5bEVur773Y=; b=pazQueOhDe2ARSKQLwocmk9zmx
+        eUloDS38mmm+XUf0HA2b2cNeWLq8cyH8LB36OfpBrEgOo7TAHEC2wd+V3QmEp+K4JgkCErZecwCtd
+        N/h+0hDGI8m9R6hYUgCLjZoHQebjj1W2rpDTRbPsqF7sEd8hU8z3rnLXuTGeF7GNQAHXL8pLdImnv
+        dJEay8jYsdGVaIwCK6T2d8X8FGnpif/TdDsjpJrTbiWsX0Tb/GC373ohR+lx9NnSKXNMj/qZ6SG4W
+        7cZj/XqdcxEpVeCApoyutZm3gYkNT+H/Ltc83JjRkYqXh5dwEmZPmWAqKUcc69Eix1l7wbtisNT0i
+        ZobOxktg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1ldvbz-00GeEB-E3; Tue, 04 May 2021 14:01:23 +0000
+Date:   Tue, 4 May 2021 15:01:19 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     outreachy-kernel@googlegroups.com,
+        David Kershner <david.kershner@unisys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        sparmaintainer@unisys.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [Outreachy kernel] Re: [PATCH v7] staging: unisys: visorhba:
+ Convert module from IDR to XArray
+Message-ID: <20210504140119.GH1847222@casper.infradead.org>
+References: <20210504133253.32269-1-fmdefrancesco@gmail.com>
+ <20210504134216.GG1847222@casper.infradead.org>
+ <3550993.e1xmc6yJDa@linux.local>
 MIME-Version: 1.0
-In-Reply-To: <1618565538-6972-2-git-send-email-pk.chi@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3550993.e1xmc6yJDa@linux.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/04/2021 05:32, Po-Kai Chi wrote:
-> This patch adds the documentation of the device-tree binding for
-> MediaTek DRAM Controller.
-> 
-> Signed-off-by: Po-Kai Chi <pk.chi@mediatek.com>
-> ---
->  .../memory-controllers/mediatek,dramc.yaml         |  162 ++++++++++++++++++++
->  1 file changed, 162 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,dramc.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/memory-controllers/mediatek,dramc.yaml b/Documentation/devicetree/bindings/memory-controllers/mediatek,dramc.yaml
-> new file mode 100644
-> index 0000000..18f77c2
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/memory-controllers/mediatek,dramc.yaml
-> @@ -0,0 +1,162 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright (c) 2021 MediaTek Inc.
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/memory-controllers/mediatek,dramc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: MediaTek DRAM Controller
-> +
-> +maintainers:
-> +  - Po-Kai Chi <pk.chi@mediatek.com>
-> +
-> +description: |
-> +  MediaTek DRAM controller (DRAMC) provides an interface to query information
-> +  about DRAM which collected from bootloader and device tree.
-> +  This is mainly used by MediaTek Extended Memory Interface (EMI) and DVFS Resource
-> +  Control (DVFSRC).
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
+On Tue, May 04, 2021 at 03:58:02PM +0200, Fabio M. De Francesco wrote:
+> On Tuesday, May 4, 2021 3:42:16 PM CEST Matthew Wilcox wrote:
+> > On Tue, May 04, 2021 at 03:32:53PM +0200, Fabio M. De Francesco wrote:
+> > > Changes from v6; Added a call to xa_destroy() that I had forgotten.
+> > 
+> > What?  No!  Go back and re-read what I wrote about this previously.
+> >
+> I remember that explanation you gave me some days ago for not using it. But I 
+> was mislead by a comment ("Do we not have to call xa_destroy()?") by Dan and 
+> your "Correct" soon after the above comment. So I thought that I had 
+> misunderstand and the put back that call to xa_destroy(). I lost something in 
+> following the flow of the reviews, I suppose.
 
-Not an enum.
-
-> +          - mediatek,mt6779-dramc
-
-NAK.
-
-You missed to Cc people who should review this (e.g. Rob). Please start
-using get_maintainers script.
-
-
-Best regards,
-Krzysztof
+English doesn't have the equivalent of the French 'si' or German 'doch',
+unfortunately.  I imagine Italian does.
