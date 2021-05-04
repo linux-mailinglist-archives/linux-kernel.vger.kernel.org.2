@@ -2,114 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3224372FEB
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 20:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB5F372FED
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 20:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231673AbhEDStj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 14:49:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60088 "EHLO
+        id S231694AbhEDSuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 14:50:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231234AbhEDSti (ORCPT
+        with ESMTP id S231234AbhEDSuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 14:49:38 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFEB7C061574;
-        Tue,  4 May 2021 11:48:42 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id n84so6109029wma.0;
-        Tue, 04 May 2021 11:48:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PzlNEhJ1uZspc9o+iSF+f7KP6K9qPrHK+2KHSvJBLhk=;
-        b=Mziraub34Z3rH7N+20S9LqYW4EBqc3uozvRmCxaoZL5i7leqEpmIM8ynSfQ0HKoBQJ
-         gaDuuV0jPosshjx//yzfYN0S95KanupHsFDPsQczUGye167JOEYG7TmUoNWhJ0lfwW2W
-         6KnZp/MYrj1MJ+IDZU3/WEjrf5ZLoQMlhvnvOH/DXYzqZMqenvBTHmFoLTWz9O21i94W
-         Td7VTwP4SGQcWIsLOi8fqxcGOt6wzI3HrUSqOK+js1wKF3IeRLB7oCUbiEakKaX2rXup
-         vLkBwwJ2/LdYxVZkeBdBvo+1JDpfwU6zWeOIrT/XR+DohXjvLSe4xHUI8BRLdcs+kN2d
-         l3Dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PzlNEhJ1uZspc9o+iSF+f7KP6K9qPrHK+2KHSvJBLhk=;
-        b=LISJpLwEkoQ32yy+RmUxNf+RRHEtdAZcGkr1Evzlf3kMJ9ZBTzijspAOEoIqnKbqRN
-         Lgu6gHl0ixoBlMKRQNYo8CY+kq5ETsuXi+CofGfsVWUfGlCqoIhGENhh5s2JfTfhnJJ5
-         ykTlgMy4ySa2V5y3H4HdYQgU6EXzl8U1Z1021P4yt/xsWGd881QjsXz4b6xjeyY1ZfD9
-         2DBlnsmmjTxsmRGml743Y84g612O4JPjYuvU1dqkpzyLztJKIwbG6VO//pY+6LAQmtDO
-         M022DcbLYMqOPzHEGbLuhusTNtGW5Om9lBzWE8MFetrUDdPwZHdf3WzyiJrkny10tTke
-         8GjQ==
-X-Gm-Message-State: AOAM53108RVX3Y3PnEZzi8YWR1CwI130BwQZ0YZFQorfEMXr49il299U
-        B9Qf3PMgeWhsSGJ4xEjnwkaV5HDqM9c=
-X-Google-Smtp-Source: ABdhPJzrnJB7AGpUZvD2iMKacBUq444P5XgYxl6tEaEFLfGsi/2Xc4fx7A8rkXvGmGf1/YEUu8/W8w==
-X-Received: by 2002:a1c:2786:: with SMTP id n128mr5823494wmn.82.1620154121489;
-        Tue, 04 May 2021 11:48:41 -0700 (PDT)
-Received: from xws.localdomain ([37.58.58.229])
-        by smtp.gmail.com with ESMTPSA id g11sm16611508wri.59.2021.05.04.11.48.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 11:48:41 -0700 (PDT)
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-To:     Sebastian Reichel <sre@kernel.org>
-Cc:     Maximilian Luz <luzmaximilian@gmail.com>, linux-pm@vger.kernel.org,
+        Tue, 4 May 2021 14:50:02 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12217C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 11:49:07 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1le06N-0001tO-A3; Tue, 04 May 2021 20:48:59 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:4880:7cee:6dec:c8f9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 5BC2E61BEE7;
+        Tue,  4 May 2021 18:48:55 +0000 (UTC)
+Date:   Tue, 4 May 2021 20:48:54 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Schrempf Frieder <frieder.schrempf@kontron.de>
+Cc:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Timo =?utf-8?B?U2NobMO8w59sZXI=?= <schluessler@krause.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Tim Harvey <tharvey@gateworks.com>, stable@vger.kernel.org,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] power: supply: surface_battery: Fix battery event handling
-Date:   Tue,  4 May 2021 20:48:13 +0200
-Message-Id: <20210504184813.3414376-1-luzmaximilian@gmail.com>
-X-Mailer: git-send-email 2.31.1
+Subject: Re: [PATCH] can: mcp251x: Fix resume from sleep before interface was
+ brought up
+Message-ID: <20210504184854.urgotqioxtjwbqqs@pengutronix.de>
+References: <bd466d82-db03-38b1-0a13-86aa124680ea@kontron.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="v3vthzpowlfzvmol"
+Content-Disposition: inline
+In-Reply-To: <bd466d82-db03-38b1-0a13-86aa124680ea@kontron.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The battery subsystem of the Surface Aggregator Module EC requires us to
-register the battery notifier with instance ID 0. However, battery
-events are actually sent with the instance ID corresponding to the
-device, which is nonzero. Thus, the strict-matching approach doesn't
-work here and will discard events that the driver is expected to handle.
 
-To fix this we have to fall back on notifier matching by target-category
-only and have to manually check the instance ID in the notifier
-callback.
+--v3vthzpowlfzvmol
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 167f77f7d0b3 ("power: supply: Add battery driver for Surface Aggregator Module")
-Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
----
- drivers/power/supply/surface_battery.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+On 04.05.2021 18:01:48, Schrempf Frieder wrote:
+> Since 8ce8c0abcba3 the driver queues work via priv->restart_work when
+> resuming after suspend, even when the interface was not previously
+> enabled. This causes a null dereference error as the workqueue is
+> only allocated and initialized in mcp251x_open().
+>=20
+> To fix this we move the workqueue init to mcp251x_can_probe() as
+> there is no reason to do it later and repeat it whenever
+> mcp251x_open() is called.
+>=20
+> Fixes: 8ce8c0abcba3 ("can: mcp251x: only reset hardware as required")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-diff --git a/drivers/power/supply/surface_battery.c b/drivers/power/supply/surface_battery.c
-index 7efa431a62b2..5ec2e6bb2465 100644
---- a/drivers/power/supply/surface_battery.c
-+++ b/drivers/power/supply/surface_battery.c
-@@ -345,6 +345,16 @@ static u32 spwr_notify_bat(struct ssam_event_notifier *nf, const struct ssam_eve
- 	struct spwr_battery_device *bat = container_of(nf, struct spwr_battery_device, notif);
- 	int status;
- 
-+	/*
-+	 * We cannot use strict matching when registering the notifier as the
-+	 * EC expects us to register it against instance ID 0. Strict matching
-+	 * would thus drop events, as those may have non-zero instance IDs in
-+	 * this subsystem. So we need to check the instance ID of the event
-+	 * here manually.
-+	 */
-+	if (event->instance_id != bat->sdev->uid.instance)
-+		return 0;
-+
- 	dev_dbg(&bat->sdev->dev, "power event (cid = %#04x, iid = %#04x, tid = %#04x)\n",
- 		event->command_id, event->instance_id, event->target_id);
- 
-@@ -720,8 +730,8 @@ static void spwr_battery_init(struct spwr_battery_device *bat, struct ssam_devic
- 	bat->notif.base.fn = spwr_notify_bat;
- 	bat->notif.event.reg = registry;
- 	bat->notif.event.id.target_category = sdev->uid.category;
--	bat->notif.event.id.instance = 0;
--	bat->notif.event.mask = SSAM_EVENT_MASK_STRICT;
-+	bat->notif.event.id.instance = 0;	/* need to register with instance 0 */
-+	bat->notif.event.mask = SSAM_EVENT_MASK_TARGET;
- 	bat->notif.event.flags = SSAM_EVENT_SEQUENCED;
- 
- 	bat->psy_desc.name = bat->name;
--- 
-2.31.1
+Added to linux-can/testing.
 
+Thanks,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--v3vthzpowlfzvmol
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmCRlxMACgkQqclaivrt
+76nZFQf9EALD3jMJEXRfahZ9zzZjCS+oJe2TkoDOtMQx/TPnhe//XQfoRoRfvstv
+e6AiN8Ir407VR6BSQaTTq6LaBd6VaoviRlywrUzbnKBzv4w2nvriWy250ML5KcST
+8N+6lgvPhNOQP190kAUvYzy98mzWEbEMTIkknMnvz+wEz2JV70zD/AZAiTGUpQmE
+fX+lc6RPC10zyX3QIXP6Um2yRit63INe4OFlzLv1dhfSeG89NTM+FcDnI2Nqeoqc
+v4eTX2gC+k5kFNkI1xYdilv6w93gAB/YE10K0SwdjVxe7QdHsqVUy8eMpi+cDabH
+9kZM4iWDNmeE4ayU2C3VZ+1hX/ANOw==
+=thfL
+-----END PGP SIGNATURE-----
+
+--v3vthzpowlfzvmol--
