@@ -2,131 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83952372AEA
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C5E4372B04
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231237AbhEDN0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 09:26:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43720 "EHLO
+        id S231186AbhEDNaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 09:30:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231144AbhEDN0V (ORCPT
+        with ESMTP id S231135AbhEDNaQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 09:26:21 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F46C061574;
-        Tue,  4 May 2021 06:25:26 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id d10so6866392pgf.12;
-        Tue, 04 May 2021 06:25:26 -0700 (PDT)
+        Tue, 4 May 2021 09:30:16 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD82C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 06:29:21 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id r8so12114506ybb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 06:29:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=6Usua23eG7jeiBMRqPk961Vu0oHy/tcPvUmAPfGsd3M=;
-        b=sTsLRdnna2sWw8Z9FaRNxSMft/pBwo/y8kKHX5A/bs3GC09QaDMsRY3ukXdyuzno5K
-         TTskFLmfiBewHvymg8gVK4V/TVKfQ23eP/Tu218+y4OC9ZktHTTfkJaMdWa7vEwWHVHf
-         VxYQ8k02YYjFMfqJEehpLYDZNE6BW1NlQEESuSmZ810jAvl03Y3YtDZxi0VRPLFBXUYJ
-         uFkEjyscASDsMyBzUlSN2YID8zDZop12wU5y2YkeCcPz8pkVx3zQ8M+7EstrM8ejVLtl
-         +UOwsKs2q6eecp6bytsFx6j4sQe81qn14UFJkgvj+14FZVfWqRencBKKh1p/ACnYmBNR
-         rY6g==
+        bh=/BRhTEpnUP9fxfD+K9LGEgYyn57sT/mfo8VpaW+h4gg=;
+        b=zliUgqxPji85MVuM2cxAmdIGtLCvTweTUHzYvjqkyKw1DFdDKq1FgLiw7mV9pHwZsK
+         UNYPWJ8+d1pv3FHKwG+OH5uACLhSBfrX5oUh5tEeyGl1cSRpz40BunyzXFyCXT2NNmVY
+         9XkgSQwzpmQWggXaG9OzAErU5CCPo5vc28rxA00FE8xrZUISN9W7KnFZxzrShWZ4IyWH
+         0zHXDQAFrYohnLuRoHW9kJ5IMg4giaOwn5NnzlagJ7xjhIMX41k1UugAvKn+9fpmGMQi
+         +pgHNzCz7T726HaoYWMzFwmIThbkuxMzph2vv4CsK/fZQNjKt8F+7S2Uz6cFMHr4QvbF
+         JwtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6Usua23eG7jeiBMRqPk961Vu0oHy/tcPvUmAPfGsd3M=;
-        b=j3Hg6m5oaYGEZsgYqRwl++qN4JIXMTMXJtHolRD1lP6PCclIOpVygU1zRVna11z+IO
-         x+iWaSQLK/nfeTGFb92MLQUcvfWOh2YlPMLWWK60qBb8YSOXYcp9MA7AUWU0nxO4t52L
-         Fj8WzXKujlneWcmCclOrGBYBTRQMCVN34qgXCUu75uG+UlReNTFMepiLWLSqxnH8tPYS
-         Hf2GglOehP62hl7SSeAOVXFaiZofddgsmt+vBZ63qcufIQeUOFTI7G96FEVMLfNgO4v/
-         YdJXqaEGIKTYOFzfyRADXqJVjpnHqoEKd/US+ZgwyaWW5zvLuLZr2LZ5HXwYUxiCPpeQ
-         VXGg==
-X-Gm-Message-State: AOAM530VnOf37L1srkA+DV3EisywCUX8GR0KN8aSL4BbqZMcMJPsQjXo
-        GbXVztJDSITP7CglaGP20rnORD6GcAk/i7jL7ng=
-X-Google-Smtp-Source: ABdhPJzvGspK5lFxakG5qrtBG+U2cTV9ewqHbVPwR6w2Q0rRyLr2DmXQST3reCaT/EdEu09iSl/HelPXit3utm0fpRE=
-X-Received: by 2002:a17:90a:d90c:: with SMTP id c12mr5218252pjv.129.1620134725780;
- Tue, 04 May 2021 06:25:25 -0700 (PDT)
+        bh=/BRhTEpnUP9fxfD+K9LGEgYyn57sT/mfo8VpaW+h4gg=;
+        b=T5VdZyCFLHMzuKXhfFhREaLqq1wgwtHO6C9zhfEspX1yk6Pd6e3S7CRdBk3w468wuk
+         I8S9m4Y2AdOdFo/lVIAc6ImW1VmIdzsZoX07hlUzALwMOG6uwdw4bFU/T5xM7ZUItDX4
+         7aodv0RGqUbAh0awDtdG8/R+fdt3pcjZdzpG+VH79cHPJW+li/fS3eCBQMwiuRVJYoc8
+         L57wntQIxUWH0332KQOVViQPUJi2js45/GhsQ12DVyWKDlg8ePkVtnhdBoWRPLgMkgCC
+         jNR0NvNMy3YuJyd2gzeb6cNH4Mu//KAjq8Lqeb5nQEHHw2ES90N3ZsdtPusPwz7aZNJC
+         erZA==
+X-Gm-Message-State: AOAM531iAUc/p2g70FLpa067skPj86VFsFlfi/yxU6xk5d30gl2jLKlw
+        Ka96XWHRbvB99hD5khruv3hg7ikYsgFX1+KO364pgQ==
+X-Google-Smtp-Source: ABdhPJwjcqLzq5cHFekTHgpc3kqBBbnRLj4YJ8atyXG840GdCFl/o7yDSxXGW3nl7DG4qFazGfogmf6GNa3C7phTrw4=
+X-Received: by 2002:a25:c681:: with SMTP id k123mr35487853ybf.303.1620134960204;
+ Tue, 04 May 2021 06:29:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210501151538.145449-1-masahiroy@kernel.org> <CANiq72k1hB3X6+Nc_iu=f=BoB-F9JW2j_B4ZMcv8_UpW5QQ2Og@mail.gmail.com>
- <3943bc020f6227c8801907317fc113aa13ad4bad.camel@perches.com>
- <20210502183030.GF10366@gate.crashing.org> <81a926a3bdb70debe3ae2b13655ea8d249fb9991.camel@perches.com>
- <20210502203253.GH10366@gate.crashing.org> <CAHk-=wjGJskk5EwnDCccs6DcLytE2yx76+P_W-n1-B5zq0M3KA@mail.gmail.com>
- <20210502223007.GZ1847222@casper.infradead.org> <YI+nhMcPSTs/5Ydp@ada-deb-carambola.ifak-system.com>
- <CAK8P3a0kV4ZfMEFh0DcMDjXqxA0yhj8a8CL-YFGV6B4pszHeGg@mail.gmail.com>
-In-Reply-To: <CAK8P3a0kV4ZfMEFh0DcMDjXqxA0yhj8a8CL-YFGV6B4pszHeGg@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 4 May 2021 16:25:09 +0300
-Message-ID: <CAHp75VdE9h9=CpzX094iJ52HR6Sz+f-qGfCt6YHfSPpG2Lb4-w@mail.gmail.com>
-Subject: Re: [PATCH] Raise the minimum GCC version to 5.2
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Joe Perches <joe@perches.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <20210504125909.16108-1-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20210504125909.16108-1-srinivas.kandagatla@linaro.org>
+From:   Amit Pundir <amit.pundir@linaro.org>
+Date:   Tue, 4 May 2021 18:58:44 +0530
+Message-ID: <CAMi1Hd0Fxj2Y_ZheFGveCpz1XWHhOOx3UYz7xW4-8RVAN1TPAg@mail.gmail.com>
+Subject: Re: [PATCH] soundwire: qcom: fix handling of qcom,ports-block-pack-mode
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, yung-chuan.liao@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        alsa-devel@alsa-project.org, lkml <linux-kernel@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        John Stultz <john.stultz@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 3, 2021 at 12:29 PM Arnd Bergmann <arnd@arndb.de> wrote:
+On Tue, 4 May 2021 at 18:29, Srinivas Kandagatla
+<srinivas.kandagatla@linaro.org> wrote:
 >
-> On Mon, May 3, 2021 at 9:35 AM Alexander Dahl <ada@thorsis.com> wrote:
-> >
-> > Desktops and servers are all nice, however I just want to make you
-> > aware, there are embedded users forced to stick to older cross
-> > toolchains for different reasons as well, e.g. in industrial
-> > environment. :-)
-> >
-> > This is no show stopper for us, I just wanted to let you be aware.
+> Support to "qcom,ports-block-pack-mode" was added at later stages
+> to support a variant of Qualcomm SoundWire controllers available
+> on Apps processor. However the older versions of the SoundWire
+> controller which are embedded in WCD Codecs do not need this property.
 >
-> Can you be more specific about what scenarios you are thinking of,
-> what the motivations are for using an old compiler with a new kernel
-> on embedded systems, and what you think a realistic maximum
-> time would be between compiler updates?
+> So returning on error for those cases will break boards like DragonBoard
+> DB845c and Lenovo Yoga C630.
 >
-> One scenario that I've seen previously is where user space and
-> kernel are built together as a source based distribution (OE, buildroot,
-> openwrt, ...), and the compiler is picked to match the original sources
-> of the user space because that is best tested, but the same compiler
-> then gets used to build the kernel as well because that is the default
-> in the build environment.
->
-> There are two problems I see with this logic:
->
-> - Running the latest kernel to avoid security problems is of course
->   a good idea, but if one runs that with ten year old user space that
->   is never updated, the system is likely to end up just as insecure.
->   Not all bugs are in the kernel.
->
-> - The same logic that applies to ancient user space staying with
->   an ancient compiler (it's better tested in this combination) also
->   applies to the kernel: running the latest kernel on an old compiler
->   is something that few people test, and tends to run into more bugs
->   than using the compiler that other developers used to test that
->   kernel.
+> This patch fixes error handling on this property considering older usecases.
 
-I understand that you are talking about embedded, but it you stuck
-with a distro (esp. LTS one, like CentOS 7.x), you have gcc 4.8.5
-there for everything, but they have got security updates. Seems if you
-are with a distro you have to stick with its kernel with all pros and
-cons of such an approach.
+Tested on Xiaomi Pocophone F1 (sdm845).
 
+Tested-by: Amit Pundir <amit.pundir@linaro.org>
 
--- 
-With Best Regards,
-Andy Shevchenko
+>
+> Fixes: 5943e4fb14e3 ("soundwire: qcom: check of_property_read status")
+> Reported-by: Amit Pundir <amit.pundir@linaro.org>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  drivers/soundwire/qcom.c | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+> index 2827085a323b..0ef79d60e88e 100644
+> --- a/drivers/soundwire/qcom.c
+> +++ b/drivers/soundwire/qcom.c
+> @@ -1150,8 +1150,16 @@ static int qcom_swrm_get_port_config(struct qcom_swrm_ctrl *ctrl)
+>
+>         ret = of_property_read_u8_array(np, "qcom,ports-block-pack-mode",
+>                                         bp_mode, nports);
+> -       if (ret)
+> -               return ret;
+> +       if (ret) {
+> +               u32 version;
+> +
+> +               ctrl->reg_read(ctrl, SWRM_COMP_HW_VERSION, &version);
+> +
+> +               if (version <= 0x01030000)
+> +                       memset(bp_mode, SWR_INVALID_PARAM, QCOM_SDW_MAX_PORTS);
+> +               else
+> +                       return ret;
+> +       }
+>
+>         memset(hstart, SWR_INVALID_PARAM, QCOM_SDW_MAX_PORTS);
+>         of_property_read_u8_array(np, "qcom,ports-hstart", hstart, nports);
+> --
+> 2.21.0
+>
