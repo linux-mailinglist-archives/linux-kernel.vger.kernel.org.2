@@ -2,89 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B7C372A4A
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 14:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E617A372A46
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 14:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbhEDMou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 08:44:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34476 "EHLO
+        id S230376AbhEDMon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 08:44:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230362AbhEDMot (ORCPT
+        with ESMTP id S230256AbhEDMol (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 08:44:49 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4187C061574;
-        Tue,  4 May 2021 05:43:53 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id t18so9271672wry.1;
-        Tue, 04 May 2021 05:43:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=UkcPfOw1zL7OvDlpQg+xfIeD/O5P0yQ5Qy64lO5GzLE=;
-        b=cYGmmOIL0DZvq0tOcTQpB6OosRqnot+QaUnl0KYl+CG77yzYbkAaerHcRzXja5Xhr1
-         lS8xJhxjpAzhKvgWXfWhb+q9ZezccnHFUwm2cU1UuQry//iJUl2XAyVmxqeIyd1shS/f
-         UbLGgUnWbv43d6fjU9plVAo7QcXFHyJJZ4wN/Dizsqs/rBlMDOPbYzWsYHMD70HJnGv0
-         xJ9rGFQiU0grCfgMgh/Q0MCHUvzkPGdjRGNx4prjKwtucYTITy3UfSdhWzZ7SNt6EoNM
-         KXSev60Cv33V4ecm6ZYtrlsUQb9QN+7w21equ4WgQaRddF8WBp7DTeH2BcDxjjkn3pPl
-         0mxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=UkcPfOw1zL7OvDlpQg+xfIeD/O5P0yQ5Qy64lO5GzLE=;
-        b=Oqok33nEbDIFl4danWfJ9rKA81uHUuJQzt1Uo4r4wTbcwHlEN0nB2Z9TRjf4RftRwm
-         Qod5heiHLPbG6FYJ5XH7l5Iw01nNH6/pfcht/4dFjsLsCp908cx+LVbyby0Tlav+UdK6
-         U6PfHLYexqxzzIhqFsHKPeEBe/BX6CQ8g8g7pNh6Y4a+eygAPFOKKrbCvBbjiPDsHCu2
-         7jZcC465FcXUk/wculbhns0+0euJagj2EiLVftJPEKvAuGP2VMHSzGE+tqwJeBiz68dM
-         VYx5okIPsXD6xZQb6APdTwQBJohcv7+SJ0m834RMBAUlMaFI8/SNgWLvcgcabYOBFBzF
-         pwKA==
-X-Gm-Message-State: AOAM532asTrSgoK/yJ6gFNt3y4v80puxwkuscJlhe3oas6AAi398ssMs
-        UmTLdz9bmnpVZPDKoUcDINo=
-X-Google-Smtp-Source: ABdhPJwBEUAltlS9MdL420XVTKnQOM1FVxbisDjEDRdT/oObO9i972dnrB9jZUTfEYQ3frGwvXLvPw==
-X-Received: by 2002:a5d:53c3:: with SMTP id a3mr14349476wrw.376.1620132232466;
-        Tue, 04 May 2021 05:43:52 -0700 (PDT)
-Received: from localhost.localdomain ([197.2.237.199])
-        by smtp.gmail.com with ESMTPSA id f25sm16627965wrd.67.2021.05.04.05.43.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 05:43:52 -0700 (PDT)
-From:   Khaled ROMDHANI <khaledromdhani216@gmail.com>
-To:     sfrench@samba.org
-Cc:     Khaled ROMDHANI <khaledromdhani216@gmail.com>,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH-next] fs/cifs: Fix resource leak
-Date:   Tue,  4 May 2021 13:43:43 +0100
-Message-Id: <20210504124343.22611-1-khaledromdhani216@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 4 May 2021 08:44:41 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B684C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 05:43:47 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620132225;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BR3v2+p903dGyaTnMIq3ixCFpMkgOvkdYdpyOkK9gWA=;
+        b=YGpYnDubeYG4hztg6Ab9SMmTMvPkQnJ+39Xc91UX1nvVlQRdSkpj6YLRaHf+ZSA9+AU72G
+        gKfXtHbWoUDv5aB5S2E7vvewUGiz/F+h9a2ZEXre+KsKAhtadRFKCup5O/hzvksW0HRjGH
+        rh3mPaT4kOyaX2ciYp1whIQXkshvinHoI+pvfVz+HSXcxPsa/PPOI/LoQsOj2+cgBZ/J8r
+        8GUBpgEBftxyBbTrex3kgHJ9LgZmYy5HYw33rj14Ert4J4Gg4cS4sKPtswOMVhWJs9YhwW
+        J1xt2Lmdkzm2tUv97S1z2u9ggh7ll2hOWx8DVllI8mY0jrTIHIdeR3ROpQrg4Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620132225;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BR3v2+p903dGyaTnMIq3ixCFpMkgOvkdYdpyOkK9gWA=;
+        b=S1B4Qb8VmFFB8YO1vKikYM+tXoOcZz1BocPDW/Hx7/m2cG9qidy0SVZkSAV5eNpCQOJ2Oa
+        WX+qTtFezIHDrNBQ==
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Joerg Roedel <jroedel@suse.de>, Jian Cai <caij2003@gmail.com>
+Subject: Re: [PATCH 2/4] x86/entry: Use asm_noist_exc_nmi() for NMI in early booting stage
+In-Reply-To: <875yzzjxth.ffs@nanos.tec.linutronix.de>
+References: <20210426230949.3561-1-jiangshanlai@gmail.com> <20210426230949.3561-3-jiangshanlai@gmail.com> <87bl9rk23k.ffs@nanos.tec.linutronix.de> <878s4vk1l9.ffs@nanos.tec.linutronix.de> <875yzzjxth.ffs@nanos.tec.linutronix.de>
+Date:   Tue, 04 May 2021 14:43:44 +0200
+Message-ID: <87wnseis8v.ffs@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The -EIO error return path is leaking memory allocated
-to page. Fix this by invoking the free_dentry_path before
-the return.
+On Mon, May 03 2021 at 23:45, Thomas Gleixner wrote:
+> The problem was introduced in 4.14 with b70543a0b2b6 ("x86/idt: Move
+> regular trap init to tables").
+>
+> Before that trap_init() installed an IST gate right away, but looking
+> deeper this was broken forever because there is a hen and egg problem.
+>
+> ISTs only work after TSS is initialized and the ordering here is:
+>
+> trap_init()
+>   init_idt()
+>   cpu_init()
+>     init_tss()
+>
+> So the original code had a race window between init_idt() and
+> init_tss(). Any IST using exception in that window goes south because
+> TSS is not initialized.
+>
+> b70543a0b2b6 traded the above with that NMI issue. All other
+> exceptions are fine...
+>
+> I'll think about it tomorrow some more...
 
-Addresses-Coverity: ("Resource leak")
-Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
----
- fs/cifs/link.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+It does not really matter which way around we do it. Even if we do that
+noist dance then still any NMI hitting _before_ init_idt() is going to
+lala land. So having this tiny step in between is more or less cosmetic.
 
-diff --git a/fs/cifs/link.c b/fs/cifs/link.c
-index 1cbe7ec73728..1485c6095ba1 100644
---- a/fs/cifs/link.c
-+++ b/fs/cifs/link.c
-@@ -686,8 +686,10 @@ cifs_symlink(struct user_namespace *mnt_userns, struct inode *inode,
- 	void *page = alloc_dentry_path();
- 	struct inode *newinode = NULL;
- 
--	if (unlikely(cifs_forced_shutdown(cifs_sb)))
-+	if (unlikely(cifs_forced_shutdown(cifs_sb))) {
-+		free_dentry_path(page);
- 		return -EIO;
-+	}
- 
- 	xid = get_xid();
- 
--- 
-2.17.1
+And just for completness sake, I don't see a reason why we have to set
+up the idt gates _before_ the TSS muck, i.e. before cpu_init().
+
+The only thing cpu_init() needs working which is not installed in the
+early_idt is #GP because some cpu init code uses rd/wrmsrl_safe(). But
+that's pretty much all of it.
+
+So this wants a proper cleanup and not some paper over it with an extra
+step and I don't see a reason why any of this should be backported
+simply because it does not matter at all whether the early idt which
+only populates a few essential gates is active for a bit longer.
+
+So what we need is a solution for that KVM wreckage but that can be
+stand alone.
+
+Thanks,
+
+        tglx
+
+
 
