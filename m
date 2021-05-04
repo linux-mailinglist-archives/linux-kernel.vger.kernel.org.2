@@ -2,104 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F17EC372E5E
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1BB2372E63
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231838AbhEDRCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:02:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54554 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231773AbhEDRCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 13:02:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AE786101D;
-        Tue,  4 May 2021 17:01:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620147715;
-        bh=f5jEOgnbHsOfDlpo88Jj2D5L5O3g0o4OFA7mG7XvBKw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VXNMBP6b2+7Yp0/mUNXRSqDbMGvmGY5Jp27WbJvhrjGZpfkgCJHgatjyaNRRSRPto
-         LxfXdXHQYJBrxoTPQEmrX/lOQkUSgVj7CojPqKA5ry5B2sxWElUVvKo2HYKgXl45RD
-         sEAVszs/3OC3WUs9XXiYSkHRexEzigEAdrJenR7VPlfF9Vd3OXt6ZWKjAM8PabyBDd
-         9KRYJ0bHfp0sIa+tFzDajPDDkX0FNOMmVA4kPPQVWxU3QgA+hfPOaqBZoB+0L6YJDL
-         C2voEXXa8rf8OCPagPFTQyGDUB6ZXTG6ZtV1BHK+TKaVcErcyIWF1eUUIpLFbrjn0n
-         v+DF+xJvGX0nw==
-Date:   Tue, 4 May 2021 10:01:54 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     syzbot <syzbot+e4eb6db47eb0f80308c6@syzkaller.appspotmail.com>,
-        David Howells <dhowells@redhat.com>, jarkko@kernel.org,
-        jmorris@namei.org, keyrings@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-security-module@vger.kernel.org, serge@hallyn.com,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: [syzbot] KCSAN: data-race in assoc_array_apply_edit /
- search_nested_keyrings
-Message-ID: <YJF+AiEM3K8VRkk3@gmail.com>
-References: <000000000000c224d005c17f7142@google.com>
- <CANpmjNOJ3Yhu77mU-8WvYFSnFgCYhctkCcTZhwpO5jrMzPejtA@mail.gmail.com>
+        id S231890AbhEDRDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:03:25 -0400
+Received: from mail-40137.protonmail.ch ([185.70.40.137]:11852 "EHLO
+        mail-40137.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231807AbhEDRDY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 13:03:24 -0400
+X-Greylist: delayed 106596 seconds by postgrey-1.27 at vger.kernel.org; Tue, 04 May 2021 13:03:23 EDT
+Date:   Tue, 04 May 2021 17:02:21 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1620147744;
+        bh=CbdmEmk9lb2MgsVE9gcAhnwdCS6ANCEre4YEOrrImEc=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=J5Gmq2mvoNiC01lFzHpqRWn07ajMaBMEbZffDpZaDKUpLWQebw0cvFxK/02vfNsYV
+         JMwjNXsKV1K8I9klLdWLVC+UveZNOAxpjaraKj9Ne3xvjD3b+nX4BJTTas6X+0DyvO
+         IW+Fn+6pC7iVhUFKcZMZn+zFI0xG16XHXaU+Id8g=
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From:   Jari Ruusu <jariruusu@protonmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Kalle Valo <kvalo@codeaurora.org>
+Reply-To: Jari Ruusu <jariruusu@protonmail.com>
+Subject: Re: [PATCH 5.10 1/2] iwlwifi: Fix softirq/hardirq disabling in iwl_pcie_gen2_enqueue_hcmd()
+Message-ID: <lKQ4w6tXpon1sVWKDLQXCcZLzvchbrKBCQPO83v1wu9e-Ewul20hGjbfcOX1GeqFYhQGWpBV7GiyPM13lnU0BE3A9D11OEYt-_g_HwcCyQI=@protonmail.com>
+In-Reply-To: <YJFpxY6iFHMiPHFE@kroah.com>
+References: <20210430141910.473289618@linuxfoundation.org> <20210430141910.521897363@linuxfoundation.org> <608CFF6A.4BC054A3@users.sourceforge.net> <YI6HFNNvzuHnv5VU@kroah.com> <bO2GF-6sC-I4NbFif7JoGUpuRpAV-rHEMwtLsKfN9SCsA0lwB1NgEV4OC7Xd5fdoq3UPcZ6-uh2VDSe1Xtovy8ti3k5vmOsiMVTdfTgl0Yw=@protonmail.com> <YJD2uTdQonXymbn6@kroah.com> <npSsinT79DB6Ze8QTkmLcuOTyVwRcy2FbOf0tDjpEHbTxKdYmLar8Br66_ypLjzZ86sIJKnSbUHeehagPR6RqxsJsKdWW_vWnXOUEhMC14g=@protonmail.com> <YJFNyOGrF8RcTTlc@kroah.com> <g5YP678olZEf3yQNX2ptK3X6DceFoemqwzEgSJclx_dHFAJfbJBWznYtB74u5g69Onx_6QZkLF-K2muYLa3qsotkPpxbHYuz4Hrs94olZ7c=@protonmail.com> <YJFpxY6iFHMiPHFE@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNOJ3Yhu77mU-8WvYFSnFgCYhctkCcTZhwpO5jrMzPejtA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 01:38:20PM +0200, 'Marco Elver' via syzkaller-bugs wrote:
-> Hello,
-> 
-> On Tue, 4 May 2021 at 13:33, syzbot
-> <syzbot+e4eb6db47eb0f80308c6@syzkaller.appspotmail.com> wrote:
-> > HEAD commit:    5e321ded Merge tag 'for-5.13/parisc' of git://git.kernel.o..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=111cafb9d00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=a4da2ebcb6e8f526
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=e4eb6db47eb0f80308c6
-> > compiler:       Debian clang version 11.0.1-2
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+e4eb6db47eb0f80308c6@syzkaller.appspotmail.com
-> >
-> > ==================================================================
-> > BUG: KCSAN: data-race in assoc_array_apply_edit / search_nested_keyrings
-> >
-> > write to 0xffff8881065ffc10 of 8 bytes by task 30966 on cpu 1:
-> >  assoc_array_apply_edit+0x3e/0x660 lib/assoc_array.c:1357
-> >  __key_link+0x8a/0xc0 security/keys/keyring.c:1372
-> >  __key_instantiate_and_link+0x15b/0x290 security/keys/key.c:459
-> >  key_create_or_update+0x750/0x990 security/keys/key.c:941
-> >  __do_sys_add_key security/keys/keyctl.c:134 [inline]
-> >  __se_sys_add_key+0x26f/0x300 security/keys/keyctl.c:74
-> >  __x64_sys_add_key+0x63/0x70 security/keys/keyctl.c:74
-> >  do_syscall_64+0x4a/0x90 arch/x86/entry/common.c:47
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >
-> > read to 0xffff8881065ffc10 of 8 bytes by task 30971 on cpu 0:
-> >  search_nested_keyrings+0x34f/0x920 security/keys/keyring.c:751
-> >  keyring_search_rcu+0xf4/0x180 security/keys/keyring.c:922
-> >  search_cred_keyrings_rcu+0x135/0x240 security/keys/process_keys.c:480
-> >  search_process_keyrings_rcu security/keys/process_keys.c:544 [inline]
-> >  lookup_user_key+0xab6/0xd40 security/keys/process_keys.c:762
-> >  __do_sys_add_key security/keys/keyctl.c:126 [inline]
-> >  __se_sys_add_key+0x23a/0x300 security/keys/keyctl.c:74
-> >  __x64_sys_add_key+0x63/0x70 security/keys/keyctl.c:74
-> >  do_syscall_64+0x4a/0x90 arch/x86/entry/common.c:47
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> I found this interesting because the code around
-> security/keys/keyring.c:751 is diligent in marking concurrency
-> accesses with READ_ONCE(). So on the off-chance there is unexpected
-> concurrency here, I thought it'd be worth double-checking as I wasn't
-> able to conclude if this is just missing a READ_ONCE().
-> 
-> Thank you!
-> 
+On Tuesday, May 4, 2021 6:35 PM, Greg Kroah-Hartman <gregkh@linuxfoundation=
+.org> wrote:
+> Can you resend your backports here now, and properly let us know what
+> kernel they belong into (again, the subject line is very confusing.)
 
-It looks more like the problem is missing WRITE_ONCE(), not READ_ONCE().
+iwlwifi: Fix softirq/hardirq disabling in iwl_pcie_gen2_enqueue_hcmd()
+upstream commit e7020bb068d8be50a92f48e36b236a1a1ef9282e,
+backport for linux-5.4.y and linux-4.19.y (booted and ping tested)
+Signed-off-by: Jari Ruusu <jariruusu@protonmail.com>
 
-smp_store_release() would also handle this properly, without the need for the
-explicit smp_wmb().
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/tx-gen2.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/tx-gen2.c
+@@ -705,6 +705,7 @@ static int iwl_pcie_gen2_enqueue_hcmd(struct iwl_trans =
+*trans,
+ =09const u8 *cmddata[IWL_MAX_CMD_TBS_PER_TFD];
+ =09u16 cmdlen[IWL_MAX_CMD_TBS_PER_TFD];
+ =09struct iwl_tfh_tfd *tfd;
++=09unsigned long flags2;
 
-- Eric
+ =09copy_size =3D sizeof(struct iwl_cmd_header_wide);
+ =09cmd_size =3D sizeof(struct iwl_cmd_header_wide);
+@@ -773,14 +774,14 @@ static int iwl_pcie_gen2_enqueue_hcmd(struct iwl_tran=
+s *trans,
+ =09=09goto free_dup_buf;
+ =09}
+
+-=09spin_lock_bh(&txq->lock);
++=09spin_lock_irqsave(&txq->lock, flags2);
+
+ =09idx =3D iwl_pcie_get_cmd_index(txq, txq->write_ptr);
+ =09tfd =3D iwl_pcie_get_tfd(trans, txq, txq->write_ptr);
+ =09memset(tfd, 0, sizeof(*tfd));
+
+ =09if (iwl_queue_space(trans, txq) < ((cmd->flags & CMD_ASYNC) ? 2 : 1)) {
+-=09=09spin_unlock_bh(&txq->lock);
++=09=09spin_unlock_irqrestore(&txq->lock, flags2);
+
+ =09=09IWL_ERR(trans, "No space in command queue\n");
+ =09=09iwl_op_mode_cmd_queue_full(trans->op_mode);
+@@ -915,7 +916,7 @@ static int iwl_pcie_gen2_enqueue_hcmd(struct iwl_trans =
+*trans,
+ =09spin_unlock_irqrestore(&trans_pcie->reg_lock, flags);
+
+ out:
+-=09spin_unlock_bh(&txq->lock);
++=09spin_unlock_irqrestore(&txq->lock, flags2);
+ free_dup_buf:
+ =09if (idx < 0)
+ =09=09kfree(dup_buf);
+
+--
+Jari Ruusu=C2=A0 4096R/8132F189 12D6 4C3A DCDA 0AA4 27BD=C2=A0 ACDF F073 3C=
+80 8132 F189
+
