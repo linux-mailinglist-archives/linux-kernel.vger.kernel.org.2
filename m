@@ -2,226 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86F637309A
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A7137309D
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232398AbhEDTRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 15:17:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38242 "EHLO
+        id S232409AbhEDTSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 15:18:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232369AbhEDTRc (ORCPT
+        with ESMTP id S232082AbhEDTSj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 15:17:32 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B1AC061763
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 12:16:36 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id i13so62616pfu.2
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 12:16:36 -0700 (PDT)
+        Tue, 4 May 2021 15:18:39 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6312DC061574;
+        Tue,  4 May 2021 12:17:43 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id f24so14885189ejc.6;
+        Tue, 04 May 2021 12:17:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=rVaoA5kN9/YA+dlLhfwPSk3NfebR3WIgBEimIrB5M90=;
-        b=f91FQNgUFD8vQnaaFNLLy2tlsQJ59H2CR5ohNwKUU04xp1VF4IIbYcKm1TU1tvQfYF
-         ATC7f2HV1LY8c6UxCNQYe76DH4BwWykkcE8x5X7K7NEVTDbJpodGoHX/cULy4N7/zDS+
-         LOpHLxaDz8wLiR+Y2RI80o834JSHh0q64Ql0U=
+        bh=o/YSgyoStELVjmwvVjY4WityzMhKVw/+pPPsl07P0wA=;
+        b=QQ4FJRoTLq3jR8e6Rys7S0/eyU7qiTDxmTstOxeY0MLFeLxcqBBqM0o/0cDON6pRUV
+         4qHk+m5N5Fw+xsCy/5dKTVasE6SJe8dR7Wrk3TW7fauwlK26u0A//xsnPogiLhRaFfzP
+         fXW1xNh0zaF/MEMa1vEvCdZDnPNsmP54PFfhauz2Ob5z03al0wmXNzJ0lPwqWbAcv3mJ
+         6U25GbDwn3O+MlCup2kP9y/Im50l1lV5XAc5ughsts6NGQTAx7rpix8VQ/XNgIRHWQi/
+         jcyMJ7sTIoamkTxtALkKv/iVFpdrLrlIrlL3pJLEq7n1tALP4Pmo3/PwhRkrX7XvlhUs
+         z+HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=rVaoA5kN9/YA+dlLhfwPSk3NfebR3WIgBEimIrB5M90=;
-        b=DJq2N+j2D/vrzFaRIWoE7zeBSWcrR7Y9NOSl3xGraWHWCghbdexKqaT5zVUqeFFHHT
-         hL/tl9+ZfXYfrmzuPrU1yHDE98VeZfRacB3fQju4snj/8pgbDiRKYhbb6a797VCnkqVF
-         RtHS3IkYkHsZKo3C5sCkk1EFjXtOt1gFNMNFdTovJPyNboiqcEbAkKPeLecyo+Q/6HxR
-         OlsL6BkdL5eJC295rl5/v1RtsDWSHRuMXm9EEuxd1DnQ3BzMOK9B5LaoOSoFy4iAgEYN
-         DX26kttVCp+fygul5zODNhgWzX/6GWahqLhStTEVYD1xHnyYq8fdhGglin5CI1w8iSoL
-         rbMQ==
-X-Gm-Message-State: AOAM531sY/SsZof3P+LfunwpwApTaqDo6hjRu8DawFKt+pyjeSHH01DJ
-        kaBB2tXnaKS83+DliHEvhpbB9w==
-X-Google-Smtp-Source: ABdhPJwKbZFIR6zgWDtGZDFHTspmIR1D1rCFO8lIMwXl/Fi+eINfevYxEbFjCQBxxzTO7WcM21yFuQ==
-X-Received: by 2002:a63:580b:: with SMTP id m11mr24907711pgb.448.1620155795877;
-        Tue, 04 May 2021 12:16:35 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:4c2f:1f84:af45:6245])
-        by smtp.gmail.com with UTF8SMTPSA id u12sm5108385pji.45.2021.05.04.12.16.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 May 2021 12:16:35 -0700 (PDT)
-Date:   Tue, 4 May 2021 12:16:33 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>, bjorn.andersson@linaro.org,
-        viresh.kumar@linaro.org, swboyd@chromium.org, agross@kernel.org,
-        robh+dt@kernel.org, rjw@rjwysocki.net,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        dianders@chromium.org
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: sc7280: Add cpu OPP tables
-Message-ID: <YJGdkVeJDQObFlNh@google.com>
-References: <1619792901-32701-1-git-send-email-sibis@codeaurora.org>
- <1619792901-32701-3-git-send-email-sibis@codeaurora.org>
- <20210504144215.svmrmmsy4jtoixzv@bogus>
- <1fc9fb8d9a94909ff9b7b76d598bd266@codeaurora.org>
+        bh=o/YSgyoStELVjmwvVjY4WityzMhKVw/+pPPsl07P0wA=;
+        b=i66Clq390WKf0MnlqqOY6l/Swfo7A0SyCxA/TwYNrXV0zYVkELMPykCFlxoMOJXVG6
+         MrmJ2BPOjkiO859wxAKoqk3ENzPH+G0H4vRQPSGeSIcJukAajNWZZnN7iBYi+P3WxrE9
+         VhlMre+ly/EwCOTxkGPj4RhdG/u6wz0v2vmYVx6ISgiqbZkU7KUx7Rj6Fp5JLwC1DwSv
+         UtankVyzP7hkocuHOQLfdZjath3UL1k+0FBHIOTZStr2L4kNIEoDSH/k37cWHBjJohcc
+         8JLmMJdLF6kRvdGuS3mf4kaBVcgkon1wuZmXATq7VYPR8qbL9ZqpLH2A5ClXSanXV8G+
+         x7wg==
+X-Gm-Message-State: AOAM531GgJwaGEj0UgNubO8ELoy5VMjkQezgYGwFMY4j9ITxlahTeYJZ
+        2QWc81+Vv0Yih8lfNKr8IGA=
+X-Google-Smtp-Source: ABdhPJx9hKET6uKlNJAPMjx6REVTSM5pk2Kuya7T+YEUEScYmsfsXcvnk+IeKD2BaZsT0GgPGVpOEA==
+X-Received: by 2002:a17:906:2287:: with SMTP id p7mr23238378eja.377.1620155862013;
+        Tue, 04 May 2021 12:17:42 -0700 (PDT)
+Received: from skbuf ([86.127.41.210])
+        by smtp.gmail.com with ESMTPSA id lc1sm1833882ejb.39.2021.05.04.12.17.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 12:17:41 -0700 (PDT)
+Date:   Tue, 4 May 2021 22:17:39 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Michael Walle <michael@walle.cc>
+Cc:     xiaoliang.yang_1@nxp.com, Arvid.Brodin@xdin.com,
+        UNGLinuxDriver@microchip.com, alexandre.belloni@bootlin.com,
+        allan.nielsen@microchip.com, andre.guedes@linux.intel.com,
+        claudiu.manoil@nxp.com, colin.king@canonical.com,
+        davem@davemloft.net, idosch@mellanox.com,
+        ivan.khoronzhuk@linaro.org, jiri@mellanox.com,
+        joergen.andreasen@microchip.com, leoyang.li@nxp.com,
+        linux-kernel@vger.kernel.org, m-karicheri2@ti.com,
+        michael.chan@broadcom.com, mingkai.hu@nxp.com,
+        netdev@vger.kernel.org, po.liu@nxp.com, saeedm@mellanox.com,
+        vinicius.gomes@intel.com, vladimir.oltean@nxp.com,
+        yuehaibing@huawei.com
+Subject: Re: [net-next] net: dsa: felix: disable always guard band bit for
+ TAS config
+Message-ID: <20210504191739.73oejybqb6z7dlxr@skbuf>
+References: <20210419102530.20361-1-xiaoliang.yang_1@nxp.com>
+ <20210504170514.10729-1-michael@walle.cc>
+ <20210504181833.w2pecbp2qpuiactv@skbuf>
+ <c7618025da6723418c56a54fe4683bd7@walle.cc>
+ <20210504185040.ftkub3ropuacmyel@skbuf>
+ <ccb40b7fd18b51ecfc3f849a47378c54@walle.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1fc9fb8d9a94909ff9b7b76d598bd266@codeaurora.org>
+In-Reply-To: <ccb40b7fd18b51ecfc3f849a47378c54@walle.cc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 11:55:10PM +0530, Sibi Sankar wrote:
-> Hey Sudeep,
-> 
-> Thanks for the review!
-> 
-> On 2021-05-04 20:12, Sudeep Holla wrote:
-> > On Fri, Apr 30, 2021 at 07:58:21PM +0530, Sibi Sankar wrote:
-> > > Add OPP tables required to scale DDR/L3 per freq-domain on SC7280
-> > > SoCs.
+On Tue, May 04, 2021 at 09:08:00PM +0200, Michael Walle wrote:
+> > > > > As explained in another mail in this thread, all queues are marked as
+> > > > > scheduled. So this is actually a no-op, correct? It doesn't matter if
+> > > > > it set or not set for now. Dunno why we even care for this bit then.
+> > > >
+> > > > It matters because ALWAYS_GUARD_BAND_SCH_Q reduces the available
+> > > > throughput when set.
 > > > 
-> > > Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> > > ---
-> > >  arch/arm64/boot/dts/qcom/sc7280.dtsi | 135
-> > > +++++++++++++++++++++++++++++++++++
-> > >  1 file changed, 135 insertions(+)
-> > > 
-> > > diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > > b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > > index 0bb835aeae33..90220cecb368 100644
-> > > --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > > +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> > > Ahh, I see now. All queues are "scheduled" but the guard band only
+> > > applies
+> > > for "non-scheduled" -> "scheduled" transitions. So the guard band is
+> > > never
+> > > applied, right? Is that really what we want?
 > > 
-> > 
-> > [...]
-> > 
-> > > @@ -248,6 +273,116 @@
-> > >  		};
-> > >  	};
-> > > 
-> > > +	cpu0_opp_table: cpu0_opp_table {
-> > > +		compatible = "operating-points-v2";
-> > > +		opp-shared;
-> > > +
-> > > +		cpu0_opp1: opp-300000000 {
-> > > +			opp-hz = /bits/ 64 <300000000>;
-> > > +			opp-peak-kBps = <800000 9600000>;
-> > > +		};
-> > > +
-> > > +		cpu0_opp2: opp-691200000 {
-> > > +			opp-hz = /bits/ 64 <691200000>;
-> > > +			opp-peak-kBps = <800000 17817600>;
-> > > +		};
-> > > +
-> > > +		cpu0_opp3: opp-806400000 {
-> > > +			opp-hz = /bits/ 64 <806400000>;
-> > > +			opp-peak-kBps = <800000 20889600>;
-> > > +		};
-> > > +
-> > > +		cpu0_opp4: opp-940800000 {
-> > > +			opp-hz = /bits/ 64 <940800000>;
-> > > +			opp-peak-kBps = <1804000 24576000>;
-> > > +		};
-> > > +
-> > > +		cpu0_opp5: opp-1152000000 {
-> > > +			opp-hz = /bits/ 64 <1152000000>;
-> > > +			opp-peak-kBps = <2188000 27033600>;
-> > > +		};
-> > > +
-> > > +		cpu0_opp6: opp-1324800000 {
-> > > +			opp-hz = /bits/ 64 <1324800000>;
-> > > +			opp-peak-kBps = <2188000 33792000>;
-> > > +		};
-> > > +
-> > > +		cpu0_opp7: opp-1516800000 {
-> > > +			opp-hz = /bits/ 64 <1516800000>;
-> > > +			opp-peak-kBps = <3072000 38092800>;
-> > > +		};
-> > > +
-> > > +		cpu0_opp8: opp-1651200000 {
-> > > +			opp-hz = /bits/ 64 <1651200000>;
-> > > +			opp-peak-kBps = <3072000 41779200>;
-> > > +		};
-> > > +
-> > > +		cpu0_opp9: opp-1804800000 {
-> > > +			opp-hz = /bits/ 64 <1804800000>;
-> > > +			opp-peak-kBps = <4068000 48537600>;
-> > > +		};
-> > > +
-> > > +		cpu0_opp10: opp-1958400000 {
-> > > +			opp-hz = /bits/ 64 <1958400000>;
-> > > +			opp-peak-kBps = <4068000 48537600>;
-> > > +		};
-> > > +	};
-> > > +
-> > 
-> > NACK, this breaks if there is a mismatch from what is read from the
-> > hardware
-> > and what is presented in this table above. Either add it from the some
-> > bootloader or other boot code to this table reading from the
-> > hardware/firmware
-> > or find a way to link them without this.
-> > 
-> > Sorry I had warned long back about this when such links were discussed
-> > as
-> > part of interconnect binding.
+> > Xiaoliang explained that yes, this is what we want. If the end user
+> > wants a guard band they can explicitly add a "sched-entry 00" in the
+> > tc-taprio config.
 > 
-> Not sure why this warrants a NACK,
-> as this was consensus for mapping
-> cpu freq to DDR/L3 bandwidth votes.
-> (We use the same solution on SDM845
-> and SC7180). The opp tables are
-> optional and when specified puts in
-> votes for DDR/L3. In the future the
-> table can be safely dropped when more
-> useful devfreq governors are upstreamed.
+> You're disabling the guard band, then. I figured, but isn't that
+> suprising for the user? Who else implements taprio? Do they do it in the
+> same way? I mean this behavior is passed right to the userspace and have
+> a direct impact on how it is configured. Of course a user can add it
+> manually, but I'm not sure that is what we want here. At least it needs
+> to be documented somewhere. Or maybe it should be a switchable option.
 > 
-> cpufreq: qcom: Don't add frequencies without an OPP
+> Consider the following:
+> sched-entry S 01 25000
+> sched-entry S fe 175000
+> basetime 0
 > 
-> I guess your main concern for breakage
-> is ^^ commit? The original design is
-> to list a super set of frequencies
-> supported by all variants of the SoC
-> along with the required DDR/L3 bandwidth
-> values. When we run into non-documented
-> frequency we just wouldn't put in bw
-> votes for it which should be fine since
-> the entire opp_table is optional. If
-> this is the reason for the NACK I can
-> try get it reverted with Matthias's ack.
+> Doesn't guarantee, that queue 0 is available at the beginning of
+> the cycle, in the worst case it takes up to
+> <begin of cycle> + ~12.5us until the frame makes it through (given
+> gigabit and 1518b frames).
+> 
+> Btw. there are also other implementations which don't need a guard
+> band (because they are store-and-forward and cound the remaining
+> bytes). So yes, using a guard band and scheduling is degrading the
+> performance.
 
-Couldn't omitting the vote result in inconsistent performance at OPPs
-w/o DT entry?
+What is surprising for the user, and I mentioned this already in another
+thread on this patch, is that the Felix switch overruns the time gate (a
+packet taking 2 us to transmit will start transmission even if there is
+only 1 us left of its time slot, delaying the packets from the next time
+slot by 1 us). I guess that this is why the ALWAYS_GUARD_BAND_SCH_Q bit
+exists, as a way to avoid these overruns, but it is a bit of a poor tool
+for that job. Anyway, right now we disable it and live with the overruns.
 
-Let's assume the Soc has (at least) the following OPPs:
+FWIW, the ENETC does not overrun the time gate, the SJA1105 does. You
+can't really tell just by looking at the driver code, just by testing.
+It's a bit of a crapshoot.
 
-  cpu0_opp1: opp-300000000 {
-           opp-hz = /bits/ 64 <300000000>;
-           opp-peak-kBps = <800000 9600000>;
-  };
+> > Sorry, I don't understand what you mean to say here.
+> 
+> I doubt that ALWAYS_GUARD_BAND_SCH_Q is a per-port setting. But that is
+> only a guess. One would have to check with the IP vendor.
 
-  cpu0_opp3: opp-806400000 {
-          opp-hz = /bits/ 64 <806400000>;
-          opp-peak-kBps = <800000 20889600>;
-  };
+Probably not, but I'm not sure that this is relevant one way or another,
+as the driver unconditionally clears it regardless of port (or unconditionally
+set it, before Xiaoliang's patch).
 
-  /* missing in the device tree */
-  cpu0_opp4: opp-940800000 {
-          opp-hz = /bits/ 64 <940800000>;
-          opp-peak-kBps = <1804000 24576000>;
-  };
+> > > > May I know what drew your attention to this patch? Is there something
+> > > > wrong?
+> 
+> See private mail.
 
-  cpu0_opp5: opp-1152000000 {
-          opp-hz = /bits/ 64 <1152000000>;
-          opp-peak-kBps = <2188000 27033600>;
-  };
-
-
-When the CPU frequency changes from 1.152 GHz to 940.4 MHz the
-bandwidth vote is omitted because the new OPP isn't listed in the
-DT, the DDR/L3 bandwidth remains at the value for 1.152 GHz, which
-is fine in terms of performance, but has a penalty in terms of power.
-
-In case the CPU frequency changes from 806.4 MHz to 940.4 MHz the
-bandwidth vote is also omitted, but now the DDR/L3 bandwith stays
-at the value for 806.4 MHz, which could have a negative impact on
-performance. The impact would be even larger if the switch happened
-from a lower OPP, like OPP 1.
+Responded. I'm really curious if this change makes any difference at all
+to your use case.
