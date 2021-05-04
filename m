@@ -2,162 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 865EA372BEE
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D3E372BF3
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231573AbhEDOYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 10:24:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231393AbhEDOYj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 10:24:39 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BADEC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 07:23:44 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id y7so13438116ejj.9
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 07:23:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ensQSDTh3BO9iGPVrV6EYBnSBYEfz7lspMmgWRr6tEM=;
-        b=A/agEr85m2gTABKwkX7MweJdDLUWMMy/uuv8cOATtF0IOSbqQGQWqB7WVO/2i6CTej
-         A/xEN0wabqwjnysRyxUsM6987Nm7ZjOXb3ElY7BOmpcbi2Nz6d878YWmh7i2EiFYeKva
-         NM7Q/fRoU0PTIKl2uxcCG8z+XO6JfxPjFQ6us=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=ensQSDTh3BO9iGPVrV6EYBnSBYEfz7lspMmgWRr6tEM=;
-        b=Ji0pMH66a/EYnkgyWMYV7Hk5UR9ZSDwk+URjN5FeDuT2lh05Zo7syrNgWpDJynINCv
-         kLV9SLddc02IG3SZ8VyUMUD+i2gc597sMWwFzMfolyLq17yGikfG9L7mGS4r4qoKi6U6
-         QArrzmaNqSeLNIJjE8lh/iTtfs2qS8fpeMlKjd/qHv+FjK/KHWoiGSlV44yQP8VxppZI
-         RBo9KxrXeKgDhOlRCpHzL96dN314GP+ss1fQoPqblVjnRoZ034a0qrtz4UGrz9MPCev/
-         /UN4rEsseelW90oegiR2Gddad+1LN7qMOViaBnJ5Iu13e3sRAGDSy5d8t06Xaa0geaUD
-         naYw==
-X-Gm-Message-State: AOAM531AbXS555BcE3YfHMhQSe9VcZOZWCFhFNdLlo1W6Jme3/b9FX5k
-        MBeTQNeZUXeQ1Bw1UgMrCvVQYA==
-X-Google-Smtp-Source: ABdhPJzaM96uclt2Tpt863I3ZtqPW7KYS209iLyt378polAbgvCVI1aPL30//Pa3FZcXPaOgGHkVGA==
-X-Received: by 2002:a17:906:194d:: with SMTP id b13mr22253337eje.83.1620138223252;
-        Tue, 04 May 2021 07:23:43 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id t14sm1462204ejc.121.2021.05.04.07.23.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 07:23:42 -0700 (PDT)
-Date:   Tue, 4 May 2021 16:23:40 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Greg Kurz <groug@kaod.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, kvm@vger.kernel.org,
-        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, Paul Mackerras <paulus@samba.org>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-api@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, qemu-devel@nongnu.org,
-        qemu-ppc@nongnu.org
-Subject: Re: remove the nvlink2 pci_vfio subdriver v2
-Message-ID: <YJFY7NjEBtCSlJHw@phenom.ffwll.local>
-Mail-Followup-To: Greg Kurz <groug@kaod.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, kvm@vger.kernel.org,
-        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, Paul Mackerras <paulus@samba.org>,
-        linux-api@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        qemu-devel@nongnu.org, qemu-ppc@nongnu.org
-References: <20210326061311.1497642-1-hch@lst.de>
- <20210504142236.76994047@bahia.lan>
- <YJFFG1tSP0dUCxcX@kroah.com>
- <20210504152034.18e41ec3@bahia.lan>
+        id S231592AbhEDOZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 10:25:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:59244 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231580AbhEDOZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 10:25:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EF76AED1;
+        Tue,  4 May 2021 07:24:05 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4EF513F718;
+        Tue,  4 May 2021 07:24:03 -0700 (PDT)
+Date:   Tue, 4 May 2021 15:23:58 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Greentime Hu <greentime.hu@sifive.com>, paul.walmsley@sifive.com,
+        hes@sifive.com, erik.danie@sifive.com, zong.li@sifive.com,
+        bhelgaas@google.com, robh+dt@kernel.org, aou@eecs.berkeley.edu,
+        mturquette@baylibre.com, sboyd@kernel.org, p.zabel@pengutronix.de,
+        alex.dewar90@gmail.com, khilman@baylibre.com,
+        hayashi.kunihiko@socionext.com, vidyas@nvidia.com,
+        jh80.chung@samsung.com, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [PATCH v6 5/6] PCI: fu740: Add SiFive FU740 PCIe host controller
+ driver
+Message-ID: <20210504142358.GA25477@lpieralisi>
+References: <20210504105940.100004-6-greentime.hu@sifive.com>
+ <20210504134632.GA1088165@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210504152034.18e41ec3@bahia.lan>
-X-Operating-System: Linux phenom 5.10.32scarlett+ 
+In-Reply-To: <20210504134632.GA1088165@bjorn-Precision-5520>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 03:20:34PM +0200, Greg Kurz wrote:
-> On Tue, 4 May 2021 14:59:07 +0200
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> 
-> > On Tue, May 04, 2021 at 02:22:36PM +0200, Greg Kurz wrote:
-> > > On Fri, 26 Mar 2021 07:13:09 +0100
-> > > Christoph Hellwig <hch@lst.de> wrote:
-> > > 
-> > > > Hi all,
-> > > > 
-> > > > the nvlink2 vfio subdriver is a weird beast.  It supports a hardware
-> > > > feature without any open source component - what would normally be
-> > > > the normal open source userspace that we require for kernel drivers,
-> > > > although in this particular case user space could of course be a
-> > > > kernel driver in a VM.  It also happens to be a complete mess that
-> > > > does not properly bind to PCI IDs, is hacked into the vfio_pci driver
-> > > > and also pulles in over 1000 lines of code always build into powerpc
-> > > > kernels that have Power NV support enabled.  Because of all these
-> > > > issues and the lack of breaking userspace when it is removed I think
-> > > > the best idea is to simply kill.
-> > > > 
-> > > > Changes since v1:
-> > > >  - document the removed subtypes as reserved
-> > > >  - add the ACK from Greg
-> > > > 
-> > > > Diffstat:
-> > > >  arch/powerpc/platforms/powernv/npu-dma.c     |  705 ---------------------------
-> > > >  b/arch/powerpc/include/asm/opal.h            |    3 
-> > > >  b/arch/powerpc/include/asm/pci-bridge.h      |    1 
-> > > >  b/arch/powerpc/include/asm/pci.h             |    7 
-> > > >  b/arch/powerpc/platforms/powernv/Makefile    |    2 
-> > > >  b/arch/powerpc/platforms/powernv/opal-call.c |    2 
-> > > >  b/arch/powerpc/platforms/powernv/pci-ioda.c  |  185 -------
-> > > >  b/arch/powerpc/platforms/powernv/pci.c       |   11 
-> > > >  b/arch/powerpc/platforms/powernv/pci.h       |   17 
-> > > >  b/arch/powerpc/platforms/pseries/pci.c       |   23 
-> > > >  b/drivers/vfio/pci/Kconfig                   |    6 
-> > > >  b/drivers/vfio/pci/Makefile                  |    1 
-> > > >  b/drivers/vfio/pci/vfio_pci.c                |   18 
-> > > >  b/drivers/vfio/pci/vfio_pci_private.h        |   14 
-> > > >  b/include/uapi/linux/vfio.h                  |   38 -
-> > > 
-> > > 
-> > > Hi Christoph,
-> > > 
-> > > FYI, these uapi changes break build of QEMU.
+On Tue, May 04, 2021 at 08:46:32AM -0500, Bjorn Helgaas wrote:
+> On Tue, May 04, 2021 at 06:59:39PM +0800, Greentime Hu wrote:
+> > From: Paul Walmsley <paul.walmsley@sifive.com>
 > > 
-> > What uapi changes?
+> > Add driver for the SiFive FU740 PCIe host controller.
+> > This controller is based on the DesignWare PCIe core.
 > > 
+> > Signed-off-by: Paul Walmsley <paul.walmsley@sifive.com>
+> > Co-developed-by: Henry Styles <hes@sifive.com>
+> > Signed-off-by: Henry Styles <hes@sifive.com>
+> > Co-developed-by: Erik Danie <erik.danie@sifive.com>
+> > Signed-off-by: Erik Danie <erik.danie@sifive.com>
+> > Co-developed-by: Greentime Hu <greentime.hu@sifive.com>
+> > Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
+> > ---
+> >  drivers/pci/controller/dwc/Kconfig      |  10 +
+> >  drivers/pci/controller/dwc/Makefile     |   1 +
+> >  drivers/pci/controller/dwc/pcie-fu740.c | 309 ++++++++++++++++++++++++
+> >  3 files changed, 320 insertions(+)
+> >  create mode 100644 drivers/pci/controller/dwc/pcie-fu740.c
+> > 
+> > diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
+> > index 22c5529e9a65..255d43b1661b 100644
+> > --- a/drivers/pci/controller/dwc/Kconfig
+> > +++ b/drivers/pci/controller/dwc/Kconfig
+> > @@ -318,4 +318,14 @@ config PCIE_AL
+> >  	  required only for DT-based platforms. ACPI platforms with the
+> >  	  Annapurna Labs PCIe controller don't need to enable this.
+> >  
+> > +config PCIE_FU740
+> > +	bool "SiFive FU740 PCIe host controller"
+> > +	depends on PCI_MSI_IRQ_DOMAIN
+> > +	depends on SOC_SIFIVE || COMPILE_TEST
+> > +	depends on GPIOLIB
 > 
-> All macros and structure definitions that are being removed
-> from include/uapi/linux/vfio.h by patch 1.
+> 1) I'm a little disappointed that I reported the build issue 6 days
+>    ago when we were already in the merge window, and it's taken until
+>    now to make some progress.
+> 
+> 2) I would prefer not to depend on GPIOLIB because it reduces
+>    compile-test coverage.  For example, the x86_64 defconfig does not
+>    enable GPIOLIB, so one must manually enable it to even be able to
+>    enable PCIE_FU740.
+> 
+>    Many other PCI controller drivers use GPIO, but no others depend on
+>    GPIOLIB, so I infer that in the !GPIOLIB case, gpio/consumer.h
+>    provides the stubs required for compile testing.
+> 
+>    We could have a conversation about whether it's better to
+>    explicitly depend on GPIOLIB here, or whether building a working
+>    FU740 driver implicitly depends on GPIOLIB being selected
+>    elsewhere.  That implicit dependency *is* a little obscure, but I
+>    think that's what other drivers currently do, and I'd like to do
+>    this consistently unless there's a good reason otherwise.
 
-Just my 2cents from drm (where we deprecate old gunk uapi quite often):
-Imo it's best to keep the uapi headers as-is, but exchange the
-documentation with a big "this is removed, never use again" warning:
+I will drop the explicit GPIOLIB dependency and push it out. For (1) I
+agree with you - I merged when I received some input - it is reasonable
+to avoid adding it to v5.13 material for this reason, apologies.
 
-- it occasionally serves as a good lesson for how to not do uapi (whatever
-  the reasons really are in the specific case)
+Thanks,
+Lorenzo
 
-- it's good to know which uapi numbers (like parameter extensions or
-  whatever they are in this case) are defacto reserved, because there are
-  binaries (qemu in this) that have code acting on them out there.
-
-The only exception where we completely nuke the structs and #defines is
-when uapi has been only used by testcases. Which we know, since we defacto
-limit our stable uapi guarantee to the canonical open&upstream userspace
-drivers only (for at least the driver-specific stuff, the cross-driver
-interfaces are hopeless).
-
-Anyway feel free to ignore since this might be different than drivers/gpu.
-
-Cheers, Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+>    Here are some examples of other drivers:
+> 
+>    dwc/pci-dra7xx.c:
+>      config PCI_DRA7XX_HOST
+>        depends on SOC_DRA7XX || COMPILE_TEST
+> 
+>      config SOC_DRA7XX
+>        select ARCH_OMAP2PLUS
+> 
+>      config ARCH_OMAP2PLUS
+>        select GPIOLIB
+> 
+>    dwc/pci-meson.c:
+>      config PCI_MESON
+>        # doesn't, but probably *should* depend on "ARCH_MESON || COMPILE_TEST"
+> 
+>      menuconfig ARCH_MESON
+>        select GPIOLIB
+> 
+>    dwc/pcie-qcom.c:
+>      config PCIE_QCOM
+>        depends on OF && (ARCH_QCOM || COMPILE_TEST)
+> 
+>      config ARCH_QCOM
+>        select GPIOLIB
+> 
+>    pcie-rockchip.c:
+>      config PCIE_ROCKCHIP_HOST
+>        depends on ARCH_ROCKCHIP || COMPILE_TEST
+> 
+>      config ARCH_ROCKCHIP
+>        select GPIOLIB
+> 
+> > +	select PCIE_DW_HOST
+> > +	help
+> > +	  Say Y here if you want PCIe controller support for the SiFive
+> > +	  FU740.
+> > +
+> >  endmenu
