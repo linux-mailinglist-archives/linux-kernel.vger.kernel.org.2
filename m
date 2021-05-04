@@ -2,91 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E115E3732C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 01:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 542CD3732C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 01:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231416AbhEDXgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 19:36:04 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:48927 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231226AbhEDXgC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 19:36:02 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FZbmM4qW8z9sSs;
-        Wed,  5 May 2021 09:34:59 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1620171300;
-        bh=0out9Isf7Z9icGU+IM9sl8hM3WJa0lf6i23LuiOjslg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=jq4yVblMaYDOESwevI/KiRgOaXDrtCdlBfCY4WdMH2k6CvwpuPWbuXZEqDvcHbncP
-         MuEop5QTM3CU5raqNElJBO1RHfnajoMurKMW8RINRlSK+oLrm+xWVqYuQlqj+jlOyN
-         hURiv13oZWqP8BdpUDdgC0KVoXpsTwsgZfXWTaQEmb/3ps44bCrIeiApaRJKgN3R6I
-         8EzF2J/W1wL8222wSqDYLcKBj9YUZ4FkhitoGRfAMx288htOhmqWt9APWTODjdA6iK
-         Mey8/xRy5Kewb5j9obj0TmDmkkNmtTXL0x/t7KOaKMQHfXKmf2l5+55/7brCQ7s+BC
-         gz1+lZVKWpYug==
-Date:   Wed, 5 May 2021 09:34:58 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Jude Shih <shenshih@amd.com>, Hanghong Ma <Hanghong.Ma@amd.com>,
-        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Dave Airlie <airlied@linux.ie>
-Subject: linux-next: build failure after merge of the amdgpu tree
-Message-ID: <20210505093458.23efd0ee@canb.auug.org.au>
+        id S231447AbhEDXh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 19:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231430AbhEDXhy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 19:37:54 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4EEFC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 16:36:58 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id t8so583098oij.0
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 16:36:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7ZG1nWXtzTYTaXrMK1FVDEfdYcnwUzz0W/Bp4Vm63w8=;
+        b=W0/NtpO49BkFw56cUrtxd4cEfAJIY00IrrdCRRM83zOAeUgsB5GNY/mRrQ9guQ+GCu
+         zt+IJvmorwCO7B/VnqnHGwHqgBURRJbU4N9fAgchjHtd3fM8mwQ3UelDSkOAA8+3qMf8
+         r9JZMox/04J0poAyl2fdpSvJp4JNeW+aKECRZEie7GHgopXF8ef5KvuID8N/VIJ3vacw
+         /pAZnyCOMa76HYaURuL4TrKT5xRQmbHMuP/59JFIL5CjKdSjWfNmpOhrGkgBJEeFKtJR
+         3qFalKYZueX64+3yV8ur8yG1/8AgITMp2LXEsXIZN2c/2iR9N87REuOR7ayWiX89ltLq
+         MGAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7ZG1nWXtzTYTaXrMK1FVDEfdYcnwUzz0W/Bp4Vm63w8=;
+        b=CF5BsgFLHh0TrrA3OSeMyAz+4j+9NQCInh0TsxLcdDMoPYrAtpV1lO1wXwv0OEh4i6
+         zbJxxMQ/VybgHt6gLPFsSE0BZ4R5BAkG8qb1oa+3t+JeXDPN0pDisqE7adsKWwlccHxV
+         oo/88maF7V7wGVqyRJkkUdHmbr1TSjyFTTBlBi3Wn1ANfnTOzX4+Pdc3VZqH+NPloKXl
+         XD6ubWhhdGq8700GTfA8+E//4bzbw4EEjMcfQZzyR2gH80pHSmcSmNv8ekuXb38TdAnG
+         8FHrAIx7X8+w31/6QI7Oyfe9Ewxx/3c2i5uRB/NPGLIUEtSpv+demubulo+YlxL5IOpk
+         vt0A==
+X-Gm-Message-State: AOAM533C5s9z62w4eSX7STwJRtyCIH78Fd3sRqUgfsa/e7vSBYAIRQMW
+        DtmyW2n5hu3Bl619dz4GqLXsW7vTbU8Vwm57QgirCg==
+X-Google-Smtp-Source: ABdhPJwn/nngurgnvemnAXyxfhI7q1jjWsE5Plk4Zrimr9wx7e+kViDLlODMMe3olSMzacxI1V8LVMwEjPJKagGUspg=
+X-Received: by 2002:a05:6808:b2f:: with SMTP id t15mr4766153oij.6.1620171418015;
+ Tue, 04 May 2021 16:36:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/sU9Rfc=Y6ieX.=tcetB9P0L";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210504171734.1434054-1-seanjc@google.com> <20210504171734.1434054-6-seanjc@google.com>
+In-Reply-To: <20210504171734.1434054-6-seanjc@google.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Tue, 4 May 2021 16:36:46 -0700
+Message-ID: <CALMp9eQOZyf=U=Y-4CLpB9=nBfVPjOQzcURrTAUNZyugiischw@mail.gmail.com>
+Subject: Re: [PATCH 05/15] KVM: VMX: Disable preemption when probing user
+ return MSRs
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Reiji Watanabe <reijiw@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/sU9Rfc=Y6ieX.=tcetB9P0L
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-After merging the amdgpu tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
-
-drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c: In function 'a=
-mdgpu_dm_initialize_drm_device':
-drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:3728:7: error: =
-implicit declaration of function 'register_outbox_irq_handlers'; did you me=
-an 'register_hpd_handlers'? [-Werror=3Dimplicit-function-declaration]
- 3728 |   if (register_outbox_irq_handlers(dm->adev)) {
-      |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      |       register_hpd_handlers
-
-Caused by commit
-
-  77a49c458931 ("drm/amd/display: Support for DMUB AUX")
-
-I have used the amdgpu tree from next-20210504 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/sU9Rfc=Y6ieX.=tcetB9P0L
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCR2iIACgkQAVBC80lX
-0GxA5Af/Q9d0AAusrcQqcYWNMCZR8hsKWJmF4j1lFAjqlUd9+L/NWsDZEMS4OFxi
-oBM1HqbyI/S7WmpUh+YfUvymSrPJ6XUuagfW8KZMc3dRR9GwRIrjD89SWbr2e49B
-zoesFg26qvxB6EwO4P4J5xzRDzP+UMM0AZ2gw35ZBdH9pLtMc7NfLYL9v0+wlRMn
-QgVyNRHhOfWTezmJfBRdxbX7PhLkPkVywChp6HvS9mR52xpJH7fefk6nPkNdT36Q
-fuTbLedJIDTl25COoB7EFfiy1iky47mY0jxjnPQhmohZFtEnjB12IAvqNYztnkbf
-5d3nL0W8Nflacqu5rJmr3I0uh2ROiA==
-=Do7a
------END PGP SIGNATURE-----
-
---Sig_/sU9Rfc=Y6ieX.=tcetB9P0L--
+On Tue, May 4, 2021 at 10:17 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Disable preemption when probing a user return MSR via RDSMR/WRMSR.  If
+> the MSR holds a different value per logical CPU, the WRMSR could corrupt
+> the host's value if KVM is preempted between the RDMSR and WRMSR, and
+> then rescheduled on a different CPU.
+>
+> Opportunistically land the helper in common x86, SVM will use the helper
+> in a future commit.
+>
+> Fixes: 4be534102624 ("KVM: VMX: Initialize vmx->guest_msrs[] right after allocation")
+> Cc: stable@vger.kernel.org
+> Cc: Xiaoyao Li <xiaoyao.li@intel.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+Reviewed-by: Jim Mattson <jmattson@google.com>
