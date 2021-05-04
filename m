@@ -2,139 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59511372450
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 03:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A553372454
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 03:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbhEDBtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 21:49:04 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:11938 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbhEDBtD (ORCPT
+        id S229670AbhEDB4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 21:56:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229499AbhEDB4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 21:49:03 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1441YjVt019378;
-        Tue, 4 May 2021 09:34:45 +0800 (GMT-8)
-        (envelope-from steven_lee@aspeedtech.com)
-Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 4 May
- 2021 09:46:26 +0800
-Date:   Tue, 4 May 2021 09:46:23 +0800
-From:   Steven Lee <steven_lee@aspeedtech.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
-        "Ryan Chen" <ryanchen.aspeed@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Ryan Chen <ryan_chen@aspeedtech.com>,
-        "moderated list:ASPEED SD/MMC DRIVER" <linux-aspeed@lists.ozlabs.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ASPEED SD/MMC DRIVER" <linux-mmc@vger.kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>,
-        "Ulf Hansson" <ulf.hansson@linaro.org>,
-        Joel Stanley <joel@jms.id.au>,
-        "Hongweiz@ami.com" <Hongweiz@ami.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: mmc: sdhci-of-aspeed: Add
- description for AST2600 EVB.
-Message-ID: <20210504014622.GB20079@aspeedtech.com>
-References: <20210503014336.20256-1-steven_lee@aspeedtech.com>
- <20210503014336.20256-2-steven_lee@aspeedtech.com>
- <1620055245.319540.1846827.nullmailer@robh.at.kernel.org>
+        Mon, 3 May 2021 21:56:43 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 829C8C061574;
+        Mon,  3 May 2021 18:55:49 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1ldkHm-00ApeZ-PB; Tue, 04 May 2021 01:55:42 +0000
+Date:   Tue, 4 May 2021 01:55:42 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] gpio: updates for v5.13
+Message-ID: <YJCpnvKUNx+Tc+vg@zeniv-ca.linux.org.uk>
+References: <20210502193216.24872-1-brgl@bgdev.pl>
+ <CAHk-=whSWp3exv8tZ2th5im_P7HF=c6iuOOVb9iSrNrd6405WA@mail.gmail.com>
+ <YJBA1iYK7npit9vn@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1620055245.319540.1846827.nullmailer@robh.at.kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1441YjVt019378
+In-Reply-To: <YJBA1iYK7npit9vn@zeniv-ca.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 05/03/2021 23:20, Rob Herring wrote:
-> On Mon, 03 May 2021 09:43:34 +0800, Steven Lee wrote:
-> > Add the description for describing the AST 2600 EVB reference design of
-> > GPIO regulators and provide the example in the document.
-> > 
-> > AST2600-A2 EVB has the reference design for enabling SD bus
-> > power and toggling SD bus signal voltage by GPIO pins.
-> > 
-> > In the reference design, GPIOV0 of AST2600-A2 EVB is connected to
-> > power load switch that providing 3.3v to SD1 bus vdd. GPIOV1 is
-> > connected to a 1.8v and a 3.3v power load switch that providing
-> > signal voltage to
-> > SD1 bus.
-> > 
-> > If GPIOV0 is active high, SD1 bus is enabled. Otherwise, SD1 bus is
-> > disabled.
-> > If GPIOV1 is active high, 3.3v power load switch is enabled, SD1
-> > signal voltage is 3.3v. Otherwise, 1.8v power load switch will be
-> > enabled, SD1 signal voltage becomes 1.8v.
-> > 
-> > AST2600-A2 EVB also support toggling signal voltage for SD2 bus.
-> > The design is the same as SD1 bus. It uses GPIOV2 as power-gpio and
-> > GPIOV3 as power-switch-gpio.
-> > 
-> > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> > ---
-> >  .../devicetree/bindings/mmc/aspeed,sdhci.yaml | 99 +++++++++++++++++++
-> >  1 file changed, 99 insertions(+)
-> > 
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> ./Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml:97:5: [error] syntax error: expected <block end>, but found '<scalar>' (syntax)
-> 
-> dtschema/dtc warnings/errors:
-> make[1]: *** Deleting file 'Documentation/devicetree/bindings/mmc/aspeed,sdhci.example.dts'
-> Traceback (most recent call last):
->   File "/usr/local/bin/dt-extract-example", line 45, in <module>
->     binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
->   File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 421, in load
->     return constructor.get_single_data()
->   File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 109, in get_single_data
->     node = self.composer.get_single_node()
->   File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
->   File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
->   File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
->   File "_ruamel_yaml.pyx", line 891, in _ruamel_yaml.CParser._compose_mapping_node
->   File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
-> ruamel.yaml.parser.ParserError: while parsing a block mapping
->   in "<unicode string>", line 5, column 1
-> did not find expected key
->   in "<unicode string>", line 97, column 5
-> make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/mmc/aspeed,sdhci.example.dts] Error 1
-> make[1]: *** Waiting for unfinished jobs....
-> ./Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml:  while parsing a block mapping
->   in "<unicode string>", line 5, column 1
-> did not find expected key
->   in "<unicode string>", line 97, column 5
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml: ignoring, error parsing file
-> warning: no schema found in file: ./Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
-> make: *** [Makefile:1414: dt_binding_check] Error 2
-> 
-> See https://patchwork.ozlabs.org/patch/1472993
-> 
-> This check can fail if there are any dependencies. The base for a patch
-> series is generally the most recent rc1.
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
-> 
-> pip3 install dtschema --upgrade
-> 
-> Please check and re-submit.
-> 
+On Mon, May 03, 2021 at 06:28:38PM +0000, Al Viro wrote:
 
-Thanks for the log and the information, I will install the package
-and do the check before re-submiting the patch.
+> > So Al, do you see anything horrendous in how that configfs thing uses
+> > a rename to do kind of an "atomic swap" of configfs state?
+> 
+> Give me a few hours; configfs is playing silly buggers with a lot of
+> structures when creating/tearing down subtrees, and I'd actually
+> expect more trouble with configfs data structures than with VFS ones.
+> 
+> I'll take a look.
 
+FWIW, one obviously bogus thing is this:
+
++       spin_lock(&configfs_dirent_lock);
++       new_dentry->d_fsdata = sd;
++       list_move(&sd->s_sibling, &new_parent_sd->s_children);
++       item->ci_parent = new_parent_item;
++       d_move(old_dentry, new_dentry);
++       spin_unlock(&configfs_dirent_lock);
+on successful ->rename().  sd here comes from
++       sd = old_dentry->d_fsdata;
+
+	Now, take a look at configfs_d_iput().  ->d_fsdata contributes
+to refcount of sd, and I don't see anything here that would grab the
+reference.
+
+	Incidentally, if your code critically depends upon some field
+being first in such-and-such structure, you should either get rid of
+the dependency or at least bother to document that.
+That
++               /*
++                * Free memory allocated for the pending and live directories
++                * of committable groups.
++                */
++               if (sd->s_type & (CONFIGFS_GROUP_PENDING | CONFIGFS_GROUP_LIVE))
++                       kfree(sd->s_element);
++
+is asking for trouble down the road.
+
+	I dislike (for the lack of adequate printable terms) the way configfs 
+deals with subtree creation and, especially, removal.  It's kept attached
+to dentry tree (all the way to the root) as we build it and, in case we
+fail halfway through, as we are trying to take it apart.
+
+	There is convoluted code trying to prevent breakage in such cases,
+but it's complex, brittle and I don't remember how critical the lack of
+renames had been in its analysis.  I can try to redo that, but that would
+take some time - IIRC, the last time I did it, it took several days
+of work (including arseloads of grepping through configfs users and
+doing RTFS in those)
+
+	IMO we should attach the subtree we'd built only when it's
+fully set up.  I can dig out the notes (from 2 years ago) on how to massage
+the damn thing in that direction, but again, it'll take a day or two
+to verify that analysis still applies.  OTOH, that would simplify the code
+considerably, so the next time we want to change something it wouldn't
+be so unpleasant.
