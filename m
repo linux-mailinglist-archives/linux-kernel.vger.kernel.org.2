@@ -2,130 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEABD373165
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B89FC373169
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232819AbhEDU3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 16:29:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21078 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231989AbhEDU3H (ORCPT
+        id S232807AbhEDUd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 16:33:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232560AbhEDUd2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 16:29:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620160092;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FbsHJVMfILlnS5Wi41hoQHAxs4c8Dc+Z1Og1/gTmS3c=;
-        b=J7v0LT2wOO+CQELf7onYGMi57UtUIMnWBfIqSD6eRYFQSnCD/wxMc/dfebnyNO3D1z6ZRU
-        oASaP1yJ60KhHjZJGKO4SQGHP7GiTZm9axQ0mlFTTXLe5u9EIo5E5T3I0VdktTW6h5HDuh
-        cM2XD4JwTYVMo5K/u9MhoiyNtPuQLB0=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-20-3-S3cgCrP4y0NjspdfNgTg-1; Tue, 04 May 2021 16:28:08 -0400
-X-MC-Unique: 3-S3cgCrP4y0NjspdfNgTg-1
-Received: by mail-ej1-f71.google.com with SMTP id r18-20020a1709069592b029039256602ce8so3607982ejx.1
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 13:28:08 -0700 (PDT)
+        Tue, 4 May 2021 16:33:28 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59322C061574;
+        Tue,  4 May 2021 13:32:32 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id y7so15165330ejj.9;
+        Tue, 04 May 2021 13:32:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s+WAhzdP859cnPeCIedjnSWgh7wM+d3lJE1B2lOJ2lo=;
+        b=fAWK10XbeBYU/CZ0BaOeCT3j6uYBMt0KmSpmDHgQidw3BXFZ/WFSuwTT88Mp/48Wbw
+         7eJsDuXTCNPl298XAikPJvylbL2Mf7EaHrpNsQ+LsugWbIyeQt9rwxS9xuUIil15TnQx
+         R5Fblfvkg9/xhdcO+t0IbZsOpT+ZHtEjCC2BDdW8TVFzD2BrnyeeUeCU5zcscY+GDZSt
+         5h1WOG9M+aJDT6pumDSg2cAZKIzsy8vUhOVw8ayVY71LkDLX9GcjRSf5aLB55d/gdFIy
+         dmJUmK6GC8aABTb7xnHI50u6YT9qv6ocJ09KvtqVOYbeTPgd/vBX2Zjlg7N5fvM45KBu
+         FgZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=FbsHJVMfILlnS5Wi41hoQHAxs4c8Dc+Z1Og1/gTmS3c=;
-        b=Xw606w7PJHUlMBixoXvo6V8tLzt4k59xUt65JyCUeS3Kns+Pzb+L0FI3abNcDgiSbI
-         MvNQELnTVUyzZf64G8nmkLptv1W8/QSfa16mVSoiArnWuRs1PPJzsXctME40mHM6HlPM
-         7sJ4pg7zyNTV9ZAeRcfSm8aPTzkyryAOD4j9P4hNopG0kmVQtn1nuF7MCUmvWRlFNyaV
-         frnwtolS7Cy+oa8D6+vBQ3cFxcpIkdXER+cOdK0YSQ55MJgVOPy01hLvT9kCJOsDKdNd
-         tOZZJj+e+PFMRhdOXerV6sAbM/nB4CkTHUeJUyOjkP6tGnbh6QcsPaZTnOXtpcfvncC8
-         7iwA==
-X-Gm-Message-State: AOAM530TbhCGMQV+9SCFw7+emWtjZ6lhEgJLyCDyXu7qtmhB+XFTWNWF
-        +8DRo0idB97yZoWIoEV1oMR5sfm6Kn/yaNQbxklvUnpzlZiuSpiMoVv08rTlOgBFAkOpHf0SXKd
-        7B6IQx6vGOWjNGKNyGc100iLD
-X-Received: by 2002:a17:906:414d:: with SMTP id l13mr23123481ejk.527.1620160087433;
-        Tue, 04 May 2021 13:28:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxl5vGIFlk8ABdz+SL+2HU6NV1sbi8oeO0R+cNsAQCQnnpf/2epVEQ5+x0V5jftLyZ2SiwKrA==
-X-Received: by 2002:a17:906:414d:: with SMTP id l13mr23123463ejk.527.1620160087260;
-        Tue, 04 May 2021 13:28:07 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id c7sm6558812ede.37.2021.05.04.13.28.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 May 2021 13:28:06 -0700 (PDT)
-Subject: Re: [PATCH v3 2/2] KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS
- hypercall
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        srutherford@google.com, joro@8bytes.org, brijesh.singh@amd.com,
-        thomas.lendacky@amd.com, ashish.kalra@amd.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@suse.de>,
-        x86@kernel.org
-References: <20210429104707.203055-1-pbonzini@redhat.com>
- <20210429104707.203055-3-pbonzini@redhat.com> <YIxkTZsblAzUzsf7@google.com>
- <c4bf8a05-ec0d-9723-bb64-444fe1f088b5@redhat.com>
- <YJF/3d+VBfJKqXV4@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f7300393-6527-005f-d824-eed5f7f2f8a8@redhat.com>
-Date:   Tue, 4 May 2021 22:27:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        bh=s+WAhzdP859cnPeCIedjnSWgh7wM+d3lJE1B2lOJ2lo=;
+        b=kWbNKa5j08oVeaTnjTp/ttQaUhjlxlTXw88HFq/bkti+8AUTCOk9ylAdaaBBtu8iw3
+         e9xu0f4n4u/0RhwO10ekVe03qVFYZlSJAmSPD4pW4+fEtgAcbUPfbCCJVEA0voP9Rtf3
+         NUb5rRfr9cjceAUSrIjK0/H5NfpOo6KBxLrTpdPAkyGsZVdkBFfV5T4bYD8wxDtB69Tv
+         2DoJt4eTwf0MsmiC/6hpYYUiFZJFZIASqsNkslZeY9OKT0P6I6rhx5kYscGI31h92Gxs
+         OBe7PSXNLUjCwtykULKZtCIwbezr/hcvKCOV4DsiTK8zQ0yYaYBEOmrPL8MVqO8JSvTD
+         JQRw==
+X-Gm-Message-State: AOAM5335xFQ9O7+LIn0jjWxRWt8wEDOOU4L+fYriz3xuLZGcew5FkOyl
+        9+mIFnk9Nk3SRHCVqh6QLNc=
+X-Google-Smtp-Source: ABdhPJx9On1jC6rFO4wd0vFLnNAciS9RSj7Lc8RO1FGa8X7kp0YHt09XfZVspyjEYQjnH/lIY9TN6Q==
+X-Received: by 2002:a17:906:18e1:: with SMTP id e1mr23426834ejf.341.1620160351157;
+        Tue, 04 May 2021 13:32:31 -0700 (PDT)
+Received: from localhost.localdomain (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
+        by smtp.gmail.com with ESMTPSA id cw6sm1900613ejb.32.2021.05.04.13.32.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 13:32:30 -0700 (PDT)
+From:   Bean Huo <huobean@gmail.com>
+To:     ulf.hansson@linaro.org, adrian.hunter@intel.com
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bean Huo <beanhuo@micron.com>,
+        Michael Brunner <Michael.Brunner@kontron.com>
+Subject: [PATCH v1] mmc: block: Disable CMDQ on the ioctl path
+Date:   Tue,  4 May 2021 22:32:09 +0200
+Message-Id: <20210504203209.361597-1-huobean@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YJF/3d+VBfJKqXV4@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/05/21 19:09, Sean Christopherson wrote:
-> On Sat, May 01, 2021, Paolo Bonzini wrote:
->> - make it completely independent from migration, i.e. it's just a facet of
->> MSR_KVM_PAGE_ENC_STATUS saying whether the bitmap is up-to-date.  It would
->> use CPUID bit as the encryption status bitmap and have no code at all in KVM
->> (userspace needs to set up the filter and implement everything).
-> 
-> If the bit is purely a "page encryption status is up-to-date", what about
-> overloading KVM_HC_PAGE_ENC_STATUS to handle that status update as well?   That
-> would eliminate my biggest complaint about having what is effectively a single
-> paravirt feature split into two separate, but intertwined chunks of ABI.
+From: Bean Huo <beanhuo@micron.com>
 
-It's true that they are intertwined, but I dislike not having a way to 
-read the current state.
+According to the eMMC Spec:
+"When command queuing is enabled (CMDQ Mode En bit in CMDQ_MODE_EN
+field is set to ‘1’) class 11 commands are the only method through
+which data transfer tasks can be issued. Existing data transfer
+commands, namely CMD18/CMD17 and CMD25/CMD24, are not supported when
+command queuing is enabled."
+which means if CMDQ is enabled, the FFU commands will not be supported.
+To fix this issue, just simply disable CMDQ on the ioctl path, and
+re-enable CMDQ once ioctl request is completed.
 
-Paolo
+Tested-by: Michael Brunner <Michael.Brunner@kontron.com>
+Signed-off-by: Bean Huo <beanhuo@micron.com>
+---
+ drivers/mmc/core/block.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-> 
-> #define KVM_HC_PAGE_ENC_UPDATE		12
-> 
-> #define KVM_HC_PAGE_ENC_REGION_UPDATE	0 /* encrypted vs. plain text */
-> #define KVM_HC_PAGE_ENC_STATUS_UPDATE	1 /* up-to-date vs. stale */
-> 
-> 		ret = -KVM_ENOSYS;
-> 		if (!vcpu->kvm->arch.hypercall_exit_enabled)
-> 		        break;
-> 
-> 		ret = -EINVAL;
-> 		if (a0 == KVM_HC_PAGE_ENC_REGION_UPDATE) {
-> 			u64 gpa = a1, npages = a2;
-> 
-> 			if (!PAGE_ALIGNED(gpa) || !npages ||
-> 			    gpa_to_gfn(gpa) + npages <= gpa_to_gfn(gpa))
-> 				break;
-> 		} else if (a0 != KVM_HC_PAGE_ENC_STATUS_UPDATE) {
-> 			break;
-> 		}
-> 
-> 		vcpu->run->exit_reason        = KVM_EXIT_HYPERCALL;
-> 		vcpu->run->hypercall.nr       = KVM_HC_PAGE_ENC_STATUS;
-> 		vcpu->run->hypercall.args[0]  = a0;
-> 		vcpu->run->hypercall.args[1]  = a1;
-> 		vcpu->run->hypercall.args[2]  = a2;
-> 		vcpu->run->hypercall.args[3]  = a3;
-> 		vcpu->run->hypercall.longmode = op_64_bit;
-> 		vcpu->arch.complete_userspace_io = complete_hypercall_exit;
-> 		return 0;
-> 
+diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+index 689eb9afeeed..21fb99883b1e 100644
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -1004,6 +1004,11 @@ static void mmc_blk_issue_drv_op(struct mmc_queue *mq, struct request *req)
+ 
+ 	switch (mq_rq->drv_op) {
+ 	case MMC_DRV_OP_IOCTL:
++		if (card->ext_csd.cmdq_en) {
++			ret = mmc_cmdq_disable(card);
++			if (ret)
++				break;
++		}
+ 	case MMC_DRV_OP_IOCTL_RPMB:
+ 		idata = mq_rq->drv_op_data;
+ 		for (i = 0, ret = 0; i < mq_rq->ioc_count; i++) {
+@@ -1014,6 +1019,8 @@ static void mmc_blk_issue_drv_op(struct mmc_queue *mq, struct request *req)
+ 		/* Always switch back to main area after RPMB access */
+ 		if (rpmb_ioctl)
+ 			mmc_blk_part_switch(card, 0);
++		else if (card->reenable_cmdq && !card->ext_csd.cmdq_en)
++			mmc_cmdq_enable(card);
+ 		break;
+ 	case MMC_DRV_OP_BOOT_WP:
+ 		ret = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL, EXT_CSD_BOOT_WP,
+-- 
+2.25.1
 
