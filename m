@@ -2,128 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21518372F20
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3348E372F22
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232027AbhEDRqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:46:38 -0400
-Received: from mail1.protonmail.ch ([185.70.40.18]:35381 "EHLO
-        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231998AbhEDRqg (ORCPT
+        id S231808AbhEDRrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:47:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230396AbhEDRrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 13:46:36 -0400
-Date:   Tue, 04 May 2021 17:45:37 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
-        s=protonmail3; t=1620150339;
-        bh=l7iVg4/OggiIkPeMxEn/RhDWwcdILaZsHBJ2V+aEFSg=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=miwE+3WH0QRy/M8fMvtxbKcq4DIoyMWunzOjNUCSYm0+xBJqjhsh8zxp0J1795FYy
-         BxLkCcaw+P6oYgEirjQCmniTUePbBAePv7jvMYxUU7M8wPjlv65DSbykv/vceZoQtJ
-         L6aFmE9DluKG0+8Tf94Ieh0JjLIlGwEfRDnhs1BRzvx1Qwytmz20kLTPRPszFa3bLQ
-         SUHj4frnqp+xnu5aQ2QU7iIqutV3Op4VV7kjD9bERSTlZVzKFgCsrESac2roGQitAm
-         fSFJpiFezqLVZDmh3K5MXvu0AvVTOU8qGriqmcdvpOteGNZCtPhzjij7VrTdFsfIER
-         98EjtHCr1OHGw==
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-From:   Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
-Subject: Re: [PATCH] staging: rtl8723bs: use generic kernel error codes
-Message-ID: <20210504174530.3kog7zq6tuk3wnlk@bryanbrattlof.com>
-In-Reply-To: <YJFziyZHnbsWdTFn@kroah.com>
-References: <c94e5865e59d35fe0e39d5cd46d71ad4a752ddd4.1620144194.git-series.hello@bryanbrattlof.com> <YJFziyZHnbsWdTFn@kroah.com>
+        Tue, 4 May 2021 13:47:41 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C5D5C061574;
+        Tue,  4 May 2021 10:46:45 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id t4so4758101plc.6;
+        Tue, 04 May 2021 10:46:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0/DN3S+KqczmNeTI/tnruDlhUcMg1qL74ctL3tIVK/U=;
+        b=LraFaycts+W6qOEx9wmZ6qvgGMnNrS4WMRhOtMA3WBaVFimniBt1k+t3m/kmTnjflA
+         onhAXEayfotCAmus7iWUmlc9ICmu3fk9wT+wOCdspwdAKeSsBj3hmVet5b5qAVG7us+l
+         bqLjtp7sUKkX5boU2lwboct0sgfyjdEJI5i4zmxd4e36c3JD+V9SZ6tRfpt9b5PzrIQ7
+         57ZwrBB0h1UARV3yLXFoAZPwneaHD4P0gXzbbG6iS7r32Nv93ZCMHVAbLk1gpHjwmT9T
+         MXxSvKg516ybq2XXFONekAlHfhuM7YsE2q4mxl1awYfnibz9Gt9w/rqPx9Kq9PCiq0zP
+         w2IQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0/DN3S+KqczmNeTI/tnruDlhUcMg1qL74ctL3tIVK/U=;
+        b=CCIKGKVvykq8cLso9RMDkLbMsTbUD4hbkbnIJnvRa2sMpiX7BngtEH+/IVHrTzsggW
+         VwIOAohHFRgwrYJqoP4OO4vFfGv3X+3mn+KPP4OH+Ia0aPxAUKtD25GxFJjS51QdYTTW
+         iF6wumlC+8e4FOJcwQS/zYa8YyFlIdtOFq+ehELSllw8HCrWofCMSrG8Tb55ZoYzGmGR
+         8MaorVD+efizj7oS9f32wvu/j1PvFZcmlkolvDOirxMXIPdIM3UIYNFUSyJZ28spyIYo
+         0mmqmu73PNllzHlpJKRaKX9K0BrUxaBuxYxhrE6QTrqcAITN5N5fY28vhKkxP5hwrqto
+         cmfQ==
+X-Gm-Message-State: AOAM533WhPs4DcHbcu9YiEVLYumHd2neAcnVElgsTcUL4dpS5p6TFs0u
+        /39F9nKFFj3IL4P7uNFPK3HcFpkRMddh7vu9Zeo=
+X-Google-Smtp-Source: ABdhPJx2QAmmQRy6gtulUL1+mJeTTsAXKzF7dFGZo7GaiBTbfQaMhqCahuYtTv4bdD5KbNaaW3PJ26eXqFJrwXX4ne0=
+X-Received: by 2002:a17:902:ecc6:b029:ee:af8f:899e with SMTP id
+ a6-20020a170902ecc6b02900eeaf8f899emr21275580plh.21.1620150405093; Tue, 04
+ May 2021 10:46:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <20210504174019.2134652-1-linux@roeck-us.net> <CAHp75Vd-iTkA5Y6tEHtfcqLxxmHaaU8nLQSL7eWb-gaa-c8AJg@mail.gmail.com>
+In-Reply-To: <CAHp75Vd-iTkA5Y6tEHtfcqLxxmHaaU8nLQSL7eWb-gaa-c8AJg@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 4 May 2021 20:46:29 +0300
+Message-ID: <CAHp75VdOPkRrAWo9tFvN-9HhXfCGo8hA7V0jypPiLnibUCbuVw@mail.gmail.com>
+Subject: Re: [PATCH] iio: bme680_i2c: Make bme680_acpi_match depend on CONFIG_ACPI
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry for the spam Greg I dropped the mailing lists from the first
-email.  :(
-
-On Tue, May 04, 2021 at 06:17:15PM +0200, Greg Kroah-Hartman wrote:
->On Tue, May 04, 2021 at 04:07:48PM +0000, Bryan Brattlof wrote:
-
-<snip>
-
->> @@ -139,12 +139,11 @@ static u32 sdio_init(struct dvobj_priv *dvobj)
->>  =09psdio_data->tx_block_mode =3D 1;
->>  =09psdio_data->rx_block_mode =3D 1;
->>
->> +=09return err;
->> +
->>  release:
->>  =09sdio_release_host(func);
->> -
->> -=09if (err)
->> -=09=09return _FAIL;
->> -=09return _SUCCESS;
->> +=09return err;
->>  }
+On Tue, May 4, 2021 at 8:44 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
 >
->You just changed the logic here, are you SURE that was ok to do?
+> On Tue, May 4, 2021 at 8:40 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> >
+> > With CONFIG_ACPI=n and -Werror, 0-day reports:
+> >
+> > drivers/iio/chemical/bme680_i2c.c:46:36: error:
+> >         'bme680_acpi_match' defined but not used
 >
-
-I can't say my brain didn't bleed a little trying to keep this straight
-in my head while walking through this. (For what ever reason my brain
-sees negative integers as False) =C2=AF\_(=E3=83=84)_/=C2=AF
-
-Both the sdio_enable_func() and sdio_set_block_size() will return a
-negative integer if they fail, which we evaluate as True, allowing us to
-jump to release, free the card and propagate the error backwards.
-
-If everything worked, we'll skip all the jumps until we get to the first
-'return err;' statement, returning our 0 for success.
-
-Inside sdio_dvobj_init() if we see 'anything below 0' (This probably
-should be changed to 'anything True') we jump to free_dvobj where we
-free the dvobj and return NULL
-
-If I've looked at this long enough I don't thing I changed the logic.
-
-Hopefully. :)
-
+> > Given the other patch, question of course is if this ACPI ID
+> > is real. A Google search suggests that this might not be the case.
+> > Should we remove it as well ? STK8312 has the same problem.
 >
->>
->>  static void sdio_deinit(struct dvobj_priv *dvobj)
->> @@ -186,7 +185,7 @@ static struct dvobj_priv *sdio_dvobj_init(struct sdi=
-o_func *func)
->>  =09psdio =3D &dvobj->intf_data;
->>  =09psdio->func =3D func;
->>
->> -=09if (sdio_init(dvobj) !=3D _SUCCESS)
->> +=09if (sdio_init(dvobj) < 0)
->>  =09=09goto free_dvobj;
->>
->>  =09rtw_reset_continual_io_error(dvobj);
->>
->> base-commit: 9ccce092fc64d19504fa54de4fd659e279cc92e7
->> --
->> git-series 0.9.1
->>
->>
->
->And that's all to remove the need for these crazy error values?  If so,
->why not also remove the #defines for them as well?
->
+> For this one definitely removal. Looking into the code it suggests a
+> cargo cult taken that time by a few contributors to invent fake ACPI
+> IDs while submitting new drivers.
+> Feel free to add my tag or if you wish me I'll add it explicitly.
 
-I might have over sold this patch. :)
+Had just looked at STK, the same guy as for AOS2315. So, also to remove.
 
-There are quite a few functions like this still here that need to be
-converted before we can get rid of the _SUCCESS and _FAIL definitions.
-
-Would it be better if I bundled these up in a series?
-
---
-~Bryan
-
->
->thanks,
->
->greg k-h
-
+-- 
+With Best Regards,
+Andy Shevchenko
