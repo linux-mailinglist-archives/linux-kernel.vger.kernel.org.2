@@ -2,75 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13894373249
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 00:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D14337324B
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 00:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233039AbhEDWYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 18:24:41 -0400
-Received: from fgw21-7.mail.saunalahti.fi ([62.142.5.82]:48740 "EHLO
-        fgw21-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232456AbhEDWYl (ORCPT
+        id S233050AbhEDWZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 18:25:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232963AbhEDWZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 18:24:41 -0400
-Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
-        by fgw21.mail.saunalahti.fi (Halon) with ESMTP
-        id 62d009b2-ad27-11eb-9eb8-005056bdd08f;
-        Wed, 05 May 2021 01:23:44 +0300 (EEST)
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v1 1/1] usb: typec: ucsi: Put fwnode in any case during ->probe()
-Date:   Wed,  5 May 2021 01:23:37 +0300
-Message-Id: <20210504222337.3151726-1-andy.shevchenko@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 4 May 2021 18:25:13 -0400
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C39C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 15:24:16 -0700 (PDT)
+Received: by mail-oo1-xc2e.google.com with SMTP id i20-20020a4a8d940000b02901bc71746525so56854ook.2
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 15:24:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G/mynJyVd6OqUtlJeADQl+MoXNb+9GbiDjZ8MMglkq0=;
+        b=ZzZ3kUkX93v63Jb3vme8k9OXJxDVZy2d4Qc3VpSVGzi0IxBMOWHLm2TYMxFI0esBWD
+         T35MJNUTB1WP34XtEKngIQ25gkZvtXppq/TpEP8vVy20dd0y3yPLwrZ8ky1JpQdp9gBw
+         6MdWseZzEbo1Q1OEfHl3kJgQNaUwubelotgMRyfIEmsIJhbb2+6qHUe6sO+YCtfomzcX
+         pNN+o/vIUNia2nxYuc59jkTt0wUs32NPVlscVUQzImJsbAIQrRct9CIpwZmx6w9jZZpp
+         gKq8XKbXx1EN2kfVUmXfD+qjEzPsVvdUmez2s4W3AkJnSJf+I94xyeyWP9cjWiJObCjA
+         REaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G/mynJyVd6OqUtlJeADQl+MoXNb+9GbiDjZ8MMglkq0=;
+        b=t+KHL9uLwtnNLwLoSXENXh6jaC+Y94/ab7VlPpPJxP3XJhYsQIO6Bz1l+upbiie9DK
+         ogZ605lgoJItaerJWNxuWDoXxwbjZZLI3YMvqB0civrOZVRDVQG9bakKgnRTaqNTaFDy
+         3Yt65nRk98BV7xMzQQElQTWv8AyejTaARUTMoC3+sGr5no9ymknA9EYQPzMTwjFZkWWn
+         Cno2RCz4Szpb7mVufR37pf6+Ne5pTH4qzbFIc9Jf5UME66T3wgxygdiK5Q0ViUZm5Pjy
+         /PbKDulMn0rfoWaDVEcIm2Wp/h4TLPQ7+Gjk/tqO09RR48YGjYcABHHvWXneffkKY0E5
+         Jdjg==
+X-Gm-Message-State: AOAM531/s0mEw+9bDb0mj7VVgDgupSxWJp6eyK5159XNSkj3IiGrDr4K
+        3/cTg4ai50PGMH3KmDtK0JuDi3VVafIQPll7zwuooA==
+X-Google-Smtp-Source: ABdhPJxo1sYC258Xmtlr84Guf3FGfzlmaAS4Bfv2FWjEz/7XUJt0x/Hw0EWXImD8YubRD/UmQPLLXeL5grngKF8MWhs=
+X-Received: by 2002:a4a:ea94:: with SMTP id r20mr7794217ooh.81.1620167055541;
+ Tue, 04 May 2021 15:24:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210504171734.1434054-1-seanjc@google.com> <20210504171734.1434054-4-seanjc@google.com>
+ <CALMp9eSvXRJm-KxCGKOkgPO=4wJPBi5wDFLbCCX91UtvGJ1qBg@mail.gmail.com>
+ <YJHCadSIQ/cK/RAw@google.com> <CALMp9eSeeuXUXz+0J17b7Dk8pyy3XPgqUXKC5-V8Q7SRd7ykgA@mail.gmail.com>
+ <YJHGQgEE3mqUhbAc@google.com>
+In-Reply-To: <YJHGQgEE3mqUhbAc@google.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Tue, 4 May 2021 15:24:04 -0700
+Message-ID: <CALMp9eT9HMKs_JcQHLsyc9MxFLFaAt9Ve8ev=inH-+8NeHtayw@mail.gmail.com>
+Subject: Re: [PATCH 03/15] KVM: SVM: Inject #UD on RDTSCP when it should be
+ disabled in the guest
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Reiji Watanabe <reijiw@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-device_for_each_child_node() bumps a reference counting of a returned variable.
-We have to balance it whenever we return to the caller.
+On Tue, May 4, 2021 at 3:10 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Tue, May 04, 2021, Jim Mattson wrote:
+> > On Tue, May 4, 2021 at 2:53 PM Sean Christopherson <seanjc@google.com> wrote:
+> > >
+> > > On Tue, May 04, 2021, Jim Mattson wrote:
+> > > > On Tue, May 4, 2021 at 10:17 AM Sean Christopherson <seanjc@google.com> wrote:
+> > > > >
+> > > > > Intercept RDTSCP to inject #UD if RDTSC is disabled in the guest.
+> > > > >
+> > > > > Note, SVM does not support intercepting RDPID.  Unlike VMX's
+> > > > > ENABLE_RDTSCP control, RDTSCP interception does not apply to RDPID.  This
+> > > > > is a benign virtualization hole as the host kernel (incorrectly) sets
+> > > > > MSR_TSC_AUX if RDTSCP is supported, and KVM loads the guest's MSR_TSC_AUX
+> > > > > into hardware if RDTSCP is supported in the host, i.e. KVM will not leak
+> > > > > the host's MSR_TSC_AUX to the guest.
+> > > > >
+> > > > > But, when the kernel bug is fixed, KVM will start leaking the host's
+> > > > > MSR_TSC_AUX if RDPID is supported in hardware, but RDTSCP isn't available
+> > > > > for whatever reason.  This leak will be remedied in a future commit.
+> > > > >
+> > > > > Fixes: 46896c73c1a4 ("KVM: svm: add support for RDTSCP")
+> > > > > Cc: stable@vger.kernel.org
+> > > > > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > > > > ---
+> > > > ...
+> > > > > @@ -4007,8 +4017,7 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+> > > > >         svm->nrips_enabled = kvm_cpu_cap_has(X86_FEATURE_NRIPS) &&
+> > > > >                              guest_cpuid_has(vcpu, X86_FEATURE_NRIPS);
+> > > > >
+> > > > > -       /* Check again if INVPCID interception if required */
+> > > > > -       svm_check_invpcid(svm);
+> > > > > +       svm_recalc_instruction_intercepts(vcpu, svm);
+> > > >
+> > > > Does the right thing happen here if the vCPU is in guest mode when
+> > > > userspace decides to toggle the CPUID.80000001H:EDX.RDTSCP bit on or
+> > > > off?
+> > >
+> > > I hate our terminology.  By "guest mode", do you mean running the vCPU, or do
+> > > you specifically mean running in L2?
+> >
+> > I mean is_guest_mode(vcpu) is true (i.e. running L2).
+>
+> No, it will not do the right thing, whatever "right thing" even means in this
+> context.  That's a pre-existing issue, e.g. INVCPID handling is also wrong.
+> I highly doubt VMX does, or even can, do the right thing either.
+>
+> I'm pretty sure I lobbied in the past to disallow KVM_SET_CPUID* if the vCPU is
+> in guest mode since it's impossible to do the right thing without forcing an
+> exit to L1, e.g. changing MAXPHYSADDR will allow running L2 with an illegal
+> CR3, ditto for various CR4 bits.
 
-Fixes: c1b0bc2dabfa ("usb: typec: Add support for UCSI interface")
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
- drivers/usb/typec/ucsi/ucsi.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+With that caveat understood,
 
-diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
-index 282c3c825c13..0e1cec346e0f 100644
---- a/drivers/usb/typec/ucsi/ucsi.c
-+++ b/drivers/usb/typec/ucsi/ucsi.c
-@@ -999,6 +999,7 @@ static const struct typec_operations ucsi_ops = {
- 	.pr_set = ucsi_pr_swap
- };
- 
-+/* Caller must call fwnode_handle_put() after use */
- static struct fwnode_handle *ucsi_find_fwnode(struct ucsi_connector *con)
- {
- 	struct fwnode_handle *fwnode;
-@@ -1033,7 +1034,7 @@ static int ucsi_register_port(struct ucsi *ucsi, int index)
- 	command |= UCSI_CONNECTOR_NUMBER(con->num);
- 	ret = ucsi_send_command(ucsi, command, &con->cap, sizeof(con->cap));
- 	if (ret < 0)
--		goto out;
-+		goto out_unlock;
- 
- 	if (con->cap.op_mode & UCSI_CONCAP_OPMODE_DRP)
- 		cap->data = TYPEC_PORT_DRD;
-@@ -1151,6 +1152,8 @@ static int ucsi_register_port(struct ucsi *ucsi, int index)
- 	trace_ucsi_register_port(con->num, &con->status);
- 
- out:
-+	fwnode_handle_put(cap->fwnode);
-+out_unlock:
- 	mutex_unlock(&con->lock);
- 	return ret;
- }
--- 
-2.31.1
-
+Reviewed-by: Jim Mattson <jmattson@google.com>
