@@ -2,64 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F95A372423
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 03:07:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DACEE37242B
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 03:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229665AbhEDBIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 21:08:07 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:34495 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbhEDBIE (ORCPT
+        id S229667AbhEDBLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 21:11:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229499AbhEDBLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 21:08:04 -0400
-Received: by mail-io1-f72.google.com with SMTP id v25-20020a0566020159b02904017f565b33so4572949iot.1
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 18:07:09 -0700 (PDT)
+        Mon, 3 May 2021 21:11:45 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54383C061574;
+        Mon,  3 May 2021 18:10:50 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id a36so9105055ljq.8;
+        Mon, 03 May 2021 18:10:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=D0lgtfaP36ZfPSmKmpzztfbLyB0QiqQgCwN8TsaLltg=;
+        b=tuiePi9pQIXkzFP/Sr+4ROFrb/qdBenxHHU/ZnVcX7TNAl5W7xgk3zzYAPK75pjZMu
+         CCjhyfQwlf+CZhLMB0HIAZGsLL6ee4yyiUDTTgUUaurWSaRyzEiWPLxy9+Zkhl1DlPXb
+         gHQfhcRR/PAL3E8kr6e2cBzuL1yXRdXRev4q/An6jGabUJ/IcscZS+VewUcw6aMfVE8a
+         4VS298j8UqbOSIy9XNlytitQhjtcjDvJ4WUwqvH6MDU9K0tryLnK/rXpggBvh43PyRc8
+         ngIwg8vdRNez/Q2+eY0+OPFqcDkEen7fEALxoxMkdd9QIFuXsgIYCkwBYp+BefLYNyoV
+         3Kyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=mHxj7gfCzBhBwoGIna8lGYdS0gFkx9kneQlodxRr0+0=;
-        b=feZW7lcEaLMHnKC2WxF3JuZXWzxJOLBvBhXENLKnDtXsyWl1tGK8PRDk+oU5HTjGx4
-         xXIrYZ9ZZovrwI5UXjz2+neSUElHs4EGkEq/TzUo63/VePrC+wAxLJ0isfUb46eHb7sk
-         1WZvPjWdq/VLv6UoayTJEG53M/OrdfAIvX+fxLgz8gbwFQNNVvGFu0pKmN2NqLnyxo70
-         frc+H2dEVJyTjD1hDHhOtrxszOLYeolf+q83Nvk+tiD5vN/ptaGwMj2oQfw311ACFc7O
-         ebgc6qBfZpfhsHwk717jviA36u3mjRpYXw1zGISUdDi22jrftRHXIAGlrVMt9ulPokXo
-         UQiA==
-X-Gm-Message-State: AOAM53283soZxEhuh/7RBf1O9pl3ilK4cQVr2Kv8BqQhkzDcrKxCildc
-        puvRTa14n5OoRWsmmJThJFxhNwQXvsTgKQjNkU+ISBZxjBkG
-X-Google-Smtp-Source: ABdhPJzfFUa69m/bkEQ/VR6vmJYrlPxEo+icvWpLAw5Qk1Oil/psVx4WLV8FdY9+XE3PxhIk/5BItd+QMqb2EsRqSDtAKMJtGG4y
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=D0lgtfaP36ZfPSmKmpzztfbLyB0QiqQgCwN8TsaLltg=;
+        b=XmrkXkbd8CdNvBAzDwKlxmZXbRpM8tlJQ68zN7G680//A+FGERk2KvAS82Ggm0Tjb2
+         s/SiOrevt3BTnaTiTSs7D0Re2pfBLgpoiXrTyv3g+lTQG5xL0poqj71uIxghx3FG6hUz
+         dMAttVtphCRH8NoKGChKGOLArY1ncrfvcP9Lj3QsuhCqcEXTQpXxyekjMULplKcKiINB
+         jh/O+S2BC8hze6Gv+5jiO5JqIrGqlDIHKWS84Xq2hG76UGOmuBiR+xDT2YZJiTuRqwFL
+         zmqFU2NWXHX8Q04N50PsB/n5C3QXTwuArdTHnSbc+3E3wOFhCiIUyTXshXSJYzF/nq2n
+         VWzA==
+X-Gm-Message-State: AOAM532G9VOD3XVWdoKrEbeE0TPKb4FMxlaea8d7wztCE8YCv5BZEb8H
+        8EypEUiUv61A6QDq1GjX0IQ0Dw0OcG4XOR4MTEo=
+X-Google-Smtp-Source: ABdhPJwplQJLbixrjN9+9axcR9bQKfoPeg6i3Y5l5tzT/Nh5XywoIkSxDJumBrQMN0HMJvZnXJEZvzHKvPhqiiBwjwU=
+X-Received: by 2002:a2e:bc25:: with SMTP id b37mr15621353ljf.342.1620090648633;
+ Mon, 03 May 2021 18:10:48 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:f11:: with SMTP id h17mr10040830jas.102.1620090428937;
- Mon, 03 May 2021 18:07:08 -0700 (PDT)
-Date:   Mon, 03 May 2021 18:07:08 -0700
-In-Reply-To: <20210504004700.GA638732@rowland.harvard.edu>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000855d9805c176b211@google.com>
-Subject: Re: [syzbot] WARNING in do_proc_bulk
-From:   syzbot <syzbot+882a85c0c8ec4a3e2281@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-usb@vger.kernel.org, stern@rowland.harvard.edu,
-        syzkaller-bugs@googlegroups.com
+References: <1619421491-31494-1-git-send-email-u0084500@gmail.com>
+ <1619421491-31494-2-git-send-email-u0084500@gmail.com> <20210430201026.GA3797206@robh.at.kernel.org>
+In-Reply-To: <20210430201026.GA3797206@robh.at.kernel.org>
+From:   ChiYuan Huang <u0084500@gmail.com>
+Date:   Tue, 4 May 2021 09:10:37 +0800
+Message-ID: <CADiBU3_SkXL1F5O6G+n=qjokmqLhbUuJNeRPGfWUqVRbcB=acA@mail.gmail.com>
+Subject: Re: [RESEND PATCH v6 2/4] backlight: rt4831: Adds DT binding document
+ for Richtek RT4831 backlight
+To:     Rob Herring <robh@kernel.org>
+Cc:     Lee Jones <lee.jones@linaro.org>, lgirdwood@gmail.com,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        jingoohan1@gmail.com, b.zolnierkie@samsung.com,
+        Pavel Machek <pavel@ucw.cz>, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, cy_huang <cy_huang@richtek.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Rob Herring <robh@kernel.org> =E6=96=BC 2021=E5=B9=B45=E6=9C=881=E6=97=A5 =
+=E9=80=B1=E5=85=AD =E4=B8=8A=E5=8D=884:10=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Mon, Apr 26, 2021 at 03:18:09PM +0800, cy_huang wrote:
+> > From: ChiYuan Huang <cy_huang@richtek.com>
+> >
+> > Adds DT binding document for Richtek RT4831 backlight.
+> >
+> > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+> > Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+> > ---
+> > Resend this v6 patch series to loop devicetree reviewers.
+> >
+> > For next, need to add the below line
+> > Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+> > ---
+> >  .../leds/backlight/richtek,rt4831-backlight.yaml   | 65 ++++++++++++++=
+++++++++
+> >  include/dt-bindings/leds/rt4831-backlight.h        | 23 ++++++++
+> >  2 files changed, 88 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/leds/backlight/ri=
+chtek,rt4831-backlight.yaml
+> >  create mode 100644 include/dt-bindings/leds/rt4831-backlight.h
+> >
+> > diff --git a/Documentation/devicetree/bindings/leds/backlight/richtek,r=
+t4831-backlight.yaml b/Documentation/devicetree/bindings/leds/backlight/ric=
+htek,rt4831-backlight.yaml
+> > new file mode 100644
+> > index 00000000..4da6a66
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/leds/backlight/richtek,rt4831-b=
+acklight.yaml
+> > @@ -0,0 +1,65 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/leds/backlight/richtek,rt4831-backl=
+ight.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Richtek RT4831 Backlight
+> > +
+> > +maintainers:
+> > +  - ChiYuan Huang <cy_huang@richtek.com>
+> > +
+> > +description: |
+> > +  RT4831 is a mutifunctional device that can provide power to the LCD =
+display
+> > +  and LCD backlight.
+> > +
+> > +  For the LCD backlight, it can provide four channel WLED driving capa=
+bility.
+> > +  Each channel driving current is up to 30mA
+> > +
+> > +  Datasheet is available at
+> > +  https://www.richtek.com/assets/product_file/RT4831A/DS4831A-05.pdf
+> > +
+>
+> Need to reference common backlight schema:
+>
+> allOf:
+>   - $ref: common.yaml#
+>
+> > +properties:
+> > +  compatible:
+> > +    const: richtek,rt4831-backlight
+> > +
+> > +  default-brightness:
+> > +    description: |
+> > +      The default brightness that applied to the system on start-up.
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+>
+> Drop description and $ref. Covered in common.yaml.
+>
+OK
+> > +    minimum: 0
+> > +    maximum: 2048
+> > +
+> > +  max-brightness:
+> > +    description: |
+> > +      The max brightness for the H/W limit
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+>
+> And here.
+>
+OK
 
-Reported-and-tested-by: syzbot+882a85c0c8ec4a3e2281@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         d2b6f8a1 Merge tag 'xfs-5.13-merge-3' of git://git.kernel...
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-kernel config:  https://syzkaller.appspot.com/x/.config?x=751a9df13cd00e8a
-dashboard link: https://syzkaller.appspot.com/bug?extid=882a85c0c8ec4a3e2281
-compiler:       
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1787af43d00000
-
-Note: testing is done by a robot and is best-effort only.
+The above changes will be merged in next, thanks.
+After mfd code patch reviewed, I'll send v7 for all of review comments.
+> > +    minimum: 0
+> > +    maximum: 2048
+> > +
+> > +  richtek,pwm-enable:
+> > +    description: |
+> > +      Specify the backlight dimming following by PWM duty or by SW con=
+trol.
+> > +    type: boolean
+> > +
+> > +  richtek,bled-ovp-sel:
+> > +    description: |
+> > +      Backlight OVP level selection, currently support 17V/21V/25V/29V=
+.
+> > +    $ref: /schemas/types.yaml#/definitions/uint8
+> > +    default: 1
+> > +    minimum: 0
+> > +    maximum: 3
+> > +
+> > +  richtek,channel-use:
+> > +    description: |
+> > +      Backlight LED channel to be used.
+> > +      BIT 0/1/2/3 is used to indicate led channel 1/2/3/4 enable or di=
+sable.
+> > +    $ref: /schemas/types.yaml#/definitions/uint8
+> > +    minimum: 1
+> > +    maximum: 15
+> > +
+> > +required:
+> > +  - compatible
+> > +  - richtek,channel-use
+> > +
+> > +additionalProperties: false
+> > diff --git a/include/dt-bindings/leds/rt4831-backlight.h b/include/dt-b=
+indings/leds/rt4831-backlight.h
+> > new file mode 100644
+> > index 00000000..125c635
+> > --- /dev/null
+> > +++ b/include/dt-bindings/leds/rt4831-backlight.h
+> > @@ -0,0 +1,23 @@
+> > +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
+> > +/*
+> > + * This header provides constants for rt4831 backlight bindings.
+> > + *
+> > + * Copyright (C) 2020, Richtek Technology Corp.
+> > + * Author: ChiYuan Huang <cy_huang@richtek.com>
+> > + */
+> > +
+> > +#ifndef _DT_BINDINGS_RT4831_BACKLIGHT_H
+> > +#define _DT_BINDINGS_RT4831_BACKLIGHT_H
+> > +
+> > +#define RT4831_BLOVPLVL_17V  0
+> > +#define RT4831_BLOVPLVL_21V  1
+> > +#define RT4831_BLOVPLVL_25V  2
+> > +#define RT4831_BLOVPLVL_29V  3
+> > +
+> > +#define RT4831_BLED_CH1EN    (1 << 0)
+> > +#define RT4831_BLED_CH2EN    (1 << 1)
+> > +#define RT4831_BLED_CH3EN    (1 << 2)
+> > +#define RT4831_BLED_CH4EN    (1 << 3)
+> > +#define RT4831_BLED_ALLCHEN  ((1 << 4) - 1)
+> > +
+> > +#endif /* _DT_BINDINGS_RT4831_BACKLIGHT_H */
+> > --
+> > 2.7.4
+> >
