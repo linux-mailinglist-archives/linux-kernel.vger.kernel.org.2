@@ -2,68 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 787A3372EDF
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C17FC372EE3
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231175AbhEDR1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:27:06 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:59941 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230289AbhEDR1E (ORCPT
+        id S231502AbhEDR13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:27:29 -0400
+Received: from mail-0201.mail-europe.com ([51.77.79.158]:43846 "EHLO
+        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231211AbhEDR11 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 13:27:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1620149169; x=1651685169;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=tELHJYEjlyIrHvp1LCUAoAaqANLGV9YKPvNdul3uko0=;
-  b=Njz1UxDMhYsSVjlunpff3y57LyKydDi7PyUHJmmlHHRqCdQsa6qPIsmO
-   ECOgD4KYm0AaIO5W4L/nUdX1EulkAnm864Y9aEho7h+XiieGX4Tfqhk69
-   gpLztAscOCA8YxqtN7TYNpxg8bASUpVgFH6NO/cnLzW4JMhFOcjuIsBgy
-   0=;
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 04 May 2021 10:26:09 -0700
-X-QCInternal: smtphost
-Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
-  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/AES256-SHA; 04 May 2021 10:26:09 -0700
-Received: from [10.226.59.216] (10.80.80.8) by nasanexm03e.na.qualcomm.com
- (10.85.0.48) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 4 May 2021
- 10:26:08 -0700
-Subject: Re: [PATCH v1 2/6] bus: mhi: core: Set BHI and BHIe pointers to NULL
- in clean-up
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        <manivannan.sadhasivam@linaro.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <hemantk@codeaurora.org>,
-        <linux-kernel@vger.kernel.org>, <loic.poulain@linaro.org>,
-        <linux-wireless@vger.kernel.org>, <kvalo@codeaurora.org>,
-        <ath11k@lists.infradead.org>
-References: <1618598825-18629-1-git-send-email-bbhatt@codeaurora.org>
- <1618598825-18629-3-git-send-email-bbhatt@codeaurora.org>
-From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
-Message-ID: <55df55c8-5799-e581-1dbb-8291243bf37d@quicinc.com>
-Date:   Tue, 4 May 2021 11:26:08 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        Tue, 4 May 2021 13:27:27 -0400
+Date:   Tue, 04 May 2021 17:26:23 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1620149189;
+        bh=VOuXsPA3D+q5QOcWnf6vc7Q/RxQzQx+++abTtPCYqrM=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=Et7VucL2B0TcLyz/Q884yy7jTPSfShYHKRqzgWwiaJKTds0oj04xDqA/PAYsuEB6v
+         XxEJWEaFequpNgrVihnox6ov6kaVE0lD27A7Q8FMjlTg8JBwGqRA5L7tF1j2QFvdp4
+         6e/hNHXFntRr9xJt5MCi6CtPNO7fc+rjIYk5uAoM=
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From:   Jari Ruusu <jariruusu@protonmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Kalle Valo <kvalo@codeaurora.org>
+Reply-To: Jari Ruusu <jariruusu@protonmail.com>
+Subject: Backport for 4.14, iwlwifi: Fix softirq/hardirq disabling in iwl_pcie_gen2_enqueue_hcmd()
+Message-ID: <hpXG69eRSC4er-hdEhxVubn7JIYtPM3Kg-5DAOBTN20hGVIgF-4z9Y69VJTX9oF4V3L6c9eur0JPfLnAAMFLGJG7jbMLtshP1jFl47bOfb8=@protonmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1618598825-18629-3-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanexm03a.na.qualcomm.com (10.85.0.103) To
- nasanexm03e.na.qualcomm.com (10.85.0.48)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/16/2021 12:47 PM, Bhaumik Bhatt wrote:
-> Set the BHI and BHIe pointers to NULL as part of clean-up. This
-> makes sure that stale pointers are not accessed after powering
-> MHI down.
-> 
-> Suggested-by: Hemant Kumar <hemantk@codeaurora.org>
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> ---
+iwlwifi: Fix softirq/hardirq disabling in iwl_pcie_gen2_enqueue_hcmd()
+upstream commit e7020bb068d8be50a92f48e36b236a1a1ef9282e,
+backport for linux-4.14.y (booted and ping tested)
+Signed-off-by: Jari Ruusu <jariruusu@protonmail.com>
 
-Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/tx-gen2.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/tx-gen2.c
+@@ -559,6 +559,7 @@ static int iwl_pcie_gen2_enqueue_hcmd(struct iwl_trans =
+*trans,
+ =09const u8 *cmddata[IWL_MAX_CMD_TBS_PER_TFD];
+ =09u16 cmdlen[IWL_MAX_CMD_TBS_PER_TFD];
+ =09struct iwl_tfh_tfd *tfd =3D iwl_pcie_get_tfd(trans, txq, txq->write_ptr=
+);
++=09unsigned long flags2;
+
+ =09memset(tfd, 0, sizeof(*tfd));
+
+@@ -629,10 +630,10 @@ static int iwl_pcie_gen2_enqueue_hcmd(struct iwl_tran=
+s *trans,
+ =09=09goto free_dup_buf;
+ =09}
+
+-=09spin_lock_bh(&txq->lock);
++=09spin_lock_irqsave(&txq->lock, flags2);
+
+ =09if (iwl_queue_space(txq) < ((cmd->flags & CMD_ASYNC) ? 2 : 1)) {
+-=09=09spin_unlock_bh(&txq->lock);
++=09=09spin_unlock_irqrestore(&txq->lock, flags2);
+
+ =09=09IWL_ERR(trans, "No space in command queue\n");
+ =09=09iwl_op_mode_cmd_queue_full(trans->op_mode);
+@@ -773,7 +774,7 @@ static int iwl_pcie_gen2_enqueue_hcmd(struct iwl_trans =
+*trans,
+ =09spin_unlock_irqrestore(&trans_pcie->reg_lock, flags);
+
+ out:
+-=09spin_unlock_bh(&txq->lock);
++=09spin_unlock_irqrestore(&txq->lock, flags2);
+ free_dup_buf:
+ =09if (idx < 0)
+ =09=09kfree(dup_buf);
+
+--
+Jari Ruusu=C2=A0 4096R/8132F189 12D6 4C3A DCDA 0AA4 27BD=C2=A0 ACDF F073 3C=
+80 8132 F189
+
