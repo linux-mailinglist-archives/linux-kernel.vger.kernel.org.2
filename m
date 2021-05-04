@@ -2,225 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6DDB37299E
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 13:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA59D3729A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 13:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbhEDLkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 07:40:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48576 "EHLO
+        id S230228AbhEDLt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 07:49:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbhEDLkd (ORCPT
+        with ESMTP id S230153AbhEDLt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 07:40:33 -0400
-Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B84FC061574;
-        Tue,  4 May 2021 04:39:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-         s=42; h=Date:Message-ID:From:Cc:To;
-        bh=Yka7LNg7ewHAq2XpviLt372rpxVqwZXVShfcGxLca20=; b=lOwHMLcKNWzm+crLQEUY3mnsqU
-        uIQsHCk01m7sgi+MT/+eJ7cfVq068lB+wSGbArh+st+CbIgGZQuycV3aa6QXgJJ8/q7Jqxcb9X2fK
-        9g+S5yQWybXNpu5HYuesfOhNlLp8Z1qoGMFMQUVTGySSbi5/oucBGCCMUWiq0HCOzBHKbbXAapoKa
-        4lk3vz3juSwNv5BdpywshMFbnyr3pn4qz669inKsRd74xfTwwF2k0yRzXaEEWZSwLpzmEyKx9rEuh
-        Kvy7UOvB7F8oc8uACGDUXugiWM4mNigW04wCV73zdqpTw8jSxa5UF0F2UlvgvXWcxXqtSSgvCPXk9
-        b8T9jypkgkPu4cgO+vYzAt1eBzVfnmCSNarQClAOfU+OYSWH8eeJH43UAp/Si9pDI0C1YLQPAEgoi
-        Ecib08VtulRo/fiH4bjNndfV5zLB8ZZ3Y/WCG5B66NURskKM2T/A3eTGqLgrqvqr4/g3mzclmpfOc
-        UT1/zH9nLvqh9U18m71hul6p;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
-        (Exim)
-        id 1ldtOp-0004uU-HY; Tue, 04 May 2021 11:39:35 +0000
-To:     Jens Axboe <axboe@kernel.dk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-References: <8735v3ex3h.ffs@nanos.tec.linutronix.de>
- <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
- <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
- <CALCETrV9bCenqzzaW6Ra18tCvNP-my09decTjmLDVZZAQxR6VA@mail.gmail.com>
- <CAHk-=wgo6XEz3VQ9ntqzWLR3-hm1YXrXUz4_heDs4wcLe9NYvA@mail.gmail.com>
- <d26e3a82-8a2c-7354-d36b-cac945c208c7@kernel.dk>
- <CALCETrWmhquicE2C=G2Hmwfj4VNypXVxY-K3CWOkyMe9Edv88A@mail.gmail.com>
- <CAHk-=wgqK0qUskrzeWXmChErEm32UiOaUmynWdyrjAwNzkDKaw@mail.gmail.com>
- <8735v3jujv.ffs@nanos.tec.linutronix.de>
- <CAHk-=wi4Dyg_Z70J_hJbtFLPQDG+Zx3dP2jB5QrOdZC6W6j4Gw@mail.gmail.com>
- <12710fda-1732-ee55-9ac1-0df9882aa71b@samba.org>
- <CAHk-=wiR7c-UHh_3Rj-EU8=AbURKchnMFJWW7=5EH=qEUDT8wg@mail.gmail.com>
- <59ea3b5a-d7b3-b62e-cc83-1f32a83c4ac2@kernel.dk>
-From:   Stefan Metzmacher <metze@samba.org>
-Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
- registers for io_threads
-Message-ID: <4d0bb1e7-acbd-4afb-e6d6-a2e7f78ccaaa@samba.org>
-Date:   Tue, 4 May 2021 13:39:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 4 May 2021 07:49:28 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B89C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 04:48:33 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id zg3so12672228ejb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 04:48:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vZKw17Y6Eu5a8sxvLIrFLfxkEizM6QV3DVVZZEdS/rU=;
+        b=OnYC6S9iWXIxsdpdyW/QtLTRf8feHepvehG7VkmZuTC6eS1nil38GiXi3UczBI7+0M
+         4lIxDqssnU71JyOcDpAY3eTLulPMVM0npYc50EkL3JLfp0oPsB8vk1U/XRW3uq9jw5XH
+         8WGFkRUzSRH1GK0o1K2HKRTZjVpy7dqqZboGZE7f+6EIlYBauxxWWlK4KT259RNoUCtQ
+         MTH7OM7BHJDeJTWhUixHGR228F+38wAN6pWz1u981wm/CMnuZLa299IoYBi89j6pOX0r
+         cnEa+jQZ8wotpBBjUTDc/gVE9FZrBWMeT7jTsGk2Rb6ke7Y+fSq4VlrGX17eMbYRTvcs
+         7A9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vZKw17Y6Eu5a8sxvLIrFLfxkEizM6QV3DVVZZEdS/rU=;
+        b=PRj2tkMmKgLruXTPoeSAXQ9CrFsOgYFQkkp5ezWXzNSX5fKrZ0tgJ8JCBLI09XVzIW
+         CJ9qNccmM5NgnHJxSn0ol61XMrustjXqZZlcm3S7G1rII1zwV+A57jQxHw77t8O17s3g
+         vTu2S+tFwYBMVB+A3lTZQvCko/QbhMZoAtVFA/9iuzPJeTYkomzatbtZ4QzysQ/QXYbt
+         moHoJKpt27t8rZgpom0csg/Lt5+OhWZuEnYSDX5a9soXnjYKe/hJGYbMDffeJ90/YXVy
+         lTiL8b9qxeXdjRS6kUp3TmuPH3y268rd0Lm6nG0HM8SKZKnrkxne/K5j03slqfXKiL7M
+         gFlQ==
+X-Gm-Message-State: AOAM533WIlG+IjYNGbX0sH8+h59u9GKBJKBBpTwNpUicgwYcbnxQwPJI
+        FdeEUjoJrMS7ulR70UNxpBe1Kg==
+X-Google-Smtp-Source: ABdhPJw5prlTKIg+b6kYNCxo5TticYdFBD5NzEUsHC2CbZNk36nyuhybvkttL6kuw7I2tbtcygq75A==
+X-Received: by 2002:a17:906:f56:: with SMTP id h22mr21420087ejj.366.1620128912296;
+        Tue, 04 May 2021 04:48:32 -0700 (PDT)
+Received: from localhost.localdomain (dh207-98-12.xnet.hr. [88.207.98.12])
+        by smtp.googlemail.com with ESMTPSA id t22sm14149944edw.29.2021.05.04.04.48.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 04:48:31 -0700 (PDT)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Robert Marko <robert.marko@sartura.hr>
+Subject: [PATCH] soc: qcom: socinfo: Add remaining IPQ6018 family ID-s
+Date:   Tue,  4 May 2021 13:48:26 +0200
+Message-Id: <20210504114826.64376-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <59ea3b5a-d7b3-b62e-cc83-1f32a83c4ac2@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+ID for IPQ6018 was previously added, but ID-s for rest of the
+family are missing.
+So, lets add those based on downstream driver.
 
-Am 04.05.21 um 04:50 schrieb Jens Axboe:
-> On 5/3/21 5:48 PM, Linus Torvalds wrote:
->> On Mon, May 3, 2021 at 4:27 PM Stefan Metzmacher <metze@samba.org> wrote:
->>>
->>> If I remember correctly gdb showed bogus addresses for the backtraces of the io_threads,
->>> as some regs where not cleared.
->>
->> Yeah, so that patch will make the IO thread have the user stack
->> pointer point to the original user stack, but that stack will
->> obviously be used by the original thread which means that it will
->> contain random stuff on it.
->>
->> Doing a
->>
->>         childregs->sp = 0;
->>
->> is probably a good idea for that PF_IO_WORKER case, since it really
->> doesn't have - or need - a user stack.
->>
->> Of course, it doesn't really have - or need - any of the other user
->> registers either, but once you fill in the segment stuff to make gdb
->> happy, you might as well fill it all in using the same code that the
->> regular case does.
-> 
-> I tested the below, which is the two combined, with a case that
-> deliberately has two types of io threads - one for SQPOLL submission,
-> and one that was created due to async work being needed. gdb attaches
-> just fine to the creator, with a slight complaint:
-> 
-> Attaching to process 370
-> [New LWP 371]
-> [New LWP 372]
-> Error while reading shared library symbols for /usr/lib/libpthread.so.0:
-> Cannot find user-level thread for LWP 372: generic error
-> 0x00007f1a74675125 in clock_nanosleep@GLIBC_2.2.5 () from /usr/lib/libc.so.6
-> (gdb) info threads
->   Id   Target Id             Frame 
-> * 1    LWP 370 "io_uring"    0x00007f1a74675125 in clock_nanosleep@GLIBC_2.2.5 ()
->    from /usr/lib/libc.so.6
->   2    LWP 371 "iou-sqp-370" 0x00007f1a746a7a9d in syscall () from /usr/lib/libc.so.6
->   3    LWP 372 "io_uring"    0x00007f1a74675125 in clock_nanosleep@GLIBC_2.2.5 ()
->    from /usr/lib/libc.so.6
-> 
-> (gdb) thread 2
-> [Switching to thread 2 (LWP 371)]
-> #0  0x00007f1a746a7a9d in syscall () from /usr/lib/libc.so.6
-> (gdb) bt
-> #0  0x00007f1a746a7a9d in syscall () from /usr/lib/libc.so.6
-> Backtrace stopped: Cannot access memory at address 0x0
-> 
-> (gdb) thread 1
-> [Switching to thread 1 (LWP 370)]
-> #0  0x00007f1a74675125 in clock_nanosleep@GLIBC_2.2.5 () from /usr/lib/libc.so.6
-> (gdb) bt
-> #0  0x00007f1a74675125 in clock_nanosleep@GLIBC_2.2.5 () from /usr/lib/libc.so.6
-> #1  0x00007f1a7467a357 in nanosleep () from /usr/lib/libc.so.6
-> #2  0x00007f1a7467a28e in sleep () from /usr/lib/libc.so.6
-> #3  0x000055bd41e929ba in main (argc=<optimized out>, argv=<optimized out>)
->     at t/io_uring.c:658
-> 
-> which looks very reasonable to me - no backtraces for the io threads, and
-> no arch complaints.
-> 
-> 
-> diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-> index 43cbfc84153a..58987bce90e2 100644
-> --- a/arch/x86/kernel/process.c
-> +++ b/arch/x86/kernel/process.c
-> @@ -156,7 +156,7 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
->  #endif
->  
->  	/* Kernel thread ? */
-> -	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
-> +	if (unlikely(p->flags & PF_KTHREAD)) {
->  		memset(childregs, 0, sizeof(struct pt_regs));
->  		kthread_frame_init(frame, sp, arg);
->  		return 0;
-> @@ -168,6 +168,12 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
->  	if (sp)
->  		childregs->sp = sp;
->  
-> +	if (unlikely(p->flags & PF_IO_WORKER)) {
-> +		childregs->sp = 0;
-> +		kthread_frame_init(frame, sp, arg);
-> +		return 0;
-> +	}
-> +
->  #ifdef CONFIG_X86_32
->  	task_user_gs(p) = get_user_gs(current_pt_regs());
->  #endif
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+---
+ drivers/soc/qcom/socinfo.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-I'm currently testing this (moving things to the end and resetting ->ip = 0 too)
+diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
+index f6cfb79338f0..28bbc7a9227e 100644
+--- a/drivers/soc/qcom/socinfo.c
++++ b/drivers/soc/qcom/socinfo.c
+@@ -255,6 +255,9 @@ static const struct soc_id soc_id[] = {
+ 	{ 351, "SDA450" },
+ 	{ 356, "SM8250" },
+ 	{ 402, "IPQ6018" },
++	{ 403, "IPQ6028" },
++	{ 421, "IPQ6000" },
++	{ 422, "IPQ6010" },
+ 	{ 425, "SC7180" },
+ 	{ 455, "QRB5165" },
+ };
+-- 
+2.31.1
 
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -161,7 +161,7 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
- #endif
-
-        /* Kernel thread ? */
--       if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
-+       if (unlikely(p->flags & PF_KTHREAD)) {
-                memset(childregs, 0, sizeof(struct pt_regs));
-                kthread_frame_init(frame, sp, arg);
-                return 0;
-@@ -184,6 +184,23 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
-        if (!ret && unlikely(test_tsk_thread_flag(current, TIF_IO_BITMAP)))
-                io_bitmap_share(p);
-
-+       /*
-+        * An IO thread is a user space thread, but it doesn't
-+        * return to ret_after_fork().
-+        *
-+        * In order to indicate that to tools like gdb,
-+        * we reset the stack and instruction pointers.
-+        *
-+        * It does the same kernel frame setup to return to a kernel
-+        * function that a kernel thread does.
-+        */
-+       if (!ret && unlikely(p->flags & PF_IO_WORKER)) {
-+               childregs->sp = 0;
-+               childregs->ip = 0;
-+               kthread_frame_init(frame, sp, arg);
-+               return 0;
-+       }
-+
-        return ret;
- }
-
-which means the output looks like this:
-
-(gdb) info threads
-  Id   Target Id                  Frame
-* 1    LWP 4863 "io_uring-cp-for" syscall () at ../sysdeps/unix/sysv/linux/x86_64/syscall.S:38
-  2    LWP 4864 "iou-mgr-4863"    0x0000000000000000 in ?? ()
-  3    LWP 4865 "iou-wrk-4863"    0x0000000000000000 in ?? ()
-(gdb) thread 3
-[Switching to thread 3 (LWP 4865)]
-#0  0x0000000000000000 in ?? ()
-(gdb) bt
-#0  0x0000000000000000 in ?? ()
-Backtrace stopped: Cannot access memory at address 0x0
-
-I think "0x0000000000000000 in ?? ()" is a relative sane indication that this thread
-will never return to userspace. I'd prefer this over:
-
-> (gdb) thread 2
-> [Switching to thread 2 (LWP 371)]
-> #0  0x00007f1a746a7a9d in syscall () from /usr/lib/libc.so.6
-> (gdb) bt
-> #0  0x00007f1a746a7a9d in syscall () from /usr/lib/libc.so.6
-> Backtrace stopped: Cannot access memory at address 0x0
-
-which seem to indicate that the syscall returns eventually.
-
-What do you think? Should I post that as v2 if my final testing doesn't find any problem?
-
-Thanks!
-metze
