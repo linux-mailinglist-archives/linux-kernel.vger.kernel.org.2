@@ -2,130 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C395372768
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 10:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EABB37277F
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 10:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230007AbhEDImX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 04:42:23 -0400
-Received: from gofer.mess.org ([88.97.38.141]:49641 "EHLO gofer.mess.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229916AbhEDImV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 04:42:21 -0400
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id C22C3C645F; Tue,  4 May 2021 09:41:24 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
-        t=1620117684; bh=OM5xZktMxlFpeUx0Uz4eNTL0omIVepTrzyoxNTKT3Qc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KrirSAfQ3FxYbJu34wLPw6RGXr/Q1A9XaxuvyAATqG/vTDdzxeB57qKsPsmm1l0Td
-         yJtDGVpxib00but2RSgBW+ybnUN0F24WaHCZvK/EDGS3ofbxKAuzp39YCBKjbSks/q
-         79/rzGtpQdYp93Ywx8hmcdx9gnVV87Y+fvTR4tLi2qm0IVW75VxvreDV1ARbAv2u49
-         u8cTSxvLOu76zkJnHFEsXyZtGAg5KyvTchEINO849E3WGUwM3hjgK8gJP0iMFuAdND
-         v3ACLkOxdkUWJgFf5QRs74wUufETo2chWJ1cUQZL8tY7jSSkrirwa+7BLLmFiASLjR
-         AGu7sQdnxIELA==
-Date:   Tue, 4 May 2021 09:41:24 +0100
-From:   Sean Young <sean@mess.org>
-To:     =?utf-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>, jr@memlen.com,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-media@vger.kernel.org, mchehab@kernel.org,
-        anant.thazhemadam@gmail.com,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: "UBSAN: shift-out-of-bounds in mceusb_dev_recv" should share the
- same root cause with "UBSAN: shift-out-of-bounds in mceusb_dev_printdata"
-Message-ID: <20210504084124.GB26294@gofer.mess.org>
-References: <CAD-N9QW-zm37f9PW-iF-NaAH5LLePWFba3aG5LkXD2a07YBZpg@mail.gmail.com>
- <X/6mhQfPRt0QoorO@kroah.com>
- <CAD-N9QUuvxa3CCqru08O2x9p-AJp54qo-e-9O49YGQwQEWKLdA@mail.gmail.com>
- <CAD-N9QVAaVozZuPSG9YKjEYreRX3PEoW0UM3Dwhko_-tVTpK0Q@mail.gmail.com>
- <20210503092803.GA15275@gofer.mess.org>
- <CAD-N9QVAKD3eVghy_Lj-aTnkB51NhWTci2gtBJZOnKsE6J3u=w@mail.gmail.com>
+        id S230110AbhEDIrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 04:47:00 -0400
+Received: from mail-41103.protonmail.ch ([185.70.41.103]:11880 "EHLO
+        mail-41103.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229920AbhEDIq6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 04:46:58 -0400
+Received: from mail-02.mail-europe.com (mail-0201.mail-europe.com [51.77.79.158])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        by mail-41103.protonmail.ch (Postfix) with ESMTPS id 4FZD2d58zfz4wxpV;
+        Tue,  4 May 2021 08:46:01 +0000 (UTC)
+Authentication-Results: mail-41103.protonmail.ch;
+        dkim=pass (1024-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="sEuC26GT"
+Date:   Tue, 04 May 2021 08:45:48 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1620117957;
+        bh=v1aoVMgbmZpYW/FjKNTAtyYXJi0XFRhH34LJ661TRZY=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=sEuC26GTVJrNMsITKrDwhsrC+hm1anoaEcctGoHCNCKWqmU+MgYbMjzF47fUAhNi7
+         3rqmIiRGbi4zgotNS6EOsMcP88O++ng2+4VvYIZjqG6W+HLUkCmf5Wp+Mf8pHutUTc
+         G7526WrxFVS03ycxTehN69h6/4l6qf4E5rMs8k6A=
+To:     "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+From:   Yassine Oudjana <y.oudjana@protonmail.com>
+Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "phone-devel@vger.kernel.org" <phone-devel@vger.kernel.org>,
+        "~postmarketos/upstreaming@lists.sr.ht" 
+        <~postmarketos/upstreaming@lists.sr.ht>
+Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
+Subject: [PATCH 0/2] Input: cypress-sf - add support for Cypress Streetfighter touchkeys
+Message-ID: <QwYaG_N9WhbyEiWPMqCX9XkW4fMxKGFkdJklaQnl2Wg4r3xlN7qNn6hU7Wp0LYClh5pB2xqpqsLY2mi0vcJVBNqUmzjEdNTuG2iGHGaFbo0=@protonmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD-N9QVAKD3eVghy_Lj-aTnkB51NhWTci2gtBJZOnKsE6J3u=w@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 07:24:35PM +0800, 慕冬亮 wrote:
-> On Mon, May 3, 2021 at 5:28 PM Sean Young <sean@mess.org> wrote:
-> >
-> > HI,
-> >
-> > On Sun, May 02, 2021 at 10:29:25PM +0800, 慕冬亮 wrote:
-> > > Hi kernel developers,
-> > >
-> > > I found one interesting follow-up for these two crash reports. In the
-> > > syzbot dashboard, they are fixed with different patches. Each patch
-> > > fixes at the failure point - mceusb_handle_command  and
-> > > mceusb_dev_printdata. For patch details, please have a look at the
-> > > crash reports [1] and [2].
-> > >
-> > > Recall the vulnerability below, and kernel crashes both at the case
-> > > SUBCMD with incorrect value in ir_buf_in[i+2]. I still think they
-> > > share the same root cause and fixing this bug needs two patches at the
-> > > same time.
-> > >
-> > > --------------------------------------------------------------------------------------------------------------------------
-> > > for (; i < buf_len; i++) {
-> > >      switch (ir->parser_state) {
-> > >      case SUBCMD:
-> > >              ir->rem = mceusb_cmd_datasize(ir->cmd, ir->buf_in[i]);
-> > >              mceusb_dev_printdata(ir, ir->buf_in, buf_len, i - 1,
-> > >                                                    ir->rem + 2, false);
-> > >              if (i + ir->rem < buf_len)
-> > >              mceusb_handle_command(ir, &ir->buf_in[i - 1]);
-> > > --------------------------------------------------------------------------------------------------------------------------
-> > >
-> > > I wonder if developers can see two crash reports in the very
-> > > beginning, they may craft different patches which fix this bug in the
-> > > root cause. Meanwhile, if developers can see those crash reports in
-> > > advance, this may save some time for developers since only one takes
-> > > time to analyze this bug. If you have any issues about this statement,
-> > > please let me know.
-> >
-> > I am sorry, I have a hard time following. As far as I am aware, the issue
-> > with mceusb_dev_printdata() have been resolved. If you think there is still
-> > is an issue, please do send a patch and then we can discuss it. As far as I
-> > know there is noone else working on this.
-> 
-> Hi Sean,
-> 
-> Sorry for the bad logic. Let me organize my logic about these two
-> crashes and the underlying bug.
-> 
-> First, let's sync on the same page. In this thread, I would like to
-> prove to you guys these two crash reports share the same root cause -
-> they both miss the sanity check of the same field from user space.
+Hi,
 
-So you mean:
-[1] UBSAN: shift-out-of-bounds in mceusb_dev_printdata
-https://syzkaller.appspot.com/bug?id=df1efbbf75149f5853ecff1938ffd3134f269119
-[2] UBSAN: shift-out-of-bounds in mceusb_dev_recv
-https://syzkaller.appspot.com/bug?id=50d4123e6132c9563297ecad0479eaad7480c172
+This patchset adds support for the Cypress StreetFighter touchkey device.
+This driver is based on the driver from the vendor kernel for the Xiaomi
+Mi Note 2[1][2], which is also the device where this was tested.
 
-1) So these bugs are not crashes -- shift out of bounds is the error.
-2) The "bug" is that garbage will be printed to the kernel log when
-   garbage data is received. I'm not sure it is a bug.
-2) The data comes from the usb device, not user space
-3) They are both fixed
-4) They are in different parts of the code
+Best Regards,
+Yassine
 
-> Second, if you agree with the first point, let's move on. If we can
-> know the duplication information before, you and James Reynolds, who
-> fixes another crash at mceusb_handle_command do not need to analyze it
-> twice. And I think either your patch or the patch developed by James
-> Reynolds only fixes the crash reports at the failure point, without
-> completely fixing the underlying bug.
+[1] https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/scorpio-m-oss/d=
+rivers/input/touchscreen/cyttsp_button.c
+[2] https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/scorpio-m-oss/a=
+rch/arm/boot/dts/qcom/scorpio-msm8996-mtp.dtsi#L300-L322
 
-Please send a patch which shows this is the case.
+Yassine Oudjana (2):
+  Input: cypress-sf - Add Cypress StreetFighter touchkey driver
+  dt-bindings: input: Add binding for cypress-sf
 
-> Please let me know if you have any questions about the above text.
-> Thanks in advance.
+ .../devicetree/bindings/input/cypress-sf.yaml |  55 +++++
+ drivers/input/keyboard/Kconfig                |  10 +
+ drivers/input/keyboard/Makefile               |   1 +
+ drivers/input/keyboard/cypress-sf.c           | 220 ++++++++++++++++++
+ 4 files changed, 286 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/cypress-sf.yaml
+ create mode 100644 drivers/input/keyboard/cypress-sf.c
 
-Thanks,
-
-Sean
+--
+2.31.1
