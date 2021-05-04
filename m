@@ -2,202 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98FA9372E2E
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 18:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B4E372E4A
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 18:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231734AbhEDQjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 12:39:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231602AbhEDQjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 12:39:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A333761177;
-        Tue,  4 May 2021 16:38:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620146336;
-        bh=WGHPPs4w6bWsewmYioHaBuzh4xo3duDHdMH9cbOnfxA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=UY3PyfwLqNhAxfHYAmHrr1RiTI0ej1EIaFv30R6RMb6+2Awa4QA/npohfjoUKETpv
-         D4Om3vdM4o6zAhwIDU2R1DJ6IgYg3NHqmd0tMHAazmstiof3NNm4PyF5OhzjWLE81N
-         fG1M6YeaweQ2m+0IZGPzMi48YNiGYBbAwJNTD75+zHzbLZIoxXPSXqjXI3EWiR1HFG
-         wWFxik+Y9flC97nW2GwfGuBsmwPiK3FICn7w8FkQPxwU6urRl1RLbQTIZ42R2oUuPf
-         rmTpQsZeUMOPAp5MChtQSR+CMNieLHm09LTXc6iANQ6NqjC+PMlL9Ur4N7e+XcNqH8
-         11e8KFkpzrglw==
-Date:   Tue, 4 May 2021 22:08:52 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        dma <dmaengine@vger.kernel.org>
-Subject: [GIT PULL]: dmaengine updates for v5.13-rc1
-Message-ID: <YJF4nAJ/XXY9qUuI@vkoul-mobl.Dlink>
+        id S231773AbhEDQxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 12:53:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231607AbhEDQxx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 12:53:53 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC69C061763
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 09:52:58 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id c8-20020a9d78480000b0290289e9d1b7bcso8830762otm.4
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 09:52:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vdkFREewlZcIDmDynEQ1WiTK28L5oQeFHQvdWFt20H8=;
+        b=sxCdv3gUS81WcMO5HZwVF/YY/aTx9nyBxnp72jMDhHxZyPo8dExNRLRe1h6NxXBlMF
+         owEnVU/qRjK/grqsNFswIwo4RYalfY8Q9BT68HxVIq40oX3IyJTxisXf+RWQnlh6ksBl
+         8SdZm2T5mo3K/W5I/O0LXTqtqkeiiNn2CxxT9Vt+ceX3uOQxiO7wonFbVriU//TlbdQQ
+         dMKjYUY4W6MxXbGp5N2i0WA0yxZSBT3oJGmalOomTLWDKimjaT0vvCzdn/5nhsegpqSO
+         PptP4XzsvIuul9jIuRXwBty0YwD1ttzYoy2OOyJjqlFRletHTLL2OLQhqHzi4cLGdbo6
+         1cTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vdkFREewlZcIDmDynEQ1WiTK28L5oQeFHQvdWFt20H8=;
+        b=GVlvfwG6XVKETit8CDCjsWEArMg5S0v/hko77W/G4nDOd59Ex+LZI28ihBfZcWAssZ
+         GqAIZj/UlWoZo7O2D3qMgcPohTOTahc9yKiLrkAmtajKnA285MQu6gzAC+p5ogRR3cho
+         IZ1qlCkj/3gu1UWxWaJCVStfKhY9xa+S/09QorpmWbb0G5gijglC4zeaUZTj/FTbrm6/
+         rjDNYfxVySRxknYfU+MhvTxhd7qauap4DQYRdulqD0wDBQW9uuuBc8H3WlTGVmh3A969
+         jQxVChZnlKsUiC+BT6V7pcz529bTZ+ySUihpGCSHg8aR8Af8SaNOTzot9y7DAi+awWsU
+         hxDg==
+X-Gm-Message-State: AOAM533c0vkxZaN+1XgoR/pcgLlUrLmIEaWXnQvLI9kQf4NkLUCim4Jt
+        +GwNaw9vTge+G8J0UhcO0h9dx83tIIkTu6Is/qFw2g==
+X-Google-Smtp-Source: ABdhPJz4q/uVbItWDyl6QflQ4NHfG7as4jx8YVi70hHEkvZXmHwdIZxapwMixmihPdmvH/JJv8aCMvaA7Abj9xLlRHE=
+X-Received: by 2002:a05:6830:16c8:: with SMTP id l8mr20047502otr.56.1620147177249;
+ Tue, 04 May 2021 09:52:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="WzQOajWiqVg22n3c"
-Content-Disposition: inline
+References: <20210428172729.3551-1-valeriy.vdovin@virtuozzo.com>
+ <YIoFFl72VSeuhCRt@google.com> <0d68dbc3-8462-7763-fbad-f3b895fcf6e6@redhat.com>
+ <be7eedf7-03a2-f998-079d-b18101b8b187@openvz.org> <63e54361-0018-ad3b-fb2b-e5dba6a0f221@redhat.com>
+ <048b3f3a-379d-cff3-20b6-fc74dd12a98f@openvz.org> <514b5373-c07b-ad34-5fba-f8850faf6d68@redhat.com>
+ <b4434730-9cd1-1d41-d012-f7beff7e351b@amazon.com>
+In-Reply-To: <b4434730-9cd1-1d41-d012-f7beff7e351b@amazon.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Tue, 4 May 2021 09:52:46 -0700
+Message-ID: <CALMp9eSzNBv-EQoGryyx_eFGmYyUBQwYkB5ndmwuE1SP0Wu6_A@mail.gmail.com>
+Subject: Re: [PATCH v4] KVM: x86: Fix KVM_GET_CPUID2 ioctl to return cpuid
+ entries count
+To:     Alexander Graf <graf@amazon.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        "Denis V. Lunev" <den@openvz.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Valeriy Vdovin <valeriy.vdovin@virtuozzo.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        Like Xu <like.xu@linux.intel.com>, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 4, 2021 at 2:26 AM Alexander Graf <graf@amazon.com> wrote:
+>
+>
+>
+> On 04.05.21 10:21, Paolo Bonzini wrote:
+> >
+> > On 04/05/21 10:15, Denis V. Lunev wrote:
+> >> As far as I understand only some testing within kernel now.
+> >> Though we have plans to expose it for QAPI as the series
+> >> in QEMU
+> >>    [PATCH 1/2] qapi: fix error handling for x-vz-query-cpu-model-cpuid
+> >>    [PATCH 2/2] qapi: blacklisted x-vz-query-cpu-model-cpuid in tests
+> >> is not coming in a good way.
+> >> The idea was to avoid manual code rework in QEMU and
+> >> expose collected model at least for debug.
+> >
+> > KVM_GET_CPUID2 as a VM ioctl cannot expose the whole truth about CPUID
+> > either, since it doesn't handle the TSX_CTRL_CPUID_CLEAR bit.  Given
+> > that QEMU doesn't need KVM_GET_CPUID2; it only needs to save whatever it
+> > passed to KVM_SET_CPUID2.
+>
+> What if we instead deflect CPUID into user space so it can emulate it in
+> whatever way it likes? Is the performance difference going to be
+> relevant? Are people still using cpuid as barrier these days?
 
---WzQOajWiqVg22n3c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+What else would they use (in ring 3 code)? Sure, serialize is coming
+in Sapphire Rapids, but it will be 20+ years before kvm drops support
+for CPUs without serialize.
 
-Hello Linus,
-
-Here is the dmaengine pull request for this cycle. Please pull:
-
-The following changes since commit ea9aadc06a9f10ad20a90edc0a484f1147d88a7a:
-
-  dmaengine: idxd: fix wq cleanup of WQCFG registers (2021-04-12 22:08:39 +=
-0530)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dm=
-aengine-5.13-rc1
-
-for you to fetch changes up to 0bde4444ec44b8e64bbd4af72fcaef58bcdbd4ce:
-
-  dmaengine: idxd: Enable IDXD performance monitor support (2021-04-25 21:4=
-6:12 +0530)
-
-----------------------------------------------------------------
-dmaengine updates for v5.13-rc1
-
-New drivers/devices
- - Support for QCOM SM8150 GPI DMA
-
-Updates:
- - Big pile of idxd updates including support for performance monitoring
- - Support in dw-edma for interleaved dma
- - Support for synchronize() in Xilinx driver
-
-----------------------------------------------------------------
-Colin Ian King (1):
-      dmaengine: idxd: Fix potential null dereference on pointer status
-
-Dave Jiang (19):
-      dmaengine: idxd: fix dma device lifetime
-      dmaengine: idxd: cleanup pci interrupt vector allocation management
-      dmaengine: idxd: removal of pcim managed mmio mapping
-      dmaengine: idxd: use ida for device instance enumeration
-      dmaengine: idxd: fix idxd conf_dev 'struct device' lifetime
-      dmaengine: idxd: fix wq conf_dev 'struct device' lifetime
-      dmaengine: idxd: fix engine conf_dev lifetime
-      dmaengine: idxd: fix group conf_dev lifetime
-      dmaengine: idxd: fix cdev setup and free device lifetime issues
-      dmaengine: idxd: iax bus removal
-      dmaengine: idxd: remove detection of device type
-      dmaengine: idxd: add percpu_ref to descriptor submission path
-      dmaengine: idxd: add support for readonly config mode
-      dmaengine: idxd: add interrupt handle request and release support
-      dmaengine: idxd: convert sprintf() to sysfs_emit() for all usages
-      dmaengine: idxd: enable SVA feature for IOMMU
-      dmaengine: idxd: support reporting of halt interrupt
-      dmaengine: idxd: device cmd should use dedicated lock
-      dmaengine: idxd: remove MSIX masking for interrupt handlers
-
-Felipe Balbi (1):
-      dt-bindings: dmaengine: qcom: gpi: add compatible for sm8150
-
-Gustavo Pimentel (15):
-      dmaengine: dw-edma: Add writeq() and readq() for 64 bits architectures
-      dmaengine: dw-edma: Fix comments offset characters' alignment
-      dmaengine: dw-edma: Add support for the HDMA feature
-      PCI: Add pci_find_vsec_capability() to find a specific VSEC
-      dmaengine: dw-edma: Add PCIe VSEC data retrieval support
-      dmaengine: dw-edma: Add device_prep_interleave_dma() support
-      dmaengine: dw-edma: Improve number of channels check
-      dmaengine: dw-edma: Reorder variables to keep consistency
-      dmaengine: dw-edma: Improve the linked list and data blocks definition
-      dmaengine: dw-edma: Change linked list and data blocks offset and siz=
-es
-      dmaengine: dw-edma: Move struct dentry variable from static definitio=
-n into dw_edma struct
-      dmaengine: dw-edma: Fix crash on loading/unloading driver
-      dmaengine: dw-edma: Change DMA abbreviation from lower into upper case
-      dmaengine: dw-edma: Revert fix scatter-gather address calculation
-      dmaengine: dw-edma: Add pcim_iomap_table return check
-
-Hao Fang (1):
-      dmaengine: k3dma: use the correct HiSilicon copyright
-
-Jiapeng Chong (1):
-      dmaengine: qcom_hidma: remove unused code
-
-Lars-Peter Clausen (1):
-      dmaengine: xilinx: Introduce synchronize() callback
-
-Tom Zanussi (2):
-      dmaengine: idxd: Add IDXD performance monitor support
-      dmaengine: idxd: Enable IDXD performance monitor support
-
-Vinod Koul (1):
-      Merge branch 'fixes' into next
-
-YueHaibing (1):
-      dmaengine: at_xdmac: Remove unused inline function at_xdmac_csize()
-
- .../ABI/testing/sysfs-bus-event_source-devices-dsa |  30 +
- .../devicetree/bindings/dma/qcom,gpi.yaml          |   1 +
- drivers/dma/Kconfig                                |  12 +
- drivers/dma/at_xdmac.c                             |  11 -
- drivers/dma/dw-edma/dw-edma-core.c                 | 178 +++--
- drivers/dma/dw-edma/dw-edma-core.h                 |  37 +-
- drivers/dma/dw-edma/dw-edma-pcie.c                 | 277 ++++++--
- drivers/dma/dw-edma/dw-edma-v0-core.c              | 300 ++++++--
- drivers/dma/dw-edma/dw-edma-v0-core.h              |   2 +-
- drivers/dma/dw-edma/dw-edma-v0-debugfs.c           |  77 +-
- drivers/dma/dw-edma/dw-edma-v0-debugfs.h           |   4 +-
- drivers/dma/dw-edma/dw-edma-v0-regs.h              | 291 +++++---
- drivers/dma/idxd/Makefile                          |   2 +
- drivers/dma/idxd/cdev.c                            | 132 ++--
- drivers/dma/idxd/device.c                          | 283 +++++++-
- drivers/dma/idxd/dma.c                             |  77 +-
- drivers/dma/idxd/idxd.h                            | 168 ++++-
- drivers/dma/idxd/init.c                            | 485 +++++++++----
- drivers/dma/idxd/irq.c                             |  29 +-
- drivers/dma/idxd/perfmon.c                         | 662 ++++++++++++++++++
- drivers/dma/idxd/perfmon.h                         | 119 ++++
- drivers/dma/idxd/registers.h                       | 120 +++-
- drivers/dma/idxd/submit.c                          |  42 +-
- drivers/dma/idxd/sysfs.c                           | 776 +++++++++--------=
-----
- drivers/dma/k3dma.c                                |   4 +-
- drivers/dma/qcom/gpi.c                             |   1 +
- drivers/dma/qcom/hidma.c                           |   6 -
- drivers/dma/xilinx/xilinx_dma.c                    |   8 +
- drivers/pci/pci.c                                  |  30 +
- include/linux/cpuhotplug.h                         |   1 +
- include/linux/pci.h                                |   1 +
- 31 files changed, 3030 insertions(+), 1136 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-event_source-device=
-s-dsa
- create mode 100644 drivers/dma/idxd/perfmon.c
- create mode 100644 drivers/dma/idxd/perfmon.h
---=20
-~Vinod
-
---WzQOajWiqVg22n3c
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmCReJwACgkQfBQHDyUj
-g0fkbA/+I5Q7qI8gUWbFr7y/Kmk9Sq3c51Lk+JuLlguK0EzqjFuMrLp8DEuWnXsx
-pjMcb3XWfEB6gmMmpnRT1co/vbzYUf2x4CGBCIro1TdvtmL1+5+R3vFw9ha1/sSo
-l/KczIyDFCESoHZyolw8rNvUlhxG0xl/RJbnKzaEFfDNOoKuk28TIlCuG2eL5VIN
-GIG8JsTk1BKQs9Lf3nS0gkzvt28lIQTvIpelfwH7si4+EKoOlbM6t5LT3Ap0mQW5
-5hy6kDPIT/7Q8wYkLZk8yJ/3z6PQMmzgiqpyY21ijdu1mG24h10TSvApvVT2GMPM
-R+72q+M67wIztbh2d3duJYhcHEXLNq1U8BGGGh9CsbzxSlHwVYiiz8r9mOSPVG6n
-vYqB8kuuGGwbe+DvKEhqPfvOCiZEtDqyEW59fskd6XoxfGgEiI/F1G4xT7SggUqt
-+JWjIBPTFJVjbtR/qibKTtePcevNrp+UdBT3Un5r9Cihr0ztigPOSFXlgjz7U2Wf
-jEujdfMfKtNRZlUDubeXyNuO7tmsqLQHsIbXWrRKInYIWBkEmsk4msjupo/xa06A
-4DVAGGWiwY9ygZy++ZSAWKrn/vPzLssacb/Diiptgqbo74xG1eWSRIjOAsJpx+xv
-WL0Jmau2ReJIIN9tBR8hO+x8/dQ986Hr3pGm09HjV+bGhMGOw7Q=
-=jYQL
------END PGP SIGNATURE-----
-
---WzQOajWiqVg22n3c--
+>
+> Alex
+>
+>
+>
+> Amazon Development Center Germany GmbH
+> Krausenstr. 38
+> 10117 Berlin
+> Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+> Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+> Sitz: Berlin
+> Ust-ID: DE 289 237 879
+>
+>
