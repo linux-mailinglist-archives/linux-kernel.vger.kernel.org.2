@@ -2,213 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A4CD372D6D
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A01372D70
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231576AbhEDP5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 11:57:40 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:55492 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230512AbhEDP5j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 11:57:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1620143803;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=q2GiZPtJwmu4VDYvPpK6XiMIk4KQ2qSQrkEgbApiyXE=;
-        b=YwuSw4DHZSqcqPKRLnooS9MJSJzbX1MrybK8DxvqsTPsX40QDs4fjg1bV2TAeogmIg0lYp
-        rTngKO0AWemP+q33U/RuOjAga8jdjyqbbOpsbB2qWxSL5TChlu+3tZkgOlc/AMF8wPkXVd
-        c5JGmkDs+qFODtbM/Pr4UvjF9fWtl2w=
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com
- (mail-he1eur04lp2053.outbound.protection.outlook.com [104.47.13.53]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-31-GvnZGkTZMhSq0cdqQHchXw-1; Tue, 04 May 2021 17:56:42 +0200
-X-MC-Unique: GvnZGkTZMhSq0cdqQHchXw-1
+        id S231589AbhEDP6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 11:58:25 -0400
+Received: from mail-eopbgr70043.outbound.protection.outlook.com ([40.107.7.43]:54866
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230512AbhEDP6Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 11:58:24 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DJS+SSXWCbFBnTCmBVE1z7EwT8HP9QNEnGDhBE4bu8SVuD7KLdH6UXv1E/e+UShWk3w7gpas+MsMt+zzfRZHHwscvFIZu3UCLyCwtIAOc6Pfp6v1wlcckJ88wGsZ8Zr+DMPftPSSUXmpgfID21Gx0Dv7EtBGxgxF/bOETA8PjXZbxFY+136b+PfnjXK08k/nFAvUOLLit/4LN6IAaE52C/6KnG9lq5IYKnEPnxrPBXwqCnikoNIx7OZTbwsQLhtjern9Z/S8clyo1wfZQ0usCvK2MHtWIZ5RyIfTx+aibsnjh+Gop6Yk+nMzRoXfaYpqtNSGagSC7/MxnJSY193Kpg==
+ b=cnk6smTf+XCc/4VDGwauy4S9bzinaN4OXc/zuw2QiBD4p6MtPJNX+ch+8I39eW0KfenFBMUhi5t0h17caxJ5S0qARXpHd7TTE/dTpRGYZL6N/Wh8pSwXbBYgE2WXiDA2jBv/1Y6S1g5nauAXR70gSCx6eWXVT95enRh0HsPdwR+oRbtGCVHpPX1C8riBN9orHUzi+Z+2MaJWM/rhVbtXYzEDQmEgn8vm1S5RKSPf5chKAlJUcsXXDr2pGxIy/5YGTF0RUa8JML1iPfD7ucFuKze4huzNc1YfyHHo9n2M70/kI0ADujc4go45untGDLZYC55wEq4HwzWfH9R70pAyhw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZqZdr4fe1oeID4+/CllF3yIlaNBBvdcazomFkO+Any4=;
- b=lNsSGBypeS3/zGjh68JWJbXu/+jmTrl/rkJfiaO5Wcx59VmlseTrVeVmDPWIrRTpOaaZBTcRUl8uPUdtafWUrJCuJwvZzAuSgIdECATC+Bj1C2sqOBME9+7GVSGkUj5TyznLUq1OVL4oQQziOQ2P9e++l0dxC0b5lxJfBM8I/657BWoevHiPDbE+OIVYcmMEz/0MWii+k0ZESs7Gvl+MDBa5mDktB+pfl1ZVSAYKBR3t3Vkz6DY06+xw2vUXJfQNj9rSrCH4CL/6wrKBa3TZiI2gyddzs5OnSDBHrc+9s6a/PRkprEDyl5NA72k5SsKw/fdY6MN+9psGQ1AjleavBw==
+ bh=RF0af6UEDJ3hbAYP6eEO99fzC3ldtJvNlg/rDvhf1HE=;
+ b=nFam0K78nqtc79WtGG0kbr7YQlr5Z8leQmxKCgsXKVOdzLgoBrPDKZ5C5Y9LG2lSiYhrgJPMjNXQCQxqHcVXzOQ7tzs889YMj/DZU6+91bgrYhng0W3pQIzPT5ahD4tBa5chWiaWujpNxxLyVy45jVvXqbsBIX+cAp8lfjGXm2GmQ0dkOVyteiFyOE8yYSqobjuI7o+/k02/02vSmeoSd9LbDKsgWSQMTOsYrSfn4zZCrqXGmqepDuTDWZtI5+NimITLNSwttx6/MvILrscxmAWCpNElM0JXJHx707Xjy8k8X7mP9Pg1aY2xrappS6KN3LfePLLBr0aZ84JE/sf4Ow==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from AM0PR04MB5650.eurprd04.prod.outlook.com (2603:10a6:208:128::18)
- by AM0PR04MB7058.eurprd04.prod.outlook.com (2603:10a6:208:195::24) with
+ smtp.mailfrom=seco.com; dmarc=pass action=none header.from=seco.com;
+ dkim=pass header.d=seco.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=secospa.onmicrosoft.com; s=selector2-secospa-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RF0af6UEDJ3hbAYP6eEO99fzC3ldtJvNlg/rDvhf1HE=;
+ b=eaoUF5BG8pmJaeak8vOcsFmldMHAbGSCX/gxIX8TXQIbqNzGEjO8LsnQQDb1kDOVFRnfC40bnjEDp3mszdWzT0wTnFzaMBNrJ7ZLUXkxvgK78hRxO/d3aAoYQQHEXox0e8/5hrF+XliVYrZXp6W+8B89AyVtFBqoP4LYAMsx7E8=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=seco.com;
+Received: from DB7PR03MB4523.eurprd03.prod.outlook.com (2603:10a6:10:19::27)
+ by DBBPR03MB5141.eurprd03.prod.outlook.com (2603:10a6:10:f4::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.42; Tue, 4 May
- 2021 15:56:41 +0000
-Received: from AM0PR04MB5650.eurprd04.prod.outlook.com
- ([fe80::756a:86b8:8283:733d]) by AM0PR04MB5650.eurprd04.prod.outlook.com
- ([fe80::756a:86b8:8283:733d%6]) with mapi id 15.20.4087.043; Tue, 4 May 2021
- 15:56:41 +0000
-From:   Varad Gautam <varad.gautam@suse.com>
-To:     linux-kernel@vger.kernel.org
-CC:     varad.gautam@suse.com,
-        Matthias von Faber <matthias.vonfaber@aox-tech.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Manfred Spraul <manfred@colorfullife.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: [PATCH] ipc/mqueue: Avoid relying on a stack reference past its expiry
-Date:   Tue,  4 May 2021 17:55:33 +0200
-Message-ID: <20210504155534.17270-1-varad.gautam@suse.com>
-X-Mailer: git-send-email 2.30.2
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-X-Originating-IP: [95.90.93.216]
-X-ClientProxiedBy: FR3P281CA0067.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:4b::14) To AM0PR04MB5650.eurprd04.prod.outlook.com
- (2603:10a6:208:128::18)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.38; Tue, 4 May
+ 2021 15:57:25 +0000
+Received: from DB7PR03MB4523.eurprd03.prod.outlook.com
+ ([fe80::40d5:3554:c709:6b1b]) by DB7PR03MB4523.eurprd03.prod.outlook.com
+ ([fe80::40d5:3554:c709:6b1b%5]) with mapi id 15.20.4087.044; Tue, 4 May 2021
+ 15:57:25 +0000
+Subject: Re: [PATCH 2/2] pwm: Add support for Xilinx AXI Timer
+To:     Michal Simek <michal.simek@xilinx.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Lee Jones <lee.jones@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+References: <20210503214413.3145015-1-sean.anderson@seco.com>
+ <20210503214413.3145015-2-sean.anderson@seco.com>
+ <20210504085112.edyy6loprfzejrjl@pengutronix.de>
+ <dc6d9f40-a913-90c4-9675-0f84f789ab61@xilinx.com>
+From:   Sean Anderson <sean.anderson@seco.com>
+Message-ID: <71694d6a-21d8-2b31-0e66-2dfea52a6390@seco.com>
+Date:   Tue, 4 May 2021 11:57:20 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <dc6d9f40-a913-90c4-9675-0f84f789ab61@xilinx.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [50.195.82.171]
+X-ClientProxiedBy: BL1PR13CA0256.namprd13.prod.outlook.com
+ (2603:10b6:208:2ba::21) To DB7PR03MB4523.eurprd03.prod.outlook.com
+ (2603:10a6:10:19::27)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xps13.suse.de (95.90.93.216) by FR3P281CA0067.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:4b::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.8 via Frontend Transport; Tue, 4 May 2021 15:56:40 +0000
+Received: from [172.27.1.65] (50.195.82.171) by BL1PR13CA0256.namprd13.prod.outlook.com (2603:10b6:208:2ba::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.8 via Frontend Transport; Tue, 4 May 2021 15:57:24 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a77c150e-42c2-4358-abe2-08d90f1534fb
-X-MS-TrafficTypeDiagnostic: AM0PR04MB7058:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR04MB7058A1AF7A8FA20F4C110CF2E05A9@AM0PR04MB7058.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Office365-Filtering-Correlation-Id: 47553343-6346-4fb9-c580-08d90f154f60
+X-MS-TrafficTypeDiagnostic: DBBPR03MB5141:
+X-Microsoft-Antispam-PRVS: <DBBPR03MB51412CE44FC9CB95EA088346965A9@DBBPR03MB5141.eurprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hyTmbKMTI4SyrbrJZx0sZPVuY/y4jn4FeSi6/gnwV9k8pXJOaP49eyI87b8vDjbx0YzSh5fL7q/9+r1OZiOXBEEOBdlNf1JBxfu7LcEgENSNnDFNqc0BPn4DA3q1V4x/oxqBu2UaI1R+yPfT2xKvHKu0jkzsayD9z7wg/J3x4e6aewCcG/BKMyMij2yL7/sh89ElKdB82PtrpNQYXDbkW/99HelhE/qGc2YdgotUmHO2z3laXn2w931Cym6nZjGkGTh6S/jIPMXn4MVVL8mDxKk37LvApcDWo1XhEOMdLoTEEyCRW/yMxjutOdhVwhQvAk7FzMsOhJXfF3+T2XmzZztgH1GYtRG/p8snz3PAD8j0+n3fZ1gRkcyHv+A3zyos5+f07NR92TODNQl7ixG6xig1f0rfUjKS0xtG9NgoqPP8IHK+Tc+3P2gUmoiheGVwRrBjAePnzlY5lIi2u99Mljxrohfdz3KgHp4ftbbYg4OTxCe/OIecHvNsFBfdd0ngCeU6mywsIg8rBLhZJ02xqhDizLqSN1cn1zMCqF+vLNMTDRlBylr5wnL27dgGVn7IDgnJJ6Ycjz9rDb5W/hn+UEwgOk05TUlUcvUsio7wJAWTxqStw8zISvOWTQZntChTkbs00/hFXnxLBze7bioCgg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5650.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(136003)(39850400004)(366004)(346002)(8676002)(6512007)(186003)(316002)(38100700002)(1076003)(66556008)(38350700002)(83380400001)(8936002)(478600001)(54906003)(6666004)(6916009)(4326008)(44832011)(36756003)(5660300002)(26005)(66476007)(6486002)(6506007)(956004)(66946007)(86362001)(52116002)(2906002)(16526019)(2616005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?geSIJbZiqfmIB/KkHq/TNfC9ICkRFp92wcBDh/E1plmdMIgFP/7yvmIbrJae?=
- =?us-ascii?Q?yfwjYlnW0ZXAvvZfpcFxvAWiPP2TqKmS+n1jhKRQPrng3TAaZwdWkqvPOaBA?=
- =?us-ascii?Q?dvAiL1cGcQGx8+Z/8cYN7kmOdYlPDGvXhU9U52a/hLtq5GEaO0ymZ2xfc2+8?=
- =?us-ascii?Q?cv+PaRrehxXWCnxwJJImw6+YyqYiqYjRtEBOZ09+173Z+f19wZU63FVGISRh?=
- =?us-ascii?Q?gBo2hbbKFUT1N79ZSWNEOGlhaS3i6VfVq3+C0xQnRlWIlG0dHzaj6YVX8Mrc?=
- =?us-ascii?Q?MTr5qbD+GztoIjfqrYu7ti2oUtjCywLH2xd5cGXFhVMhf4w0SkZ4IbNICCu0?=
- =?us-ascii?Q?ml1Hsunm4TUTSHxwQcmIkSxZi51X2NSZr9fHtBn/w9QHHlaLpm/NqWEjBegw?=
- =?us-ascii?Q?eBKycLA6OG72IGcrc5/+OdmFkRyeQobGXUTBFP8eGAkKa5WBQw+RJcKV4fqV?=
- =?us-ascii?Q?weuU9tSVSzar5zZAhOb17ptAlywfLcsGS627aTx8xuckDjdFZaBIHvlWGiPb?=
- =?us-ascii?Q?JDO5+Ig8aQf9hKBW9MWM9rvZDuy79keLENJVnk3OxqAy9GtFhBWimChtyXZA?=
- =?us-ascii?Q?ZkxuPMEb0xGaQBmktlYB6rlAylJyhpTkh6xGpN4Ntrbl/9bU5nwImz3sjrjv?=
- =?us-ascii?Q?WAvDTjM9UPdky7ZEG8KYyR8VIQKRLZkU99iV/w0hN2COa2MfLfU/imVIsXKM?=
- =?us-ascii?Q?+4Mqlag2KKGFDdTkpD0YFVP//BSRre7gbuTVMaPWeB3PRuIg3Rc+t+cfPmEZ?=
- =?us-ascii?Q?Rfwsm/SnAIZbwiqA9vtAEt7WTfnSHJmFHXaWSogJhesMqIb8Os2VmIq28d+w?=
- =?us-ascii?Q?fV15FkTMMdKohQnCNh3PmmAuSwKajZhUWNFwQL7KpZGeHxTv52rAojXykTHd?=
- =?us-ascii?Q?Ob6Nx9HQH9C/pK6/4vmJFcid/7V9CAOdXZf7XbrSLwRjkT/iG6Q3mQC1GDAT?=
- =?us-ascii?Q?JIZREJHflzVPAyqjrIR4GseKRncpQi+OnuENngzVqRVTqNOT27Fg/MSMQzTA?=
- =?us-ascii?Q?VAdXtuDhutGnnf5OXEwWG4RFhG+k8kXsHAjStat5DesWbKqWJRUyWhAVyb8v?=
- =?us-ascii?Q?l2+1mLXGTz0dQWYCq0VzNn2v360DutToE04iQPZrKC3VAuYjAWCP4D6ea+sh?=
- =?us-ascii?Q?hpNKEdlekvXi/htbrRLaSgYIT4LjhuS47MKnqJz6sX/4Snf9XCn6zZlXOzrm?=
- =?us-ascii?Q?1+C7LqL0bQhUQEiQZkgAZamUZOxrXQFstb1V1oeRjIf+tozkJ4NBEJ+c4tUi?=
- =?us-ascii?Q?lFUiJ4AID8tFdS/EK4kyf4oH/GZQYyqIDvUU9PRWGfFtN8Z05DTl8T8fywTJ?=
- =?us-ascii?Q?mwiVuelSiHSmPef8aX9kxdfD?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a77c150e-42c2-4358-abe2-08d90f1534fb
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5650.eurprd04.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: MfhCnv5dYl6jvMU7tgbWI/6XDjc0XPGJ0GNOnbhWsAsE2VIOzGYZe1X5RhTGw5aG8jAn7Fj7dVa6jCYwDsNII3BVYHUDL5Uv5Vjsm6NuCTrgq4VCuykxcZrpxfD4P3brMVPtqkrLBmdQYCNsCHtuVCn4bvTjMSBeu7opbhnt0x+p2pmkS13cxen97rcWagmIUMM+ySqyHA0DwwsN53UrSIOKMoVQ92MWgsQ2DTc1OzXp9JUiYRpGx0or/ThZjdryZGOS8k6u1I1sNdaX8c34RwSLhQeVa7K58QwO2E0FoH2abLVcPc99WLCX4gmtMGnLsU41Pbq0vwV48/Iq7GjLbO8FEvhv/UnyS4wm7Vgej2Yej+WRCO0oed84zY5swZUlTQFRSIH2+l/ybh9mCk4DYLL5IlBACNKB5WCI4gS+LdsFNYQqR34Y4HLnMAAZe3jh1CpH5IvgmJvfLDOzv/KaA2vFaCL0l/uXK++Z2ONP/lK4jbzVoIQEyQEJGWStE490xCa1IyO/W/aBko8UEE4yTNTjgtnjNfZrOl6OyZn+OlKJr/LGEbavhqfY1sO//ZU3HHkFxGAB3PGkxh0BKvzsWPWuA1Q+CaYpsOSfS45P+DWUk7InfonM2PQKhjX+E2zP4Wu0kM5L2CB9Xej+7ZdOdZ2PQDnKfG8T1UkEN+Pro5/GlTKIbrICOupJy9sNFKEoOcA4d6l19MtHNBQTOYl1Yf6yCnemI6LpJ3M6cmIvmZpifazB8rWebEwxcMdAWTBpKqrm+DJfZujXYnpMuajT6afl6DSEo5pKFfIeSdWXBRU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR03MB4523.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6486002)(38350700002)(956004)(54906003)(16526019)(2906002)(38100700002)(2616005)(52116002)(86362001)(44832011)(16576012)(83380400001)(31696002)(66946007)(36756003)(8936002)(110136005)(66574015)(5660300002)(8676002)(31686004)(4326008)(966005)(6666004)(53546011)(26005)(498600001)(66556008)(186003)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?tjI80OAsOVTHByhDgpw7IVbt2NuO8Hapc81gaC8raodyc+LWlY27Cvik?=
+ =?Windows-1252?Q?o8VfVrmqWJDZ1jJkfsGsOsqY7N4+tqoPXjXofu0KWpU13ty8dWvD5oCz?=
+ =?Windows-1252?Q?uW99D6F6TlMmCPRs5YGsPEB+kZ7V2oZp0d2OSGjY2wBYg6ePeOml2AIg?=
+ =?Windows-1252?Q?Gk0K08qGcnSaT6uDxpdioZ1XE5qjib1OpZtgWRrxzBaLUPmz0gbp/ObH?=
+ =?Windows-1252?Q?A8JS0CKnIBdulA7c8SiXkq03GxBfKJdA1FVDF388kUk7DdpuP8nKMa2o?=
+ =?Windows-1252?Q?odrS7pybGMsBc/ZzypsEyur+ZzOWUhAme8s/4azeLGvf1MBkxsqsyCYC?=
+ =?Windows-1252?Q?8BABh6/EuNJQj8Ry310EWtdQ9VVT5XboFJthUhDuZA5/IMaNIq7Iok8U?=
+ =?Windows-1252?Q?BFxJ6cYndVca6p7qOyzGdkzFM/XqQaTGL3HNnGpYx9UB5M1s5qTvzF4w?=
+ =?Windows-1252?Q?mGHfWNch2BerCS1GJu+kN3IgQARD3BWJBMsqPAkHnu1NpqLFjwRjPBnk?=
+ =?Windows-1252?Q?GBwTwY2h1n8ukCUdBoJ2rrFvwO3q14uQKcF0YKgiGp/3uhW91tCVxVCf?=
+ =?Windows-1252?Q?yhQntotqAjRMdIxS1E3z0bkE3SY3BGyGTG3WDsTEeeSeSZXKmhnRuVLR?=
+ =?Windows-1252?Q?wf8nfPnLO8OmqWyKe3jipvozDTdJ3Ozb3KE36RRu9XglfJXmneeoJM4O?=
+ =?Windows-1252?Q?GmQ1EhcQ/Xy2FFi9nsE4huKBkd2tksy4IhQIZS7EcAPRv/0QyIGQwiKx?=
+ =?Windows-1252?Q?yaBB+5FJQsfCSbi/PpPXPbdvc+wg9YMI2YuSBKl6caHEa532xoVoPPkB?=
+ =?Windows-1252?Q?v3PIGCPMfejMdoqSpdOqmI8Vy074E2WXKrYI5dV0T8tGViFjXSf3657o?=
+ =?Windows-1252?Q?x5DgT+TY0+04jn4glLIcl7GZEtCNVcc6qkldvqNfsXEeieX/+mqWttR2?=
+ =?Windows-1252?Q?2pOeXF32zMpcC7xhsBdH8gCpcNU7ugaohPDZgfVr3eOeohO36CpazIon?=
+ =?Windows-1252?Q?rgia2lq/YGIfU2sVd3EUMEWSbpQtb77ffz/G2wfrk888QnvBWGqaYeJV?=
+ =?Windows-1252?Q?NM9zYyZUFdkOPkHTpK4jusFewcBLh/pvSf+oCgWctybnQAt8z58iujSZ?=
+ =?Windows-1252?Q?70e+Xb591YemlN9iP3YCDUFVRTlomcwoX0a/C6lGyEBuDaTclGrxMv37?=
+ =?Windows-1252?Q?wgJzhwMdzLseAX0nt2sYzIJhJMMZthKFrv6WTJnyGCiRHyVPK8kKMex6?=
+ =?Windows-1252?Q?vzQ+jpZzIrdu3fOF48CD8Kktoma/HiE/tElaLh3R3/uRgVsSXMtA/D0h?=
+ =?Windows-1252?Q?u5qAdLBAY4z6rl1LQ45pbB8B+Ps7Q0xBpddcSZmIWJeldaF7Jo6okJp7?=
+ =?Windows-1252?Q?EHkbkZYrvMlFwlBNaFtMt/MrJ3PhLqwZeGctoiiK2ocTlnjChlHzkp61?=
+X-OriginatorOrg: seco.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 47553343-6346-4fb9-c580-08d90f154f60
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR03MB4523.eurprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 May 2021 15:56:40.8893
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 May 2021 15:57:25.1836
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-Id: bebe97c3-6438-442e-ade3-ff17aa50e733
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: v8Bn/W/Vx4u5AZm7kizGIpwp1uNqEeJW/mZInkW5BBra5TXlq+5483V5oKXGKiswYjQjlES85MEY0U+B0ddM8Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB7058
+X-MS-Exchange-CrossTenant-UserPrincipalName: mvvTpxYj3wqHKo8fYLc5cTy4/icfO2leIZf9kGVCl37Ui8EvRdf6i3685cLptXFb0478OPuuy6mYqmKFW01Zyw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR03MB5141
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-do_mq_timedreceive calls wq_sleep with a stack local address. The
-sender (do_mq_timedsend) uses this address to later call
-pipelined_send.
 
-This leads to a very hard to trigger race where a do_mq_timedreceive call
-might return and leave do_mq_timedsend to rely on an invalid address,
-causing the following crash:
 
-[  240.739977] RIP: 0010:wake_q_add_safe+0x13/0x60
-[  240.739991] Call Trace:
-[  240.739999]  __x64_sys_mq_timedsend+0x2a9/0x490
-[  240.740003]  ? auditd_test_task+0x38/0x40
-[  240.740007]  ? auditd_test_task+0x38/0x40
-[  240.740011]  do_syscall_64+0x80/0x680
-[  240.740017]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  240.740019] RIP: 0033:0x7f5928e40343
+On 5/4/21 8:32 AM, Michal Simek wrote:
+ >
+ >
+ > On 5/4/21 10:51 AM, Uwe Kleine-König wrote:
+ >> Hello,
+ >>
+ >> On Mon, May 03, 2021 at 05:44:13PM -0400, Sean Anderson wrote:
+ >>> This adds PWM support for Xilinx LogiCORE IP AXI soft timers commonly
+ >>> found on Xilinx FPGAs. There is another driver for this device located
+ >>> at arch/microblaze/kernel/timer.c, but it is only used for timekeeping.
+ >>> This driver was written with reference to Xilinx DS764 for v1.03.a [1].
+ >>>
+ >>> [1] https://www.xilinx.com/support/documentation/ip_documentation/axi_timer/v1_03_a/axi_timer_ds764.pdf
+ >>>
+ >>> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+ >>> ---
+ >>>
+ >>>   arch/arm64/configs/defconfig |   1 +
+ >>>   drivers/pwm/Kconfig          |  11 ++
+ >>>   drivers/pwm/Makefile         |   1 +
+ >>>   drivers/pwm/pwm-xilinx.c     | 322 +++++++++++++++++++++++++++++++++++
+ >>>   4 files changed, 335 insertions(+)
+ >>>   create mode 100644 drivers/pwm/pwm-xilinx.c
+ >>>
+ >>> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+ >>> index 08c6f769df9a..81794209f287 100644
+ >>> --- a/arch/arm64/configs/defconfig
+ >>> +++ b/arch/arm64/configs/defconfig
+ >>> @@ -1083,6 +1083,7 @@ CONFIG_PWM_SAMSUNG=y
+ >>>   CONFIG_PWM_SL28CPLD=m
+ >>>   CONFIG_PWM_SUN4I=m
+ >>>   CONFIG_PWM_TEGRA=m
+ >>> +CONFIG_PWM_XILINX=m
+ >>>   CONFIG_SL28CPLD_INTC=y
+ >>>   CONFIG_QCOM_PDC=y
+ >>>   CONFIG_RESET_IMX7=y
+ >>
+ >> I think this should go into a separate patch once this driver is
+ >> accepted. This can then go via the ARM people.
+ >>
+ >>> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+ >>> index d3371ac7b871..01e62928f4bf 100644
+ >>> --- a/drivers/pwm/Kconfig
+ >>> +++ b/drivers/pwm/Kconfig
+ >>> @@ -628,4 +628,15 @@ config PWM_VT8500
+ >>>   	  To compile this driver as a module, choose M here: the module
+ >>>   	  will be called pwm-vt8500.
+ >>>
+ >>> +config PWM_XILINX
+ >>> +	tristate "Xilinx AXI Timer PWM support"
+ >>> +	depends on !MICROBLAZE
+ >>
+ >> I don't understand this dependency.
+ >
+ > The dependency is clear here because microblaze has already driver for
+ > this timer here arch/microblaze/kernel/timer.c.
+ >
+ > And that's exactly pointing to the way how this should be done.
+ > IP itself is single or dual timer and in case of dual timer you can
+ > select if there is pwm output and use it for PWM generation.
+ >
+ > It means it is timer with PMW together.
+ > I didn't have a time but Uwe likely knows this better how to design it.
+ >
+ > I see that gpio-mvebu driver instantiate pwm driver. Maybe that's the
+ > way to go.
 
-The race occurs as:
+I think drivers/clocksource/samsung_pwm_timer.c and
+drivers/pwm/pwm-samsung.c provide another example for how to go about
+this.
 
-1. do_mq_timedreceive calls wq_sleep with the address of
-`struct ext_wait_queue` on function stack (aliased as `ewq_addr` here)
-- it holds a valid `struct ext_wait_queue *` as long as the stack has
-not been overwritten.
+ > Step first is move axi timer driver from microblaze to generic location.
 
-2. `ewq_addr` gets added to info->e_wait_q[RECV].list in wq_add, and
-do_mq_timedsend receives it via wq_get_first_waiter(info, RECV) to call
-__pipelined_op.
+Yes. However, I don't have a microblaze setup, so I have just added the
+PWM driver.
 
-3. Sender calls __pipelined_op::smp_store_release(&this->state, STATE_READY=
-).
-Here is where the race window begins. (`this` is `ewq_addr`.)
+ > Figured it out how to add PWM (with DT flag) and then write support for it.
 
-4. If the receiver wakes up now in do_mq_timedreceive::wq_sleep, it
-will see `state =3D=3D STATE_READY` and break. `ewq_addr` gets removed from
-info->e_wait_q[RECV].list.
+I would really like to see a standard way of doing this. Many timers
+also have PWM support (e.g. samsung, and also DW). I think it's unusual
+that this problem has not already been addressed.
 
-5. do_mq_timedreceive returns, and `ewq_addr` is no longer guaranteed
-to be a `struct ext_wait_queue *` since it was on do_mq_timedreceive's
-stack. (Although the address may not get overwritten until another
-function happens to touch it, which means it can persist around for an
-indefinite time.)
+--Sean
 
-6. do_mq_timedsend::__pipelined_op() still believes `ewq_addr` is a
-`struct ext_wait_queue *`, and uses it to find a task_struct to pass
-to the wake_q_add_safe call. In the lucky case where nothing has
-overwritten `ewq_addr` yet, `ewq_addr->task` is the right task_struct.
-In the unlucky case, __pipelined_op::wake_q_add_safe gets handed a
-bogus address as the receiver's task_struct causing the crash.
-
-do_mq_timedsend::__pipelined_op() should not dereference `this` after
-setting STATE_READY, as the receiver counterpart is now free to return.
-Change __pipelined_op to call wake_q_add_safe on the receiver's
-task_struct returned by get_task_struct, instead of dereferencing
-`this` which sits on the receiver's stack.
-
-Fixes: c5b2cbdbdac563 ("ipc/mqueue.c: update/document memory barriers")
-Signed-off-by: Varad Gautam <varad.gautam@suse.com>
-Reported-by: Matthias von Faber <matthias.vonfaber@aox-tech.de>
-Cc: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: Manfred Spraul <manfred@colorfullife.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Davidlohr Bueso <dbueso@suse.de>
-
----
- ipc/mqueue.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/ipc/mqueue.c b/ipc/mqueue.c
-index 8031464ed4ae2..8f78057c6be53 100644
---- a/ipc/mqueue.c
-+++ b/ipc/mqueue.c
-@@ -1004,12 +1004,14 @@ static inline void __pipelined_op(struct wake_q_hea=
-d *wake_q,
- 				  struct mqueue_inode_info *info,
- 				  struct ext_wait_queue *this)
- {
-+	struct task_struct *t;
-+
- 	list_del(&this->list);
--	get_task_struct(this->task);
-+	t =3D get_task_struct(this->task);
-=20
- 	/* see MQ_BARRIER for purpose/pairing */
- 	smp_store_release(&this->state, STATE_READY);
--	wake_q_add_safe(wake_q, this->task);
-+	wake_q_add_safe(wake_q, t);
- }
-=20
- /* pipelined_send() - send a message directly to the task waiting in
---=20
-2.30.2
-
+ >
+ > Thanks,
+ > Michal
+ >
