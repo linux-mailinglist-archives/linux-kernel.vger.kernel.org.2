@@ -2,145 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B033730D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7EB43730DA
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232369AbhEDTdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 15:33:33 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:60638 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbhEDTdb (ORCPT
+        id S232398AbhEDTgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 15:36:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232181AbhEDTgB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 15:33:31 -0400
-Received: from [192.168.254.32] (unknown [47.187.223.33])
-        by linux.microsoft.com (Postfix) with ESMTPSA id EB8FB20B7178;
-        Tue,  4 May 2021 12:32:35 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EB8FB20B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1620156756;
-        bh=VpUXm1vXYJ2pKfbkpAPbT9u9hdyCkuFseoK05J0qTvU=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=AGyabpQ4bzjD9q9q5KY4O0oiMDlhuSgKE1Y+Id9nXundCbzdr1GJFOTVrlskzId14
-         n1N9tdINtjeMLpICrIPY6UiqB2bISeJiB7ndZIEP0IhLrt8Rc8LsXDW+t/wrMT5bKQ
-         6N6RE6nbJBOuJxgCzZ9OhmpwvzQ6qc8XaiuL/tYU=
-Subject: Re: [RFC PATCH v3 2/4] arm64: Check the return PC against unreliable
- code sections
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     jpoimboe@redhat.com, mark.rutland@arm.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <65cf4dfbc439b010b50a0c46ec500432acde86d6>
- <20210503173615.21576-1-madvenka@linux.microsoft.com>
- <20210503173615.21576-3-madvenka@linux.microsoft.com>
- <20210504160508.GC7094@sirena.org.uk>
- <1bd2b177-509a-21d9-e349-9b2388db45eb@linux.microsoft.com>
-Message-ID: <0f72c4cb-25ef-ee23-49e4-986542be8673@linux.microsoft.com>
-Date:   Tue, 4 May 2021 14:32:35 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 4 May 2021 15:36:01 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37BD0C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 12:35:05 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id n2so10675988wrm.0
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 12:35:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/wlkno7pRty5OfZRb8J5gIbUcerkat2d/Bw1XsvXcxA=;
+        b=cQwuhcRbcCqXF84od/9QObdaYeQP08k05+eaYKRXsWjfB8+uK8p0Rew0weWkCYskXA
+         XzJPK2gWVgMfQu81aw7g1F1FHwOtP3iU8hguoWKm1B2zpiIt7kAxrA5UHLZYaBxk9zri
+         DUO5XmmmZ1drzcHgZhgOVFXZAXJ3MDqPUrsp2qoatan9C8w8qk81YqOOuNkvGWf8eNtq
+         f8gU/gXLdCurvwLOqLHQVU5Z91fWQAaZHsgv67KDPM90OyZBdSQN0QmIGCLoeUHRc5Cz
+         HV3I7445/U9WHR8/VUINZHiG8nk0q53HEI+sL4Me54akckuGl2dbb3+ijnefVdPaQ/YF
+         hISg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/wlkno7pRty5OfZRb8J5gIbUcerkat2d/Bw1XsvXcxA=;
+        b=lw9n6z+3mwl4792cFKURTrlJK5H7WYOyeKmnwlsBLYJqIT5OrEq2eiHN8ISPE3/58G
+         XQD6j7/RUadJpwCNwr18akEQQbzi7Gi8AQZcXGaUNrFT9pP2gbnVDCskerptAzzfioH9
+         pIuSKi3E4HfgQ4Hj76O+uL/DKqjTRLH8IbxsnjV92vEl83ce7MeX9jCByoy3tePPM23z
+         LA26muEw64xuwTi0pGrcixj2/fPJl9bx345ZhxIEll9tr+1/G0PhuyOLo6OsQhvz43Uc
+         ogIndDMf0PgvGmQfxA/yy0w6F8lu78rogmjopfeN0faZeD/GmVbSkuE97Z5BqsV1DhGF
+         iLag==
+X-Gm-Message-State: AOAM5322F9BjtQZX+w7NaQPushwEO3nTagTOMcgTCnYbpUMb9z8WrQ8E
+        QydARRWUVrbahoQu/NU1dwm/Zg==
+X-Google-Smtp-Source: ABdhPJyRqQn35aDMtuJzXmdCWQFefsfXBopf6kCEyTozbNmoBqhTRobePV2+CeNp53C7ihebxE0Leg==
+X-Received: by 2002:adf:e3c6:: with SMTP id k6mr10179868wrm.236.1620156903866;
+        Tue, 04 May 2021 12:35:03 -0700 (PDT)
+Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.googlemail.com with ESMTPSA id x8sm17072136wru.70.2021.05.04.12.35.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 12:35:03 -0700 (PDT)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     arnd@arndb.de, kaloz@openwrt.org, khalasa@piap.pl,
+        linusw@kernel.org, linux@armlinux.org.uk, olof@lixom.net,
+        robh+dt@kernel.org, soc@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH 0/5] ixp4xx: add welltech-epbx100
+Date:   Tue,  4 May 2021 19:34:52 +0000
+Message-Id: <20210504193457.4008384-1-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <1bd2b177-509a-21d9-e349-9b2388db45eb@linux.microsoft.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The welltech epbx100 is a small IP PBX board.
+It ship an Intel IXDPG425 Network Gateway Reference (IXP42X 533MHz) SoC.
+Original image ran an old 2.4.31 but upgrading to recent kernel was
+easy.
+It misses a working network interfaces but its current state is
+sufficient to work on my interest, its crypto device.
 
+More information on the board could be found on http://kernel.montjoie.ovh/welltech-epbx100.html
 
-On 5/4/21 2:03 PM, Madhavan T. Venkataraman wrote:
-> 
-> 
-> On 5/4/21 11:05 AM, Mark Brown wrote:
->> On Mon, May 03, 2021 at 12:36:13PM -0500, madvenka@linux.microsoft.com wrote:
->>> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
->>>
->>> Create a sym_code_ranges[] array to cover the following text sections that
->>> contain functions defined as SYM_CODE_*(). These functions are low-level
->>
->> This makes sense to me - a few of bikesheddy comments below but nothing
->> really substantive.
->>
-> 
-> OK.
-> 
->>> +static struct code_range *lookup_range(unsigned long pc)
->>
->> This feels like it should have a prefix on the name (eg, unwinder_)
->> since it looks collision prone.  Or lookup_code_range() rather than just
->> plain lookup_range().
->>
-> 
-> I will add the prefix.
-> 
->>> +{
->> +       struct code_range *range;
->> +         
->> +       for (range = sym_code_ranges; range->start; range++) {
->>
->> It seems more idiomatic to use ARRAY_SIZE() rather than a sentinel here,
->> the array can't be empty.
->>
-> 
-> If there is a match, I return the matched range. Else, I return the sentinel.
-> This is just so I don't have to check for range == NULL after calling
-> lookup_range().
-> 
-> I will change it to what you have suggested and check for NULL explicitly.
-> It is not a problem.
-> 
->>> +	range = lookup_range(frame->pc);
->>> +
->>>  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
->>>  	if (tsk->ret_stack &&
->>>  		frame->pc == (unsigned long)return_to_handler) {
->>> @@ -118,9 +160,21 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
->>>  			return -EINVAL;
->>>  		frame->pc = ret_stack->ret;
->>>  		frame->pc = ptrauth_strip_insn_pac(frame->pc);
->>> +		return 0;
->>>  	}
->>
->> Do we not need to look up the range of the restored pc and validate
->> what's being pointed to here?  It's not immediately obvious why we do
->> the lookup before handling the function graph tracer, especially given
->> that we never look at the result and there's now a return added skipping
->> further reliability checks.  At the very least I think this needs some
->> additional comments so the code is more obvious.
-> I want sym_code_ranges[] to contain both unwindable and non-unwindable ranges.
-> Unwindable ranges will be special ranges such as the return_to_handler() and
-> kretprobe_trampoline() functions for which the unwinder has (or will have)
-> special code to unwind. So, the lookup_range() has to happen before the
-> function graph code. Please look at the last patch in the series for
-> the fix for the above function graph code.
-> 
-> On the question of "should the original return address be checked against
-> sym_code_ranges[]?" - I assumed that if there is a function graph trace on a
-> function, it had to be an ftraceable function. It would not be a part
-> of sym_code_ranges[]. Is that a wrong assumption on my part?
-> 
+Corentin Labbe (5):
+  ARM: ixp4xx_defconfig: add CONFIG_SERIAL_OF_PLATFORM
+  ARM: ixp4xx_defconfig: add MTD_PHYSMAP
+  dt-bindings: add vendor prefix for welltech
+  dt-bindings: arm: intel-ixp4xx: add welltech,epbx100
+  ARM: dts: add intel-ixp42x-welltech-epbx100
 
-If you prefer, I could do something like this:
+ .../devicetree/bindings/arm/intel-ixp4xx.yaml |  1 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
+ arch/arm/boot/dts/Makefile                    |  1 +
+ .../dts/intel-ixp42x-welltech-epbx100.dts     | 76 +++++++++++++++++++
+ arch/arm/configs/ixp4xx_defconfig             |  3 +
+ 5 files changed, 83 insertions(+)
+ create mode 100644 arch/arm/boot/dts/intel-ixp42x-welltech-epbx100.dts
 
-check_pc:
-	if (!__kernel_text_address(frame->pc))
-		frame->reliable = false;
+-- 
+2.26.3
 
-	range = lookup_range(frame->pc);
-
-#ifdef CONFIG_FUNCTION_GRAPH_TRACER
-	if (tsk->ret_stack &&
-		frame->pc == (unsigned long)return_to_handler) {
-		...
-		frame->pc = ret_stack->ret;
-		frame->pc = ptrauth_strip_insn_pac(frame->pc);
-		goto check_pc;
-	}
-#endif /* CONFIG_FUNCTION_GRAPH_TRACER */
-
-Is that acceptable?
-
-Madhavan
