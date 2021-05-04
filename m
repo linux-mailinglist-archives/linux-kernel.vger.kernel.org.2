@@ -2,176 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAAE1372E23
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 18:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98FA9372E2E
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 18:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231925AbhEDQcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 12:32:47 -0400
-Received: from mail-dm6nam11on2077.outbound.protection.outlook.com ([40.107.223.77]:33633
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231744AbhEDQco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 12:32:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RXFwdCe+oZl9UCO3DQtKpk3alHpbc4qEVSjkCvK9A7T2Vx/sSIDHJI5cDOJS1YIkGm6a9HAO1nmVCATFDQ0fPLxcjW/rmCvDzJMm49Jrc1fDi5XSThBgz3be07CdfwJ5Dq/EjWBnsQOTM5Qq/i6eYlGJPMyYOXqTQ4EgJYeksL9Mt8HBUxQDR/xzq10WFZwaAqxy2ONwhT1BkrE9SkTzevBsx/jP7j2fdcf4RT4fUi8PjBAypQNsIwU6xbo+N2h96nLH20SlYCgrErdo/Ckh/b9dggfDRtbCouzo7k0QJqm/uKrEOw9AK4nUvt85TgUThoC+n91JPqJeDJ0nEs9C/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8O2DkU3YtUqQE86orQx8Gn+mwJw0fU3SGUHkiEbFIds=;
- b=kjf0RV/vt8KqP0fwALG2mwHl3/IA291j+itRJlIBCDASP847eM9JBro0mMEQeysgvPtqSieDLhUecIMZNLUiKF1tOOYguGARGumWBU13MtqguwvDp3dd/LziOpP0opiCVzTtSy2NKr2Woojleu55zFUvqewzdJEInKpH7tDSl0rOrDKTNZd9Z0WvPQwy23cDYqjlrkZ5f+HeASWLPPr175aMwBNAhVcVAjgExSVTqJTjToC7o0CeokTiPRHXktwOjo4b/HY+82dBi8w06SwbySuiDvnbV3GtCciiObgsgD5UFbdtFdnolhOKRo2WDB8UWniWIMICpe1sit9ixqwo9g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8O2DkU3YtUqQE86orQx8Gn+mwJw0fU3SGUHkiEbFIds=;
- b=BElQBjp74MZc8ReP9t3/VyPRTjx0c7lu7tcmAcu5Dr8iSRDQP1WoF4/b/dcDx4E/Qtin+UO7ft604INf6XvlyKIPd6t0tQYsKyfTnG8UjsLJZ1N28Mom6sITyxZ844oWLMumd6X/Y+DFfYA3uRO36HG/nJ1h8x88rXydedr9TvbNxhgRLAL/XYjgvFp4b5SNRmvN+14Z31l0c9PKdiyHn9101rGZtDk8KYQsPw8vcoxDM63+QpvkSAxmBYqxv03yEf3H0LE1FH7/d8utX8Sa1C1HM510HVkAI9KdLiGPDfsmmd62fbZjHfeM5b+Fy11MwHN7IWO15d8taIthryteWA==
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BY5PR12MB3827.namprd12.prod.outlook.com (2603:10b6:a03:1ab::16)
- by BY5PR12MB4241.namprd12.prod.outlook.com (2603:10b6:a03:20c::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24; Tue, 4 May
- 2021 16:31:47 +0000
-Received: from BY5PR12MB3827.namprd12.prod.outlook.com
- ([fe80::81ef:d824:43ae:aef5]) by BY5PR12MB3827.namprd12.prod.outlook.com
- ([fe80::81ef:d824:43ae:aef5%4]) with mapi id 15.20.4087.044; Tue, 4 May 2021
- 16:31:47 +0000
-Date:   Tue, 4 May 2021 13:31:45 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210504163145.GU1370958@nvidia.com>
-References: <20210421230301.GP1370958@nvidia.com>
- <MWHPR11MB1886188698A6E20338196F788C469@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210422121020.GT1370958@nvidia.com>
- <MWHPR11MB1886E688D2128C98A1F240B18C459@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210423114944.GF1370958@nvidia.com>
- <MWHPR11MB18861FE6982D73AFBF173E048C439@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210426123817.GQ1370958@nvidia.com>
- <MWHPR11MB188625137D5B7423822396C88C409@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210428204606.GX1370958@nvidia.com>
- <20210504092255.76c387f8@jacob-builder>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210504092255.76c387f8@jacob-builder>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL1PR13CA0018.namprd13.prod.outlook.com
- (2603:10b6:208:256::23) To BY5PR12MB3827.namprd12.prod.outlook.com
- (2603:10b6:a03:1ab::16)
+        id S231734AbhEDQjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 12:39:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34162 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231602AbhEDQjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 12:39:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A333761177;
+        Tue,  4 May 2021 16:38:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620146336;
+        bh=WGHPPs4w6bWsewmYioHaBuzh4xo3duDHdMH9cbOnfxA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=UY3PyfwLqNhAxfHYAmHrr1RiTI0ej1EIaFv30R6RMb6+2Awa4QA/npohfjoUKETpv
+         D4Om3vdM4o6zAhwIDU2R1DJ6IgYg3NHqmd0tMHAazmstiof3NNm4PyF5OhzjWLE81N
+         fG1M6YeaweQ2m+0IZGPzMi48YNiGYBbAwJNTD75+zHzbLZIoxXPSXqjXI3EWiR1HFG
+         wWFxik+Y9flC97nW2GwfGuBsmwPiK3FICn7w8FkQPxwU6urRl1RLbQTIZ42R2oUuPf
+         rmTpQsZeUMOPAp5MChtQSR+CMNieLHm09LTXc6iANQ6NqjC+PMlL9Ur4N7e+XcNqH8
+         11e8KFkpzrglw==
+Date:   Tue, 4 May 2021 22:08:52 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        dma <dmaengine@vger.kernel.org>
+Subject: [GIT PULL]: dmaengine updates for v5.13-rc1
+Message-ID: <YJF4nAJ/XXY9qUuI@vkoul-mobl.Dlink>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0018.namprd13.prod.outlook.com (2603:10b6:208:256::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.8 via Frontend Transport; Tue, 4 May 2021 16:31:47 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ldxxZ-000RAF-Hw; Tue, 04 May 2021 13:31:45 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a1aae10c-c672-4dde-f67d-08d90f1a1c9a
-X-MS-TrafficTypeDiagnostic: BY5PR12MB4241:
-X-Microsoft-Antispam-PRVS: <BY5PR12MB424163CBA3F092D86913E163C25A9@BY5PR12MB4241.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tIfNxc8dFBzTo1bnuV9Plt4p5YYgN5TO5ACj7KUdGUgPyq9OTkxfrhKq+xWI53ACFINTH9XuqR35MOB1ZhDoGkeM4oDV+hvBazwDIduCYAnyVncDOjs5h1Qkv0WRP+fe4UBF6OGUmuenH1OnHmoJUIhLBnwsve8/FkIuJsQ0cjQInKRSzYGqE8HUfiZR7lbs0nQMfA6NWRgBy09eFVaNRfuT8fcezm8H5AkrMSAvdn+kVFx9nLK0ZekAqTsBZCRhMViLmHnr3uQzt+CVE44nJMkG/QIJ4/+47jwgLz/0XQV6FW5bk1vwh7d1xHZzZCk6IHSoXKLOQuyOObmMNOofmRJ3AuaJIcwDrwlGDw2H+jqLJq0Ol5FCzNAiiREvzKr58ALVLNUdGpayvGepalq96rkW3HoHHgFjJiOxQ/ePwSxeVcp9H6zBzgmv+gDnn+tEhzvHMT2ec8AMKAWvXhEo7WQVX/f1qcT0pILuQr3giZDnx5WSVnPOywPzjUs25jhwS06PU6p5KpDBJVGIoU8cqkcoNAcN3ar3pVEnDj7WUoOOt1xUycYhGNtBpyxvrP2FqyRrAa2TRVoLbFfhvOemwxiQWFz6okXQqrgRYfFuCMQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3827.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(366004)(376002)(346002)(39860400002)(38100700002)(66946007)(6916009)(2906002)(5660300002)(66476007)(66556008)(26005)(186003)(426003)(478600001)(7416002)(8936002)(316002)(2616005)(9746002)(8676002)(86362001)(4326008)(33656002)(36756003)(1076003)(54906003)(9786002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?mydIjh5YQxEaSIEivDI+tYfJOdWSzL3ZMmQ7UxOd7KRuzIiuNTVkVu5cEC5M?=
- =?us-ascii?Q?SJeh8o/Y58ZDvQtDyAZwVEEn+/X737qwRZjOrzgtVRrSHbJJbFS6WBGpo3dF?=
- =?us-ascii?Q?nvcbHa8aQv9pAfnkvw4SLD304VZMrRfN5u0KCQ97QGzrYlv/pUWnJVxIlT1O?=
- =?us-ascii?Q?nF9AtK6BDrsaqRumll8SSXT5tu4Qim93FkAmtZPoRDjbXaJQ7O8Geqyi/9tp?=
- =?us-ascii?Q?XukfiXIYEzzKWGHHl0IIKIQw8+hd45Yru0x0uRTTlduy/NeVp/1VFL7A9eZu?=
- =?us-ascii?Q?N9Y9UP2oKAxCCktcs6L549/QpRF9jg6MbmyYcNFUQQZOOr0OweyTYMBkZkDu?=
- =?us-ascii?Q?NO3lqntCiRbE1tBW4AQwUlWlVbxT4aI+Af4OohlzVtE/qUDmWRJtZdRu9vpC?=
- =?us-ascii?Q?133k4C6hNpKrEoI08M1BO5Eov5vNg/jpb+//Da3T0eS+CTbeQD008x4c/igt?=
- =?us-ascii?Q?DPTyn2N6esYjNx+Uc8dbX9TCbGtJlVZtJq2RBEgSTJ8uzimCZ8ygBwzr6Ywr?=
- =?us-ascii?Q?dyj2k9fy+qgJ0Z5ppOgs7mv87/lU1JLIgGqZsFOKdE066NUNPBJU70BBiA+1?=
- =?us-ascii?Q?tamb34TTMlPdzPZ4oN35TWoQ6Ba0Ny1oBii9JU0un8B6VEUjateh1fg4jIWy?=
- =?us-ascii?Q?1xra/9zctPAWIXibydbw4rWIZKSUNOeungu2uPdloIUqI9tIiFVF++l8+tl6?=
- =?us-ascii?Q?4Onxqt6OBw9o9L/RhIYTdtsKsf0nuvNEu/1xSM9GI0r0u10z+QCVCaZoGC1p?=
- =?us-ascii?Q?faVgJv//PVAvlienNVqW0s0VtastyMG0uUcx9Ut8MXTEkeovVhp8F682zzEF?=
- =?us-ascii?Q?EU7FXSZMtyM6Xuq3ihZc9I3yn9leRHdjNwE/VQBUH93be48/XWBRcDY37Oel?=
- =?us-ascii?Q?0EItLNlf+vyMiVRz8ak30qLT1B0x/IzufMzGOSrBd8TUDRwscM/ZSe9scWuR?=
- =?us-ascii?Q?JlWJyraSS5SBjOUGA6g6H9E1O4R0cBNqdMq911RMHcSgwhqZAuzLINWumh2Y?=
- =?us-ascii?Q?Nuzwb8L6j/pvUgNvvor/ye81COUwPnSbM87xWqGi2+7/t7chkuz3KBhPJlq/?=
- =?us-ascii?Q?cPMbC82g3ouJMzzfuBu5uzgnQhOfC/kQVi1TmI/6pFp6UNucPENW6mLvtCx+?=
- =?us-ascii?Q?cvbicEZ+F8Asb6RNMfSoFrVdDq2QwdE2Z7Lot2hPvSR78Lgp3cUruXK06Led?=
- =?us-ascii?Q?vRB4X3tJ8SSH3vIBldhuR3kq0RUSiS0C1srlKxR3SNzaTtIu1NTUPrETwJam?=
- =?us-ascii?Q?eUo54TLQ74kbgIeTldGvxfh3pExTm0AMX4Ozlc6Z/ewhxG46qdHRQWOxJqAl?=
- =?us-ascii?Q?a9A7FbfRQtOT0Bk+NcN1VlRw?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a1aae10c-c672-4dde-f67d-08d90f1a1c9a
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3827.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 May 2021 16:31:47.5778
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +ZTbqUqBPVaOm0gcTie4BYe2Ke+K6ZNz288TCg+a1N4Cgg2PXJL0j2W18oVBIfNB
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4241
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="WzQOajWiqVg22n3c"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 09:22:55AM -0700, Jacob Pan wrote:
-> Hi Jason,
-> 
-> On Wed, 28 Apr 2021 17:46:06 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
-> 
-> > > > I think the name IOASID is fine for the uAPI, the kernel version can
-> > > > be called ioasid_id or something.  
-> > > 
-> > > ioasid is already an id and then ioasid_id just adds confusion. Another
-> > > point is that ioasid is currently used to represent both PCI PASID and
-> > > ARM substream ID in the kernel. It implies that if we want to separate
-> > > ioasid and pasid in the uAPI the 'pasid' also needs to be replaced with
-> > > another general term usable for substream ID. Are we making the
-> > > terms too confusing here?  
-> > 
-> > This is why I also am not so sure about exposing the PASID in the API
-> > because it is ultimately a HW specific item.
-> > 
-> > As I said to David, one avenue is to have some generic uAPI that is
-> > very general and keep all this deeply detailed stuff, that really only
-> > matters for qemu, as part of a more HW specific vIOMMU driver
-> > interface.
-> I think it is not just for QEMU. I am assuming you meant PASID is
-> needed for guest driver to program assigned but not mediated devices.
 
-Anything that directly operates the device and tries to instantiate
-PASIDs for vfio-pci devices will need to understand the PASID.
+--WzQOajWiqVg22n3c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> User space drivers may also need to get the real HW PASID to program it on
-> to the HW. So this uAPI need to provide some lookup functionality. Perhaps
-> the kernel generic version can be called ioasid_hw_id?
-> 
-> So we have the following per my understanding:
-> - IOASID: a userspace logical number which identifies a page table, this can
-> be a first level (GVA-GPA), or a second level (GPA->HPA) page table.
-> - PASID: strictly defined in PCIe term
-> - Substream ID: strictly defined in ARM SMMUv3 spec.
-> - IOASID_HW_ID: a generic ID backed by PASID, Substream ID, or any other
-> 		 HW IDs used to tag DMA
-> 
-> Is that right?
+Hello Linus,
 
-It is reasonable. If a IOASID_HW_ID IOCTL can back with a enum that
-qualified its exact nature it might be perfectly fine.
+Here is the dmaengine pull request for this cycle. Please pull:
 
-Jason
+The following changes since commit ea9aadc06a9f10ad20a90edc0a484f1147d88a7a:
+
+  dmaengine: idxd: fix wq cleanup of WQCFG registers (2021-04-12 22:08:39 +=
+0530)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dm=
+aengine-5.13-rc1
+
+for you to fetch changes up to 0bde4444ec44b8e64bbd4af72fcaef58bcdbd4ce:
+
+  dmaengine: idxd: Enable IDXD performance monitor support (2021-04-25 21:4=
+6:12 +0530)
+
+----------------------------------------------------------------
+dmaengine updates for v5.13-rc1
+
+New drivers/devices
+ - Support for QCOM SM8150 GPI DMA
+
+Updates:
+ - Big pile of idxd updates including support for performance monitoring
+ - Support in dw-edma for interleaved dma
+ - Support for synchronize() in Xilinx driver
+
+----------------------------------------------------------------
+Colin Ian King (1):
+      dmaengine: idxd: Fix potential null dereference on pointer status
+
+Dave Jiang (19):
+      dmaengine: idxd: fix dma device lifetime
+      dmaengine: idxd: cleanup pci interrupt vector allocation management
+      dmaengine: idxd: removal of pcim managed mmio mapping
+      dmaengine: idxd: use ida for device instance enumeration
+      dmaengine: idxd: fix idxd conf_dev 'struct device' lifetime
+      dmaengine: idxd: fix wq conf_dev 'struct device' lifetime
+      dmaengine: idxd: fix engine conf_dev lifetime
+      dmaengine: idxd: fix group conf_dev lifetime
+      dmaengine: idxd: fix cdev setup and free device lifetime issues
+      dmaengine: idxd: iax bus removal
+      dmaengine: idxd: remove detection of device type
+      dmaengine: idxd: add percpu_ref to descriptor submission path
+      dmaengine: idxd: add support for readonly config mode
+      dmaengine: idxd: add interrupt handle request and release support
+      dmaengine: idxd: convert sprintf() to sysfs_emit() for all usages
+      dmaengine: idxd: enable SVA feature for IOMMU
+      dmaengine: idxd: support reporting of halt interrupt
+      dmaengine: idxd: device cmd should use dedicated lock
+      dmaengine: idxd: remove MSIX masking for interrupt handlers
+
+Felipe Balbi (1):
+      dt-bindings: dmaengine: qcom: gpi: add compatible for sm8150
+
+Gustavo Pimentel (15):
+      dmaengine: dw-edma: Add writeq() and readq() for 64 bits architectures
+      dmaengine: dw-edma: Fix comments offset characters' alignment
+      dmaengine: dw-edma: Add support for the HDMA feature
+      PCI: Add pci_find_vsec_capability() to find a specific VSEC
+      dmaengine: dw-edma: Add PCIe VSEC data retrieval support
+      dmaengine: dw-edma: Add device_prep_interleave_dma() support
+      dmaengine: dw-edma: Improve number of channels check
+      dmaengine: dw-edma: Reorder variables to keep consistency
+      dmaengine: dw-edma: Improve the linked list and data blocks definition
+      dmaengine: dw-edma: Change linked list and data blocks offset and siz=
+es
+      dmaengine: dw-edma: Move struct dentry variable from static definitio=
+n into dw_edma struct
+      dmaengine: dw-edma: Fix crash on loading/unloading driver
+      dmaengine: dw-edma: Change DMA abbreviation from lower into upper case
+      dmaengine: dw-edma: Revert fix scatter-gather address calculation
+      dmaengine: dw-edma: Add pcim_iomap_table return check
+
+Hao Fang (1):
+      dmaengine: k3dma: use the correct HiSilicon copyright
+
+Jiapeng Chong (1):
+      dmaengine: qcom_hidma: remove unused code
+
+Lars-Peter Clausen (1):
+      dmaengine: xilinx: Introduce synchronize() callback
+
+Tom Zanussi (2):
+      dmaengine: idxd: Add IDXD performance monitor support
+      dmaengine: idxd: Enable IDXD performance monitor support
+
+Vinod Koul (1):
+      Merge branch 'fixes' into next
+
+YueHaibing (1):
+      dmaengine: at_xdmac: Remove unused inline function at_xdmac_csize()
+
+ .../ABI/testing/sysfs-bus-event_source-devices-dsa |  30 +
+ .../devicetree/bindings/dma/qcom,gpi.yaml          |   1 +
+ drivers/dma/Kconfig                                |  12 +
+ drivers/dma/at_xdmac.c                             |  11 -
+ drivers/dma/dw-edma/dw-edma-core.c                 | 178 +++--
+ drivers/dma/dw-edma/dw-edma-core.h                 |  37 +-
+ drivers/dma/dw-edma/dw-edma-pcie.c                 | 277 ++++++--
+ drivers/dma/dw-edma/dw-edma-v0-core.c              | 300 ++++++--
+ drivers/dma/dw-edma/dw-edma-v0-core.h              |   2 +-
+ drivers/dma/dw-edma/dw-edma-v0-debugfs.c           |  77 +-
+ drivers/dma/dw-edma/dw-edma-v0-debugfs.h           |   4 +-
+ drivers/dma/dw-edma/dw-edma-v0-regs.h              | 291 +++++---
+ drivers/dma/idxd/Makefile                          |   2 +
+ drivers/dma/idxd/cdev.c                            | 132 ++--
+ drivers/dma/idxd/device.c                          | 283 +++++++-
+ drivers/dma/idxd/dma.c                             |  77 +-
+ drivers/dma/idxd/idxd.h                            | 168 ++++-
+ drivers/dma/idxd/init.c                            | 485 +++++++++----
+ drivers/dma/idxd/irq.c                             |  29 +-
+ drivers/dma/idxd/perfmon.c                         | 662 ++++++++++++++++++
+ drivers/dma/idxd/perfmon.h                         | 119 ++++
+ drivers/dma/idxd/registers.h                       | 120 +++-
+ drivers/dma/idxd/submit.c                          |  42 +-
+ drivers/dma/idxd/sysfs.c                           | 776 +++++++++--------=
+----
+ drivers/dma/k3dma.c                                |   4 +-
+ drivers/dma/qcom/gpi.c                             |   1 +
+ drivers/dma/qcom/hidma.c                           |   6 -
+ drivers/dma/xilinx/xilinx_dma.c                    |   8 +
+ drivers/pci/pci.c                                  |  30 +
+ include/linux/cpuhotplug.h                         |   1 +
+ include/linux/pci.h                                |   1 +
+ 31 files changed, 3030 insertions(+), 1136 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-event_source-device=
+s-dsa
+ create mode 100644 drivers/dma/idxd/perfmon.c
+ create mode 100644 drivers/dma/idxd/perfmon.h
+--=20
+~Vinod
+
+--WzQOajWiqVg22n3c
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmCReJwACgkQfBQHDyUj
+g0fkbA/+I5Q7qI8gUWbFr7y/Kmk9Sq3c51Lk+JuLlguK0EzqjFuMrLp8DEuWnXsx
+pjMcb3XWfEB6gmMmpnRT1co/vbzYUf2x4CGBCIro1TdvtmL1+5+R3vFw9ha1/sSo
+l/KczIyDFCESoHZyolw8rNvUlhxG0xl/RJbnKzaEFfDNOoKuk28TIlCuG2eL5VIN
+GIG8JsTk1BKQs9Lf3nS0gkzvt28lIQTvIpelfwH7si4+EKoOlbM6t5LT3Ap0mQW5
+5hy6kDPIT/7Q8wYkLZk8yJ/3z6PQMmzgiqpyY21ijdu1mG24h10TSvApvVT2GMPM
+R+72q+M67wIztbh2d3duJYhcHEXLNq1U8BGGGh9CsbzxSlHwVYiiz8r9mOSPVG6n
+vYqB8kuuGGwbe+DvKEhqPfvOCiZEtDqyEW59fskd6XoxfGgEiI/F1G4xT7SggUqt
++JWjIBPTFJVjbtR/qibKTtePcevNrp+UdBT3Un5r9Cihr0ztigPOSFXlgjz7U2Wf
+jEujdfMfKtNRZlUDubeXyNuO7tmsqLQHsIbXWrRKInYIWBkEmsk4msjupo/xa06A
+4DVAGGWiwY9ygZy++ZSAWKrn/vPzLssacb/Diiptgqbo74xG1eWSRIjOAsJpx+xv
+WL0Jmau2ReJIIN9tBR8hO+x8/dQ986Hr3pGm09HjV+bGhMGOw7Q=
+=jYQL
+-----END PGP SIGNATURE-----
+
+--WzQOajWiqVg22n3c--
