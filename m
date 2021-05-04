@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D396372EC1
+	by mail.lfdr.de (Postfix) with ESMTP id D76D9372EC3
 	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232445AbhEDRTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:19:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39708 "EHLO
+        id S232487AbhEDRTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:19:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232250AbhEDRTF (ORCPT
+        with ESMTP id S232304AbhEDRTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 13:19:05 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D0AC061761
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:18:09 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id j3-20020ac874c30000b02901bab5879d6aso4023837qtr.0
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:18:09 -0700 (PDT)
+        Tue, 4 May 2021 13:19:10 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D238C06134C
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:18:11 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id i62-20020a3786410000b02902e4f9ff4af8so8026478qkd.8
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:18:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=OfxrzbCyayDhIsgc+QsgzNeUTDdIWPqYIy1TjIvLC5Y=;
-        b=QJ3Hkp2+Ym0T9YKmjqMWJvgu3kPTtTxOSvakW/z/eVcGcwWHYaOjwvTKYbuvwTfaIF
-         qBwf/FVLAnsMogpo9M59vB2p0NsyV4Ho3A1HW2P/t2OxEG/jq4mYRrcyhj0FYG5nzu7T
-         FDUlut38RLct/pFsq/vDamxiVrg6s1IQksMtj/5QnP9+OHZ3iOhoz7sN2sptcSpo0Izi
-         V16YnJ9OrgXKaz7caMvCC41x4/+ajPUOJXU7tS8c2qbwLlONrJPEct8BUgsovVUTWCDm
-         HB0FGx9dHdGIQGcxQ2EnOMoy3ZBUzhdNm6V5zjebIi1o3CHHh9F5vA6o+t/NyRG//dO/
-         GlIQ==
+        bh=EJVLUy9Wu1XMVquYiQb1OEBFSqdA144hYS1qNH/p6ok=;
+        b=GaRByPbJVmtgHWnYspoS8Dyjsh95eo63qw5bARG4QFcCgvqBFPaPZgkMwhIudspGV3
+         XxsQJfbuP47evZwpOW+90yLQ54UiDMP0KpyTMEay5IS3EmorT3z2HvoZ8/5HY+58ZT7D
+         kJ1Q9SUEAN74G/9VOxqFRd6SHA+CU6zjz/rfMNmqlbPWQ3VkFDZQnYgRzUciw+sZiZRW
+         QFVzh75tN13ns60wE+2IufukKRoZ2SteQiTMAvH8QOhuRZ86Q7W4fN6vNVaPCs6TWYY+
+         gDXEUjdS1PRaApRNuzzRf8V8/kPKZjXAdFlxHvSdFGggSKInJtBXv+eGNm05UHzp+n+t
+         TkJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=OfxrzbCyayDhIsgc+QsgzNeUTDdIWPqYIy1TjIvLC5Y=;
-        b=mZiXmINaUGQTTcPyC7TGamsy+6JeQl6RovBXADT94ecuC1cPDvfmPK1eWieSJksJZ8
-         zdqFmahF5+1nrGqbL/1Vx1g3ZEWRJkEXbqyG98B3NaIHHXYxxMKVItef3ladyxSeh5aG
-         hFCleqLeBsZA/pzmcUDxU1x2w0bSpkx8sGv8kDr4JqXoaNibJB13pb/71dH4s8HuzM/n
-         dv+E9bFFzJIDs8GkKOyzXFWaNiTYy1mhxcXjxKtamwn/APgdAdz+j/BSqNNVaeMJrdL5
-         yK0+xzX/zYcKMKlu/KQVoQTeybijwh1QKE51st+p9hhHvtWcIsmTj7gnaqJJRjQQBJ9u
-         /t0w==
-X-Gm-Message-State: AOAM531b2zhtYXbqZMYMfiBrNFAFGeEY/cFqvv8VHDvet1dDzF8xhzrS
-        LXWVWg6l0cpjNDPkG6xVNy1hfzYBwKQ=
-X-Google-Smtp-Source: ABdhPJyOGmfzlqBR28ALLywAnRsDHPLL4pecU+CxalZu57YMVP1A5uIdGv3FvOoGtTUMYKqm6+SYvig3Gws=
+        bh=EJVLUy9Wu1XMVquYiQb1OEBFSqdA144hYS1qNH/p6ok=;
+        b=KasEDrzJre9YPKfBM7FKoAgZGszl1EFvDKYG+iHWA1lGbUrnHPUKIvuBxza5PLlvy6
+         73XvgjS5gOQcGRSfU+j7TKRVWRTCDAgn+fbUx8kPeqMvIJMAxafVj8HVM3c6/of/Ia+m
+         w417tTn+e/boctW96THnIVnxlIm+P41993utfeAFLemk/EFFszOo0WisBJwajYMtYKuu
+         GOMP9jnEYtCvbxi06+gRqjV6K8DvP5hkXaaahvvyu41cVC1KzZCYoJ+AeoLa99N3nMri
+         XR1/66IGYsnKO4T3NOB3Jv7v9X4SATkDuErYIxSZa+tn7amnFjIZe34UYl5DtLuFsE5y
+         TVYg==
+X-Gm-Message-State: AOAM5323myWrBhsZvdHioO3Xj5EOMYcPRc8KlXsa0GJ9qMWme2JlYIVN
+        wbHXVsMx59t6+OmDEK3lT5YgzcByRwI=
+X-Google-Smtp-Source: ABdhPJyhVg/bmFC4ZCuJps+AFIdNNG3bxydLRShSlFwsS1FMASCi+Phzl7sFcSPLPYREl0r4GH/DbMxTvP4=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:df57:48cb:ea33:a156])
- (user=seanjc job=sendgmr) by 2002:a0c:bd2b:: with SMTP id m43mr26873037qvg.52.1620148688313;
- Tue, 04 May 2021 10:18:08 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a0c:e486:: with SMTP id n6mr24367135qvl.21.1620148690729;
+ Tue, 04 May 2021 10:18:10 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue,  4 May 2021 10:17:30 -0700
+Date:   Tue,  4 May 2021 10:17:31 -0700
 In-Reply-To: <20210504171734.1434054-1-seanjc@google.com>
-Message-Id: <20210504171734.1434054-12-seanjc@google.com>
+Message-Id: <20210504171734.1434054-13-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210504171734.1434054-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
-Subject: [PATCH 11/15] KVM: VMX: Disable loading of TSX_CTRL MSR the more
- conventional way
+Subject: [PATCH 12/15] KVM: x86: Export the number of uret MSRs to vendor modules
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -68,61 +67,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tag TSX_CTRL as not needing to be loaded when RTM isn't supported in the
-host.  Crushing the write mask to '0' has the same effect, but requires
-more mental gymnastics to understand.
+Split out and export the number of configured user return MSRs so that
+VMX can iterate over the set of MSRs without having to do its own tracking.
+Keep the list itself internal to x86 so that vendor code still has to go
+through the "official" APIs to add/modify entries.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/vmx/vmx.c | 22 ++++++++++------------
- 1 file changed, 10 insertions(+), 12 deletions(-)
+ arch/x86/include/asm/kvm_host.h |  1 +
+ arch/x86/kvm/x86.c              | 29 +++++++++++++----------------
+ 2 files changed, 14 insertions(+), 16 deletions(-)
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 4b432d2bbd06..7a53568b34fc 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -1771,7 +1771,13 @@ static void setup_msrs(struct vcpu_vmx *vmx)
- 			   guest_cpuid_has(&vmx->vcpu, X86_FEATURE_RDTSCP) ||
- 			   guest_cpuid_has(&vmx->vcpu, X86_FEATURE_RDPID));
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index c9452472ed55..10663610f105 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1419,6 +1419,7 @@ struct kvm_arch_async_pf {
+ 	bool direct_map;
+ };
  
--	vmx_setup_uret_msr(vmx, MSR_IA32_TSX_CTRL, true);
-+	/*
-+	 * hle=0, rtm=0, tsx_ctrl=1 can be found with some combinations of new
-+	 * kernel and old userspace.  If those guests run on a tsx=off host, do
-+	 * allow guests to use TSX_CTRL, but don't change the value in hardware
-+	 * so that TSX remains always disabled.
-+	 */
-+	vmx_setup_uret_msr(vmx, MSR_IA32_TSX_CTRL, boot_cpu_has(X86_FEATURE_RTM));
++extern u32 __read_mostly kvm_nr_uret_msrs;
+ extern u64 __read_mostly host_efer;
+ extern bool __read_mostly allow_smaller_maxphyaddr;
+ extern struct kvm_x86_ops kvm_x86_ops;
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 90ef340565a4..2fd46e917666 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -184,11 +184,6 @@ module_param(pi_inject_timer, bint, S_IRUGO | S_IWUSR);
+  */
+ #define KVM_MAX_NR_USER_RETURN_MSRS 16
  
- 	if (cpu_has_vmx_msr_bitmap())
- 		vmx_update_msr_bitmap(&vmx->vcpu);
-@@ -6919,23 +6925,15 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
- 		vmx->guest_uret_msrs[i].data = 0;
- 		vmx->guest_uret_msrs[i].mask = -1ull;
+-struct kvm_user_return_msrs_global {
+-	int nr;
+-	u32 msrs[KVM_MAX_NR_USER_RETURN_MSRS];
+-};
+-
+ struct kvm_user_return_msrs {
+ 	struct user_return_notifier urn;
+ 	bool registered;
+@@ -198,7 +193,9 @@ struct kvm_user_return_msrs {
+ 	} values[KVM_MAX_NR_USER_RETURN_MSRS];
+ };
+ 
+-static struct kvm_user_return_msrs_global __read_mostly user_return_msrs_global;
++u32 __read_mostly kvm_nr_uret_msrs;
++EXPORT_SYMBOL_GPL(kvm_nr_uret_msrs);
++static u32 __read_mostly kvm_uret_msrs_list[KVM_MAX_NR_USER_RETURN_MSRS];
+ static struct kvm_user_return_msrs __percpu *user_return_msrs;
+ 
+ #define KVM_SUPPORTED_XCR0     (XFEATURE_MASK_FP | XFEATURE_MASK_SSE \
+@@ -330,10 +327,10 @@ static void kvm_on_user_return(struct user_return_notifier *urn)
+ 		user_return_notifier_unregister(urn);
  	}
--	tsx_ctrl = vmx_find_uret_msr(vmx, MSR_IA32_TSX_CTRL);
--	if (tsx_ctrl) {
-+	if (boot_cpu_has(X86_FEATURE_RTM)) {
- 		/*
- 		 * TSX_CTRL_CPUID_CLEAR is handled in the CPUID interception.
- 		 * Keep the host value unchanged to avoid changing CPUID bits
- 		 * under the host kernel's feet.
--		 *
--		 * hle=0, rtm=0, tsx_ctrl=1 can be found with some combinations
--		 * of new kernel and old userspace.  If those guests run on a
--		 * tsx=off host, do allow guests to use TSX_CTRL, but do not
--		 * change the value on the host so that TSX remains always
--		 * disabled.
- 		 */
--		if (boot_cpu_has(X86_FEATURE_RTM))
-+		tsx_ctrl = vmx_find_uret_msr(vmx, MSR_IA32_TSX_CTRL);
-+		if (tsx_ctrl)
- 			vmx->guest_uret_msrs[i].mask = ~(u64)TSX_CTRL_CPUID_CLEAR;
--		else
--			vmx->guest_uret_msrs[i].mask = 0;
+ 	local_irq_restore(flags);
+-	for (slot = 0; slot < user_return_msrs_global.nr; ++slot) {
++	for (slot = 0; slot < kvm_nr_uret_msrs; ++slot) {
+ 		values = &msrs->values[slot];
+ 		if (values->host != values->curr) {
+-			wrmsrl(user_return_msrs_global.msrs[slot], values->host);
++			wrmsrl(kvm_uret_msrs_list[slot], values->host);
+ 			values->curr = values->host;
+ 		}
  	}
+@@ -358,9 +355,9 @@ EXPORT_SYMBOL_GPL(kvm_probe_user_return_msr);
+ void kvm_define_user_return_msr(unsigned slot, u32 msr)
+ {
+ 	BUG_ON(slot >= KVM_MAX_NR_USER_RETURN_MSRS);
+-	user_return_msrs_global.msrs[slot] = msr;
+-	if (slot >= user_return_msrs_global.nr)
+-		user_return_msrs_global.nr = slot + 1;
++	kvm_uret_msrs_list[slot] = msr;
++	if (slot >= kvm_nr_uret_msrs)
++		kvm_nr_uret_msrs = slot + 1;
+ }
+ EXPORT_SYMBOL_GPL(kvm_define_user_return_msr);
  
- 	err = alloc_loaded_vmcs(&vmx->vmcs01);
+@@ -368,8 +365,8 @@ int kvm_find_user_return_msr(u32 msr)
+ {
+ 	int i;
+ 
+-	for (i = 0; i < user_return_msrs_global.nr; ++i) {
+-		if (user_return_msrs_global.msrs[i] == msr)
++	for (i = 0; i < kvm_nr_uret_msrs; ++i) {
++		if (kvm_uret_msrs_list[i] == msr)
+ 			return i;
+ 	}
+ 	return -1;
+@@ -383,8 +380,8 @@ static void kvm_user_return_msr_cpu_online(void)
+ 	u64 value;
+ 	int i;
+ 
+-	for (i = 0; i < user_return_msrs_global.nr; ++i) {
+-		rdmsrl_safe(user_return_msrs_global.msrs[i], &value);
++	for (i = 0; i < kvm_nr_uret_msrs; ++i) {
++		rdmsrl_safe(kvm_uret_msrs_list[i], &value);
+ 		msrs->values[i].host = value;
+ 		msrs->values[i].curr = value;
+ 	}
+@@ -399,7 +396,7 @@ int kvm_set_user_return_msr(unsigned slot, u64 value, u64 mask)
+ 	value = (value & mask) | (msrs->values[slot].host & ~mask);
+ 	if (value == msrs->values[slot].curr)
+ 		return 0;
+-	err = wrmsrl_safe(user_return_msrs_global.msrs[slot], value);
++	err = wrmsrl_safe(kvm_uret_msrs_list[slot], value);
+ 	if (err)
+ 		return 1;
+ 
 -- 
 2.31.1.527.g47e6f16901-goog
 
