@@ -2,90 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB51B373110
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D5B373116
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232643AbhEDTyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 15:54:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232209AbhEDTys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 15:54:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27CF4611CB;
-        Tue,  4 May 2021 19:53:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620158032;
-        bh=0r/j8p/v0WMfwl7qORsmq6s2OTxkG5aV8XkOqLqw72Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZDO27gy4lnDgiHSPEYDc8pkPgY7LqE9sm34xJn7XG1luMHes+6XjCwdLbhnJxJoih
-         xidjKRzDFx6FzlTmAxcfvcDPPcebe5KOyTg4kmdifo6+FJ2WTeEhbctDgHJ6LWdXU8
-         TxkHd//qRzJvwE4yNyXiuFWves3HyPOfzTCmBeNlkT7IJ/F67tuQ0FaLWvzxxLCjT7
-         KVzSrXEKErcuPzODm6zmeuZdIYisFLR7jr5FwH/XmqMjg1OZkVJY94tx2LqFfH4wEE
-         uc+edw9HeUsckvPz+w66qKjyH50SXlcLSKMNDvD9ah09Z62ePeew4M9oaNp6jE2K5J
-         lI+m4RWho/nQA==
-Date:   Tue, 4 May 2021 21:53:48 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Alain Volmat <alain.volmat@foss.st.com>
-Cc:     robh+dt@kernel.org, mark.rutland@arm.com,
-        pierre-yves.mordret@foss.st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        fabrice.gasnier@foss.st.com
-Subject: Re: [PATCH v3 1/2] dt-bindings: i2c: stm32f7: add st,smbus-alert
- binding for SMBus Alert
-Message-ID: <20210504195348.GB1783@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Alain Volmat <alain.volmat@foss.st.com>, robh+dt@kernel.org,
-        mark.rutland@arm.com, pierre-yves.mordret@foss.st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        fabrice.gasnier@foss.st.com
-References: <1616998145-28278-1-git-send-email-alain.volmat@foss.st.com>
- <1616998145-28278-2-git-send-email-alain.volmat@foss.st.com>
+        id S232657AbhEDT4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 15:56:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232582AbhEDT4R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 15:56:17 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DDBC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 12:55:22 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id m11so35447pfc.11
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 12:55:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=V9MXCUfkwjmTe3RnQ5lcnKM97SAruzdIHvAHJ/7SbBM=;
+        b=gDxUZXMjj4gmp5w7OneOA+ybUb5VLB6rrAPPS0IlGoniTArDiPJtz+fjyJG5pgsAMk
+         KVjvhbAGD2sm8co6/oxomB+WqEb34rpQzg9VqgC7Pxglu9zYWstkxG+O4KcWxYMINqEE
+         Z+RuLPQiCNVqp5L26RB3hDzYZcckTcsvVLcM9ivk8Quwc1EvIaHqbPP51FfNUayEGBtl
+         0o0RFgUZ0GWIP+D0EunIYE6tDOi/TzlAW8yQ3iu5z5Ff2RWfpZBNmalCU/lKEAlnVOFu
+         zZzrNLFp0Ybndoegu82z6OGV4CV3nuSkGn55WMkjI2P16/OfYTpz8d+NxnQro74LTSW7
+         Wq5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=V9MXCUfkwjmTe3RnQ5lcnKM97SAruzdIHvAHJ/7SbBM=;
+        b=bPQlanEk+zNy/4w6UPbDxuRR8TV2igNrwDDen4psRKAPr751Q1M40USpA42HbuigLp
+         vjAy21Mf+8TzXyco/nxaJhzL0skPTwmLQqN3g/fxfiTaK8MDpNBWT3WWbe9zZG0Rtnx8
+         DbcskpEVhRMcx0qOIlXlYVyIOUAaMb2bzDD6a6Y9wq9zAyl/XtlObeLEymfMIp031Wyx
+         FVEtGB8ZZh/N2vAdXvw6uh3/M/bkXe2BlGFh8fk8oby9HE0RUyLrQoVICl5lhuOJEJlP
+         w4JhuImcTAZTA/FgtvOUwTzTk4NwRwku3rbxCRmVXuSXcE1pfxabZ+13vQVb0EmePkZS
+         JHMg==
+X-Gm-Message-State: AOAM530CweVdTbOi9ehiLmJDvxwwOvwyDlWrjqbK3nqVp8lOZwrDZl3X
+        kvLw7YCCrZlNUGeWC2i1oycJYw==
+X-Google-Smtp-Source: ABdhPJxa4R2eqYOmzom07zcVSSH/UwYdjTwtJKrJZ4ws+px9kF2HWI7h/Tqs4dOTngLsuXaKVJoJNA==
+X-Received: by 2002:a63:796:: with SMTP id 144mr24646749pgh.246.1620158121499;
+        Tue, 04 May 2021 12:55:21 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id j10sm13484582pfn.207.2021.05.04.12.55.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 12:55:20 -0700 (PDT)
+Date:   Tue, 4 May 2021 19:55:16 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Subject: Re: [PATCH v2 1/7] KVM: x86/mmu: Track if shadow MMU active
+Message-ID: <YJGmpOzaFy9E0f5T@google.com>
+References: <20210429211833.3361994-1-bgardon@google.com>
+ <20210429211833.3361994-2-bgardon@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jho1yZJdad60DJr+"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1616998145-28278-2-git-send-email-alain.volmat@foss.st.com>
+In-Reply-To: <20210429211833.3361994-2-bgardon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 29, 2021, Ben Gardon wrote:
+> Add a field to each VM to track if the shadow / legacy MMU is actually
+> in use. If the shadow MMU is not in use, then that knowledge opens the
+> door to other optimizations which will be added in future patches.
+> 
+> Signed-off-by: Ben Gardon <bgardon@google.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h |  2 ++
+>  arch/x86/kvm/mmu/mmu.c          | 10 +++++++++-
+>  arch/x86/kvm/mmu/mmu_internal.h |  2 ++
+>  arch/x86/kvm/mmu/tdp_mmu.c      |  6 ++++--
+>  arch/x86/kvm/mmu/tdp_mmu.h      |  4 ++--
+>  5 files changed, 19 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index ad22d4839bcc..3900dcf2439e 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1122,6 +1122,8 @@ struct kvm_arch {
+>  	 */
+>  	spinlock_t tdp_mmu_pages_lock;
+>  #endif /* CONFIG_X86_64 */
+> +
+> +	bool shadow_mmu_active;
 
---jho1yZJdad60DJr+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I'm not a fan of the name, "shadow mmu" in KVM almost always means shadow paging
+of some form, whereas this covers both shadow paging and legacy TDP support.
 
+But, I think we we can avoid bikeshedding by simply eliminating this flag.  More
+in later patches.
 
-> +        st,smbus-alert:
+>  };
+>  
+>  struct kvm_vm_stat {
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 930ac8a7e7c9..3975272321d0 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -3110,6 +3110,11 @@ static int fast_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+>  	return ret;
+>  }
+>  
+> +void activate_shadow_mmu(struct kvm *kvm)
+> +{
+> +	kvm->arch.shadow_mmu_active = true;
+> +}
+> +
+>  static void mmu_free_root_page(struct kvm *kvm, hpa_t *root_hpa,
+>  			       struct list_head *invalid_list)
+>  {
+> @@ -3280,6 +3285,8 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+>  		}
+>  	}
+>  
+> +	activate_shadow_mmu(vcpu->kvm);
+> +
+>  	write_lock(&vcpu->kvm->mmu_lock);
+>  	r = make_mmu_pages_available(vcpu);
+>  	if (r < 0)
+> @@ -5467,7 +5474,8 @@ void kvm_mmu_init_vm(struct kvm *kvm)
+>  {
+>  	struct kvm_page_track_notifier_node *node = &kvm->arch.mmu_sp_tracker;
+>  
+> -	kvm_mmu_init_tdp_mmu(kvm);
+> +	if (!kvm_mmu_init_tdp_mmu(kvm))
+> +		activate_shadow_mmu(kvm);
 
-After reading the specs again, I think we can make this a generic
-binding. SMBusAlert is optional. So, we can say it is not covered by the
-"smbus" binding and needs a seperate one. Makes sense?
-
-
---jho1yZJdad60DJr+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCRpkwACgkQFA3kzBSg
-Kba/8g//fDwD9sm7N+HAiL7vPmZr0Uock8CYReRf6YpDV+9Yrhh7MVqURaDwtor8
-sIXzxCIeW+HfNXOVjWgEEYwW+NIhjqerMTl+1bG5SLJq+R0gvlsEo7IIAoZ9TdYh
-Urt2LEYuR5yXwD38zkpG110NeqvzgMbYnXk7l8t8+FOCLYfhR3FH1VVM5c5/rPy1
-P5IY/V+z6Kq+YzMpxUreBg/erR14SxUfy3it1cSSJn2TpiSiUuHooV15orA3+VLR
-2VpQLmVBpN86UFHLEHpgSwIYTiOvDu0tF86eZQPCUo3l3blCuId/RhX5ysroAA1s
-R/QwP787hLZHrCbvwfFPFMWi9/Yety6/BLWVDHpp22eR9kHtBhQ1tVvn/Fhy+qaz
-UZnLlVDMqi6N7tQoKDNYF8tzpz7kyhXMCLT4ZoSlxiFIkCACmYZs+Q8+5CSJKo7A
-yuRoVgvy0XG4mTmqDQNda6l2p+SQyQxTri9gSEGczKS6nO8vv/Gb+WZfTyuXe7dW
-SPsckWowrvq7Mq0Ea51YqvdRDN3YpvSUEGeBc0hIgOsqRgpsdBAflM97PLV1BktQ
-6Ee4/xaVDhrjplvpqVwXJZdslRMQO9iawelqngz0P4xVnMJxNzM73ZHOWIM8AP4S
-SreuL3RNm/pPROdtld4xb66OK/mm/cHxgvjy3cLhtbtLrVt/zrk=
-=W6P4
------END PGP SIGNATURE-----
-
---jho1yZJdad60DJr+--
+Doesn't come into play yet, but I would strongly prefer to open code setting the
+necessary flag instead of relying on the helper to never fail.
