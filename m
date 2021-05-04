@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED975372EC6
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B77E8372EC8
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232518AbhEDRTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:19:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39690 "EHLO
+        id S232370AbhEDRTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232354AbhEDRTS (ORCPT
+        with ESMTP id S232233AbhEDRTV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 13:19:18 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D2FC061345
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:18:16 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id o12-20020a5b050c0000b02904f4a117bd74so12588811ybp.17
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:18:16 -0700 (PDT)
+        Tue, 4 May 2021 13:19:21 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9BF4C061353
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:18:18 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id a7-20020a5b00070000b02904ed415d9d84so12561608ybp.0
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:18:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=n3WdNBU3wLg2BveFZOVMyvP1egZ3CBjYg+W/tOrWu7w=;
-        b=P9lOY7moXKyYkZluKXbmMMkDQlfFbAkPP2wDNkED27PIj1b4i6FFISiWtL5WAVl5nY
-         6cfelvMxZHAGVOq9hsc3gCalvxujh70dTTF2l6iBQUQ7ParF5ztKn/aG/tdxpff2EnQK
-         8AMY7ns0OnqE/0AkxjclOd9+OQE4MorLT20iLimXbUJJP1Gyt4+CVRimOw5jtoqWjklg
-         KRWsyYxKk1/olUpTRHkmQAT67E0+wnieg288etP1YKMF+Jzu1umOBzN6MB5i5xbcqMkm
-         iPMYj2u5Kl5wgZN533a0sIk+OQHiHS3nnHcM8ydPOc+hCUsw7zg2xK9F0C3ODE6bQ8cJ
-         tXJQ==
+        bh=la9oY1bxuLYI2LhjbikVYGCKhsj27XYDlkUaBPeOjcE=;
+        b=jn7iGmXk2tM9WVcHBi3kVdO4RzzftrZfQjnK+KwLY8ldx7zkeKX1Ji8siS6FGY4sOb
+         hweay/CtK/y3qJ+aMkl1CKVsa8O4blH0Z4ObvgtaA2EAlo2umn8s6Yh6lEjq/vkfVOmF
+         AK9du+htAn4roZgYlRNomur8QSNZN5lnsPUhd8pyzyLcBrUpSHk5yIC2W8XPaQ8UU0Wa
+         MyUHUKhTVHjSOjjUBrcay/jqEBB7LOLLdxPljAg5aA0jtOfrTs3W+zClQqkcPIj//3SO
+         rJJBBQCpm9MsJldnED0rOfmLYLzH9G9mmBS54TnM4bqZvRA+SMbAbru+RuE520OCxPQ7
+         5mHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=n3WdNBU3wLg2BveFZOVMyvP1egZ3CBjYg+W/tOrWu7w=;
-        b=r9mEaG52Rcd9Q2tuudbimGWF4LLfccVp7AGWpX4rb91xNrp1oaQMUjry4JbJcqwNjZ
-         mo2xosy+VRR02uHEPxOhMHSIi7cMazns6UzHqcSSg6NMx7UO7rHI1KsdnckvBrnHq32K
-         IRq5ZiEoQZUwIK6cPQnAswMtPJc7nWtv+GRkjEq9DGlIplWkRmY7y8n1LBxRzjGW/xMj
-         0zve6u5fU/Y2O4wYtYZIexFwI4JJj/kuLUUCCq0QhdJEFCsvVjc+98QYLhjfIOqA+moe
-         mqi/yE5hF4Rs61J6SrNh52iTbz7VtWHrh7pobrxb2OwYuHmsuhiEnxir8C+/eEQOs0UB
-         W8TA==
-X-Gm-Message-State: AOAM533vthFbzSN2pcBD1icyjz3KvdL0lDcw1A5KaC1hz1Hrh/ou0jkv
-        E2xxwwLC03dbk0igmeSLpQJOdjWazWM=
-X-Google-Smtp-Source: ABdhPJwyh5X6WR35hSEdU0UOSUQJq4myiesLVifDWYcIH6ej+A+EgNY0bGrDFWfx929hgZ7bgpzF1NRuIGs=
+        bh=la9oY1bxuLYI2LhjbikVYGCKhsj27XYDlkUaBPeOjcE=;
+        b=oLf5tuZxrlV7YulKubgMGUey0/b0P1OWpc2TGKEbCAEEds71DzHRHrxhWxcyIi0P/n
+         jJ5yZlAE1tGJlkApjvH7Qi7u3MDNuSt0EyVEX13emouPlz1kf7h7zAj8aOTAN1Cn6jDJ
+         Nu/A6/6R6ej/xV4VRNfyJ1vew39iG7+R3MbBjBjX/UvT0mRkNuBY5XFAtvc3L03kMVpd
+         iURGavW50O/HF3zYOR6z8g/+5DjMuRP8poJeVUKiC3ZHXllve3K2q8omIDe9JG8+oFss
+         p6ev8OzeIijB4iOk2GMko9PK0VRwk0sUvo8rxgaOiWUDZq8NtA5R4nP3u8gS0CgvlmvX
+         H0Aw==
+X-Gm-Message-State: AOAM533qYYZ/dKd15jOpZRg4jn/KvYczlknedYpev+45vPM9notqVPLo
+        M2DpOmlJc7LV3pgIvBLYauknLN+MV6A=
+X-Google-Smtp-Source: ABdhPJwwHw598d//FTS6A9v+yJFz6d3uPtTa/zkCcvmZHBETLX5230DxHwzzjkufCXdGKaG2q1I+ZkEAJBc=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:df57:48cb:ea33:a156])
- (user=seanjc job=sendgmr) by 2002:a25:ef51:: with SMTP id w17mr35753680ybm.520.1620148695580;
- Tue, 04 May 2021 10:18:15 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:6902:120a:: with SMTP id
+ s10mr34885283ybu.91.1620148698033; Tue, 04 May 2021 10:18:18 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue,  4 May 2021 10:17:33 -0700
+Date:   Tue,  4 May 2021 10:17:34 -0700
 In-Reply-To: <20210504171734.1434054-1-seanjc@google.com>
-Message-Id: <20210504171734.1434054-15-seanjc@google.com>
+Message-Id: <20210504171734.1434054-16-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210504171734.1434054-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
-Subject: [PATCH 14/15] KVM: x86: Tie Intel and AMD behavior for MSR_TSC_AUX to
- guest CPU model
+Subject: [PATCH 15/15] KVM: x86: Hide RDTSCP and RDPID if MSR_TSC_AUX probing failed
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -68,169 +67,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Squish the Intel and AMD emulation of MSR_TSC_AUX together and tie it to
-the guest CPU model instead of the host CPU behavior.  While not strictly
-necessary to avoid guest breakage, emulating cross-vendor "architecture"
-will provide consistent behavior for the guest, e.g. WRMSR fault behavior
-won't change if the vCPU is migrated to a host with divergent behavior.
+If probing MSR_TSC_AUX failed, hide RDTSCP and RDPID, and WARN if either
+feature was reported as supported.  In theory, such a scenario should
+never happen as both Intel and AMD state that MSR_TSC_AUX is available if
+RDTSCP or RDPID is supported.  But, KVM injects #GP on MSR_TSC_AUX
+accesses if probing failed, faults on WRMSR(MSR_TSC_AUX) may be fatal to
+the guest (because they happen during early CPU bringup), and KVM itself
+has effectively misreported RDPID support in the past.
 
-Note, the "new" kvm_is_supported_user_return_msr() checks do not add new
-functionality on either SVM or VMX.  On SVM, the equivalent was
-"tsc_aux_uret_slot < 0", and on VMX the check was buried in the
-vmx_find_uret_msr() call at the find_uret_msr label.
+Note, this also has the happy side effect of omitting MSR_TSC_AUX from
+the list of MSRs that are exposed to userspace if probing the MSR fails.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/include/asm/kvm_host.h |  5 +++++
- arch/x86/kvm/svm/svm.c          | 24 ----------------------
- arch/x86/kvm/vmx/vmx.c          | 15 --------------
- arch/x86/kvm/x86.c              | 36 +++++++++++++++++++++++++++++++++
- 4 files changed, 41 insertions(+), 39 deletions(-)
+ arch/x86/kvm/cpuid.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index a4b912f7e427..00fb9efb9984 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1782,6 +1782,11 @@ int kvm_add_user_return_msr(u32 msr);
- int kvm_find_user_return_msr(u32 msr);
- int kvm_set_user_return_msr(unsigned index, u64 val, u64 mask);
- 
-+static inline bool kvm_is_supported_user_return_msr(u32 msr)
-+{
-+	return kvm_find_user_return_msr(msr) >= 0;
-+}
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index c96f79c9fff2..bf0f74ce4974 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -567,6 +567,21 @@ void kvm_set_cpu_caps(void)
+ 		F(ACE2) | F(ACE2_EN) | F(PHE) | F(PHE_EN) |
+ 		F(PMM) | F(PMM_EN)
+ 	);
 +
- u64 kvm_scale_tsc(struct kvm_vcpu *vcpu, u64 tsc);
- u64 kvm_read_l1_tsc(struct kvm_vcpu *vcpu, u64 host_tsc);
- 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index de921935e8de..6c7c6a303cc5 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -2663,12 +2663,6 @@ static int svm_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 			msr_info->data |= (u64)svm->sysenter_esp_hi << 32;
- 		break;
- 	case MSR_TSC_AUX:
--		if (tsc_aux_uret_slot < 0)
--			return 1;
--		if (!msr_info->host_initiated &&
--		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
--		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
--			return 1;
- 		msr_info->data = svm->tsc_aux;
- 		break;
- 	/*
-@@ -2885,24 +2879,6 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
- 		svm->sysenter_esp_hi = guest_cpuid_is_intel(vcpu) ? (data >> 32) : 0;
- 		break;
- 	case MSR_TSC_AUX:
--		if (tsc_aux_uret_slot < 0)
--			return 1;
--
--		if (!msr->host_initiated &&
--		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
--		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
--			return 1;
--
--		/*
--		 * Per Intel's SDM, bits 63:32 are reserved, but AMD's APM has
--		 * incomplete and conflicting architectural behavior.  Current
--		 * AMD CPUs completely ignore bits 63:32, i.e. they aren't
--		 * reserved and always read as zeros.  Emulate AMD CPU behavior
--		 * to avoid explosions if the vCPU is migrated from an AMD host
--		 * to an Intel host.
--		 */
--		data = (u32)data;
--
- 		/*
- 		 * TSC_AUX is usually changed only during boot and never read
- 		 * directly.  Intercept TSC_AUX instead of exposing it to the
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 26f82f302391..d85ac5876982 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -1981,12 +1981,6 @@ static int vmx_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		else
- 			msr_info->data = vmx->pt_desc.guest.addr_a[index / 2];
- 		break;
--	case MSR_TSC_AUX:
--		if (!msr_info->host_initiated &&
--		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
--		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
--			return 1;
--		goto find_uret_msr;
- 	case MSR_IA32_DEBUGCTLMSR:
- 		msr_info->data = vmcs_read64(GUEST_IA32_DEBUGCTL);
- 		break;
-@@ -2302,15 +2296,6 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		else
- 			vmx->pt_desc.guest.addr_a[index / 2] = data;
- 		break;
--	case MSR_TSC_AUX:
--		if (!msr_info->host_initiated &&
--		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
--		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
--			return 1;
--		/* Check reserved bit, higher 32 bits should be zero */
--		if ((data >> 32) != 0)
--			return 1;
--		goto find_uret_msr;
- 	case MSR_IA32_PERF_CAPABILITIES:
- 		if (data && !vcpu_to_pmu(vcpu)->version)
- 			return 1;
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index adca491d3b4b..896127ea4d4f 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -1642,6 +1642,30 @@ static int __kvm_set_msr(struct kvm_vcpu *vcpu, u32 index, u64 data,
- 		 * invokes 64-bit SYSENTER.
- 		 */
- 		data = get_canonical(data, vcpu_virt_addr_bits(vcpu));
-+		break;
-+	case MSR_TSC_AUX:
-+		if (!kvm_is_supported_user_return_msr(MSR_TSC_AUX))
-+			return 1;
-+
-+		if (!host_initiated &&
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
-+			return 1;
-+
-+		/*
-+		 * Per Intel's SDM, bits 63:32 are reserved, but AMD's APM has
-+		 * incomplete and conflicting architectural behavior.  Current
-+		 * AMD CPUs completely ignore bits 63:32, i.e. they aren't
-+		 * reserved and always read as zeros.  Enforce Intel's reserved
-+		 * bits check if and only if the guest CPU is Intel, and clear
-+		 * the bits in all other cases.  This ensures cross-vendor
-+		 * migration will provide consistent behavior for the guest.
-+		 */
-+		if (guest_cpuid_is_intel(vcpu) && (data >> 32) != 0)
-+			return 1;
-+
-+		data = (u32)data;
-+		break;
- 	}
- 
- 	msr.data = data;
-@@ -1678,6 +1702,18 @@ int __kvm_get_msr(struct kvm_vcpu *vcpu, u32 index, u64 *data,
- 	if (!host_initiated && !kvm_msr_allowed(vcpu, index, KVM_MSR_FILTER_READ))
- 		return KVM_MSR_RET_FILTERED;
- 
-+	switch (index) {
-+	case MSR_TSC_AUX:
-+		if (!kvm_is_supported_user_return_msr(MSR_TSC_AUX))
-+			return 1;
-+
-+		if (!host_initiated &&
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
-+			return 1;
-+		break;
++	/*
++	 * Hide RDTSCP and RDPID if either feature is reported as supported but
++	 * probing MSR_TSC_AUX failed.  This is purely a sanity check and
++	 * should never happen, but the guest will likely crash if RDTSCP or
++	 * RDPID is misreported, and KVM has botched MSR_TSC_AUX emulation in
++	 * the past, e.g. the sanity check may fire if this instance of KVM is
++	 * running as L1 on top of an older, broken KVM.
++	 */
++	if (WARN_ON((kvm_cpu_cap_has(X86_FEATURE_RDTSCP) ||
++		     kvm_cpu_cap_has(X86_FEATURE_RDPID)) &&
++		     !kvm_is_supported_user_return_msr(MSR_TSC_AUX))) {
++		kvm_cpu_cap_clear(X86_FEATURE_RDTSCP);
++		kvm_cpu_cap_clear(X86_FEATURE_RDPID);
 +	}
-+
- 	msr.index = index;
- 	msr.host_initiated = host_initiated;
+ }
+ EXPORT_SYMBOL_GPL(kvm_set_cpu_caps);
  
 -- 
 2.31.1.527.g47e6f16901-goog
