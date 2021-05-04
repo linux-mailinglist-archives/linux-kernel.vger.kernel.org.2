@@ -2,214 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63CBA3732AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 01:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 734FC3732A9
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 01:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231214AbhEDXQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 19:16:39 -0400
-Received: from mout.gmx.net ([212.227.17.22]:58075 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229960AbhEDXQi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 19:16:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1620170131;
-        bh=iNvmekSG/CXCqHJ6AELO1RGvs+sqj7XiQLD/Px+qlxw=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=GQdb4CpOr/f4c0Q5cuFz9LGdn76Lb5jjfzQeo8tCuF70ErDc4SncGEo/HcSfAzR0s
-         /X2DOAT3UKxGla429tfBnPFqJNMiPKoXVatbITlAhTiWsnh7X1dC0elzE113mfPgu6
-         BGZTm94DJB+ltiWT5DR3uzS8vLFvdq8igzxryH2g=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.51] ([78.42.220.31]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MJE27-1ly5Bg2VBr-00KkPv; Wed, 05
- May 2021 01:15:31 +0200
-Subject: Re: [PATCH v3 2/4] tpm: Simplify locality handling
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
-        James.Bottomley@hansenpartnership.com, keescook@chromium.org,
-        jsnitsel@redhat.com, ml.linux@elloe.vision,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210501135727.17747-1-LinoSanfilippo@gmx.de>
- <20210501135727.17747-3-LinoSanfilippo@gmx.de> <YJAby8mmiJ74qWAh@kernel.org>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Message-ID: <6722bf6f-1a3f-ee9c-55e2-cf63c64266a9@gmx.de>
-Date:   Wed, 5 May 2021 01:15:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231182AbhEDXQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 19:16:31 -0400
+Received: from mail-bn7nam10on2080.outbound.protection.outlook.com ([40.107.92.80]:47729
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229960AbhEDXQ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 19:16:29 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OTQ5huxp3RslomJF2vwxlX0isdo5+QebggGZH3NzdpI1tbqX++WcrRlxwTpT/9j71F1NIYRsdVNaZFfPYUWsipmYA4r/n0UQhYvy8ueNG/CIWtYH1ST3d/EMny1+SowK4c1S6RdXJb0tq9w4dm79vv7unYtYHvlHjQLLH48rgBQMUAJQeF3Q6DvdmsliEDDuoIE9y98a2IUl3pUXXS+3IUh0xNHQfW10uXgHjCTkykDXgW623Z3gGHhWLMFc2EHy9baWEC+ekjXpX+Xjgw2U6VuHXRQESepVOhohxTI8TS4OMTBgZknDT3pGnss4AUkSgYatd/ykPkqvZK9Xum7Drw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cLArOltAOURLFEyuzKk6PJmJ0pfXnOd1SuIahF/sRjY=;
+ b=nUeI0tknk7LkUAmXGrnMqd8uNkKwLgzS2fsS+eVFOJ7EB/on8W1v0ANAHmkcuTT9saRar0LXjAg4N/S55PuBwhhNKJlC+ss7ENXn8osseAxyQh+MP+JDKjY1/xmlhheYJk3eMeObXhPDmL2eEPJFbwGZjUZFxm2tRdXuL2ZzoLYK329vz2qXaijg3kDpkgsw7TTMH/wJL5zlixj+ISQNepfHDXyDV5paZOZTDRYeEwTS9iRkqs53jQGe0fSNj9a19tKOW7UaMooLq9WyEK2g05NSfmjre1JSf2BGZDmBJNAf30vc/Npe0Y0MNnAQBlROzCRPiUTYA9qyTGBpLW59JA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cLArOltAOURLFEyuzKk6PJmJ0pfXnOd1SuIahF/sRjY=;
+ b=GxRbyVPgdwFtFgyoa4wQA4EGmiWBYPbCwRFPeyYyDyHnYYs/0SoQNe05NHcqaTQdCwt0MNwkNwSz+3DA00sgo2LL0XQRYLm/IMfzyp47L8kdCzbr9GOr5uncuADU3gd8QRy8ms1qHi0OWFPw9L/QyLZL1FGNJykfnzUnHjgjHQR5Crsi/G2a1pH7Qm+I3XhlTdJHHbwuqNQyDSlxmlqSzVk4h7gSXu+1gADhLaXgcFLtO74je+YNnHdnvsZGARjWvCxdxwJFW4gVkIAg36d6rqPXkokwhyZJdKHWkerXxPDDPsDszRX8hkW3qJeR5JvnOa3L1vc0r4xk/RL4YNAmCw==
+Authentication-Results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1658.namprd12.prod.outlook.com (2603:10b6:4:5::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4087.44; Tue, 4 May 2021 23:15:32 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4108.025; Tue, 4 May 2021
+ 23:15:32 +0000
+Date:   Tue, 4 May 2021 20:15:30 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210504231530.GE1370958@nvidia.com>
+References: <MWHPR11MB1886188698A6E20338196F788C469@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210422121020.GT1370958@nvidia.com>
+ <MWHPR11MB1886E688D2128C98A1F240B18C459@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210423114944.GF1370958@nvidia.com>
+ <MWHPR11MB18861FE6982D73AFBF173E048C439@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210426123817.GQ1370958@nvidia.com>
+ <MWHPR11MB188625137D5B7423822396C88C409@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210504084148.4f61d0b5@jacob-builder>
+ <20210504180050.GB1370958@nvidia.com>
+ <20210504151154.02908c63@jacob-builder>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210504151154.02908c63@jacob-builder>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: BL0PR0102CA0054.prod.exchangelabs.com
+ (2603:10b6:208:25::31) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <YJAby8mmiJ74qWAh@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:z8ssrqOzxZVuQxlXNTLwBYYL2DPZR4/MJpqRqYtpkSDKm8U6R21
- QoMfKmIDAfwjfDGgOBoJy40ubeSZS2PTb0MH+bCyCd8z5BCJm/ERS/v4WwIJUvU14dIrxAl
- INwOWVRtWfDt3fyXz1C8zsVSPxXTcZ4gcI4hqsiGEQ5DmSGdMt7t49ukkHCYhCix3oXMd/t
- Fup3D4NtuJ35pCuUtDElg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:8qBCPQngce8=:b+5/pJeWP50jDbX5RoAs9W
- aADz77oV1qPV3zKGClfPxFrEp3E/fv0y3zVy0LZwrSS4EU3/NJCOkL3P2RQxKcsiJ1b/rrZ/f
- PseyE/PThIj/AaKpw8x5x0S+t8tJaRi/8u1X9tD8J4lx7vNC+HherGWlsXvAhc2SxCk0ExLH+
- P40lU3c5lHvs3xViEhtTlWPTFdTIOy3zECnvq04jHJAYNKG1J3WJZrf/2azgOrnLXmNo95R5y
- tBRauuAHSi++f2bx59G4rnw7rr7UivzE3lJVG/FOSYCKM9Kim9oSvTi7kdsbZ7oDISI40btWQ
- eAjb8Drhjp3dfRb3Yi6vQ16GY23/LERIvrORDHQXJ7NUMi9gbK1dOtxi18HmyTreG5AuLu5K8
- zC+UOUDm5z+40kDiF3PKHEO6PTVcVTSmi5dCW0TmiB3184as4gcR0FPPRWnj1jBaEX0BtuS+C
- znWWD7VvRmILsRU8E1eptvn8occQQlQUVa2YH6IxRPHvQMzC/YjyQhXYhjlVzU9hbV2wzVw6O
- O7E0QMs3xO8lyXYqJdR/xASCFyLuR2l9mOeR613cWE1fzPRFEYk++QUgaAhYtC72RVNMs4sMh
- LeiPuW14GRJ1LD1TL4B/fWqlIVIaXokCEUhXXOnwq7IsKl7pMISJsF6+6otBphp15V5EIsq3X
- B7jJJwXw7M6FIvapeOPibT/vNw/dn55mioo2xYzE7tNnf8o4PZFaGQhxAUxuUxQj82u74XMfn
- J8YXr3kwgY4bwvQ4f+YGLwxEC9MCwpt5PdP5wfAp9r/YvkPpn0EH1JXWXGVno+YctFT/Ea/lQ
- pOhAZ3KuN7y7q7hJ9H8pHERnjo/CW5YwMko0D1osPjzNhMsoRK6TBpdXS0jyP15A93bpU4Bp2
- K02URKI9ci/iBTCnl4ex4ivyAfBfZFsSRlmhxySUeDOKTkeUrbnsH3Pb5Q9MOoqTkGxBARA+4
- iXc6fKx2hpZXw0wmXBqlY8JdkGGrMlYt0fkW71PQRoZkqdz6YgaRjvYp3nn+P8Hs1+VtQv4Hk
- IyU6wPi1AvmVxZ2KLlU4F/BUfGkWinpkf7z3nY5XDtmcdOV3gXceRhC8FBkNjhBv03jv6/ylA
- QccLPSyfp5IoEXXw53a8OLh7UbbGjv2gsU4gpmgKOut0puEyzt3GLbT0D+c2YXZVN3pvDyu1m
- XsnOf1NXGWMruQH9e7HfFQgdDwXhx1lJVZzbdOjilxZGBT5FnRlBpepZCMG8Ic35Nhyg6AQNK
- 6jtZs+6kK8oYlBfcP
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by BL0PR0102CA0054.prod.exchangelabs.com (2603:10b6:208:25::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.39 via Frontend Transport; Tue, 4 May 2021 23:15:32 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1le4GI-000qOA-6e; Tue, 04 May 2021 20:15:30 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5d9d8e17-2f0a-4243-25f3-08d90f5283d0
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1658:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB1658ED47CDF3FBCA857C7DEEC25A9@DM5PR12MB1658.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /CHyb4m2Q3REo1YpRVmj6fweVXDWgszW+hYPZ1sZyVC6aXSPKiMnIZkjGAotSaQ/E9awLZX5agP318Ir6KHkOkKdW3CmLpw0/1HpeVPtfcyEHLW3v6ui59gjwmxaGmc673qRPwB00ZCS6AhxHM7+6zPzZpZEQ2MGwWnX1zJPdXIKFiex7vekOBMr4hEAxja4POEHLHxsf/suZNaTkRjzVzaXs/USIj6lBWk3gHInDA7B3IUywwwG3zVWkpHlkDuCVy4iFeOU6AfWESt01+O/YkLfDx4dupsS75InWkac2qy+QxW2jO6m3ddtWGa33CgToIQUcRbnzqloEpAoicc8rpA3eYonsrtq8nmaTPsHL9pmQUBXiEw6UneWnyH/PqBcujq5RiYIUUksHMRQtaIDAiwGybeWO6z3gYJjeVZ5Va7iKJMVSXTuqxG2k9EC62lvop6ktU/eE3MG6L42J1+LOAHQvUdbUPNb4FVtpRb/IFZcHHg0ulkgbvYpSNgnH890S67bKYDbMjMOSCOARSJI4iqvHJSOl5VIkX35zOkFVjCyjPicy6lGWNpENdp2wEm18sd6jtCrce9x5C8bQiQbs2t73CnkvU+PWGz13Zjo6Is=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(366004)(136003)(396003)(38100700002)(83380400001)(26005)(9786002)(36756003)(9746002)(2906002)(33656002)(7416002)(66946007)(186003)(8676002)(4326008)(86362001)(478600001)(66476007)(2616005)(5660300002)(66556008)(6916009)(426003)(8936002)(1076003)(316002)(54906003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?mxm2q07Ue/iHOJ9eWwwdEFtTo32MOQjPguDAhqEIV9RA79x8P+Vp1rNGN1Y2?=
+ =?us-ascii?Q?RmUen59DvqV9zRpoIn1uFzjY1xgXLYy8cvv/z2547MlKUvLlhtyz8armXGhA?=
+ =?us-ascii?Q?DqRrWj0NVXQXvE9s6YeHzu8XDZHhPj0EgxEoC/Rhm4TCs8lCZLB4FNeuSJWn?=
+ =?us-ascii?Q?hfGS6LegTCtFVhlyVbdLxnp8z2XtPyTxqC0ZSxsHAD5Dd32VGAy9TEpvbd1K?=
+ =?us-ascii?Q?aPFk6g+nJYeLAxtH4lV2NTqbeSimeQjdKnLbNo7rgciZBzK1Sq9rL0+9gpH5?=
+ =?us-ascii?Q?ZSSjM2nlwkfU1KWjCsH4Q5shFyrSwHhZcd3EqW07cLKnFlhMZj1t5MOlrP3H?=
+ =?us-ascii?Q?69+Z9qzexQ4hE5XpP13GaNcfvT6fAVIp9N4T20SvggURzAlrzZziRr2GPoD1?=
+ =?us-ascii?Q?/MSbamgk3PXnVVORqhG1aXSsATqzoaXUlNsi7EuyZZq4COKvo5bqW9l2EWQL?=
+ =?us-ascii?Q?RSEF4b1kBLV9rtNNbMAYHSu8cAV5bk1jUgckfOa0AjJr880sgXrB6OWfuP1W?=
+ =?us-ascii?Q?JZPDj1PoMkoEapTdRNNAmFzX/HS34PhktieFaz0fLXwe7wwuf74RU8hmyW0I?=
+ =?us-ascii?Q?Mg0I7B8IgkIJs/Jypvb4N+r5x1t6QhAbp4LXHUGr/vS/KWHV/09r5dnpJ/rz?=
+ =?us-ascii?Q?Tj7IGEHsnggoGVRSMLtKerY8Lw07Fu3bUhn3iHXnC4OwyejU5BEcCtydgqla?=
+ =?us-ascii?Q?d1JUsQKNufy/ChH55jZ9MBlcz+xyUfWRlU5E2F2Ij92z6vU6hsEuSBP61+OZ?=
+ =?us-ascii?Q?wnXi9/MET24lORbo5xSvLfgREEERPIsIaVOGtK4p9thm3KbI9nIEpSL3w38/?=
+ =?us-ascii?Q?dZPln59KeaIRp7suUZfacEYevnq+vgfOsP2EgM+1gm+jjS14QsDxgxHPN9s/?=
+ =?us-ascii?Q?oed9sDs9YI1ARRIe6PQ+SeqhBOpqkbyrr13AQUE/l8C5CQKRlRoqxOSAFwkS?=
+ =?us-ascii?Q?aqlZD34resvybXX1FisVtYNtnMUC/IF1J7i37q+tjQnGhPD+XXCnbHL8lcpa?=
+ =?us-ascii?Q?etUFSGVgylfjEU+MVxiq1kFetxZYzeBu/7hF2IsKszzm9MN1NTx5qXFm3XwW?=
+ =?us-ascii?Q?+JyFI15UHhNzPgx03SgQUiq4GImuf64+McrLiTW8Cv3kt6ajhqB8HCkoro+o?=
+ =?us-ascii?Q?8ZLU5jHTlNpsaiDHq/3ExY38qm89Q5laAQJeXjiPnGKKj/CP2e812PyP1Wdh?=
+ =?us-ascii?Q?XRVtYQag4k0IqZC7Do1iBiTJf1TzMWOGP4FYIO2jw5Jx3IdlAk+I4BPcRSWk?=
+ =?us-ascii?Q?RwGWiKrb5IcvuVDEftr1sKU5rYFYTNuwruTzb85RNoQxXEir3axchL9NzSuZ?=
+ =?us-ascii?Q?Dk3+0Ab9x+SLjjTahshwtNaA?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5d9d8e17-2f0a-4243-25f3-08d90f5283d0
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 May 2021 23:15:32.6205
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YnHsjKekZ+EfgtzIHRMdn+L8MgkcUU7p6blpRW7fBAVg8Xct2NqqK9q9456CGJ6w
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1658
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, May 04, 2021 at 03:11:54PM -0700, Jacob Pan wrote:
 
-On 03.05.21 at 17:50, Jarkko Sakkinen wrote:
-> What the heck is "simplification" and what that has to do with fixing
-> anything? I don't understand your terminology.
+> > It is a weird way to use xarray to have a structure which
+> > itself is just a wrapper around another RCU protected structure.
+> > 
+> > Make the caller supply the ioasid_data memory, embedded in its own
+> > element, get rid of the void * and rely on XA_ZERO_ENTRY to hold
+> > allocated but not active entries.
+> > 
+> Let me try to paraphrase to make sure I understand. Currently
+> struct ioasid_data is private to the iasid core, its memory is allocated by
+> the ioasid core.
+> 
+> You are suggesting the following:
+> 1. make struct ioasid_data public
+> 2. caller allocates memory for ioasid_data, initialize it then pass it to
+> ioasid_alloc to store in the xarray
+> 3. caller will be responsible for setting private data inside ioasid_data
+> and do call_rcu after update if needed.
 
+Basically, but you probably won't need a "private data" once the
+caller has this struct as it can just embed it in whatever larger
+struct makes sense for it and use container_of/etc
 
-The intention for this patch is not to fix anything. Please read the cover
-letter and the commit message.
-This patch is about making the locality handling easier by not claiming/re=
-leasing
-it multiple times over the driver life time, but claiming it once at drive=
-r
-startup and only releasing it at driver shutdown.
+I didn't look too closely at the whole thing though. Honestly I'm a
+bit puzzled why we need a pluggable global allocator framework.. The
+whole framework went to some trouble to isolate everything into iommu
+drivers then that whole design is disturbed by this global thing.
 
-Right now we have locality request/release combos in
-
-- probe_itpm()
-- tpm_tis_gen_interrupt()
-- tpm_tis_core_init()
-- tpm_chip_start()
-
-and there is still one combo missing for
-
-- tpm2_get_timeouts()
-
-which is the reason why we get the "TPM returned invalid status" bug in ca=
-se
-of TPM2 (and this is the bug which is _incidentally_ fixed by this patch, =
-see
-below).
-
-And if we are going to enable interrupts, we have to introduce yet another=
- combo,
-for accessing the status register in the interrupt handler, since TPM 2.0
-requires holding the locality for writing to the status register. That mak=
-es
-6 different code places in which we take and release the locality.
-
-With this patch applied we only take the locality at one place. Furthermor=
-e
-with interrupts enabled we dont have to claim the locality for each handle=
-r
-execution, saving us countless claim/release combinations at runtime.
-
-Hence the term "simplification" which is perfectly justified IMO.
-
-So again, this patch is "only" in preparation for the next patch when inte=
-rrupts
-are actually enabled and we would have to take the locality in the interru=
-pt
-handler without this patch.
-
-
-
-> On Sat, May 01, 2021 at 03:57:25PM +0200, Lino Sanfilippo wrote:
-
->> WARNING: CPU: 0 PID: 874 at drivers/char/tpm/tpm_tis_core.c:249 tpm_tis=
-_status+0xbc/0xc8 [tpm_tis_core]
->> Modules linked in: tpm_tis_spi tpm_tis_core tpm sha256_generic cfg80211=
- rfkill 8021q garp stp llc spidev v3d gpu_sched vc4 bcm2835_codec(C) cec r=
-aspberrypi_hwmon drm_kms_helper drm bcm2835_isp(C) v4l2_mem2mem bcm2835_v4=
-l2(C) bcm2835_mmal_vchiq(C) videobuf2_vmalloc videobuf2_dma_contig snd_bcm=
-2835(C) videobuf2_memops drm_panel_orientation_quirks videobuf2_v4l2 video=
-buf2_common snd_soc_core snd_compress videodev snd_pcm_dmaengine spi_bcm28=
-35 snd_pcm mc vc_sm_cma(C) snd_timer snd syscopyarea rpivid_mem sysfillrec=
-t sysimgblt fb_sys_fops backlight uio_pdrv_genirq uio ip_tables x_tables i=
-pv6 [last unloaded: tpm]
->> CPU: 0 PID: 874 Comm: kworker/u8:1 Tainted: G        WC        5.11.0-r=
-c2-LS-HOME+ #1
->> Hardware name: Raspberry Pi Compute Module 4 Rev 1.0 (DT)
->> Workqueue: events_unbound async_run_entry_fn
->> pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=3D--)
->> pc : tpm_tis_status+0xbc/0xc8 [tpm_tis_core]
->> lr : tpm_tis_status+0xbc/0xc8 [tpm_tis_core]
->> sp : ffffffc0127e38f0
->> x29: ffffffc0127e38f0 x28: ffffffc011238000
->> x27: 0000000000000016 x26: 000000000000017a
->> x25: 0000000000000014 x24: ffffff8047f60000
->> x23: 0000000000000000 x22: 0000000000000016
->> x21: ffffff8044e8a480 x20: 0000000000000000
->> x19: ffffffc011238000 x18: ffffffc011238948
->> x17: 0000000000000000 x16: 0000000000000000
->> x15: ffffffc01141be81 x14: ffffffffffffffff
->> x13: ffffffc01141be7e x12: ffffffffffffffff
->> x11: ffffff807fb797f0 x10: 00000000000019b0
->> x9 : ffffffc0127e38f0 x8 : 766e692064656e72
->> x7 : 0000000000000000 x6 : ffffffc011239000
->> x5 : ffffff807fb628b8 x4 : 0000000000000000
->> x3 : 0000000000000027 x2 : 0000000000000000
->> x1 : 6818b6f22fdef800 x0 : 0000000000000000
->> Call trace:
->> tpm_tis_status+0xbc/0xc8 [tpm_tis_core]
->> tpm_tis_send_data+0x58/0x250 [tpm_tis_core]
->> tpm_tis_send_main+0x50/0x128 [tpm_tis_core]
->> tpm_tis_send+0x4c/0xe0 [tpm_tis_core]
->> tpm_transmit+0xd0/0x350 [tpm]
->> tpm_transmit_cmd+0x3c/0xc0 [tpm]
->> tpm2_get_tpm_pt+0x124/0x1e8 [tpm]
->> tpm_tis_probe_irq_single+0x198/0x364 [tpm_tis_core]
->> tpm_tis_core_init+0x304/0x520 [tpm_tis_core]
->> tpm_tis_spi_init+0x5c/0x78 [tpm_tis_spi]
->> tpm_tis_spi_probe+0x80/0x98 [tpm_tis_spi]
->> tpm_tis_spi_driver_probe+0x4c/0x60 [tpm_tis_spi]
->> spi_probe+0x84/0xf0
->> really_probe+0x118/0x420
->> driver_probe_device+0x5c/0xc0
->> __driver_attach_async_helper+0x64/0x68
->> async_run_entry_fn+0x48/0x150
->> process_one_work+0x15c/0x4d0
->> worker_thread+0x50/0x490
->> kthread+0x118/0x150
->> ret_from_fork+0x10/0x1c
->>
->> The reason for this issue is that in case of TPM 2 function
->> tpm2_get_timeouts() which executes a TPM command is called without a
->> claimed locality. Since with this patch the locality is taken once at
->> driver startup and never released before shutdown the issue does not oc=
-cur
->> any more.
->
-> Please rather create fix that fixes the issue exactly in the code path.
-> I don't want to worry what other things this might do "as a side-effect"=
-.
-
-As explained above this patch is not meant to fix a bug in the first place
-but rather fixes the bug above incidentally by the locality handling reimp=
-lementation.
-
-> Also, lacks the explanation why this patch fixes the issue.
->
-
-The explanation is there:
-
-"The reason for this issue is that in case of TPM 2 function
- tpm2_get_timeouts() which executes a TPM command is called without a
- claimed locality. Since with this patch the locality is taken once at
- driver startup and never released before shutdown the issue does not occu=
-r
- any more."
-
-I really dont know how to describe this more clear.
-
-
-Lino
+Jason
