@@ -2,76 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11765372ABC
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2261372AC3
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:16:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230525AbhEDNOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 09:14:50 -0400
-Received: from www.zeus03.de ([194.117.254.33]:56076 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230373AbhEDNOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 09:14:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=k1; bh=GFuxb+FJN/AYzzgtfECzX4ROXxl
-        7i8ecaGDmCKA2E3k=; b=ep2Pkl5gQ029j/pDjbGy4j0oE7NLVRHkI8c312y53/M
-        9bYxcdpfqFEDZr2N1IP7wrFU2EgpX3t2rk91B8cUsJNPnHiMAC6aQJLVN/vHWyvC
-        FBr5R2xAqM13Cc4eutQHPOcn0q0YLMUSzQp2jr/xzqWeYaO+o8X3EQfstB94F0v0
-        =
-Received: (qmail 1372248 invoked from network); 4 May 2021 15:13:52 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 4 May 2021 15:13:52 +0200
-X-UD-Smtp-Session: l3s3148p1@XRl/2YDBIo0gAwDPXxOMAJUzfx/HAvHg
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH v2] debugfs: only accept read attributes for blobs
-Date:   Tue,  4 May 2021 15:13:49 +0200
-Message-Id: <20210504131350.46586-1-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.30.0
+        id S231131AbhEDNRC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 4 May 2021 09:17:02 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2993 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230373AbhEDNRA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 09:17:00 -0400
+Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FZKnd07R0z6xhr1;
+        Tue,  4 May 2021 21:05:09 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 4 May 2021 15:16:03 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
+ Tue, 4 May 2021 15:16:03 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        "mjg59@google.com" <mjg59@google.com>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v5 06/12] evm: Ignore INTEGRITY_NOLABEL/INTEGRITY_NOXATTRS
+ if conditions are safe
+Thread-Topic: [PATCH v5 06/12] evm: Ignore
+ INTEGRITY_NOLABEL/INTEGRITY_NOXATTRS if conditions are safe
+Thread-Index: AQHXK5xdbQY13c/E0Ea5lrgi3mZG3arQ6VCAgAChtnCAAGkoMP//5ewAgAGXDOA=
+Date:   Tue, 4 May 2021 13:16:03 +0000
+Message-ID: <1869963c94574fd1b026b304acdd308e@huawei.com>
+References: <20210407105252.30721-1-roberto.sassu@huawei.com>
+         <20210407105252.30721-7-roberto.sassu@huawei.com>
+         <b8790b57e289980d4fe1133d15203ce016d2319d.camel@linux.ibm.com>
+         <c12f18094cc0479faa3f0f152b4964de@huawei.com>
+         <33cad84d2f894ed5a05a3bd6854f73a0@huawei.com>
+ <a2ca7317b672c63a40743268b641dd73661c3329.camel@linux.ibm.com>
+In-Reply-To: <a2ca7317b672c63a40743268b641dd73661c3329.camel@linux.ibm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.221.98.153]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Blobs can only be read. So, keep only 'read' file attributes because the
-others will not work and only confuse users.
+> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> Sent: Monday, May 3, 2021 4:35 PM
+> On Mon, 2021-05-03 at 14:15 +0000, Roberto Sassu wrote:
+> 
+> > > > >  	if (evm_status != INTEGRITY_PASS)
+> > > > >  		integrity_audit_msg(AUDIT_INTEGRITY_METADATA,
+> > > > d_backing_inode(dentry),
+> > > > >  				    dentry->d_name.name,
+> > > > "appraise_metadata",
+> > > > > @@ -515,7 +535,8 @@ int evm_inode_setattr(struct dentry *dentry,
+> > > struct
+> > > > iattr *attr)
+> > > > >  		return 0;
+> > > > >  	evm_status = evm_verify_current_integrity(dentry);
+> > > > >  	if ((evm_status == INTEGRITY_PASS) ||
+> > > > > -	    (evm_status == INTEGRITY_NOXATTRS))
+> > > > > +	    (evm_status == INTEGRITY_NOXATTRS) ||
+> > > > > +	    (evm_ignore_error_safe(evm_status)))
+> > > >
+> > > > It would also remove the INTEGRITY_NOXATTRS test duplication here.
+> > >
+> > > Ok.
+> >
+> > Actually, it does not seem a duplication. Currently, INTEGRITY_NOXATTRS
+> > is ignored also when the HMAC key is loaded.
+> 
+> The existing INTEGRITY_NOXATTRS exemption is more general and includes
+> the new case of when EVM HMAC is disabled.  The additional exemption is
+> only needed for INTEGRITY_NOLABEL, when EVM HMAC is disabled.
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
----
+Unfortunately, evm_ignore_error_safe() is called by both evm_protect_xattr()
+and evm_inode_setattr(). The former requires an exemption also for
+INTEGRITY_NOXATTRS.
 
-Changes since v1:
-* use octal permissions
-* fix space before tab issue :(
+I would keep the function as it is. In the worst case, when the status is
+INTEGRITY_NOXATTRS in evm_inode_setattr(), the function will not
+be called.
 
- fs/debugfs/file.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Roberto
 
-diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
-index 686e0ad28788..fe545c8d5ccb 100644
---- a/fs/debugfs/file.c
-+++ b/fs/debugfs/file.c
-@@ -890,7 +890,8 @@ static const struct file_operations fops_blob = {
- /**
-  * debugfs_create_blob - create a debugfs file that is used to read a binary blob
-  * @name: a pointer to a string containing the name of the file to create.
-- * @mode: the permission that the file should have
-+ * @mode: the read permission that the file should have (other permissions are
-+ *	  masked out)
-  * @parent: a pointer to the parent dentry for this file.  This should be a
-  *          directory dentry if set.  If this parameter is %NULL, then the
-  *          file will be created in the root of the debugfs filesystem.
-@@ -914,7 +915,7 @@ struct dentry *debugfs_create_blob(const char *name, umode_t mode,
- 				   struct dentry *parent,
- 				   struct debugfs_blob_wrapper *blob)
- {
--	return debugfs_create_file_unsafe(name, mode, parent, blob, &fops_blob);
-+	return debugfs_create_file_unsafe(name, mode & 0444, parent, blob, &fops_blob);
- }
- EXPORT_SYMBOL_GPL(debugfs_create_blob);
- 
--- 
-2.30.0
-
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Li Jian, Shi Yanli
