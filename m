@@ -2,63 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5B3D373162
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEABD373165
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232702AbhEDU1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 16:27:35 -0400
-Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:47982 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231989AbhEDU1c (ORCPT
+        id S232819AbhEDU3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 16:29:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21078 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231989AbhEDU3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 16:27:32 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d69 with ME
-        id 0kSX2500121Fzsu03kSXNL; Tue, 04 May 2021 22:26:35 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 04 May 2021 22:26:35 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     b-liu@ti.com, gregkh@linuxfoundation.org, matthias.bgg@gmail.com,
-        min.guo@mediatek.com, yonglong.wu@mediatek.com
-Cc:     linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] usb: musb: Fix an error message
-Date:   Tue,  4 May 2021 22:26:29 +0200
-Message-Id: <69f514dc7134e3c917cad208e73cc650cb9e2bd6.1620159879.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Tue, 4 May 2021 16:29:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620160092;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FbsHJVMfILlnS5Wi41hoQHAxs4c8Dc+Z1Og1/gTmS3c=;
+        b=J7v0LT2wOO+CQELf7onYGMi57UtUIMnWBfIqSD6eRYFQSnCD/wxMc/dfebnyNO3D1z6ZRU
+        oASaP1yJ60KhHjZJGKO4SQGHP7GiTZm9axQ0mlFTTXLe5u9EIo5E5T3I0VdktTW6h5HDuh
+        cM2XD4JwTYVMo5K/u9MhoiyNtPuQLB0=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-20-3-S3cgCrP4y0NjspdfNgTg-1; Tue, 04 May 2021 16:28:08 -0400
+X-MC-Unique: 3-S3cgCrP4y0NjspdfNgTg-1
+Received: by mail-ej1-f71.google.com with SMTP id r18-20020a1709069592b029039256602ce8so3607982ejx.1
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 13:28:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FbsHJVMfILlnS5Wi41hoQHAxs4c8Dc+Z1Og1/gTmS3c=;
+        b=Xw606w7PJHUlMBixoXvo6V8tLzt4k59xUt65JyCUeS3Kns+Pzb+L0FI3abNcDgiSbI
+         MvNQELnTVUyzZf64G8nmkLptv1W8/QSfa16mVSoiArnWuRs1PPJzsXctME40mHM6HlPM
+         7sJ4pg7zyNTV9ZAeRcfSm8aPTzkyryAOD4j9P4hNopG0kmVQtn1nuF7MCUmvWRlFNyaV
+         frnwtolS7Cy+oa8D6+vBQ3cFxcpIkdXER+cOdK0YSQ55MJgVOPy01hLvT9kCJOsDKdNd
+         tOZZJj+e+PFMRhdOXerV6sAbM/nB4CkTHUeJUyOjkP6tGnbh6QcsPaZTnOXtpcfvncC8
+         7iwA==
+X-Gm-Message-State: AOAM530TbhCGMQV+9SCFw7+emWtjZ6lhEgJLyCDyXu7qtmhB+XFTWNWF
+        +8DRo0idB97yZoWIoEV1oMR5sfm6Kn/yaNQbxklvUnpzlZiuSpiMoVv08rTlOgBFAkOpHf0SXKd
+        7B6IQx6vGOWjNGKNyGc100iLD
+X-Received: by 2002:a17:906:414d:: with SMTP id l13mr23123481ejk.527.1620160087433;
+        Tue, 04 May 2021 13:28:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxl5vGIFlk8ABdz+SL+2HU6NV1sbi8oeO0R+cNsAQCQnnpf/2epVEQ5+x0V5jftLyZ2SiwKrA==
+X-Received: by 2002:a17:906:414d:: with SMTP id l13mr23123463ejk.527.1620160087260;
+        Tue, 04 May 2021 13:28:07 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id c7sm6558812ede.37.2021.05.04.13.28.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 May 2021 13:28:06 -0700 (PDT)
+Subject: Re: [PATCH v3 2/2] KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS
+ hypercall
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        srutherford@google.com, joro@8bytes.org, brijesh.singh@amd.com,
+        thomas.lendacky@amd.com, ashish.kalra@amd.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org
+References: <20210429104707.203055-1-pbonzini@redhat.com>
+ <20210429104707.203055-3-pbonzini@redhat.com> <YIxkTZsblAzUzsf7@google.com>
+ <c4bf8a05-ec0d-9723-bb64-444fe1f088b5@redhat.com>
+ <YJF/3d+VBfJKqXV4@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f7300393-6527-005f-d824-eed5f7f2f8a8@redhat.com>
+Date:   Tue, 4 May 2021 22:27:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YJF/3d+VBfJKqXV4@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'ret' is known to be 0 here.
-Initialize 'ret' with the expected error code before using it.
+On 04/05/21 19:09, Sean Christopherson wrote:
+> On Sat, May 01, 2021, Paolo Bonzini wrote:
+>> - make it completely independent from migration, i.e. it's just a facet of
+>> MSR_KVM_PAGE_ENC_STATUS saying whether the bitmap is up-to-date.  It would
+>> use CPUID bit as the encryption status bitmap and have no code at all in KVM
+>> (userspace needs to set up the filter and implement everything).
+> 
+> If the bit is purely a "page encryption status is up-to-date", what about
+> overloading KVM_HC_PAGE_ENC_STATUS to handle that status update as well?   That
+> would eliminate my biggest complaint about having what is effectively a single
+> paravirt feature split into two separate, but intertwined chunks of ABI.
 
-Fixes: 0990366bab3c ("usb: musb: Add support for MediaTek musb controller")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/usb/musb/mediatek.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It's true that they are intertwined, but I dislike not having a way to 
+read the current state.
 
-diff --git a/drivers/usb/musb/mediatek.c b/drivers/usb/musb/mediatek.c
-index eebeadd26946..6b92d037d8fc 100644
---- a/drivers/usb/musb/mediatek.c
-+++ b/drivers/usb/musb/mediatek.c
-@@ -518,8 +518,8 @@ static int mtk_musb_probe(struct platform_device *pdev)
- 
- 	glue->xceiv = devm_usb_get_phy(dev, USB_PHY_TYPE_USB2);
- 	if (IS_ERR(glue->xceiv)) {
--		dev_err(dev, "fail to getting usb-phy %d\n", ret);
- 		ret = PTR_ERR(glue->xceiv);
-+		dev_err(dev, "fail to getting usb-phy %d\n", ret);
- 		goto err_unregister_usb_phy;
- 	}
- 
--- 
-2.30.2
+Paolo
+
+> 
+> #define KVM_HC_PAGE_ENC_UPDATE		12
+> 
+> #define KVM_HC_PAGE_ENC_REGION_UPDATE	0 /* encrypted vs. plain text */
+> #define KVM_HC_PAGE_ENC_STATUS_UPDATE	1 /* up-to-date vs. stale */
+> 
+> 		ret = -KVM_ENOSYS;
+> 		if (!vcpu->kvm->arch.hypercall_exit_enabled)
+> 		        break;
+> 
+> 		ret = -EINVAL;
+> 		if (a0 == KVM_HC_PAGE_ENC_REGION_UPDATE) {
+> 			u64 gpa = a1, npages = a2;
+> 
+> 			if (!PAGE_ALIGNED(gpa) || !npages ||
+> 			    gpa_to_gfn(gpa) + npages <= gpa_to_gfn(gpa))
+> 				break;
+> 		} else if (a0 != KVM_HC_PAGE_ENC_STATUS_UPDATE) {
+> 			break;
+> 		}
+> 
+> 		vcpu->run->exit_reason        = KVM_EXIT_HYPERCALL;
+> 		vcpu->run->hypercall.nr       = KVM_HC_PAGE_ENC_STATUS;
+> 		vcpu->run->hypercall.args[0]  = a0;
+> 		vcpu->run->hypercall.args[1]  = a1;
+> 		vcpu->run->hypercall.args[2]  = a2;
+> 		vcpu->run->hypercall.args[3]  = a3;
+> 		vcpu->run->hypercall.longmode = op_64_bit;
+> 		vcpu->arch.complete_userspace_io = complete_hypercall_exit;
+> 		return 0;
+> 
 
