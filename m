@@ -2,151 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E13CA3723D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 02:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA5323723DA
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 02:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbhEDASq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 20:18:46 -0400
-Received: from mail-bn8nam11on2080.outbound.protection.outlook.com ([40.107.236.80]:39639
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229497AbhEDASp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 20:18:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F2ZNNiAO35cwyzZzHxABtDyaEHVhD+uLeqxL4UvzkrI4mBNBl9KkHWeiFxcibsk187SJYSr2dI392d8rXLQRyfnCiXk+81ZcupDYFVu/u+iQFAGSVB03zIyy4lcY1vm0+rnQut2FdsPIFBxCyqUyJniuAvGGReGX7Et8F96tf492bN+bFvWGvscAw2h1pA7+U1LBiktEHf9ZTUGyVyEzuKUh4WJFBhSZjkuSkJ6/EDo/DzrG3V3F2Iw5cEBWGRbiRvpP4BIKh0at8xY0LwdJ03rqGj54hyIQmdavwNF8ownkjTLHrGIviF92q51IODjKnPN8321Mbgv6cc+WhT7OTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ugz+igUYvCk7BaSK/WNdNeraISwlgXmTyzLgvvzUbnU=;
- b=MZT7FNqTfgr0FJ4fhar13O8x1RBl+aqycXzlBgz58E9lbbx4Xi/unri571D3ggOFkHCCpptLBXuMNNPbdOAqoDj2JgqwvtD0MiXe8KAZAzFBdFMs5ATbR9v9sa70/Y07BA+MvmBcAQjAjIS9aoBKmQnySvPDzy0p3oFq2Q9N96aLA+JU+rZXfdPoySDFzvfMItk/lsNB4dnA6YGip9nxE0O39R0iKkCltlA0AKJ+4Eleu/AS+Y/BjXlr4Wq61L+idBOVTM+6L5JACS/cwdjW7K75LyqkB9cxGZ9t45aF0boJPxqHlxW7PIOajzUZwhs95hr/TZl49K/GUAML7Dxucg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=raithlin.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ugz+igUYvCk7BaSK/WNdNeraISwlgXmTyzLgvvzUbnU=;
- b=OlZTKYPn79aecCTchVHZ5mWH2K7RNpU0IiJx2LQyEidtnfZ+RAf6Ub87X/NxPt5DCt4+dECELyU6CBlEn7aNj4yF0ClhABkvcIBn0soeKYckbZ6Cb379ni0CWq0mAE4ih0ek0ezSviVl39Hr+c1JkA6wExXSvdNwPW4DUX3dpndhPd3YQBwnNx3/HAj9O4kTVdOmiaKmwony6/G+FH5E9alGJlsA3ESoOmMt1+PFhjzG/Pazm0ckMVZz18XRwyFsgGrq6p0dMiFSwx67nNwApj5ycrZkcqlnKxSipS2VhdgocR8Pp0RJsSaQ80ZpDyNlkK9QOQQ4+CF4y+AfRejIwA==
-Received: from BN1PR13CA0017.namprd13.prod.outlook.com (2603:10b6:408:e2::22)
- by MN2PR12MB4485.namprd12.prod.outlook.com (2603:10b6:208:269::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.25; Tue, 4 May
- 2021 00:17:49 +0000
-Received: from BN8NAM11FT005.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:e2:cafe::d4) by BN1PR13CA0017.outlook.office365.com
- (2603:10b6:408:e2::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.8 via Frontend
- Transport; Tue, 4 May 2021 00:17:49 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; raithlin.com; dkim=none (message not signed)
- header.d=none;raithlin.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT005.mail.protection.outlook.com (10.13.176.69) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4087.27 via Frontend Transport; Tue, 4 May 2021 00:17:49 +0000
-Received: from [10.2.50.162] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 4 May
- 2021 00:17:48 +0000
-Subject: Re: [PATCH 12/16] nvme-pci: Check DMA ops when indicating support for
- PCI P2PDMA
-To:     Logan Gunthorpe <logang@deltatee.com>,
-        <linux-kernel@vger.kernel.org>, <linux-nvme@lists.infradead.org>,
-        <linux-block@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-mm@kvack.org>, <iommu@lists.linux-foundation.org>
-CC:     Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>
-References: <20210408170123.8788-1-logang@deltatee.com>
- <20210408170123.8788-13-logang@deltatee.com>
- <f8bdf85c-2302-890e-7f77-e11fe6f29d6e@nvidia.com>
- <f33a9cff-82d0-7a05-070a-8c6018fbaba9@deltatee.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <db17d695-eab8-9078-4878-dcc0ece94d23@nvidia.com>
-Date:   Mon, 3 May 2021 17:17:48 -0700
+        id S229662AbhEDAUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 20:20:23 -0400
+Received: from gateway21.websitewelcome.com ([192.185.45.212]:45687 "EHLO
+        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229602AbhEDAUW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 20:20:22 -0400
+Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
+        by gateway21.websitewelcome.com (Postfix) with ESMTP id 89B8D400D9C18
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 19:19:26 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id dimcl80aM1cHedimcl6es9; Mon, 03 May 2021 19:19:26 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Ig3CIZ/xmFOthwSo8EhRMfGFFJSSDrU9KPABQLO3bKw=; b=aCCPuf0rrTzuThkDJZ/b5GIA2p
+        s3MQoip/HAnHcpu36zFanRHfJXuAHeS6aNB9xrUMOK5rgw8MyAPB201Dr3d06X7pXcBM9Q9hy7ZI7
+        xKxTWvkiZMVPuBDthn4XqnCAaLAJ6+Z9DVE5wzUlBr1qANp3JTjQzVS8JkxlbH/gcZ08vasjhcG8K
+        A3CHwZX3Jf5f+UERSOTEUEIfNWsyNJQeSv9EvDRIPmGtzNimjj1p5B/wkZndMaD32Bf2EPnHFT+bu
+        avcZ8lyKUB/a94W4ZbnUq6GExQIBu0eYQPLzmVEn1Kr9/huDBUhkoMdgqL8l+LjrBNxNYD1/x+C3d
+        9VFynPOA==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:48728 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1ldimZ-001mFB-0t; Mon, 03 May 2021 19:19:23 -0500
+Subject: Re: [PATCH v3][next] scsi: aacraid: Replace one-element array with
+ flexible-array member
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
+References: <20210421185611.GA105224@embeddedor>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <d26823dd-5248-4965-cc30-f9e6294536ee@embeddedor.com>
+Date:   Mon, 3 May 2021 19:19:25 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <f33a9cff-82d0-7a05-070a-8c6018fbaba9@deltatee.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20210421185611.GA105224@embeddedor>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d5974555-58c3-4bc7-9f0b-08d90e920cf2
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4485:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB44853158E94A56267F464DF4A85A9@MN2PR12MB4485.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rm8FiZXipicfTDHKIDf/22Z84PCY5NzoV4u+ZBZmuIY5xxTEJFqaoj75DHbAhL2jP6oIKBWPjBaXWNGqp6WU6ox4jVKYRcVp7RAs/UW4qLm9xUTcQdu8vnG8ov9b74WLd3Mmg5dow4iCY5nD6L6bPowK8cVxUwzMlNypkNeH/QIlAZEW0iI0ppPCFl9ad7xbCRz+sT+d17aZevApZTIMJOim4X4O5HdjrjWq7KmITiAI5dfA/Mf7s5c1kDxTMlNb5HTs+B4k4WCA1BD1QbTkuZNavoMVHavI2YuYz8493L24EldJanK90crY1cQ8/Q+K6ztIXI+uAnTbtIsIbyjChquuauupxJ3izHtCGfYGr/KSZJkrAlyO9pRJKnbvixx9XkX6wNZUkxMyPAmTR/+Q8CLJkltXBsPWlzryaeoHhmxIUNFCi9gvZ6fgG7nSpQU9dfCnpZXapHSS1CSP2u+q+7TJJyDal7/4ELvy7wKOW7wbThzOjqRrXGraM+TT8o/YX2NOF2iDic+kuBQjlGRrRQOGpzKJ5694g8K5kCH1uLlu7Cn93BSsfilT8fWphvpN56I3sC8x9REalX2/JCO50fI+zcnzqYY9AjOAtSd3e16RWM7LKTF9nUi+OYDlgFOY9RUDAX8prTqmM3QK3tKo0dG3Wn0lvKZjhqxWofTtR1Mz2WFWboKf4NochLtiZ2d+aCI5uEbjf+g6q3mi1TaIvQ==
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(39860400002)(346002)(46966006)(36840700001)(47076005)(83380400001)(70586007)(86362001)(82740400003)(16526019)(2616005)(54906003)(2906002)(36906005)(4326008)(36860700001)(356005)(426003)(70206006)(31686004)(5660300002)(7416002)(8676002)(336012)(7636003)(478600001)(26005)(110136005)(53546011)(8936002)(16576012)(31696002)(186003)(82310400003)(36756003)(316002)(43740500002)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 May 2021 00:17:49.2598
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d5974555-58c3-4bc7-9f0b-08d90e920cf2
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT005.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4485
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1ldimZ-001mFB-0t
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:48728
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 6
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/3/21 10:17 AM, Logan Gunthorpe wrote:
-...
->>>    	blk_queue_flag_set(QUEUE_FLAG_NONROT, ns->queue);
->>> -	if (ctrl->ops->flags & NVME_F_PCI_P2PDMA)
->>> +	if (ctrl->ops->supports_pci_p2pdma &&
->>> +	    ctrl->ops->supports_pci_p2pdma(ctrl))
->>
->> This is a little excessive, as I suspected. How about providing a
->> default .supports_pci_p2pdma routine that returns false, so that
->> the op is always available (non-null)? By "default", maybe that
->> means either requiring an init_the_ops_struct() routine to be
->> used, and/or checking all the users of struct nvme_ctrl_ops.
-> 
-> Honestly that sounds much more messy to me than simply checking if it's
-> NULL before using it (which is a common, accepted pattern for ops).
+Hi Martin,
 
-OK, it's a minor suggestion, so feel free to ignore if you prefer it
-the other way, sure.
+Friendly ping: could you take this patch, please? :)
 
-> 
->> Another idea: maybe you don't really need a bool .supports_pci_p2pdma()
->> routine at all, because the existing .flags really is about right.
->> You just need the flags to be filled in dynamically. So, do that
->> during nvme_pci setup/init time: that's when this module would call
->> dma_pci_p2pdma_supported().
-> 
-> If the flag is filled in dynamically, then the ops struct would have to
-> be non-constant. Ops structs should be constant for security reasons.
-> 
+Thanks!
+--
+Gustavo
 
-Hadn't thought about keeping ops structs constant. OK.
-
-thanks,
--- 
-John Hubbard
-NVIDIA
+On 4/21/21 13:56, Gustavo A. R. Silva wrote:
+> There is a regular need in the kernel to provide a way to declare having
+> a dynamically sized set of trailing elements in a structure. Kernel code
+> should always use “flexible array members”[1] for these cases. The older
+> style of one-element or zero-length arrays should no longer be used[2].
+> 
+> Refactor the code according to the use of a flexible-array member in
+> struct aac_raw_io2 instead of one-element array, and use the
+> struct_size() helper.
+> 
+> Also, this helps with the ongoing efforts to enable -Warray-bounds by
+> fixing the following warnings:
+> 
+> drivers/scsi/aacraid/aachba.c: In function ‘aac_build_sgraw2’:
+> drivers/scsi/aacraid/aachba.c:3970:18: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
+>  3970 |     if (rio2->sge[j].length % (i*PAGE_SIZE)) {
+>       |         ~~~~~~~~~^~~
+> drivers/scsi/aacraid/aachba.c:3974:27: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
+>  3974 |     nseg_new += (rio2->sge[j].length / (i*PAGE_SIZE));
+>       |                  ~~~~~~~~~^~~
+> drivers/scsi/aacraid/aachba.c:4011:28: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
+>  4011 |   for (j = 0; j < rio2->sge[i].length / (pages * PAGE_SIZE); ++j) {
+>       |                   ~~~~~~~~~^~~
+> drivers/scsi/aacraid/aachba.c:4012:24: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
+>  4012 |    addr_low = rio2->sge[i].addrLow + j * pages * PAGE_SIZE;
+>       |               ~~~~~~~~~^~~
+> drivers/scsi/aacraid/aachba.c:4014:33: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
+>  4014 |    sge[pos].addrHigh = rio2->sge[i].addrHigh;
+>       |                        ~~~~~~~~~^~~
+> drivers/scsi/aacraid/aachba.c:4015:28: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
+>  4015 |    if (addr_low < rio2->sge[i].addrLow)
+>       |                   ~~~~~~~~~^~~
+> 
+> [1] https://en.wikipedia.org/wiki/Flexible_array_member
+> [2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
+> 
+> Link: https://github.com/KSPP/linux/issues/79
+> Link: https://github.com/KSPP/linux/issues/109
+> Build-tested-by: kernel test robot <lkp@intel.com>
+> Link: https://lore.kernel.org/lkml/60414244.ur4%2FkI+fBF1ohKZs%25lkp@intel.com/
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+> Changes in v3:
+>  - Use (nseg_new-1)*sizeof(struct sge_ieee1212) to calculate
+>    size in call to memcpy() in order to avoid any confusion.
+> 
+> Changes in v2:
+>  - Add code comment for clarification.
+> 
+>  drivers/scsi/aacraid/aachba.c  | 10 +++++-----
+>  drivers/scsi/aacraid/aacraid.h |  2 +-
+>  2 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/scsi/aacraid/aachba.c b/drivers/scsi/aacraid/aachba.c
+> index f1f62b5da8b7..46b8dffce2dd 100644
+> --- a/drivers/scsi/aacraid/aachba.c
+> +++ b/drivers/scsi/aacraid/aachba.c
+> @@ -1235,8 +1235,8 @@ static int aac_read_raw_io(struct fib * fib, struct scsi_cmnd * cmd, u64 lba, u3
+>  		if (ret < 0)
+>  			return ret;
+>  		command = ContainerRawIo2;
+> -		fibsize = sizeof(struct aac_raw_io2) +
+> -			((le32_to_cpu(readcmd2->sgeCnt)-1) * sizeof(struct sge_ieee1212));
+> +		fibsize = struct_size(readcmd2, sge,
+> +				     le32_to_cpu(readcmd2->sgeCnt));
+>  	} else {
+>  		struct aac_raw_io *readcmd;
+>  		readcmd = (struct aac_raw_io *) fib_data(fib);
+> @@ -1366,8 +1366,8 @@ static int aac_write_raw_io(struct fib * fib, struct scsi_cmnd * cmd, u64 lba, u
+>  		if (ret < 0)
+>  			return ret;
+>  		command = ContainerRawIo2;
+> -		fibsize = sizeof(struct aac_raw_io2) +
+> -			((le32_to_cpu(writecmd2->sgeCnt)-1) * sizeof(struct sge_ieee1212));
+> +		fibsize = struct_size(writecmd2, sge,
+> +				      le32_to_cpu(writecmd2->sgeCnt));
+>  	} else {
+>  		struct aac_raw_io *writecmd;
+>  		writecmd = (struct aac_raw_io *) fib_data(fib);
+> @@ -3998,7 +3998,7 @@ static int aac_convert_sgraw2(struct aac_raw_io2 *rio2, int pages, int nseg, int
+>  	if (aac_convert_sgl == 0)
+>  		return 0;
+>  
+> -	sge = kmalloc_array(nseg_new, sizeof(struct sge_ieee1212), GFP_ATOMIC);
+> +	sge = kmalloc_array(nseg_new, sizeof(*sge), GFP_ATOMIC);
+>  	if (sge == NULL)
+>  		return -ENOMEM;
+>  
+> diff --git a/drivers/scsi/aacraid/aacraid.h b/drivers/scsi/aacraid/aacraid.h
+> index e3e4ecbea726..3733df77bc65 100644
+> --- a/drivers/scsi/aacraid/aacraid.h
+> +++ b/drivers/scsi/aacraid/aacraid.h
+> @@ -1929,7 +1929,7 @@ struct aac_raw_io2 {
+>  	u8		bpComplete;	/* reserved for F/W use */
+>  	u8		sgeFirstIndex;	/* reserved for F/W use */
+>  	u8		unused[4];
+> -	struct sge_ieee1212	sge[1];
+> +	struct sge_ieee1212	sge[];
+>  };
+>  
+>  #define CT_FLUSH_CACHE 129
+> 
