@@ -2,126 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD4E53730A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B27F03730CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232460AbhEDTUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 15:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231604AbhEDTUs (ORCPT
+        id S232216AbhEDTbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 15:31:39 -0400
+Received: from smtpout2.vodafonemail.de ([145.253.239.133]:34006 "EHLO
+        smtpout2.vodafonemail.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229542AbhEDTbi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 15:20:48 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADEADC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 12:19:52 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id n25so11757707edr.5
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 12:19:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=PaY5BeyThU9Oqa5E0rN+QI4l8GyOFDg1PpkL7EPVYXE=;
-        b=JFA/8XYwritP46yCAgT/nmYSkwKesLyBCdX4oAhNdOXQ69Td23Fk3CP35RxxITPhih
-         rhnzsp0ZNAkMJisc2i599n6V7f5dW4Kl2ROcORZwx3HXkqViXtbZsk5/62rIXOB2qGtU
-         WFJakaMAyaCefWlwkcmjYuG1DvfqbC8AFWdIYSwHj3lJMZ91dJH3WSYoBVkApqLP/Vp+
-         2G/STcG2STau8pGFolQVSW6jasMrNh/4m4zce/IAosTmfR+oig36/rYiHxC4ZNATMCqk
-         f1ZqeCLxCUTkLXFQwiAIVX2NYXYXokNBBUM2PCyVZ0zmK1f3sKvM9T3Y+SgzewZyB/CA
-         TvRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PaY5BeyThU9Oqa5E0rN+QI4l8GyOFDg1PpkL7EPVYXE=;
-        b=LdK8hybAwNraO/Ypvg7il1AWC2H5UnP9HTDPiDeQba4kPivX3EC7N0ZmgtTzlADmzR
-         Uj3Jyc6CeaQSasWNX89AQwjln/Rbi68jhlvmvVKk70zFDibZLMKZdsiw2ZFRHG+NNuMK
-         8eD6di5WtmKXiskYg09d4lYvnzsM2h7Jx9LwJPNCjwL0wMgAeFJ8MexFyCQyF/iMRf9u
-         mRx4uMqKje+9sOXUL2MyzAnuVqm6cWDk/4DpTpntk85mMpmsztvFT7wv5/02IFj+nCh0
-         iJtoxLQNDy3rWpJTy8NBcPH39w2U5oG6wC560oEbTD56p7eLQ0q2qI3d3u4Q02HBMLiX
-         NiqQ==
-X-Gm-Message-State: AOAM533yLq4wsBDktvsrud+I26E2Nb49AM8R/7Kgs1CKTi/Xd3egd2IC
-        w8cLYVNk3vWpHlABZZ56bD+v3HGuLLBxwofyDzI=
-X-Google-Smtp-Source: ABdhPJxQhIHBDaE08YeU5xNR99TW13NYeX6EKKCoEJUJq4Tl1oPY59Rx1+gNQB6ZpTtMRCDoE9w7os89CzDYdM3ulQ4=
-X-Received: by 2002:aa7:cd50:: with SMTP id v16mr28953451edw.175.1620155991412;
- Tue, 04 May 2021 12:19:51 -0700 (PDT)
+        Tue, 4 May 2021 15:31:38 -0400
+X-Greylist: delayed 497 seconds by postgrey-1.27 at vger.kernel.org; Tue, 04 May 2021 15:31:37 EDT
+Received: from smtp.vodafone.de (smtpa07.fra-mediabeam.com [10.2.0.38])
+        by smtpout2.vodafonemail.de (Postfix) with ESMTP id C777C120B8D
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 21:22:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arcor.de;
+        s=vfde-smtpout-mb-15sep; t=1620156144;
+        bh=dpukU8GguUO6xvcNrar3i7J3K9bMQJqkS5L6BNfPCBg=;
+        h=From:To:Subject:Date;
+        b=Mbnohlt25E8wZkPJcjxq1sTIidYCE9TVJ7TXeoT95TjosOo6ncXgQJIsVbQg1u1x8
+         aCgqKdI6xgNBFpI+wC7Eot8l5/YGUjs3JUywIYgxKyJJ/BGup0ygj912v2tuqgWo5N
+         sQXlPZDo94j8zAYXd4J20DfBtq0yVEay2nYeN+eE=
+Received: from H270 (p5b38f6a1.dip0.t-ipconnect.de [91.56.246.161])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp.vodafone.de (Postfix) with ESMTPSA id 7F787140272
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 19:22:24 +0000 (UTC)
+Message-ID: <6C7CD73845304CDE98F6DB165904B571@H270>
+From:   "Stefan Kanthak" <kanthak@arcor.de>
+To:     <linux-kernel@vger.kernel.org>
+Subject: [PATCH] vsscanf() in lib/vsprintf.c
+Date:   Tue, 4 May 2021 21:19:47 +0200
+Organization: Me, myself & IT
 MIME-Version: 1.0
-References: <e4r4g4R-yjH.A.CJE.0pVkgB@appolonius> <20210504183009.GV6564@kitsune.suse.cz>
- <CABkfQAHfjfBFqnVPzg1w5JFOErr=AsLpQgwzwpUJ2Uc_-cmD_w@mail.gmail.com> <20210504190452.GW6564@kitsune.suse.cz>
-In-Reply-To: <20210504190452.GW6564@kitsune.suse.cz>
-From:   Adrien Grassein <adrien.grassein@gmail.com>
-Date:   Tue, 4 May 2021 21:19:36 +0200
-Message-ID: <CABkfQAFpTYFgiA-h+5DBiky3CMtdj71n5+usGGtrTHsYB1xruA@mail.gmail.com>
-Subject: Re: ERROR: modpost: "drm_display_mode_to_videomode"
- [drivers/gpu/drm/bridge/lontium-lt8912b.ko] undefined!
-To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed;
+        boundary="----=_NextPart_000_2F4E_01D7412B.363FA9A0"
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Windows Mail 6.0.6002.18197
+X-MimeOLE: Produced By Microsoft MimeOLE V6.1.7601.24158
+X-purgate-type: clean
+X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
+X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
+X-purgate: clean
+X-purgate-size: 4236
+X-purgate-ID: 155817::1620156144-0000067D-C9F8850F/0/0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ok thanks,
+This is a multi-part message in MIME format.
 
-I will investigate this.
+------=_NextPart_000_2F4E_01D7412B.363FA9A0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-Le mar. 4 mai 2021 =C3=A0 21:04, Michal Such=C3=A1nek <msuchanek@suse.de> a=
- =C3=A9crit :
->
-> Hello,
->
-> I have only one from ppc64, the other architectures don't have the
-> problem or fail earlier.
->
-> Thanks
->
-> Michal
->
-> On Tue, May 04, 2021 at 08:45:01PM +0200, Adrien Grassein wrote:
-> > Hello,
-> >
-> > I think this is self-evident but could you please send the config to co=
-nfirm?
-> >
-> > Thanks,
-> >
-> > Le mar. 4 mai 2021 =C3=A0 20:30, Michal Such=C3=A1nek <msuchanek@suse.d=
-e> a =C3=A9crit :
-> > >
-> > > Hello,
-> > >
-> > > I get errors about missing symbol in the lontium-lt8912b module.
-> > >
-> > > Is the problem self-evident or do you need the config as well?
-> > >
-> > > I don't need the driver for anything, it was just auto-enabled becaus=
-e
-> > > it's new and the change has not been reviewed.
-> > >
-> > > Thanks
-> > >
-> > > Michal
-> > > >
-> > > > Last output:
-> > > >   WRAP    arch/powerpc/boot/zImage.maple
-> > > >   WRAP    arch/powerpc/boot/zImage.pseries
-> > > > make[2]: *** Deleting file 'modules-only.symvers'
-> > > >   MODPOST modules-only.symvers
-> > > > ERROR: modpost: "drm_display_mode_to_videomode" [drivers/gpu/drm/br=
-idge/lontium-lt8912b.ko] undefined!
-> > > > make[2]: *** [../scripts/Makefile.modpost:150: modules-only.symvers=
-] Error 1
-> > > > make[1]: *** [/home/abuild/rpmbuild/BUILD/kernel-vanilla-5.12.0.136=
-70.g5e321ded302d/linux-5.12-13670-g5e321ded302d/Makefile:1770: modules] Err=
-or 2
-> > > > make: *** [../Makefile:215: __sub-make] Error 2
-> > > > error: Bad exit status from /var/tmp/rpm-tmp.q1oSIp (%build)
+Hi @ll,
+
+both <https://www.kernel.org/doc/htmldocs/kernel-api/API-sscanf.html>
+and <https://www.kernel.org/doc/htmldocs/kernel-api/API-vsscanf.html>
+are rather terse and fail to specify the supported arguments and their
+conversion specifiers/modifiers.
+
+<https://www.kernel.org/doc/htmldocs/kernel-api/libc.html#id-1.4.3>
+tells OTOH:
+
+| The behaviour of these functions may vary slightly from those
+| defined by ANSI, and these deviations are noted in the text.
+
+There is but no text (see above) despite multiple deviations from
+ANSI C 
+
+<https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/lib/vsprintf.c?h=v5.12>
+
+|  /* '%*[' not yet supported, invalid format */
+...
+|  /*
+|   * Warning: This implementation of the '[' conversion specifier
+|   * deviates from its glibc counterpart in the following ways:
+...
+
+More deviations (just from reading the source):
+
+1. no support for %p
+2. no support for conversion modifiers j and t
+3. no support for multibyte characters and strings, i.e. %<width>c
+   and %<width>s may split UTF-8 codepoints
+4. accepts %[<width>]<modifier>[c|s], but ignores all conversion
+   modifiers
+5. treats %<width><modifier>% (and combinations) as %%
+6. accepts %<width><modifier>n (and combinations)
+7. doesn't scan the input for %[...]n
+8. uses simple_strto[u]l for the conversion modifier z, i.e. assigns
+   uint32_t to size_t, resulting in truncation
+
+Is this intended?
+If not: patch to fix 5. and 6. and simplify the qualifier handling
+        attached 
+
+Stefan Kanthak
+------=_NextPart_000_2F4E_01D7412B.363FA9A0
+Content-Type: application/octet-stream;
+	name="vsprintf.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="vsprintf.patch"
+
+--- -/lib/vsprintf.c=0A=
++++ +/lib/vsprintf.c=0A=
+@@ -3287,17 +3287,25 @@=0A=
+ 			str =3D skip_spaces(str);=0A=
+ 		}=0A=
+ =0A=
++		if (!*fmt)=0A=
++			break;=0A=
++=0A=
+ 		/* anything that is not a conversion must match exactly */=0A=
+-		if (*fmt !=3D '%' && *fmt) {=0A=
++		if (*fmt !=3D '%') {=0A=
+ 			if (*fmt++ !=3D *str++)=0A=
+ 				break;=0A=
+ 			continue;=0A=
+ 		}=0A=
+ =0A=
+-		if (!*fmt)=0A=
+-			break;=0A=
+ =0A=
++		/* %% must match % */=0A=
++		if (*fmt =3D=3D '%') {=0A=
++			if (*fmt++ !=3D *str++)=0A=
++				break;=0A=
++			continue;=0A=
++		}=0A=
++=0A=
+ 		/* skip this conversion.=0A=
+ 		 * advance both strings to next white space=0A=
+ 		 */=0A=
+@@ -3315,6 +3323,13 @@=0A=
+ 			continue;=0A=
+ 		}=0A=
+ =0A=
++		if (*fmt =3D=3D 'n') {=0A=
++			/* return number of characters read so far */=0A=
++			*va_arg(args, int *) =3D str - buf;=0A=
++			++fmt;=0A=
++			continue;=0A=
++		}=0A=
++=0A=
+ 		/* get field width */=0A=
+ 		field_width =3D -1;=0A=
+ 		if (isdigit(*fmt)) {=0A=
+@@ -3325,30 +3340,18 @@=0A=
+ =0A=
+ 		/* get conversion qualifier */=0A=
+ 		qualifier =3D -1;=0A=
+-		if (*fmt =3D=3D 'h' || _tolower(*fmt) =3D=3D 'l' ||=0A=
+-		    *fmt =3D=3D 'z') {=0A=
++		if (*fmt =3D=3D 'z' || *fmt =3D=3D 'L')=0A=
+ 			qualifier =3D *fmt++;=0A=
++		else if (*fmt =3D=3D 'h' || *fmt =3D=3D 'l') {=0A=
+ 			if (unlikely(qualifier =3D=3D *fmt)) {=0A=
+-				if (qualifier =3D=3D 'h') {=0A=
+-					qualifier =3D 'H';=0A=
+-					fmt++;=0A=
+-				} else if (qualifier =3D=3D 'l') {=0A=
+-					qualifier =3D 'L';=0A=
+-					fmt++;=0A=
+-				}=0A=
++				qualifier =3D _toupper(qualifier);=0A=
++				fmt++;=0A=
+ 			}=0A=
+ 		}=0A=
+ =0A=
+ 		if (!*fmt)=0A=
+ 			break;=0A=
+ =0A=
+-		if (*fmt =3D=3D 'n') {=0A=
+-			/* return number of characters read so far */=0A=
+-			*va_arg(args, int *) =3D str - buf;=0A=
+-			++fmt;=0A=
+-			continue;=0A=
+-		}=0A=
+-=0A=
+ 		if (!*str)=0A=
+ 			break;=0A=
+ =0A=
+@@ -3450,11 +3453,6 @@=0A=
+ 			fallthrough;=0A=
+ 		case 'u':=0A=
+ 			break;=0A=
+-		case '%':=0A=
+-			/* looking for '%' in str */=0A=
+-			if (*str++ !=3D '%')=0A=
+-				return num;=0A=
+-			continue;=0A=
+ 		default:=0A=
+ 			/* invalid format; stop here */=0A=
+ 			return num;=0A=
+
+------=_NextPart_000_2F4E_01D7412B.363FA9A0--
+
