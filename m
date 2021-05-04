@@ -2,150 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 057143723C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 02:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E7FC3723C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 02:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229672AbhEDACb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 20:02:31 -0400
-Received: from mail-bn1nam07on2065.outbound.protection.outlook.com ([40.107.212.65]:33860
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229499AbhEDACa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 20:02:30 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CQ349dalfFZlLLUKAv+RmQPoKi+23fNIQgQS2ofOamHpPKizm7dnKrisFHG1LB3ubk9IdMId+FwsComDQbU79wlfh4/Zpp+6rwTae3MdFSa7f/KlDCZ1s8A40nVKjPW9ZoUlkpifT2VcZQxj03nYz/ZHv38u/hrci0yHy2Rr2WywuquGiwqx4YRVMr/mRdKkxsAAECgirXqJ3AFLG//yGBFQzoY7Z/6Iz+/LFBEbCLM2iKAqVLBNcV9k/xJNoEFkXsVTDmaiim0s7TLAvPIAaTvYSYOSRvXv33K8bhSaFEC2RoNV06hWLZfTakDWNrjbFgE36JdWWGYdUXPBDixpMA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G/cKLKtzFGu2aBmD9V1JWghE6lhzzVpZbjGGqXGgfDE=;
- b=k5dcz9/T4tpG5GqOJOtrV1I8j77yaPzkGmCEwGKAwoaZFTvETmDvNdy8RdHn3IYz/tfvjI4AwRi5YwiPjmvxFK6j4iN6imKr+6gpq7vV2cP16SaQKheVDftNsyCCbfIbKlSO8e2DdR1R/IoSS5OqvAsbu/yJRfAmkV5GOClL6sEeRtNeOCxS9qVF4kUFmxbAK7C0HXx6+e+iRzEsOYDSb+MyUyNY/RDz5dDfg6vPtnAoxotoVkUmUdF4K0Y6WWtK6IFLHnmoAskwvQ9d+tPZkJMx644fK/6dFHXI772ndGZWrrQUkbq+KF68E99UT3jbUS82xK7EmRhNkKIKfsYXAg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=raithlin.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G/cKLKtzFGu2aBmD9V1JWghE6lhzzVpZbjGGqXGgfDE=;
- b=jJ3JtgOsZ8NdK38ie1C/LhBT5lRufdPnz5NSvkEbrYT4JI3vO9GIgBeR3JRhNZhzJeatAhI9ayAIZ6iuAiINzGzyUP+v3NO5+DNdpECxNi7fG5sR3OfynMROkukDho+yd3EdflRpyrywD38cYSQpZXb3W7+p9jG2vSurHcVlFUAE5ZdKmEqKSAu0Kn+1IF9ULvgdbbIU6P5x+57G6QEqh+eau6iZ+4mPLs5ESA7iyeJDCNFH6S+hTaA341K1q7eSCYAlhB3roWrr9niNae6sZL2FTJVHxjDt2ZH3nZSGZCjbs8Dz3icvxNitctTzEVZ/Mqh1lEYPovTbufFhDVYM3w==
-Received: from BN6PR18CA0011.namprd18.prod.outlook.com (2603:10b6:404:121::21)
- by DM6PR12MB4419.namprd12.prod.outlook.com (2603:10b6:5:2aa::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.25; Tue, 4 May
- 2021 00:01:32 +0000
-Received: from BN8NAM11FT068.eop-nam11.prod.protection.outlook.com
- (2603:10b6:404:121:cafe::50) by BN6PR18CA0011.outlook.office365.com
- (2603:10b6:404:121::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.25 via Frontend
- Transport; Tue, 4 May 2021 00:01:32 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; raithlin.com; dkim=none (message not signed)
- header.d=none;raithlin.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT068.mail.protection.outlook.com (10.13.177.69) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4087.27 via Frontend Transport; Tue, 4 May 2021 00:01:32 +0000
-Received: from [10.2.50.162] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 4 May
- 2021 00:01:30 +0000
-Subject: Re: [PATCH 09/16] dma-direct: Support PCI P2PDMA pages in dma-direct
- map_sg
-To:     Logan Gunthorpe <logang@deltatee.com>,
-        <linux-kernel@vger.kernel.org>, <linux-nvme@lists.infradead.org>,
-        <linux-block@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-mm@kvack.org>, <iommu@lists.linux-foundation.org>
-CC:     Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>
-References: <20210408170123.8788-1-logang@deltatee.com>
- <20210408170123.8788-10-logang@deltatee.com>
- <37fa46c7-2c24-1808-16e9-e543f4601279@nvidia.com>
- <8de928ab-2842-dac9-07ad-a098124f791f@deltatee.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <2a08b685-53c1-3ee4-0ce1-315554d63685@nvidia.com>
-Date:   Mon, 3 May 2021 17:01:29 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S229698AbhEDAC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 20:02:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37764 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229673AbhEDACw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 20:02:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24CB461244
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 00:01:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620086518;
+        bh=IKpKf7PhC4k2UZheSYL1fEwwAl2gFqXtlCWhSayr0sY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Qawfd1SE7EDaQtWrx5lNXQlaa6e/mPEldFfkFRDevH8IcTz5YkOYjCK1/JyZI4UkB
+         crpWEcIDIcqWcNLrvE0D/VGYJLuREY4B3/jHr/4xgs1gLwNwf1wOC5W7JJ+aeLolEi
+         lOOfYejUhkHXocyB3LNG8KBFKDF4UFUQaA9xW9RNZHYIoMglM/B4ubR5LBSB/9nxGC
+         /1js7N+YgjlYKzBQ63S3GL43xYlPDZL12QkgqjJVFlP8DfswEllWCTmcyUorv2VB8t
+         WoC3SMhWbW6gCwK6OYY47ABF4d97KhDZnJRqqoMGGf7mLsucExFdqDmR8Y3z9Rv/An
+         sxmlML8xUY3SA==
+Received: by mail-ej1-f44.google.com with SMTP id a4so10449442ejk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 17:01:58 -0700 (PDT)
+X-Gm-Message-State: AOAM530kaj6Q2X7jYLZNY7zennnVW2vrU1/mbqiXC+144F1wMDpoNDFO
+        ArvneihbdsxvIBZO1xBzfD2iJF+s86snN8G7zQvsHQ==
+X-Google-Smtp-Source: ABdhPJwBn8JeNuxiPtZcB6RVcrwDaqmLIJBExddckI7Y2zSt42SGvalk9nv7cMZmnP7w5qND43ZrGzZSHhcr/YmRkkg=
+X-Received: by 2002:a17:906:4f91:: with SMTP id o17mr18944005eju.503.1620086516574;
+ Mon, 03 May 2021 17:01:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <8de928ab-2842-dac9-07ad-a098124f791f@deltatee.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0813dd7d-b8d3-4a4a-ab1e-08d90e8fc688
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4419:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4419EA1EF793681904259354A85A9@DM6PR12MB4419.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: g25pE3vm47iOOf3nrkoBw1Avm6lF0MjJlFEB7U2Yew/Zyk7wqbrBCatnGMxxEQGK1DuKwK2om1mRsSuX381Gq647R9kcThPTGXC9Eb473Y1SDtTHjjWQ9ZjWu3NGWifydb/zEnPmY45pZGuqfAQI3iuHV0+rbYKgtfRd62jdfLGf/wzqu34Wdr1v7gwKPZkbTEdTglHIZSwJRcWzh9PiTImue55182LoRc3RNolAUxSERvTc7VVTMQJocrNm7iTH+XdpTDIQNItwZUtNjUeFd1TRLbwtgADjfUNhvEtgscaLV3i6i66VKg1o+bWQlw8S/iPxhS0/LrFRaQ4ywxwgC2jZtqmB4AxClxDTQRdHYuKfnLQ2z1EBi2gB0ToZr9zq0Fsj89sk63tUBSRjCR/ukWwQmeH1hScFOEXxNhC0Fe6LBMfas8VgzcC8HjujsyZsYMvtWwmAr/DYIwWjbCGMFUa/0Q+T94rs1hMgwufvv20vVZ279CqFeYdd13X0Fu+H+OMhdTbywmbh0n9fd2xml0BgFnywafIM0wLvfzcBJmIOcr3/JZo5mc+/BcVVHNq8Wfdr6gbPjHZgrkvJPmcLxYtPcp0F47mo8iR0uliYkKKR5nZ5OuGHpSHNg33a/Q7h+6GkP0rzklkRCQ4APUNhMnAJ+thEVMTWRj3813r+vPlX4fX2VMcgQK/hFIJXVctYVGe3Z0A/xFQuPkS6vjrtdA==
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(136003)(39860400002)(346002)(396003)(46966006)(36840700001)(110136005)(316002)(2906002)(336012)(36860700001)(426003)(7416002)(8676002)(83380400001)(47076005)(31696002)(86362001)(4326008)(26005)(7636003)(82310400003)(5660300002)(8936002)(478600001)(31686004)(16576012)(70586007)(36756003)(70206006)(186003)(16526019)(356005)(36906005)(2616005)(82740400003)(54906003)(53546011)(43740500002)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 May 2021 00:01:32.1844
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0813dd7d-b8d3-4a4a-ab1e-08d90e8fc688
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT068.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4419
+References: <8735v3ex3h.ffs@nanos.tec.linutronix.de> <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
+ <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
+ <CALCETrV9bCenqzzaW6Ra18tCvNP-my09decTjmLDVZZAQxR6VA@mail.gmail.com>
+ <CAHk-=wgo6XEz3VQ9ntqzWLR3-hm1YXrXUz4_heDs4wcLe9NYvA@mail.gmail.com>
+ <d26e3a82-8a2c-7354-d36b-cac945c208c7@kernel.dk> <CALCETrWmhquicE2C=G2Hmwfj4VNypXVxY-K3CWOkyMe9Edv88A@mail.gmail.com>
+ <CAHk-=wgqK0qUskrzeWXmChErEm32UiOaUmynWdyrjAwNzkDKaw@mail.gmail.com>
+ <8735v3jujv.ffs@nanos.tec.linutronix.de> <CAHk-=wi4Dyg_Z70J_hJbtFLPQDG+Zx3dP2jB5QrOdZC6W6j4Gw@mail.gmail.com>
+In-Reply-To: <CAHk-=wi4Dyg_Z70J_hJbtFLPQDG+Zx3dP2jB5QrOdZC6W6j4Gw@mail.gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 3 May 2021 17:01:45 -0700
+X-Gmail-Original-Message-ID: <CALCETrXW4BxhXt5AhW9-kOOqtz7O9cHtCsMNg7UWcAuS5HBB8Q@mail.gmail.com>
+Message-ID: <CALCETrXW4BxhXt5AhW9-kOOqtz7O9cHtCsMNg7UWcAuS5HBB8Q@mail.gmail.com>
+Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
+ registers for io_threads
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Stefan Metzmacher <metze@samba.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/3/21 10:04 AM, Logan Gunthorpe wrote:
-> Oops missed a comment:
-> 
-> On 2021-05-02 5:28 p.m., John Hubbard wrote:
->>>    int dma_direct_map_sg(struct device *dev, struct scatterlist *sgl, int nents,
->>>    		enum dma_data_direction dir, unsigned long attrs)
->>>    {
->>> -	int i;
->>> +	struct pci_p2pdma_map_state p2pdma_state = {};
->>
->> Is it worth putting this stuff on the stack--is there a noticeable
->> performance improvement from caching the state? Because if it's
->> invisible, then simplicity is better. I suspect you're right, and that
->> it *is* worth it, but it's good to know for real.
-> 
-> I haven't measured it (it would be hard to measure), but I think it's
-> fairly clear here. Without the state, xa_load() would need to be called
-> on *every* page in an SGL that maps only P2PDMA memory from one device.
-> With the state, it only needs to be called once. xa_load() is cheap, but
-> it is not that cheap.
+On Mon, May 3, 2021 at 4:16 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Mon, May 3, 2021 at 3:56 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+> >
+> > It's all fine that we have lots of blurb about GDB, but there is no
+> > reasoning why this does not affect regular kernel threads which take the
+> > same code path.
+>
+> Actual kernel threads don't get attached to by ptrace.
+>
+> > This is a half setup user space thread which is assumed to behave like a
+> > regular kernel thread, but is this assumption actually true?
+>
+> No, no.
+>
+> It's a *fully set up USER thread*.
+>
+> Those IO threads used to be kernel threads. That didn't work out for
+> the reasons already mentioned earlier.
+>
+> These days they really are fully regular user threads, they just don't
+> return to user space because they continue to do the IO work that they
+> were created for.
+>
+> Maybe instead of Stefan's patch, we could do something like this:
+>
+>    diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+>    index 43cbfc84153a..890f3992e781 100644
+>    --- a/arch/x86/kernel/process.c
+>    +++ b/arch/x86/kernel/process.c
+>    @@ -156,7 +156,7 @@ int copy_thread(unsigned long clone_flags,
+> unsigned long sp, unsigned long arg,
+>     #endif
+>
+>         /* Kernel thread ? */
+>    -    if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
+>    +    if (unlikely(p->flags & PF_KTHREAD)) {
+>                 memset(childregs, 0, sizeof(struct pt_regs));
+>                 kthread_frame_init(frame, sp, arg);
+>                 return 0;
+>    @@ -168,6 +168,17 @@ int copy_thread(unsigned long clone_flags,
+> unsigned long sp, unsigned long arg,
+>         if (sp)
+>                 childregs->sp = sp;
+>
+>    +    /*
+>    +     * An IO thread is a user space thread, but it doesn't
+>    +     * return to ret_after_fork(), it does the same kernel
+>    +     * frame setup to return to a kernel function that
+>    +     * a kernel thread does.
+>    +     */
+>    +    if (unlikely(p->flags & PF_IO_WORKER)) {
+>    +            kthread_frame_init(frame, sp, arg);
+>    +            return 0;
+>    +    }
+>    +
+>     #ifdef CONFIG_X86_32
+>         task_user_gs(p) = get_user_gs(current_pt_regs());
+>     #endif
+>
+> does that clarify things and make people happier?
+>
+> Maybe the compiler might even notice that the
+>
+>                 kthread_frame_init(frame, sp, arg);
+>                 return 0;
+>
+> part is common code and then it will result in less generated code too.
+>
+> NOTE! The above is - as usual - COMPLETELY UNTESTED. It looks obvious
+> enough, and it builds cleanly. But that's all I'm going to guarantee.
+>
+> It's whitespace-damaged on purpose.
 
-OK, thanks for spelling it out for me. :)
+I like this patch considerably more than I liked the previous patch.
 
-> 
-> There's essentially the same optimization in get_user_pages for
-> ZONE_DEVICE pages. So, if it is necessary there, it should be necessary
-> here.
-> 
+FWIW, I have this fixlet sitting around:
 
-Right, that's a pretty solid example.
+https://git.kernel.org/pub/scm/linux/kernel/git/luto/linux.git/commit/?h=x86/kentry&id=1eef07ae5b236112c9a0c5d880d7f9bb13e73761
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+Your patch fixes the same bug for the specific case of io_uring.
