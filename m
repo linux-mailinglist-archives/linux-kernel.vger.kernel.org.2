@@ -2,89 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C8A373153
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6AA4373156
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232004AbhEDUXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 16:23:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231601AbhEDUXU (ORCPT
+        id S232702AbhEDUYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 16:24:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45923 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229868AbhEDUX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 16:23:20 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28CEDC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 13:22:25 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id g13so6107631qts.4
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 13:22:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wZ5rLmppeNysLxYZlMRY8jT3QJH17/ddU1plSVt+R7g=;
-        b=cF72n9KhM31XWLCoY/ufX4mETUrZ38iaDoUfd1+xvm43H8mPXEZGI0pqs9f+6D6d9h
-         Ok7tJSLf/6lKgmaIwbNlPE+OebT8zWp+FBF0GMExzS90NMR1aABG1Dwh5cCUDZ+JF7TZ
-         Fm1lOq+RaqoKoyNVUvMl/vrVH1CInEsX02qRZ0uBlpIfUWRjtWFyQSRYYi4qXcLXk/cs
-         kEf/Cjjvt54bG7CGCFcywtU/hQGvUzQ896UGRSabKFc9z+TUis0+3phuclMpKdglKyJx
-         aFOJh83FvkUe2ZfvVwvdCMakBnGHOQmMd95NIP4wlSzN/B9/NddTXbKP/ECO3QthX4c7
-         r86w==
+        Tue, 4 May 2021 16:23:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620159783;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LZKovbJ8lKtotNg9ShvdPO02WF5aXDGNpj87pCUgbWM=;
+        b=acGWK4G6g2NXiHyfiPSFyeVyynJiXbRYWOkSN74PgCUxWNbK/PeEPgUU0zpKPf/onImLL8
+        367ke7noPmRiHQjxpy9DLh7SZEHAu4a0dB9UvB/fhm+lVHcgFYIc9ZkGFtKHKd4O5DMnky
+        65RPlKx3oiurh42ZVf+0s9I7lTuHZhE=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-500-fWFsnfg2OA2z6rMCiFgsuA-1; Tue, 04 May 2021 16:23:02 -0400
+X-MC-Unique: fWFsnfg2OA2z6rMCiFgsuA-1
+Received: by mail-ed1-f71.google.com with SMTP id d18-20020aa7d6920000b0290388b4c7ee24so4273756edr.12
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 13:23:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wZ5rLmppeNysLxYZlMRY8jT3QJH17/ddU1plSVt+R7g=;
-        b=X5CCn2vwU/+axxzNpSXGFVE/1O0BqNpWusnbMyh7UBtHBlGhlwkPli168FFVe3FVTF
-         Rw98ydkE6/vaVQBw5UJU59FWYnF82D8xRp0kf7d2z6b8P1QUM+RQ7Ix5L6ruQpp+/JMt
-         W8b3RfWmUuQyFDmKNyrJrC/EA2w/3zHQrdZHkyStO/kiq86hzDoqRpz4Zpywkya8yq2Q
-         797D6wnCEdJAbbmxTTW4lyHUR2uuyc1LNbRFNqOQlYooWH7+MqGluCCfhLIjfycxFeJN
-         b8flrvgdsVaFECka13VCYSKwVRlv4MT+r1H22Nt+hyPo0KXLhBvbGPFRCU0MiBl7F4Aj
-         k7fg==
-X-Gm-Message-State: AOAM532vD0f+QCrN6UxTYNxH5r+iTPv4wci5cD67W9KRfiXdc1PDEqN7
-        +Coz6t64hUvbtbXlT+i9KpoMRg==
-X-Google-Smtp-Source: ABdhPJyYRkAsVpmjy6Fc0GkmgaKDAGK58ktBExQWeDqwJMdDAK85VOjhm89/mlyCX6knVm4j1UVIWw==
-X-Received: by 2002:ac8:4a19:: with SMTP id x25mr20683950qtq.389.1620159744382;
-        Tue, 04 May 2021 13:22:24 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id f5sm12471396qkk.12.2021.05.04.13.22.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 13:22:23 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1le1Yk-000nvc-GB; Tue, 04 May 2021 17:22:22 -0300
-Date:   Tue, 4 May 2021 17:22:22 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Parav Pandit <parav@nvidia.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: CFI violation in drivers/infiniband/core/sysfs.c
-Message-ID: <20210504202222.GB2047089@ziepe.ca>
-References: <20210402195241.gahc5w25gezluw7p@archlinux-ax161>
- <202104021555.08B883C7@keescook>
- <20210403065559.5vebyyx2p5uej5nw@archlinux-ax161>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LZKovbJ8lKtotNg9ShvdPO02WF5aXDGNpj87pCUgbWM=;
+        b=SxKTxIztxmLEU04Ztnz9f14P1IvS4f5y1c+ARg1gHbSRIbobSbpr9w5H/gXThGjBCp
+         q3v5WE0OtTaiVqfu/RJReQzVpLpWgsxhDvRdo0DuYJmDw656JcITQuj/MUva/MH+4OGj
+         iTFnWkJufz6LhwKp2REBDY8UsqfkRhdRWOxTd/1NFwsgQUG0Y8/hnP2ujH/E4BzLp13t
+         IHpGX76jU9dCu2QVRHxFORbEGg9fhVhXu86a2zL369W4Uuy4BjVihFzRQKzRnAD5pgdS
+         HDi0Y2gRBiAJlkofYpgo+4fy2aOBvjJ0Q/clQgYOrn1lN34NiN8SBu+rOt5u9SgHxHQ9
+         v2vA==
+X-Gm-Message-State: AOAM531xANvShJNdSQA5JJoYCOuVWmwnmThgjIzpE2ljp7QuwdtzJj5m
+        p6NZLCQykk9QkT6BK/7S/9GE+VF2DXWqi9cQWy9jOJ3KOtXb47ON4qC5bI/qTiiaR9lVG4Rp2UI
+        wFuPfhKCgAjfYggoeOiikAIu4
+X-Received: by 2002:a17:906:a295:: with SMTP id i21mr23568687ejz.160.1620159780863;
+        Tue, 04 May 2021 13:23:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy/ehuSnSyvhjGI2eJylw4RSt91+go0x6ZX/64OwCIMlzvvHaAvwWoFTchd058/nFJcvnoIXw==
+X-Received: by 2002:a17:906:a295:: with SMTP id i21mr23568673ejz.160.1620159780652;
+        Tue, 04 May 2021 13:23:00 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id p22sm15250338edr.4.2021.05.04.13.22.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 May 2021 13:23:00 -0700 (PDT)
+Subject: Re: [PATCH v2 7/7] KVM: x86/mmu: Lazily allocate memslot rmaps
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20210429211833.3361994-1-bgardon@google.com>
+ <20210429211833.3361994-8-bgardon@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <1e50ae22-16a3-c43d-594a-a20d2ea3caa5@redhat.com>
+Date:   Tue, 4 May 2021 22:22:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210403065559.5vebyyx2p5uej5nw@archlinux-ax161>
+In-Reply-To: <20210429211833.3361994-8-bgardon@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 11:55:59PM -0700, Nathan Chancellor wrote:
-> > So, I think, the solution is below. This hasn't been runtime tested. It
-> > basically removes the ib_port callback prototype and leaves everything
-> > as kobject/attr. The callbacks then do their own container_of() calls.
-> 
-> Well that appear to be okay from a runtime perspective.
+On 29/04/21 23:18, Ben Gardon wrote:
+> +	/*
+> +	 * If set, the rmap should be allocated for any newly created or
+> +	 * modified memslots. If allocating rmaps lazily, this may be set
+> +	 * before the rmaps are allocated for existing memslots, but
+> +	 * shadow_mmu_active will not be set until after the rmaps are fully
+> +	 * allocated.
+> +	 */
+> +	bool alloc_memslot_rmaps;
 
-This giant thing should fix it, and some of the other stuff Greg observed:
+Let's remove the whole sentence starting with "If allocating rmaps 
+lazily".  The part about shadow_mmu_active should go there, while the 
+rest is pointless as long as we just say that this flag will be accessed 
+only under slots_arch_lock.
 
-https://github.com/jgunthorpe/linux/commits/rmda_sysfs_cleanup
+(Regarding shadow_mmu_active, I think I know what Sean will be 
+suggesting because I had a similar thought and decided it introduced 
+extra unnecessary complication... but maybe not, so let's see what he says).
 
-It needs some testing before it gets posted
+Paolo
 
-Jason
