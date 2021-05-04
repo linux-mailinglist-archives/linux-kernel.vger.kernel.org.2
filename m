@@ -2,168 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9DD37288C
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 12:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D038372893
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 12:14:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhEDKNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 06:13:06 -0400
-Received: from foss.arm.com ([217.140.110.172]:56502 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229947AbhEDKNE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 06:13:04 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8CBB1D6E;
-        Tue,  4 May 2021 03:12:09 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E2D803F73B;
-        Tue,  4 May 2021 03:12:06 -0700 (PDT)
-Date:   Tue, 4 May 2021 11:12:01 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Greentime Hu <greentime.hu@sifive.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>, hes@sifive.com,
-        Erik Danie <erik.danie@sifive.com>,
-        Zong Li <zong.li@sifive.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, robh+dt@kernel.org,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>, alex.dewar90@gmail.com,
-        khilman@baylibre.com, hayashi.kunihiko@socionext.com,
-        vidyas@nvidia.com, jh80.chung@samsung.com,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH v5 0/6] Add SiFive FU740 PCIe host controller driver
- support
-Message-ID: <20210504101201.GA20729@lpieralisi>
-References: <20210406092634.50465-1-greentime.hu@sifive.com>
- <20210503164023.GA919777@bjorn-Precision-5520>
- <CAHCEeh+cMrEnHNG3W3ZNzdgT-m7BMorDawF6D8qkFYGg=RJMOw@mail.gmail.com>
+        id S230198AbhEDKPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 06:15:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230169AbhEDKPS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 06:15:18 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1498CC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 03:14:16 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id e2so4568451plh.8
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 03:14:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=G4WSnegt7sWFXhiZUo/H8mFA8YOfhqB3H/FcAZj7hT8=;
+        b=ntW8xcKQmgkUHISGAF4IzI224Ye5tabfMbPJRLiGbqY7Rr3tclDi+8u7+XIWZyZtp8
+         W+24vVGh+Kb8PFB+eQPqOIeCNFJpo0a340nCJBRd3HIg5i0kBMtxTV6QbGjpSw5VUzPr
+         Es0CARIQQfdBNbktqpmur+D+QCZX0ULZyXeGUbQHEgula8cLINk5YZ7mFyfkirrg/Xr7
+         yDKIvXXPAtuNV4KAYn+xfXt2c4rFpKGP7HswvwXxlMCQtAfrysEUsciTLeiOxAc/wAEc
+         U5TiqfL3po4tzJvQhJDbGhCfniUbK7Mchh6W4VAF1acttTlXf3QjdwcGFm0jCXD8cv2+
+         PPyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=G4WSnegt7sWFXhiZUo/H8mFA8YOfhqB3H/FcAZj7hT8=;
+        b=YEPyiTsa00gL9zmNu+IvTVuqtoQDY9w2WTTnDzhpAv0JTIdrfDPujQ8W5gcE9e2JvM
+         7F7k8g7k80T/EccUi1vsTitj68N98D8E+OCyRCsDs6zhYSIiT826/vAkCA7gWxJ8duVM
+         rA6968e1F6787JShjsiseEXges0iEiq5Bhxn5iy6CsNmfx3T+hgOAewWwy+T7P1/jDzt
+         Xv1DBinBE5wEK4OTR07FUUQu4Hhl7Q1TJY9Qp+BTfvGunPqd8lmNo19lxRDFgWEPjrJp
+         coYZsCMVZL5M5rzr2XfNoalLKgK/F+yvEDbMko6vDDvIVJsmC/ExLA4qMdwO/Lo28ePe
+         3cjg==
+X-Gm-Message-State: AOAM532jiczmD3YiltiHxWkr+iv4vfPDxA/224s7hEq59i0Afo1VZJI1
+        WCs8rnCdHf/hegptI1KuZUs=
+X-Google-Smtp-Source: ABdhPJxdWLerj3PVzICFvrxooqDo1msdzSUrDqhSN6Tldy17O34vbf0IFxgXhrojl9ihycNwkeo44w==
+X-Received: by 2002:a17:902:c211:b029:ed:7a6b:d4bf with SMTP id 17-20020a170902c211b02900ed7a6bd4bfmr25144155pll.63.1620123255583;
+        Tue, 04 May 2021 03:14:15 -0700 (PDT)
+Received: from localhost ([61.68.127.20])
+        by smtp.gmail.com with ESMTPSA id b1sm3120712pgf.84.2021.05.04.03.14.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 03:14:15 -0700 (PDT)
+Date:   Tue, 04 May 2021 20:14:09 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH 1/2] powerpc/asm-offset: Remove unused items related to
+ paca
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <f38728dbe96df5fef84c868640def5f6d7c114bc.1620060357.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <f38728dbe96df5fef84c868640def5f6d7c114bc.1620060357.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHCEeh+cMrEnHNG3W3ZNzdgT-m7BMorDawF6D8qkFYGg=RJMOw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Message-Id: <1620121538.q0b7uiea5y.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 03:20:00PM +0800, Greentime Hu wrote:
-> Bjorn Helgaas <helgaas@kernel.org> 於 2021年5月4日 週二 上午12:40寫道：
-> >
-> > On Tue, Apr 06, 2021 at 05:26:28PM +0800, Greentime Hu wrote:
-> > > This patchset includes SiFive FU740 PCIe host controller driver. We also
-> > > add pcie_aux clock and pcie_power_on_reset controller to prci driver for
-> > > PCIe driver to use it.
-> >
-> > I dropped this series because of the build problem I mentioned [1].
-> > It will not be included in v5.13 unless the build problem is fixed
-> > ASAP.
-> >
-> > [1] https://lore.kernel.org/r/20210428194713.GA314975@bjorn-Precision-5520
-> >
-> 
-> Hi all,
-> 
-> This build failed in x86_64 is because CONFIG_GPIOLIB is disabled in
-> the testing config.
-> 
-> diff --git a/drivers/pci/controller/dwc/Kconfig
-> b/drivers/pci/controller/dwc/Kconfig
-> index 0a37d21ed64e..56b66e1fed53 100644
-> --- a/drivers/pci/controller/dwc/Kconfig
-> +++ b/drivers/pci/controller/dwc/Kconfig
-> @@ -323,6 +323,7 @@ config PCIE_FU740
->         depends on PCI_MSI_IRQ_DOMAIN
->         depends on SOC_SIFIVE || COMPILE_TEST
->         select PCIE_DW_HOST
-> +       select GPIOLIB
+Excerpts from Christophe Leroy's message of May 4, 2021 2:46 am:
+> PACA_SIZE, PACACONTEXTID, PACALOWSLICESPSIZE, PACAHIGHSLICEPSIZE,
+> PACA_SLB_ADDR_LIMIT, MMUPSIZEDEFSIZE, PACASLBCACHE, PACASLBCACHEPTR,
+> PACASTABRR, PACAVMALLOCSLLP, MMUPSIZESLLP, PACACONTEXTSLLP,
+> PACALPPACAPTR, LPPACA_DTLIDX and PACA_DTL_RIDX are not used anymore
+> by ASM code.
 
-I think that an include:
+Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
 
-#include <linux/gpio/consumer.h>
+Also I think SIGSEGV, NMI_MASK, THREAD_DBCR0, KUAP?, TI_FLAGS,
+TI_PREEMPT, [ID]CACHEL1*, STACK_REGS_KUAP, EXC_LVL_SIZE, KVM_NEED_FLUSH,=20
+KVM_FWNMI, VCPU_DEC, VCPU_SPMC, HSTATE_XICS_PHYS, HSTATE_SAVED_XIRR,
+PPC_DBELL_MSGTYPE I think. While we're cleaning it up.
 
-in the driver would do. Still, I believe we should also add a
-"depends on" in the Kconfig entry rather than a "select".
-
-Please let me know as soon as possible.
-
-Lorenzo
-
->         help
->           Say Y here if you want PCIe controller support for the SiFive
->           FU740.
-> 
-> After applying this change, it can build pass.
-> 
-> > > This is tested with e1000e: Intel(R) PRO/1000 Network Card, AMD Radeon R5
-> > > 230 graphics card and SP M.2 PCIe Gen 3 SSD in SiFive Unmatched based on
-> > > v5.11 Linux kernel.
-> > >
-> > > Changes in v5:
-> > >  - Fix typo in comments
-> > >  - Keep comments style consistent
-> > >  - Refine some error handling codes
-> > >  - Remove unneeded header file including
-> > >  - Merge fu740_pcie_ltssm_enable implementation to fu740_pcie_start_link
-> > >
-> > > Changes in v4:
-> > >  - Fix Wunused-but-set-variable warning in prci driver
-> > >
-> > > Changes in v3:
-> > >  - Remove items that has been defined
-> > >  - Refine format of sifive,fu740-pcie.yaml
-> > >  - Replace perstn-gpios with the common one
-> > >  - Change DBI mapping space to 2GB from 4GB
-> > >  - Refine drivers/reset/Kconfig
-> > >
-> > > Changes in v2:
-> > >  - Refine codes based on reviewers' feedback
-> > >  - Remove define and use the common one
-> > >  - Replace __raw_writel with writel_relaxed
-> > >  - Split fu740_phyregreadwrite to write function
-> > >  - Use readl_poll_timeout in stead of while loop checking
-> > >  - Use dwc common codes
-> > >  - Use gpio descriptors and the gpiod_* api.
-> > >  - Replace devm_ioremap_resource with devm_platform_ioremap_resource_byname
-> > >  - Replace devm_reset_control_get with devm_reset_control_get_exclusive
-> > >  - Add more comments for delay and sleep
-> > >  - Remove "phy ? x : y" expressions
-> > >  - Refine code logic to remove possible infinite loop
-> > >  - Replace magic number with meaningful define
-> > >  - Remove fu740_pcie_pm_ops
-> > >  - Use builtin_platform_driver
-> > >
-> > > Greentime Hu (5):
-> > >   clk: sifive: Add pcie_aux clock in prci driver for PCIe driver
-> > >   clk: sifive: Use reset-simple in prci driver for PCIe driver
-> > >   MAINTAINERS: Add maintainers for SiFive FU740 PCIe driver
-> > >   dt-bindings: PCI: Add SiFive FU740 PCIe host controller
-> > >   riscv: dts: Add PCIe support for the SiFive FU740-C000 SoC
-> > >
-> > > Paul Walmsley (1):
-> > >   PCI: fu740: Add SiFive FU740 PCIe host controller driver
-> > >
-> > >  .../bindings/pci/sifive,fu740-pcie.yaml       | 113 +++++++
-> > >  MAINTAINERS                                   |   8 +
-> > >  arch/riscv/boot/dts/sifive/fu740-c000.dtsi    |  33 ++
-> > >  drivers/clk/sifive/Kconfig                    |   2 +
-> > >  drivers/clk/sifive/fu740-prci.c               |  11 +
-> > >  drivers/clk/sifive/fu740-prci.h               |   2 +-
-> > >  drivers/clk/sifive/sifive-prci.c              |  54 +++
-> > >  drivers/clk/sifive/sifive-prci.h              |  13 +
-> > >  drivers/pci/controller/dwc/Kconfig            |   9 +
-> > >  drivers/pci/controller/dwc/Makefile           |   1 +
-> > >  drivers/pci/controller/dwc/pcie-fu740.c       | 308 ++++++++++++++++++
-> > >  drivers/reset/Kconfig                         |   1 +
-> > >  include/dt-bindings/clock/sifive-fu740-prci.h |   1 +
-> > >  13 files changed, 555 insertions(+), 1 deletion(-)
-> > >  create mode 100644 Documentation/devicetree/bindings/pci/sifive,fu740-pcie.yaml
-> > >  create mode 100644 drivers/pci/controller/dwc/pcie-fu740.c
-> > >
-> > > --
-> > > 2.30.2
-> > >
+>=20
+> Remove them.
+>=20
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  arch/powerpc/kernel/asm-offsets.c | 24 ------------------------
+>  1 file changed, 24 deletions(-)
+>=20
+> diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-=
+offsets.c
+> index 28af4efb4587..419ab4a89114 100644
+> --- a/arch/powerpc/kernel/asm-offsets.c
+> +++ b/arch/powerpc/kernel/asm-offsets.c
+> @@ -197,7 +197,6 @@ int main(void)
+>  	OFFSET(ICACHEL1LOGBLOCKSIZE, ppc64_caches, l1i.log_block_size);
+>  	OFFSET(ICACHEL1BLOCKSPERPAGE, ppc64_caches, l1i.blocks_per_page);
+>  	/* paca */
+> -	DEFINE(PACA_SIZE, sizeof(struct paca_struct));
+>  	OFFSET(PACAPACAINDEX, paca_struct, paca_index);
+>  	OFFSET(PACAPROCSTART, paca_struct, cpu_start);
+>  	OFFSET(PACAKSAVE, paca_struct, kstack);
+> @@ -212,15 +211,6 @@ int main(void)
+>  	OFFSET(PACAIRQSOFTMASK, paca_struct, irq_soft_mask);
+>  	OFFSET(PACAIRQHAPPENED, paca_struct, irq_happened);
+>  	OFFSET(PACA_FTRACE_ENABLED, paca_struct, ftrace_enabled);
+> -#ifdef CONFIG_PPC_BOOK3S
+> -	OFFSET(PACACONTEXTID, paca_struct, mm_ctx_id);
+> -#ifdef CONFIG_PPC_MM_SLICES
+> -	OFFSET(PACALOWSLICESPSIZE, paca_struct, mm_ctx_low_slices_psize);
+> -	OFFSET(PACAHIGHSLICEPSIZE, paca_struct, mm_ctx_high_slices_psize);
+> -	OFFSET(PACA_SLB_ADDR_LIMIT, paca_struct, mm_ctx_slb_addr_limit);
+> -	DEFINE(MMUPSIZEDEFSIZE, sizeof(struct mmu_psize_def));
+> -#endif /* CONFIG_PPC_MM_SLICES */
+> -#endif
+> =20
+>  #ifdef CONFIG_PPC_BOOK3E
+>  	OFFSET(PACAPGD, paca_struct, pgd);
+> @@ -241,21 +231,9 @@ int main(void)
+>  #endif /* CONFIG_PPC_BOOK3E */
+> =20
+>  #ifdef CONFIG_PPC_BOOK3S_64
+> -	OFFSET(PACASLBCACHE, paca_struct, slb_cache);
+> -	OFFSET(PACASLBCACHEPTR, paca_struct, slb_cache_ptr);
+> -	OFFSET(PACASTABRR, paca_struct, stab_rr);
+> -	OFFSET(PACAVMALLOCSLLP, paca_struct, vmalloc_sllp);
+> -#ifdef CONFIG_PPC_MM_SLICES
+> -	OFFSET(MMUPSIZESLLP, mmu_psize_def, sllp);
+> -#else
+> -	OFFSET(PACACONTEXTSLLP, paca_struct, mm_ctx_sllp);
+> -#endif /* CONFIG_PPC_MM_SLICES */
+>  	OFFSET(PACA_EXGEN, paca_struct, exgen);
+>  	OFFSET(PACA_EXMC, paca_struct, exmc);
+>  	OFFSET(PACA_EXNMI, paca_struct, exnmi);
+> -#ifdef CONFIG_PPC_PSERIES
+> -	OFFSET(PACALPPACAPTR, paca_struct, lppaca_ptr);
+> -#endif
+>  	OFFSET(PACA_SLBSHADOWPTR, paca_struct, slb_shadow_ptr);
+>  	OFFSET(SLBSHADOW_STACKVSID, slb_shadow, save_area[SLB_NUM_BOLTED - 1].v=
+sid);
+>  	OFFSET(SLBSHADOW_STACKESID, slb_shadow, save_area[SLB_NUM_BOLTED - 1].e=
+sid);
+> @@ -264,9 +242,7 @@ int main(void)
+>  #ifdef CONFIG_KVM_BOOK3S_HV_POSSIBLE
+>  	OFFSET(PACA_PMCINUSE, paca_struct, pmcregs_in_use);
+>  #endif
+> -	OFFSET(LPPACA_DTLIDX, lppaca, dtl_idx);
+>  	OFFSET(LPPACA_YIELDCOUNT, lppaca, yield_count);
+> -	OFFSET(PACA_DTL_RIDX, paca_struct, dtl_ridx);
+>  #endif /* CONFIG_PPC_BOOK3S_64 */
+>  	OFFSET(PACAEMERGSP, paca_struct, emergency_sp);
+>  #ifdef CONFIG_PPC_BOOK3S_64
+> --=20
+> 2.25.0
+>=20
+>=20
