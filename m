@@ -2,62 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D7E372E51
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 18:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56FAF372E5A
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231175AbhEDQ6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 12:58:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52136 "EHLO mail.kernel.org"
+        id S231809AbhEDRBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:01:34 -0400
+Received: from www.zeus03.de ([194.117.254.33]:48082 "EHLO mail.zeus03.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230285AbhEDQ6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 12:58:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02B336112F;
-        Tue,  4 May 2021 16:57:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620147456;
-        bh=7xtXEJUggeEQTnglckkti+0y7zH44zmLRlGn4eJ23Zw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=POXrpb22md3Gzgo2Tdj0M4U4LAOaoGmbUFzKkFlRlHCzxXbq4UhFXpyXp9biB7vwT
-         26B7R2RL6kXXSoqe6ZT0J5UrMLBcNJn6/LzlIrOh/BC92EUyzKnv3jGZPi8RpeF8kd
-         TPNCuFQtSKH9OSSPxlf9zLS7YmYs1XlqavRiKiyM7dL4iCw+z8zLtzi83O8PNK+7z5
-         rEpe2yJRdW4oqsTaeAQz9lD7CeWO23ZYxmlMYX8MnTh7QZhzhVMHSrR170Aqi+nwIy
-         hwx4jb/o8/SGN7RiAZt53FYHofj+v2IA05vFVwyvtUUVWcEf8/4wR9s3slKqVD/kT6
-         l6qesFDYHJxlQ==
-Date:   Tue, 4 May 2021 09:57:34 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [RFC PATCH] crypto: arc4: Implement a version optimized for
- memory usage
-Message-ID: <YJF8/oaWUqZsWfOb@gmail.com>
-References: <c52bd8972c9763c3fac685d7c6af3c46a23a1477.1619983555.git.christophe.jaillet@wanadoo.fr>
+        id S230285AbhEDRBc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 13:01:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=k1; bh=1yOjEf8whXDmiLTEPHapmPnnqSu
+        0d5DcIg8qz7S+MwA=; b=QA/6Shkdruc5BJykSj/EIgUC/Q2G+aF4V9+yindpZUN
+        ZaLpx8J4cSzDmphCy/0CeZ3iXDjWDpTd8Vfpm9+Ofpy0bPcE1BfO9zNOfTw7hgPE
+        RJJ4z3Y+nyysqfHt//fXc3MmM61xJEmLdDEUbuXOmRm2olR5R5t/5Q/0svV0Lx98
+        =
+Received: (qmail 1437682 invoked from network); 4 May 2021 19:00:35 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 4 May 2021 19:00:35 +0200
+X-UD-Smtp-Session: l3s3148p1@YaRKBITBqI8gAwDPXxOMAJUzfx/HAvHg
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Corentin Chary <corentin.chary@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org
+Subject: [PATCH v2 1/2] platform/x86: samsung-laptop: use octal numbers for rwx file permissions
+Date:   Tue,  4 May 2021 19:00:28 +0200
+Message-Id: <20210504170030.58447-1-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c52bd8972c9763c3fac685d7c6af3c46a23a1477.1619983555.git.christophe.jaillet@wanadoo.fr>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 02, 2021 at 09:29:46PM +0200, Christophe JAILLET wrote:
-> +#if defined(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS)
-> +#define S_type	u8
-> +#else
-> +#define S_type	u32
-> +#endif
-> +
->  struct arc4_ctx {
-> -	u32 S[256];
-> +	S_type S[256];
->  	u32 x, y;
->  };
+Andy asked me to do it before working further on the code.
 
-Is it actually useful to keep both versions?  It seems we could just use the u8
-version everywhere.  Note that there aren't actually any unaligned memory
-accesses, so choosing the version conditionally on
-CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS seems odd.  What are you trying to
-determine by checking that?
+Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+---
 
-- Eric
+Change since v1: new patch
+
+ drivers/platform/x86/samsung-laptop.c | 35 +++++++++++----------------
+ 1 file changed, 14 insertions(+), 21 deletions(-)
+
+diff --git a/drivers/platform/x86/samsung-laptop.c b/drivers/platform/x86/samsung-laptop.c
+index d5cec6e35bb8..763d97cbbe53 100644
+--- a/drivers/platform/x86/samsung-laptop.c
++++ b/drivers/platform/x86/samsung-laptop.c
+@@ -388,7 +388,7 @@ MODULE_PARM_DESC(force,
+ 		"Disable the DMI check and forces the driver to be loaded");
+ 
+ static bool debug;
+-module_param(debug, bool, S_IRUGO | S_IWUSR);
++module_param(debug, bool, 0644);
+ MODULE_PARM_DESC(debug, "Debug enabled or not");
+ 
+ static int sabi_command(struct samsung_laptop *samsung, u16 command,
+@@ -705,7 +705,7 @@ static ssize_t set_performance_level(struct device *dev,
+ 	return count;
+ }
+ 
+-static DEVICE_ATTR(performance_level, S_IWUSR | S_IRUGO,
++static DEVICE_ATTR(performance_level, 0644,
+ 		   get_performance_level, set_performance_level);
+ 
+ static int read_battery_life_extender(struct samsung_laptop *samsung)
+@@ -774,7 +774,7 @@ static ssize_t set_battery_life_extender(struct device *dev,
+ 	return count;
+ }
+ 
+-static DEVICE_ATTR(battery_life_extender, S_IWUSR | S_IRUGO,
++static DEVICE_ATTR(battery_life_extender, 0644,
+ 		   get_battery_life_extender, set_battery_life_extender);
+ 
+ static int read_usb_charge(struct samsung_laptop *samsung)
+@@ -843,7 +843,7 @@ static ssize_t set_usb_charge(struct device *dev,
+ 	return count;
+ }
+ 
+-static DEVICE_ATTR(usb_charge, S_IWUSR | S_IRUGO,
++static DEVICE_ATTR(usb_charge, 0644,
+ 		   get_usb_charge, set_usb_charge);
+ 
+ static int read_lid_handling(struct samsung_laptop *samsung)
+@@ -908,7 +908,7 @@ static ssize_t set_lid_handling(struct device *dev,
+ 	return count;
+ }
+ 
+-static DEVICE_ATTR(lid_handling, S_IWUSR | S_IRUGO,
++static DEVICE_ATTR(lid_handling, 0644,
+ 		   get_lid_handling, set_lid_handling);
+ 
+ static struct attribute *platform_attributes[] = {
+@@ -1291,24 +1291,17 @@ static void samsung_debugfs_init(struct samsung_laptop *samsung)
+ 	samsung->debug.sdiag_wrapper.data = samsung->sdiag;
+ 	samsung->debug.sdiag_wrapper.size = strlen(samsung->sdiag);
+ 
+-	debugfs_create_u16("command", S_IRUGO | S_IWUSR, root,
+-			   &samsung->debug.command);
+-	debugfs_create_u32("d0", S_IRUGO | S_IWUSR, root,
+-			   &samsung->debug.data.d0);
+-	debugfs_create_u32("d1", S_IRUGO | S_IWUSR, root,
+-			   &samsung->debug.data.d1);
+-	debugfs_create_u16("d2", S_IRUGO | S_IWUSR, root,
+-			   &samsung->debug.data.d2);
+-	debugfs_create_u8("d3", S_IRUGO | S_IWUSR, root,
+-			  &samsung->debug.data.d3);
+-	debugfs_create_blob("data", S_IRUGO | S_IWUSR, root,
+-			    &samsung->debug.data_wrapper);
+-	debugfs_create_blob("f0000_segment", S_IRUSR | S_IWUSR, root,
++	debugfs_create_u16("command", 0644, root, &samsung->debug.command);
++	debugfs_create_u32("d0", 0644, root, &samsung->debug.data.d0);
++	debugfs_create_u32("d1", 0644, root, &samsung->debug.data.d1);
++	debugfs_create_u16("d2", 0644, root, &samsung->debug.data.d2);
++	debugfs_create_u8("d3", 0644, root, &samsung->debug.data.d3);
++	debugfs_create_blob("data", 0644, root, &samsung->debug.data_wrapper);
++	debugfs_create_blob("f0000_segment", 0600, root,
+ 			    &samsung->debug.f0000_wrapper);
+-	debugfs_create_file("call", S_IFREG | S_IRUGO, root, samsung,
++	debugfs_create_file("call", S_IFREG | 0444, root, samsung,
+ 			    &samsung_laptop_call_fops);
+-	debugfs_create_blob("sdiag", S_IRUGO | S_IWUSR, root,
+-			    &samsung->debug.sdiag_wrapper);
++	debugfs_create_blob("sdiag", 0644, root, &samsung->debug.sdiag_wrapper);
+ }
+ 
+ static void samsung_sabi_exit(struct samsung_laptop *samsung)
+-- 
+2.30.0
+
